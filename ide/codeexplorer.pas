@@ -891,6 +891,17 @@ begin
         end;
       end;
 
+    ctnAsmBlock:
+      begin
+        DebugLn(['TCodeExplorerView.CreateFigures ',Tool.ExtractNode(CodeNode,[])]);
+        if (cefcEmptyBlocks in Figures)
+        and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('asm'),
+             CodeNode.EndPos-length('end')-1)
+        then begin
+          AddCodeNode(cefcEmptyBlocks,CodeNode);
+        end;
+      end;
+
     ctnProcedure:
       begin
         if (cefcNestedProcs in Figures) then
