@@ -893,7 +893,6 @@ begin
 
     ctnAsmBlock:
       begin
-        DebugLn(['TCodeExplorerView.CreateFigures ',Tool.ExtractNode(CodeNode,[])]);
         if (cefcEmptyBlocks in Figures)
         and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('asm'),
              CodeNode.EndPos-length('end')-1)
