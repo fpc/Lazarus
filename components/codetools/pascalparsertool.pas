@@ -695,12 +695,14 @@ begin
     RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
        +BeginNode.DescAsString);
-  if (BeginNode.FirstChild<>nil)
-  or ((BeginNode.SubDesc and ctnsNeedJITParsing)=0) then
+  if (BeginNode.SubDesc and ctnsNeedJITParsing)=0 then
     // block already parsed
     exit;
   // avoid endless loop
   BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
+  if (BeginNode.FirstChild<>nil) then
+    // block already parsed
+    exit;
 
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
@@ -716,13 +718,14 @@ begin
       MaxPos:=SrcLen;
     repeat
       ReadNextAtom;
-      if UpAtomIs('WITH') then
-        ReadWithStatement(true,true);
-      if UpAtomIs('ON') then
+      if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+            CurPos.EndPos-CurPos.StartPos) then
+      begin
+        if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
+      end else if UpAtomIs('WITH') then
+        ReadWithStatement(true,true)
+      else if UpAtomIs('ON') then
         ReadOnStatement(true,true);
-      if UpAtomIs('CASE') then begin
-        // ToDo
-      end;
     until (CurPos.StartPos>=MaxPos);
     CurrentPhase:=OldPhase;
   except
@@ -2129,7 +2132,8 @@ function TPascalParserTool.ReadTilBlockEnd(
 var BlockType: TEndBlockType;
   TryType: TTryType;
   BlockStartPos: integer;
-  
+  Desc: TCodeTreeNodeDesc;
+
   procedure SaveRaiseExceptionWithBlockStartHint(const AMessage: string);
   var CaretXY: TCodeXYPosition;
   begin
@@ -2173,9 +2177,11 @@ var BlockType: TEndBlockType;
 begin
   Result:=true;
   TryType:=ttNone;
-  if CurPos.Flag=cafBEGIN then
-    BlockType:=ebtBegin
-  else if UpAtomIs('REPEAT') then
+  Desc:=ctnNone;
+  if CurPos.Flag=cafBEGIN then begin
+    BlockType:=ebtBegin;
+    Desc:=ctnBeginBlock;
+  end else if UpAtomIs('REPEAT') then
     BlockType:=ebtRepeat
   else if UpAtomIs('TRY') then
     BlockType:=ebtTry
@@ -2187,6 +2193,13 @@ begin
     BlockType:=ebtRecord
   else
     RaiseUnknownBlockType;
+  if (Desc<>ctnNone) then begin
+    if CreateNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=Desc;
+    end else
+      Desc:=ctnNone;
+  end;
   BlockStartPos:=CurPos.StartPos;
   repeat
     ReadNextAtom;
@@ -2202,6 +2215,10 @@ begin
           RaiseStrExpectedWithBlockStartHint('"until"');
         if (BlockType=ebtTry) and (TryType=ttNone) then
           RaiseStrExpectedWithBlockStartHint('"finally"');
+        if Desc<>ctnNone then begin
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+        end;
         ReadNextAtom;
         if (CurPos.Flag=cafPoint) and (BlockType<>ebtBegin) then begin
           RaiseCharExpectedButAtomFound(';');
@@ -2218,9 +2235,13 @@ begin
       if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
         ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
-      if BlockType=ebtRepeat then
-        break;
-      RaiseStrExpectedWithBlockStartHint('"end"');
+      if BlockType<>ebtRepeat then
+        RaiseStrExpectedWithBlockStartHint('"end"');
+      if Desc<>ctnNone then begin
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+      end;
+      break;
     end else if UpAtomIs('FINALLY') then begin
       if (BlockType=ebtTry) and (TryType=ttNone) then begin
         if StopOnBlockMiddlePart then break;

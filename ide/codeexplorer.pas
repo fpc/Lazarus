@@ -857,6 +857,8 @@ begin
     case CodeNode.Desc of
     ctnBeginBlock:
       begin
+        if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
+          Tool.BuildSubTreeForBeginBlock(CodeNode);
         if (cefcLongProcs in Figures)
         and (CodeNode.Parent.Desc=ctnProcedure) then begin
           LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);
@@ -880,6 +882,12 @@ begin
         if (cefcUnnamedConsts in Figures)
         and (not CodeNode.HasParentOfType(ctnBeginBlock)) then begin
           FindFigureConstants(Tool,CodeNode,CodeNode.StartPos,CodeNode.EndPos);
+        end;
+        if (cefcEmptyBlocks in Figures)
+        and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('begin'),
+             CodeNode.EndPos-length('end')-1)
+        then begin
+          AddCodeNode(cefcEmptyBlocks,CodeNode);
         end;
       end;
 

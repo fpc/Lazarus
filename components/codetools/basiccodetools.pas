@@ -3739,6 +3739,7 @@ begin
 end;
 
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
+// from FromPos to including ToPos
 var
   SrcLen: integer;
   CodePos: integer;

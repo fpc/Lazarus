@@ -4165,6 +4165,7 @@ resourcestring
   lisCEFigureCharConst = 'Search for unnamed char constants';
   lisCEIgnoreFigureConstants = 'Ignore next unnamed constants';
   lisCEIgnoreFigConstInFuncs = 'Ignore constants in next functions';
+  lisCEEmptyBlocks = 'Empty blocks';
 
 implementation
 
