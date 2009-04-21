@@ -774,12 +774,12 @@ end;
 
 function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x, Result);
+  Result := ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x);
 end;
 
 function TLineSeries.GetYImgValue(AIndex: Integer): Integer;
 begin
-  ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y, Result);
+  Result := ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y);
 end;
 
 function TLineSeries.GetXMin: Double;
@@ -962,23 +962,15 @@ begin
 end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
-var
-  posImage: Integer;
 begin
   ACanvas.Pen.Assign(FPen);
 
   with ParentChart do
     case LineStyle of
       lsHorizontal:
-        begin
-          YGraphToImage(FPosGraph, posImage);
-          DrawLineHoriz(ACanvas, posImage);
-        end;
+        DrawLineHoriz(ACanvas, YGraphToImage(FPosGraph));
       lsVertical:
-        begin
-          XGraphToImage(FPosGraph, posImage);
-          DrawLineVert(ACanvas, posImage);
-        end;
+        DrawLineVert(ACanvas, XGraphToImage(FPosGraph));
     end;
 end;
 
@@ -1148,7 +1140,7 @@ var
       if barBottomY < YGraphMin then barBottomY := YGraphMin;
 
       r.TopLeft := GraphToImage(barTop);
-      YGraphToImage(barBottomY, r.Bottom);
+      r.Bottom := YGraphToImage(barBottomY);
     end;
 
     // Adjust for multiple bar series.
@@ -1567,24 +1559,20 @@ procedure TFuncSeries.Draw(ACanvas: TCanvas);
       yg := Extent.YMin;
     if Extent.UseYMax and (yg > Extent.YMax) then
       yg := Extent.YMax;
-    FChart.YGraphToImage(yg, Result);
+    Result := FChart.YGraphToImage(yg);
   end;
 
 var
-  x, xmax, t: Integer;
+  x, xmax: Integer;
 begin
   if not Assigned(OnCalculate) then exit;
 
   x := FChart.ClipRect.Left;
-  if Extent.UseXMin then begin
-    FChart.XGraphToImage(Extent.XMin, t);
-    x := Max(x, t);
-  end;
+  if Extent.UseXMin then
+    x := Max(FChart.XGraphToImage(Extent.XMin), x);
   xmax := FChart.ClipRect.Right;
-  if Extent.UseXMax then begin
-    FChart.XGraphToImage(Extent.XMax, t);
-    x := Min(x, t);
-  end;
+  if Extent.UseXMax then
+    x := Min(FChart.XGraphToImage(Extent.XMax), x);
 
   ACanvas.Pen.Assign(Pen);
 

@@ -184,7 +184,6 @@ type
 
     function GetSeriesCount: Integer;
     function GetSeriesInZOrder: TFPList;
-
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -216,9 +215,9 @@ type
     procedure SetAutoYMin(Auto: Boolean);
     procedure SetAutoYMax(Auto: Boolean);
 
-    procedure XGraphToImage(Xin: Double; out XOut: Integer);
-    procedure YGraphToImage(Yin: Double; out YOut: Integer);
-    function GraphToImage(AGraphPoint: TDoublePoint) : TPoint;
+    function XGraphToImage(AX: Double): Integer; inline;
+    function YGraphToImage(AY: Double): Integer; inline;
+    function GraphToImage(AGraphPoint: TDoublePoint): TPoint;
     procedure XImageToGraph(XIn: Integer; out XOut: Double);
     procedure YImageToGraph(YIn: Integer; out YOut: Double);
     procedure ImageToGraph(XIn, YIn: Integer; out XOut, YOut: Double);
@@ -596,7 +595,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     x, w: Integer;
     markText: String;
   begin
-    XGraphToImage(AMark, x);
+    x := XGraphToImage(AMark);
 
     if FBottomAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FBottomAxis.Grid);
@@ -623,7 +622,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     x, y, w, h: Integer;
     markText: String;
   begin
-    YGraphToImage(AMark, y);
+    y := YGraphToImage(AMark);
 
     if FLeftAxis.Grid.Visible then begin
       ACanvas.Pen.Assign(FLeftAxis.Grid);
@@ -957,20 +956,19 @@ begin
   Invalidate;
 end;
 
-procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
+function TChart.XGraphToImage(AX: Double): Integer;
 begin
-  XOut := Round(FScale.X * XIn + FOffset.X);
+  Result := Round(FScale.X * AX + FOffset.X);
 end;
 
-procedure TChart.YGraphToImage(Yin: Double; out YOut: Integer);
+function TChart.YGraphToImage(AY: Double): Integer;
 begin
-  YOut := Round(FScale.Y * YIn + FOffset.Y);
+  Result := Round(FScale.Y * AY + FOffset.Y);
 end;
 
 function TChart.GraphToImage(AGraphPoint: TDoublePoint): TPoint;
 begin
-  XGraphToImage(AGraphPoint.X, Result.X);
-  YGraphToImage(AGraphPoint.Y, Result.Y);
+  Result := Point(XGraphToImage(AGraphPoint.X), YGraphToImage(AGraphPoint.Y));
 end;
 
 procedure TChart.XImageToGraph(XIn: Integer; out XOut: Double);
