@@ -556,7 +556,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.WinRegister
   Params: None
-  Returns: If the window was successfully regitered
+  Returns: If the window was successfully registered
 
   Registers the main window class
  ------------------------------------------------------------------------------}
