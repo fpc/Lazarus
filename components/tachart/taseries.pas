@@ -29,7 +29,7 @@ unit TASeries;
 interface
 
 uses
-  Classes, Dialogs, Graphics, sysutils,
+  Classes, Graphics, SysUtils,
   TAGraph, TAChartUtils, TATypes;
 
 type
@@ -177,9 +177,10 @@ type
   published
     property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-    property InvertedStairs: Boolean read FInvertedStairs write SetInvertedStairs;
+    property InvertedStairs: Boolean
+      read FInvertedStairs write SetInvertedStairs default false;
     property SeriesColor;
-    property Stairs: Boolean read FStairs write SetStairs;
+    property Stairs: Boolean read FStairs write SetStairs default false;
   end;
 
   { TBasicLineSeries }
@@ -252,7 +253,7 @@ type
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property SeriesColor;
     property ShowLines: Boolean read FShowLines write SetShowLines default true;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
+    property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
@@ -1089,9 +1090,8 @@ end;
 procedure TBarSeries.SetBarWidthPercent(Value: Integer);
 begin
   if (Value < 1) or (Value > 100) then
-    raise BarException.Create('Wrong BarWidth Percent')
-  else
-    FBarWidthPercent := Value;
+    raise BarException.Create('Wrong BarWidth Percent');
+  FBarWidthPercent := Value;
 end;
 
 procedure TBarSeries.SetSeriesColor(const AValue: TColor);

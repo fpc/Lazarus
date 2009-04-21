@@ -86,10 +86,10 @@ type
 
   TPenBrushFontRecall = class
   private
-    FPen: TPen;
     FBrush: TBrush;
-    FFont: TFont;
     FCanvas: TCanvas;
+    FFont: TFont;
+    FPen: TPen;
   public
     constructor Create(ACanvas: TCanvas; AParams: TPenBrushFont);
     destructor Destroy; override;

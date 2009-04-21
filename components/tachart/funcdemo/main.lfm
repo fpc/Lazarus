@@ -11,9 +11,7 @@ object Form1: TForm1
   object Chart1: TChart
     Height = 362
     Width = 461
-    Legend.Alignment = laRight
     Legend.Visible = True
-    Title.Alignment = taCenter
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -24,12 +22,12 @@ object Form1: TForm1
     LeftAxis.Grid.Style = psDot
     LeftAxis.Grid.Visible = True
     LeftAxis.Title.Angle = 90
+    LeftAxis.Visible = False
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
+    BottomAxis.Visible = False
     Frame.Visible = True
-    BackColor = clBtnFace
     Align = alClient
-    Color = clBtnFace
     ParentColor = False
     object Chart1FuncSeries1: TFuncSeries
       Extent.XMin = -6.28

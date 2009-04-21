@@ -29,7 +29,7 @@ interface
 
 uses
   LCLIntF, LCLType, LResources,
-  SysUtils, Classes, Controls, Graphics, Dialogs, StdCtrls,
+  SysUtils, Classes, Controls, Graphics, Dialogs,
   TAChartUtils, TATypes;
 
 const
@@ -147,8 +147,6 @@ type
 
     FFrame: TChartPen;
 
-    FBackColor: TColor;
-
     FAxisVisible: Boolean;
 
     function GetMargins(ACanvas: TCanvas): TRect;
@@ -176,7 +174,6 @@ type
 
     procedure SetFrame(Value: TChartPen);
 
-    procedure SetBackColor(Value: TColor);
     procedure SetAxisVisible(Value: Boolean);
 
     function GetChartHeight: Integer;
@@ -252,7 +249,7 @@ type
     property YGraphMin: Double read FYGraphMin write SetYGraphMin;
     property XGraphMax: Double read FXGraphMax write SetXGraphMax;
     property YGraphMax: Double read FYGraphMax write SetYGraphMax;
-    property MirrorX: Boolean read FMirrorX write SetMirrorX;
+    property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
     property ReticuleMode: TReticuleMode
       read FReticuleMode write SetReticuleMode default rmNone;
@@ -271,13 +268,11 @@ type
     property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
     property Frame: TChartPen read FFrame write SetFrame;
 
-    property BackColor: TColor read FBackColor write SetBackColor;
-
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
 
     property Align;
     property Anchors;
-    property Color;
+    property Color default clBtnFace;
     property DoubleBuffered;
     property DragCursor;
     property DragMode;
@@ -365,7 +360,6 @@ begin
 
   MirrorX := false;
   FIsZoomed := false;
-  FBackColor := Color;
 
   FGraphBrush := TBrush.Create;
   FGraphBrush.OnChange := @StyleChanged;
@@ -705,7 +699,7 @@ begin
       Pen.Assign(FFrame)
     else
       Pen.Style := psClear;
-    Brush.Color := FBackColor;
+    Brush.Color := Color;
     Rectangle(FClipRect);
   end;
 
@@ -895,10 +889,12 @@ begin
 end;
 
 function TChart.GetMargins(ACanvas: TCanvas): TRect;
+const
+  DEF_MARGIN = 4;
 var
   i: Integer;
 begin
-  Result := Rect(4, 4, 4, 4);
+  Result := Rect(DEF_MARGIN, DEF_MARGIN, DEF_MARGIN, DEF_MARGIN);
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
       Series[i].UpdateMargins(ACanvas, Result);
@@ -1255,12 +1251,6 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetBackColor(Value: TColor);
-begin
-  FBackColor := Value;
-  Invalidate;
-end; 
-
 procedure TChart.SetAxisVisible(Value: Boolean);
 begin
   FAxisVisible := Value;
@@ -1469,6 +1459,7 @@ end;
 
 initialization
   {$I tagraph.lrs}
+  RegisterPropertyToSkip(TChart, 'BackColor', 'Obsolete, use Color instead', '');
   SeriesClassRegistry := TStringList.Create;
 
 finalization

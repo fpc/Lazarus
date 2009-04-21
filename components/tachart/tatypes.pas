@@ -41,7 +41,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible: Boolean read FVisible write SetVisible default false;
   end;
 
   TLegendAlignment = (laLeft, laRight, laTop, laBottom);
@@ -83,10 +83,11 @@ type
 
     procedure Assign(Source: TPersistent); override;
   published
-    property Alignment: TLegendAlignment read FAlignment write SetAlignment;
+    property Alignment: TLegendAlignment
+      read FAlignment write SetAlignment default laRight;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
-    property Visible;
+    property Visible default false;
   end;
 
   TChartTitle = class(TChartElement)
@@ -108,12 +109,13 @@ type
 
     procedure Assign(Source: TPersistent); override;
   published
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Alignment: TAlignment
+      read FAlignment write SetAlignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property Text: TStrings read FText write SetText;
-    property Visible;
+    property Visible default false;
   end;
 
   TChartAxisTitle = class(TChartElement)
@@ -131,9 +133,10 @@ type
 
     procedure Assign(Source: TPersistent); override;
   published
-    property Angle: Integer read FAngle write SetAngle;
+    property Angle: Integer read FAngle write SetAngle default 0;
     property Caption: String read FCaption write SetCaption;
     property Font: TFont read FFont write SetFont;
+    property Visible default false;
   end;
 
   TChartAxis = class(TChartElement)
@@ -153,9 +156,9 @@ type
   published
     property Grid: TChartPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
-    property Inverted: boolean read FInverted write SetInverted;
+    property Inverted: boolean read FInverted write SetInverted default false;
     property Title: TChartAxisTitle read FTitle write SetTitle;
-    property Visible;
+    property Visible default true;
   end;
 
   TChartLinkPen = class(TChartPen)
@@ -397,6 +400,7 @@ constructor TChartTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
 
+  FAlignment := taCenter;
   InitHelper(FBrush, TBrush);
   FBrush.Color := FOwner.Color;
   InitHelper(FFont, TFont);
