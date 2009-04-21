@@ -2647,6 +2647,7 @@ end;
 
 function TCustomSynEdit.GetPopupMenu: TPopupMenu;
 begin
+  Result := nil;
   if (sfGutterClick in fStateFlags) and FGutter.HasCustomPopupMenu(Result) then
     exit;
   Result := inherited GetPopupMenu;
