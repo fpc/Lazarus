@@ -154,10 +154,7 @@ begin
   end;
 
   OpenButton.Caption:=lisMenuOpen;
-  OpenButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);

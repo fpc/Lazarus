@@ -41,19 +41,16 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEWindowIntf,
-  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
+  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit, ButtonPanel;
 
 type
 
   { TAddFileToAPackageDialog }
 
   TAddFileToAPackageDialog = class(TForm)
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     HasRegisterProcCheckBox: TCheckBox;
     FileTypeRadioGroup: TRadioGroup;
-    BtnPanel: TPanel;
-    OkButton: TBitBtn;
     UnitNameEdit: TEdit;
     FileNameEdit: TEdit;
     FileGroupBox: TGroupBox;
@@ -205,11 +202,11 @@ begin
   HasRegisterProcCheckBox.Caption:=lisAF2PHasRegisterProcedure;
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
-  OkButton.Caption:=lisLazBuildOk;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  BtnPanel.OkButton.Caption:=lisLazBuildOk;
+  BtnPanel.CancelButton.Caption:=dlgCancel;
+  BtnPanel.OkButton.OnClick:=@OkButtonClick;
+  BtnPanel.OkButton.ModalResult:=mrNone;
+  BtnPanel.HelpButton.OnClick:=@HelpButtonClick;
 
   with FileTypeRadioGroup do begin
     Caption:=lisAF2PFileType;

@@ -32,10 +32,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
     Width = 453
     Align = alTop
     Columns = <>
-    ParentColor = False
     RowSelect = True
-    SortColumn = 0
-    SortType = stNone
     TabOrder = 1
     OnDblClick = PkgListViewDblClick
     OnSelectItem = PkgListViewSelectItem
