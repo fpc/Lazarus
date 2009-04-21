@@ -2622,6 +2622,16 @@
         <short>
           <var>TCustomDateEvent</var> - generic event handler method for date-related events</short>
       </element>
+      <element name="TFileNameEdit.HideDirectories">
+        <short>Hide directory name from edit</short>
+        <descr>
+          <p>If <var>HideDirectories</var> is set to true, the file name editor displays
+only a file name, without path.</p>
+p&gt;<remark>This may be useful if application allows user to select files from
+
+fixed directory with a long path. </remark>
+        </descr>
+      </element>
     </module>
     <!-- EditBtn -->
   </package>
