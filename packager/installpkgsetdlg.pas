@@ -156,7 +156,6 @@ begin
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
   CancelButton.Caption:=dlgCancel;
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TFPList.Create;
