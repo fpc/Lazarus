@@ -9,10 +9,11 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
   ClientWidth = 581
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object NoteLabel: TLabel
+    Left = 0
     Height = 14
+    Top = 0
     Width = 581
     Align = alTop
     Caption = 'NoteLabel'
@@ -20,20 +21,25 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
     WordWrap = True
   end
   object MethodsGroupBox: TGroupBox
-    Height = 280
+    Left = 0
+    Height = 292
     Top = 14
     Width = 581
     Align = alClient
+    Anchors = [akLeft, akRight, akBottom]
     Caption = 'MethodsGroupBox'
-    ClientHeight = 262
+    ClientHeight = 274
     ClientWidth = 577
     TabOrder = 0
     object MethodsCheckListBox: TCheckListBox
       AnchorSideBottom.Control = SelectAllButton
-      Height = 227
+      Left = 0
+      Height = 239
+      Top = 0
       Width = 577
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
+      ItemHeight = 0
       OnClickCheck = MethodsCheckListBoxClickCheck
       TabOrder = 0
     end
@@ -43,7 +49,7 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 233
+      Top = 245
       Width = 98
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -59,8 +65,8 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       AnchorSideBottom.Side = asrBottom
       Left = 110
       Height = 23
-      Top = 233
-      Width = 112
+      Top = 245
+      Width = 113
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -70,38 +76,49 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 50
-    Top = 294
+    Left = 0
+    Height = 38
+    Top = 306
     Width = 581
     Align = alBottom
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 38
     ClientWidth = 581
     TabOrder = 1
     object CancelBitBtn: TBitBtn
-      Left = 517
-      Height = 38
+      AnchorSideRight.Control = BtnPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 498
+      Height = 26
       Top = 6
-      Width = 58
-      Align = alRight
+      Width = 77
+      Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
       Cancel = True
       Caption = 'Cancel'
+      Constraints.MinWidth = 75
       Kind = bkCancel
       ModalResult = 2
       NumGlyphs = 0
       TabOrder = 0
     end
     object AddFirstBitBtn: TBitBtn
-      Left = 392
-      Height = 38
+      AnchorSideRight.Control = AddAllBitBtn
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 322
+      Height = 26
       Top = 6
-      Width = 43
-      Align = alRight
+      Width = 75
+      Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = '&Yes'
+      Constraints.MinWidth = 75
       Default = True
       Kind = bkYes
       ModalResult = 6
@@ -110,14 +127,18 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
       TabOrder = 1
     end
     object AddAllBitBtn: TBitBtn
-      Left = 441
-      Height = 38
+      AnchorSideRight.Control = CancelBitBtn
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 403
+      Height = 26
       Top = 6
-      Width = 70
-      Align = alRight
+      Width = 89
+      Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Yes to &All'
+      Constraints.MinWidth = 75
       Kind = bkYesToAll
       ModalResult = 10
       NumGlyphs = 0

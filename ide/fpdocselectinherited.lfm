@@ -7,52 +7,26 @@ object FPDocSelectInheritedDlg: TFPDocSelectInheritedDlg
   ClientHeight = 75
   ClientWidth = 330
   OnCreate = FormCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object InheritedComboBox: TComboBox
     Left = 8
     Height = 21
     Top = 8
     Width = 312
     Anchors = [akTop, akLeft, akRight]
+    AutoComplete = False
     ItemHeight = 13
-    MaxLength = -1
+    ItemWidth = 0
     TabOrder = 0
     Text = 'InheritedComboBox'
   end
-  object CancelButton: TBitBtn
-    AnchorSideTop.Control = InheritedComboBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 23
-    Top = 39
-    Width = 90
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 10
-    Cancel = True
-    Caption = 'CancelButton'
-    ModalResult = 2
-    NumGlyphs = 0
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 43
+    Width = 318
     TabOrder = 1
-  end
-  object OkButton: TBitBtn
-    AnchorSideTop.Control = InheritedComboBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = CancelButton
-    Left = 149
-    Height = 23
-    Top = 39
-    Width = 71
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 10
-    Caption = 'OkButton'
-    Default = True
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

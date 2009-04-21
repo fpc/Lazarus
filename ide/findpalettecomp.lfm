@@ -9,8 +9,7 @@ object FindPaletteComponentDlg: TFindPaletteComponentDlg
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object SearchPatternGroupBox: TGroupBox
     Left = 6
     Height = 55
@@ -35,61 +34,35 @@ object FindPaletteComponentDlg: TFindPaletteComponentDlg
   end
   object ComponentsGroupBox: TGroupBox
     Left = 6
-    Height = 192
+    Height = 195
     Top = 67
     Width = 388
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 174
+    ClientHeight = 177
     ClientWidth = 384
     TabOrder = 1
     object ComponentsListBox: TListBox
-      Height = 174
+      Left = 0
+      Height = 177
+      Top = 0
       Width = 384
       Align = alClient
+      ItemHeight = 0
       OnDblClick = ComponentsListBoxDblClick
       OnDrawItem = ComponentsListBoxDrawItem
       Style = lbOwnerDrawFixed
       TabOrder = 0
     end
   end
-  object BtnPanel: TPanel
-    Height = 35
-    Top = 265
-    Width = 400
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 35
-    ClientWidth = 400
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 268
+    Width = 388
     TabOrder = 2
-    object CancelButton: TBitBtn
-      Left = 304
-      Height = 23
-      Top = 6
-      Width = 90
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'CancelButton'
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object SelectButton: TBitBtn
-      Left = 211
-      Height = 23
-      Top = 6
-      Width = 87
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'SelectButton'
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

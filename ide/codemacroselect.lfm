@@ -9,8 +9,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
   ClientWidth = 561
   OnClose = FormClose
   OnCreate = FormCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object MacrosGroupBox: TGroupBox
     Left = 10
     Height = 210
@@ -22,9 +21,12 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     ClientWidth = 166
     TabOrder = 0
     object MacrosListBox: TListBox
+      Left = 0
       Height = 192
+      Top = 0
       Width = 166
       Align = alClient
+      ItemHeight = 0
       OnSelectionChange = MacrosListBoxSelectionChange
       TabOrder = 0
     end
@@ -40,7 +42,9 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     ClientWidth = 357
     TabOrder = 1
     object DescriptionMemo: TMemo
+      Left = 0
       Height = 192
+      Top = 0
       Width = 357
       Align = alClient
       Lines.Strings = (
@@ -61,45 +65,22 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     ClientWidth = 537
     TabOrder = 2
     object ParameterEdit: TEdit
+      Left = 0
       Height = 23
+      Top = 0
       Width = 537
       Align = alTop
       TabOrder = 0
       Text = 'ParameterEdit'
     end
   end
-  object OkButton: TBitBtn
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 380
-    Height = 23
-    Top = 286
-    Width = 71
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Bottom = 10
-    Caption = 'OkButton'
-    ModalResult = 1
-    NumGlyphs = 0
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 287
+    Width = 549
     TabOrder = 3
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 461
-    Height = 23
-    Top = 286
-    Width = 90
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 10
-    Caption = 'CancelButton'
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

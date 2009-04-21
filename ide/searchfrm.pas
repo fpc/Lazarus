@@ -56,7 +56,6 @@ type
     Panel2: TPANEL;
     procedure OnAddMatch(const Filename: string; const StartPos, EndPos: TPoint;
                          const Lines: string);
-    procedure Panel2Click(Sender: TObject);
     procedure SearchFormCREATE(Sender: TObject);
     procedure SearchFormDESTROY(Sender: TObject);
     procedure btnAbortCLICK(Sender: TObject);
@@ -622,7 +621,6 @@ begin
   SearchTextLabel.Caption:=lissSearchText;
   btnCancel.Caption:=dlgCancel;
   Caption:=dlgSearchCaption;
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
 
   fProgress:=TIDESearchInTextProgress.Create;
   FProgress.OnAddMatch:=@OnAddMatch;
@@ -637,11 +635,6 @@ begin
   fSearchOpen:= false;
   fSearchFiles:= false;
   Caption:= dlgSearchCaption;
-end;
-
-procedure TSearchForm.Panel2Click(Sender: TObject);
-begin
-
 end;
 
 procedure TSearchForm.OnAddMatch(const Filename: string; const StartPos,

@@ -9,11 +9,12 @@ object SearchForm: TSearchForm
   ClientWidth = 428
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
-  ParentFont = False
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Panel2: TPanel
+    Left = 0
     Height = 149
+    Top = 0
     Width = 428
     Align = alClient
     BevelInner = bvLowered
@@ -22,7 +23,6 @@ object SearchForm: TSearchForm
     FullRepaint = False
     TabOrder = 0
     TabStop = True
-    OnClick = Panel2Click
     object lblMatches: TLabel
       Left = 121
       Height = 14
@@ -76,12 +76,14 @@ object SearchForm: TSearchForm
     end
     object btnCancel: TBitBtn
       Left = 177
-      Height = 23
+      Height = 26
       Top = 112
-      Width = 58
+      Width = 77
       AutoSize = True
+      Cancel = True
       Caption = 'Cancel'
-      Default = True
+      Kind = bkCancel
+      ModalResult = 2
       NumGlyphs = 0
       OnClick = btnAbortCLICK
       TabOrder = 0

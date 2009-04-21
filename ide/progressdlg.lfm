@@ -8,9 +8,8 @@ object IDEProgressDialog: TIDEProgressDialog
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object DescriptionLabel: TLabel
     Left = 152
     Height = 13
@@ -28,7 +27,6 @@ object IDEProgressDialog: TIDEProgressDialog
     Top = 64
     Width = 370
     Anchors = [akTop]
-    Max = 100
     TabOrder = 0
   end
   object AbortButton: TBitBtn
@@ -37,7 +35,9 @@ object IDEProgressDialog: TIDEProgressDialog
     Top = 92
     Width = 139
     Anchors = [akBottom]
-    Caption = 'AbortButton'
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
     ModalResult = 3
     NumGlyphs = 0
     TabOrder = 1

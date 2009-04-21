@@ -40,20 +40,18 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, db,
-  LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls;
+  LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls, ButtonPanel;
 
 type
 
   { TFindPaletteComponentDlg }
 
   TFindPaletteComponentDlg = class(TForm)
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     ComponentsGroupBox: TGroupBox;
     ComponentsListBox: TListBox;
-    BtnPanel: TPanel;
     PatternEdit: TEdit;
     SearchPatternGroupBox: TGroupBox;
-    SelectButton: TBitBtn;
     procedure ComponentsListBoxDblClick(Sender: TObject);
     procedure ComponentsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -90,10 +88,8 @@ procedure TFindPaletteComponentDlg.FormCreate(Sender: TObject);
 begin
   Caption:=lisFPFindPaletteComponent;
   ComponentsGroupBox.Caption:=lisFPComponents;
-  SelectButton.Caption:=lisMenuSelect;
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  SelectButton.LoadGlyphFromLazarusResource('btn_ok');
+  BtnPanel.OKButton.Caption:=lisMenuSelect;
+  BtnPanel.CancelButton.Caption:=dlgCancel;
 
   PatternEdit.Text:='';
   SearchPatternGroupBox.Caption:=lisMenuFind;

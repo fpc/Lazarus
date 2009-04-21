@@ -10,20 +10,19 @@ object HelpSelectorDialog: THelpSelectorDialog
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object NodesGroupBox: TGroupBox
-    AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 233
+    Height = 239
     Top = 6
     Width = 488
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    ClientHeight = 215
+    ClientHeight = 221
     ClientWidth = 484
     TabOrder = 0
     object NodesListBox: TListBox
       Left = 6
-      Height = 203
+      Height = 209
       Top = 6
       Width = 472
       Align = alClient
@@ -33,58 +32,13 @@ object HelpSelectorDialog: THelpSelectorDialog
       TabOrder = 0
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 38
-    Top = 245
-    Width = 500
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 500
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 251
+    Width = 488
     TabOrder = 1
-    object OKButton: TBitBtn
-      AnchorSideTop.Control = BtnPanel
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = CancelButton
-      AnchorSideBottom.Control = BtnPanel
-      AnchorSideBottom.Side = asrBottom
-      Left = 336
-      Height = 26
-      Top = 6
-      Width = 75
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object CancelButton: TBitBtn
-      AnchorSideTop.Control = BtnPanel
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = BtnPanel
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = BtnPanel
-      AnchorSideBottom.Side = asrBottom
-      Left = 417
-      Height = 26
-      Top = 6
-      Width = 77
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

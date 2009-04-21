@@ -8,8 +8,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   ClientWidth = 554
   OnClose = ImExportCompOptsDlgCLOSE
   OnCreate = ImExportCompOptsDlgCREATE
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object OpenRecentGroupbox: TGroupBox
     Left = 8
     Height = 176
@@ -19,14 +18,16 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     Caption = 'OpenRecentGroupbox'
     ClientHeight = 158
     ClientWidth = 532
-    ParentCtl3D = False
     TabOrder = 0
     object RecentListbox: TListBox
+      Left = 0
       Height = 120
+      Top = 0
       Width = 532
       Align = alTop
       Anchors = [akTop, akLeft, akBottom]
       ClickOnSelChange = False
+      ItemHeight = 0
       OnClick = RecentListboxCLICK
       OnDblClick = RecentListboxDBLCLICK
       TabOrder = 0
@@ -80,7 +81,9 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     Top = 200
     Width = 110
     Anchors = [akLeft, akBottom]
-    Caption = 'CancelButton'
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3

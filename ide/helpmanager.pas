@@ -47,7 +47,7 @@ uses
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
-  IDEContextHelpEdit;
+  IDEContextHelpEdit, ButtonPanel;
 
 type
 
@@ -189,11 +189,9 @@ type
   { THelpSelectorDialog }
   
   THelpSelectorDialog = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     NodesGroupBox: TGroupBox;
     NodesListBox: TListBox;
-    BtnPanel: TPanel;
     procedure HelpSelectorDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure NodesListBoxDblClick(Sender: TObject);
@@ -583,10 +581,8 @@ begin
 
   Caption := lisHelpSelectorDialog;
   NodesGroupBox.Caption:=lisSelectAHelpItem;
-  OkButton.Caption:=lisLazBuildOk;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  BtnPanel.OKButton.Caption:=lisLazBuildOk;
+  BtnPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 { TIDEHelpDatabases }

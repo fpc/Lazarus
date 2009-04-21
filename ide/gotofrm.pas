@@ -34,9 +34,6 @@ begin
   Caption := lisMenuGotoLine;
   Label1.Caption := lisUEGotoLine;
   Edit1.Caption := '';
-
-  btnOK.LoadGlyphFromLazarusResource('btn_ok');
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 procedure TfrmGoto.DoShow;

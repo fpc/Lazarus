@@ -130,7 +130,6 @@ begin
   Caption:=lisPDProgress;
   DescriptionLabel.Caption:='...';
   AbortButton.Caption:=lisPDAbort;
-  AbortButton.LoadGlyphFromLazarusResource('btn_cancel');
 
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;

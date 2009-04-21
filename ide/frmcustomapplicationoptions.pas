@@ -118,9 +118,6 @@ begin
 
   BOK.Caption:= lisOkBtn;
   BCancel.Caption:= dlgCancel;
-
-  BOK.LoadGlyphFromLazarusResource('btn_ok');
-  BCancel.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 function TCustomApplicationOptionsForm.GetBool(Index: integer): Boolean;

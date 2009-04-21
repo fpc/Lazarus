@@ -26,16 +26,15 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, LazarusIdeStrConsts;
+  Buttons, LazarusIdeStrConsts, ButtonPanel;
 
 type
 
   { TFPDocSelectInheritedDlg }
 
   TFPDocSelectInheritedDlg = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     InheritedComboBox: TComboBox;
-    OkButton: TBitBtn;
     procedure FormCreate(Sender: TObject);
   end;
 
@@ -46,10 +45,8 @@ implementation
 procedure TFPDocSelectInheritedDlg.FormCreate(Sender: TObject);
 begin
   Caption:=rsSelectAnInheritedEntry;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  ButtonPanel1.OKButton.Caption:=lisOkBtn;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 end;
 
 initialization

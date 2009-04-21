@@ -4,28 +4,28 @@ LazarusResources.Add('TImExportCompOptsDlg','FORMDATA',[
   'TPF0'#20'TImExportCompOptsDlg'#19'ImExportCompOptsDlg'#4'Left'#3'<'#1#6'Heig'
   +'ht'#3#235#0#3'Top'#3#212#0#5'Width'#3'*'#2#7'Caption'#6#19'ImExportCompOpts'
   +'Dlg'#12'ClientHeight'#3#235#0#11'ClientWidth'#3'*'#2#7'OnClose'#7#24'ImExpo'
-  +'rtCompOptsDlgCLOSE'#8'OnCreate'#7#25'ImExportCompOptsDlgCREATE'#10'ParentFo'
-  +'nt'#8#10'LCLVersion'#6#6'0.9.25'#0#9'TGroupBox'#18'OpenRecentGroupbox'#4'Le'
-  +'ft'#2#8#6'Height'#3#176#0#3'Top'#2#8#5'Width'#3#24#2#7'Anchors'#11#5'akTop'
-  +#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#18'OpenRecentGroupbox'#12'C'
-  +'lientHeight'#3#158#0#11'ClientWidth'#3#20#2#11'ParentCtl3D'#8#8'TabOrder'#2
-  +#0#0#8'TListBox'#13'RecentListbox'#6'Height'#2'x'#5'Width'#3#20#2#5'Align'#7
-  +#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#16'ClickOnSelChange'
-  +#8#7'OnClick'#7#18'RecentListboxCLICK'#10'OnDblClick'#7#21'RecentListboxDBLC'
-  +'LICK'#8'TabOrder'#2#0#0#0#7'TButton'#16'OpenRecentButton'#4'Left'#2#9#6'Hei'
-  +'ght'#2#25#3'Top'#3#128#0#5'Width'#3#150#0#7'Anchors'#11#6'akLeft'#8'akBotto'
-  +'m'#0#7'Caption'#6#16'OpenRecentButton'#7'OnClick'#7#21'OpenRecentButtonCLIC'
-  +'K'#8'TabOrder'#2#1#0#0#7'TButton'#18'SaveToRecentButton'#4'Left'#3#182#0#6
-  +'Height'#2#25#3'Top'#3#128#0#5'Width'#3#150#0#7'Anchors'#11#6'akLeft'#8'akBo'
-  +'ttom'#0#7'Caption'#6#18'SaveToRecentButton'#7'OnClick'#7#23'SaveToRecentBut'
-  +'tonCLICK'#8'TabOrder'#2#2#0#0#0#7'TBitBtn'#10'OpenButton'#4'Left'#2#8#6'Hei'
-  +'ght'#2#25#3'Top'#3#200#0#5'Width'#3#167#0#7'Anchors'#11#6'akLeft'#8'akBotto'
-  +'m'#0#7'Caption'#6#10'OpenButton'#9'NumGlyphs'#2#0#7'OnClick'#7#15'OpenButto'
-  +'nCLICK'#8'TabOrder'#2#1#0#0#7'TBitBtn'#10'SaveButton'#4'Left'#3#214#0#6'Hei'
-  +'ght'#2#25#3'Top'#3#200#0#5'Width'#3#167#0#7'Anchors'#11#6'akLeft'#8'akBotto'
-  +'m'#0#7'Caption'#6#10'SaveButton'#9'NumGlyphs'#2#0#7'OnClick'#7#15'SaveButto'
-  +'nCLICK'#8'TabOrder'#2#2#0#0#7'TBitBtn'#12'CancelButton'#4'Left'#3#176#1#6'H'
-  +'eight'#2#25#3'Top'#3#200#0#5'Width'#2'n'#7'Anchors'#11#6'akLeft'#8'akBottom'
-  +#0#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2#9'NumGlyphs'#2#0#8'TabO'
-  +'rder'#2#3#0#0#0
+  +'rtCompOptsDlgCLOSE'#8'OnCreate'#7#25'ImExportCompOptsDlgCREATE'#10'LCLVersi'
+  +'on'#6#6'0.9.27'#0#9'TGroupBox'#18'OpenRecentGroupbox'#4'Left'#2#8#6'Height'
+  +#3#176#0#3'Top'#2#8#5'Width'#3#24#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRig'
+  +'ht'#8'akBottom'#0#7'Caption'#6#18'OpenRecentGroupbox'#12'ClientHeight'#3#158
+  +#0#11'ClientWidth'#3#20#2#8'TabOrder'#2#0#0#8'TListBox'#13'RecentListbox'#4
+  +'Left'#2#0#6'Height'#2'x'#3'Top'#2#0#5'Width'#3#20#2#5'Align'#7#5'alTop'#7'A'
+  +'nchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#16'ClickOnSelChange'#8#10'ItemH'
+  +'eight'#2#0#7'OnClick'#7#18'RecentListboxCLICK'#10'OnDblClick'#7#21'RecentLi'
+  +'stboxDBLCLICK'#8'TabOrder'#2#0#0#0#7'TButton'#16'OpenRecentButton'#4'Left'#2
+  +#9#6'Height'#2#25#3'Top'#3#128#0#5'Width'#3#150#0#7'Anchors'#11#6'akLeft'#8
+  +'akBottom'#0#7'Caption'#6#16'OpenRecentButton'#7'OnClick'#7#21'OpenRecentBut'
+  +'tonCLICK'#8'TabOrder'#2#1#0#0#7'TButton'#18'SaveToRecentButton'#4'Left'#3
+  +#182#0#6'Height'#2#25#3'Top'#3#128#0#5'Width'#3#150#0#7'Anchors'#11#6'akLeft'
+  +#8'akBottom'#0#7'Caption'#6#18'SaveToRecentButton'#7'OnClick'#7#23'SaveToRec'
+  +'entButtonCLICK'#8'TabOrder'#2#2#0#0#0#7'TBitBtn'#10'OpenButton'#4'Left'#2#8
+  +#6'Height'#2#25#3'Top'#3#200#0#5'Width'#3#167#0#7'Anchors'#11#6'akLeft'#8'ak'
+  +'Bottom'#0#7'Caption'#6#10'OpenButton'#9'NumGlyphs'#2#0#7'OnClick'#7#15'Open'
+  +'ButtonCLICK'#8'TabOrder'#2#1#0#0#7'TBitBtn'#10'SaveButton'#4'Left'#3#214#0#6
+  +'Height'#2#25#3'Top'#3#200#0#5'Width'#3#167#0#7'Anchors'#11#6'akLeft'#8'akBo'
+  +'ttom'#0#7'Caption'#6#10'SaveButton'#9'NumGlyphs'#2#0#7'OnClick'#7#15'SaveBu'
+  +'ttonCLICK'#8'TabOrder'#2#2#0#0#7'TBitBtn'#12'CancelButton'#4'Left'#3#176#1#6
+  +'Height'#2#25#3'Top'#3#200#0#5'Width'#2'n'#7'Anchors'#11#6'akLeft'#8'akBotto'
+  +'m'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResul'
+  +'t'#2#2#9'NumGlyphs'#2#0#8'TabOrder'#2#3#0#0#0
 ]);

@@ -32,15 +32,14 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, SrcEditorIntf, IDEWindowIntf,
-  InputHistory , LazarusIDEStrConsts;
+  InputHistory , LazarusIDEStrConsts, ButtonPanel;
 
 type
 
   { TCodeMacroSelectDlg }
 
   TCodeMacroSelectDlg = class(TForm)
-    CancelButton: TBitBtn;
-    OkButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     ParameterEdit: TEdit;
     ParameterGroupBox: TGroupBox;
     MacrosListBox: TListBox;
@@ -86,10 +85,8 @@ begin
   Caption:=lisCTSelectCodeMacro;
   MacrosGroupBox.Caption:=lisEdtExtToolMacros;
   DescriptionGroupBox.Caption:=lisToDoLDescription;
-  OkButton.Caption:=lisCTInsertMacro;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  ButtonPanel1.OkButton.Caption:=lisCTInsertMacro;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   ParameterGroupBox.Caption:=lisCMParameter;
   ParameterEdit.Text:='';
   

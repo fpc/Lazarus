@@ -67,7 +67,6 @@ object TodoDialog: TTodoDialog
   end
   object PriorityEdit: TEdit
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = BtnPanel
     Left = 6
     Height = 23
     Top = 205
@@ -100,46 +99,13 @@ object TodoDialog: TTodoDialog
     BorderSpacing.Right = 6
     TabOrder = 3
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 35
-    Top = 234
-    Width = 475
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 35
-    ClientWidth = 475
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 237
+    Width = 463
     TabOrder = 4
-    object CancelButton: TBitBtn
-      Left = 394
-      Height = 23
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object OkButton: TBitBtn
-      Left = 313
-      Height = 23
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Ok'
-      Constraints.MinWidth = 75
-      Default = True
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

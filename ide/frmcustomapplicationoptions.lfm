@@ -10,9 +10,8 @@ object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
   ClientHeight = 290
   ClientWidth = 460
   OnCreate = FormCreate
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object LEClassName: TLabel
     Left = 8
     Height = 23
@@ -95,6 +94,7 @@ object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
     BorderSpacing.Around = 6
     Caption = '&OK'
     Default = True
+    Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 3
@@ -111,7 +111,8 @@ object CustomApplicationOptionsForm: TCustomApplicationOptionsForm
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'Cancel'
+    Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 4

@@ -154,8 +154,6 @@ begin
 
   OKBitBtn.Caption:=lisOkBtn;
   CancelBitBtn.Caption:=dlgCancel;
-  OKBitBtn.LoadGlyphFromLazarusResource('btn_ok');
-  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
   AddTemplateButton.LoadGlyphFromLazarusResource('laz_add');
   MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
   MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');

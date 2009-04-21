@@ -8,10 +8,11 @@ object CheckLFMDialog: TCheckLFMDialog
   ClientHeight = 580
   ClientWidth = 552
   OnCreate = CheckLFMDialogCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object NoteLabel: TLabel
+    Left = 0
     Height = 14
+    Top = 0
     Width = 552
     Align = alTop
     Caption = 'NoteLabel'
@@ -19,27 +20,29 @@ object CheckLFMDialog: TCheckLFMDialog
     WordWrap = True
   end
   object LFMGroupBox: TGroupBox
-    Height = 427
+    Left = 0
+    Height = 424
     Top = 14
     Width = 552
     Align = alClient
     Caption = 'LFM file'
-    ClientHeight = 409
+    ClientHeight = 406
     ClientWidth = 548
-    ParentCtl3D = False
     TabOrder = 0
     object LFMSynEdit: TSynEdit
-      Height = 409
+      Left = 0
+      Height = 406
+      Top = 0
       Width = 548
       Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
       Font.Pitch = fpFixed
+      Font.Quality = fqNonAntialiased
       ParentColor = False
-      ParentCtl3D = False
       ParentFont = False
       TabOrder = 0
-      BookMarkOptions.OnChange = nil
+      Gutter.Width = 59
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -365,54 +368,86 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
-      SelectedColor.OnChange = nil
+      BracketHighlightStyle = sbhsBoth
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
+      object TSynGutterPartList
+        object TSynGutterMarks
+          Width = 23
+        end
+        object TSynGutterLineNumber
+          Width = 19
+          MarkupInfo.Background = clBtnFace
+          MarkupInfo.Foreground = clNone
+          DigitCount = 2
+          ShowOnlyLineNumbersMultiplesOf = 1
+          ZeroStart = False
+          LeadingZeros = False
+        end
+        object TSynGutterChanges
+          Width = 4
+          ModifiedColor = 59900
+          SavedColor = clGreen
+        end
+        object TSynGutterSeparator
+          Width = 2
+        end
+        object TSynGutterCodeFolding
+          MarkupInfo.Background = clNone
+          MarkupInfo.Foreground = clGray
+        end
+      end
     end
   end
   object ErrorsGroupBox: TGroupBox
+    Left = 0
     Height = 104
-    Top = 441
+    Top = 438
     Width = 552
     Align = alBottom
     Caption = 'Errors'
     ClientHeight = 86
     ClientWidth = 548
-    ParentCtl3D = False
     TabOrder = 1
     object ErrorsListBox: TListBox
+      Left = 0
       Height = 86
+      Top = 0
       Width = 548
       Align = alClient
+      ItemHeight = 0
       OnClick = ErrorsListBoxClick
       TabOrder = 0
     end
   end
   object BtnPanel: TPanel
-    Height = 35
-    Top = 545
+    Left = 0
+    Height = 38
+    Top = 542
     Width = 552
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 35
+    ClientHeight = 38
     ClientWidth = 552
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 488
-      Height = 23
+      Left = 469
+      Height = 26
       Top = 6
-      Width = 58
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
+      Cancel = True
       Caption = 'Cancel'
+      Kind = bkCancel
       ModalResult = 2
       NumGlyphs = 0
       TabOrder = 0
     end
     object RemoveAllButton: TBitBtn
-      Left = 319
-      Height = 23
+      Left = 300
+      Height = 26
       Top = 6
       Width = 163
       Align = alRight

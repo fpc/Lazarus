@@ -11,7 +11,6 @@ object PathEditorDialog: TPathEditorDialog
   Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnResize = FormResize
-  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object PathGroupBox: TGroupBox
@@ -45,11 +44,14 @@ object PathEditorDialog: TPathEditorDialog
       Font.Height = -16
       Font.Name = 'courier'
       Font.Pitch = fpFixed
+      Font.Quality = fqNonAntialiased
       ParentColor = False
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
+      Gutter.Width = 0
       Keystrokes = <      
         item
           Command = 3
@@ -375,6 +377,33 @@ object PathEditorDialog: TPathEditorDialog
         'PathEdit'
       )
       Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+      BracketHighlightStyle = sbhsBoth
+      object TSynGutterPartList
+        object TSynGutterMarks
+          Width = 23
+        end
+        object TSynGutterLineNumber
+          Width = 17
+          MarkupInfo.Background = clBtnFace
+          MarkupInfo.Foreground = clNone
+          DigitCount = 2
+          ShowOnlyLineNumbersMultiplesOf = 1
+          ZeroStart = False
+          LeadingZeros = False
+        end
+        object TSynGutterChanges
+          Width = 4
+          ModifiedColor = 59900
+          SavedColor = clGreen
+        end
+        object TSynGutterSeparator
+          Width = 2
+        end
+        object TSynGutterCodeFolding
+          MarkupInfo.Background = clNone
+          MarkupInfo.Foreground = clGray
+        end
+      end
     end
     object MoveUpButton: TBitBtn
       AnchorSideLeft.Control = PathGroupBox
@@ -475,6 +504,7 @@ object PathEditorDialog: TPathEditorDialog
       Width = 472
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
+      ItemHeight = 0
       MultiSelect = True
       OnDblClick = TemplatesListBoxDblClick
       TabOrder = 0
@@ -500,10 +530,10 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Control = CancelBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 362
+    Left = 345
     Height = 26
     Top = 368
-    Width = 55
+    Width = 60
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -519,10 +549,10 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 423
+    Left = 411
     Height = 26
     Top = 368
-    Width = 71
+    Width = 83
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

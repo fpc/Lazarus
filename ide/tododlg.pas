@@ -31,19 +31,17 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
-  TodoList, LazarusIDEStrConsts, Buttons;
+  TodoList, LazarusIDEStrConsts, Buttons, ButtonPanel;
 
 type
 
   { TTodoDialog }
 
   TTodoDialog = class(TForm)
-    CancelButton: TBitBtn;
-    OkButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
-    BtnPanel: TPanel;
     PriorityEdit: TEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
@@ -78,10 +76,8 @@ begin
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;
   CategoryLabel.Caption:=listToDoLCategory;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  BtnPanel.OKButton.Caption:=lisOkBtn;
+  BtnPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 function ExecuteTodoDialog: TTodoItem;
