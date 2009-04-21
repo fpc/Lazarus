@@ -908,7 +908,7 @@ begin
   if FSharedImage.SaveStream = nil
   then Error;
 
-  Size := NtoLE(FSharedImage.SaveStream.Size);
+  Size := NtoLE(Longint(FSharedImage.SaveStream.Size));
   Stream.Write(Size, SizeOf(Size));
   SaveToStream(Stream);
 end;
