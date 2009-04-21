@@ -153,6 +153,34 @@ msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr ""
 
+#: objinspstrconsts.liisaddvalue
+msgid "Add value"
+msgstr ""
+
+#: objinspstrconsts.liiselse
+msgid "Else"
+msgstr ""
+
+#: objinspstrconsts.liiselseif
+msgid "ElseIf"
+msgstr ""
+
+#: objinspstrconsts.liisif
+msgid "If"
+msgstr ""
+
+#: objinspstrconsts.liisifdef
+msgid "IfDef"
+msgstr ""
+
+#: objinspstrconsts.liisifndef
+msgid "IfNDef"
+msgstr ""
+
+#: objinspstrconsts.liissetvalue
+msgid "Set value"
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
 msgstr "Aggiungi pagina"
@@ -1076,6 +1104,10 @@ msgstr ""
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
+msgstr ""
+
+#: objinspstrconsts.sccsmaskeditor
+msgid "Edit Mask Editor..."
 msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels

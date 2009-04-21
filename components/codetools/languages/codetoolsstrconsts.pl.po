@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
 "PO-Revision-Date: 2007-01-14 00:09+0100\n"
