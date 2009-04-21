@@ -217,10 +217,10 @@ type
 
     function XGraphToImage(AX: Double): Integer; inline;
     function YGraphToImage(AY: Double): Integer; inline;
-    function GraphToImage(AGraphPoint: TDoublePoint): TPoint;
-    procedure XImageToGraph(XIn: Integer; out XOut: Double);
-    procedure YImageToGraph(YIn: Integer; out YOut: Double);
-    procedure ImageToGraph(XIn, YIn: Integer; out XOut, YOut: Double);
+    function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
+    function XImageToGraph(AX: Integer): Double; inline;
+    function YImageToGraph(AY: Integer): Double; inline;
+    function ImageToGraph(const APoint: TPoint): TDoublePoint;
     procedure DisplaySeries(ACanvas: TCanvas);
     procedure ZoomFull;
 
@@ -462,8 +462,8 @@ begin
       Exchange(lo, hi);
     FScale.X := (hi - lo) / (FXGraphMax - FXGraphMin);
     FOffset.X := hi - FScale.X * FXGraphMax;
-    XImageToGraph(FClipRect.Left, FXGraphMin);
-    XImageToGraph(FClipRect.Right, FXGraphMax);
+    FXGraphMin := XImageToGraph(FClipRect.Left);
+    FXGraphMax := XImageToGraph(FClipRect.Right);
     if BottomAxis.Inverted then
       Exchange(FXGraphMin, FXGraphMax);
   end
@@ -478,8 +478,8 @@ begin
       Exchange(lo, hi);
     FScale.Y := (hi - lo) / (FYGraphMax - FYGraphMin);
     FOffset.Y := hi - FScale.Y * FYGraphMax;
-    YImageToGraph(FClipRect.Bottom, FYGraphMin);
-    YImageToGraph(FClipRect.Top, FYGraphMax);
+    FYGraphMin := YImageToGraph(FClipRect.Bottom);
+    FYGraphMax := YImageToGraph(FClipRect.Top);
     if LeftAxis.Inverted then
       Exchange(FYGraphMin, FYGraphMax);
   end
@@ -966,25 +966,25 @@ begin
   Result := Round(FScale.Y * AY + FOffset.Y);
 end;
 
-function TChart.GraphToImage(AGraphPoint: TDoublePoint): TPoint;
+function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
 begin
   Result := Point(XGraphToImage(AGraphPoint.X), YGraphToImage(AGraphPoint.Y));
 end;
 
-procedure TChart.XImageToGraph(XIn: Integer; out XOut: Double);
+function TChart.XImageToGraph(AX: Integer): Double;
 begin
-  XOut := (XIn - FOffset.X) / FScale.X;
+  Result := (AX - FOffset.X) / FScale.X;
 end;
 
-procedure TChart.YImageToGraph(YIn: Integer; out YOut: Double);
+function TChart.YImageToGraph(AY: Integer): Double;
 begin
-  YOut := (YIn - FOffset.Y) / FScale.Y;
+  Result := (AY - FOffset.Y) / FScale.Y;
 end;
 
-procedure TChart.ImageToGraph(XIn, YIn: Integer; out XOut, YOut: Double);
+function TChart.ImageToGraph(const APoint: TPoint): TDoublePoint;
 begin
-  XImageToGraph(XIn, XOut);
-  YImageToGraph(YIn, YOut);
+  Result.X := XImageToGraph(APoint.X);
+  Result.Y := YImageToGraph(APoint.Y);
 end;
 
 function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
@@ -1190,8 +1190,8 @@ begin
   with FSelectionRect do begin
     FIsZoomed := (Left < Right) and (Top < Bottom);
     if FIsZoomed then begin
-      ImageToGraph(Left, Bottom, FCurrentExtent.a.X, FCurrentExtent.a.Y);
-      ImageToGraph(Right, Top, FCurrentExtent.b.X, FCurrentExtent.b.Y);
+      FCurrentExtent.a := ImageToGraph(Point(Left, Bottom));
+      FCurrentExtent.b := ImageToGraph(Point(Right, Top));
     end;
   end;
 

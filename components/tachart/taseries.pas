@@ -1551,10 +1551,9 @@ procedure TFuncSeries.Draw(ACanvas: TCanvas);
 
   function CalcY(AX: Integer): Integer;
   var
-    xg, yg: Double;
+    yg: Double;
   begin
-    FChart.XImageToGraph(AX, xg);
-    OnCalculate(xg, yg);
+    OnCalculate(FChart.XImageToGraph(AX), yg);
     if Extent.UseYMin and (yg < Extent.YMin) then
       yg := Extent.YMin;
     if Extent.UseYMax and (yg > Extent.YMax) then
