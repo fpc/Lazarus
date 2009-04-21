@@ -162,9 +162,9 @@ type
     FDialogTitle: String;
     FFilter: String;
     FFilterIndex: Integer;
+    FHideDirectories: Boolean;
     FInitialDir: String;
     FOnAcceptFN: TAcceptFileNameEvent;
-    function GetFileName: String;
     procedure SetFileName(const AValue: String);
   protected
     function GetDefaultGlyph: TBitmap; override;
@@ -172,6 +172,7 @@ type
     function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
     procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
     procedure DoButtonClick (Sender: TObject); override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -179,7 +180,7 @@ type
     property DialogFiles : TStrings read FDialogFiles;
   published
     // TFileName properties.
-    property FileName : String read GetFileName write SetFileName;
+    property FileName : String read FFileName write SetFileName;
     property InitialDir : String read FInitialDir write FInitialDir;
     property OnAcceptFileName : TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
     property DialogKind : TDialogKind read FDialogKind write FDialogKind default dkOpen;
@@ -187,6 +188,7 @@ type
     property DialogOptions : TOpenOptions read FDialogOptions write FDialogOptions;
     property Filter : String read FFilter write FFilter;
     property FilterIndex : Integer read FFilterIndex write FFIlterIndex;
+    property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;
@@ -196,6 +198,7 @@ type
     property Flat;
     // Other properties
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property BorderSpacing;
@@ -712,13 +715,19 @@ end;
 
 procedure TFileNameEdit.SetFileName(const AValue: String);
 begin
-  FFileNAme:=AValue;
-  Text:=AValue;
+  FFileName := AValue;
+  if FHideDirectories then
+    inherited RealSetText(ExtractFileName(AValue))
+  else
+    inherited RealSetText(AValue)
 end;
 
-function TFileNameEdit.GetFileName: String;
+procedure TFileNameEdit.RealSetText(const Value: TCaption);
 begin
-  Result:=Text;
+  if FHideDirectories and (ExtractFilePath(Value) = '') then
+    FileName := ExtractFilePath(FFileName) + Value
+  else
+    FileName := Value;
 end;
 
 function TFileNameEdit.CreateDialog(AKind: TDialogKind): TCommonDialog;
