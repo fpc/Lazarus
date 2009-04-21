@@ -1587,6 +1587,10 @@ begin
   DoubleBuffered := false;
 {$ENDIF}
 {$ENDIF}
+  {$IFNDEF EnableDoubleBuf}
+  DoubleBuffered := True;
+  {$ENDIF}
+
   {$IFNDEF SYN_LAZARUS}
   fSelectedColor := TSynSelectedColor.Create;
   fSelectedColor.OnChange := {$IFDEF FPC}@{$ENDIF}SelectedColorsChanged;
