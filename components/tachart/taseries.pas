@@ -87,6 +87,7 @@ type
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
     property Title;
+    property ZPosition;
   end;
 
   { TBasicPointSeries }

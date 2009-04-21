@@ -67,6 +67,7 @@ type
     procedure InitLine;
     procedure InitPie;
     procedure InitArea;
+    procedure BringToFront(ASeries: TChartSeries);
   end;
 
 var
@@ -79,11 +80,20 @@ uses
 
 { TForm1 }
 
+procedure TForm1.BringToFront(ASeries: TChartSeries);
+var
+  i: Integer;
+begin
+  for i := 0 to Chart1.SeriesCount - 1 do
+    Chart1.Series[i].ZPosition := Ord(Chart1.Series[i] <> ASeries);
+end;
+
 procedure TForm1.btnAddAreaClick(Sender: TObject);
 var
   i: integer;
 begin
   if FArea = nil then InitArea;
+  BringToFront(FArea);
   FArea.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     X3 := X3 + 1;
@@ -99,6 +109,7 @@ var
   i: integer;
 begin
   if FBar = nil then InitBar;
+  BringToFront(FBar);
   FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FBar.AddXY(x, y, '', clRed);
@@ -114,6 +125,7 @@ var
   i: integer;
 begin
   if FLine = nil then InitLine;
+  BringToFront(FLine);
   FLine.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FLine.AddXY(x1, y1, '', clGreen);
@@ -128,6 +140,7 @@ var
   i: integer;
 begin
   if FPie = nil then InitPie;
+  BringToFront(FPie);
   FPie.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
     FPie.AddPie(3.4234235235, 'sde21312', clTAColor);

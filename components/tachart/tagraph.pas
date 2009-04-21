@@ -49,10 +49,11 @@ type
 
   TBasicChartSeries = class(TComponent)
   protected
-    FTitle: String;
-    FChart: TChart;
     FActive: Boolean;
+    FChart: TChart;
     FShowInLegend: Boolean;
+    FTitle: String;
+    FZPosition: Integer;
 
     procedure AfterAdd; virtual;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
@@ -63,12 +64,13 @@ type
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
-    procedure UpdateBounds(
-      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
+    procedure SetZPosition(const AValue: Integer);
+    procedure UpdateBounds(
+      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
@@ -88,6 +90,7 @@ type
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
+    property ZPosition: Integer read FZPosition write SetZPosition default 0;
   end;
 
   TSeriesClass = class of TBasicChartSeries;
@@ -180,6 +183,7 @@ type
     function GetChartWidth: Integer;
 
     function GetSeriesCount: Integer;
+    function GetSeriesInZOrder: TFPList;
 
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -308,6 +312,12 @@ uses
 const
   MinDouble = -1.7e308;
   MaxDouble = 1.7e308;
+
+function CompareZPosition(AItem1, AItem2: Pointer): Integer;
+begin
+  Result :=
+    TBasicChartSeries(AItem2).ZPosition - TBasicChartSeries(AItem1).ZPosition;
+end;
 
 procedure Register;
 var
@@ -1093,6 +1103,7 @@ end;
 procedure TChart.DisplaySeries(ACanvas: TCanvas);
 var
   i: Integer;
+  seriesInZOrder: TFPList;
 begin
   if SeriesCount = 0 then exit;
 
@@ -1101,10 +1112,15 @@ begin
   IntersectClipRect(
     ACanvas.Handle, FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
 
-  // Update all series
-  for i := 0 to SeriesCount - 1 do
-    if Series[i].Active then
-      Series[i].Draw(ACanvas);
+  seriesInZOrder := GetSeriesInZOrder;
+  try
+    for i := 0 to SeriesCount - 1 do
+      with TBasicChartSeries(seriesInZOrder[i]) do
+        if Active then
+          Draw(ACanvas);
+  finally
+    seriesInZOrder.Free;
+  end;
 
   // Now disable clipping.
   SelectClipRgn(ACanvas.Handle, 0);
@@ -1281,6 +1297,18 @@ begin
   Result := FSeries.FList.Count;
 end;
 
+function TChart.GetSeriesInZOrder: TFPList;
+begin
+  Result := TFPList.Create;
+  try
+    Result.Assign(FSeries.FList);
+    Result.Sort(@CompareZPosition);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
 procedure TChart.UpdateExtent;
 var
   XMinSeries, YMinSeries, XMaxSeries, YMaxSeries, Valeur, Tolerance: Double;
@@ -1412,6 +1440,12 @@ procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
 begin
   if not (csLoading in ComponentState) then
     (AParent as TChart).AddSeries(Self);
+end;
+
+procedure TBasicChartSeries.SetZPosition(const AValue: Integer);
+begin
+  if FZPosition = AValue then exit;
+  FZPosition := AValue;
 end;
 
 procedure TBasicChartSeries.UpdateMargins(
