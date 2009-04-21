@@ -16,6 +16,7 @@ TWinCEMemoStrings = class(TStrings)
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     //procedure SetSorted(Val : boolean); virtual;
+     procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
@@ -73,6 +74,13 @@ begin
     Result := UTF8Encode(WideString(textbuf));
     SysFreeString(textbuf);
   end;
+end;
+
+procedure TWinCEMemoStrings.SetUpdateState(Updating: Boolean);
+begin
+  Windows.SendMessage(fHandle, WM_SETREDRAW, WPARAM(not Updating), 0);
+  if not Updating then
+    Windows.InvalidateRect(fHandle, nil, TRUE);
 end;
 
 constructor TWinCEMemoStrings.Create(Handle: HWND; TheOwner: TWinControl);
