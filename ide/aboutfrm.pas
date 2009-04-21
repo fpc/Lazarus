@@ -196,8 +196,8 @@ end;
 
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
 begin
-  Clipboard.AsText := 'v' + LazarusVersionStr + ' r' + LazarusRevisionStr +
-      ' ' + PlatformLabel.Caption;
+  Clipboard.AsText := 'Lazarus ' + LazarusVersionStr + ' r' + LazarusRevisionStr +
+    ' FPC ' + {$I %FPCVERSION%} + ' ' + PlatformLabel.Caption;
 end;
 
 procedure TAboutForm.NotebookPageChanged(Sender: TObject);
@@ -235,6 +235,7 @@ procedure TAboutForm.LoadContributors;
 var
   ContributorsFileName: string;
 begin
+  ContributorsPage.ControlStyle := ContributorsPage.ControlStyle - [csOpaque];
   Contributors := TScrollingText.Create(ContributorsPage);
   Contributors.Parent := ContributorsPage;
   Contributors.Align:=alClient;
