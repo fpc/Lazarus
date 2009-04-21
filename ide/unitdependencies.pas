@@ -115,8 +115,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure ClearChilds;
-    procedure CreateChilds;
+    procedure ClearChildren;
+    procedure CreateChildren;
     procedure ClearGrandChildren;
     procedure CreateGrandChildren;
     function FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer): TUnitNode;
@@ -139,21 +139,6 @@ type
   end;
   
   
-  { TExpandedUnitNodeState
-    Used to save which TUnitNodes are expanded during a Refresh }
-  
-  TExpandedUnitNodeState = class
-  private
-    FPaths: TStringList;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Assign(ANode: TUnitNode);
-    procedure AssignTo(ANode: TUnitNode);
-  end;
-
-
   { TUnitDependenciesView }
   
   TOnGetProjectMainFilename = function(Sender: TObject): string of object;
@@ -225,6 +210,20 @@ var
 
 implementation
 
+type
+  { TExpandedUnitNodeState
+    Used to save which TUnitNodes are expanded during a Refresh }
+
+  TExpandedUnitNodeState = class
+  private
+    FPaths: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(ANode: TUnitNode);
+    procedure AssignTo(ANode: TUnitNode);
+  end;
 
 { TUnitDependenciesView }
 
@@ -340,8 +339,7 @@ end;
 
 procedure TUnitDependenciesView.ClearTree;
 begin
-  FRootNode.Free;
-  FRootNode:=nil;
+  FreeThenNil(FRootNode);
 end;
 
 procedure TUnitDependenciesView.RebuildTree;
@@ -364,7 +362,7 @@ begin
     FRootNode.ShortFilename:=FRootShortFilename;
     UnitTreeView.Items.Clear;
     FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
-    FRootNode.CreateChilds;
+    FRootNode.CreateChildren;
 
   finally
     FRebuildTreeNeeded:=false;
@@ -480,12 +478,15 @@ begin
     if Assigned(OnAccessingSources) then OnAccessingSources(Self);
     // save old expanded nodes
     ExpandState:=TExpandedUnitNodeState.Create;
-    ExpandState.Assign(FRootNode);
-    // clear all child nodes
-    RebuildTree;
-    // restore expanded state
-    ExpandState.AssignTo(FRootNode);
-    ExpandState.Free;
+    try
+      ExpandState.Assign(FRootNode);
+      // clear all child nodes
+      RebuildTree;
+      // restore expanded state
+      ExpandState.AssignTo(FRootNode);
+    finally
+      ExpandState.Free;
+    end;
   finally
     FRefreshNeeded:=false;
     EndUpdate;
@@ -612,7 +613,7 @@ begin
     Parent.TreeNode.HasChildren:=true;
     TreeNode:=Parent.TreeNode.TreeNodes.AddChild(Parent.TreeNode,'');
     if Parent.TreeNode.Expanded then begin
-      CreateChilds;
+      CreateChildren;
     end;
   end;
 end;
@@ -687,23 +688,23 @@ end;
 
 destructor TUnitNode.Destroy;
 begin
-  ClearChilds;
+  ClearChildren;
   Parent:=nil;
   inherited Destroy;
 end;
 
-procedure TUnitNode.ClearChilds;
+procedure TUnitNode.ClearChildren;
 begin
   while LastChild<>nil do
     LastChild.Free;
 end;
 
-procedure TUnitNode.CreateChilds;
+procedure TUnitNode.CreateChildren;
 var
   UsedInterfaceFilenames, UsedImplementationFilenames: TStrings;
   i: integer;
 begin
-  ClearChilds;
+  ClearChildren;
   UpdateSourceType;
   if CodeBuffer=nil then exit;
   if CodeToolBoss.FindUsedUnitFiles(CodeBuffer,
@@ -730,7 +731,7 @@ var
 begin
   AChildNode:=FirstChild;
   while AChildNode<>nil do begin
-    AChildNode.ClearChilds;
+    AChildNode.ClearChildren;
     AChildNode:=AChildNode.NextSibling;
   end;
 end;
@@ -741,7 +742,7 @@ var
 begin
   AChildNode:=FirstChild;
   while AChildNode<>nil do begin
-    AChildNode.CreateChilds;
+    AChildNode.CreateChildren;
     AChildNode:=AChildNode.NextSibling;
   end;
 end;
