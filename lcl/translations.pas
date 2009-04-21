@@ -80,8 +80,11 @@ type
     Identifier: string;
     Original: string;
     Translation: string;
+    Flags: string;
+    PreviousID: string;
     Context: string;
     constructor Create(const TheIdentifier, TheOriginal, TheTranslated: string);
+    procedure ModifyFlag(const AFlag: string; Check: boolean);
   end;
 
   { TPOFile }
@@ -108,7 +111,7 @@ type
     destructor Destroy; override;
     procedure ReadPOText(const s: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
-                        Context: string);
+                        Context, Flags, PreviousID: string);
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
@@ -120,7 +123,7 @@ type
     procedure ClearModuleList;
     procedure AddToModuleList(Identifier: string);
     procedure UntagAll;
-    
+
     property Tag: integer read FTag write FTag;
     property Modified: boolean read FModified;
     property Items: TFPList read FItems;
@@ -529,6 +532,15 @@ const
   sMsgID: PChar = 'msgid "';
   sMsgStr: PChar = 'msgstr "';
   sMsgCtxt: Pchar = 'msgctxt "';
+  sFlags: Pchar = '#, ';
+  sPrevMsgID: PChar = '#| msgid "';
+  sPrevStr: PChar = '#| "';
+
+const
+  ciNone      = 0;
+  ciMsgID     = 1;
+  ciMsgStr    = 2;
+  ciPrevMsgID = 3;
   
 var
   l: Integer;
@@ -537,26 +549,42 @@ var
   LineStart: PChar;
   LineEnd: PChar;
   Identifier: String;
-  MsgID: String;
+  MsgID,MsgStr,PrevMsgID: String;
   Line: String;
   Comments: String;
   Context: string;
+  Flags: string;
   TextEnd: PChar;
-  i: Integer;
+  i, CollectedIndex: Integer;
   
   procedure ResetVars;
   begin
-    MsgId  := '';
+    MsgId := '';
+    MsgStr := '';
     Line := '';
     Identifier := '';
     Comments := '';
     Context := '';
+    Flags := '';
+    PrevMsgID := '';
+    CollectedIndex := ciNone;
   end;
   
+  procedure StoreCollectedLine;
+  begin
+    case CollectedIndex of
+      ciMsgID: MsgID := Line;
+      ciMsgStr: MsgStr := Line;
+      ciPrevMsgID: PrevMsgID := Line;
+    end;
+    CollectedIndex := ciNone;
+  end;
+
   procedure AddEntry;
   var
     Item: TPOFileItem;
   begin
+    StoreCollectedLine;
     if Identifier<>'' then begin
       // check for unresolved duplicates in po file
       Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
@@ -569,10 +597,10 @@ var
           Context := Identifier;
         // if old duplicate was translated and
         // new one is not, provide a initial translation
-        if Line='' then
-          Line := Item.Translation;
+        if MsgStr='' then
+          MsgStr := Item.Translation;
       end;
-      Add(Identifier,MsgID,Line,Comments,Context);
+      Add(Identifier,MsgID,MsgStr,Comments,Context,Flags,PrevMsgID);
       ResetVars;
     end else
     if (Line<>'') and (FHeader=nil) then begin
@@ -582,15 +610,38 @@ var
     end
   end;
 
+  function TestPrefixStr(AIndex: Integer): boolean;
+  var
+    s: string;
+    l: Integer;
+  begin
+    case aIndex of
+      ciMsgID: s:=sMsgId;
+      ciMsgStr: s:=sMsgStr;
+      ciPrevMsgId: s:=sPrevMsgId;
+    end;
+    L := Length(s);
+    result := CompareMem(LineStart, pchar(s), L);
+    if Result then begin
+      StoreCollectedLine;
+      CollectedIndex := AIndex;
+      Line:=UTF8CStringToUTF8String(LineStart+L,LineLen-L-1);
+    end;
+  end;
+
 begin
   if s='' then exit;
   l:=length(s);
   p:=PChar(s);
   LineStart:=p;
   TextEnd:=p+l;
+
   Identifier:='';
   Comments:='';
   Line:='';
+  Flags:='';
+  CollectedIndex := ciNone;
+
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
@@ -604,20 +655,19 @@ begin
         for i:=1 to length(Identifier) do
           if Identifier[i]=':' then
             Identifier[i]:='.';
-      end else if CompareMem(LineStart,sMsgID,7) then begin
-        // start collecting MsgId lines
-        Line:=UTF8CStringToUTF8String(LineStart+7,LineLen-8);
-      end else if CompareMem(LineStart,sMsgStr,8) then begin
-        // store collected strings in MsgId
-        MsgId := Line;
-        // start collecting MsgStr lines
-        Line:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
+      end else if TestPrefixStr(ciMsgId) then begin
+      end else if TestPrefixStr(ciMsgStr) then begin
+      end else if TestPrefixStr(ciPrevMsgId) then begin
       end else if CompareMem(LineStart, sMsgCtxt,9) then begin
         Context:= Copy(LineStart, 10, LineLen-10);
-      end else if LineStart^='"' then begin
+      end else if CompareMem(LineStart, sFlags, 3) then begin
+        Flags := copy(LineStart, 4, LineLen-3);
+      end else if (LineStart^='"') then begin
         if CompareMem(LineStart,sCharSetIdentifier,35) then
           FCharSet:=copy(LineStart, 35,LineLen-37);
         Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+      end else if CompareMem(LineStart, sPrevStr, 4) then begin
+        Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
       end else if LineStart^='#' then begin
         if Comments<>'' then
           Comments := Comments + LineEnding;
@@ -632,7 +682,7 @@ begin
 end;
 
 procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
-  Comments, Context: string);
+  Comments, Context, Flags, PreviousID: string);
 var
   Item: TPOFileItem;
   p: Integer;
@@ -641,6 +691,8 @@ begin
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
   Item.Comments:=Comments;
   Item.Context:=Context;
+  Item.Flags:=Flags;
+  Item.PreviousID:=PreviousID;
   Item.Tag:=FTag;
   FItems.Add(Item);
   
@@ -715,6 +767,8 @@ var
   i,j,n: integer;
   p: LongInt;
   Identifier, Value,Line,UStr: string;
+  Ch: Char;
+  MultiLinedValue: boolean;
 
   procedure NextLine;
   begin
@@ -754,6 +808,7 @@ begin
 
       Value := '';
       Identifier := '';
+      MultilinedValue := false;
 
     end else begin
 
@@ -782,7 +837,11 @@ begin
               j:=p;
               while (p<=n)and(Line[p] in ['0'..'9']) do
                 inc(p);
-              UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
+
+              Ch := Chr(StrToInt(copy(Line, j, p-j)));
+              UStr := UStr + Ch;
+              if Ch in [#13,#10] then
+                MultilinedValue := True;
 
               if (p=n) and (Line[p]='+') then
                 NextLine;
@@ -803,8 +862,16 @@ begin
             inc(p); // this is an unexpected string
         end;
 
-        if Value<>'' then
+        if Value<>'' then begin
+          if MultiLinedValue then begin
+            // check that we end on lineending, multilined
+            // resource strings from rst usually do not end
+            // in lineending, fix here.
+            if not (Value[Length(Value)] in [#13,#10]) then
+              Value := Value + LineEnding;
+          end;
           UpdateItem(Identifier, Value);
+        end;
 
       end; // if p>0 then begin
 
@@ -847,6 +914,7 @@ var
   procedure WriteLst(const AProp, AValue: string );
   var
     i: Integer;
+    s: string;
   begin
     if (AValue='') and (AProp='') then
       exit;
@@ -858,9 +926,15 @@ var
     end else begin
       if AProp<>'' then
         OutLst.Add(AProp+' ""');
-      for i:=0 to FHelperList.Count-1 do
-        if AProp='' then OutLst.Add(FHelperList[i])
-        else             OutLst.Add('"'+FHelperList[i]+'\n"');
+      for i:=0 to FHelperList.Count-1 do begin
+        s := FHelperList[i];
+        if AProp<>'' then begin
+          s := '"' + s + '\n"';
+          if AProp='#| msgid' then
+            s := '#| ' + s;
+        end;
+        OutLst.Add(s)
+      end;
     end;
   end;
   
@@ -869,6 +943,10 @@ var
     WriteLst('',Item.Comments);
     if Item.Identifier<>'' then
       OutLst.Add('#: '+Item.Identifier);
+    if Trim(Item.Flags)<>'' then
+      OutLst.Add('#, '+Trim(Item.Flags));
+    if Item.PreviousID<>'' then
+      WriteLst('#| msgid', strToPoStr(Item.PreviousID));
     if Item.Context<>'' then
       WriteLst('msgctxt', Item.Context);
     WriteLst('msgid', StrToPoStr(Item.Original));
@@ -905,73 +983,113 @@ begin
   
 end;
 
+function SkipLineEndings(var P: PChar; var DecCount: Integer): Integer;
+  procedure Skip;
+  begin
+    Dec(DecCount);
+    Inc(P);
+  end;
+begin
+  Result  := 0;
+  while (P^ in [#10,#13]) do begin
+    Inc(Result);
+    if (P^=#13) then begin
+      Skip;
+      if P^=#10 then
+        Skip;
+    end else
+      Skip;
+  end;
+end;
+
+function CompareMultilinedStrings(const S1,S2: string): Integer;
+var
+  C1,C2,L1,L2: Integer;
+  P1,P2: PChar;
+begin
+  L1 := Length(S1);
+  L2 := Length(S2);
+  P1 := pchar(S1);
+  P2 := pchar(S2);
+  Result := ord(P1^) - ord(P2^);
+
+  while (Result=0) and (P1^<>#0) do begin
+    Inc(P1); Inc(P2);
+    Dec(L1); Dec(L2);
+    if P1^<>P2^ then begin
+      C1 := SkipLineEndings(P1, L1);
+      C2 := SkipLineEndings(P2, L2);
+      if (C1<>C2) then
+        // different amount of lineendings
+        result := C1-C2
+      else
+      if (C1=0) then
+        // there are no lineendings at all, will end loop
+        result := Ord(P1^)-Ord(P2^);
+    end;
+  end;
+
+  // if strings are the same, check that all chars have been consumed
+  // just in case there are unexpected chars in between, in this case
+  // L1=L2=0;
+  if Result=0 then
+    Result := L1-L2;
+end;
+
 procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 var
   Item: TPOFileItem;
-//  p: Integer;
-  AContext,AComment,ATranslation: string;
+  AContext,AComment,ATranslation,AFlags,APrevStr: string;
 begin
   if FHelperList=nil then
     FHelperList := TStringList.Create;
-
-  FHelperList.Text:=Original;
-  Original := FHelperList.Text; // this should unify line endings
 
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierToItem.Data[Identifier]);
   if Item<>nil then begin
     // found, update item value
     AddToModuleList(IDentifier);
-    FModified := FModified or (Item.Original<>Original);
+
+    if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
+      FModified := True;
+      if Item.Translation<>'' then begin
+        Item.ModifyFlag('fuzzy', true);
+        Item.PreviousID:=Item.Original;
+      end;
+    end;
     Item.Original:=Original;
     Item.Tag:=FTag;
     exit;
   end;
 
-  // try to find PO entry using only variable part identifier
-  {
-  // this needs to be improved as it assumes that variable part identifier
-  // are unique within all project units.
-  p := pos('.', Identifier);
-  if p>0 then begin
-    Item := TPOFileItem(FIdentVarToItem.Data[RightStr(Identifier, Length(Identifier)-P)]);
-    if Item<>nil then begin
-      // found!, this means module name has changed
-      AddToModuleList(Item.Identifier);
-      // update identifier list
-      FIdentifierToItem.Remove(Item.Identifier);
-      FIdentifierToItem.Add(Identifier, Item);
-      // update item
-      FModified := true;
-      Item.Identifier:=Identifier;
-      Item.Original:=Original;
-      Item.Tag := FTag;
-      exit;
-    end;
-  end;
-  }
-
   // try to find po entry based only on it's value
   AContext := '';
   AComment := '';
   ATranslation := '';
+  AFlags := '';
+  APrevStr := '';
   Item := TPOFileItem(FOriginalToItem.Data[Original]);
   if Item<>nil then begin
     // old item don't have context, add one
     if Item.Context='' then
       Item.Context := Item.Identifier;
       
-    // if old item it's already translated use translated
+    // if old item it's already translated use translation
     if Item.Translation<>'' then
       ATranslation := Item.Translation;
-    
+
+    AFlags := Item.Flags;
+    // if old item was fuzzy, new should be fuzzy too.
+    if (ATranslation<>'') and (pos('fuzzy', AFlags)<>0) then
+      APrevStr := Item.PreviousID;
+
     // update identifier list
     AContext := Identifier;
   end;
 
   // this appear to be a new item
   FModified := true;
-  Add(Identifier, Original, ATranslation, AComment, AContext);
+  Add(Identifier, Original, ATranslation, AComment, AContext, AFlags, APrevStr);
 end;
 
 procedure TPOFile.UpdateTranslation(BasePOFile: TPOFile);
@@ -1026,6 +1144,30 @@ begin
   Identifier:=TheIdentifier;
   Original:=TheOriginal;
   Translation:=TheTranslated;
+end;
+
+procedure TPOFileItem.ModifyFlag(const AFlag: string; Check: boolean);
+var
+  i: Integer;
+  F: TStringList;
+begin
+  F := TStringList.Create;
+  try
+
+    F.CommaText := Flags;
+    i := F.IndexOf(AFlag);
+
+    if (i<0) and Check then
+      F.Add(AFlag)
+    else
+    if (i>=0) and (not Check) then
+      F.Delete(i);
+
+    Flags := F.CommaText;
+
+  finally
+    F.Free;
+  end;
 end;
 
 end.
