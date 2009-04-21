@@ -284,7 +284,7 @@ var
 begin
   if Stage<>cdPostPaint then exit;
   UnitNode:=TUnitNode(Node.Data);
-  if UnitNode.IsFirstImplementationNode then begin
+  if (UnitNode<>nil) and UnitNode.IsFirstImplementationNode then begin
     NodeRect:=Node.DisplayRect(false);
     NodeRect.Left:=Node.DisplayStateIconLeft;
     with Node.TreeView.Canvas do begin
