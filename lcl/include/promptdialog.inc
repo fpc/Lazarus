@@ -286,8 +286,10 @@ begin
     ShowPrefix := True;
   end;
 
-  if IsSmallDevice then LayoutDialogSmallDevice()
-  else LayoutDialog();
+  if IsSmallDevice then
+    LayoutDialogSmallDevice()
+  else
+    LayoutDialog();
 end;
 
 destructor TPromptDialog.Destroy;
@@ -298,7 +300,6 @@ end;
 
 procedure TPromptDialog.LayoutDialog;
 Const
-  //AVGBuffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
   cBtnCalcWidth  = 50;
   cBtnCalcHeight = 13;
   cBtnCalcSpace   = 4;
@@ -320,26 +321,16 @@ var
   CurBtnSize: TPoint;
 
   function GetButtonSize(AButton: TBitBtn): TPoint;
-  var
-    curBtnSize: tagSIZE;
   begin
-    curBtnSize:=Canvas.TextExtent(AButton.Caption);
-    inc(curBtnSize.cx,AButton.Glyph.Width+4);
-    if curBtnSize.cy<AButton.Glyph.Height then
-      curBtnSize.cy:=AButton.Glyph.Height;
-    //debugln('GetButtonSize A ',AButton.Caption,' ',dbgs(curBtnSize.cx),',',dbgs(curBtnSize.cy));
-
-    inc(curBtnSize.cx,2*cBtnCalcBorder);
-    inc(curBtnSize.cy,2*cBtnCalcBorder);
-    if MinBtnHeight<curBtnSize.cy then
-      MinBtnHeight:=curBtnSize.cy
-    else if curBtnSize.cy<MinBtnHeight then
-      curBtnSize.cy:=MinBtnHeight;
-    if curBtnSize.cx < MinBtnWidth then
-      curBtnSize.cx := MinBtnWidth;
-      
-    Result:=Point(curBtnSize.cx,curBtnSize.cy);
-    //debugln('GetButtonSize ',AButton.Caption,' ',dbgs(Result));
+    AButton.HandleNeeded;
+    TBitBtnAccess(AButton).CalculatePreferredSize(Result.x, Result.y, True);
+    if MinBtnHeight < Result.y then
+      MinBtnHeight := Result.y
+    else
+    if Result.y < MinBtnHeight then
+      Result.y := MinBtnHeight;
+    if Result.x < MinBtnWidth then
+      Result.x := MinBtnWidth;
   end;
   
 begin
@@ -360,9 +351,8 @@ begin
   ButtonIndex := -1;
   for curBtn := 0 to NumButtons - 1 do
   begin
-    If (Buttons[curBtn] >= Low(DialogButtonKind)) and
-      (Buttons[curBtn] <= High(DialogButtonKind))
-    then
+    if (Buttons[curBtn] >= Low(DialogButtonKind)) and
+       (Buttons[curBtn] <= High(DialogButtonKind)) then
     begin
       inc(ButtonIndex);
 
@@ -387,8 +377,8 @@ begin
   end;
 
   // calculate the minimum text offset from left
-  If FBitmap <> nil then
-    cMinLeft := cBitmapX + max(32,FBitmap.Width) + cLabelSpacing
+  if FBitmap <> nil then
+    cMinLeft := cBitmapX + max(32, FBitmap.Width) + cLabelSpacing
   else
     cMinLeft := 0;
 
@@ -397,7 +387,8 @@ begin
 
   // if buttons require more space than the text, center the text
   // as much as possible
-  if reqWidth < reqBtnWidth then begin
+  if reqWidth < reqBtnWidth then
+  begin
     reqWidth := reqBtnWidth;
     TextLeft := max(cMinLeft, cLabelSpacing + (reqWidth - TextBox.Right) div 2);
   end
@@ -421,16 +412,19 @@ begin
   ButtonTop := reqHeight + 2*cLabelSpacing;
 
   // position buttons and activate default
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TBitBtn) then begin
-      CurButton:=TBitBtn(Components[i]);
-      CurBtnSize:=GetButtonSize(CurButton);
-      CurButton.SetBounds(ButtonLeft,ButtonTop,CurBtnSize.X,CurBtnSize.Y);
-      inc(ButtonLeft,CurButton.Width+cBtnDist);
+  for i := 0 to ComponentCount-1 do
+  begin
+    if (Components[i] is TBitBtn) then
+    begin
+      CurButton := TBitBtn(Components[i]);
+      CurBtnSize := GetButtonSize(CurButton);
+      CurButton.SetBounds(ButtonLeft, ButtonTop, CurBtnSize.X, CurBtnSize.Y);
+      inc(ButtonLeft, CurButton.Width + cBtnDist);
       
-      if (CurButton.Default) then begin
-        ActiveControl:=CurButton;
-        DefaultControl:=CurButton;
+      if (CurButton.Default) then
+      begin
+        ActiveControl := CurButton;
+        DefaultControl := CurButton;
       end;
     end;
   end;
@@ -591,7 +585,6 @@ type
     procedure LayoutDialog;
     function ShowModal: TModalResult; override;
     function FindButton(Order: array of TModalResult): TBitBtn;
-    procedure CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
   end;
 
 { TQuestionDlg }
@@ -620,13 +613,29 @@ var
   Flags: Cardinal;
   i: Integer;
   CurButton: TBitBtn;
-  CurBtnWidth, CurBtnHeight: Integer;
   reqBtnWidth: Integer;
   reqWidth: LongInt;
   cMinLeft: Integer;
   ButtonLeft: Integer;
   reqHeight: LongInt;
   CurBtnPos: Integer;
+  CurBtnSize: TPoint;
+  MinBtnWidth: Integer; // minimum width for a single button
+  MinBtnHeight: Integer; // minimum height for a single button
+
+  function GetButtonSize(AButton: TBitBtn): TPoint;
+  begin
+    AButton.HandleNeeded;
+    TBitBtnAccess(AButton).CalculatePreferredSize(Result.x, Result.y, True);
+    if MinBtnHeight < Result.y then
+      MinBtnHeight := Result.y
+    else
+    if Result.y < MinBtnHeight then
+      Result.y := MinBtnHeight;
+    if Result.x < MinBtnWidth then
+      Result.x := MinBtnWidth;
+  end;
+
 begin
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
 
@@ -648,24 +657,25 @@ begin
   DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
 
   // calculate the width we need to display the buttons
+  MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
+  MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
   reqBtnWidth := 0;
-  CurBtnHeight := 25;
+
   if FButtons <> nil then
-    for i := 0 to FButtons.Count-1 do
+    for i := 0 to FButtons.Count - 1 do
     begin
-      if i > 0 then
-        Inc(reqBtnWidth, cBtnDist);
       CurButton := TBitBtn(FButtons[i]);
-      CalcButtonSize(CurButton, CurBtnWidth, CurBtnHeight);
-      Inc(reqBtnWidth, CurBtnWidth);
+      CurBtnSize:=GetButtonSize(CurButton);
+      if i > 0 then Inc(reqBtnWidth, cBtnDist);
+      Inc(reqBtnWidth, CurBtnSize.X);
     end;
 
   // calculate the width of the dialog
-  If FBitmap <> nil then
-    cMinLeft := cLabelSpacing + max(20,FBitmap.Width) + cLabelSpacing
+  if FBitmap <> nil then
+    cMinLeft := cLabelSpacing + max(20, FBitmap.Width) + cLabelSpacing
   else
     cMinLeft := cLabelSpacing;
-  reqWidth:= reqBtnWidth + 2*cBtnDist;
+  reqWidth:= reqBtnWidth + 2 * cBtnDist;
   if reqWidth < (TextBox.Right + cMinLeft + cLabelSpacing) then
     reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing;
   ButtonLeft := ((reqWidth - reqBtnWidth) div 2);
@@ -674,7 +684,7 @@ begin
   reqHeight:= TextBox.Bottom;
   if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
     reqHeight := FBitmap.Height;
-  inc(reqHeight,CurBtnHeight+3*cLabelSpacing);
+  inc(reqHeight, CurBtnSize.Y + 3 * cLabelSpacing);
 
   // calculate the text position
   OffsetRect(TextBox,
@@ -682,33 +692,33 @@ begin
              cLabelSpacing);
 
   // calculate the icon position
-  if FBitmap<>nil then begin
-    FBitmapX:=cLabelSpacing;
-    FBitmapY:=(reqHeight-CurBtnHeight-FBitmap.Height-cLabelSpacing) div 2;
+  if FBitmap <> nil then
+  begin
+    FBitmapX := cLabelSpacing;
+    FBitmapY := (reqHeight - CurBtnSize.Y - FBitmap.Height - cLabelSpacing) div 2;
   end;
 
   // set size of form
-  SetBounds((Screen.Width-reqWidth-10) div 2, (Screen.Height-reqHeight-50) div 2,
-         reqWidth,reqHeight);
+  SetBounds((Screen.Width - reqWidth-10) div 2, (Screen.Height - reqHeight-50) div 2,
+         reqWidth, reqHeight);
 
   // position buttons
-  CurBtnPos:=ButtonLeft;
-  if FButtons<>nil then
-    for i:=0 to FButtons.Count-1 do begin
-      if i>0 then
-        Inc(CurBtnPos,cBtnDist);
-      CurButton:=TBitBtn(FButtons[i]);
-      CalcButtonSize(CurButton,CurBtnWidth,CurBtnHeight);
-      CurButton.SetBounds(CurBtnPos,ClientHeight-CurBtnHeight-cLabelSpacing,
-                          CurBtnWidth,CurBtnHeight);
-      Inc(CurBtnPos,CurBtnWidth);
+  CurBtnPos := ButtonLeft;
+  if FButtons <> nil then
+    for i := 0 to FButtons.Count-1 do
+    begin
+      CurButton := TBitBtn(Components[i]);
+      CurBtnSize := GetButtonSize(CurButton);
+      CurButton.SetBounds(CurBtnPos, ClientHeight - CurBtnSize.Y - cLabelSpacing,
+                          CurBtnSize.X, CurBtnSize.Y);
+      inc(CurBtnPos, CurButton.Width + cBtnDist);
     end;
 end;
 
 function TQuestionDlg.ShowModal: TModalResult;
 begin
   LayoutDialog;
-  Result:=inherited ShowModal;
+  Result := inherited ShowModal;
 end;
 
 function TQuestionDlg.FindButton(Order: array of TModalResult): TBitBtn;
@@ -729,20 +739,6 @@ begin
     end;
   end;
   Result:=nil;
-end;
-
-procedure TQuestionDlg.CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
-var
-  TxtSize: TSize;
-begin
-  TxtSize := Canvas.TextExtent(AButton.Caption);
-  w := Max(TxtSize.cx, MinimumDialogButtonWidth);
-  h := Max(TxtSize.cy, MinimumDialogButtonHeight);
-  if AButton.Kind <> bkCustom then
-    inc(w, 22); // icon
-  h := Max(h, 22); // icon
-  inc(w, 12); // borders
-  inc(h, 6); // borders
 end;
 
 procedure TQuestionDlg.ButtonKeyDown(Sender: TObject; var Key: Word;

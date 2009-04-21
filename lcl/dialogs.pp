@@ -480,7 +480,7 @@ type
   end;
 
 var
-  MinimumDialogButtonWidth: integer = 90;
+  MinimumDialogButtonWidth: integer = 75;
   MinimumDialogButtonHeight: integer = 25;
 
 { MessageDlg }
@@ -546,6 +546,9 @@ const
   cBitmapX  = 10;      // x-position for bitmap in messagedialog
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
   cLabelSpacing = 10;   // distance between icon & label
+
+type
+  TBitBtnAccess = class(TBitBtn);
 
 procedure Register;
 begin
