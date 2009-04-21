@@ -21,12 +21,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 272
     ClientWidth = 251
     TabOrder = 0
     object InstallListBox: TListBox
       Left = 6
-      Height = 168
+      Height = 167
       Top = 6
       Width = 239
       Align = alClient
@@ -37,11 +37,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       OnDblClick = InstallListBoxDblClick
       OnSelectionChange = InstallListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object UninstallButton: TButton
       Left = 6
       Height = 25
-      Top = 180
+      Top = 179
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -52,7 +53,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ImportButton: TButton
       Left = 6
       Height = 25
-      Top = 211
+      Top = 210
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -63,7 +64,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportButton: TButton
       Left = 6
       Height = 25
-      Top = 242
+      Top = 241
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -80,12 +81,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 272
     ClientWidth = 251
     TabOrder = 1
     object AvailableListBox: TListBox
       Left = 6
-      Height = 230
+      Height = 229
       Top = 6
       Width = 239
       Align = alClient
@@ -96,11 +97,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       OnDblClick = AvailableListBoxDblClick
       OnSelectionChange = AvailableListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object AddToInstallButton: TButton
       Left = 6
       Height = 25
-      Top = 242
+      Top = 241
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -110,18 +112,19 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     end
   end
   object PkgInfoGroupBox: TGroupBox
+    AnchorSideBottom.Control = HelpButton
     Left = 7
     Height = 85
-    Top = 306
+    Top = 308
     Width = 515
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'PkgInfoGroupBox'
-    ClientHeight = 67
+    ClientHeight = 66
     ClientWidth = 511
     TabOrder = 2
     object PkgInfoMemo: TMemo
       Left = 6
-      Height = 55
+      Height = 54
       Top = 6
       Width = 499
       Align = alClient
@@ -132,71 +135,42 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     end
   end
   object CancelButton: TBitBtn
+    AnchorSideTop.Control = HelpButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 414
-    Height = 26
-    Top = 409
-    Width = 109
-    Anchors = [akRight, akBottom]
+    Left = 445
+    Height = 36
+    Top = 399
+    Width = 78
+    Anchors = [akTop, akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Cancel = True
-    Caption = 'CancelButton'
-    Glyph.Data = {
-      36040000424D3604000000000000360000002800000010000000100000000100
-      2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
-      F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
-      E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
-      F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
-      E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
-      FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
-      F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
-      FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
-      FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
-      FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
-      FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
-      FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
-      FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
-      F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
-      FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
-      F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
-      FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
-    }
+    Caption = 'Cancel'
+    Constraints.MinWidth = 75
+    Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3
   end
   object SaveAndExitButton: TBitBtn
+    AnchorSideTop.Control = HelpButton
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 270
-    Height = 26
-    Top = 409
-    Width = 138
-    Anchors = [akRight, akBottom]
+    Left = 285
+    Height = 36
+    Top = 399
+    Width = 154
+    Anchors = [akTop, akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Caption = 'SaveAndExitButton'
+    Constraints.MinWidth = 75
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -238,17 +212,20 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     TabOrder = 4
   end
   object SaveAndRebuildButton: TBitBtn
+    AnchorSideTop.Control = HelpButton
     AnchorSideRight.Control = SaveAndExitButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 109
-    Height = 26
-    Top = 409
-    Width = 155
-    Anchors = [akRight, akBottom]
+    Left = 103
+    Height = 36
+    Top = 399
+    Width = 176
+    Anchors = [akTop, akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Caption = 'SaveAndRebuildButton'
+    Constraints.MinWidth = 75
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000000000000000
@@ -294,13 +271,14 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
-    Top = 409
-    Width = 66
+    Height = 36
+    Top = 399
+    Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = '&Help'
+    Constraints.MinWidth = 75
     Kind = bkHelp
     NumGlyphs = 0
     OnClick = HelpButtonClick
