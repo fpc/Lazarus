@@ -431,6 +431,7 @@ begin
         then
           RaiseGDBException('TCarbonWidgetSet.AppRun post dummy event failed');
         fMainEventQueue:=CurMainEventQueue;
+        basiceventSetEvent(FirstAppEventLock);
 
         RunApplicationEventLoop;
       finally
@@ -924,6 +925,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.OnWakeMainThread(Sender: TObject);
 begin
+  // wait infinite for the first (dummy) event sent to the main event queue
+  basiceventWaitFor(-1, FirstAppEventLock);
   SendCheckSynchronizeMessage;
 end;
 

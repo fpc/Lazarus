@@ -157,6 +157,9 @@ uses
   Buttons, StdCtrls, PairSplitter, ComCtrls, Calendar, Arrow,
   Spin, ExtCtrls, FileCtrl, LResources;
 
+var
+  FirstAppEventLock: pEventState = nil;
+
 // the implementation of the utility methods
 {$I carbonobject.inc}
 // the implementation of the winapi compatibility methods
@@ -167,10 +170,14 @@ uses
 
 procedure InternalInit;
 begin
+  FirstAppEventLock:=BasicEventCreate(nil, true, false, '');
 end;
 
 procedure InternalFinal;
 begin
+  basiceventSetEvent(FirstAppEventLock);
+  basiceventdestroy(FirstAppEventLock);
+  FirstAppEventLock:=nil;
 end;
 
 
