@@ -175,7 +175,7 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
-    +'  fpWeb,fpCGI;'+le
+    +'  httpd,fpCGI;'+le
     +le
     +'begin'+le
     +'  Application.Title:=''cgiproject1'';'+le
@@ -389,7 +389,7 @@ begin
     +'{$ifdef unix}'+le
     +'  cthreads,'+le
     +'{$endif}'+le
-    +'  fpWeb,lazweb,httpd,fpApache;'+le
+    +'  httpd,fpApache;'+le
     +le
     +'Const'+le
     +le
