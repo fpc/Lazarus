@@ -158,7 +158,27 @@ uses
   Spin, ExtCtrls, FileCtrl, LResources;
 
 var
-  FirstAppEventLock: pEventState = nil;
+  FirstAppEventLock: MPEventID = nil;
+
+const
+  EventFlags : MPEventFlags = 1;
+
+procedure SignalFirstAppEvent;
+begin
+  MPSetEvent(FirstAppEventLock, EventFlags);
+end;
+
+procedure WaitFirstAppEvent;
+var
+  fl  : MPEventFlags;
+begin
+  fl := EventFlags;
+  if FirstAppEventLock <> nil then
+  begin
+    MPWaitForEvent(FirstAppEventLock, @fl, kDurationForever);
+    SignalFirstAppEvent;
+  end;
+end;
 
 // the implementation of the utility methods
 {$I carbonobject.inc}
@@ -170,14 +190,17 @@ var
 
 procedure InternalInit;
 begin
-  FirstAppEventLock:=BasicEventCreate(nil, true, false, '');
+  MPCreateEvent(FirstAppEventLock);
 end;
 
 procedure InternalFinal;
 begin
-  basiceventSetEvent(FirstAppEventLock);
-  basiceventdestroy(FirstAppEventLock);
-  FirstAppEventLock:=nil;
+  if Assigned(FirstAppEventLock) then
+  begin
+    SignalFirstAppEvent;
+    MPDeleteEvent(FirstAppEventLock);
+    FirstAppEventLock:=nil;
+  end;
 end;
 
 
