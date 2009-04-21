@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.69 }
+{ Version : 1.70 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -167,6 +167,7 @@ QCursorH = class(TObject) end;
 QDataStreamH = class(TObject) end;
 QDateH = class(TObject) end;
 QDateTimeH = class(TObject) end;
+QDecorationH = class(TObject) end;
 QDirH = class(TObject) end;
 QEventH = class(TObject) end;
   QLCLMessageEventH = class(QEventH) end;
@@ -487,6 +488,7 @@ QVariantH = class(TObject) end;
 QVectorH = class(TObject) end;
   QPolygonH = class(QVectorH) end;
   QPolygonFH = class(QVectorH) end;
+QWSEventH = class(TObject) end;
 QWebDatabaseH = class(TObject) end;
 QWebHistoryH = class(TObject) end;
 QWebHistoryItemH = class(TObject) end;
