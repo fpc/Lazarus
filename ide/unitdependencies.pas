@@ -343,6 +343,8 @@ begin
 end;
 
 procedure TUnitDependenciesView.RebuildTree;
+var
+  ExpandState: TExpandedUnitNodeState;
 begin
   if FUpdateCount>0 then begin
     FRebuildTreeNeeded:=true;
@@ -351,8 +353,10 @@ begin
   FRebuildTreeNeeded:=false;
 
   CodeToolBoss.ActivateWriteLock;
+  ExpandState:=TExpandedUnitNodeState.Create;
   BeginUpdate;
   try
+    ExpandState.Assign(FRootNode);
     ClearTree;
     if RootFilename='' then exit;
     FRootNode:=TUnitNode.Create;
@@ -363,10 +367,11 @@ begin
     UnitTreeView.Items.Clear;
     FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
     FRootNode.CreateChildren;
-
+    ExpandState.AssignTo(FRootNode);
   finally
     FRebuildTreeNeeded:=false;
     EndUpdate;
+    ExpandState.Free;
     CodeToolBoss.DeActivateWriteLock;
   end;
 end;
@@ -465,8 +470,6 @@ begin
 end;
 
 procedure TUnitDependenciesView.Refresh;
-var
-  ExpandState: TExpandedUnitNodeState;
 begin
   if FUpdateCount>0 then begin
     FRefreshNeeded:=true;
@@ -476,17 +479,7 @@ begin
   BeginUpdate;
   try
     if Assigned(OnAccessingSources) then OnAccessingSources(Self);
-    // save old expanded nodes
-    ExpandState:=TExpandedUnitNodeState.Create;
-    try
-      ExpandState.Assign(FRootNode);
-      // clear all child nodes
-      RebuildTree;
-      // restore expanded state
-      ExpandState.AssignTo(FRootNode);
-    finally
-      ExpandState.Free;
-    end;
+    RebuildTree;
   finally
     FRefreshNeeded:=false;
     EndUpdate;
@@ -820,23 +813,15 @@ procedure TExpandedUnitNodeState.Clear;
   procedure ClearPathTree(StringListNode: TStringList);
   var
     i: integer;
-    sl: TStringList;
   begin
     if StringListNode=nil then exit;
-    for i:=0 to StringListNode.Count-1 do begin
-      sl:=TStringList(StringListNode.Objects[i]);
-      if sl<>nil then begin
-        ClearPathTree(sl);
-        sl.Free;
-      end;
-    end;
-    StringListNode.Clear;
+    for i:=0 to StringListNode.Count-1 do
+      ClearPathTree(TStringList(StringListNode.Objects[i]));
+    FreeAndNil(StringListNode);
   end;
   
 begin
-  if FPaths=nil then exit;
   ClearPathTree(FPaths);
-  FreeAndNil(FPaths);
 end;
 
 procedure TExpandedUnitNodeState.Assign(ANode: TUnitNode);
@@ -846,21 +831,20 @@ procedure TExpandedUnitNodeState.Assign(ANode: TUnitNode);
     ChildNode: TUnitNode;
     CurChildList: TStringList;
   begin
-    if CurNode=nil then exit;
-    if CurNode.HasChildren and (CurNode.TreeNode<>nil)
-    and (CurNode.TreeNode.Expanded) then begin
-      if CurPathList=nil then
-        CurPathList:=TStringList.Create;
-      CurPathList.Add(CurNode.Filename);
-      CurChildList:=nil;
-      ChildNode:=CurNode.FirstChild;
-      while ChildNode<>nil do begin
-        AssignRecursive(CurChildList,ChildNode);
-        ChildNode:=ChildNode.NextSibling;
-      end;
-      if CurChildList<>nil then
-        CurPathList.Objects[CurPathList.Count-1]:=CurChildList;
+    if (CurNode=nil) or (not CurNode.HasChildren) or (CurNode.TreeNode=nil) then
+      exit;
+    if not CurNode.TreeNode.Expanded then exit;
+    if CurPathList=nil then
+      CurPathList:=TStringList.Create;
+
+    CurPathList.Add(CurNode.Filename);
+    CurChildList:=nil;
+    ChildNode:=CurNode.FirstChild;
+    while ChildNode<>nil do begin
+      AssignRecursive(CurChildList,ChildNode);
+      ChildNode:=ChildNode.NextSibling;
     end;
+    CurPathList.Objects[CurPathList.Count-1]:=CurChildList;
   end;
 
 begin
@@ -876,20 +860,20 @@ procedure TExpandedUnitNodeState.AssignTo(ANode: TUnitNode);
     CurChildList: TStringList;
     i: integer;
   begin
-    if (CurPathList=nil) or (CurNode=nil) or (not CurNode.HasChildren)
-    or (CurNode.TreeNode=nil) then
+    if (CurNode=nil) or (not CurNode.HasChildren) or (CurNode.TreeNode=nil) then
       exit;
+    if CurPathList=nil then exit;
     i:=CurPathList.IndexOf(CurNode.Filename);
-    if i>=0 then begin
-      CurNode.TreeNode.Expand(false);
-      CurChildList:=TStringList(CurPathList.Objects[i]);
-      if CurChildList<>nil then begin
-        ChildNode:=CurNode.FirstChild;
-        while ChildNode<>nil do begin
-          AssignToRecursive(CurChildList,ChildNode);
-          ChildNode:=ChildNode.NextSibling;
-        end;
-      end;
+    if i<0 then exit;
+
+    CurNode.TreeNode.Expand(false);
+    CurChildList:=TStringList(CurPathList.Objects[i]);
+    if CurChildList=nil then exit;
+
+    ChildNode:=CurNode.FirstChild;
+    while ChildNode<>nil do begin
+      AssignToRecursive(CurChildList,ChildNode);
+      ChildNode:=ChildNode.NextSibling;
     end;
   end;
 
