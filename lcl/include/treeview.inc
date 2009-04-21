@@ -4669,7 +4669,7 @@ begin
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
     if (Button = mbLeft) and (CursorNode<>nil) then begin
       Exclude(fStates,tvsWaitForDragging);
-      if CursorNode.HasChildren
+      if CursorNode.HasChildren and ShowButtons
       and (LogicalX>=CursorNode.DisplayExpandSignLeft)
       and (LogicalX<CursorNode.DisplayExpandSignRight) then begin
         // mousedown occured on expand sign -> expand/collapse
