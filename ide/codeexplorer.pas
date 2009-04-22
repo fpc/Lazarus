@@ -74,6 +74,41 @@ type
     cepDirectives
     );
 
+  TCodeObsStackItemType = (
+    cositNone,
+    cositBegin,
+    cositRepeat,
+    cositTry,
+    cositFinally,
+    cositExcept,
+    cositCase,
+    cositCaseElse,
+    cositRoundBracketOpen,
+    cositEdgedBracketOpen
+    );
+  TCodeObsStackItem = record
+    StartPos: integer;
+    Typ: TCodeObsStackItemType;
+  end;
+  TCodeObsStack = ^TCodeObsStackItem;
+
+  { TCodeObserverStatementState }
+
+  TCodeObserverStatementState = class
+  public
+    Stack: TCodeObsStack;
+    StackPtr: integer;
+    StackCapacity: integer;
+    IgnoreConstLevel: integer;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Push(Typ: TCodeObsStackItemType; StartPos: integer);
+    function Pop: TCodeObsStackItemType;
+    procedure PopAll;
+    function TopType: TCodeObsStackItemType;
+  end;
+
   { TCodeExplorerView }
 
   TCodeExplorerView = class(TForm)
@@ -171,8 +206,9 @@ type
                           CreateSiblings: boolean);
     procedure CreateObservations(Tool: TCodeTool);
     function CreateObserverNode(Tool: TCodeTool; f: TCEObserverCategory): TTreeNode;
-    procedure FindObserverConstants(Tool: TCodeTool; CodeNode: TCodeTreeNode;
-                                  StartPos, EndPos: integer);
+    procedure CreateObserverNodesForStatement(Tool: TCodeTool;
+                            CodeNode: TCodeTreeNode; StartPos, EndPos: integer;
+                            ObserverState: TCodeObserverStatementState);
     procedure FindObserverTodos(Tool: TCodeTool);
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
@@ -857,135 +893,142 @@ var
   f: TCEObserverCategory;
   ObserverCats: TCEObserverCategories;
   ProcNode: TCodeTreeNode;
+  ObsState: TCodeObserverStatementState;
 begin
   CodeNode:=Tool.Tree.Root;
   ObserverCats:=CodeExplorerOptions.ObserverCategories;
-  while CodeNode<>nil do begin
-    case CodeNode.Desc of
-    ctnBeginBlock:
-      begin
-        if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
-          Tool.BuildSubTreeForBeginBlock(CodeNode);
-        if (cefcLongProcs in ObserverCats)
-        and (CodeNode.Parent.Desc=ctnProcedure) then begin
-          LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);
-          if LineCnt>=CodeExplorerOptions.LongProcLineCount then
-          begin
-            ProcNode:=CodeNode.Parent;
-            AddCodeNode(cefcLongProcs,ProcNode);
-          end;
-        end;
-        if (cefcEmptyProcs in ObserverCats)
-        and (CodeNode.Parent.Desc=ctnProcedure) then begin
-          Tool.MoveCursorToCleanPos(CodeNode.StartPos);
-          Tool.ReadNextAtom;// read begin
-          Tool.ReadNextAtom;
-          if Tool.CurPos.Flag=cafEnd then begin
-            // no code, maybe comments and directives (hidden code)
-            ProcNode:=CodeNode.Parent;
-            AddCodeNode(cefcEmptyProcs,ProcNode);
-          end;
-        end;
-        if (cefcUnnamedConsts in ObserverCats)
-        and (not CodeNode.HasParentOfType(ctnBeginBlock)) then begin
-          FindObserverConstants(Tool,CodeNode,CodeNode.StartPos,CodeNode.EndPos);
-        end;
-        if (cefcEmptyBlocks in ObserverCats)
-        and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('begin'),
-             CodeNode.EndPos-length('end')-1)
-        then begin
-          AddCodeNode(cefcEmptyBlocks,CodeNode);
-        end;
-      end;
-
-    ctnAsmBlock:
-      begin
-        if (cefcEmptyBlocks in ObserverCats)
-        and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('asm'),
-             CodeNode.EndPos-length('end')-1)
-        then begin
-          AddCodeNode(cefcEmptyBlocks,CodeNode);
-        end;
-      end;
-
-    ctnProcedure:
-      begin
-        if (cefcNestedProcs in ObserverCats) then
+  ObsState:=TCodeObserverStatementState.Create;
+  try
+    while CodeNode<>nil do begin
+      case CodeNode.Desc of
+      ctnBeginBlock:
         begin
-          i:=0;
-          ProcNode:=CodeNode.FirstChild;
-          while ProcNode<>nil do begin
-            if ProcNode.Desc=ctnProcedure then
-              inc(i);
-            ProcNode:=ProcNode.NextBrother;
+          if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
+            Tool.BuildSubTreeForBeginBlock(CodeNode);
+          if (cefcLongProcs in ObserverCats)
+          and (CodeNode.Parent.Desc=ctnProcedure) then begin
+            LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);
+            if LineCnt>=CodeExplorerOptions.LongProcLineCount then
+            begin
+              ProcNode:=CodeNode.Parent;
+              AddCodeNode(cefcLongProcs,ProcNode);
+            end;
           end;
-          if i>=CodeExplorerOptions.NestedProcCount then begin
-            AddCodeNode(cefcNestedProcs,CodeNode);
+          if (cefcEmptyProcs in ObserverCats)
+          and (CodeNode.Parent.Desc=ctnProcedure) then begin
+            Tool.MoveCursorToCleanPos(CodeNode.StartPos);
+            Tool.ReadNextAtom;// read begin
+            Tool.ReadNextAtom;
+            if Tool.CurPos.Flag=cafEnd then begin
+              // no code, maybe comments and directives (hidden code)
+              ProcNode:=CodeNode.Parent;
+              AddCodeNode(cefcEmptyProcs,ProcNode);
+            end;
+          end;
+          if (cefcUnnamedConsts in ObserverCats)
+          and (not CodeNode.HasParentOfType(ctnBeginBlock)) then begin
+            CreateObserverNodesForStatement(Tool,CodeNode,
+                                    CodeNode.StartPos,CodeNode.EndPos,ObsState);
+          end;
+          if (cefcEmptyBlocks in ObserverCats)
+          and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('begin'),
+               CodeNode.EndPos-length('end')-1)
+          then begin
+            AddCodeNode(cefcEmptyBlocks,CodeNode);
           end;
         end;
-      end;
 
-    ctnParameterList:
-      begin
-        if (cefcLongParamLists in ObserverCats)
-        and (CodeNode.HasParentOfType(ctnInterface))
-        and (CodeNode.ChildCount>CodeExplorerOptions.LongParamListCount) then
+      ctnAsmBlock:
         begin
-          if (CodeNode.Parent.Desc=ctnProcedureHead)
-          and (CodeNode.Parent.Parent.Desc=ctnProcedure) then
-          begin
-            ProcNode:=CodeNode.Parent.Parent;
-            AddCodeNode(cefcLongParamLists,ProcNode);
+          if (cefcEmptyBlocks in ObserverCats)
+          and CodeIsOnlySpace(Tool.Src,CodeNode.StartPos+length('asm'),
+               CodeNode.EndPos-length('end')-1)
+          then begin
+            AddCodeNode(cefcEmptyBlocks,CodeNode);
           end;
         end;
-      end;
 
-    ctnProperty:
-      begin
-        if (cefcPublishedPropWithoutDefault in ObserverCats)
-        and (CodeNode.Parent.Desc=ctnClassPublished)
-        and (not Tool.PropertyHasSpecifier(CodeNode,'default'))
-        and (Tool.PropertyHasSpecifier(CodeNode,'read'))
-        and (Tool.PropertyHasSpecifier(CodeNode,'write'))
-        then begin
-          AddCodeNode(cefcPublishedPropWithoutDefault,CodeNode);
-        end;
-      end;
-
-    ctnClassTypePrivate..ctnClassPublished:
-      begin
-        if (cefcUnsortedClassVisibility in ObserverCats)
-        and (CodeNode.PriorBrother<>nil)
-        and (CodeNode.PriorBrother.Desc in AllClassBaseSections)
-        and (CodeNode.PriorBrother.Desc>CodeNode.Desc)
-        then begin
-          if (CodeNode.PriorBrother.Desc=ctnClassPublished)
-          and (CodeNode.PriorBrother.PriorBrother=nil) then
-          begin
-            // the first section can be published
-          end else begin
-            // the prior section was more visible
-            AddCodeNode(cefcUnsortedClassVisibility,CodeNode);
-          end;
-        end;
-        if (cefcUnsortedClassMembers in ObserverCats)
-        then
-          CheckUnsortedClassMembers(CodeNode);
-        if (cefcEmptyClassSections in ObserverCats) and
-           (CodeNode.FirstChild=nil) and
-           ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.PriorBrother<>nil)) then
+      ctnProcedure:
         begin
-          // empty class section
-          AddCodeNode(cefcEmptyClassSections,CodeNode);
+          if (cefcNestedProcs in ObserverCats) then
+          begin
+            i:=0;
+            ProcNode:=CodeNode.FirstChild;
+            while ProcNode<>nil do begin
+              if ProcNode.Desc=ctnProcedure then
+                inc(i);
+              ProcNode:=ProcNode.NextBrother;
+            end;
+            if i>=CodeExplorerOptions.NestedProcCount then begin
+              AddCodeNode(cefcNestedProcs,CodeNode);
+            end;
+          end;
         end;
-      end;
 
+      ctnParameterList:
+        begin
+          if (cefcLongParamLists in ObserverCats)
+          and (CodeNode.HasParentOfType(ctnInterface))
+          and (CodeNode.ChildCount>CodeExplorerOptions.LongParamListCount) then
+          begin
+            if (CodeNode.Parent.Desc=ctnProcedureHead)
+            and (CodeNode.Parent.Parent.Desc=ctnProcedure) then
+            begin
+              ProcNode:=CodeNode.Parent.Parent;
+              AddCodeNode(cefcLongParamLists,ProcNode);
+            end;
+          end;
+        end;
+
+      ctnProperty:
+        begin
+          if (cefcPublishedPropWithoutDefault in ObserverCats)
+          and (CodeNode.Parent.Desc=ctnClassPublished)
+          and (not Tool.PropertyHasSpecifier(CodeNode,'default'))
+          and (Tool.PropertyHasSpecifier(CodeNode,'read'))
+          and (Tool.PropertyHasSpecifier(CodeNode,'write'))
+          then begin
+            AddCodeNode(cefcPublishedPropWithoutDefault,CodeNode);
+          end;
+        end;
+
+      ctnClassTypePrivate..ctnClassPublished:
+        begin
+          if (cefcUnsortedClassVisibility in ObserverCats)
+          and (CodeNode.PriorBrother<>nil)
+          and (CodeNode.PriorBrother.Desc in AllClassBaseSections)
+          and (CodeNode.PriorBrother.Desc>CodeNode.Desc)
+          then begin
+            if (CodeNode.PriorBrother.Desc=ctnClassPublished)
+            and (CodeNode.PriorBrother.PriorBrother=nil) then
+            begin
+              // the first section can be published
+            end else begin
+              // the prior section was more visible
+              AddCodeNode(cefcUnsortedClassVisibility,CodeNode);
+            end;
+          end;
+          if (cefcUnsortedClassMembers in ObserverCats)
+          then
+            CheckUnsortedClassMembers(CodeNode);
+          if (cefcEmptyClassSections in ObserverCats) and
+             (CodeNode.FirstChild=nil) and
+             ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.PriorBrother<>nil)) then
+          begin
+            // empty class section
+            AddCodeNode(cefcEmptyClassSections,CodeNode);
+          end;
+        end;
+
+      end;
+      CodeNode:=CodeNode.Next;
     end;
-    CodeNode:=CodeNode.Next;
-  end;
 
-  if cefcToDos in ObserverCats then
-    FindObserverTodos(Tool);
+    if cefcToDos in ObserverCats then
+      FindObserverTodos(Tool);
+  finally
+    ObsState.Free;
+  end;
 
   // add numbers
   for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
@@ -1030,9 +1073,9 @@ begin
   Result:=fObserverCatNodes[f];
 end;
 
-procedure TCodeExplorerView.FindObserverConstants(Tool: TCodeTool;
+procedure TCodeExplorerView.CreateObserverNodesForStatement(Tool: TCodeTool;
   CodeNode: TCodeTreeNode;
-  StartPos, EndPos: integer);
+  StartPos, EndPos: integer; ObserverState: TCodeObserverStatementState);
 var
   Data: TViewNodeData;
   ObsTVNode: TTreeNode;
@@ -1044,18 +1087,26 @@ var
   CurAtom, Last1Atom, Last2Atom: TCommonAtomFlag;
   FuncName: string;
   Atom: TAtomPosition;
+  c1: Char;
+  Typ: TCodeObsStackItemType;
 begin
   if (StartPos<1) or (StartPos>=EndPos) then exit;
   Tool.MoveCursorToCleanPos(StartPos);
   Last1Atom:=cafNone;
   Last2Atom:=cafNone;
+  ObserverState.PopAll;
   while Tool.CurPos.StartPos<EndPos do begin
     CurAtom:=cafNone;
-    case Tool.Src[Tool.CurPos.StartPos] of
+    c1:=Tool.Src[Tool.CurPos.StartPos];
+    case c1 of
     '''','#','0'..'9','$','%':
       begin
         // a constant
-        if Tool.AtomIsEmptyStringConstant then begin
+        if (ObserverState.IgnoreConstLevel>=0)
+        and (ObserverState.IgnoreConstLevel>=ObserverState.StackPtr)
+          // ignore range
+        then begin
+        end else if Tool.AtomIsEmptyStringConstant then begin
           // ignore empty string constant ''
         end else if Tool.AtomIsCharConstant
         and (not CodeExplorerOptions.ObserveCharConst) then
@@ -1101,21 +1152,79 @@ begin
     '.':
       CurAtom:=cafPoint;
 
-    '_','a'..'z','A'..'Z':
-      CurAtom:=cafWord;
-
     '(','[':
-      if Last1Atom=cafWord then
       begin
-        Atom:=Tool.LastAtoms.GetValueAt(0);
-        FuncName:=copy(Tool.Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
-        if Last2Atom=cafPoint then
-          FuncName:='.'+FuncName;
-        if CodeExplorerOptions.COIgnoreConstInFunc(FuncName) then
+        if c1='(' then
+          ObserverState.Push(cositRoundBracketOpen,Tool.CurPos.StartPos)
+        else
+          ObserverState.Push(cositEdgedBracketOpen,Tool.CurPos.StartPos);
+        if (Last1Atom=cafWord)
+        and (ObserverState.IgnoreConstLevel<0) then
         begin
-          // skip this function call
-          Tool.ReadTilBracketClose(false);
+          Atom:=Tool.LastAtoms.GetValueAt(0);
+          FuncName:=copy(Tool.Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
+          if Last2Atom=cafPoint then
+            FuncName:='.'+FuncName;
+          if CodeExplorerOptions.COIgnoreConstInFunc(FuncName) then
+          begin
+            // skip this function call
+            ObserverState.IgnoreConstLevel:=ObserverState.StackPtr;
+          end;
         end;
+      end;
+
+    ')',']':
+      begin
+        while ObserverState.StackPtr>0 do
+        begin
+          Typ:=ObserverState.TopType;
+          if Typ in [cositRoundBracketOpen,cositEdgedBracketOpen]
+          then begin
+            ObserverState.Pop;
+            // normally brackets must match () []
+            // but during editing often the brackets don't match
+            // for example [( ]
+            // skip silently
+            if (Typ=cositRoundBracketOpen)=(c1='(') then break;
+          end else begin
+            // missing bracket close
+            break;
+          end;
+        end;
+      end;
+
+    '_','a'..'z','A'..'Z':
+      begin
+        CurAtom:=cafWord;
+        if Tool.UpAtomIs('END') then
+        begin
+          while ObserverState.StackPtr>0 do
+          begin
+            Typ:=ObserverState.Pop;
+            if Typ in [cositBegin,cositFinally,cositExcept,cositCase,cositCaseElse]
+            then
+              break;
+          end;
+        end
+        else if Tool.UpAtomIs('BEGIN') then
+          ObserverState.Push(cositBegin,Tool.CurPos.StartPos)
+        else if Tool.UpAtomIs('REPEAT') then
+          ObserverState.Push(cositRepeat,Tool.CurPos.StartPos)
+        else if Tool.UpAtomIs('TRY') then
+          ObserverState.Push(cositTry,Tool.CurPos.StartPos)
+        else if Tool.UpAtomIs('FINALLY') or Tool.UpAtomIs('EXCEPT') then
+        begin
+          while ObserverState.StackPtr>0 do
+          begin
+            Typ:=ObserverState.Pop;
+            if Typ=cositTry then
+              break;
+          end;
+        end
+        else if Tool.UpAtomIs('CASE') then
+          ObserverState.Push(cositCase,Tool.CurPos.StartPos)
+        else if Tool.UpAtomIs('ELSE') and (ObserverState.TopType=cositCase) then
+          ObserverState.Pop;
       end;
     end;
     // read next atom
@@ -1780,6 +1889,62 @@ begin
     Result:=1
   else
     Result:=0;
+end;
+
+{ TCodeObserverStatementState }
+
+constructor TCodeObserverStatementState.Create;
+begin
+
+end;
+
+destructor TCodeObserverStatementState.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TCodeObserverStatementState.Clear;
+begin
+  ReAllocMem(Stack,0);
+  StackCapacity:=0;
+  StackPtr:=0;
+end;
+
+procedure TCodeObserverStatementState.Push(Typ: TCodeObsStackItemType;
+  StartPos: integer);
+begin
+  if StackPtr=StackCapacity then
+  begin
+    StackCapacity:=StackCapacity*2+10;
+    ReAllocMem(Stack,SizeOf(TCodeObsStackItem)*StackCapacity);
+  end;
+  Stack[StackPtr].Typ:=Typ;
+  Stack[StackPtr].StartPos:=StartPos;
+  inc(StackPtr);
+end;
+
+function TCodeObserverStatementState.Pop: TCodeObsStackItemType;
+begin
+  if StackPtr=0 then
+    RaiseGDBException('inconsistency');
+  dec(StackPtr);
+  Result:=Stack[StackPtr].Typ;
+  if IgnoreConstLevel>StackPtr then
+    IgnoreConstLevel:=-1;
+end;
+
+procedure TCodeObserverStatementState.PopAll;
+begin
+  StackPtr:=0;
+end;
+
+function TCodeObserverStatementState.TopType: TCodeObsStackItemType;
+begin
+  if StackPtr>0 then
+    Result:=Stack[StackPtr-1].Typ
+  else
+    Result:=cositNone;
 end;
 
 initialization
