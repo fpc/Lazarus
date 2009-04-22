@@ -120,6 +120,7 @@ type
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     fObserverNode: TTreeNode;
     fObserverCatNodes: array[TCEObserverCategory] of TTreeNode;
+    fObserverCatOverflow: array[TCEObserverCategory] of boolean;
     FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
     FLastCodeFilter: string;
@@ -224,6 +225,7 @@ type
 
 const
   CodeExplorerMenuRootName = 'Code Explorer';
+  CodeObserverMaxNodes = 50;
 
 var
   CodeExplorerView: TCodeExplorerView;
@@ -766,8 +768,13 @@ procedure TCodeExplorerView.CreateObservations(Tool: TCodeTool);
     NodeText: String;
     NodeImageIndCex: LongInt;
   begin
-    Data:=TViewNodeData.Create(CodeNode);
     ObsTVNode:=CreateObserverNode(Tool,f);
+    if ObsTVNode.Count>=CodeObserverMaxNodes then
+    begin
+      fObserverCatOverflow[f]:=true;
+      exit(nil);
+    end;
+    Data:=TViewNodeData.Create(CodeNode);
     NodeText:=GetCodeNodeDescription(Tool,CodeNode);
     NodeImageIndCex:=GetCodeNodeImage(Tool,CodeNode);
     Result:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
@@ -984,8 +991,12 @@ begin
   for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
   begin
     if fObserverCatNodes[f]=nil then continue;
-    fObserverCatNodes[f].Text:=
-           fObserverCatNodes[f].Text+' ('+IntToStr(fObserverCatNodes[f].Count)+')';
+    if fObserverCatOverflow[f] then
+      fObserverCatNodes[f].Text:=
+        fObserverCatNodes[f].Text+' ('+IntToStr(fObserverCatNodes[f].Count)+'+)'
+    else
+      fObserverCatNodes[f].Text:=
+        fObserverCatNodes[f].Text+' ('+IntToStr(fObserverCatNodes[f].Count)+')';
   end;
 end;
 
@@ -1055,29 +1066,35 @@ begin
           // ignore user defined constants
         end else begin
           // add constant
-          Data:=TViewNodeData.Create(CodeNode);
-          Data.Desc:=ctnConstant;
-          Data.SubDesc:=ctnsNone;
-          Data.StartPos:=Tool.CurPos.StartPos;
-          Data.EndPos:=Tool.CurPos.EndPos;
           ObsTVNode:=CreateObserverNode(Tool,cefcUnnamedConsts);
-          NodeText:=Tool.GetAtom;
-          // add some context information
-          ProcNode:=CodeNode;
-          while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
-            ProcNode:=ProcNode.Parent;
-          if ProcNode<>nil then begin
-            OldPos:=Tool.CurPos.EndPos;
-            NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
-              phpWithoutClassName])]);
-            Tool.MoveCursorToCleanPos(OldPos);
+          if ObsTVNode.Count>=CodeObserverMaxNodes then
+          begin
+            fObserverCatOverflow[cefcUnnamedConsts]:=true;
+            break;
+          end else begin
+            Data:=TViewNodeData.Create(CodeNode);
+            Data.Desc:=ctnConstant;
+            Data.SubDesc:=ctnsNone;
+            Data.StartPos:=Tool.CurPos.StartPos;
+            Data.EndPos:=Tool.CurPos.EndPos;
+            NodeText:=Tool.GetAtom;
+            // add some context information
+            ProcNode:=CodeNode;
+            while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+              ProcNode:=ProcNode.Parent;
+            if ProcNode<>nil then begin
+              OldPos:=Tool.CurPos.EndPos;
+              NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
+                phpWithoutClassName])]);
+              Tool.MoveCursorToCleanPos(OldPos);
+            end;
+            NodeImageIndCex:=ImgIDConst;
+            TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
+            TVNode.Data:=Data;
+            TVNode.Text:=NodeText;
+            TVNode.ImageIndex:=NodeImageIndCex;
+            TVNode.SelectedIndex:=NodeImageIndCex;
           end;
-          NodeImageIndCex:=ImgIDConst;
-          TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
-          TVNode.Data:=Data;
-          TVNode.Text:=NodeText;
-          TVNode.ImageIndex:=NodeImageIndCex;
-          TVNode.SelectedIndex:=NodeImageIndCex;
         end;
       end;
 
@@ -1134,21 +1151,26 @@ begin
     if GetToDoComment(Src,p,CommentEndPos,MagicStartPos,TextStartPos,TextEndPos)
     then begin
       // add todo
-      Data:=TViewNodeData.Create(Tool.Tree.Root);
-      Data.Desc:=ctnConstant;
-      Data.SubDesc:=ctnsNone;
-      Data.StartPos:=p;
-      Data.EndPos:=MagicStartPos;
       ObsTVNode:=CreateObserverNode(Tool,cefcToDos);
-      l:=TextEndPos-TextStartPos;
-      if l>20 then l:=20;
-      NodeText:=TrimCodeSpace(copy(Src,TextStartPos,l));
-      NodeImageIndCex:=ImgIDConst;
-      TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
-      TVNode.Data:=Data;
-      TVNode.Text:=NodeText;
-      TVNode.ImageIndex:=NodeImageIndCex;
-      TVNode.SelectedIndex:=NodeImageIndCex;
+      if fObserverNode.Count>=CodeObserverMaxNodes then begin
+        fObserverCatOverflow[cefcToDos]:=true;
+        break;
+      end else begin
+        Data:=TViewNodeData.Create(Tool.Tree.Root);
+        Data.Desc:=ctnConstant;
+        Data.SubDesc:=ctnsNone;
+        Data.StartPos:=p;
+        Data.EndPos:=MagicStartPos;
+        l:=TextEndPos-TextStartPos;
+        if l>20 then l:=20;
+        NodeText:=TrimCodeSpace(copy(Src,TextStartPos,l));
+        NodeImageIndCex:=ImgIDConst;
+        TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
+        TVNode.Data:=Data;
+        TVNode.Text:=NodeText;
+        TVNode.ImageIndex:=NodeImageIndCex;
+        TVNode.SelectedIndex:=NodeImageIndCex;
+      end;
     end;
     p:=CommentEndPos;
   until p>SrcLen;
