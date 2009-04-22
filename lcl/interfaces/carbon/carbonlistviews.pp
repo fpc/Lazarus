@@ -608,7 +608,7 @@ var
   SubIndex: Integer;
 begin
   Result := noErr;
-  // DebugLn('CarbonItemDataCallBack ID: ' + DbgS(ID));
+  DebugLn('CarbonItemDataCallBack ID: ' + DbgS(ID));
   ACarbonDataBrowser := TCarbonDataBrowser(GetCarbonControl(AControl));
   if ACarbonDataBrowser = nil then Exit;
   ALCLDataBrowser := ACarbonDataBrowser.LCLObject;
@@ -1077,8 +1077,7 @@ begin
   GetClientRect(R);
   
   Result := (Y - R.Top - GetHeaderHeight + P.Y) div GetItemsHeight;
-  
-  if Result >= GetitemsCount then Result := -1;
+  if (Result < 0) or (Result >= GetitemsCount) then Result := -1;
 end;
 
 function TCarbonDataBrowser.GetItemIcon(AIndex, ASubIndex: Integer): IconRef;
