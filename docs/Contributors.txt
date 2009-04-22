@@ -32,6 +32,7 @@ Cliff Baeseman
 Colin Western
 Curtis White
 Daniel Oom
+Daniel Simões de Almeida
 Darek Mazur
 Darius Blaszijk
 David Guadagnini

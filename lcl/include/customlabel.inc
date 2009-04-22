@@ -386,8 +386,8 @@ var
   OldFontHeight: LongInt;
 begin
   Result:=false;
-  if not CalcFittingFontHeight(GetLabelText,Width,Height,NeededWidth,NeededHeight,
-                               NewFontHeight) then exit;
+  if not CalcFittingFontHeight(GetLabelText,Width,Height,NewFontHeight,NeededWidth,
+                               NeededHeight) then exit;
   if Font.Height=NewFontHeight then exit;
   //debugln('TCustomLabel.AdjustFontForOptimalFill OldFontHeight=',dbgs(Font.Height),' NewFontHeight=',dbgs(NewFontHeight));
   OldFontHeight:=Font.Height;
