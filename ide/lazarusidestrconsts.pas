@@ -4170,6 +4170,7 @@ resourcestring
   lisCEEmptyGroup = 'Empty constructs';
   lisCEStyleGroup = 'Style';
   lisCEOtherGroup = 'Other';
+  lisCEWrongIndentation = 'Wrong indentation';
 
 implementation
 

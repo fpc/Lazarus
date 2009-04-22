@@ -89,24 +89,30 @@ type
   TCodeObsStackItem = record
     StartPos: integer;
     Typ: TCodeObsStackItemType;
+    StatementStartPos: integer;
   end;
   TCodeObsStack = ^TCodeObsStackItem;
 
   { TCodeObserverStatementState }
 
   TCodeObserverStatementState = class
+  private
+    function GetStatementStartPos: integer;
+    procedure SetStatementStartPos(const AValue: integer);
   public
     Stack: TCodeObsStack;
     StackPtr: integer;
     StackCapacity: integer;
     IgnoreConstLevel: integer;
-    constructor Create;
+    TopLvlStatementStartPos: integer;
     destructor Destroy; override;
     procedure Clear;
+    procedure Reset;
     procedure Push(Typ: TCodeObsStackItemType; StartPos: integer);
     function Pop: TCodeObsStackItemType;
     procedure PopAll;
     function TopType: TCodeObsStackItemType;
+    property StatementStartPos: integer read GetStatementStartPos write SetStatementStartPos;
   end;
 
   { TCodeExplorerView }
@@ -904,7 +910,12 @@ begin
       ctnBeginBlock:
         begin
           if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
-            Tool.BuildSubTreeForBeginBlock(CodeNode);
+          begin
+            try
+              Tool.BuildSubTreeForBeginBlock(CodeNode);
+            except
+            end;
+          end;
           if (cefcLongProcs in ObserverCats)
           and (CodeNode.Parent.Desc=ctnProcedure) then begin
             LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);
@@ -915,7 +926,8 @@ begin
             end;
           end;
           if (cefcEmptyProcs in ObserverCats)
-          and (CodeNode.Parent.Desc=ctnProcedure) then begin
+          and (CodeNode.Parent.Desc=ctnProcedure) then
+          begin
             Tool.MoveCursorToCleanPos(CodeNode.StartPos);
             Tool.ReadNextAtom;// read begin
             Tool.ReadNextAtom;
@@ -925,8 +937,8 @@ begin
               AddCodeNode(cefcEmptyProcs,ProcNode);
             end;
           end;
-          if (cefcUnnamedConsts in ObserverCats)
-          and (not CodeNode.HasParentOfType(ctnBeginBlock)) then begin
+          if not CodeNode.HasParentOfType(ctnBeginBlock) then
+          begin
             CreateObserverNodesForStatement(Tool,CodeNode,
                                     CodeNode.StartPos,CodeNode.EndPos,ObsState);
           end;
@@ -1089,23 +1101,107 @@ var
   Atom: TAtomPosition;
   c1: Char;
   Typ: TCodeObsStackItemType;
+  CheckWrongIndentation: boolean;
+  FindUnnamedConstants: boolean;
+
+  procedure CheckSubStatement(CanBeEqual: boolean);
+  var
+    StatementStartPos: Integer;
+    LastIndent: LongInt;
+    Indent: LongInt;
+    NeedUndo: Boolean;
+    LastPos: LongInt;
+  begin
+    //DebugLn(['CheckSubStatement START=',Tool.GetAtom,' ',CheckWrongIndentation,' ',ObserverState.StatementStartPos,' ',dbgstr(copy(Tool.Src,ObserverState.StatementStartPos,15))]);
+    if not CheckWrongIndentation then exit;
+    StatementStartPos:=ObserverState.StatementStartPos;
+    if StatementStartPos<1 then exit;
+    LastPos:=Tool.CurPos.StartPos;
+    Tool.ReadNextAtom;
+    if PositionsInSameLine(Tool.Src,LastPos,Tool.CurPos.StartPos) then exit;
+    NeedUndo:=true;
+    //DebugLn(['CheckSubStatement NEXT=',Tool.GetAtom,' NotSameLine=',not PositionsInSameLine(Tool.Src,StatementStartPos,Tool.CurPos.StartPos),' ',dbgstr(copy(Tool.Src,Tool.CurPos.StartPos,15))]);
+    if (Tool.CurPos.Flag<>cafNone)
+    and (not PositionsInSameLine(Tool.Src,StatementStartPos,Tool.CurPos.StartPos))
+    then begin
+      LastIndent:=GetLineIndent(Tool.Src,StatementStartPos);
+      Indent:=GetLineIndent(Tool.Src,Tool.CurPos.StartPos);
+      //DebugLn(['CheckSubStatement OTHER LINE ',Tool.GetAtom,' ',LastIndent,' ',Indent]);
+      if (Indent<LastIndent)
+      or ((Indent=LastIndent) and (not CanBeEqual) and (not Tool.UpAtomIs('BEGIN')))
+      then begin
+        //DebugLn(['CheckSubStatement START=',CheckWrongIndentation,' ',ObserverState.StatementStartPos,' ',dbgstr(copy(Tool.Src,ObserverState.StatementStartPos,15))]);
+        //DebugLn(['CheckSubStatement NEXT=',Tool.GetAtom,' NotSameLine=',not PositionsInSameLine(Tool.Src,StatementStartPos,Tool.CurPos.StartPos),' ',dbgstr(copy(Tool.Src,Tool.CurPos.StartPos,15))]);
+        //DebugLn(['CheckSubStatement OTHER LINE LastIndent=',LastIndent,' Indent=',Indent]);
+        // add wrong indentation
+        ObsTVNode:=CreateObserverNode(Tool,cefcWrongIndentation);
+        if ObsTVNode.Count>=CodeObserverMaxNodes then
+        begin
+          fObserverCatOverflow[cefcWrongIndentation]:=true;
+        end else begin
+          Data:=TViewNodeData.Create(CodeNode);
+          Data.Desc:=ctnConstant;
+          Data.SubDesc:=ctnsNone;
+          Data.StartPos:=Tool.CurPos.StartPos;
+          Data.EndPos:=Tool.CurPos.EndPos;
+          NodeText:=Tool.GetAtom;
+          // add some context information
+          Tool.UndoReadNextAtom;
+          NeedUndo:=false;
+          ProcNode:=CodeNode;
+          while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+            ProcNode:=ProcNode.Parent;
+          if ProcNode<>nil then begin
+            OldPos:=Tool.CurPos.EndPos;
+            NodeText:=Format(lisCEIn, [NodeText, Tool.ExtractProcName(ProcNode, [
+              phpWithoutClassName])]);
+            Tool.MoveCursorToCleanPos(OldPos);
+          end;
+          NodeImageIndCex:=ImgIDConst;
+          TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
+          TVNode.Data:=Data;
+          TVNode.Text:=NodeText;
+          TVNode.ImageIndex:=NodeImageIndCex;
+          TVNode.SelectedIndex:=NodeImageIndCex;
+        end;
+      end;
+    end;
+    if NeedUndo then
+      Tool.UndoReadNextAtom;
+  end;
+
 begin
   if (StartPos<1) or (StartPos>=EndPos) then exit;
+  CheckWrongIndentation:=cefcWrongIndentation in CodeExplorerOptions.ObserverCategories;
+  FindUnnamedConstants:=cefcUnnamedConsts in CodeExplorerOptions.ObserverCategories;
+  if (not FindUnnamedConstants) and (not CheckWrongIndentation) then exit;
   Tool.MoveCursorToCleanPos(StartPos);
   Last1Atom:=cafNone;
   Last2Atom:=cafNone;
-  ObserverState.PopAll;
+  ObserverState.Reset;
   while Tool.CurPos.StartPos<EndPos do begin
     CurAtom:=cafNone;
+    if ObserverState.StatementStartPos<1 then
+    begin
+      // start of statement
+      ObserverState.StatementStartPos:=Tool.CurPos.StartPos;
+    end;
+
     c1:=Tool.Src[Tool.CurPos.StartPos];
     case c1 of
+    ';':
+      begin
+        // end of statement
+        ObserverState.StatementStartPos:=0;
+      end;
+
     '''','#','0'..'9','$','%':
       begin
         // a constant
         if (ObserverState.IgnoreConstLevel>=0)
         and (ObserverState.IgnoreConstLevel>=ObserverState.StackPtr)
-          // ignore range
         then begin
+          // ignore range
         end else if Tool.AtomIsEmptyStringConstant then begin
           // ignore empty string constant ''
         end else if Tool.AtomIsCharConstant
@@ -1193,6 +1289,9 @@ begin
         end;
       end;
 
+    ':':
+      ObserverState.StatementStartPos:=-1;
+
     '_','a'..'z','A'..'Z':
       begin
         CurAtom:=cafWord;
@@ -1205,6 +1304,7 @@ begin
             then
               break;
           end;
+          ObserverState.StatementStartPos:=-1;
         end
         else if Tool.UpAtomIs('BEGIN') then
           ObserverState.Push(cositBegin,Tool.CurPos.StartPos)
@@ -1220,11 +1320,31 @@ begin
             if Typ=cositTry then
               break;
           end;
+          ObserverState.StatementStartPos:=-1;
+          if Tool.UpAtomIs('FINALLY') then
+            ObserverState.Push(cositFinally,Tool.CurPos.StartPos)
+          else
+            ObserverState.Push(cositExcept,Tool.CurPos.StartPos);
         end
         else if Tool.UpAtomIs('CASE') then
-          ObserverState.Push(cositCase,Tool.CurPos.StartPos)
-        else if Tool.UpAtomIs('ELSE') and (ObserverState.TopType=cositCase) then
-          ObserverState.Pop;
+        begin
+          ObserverState.Push(cositCase,Tool.CurPos.StartPos);
+          ObserverState.StatementStartPos:=Tool.CurPos.StartPos;
+        end
+        else if Tool.UpAtomIs('ELSE') then
+        begin
+          if ObserverState.TopType=cositCase then
+          begin
+            ObserverState.Pop;
+            ObserverState.Push(cositCaseElse,Tool.CurPos.StartPos);
+          end;
+          ObserverState.StatementStartPos:=-1;
+          CheckSubStatement(false);
+        end
+        else if Tool.UpAtomIs('DO') or Tool.UpAtomIs('THEN') then
+          CheckSubStatement(false)
+        else if Tool.UpAtomIs('OF') then
+          CheckSubStatement(true);
       end;
     end;
     // read next atom
@@ -1893,9 +2013,21 @@ end;
 
 { TCodeObserverStatementState }
 
-constructor TCodeObserverStatementState.Create;
+function TCodeObserverStatementState.GetStatementStartPos: integer;
 begin
+  if StackPtr=0 then
+    Result:=TopLvlStatementStartPos
+  else
+    Result:=Stack[StackPtr-1].StatementStartPos;
+end;
 
+procedure TCodeObserverStatementState.SetStatementStartPos(const AValue: integer
+  );
+begin
+  if StackPtr=0 then
+    TopLvlStatementStartPos:=AValue
+  else
+    Stack[StackPtr-1].StatementStartPos:=AValue;
 end;
 
 destructor TCodeObserverStatementState.Destroy;
@@ -1911,6 +2043,13 @@ begin
   StackPtr:=0;
 end;
 
+procedure TCodeObserverStatementState.Reset;
+begin
+  PopAll;
+  TopLvlStatementStartPos:=0;
+  IgnoreConstLevel:=-1;
+end;
+
 procedure TCodeObserverStatementState.Push(Typ: TCodeObsStackItemType;
   StartPos: integer);
 begin
@@ -1921,6 +2060,7 @@ begin
   end;
   Stack[StackPtr].Typ:=Typ;
   Stack[StackPtr].StartPos:=StartPos;
+  Stack[StackPtr].StatementStartPos:=0;
   inc(StackPtr);
 end;
 

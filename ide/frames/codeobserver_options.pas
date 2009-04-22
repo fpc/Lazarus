@@ -67,7 +67,7 @@ const
     [cefcLongProcs, cefcLongParamLists, cefcNestedProcs],
     [cefcEmptyProcs, cefcEmptyBlocks, cefcEmptyClassSections],
     [cefcUnnamedConsts, cefcUnsortedClassVisibility, cefcUnsortedClassMembers],
-    [cefcPublishedPropWithoutDefault, cefcToDos]);
+    [cefcPublishedPropWithoutDefault, cefcWrongIndentation, cefcToDos]);
 
 function GroupName(AGroup: TCEObserverCategoryGroup): String;
 begin

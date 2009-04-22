@@ -73,6 +73,7 @@ type
     cefcNestedProcs, // procs with a lot of nested sub procs
     cefcUnnamedConsts, // numbers, strings in statements
     cefcEmptyBlocks,   // empty begin..end block (not even a comment)
+    cefcWrongIndentation, // possible missing lines or begin blocks
     cefcPublishedPropWithoutDefault, // published properties without default specifier
     cefcUnsortedClassVisibility, // public,private,protected,published keywords are not sorted
     cefcEmptyClassSections, // empty public,private,protected,published section
@@ -93,6 +94,7 @@ const
     cefcEmptyProcs,
     cefcUnnamedConsts,
     cefcEmptyBlocks,
+    cefcWrongIndentation,
     cefcPublishedPropWithoutDefault,
     cefcToDos
     ];
@@ -217,6 +219,7 @@ const
     'NestedProcs',
     'UnnamedConsts',
     'EmptyBlocks',
+    'WrongIndentation',
     'PublishedPropWithoutDefault',
     'UnsortedClassVisibility',
     'EmptyClassSections',
@@ -289,6 +292,7 @@ begin
   cefcNestedProcs: Result:=lisCEManyNestedProcedures;
   cefcUnnamedConsts: Result:=lisCEUnnamedConstants;
   cefcEmptyBlocks: Result:=lisCEEmptyBlocks;
+  cefcWrongIndentation: Result:=lisCEWrongIndentation;
   cefcPublishedPropWithoutDefault: Result:=lisCEPublishedPropertyWithoutDefault;
   cefcUnsortedClassVisibility: Result:=lisCEUnsortedVisibility;
   cefcEmptyClassSections: Result:=lisCEEmptyClassSections;
