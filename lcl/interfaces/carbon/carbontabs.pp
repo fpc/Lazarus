@@ -251,6 +251,50 @@ const
   ArrowSize = 16;
 
 {------------------------------------------------------------------------------
+  Name: CarbonTabsPrevArrow_Reverse
+  Reverses carbon arrow CGContext, so the right pointing arrow reversed to left
+  It's required in Leopard only, there left arrow is suppressed by Apple.
+ ------------------------------------------------------------------------------}
+function CarbonTabsPrevArrow_Reverse(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Context : CGContextRef;
+  layer   : CGLayerRef;
+  lCtx    : CGContextRef;
+  sz      : CGSize;
+  pnt     : CGPoint;
+  w       : LongWord;
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonTabsPrevArrow_Reverse: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil, sizeof(Context), nil, @Context );
+  if Result <> 0 then begin
+    CallNextEventHandler(ANextHandler, AEvent);
+    Exit;
+  end;
+
+  sz.height := ArrowSize; sz.width := ArrowSize;
+  layer := CGLayerCreateWithContext(Context, sz, nil);
+  try
+    lCtx := CGLayerGetContext(layer);
+    SetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, sizeof(lCtx), @lCtx);
+
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+
+    w := ArrowSize;
+    pnt.x := w-0-ArrowSize; pnt.y := 1;
+    CGContextTranslateCTM(Context, w, 0);
+    CGContextScaleCTM(Context, -1, 1);
+    CGContextDrawLayerAtPoint(Context, pnt, layer);
+  finally
+    CGLayerRelease(layer);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.GetPrevArrowBounds
   Returns: Bounds of prev arrow
  ------------------------------------------------------------------------------}
@@ -302,6 +346,8 @@ var
   TabEntry: ControlTabEntry;
   R: TRect;
   TmpSpec: EventTypeSpec;
+  Err: OSStatus;
+  Ver: SInt32;
 begin
   case (LCLObject as TCustomNotebook).TabPosition of
   tpTop: Direction := kControlTabDirectionNorth;
@@ -357,7 +403,15 @@ begin
   InstallControlEventHandler(FNextArrow,
     RegisterEventHandler(@CarbonTabsNextArrow_Track),
     1, @TmpSpec, Pointer(Self), nil);
-  
+
+  Err:=Gestalt(gestaltSystemVersion, Ver);
+  if (Err <> 0) or (Ver >= $1040) then begin
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+    InstallControlEventHandler(FPrevArrow,
+      RegisterEventHandler(@CarbonTabsPrevArrow_Reverse),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
+
   FFirstIndex := 0;
   FLastIndex := 0;
   FTabIndex := -1;
