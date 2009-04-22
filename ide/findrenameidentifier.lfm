@@ -15,18 +15,18 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   LCLVersion = '0.9.27'
   object CurrentGroupBox: TGroupBox
     Left = 6
-    Height = 102
+    Height = 117
     Top = 6
     Width = 440
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'CurrentGroupBox'
-    ClientHeight = 83
+    ClientHeight = 98
     ClientWidth = 436
     TabOrder = 0
     object CurrentListBox: TListBox
       Left = 6
-      Height = 71
+      Height = 86
       Top = 6
       Width = 424
       Align = alClient
@@ -39,14 +39,14 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object NewGroupBox: TGroupBox
     Left = 6
-    Height = 82
-    Top = 114
+    Height = 67
+    Top = 129
     Width = 440
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 63
+    ClientHeight = 48
     ClientWidth = 436
     TabOrder = 1
     object NewEdit: TEdit

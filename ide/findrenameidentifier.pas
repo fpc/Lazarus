@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
   // codetools
-  Laz_Dom, AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
+  Laz_Dom, AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   InputHistory, SearchResultView, CodeHelp, ButtonPanel;
@@ -64,7 +64,9 @@ type
     FAllowRename: boolean;
     FIdentifierFilename: string;
     FIdentifierPosition: TPoint;
+    FIsPrivate: boolean;
     procedure SetAllowRename(const AValue: boolean);
+    procedure SetIsPrivate(const AValue: boolean);
     procedure UpdateRename;
   public
     procedure LoadFromConfig;
@@ -76,6 +78,7 @@ type
     property IdentifierFilename: string read FIdentifierFilename;
     property IdentifierPosition: TPoint read FIdentifierPosition;
     property AllowRename: boolean read FAllowRename write SetAllowRename;
+    property IsPrivate: boolean read FIsPrivate write SetIsPrivate;
   end;
 
 procedure CleanUpFileList(Files: TStringList);
@@ -545,6 +548,15 @@ begin
   UpdateRename;
 end;
 
+procedure TFindRenameIdentifierDialog.SetIsPrivate(const AValue: boolean);
+begin
+  if FIsPrivate=AValue then exit;
+  FIsPrivate:=AValue;
+  ExtraFilesGroupBox.Enabled:=not IsPrivate;
+  ScopeRadioGroup.Enabled:=not IsPrivate;
+  ScopeRadioGroup.ItemIndex:=0;
+end;
+
 procedure TFindRenameIdentifierDialog.FindOrRenameButtonClick(Sender: TObject);
 var
   NewIdentifier: String;
@@ -597,15 +609,17 @@ procedure TFindRenameIdentifierDialog.SaveToOptions(
   Options: TFindRenameIdentifierOptions);
 begin
   Options.Rename:=RenameCheckBox.Checked;
-  SplitString(ExtraFilesEdit.Text,';',Options.ExtraFiles,true);
+  if ExtraFilesGroupBox.Enabled then
+    SplitString(ExtraFilesEdit.Text,';',Options.ExtraFiles,true);
   Options.RenameTo:=NewEdit.Text;
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
-  case ScopeRadioGroup.ItemIndex of
-  0: Options.Scope:=frCurrentUnit;
-  1: Options.Scope:=frProject;
-  2: Options.Scope:=frOwnerProjectPackage;
-  else Options.Scope:=frAllOpenProjectsAndPackages;
-  end;
+  if ScopeRadioGroup.Enabled then
+    case ScopeRadioGroup.ItemIndex of
+    0: Options.Scope:=frCurrentUnit;
+    1: Options.Scope:=frProject;
+    2: Options.Scope:=frOwnerProjectPackage;
+    else Options.Scope:=frAllOpenProjectsAndPackages;
+    end;
 end;
 
 procedure TFindRenameIdentifierDialog.SetIdentifier(
@@ -617,6 +631,10 @@ var
   i: Integer;
   CurCode: TCodeBuffer;
   NewIdentifier: String;
+  Tool: TCodeTool;
+  CodeXY: TCodeXYPosition;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
 begin
   FIdentifierFilename:=NewIdentifierFilename;
   FIdentifierPosition:=NewIdentifierPosition;
@@ -641,6 +659,17 @@ begin
     begin
       CurrentGroupBox.Caption:=Format(lisFRIIdentifier, [NewIdentifier]);
       NewEdit.Text:=NewIdentifier;
+    end;
+    // check if in implementation or private section
+    if CodeToolBoss.Explore(ACodeBuffer,Tool,false) then begin
+      CodeXY:=CodeXYPosition(NewIdentifierPosition.X,NewIdentifierPosition.Y,ACodeBuffer);
+      if Tool.CaretToCleanPos(CodeXY,CleanPos)=0 then begin
+        Node:=Tool.BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,false);
+        if (Node=nil)
+        or Node.HasParentOfType(ctnImplementation)
+        or Node.HasParentOfType(ctnClassPrivate) then
+          IsPrivate:=true;
+      end;
     end;
   end;
 end;
