@@ -25,7 +25,7 @@ unit codeobserver_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms,
+  Classes, Graphics, SysUtils, FileUtil, LResources, Forms,
   IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls, Spin, StdCtrls;
 
 type
@@ -47,6 +47,11 @@ type
     LongParamListCountSpinEdit: TSpinEdit;
     NestedProcCountSpinEdit: TSpinEdit;
     CodeObsLeftPanel: TPanel;
+    procedure CodeObsCategoriesCheckGroupItemClick(Sender: TObject;
+      Index: integer);
+  private
+    FCategoryCheckBoxes: array [TCEObserverCategory] of TCheckBox;
+    FGroupCheckBoxes: array [TCEObserverCategoryGroup] of TCheckBox;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -57,7 +62,60 @@ type
 
 implementation
 
+const
+  GroupCategories: array [TCEObserverCategoryGroup] of TCEObserverCategories = (
+    [cefcLongProcs, cefcLongParamLists, cefcNestedProcs],
+    [cefcEmptyProcs, cefcEmptyBlocks, cefcEmptyClassSections],
+    [cefcUnnamedConsts, cefcUnsortedClassVisibility, cefcUnsortedClassMembers],
+    [cefcPublishedPropWithoutDefault, cefcToDos]);
+
+function GroupName(AGroup: TCEObserverCategoryGroup): String;
+begin
+  case AGroup of
+    ocgComplexity: Result := lisCEComplexityGroup;
+    ocgEmpty: Result := lisCEEmptyGroup;
+    ocgStyle: Result := lisCEStyleGroup;
+    ocgOther: Result := lisCEOtherGroup;
+    else Result := '?';
+  end;
+end;
+
 { TCodeObserverOptionsFrame }
+
+procedure TCodeObserverOptionsFrame.CodeObsCategoriesCheckGroupItemClick(
+  Sender: TObject; Index: integer);
+var
+  c: TCEObserverCategory;
+  g: TCEObserverCategoryGroup;
+  hasState: array [Boolean] of Boolean;
+begin
+  CodeObsCategoriesCheckGroup.OnItemClick := nil;
+  try
+    for g := Low(g) to High(g) do begin
+      hasState[true] := false;
+      hasState[false] := false;
+      for c := Low(c) to High(c) do
+        if c in GroupCategories[g] then
+          hasState[FCategoryCheckBoxes[c].Checked] := true;
+      if (Sender <> nil)
+      and (FGroupCheckBoxes[g] = CodeObsCategoriesCheckGroup.Components[Index])
+      then begin
+        // Check/uncheck all categories in group
+        for c := Low(c) to High(c) do
+          if c in GroupCategories[g] then
+            FCategoryCheckBoxes[c].Checked := hasState[false];
+        FGroupCheckBoxes[g].Checked := hasState[false]
+      end
+      else if hasState[true] and hasState[false] then
+        FGroupCheckBoxes[g].State := cbGrayed
+      else
+        FGroupCheckBoxes[g].Checked := not hasState[false];
+    end;
+  finally
+    CodeObsCategoriesCheckGroup.OnItemClick :=
+      @CodeObsCategoriesCheckGroupItemClick;
+  end;
+end;
 
 function TCodeObserverOptionsFrame.GetTitle: String;
 begin
@@ -68,10 +126,28 @@ procedure TCodeObserverOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 var
   c: TCEObserverCategory;
+  g: TCEObserverCategoryGroup;
+
+  function AddCheckBox(ACaption: String): TCheckBox;
+  begin
+    with CodeObsCategoriesCheckGroup do
+      Result := TCheckBox(Components[Items.Add(ACaption)]);
+  end;
+
 begin
   CodeObsCategoriesCheckGroup.Caption := lisCEShowCodeObserver;
-  for c := Low(TCEObserverCategory) to High(TCEObserverCategory) do
-    CodeObsCategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
+  for g := Low(g) to High(g) do begin
+    FGroupCheckBoxes[g] := AddCheckBox(GroupName(g) + ':');
+    with FGroupCheckBoxes[g] do begin
+      AllowGrayed := true;
+      State := cbGrayed;
+      Font.Style := [fsItalic];
+    end;
+    for c := Low(c) to High(c) do
+      if c in GroupCategories[g] then
+        FCategoryCheckBoxes[c] :=
+          AddCheckBox('   ' + CodeExplorerLocalizedString(c));
+  end;
 
   LongProcLineCountLabel.Caption := lisCELongProcLineCount;
   LongParamListCountLabel.Caption := lisCELongParamListCount;
@@ -89,8 +165,9 @@ var
 begin
   with TCodeExplorerOptions(AOptions) do
   begin
-    for c := Low(TCEObserverCategory) to High(TCEObserverCategory) do
-      CodeObsCategoriesCheckGroup.Checked[ord(c)] := c in ObserverCategories;
+    for c := Low(c) to High(c) do
+      FCategoryCheckBoxes[c].Checked := c in ObserverCategories;
+    CodeObsCategoriesCheckGroupItemClick(nil, -1);
 
     LongProcLineCountSpinEdit.Value := LongProcLineCount;
     LongParamListCountSpinEdit.Value := LongParamListCount;
@@ -112,8 +189,8 @@ var
   c: TCEObserverCategory;
 begin
   NewCategories := [];
-  for c := Low(TCEObserverCategory) to high(TCEObserverCategory) do
-    if CodeObsCategoriesCheckGroup.Checked[ord(c)] then
+  for c := Low(c) to high(c) do
+    if FCategoryCheckBoxes[c].Checked then
       Include(NewCategories, c);
   with TCodeExplorerOptions(AOptions) do
   begin

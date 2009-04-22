@@ -81,6 +81,8 @@ type
     );
   TCEObserverCategories = set of TCEObserverCategory;
 
+  TCEObserverCategoryGroup = (ocgComplexity, ocgEmpty, ocgStyle, ocgOther);
+
 const
   FirstCodeExplorerCategory = cecUses;
   DefaultCodeExplorerCategories = [cecUses,

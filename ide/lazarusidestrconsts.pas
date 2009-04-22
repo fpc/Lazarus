@@ -4148,7 +4148,7 @@ resourcestring
   lisUnusedUnits = 'Unused units';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
-  lisCEShowCodeObserver = 'Show Code Observer';
+  lisCEShowCodeObserver = 'Show observerations about';
   lisCELongProcedures = 'Long procedures';
   lisCEManyParameters = 'Many parameters';
   lisCEUnnamedConstants = 'Unnamed constants';
@@ -4166,6 +4166,10 @@ resourcestring
   lisCodeObsIgnoreeConstants = 'Ignore next unnamed constants';
   lisCodeObIgnoreConstInFuncs = 'Ignore constants in next functions';
   lisCEEmptyBlocks = 'Empty blocks';
+  lisCEComplexityGroup = 'Complexity';
+  lisCEEmptyGroup = 'Empty constructs';
+  lisCEStyleGroup = 'Style';
+  lisCEOtherGroup = 'Other';
 
 implementation
 
