@@ -689,6 +689,7 @@ msgstr "Template kode"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Warna"
 
@@ -790,6 +791,7 @@ msgid "Backup"
 msgstr "Backup"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Warna"
 
@@ -3067,24 +3069,28 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
+msgstr ""
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
 msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3094,14 +3100,6 @@ msgstr "(Filter)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Mengikuti kursor"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3184,6 +3182,11 @@ msgstr "Saat menganggur"
 msgid "Refresh automatically"
 msgstr "Segarkan secara otomatis"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Lainnya"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Mutahirkan"
@@ -3205,8 +3208,13 @@ msgstr ""
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
+msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts.liscetodos
@@ -3610,6 +3618,25 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5835,6 +5862,7 @@ msgid "Save to recent"
 msgstr "Simpan ke terbaru"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "OK"
 
@@ -7132,7 +7160,9 @@ msgid "Close"
 msgstr "Tutup"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Tutup semua file editor"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7532,7 +7562,9 @@ msgid "Online Help"
 msgstr "Panduan Online"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Buka ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7556,7 +7588,9 @@ msgid "Open Project ..."
 msgstr "Buka Proyek ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Buka yang Terakhir ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7623,7 +7657,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Keluar"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7685,8 +7721,10 @@ msgid "Run to cursor"
 msgstr "Jalanjan sampai kursor"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Simpan"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7694,7 +7732,9 @@ msgid "Save All"
 msgstr "Simpan Semua"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Simpan Sebagai ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10646,6 +10686,7 @@ msgid "String"
 msgstr ""
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr ""
 

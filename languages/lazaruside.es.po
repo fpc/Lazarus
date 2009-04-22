@@ -689,6 +689,7 @@ msgstr "Plantillas de Código"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Color"
 
@@ -790,6 +791,7 @@ msgid "Backup"
 msgstr "Copia de seguridad"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Colores"
 
@@ -3067,24 +3069,28 @@ msgstr "delimitador de ruta incorrecto"
 msgid "Categories"
 msgstr "Categorías"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "Constantes"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3094,14 +3100,6 @@ msgstr "(Filtro)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Seguir al cursor"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3184,6 +3182,11 @@ msgstr "Cuando esté parado"
 msgid "Refresh automatically"
 msgstr "Refrescar automáticamente"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Otro"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Actualizar"
@@ -3205,8 +3208,13 @@ msgstr "Propiedades"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
+msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts.liscetodos
@@ -3610,6 +3618,25 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5835,6 +5862,7 @@ msgid "Save to recent"
 msgstr "Guardar en reciente"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "Aceptar"
 
@@ -7132,7 +7160,9 @@ msgid "Close"
 msgstr "Cerrar"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Cerrar todos los archivos del editor"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7532,7 +7562,9 @@ msgid "Online Help"
 msgstr "Ayuda en línea"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Abrir ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7556,7 +7588,9 @@ msgid "Open Project ..."
 msgstr "Abrir Proyecto ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Abrir Reciente ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7623,7 +7657,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Salir"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7685,8 +7721,10 @@ msgid "Run to cursor"
 msgstr "Ejecutar desde cursor"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Guardar"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7694,7 +7732,9 @@ msgid "Save All"
 msgstr "Guardar todo"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Guardar Como ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10646,6 +10686,7 @@ msgid "String"
 msgstr ""
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr ""
 

@@ -1065,7 +1065,7 @@ msgstr ""
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: objinspstrconsts.sccslvedtgrplcaption
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"

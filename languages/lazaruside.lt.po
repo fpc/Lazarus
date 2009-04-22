@@ -694,6 +694,7 @@ msgstr "Kodo šablonai"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Spalva"
 
@@ -795,6 +796,7 @@ msgid "Backup"
 msgstr "Atsarginė kopija"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Spalvos"
 
@@ -3088,24 +3090,28 @@ msgstr "klaidingas kelio skirtukas"
 msgid "Categories"
 msgstr "Kategorijos"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "Konstantos"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3115,14 +3121,6 @@ msgstr "(Filtras)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Sekti žymeklį"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3205,6 +3203,11 @@ msgstr "Neveikos metu"
 msgid "Refresh automatically"
 msgstr "Atnaujinti automatiškai"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Kiti"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Atnaujinimas"
@@ -3226,9 +3229,14 @@ msgstr "Savybės"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
 msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
+msgstr "Stilius"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -3631,6 +3639,25 @@ msgstr "Rodyti tuščius metodus"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5856,6 +5883,7 @@ msgid "Save to recent"
 msgstr "Įrašyti paskutinįsyk naudotame"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "Tinka"
 
@@ -7157,7 +7185,9 @@ msgid "Close"
 msgstr "Užverti"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Užverti visus rengyklės failus"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7557,7 +7587,9 @@ msgid "Online Help"
 msgstr "Internetinis žinynas"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Atverti…"
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7581,7 +7613,9 @@ msgid "Open Project ..."
 msgstr "Atverti projektą…"
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Atverti paskutinį naudotą…"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7648,7 +7682,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Baigti darbą"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7710,8 +7746,10 @@ msgid "Run to cursor"
 msgstr "Startuoti iki žymeklio"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Įrašyti"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7719,7 +7757,9 @@ msgid "Save All"
 msgstr "Įrašyti visus"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Įrašyti taip…"
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10675,6 +10715,7 @@ msgid "String"
 msgstr "Tekstas"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Stilius"
 

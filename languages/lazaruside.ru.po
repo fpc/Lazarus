@@ -3063,24 +3063,28 @@ msgstr "неверный разделитель пути"
 msgid "Categories"
 msgstr "Категории"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "Константы"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3090,14 +3094,6 @@ msgstr "(Фильтр)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Следовать за курсором"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3180,6 +3176,11 @@ msgstr "При простое"
 msgid "Refresh automatically"
 msgstr "Обновлять автоматически"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Другое"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Обновить"
@@ -3201,9 +3202,14 @@ msgstr "Свойства"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
 msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
+msgstr "Стиль"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -3606,6 +3612,25 @@ msgstr "Показать пустые методы"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5831,6 +5856,7 @@ msgid "Save to recent"
 msgstr "Сохранить в недавних"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "ОК"
 
@@ -7128,7 +7154,9 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Закрыть все файлы редактора"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7528,7 +7556,9 @@ msgid "Online Help"
 msgstr "Оперативная справка"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Открыть ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7552,7 +7582,9 @@ msgid "Open Project ..."
 msgstr "Открыть проект ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Открыть недавнее"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7619,7 +7651,9 @@ msgid "Quick syntax check OK"
 msgstr "Быстрая проверка синтаксиса прошла успешно."
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Выход"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7681,8 +7715,10 @@ msgid "Run to cursor"
 msgstr "Запуск до курсора"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Сохранить"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7690,7 +7726,9 @@ msgid "Save All"
 msgstr "Сохранить все"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Сохранить как ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10642,6 +10680,7 @@ msgid "String"
 msgstr "Строка"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Стиль"
 

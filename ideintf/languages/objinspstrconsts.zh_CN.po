@@ -1060,7 +1060,7 @@ msgstr "ListView 标签编辑器"
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: objinspstrconsts.sccslvedtgrplcaption
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"

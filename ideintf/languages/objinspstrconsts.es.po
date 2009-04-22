@@ -1062,7 +1062,7 @@ msgstr "Editor de elementos de ListView"
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Suprimir"
 
 #: objinspstrconsts.sccslvedtgrplcaption
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"

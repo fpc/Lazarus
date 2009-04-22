@@ -692,6 +692,7 @@ msgstr "代码模板"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "颜色"
 
@@ -793,6 +794,7 @@ msgid "Backup"
 msgstr "备份"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "颜色"
 
@@ -3070,24 +3072,28 @@ msgstr "错误的路径分隔符"
 msgid "Categories"
 msgstr "种类"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "常量"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3097,14 +3103,6 @@ msgstr "(过滤)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "跟随光标"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3187,6 +3185,11 @@ msgstr "空闲状态"
 msgid "Refresh automatically"
 msgstr "自动刷新"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "其余的"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "更新"
@@ -3208,9 +3211,14 @@ msgstr "属性"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
 msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
+msgstr "样式"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -3613,6 +3621,25 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5838,6 +5865,7 @@ msgid "Save to recent"
 msgstr "保存到最近的文件"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "确定"
 
@@ -7135,7 +7163,9 @@ msgid "Close"
 msgstr "关闭"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "关闭所有编辑器中的文件"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7535,7 +7565,9 @@ msgid "Online Help"
 msgstr "在线帮助"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "打开 ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7559,7 +7591,9 @@ msgid "Open Project ..."
 msgstr "打开工程 ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "打开最近的文件 ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7626,7 +7660,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "退出"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7688,8 +7724,10 @@ msgid "Run to cursor"
 msgstr "运行到光标处"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "保存"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7697,7 +7735,9 @@ msgid "Save All"
 msgstr "全选"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "另存为 ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10649,6 +10689,7 @@ msgid "String"
 msgstr "String"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "样式"
 

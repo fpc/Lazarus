@@ -150,17 +150,17 @@ resourcestring
   lisMenuNewUnit = 'New Unit';
   lisMenuNewForm = 'New Form';
   lisMenuNewOther = 'New ...';
-  lisMenuOpen = 'Open ...';
+  lisMenuOpen = '&Open ...';
   lisMenuRevert = 'Revert';
   lisPkgEditPublishPackage = 'Publish Package';
-  lisMenuOpenRecent = 'Open Recent ...';
-  lisMenuSave = 'Save';
+  lisMenuOpenRecent = 'Open &Recent ...';
+  lisMenuSave = '&Save';
   lisKMSaveAs = 'SaveAs';
   lisKMSaveAll = 'SaveAll';
   lisDiscardChanges = 'Discard changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
-  lisMenuSaveAs = 'Save As ...';
+  lisMenuSaveAs = 'Save &As ...';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
   lisConvert = 'Convert';
@@ -170,9 +170,9 @@ resourcestring
   lisPLDGlobal = 'Global';
   lisKMCloseAll = 'Close All';
   lisCTDefDefineTemplates = 'Define templates';
-  lisMenuCloseAll = 'Close all editor files';
+  lisMenuCloseAll = 'Close a&ll editor files';
   lisMenuCleanDirectory = 'Clean directory ...';
-  lisMenuQuit = 'Quit';
+  lisMenuQuit = '&Quit';
   lisMenuRestart = 'Restart';
 
   lisMenuUndo = 'Undo';

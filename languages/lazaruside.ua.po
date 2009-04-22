@@ -684,6 +684,7 @@ msgstr "Кодові шаблони"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Колір"
 
@@ -785,6 +786,7 @@ msgid "Backup"
 msgstr "Резервування"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Кольори"
 
@@ -3062,24 +3064,28 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
+msgstr ""
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
 msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3089,14 +3095,6 @@ msgstr "(Фільтр)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Слідувати за курсором"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3179,6 +3177,11 @@ msgstr "В паузах"
 msgid "Refresh automatically"
 msgstr "Оновлювати автоматично"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Інше"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Поновити"
@@ -3200,8 +3203,13 @@ msgstr ""
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
+msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts.liscetodos
@@ -3605,6 +3613,25 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5830,6 +5857,7 @@ msgid "Save to recent"
 msgstr "Зберегти в нещодавні"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "Гаразд"
 
@@ -7127,7 +7155,9 @@ msgid "Close"
 msgstr "Закрити"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Закрити всі файли редактора"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7527,7 +7557,9 @@ msgid "Online Help"
 msgstr "Мережева довідка"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Відкрити ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7551,7 +7583,9 @@ msgid "Open Project ..."
 msgstr "Відкрити проект ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Відкрити нещодавні ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7618,7 +7652,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Вихід"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7680,8 +7716,10 @@ msgid "Run to cursor"
 msgstr "Виконати до курсора"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Зберегти"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7689,7 +7727,9 @@ msgid "Save All"
 msgstr "Зберегти всі"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Зберегти як ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10641,6 +10681,7 @@ msgid "String"
 msgstr ""
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr ""
 

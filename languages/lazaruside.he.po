@@ -690,6 +690,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "צבע"
 
@@ -791,6 +792,7 @@ msgid "Backup"
 msgstr ""
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "צבעים"
 
@@ -3064,24 +3066,28 @@ msgstr "מפריד הנתיב שגוי"
 msgid "Categories"
 msgstr "קטגוריות"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "קבועים"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3090,14 +3096,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscein
@@ -3181,6 +3179,11 @@ msgstr "בהמתנה"
 msgid "Refresh automatically"
 msgstr "ריענון אוטומטי"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr ""
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr ""
@@ -3202,8 +3205,13 @@ msgstr "תכונות"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
+msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts.liscetodos
@@ -3607,6 +3615,25 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5832,6 +5859,7 @@ msgid "Save to recent"
 msgstr ""
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "אשר"
 
@@ -7129,7 +7157,9 @@ msgid "Close"
 msgstr "סגור"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "סגור את כל הקבצים בעורך"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7529,7 +7559,9 @@ msgid "Online Help"
 msgstr "עזרה מקוונת"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "פתח ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7553,7 +7585,9 @@ msgid "Open Project ..."
 msgstr "פתח פרויקט ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "פתח אחרונים ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7620,7 +7654,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "יציאה"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7682,8 +7718,10 @@ msgid "Run to cursor"
 msgstr "רוץ עד לסמן"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "שמור"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7691,7 +7729,9 @@ msgid "Save All"
 msgstr "שמור הכל"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "שמור כ ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10643,6 +10683,7 @@ msgid "String"
 msgstr "מחרוזת"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr ""
 

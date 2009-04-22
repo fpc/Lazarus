@@ -688,6 +688,7 @@ msgstr "コードテンプレート"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "色"
 
@@ -789,6 +790,7 @@ msgid "Backup"
 msgstr "バックアップ"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "色"
 
@@ -3066,24 +3068,28 @@ msgstr "間違ったパス区切り文字"
 msgid "Categories"
 msgstr "カテゴリ"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "定数"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3093,14 +3099,6 @@ msgstr "(フィルター)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "カーソルを追跡"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3183,6 +3181,11 @@ msgstr "アイドル時"
 msgid "Refresh automatically"
 msgstr "自動的にリフレッシュ"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "その他"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "アップデート"
@@ -3204,9 +3207,14 @@ msgstr "プロパティ"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
 msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
+msgstr "スタイル"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -3609,6 +3617,25 @@ msgstr "空のメソッドを表示"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5834,6 +5861,7 @@ msgid "Save to recent"
 msgstr "最近扱ったファイルに保存"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr ""
 
@@ -7131,7 +7159,9 @@ msgid "Close"
 msgstr "閉じる"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "全ファイルを閉じる"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7531,7 +7561,9 @@ msgid "Online Help"
 msgstr "オンラインヘルプ"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "開く ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7555,7 +7587,9 @@ msgid "Open Project ..."
 msgstr "プロジェクトを開く ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "最近扱ったファイルを開く ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7622,7 +7656,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "終了"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7684,8 +7720,10 @@ msgid "Run to cursor"
 msgstr "カーソル位置まで実行"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "保存"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7693,7 +7731,9 @@ msgid "Save All"
 msgstr "すべて保存"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "名前を付けて保存 ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10643,6 +10683,7 @@ msgid "String"
 msgstr "文字列"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "スタイル"
 

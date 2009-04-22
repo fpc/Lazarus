@@ -694,6 +694,7 @@ msgstr "Šablóny kódu"
 #: lazarusidestrconsts.dlgedcolor
 #, fuzzy
 #| msgid "Syntax highlight"
+msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Farba"
 
@@ -795,6 +796,7 @@ msgid "Backup"
 msgstr "Záloha"
 
 #: lazarusidestrconsts.dlgenvcolors
+msgctxt "lazarusidestrconsts.dlgenvcolors"
 msgid "Colors"
 msgstr "Farby"
 
@@ -3072,24 +3074,28 @@ msgstr "zlý oddeľovač cesty"
 msgid "Categories"
 msgstr "Kategórie"
 
+#: lazarusidestrconsts.liscecomplexitygroup
+msgid "Complexity"
+msgstr ""
+
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "Konštanty"
+
+#: lazarusidestrconsts.lisceemptyblocks
+msgid "Empty blocks"
+msgstr ""
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
 msgstr ""
 
+#: lazarusidestrconsts.lisceemptygroup
+msgid "Empty constructs"
+msgstr ""
+
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigurecharconst
-msgid "Search for unnamed char constants"
-msgstr ""
-
-#: lazarusidestrconsts.liscefigures
-msgid "Figures"
 msgstr ""
 
 #: lazarusidestrconsts.liscefilter
@@ -3099,14 +3105,6 @@ msgstr "(Filter)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Nasledovať kurzor"
-
-#: lazarusidestrconsts.lisceignorefigconstinfuncs
-msgid "Ignore constants in next functions"
-msgstr ""
-
-#: lazarusidestrconsts.lisceignorefigureconstants
-msgid "Ignore next unnamed constants"
-msgstr ""
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
@@ -3189,6 +3187,11 @@ msgstr "Pri nečinnosti"
 msgid "Refresh automatically"
 msgstr "Obnoviť automaticky"
 
+#: lazarusidestrconsts.lisceothergroup
+msgctxt "lazarusidestrconsts.lisceothergroup"
+msgid "Other"
+msgstr "Ostatné"
+
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
 msgstr "Aktualizovať"
@@ -3210,9 +3213,14 @@ msgstr "Vlastnosti"
 msgid "Published properties without default"
 msgstr ""
 
-#: lazarusidestrconsts.lisceshowfigures
-msgid "Show figures"
+#: lazarusidestrconsts.lisceshowcodeobserver
+msgid "Show observerations about"
 msgstr ""
+
+#: lazarusidestrconsts.liscestylegroup
+msgctxt "lazarusidestrconsts.liscestylegroup"
+msgid "Style"
+msgstr "Štýl"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -3615,6 +3623,25 @@ msgstr "Zobraziť prázdne metódy"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobignoreconstinfuncs
+msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
+msgid "Ignore constants in next functions"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobscharconst
+msgctxt "lazarusidestrconsts.liscodeobscharconst"
+msgid "Search for unnamed char constants"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobserver
+msgid "Code Observer"
+msgstr ""
+
+#: lazarusidestrconsts.liscodeobsignoreeconstants
+msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
+msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
@@ -5840,6 +5867,7 @@ msgid "Save to recent"
 msgstr "Uložiť k nedávnym"
 
 #: lazarusidestrconsts.lisifdok
+msgctxt "lazarusidestrconsts.lisifdok"
 msgid "OK"
 msgstr "OK"
 
@@ -7137,7 +7165,9 @@ msgid "Close"
 msgstr "Zatvoriť"
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close all editor files"
+#, fuzzy
+#| msgid "Close all editor files"
+msgid "Close a&ll editor files"
 msgstr "Zatvoriť všetky súbory editora"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -7537,7 +7567,9 @@ msgid "Online Help"
 msgstr "Online pomoc"
 
 #: lazarusidestrconsts.lismenuopen
-msgid "Open ..."
+#, fuzzy
+#| msgid "Open ..."
+msgid "&Open ..."
 msgstr "Otvoriť ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
@@ -7561,7 +7593,9 @@ msgid "Open Project ..."
 msgstr "Otvoriť projekt ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-msgid "Open Recent ..."
+#, fuzzy
+#| msgid "Open Recent ..."
+msgid "Open &Recent ..."
 msgstr "Otvoriť posledné ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
@@ -7628,7 +7662,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-msgid "Quit"
+#, fuzzy
+#| msgid "Quit"
+msgid "&Quit"
 msgstr "Skončiť"
 
 #: lazarusidestrconsts.lismenuredo
@@ -7690,8 +7726,10 @@ msgid "Run to cursor"
 msgstr "Spustiť po kurzor"
 
 #: lazarusidestrconsts.lismenusave
+#, fuzzy
+#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
-msgid "Save"
+msgid "&Save"
 msgstr "Uložiť"
 
 #: lazarusidestrconsts.lismenusaveall
@@ -7699,7 +7737,9 @@ msgid "Save All"
 msgstr "Uložiť všetko"
 
 #: lazarusidestrconsts.lismenusaveas
-msgid "Save As ..."
+#, fuzzy
+#| msgid "Save As ..."
+msgid "Save &As ..."
 msgstr "Uložiť ako ..."
 
 #: lazarusidestrconsts.lismenusaveproject
@@ -10651,6 +10691,7 @@ msgid "String"
 msgstr "Reťazec"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Štýl"
 
