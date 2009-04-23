@@ -211,22 +211,33 @@ var
   Geometry: TGdkGeometry;
 begin
   Widget := PGtkWidget(AWinControl.Handle);
-  if (Widget <> nil) and (GtkWidgetIsA(Widget,gtk_window_get_type)) then begin
-    with Geometry, AWinControl do begin
+  if (Widget <> nil) and (GtkWidgetIsA(Widget, gtk_window_get_type)) then
+  begin
+    with Geometry, AWinControl do
+    begin
       if Constraints.MinWidth > 0 then
-        min_width:= Constraints.MinWidth else min_width:= 1;
+        min_width := Constraints.MinWidth
+      else
+        min_width := 1;
       if Constraints.MaxWidth > 0 then
-        max_width:= Constraints.MaxWidth else max_width:= 32767;
+        max_width := Constraints.MaxWidth
+      else
+        max_width := 32767;
       if Constraints.MinHeight > 0 then
-        min_height:= Constraints.MinHeight else min_height:= 1;
+        min_height := Constraints.MinHeight
+      else
+        min_height := 1;
       if Constraints.MaxHeight > 0 then
-        max_height:= Constraints.MaxHeight else max_height:= 32767;
-      base_width:= Width;
-      base_height:= Height;
-      width_inc:= 1;
-      height_inc:= 1;
-      min_aspect:= 0;
-      max_aspect:= 1;
+        max_height := Constraints.MaxHeight
+      else
+        max_height := 32767;
+
+      base_width := Width;
+      base_height := Height;
+      width_inc := 1;
+      height_inc := 1;
+      min_aspect := 0;
+      max_aspect := 1;
     end;
     //debugln('TGtkWSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
     gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
