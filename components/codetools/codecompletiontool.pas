@@ -5022,6 +5022,16 @@ begin
         
         if InsertNode<>nil then begin
         
+          // for variable lists: a,b,c: integer
+          // use last node
+          if InsertBehind then begin
+            while (InsertNode.Desc=ctnVarDefinition)
+            and (InsertNode.FirstChild=nil)
+            and (InsertNode.NextBrother<>nil)
+            and (InsertNode.NextBrother.Desc=ctnVarDefinition) do
+              InsertNode:=InsertNode.NextBrother;
+          end;
+
           if (not IsVariable) and (InsertNode.Desc=ctnVarDefinition)
           and (InsertNode.NextBrother<>nil) then begin
             // insertion is a new method and it should be inserted behind
