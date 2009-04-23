@@ -263,6 +263,10 @@ begin
   begin
     if FButtons[btn] = nil then Continue;
     FButtons[btn].CalculatePreferredSize(BtnWidth, BtnHeight, True);
+    if Align in [alTop, alBottom] then
+      FButtons[btn].Width := BtnWidth;
+    if Align in [alLeft, alRight] then
+      FButtons[btn].Height := BtnHeight;
     if BtnWidth > FButtonsWidth then
       FButtonsWidth := BtnWidth;
     if BtnHeight > FButtonsHeight then
