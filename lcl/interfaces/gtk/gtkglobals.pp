@@ -176,7 +176,7 @@ const
     0, // bsNone
     0, // bsSingle
     1, // bsSizeable
-    1, // bsDialog
+    0, // bsDialog
     0, // bsToolWindow
     1  // bsSizeToolWin
   );

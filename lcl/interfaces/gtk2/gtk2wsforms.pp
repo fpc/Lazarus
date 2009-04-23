@@ -165,8 +165,10 @@ begin
 
     // Sets the window as resizable or not
     // Depends on the WM supporting this
-    if (csDesigning in ACustomForm.ComponentState) then AResizable := 1
-    else AResizable := FormResizableMap[ABorderStyle];
+    if (csDesigning in ACustomForm.ComponentState) then
+      AResizable := 1
+    else
+      AResizable := FormResizableMap[ABorderStyle];
 
     // gtk_window_set_policy is deprecated in Gtk2
     gtk_window_set_resizable(GTK_WINDOW(P), gboolean(AResizable));
