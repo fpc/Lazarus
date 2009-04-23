@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-21 20:07+0300\n"
+"PO-Revision-Date: 2009-04-23 02:15+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr "Описание"
 
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
-msgstr ""
+msgstr "Этот проект не имеет дополнительных переменных."
 
 #: frmtemplatevariables.svalue
 msgid "Value"

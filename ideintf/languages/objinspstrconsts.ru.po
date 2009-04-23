@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-01 02:36+0300\n"
+"PO-Revision-Date: 2009-04-23 03:04+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1256,11 +1256,11 @@ msgstr "Выбрать"
 
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
-msgstr "Принять"
+msgstr "Accept"
 
 #: objinspstrconsts.srvk_apps
 msgid "application key"
-msgstr "клавиша application"
+msgstr "Клавиша application"
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
@@ -1268,12 +1268,12 @@ msgstr "Забой"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
-msgstr "Прописные"
+msgstr "CapsLock"
 
 #: objinspstrconsts.srvk_clear
 msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr "Очистить"
+msgstr "Clear"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1297,7 +1297,7 @@ msgstr "Escape"
 
 #: objinspstrconsts.srvk_execute
 msgid "Execute"
-msgstr "Выполнить"
+msgstr "Execute"
 
 #: objinspstrconsts.srvk_final
 msgid "Final"
@@ -1319,11 +1319,11 @@ msgstr "Home"
 #: objinspstrconsts.srvk_insert
 msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr "Вставить"
+msgstr "Insert"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
-msgstr "Нерегулярный "
+msgstr "Irregular "
 
 #: objinspstrconsts.srvk_junja
 msgid "Junja"
@@ -1340,11 +1340,11 @@ msgstr "Левая клавиша мыши"
 #: objinspstrconsts.srvk_left
 msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr "По левому краю"
+msgstr "Стрелка влево"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
-msgstr "левая клавиша windows"
+msgstr "Левая клавиша windows"
 
 #: objinspstrconsts.srvk_mbutton
 msgid "Mouse Button Middle"
@@ -1365,7 +1365,7 @@ msgstr "Изменение режима"
 #: objinspstrconsts.srvk_next
 msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr "Следующий"
+msgstr "Page Down"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1377,7 +1377,7 @@ msgstr "нет"
 
 #: objinspstrconsts.srvk_numlock
 msgid "Numlock"
-msgstr "Numlock"
+msgstr "NumLock"
 
 #: objinspstrconsts.srvk_numpad
 msgid "Numpad %d"
@@ -1394,7 +1394,7 @@ msgstr "Печать"
 #: objinspstrconsts.srvk_prior
 msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr "Предыдущий"
+msgstr "Page Up"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1407,11 +1407,11 @@ msgstr "Ввод"
 #: objinspstrconsts.srvk_right
 msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr "По правому краю"
+msgstr "Стрелка вправо"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"
-msgstr "правая клавиша windows"
+msgstr "Правая клавиша windows"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
@@ -1440,12 +1440,12 @@ msgstr "ТАБ"
 #: objinspstrconsts.srvk_unknown
 msgctxt "objinspstrconsts.srvk_unknown"
 msgid "Unknown"
-msgstr "Неизвестный"
+msgstr "Неизвестная"
 
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr "Вверх"
+msgstr "Стрелка вверх"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"

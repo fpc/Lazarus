@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-01 04:30+0300\n"
+"PO-Revision-Date: 2009-04-23 02:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -148,7 +148,7 @@ msgstr "Подсветка скобок"
 
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
-msgstr ""
+msgstr "Файл сообщений компилятора Free Pascal (*.msg)|*.msg|Все файлы (*.*)|*.*"
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
@@ -345,7 +345,7 @@ msgstr "Создание кода"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgid "Mouse"
-msgstr ""
+msgstr "Мышь"
 
 #: lazarusidestrconsts.dlgcodegeneration
 msgid "Code"
@@ -426,7 +426,7 @@ msgstr "Переместить вверх"
 
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler Messages"
-msgstr ""
+msgstr "Сообщения компилятора"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -508,7 +508,7 @@ msgstr "Генерировать код для valgrind"
 
 #: lazarusidestrconsts.dlgcoverbosity
 msgid "Verbosity"
-msgstr ""
+msgstr "Подробность вывода"
 
 #: lazarusidestrconsts.dlgcppinline
 msgid "C++ Styled INLINE"
@@ -580,66 +580,66 @@ msgstr "Отключить сглаживание"
 
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
-msgstr ""
+msgstr "Уровень отображения разделителя"
 
 #: lazarusidestrconsts.dlgdividernestcolor
 msgid "Nested line color"
-msgstr ""
+msgstr "Цвет вложенной линии"
 
 #: lazarusidestrconsts.dlgdividernestcolordefault
 msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
 msgid "Use Default"
-msgstr ""
+msgstr "Цвет по умолчанию"
 
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
-msgstr ""
+msgstr "Отображать разделитель"
 
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
-msgstr ""
+msgstr "Цвет линии"
 
 #: lazarusidestrconsts.dlgdividertopcolordefault
 msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
 msgid "Use Default"
-msgstr ""
+msgstr "Цвет по умолчанию"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
-msgstr ""
+msgstr "Begin/End"
 
 #: lazarusidestrconsts.dlgdivpasprocedurename
 msgid "Procedure/Function"
-msgstr ""
+msgstr "Procedure/Function"
 
 #: lazarusidestrconsts.dlgdivpasstructglobalname
 msgid "Class/Struct"
-msgstr ""
+msgstr "Class/Struct"
 
 #: lazarusidestrconsts.dlgdivpasstructlocalname
 msgid "Class/Struct (local)"
-msgstr ""
+msgstr "Class/Struct (локальная)"
 
 #: lazarusidestrconsts.dlgdivpastryname
 msgid "Try/Except"
-msgstr ""
+msgstr "Try/Except"
 
 #: lazarusidestrconsts.dlgdivpasunitsectionname
 msgid "Unit sections"
-msgstr ""
+msgstr "Разделы модуля"
 
 #: lazarusidestrconsts.dlgdivpasusesname
 msgid "Uses clause"
-msgstr ""
+msgstr "Выражение Uses"
 
 #: lazarusidestrconsts.dlgdivpasvarglobalname
 msgid "Var/Type"
-msgstr ""
+msgstr "Var/Type"
 
 #: lazarusidestrconsts.dlgdivpasvarlocalname
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
-msgstr ""
+msgstr "Var/Type (локальная)"
 
 #: lazarusidestrconsts.dlgdoesnotexist
 msgid "\" does not exist."
@@ -860,43 +860,43 @@ msgstr "Поиск текста под курсором"
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
-msgstr ""
+msgstr "Var/Type (локальная)"
 
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
-msgstr ""
+msgstr "Asm"
 
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
-msgstr ""
+msgstr "Begin/End (вложенная)"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
-msgstr ""
+msgstr "Case"
 
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
-msgstr ""
+msgstr "Class/Object"
 
 #: lazarusidestrconsts.dlgfoldpasclasssection
 msgid "public/private"
-msgstr ""
+msgstr "public/private"
 
 #: lazarusidestrconsts.dlgfoldpasexcept
 msgid "Except/Finally"
-msgstr ""
+msgstr "Except/Finally"
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
-msgstr ""
+msgstr "{$IfDef}"
 
 #: lazarusidestrconsts.dlgfoldpasnestedcomment
 msgid "Nested Comment"
-msgstr ""
+msgstr "Вложенный комментарий"
 
 #: lazarusidestrconsts.dlgfoldpasprocbeginend
 msgid "Begin/End (procedure)"
-msgstr ""
+msgstr "Begin/End (процедура)"
 
 #: lazarusidestrconsts.dlgfoldpasprocedure
 msgctxt "lazarusidestrconsts.dlgfoldpasprocedure"
@@ -910,15 +910,15 @@ msgstr "Программа"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgid "Record"
-msgstr ""
+msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
-msgstr ""
+msgstr "Repeat"
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
-msgstr ""
+msgstr "Try"
 
 #: lazarusidestrconsts.dlgfoldpasunit
 msgctxt "lazarusidestrconsts.dlgfoldpasunit"
@@ -927,11 +927,11 @@ msgstr "Модуль"
 
 #: lazarusidestrconsts.dlgfoldpasunitsection
 msgid "Unit section"
-msgstr ""
+msgstr "Секция модуля"
 
 #: lazarusidestrconsts.dlgfoldpasuserregion
 msgid "{%Region}"
-msgstr ""
+msgstr "{%Region}"
 
 #: lazarusidestrconsts.dlgfoldpasuses
 msgctxt "lazarusidestrconsts.dlgfoldpasuses"
@@ -940,7 +940,7 @@ msgstr "Используемые модули"
 
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
-msgstr ""
+msgstr "Var/Type (глобальная)"
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -981,7 +981,7 @@ msgstr "Параметры"
 
 #: lazarusidestrconsts.dlggeneratedwarf
 msgid "Generate dwarf debug information"
-msgstr ""
+msgstr "Генерировать отладочную информацию dwarf"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -1329,37 +1329,37 @@ msgstr "Смешивать методы и свойства"
 
 #: lazarusidestrconsts.dlgmousefoldbutton
 msgid "Button"
-msgstr ""
+msgstr "Кнопка"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonleft
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonleft"
 msgid "Left"
-msgstr "Стрелка влево"
+msgstr "Левая"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
 msgid "Middle"
-msgstr ""
+msgstr "Средняя"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonright
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonright"
 msgid "Right"
-msgstr "Стрелка вправо"
+msgstr "Правая"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
 msgid "Fold All (Some Colapsed)"
-msgstr ""
+msgstr "Свернуть все (некоторые свёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldone
 msgid "Fold One (Some Colapsed)"
-msgstr ""
+msgstr "Свернуть один (некоторые свёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldall
 msgid "Unfold All (Some Colapsed)"
-msgstr ""
+msgstr "Развернуть все (некоторые свёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldone
 msgid "Unfold One (Some Colapsed)"
-msgstr ""
+msgstr "Развернуть один (некоторые свёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldenabled
 msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
@@ -1368,19 +1368,19 @@ msgstr "Включить"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
-msgstr ""
+msgstr "Свернуть все (все развёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldone
 msgid "Fold One (All Expanded)"
-msgstr ""
+msgstr "Свернуть один (все развёрнуты)"
 
 #: lazarusidestrconsts.dlgmousefoldgroup1
 msgid "Setting 1"
-msgstr ""
+msgstr "Параметр 1"
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
 msgid "setting 2"
-msgstr ""
+msgstr "Параметр 2"
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
 msgctxt "lazarusidestrconsts.dlgmousefoldmodifieralt"
@@ -2043,7 +2043,7 @@ msgstr "Использовать дополнительный конфигура
 
 #: lazarusidestrconsts.dlgusedividerdraw
 msgid "Divider drawing"
-msgstr ""
+msgstr "Отображение разделителя"
 
 #: lazarusidestrconsts.dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -2055,7 +2055,7 @@ msgstr "Использовать приложение для запуска"
 
 #: lazarusidestrconsts.dlgusemsgfile
 msgid "Use messages file"
-msgstr ""
+msgstr "Использовать файл сообщений"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -2653,7 +2653,7 @@ msgstr "Альтернативная клавиша (или двухклавиш
 
 #: lazarusidestrconsts.lisalways
 msgid "Always"
-msgstr ""
+msgstr "Всегда"
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3065,7 +3065,7 @@ msgstr "Категории"
 
 #: lazarusidestrconsts.liscecomplexitygroup
 msgid "Complexity"
-msgstr ""
+msgstr "Сложность"
 
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
@@ -3073,19 +3073,19 @@ msgstr "Константы"
 
 #: lazarusidestrconsts.lisceemptyblocks
 msgid "Empty blocks"
-msgstr ""
+msgstr "Пустые блоки"
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
-msgstr ""
+msgstr "Пустые секции классов"
 
 #: lazarusidestrconsts.lisceemptygroup
 msgid "Empty constructs"
-msgstr ""
+msgstr "Пустые конструкции"
 
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
+msgstr "Пустые процедуры"
 
 #: lazarusidestrconsts.liscefilter
 msgid "(Filter)"
@@ -3097,27 +3097,27 @@ msgstr "Следовать за курсором"
 
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
-msgstr ""
+msgstr "%s в %s"
 
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
-msgstr ""
+msgstr "\"Много\" параметров"
 
 #: lazarusidestrconsts.liscelongprocedures
 msgid "Long procedures"
-msgstr ""
+msgstr "Длинные процедуры"
 
 #: lazarusidestrconsts.liscelongproclinecount
 msgid "Line count of procedure treated as \"long\""
-msgstr ""
+msgstr "\"Много\" строк в процедуре"
 
 #: lazarusidestrconsts.liscemanynestedprocedures
 msgid "Many nested procedures"
-msgstr ""
+msgstr "Много вложенных процедур"
 
 #: lazarusidestrconsts.liscemanyparameters
 msgid "Many parameters"
-msgstr ""
+msgstr "Много параметров"
 
 #: lazarusidestrconsts.liscemodeshowcategories
 msgid "Show Categories"
@@ -3129,7 +3129,7 @@ msgstr "Показать узлы исходного кода"
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treating as \"many\""
-msgstr ""
+msgstr "\"Много\" вложенных процедур"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
@@ -3166,7 +3166,7 @@ msgstr "Никогда, только вручную"
 
 #: lazarusidestrconsts.lisceonlyusedincategorymode
 msgid "Only used in category mode"
-msgstr "Используются только при отображении категориями"
+msgstr "Категории (только в режиме категорий)"
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
@@ -3183,7 +3183,7 @@ msgstr "Другое"
 
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
-msgstr "Обновить"
+msgstr "Обновление"
 
 #: lazarusidestrconsts.lisceowhenswitchingfile
 msgid "When switching file in source editor"
@@ -3200,11 +3200,12 @@ msgstr "Свойства"
 
 #: lazarusidestrconsts.liscepublishedpropertywithoutdefault
 msgid "Published properties without default"
-msgstr ""
+msgstr "Опубликованные свойства без default"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
+#| msgid "Show Code Observer"
 msgid "Show observerations about"
-msgstr ""
+msgstr "Сообщения смотрителя кода"
 
 #: lazarusidestrconsts.liscestylegroup
 msgctxt "lazarusidestrconsts.liscestylegroup"
@@ -3213,7 +3214,7 @@ msgstr "Стиль"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
-msgstr ""
+msgstr "Элементы ToDo"
 
 #: lazarusidestrconsts.liscetypes
 msgid "Types"
@@ -3221,15 +3222,15 @@ msgstr "Типы"
 
 #: lazarusidestrconsts.lisceunnamedconstants
 msgid "Unnamed constants"
-msgstr ""
+msgstr "Неименованные константы"
 
 #: lazarusidestrconsts.lisceunsortedmembers
 msgid "Unsorted members"
-msgstr ""
+msgstr "Несортированные члены"
 
 #: lazarusidestrconsts.lisceunsortedvisibility
 msgid "Unsorted visibility"
-msgstr ""
+msgstr "Несортированные видимые"
 
 #: lazarusidestrconsts.lisceuses
 msgctxt "lazarusidestrconsts.lisceuses"
@@ -3239,6 +3240,10 @@ msgstr "Используемые модули"
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
 msgstr "Переменные"
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
+msgstr "Неверные отступы"
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -3612,26 +3617,23 @@ msgstr "Показать пустые методы"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
-msgstr ""
+msgstr "Показать неиспользуемые модули"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
-msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
-msgstr ""
+msgstr "Игнорировать константы в функциях:"
 
 #: lazarusidestrconsts.liscodeobscharconst
-msgctxt "lazarusidestrconsts.liscodeobscharconst"
 msgid "Search for unnamed char constants"
-msgstr ""
+msgstr "Искать неименованные константы-символы"
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
-msgstr ""
+msgstr "Смотритель кода"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
-msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
 msgid "Ignore next unnamed constants"
-msgstr ""
+msgstr "Игнорировать неименованные константы:"
 
 #: lazarusidestrconsts.liscodetempladd
 msgid "Add"
@@ -4378,7 +4380,7 @@ msgstr "Создать каталог?"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
-msgstr ""
+msgstr "Создать функцию"
 
 #: lazarusidestrconsts.liscreatehelpnode
 msgid "Create Help node"
@@ -5969,15 +5971,15 @@ msgstr "Для создания очищенной копии проекта/п�
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
-msgstr ""
+msgstr "Данные"
 
 #: lazarusidestrconsts.lisinspectdialog
 msgid "Debug Inspector"
-msgstr ""
+msgstr "Инспектор отладки"
 
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
-msgstr ""
+msgstr "Методы"
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -7154,10 +7156,9 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
 #| msgid "Close all editor files"
 msgid "Close a&ll editor files"
-msgstr "Закрыть все файлы редактора"
+msgstr "&Закрыть все файлы редактора"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
@@ -7556,10 +7557,9 @@ msgid "Online Help"
 msgstr "Оперативная справка"
 
 #: lazarusidestrconsts.lismenuopen
-#, fuzzy
 #| msgid "Open ..."
 msgid "&Open ..."
-msgstr "Открыть ..."
+msgstr "&Открыть ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
@@ -7582,10 +7582,9 @@ msgid "Open Project ..."
 msgstr "Открыть проект ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#, fuzzy
 #| msgid "Open Recent ..."
 msgid "Open &Recent ..."
-msgstr "Открыть недавнее"
+msgstr "Открыть &недавнее"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
 msgid "Open recent package ..."
@@ -7651,10 +7650,9 @@ msgid "Quick syntax check OK"
 msgstr "Быстрая проверка синтаксиса прошла успешно."
 
 #: lazarusidestrconsts.lismenuquit
-#, fuzzy
 #| msgid "Quit"
 msgid "&Quit"
-msgstr "Выход"
+msgstr "В&ыход"
 
 #: lazarusidestrconsts.lismenuredo
 msgctxt "lazarusidestrconsts.lismenuredo"
@@ -7715,21 +7713,19 @@ msgid "Run to cursor"
 msgstr "Запуск до курсора"
 
 #: lazarusidestrconsts.lismenusave
-#, fuzzy
 #| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
-msgstr "Сохранить"
+msgstr "&Сохранить"
 
 #: lazarusidestrconsts.lismenusaveall
 msgid "Save All"
 msgstr "Сохранить все"
 
 #: lazarusidestrconsts.lismenusaveas
-#, fuzzy
 #| msgid "Save As ..."
 msgid "Save &As ..."
-msgstr "Сохранить как ..."
+msgstr "Сохранить &как ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
@@ -7926,10 +7922,9 @@ msgid "&View"
 msgstr "&Вид"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
-#, fuzzy
 #| msgid "View Anchor Editor"
 msgid "Anchor Editor"
-msgstr "Показать редактор привязок"
+msgstr "Редактор привязок"
 
 #: lazarusidestrconsts.lismenuviewassembler
 msgid "Assembler"
@@ -7953,10 +7948,9 @@ msgid "Code Explorer"
 msgstr "Обозреватель кода"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
-#, fuzzy
 #| msgid "View Component Palette"
 msgid "Component Palette"
-msgstr "Показывать палитру компонентов"
+msgstr "Палитра компонентов"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
@@ -7971,17 +7965,15 @@ msgid "Forms..."
 msgstr "Формы..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
-#, fuzzy
 #| msgid "View IDE speed buttons"
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
 msgid "IDE speed buttons"
-msgstr "Показывать кнопки быстрого доступа IDE"
+msgstr "Кнопки быстрого доступа IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#, fuzzy
 #| msgid "View Jump-History ..."
 msgid "Jump-History ..."
-msgstr "Просмотр истории переходов ..."
+msgstr "История переходов ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
 msgid "Local Variables"
@@ -8029,16 +8021,14 @@ msgid "Toggle form/unit view"
 msgstr "Переключить форму/модуль"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#, fuzzy
 #| msgid "View Unit Dependencies"
 msgid "Unit Dependencies"
-msgstr "Показать зависимости модулей"
+msgstr "Зависимости модулей"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
 #| msgid "View Unit Information"
 msgid "Unit Information"
-msgstr "Показать сведения о модуле"
+msgstr "Сведения о модуле"
 
 #: lazarusidestrconsts.lismenuviewunits
 msgid "Units..."
@@ -8102,7 +8092,7 @@ msgstr "Имя новой процедуры"
 
 #: lazarusidestrconsts.lisnever
 msgid "Never"
-msgstr ""
+msgstr "Никогда"
 
 #: lazarusidestrconsts.lisnew
 msgid "new"
@@ -8397,11 +8387,10 @@ msgid "&Ok"
 msgstr "&ОК"
 
 #: lazarusidestrconsts.lisokbtn
-#, fuzzy
 #| msgid "Ok"
 msgctxt "lazarusidestrconsts.lisokbtn"
 msgid "OK"
-msgstr "ОК"
+msgstr "OK"
 
 #: lazarusidestrconsts.lisold
 msgid "old"
@@ -10175,7 +10164,7 @@ msgstr "Удалить все некорректные свойства"
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
-msgstr ""
+msgstr "Удалить все модули"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
@@ -10183,7 +10172,7 @@ msgstr "Удалить из проекта"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
-msgstr ""
+msgstr "Удалить выбранные модули"
 
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
@@ -10235,7 +10224,7 @@ msgstr "Result :="
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
-msgstr ""
+msgstr "Результат функции:"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -10900,7 +10889,7 @@ msgstr "Каталог исходного кода FreePascal не найден.
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
-msgstr ""
+msgstr "Идентификатор является модулем. Для его переименования используйте функцию Файл -> Сохранить как."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
@@ -11032,7 +11021,7 @@ msgstr "Имя файла %s%s%s модуля не в нижнем регист�
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
-msgstr ""
+msgstr "Модуль %s используется другими файлами.%sОбновить ссылки автоматически?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -11644,7 +11633,7 @@ msgstr "Модули не найдены"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
-msgstr ""
+msgstr "Неиспользуемые модули"
 
 #: lazarusidestrconsts.lisupdatepreview
 msgid "Update preview"
@@ -11652,7 +11641,7 @@ msgstr "Обновить предпросмотр"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
-msgstr ""
+msgstr "Обновить ссылки?"
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
@@ -11676,7 +11665,7 @@ msgstr "Домашний каталог пользователя"
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
-msgstr ""
+msgstr "UTF-8 с BOM"
 
 #: lazarusidestrconsts.lisvalue
 msgid "Value:"
@@ -11732,7 +11721,7 @@ msgstr "Наблюдение за свойствами"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
-msgstr ""
+msgstr "Обновление ссылок при переименовании модуля"
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -12648,7 +12637,7 @@ msgstr "Удалить пустые методы"
 
 #: lazarusidestrconsts.srkmecremoveunusedunits
 msgid "Remove unused units"
-msgstr ""
+msgstr "Удалить неиспользуемые модули"
 
 #: lazarusidestrconsts.srkmecrenameidentifier
 msgid "Rename identifier"
