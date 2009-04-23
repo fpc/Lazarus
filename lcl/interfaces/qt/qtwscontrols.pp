@@ -190,7 +190,12 @@ begin
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}
       {$ifdef darwin}
+      {$ifdef USE_QT_45}
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint 
+        or QtWindowTitleHint or QtWindowCloseButtonHint);
+      {$else}
       QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+      {$endif}
       {$endif}
       Widget.setWindowModality(QtApplicationModal);
     end;
