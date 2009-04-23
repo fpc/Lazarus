@@ -4,6 +4,7 @@ object PathEditorDialog: TPathEditorDialog
   Top = 158
   Width = 500
   ActiveControl = TemplatesListBox
+  AutoSize = True
   Caption = 'PathEditorDialog'
   ClientHeight = 400
   ClientWidth = 500
@@ -23,12 +24,15 @@ object PathEditorDialog: TPathEditorDialog
     Top = 6
     Width = 488
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'PathGroupBox'
     ClientHeight = 176
     ClientWidth = 484
+    Constraints.MinHeight = 194
+    Constraints.MinWidth = 488
     TabOrder = 0
     object PathEdit: TSynEdit
       AnchorSideLeft.Control = PathGroupBox
@@ -49,7 +53,6 @@ object PathEditorDialog: TPathEditorDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
-      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Gutter.Width = 0
       Keystrokes = <      
@@ -383,7 +386,7 @@ object PathEditorDialog: TPathEditorDialog
           Width = 23
         end
         object TSynGutterLineNumber
-          Width = 17
+          Width = 25
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
           DigitCount = 2
@@ -530,10 +533,10 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Control = CancelBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 345
+    Left = 362
     Height = 26
     Top = 368
-    Width = 60
+    Width = 55
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -549,10 +552,10 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 411
+    Left = 423
     Height = 26
     Top = 368
-    Width = 83
+    Width = 71
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
