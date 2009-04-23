@@ -32,6 +32,9 @@ const
   DefShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp];
 
 type
+
+  { TPanelBitBtn }
+
   TPanelBitBtn = class(TCustomBitBtn)
   public
     constructor Create(AOwner: TComponent); override;

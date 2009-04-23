@@ -217,14 +217,20 @@ var
 begin
   if NewControl <> FDefaultControl then
   begin
-    OldDefaultControl:=FDefaultControl;
+    OldDefaultControl := FDefaultControl;
     FDefaultControl := NewControl;
     // notify old control
-    if OldDefaultControl<>nil then
+    if OldDefaultControl <> nil then
+    begin
+      OldDefaultControl.RemoveFreeNotification(Self);
       OldDefaultControl.UpdateRolesForForm;
+    end;
     // notify new control
-    if FDefaultControl<>nil then
+    if FDefaultControl <> nil then
+    begin
+      FDefaultControl.FreeNotification(Self);
       FDefaultControl.UpdateRolesForForm;
+    end;
     // maybe active default control changed
     if FActiveDefaultControl = nil then
     begin
