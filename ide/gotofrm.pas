@@ -6,18 +6,16 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, LazarusIDEStrConsts, LCLType;
+  StdCtrls, ExtCtrls, Buttons, LazarusIDEStrConsts, LCLType, ButtonPanel;
 
 type
 
   { TfrmGoto }
 
   TfrmGoto = class(TForm)
+    ButtonPanel1: TButtonPanel;
     Label1: TLabel;
     Edit1: TEdit;
-    btnOK: TBitbtn;
-    btnCancel: TBitBtn;
-    procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
   public
     constructor Create(AOwner: TComponent); override;
     procedure DoShow; override;
@@ -41,21 +39,6 @@ begin
   Edit1.SelectAll;
   Edit1.SetFocus;
   inherited DoShow;
-end;
-
-procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
-   Shift:TShiftState);
-begin
-  if (Key=VK_RETURN) then
-  begin
-    ModalResult:=mrOk;
-    Key := 0;
-  end;
-  if (Key=VK_ESCAPE) then
-  begin
-    ModalResult:=mrCancel;
-    Key := 0;
-  end;
 end;
 
 initialization
