@@ -1,6 +1,6 @@
 object frmGoto: TfrmGoto
   Left = 423
-  Height = 87
+  Height = 69
   Top = 427
   Width = 250
   ActiveControl = Edit1
@@ -8,25 +8,31 @@ object frmGoto: TfrmGoto
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'frmGoto'
-  ClientHeight = 87
+  ClientHeight = 69
   ClientWidth = 250
   LCLVersion = '0.9.27'
   object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     Left = 6
     Height = 14
     Top = 6
-    Width = 238
-    Align = alTop
+    Width = 32
     BorderSpacing.Around = 6
     Caption = 'Label1'
     ParentColor = False
   end
   object Edit1: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
     Top = 26
     Width = 238
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     TabOrder = 0
     Text = 'Edit1'
