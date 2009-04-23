@@ -250,25 +250,20 @@ end;
 procedure TCustomButtonPanel.UpdateSizes;
 var
   btn: TPanelButton;
+  BtnWidth, BtnHeight: Integer;
 begin
-  FButtonsHeight := 0;
+  if csDestroying in ComponentState then
+    Exit;
+  FButtonsHeight := DefMinHeight;
+  FButtonsWidth := DefMinWidth;
   for btn := Low(btn) to High(btn) do
   begin
     if FButtons[btn] = nil then Continue;
-    if FButtonsHeight > FButtons[btn].Height then Continue;
-    FButtonsHeight := FButtons[btn].Height;
-  end;
-
-  if Align in [alLeft, alRight]
-  then begin
-    // give the same width in this case too
-    FButtonsWidth := 0;
-    for btn := Low(btn) to High(btn) do
-    begin
-      if FButtons[btn] = nil then Continue;
-      if FButtonsWidth > FButtons[btn].Width then Continue;
-      FButtonsWidth := FButtons[btn].Width;
-    end;
+    FButtons[btn].CalculatePreferredSize(BtnWidth, BtnHeight, True);
+    if BtnWidth > FButtonsWidth then
+      FButtonsWidth := BtnWidth;
+    if BtnHeight > FButtonsHeight then
+      FButtonsHeight := BtnHeight;
   end;
 end;
 
@@ -291,6 +286,7 @@ begin
       if ShowBevel then
         inc(PreferredWidth, Spacing + FBevel.Width);
     end;
+    ReAlign;
   end;
 end;
 
@@ -409,8 +405,8 @@ begin
   Caption    := '';
   ControlStyle := ControlStyle - [csSetCaption];
   AutoSize   := True;
-  FSpacing := 6;
-  ShowBevel := True;
+  FSpacing   := 6;
+  ShowBevel  := True;
 
 
   FDefaultButton := pbOK;
@@ -452,7 +448,6 @@ begin
     Name     := NAMES[AButton];
     Parent   := Self;
     Kind     := KINDS[AButton];
-    AutoSize := True;
     Constraints.MinWidth := DefMinWidth;
     Constraints.MinHeight := DefMinHeight;
     Caption  := GetCaption(AButton);
