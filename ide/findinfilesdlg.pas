@@ -25,15 +25,13 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
-  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit;
+  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel;
 
 type
   { TLazFindInFilesDialog }
 
   TLazFindInFilesDialog = class(TForm)
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
-    OKButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     ReplaceCheckBox: TCheckBox;
     ReplaceTextComboBox: TComboBox;
     IncludeSubDirsCheckBox: TCheckBox;
@@ -145,8 +143,9 @@ begin
 
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 
-  OkButton.Caption := lisLazBuildOk;
-  CancelButton.Caption := dlgCancel;
+  ButtonPanel1.OkButton.Caption := lisLazBuildOk;
+  ButtonPanel1.CancelButton.Caption := dlgCancel;
+  ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
 
   ReplaceCheckBox.Enabled:=true;
 
@@ -230,9 +229,9 @@ procedure TLazFindInFilesDialog.UpdateReplaceCheck;
 begin
   ReplaceTextComboBox.Enabled:=ReplaceCheckBox.Checked;
   if ReplaceCheckBox.Checked then
-    OKButton.Caption:=lisMenuReplace
+    ButtonPanel1.OKButton.Caption := lisMenuReplace
   else
-    OKButton.Caption:=lisMenuFind;
+    ButtonPanel1.OKButton.Caption := lisMenuFind;
 end;
 
 initialization

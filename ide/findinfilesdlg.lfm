@@ -198,61 +198,14 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     OnChange = ReplaceCheckBoxChange
     TabOrder = 5
   end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 337
-    Height = 26
-    Top = 428
-    Width = 77
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 6
-  end
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 256
-    Height = 26
-    Top = 428
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 7
-  end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+  object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
     Top = 428
-    Width = 66
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Kind = bkHelp
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    TabOrder = 8
+    Width = 408
+    TabOrder = 6
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     FilterIndex = 0
