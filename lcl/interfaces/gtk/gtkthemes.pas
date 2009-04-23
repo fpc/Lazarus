@@ -392,10 +392,10 @@ to alternate splitter painting}
         Result.Detail := 'notebook';
         if Details.Part in [TABP_PANE, TABP_BODY] then
         begin
-          Result.GapSide := GTK_POS_TOP;
+          {Result.GapSide := GTK_POS_TOP;
           Result.GapX := 20;
-          Result.GapWidth := 40;
-          Result.Painter := gptBoxGap;
+          Result.GapWidth := 40;}
+          Result.Painter := gptBox;
         end;
       end;
   end;
