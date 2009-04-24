@@ -521,7 +521,7 @@ begin
   ctnUnit, ctnProgram, ctnLibrary, ctnPackage:
     Result:=CodeNode.DescAsString+' '+ACodeTool.ExtractSourceName;
 
-  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
     Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
   ctnClass:
