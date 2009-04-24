@@ -1038,23 +1038,30 @@ var
 begin
   if SeriesCount = 0 then exit;
 
-  // Set clipping region so we don't draw outside.
-  // TODO: Replace by Canvas.ClipRect after fixing issue 13418.
-  IntersectClipRect(
-    ACanvas.Handle, FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
-
   seriesInZOrder := GetSeriesInZOrder;
   try
     for i := 0 to SeriesCount - 1 do
-      with TBasicChartSeries(seriesInZOrder[i]) do
-        if Active then
-          Draw(ACanvas);
+      with TBasicChartSeries(seriesInZOrder[i]) do begin
+        if not Active then continue;
+        FOffset.X -= ZPosition;
+        FOffset.Y += ZPosition;
+        OffsetRect(FClipRect, -ZPosition, ZPosition);
+        // Set clipping region so we don't draw outside.
+        // TODO: Replace by Canvas.ClipRect after fixing issue 13418.
+        IntersectClipRect(
+          ACanvas.Handle,
+          FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
+        Draw(ACanvas);
+        FOffset.X += ZPosition;
+        FOffset.Y -= ZPosition;
+        OffsetRect(FClipRect, ZPosition, -ZPosition);
+        // Now disable clipping.
+        SelectClipRgn(ACanvas.Handle, 0);
+      end;
   finally
     seriesInZOrder.Free;
   end;
 
-  // Now disable clipping.
-  SelectClipRgn(ACanvas.Handle, 0);
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
