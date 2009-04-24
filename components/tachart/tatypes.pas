@@ -241,6 +241,8 @@ type
     property Visible default true;
   end;
 
+  EExtentError = class(EChartError);
+
   { TChartExtent }
 
   TChartExtent = class (TChartElement)
@@ -253,6 +255,7 @@ type
     procedure SetBounds(AIndex: Integer; const AValue: Double);
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
+    procedure CheckBoundsOrder;
     property Extent: TDoubleRect read FExtent;
   published
     property XMin: Double index 1 read GetBounds write SetBounds;
@@ -778,6 +781,20 @@ end;
 function TChartExtent.GetUseBounds(AIndex: Integer): Boolean;
 begin
   Result := FUseBounds[AIndex];
+end;
+
+procedure TChartExtent.CheckBoundsOrder;
+begin
+  if UseXMin and UseXMax and (XMin >= XMax) then begin
+    UseXMin := false;
+    UseXMax := false;
+    raise EExtentError.Create('ChartExtent: XMin >= XMax');
+  end;
+  if UseYMin and UseYMax and (YMin >= YMax) then begin
+    UseYMin := false;
+    UseYMax := false;
+    raise EExtentError.Create('ChartExtent: YMin >= YMax');
+  end;
 end;
 
 function TChartExtent.GetBounds(AIndex: Integer): Double;

@@ -1241,6 +1241,7 @@ begin
     FYGraphMax := FCurrentExtent.b.Y;
     exit;
   end;
+  Extent.CheckBoundsOrder;
 
   // Search # of points, min and max of all series
   FXGraphMin := Infinity;
