@@ -346,10 +346,10 @@ constructor TChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  XGraphMin := MaxDouble;
-  YGraphMin := MaxDouble;
-  XGraphMax := MinDouble;
-  YGraphMax := MinDouble;
+  XGraphMin := Infinity;
+  YGraphMin := Infinity;
+  XGraphMax := NegInfinity;
+  YGraphMax := NegInfinity;
 
   FActive := true;
   FShowInLegend := true;

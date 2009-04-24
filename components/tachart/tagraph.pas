@@ -117,14 +117,11 @@ type
 
   TChart = class(TCustomChart)
   private
+    FExtent: TChartExtent;
     FSeries: TChartSeriesList;
     FMirrorX: Boolean;                // From right to left ?
     FXGraphMin, FYGraphMin: Double;   // Graph coordinates of limits
     FXGraphMax, FYGraphMax: Double;
-    FAutoUpdateXMin: Boolean;         // Automatic calculation of XMin limit of graph ?
-    FAutoUpdateXMax: Boolean;         // Automatic calculation of XMax limit of graph ?
-    FAutoUpdateYMin: Boolean;         // Automatic calculation of YMin limit of graph ?
-    FAutoUpdateYMax: Boolean;         // Automatic calculation of YMax limit of graph ?
 
     FLegend: TChartLegend;            //legend configuration
     FTitle: TChartTitle;              //legend configuration
@@ -155,15 +152,8 @@ type
     function GetMargins(ACanvas: TCanvas): TRect;
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure PrepareXorPen;
-    procedure SetAutoUpdateXMin(Value: Boolean);
-    procedure SetAutoUpdateXMax(Value: Boolean);
-    procedure SetAutoUpdateYMin(Value: Boolean);
-    procedure SetAutoUpdateYMax(Value: Boolean);
+    procedure SetExtent(const AValue: TChartExtent);
     procedure SetReticuleMode(const AValue: TReticuleMode);
-    procedure SetXGraphMin(Value: Double);
-    procedure SetYGraphMin(Value: Double);
-    procedure SetXGraphMax(Value: Double);
-    procedure SetYGraphMax(Value: Double);
     procedure SetMirrorX(AValue: Boolean);
     procedure SetGraphBrush(Value: TBrush);
     procedure SetTitle(Value: TChartTitle);
@@ -210,11 +200,6 @@ type
 
     procedure AddSeries(ASeries: TBasicChartSeries);
     procedure DeleteSeries(ASeries: TBasicChartSeries);
-    procedure SetAutoXMin(Auto: Boolean);
-    procedure SetAutoXMax(Auto: Boolean);
-    procedure SetAutoYMin(Auto: Boolean);
-    procedure SetAutoYMax(Auto: Boolean);
-
     function XGraphToImage(AX: Double): Integer; inline;
     function YGraphToImage(AY: Double): Integer; inline;
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
@@ -239,19 +224,17 @@ type
     property Canvas;
     property ClipRect: TRect read FClipRect;
 
+    property XGraphMin: Double read FXGraphMin;
+    property YGraphMin: Double read FYGraphMin;
+    property XGraphMax: Double read FXGraphMax;
+    property YGraphMax: Double read FYGraphMax;
+
     property SeriesCount: Integer read GetSeriesCount;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
   published
     procedure StyleChanged(Sender: TObject);
-    property AutoUpdateXMin: Boolean read FAutoUpdateXMin write SetAutoUpdateXMin default true;
-    property AutoUpdateXMax: Boolean read FAutoUpdateXMax write SetAutoUpdateXMax default true;
-    property AutoUpdateYMin: Boolean read FAutoUpdateYMin write SetAutoUpdateYMin default true;
-    property AutoUpdateYMax: Boolean read FAutoUpdateYMax write SetAutoUpdateYMax default true;
-    property XGraphMin: Double read FXGraphMin write SetXGraphMin;
-    property YGraphMin: Double read FYGraphMin write SetYGraphMin;
-    property XGraphMax: Double read FXGraphMax write SetXGraphMax;
-    property YGraphMax: Double read FYGraphMax write SetYGraphMax;
+    property Extent: TChartExtent read FExtent write SetExtent;
     property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
     property ReticuleMode: TReticuleMode
@@ -308,10 +291,6 @@ implementation
 uses
   Clipbrd, LCLProc, GraphMath, Math, Types;
 
-const
-  MinDouble = -1.7e308;
-  MaxDouble = 1.7e308;
-
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
   Result :=
@@ -354,11 +333,6 @@ begin
 
   FSeries := TChartSeriesList.Create(Self);
 
-  FAutoUpdateXMin := True;
-  FAutoUpdateXMax := True;
-  FAutoUpdateYMin := True;
-  FAutoUpdateYMax := True;
-
   Color := clBtnFace;
   AxisColor := clBlack;
 
@@ -393,6 +367,8 @@ begin
   FFrame :=  TChartPen.Create;
   FFrame.Visible := true;
   FFrame.OnChange := @StyleChanged;
+
+  FExtent := TChartExtent.Create(Self);
 end;
 
 destructor TChart.Destroy;
@@ -400,12 +376,13 @@ begin
   FSeries.Free;
   FGraphBrush.Free;
 
-  FLegend.Destroy;
-  FTitle.Destroy;
-  FFoot.Destroy;
-  LeftAxis.Destroy;
-  BottomAxis.Destroy;
-  FFrame.Destroy;
+  FLegend.Free;
+  FTitle.Free;
+  FFoot.Free;
+  FLeftAxis.Free;
+  FBottomAxis.Free;
+  FFrame.Free;
+  FExtent.Free;
 
   inherited Destroy;
 end;
@@ -809,50 +786,6 @@ begin
     ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
 end;
 
-procedure TChart.SetAutoUpdateXMin(Value: Boolean);
-begin
-  FAutoUpdateXMin := Value;
-end;
-
-procedure TChart.SetAutoUpdateXMax(Value: Boolean);
-begin
-  FAutoUpdateXMax := Value;
-end;
-
-procedure TChart.SetAutoUpdateYMin(Value: Boolean);
-begin
-  FAutoUpdateYMin := Value;
-end;
-
-procedure TChart.SetAutoUpdateYMax(Value: Boolean);
-begin
-  FAutoUpdateYMax := Value;
-end;
-
-procedure TChart.SetXGraphMin(Value: Double);
-begin
-  FXGraphMin := Value;
-  Invalidate;
-end;
-
-procedure TChart.SetYGraphMin(Value: Double);
-begin
-  FYGraphMin := Value;
-  Invalidate;
-end;
-
-procedure TChart.SetXGraphMax(Value: Double);
-begin
-  FXGraphMax := Value;
-  Invalidate;
-end;
-
-procedure TChart.SetYGraphMax(Value: Double);
-begin
-  FYGraphMax := Value;
-  Invalidate;
-end;
-
 procedure TChart.SetMirrorX(AValue: Boolean);
 begin
   if AValue = FMirrorX then exit;
@@ -929,30 +862,6 @@ begin
   i := FSeries.FList.IndexOf(ASeries);
   if i < 0 then exit;
   FSeries.FList.Delete(i);
-  Invalidate;
-end;
-
-procedure TChart.SetAutoXMin(Auto: Boolean);
-begin
-  FAutoUpdateXMin := Auto;
-  Invalidate;
-end;
-
-procedure TChart.SetAutoXMax(Auto: Boolean);
-begin
-  FAutoUpdateXMax := Auto;
-  Invalidate;
-end;
-
-procedure TChart.SetAutoYMin(Auto: Boolean);
-begin
-  FAutoUpdateYMin := Auto;
-  Invalidate;
-end;
-
-procedure TChart.SetAutoYMax(Auto: Boolean);
-begin
-  FAutoUpdateYMax := Auto;
   Invalidate;
 end;
 
@@ -1259,6 +1168,12 @@ begin
     Series.FList.Move(i, Order);
 end;
 
+procedure TChart.SetExtent(const AValue: TChartExtent);
+begin
+  FExtent.Assign(AValue);
+  Invalidate;
+end;
+
 procedure TChart.SetFrame(Value: TChartPen);
 begin
   FFrame.Assign(Value);
@@ -1309,7 +1224,7 @@ end;
 
 procedure TChart.UpdateExtent;
 var
-  XMinSeries, YMinSeries, XMaxSeries, YMaxSeries, Valeur, Tolerance: Double;
+  ext, tolerance: Double;
   allEmpty: Boolean = true;
   i: Integer;
 begin
@@ -1318,69 +1233,53 @@ begin
     FYGraphMin := FCurrentExtent.a.Y;
     FXGraphMax := FCurrentExtent.b.X;
     FYGraphMax := FCurrentExtent.b.Y;
-  end
-  else begin
-    // Search # of points, min and max of all series
-    XMinSeries := MaxDouble;
-    XMaxSeries := MinDouble;
-    YMinSeries := MaxDouble;
-    YMaxSeries := MinDouble;
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active then begin
-          allEmpty := allEmpty and IsEmpty;
-          UpdateBounds(XMinSeries, YMinSeries, XMaxSeries, YMaxSeries);
-        end;
-    if XMinSeries > MaxDouble / 10 then XMinSeries := 0;
-    if YMinSeries > MaxDouble / 10 then YMinSeries := 0;
-    if XMaxSeries < MinDouble / 10 then XMaxSeries := 0;
-    if YMaxSeries < MinDouble / 10 then YMaxSeries := 0;
-
-    if YMaxSeries = YMinSeries then begin
-      YMaxSeries := YMaxSeries + 1;
-      YMinSeries := YMinSeries - 1;
-    end;
-    if XMaxSeries = XMinSeries then begin
-      XMaxSeries := XMaxSeries + 1;
-      XMinSeries := XMinSeries - 1;
-    end;
-
-
-    // Image coordinates calculation
-    // Update max in graph
-    // if one point : + / - 10% of the point coordinates
-    Tolerance := 0.001; //this should be cleaned eventually
-    // Tolerance := 0.1;
-
-    if not allEmpty then begin
-      // if several points : automatic + / - 10% of interval
-      Valeur := Tolerance * (XMaxSeries - XMinSeries);
-      if Valeur <> 0 then begin
-        if FAutoUpdateXMin then FXGraphMin := XMinSeries - Valeur;
-        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + Valeur;
-      end
-      else begin
-        if FAutoUpdateXMin then FXGraphMin := XMinSeries - 1;
-        if FAutoUpdateXMax then FXGraphMax := XMaxSeries + 1;
-      end;
-      Valeur := Tolerance * (YMaxSeries - YMinSeries);
-      if Valeur <> 0 then begin
-        if FAutoUpdateYMin then FYGraphMin := YMinSeries - Valeur;
-        if FAutoUpdateYMax then FYGraphMax := YMaxSeries + Valeur;
-      end
-      else begin
-        if FAutoUpdateYMin then FYGraphMin := YMinSeries - 1;
-        if FAutoUpdateYMax then FYGraphMax := YMinSeries + 1;
-      end;
-    end
-    else begin
-      // 0 Points
-      if FAutoUpdateXMin then FXGraphMin := 0;
-      if FAutoUpdateXMax then FXGraphMax := 0;
-      if FAutoUpdateYMin then FYGraphMin := 0;
-      if FAutoUpdateYMax then FYGraphMax := 0;
-    end;
+    exit;
   end;
+
+  // Search # of points, min and max of all series
+  FXGraphMin := Infinity;
+  FXGraphMax := NegInfinity;
+  FYGraphMin := Infinity;
+  FYGraphMax := NegInfinity;
+  for i := 0 to SeriesCount - 1 do
+    with Series[i] do
+      if Active then begin
+        allEmpty := allEmpty and IsEmpty;
+        UpdateBounds(FXGraphMin, FYGraphMin, FXGraphMax, FYGraphMax);
+      end;
+
+  if Extent.UseXMax and (FXGraphMax > Extent.XMax) then
+    FXGraphMax := Extent.XMax;
+  if Extent.UseXMin and (FXGraphMin < Extent.XMin) then
+    FXGraphMin := Extent.XMin;
+  if Extent.UseYMax and (FYGraphMax > Extent.YMax) then
+    FYGraphMax := Extent.YMax;
+  if Extent.UseYMin and (FYGraphMin < Extent.YMin) then
+    FYGraphMin := Extent.YMin;
+
+  // Min >= Max is possible in 3 cases:
+  // 1) bounds not updated, so min = Inf, max = -Inf
+  // 2) extent forced some bound beyond he opposite one
+  // 3) only one point, so min = max
+  if FXGraphMin >= FXGraphMax then begin
+    FXGraphMin := (FXGraphMin + FXGraphMax) * 0.5 - 1;
+    FXGraphMax := FXGraphMin + 2;
+  end;
+  if FYGraphMin >= FYGraphMax then begin
+    FYGraphMin := (FYGraphMin + FYGraphMax) * 0.5 - 1;
+    FYGraphMax := FYGraphMin + 2;
+  end;
+
+  if allEmpty then exit;
+
+  // Expand view slightly to avoid puttind data points on the chart edge.
+  tolerance := 0.01;
+  ext := tolerance * (FXGraphMax - FXGraphMin);
+  FXGraphMin -= ext;
+  FXGraphMax += ext;
+  ext := tolerance * (FYGraphMax - FYGraphMin);
+  FYGraphMin -= ext;
+  FYGraphMax += ext;
 end;
 
 procedure TChart.ZoomFull;
@@ -1489,9 +1388,24 @@ begin
   GetItem(AIndex).Assign(AValue);
 end;
 
+procedure SkipObsoleteChartProperties;
+const
+  NOTE = 'Obsolete, use Extent instead';
+  NAMES: array [1..4] of String = (
+    'XGraph', 'YGraph', 'AutoUpdateX', 'AutoUpdateY');
+var
+  i: Integer;
+begin
+  RegisterPropertyToSkip(TChart, 'BackColor', 'Obsolete, use Color instead', '');
+  for i := 1 to High(NAMES) do begin
+    RegisterPropertyToSkip(TChart, NAMES[i] + 'Min', NOTE, '');
+    RegisterPropertyToSkip(TChart, NAMES[i] + 'Max', NOTE, '');
+  end;
+end;
+
 initialization
   {$I tagraph.lrs}
-  RegisterPropertyToSkip(TChart, 'BackColor', 'Obsolete, use Color instead', '');
+  SkipObsoleteChartProperties;
   SeriesClassRegistry := TStringList.Create;
 
 finalization
