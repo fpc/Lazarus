@@ -259,10 +259,10 @@ type
     property YMin: Double index 2 read GetBounds write SetBounds;
     property XMax: Double index 3 read GetBounds write SetBounds;
     property YMax: Double index 4 read GetBounds write SetBounds;
-    property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds;
-    property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds;
-    property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds;
-    property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds;
+    property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
+    property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds default false;
+    property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds default false;
+    property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds default false;
   end;
 
 const
@@ -511,6 +511,7 @@ begin
   inherited Create(AOwner);
   FTitle := TChartAxisTitle.Create(AOwner);
   InitHelper(FGrid, TChartPen);
+  FVisible := true;
 end;
 
 destructor TChartAxis.Destroy;

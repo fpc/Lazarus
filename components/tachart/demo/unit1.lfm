@@ -35,13 +35,11 @@ object Form1: TForm1
     LeftAxis.Title.Angle = 90
     LeftAxis.Title.Font.Height = -11
     LeftAxis.Title.Font.Name = 'MS Sans Serif'
-    LeftAxis.Visible = False
     BottomAxis.Grid.Color = clGray
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
     BottomAxis.Title.Font.Height = -11
     BottomAxis.Title.Font.Name = 'MS Sans Serif'
-    BottomAxis.Visible = False
     Frame.Visible = True
     Align = alClient
     ParentColor = False
