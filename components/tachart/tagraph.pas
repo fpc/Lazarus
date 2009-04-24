@@ -124,6 +124,7 @@ type
     FAxisColor: TColor;
     FAxisVisible: Boolean;
     FBottomAxis: TChartAxis;
+    FExpandPercentage: Integer;
     FExtent: TChartExtent;
     FFoot: TChartTitle;
     FFrame: TChartPen;
@@ -159,6 +160,7 @@ type
     procedure SetAxisColor(const AValue: TColor);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBottomAxis(Value: TChartAxis);
+    procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(const AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
@@ -234,6 +236,8 @@ type
     property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
+    property ExpandPercentage: Integer
+      read FExpandPercentage write SetExpandPercentage default 0;
     property Extent: TChartExtent read FExtent write SetExtent;
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
@@ -1168,6 +1172,13 @@ begin
     Series.FList.Move(i, Order);
 end;
 
+procedure TChart.SetExpandPercentage(AValue: Integer);
+begin
+  if FExpandPercentage = AValue then exit;
+  FExpandPercentage := AValue;
+  Invalidate;
+end;
+
 procedure TChart.SetExtent(const AValue: TChartExtent);
 begin
   FExtent.Assign(AValue);
@@ -1223,8 +1234,6 @@ begin
 end;
 
 procedure TChart.UpdateExtent;
-var
-  ext, tolerance: Double;
 
   procedure SetBounds(
     var ALo, AHi: Double; AMin, AMax: Double; AUseMin, AUseMax: Boolean);
@@ -1239,6 +1248,10 @@ var
       AHi := IfThen(AUseMax and (AValue > AMax), AMax, AValue);
     end;
 
+  const
+    PERCENT = 0.01;
+  var
+    ext: Double;
   begin
     if (ALo = Infinity) and (AHi = NegInfinity) then begin
       // No boundaries, try to use extent
@@ -1281,7 +1294,7 @@ var
       SetHi(AHi);
       if ALo >= AHi then SetLo(AHi - 1);
       // Expand view slightly to avoid puttind data points on the chart edge.
-      ext := tolerance * (AHi - ALo);
+      ext := ExpandPercentage * PERCENT * (AHi - ALo);
       SetLo(ALo - ext);
       SetHi(AHi + ext);
     end;
@@ -1299,7 +1312,6 @@ begin
     with Series[i] do
       if Active then
         UpdateBounds(FCurrentExtent);
-  tolerance := 0.01;
   with FCurrentExtent, Extent do begin
     SetBounds(a.X, b.X, XMin, XMax, UseXMin, UseXMax);
     SetBounds(a.Y, b.Y, YMin, YMax, UseYMin, UseYMax);
