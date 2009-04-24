@@ -52,7 +52,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools, LinkScanner,
   AVL_Tree, CodeToolMemManager, DefineTemplates,
   SourceChanger, FindDeclarationTool, PascalParserTool;
   
@@ -309,6 +309,8 @@ type
     procedure ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
       out CleanCursorPos: integer; out CursorNode: TCodeTreeNode;
       out IdentStartPos, IdentEndPos: integer);
+    function FindIdentifierStartPos(const CursorPos: TCodeXYPosition
+                                      ): TCodeXYPosition;
     procedure FindCollectionContext(Params: TFindDeclarationParams;
       IdentStartPos: integer; CursorNode: TCodeTreeNode;
       out GatherContext: TFindContext; out ContextExprStartPos: LongInt;
@@ -1327,7 +1329,7 @@ begin
 
   // build code tree
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
+  DebugLn('TIdentCompletionTool.ParseSourceTillCollectionStart A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y),' ',DbgsCXY(IdentStartXYPos));
   {$ENDIF}
   BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                 [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
@@ -1342,6 +1344,21 @@ begin
   
   // get identifier position
   GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+end;
+
+function TIdentCompletionTool.FindIdentifierStartPos(
+  const CursorPos: TCodeXYPosition): TCodeXYPosition;
+var
+  p: integer;
+  IdentStartPos, IdentEndPos: integer;
+begin
+  CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,p);
+  if p<1 then
+    RaiseException(ctsCursorPosOutsideOfCode);
+  GetIdentStartEndAtPosition(CursorPos.Code.Source,p,IdentStartPos,IdentEndPos);
+  Result:=CursorPos;
+  if IdentStartPos>0 then
+    dec(Result.X,p-IdentStartPos);
 end;
 
 procedure TIdentCompletionTool.FindCollectionContext(
@@ -1514,6 +1531,7 @@ var
   StartInSubContext: Boolean;
   StartPosOfVariable: LongInt;
   CursorContext: TFindContext;
+  IdentStartXY: TCodeXYPosition;
   
   procedure CheckProcedureDeclarationContext;
   var
@@ -1561,7 +1579,8 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
-    ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
+    IdentStartXY:=FindIdentifierStartPos(CursorPos);
+    ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
     if CleanCursorPos=0 then ;
 
@@ -1586,7 +1605,7 @@ begin
       GatherSourceNames(GatherContext);
     end else begin
       // find class and ancestors if existing (needed for protected identifiers)
-      FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
+      FindContextClassAndAncestors(IdentStartXY,ClassAndAncestors);
 
       FindCollectionContext(Params,IdentStartPos,CursorNode,
                            GatherContext,ContextExprStartPos,StartInSubContext);

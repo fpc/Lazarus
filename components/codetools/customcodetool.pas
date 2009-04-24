@@ -2150,19 +2150,21 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
 var
   ChildNode: TCodeTreeNode;
   Brother: TCodeTreeNode;
+  Node: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   Result:=nil;
-  while StartNode<>nil do begin
+  Node:=StartNode;
+  while Node<>nil do begin
     //DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
     //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
     //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
-    if (StartNode.StartPos<=P)
-    and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
+    if (Node.StartPos<=P)
+    and ((Node.EndPos>P) or (Node.EndPos<1)) then begin
       // StartNode contains P
-      Result:=StartNode;
+      Result:=Node;
       // -> search for a child that contains P
-      Brother:=StartNode;
+      Brother:=Node;
       while (Brother<>nil)
       and (Brother.StartPos<=P) do begin
         // brother also contains P
@@ -2178,9 +2180,22 @@ begin
       break;
     end else begin
       // search in next node
-      StartNode:=StartNode.NextBrother;
+      Node:=Node.NextBrother;
     end;
   end;
+  if (Result=nil) and (Tree.Root<>nil) then begin
+    Node:=Tree.Root;
+    while Node.NextBrother<>nil do
+      Node:=Node.NextBrother;
+    if (Node<>nil) and (Node.EndPos=p) then begin
+      // cursor at end of source
+      Result:=Node;
+      while (Result.LastChild<>nil) and (Result.LastChild.EndPos=p) do
+        Result:=Result.LastChild;
+      exit;
+    end;
+  end;
+
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
     RaiseNoNodeFoundAtCursor;
