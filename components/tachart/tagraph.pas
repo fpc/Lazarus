@@ -72,16 +72,19 @@ type
       var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
+  protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
+
   public
     destructor Destroy; override;
 
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
-    function IsEmpty: Boolean; virtual; abstract;
+  public
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
+    function IsEmpty: Boolean; virtual; abstract;
 
     property Active: Boolean read FActive write SetActive;
     property ParentChart: TChart read FChart;
@@ -104,10 +107,11 @@ type
     function GetItem(AIndex: Integer): TBasicChartSeries;
     procedure SetItem(AIndex: Integer; const AValue: TBasicChartSeries);
   public
+    function Count: Integer;
     constructor Create(AOwner: TChart);
     destructor Destroy; override;
 
-    function Count: Integer;
+  public
     property Chart: TChart read FChart;
     property Items[AIndex: Integer]: TBasicChartSeries
       read GetItem write SetItem; default;
@@ -116,146 +120,140 @@ type
   { TChart }
 
   TChart = class(TCustomChart)
-  private
-    FExtent: TChartExtent;
-    FSeries: TChartSeriesList;
-    FMirrorX: Boolean;                // From right to left ?
-    FXGraphMin, FYGraphMin: Double;   // Graph coordinates of limits
-    FXGraphMax, FYGraphMax: Double;
-
-    FLegend: TChartLegend;            //legend configuration
-    FTitle: TChartTitle;              //legend configuration
-    FFoot: TChartTitle;               //legend configuration
-    FLeftAxis: TChartAxis;
-    FBottomAxis: TChartAxis;
-
+  private // Property fields
     FAllowZoom: Boolean;
-
+    FAxisColor: TColor;
+    FAxisVisible: Boolean;
+    FBottomAxis: TChartAxis;
+    FExtent: TChartExtent;
+    FFoot: TChartTitle;
+    FFrame: TChartPen;
     FGraphBrush: TBrush;
-    AxisColor: TColor;                // Axis color
-    FScale, FOffset: TDoublePoint;    // Coordinates transformation
+    FLeftAxis: TChartAxis;
+    FLegend: TChartLegend;
+    FMirrorX: Boolean;                // From right to left ?
+    FOnDrawReticule: TDrawReticuleEvent;
+    FSeries: TChartSeriesList;
+    FTitle: TChartTitle;
 
+  private
+    FClipRect: TRect;
+    FCurrentExtent: TDoubleRect;
     FIsMouseDown: Boolean;
     FIsZoomed: Boolean;
-    FSelectionRect: TRect;
-    FCurrentExtent: TDoubleRect;
-    FClipRect: TRect;
-
+    FOffset: TDoublePoint;   // Coordinates transformation
     FReticuleMode: TReticuleMode;
-    FOnDrawReticule: TDrawReticuleEvent;
     FReticulePos: TPoint;
+    FScale: TDoublePoint;    // Coordinates transformation
+    FSelectionRect: TRect;
+    FXGraphMax, FXGraphMin: Double;   // Graph coordinates of limits
+    FYGraphMax, FYGraphMin: Double;
 
-    FFrame: TChartPen;
-
-    FAxisVisible: Boolean;
-
-    function GetMargins(ACanvas: TCanvas): TRect;
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
-    procedure PrepareXorPen;
-    procedure SetExtent(const AValue: TChartExtent);
-    procedure SetReticuleMode(const AValue: TReticuleMode);
-    procedure SetMirrorX(AValue: Boolean);
-    procedure SetGraphBrush(Value: TBrush);
-    procedure SetTitle(Value: TChartTitle);
-    procedure SetFoot(Value: TChartTitle);
-    function  GetLegendWidth(ACanvas: TCanvas): Integer;
     procedure DrawReticule(ACanvas: TCanvas);
-
-    procedure SetLegend(Value: TChartLegend);
-    procedure SetLeftAxis(Value: TChartAxis);
-    procedure SetBottomAxis(Value: TChartAxis);
-
-    procedure SetFrame(Value: TChartPen);
-
-    procedure SetAxisVisible(Value: Boolean);
-
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
-
+    function GetLegendWidth(ACanvas: TCanvas): Integer;
+    function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
     function GetSeriesInZOrder: TFPList;
+    procedure PrepareXorPen;
+
+    procedure SetAxisColor(const AValue: TColor);
+    procedure SetAxisVisible(Value: Boolean);
+    procedure SetBottomAxis(Value: TChartAxis);
+    procedure SetExtent(const AValue: TChartExtent);
+    procedure SetFoot(Value: TChartTitle);
+    procedure SetFrame(Value: TChartPen);
+    procedure SetGraphBrush(Value: TBrush);
+    procedure SetLeftAxis(Value: TChartAxis);
+    procedure SetLegend(Value: TChartLegend);
+    procedure SetMirrorX(AValue: Boolean);
+    procedure SetReticuleMode(const AValue: TReticuleMode);
+    procedure SetTitle(Value: TChartTitle);
+
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Clean(ACanvas: TCanvas; ARect: TRect);
+    procedure DisplaySeries(ACanvas: TCanvas);
     procedure DoDrawReticule(
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
-
-    procedure Clean(ACanvas: TCanvas; ARect: TRect);
-    procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
     procedure DrawLegend(ACanvas: TCanvas);
+    procedure DrawTitleFoot(ACanvas: TCanvas);
+    procedure MouseDown(
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure StyleChanged(Sender: TObject);
     procedure UpdateExtent;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
-    procedure Paint; override;
     procedure EraseBackground(DC: HDC); override;
     procedure GetChildren(AProc: TGetChildProc; ARoot: TComponent); override;
+    procedure Paint; override;
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
-    procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-
-    procedure AddSeries(ASeries: TBasicChartSeries);
-    procedure DeleteSeries(ASeries: TBasicChartSeries);
-    function XGraphToImage(AX: Double): Integer; inline;
-    function YGraphToImage(AY: Double): Integer; inline;
-    function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
-    function XImageToGraph(AX: Integer): Double; inline;
-    function YImageToGraph(AY: Integer): Double; inline;
-    function ImageToGraph(const APoint: TPoint): TDoublePoint;
-    procedure DisplaySeries(ACanvas: TCanvas);
-    procedure ZoomFull;
-
-    procedure SaveToBitmapFile(const FileName: String);
-    procedure CopyToClipboardBitmap;
-    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
-    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
-
+  public // Helpers for series drawing
     function GetNewColor: TColor;
     function GetRectangle: TRect;
-
-    function LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
+    function LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
 
-    property Canvas;
-    property ClipRect: TRect read FClipRect;
+  public
+    procedure AddSeries(ASeries: TBasicChartSeries);
+    procedure CopyToClipboardBitmap;
+    procedure DeleteSeries(ASeries: TBasicChartSeries);
+    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
+    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
+    procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
+    procedure SaveToBitmapFile(const FileName: String);
+    procedure ZoomFull;
 
-    property XGraphMin: Double read FXGraphMin;
-    property YGraphMin: Double read FYGraphMin;
-    property XGraphMax: Double read FXGraphMax;
-    property YGraphMax: Double read FYGraphMax;
+  public // Coordinate conversion
+    function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
+    function ImageToGraph(const APoint: TPoint): TDoublePoint;
+    function XGraphToImage(AX: Double): Integer; inline;
+    function XImageToGraph(AX: Integer): Double; inline;
+    function YGraphToImage(AY: Double): Integer; inline;
+    function YImageToGraph(AY: Integer): Double; inline;
 
-    property SeriesCount: Integer read GetSeriesCount;
+  public
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
+    property ClipRect: TRect read FClipRect;
+    property SeriesCount: Integer read GetSeriesCount;
+    property XGraphMax: Double read FXGraphMax;
+    property XGraphMin: Double read FXGraphMin;
+    property YGraphMax: Double read FYGraphMax;
+    property YGraphMin: Double read FYGraphMin;
+
   published
-    procedure StyleChanged(Sender: TObject);
+    property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
+    property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
+    property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
+    property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
     property Extent: TChartExtent read FExtent write SetExtent;
-    property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
+    property Foot: TChartTitle read FFoot write SetFoot;
+    property Frame: TChartPen read FFrame write SetFrame;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
+    property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
+    property Legend: TChartLegend read FLegend write SetLegend;
+    property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
     property ReticuleMode: TReticuleMode
       read FReticuleMode write SetReticuleMode default rmNone;
     property Series: TChartSeriesList read FSeries;
+    property Title: TChartTitle read FTitle write SetTitle;
 
+  published
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write FOnDrawReticule;
 
-    property Legend: TChartLegend read FLegend write SetLegend;
-    property Title: TChartTitle read FTitle write SetTitle;
-    property Foot: TChartTitle read FFoot write SetFoot;
-
-    property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
-
-    property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
-    property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
-    property Frame: TChartPen read FFrame write SetFrame;
-
-    property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
-
+  published
     property Align;
     property Anchors;
     property Color default clBtnFace;
@@ -269,15 +267,16 @@ type
     property ShowHint;
     property Visible;
 
+  published
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
-    property OnStartDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnStartDrag;
   end;
 
 procedure Register;
@@ -983,6 +982,13 @@ begin
   finally
     tmpBitmap.Free;
   end;
+end;
+
+procedure TChart.SetAxisColor(const AValue: TColor);
+begin
+  if FAxisColor = AValue then exit;
+  FAxisColor := AValue;
+  Invalidate;
 end;
 
 procedure TChart.CopyToClipboardBitmap;
