@@ -108,14 +108,16 @@ type
 
   TBarSeries = class(TBasicPointSeries)
   private
+    FAdjustBarWidth: Boolean;
     FBarBrush: TBrush;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
 
+    procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
+    procedure SetAdjustBarWidth(AValue: Boolean);
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
-    procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetSeriesColor: TColor; override;
@@ -127,6 +129,8 @@ type
     procedure Draw(ACanvas: TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
+    property AdjustBarWidth: Boolean
+      read FAdjustBarWidth write SetAdjustBarWidth default false;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
@@ -1206,6 +1210,11 @@ procedure TBarSeries.ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
 var
   i: Integer;
 begin
+  if not AdjustBarWidth then begin
+    ATotalNumber := 1;
+    AMyPos := 0;
+    exit;
+  end;
   ATotalNumber := 0;
   AMyPos := -1;
   for i := 0 to ParentChart.SeriesCount - 1 do begin
@@ -1220,6 +1229,13 @@ end;
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
+end;
+
+procedure TBarSeries.SetAdjustBarWidth(AValue: Boolean);
+begin
+  if FAdjustBarWidth = AValue then exit;
+  FAdjustBarWidth := AValue;
+  UpdateParentChart;
 end;
 
 { TPieSeries }
