@@ -85,7 +85,7 @@ var
   i: Integer;
 begin
   for i := 0 to Chart1.SeriesCount - 1 do
-    Chart1.Series[i].ZPosition := Ord(Chart1.Series[i] <> ASeries);
+    Chart1.Series[i].ZPosition := Ord(Chart1.Series[i] = ASeries);
 end;
 
 procedure TForm1.btnAddAreaClick(Sender: TObject);

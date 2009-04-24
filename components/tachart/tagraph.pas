@@ -299,7 +299,7 @@ uses
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
   Result :=
-    TBasicChartSeries(AItem2).ZPosition - TBasicChartSeries(AItem1).ZPosition;
+    TBasicChartSeries(AItem1).ZPosition - TBasicChartSeries(AItem2).ZPosition;
 end;
 
 procedure Register;
