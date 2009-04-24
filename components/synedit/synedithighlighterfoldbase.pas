@@ -101,6 +101,7 @@ type
   TSynFoldAction = (sfaOpen,    // At this node a new Fold can start
                     sfaClose,   // At this node a fold ends
                     sfaMarkup,  // This node can be highlighted, by the matching Word-Pair Markup
+                    sfaFold,    // Part of a foldable block
                     sfaInvalid  // Wrong Index
                    );
   TSynFoldActions = set of TSynFoldAction;

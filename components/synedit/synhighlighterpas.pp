@@ -2767,8 +2767,9 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType);
-//    if not SubBlock then
-      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaOpen);
+    if FoldBlock then
+      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
+    include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaOpen);
     inc(FNodeInfoCount);
   end;
   if not FoldBlock then
@@ -2783,8 +2784,9 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], -1, TopPascalCodeFoldBlockType);
-//    if DecreaseLevel then
-      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
+    if DecreaseLevel then
+      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
+    include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
     inc(FNodeInfoCount);
   end;
   inherited EndCodeFoldBlock(DecreaseLevel);

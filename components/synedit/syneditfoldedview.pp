@@ -2210,6 +2210,8 @@ begin
       n := o;
       for i := hl.FoldNodeInfoCount[aStartIndex] - 1 downto 0 do begin
         nd := hl.FoldNodeInfo[aStartIndex, i];
+        if not(sfaFold in nd.FoldAction) then
+          continue;
         t := nd.FoldGroup;
         if sfaOpen in nd.FoldAction then begin
           dec(n);
