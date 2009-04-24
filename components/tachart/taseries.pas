@@ -58,7 +58,8 @@ type
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetValuesTotal: Double;
     procedure SetActive(AValue: Boolean); override;
-    procedure SetShowInLegend(Value: Boolean); override;
+    procedure SetShowInLegend(AValue: Boolean); override;
+    procedure SetZPosition(AValue: TChartZPosition); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
@@ -316,6 +317,7 @@ type
     procedure SetActive(AValue: Boolean); override;
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure SetShowInLegend(AValue: Boolean); override;
+    procedure SetZPosition(AValue: TChartZPosition); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
@@ -335,6 +337,7 @@ type
     property ShowInLegend;
     property Step: TFuncSeriesStep read FStep write SetStep default 2;
     property Title;
+    property ZPosition;
   end;
 
 implementation
@@ -523,9 +526,17 @@ begin
   FMarks.Assign(AValue);
 end;
 
-procedure TChartSeries.SetShowInLegend(Value: Boolean);
+procedure TChartSeries.SetShowInLegend(AValue: Boolean);
 begin
-  FShowInLegend := Value;
+  if FShowInLegend = AValue then exit;
+  FShowInLegend := AValue;
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.SetZPosition(AValue: TChartZPosition);
+begin
+  if FZPosition = AValue then exit;
+  FZPosition := AValue;
   UpdateParentChart;
 end;
 
@@ -1658,6 +1669,13 @@ procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetZPosition(AValue: TChartZPosition);
+begin
+  if FZPosition = AValue then exit;
+  FZPosition := AValue;
   UpdateParentChart;
 end;
 

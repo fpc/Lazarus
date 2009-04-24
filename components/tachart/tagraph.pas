@@ -45,6 +45,8 @@ type
     ASender: TChart; ASeriesIndex, AIndex: Integer;
     const AImg: TPoint; const AData: TDoublePoint) of object;
 
+  TChartZPosition = 0..MaxInt;
+
   { TBasicChartSeries }
 
   TBasicChartSeries = class(TComponent)
@@ -53,7 +55,7 @@ type
     FChart: TChart;
     FShowInLegend: Boolean;
     FTitle: String;
-    FZPosition: Integer;
+    FZPosition: TChartZPosition;
 
     procedure AfterAdd; virtual;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
@@ -67,7 +69,7 @@ type
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
-    procedure SetZPosition(const AValue: Integer);
+    procedure SetZPosition(AValue: TChartZPosition); virtual; abstract;
     procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
@@ -92,7 +94,7 @@ type
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
-    property ZPosition: Integer read FZPosition write SetZPosition default 0;
+    property ZPosition: TChartZPosition read FZPosition write SetZPosition default 0;
   end;
 
   TSeriesClass = class of TBasicChartSeries;
@@ -124,6 +126,7 @@ type
     FAxisColor: TColor;
     FAxisVisible: Boolean;
     FBottomAxis: TChartAxis;
+    FDepth: TChartZPosition;
     FExpandPercentage: Integer;
     FExtent: TChartExtent;
     FFoot: TChartTitle;
@@ -160,6 +163,7 @@ type
     procedure SetAxisColor(const AValue: TColor);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBottomAxis(Value: TChartAxis);
+    procedure SetDepth(AValue: TChartZPosition);
     procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(const AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
@@ -236,6 +240,7 @@ type
     property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
+    property Depth: TChartZPosition read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
     property Extent: TChartExtent read FExtent write SetExtent;
@@ -402,12 +407,12 @@ end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 begin
+  Clean(ACanvas, ARect);
+
   FClipRect := ARect;
   InflateRect(FClipRect, -2, -2);
-  DrawReticule(ACanvas);
 
   UpdateExtent;
-  Clean(ACanvas, ARect);
   DrawTitleFoot(ACanvas);
   DrawLegend(ACanvas);
   DrawAxis(ACanvas, ARect);
@@ -523,6 +528,9 @@ begin
 end;
 
 procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
+var
+  leftOffset: Integer = 0;
+  bottomOffset: Integer = 0;
 
   function MarkToText(AMark: Double): String;
   begin
@@ -538,7 +546,6 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
     s: String;
   begin
     // FIXME: Angle assumed to be around 0 for bottom and 90 for left axis.
-
     c := CenterPoint(FClipRect);
     s := FLeftAxis.Title.Caption;
     if FLeftAxis.Visible and (s <> '') then begin
@@ -549,7 +556,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
       end
       else begin
         x := FClipRect.Left;
-        FClipRect.Left += w + 4;
+        leftOffset := w + 4;
       end;
       RotateLabel(ACanvas, x, c.Y - w div 2, s, FLeftAxis.Title.Angle)
     end;
@@ -560,7 +567,7 @@ procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
       RotateLabel(
         ACanvas, c.X - sz.cx div 2, FClipRect.Bottom - sz.cy,
         s, FBottomAxis.Title.Angle);
-      FClipRect.Bottom -= sz.cy + 4;
+      bottomOffset := sz.cy + 4;
     end;
   end;
 
@@ -628,7 +635,11 @@ var
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
 begin
-  if not FAxisVisible then exit;
+  if not FAxisVisible then begin
+    FClipRect.Left += Depth;
+    FClipRect.Bottom -= Depth;
+    exit;
+  end;
 
   DrawAxisTitles;
 
@@ -668,11 +679,14 @@ begin
     if FMirrorX then
       FClipRect.Right -= leftAxisWidth
     else
-      FClipRect.Left += leftAxisWidth;
+      leftOffset += leftAxisWidth;
   end;
 
   if FBottomAxis.Visible then
-    FClipRect.Bottom -= ACanvas.TextHeight('0') + 5;
+    bottomOffset += ACanvas.TextHeight('0') + 5;
+
+  FClipRect.Left += Max(leftOffset, Depth);
+  FClipRect.Bottom -= Max(bottomOffset, Depth);
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
 
@@ -683,7 +697,8 @@ begin
     else
       Pen.Style := psClear;
     Brush.Color := Color;
-    Rectangle(FClipRect);
+    with FClipRect do
+      Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
 
   // X graduations
@@ -723,6 +738,11 @@ begin
         end;
     end;
   end;
+
+  // Z axis
+  if Depth > 0 then
+    with FClipRect do
+      ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
 end;
 
 procedure TChart.DrawLegend(ACanvas: TCanvas);
@@ -1172,6 +1192,13 @@ begin
     Series.FList.Move(i, Order);
 end;
 
+procedure TChart.SetDepth(AValue: TChartZPosition);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
+  Invalidate;
+end;
+
 procedure TChart.SetExpandPercentage(AValue: Integer);
 begin
   if FExpandPercentage = AValue then exit;
@@ -1373,12 +1400,6 @@ procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
 begin
   if not (csLoading in ComponentState) then
     (AParent as TChart).AddSeries(Self);
-end;
-
-procedure TBasicChartSeries.SetZPosition(const AValue: Integer);
-begin
-  if FZPosition = AValue then exit;
-  FZPosition := AValue;
 end;
 
 procedure TBasicChartSeries.UpdateMargins(
