@@ -748,13 +748,21 @@ end;
   parent
  ------------------------------------------------------------------------------}
 function TCarbonControl.SetBounds(const ARect: TRect): Boolean;
+var
+  B :CGRect;
 begin
   Result := False;
+
+  if (IsDrawEvent > 0) then HIViewGetBounds(Frames[0], B);
+
   if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
     Self, SSetBounds, SViewFrame) then Exit;
   // ensure bounds are send back to LCL once after creation
   BoundsChanged;
-  
+
+  if (IsDrawEvent > 0) and not Types.EqualRect( CGRectToRect(B), ARect) then
+    InvalidPaint := true;
+
   Result := True;
 end;
 
@@ -885,11 +893,17 @@ end;
 procedure TCarbonControl.ShowHide(AVisible: Boolean);
 var
   I: Integer;
+  v: Boolean;
 begin
   //DebugLn('TCarbonControl.ShowHide ' + DbgSName(LCLobject),' ', DbgS(AVisible));
+  v := IsVisible;
+
   for I := 0 to GetFrameCount - 1 do
     OSError(HIViewSetVisible(Frames[I], AVisible or (csDesigning in LCLobject.ComponentState)),
       Self, 'ShowHide', SViewVisible);
+
+  if (IsDrawEvent > 0) and (AVisible <> v) and (AVisible or (csDesigning in LCLobject.ComponentState)) and (GetFrameCount>0) then
+    InvalidPaint := true;
 end;
 
 {------------------------------------------------------------------------------

@@ -39,13 +39,17 @@ function CarbonCommon_Draw(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  AStruct: PPaintStruct;
+  AStruct : PPaintStruct;
+  Win     : WindowRef;
+  Content : HIViewRef;
 begin
+
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
 
-    
+  inc(IsDrawEvent);
+
   AWidget.Context := TCarbonControlContext.Create(AWidget);
   try
     // set canvas context
@@ -57,11 +61,17 @@ begin
     AWidget.Context.Reset;
 
     // let carbon draw/update
-    Result := CallNextEventHandler(ANextHandler, AEvent);
+    if not isRepaint or ( AWidget.InheritsFrom(TCarbonCustomControl)  and not (AWidget is TCarbonScrollingWinControl)) then
+      Result := CallNextEventHandler(ANextHandler, AEvent)
+    else
+      Result := noErr;
 
     if (AWidget is TCarbonControl) and
       (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
+    begin
+      // todo: find a way to erase old content
       (AWidget as TCarbonControl).Draw;
+    end;
 
     New(AStruct);
     FillChar(AStruct^, SizeOf(TPaintStruct), 0);
@@ -76,8 +86,23 @@ begin
     end;
     
     if AWidget.HasCaret then DrawCaret;
+
   finally
     FreeAndNil(AWidget.Context);
+    dec(IsDrawEvent);
+    if (IsDrawEvent = 0) and InvalidPaint then
+    begin
+      if not IsRepaint then
+      begin
+        IsRepaint := true;
+        Win:=HIViewGetWindow(AWidget.Widget);
+        HIViewFindByID( HIViewGetRoot(Win), kHIViewWindowContentID, Content);
+        HIViewSetNeedsDisplay(Content, true);
+        HIViewRender(Content);
+        IsRepaint:=false;
+      end;
+      InvalidPaint:=false;
+    end;
   end;
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw end ', DbgSName(AWidget.LCLObject));
@@ -453,3 +478,5 @@ begin
       SizeOf(TLMessage), @AMessage);
   end;
 end;
+
+

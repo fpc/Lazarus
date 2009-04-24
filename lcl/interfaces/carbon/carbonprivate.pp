@@ -294,6 +294,16 @@ implementation
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
   CarbonWSStdCtrls, CarbonCanvas, CarbonCaret;
 
+var
+  // recursive number of draw events called by OSX
+  IsDrawEvent  : Integer = 0;
+  // invalidated inside OnPaint event
+  InvalidPaint : Boolean = false;
+  // invalidating
+  IsRepaint    : Boolean = false;
+
+
+
 {------------------------------------------------------------------------------
   Name:    GetCarbonWidget
   Params:  AWidget - Pointer to control or window widget
