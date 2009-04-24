@@ -577,13 +577,13 @@ function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;
   CodeNode: TCodeTreeNode): integer;
 begin
   case CodeNode.Desc of
-    ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
-    ctnUnit:                            Result:=ImgIDUnit;
-    ctnInterface:                       Result:=ImgIDInterface;
-    ctnImplementation:                  Result:=ImgIDImplementation;
-    ctnInitialization:                  Result:=ImgIDInitialization;
-    ctnFinalization:                    Result:=ImgIDFinalization;
-    ctnTypeSection:                     Result:=ImgIDSection;
+    ctnProgram,ctnLibrary,ctnPackage: Result:=ImgIDProgram;
+    ctnUnit:                          Result:=ImgIDUnit;
+    ctnInterface:                     Result:=ImgIDInterface;
+    ctnImplementation:                Result:=ImgIDImplementation;
+    ctnInitialization:                Result:=ImgIDInitialization;
+    ctnFinalization:                  Result:=ImgIDFinalization;
+    ctnTypeSection:                   Result:=ImgIDSection;
     ctnTypeDefinition:
       begin
         if (CodeNode.FirstChild <> nil) and (CodeNode.FirstChild.Desc = ctnClass) then
@@ -591,16 +591,18 @@ begin
         else
           Result := ImgIDType;
       end;
-    ctnVarSection:                      Result:=ImgIDSection;
-    ctnVarDefinition:                   Result:=ImgIDVariable;
-    ctnConstSection,ctnResStrSection:   Result:=ImgIDSection;
-    ctnConstDefinition:                 Result:=ImgIDConst;
-    ctnClass:                           Result:=ImgIDClass;
-    ctnProcedure:                       if Tool.NodeIsFunction(CodeNode) then
-                                          Result:=ImgIDFunction
-                                        else
-                                          Result:=ImgIDProcedure;
-    ctnProperty:                        Result:=ImgIDProperty;
+    ctnVarSection:                    Result:=ImgIDSection;
+    ctnVarDefinition:                 Result:=ImgIDVariable;
+    ctnConstSection,ctnResStrSection: Result:=ImgIDSection;
+    ctnConstDefinition:               Result:=ImgIDConst;
+    ctnClass:                         Result:=ImgIDClass;
+    ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
+                                        Result:=ImgIDFunction
+                                      else
+                                        Result:=ImgIDProcedure;
+    ctnProperty:                      Result:=ImgIDProperty;
+    ctnUsesSection:                   Result:= ImgIDSection;
+    ctnUseUnit:                       Result:=ImgIDUnit;
   else
     Result:=ImgIDDefault;
   end;
