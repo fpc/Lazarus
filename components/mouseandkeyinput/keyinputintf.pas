@@ -35,6 +35,7 @@ type
     procedure Up(Key: Word);
     
     procedure Press(Key: Word);
+    procedure Press(StringValue : String);
     
     procedure Apply(Shift: TShiftState);
     procedure Unapply(Shift: TShiftState);
@@ -62,6 +63,18 @@ procedure TKeyInput.Press(Key: Word);
 begin
   Down(Key);
   Up(Key);
+end;
+
+procedure TKeyInput.Press(StringValue: String);
+var
+  i : Integer;
+begin
+  i :=1;
+  while (i <= Length(StringValue)) do
+    begin
+      Press(Ord(StringValue[i]));
+      Inc(i);
+    end;
 end;
 
 procedure TKeyInput.Apply(Shift: TShiftState);
