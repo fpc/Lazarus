@@ -60,7 +60,7 @@ type
     procedure SetActive(AValue: Boolean); override;
     procedure SetShowInLegend(Value: Boolean); override;
     procedure StyleChanged(Sender: TObject);
-    procedure UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double); override;
+    procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
 
     property Coord: TList read FCoordList;
@@ -317,7 +317,7 @@ type
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure SetShowInLegend(AValue: Boolean); override;
     procedure StyleChanged(Sender: TObject);
-    procedure UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double); override;
+    procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
 
   public
@@ -534,13 +534,13 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double);
+procedure TChartSeries.UpdateBounds(var ABounds: TDoubleRect);
 begin
   if not Active or (Count = 0) then exit;
-  if XGraphMin < AXMin then AXMin := XGraphMin;
-  if YGraphMin < AYMin then AYMin := YGraphMin;
-  if XGraphMax > AXMax then AXMax := XGraphMax;
-  if YGraphMax > AYMax then AYMax := YGraphMax;
+  if XGraphMin < ABounds.a.X then ABounds.a.X := XGraphMin;
+  if YGraphMin < ABounds.a.Y then ABounds.a.Y := YGraphMin;
+  if XGraphMax > ABounds.b.X then ABounds.b.X := XGraphMax;
+  if YGraphMax > ABounds.b.Y then ABounds.b.Y := YGraphMax;
 end;
 
 procedure TChartSeries.UpdateParentChart;
@@ -1666,13 +1666,13 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.UpdateBounds(var AXMin, AYMin, AXMax, AYMax: Double);
+procedure TFuncSeries.UpdateBounds(var ABounds: TDoubleRect);
 begin
   with Extent do begin
-    if UseXMin and (XMin < AXMin) then AXMin := XMin;
-    if UseYMin and (YMin < AYMin) then AYMin := YMin;
-    if UseXMax and (XMax > AXMax) then AXMax := XMax;
-    if UseYMax and (YMax > AYMax) then AYMax := YMax;
+    if UseXMin and (XMin < ABounds.a.X) then ABounds.a.X := XMin;
+    if UseYMin and (YMin < ABounds.a.Y) then ABounds.a.Y := YMin;
+    if UseXMax and (XMax > ABounds.b.X) then ABounds.b.X := XMax;
+    if UseYMax and (YMax > ABounds.b.Y) then ABounds.b.Y := YMax;
   end;
 end;
 

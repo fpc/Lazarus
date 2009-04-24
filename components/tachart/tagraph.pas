@@ -68,8 +68,7 @@ type
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(const AValue: Integer);
-    procedure UpdateBounds(
-      var AXMin, AYMin, AXMax, AYMax: Double); virtual; abstract;
+    procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
   protected
@@ -146,8 +145,6 @@ type
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
     FSelectionRect: TRect;
-    FXGraphMax, FXGraphMin: Double;   // Graph coordinates of limits
-    FYGraphMax, FYGraphMin: Double;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ACanvas: TCanvas);
@@ -227,10 +224,10 @@ type
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
     property SeriesCount: Integer read GetSeriesCount;
-    property XGraphMax: Double read FXGraphMax;
-    property XGraphMin: Double read FXGraphMin;
-    property YGraphMax: Double read FYGraphMax;
-    property YGraphMin: Double read FYGraphMin;
+    property XGraphMax: Double read FCurrentExtent.b.X;
+    property XGraphMin: Double read FCurrentExtent.a.X;
+    property YGraphMax: Double read FCurrentExtent.b.Y;
+    property YGraphMin: Double read FCurrentExtent.a.Y;
 
   published
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
@@ -335,10 +332,7 @@ begin
   Color := clBtnFace;
   AxisColor := clBlack;
 
-  FXGraphMax := 0;
-  FXGraphMin := 0;
-  FYGraphMax := 0;
-  FYGraphMin := 0;
+  FCurrentExtent := EmptyDoubleRect;
 
   MirrorX := false;
   FIsZoomed := false;
@@ -431,33 +425,33 @@ procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
 var
   lo, hi: Integer;
 begin
-  if FXGraphMax <> FXGraphMin then begin
+  if XGraphMax <> XGraphMin then begin
     lo := FClipRect.Left + AMargin.Left;
     hi := FClipRect.Right - AMargin.Right;
     if BottomAxis.Inverted then
       Exchange(lo, hi);
-    FScale.X := (hi - lo) / (FXGraphMax - FXGraphMin);
-    FOffset.X := hi - FScale.X * FXGraphMax;
-    FXGraphMin := XImageToGraph(FClipRect.Left);
-    FXGraphMax := XImageToGraph(FClipRect.Right);
+    FScale.X := (hi - lo) / (XGraphMax - XGraphMin);
+    FOffset.X := hi - FScale.X * XGraphMax;
+    FCurrentExtent.a.X := XImageToGraph(FClipRect.Left);
+    FCurrentExtent.b.X := XImageToGraph(FClipRect.Right);
     if BottomAxis.Inverted then
-      Exchange(FXGraphMin, FXGraphMax);
+      Exchange(FCurrentExtent.a.X, FCurrentExtent.b.X);
   end
   else begin
     FScale.X := 1;
     FOffset.X := 0;
   end;
-  if FYGraphMax <> FYGraphMin then begin
+  if YGraphMax <> YGraphMin then begin
     lo := FClipRect.Bottom - AMargin.Bottom;
     hi := FClipRect.Top + AMargin.Top;
     if LeftAxis.Inverted then
       Exchange(lo, hi);
-    FScale.Y := (hi - lo) / (FYGraphMax - FYGraphMin);
-    FOffset.Y := hi - FScale.Y * FYGraphMax;
-    FYGraphMin := YImageToGraph(FClipRect.Bottom);
-    FYGraphMax := YImageToGraph(FClipRect.Top);
+    FScale.Y := (hi - lo) / (YGraphMax - YGraphMin);
+    FOffset.Y := hi - FScale.Y * YGraphMax;
+    FCurrentExtent.a.Y := YImageToGraph(FClipRect.Bottom);
+    FCurrentExtent.b.Y := YImageToGraph(FClipRect.Top);
     if LeftAxis.Inverted then
-      Exchange(FYGraphMin, FYGraphMax);
+      Exchange(FCurrentExtent.a.Y, FCurrentExtent.b.Y);
   end
   else begin
     FScale.Y := 1;
@@ -642,18 +636,18 @@ begin
   if FLeftAxis.Visible then begin
     // Find max mark width
     maxWidth := 0;
-    if FYGraphMin <> FYGraphMax then begin
-      CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
+    if YGraphMin <> YGraphMax then begin
+      CalculateIntervals(YGraphMin, YGraphMax, leftAxisScale, mark, step);
       case leftAxisScale of
         asIncreasing:
-          while mark <= FYGraphMax + step * 10e-10 do begin
-            if mark >= FYGraphMin then
+          while mark <= YGraphMax + step * 10e-10 do begin
+            if mark >= YGraphMin then
               maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
             mark += step;
           end;
         asDecreasing:
-          while mark >= FYGraphMin - step * 10e-10 do begin
-            if mark <= FYGraphMax then
+          while mark >= YGraphMin - step * 10e-10 do begin
+            if mark <= YGraphMax then
               maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
             mark -= step;
           end;
@@ -689,18 +683,18 @@ begin
   end;
 
   // X graduations
-  if FBottomAxis.Visible and (FXGraphMin <> FXGraphMax) then begin
-    CalculateIntervals(FXGraphMin, FXGraphMax, bottomAxisScale, mark, step);
+  if FBottomAxis.Visible and (XGraphMin <> XGraphMax) then begin
+    CalculateIntervals(XGraphMin, XGraphMax, bottomAxisScale, mark, step);
     case bottomAxisScale of
       asIncreasing:
-        while mark <= FXGraphMax + step * 10e-10 do begin
-          if mark >= FXGraphMin then
+        while mark <= XGraphMax + step * 10e-10 do begin
+          if mark >= XGraphMin then
             DrawXMark(mark);
           mark += step;
         end;
       asDecreasing:
-        while mark >= FXGraphMin - step * 10e-10 do begin
-          if mark <= FXGraphMax then
+        while mark >= XGraphMin - step * 10e-10 do begin
+          if mark <= XGraphMax then
             DrawXMark(mark);
           mark -= step;
         end;
@@ -708,18 +702,18 @@ begin
   end;
 
   // Y graduations
-  if FLeftAxis.Visible and (FYGraphMin <> FYGraphMax) then begin
-    CalculateIntervals(FYGraphMin, FYGraphMax, leftAxisScale, mark, step);
+  if FLeftAxis.Visible and (YGraphMin <> YGraphMax) then begin
+    CalculateIntervals(YGraphMin, YGraphMax, leftAxisScale, mark, step);
     case leftAxisScale of
       asIncreasing:
-        while mark <= FYGraphMax + step * 10e-10 do begin
-          if mark >= FYGraphMin then
+        while mark <= YGraphMax + step * 10e-10 do begin
+          if mark >= YGraphMin then
             DrawYMark(mark);
           mark += step;
         end;
       asDecreasing:
-        while mark >= FYGraphMin - step * 10e-10 do begin
-          if mark <= FYGraphMax then
+        while mark >= YGraphMin - step * 10e-10 do begin
+          if mark <= YGraphMax then
             DrawYMark(mark);
           mark -= step;
         end;
@@ -1231,62 +1225,85 @@ end;
 procedure TChart.UpdateExtent;
 var
   ext, tolerance: Double;
-  allEmpty: Boolean = true;
+
+  procedure SetBounds(
+    var ALo, AHi: Double; AMin, AMax: Double; AUseMin, AUseMax: Boolean);
+
+    procedure SetLo(AValue: Double);
+    begin
+      ALo := IfThen(AUseMin and (AValue < AMin), AMin, AValue);
+    end;
+
+    procedure SetHi(AValue: Double);
+    begin
+      AHi := IfThen(AUseMax and (AValue > AMax), AMax, AValue);
+    end;
+
+  begin
+    if (ALo = Infinity) and (AHi = NegInfinity) then begin
+      // No boundaries, try to use extent
+      if not AUseMin and not AUseMax then begin
+        // Nothing we can do, give up
+        ALo := -1;
+        AHi := 1;
+      end
+      else if AUseMin then begin
+        ALo := AMin;
+        AHi := IfThen(AUseMax, AMax, ALo + 1);
+      end
+      else begin // Only AUseMax is true
+        AHi := AMax;
+        ALo := AHi - 1;
+      end;
+    end
+    else if ALo = Infinity then begin
+      SetHi(AHi);
+      if AUseMin then begin
+        ALo := AMin;
+        if ALo >= AHi then SetHi(ALo + 1);
+      end
+      else
+        ALo := AHi - 1;
+    end
+    else if AHi = NegInfinity then begin
+      SetLo(ALo);
+      if AUseMax then begin
+        AHi := AMax;
+        if ALo >= AHi then SetLo(AHi - 1);
+      end
+      else
+        AHi := ALo + 1;
+    end
+    else begin
+      // Both high and low boundary defined
+      SetLo(ALo);
+      if ALo >= AHi then SetHi(ALo + 1);
+      SetHi(AHi);
+      if ALo >= AHi then SetLo(AHi - 1);
+      // Expand view slightly to avoid puttind data points on the chart edge.
+      ext := tolerance * (AHi - ALo);
+      SetLo(ALo - ext);
+      SetHi(AHi + ext);
+    end;
+
+  end;
+
+var
   i: Integer;
 begin
-  if FIsZoomed then begin
-    FXGraphMin := FCurrentExtent.a.X;
-    FYGraphMin := FCurrentExtent.a.Y;
-    FXGraphMax := FCurrentExtent.b.X;
-    FYGraphMax := FCurrentExtent.b.Y;
-    exit;
-  end;
+  if FIsZoomed then exit;
   Extent.CheckBoundsOrder;
 
-  // Search # of points, min and max of all series
-  FXGraphMin := Infinity;
-  FXGraphMax := NegInfinity;
-  FYGraphMin := Infinity;
-  FYGraphMax := NegInfinity;
+  FCurrentExtent := DoubleRect(Infinity, Infinity, NegInfinity, NegInfinity);
   for i := 0 to SeriesCount - 1 do
     with Series[i] do
-      if Active then begin
-        allEmpty := allEmpty and IsEmpty;
-        UpdateBounds(FXGraphMin, FYGraphMin, FXGraphMax, FYGraphMax);
-      end;
-
-  if Extent.UseXMax and (FXGraphMax > Extent.XMax) then
-    FXGraphMax := Extent.XMax;
-  if Extent.UseXMin and (FXGraphMin < Extent.XMin) then
-    FXGraphMin := Extent.XMin;
-  if Extent.UseYMax and (FYGraphMax > Extent.YMax) then
-    FYGraphMax := Extent.YMax;
-  if Extent.UseYMin and (FYGraphMin < Extent.YMin) then
-    FYGraphMin := Extent.YMin;
-
-  // Min >= Max is possible in 3 cases:
-  // 1) bounds not updated, so min = Inf, max = -Inf
-  // 2) extent forced some bound beyond he opposite one
-  // 3) only one point, so min = max
-  if FXGraphMin >= FXGraphMax then begin
-    FXGraphMin := (FXGraphMin + FXGraphMax) * 0.5 - 1;
-    FXGraphMax := FXGraphMin + 2;
-  end;
-  if FYGraphMin >= FYGraphMax then begin
-    FYGraphMin := (FYGraphMin + FYGraphMax) * 0.5 - 1;
-    FYGraphMax := FYGraphMin + 2;
-  end;
-
-  if allEmpty then exit;
-
-  // Expand view slightly to avoid puttind data points on the chart edge.
+      if Active then
+        UpdateBounds(FCurrentExtent);
   tolerance := 0.01;
-  ext := tolerance * (FXGraphMax - FXGraphMin);
-  FXGraphMin -= ext;
-  FXGraphMax += ext;
-  ext := tolerance * (FYGraphMax - FYGraphMin);
-  FYGraphMin -= ext;
-  FYGraphMax += ext;
+  with FCurrentExtent, Extent do begin
+    SetBounds(a.X, b.X, XMin, XMax, UseXMin, UseXMax);
+    SetBounds(a.Y, b.Y, YMin, YMax, UseYMin, UseYMax);
+  end;
 end;
 
 procedure TChart.ZoomFull;
