@@ -5997,6 +5997,7 @@ var
   var
     ProcNode: TCodeTreeNode;
     ClassOfMethodContext: TFindContext;
+    HasIdentifier: Boolean;
   begin
     // for example: inherited A;
     // inherited skips the class and begins to search in the ancestor class
@@ -6009,14 +6010,17 @@ var
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
     end;
-    if not (NextAtomType in [vatIdentifier,vatPreDefIdentifier]) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseIdentExpected;
-    end;
+    HasIdentifier:=NextAtom.EndPos<=EndPos;
+    if HasIdentifier then begin
+      if (not (NextAtomType in [vatIdentifier,vatPreDefIdentifier])) then
+      begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseIdentExpected;
+      end;
 
-    ReadNextExpressionAtom;
+      ReadNextExpressionAtom;
+    end;
     {$IFDEF ShowExprEval}
     DebugLn('    ResolveINHERITED CurAtomType=',
       VariableAtomTypeNames[CurAtomType],
@@ -6037,17 +6041,23 @@ var
     ClassOfMethodContext.Tool.FindAncestorOfClass(ClassOfMethodContext.Node,
                                                   Params,true);
 
-    // search identifier only in class ancestor
-    Params.Load(OldInput,false);
-    Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-    Params.ContextNode:=Params.NewNode;
-    Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
-                              +[fdfExceptionOnNotFound,fdfSearchInAncestors];
-    Params.NewCodeTool.FindIdentifierInContext(Params);
-    ExprType.Context:=CreateFindContext(Params);
-    Params.Load(OldInput,true);
+    if HasIdentifier then begin
+      // search identifier only in class ancestor
+      Params.Load(OldInput,false);
+      Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+      Params.ContextNode:=Params.NewNode;
+      Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
+                                +[fdfExceptionOnNotFound,fdfSearchInAncestors];
+      Params.NewCodeTool.FindIdentifierInContext(Params);
+      ExprType.Context:=CreateFindContext(Params);
+      Params.Load(OldInput,true);
 
-    ResolveBaseTypeOfIdentifier;
+      ResolveBaseTypeOfIdentifier;
+    end else begin
+      // the keyword 'inherited' is the last atom
+      // return the ancestor class context
+      ExprType.Context:=CreateFindContext(Params);
+    end;
   end;
   
 begin
@@ -6063,6 +6073,9 @@ begin
   {$ENDIF}
   
   if not InitAtomQueue then exit;
+  {$IFDEF ShowExprEval}
+  DebugLn(['TFindDeclarationTool.FindExpressionTypeOfVariable Expression="',copy(Src,StartPos,EndPos-StartPos),'"']);
+  {$ENDIF}
   ExprType.Desc:=xtContext;
   ExprType.SubDesc:=xtNone;
   ExprType.Context:=StartContext;

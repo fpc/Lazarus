@@ -1730,7 +1730,9 @@ begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
+      {$IFDEF CTDEBUG}
       debugln(['TCodeToolManager.FindDeclaration ',DbgsCXY(NewPos)]);
+      {$ENDIF}
     end;
   {$IFDEF DoNotHandleFindDeclException}
   finally
