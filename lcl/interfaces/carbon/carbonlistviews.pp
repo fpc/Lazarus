@@ -608,7 +608,7 @@ var
   SubIndex: Integer;
 begin
   Result := noErr;
-  DebugLn('CarbonItemDataCallBack ID: ' + DbgS(ID));
+  // DebugLn('CarbonItemDataCallBack ID: ' + DbgS(ID));
   ACarbonDataBrowser := TCarbonDataBrowser(GetCarbonControl(AControl));
   if ACarbonDataBrowser = nil then Exit;
   ALCLDataBrowser := ACarbonDataBrowser.LCLObject;
@@ -972,7 +972,7 @@ end;
 function TCarbonDataBrowser.GetItemChecked(AIndex: Integer): Boolean;
 begin
   if (AIndex >= 0) and (AIndex < GetItemsCount) then
-    Result := Boolean(FItemsCheck[AIndex])
+    Result := Assigned(FItemsCheck[AIndex])
   else
     Result := False;
 end;
