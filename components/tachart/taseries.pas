@@ -1571,7 +1571,7 @@ begin
     x := Max(FChart.XGraphToImage(Extent.XMin), x);
   xmax := FChart.ClipRect.Right;
   if Extent.UseXMax then
-    x := Min(FChart.XGraphToImage(Extent.XMax), x);
+    xmax := Min(FChart.XGraphToImage(Extent.XMax), xmax);
 
   ACanvas.Pen.Assign(Pen);
 
