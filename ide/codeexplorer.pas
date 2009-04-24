@@ -490,7 +490,8 @@ begin
   // Let's Invert Mode of Exibition
   if Mode = cemCategory then
     SetMode(cemSource)
-  else SetMode(cemCategory);
+  else
+    SetMode(cemCategory);
 end;
 
 procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
@@ -1624,7 +1625,8 @@ begin
     end else begin
       CodeTreeview.Items.Clear;
       CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
-      if cecCodeObserver in CodeExplorerOptions.Categories then
+      if (Mode = cemCategory) and
+         (cecCodeObserver in CodeExplorerOptions.Categories) then
         CreateObservations(ACodeTool);
     end;
 
