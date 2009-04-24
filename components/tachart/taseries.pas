@@ -33,7 +33,7 @@ uses
   TAGraph, TAChartUtils, TATypes;
 
 type
-  BarException = class(Exception);
+  EBarError = class(EChartError);
 
   { TChartSeries }
 
@@ -1083,7 +1083,7 @@ end;
 procedure TBarSeries.SetBarWidthPercent(Value: Integer);
 begin
   if (Value < 1) or (Value > 100) then
-    raise BarException.Create('Wrong BarWidth Percent');
+    raise EBarError.Create('Wrong BarWidth Percent');
   FBarWidthPercent := Value;
 end;
 

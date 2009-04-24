@@ -29,7 +29,7 @@ unit TAChartUtils;
 interface
 
 uses
-  Graphics, Types;
+  Graphics, Types, SysUtils;
 
 const
   MaxColor = 15;
@@ -38,6 +38,8 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 
 type
+  EChartError = class(Exception);
+
   TChartCoord = record
     x, y: Double;
     Color: TColor;
@@ -110,11 +112,13 @@ const
     '%1:.2f%% of %3:g', // smsLabelPercentTotal
     '%4:g' // smsXValue
   );
+  EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
-function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
+function DoublePoint(const ACoord: TChartCoord): TDoublePoint; inline;
+function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
@@ -139,7 +143,7 @@ operator +(const A: TPoint; B: TSize): TPoint;
 implementation
 
 uses
-  Math, SysUtils, LCLIntf, LCLType;
+  Math, LCLIntf, LCLType;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -214,6 +218,14 @@ function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
 begin
   Result.X := ACoord.x;
   Result.Y := ACoord.y;
+end;
+
+function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
+begin
+  Result.a.X := AX1;
+  Result.a.Y := AY1;
+  Result.b.X := AX2;
+  Result.b.Y := AY2;
 end;
 
 procedure Exchange(var A, B: Integer); overload;
