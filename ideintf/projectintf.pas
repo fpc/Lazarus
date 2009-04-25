@@ -152,9 +152,9 @@ type
     property Root: TCompOptCondNode read FRoot write FRoot;
   end;
 
-  { TLazBuildMode }
+  { TLazBuildProperty }
 
-  TLazBuildMode = class
+  TLazBuildProperty = class
   protected
     FDefaultValue: TLazCompOptConditionals;
     FIdentifier: string;
@@ -166,7 +166,7 @@ type
     procedure SetValueDescriptions(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
-    procedure Assign(Source: TLazBuildMode); virtual; abstract;
+    procedure Assign(Source: TLazBuildProperty); virtual; abstract;
     procedure SetDefaultValue(const AValue: string); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property Description: string read FDescription write SetDescription;
@@ -175,23 +175,23 @@ type
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 
-  { TLazBuildModes }
+  { TLazBuildProperties }
 
-  TLazBuildModes = class
+  TLazBuildProperties = class
   private
     FOwner: TObject;
   protected
-    function GetItems(Index: integer): TLazBuildMode; virtual; abstract;
+    function GetItems(Index: integer): TLazBuildProperty; virtual; abstract;
   public
     constructor Create(TheOwner: TObject); virtual;
-    function Add(Identifier: string): TLazBuildMode; virtual; abstract;
+    function Add(Identifier: string): TLazBuildProperty; virtual; abstract;
     procedure Delete(Index: integer); virtual; abstract;
     procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
     function IndexOfIdentifier(Identifier: string): integer; virtual; abstract;
-    function ModeWithIdentifier(Identifier: string): TLazBuildMode; virtual; abstract;
+    function ModeWithIdentifier(Identifier: string): TLazBuildProperty; virtual; abstract;
     function Count: integer; virtual; abstract;
     procedure Clear; virtual; abstract;
-    property Items[Index: integer]: TLazBuildMode read GetItems; default;
+    property Items[Index: integer]: TLazBuildProperty read GetItems; default;
     property Owner: TObject read FOwner;
   end;
 
@@ -232,7 +232,7 @@ type
 
     // conditionals / build modes
     FConditionals: TLazCompOptConditionals;
-    fBuildModes: TLazBuildModes;
+    fBuildModes: TLazBuildProperties;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -344,7 +344,7 @@ type
 
     // conditional / build modes
     property Conditionals: TLazCompOptConditionals read FConditionals;
-    property BuildModes: TLazBuildModes read fBuildModes;
+    property BuildModes: TLazBuildProperties read fBuildModes;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
@@ -1628,9 +1628,9 @@ begin
   inherited Destroy;
 end;
 
-{ TLazBuildModes }
+{ TLazBuildProperties }
 
-constructor TLazBuildModes.Create(TheOwner: TObject);
+constructor TLazBuildProperties.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner
 end;

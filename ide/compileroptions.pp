@@ -52,7 +52,7 @@ type
 
   { TIDEBuildMode }
 
-  TIDEBuildMode = class(TLazBuildMode)
+  TIDEBuildMode = class(TLazBuildProperty)
   protected
     procedure SetIdentifier(const AValue: string); override;
     procedure SetDescription(const AValue: string); override;
@@ -61,12 +61,12 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Assign(Source: TLazBuildMode); override;
+    procedure Assign(Source: TLazBuildProperty); override;
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
-    procedure CreateDiff(OtherMode: TLazBuildMode; Tool: TCompilerDiffTool);
+    procedure CreateDiff(OtherMode: TLazBuildProperty; Tool: TCompilerDiffTool);
     procedure Assign(Source: TIDEBuildMode);
     procedure SetDefaultValue(const AValue: string); override;
   end;
@@ -75,16 +75,16 @@ type
 
   { TIDEBuildModes }
 
-  TIDEBuildModes = class(TLazBuildModes)
+  TIDEBuildModes = class(TLazBuildProperties)
   private
     FBuildModeSet: TBuildModeSet;
     fPrevModes, fNextModes: TIDEBuildModes;
     procedure SetBuildModeSet(const AValue: TBuildModeSet);
   protected
     FItems: TFPList;// list of TIDEBuildMode
-    function GetItems(Index: integer): TLazBuildMode; override;
+    function GetItems(Index: integer): TLazBuildProperty; override;
   public
-    function Add(Identifier: string): TLazBuildMode; override;
+    function Add(Identifier: string): TLazBuildProperty; override;
     procedure Clear; override;
     function Count: integer; override;
     constructor Create(TheOwner: TObject); override;
@@ -97,8 +97,9 @@ type
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
-    procedure CreateDiff(OtherModes: TLazBuildModes; Tool: TCompilerDiffTool);
-    procedure Assign(Source: TLazBuildModes);
+    procedure CreateDiff(OtherProperties: TLazBuildProperties;
+                         Tool: TCompilerDiffTool);
+    procedure Assign(Source: TLazBuildProperties);
     property BuildModeSet: TBuildModeSet read FBuildModeSet write SetBuildModeSet;// active in BuildModeSet
   end;
 
@@ -3541,7 +3542,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEBuildMode.Assign(Source: TLazBuildMode);
+procedure TIDEBuildMode.Assign(Source: TLazBuildProperty);
 begin
   FIdentifier:=Source.Identifier;
   FDefaultValue.Assign(Source.DefaultValue);
@@ -3578,7 +3579,7 @@ begin
                                                       UsePathDelim);
 end;
 
-procedure TIDEBuildMode.CreateDiff(OtherMode: TLazBuildMode;
+procedure TIDEBuildMode.CreateDiff(OtherMode: TLazBuildProperty;
   Tool: TCompilerDiffTool);
 begin
   Tool.AddDiff('Identifier',Identifier,OtherMode.Identifier);
@@ -3632,12 +3633,12 @@ begin
   end;
 end;
 
-function TIDEBuildModes.GetItems(Index: integer): TLazBuildMode;
+function TIDEBuildModes.GetItems(Index: integer): TLazBuildProperty;
 begin
-  Result:=TLazBuildMode(FItems[Index]);
+  Result:=TLazBuildProperty(FItems[Index]);
 end;
 
-function TIDEBuildModes.Add(Identifier: string): TLazBuildMode;
+function TIDEBuildModes.Add(Identifier: string): TLazBuildProperty;
 begin
   if IndexOfIdentifier(Identifier)>=0 then
     raise Exception.Create('TIDEBuildModes.Add identifier already exists');
@@ -3731,22 +3732,22 @@ begin
                                     Path+'Item'+IntToStr(i+1)+'/',UsePathDelim);
 end;
 
-procedure TIDEBuildModes.CreateDiff(OtherModes: TLazBuildModes;
+procedure TIDEBuildModes.CreateDiff(OtherProperties: TLazBuildProperties;
   Tool: TCompilerDiffTool);
 var
   i: Integer;
 begin
-  Tool.AddDiff('Count',Count,OtherModes.Count);
+  Tool.AddDiff('Count',Count,OtherProperties.Count);
   for i:=0 to Count-1 do begin
-    if i<OtherModes.Count then
-      TIDEBuildMode(Items[i]).CreateDiff(OtherModes.Items[i],Tool);
+    if i<OtherProperties.Count then
+      TIDEBuildMode(Items[i]).CreateDiff(OtherProperties.Items[i],Tool);
   end;
 end;
 
-procedure TIDEBuildModes.Assign(Source: TLazBuildModes);
+procedure TIDEBuildModes.Assign(Source: TLazBuildProperties);
 var
   i: Integer;
-  Item: TLazBuildMode;
+  Item: TLazBuildProperty;
 begin
   Clear;
   for i:=0 to Source.Count-1 do begin
