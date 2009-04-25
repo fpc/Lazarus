@@ -1,14 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# Builds all Lazarus docs and pack them in one .chm file
 #
-# Author: Mattias Gaertner
+# Notes:
 #
-# Creates the whole HTML output for Lazarus
+# Before running this file, first compile the project build_lcl_docs.lpi
+#
+./build_lcl_docs --outfmt html
 
-set -x
-set -e
-
-sh ./build_lcl_html.sh $@
-sh ./build_gtkintf_html.sh $@
-
-# end.
 
