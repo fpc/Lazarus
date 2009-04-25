@@ -398,6 +398,16 @@ to alternate splitter painting}
           Result.Painter := gptBox;
         end;
       end;
+    teToolTip:
+      begin
+        Result.Style := GetStyle(lgsTooltip);
+        Result.Widget := GetStyleWidget(lgsTooltip);
+        Result.State := GTK_STATE_NORMAL;
+        Result.Shadow := GTK_SHADOW_OUT;
+        Result.Detail := 'tooltip';
+        if Details.Part = TTP_STANDARD then
+          Result.Painter := gptFlatBox;
+      end;
   end;
 end;
 
