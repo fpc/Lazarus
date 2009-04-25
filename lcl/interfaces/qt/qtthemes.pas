@@ -202,13 +202,19 @@ begin
         end;
         qdvPrimitive:
         begin
-          if Element.PrimitiveElement = QStylePE_FrameTabWidget then
-          begin
-            opt := QStyleOptionTabWidgetFrame_create();
-            // need widget to draw gradient
-          end
-          else
-            opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+          case Element.PrimitiveElement of
+            QStylePE_FrameTabWidget:
+              begin
+                opt := QStyleOptionTabWidgetFrame_create();
+                // need widget to draw gradient
+              end;
+            QStylePE_PanelTipLabel:
+              begin
+                opt := QStyleOptionFrame_create();
+              end;
+            else
+              opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+          end;
           QStyleOption_setState(opt, GetControlState(Details));
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
@@ -478,6 +484,14 @@ begin
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_IndicatorBranch
+        end;
+      end;
+    teToolTip:
+      begin
+        if Details.Part = TTP_STANDARD then
+        begin
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_PanelTipLabel;
         end;
       end;
   end;
