@@ -1,4 +1,4 @@
-Installation hints for lazarus
+﻿Installation hints for lazarus
 ==============================
 
 Lazarus provides two main parts:
@@ -10,7 +10,7 @@ What is required for lazarus:
                IMPORTANT: try to get the same version of the sources and the
                           installed compiler.
 - Under Linux/xxxBSD: gtk libaries - Most distributions already install them.
-     See www.gtk.org. You need gtk 1.x. The new gtk2 is not yet supported.
+     See www.gtk.org.
 
 
 The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
@@ -38,7 +38,7 @@ properly:
   Make sure, that you have installed X, gtk1 and gtk1-devel.
 
   Fedora: yum install gtk+-devel gdk-pixbuf-devel gtk2-devel
-  Ubuntu:
+  Ubuntu: apt-get install lazarus
 
   Download and install FreePascal. Either the rpm, tgz or the daily snapshot.
   You need at least fpc 2.2.2 (2.2.2 is the stable version of fpc, the 2.3.1 is
@@ -87,8 +87,9 @@ properly:
 --------------------------------------------------------------------------------
 2.1 Installing FreePascal under Linux:
 
-  Lazarus requires a fpc (FreePascal) version 1.0.10 and it requires both - the
-  compiled fpc libs (binaries) and the fpc sources. The fpc 1.0.6 is too buggy.
+  Lazarus requires a fpc (FreePascal) version 2.2.2 (or newer) and it requires both
+  - the compiled fpc libs (binaries) and the fpc sources. Most of the Linux distributions
+  contain packages for FreePascal. Use your package manager to install them.
 
   The fpc binaries:
   At the lazarus downloads section (www.lazarus.freepascal.org
@@ -101,7 +102,7 @@ properly:
   The fpc sources:
   The easiest way to get the freepascal sources is via svn. Of course you can
   also download it as whole, see http://www.freepascal.org/develop.html
-  for the daily snapshot of the release tree (2.0.x).
+  for the daily snapshot of the release tree (2.3.x).
 
   The fpc sources via svn:
   Create a directory, where you would like to put the sources. You don't need
@@ -125,7 +126,9 @@ properly:
 --------------------------------------------------------------------------------
 2.2 Installing FreePascal under Windows:
 
-    ToDo: Write me.
+  If you use the windows installer for lazarus, then you don't need to install 
+  FreePascal separately, because the installer already contains the necessary
+  files.
     
   See http://www.freepascal.org/down-win32.html. You can find a list of mirrors
   at http://www.freepascal.org/sdown.html. Download for example fpc as one big
@@ -244,6 +247,9 @@ properly:
   
   ToDo: more details about the tars.
   
+  Hint: In the meantime most Linux distributions contain a Lazarus package. Go
+  to your package manager and install it.
+
   Downloading lazarus svn: svn provides an easy way to update your sources by
   only downloading the changes. This is the recommended way and saves you a lot
   of time. A connection to the internet is needed for this:
@@ -299,7 +305,10 @@ properly:
 --------------------------------------------------------------------------------
 3.1 Installing Lazarus under Windows:
 
-  Under windows the IDE does not run well. So don't expect too much.
+  Just download and install the .exe file. You can get the files from:
+  http://sourceforge.net/project/showfiles.php?group_id=89339 (stable release) or
+  http://snapshots.lazarus.shikami.org/lazarus/ (snapshots)
+
 
   Thx to Joe for this Step-by-step description:
 
