@@ -1881,6 +1881,7 @@ end;
 constructor TSynBaseCompletionHint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Canvas.Brush.Style := bsSolid;
   FCompletionForm := AOwner as TSynBaseCompletionForm;
   Color := FCompletionForm.BackgroundColor;
   AutoHide := False;
