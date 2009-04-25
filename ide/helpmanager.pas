@@ -316,6 +316,7 @@ begin
   WordWrap := True;
   Layout := tlCenter;
   Alignment := taCenter;
+  Font.Color := clInfoText;
 end;
 
 function TSimpleHTMLControl.GetURL: string;
