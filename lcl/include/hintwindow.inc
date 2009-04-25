@@ -34,6 +34,7 @@ begin
   Parent := nil;
   Color := clInfoBk;
   Canvas.Font := Screen.HintFont;
+  Canvas.Brush.Style := bsClear;
   BorderStyle := bsNone;
   Caption := 'THintWindow';
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
@@ -90,7 +91,7 @@ begin
   if FAutoHideTimer <> nil then
     TCustomTimer(FAutoHideTimer).Enabled := False;
   if Visible then
-    Visible := False;//Hide;
+    Visible := False;
 end;
 
 procedure THintWindow.Paint;
@@ -98,12 +99,16 @@ var
   ARect: TRect;
 begin
   ARect := ClientRect;
-  Canvas.Brush.Color := Color;
-  //DebugLn(['THintWindow.Paint Canvas.Brush.Color=',dbgs(Canvas.Brush.Color)]);
-  Canvas.Pen.Width := 1;
-  Canvas.FillRect(ARect);
-  DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
-  InflateRect(ARect,-2*HintBorderWidth,-2*HintBorderWidth);
+  if Color = clInfoBk then // draw using themes
+    ThemeServices.DrawTooltip(Canvas.Handle, ARect)
+  else
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.Pen.Width := 1;
+    Canvas.FillRect(ARect);
+    DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
+  end;
+  InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
   DrawText(Canvas.GetUpdatedHandle([csFontValid]),
            PChar(Caption), Length(Caption), ARect,
            DT_NOPREFIX or DT_CENTER or DT_VCENTER or DT_WORDBREAK);
