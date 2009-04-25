@@ -232,7 +232,7 @@ type
 
     // conditionals / build modes
     FConditionals: TLazCompOptConditionals;
-    fBuildModes: TLazBuildProperties;
+    fBuildProperties: TLazBuildProperties;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -344,7 +344,7 @@ type
 
     // conditional / build modes
     property Conditionals: TLazCompOptConditionals read FConditionals;
-    property BuildModes: TLazBuildProperties read fBuildModes;
+    property BuildProperties: TLazBuildProperties read fBuildProperties;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 

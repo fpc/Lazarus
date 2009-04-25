@@ -57,13 +57,13 @@ type
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
-    FBuildModes: TIDEBuildModes;
+    FBuildProperties: TIDEBuildProperties;
     fModeImgID: LongInt;
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     FEditors: TFPList;// list of TCompOptsExprEditor
-    procedure SetBuildModes(const AValue: TIDEBuildModes);
+    procedure SetBuildProperties(const AValue: TIDEBuildProperties);
     procedure RebuildTreeView;
     procedure TreeViewAddBuildMode(BuildProperty: TLazBuildProperty);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
@@ -77,7 +77,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property BuildModes: TIDEBuildModes read FBuildModes write SetBuildModes;
+    property BuildProperties: TIDEBuildProperties read FBuildProperties write SetBuildProperties;
   end;
 
 implementation
@@ -90,8 +90,8 @@ var
   NewBuildProperty: TLazBuildProperty;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=GlobalBuildModeSet.GetUniqueModeName(BuildModes);
-  NewBuildProperty:=BuildModes.Add(NewIdentifier);
+  NewIdentifier:=GlobalBuildProperties.GetUniqueModeName(BuildProperties);
+  NewBuildProperty:=BuildProperties.Add(NewIdentifier);
   // add a node
   SetResultNode:=TCompOptCondNode.Create(NewBuildProperty.DefaultValue);
   SetResultNode.NodeType:=cocntSetValue;
@@ -151,23 +151,23 @@ end;
 
 procedure TCompOptBuildModesFrame.DeleteBuildModeClick(Sender: TObject);
 var
-  BuildMode: TIDEBuildMode;
+  BuildProperty: TIDEBuildProperty;
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
   i: LongInt;
   Editor: TCompOptsExprEditor;
 begin
-  SelTVNode:=GetSelectedNode(BuildMode,NodeType);
-  if BuildMode=nil then exit;
+  SelTVNode:=GetSelectedNode(BuildProperty,NodeType);
+  if BuildProperty=nil then exit;
   if MessageDlg(lisConfirmDelete,
-    Format(lisDeleteBuildMode, ['"', BuildMode.Identifier, '"']),
+    Format(lisDeleteBuildMode, ['"', BuildProperty.Identifier, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
-  i:=BuildModes.IndexOfIdentifier(BuildMode.Identifier);
-  Editor:=GetEditor(BuildMode);
+  i:=BuildProperties.IndexOfIdentifier(BuildProperty.Identifier);
+  Editor:=GetEditor(BuildProperty);
   FEditors.Remove(Editor);
   Editor.Free;
-  BuildModes.Delete(i);
+  BuildProperties.Delete(i);
   BuildModesTreeView.BeginUpdate;
   SelTVNode.Delete;
   BuildModesTreeView.EndUpdate;
@@ -235,7 +235,7 @@ procedure TCompOptBuildModesFrame.BuildModesTreeViewEdited(Sender: TObject;
 var
   BuildProperty: TLazBuildProperty;
   NodeType: TCBMNodeType;
-  ConflictBuildMode: TIDEBuildMode;
+  ConflictBuildProperty: TIDEBuildProperty;
   Index: LongInt;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
@@ -252,8 +252,8 @@ begin
         S:=BuildProperty.Identifier;
         exit;
       end;
-      ConflictBuildMode:=BuildModes.ModeWithIdentifier(S);
-      if (ConflictBuildMode<>nil) and (ConflictBuildMode<>BuildProperty) then
+      ConflictBuildProperty:=BuildProperties.ModeWithIdentifier(S);
+      if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildProperty) then
       begin
         MessageDlg(lisCCOErrorCaption,
           Format(lisThereIsAlreadyABuildModeWithTheName, ['"', S, '"']),
@@ -281,10 +281,11 @@ begin
   end;
 end;
 
-procedure TCompOptBuildModesFrame.SetBuildModes(const AValue: TIDEBuildModes);
+procedure TCompOptBuildModesFrame.SetBuildProperties(
+  const AValue: TIDEBuildProperties);
 begin
-  if FBuildModes=AValue then exit;
-  FBuildModes:=AValue;
+  if FBuildProperties=AValue then exit;
+  FBuildProperties:=AValue;
   RebuildTreeView;
 end;
 
@@ -295,10 +296,10 @@ begin
   BuildModesTreeView.BeginUpdate;
   BuildModesTreeView.Items.Clear;
   FreeEditors;
-  if BuildModes<>nil then begin
+  if BuildProperties<>nil then begin
     // first level: build modes
-    for i:=0 to BuildModes.Count-1 do
-      TreeViewAddBuildMode(BuildModes.Items[i]);
+    for i:=0 to BuildProperties.Count-1 do
+      TreeViewAddBuildMode(BuildProperties.Items[i]);
   end;
   BuildModesTreeView.EndUpdate;
 end;

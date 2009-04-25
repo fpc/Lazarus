@@ -6808,7 +6808,8 @@ begin
   EnvironmentOptions.Save(false);
 
   {$IFDEF EnableBuildModes}
-  TIDEBuildModes(Project1.CompilerOptions.BuildModes).BuildModeSet:=GlobalBuildModeSet;
+  TIDEBuildProperties(Project1.CompilerOptions.BuildProperties)
+    .BuildPropertySet:=GlobalBuildProperties;
   {$ENDIF}
 
   MainBuildBoss.RescanCompilerDefines(true,true);
@@ -8619,9 +8620,9 @@ begin
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
-  // deactivate project build modes
+  // deactivate project build properties
   if Project1<>nil then
-    TIDEBuildModes(Project1.CompilerOptions.BuildModes).BuildModeSet:=nil;
+    TIDEBuildProperties(Project1.CompilerOptions.BuildProperties).BuildPropertySet:=nil;
   IncreaseCompilerParseStamp;
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;
