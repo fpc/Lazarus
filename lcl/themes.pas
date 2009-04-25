@@ -467,7 +467,6 @@ type
       Bounds: PRect = nil);
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
-    procedure DrawTooltip(DC: HDC; ARect: TRect); virtual;
 
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; virtual;
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); virtual;
@@ -2021,6 +2020,14 @@ begin
           end;
         end;
       end;
+    teToolTip:
+      begin
+        if Details.Part = TTP_STANDARD then
+        begin
+          FillWithColor(ARect, clInfoBk);
+          LCLIntf.DrawEdge(DC, ARect, BDR_RAISEDOUTER, BF_RECT);
+        end;
+      end;
   end;
 end;
 
@@ -2209,16 +2216,6 @@ begin
   end;
   Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
   Canvas.Font.Color := OldColor;
-end;
-
-procedure TThemeServices.DrawTooltip(DC: HDC; ARect: TRect);
-var
-  Brush: HBrush;
-begin
-  Brush := CreateSolidBrush(ColorToRGB(clInfoBk));
-  FillRect(DC, ARect, Brush);
-  DeleteObject(Brush);
-  LCLIntf.DrawEdge(DC, ARect, BDR_RAISEDOUTER, BF_RECT or BF_ADJUST);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

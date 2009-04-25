@@ -49,7 +49,6 @@ type
       const S: String; R: TRect; Flags, Flags2: Cardinal); override;
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails;
       const S: String; R: TRect; Flags, Flags2: Cardinal); override;
-    procedure DrawTooltip(DC: HDC; ARect: TRect); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -182,10 +181,23 @@ begin
 end;
 
 procedure TWin32ThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil);
+var
+  ARect: TRect;
+  Brush: HBrush;
 begin
   if ThemesEnabled then
+  begin
     with Details do
-      DrawThemeBackground(Theme[Element], DC, Part, State, R, ClipRect)
+      DrawThemeBackground(Theme[Element], DC, Part, State, R, ClipRect);
+    if (Details.Element = teToolTip) and (Details.Part = TTP_STANDARD) and (WindowsVersion < wvVista) then
+    begin
+      // use native background on windows vista
+      ARect := ContentRect(DC, Details, R);
+      Brush := CreateSolidBrush(ColorToRGB(clInfoBk));
+      FillRect(DC, ARect, Brush);
+      DeleteObject(Brush);
+    end;
+  end
   else
     inherited;
 end;
@@ -316,28 +328,6 @@ begin
     DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2)
   else
     inherited;
-end;
-
-procedure TWin32ThemeServices.DrawTooltip(DC: HDC; ARect: TRect);
-var
-  Details: TThemedElementDetails;
-  Brush: HBrush;
-begin
-  if ThemesEnabled then
-  begin
-    Details := GetElementDetails(tttStandardNormal);
-    DrawElement(DC, Details, ARect);
-    if WindowsVersion < wvVista then
-    begin
-      // use native background on windows vista
-      ARect := ContentRect(DC, Details, ARect);
-      Brush := CreateSolidBrush(ColorToRGB(clInfoBk));
-      FillRect(DC, ARect, Brush);
-      DeleteObject(Brush);
-    end;
-  end
-  else
-    inherited DrawTooltip(DC, ARect);
 end;
 
 end.

@@ -97,10 +97,14 @@ end;
 procedure THintWindow.Paint;
 var
   ARect: TRect;
+  Details: TThemedElementDetails;
 begin
   ARect := ClientRect;
   if Color = clInfoBk then // draw using themes
-    ThemeServices.DrawTooltip(Canvas.Handle, ARect)
+  begin
+    Details := ThemeServices.GetElementDetails(tttStandardLink);
+    ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
+  end
   else
   begin
     Canvas.Brush.Color := Color;
