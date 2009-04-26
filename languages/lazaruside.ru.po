@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-23 02:21+0300\n"
+"PO-Revision-Date: 2009-04-24 04:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -39,7 +39,7 @@ msgstr "По алфавиту"
 
 #: lazarusidestrconsts.dlgaltsetclmode
 msgid "Alt-Key sets column mode"
-msgstr "Кнопка Alt изменяет режим колонок"
+msgstr "Кнопка Alt задаёт режим выделения"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -329,7 +329,7 @@ msgstr "Создать элемент ниже"
 
 #: lazarusidestrconsts.dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
-msgstr "Генерировать информацию для DBX (замедляет сборку)"
+msgstr "Генерировать отладочную информацию для DBX (замедляет сборку)"
 
 #: lazarusidestrconsts.dlgcodebugging
 msgid "Debugging:"
@@ -361,7 +361,7 @@ msgstr "Быстрый код"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate Debugging Info For GDB (Slows Compiling)"
-msgstr "Генерировать информацию для GDB (замедляет сборку)"
+msgstr "Генерировать отладочную информацию для GDB (замедляет сборку)"
 
 #: lazarusidestrconsts.dlgcogenerate
 msgid "Generate:"
@@ -981,7 +981,7 @@ msgstr "Параметры"
 
 #: lazarusidestrconsts.dlggeneratedwarf
 msgid "Generate dwarf debug information"
-msgstr "Генерировать отладочную информацию dwarf"
+msgstr "Генерировать отладочную информацию в формате dwarf"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -4050,7 +4050,7 @@ msgstr "Ошибка записи"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
-msgstr "At"
+msgstr "Оператор @"
 
 #: lazarusidestrconsts.liscodetoolsoptsbracket
 msgid "Bracket"
@@ -4352,7 +4352,7 @@ msgstr "Пропуск вызова компилятора"
 
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
-msgstr "Специфические параметры ОС"
+msgstr "Частные параметры целевой ОС"
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -4372,7 +4372,7 @@ msgstr "Открыть модуль %s"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
-msgstr "Создайте сперва проект!"
+msgstr "Сначала необходимо создать проект!"
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -4448,11 +4448,11 @@ msgstr "Текущий"
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
-msgstr "Колонка курсора в этом редакторе"
+msgstr "Номер столбца под курсором в текущем редакторе"
 
 #: lazarusidestrconsts.liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
-msgstr "Ряд курсора в этом редакторе"
+msgstr "Номер строки под курсором в текущем редакторе"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7441,7 +7441,7 @@ msgstr "Внутреннее состояние IDE"
 
 #: lazarusidestrconsts.lismenuincrementalfind
 msgid "Incremental Find"
-msgstr "Найти с нарастанием"
+msgstr "Найти с инкрементом"
 
 #: lazarusidestrconsts.lismenuindentselection
 msgid "Indent selection"
@@ -7670,7 +7670,7 @@ msgstr "Переименовать идентификатор ..."
 #: lazarusidestrconsts.lismenureplace
 msgctxt "lazarusidestrconsts.lismenureplace"
 msgid "Replace"
-msgstr "Замена"
+msgstr "Заменить"
 
 #: lazarusidestrconsts.lismenureplace2
 msgid "&Replace ..."
@@ -7773,7 +7773,7 @@ msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
-msgstr "Сортировка выбранного ..."
+msgstr "Сортировать выбранное ..."
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
@@ -10517,7 +10517,7 @@ msgstr "Пропустить загрузку предыдущего проек�
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "smaller rather than faster"
-msgstr "приоритет размера над скоростью"
+msgstr "Приоритет размера над скоростью"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
@@ -10533,7 +10533,7 @@ msgstr "Извините, этот тип ещё не реализован"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
-msgstr "Наследуемый"
+msgstr "По возрастанию"
 
 #: lazarusidestrconsts.lissortselcancel
 msgctxt "lazarusidestrconsts.lissortselcancel"
@@ -10551,7 +10551,7 @@ msgstr "По убыванию"
 
 #: lazarusidestrconsts.lissortseldomain
 msgid "Domain"
-msgstr "Домен"
+msgstr "Сортируемые объекты"
 
 #: lazarusidestrconsts.lissortselignorespace
 msgid "Ignore Space"
@@ -10577,11 +10577,11 @@ msgstr "Предпросмотр"
 
 #: lazarusidestrconsts.lissortselsort
 msgid "Accept"
-msgstr "Accept"
+msgstr "Принять"
 
 #: lazarusidestrconsts.lissortselsortselection
 msgid "Sort selection"
-msgstr "Сортировка выбранного"
+msgstr "Сортировать выбранное"
 
 #: lazarusidestrconsts.lissortselwords
 msgctxt "lazarusidestrconsts.lissortselwords"
