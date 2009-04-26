@@ -5604,11 +5604,12 @@ begin
           if Relaxed then MoveSel(False, ColCount-1, FRow)
           else            MoveSel(False, FCol, RowCount-1);
       end;
-    VK_F2: //, VK_RETURN:
+    VK_F2:
       begin
-        EditorShow(False);
-        // if Key=VK_RETURN then EditorSelectAll;
-        Key:=0;
+        if not FEditorKey and EditingAllowed(FCol) then begin
+          EditorShow(False);
+          Key:=0;
+        end ;
       end;
     VK_RETURN:
       begin
