@@ -340,11 +340,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgid "Mouse"
-msgstr ""
+msgstr "Hiiri"
 
 #: lazarusidestrconsts.dlgcodegeneration
 msgid "Code"
-msgstr ""
+msgstr "Koodi"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
@@ -515,7 +515,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
 msgid "Cursor:"
-msgstr ""
+msgstr "Kursori:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1326,21 +1326,21 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldbutton
 msgid "Button"
-msgstr ""
+msgstr "Painike"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonleft
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonleft"
 msgid "Left"
-msgstr ""
+msgstr "Vasen"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
 msgid "Middle"
-msgstr ""
+msgstr "Keskimmäinen"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonright
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonright"
 msgid "Right"
-msgstr ""
+msgstr "Oikea"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
 msgid "Fold All (Some Colapsed)"
@@ -1361,7 +1361,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmousefoldenabled
 msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
 msgid "Enabled"
-msgstr ""
+msgstr "Sallittu"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
 msgid "Fold All (All Expanded)"
@@ -1373,11 +1373,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldgroup1
 msgid "Setting 1"
-msgstr ""
+msgstr "Asetus 1"
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
 msgid "setting 2"
-msgstr ""
+msgstr "Asetus"
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
 msgctxt "lazarusidestrconsts.dlgmousefoldmodifieralt"
@@ -1396,7 +1396,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmousegroupoptions
 msgid "Mouse:"
-msgstr ""
+msgstr "Hiiri:"
 
 #: lazarusidestrconsts.dlgmouselinks
 msgid "Mouse links"
@@ -3163,7 +3163,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceoneveronlymanually
 msgid "Never, only manually"
-msgstr ""
+msgstr "Ei koskaan automaattisesti. Ainoastaan erikseen käskettäessä."
 
 #: lazarusidestrconsts.lisceonlyusedincategorymode
 msgid "Only used in category mode"
@@ -3175,7 +3175,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
-msgstr ""
+msgstr "Automaattinen päivitys"
 
 #: lazarusidestrconsts.lisceothergroup
 msgctxt "lazarusidestrconsts.lisceothergroup"
@@ -3222,7 +3222,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceunnamedconstants
 msgid "Unnamed constants"
-msgstr ""
+msgstr "Nimeämättömät vakiot"
 
 #: lazarusidestrconsts.lisceunsortedmembers
 msgid "Unsorted members"
@@ -3247,7 +3247,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
-msgstr ""
+msgstr "Muunna merkistökoodaus"
 
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
@@ -3263,7 +3263,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
-msgstr ""
+msgstr "Merkkitaulukko"
 
 #: lazarusidestrconsts.lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
@@ -3303,7 +3303,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
-msgstr ""
+msgstr "Valitse Delphi:n tekemä unit(*.pas)"
 
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
@@ -3618,7 +3618,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
-msgstr ""
+msgstr "Jätä huomioonottamatta vakiot seuraavissa funktioissa"
 
 #: lazarusidestrconsts.liscodeobscharconst
 msgctxt "lazarusidestrconsts.liscodeobscharconst"
@@ -3632,7 +3632,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
 msgid "Ignore next unnamed constants"
-msgstr ""
+msgstr "Jätä huomioonottamatta seuravat nimettömät vakiot"
 
 #: lazarusidestrconsts.liscodetempladd
 msgid "Add"
@@ -4972,7 +4972,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooledittool
 msgid "Edit Tool"
-msgstr ""
+msgstr "Muokkaa työkalua"
 
 #: lazarusidestrconsts.lisedtexttoolinsert
 msgid "Insert"
@@ -4992,7 +4992,7 @@ msgstr "Parametrit:"
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
-msgstr ""
+msgstr "Ohjelman tiedostonimi"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
@@ -5340,7 +5340,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External tools"
-msgstr ""
+msgstr "Ulkopuoliset työkalut"
 
 #: lazarusidestrconsts.lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -5404,7 +5404,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
-msgstr ""
+msgstr "Tiedeosto %s%s%s on muuttunut. Talletetaanko?"
 
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
@@ -7203,7 +7203,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
 msgid "Configure external tools ..."
-msgstr ""
+msgstr "Muokkaa ulkopuolisia työkaluja ..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
@@ -8464,7 +8464,7 @@ msgstr "Avaa projekti uudelleen"
 
 #: lazarusidestrconsts.lisopenprojectfile
 msgid "Open Project File"
-msgstr ""
+msgstr "Avaa projektitiedosto"
 
 #: lazarusidestrconsts.lisopensymlink
 msgid "Open symlink"
@@ -9984,7 +9984,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
-msgstr "Projekti 'velho'"
+msgstr "Projektin valinta"
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -9992,7 +9992,7 @@ msgstr "Vahvista riippuvuuden poistaminen"
 
 #: lazarusidestrconsts.lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
-msgstr ""
+msgstr "Vahvista tiedoston poistaminen"
 
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
 msgid "Delete dependency for %s?"
@@ -10123,7 +10123,7 @@ msgstr "Avaa viimeksi esillä olleista"
 
 #: lazarusidestrconsts.lispwrecentprojects
 msgid "Recent Projects"
-msgstr ""
+msgstr "Viimeksi esillä olleet projektit"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -11635,7 +11635,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunitsnotfound2
 msgid "Units not found"
-msgstr ""
+msgstr "Käännösyksikköjä (unit) ei löydetty"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
@@ -11840,7 +11840,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
-msgstr ""
+msgstr "ulje käytössä oleva välilehti"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
@@ -12057,7 +12057,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rsstartanewsearch
 msgid "Start a new search"
-msgstr ""
+msgstr "Aloita uusi etsintä"
 
 #: lazarusidestrconsts.rsversion
 msgid "Version:"
@@ -12692,7 +12692,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
 msgid "Select All"
-msgstr ""
+msgstr "Valitse kaikki"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -12809,7 +12809,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglecodeexpl
 msgid "View Code Explorer"
-msgstr "Näytä koodiselain"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
