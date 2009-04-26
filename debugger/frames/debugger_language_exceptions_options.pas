@@ -65,7 +65,7 @@ var
   idx: Integer;
   S: String;
 begin
-  if not InputQuery('Add Exception', 'Enter the name of the exception', S)
+  if not InputQuery(lisDebugOptionsFrmAddException, lisDebugOptionsFrmEnterExceptionName, S)
   then Exit;
 
   if clbExceptions.Items.IndexOf(S) = -1
@@ -81,7 +81,7 @@ begin
     end;
   end
   else begin
-    MessageDlg('Duplicate Exception name', mtError, [mbOK], 0);
+    MessageDlg(lisDebugOptionsFrmDuplicateExceptionName, mtError, [mbOK], 0);
   end;
 end;
 
