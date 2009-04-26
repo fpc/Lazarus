@@ -433,10 +433,14 @@ begin
   RemoveBitBtn.LoadGlyphFromLazarusResource('laz_delete');
   OptionsBitBtn.LoadGlyphFromLazarusResource('menu_environment_options');
 
-  OpenBitBtn.Caption:=lisMenuOpen;
-  AddBitBtn.Caption:=lisCodeTemplAdd;
-  RemoveBitBtn.Caption:=lisExtToolRemove;
-  OptionsBitBtn.Caption:=dlgFROpts;
+  OpenBitBtn.Caption:='';
+  AddBitBtn.Caption:='';
+  RemoveBitBtn.Caption:='';
+  OptionsBitBtn.Caption:='';
+  OpenBitBtn.Hint:=lisOpenFile;
+  AddBitBtn.Hint:=lisCodeTemplAdd;
+  RemoveBitBtn.Hint:=lisExtToolRemove;
+  OptionsBitBtn.Hint:=dlgFROpts;
 
   with ItemsTreeView do begin
     FilesNode:=Items.Add(nil, dlgEnvFiles);

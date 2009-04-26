@@ -13,7 +13,6 @@ object ProjectInspectorForm: TProjectInspectorForm
   object ItemsTreeView: TTreeView
     AnchorSideTop.Control = OpenBitBtn
     AnchorSideTop.Side = asrBottom
-    Left = 0
     Height = 284
     Top = 25
     Width = 433
@@ -31,13 +30,13 @@ object ProjectInspectorForm: TProjectInspectorForm
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object OpenBitBtn: TBitBtn
-    Left = 0
     Height = 23
-    Top = 0
     Width = 80
     AutoSize = True
     Caption = 'OpenBitBtn'
     OnClick = OpenBitBtnClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object AddBitBtn: TBitBtn
@@ -46,11 +45,12 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideTop.Control = OpenBitBtn
     Left = 80
     Height = 23
-    Top = 0
     Width = 73
     AutoSize = True
     Caption = 'AddBitBtn'
     OnClick = AddBitBtnClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
   end
   object RemoveBitBtn: TBitBtn
@@ -59,11 +59,12 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideTop.Control = OpenBitBtn
     Left = 153
     Height = 23
-    Top = 0
     Width = 93
     AutoSize = True
     Caption = 'RemoveBitBtn'
     OnClick = RemoveBitBtnClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
   end
   object OptionsBitBtn: TBitBtn
@@ -72,11 +73,12 @@ object ProjectInspectorForm: TProjectInspectorForm
     AnchorSideTop.Control = OpenBitBtn
     Left = 246
     Height = 23
-    Top = 0
     Width = 91
     AutoSize = True
     Caption = 'OptionsBitBtn'
     OnClick = OptionsBitBtnClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
   end
   object ItemsPopupMenu: TPopupMenu
