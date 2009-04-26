@@ -1798,7 +1798,7 @@ type
     property DockClients[Index: Integer]: TControl read GetDockClients;
     property DockManager: TDockManager read FDockManager write SetDockManager;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default False;
     property Handle: HWND read GetHandle write SetHandle;
     property IsResizing: Boolean read GetIsResizing;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
