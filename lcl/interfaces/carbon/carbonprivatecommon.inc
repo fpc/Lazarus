@@ -35,6 +35,21 @@ end;
   Name: CarbonCommon_Draw
   Handles draw event
  ------------------------------------------------------------------------------}
+function CarbonWindow_ContentDraw(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  if not isRepaint then
+    Result := CallNextEventHandler(ANextHandler, AEvent)
+  else
+    Result := noErr;
+end;
+
+
+{------------------------------------------------------------------------------
+  Name: CarbonCommon_Draw
+  Handles draw event
+ ------------------------------------------------------------------------------}
 function CarbonCommon_Draw(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -43,6 +58,11 @@ var
   Win     : WindowRef;
   Content : HIViewRef;
 begin
+  if isRepaint then
+  begin
+    Result := noErr;
+    Exit;
+  end;
 
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
@@ -61,15 +81,11 @@ begin
     AWidget.Context.Reset;
 
     // let carbon draw/update
-    if not isRepaint or ( AWidget.InheritsFrom(TCarbonCustomControl)  and not (AWidget is TCarbonScrollingWinControl)) then
-      Result := CallNextEventHandler(ANextHandler, AEvent)
-    else
-      Result := noErr;
+    Result := CallNextEventHandler(ANextHandler, AEvent);
 
     if (AWidget is TCarbonControl) and
       (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then
     begin
-      // todo: find a way to erase old content
       (AWidget as TCarbonControl).Draw;
     end;
 
@@ -84,7 +100,6 @@ begin
     finally
       Dispose(AStruct);
     end;
-    
     if AWidget.HasCaret then DrawCaret;
 
   finally
@@ -97,8 +112,8 @@ begin
         IsRepaint := true;
         Win:=HIViewGetWindow(AWidget.Widget);
         HIViewFindByID( HIViewGetRoot(Win), kHIViewWindowContentID, Content);
-        HIViewSetNeedsDisplay(Content, true);
-        HIViewRender(Content);
+        //HIViewSetNeedsDisplay(Content, true);
+        HIViewRender(HIViewGetRoot(Win));
         IsRepaint:=false;
       end;
       InvalidPaint:=false;

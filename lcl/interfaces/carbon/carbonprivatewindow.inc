@@ -996,6 +996,7 @@ var
   KeySpecs: array[0..3] of EventTypeSpec;
   ActivateSpecs: array[0..1] of EventTypeSpec;
   ShowWindowSpecs: array[0..2] of EventTypeSpec;
+  WinContent: HIViewRef;
 begin
   // Window Events
 
@@ -1078,6 +1079,14 @@ begin
     RegisterEventHandler(@CarbonCommon_User),
     1, @TmpSpec, Pointer(Self), nil);
 
+  // paint content message
+  if (HIViewFindByID( HIViewGetRoot(fWindowRef), kHIViewWindowContentID, WinContent) = noErr) then
+  begin
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+    InstallControlEventHandler(WinContent,
+      RegisterEventHandler(@CarbonWindow_ContentDraw),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
 end;
 
 procedure TCarbonWindow.CreateWindow(const AParams: TCreateParams);
