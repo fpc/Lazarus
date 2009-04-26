@@ -2173,7 +2173,8 @@ begin
           if ChildNode<>nil then begin
             Result:=ChildNode;
             exit;
-          end;
+          end else
+            Result:=Brother;
         end;
         Brother:=Brother.NextBrother;
       end;

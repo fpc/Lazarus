@@ -48,7 +48,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf, LResources,
-  Graphics, LMessages, WSLCLClasses, WSControls,
+  Graphics, LMessages, WSLCLClasses,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
 {$ENDIF}

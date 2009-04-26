@@ -2072,7 +2072,7 @@ begin
   DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Identifier=',
     '"',GetIdentifier(Params.Identifier),'"',
     ' ContextNode=',NodeDescriptionAsString(Params.ContextNode.Desc),
-    ' "',copy(Src,Params.ContextNode.StartPos,20),'"');
+    ' "',dbgstr(copy(Src,Params.ContextNode.StartPos,20)),'"');
   {$ENDIF}
   Result:=false;
   // search in cleaned source
@@ -2536,7 +2536,7 @@ var
     repeat
       // search for prior node
       {$IFDEF ShowTriedIdentifiers}
-      //DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString,' ',dbgstr(copy(Src,ContextNode.StartPos,ContextNode.EndPos-ContextNode.StartPos)));
       {$ENDIF}
       LastSearchedNode:=ContextNode;
 
@@ -5682,13 +5682,12 @@ var
       // build new param flags for sub identifiers
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                     +(fdfGlobals*Params.Flags);
+      Params.ContextNode:=ExprType.Context.Node;
       if ExprType.Context.Node=StartContext.Node then begin
         // there is no special context -> search in parent contexts too
-        Params.Flags:=Params.Flags
-                     +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
+        Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else begin
         // only search in special context
-        Params.ContextNode:=ExprType.Context.Node;
       end;
 
       // check identifier for overloaded procs
@@ -5703,7 +5702,7 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       {$IFDEF ShowExprEval}
-      DebugLn('  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'" ',Params.ContextNode.DescAsString,' ',dbgstr(copy(ExprType.Context.Tool.Src,Params.ContextNode.StartPos,15)));
       {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
         if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
@@ -6068,7 +6067,7 @@ begin
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
     ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
-    ' StartContext=',StartContext.Node.DescAsString
+    ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(copy(StartContext.Tool.Src,StartContext.Node.StartPos,15))
   );
   {$ENDIF}
   

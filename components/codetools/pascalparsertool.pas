@@ -2507,10 +2507,12 @@ function TPascalParserTool.ReadWithStatement(ExceptionOnError,
       CurNode.EndPos:=EndPos;
       EndChildNode; // ctnWithVariable
       // set all with variable ends
-      while (WithVarNode<>nil) and (WithVarNode.FirstChild=nil) do begin
-        WithVarNode.EndPos:=EndPos;
+      repeat
         WithVarNode:=WithVarNode.PriorBrother;
-      end;
+        if (WithVarNode=nil) or (WithVarNode.Desc<>ctnWithVariable)
+        or (WithVarNode.EndPos>0) then break;
+        WithVarNode.EndPos:=EndPos;
+      until false;
     end;
   end;
   
