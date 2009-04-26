@@ -23,6 +23,7 @@
 }
 
 {off $DEFINE VerboseAccelerator}
+{off $DEFINE VerboseUpdateSysColorMap}
 
 {$IFOPT C-}
 // Uncomment for local trace
@@ -7095,7 +7096,6 @@ end;
   Reads the system colors.
  ------------------------------------------------------------------------------}
 procedure UpdateSysColorMap(Widget: PGtkWidget);
-{ $DEFINE VerboseUpdateSysColorMap}
 {$IFDEF VerboseUpdateSysColorMap}
   function GdkColorAsString(c: TgdkColor): string;
   begin
@@ -7195,14 +7195,11 @@ begin
     {$IFNDEF DisableGtkSysColors}
     SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
     SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
-    SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(text[GTK_STATE_ACTIVE]);
-    SysColorMap[COLOR_INACTIVECAPTION] := TGDKColorToTColor(text[GTK_STATE_INSENSITIVE]);
     SysColorMap[COLOR_MENU] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_WINDOW] := TGDKColorToTColor(white);
     SysColorMap[COLOR_WINDOWFRAME] := TGDKColorToTColor(black);
     SysColorMap[COLOR_MENUTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_WINDOWTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_CAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_SELECTED]);
     SysColorMap[COLOR_ACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
     SysColorMap[COLOR_INACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_APPWORKSPACE] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
@@ -7212,16 +7209,20 @@ begin
     SysColorMap[COLOR_BTNSHADOW] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
     SysColorMap[COLOR_GRAYTEXT] := TGDKColorToTColor(text[GTK_STATE_INSENSITIVE]);
     SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_INACTIVECAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_INSENSITIVE]);
     SysColorMap[COLOR_BTNHIGHLIGHT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
     SysColorMap[COLOR_3DDKSHADOW] := TGDKColorToTColor(black);
     SysColorMap[COLOR_3DLIGHT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
     SysColorMap[COLOR_INFOTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_INFOBK] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
     SysColorMap[COLOR_HOTLIGHT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_FORM] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+    // colors which can be only retrieved from the window manager (metacity)
+    SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_SELECTED]);
+    SysColorMap[COLOR_INACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+    SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_SELECTED]);
+    SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+    SysColorMap[COLOR_CAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_SELECTED]);
+    SysColorMap[COLOR_INACTIVECAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
     {$ENDIF}
   end;
 end;
