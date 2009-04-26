@@ -53,6 +53,7 @@ type
   protected
     FActive: Boolean;
     FChart: TChart;
+    FDepth: TChartZPosition;
     FShowInLegend: Boolean;
     FTitle: String;
     FZPosition: TChartZPosition;
@@ -67,6 +68,7 @@ type
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
+    procedure SetDepth(AValue: TChartZPosition); virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartZPosition); virtual; abstract;
@@ -88,6 +90,7 @@ type
     function IsEmpty: Boolean; virtual; abstract;
 
     property Active: Boolean read FActive write SetActive;
+    property Depth: TChartZPosition read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
@@ -1032,6 +1035,16 @@ begin
 end;
 
 procedure TChart.DisplaySeries(ACanvas: TCanvas);
+
+  procedure OffsetDrawArea(AZPos, ADepth: Integer);
+  begin
+    FOffset.X -= AZPos;
+    FOffset.Y += AZPos;
+    OffsetRect(FClipRect, -AZPos, AZPos);
+    FClipRect.Right += ADepth;
+    FClipRect.Top -= ADepth;
+  end;
+
 var
   i: Integer;
   seriesInZOrder: TFPList;
@@ -1043,18 +1056,14 @@ begin
     for i := 0 to SeriesCount - 1 do
       with TBasicChartSeries(seriesInZOrder[i]) do begin
         if not Active then continue;
-        FOffset.X -= ZPosition;
-        FOffset.Y += ZPosition;
-        OffsetRect(FClipRect, -ZPosition, ZPosition);
+        OffsetDrawArea(ZPosition, Depth);
         // Set clipping region so we don't draw outside.
         // TODO: Replace by Canvas.ClipRect after fixing issue 13418.
         IntersectClipRect(
           ACanvas.Handle,
           FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
         Draw(ACanvas);
-        FOffset.X += ZPosition;
-        FOffset.Y -= ZPosition;
-        OffsetRect(FClipRect, ZPosition, -ZPosition);
+        OffsetDrawArea(-ZPosition, -Depth);
         // Now disable clipping.
         SelectClipRgn(ACanvas.Handle, 0);
       end;

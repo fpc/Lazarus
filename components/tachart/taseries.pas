@@ -58,6 +58,7 @@ type
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetValuesTotal: Double;
     procedure SetActive(AValue: Boolean); override;
+    procedure SetDepth(AValue: TChartZPosition); override;
     procedure SetShowInLegend(AValue: Boolean); override;
     procedure SetZPosition(AValue: TChartZPosition); override;
     procedure StyleChanged(Sender: TObject);
@@ -135,6 +136,7 @@ type
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
       read FBarWidthPercent write SetBarWidthPercent default 70;
+    property Depth;
     property SeriesColor;
   end;
 
@@ -319,6 +321,7 @@ type
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetSeriesColor: TColor; override;
     procedure SetActive(AValue: Boolean); override;
+    procedure SetDepth(AValue: TChartZPosition); override;
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure SetShowInLegend(AValue: Boolean); override;
     procedure SetZPosition(AValue: TChartZPosition); override;
@@ -521,6 +524,13 @@ end;
 procedure TChartSeries.SetActive(AValue: Boolean);
 begin
   FActive := AValue;
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.SetDepth(AValue: TChartZPosition);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
   UpdateParentChart;
 end;
 
@@ -1187,6 +1197,11 @@ begin
     end;
 
     ACanvas.Rectangle(r);
+    if Depth > 0 then begin
+      DrawLineDepth(ACanvas, r.Left, r.Top, r.Right - 1, r.Top, Depth);
+      DrawLineDepth(
+        ACanvas, r.Right - 1, r.Top, r.Right - 1, r.Bottom - 1, Depth);
+    end;
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
@@ -1643,6 +1658,13 @@ procedure TFuncSeries.SetActive(AValue: Boolean);
 begin
   if FActive = AValue then exit;
   FActive := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFuncSeries.SetDepth(AValue: TChartZPosition);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
   UpdateParentChart;
 end;
 

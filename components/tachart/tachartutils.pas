@@ -120,6 +120,9 @@ procedure CalculateIntervals(
 function DoublePoint(const ACoord: TChartCoord): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
+procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
+procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
+
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
 procedure Exchange(var A, B: TDoublePoint); overload;
@@ -226,6 +229,20 @@ begin
   Result.a.Y := AY1;
   Result.b.X := AX2;
   Result.b.Y := AY2;
+end;
+
+procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
+begin
+  DrawLineDepth(ACanvas, Point(AX1, AY1), Point(AX2, AY2), ADepth);
+end;
+
+procedure DrawLineDepth(
+  ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
+var
+  d: TSize;
+begin
+  d := Size(ADepth, -ADepth);
+  ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
 procedure Exchange(var A, B: Integer); overload;
