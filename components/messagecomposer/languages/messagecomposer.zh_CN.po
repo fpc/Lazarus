@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.27 beta\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-04-24 19:20+0800\n"
+"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "取消"
+
+#: messagecomposer.rsok
+msgid "Ok"
+msgstr "确定"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "测试"
+
+#: messagecomposer.skindofmessage
+msgid "KIND OF MESSAGE"
+msgstr "信息类型"
+
+#: messagecomposer.smaskinput
+msgid "Mask Input"
+msgstr ""
+
+#: messagecomposer.smessagecomposercaption
+msgid "Message Composer ..."
+msgstr "信息控制 ..."
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "显示信息"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not Implemented Yet"
+msgstr "未实现"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "询问用户输入文本"
+
+#: messagecomposer.ssourcewrapper
+msgid "SOURCE WRAPPER"
+msgstr ""
+
