@@ -412,7 +412,9 @@ end;
 
 
 initialization
+{$IFDEF GTK1}
   {$I gtkimages.lrs}
+{$ENDIF}
   InternalInit;
 
 finalization

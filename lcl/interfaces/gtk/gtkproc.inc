@@ -4142,13 +4142,11 @@ begin
   end;
 end;
 
+{$IFDef GTK1}
 var
-  {$IFDef GTK1}
   NoteBookCloseBtnPixmapImg: PGdkPixmap = nil;
   NoteBookCloseBtnPixmapMask: PGdkPixmap = nil;
-  {$Else}
-  NoteBookCloseBtnPixbuf: PGdkPixbuf = nil;
-  {$EndIf}
+{$EndIf}
 
 {-------------------------------------------------------------------------------
   procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
@@ -4186,13 +4184,6 @@ begin
   end;
   Img:=NoteBookCloseBtnPixmapImg;
   Mask:=NoteBookCloseBtnPixmapMask;
-end;
-{$Else}
-procedure GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);
-begin
-  if (NoteBookCloseBtnPixbuf=nil) then
-    LoadPixbufFromLazResource('tnotebook_close_tab', NoteBookCloseBtnPixbuf);
-  Img:=NoteBookCloseBtnPixbuf;
 end;
 {$EndIF}
 
@@ -4347,47 +4338,48 @@ var
     Img: PGdkPixmap;
     Mask: PGdkBitmap;
     {$Else}
-    Img: PGdkPixbuf;
-    x, y: gInt;
+    style: PGtkRcStyle;
     {$EndIf}
   begin
     {$IfDef GTK1}
     //debugln('UpdateTabCloseBtn ',GetWidgetDebugReport(NoteBookWidget));
-    GetNoteBookCloseBtnImage(GetControlWindow(NoteBookWidget),Img,Mask);
-    {$Else}
-    GetNoteBookCloseBtnImage(Img);
+    GetNoteBookCloseBtnImage(GetControlWindow(NoteBookWidget), Img, Mask);
     {$EndIf}
     //debugln('UpdateTabCloseBtn ',dbgs(nboShowCloseButtons in TheNotebook.Options),' ',dbgs(Img<>nil));
-    if (nboShowCloseButtons in TheNotebook.Options) and (Img<>nil) then begin
+    if (nboShowCloseButtons in TheNotebook.Options)
+       {$ifdef GTK1}and (Img <> nil){$ENDIF} then
+    begin
       // close buttons enabled
-      if TabCloseBtnWidget=nil then begin
+      if TabCloseBtnWidget = nil then
+      begin
         // there is no close button yet
         // -> add one to the right side of the label in the tab
-        TabCloseBtnWidget:=gtk_button_new;
+        TabCloseBtnWidget := gtk_button_new;
+        gtk_button_set_relief(PGtkButton(TabCloseBtnWidget), GTK_RELIEF_NONE);
         {$ifdef gtk2}
-        gtk_widget_get_size_request(TabWidget, @x, @y);
-        y := 0; // will make it default fit
-        gtk_widget_set_size_request(TabCloseBtnWidget, x, y);
+        gtk_button_set_focus_on_click(PGtkButton(TabCloseBtnWidget), False);
+        style := gtk_widget_get_modifier_style(TabCloseBtnWidget);
+        style^.xthickness := 0;
+        style^.ythickness := 0;
+        gtk_widget_modify_style(TabCloseBtnWidget, style);
         {$endif}
         gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
                             TabCloseBtnWidget);
-        begin
-          // put a pixmap into the button
-         {$IfDef GTK1}
-          TabCloseBtnImageWidget:=gtk_pixmap_new(Img,Mask);
-         {$Else}
-          TabCloseBtnImageWidget:=gtk_image_new_from_pixbuf(Img);
-         {$EndIf}
-          gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnImage',
-                              TabCloseBtnImageWidget);
-          gtk_widget_show(TabCloseBtnImageWidget);
-          gtk_container_add(PGtkContainer(TabCloseBtnWidget),
+        // put a pixmap into the button
+       {$IfDef GTK1}
+        TabCloseBtnImageWidget:=gtk_pixmap_new(Img,Mask);
+       {$Else}
+        TabCloseBtnImageWidget:=gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
+       {$EndIf}
+        gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnImage',
                             TabCloseBtnImageWidget);
-        end;
+        gtk_widget_show(TabCloseBtnImageWidget);
+        gtk_container_add(PGtkContainer(TabCloseBtnWidget),
+                          TabCloseBtnImageWidget);
         gtk_widget_show(TabCloseBtnWidget);
         g_signal_connect(PGtkObject(TabCloseBtnWidget), 'clicked',
           TGTKSignalFunc(@gtkNoteBookCloseBtnClicked), APage);
-        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabCloseBtnWidget);
+        gtk_box_pack_start(PGtkBox(TabWidget), TabCloseBtnWidget, False, False, 0);
       end;
     end else begin
       // close buttons disabled
