@@ -252,16 +252,17 @@ type
 
     function GetBounds(AIndex: Integer): Double;
     function GetUseBounds(AIndex: integer): Boolean;
+    function IsBoundsStored(AIndex: Integer): boolean;
     procedure SetBounds(AIndex: Integer; const AValue: Double);
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
     procedure CheckBoundsOrder;
     property Extent: TDoubleRect read FExtent;
   published
-    property XMin: Double index 1 read GetBounds write SetBounds;
-    property YMin: Double index 2 read GetBounds write SetBounds;
-    property XMax: Double index 3 read GetBounds write SetBounds;
-    property YMax: Double index 4 read GetBounds write SetBounds;
+    property XMin: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
+    property YMin: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
+    property XMax: Double index 3 read GetBounds write SetBounds stored IsBoundsStored;
+    property YMax: Double index 4 read GetBounds write SetBounds stored IsBoundsStored;
     property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
     property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds default false;
     property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds default false;
@@ -781,6 +782,11 @@ end;
 function TChartExtent.GetUseBounds(AIndex: Integer): Boolean;
 begin
   Result := FUseBounds[AIndex];
+end;
+
+function TChartExtent.IsBoundsStored(AIndex: Integer): boolean;
+begin
+  Result := FExtent.coords[AIndex] <> 0;
 end;
 
 procedure TChartExtent.CheckBoundsOrder;
