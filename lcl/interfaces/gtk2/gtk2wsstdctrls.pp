@@ -1426,24 +1426,22 @@ class procedure TGtk2WSCustomComboBox.SetStyle(
 var
   WidgetInfo: PWidgetInfo;
   p: PGtkWidget;
+  NeedEntry: Boolean;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
   p := WidgetInfo^.CoreWidget;
   case NewStyle of
     csDropDown,
     csSimple:
-      begin
-        if gtk_is_combo_box_entry(p) then Exit;
-        ReCreateCombo(ACustomComboBox, True, WidgetInfo);
-      end;
-    csDropDownList,
+      NeedEntry := True;
+    csDropDownList:
+      NeedEntry := False;
     csOwnerDrawFixed,
     csOwnerDrawVariable:
-      begin
-        if not gtk_is_combo_box_entry(p) then Exit;
-        ReCreateCombo(ACustomComboBox, False, WidgetInfo);
-      end;
+      NeedEntry := not ACustomComboBox.ReadOnly;
   end;
+  if gtk_is_combo_box_entry(p) = NeedEntry then Exit;
+  ReCreateCombo(ACustomComboBox, NeedEntry, WidgetInfo);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetReadOnly(
@@ -1454,10 +1452,17 @@ var
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
+  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then
+  begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-    gtk_entry_set_editable(PGtkEntry(Entry), not NewReadOnly);
-  end;
+    if ACustomComboBox.Style in [csDropDown, csSimple] then
+      gtk_entry_set_editable(PGtkEntry(Entry), not NewReadOnly)
+    else
+    if (PGtkEntry(Entry)^.flag0 and $1) = Ord(NewReadOnly) then
+      ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
+  end
+  else
+    ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
 end;
 
 class function TGtk2WSCustomComboBox.GetItems(
@@ -1563,8 +1568,9 @@ var
   ACustomComboBox: TCustomComboBox;
   ItemList: TGtkListStoreStringList;
   LCLIndex: PLongint;
+  NeedEntry: Boolean;
 begin
-  ACustomComboBox:=TCustomComboBox(AWinControl);
+  ACustomComboBox := TCustomComboBox(AWinControl);
 
   Box := gtk_event_box_new;
   {$IFDEF DebugLCLComponents}
@@ -1576,13 +1582,19 @@ begin
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
 
   case ACustomComboBox.Style of
-    csDropDown, csSimple:
-      ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0);
-    csDropDownList,
+    csDropDown,
+    csSimple:
+      NeedEntry := True;
+    csDropDownList:
+      NeedEntry := False;
     csOwnerDrawFixed,
-    csOwnerDrawVariable :
-      ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));
+    csOwnerDrawVariable:
+      NeedEntry := not ACustomComboBox.ReadOnly;
   end;
+  if NeedEntry then
+    ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0)
+  else
+    ComboWidget := gtk_combo_box_new_with_model(GTK_TREE_MODEL (ListStore));
 
   SetSensitivity(AWinControl, ComboWidget);
 

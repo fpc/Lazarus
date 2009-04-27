@@ -2589,18 +2589,18 @@ begin
   end;
 end;
 
-procedure TPropertyEditor.SetOrdValue(const NewValue:Longint);
+procedure TPropertyEditor.SetOrdValue(const NewValue: Longint);
 var
   I:Integer;
   Changed: boolean;
 begin
-  Changed:=false;
-  for I:=0 to FPropCount-1 do
+  Changed := False;
+  for I := 0 to FPropCount - 1 do
     with FPropList^[I] do
-      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>NewValue);
+      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> NewValue);
   if Changed then begin
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetOrdProp(Instance,PropInfo,NewValue);
+      with FPropList^[I] do SetOrdProp(Instance, PropInfo, NewValue);
     Modified;
   end;
 end;
