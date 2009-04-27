@@ -141,8 +141,7 @@ begin
   FillChar(BitBtnInfo^, SizeOf(BitBtnInfo^), 0);
   WidgetInfo^.UserData := BitBtnInfo;
   WidgetInfo^.DataOwner := True;
-  
-  
+
   BitBtnInfo^.AlignWidget := gtk_alignment_new(0.5, 0.5, 0, 0);
   gtk_container_add(Pointer(Result), BitBtnInfo^.AlignWidget);
 
@@ -151,7 +150,7 @@ begin
   
   BitBtnInfo^.LabelWidget := gtk_label_new('bitbtn');
   gtk_table_attach(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget,
-                   2, 3, 0, 4, 0, 0, 0, 0);
+                   2, 3, 0, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
 
   BitBtnInfo^.SpaceWidget := nil;
   BitBtnInfo^.ImageWidget := nil;
@@ -359,36 +358,36 @@ begin
     blGlyphLeft: begin
       if AInfo^.ImageWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 2, 1, 3, 0, 0, 0, 0);
+                            1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       2, 3, 1, 3, 0, 0, 0, 0);
+                       2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
     blGlyphRight: begin
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 2, 1, 3, 0, 0, 0, 0);
+                       1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       if AInfo^.ImageWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            2, 3, 1, 3, 0, 0, 0, 0);
+                            2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       if AInfo^.SpaceWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                            3, 4, 1, 3, 0, 0, 0, 0);
+                            3, 4, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
     blGlyphTop: begin
       if AInfo^.ImageWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 3, 1, 2, 0, 0, 0, 0);
+                            1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 3, 2, 3, 0, 0, 0, 0);
+                       1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end; 
     blGlyphBottom: begin
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                       1, 3, 1, 2, 0, 0, 0, 0);
+                       1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       if AInfo^.ImageWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 3, 2, 3, 0, 0, 0, 0);
+                            1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       if AInfo^.SpaceWidget <> nil
       then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                            1, 3, 3, 4, 0, 0, 0, 0);
+                            1, 3, 3, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
   end;
   
