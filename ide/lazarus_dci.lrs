@@ -16,18 +16,19 @@ LazarusResources.Add('lazarus_dci_file','DCI',[
   +'[ife | if then (no begin/end) else (no begin/end)]'#10'if | then'#10#10'els'
   +'e'#10'[ifeb | if then else]'#10'if | then begin'#10#10'end'#10'else begin'
   +#10#10'end;'#10'[procedure | procedure declaration]'#10'procedure |();'#10'b'
-  +'egin'#10#10'end;'#10'[trye | try except]'#10'try'#10'  | '#10'except'#10#10
-  +'end;'#10'[tryf | try finally]'#10'try'#10'  | '#10'finally'#10#10'end;'#10
-  +'[trycf | try finally (with Create/Free)]'#10'|variable := typename.Create; '
-  +#10'try'#10#10'finally'#10'  variable.Free;'#10'end;'#10'[whileb | while sta'
-  +'tement]'#10'while | do begin'#10#10'end;'#10'[whiles | while (no begin)]'#10
-  +'while | do'#10'[withb | with statement]'#10'with | do begin'#10#10'end;'#10
-  +'[b | begin end]'#10'begin'#10'  |'#10'end;'#10'[withs | with (no begin)]'#10
-  +'with | do'#10'[hexc | HexStr(Cardinal(),8)]'#10'HexStr(Cardinal(|),8)'#10'['
-  +'be | begin end else begin end]'#10'begin'#10'  |'#10'end else begin'#10#10
-  +'end;'#10'[withc | with for components]'#10'with | do begin'#10'  Name:='''''
-  +';'#10'  Parent:=;'#10'  Left:=;'#10'  Top:=;'#10'  Width:=;'#10'  Height:=;'
-  +#10'  Caption:='''';'#10'end;'#10'[d | debugln]'#10'$(AttributesStart)'#10'E'
-  +'nableMakros=true'#10'$(AttributesEnd)'#10'debugln([''$ProcedureName() ''|])'
-  +';'#10
+  +'egin'#10#10'end;'#10'[ofall | case of all enums]'#10'$(AttributesStart)'#10
+  +'EnableMakros=true'#10'$(AttributesEnd)'#10'of'#10'|$OfAll()end;'#10'[trye |'
+  +' try except]'#10'try'#10'  | '#10'except'#10#10'end;'#10'[tryf | try finall'
+  +'y]'#10'try'#10'  | '#10'finally'#10#10'end;'#10'[trycf | try finally (with '
+  +'Create/Free)]'#10'|variable := typename.Create; '#10'try'#10#10'finally'#10
+  +'  variable.Free;'#10'end;'#10'[whileb | while statement]'#10'while | do beg'
+  +'in'#10#10'end;'#10'[whiles | while (no begin)]'#10'while | do'#10'[withb | '
+  +'with statement]'#10'with | do begin'#10#10'end;'#10'[b | begin end]'#10'beg'
+  +'in'#10'  |'#10'end;'#10'[withs | with (no begin)]'#10'with | do'#10'[hexc |'
+  +' HexStr(Cardinal(),8)]'#10'HexStr(Cardinal(|),8)'#10'[be | begin end else b'
+  +'egin end]'#10'begin'#10'  |'#10'end else begin'#10#10'end;'#10'[withc | wit'
+  +'h for components]'#10'with | do begin'#10'  Name:='''';'#10'  Parent:=;'#10
+  +'  Left:=;'#10'  Top:=;'#10'  Width:=;'#10'  Height:=;'#10'  Caption:='''';'
+  +#10'end;'#10'[d | debugln]'#10'$(AttributesStart)'#10'EnableMakros=true'#10
+  +'$(AttributesEnd)'#10'debugln([''$ProcedureName() ''|]);'#10
 ]);

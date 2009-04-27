@@ -981,7 +981,7 @@ function ExprTypeToString(const ExprType: TExpressionType): string;
 begin
   Result:='Desc='+ExpressionTypeDescNames[ExprType.Desc]
          +' SubDesc='+ExpressionTypeDescNames[ExprType.SubDesc]
-         +FindContextToString(ExprType.Context);
+         +' '+FindContextToString(ExprType.Context);
 end;
 
 function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;

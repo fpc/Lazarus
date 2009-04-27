@@ -71,6 +71,12 @@ procedure |();
 begin
 
 end;
+[ofall | case of all enums]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+of
+|$OfAll()end;
 [trye | try except]
 try
   | 

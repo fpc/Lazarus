@@ -332,6 +332,8 @@ type
     function FindAbstractMethods(const CursorPos: TCodeXYPosition;
                                  out ListOfPCodeXYPosition: TFPList;
                                  SkipAbstractsInStartClass: boolean = false): boolean;
+    function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
+                                     List: TStrings): boolean;
   end;
   
 const
@@ -1932,6 +1934,89 @@ begin
   finally
     Params.Free;
     ClearFoundMethods;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TIdentCompletionTool.GetValuesOfCaseVariable(
+  const CursorPos: TCodeXYPosition; List: TStrings): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  CaseAtom: TAtomPosition;
+  Params: TFindDeclarationParams;
+  EndPos: LongInt;
+  ExprType: TExpressionType;
+  Node: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+begin
+  Result:=false;
+  ActivateGlobalWriteLock;
+  Params:=nil;
+  try
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+
+    // find node at position
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
+
+    // find keyword case
+    MoveCursorToNodeStart(CursorNode);
+    CaseAtom:=CleanAtomPosition;
+    repeat
+      ReadNextAtom;
+      if UpAtomIs('CASE') then
+        CaseAtom:=CurPos
+    until (CurPos.EndPos>SrcLen) or (CurPos.EndPos>CleanCursorPos);
+    if CaseAtom.StartPos<1 then exit;
+
+    // find case variable
+    EndPos:=FindEndOfExpression(CaseAtom.EndPos);
+    if EndPos>CleanCursorPos then
+      EndPos:=CleanCursorPos;
+    //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Expr=',dbgstr(copy(Src,CaseAtom.EndPos,EndPos-CaseAtom.EndPos))]);
+
+    Params:=TFindDeclarationParams.Create;
+    Params.ContextNode:=CursorNode;
+    Params.Flags:=fdfGlobals+fdfDefaultForExpressions;
+    ExprType:=FindExpressionTypeOfVariable(CaseAtom.EndPos,EndPos,Params,true);
+    //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
+
+    case ExprType.Desc of
+
+    xtBoolean,xtByteBool,xtLongBool:
+      begin
+        List.Add('True');
+        List.Add('False');
+      end;
+
+    xtContext:
+      begin
+        Node:=ExprType.Context.Node;
+        Tool:=ExprType.Context.Tool;
+        if Node=nil then exit;
+        case Node.Desc of
+
+        ctnEnumerationType:
+          begin
+            Node:=Node.FirstChild;
+            while Node<>nil do begin
+              List.Add(GetIdentifier(@Tool.Src[Node.StartPos]));
+              Node:=Node.NextBrother;
+            end;
+          end;
+
+        else
+          exit;
+        end;
+      end;
+    else
+      exit;
+    end;
+
+    Result:=true;
+  finally
+    Params.Free;
     DeactivateGlobalWriteLock;
   end;
 end;

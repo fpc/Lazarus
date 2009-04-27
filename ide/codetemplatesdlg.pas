@@ -174,12 +174,14 @@ function CodeMacroDate(const Parameter: string; InteractiveValue: TPersistent;
 function CodeMacroTime(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMacroDateTime(const Parameter: string;
-                        InteractiveValue: TPersistent;
+function CodeMacroDateTime(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 function CodeMacroAddMissingEnd(const Parameter: string;
                         InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 
@@ -465,6 +467,55 @@ begin
   end;
 end;
 
+function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
+  SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
+// completes
+//  case SomeEnum of
+//  <list of enums>
+//  end;
+var
+  List: TStrings;
+  Code: TCodeBuffer;
+  CaretXY: TPoint;
+  p: integer;
+  i: Integer;
+begin
+  List:=TStringList.Create;
+  try
+    CaretXY:=SrcEdit.CursorTextXY;
+    Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+    Code.LineColToPosition(CaretXY.Y,CaretXY.X,p);
+    if p<1 then begin
+      ErrorMsg:='outside of code';
+      exit(false);
+    end;
+    while (p>1) and (IsIdentChar[Code.Source[p-1]]) do
+    begin
+      dec(p);
+      dec(CaretXY.X);
+    end;
+    if not CodeToolBoss.GetValuesOfCaseVariable(
+      SrcEdit.CodeToolsBuffer as TCodeBuffer,
+      CaretXY.X,CaretXY.Y,List) then
+    begin
+      Result:=false;
+      ErrorMsg:=CodeToolBoss.ErrorMessage;
+      if ErrorMsg='' then
+        ErrorMsg:='missing case variable';
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    Value:='';
+    for i:=0 to List.Count-1 do
+      Value:=Value+List[i]+': ;'+LineEnding;
+  finally
+    List.Free;
+  end;
+
+  Result:=true;
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -533,6 +584,9 @@ begin
                      'check if the next token in source'
                     +' is an end and if not returns lineend + end; + lineend',
                     @CodeMacroAddMissingEnd,nil);
+  RegisterCodeMacro('OfAll','list of all case values',
+                    'returns list of all values of case variable in front of variable',
+                    @CodeMacroOfAll,nil);
 end;
 
 { TCodeTemplateEditForm }

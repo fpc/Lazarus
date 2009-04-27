@@ -401,6 +401,8 @@ type
     function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
           out ListOfPCodeXYPosition: TFPList;
           SkipAbstractsInStartClass: boolean = false): boolean;
+    function GetValuesOfCaseVariable(Code: TCodeBuffer; X,Y: integer;
+          List: TStrings): boolean;
 
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
@@ -2084,6 +2086,26 @@ begin
   try
     Result:=FCurCodeTool.FindAbstractMethods(CursorPos,ListOfPCodeXYPosition,
                                              SkipAbstractsInStartClass);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetValuesOfCaseVariable(Code: TCodeBuffer; X,
+  Y: integer; List: TStrings): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetValuesOfCaseVariable A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.GetValuesOfCaseVariable(CursorPos,List);
   except
     on e: Exception do Result:=HandleException(e);
   end;
