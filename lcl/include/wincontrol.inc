@@ -4199,8 +4199,8 @@ begin
       );
       {$ENDIF}
     end;
-    Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
-                    LParam(Integer(PointToSmallPoint(P))));
+    TheMessage.Result := Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
+                         LParam(Integer(PointToSmallPoint(P))));
     Result := True;
   end;
 end;
