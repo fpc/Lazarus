@@ -177,6 +177,8 @@ var
   FileReadable: boolean;
 begin
   ACodeBuffer:=nil;
+  if not FilenameIsAbsolute(AFilename) then
+    Flags:=Flags-[lbfUpdateFromDisk,lbfRevert];
   if [lbfUpdateFromDisk,lbfRevert]*Flags=[] then begin
     // can use cache
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);
