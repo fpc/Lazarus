@@ -2151,12 +2151,14 @@ end;
 
 procedure TOICustomPropertyGrid.DoTabKey;
 begin
-  if Column=oipgcValue then begin
-    Column:=oipgcName;
+  if Column = oipgcValue then 
+  begin
+    Column := oipgcName;
     Self.SetFocus;
-  end else begin
-    Column:=oipgcValue;
-    if FCurrentEdit<>nil then
+  end else 
+  begin
+    Column := oipgcValue;
+    if FCurrentEdit <> nil then
       FCurrentEdit.SetFocus;
   end;
 end;
@@ -4075,13 +4077,13 @@ begin
     ComponentRestrictedBox.Invalidate;
   end;
   
-  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-    if GridControl[Page]<>nil then
+  for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page] <> nil then
       GridControl[Page].Selection := FSelection;
   ComponentTree.Selection := FSelection;
   ComponentTree.MakeSelectionVisible;
   if (not Visible) and AutoShow and (FSelection.Count > 0) then
-    Visible:=true;
+    Visible := True;
 end;
 
 procedure TObjectInspectorDlg.SaveChanges;
