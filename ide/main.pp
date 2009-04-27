@@ -5014,6 +5014,7 @@ begin
   // get final filename
   NewFilename:=NewSource.Filename;
   NewFilePath:=ExtractFilePath(NewFilename);
+  EnvironmentOptions.RemoveFromRecentOpenFiles(OldFilename);
   EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
   SetRecentFilesMenu;
 
@@ -7391,6 +7392,14 @@ begin
     end;
     if Result=mrAbort then exit;
     Result:=mrOk;
+  end;
+
+  // add to recent file list
+  if (not ActiveUnitInfo.IsVirtual)
+  and (not (cfProjectClosing in Flags)) then
+  begin
+    EnvironmentOptions.AddToRecentOpenFiles(ActiveUnitInfo.Filename);
+    SetRecentFilesMenu;
   end;
 
   // close form soft (keep it if used by another component)
