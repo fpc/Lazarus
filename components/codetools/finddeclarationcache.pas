@@ -43,12 +43,12 @@ uses
 
 type
   {
-    1. interface cache:
+    1. interface cache: (unit interfaces, not class interfaces)
       Every FindIdentifierInInterface call is cached
         - stores: Identifier -> Node+CleanPos
         - cache must be deleted, everytime the codetree is rebuild
            this is enough update, because it does only store internals
-       -> This will improve search time for interface requests
+       -> This improves search time for interface requests
   }
   PInterfaceIdentCacheEntry = ^TInterfaceIdentCacheEntry;
   TInterfaceIdentCacheEntry = record
@@ -56,21 +56,29 @@ type
     Node: TCodeTreeNode; // if node = nil then identifier does not exist in
                          //                    this interface
     CleanPos: integer;
+    Overloaded: PInterfaceIdentCacheEntry;
     NextEntry: PInterfaceIdentCacheEntry; // used by memory manager
   end;
 
+  { TInterfaceIdentifierCache }
+
   TInterfaceIdentifierCache = class
   private
+    FComplete: boolean;
     FItems: TAVLTree; // tree of TInterfaceIdentCacheEntry
     FTool: TPascalParserTool;
     function FindAVLNode(Identifier: PChar): TAVLTreeNode;
+    procedure SetComplete(const AValue: boolean);
   public
     function FindIdentifier(Identifier: PChar): PInterfaceIdentCacheEntry;
     procedure Add(Identifier: PChar; Node: TCodeTreeNode; CleanPos: integer);
     procedure Clear;
+    procedure ClearMissingIdentifiers;
     constructor Create(ATool: TPascalParserTool);
     destructor Destroy; override;
+    procedure ConsistencyCheck;
     property Tool: TPascalParserTool read FTool;
+    property Complete: boolean read FComplete write SetComplete;
   end;
 
   {
@@ -343,6 +351,10 @@ end;
 procedure TInterfaceIdentCacheEntryMemManager.DisposeEntry(
   Entry: PInterfaceIdentCacheEntry);
 begin
+  if Entry^.Overloaded<>nil then begin
+    DisposeEntry(Entry^.Overloaded);
+    Entry^.Overloaded:=nil;
+  end;
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add Entry to Free list
@@ -411,6 +423,25 @@ begin
   end;
 end;
 
+procedure TInterfaceIdentifierCache.ClearMissingIdentifiers;
+var
+  Node: TAVLTreeNode;
+  NextNode: TAVLTreeNode;
+  Entry: PInterfaceIdentCacheEntry;
+begin
+  if FItems=nil then exit;
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    NextNode:=FItems.FindSuccessor(Node);
+    Entry:=PInterfaceIdentCacheEntry(Node.Data);
+    if Entry^.Node=nil then begin
+      FItems.Delete(Node);
+      InterfaceIdentCacheEntryMemManager.DisposeEntry(Entry);
+    end;
+    Node:=NextNode;
+  end;
+end;
+
 constructor TInterfaceIdentifierCache.Create(ATool: TPascalParserTool);
 begin
   inherited Create;
@@ -422,8 +453,37 @@ end;
 destructor TInterfaceIdentifierCache.Destroy;
 begin
   Clear;
-  if FItems<>nil then FItems.Free;
+  FreeAndNil(FItems);
   inherited Destroy;
+end;
+
+procedure TInterfaceIdentifierCache.ConsistencyCheck;
+var
+  Node: TAVLTreeNode;
+  Entry: PInterfaceIdentCacheEntry;
+begin
+  if FItems<>nil then begin
+    if FItems.ConsistencyCheck<>0 then
+      RaiseCatchableException('');
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Entry:=PInterfaceIdentCacheEntry(Node.Data);
+      while Entry<>nil do begin
+        if (Entry^.Identifier=nil) or (Entry^.Identifier^=#0) then
+          RaiseCatchableException('');
+        if (Entry^.Node=nil) and Complete then
+          RaiseCatchableException('');
+        if (Entry^.Overloaded<>nil)
+        and (CompareIdentifiers(Entry^.Identifier,Entry^.Overloaded^.Identifier)<>0)
+        then begin
+          debugln(['TInterfaceIdentifierCache.ConsistencyCheck Entry=',GetIdentifier(Entry^.Identifier),'<>',GetIdentifier(Entry^.Overloaded^.Identifier)]);
+          RaiseCatchableException('');
+        end;
+        Entry:=Entry^.Overloaded;
+      end;
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
 end;
 
 function TInterfaceIdentifierCache.FindAVLNode(Identifier: PChar): TAVLTreeNode;
@@ -448,6 +508,14 @@ begin
   end;
 end;
 
+procedure TInterfaceIdentifierCache.SetComplete(const AValue: boolean);
+begin
+  if FComplete=AValue then exit;
+  FComplete:=AValue;
+  if FComplete then
+    ClearMissingIdentifiers;
+end;
+
 function TInterfaceIdentifierCache.FindIdentifier(Identifier: PChar
   ): PInterfaceIdentCacheEntry;
 var Node: TAVLTreeNode;
@@ -463,16 +531,25 @@ procedure TInterfaceIdentifierCache.Add(Identifier: PChar; Node: TCodeTreeNode;
   CleanPos: integer);
 var
   NewEntry: PInterfaceIdentCacheEntry;
+  OldNode: TAVLTreeNode;
 begin
+  if (GetIdentLen(Identifier)=0) then
+    RaiseCatchableException('');
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTInterfaceIdentCacheEntry);
+  OldNode:=FindAVLNode(Identifier);
   NewEntry:=InterfaceIdentCacheEntryMemManager.NewEntry;
   NewEntry^.Identifier:=GlobalIdentifierTree.AddCopy(Identifier);
   NewEntry^.Node:=Node;
   NewEntry^.CleanPos:=CleanPos;
-  FItems.Add(NewEntry);
+  if OldNode<>nil then begin
+    NewEntry^.Overloaded:=PInterfaceIdentCacheEntry(OldNode.Data);
+    OldNode.Data:=NewEntry;
+  end else begin
+    NewEntry^.Overloaded:=nil;
+    FItems.Add(NewEntry);
+  end;
 end;
-
 
 { TGlobalIdentifierTree }
 
@@ -512,7 +589,8 @@ begin
   Len:=0;
   while IsIdentChar[Identifier[Len]] do inc(Len);
   GetMem(Result,Len+1);
-  Move(Identifier^,Result^,Len+1);
+  Move(Identifier^,Result^,Len);
+  Result[Len]:=#0;
   if FItems=nil then
     FItems:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
   FItems.Add(Result);

@@ -111,6 +111,7 @@ type
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsOperator(ProcNode: TCodeTreeNode): boolean;
 
     // classes
     function ExtractClassName(ClassNode: TCodeTreeNode;
@@ -154,6 +155,7 @@ type
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
                                             ): boolean;
     function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
+    function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
 
     // sections
     function GetSourceName(DoBuildTree: boolean = true): string;
@@ -1590,6 +1592,16 @@ begin
   if (ctnsForwardDeclaration and ProcNode.SubDesc)>0 then exit(true);
 end;
 
+function TPascalReaderTool.NodeIsOperator(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (ProcNode=nil) then exit;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if ProcNode.Desc<>ctnProcedure then exit;
+  Result:=CompareIdentifiers('operator',@Src[ProcNode.StartPos])=0;
+end;
+
 function TPascalReaderTool.NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode
   ): boolean;
 begin
@@ -1672,6 +1684,30 @@ begin
   if not ReadTilVariableEnd(true,true) then exit(-1);
   UndoReadNextAtom;
   Result:=CurPos.EndPos;
+end;
+
+function TPascalReaderTool.NodeIsIdentifierInInterface(Node: TCodeTreeNode
+  ): boolean;
+begin
+  case Node.Desc of
+  ctnEnumIdentifier:
+    Result:=true;
+  ctnVarDefinition:
+    Result:=(Node.Parent.Desc=ctnVarSection)
+            and (Node.Parent.Parent.Desc=ctnInterface);
+  ctnConstDefinition:
+    Result:=(Node.Parent.Desc=ctnConstSection)
+            and (Node.Parent.Parent.Desc=ctnInterface);
+  ctnTypeDefinition,ctnGenericType:
+    Result:=(Node.Parent.Desc=ctnTypeSection)
+            and (Node.Parent.Parent.Desc=ctnInterface);
+  ctnProcedure,ctnProperty:
+    Result:=Node.Parent.Desc=ctnInterface;
+  ctnProcedureHead:
+    Result:=(Node.Parent.Desc=ctnProcedure)
+        and (Node.Parent.Parent.Desc=ctnInterface);
+  end;
+  Result:=false;
 end;
 
 function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;

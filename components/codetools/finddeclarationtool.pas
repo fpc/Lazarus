@@ -708,6 +708,7 @@ type
 
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure ValidateToolDependencies; override;
+    function BuildInterfaceIdentifierCache(ExceptionOnNotUnit: boolean): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindMainDeclaration(const CursorPos: TCodeXYPosition;
@@ -4768,7 +4769,7 @@ function TFindDeclarationTool.FindIdentifierInUsesSection(
 { this function is internally used by FindIdentifierInContext
 
    search backwards through the uses section
-   compare first the unit name, then load the unit and search there
+   compare first the all unit names, then load the units and search there
 }
 var
   InAtom, UnitNameAtom: TAtomPosition;
@@ -4777,21 +4778,43 @@ var
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   Result:=false;
-  MoveCursorToUsesEnd(UsesNode);
+  // reparse uses section
+  MoveCursorToNodeStart(UsesNode);
+  if (UsesNode.Desc=ctnUsesSection) then begin
+    ReadNextAtom;
+    if not UpAtomIs('USES') then
+      RaiseUsesExpected;
+  end;
   repeat
-    ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    ReadNextAtom;  // read name
+    if CurPos.StartPos>SrcLen then break;
+    if AtomIsChar(';') then break;
+    AtomIsIdentifier(true);
     if (Params.IdentifierTool=Self)
-    and CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
+    and CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
     begin
       // the searched identifier was a uses unitname, point to the identifier in
       // the uses section
       Result:=true;
-      Params.SetResult(Self,UsesNode,UnitNameAtom.StartPos);
+      Params.SetResult(Self,UsesNode,CurPos.StartPos);
       exit;
     end;
-    if (fdfIgnoreUsedUnits in Params.Flags) then begin
-      // search further
-    end else begin
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      if not AtomIsStringConstant then RaiseStrConstExpected;
+      ReadNextAtom;
+    end;
+    if AtomIsChar(';') then break;
+    if not AtomIsChar(',') then
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
+  until (CurPos.StartPos>SrcLen);
+
+  if not (fdfIgnoreUsedUnits in Params.Flags) then begin
+    // search in units
+    MoveCursorToUsesEnd(UsesNode);
+    repeat
+      ReadPriorUsedUnit(UnitNameAtom, InAtom);
       // open the unit
       {$IFDEF ShowTriedUnits}
       DebugLn('TFindDeclarationTool.FindIdentifierInUsesSection Self=',MainFilename,
@@ -4808,9 +4831,9 @@ begin
       if Result and Params.IsFinal then exit;
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
-    end;
-    ReadPriorAtom; // read keyword 'uses' or comma
-  until not AtomIsChar(',');
+      ReadPriorAtom; // read keyword 'uses' or comma
+    until not AtomIsChar(',');
+  end;
 end;
 
 function TFindDeclarationTool.FindCodeToolForUsedUnit(UnitNameAtom,
@@ -4952,19 +4975,9 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInInterface(
   AskingTool: TFindDeclarationTool; Params: TFindDeclarationParams): boolean;
-var InterfaceNode: TCodeTreeNode;
-  SrcIsUsable: boolean;
-  OldInput: TFindDeclarationInput;
+var
   CacheEntry: PInterfaceIdentCacheEntry;
-  
-  procedure RaiseWrongContext;
-  begin
-    DebugLn('TFindDeclarationTool.FindIdentifierInInterface.RaiseWrongContext');
-    Params.WriteDebugReport;
-    SaveRaiseException('TFindDeclarationTool.FindIdentifierInInterface '
-                      +'Internal Error: Wrong CodeTool');
-  end;
-  
+  IdentFoundResult: TIdentifierFoundResult;
 begin
   Result:=false;
   // build code tree
@@ -4978,78 +4991,109 @@ begin
   {$ENDIF}
 
   // ToDo: build codetree for ppu, ppw, dcu files
-  
+
   // build tree for pascal source
-  BuildTree(true);
+  if not BuildInterfaceIdentifierCache(true) then exit(false);
   if (AskingTool<>Self) and (AskingTool<>nil) then
     AskingTool.AddToolDependency(Self);
 
   // search identifier in cache
-  if (FInterfaceIdentifierCache<>nil)
-  and (not (fdfCollect in Params.Flags)) then begin
-    CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
-    if CacheEntry<>nil then begin
-      // identifier in cache found
-      {$IFDEF ShowInterfaceCache}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
-      ' Exists=',DbgS(CacheEntry^.Node<>nil));
-      {$ENDIF}
-      if CacheEntry^.Node=nil then begin
-        // identifier not in this interface
-      end else begin
-        // identifier in this interface found
-        Params.SetResult(Self,CacheEntry^.Node,CacheEntry^.CleanPos);
-        Result:=true;
-      end;
-      exit;
-    end;
+  CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
+  while CacheEntry<>nil do begin
+    Params.SetResult(Self,CacheEntry^.Node,CacheEntry^.CleanPos);
+    IdentFoundResult:=DoOnIdentifierFound(Params,Params.NewNode);
+    {$IFDEF ShowProcSearch}
+    DebugLn(['[TFindDeclarationTool.FindIdentifierInContext.CheckResult] DoOnIdentifierFound=',IdentifierFoundResultNames[IdentFoundResult]]);
+    {$ENDIF}
+    if (IdentFoundResult=ifrSuccess) then
+      exit(true);
+    if IdentFoundResult=ifrAbortSearch then exit(false);
+    // proceed
+    CacheEntry:=CacheEntry^.Overloaded;
   end;
-  
-  // check source name
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read keyword for source type, e.g. 'unit'
-  SrcIsUsable:=UpAtomIs('UNIT');
-  if not SrcIsUsable then
-    RaiseException(ctsSourceIsNotUnit);
-  ReadNextAtom; // read source name
-  if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
-    // identifier is source name
-    Params.SetResult(Self,Tree.Root,CurPos.StartPos);
-    Result:=true;
-    exit;
-  end;
-  
-  // search identifier in interface
-  InterfaceNode:=FindInterfaceNode;
-  if InterfaceNode=nil then
-    RaiseException(ctsInterfaceSectionNotFound);
-  Params.Save(OldInput);
-  Params.Flags:=(fdfGlobalsSameIdent*Params.Flags)
-                -[fdfExceptionOnNotFound,fdfSearchInParentNodes]
-                +[fdfIgnoreUsedUnits];
-  Params.ContextNode:=InterfaceNode;
-  Result:=FindIdentifierInContext(Params);
-  Params.Load(OldInput,true);
+  exit(false);
+end;
 
-  // save result in cache
-  if Params.Flags*[fdfCollect,fdfDoNotCache]=[] then begin
-    if FInterfaceIdentifierCache=nil then
-      FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-    if Result and (Params.NewCodeTool=Self) then begin
-      // identifier exists in interface
-      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-        //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
-        // ToDo: add param list to cache
-        // -> do not cache
-      end else begin
-        FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
-          Params.NewCleanPos);
-      end;
-    end else if not Result then begin
-      // identifier does not exist in this interface
-      FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
+function TFindDeclarationTool.BuildInterfaceIdentifierCache(
+  ExceptionOnNotUnit: boolean): boolean;
+
+  procedure ScanForEnums(Node: TCodeTreeNode);
+  begin
+    while Node<>nil do begin
+      if Node.Desc=ctnEnumIdentifier then
+        FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
+      Node:=Node.Next;
     end;
   end;
+
+  procedure ScanChilds(ParentNode: TCodeTreeNode);
+  var
+    Node: TCodeTreeNode;
+  begin
+    Node:=ParentNode.FirstChild;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnTypeSection,ctnConstSection,ctnVarSection,ctnResStrSection:
+        ScanChilds(Node);
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+        FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
+      ctnGenericType:
+        if Node.FirstChild<>nil then
+          FInterfaceIdentifierCache.Add(@Src[Node.FirstChild.StartPos],Node,Node.StartPos);
+      ctnProperty:
+        begin
+          MoveCursorToPropName(Node);
+          FInterfaceIdentifierCache.Add(@Src[CurPos.StartPos],Node,Node.StartPos);
+        end;
+      ctnProcedure:
+        if (Node.FirstChild<>nil) and (not NodeIsOperator(Node)) then
+          FInterfaceIdentifierCache.Add(@Src[Node.FirstChild.StartPos],Node,Node.StartPos);
+      end;
+      ScanForEnums(Node);
+      Node:=Node.NextBrother;
+    end;
+  end;
+
+var
+  InterfaceNode: TCodeTreeNode;
+begin
+  // build tree for pascal source
+  BuildTree(true);
+
+  // search interface section
+  InterfaceNode:=FindInterfaceNode;
+  if InterfaceNode=nil then begin
+    // check source type
+    if ExceptionOnNotUnit then begin
+      MoveCursorToNodeStart(Tree.Root);
+      ReadNextAtom; // read keyword for source type, e.g. 'unit'
+      if not UpAtomIs('UNIT') then
+        RaiseException(ctsSourceIsNotUnit);
+      RaiseException(ctsInterfaceSectionNotFound);
+    end else
+      exit(true);
+  end;
+
+  // create tree
+  if (FInterfaceIdentifierCache<>nil) and FInterfaceIdentifierCache.Complete then
+    exit(true);
+
+  if FInterfaceIdentifierCache=nil then
+    FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self)
+  else
+    FInterfaceIdentifierCache.Clear;
+  FInterfaceIdentifierCache.Complete:=true;
+
+  // add unit node
+  MoveCursorToNodeStart(Tree.Root);
+  ReadNextAtom; // keyword unit
+  ReadNextAtom;
+  FInterfaceIdentifierCache.Add(@Src[CurPos.StartPos],Tree.Root,CurPos.StartPos);
+
+  // create nodes
+  ScanChilds(InterfaceNode);
+
+  Result:=true;
 end;
 
 function TFindDeclarationTool.CompareNodeIdentifier(Node: TCodeTreeNode;
@@ -5113,7 +5157,7 @@ begin
     DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
   end else begin
     // source found -> get codetool for it
-    {$IFDEF ShowTriedContexts}
+    {$IF defined(ShowTriedContexts) or defined(ShowTriedUnits)}
     DebugLn('[TFindDeclarationTool.FindIdentifierInUsedUnit] ',
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
     ' NewCode=',NewCode.Filename,' IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags));
@@ -7673,8 +7717,10 @@ end;
 procedure TFindDeclarationTool.DoDeleteNodes;
 begin
   ClearNodeCaches(true);
-  if FInterfaceIdentifierCache<>nil then
+  if FInterfaceIdentifierCache<>nil then begin
     FInterfaceIdentifierCache.Clear;
+    FInterfaceIdentifierCache.Complete:=false;
+  end;
   inherited DoDeleteNodes;
 end;
 
@@ -7862,9 +7908,8 @@ procedure TFindDeclarationTool.ConsistencyCheck;
 var ANodeCache: TCodeTreeNodeCache;
 begin
   inherited ConsistencyCheck;
-  if FInterfaceIdentifierCache<>nil then begin
-
-  end;
+  if FInterfaceIdentifierCache<>nil then
+    FInterfaceIdentifierCache.ConsistencyCheck;
   ANodeCache:=FFirstNodeCache;
   while ANodeCache<>nil do begin
     ANodeCache.ConsistencyCheck;
