@@ -4975,9 +4975,23 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInInterface(
   AskingTool: TFindDeclarationTool; Params: TFindDeclarationParams): boolean;
+
+  function CheckEntry(Entry: PInterfaceIdentCacheEntry): TIdentifierFoundResult;
+  begin
+    while Entry<>nil do begin
+      Params.SetResult(Self,Entry^.Node,Entry^.CleanPos);
+      Result:=DoOnIdentifierFound(Params,Params.NewNode);
+      if Result in [ifrSuccess,ifrAbortSearch] then
+        exit;
+      // proceed
+      Entry:=Entry^.Overloaded;
+    end;
+    Result:=ifrProceedSearch;
+  end;
+
 var
   CacheEntry: PInterfaceIdentCacheEntry;
-  IdentFoundResult: TIdentifierFoundResult;
+  AVLNode: TAVLTreeNode;
 begin
   Result:=false;
   // build code tree
@@ -4998,20 +5012,25 @@ begin
     AskingTool.AddToolDependency(Self);
 
   // search identifier in cache
-  CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
-  while CacheEntry<>nil do begin
-    Params.SetResult(Self,CacheEntry^.Node,CacheEntry^.CleanPos);
-    IdentFoundResult:=DoOnIdentifierFound(Params,Params.NewNode);
-    {$IFDEF ShowProcSearch}
-    DebugLn(['[TFindDeclarationTool.FindIdentifierInContext.CheckResult] DoOnIdentifierFound=',IdentifierFoundResultNames[IdentFoundResult]]);
-    {$ENDIF}
-    if (IdentFoundResult=ifrSuccess) then
-      exit(true);
-    if IdentFoundResult=ifrAbortSearch then exit(false);
-    // proceed
-    CacheEntry:=CacheEntry^.Overloaded;
+  if fdfCollect in Params.Flags then begin
+    AVLNode:=FInterfaceIdentifierCache.Items.FindLowest;
+    while AVLNode<>nil do begin
+      CacheEntry:=PInterfaceIdentCacheEntry(AVLNode.Data);
+      case CheckEntry(CacheEntry) of
+      ifrSuccess: exit(true);
+      ifrAbortSearch: exit(false);
+      end;
+      AVLNode:=FInterfaceIdentifierCache.Items.FindSuccessor(AVLNode);
+    end;
+  end else begin
+    CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
+    case CheckEntry(CacheEntry) of
+    ifrSuccess: exit(true);
+    ifrAbortSearch: exit(false);
+    end;
   end;
-  exit(false);
+
+  Result:=false;
 end;
 
 function TFindDeclarationTool.BuildInterfaceIdentifierCache(

@@ -79,6 +79,7 @@ type
     procedure ConsistencyCheck;
     property Tool: TPascalParserTool read FTool;
     property Complete: boolean read FComplete write SetComplete;
+    property Items: TAVLTree read FItems;
   end;
 
   {
