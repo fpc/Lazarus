@@ -313,6 +313,7 @@ type
     function GetRowCount:integer;
     procedure ClearRows;
     function GetCurrentEditValue: string;
+    procedure SetActiveControl(const AControl: TWinControl);
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetDrawHorzGridLines(const AValue: Boolean);
@@ -1530,7 +1531,7 @@ begin
       and (not NewRow.IsReadOnly)
       and CanFocus then begin
         if (Column=oipgcValue) then
-          FCurrentEdit.SetFocus;
+          SetActiveControl(FCurrentEdit);
       end;
     end;
     if FCurrentButton<>nil then
@@ -1858,7 +1859,7 @@ begin
   ItemIndex:=NewItemIndex;
   if FCurrentEdit<>nil then
   begin
-    FCurrentEdit.SetFocus;
+    SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll;
   end;
@@ -2755,6 +2756,15 @@ begin
     Result:=ValueCheckBox.Caption
   else
     Result:='';
+end;
+
+procedure TOICustomPropertyGrid.SetActiveControl(const AControl: TWinControl);
+var
+  F: TCustomForm;
+begin
+  F := GetParentForm(Self);
+  if F <> nil then
+    F.ActiveControl := AControl;
 end;
 
 procedure TOICustomPropertyGrid.SetColumn(
