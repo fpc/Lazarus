@@ -955,6 +955,7 @@ resourcestring
   dlgLoadDFile = 'Load desktop settings from file';
   dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
+  dlgHideMessagesIcons = 'Hide Messages Icons';
   dlgPalHints = 'Hints for component palette';
   lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';

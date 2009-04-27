@@ -159,6 +159,7 @@ type
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FMinimizeAllOnMinimizeMain: boolean;
     FHideIDEOnRun: boolean;
+    FHideMessagesIcons: boolean;
     FComponentPaletteVisible: boolean;
     FDebuggerSearchPath: string;
 
@@ -317,6 +318,7 @@ type
     property MinimizeAllOnMinimizeMain: boolean read FMinimizeAllOnMinimizeMain
                                                write FMinimizeAllOnMinimizeMain;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
+    property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
     property IDESpeedButtonsVisible: boolean read FIDESpeedButtonsVisible
@@ -610,6 +612,7 @@ begin
     IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FMinimizeAllOnMinimizeMain:=false;
   FHideIDEOnRun:=false;
+  FHideMessagesIcons:=false;
   FComponentPaletteVisible:=true;
   FIDESpeedButtonsVisible:=true;
 
@@ -827,6 +830,8 @@ begin
       Path+'Desktop/MinimizeAllOnMinimizeMain/Value',true);
     FHideIDEOnRun:=XMLConfig.GetValue(
       Path+'Desktop/HideIDEOnRun/Value',false);
+    FHideMessagesIcons:=XMLConfig.GetValue(
+      Path+'Desktop/HideMessagesIcons/Value',false);
     FComponentPaletteVisible:=XMLConfig.GetValue(
       Path+'Desktop/ComponentPaletteVisible/Value',true);
     FIDESpeedButtonsVisible:=XMLConfig.GetValue(
@@ -1078,6 +1083,8 @@ begin
     XMLConfig.SetDeleteValue(Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
                              FMinimizeAllOnMinimizeMain,true);
     XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
+                             false);
+    XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',FHideMessagesIcons,
                              false);
     XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
                              FComponentPaletteVisible,true);

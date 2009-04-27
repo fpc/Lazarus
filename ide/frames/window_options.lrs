@@ -2,29 +2,31 @@
 
 LazarusResources.Add('TWindowOptionsFrame','FORMDATA',[
   'TPF0'#241#19'TWindowOptionsFrame'#18'WindowOptionsFrame'#6'Height'#3#140#1#5
-  +'Width'#3#207#1#12'ClientHeight'#3#140#1#11'ClientWidth'#3#207#1#7'Visible'#8
-  +#10'DesignLeft'#3#154#0#9'DesignTop'#3#203#0#0#242#2#0#9'TCheckBox!MinimizeA'
-  +'llOnMinimizeMainCheckBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSi'
-  +'deTop.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2
-  +#0#6'Height'#2#17#3'Top'#2#0#5'Width'#3#195#0#7'Caption'#6'!MinimizeAllOnMin'
-  +'imizeMainCheckBox'#7'Enabled'#8#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#20
-  +'HideIDEOnRunCheckBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTo'
-  +'p.Control'#7'!MinimizeAllOnMinimizeMainCheckBox'#18'AnchorSideTop.Side'#7#9
-  +'asrBottom'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2
-  +#17#3'Top'#2#17#5'Width'#3#141#0#7'Caption'#6#20'HideIDEOnRunCheckBox'#8'Tab'
-  +'Order'#2#1#0#0#242#2#2#9'TGroupBox'#23'WindowPositionsGroupBox'#22'AnchorSi'
-  +'deLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#20'HideIDEOnRunCheck'
-  +'Box'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5
-  +'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'
-  +#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#3
-  +'j'#1#3'Top'#2'"'#5'Width'#3#207#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRigh'
-  +'t'#8'akBottom'#0#7'Caption'#6#23'WindowPositionsGroupBox'#12'ClientHeight'#3
-  +'X'#1#11'ClientWidth'#3#203#1#8'TabOrder'#2#2#0#8'TListBox'#22'WindowPositio'
-  +'nsListBox'#22'AnchorSideLeft.Control'#7#23'WindowPositionsGroupBox'#21'Anch'
-  +'orSideTop.Control'#7#23'WindowPositionsGroupBox'#23'AnchorSideRight.Control'
-  +#7#23'WindowPositionsGroupBox'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Lef'
-  +'t'#2#6#6'Height'#2'd'#3'Top'#2#6#5'Width'#3#191#1#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#10'ItemHeight'#2#0#17'OnS'
-  +'electionChange'#7'%WindowPositionsListBoxSelectionChange'#8'TabOrder'#2#0#0
-  +#0#0#0
+  +'Width'#3#207#1#12'ClientHeight'#3#136#1#11'ClientWidth'#3#203#1#8'TabOrder'
+  +#2#0#7'Visible'#8#10'DesignLeft'#3#157#1#9'DesignTop'#3#210#0#0#242#2#0#9'TC'
+  +'heckBox!MinimizeAllOnMinimizeMainCheckBox'#22'AnchorSideLeft.Control'#7#5'O'
+  +'wner'#21'AnchorSideTop.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asr'
+  +'Bottom'#4'Left'#2#0#6'Height'#2#22#3'Top'#2#0#5'Width'#3#6#1#7'Caption'#6'!'
+  +'MinimizeAllOnMinimizeMainCheckBox'#7'Enabled'#8#8'TabOrder'#2#0#0#0#242#2#1
+  +#9'TCheckBox'#20'HideIDEOnRunCheckBox'#22'AnchorSideLeft.Control'#7#5'Owner'
+  +#21'AnchorSideTop.Control'#7'!MinimizeAllOnMinimizeMainCheckBox'#18'AnchorSi'
+  +'deTop.Side'#7#9'asrBottom'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2
+  +#0#6'Height'#2#22#3'Top'#2#22#5'Width'#3#178#0#7'Caption'#6#20'HideIDEOnRunC'
+  +'heckBox'#8'TabOrder'#2#1#0#0#242#2#2#9'TGroupBox'#23'WindowPositionsGroupBo'
+  +'x'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#25'Hid'
+  +'eMessagesIconsCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSide'
+  +'Right.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'Anchor'
+  +'SideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'L'
+  +'eft'#2#0#6'Height'#3'P'#1#3'Top'#2'8'#5'Width'#3#203#1#7'Anchors'#11#5'akTo'
+  +'p'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#23'WindowPositionsGroupB'
+  +'ox'#12'ClientHeight'#3'='#1#11'ClientWidth'#3#199#1#8'TabOrder'#2#2#0#8'TLi'
+  +'stBox'#22'WindowPositionsListBox'#22'AnchorSideLeft.Control'#7#23'WindowPos'
+  +'itionsGroupBox'#21'AnchorSideTop.Control'#7#23'WindowPositionsGroupBox'#23
+  +'AnchorSideRight.Control'#7#23'WindowPositionsGroupBox'#20'AnchorSideRight.S'
+  +'ide'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'd'#3'Top'#2#6#5'Width'#3#187#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#10
+  +'ItemHeight'#2#0#17'OnSelectionChange'#7'%WindowPositionsListBoxSelectionCha'
+  +'nge'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#0#242#2#3#9'TCheckBox'#25'HideMe'
+  +'ssagesIconsCheckBox'#4'Left'#2#0#6'Height'#2#22#3'Top'#2'"'#5'Width'#3#213#0
+  +#7'Caption'#6#25'HideMessagesIconsCheckBox'#8'TabOrder'#2#3#0#0#0
 ]);

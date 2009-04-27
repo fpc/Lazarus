@@ -33,9 +33,10 @@ type
   { TWindowOptionsFrame }
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
+    HideMessagesIconsCheckBox: TCheckBox;
+    WindowPositionsGroupBox: TGroupBox;
     HideIDEOnRunCheckBox: TCheckBox;
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
-    WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
     procedure WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
@@ -67,6 +68,7 @@ begin
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
+  HideMessagesIconsCheckBox.Caption := dlgHideMessagesIcons;
 
   // Window Positions
   WindowPositionsGroupBox.Caption := dlgWinPos;
@@ -99,6 +101,7 @@ begin
     // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked := MinimizeAllOnMinimizeMain;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
+    HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
   end;
 end;
 
@@ -110,6 +113,7 @@ begin
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
+    HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
   end;
 end;
 

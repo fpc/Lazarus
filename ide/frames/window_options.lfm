@@ -1,19 +1,20 @@
 inherited WindowOptionsFrame: TWindowOptionsFrame
   Height = 396
   Width = 463
-  ClientHeight = 396
-  ClientWidth = 463
+  ClientHeight = 392
+  ClientWidth = 459
+  TabOrder = 0
   Visible = False
-  DesignLeft = 154
-  DesignTop = 203
+  DesignLeft = 413
+  DesignTop = 210
   object MinimizeAllOnMinimizeMainCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
+    Height = 22
     Top = 0
-    Width = 195
+    Width = 262
     Caption = 'MinimizeAllOnMinimizeMainCheckBox'
     Enabled = False
     TabOrder = 0
@@ -24,28 +25,28 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 17
-    Top = 17
-    Width = 141
+    Height = 22
+    Top = 22
+    Width = 178
     Caption = 'HideIDEOnRunCheckBox'
     TabOrder = 1
   end
   object WindowPositionsGroupBox: TGroupBox[2]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = HideIDEOnRunCheckBox
+    AnchorSideTop.Control = HideMessagesIconsCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 362
-    Top = 34
-    Width = 463
+    Height = 336
+    Top = 56
+    Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'WindowPositionsGroupBox'
-    ClientHeight = 344
-    ClientWidth = 459
+    ClientHeight = 317
+    ClientWidth = 455
     TabOrder = 2
     object WindowPositionsListBox: TListBox
       AnchorSideLeft.Control = WindowPositionsGroupBox
@@ -55,12 +56,21 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Left = 6
       Height = 100
       Top = 6
-      Width = 447
+      Width = 443
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = WindowPositionsListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
+  end
+  object HideMessagesIconsCheckBox: TCheckBox[3]
+    Left = 0
+    Height = 22
+    Top = 34
+    Width = 213
+    Caption = 'HideMessagesIconsCheckBox'
+    TabOrder = 3
   end
 end

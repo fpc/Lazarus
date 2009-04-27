@@ -85,7 +85,7 @@ uses
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
-  IDEOptionsIntf,
+  IDEOptionsIntf, IDEImagesIntf,
   // protocol
   IDEProtocol,
   // compile
@@ -11324,6 +11324,12 @@ var
   ALayout: TIDEWindowLayout;
 begin
   //debugln('TMainIDE.DoShowMessagesView');
+  if EnvironmentOptions.HideMessagesIcons then
+    MessagesView.MessageTreeView.Images := nil
+  else
+    MessagesView.MessageTreeView.Images := IDEImages.Images_12;
+
+
   WasVisible:=MessagesView.Visible;
   MessagesView.Visible:=true;
   if not WasVisible then begin
