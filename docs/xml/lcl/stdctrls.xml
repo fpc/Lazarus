@@ -9973,6 +9973,27 @@ Reads or Writes flag if control is re-sized.
       <element name="TButtonControl.CMWantSpecialKey" link="#LCL.Controls.TControl.CMWantSpecialKey"/>
       <element name="TRadioButton.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TRadioButton.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TMemo.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
+      <element name="TEdit.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TGroupBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TGroupBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="TLabel.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TRadioButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomCheckBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TButtonControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomScrollBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomGroupBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomComboBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomListBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomMemo.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomStaticText.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TToggleBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomLabel.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TStaticText.DragKind" link="#LCL.Controls.TControl.DragKind"/>
     </module>
     <!-- StdCtrls -->
   </package>

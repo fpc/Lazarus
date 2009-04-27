@@ -163,6 +163,10 @@
         <short>
           <var>WSDestroyReference</var> - destroys widget set reference</short>
       </element>
+      <element name="TLCLComponent.WSRegisterClass">
+        <short>
+          <var>WSRegisterClass</var> - Register this Class for the current Widget Set</short>
+      </element>
     </module>
     <!-- LCLClasses -->
   </package>
