@@ -567,9 +567,9 @@ begin
     debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     {$ENDIF}
     if not FoundSystemPPU then begin
-      IDEMessageDialog('Error',
-        'The system.ppu was not found in the FPC directories. '
-        +'Make sure fpc is installed correctly and the fpc.cfg points to the right directory.',
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
+          TargetOS, TargetProcessor, #13, #13]),
         mtError,[mbOk]);
     end;
 

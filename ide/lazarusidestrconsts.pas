@@ -4174,6 +4174,10 @@ resourcestring
   lisCEStyleGroup = 'Style';
   lisCEOtherGroup = 'Other';
   lisCEWrongIndentation = 'Wrong indentation';
+  lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar = 'The project uses '
+    +'target OS=%s and CPU=%s.%sThe system.ppu for this target was not found '
+    +'in the FPC binary directories. %sMake sure fpc is installed correctly '
+    +'for this target and the fpc.cfg contains the right directories.';
 
 implementation
 
