@@ -2240,7 +2240,7 @@ begin
         // open package
         APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
         if APackage<>nil then begin
-          PackageEditingInterface.DoOpenPackageWithName(List.Owner,[]);
+          PackageEditingInterface.DoOpenPackageWithName(List.Owner,[],false);
         end;
       end;
     end else if NodeData is TCodeBrowserUnit then begin

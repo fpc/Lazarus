@@ -1100,7 +1100,7 @@ begin
   // commit editor changes
   if not CodeToolBoss.GatherExternalChanges then exit;
   // get code buffer for Filename
-  if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText]) then
+  if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText],false) then
     exit;
     
   Result:=CollectKeyWords(CodeBuffer);

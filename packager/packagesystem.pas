@@ -141,7 +141,7 @@ type
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
-                                           PkgLink: TPackageLink): boolean;
+                       PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(const Msg, Directory: string);
   public
@@ -279,12 +279,13 @@ type
                                            CleanUp: boolean): TModalResult;
     function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
     function SavePackageMainSource(APackage: TLazPackage;
-                                   Flags: TPkgCompileFlags): TModalResult;
+                     Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
                                 Globals: TGlobalCompilerOptions;
                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                            ShowAbort: boolean;
                             Globals: TGlobalCompilerOptions = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
   public
@@ -318,7 +319,8 @@ type
     procedure RemoveDependencyFromPackage(APackage: TLazPackage;
                          Dependency: TPkgDependency; AddToRemovedList: boolean);
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
-    function OpenDependency(Dependency: TPkgDependency): TLoadPackageResult;
+    function OpenDependency(Dependency: TPkgDependency;
+                            ShowAbort: boolean): TLoadPackageResult;
     procedure OpenInstalledDependency(Dependency: TPkgDependency;
                           InstallType: TPackageInstallType; var Quiet: boolean);
     procedure OpenRequiredDependencyList(FirstDependency: TPkgDependency);
@@ -427,7 +429,7 @@ begin
     if (Dependency.LoadPackageResult<>lprSuccess)
     and Dependency.IsCompatible(APackage) then begin
       Dependency.LoadPackageResult:=lprUndefined;
-      OpenDependency(Dependency);
+      OpenDependency(Dependency,false);
     end;
     ANode:=FindNextPkgDependencyNodeWithSameName(ANode);
   end;
@@ -435,14 +437,14 @@ begin
 end;
 
 function TLazPackageGraph.OpenDependencyWithPackageLink(
-  Dependency: TPkgDependency; PkgLink: TPackageLink): boolean;
+  Dependency: TPkgDependency; PkgLink: TPackageLink;
+  ShowAbort: boolean): TModalResult;
 var
   AFilename: String;
   NewPackage: TLazPackage;
   XMLConfig: TXMLConfig;
   Code: TCodeBuffer;
 begin
-  Result:=false;
   NewPackage:=nil;
   XMLConfig:=nil;
   BeginUpdate(false);
@@ -451,7 +453,7 @@ begin
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
-      exit;
+      exit(mrCancel);
     end;
     try
       PkgLink.FileDate:=FileDateToDateTime(FileAgeUTF8(AFilename));
@@ -459,26 +461,28 @@ begin
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;
-      if LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
-                           Code,[lbfUpdateFromDisk,lbfRevert])<>mrOk then exit;
+      Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
+                         Code,[lbfUpdateFromDisk,lbfRevert],ShowAbort);
+      if Result<>mrOk then exit;
       NewPackage.LoadFromXMLConfig(XMLConfig,'Package/');
       NewPackage.LPKSource:=Code;
     except
       on E: Exception do begin
         DebugLn('unable to read file "'+AFilename+'" ',E.Message);
+        Result:=mrCancel;
         exit;
       end;
     end;
     if not NewPackage.MakeSense then begin
       DebugLn('invalid Package file "'+AFilename+'".');
-      exit;
+      exit(mrCancel);
     end;
     if SysUtils.CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
     // ok
-    Result:=true;
+    Result:=mrOk;
     AddPackage(NewPackage);
   finally
-    if not Result then
+    if Result<>mrOk then
       NewPackage.Free;
     EndUpdate;
     FreeAndNil(XMLConfig);
@@ -1650,7 +1654,7 @@ begin
   // open all required dependencies
   Dependency:=APackage.FirstRequiredDependency;
   while Dependency<>nil do begin
-    OpenDependency(Dependency);
+    OpenDependency(Dependency,false);
     Dependency:=Dependency.NextRequiresDependency;
   end;
   
@@ -1753,7 +1757,7 @@ begin
   for i:=0 to LazarusBasePackages.Count-1 do begin
     BasePackage:=TLazPackage(LazarusBasePackages[i]);
     Dependency:=BasePackage.CreateDependencyWithOwner(Self);
-    OpenDependency(Dependency);
+    OpenDependency(Dependency,false);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires)
   end;
   SortAutoInstallDependencies;
@@ -1779,7 +1783,7 @@ begin
     Dependency.Owner:=Self;
     Dependency.PackageName:=PackageName;
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
-    if OpenDependency(Dependency)<>lprSuccess then begin
+    if OpenDependency(Dependency,false)<>lprSuccess then begin
       IDEMessageDialog(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
         mtWarning,[mbOk]);
@@ -2825,7 +2829,7 @@ begin
       while i<AutoPackages.Count do begin
         Result:=CompilePackage(TLazPackage(AutoPackages[i]),
                                [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                                pcfDoNotSaveEditorFiles],Globals);
+                                pcfDoNotSaveEditorFiles],false,Globals);
         if Result<>mrOk then exit;
         inc(i);
       end;
@@ -2840,7 +2844,8 @@ begin
 end;
 
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
-  Flags: TPkgCompileFlags; Globals: TGlobalCompilerOptions): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean; Globals: TGlobalCompilerOptions
+  ): TModalResult;
 var
   PkgCompileTool: TIDEExternalToolOptions;
   CompilerFilename: String;
@@ -2915,7 +2920,7 @@ begin
       end;
 
       // create package main source file
-      Result:=SavePackageMainSource(APackage,Flags);
+      Result:=SavePackageMainSource(APackage,Flags,ShowAbort);
       if Result<>mrOk then begin
         DebugLn('TLazPackageGraph.CompilePackage SavePackageMainSource failed: ',APackage.IDAsString);
         exit;
@@ -3225,7 +3230,7 @@ begin
 end;
 
 function TLazPackageGraph.SavePackageMainSource(APackage: TLazPackage;
-  Flags: TPkgCompileFlags): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 var
   SrcFilename: String;
   UsedUnits: String;
@@ -3250,10 +3255,10 @@ begin
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
   if not DirPathExists(OutputDir) then begin
-    Result:=IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
+    Result:=IDEMessageDialogAb(lisEnvOptDlgDirectoryNotFound,
       Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
         APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
-      mtError,[mbCancel,mbAbort]);
+      mtError,[mbCancel],ShowAbort);
     exit;
   end;
 
@@ -3358,7 +3363,7 @@ begin
 
   // check if old code is already uptodate
   Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
-                                      lbfUpdateFromDisk,lbfCreateClearOnError]);
+                            lbfUpdateFromDisk,lbfCreateClearOnError],ShowAbort);
   if Result<>mrOk then begin
     DebugLn('TLazPackageGraph.SavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
     exit;
@@ -3681,7 +3686,7 @@ begin
   APackage.AddRequiredDependency(Dependency);
   Dependency.LoadPackageResult:=lprUndefined;
   IncreaseCompilerParseStamp;
-  OpenDependency(Dependency);
+  OpenDependency(Dependency,false);
   EndUpdate;
 end;
 
@@ -3713,18 +3718,19 @@ begin
   BeginUpdate(true);
   Dependency.Assign(NewDependency);
   Dependency.LoadPackageResult:=lprUndefined;
-  OpenDependency(Dependency);
+  OpenDependency(Dependency,false);
   DoDependencyChanged(Dependency);
   EndUpdate;
 end;
 
-function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency
-  ): TLoadPackageResult;
+function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
+  ShowAbort: boolean): TLoadPackageResult;
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
   CurDir: String;
   AFilename: String;
+  MsgResult: TModalResult;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     BeginUpdate(false);
@@ -3744,9 +3750,10 @@ begin
         repeat
           PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
           if (PkgLink=nil) then break;
-          if OpenDependencyWithPackageLink(Dependency,PkgLink) then break;
+          MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
+          if MsgResult=mrOk then break;
           PkgLinks.RemoveLink(PkgLink,true);
-        until false;
+        until MsgResult=mrAbort;
         if (Dependency.LoadPackageResult=lprNotFound)
         and (Dependency.DefaultFilename<>'') then begin
           // try defaultfilename
@@ -3765,7 +3772,7 @@ begin
               if FileExistsCached(AFilename) then begin
                 PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
                 if (PkgLink<>nil) then begin
-                  if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
+                  if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
                     PkgLinks.RemoveLink(PkgLink,true);
                 end;
               end;
@@ -3782,7 +3789,7 @@ begin
             if FileExistsCached(AFilename) then begin
               PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
               if (PkgLink<>nil) then begin
-                if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
+                if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
                   PkgLinks.RemoveLink(PkgLink,true);
               end;
             end;
@@ -3806,7 +3813,7 @@ var
   BrokenPackage: TLazPackage;
   CurResult: TModalResult;
 begin
-  OpenDependency(Dependency);
+  OpenDependency(Dependency,false);
   if Dependency.LoadPackageResult<>lprSuccess then begin
     // a valid lpk file of the installed package can not be found
     // -> create a broken package
@@ -3847,7 +3854,7 @@ begin
     end;
 
     // open it
-    if OpenDependency(Dependency)<>lprSuccess then
+    if OpenDependency(Dependency,false)<>lprSuccess then
       RaiseException('TLazPackageGraph.OpenInstalledDependency');
   end;
   Dependency.RequiredPackage.Installed:=InstallType;
@@ -3860,7 +3867,7 @@ var
 begin
   Dependency:=FirstDependency;
   while Dependency<>nil do begin
-    OpenDependency(Dependency);
+    OpenDependency(Dependency,false);
     Dependency:=Dependency.NextRequiresDependency;
   end;
 end;

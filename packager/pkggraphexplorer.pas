@@ -204,7 +204,7 @@ begin
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
       // find required package
-      if PackageGraph.OpenDependency(Dependency)=lprSuccess then
+      if PackageGraph.OpenDependency(Dependency,false)=lprSuccess then
       begin
         ChildPackage:=Dependency.RequiredPackage;
         // package found

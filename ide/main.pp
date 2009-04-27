@@ -620,7 +620,7 @@ type
         PageIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
         var LFMCode, ResourceCode: TCodeBuffer;
-        IgnoreSourceErrors, AutoCreateResourceCode: boolean): TModalResult;
+        IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
@@ -815,7 +815,7 @@ type
                              SearchFlags: TProjectFileSearchFlags): boolean;
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
                                const AFilename: string;
-                               Flags: TLoadBufferFlags): TModalResult;
+                               Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
                                         const AFilename:string): TModalResult;
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
@@ -1972,7 +1972,8 @@ begin
         Begin
           AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
           if CompareFileExt(AFilename,'.lpk',false)=0 then begin
-            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen])=mrAbort
+            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)
+              =mrAbort
             then
               break;
           end else begin
@@ -3408,7 +3409,7 @@ Begin
         exit;
       end;
       if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
-                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert])
+                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert],false)
       then
         exit;
       if DoCreateProjectForProgram(PreReadBuf)=mrOk then begin
@@ -4324,7 +4325,7 @@ end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, ResourceCode: TCodeBuffer;
-  IgnoreSourceErrors, AutoCreateResourceCode: boolean): TModalResult;
+  IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
 var
   LFMFilename: string;
   LRSFilename: String;
@@ -4336,7 +4337,7 @@ begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
     LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
     if LRSFilename<>'' then begin
-      Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk]);
+      Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
       if Result<>mrOk then exit;
     end else begin
       LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
@@ -4355,7 +4356,7 @@ begin
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if (FileExistsUTF8(LFMFilename)) then begin
-        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;
     end;
@@ -4392,7 +4393,7 @@ begin
   end;
 
   // load unit source
-  Result:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
+  Result:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
   if Result<>mrOk then begin
     debugln('TMainIDE.DoOpenComponent Failed loading ',UnitFilename);
     exit;
@@ -4406,7 +4407,7 @@ begin
   end;
 
   // load lfm source
-  Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+  Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
   if Result<>mrOk then begin
     debugln('TMainIDE.DoOpenComponent Failed loading ',LFMFilename);
     exit;
@@ -5345,7 +5346,7 @@ begin
   // load the source
   LoadFlags := [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert];
   if ofQuiet in Flags then Include(LoadFlags, lbfQuiet);
-  Result:=LoadCodeBuffer(PreReadBuf,AFileName,LoadFlags);
+  Result:=LoadCodeBuffer(PreReadBuf,AFileName,LoadFlags,true);
   if Result<>mrOk then exit;
   NewUnitInfo:=nil;
 
@@ -5425,7 +5426,10 @@ function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
 var
   LFMFilename: string;
   LFMBuf: TCodeBuffer;
+  CanAbort: boolean;
 begin
+  CanAbort:=[ofProjectLoading,ofMultiOpen]*OpenFlags<>[];
+
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   LFMBuf:=nil;
@@ -5439,7 +5443,7 @@ begin
   end;
 
   // there is a lazarus form text file -> load it
-  Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
+  Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk],CanAbort);
   if Result<>mrOk then begin
     DebugLn(['TMainIDE.DoLoadLFM LoadIDECodeBuffer failed']);
     exit;
@@ -5772,9 +5776,10 @@ var
           LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
           if FileExistsCached(LFMFilename) then begin
             // load the lfm file
-            ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+            ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
             if ModalResult<>mrOk then begin
               debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+              if ModalResult=mrAbort then break;
             end else begin
               // read the LFM component name
               ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
@@ -5811,7 +5816,7 @@ var
       exit(mrCancel);
     end;
     LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-    ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+    ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],false);
     if ModalResult<>mrOk then begin
       debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
       exit(mrCancel);
@@ -5827,7 +5832,7 @@ var
 
     if RefUnitInfo.Source = nil then
     begin
-      ModalResult := LoadCodeBuffer(UnitCode, UnitFileName, [lbfCheckIfText]);
+      ModalResult := LoadCodeBuffer(UnitCode, UnitFileName, [lbfCheckIfText],false);
       if ModalResult<>mrOk then begin
         debugln('TMainIDE.DoFixupComponentReferences Failed loading ',UnitFilename);
         exit(mrCancel);
@@ -5911,7 +5916,7 @@ begin
   // find the ancestor type in the source
   if AnUnitInfo.Source=nil then begin
     Result:=LoadCodeBuffer(CodeBuf,AnUnitInfo.Filename,
-                           [lbfUpdateFromDisk,lbfCheckIfText]);
+                           [lbfUpdateFromDisk,lbfCheckIfText],true);
     if Result<>mrOk then exit;
     AnUnitInfo.Source:=CodeBuf;
   end;
@@ -6074,7 +6079,7 @@ var
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
       if FileExistsUTF8(LFMFilename) then begin
         // load the lfm file
-        TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+        TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
         if TheModalResult<>mrOk then begin
           debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',LFMFilename);
           exit;
@@ -6094,7 +6099,7 @@ var
 
     debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading referenced form ',UnitFilename);
     // load unit source
-    TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
+    TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
     if TheModalResult<>mrOk then begin
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed loading ',UnitFilename);
       exit;
@@ -7234,7 +7239,7 @@ begin
 
   // load old resource file
   Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
-                             not (sfSaveAs in Flags),true);
+                             not (sfSaveAs in Flags),true,CanAbort);
   if Result in [mrIgnore,mrOk] then
     Result:=mrCancel
   else
@@ -7451,6 +7456,7 @@ var
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
   Reverting: Boolean;
+  CanAbort: boolean;
 
   function OpenResource: TModalResult;
   var
@@ -7499,6 +7505,8 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
+
+  CanAbort:=[ofProjectLoading,ofMultiOpen]*Flags<>[];
 
   // replace macros
   if ofConvertMacros in Flags then begin
@@ -7566,7 +7574,7 @@ begin
         Format(lisOpenThePackage, [AFilename]), mtConfirmation,
         [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile], 0)=mrYes
       then begin
-        Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent]);
+        Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
         exit;
       end;
     end;
@@ -7654,7 +7662,7 @@ begin
         if ofRevert in Flags then
           Include(LoadBufferFlags,lbfRevert);
       end;
-      Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
+      Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags,CanAbort);
       if Result<>mrOk then begin
         DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
         exit;
@@ -7838,7 +7846,7 @@ begin
               exit;
             end;
             // load the lfm file
-            TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+            TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],false);
             if TheModalResult<>mrOk then begin
               debugln('TMainIDE.DoSelectFrame Failed loading ',LFMFilename);
               exit;
@@ -8098,11 +8106,12 @@ begin
 end;
 
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
-  const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
+  const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean
+  ): TModalResult;
 begin
   if Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil then
     Exclude(Flags,lbfUpdateFromDisk);
-  Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags);
+  Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
@@ -8741,7 +8750,7 @@ begin
     if Project1.MainUnitID>=0 then begin
       // read MainUnit Source
       Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
-                             [lbfUpdateFromDisk,lbfRevert]);// do not check if source is text
+                             [lbfUpdateFromDisk,lbfRevert],false);// do not check if source is text
       if (Result<>mrOk) then exit;
       Project1.MainUnitInfo.Source:=NewBuf;
     end;
@@ -9792,7 +9801,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
         AFilename:=CleanAndExpandFilename(Files.Strings[i]);
         DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AFilename="',AFilename,'"']);
         if CompareFileExt(AFilename,'.lpk',false)=0 then begin
-          if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent])=mrAbort
+          if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],true)=mrAbort
           then
             break;
         end else begin
@@ -10344,7 +10353,7 @@ begin
   end;
   // load the pascal unit
   SaveSourceEditorChangesToCodeCache(-1);
-  Result:=LoadCodeBuffer(PascalBuf,UnitFilename,[]);
+  Result:=LoadCodeBuffer(PascalBuf,UnitFilename,[],false);
   if Result<>mrOk then exit;
 
   // open messages window

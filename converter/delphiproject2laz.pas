@@ -82,8 +82,10 @@ function ConvertAllDelphiProjectUnits(AProject: TProject;
 function ConvertDelphiToLazarusPackage(const PackageFilename: string
                                        ): TModalResult;
 function FindDPKFilename(const LPKFilename: string): string;
-function FindAllDelphiPackageUnits(APackage: TLazPackage): TModalResult;
-function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer): TModalResult;
+function FindAllDelphiPackageUnits(APackage: TLazPackage;
+                                   ShowAbort: boolean): TModalResult;
+function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer;
+                     ShowAbort: boolean): TModalResult;
 function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
                          Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
 
@@ -439,7 +441,7 @@ begin
     end;
 
     // find and convert all project files
-    Result:=FindAllDelphiPackageUnits(APackage);
+    Result:=FindAllDelphiPackageUnits(APackage,true);
     if Result<>mrOk then exit;
 
     // convert all package files
@@ -453,7 +455,8 @@ begin
   Result:=mrOk;
 end;
 
-function FindAllDelphiPackageUnits(APackage: TLazPackage): TModalResult;
+function FindAllDelphiPackageUnits(APackage: TLazPackage;
+  ShowAbort: boolean): TModalResult;
 var
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
   DPKCode: TCodeBuffer;
@@ -465,7 +468,7 @@ var
   OffendingUnit: TPkgFile;
   PkgFile: TPkgFile;
 begin
-  Result:=LoadDPKFile(APackage,DPKCode);
+  Result:=LoadDPKFile(APackage,DPKCode,ShowAbort);
   if Result<>mrOk then exit;
 
   FoundInUnits:=nil;
@@ -576,8 +579,8 @@ begin
   Result:=mrOk;
 end;
 
-function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer
-  ): TModalResult;
+function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer;
+  ShowAbort: boolean): TModalResult;
 var
   DPKFilename: String;
 begin
@@ -588,7 +591,7 @@ begin
       +APackage.Filename,mtError,[mbAbort],0);
     exit;
   end;
-  Result:=LoadCodeBuffer(DPKCode,DPKFilename,[]);
+  Result:=LoadCodeBuffer(DPKCode,DPKFilename,[],ShowAbort);
 end;
 
 function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
@@ -701,7 +704,7 @@ begin
 
   // fix or comment missing units
   DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
-  Result:=FixMissingUnits(LazarusUnitFilename,cdtlufIsSubProc in Flags);
+  Result:=FixMissingUnits(LazarusUnitFilename,cdtlufIsSubProc in Flags,true);
   if Result=mrAbort then exit;
   if (Result<>mrOk) then begin
     Result:=JumpToCodetoolErrorAndAskToAbort(cdtlufIsSubProc in Flags);
@@ -715,7 +718,7 @@ begin
   // add {$i unit.lrs} directive
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
-                                             LRSFilename<>'');
+                                             LRSFilename<>'',true);
   if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result=mrOk,
                                                 cdtlufIsSubProc in Flags,Result)
   then exit;
@@ -723,7 +726,7 @@ begin
   if cdtlufCheckLFM in Flags then begin
     // check the LFM file and the pascal unit
     DebugLn('ConvertDelphiToLazarusUnit Check new .lfm and .pas file');
-    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile);
+    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile,true);
     if Result<>mrOk then exit;
     if HasDFMFile and (LFMCode=nil) then
       DebugLn('WARNING: ConvertDelphiToLazarusUnit unable to load LFMCode');
@@ -789,7 +792,7 @@ var
   MainUnitInfo: TUnitInfo;
 begin
   LPRCode:=nil;
-  Result:=CreateLPRFileForDPRFile(DPRFilename,MainSourceFilename,LPRCode);
+  Result:=CreateLPRFileForDPRFile(DPRFilename,MainSourceFilename,LPRCode,true);
   if Result<>mrOk then begin
     DebugLn('CreateDelphiToLazarusMainSourceFile CreateLPRFileForDPRFile failed DPRFilename="',DPRFilename,'" MainSourceFilename="',MainSourceFilename,'"');
     exit;
@@ -872,7 +875,7 @@ begin
     // there is already a lazarus package file
     // open the package editor
     DebugLn('CreateDelphiToLazarusPackageInstance OPEN ',LPKFilename);
-    Result:=PackageEditingInterface.DoOpenPackageFile(LPKFilename,[pofAddToRecent]);
+    Result:=PackageEditingInterface.DoOpenPackageFile(LPKFilename,[pofAddToRecent],true);
     if Result<>mrOk then exit;
   end;
   
@@ -887,7 +890,7 @@ begin
         'There is already a package with the name "'+PkgName+'"'#13
         +'Please close this package first.',mtError,[mbAbort],0);
       PackageEditingInterface.DoOpenPackageFile(APackage.Filename,
-                                                        [pofAddToRecent]);
+                                                        [pofAddToRecent],true);
       Result:=mrAbort;
       exit;
     end else begin

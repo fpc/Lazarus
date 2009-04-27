@@ -170,7 +170,7 @@ begin
     // search in every file
     for i:=0 to Files.Count-1 do begin
       LoadResult:=
-               LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
+          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
       if LoadResult=mrAbort then begin
         debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
         exit;
@@ -226,7 +226,7 @@ begin
     for i:=0 to Files.Count-1 do begin
       if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
       LoadResult:=
-               LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
+          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
       if LoadResult=mrAbort then begin
         debugln('GatherUnitReferences unable to load "',Files[i],'"');
         if IgnoreErrors then
@@ -642,7 +642,7 @@ begin
   s:=IdentifierFilename
      +'('+IntToStr(IdentifierPosition.Y)+','+IntToStr(IdentifierPosition.X)+')';
   CurrentListBox.Items.Add(s);
-  LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText]);
+  LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
   if ACodeBuffer<>nil then begin
     CodeToolBoss.GetIncludeCodeChain(ACodeBuffer,true,ListOfCodeBuffer);
     if ListOfCodeBuffer<>nil then begin

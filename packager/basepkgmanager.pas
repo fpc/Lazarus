@@ -110,8 +110,8 @@ type
 
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;
-    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags
-                           ): TModalResult; virtual; abstract;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
+                           ShowAbort: boolean): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 

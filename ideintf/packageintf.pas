@@ -78,9 +78,11 @@ type
   TPackageEditingInterface = class(TComponent)
   public
     function DoOpenPackageWithName(const APackageName: string;
-                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
+                         Flags: TPkgOpenFlags;
+                         ShowAbort: boolean): TModalResult; virtual; abstract;
     function DoOpenPackageFile(AFilename: string;
-                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
+                         Flags: TPkgOpenFlags; ShowAbort: boolean
+                         ): TModalResult; virtual; abstract;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;

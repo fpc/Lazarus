@@ -2314,7 +2314,7 @@ var
   APackage: TLazPackage;
 begin
   Result:=mrCancel;
-  if PackageGraph.OpenDependency(Dependency)=lprSuccess then
+  if PackageGraph.OpenDependency(Dependency,false)=lprSuccess then
   begin
     APackage:=Dependency.RequiredPackage;
     if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);

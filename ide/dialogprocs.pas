@@ -65,7 +65,7 @@ function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
 function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
                                   ExtraButtons: TMsgDlgButtons): TModalResult;
 function LoadCodeBuffer(out ACodeBuffer: TCodeBuffer; const AFilename: string;
-                        Flags: TLoadBufferFlags): TModalResult;
+                        Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 function SaveCodeBuffer(ACodeBuffer: TCodeBuffer): TModalResult;
 function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer;
                          const Filename: string; Backup: boolean = false): TModalResult;
@@ -74,7 +74,8 @@ function LoadStringListFromFile(const Filename, ListTitle: string;
 function SaveStringListToFile(const Filename, ListTitle: string;
                               var sl: TStrings): TModalResult;
 function LoadXMLConfigFromCodeBuffer(const Filename: string; Config: TXMLConfig;
-                        out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags
+                        out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags;
+                        ShowAbort: boolean
                         ): TModalResult;
 function SaveXMLConfigToCodeBuffer(const Filename: string; Config: TXMLConfig;
                         var ACodeBuffer: TCodeBuffer): TModalResult;
@@ -98,7 +99,7 @@ function SaveStringToFile(const Filename, Content: string;
                         ErrorButtons: TMsgDlgButtons; const Context: string = ''
                         ): TModalResult;
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
-                                        LRSFilename: string): TModalResult;
+                         LRSFilename: string; ShowAbort: boolean): TModalResult;
 function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
                             Ask: boolean; out NewResult: TModalResult): boolean;
 function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
@@ -171,7 +172,7 @@ begin
 end;
 
 function LoadCodeBuffer(out ACodeBuffer: TCodeBuffer; const AFilename: string;
-  Flags: TLoadBufferFlags): TModalResult;
+  Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 var
   ACaption, AText: string;
   FileReadable: boolean;
@@ -201,8 +202,8 @@ begin
         ACaption:=lisFileNotText;
         AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2, ['"',
           AFilename, '"', #13, #13]);
-        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,
-                           [mbOk, mbIgnore, mbAbort]);
+        Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,
+                           [mbOk, mbIgnore],ShowAbort);
       end;
       if Result<>mrOk then break;
     end;
@@ -220,9 +221,11 @@ begin
       else begin
         ACaption:=lisReadError;
         AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
-        Result:=IDEMessageDialog(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore]);
+        Result:=IDEMessageDialogAb(ACaption,AText,mtError,
+                                   [mbRetry,mbIgnore],
+                                   ShowAbort);
+        if Result=mrAbort then exit;
       end;
-      if Result=mrAbort then break;
     end;
   until Result<>mrRetry;
   if (ACodeBuffer=nil) and (lbfCreateClearOnError in Flags) then begin
@@ -304,12 +307,12 @@ begin
 end;
 
 function LoadXMLConfigFromCodeBuffer(const Filename: string;
-  Config: TXMLConfig; out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags
-  ): TModalResult;
+  Config: TXMLConfig; out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags;
+  ShowAbort: boolean): TModalResult;
 var
   ms: TMemoryStream;
 begin
-  Result:=LoadCodeBuffer(ACodeBuffer,Filename,Flags);
+  Result:=LoadCodeBuffer(ACodeBuffer,Filename,Flags,ShowAbort);
   if Result<>mrOk then begin
     Config.Clear;
     exit;
@@ -586,14 +589,14 @@ begin
 end;
 
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
-  LRSFilename: string): TModalResult;
+  LRSFilename: string; ShowAbort: boolean): TModalResult;
 var
   LFMMemStream, LRSMemStream: TMemoryStream;
   LFMBuffer: TCodeBuffer;
   LRSBuffer: TCodeBuffer;
 begin
   // read lfm file
-  Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk]);
+  Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk],ShowAbort);
   if Result<>mrOk then exit;
   LFMMemStream:=nil;
   LRSMemStream:=nil;
@@ -604,10 +607,10 @@ begin
     LRSMemStream:=TMemoryStream.Create;
     // convert
     if not LFMtoLRSstream(LFMMemStream,LRSMemStream) then begin
-      Result:=IDEMessageDialog(lisStreamError,
+      Result:=IDEMessageDialogAb(lisStreamError,
         Format(lisUnableToUpdateTheBinaryResourceFileFromFileTheText, [#13,
           LRSFilename, #13, #13, LFMFilename, #13, #13]),
-        mtError,[mbCancel,mbAbort,mbIgnore]);
+        mtError,[mbCancel,mbIgnore],ShowAbort);
       exit;
     end;
     LRSMemStream.Position:=0;

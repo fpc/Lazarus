@@ -258,7 +258,7 @@ begin
     exit;
   end;
   Code:=nil;
-  if LoadCodeBuffer(Code,AFile.Filename,[])<>mrOk then begin
+  if LoadCodeBuffer(Code,AFile.Filename,[],false)<>mrOk then begin
     exit;
   end;
   if Row.Editor=nil then begin

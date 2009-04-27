@@ -144,7 +144,7 @@ type
     function FindLRSFilename(AnUnitInfo: TUnitInfo;
                              UseDefaultIfNotFound: boolean): string;
     function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
-    function UpdateLRSFromLFM(AnUnitInfo: TUnitInfo): TModalResult;
+    function UpdateLRSFromLFM(AnUnitInfo: TUnitInfo; ShowAbort: boolean): TModalResult;
     function UpdateProjectAutomaticFiles: TModalResult; override;
 
     // methods for building
@@ -1032,7 +1032,8 @@ begin
   Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
 end;
 
-function TBuildManager.UpdateLRSFromLFM(AnUnitInfo: TUnitInfo): TModalResult;
+function TBuildManager.UpdateLRSFromLFM(AnUnitInfo: TUnitInfo;
+  ShowAbort: boolean): TModalResult;
 var
   LFMFilename: String;
   LRSFilename: String;
@@ -1051,7 +1052,7 @@ begin
   debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAgeUTF8(LFMFilename)),' LRSAge=',dbgs(FileAgeUTF8(LRSFilename)));
   // the .lrs file does not exist, or is older than the .lfm file
   // -> update .lrs file
-  Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);
+  Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename,ShowAbort);
 end;
 
 function TBuildManager.UpdateProjectAutomaticFiles: TModalResult;
@@ -1065,7 +1066,7 @@ begin
   begin
     if AnUnitInfo.HasResources then 
     begin      
-      Result := UpdateLRSFromLFM(AnUnitInfo);
+      Result := UpdateLRSFromLFM(AnUnitInfo,false);
       if Result = mrIgnore then Result:=mrOk;
       if Result <> mrOk then exit;
     end;

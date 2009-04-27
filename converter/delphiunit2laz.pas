@@ -66,7 +66,7 @@ function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
   RenameDFMFile, RenameLowercase: boolean;
   var LazarusFilename, LFMFilename: string): TModalResult;
 function FixMissingUnits(const LazarusUnitFilename: string;
-                         IsSubProc: boolean): TModalResult;
+                         IsSubProc, ShowAbort: boolean): TModalResult;
 
 // dfm/lfm
 function ConvertDFMToLFMFilename(const DFMFilename: string;
@@ -74,15 +74,15 @@ function ConvertDFMToLFMFilename(const DFMFilename: string;
 function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
-  AddLRSCode: boolean): TModalResult;
+  AddLRSCode, ShowAbort: boolean): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
-  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
+  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist, ShowAbort: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 
 // projects
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
 function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
-  out LPRCode: TCodeBuffer): TModalResult;
+  out LPRCode: TCodeBuffer; ShowAbort: boolean): TModalResult;
 
 // packages
 function ExtractOptionsFromDPK(const Filename: string;
@@ -274,13 +274,13 @@ begin
 end;
 
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
-  AddLRSCode: boolean): TModalResult;
+  AddLRSCode, ShowAbort: boolean): TModalResult;
 var
   LazUnitCode: TCodeBuffer;
   CTResult: Boolean;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
+                         [lbfCheckIfText,lbfUpdateFromDisk],ShowAbort);
   if Result<>mrOk then exit;
   CTResult:=CodeToolBoss.ConvertDelphiToLazarusSource(LazUnitCode,AddLRSCode);
   if not CTResult then begin
@@ -292,7 +292,7 @@ begin
 end;
 
 function FixMissingUnits(const LazarusUnitFilename: string;
-  IsSubProc: boolean): TModalResult;
+  IsSubProc, ShowAbort: boolean): TModalResult;
 
   function MissingUnitNameToMessage(CodeBuf: TCodeBuffer;
     const MissingUnit: string): string;
@@ -333,7 +333,7 @@ var
   MissingIncludeFilesCodeXYPos: TFPList;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
+                         [lbfCheckIfText,lbfUpdateFromDisk],ShowAbort);
   if Result<>mrOk then exit;
 
   // fix include filenames
@@ -421,24 +421,24 @@ begin
 end;
 
 function LoadUnitAndLFMFile(const UnitFileName: string;
-  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
+  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist, ShowAbort: boolean): TModalResult;
 var
   LFMFilename: string;
 begin
   UnitCode:=nil;
   LFMCode:=nil;
   Result:=LoadCodeBuffer(UnitCode,UnitFileName,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
+                         [lbfCheckIfText,lbfUpdateFromDisk],ShowAbort);
   if Result<>mrOk then exit;
   LFMFilename:=ChangeFileExt(UnitFileName,'.lfm');
   if FileExistsUTF8(LFMFilename) then begin
     Result:=LoadCodeBuffer(LFMCode,LFMFilename,
-                           [lbfCheckIfText,lbfUpdateFromDisk]);
+                           [lbfCheckIfText,lbfUpdateFromDisk],ShowAbort);
     if Result<>mrOk then exit;
   end else if LFMMustExist then begin
     Result:=QuestionDlg(lisLFMFileNotFound,
                        Format(lisUnitLFMFile, [UnitFileName, #13, LFMFilename]),
-                       mtError,[mrCancel,'Skip this step',mrAbort],0);
+                       mtError,[mrCancel,'Skip this step',mrAbort,'Cancel all'],0);
   end;
 end;
 
@@ -465,14 +465,14 @@ begin
 end;
 
 function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
-  out LPRCode: TCodeBuffer): TModalResult;
+  out LPRCode: TCodeBuffer; ShowAbort: boolean): TModalResult;
 begin
   if not FileExistsUTF8(LPRFilename) then begin
     Result:=CopyFileWithErrorDialogs(DPRFilename,LPRFilename,[]);
     if Result<>mrOk then exit;
   end;
   Result:=LoadCodeBuffer(LPRCode,LPRFilename,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
+                         [lbfCheckIfText,lbfUpdateFromDisk],ShowAbort);
 end;
 
 function ExtractOptionsFromDelphiSource(const Filename: string;

@@ -260,12 +260,13 @@ type
     // package editors
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
-    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags
-                           ): TModalResult; override;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
+                           ShowAbort: boolean): TModalResult; override;
     function DoOpenPackageWithName(const APackageName: string;
-                         Flags: TPkgOpenFlags): TModalResult; override;
+                         Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult; override;
     function DoOpenPackageFile(AFilename: string;
-                         Flags: TPkgOpenFlags): TModalResult; override;
+                         Flags: TPkgOpenFlags;
+                         ShowAbort: boolean): TModalResult; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; override;
@@ -373,7 +374,7 @@ begin
             Include(OpenFlags,pofMultiOpen)
           else
             Exclude(OpenFlags,pofMultiOpen);
-          if DoOpenPackageFile(AFilename,OpenFlags)=mrAbort then begin
+          if DoOpenPackageFile(AFilename,OpenFlags,true)=mrAbort then begin
             break;
           end;
         end;
@@ -537,7 +538,7 @@ end;
 procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
 begin
   if (Sender=nil) or (not (Sender is TLazPackage)) then exit;
-  DoOpenPackage(TLazPackage(Sender),[]);
+  DoOpenPackage(TLazPackage(Sender),[],false);
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenUnit(Sender: TObject);
@@ -663,7 +664,7 @@ begin
   // load all packages
   CurDependency:=FirstDependency;
   while CurDependency<>nil do begin
-    OpenResult:=PackageGraph.OpenDependency(CurDependency);
+    OpenResult:=PackageGraph.OpenDependency(CurDependency,false);
     if OpenResult<>lprSuccess then begin
       IDEMessageDialog(lisCCOErrorCaption,
         Format(lisUnableToLoadPackage, ['"', CurDependency.AsString, '"']),
@@ -681,7 +682,7 @@ var
 begin
   PkgFile:=GetPackageOfCurrentSourceEditor;
   if PkgFile<>nil then
-    DoOpenPackage(PkgFile.LazPackage,[]);
+    DoOpenPackage(PkgFile.LazPackage,[],false);
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -709,7 +710,7 @@ begin
       [mbCancel]);
     exit;
   end;
-  DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent])
+  DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent],false)
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
@@ -817,7 +818,7 @@ begin
   if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename))
   or (not FileExistsUTF8(APackage.Filename)) then
     exit(mrCancel);
-  Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
+  Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],false);
 end;
 
 function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
@@ -853,7 +854,7 @@ end;
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoOpenPackage(APackage,[]);
+  Result:=DoOpenPackage(APackage,[],false);
 end;
 
 function TPkgManager.OnPackageEditorSavePackage(Sender: TObject;
@@ -912,7 +913,7 @@ end;
 function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoOpenPackage(APackage,[]);
+  Result:=DoOpenPackage(APackage,[],false);
 end;
 
 function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
@@ -1001,7 +1002,7 @@ var
   AFilename: string;
 begin
   AFileName:=ExpandFileNameUTF8((Sender as TIDEMenuItem).Caption);
-  if DoOpenPackageFile(AFilename,[pofAddToRecent])=mrOk then begin
+  if DoOpenPackageFile(AFilename,[pofAddToRecent],false)=mrOk then begin
     UpdateEnvironment;
   end else begin
     // open failed
@@ -2179,7 +2180,7 @@ function TPkgManager.AddProjectDependency(AProject: TProject;
 begin
   Result:=mrOk;
   AProject.AddRequiredDependency(ADependency);
-  PackageGraph.OpenDependency(ADependency);
+  PackageGraph.OpenDependency(ADependency,false);
   if (ADependency.RequiredPackage<>nil)
   and (not ADependency.RequiredPackage.AutoCreated)
   and ADependency.RequiredPackage.AddToProjectUsesSection
@@ -2286,11 +2287,11 @@ var
 begin
   Result:=ShowOpenInstalledPkgDlg(APackage);
   if (Result<>mrOk) then exit;
-  Result:=DoOpenPackage(APackage,[]);
+  Result:=DoOpenPackage(APackage,[],false);
 end;
 
 function TPkgManager.DoOpenPackage(APackage: TLazPackage;
-  Flags: TPkgOpenFlags): TModalResult;
+  Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
 var
   CurEditor: TPackageEditorForm;
   AFilename: String;
@@ -2299,7 +2300,7 @@ begin
   
   // revert: if possible and wanted
   if (pofRevert in Flags) and (FileExistsCached(AFilename)) then begin
-    Result:=DoOpenPackageFile(AFilename,Flags);
+    Result:=DoOpenPackageFile(AFilename,Flags,ShowAbort);
     exit;
   end;
 
@@ -2321,7 +2322,7 @@ begin
 end;
 
 function TPkgManager.DoOpenPackageWithName(const APackageName: string;
-  Flags: TPkgOpenFlags): TModalResult;
+  Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
 var
   APackage: TLazPackage;
 begin
@@ -2329,11 +2330,11 @@ begin
   if APackage=nil then
     Result:=mrCancel
   else
-    Result:=DoOpenPackage(APackage,Flags);
+    Result:=DoOpenPackage(APackage,Flags,ShowAbort);
 end;
 
-function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags
-  ): TModalResult;
+function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags;
+  ShowAbort: boolean): TModalResult;
 var
   APackage: TLazPackage;
   XMLConfig: TXMLConfig;
@@ -2419,7 +2420,7 @@ begin
         try
           APackage.Filename:=AFilename;
           Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
-                               Code,[lbfUpdateFromDisk,lbfRevert]);
+                               Code,[lbfUpdateFromDisk,lbfRevert],ShowAbort);
           if Result<>mrOk then exit;
           APackage.LPKSource:=Code;
           APackage.LoadFromXMLConfig(XMLConfig,'Package/');
@@ -2457,7 +2458,7 @@ begin
   end;
 
   if OpenEditor then
-    Result:=DoOpenPackage(APackage,[])
+    Result:=DoOpenPackage(APackage,[],ShowAbort)
   else
     Result:=mrOk;
 
@@ -2699,7 +2700,7 @@ begin
   Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
 
-  Result:=PackageGraph.CompilePackage(APackage,Flags,Globals);
+  Result:=PackageGraph.CompilePackage(APackage,Flags,false,Globals);
 end;
 
 function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage
@@ -3394,7 +3395,7 @@ begin
   if APackageList=nil then exit(mrOk);
   for i:=0 to APackageList.Count-1 do begin
     APackage:=TLazPackage(APackageList[i]);
-    Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
+    Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],true);
     if Result=mrAbort then exit;
   end;
   Result:=mrOk;
@@ -3586,7 +3587,7 @@ begin
         RequiredPackage.AutoInstall:=pitStatic;
         Dependency:=RequiredPackage.CreateDependencyWithOwner(Self);
         Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
-        PackageGraph.OpenDependency(Dependency);
+        PackageGraph.OpenDependency(Dependency,false);
         NeedSaving:=true;
       end;
     end;
@@ -4120,9 +4121,9 @@ begin
   if Dependency=nil then exit;
   // user has selected a dependency -> open package
   Result:=true;
-  if PackageGraph.OpenDependency(Dependency)<>lprSuccess then
+  if PackageGraph.OpenDependency(Dependency,false)<>lprSuccess then
     exit;
-  DoOpenPackage(Dependency.RequiredPackage,[]);
+  DoOpenPackage(Dependency.RequiredPackage,[],false);
 end;
 
 function TPkgManager.OnProjectInspectorAddDependency(Sender: TObject;
@@ -4165,7 +4166,7 @@ function TPkgManager.OnProjectInspectorReAddDependency(Sender: TObject;
 begin
   Result:=mrOk;
   Project1.ReaddRemovedDependency(ADependency);
-  PackageGraph.OpenDependency(ADependency);
+  PackageGraph.OpenDependency(ADependency,false);
   if (ADependency.RequiredPackage<>nil)
   and (not ADependency.RequiredPackage.AutoCreated) then begin
     AddUnitToProjectMainUsesSection(Project1,ADependency.PackageName,'');

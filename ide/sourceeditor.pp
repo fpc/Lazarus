@@ -5441,7 +5441,7 @@ begin
     MainIDEInterface.DoOpenProjectFile(AFilename,
       [ofOnlyIfExists,ofAddToRecent,ofUseCache])
   else if CompareFileExt(AFilename,'.lpk')=0 then
-    PackageEditingInterface.DoOpenPackageFile(AFilename,[pofAddToRecent]);
+    PackageEditingInterface.DoOpenPackageFile(AFilename,[pofAddToRecent],false);
 end;
 
 Procedure TSourceNotebook.ShowUnitInfo(Sender: TObject);
