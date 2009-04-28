@@ -460,9 +460,9 @@ var
 {$ifdef DEBUG_DOUBLEBUFFER}
           ORect.Left := 0;
           ORect.Top := 0;
-          ORect.Right := DoubleBufferBitmapWidth;
-          ORect.Bottom := DoubleBufferBitmapHeight;
-          Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP));
+          ORect.Right := CurDoubleBuffer.BitmapWidth;
+          ORect.Bottom := CurDoubleBuffer.BitmapHeight;
+          Windows.FillRect(CurDoubleBuffer.DC, ORect, GetSysColorBrush(COLOR_DESKTOP));
 {$endif}
           PaintRegion := CreateRectRgn(0, 0, 1, 1);
           if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
