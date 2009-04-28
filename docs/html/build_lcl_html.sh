@@ -6,6 +6,7 @@
 # Creates an chm file, if HTMLFMT is set to chm,
 # otherwise it create html docs
 
+
 #set -x
 set -e
 
@@ -51,6 +52,9 @@ fi
 FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT"
 if [ "$HTMLFMT" == "chm" ]; then
   FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --make-searchable --output=lcl.chm"
+fi
+if [ -n "$FOOTERDATE" ]; then
+  FPDocParams="$FPDocParams --footer-date=$FOOTERDATE"
 fi
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
