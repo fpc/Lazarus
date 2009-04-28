@@ -1,16 +1,13 @@
-This patch fixes dist_clean target used to remove generated files before
-packaging sources.
-
-Index: Makefile.fpc
+Index: lazarus/Makefile.fpc
 ===================================================================
---- lazarus~/Makefile.fpc	(révision 16588)
+--- lazarus/Makefile.fpc	(révision 19673)
 +++ lazarus/Makefile.fpc	(copie de travail)
 @@ -11,7 +11,7 @@
  
  [target]
  programs=lazarus startlazarus
--dirs=lcl components packager/registration ideintf designer packager
-+dirs=lcl components packager/registration ideintf designer packager ide tools
+-dirs=lcl packager/registration ideintf packager components
++dirs=lcl packager/registration ideintf packager components ide tools
  exampledirs=examples
  
  [compiler]
@@ -19,7 +16,7 @@ Index: Makefile.fpc
  #-----------------------------------------------------------------------------
  [rules]
 -.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
-+.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder all clean cleanide purge examples install lazbuild
++.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
  
  #-----------------------------------------------------------------------------
 -ide: 
@@ -29,11 +26,13 @@ Index: Makefile.fpc
  idepkg:
  	$(MAKE) -C ide idepkg
  
-@@ -81,7 +77,6 @@
+@@ -81,8 +77,7 @@
  
  #-----------------------------------------------------------------------------
- tools: lcl components
+ tools: lcl
 -	$(MAKE) -C tools
- 	
+-	
++
  #-----------------------------------------------------------------------------
  examples: lcl components
+ 

@@ -5,7 +5,7 @@ Maintainer: Carlos Laviola <claviola@debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freepascal.org>
 Standards-Version: 3.8.0
 Build-Depends: debhelper (>= 5), quilt, fpc (>= 2.2.2-5), fpc-source (>= 2.2.2-5), 
- fp-utils, imagemagick, libgdk-pixbuf-dev
+ fp-utils, imagemagick
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
@@ -13,7 +13,8 @@ Homepage: http://www.lazarus.freepascal.org
 Package: lazarus
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: lazarus-ide, lazarus-src, lazarus-doc
+Depends: lazarus-ide (= ${binary:Version}), lazarus-src (= ${binary:Version}),
+ lazarus-doc (>= ${source:Upstream-Version})
 Recommends: fpc, fpc-source
 Suggests: fp-utils, fp-docs
 Description: IDE for Free Pascal to create (graphical and console) applications
@@ -67,11 +68,10 @@ Description: IDE to create (graphical and console) applications with Free
 Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 arm
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-5), fp-units-base, fp-units-rtl,
- fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
+Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-5), fp-units-base,
+ fp-units-rtl, fp-units-fcl, fp-units-gtk2,
  ${fpc-abi:Depends}, lazarus-src
-Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
- fp-units-net, fpc-source, gdb
+Recommends: fpc, gdb
 Suggests: fp-utils
 Description: IDE to create (graphical and console) applications  with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs

@@ -2,7 +2,14 @@ lazarus (0.9.27-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Mazen Neifer <mazen@freepascal.org>  Mon, 22 Dec 2008 10:22:00 +0100
+ -- Mazen Neifer <mazen@freepascal.org>  Mon, 28 Apr 2009 22:33:00 +0200
+
+lazarus (0.9.26.2-1) unstable; urgency=low
+
+  * New upstream version.
+  * Used GTK2 and dropped GTK1 dependency. (Closes: Bug#521326)
+
+ -- Mazen Neifer <mazen@freepascal.org>  Wed, 17 Feb 2009 16:17:00 +0100
 
 lazarus (0.9.26-4) unstable; urgency=low
 

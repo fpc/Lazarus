@@ -12,8 +12,8 @@ endif
 # Set FPCVER
 FPCVER=$(shell ${FPC} -iV)
 # Get version information from changelog file
-DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
-DEB_UPSTREAM_VERSION := $(shell echo $(DEB_VERSION) | cut -f 1 -d -)
+DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
 # Get directories
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
@@ -68,8 +68,7 @@ clean-patched:
 	dh_testdir
 	dh_testroot
 	${RM} lazarus startlazarus lazbuild
-	$(MAKE) distclean
-	$(MAKE) distclean LCL_PLATFORM=gtk2
+	$(MAKE) distclean ${BUILDOPTS}
 	find '(' -name '*.a' -or -name '*.o' -or -name '*.so' -or -name '*.ppu' ')' -exec ${RM} '{}' ';'
 	dh_prep
 
@@ -115,7 +114,6 @@ build-arch-stamp:
 	@echo "--- Building"
 	dh_testdir
 	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
-	$(MAKE) lcl packager/registration ideintf bigidecomponents examples LCL_PLATFORM=gtk2 $(BUILDOPTS)
 	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
 	$(MAKE) lazbuilder $(BUILDOPTS)
 	$(MAKE) tools $(BUILDOPTS)
