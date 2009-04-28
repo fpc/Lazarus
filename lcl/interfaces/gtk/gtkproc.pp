@@ -379,7 +379,7 @@ procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
 function AllocGDKColor(const AColor: LongInt): TGDKColor;
 function TGDKColorToTColor(const value: TGDKColor): TColor;
 function TColortoTGDKColor(const value: TColor): TGDKColor;
-procedure UpdateSysColorMap(Widget: PGtkWidget);
+procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);
 function IsBackgroundColor(Color: TColor): boolean;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);

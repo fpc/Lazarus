@@ -137,6 +137,7 @@ type
   public
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
+    procedure InitSystemColors;
     procedure PassCmdLineOptions; override;
    
 {$ifdef Unix}

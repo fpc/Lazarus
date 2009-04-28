@@ -7095,7 +7095,7 @@ end;
 
   Reads the system colors.
  ------------------------------------------------------------------------------}
-procedure UpdateSysColorMap(Widget: PGtkWidget);
+procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);
 {$IFDEF VerboseUpdateSysColorMap}
   function GdkColorAsString(c: TgdkColor): string;
   begin
@@ -7111,18 +7111,23 @@ var
   MainStyle: PGtkStyle;
 begin
   if Widget=nil then exit;
+  if not (Lgs in [lgsButton, lgsWindow, lgsMenuBar, lgsMenuitem,
+    lgsVerticalScrollbar, lgsHorizontalScrollbar, lgsTooltip]) then exit;
+
   {$IFDEF NoStyle}
   exit;
   {$ENDIF}
   //debugln('UpdateSysColorMap ',GetWidgetDebugReport(Widget));
   gtk_widget_set_rc_style(Widget);
-  MainStyle:=gtk_widget_get_style(Widget);
-  if MainStyle=nil then exit;
-  with MainStyle^ do begin
-  
+  MainStyle := gtk_widget_get_style(Widget);
+  if MainStyle = nil then exit;
+  with MainStyle^ do
+  begin
     {$IFDEF VerboseUpdateSysColorMap}
-    if rc_style<>nil then begin
-      with rc_style^ do begin
+    if rc_style<>nil then
+    begin
+      with rc_style^ do
+      begin
         DebugLn('rc_style:');
         DebugLn(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
         DebugLn(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
@@ -7193,36 +7198,63 @@ begin
     {$ENDIF}
     
     {$IFNDEF DisableGtkSysColors}
-    SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
-    SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
-    SysColorMap[COLOR_MENU] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_WINDOW] := TGDKColorToTColor(white);
-    SysColorMap[COLOR_WINDOWFRAME] := TGDKColorToTColor(black);
-    SysColorMap[COLOR_MENUTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_WINDOWTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_ACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
-    SysColorMap[COLOR_INACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_APPWORKSPACE] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_HIGHLIGHT] := TGDKColorToTColor(bg[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_HIGHLIGHTTEXT] := TGDKColorToTColor(text[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_BTNFACE] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_BTNSHADOW] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
-    SysColorMap[COLOR_GRAYTEXT] := TGDKColorToTColor(text[GTK_STATE_INSENSITIVE]);
-    SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_BTNHIGHLIGHT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_3DDKSHADOW] := TGDKColorToTColor(black);
-    SysColorMap[COLOR_3DLIGHT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_INFOTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_INFOBK] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
-    SysColorMap[COLOR_HOTLIGHT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_FORM] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    // colors which can be only retrieved from the window manager (metacity)
-    SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_INACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-    SysColorMap[COLOR_CAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_SELECTED]);
-    SysColorMap[COLOR_INACTIVECAPTIONTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
+    // this map is taken from this research:
+    // http://www.endolith.com/wordpress/2008/08/03/wine-colors/
+    case Lgs of
+      lgsButton:
+        begin
+          SysColorMap[COLOR_ACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_INACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_WINDOWFRAME] := TGDKColorToTColor(mid[GTK_STATE_SELECTED]);
+
+          SysColorMap[COLOR_BTNFACE] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_BTNSHADOW] := TGDKColorToTColor(dark[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_BTNHIGHLIGHT] := TGDKColorToTColor(light[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_3DDKSHADOW] := TGDKColorToTColor(black);
+          SysColorMap[COLOR_3DLIGHT] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
+        end;
+      lgsWindow:
+        begin
+          // colors which can be only retrieved from the window manager (metacity)
+          SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(dark[GTK_STATE_SELECTED]);
+          SysColorMap[COLOR_INACTIVECAPTION] := TGDKColorToTColor(dark[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(light[GTK_STATE_SELECTED]);
+          SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_CAPTIONTEXT] := TGDKColorToTColor(white);
+          SysColorMap[COLOR_INACTIVECAPTIONTEXT] := TGDKColorToTColor(white);
+          // others
+          SysColorMap[COLOR_APPWORKSPACE] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_GRAYTEXT] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
+          SysColorMap[COLOR_HIGHLIGHT] := TGDKColorToTColor(base[GTK_STATE_SELECTED]);
+          SysColorMap[COLOR_HIGHLIGHTTEXT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
+          SysColorMap[COLOR_WINDOW] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_WINDOWTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_HOTLIGHT] := TGDKColorToTColor(light[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
+          SysColorMap[COLOR_FORM] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+        end;
+      lgsMenuBar:
+        begin
+          SysColorMap[COLOR_MENUBAR] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+        end;
+      lgsMenuitem:
+        begin
+          SysColorMap[COLOR_MENU] := TGDKColorToTColor(light[GTK_STATE_ACTIVE]);
+          SysColorMap[COLOR_MENUTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_MENUHILIGHT] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
+        end;
+      lgsVerticalScrollbar,
+      lgsHorizontalScrollbar:
+        begin
+          SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
+        end;
+      lgsTooltip:
+        begin
+          SysColorMap[COLOR_INFOTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
+          SysColorMap[COLOR_INFOBK] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+        end;
+    end;
     {$ENDIF}
   end;
 end;
@@ -7913,18 +7945,18 @@ begin
         gtk_widget_show_all(StyleObject^.Widget);
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then
         begin
-          StyleWindowWidget:=GetStyleWidget(lgsWindow);
-          // add menu above the forms client area (fixed widget)
-          VBox:=PGTKWidget(
-                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
-          DebugLn(['GetStyleWithName adding menu to form']);
-          gtk_box_pack_start(PGTKBox(VBox), StyleObject^.Widget, false, True, 0);
+          // attach menu to window
+          gtk_menu_attach_to_widget(PGtkMenu(StyleObject^.Widget),
+            GetStyleWidget(lgsWindow), nil);
         end
         else
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_BAR) then
         begin
-          DebugLn(['GetStyleWithName adding menubar to menu']);
-          gtk_menu_append(GetStyleWidget(lgsMenu),StyleObject^.Widget);
+          StyleWindowWidget:=GetStyleWidget(lgsWindow);
+          // add menu above the forms client area (fixed widget)
+          VBox:=PGTKWidget(
+                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+          gtk_box_pack_start(PGTKBox(VBox), StyleObject^.Widget, False, False, 0);
         end
         else
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then
@@ -7995,14 +8027,13 @@ begin
         StyleObject^.Style := GTK_Style_Ref(StyleObject^.Style);
         
     // if successful add to style objects list
-    if StyleObject^.Style <> nil then begin
+    if StyleObject^.Style <> nil then
+    begin
       Styles.AddObject(WName, TObject(StyleObject));
-      if lgs<>lgsUserDefined then
-        StandardStyles[lgs]:=StyleObject;
-      Result:=StyleObject^.Style;
-      If (StyleObject^.Widget <> nil)
-      and (CompareText(WName,LazGtkStyleNames[lgsWindow])=0) then
-        UpdateSysColorMap(StyleObject^.Widget);
+      if lgs <> lgsUserDefined then
+        StandardStyles[lgs] := StyleObject;
+      Result := StyleObject^.Style;
+      UpdateSysColorMap(StyleObject^.Widget, lgs);
         
       // ToDo: create all gc of the style
       //gtk_widget_set_rc_style(StyleObject^.Widget);

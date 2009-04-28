@@ -248,6 +248,7 @@ begin
 
   // Init stock objects;
   InitStockItems;
+  InitSystemColors;
 
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
@@ -1276,6 +1277,17 @@ begin
   DeleteAndNilObject(FStockWhitePen);
 
   DeleteAndNilObject(FStockSystemFont);
+end;
+
+procedure TGTKWidgetSet.InitSystemColors;
+begin
+  // we need to request style and inside UpdateSysColorMap will be indirectly called
+  GetStyle(lgsButton);
+  GetStyle(lgsWindow);
+  GetStyle(lgsMenuBar);
+  GetStyle(lgsMenuitem);
+  GetStyle(lgsVerticalScrollbar);
+  GetStyle(lgsTooltip);
 end;
 
 {------------------------------------------------------------------------------
