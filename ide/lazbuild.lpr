@@ -525,7 +525,7 @@ begin
     CheckPackageGraphForCompilation(APackage,nil);
   end;
 
-  if PackageGraph.CompilePackage(APackage,Flags)<>mrOk then
+  if PackageGraph.CompilePackage(APackage,Flags,false)<>mrOk then
     Error(ErrorBuildFailed,APackage.IDAsString+' compilation failed');
 end;
 
