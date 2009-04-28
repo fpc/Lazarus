@@ -1982,6 +1982,14 @@ begin
     ExprType:=FindExpressionTypeOfVariable(CaseAtom.EndPos,EndPos,Params,true);
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
 
+    if ExprType.Desc=xtContext then begin
+      // resolve aliases and properties
+      Params.Clear;
+      Params.Flags:=fdfGlobals+fdfDefaultForExpressions;
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                 ExprType.Context.Node);
+    end;
+
     case ExprType.Desc of
 
     xtBoolean,xtByteBool,xtLongBool:
@@ -2007,6 +2015,7 @@ begin
           end;
 
         else
+          debugln(['TIdentCompletionTool.GetValuesOfCaseVariable not an enum: ',Node.DescAsString]);
           exit;
         end;
       end;
