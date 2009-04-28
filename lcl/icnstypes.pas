@@ -173,11 +173,11 @@ const
  { iitThumbnail8BitMask  } [iitThumbnail32BitData]
   );
 
-function GetIcnsIconType(StrIconType: FourCharCode): TicnsIconType;
+function GetIcnsIconType(const StrIconType: FourCharCode): TicnsIconType;
 
 implementation
 
-function GetIcnsIconType(StrIconType: FourCharCode): TicnsIconType;
+function GetIcnsIconType(const StrIconType: FourCharCode): TicnsIconType;
 begin
   Result := iitNone;
 

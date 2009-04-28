@@ -41,6 +41,7 @@ type
     CategoryTree: TTreeView;
 
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
+    procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
@@ -127,6 +128,13 @@ begin
 
     PrevEditor := AEditor;
   end;
+end;
+
+procedure TIDEOptionsDialog.FormShow(Sender: TObject);
+begin
+  // make the category visible in the treeview
+  if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
+    CategoryTree.TopItem:=CategoryTree.Selected.Parent;
 end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
