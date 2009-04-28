@@ -117,7 +117,7 @@ begin
     Exit;
   end;
 
-  OleInitialize(nil);
+  CoInitializeEx(nil, COINIT_MULTITHREADED);
   //TODO: Remove when the WS interface is implemented
   //      Common controls only need to be initialized when used
   //      So they are initialized in the CreateHandle for common controls
@@ -427,7 +427,7 @@ end;
 procedure TWin32WidgetSet.AppTerminate;
 begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
-  OleUninitialize;
+  CoUninitialize;
 end;
 
 procedure TWin32WidgetSet.AppSetIcon(const Small, Big: HICON);
