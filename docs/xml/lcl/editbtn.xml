@@ -1242,7 +1242,6 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.dirsel.tdirseldlg">Directory Select Dialog</link>
           <link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
         </seealso>
       </element>
@@ -2627,9 +2626,7 @@
         <descr>
           <p>If <var>HideDirectories</var> is set to true, the file name editor displays
 only a file name, without path.</p>
-p&gt;<remark>This may be useful if application allows user to select files from
-
-fixed directory with a long path. </remark>
+<remark>This may be useful if application allows user to select files from a fixed directory with a long path.</remark>
         </descr>
       </element>
     </module>

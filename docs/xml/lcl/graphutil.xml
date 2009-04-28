@@ -318,9 +318,7 @@
       <element name="NiceArrowAngle">
         <short/>
       </element>
-      <element name="DrawArrow">
-        <short/>
-      </element>
+      <element name="DrawArrow"/>
     </module>
     <!-- GraphUtil -->
   </package>
