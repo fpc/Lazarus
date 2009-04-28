@@ -331,8 +331,7 @@ end;
 
 procedure Register;
 begin
-  // todo:
-  RegisterIDEMenuCommand(mnuTools, 'mnuLeakView', 'Leak View', nil, @IDEMenuClicked);
+  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuLeakView', 'Leak View', nil, @IDEMenuClicked);
 end;
 
 
