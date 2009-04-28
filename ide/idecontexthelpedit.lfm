@@ -18,23 +18,23 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   LCLVersion = '0.9.27'
   object WindowControlsGroupBox: TGroupBox
     Left = 6
-    Height = 466
+    Height = 456
     Top = 6
     Width = 305
     Align = alLeft
     BorderSpacing.Around = 6
     Caption = 'WindowControlsGroupBox'
-    ClientHeight = 448
+    ClientHeight = 437
     ClientWidth = 301
     TabOrder = 0
     object ControlsTreeView: TTreeView
       Left = 6
-      Height = 354
+      Height = 343
       Top = 6
       Width = 289
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       ReadOnly = True
       TabOrder = 0
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
@@ -42,7 +42,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object CreateHelpNodeForControlButton: TButton
       Left = 6
       Height = 35
-      Top = 366
+      Top = 355
       Width = 289
       Align = alBottom
       BorderSpacing.Around = 6
@@ -53,7 +53,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object TestButton: TButton
       Left = 6
       Height = 35
-      Top = 407
+      Top = 396
       Width = 289
       Align = alBottom
       BorderSpacing.Around = 6
@@ -64,23 +64,23 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   end
   object NodesGroupBox: TGroupBox
     Left = 328
-    Height = 466
+    Height = 456
     Top = 6
     Width = 285
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    ClientHeight = 448
+    ClientHeight = 437
     ClientWidth = 281
     TabOrder = 1
     object HelpNodesTreeView: TTreeView
       Left = 6
-      Height = 317
+      Height = 240
       Top = 6
       Width = 269
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       ReadOnly = True
       TabOrder = 0
       OnSelectionChanged = HelpNodesTreeViewSelectionChanged
@@ -88,35 +88,35 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     end
     object HelpNodePropertiesGroupBox: TGroupBox
       Left = 6
-      Height = 113
-      Top = 329
+      Height = 179
+      Top = 252
       Width = 269
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'HelpNodePropertiesGroupBox'
-      ClientHeight = 95
+      ClientHeight = 160
       ClientWidth = 265
       TabOrder = 1
       object NodeNameLabel: TLabel
         Left = 10
-        Height = 14
+        Height = 18
         Top = 10
-        Width = 32
+        Width = 44
         Caption = 'Name:'
         ParentColor = False
       end
       object NodePathLabel: TLabel
         Left = 10
-        Height = 14
+        Height = 18
         Top = 40
-        Width = 27
+        Width = 33
         Caption = 'Path:'
         ParentColor = False
       end
       object NodeHasHelpCheckBox: TCheckBox
         Left = 6
-        Height = 17
-        Top = 72
+        Height = 22
+        Top = 104
         Width = 253
         Align = alBottom
         BorderSpacing.Around = 6
@@ -150,18 +150,40 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         TabOrder = 2
         Text = 'NodePathEdit'
       end
+      object NodeIsRootCheckBox: TCheckBox
+        Left = 6
+        Height = 22
+        Top = 132
+        Width = 253
+        Align = alBottom
+        BorderSpacing.Around = 6
+        Caption = 'NodeIsRootCheckBox'
+        OnEditingDone = NodeIsRootCheckBoxEditingDone
+        TabOrder = 3
+      end
+      object FullPathEdit: TEdit
+        Left = 6
+        Height = 23
+        Top = 75
+        Width = 253
+        Align = alBottom
+        BorderSpacing.Around = 6
+        ReadOnly = True
+        TabOrder = 4
+        Text = 'FullPathEdit'
+      end
     end
   end
   object Splitter1: TSplitter
     Left = 317
-    Height = 466
+    Height = 456
     Top = 6
     Width = 5
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 478
+    Height = 36
+    Top = 468
     Width = 607
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]

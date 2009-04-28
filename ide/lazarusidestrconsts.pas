@@ -4095,6 +4095,7 @@ resourcestring
   // Edit context help dialog (IDEContextHelpEdit.pas)
   lisHelpEntries = 'Help entries';
   lisPath = 'Path';
+  lisCEIsARootControl = 'Is a root control';
   lisHasHelp = 'Has Help';
   lisCreateHelpNode = 'Create Help node';
   lisEditContextHelp = 'Edit context help';

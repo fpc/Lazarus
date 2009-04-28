@@ -43,6 +43,8 @@ type
 
   TContextHelpEditorDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    FullPathEdit: TEdit;
+    NodeIsRootCheckBox: TCheckBox;
     TestButton: TButton;
     CreateHelpNodeForControlButton: TButton;
     NodeNameEdit: TEdit;
@@ -62,6 +64,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure HelpNodesTreeViewSelectionChanged(Sender: TObject);
     procedure NodeHasHelpCheckBoxEditingDone(Sender: TObject);
+    procedure NodeIsRootCheckBoxEditingDone(Sender: TObject);
     procedure NodeNameEditEditingDone(Sender: TObject);
     procedure NodePathEditEditingDone(Sender: TObject);
     procedure OkBitBtnClick(Sender: TObject);
@@ -70,6 +73,7 @@ type
     FIDEWindow: TCustomForm;
     FInvoker: TObject;
     FWorkingHelpNodes: TIWHelpTree;
+    fLoading: boolean;
     procedure SetIDEWindow(const AValue: TCustomForm);
     procedure SetInvoker(const AValue: TObject);
     procedure UpdateWindowControlsGroupBoxCaption;
@@ -150,6 +154,7 @@ begin
   TestButton.Caption:=dlgCCOTest;
   CreateHelpNodeForControlButton.Caption:=lisCreateHelpNode;
   NodeHasHelpCheckBox.Caption:=lisHasHelp;
+  NodeIsRootCheckBox.Caption:=lisCEIsARootControl;
   NodePathLabel.Caption:=lisPath;
   NodeNameLabel.Caption:=lisDebugOptionsFrmName;
   NodesGroupBox.Caption:=lisHelpEntries;
@@ -176,6 +181,11 @@ begin
 end;
 
 procedure TContextHelpEditorDlg.NodeHasHelpCheckBoxEditingDone(Sender: TObject);
+begin
+  SaveHelpNodeProperties;
+end;
+
+procedure TContextHelpEditorDlg.NodeIsRootCheckBoxEditingDone(Sender: TObject);
 begin
   SaveHelpNodeProperties;
 end;
@@ -287,15 +297,22 @@ var
 begin
   if (csDestroying in ComponentState) then exit;
   HelpNode:=GetCurrentHelpNode;
-  if HelpNode<>nil then begin
-    HelpNodePropertiesGroupBox.Caption:=HelpNode.Name;
-    NodeNameEdit.Text:=HelpNode.Name;
-    NodePathEdit.Text:=HelpNode.Path;
-    NodeHasHelpCheckBox.Checked:=HelpNode.HasHelp;
-    HelpNodePropertiesGroupBox.Enabled:=true;
-  end else begin
-    HelpNodePropertiesGroupBox.Caption:=lisNoNodeSelected;
-    HelpNodePropertiesGroupBox.Enabled:=false;
+  fLoading:=true;
+  try
+    if HelpNode<>nil then begin
+      HelpNodePropertiesGroupBox.Caption:=HelpNode.Name;
+      NodeNameEdit.Text:=HelpNode.Name;
+      NodePathEdit.Text:=HelpNode.Path;
+      NodeHasHelpCheckBox.Checked:=HelpNode.HasHelp;
+      NodeIsRootCheckBox.Checked:=HelpNode.IsRoot;
+      HelpNodePropertiesGroupBox.Enabled:=true;
+      FullPathEdit.Text:=HelpNode.GetFullPath;
+    end else begin
+      HelpNodePropertiesGroupBox.Caption:=lisNoNodeSelected;
+      HelpNodePropertiesGroupBox.Enabled:=false;
+    end;
+  finally
+    fLoading:=false;
   end;
 end;
 
@@ -384,11 +401,14 @@ procedure TContextHelpEditorDlg.SaveHelpNodeProperties;
 var
   HelpNode: TIWHelpNode;
 begin
+  if fLoading then exit;
   HelpNode:=GetCurrentHelpNode;
   if HelpNode=nil then exit;
   HelpNode.Name:=NodeNameEdit.Text;
   HelpNode.Path:=NodePathEdit.Text;
   HelpNode.HasHelp:=NodeHasHelpCheckBox.Checked;
+  HelpNode.IsRoot:=NodeIsRootCheckBox.Checked;
+  FullPathEdit.Text:=HelpNode.GetFullPath;
 end;
 
 procedure TContextHelpEditorDlg.SetIDEWindow(const AValue: TCustomForm);

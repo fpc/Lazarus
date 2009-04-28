@@ -39,6 +39,7 @@ type
   
   TIWHelpNode = class
   private
+    FIsRoot: boolean;
     FItems: TFPList;// list of TIWHelpNode
     FHasHelp: Boolean;
     FName: string;
@@ -47,6 +48,7 @@ type
     function GetChilds(Index: integer): TIWHelpNode;
     function GetCount: integer;
     procedure SetHasHelp(const AValue: Boolean);
+    procedure SetIsRoot(const AValue: boolean);
     procedure SetName(const AValue: string);
     procedure SetPath(const AValue: string);
     procedure DoRemove(AChild: TIWHelpNode);
@@ -64,6 +66,7 @@ type
     function GetFullPath: string;
   public
     property HasHelp: Boolean read FHasHelp write SetHasHelp;
+    property IsRoot: boolean read FIsRoot write SetIsRoot;// skip parent paths, except path of the top node
     property Name: string read FName write SetName;
     property Path: string read FPath write SetPath;
     property Parent: TIWHelpNode read FParent;
@@ -168,6 +171,12 @@ begin
   FHasHelp:=AValue;
 end;
 
+procedure TIWHelpNode.SetIsRoot(const AValue: boolean);
+begin
+  if FIsRoot=AValue then exit;
+  FIsRoot:=AValue;
+end;
+
 procedure TIWHelpNode.SetName(const AValue: string);
 begin
   if FName=AValue then exit;
@@ -238,6 +247,7 @@ begin
   Name:=Source.Name;
   Path:=Source.Path;
   HasHelp:=Source.HasHelp;
+  IsRoot:=Source.IsRoot;
   for i:=0 to Source.Count-1 do begin
     SrcNode:=Source[i];
     NewNode:=AddChild;
@@ -270,6 +280,7 @@ begin
   Name:=NewName;
   Path:=Config.GetValue(CfgPath+'Path','');
   HasHelp:=Config.GetValue(CfgPath+'HasHelp',false);
+  IsRoot:=Config.GetValue(CfgPath+'IsRoot',false);
   NewChildCount:=Config.GetValue(CfgPath+'ChildCount',0);
   for i:=0 to NewChildCount-1 do begin
     NewChild:=AddChild('');
@@ -284,6 +295,7 @@ begin
   Config.SetDeleteValue(CfgPath+'Name',Name,'');
   Config.SetDeleteValue(CfgPath+'Path',Path,'');
   Config.SetDeleteValue(CfgPath+'HasHelp',HasHelp,false);
+  Config.SetDeleteValue(CfgPath+'IsRoot',IsRoot,false);
   Config.SetDeleteValue(CfgPath+'ChildCount',Count,0);
   for i:=0 to Count-1 do
     Childs[i].Save(Config,CfgPath+'Node'+IntToStr(i+1)+'/');
@@ -316,11 +328,16 @@ end;
 function TIWHelpNode.GetFullPath: string;
 var
   Node: TIWHelpNode;
+  SkipTillRoot: Boolean;
 begin
-  Result:=Path;
-  Node:=Parent;
+  Result:='';
+  Node:=Self;
+  SkipTillRoot:=false;
   while Node<>nil do begin
-    Result:=Node.Path+Result;
+    if (Node.Parent=nil) or (not SkipTillRoot) then
+      Result:=Node.Path+Result;
+    if Node.IsRoot then
+      SkipTillRoot:=true;
     Node:=Node.Parent;
   end;
 end;
