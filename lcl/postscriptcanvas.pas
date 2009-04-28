@@ -70,8 +70,13 @@ Type
     fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
     FFs            : TFormatSettings;
+    FXDPI,FYDPI    : Integer;
 
+    function GetXDPI: Integer;
+    function GetYDPI: Integer;
     procedure psDrawRect(ARect:TRect);
+    procedure SetUserXDPI(const AValue: Integer);
+    procedure SetUserYDPI(const AValue: Integer);
     procedure WriteHeader(St : String);
     procedure Write(const St : String; Lst : TstringList = nil); overload;
     procedure WriteB(const St : string);
@@ -98,6 +103,7 @@ Type
     procedure SetBrushFillPattern(SetBorder,SetFill : Boolean); overload;
     
     procedure GetRGBImage(SrcGraph: TGraphic; Lst : TStringList);
+    procedure PixelsToPoints(const PixX,PixY: Integer; out PtX,PtY:Single);
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -166,6 +172,8 @@ Type
 
 
     property OutPutFileName : string read fFileName write fFileName;
+    property XDPI: Integer read GetXDPI write SetUserXDPI;
+    property YDPI: Integer read GetYDPI write SetUserYDPI;
   end;
 
   TPostScriptCanvas = Class(TPostScriptPrinterCanvas)
@@ -722,8 +730,8 @@ begin
   begin
     l:=0;
     t:=0;
-    w:=PageWidth; // page in pixels, printer in points
-    h:=PageHeight;
+    w:=round(PageWidth*72/XDPI); // page in pixels, printer in points
+    h:=round(PageHeight*72/YDPI);
   end;
   WriteHeader('%%'+Format('BoundingBox: %d %d %d %d',[l,t,w,h]));
 end;
@@ -733,10 +741,8 @@ end;
 //Modify X and Y for use Left and Top margin
 function TPostScriptPrinterCanvas.TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
 begin
-  cnvY:=PageHeight+BottomMargin-cnvY; // swap Y axis
-  cnvX:=cnvX+LeftMargin; // shift X axis
-  Result.fx:=72*(cnvX/Printer.XDPI); // pixels to points
-  Result.fy:=72*(cnvY/Printer.YDPI);
+  PixelsToPoints(cnvX+LeftMargin, PageHeight+BottomMargin-cnvY,
+    Result.Fx, Result.Fy);
 end;
 
 //Save the last position
@@ -753,7 +759,7 @@ var
 begin
   if Pen.Width<>fcPenWidth then
   begin
-    pw:=1/Self.Printer.XDPI; // printer pixel in inches
+    pw:=1/XDPI; // printer pixel in inches
     pw:=Pen.Width*pw*72; // pen width in Points -> 1/72 inches
     Write(Format('%.3f setlinewidth',[pw],FFs));
     fcPenWidth:=Pen.Width;
@@ -1027,6 +1033,13 @@ begin
       SrcIntfImg.Free;
     end;
   end;
+end;
+
+procedure TPostScriptPrinterCanvas.PixelsToPoints(const PixX,PixY: Integer;
+  out PtX,PtY:Single);
+begin
+  PtX:=72*(PixX/XDPI); // pixels to points
+  PtY:=72*(PixY/YDPI);
 end;
 
 procedure TPostScriptPrinterCanvas.CreateHandle;
@@ -1566,6 +1579,38 @@ begin
 
 end;
 
+procedure TPostScriptPrinterCanvas.SetUserXDPI(const AValue: Integer);
+begin
+  FXDPI := AValue;
+end;
+
+procedure TPostScriptPrinterCanvas.SetUserYDPI(const AValue: Integer);
+begin
+  FYDPI := AValue;
+end;
+
+function TPostScriptPrinterCanvas.GetXDPI: Integer;
+begin
+  if Printer<>nil then
+    result := Printer.XDPI
+  else
+  if FXDPI <= 0 then
+    result := 300
+  else
+    result := FXDPI;
+end;
+
+function TPostScriptPrinterCanvas.GetYDPI: Integer;
+begin
+  if Printer<>nil then
+    result := Printer.YDPI
+  else
+  if FYDPI <= 0 then
+    result := 300
+  else
+    result := FYDPI;
+end;
+
 //Draw an Rectangle
 procedure TPostScriptPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
 begin
@@ -1661,7 +1706,7 @@ begin
   save current matrix, translate to center of ellipse, scale by rx ry, and draw
   a circle of unit radius in counterclockwise dir, return to original matrix
   arguments are (cx, cy, rx, ry, startAngle, endAngle)}
-  ellipsePath:='matrix currentmatrix %f %f translate %f %f scale 0 0 1 %d %d arc setmatrix';
+  ellipsePath:='matrix currentmatrix %f %f translate %d %d scale 0 0 1 %d %d arc setmatrix';
 
   {choice between newpath and moveto beginning of arc
    go with newpath for precision, does this violate any assumptions in code???
@@ -1936,7 +1981,7 @@ begin
   Result.cY := 0;
   if Text='' then Exit;
   RequiredState([csHandleValid, csFontValid]);
-  Result.cY:=round((Font.Size/72)*Printer.YDPI); // points to inches and then to pixels
+  Result.cY:=round((Font.Size/72)*YDPI); // points to inches and then to pixels
 
   FontName:=MappedFontName;
   IndexFont:=0; //By default, use Courier metrics
@@ -1955,7 +2000,7 @@ begin
     if (c in [#32..#255]) then
       Inc(Result.cX,cFontPSMetrics[IndexFont].Widths[Ord(c)]);
   end;
-  Result.cX:=Round(Result.cX*(Font.Size/72)*0.001*Printer.XDPI);
+  Result.cX:=Round(Result.cX*(Font.Size/72)*0.001*XDPI);
 end;
 
 //Draw an Picture

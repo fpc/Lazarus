@@ -128,6 +128,8 @@ var
 begin
   if Sender=nil then ;
   PsCanvas := TPostscriptCanvas.Create;
+  PsCanvas.XDPI:=72;
+  PsCanvas.YDPI:=72;
   With PsCanvas do
   try
     if ListBox1.ItemIndex=1 then begin
