@@ -410,13 +410,6 @@ var
     // check if double buffering is requested
     useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered
       or ThemeServices.ThemesEnabled);
-{$ifdef MSG_DEBUG}
-    if useDoubleBuffer and (DoubleBufferDC <> 0) then
-    begin
-      DebugLn('ERROR: RECURSIVE PROBLEM! DOUBLEBUFFERED PAINT');
-      useDoubleBuffer := false;
-    end;
-{$endif}
     if useDoubleBuffer then
     begin
       if CurDoubleBuffer.DC <> 0 then
@@ -447,7 +440,7 @@ var
 
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer then
-      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(DoubleBufferDC, 8))
+      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2))
     else
       DebugLn(MessageStackDepth, ' *painting, but not double buffering');
 {$endif}
@@ -486,8 +479,9 @@ var
             Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
           end;
 {$ifdef DEBUG_DOUBLEBUFFER}
-          Windows.GetClipBox(DoubleBufferDC, ClipBox);
-          DebugLn('Double buffering in DC ', IntToHex(DoubleBufferDC, 8), ' with clipping rect (',
+          Windows.GetClipBox(CurDoubleBuffer.DC, ClipBox);
+          DebugLn('Double buffering in DC ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2),
+            ' with clipping rect (',
             IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
             IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
 {$endif}
