@@ -6000,7 +6000,8 @@ begin
           if LogCaretXY.X > Len + 1 then
             LogCaretXY.X := Len + 1;
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
-          if (eoAutoIndent in fOptions) and (LogCaretXY.X > 1) then begin
+          if (eoAutoIndent in fOptions) and ((LogCaretXY.X > 1) or (Len = 0)) then
+          begin
             Caret := CaretXY;
             Caret.Y := Caret.Y + 1;
             FTheLinesView.EditInsert(1, LogCaretXY.Y + 1,
