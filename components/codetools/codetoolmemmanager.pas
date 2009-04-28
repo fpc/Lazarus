@@ -23,7 +23,7 @@
   Abstract:
     Defines TCodeToolMemManager, which is the base class for the various
     memory manager in the codetools. An own memory manager is somewhat faster
-    and makes debugging and proiling easier.
+    and makes debugging and profiling easier.
 }
 unit CodeToolMemManager;
 
@@ -72,7 +72,7 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
-  
+
 
 implementation
 

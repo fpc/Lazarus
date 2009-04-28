@@ -72,15 +72,17 @@ type
 
   TLCLNonFreeMemManager = class
   private
-    FItemSize: integer;
+    FItemSize: PtrInt;
     FItems: TFPList;
     FCurItem: Pointer;
     FEndItem: Pointer;
-    FCurSize: integer;
-    FFirstSize: integer;
+    FCurSize: PtrInt;
+    FFirstSize: PtrInt;
+    FMaxItemsPerChunk: PtrInt;
   public
     ClearOnCreate: boolean;
-    property ItemSize: integer read FItemSize;
+    property ItemSize: PtrInt read FItemSize;
+    property MaxItemsPerChunk: PtrInt read FMaxItemsPerChunk write FMaxItemsPerChunk;
     procedure Clear;
     constructor Create(TheItemSize: integer);
     destructor Destroy; override;
@@ -229,6 +231,8 @@ begin
   if (FCurItem=FEndItem) then begin
     // each item has double the size of its predecessor
     inc(FCurSize,FCurSize);
+    if (FMaxItemsPerChunk>0) and (FCurSize>FMaxItemsPerChunk*FItemSize) then
+      FCurSize:=FMaxItemsPerChunk*FItemSize;
     GetMem(FCurItem,FCurSize);
     if ClearOnCreate then
       FillChar(FCurItem^,FCurSize,0);

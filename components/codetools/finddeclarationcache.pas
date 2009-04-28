@@ -197,6 +197,9 @@ type
 
   //----------------------------------------------------------------------------
 type
+
+  { TGlobalIdentifierTree }
+
   TGlobalIdentifierTree = class
   private
     FItems: TAVLTree; // tree of PChar;
@@ -206,6 +209,7 @@ type
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
+    function Count: integer;
   end;
 
   //----------------------------------------------------------------------------
@@ -577,6 +581,14 @@ begin
   Clear;
   FItems.Free;
   inherited Destroy;
+end;
+
+function TGlobalIdentifierTree.Count: integer;
+begin
+  if FItems<>nil then
+    Result:=FItems.Count
+  else
+    Result:=0;
 end;
 
 function TGlobalIdentifierTree.AddCopy(Identifier: PChar): PChar;

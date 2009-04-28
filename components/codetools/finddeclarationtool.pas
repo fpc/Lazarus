@@ -5117,6 +5117,7 @@ begin
   // create nodes
   ScanChilds(InterfaceNode);
 
+  DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache ',MainFilename,' ',FInterfaceIdentifierCache.Items.Count,' ',GlobalIdentifierTree.Count]);
   Result:=true;
 end;
 
