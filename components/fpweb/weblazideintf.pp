@@ -214,7 +214,7 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
-    +'  httpd,fpCGI;'+le
+    +'  fpCGI;'+le
     +le
     +'begin'+le
     +'  Application.Title:=''cgiproject1'';'+le
@@ -226,6 +226,7 @@ begin
 
   // add
   AProject.AddPackageDependency('FCL');
+  AProject.AddPackageDependency('LCL');
   AProject.AddPackageDependency('WebLaz');
 
   // compiler options
@@ -606,7 +607,7 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
-    +'  fpWeb,fpFCGI;'+le
+    +'  fpFCGI;'+le
     +le
     +'begin'+le
     +'  Application.Title:=''fcgiproject1'';'+le
@@ -618,6 +619,7 @@ begin
 
   // add
   AProject.AddPackageDependency('FCL');
+  AProject.AddPackageDependency('LCL');
   AProject.AddPackageDependency('WebLaz');
 
   // compiler options
