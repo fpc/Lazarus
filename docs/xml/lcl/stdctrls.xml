@@ -7415,15 +7415,15 @@ is done automatically by the streaming system.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.ModalResult">
-        <short>Is a Modal Result awaited? (default is false)</short>
-        <descr/>
+        <short>Determines whether the button closes its modal parent form.</short>
+        <descr>The default value is <link id="controls.mrNone">mrNone</link>.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Cancel">
         <short>Is this the Cancel button? (default setting is False)</short>
         <descr>
-          <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
+          <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to <link id="controls.mrCancel">mrCancel</link>.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->

@@ -1959,8 +1959,19 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TModalResult">
         <short>
           <var>TModalResult</var> - the range of values that can be returned as a modal result</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <var>TModalResult</var> represents the value returned by a modal dialog. Even though the type is defined as an integer, instead a few standard constants are used as return results in applications.</descr>
+        <seealso>
+          <link id="controls.mrNone"/>
+          <link id="controls.mrOK"/>
+          <link id="controls.mrCancel"/>
+          <link id="controls.mrAbort"/>
+          <link id="controls.mrRetry"/>
+          <link id="controls.mrIgnore"/>
+          <link id="controls.mrYes"/>
+          <link id="controls.mrNo"/>
+          <link id="controls.mrAll"/>
+        </seealso>
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PModalResult">
