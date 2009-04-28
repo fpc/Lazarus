@@ -5016,6 +5016,7 @@ begin
     AVLNode:=FInterfaceIdentifierCache.Items.FindLowest;
     while AVLNode<>nil do begin
       CacheEntry:=PInterfaceIdentCacheEntry(AVLNode.Data);
+      //DebugLn(['TFindDeclarationTool.FindIdentifierInInterface ',CacheEntry^.Identifier]);
       case CheckEntry(CacheEntry) of
       ifrSuccess: exit(true);
       ifrAbortSearch: exit(false);
@@ -5024,12 +5025,15 @@ begin
     end;
   end else begin
     CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
+    if CacheEntry=nil then
+      exit(false);
     case CheckEntry(CacheEntry) of
     ifrSuccess: exit(true);
     ifrAbortSearch: exit(false);
     end;
   end;
 
+  // proceed search
   Result:=false;
 end;
 
@@ -5066,7 +5070,8 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
         end;
       ctnProcedure:
         if (Node.FirstChild<>nil) and (not NodeIsOperator(Node)) then
-          FInterfaceIdentifierCache.Add(@Src[Node.FirstChild.StartPos],Node,Node.StartPos);
+          FInterfaceIdentifierCache.Add(@Src[Node.FirstChild.StartPos],Node,
+                                        Node.FirstChild.StartPos);
       end;
       ScanForEnums(Node);
       Node:=Node.NextBrother;
@@ -5161,7 +5166,7 @@ function TFindDeclarationTool.FindIdentifierInUsedUnit(
 var
   NewCode: TCodeBuffer;
   NewCodeTool: TFindDeclarationTool;
-  OldInput: TFindDeclarationInput;
+  OldFlags: TFindDeclarationFlags;
 begin
   Result:=false;
   // open the unit and search the identifier in the interface
@@ -5195,11 +5200,11 @@ begin
       RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[AnUnitName]);
     end;
     // search the identifier in the interface of the used unit
-    Params.Save(OldInput);
+    OldFlags:=Params.Flags;
     Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                  -[fdfExceptionOnNotFound];
     Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-    Params.Load(OldInput,true);
+    Params.Flags:=OldFlags;
   end;
 end;
 
