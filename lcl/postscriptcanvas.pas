@@ -34,6 +34,8 @@
      - Implemente few methods
 }
 
+{$DEFINE ASCII85}
+
 unit PostScriptCanvas;
 
 {$mode objfpc}{$H+}
@@ -518,6 +520,108 @@ Const
    )
    );
 
+{$IFDEF ASCII85}
+type
+
+  { TAscii85Encoder }
+
+  TAscii85Encoder=class
+  private
+    FStream: TMemoryStream;
+    FData: LongWord;
+    FCount: Integer;
+    FMaxWidth,FWritten: Integer;
+    procedure EmitData;
+    procedure WriteByte(const B:Byte);
+  public
+    destructor Destroy; override;
+    procedure Add(B: Byte);
+    procedure Finish;
+
+    property Stream: TMemoryStream read FStream;
+    property MaxWidth: Integer read FMaxWidth write FMaxWidth;
+  end;
+
+{ TAscii85Encoder }
+
+procedure TAscii85Encoder.EmitData;
+const
+  Cn: array[0..4] of longint = (85*85*85*85,85*85*85,85*85,85,1);
+var
+  B: byte;
+  i,n: Integer;
+begin
+  if FCount=0 then
+    exit;
+
+  if FStream=nil then
+    FStream := TMemoryStream.Create;
+
+  if (FCount=4) and (FData=0) then
+
+    // special case, zeroed 5-tuple will be generated
+    WriteByte(ord('z'))
+
+  else begin
+
+    n := FCount;
+    while FCount<4 do begin
+      FData := (FData shl 8);
+      inc(FCount);
+    end;
+    for i:=0 to n do begin
+      B := byte((FData div Cn[i])+33);
+      FData := FData mod Cn[i];
+      WriteByte(B);
+    end;
+
+  end;
+
+  FCount := 0;
+  FData := 0;
+end;
+
+procedure TAscii85Encoder.WriteByte(const B: Byte);
+begin
+  FStream.WriteByte(B);
+  if FMaxWidth>0 then begin
+    Inc(FWritten);
+    if FWritten>=FMaxWidth then begin
+      // write lineending
+      if (LineEnding=#13) or (LineEnding=#13#10) then
+        FStream.WriteByte(13);
+      if (LineEnding=#10) or (LineEnding=#13#10) then
+        FStream.WriteByte(10);
+      FWritten := 0;
+    end;
+  end;
+end;
+
+destructor TAscii85Encoder.Destroy;
+begin
+  if FStream<>nil then
+    FStream.Free;
+  inherited Destroy;
+end;
+
+procedure TAscii85Encoder.Add(B: Byte);
+begin
+  FData := (FData shl 8) or B;
+  inc(FCount);
+  if FCount=4 then
+    EmitData;
+end;
+
+procedure TAscii85Encoder.Finish;
+begin
+  EmitData;
+  FStream.WriteByte(ord('~'));
+  FStream.WriteByte(ord('>'));
+  FStream.Position:=0;
+end;
+
+{$ENDIF}
+
 { TPostScriptPrinterCanvas }
 
 //Write an instruction in the header of document
@@ -839,9 +943,68 @@ procedure TPostScriptPrinterCanvas.GetRGBImage(SrcGraph: TGraphic;
   Lst: TStringList);
 var
   SrcIntfImg : TLazIntfImage;
-  px, py     : Integer;
-  CurColor   : TFPColor;
-  St         : String;
+
+  {$IFDEF ASCII85}
+  procedure TransferRGB;
+  var
+    px, py     : Integer;
+    CurColor   : TFPColor;
+    Encoder    : TAscii85Encoder;
+  begin
+    Encoder := TAscii85Encoder.Create;
+    try
+      Encoder.MaxWidth:=75;
+      for py:=0 to SrcIntfImg.Height-1 do
+      begin
+        for px:=0 to SrcIntfImg.Width-1 do
+        begin
+          CurColor:=SrcIntfImg.Colors[px,py];
+          Encoder.Add(Hi(CurColor.Red));
+          Encoder.Add(Hi(CurColor.Green));
+          Encoder.Add(Hi(CurColor.Blue));
+        end;
+      end;
+      Encoder.Finish;
+      Encoder.Stream.Position:=0;
+      Lst.LoadFromStream(Encoder.Stream);
+    finally
+      Encoder.Free;
+    end;
+  end;
+  {$ELSE}
+  procedure TransferRGB;
+  var
+    px, py     : Integer;
+    CurColor   : TFPColor;
+    St         : String;
+  begin
+    St:='';
+    for py:=0 to SrcIntfImg.Height-1 do
+    begin
+      for px:=0 to SrcIntfImg.Width-1 do
+      begin
+        CurColor:=SrcIntfImg.Colors[px,py];
+        St:=St+IntToHex(Hi(CurColor.Red),2)+
+               IntToHex(Hi(CurColor.Green),2)+
+               IntToHex(Hi(CurColor.Blue),2);
+
+        if Length(St)>=78 then
+        begin
+           Lst.Add(Copy(St,1,78));
+           System.Delete(St,1,78);
+        end;
+      end;
+    end;
+    if St<>'' then
+      Lst.Add(St);
+  end;
+  {$ENDIF}
+
+  procedure TransferRGBA;
+  begin
+    TransferRGB;
+  end;
+
 begin
   if (SrcGraph is TRasterImage) then
   begin
@@ -850,25 +1013,15 @@ begin
     Try
       SrcIntfImg.LoadFromBitmap(TRasterImage(SrcGraph).BitmapHandle,
                                 TRasterImage(SrcGraph).MaskHandle);
-      St:='';
-      for py:=0 to SrcIntfImg.Height-1 do
-      begin
-        for px:=0 to SrcIntfImg.Width-1 do
-        begin
-          CurColor:=SrcIntfImg.Colors[px,py];
-          St:=St+IntToHex(Hi(CurColor.Red),2)+
-                 IntToHex(Hi(CurColor.Green),2)+
-                 IntToHex(Hi(CurColor.Blue),2);
 
-          if Length(St)>=78 then
-          begin
-             Lst.Add(Copy(St,1,78));
-             System.Delete(St,1,78);
-          end;
-        end;
+      if SrcIntfImg.DataDescription.Format<>ricfNone then
+      begin
+        if SrcIntfImg.DataDescription.AlphaPrec<>0 then
+          TransferRGBA
+        else
+          TransferRGB;
       end;
-      if St<>'' then
-        Lst.Add(St);
+
     finally
       Lst.EndUpdate;
       SrcIntfImg.Free;
@@ -1845,15 +1998,29 @@ begin
   WriteB('gsave');
   writeB(Format('%f %f translate',[pp1.fx,pp1.fy-DrawHeight],FFs));
   WriteB(Format('%f %f scale',[DrawWidth,DrawHeight],FFs));
-
+  {$IFDEF ASCII85}
+  WriteB('<<');
+	WriteB('  /ImageType 1');
+	WriteB('  /Width '+IntToStr(ImgWidth));
+	WriteB('  /Height '+IntToStr(ImgHeight));
+	WriteB('  /BitsPerComponent 8');
+	WriteB('  /Decode [0 1 0 1 0 1]');
+	WriteB('  /ImageMatrix '+Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
+	WriteB('  /DataSource currentfile /ASCII85Decode filter');
+  WriteB('>>');
+  WriteB('image');
+  Write(fBuffer);
+  ClearBuffer;
+  GetRGBImage(SrcGraphic,fBuffer);
+  {$ELSE}
   WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
   // colorimage width height bits/comp matrix data0..dataN-1 multi? ncomp colorimage
   WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
   WriteB(Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
   WriteB('{ currentfile scanline readhexstring pop } false 3');
   WriteB('colorimage');
-
   GetRGBImage(SrcGraphic,fBuffer);
+  {$ENDIF}
   WriteB('% end of image data');
   WriteB('grestore');
   
