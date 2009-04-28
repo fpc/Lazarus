@@ -874,10 +874,11 @@ resourcestring
   // Search dialog
   dlgSearchCaption = 'Searching...';
   dlgSearchAbort = 'Search terminated by user.';
+  dlgSeachDirectoryNotFound = 'Search directory "%s" not found.';
   lissMatches = 'Matches';
   lissSearching = 'Searching';
   lissSearchText = 'Search text';
-  
+
   dlgDesktop = 'Desktop';
   dlgWindow = 'Window';
   dlgFrmEditor = 'Form Editor';

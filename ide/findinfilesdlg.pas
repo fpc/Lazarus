@@ -50,6 +50,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
+    procedure OKButtonClick(Sender : TObject);
     procedure ReplaceCheckBoxChange(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
   private
@@ -144,6 +145,7 @@ begin
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 
   ButtonPanel1.OkButton.Caption := lisLazBuildOk;
+  ButtonPanel1.OKButton.OnClick:= @OKButtonClick;
   ButtonPanel1.CancelButton.Caption := dlgCancel;
   ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
 
@@ -158,6 +160,18 @@ end;
 procedure TLazFindInFilesDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
+end;
+
+procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);
+begin
+  if (WhereRadioGroup.ItemIndex=2) and
+    (not DirectoryExistsUTF8(DirectoryComboBox.Text)) then
+  begin
+    MessageDlg(lisEnvOptDlgDirectoryNotFound,
+               Format(dlgSeachDirectoryNotFound,[DirectoryComboBox.Text]),
+               mtWarning, [mbOk],0);
+    ModalResult:=mrNone;
+  end
 end;
 
 procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);
