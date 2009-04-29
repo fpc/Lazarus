@@ -642,10 +642,9 @@ var
   comp: integer;
   Node: TAVLTreeNode;
 begin
-  Result:=nil;
   if FItems<>nil then begin
     Node:=FItems.Root;
-    while Result<>nil do begin
+    while Node<>nil do begin
       Result:=PChar(Node.Data);
       comp:=CompareIdentifiers(Identifier,Result);
       if comp<0 then
@@ -656,6 +655,7 @@ begin
         exit;
     end;
   end;
+  Result:=nil;
 end;
 
 

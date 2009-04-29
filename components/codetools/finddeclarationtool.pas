@@ -5040,12 +5040,23 @@ end;
 function TFindDeclarationTool.BuildInterfaceIdentifierCache(
   ExceptionOnNotUnit: boolean): boolean;
 
-  procedure ScanForEnums(Node: TCodeTreeNode);
+  procedure ScanForEnums(ParentNode: TCodeTreeNode);
+  var
+    Node: TCodeTreeNode;
   begin
+    Node:=ParentNode.FirstChild;
     while Node<>nil do begin
       if Node.Desc=ctnEnumIdentifier then
         FInterfaceIdentifierCache.Add(@Src[Node.StartPos],Node,Node.StartPos);
-      Node:=Node.Next;
+      if Node.FirstChild<>nil then
+        Node:=Node.FirstChild
+      else begin
+        while Node.NextBrother=nil do begin
+          Node:=Node.Parent;
+          if Node=ParentNode then exit;
+        end;
+        Node:=Node.NextBrother;
+      end;
     end;
   end;
 
@@ -5081,10 +5092,8 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
 var
   InterfaceNode: TCodeTreeNode;
 begin
-  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache START ',GetTicks]);
   // build tree for pascal source
   BuildTree(true);
-  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache BuildTree ',GetTicks]);
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
@@ -5109,7 +5118,6 @@ begin
   else
     FInterfaceIdentifierCache.Clear;
   FInterfaceIdentifierCache.Complete:=true;
-  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache CLEAR ',GetTicks]);
 
   // add unit node
   MoveCursorToNodeStart(Tree.Root);
@@ -5117,11 +5125,9 @@ begin
   ReadNextAtom;
   FInterfaceIdentifierCache.Add(@Src[CurPos.StartPos],Tree.Root,CurPos.StartPos);
 
-  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache root node ',GetTicks]);
   // create nodes
   ScanChilds(InterfaceNode);
 
-  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache childs ',GetTicks]);
   //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache ',MainFilename,' ',FInterfaceIdentifierCache.Items.Count,' ',GlobalIdentifierTree.Count]);
   Result:=true;
 end;
