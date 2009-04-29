@@ -60,8 +60,36 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetClipRect: TRect;
 begin
+  // return actual clipping rectangle
   if GetClipBox(FHandle, @Result) = ERROR then
-    Result := Rect(0,0,2000,2000);{Just in Case}
+    Result := Rect(0, 0, 2000, 2000);{Just in Case}
+end;
+
+procedure TCanvas.SetClipRect(const ARect: TRect);
+var
+  RGN: HRGN;
+begin
+  inherited SetClipRect(ARect);
+  with ARect do
+    RGN := CreateRectRGN(Left, Top, Right, Bottom);
+  SelectClipRGN(Handle, RGN);
+  DeleteObject(RGN);
+end;
+
+function TCanvas.GetClipping: Boolean;
+var
+  R: TRect;
+begin
+  Result := GetClipBox(FHandle, @R) > NullRegion;
+end;
+
+procedure TCanvas.SetClipping(const AValue: boolean);
+begin
+  inherited SetClipping(AValue);
+  if AValue then
+    SetClipRect(inherited GetClipRect)
+  else
+    SelectClipRGN(Handle, 0);
 end;
 
 

@@ -30,6 +30,9 @@ interface
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}
+{$IF (FPC_VERSION = 2) AND (FPC_RELEASE >= 3)}
+  {$DEFINE OverrideClipping}
+{$IFEND}
 
 
 uses
@@ -1015,7 +1018,10 @@ type
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
   protected
     function GetClipRect: TRect; override;
-    Function GetPixel(X,Y: Integer): TColor; virtual;
+    procedure SetClipRect(const ARect: TRect); override;
+    function GetClipping: Boolean; {$ifdef OverrideClipping}override; {$else} reintroduce;{$endif}
+    procedure SetClipping(const AValue: boolean); {$ifdef OverrideClipping}override; {$else} reintroduce;{$endif}
+    function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
     procedure CreateHandle; virtual;
