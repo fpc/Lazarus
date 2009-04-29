@@ -1091,6 +1091,10 @@ msgstr "Alçada"
 msgid "Hide IDE windows on run"
 msgstr "Amaga les finestres de l'IDE durant l'execució"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr ""
@@ -1736,6 +1740,10 @@ msgstr "Desplaça fins el final del fitxer"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Desplaça fins el final de la línia"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3105,6 +3113,10 @@ msgstr ""
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3244,6 +3256,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
+msgstr ""
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
@@ -4506,6 +4522,10 @@ msgstr "Depurador invàlid"
 msgid "%s (debugging ...)"
 msgstr "%s (s'està depurant ...)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Trajectòria de cerca addicional"
@@ -4525,6 +4545,14 @@ msgstr "Opcions generals de depuració"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Opcions específiques del depurador (Depen del tipus de depurador)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -10973,6 +11001,10 @@ msgstr "El fitxer d'informació del projecte %s%s%s%sés igual al fitxer princip
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "S'ha de desar el projecte abans de muntar de nou%sSi fiqueu el directori de les proves en les opcions de l'entorn,%spodeu crear projectes nous i muntar-los al mateix temps.%sVoleu desar el projecte?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

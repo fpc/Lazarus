@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.27 beta\n"
 "POT-Creation-Date: \n"
@@ -1270,13 +1270,13 @@ msgid "Backspace"
 msgstr ""
 
 #: objinspstrconsts.srvk_capital
-msgid "capital"
+msgid "Capital"
 msgstr ""
 
 #: objinspstrconsts.srvk_clear
 msgctxt "objinspstrconsts.srvk_clear"
 msgid "Clear"
-msgstr ""
+msgstr "清除"
 
 #: objinspstrconsts.srvk_cmd
 msgid "Cmd"
@@ -1313,7 +1313,7 @@ msgstr ""
 #: objinspstrconsts.srvk_help
 msgctxt "objinspstrconsts.srvk_help"
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
@@ -1322,7 +1322,7 @@ msgstr ""
 #: objinspstrconsts.srvk_insert
 msgctxt "objinspstrconsts.srvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "插入"
 
 #: objinspstrconsts.srvk_irregular
 msgid "Irregular "
@@ -1343,7 +1343,7 @@ msgstr ""
 #: objinspstrconsts.srvk_left
 msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: objinspstrconsts.srvk_lwin
 msgid "left windows key"
@@ -1368,7 +1368,7 @@ msgstr ""
 #: objinspstrconsts.srvk_next
 msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "下一个"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
@@ -1397,7 +1397,7 @@ msgstr ""
 #: objinspstrconsts.srvk_prior
 msgctxt "objinspstrconsts.srvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "前一个"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
@@ -1410,7 +1410,7 @@ msgstr ""
 #: objinspstrconsts.srvk_right
 msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: objinspstrconsts.srvk_rwin
 msgid "right windows key"

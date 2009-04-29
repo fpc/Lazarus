@@ -1096,6 +1096,10 @@ msgstr "Höhe:"
 msgid "Hide IDE windows on run"
 msgstr "IDE-Fenster beim Start verstecken"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Hervorhebungsfarbe"
@@ -1747,6 +1751,10 @@ msgstr "Scrollen über das Dateiende hinaus"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Scrollen über das Zeilenende hinaus"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3120,6 +3128,10 @@ msgstr "Cursor folgen"
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3260,6 +3272,10 @@ msgstr "Uses"
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
 msgstr "Variablen"
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
+msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -4521,6 +4537,10 @@ msgstr "Debugger ungültig"
 msgid "%s (debugging ...)"
 msgstr "%s (Debuggen...)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Zusätzlicher Suchpfad"
@@ -4540,6 +4560,14 @@ msgstr "Allgemeine Debuggereinstellungen"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Spezifische Debuggereinstellungen (abhängig vom Typ des Debuggers)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -10990,6 +11018,10 @@ msgstr "Die Projekt-Infodatei %s%s%s%sist identisch zur Haupt-Quelltextdatei des
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%können Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

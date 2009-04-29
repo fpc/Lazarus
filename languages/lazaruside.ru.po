@@ -1089,6 +1089,10 @@ msgstr "Высота:"
 msgid "Hide IDE windows on run"
 msgstr "Скрыть окна IDE при пуске"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Выделение"
@@ -1732,6 +1736,10 @@ msgstr "Прокручивать за конец файла"
 #: lazarusidestrconsts.dlgscrollpastendline
 msgid "Caret past end of line"
 msgstr "Прокручивать за конец строки"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3098,6 +3106,10 @@ msgstr "Следовать за курсором"
 #: lazarusidestrconsts.liscein
 msgid "%s in %s"
 msgstr "%s в %s"
+
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
 
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
@@ -4502,6 +4514,10 @@ msgstr "Неправильный отладчик"
 msgid "%s (debugging ...)"
 msgstr "%s (идёт отладка ...)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Дополнительный путь поиска"
@@ -4521,6 +4537,14 @@ msgstr "Общие параметры отладчика"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Частные параметры отладчика (зависят от типа отладчика)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -10958,6 +10982,10 @@ msgstr "Файл сведений проекта %s%s%s%sсовпадает с �
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Проект надо сохранить до компиляции%sЕсли Вы установите каталог проб в параметрах окружения,%sВы можете создавать новые проекты и собирать их сразу.%sСохранить прокет?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

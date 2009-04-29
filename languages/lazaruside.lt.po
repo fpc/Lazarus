@@ -1096,6 +1096,10 @@ msgstr "Aukštis:"
 msgid "Hide IDE windows on run"
 msgstr "Startuojant programą slėpti IKA langus"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Paryškinimo spalva"
@@ -1747,6 +1751,10 @@ msgstr "Failo pabaiga nesustabdo slinkties"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Eilutės pabaiga nesustabdo slinkties"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3126,6 +3134,10 @@ msgstr "Sekti žymeklį"
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3266,6 +3278,10 @@ msgstr "Naudojamieji"
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
 msgstr "Kintamieji"
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
+msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -4527,6 +4543,10 @@ msgstr "Netinkama derintuvė"
 msgid "%s (debugging ...)"
 msgstr "%s (derinama…)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Papildomi paieškos keliai"
@@ -4546,6 +4566,14 @@ msgstr "Derintuvės pagrindinės parinktys"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Derintuvės specifinės parinktys (priklauso nuo derintuvės tipo)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -11004,6 +11032,10 @@ msgstr "Projekto informacinis failas %s%s%s%s toks pat kaip ir projekto pagrindi
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Prieš darymą projektas turi būti išsaugotas%sAplinkos parinktyse parinkę testo aplanką,%snaujus projektus bus galima kurti ir daryti vienu metu.%sĮrašyti projektą?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

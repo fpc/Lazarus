@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.27 beta\n"
 "POT-Creation-Date: \n"
@@ -1094,6 +1094,10 @@ msgstr "高度:"
 msgid "Hide IDE windows on run"
 msgstr "运行时隐藏 IDE 窗口"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "高亮颜色"
@@ -1739,6 +1743,10 @@ msgstr "滚动超过文件末尾"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "滚动超过行末"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -2545,7 +2553,7 @@ msgstr "添加目录"
 
 #: lazarusidestrconsts.lisaddfilesofdirectory
 msgid "Add files of directory"
-msgstr ""添加目录的文件
+msgstr "\"添加目录的文件"
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -3108,6 +3116,10 @@ msgstr "跟随光标"
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3248,6 +3260,10 @@ msgstr ""
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
 msgstr "变量"
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
+msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -4509,6 +4525,10 @@ msgstr "调试器错误"
 msgid "%s (debugging ...)"
 msgstr "%s (正在调试...)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "附加的搜索路径"
@@ -4528,6 +4548,14 @@ msgstr "调试器常规选项"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "调试器特殊选项(依靠调试器的类型)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -4967,7 +4995,7 @@ msgstr "使用 LineInfo 单元"
 #: lazarusidestrconsts.lisedtexttoolalt
 msgctxt "lazarusidestrconsts.lisedtexttoolalt"
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lazarusidestrconsts.lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -4976,7 +5004,7 @@ msgstr "一个有效的工具需要标题和文件名."
 #: lazarusidestrconsts.lisedtexttoolctrl
 msgctxt "lazarusidestrconsts.lisedtexttoolctrl"
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lazarusidestrconsts.lisedtexttooledittool
 msgid "Edit Tool"
@@ -10974,6 +11002,10 @@ msgstr "工程信息文件 %s%s%s%s和工程主文件是等价的!"
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "在编译工程之前必须保存%s如果你在环境选项中设置了测试目录,%s你可以创建一个新的工程然后马上编译.%s保存工程?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

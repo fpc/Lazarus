@@ -1086,6 +1086,10 @@ msgstr "Korkeus:"
 msgid "Hide IDE windows on run"
 msgstr "Pienennä Lazaruksen käyttöliittymä ohjelmaa suorittaessa "
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr ""
@@ -1731,6 +1735,10 @@ msgstr "Näytä tiedoston lopussa tyhjää tilaa ('Scrollaa' lopun yli)"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Kursoria liikuttaessa ('scrollatessa') ei välitetä rivinlopusta"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3100,6 +3108,10 @@ msgstr ""
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3239,6 +3251,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
+msgstr ""
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
@@ -4501,6 +4517,10 @@ msgstr ""
 msgid "%s (debugging ...)"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr ""
@@ -4519,6 +4539,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
@@ -5058,7 +5086,7 @@ msgstr ""
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
-msgstr ""
+msgstr "Sallittu"
 
 #: lazarusidestrconsts.lisenablegroup
 msgid "Enable Group"
@@ -6883,7 +6911,7 @@ msgstr ""
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
-msgstr ""
+msgstr "Vasen"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
@@ -10239,7 +10267,7 @@ msgstr ""
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
-msgstr ""
+msgstr "Oikea"
 
 #: lazarusidestrconsts.lisrightanchoring
 msgid "Right anchoring"
@@ -10963,6 +10991,10 @@ msgstr "Projektn info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pä
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

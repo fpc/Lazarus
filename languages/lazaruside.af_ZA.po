@@ -1093,6 +1093,10 @@ msgstr "Hoogte:"
 msgid "Hide IDE windows on run"
 msgstr ""
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr ""
@@ -1735,6 +1739,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgscrollpastendline
 msgid "Caret past end of line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
 msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
@@ -3103,6 +3111,10 @@ msgstr ""
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3242,6 +3254,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
+msgstr ""
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
@@ -4504,6 +4520,10 @@ msgstr ""
 msgid "%s (debugging ...)"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr ""
@@ -4522,6 +4542,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
@@ -10954,6 +10982,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

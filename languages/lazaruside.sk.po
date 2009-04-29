@@ -1096,6 +1096,10 @@ msgstr "Výška:"
 msgid "Hide IDE windows on run"
 msgstr "Pri spustení skryť okno IDE"
 
+#: lazarusidestrconsts.dlghidemessagesicons
+msgid "Hide Messages Icons"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Zvýrazniť"
@@ -1741,6 +1745,10 @@ msgstr "Rolovať za koniec súboru"
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Rolovať za koniec riadka"
+
+#: lazarusidestrconsts.dlgseachdirectorynotfound
+msgid "Search directory \"%s\" not found."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3110,6 +3118,10 @@ msgstr "Nasledovať kurzor"
 msgid "%s in %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
 msgstr ""
@@ -3250,6 +3262,10 @@ msgstr "Uses"
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
 msgstr "Premenné"
+
+#: lazarusidestrconsts.liscewrongindentation
+msgid "Wrong indentation"
+msgstr ""
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
@@ -4511,6 +4527,10 @@ msgstr "Neplatný debuger"
 msgid "%s (debugging ...)"
 msgstr "%s (ladím ...)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmaddexception
+msgid "Add Exception"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Ďalšia prehľadávaná cesta"
@@ -4530,6 +4550,14 @@ msgstr "Všeobecné voľby debugera"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Špecifické voľby debugera (závisia na type debugera)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
+msgid "Duplicate Exception name"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
+msgid "Enter the name of the exception"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -10980,6 +11008,10 @@ msgstr "Informačný súbor projektu %s%s%s%sje zhodný so záladným súborom z
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Pred vybudovaním musíte projekt uložiť%sAk ste nastavili testovací adresár vo voľabch prostredia,%smôžete nový projekt naraz vytvoriť a vybudovať.%sUložiť projekt?"
+
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

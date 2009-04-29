@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.27 beta\n"
 "POT-Creation-Date: \n"
@@ -1204,3 +1204,4 @@ msgstr "错误的标识符：期望 %s 但是找到了 %s"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "错误的标识符类型：期望 %s 但是找到了 %s"
+

@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.27 beta\n"
 "POT-Creation-Date: \n"
@@ -86,7 +86,7 @@ msgstr "下载: (%s), 大小发现异常 %s, 只得到 %s"
 
 #: ipconst.providerunknownformat
 msgid "Don't know how to handle %s"
-msgstr 不知道如何处理 %s"
+msgstr ""
 
 #: ipconst.providerunknownpicture
 msgid "Invalid picture format"
@@ -223,7 +223,9 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "连接: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-msgid "Close: Loc: %s Rem: %s"
+#, fuzzy
+#| msgid "Close: Loc: %s Rem: %s"
+msgid "Close:   Loc: %s Rem: %s"
 msgstr "关闭: Loc: %s Rem: %s"
 
 #: ipconst.sfilename
@@ -860,7 +862,9 @@ msgid " (ssRcptTo)"
 msgstr ""
 
 #: ipconst.slogresponse
-msgid "Generating OnTop event, Code = "
+#, fuzzy
+#| msgid "Generating OnTop event, Code = "
+msgid "Generating OnResponse event, Code = "
 msgstr "生成 OnTop 事件, Code = "
 
 #: ipconst.slogrset
@@ -1500,7 +1504,7 @@ msgstr "获取邮箱列表"
 #: ipconst.spsnoop
 msgctxt "ipconst.spsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "没有操作"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
@@ -1779,7 +1783,7 @@ msgstr "无效的发件系统地址"
 
 #: ipconst.ssmtpresponse20
 msgid "Other or undefined mailbox status"
-msgstr 其它或未定义的邮箱状态""
+msgstr ""
 
 #: ipconst.ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
@@ -2562,3 +2566,4 @@ msgstr ""
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "部分流量有问题"
+
