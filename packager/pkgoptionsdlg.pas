@@ -42,7 +42,8 @@ uses
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
   IDEDialogs, MacroIntf,
   LazarusIDEStrConsts,
-  BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions;
+  BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions,
+  ButtonPanel;
 
 type
 
@@ -51,10 +52,9 @@ type
   TPackageOptionsDialog = class(TForm)
     AdditionalInfoButton: TButton;
     AddPackageUnitToProjectCheckBox: TCheckBox;
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     EnableI18NCheckBox: TCheckBox;
     ConditionalsGroupBox: TGroupBox;
-    OKButton: TBitBtn;
     Usage2Page: TPage;
     ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
@@ -404,8 +404,7 @@ begin
   Notebook.Page[4].Caption:=lisPckOptsProvides;
   Notebook.Page[5].Caption:=dlgPOI18n;
 
-  OKButton.Caption:=lisLazBuildOk;
-  CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.OKButton.OnClick:=@OkButtonClick;
 
   SetupUsagePage;
   SetupIDEPage;
@@ -536,7 +535,7 @@ procedure TPackageOptionsDialog.ReadOptionsFromPackage;
 begin
   if LazPackage=nil then exit;
   
-  OkButton.Enabled:=not LazPackage.ReadOnly;
+  ButtonPanel1.OKButton.Enabled:=not LazPackage.ReadOnly;
 
   // Description page
   DescriptionMemo.Text:=LazPackage.Description;
