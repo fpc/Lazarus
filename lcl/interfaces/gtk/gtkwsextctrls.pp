@@ -170,7 +170,11 @@ type
   { TGtkWSCustomPanel }
 
   TGtkWSCustomPanel = class(TWSCustomPanel)
-  published
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSPanel }
@@ -593,6 +597,58 @@ class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
   AShowTabs: boolean);
 begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
+end;
+
+class procedure TGtkWSCustomPanel.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  TempWidget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
+begin
+  // TPanel control is a area with frame around. Area can have its own color
+
+  // To implement that in gtk we need:
+  // 1. GtkViewport to draw frame around area
+  // 2. GtkFixed to plaace controls and draw color area
+
+  Widget := gtk_viewport_new(nil, nil);
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  gtk_viewport_set_shadow_type(PGtkViewport(Widget), BorderStyleShadowMap[TCustomPanel(AWinControl).BorderStyle]);
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
+  gtk_widget_show(TempWidget);
+  SetFixedWidget(Widget, TempWidget);
+  SetMainWidget(Widget, TempWidget);
+  gtk_widget_show(Widget);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Set_RC_Name(AWinControl, Widget);
+  SetCallBacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
+var
+  MainWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));
+  if MainWidget<>nil then
+  GtkWidgetSet.SetWidgetColor(MainWidget,
+                              AWinControl.font.color, AWinControl.color,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+
+  UpdateWidgetStyleOfControl(AWinControl);
 end;
 
 {$IFDEF GTK1}

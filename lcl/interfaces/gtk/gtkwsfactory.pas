@@ -179,7 +179,6 @@ end;
 function RegisterCustomListView: Boolean; alias : 'WSRegisterCustomListView';
 begin
 {$IFDEF GTK1}
-//  RegisterWSComponent(TCustomListView, TGtkWSListView);
   RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkPrivateScrolling);
   Result := True;
 {$ELSE}
@@ -371,14 +370,12 @@ end;
 // extctrls
 function RegisterCustomPage: Boolean; alias : 'WSRegisterCustomPage';
 begin
-//  RegisterWSComponent(TPage, TGtkWSPage);
   RegisterWSComponent(TCustomPage, TGtkWSCustomPage);
   Result := True;
 end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-//  RegisterWSComponent(TNotebook, TGtkWSNotebook);
 {$IFDEF GTK1}
   RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook, TGtk1PrivateNotebook);
   Result := True;
@@ -442,9 +439,12 @@ end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
-//  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
-//  RegisterWSComponent(TPanel, TGtkWSPanel);
+{$IFDEF GTK1}
+  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
+  Result := True;
+{$ELSE}
   Result := False;
+{$ENDIF}
 end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
