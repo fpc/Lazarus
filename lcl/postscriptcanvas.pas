@@ -2041,6 +2041,7 @@ begin
   ClearBuffer;
 
   WriteB('gsave');
+  WriteB('/DeviceRGB setcolorspace');
   writeB(Format('%f %f translate',[pp1.fx,pp1.fy-DrawHeight],FFs));
   WriteB(Format('%f %f scale',[DrawWidth,DrawHeight],FFs));
   {$IFDEF ASCII85}
