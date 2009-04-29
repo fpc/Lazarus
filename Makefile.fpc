@@ -173,12 +173,12 @@ ifneq ($(wildcard ${DEBDIR}/changelog),)
 .PHONY: debcopy deb
 
 DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
-DEBFPCVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
-DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBFPCVERSION)
+DEBVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
+DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBVERSION)
 
 debcheck:
-ifneq ($(DEBFPCVERSION),$(PACKAGE_VERSION))
-	@$(ECHO) "Debian version ($(DEBFPCVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
+	@$(ECHO) "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
 	@exit 1
 endif
 
@@ -220,7 +220,11 @@ ifdef NODOCS
 else
 	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc
 endif
-	mv -v -t . $(DEBSRCDIR)/../*.{deb,dsc,changes,tar.gz}
+	mv -v -t . \
+	$(DEBSRCDIR)/../*.changes \
+	$(DEBSRCDIR)/../*.deb \
+	$(DEBSRCDIR)/../*.dsc \
+	$(DEBSRCDIR)/../*.tar.gz
 
 debclean:
 	rm -rf $(DEBSRCDIR)
@@ -231,4 +235,3 @@ deb: debcheck debcopy debbuild debclean
 endif   # changelog found
 
 endif
-
