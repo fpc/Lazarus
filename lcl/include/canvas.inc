@@ -85,7 +85,7 @@ end;
 
 procedure TCanvas.SetClipping(const AValue: boolean);
 begin
-  inherited SetClipping(AValue);
+  inherited Clipping := AValue;
   if AValue then
     SetClipRect(inherited GetClipRect)
   else

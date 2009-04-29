@@ -1019,8 +1019,8 @@ type
   protected
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;
-    function GetClipping: Boolean; {$ifdef OverrideClipping}override; {$else} reintroduce;{$endif}
-    procedure SetClipping(const AValue: boolean); {$ifdef OverrideClipping}override; {$else} reintroduce;{$endif}
+    function GetClipping: Boolean; {$ifdef OverrideClipping}override;{$endif}
+    procedure SetClipping(const AValue: boolean); {$ifdef OverrideClipping}override;{$endif}
     function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
