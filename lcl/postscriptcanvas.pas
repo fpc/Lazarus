@@ -956,6 +956,8 @@ var
     px, py     : Integer;
     CurColor   : TFPColor;
     Encoder    : TAscii85Encoder;
+    A          : Byte;
+    Ratio      : Single;
   begin
     Encoder := TAscii85Encoder.Create;
     try
@@ -965,14 +967,21 @@ var
         for px:=0 to SrcIntfImg.Width-1 do
         begin
           CurColor:=SrcIntfImg.Colors[px,py];
-          if CurColor.alpha=0 then begin
+          A := Hi(CurColor.alpha);
+          if A=0 then begin
             Encoder.Add(255);
             Encoder.Add(255);
             Encoder.Add(255);
-          end else begin
+          end else
+          if A=255 then begin
             Encoder.Add(Hi(CurColor.Red));
             Encoder.Add(Hi(CurColor.Green));
             Encoder.Add(Hi(CurColor.Blue));
+          end else begin
+            Ratio := 1-(255-A)/255;
+            Encoder.Add(round(Hi(CurColor.Red  )*Ratio+255*(1-Ratio)));
+            Encoder.Add(round(Hi(CurColor.Green)*Ratio+255*(1-Ratio)));
+            Encoder.Add(round(Hi(CurColor.Blue )*Ratio+255*(1-Ratio)));
           end;
         end;
       end;
