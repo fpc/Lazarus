@@ -5081,8 +5081,10 @@ function TFindDeclarationTool.BuildInterfaceIdentifierCache(
 var
   InterfaceNode: TCodeTreeNode;
 begin
+  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache START ',GetTicks]);
   // build tree for pascal source
   BuildTree(true);
+  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache BuildTree ',GetTicks]);
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
@@ -5107,6 +5109,7 @@ begin
   else
     FInterfaceIdentifierCache.Clear;
   FInterfaceIdentifierCache.Complete:=true;
+  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache CLEAR ',GetTicks]);
 
   // add unit node
   MoveCursorToNodeStart(Tree.Root);
@@ -5114,9 +5117,11 @@ begin
   ReadNextAtom;
   FInterfaceIdentifierCache.Add(@Src[CurPos.StartPos],Tree.Root,CurPos.StartPos);
 
+  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache root node ',GetTicks]);
   // create nodes
   ScanChilds(InterfaceNode);
 
+  //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache childs ',GetTicks]);
   //DebugLn(['TFindDeclarationTool.BuildInterfaceIdentifierCache ',MainFilename,' ',FInterfaceIdentifierCache.Items.Count,' ',GlobalIdentifierTree.Count]);
   Result:=true;
 end;

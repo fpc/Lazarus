@@ -52,13 +52,10 @@ begin
   Options:=TCodeToolsOptions.Create;
   try
 
-    // To not parse the FPC sources every time, the options are saved to a file.
-    if FileExists(ConfigFilename) then
-      Options.LoadFromFile(ConfigFilename);
-
     // setup your paths
     writeln('Config=',ConfigFilename);
     if FileExists(ConfigFilename) then begin
+      // To not parse the FPC sources every time, the options are saved to a file.
       Options.LoadFromFile(ConfigFilename);
     end else begin
       Options.InitWithEnvironmentVariables;
@@ -97,7 +94,9 @@ begin
     Y:=43;
 
     writeln('FPCSrcDir=',Options.FPCSrcDir);
-    writeln('FPC=',Options.FPCPath);
+    writeln('PP=',Options.FPCPath);
+    writeln('TARGET=',Options.TargetOS);
+    writeln('TARGETCPU=',Options.TargetProcessor);
     if (ParamCount>=3) then begin
       Options.TestPascalFile:=ExpandFileName(ParamStr(1));
       X:=StrToInt(ParamStr(2));

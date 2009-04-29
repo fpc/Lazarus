@@ -263,6 +263,8 @@ begin
     LazarusSrcDir:=GetEnvironmentVariableUTF8('LAZARUSDIR');
   if GetEnvironmentVariableUTF8('FPCTARGET')<>'' then
     TargetOS:=GetEnvironmentVariableUTF8('FPCTARGET');
+  if GetEnvironmentVariableUTF8('FPCTARGETCPU')<>'' then
+    TargetProcessor:=GetEnvironmentVariableUTF8('FPCTARGETCPU');
 end;
 
 function TCodeToolsOptions.FindDefaultCompilerFilename: string;

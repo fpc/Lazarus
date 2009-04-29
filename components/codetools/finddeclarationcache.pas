@@ -203,6 +203,12 @@ type
   TGlobalIdentifierTree = class
   private
     FItems: TAVLTree; // tree of PChar;
+    FDefaultDataBlockSize: integer;
+    FDataBlockSize: integer;
+    FDataBlock: Pointer;
+    FDataBlockEnd: integer;
+    FFullDataBlocks: TFPList; // full blocks of data
+    function InternalGetMem(Size: integer): Pointer;
   public
     function AddCopy(Identifier: PChar): PChar;
     function Find(Identifier: PChar): PChar;
@@ -559,27 +565,34 @@ end;
 { TGlobalIdentifierTree }
 
 procedure TGlobalIdentifierTree.Clear;
-var Node: TAVLTreeNode;
+var
+  i: Integer;
 begin
-  if FItems<>nil then begin
-    Node:=FItems.FindLowest;
-    while Node<>nil do begin
-      FreeMem(Node.Data);
-      Node:=FItems.FindSuccessor(Node);
-    end;
+  if FItems<>nil then
     FItems.Clear;
+  if FFullDataBlocks<>nil then begin
+    for i:=0 to FFullDataBlocks.Count-1 do
+      FreeMem(FFullDataBlocks[i]);
+    FFullDataBlocks.Clear;
+    ReAllocMem(FDataBlock,0);
+    FDataBlockEnd:=0;
+    FDataBlockSize:=0;
   end;
 end;
 
 constructor TGlobalIdentifierTree.Create;
 begin
   inherited Create;
+  FItems:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
+  FFullDataBlocks:=TFPList.Create;
+  FDefaultDataBlockSize:=256*256*2;
 end;
 
 destructor TGlobalIdentifierTree.Destroy;
 begin
   Clear;
   FItems.Free;
+  FFullDataBlocks.Free;
   inherited Destroy;
 end;
 
@@ -589,6 +602,22 @@ begin
     Result:=FItems.Count
   else
     Result:=0;
+end;
+
+function TGlobalIdentifierTree.InternalGetMem(Size: integer): Pointer;
+begin
+  if (FDataBlock=nil) or (FDataBlockEnd+Size>FDataBlockSize) then begin
+    // store old block
+    FFullDataBlocks.Add(FDataBlock);
+    // create a new
+    FDataBlockSize:=FDefaultDataBlockSize;
+    if FDataBlockSize<Size then
+      FDataBlockSize:=Size;
+    GetMem(FDataBlock,FDataBlockSize);
+    FDataBlockEnd:=0;
+  end;
+  Result:=FDataBlock+FDataBlockEnd;
+  inc(FDataBlockEnd,Size);
 end;
 
 function TGlobalIdentifierTree.AddCopy(Identifier: PChar): PChar;
@@ -601,11 +630,10 @@ begin
     exit;
   Len:=0;
   while IsIdentChar[Identifier[Len]] do inc(Len);
-  GetMem(Result,Len+1);
+  Result:=InternalGetMem(Len+1);
+  // GetMem(Result,Len+1);
   Move(Identifier^,Result^,Len);
   Result[Len]:=#0;
-  if FItems=nil then
-    FItems:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
   FItems.Add(Result);
 end;
 
