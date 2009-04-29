@@ -238,12 +238,14 @@ implementation
 uses
   // Data dictionary support for
   fpdddbf,     // DBF
+  {$ifndef win64}
   fpddfb,      // Firebird
   fpddmysql40, // MySQL 4.0
   fpddmysql41, // MySQL 4.1
   fpddmysql50, // MySQL 5.0
   fpddoracle,  // Oracle
   fpddpq,      // PostgreSQL
+  {$endif}
   fpddsqlite3, // SQLite 3
   fpddodbc,    // Any ODBC supported
   frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect,fpstdexports;
@@ -393,12 +395,14 @@ end;
 procedure TMainForm.RegisterDDEngines;
 
 begin
+{$ifndef win64}
   RegisterFBDDEngine;
   RegisterMySQL40DDEngine;
   RegisterMySQL41DDEngine;
   RegisterMySQL50DDEngine;
   RegisterOracleDDEngine;
   RegisterPostgreSQLDDengine;
+{$endif}
   RegisterSQLite3DDEngine;
   RegisterODBCDDengine;
 end;
