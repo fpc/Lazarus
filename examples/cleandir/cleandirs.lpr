@@ -24,7 +24,6 @@ Uses
 {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
 {$ENDIF}{$ENDIF}
-  lazdaemon,
   daemonapp,
   sysutils
   { add your units here }, svcmap, svccleandirs, dircleaner;

@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <AutoCreateForms Value="False"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Directory Cleaning service"/>
     </General>
@@ -49,7 +48,6 @@
         <Filename Value="svccleandirs.pp"/>
         <ComponentName Value="CleanDirsDaemon"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="svccleandirs.lrs"/>
         <UnitName Value="svccleandirs"/>
       </Unit1>
       <Unit2>
@@ -61,7 +59,6 @@
         <Filename Value="svcmap.pp"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="svcmap.lrs"/>
         <UnitName Value="svcmap"/>
       </Unit3>
     </Units>
