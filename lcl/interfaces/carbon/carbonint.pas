@@ -72,8 +72,6 @@ type
     FOpenEventHandlerUPP: AEEventHandlerUPP;
     FQuitEventHandlerUPP: AEEventHandlerUPP;
 
-    FEventLoopUPP: EventHandlerUPP;
-    FEventLoopHandler: EventHandlerRef;
     FAppLoop: TApplicationMainLoop;
 
     {$ifdef CarbonUseCocoa}
@@ -86,9 +84,6 @@ type
     procedure OnWakeMainThread(Sender: TObject);
 
     procedure RegisterEvents;
-
-    procedure InitMainLoop;
-    procedure ReleaseMainLoop;
 
   public
     constructor Create; override;
