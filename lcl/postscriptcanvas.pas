@@ -965,9 +965,15 @@ var
         for px:=0 to SrcIntfImg.Width-1 do
         begin
           CurColor:=SrcIntfImg.Colors[px,py];
-          Encoder.Add(Hi(CurColor.Red));
-          Encoder.Add(Hi(CurColor.Green));
-          Encoder.Add(Hi(CurColor.Blue));
+          if CurColor.alpha=0 then begin
+            Encoder.Add(255);
+            Encoder.Add(255);
+            Encoder.Add(255);
+          end else begin
+            Encoder.Add(Hi(CurColor.Red));
+            Encoder.Add(Hi(CurColor.Green));
+            Encoder.Add(Hi(CurColor.Blue));
+          end;
         end;
       end;
       Encoder.Finish;
