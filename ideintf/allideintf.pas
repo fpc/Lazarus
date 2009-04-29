@@ -21,6 +21,7 @@ interface
 
 uses
   ActionsEditor,
+  ActionsEditorStd,
   BaseIDEIntf,
   ComponentEditors,
   ComponentReg,

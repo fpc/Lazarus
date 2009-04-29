@@ -69,11 +69,11 @@ type
   TActStdProp = class
   private
     fPropList: TObjectList;
-    procedure Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
   public
     constructor Create;
     destructor Destroy; override;
     function IndexOfClass(ActClassName: String): TActStdPropItem;
+    procedure Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
   end;
 
 
