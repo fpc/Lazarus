@@ -134,14 +134,7 @@ begin
 end;
 
 procedure TMainMenuEditorForm.FormPaint(Sender: TObject);
-var
-  temp_coord: TRect;
 begin
-  temp_coord:=DesignerMainMenu.GetMaxCoordinates(DesignerMainMenu.Root, 0, 0);
-  Panel.Width:=temp_coord.Right + 10;
-  Panel.Height:=temp_coord.Bottom + 10;
-  //writeln('Panel Width: ', Panel.width, ' Panel Height: ', Panel.Height);
-  DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
 end;
 
 procedure TMainMenuEditorForm.List_menusClick(Sender: TObject);
@@ -199,8 +192,7 @@ begin
     LoadMainMenu;
     SetCoordinates(10,10,0,DesignerMainMenu.Root);
   end;
-
-  Invalidate;
+  DesignerMainMenu.Panel := Panel;
 end;
 
 procedure TMainMenuEditorForm.UpdateListOfMenus;
@@ -242,6 +234,7 @@ begin
     fDesigner := FindRootDesigner(fMenu) as TComponentEditorDesigner;
     UpdateListOfMenus;
     CreateDesignerMenu;
+    DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
   end;
 end;
 

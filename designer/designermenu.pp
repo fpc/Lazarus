@@ -126,6 +126,7 @@ type
     procedure Link(MenuItem: TMenuItem; ParentM: PDesignerMenuItem);
     
     // Draw function and supplementary functions for setting coordinates
+    procedure RealignDesigner;
     procedure Draw(MenuItem: PDesignerMenuItem; FormPanel,SubMenuPanel: TPanel); //draw function
     procedure SetCoordinates(Coord_Left,Coord_Top,Coord_Right: Integer;MenuItem: PDesignerMenuItem); //coord. of each designermenuitem
     function GetSubMenuHeight(MenuItem: PDesignerMenuItem; LeftPos,TopPos: Integer; Ident: string): TRect; //width and height of submenu panel
@@ -449,6 +450,16 @@ begin
   dec(temp_level);
 end;
 
+procedure TDesignerMainMenu.RealignDesigner;
+var
+  temp_coord: TRect;
+begin
+  temp_coord:=GetMaxCoordinates(Root, 0, 0);
+  Panel.Width:=temp_coord.Right + 10;
+  Panel.Height:=temp_coord.Bottom + 10;
+  Draw(Root, Panel, Panel);
+end;
+
 //------------------------------------------------------------------------------------------//
 // Draw the the whole DesignerMenu with active MenuItems and SubMenus ----------------------//
 //------------------------------------------------------------------------------------------//
@@ -767,9 +778,9 @@ begin
     SelectedDesignerMenuItem := DesignerItem^.ID;
     ChangeMenuItem(Root, 1, SelectedDesignerMenuItem);
     CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
-
-    Parent.Invalidate;
     UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
+
+    RealignDesigner;
   end;
 end;
 
@@ -791,11 +802,12 @@ begin
    
   NewItem^.Active := True; // set visible
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-  Parent.Invalidate;
 
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.PrevItem, 1, 2);
+
+  RealignDesigner;
 end;
 
 // ------------------------------------------------------------//
@@ -811,11 +823,12 @@ begin
    
   NewItem^.Active := True; // set visible
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root); 
-  Parent.Invalidate;
 
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);  
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.NextItem, 1, 1);
+
+  RealignDesigner;
 end;
 
 // ------------------------------------------------------------//
@@ -831,11 +844,12 @@ begin
    
   NewItem^.Active := True; // set visible
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-  Parent.Invalidate;
-  
+
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu, 1, 3);
+
+  RealignDesigner;
 end;
 
 // -----------------------------------------------------------------------//
@@ -861,12 +875,13 @@ begin
   if (MoveUp(Root, SelectedDesignerMenuItem) > 0) then
   begin
     SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-    Parent.Invalidate;
-    
+
     InitIndexSequence;
     CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
     
     UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 4);
+
+    RealignDesigner;
   end;
 end;
 
@@ -898,12 +913,14 @@ begin
     
     ChangeMenuItem(Root, 2, Root^.ID);
     SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-    Parent.Invalidate;
+
     if (temp_returnvalue = 1) then
       UpdateMenu(fMenu.Items, nil, 1, 7);
     if (temp_returnvalue = 2) then
       UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1 , 8);
     ChangeMenuItem(Root, 1, SelectedDesignerMenuItem);    
+
+    RealignDesigner;
   end;
 end;
 
@@ -920,7 +937,7 @@ begin
     begin
       DeleteItem(Item);
       SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-      Parent.Invalidate;
+      RealignDesigner;
     end;
   end;
   inherited;
@@ -1198,7 +1215,7 @@ begin
   end else
   begin
   end;
-  Parent.Invalidate;
+  RealignDesigner;
 end;
 
 // -----------------------------------------------------------------//
@@ -1395,7 +1412,7 @@ begin
       end;
     end;
     if InvalidateNeeded then
-      Parent.Invalidate;
+      RealignDesigner;
   finally
     Selection.Free;
   end;
@@ -1414,12 +1431,13 @@ begin
   if (MoveDown(Root, SelectedDesignerMenuItem) > 0) then
   begin
     SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
-    Parent.Invalidate;
 
     InitIndexSequence;
     CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
 
     UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 5);
+
+    RealignDesigner;
   end;
 end;
 
