@@ -14321,22 +14321,27 @@ end;
 function TMainIDE.OnPropHookMethodExists(const AMethodName: String;
   TypeData: PTypeData;
   var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  //D: DWord;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
-  then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
+    Exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
+  WriteLn('');
+  WriteLn('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
   {$ENDIF}
-  Result:=CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
-                        ActiveUnitInfo.Component.ClassName,AMethodName,TypeData,
-                        MethodIsCompatible,MethodIsPublished,IdentIsMethod);
-  if CodeToolBoss.ErrorMessage<>'' then begin
+  //D := GetTickCount;
+  Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
+                        ActiveUnitInfo.Component.ClassName, AMethodName, TypeData,
+                        MethodIsCompatible, MethodIsPublished, IdentIsMethod);
+  //D := GetTickCount - D;
+  //WriteLn('CodeToolBoss.PublishedMethodExists takes ', D, ' ms');
+  if CodeToolBoss.ErrorMessage <> '' then
+  begin
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage
-      );
+    raise Exception.Create(lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage);
   end;
 end;
 

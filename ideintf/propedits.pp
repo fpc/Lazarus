@@ -4112,13 +4112,13 @@ var
   NewMethodName: shortstring;
 begin
   NewMethodName:=GetValue;
-  DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
+  //DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
   if (not IsValidIdent(NewMethodName))
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
     // the current method is from the ancestor
     // -> add an override with the default name
     NewMethodName := GetFormMethodName;
-    DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',NewMethodName);
+    //DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',NewMethodName);
     if not IsValidIdent(NewMethodName) then
       raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
     SetValue(NewMethodName); // this will jump to the method
