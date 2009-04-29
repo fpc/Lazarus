@@ -7658,6 +7658,13 @@ begin
     Result:=GetStyleWithName(LazGtkStyleNames[aStyle]);
 end;
 
+procedure tooltip_window_style_set(Widget: PGtkWidget; PreviousStyle: PGtkStyle;
+          StyleObject: PStyleObject); cdecl;
+begin
+  StyleObject^.Style := gtk_widget_get_style(Widget);
+  UpdateSysColorMap(Widget, lgsToolTip);
+end;
+
 {------------------------------------------------------------------------------
   Function: GetStyleWithName
   Params: none
@@ -7864,12 +7871,17 @@ begin
         StyleObject^.Widget := CreateStyleNotebook;
       end
     else
-      If CompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
+      if CompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then
+      begin
         lgs := lgsTooltip;
         Tp := gtk_tooltips_new;
         gtk_tooltips_force_window(Tp);
         StyleObject^.Widget := PGTKTooltips(Tp)^.Tip_Window;
         gtk_widget_ref(StyleObject^.Widget);// MG: why is this needed?
+        {$IFNDEF GTK1}
+        g_signal_connect(StyleObject^.Widget, 'style-set',
+			 TGCallback(@tooltip_window_style_set), StyleObject);
+        {$ENDIF}
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Obj := Tp;
         Tp := nil;
@@ -7961,7 +7973,6 @@ begin
         else
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then
         begin
-          DebugLn(['GetStyleWithName adding menuitem to menubar']);
           gtk_menu_bar_append({$IFDEF Gtk1}
                               PGtkMenuBar(GetStyleWidget(lgsMenuBar)),
                               {$ELSE}
