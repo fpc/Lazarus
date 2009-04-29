@@ -109,9 +109,9 @@ var
   Dummy: LongWord;
 begin
   // Get our TApplicationMainLoop
-  Result := GetEventParameter(inEvent, MakeFourCC('Loop'), MakeFourCC('TAML'),
-                              @Dummy, SizeOf(Loop), @Dummy, @Loop);
-  if Result <> noErr then Exit;
+  Result := noErr;
+  if (not Assigned(inUserData)) then Exit;
+  Loop := TCarbonWidgetSet(inUserData).FAppLoop;
   if not Assigned(Loop) then Exit;
 
   // Install our override on the kEventClassApplication, kEventAppQuit event.
@@ -122,7 +122,6 @@ begin
   try
     TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppQuit);
     if not InstallApplicationEventHandler(QuitUPP, 1, @TmpSpec, nil, @QuitHandler) then Exit;
-
     try
       // Run our event loop until quitNow is set.
       Loop;
@@ -358,6 +357,8 @@ begin
   finally
     ReleaseDC(0, ScreenDC);
   end;
+
+  InitMainLoop;
 end;
 
 {------------------------------------------------------------------------------
@@ -370,81 +371,12 @@ procedure TCarbonWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
   // rest of your application to maintain a global variable,
   // gNumberOfRunningThreads, that reflects the number of threads
   // that are ready to run.
-var
-  EventLoopUPP: EventHandlerUPP;
-  EventLoopHandler: EventHandlerRef;
-  DummyEvent: EventRef;
-  EventSpec: EventTypeSpec;
-  CurMainEventQueue: EventQueueRef;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppRun');
   {$ENDIF}
-  
-  DummyEvent := nil;
-
-  // Create a UPP for EventLoopEventHandler and QuitEventHandler
-
-  EventLoopUPP := NewEventHandlerUPP(EventHandlerProcPtr(
-                                     Pointer(@EventLoopEventHandler)));
-  if EventLoopUPP = nil then
-    RaiseGDBException('TCarbonWidgetSet.AppRun no eventhandler');
-
-  try
-    // Install EventLoopEventHandler, create a dummy event and post it,
-    // and then call RunApplicationEventLoop.  The rationale for this
-    // is as follows:  We want to unravel RunApplicationEventLoop so
-    // that we can can yield to cooperative threads.  In fact, the
-    // core code for RunApplicationEventLoop is pretty easy (you
-    // can see it above in EventLoopEventHandler).  However, if you
-    // just execute this code you miss out on all the standard event
-    // handlers.  These are relatively easy to reproduce (handling
-    // the quit event and so on), but doing so is a pain because
-    // a) it requires a bunch boilerplate code, and b) if Apple
-    // extends the list of standard event handlers, your application
-    // wouldn't benefit.  So, we execute our event loop from within
-    // a Carbon event handler that we cause to be executed by
-    // explicitly posting an event to our event loop.  Thus, the
-    // standard event handlers are installed while our event loop runs.
-
-    EventSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindMain);
-    if not InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
-                                      @EventLoopHandler) then Exit;
-
-    try
-      if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind, 0,
-        kEventAttributeNone, DummyEvent) <> noErr
-      then
-        RaiseGDBException('TCarbonWidgetSet.AppRun create first dummy event failed');
-
-      try
-        if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
-                             MakeFourCC('TAML'), SizeOf(ALoop),
-                             @ALoop) <> noErr
-        then
-          RaiseGDBException('TCarbonWidgetSet.AppRun setparam to first event failed');
-
-        //DebuglnThrea dLog('TCarbonWidgetSet.AppRun '+dbgs(GetMainEventQueue));
-        CurMainEventQueue:=GetMainEventQueue;
-        if PostEventToQueue(CurMainEventQueue, DummyEvent,
-                            kEventPriorityHigh) <> noErr
-        then
-          RaiseGDBException('TCarbonWidgetSet.AppRun post dummy event failed');
-        fMainEventQueue:=CurMainEventQueue;
-        SignalFirstAppEvent;
-
-        RunApplicationEventLoop;
-      finally
-        fMainEventQueue:=nil;
-        ReleaseEvent(DummyEvent);
-      end;
-    finally
-      MacOSAll.RemoveEventHandler(EventLoopHandler);
-    end;
-  finally
-    DisposeEventHandlerUPP(EventLoopUPP);
-  end;
-  
+  FAppLoop:=ALoop;
+  RunApplicationEventLoop;
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppRun END');
   {$ENDIF}
@@ -556,6 +488,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonWidgetSet.Destroy;
 begin
+  ReleaseMainLoop;
   FreeAndNil(FTimerMap);
   DisposeAEEventHandlerUPP(FOpenEventHandlerUPP);
   DisposeAEEventHandlerUPP(FQuitEventHandlerUPP);
@@ -965,6 +898,87 @@ begin
     Self, SName, 'AEInstallEventHandler');
 end;
 
+procedure TCarbonWidgetSet.InitMainLoop;
+  // A reimplementation of RunApplicationEventLoop that supports
+  // yielding time to cooperative threads.  It relies on the
+  // rest of your application to maintain a global variable,
+  // gNumberOfRunningThreads, that reflects the number of threads
+  // that are ready to run.
+var
+  DummyEvent: EventRef;
+  EventSpec: EventTypeSpec;
+  CurMainEventQueue: EventQueueRef;
+begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.InitMainLoop');
+  {$ENDIF}
+
+  DummyEvent := nil;
+
+  // Create a UPP for EventLoopEventHandler and QuitEventHandler
+
+  FEventLoopUPP := NewEventHandlerUPP(EventHandlerProcPtr(
+                                     Pointer(@EventLoopEventHandler)));
+  if FEventLoopUPP = nil then
+    RaiseGDBException('TCarbonWidgetSet.InitMainLoop no eventhandler');
+
+  // Install EventLoopEventHandler, create a dummy event and post it,
+  // and then call RunApplicationEventLoop.  The rationale for this
+  // is as follows:  We want to unravel RunApplicationEventLoop so
+  // that we can can yield to cooperative threads.  In fact, the
+  // core code for RunApplicationEventLoop is pretty easy (you
+  // can see it above in EventLoopEventHandler).  However, if you
+  // just execute this code you miss out on all the standard event
+  // handlers.  These are relatively easy to reproduce (handling
+  // the quit event and so on), but doing so is a pain because
+  // a) it requires a bunch boilerplate code, and b) if Apple
+  // extends the list of standard event handlers, your application
+  // wouldn't benefit.  So, we execute our event loop from within
+  // a Carbon event handler that we cause to be executed by
+  // explicitly posting an event to our event loop.  Thus, the
+  // standard event handlers are installed while our event loop runs.
+
+  EventSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindMain);
+  if not InstallApplicationEventHandler(FEventLoopUPP, 1, @EventSpec, Self,
+                                    @FEventLoopHandler) then Exit;
+
+  if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind, 0,
+    kEventAttributeNone, DummyEvent) <> noErr
+  then
+    RaiseGDBException('TCarbonWidgetSet.InitMainLoop create first dummy event failed');
+
+  try
+    {if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
+                         MakeFourCC('TAML'), SizeOf(ALoop),
+                         @ALoop) <> noErr
+    then
+      RaiseGDBException('TCarbonWidgetSet.InitMainLoop setparam to first event failed');}
+
+          //DebuglnThrea dLog('TCarbonWidgetSet.AppRun '+dbgs(GetMainEventQueue));
+    CurMainEventQueue:=GetMainEventQueue;
+    if PostEventToQueue(CurMainEventQueue, DummyEvent,
+                        kEventPriorityHigh) <> noErr
+    then
+      RaiseGDBException('TCarbonWidgetSet.AppRun post dummy event failed');
+  finally
+    ReleaseEvent(DummyEvent);
+  end;
+
+  fMainEventQueue:=CurMainEventQueue;
+  SignalFirstAppEvent;
+
+  {$IFDEF VerboseObject}
+    DebugLn('TCarbonWidgetSet.InitMainLoop END');
+  {$ENDIF}
+end;
+
+procedure TCarbonWidgetSet.ReleaseMainLoop;
+begin
+  fMainEventQueue:=nil;
+  if Assigned(FEventLoopHandler) then MacOSAll.RemoveEventHandler(FEventLoopHandler);
+  if Assigned(FEventLoopUPP) then DisposeEventHandlerUPP(FEventLoopUPP);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppTerminate
 
@@ -1275,7 +1289,7 @@ var
   Widget: TCarbonWidget;
 begin
   Result := nil;
-  if FMainEventQueue = nil then exit;
+  if FMainEventQueue = nil then Exit;
 
   Widget := TCarbonWidget(Handle);
 

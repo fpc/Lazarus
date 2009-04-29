@@ -72,6 +72,10 @@ type
     FOpenEventHandlerUPP: AEEventHandlerUPP;
     FQuitEventHandlerUPP: AEEventHandlerUPP;
 
+    FEventLoopUPP: EventHandlerUPP;
+    FEventLoopHandler: EventHandlerRef;
+    FAppLoop: TApplicationMainLoop;
+
     {$ifdef CarbonUseCocoa}
       pool: NSAutoreleasePool;
     {$endif}
@@ -82,6 +86,10 @@ type
     procedure OnWakeMainThread(Sender: TObject);
 
     procedure RegisterEvents;
+
+    procedure InitMainLoop;
+    procedure ReleaseMainLoop;
+
   public
     constructor Create; override;
     destructor Destroy; override;
