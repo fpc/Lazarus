@@ -1689,7 +1689,7 @@ begin
 
   if LblWidget<>nil then 
   begin
-    GtkWidgetSet.SetWidgetColor(LblWidget, AFont.Ñolor, clNone,
+    GtkWidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
@@ -1844,7 +1844,7 @@ begin
   AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
 
   if AWidget<>nil then begin
-    GtkWidgetSet.SetWidgetColor(AWidget, AFont.Ñolor, clNone,
+    GtkWidgetSet.SetWidgetColor(AWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
         GTK_STYLE_TEXT]);
     GtkWidgetSet.SetWidgetFont(AWidget, AFont);
