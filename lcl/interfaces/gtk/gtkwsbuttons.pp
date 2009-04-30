@@ -67,7 +67,7 @@ type
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
   TGtkWSBitBtnClass = class of TGtkWSBitBtn;
 
@@ -257,14 +257,13 @@ var
   Widget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
   
   Widget:= PGtkWidget(AWinControl.Handle);
   WidgetInfo := GetWidgetInfo(Widget);
   BitBtnInfo := WidgetInfo^.UserData;
 
   if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
-  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
+  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AFont.Color,
     clNone,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
   GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);

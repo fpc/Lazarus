@@ -1508,14 +1508,13 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
 
   if Entry <> nil then
   begin
-    Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AFont.color, clNone,
+    Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
     Gtk2WidgetSet.SetWidgetFont(PGtkWidget(Entry), AFont);
   end;
@@ -1848,7 +1847,7 @@ begin
 
   if (LblWidget <> nil) then
   begin
-    Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.color, clNone,
+    Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
   end;

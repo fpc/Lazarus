@@ -98,7 +98,7 @@ type
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   {$ENDIF}
   end;
 
@@ -129,7 +129,7 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   {$ENDIF}
   end;
 
@@ -187,7 +187,7 @@ type
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo;
                                 const NewWordWrap: boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     {$endif}
   end;
 
@@ -219,7 +219,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
@@ -253,7 +253,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -277,7 +277,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   {$ENDIF}
   end;
 
@@ -741,25 +741,23 @@ begin
 end;
 
 class procedure TGtkWSCustomListBox.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   Widget: PGtkWidget;
   GList: PGList;
   ChildWidget: PGTKLabel;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
-  //DebugLn('TGtkWSCustomListBox.SetFont ');
 
   { Get the selections }
-  Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
-  GList:=  PGtkList(Widget)^.children;
+  Widget := GetWidgetInfo(Pointer(AWinControl.Handle))^.CoreWidget;
+  GList :=  PGtkList(Widget)^.children;
   while Assigned(GList) do
   begin
     //  DebugLn('TGtkWSCustomListBox.SetFont for item ',PGTKLabel(PGtkBin(GList^.data)^.child)^.thelabel);
     ChildWidget := PGTKLabel(PGtkBin(GList^.data)^.child);
 
-    GtkWidgetSet.SetWidgetColor(PGtkWidget(ChildWidget), AWinControl.font.color, clNone,
+    GtkWidgetSet.SetWidgetColor(PGtkWidget(ChildWidget), AFont.Color, clNone,
       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
       GtkWidgetSet.SetWidgetFont(PGtkWidget(ChildWidget), AFont);
       GList := GList^.Next;
@@ -1104,19 +1102,19 @@ begin
 end;
 
 class procedure TGtkWSCustomComboBox.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   AWidget: PGTKWidget;
   EntryWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
 
-  AWidget:= PGtkWidget(AWinControl.Handle);
-  EntryWidget:=PGtkCombo(AWidget)^.entry;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  EntryWidget := PGtkCombo(AWidget)^.entry;
 
-  if EntryWidget<>nil then begin
-    GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, clNone,
+  if EntryWidget<>nil then 
+  begin
+    GtkWidgetSet.SetWidgetColor(EntryWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     GtkWidgetSet.SetWidgetFont(EntryWidget, AFont);
   end;
@@ -1441,12 +1439,9 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont')
   then Exit;
   
-  if AFont.IsDefault then
-    Exit;
-    
   Widget := PGtkWidget(GetLabelWidget(PGtkFrame(AWinControl.Handle)));
 
-  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
+  GtkWidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
   GtkWidgetSet.SetWidgetFont(Widget, AFont);
 end;
@@ -1570,19 +1565,19 @@ begin
 end;
 
 class procedure TGtkWSButton.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   Widget: PGTKWidget;
   LblWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
 
   Widget:= PGtkWidget(AWinControl.Handle);
   LblWidget := (pGtkBin(Widget)^.Child);
 
-  if LblWidget<>nil then begin
-    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+  if LblWidget <> nil then 
+  begin
+    GtkWidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
@@ -1688,13 +1683,13 @@ var
   LblWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit ;
 
   Widget:= PGtkWidget(AWinControl.Handle);
   LblWidget := (pGtkBin(Widget)^.Child);
 
-  if LblWidget<>nil then begin
-    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+  if LblWidget<>nil then 
+  begin
+    GtkWidgetSet.SetWidgetColor(LblWidget, AFont.Ñolor, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
@@ -1839,20 +1834,17 @@ begin
 end;
 
 class procedure TGtkWSCustomMemo.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   AWidget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
 
   AWidget:= PGtkWidget(AWinControl.Handle);
   AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
 
   if AWidget<>nil then begin
-//    GtkWidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
-//       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-    GtkWidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
+    GtkWidgetSet.SetWidgetColor(AWidget, AFont.Ñolor, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
         GTK_STYLE_TEXT]);
     GtkWidgetSet.SetWidgetFont(AWidget, AFont);

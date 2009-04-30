@@ -172,7 +172,7 @@ type
   TGtkWSCustomPanel = class(TWSCustomPanel)
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
