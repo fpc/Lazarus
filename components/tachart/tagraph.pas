@@ -434,41 +434,45 @@ begin
 end;
 
 procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
-var
-  lo, hi: Integer;
+type
+  TConvFunc = function (AX: Integer): Double of object;
+
+  procedure CalcOneCoord(
+    AInverted: boolean; AConv: TConvFunc; var AGraphMin, AGraphMax: Double;
+    AImageLo, AImageHi, AMarginLo, AMarginHi, ASign: Integer;
+    out AScale, AOffset: Double);
+  var
+    lo, hi: Integer;
+  begin
+    lo := AImageLo + AMarginLo;
+    hi := AImageHi + AMarginHi;
+
+    if (AGraphMax = AGraphMin) or (Sign(hi - lo) <> ASign) then begin
+      AScale := 1;
+      AOffset := 0;
+      exit;
+    end;
+
+    if AInverted then
+      Exchange(lo, hi);
+
+    AScale := (hi - lo) / (AGraphMax - AGraphMin);
+    AOffset := hi - AScale * AGraphMax;
+    AGraphMin := AConv(AImageLo);
+    AGraphMax := AConv(AImageHi);;
+    if AInverted then
+      Exchange(AGraphMin, AGraphMax);
+  end;
+
 begin
-  if XGraphMax <> XGraphMin then begin
-    lo := FClipRect.Left + AMargin.Left;
-    hi := FClipRect.Right - AMargin.Right;
-    if BottomAxis.Inverted then
-      Exchange(lo, hi);
-    FScale.X := (hi - lo) / (XGraphMax - XGraphMin);
-    FOffset.X := hi - FScale.X * XGraphMax;
-    FCurrentExtent.a.X := XImageToGraph(FClipRect.Left);
-    FCurrentExtent.b.X := XImageToGraph(FClipRect.Right);
-    if BottomAxis.Inverted then
-      Exchange(FCurrentExtent.a.X, FCurrentExtent.b.X);
-  end
-  else begin
-    FScale.X := 1;
-    FOffset.X := 0;
-  end;
-  if YGraphMax <> YGraphMin then begin
-    lo := FClipRect.Bottom - AMargin.Bottom;
-    hi := FClipRect.Top + AMargin.Top;
-    if LeftAxis.Inverted then
-      Exchange(lo, hi);
-    FScale.Y := (hi - lo) / (YGraphMax - YGraphMin);
-    FOffset.Y := hi - FScale.Y * YGraphMax;
-    FCurrentExtent.a.Y := YImageToGraph(FClipRect.Bottom);
-    FCurrentExtent.b.Y := YImageToGraph(FClipRect.Top);
-    if LeftAxis.Inverted then
-      Exchange(FCurrentExtent.a.Y, FCurrentExtent.b.Y);
-  end
-  else begin
-    FScale.Y := 1;
-    FOffset.Y := 0;
-  end;
+  CalcOneCoord(
+    BottomAxis.Inverted, @XImageToGraph, FCurrentExtent.a.X, FCurrentExtent.b.X,
+    FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right, 1,
+    FScale.X, FOffset.X);
+  CalcOneCoord(
+    LeftAxis.Inverted, @YImageToGraph, FCurrentExtent.a.Y, FCurrentExtent.b.Y,
+    FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top, -1,
+    FScale.Y, FOffset.Y);
 end;
 
 procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
