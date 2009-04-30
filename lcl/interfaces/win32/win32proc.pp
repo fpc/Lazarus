@@ -105,6 +105,7 @@ procedure RestoreStayOnTopFlags(Window: HWND);
 
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
+function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width, Height: integer): boolean;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 procedure SetMenuFlag(const Menu:HMenu; Flag: Cardinal; Value: boolean);
@@ -1149,16 +1150,15 @@ begin
   SetMenuItemInfo(Menu, 0, True, @MenuInfo);
 end;
 
-function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,
+  Height: integer): boolean;
 var
   textSize: Windows.SIZE;
-  winHandle: HWND;
   canvasHandle: HDC;
   oldFontHandle, newFontHandle: HFONT;
 begin
-  winHandle := AWinControl.Handle;
-  canvasHandle := Windows.GetDC(winHandle);
-  newFontHandle := HFONT(SendMessage(winHandle, WM_GETFONT, 0, 0));
+  canvasHandle := Windows.GetDC(AWindow);
+  newFontHandle := HFONT(SendMessage(AWindow, WM_GETFONT, 0, 0));
   oldFontHandle := SelectObject(canvasHandle, newFontHandle);
   DeleteAmpersands(Text);
 
@@ -1170,7 +1170,12 @@ begin
     Height := textSize.cy;
   end;
   SelectObject(canvasHandle, oldFontHandle);
-  Windows.ReleaseDC(winHandle, canvasHandle);
+  Windows.ReleaseDC(AWindow, canvasHandle);
+end;
+
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+begin
+  Result := MeasureTextForWnd(AWinControl.Handle, Text, Width, Height);
 end;
 
 function GetControlText(AHandle: HWND): string;

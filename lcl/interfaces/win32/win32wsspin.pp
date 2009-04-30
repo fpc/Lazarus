@@ -50,6 +50,9 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -180,6 +183,17 @@ begin
   Result := Params.Window;
 end;
 
+class procedure TWin32WSCustomFloatSpinEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if MeasureTextForWnd(GetBuddyWindow(AWinControl.Handle), 'Fj', PreferredWidth, PreferredHeight) then
+  begin
+    PreferredWidth := 0;
+    Inc(PreferredHeight, 10);
+  end;
+end;
+
 class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
@@ -187,7 +201,6 @@ var
   R: TRect;
   WindowWidth: Integer;
 begin
-
   WinHandle := AWinControl.Handle;
 {
   // detach from buddy first
