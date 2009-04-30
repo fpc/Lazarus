@@ -14,7 +14,7 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 22
     Top = 0
-    Width = 262
+    Width = 276
     Caption = 'MinimizeAllOnMinimizeMainCheckBox'
     Enabled = False
     TabOrder = 0
@@ -27,7 +27,7 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 22
     Top = 22
-    Width = 178
+    Width = 183
     Caption = 'HideIDEOnRunCheckBox'
     TabOrder = 1
   end
@@ -40,12 +40,12 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 336
-    Top = 56
+    Height = 326
+    Top = 66
     Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'WindowPositionsGroupBox'
-    ClientHeight = 317
+    ClientHeight = 307
     ClientWidth = 455
     TabOrder = 2
     object WindowPositionsListBox: TListBox
@@ -66,10 +66,13 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     end
   end
   object HideMessagesIconsCheckBox: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HideIDEOnRunCheckBox
+    AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 22
-    Top = 34
-    Width = 213
+    Top = 44
+    Width = 218
     Caption = 'HideMessagesIconsCheckBox'
     TabOrder = 3
   end

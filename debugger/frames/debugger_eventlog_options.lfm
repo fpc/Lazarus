@@ -1,17 +1,13 @@
-object DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
-  Left = 0
+inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
   Height = 368
-  Top = 0
   Width = 534
-  HelpContext = 0
-  ClientHeight = 368
-  ClientWidth = 534
-  Ctl3D = False
+  ClientHeight = 364
+  ClientWidth = 530
   TabOrder = 0
   Visible = False
   DesignLeft = 536
   DesignTop = 282
-  object gbGeneral: TGroupBox
+  object gbGeneral: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -19,46 +15,39 @@ object DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
     Left = 0
     Height = 132
     Top = 0
-    Width = 534
-    HelpContext = 0
+    Width = 530
     Anchors = [akTop, akLeft, akRight]
     Caption = 'General'
-    ClientHeight = 114
-    ClientWidth = 530
-    Ctl3D = False
-    ParentCtl3D = False
+    ClientHeight = 113
+    ClientWidth = 526
     TabOrder = 0
     object chkClearLogOnRun: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 5
-      Width = 102
-      HelpContext = 0
+      Width = 127
       Caption = 'Clear log on run'
       TabOrder = 0
-      UseOnChange = False
     end
     object chkLimitLinecount: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 29
-      Width = 106
-      HelpContext = 0
+      Width = 138
       Caption = 'Limit linecount to'
       TabOrder = 1
-      UseOnChange = False
     end
     object seLimitLinecount: TSpinEdit
       Left = 46
-      Height = 20
+      Height = 27
       Top = 54
       Width = 82
-      HelpContext = 0
+      AutoSize = True
       Enabled = False
       TabOrder = 2
     end
   end
-  object gbMessages: TGroupBox
+  object gbMessages: TGroupBox[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = gbGeneral
     AnchorSideTop.Side = asrBottom
@@ -67,95 +56,78 @@ object DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 230
+    Height = 226
     Top = 138
-    Width = 534
-    HelpContext = 0
+    Width = 530
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'Messages'
-    ClientHeight = 212
-    ClientWidth = 530
-    Ctl3D = False
+    ClientHeight = 207
+    ClientWidth = 526
     Enabled = False
-    ParentCtl3D = False
     TabOrder = 1
     object chkMessagesBreakpoint: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 5
-      Width = 77
-      HelpContext = 0
+      Width = 95
       AllowGrayed = True
       Caption = 'Breakpoint'
       TabOrder = 0
-      UseOnChange = False
     end
     object chkMessagesProcess: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 29
-      Width = 63
-      HelpContext = 0
+      Width = 74
       AllowGrayed = True
       Caption = 'Process'
       TabOrder = 1
-      UseOnChange = False
     end
     object chkMessagesThread: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 53
-      Width = 60
-      HelpContext = 0
+      Width = 69
       AllowGrayed = True
       Caption = 'Thread'
       TabOrder = 2
-      UseOnChange = False
     end
     object chkMessagesModule: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 77
-      Width = 60
-      HelpContext = 0
+      Width = 72
       AllowGrayed = True
       Caption = 'Module'
       TabOrder = 3
-      UseOnChange = False
     end
     object chkMessagesOutput: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 101
-      Width = 60
-      HelpContext = 0
+      Width = 68
       AllowGrayed = True
       Caption = 'Output'
       TabOrder = 4
-      UseOnChange = False
     end
     object chkMessagesWindow: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 125
-      Width = 64
-      HelpContext = 0
+      Width = 76
       AllowGrayed = True
       Caption = 'Window'
       TabOrder = 5
-      UseOnChange = False
     end
     object chkMessagesInterface: TCheckBox
       Left = 4
-      Height = 19
+      Height = 22
       Top = 149
-      Width = 71
-      HelpContext = 0
+      Width = 82
       AllowGrayed = True
       Caption = 'Interface'
       TabOrder = 6
-      UseOnChange = False
     end
   end
 end
