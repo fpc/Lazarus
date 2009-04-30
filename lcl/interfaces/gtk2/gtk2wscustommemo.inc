@@ -216,7 +216,7 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
     Exit;
     
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle))^.CoreWidget);
   TextBuffer := gtk_text_view_get_buffer(TextView);
   SelStart := GetSelStart(ACustomEdit);
 
@@ -332,8 +332,7 @@ begin
   Result := Min(StartPos, EndPos);
 end;
 
-class function TGtk2WSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit
-  ): integer;
+class function TGtk2WSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
@@ -350,8 +349,7 @@ begin
   Result := Abs(gtk_text_iter_get_offset(@EndIter) - gtk_text_iter_get_offset(@StartIter));
 end;
 
-class function TGtk2WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit
-  ): TPoint;
+class function TGtk2WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
 var
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
