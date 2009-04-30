@@ -362,7 +362,8 @@ end;
 function TQtWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
-    lcCanDrawOutsideOnPaint: Result := 0
+    lcCanDrawOutsideOnPaint: Result := 0;
+    lcDragDockStartOnTitleClick: Result := {$ifdef MSWINDOWS} 1 {$else} 0 {$endif};
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

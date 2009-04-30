@@ -69,13 +69,14 @@ type
   TLCLPlatforms = set of TLCLPlatform;
 
   TLCLCapability = (
-    lcAsyncProcess,          // Support for async process
-    lcCanDrawOutsideOnPaint, // Support for drawing outside OnPaint event of an control
+    lcAsyncProcess,             // Support for async process
+    lcCanDrawOutsideOnPaint,    // Support for drawing outside OnPaint event of an control
     lcNeedMininimizeAppWithMainForm,
-                             // When main form is minimized, then minimize also app
-    lcApplicationTitle,      // Can change application title in runtime
-    lcFormIcon,              // Forms have icon
-    lcModalWindow
+                                // When main form is minimized, then minimize also app
+    lcApplicationTitle,         // Can change application title in runtime
+    lcFormIcon,                 // Forms have icon
+    lcModalWindow,              // native modal windows support
+    lcDragDockStartOnTitleClick // ability to start drag/dock events on title bar click
   );
 
   { TWidgetSet }

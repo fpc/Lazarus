@@ -469,6 +469,7 @@ begin
   case ACapability of
     lcAsyncProcess: Result := 1;
     lcModalWindow: Result := 0;
+    lcDragDockStartOnTitleClick: Result := 1;
   else
     Result := inherited;
   end;
