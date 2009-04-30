@@ -2646,7 +2646,7 @@ end;
 
 procedure SetCaptureControl(Control: TControl);
 var
-  OldCaptureWinControl: TWinControl;
+  // OldCaptureWinControl: TWinControl;
   NewCaptureWinControl: TWinControl;
 begin
   //DebugLn('SetCaptureControl Old=',DbgSName(CaptureControl),' New=',DbgSName(Control));
@@ -2663,7 +2663,7 @@ begin
     Exit;
   end;
 
-  OldCaptureWinControl := FindOwnerControl(GetCapture);
+  // OldCaptureWinControl := FindOwnerControl(GetCapture);
   if Control is TWinControl then
     NewCaptureWinControl := TWinControl(Control)
   else
@@ -2680,16 +2680,22 @@ begin
     Exit;
   end;
 
-  if NewCaptureWinControl = OldCaptureWinControl then
-  begin
-    {$IFDEF VerboseMouseCapture}
-    DebugLN('SetCaptureControl Keep WinControl ',DbgSName(NewCaptureWinControl),
-      ' switch Control ',DbgSName(Control));
-    {$ENDIF}
-    // just change the CaptureControl, intf call not needed
-    CaptureControl := Control;
-    Exit;
-  end;
+  // Paul: don't uncomment. Intf call is needed since some widgetsets can install
+  // capture themselves and release capture. Thus we can be in situation when we
+  // get widgetset installed capture and don't install our own, later widgetset
+  // releases its own capture and we have no capture. Such behavior was registered
+  // on windows and it cased a bug #13615
+
+// if NewCaptureWinControl = OldCaptureWinControl then
+// begin
+//  {$IFDEF VerboseMouseCapture}
+//    DebugLN('SetCaptureControl Keep WinControl ',DbgSName(NewCaptureWinControl),
+//    ' switch Control ',DbgSName(Control));
+//  {$ENDIF}
+//   CaptureControl := Control;
+//   Exit;
+// end;
+
 
   // switch capture control
   {$IFDEF VerboseMouseCapture}
