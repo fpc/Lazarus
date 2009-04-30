@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-23 17:42+0100\n"
+"PO-Revision-Date: 2009-04-30 20:16+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -157,31 +157,31 @@ msgstr "Hinzufügen"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
-msgstr ""
+msgstr "Wert hinzufpgen"
 
 #: objinspstrconsts.liiselse
 msgid "Else"
-msgstr ""
+msgstr "Else"
 
 #: objinspstrconsts.liiselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: objinspstrconsts.liisif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: objinspstrconsts.liisifdef
 msgid "IfDef"
-msgstr ""
+msgstr "IfDef"
 
 #: objinspstrconsts.liisifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
-msgstr ""
+msgstr "Wert setzen"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -1110,7 +1110,7 @@ msgstr "Neuer Untereintrag"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor..."
-msgstr ""
+msgstr "Markeneditor bearbeiten..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."

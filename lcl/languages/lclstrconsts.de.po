@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-16 10:23+0100\n"
+"PO-Revision-Date: 2009-04-30 20:23+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -269,7 +269,7 @@ msgstr "Arbeitsbereich"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr ""
+msgstr "Aquamarin"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -285,7 +285,7 @@ msgstr "Bitmaps"
 
 #: lclstrconsts.rsblackcolorcaption
 msgid "Black"
-msgstr ""
+msgstr "Schwarz"
 
 #: lclstrconsts.rsblank
 msgid "Blank"
@@ -293,7 +293,7 @@ msgstr "Leer"
 
 #: lclstrconsts.rsbluecolorcaption
 msgid "Blue"
-msgstr ""
+msgstr "Blau"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
@@ -338,7 +338,7 @@ msgstr "Schreibweisenabhängig"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
-msgstr ""
+msgstr "Cremefarbig"
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -354,7 +354,7 @@ msgstr "Eigene ..."
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
-msgstr ""
+msgstr "Voreingestellt"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -512,7 +512,7 @@ msgstr "Vorwärts"
 
 #: lclstrconsts.rsfuchsiacolorcaption
 msgid "Fuchsia"
-msgstr ""
+msgstr "Purpur"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
@@ -536,7 +536,7 @@ msgstr "Gradient der inaktiven Titelleiste"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
-msgstr ""
+msgstr "Grau"
 
 #: lclstrconsts.rsgraytextcolorcaption
 msgid "Gray Text"
@@ -544,7 +544,7 @@ msgstr "Ausgegrauter Text"
 
 #: lclstrconsts.rsgreencolorcaption
 msgid "Green"
-msgstr ""
+msgstr "Grün"
 
 #: lclstrconsts.rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -791,7 +791,7 @@ msgstr "Letzter"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr ""
+msgstr "Hellgrün"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
@@ -803,7 +803,7 @@ msgstr "Zeile muß leer sein"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr ""
+msgstr "Kastanienbraun"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -856,7 +856,7 @@ msgstr "&Alles bestätigen"
 
 #: lclstrconsts.rsmedgraycolorcaption
 msgid "Medium Gray"
-msgstr ""
+msgstr "Mittelgrau"
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
@@ -881,7 +881,7 @@ msgstr " geändert "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
-msgstr ""
+msgstr "\"Geldgrün\""
 
 #: lclstrconsts.rsmtconfirmation
 msgid "Confirmation"
@@ -906,7 +906,7 @@ msgstr "Warnung"
 
 #: lclstrconsts.rsnavycolorcaption
 msgid "Navy"
-msgstr ""
+msgstr "Marineblau"
 
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
@@ -915,7 +915,7 @@ msgstr "Nächster"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
-msgstr ""
+msgstr "Keine"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -927,7 +927,7 @@ msgstr "Kein Widgetset-Objekt. Bitte überprüfen Sie, ob die Unit \"Interfaces\
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
-msgstr ""
+msgstr "Oliv"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
@@ -958,10 +958,9 @@ msgid "Post"
 msgstr "Übertragen"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#, fuzzy
 #| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%sMit Ok wird ignoriert und Dateninkonsistenz riskiert.%sMit Abbrechen wird das Programm abgebrochen."
+msgstr "%s%sOk übergeht und riskiert Dateninkonsistenz.%sMit Abbrechen wird das Programm abgebrochen."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -974,7 +973,7 @@ msgstr "Eigenschaft %s fehlt"
 
 #: lclstrconsts.rspurplecolorcaption
 msgid "Purple"
-msgstr ""
+msgstr "Purpur"
 
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
@@ -990,7 +989,7 @@ msgstr "Kann nicht mit dem kompletten Aktualisieren beginnen wenn ein Canvas-Upd
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
-msgstr ""
+msgstr "Rot"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
@@ -1027,7 +1026,7 @@ msgstr "Schriftart auswählen"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
-msgstr ""
+msgstr "Silber"
 
 #: lclstrconsts.rssize
 msgid "  size "
@@ -1035,11 +1034,11 @@ msgstr "  Größe "
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
-msgstr ""
+msgstr "Himmelblau"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
-msgstr ""
+msgstr "Türkiss"
 
 #: lclstrconsts.rstext
 msgid "Text"
@@ -1087,7 +1086,7 @@ msgstr "WARNUNG: Es sind %s nicht entfernte LM_PAINT/LM_GtkPAINT-Meldungs-Links 
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
-msgstr ""
+msgstr "Weiß"
 
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
@@ -1115,7 +1114,7 @@ msgstr "Fenstertext"
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
-msgstr ""
+msgstr "Gelb"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
