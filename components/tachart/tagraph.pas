@@ -1057,15 +1057,11 @@ begin
       with TBasicChartSeries(seriesInZOrder[i]) do begin
         if not Active then continue;
         OffsetDrawArea(ZPosition, Depth);
-        // Set clipping region so we don't draw outside.
-        // TODO: Replace by Canvas.ClipRect after fixing issue 13418.
-        IntersectClipRect(
-          ACanvas.Handle,
-          FClipRect.Left, FClipRect.Top, FClipRect.Right, FClipRect.Bottom);
+        Canvas.ClipRect := FClipRect;
+        Canvas.Clipping := true;
         Draw(ACanvas);
         OffsetDrawArea(-ZPosition, -Depth);
-        // Now disable clipping.
-        SelectClipRgn(ACanvas.Handle, 0);
+        Canvas.Clipping := false;
       end;
   finally
     seriesInZOrder.Free;
