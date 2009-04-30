@@ -4148,29 +4148,30 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.IsControlMouseMsg(var TheMessage: TLMMouse) : Boolean;
 var
-  Control : TControl;
-  ScrolledOffset,
-  P : TPoint;
+  Control: TControl;
+  ScrolledOffset, P: TPoint;
   ClientBounds: TRect;
 begin
   { CaptureControl = nil means that widgetset has captured input, but it does
     not know anything about TControl controls }
-  if (FindOwnerControl(GetCapture) = Self) and (CaptureControl <> nil)
-  then begin
+  if (FindOwnerControl(GetCapture) = Self) and (CaptureControl <> nil) then
+  begin
     Control := nil;
     //DebugLn(['TWinControl.IsControlMouseMsg A ', DbgSName(CaptureControl), ', ',DbgSName(CaptureControl.Parent),', Self: ', DbgSName(Self)]);
-    if (CaptureControl.Parent = Self)
-    then Control := CaptureControl;
+    if (CaptureControl.Parent = Self) then
+      Control := CaptureControl;
   end
-  else begin
+  else
+  begin
     // do query wincontrol childs, in case they overlap
     Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
                             [capfAllowWinControls]);
-    if Control is TWinControl then begin
+    if Control is TWinControl then
+    begin
       // there is a TWinControl child at this position
       // TWinControl childs get their own messages
       // => ignore here
-      Control:=nil;
+      Control := nil;
     end;
   end;
 

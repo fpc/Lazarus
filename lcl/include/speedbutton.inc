@@ -48,11 +48,11 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents, csOpaque];
 
-  FLayout:= blGlyphLeft;
-  FAllowAllUp:= false;
+  FLayout := blGlyphLeft;
+  FAllowAllUp := False;
   FMouseInControl := False;
   FDragging := False;
-  FShowAccelChar:=true;
+  FShowAccelChar := True;
   FSpacing := 4;
   FMargin := -1;
   Color := clBtnFace;

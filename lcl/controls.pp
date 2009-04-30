@@ -2651,44 +2651,52 @@ var
 begin
   //DebugLn('SetCaptureControl Old=',DbgSName(CaptureControl),' New=',DbgSName(Control));
   if (CaptureControl=Control) then exit;
-  if Control=nil then begin
+
+  if Control = nil then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('SetCaptureControl Only ReleaseCapture');
     {$ENDIF}
     // just unset the capturing, intf call not needed
-    CaptureControl:=nil;
+    CaptureControl := nil;
     ReleaseCapture;
-    exit;
+    Exit;
   end;
-  OldCaptureWinControl:=FindOwnerControl(GetCapture);
+
+  OldCaptureWinControl := FindOwnerControl(GetCapture);
   if Control is TWinControl then
-    NewCaptureWinControl:=TWinControl(Control)
+    NewCaptureWinControl := TWinControl(Control)
   else
-    NewCaptureWinControl:=Control.Parent;
-  if NewCaptureWinControl=nil then begin
+    NewCaptureWinControl := Control.Parent;
+
+  if NewCaptureWinControl = nil then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLN('SetCaptureControl Only ReleaseCapture');
     {$ENDIF}
     // just unset the capturing, intf call not needed
     CaptureControl:=nil;
     ReleaseCapture;
-    exit;
+    Exit;
   end;
-  if NewCaptureWinControl=OldCaptureWinControl then begin
+
+  if NewCaptureWinControl = OldCaptureWinControl then
+  begin
     {$IFDEF VerboseMouseCapture}
     DebugLN('SetCaptureControl Keep WinControl ',DbgSName(NewCaptureWinControl),
       ' switch Control ',DbgSName(Control));
     {$ENDIF}
     // just change the CaptureControl, intf call not needed
-    CaptureControl:=Control;
-    exit;
+    CaptureControl := Control;
+    Exit;
   end;
+
   // switch capture control
   {$IFDEF VerboseMouseCapture}
   DebugLN('SetCaptureControl Switch to WinControl=',DbgSName(NewCaptureWinControl),
     ' and Control=',DbgSName(Control));
   {$ENDIF}
-  CaptureControl:=Control;
+  CaptureControl := Control;
   ReleaseCapture;
   SetCapture(TWinControl(NewCaptureWinControl).Handle);
 end;
