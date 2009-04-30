@@ -1186,7 +1186,6 @@ begin
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');
   WriteHeader('%%PageOrder: Ascend');
-  WriteHeader('%%Page: 1 1');
   WriteHeader('');
   WriteHeader('%------------------------------------------------------------');
   WriteHeader('%================== BEGIN SETUP==============================');
@@ -1422,6 +1421,7 @@ begin
   WriteHeader('');
   WriteOrientation;
   WriteHeader('');
+  WriteHeader('%%Page: 1 1');
 end;
 
 procedure TPostScriptPrinterCanvas.EndDoc;
