@@ -111,8 +111,14 @@ begin
         Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
         Exit;
       end;
-      
-      if (lfHeight = 0) and (lfWeight <> FW_BOLD) and (CompareText(lfFacename, 'default') = 0) then
+
+      // if we have really default font
+      if (lfHeight = 0) and
+         (lfWeight = 0) and
+         (lfItalic = 0) and
+         (lfUnderline = 0) and
+         (lfOrientation = 0) and
+         (CompareText(lfFacename, 'default') = 0) then
       begin
         // use default font
         {$IFDEF VerboseFonts}
