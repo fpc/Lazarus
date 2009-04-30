@@ -454,14 +454,13 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont')
   then Exit;
 
-  Widget:=pGtkWidget(AWinControl.handle);
-  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then
+  Widget := PGtkWidget(AWinControl.Handle);
+  if GtkWidgetIsA(Widget, GTKAPIWidget_GetType) then
     exit;
 
-  if AFont.IsDefault then exit;
   //DebugLn('TGtkWSWinControl.SetFont ',DbgSName(AWinControl));
-  GtkWidgetSet.SetWidgetFont(Widget,AFont);
-  GtkWidgetSet.SetWidgetColor(Widget,AWinControl.Font.Color,clNone,
+  GtkWidgetSet.SetWidgetFont(Widget, AFont);
+  GtkWidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT,GTK_STATE_SELECTED
                                {$IFDEF GTK2},GTK_STYLE_TEXT{$ENDIF}]);

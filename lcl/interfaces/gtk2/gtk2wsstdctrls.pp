@@ -83,7 +83,7 @@ type
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TGtk2WSGroupBox }
@@ -124,7 +124,7 @@ type
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     
     class function  CanFocus(const AWinControl: TWinControl): boolean; override;
@@ -161,7 +161,7 @@ type
                                      AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TGtk2WSListBox }
@@ -198,7 +198,7 @@ type
 
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
@@ -271,7 +271,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -292,7 +292,7 @@ type
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
       const NewState: TCheckBoxState); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TGtk2WSCheckBox }
@@ -560,9 +560,9 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
-  Widget := GetWidgetInfo(Pointer(AWinControl.Handle), True)^.CoreWidget;
+  Widget := GetWidgetInfo(Pointer(AWinControl.Handle))^.CoreWidget;
 
-  Gtk2WidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
+  Gtk2WidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
         GTK_STYLE_TEXT]);
   Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
@@ -833,19 +833,19 @@ begin
 end;
 
 class procedure TGtk2WSCustomCheckBox.SetFont(const AWinControl: TWinControl;
-  const AFont: tFont);
+  const AFont: TFont);
 var
   Widget: PGTKWidget;
   LblWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit ;
 
-  Widget:= PGtkWidget(AWinControl.Handle);
+  Widget := PGtkWidget(AWinControl.Handle);
   LblWidget := (pGtkBin(Widget)^.Child);
 
-  if LblWidget<>nil then begin
-    Gtk2WidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+  if LblWidget <> nil then
+  begin
+    Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
@@ -1502,7 +1502,7 @@ begin
 end;
 
 class procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   Entry: PGtkEntry;
   WidgetInfo: PWidgetInfo;
@@ -1512,8 +1512,10 @@ begin
 
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
-  if Entry<>nil then begin
-    Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AWinControl.font.color, clNone,
+
+  if Entry <> nil then
+  begin
+    Gtk2WidgetSet.SetWidgetColor(PGtkWidget(Entry), AFont.color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
     Gtk2WidgetSet.SetWidgetFont(PGtkWidget(Entry), AFont);
   end;
@@ -1675,15 +1677,17 @@ begin
 end;
 
 class procedure TGtk2WSCustomGroupBox.SetFont(const AWinControl: TWinControl;
-  const AFont: tFont);
+  const AFont: TFont);
 var
   Frame: PGtkFrame;
   Lbl: PGtkWidget;
 begin
   Frame:=PGtkFrame(Pointer(AWinControl.Handle));
   Lbl := gtk_frame_get_label_widget(Frame);
-  if Lbl <> nil then begin
-    Gtk2WidgetSet.SetWidgetColor(Lbl, AWinControl.Font.Color, clNone,
+
+  if Lbl <> nil then
+  begin
+    Gtk2WidgetSet.SetWidgetColor(Lbl, AFont.Color, clNone,
       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     Gtk2WidgetSet.SetWidgetFont(Lbl, AFont);
   end;
@@ -1834,18 +1838,17 @@ begin
 end;
 
 class procedure TGtk2WSButton.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   LblWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  if AFont.IsDefault then exit;
 
   LblWidget := PGtkWidget(GetLabelWidget(PGtkEventBox(AWinControl.Handle)));
 
   if (LblWidget <> nil) then
   begin
-    Gtk2WidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+    Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
   end;

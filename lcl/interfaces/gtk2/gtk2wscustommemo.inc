@@ -174,19 +174,19 @@ begin
 end;
 
 class procedure TGtk2WSCustomMemo.SetFont(const AWinControl: TWinControl;
-  const AFont : TFont);
+  const AFont: TFont);
 var
   AWidget: PGTKWidget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
-  if AFont.IsDefault then exit;
 
   AWidget:= PGtkWidget(AWinControl.Handle);
-  AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
+  AWidget:= GetWidgetInfo(AWidget)^.CoreWidget;
 
-  if AWidget<>nil then begin
-    Gtk2WidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
+  if AWidget <> nil then
+  begin
+    Gtk2WidgetSet.SetWidgetColor(AWidget, AFont.color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
         GTK_STYLE_TEXT]);
     Gtk2WidgetSet.SetWidgetFont(AWidget, AFont);
