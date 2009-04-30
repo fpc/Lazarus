@@ -472,7 +472,7 @@ constructor TPOFile.Create(const AFilename: String; Full:boolean=False);
 var
   f: TStream;
 begin
-  f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
+  f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
   try
     Self.Create(f, Full);
     if FHeader=nil then

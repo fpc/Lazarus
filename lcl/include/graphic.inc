@@ -233,7 +233,7 @@ procedure TGraphic.LoadFromFile(const Filename: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead{ or fmShareDenyWrite});
+  Stream := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally

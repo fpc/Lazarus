@@ -1402,29 +1402,28 @@ end;
   function CopyFile(const SrcFilename, DestFilename: string PreserveTime:
     boolean): boolean;
  ------------------------------------------------------------------------------}
-function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean
-  ): boolean;
+function CopyFile(const SrcFilename, DestFilename: String; PreserveTime: Boolean): Boolean;
 var
   SrcFS: TFileStream;
   DestFS: TFileStream;
 begin
   try
-    SrcFS:=TFileStream.Create(UTF8ToSys(SrcFilename),fmOpenRead);
+    SrcFS:=TFileStream.Create(UTF8ToSys(SrcFilename), fmOpenRead or fmShareDenyWrite);
     try
-      DestFS:=TFileStream.Create(UTF8ToSys(DestFilename),fmCreate);
+      DestFS := TFileStream.Create(UTF8ToSys(DestFilename), fmCreate);
       try
-        DestFS.CopyFrom(SrcFS,SrcFS.Size);
+        DestFS.CopyFrom(SrcFS, SrcFS.Size);
       finally
         DestFS.Free;
       end;
       if PreserveTime then
-         FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
+        FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
     finally
       SrcFS.Free;
     end;
-    Result:=true;
+    Result := True;
   except
-    Result:=false;
+    Result := False;
   end;
 end;
 
@@ -1866,22 +1865,22 @@ end;
 {------------------------------------------------------------------------------
   function ReadFileToString(const Filename: string): string;
  ------------------------------------------------------------------------------}
-function ReadFileToString(const Filename: string): string;
+function ReadFileToString(const Filename: String): String;
 var
   fs: TFileStream;
 begin
-  Result:='';
+  Result := '';
   try
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
+    fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
     try
-      Setlength(Result,fs.Size);
-      if Result<>'' then
-        fs.Read(Result[1],length(Result));
+      Setlength(Result, fs.Size);
+      if Result <> '' then
+        fs.Read(Result[1], Length(Result));
     finally
       fs.Free;
     end;
   except
-    Result:='';
+    Result := '';
   end;
 end;
 

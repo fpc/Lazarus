@@ -494,7 +494,7 @@ begin
   Ext := ExtractFileExt(Filename);
   System.Delete(Ext, 1, 1); // delete '.'
   
-  Stream := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead{ or fmShareDenyWrite});
+  Stream := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStreamWithFileExt(Stream, ext);
   finally

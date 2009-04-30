@@ -4821,7 +4821,7 @@ procedure TCustomTreeView.LoadFromFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally
