@@ -4374,11 +4374,12 @@ end;
 
 function TFindDeclarationTool.FindAncestorOfClass(ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
-var AncestorAtom: TAtomPosition;
+var
   OldInput: TFindDeclarationInput;
   AncestorNode, ClassIdentNode: TCodeTreeNode;
   SearchBaseClass: boolean;
   AncestorContext: TFindContext;
+  AncestorStartPos: LongInt;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
@@ -4388,26 +4389,30 @@ begin
   Result:=false;
   
   // ToDo: ppu, ppw, dcu
-  
+
   // search the ancestor name
-  MoveCursorToNodeStart(ClassNode);
-  ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
-  if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
-  ReadNextAtom;
   ClassIdentNode:=ClassNode.Parent;
-  if (ClassIdentNode<>nil) and (ClassIdentNode.Desc=ctnGenericType) then
-    ClassIdentNode:=ClassIdentNode.FirstChild;
-  if AtomIsChar('(') then begin
+
+  if (ClassNode.FirstChild<>nil)
+  and (ClassNode.FirstChild.Desc=ctnClassInheritance)
+  and (ClassNode.FirstChild.FirstChild<>nil) then begin
+    MoveCursorToCleanPos(ClassNode.FirstChild.FirstChild.StartPos);
+    AncestorStartPos:=CurPos.StartPos;
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
-    // ancestor name found
-    AncestorAtom:=CurPos;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      AncestorStartPos:=CurPos.StartPos;
+    end;
     SearchBaseClass:=false;
     if (ClassIdentNode<>nil)
-    and (CompareIdentifiers(@Src[CurPos.StartPos],
+    and (ClassIdentNode.Desc=ctnTypeDefinition)
+    and (CompareIdentifiers(@Src[AncestorStartPos],
       @Src[ClassIdentNode.StartPos])=0)
     then begin
-      MoveCursorToCleanPos(CurPos.StartPos);
+      MoveCursorToCleanPos(AncestorStartPos);
       RaiseException('ancestor has same name as class');
     end;
   end else begin
@@ -4422,7 +4427,7 @@ begin
     if ClassNode.Desc=ctnClass then begin
       // if this class is not TObject, TObject is class ancestor
       SearchBaseClass:=
-                    not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
+                  not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
     end else begin
       // Delphi has as default interface IInterface
       // FPC has as interface IUnknown
@@ -4434,18 +4439,17 @@ begin
   end;
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-  ' search ancestor class = ',GetAtom);
+  ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
   {$ENDIF}
 
   // search ancestor class context
-  CurPos.StartPos:=CurPos.EndPos;
   Params.Save(OldInput);
   Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                  fdfExceptionOnNotFound]
                 +(fdfGlobals*Params.Flags)
                 -[fdfTopLvlResolving];
   if not SearchBaseClass then
-    Params.SetIdentifier(Self,@Src[AncestorAtom.StartPos],nil)
+    Params.SetIdentifier(Self,@Src[AncestorStartPos],nil)
   else begin
     if ClassNode.Desc=ctnClass then
       Params.SetIdentifier(Self,'TObject',nil)

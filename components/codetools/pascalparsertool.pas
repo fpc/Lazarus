@@ -204,6 +204,7 @@ type
     procedure ReadVariableType;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
+    procedure ReadClassInheritance(CreateChildNodes: boolean);
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -629,8 +630,7 @@ begin
       RaiseClassKeyWordExpected;
     ReadNextAtom;
     if CurPos.Flag=cafRoundBracketOpen then
-      // read inheritage
-      ReadTilBracketClose(true)
+      ReadClassInheritance(true)
     else
       UndoReadNextAtom;
     // clear the last atoms
@@ -638,7 +638,7 @@ begin
     // start the first class section (always published)
     CreateChildNode;
     CurNode.Desc:=ctnClassPublished;
-    CurNode.StartPos:=CurPos.EndPos; // behind 'class'
+    CurNode.StartPos:=CurPos.EndPos; // behind 'class' including the space
     ReadNextAtom;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
@@ -3368,12 +3368,11 @@ begin
   if (CurPos.Flag<>cafSemicolon) then begin
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
-      ReadTilBracketClose(true);
+      ReadClassInheritance(ChildCreated);
       ReadNextAtom;
     end;
-    if CurPos.Flag=cafEdgedBracketOpen then begin
+    if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
-    end;
     // parse till "end" of class/object
     CurKeyWordFuncList:=ClassInterfaceKeyWordFuncList;
     try
@@ -4171,6 +4170,49 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
+end;
+
+procedure TPascalParserTool.ReadClassInheritance(CreateChildNodes: boolean);
+// cursor must be the round bracket open
+// at the end cursor will be on round bracket close
+begin
+  // read inheritage
+  if CreateChildNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnClassInheritance;
+  end;
+  // read list of ancestors, interfaces
+  ReadNextAtom;
+  if CurPos.Flag<>cafRoundBracketClose then begin
+    repeat
+      // read Identifier or Unit.Identifier
+      AtomIsIdentifier(true);
+      if CreateChildNodes then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnIdentifier;
+      end;
+      ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        ReadNextAtom;
+      end;
+      if CreateChildNodes then begin
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+      end;
+      // read comma or )
+      if CurPos.Flag=cafRoundBracketClose then break;
+      if CurPos.Flag<>cafComma then
+        RaiseCharExpectedButAtomFound(')');
+      ReadNextAtom;
+    until false;
+  end;
+  // close ctnClassInheritance
+  if CreateChildNodes then begin
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end;
 end;
 
 procedure TPascalParserTool.ValidateToolDependencies;

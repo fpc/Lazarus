@@ -82,19 +82,20 @@ const
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
-  ctnClassGUID          = 32;
-  ctnClassTypePrivate   = 33;
-  ctnClassTypeProtected = 34;
-  ctnClassTypePublic    = 35;
-  ctnClassTypePublished = 36;
-  ctnClassVarPrivate    = 37;
-  ctnClassVarProtected  = 38;
-  ctnClassVarPublic     = 39;
-  ctnClassVarPublished  = 40;
-  ctnClassPrivate       = 41;
-  ctnClassProtected     = 42;
-  ctnClassPublic        = 43;
-  ctnClassPublished     = 44;
+  ctnClassInheritance   = 32;
+  ctnClassGUID          = 33;
+  ctnClassTypePrivate   = 34;
+  ctnClassTypeProtected = 35;
+  ctnClassTypePublic    = 36;
+  ctnClassTypePublished = 37;
+  ctnClassVarPrivate    = 38;
+  ctnClassVarProtected  = 39;
+  ctnClassVarPublic     = 40;
+  ctnClassVarPublished  = 41;
+  ctnClassPrivate       = 42;
+  ctnClassProtected     = 43;
+  ctnClassPublic        = 44;
+  ctnClassPublished     = 45;
 
   ctnProperty           = 50;
   ctnMethodMap          = 51;
@@ -354,6 +355,7 @@ begin
 
   ctnClass: Result:='Class';
   ctnClassInterface: Result:='Class Interface';
+  ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
   ctnClassPublished: Result:='Published';
   ctnClassPrivate: Result:='Private';
