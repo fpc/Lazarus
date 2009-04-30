@@ -4777,7 +4777,7 @@ begin
   if Handle = 0 then Exit;
   ARect.Left := 0;
   ARect.Top := 0;
-  Widget := pgtkwidget(Handle);
+  Widget := PGtkWidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
   if (ClientWidget <> nil) then
     Widget := ClientWidget;
