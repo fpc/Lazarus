@@ -37,9 +37,9 @@ begin
   if (TObject(Target) is TCustomControl)
   {$ifdef gtk1}
      and GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_Type)
+     and not (wwiNoEraseBkgnd in GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle))^.Flags)
   {$endif}
   then begin
-    //DebugLn('LM_ERASEBKGND for: ', dbgsName(TCustomControl(Target)));
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
     Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);

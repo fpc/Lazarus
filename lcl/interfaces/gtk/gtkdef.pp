@@ -414,7 +414,8 @@ type
     wwiValidQueuedEvent,              // Mark this widgetinfo as valid queued proc
                                       // see gtkwsmenus.pp: gtkWSPopupMenuDeactivate
     wwiDeactivating,                  // during gtk deactivate
-    wwiActivating                     // during gtk activate
+    wwiActivating,                    // during gtk activate
+    wwiNoEraseBkgnd                   // erase background is disabled for widget
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
   tGtkStateEnumRange = 0..31;

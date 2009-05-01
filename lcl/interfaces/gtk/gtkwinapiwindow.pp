@@ -476,7 +476,8 @@ procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl;
 // All //@ marked lines are already set by the inherited realize
 // we only have to (re)set the event mask
 
-//@var
+var
+  Info: PWidgetInfo;
 //@  Attributes: TGdkWindowAttr;
 //@  AttributesMask: gint;
 begin
@@ -518,8 +519,9 @@ begin
 
 //@  AWidget^.Style := gtk_style_attach(AWidget^.Style, AWidget^.Window);
 //@  gtk_style_set_background(AWidget^.Style, AWidget^.Window, GTK_STATE_NORMAL);
-  gdk_window_set_back_pixmap(AWidget^.Window, nil, GdkFalse);
-
+  Info := GetWidgetInfo(AWidget);
+  if (Info = nil) or ([wwiNoEraseBkgnd] * Info^.Flags = []) then
+    gdk_window_set_back_pixmap(AWidget^.Window, nil, GdkFalse);
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl;

@@ -610,28 +610,22 @@ class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
-  TempWidget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Allocation: TGTKAllocation;
 begin
-  // TPanel control is a area with frame around. Area can have its own color
-
-  // To implement that in gtk we need:
-  // 1. GtkFrame to draw frame around area
-  // 2. GtkFixed to plaace controls and draw color area
-
-  Widget := gtk_frame_new(nil);
-  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
-  gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[TCustomPanel(AWinControl).BorderStyle]);
-  TempWidget := CreateFixedClientWidget;
-  gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
-  gtk_widget_show(TempWidget);
-  SetFixedWidget(Widget, TempWidget);
-  SetMainWidget(Widget, TempWidget);
-  gtk_widget_show(Widget);
-
+  Widget := TGtkWidgetset(Widgetset).CreateAPIWidget(AWinControl);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
+
+  Result := THandle(PtrUInt(Widget));
+  if Result = 0 then Exit;
+
+  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+  Include(WidgetInfo^.Flags, wwiNoEraseBkgnd);
+
   // set allocation
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
@@ -639,9 +633,8 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
 
-  Result := TLCLIntfHandle(PtrUInt(Widget));
   Set_RC_Name(AWinControl, Widget);
-  SetCallBacks(Widget, WidgetInfo);
+  SetCallbacks(Widget, WidgetInfo);
 end;
 
 class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
