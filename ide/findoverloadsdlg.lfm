@@ -8,6 +8,7 @@ object FindOverloadsDialog: TFindOverloadsDialog
   ClientHeight = 338
   ClientWidth = 548
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ButtonPanel1: TButtonPanel
@@ -16,6 +17,7 @@ object FindOverloadsDialog: TFindOverloadsDialog
     Top = 288
     Width = 536
     TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbClose]
   end
   object CurGroupBox: TGroupBox
     Left = 6

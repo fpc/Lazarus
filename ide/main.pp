@@ -2800,6 +2800,9 @@ begin
   ecRemoveUnusedUnits:
     DoRemoveUnusedUnits;
 
+  ecFindOverloads:
+    DoFindOverloads;
+
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
 
