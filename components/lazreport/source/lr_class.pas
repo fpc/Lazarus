@@ -7608,6 +7608,11 @@ begin
         begin
           aValue:= frVariables[s];
           Exit;
+        end else
+        if CompareText(s,'REPORTTITLE')=0 then
+        begin
+          aValue := Title;
+          Exit;
         end;
         if s <> SubValue then
         begin
@@ -7663,13 +7668,17 @@ begin
 end;
 
 procedure TfrReport.LoadFromXML(XML: TLrXMLConfig; Path: String);
+var
+  ATitle: string;
 begin
   CurReport := Self;
   frVersion := XML.GetValue(Path+'Version/Value', 21);
   fComments.Text := XML.GetValue(Path+'Comments/Value', '');
   fKeyWords := XML.GetValue(Path+'KeyWords/Value', '');
   fSubject  := XML.GetValue(Path+'Subject/Value', '');
-  fTitle    := XML.GetValue(Path+'Title/Value', '');
+  ATitle    := XML.GetValue(Path+'Title/Value', '');
+  if ATitle<>'' then
+    fTitle := ATitle;
 
 //  XML.SetValue(Path+'ReportCreateDate/Value', FReportCreateDate);
 //  XML.SetValue(Path+'ReportCreateDate/Value', FReportLastChange);
