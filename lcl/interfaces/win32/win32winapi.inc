@@ -970,7 +970,7 @@ begin
   if UnicodeEnabledOS then
     TempLogFontW.lfFaceName := UTF8ToUTF16(FontName)
   else
-    TempLogFontW.lfFaceName := Utf8ToAnsi(FontName);
+    TempLogFont.lfFaceName := Utf8ToAnsi(FontName);
   {$endif}
   end;
   {$ifdef WindowsUnicodeSupport}
