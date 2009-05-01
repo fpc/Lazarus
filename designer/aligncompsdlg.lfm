@@ -3,23 +3,37 @@ object AlignComponentsDialog: TAlignComponentsDialog
   Height = 238
   Top = 325
   Width = 400
-  ActiveControl = OKButton
   BorderStyle = bsSizeToolWin
   Caption = 'AlignComponentsDialog'
   ClientHeight = 238
   ClientWidth = 400
-  OnResize = FormResize
   Position = poScreenCenter
   LCLVersion = '0.9.27'
+  object PosLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 200
+    Height = 14
+    Top = 0
+    Width = 1
+    ParentColor = False
+  end
   object HorizontalRadioGroup: TRadioGroup
-    AnchorSideBottom.Control = ACDBtnPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = PosLabel
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 188
+    Height = 194
     Top = 6
     Width = 191
-    Anchors = [akTop, akLeft, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 6
     Caption = 'HorizontalRadioGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -32,14 +46,21 @@ object AlignComponentsDialog: TAlignComponentsDialog
     TabOrder = 0
   end
   object VerticalRadioGroup: TRadioGroup
-    AnchorSideBottom.Control = ACDBtnPanel
+    AnchorSideLeft.Control = PosLabel
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
     Left = 203
-    Height = 188
+    Height = 194
     Top = 6
     Width = 191
-    Anchors = [akTop, akRight, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Caption = 'VerticalRadioGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -51,49 +72,13 @@ object AlignComponentsDialog: TAlignComponentsDialog
     ChildSizing.ControlsPerLine = 1
     TabOrder = 1
   end
-  object ACDBtnPanel: TPanel
-    Left = 0
-    Height = 38
-    Top = 200
-    Width = 400
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 400
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 206
+    Width = 388
     TabOrder = 2
-    object OKButton: TBitBtn
-      Left = 236
-      Height = 26
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object CancelButton: TBitBtn
-      AnchorSideRight.Side = asrBottom
-      Left = 317
-      Height = 26
-      Top = 6
-      Width = 77
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

@@ -31,50 +31,40 @@ interface
 
 uses
   Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, LResources,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, ButtonPanel, StdCtrls;
 
 type
   { TAlignComponentsDialog }
   TAlignComponentsDialog = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     HorizontalRadioGroup: TRadioGroup;
-    ACDBtnPanel: TPanel;
+    PosLabel: TLabel;
     VerticalRadioGroup: TRadioGroup;
-    procedure FormResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);  override;
   end;
 
-function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
-  ): TModalResult;
+function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
 
 implementation
 
-function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
-  ): TModalResult;
-var AlignComponentsDialog: TAlignComponentsDialog;
+function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
+var
+  AlignComponentsDialog: TAlignComponentsDialog;
 begin
-  AlignComponentsDialog:=TAlignComponentsDialog.Create(nil);
+  AlignComponentsDialog := TAlignComponentsDialog.Create(nil);
   try
-    with AlignComponentsDialog do begin
-      HorizontalRadioGroup.ItemIndex:=0;
-      VerticalRadioGroup.ItemIndex:=0;
-      Result:=ShowModal;
-      HorizAlignID:=AlignComponentsDialog.HorizontalRadioGroup.ItemIndex;
-      VertAlignID:=AlignComponentsDialog.VerticalRadioGroup.ItemIndex;
+    with AlignComponentsDialog do
+    begin
+      HorizontalRadioGroup.ItemIndex := 0;
+      VerticalRadioGroup.ItemIndex := 0;
+      Result := ShowModal;
+      HorizAlignID := AlignComponentsDialog.HorizontalRadioGroup.ItemIndex;
+      VertAlignID := AlignComponentsDialog.VerticalRadioGroup.ItemIndex;
     end;
   finally
     AlignComponentsDialog.Free;
   end;
-end;
-
-{ TAlignComponentsDialog }
-procedure TAlignComponentsDialog.FormResize(Sender: TObject);
-begin
-  HorizontalRadioGroup.Width := ClientWidth div 2 - 9;
-  VerticalRadioGroup.Left := HorizontalRadioGroup.Width + 12;
-  VerticalRadioGroup.Width := ClientWidth div 2 - 9;
 end;
 
 constructor TAlignComponentsDialog.Create(AOwner: TComponent);
@@ -83,9 +73,11 @@ begin
 
   Caption:=lisAlignment;
 
-  with HorizontalRadioGroup do begin
+  with HorizontalRadioGroup do
+  begin
     Caption:=lisHorizontal;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
       Add(lisNoChange);
       Add(lisLeftSides);
@@ -99,9 +91,11 @@ begin
     end;
   end;
 
-  with VerticalRadioGroup do begin
+  with VerticalRadioGroup do
+  begin
     Caption:=lisVertical;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
       Add(lisNoChange);
       Add(lisTops);
@@ -115,10 +109,8 @@ begin
     end;
   end;
 
-  OkButton.Caption:=dlgButApply;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  BtnPanel.OKButton.Caption := lisOkBtn;
+  BtnPanel.CancelButton.Caption := dlgCancel;
 end;
 
 initialization
