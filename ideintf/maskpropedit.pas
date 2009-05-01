@@ -26,17 +26,15 @@ interface
 uses
   Classes, SysUtils, MaskUtils, LResources, Forms, Controls, Graphics, Dialogs,
   StrUtils, StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
-  PropEdits, ComponentEditors, ObjInspStrConsts;
+  PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
 type
 
   { TMaskEditorForm }
 
   TMaskEditorForm = class(TForm)
-    CancelButton: TBitBtn;
-    HelpButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     LoadSampleMasksButton: TButton;
-    OkButton: TBitBtn;
     SaveLiteralCheckBox: TCheckBox;
     InputMaskEdit: TEdit;
     CharactersForBlanksEdit: TEdit;

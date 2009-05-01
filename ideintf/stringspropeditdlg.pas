@@ -23,16 +23,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts, ExtCtrls;
+  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel;
   
 type
 
   { TStringsPropEditorFrm }
 
   TStringsPropEditorFrm = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
-    BtnPanel: TPanel;
+    BtnPanel: TButtonPanel;
     StatusLabel: TLabel;
     SortButton: TButton;
     TextGroupBox: TGroupBox;
@@ -54,8 +52,8 @@ begin
   Caption := oisStringsEditorDialog;
   StatusLabel.Caption := ois0Lines0Chars;
   SortButton.Caption := oisSort;
-  OKButton.Caption := oisOk2;
-  CancelButton.Caption := oiStdActDataSetCancel1Hint;
+  BtnPanel.OKButton.Caption := oisOk2;
+  BtnPanel.CancelButton.Caption := oiStdActDataSetCancel1Hint;
 
   AddButtons;
 end;

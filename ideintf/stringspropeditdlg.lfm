@@ -13,15 +13,19 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object TextGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 252
+    Height = 258
     Top = 6
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 234
+    ClientHeight = 240
     ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
@@ -29,7 +33,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideBottom.Side = asrBottom
       Left = 9
       Height = 14
-      Top = 214
+      Top = 220
       Width = 57
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
@@ -41,7 +45,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 202
+      Height = 208
       Top = 6
       Width = 291
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -69,51 +73,13 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       TabOrder = 1
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 38
-    Top = 264
-    Width = 400
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 400
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 270
+    Width = 388
     TabOrder = 1
-    object CancelButton: TBitBtn
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 317
-      Height = 26
-      Top = 6
-      Width = 77
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object OKButton: TBitBtn
-      AnchorSideBottom.Side = asrBottom
-      Left = 236
-      Height = 26
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end
