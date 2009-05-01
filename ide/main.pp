@@ -850,12 +850,12 @@ type
                            Flags: TCodeToolsFlags): boolean;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
-                               AddJumpPoint: boolean): TModalResult; override;
+                               AddJumpPoint: boolean; MarkLine: Boolean = False): TModalResult; override;
     function DoJumpToCodePos(
                         ActiveSrcEdit: TSourceEditor;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; override;
+                        AddJumpPoint: boolean; FocusEditor: Boolean = True; MarkLine: Boolean = False): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
@@ -12323,20 +12323,20 @@ begin
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
-  NewTopLine: integer; AddJumpPoint: boolean): TModalResult;
+  NewTopLine: integer; AddJumpPoint: boolean; MarkLine: Boolean): TModalResult;
 var
   CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
   CodeBuffer:=CodeToolBoss.LoadFile(CleanAndExpandFilename(Filename),true,false);
   if CodeBuffer=nil then exit;
-  Result:=DoJumpToCodePos(nil,nil,CodeBuffer,NewX,NewY,NewTopLine,AddJumpPoint);
+  Result:=DoJumpToCodePos(nil,nil,CodeBuffer,NewX,NewY,NewTopLine,AddJumpPoint, True, MarkLine);
 end;
 
 function TMainIDE.DoJumpToCodePos(
   ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-  AddJumpPoint: boolean; FocusEditor: boolean): TModalResult;
+  AddJumpPoint: boolean; FocusEditor: boolean; MarkLine: Boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   NewUnitInfo: TUnitInfo;
@@ -12378,7 +12378,8 @@ begin
   if NewTopLine<1 then
     NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
   //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
-  with NewSrcEdit.EditorComponent do begin
+  with NewSrcEdit.EditorComponent do 
+  begin
     MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
     BlockBegin:=LogicalCaretXY;
     BlockEnd:=BlockBegin;
@@ -12386,6 +12387,8 @@ begin
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
+  if MarkLine then
+    NewSrcEdit.ErrorLine := NewY;
 
   if FocusEditor
   then begin

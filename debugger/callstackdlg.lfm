@@ -172,52 +172,43 @@ inherited CallStackDlg: TCallStackDlg
     top = 80
     object actShow: TAction
       Caption = 'Show'
-      DisableIfNoHandler = True
       OnExecute = actShowClick
     end
     object actSetCurrent: TAction
       Caption = 'Current'
-      DisableIfNoHandler = True
       OnExecute = actSetAsCurrentClick
     end
     object actCopyAll: TAction
       Caption = 'Copy All'
-      DisableIfNoHandler = True
       OnExecute = actCopyAllClick
     end
     object actViewMore: TAction
       Category = 'View'
       Caption = 'More'
-      DisableIfNoHandler = True
       OnExecute = actViewMoreExecute
     end
     object actViewGoto: TAction
       Category = 'View'
       Caption = 'Goto'
-      DisableIfNoHandler = True
       OnExecute = actViewGotoExecute
     end
     object actViewLimit: TAction
       Category = 'View'
       Caption = '10'
-      DisableIfNoHandler = True
       OnExecute = actViewLimitExecute
     end
     object actViewTop: TAction
       Category = 'View'
       Caption = 'Top'
-      DisableIfNoHandler = True
       OnExecute = actViewTopExecute
     end
     object actViewBottom: TAction
       Category = 'View'
       Caption = 'Bottom'
-      DisableIfNoHandler = True
       OnExecute = actViewBottomExecute
     end
     object actToggleBreakPoint: TAction
       Caption = 'Toggle Breakpoint'
-      DisableIfNoHandler = True
       OnExecute = actToggleBreakPointExecute
     end
   end

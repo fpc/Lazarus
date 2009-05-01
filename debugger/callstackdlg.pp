@@ -332,7 +332,7 @@ begin
 
   Filename := Entry.Source;
   if (FileName <> '') and DebugBoss.GetFullFilename(Filename, True)
-  then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True);
+  then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
 end;
 
 procedure TCallStackDlg.CopyToClipBoard;

@@ -166,12 +166,15 @@ type
                         ActiveSrcEdit: TSourceEditorInterface;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean): TModalResult; override;
+                        AddJumpPoint: boolean;
+                        MarkLine: Boolean = False): TModalResult; override;
     function DoJumpToCodePos(
                         ActiveSrcEdit: TSourceEditor;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean; FocusEditor: Boolean=True): TModalResult; virtual; abstract;
+                        AddJumpPoint: boolean;
+                        FocusEditor: Boolean = True;
+                        MarkLine: Boolean = False): TModalResult; virtual; abstract;
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
@@ -1099,17 +1102,17 @@ end;
 
 function TMainIDEBase.DoJumpToCodePosition(
   ActiveSrcEdit: TSourceEditorInterface; ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer; AddJumpPoint: boolean
-  ): TModalResult;
+  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer; AddJumpPoint: boolean;
+  MarkLine: Boolean): TModalResult;
 var
   SrcEdit: TSourceEditor;
 begin
-  if ActiveSrcEdit=nil then
-    SrcEdit:=nil
+  if ActiveSrcEdit = nil then
+    SrcEdit := nil
   else
-    SrcEdit:=ActiveSrcEdit as TSourceEditor;
-  Result:=DoJumpToCodePos(SrcEdit as TSourceEditor, ActiveUnitInfo,
-                          NewSource, NewX, NewY, NewTopLine, AddJumpPoint);
+    SrcEdit := ActiveSrcEdit as TSourceEditor;
+  Result := DoJumpToCodePos(SrcEdit as TSourceEditor, ActiveUnitInfo,
+                            NewSource, NewX, NewY, NewTopLine, AddJumpPoint, MarkLine);
 end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);

@@ -168,12 +168,14 @@ type
                                OnClickEvent: TNotifyEvent); virtual; abstract;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
-                               AddJumpPoint: boolean): TModalResult; virtual; abstract;
+                               AddJumpPoint: boolean;
+                               MarkLine: Boolean = False): TModalResult; virtual; abstract;
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean): TModalResult; virtual; abstract;
+                        AddJumpPoint: boolean;
+                        MarkLine: Boolean = False): TModalResult; virtual; abstract;
 
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
