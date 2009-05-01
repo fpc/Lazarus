@@ -2133,6 +2133,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Graph:=TDeclarationOverloadsGraph.Create;
+    Graph.OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
     Result:=Graph.Init(NewCode,NewX,NewY);
   except
     on e: Exception do Result:=HandleException(e);
@@ -4886,9 +4887,10 @@ function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
   Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('[TCodeToolManager.OnGetCodeToolForBuffer]'
-    ,' Sender=',TCustomCodeTool(Sender).MainFilename
-    ,' Code=',Code.Filename);
+  DbgOut('[TCodeToolManager.OnGetCodeToolForBuffer]');
+  if Sender is TCustomCodeTool then
+    DbgOut(' Sender=',TCustomCodeTool(Sender).MainFilename);
+  debugln(' Code=',Code.Filename);
   {$ENDIF}
   Result:=TFindDeclarationTool(GetCodeToolForSource(Code,GoToMainCode,true));
 end;

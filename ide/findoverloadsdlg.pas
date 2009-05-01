@@ -157,16 +157,18 @@ var
 begin
   Graph:=nil;
   FindOverloadsDialog:=nil;
+  CodeToolBoss.ActivateWriteLock;
   try
     if not CodeToolBoss.GatherOverloads(Code,X,Y,Graph) then begin
       LazarusIDE.DoJumpToCodeToolBossError;
       exit(mrCancel);
     end;
-    DebugLn(['ShowFindOverloadsDialog ',Graph.StartCode.Filename,' ',Graph.StartX,',',Graph.StartY]);
+    //DebugLn(['ShowFindOverloadsDialog ',Graph.StartCode.Filename,' ',Graph.StartX,',',Graph.StartY]);
     FindOverloadsDialog:=TFindOverloadsDialog.Create(nil);
     FindOverloadsDialog.Worker.Graph:=Graph;
     Result:=FindOverloadsDialog.ShowModal;
   finally
+    CodeToolBoss.DeactivateWriteLock;
     FindOverloadsDialog.Free;
     Graph.Free;
   end;

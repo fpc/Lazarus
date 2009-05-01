@@ -142,9 +142,12 @@ const
 
 
   // combined values
-  AllCodeSections =
-     [ctnProgram, ctnPackage, ctnLibrary, ctnUnit, ctnInterface,
-      ctnImplementation, ctnInitialization, ctnFinalization];
+  AllSourceTypes =
+     [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
+  AllUsableSourceTypes =
+     [ctnUnit];
+  AllCodeSections = AllSourceTypes
+     + [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
   AllClassBaseSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
   AllClassTypeSections =
@@ -173,10 +176,6 @@ const
       ctnClassOfType,ctnVariantType,ctnConstant];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement];
-  AllSourceTypes =
-     [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
-  AllUsableSourceTypes =
-     [ctnUnit];
   AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections +
      [ctnClass,ctnClassInterface,ctnProcedure];
 
