@@ -70,10 +70,17 @@ var
   RGN: HRGN;
 begin
   inherited SetClipRect(ARect);
-  with ARect do
-    RGN := CreateRectRGN(Left, Top, Right, Bottom);
-  SelectClipRGN(Handle, RGN);
-  DeleteObject(RGN);
+  {$ifdef OverrideClipping}
+  if inherited GetClipping then
+  {$else}
+  if inherited Clipping then
+  {$endif}
+  begin
+    with ARect do
+      RGN := CreateRectRGN(Left, Top, Right, Bottom);
+    SelectClipRGN(Handle, RGN);
+    DeleteObject(RGN);
+  end;
 end;
 
 function TCanvas.GetClipping: Boolean;
@@ -85,7 +92,11 @@ end;
 
 procedure TCanvas.SetClipping(const AValue: boolean);
 begin
+  {$ifdef OverrideClipping}
+  inherited SetClipping(AValue);
+  {$else}
   inherited Clipping := AValue;
+  {$endif}
   if AValue then
     SetClipRect(inherited GetClipRect)
   else
