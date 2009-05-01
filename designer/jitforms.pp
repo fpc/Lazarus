@@ -822,9 +822,9 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     DestroyDriver:=false;
     InitReading;
     CreateReader(AStream,Reader,DestroyDriver);
-    { $IFDEF VerboseJITForms}
+    {$IFDEF VerboseJITForms}
     DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass)]);
-    { $ENDIF}
+    {$ENDIF}
     try
       Reader.ReadRootComponent(FCurReadJITComponent);
       {$IFDEF VerboseJITForms}
@@ -1267,9 +1267,9 @@ begin
       finally
         Reader.EndReferences;
       end;
-      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
 
       {$IFDEF VerboseJITForms}
+      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
       debugln('[TJITComponentList.AddJITChildComponentFromStream] D');
       {$ENDIF}
       DoFinishReading;
@@ -1294,9 +1294,9 @@ var
 begin
   FCurReadStreamClass:=nil;
   InitReading;
-  { $IFDEF VerboseJITForms}
+  {$IFDEF VerboseJITForms}
   DebugLn(['TJITComponentList.ReadInlineJITChildComponent Reading: ',DbgSName(Component)]);
-  { $ENDIF}
+  {$ENDIF}
   try
     try
       FCurReadJITComponent:=Component;
