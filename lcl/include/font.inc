@@ -891,6 +891,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Returns the orientation of the font
+
+  The orientation is defined as the angle, in tenths of degrees,
+  between the X axis of the Canvas and the baseline of the font.
+
+  The property and it's setter/getter pair are compatible with Delphi
+ ------------------------------------------------------------------------------}
+function TFont.GetOrientation: Integer;
+begin
+  Result := FOrientation;
+end;
+
+{------------------------------------------------------------------------------
   Method: TFont.SetName
   Params: Value: the new value
   Returns:  nothing
@@ -903,6 +916,23 @@ begin
   begin
     FreeReference;
     inherited SetName(AValue);
+    Changed;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Changes the orientation of the font
+
+  The orientation is defined as the angle, in tenths of degrees,
+  between the X axis of the Canvas and the baseline of the font.
+
+  The property and it's setter/getter pair are compatible with Delphi
+ ------------------------------------------------------------------------------}
+procedure TFont.SetOrientation(AValue: Integer);
+begin
+  if FOrientation <> AValue then
+  begin
+    FreeReference;
     Changed;
   end;
 end;
@@ -1045,8 +1075,8 @@ begin
   begin
     lfHeight := Height;
     lfWidth := 0;
-    lfEscapement := 0;
-    lfOrientation := 0;
+    lfEscapement := FOrientation;
+    lfOrientation := FOrientation;
     lfWeight := LF_WEIGHT[fsBold in Style];
     lfItalic := LF_BOOL[fsItalic in Style];
     lfUnderline := LF_BOOL[fsUnderline in Style];
