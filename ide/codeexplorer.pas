@@ -1028,12 +1028,18 @@ begin
           if (cefcUnsortedClassMembers in ObserverCats)
           then
             CheckUnsortedClassMembers(CodeNode);
-          if (cefcEmptyClassSections in ObserverCats) and
-             (CodeNode.FirstChild=nil) and
-             ((CodeNode.Desc <> ctnClassPublished) or (CodeNode.PriorBrother<>nil)) then
+          if (cefcEmptyClassSections in ObserverCats)
+          and (CodeNode.FirstChild=nil) then
           begin
-            // empty class section
-            AddCodeNode(cefcEmptyClassSections,CodeNode);
+            if (CodeNode.Desc=ctnClassPublished)
+            and ((CodeNode.PriorBrother=nil)
+               or (not (CodeNode.PriorBrother.Desc in AllClassBaseSections)))
+            then begin
+              // the first section can be empty
+            end else begin
+              // empty class section
+              AddCodeNode(cefcEmptyClassSections,CodeNode);
+            end;
           end;
         end;
 
