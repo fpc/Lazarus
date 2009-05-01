@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
   StdCtrls, Buttons, ExtCtrls, Menus, LCLProc, ColorBox, ExtDlgs,
-  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts;
+  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
 type
   TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);
@@ -50,10 +50,6 @@ type
   { TImageListEditorDlg }
 
   TImageListEditorDlg = class(TForm)
-    BtnOK: TBitBtn;
-    BtnCancel: TBitBtn;
-    BtnApply: TBitBtn;
-    BtnHelp: TBitBtn;
     BtnAdd: TButton;
     BtnClear: TButton;
     BtnDelete: TButton;
@@ -61,6 +57,7 @@ type
     BtnMoveDown: TButton;
     BtnSave: TButton;
     btnSaveAll: TButton;
+    BtnPanel: TButtonPanel;
     ColorBoxTransparent: TColorBox;
     GroupBoxL: TGroupBox;
     GroupBoxR: TGroupBox;
@@ -185,12 +182,16 @@ begin
 
   BtnAdd.Caption := sccsILEdtAdd;
   BtnDelete.Caption := sccsILEdtDelete;
-  BtnApply.Caption := sccsILEdtApply;
   BtnClear.Caption := sccsILEdtClear;
   BtnMoveUp.Caption := sccsILEdtMoveUp;
   BtnMoveDown.Caption := sccsILEdtMoveDown;
   BtnSave.Caption := sccsILEdtSave;
   BtnSaveAll.Caption := sccsILEdtSaveAll;
+
+  BtnPanel.CloseButton.Caption := sccsILEdtApply;
+  BtnPanel.CloseButton.Glyph := nil;
+  BtnPanel.CloseButton.ModalResult := mrNone;
+  BtnPanel.CloseButton.OnClick := @btnApplyClick;
 
   LabelTransparent.Caption := sccsILEdtransparentColor;
 

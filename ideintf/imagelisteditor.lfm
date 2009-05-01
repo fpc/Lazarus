@@ -3,7 +3,6 @@ object ImageListEditorDlg: TImageListEditorDlg
   Height = 379
   Top = 191
   Width = 616
-  ActiveControl = BtnOK
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
   ClientHeight = 379
@@ -15,21 +14,25 @@ object ImageListEditorDlg: TImageListEditorDlg
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object GroupBoxR: TGroupBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
     Left = 375
-    Height = 313
+    Height = 335
     Top = 6
     Width = 235
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 294
+    ClientHeight = 317
     ClientWidth = 231
-    TabOrder = 5
+    TabOrder = 1
     object LabelTransparent: TLabel
       Left = 110
-      Height = 18
-      Top = 184
-      Width = 117
+      Height = 14
+      Top = 211
+      Width = 92
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
@@ -37,14 +40,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object LabelSize: TLabel
       Left = 6
-      Height = 15
+      Height = 14
       Top = 6
-      Width = 2
+      Width = 1
       ParentColor = False
     end
     object Preview: TScrollBox
       Left = 6
-      Height = 146
+      Height = 169
       Top = 32
       Width = 218
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -57,7 +60,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     object RadioGroup: TRadioGroup
       Left = 6
       Height = 105
-      Top = 184
+      Top = 207
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -71,7 +74,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 86
+      ClientHeight = 87
       ClientWidth = 92
       Enabled = False
       ItemIndex = 0
@@ -88,8 +91,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
       Left = 110
-      Height = 31
-      Top = 208
+      Height = 22
+      Top = 231
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
@@ -101,80 +104,30 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 2
     end
   end
-  object BtnOK: TBitBtn
-    AnchorSideRight.Control = BtnCancel
-    Left = 230
-    Height = 35
-    Top = 334
-    Width = 90
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 0
-  end
-  object BtnCancel: TBitBtn
-    AnchorSideRight.Control = BtnApply
-    Left = 326
-    Height = 35
-    Top = 334
-    Width = 90
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 1
-  end
-  object BtnApply: TBitBtn
-    AnchorSideRight.Control = BtnHelp
-    Left = 422
-    Height = 35
-    Top = 334
-    Width = 90
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = '&Apply'
-    NumGlyphs = 0
-    OnClick = btnApplyClick
-    TabOrder = 2
-  end
-  object BtnHelp: TBitBtn
-    Left = 518
-    Height = 35
-    Top = 334
-    Width = 90
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Kind = bkHelp
-    NumGlyphs = 0
-    TabOrder = 3
-  end
   object GroupBoxL: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 313
+    Height = 335
     Top = 6
     Width = 364
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 294
+    ClientHeight = 317
     ClientWidth = 360
-    TabOrder = 4
+    TabOrder = 0
     object TreeView: TTreeView
       AnchorSideLeft.Control = GroupBoxL
       AnchorSideTop.Control = GroupBoxL
       Left = 6
-      Height = 283
+      Height = 306
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 16
       HideSelection = False
       Images = ImageList
       ReadOnly = True
@@ -308,8 +261,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 7
     end
   end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 347
+    Width = 604
+    TabOrder = 2
+    ShowBevel = False
+  end
   object ImageList: TImageList
-    Masked = False
     left = 216
     top = 246
   end
