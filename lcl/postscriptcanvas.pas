@@ -70,22 +70,17 @@ Type
     fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
     FFs            : TFormatSettings;
-    FXDPI,FYDPI    : Integer;
 
-    function GetXDPI: Integer;
-    function GetYDPI: Integer;
     procedure psDrawRect(ARect:TRect);
-    procedure SetUserXDPI(const AValue: Integer);
-    procedure SetUserYDPI(const AValue: Integer);
     procedure WriteHeader(St : String);
     procedure Write(const St : String; Lst : TstringList = nil); overload;
     procedure WriteB(const St : string);
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
     procedure WriteComment(const St : string);
-    procedure WriteOrientation;
-    procedure WriteOrientationHeader;
-    procedure WriteBoundingBox;
+    procedure WritePageTransform;
+    procedure WriteOrientation(UseHeader: boolean);
+    procedure WriteBoundingBox(UseHeader: boolean);
     
     function TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
     procedure SetPosition(X,Y : Integer);
@@ -172,8 +167,6 @@ Type
 
 
     property OutPutFileName : string read fFileName write fFileName;
-    property XDPI: Integer read GetXDPI write SetUserXDPI;
-    property YDPI: Integer read GetYDPI write SetUserYDPI;
   end;
 
   TPostScriptCanvas = Class(TPostScriptPrinterCanvas)
@@ -528,6 +521,10 @@ Const
    )
    );
 
+const
+  PageOpArr: array[boolean] of string[5] = ('Page','');
+  OrientArr: array[boolean] of string[10] = ('Landscape','Portrait');
+
 {$IFDEF ASCII85}
 type
 
@@ -671,69 +668,68 @@ begin
   fDocument.Add('%'+St);
 end;
 
-procedure TPostScriptPrinterCanvas.WriteOrientation;
+procedure TPostScriptPrinterCanvas.WritePageTransform;
 var
   h,w:integer;
 begin
-  if Printer=nil then
-    exit;
-  case Printer.Orientation of
+  case Orientation of
     poReversePortrait:
       begin
-        w:=round(Printer.PaperSize.Width*72/printer.XDPI);
-        h:=round(Printer.PaperSize.Height*72/printer.YDPI);
+        w:=round(PaperWidth*72/XDPI);
+        h:=round(PaperHeight*72/YDPI);
         Write(format('%d %d translate 180 rotate',[w,h]));
       end;
     poLandscape:
       begin
-        h:=round(Printer.PaperSize.Width*72/printer.XDPI);
+        h:=round(PaperWidth*72/XDPI);
         Write(format('0 %d translate 90 neg rotate',[h]));
       end;
     poReverseLandscape:
       begin
-        h:=round(Printer.PaperSize.Height*72/printer.YDPI);
+        h:=round(PaperHeight*72/YDPI);
         Write(format('%d 0 translate 90 rotate',[h]));
       end;
   end;
 end;
 
-procedure TPostScriptPrinterCanvas.WriteOrientationHeader;
+procedure TPostScriptPrinterCanvas.WriteOrientation(UseHeader: boolean);
+var
+  L: TStringList;
 begin
-  if (Printer<>nil) and
-    ((Printer.Orientation=poLandscape) or
-     (Printer.Orientation=poReverseLandscape))
-  then
-    WriteHeader('%%Orientation: Landscape');
+
+  if UseHeader then
+    L := Fheader
+  else
+    L := nil;
+
+  Write('%%'+PageOpArr[UseHeader]+'Orientation: '+
+    OrientArr[(Orientation=poPortrait)or(Orientation=poReversePortrait)], L);
 end;
 
-procedure TPostScriptPrinterCanvas.WriteBoundingBox;
+procedure TPostScriptPrinterCanvas.WriteBoundingBox(UseHeader: boolean);
 var
   a,l,t,w,h: Integer;
+  Lst: TStringList;
 begin
-  if (Printer<>nil) then
+
+  l := round(LeftMargin * 72 / XDPI);
+  t := round(TopMargin * 72 / YDPI);
+  w := round((PaperWidth - RightMargin) * 72 / XDPI);
+  h := round((PaperHeight - BottomMargin) * 72 / YDPI);
+
+  if (Orientation=poLandscape) or (Orientation=poReverseLandscape) then
   begin
-    with Printer.PaperSize.PaperRect.WorkRect do
-    begin
-      l:=round(Left*72/printer.XDPI);
-      t:=round(Top*72/Printer.XDPI);
-      w:=round(Right*72/Printer.XDPI);
-      h:=round(Bottom*72/Printer.YDPI);
-      if (Printer.Orientation=poLandscape) or
-         (Printer.Orientation=poReverseLandscape) then
-      begin
-        a := l; l := t; t := a;
-        a := w; w := h; h := a;
-      end;
-    end;
-  end
-  else // should not be
-  begin
-    l:=0;
-    t:=0;
-    w:=round(PageWidth*72/XDPI); // page in pixels, printer in points
-    h:=round(PageHeight*72/YDPI);
+    a := l; l := t; t := a;
+    a := w; w := h; h := a;
   end;
-  WriteHeader('%%'+Format('BoundingBox: %d %d %d %d',[l,t,w,h]));
+
+  if UseHeader then
+    Lst := FHeader
+  else
+    Lst := nil;
+
+  Write('%%'+PageOpArr[UseHeader]+Format('BoundingBox: %d %d %d %d',[l,t,w,h]),
+    Lst);
 end;
 
 //Convert an TCanvas Y point to PostScript Y point
@@ -1178,11 +1174,11 @@ begin
   Font.Color:=clBlack;
 
   WriteHeader('%!PS-Adobe-3.0');
-  WriteBoundingBox;
+  WriteBoundingBox(True);
   WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
   WriteHeader('%%'+Format('Title: %s',[Title]));
   WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
-  WriteOrientationHeader;
+  WriteOrientation(true);
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');
   WriteHeader('%%PageOrder: Ascend');
@@ -1419,9 +1415,8 @@ begin
   WriteHeader('%%EndSetup');
   WriteHeader('%%====================== END SETUP =========================');
   WriteHeader('');
-  WriteOrientation;
-  WriteHeader('');
   WriteHeader('%%Page: 1 1');
+  WritePageTransform;
 end;
 
 procedure TPostScriptPrinterCanvas.EndDoc;
@@ -1455,6 +1450,9 @@ begin
   Write('stroke');
   Write('showpage');
   Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
+  WriteBoundingBox(false);
+  WriteOrientation(false);
+  WritePageTransform;
   write('newpath');
 
   Self.fcPenWidth:=-1; // prevent cached line width affect new page
@@ -1592,38 +1590,6 @@ begin
   writeB(Format('    %f %f lineto',[pp1.fx,pp2.fy],FFs));
   writeB('closepath');
 
-end;
-
-procedure TPostScriptPrinterCanvas.SetUserXDPI(const AValue: Integer);
-begin
-  FXDPI := AValue;
-end;
-
-procedure TPostScriptPrinterCanvas.SetUserYDPI(const AValue: Integer);
-begin
-  FYDPI := AValue;
-end;
-
-function TPostScriptPrinterCanvas.GetXDPI: Integer;
-begin
-  if Printer<>nil then
-    result := Printer.XDPI
-  else
-  if FXDPI <= 0 then
-    result := 300
-  else
-    result := FXDPI;
-end;
-
-function TPostScriptPrinterCanvas.GetYDPI: Integer;
-begin
-  if Printer<>nil then
-    result := Printer.YDPI
-  else
-  if FYDPI <= 0 then
-    result := 300
-  else
-    result := FYDPI;
 end;
 
 //Draw an Rectangle

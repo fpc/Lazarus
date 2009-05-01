@@ -45,25 +45,44 @@ type
    associated with TPrinter or override few values.
    
    BeginDoc,NewPage and EndDoc it's called in Printer.BeginDoc ...
+
+   PaperWidth:  physical width of paper
+   PaperHeight: Physical height of paper
+   PageWidth:   Printable width on page
+   PageHeight:  Printable height of paper
   }
+
+  { TPrinterCanvas }
+
   TPrinterCanvas = class(TCanvas)
   private
     fPrinter      : TPrinter;
     fTitle        : String;
-    fPageHeight   : Integer;
-    fPageWidth    : Integer;
     fPageNum      : Integer;
     fTopMargin    : Integer;
     fLeftMargin   : Integer;
     fBottomMargin : Integer;
     fRightMargin  : Integer;
-    
+    fPaperWidth   : Integer;
+    fPaperHeight  : Integer;
+    fOrientation  : TPrinterOrientation;
+    fXDPI,fYDPI    : Integer;
+
+    function GetOrientation: TPrinterOrientation;
     function GetPageHeight: Integer;
     function GetPageWidth: Integer;
+    function GetPaperHeight: Integer;
+    function GetPaperWidth: Integer;
     function GetTitle: string;
-    procedure SetPageHeight(const AValue: Integer);
-    procedure SetPageWidth(const AValue: Integer);
+    function GetXDPI: Integer;
+    function GetYDPI: Integer;
+    procedure SetOrientation(const AValue: TPrinterOrientation);
+    procedure SetPaperHeight(const AValue: Integer);
+    procedure SetPaperWidth(const AValue: Integer);
     procedure SetTitle(const AValue: string);
+    function HasDefaultMargins: boolean;
+    procedure SetXDPI(const AValue: Integer);
+    procedure SetYDPI(const AValue: Integer);
   protected
     procedure BeginDoc; virtual;
     procedure NewPage;  virtual;
@@ -79,13 +98,18 @@ type
     property Printer : TPrinter read fPrinter;
     
     property Title : string read GetTitle write SetTitle;
-    property PageHeight : Integer read GetPageHeight write SetPageHeight;
-    property PageWidth  : Integer read GetPageWidth write SetPageWidth;
+    property PageHeight : Integer read GetPageHeight;
+    property PageWidth  : Integer read GetPageWidth;
+    property PaperWidth : Integer read GetPaperWidth write SetPaperWidth;
+    property PaperHeight: Integer read GetPaperHeight write SetPaperHeight;
     property PageNumber : Integer read fPageNum;
     property TopMargin : Integer read GetTopMargin write FTopMargin;
     property LeftMargin: Integer read GetLeftMargin write FLeftMargin;
     property BottomMargin: Integer read GetBottomMargin write FBottomMargin;
     property RightMargin: Integer read GetRightMargin write FRightMargin;
+    property Orientation: TPrinterOrientation read GetOrientation Write SetOrientation;
+    property XDPI: Integer read GetXDPI write SetXDPI;
+    property YDPI: Integer read GetYDPI write SetYDPI;
 
   end;
 
@@ -889,30 +913,84 @@ begin
     Result:=fTitle;
 end;
 
+function TPrinterCanvas.GetXDPI: Integer;
+begin
+  if Printer<>nil then
+    result := Printer.XDPI
+  else
+  if fXDPI <= 0 then
+    result := 300
+  else
+    result := fXDPI;
+end;
+
+function TPrinterCanvas.GetYDPI: Integer;
+begin
+  if Printer<>nil then
+    result := Printer.YDPI
+  else
+  if fYDPI <= 0 then
+    result := 300
+  else
+    result := fYDPI;
+end;
+
+procedure TPrinterCanvas.SetOrientation(const AValue: TPrinterOrientation);
+begin
+  if Assigned(fPrinter) then
+    fPrinter.Orientation := AValue
+  else
+    fOrientation := AValue;
+end;
+
+function TPrinterCanvas.GetOrientation: TPrinterOrientation;
+begin
+  if fPrinter<>nil then
+    result := fPrinter.Orientation
+  else
+    result := fOrientation;
+end;
+
 function TPrinterCanvas.GetPageHeight: Integer;
 begin
-  if Assigned(fPrinter) and (fPageHeight=0) then
-     Result:=fPrinter.PageHeight
+  if Assigned(fPrinter) and HasDefaultMargins then
+    Result:=fPrinter.PageHeight
   else
-    Result:=fPageHeight;
+    Result:= PaperHeight - TopMargin - BottomMargin;
 end;
 
 function TPrinterCanvas.GetPageWidth: Integer;
 begin
-  if Assigned(fPrinter) and (fPageWidth=0) then
-     Result:=fPrinter.PageWidth
+  if Assigned(fPrinter) and HasDefaultMargins then
+    Result:=fPrinter.PageWidth
   else
-    Result:=fPageWidth;
+    Result:= PaperWidth - LeftMargin - RightMargin;
 end;
 
-procedure TPrinterCanvas.SetPageHeight(const AValue: Integer);
+function TPrinterCanvas.GetPaperHeight: Integer;
 begin
-  fPageHeight:=aValue;
+  if Assigned(fPrinter) then
+    result := fPrinter.PaperSize.Height
+  else
+    result := fPaperHeight;
 end;
 
-procedure TPrinterCanvas.SetPageWidth(const AValue: Integer);
+function TPrinterCanvas.GetPaperWidth: Integer;
 begin
-  fPageWidth:=aValue;
+  if Assigned(fPrinter) then
+    result := fPrinter.PaperSize.Width
+  else
+    result := fPaperWidth;
+end;
+
+procedure TPrinterCanvas.SetPaperHeight(const AValue: Integer);
+begin
+  fPaperHeight := AValue;
+end;
+
+procedure TPrinterCanvas.SetPaperWidth(const AValue: Integer);
+begin
+  fPaperWidth := AValue;
 end;
 
 procedure TPrinterCanvas.SetTitle(const AValue: string);
@@ -923,15 +1001,25 @@ begin
     fTitle:=aValue;
 end;
 
+function TPrinterCanvas.HasDefaultMargins: boolean;
+begin
+  result := (FLeftMargin=0) and (FRightMargin=0) and
+            (FTopMargin=0) and (FBottomMargin=0);
+end;
+
+procedure TPrinterCanvas.SetXDPI(const AValue: Integer);
+begin
+  fXDPI := AValue;
+end;
+
+procedure TPrinterCanvas.SetYDPI(const AValue: Integer);
+begin
+  fYDPI := AValue;
+end;
+
 constructor TPrinterCanvas.Create(APrinter: TPrinter);
 begin
-  Inherited Create;
-  fPageWidth      :=0;
-  fPageHeight     :=0;
-  fTopMargin      :=0;
-  fLeftMargin     :=0;
-  fRightMargin    :=0;
-  fBottomMargin   :=0;
+  inherited Create;
   fPrinter:=aPrinter;
 end;
 
@@ -962,7 +1050,7 @@ begin
   if (fLeftMargin=0) and (fPrinter<>nil) then
     Result:=fPrinter.PaperSize.PaperRect.WorkRect.Left
   else
-    Result:=FLeftMargin;
+    Result:=fLeftMargin;
 end;
 
 function TPrinterCanvas.GetTopMargin: Integer;
