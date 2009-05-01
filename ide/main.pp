@@ -130,15 +130,16 @@ uses
   debugger_language_exceptions_options, debugger_signals_options,
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options,
-  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping,
-  IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
+  IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
-  EmptyMethodsDlg, UnusedUnitsDlg, CleanDirDlg, CodeContextForm, AboutFrm,
-  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
-  BuildManager, CodeExplOpts,
+  EmptyMethodsDlg, UnusedUnitsDlg, FindOverloadsDlg, CleanDirDlg,
+  CodeContextForm, AboutFrm, CompatibilityRestrictions, RestrictionBrowser,
+  ProjectWizardDlg, IDECmdLine, CodeExplOpts,
+  BuildManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -871,6 +872,7 @@ type
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
+    function DoFindOverloads: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
@@ -12794,6 +12796,11 @@ end;
 function TMainIDE.DoRemoveUnusedUnits: TModalResult;
 begin
   Result:=ShowUnusedUnitsDialog;
+end;
+
+function TMainIDE.DoFindOverloads: TModalResult;
+begin
+  Result:=ShowFindOverloadsDialog;
 end;
 
 {-------------------------------------------------------------------------------
