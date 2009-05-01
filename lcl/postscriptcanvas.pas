@@ -590,16 +590,16 @@ begin
 end;
 
 procedure TAscii85Encoder.WriteByte(const B: Byte);
+var
+  e: string;
 begin
   FStream.WriteByte(B);
   if FMaxWidth>0 then begin
     Inc(FWritten);
     if FWritten>=FMaxWidth then begin
       // write lineending
-      if (LineEnding=#13) or (LineEnding=#13#10) then
-        FStream.WriteByte(13);
-      if (LineEnding=#10) or (LineEnding=#13#10) then
-        FStream.WriteByte(10);
+      e:=LineEnding;
+      FStream.Write(e[1],length(e));
       FWritten := 0;
     end;
   end;
