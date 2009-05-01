@@ -231,6 +231,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BiDiMode;
+    property BorderSpacing;
     property BorderStyle;
     property CharCase;
     property Color;
