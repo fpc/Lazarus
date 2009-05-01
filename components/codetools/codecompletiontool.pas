@@ -4927,6 +4927,8 @@ begin
       if Visibility=pcsPublished then begin
         // insert into first published section
         ClassSectionNode:=FCodeCompleteClassNode.FirstChild;
+        while not (ClassSectionNode.Desc in AllClassSections) do
+          ClassSectionNode:=ClassSectionNode.NextBrother;
         // the first class section is always a published section, even if there
         // is no 'published' keyword. If the class starts with the 'published'
         // keyword, then it will be more beautiful to insert vars and procs to
