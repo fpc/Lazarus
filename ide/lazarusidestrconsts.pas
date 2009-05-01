@@ -2106,6 +2106,7 @@ resourcestring
   srkmecShowAbstractMethods       = 'Show abstract methods';
   srkmecRemoveEmptyMethods        = 'Remove empty methods';
   srkmecRemoveUnusedUnits         = 'Remove unused units';
+  srkmecFindOverloads             = 'Find overloads';
 
   // run menu
   srkmecBuild                     = 'build program/project';

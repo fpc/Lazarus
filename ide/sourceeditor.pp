@@ -437,6 +437,7 @@ type
     procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
     procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
+    procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);
@@ -862,6 +863,7 @@ var
     SrcEditMenuShowAbstractMethods: TIDEMenuCommand;
     SrcEditMenuShowEmptyMethods: TIDEMenuCommand;
     SrcEditMenuShowUnusedUnits: TIDEMenuCommand;
+    SrcEditMenuFindOverloads: TIDEMenuCommand;
   SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
@@ -1022,6 +1024,11 @@ begin
                                'ShowEmptyMethods', lisCodeHelpShowEmptyMethods);
     SrcEditMenuShowUnusedUnits:=RegisterIDEMenuCommand(AParent,
                                'ShowUnusedUnits', lisCodeHelpShowUnusedUnits);
+    SrcEditMenuFindOverloads:=RegisterIDEMenuCommand(AParent,
+                               'FindOverloads', srkmecFindOverloads);
+   {$IFNDEF EnableFindOverloads}
+   SrcEditMenuFindOverloads.Visible:=false;
+   {$ENDIF}
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
@@ -4425,6 +4432,7 @@ begin
   SrcEditMenuShowAbstractMethods.OnClick:=@ShowAbstractMethodsMenuItemClick;
   SrcEditMenuShowEmptyMethods.OnClick:=@ShowEmptyMethodsMenuItemClick;
   SrcEditMenuShowUnusedUnits.OnClick:=@ShowUnusedUnitsMenuItemClick;
+  SrcEditMenuFindOverloads.OnClick:=@FindOverloadsMenuItemClick;
 
   SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
@@ -5674,6 +5682,11 @@ end;
 procedure TSourceNotebook.ShowUnusedUnitsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecRemoveUnusedUnits);
+end;
+
+procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecFindOverloads);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);

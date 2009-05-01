@@ -140,6 +140,7 @@ const
   ecShowAbstractMethods     = ecFirstLazarus + 119;
   ecRemoveEmptyMethods      = ecFirstLazarus + 120;
   ecRemoveUnusedUnits       = ecFirstLazarus + 121;
+  ecFindOverloads           = ecFirstLazarus + 122;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;

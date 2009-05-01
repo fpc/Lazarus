@@ -404,6 +404,7 @@ begin
   ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveUnusedUnits: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindOverloads: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -1761,7 +1762,8 @@ begin
     ecFindBlockStart          : Result:= srkmecFindBlockStart;
     ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
     ecRemoveEmptyMethods      : Result:= srkmecRemoveEmptyMethods;
-    ecRemoveUnusedUnits       : Result:= srkmecRemoveEmptyMethods;
+    ecRemoveUnusedUnits       : Result:= srkmecRemoveUnusedUnits;
+    ecFindOverloads           : Result:= srkmecFindOverloads;
 
     // project (menu string resource)
     ecNewProject              : Result:= lisMenuNewProject;
@@ -2224,6 +2226,8 @@ begin
     ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits,
     ecRemoveUnusedUnits);
+  AddDefault(C, 'Find overloads', srkmecFindOverloads,
+    ecFindOverloads);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,
