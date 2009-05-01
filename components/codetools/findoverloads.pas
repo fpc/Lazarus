@@ -30,7 +30,7 @@ unit FindOverloads;
 interface
 
 uses
-  Classes, SysUtils, CodeGraph;
+  Classes, SysUtils, CodeGraph, CodeCache;
 
 type
   TOverloadsGraphNode = class(TCodeGraphNode)
@@ -55,12 +55,19 @@ type
   private
     FGraph: TCodeGraph;
     FIdentifier: string;
+    FStartCode: TCodeBuffer;
+    FStartX: integer;
+    FStartY: integer;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    function Init(Code: TCodeBuffer; X,Y: integer): Boolean;
     property Identifier: string read FIdentifier;
     property Graph: TCodeGraph read FGraph;
+    property StartCode: TCodeBuffer read FStartCode;
+    property StartX: integer read FStartX;
+    property StartY: integer read FStartY;
   end;
 
 implementation
@@ -82,6 +89,19 @@ end;
 procedure TDeclarationOverloadsGraph.Clear;
 begin
 
+end;
+
+function TDeclarationOverloadsGraph.Init(Code: TCodeBuffer; X, Y: integer
+  ): Boolean;
+begin
+  Result:=false;
+  FStartCode:=Code;
+  FStartX:=X;
+  FStartY:=Y;
+
+
+
+  Result:=true;
 end;
 
 end.

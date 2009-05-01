@@ -2116,19 +2116,24 @@ end;
 function TCodeToolManager.GatherOverloads(Code: TCodeBuffer; X, Y: integer; out
   Graph: TDeclarationOverloadsGraph): boolean;
 var
-  CursorPos: TCodeXYPosition;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
 begin
-  Graph:=nil;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GatherOverloads A ',Code.Filename);
   {$ENDIF}
   Result:=false;
+  Graph:=nil;
+  if not FindMainDeclaration(Code,X,Y,NewCode,NewX,NewY,NewTopLine)
+  then begin
+    DebugLn('TCodeToolManager.GatherOverloads unable to FindMainDeclaration ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+    exit;
+  end;
+  if NewTopLine=0 then ;
   if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=X;
-  CursorPos.Y:=Y;
-  CursorPos.Code:=Code;
   try
     Graph:=TDeclarationOverloadsGraph.Create;
+    Result:=Graph.Init(NewCode,NewX,NewY);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -4175,6 +4175,8 @@ var
   SelAvail: Boolean;
   SelAvailAndWritable: Boolean;
   CurFilename: String;
+  CurWordAtCursor: String;
+  AtIdentifier: Boolean;
 begin
   //DebugLn(['TSourceNotebook.SrcPopUpMenuPopup ',dbgsName(Sender)]);
   //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup START ',true);
@@ -4241,18 +4243,21 @@ begin
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
     if EditorPopupPoint.X>EditorComp.GutterWidth then begin
       // user clicked on text
+      // collect some flags
       SelAvail:=ASrcEdit.EditorComponent.SelAvail;
       SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
       SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
       SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
       SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
-      SrcEditMenuFindIdentifierReferences.Enabled:=
-                                     IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
-      SrcEditMenuRenameIdentifier.Enabled:=
-                                     IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
-                                     and (not ASrcEdit.ReadOnly);
+      CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
+      AtIdentifier:=IsValidIdent(CurWordAtCursor);
+      // enable menu items
+      SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
+      SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier
+                                           and (not ASrcEdit.ReadOnly);
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
+      SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
     end else begin
       // user clicked on gutter
       SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,

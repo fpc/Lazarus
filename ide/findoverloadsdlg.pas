@@ -83,13 +83,12 @@ type
     procedure ScanSomeFiles;
     procedure ScanFile(AFile: TFOWFile);
   public
-    StartCodeXY: TCodeXYPosition;
     Scopes: TFindOverloadsScopes;
     CompletedScopes: TFindOverloadsScopes;
+    Graph: TDeclarationOverloadsGraph;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure SetStartPosition(Code: TCodeBuffer; X, Y: integer);
     procedure Work;
     function Done: boolean;
     procedure StopSearching;
@@ -154,13 +153,22 @@ function ShowFindOverloadsDialog(Code: TCodeBuffer; X, Y: integer
   ): TModalResult;
 var
   FindOverloadsDialog: TFindOverloadsDialog;
+  Graph: TDeclarationOverloadsGraph;
 begin
-  FindOverloadsDialog:=TFindOverloadsDialog.Create(nil);
+  Graph:=nil;
+  FindOverloadsDialog:=nil;
   try
-    FindOverloadsDialog.Worker.SetStartPosition(Code,X,Y);
+    if not CodeToolBoss.GatherOverloads(Code,X,Y,Graph) then begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit(mrCancel);
+    end;
+    DebugLn(['ShowFindOverloadsDialog ',Graph.StartCode.Filename,' ',Graph.StartX,',',Graph.StartY]);
+    FindOverloadsDialog:=TFindOverloadsDialog.Create(nil);
+    FindOverloadsDialog.Worker.Graph:=Graph;
     Result:=FindOverloadsDialog.ShowModal;
   finally
     FindOverloadsDialog.Free;
+    Graph.Free;
   end;
 end;
 
@@ -372,14 +380,6 @@ begin
   FStageTitle:='Finished';
   FStagePosition:=0;
   FStagePosMax:=100;
-end;
-
-procedure TFindOverloadsWorker.SetStartPosition(Code: TCodeBuffer; X, Y: integer
-  );
-begin
-  StartCodeXY.Code:=Code;
-  StartCodeXY.X:=X;
-  StartCodeXY.Y:=Y;
 end;
 
 procedure TFindOverloadsWorker.Work;
