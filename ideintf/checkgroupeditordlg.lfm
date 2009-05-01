@@ -3,6 +3,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
   Height = 300
   Top = 195
   Width = 608
+  ActiveControl = DuplicateCheckBox
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckGroupEditorDlg'
@@ -16,9 +17,9 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideTop.Control = DuplicateCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 372
-    Height = 14
-    Top = 71
-    Width = 66
+    Height = 18
+    Top = 76
+    Width = 93
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'ColumnsLabel'
@@ -29,7 +30,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideTop.Control = ToolBar
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 230
+    Height = 220
     Top = 32
     Width = 360
     Align = alLeft
@@ -57,7 +58,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 372
-    Height = 17
+    Height = 22
     Top = 48
     Width = 230
     Anchors = [akTop, akLeft, akRight]
@@ -75,7 +76,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideTop.Side = asrBottom
     Left = 375
     Height = 23
-    Top = 88
+    Top = 97
     Width = 34
     BorderSpacing.Left = 3
     BorderSpacing.Top = 3
@@ -93,7 +94,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideBottom.Side = asrBottom
     Left = 409
     Height = 23
-    Top = 88
+    Top = 97
     Width = 17
     Anchors = [akTop, akLeft, akBottom]
     Associate = ColumnsEdit
@@ -167,19 +168,19 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Side = asrBottom
       Left = 122
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 60
+      Width = 85
       Caption = 'LabelDisable'
-      Font.Color = clHotLight
+      Font.Color = clHighlight
       ParentColor = False
       ParentFont = False
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 268
+    Height = 36
+    Top = 258
     Width = 596
     TabOrder = 5
     ShowBevel = False
