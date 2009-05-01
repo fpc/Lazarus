@@ -933,6 +933,7 @@ begin
   if FOrientation <> AValue then
   begin
     FreeReference;
+    FOrientation := AValue;
     Changed;
   end;
 end;
