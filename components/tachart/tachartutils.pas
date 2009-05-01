@@ -134,9 +134,6 @@ function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
 
-procedure RotateLabel(
-  Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
-
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
@@ -291,27 +288,6 @@ end;
 function PointDistY(const A, B: TPoint): Integer; inline;
 begin
   Result := Abs(A.Y - B.Y);
-end;
-
-procedure RotateLabel(
-  Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
-var
-  OldFont, NewFont: HFONT;
-  LogRec: TLOGFONT;
-  DC: HDC;
-begin
-  with Canvas do begin
-    Brush.Style := bsClear;
-    GetObject(Font.Handle, SizeOf(LogRec), @LogRec);
-    LogRec.lfEscapement   := RotDegree * 10;
-    LogRec.lfOrientation  := 0;
-    LogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
-    NewFont := CreateFontIndirect(LogRec);
-    DC := Handle;
-  end;
-  OldFont := SelectObject(DC, NewFont);
-  TextOut(DC, X, Y, @St[1], Length(St));
-  DeleteObject(SelectObject(DC, OldFont));
 end;
 
 {$HINTS OFF}

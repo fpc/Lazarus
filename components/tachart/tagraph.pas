@@ -546,6 +546,8 @@ var
   end;
 
   procedure DrawAxisTitles;
+  const
+    DEGREES_TO_ORIENT = 10;
   var
     x, w: Integer;
     c: TPoint;
@@ -565,17 +567,18 @@ var
         x := FClipRect.Left;
         leftOffset := w + 4;
       end;
-      RotateLabel(ACanvas, x, c.Y - w div 2, s, FLeftAxis.Title.Angle)
+      ACanvas.Font.Orientation := FLeftAxis.Title.Angle * DEGREES_TO_ORIENT;
+      ACanvas.TextOut(x, c.Y - w div 2, s);
     end;
 
     s := FBottomAxis.Title.Caption;
     if FBottomAxis.Visible and (s <> '') then begin
       sz := ACanvas.TextExtent(s);
-      RotateLabel(
-        ACanvas, c.X - sz.cx div 2, FClipRect.Bottom - sz.cy,
-        s, FBottomAxis.Title.Angle);
+      ACanvas.Font.Orientation := FBottomAxis.Title.Angle * DEGREES_TO_ORIENT;
+      ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
       bottomOffset := sz.cy + 4;
     end;
+    ACanvas.Font.Orientation := 0;
   end;
 
   procedure DrawXMark(AMark: Double);
