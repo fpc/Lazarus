@@ -274,11 +274,11 @@ end;
 
 destructor TSourceLog.Destroy;
 begin
-  Clear;
   if FChangeHooks<>nil then begin
     FreeMem(FChangeHooks);
     FChangeHooks:=nil;
   end;
+  Clear;
   FMarkers.Free;
   FLog.Free;
   inherited Destroy;
