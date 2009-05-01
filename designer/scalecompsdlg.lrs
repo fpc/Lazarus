@@ -1,34 +1,26 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TScaleComponentsDialog','FORMDATA',[
-  'TPF0'#22'TScaleComponentsDialog'#21'ScaleComponentsDialog'#4'Left'#3't'#1#6
-  +'Height'#2'R'#3'Top'#3#186#2#5'Width'#3#2#1#13'ActiveControl'#7#8'OKButton'
-  +#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimize'#0#11'BorderStyle'#7#12'b'
-  +'sToolWindow'#7'Caption'#6#21'ScaleComponentsDialog'#12'ClientHeight'#2'R'#11
-  +'ClientWidth'#3#2#1#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.'
-  +'27'#0#6'TLabel'#12'PercentLabel'#21'AnchorSideTop.Control'#7#11'PercentEdit'
-  +#18'AnchorSideTop.Side'#7#9'asrCenter'#23'AnchorSideRight.Control'#7#5'Owner'
-  +#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#189#0#6'Height'#2#14#3'To'
-  +'p'#2#10#5'Width'#2'?'#7'Anchors'#11#5'akTop'#7'akRight'#0#19'BorderSpacing.'
-  +'Right'#2#6#7'Caption'#6#12'PercentLabel'#11'ParentColor'#8#0#0#6'TLabel'#10
-  +'ScaleLabel'#21'AnchorSideTop.Control'#7#11'PercentEdit'#18'AnchorSideTop.Si'
-  +'de'#7#9'asrCenter'#4'Left'#2#8#6'Height'#2#14#3'Top'#2#10#5'Width'#2'3'#7'C'
-  +'aption'#6#10'ScaleLabel'#11'ParentColor'#8#0#0#7'TBitBtn'#8'OKButton'#23'An'
-  +'chorSideRight.Control'#7#12'CancelButton'#24'AnchorSideBottom.Control'#7#5
-  +'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#2'n'#6'Height'#2#26
-  +#3'Top'#2'2'#5'Width'#2';'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'
-  +#9#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#6#7'Caption'#6#3'&'
-  +'OK'#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#8'T'
-  +'abOrder'#2#0#0#0#7'TBitBtn'#12'CancelButton'#23'AnchorSideRight.Control'#7#5
-  +'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'
-  +#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#175#0#6'Heigh'
-  +'t'#2#26#3'Top'#2'2'#5'Width'#2'M'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8
-  +'AutoSize'#9#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#6#6'Canc'
-  +'el'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2#9'Nu'
-  +'mGlyphs'#2#0#8'TabOrder'#2#1#0#0#5'TEdit'#11'PercentEdit'#22'AnchorSideLeft'
-  +'.Control'#7#10'ScaleLabel'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'Anchor'
-  +'SideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#12'PercentLabel'#4
-  +'Left'#2'A'#6'Height'#2#23#3'Top'#2#6#5'Width'#2'v'#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#19
-  +'BorderSpacing.Right'#2#6#8'TabOrder'#2#2#4'Text'#6#11'PercentEdit'#0#0#0
+  'TPF0'#22'TScaleComponentsDialog'#21'ScaleComponentsDialog'#4'Left'#3#130#2#6
+  +'Height'#2'W'#3'Top'#3'z'#1#5'Width'#3#0#1#11'BorderIcons'#11#12'biSystemMen'
+  +'u'#10'biMinimize'#0#11'BorderStyle'#7#12'bsToolWindow'#7'Caption'#6#21'Scal'
+  +'eComponentsDialog'#12'ClientHeight'#2'W'#11'ClientWidth'#3#0#1#8'Position'#7
+  +#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#12'PercentLabel'
+  +#21'AnchorSideTop.Control'#7#11'PercentEdit'#18'AnchorSideTop.Side'#7#9'asrC'
+  +'enter'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9
+  +'asrBottom'#4'Left'#3#187#0#6'Height'#2#14#3'Top'#2#10#5'Width'#2'?'#7'Ancho'
+  +'rs'#11#5'akTop'#7'akRight'#0#19'BorderSpacing.Right'#2#6#7'Caption'#6#12'Pe'
+  +'rcentLabel'#11'ParentColor'#8#0#0#6'TLabel'#10'ScaleLabel'#22'AnchorSideLef'
+  +'t.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#11'PercentEdit'#18'Anchor'
+  +'SideTop.Side'#7#9'asrCenter'#4'Left'#2#6#6'Height'#2#14#3'Top'#2#10#5'Width'
+  +#2'3'#18'BorderSpacing.Left'#2#6#7'Caption'#6#10'ScaleLabel'#11'ParentColor'
+  +#8#0#0#5'TEdit'#11'PercentEdit'#22'AnchorSideLeft.Control'#7#10'ScaleLabel'
+  +#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#5'Owner'
+  +#23'AnchorSideRight.Control'#7#12'PercentLabel'#4'Left'#2'?'#6'Height'#2#23#3
+  +'Top'#2#6#5'Width'#2'v'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#18'Bor'
+  +'derSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#19'BorderSpacing.Right'#2#6#8
+  +'TabOrder'#2#0#4'Text'#6#11'PercentEdit'#0#0#12'TButtonPanel'#12'ButtonPanel'
+  +'1'#21'AnchorSideTop.Control'#7#11'PercentEdit'#18'AnchorSideTop.Side'#7#9'a'
+  +'srBottom'#4'Left'#2#6#6'Height'#2'"'#3'Top'#2'/'#5'Width'#3#244#0#8'TabOrde'
+  +'r'#2#1#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0#0#0#0
 ]);

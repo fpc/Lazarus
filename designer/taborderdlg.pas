@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts;
+  Buttons, ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel;
 
 type
 
@@ -42,7 +42,7 @@ type
   TTabOrderDialog = class(TForm)
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     OkButton:     TBitBtn;
     ShowOldValuesCheckbox: TCheckBox;
     ItemTreeview: TTreeView;
@@ -83,12 +83,11 @@ end;
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
-  ShowOldValuesCheckbox.Caption:=lisShowOldTabOrder;
-  OkButton.Caption:= lisOkBtn;
-  CancelButton.Caption:= dlgCancel;
+  ShowOldValuesCheckbox.Caption := lisShowOldTabOrder;
+  BtnPanel.OkButton.Caption := lisOkBtn;
+  BtnPanel.OKButton.OnClick := @OkButtonCLICK;
+  BtnPanel.CancelButton.Caption := dlgCancel;
 
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
 end;

@@ -31,19 +31,18 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources;
+  LResources, ButtonPanel;
 
 type
   { TSizeComponentsDialog }
   TSizeComponentsDialog = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
+    PosLabel: TLabel;
     WidthRadioGroup: TRadioGroup;
     HeightRadioGroup: TRadioGroup;
     WidthEdit: TEdit;
     HeightEdit: TEdit;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);  override;
   end;
@@ -56,26 +55,21 @@ uses LazarusIDEStrConsts;
 
 function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
-var SizeComponentsDialog: TSizeComponentsDialog;
+var
+  SizeComponentsDialog: TSizeComponentsDialog;
 begin
-  SizeComponentsDialog:=TSizeComponentsDialog.Create(nil);
-  with SizeComponentsDialog do begin
-    Result:=ShowModal;
-    HorizSizingID:=SizeComponentsDialog.WidthRadioGroup.ItemIndex;
-    FixedWidth:=StrToIntDef(SizeComponentsDialog.WidthEdit.Text,0);
-    VertSizingID:=SizeComponentsDialog.HeightRadioGroup.ItemIndex;
-    FixedHeight:=StrToIntDef(SizeComponentsDialog.HeightEdit.Text,0);
+  SizeComponentsDialog := TSizeComponentsDialog.Create(nil);
+  with SizeComponentsDialog do
+  begin
+    Result := ShowModal;
+    HorizSizingID := WidthRadioGroup.ItemIndex;
+    FixedWidth := StrToIntDef(WidthEdit.Text,0);
+    VertSizingID := HeightRadioGroup.ItemIndex;
+    FixedHeight := StrToIntDef(HeightEdit.Text,0);
   end;
 end;
 
 { TSizeComponentsDialog }
-
-procedure TSizeComponentsDialog.FormResize(Sender: TObject);
-begin
-  WidthRadioGroup.Width := ClientWidth div 2 - 9;
-  HeightRadioGroup.Left := WidthRadioGroup.Width + 12;
-  HeightRadioGroup.Width := ClientWidth div 2 - 9;
-end;
 
 procedure TSizeComponentsDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -89,9 +83,11 @@ begin
 
   Caption:=fdmSizeWord;
 
-  with WidthRadioGroup do begin
+  with WidthRadioGroup do
+  begin
     Caption:=dlgWidthPos;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
       Add(lisNoChange);
       Add(lisShrinkToSmal);
@@ -102,9 +98,11 @@ begin
     ItemIndex:=0;
   end;
 
-  with HeightRadioGroup do begin
+  with HeightRadioGroup do
+  begin
     Caption:=DlgHeightPos;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
       Add(lisNoChange);
       Add(lisShrinkToSmal);
@@ -118,10 +116,8 @@ begin
   WidthEdit.Text:='';
   HeightEdit.Text:='';
 
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:= dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  ButtonPanel1.OkButton.Caption := lisOkBtn;
+  ButtonPanel1.CancelButton.Caption := dlgCancel;
 end;
 
 initialization

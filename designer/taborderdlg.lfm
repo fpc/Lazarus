@@ -43,14 +43,13 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ShowOldValuesCheckbox
     Left = 6
-    Height = 309
+    Height = 320
     Top = 6
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     HideSelection = False
-    ParentCtl3D = False
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
@@ -58,11 +57,11 @@ object TabOrderDialog: TTabOrderDialog
   end
   object ShowOldValuesCheckbox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = CancelButton
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 22
-    Top = 321
-    Width = 183
+    Height = 17
+    Top = 332
+    Width = 141
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'
@@ -70,13 +69,12 @@ object TabOrderDialog: TTabOrderDialog
     TabOrder = 1
   end
   object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 163
-    Height = 36
-    Top = 345
-    Width = 57
+    Left = 161
+    Height = 26
+    Top = 355
+    Width = 59
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -87,23 +85,18 @@ object TabOrderDialog: TTabOrderDialog
     OnClick = OkButtonCLICK
     TabOrder = 2
   end
-  object CancelButton: TBitBtn
+  object BtnPanel: TButtonPanel
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 226
-    Height = 32
-    Top = 349
-    Width = 78
+    Left = 6
+    Height = 26
+    Top = 355
+    Width = 298
     Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
     TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

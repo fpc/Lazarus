@@ -39,15 +39,14 @@ uses
   StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
   // IDE
   SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
-  FormEditingIntf, CheckLFMDlg, Project, MainIntf, ExtCtrls;
+  FormEditingIntf, CheckLFMDlg, Project, MainIntf, ExtCtrls, ButtonPanel;
 
 type
 
   { TChangeClassDlg }
 
   TChangeClassDlg = class(TForm)
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
+    BtnPanel: TButtonPanel;
     NewClassComboBox: TComboBox;
     NewAncestorGroupBox: TGroupBox;
     NewAncestorsListBox: TListBox;
@@ -56,7 +55,6 @@ type
     OldClassLabel: TLabel;
     NewGroupBox: TGroupBox;
     OldGroupBox: TGroupBox;
-    BtnPanel: TPanel;
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
   private
@@ -305,10 +303,8 @@ begin
   NewGroupBox.Caption:=lisNewClass;
   OldAncestorGroupBox.Caption:=lisOldAncestors;
   NewAncestorGroupBox.Caption:=lisNewAncestors;
-  OkButton.Caption:=lisLazBuildOk;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  BtnPanel.OkButton.Caption := lisOkBtn;
+  BtnPanel.CancelButton.Caption := dlgCancel;
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);

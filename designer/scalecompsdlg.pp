@@ -31,15 +31,17 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, LResources, LazarusIDEStrConsts;
+  ExtCtrls, LResources, LazarusIDEStrConsts, ButtonPanel;
 
 type
+
+  { TScaleComponentsDialog }
+
   TScaleComponentsDialog = class(TForm)
+    ButtonPanel1: TButtonPanel;
     ScaleLabel: TLabel;
     PercentEdit: TEdit;
     PercentLabel: TLabel;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
   public
     constructor Create(AOwner: TComponent);  override;
   end;
@@ -49,10 +51,12 @@ function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
 implementation
 
 function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
-var ScaleComponentsDialog: TScaleComponentsDialog;
+var
+  ScaleComponentsDialog: TScaleComponentsDialog;
 begin
   ScaleComponentsDialog:=TScaleComponentsDialog.Create(nil);
-  with ScaleComponentsDialog do begin
+  with ScaleComponentsDialog do
+  begin
     PercentEdit.Text:='100';
     Result:=ShowModal;
     ScaleInPercent:=StrToIntDef(ScaleComponentsDialog.PercentEdit.Text,100);
@@ -66,15 +70,13 @@ constructor TScaleComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  Caption:=fdmScaleWord;
+  Caption := fdmScaleWord;
 
-  ScaleLabel.Caption:=lisScalingFactor;
-  PercentLabel.Caption:='%';
+  ScaleLabel.Caption := lisScalingFactor;
+  PercentLabel.Caption := '%';
 
-  OkButton.Caption:=dlgButApply;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  ButtonPanel1.OkButton.Caption := lisOkBtn;
+  ButtonPanel1.CancelButton.Caption := dlgCancel;
 end;
 
 initialization
