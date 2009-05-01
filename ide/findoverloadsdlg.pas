@@ -33,18 +33,11 @@ uses
   Classes, SysUtils, LCLProc,FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel, ComCtrls, AvgLvlTree,
   // codetools
-  CodeTree, CodeCache, LazIDEIntf, ProjectIntf,
+  CodeTree, CodeCache, CodeAtom, CodeToolManager, CodeGraph, FindOverloads,
   // IDE
-  SrcEditorIntf, IDEProcs;
+  LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEProcs;
 
 type
-  TFOWNode = class
-  public
-    Identifier: string;
-    Desc: TCodeTreeNodeDesc;
-    Code: TCodeBuffer;
-    Position: integer;
-  end;
 
   { TFOWFile }
 
@@ -63,21 +56,21 @@ type
     property Code: TCodeBuffer read FCode write SetCode;
   end;
 
-  TFindOverloadScope = (
+  TFindOverloadsScope = (
     fosProject,
     fosPackages,
     fosOtherSources
     );
-  TFindOverloadScopes = set of TFindOverloadScope;
+  TFindOverloadsScopes = set of TFindOverloadsScope;
 
   TFOWStage = (
     fowsStart,
     fowsFinished
     );
 
-  { TFindOverloadWorker }
+  { TFindOverloadsWorker }
 
-  TFindOverloadWorker = class
+  TFindOverloadsWorker = class
   private
     FFiles: TAvgLvlTree;
     FScanFiles: TAvgLvlTree;
@@ -90,19 +83,21 @@ type
     procedure ScanSomeFiles;
     procedure ScanFile(AFile: TFOWFile);
   public
-    Scopes: TFindOverloadScopes;
-    CompletedScopes: TFindOverloadScopes;
+    StartCodeXY: TCodeXYPosition;
+    Scopes: TFindOverloadsScopes;
+    CompletedScopes: TFindOverloadsScopes;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure SetStartPosition(Code: TCodeBuffer; X, Y: integer);
     procedure Work;
     function Done: boolean;
     procedure StopSearching;
     function AddFileToScan(const Filename: string;
                            CheckExtension: boolean = true): TFOWFile;
     function FindFile(const Filename: string): TFOWFile;
-    property Files: TAvgLvlTree read FFiles; // tree of TFindOverloadWorkerFile
-    property ScanFiles: TAvgLvlTree read FScanFiles;// tree of TFindOverloadWorkerFile
+    property Files: TAvgLvlTree read FFiles; // tree of TFindOverloadsWorkerFile
+    property ScanFiles: TAvgLvlTree read FScanFiles;// tree of TFindOverloadsWorkerFile
     property StageTitle: string read FStageTitle write FStageTitle;
     property StagePosition: integer read FStagePosition write FStagePosition;
     property StagePosMax: integer read FStagePosMax write FStagePosMax;
@@ -124,12 +119,12 @@ type
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     FIdleConnected: boolean;
-    fWorker: TFindOverloadWorker;
+    fWorker: TFindOverloadsWorker;
     procedure SetIdleConnected(const AValue: boolean);
     procedure UpdateProgress;
     procedure StopWorking;
   public
-    property Worker: TFindOverloadWorker read fWorker;
+    property Worker: TFindOverloadsWorker read fWorker;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
@@ -162,6 +157,7 @@ var
 begin
   FindOverloadsDialog:=TFindOverloadsDialog.Create(nil);
   try
+    FindOverloadsDialog.Worker.SetStartPosition(Code,X,Y);
     Result:=FindOverloadsDialog.ShowModal;
   finally
     FindOverloadsDialog.Free;
@@ -192,7 +188,7 @@ begin
 
   ButtonPanel1.CancelButton.OnClick:=@ButtonPanel1Click;
 
-  fWorker:=TFindOverloadWorker.Create;
+  fWorker:=TFindOverloadsWorker.Create;
   IdleConnected:=true;
   UpdateProgress;
 end;
@@ -273,9 +269,9 @@ begin
   inherited Destroy;
 end;
 
-{ TFindOverloadWorker }
+{ TFindOverloadsWorker }
 
-procedure TFindOverloadWorker.CollectProjectFiles;
+procedure TFindOverloadsWorker.CollectProjectFiles;
 var
   AProject: TLazProject;
   i: Integer;
@@ -292,19 +288,19 @@ begin
   Include(CompletedScopes,fosProject);
 end;
 
-procedure TFindOverloadWorker.CollectPackageFiles;
+procedure TFindOverloadsWorker.CollectPackageFiles;
 begin
 
   Include(CompletedScopes,fosPackages);
 end;
 
-procedure TFindOverloadWorker.CollectOtherSourceFiles;
+procedure TFindOverloadsWorker.CollectOtherSourceFiles;
 begin
 
   Include(CompletedScopes,fosOtherSources);
 end;
 
-procedure TFindOverloadWorker.ScanSomeFiles;
+procedure TFindOverloadsWorker.ScanSomeFiles;
 const
   MaxScanTime = 0.3/86400; // 0.3 seconds
 var
@@ -320,15 +316,17 @@ begin
   end;
 end;
 
-procedure TFindOverloadWorker.ScanFile(AFile: TFOWFile);
+procedure TFindOverloadsWorker.ScanFile(AFile: TFOWFile);
 begin
   FScanFiles.Remove(AFile);
   if AFile.Scanned then exit;
   AFile.Scanned:=true;
-  DebugLn(['TFindOverloadWorker.ScanFile ',AFile.Filename]);
+  DebugLn(['TFindOverloadsWorker.ScanFile ',AFile.Filename]);
+
+
 end;
 
-function TFindOverloadWorker.AddFileToScan(const Filename: string;
+function TFindOverloadsWorker.AddFileToScan(const Filename: string;
   CheckExtension: boolean): TFOWFile;
 begin
   if CheckExtension and (not FilenameIsPascalSource(Filename)) then
@@ -340,7 +338,7 @@ begin
   FScanFiles.Add(Result);
 end;
 
-function TFindOverloadWorker.FindFile(const Filename: string): TFOWFile;
+function TFindOverloadsWorker.FindFile(const Filename: string): TFOWFile;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
@@ -351,7 +349,7 @@ begin
     Result:=nil;
 end;
 
-constructor TFindOverloadWorker.Create;
+constructor TFindOverloadsWorker.Create;
 begin
   Scopes:=[fosProject,fosPackages];
   FFiles:=TAvgLvlTree.Create(TListSortCompare(@CompareFOWFiles));
@@ -359,7 +357,7 @@ begin
   FStagePosMax:=100;
 end;
 
-destructor TFindOverloadWorker.Destroy;
+destructor TFindOverloadsWorker.Destroy;
 begin
   Clear;
   FreeAndNil(FFiles);
@@ -367,7 +365,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFindOverloadWorker.Clear;
+procedure TFindOverloadsWorker.Clear;
 begin
   FFiles.FreeAndClear;
   FScanFiles.Clear;
@@ -376,9 +374,17 @@ begin
   FStagePosMax:=100;
 end;
 
-procedure TFindOverloadWorker.Work;
+procedure TFindOverloadsWorker.SetStartPosition(Code: TCodeBuffer; X, Y: integer
+  );
 begin
-  DebugLn(['TFindOverloadWorker.Work START']);
+  StartCodeXY.Code:=Code;
+  StartCodeXY.X:=X;
+  StartCodeXY.Y:=Y;
+end;
+
+procedure TFindOverloadsWorker.Work;
+begin
+  DebugLn(['TFindOverloadsWorker.Work START']);
   if FScanFiles.Count>0 then begin
     // scan files
     ScanSomeFiles;
@@ -407,15 +413,15 @@ begin
     StageTitle:='Finished';
     StagePosition:=StagePosMax;
   end;
-  DebugLn(['TFindOverloadWorker.Work END ',StageTitle,' ',StagePosition,'/',StagePosMax]);
+  DebugLn(['TFindOverloadsWorker.Work END ',StageTitle,' ',StagePosition,'/',StagePosMax]);
 end;
 
-function TFindOverloadWorker.Done: boolean;
+function TFindOverloadsWorker.Done: boolean;
 begin
   Result:=(Scopes-CompletedScopes=[]) and (FScanFiles.Count=0);
 end;
 
-procedure TFindOverloadWorker.StopSearching;
+procedure TFindOverloadsWorker.StopSearching;
 begin
   CompletedScopes:=Scopes;
   FScanFiles.Clear;

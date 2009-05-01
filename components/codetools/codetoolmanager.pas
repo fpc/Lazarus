@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
-  ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
+  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, FindOverloads,
   DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree, PascalParserTool,
   CodeToolsConfig, CustomCodeTool, FindDeclarationTool, IdentCompletionTool,
   StdCodeTools, ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool,
@@ -403,6 +403,8 @@ type
           SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(Code: TCodeBuffer; X,Y: integer;
           List: TStrings): boolean;
+    function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
+          out Graph: TDeclarationOverloadsGraph): boolean;
 
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
@@ -2106,6 +2108,27 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.GetValuesOfCaseVariable(CursorPos,List);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GatherOverloads(Code: TCodeBuffer; X, Y: integer; out
+  Graph: TDeclarationOverloadsGraph): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Graph:=nil;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GatherOverloads A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Graph:=TDeclarationOverloadsGraph.Create;
   except
     on e: Exception do Result:=HandleException(e);
   end;
