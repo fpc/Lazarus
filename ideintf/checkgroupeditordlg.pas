@@ -19,23 +19,19 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, Menus, ComCtrls,
-  ObjInspStrConsts, IDEImagesIntf;
+  ObjInspStrConsts, IDEImagesIntf, ButtonPanel;
 
 type
 
   { TCheckGroupEditorDlg }
 
   TCheckGroupEditorDlg = class(TForm)
-    BtnApply: TBitBtn;
-    BtnCancel: TBitBtn;
-    BtnHelp: TBitBtn;
-    BtnOK: TBitBtn;
     DuplicateCheckBox: TCheckBox;
     ColumnsEdit: TEdit;
     FCheck: TCheckGroup;
     aCheck: TCheckGroup;
-    FPanelOKCancel: TPanel;
     ColumnsLabel: TLabel;
+    BtnPanel: TButtonPanel;
     FPopupMenu: TPopupMenu;
     ColumnsUpDown: TUpDown;
     LabelDisable: TLabel;
@@ -148,6 +144,10 @@ begin
   ColumnsLabel.Caption := cgColumns;
   DuplicateCheckBox.Caption := cgCheckDuplicate;
   LabelDisable.Caption := cgDisable;
+  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.Glyph := nil;
+  BtnPanel.CloseButton.ModalResult := mrNone;
+  BtnPanel.CloseButton.OnClick := @ApplyCheck;
 
   tbAdd.Hint := clbAdd;
   tbDelete.Hint := clbDeleteHint;
