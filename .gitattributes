@@ -1873,6 +1873,7 @@ docs/TODO.txt svneol=native#text/plain
 docs/acknowledgements.txt svneol=native#text/plain
 docs/booth/ProdProgEntwMitOpenSourceSystems2007.odp -text
 docs/contributors.utf8 svneol=native#text/plain
+docs/html/Makefile svneol=native#text/plain
 docs/html/README.txt svneol=native#text/plain
 docs/html/build_chm.bat svneol=native#text/plain
 docs/html/build_chm.sh svneol=native#text/plain
