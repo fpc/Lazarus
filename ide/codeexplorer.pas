@@ -910,6 +910,7 @@ begin
   try
     while CodeNode<>nil do begin
       case CodeNode.Desc of
+
       ctnBeginBlock:
         begin
           if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
@@ -1015,8 +1016,9 @@ begin
           and (CodeNode.PriorBrother.Desc>CodeNode.Desc)
           then begin
             if (CodeNode.PriorBrother.Desc=ctnClassPublished)
-            and (CodeNode.PriorBrother.PriorBrother=nil) then
-            begin
+            and ((CodeNode.PriorBrother.PriorBrother=nil)
+               or (not (CodeNode.PriorBrother.PriorBrother.Desc in AllClassBaseSections)))
+            then begin
               // the first section can be published
             end else begin
               // the prior section was more visible
