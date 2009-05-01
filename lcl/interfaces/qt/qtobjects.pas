@@ -2029,51 +2029,61 @@ end;
   
   Qt does not draw the text starting at Y position and downwards, like LCL.
 
-  Instead, Y becomes the baseline for the text and it´s drawn upwards.
+  Instead, Y becomes the baseline for the text and it's drawn upwards.
   
-  To get a correct behavior we need to sum the text´s height to the Y coordinate.
+  To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
-  AFont: TQtFont;
   ARect: TRect;
-  dy: Integer;
+  FixedY, dy: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
   {$endif}
 
-  AFont := Font;
-  with AFont do
-    if Angle <> 0 then
-    begin
-      Translate(x, y);
-      Rotate(-0.1 * Angle);
-      Translate(-x, -y);
-    end;
+  // First translate and then rotate, that makes the
+  // correct rotation effect that we want
+  if Font.Angle <> 0 then
+  begin
+    Translate(x, y);
+    Rotate(-0.1 * Font.Angle);
+  end;
 
-  // what about AFont.Metrics.descent and AFont.Metrics.leading ?
-  y := y + AFont.Metrics.ascent;
+  // what about Font.Metrics.descent and Font.Metrics.leading ?
+  FixedY := y + Font.Metrics.ascent;
 
   // manual check for clipping
   if getClipping then
   begin
-    dy := AFont.Metrics.height;
+    dy := Font.Metrics.height;
     ARect := getClipRegion.getBoundingRect;
-    if (y + dy < ARect.Top) or (y > ARect.Bottom) or
+    if (FixedY + dy < ARect.Top) or (FixedY > ARect.Bottom) or
        (x > ARect.Right) then
       Exit;
   end;
 
   RestoreTextColor;
-  
-  QPainter_drawText(Widget, x, y, s);
+
+  // The ascent is only applied here, because it also needs
+  // to be rotated
+  if Font.Angle <> 0 then
+    QPainter_drawText(Widget, 0, Font.Metrics.ascent, s)
+  else
+    QPainter_drawText(Widget, x, FixedY, s);
   
   RestorePenColor;
   
+  // Restore previous angle
+  if Font.Angle <> 0 then
+  begin
+    Rotate(0.1 * Font.Angle);
+    Translate(-x, -y);
+  end;
+
   {$ifdef VerboseQt}
   WriteLn(' Font metrics height: ', AFont.Metrics.height, ' Angle: ',
-    Round(0.1 * AFont.Angle));
+    Round(0.1 * Font.Angle));
   {$endif}
 end;
 
@@ -2088,17 +2098,27 @@ begin
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
   {$endif}
 
-  with Font do
-    if Angle <> 0 then
-    begin
-      Translate(x, y);
-      Rotate(-0.1 * Angle);
-      Translate(-x, -y);
-      // todo: something wrong with coordinates happen after that
-    end;
+  // First translate and then rotate, that makes the
+  // correct rotation effect that we want
+  if Font.Angle <> 0 then
+  begin
+    Translate(x, y);
+    Rotate(-0.1 * Font.Angle);
+  end;
+
   RestoreTextColor;
-  QPainter_DrawText(Widget, x, y, w, h, Flags, s);
+  if Font.Angle <> 0 then
+    QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
+  else
+    QPainter_DrawText(Widget, x, y, w, h, Flags, s);
   RestorePenColor;
+
+  // Restore previous angle
+  if Font.Angle <> 0 then
+  begin
+    Rotate(0.1 * Font.Angle);
+    Translate(-x, -y);
+  end;
 end;
 
 {------------------------------------------------------------------------------
