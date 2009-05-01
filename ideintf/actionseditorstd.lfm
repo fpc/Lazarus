@@ -1,7 +1,7 @@
 object FormActStandard: TFormActStandard
-  Left = 294
+  Left = 537
   Height = 483
-  Top = 184
+  Top = 187
   Width = 330
   ActiveControl = tvActStdList
   BorderStyle = bsDialog
@@ -10,28 +10,37 @@ object FormActStandard: TFormActStandard
   ClientWidth = 330
   KeyPreview = True
   OnClose = FormActStandardClose
-  OnKeyPress = FormActStandardKeyPress
   Position = poOwnerFormCenter
   LCLVersion = '0.9.27'
   object LabelHeadLine: TLabel
-    Left = 12
-    Height = 18
-    Top = 9
-    Width = 95
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 14
+    Top = 6
+    Width = 70
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'LabelHeadLine'
     ParentColor = False
   end
   object tvActStdList: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LabelHeadLine
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
-    Left = 8
-    Height = 395
-    Top = 32
-    Width = 313
+    Left = 6
+    Height = 422
+    Top = 23
+    Width = 318
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpand = True
-    BorderSpacing.Bottom = 6
-    Ctl3D = False
-    DefaultItemHeight = 19
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    DefaultItemHeight = 15
     HideSelection = False
     HotTrack = True
     ReadOnly = True
@@ -41,51 +50,13 @@ object FormActStandard: TFormActStandard
     OnDblClick = tvActStdListDblClick
     Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 50
-    Top = 433
-    Width = 330
-    Align = alBottom
-    BevelOuter = bvNone
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.HorizontalSpacing = 6
-    ChildSizing.VerticalSpacing = 6
-    ClientHeight = 50
-    ClientWidth = 330
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 451
+    Width = 318
     TabOrder = 1
-    object btnCancel: TBitBtn
-      Left = 165
-      Height = 38
-      Top = 6
-      Width = 78
-      Align = alRight
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object btnOK: TBitBtn
-      Left = 249
-      Height = 38
-      Top = 6
-      Width = 75
-      Align = alRight
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      Caption = '&OK'
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      OnClick = btnOKClick
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

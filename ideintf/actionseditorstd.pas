@@ -33,25 +33,22 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType, Contnrs,
-  LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls;
+  LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls, ButtonPanel;
 
 type
 
   { TFormActStandard }
 
   TFormActStandard = class(TForm)
-    btnCancel: TBitBtn;
-    btnOK: TBitBtn;
     LabelHeadLine: TLabel;
-    BtnPanel: TPanel;
     tvActStdList: TTreeView;
+    BtnPanel: TButtonPanel;
     procedure FormActStandardClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormActStandardKeyPress(Sender: TObject; var Key: char);
     procedure btnOKClick(Sender: TObject);
     procedure tvActStdListDblClick(Sender: TObject);
   private
     FResultActionProc: TResultActProc;
-    fActStdProperty: TActStdProp;
+    FActStdProperty: TActStdProp;
     procedure EnumAct;
     procedure ResultActionProc;
     procedure AddStdActProperties;
@@ -71,16 +68,10 @@ begin
   CloseAction := caFree;
 end;
 
-procedure TFormActStandard.FormActStandardKeyPress(Sender: TObject; var Key: char);
-begin
-  if Ord(Key) = VK_ESCAPE then Self.Close;
-end;
-
 procedure TFormActStandard.btnOKClick(Sender: TObject);
 begin
-  if Assigned(FResultActionProc)
-     and not tvActStdList.Selected.HasChildren
-  then ResultActionProc;
+  if Assigned(FResultActionProc) and not tvActStdList.Selected.HasChildren then
+    ResultActionProc;
 end;
 
 procedure TFormActStandard.tvActStdListDblClick(Sender: TObject);
@@ -91,12 +82,13 @@ var
 begin
   mousePoint := TTreeView(Sender).ScreenToClient(Mouse.CursorPos);
   node := TTreeView(Sender).Selected;
-  if Assigned(node) then begin
+  if Assigned(node) then
+  begin
     MyHitTest := TTreeView(Sender).GetHitTestInfoAt(mousePoint.X, mousePoint.Y );
-    if (htOnItem in MyHitTest)
-       or (htOnLabel in MyHitTest) then begin
-      if (not node.HasChildren) and (node.Parent is TTreeNode)
-      then btnOK.Click
+    if (htOnItem in MyHitTest) or (htOnLabel in MyHitTest) then
+    begin
+      if (not node.HasChildren) and (node.Parent is TTreeNode) then
+        BtnPanel.OKButton.Click
 {      else begin
         if node.Expanded
         then node.Collapse(False)
@@ -112,11 +104,13 @@ var
   NodeCategory: TTreeNode;
 begin
   tvActStdList.BeginUpdate;
-  for outer := 0 to RegisteredActions.Count-1 do begin
-    with tvActStdList.Items do begin
+  for outer := 0 to RegisteredActions.Count-1 do
+  begin
+    with tvActStdList.Items do
+    begin
       NodeCategory := Add(nil, RegisteredActions.Items[outer].Name);
-      for inner := 0 to RegisteredActions.Items[outer].Count-1
-      do AddChild(NodeCategory, RegisteredActions.Items[outer].Items[inner].ActionClass.ClassName);
+      for inner := 0 to RegisteredActions.Items[outer].Count-1 do
+        AddChild(NodeCategory, RegisteredActions.Items[outer].Items[inner].ActionClass.ClassName);
     end;  // with
   end;  // for outer
   tvActStdList.EndUpdate;
@@ -133,46 +127,46 @@ begin
   Category := tvActStdList.Selected.Parent.Text;
   lastItem := True;
   fClass := RegisteredActions.Items[RegisteredActions.IndexOfCategory(Category)].Items[tvActStdList.Selected.Index].ActionClass;
-  FResultActionProc(Category, fClass, fActStdProperty.IndexOfClass(fClass.ClassName), lastItem);
+  FResultActionProc(Category, fClass, FActStdProperty.IndexOfClass(fClass.ClassName), lastItem);
 end;
 
 procedure TFormActStandard.AddStdActProperties;
 begin
 //ActStdResource.Add(TEditCutResource);
-  fActStdProperty.Add(TEditCut, oiStdActEditCutHeadLine, oiStdActEditCutShortCut, oiStdActEditCutShortHint);
-  fActStdProperty.Add(TEditCopy, oiStdActEditCopyHeadLine, oiStdActEditCopyShortCut, oiStdActEditCopyShortHint);
-  fActStdProperty.Add(TEditPaste, oiStdActEditPasteHeadLine, oiStdActEditPasteShortCut, oiStdActEditPasteShortHint);
-  fActStdProperty.Add(TEditSelectAll, oiStdActEditSelectAllHeadLine, oiStdActEditSelectAllShortCut, oiStdActEditSelectAllShortHint);
-  fActStdProperty.Add(TEditUndo, oiStdActEditUndoHeadLine, oiStdActEditUndoShortCut, oiStdActEditUndoShortHint);
-  fActStdProperty.Add(TEditDelete, oiStdActEditDeleteHeadLine, oiStdActEditDeleteShortCut, oiStdActEditDeleteShortHint);
+  FActStdProperty.Add(TEditCut, oiStdActEditCutHeadLine, oiStdActEditCutShortCut, oiStdActEditCutShortHint);
+  FActStdProperty.Add(TEditCopy, oiStdActEditCopyHeadLine, oiStdActEditCopyShortCut, oiStdActEditCopyShortHint);
+  FActStdProperty.Add(TEditPaste, oiStdActEditPasteHeadLine, oiStdActEditPasteShortCut, oiStdActEditPasteShortHint);
+  FActStdProperty.Add(TEditSelectAll, oiStdActEditSelectAllHeadLine, oiStdActEditSelectAllShortCut, oiStdActEditSelectAllShortHint);
+  FActStdProperty.Add(TEditUndo, oiStdActEditUndoHeadLine, oiStdActEditUndoShortCut, oiStdActEditUndoShortHint);
+  FActStdProperty.Add(TEditDelete, oiStdActEditDeleteHeadLine, oiStdActEditDeleteShortCut, oiStdActEditDeleteShortHint);
 
-  fActStdProperty.Add(TSearchFind, oiStdActSearchFindHeadLine, oiStdActSearchFindShortCut, '');
-  fActStdProperty.Add(TSearchFindFirst, oiStdActSearchFindFirstHeadLine, '', '');
-  fActStdProperty.Add(TSearchFindNext, oiStdActSearchFindNextHeadLine, oiStdActSearchFindNextShortCut, '');
-  fActStdProperty.Add(TSearchReplace, oiStdActSearchReplaceHeadLine, '', '');
+  FActStdProperty.Add(TSearchFind, oiStdActSearchFindHeadLine, oiStdActSearchFindShortCut, '');
+  FActStdProperty.Add(TSearchFindFirst, oiStdActSearchFindFirstHeadLine, '', '');
+  FActStdProperty.Add(TSearchFindNext, oiStdActSearchFindNextHeadLine, oiStdActSearchFindNextShortCut, '');
+  FActStdProperty.Add(TSearchReplace, oiStdActSearchReplaceHeadLine, '', '');
   
-  fActStdProperty.Add(THelpContents, oiStdActHelpContentsHeadLine, '', oiStdActHelpContentsHint);
-  fActStdProperty.Add(THelpTopicSearch, oiStdActHelpTopicSearchHeadLine, '', oiStdActHelpTopicSearchHint);
-  fActStdProperty.Add(THelpOnHelp, oiStdActHelpHelpHelpHeadLine, '', oiStdActHelpHelpHelpHint);
+  FActStdProperty.Add(THelpContents, oiStdActHelpContentsHeadLine, '', oiStdActHelpContentsHint);
+  FActStdProperty.Add(THelpTopicSearch, oiStdActHelpTopicSearchHeadLine, '', oiStdActHelpTopicSearchHint);
+  FActStdProperty.Add(THelpOnHelp, oiStdActHelpHelpHelpHeadLine, '', oiStdActHelpHelpHelpHint);
 
-  fActStdProperty.Add(TFileOpen, oiStdActFileOpenHeadLine, oiStdActFileOpenShortCut, oiStdActFileOpenHint);
-  fActStdProperty.Add(TFileOpenWith, oiStdActFileOpenWithHeadLine, '', oiStdActFileOpenHint);
-  fActStdProperty.Add(TFileSaveAs, oiStdActFileSaveAsHeadLine, '', oiStdActFileSaveAsHint);
-  fActStdProperty.Add(TFileExit, oiStdActFileExitHeadLine, '', oiStdActFileExitHint);
+  FActStdProperty.Add(TFileOpen, oiStdActFileOpenHeadLine, oiStdActFileOpenShortCut, oiStdActFileOpenHint);
+  FActStdProperty.Add(TFileOpenWith, oiStdActFileOpenWithHeadLine, '', oiStdActFileOpenHint);
+  FActStdProperty.Add(TFileSaveAs, oiStdActFileSaveAsHeadLine, '', oiStdActFileSaveAsHint);
+  FActStdProperty.Add(TFileExit, oiStdActFileExitHeadLine, '', oiStdActFileExitHint);
 
-  fActStdProperty.Add(TColorSelect, oiStdActColorSelect1HeadLine, '', oiStdActColorSelectHint);
-  fActStdProperty.Add(TFontEdit, oiStdActFontEditHeadLine, '', oiStdActFontEditHint);
+  FActStdProperty.Add(TColorSelect, oiStdActColorSelect1HeadLine, '', oiStdActColorSelectHint);
+  FActStdProperty.Add(TFontEdit, oiStdActFontEditHeadLine, '', oiStdActFontEditHint);
 
-  fActStdProperty.Add(TDataSetFirst, oiStdActDataSetFirstHeadLine, '', oiStdActDataSetFirstHint);
-  fActStdProperty.Add(TDataSetPrior, oiStdActDataSetPriorHeadLine, '', oiStdActDataSetPriorHint);
-  fActStdProperty.Add(TDataSetNext, oiStdActDataSetNextHeadLine, '', oiStdActDataSetNextHint);
-  fActStdProperty.Add(TDataSetLast, oiStdActDataSetLastHeadLine, '', oiStdActDataSetLastHint);
-  fActStdProperty.Add(TDataSetInsert, oiStdActDataSetInsertHeadLine, '', oiStdActDataSetInsertHint);
-  fActStdProperty.Add(TDataSetDelete, oiStdActDataSetDeleteHeadLine, '', oiStdActDataSetDeleteHint);
-  fActStdProperty.Add(TDataSetEdit, oiStdActDataSetEditHeadLine, '', oiStdActDataSetEditHint);
-  fActStdProperty.Add(TDataSetPost, oiStdActDataSetPostHeadLine, '', oiStdActDataSetPostHint);
-  fActStdProperty.Add(TDataSetCancel, oiStdActDataSetCancelHeadLine, '', oiStdActDataSetCancel1Hint);
-  fActStdProperty.Add(TDataSetRefresh, oiStdActDataSetRefreshHeadLine, '', oiStdActDataSetRefreshHint);
+  FActStdProperty.Add(TDataSetFirst, oiStdActDataSetFirstHeadLine, '', oiStdActDataSetFirstHint);
+  FActStdProperty.Add(TDataSetPrior, oiStdActDataSetPriorHeadLine, '', oiStdActDataSetPriorHint);
+  FActStdProperty.Add(TDataSetNext, oiStdActDataSetNextHeadLine, '', oiStdActDataSetNextHint);
+  FActStdProperty.Add(TDataSetLast, oiStdActDataSetLastHeadLine, '', oiStdActDataSetLastHint);
+  FActStdProperty.Add(TDataSetInsert, oiStdActDataSetInsertHeadLine, '', oiStdActDataSetInsertHint);
+  FActStdProperty.Add(TDataSetDelete, oiStdActDataSetDeleteHeadLine, '', oiStdActDataSetDeleteHint);
+  FActStdProperty.Add(TDataSetEdit, oiStdActDataSetEditHeadLine, '', oiStdActDataSetEditHint);
+  FActStdProperty.Add(TDataSetPost, oiStdActDataSetPostHeadLine, '', oiStdActDataSetPostHint);
+  FActStdProperty.Add(TDataSetCancel, oiStdActDataSetCancelHeadLine, '', oiStdActDataSetCancel1Hint);
+  FActStdProperty.Add(TDataSetRefresh, oiStdActDataSetRefreshHeadLine, '', oiStdActDataSetRefreshHint);
 end;
 
 constructor TFormActStandard.Create(AOwner: TComponent);
@@ -186,21 +180,22 @@ begin
   FResultActionProc := ResultActProc;
   Caption := OisStdActionListEditor;
   LabelHeadLine.Caption := oisStdActionListEditorClass;
+  BtnPanel.OKButton.OnClick := @btnOKClick;
   EnumAct;
-  fActStdProperty := TActStdProp.Create;
+  FActStdProperty := TActStdProp.Create;
   AddStdActProperties;
 end;
 
 destructor TFormActStandard.Destroy;
 begin
-  fActStdProperty.Free;
+  FActStdProperty.Free;
   inherited Destroy;
 end;
 
 procedure CreateFormActStandard(AOwner: TComponent;
   ResultActProc: TResultActProc; out Form: TForm);
 begin
-  Form:=TFormActStandard.CreateEx(AOwner,ResultActProc);
+  Form := TFormActStandard.CreateEx(AOwner, ResultActProc);
 end;
 
 initialization
