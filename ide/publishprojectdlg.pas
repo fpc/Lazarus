@@ -41,15 +41,13 @@ uses
   StdCtrls, Dialogs,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, ExtCtrls, IDEContextHelpEdit;
+  LazarusIDEStrConsts, ExtCtrls, IDEContextHelpEdit, ButtonPanel;
 
 type
   { TPublishProjectDialog }
 
   TPublishProjectDialog = class(TForm)
-    HelpButton: TBitBtn;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     DestDirGroupBox: TGroupBox;
     DestDirComboBox: TComboBox;
     BrowseDestDirBitBtn: TBitBtn;
@@ -61,8 +59,6 @@ type
 
     IncludeFilterCombobox: TComboBox;
     IncFilterSimpleSyntaxCheckbox: TCheckBox;
-    BtnPanel: TPanel;
-    SaveSettingsButton: TBitBtn;
     UseIncludeFilterCheckbox: TCheckBox;
     IncludeFilterGroupbox: TGroupBox;
 
@@ -170,10 +166,18 @@ begin
                                         lisSaveEditorInfoOfNonProjectFiles;
   SaveClosedEditorFilesInfoCheckbox.Caption:=lisSaveInfoOfClosedEditorFiles;
 
-  OkButton.Caption:=lisLazBuildOk;
-  SaveSettingsButton.Caption:=lisSaveSettings;
-  CancelButton.Caption:=dlgCancel;
-  SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
+  ButtonPanel1.OkButton.Caption := lisLazBuildOk;
+  ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
+
+  ButtonPanel1.CancelButton.Caption := dlgCancel;
+
+  ButtonPanel1.CloseButton.Caption := lisSaveSettings;
+  ButtonPanel1.CloseButton.ModalResult := mrNone;
+  ButtonPanel1.CloseButton.Kind := bkCustom;
+  ButtonPanel1.CloseButton.LoadGlyphFromLazarusResource('menu_save');
+  ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
+
+  ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TPublishProjectDialog.HelpButtonClick(Sender: TObject);

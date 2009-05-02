@@ -220,80 +220,12 @@ object PublishProjectDialog: TPublishProjectDialog
       Text = 'ExcludeFilterCombobox'
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 38
-    Top = 493
-    Width = 484
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 484
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 499
+    Width = 472
     TabOrder = 5
-    object CancelButton: TBitBtn
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 401
-      Height = 26
-      Top = 6
-      Width = 77
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object OkButton: TBitBtn
-      AnchorSideBottom.Side = asrBottom
-      Left = 336
-      Height = 26
-      Top = 6
-      Width = 59
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      OnClick = OkButtonCLICK
-      TabOrder = 1
-    end
-    object SaveSettingsButton: TBitBtn
-      AnchorSideRight.Control = OkButton
-      AnchorSideBottom.Control = BtnPanel
-      AnchorSideBottom.Side = asrBottom
-      Left = 239
-      Height = 23
-      Top = 9
-      Width = 91
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Save settings'
-      NumGlyphs = 0
-      OnClick = SaveSettingsButtonCLICK
-      TabOrder = 2
-    end
-    object HelpButton: TBitBtn
-      Left = 6
-      Height = 26
-      Top = 6
-      Width = 66
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&Help'
-      Kind = bkHelp
-      NumGlyphs = 0
-      OnClick = HelpButtonClick
-      TabOrder = 3
-    end
+    ShowBevel = False
   end
 end
