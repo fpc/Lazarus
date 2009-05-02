@@ -54,6 +54,10 @@ type
     procedure HandleOnExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
     procedure HandleSelectionChanged(Sender: TObject);
   protected
+    { Other methods specific to Lazarus }
+    function  PopulateTreeNodeWithFiles(
+      ANode: TTreeNode; ANodePath: string): Boolean;
+    procedure PopulateWithBaseFiles;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -65,9 +69,6 @@ type
       AObjectTypes: TObjectTypes; AResult: TStrings);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
-    function  PopulateTreeNodeWithFiles(
-      ANode: TTreeNode; ANodePath: string): Boolean;
-    procedure PopulateWithBaseFiles;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
@@ -147,11 +148,12 @@ type
   protected
     { Methods specific to Lazarus }
     procedure PopulateWithRoot();
-//    function GetPathFromNode(ANode: TTreeNode): string;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Methods specific to Lazarus }
+    function GetPathFromItem(ANode: TListItem): string;
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
@@ -311,7 +313,7 @@ begin
   if Assigned(FShellListView) then
   begin
     FShellListView.Root := GetPathFromNode(Selected);
-    FShellListView.Refresh;
+    FShellListView.Refresh; // Repaint
   end;
 end;
 
@@ -584,6 +586,11 @@ begin
   finally
     Files.Free;
   end;
+end;
+
+function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
+begin
+  Result := IncludeTrailingPathDelimiter(FRoot) + ANode.Caption;
 end;
 
 procedure Register;
