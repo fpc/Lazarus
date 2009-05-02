@@ -477,6 +477,7 @@ begin
   end else begin
     StageTitle:='Finished';
     StagePosition:=StagePosMax;
+    Graph.ComputeShortestPaths;
   end;
   DebugLn(['TFindOverloadsWorker.Work END ',StageTitle,' ',StagePosition,'/',StagePosMax]);
 end;
@@ -490,6 +491,7 @@ procedure TFindOverloadsWorker.StopSearching;
 begin
   CompletedScopes:=Scopes;
   FScanFiles.Clear;
+  Graph.ComputeShortestPaths;
 end;
 
 initialization

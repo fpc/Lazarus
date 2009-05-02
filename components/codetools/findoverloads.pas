@@ -22,6 +22,9 @@
 
   Abstract:
     A graph of declaration overloads.
+    Create via CodeToolBoss.GatherOverloads(Code,X,Y,Graph).
+    Add units via Graph.ScanToolForIdentifier.
+
 }
 unit FindOverloads;
 
@@ -34,6 +37,7 @@ uses
   CodeCache, FindDeclarationTool, AVL_Tree, FindDeclarationCache, StdCodeTools;
 
 type
+  TOverloadsGraphEdge = class;
 
   { TOverloadsGraphNode }
 
@@ -41,6 +45,8 @@ type
   public
     Identifier: string;
     Tool: TFindDeclarationTool;
+    ShortestPathLength: integer;
+    ShortestPathEdge: TOverloadsGraphEdge;
     function AsDebugString: string;
   end;
 
@@ -57,6 +63,7 @@ type
   public
     Typ: TOverloadsGraphEdgeType;
     function AsDebugString: string;
+    function Cost: integer;
   end;
 
   { TDeclarationOverloadsGraph }
@@ -66,7 +73,9 @@ type
     FGraph: TCodeGraph;
     FIdentifier: string;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
+    FShortestNodes: TAVLTree;
     FStartCode: TCodeBuffer;
+    FStartCodeNode: TCodeTreeNode;
     FStartX: integer;
     FStartY: integer;
     function AddContext(Tool: TFindDeclarationTool;
@@ -80,11 +89,15 @@ type
     function Init(Code: TCodeBuffer; X,Y: integer): Boolean;
     procedure ScanToolForIdentifier(Tool: TStandardCodeTool;
                                     OnlyInterface: boolean);
-    property Identifier: string read FIdentifier;
+    procedure ComputeShortestPaths;
+  public
     property Graph: TCodeGraph read FGraph;
+    property Identifier: string read FIdentifier;
+    property ShortestNodes: TAVLTree read FShortestNodes;// nodes sorted for ShortestPathLength (after ComputeShortestPaths)
     property StartCode: TCodeBuffer read FStartCode;
     property StartX: integer read FStartX;
     property StartY: integer read FStartY;
+    property StartCodeNode: TCodeTreeNode read FStartCodeNode;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
                      read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
   end;
@@ -96,7 +109,20 @@ const
     'Alias-Old'
     );
 
+function CompareOverloadsNodesByPathLen(Node1, Node2: TOverloadsGraphNode): integer;
+
 implementation
+
+function CompareOverloadsNodesByPathLen(Node1, Node2: TOverloadsGraphNode
+  ): integer;
+begin
+  if Node1.ShortestPathLength>Node2.ShortestPathLength then
+    Result:=1
+  else if Node1.ShortestPathLength<Node2.ShortestPathLength then
+    Result:=-1
+  else
+    Result:=0;
+end;
 
 { TDeclarationOverloadsGraph }
 
@@ -234,7 +260,13 @@ end;
 
 procedure TDeclarationOverloadsGraph.Clear;
 begin
-
+  FreeAndNil(FShortestNodes);
+  Graph.Clear;
+  FStartCodeNode:=nil;
+  FStartCode:=nil;
+  FStartX:=0;
+  FStartY:=0;
+  FIdentifier:='';
 end;
 
 function TDeclarationOverloadsGraph.Init(Code: TCodeBuffer; X, Y: integer
@@ -242,7 +274,6 @@ function TDeclarationOverloadsGraph.Init(Code: TCodeBuffer; X, Y: integer
 var
   Tool: TFindDeclarationTool;
   CleanPos: integer;
-  CodeNode: TCodeTreeNode;
 begin
   Result:=false;
   FStartCode:=Code;
@@ -254,13 +285,13 @@ begin
     DebugLn(['TDeclarationOverloadsGraph.Init Tool.CaretToCleanPos failed']);
     exit(false);
   end;
-  CodeNode:=Tool.FindDeepestNodeAtPos(CleanPos,true);
+  fStartCodeNode:=Tool.FindDeepestNodeAtPos(CleanPos,true);
   //DebugLn(['TDeclarationOverloadsGraph.Init Add start context']);
-  AddContext(Tool,CodeNode);
+  AddContext(Tool,StartCodeNode);
 
   fIdentifier:='';
-  if CodeNode.Desc in AllIdentifierDefinitions+[ctnEnumIdentifier] then
-    fIdentifier:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
+  if fStartCodeNode.Desc in AllIdentifierDefinitions+[ctnEnumIdentifier] then
+    fIdentifier:=GetIdentifier(@Tool.Src[fStartCodeNode.StartPos]);
 
   Result:=true;
 end;
@@ -324,6 +355,95 @@ begin
   end;
 end;
 
+procedure TDeclarationOverloadsGraph.ComputeShortestPaths;
+var
+  AVLNode: TAVLTreeNode;
+  GraphNode: TOverloadsGraphNode;
+  StartGraphNode: TOverloadsGraphNode;
+  WorkNodes: TAVLTree;
+  Edge: TOverloadsGraphEdge;
+  GraphNode2: TOverloadsGraphNode;
+begin
+  (* Dijkstra-Algorithm:
+    for v in V do l(v):=inf
+    l(u) := 0
+    W:=V
+    while W not empty do
+      v := { v in W | l(v) minimal }
+      W:=W-{v}
+      for x in Adj(v), x in W do
+        if l(v)+w(v,x)<l(x) then
+          l(x):=l(v)+w(v,x)
+          k(x):=(v,x)
+  *)
+  StartGraphNode:=TOverloadsGraphNode(Graph.GetGraphNode(StartCodeNode,false));
+  if StartGraphNode=nil then exit;
+
+  WorkNodes:=nil;
+  try
+    // set all ShortestPathLength to infinity (except the start which gets 0)
+    // and sort all nodes in a tree
+    WorkNodes:=TAVLTree.Create(TListSortCompare(@CompareOverloadsNodesByPathLen));
+    AVLNode:=Graph.Nodes.FindLowest;
+    while AVLNode<>nil do begin
+      GraphNode:=TOverloadsGraphNode(AVLNode.Data);
+      GraphNode.ShortestPathEdge:=nil;
+      if GraphNode.Node=StartCodeNode then
+        GraphNode.ShortestPathLength:=0
+      else
+        GraphNode.ShortestPathLength:=high(integer) div 2;
+      WorkNodes.Add(GraphNode);
+      AVLNode:=Graph.Nodes.FindSuccessor(AVLNode);
+    end;
+
+    // for each remaining node that has currently the shortest path ...
+    while WorkNodes.Count>0 do begin
+      GraphNode:=TOverloadsGraphNode(WorkNodes.FindLowest.Data);
+      // this node's ShortestPathLength is final
+      WorkNodes.Remove(GraphNode);
+      // update adjacent nodes
+      AVLNode:=GraphNode.OutTree.FindLowest;
+      while AVLNode<>nil do begin
+        Edge:=TOverloadsGraphEdge(AVLNode.Data);
+        GraphNode2:=TOverloadsGraphNode(Edge.ToNode);
+        if GraphNode.ShortestPathLength+Edge.Cost<GraphNode2.ShortestPathLength
+        then begin
+          GraphNode2.ShortestPathLength:=GraphNode.ShortestPathLength+Edge.Cost;
+          GraphNode2.ShortestPathEdge:=Edge;
+        end;
+        AVLNode:=GraphNode.OutTree.FindSuccessor(AVLNode);
+      end;
+      // update incident nodes
+      AVLNode:=GraphNode.InTree.FindLowest;
+      while AVLNode<>nil do begin
+        Edge:=TOverloadsGraphEdge(AVLNode.Data);
+        GraphNode2:=TOverloadsGraphNode(Edge.FromNode);
+        if GraphNode.ShortestPathLength+Edge.Cost<GraphNode2.ShortestPathLength
+        then begin
+          GraphNode2.ShortestPathLength:=GraphNode.ShortestPathLength+Edge.Cost;
+          GraphNode2.ShortestPathEdge:=Edge;
+        end;
+        AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
+      end;
+    end;
+
+  finally
+    WorkNodes.Free;
+  end;
+
+  // build ShortestNodes
+  if FShortestNodes=nil then
+    FShortestNodes:=TAVLTree.Create(TListSortCompare(@CompareOverloadsNodesByPathLen))
+  else
+    FShortestNodes.Clear;
+  AVLNode:=Graph.Nodes.FindLowest;
+  while AVLNode<>nil do begin
+    GraphNode:=TOverloadsGraphNode(AVLNode.Data);
+    FShortestNodes.Add(GraphNode);
+    AVLNode:=Graph.Nodes.FindSuccessor(AVLNode);
+  end;
+end;
+
 { TOverloadsGraphNode }
 
 function TOverloadsGraphNode.AsDebugString: string;
@@ -344,6 +464,16 @@ begin
     +' '+(FromNode as TOverloadsGraphNode).AsDebugString
     +'->'
     +(ToNode as TOverloadsGraphNode).AsDebugString;
+end;
+
+function TOverloadsGraphEdge.Cost: integer;
+begin
+  case Typ of
+  ogetParentChild: Result:=10;
+  ogetAncestorInherited: Result:=1;
+  ogetAliasOld: Result:=1;
+  else Result:=100;
+  end;
 end;
 
 end.
