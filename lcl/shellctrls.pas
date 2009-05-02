@@ -553,7 +553,7 @@ var
   i: Integer;
   Files: TStringList;
   NewItem: TListItem;
-  CurFileName: string;
+  CurFileName, CurFilePath: string;
   CurFileSize: Int64;
 begin
   // Check inputs
@@ -567,16 +567,17 @@ begin
     begin
       NewItem := Items.Add;
       CurFileName := Files.Strings[i];
+      CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
       // First column - Name
       NewItem.Caption := CurFileName;
       // Second column - Size
-      CurFileSize := FileSize(FRoot + CurFileName); // in Bytes
+      CurFileSize := FileSize(CurFilePath); // in Bytes
       if CurFileSize < 1024 then
         NewItem.SubItems.Add(IntToStr(CurFileSize) + ' bytes')
       else if CurFileSize < 1024 * 1024 then
         NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' kB')
       else
-        NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' MB');
+        NewItem.SubItems.Add(IntToStr(CurFileSize div (1024 * 1024)) + ' MB');
       // Third column - Type
       NewItem.SubItems.Add(ExtractFileExt(CurFileName));
     end;
