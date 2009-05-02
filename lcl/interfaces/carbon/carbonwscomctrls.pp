@@ -342,10 +342,13 @@ end;
 
 class procedure TCarbonWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+var
+  Column: TCarbonListColumn;
 begin
   if not CheckHandle(ALV, Self, 'ColumnSetWidth') then Exit;
 
-  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetWidth(AWidth);
+  Column := TCarbonListView(ALV.Handle).GetColumn(AIndex);
+  if Column <> nil then Column.SetWidth(AWidth); // Avoids crash
 end;
 
 class procedure TCarbonWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;

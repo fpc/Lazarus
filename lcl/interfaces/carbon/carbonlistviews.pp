@@ -1422,15 +1422,15 @@ end;
 
 function TCarbonListView.GetItemCaption(AIndex, ASubIndex: Integer): String;
 begin
-  if (AIndex >= 0) and (AIndex < (LCLObject as TListView).Items.Count) then
+  if (AIndex >= 0) and (AIndex < (LCLObject as TCustomListView).Items.Count) then
   begin
     if ASubIndex = 0 then
-      Result := (LCLObject as TListView).Items[AIndex].Caption
+      Result := (LCLObject as TCustomListView).Items[AIndex].Caption
     else
     begin
       if (ASubIndex > 0) and
-        (ASubIndex <= (LCLObject as TListView).Items[AIndex].SubItems.Count) then
-        Result := (LCLObject as TListView).Items[AIndex].SubItems[ASubIndex - 1]
+        (ASubIndex <= (LCLObject as TCustomListView).Items[AIndex].SubItems.Count) then
+        Result := (LCLObject as TCustomListView).Items[AIndex].SubItems[ASubIndex - 1]
       else
         Result := '';
     end;
@@ -1441,12 +1441,12 @@ end;
 
 function TCarbonListView.GetReadOnly: Boolean;
 begin
-  Result := (LCLObject as TListView).ReadOnly;
+  Result := (LCLObject as TCustomListView).ReadOnly;
 end;
 
 function TCarbonListView.MultiSelect: Boolean;
 begin
-  Result := (LCLObject as TListView).MultiSelect;
+  Result := (LCLObject as TCustomListView).MultiSelect;
 end;
 
 function TCarbonListView.IsOwnerDrawn: Boolean;

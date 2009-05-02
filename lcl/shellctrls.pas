@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics,
-  ComCtrls;
+  ComCtrls, FileUtil;
 
 type
 
@@ -52,19 +52,22 @@ type
     procedure SetShellListView(const Value: TCustomShellListView);
     { Other internal methods }
     procedure HandleOnExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
+    procedure HandleSelectionChanged(Sender: TObject);
   protected
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    { Methods specific to Lazarus }
+    { Methods specific to Lazarus - useful for other classes }
+    class function  GetBasePath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
       AObjectTypes: TObjectTypes; AResult: TStrings);
-    function PopulateTreeNodeWithFiles(
+    { Other methods specific to Lazarus }
+    function  GetPathFromNode(ANode: TTreeNode): string;
+    function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
     procedure PopulateWithBaseFiles;
-    function GetPathFromNode(ANode: TTreeNode): string;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
@@ -138,20 +141,20 @@ type
     FShellTreeView: TCustomShellTreeView;
     { Setters and getters }
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
+    procedure SetRoot(const Value: string);
     { Other internal methods }
+    procedure HandleResize(Sender: TObject);
   protected
+    { Methods specific to Lazarus }
+    procedure PopulateWithRoot();
+//    function GetPathFromNode(ANode: TTreeNode): string;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    { Methods specific to Lazarus }
-    procedure PopulateWithRoot();
-//    function GetPathFromNode(ANode: TTreeNode): string;
-
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
-    property Root: string read FRoot write FRoot;
+    property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
   end;
 
@@ -303,6 +306,15 @@ begin
   AllowExpansion := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
 end;
 
+procedure TCustomShellTreeView.HandleSelectionChanged(Sender: TObject);
+begin
+  if Assigned(FShellListView) then
+  begin
+    FShellListView.Root := GetPathFromNode(Selected);
+    FShellListView.Refresh;
+  end;
+end;
+
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -314,6 +326,7 @@ begin
   // Necessary event handlers
 
   OnExpanding := @HandleOnExpanding;
+  OnSelectionChanged := @HandleSelectionChanged;
 
   // Populates the base dirs
 
@@ -337,9 +350,9 @@ var
   ObjectData: TObject;
   SearchStr: string;
 begin
-  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + '*.*';
+  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask;
 
-  FindResult := FindFirst(SearchStr, FaDirectory, DirInfo);
+  FindResult := FindFirst(SearchStr, faAnyFile, DirInfo);
 
   while FindResult = 0 do
   begin
@@ -372,6 +385,19 @@ begin
   end;
 
   SysUtils.FindClose(DirInfo);
+end;
+
+class function TCustomShellTreeView.GetBasePath: string;
+begin
+  {$if defined(windows) and not defined(wince)}
+  Result := '';
+  {$endif}
+  {$ifdef wince}
+  Result := '\';
+  {$endif}
+  {$ifdef unix}
+  Result := '/';
+  {$endif}
 end;
 
 { Returns true if at least one item was added, false otherwise }
@@ -430,15 +456,9 @@ begin
     Inc(pDrive, 4);
   end;
 end;
-  {$endif}
-  {$ifdef wince}
+  {$else}
 begin
-  PopulateTreeNodeWithFiles(nil, '\');
-end;
-  {$endif}
-  {$ifdef unix}
-begin
-  PopulateTreeNodeWithFiles(nil, '/');
+  PopulateTreeNodeWithFiles(nil, GetBasePath());
 end;
   {$endif}
 
@@ -446,17 +466,22 @@ function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 var
   rootDir : String;
 begin
+  // If nothing is selected, then the base is selected
+  if ANode = nil then Exit(GetBasePath());
+
   // In the future use ANode.Data instead of ANode.Text
   rootDir := PChar(ANode.Text);
   while (ANode.Parent <> nil)do
   begin
     ANode := ANode.Parent;
-    if( pChar(ANode.Text) <> PathDelim)then
-      rootDir := PChar(ANode.Text)+PathDelim+rootDir
+    if (PChar(ANode.Text) <> PathDelim) then
+      rootDir := PChar(ANode.Text) + PathDelim + rootDir
     else
-      rootDir := PChar(ANode.Text)+rootDir;
+      rootDir := PChar(ANode.Text) + rootDir;
   end;
-  result:=rootDir;
+  // Check, maybe the base path won't be necessary in the future
+  // if the base directory is added to the items list
+  Result := GetBasePath + rootDir;
 end;
 
 { TCustomShellListView }
@@ -464,22 +489,38 @@ end;
 procedure TCustomShellListView.SetShellTreeView(
   const Value: TCustomShellTreeView);
 begin
-  FShellTreeView := Value;
+  if FShellTreeView <> Value then
+  begin
+    FShellTreeView := Value;
 
-{  if Value.Selected <> nil then
-  begin
-    FRoot := Value.GetPathFromNode(Value.Selected);
-    Clear();
-    PopulateWithRoot();
-  end
-  else
-  begin
-    Clear();
+    Clear;
+
+    if Value <> nil then
+    begin
+      FRoot := Value.GetPathFromNode(Value.Selected);
+      PopulateWithRoot();
+    end;
   end;
 
   // Also update the pair, but only if necessary to avoid circular calls of the setters
-  if Value.ShellListView <> Self then
-    Value.ShellListView := Self;}
+  if Value.ShellListView <> Self then Value.ShellListView := Self;
+end;
+
+procedure TCustomShellListView.SetRoot(const Value: string);
+begin
+  if FRoot <> Value then
+  begin
+    FRoot := Value;
+    Clear;
+    PopulateWithRoot();
+  end;
+end;
+
+procedure TCustomShellListView.HandleResize(Sender: TObject);
+begin
+  if Column[0] <> nil then Column[0].Width := (70 * Width) div 100;
+  if Column[1] <> nil then Column[1].Width := (15 * Width) div 100;
+  if Column[2] <> nil then Column[2].Width := (15 * Width) div 100;
 end;
 
 constructor TCustomShellListView.Create(AOwner: TComponent);
@@ -488,7 +529,7 @@ begin
 
   // Initial property values
 
-  ObjectTypes:= [otNonFolders];
+  ObjectTypes := [otNonFolders];
 
   Self.Columns.Add;
   Self.Column[0].Caption := 'Name';
@@ -496,6 +537,9 @@ begin
   Self.Column[1].Caption := 'Size';
   Self.Columns.Add;
   Self.Column[2].Caption := 'Type';
+
+  // Internal event handlers
+  OnResize := @HandleResize;
 end;
 
 destructor TCustomShellListView.Destroy;
@@ -505,24 +549,40 @@ begin
 end;
 
 procedure TCustomShellListView.PopulateWithRoot();
-{var
+var
   i: Integer;
   Files: TStringList;
   NewItem: TListItem;
-}
+  CurFileName: string;
+  CurFileSize: Int64;
 begin
-{  Files := TStringList.Create;
+  // Check inputs
+  if FRoot = '' then Exit;
+
+  Files := TStringList.Create;
   try
     TCustomShellTreeView.GetFilesInDir(FRoot, FObjectTypes, Files);
 
     for i := 0 to Files.Count - 1 do
     begin
       NewItem := Items.Add;
-      NewItem.Caption := Files.Strings[i];
+      CurFileName := Files.Strings[i];
+      // First column - Name
+      NewItem.Caption := CurFileName;
+      // Second column - Size
+      CurFileSize := FileSize(FRoot + CurFileName); // in Bytes
+      if CurFileSize < 1024 then
+        NewItem.SubItems.Add(IntToStr(CurFileSize) + ' bytes')
+      else if CurFileSize < 1024 * 1024 then
+        NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' kB')
+      else
+        NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' MB');
+      // Third column - Type
+      NewItem.SubItems.Add(ExtractFileExt(CurFileName));
     end;
   finally
     Files.Free;
-  end;}
+  end;
 end;
 
 procedure Register;

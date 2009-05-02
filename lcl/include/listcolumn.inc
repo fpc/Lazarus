@@ -168,7 +168,8 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetWidth(LV, Index, Self, FWidth);
+  if (LV <> nil) or (LV.WidgetsetClass <> nil) then // Avoids crash
+    TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetWidth(LV, Index, Self, FWidth);
 end;
 
 procedure TListColumn.SetMaxWidth(const AValue: TWidth);

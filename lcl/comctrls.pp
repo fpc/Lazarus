@@ -1008,17 +1008,14 @@ type
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
-    property Columns: TListColumns read FColumns write SetColumns;
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
+    property Columns: TListColumns read FColumns write SetColumns;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
     property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
     property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
-    property Items: TListItems read FListItems write SetItems;
     property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
-    property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
     property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
     property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
-    property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
     property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
@@ -1060,6 +1057,12 @@ type
     property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty default False;
     property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
     property ItemFocused: TListItem read GetFocused write SetFocused;
+    property Items: TListItems read FListItems write SetItems;
+    // MultiSelect and ReadOnly should be protected, but can't because Carbon Interface
+    // needs to access this property and it cannot cast to TListItem, because we have
+    // other classes descending from TCustomListItem which need to work too
+    property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
+    property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
     property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty default False;
     property SelCount: Integer read GetSelCount;
     property Selected: TListItem read GetSelection write SetSelection;
