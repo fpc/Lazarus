@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeAtom, CodeTree, CodeGraph,
-  CodeCache, FindDeclarationTool;
+  CodeCache, FindDeclarationTool, AVL_Tree, FindDeclarationCache, StdCodeTools;
 
 type
 
@@ -78,6 +78,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Init(Code: TCodeBuffer; X,Y: integer): Boolean;
+    procedure ScanToolForIdentifier(Tool: TStandardCodeTool;
+                                    OnlyInterface: boolean);
     property Identifier: string read FIdentifier;
     property Graph: TCodeGraph read FGraph;
     property StartCode: TCodeBuffer read FStartCode;
@@ -115,7 +117,7 @@ begin
   Result:=TOverloadsGraphNode(Graph.GetGraphNode(CodeNode,false));
   if Result<>nil then exit;
   // add new node
-  DebugLn(['TDeclarationOverloadsGraph.AddContext ',Tool.MainFilename,' ',CodeNode.DescAsString,' "',dbgstr(copy(Tool.Src,CodeNode.StartPos,20)),'"']);
+  //DebugLn(['TDeclarationOverloadsGraph.AddContext ',Tool.MainFilename,' ',CodeNode.DescAsString,' "',dbgstr(copy(Tool.Src,CodeNode.StartPos,20)),'"']);
   Result:=TOverloadsGraphNode(Graph.GetGraphNode(CodeNode,true));
   Result.Tool:=Tool;
   if CodeNode.Desc in AllIdentifierDefinitions then
@@ -180,7 +182,7 @@ begin
   if (CodeNode.Desc=ctnTypeDefinition)
   and (CodeNode.FirstChild<>nil)
   and (CodeNode.FirstChild.Desc=ctnIdentifier) then begin
-    DebugLn(['TDeclarationOverloadsGraph.AddContext alias']);
+    //DebugLn(['TDeclarationOverloadsGraph.AddContext alias']);
     Params:=TFindDeclarationParams.Create;
     try
       try
@@ -215,7 +217,7 @@ begin
   // create new edge
   Result:=TOverloadsGraphEdge(Graph.GetEdge(FromNode,ToNode,true));
   Result.Typ:=Typ;
-  DebugLn(['TDeclarationOverloadsGraph.AddEdge ',Result.AsDebugString]);
+  //DebugLn(['TDeclarationOverloadsGraph.AddEdge ',Result.AsDebugString]);
 end;
 
 constructor TDeclarationOverloadsGraph.Create;
@@ -253,10 +255,73 @@ begin
     exit(false);
   end;
   CodeNode:=Tool.FindDeepestNodeAtPos(CleanPos,true);
-  DebugLn(['TDeclarationOverloadsGraph.Init Add start context']);
+  //DebugLn(['TDeclarationOverloadsGraph.Init Add start context']);
   AddContext(Tool,CodeNode);
 
+  fIdentifier:='';
+  if CodeNode.Desc in AllIdentifierDefinitions+[ctnEnumIdentifier] then
+    fIdentifier:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
+
   Result:=true;
+end;
+
+procedure TDeclarationOverloadsGraph.ScanToolForIdentifier(
+  Tool: TStandardCodeTool; OnlyInterface: boolean);
+var
+  Entry: PInterfaceIdentCacheEntry;
+  Node: TCodeTreeNode;
+begin
+  if Identifier='' then exit;
+  if OnlyInterface then begin
+    // use interface cache
+    try
+      Tool.BuildInterfaceIdentifierCache(false);
+    except
+    end;
+    if Tool.InterfaceIdentifierCache<>nil then begin
+      Entry:=Tool.InterfaceIdentifierCache.FindIdentifier(PChar(Identifier));
+      while Entry<>nil do begin
+        if CompareIdentifiers(Entry^.Identifier,PChar(Identifier))=0 then
+          AddContext(Tool,Entry^.Node);
+        Entry:=Entry^.NextEntry;
+      end;
+    end;
+  end else begin
+    // scan whole unit/program
+    try
+      Tool.Explore(false);
+    except
+    end;
+    if Tool.Tree=nil then exit;
+    Node:=Tool.Tree.Root;
+    while Node<>nil do begin
+      case Node.Desc of
+
+      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType,
+      ctnEnumIdentifier:
+        if CompareIdentifiers(@Tool.Src[Node.StartPos],PChar(Identifier))=0
+        then
+          AddContext(Tool,Node);
+
+      ctnProcedure:
+        begin
+          Tool.MoveCursorToProcName(Node,true);
+          if CompareIdentifiers(@Tool.Src[Tool.CurPos.StartPos],PChar(Identifier))=0
+          then
+            AddContext(Tool,Node);
+        end;
+
+      ctnProperty:
+        begin
+          Tool.MoveCursorToPropName(Node);
+          if CompareIdentifiers(@Tool.Src[Tool.CurPos.StartPos],PChar(Identifier))=0
+          then
+            AddContext(Tool,Node);
+        end;
+      end;
+      Node:=Node.Next;
+    end;
+  end;
 end;
 
 { TOverloadsGraphNode }

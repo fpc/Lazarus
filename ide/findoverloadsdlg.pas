@@ -45,6 +45,7 @@ type
   private
     FCode: TCodeBuffer;
     FFilename: string;
+    FOnlyInterface: boolean;
     FScanned: boolean;
     procedure SetCode(const AValue: TCodeBuffer);
     procedure SetScanned(const AValue: boolean);
@@ -52,6 +53,7 @@ type
     constructor Create(const TheFilename: string);
     destructor Destroy; override;
     property Filename: string read FFilename;
+    property OnlyInterface: boolean read FOnlyInterface write FOnlyInterface;
     property Scanned: boolean read FScanned write SetScanned;
     property Code: TCodeBuffer read FCode write SetCode;
   end;
@@ -82,7 +84,9 @@ type
     procedure CollectOtherSourceFiles;
     procedure ScanSomeFiles;
     procedure ScanFile(AFile: TFOWFile);
+    procedure CollectStartSource;
   public
+    StartSourceScanned: boolean;
     Scopes: TFindOverloadsScopes;
     CompletedScopes: TFindOverloadsScopes;
     Graph: TDeclarationOverloadsGraph;
@@ -272,6 +276,7 @@ end;
 constructor TFOWFile.Create(const TheFilename: string);
 begin
   FFilename:=TheFilename;
+  FOnlyInterface:=true;
 end;
 
 destructor TFOWFile.Destroy;
@@ -327,13 +332,62 @@ begin
 end;
 
 procedure TFindOverloadsWorker.ScanFile(AFile: TFOWFile);
+var
+  Tool: TCodeTool;
+  Filename: String;
+  MainFile: TFOWFile;
+  Code: TCodeBuffer;
 begin
   FScanFiles.Remove(AFile);
   if AFile.Scanned then exit;
   AFile.Scanned:=true;
-  DebugLn(['TFindOverloadsWorker.ScanFile ',AFile.Filename]);
+  //DebugLn(['TFindOverloadsWorker.ScanFile File=',AFile.Filename]);
+  // get codetool
+  Filename:=TrimFilename(AFile.Filename);
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then begin
+    DebugLn(['TFindOverloadsWorker.ScanFile file not readable: ',Filename]);
+    exit;
+  end;
+  Tool:=TCodeTool(CodeToolBoss.GetCodeToolForSource(Code,true,false));
+  if Tool=nil then begin
+    DebugLn(['TFindOverloadsWorker.ScanFile file not in a unit: ',Filename]);
+    exit;
+  end;
+  // check if AFile is an include file
+  Filename:=Tool.MainFilename;
+  MainFile:=FindFile(Filename);
+  // get unit
+  if MainFile=nil then begin
+    MainFile:=TFOWFile.Create(Filename);
+    FFiles.Add(MainFile);
+  end;
+  if (MainFile<>AFile) and MainFile.Scanned then begin
+    //DebugLn(['TFindOverloadsWorker.ScanFile already scanned: ',Filename]);
+    exit;
+  end;
+  // scan unit
+  FScanFiles.Remove(MainFile);
+  MainFile.Scanned:=true;
+  if not AFile.OnlyInterface then
+    MainFile.OnlyInterface:=false;
+  //DebugLn(['TFindOverloadsWorker.ScanFile scanning: ',Tool.MainFilename]);
+  Graph.ScanToolForIdentifier(Tool,MainFile.OnlyInterface);
+end;
 
-
+procedure TFindOverloadsWorker.CollectStartSource;
+var
+  Filename: String;
+  aFile: TFOWFile;
+begin
+  Filename:=Graph.StartCode.Filename;
+  aFile:=FindFile(Filename);
+  if aFile=nil then begin
+    aFile:=TFOWFile.Create(Filename);
+    aFile.OnlyInterface:=false;
+    FFiles.Add(aFile);
+    FScanFiles.Add(aFile);
+  end;
 end;
 
 function TFindOverloadsWorker.AddFileToScan(const Filename: string;
@@ -382,6 +436,7 @@ begin
   FStageTitle:='Finished';
   FStagePosition:=0;
   FStagePosMax:=100;
+  StartSourceScanned:=false;
 end;
 
 procedure TFindOverloadsWorker.Work;
@@ -391,25 +446,32 @@ begin
     // scan files
     ScanSomeFiles;
   end
+  else if not StartSourceScanned then
+  begin
+    StageTitle:='Scanning start source ...';
+    StagePosition:=10;
+    StartSourceScanned:=true;
+    CollectStartSource;
+  end
   else if (fosProject in Scopes) and not (fosProject in CompletedScopes) then
   begin
     // collect project files
     StageTitle:='Scanning project ...';
-    StagePosition:=1;
+    StagePosition:=20;
     CollectProjectFiles;
   end
   else if (fosPackages in Scopes) and not (fosPackages in CompletedScopes) then
   begin
     // collect package files
     StageTitle:='Scanning packages ...';
-    StagePosition:=10;
+    StagePosition:=40;
     CollectPackageFiles;
   end
   else if (fosOtherSources in Scopes) and not (fosOtherSources in CompletedScopes)
   then begin
     // collect other sources
     StageTitle:='Scanning other sources ...';
-    StagePosition:=30;
+    StagePosition:=60;
     CollectOtherSourceFiles;
   end else begin
     StageTitle:='Finished';

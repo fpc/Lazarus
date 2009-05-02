@@ -65,7 +65,7 @@ type
   TInterfaceIdentifierCache = class
   private
     FComplete: boolean;
-    FItems: TAVLTree; // tree of TInterfaceIdentCacheEntry
+    FItems: TAVLTree; // tree of PInterfaceIdentCacheEntry
     FTool: TPascalParserTool;
     function FindAVLNode(Identifier: PChar): TAVLTreeNode;
     procedure SetComplete(const AValue: boolean);
