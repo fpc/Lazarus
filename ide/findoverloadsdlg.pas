@@ -159,6 +159,7 @@ var
   FindOverloadsDialog: TFindOverloadsDialog;
   Graph: TDeclarationOverloadsGraph;
 begin
+  if not LazarusIDE.BeginCodeTools then exit;
   Graph:=nil;
   FindOverloadsDialog:=nil;
   CodeToolBoss.ActivateWriteLock;
