@@ -1863,7 +1863,7 @@ resourcestring
   lisViewSourceLfm = 'View Source (.lfm)';
   fdmSaveFormAsXML = 'Save form as xml';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
-  fdmShowOptions='Show Options for form editing';
+  fdmShowOptions='Options';
 
   //-----------------------
   // keyMapping
