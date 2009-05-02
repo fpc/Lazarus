@@ -256,6 +256,7 @@ type
     property XGraphMax;
     property YGraphMax;
   published
+    property Depth;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
@@ -660,6 +661,7 @@ var
 
 var
   i: Integer;
+  c: TColor;
 begin
   if Count = 0 then exit;
 
@@ -672,8 +674,17 @@ begin
 
     if PrepareLine then begin
       ACanvas.Pen.Style := FStyle;
-      ACanvas.Pen.Color := PChartCoord(FCoordList[i])^.Color;
-      ACanvas.Line(i1, i2);
+      c := PChartCoord(FCoordList[i])^.Color;
+      if Depth = 0 then begin
+        ACanvas.Pen.Color := c;
+        ACanvas.Line(i1, i2);
+      end
+      else begin
+        ACanvas.Brush.Style := bsSolid;
+        ACanvas.Pen.Color := clBlack;
+        ACanvas.Brush.Color := c;
+        DrawLineDepth(ACanvas, i1, i2, Depth);
+      end;
     end;
     DrawPoint(i);
   end;

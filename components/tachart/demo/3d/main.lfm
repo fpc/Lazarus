@@ -10,7 +10,9 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
+    Left = 0
     Height = 300
+    Top = 0
     Width = 560
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
@@ -42,10 +44,8 @@ object Form1: TForm1
       Depth = 10
       SeriesColor = clMaroon
     end
-    object Chart1BarSeries3: TBarSeries
+    object Chart1LineSeries1: TLineSeries
       ZPosition = 50
-      BarBrush.Color = clBlue
-      BarWidthPercent = 50
       Depth = 10
       SeriesColor = clBlue
     end

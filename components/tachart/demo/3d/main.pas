@@ -16,7 +16,7 @@ type
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1BarSeries2: TBarSeries;
-    Chart1BarSeries3: TBarSeries;
+    Chart1LineSeries1: TLineSeries;
     procedure FormCreate(Sender: TObject);
   end;
 
@@ -35,7 +35,7 @@ begin
   for i := 1 to 7 do begin
     Chart1BarSeries1.AddXY(i, Random(8) + 4);
     Chart1BarSeries2.AddXY(i, Random(8) + 4);
-    Chart1BarSeries3.AddXY(i, Random(8) + 4);
+    Chart1LineSeries1.AddXY(i, Random(8) + 4);
   end;
 end;
 
