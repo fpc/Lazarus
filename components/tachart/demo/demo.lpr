@@ -11,6 +11,7 @@ uses
   { add your units here }, unit1, TAChartLazarusPkg;
 
 begin
+  Application.Title := 'TChart basic demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;

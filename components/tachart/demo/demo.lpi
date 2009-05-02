@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
     <General>
-      <SessionStorage Value="InIDEConfig"/>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
+      <Title Value="TChart basic demo"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -20,19 +22,23 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item1>
       <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
         <PackageName Value="TAChartLazarusPkg"/>
         <MinVersion Valid="True"/>
-      </Item2>
+      </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="demo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -43,19 +49,21 @@
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="unit1"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="../tagraph.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TAGraph"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+    </SearchPaths>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -63,6 +71,7 @@
       </Options>
     </Linking>
     <Other>
+      <WriteFPCLogo Value="False"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
