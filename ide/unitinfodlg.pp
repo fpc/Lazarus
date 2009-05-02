@@ -66,8 +66,6 @@ type
     UType: TLabel;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure GotoIncludeDirectiveButtonClick(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
     FFilePath: string;
@@ -153,17 +151,6 @@ begin
   ClearIncludedBy.Caption:=lisUIClearIncludedByReference;
   CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
   GotoIncludeDirectiveButton.Caption:=lisMenuGotoIncludeDirective;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-end;
-
-procedure TUnitInfoDialog.GotoIncludeDirectiveButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TUnitInfoDialog.OkButtonClick(Sender: TObject);
-begin
-
 end;
 
 procedure TUnitInfoDialog.clearIncludedByClick(Sender: TObject);

@@ -9,29 +9,28 @@ object UnitInfoDialog: TUnitInfoDialog
   ClientHeight = 283
   ClientWidth = 500
   OnCreate = FormCreate
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object OkButton: TBitBtn
-    Left = 454
-    Height = 23
-    Top = 247
-    Width = 40
+    Left = 419
+    Height = 26
+    Top = 244
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     Cancel = True
     Caption = '&OK'
+    Constraints.MinWidth = 75
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
-    OnClick = OkButtonClick
     TabOrder = 0
   end
   object Notebook: TNotebook
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 235
+    Height = 232
     Top = 6
     Width = 488
     Align = alTop
@@ -41,8 +40,8 @@ object UnitInfoDialog: TUnitInfoDialog
     TabOrder = 1
     object GeneralPage: TPage
       Caption = 'GeneralPage'
-      ClientWidth = 484
-      ClientHeight = 191
+      ClientWidth = 480
+      ClientHeight = 206
       object ULines: TLabel
         Left = 12
         Height = 13
@@ -212,13 +211,13 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object UnitPathsPage: TPage
       Caption = 'UnitPathsPage'
-      ClientWidth = 484
-      ClientHeight = 195
+      ClientWidth = 480
+      ClientHeight = 206
       object UnitPathMemo: TMemo
         Left = 6
-        Height = 183
+        Height = 194
         Top = 6
-        Width = 472
+        Width = 468
         Align = alClient
         BorderSpacing.Around = 6
         ReadOnly = True
@@ -229,10 +228,10 @@ object UnitInfoDialog: TUnitInfoDialog
     object IncludePathsPage: TPage
       Caption = 'IncludePathsPage'
       ClientWidth = 480
-      ClientHeight = 209
+      ClientHeight = 206
       object IncludePathMemo: TMemo
         Left = 6
-        Height = 197
+        Height = 194
         Top = 6
         Width = 468
         Align = alClient
@@ -244,13 +243,13 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object CompleteUnitPathsPage: TPage
       Caption = 'CompleteUnitPathsPage'
-      ClientWidth = 484
-      ClientHeight = 195
+      ClientWidth = 480
+      ClientHeight = 206
       object SrcPathMemo: TMemo
         Left = 6
-        Height = 183
+        Height = 194
         Top = 6
-        Width = 472
+        Width = 468
         Align = alClient
         BorderSpacing.Around = 6
         ReadOnly = True
@@ -264,8 +263,8 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 247
+    Height = 26
+    Top = 244
     Width = 130
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
@@ -278,16 +277,15 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideRight.Control = OkButton
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
-    Left = 286
-    Height = 23
-    Top = 247
-    Width = 158
+    Left = 256
+    Height = 26
+    Top = 244
+    Width = 157
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Right = 10
+    BorderSpacing.Right = 6
     Caption = 'GotoIncludeDirectiveButton'
     ModalResult = 6
-    OnClick = GotoIncludeDirectiveButtonClick
     TabOrder = 3
   end
 end
