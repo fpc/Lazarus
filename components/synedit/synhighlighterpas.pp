@@ -2717,7 +2717,8 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType);
-    Include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaOpen);
+    FNodeInfoList[FNodeInfoCount].FoldAction :=
+      FNodeInfoList[FNodeInfoCount].FoldAction + [sfaOpen, sfaFold];
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -2734,7 +2735,8 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType);
-    Include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
+    FNodeInfoList[FNodeInfoCount].FoldAction :=
+      FNodeInfoList[FNodeInfoCount].FoldAction + [sfaClose, sfaFold];
     inc(FNodeInfoCount);
   end;
   case ABlockType of
