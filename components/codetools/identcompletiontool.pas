@@ -1397,12 +1397,25 @@ procedure TIdentCompletionTool.FindCollectionContext(
 
 var
   ExprType: TExpressionType;
+  IgnoreCurContext: Boolean;
 begin
   GatherContext:=CreateFindContext(Self,CursorNode);
 
+  IgnoreCurContext:=false;
   ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
-  if GatherContext.Node.Desc=ctnWithVariable then
+  if GatherContext.Node.Desc=ctnWithVariable then begin
+    if GatherContext.Node.PriorBrother<>nil then
+      GatherContext.Node:=GatherContext.Node.PriorBrother
+    else
+      GatherContext.Node:=GatherContext.Node.Parent;
+  end
+  else if (GatherContext.Node.Desc=ctnClassInheritance)
+  or (GatherContext.Node.Parent.Desc=ctnClassInheritance) then begin
+    while not (GatherContext.Node.Desc in [ctnClass,ctnClassInterface]) do
+      GatherContext.Node:=GatherContext.Node.Parent;
     GatherContext.Node:=GatherContext.Node.Parent;
+    IgnoreCurContext:=true;
+  end;
 
   StartInSubContext:=false;
   //DebugLn(['TIdentCompletionTool.FindCollectionContext ContextExprStartPos=',ContextExprStartPos,' "',dbgstr(copy(Src,ContextExprStartPos,20)),'" IdentStartPos="',dbgstr(copy(Src,IdentStartPos,20)),'"']);
@@ -1412,6 +1425,8 @@ begin
     Params.SetIdentifier(Self,nil,nil);
     Params.Flags:=[fdfExceptionOnNotFound,
                    fdfSearchInParentNodes,fdfSearchInAncestors];
+    if IgnoreCurContext then
+      Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
     ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
                                            Params,false);
     //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);

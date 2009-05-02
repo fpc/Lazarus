@@ -173,7 +173,20 @@ begin
   end;
 
   // ToDo: add alias
+  if (CodeNode.Desc=ctnTypeDefinition)
+  and (CodeNode.FirstChild<>nil)
+  and (CodeNode.FirstChild.Desc=ctnIdentifier) then begin
+    DebugLn(['TDeclarationOverloadsGraph.AddContext alias']);
+    {Tool.MoveCursorToCleanPos(CodeNode.FirstChild);
+    Tool.ReadNextAtom;
 
+    Params:=TFindDeclarationParams.Create;
+    try
+      Tool.FindDeclarationOfIdentifier();
+    finally
+      Params.Free;
+    end;}
+  end;
 
 end;
 

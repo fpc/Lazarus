@@ -730,7 +730,7 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationNodeInInterface(const Identifier: string;
-      BuildTheTree: Boolean): TCodeTreeNode;
+      BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var
 
     function FindInitializationSection: TCodeTreeNode;
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
@@ -753,9 +753,17 @@ type
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
-      out ListOfPFindContext: TFPList): boolean;
+      out ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
-      var ListOfPFindContext: TFPList): boolean;
+      var ListOfPFindContext: TFPList): boolean; // without interfaces
+    function FindAncestorOfClass(ClassNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
+    function FindAncestorOfClassInheritance(IdentifierNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+    function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
+      var ListOfPFindContext: TFPList;
+      Params: TFindDeclarationParams; FindClassContext: boolean;
+      ExceptionOnNotFound: boolean = true): boolean; // with interfaces
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
     function FindUnitReferences(UnitCode: TCodeBuffer;
@@ -765,14 +773,6 @@ type
                                  Node: TCodeTreeNode): boolean;
 
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
-    function FindAncestorOfClass(ClassNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
-    function FindAncestorOfClassInheritance(IdentifierNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
-    function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
-      var ListOfPFindContext: TFPList;
-      Params: TFindDeclarationParams; FindClassContext: boolean;
-      ExceptionOnNotFound: boolean = true): boolean;
     function FindNthParameterNode(Node: TCodeTreeNode;
                                   ParameterIndex: integer): TCodeTreeNode;
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
@@ -1227,12 +1227,10 @@ var CleanCursorPos: integer;
         // parse class and build CodeTreeNodes for all properties/methods
         BuildSubTreeForClass(ClassNode);
         CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
-        if (CursorNode.Desc in [ctnClass,ctnClassInterface])
-        and ((ClassNode.FirstChild=nil)
-             or (CleanCursorPos<ClassNode.FirstChild.StartPos))
-        then begin
+        if (CursorNode.Desc=ctnClassInheritance)
+        or (CursorNode.Parent.Desc=ctnClassInheritance) then begin
           // identifier is an ancestor/interface identifier
-          CursorNode:=CursorNode.Parent;
+          CursorNode:=ClassNode.Parent;
           DirectSearch:=true;
           SkipChecks:=true;
         end;
@@ -1629,7 +1627,7 @@ var
   StartNode: TCodeTreeNode;
   SectionNode: TCodeTreeNode;
   Node: TCodeTreeNode;
-  BestNodeIsForwardDecaration: Boolean;
+  BestNodeIsForwardDeclaration: Boolean;
   CurNodeIsForwardDeclaration: Boolean;
   BestNode: TCodeTreeNode;
   NameNode: TCodeTreeNode;
@@ -1646,7 +1644,7 @@ begin
   SectionNode:=StartNode.FirstChild;
   if SectionNode=nil then exit;
   BestNode:=nil;
-  BestNodeIsForwardDecaration:=false;
+  BestNodeIsForwardDeclaration:=false;
   while SectionNode<>nil do begin
     if SectionNode.Desc in AllDefinitionSections then begin
       Node:=SectionNode.FirstChild;
@@ -1659,9 +1657,9 @@ begin
           and CompareSrcIdentifiers(NameNode.StartPos,PChar(Pointer(Identifier)))
           then begin
             CurNodeIsForwardDeclaration:=NodeIsForwardDeclaration(Node);
-            if (BestNode=nil) or BestNodeIsForwardDecaration then begin
+            if (BestNode=nil) or BestNodeIsForwardDeclaration then begin
               BestNode:=Node;
-              BestNodeIsForwardDecaration:=CurNodeIsForwardDeclaration;
+              BestNodeIsForwardDeclaration:=CurNodeIsForwardDeclaration;
             end;
           end;
         end;
@@ -3542,6 +3540,9 @@ begin
 
     // find class node
     ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    if (ANode.Desc=ctnClassInheritance)
+    or (ANode.Parent.Desc=ctnClassInheritance) then
+      exit;
     ClassNode:=FindClassNode(ANode);
     if (ClassNode=nil) or (ClassNode.Parent=nil)
     or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
