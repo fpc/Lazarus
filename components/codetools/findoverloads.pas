@@ -46,7 +46,8 @@ type
 
   TOverloadsGraphEdgeType = (
     ogetParentChild,
-    ogetAncestorInherited
+    ogetAncestorInherited,
+    ogetAliasOld
     );
   TOverloadsGraphEdgeTypes = set of TOverloadsGraphEdgeType;
 
@@ -89,7 +90,8 @@ type
 const
   OverloadsGraphEdgeTypeNames: array[TOverloadsGraphEdgeType] of string = (
     'Parent-Child',
-    'Ancestor-Inherited'
+    'Ancestor-Inherited',
+    'Alias-Old'
     );
 
 implementation
@@ -105,8 +107,10 @@ var
   Params: TFindDeclarationParams;
   ListOfPFindContext: TFPList;
   i: Integer;
-  Context: PFindContext;
+  ContextPtr: PFindContext;
   AncestorGraphNode: TOverloadsGraphNode;
+  Context: TFindContext;
+  AliasGraphNode: TOverloadsGraphNode;
 begin
   Result:=TOverloadsGraphNode(Graph.GetGraphNode(CodeNode,false));
   if Result<>nil then exit;
@@ -160,8 +164,8 @@ begin
         if ListOfPFindContext<>nil then begin
           for i:=0 to ListOfPFindContext.Count-1 do begin
             //DebugLn(['TDeclarationOverloadsGraph.AddContext ancestor #',i]);
-            Context:=PFindContext(ListOfPFindContext[i]);
-            AncestorGraphNode:=AddContext(Context^.Tool,Context^.Node);
+            ContextPtr:=PFindContext(ListOfPFindContext[i]);
+            AncestorGraphNode:=AddContext(ContextPtr^.Tool,ContextPtr^.Node);
             AddEdge(ogetAncestorInherited,AncestorGraphNode.Node,Result.Node);
           end;
         end;
@@ -177,15 +181,24 @@ begin
   and (CodeNode.FirstChild<>nil)
   and (CodeNode.FirstChild.Desc=ctnIdentifier) then begin
     DebugLn(['TDeclarationOverloadsGraph.AddContext alias']);
-    {Tool.MoveCursorToCleanPos(CodeNode.FirstChild);
-    Tool.ReadNextAtom;
-
     Params:=TFindDeclarationParams.Create;
     try
-      Tool.FindDeclarationOfIdentifier();
+      try
+        Context:=Tool.FindBaseTypeOfNode(Params,CodeNode);
+        if Context.Node<>nil then begin
+          while (Context.Node<>nil)
+          and (not (Context.Node.Desc in AllIdentifierDefinitions)) do
+            Context.Node:=Context.Node.Parent;
+          if Context.Node<>nil then begin
+            AliasGraphNode:=AddContext(Context.Tool,Context.Node);
+            AddEdge(ogetAliasOld,AliasGraphNode.Node,Result.Node);
+          end;
+        end;
+      except
+      end;
     finally
       Params.Free;
-    end;}
+    end;
   end;
 
 end;
@@ -263,7 +276,7 @@ end;
 function TOverloadsGraphEdge.AsDebugString: string;
 begin
   Result:='Typ='+OverloadsGraphEdgeTypeNames[Typ]
-    +(FromNode as TOverloadsGraphNode).AsDebugString
+    +' '+(FromNode as TOverloadsGraphNode).AsDebugString
     +'->'
     +(ToNode as TOverloadsGraphNode).AsDebugString;
 end;
