@@ -7,9 +7,12 @@ object Form1: TForm1
   ClientHeight = 362
   ClientWidth = 461
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
+    Left = 0
     Height = 362
+    Top = 0
     Width = 461
     BottomAxis.Grid.Style = psDot
     BottomAxis.Grid.Visible = True
@@ -27,6 +30,7 @@ object Form1: TForm1
       'TAChart'
     )
     Align = alClient
+    ParentColor = False
     object Chart1FuncSeries1: TFuncSeries
       Extent.XMin = -6.28
       Extent.YMin = -1
@@ -43,11 +47,13 @@ object Form1: TForm1
     end
     object Chart1XAxis: TLine
       ShowInLegend = False
+      Position = 0
       SeriesColor = clBlack
     end
     object Chart1YAxis: TLine
       ShowInLegend = False
       LineStyle = lsVertical
+      Position = 0
       SeriesColor = clBlack
     end
   end
