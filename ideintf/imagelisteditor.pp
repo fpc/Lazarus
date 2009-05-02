@@ -189,6 +189,7 @@ begin
   BtnSaveAll.Caption := sccsILEdtSaveAll;
 
   BtnPanel.CloseButton.Caption := sccsILEdtApply;
+  BtnPanel.CloseButton.Kind := bkCustom;
   BtnPanel.CloseButton.Glyph := nil;
   BtnPanel.CloseButton.ModalResult := mrNone;
   BtnPanel.CloseButton.OnClick := @btnApplyClick;

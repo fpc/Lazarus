@@ -145,6 +145,7 @@ begin
   DuplicateCheckBox.Caption := cgCheckDuplicate;
   LabelDisable.Caption := cgDisable;
   BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.Kind := bkCustom;
   BtnPanel.CloseButton.Glyph := nil;
   BtnPanel.CloseButton.ModalResult := mrNone;
   BtnPanel.CloseButton.OnClick := @ApplyCheck;
