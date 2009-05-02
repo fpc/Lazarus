@@ -88,20 +88,6 @@ const
      IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
 
-  // standard windows icons (WinUser.h)
-  // they are already defined in the rtl, however the
-  // const = const defines after this fail with an illegal expression
-  IDI_APPLICATION = System.MakeIntResource(32512);
-  IDI_HAND        = System.MakeIntResource(32513);
-  IDI_QUESTION    = System.MakeIntResource(32514);
-  IDI_EXCLAMATION = System.MakeIntResource(32515);
-  IDI_ASTERISK    = System.MakeIntResource(32516);
-  IDI_WINLOGO     = System.MakeIntResource(32517); // XP only
-
-  IDI_WARNING     = IDI_EXCLAMATION;
-  IDI_ERROR       = IDI_HAND;
-  IDI_INFORMATION = IDI_ASTERISK;
-
 type
   PInitCommonControlsEx = ^TInitCommonControlsEx;
   TInitCommonControlsEx = record

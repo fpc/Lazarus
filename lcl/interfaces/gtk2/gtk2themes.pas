@@ -8,7 +8,7 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // os
-  glib2,  gdk2, gtk2, Pango,
+  glib2,  gdk2, gtk2, gdk2pixbuf, Pango,
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
@@ -22,6 +22,7 @@ type
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; override;
   public
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
   end;
 
 implementation
@@ -129,6 +130,73 @@ begin
   end
   else
     Result := GetBaseDetailsSize(Details);
+end;
+
+function TGtk2ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+var
+  GDIObj: PGDIObject;
+  StockName: PChar;
+  IconSet: PGtkIconSet;
+  Pixbuf: PGDKPixbuf;
+begin
+  case StockID of
+    idButtonOk: StockName := GTK_STOCK_OK;
+    idButtonCancel: StockName := GTK_STOCK_CANCEL;
+    idButtonYes: StockName := GTK_STOCK_YES;
+    idButtonYesToAll: StockName := GTK_STOCK_YES;
+    idButtonNo: StockName := GTK_STOCK_NO;
+    idButtonNoToAll: StockName := GTK_STOCK_NO;
+    idButtonHelp: StockName := GTK_STOCK_HELP;
+    idButtonAbort: StockName := GTK_STOCK_STOP;
+    idButtonClose: StockName := GTK_STOCK_CLOSE;
+    // this is disputable but anyway stock icons looks like our own
+    idButtonAll: StockName := GTK_STOCK_APPLY;
+    idButtonIgnore: StockName := GTK_STOCK_DELETE;
+    idButtonRetry: StockName := GTK_STOCK_REFRESH;
+
+    idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
+    idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
+    idDialogInfo : StockName := GTK_STOCK_DIALOG_INFO;
+    idDialogConfirm : StockName := GTK_STOCK_DIALOG_QUESTION;
+   else
+   begin
+      Result := inherited GetStockImage(StockID, Image, Mask);
+      Exit;
+    end;
+  end;
+
+  if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
+    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsButton), StockName)
+  else
+    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsWindow), StockName);
+
+  if (IconSet = nil) then
+  begin
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
+  end;
+
+  if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
+    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton),
+      GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
+  else
+    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow),
+      GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
+
+  GDIObj := Gtk2Widgetset.NewGDIObject(gdiBitmap);
+  with GDIObj^ do
+  begin
+    GDIBitmapType := gbPixbuf;
+    visual := gdk_visual_get_system();
+    gdk_visual_ref(visual);
+    colormap := gdk_colormap_get_system();
+    gdk_colormap_ref(colormap);
+    GDIPixbufObject := Pixbuf;
+  end;
+
+  Image := HBitmap(PtrUInt(GDIObj));
+  Mask := 0;
+  Result := True;
 end;
 
 end.

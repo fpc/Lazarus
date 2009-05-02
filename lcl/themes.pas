@@ -455,6 +455,7 @@ type
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
     
     function GetDetailSize(Details: TThemedElementDetails): Integer; virtual;
+    function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
 
     function ColorToRGB(Color: LongInt; Details: PThemedElementDetails = nil): COLORREF;
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; virtual;
@@ -1778,6 +1779,11 @@ begin
       if Details.Part = TVP_GLYPH then
         Result := 9;
   end;
+end;
+
+function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+begin
+  Result := False;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

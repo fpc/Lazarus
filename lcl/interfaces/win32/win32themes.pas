@@ -11,7 +11,7 @@ uses
   // rtl
   Classes, SysUtils,
   // lcl
-  Controls, Graphics, Themes, LCLProc;
+  Controls, Graphics, Themes, LCLProc, LCLType;
   
 type
 
@@ -35,6 +35,7 @@ type
     destructor Destroy; override;
 
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       ClipRect: PRect = nil); override;
@@ -89,6 +90,20 @@ const
     'window'       // teWindow
   );
 
+  // standard windows icons (WinUser.h)
+  // they are already defined in the rtl, however the
+  // const = const defines after this fail with an illegal expression
+  IDI_APPLICATION = System.MakeIntResource(32512);
+  IDI_HAND        = System.MakeIntResource(32513);
+  IDI_QUESTION    = System.MakeIntResource(32514);
+  IDI_EXCLAMATION = System.MakeIntResource(32515);
+  IDI_ASTERISK    = System.MakeIntResource(32516);
+  IDI_WINLOGO     = System.MakeIntResource(32517); // XP only
+
+  IDI_WARNING     = IDI_EXCLAMATION;
+  IDI_ERROR       = IDI_HAND;
+  IDI_INFORMATION = IDI_ASTERISK;
+
 { TWin32ThemeServices }
 
 procedure TWin32ThemeServices.UnloadThemeData;
@@ -128,6 +143,65 @@ begin
   end
   else
     Result:=inherited GetDetailSize(Details);
+end;
+
+function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image,
+  Mask: HBitmap): Boolean;
+var
+  IconHandle: HIcon;
+  IconInfo: TIconInfo;
+  Bitmap: Windows.TBitmap;
+  x, y: Integer;
+  LinePtr: PByte;
+  Pixel: PRGBAQuad;
+begin
+  case StockID of
+    idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+  else
+    IconHandle := 0;
+  end;
+  Result := (IconHandle <> 0) and GetIconInfo(IconHandle, @IconInfo);
+  if not Result then
+  begin
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
+  end;
+
+  Image := IconInfo.hbmColor;
+  Mask := IconInfo.hbmMask;
+
+  if WindowsVersion >= wvXP then Exit; // XP and up return alpha bitmaps
+  if GetObject(Image, SizeOf(Bitmap), @Bitmap) = 0 then Exit;
+  if Bitmap.bmBitsPixel <> 32 then Exit; // we only need to "fix" 32bpp images
+
+  Image := CopyImage(IconInfo.hbmColor, IMAGE_BITMAP, 0, 0, LR_COPYDELETEORG or LR_CREATEDIBSECTION);
+  if WindowsVersion in [wv95, wv98, wvME]
+  then begin
+    // 95 or ME aren't tested, so if icons appear invisible remove them
+    // only copying is enough
+    Exit;
+  end;
+
+  // Others remain ( wvUnknown, wvNT4, wv2000 )
+
+  if GetObject(Image, SizeOf(Bitmap), @Bitmap) = 0 then Exit; // ???
+  if Bitmap.bmBits = nil then Exit; // ?? we requested a dibsection, but didn't get one ??
+
+  LinePtr := Bitmap.bmBits;
+
+  for y := Bitmap.bmHeight downto 1 do
+  begin
+    Pixel := Pointer(LinePtr);
+    for x := Bitmap.bmWidth downto 1 do
+    begin
+      Pixel^.Alpha := 255;
+      Inc(Pixel);
+    end;
+    Inc(LinePtr, Bitmap.bmWidthBytes);
+  end;
 end;
 
 function TWin32ThemeServices.UseThemes: Boolean;

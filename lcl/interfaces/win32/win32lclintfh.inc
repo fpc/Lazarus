@@ -54,8 +54,6 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
-function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
-
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
 function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;

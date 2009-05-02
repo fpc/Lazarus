@@ -62,7 +62,6 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
-    function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     function AppHandle: THandle; override;

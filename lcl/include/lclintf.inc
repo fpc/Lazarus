@@ -379,11 +379,6 @@ begin
   Result := WidgetSet.IsDesignerDC(WindowHandle, DC);
 end;
 
-function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
-begin
-  Result := WidgetSet.LoadStockPixmap(StockID, Mask);
-end;
-
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);

@@ -181,8 +181,7 @@ begin
     // then ask the widgetset
     if not GlyphValid then 
     begin
-      BitmapHandle := LoadStockPixmap(BitBtnImages[FKind], MaskHandle);
-      if BitmapHandle <> 0 then
+      if ThemeServices.GetStockImage(BitBtnImages[FKind], BitmapHandle, MaskHandle) then
       begin
         Glyph.Handle := BitmapHandle;
         Glyph.MaskHandle := MaskHandle;

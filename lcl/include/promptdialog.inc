@@ -83,8 +83,7 @@ function GetDialogIcon(idDiag: Integer): TCustomBitmap;
 var
   BitmapHandle, MaskHandle: HBitmap;
 begin
-  BitmapHandle := LoadStockPixmap(idDiag, MaskHandle);
-  if BitmapHandle <> 0 then
+  if ThemeServices.GetStockImage(idDiag, BitmapHandle, MaskHandle) then
   begin
     Result := TBitmap.Create;
     Result.Handle := BitmapHandle;
@@ -92,9 +91,7 @@ begin
       Result.MaskHandle := MaskHandle;
   end
   else
-  begin // load default icon from resource
     Result := CreateBitmapFromLazarusResource(DialogResName[idDiag]);
-  end;
 end;
 
 procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word;

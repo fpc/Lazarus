@@ -579,12 +579,6 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
-begin
-  Mask := 0;
-  Result := 0;
-end;
-
 function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 var
   P : TPoint;

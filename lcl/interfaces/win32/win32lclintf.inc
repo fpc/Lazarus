@@ -478,60 +478,6 @@ begin
   {$endif}
 end;
 
-function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;
-var
-  IconHandle: HIcon;
-  IconInfo: TIconInfo;
-  Bitmap: Windows.TBitmap;
-  x, y: Integer;
-  LinePtr: PByte;
-  Pixel: PRGBAQuad;
-begin
-  case StockID of
-    idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-  else
-    IconHandle := 0;
-  end;
-  if IconHandle = 0 then Exit(0);
-  if not GetIconInfo(IconHandle, @IconInfo) then Exit(0);
-
-  Result := IconInfo.hbmColor;
-  Mask := IconInfo.hbmMask;
-  
-  if WindowsVersion >= wvXP then Exit; // XP and up return alpha bitmaps
-  if GetObject(Result, SizeOf(Bitmap), @Bitmap) = 0 then Exit;
-  if Bitmap.bmBitsPixel <> 32 then Exit; // we only need to "fix" 32bpp images
-
-  Result := CopyImage(IconInfo.hbmColor, IMAGE_BITMAP, 0, 0, LR_COPYDELETEORG or LR_CREATEDIBSECTION);
-  if WindowsVersion in [wv95, wv98, wvME]
-  then begin
-    // 95 or ME aren't tested, so if icons appear invisible remove them
-    // only copying is enough
-    Exit;
-  end;
-  
-  // Others remain ( wvUnknown, wvNT4, wv2000 )
-  
-  if GetObject(Result, SizeOf(Bitmap), @Bitmap) = 0 then Exit; // ???
-  if Bitmap.bmBits = nil then Exit; // ?? we requested a dibsection, but didn't get one ??
-
-  LinePtr := Bitmap.bmBits;
-  
-  for y := Bitmap.bmHeight downto 1 do
-  begin
-    Pixel := Pointer(LinePtr);
-    for x := Bitmap.bmWidth downto 1 do
-    begin
-      Pixel^.Alpha := 255;
-      Inc(Pixel);
-    end;
-    Inc(LinePtr, Bitmap.bmWidthBytes);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
   Params: ARawImage:

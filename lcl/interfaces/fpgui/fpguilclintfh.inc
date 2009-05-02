@@ -15,7 +15,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -50,8 +50,6 @@ function FontCanUTF8(Font: HFont): boolean; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
-
-function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
 
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
