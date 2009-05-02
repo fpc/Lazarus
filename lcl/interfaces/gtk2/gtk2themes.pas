@@ -155,9 +155,10 @@ begin
     idButtonRetry: StockName := GTK_STOCK_REFRESH;
 
     idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
-    idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
-    idDialogInfo : StockName := GTK_STOCK_DIALOG_INFO;
-    idDialogConfirm : StockName := GTK_STOCK_DIALOG_QUESTION;
+    idDialogError: StockName := GTK_STOCK_DIALOG_ERROR;
+    idDialogInfo: StockName := GTK_STOCK_DIALOG_INFO;
+    idDialogConfirm: StockName := GTK_STOCK_DIALOG_QUESTION;
+    idDialogShield: StockName := GTK_STOCK_DIALOG_AUTHENTICATION;
    else
    begin
       Result := inherited GetStockImage(StockID, Image, Mask);

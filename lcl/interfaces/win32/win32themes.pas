@@ -145,8 +145,7 @@ begin
     Result:=inherited GetDetailSize(Details);
 end;
 
-function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image,
-  Mask: HBitmap): Boolean;
+function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
 var
   IconHandle: HIcon;
   IconInfo: TIconInfo;
@@ -154,12 +153,22 @@ var
   x, y: Integer;
   LinePtr: PByte;
   Pixel: PRGBAQuad;
+  SHIconInfo: TSHSTOCKICONINFO;
 begin
   case StockID of
     idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogShield :
+      begin
+        FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
+        SHIconInfo.cbSize := SizeOf(SHIconInfo);
+        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
+          IconHandle := SHIconInfo.hIcon
+        else
+          IconHandle := 0;
+      end;
   else
     IconHandle := 0;
   end;

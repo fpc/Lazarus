@@ -450,6 +450,26 @@ function GetSaveFileName(_para1:LPOPENFILENAME):WINBOOL; stdcall; external 'comd
 function GetFileVersion(FileName: string): dword;
 {$endif}
 
+type
+  SHSTOCKICONINFO = record
+    cbSize: DWORD;
+    hIcon: HICON;
+    iSysImageIndex: integer;
+    iIcon: integer;
+    szPath: array[0..MAX_PATH - 1] of WCHAR;
+  end;
+  TSHSTOCKICONINFO = SHSTOCKICONINFO;
+  PSHSTOCKICONINFO = ^SHSTOCKICONINFO;
+
+var
+  SHGetStockIconInfo: function(siid: integer; uFlags: UINT; psii: PSHSTOCKICONINFO): HResult; stdcall;
+
+const
+  SIID_SHIELD = 77;
+  SHGFI_SMALLICON = $000000001;
+  SHGFI_LARGEICON = $000000000;
+  SHGFI_ICON      = $000000100;
+
 implementation
 
 uses
@@ -1021,13 +1041,20 @@ begin
     Result := 0;
 end;
 
+function _SHGetStockIconInfo(siid: integer; uFlags: UINT; psii: PSHSTOCKICONINFO): HResult;
+begin
+  Result := E_NOTIMPL;
+end;
+
 const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
+  shell32lib = 'shell32.dll';
 
 var
   msimg32handle: THandle = 0;
   user32handle: THandle = 0;
+  shell32handle: THandle = 0;
 
 procedure Initialize;
 var
@@ -1098,6 +1125,16 @@ begin
     else
       Pointer(MonitorFromPoint) := @_MonitorFromPoint;
   end;
+
+  shell32handle := LoadLibrary(shell32lib);
+  if shell32handle <> 0 then
+  begin
+    p := GetProcAddress(shell32handle, 'SHGetStockIconInfo');
+    if p <> nil then
+      Pointer(SHGetStockIconInfo) := p
+    else
+      Pointer(SHGetStockIconInfo) := @_SHGetStockIconInfo;
+  end;
 end;
 
 procedure Finalize;
@@ -1112,6 +1149,10 @@ begin
   if user32handle <> 0 then
     FreeLibrary(user32handle);
   user32handle := 0;
+
+  if shell32handle <> 0 then
+    FreeLibrary(shell32handle);
+  shell32handle := 0;
 end;
 
 initialization

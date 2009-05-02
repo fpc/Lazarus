@@ -1607,6 +1607,7 @@ const
   idDialogError = idDialogBase + 2;
   idDialogInfo = idDialogBase + 3;
   idDialogConfirm = idDialogBase + 4;
+  idDialogShield = idDialogBase + 5;
 
 //==============================================
 // SystemMetrics constants
