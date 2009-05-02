@@ -159,10 +159,10 @@ begin
     idDialogInfo: StockName := GTK_STOCK_DIALOG_INFO;
     idDialogConfirm: StockName := GTK_STOCK_DIALOG_QUESTION;
     idDialogShield: StockName := GTK_STOCK_DIALOG_AUTHENTICATION;
-   else
-   begin
-      Result := inherited GetStockImage(StockID, Image, Mask);
-      Exit;
+  else
+    begin
+       Result := inherited GetStockImage(StockID, Image, Mask);
+       Exit;
     end;
   end;
 

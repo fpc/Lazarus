@@ -164,7 +164,7 @@ begin
       begin
         FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
-        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
+        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon
         else
           IconHandle := 0;
