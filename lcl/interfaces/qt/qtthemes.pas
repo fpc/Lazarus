@@ -59,6 +59,7 @@ type
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -330,6 +331,61 @@ begin
     else
       Result := inherited;
   end;
+end;
+
+function TQtThemeServices.GetStockImage(StockID: LongInt; out Image,
+  Mask: HBitmap): Boolean;
+var
+  APixmap: QPixmapH;
+  AImage: QImageH;
+  AStdPixmap: QStyleStandardPixmap;
+  opt: QStyleOptionH;
+begin
+  case StockID of
+    idButtonOk: AStdPixmap := QStyleSP_DialogOkButton;
+    idButtonCancel: AStdPixmap := QStyleSP_DialogCancelButton;
+    idButtonYes: AStdPixmap := QStyleSP_DialogYesButton;
+    idButtonYesToAll: AStdPixmap := QStyleSP_DialogYesButton;
+    idButtonNo: AStdPixmap := QStyleSP_DialogNoButton;
+    idButtonNoToAll: AStdPixmap := QStyleSP_DialogNoButton;
+    idButtonHelp: AStdPixmap := QStyleSP_DialogHelpButton;
+    idButtonClose: AStdPixmap := QStyleSP_DialogCloseButton;
+    idButtonAbort: AStdPixmap := QStyleSP_DialogResetButton;
+    idButtonAll: AStdPixmap := QStyleSP_DialogApplyButton;
+    idButtonIgnore: AStdPixmap := QStyleSP_DialogDiscardButton;
+    idButtonRetry: AStdPixmap := QStyleSP_BrowserReload; // ?
+
+    idDialogWarning : AStdPixmap := QStyleSP_MessageBoxWarning;
+    idDialogError: AStdPixmap := QStyleSP_MessageBoxCritical;
+    idDialogInfo: AStdPixmap := QStyleSP_MessageBoxInformation;
+    idDialogConfirm: AStdPixmap := QStyleSP_MessageBoxQuestion;
+    idDialogShield: AStdPixmap := QStyleSP_VistaShield;
+  else
+    begin
+       Result := inherited GetStockImage(StockID, Image, Mask);
+       Exit;
+    end;
+  end;
+
+  opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+  APixmap := QPixmap_create();
+  QStyle_standardPixmap(QApplication_style(), APixmap, AStdPixmap, opt);
+  QStyleOption_Destroy(opt);
+
+  if QPixmap_isNull(APixmap) then
+  begin
+    QPixmap_destroy(APixmap);
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
+  end;
+
+  // convert from what we have to QImageH
+  AImage := QImage_create();
+  QPixmap_toImage(APixmap, AImage);
+  QPixmap_destroy(APixmap);
+  Image := HBitmap(TQtImage.Create(AImage));
+  Mask := 0;
+  Result := True;
 end;
 
 function TQtThemeServices.GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
