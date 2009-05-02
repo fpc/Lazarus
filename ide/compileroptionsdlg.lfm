@@ -237,8 +237,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Left = 6
         ItemHeight = 13
         ItemWidth = 0
+        Style = csDropDownList
         TabOrder = 6
-        Text = 'LCLWidgetTypeComboBox'
       end
     end
     object ParsingPage: TPage
