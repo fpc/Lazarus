@@ -370,6 +370,7 @@ type
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
+    FOldTopView: Integer; // TopView before IncPaintLock
     fHighlighter: TSynCustomHighlighter;
     {$IFNDEF SYN_LAZARUS}
     fSelectedColor: TSynSelectedColor;
@@ -557,6 +558,7 @@ type
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
     procedure SetTopLine(Value: Integer);
+    procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
@@ -575,6 +577,7 @@ type
     procedure UpdateCtrlMouse;
     procedure UpdateScrollBars;
   protected
+    procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DblClick; override;
@@ -1658,7 +1661,7 @@ begin
   TabStop := True;
   fInserting := True;
   fMaxLeftChar := 1024;
-  fScrollBars := ssBoth;
+  ScrollBars := ssBoth;
   {$IFDEF SYN_LAZARUS}
   BorderStyle := bsSingle;
   {$ELSE}
@@ -1767,6 +1770,7 @@ begin
   FFoldedLinesView.UnLock; // after ScanFrom, but before UpdateCaret
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
+    ScrollAfterTopLineChanged;
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
     if sfCaretChanged in fStateFlags then
@@ -2094,6 +2098,8 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
+  if fPaintLock = 0 then
+    FOldTopView := TopView;
   inc(fPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
@@ -3797,13 +3803,21 @@ begin
     Text := Value;
 end;
 
+procedure TCustomSynEdit.CreateHandle;
+begin
+  inherited CreateHandle;
+  ShowScrollBar(Handle, SB_HORZ, fScrollBars in [ssBoth, ssHorizontal] );
+  ShowScrollBar(Handle, SB_Vert, fScrollBars in [ssBoth, ssVertical] );
+end;
+
 procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);
 begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
-    {$IFNDEF SYN_LAZARUS}
-    RecreateWnd(Self)
-    {$ENDIF};
+    if HandleAllocated then begin
+      ShowScrollBar(Handle, SB_HORZ, fScrollBars in [ssBoth, ssHorizontal] );
+      ShowScrollBar(Handle, SB_Vert, fScrollBars in [ssBoth, ssVertical] );
+    end;
     UpdateScrollBars;
     Invalidate;
   end;
@@ -3877,62 +3891,44 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
-var
-  Delta: Integer;
-{$ifdef SYN_LAZARUS}
-  OldTopLine: LongInt;
-{$ENDIF}
 begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   if (eoScrollPastEof in Options) then
     Value := Min(Value, FTheLinesView.Count)
   else
-    {$ifdef SYN_LAZARUS}
     Value := Min(Value, FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -fLinesInWindow));
-    {$ELSE}
-    Value := Min(Value, Lines.Count + 1 - fLinesInWindow);
-    {$ENDIF}
   Value := Max(Value, 1);
-  {$IFDEF SYN_LAZARUS}
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
-  {$ENDIF}
   FFoldedLinesView.TopTextIndex := fTopLine - 1;
   if Value <> fTopLine then begin
-{$ifdef SYN_LAZARUS}
-    OldTopLine := TopView;
+    if fPaintLock = 0 then
+      FOldTopView := TopView;
     fTopLine := Value;
     FFoldedLinesView.TopTextIndex := Value-1;
     UpdateScrollBars;
-    Delta := OldTopLine - TopView;
-    if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags)
-    and not (fPaintLock <> 0) then
-    begin
-      // TODO: SW_SMOOTHSCROLL --> can't get it work
-      if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil,
-        SW_INVALIDATE) then
-      begin
-        // scrollwindow failed, invalidate all
-        Invalidate;
-      end;
-    end
-{$else}
-    Delta := TopLine - Value;
-    fTopLine := Value;
-    UpdateScrollBars;
-    if Abs(Delta) < fLinesInWindow then
-    begin
-      ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil);
-    end
-{$endif}
-    else
-      Invalidate;
+    ScrollAfterTopLineChanged;
     StatusChanged([scTopLine]);
   end;
-{$ifdef SYN_LAZARUS}
   fMarkupManager.TopLine:= fTopLine;
-{$endif}
+end;
+
+procedure TCustomSynEdit.ScrollAfterTopLineChanged;
+var
+  Delta: Integer;
+begin
+  if (sfPainting in fStateFlags) or (fPaintLock <> 0) then exit;
+  Delta := FOldTopView - TopView;
+  if Delta = 0 then exit;
+  // TODO: SW_SMOOTHSCROLL --> can't get it work
+  if (Abs(Delta) >= fLinesInWindow) or
+  not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
+  then
+    Invalidate    // scrollwindow failed, invalidate all
+  else
+    if eoAlwaysVisibleCaret in fOptions2 then
+      MoveCaretToVisibleArea;      // Invalidate caret line, if necessary
 end;
 
 procedure TCustomSynEdit.ShowCaret;
@@ -4063,21 +4059,12 @@ begin
           ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine;
         ScrollInfo.nPage := CharsInWindow;
         ScrollInfo.nPos := LeftChar;
-        {$IFDEF SYN_LAZARUS}
-        { for win32 target, need to call showscrollbar before setscrollinfo }
-        ShowScrollBar(Handle, SB_HORZ, True);
-        {$ENDIF}
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         //DebugLn('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
         //' nPos=',ScrollInfo.nPos,
         //' ClientW=',ClientWidth
         //);
-      end else begin
-        {$IFDEF SYN_LAZARUS}
-        // tell interface to remove horizontal scrollbar
-        ShowScrollBar(Handle, SB_HORZ, FALSE);
-        {$ENDIF}
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
         nMaxScroll := {$IFDEF SYN_LAZARUS}FFoldedLinesView.Count+1{$ELSE}Lines.Count{$ENDIF};
@@ -4101,16 +4088,7 @@ begin
           ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
         end;
 {$ENDIF}
-        {$IFDEF SYN_LAZARUS}
-        { for win32 target, need to call showscrollbar before setscrollinfo }
-        ShowScrollBar(Handle, SB_VERT, True);
-        {$ENDIF}
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-      end else begin
-        {$IFDEF SYN_LAZARUS}
-        // tell interface to remove vertical scrollbar
-        ShowScrollBar(Handle, SB_Vert, FALSE);
-        {$ENDIF}
       end;
     end;
   end;
@@ -4339,7 +4317,6 @@ begin
         end;
       {$ENDIF}
   end;
-  Update;
 end;
 
 function TCustomSynEdit.ScanFrom(var Index: integer; AtLeastTilIndex: integer): integer;
@@ -5699,16 +5676,10 @@ begin
       ecUp, ecSelUp, ecColSelUp:
         begin
           MoveCaretVert(-1, Command in [ecSelUp, ecColSelUp]);
-          {$IFNDEF SYN_LAZARUS}
-          Update;
-          {$ENDIF}
         end;
       ecDown, ecSelDown, ecColSelDown:
         begin
           MoveCaretVert(1, Command in [ecSelDown, ecColSelDown]);
-          {$IFNDEF SYN_LAZARUS}
-          Update;
-          {$ENDIF}
         end;
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown, ecColSelPageUp, ecColSelPageDown:
         begin
@@ -6124,25 +6095,15 @@ begin
         end;
       ecScrollUp:
         begin
-          {$IFDEF SYN_LAZARUS}
           TopView := TopView - 1;
-		  {$ELSE}
-          TopLine := TopLine - 1;
-          {$ENDIF}
-          if CaretY > {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow-1){$ELSE}TopLine + LinesInWindow - 1{$ENDIF} then
-            CaretY := {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow-1){$ELSE}TopLine + LinesInWindow - 1{$ENDIF};
-          Update;
+          if CaretY > ScreenRowToRow(LinesInWindow-1) then
+            CaretY := ScreenRowToRow(LinesInWindow-1);
         end;
       ecScrollDown:
         begin
-          {$IFDEF SYN_LAZARUS}
           TopView := TopView + 1;
-		  {$ELSE}
-          TopLine := TopLine + 1;
-          {$ENDIF}
           if CaretY < TopLine then
             CaretY := TopLine;
-          Update;
         end;
       ecScrollLeft:
         begin
