@@ -438,8 +438,6 @@ begin
   ShowProjectButton.ImageIndex := IDEImages.LoadImage(16, 'item_project');
   SelectUnitButton.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
   RefreshButton.ImageIndex := IDEImages.LoadImage(16, 'laz_refresh');
-  CloseButton.LoadGlyphFromLazarusResource('btn_close');
-
 end;
 
 destructor TUnitDependenciesView.Destroy;
