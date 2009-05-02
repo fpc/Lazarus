@@ -30,26 +30,32 @@ unit FindOverloads;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, CodeAtom, CodeTree, CodeGraph, CodeCache,
-  FindDeclarationTool;
+  Classes, SysUtils, FileProcs, BasicCodeTools, CodeAtom, CodeTree, CodeGraph,
+  CodeCache, FindDeclarationTool;
 
 type
+
+  { TOverloadsGraphNode }
+
   TOverloadsGraphNode = class(TCodeGraphNode)
   public
     Identifier: string;
     Tool: TFindDeclarationTool;
+    function AsDebugString: string;
   end;
 
   TOverloadsGraphEdgeType = (
     ogetParentChild,
-    ogetAncestorInherited,
-    ogetInterfaceInherited
+    ogetAncestorInherited
     );
   TOverloadsGraphEdgeTypes = set of TOverloadsGraphEdgeType;
+
+  { TOverloadsGraphEdge }
 
   TOverloadsGraphEdge = class(TCodeGraphEdge)
   public
     Typ: TOverloadsGraphEdgeType;
+    function AsDebugString: string;
   end;
 
   { TDeclarationOverloadsGraph }
@@ -83,8 +89,7 @@ type
 const
   OverloadsGraphEdgeTypeNames: array[TOverloadsGraphEdgeType] of string = (
     'Parent-Child',
-    'Ancestor-Inherited',
-    'Interface-Inherited'
+    'Ancestor-Inherited'
     );
 
 implementation
@@ -96,6 +101,12 @@ function TDeclarationOverloadsGraph.AddContext(Tool: TFindDeclarationTool;
 var
   ParentCodeNode: TCodeTreeNode;
   ParentGraphNode: TOverloadsGraphNode;
+  ClassNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+  ListOfPFindContext: TFPList;
+  i: Integer;
+  Context: PFindContext;
+  AncestorGraphNode: TOverloadsGraphNode;
 begin
   Result:=TOverloadsGraphNode(Graph.GetGraphNode(CodeNode,false));
   if Result<>nil then exit;
@@ -103,15 +114,22 @@ begin
   DebugLn(['TDeclarationOverloadsGraph.AddContext ',Tool.MainFilename,' ',CodeNode.DescAsString,' "',dbgstr(copy(Tool.Src,CodeNode.StartPos,20)),'"']);
   Result:=TOverloadsGraphNode(Graph.GetGraphNode(CodeNode,true));
   Result.Tool:=Tool;
+  if CodeNode.Desc in AllIdentifierDefinitions then
+    Result.Identifier:=Tool.ExtractDefinitionName(CodeNode)
+  else begin
+    case CodeNode.Desc of
+    ctnEnumIdentifier: Result.Identifier:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
+    end;
+  end;
 
   // add parent nodes to graph
   ParentCodeNode:=CodeNode.Parent;
   while ParentCodeNode<>nil do begin
-    DebugLn(['TDeclarationOverloadsGraph.AddContext ',ParentCodeNode.DescAsString]);
+    //DebugLn(['TDeclarationOverloadsGraph.AddContext ',ParentCodeNode.DescAsString]);
     if ParentCodeNode.Desc in
       AllSourceTypes+[ctnClass,ctnClassInterface,ctnRecordType]
     then begin
-      DebugLn(['TDeclarationOverloadsGraph.AddContext ADD parent']);
+      //DebugLn(['TDeclarationOverloadsGraph.AddContext ADD parent']);
       ParentGraphNode:=AddContext(Tool,ParentCodeNode);
       AddEdge(ogetParentChild,ParentGraphNode.Node,Result.Node);
       break;
@@ -122,8 +140,37 @@ begin
       ParentCodeNode:=ParentCodeNode.PriorBrother;
   end;
 
-  // ToDo: add ancestors, interfaces
+  // add ancestors, interfaces
+  if (CodeNode.Desc=ctnTypeDefinition)
+  and (CodeNode.FirstChild<>nil)
+  and (CodeNode.FirstChild.Desc in [ctnClass,ctnClassInterface]) then begin
+    //DebugLn(['TDeclarationOverloadsGraph.AddContext a class or interface']);
+    // a class or class interface
+    ClassNode:=CodeNode.FirstChild;
+    Tool.BuildSubTree(ClassNode);
 
+    if (ClassNode.FirstChild<>nil)
+    and (ClassNode.FirstChild.Desc=ctnClassInheritance) then begin
+      //DebugLn(['TDeclarationOverloadsGraph.AddContext has ancestor(s)']);
+      Params:=TFindDeclarationParams.Create;
+      ListOfPFindContext:=nil;
+      try
+        Tool.FindAncestorsOfClass(ClassNode,ListOfPFindContext,Params,false);
+        //DebugLn(['TDeclarationOverloadsGraph.AddContext ancestors found: ',ListOfPFindContext<>nil]);
+        if ListOfPFindContext<>nil then begin
+          for i:=0 to ListOfPFindContext.Count-1 do begin
+            //DebugLn(['TDeclarationOverloadsGraph.AddContext ancestor #',i]);
+            Context:=PFindContext(ListOfPFindContext[i]);
+            AncestorGraphNode:=AddContext(Context^.Tool,Context^.Node);
+            AddEdge(ogetAncestorInherited,AncestorGraphNode.Node,Result.Node);
+          end;
+        end;
+      finally
+        FreeListOfPFindContext(ListOfPFindContext);
+        Params.Free;
+      end;
+    end;
+  end;
 
   // ToDo: add alias
 
@@ -142,7 +189,7 @@ begin
   // create new edge
   Result:=TOverloadsGraphEdge(Graph.GetEdge(FromNode,ToNode,true));
   Result.Typ:=Typ;
-  DebugLn(['TDeclarationOverloadsGraph.AddEdge ',OverloadsGraphEdgeTypeNames[Typ]]);
+  DebugLn(['TDeclarationOverloadsGraph.AddEdge ',Result.AsDebugString]);
 end;
 
 constructor TDeclarationOverloadsGraph.Create;
@@ -184,6 +231,28 @@ begin
   AddContext(Tool,CodeNode);
 
   Result:=true;
+end;
+
+{ TOverloadsGraphNode }
+
+function TOverloadsGraphNode.AsDebugString: string;
+begin
+  Result:=Identifier;
+  if Node<>nil then
+    Result:=Result+' Desc="'+Node.DescAsString+'"';
+  if (Tool<>nil) and (Node<>nil) and (Identifier='') then begin
+    Result:=Result+' "'+dbgstr(copy(Tool.Src,Node.StartPos,20))+'"';
+  end;
+end;
+
+{ TOverloadsGraphEdge }
+
+function TOverloadsGraphEdge.AsDebugString: string;
+begin
+  Result:='Typ='+OverloadsGraphEdgeTypeNames[Typ]
+    +(FromNode as TOverloadsGraphNode).AsDebugString
+    +'->'
+    +(ToNode as TOverloadsGraphNode).AsDebugString;
 end;
 
 end.

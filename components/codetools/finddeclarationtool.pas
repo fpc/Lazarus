@@ -766,7 +766,13 @@ type
 
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
+    function FindAncestorOfClassInheritance(IdentifierNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+    function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
+      var ListOfPFindContext: TFPList;
+      Params: TFindDeclarationParams; FindClassContext: boolean;
+      ExceptionOnNotFound: boolean = true): boolean;
     function FindNthParameterNode(Node: TCodeTreeNode;
                                   ParameterIndex: integer): TCodeTreeNode;
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
@@ -4379,7 +4385,6 @@ var
   AncestorNode, ClassIdentNode: TCodeTreeNode;
   SearchBaseClass: boolean;
   AncestorContext: TFindContext;
-  AncestorStartPos: LongInt;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
@@ -4391,72 +4396,50 @@ begin
   // ToDo: ppu, ppw, dcu
 
   // search the ancestor name
-  ClassIdentNode:=ClassNode.Parent;
-
   if (ClassNode.FirstChild<>nil)
   and (ClassNode.FirstChild.Desc=ctnClassInheritance)
   and (ClassNode.FirstChild.FirstChild<>nil) then begin
-    MoveCursorToCleanPos(ClassNode.FirstChild.FirstChild.StartPos);
-    AncestorStartPos:=CurPos.StartPos;
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    ReadNextAtom;
-    if CurPos.Flag=cafPoint then begin
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-      AncestorStartPos:=CurPos.StartPos;
-    end;
-    SearchBaseClass:=false;
-    if (ClassIdentNode<>nil)
-    and (ClassIdentNode.Desc=ctnTypeDefinition)
-    and (CompareIdentifiers(@Src[AncestorStartPos],
-      @Src[ClassIdentNode.StartPos])=0)
-    then begin
-      MoveCursorToCleanPos(AncestorStartPos);
-      RaiseException('ancestor has same name as class');
-    end;
-  end else begin
-    // no ancestor class specified
-    // check class name
-    if (ClassIdentNode=nil)
-    or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericName])) then
-    begin
-      MoveCursorToNodeStart(ClassNode);
-      RaiseException('class without name');
-    end;
-    if ClassNode.Desc=ctnClass then begin
-      // if this class is not TObject, TObject is class ancestor
-      SearchBaseClass:=
-                  not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
-    end else begin
-      // Delphi has as default interface IInterface
-      // FPC has as interface IUnknown
-      SearchBaseClass:=
-                (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface'))
-            and (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IUnknown'));
-    end;
-    if not SearchBaseClass then exit;
+    Result:=FindAncestorOfClassInheritance(ClassNode.FirstChild.FirstChild,
+               Params,FindClassContext);
+    exit;
   end;
+
+  // no ancestor class specified
+  ClassIdentNode:=ClassNode.Parent;
+  // check class name
+  if (ClassIdentNode=nil)
+  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericName])) then
+  begin
+    MoveCursorToNodeStart(ClassNode);
+    RaiseException('class without name');
+  end;
+  if ClassNode.Desc=ctnClass then begin
+    // if this class is not TObject, TObject is class ancestor
+    SearchBaseClass:=not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
+  end else begin
+    // Delphi has as default interface IInterface
+    // FPC has as default interface IUnknown and an alias IInterface = IUnknown
+    SearchBaseClass:=
+              (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface'))
+          and (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IUnknown'));
+  end;
+  if not SearchBaseClass then exit;
+
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
   ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
   {$ENDIF}
 
-  // search ancestor class context
+  // search ancestor
   Params.Save(OldInput);
   Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                  fdfExceptionOnNotFound]
                 +(fdfGlobals*Params.Flags)
                 -[fdfTopLvlResolving];
-  if not SearchBaseClass then
-    Params.SetIdentifier(Self,@Src[AncestorStartPos],nil)
-  else begin
-    if ClassNode.Desc=ctnClass then
-      Params.SetIdentifier(Self,'TObject',nil)
-    else
-      Params.SetIdentifier(Self,'IInterface',nil);
-    Exclude(Params.Flags,fdfExceptionOnNotFound);
-  end;
+  if ClassNode.Desc=ctnClass then
+    Params.SetIdentifier(Self,'TObject',nil)
+  else
+    Params.SetIdentifier(Self,'IInterface',nil);
   Params.ContextNode:=ClassNode;
   if not FindIdentifierInContext(Params) then begin
     MoveCursorToNodeStart(ClassNode);
@@ -4464,16 +4447,166 @@ begin
       RaiseException(ctsDefaultClassAncestorTObjectNotFound)
     else
       RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+    exit;
   end;
+
+  // check result
+  if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+  begin
+    MoveCursorToNodeStart(ClassNode);
+    if ClassNode.Desc=ctnClass then
+      RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+    else
+      RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+  end;
+
+  // search ancestor class context
   if FindClassContext then begin
     AncestorNode:=Params.NewNode;
     Params.Flags:=Params.Flags+[fdfFindChilds];
     AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                            AncestorNode);
     Params.SetResult(AncestorContext);
+
+    // check result
+    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface]) then
+    begin
+      MoveCursorToNodeStart(ClassNode);
+      if ClassNode.Desc=ctnClass then
+        RaiseException(ctsDefaultClassAncestorTObjectNotFound)
+      else
+        RaiseException(ctsDefaultInterfaceAncestorIInterfaceNotFound);
+    end;
   end;
   Result:=true;
   Params.Load(OldInput,true);
+end;
+
+function TFindDeclarationTool.FindAncestorOfClassInheritance(
+  IdentifierNode: TCodeTreeNode;
+  Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+var
+  OldInput: TFindDeclarationInput;
+  AncestorNode, ClassNode, ClassIdentNode: TCodeTreeNode;
+  AncestorContext: TFindContext;
+  AncestorStartPos: LongInt;
+begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(IdentifierNode);{$ENDIF}
+  if (IdentifierNode=nil)
+  or (IdentifierNode.Desc<>ctnIdentifier)
+  or (IdentifierNode.Parent=nil)
+  or (IdentifierNode.Parent.Desc<>ctnClassInheritance)
+  then
+    RaiseException('[TFindDeclarationTool.FindAncestorOfClass] '
+      +' not an inheritance node');
+  Result:=false;
+
+  ClassNode:=IdentifierNode.Parent.Parent;
+  ClassIdentNode:=ClassNode.Parent;
+
+  MoveCursorToCleanPos(IdentifierNode.StartPos);
+  AncestorStartPos:=CurPos.StartPos;
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if CurPos.Flag=cafPoint then begin
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    AncestorStartPos:=CurPos.StartPos;
+  end;
+  if (ClassIdentNode<>nil)
+  and (ClassIdentNode.Desc=ctnTypeDefinition)
+  and (CompareIdentifiers(@Src[AncestorStartPos],
+    @Src[ClassIdentNode.StartPos])=0)
+  then begin
+    MoveCursorToCleanPos(AncestorStartPos);
+    RaiseException('ancestor has same name as class');
+  end;
+  {$IFDEF ShowTriedContexts}
+  DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
+  ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
+  {$ENDIF}
+
+  // search ancestor
+  Params.Save(OldInput);
+  Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
+                 fdfExceptionOnNotFound]
+                +(fdfGlobals*Params.Flags)
+                -[fdfTopLvlResolving];
+  Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
+  Params.ContextNode:=ClassIdentNode;
+  if not FindIdentifierInContext(Params) then
+    exit;
+
+  // check result
+  if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+  begin
+    MoveCursorToCleanPos(AncestorStartPos);
+    ReadNextAtom;
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['type',GetAtom]);
+  end;
+
+  // search ancestor class context
+  if FindClassContext then begin
+    AncestorNode:=Params.NewNode;
+    Params.Flags:=Params.Flags+[fdfFindChilds];
+    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                           AncestorNode);
+    Params.SetResult(AncestorContext);
+
+    // check result
+    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface]) then
+    begin
+      MoveCursorToCleanPos(AncestorStartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,['class',GetAtom]);
+    end;
+  end;
+  Result:=true;
+  Params.Load(OldInput,true);
+end;
+
+function TFindDeclarationTool.FindAncestorsOfClass(ClassNode: TCodeTreeNode;
+  var ListOfPFindContext: TFPList;
+  Params: TFindDeclarationParams; FindClassContext: boolean;
+  ExceptionOnNotFound: boolean): boolean;
+var
+  Node: TCodeTreeNode;
+  Context: TFindContext;
+begin
+  Result:=false;
+  if (ClassNode.FirstChild=nil)
+  or (ClassNode.FirstChild.Desc<>ctnClassInheritance)
+  or (ClassNode.FirstChild.FirstChild=nil) then
+    exit(true);
+  Node:=ClassNode.FirstChild.FirstChild;
+  if Node=nil then begin
+    try
+      if not FindAncestorOfClass(ClassNode,Params,FindClassContext) then begin
+        exit(true); // this is TObject or IInterface, IUnknown
+      end else begin
+        Context:=CreateFindContext(Params);
+      end;
+      AddFindContext(ListOfPFindContext,Context);
+      Result:=Context.Node<>nil;
+    except
+      if ExceptionOnNotFound then raise;
+    end;
+  end else begin
+    while Node<>nil do begin
+      try
+        if FindAncestorOfClassInheritance(Node,Params,FindClassContext) then
+        begin
+          Context:=CreateFindContext(Params);
+          AddFindContext(ListOfPFindContext,Context);
+        end;
+      except
+        if ExceptionOnNotFound then raise;
+      end;
+      Node:=Node.NextBrother;
+    end;
+  end;
+  Result:=true;
 end;
 
 function TFindDeclarationTool.FindForwardIdentifier(
