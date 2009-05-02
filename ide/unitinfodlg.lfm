@@ -12,12 +12,15 @@ object UnitInfoDialog: TUnitInfoDialog
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object OkButton: TBitBtn
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 419
     Height = 26
-    Top = 244
+    Top = 251
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.Bottom = 6
     Cancel = True
     Caption = '&OK'
     Constraints.MinWidth = 75
@@ -30,7 +33,7 @@ object UnitInfoDialog: TUnitInfoDialog
   object Notebook: TNotebook
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 232
+    Height = 239
     Top = 6
     Width = 488
     Align = alTop
@@ -228,10 +231,10 @@ object UnitInfoDialog: TUnitInfoDialog
     object IncludePathsPage: TPage
       Caption = 'IncludePathsPage'
       ClientWidth = 480
-      ClientHeight = 206
+      ClientHeight = 213
       object IncludePathMemo: TMemo
         Left = 6
-        Height = 194
+        Height = 201
         Top = 6
         Width = 468
         Align = alClient
@@ -264,7 +267,7 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 26
-    Top = 244
+    Top = 251
     Width = 130
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
@@ -279,7 +282,7 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideBottom.Side = asrBottom
     Left = 256
     Height = 26
-    Top = 244
+    Top = 251
     Width = 157
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
