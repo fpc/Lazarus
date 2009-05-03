@@ -1300,6 +1300,7 @@ resourcestring
   dlgCenterCursorLine = 'Center Cursor Line';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgClassInsertPolicy = 'Class part insert policy';
+  lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';
   dlgCDTLast = 'Last';
   dlgMixMethodsAndProperties = 'Mix methods and properties';
@@ -1308,6 +1309,10 @@ resourcestring
   dlgInFrontOfMethods = 'In front of methods';
   dlgBehindMethods = 'Behind methods';
   dlgForwardProcsKeepOrder = 'Keep order of procedures';
+  lisNewUnitsAreAddedToUsesSections = 'New units are added to uses sections:';
+  lisFirst = 'First';
+  lisInFrontOfRelated = 'In front of related';
+  lisBehindRelated = 'Behind related';
   dlgMethodInsPolicy = 'Method insert policy';
   dlgCDTClassOrder = 'Class order';
   dlgKeywordPolicy = 'Keyword policy';

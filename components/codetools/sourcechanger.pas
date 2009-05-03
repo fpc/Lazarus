@@ -274,7 +274,14 @@ const
     shortstring =
     ('Last', 'InFrontOfMethods', 'BehindMethods');
     
-    
+  UsesInsertPolicyNames: array[TUsesInsertPolicy] of shortstring = (
+      'First',
+      'InFrontOfRelated',
+      'BehindRelated',
+      'Last',
+      'Alphabetically'
+    );
+
   DefaultDoNotSplitLineInFront: TAtomTypes =
     [atColon,atComma,atSemicolon,atPoint];
   DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
@@ -290,6 +297,7 @@ function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
 function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
 function ForwardProcBodyInsertPolicyNameToPolicy(
   const s: string): TForwardProcBodyInsertPolicy;
+function UsesInsertPolicyNameToPolicy(const s: string): TUsesInsertPolicy;
 
 
 implementation
@@ -346,6 +354,13 @@ begin
     if SysUtils.CompareText(ForwardProcBodyInsertPolicyNames[Result],s)=0 then
       exit;
   Result:=fpipBehindMethods;
+end;
+
+function UsesInsertPolicyNameToPolicy(const s: string): TUsesInsertPolicy;
+begin
+  for Result:=Low(TUsesInsertPolicy) to High(TUsesInsertPolicy) do
+    if SysUtils.CompareText(UsesInsertPolicyNames[Result],s)=0 then exit;
+  Result:=uipInFrontOfRelated;
 end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;

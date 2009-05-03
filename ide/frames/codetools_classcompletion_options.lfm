@@ -1,0 +1,242 @@
+inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFrame
+  Height = 377
+  Width = 572
+  ClientHeight = 373
+  ClientWidth = 568
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 334
+  DesignTop = 307
+  object ClassPartInsertPolicyRadioGroup: TRadioGroup[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 100
+    Top = 0
+    Width = 254
+    AutoFill = True
+    Caption = 'ClassPartInsertPolicyRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+  end
+  object MethodInsertPolicyRadioGroup: TRadioGroup[1]
+    AnchorSideLeft.Control = ClassPartInsertPolicyRadioGroup
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 260
+    Height = 100
+    Top = 0
+    Width = 308
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Left = 6
+    Caption = 'MethodInsertPolicyRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+  object MixMethodsAndPropertiesCheckBox: TCheckBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 106
+    Width = 253
+    BorderSpacing.Around = 6
+    Caption = 'MixMethodsAndPropertiesCheckBox'
+    TabOrder = 2
+  end
+  object ClassHeaderCommentsCheckBox: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MixMethodsAndPropertiesCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 134
+    Width = 239
+    BorderSpacing.Around = 6
+    Caption = 'ClassHeaderCommentsCheckBox'
+    TabOrder = 3
+  end
+  object PropertyCompletionGroupBox: TGroupBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 193
+    Top = 173
+    Width = 568
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'PropertyCompletionGroupBox'
+    ClientHeight = 174
+    ClientWidth = 564
+    TabOrder = 4
+    object PropertyReadIdentPrefixLabel: TLabel
+      AnchorSideTop.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+      Left = -27
+      Height = 18
+      Top = 32
+      Width = 187
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'PropertyReadIdentPrefixLabel'
+      ParentColor = False
+    end
+    object PropertyWriteIdentPrefixLabel: TLabel
+      AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = PropertyWriteIdentPrefixEdit
+      Left = -27
+      Height = 18
+      Top = 59
+      Width = 187
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'PropertyWriteIdentPrefixLabel'
+      ParentColor = False
+    end
+    object PropertyStoredIdentPostfixLabel: TLabel
+      AnchorSideTop.Control = PropertyStoredIdentPostfixEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = PropertyStoredIdentPostfixEdit
+      Left = -46
+      Height = 18
+      Top = 86
+      Width = 206
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'PropertyStoredIdentPostfixLabel'
+      ParentColor = False
+    end
+    object PrivateVariablePrefixLabel: TLabel
+      AnchorSideTop.Control = PrivateVariablePrefixEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = PrivateVariablePrefixEdit
+      Left = -5
+      Height = 18
+      Top = 113
+      Width = 165
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'PrivateVariablePrefixLabel'
+      ParentColor = False
+    end
+    object SetPropertyVariablenameLabel: TLabel
+      AnchorSideTop.Control = SetPropertyVariablenameEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = SetPropertyVariablenameEdit
+      Left = -39
+      Height = 18
+      Top = 140
+      Width = 199
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'SetPropertyVariablenameLabel'
+      ParentColor = False
+    end
+    object PropertyCompletionCheckBox: TCheckBox
+      AnchorSideLeft.Control = PropertyCompletionGroupBox
+      AnchorSideTop.Control = PropertyCompletionGroupBox
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 214
+      BorderSpacing.Around = 6
+      Caption = 'PropertyCompletionCheckBox'
+      TabOrder = 0
+    end
+    object PropertyReadIdentPrefixEdit: TEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 27
+      Top = 28
+      Width = 80
+      AutoSize = True
+      TabOrder = 1
+      Text = 'PropertyReadIdentPrefixEdit'
+    end
+    object PropertyWriteIdentPrefixEdit: TEdit
+      AnchorSideLeft.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 27
+      Top = 55
+      Width = 80
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      TabOrder = 2
+      Text = 'PropertyWriteIdentPrefixEdit'
+    end
+    object PropertyStoredIdentPostfixEdit: TEdit
+      AnchorSideLeft.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Control = PropertyWriteIdentPrefixEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 27
+      Top = 82
+      Width = 80
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      TabOrder = 3
+      Text = 'PropertyStoredIdentPostfixEdit'
+    end
+    object PrivateVariablePrefixEdit: TEdit
+      AnchorSideLeft.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Control = PropertyStoredIdentPostfixEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 27
+      Top = 109
+      Width = 80
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      TabOrder = 4
+      Text = 'PrivateVariablePrefixEdit'
+    end
+    object SetPropertyVariablenameEdit: TEdit
+      AnchorSideLeft.Control = PropertyReadIdentPrefixEdit
+      AnchorSideTop.Control = PrivateVariablePrefixEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = PropertyReadIdentPrefixEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 166
+      Height = 27
+      Top = 136
+      Width = 80
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      TabOrder = 5
+      Text = 'SetPropertyVariablenameEdit'
+    end
+  end
+end

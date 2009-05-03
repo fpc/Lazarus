@@ -140,11 +140,12 @@ const
 
   GroupCodetools    = 300;
     CdtOptionsGeneral         = 100;
-    CdtOptionsCodeCreation    = 200;
-    CdtOptionsWords           = 300;
-    CdtOptionsLineSplitting   = 400;
-    CdtOptionsSpace           = 500;
-    CdtOptionsIdentCompletion = 600;
+    CdtOptionsClassCompletion = 200;
+    CdtOptionsCodeCreation    = 300;
+    CdtOptionsWords           = 400;
+    CdtOptionsLineSplitting   = 500;
+    CdtOptionsSpace           = 600;
+    CdtOptionsIdentCompletion = 700;
 
   GroupCodeExplorer = 350;
     cdeOptionsUpdate     = 100;

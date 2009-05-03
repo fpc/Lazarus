@@ -86,6 +86,7 @@ type
 
     // identifier completion
     FIdentComplAddSemicolon: Boolean;
+    FUsesInsertPolicy: TUsesInsertPolicy;
     procedure SetFilename(const AValue: string);
   public
     constructor Create;
@@ -160,6 +161,8 @@ type
       read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write FSetPropertyVariablename;
+    property UsesInsertPolicy: TUsesInsertPolicy
+      read FUsesInsertPolicy write FUsesInsertPolicy;
       
     // identifier completion
     property IdentComplAddSemicolon: Boolean read FIdentComplAddSemicolon
@@ -365,7 +368,10 @@ begin
       'CodeToolsOptions/PrivateVariablePrefix/Value',''),'F');
     FSetPropertyVariablename:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
-      
+    FUsesInsertPolicy:=UsesInsertPolicyNameToPolicy(XMLConfig.GetValue(
+      'CodeToolsOptions/UsesInsertPolicy/Value',
+      UsesInsertPolicyNames[uipInFrontOfRelated]));
+
     // identifier completion
     FIdentComplAddSemicolon:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AddSemicolon',true);
@@ -464,6 +470,9 @@ begin
       FPrivateVariablePrefix,'F');
     XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
       FSetPropertyVariablename,'AValue');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/UsesInsertPolicy/Value',
+      UsesInsertPolicyNames[FUsesInsertPolicy],
+      UsesInsertPolicyNames[uipInFrontOfRelated]);
 
     // identifier completion
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddSemicolon',
@@ -547,6 +556,7 @@ begin
     FPropertyStoredIdentPostfix:=CodeToolsOpts.FPropertyStoredIdentPostfix;
     FPrivateVariablePrefix:=CodeToolsOpts.FPrivateVariablePrefix;
     FSetPropertyVariablename:=CodeToolsOpts.FSetPropertyVariablename;
+    FUsesInsertPolicy:=CodeToolsOpts.FUsesInsertPolicy;
     
     // identifier completion
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
@@ -592,6 +602,7 @@ begin
   FPropertyStoredIdentPostfix:='IsStored';
   FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
+  FUsesInsertPolicy:=uipInFrontOfRelated;
   
   // identifier completion
   FIdentComplAddSemicolon:=true;
@@ -644,6 +655,7 @@ begin
     and (FPropertyStoredIdentPostfix=CodeToolsOpts.FPropertyStoredIdentPostfix)
     and (FPrivateVariablePrefix=CodeToolsOpts.FPrivateVariablePrefix)
     and (FSetPropertyVariablename=CodeToolsOpts.FSetPropertyVariablename)
+    and (FUsesInsertPolicy=CodeToolsOpts.FUsesInsertPolicy)
    ;
 end;
 
@@ -704,6 +716,7 @@ begin
     BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
     BeautifyCodeOptions.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
     BeautifyCodeOptions.PrivateVariablePrefix:=PrivateVariablePrefix;
+    BeautifyCodeOptions.UsesInsertPolicy:=UsesInsertPolicy;
   end
   else
     inherited AssignTo(Dest);
