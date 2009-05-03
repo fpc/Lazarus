@@ -68,6 +68,15 @@ type
     fpipBehindMethods
     );
 
+  // where to add new units to a uses section
+  TUsesInsertPolicy = (
+    uipFirst,
+    uipInFrontOfRelated, // related = shortest relative file path (#directory changes)
+    uipBehindRelated,
+    uipLast,
+    uipAlphabetically
+    );
+
   TWordPolicy = (wpNone, wpLowerCase, wpUpperCase, wpLowerCaseFirstLetterUp);
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
@@ -103,12 +112,6 @@ type
     LineEnd: string; // default: #13#10
     Indent: integer;
     TabWidth: integer;
-    ClassPartInsertPolicy: TClassPartInsertPolicy;
-    MixMethodsAndProperties: boolean;
-    MethodInsertPolicy: TMethodInsertPolicy;
-    ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
-    KeepForwardProcOrder: boolean;
-    ClassHeaderComments: boolean;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     DoNotSplitLineInFront: TAtomTypes;
@@ -117,10 +120,21 @@ type
     DoInsertSpaceAfter: TAtomTypes;
     DoNotInsertSpaceInFront: TAtomTypes;
     DoNotInsertSpaceAfter: TAtomTypes;
+    // procedures
+    ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
+    KeepForwardProcOrder: boolean;
+    // classes, methods, properties
+    ClassHeaderComments: boolean;
+    ClassPartInsertPolicy: TClassPartInsertPolicy;
+    MixMethodsAndProperties: boolean;
+    MethodInsertPolicy: TMethodInsertPolicy;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
     PrivateVariablePrefix: string;
+    // uses section
+    UsesInsertPolicy: TUsesInsertPolicy;
+
     CurFlags: TBeautifyCodeFlags;
     
     NestedComments: boolean;
@@ -971,6 +985,7 @@ begin
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
   PrivateVariablePrefix:='f';
+  UsesInsertPolicy:=uipInFrontOfRelated;
   
   NestedComments:=true;
 end;

@@ -195,23 +195,23 @@ type
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
 
     // initializing single codetools
+    function GetCodeToolForSource(Code: TCodeBuffer;
+                      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property CurCodeTool: TCodeTool read FCurCodeTool;
     procedure ClearCurCodeTool;
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
     procedure ClearPositions;
-    function GetCodeToolForSource(Code: TCodeBuffer;
-                      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
-      
+
     // initializing single compilerdirectivestrees
-    function FindDirectivesToolForSource(Code: TCodeBuffer
-                                        ): TDirectivesTool;
+    function GetDirectivesToolForSource(Code: TCodeBuffer;
+                            ExceptionOnError: boolean): TCompilerDirectivesTree;
     property CurDirectivesTool: TDirectivesTool read FCurDirectivesTool;
     procedure ClearCurDirectivesTool;
     function InitCurDirectivesTool(Code: TCodeBuffer): boolean;
-    function GetDirectivesToolForSource(Code: TCodeBuffer;
-                            ExceptionOnError: boolean): TCompilerDirectivesTree;
+    function FindDirectivesToolForSource(Code: TCodeBuffer
+                                        ): TDirectivesTool;
 
     // exception handling
     procedure ClearError;
