@@ -2528,6 +2528,7 @@ end;
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
   if Tree.Root<>nil then begin
+    //DebugLn(['TCustomCodeTool.DoDeleteNodes ',MainFilename]);
     // first notify, so that references could be deleted clean
     IncreaseTreeChangeStep(true);
     // then change

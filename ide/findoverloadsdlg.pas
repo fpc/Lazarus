@@ -33,7 +33,8 @@ uses
   Classes, SysUtils, LCLProc,FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel, ComCtrls, AvgLvlTree,
   // codetools
-  CodeTree, CodeCache, CodeAtom, CodeToolManager, CodeGraph, FindOverloads,
+  FindDeclarationTool, PascalParserTool, CodeTree, CodeCache, CodeAtom,
+  CodeToolManager, CodeGraph, FindOverloads,
   // IDE
   LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEProcs;
 
@@ -122,10 +123,12 @@ type
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     FIdleConnected: boolean;
+    fCurTreeViewComplete: boolean;
     fWorker: TFindOverloadsWorker;
     procedure SetIdleConnected(const AValue: boolean);
     procedure UpdateProgress;
     procedure StopWorking;
+    procedure UpdateCurTreeView;
   public
     property Worker: TFindOverloadsWorker read fWorker;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -226,6 +229,8 @@ begin
   if Done then
     IdleConnected:=false;
   UpdateProgress;
+  if not fCurTreeViewComplete then
+    UpdateCurTreeView;
 end;
 
 procedure TFindOverloadsDialog.SetIdleConnected(const AValue: boolean);
@@ -258,6 +263,70 @@ procedure TFindOverloadsDialog.StopWorking;
 begin
   IdleConnected:=false;
   Worker.StopSearching;
+end;
+
+procedure TFindOverloadsDialog.UpdateCurTreeView;
+var
+  s: String;
+  Node: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+  ParentNode: TCodeTreeNode;
+begin
+  fCurTreeViewComplete:=true;
+  CurTreeView.BeginUpdate;
+  CurTreeView.Items.Clear;
+  Node:=Worker.Graph.StartCodeNode;
+  Tool:=Worker.Graph.StartTool;
+  if Node<>nil then begin
+    DebugLn(['TFindOverloadsDialog.UpdateCurTreeView ',Node.DescAsString,' ',dbgstr(copy(Tool.Src,Node.StartPos,20))]);
+    // unit name
+    s:=Tool.GetSourceName(false)+': ';
+    // keyword
+    case Node.Desc of
+    ctnEnumIdentifier: s:=s+'enum';
+    ctnVarDefinition: s:=s+'var';
+    ctnConstDefinition: s:=s+'const';
+    ctnTypeDefinition: s:=s+'type';
+    ctnGenericType: s:=s+'generic';
+    ctnProperty: s:=s+'property';
+    ctnProcedure: s:=s+'procedure';
+    ctnUseUnit: s:=s+'uses';
+    ctnUnit: s:=s+'unit';
+    ctnProgram: s:=s+'program';
+    ctnPackage: s:=s+'package';
+    ctnLibrary: s:=s+'library';
+    end;
+    s:=s+' ';
+    // context
+    if Node.Desc<>ctnEnumIdentifier then
+    begin
+      ParentNode:=Node.Parent;
+      while ParentNode<>nil do begin
+        case ParentNode.Desc of
+        ctnTypeDefinition,ctnGenericType:
+          s:=s+Tool.ExtractDefinitionName(Node)+'.';
+        end;
+        ParentNode:=ParentNode.Parent;
+      end;
+    end;
+    // name
+    case Node.Desc of
+    ctnEnumIdentifier, ctnTypeDefinition, ctnConstDefinition, ctnVarDefinition,
+    ctnGenericType:
+      s:=s+Tool.ExtractDefinitionName(Node);
+    ctnProperty:
+      s:=s+Tool.ExtractPropName(Node,false);
+    ctnProcedure:
+      s:=s+Tool.ExtractProcName(Node,[phpWithoutClassName,phpCommentsToSpace]);
+    ctnUseUnit:
+      s:=s+Tool.ExtractNode(Node,[phpCommentsToSpace]);
+    ctnUnit,ctnProgram,ctnPackage,ctnLibrary:
+      s:=s+Tool.GetSourceName(false);
+    end;
+    // add node
+    CurTreeView.Items.Add(nil,s);
+  end;
+  CurTreeView.EndUpdate;
 end;
 
 { TFOWFile }

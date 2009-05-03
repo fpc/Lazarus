@@ -76,6 +76,7 @@ type
     FShortestNodes: TAVLTree;
     FStartCode: TCodeBuffer;
     FStartCodeNode: TCodeTreeNode;
+    FStartTool: TFindDeclarationTool;
     FStartX: integer;
     FStartY: integer;
     function AddContext(Tool: TFindDeclarationTool;
@@ -97,6 +98,7 @@ type
     property StartCode: TCodeBuffer read FStartCode;
     property StartX: integer read FStartX;
     property StartY: integer read FStartY;
+    property StartTool: TFindDeclarationTool read FStartTool;
     property StartCodeNode: TCodeTreeNode read FStartCodeNode;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
                      read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
@@ -272,7 +274,6 @@ end;
 function TDeclarationOverloadsGraph.Init(Code: TCodeBuffer; X, Y: integer
   ): Boolean;
 var
-  Tool: TFindDeclarationTool;
   CleanPos: integer;
 begin
   Result:=false;
@@ -280,18 +281,18 @@ begin
   FStartX:=X;
   FStartY:=Y;
 
-  Tool:=OnGetCodeToolForBuffer(Self,Code,true);
-  if Tool.CaretToCleanPos(CodeXYPosition(X,Y,Code),CleanPos)<>0 then begin
+  fStartTool:=OnGetCodeToolForBuffer(Self,Code,true);
+  if fStartTool.CaretToCleanPos(CodeXYPosition(X,Y,Code),CleanPos)<>0 then begin
     DebugLn(['TDeclarationOverloadsGraph.Init Tool.CaretToCleanPos failed']);
     exit(false);
   end;
-  fStartCodeNode:=Tool.FindDeepestNodeAtPos(CleanPos,true);
-  //DebugLn(['TDeclarationOverloadsGraph.Init Add start context']);
-  AddContext(Tool,StartCodeNode);
+  fStartCodeNode:=fStartTool.FindDeepestNodeAtPos(CleanPos,true);
+  DebugLn(['TDeclarationOverloadsGraph.Init Add start context ',FStartTool.MainFilename,' ',FStartCodeNode.DescAsString,' ',dbgstr(copy(FStartTool.Src,FStartCodeNode.StartPos,20))]);
+  AddContext(fStartTool,StartCodeNode);
 
   fIdentifier:='';
   if fStartCodeNode.Desc in AllIdentifierDefinitions+[ctnEnumIdentifier] then
-    fIdentifier:=GetIdentifier(@Tool.Src[fStartCodeNode.StartPos]);
+    fIdentifier:=GetIdentifier(@fStartTool.Src[fStartCodeNode.StartPos]);
 
   Result:=true;
 end;
