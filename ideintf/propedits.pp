@@ -6509,7 +6509,7 @@ var
       VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
       VK_LBUTTON    :AddStr(srVK_LBUTTON);
       VK_RBUTTON    :AddStr(srVK_RBUTTON);
-      VK_CANCEL     :AddStr(oiStdActDataSetCancel1Hint);
+      VK_CANCEL     :AddStr(srVK_CANCEL);
       VK_MBUTTON    :AddStr(srVK_MBUTTON);
       VK_BACK       :AddStr(srVK_BACK);
       VK_TAB        :AddStr(srVK_TAB);
@@ -6539,13 +6539,13 @@ var
       VK_LEFT       :AddStr(srVK_LEFT);
       VK_UP         :AddStr(srVK_UP);
       VK_RIGHT      :AddStr(srVK_RIGHT);
-      VK_DOWN       : AddStr(clbDown);
-      VK_SELECT     : AddStr(srSelect);
+      VK_DOWN       : AddStr(srVK_DOWN);
+      VK_SELECT     : AddStr(srVK_SELECT);
       VK_PRINT      :AddStr(srVK_PRINT);
       VK_EXECUTE    :AddStr(srVK_EXECUTE);
       VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
       VK_INSERT     :AddStr(srVK_INSERT);
-      VK_DELETE     : AddStr(oisDelete);
+      VK_DELETE     : AddStr(srVK_DELETE);
       VK_HELP       :AddStr(srVK_HELP);
       VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
       VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));

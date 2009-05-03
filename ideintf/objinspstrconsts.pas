@@ -380,7 +380,7 @@ resourcestring
   srVK_UNKNOWN    = 'Unknown';
   srVK_LBUTTON    = 'Mouse Button Left';
   srVK_RBUTTON    = 'Mouse Button Right';
-  //srVK_CANCEL     = 'Cancel'; = dlgCancel
+  srVK_CANCEL     = 'Cancel'; //= dlgCancel
   srVK_MBUTTON    = 'Mouse Button Middle';
   srVK_BACK       = 'Backspace';
   srVK_TAB        = 'Tab';
@@ -411,22 +411,21 @@ resourcestring
   srVK_LEFT       = 'Left';
   srVK_UP         = 'Up';
   srVK_RIGHT      = 'Right';
-  //srVK_DOWN       = 'Down'; = dlgdownword
-  //srVK_SELECT     = 'Select'; = lismenuselect
+  srVK_DOWN       = 'Down'; //= dlgdownword
+  srVK_SELECT     = 'Select'; //= lismenuselect
   srVK_PRINT      = 'Print';
-  srSelect = 'Select';
   srVK_EXECUTE    = 'Execute';
   srVK_SNAPSHOT   = 'Snapshot';
   srVK_INSERT     = 'Insert';
-  //srVK_DELETE     = 'Delete'; dlgeddelete
+  srVK_DELETE     = 'Delete'; //dlgeddelete
   srVK_HELP       = 'Help';
-  srVK_LWIN       = 'left windows key';
-  srVK_RWIN       = 'right windows key';
-  srVK_APPS       = 'application key';
+  srVK_LWIN       = 'Left Windows Key';
+  srVK_RWIN       = 'Right Windows Key';
+  srVK_APPS       = 'Application Key';
   srVK_NUMPAD     = 'Numpad %d';
   srVK_NUMLOCK    = 'Numlock';
   srVK_SCROLL     = 'Scroll';
-  srVK_IRREGULAR  = 'Irregular ';
+  srVK_IRREGULAR  = 'Irregular';
   srVK_NONE       = 'none';
   srkm_Alt        = 'Alt';
   srkm_Ctrl       = 'Ctrl';
