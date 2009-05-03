@@ -529,6 +529,9 @@ function SelectDirectory(out Directory: string;
 function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Integer;
   out ColorIndex: Integer; out ColorValue: TColor): Boolean;
 
+// helper functions (search LCLType for idDiag)
+function GetDialogCaption(idDiag: Integer): String;
+function GetDialogIcon(idDiag: Integer): TCustomBitmap;
 
 procedure Register;
 
@@ -546,6 +549,27 @@ const
   cBitmapX  = 10;      // x-position for bitmap in messagedialog
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
   cLabelSpacing = 10;   // distance between icon & label
+
+  DialogResult : Array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
+
+  DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
+    bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
+    bkIgnore, bkAll, bkYesToAll, bkNoToAll);
+
+  MsgDlgCaptions: Array[mtWarning..mtCustom] of String = (rsMtWarning, rsMtError,
+        rsMtInformation, rsMtConfirmation, rsMtCustom);
+
+  DialogResName: array[idDialogWarning..idDialogConfirm] of String =
+  (
+{idDialogWarning} 'dialog_warning',
+{idDialogError  } 'dialog_error',
+{idDialogInfo   } 'dialog_information',
+{idDialogConfirm} 'dialog_confirmation'
+  );
+
 
 type
   TBitBtnAccess = class(TBitBtn);
@@ -621,6 +645,37 @@ begin
   Result := MessageDlg(Caption, Text, DlgType, Buttons, 0, DefButton);
 end;
 
+{** Return the localized or not title of dialog}
+function GetDialogCaption(idDiag: Integer): String;
+begin
+  case idDiag of
+    idDialogWarning : Result := rsMtWarning;
+    idDialogError   : Result := rsMtError;
+    idDialogInfo    : Result := rsMtInformation;
+    idDialogConfirm : Result := rsMtConfirmation;
+    idDialogShield  : Result := rsMtAuthentication;
+  else
+    Result := '?';
+  end;
+end;
+
+function GetDialogIcon(idDiag: Integer): TCustomBitmap;
+var
+  BitmapHandle, MaskHandle: HBitmap;
+begin
+  if ThemeServices.GetStockImage(idDiag, BitmapHandle, MaskHandle) then
+  begin
+    Result := TBitmap.Create;
+    Result.Handle := BitmapHandle;
+    if MaskHandle <> 0 then
+      Result.MaskHandle := MaskHandle;
+  end
+  else
+  if (idDiag < Low(DialogResName)) or (idDiag > High(DialogResName)) then
+    Result := nil
+  else
+    Result := CreateBitmapFromLazarusResource(DialogResName[idDiag]);
+end;
 
 {$I colordialog.inc}
 {$I commondialog.inc}

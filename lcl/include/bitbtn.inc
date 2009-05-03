@@ -161,9 +161,9 @@ var
   CustomGlyph: TGraphic;
   BitmapHandle, MaskHandle: HBitmap;
 begin
-  if (Kind<>bkCustom) then
+  if (Kind <> bkCustom) then
   begin
-    GlyphValid:=false;
+    GlyphValid := False;
     
     // first let the user override
     if GetDefaultBitBtnGlyph <> nil then
@@ -181,11 +181,11 @@ begin
     // then ask the widgetset
     if not GlyphValid then 
     begin
-      if ThemeServices.GetStockImage(BitBtnImages[FKind], BitmapHandle, MaskHandle) then
+      if ThemeServices.GetStockImage(BitBtnImages[Kind], BitmapHandle, MaskHandle) then
       begin
         Glyph.Handle := BitmapHandle;
         Glyph.MaskHandle := MaskHandle;
-        GlyphValid := true;
+        GlyphValid := True;
       end;
     end;
     
@@ -203,33 +203,21 @@ begin
 
   if not (csLoading in ComponentState) then
   begin
-    Caption := GetCaptionOfKind(fKind);
-    ModalResult := BitBtnModalResults[FKind];
-    Default := FKind in [bkOk, bkYes];
-    Cancel := FKind in [bkCancel, bkNo];
+    Caption := GetCaptionOfKind(Kind);
+    ModalResult := BitBtnModalResults[Kind];
+    Default := Kind in [bkOk, bkYes];
+    Cancel := Kind in [bkCancel, bkNo];
   end;
 end;
 
 { Return the caption associated with the akind value.
   This function replaces BitBtnCaption const because the localizing
   dont work with an const array }
-function TCustomBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
+function TCustomBitBtn.GetCaptionOfKind(AKind: TBitBtnKind): String;
 begin
-  Result:='';
-  case aKind of
-    bkOK       : Result:=rsmbOK;
-    bkCancel   : Result:=rsmbCancel;
-    bkHelp     : Result:=rsmbHelp;
-    bkYes      : Result:=rsmbYes;
-    bkNo       : Result:=rsmbNo;
-    bkClose    : Result:=rsmbClose;
-    bkAbort    : Result:=rsmbAbort;
-    bkRetry    : Result:=rsmbRetry;
-    bkIgnore   : Result:=rsmbIgnore;
-    bkAll      : Result:=rsmbAll;
-    bkNoToAll  : Result:=rsmbNoToAll;
-    bkYesToAll : Result:=rsmbYesToAll;
-  end;
+  Result := GetButtonCaption(BitBtnImages[Kind]);
+  if Result = '?' then
+    Result := '';
 end;
 
 class procedure TCustomBitBtn.WSRegisterClass;

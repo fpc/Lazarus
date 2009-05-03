@@ -44,11 +44,15 @@ resourceString
   rsMbYesToAll     = 'Yes to &All';
   rsMbHelp         = '&Help';
   rsMbClose        = '&Close';
+  rsmbOpen         = '&Open';
+  rsmbSave         = '&Save';
+  rsmbUnlock       = '&Unlock';
 
   rsMtWarning      = 'Warning';
   rsMtError        = 'Error';
   rsMtInformation  = 'Information';
   rsMtConfirmation = 'Confirmation';
+  rsMtAuthentication = 'Authentication';
   rsMtCustom       = 'Custom';
 
   // file dialog

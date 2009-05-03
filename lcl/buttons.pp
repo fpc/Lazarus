@@ -150,7 +150,7 @@ type
     procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
     //Return the caption associated with the aKind value.
-    function GetCaptionOfKind(aKind: TBitBtnKind): String;
+    function GetCaptionOfKind(AKind: TBitBtnKind): String;
   protected
     FButtonGlyph: TButtonGlyph;
     class procedure WSRegisterClass; override;
@@ -395,6 +395,11 @@ var
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
 
+// helper functions (search LCLType for idButton)
+function GetButtonCaption(idButton: Integer): String;
+function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
+function GetButtonIcon(idButton: Integer): TCustomBitmap;
+
 procedure Register;
 
 implementation
@@ -409,33 +414,39 @@ const
     mrNoToAll, mrYesToAll);
 
   BitBtnImages: array[TBitBtnKind] of Longint = (
-    idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
+    idButtonBase, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
     idButtonAll, idButtonNoToAll, idButtonYesToAll);
 
-  BitBtnResNames: array[TBitBtnKind] of String =
+  BitBtnResNames: array[idButtonOk..idButtonNoToAll] of String =
   (
-{bkCustom  } '',
-{bkOK      } 'btn_ok',
-{bkCancel  } 'btn_cancel',
-{bkHelp    } 'btn_help',
-{bkYes     } 'btn_yes',
-{bkNo      } 'btn_no',
-{bkClose   } 'btn_close',
-{bkAbort   } 'btn_abort',
-{bkRetry   } 'btn_retry',
-{bkIgnore  } 'btn_ignore',
-{bkAll     } 'btn_all',
-{bkNoToAll } 'btn_no',
-{bkYesToAll} 'btn_all'
+{idButtonOk      } 'btn_ok',
+{idButtonCancel  } 'btn_cancel',
+{idButtonHelp    } 'btn_help',
+{idButtonYes     } 'btn_yes',
+{idButtonNo      } 'btn_no',
+{idButtonClose   } 'btn_close',
+{idButtonAbort   } 'btn_abort',
+{idButtonRetry   } 'btn_retry',
+{idButtonIgnore  } 'btn_ignore',
+{idButtonAll     } 'btn_all',
+{idButtonYesToAll} 'btn_all',
+{idButtonNoToAll } 'btn_no'
   );
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 begin
+  Result := GetDefaultButtonIcon(BitBtnImages[Kind]);
+end;
+
+function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
+begin
   Result := nil;
-  if BitBtnResNames[Kind] = '' then
+  if (idButton < Low(BitBtnResNames)) or (idButton > High(BitBtnResNames)) then
     Exit;
-  Result := CreateBitmapFromLazarusResource(BitBtnResNames[Kind]);
+  if BitBtnResNames[idButton] = '' then
+    Exit;
+  Result := CreateBitmapFromLazarusResource(BitBtnResNames[idButton]);
 end;
 
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
@@ -470,6 +481,44 @@ begin
     B.Free;
     C.Free;
   end;
+end;
+
+function GetButtonCaption(idButton: Integer): String;
+begin
+  case idButton of
+    idButtonOk       : Result := rsmbOK;
+    idButtonCancel   : Result := rsmbCancel;
+    idButtonHelp     : Result := rsmbHelp;
+    idButtonYes      : Result := rsmbYes;
+    idButtonNo       : Result := rsmbNo;
+    idButtonClose    : Result := rsmbClose;
+    idButtonAbort    : Result := rsmbAbort;
+    idButtonRetry    : Result := rsmbRetry;
+    idButtonIgnore   : Result := rsmbIgnore;
+    idButtonAll      : Result := rsmbAll;
+    idButtonYesToAll : Result := rsmbYesToAll;
+    idButtonNoToAll  : Result := rsmbNoToAll;
+    idButtonOpen     : Result := rsmbOpen;
+    idButtonSave     : Result := rsmbSave;
+    idButtonShield   : Result := rsmbUnlock;
+  else
+    Result := '?';
+  end;
+end;
+
+function GetButtonIcon(idButton: Integer): TCustomBitmap;
+var
+  BitmapHandle, MaskHandle: HBitmap;
+begin
+  if ThemeServices.GetStockImage(idButton, BitmapHandle, MaskHandle) then
+  begin
+    Result := TBitmap.Create;
+    Result.Handle := BitmapHandle;
+    if MaskHandle <> 0 then
+      Result.MaskHandle := MaskHandle;
+  end
+  else
+    Result := GetDefaultButtonIcon(idButton);
 end;
 
 procedure Register;
