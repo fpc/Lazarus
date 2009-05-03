@@ -47,8 +47,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="39" Y="23"/>
-        <TopLine Value="12"/>
+        <CursorPos X="66" Y="29"/>
+        <TopLine Value="21"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
@@ -121,7 +121,6 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)\"/>
-      <LCLWidgetType Value="qt"/>
     </SearchPaths>
     <Linking>
       <Options>
