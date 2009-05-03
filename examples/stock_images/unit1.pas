@@ -21,6 +21,8 @@ type
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     Label1: TLabel;
+    DialogCaptionLbl: TLabel;
+    ButtonCaptionLbl: TLabel;
     procedure ButtonTrackChange(Sender: TObject);
     procedure DialogTrackChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -63,22 +65,32 @@ end;
 
 procedure TForm1.UpdateDialogImage;
 var
-  Image, Mask: HBitmap;
+  B: TCustomBitmap;
 begin
-  if ThemeServices.GetStockImage(DialogTrack.Position + idDialogBase, Image, Mask) then
-    DialogImage.Picture.Bitmap.LoadFromBitmapHandles(Image, Mask)
+  B := GetDialogIcon(DialogTrack.Position + idDialogBase);
+  if B <> nil then
+  begin
+    DialogImage.Picture.Graphic := B;
+    B.Free;
+  end
   else
     DialogImage.Picture.Clear;
+  DialogCaptionLbl.Caption := GetDialogCaption(DialogTrack.Position + idDialogBase);
 end;
 
 procedure TForm1.UpdateButtonImage;
 var
-  Image, Mask: HBitmap;
+  B: TCustomBitmap;
 begin
-  if ThemeServices.GetStockImage(ButtonTrack.Position + idButtonBase, Image, Mask) then
-    ButtonImage.Picture.Bitmap.LoadFromBitmapHandles(Image, Mask)
+  B := GetButtonIcon(ButtonTrack.Position + idButtonBase);
+  if B <> nil then
+  begin
+    ButtonImage.Picture.Graphic := B;
+    B.Free;
+  end
   else
     ButtonImage.Picture.Clear;
+  ButtonCaptionLbl.Caption := GetButtonCaption(ButtonTrack.Position + idButtonBase);
 end;
 
 initialization

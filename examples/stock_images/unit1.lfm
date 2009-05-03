@@ -32,23 +32,40 @@ object Form1: TForm1
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
-    Caption = 'Dialog Icons'
+    Caption = 'Dialog Icons:'
     ClientHeight = 193
     ClientWidth = 188
     TabOrder = 0
     object DialogImage: TImage
       AnchorSideLeft.Control = GroupBox1
-      AnchorSideTop.Control = GroupBox1
+      AnchorSideTop.Control = DialogCaptionLbl
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = GroupBox1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DialogTrack
       Left = 6
-      Height = 134
-      Top = 6
+      Height = 114
+      Top = 26
       Width = 176
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Center = True
+    end
+    object DialogCaptionLbl: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 176
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'DialogCaptionLbl'
+      ParentColor = False
     end
     object DialogTrack: TTrackBar
       AnchorSideLeft.Control = GroupBox1
@@ -82,23 +99,40 @@ object Form1: TForm1
     BorderSpacing.Left = 3
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
-    Caption = 'Button Icons'
+    Caption = 'Button Icons:'
     ClientHeight = 193
     ClientWidth = 187
     TabOrder = 1
     object ButtonImage: TImage
       AnchorSideLeft.Control = GroupBox2
-      AnchorSideTop.Control = GroupBox2
+      AnchorSideTop.Control = ButtonCaptionLbl
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ButtonTrack
       Left = 6
-      Height = 134
-      Top = 6
+      Height = 114
+      Top = 26
       Width = 175
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Center = True
+    end
+    object ButtonCaptionLbl: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 175
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'ButtonCaptionLbl'
+      ParentColor = False
     end
     object ButtonTrack: TTrackBar
       AnchorSideLeft.Control = GroupBox2
