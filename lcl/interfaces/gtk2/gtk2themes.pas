@@ -153,6 +153,9 @@ begin
     idButtonAll: StockName := GTK_STOCK_APPLY;
     idButtonIgnore: StockName := GTK_STOCK_DELETE;
     idButtonRetry: StockName := GTK_STOCK_REFRESH;
+    idButtonOpen: StockName := GTK_STOCK_OPEN;
+    idButtonSave: StockName := GTK_STOCK_SAVE;
+    idButtonShield: StockName := GTK_STOCK_DIALOG_AUTHENTICATION;
 
     idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
     idDialogError: StockName := GTK_STOCK_DIALOG_ERROR;

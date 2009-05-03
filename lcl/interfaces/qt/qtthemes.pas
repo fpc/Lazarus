@@ -354,12 +354,14 @@ begin
     idButtonAll: AStdPixmap := QStyleSP_DialogApplyButton;
     idButtonIgnore: AStdPixmap := QStyleSP_DialogDiscardButton;
     idButtonRetry: AStdPixmap := QStyleSP_BrowserReload; // ?
+    idButtonOpen: AStdPixmap := QStyleSP_DialogOpenButton;
+    idButtonSave: AStdPixmap := QStyleSP_DialogSaveButton;
+    idButtonShield: AStdPixmap := QStyleSP_VistaShield;
 
     idDialogWarning : AStdPixmap := QStyleSP_MessageBoxWarning;
     idDialogError: AStdPixmap := QStyleSP_MessageBoxCritical;
     idDialogInfo: AStdPixmap := QStyleSP_MessageBoxInformation;
     idDialogConfirm: AStdPixmap := QStyleSP_MessageBoxQuestion;
-    idDialogShield: AStdPixmap := QStyleSP_VistaShield;
   else
     begin
        Result := inherited GetStockImage(StockID, Image, Mask);

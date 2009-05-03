@@ -160,11 +160,20 @@ begin
     idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogShield :
+    idDialogShield:
       begin
         FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
         if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
+          IconHandle := SHIconInfo.hIcon
+        else
+          IconHandle := 0;
+      end;
+    idButtonShield:
+      begin
+        FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
+        SHIconInfo.cbSize := SizeOf(SHIconInfo);
+        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon
         else
           IconHandle := 0;

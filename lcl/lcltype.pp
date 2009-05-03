@@ -1601,6 +1601,9 @@ const
   idButtonAll = idButtonBase + 10;
   idButtonYesToAll = idButtonBase + 11;
   idButtonNoToAll = idButtonBase + 12;
+  idButtonOpen = idButtonBase + 13;
+  idButtonSave = idButtonBase + 14;
+  idButtonShield = idButtonBase + 15;
 
   idDialogBase = $FF;
   idDialogWarning = idDialogBase + 1;
