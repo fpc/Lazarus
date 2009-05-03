@@ -57,6 +57,7 @@ components/chmhelp/lhelp/images/table_open.png -text
 components/chmhelp/lhelp/lhelp.ico -text svneol=unset#image/icon
 components/chmhelp/lhelp/lhelp.lpi svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
+components/chmhelp/lhelp/lhelp.manifest svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.rc svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.lrs svneol=native#text/plain

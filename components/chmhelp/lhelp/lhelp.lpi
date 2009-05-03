@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
@@ -54,7 +56,6 @@
         <Filename Value="chmpopup.pas"/>
         <ComponentName Value="HelpPopupForm"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="chmpopup.lrs"/>
         <UnitName Value="ChmPopup"/>
       </Unit3>
       <Unit4>
@@ -63,7 +64,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="lhelpcore.lrs"/>
         <UnitName Value="lhelpcore"/>
       </Unit4>
       <Unit5>

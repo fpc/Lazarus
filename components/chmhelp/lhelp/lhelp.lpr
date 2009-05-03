@@ -36,7 +36,6 @@ var
 {$IFDEF WINDOWS}{$R lhelp.rc}{$ENDIF}
 
 begin
-  {$I lhelp.lrs}
   Application.Initialize;
   for X := 1 to ParamCount do
     if LowerCase(ParamStr(X)) = '--help' then 
