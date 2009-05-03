@@ -1253,20 +1253,20 @@ msgstr ""
 msgid "Ctrl"
 msgstr ""
 
-#: objinspstrconsts.srselect
-msgid "Select"
-msgstr ""
-
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
 msgstr ""
 
 #: objinspstrconsts.srvk_apps
-msgid "application key"
+msgid "Application Key"
 msgstr ""
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
+msgstr ""
+
+#: objinspstrconsts.srvk_cancel
+msgid "Cancel"
 msgstr ""
 
 #: objinspstrconsts.srvk_capital
@@ -1288,6 +1288,14 @@ msgstr ""
 
 #: objinspstrconsts.srvk_convert
 msgid "Convert"
+msgstr ""
+
+#: objinspstrconsts.srvk_delete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.srvk_down
+msgid "Down"
 msgstr ""
 
 #: objinspstrconsts.srvk_end
@@ -1325,7 +1333,7 @@ msgid "Insert"
 msgstr "Wstaw"
 
 #: objinspstrconsts.srvk_irregular
-msgid "Irregular "
+msgid "Irregular"
 msgstr ""
 
 #: objinspstrconsts.srvk_junja
@@ -1346,7 +1354,7 @@ msgid "Left"
 msgstr ""
 
 #: objinspstrconsts.srvk_lwin
-msgid "left windows key"
+msgid "Left Windows Key"
 msgstr ""
 
 #: objinspstrconsts.srvk_mbutton
@@ -1413,11 +1421,15 @@ msgid "Right"
 msgstr ""
 
 #: objinspstrconsts.srvk_rwin
-msgid "right windows key"
+msgid "Right Windows Key"
 msgstr ""
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
+msgstr ""
+
+#: objinspstrconsts.srvk_select
+msgid "Select"
 msgstr ""
 
 #: objinspstrconsts.srvk_shift

@@ -1254,21 +1254,21 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: objinspstrconsts.srselect
-msgid "Select"
-msgstr "Zvoliť"
-
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
 msgstr "Priajť"
 
 #: objinspstrconsts.srvk_apps
-msgid "application key"
+msgid "Application Key"
 msgstr "kláves Menu"
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
 msgstr "Backspace"
+
+#: objinspstrconsts.srvk_cancel
+msgid "Cancel"
+msgstr ""
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1290,6 +1290,14 @@ msgstr "Control"
 #: objinspstrconsts.srvk_convert
 msgid "Convert"
 msgstr "Konvertovať"
+
+#: objinspstrconsts.srvk_delete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts.srvk_down
+msgid "Down"
+msgstr ""
 
 #: objinspstrconsts.srvk_end
 msgid "End"
@@ -1326,7 +1334,7 @@ msgid "Insert"
 msgstr "Vložiť"
 
 #: objinspstrconsts.srvk_irregular
-msgid "Irregular "
+msgid "Irregular"
 msgstr "Neplatný"
 
 #: objinspstrconsts.srvk_junja
@@ -1347,7 +1355,7 @@ msgid "Left"
 msgstr "Vľavo"
 
 #: objinspstrconsts.srvk_lwin
-msgid "left windows key"
+msgid "Left Windows Key"
 msgstr "ľavý Win kláves"
 
 #: objinspstrconsts.srvk_mbutton
@@ -1414,12 +1422,16 @@ msgid "Right"
 msgstr "Vpravo"
 
 #: objinspstrconsts.srvk_rwin
-msgid "right windows key"
+msgid "Right Windows Key"
 msgstr "pravý Win kláves"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
 msgstr "Posunúť"
+
+#: objinspstrconsts.srvk_select
+msgid "Select"
+msgstr ""
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"
