@@ -625,41 +625,259 @@ end;
 function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
   const NewUnitName, NewUnitInFile: string;
   SourceChangeCache: TSourceChangeCache): boolean;
-var LineStart, LineEnd, Indent, InsertPos: integer;
+var
+  Options: TBeautifyCodeOptions;
+
+  function NextUseUnitNodeInSameBlock(Node: TCodeTreeNode): boolean;
+  var
+    p: LongInt;
+  begin
+    if Node.NextBrother=nil then exit(false);
+    if PositionsInSameLine(Src,Node.EndPos,Node.NextBrother.StartPos) then
+    begin
+      // uses on same line belongs to the same formatting block
+      exit(true);
+    end;
+    // check that there is no comment/directive between
+    p:=FindPrevNonSpace(Src,Node.NextBrother.StartPos-1);
+    if Src[p]<>',' then exit(false);
+    p:=FindPrevNonSpace(Src,p-1);
+    if p>Node.EndPos then exit(false);
+    if LineEndCount(Src,Node.EndPos,Node.NextBrother.StartPos,p)>1 then exit(false);
+    Result:=true;
+  end;
+
+  procedure AddUseUnit(Lines: TStrings; FirstIndent, Indent: integer;
+    const NewUses: string);
+  var
+    Line: string;
+    l: Integer;
+  begin
+    if Lines.Count=0 then begin
+      Lines.Add(NewUses);
+      exit;
+    end;
+    Line:=Lines[Lines.Count-1];
+    if (atIdentifier in Options.DoInsertSpaceAfter)
+    or (atComma in Options.DoInsertSpaceInFront) then
+      Line:=Line+' ';
+    Line:=Line+',';
+    l:=length(Line)+length(NewUses)+1;
+    if (atComma in Options.DoInsertSpaceAfter)
+    or (atIdentifier in Options.DoInsertSpaceInFront) then
+      inc(l);
+    if Lines.Count=0 then
+      inc(l,FirstIndent);
+    if l<=Options.LineLength then begin
+      // append to last line
+      if (atComma in Options.DoInsertSpaceAfter)
+      or (atIdentifier in Options.DoInsertSpaceInFront) then
+        Line:=Line+' ';
+      Line:=Line+NewUses;
+      Lines[Lines.Count-1]:=Line;
+    end else begin
+      // add new line
+      Lines[Lines.Count-1]:=Line;
+      Line:=GetIndentStr(Indent)+NewUses;
+      Lines.Add(Line);
+    end;
+  end;
+
+var LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
   NewUsesTerm: string;
+  InsertBehind: Boolean;
+  InsertNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
+  NewCode: TCodeBuffer;
+  DiffPath: String;
+  DiffCnt: Integer;
+  BestDiffCnt: LongInt;
+  AnUnitName: String;
+  AnUnitInFilename: String;
+  i: Integer;
+  NewFilename: String;
+  NewComma: string;
+  Lines: TStringList;
+  FirstIndent: Integer;
+  InsertCode: String;
 begin
   Result:=false;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) or (NewUnitName='')
   or (length(NewUnitName)>255) or (UsesNode.StartPos<1)
   or (UsesNode.EndPos<1) then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  MoveCursorToNodeStart(UsesNode); // for nice error position
-  InsertPos:=UsesNode.EndPos-1; // position of semicolon at end of uses section
+  Options:=SourceChangeCache.BeautifyCodeOptions;
+
+  // find nice insert position
+  InsertBehind:=false;
+  InsertNode:=UsesNode.FirstChild;
+
+  case Options.UsesInsertPolicy of
+
+  uipFirst:
+    begin
+      InsertBehind:=false;
+      InsertNode:=UsesNode.FirstChild;
+    end;
+
+  uipInFrontOfRelated,uipBehindRelated:
+    begin
+      NewCode:=FindUnitSource(NewUnitName,'',false);
+      if NewCode<>nil then begin
+        NewFilename:=NewCode.Filename;
+        BestDiffCnt:=High(integer);
+        Node:=UsesNode.FirstChild;
+        while Node<>nil do begin
+          MoveCursorToCleanPos(Node.StartPos);
+          ReadNextAtom;
+          AnUnitName:=GetAtom;
+          ReadNextAtom;
+          if UpAtomIs('IN') then begin
+            ReadNextAtom;
+            AnUnitInFilename:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
+          end else
+            AnUnitInFilename:='';
+          // search unit
+          //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Unit=',AnUnitName,' in "',AnUnitInFilename,'"']);
+          NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+          if NewCode<>nil then begin
+            // used unit found -> compute distance
+            DiffPath:=CreateRelativePath(NewCode.Filename,ExtractFilePath(NewFilename));
+            DiffCnt:=0;
+            for i:=0 to length(DiffPath) do
+              if DiffPath[i]=PathDelim then
+                inc(DiffCnt);
+            //DebugLn(['TStandardCodeTool.AddUnitToUsesSection DiffCnt=',DiffCnt,' "',NewCode.Filename,'" "',NewFilename,'"']);
+            if options.UsesInsertPolicy=uipInFrontOfRelated then begin
+              // insert in front of the first node with the lowest DiffCnt
+              if BestDiffCnt>DiffCnt then begin
+                BestDiffCnt:=DiffCnt;
+                InsertNode:=Node;
+                InsertBehind:=false;
+              end;
+            end else begin
+              // insert behind the last node with the lowest DiffCnt
+              if BestDiffCnt>=DiffCnt then begin
+                BestDiffCnt:=DiffCnt;
+                InsertNode:=Node;
+                InsertBehind:=true;
+              end;
+            end;
+          end;
+          Node:=Node.NextBrother;
+        end;
+      end;
+    end;
+
+  uipLast:
+    begin
+      InsertNode:=UsesNode.LastChild;
+      InsertBehind:=true;
+    end;
+
+  uipAlphabetically:
+    begin
+      InsertNode:=UsesNode.FirstChild;
+      InsertBehind:=false;
+      while (InsertNode<>nil)
+      and (CompareIdentifiers(PChar(NewUnitName),@Src[InsertNode.StartPos])<0) do
+        InsertNode:=InsertNode.NextBrother;
+      if InsertNode=nil then begin
+        InsertNode:=UsesNode.LastChild;
+        InsertBehind:=true;
+      end;
+    end;
+
+  end;
+
+
   // build insert text  "unitname in 'file'"
   NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
-    NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+'''';
-  // check if insertion would expand the line over the max LineLength
+    NewUsesTerm:=NewUsesTerm+' '
+      +Options.BeautifyKeyWord('in')
+      +' '''+NewUnitInFile+'''';
+
+  NewComma:=',';
+  if (atComma in Options.DoInsertSpaceInFront)
+    or (atIdentifier in Options.DoInsertSpaceAfter)
+  then
+    NewComma:=' '+NewComma;
+  if (atComma in Options.DoInsertSpaceAfter)
+    or (atIdentifier in Options.DoInsertSpaceInFront)
+  then
+    NewComma:=NewComma+' ';
+
+  if InsertBehind then begin
+    // insert behind unitname, in front of semicolon or comma
+    // for example: uses unit1|, unit2 in 'unit2.pp'|;
+    InsertPos:=InsertNode.EndPos;
+    InsertCode:=NewComma+NewUsesTerm;
+  end else begin
+    // insert in front of unitname, behind 'uses' or comma
+    // for example: uses |unit1, |unit2;
+    InsertPos:=InsertNode.StartPos;
+    InsertCode:=NewUsesTerm+NewComma;
+  end;
+  InsertToPos:=InsertPos;
+
+  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection InsertNode=',ExtractNode(InsertNode,[]),' InsertBehind=',InsertBehind]);
+
+  // check if addition fits into the line
+  // if not, rebuild the uses section
   GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
-  if InsertPos-LineStart+length(NewUsesTerm)+2>=
-    SourceChangeCache.BeautifyCodeOptions.LineLength then
-  begin
-    // split line
-    // calculate the indent
+  InsertLen:=length(NewUsesTerm);
+  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Line=',copy(Src,LineStart,InsertPos-LineStart),'<InsertPos>',copy(Src,InsertPos,LineEnd-InsertPos)]);
+  if (LineEnd-LineStart+InsertLen > Options.LineLength) then begin
+    // line too long => reformat block of used units
+    // find start of block of used units
+    Node:=InsertNode;
+    while (Node.PriorBrother<>nil)
+    and NextUseUnitNodeInSameBlock(Node.PriorBrother) do
+      Node:=Node.PriorBrother;
+    InsertPos:=Node.StartPos;
+    GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
+    FirstIndent:=InsertPos-LineStart;
     Indent:=GetLineIndent(Src,InsertPos);
-    // if the 'uses' keyword is not in the same line of the insertion position,
-    // then indent the new line
-    // else keep the indentation.
-    if (UsesNode.StartPos>=LineStart)
-    and (UsesNode.StartPos<LineEnd) then
-      inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
-    NewUsesTerm:=','+SourceChangeCache.BeautifyCodeOptions.LineEnd+
-      GetIndentStr(Indent)+NewUsesTerm;
-  end else
-    // simply insert
-    NewUsesTerm:=', '+NewUsesTerm;
-  if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
-                                   NewUsesTerm) then exit;
+    if PositionsInSameLine(Src,UsesNode.StartPos,InsertPos) then begin
+      // for example: uses |unit1;
+      inc(Indent,Options.Indent);
+    end;
+    // create new block of used units
+    Lines:=TStringList.Create;
+    try
+      while Node<>nil do begin
+        InsertToPos:=Node.EndPos;
+        if (Node=InsertNode) and (not InsertBehind) then
+          AddUseUnit(Lines,FirstIndent,Indent,NewUsesTerm);
+        MoveCursorToCleanPos(Node.StartPos);
+        ReadNextAtom;
+        InsertCode:=GetAtom;
+        ReadNextAtom;
+        if UpAtomIs('IN') then begin
+          ReadNextAtom;
+          InsertCode:=InsertCode+' '+Options.BeautifyKeyWord('in')+' '+GetAtom;
+        end;
+        AddUseUnit(Lines,FirstIndent,Indent,InsertCode);
+        if (Node=InsertNode) and InsertBehind then
+          AddUseUnit(Lines,FirstIndent,Indent,NewUsesTerm);
+        if not NextUseUnitNodeInSameBlock(Node) then break;
+        Node:=Node.NextBrother;
+      end;
+      InsertCode:='';
+      for i:=0 to Lines.Count-1 do begin
+        if i>0 then
+          InsertCode:=InsertCode+Options.LineEnd;
+        InsertCode:=InsertCode+Lines[i];
+      end;
+    finally
+      Lines.Free;
+    end;
+  end;
+
+  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Replace="',copy(Src,InsertPos,InsertToPos-InsertPos),'" with "',InsertCode,'"']);
+  if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertToPos,
+                                   InsertCode) then exit;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
 end;
@@ -679,9 +897,12 @@ begin
   if UsesNode<>nil then begin
     // add unit to existing uses section
     if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
-    then
+    then begin
       if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
-                                   SourceChangeCache) then exit;
+                                  SourceChangeCache)
+      then
+        exit;
+    end;
   end else begin
     // create a new uses section
     if Tree.Root=nil then exit;

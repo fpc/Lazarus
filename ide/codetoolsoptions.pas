@@ -370,7 +370,7 @@ begin
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
     FUsesInsertPolicy:=UsesInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/UsesInsertPolicy/Value',
-      UsesInsertPolicyNames[uipInFrontOfRelated]));
+      UsesInsertPolicyNames[DefaultUsesInsertPolicy]));
 
     // identifier completion
     FIdentComplAddSemicolon:=XMLConfig.GetValue(
@@ -472,7 +472,7 @@ begin
       FSetPropertyVariablename,'AValue');
     XMLConfig.SetDeleteValue('CodeToolsOptions/UsesInsertPolicy/Value',
       UsesInsertPolicyNames[FUsesInsertPolicy],
-      UsesInsertPolicyNames[uipInFrontOfRelated]);
+      UsesInsertPolicyNames[DefaultUsesInsertPolicy]);
 
     // identifier completion
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddSemicolon',
@@ -602,7 +602,7 @@ begin
   FPropertyStoredIdentPostfix:='IsStored';
   FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
-  FUsesInsertPolicy:=uipInFrontOfRelated;
+  FUsesInsertPolicy:=DefaultUsesInsertPolicy;
   
   // identifier completion
   FIdentComplAddSemicolon:=true;

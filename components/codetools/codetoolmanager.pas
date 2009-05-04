@@ -3885,7 +3885,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
-                    SourceChangeCache);
+                                                  SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

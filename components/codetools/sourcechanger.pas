@@ -47,8 +47,6 @@ uses
   KeywordFuncLists;
   
 type
-  { TBeautifyCodeOptions }
-  
   // Insert policy types for class parts (properties, variables, method defs)
   TClassPartInsertPolicy = (
     cpipAlphabetically,
@@ -91,6 +89,11 @@ type
     );
   TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
+const
+  DefaultUsesInsertPolicy = uipBehindRelated;
+
+type
+  { TBeautifyCodeOptions }
 
   TBeautifyCodeOptions = class(TPersistent)
   private
@@ -360,7 +363,7 @@ function UsesInsertPolicyNameToPolicy(const s: string): TUsesInsertPolicy;
 begin
   for Result:=Low(TUsesInsertPolicy) to High(TUsesInsertPolicy) do
     if SysUtils.CompareText(UsesInsertPolicyNames[Result],s)=0 then exit;
-  Result:=uipInFrontOfRelated;
+  Result:=DefaultUsesInsertPolicy;
 end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;
@@ -1000,7 +1003,7 @@ begin
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
   PrivateVariablePrefix:='f';
-  UsesInsertPolicy:=uipInFrontOfRelated;
+  UsesInsertPolicy:=DefaultUsesInsertPolicy;
   
   NestedComments:=true;
 end;

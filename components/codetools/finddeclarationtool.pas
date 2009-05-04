@@ -4948,7 +4948,7 @@ begin
       ReadNextAtom;
       UnitNameAtom:=CurPos;
       ReadNextAtom;
-      if CurPos.Flag=cafPoint then begin
+      if UpAtomIs('IN') then begin
         ReadNextAtom;
         InAtom:=CurPos;
       end else
@@ -5991,7 +5991,7 @@ var
       ReadNextAtom;
       UnitNameAtom:=CurPos;
       ReadNextAtom;
-      if CurPos.Flag=cafPoint then begin
+      if UpAtomIs('IN') then begin
         ReadNextAtom;
         InAtom:=CurPos;
       end else
