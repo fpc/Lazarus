@@ -2705,6 +2705,16 @@ begin
     {$ENDIF}
   {$ENDIF}
 
+  if (ContextNode.Desc=ctnInterface)
+  and (fdfIgnoreUsedUnits in Params.Flags) then begin
+    {$IFDEF ShowTriedContexts}
+    DebugLn(['TFindDeclarationTool.FindIdentifierInContext searching in interface of ',MainFilename]);
+    {$ENDIF}
+    Result:=FindIdentifierInInterface(Params.IdentifierTool,Params);
+    CheckResult(Result,false);
+    exit;
+  end;
+
   //try
     // search in the Tree of this tool
     repeat
@@ -4913,52 +4923,36 @@ var
   InAtom, UnitNameAtom: TAtomPosition;
   NewCodeTool: TFindDeclarationTool;
   OldFlags: TFindDeclarationFlags;
+  Node: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   Result:=false;
-  // reparse uses section
-  MoveCursorToNodeStart(UsesNode);
-  if (UsesNode.Desc=ctnUsesSection) then begin
-    ReadNextAtom;
-    if not UpAtomIs('USES') then
-      RaiseUsesExpected;
+  if (Params.IdentifierTool=Self) then begin
+    Node:=UsesNode.LastChild;
+    while Node<>nil do begin
+      Node:=Node.PriorBrother;
+      if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
+        // the searched identifier was a uses unitname, point to the identifier in
+        // the uses section
+        Result:=true;
+        Params.SetResult(Self,Node,CurPos.StartPos);
+        exit;
+      end;
+    end;
   end;
-  repeat
-    ReadNextAtom;  // read name
-    if CurPos.StartPos>SrcLen then break;
-    if AtomIsChar(';') then break;
-    AtomIsIdentifier(true);
-    if (Params.IdentifierTool=Self)
-    and CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
-    begin
-      // the searched identifier was a uses unitname, point to the identifier in
-      // the uses section
-      Result:=true;
-      Params.SetResult(Self,UsesNode,CurPos.StartPos);
-      exit;
-    end;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      if not AtomIsStringConstant then RaiseStrConstExpected;
-      ReadNextAtom;
-    end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
-  until (CurPos.StartPos>SrcLen);
-
   if not (fdfIgnoreUsedUnits in Params.Flags) then begin
     // search in units
-    MoveCursorToUsesEnd(UsesNode);
-    repeat
-      ReadPriorUsedUnit(UnitNameAtom, InAtom);
-      // open the unit
-      {$IFDEF ShowTriedUnits}
-      DebugLn('TFindDeclarationTool.FindIdentifierInUsesSection Self=',MainFilename,
-        ' UnitName=',GetAtom(UnitNameAtom));
-      Params.WriteDebugReport;
-      {$ENDIF}
+    Node:=UsesNode.LastChild;
+    while Node<>nil do begin
+      MoveCursorToCleanPos(Node.StartPos);
+      ReadNextAtom;
+      UnitNameAtom:=CurPos;
+      ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        ReadNextAtom;
+        InAtom:=CurPos;
+      end else
+        InAtom.StartPos:=0;
       NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,true);
       // search the identifier in the interface of the used unit
       OldFlags:=Params.Flags;
@@ -4967,10 +4961,8 @@ begin
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
       Params.Flags:=OldFlags;
       if Result and Params.IsFinal then exit;
-      // restore the cursor
-      MoveCursorToCleanPos(UnitNameAtom.StartPos);
-      ReadPriorAtom; // read keyword 'uses' or comma
-    until not AtomIsChar(',');
+      Node:=Node.PriorBrother;
+    end;
   end;
 end;
 
@@ -5966,6 +5958,11 @@ var
   end;
 
   procedure ResolvePoint;
+  var
+    NewCodeTool: TFindDeclarationTool;
+    UnitNameAtom: TAtomPosition;
+    InAtom: TAtomPosition;
+    NewNode: TCodeTreeNode;
   begin
     // for example 'A.B'
     if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
@@ -5984,6 +5981,26 @@ var
       debugln(['ResolvePoint unit -> interface node']);
       {$ENDIF}
       ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
+    end
+    else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
+      // identifier in front of the point is a uses unit name
+      {$IFDEF ShowExprEval}
+      debugln(['ResolvePoint used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+      {$ENDIF}
+      ExprType.Context.Tool.MoveCursorToCleanPos(ExprType.Context.Node.StartPos);
+      ReadNextAtom;
+      UnitNameAtom:=CurPos;
+      ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        ReadNextAtom;
+        InAtom:=CurPos;
+      end else
+        InAtom.StartPos:=0;
+      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,true);
+      NewCodeTool.BuildInterfaceIdentifierCache(true);
+      NewNode:=NewCodeTool.FindInterfaceNode;
+      ExprType.Context.Tool:=NewCodeTool;
+      ExprType.Context.Node:=NewNode;
     end
     else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
       // 'class of' plus '.' => jump to the class
