@@ -10,20 +10,26 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   OnCreate = ImExportCompOptsDlgCREATE
   LCLVersion = '0.9.27'
   object OpenRecentGroupbox: TGroupBox
-    Left = 8
-    Height = 176
-    Top = 8
-    Width = 536
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 191
+    Top = 6
+    Width = 542
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'OpenRecentGroupbox'
-    ClientHeight = 158
-    ClientWidth = 532
+    ClientHeight = 173
+    ClientWidth = 538
     TabOrder = 0
     object RecentListbox: TListBox
       Left = 0
-      Height = 120
+      Height = 135
       Top = 0
-      Width = 532
+      Width = 538
       Align = alTop
       Anchors = [akTop, akLeft, akBottom]
       ClickOnSelChange = False
@@ -35,7 +41,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     object OpenRecentButton: TButton
       Left = 9
       Height = 25
-      Top = 128
+      Top = 143
       Width = 150
       Anchors = [akLeft, akBottom]
       Caption = 'OpenRecentButton'
@@ -45,7 +51,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     object SaveToRecentButton: TButton
       Left = 182
       Height = 25
-      Top = 128
+      Top = 143
       Width = 150
       Anchors = [akLeft, akBottom]
       Caption = 'SaveToRecentButton'
@@ -54,35 +60,60 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     end
   end
   object OpenButton: TBitBtn
-    Left = 8
-    Height = 25
-    Top = 200
-    Width = 167
-    Anchors = [akLeft, akBottom]
+    AnchorSideTop.Control = CancelButton
+    AnchorSideRight.Control = SaveButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 293
+    Height = 26
+    Top = 203
+    Width = 84
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Caption = 'OpenButton'
+    Constraints.MinWidth = 75
     NumGlyphs = 0
     OnClick = OpenButtonCLICK
     TabOrder = 1
   end
   object SaveButton: TBitBtn
-    Left = 214
-    Height = 25
-    Top = 200
-    Width = 167
-    Anchors = [akLeft, akBottom]
+    AnchorSideTop.Control = CancelButton
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 383
+    Height = 26
+    Top = 203
+    Width = 82
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     Caption = 'SaveButton'
+    Constraints.MinWidth = 75
     NumGlyphs = 0
     OnClick = SaveButtonCLICK
     TabOrder = 2
   end
   object CancelButton: TBitBtn
-    Left = 432
-    Height = 25
-    Top = 200
-    Width = 110
-    Anchors = [akLeft, akBottom]
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 471
+    Height = 26
+    Top = 203
+    Width = 77
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinWidth = 75
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
