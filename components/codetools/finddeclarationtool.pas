@@ -3541,7 +3541,7 @@ begin
     // find class node
     ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     if (ANode.Desc=ctnClassInheritance)
-    or (ANode.Parent.Desc=ctnClassInheritance) then
+    or ((ANode.Parent<>nil) and (ANode.Parent.Desc=ctnClassInheritance)) then
       exit;
     ClassNode:=FindClassNode(ANode);
     if (ClassNode=nil) or (ClassNode.Parent=nil)
