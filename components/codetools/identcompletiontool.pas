@@ -1410,7 +1410,9 @@ begin
       GatherContext.Node:=GatherContext.Node.Parent;
   end
   else if (GatherContext.Node.Desc=ctnClassInheritance)
-  or (GatherContext.Node.Parent.Desc=ctnClassInheritance) then begin
+  or ((GatherContext.Node.Parent<>nil)
+     and (GatherContext.Node.Parent.Desc=ctnClassInheritance))
+  then begin
     while not (GatherContext.Node.Desc in [ctnClass,ctnClassInterface]) do
       GatherContext.Node:=GatherContext.Node.Parent;
     GatherContext.Node:=GatherContext.Node.Parent;
