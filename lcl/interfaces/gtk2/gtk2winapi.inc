@@ -571,6 +571,39 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Function: ScrollWindowEx
+  Params:  hWnd:       handle of window to scroll
+           dx:         horizontal amount to scroll
+           dy:         vertical amount to scroll
+           prcScroll:  pointer to scroll rectangle
+           prcClip:    pointer to clip rectangle
+           hrgnUpdate: handle of update region
+           prcUpdate:  pointer to update rectangle
+           flags:      scrolling flags
+
+  Returns: True if succesfull;
+
+  The ScrollWindowEx function scrolls the content of the specified window's
+  client area
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
+var
+  Widget: PGtkWidget;
+  Window: PGdkWindow;
+  Region: PGdkRegion;
+  Rect: TGdkRectangle;
+begin
+  Result := False;
+  // prcScroll, prcClip are not supported under gdk yet
+  if (hWnd = 0) or (prcScroll <> nil) or (prcClip <> nil) then Exit;
+  Widget := pgtkwidget(hWnd);
+  Widget := GetFixedWidget(Widget);
+  Window:=GetControlWindow(Widget);
+  gdk_window_scroll(Window, dx, dy);
+  Result := true;
+end;
+
 function TGtk2WidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 begin
 {$ifdef GTK_2_8}
