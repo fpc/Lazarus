@@ -430,7 +430,7 @@ begin
     Count := ARect.Right - ARect.Left;
 
   Changing;
-  for I := 0 to Count do
+  for I := 0 to Count-1 do
   begin
     Pen.Color := RGBToColor(RStart + (i * RDiff) div Count,
                             GStart + (i * GDiff) div Count,
