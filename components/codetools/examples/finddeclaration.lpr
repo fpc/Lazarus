@@ -93,8 +93,9 @@ begin
     X:=5;
     Y:=43;
 
-    writeln('FPCSrcDir=',Options.FPCSrcDir);
+    writeln('FPCDIR=',Options.FPCSrcDir);
     writeln('PP=',Options.FPCPath);
+    writeln('LAZARUSDIR=',Options.LazarusSrcDir);
     writeln('TARGET=',Options.TargetOS);
     writeln('TARGETCPU=',Options.TargetProcessor);
     if (ParamCount>=3) then begin

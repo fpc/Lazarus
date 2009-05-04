@@ -5927,6 +5927,7 @@ var
         Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else begin
         // only search in special context
+        Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
       end;
 
       // check identifier for overloaded procs
@@ -5941,7 +5942,7 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       {$IFDEF ShowExprEval}
-      DebugLn('  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'" ',Params.ContextNode.DescAsString,' ',dbgstr(copy(ExprType.Context.Tool.Src,Params.ContextNode.StartPos,15)));
+      DebugLn('  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'" ContextNode=',Params.ContextNode.DescAsString,' ',dbgstr(copy(ExprType.Context.Tool.Src,Params.ContextNode.StartPos,15)));
       {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
         if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
@@ -5979,9 +5980,10 @@ var
     end;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name
-      if ExprType.Context.Tool<>Self then begin
-        ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
-      end;
+      {$IFDEF ShowExprEval}
+      debugln(['ResolvePoint unit -> interface node']);
+      {$ENDIF}
+      ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
     end
     else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
       // 'class of' plus '.' => jump to the class
