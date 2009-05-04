@@ -595,6 +595,9 @@ var
   Rect: TGdkRectangle;
 begin
   Result := False;
+  {$IFDEF DisableGtk2ScrollWindow}
+  exit;
+  {$ENDIF}
   // prcScroll, prcClip are not supported under gdk yet
   if (hWnd = 0) or (prcScroll <> nil) or (prcClip <> nil) then Exit;
   Widget := pgtkwidget(hWnd);
