@@ -14,6 +14,7 @@ actions/laz_edit.png
 actions/laz_open.png
 actions/laz_paste.png
 actions/laz_refresh.png
+actions/laz_save.png
 actions/laz_wand.png
 items/item_character.png
 items/item_filter.png
@@ -73,7 +74,6 @@ menu/menu_run.png
 menu/menu_run_cursor.png
 menu/menu_run_file.png
 menu/menu_run_parameters.png
-menu/menu_save.png
 menu/menu_saveas.png
 menu/menu_save_all.png
 menu/menu_search_files.png

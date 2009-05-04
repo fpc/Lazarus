@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, IDEProcs, FileUtil, Laz_XMLCfg,
+  Buttons, IDEProcs, FileUtil, Laz_XMLCfg, LCLType,
   LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
 
 type
@@ -231,8 +231,12 @@ begin
   SaveButton.Caption:=lisIECOSaveToFile;
   OpenButton.Caption:=lisIECOLoadFromFile;
   CancelButton.Caption:=dlgCancel;
-  OpenButton.LoadGlyphFromLazarusResource('laz_open');
-  SaveButton.LoadGlyphFromLazarusResource('menu_save');
+  OpenButton.LoadGlyphFromStock(idButtonOpen);
+  if OpenButton.Glyph.Empty then
+    OpenButton.LoadGlyphFromLazarusResource('laz_open');
+  SaveButton.LoadGlyphFromStock(idButtonSave);
+  if SaveButton.Glyph.Empty then
+    SaveButton.LoadGlyphFromLazarusResource('laz_save');
   LoadRecentList;
 end;
 

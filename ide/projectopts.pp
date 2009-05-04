@@ -38,7 +38,7 @@ interface
 uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
-  FileUtil, IDEContextHelpEdit, EnvironmentOpts,
+  FileUtil, IDEContextHelpEdit, EnvironmentOpts, LCLType,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
@@ -305,8 +305,12 @@ begin
   LoadIconButton.Caption := dlgPOLoadIcon;
   SaveIconButton.Caption := dlgPOSaveIcon;
   ClearIconButton.Caption := dlgPOClearIcon;
-  LoadIconButton.LoadGlyphFromLazarusResource('laz_open');
-  SaveIconButton.LoadGlyphFromLazarusResource('menu_save');
+  LoadIconButton.LoadGlyphFromStock(idButtonOpen);
+  if LoadIconButton.Glyph.Empty then
+    LoadIconButton.LoadGlyphFromLazarusResource('laz_open');
+  SaveIconButton.LoadGlyphFromStock(idButtonSave);
+  if SaveIconButton.Glyph.Empty then
+    SaveIconButton.LoadGlyphFromLazarusResource('laz_save');
   ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
   IconImagePictureChanged(nil);
 end;

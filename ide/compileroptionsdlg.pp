@@ -41,7 +41,7 @@ interface
 uses
   Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
   ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, LResources, FileUtil,
-  Dialogs, Controls, GraphType,
+  Dialogs, Controls, GraphType, LCLType,
   LinkScanner,
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
@@ -1676,7 +1676,9 @@ begin
   btnCheck.Caption := lisCompTest;
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.Caption := '...';
-  btnLoadSave.LoadGlyphFromLazarusResource('menu_save');
+  btnLoadSave.LoadGlyphFromStock(idButtonSave);
+  if btnLoadSave.Glyph.Empty then
+    btnLoadSave.LoadGlyphFromLazarusResource('laz_save');
   HelpButton.Caption:=lisPckEditHelp;
 end;
 

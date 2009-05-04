@@ -859,7 +859,9 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, 520, 570);
 
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
-  SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
+  SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
+  if SaveSettingsButton.Glyph.Empty then
+    SaveSettingsButton.LoadGlyphFromLazarusResource('laz_save');
   Load(FOptions);
 end;
 

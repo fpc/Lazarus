@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, LResources, Buttons,
-  StdCtrls, Dialogs,
+  StdCtrls, Dialogs, LCLType,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, ExtCtrls, IDEContextHelpEdit, ButtonPanel;
@@ -174,7 +174,9 @@ begin
   ButtonPanel1.CloseButton.Caption := lisSaveSettings;
   ButtonPanel1.CloseButton.ModalResult := mrNone;
   ButtonPanel1.CloseButton.Kind := bkCustom;
-  ButtonPanel1.CloseButton.LoadGlyphFromLazarusResource('menu_save');
+  ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
+  if ButtonPanel1.CloseButton.Glyph.Empty then
+    ButtonPanel1.CloseButton.LoadGlyphFromLazarusResource('laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
 
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;

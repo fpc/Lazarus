@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
+  LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
   InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit;
 
 type
@@ -262,8 +262,14 @@ begin
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
-  OpenInEditorButton.LoadGlyphFromLazarusResource('laz_open');
-  SaveDiffButton.LoadGlyphFromLazarusResource('menu_save');
+
+  OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
+  if OpenInEditorButton.Glyph.Empty then
+    OpenInEditorButton.LoadGlyphFromLazarusResource('laz_open');
+  
+  SaveDiffButton.LoadGlyphFromStock(idButtonSave);
+  if SaveDiffButton.Glyph.Empty then
+    SaveDiffButton.LoadGlyphFromLazarusResource('laz_save');
 
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

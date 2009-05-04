@@ -1667,7 +1667,7 @@ begin
   MainIDEBar.OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
 
-  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
+  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'laz_save'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
   MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_save_all', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
   MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'item_form'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
   MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'menu_view_toggle_form_unit' , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);

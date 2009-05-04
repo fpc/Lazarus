@@ -3025,6 +3025,7 @@ images/actions/laz_edit.png -text svneol=unset#image/png
 images/actions/laz_open.png -text svneol=unset#image/png
 images/actions/laz_paste.png -text svneol=unset#image/png
 images/actions/laz_refresh.png -text svneol=unset#image/png
+images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal
 images/bookmark.sh svneol=native#text/plain
@@ -3305,7 +3306,6 @@ images/menu/menu_run.png -text svneol=unset#image/png
 images/menu/menu_run_cursor.png -text svneol=unset#image/png
 images/menu/menu_run_file.png -text svneol=unset#image/png
 images/menu/menu_run_parameters.png -text svneol=unset#image/png
-images/menu/menu_save.png -text svneol=unset#image/png
 images/menu/menu_save_all.png -text svneol=unset#image/png
 images/menu/menu_saveas.png -text
 images/menu/menu_search_files.png -text svneol=unset#image/png
