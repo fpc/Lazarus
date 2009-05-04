@@ -1105,6 +1105,7 @@ begin
     Application.ReleaseComponent(FEditor);
   end;
   FEditor:=nil;
+  CodeBuffer := nil;
   if (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
   FLineInfoNotification.ReleaseReference;
