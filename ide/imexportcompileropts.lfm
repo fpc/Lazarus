@@ -26,12 +26,18 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     ClientWidth = 538
     TabOrder = 0
     object RecentListbox: TListBox
-      Left = 0
-      Height = 135
-      Top = 0
-      Width = 538
+      AnchorSideLeft.Control = OpenRecentGroupbox
+      AnchorSideTop.Control = OpenRecentGroupbox
+      AnchorSideRight.Control = OpenRecentGroupbox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = OpenRecentButton
+      Left = 6
+      Height = 132
+      Top = 6
+      Width = 526
       Align = alTop
-      Anchors = [akTop, akLeft, akBottom]
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
       ClickOnSelChange = False
       ItemHeight = 0
       OnClick = RecentListboxCLICK
@@ -39,21 +45,33 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
       TabOrder = 0
     end
     object OpenRecentButton: TButton
-      Left = 9
-      Height = 25
-      Top = 143
-      Width = 150
+      AnchorSideLeft.Control = OpenRecentGroupbox
+      AnchorSideBottom.Control = OpenRecentGroupbox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 144
+      Width = 118
       Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'OpenRecentButton'
+      Constraints.MinWidth = 75
       OnClick = OpenRecentButtonCLICK
       TabOrder = 1
     end
     object SaveToRecentButton: TButton
-      Left = 182
-      Height = 25
-      Top = 143
-      Width = 150
+      AnchorSideLeft.Control = OpenRecentButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = OpenRecentGroupbox
+      AnchorSideBottom.Side = asrBottom
+      Left = 130
+      Height = 23
+      Top = 144
+      Width = 130
       Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'SaveToRecentButton'
       OnClick = SaveToRecentButtonCLICK
       TabOrder = 2
