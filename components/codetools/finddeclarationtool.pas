@@ -2639,7 +2639,8 @@ var
         ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
         ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
         ctnRecordVariant,
-        ctnProcedureHead, ctnParameterList:
+        ctnProcedureHead, ctnParameterList,
+        ctnClassInheritance:
           // these codetreenodes build a parent-child-relationship, but
           // for pascal it is only a range, hence after searching in the
           // childs of the last node, search must continue in the childs
@@ -4291,7 +4292,7 @@ begin
                     -[fdfExceptionOnNotFound];
       Params.ContextNode:=ClassContext.Node;
       {$IFDEF ShowTriedContexts}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method Identifier=',GetIdentifier(Params.Identifier));
       {$ENDIF}
       Result:=ClassContext.Tool.FindIdentifierInContext(Params);
       Params.Load(OldInput,true);

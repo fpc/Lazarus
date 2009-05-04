@@ -3314,6 +3314,10 @@ begin
     if ChildCreated and (CurNode.Desc=ctnClass) and IsForward then begin
       // forward class definition found
       CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
+    end else begin
+      // very short class found e.g. = class(TAncestor);
+      if ChildCreated and (CurNode.Desc=ctnClass) then
+        CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
     end;
   end else begin
     if ChildCreated and (CurNode.Desc=ctnClass) then
