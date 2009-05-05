@@ -192,6 +192,9 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    {$IFDEF LCLGtk2}
+    procedure DoOnResize; override;
+    {$ENDIF}
     procedure StyleChanged(Sender: TObject);
     procedure UpdateExtent;
 
@@ -392,6 +395,15 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF LCLGtk2}
+procedure TChart.DoOnResize;
+begin
+  inherited;
+  // FIXME: GTK does not invalidate the control on resizing, do it manually
+  Invalidate;
+end;
+{$ENDIF}
+
 procedure TChart.EraseBackground(DC: HDC);
 begin
   // do not erase, since we will paint over it anyway
@@ -405,7 +417,7 @@ end;
 
 procedure TChart.Paint;
 begin
-  PaintOnCanvas(Canvas, Rect(0, 0, Width, Height));
+  PaintOnCanvas(Canvas, GetClientRect);
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
