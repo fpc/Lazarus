@@ -370,7 +370,7 @@ type
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
-    FOldTopView: Integer; // TopView before IncPaintLock
+    FOldTopView, FTopDelta: Integer; // TopView before IncPaintLock
     fHighlighter: TSynCustomHighlighter;
     {$IFNDEF SYN_LAZARUS}
     fSelectedColor: TSynSelectedColor;
@@ -1685,6 +1685,7 @@ begin
   fTabWidth := 8;
   fLeftChar := 1;
   fTopLine := 1;
+  FTopDelta := 0;
   {$IFDEF SYN_LAZARUS}
   FFoldedLinesView.TopLine := 1;
   {$ELSE}
@@ -2098,8 +2099,10 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
-  if fPaintLock = 0 then
+  if fPaintLock = 0 then begin
     FOldTopView := TopView;
+    FTopDelta := 0;
+  end;
   inc(fPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
@@ -2132,10 +2135,12 @@ begin
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
         LastLine := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
+        LastLine := LastLine + FTopDelta;
       end
       else
         LastLine := LinesInWindow + 1;
       FirstLine := RowToScreenRow(Max(FirstLine, TopLine));
+      FirstLine := Max(0, FirstLine + FTopDelta);
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         rcInval := Rect(0, fTextHeight * FirstLine,
@@ -2175,13 +2180,14 @@ begin
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
         l := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
+        l := l + FTopDelta;
       end
       else
         l := LinesInWindow + 1;
       f := RowToScreenRow(Max(FirstLine, TopLine));
+      f := Max(0, f + FTopDelta);
       { any line visible? }
       if (l >= f) then begin
-        If LastLine < 0 then LastLine := ScreenRowToRow(LinesInWindow + 1);
         rcInval := Rect(fGutterWidth, fTextHeight * f,
           ClientWidth-ScrollBarWidth, fTextHeight * l);
         if sfLinesChanging in fStateFlags then
@@ -3907,6 +3913,7 @@ begin
       FOldTopView := TopView;
     fTopLine := Value;
     FFoldedLinesView.TopTextIndex := Value-1;
+    FTopDelta := TopView - FOldTopView;
     UpdateScrollBars;
     ScrollAfterTopLineChanged;
     StatusChanged([scTopLine]);
@@ -3929,6 +3936,7 @@ begin
   else
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;      // Invalidate caret line, if necessary
+  FTopDelta := 0;
 end;
 
 procedure TCustomSynEdit.ShowCaret;
@@ -8057,24 +8065,8 @@ procedure TCustomSynEdit.InvalidateLine(Line: integer);
 var
   rcInval: TRect;
 begin
-  if Visible and (Line >= TopLine) and
-    (Line <= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}
-    TopLine + LinesInWindow{$ENDIF})
-    and (Line <= FTheLinesView.Count) and HandleAllocated
-  then begin
-    // we invalidate gutter and text area of this line
-    rcInval := Rect(0, fTextHeight * RowToScreenRow(Line)
-        , ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}, 0);
-    rcInval.Bottom := rcInval.Top + fTextHeight;
-    if sfLinesChanging in fStateFlags then
-      UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-    else begin
-      {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateLines ',dbgs(rcInval)]);
-      {$ENDIF}
-      InvalidateRect(Handle, @rcInval, FALSE);
-    end;
-  end;
+  InvalidateLines(Line, Line);
+  InvalidateGutterLines(Line, Line);
 end;
 
 function TCustomSynEdit.GetReadOnly: boolean;
