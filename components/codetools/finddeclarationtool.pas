@@ -636,7 +636,8 @@ type
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
     function FindTermTypeAsString(TermAtom: TAtomPosition;
-      CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
+      CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
+      out ExprType: TExpressionType): string;
     function FindExprTypeAsString(const ExprType: TExpressionType;
       TermCleanPos: integer; Params: TFindDeclarationParams): string;
   protected
@@ -742,6 +743,7 @@ type
           out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const UpperUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
+    function GetUnitForUsesSection(Tool: TFindDeclarationTool): string;
 
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
@@ -1716,7 +1718,7 @@ function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
 begin
   Result:=UsesNode.FirstChild;
   while (Result<>nil)
-  and CompareSrcIdentifier(Result.StartPos,PChar(UnitName)) do
+  and (not CompareSrcIdentifier(Result.StartPos,PChar(UnitName))) do
     Result:=Result.NextBrother;
 end;
 
@@ -1774,6 +1776,39 @@ begin
       exit;
     end;
     SectionNode:=SectionNode.NextBrother;
+  end;
+end;
+
+function TFindDeclarationTool.GetUnitForUsesSection(Tool: TFindDeclarationTool
+  ): string;
+var
+  UsesNode: TCodeTreeNode;
+  Alternative: String;
+begin
+  Result:='';
+  if (Tool=nil) or (Tool.MainFilename='') or (Tool=Self) then
+    exit;
+  Result:=ExtractFileNameOnly(Tool.MainFilename);
+  // check if already there
+  UsesNode:=FindMainUsesSection;
+  if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
+  then begin
+    DebugLn(['TFindDeclarationTool.GetUnitForUsesSection in main']);
+    Result:='';
+    exit;
+  end;
+  UsesNode:=FindImplementationUsesSection;
+  if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
+  then begin
+    DebugLn(['TFindDeclarationTool.GetUnitForUsesSection in implementation']);
+    Result:='';
+    exit;
+  end;
+  // beautify
+  if Result=lowercase(Result) then begin
+    Alternative:=Tool.GetSourceName(false);
+    if Alternative<>'' then
+      Result:=Alternative;
   end;
 end;
 
@@ -8472,12 +8507,12 @@ begin
 end;
 
 function TFindDeclarationTool.FindTermTypeAsString(TermAtom: TAtomPosition;
-  CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
-var
-  ExprType: TExpressionType;
+  CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
+  out ExprType: TExpressionType): string;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
+  ExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFunctionResult];

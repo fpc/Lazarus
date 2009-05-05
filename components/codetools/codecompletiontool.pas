@@ -115,7 +115,8 @@ type
   TCodeCompletionCodeTool = class;
 
   TOnGetNewVariableLocation = function(Tool: TCodeCompletionCodeTool;
-                           const VariableName: string; var VariableType: string;
+                           const VariableName: string;
+                           var VariableType, VariableUnitName: string;
                            IsMethod: boolean; NewLocation: TNewVarLocation
                            ): boolean;
                            
@@ -169,14 +170,14 @@ type
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
            out VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
-                          VariableName, VariableType: string;
-                          out NewPos: TCodeXYPosition; out NewTopLine: integer;
-                          SourceChangeCache: TSourceChangeCache): boolean;
+                       VariableName, VariableType, VariableTypeUnitName: string;
+                       out NewPos: TCodeXYPosition; out NewTopLine: integer;
+                       SourceChangeCache: TSourceChangeCache): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
     function AddVariable(CursorNode: TCodeTreeNode;
                       CleanCursorPos,OldTopLine: integer;
-                      const VariableName, NewType: string;
+                      const VariableName, NewType, NewUnitName: string;
                       out NewPos: TCodeXYPosition; out NewTopLine: integer;
                       SourceChangeCache: TSourceChangeCache): boolean;
     procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
@@ -847,7 +848,7 @@ end;
 
 function TCodeCompletionCodeTool.AddLocalVariable(
   CleanCursorPos: integer; OldTopLine: integer;
-  VariableName, VariableType: string;
+  VariableName, VariableType, VariableTypeUnitName: string;
   out NewPos: TCodeXYPosition;
   out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
@@ -912,7 +913,14 @@ begin
                 InsertTxt,Indent);
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
-  if not SourceChangeCache.Apply then exit;
+
+  if (VariableTypeUnitName<>'') then begin
+    if not AddUnitToMainUsesSection(VariableTypeUnitName,'',SourceChangeCache)
+    then
+      exit;
+  end else begin
+    if not SourceChangeCache.Apply then exit;
+  end;
 
   // adjust cursor position
   AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
@@ -935,29 +943,30 @@ end;
 
 function TCodeCompletionCodeTool.AddVariable(CursorNode: TCodeTreeNode;
   CleanCursorPos,
-  OldTopLine: integer; const VariableName, NewType: string;
+  OldTopLine: integer; const VariableName, NewType, NewUnitName: string;
   out NewPos: TCodeXYPosition;
   out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
   VarLocation: TNewVarLocation;
   IsMethod: Boolean;
   VarType: String;
+  VarTypeUnitName: String;
 begin
   // ask what for location of new variable
   VarLocation:=ncpvLocal;
   VarType:=NewType;
+  VarTypeUnitName:=NewUnitName;
   if Assigned(OnGetNewVariableLocation) then begin
     IsMethod:=NodeIsInAMethod(CursorNode);
-    if not OnGetNewVariableLocation(Self,VariableName,VarType,
+    if not OnGetNewVariableLocation(Self,VariableName,VarType,VarTypeUnitName,
                                     IsMethod,VarLocation) then exit;
   end;
 
   // all needed parameters found
   Result:=true;
-
   // add local variable
   if not AddLocalVariable(CleanCursorPos, OldTopLine,
-    VariableName, VarType,
+    VariableName, VarType, VarTypeUnitName,
     NewPos, NewTopLine, SourceChangeCache)
   then
     RaiseException('CompleteLocalVariableAssignment Internal error: AddLocalVariable');
@@ -1044,6 +1053,8 @@ var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
+  ExprType: TExpressionType;
+  MissingUnit: String;
 begin
   Result:=false;
 
@@ -1085,7 +1096,7 @@ begin
     ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
     {$ENDIF}
     // find type of term
-    NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params);
+    NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,ExprType);
     if NewType='' then
       RaiseException('CompleteLocalVariableAssignment Internal error: NewType=""');
 
@@ -1093,9 +1104,14 @@ begin
     Params.Free;
     DeactivateGlobalWriteLock;
   end;
-  
+
+  MissingUnit:='';
+  if (ExprType.Desc=xtContext)
+  and (ExprType.Context.Tool<>nil) then
+    MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
+
   Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
-                      NewType,NewPos,NewTopLine,SourceChangeCache);
+                      NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
 end;
 
 function TCodeCompletionCodeTool.CompleteLocalVariableByParameter(
@@ -1110,6 +1126,7 @@ var
   TypeNode: TCodeTreeNode;
   NewType: String;
   IgnorePos: TCodePosition;
+  MissingUnitName: String;
 begin
   Result:=false;
 
@@ -1170,6 +1187,7 @@ begin
       ClearIgnoreErrorAfter;
     end;
     NewType:='';
+    MissingUnitName:='';
     if Params.NewNode<>nil then begin
       DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter Proc/PropNode=',Params.NewNode.DescAsString,' ',copy(Params.NewCodeTool.Src,Params.NewNode.StartPos,50));
       ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
@@ -1188,6 +1206,10 @@ begin
         end;
         NewType:=copy(Params.NewCodeTool.Src,TypeNode.StartPos,
                       TypeNode.EndPos-TypeNode.StartPos);
+
+        // ToDo: find unit of type declaration
+        MissingUnitName:=''; //GetUnitForUsesSection(Params.NewCodeTool);
+
         DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);
         if NewType='' then
           RaiseException('CompleteLocalVariableAsParameter Internal error: NewType=""');
@@ -1205,7 +1227,7 @@ begin
   end;
 
   Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
-                      NewType,NewPos,NewTopLine,SourceChangeCache);
+                   NewType,MissingUnitName,NewPos,NewTopLine,SourceChangeCache);
 end;
 
 function TCodeCompletionCodeTool.CompleteMethodByBody(

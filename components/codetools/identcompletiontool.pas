@@ -203,7 +203,6 @@ type
     function StartUpAtomBehindIs(const s: string): boolean;
     function CompletePrefix(const OldPrefix: string): string;
     procedure ToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
-    function GetUnitForUsesSection(Item: TIdentifierListItem): string;
   public
     property Context: TFindContext read FContext write FContext;
     property ContextFlags: TIdentifierListContextFlags
@@ -785,35 +784,6 @@ begin
       Item.UnbindNode;
     end;
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
-  end;
-end;
-
-function TIdentifierList.GetUnitForUsesSection(Item: TIdentifierListItem): string;
-var
-  Alternative: String;
-  UsesNode: TCodeTreeNode;
-begin
-  Result:='';
-  if (Item.Tool=nil) or (Item.Tool=StartContext.Tool) then
-    exit;
-  Result:=ExtractFileNameOnly(Item.Tool.MainFilename);
-  UsesNode:=Item.Tool.FindMainUsesSection;
-  if (UsesNode<>nil) and (Item.Tool.FindNameInUsesSection(UsesNode,Result)<>nil)
-  then begin
-    Result:='';
-    exit;
-  end;
-  UsesNode:=Item.Tool.FindImplementationUsesSection;
-  if (UsesNode<>nil) and (Item.Tool.FindNameInUsesSection(UsesNode,Result)<>nil)
-  then begin
-    Result:='';
-    exit;
-  end;
-
-  if Result=lowercase(Result) then begin
-    Alternative:=Item.Tool.GetSourceName(false);
-    if Alternative<>'' then
-      Result:=Alternative;
   end;
 end;
 
