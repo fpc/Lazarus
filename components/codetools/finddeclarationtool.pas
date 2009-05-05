@@ -4439,7 +4439,7 @@ begin
 
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-  ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
+  ' search default ancestor class');
   {$ENDIF}
 
   // search ancestor
@@ -4927,18 +4927,21 @@ var
   Node: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
+  {$IFDEF ShowTriedParentContexts}
+  DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',MainFilename,' fdfIgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags]);
+  {$ENDIF}
   Result:=false;
   if (Params.IdentifierTool=Self) then begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
-      Node:=Node.PriorBrother;
-      if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
+      if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
         // the searched identifier was a uses unitname, point to the identifier in
         // the uses section
         Result:=true;
-        Params.SetResult(Self,Node,CurPos.StartPos);
+        Params.SetResult(Self,Node,Node.StartPos);
         exit;
       end;
+      Node:=Node.PriorBrother;
     end;
   end;
   if not (fdfIgnoreUsedUnits in Params.Flags) then begin
@@ -4961,6 +4964,9 @@ begin
                    -[fdfExceptionOnNotFound];
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
       Params.Flags:=OldFlags;
+      {$IFDEF ShowTriedParentContexts}
+      DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',GetAtom(UnitNameAtom),' Result=',Result,' IsFinal=',Params.IsFinal]);
+      {$ENDIF}
       if Result and Params.IsFinal then exit;
       Node:=Node.PriorBrother;
     end;
