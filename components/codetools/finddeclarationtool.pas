@@ -1793,14 +1793,12 @@ begin
   UsesNode:=FindMainUsesSection;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
-    DebugLn(['TFindDeclarationTool.GetUnitForUsesSection in main']);
     Result:='';
     exit;
   end;
   UsesNode:=FindImplementationUsesSection;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
-    DebugLn(['TFindDeclarationTool.GetUnitForUsesSection in implementation']);
     Result:='';
     exit;
   end;

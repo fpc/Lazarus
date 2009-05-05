@@ -599,12 +599,13 @@ var
     or (atComma in Options.DoInsertSpaceInFront) then
       Line:=Line+' ';
     Line:=Line+',';
-    l:=length(Line)+length(NewUses)+1;
+    l:=length(Line)+length(NewUses)+1; // +1 for the following , or ;
     if (atComma in Options.DoInsertSpaceAfter)
     or (atIdentifier in Options.DoInsertSpaceInFront) then
       inc(l);
-    if Lines.Count=0 then
+    if Lines.Count=1 then
       inc(l,FirstIndent);
+    //DebugLn(['AddUseUnit Lines.Count=',Lines.Count,' l=',l,' Line="',Line,'" NewUses=',NewUses,' FirstIndent=',FirstIndent]);
     if l<=Options.LineLength then begin
       // append to last line
       if (atComma in Options.DoInsertSpaceAfter)
@@ -763,8 +764,8 @@ begin
   // check if addition fits into the line
   // if not, rebuild the uses section
   GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
-  InsertLen:=length(NewUsesTerm);
-  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Line=',copy(Src,LineStart,InsertPos-LineStart),'<InsertPos>',copy(Src,InsertPos,LineEnd-InsertPos)]);
+  InsertLen:=length(NewUsesTerm)+length(NewComma);
+  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Line=',copy(Src,LineStart,InsertPos-LineStart),'<InsertPos>',copy(Src,InsertPos,LineEnd-InsertPos),' NewLen=',LineEnd-LineStart+InsertLen,' Max=',Options.LineLength,' Addition=',NewUsesTerm]);
   if (LineEnd-LineStart+InsertLen > Options.LineLength) then begin
     // line too long => reformat block of used units
     // find start of block of used units
