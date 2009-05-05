@@ -79,11 +79,6 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
         
     // uses sections
-    function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
-          const UpperUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean;
-    function FindUnitInAllUsesSections(const UpperUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean;
     function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -375,64 +370,6 @@ begin
   if not SourceChangeCache.Apply then exit;
   CachedSourceName:=NewName;
   Result:=true;
-end;
-
-function TStandardCodeTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
-  const UpperUnitName: string;
-  out NamePos, InPos: TAtomPosition): boolean;
-begin
-  Result:=false;
-  NamePos:=CleanAtomPosition;
-  InPos:=CleanAtomPosition;
-  if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255)
-  or (UsesNode.Desc<>ctnUsesSection) then exit;
-  MoveCursorToNodeStart(UsesNode);
-  ReadNextAtom; // read 'uses'
-  repeat
-    ReadNextAtom; // read name
-    if AtomIsChar(';') then break;
-    if UpAtomIs(UpperUnitName) then begin
-      NamePos:=CurPos;
-      InPos.StartPos:=-1;
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        InPos:=CurPos;
-      end;
-      Result:=true;
-      exit;
-    end;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      ReadNextAtom;
-    end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then break;
-  until (CurPos.StartPos>SrcLen);;
-end;
-
-function TStandardCodeTool.FindUnitInAllUsesSections(
-  const UpperUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
-var SectionNode, UsesNode: TCodeTreeNode;
-begin
-  Result:=false;
-  NamePos.StartPos:=-1;
-  InPos.StartPos:=-1;
-  if (UpperUnitName='') or (length(UpperUnitName)>255) then exit;
-  BuildTree(false);
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
-    ctnPackage,ctnLibrary,ctnInterface,ctnImplementation])
-  do begin
-    UsesNode:=SectionNode.FirstChild;
-    if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
-    and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
-      Result:=true;
-      exit;
-    end;
-    SectionNode:=SectionNode.NextBrother;
-  end;
 end;
 
 function TStandardCodeTool.RenameUsedUnit(const OldUpperUnitName,
