@@ -77,7 +77,7 @@ uses
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
   // codetools
-  LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
+  FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds,
@@ -12578,8 +12578,10 @@ begin
   //DebugLn(['TMainIDE.DoFindDeclarationAtCaret LogCaretXY=',dbgs(LogCaretXY),' SynEdit.Log=',dbgs(ActiveSrcEdit.EditorComponent.LogicalCaretXY),' SynEdit.Caret=',dbgs(ActiveSrcEdit.EditorComponent.CaretXY)]);
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     LogCaretXY.X,LogCaretXY.Y,
-    NewSource,NewX,NewY,NewTopLine) then
-  begin
+    NewSource,NewX,NewY,NewTopLine,DefaultFindSmartFlags
+    //+[fsfSkipClassForward]
+    )
+  then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);

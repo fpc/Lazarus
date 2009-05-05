@@ -1453,26 +1453,26 @@ begin
       if (CurrentContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
       //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
-      if not FoundContext.Tool.CompareSrcIdentifier(
+      if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Tool.CurPos.StartPos,
-        CurrentContexts.ProcName)
+        PChar(CurrentContexts.ProcName))
       then exit;
     end;
   ctnProperty:
     begin
       if (CurrentContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToPropName(FoundContext.Node);
-      if not FoundContext.Tool.CompareSrcIdentifier(
+      if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Tool.CurPos.StartPos,
-        CurrentContexts.ProcName)
+        PChar(CurrentContexts.ProcName))
       then exit;
     end;
   ctnVarDefinition:
     begin
       if (CurrentContexts.ProcName='') then exit;
-      if not FoundContext.Tool.CompareSrcIdentifier(
+      if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Node.StartPos,
-        CurrentContexts.ProcName)
+        PChar(CurrentContexts.ProcName))
       then exit;
     end;
   else

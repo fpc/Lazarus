@@ -277,8 +277,6 @@ type
         const AnUpperIdent: string): integer;
     function CompareSrcIdentifiers(
       CleanStartPos1, CleanStartPos2: integer): boolean;
-    function CompareSrcIdentifier(CleanStartPos: integer;
-      const Identifier: string): boolean;
     function CompareSrcIdentifiers(Identifier1, Identifier2: PChar): boolean;
     function CompareSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
@@ -2451,25 +2449,6 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',dbgs(Result));
   {$ENDIF}
-end;
-
-function TCustomCodeTool.CompareSrcIdentifier(CleanStartPos: integer;
-  const Identifier: string): boolean;
-var IdentPos, Len: integer;
-begin
-  Result:=false;
-  Len:=length(Identifier);
-  if (CleanStartPos<1) or (CleanStartPos>SrcLen-Len+1) or (Identifier='') then
-    exit;
-  IdentPos:=1;
-  while (IdentPos<=Len) and (IsIdentChar[Src[CleanStartPos]]) do begin
-    if UpChars[Identifier[IdentPos]]<>UpperSrc[CleanStartPos] then
-      exit;
-    inc(IdentPos);
-    inc(CleanStartPos);
-  end;
-  Result:=(IdentPos>Len)
-    and ((CleanStartPos>Srclen) or (not IsIdentChar[Src[CleanStartPos]]));
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar

@@ -3560,7 +3560,7 @@ begin
   ANode:=ANode.FirstChild;
   while ANode<>nil do begin
     if (ANode.Desc=ctnConstDefinition)
-    and CompareSrcIdentifier(ANode.StartPos,ResStrIdentifier) then begin
+    and CompareSrcIdentifiers(ANode.StartPos,PChar(ResStrIdentifier)) then begin
       Result:=true;
       exit;
     end;

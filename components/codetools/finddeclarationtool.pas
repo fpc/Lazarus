@@ -165,6 +165,7 @@ type
                             //   instead return the variable declaration
     fdfFunctionResult,      // if function is found, return result type
     fdfFindChilds,          // search the class of a 'class of'
+    fdfSkipClassForward,    // when a class forward was found search the class
     
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving,     // set, when searching for an identifier of the
@@ -197,6 +198,7 @@ const
     'fdfFindVariable',
     'fdfFunctionResult',
     'fdfFindChilds',
+    'fdfSkipClassForward',
     'fdfCollect',
     'fdfTopLvlResolving',
     'fdfDoNotCache'
@@ -517,7 +519,8 @@ type
   TFindSmartFlag = (
     fsfIncludeDirective, // search for include file
     fsfFindMainDeclaration, // stop if already on a declaration
-    fsfSearchSourceName // if searching for a unit name, return the source name node
+    fsfSearchSourceName, // if searching for a unit name, return the source name node
+    fsfSkipClassForward  // when a forward class was found, jump further to the class
     );
   TFindSmartFlags = set of TFindSmartFlag;
   
@@ -532,7 +535,7 @@ type
   TFindDeclarationListFlags = set of TFindDeclarationListFlag;
   
 const
-  AllFindSmartFlags = [fsfIncludeDirective];
+  DefaultFindSmartFlags = [fsfIncludeDirective];
 
 type
   //----------------------------------------------------------------------------
@@ -653,6 +656,7 @@ type
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
+    function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindExpressionResultType(Params: TFindDeclarationParams;
       StartPos, EndPos: integer): TExpressionType;
     function FindCodeToolForUsedUnit(UnitNameAtom,
@@ -1135,7 +1139,7 @@ var
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
 begin
-  Result:=FindDeclaration(CursorPos,AllFindSmartFlags,NewTool,NewNode,
+  Result:=FindDeclaration(CursorPos,DefaultFindSmartFlags,NewTool,NewNode,
                           NewPos,NewTopLine);
 end;
 
@@ -1220,6 +1224,13 @@ var CleanCursorPos: integer;
         SkipChecks:=true;
       end;
     end;
+  end;
+
+  procedure CheckIfCursorInTypeNode;
+  begin
+    if (CursorNode.Desc in AllIdentifierDefinitions)
+    and (fsfSkipClassForward in SearchSmartFlags) then
+      Exclude(SearchSmartFlags,fsfSkipClassForward);
   end;
 
   procedure CheckIfCursorInClassNode;
@@ -1402,6 +1413,7 @@ begin
     SearchForward:=false;
     CheckIfCursorOnAForwardDefinedClass;
     CheckIfCursorInClassNode;
+    CheckIfCursorInTypeNode;
     CheckIfCursorInBeginNode;
     CheckIfCursorInProcNode;
     CheckIfCursorInPropertyNode;
@@ -1426,6 +1438,8 @@ begin
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                        fdfExceptionOnPredefinedIdent,
                        fdfTopLvlResolving,fdfSearchInAncestors];
+        if fsfSkipClassForward in SearchSmartFlags then
+          Include(Params.Flags,fdfSkipClassForward);
         if not DirectSearch then begin
           // ToDo: DirtySrc
           Result:=FindDeclarationOfIdentAtParam(Params);
@@ -1718,7 +1732,7 @@ function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
 begin
   Result:=UsesNode.FirstChild;
   while (Result<>nil)
-  and (not CompareSrcIdentifier(Result.StartPos,PChar(UnitName))) do
+  and (not CompareSrcIdentifiers(Result.StartPos,PChar(UnitName))) do
     Result:=Result.NextBrother;
 end;
 
@@ -1976,7 +1990,7 @@ var
   NodeStr: String;
 begin
   Result:='';
-  if FindDeclaration(CursorPos,AllFindSmartFlags,
+  if FindDeclaration(CursorPos,DefaultFindSmartFlags,
     NewTool,NewNode,NewPos,NewTopLine) then
   begin
     { Examples:
@@ -2178,6 +2192,7 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtParam(
 var
   StartPos, EndPos: integer;
   ExprType: TExpressionType;
+  SkipForward: boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Identifier=',
@@ -2199,11 +2214,14 @@ begin
     ReadTilBracketClose(true);
     EndPos:=CurPos.EndPos;
   end;
+  SkipForward:=fdfSkipClassForward in Params.Flags;
   Include(Params.Flags,fdfFindVariable);
   ExprType:=FindExpressionTypeOfVariable(StartPos,EndPos,Params,false);
   if (ExprType.Desc<>xtContext) then begin
     Params.SetResult(CleanFindContext);
   end;
+  if SkipForward and (Params.NewNode<>nil) then
+    Params.NewCodeTool.FindNonForwardClass(Params);
   {$IFDEF CTDEBUG}
   DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
@@ -2533,8 +2551,16 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
-      if not (fdfCollect in Params.Flags) then
+      if not (fdfCollect in Params.Flags) then begin
+        if (fdfSkipClassForward in Params.Flags)
+        and (ContextNode.FirstChild<>nil)
+        and (ContextNode.FirstChild.Desc in [ctnClass,ctnClassInheritance])
+        and ((ctnsForwardDeclaration and ContextNode.FirstChild.SubDesc)<>0)
+        then begin
+          FindNonForwardClass(Params);
+        end;
         exit;
+      end;
     end;
     // search for enums
     Params.ContextNode:=ContextNode;
@@ -3565,7 +3591,7 @@ begin
     CurCursorPos:=CursorPos;
     CurTool:=Self;
     try
-      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags
+      while CurTool.FindDeclaration(CurCursorPos,DefaultFindSmartFlags
         +[fsfSearchSourceName],
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
@@ -4533,13 +4559,13 @@ begin
   end;
   if ClassNode.Desc=ctnClass then begin
     // if this class is not TObject, TObject is class ancestor
-    SearchBaseClass:=not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
+    SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
   end else begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
     SearchBaseClass:=
-              (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface'))
-          and (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IUnknown'));
+              (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
+          and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown'));
   end;
   if not SearchBaseClass then exit;
 
@@ -4746,6 +4772,48 @@ begin
     IsForward:=false;
   end;
   Params.Load(OldInput,true);
+end;
+
+function TFindDeclarationTool.FindNonForwardClass(Params: TFindDeclarationParams
+  ): boolean;
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  Node:=Params.NewNode;
+  if Node.Desc=ctnGenericType then begin
+    Node:=Node.FirstChild;
+    if Node=nil then exit;
+  end else if Node.Desc<>ctnTypeDefinition then
+    exit;
+  Node:=Node.FirstChild;
+  if (Node=nil)
+  or (not (Node.Desc in [ctnClass,ctnClassInterface]))
+  or ((ctnsForwardDeclaration and Node.SubDesc)=0) then
+    exit;
+  Node:=Params.NewNode;
+  repeat
+    //DebugLn(['TFindDeclarationTool.FindNonForwardClass Node=',dbgstr(copy(Src,Node.StartPos,20))]);
+    if Node.NextBrother<>nil then
+      Node:=Node.NextBrother
+    else if (Node.Parent=nil)
+    or (not (Node.Parent.Desc in AllDefinitionSections)) then
+      break
+    else begin
+      Node:=Node.Parent.NextBrother;
+      while (Node<>nil)
+      and ((Node.FirstChild=nil) or (not (Node.Desc in AllDefinitionSections)))
+      do
+        Node:=Node.NextBrother;
+      if Node=nil then break;
+      Node:=Node.FirstChild;
+    end;
+    if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
+      Params.SetResult(Self,Node,Node.StartPos);
+      Result:=true;
+      exit;
+    end;
+  until false;
 end;
 
 function TFindDeclarationTool.FindIdentifierInWithVarContext(
@@ -5981,7 +6049,7 @@ var
     IdentFound:=false;
     if (ExprType.Context.Node<>nil)
     and (ExprType.Context.Node.Desc in AllPascalStatements) then begin
-      if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
+      if CompareSrcIdentifiers(CurAtom.StartPos,'SELF') then begin
         // SELF in a method is the object itself
         // -> check if in a method or nested proc of a method
         ProcNode:=ExprType.Context.Node;
@@ -5998,7 +6066,7 @@ var
           ExprType.Context:=CreateFindContext(Params);
           IdentFound:=true;
         end;
-      end else if CompareSrcIdentifier(CurAtom.StartPos,'RESULT') then begin
+      end else if CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
         // RESULT has a special meaning in a function
         // -> check if in a function
         ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);

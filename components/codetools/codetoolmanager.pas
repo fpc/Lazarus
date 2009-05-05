@@ -364,7 +364,8 @@ type
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine: integer;
+          Flags: TFindSmartFlags = DefaultFindSmartFlags): boolean;
     function FindDeclarationOfIdentifier(Code: TCodeBuffer; X,Y: integer;
           Identifier: PChar;
           out NewCode: TCodeBuffer;
@@ -1708,10 +1709,13 @@ end;
 
 function TCodeToolManager.FindDeclaration(Code: TCodeBuffer; X,Y: integer;
   out NewCode: TCodeBuffer;
-  out NewX, NewY, NewTopLine: integer): boolean;
+  out NewX, NewY, NewTopLine: integer;
+  Flags: TFindSmartFlags): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
+  NewTool: TFindDeclarationTool;
+  NewNode: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -1729,11 +1733,13 @@ begin
     DebugLn('TCodeToolManager.FindDeclaration NOT HANDLING EXCEPTIONS');
     RaiseUnhandableExceptions:=true;
     {$ENDIF}
-    Result:=FCurCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindDeclaration(CursorPos,Flags,NewTool,NewNode,
+                                         NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
+      if (NewTool=nil) and (NewNode<>nil) then ;
       {$IFDEF CTDEBUG}
       debugln(['TCodeToolManager.FindDeclaration ',DbgsCXY(NewPos)]);
       {$ENDIF}
