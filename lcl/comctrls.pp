@@ -166,6 +166,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
+    function GetPanelIndexAt(X, Y: Integer): Integer;
     function SizeGripEnabled: Boolean;
     function UpdatingStatusBar: boolean;
     property Canvas: TCanvas read FCanvas;

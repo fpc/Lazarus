@@ -239,6 +239,32 @@ begin
     Result := inherited ExecuteAction(ExeAction);
 end;
 
+function TStatusBar.GetPanelIndexAt(X, Y: Integer): Integer;
+var
+  R, PanelRect: TRect;
+  P: TPoint;
+  i: integer;
+begin
+  Result := -1;
+  if Panels.Count = 0 then
+    Exit;
+  R := GetChildsRect(False);
+  P := Point(X, Y);
+  if not PtInRect(R, P) then
+    Exit;
+  PanelRect := R;
+  for i := 0 to Panels.Count - 1 do
+  begin
+    if i <> Panels.Count - 1 then
+      PanelRect.Right := PanelRect.Left + Panels[i].Width
+    else
+      PanelRect.Right := R.Right;
+    if PtInRect(PanelRect, P) then
+      Exit(i);
+    PanelRect.Left := PanelRect.Right;
+  end;
+end;
+
 
 function TStatusBar.SizeGripEnabled: Boolean;
 begin
