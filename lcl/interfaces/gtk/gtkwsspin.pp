@@ -107,7 +107,10 @@ end;
 class function TGtkWSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
-  Result:=gtk_spin_button_get_value_as_float(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+  Result := gtk_spin_button_get_value_as_float(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+  // explicitly round to number of digits,
+  // to prevent rounding errors from single to double
+  Result:= RoundTo(Result, - ACustomFloatSpinEdit.DecimalPlaces);
 end;
 
 class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
