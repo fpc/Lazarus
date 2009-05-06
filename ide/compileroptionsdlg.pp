@@ -769,7 +769,7 @@ begin
       chkCompilerCompile.Visible := True;
       chkCompilerBuild.Visible := True;
       chkCompilerRun.Visible := True;
-      lblCompiler.AnchorToNeighbour(akTop,6,lblRunIfCompiler);
+      edtCompiler.AnchorToNeighbour(akTop,0,chkCompilerCompile);
     end
     else if Options is TPkgCompilerOptions
     then begin
@@ -781,14 +781,14 @@ begin
       chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
       chkCompilerBuild.Visible := False;
       chkCompilerRun.Visible := False;
-      lblCompiler.AnchorToNeighbour(akTop,6,chkCompilerCompile);
+      edtCompiler.AnchorToNeighbour(akTop,0,chkCompilerCompile);
     end
     else begin
       lblRunIfCompiler.Visible := False;
       chkCompilerCompile.Visible := False;
       chkCompilerBuild.Visible := False;
       chkCompilerRun.Visible := False;
-      lblCompiler.AnchorParallel(akTop,6,lblCompiler.Parent);
+      edtCompiler.AnchorParallel(akTop,0,lblCompiler.Parent);
     end;
 
     ExecuteAfterCommandEdit.Text:=Options.ExecuteAfter.Command;
