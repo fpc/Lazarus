@@ -15,7 +15,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   LCLVersion = '0.9.27'
   object Notebook: TNotebook
     Left = 0
-    Height = 418
+    Height = 422
     Top = 0
     Width = 473
     Align = alClient
@@ -25,7 +25,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
       ClientWidth = 465
-      ClientHeight = 392
+      ClientHeight = 396
       object AppSettingsGroupBox: TGroupBox
         Left = 6
         Height = 241
@@ -261,7 +261,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object FormsPage: TPage
       Caption = 'FormsPage'
       ClientWidth = 465
-      ClientHeight = 392
+      ClientHeight = 396
       OnResize = FormsPageResize
       object FormsAutoCreatedLabel: TLabel
         Left = 36
@@ -337,7 +337,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 36
-        Height = 333
+        Height = 337
         Top = 30
         Width = 194
         Anchors = [akTop, akLeft, akBottom]
@@ -355,7 +355,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 266
-        Height = 333
+        Height = 337
         Top = 30
         Width = 193
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -369,7 +369,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = FormsAutoCreatedListBox
         Left = 6
         Height = 17
-        Top = 369
+        Top = 373
         Width = 453
         Align = alBottom
         BorderSpacing.Around = 6
@@ -626,20 +626,20 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object VersionInfoPage: TPage
       Caption = 'VersionInfoPage'
       ClientWidth = 465
-      ClientHeight = 392
+      ClientHeight = 396
       object VersionInfoGroupBox: TGroupBox
         AnchorSideLeft.Control = LanguageSettingsGroupBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 99
+        Height = 102
         Top = 29
         Width = 453
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Version Numbering'
-        ClientHeight = 81
+        ClientHeight = 84
         ClientWidth = 449
         TabOrder = 1
         object VersionLabel: TLabel
@@ -697,9 +697,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = VersionLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 20
+          Height = 23
           Top = 26
           Width = 70
+          AutoSize = True
           MaxValue = 65535
           TabOrder = 0
         end
@@ -708,9 +709,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = MajorRevisionLabel
           AnchorSideTop.Side = asrBottom
           Left = 106
-          Height = 20
+          Height = 23
           Top = 26
           Width = 70
+          AutoSize = True
           MaxValue = 65535
           TabOrder = 1
         end
@@ -719,9 +721,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = MinorRevisionLabel
           AnchorSideTop.Side = asrBottom
           Left = 206
-          Height = 20
+          Height = 23
           Top = 26
           Width = 70
+          AutoSize = True
           MaxValue = 65535
           TabOrder = 2
         end
@@ -731,8 +734,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 17
-          Top = 58
-          Width = 151
+          Top = 61
+          Width = 149
           BorderSpacing.Top = 6
           BorderSpacing.Around = 6
           Caption = 'Automatically increase Build'
@@ -743,9 +746,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = BuildLabel
           AnchorSideTop.Side = asrBottom
           Left = 306
-          Height = 20
+          Height = 23
           Top = 26
           Width = 70
+          AutoSize = True
           MaxValue = 65535
           TabOrder = 3
         end
@@ -766,7 +770,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 71
-        Top = 134
+        Top = 137
         Width = 453
         Align = alTop
         AutoSize = True
@@ -838,7 +842,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 101
-        Top = 211
+        Top = 214
         Width = 453
         Align = alTop
         AutoSize = True
@@ -870,15 +874,16 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           ParentColor = False
         end
         object DescriptionEdit: TEdit
+          AnchorSideLeft.Control = DescriptionLabel
           AnchorSideLeft.Side = asrBottom
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 70
+          Left = 74
           Height = 21
           Top = 0
-          Width = 373
+          Width = 369
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
+          BorderSpacing.Left = 10
           BorderSpacing.Right = 6
           TabOrder = 0
         end
@@ -888,10 +893,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 70
+          Left = 74
           Height = 21
           Top = 27
-          Width = 373
+          Width = 369
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -993,8 +998,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 424
+    Height = 26
+    Top = 428
     Width = 461
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
