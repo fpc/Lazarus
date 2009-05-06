@@ -1357,14 +1357,14 @@ begin
   if (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfoEx)) then
   begin
     LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
-    Result := WinCEDef.GetMonitorInfo(hMonitor, @LocalInfo);
+    Result := WinCEDef.GetMonitorInfoW(hMonitor, @LocalInfo);
     lpmi^.rcMonitor := LocalInfo.rcMonitor;
     lpmi^.rcWork := LocalInfo.rcWork;
     lpmi^.dwFlags := LocalInfo.dwFlags;
     PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
   end
   else
-    Result := WinCEDef.GetMonitorInfo(hMonitor, lpmi);
+    Result := WinCEDef.GetMonitorInfoW(hMonitor, lpmi);
 end;
 
 {------------------------------------------------------------------------------

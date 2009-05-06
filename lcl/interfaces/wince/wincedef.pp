@@ -110,11 +110,19 @@ type
     TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
 
+{$ifdef WinCE}
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MONITORENUMPROC; dwData: LPARAM): LongBool; cdecl; external KernelDLL name 'EnumDisplayMonitors';
-function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; cdecl; external KernelDLL name 'GetMonitorInfo';
+function GetMonitorInfoW(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; cdecl; external KernelDLL name 'GetMonitorInfo';
 function MonitorFromWindow(hWnd: HWND; dwFlags: DWORD): HMONITOR; cdecl; external KernelDLL name 'MonitorFromWindow';
 function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; cdecl; external KernelDLL name 'MonitorFromRect';
 function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; cdecl; external KernelDLL name 'MonitorFromPoint';
+{$else}
+function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MONITORENUMPROC; dwData: LPARAM): LongBool; stdcall; external 'user32.dll' name 'EnumDisplayMonitors';
+function GetMonitorInfoW(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; stdcall; external 'user32.dll' name 'GetMonitorInfoW';
+function MonitorFromWindow(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromWindow';
+function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromRect';
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromPoint';
+{$endif}
 
 var
   // FTimerData contains the currently running timers
