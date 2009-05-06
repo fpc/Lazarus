@@ -2456,14 +2456,14 @@ function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar
 begin
   Result:=false;
   if (Identifier1=nil) or (Identifier2=nil) then exit;
-  while IsIdentChar[Identifier1[0]] do begin
-    if (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) then begin
+  while IsIdentChar[Identifier1^] do begin
+    if (UpChars[Identifier1^]=UpChars[Identifier2^]) then begin
       inc(Identifier1);
       inc(Identifier2);
     end else
-      exit;
+      exit(false);
   end;
-  Result:=(not IsIdentChar[Identifier2[0]]);
+  Result:=not IsIdentChar[Identifier2^];
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(CleanStartPos: integer;
@@ -2472,15 +2472,18 @@ begin
   Result:=false;
   if (AnIdentifier=nil) or (CleanStartPos<1) or (CleanStartPos>SrcLen) then
     exit;
-  while IsIdentChar[AnIdentifier[0]] do begin
-    if (UpChars[AnIdentifier[0]]=UpperSrc[CleanStartPos]) then begin
+  while IsIdentChar[AnIdentifier^] do begin
+    if (UpChars[AnIdentifier^]=UpperSrc[CleanStartPos]) then begin
       inc(AnIdentifier);
       inc(CleanStartPos);
-      if CleanStartPos>SrcLen then break;
+      if CleanStartPos>SrcLen then begin
+        Result:=not IsIdentChar[AnIdentifier^];
+        exit;
+      end;
     end else
-      exit;
+      exit(false);
   end;
-  Result:=(CleanStartPos>SrcLen) or (not IsIdentChar[Src[CleanStartPos]]);
+  Result:=not IsIdentChar[UpperSrc[CleanStartPos]];
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiersMethod(Identifier1,
