@@ -6463,8 +6463,7 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState
-  ): String;
+function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
 var
   p: integer;
 
@@ -6503,7 +6502,8 @@ var
   //
   procedure AddKey;
   begin
-    if p>0 then  AddStr(' ');
+    if p > 0 then
+      AddStr('+');
 
     case Key of
       VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
