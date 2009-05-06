@@ -58,6 +58,7 @@ type
     function PropertyID: DataBrowserPropertyID;
   protected
     function GetHeaderPropertyType: DataBrowserPropertyType; virtual;
+    function GetHeaderPropertyFlags: Integer; virtual;
   public
     constructor Create(AOwner: TCarbonDataBrowser; APropertyID: DataBrowserPropertyID;
       AListColumn: TListColumn);
@@ -399,6 +400,13 @@ begin
   end;
 end;
 
+function TCarbonListColumn.GetHeaderPropertyFlags: Integer;
+begin
+  Result := kDataBrowserPropertyIsMutable or
+            kDataBrowserListViewSelectionColumn or
+            kDataBrowserListViewTypeSelectColumn;
+end;
+
 constructor TCarbonListColumn.Create(AOwner: TCarbonDataBrowser;
   APropertyID: DataBrowserPropertyID; AListColumn: TListColumn);
 begin
@@ -410,9 +418,8 @@ begin
   
   FDesc.propertyDesc.propertyID := APropertyID;
   FDesc.propertyDesc.propertyType := GetHeaderPropertyType;
+  FDesc.propertyDesc.propertyFlags := GetHeaderPropertyFlags;
 
-  FDesc.propertyDesc.propertyFlags := kDataBrowserPropertyIsMutable or
-                                   kDataBrowserListViewSelectionColumn;
   FDesc.headerBtnDesc.version := kDataBrowserListViewLatestHeaderDesc;
   FDesc.headerBtnDesc.minimumWidth := 0;
   FDesc.headerBtnDesc.maximumWidth := $FFFF;
@@ -715,7 +722,7 @@ begin
       end;
     kDataBrowserSelectionSetChanged: // the selection order has changed
       ACarbonDataBrowser.SelectionChanged(ID - 1, True);
-   // kDataBrowserItemDoubleClicked:;
+    // kDataBrowserItemDoubleClicked:;
   end;
 end;
 
