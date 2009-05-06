@@ -1447,6 +1447,7 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
 var
   AddChar: Boolean;
+  s: String;
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
 
@@ -1487,6 +1488,15 @@ begin
     ecLineBreak:
       begin
         FSourceNoteBook.EndIncrementalFind;
+        Command:=ecNone;
+      end;
+
+    ecPaste:
+      begin
+        s:=Clipboard.AsText;
+        s:=copy(s,1,EditorOpts.RightMargin);
+        FSourceNoteBook.IncrementalSearchStr:=
+          FSourceNoteBook.IncrementalSearchStr+s;
         Command:=ecNone;
       end;
 
