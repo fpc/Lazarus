@@ -244,6 +244,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       BorderSpacing.Bottom = 6
       ItemHeight = 0
       OnClick = MacrosListboxClick
+      OnDblClick = MacrosListboxDblClick
       TabOrder = 0
     end
     object MacrosInsertButton: TButton

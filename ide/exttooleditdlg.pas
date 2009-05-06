@@ -92,6 +92,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
+    procedure MacrosListboxDblClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure OpenButtonClick(sender : TOBject);
     procedure ScannersButtonClick(Sender: TObject);
@@ -345,6 +346,11 @@ end;
 procedure TExternalToolOptionDlg.MacrosListboxClick(Sender: TObject);
 begin
   MacrosInsertButton.Enabled:=(MacrosListbox.ItemIndex>=0);
+end;
+
+procedure TExternalToolOptionDlg.MacrosListboxDblClick(Sender: TObject);
+begin
+  MacrosInsertButtonClick(nil);
 end;
 
 procedure TExternalToolOptionDlg.OKButtonClick(Sender: TObject);
