@@ -1918,10 +1918,10 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToEditorKeyString(const Key:  TIDEShortCut): String;
+function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 begin
   Result := KeyAndShiftStateToKeyString(Key.Key1, Key.Shift1);
-  if (Key.Key2<>VK_UNKNOWN) then
+  if (Key.Key2 <> VK_UNKNOWN) then
     Result := Result + ', ' + KeyAndShiftStateToKeyString(Key.Key2, Key.Shift2);
 end;
 

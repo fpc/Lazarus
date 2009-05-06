@@ -4,8 +4,8 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   ClientHeight = 510
   ClientWidth = 461
   Visible = False
-  DesignLeft = 554
-  DesignTop = 241
+  DesignLeft = 110
+  DesignTop = 145
   object KeyMappingHelpLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -13,7 +13,6 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Height = 14
     Top = 0
     Width = 105
-    HelpContext = 0
     Caption = 'KeyMappingHelpLabel'
     ParentColor = False
   end
@@ -24,10 +23,9 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 27
+    Height = 23
     Top = 20
     Width = 461
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
@@ -45,14 +43,12 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = KeyMappingFindKeyButton
     Left = 0
-    Height = 399
-    Top = 53
+    Height = 403
+    Top = 49
     Width = 461
-    HelpContext = 0
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    Ctl3D = False
     DefaultItemHeight = 15
     ReadOnly = True
     RowSelect = True
@@ -69,7 +65,6 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Height = 23
     Top = 458
     Width = 154
-    HelpContext = 0
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -84,8 +79,7 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Left = 0
     Height = 23
     Top = 487
-    Width = 189
-    HelpContext = 0
+    Width = 191
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'KeyMappingChooseSchemeButton'
@@ -97,11 +91,10 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 258
+    Left = 257
     Height = 23
     Top = 487
-    Width = 203
-    HelpContext = 0
+    Width = 204
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'KeyMappingConsistencyCheckButton'

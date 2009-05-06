@@ -355,34 +355,30 @@ end;
 
 function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(
   KeyRelation: TKeyCommandRelation): String;
-var
-  s: String;
-  CopiedLength: Integer;
+
+  function AddBrakets(S: String): String;
+  begin
+    Result := '[' + S + ']';
+  end;
+
 begin
   with KeyRelation do
   begin
     Result := UTF8Copy(LocalizedName, 1, 40);
-    CopiedLength := UTF8Length(Result);
-    if CopiedLength < 40 then
-    begin
-      SetLength(s, (40 - CopiedLength));
-      FillChar(s[1], length(s), ' ');
-    end
-    else
-      s := '';
-    Result := Result + s;
+    if Result <> '' then
+      Result := Result + '  ';
     if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
-      Result := Result + lisNone2
+      Result := Result{ + lisNone2 }
     else
     if (ShortcutA.Key1 = VK_UNKNOWN) then
-      Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutB)
+      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB))
     else
     if (ShortcutB.Key1 = VK_UNKNOWN) then
-      Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutA)
+      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
     else
-      Result := Result + KeyAndShiftStateToEditorKeyString(ShortcutA)
+      Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
                        + '  '+lisOr+'  ' +
-                         KeyAndShiftStateToEditorKeyString(ShortcutB);
+                         AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
   end;
 end;
 
