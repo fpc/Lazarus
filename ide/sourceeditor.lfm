@@ -28,5 +28,6 @@ inherited SourceNotebook: TSourceNotebook
       end>
     SimpleText = 'This is a test'
     SimplePanel = False
+    OnDblClick = StatusBarDblClick
   end
 end

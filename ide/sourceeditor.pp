@@ -426,6 +426,7 @@ type
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     procedure AddBreakpointClicked(Sender: TObject);
+    procedure StatusBarDblClick(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure DeleteBreakpointClicked(Sender: TObject);
@@ -1825,7 +1826,8 @@ end;
   Convert all tabs into spaces in current text selection.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.TabsToSpacesInSelection;
-var OldBlockBegin, OldBlockEnd: TPoint;
+var 
+  OldBlockBegin, OldBlockEnd: TPoint;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
@@ -1843,7 +1845,8 @@ begin
 end;
 
 procedure TSourceEditor.CommentSelection;
-var OldBlockBegin, OldBlockEnd: TPoint;
+var 
+  OldBlockBegin, OldBlockEnd: TPoint;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
@@ -1860,7 +1863,8 @@ begin
 end;
 
 procedure TSourceEditor.UncommentSelection;
-var OldBlockBegin, OldBlockEnd: TPoint;
+var 
+  OldBlockBegin, OldBlockEnd: TPoint;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
@@ -5249,10 +5253,12 @@ begin
 end;
 
 procedure TSourceNotebook.GotoLineClicked(Sender: TObject);
-var SrcEdit: TSourceEditor;
+var
+  SrcEdit: TSourceEditor;
 begin
-  SrcEdit:=GetActiveSE;
-  if SrcEdit<>nil then SrcEdit.ShowGotoLineDialog;
+  SrcEdit := GetActiveSE;
+  if SrcEdit <> nil then
+    SrcEdit.ShowGotoLineDialog;
 end;
 
 procedure TSourceNotebook.HistoryJump(Sender: TObject;
@@ -5606,6 +5612,19 @@ begin
   if ASrcEdit=nil then exit;
   DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,
                                ASrcEdit.EditorComponent.CaretY,true);
+end;
+
+procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);
+var
+  P: TPoint;
+begin
+  P := StatusBar.ScreenToClient(Mouse.CursorPos);
+  // if we clicked on first panel which shows position in code
+  if StatusBar.GetPanelIndexAt(P.X, P.Y) = 0 then
+  begin
+    // then show goto line dialog
+    GotoLineClicked(nil);
+  end;
 end;
 
 procedure TSourceNotebook.ToggleBreakpointClicked(Sender: TObject);
