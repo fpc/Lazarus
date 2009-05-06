@@ -1009,9 +1009,12 @@ begin
   end;
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
 
-  gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag,nil);
+  gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag, nil);
   gtk_event_box_set_above_child(PGtkEventBox(Box), false);
-  gtk_container_remove(PGtkContainer(Box), ComboWidget);
+  // don't remove Combo from Box, just destroy it and during destroy it will
+  // be removed by gtk code. Removing from Box and then destroyng can lead to
+  // double destroying since removing decrease reference and it can be the
+  // last reference
   gtk_widget_destroy(ComboWidget);
 
   // create the new widget with the old model
