@@ -743,9 +743,9 @@ type
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
           const UnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
-          const UpperUnitName: string;
+          const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
-    function FindUnitInAllUsesSections(const UpperUnitName: string;
+    function FindUnitInAllUsesSections(const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function GetUnitForUsesSection(Tool: TFindDeclarationTool): string;
 
@@ -1737,19 +1737,19 @@ begin
 end;
 
 function TFindDeclarationTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
-  const UpperUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
+  const AnUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
 begin
   Result:=false;
   NamePos:=CleanAtomPosition;
   InPos:=CleanAtomPosition;
-  if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255)
+  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255)
   or (UsesNode.Desc<>ctnUsesSection) then exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
   repeat
     ReadNextAtom; // read name
     if AtomIsChar(';') then break;
-    if UpAtomIs(UpperUnitName) then begin
+    if AtomIs(AnUnitName) then begin
       NamePos:=CurPos;
       InPos.StartPos:=-1;
       ReadNextAtom;
@@ -1771,13 +1771,13 @@ begin
 end;
 
 function TFindDeclarationTool.FindUnitInAllUsesSections(
-  const UpperUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
+  const AnUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
 var SectionNode, UsesNode: TCodeTreeNode;
 begin
   Result:=false;
   NamePos.StartPos:=-1;
   InPos.StartPos:=-1;
-  if (UpperUnitName='') or (length(UpperUnitName)>255) then exit;
+  if (AnUnitName='') or (length(AnUnitName)>255) then exit;
   BuildTree(false);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
@@ -1785,7 +1785,7 @@ begin
   do begin
     UsesNode:=SectionNode.FirstChild;
     if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
-    and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
+    and FindUnitInUsesSection(UsesNode,AnUnitName,NamePos,InPos) then begin
       Result:=true;
       exit;
     end;
