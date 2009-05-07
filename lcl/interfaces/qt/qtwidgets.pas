@@ -136,7 +136,7 @@ type
     procedure SlotDestroy; cdecl;
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
+    function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
@@ -381,7 +381,6 @@ type
   { TQtAbstractButton }
 
   TQtAbstractButton = class(TQtWidget)
-  private
   public
     function getIconSize: TSize;
     function getText: WideString; override;
@@ -462,7 +461,7 @@ type
 
   TQtHintWindow = class(TQtMainWindow)
   protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   end;
 
   { TQtStaticText }
@@ -869,7 +868,7 @@ type
     procedure setTextColor(const Value: PQColor); override;
 
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
- public
+  public
     procedure clearSelection;
     function getModel: QAbstractItemModelH;
     function getSelectionMode: QAbstractItemViewSelectionMode;
@@ -1144,15 +1143,16 @@ type
   { TQtStatusBar }
 
   TQtStatusBar = class(TQtWidget)
-  private
   protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     Panels: array of QLabelH;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
     procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
+    procedure removeWidget(AWidget: QWidgetH);
     function isSizeGripEnabled: Boolean;
     procedure setSizeGripEnabled(const Value: Boolean);
+    function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; override; cdecl;
   end;
   
   { TQtDialog }
@@ -1748,7 +1748,8 @@ begin
 
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
-      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      QEventMouseButtonDblClick:
+          Result := SlotMouse(Sender, Event);
       QEventMouseMove:
         begin
           SlotMouseMove(Event);
@@ -2107,7 +2108,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
+function TQtWidget.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 const
   // array of clickcount x buttontype
   MSGKIND: array[0..2, 1..4] of Integer =
@@ -2189,6 +2190,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMouse');
   {$endif}
+
+  Result := False; // allow qt to handle message
 
   // idea of multi click implementation is taken from gtk
 
@@ -3935,6 +3938,7 @@ procedure TQtPushButton.SlotClicked; cdecl;
 var
   Msg: TLMessage;
 begin
+  FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_CLICKED;
   DeliverMessage(Msg);
 end;
@@ -8417,6 +8421,11 @@ begin
   QStatusBar_addWidget(QStatusBarH(Widget), AWidget, AStretch);
 end;
 
+procedure TQtStatusBar.removeWidget(AWidget: QWidgetH);
+begin
+  QStatusBar_removeWidget(QStatusBarH(Widget), AWidget);
+end;
+
 function TQtStatusBar.isSizeGripEnabled: Boolean;
 begin
   Result := QStatusBar_isSizeGripEnabled(QStatusBarH(Widget));
@@ -8425,6 +8434,12 @@ end;
 procedure TQtStatusBar.setSizeGripEnabled(const Value: Boolean);
 begin
   QStatusBar_setSizeGripEnabled(QStatusBarH(Widget), Value);
+end;
+
+function TQtStatusBar.SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  inherited SlotMouse(Sender, Event);
+  Result := True; // cancel event propagation
 end;
 
 { TQtDialog }

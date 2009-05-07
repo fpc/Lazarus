@@ -440,7 +440,7 @@ begin
   begin
     for i := High(Widget.Panels) downto 0 do
     begin
-      QStatusBar_removeWidget(QStatusBarH(Widget.Widget), Widget.Panels[i]);
+      Widget.removeWidget(Widget.Panels[i]);
       QLabel_destroy(Widget.Panels[i]);
     end;
     SetLength(Widget.Panels, 0);
@@ -452,7 +452,6 @@ class procedure TQtWSStatusBar.RecreatePanels(const AStatusBar: TStatusBar;
 var
   Str: WideString;
   i: Integer;
-  R: TRect;
 begin
   ClearPanels(Widget);
   if AStatusBar.SimplePanel then
@@ -467,11 +466,11 @@ begin
     begin
       Str := GetUtf8String(AStatusBar.Panels[i].Text);
       Widget.Panels[i] := QLabel_create(@Str, Widget.Widget);
+      //QLabel_setTextInteractionFlags(Widget.Panels[i], QtNoTextInteraction);
       QLabel_setAlignment(Widget.Panels[i],
         AlignmentToQtAlignmentMap[AStatusBar.Panels[i].Alignment]);
-      R := Widget.getFrameGeometry;
-      QWidget_setGeometry(Widget.Panels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
-      Widget.addWidget(Widget.Panels[i], AStatusBar.Panels[i].Width);
+      QWidget_setMinimumWidth(Widget.Panels[i], AStatusBar.Panels[i].Width);
+      Widget.addWidget(Widget.Panels[i], ord(i = AStatusBar.Panels.Count - 1));
     end;
   end;
 end;
@@ -494,11 +493,7 @@ begin
 end;
 
 class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
-var
-  QtStatusBar: TQtStatusBar;
 begin
-  QtStatusBar := TQtStatusBar(AWinControl.Handle);
-
   TQtStatusBar(AWinControl.Handle).Release;
 end;
 
@@ -506,21 +501,11 @@ class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIn
 var
   QtStatusBar: TQtStatusBar;
   Str: Widestring;
-  i: Integer;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
-    if Length(QtStatusBar.Panels) > 0 then
-    begin
-      for i := High(QtStatusBar.Panels) downto 0 do
-      begin
-        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.Panels[i]);
-        QLabel_destroy(QtStatusBar.Panels[i]);
-      end;
-      SetLength(QtStatusBar.Panels, 0);
-    end;
-
+    ClearPanels(QtStatusBar);
     Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
   end else
