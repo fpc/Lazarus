@@ -8062,8 +8062,6 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.InvalidateLine(Line: integer);
-var
-  rcInval: TRect;
 begin
   InvalidateLines(Line, Line);
   InvalidateGutterLines(Line, Line);
