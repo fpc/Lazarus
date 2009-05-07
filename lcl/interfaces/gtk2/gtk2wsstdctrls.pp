@@ -484,7 +484,10 @@ begin
 
   // if singleselection mode then selection = itemindex
   if Path <> nil then
-    gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False)
+  begin
+    if PGtkTreeView(Widget)^.priv^.tree <> nil then
+      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
+  end
   else
   if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
   begin
