@@ -541,7 +541,8 @@ type
     function ReplaceUsedUnits(Code: TCodeBuffer;
           UnitNamePairs: TStringToStringTree): boolean;
     function AddUnitToMainUsesSection(Code: TCodeBuffer;
-          const NewUnitName, NewUnitInFile: string): boolean;
+          const NewUnitName, NewUnitInFile: string;
+          AsLast: boolean = false): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
@@ -1015,6 +1016,7 @@ end;
 function TCodeToolManager.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=SourceCache.CreateFile(AFilename);
+  DirectoryCachePool.IncreaseTimeStamp;
   {$IFDEF CTDEBUG}
   DebugLn('****** TCodeToolManager.CreateFile "',AFilename,'" ',dbgs(Result<>nil));
   {$ENDIF}
@@ -3882,7 +3884,7 @@ begin
 end;
 
 function TCodeToolManager.AddUnitToMainUsesSection(Code: TCodeBuffer;
-  const NewUnitName, NewUnitInFile: string): boolean;
+  const NewUnitName, NewUnitInFile: string; AsLast: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3891,7 +3893,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
-                                                  SourceChangeCache);
+                                                  SourceChangeCache,AsLast);
   except
     on e: Exception do Result:=HandleException(e);
   end;

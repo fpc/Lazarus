@@ -932,8 +932,9 @@ begin
         {$ENDIF}
         Result:=FindUnitLink(UnitName);
         {$IFDEF ShowTriedUnits}
-        if Result='' then
+        if Result='' then begin
           DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',UnitName,' not found in unitlinks. Directory="',Directory,'"']);
+        end;
         {$ENDIF}
       end;
       if Result<>'' then begin

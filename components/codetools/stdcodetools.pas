@@ -86,9 +86,11 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function AddUnitToUsesSection(UsesNode: TCodeTreeNode;
           const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          AsLast: boolean = false): boolean;
     function AddUnitToMainUsesSection(const NewUnitName, NewUnitInFile: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          AsLast: boolean = false): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
                                 const UpperUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
@@ -561,7 +563,7 @@ end;
 
 function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
   const NewUnitName, NewUnitInFile: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache; AsLast: boolean): boolean;
 var
   Options: TBeautifyCodeOptions;
 
@@ -638,6 +640,7 @@ var LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
   Lines: TStringList;
   FirstIndent: Integer;
   InsertCode: String;
+  UsesInsertPolicy: TUsesInsertPolicy;
 begin
   Result:=false;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) or (NewUnitName='')
@@ -649,8 +652,11 @@ begin
   // find nice insert position
   InsertBehind:=false;
   InsertNode:=UsesNode.FirstChild;
+  UsesInsertPolicy:=Options.UsesInsertPolicy;
+  if AsLast then
+    UsesInsertPolicy:=uipLast;
 
-  case Options.UsesInsertPolicy of
+  case UsesInsertPolicy of
 
   uipFirst:
     begin
@@ -686,7 +692,7 @@ begin
               if DiffPath[i]=PathDelim then
                 inc(DiffCnt);
             //DebugLn(['TStandardCodeTool.AddUnitToUsesSection DiffCnt=',DiffCnt,' "',NewCode.Filename,'" "',NewFilename,'"']);
-            if options.UsesInsertPolicy=uipInFrontOfRelated then begin
+            if UsesInsertPolicy=uipInFrontOfRelated then begin
               // insert in front of the first node with the lowest DiffCnt
               if BestDiffCnt>DiffCnt then begin
                 BestDiffCnt:=DiffCnt;
@@ -821,7 +827,8 @@ begin
 end;
 
 function TStandardCodeTool.AddUnitToMainUsesSection(const NewUnitName,
-  NewUnitInFile: string; SourceChangeCache: TSourceChangeCache): boolean;
+  NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
+  AsLast: boolean): boolean;
 var UsesNode, SectionNode: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
@@ -837,7 +844,7 @@ begin
     if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
     then begin
       if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
-                                  SourceChangeCache)
+                                  SourceChangeCache,AsLast)
       then
         exit;
     end;
