@@ -2597,7 +2597,7 @@ begin
     ShortUnitName:=AnUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
       CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
-        ShortUnitName,'');
+        ShortUnitName,'',true);
     end;
   end;
   EndUpdate;

@@ -8416,21 +8416,29 @@ begin
       // add and load default required packages
       PkgBoss.AddDefaultDependencies(Project1);
 
-      if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
-        debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
-      end;
-
       // rebuild codetools defines
       MainBuildBoss.RescanCompilerDefines(true,true);
-
-      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False) then
-        DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
 
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
       Project1.DefineTemplates.AllChanged;
       Project1.DefineTemplates.Active:=true;
       DebugBoss.Reset;
+
+    finally
+      Project1.EndUpdate;
+    end;
+
+    Project1.BeginUpdate(true);
+    try
+      // create files
+      if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
+        debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
+      end;
+
+      // init resource files
+      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False) then
+        DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
     finally
       Project1.EndUpdate;
     end;
