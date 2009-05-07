@@ -2100,11 +2100,11 @@ end;
 procedure TControl.Click;
 begin
   //DebugLn(['TControl.Click ',DbgSName(Self)]);
-  if (not (csDesigning in ComponentState)) and (ActionLink<>nil)
-  and ((Action=nil) or (@FOnClick<>@Action.OnExecute) or Assigned(FOnClick))
-  then
+  if (not (csDesigning in ComponentState)) and (ActionLink <> nil) and
+     ((Action=nil) or (@FOnClick <> @Action.OnExecute) or Assigned(FOnClick)) then
     ActionLink.Execute(Self)
-  else if Assigned(FOnClick) then
+  else
+  if Assigned(FOnClick) then
     FOnClick(Self);
 end;
 
@@ -2115,7 +2115,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.DialogChar(var Message: TLMKey): boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 procedure TControl.UpdateMouseCursor(X, Y: integer);
