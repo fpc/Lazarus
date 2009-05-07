@@ -66,7 +66,7 @@ constructor TfrTNPDFExportFilter.Create(AStream: TStream);
 begin
     inherited;
     PDF := TPReport.Create(nil);
-    //PDF.CompressionMethod := cmFlateDecode;
+    PDF.CompressionMethod := cmFlateDecode;
     PDF.UseOutlines := True;
     PDF.PageLayout := plOneColumn;
     PDF.BeginDoc;
