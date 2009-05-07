@@ -2609,6 +2609,7 @@ var
         {$IFDEF DebugLR}
         DebugLn('2 Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         {$ENDIF}
+        (*
         while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
         begin
           Canvas.Font.Size := Canvas.Font.Size-1;
@@ -2616,6 +2617,7 @@ var
           DebugLn('Rescal font %d',[Canvas.Font.Size]);
           {$ENDIF}
         end;
+        *)
         th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
         {$IFDEF DebugLR}
         DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
