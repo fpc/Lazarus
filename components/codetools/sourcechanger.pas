@@ -104,7 +104,7 @@ type
     CurPos, AtomStart, AtomEnd, SrcLen, CurIndent, HiddenIndent: integer;
     CommentLvl: integer;
     CommentStartPos: array of integer;
-    Src, UpperSrc: string;
+    Src: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
     procedure ReadTilDirectiveEnd;
@@ -1092,15 +1092,15 @@ var c1, c2: char;
 begin
   AtomStart:=CurPos;
   if AtomStart<=SrcLen then begin
-    c1:=UpperSrc[CurPos];
+    c1:=Src[CurPos];
     case c1 of
-      'A'..'Z','_': // identifier
+      'a'..'z','A'..'Z','_': // identifier
         begin
           CurAtomType:=atIdentifier;
           repeat
             inc(CurPos);
           until (CurPos>SrcLen) or (not IsIdentChar[Src[CurPos]]);
-          if WordIsKeyWord.DoItUpperCase(UpperSrc,AtomStart,CurPos-AtomStart)
+          if WordIsKeyWord.DoItCaseInsensitive(Src,AtomStart,CurPos-AtomStart)
           then
             CurAtomType:=atKeyword;
         end;
@@ -1134,7 +1134,7 @@ begin
             while (CurPos<=SrcLen) and (IsNumberChar[Src[CurPos]])
             do
               inc(CurPos);
-            if (CurPos<=SrcLen) and (UpperSrc[CurPos]='E')
+            if (CurPos<=SrcLen) and (Src[CurPos] in ['e','E'])
             then begin
               // read exponent
               inc(CurPos);
@@ -1372,7 +1372,6 @@ begin
       Indent:=0;
     // init
     Src:=AStatement;
-    UpperSrc:=UpperCaseStr(Src);
     SrcLen:=length(Src);
     if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
     CurIndent:=IndentSize;

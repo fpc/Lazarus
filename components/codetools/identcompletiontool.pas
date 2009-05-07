@@ -1387,7 +1387,7 @@ procedure TIdentCompletionTool.FindCollectionContext(
     case ContextNode.Desc of
     ctnProperty:
       // check for special property keywords
-      if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,
+      if WordIsPropertySpecifier.DoItCaseInsensitive(Src,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
       then
         // do not resolve property specifiers
@@ -1712,7 +1712,7 @@ begin
                  or UpAtomIs('DO')
                  or UpAtomIs('TO')
                  or UpAtomIs('OF')
-                 or WordIsBinaryOperator.DoItUppercase(UpperSrc,
+                 or WordIsBinaryOperator.DoItCaseInsensitive(Src,
                           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
         then begin
           // do not add semicolon
@@ -1728,7 +1728,7 @@ begin
           then begin
             // check if a semicolon is needed at the end
             if (CurPos.Flag in [cafEnd,cafBegin])
-            or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
+            or WordIsBlockKeyWord.DoItCaseInsensitive(Src,
                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             or ((CurPos.Flag=cafWord)
                 and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))

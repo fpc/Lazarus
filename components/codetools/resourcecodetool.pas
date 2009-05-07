@@ -68,7 +68,6 @@ procedure TResourceCodeTool.SetSource(ACode: TCodeBuffer);
 begin
   ClearLastError;
   Src:=ACode.Source;
-  UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
   CurPos:=StartAtomPosition;
   LastAtoms.Clear;

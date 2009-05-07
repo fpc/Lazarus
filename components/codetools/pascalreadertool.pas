@@ -472,7 +472,7 @@ begin
   end;
 
   // copy memorystream to Result string
-  Result:=GetExtraction;
+  Result:=GetExtraction(phpInUpperCase in Attr);
   
   // add semicolon
   if ([phpWithoutSemicolon,phpDoNotAddSemicolon]*Attr=[])
@@ -508,7 +508,7 @@ begin
     end;
 
     if InUpperCase then
-      Result:=GetIdentifier(@UpperSrc[DefNode.StartPos])
+      Result:=UpperCaseStr(GetIdentifier(@Src[DefNode.StartPos]))
     else
       Result:=GetIdentifier(@Src[DefNode.StartPos]);
   end else
@@ -538,7 +538,7 @@ begin
     if not AtomIsChar(',') then break;
   end;
   // copy memorystream to Result string
-  Result:=GetExtraction;
+  Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
 function TPascalReaderTool.ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode
@@ -918,7 +918,7 @@ begin
   and (CurPos.StartPos<=SrcLen) do
     ExtractNextAtom(true,Attr);
   // copy memorystream to Result string
-  Result:=GetExtraction;
+  Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
 function TPascalReaderTool.ExtractCode(StartPos, EndPos: integer;
@@ -934,7 +934,7 @@ begin
   and (CurPos.StartPos<=SrcLen) do
     ExtractNextAtom(true,Attr);
   // copy memorystream to Result string
-  Result:=GetExtraction;
+  Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
 function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;
@@ -987,7 +987,7 @@ begin
   end;
 
   // copy memorystream to Result string
-  Result:=GetExtraction;
+  Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
 function TPascalReaderTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode

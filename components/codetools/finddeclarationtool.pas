@@ -2573,7 +2573,7 @@ var
   begin
     Result:=false;
     if ContextNode.FirstChild=nil then exit;
-    //debugln('SearchInOnBlockDefinition B ',GetIdentifier(@UpperSrc[ContextNode.StartPos]));
+    //debugln('SearchInOnBlockDefinition B ',GetIdentifier(@Src[ContextNode.StartPos]));
     if (fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(ContextNode.FirstChild.StartPos,Params.Identifier)
     then begin
@@ -5055,26 +5055,26 @@ begin
       Params.Flags:=OldFlags;
       exit;
     end;
-    if not WordIsBinaryOperator.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    if not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
       RaiseBinaryOperatorNotFound;
     // put operator on stack
     ExprStack[StackPtr].theOperator:=CurPos;
     // find operator precendence level
-    if WordIsLvl1Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    if WordIsLvl1Operator.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
       ExprStack[StackPtr].OperatorLvl:=1
-    else if WordIsLvl2Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    else if WordIsLvl2Operator.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
       ExprStack[StackPtr].OperatorLvl:=2
-    else if WordIsLvl3Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    else if WordIsLvl3Operator.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
       ExprStack[StackPtr].OperatorLvl:=3
-    else if WordIsLvl4Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    else if WordIsLvl4Operator.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
       ExprStack[StackPtr].OperatorLvl:=4
@@ -6555,7 +6555,7 @@ begin
     or (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,
                         cafRoundBracketClose,cafEdgedBracketClose])
     or (AtomIsKeyWord
-      and not IsKeyWordInConstAllowed.DoItUpperCase(UpperSrc,
+      and not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
     then begin
       break;
@@ -6572,7 +6572,7 @@ function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
   
   procedure ConvertIdentifierAtCursor;
   begin
-    if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    if WordIsPredefinedIdentifier.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos) then
     begin
       // predefined identifiers
@@ -7570,15 +7570,15 @@ begin
     Result:=vatSpace
   else if (CurPos.StartPos>SrcLen) then
     Result:=vatNone
-  else if IsIdentStartChar[UpperSrc[CurPos.StartPos]] then begin
-    if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  else if IsIdentStartChar[Src[CurPos.StartPos]] then begin
+    if WordIsPredefinedIdentifier.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos) then
       Result:=vatPreDefIdentifier
     else if UpAtomIs('INHERITED') then
       Result:=vatINHERITED
     else if UpAtomIs('AS') then
       Result:=vatAS
-    else if WordIsKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    else if WordIsKeyWord.DoItCaseInsensitive(Src,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos) then
       Result:=vatKeyWord
     else if UpAtomIs('PROPERTY') then begin

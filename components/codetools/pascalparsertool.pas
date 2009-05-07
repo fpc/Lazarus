@@ -122,7 +122,7 @@ type
   protected
     // code extraction
     procedure InitExtraction;
-    function GetExtraction: string;
+    function GetExtraction(InUpperCase: boolean): string;
     function ExtractStreamEndIsIdentChar: boolean;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
     // sections
@@ -718,7 +718,7 @@ begin
       MaxPos:=SrcLen;
     repeat
       ReadNextAtom;
-      if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+      if BlockStatementStartKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos) then
       begin
         if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
@@ -882,7 +882,7 @@ begin
   if not UpAtomIs('OF') then
     RaiseCharExpectedButAtomFound('[');
   ReadNextAtom;
-  Result:=ClassVarTypeKeyWordFuncList.DoItUpperCase(UpperSrc,
+  Result:=ClassVarTypeKeyWordFuncList.DoItCaseInsensitive(Src,
     CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
@@ -1499,10 +1499,10 @@ begin
     SaveRaiseException(ctsSemicolonNotFound);
   repeat
     if (pphIsMethod in ParseAttr) then
-      IsSpecifier:=IsKeyWordMethodSpecifier.DoItUppercase(UpperSrc,
+      IsSpecifier:=IsKeyWordMethodSpecifier.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     else
-      IsSpecifier:=IsKeyWordProcedureSpecifier.DoItUppercase(UpperSrc,
+      IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     if IsSpecifier then begin
       // read specifier
@@ -1532,7 +1532,7 @@ begin
           ReadNextAtom;
           if not (CurPos.Flag in AllCommonAtomWords) then
             RaiseStringExpectedButAtomFound(ctsKeyword);
-          if not IsKeyWordProcedureBracketSpecifier.DoItUppercase(UpperSrc,
+          if not IsKeyWordProcedureBracketSpecifier.DoItCaseInsensitive(Src,
             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
           then
             RaiseKeyWordExampleExpected;
@@ -1612,7 +1612,7 @@ begin
   Result:=false;
   if CurPos.Flag in AllCommonAtomWords then begin
     // word (identifier or keyword)
-    if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
+    if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then begin
       if ExceptionOnError then
         RaiseUnexpectedKeyWord
@@ -1625,7 +1625,7 @@ begin
       Result:=ReadConstant(ExceptionOnError,Extract,Attr);
       exit;
     end;
-    if WordIsTermOperator.DoItUpperCase(UpperSrc,
+    if WordIsTermOperator.DoItCaseInsensitive(Src,
          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       // identifier + operator + ?
@@ -1653,7 +1653,7 @@ begin
   end else if AtomIsNumber or AtomIsStringConstant then begin
     // number or '...' or #...
     if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-    if WordIsTermOperator.DoItUpperCase(UpperSrc,
+    if WordIsTermOperator.DoItCaseInsensitive(Src,
          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       // number + operator + ?
@@ -1675,7 +1675,7 @@ begin
                 RaiseCharExpectedButAtomFound(')')
               else exit;
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if WordIsTermOperator.DoItUpperCase(UpperSrc,
+            if WordIsTermOperator.DoItCaseInsensitive(Src,
                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             then begin
               // open bracket + ? + close bracket + operator + ?
@@ -1702,7 +1702,7 @@ begin
               end;
             until false;
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if WordIsTermOperator.DoItUpperCase(UpperSrc,
+            if WordIsTermOperator.DoItCaseInsensitive(Src,
                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             then begin
               // open bracket + ? + close bracket + operator + ?
@@ -1933,7 +1933,7 @@ begin
 //DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
-      Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      Result:=CurKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                       CurPos.EndPos-CurPos.StartPos)
     else begin
       if Src[CurPos.StartPos] in ['(','['] then
@@ -1995,7 +1995,7 @@ begin
           CreateChildNode;
           CurNode.Desc:=ctnFinalization;
           CurSection:=CurNode.Desc;
-        end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+        end else if EndKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos) then
         begin
           ReadTilBlockEnd(false,false);
@@ -2226,7 +2226,7 @@ begin
         UndoReadNextAtom;
         break;
       end;
-    end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+    end else if EndKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos)
       or UpAtomIs('REPEAT') then
     begin
@@ -2261,13 +2261,13 @@ begin
       case BlockType of
       
       ebtBegin,ebtTry,ebtCase,ebtRepeat:
-        if UnexpectedKeyWordInBeginBlock.DoItUppercase(UpperSrc,
+        if UnexpectedKeyWordInBeginBlock.DoItCaseInsensitive(Src,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
         then
           RaiseUnexpectedKeyWordInBeginEndBlock;
           
       ebtAsm:
-        if UnexpectedKeyWordInAsmBlock.DoItUppercase(UpperSrc,
+        if UnexpectedKeyWordInAsmBlock.DoItCaseInsensitive(Src,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
         then
           RaiseUnexpectedKeyWordInBeginEndBlock;
@@ -2282,7 +2282,7 @@ function TPascalParserTool.ReadTilBlockStatementEnd(
 begin
   if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
     Result:=ReadTilBracketClose(ExceptionOnNotFound)
-  else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
+  else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
     CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
   then
     Result:=ReadTilBlockEnd(false,false)
@@ -2331,7 +2331,7 @@ begin
     ReadPriorAtom;
     if (CurPos.StartPos<1) then begin
       SaveRaiseExceptionFmt(ctsWordNotFound,['begin']);
-    end else if WordIsBlockKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    end else if WordIsBlockKeyWord.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos) then
     begin
       if (CurPos.Flag=cafEND) or (UpAtomIs('UNTIL')) then begin
@@ -2369,7 +2369,7 @@ begin
           OldAtom:=CurPos;
           repeat
             ReadPriorAtom;
-            if WordIsBlockKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+            if WordIsBlockKeyWord.DoItCaseInsensitive(Src,CurPos.StartPos,
               CurPos.EndPos-CurPos.StartPos) then
             begin
               if UpAtomIs('CASE') then begin
@@ -2455,7 +2455,7 @@ function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
 begin
   Result:=true;
   repeat
-    if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+    if BlockStatementStartKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos) then
     begin
       if not ReadTilBlockEnd(false,CreateNodes) then exit(false);
@@ -2634,7 +2634,7 @@ procedure TPascalParserTool.ReadVariableType;
 // creates nodes for variable type
 begin
   ReadNextAtom;
-  TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
     CurPos.EndPos-CurPos.StartPos);
   if UpAtomIs('ABSOLUTE') then begin
     ReadNextAtom;
@@ -2647,7 +2647,7 @@ begin
       if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
         ReadTilBracketClose(true);
       if (CurPos.Flag in AllCommonAtomWords)
-      and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
+      and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
       and AtomIsKeyWord
       then
@@ -2957,7 +2957,7 @@ begin
       if (CurPos.Flag=cafColon) then begin
         // read type
         ReadNextAtom;
-        TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+        TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos);
       end;
       if (CurPos.Flag<>cafEqual) then
@@ -2970,7 +2970,7 @@ begin
         if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
           ReadTilBracketClose(true);
         if (CurPos.Flag in AllCommonAtomWords)
-        and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
+        and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and AtomIsKeyWord then
           RaiseStringExpectedButAtomFound('constant');
@@ -3165,7 +3165,7 @@ begin
     RaiseCharExpectedButAtomFound('=');
   // read type
   ReadNextAtom;
-  TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
     CurPos.EndPos-CurPos.StartPos);
   // read ;
   if CurPos.Flag<>cafSemicolon then
@@ -3175,22 +3175,22 @@ end;
 function TPascalParserTool.KeyWordFuncTypePacked: boolean;
 begin
   ReadNextAtom;
-  if not PackedTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  if not PackedTypesKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
     CurPos.EndPos-CurPos.StartPos)
   then
     RaiseStringExpectedButAtomFound('"record"');
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                             CurPos.EndPos-CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncTypeBitPacked: boolean;
 begin
   ReadNextAtom;
-  if not BitPackedTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  if not BitPackedTypesKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
     CurPos.EndPos-CurPos.StartPos)
   then
     RaiseStringExpectedButAtomFound('"array"');
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                             CurPos.EndPos-CurPos.StartPos);
 end;
 
@@ -3437,7 +3437,7 @@ begin
   if not UpAtomIs('OF') then
     RaiseStringExpectedButAtomFound('"of"');
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                             CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
@@ -3499,7 +3499,7 @@ begin
     if not EqualFound then begin
       // read modifiers
       repeat
-        if (not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+        if (not IsKeyWordProcedureTypeSpecifier.DoItCaseInsensitive(Src,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then
         begin
           UndoReadNextAtom;
@@ -3511,7 +3511,7 @@ begin
               break;
             end;
             // delphi/fpc allow proc modifiers without semicolons
-            if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+            if not IsKeyWordProcedureTypeSpecifier.DoItCaseInsensitive(Src,
               CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
             begin
               RaiseCharExpectedButAtomFound(';');
@@ -3567,7 +3567,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnTypeType;
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -3580,7 +3580,7 @@ begin
   CurNode.Desc:=ctnFileType;
   if ReadNextUpAtomIs('OF') then begin
     ReadNextAtom;
-    Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos);
     if not Result then exit;
   end;
@@ -3595,7 +3595,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -3621,7 +3621,7 @@ var SubRangeOperatorFound: boolean;
       if (CurPos.Flag in [cafSemicolon,cafColon,cafRoundBracketClose,
         cafEqual,cafEdgedBracketClose])
       or (AtomIsKeyWord
-          and (not IsKeyWordInConstAllowed.DoItUpperCase(UpperSrc,
+          and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
       then
         break;
@@ -3761,7 +3761,7 @@ begin
         ReadNextAtom; // read next variable name
       until false;
       ReadNextAtom;
-      Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos);
       if not Result then exit;
       CurNode.EndPos:=CurPos.EndPos;
@@ -3838,7 +3838,7 @@ begin
           ReadNextAtom; // read next variable name
         until false;
         ReadNextAtom; // read type
-        Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+        Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
            CurPos.EndPos-CurPos.StartPos);
         if not Result then exit;
         CurNode.EndPos:=CurPos.EndPos;
@@ -3898,12 +3898,14 @@ begin
   ExtractMemStream.Position:=0;
 end;
 
-function TPascalParserTool.GetExtraction: string;
+function TPascalParserTool.GetExtraction(InUpperCase: boolean): string;
 begin
   SetLength(Result,ExtractMemStream.Position);
   ExtractMemStream.Position:=0;
   if Result<>'' then
     ExtractMemStream.Read(Result[1],length(Result));
+  if InUpperCase then
+    Result:=UpperCaseStr(Result);
 end;
 
 function TPascalParserTool.ExtractStreamEndIsIdentChar: boolean;
@@ -3933,12 +3935,7 @@ begin
     LastAtomEndPos:=LastAtoms.GetValueAt(0).EndPos;
     if phpWithComments in Attr then begin
       // add space/comment between pascal atoms
-      if phpInUpperCase in Attr then
-        ExtractMemStream.Write(UpperSrc[LastAtomEndPos],
-             CurPos.StartPos-LastAtomEndPos)
-      else
-        ExtractMemStream.Write(Src[LastAtomEndPos],
-             CurPos.StartPos-LastAtomEndPos);
+      ExtractMemStream.Write(Src[LastAtomEndPos],CurPos.StartPos-LastAtomEndPos);
     end else if (ExtractMemStream.Position>0) then
     begin
       // some space/comments were skipped
@@ -3954,12 +3951,7 @@ begin
     end;
   end;
   if AddAtom then begin
-    if phpInUpperCase in Attr then
-      ExtractMemStream.Write(UpperSrc[CurPos.StartPos],
-          CurPos.EndPos-CurPos.StartPos)
-    else
-      ExtractMemStream.Write(Src[CurPos.StartPos],
-          CurPos.EndPos-CurPos.StartPos);
+    ExtractMemStream.Write(Src[CurPos.StartPos],CurPos.EndPos-CurPos.StartPos);
   end;
   if (ExtractSearchPos>0)
   and (ExtractSearchPos<=ExtractMemStream.Position)

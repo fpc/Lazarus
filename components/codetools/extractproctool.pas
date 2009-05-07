@@ -216,7 +216,7 @@ begin
     or (CurPos.StartPos>CursorNode.EndPos) then
       break;
     //debugln('TExtractProcTool.InitExtractProc A "',GetAtom,'"');
-    if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
+    if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       //debugln('TExtractProcTool.InitExtractProc WordIsBlockStatementStart "',GetAtom,'"');
@@ -248,13 +248,13 @@ begin
       end;
       //debugln('TExtractProcTool.InitExtractProc Block ok');
     end
-    else if WordIsBlockStatementEnd.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementEnd.DoItCaseInsensitive(Src,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       // a block ended inside, that started outside
       exit;
     end
-    else if WordIsBlockStatementMiddle.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementMiddle.DoItCaseInsensitive(Src,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       // a block ended inside, that started outside

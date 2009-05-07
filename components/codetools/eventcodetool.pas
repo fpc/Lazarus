@@ -619,7 +619,7 @@ begin
   end;
   NameStart:=ProcHeadNode.StartPos;
   NameEnd:=NameStart;
-  while (NameEnd<=SrcLen) and (IsIdentChar[UpperSrc[NameEnd]]) do
+  while (NameEnd<=SrcLen) and (IsIdentChar[Src[NameEnd]]) do
     inc(NameEnd);
   if not SourceChangeCache.Replace(gtNone,gtNone,NameStart,NameEnd,
       NewMethodName)

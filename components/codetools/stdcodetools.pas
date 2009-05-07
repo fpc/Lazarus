@@ -3718,6 +3718,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
     ParamPos: Integer;
     ACleanPos: Integer;
     StartPos: Integer;
+    s: String;
   begin
     Result:=false;
     // find $R directive
@@ -3726,9 +3727,9 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
       ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
         Scanner.NestedComments,ParamPos);
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
+      s:=UpperCaseStr(copy(Src,ParamPos,6));
       if (Src[ACleanPos]='{')
-      and ((copy(UpperSrc,ParamPos,6)='*.DFM}')
-        or (copy(UpperSrc,ParamPos,6)='*.XFM}'))
+      and ((s='*.DFM}') or (s='*.XFM}'))
       then begin
         StartPos:=FindLineEndOrCodeInFrontOfPosition(ACleanPos,true);
         if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,ParamPos+6,'')
@@ -4925,7 +4926,7 @@ begin
         // jump backward to matching bracket
         if not ReadBackwardTilAnyBracketClose then exit;
       end
-      else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
+      else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         // block start found
@@ -5024,7 +5025,7 @@ begin
       // jump backward to matching bracket
       if not ReadBackwardTilAnyBracketClose then exit;
     end
-    else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
     begin
       // block start found
@@ -5494,7 +5495,7 @@ begin
   BlockStart:=-1;
   // read til this block is closed
   while (CurPos.StartPos<=SrcLen) do begin
-    if BlockKeywordFuncList.DoItUppercase(UpperSrc,
+    if BlockKeywordFuncList.DoItCaseInsensitive(Src,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
     begin
       for CurBlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do

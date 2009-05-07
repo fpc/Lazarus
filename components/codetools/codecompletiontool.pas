@@ -4406,7 +4406,7 @@ var
     ReadNextAtom;
     if AtomIsChar(';') then exit;
     AtomIsIdentifier(true);
-    if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then exit;
     Parts[SpecParam]:=CurPos;
     ReadNextAtom;
@@ -4462,7 +4462,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         {$ENDIF}
         RaiseException(ctsErrorInParamList);
       end;
-      CleanParamList:=GetExtraction;
+      CleanParamList:=GetExtraction(true);
       Parts[ppParamList].EndPos:=CurPos.EndPos;
     end else
       CleanParamList:='';
@@ -4502,7 +4502,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         RaiseException(ctsIndexSpecifierRedefined);
       Parts[ppIndexWord]:=CurPos;
       ReadNextAtom;
-      if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then
         RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppIndex].StartPos:=CurPos.StartPos;
@@ -4533,7 +4533,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
           RaiseException(ctsDefaultSpecifierRedefined);
         Parts[ppDefaultWord]:=CurPos;
         ReadNextAtom;
-        if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+        if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos) then
           RaiseExceptionFmt(ctsDefaultParameterExpectedButAtomFound,[GetAtom]);
         Parts[ppDefault].StartPos:=CurPos.StartPos;
@@ -4550,7 +4550,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         while CurPos.Flag=cafComma do begin
           ReadNextAtom;
           AtomIsIdentifier(true);
-          if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+          if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos) then
             RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
           ReadNextAtom;
@@ -4665,7 +4665,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
           {$ENDIF}
           RaiseException(ctsErrorInParamList);
         end;
-        ParamList:=GetExtraction;
+        ParamList:=GetExtraction(false);
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
           AccessFunc:='function '+AccessParam
@@ -4788,7 +4788,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                              phpWithComments])
         then
           RaiseException(ctsErrorInParamList);
-        ParamList:=GetExtraction;
+        ParamList:=GetExtraction(false);
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
           AccessFunc:='procedure '+AccessParam

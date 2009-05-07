@@ -80,7 +80,6 @@ type
     CursorPos: TCodeXYPosition;
     Src: string;
     GapSrc: string;
-    GapUpperSrc: string;
     Code: TCodeBuffer;
     Valid: boolean;
     CurPos: TAtomPosition;
@@ -166,7 +165,6 @@ type
     // current Values, Position, Node ...
     CurPos: TAtomPosition;
     Src: string;
-    UpperSrc: string;
     SrcLen: integer;
     CurNode: TCodeTreeNode;
     LastAtoms: TAtomRing;
@@ -564,16 +562,20 @@ begin
 end;
 
 function TCustomCodeTool.UpAtomIs(const AnAtom: shortstring): boolean;
-var AnAtomLen,i : integer;
+var
+  AnAtomLen, i: integer;
+  p: PChar;
 begin
   Result:=false;
+  AnAtomLen:=length(AnAtom);
+  if AnAtomLen<>CurPos.EndPos-CurPos.StartPos then exit;
   if (CurPos.EndPos<=SrcLen+1) and (CurPos.StartPos>=1) then begin
-    AnAtomLen:=length(AnAtom);
-    if AnAtomLen=CurPos.EndPos-CurPos.StartPos then begin
-      for i:=1 to AnAtomLen do
-        if AnAtom[i]<>UpperSrc[CurPos.StartPos-1+i] then exit;
-      Result:=true;
+    p:=@Src[CurPos.StartPos];
+    for i:=1 to AnAtomLen do begin
+      if AnAtom[i]<>UpChars[p^] then exit;
+      inc(p);
     end;
+    Result:=true;
   end;
 end;
 
@@ -597,7 +599,9 @@ end;
 
 function TCustomCodeTool.CompareNodeIdentChars(ANode: TCodeTreeNode;
   const AnUpperIdent: string): integer;
-var AnIdentLen, i, NodeSrcLen, MinLen, p: integer;
+var
+  AnIdentLen, i, NodeSrcLen, MinLen: integer;
+  p: PChar;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   if (ANode.StartPos<=SrcLen) and (ANode.EndPos<=SrcLen+1)
@@ -609,11 +613,11 @@ begin
     else
       MinLen:=NodeSrcLen;
     i:=1;
-    p:=ANode.StartPos-1+i;
-    while (i<=MinLen) and (IsIdentChar[Src[p]]) do begin
-      if AnUpperIdent[i]<>UpperSrc[p] then begin
+    p:=@Src[ANode.StartPos];
+    while (i<=MinLen) and (IsIdentChar[p^]) do begin
+      if AnUpperIdent[i]<>UpChars[p^] then begin
         // identifiers different in one letter
-        if UpperSrc[p]>AnUpperIdent[i] then
+        if UpChars[p^]>AnUpperIdent[i] then
           Result:=-1
         else
           Result:=1;
@@ -624,7 +628,7 @@ begin
     end;
     if (i>MinLen) and (i>AnIdentLen) then begin
       // node is longer than AnUpperIdent
-      if (i>NodeSrcLen) or (not IsIdentChar[Src[p]]) then
+      if (i>NodeSrcLen) or (not IsIdentChar[p^]) then
         // node identifier is equal to AnUpperIdent
         Result:=0
       else
@@ -639,19 +643,24 @@ end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(
   CleanStartPos1, CleanStartPos2: integer): boolean;
+var
+  p1: PChar;
+  p2: PChar;
 begin
-  Result:=(CleanStartPos1>=1) and (CleanStartPos1<=SrcLen)
-          and (CleanStartPos2>=1) and (CleanStartPos2<=SrcLen);
-  if not Result then exit;
-  while (CleanStartPos1<=SrcLen) and (IsIdentChar[Src[CleanStartPos1]]) do begin
-    if (UpperSrc[CleanStartPos1]<>UpperSrc[CleanStartPos2]) then begin
-      Result:=false;
-      exit;
-    end;
+  if (CleanStartPos1<1) or (CleanStartPos1>SrcLen)
+     or (CleanStartPos2<1) or (CleanStartPos2>SrcLen)
+  then
+    exit(false);
+  p1:=@Src[CleanStartPos1];
+  p2:=@Src[CleanStartPos2];
+  while (CleanStartPos1<=SrcLen) and IsIdentChar[p1^] do begin
+    if (UpChars[p1^]<>UpChars[p2^]) then
+      exit(false);
     inc(CleanStartPos1);
-    inc(CleanStartPos2);
+    inc(p1);
+    inc(p2);
   end;
-  Result:=(CleanStartPos2>SrcLen) or (not IsIdentChar[Src[CleanStartPos2]]);
+  Result:=(not IsIdentChar[p2^]);
 end;
 
 function TCustomCodeTool.AtomIsChar(const c: char): boolean;
@@ -664,8 +673,8 @@ end;
 function TCustomCodeTool.AtomIsKeyWord: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
-      and (IsIdentStartChar[UpperSrc[CurPos.StartPos]])
-      and (WordIsKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      and (IsIdentStartChar[Src[CurPos.StartPos]])
+      and (WordIsKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos));
 end;
 
@@ -677,29 +686,16 @@ function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
   end;
 
 begin
-  if CurPos.StartPos<=SrcLen then begin
-    if IsIdentStartChar[UpperSrc[CurPos.StartPos]] then begin
-      if not WordIsKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-             CurPos.EndPos-CurPos.StartPos) then
-        Result:=true
-      else begin
-        if ExceptionOnNotFound then
-          RaiseIdentExpectedButAtomFound
-        else
-          Result:=false;
-      end;
-    end else begin
-      if ExceptionOnNotFound then
-        RaiseIdentExpectedButAtomFound
-      else
-        Result:=false;
-    end;
-  end else begin
-    if ExceptionOnNotFound then
-      RaiseIdentExpectedButEOFFound
-    else
-      Result:=false;
-  end;
+  if (CurPos.StartPos<=SrcLen)
+  and IsIdentStartChar[Src[CurPos.StartPos]]
+  and not WordIsKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
+             CurPos.EndPos-CurPos.StartPos)
+  then
+    exit(true);
+  if ExceptionOnNotFound then
+    RaiseIdentExpectedButAtomFound
+  else
+    Result:=false;
 end;
 
 function TCustomCodeTool.AtomIsNumber: boolean;
@@ -807,21 +803,20 @@ function TCustomCodeTool.LastUpAtomIs(BackIndex: integer;
 var ap: TAtomPosition;
   AnAtomLen: integer;
   i: integer;
+  p: PChar;
 begin
   Result:=false;
-  if (BackIndex>=0) and (BackIndex<LastAtoms.Count) then begin
-    ap:=LastAtoms.GetValueAt(BackIndex);
-    Result:=false;
-    if (ap.StartPos<SrcLen) and (ap.EndPos<=SrcLen+1)
-    and (ap.StartPos>=1) then begin
-      AnAtomLen:=length(AnAtom);
-      if AnAtomLen=ap.EndPos-ap.StartPos then begin
-        for i:=1 to AnAtomLen do
-          if AnAtom[i]<>UpperSrc[ap.StartPos-1+i] then exit;
-        Result:=true;
-      end;
-    end;
+  if (BackIndex<0) or (BackIndex>=LastAtoms.Count) then exit;
+  ap:=LastAtoms.GetValueAt(BackIndex);
+  AnAtomLen:=length(AnAtom);
+  if AnAtomLen<>ap.EndPos-ap.StartPos then exit;
+  if (ap.StartPos>SrcLen) or (ap.EndPos>SrcLen+1) or (ap.StartPos<1) then exit;
+  p:=@Src[ap.StartPos];
+  for i:=1 to AnAtomLen do begin
+    if AnAtom[i]<>UpChars[p^] then exit;
+    inc(p);
   end;
+  Result:=true;
 end;
 
 function TCustomCodeTool.GetAtom: string;
@@ -831,7 +826,7 @@ end;
 
 function TCustomCodeTool.GetUpAtom: string;
 begin
-  Result:=copy(UpperSrc,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=UpperCaseStr(copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos));
 end;
 
 function TCustomCodeTool.GetAtom(const Atom: TAtomPosition): string;
@@ -841,23 +836,26 @@ end;
 
 function TCustomCodeTool.GetUpAtom(const Atom: TAtomPosition): string;
 begin
-  Result:=copy(UpperSrc,Atom.StartPos,Atom.EndPos-Atom.StartPos);
+  Result:=UpperCaseStr(copy(Src,Atom.StartPos,Atom.EndPos-Atom.StartPos));
 end;
 
 function TCustomCodeTool.FreeUpAtomIs(const FreeAtomPos: TAtomPosition;
   const AnAtom: shortstring): boolean;
 var AnAtomLen,i : integer;
+  p: PChar;
 begin
   Result:=false;
-  if (FreeAtomPos.StartPos<SrcLen) and (FreeAtomPos.EndPos<=SrcLen+1)
-  and (FreeAtomPos.StartPos>=1) then begin
-    AnAtomLen:=length(AnAtom);
-    if AnAtomLen=FreeAtomPos.EndPos-FreeAtomPos.StartPos then begin
-      for i:=1 to AnAtomLen do
-        if AnAtom[i]<>UpperSrc[FreeAtomPos.StartPos-1+i] then exit;
-      Result:=true;
-    end;
+  if (FreeAtomPos.StartPos>SrcLen) or (FreeAtomPos.EndPos>SrcLen+1)
+  or (FreeAtomPos.StartPos<1) then
+    exit;
+  AnAtomLen:=length(AnAtom);
+  if AnAtomLen<>FreeAtomPos.EndPos-FreeAtomPos.StartPos then exit;
+  p:=@Src[FreeAtomPos.StartPos];
+  for i:=1 to AnAtomLen do begin
+    if AnAtom[i]<>UpChars[p^] then exit;
+    inc(p);
   end;
+  Result:=true;
 end;
 
 procedure TCustomCodeTool.ReadNextAtom;
@@ -959,28 +957,28 @@ begin
     end;
     CurPos.EndPos:=CurPos.StartPos;
     // read atom
-    c1:=UpperSrc[CurPos.EndPos];
+    c1:=Src[CurPos.EndPos];
     case c1 of
     #0: ;
-    '_','A'..'Z':
+    '_','A'..'Z','a'..'z':
       begin
         inc(CurPos.EndPos);
-        while (IsIdentChar[UpperSrc[CurPos.EndPos]]) do
+        while (IsIdentChar[Src[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
         CurPos.Flag:=cafWord;
         case c1 of
-        'B':
+        'b','B':
           if (CurPos.EndPos-CurPos.StartPos=5)
           and UpAtomIs('BEGIN')
           then
             CurPos.Flag:=cafBegin;
-        'E':
+        'e','E':
           if (CurPos.EndPos-CurPos.StartPos=3)
-          and (UpperSrc[CurPos.StartPos+1]='N')
-          and (UpperSrc[CurPos.StartPos+2]='D')
+          and (Src[CurPos.StartPos+1] in ['n','N'])
+          and (Src[CurPos.StartPos+2] in ['d','D'])
           then
             CurPos.Flag:=cafEnd;
-        'R':
+        'r','R':
           if (CurPos.EndPos-CurPos.StartPos=6)
           and UpAtomIs('RECORD')
           then
@@ -1050,7 +1048,7 @@ begin
           do
             inc(CurPos.EndPos);
         end;
-        if (CurPos.EndPos<=SrcLen) and (UpperSrc[CurPos.EndPos]='E') then
+        if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['e','E']) then
         begin
           // read exponent
           inc(CurPos.EndPos);
@@ -1071,7 +1069,7 @@ begin
       begin
         inc(CurPos.EndPos);
         while (CurPos.EndPos<=SrcLen)
-        and (IsHexNumberChar[UpperSrc[CurPos.EndPos]]) do
+        and (IsHexNumberChar[Src[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
       end;
     ';':
@@ -1172,7 +1170,7 @@ var
   var PrePos: integer;
   begin
     while (CurPos.StartPos>1) do begin
-      case UpperSrc[CurPos.StartPos-1] of
+      case Src[CurPos.StartPos-1] of
       '''':
         begin
           dec(CurPos.StartPos);
@@ -1180,7 +1178,7 @@ var
             dec(CurPos.StartPos);
           until (CurPos.StartPos<1) or (Src[CurPos.StartPos]='''');
         end;
-      '0'..'9','A'..'Z':
+      '0'..'9','A'..'Z','a'..'z':
         begin
           // test if char constant
           PrePos:=CurPos.StartPos-1;
@@ -1364,13 +1362,13 @@ begin
     end;
     exit;
   end;
-  c2:=UpperSrc[CurPos.StartPos];
+  c2:=Src[CurPos.StartPos];
   case c2 of
-    '_','A'..'Z':
+    '_','A'..'Z','a'..'z':
       begin
         // identifier or keyword or hexnumber
         while (CurPos.StartPos>1) do begin
-          if (IsIdentChar[UpperSrc[CurPos.StartPos-1]]) then
+          if (IsIdentChar[Src[CurPos.StartPos-1]]) then
             dec(CurPos.StartPos)
           else begin
             case Src[CurPos.StartPos-1] of
@@ -1383,7 +1381,7 @@ begin
               // hex number
               dec(CurPos.StartPos);
             else
-              WordToAtomFlag.DoItUpperCase(UpperSrc,CurPos.StartPos,
+              WordToAtomFlag.DoItCaseInsensitive(Src,CurPos.StartPos,
                                            CurPos.EndPos-CurPos.StartPos);
               CurPos.Flag:=WordToAtomFlag.Flag;
               if CurPos.Flag=cafNone then
@@ -1404,7 +1402,7 @@ begin
         // a binary number, a char constant, a float, a float with exponent
         ForbiddenNumberTypes:=[];
         while true do begin
-          case UpperSrc[CurPos.StartPos] of
+          case UpChars[Src[CurPos.StartPos]] of
           '0'..'1':
             ;
           '2'..'9':
@@ -1434,8 +1432,9 @@ begin
             begin
               // could be part of an exponent
               if (ntFloatWithExponent in ForbiddenNumberTypes)
-              or (CurPos.StartPos<=1) or (UpperSrc[CurPos.StartPos-1]<>'E') then
-              begin
+              or (CurPos.StartPos<=1)
+              or (not (Src[CurPos.StartPos-1] in ['e','E']))
+              then begin
                 inc(CurPos.StartPos);
                 break;
               end;
@@ -1490,7 +1489,7 @@ begin
         end;
         if IsIdentStartChar[Src[CurPos.StartPos]] then begin
           // it is an identifier
-          WordToAtomFlag.DoItUpperCase(UpperSrc,CurPos.StartPos,
+          WordToAtomFlag.DoItCaseInsensitive(Src,CurPos.StartPos,
                                        CurPos.EndPos-CurPos.StartPos);
           CurPos.Flag:=WordToAtomFlag.Flag;
           if CurPos.Flag=cafNone then
@@ -1706,7 +1705,6 @@ begin
       ClearLastError;
       FLastScannerChangeStep:=Scanner.ChangeStep;
       Src:=Scanner.CleanedSrc;
-      UpperSrc:=UpperCaseStr(Src);
       SrcLen:=length(Src);
       {$IFDEF VerboseUpdateNeeded}
       DebugLn(['TCustomCodeTool.BeginParsing FForceUpdateNeeded:=true ',MainFilename]);
@@ -1977,7 +1975,7 @@ begin
   if (CurPos.StartPos>SrcLen) or (CurPos.EndPos<=CurPos.StartPos) then
     Result:=false
   else if IsIdentStartChar[Src[CurPos.StartPos]] then
-    Result:=KeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+    Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
   else
     Result:=true;
@@ -2473,7 +2471,7 @@ begin
   if (AnIdentifier=nil) or (CleanStartPos<1) or (CleanStartPos>SrcLen) then
     exit;
   while IsIdentChar[AnIdentifier^] do begin
-    if (UpChars[AnIdentifier^]=UpperSrc[CleanStartPos]) then begin
+    if (UpChars[AnIdentifier^]=UpChars[Src[CleanStartPos]]) then begin
       inc(AnIdentifier);
       inc(CleanStartPos);
       if CleanStartPos>SrcLen then begin
@@ -2483,7 +2481,7 @@ begin
     end else
       exit(false);
   end;
-  Result:=not IsIdentChar[UpperSrc[CleanStartPos]];
+  Result:=not IsIdentChar[Src[CleanStartPos]];
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiersMethod(Identifier1,
@@ -2617,7 +2615,6 @@ begin
     Src:='';
   if (GapStart>0) then begin
     GapSrc:=copy(Src,GapStart,GapEnd-GapStart);
-    GapUpperSrc:=UpperCaseStr(GapSrc);
     {$IFDEF ShowDirtySrc}
     DebugLn('TDirtySource.SetGap Owner=',ExtractFilename(Owner.MainFilename),
       ' Code=',ExtractFilename(Code.Filename),
@@ -2628,7 +2625,6 @@ begin
     {$ENDIF}
   end else begin
     GapSrc:='';
-    GapUpperSrc:='';
   end;
 end;
 
