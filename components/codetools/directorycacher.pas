@@ -37,6 +37,11 @@ interface
 uses
   Classes, SysUtils, FileProcs, AVL_Tree, CodeToolsStructs;
 
+// verbosity
+{ $DEFINE CTDEBUG}
+{ $DEFINE ShowTriedFiles}
+{ $DEFINE ShowTriedUnits}
+
 {$ifdef MSWindows}
 {$define CaseInsensitiveFilenames}
 {$endif}
@@ -297,7 +302,7 @@ begin
   Filename:='';
   if TheUnitName='' then exit;
   {$IFDEF ShowTriedFiles}
-  DebugLn('SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+  DebugLn(['SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks)]);
   {$ENDIF}
   if UnitLinkStart<1 then
     UnitLinkStart:=1;
@@ -312,8 +317,8 @@ begin
     UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
     if UnitLinkLen>0 then begin
       {$IFDEF ShowTriedFiles}
-      DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
-        ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
+      DebugLn(['  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
+        ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen)]);
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
       and (ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
@@ -861,7 +866,9 @@ var
   NewUnitName: String;
 begin
   Result:='';
-  //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath UnitName="',Unitname,'" InFilename="',InFilename,'"');
+  {$IFDEF ShowTriedUnits}
+  DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath UnitName="',Unitname,'" InFilename="',InFilename,'" Directory="',Directory,'"');
+  {$ENDIF}
   if InFilename<>'' then begin
     // uses IN parameter
     InFilename:=TrimFilename(SetDirSeparators(InFilename));
@@ -920,7 +927,14 @@ begin
       Result:=FindUnitSourceInCleanSearchPath(UnitName,SrcPath,AnyCase);
       if Result='' then begin
         // search in unit links
+        {$IFDEF ShowTriedUnits}
+        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',UnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'"']);
+        {$ENDIF}
         Result:=FindUnitLink(UnitName);
+        {$IFDEF ShowTriedUnits}
+        if Result='' then
+          DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',UnitName,' not found in unitlinks. Directory="',Directory,'"']);
+        {$ENDIF}
       end;
       if Result<>'' then begin
         // improve unit name
