@@ -3929,7 +3929,10 @@ begin
   if not Result then Exit;
 
   CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
-  if (Width = 0) or (Height = 0) then Exit;
+  if (Width = 0) or (Height = 0) then Exit(True);
+  // X2, Y2 is not part of the rectangle
+  dec(Width);
+  dec(Height);
 
   // first draw interior in brush color
   DCOrigin := DevCtx.Offset;
