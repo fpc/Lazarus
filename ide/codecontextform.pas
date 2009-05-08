@@ -581,7 +581,7 @@ procedure TCodeContextFrm.DrawHints(var MaxWidth, MaxHeight: Integer;
 var
   HorizontalSpace: Integer;
   VerticalSpace: Integer;
-  BackgroundColor, TextColor, TextBColor: TColor;
+  BackgroundColor, TextGrayColor, TextColor, PenColor: TColor;
 
   procedure DrawHint(const Line: string; var AHintRect: TRect);
   var
@@ -622,16 +622,16 @@ var
           '*':
             begin
               // switch to normal font
-              Canvas.Font.Color:=TextColor;
-              //DebugLn('DrawHint normal');
+              Canvas.Font.Color:=TextGrayColor;
+              //DebugLn('DrawHint gray');
               continue;
             end;
             
           'b':
             begin
-              // switch to bold font
-              Canvas.Font.Color:=TextBColor;
-              //DebugLn('DrawHint blue');
+              // switch to normal font
+              Canvas.Font.Color:=TextColor;
+              //DebugLn('DrawHint normal');
               continue;
             end;
             
@@ -666,8 +666,8 @@ var
       if Draw then begin
         Canvas.FillRect(Rect(TokenRect.Left,TokenRect.Top-VerticalSpace,
                              TokenRect.Right,TokenRect.Bottom+VerticalSpace));
-        DrawText(Canvas.Handle,@Line[LastTokenEnd],TokenEnd-LastTokenEnd,TokenRect,
-                 DT_SINGLELINE+DT_NOCLIP);
+        DrawText(Canvas.Handle,@Line[LastTokenEnd],TokenEnd-LastTokenEnd,
+                 TokenRect,DT_SINGLELINE+DT_NOCLIP);
       end;
       // update LineHeight and UsedWidth
       if LineHeight<TokenSize.y then
@@ -695,18 +695,19 @@ var
 begin
   //DebugLn('TCodeContextFrm.DrawHints DrawWidth=',dbgs(MaxWidth),' DrawHeight=',dbgs(MaxHeight),' Draw=',dbgs(Draw));
   if Draw then begin
-    // TODO: make colors configurable and theme dependent
-    BackgroundColor:=clWhite;
-    TextColor:=clDkGray;
-    TextBColor:=clBlack;
+    // make colors theme dependent
+    BackgroundColor:=clInfoBk;
+    TextGrayColor:=clGrayText;
+    TextColor:=clInfoText;
+    PenColor:=clBlack;
   end;
   HorizontalSpace:=2;
   VerticalSpace:=2;
 
   if Draw then begin
     Canvas.Brush.Color:=BackgroundColor;
-    Canvas.Font.Color:=TextColor;
-    Canvas.Pen.Color:=clBlack;
+    Canvas.Font.Color:=TextGrayColor;
+    Canvas.Pen.Color:=PenColor;
   end;
   NewMaxWidth:=0;
   NewMaxHeight:=0;
