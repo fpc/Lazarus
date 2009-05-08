@@ -2168,6 +2168,7 @@ examples/dockmanager/EasyDocking.lpi svneol=native#text/plain
 examples/dockmanager/EasyDocking.lpr svneol=native#text/plain
 examples/dockmanager/README.txt svneol=native#text/plain
 examples/dockmanager/fDockable.lfm svneol=native#text/plain
+examples/dockmanager/fDockable.lrs svneol=native#text/plain
 examples/dockmanager/fDockable.pas svneol=native#text/plain
 examples/dockmanager/fMain.lfm svneol=native#text/plain
 examples/dockmanager/fMain.pas svneol=native#text/plain
