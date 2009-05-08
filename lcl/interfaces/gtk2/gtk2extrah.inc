@@ -38,7 +38,6 @@ var
 
 function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib name 'gdk_x11_drawable_get_xid';
 function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib name 'gdk_x11_image_get_ximage';
-
 {$endif}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
