@@ -2823,18 +2823,22 @@ var
     Dest: PChar;
     c: Char;
     CharLen: Integer;
-    Special: boolean;
+    Special, HasTabs: boolean;
     Fill: Integer;
   begin
       LengthNeeded := 0;
     Result := 0;
+    HasTabs := False;
+    SrcPos:=0;
     for i := CurLogIndex to CurLogIndex + Count -1 do begin
       Result := Result + CharWidths[i];
       if CharWidths[i] > 1 then
         LengthNeeded := LengthNeeded + CharWidths[i] - 1;
+      if p[SrcPos] = #9 then HasTabs := True;
+      inc(SrcPos);
     end;
     Special:=eoShowSpecialChars in Options;
-    if (not Special) and (LengthNeeded=0)
+    if (not Special) and (LengthNeeded=0) and (not HasTabs)
     and (FindInvalidUTF8Character(p,Count)<0) then
       exit;
     LengthNeeded := LengthNeeded + Count;
