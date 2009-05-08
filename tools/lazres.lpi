@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="lazres"/>
       <ActiveEditorIndexAtStart Value="0"/>
@@ -37,7 +36,7 @@
         <Filename Value="lazres.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazRes"/>
-        <CursorPos X="10" Y="122"/>
+        <CursorPos X="29" Y="128"/>
         <TopLine Value="109"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="21"/>
@@ -47,10 +46,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <CodeGeneration>
-      <HeapSize Value="8000000"/>
-      <TargetProcessor Value="PENTIUM"/>
-    </CodeGeneration>
     <Linking>
       <Debugging>
         <UseLineInfoUnit Value="False"/>
