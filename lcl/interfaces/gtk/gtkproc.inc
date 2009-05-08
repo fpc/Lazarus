@@ -6040,13 +6040,12 @@ end;
 
 function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
 begin
-  Result:=gtk_statusbar_new;
+  Result := gtk_statusbar_new;
   gtk_widget_show(Result);
   // other properties are set in UpdateStatusBarPanels
 end;
 
-procedure UpdateStatusBarPanels(StatusBar: TObject;
-  StatusBarWidget: PGtkWidget);
+procedure UpdateStatusBarPanels(StatusBar: TObject; StatusBarWidget: PGtkWidget);
 var
   AStatusBar: TStatusBar;
   HBox: PGtkWidget;
@@ -6060,39 +6059,40 @@ var
   ShowSizeGrip: Boolean;
 {$ENDIF}
 begin
-  //DebugLn('UpdateStatusBarPanels ',DbgS(StatusBar));
-
-  AStatusBar:=StatusBar as TStatusBar;
-  HBox:=PGtkWidget(StatusBarWidget);
-  if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_GET_TYPE)) then
+  AStatusBar := StatusBar as TStatusBar;
+  HBox := PGtkWidget(StatusBarWidget);
+  if (not GtkWidgetIsA(StatusBarWidget, GTK_HBOX_GET_TYPE)) then
     RaiseGDBException('');
 
   // create needed panels
-  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
-  if AStatusBar.SimplePanel or (AStatusBar.Panels.Count<1) then
-    NewPanelCount:=1
+  CurPanelCount := integer(g_list_length(PGtkBox(HBox)^.children));
+  if AStatusBar.SimplePanel or (AStatusBar.Panels.Count < 1) then
+    NewPanelCount := 1
   else
-    NewPanelCount:=AStatusBar.Panels.Count;
-  while CurPanelCount<NewPanelCount do begin
-    CurStatusPanelWidget:=CreateStatusBarPanel(StatusBar,CurPanelCount);
-    ExpandItem:=(CurPanelCount=NewPanelCount-1);
-    gtk_box_pack_start(PGtkBox(HBox),CurStatusPanelWidget,
-                       ExpandItem,ExpandItem,0);
+    NewPanelCount := AStatusBar.Panels.Count;
+
+  while CurPanelCount < NewPanelCount do
+  begin
+    CurStatusPanelWidget := CreateStatusBarPanel(StatusBar, CurPanelCount);
+    ExpandItem := (CurPanelCount = NewPanelCount - 1);
+    gtk_box_pack_start(PGtkBox(HBox), CurStatusPanelWidget,
+                       ExpandItem, ExpandItem, 0);
     inc(CurPanelCount);
   end;
 
   // remove unneeded panels
-  while CurPanelCount>NewPanelCount do begin
-    CurStatusPanelWidget:=PGtkBoxChild(
-              g_list_nth_data(PGtkBox(HBox)^.children,CurPanelCount-1))^.Widget;
-    DestroyConnectedWidgetCB(CurStatusPanelWidget,true);
+  while CurPanelCount > NewPanelCount do
+  begin
+    CurStatusPanelWidget := PGtkBoxChild(
+              g_list_nth_data(PGtkBox(HBox)^.children, CurPanelCount - 1))^.Widget;
+    DestroyConnectedWidgetCB(CurStatusPanelWidget, True);
     dec(CurPanelCount);
   end;
 
   // check new panel count
-  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  CurPanelCount := integer(g_list_length(PGtkBox(HBox)^.children));
   //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',Dbgs(StatusBar),' NewPanelCount=',dbgs(NewPanelCount),' CurPanelCount=',dbgs(CurPanelCount));
-  if CurPanelCount<>NewPanelCount then
+  if CurPanelCount <> NewPanelCount then
     RaiseGDBException('');
 
   // set panel properties
@@ -6103,13 +6103,13 @@ begin
   i := 0;
   while ListItem <> nil do
   begin
-    CurStatusPanelWidget:=PGtkBoxChild(PGTKWidget(ListItem^.data))^.widget;
-    ExpandItem:=(ListItem^.next=nil);
-    gtk_box_set_child_packing(PGtkBox(HBox),CurStatusPanelWidget,
-      ExpandItem,ExpandItem,0,GTK_PACK_START);
-    UpdateStatusBarPanel(StatusBar,i,CurStatusPanelWidget);
+    CurStatusPanelWidget := PGtkBoxChild(PGTKWidget(ListItem^.data))^.widget;
+    ExpandItem := (ListItem^.next = nil);
+    gtk_box_set_child_packing(PGtkBox(HBox), CurStatusPanelWidget,
+      ExpandItem, ExpandItem, 0, GTK_PACK_START);
+    UpdateStatusBarPanel(StatusBar, i, CurStatusPanelWidget);
     inc(i);
-    ListItem:=ListItem^.next;
+    ListItem := ListItem^.next;
     {$IFNDEF GTK1}
     gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget),
       (ListItem = nil) and ShowSizeGrip);
@@ -6130,57 +6130,57 @@ var
   NewJustification: TGtkJustification;
 begin
   //DebugLn('UpdateStatusBarPanel ',DbgS(StatusBar),' Index=',dbgs(Index));
-  AStatusBar:=StatusBar as TStatusBar;
+  AStatusBar := StatusBar as TStatusBar;
 
-  CurPanel:=nil;
-  if (not AStatusBar.SimplePanel) and (AStatusBar.Panels.Count>Index) then
-    CurPanel:=AStatusBar.Panels[Index];
+  CurPanel := nil;
+  if (not AStatusBar.SimplePanel) and (AStatusBar.Panels.Count > Index) then
+    CurPanel := AStatusBar.Panels[Index];
   //DebugLn('Panel ',Index,' ',GetWidgetClassName(StatusPanelWidget),
   //  ' frame=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.frame),
   //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
   // '');
   FrameWidget := PGTKStatusBar(StatusPanelWidget)^.frame;
-  LabelWidget := PGtkLabel({$ifdef gtk2}PGTKStatusBar(StatusPanelWidget)^._label{$else}PGTKStatusBar(StatusPanelWidget)^.thelabel{$endif});
+  LabelWidget := PGtkLabel(
+    {$ifndef gtk1}
+      PGTKStatusBar(StatusPanelWidget)^._label
+    {$else}
+      PGTKStatusBar(StatusPanelWidget)^.thelabel
+    {$endif});
 
   // Text
   if AStatusBar.SimplePanel then
-    PanelText:=AStatusBar.SimpleText
-  else if CurPanel<>nil then
-    PanelText:=CurPanel.Text
+    PanelText := AStatusBar.SimpleText
   else
-    PanelText:='';
-  ContextID:=gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
-                                          'state');
+  if CurPanel <> nil then
+    PanelText := CurPanel.Text
+  else
+    PanelText := '';
+
+  ContextID := gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
+                                            'state');
   //DebugLn('  PanelText="',PanelText,'"');
-  if PanelText<>'' then
-    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,
-                       PGChar(PanelText))
+  if PanelText <> '' then
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, PGChar(PanelText))
   else
-    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,'');
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, '');
 
 
-  // Alignment
-  if CurPanel<>nil then
+  if CurPanel <> nil then
   begin
     //DebugLn('  Alignment="',ord(CurPanel.Alignment),'"');
+    // Alignment
     NewJustification := aGtkJustification[CurPanel.Alignment];
     if GTK_IS_LABEL(LabelWidget) then
       gtk_label_set_justify(LabelWidget, NewJustification);
-  end;
 
-  // Bevel
-  if CurPanel<>nil then
-  begin
+    // Bevel
     NewShadowType := aGtkShadowFromBevel[CurPanel.Bevel];
     if GTK_IS_FRAME(FrameWidget) then
       gtk_frame_set_shadow_type(PGtkFrame(FrameWidget), NewShadowType);
-  end;
 
-  // Width
-  if (CurPanel<>nil) then
-  begin
+    // Width
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
-    gtk_widget_set_usize(StatusPanelWidget,CurPanel.Width,
+    gtk_widget_set_usize(StatusPanelWidget, CurPanel.Width,
       StatusPanelWidget^.allocation.height);
   end;
 end;
