@@ -450,18 +450,21 @@ end;
 class function TGtk2WSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Widget: PGtkWidget;
+  EventBox, HBox: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
-  Widget := gtk_hbox_new(false,0);
-  UpdateStatusBarPanels(AWinControl, Widget);
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  EventBox := gtk_event_box_new;
+  HBox := gtk_hbox_new(False, 0);
+  gtk_container_add(PGtkContainer(EventBox), HBox);
+  gtk_widget_show(HBox);
+  UpdateStatusBarPanels(AWinControl, HBox);
+  Result := TLCLIntfHandle(PtrUInt(EventBox));
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
-  Set_RC_Name(AWinControl, Widget);
-  SetCallbacks(Widget, WidgetInfo);
+  Set_RC_Name(AWinControl, EventBox);
+  SetCallbacks(EventBox, WidgetInfo);
 end;
 
 class procedure TGtk2WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
@@ -472,30 +475,32 @@ var
   BoxChild: PGtkBoxChild;
 begin
   //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',DbgS(AStatusBar),' PanelIndex=',dbgs(PanelIndex));
-  if PanelIndex>=0 then begin
+  HBox := PGtkBin(AStatusBar.Handle)^.child;
+  if PanelIndex >= 0 then
+  begin
     // update one
-    HBox:=PGtkWidget(AStatusBar.Handle);
-    BoxChild:=PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children,PanelIndex));
-    if BoxChild=nil then
+    BoxChild := PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children, PanelIndex));
+    if BoxChild = nil then
       RaiseGDBException('TGtkWidgetSet.StatusBarPanelUpdate Index out of bounds');
-    StatusPanelWidget:=BoxChild^.Widget;
-    UpdateStatusBarPanel(AStatusBar,PanelIndex,StatusPanelWidget);
-  end else begin
+    StatusPanelWidget := BoxChild^.Widget;
+    UpdateStatusBarPanel(AStatusBar, PanelIndex, StatusPanelWidget);
+  end else
+  begin
     // update all
-    UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+    UpdateStatusBarPanels(AStatusBar, HBox);
   end;
 end;
 
 class procedure TGtk2WSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
-  PanelUpdate(AStatusBar,PanelIndex);
+  PanelUpdate(AStatusBar, PanelIndex);
 end;
 
 class procedure TGtk2WSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
-  UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+  UpdateStatusBarPanels(AStatusBar, PGtkBin(AStatusBar.Handle)^.child);
 end;
 
 class procedure TGtk2WSStatusBar.GetPreferredSize(
@@ -505,24 +510,24 @@ var
   StatusBarWidget: PGtkWidget;
   Requisition: TGtkRequisition;
 begin
-  StatusBarWidget:=GetStyleWidget(lgsStatusBar);
+  StatusBarWidget := GetStyleWidget(lgsStatusBar);
   // set size to default
   gtk_widget_set_size_request(StatusBarWidget, -1, -1);
   // ask default size
-  gtk_widget_size_request(StatusBarWidget,@Requisition);
-  PreferredHeight:=Requisition.height;
+  gtk_widget_size_request(StatusBarWidget, @Requisition);
+  PreferredHeight := Requisition.height;
   //debugln('TGtkWSStatusBar.GetPreferredSize END ',dbgs(PreferredHeight));
 end;
 
 class procedure TGtk2WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
   SizeGrip: Boolean);
 var
-  LastWidget, Widget: PGtkWidget;
+  LastWidget, HBox: PGtkWidget;
 begin
   if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
     Exit;
-  Widget := PGtkWidget(AStatusBar.Handle);
-  LastWidget := PGtkBoxChild(g_list_last(PGtkBox(Widget)^.children)^.data)^.widget;
+  HBox := PGtkBin(AStatusBar.Handle)^.child;
+  LastWidget := PGtkBoxChild(g_list_last(PGtkBox(HBox)^.children)^.data)^.widget;
   gtk_statusbar_set_has_resize_grip(PGtkStatusBar(LastWidget), AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled);
 end;
 
