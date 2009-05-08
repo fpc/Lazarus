@@ -455,7 +455,8 @@ begin
       if CurPos.Flag=cafSemicolon then begin
         ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
       end else begin
-        if (UpAtomIs('INLINE') or UpAtomIs('CDECL')) then begin
+        if UpAtomIs('INLINE') or UpAtomIs('CDECL')
+        or UpAtomIs('PASCAL') then begin
           ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
                           Attr);
           if not (phpWithProcModifiers in Attr) then
