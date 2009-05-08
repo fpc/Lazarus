@@ -1,6 +1,7 @@
 object Dockable: TDockable
   Left = 680
   Height = 192
+  Top = 0
   Width = 244
   Caption = 'Dockable'
   ClientHeight = 192
@@ -14,7 +15,9 @@ object Dockable: TDockable
   ShowInTaskBar = stNever
   LCLVersion = '0.9.27'
   object Shape1: TShape
+    Left = 0
     Height = 192
+    Top = 0
     Width = 244
     Align = alClient
     OnChangeBounds = Shape1ChangeBounds
@@ -31,8 +34,8 @@ object Dockable: TDockable
     Left = 10
     Height = 14
     Top = 32
-    Width = 33
-    Caption = 'Label2'
+    Width = 49
+    Caption = 'irgendwas'
     ParentColor = False
   end
 end
