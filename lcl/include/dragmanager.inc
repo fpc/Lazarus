@@ -603,7 +603,7 @@ begin
   begin
     FInDragStop := True;
     try
-      FPerformer.DragStop(ADropped);
+      FPerformer.DragStop(ADropped and not FWaitForTreshold);
     finally
       FreeAndNil(FPerformer);
       FInDragStop := False;
