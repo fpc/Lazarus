@@ -6117,6 +6117,15 @@ begin
   end;
 end;
 
+//procedure StatusBarFrameNotifyCB(AObject: PGObject; pspec: PGParamSpec; Data: Pointer); cdecl;
+//begin
+//  if pspec^.name = 'shadow-type' then
+//  begin
+    // if shadow type differs (gtk sets it according to style) then update it
+//    PGtkFrame(AObject)^.shadow_type := PtrUInt(Data);
+//  end;
+//end;
+
 procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
   StatusPanelWidget: PGtkWidget);
 var
@@ -6176,7 +6185,12 @@ begin
     // Bevel
     NewShadowType := aGtkShadowFromBevel[CurPanel.Bevel];
     if GTK_IS_FRAME(FrameWidget) then
+    begin
       gtk_frame_set_shadow_type(PGtkFrame(FrameWidget), NewShadowType);
+      {$ifndef gtk1}
+      //g_signal_connect(FrameWidget, 'notify', TGCallback(@StatusBarFrameNotifyCB), Pointer(PtrInt(NewShadowType)));
+      {$endif}
+    end;
 
     // Width
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
