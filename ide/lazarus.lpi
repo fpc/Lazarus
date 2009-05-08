@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="40">
+    <Units Count="39">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -291,34 +291,26 @@
         <UnitName Value="ComponentList"/>
       </Unit35>
       <Unit36>
-        <Filename Value="frames/compiler_conditionals_options.pas"/>
-        <ComponentName Value="CompOptsConditionalsFrame"/>
-        <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_Conditionals_Options"/>
-      </Unit36>
-      <Unit37>
         <Filename Value="frames/codeexplorer_update_options.pas"/>
         <ComponentName Value="CodeExplorerUpdateOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeexplorer_update_options"/>
-      </Unit37>
-      <Unit38>
+      </Unit36>
+      <Unit37>
         <Filename Value="frames/codeexplorer_categories_options.pas"/>
         <ComponentName Value="CodeExplorerCategoriesOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeexplorer_categories_options"/>
-      </Unit38>
-      <Unit39>
+      </Unit37>
+      <Unit38>
         <Filename Value="frames/codeobserver_options.pas"/>
         <ComponentName Value="CodeObserverOptionsFrame"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeobserver_options"/>
-      </Unit39>
+      </Unit38>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
