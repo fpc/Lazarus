@@ -1,0 +1,25 @@
+object DumpBox: TDumpBox
+  Left = 436
+  Height = 440
+  Top = 562
+  Width = 635
+  ActiveControl = Memo1
+  Caption = 'DumpBox'
+  ClientHeight = 440
+  ClientWidth = 635
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Position = poMainFormCenter
+  LCLVersion = '0.9.27'
+  object Memo1: TMemo
+    Height = 440
+    Width = 635
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    ReadOnly = True
+    TabOrder = 0
+    WordWrap = False
+  end
+end
