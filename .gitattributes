@@ -2164,6 +2164,7 @@ examples/docking/unit1.lrs svneol=native#text/pascal
 examples/docking/unit1.pas svneol=native#text/pascal
 examples/dockmanager/EasyDockHelpers.pas svneol=native#text/plain
 examples/dockmanager/EasyDockSite.pas svneol=native#text/plain
+examples/dockmanager/EasyDocking.lpi svneol=native#text/plain
 examples/dockmanager/README.txt svneol=native#text/plain
 examples/dockmanager/fDockable.lfm svneol=native#text/plain
 examples/dockmanager/fDockable.pas svneol=native#text/plain
