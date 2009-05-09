@@ -10,7 +10,7 @@
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="EasyDocking"/>
-      <ActiveEditorIndexAtStart Value="7"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -32,19 +32,19 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="17">
       <Unit0>
-        <Filename Value="EasyDocking.lpr"/>
+        <Filename Value="easydocking.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="EasyDocking"/>
-        <CursorPos X="33" Y="13"/>
+        <CursorPos X="1" Y="23"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="307"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="fDockable.pas"/>
+        <Filename Value="fdockable.pas"/>
         <ComponentName Value="Dockable"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
@@ -52,34 +52,34 @@
         <UnitName Value="fDockable"/>
         <CursorPos X="5" Y="43"/>
         <TopLine Value="6"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="307"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="fMain.pas"/>
+        <Filename Value="fmain.pas"/>
         <ComponentName Value="EasyDockMain"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMain"/>
-        <CursorPos X="24" Y="166"/>
-        <TopLine Value="150"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="14" Y="124"/>
+        <TopLine Value="99"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="307"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="EasyDockSite.pas"/>
+        <Filename Value="easydocksite.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="EasyDockSite"/>
-        <CursorPos X="1" Y="393"/>
-        <TopLine Value="379"/>
+        <CursorPos X="12" Y="1257"/>
+        <TopLine Value="1221"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="307"/>
         <Bookmarks Count="2">
-          <Item0 X="1" Y="378" ID="1"/>
-          <Item1 X="24" Y="760" ID="3"/>
+          <Item0 X="1" Y="382" ID="1"/>
+          <Item1 X="24" Y="757" ID="3"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit3>
@@ -136,36 +136,31 @@
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="56" Y="1559"/>
-        <TopLine Value="1538"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="69" Y="5"/>
+        <TopLine Value="1"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\compon.inc"/>
-        <CursorPos X="9" Y="335"/>
-        <TopLine Value="324"/>
-        <EditorIndex Value="4"/>
+        <CursorPos X="37" Y="4"/>
+        <TopLine Value="1"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="EasyDockHelpers.pas"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <IsPartOfProject Value="True"/>
         <UnitName Value="EasyDockHelpers"/>
-        <CursorPos X="1" Y="13"/>
-        <TopLine Value="1"/>
+        <CursorPos X="1" Y="419"/>
+        <TopLine Value="398"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="README.txt"/>
-        <CursorPos X="1" Y="31"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="63" Y="1541"/>
+        <TopLine Value="1538"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <SyntaxHighlighter Value="None"/>
       </Unit12>
       <Unit13>
@@ -174,124 +169,151 @@
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="..\..\lcl\include\wincontrol.inc"/>
+        <CursorPos X="17" Y="6976"/>
+        <TopLine Value="6974"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <CursorPos X="15" Y="3001"/>
+        <TopLine Value="2977"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="14" Y="1087"/>
+        <TopLine Value="1066"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit16>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="390" Column="1" TopLine="363"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="202" Column="1" TopLine="181"/>
       </Position1>
       <Position2>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="164" Column="1" TopLine="143"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="203" Column="1" TopLine="182"/>
       </Position2>
       <Position3>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="33" Column="13" TopLine="16"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="224" Column="1" TopLine="203"/>
       </Position3>
       <Position4>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="651" Column="1" TopLine="618"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="225" Column="1" TopLine="204"/>
       </Position4>
       <Position5>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="226" Column="1" TopLine="205"/>
       </Position5>
       <Position6>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="32" Column="24" TopLine="1"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="228" Column="1" TopLine="207"/>
       </Position6>
       <Position7>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="175" Column="1" TopLine="175"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="229" Column="1" TopLine="208"/>
       </Position7>
       <Position8>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="236" Column="1" TopLine="215"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="230" Column="1" TopLine="209"/>
       </Position8>
       <Position9>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="19" Column="19" TopLine="1"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="233" Column="1" TopLine="212"/>
       </Position9>
       <Position10>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="34" Column="34" TopLine="1"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="235" Column="1" TopLine="214"/>
       </Position10>
       <Position11>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="75" Column="1" TopLine="53"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="236" Column="1" TopLine="215"/>
       </Position11>
       <Position12>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="145" Column="60" TopLine="124"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="239" Column="1" TopLine="218"/>
       </Position12>
       <Position13>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="159" Column="32" TopLine="124"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="240" Column="1" TopLine="219"/>
       </Position13>
       <Position14>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="167" Column="53" TopLine="146"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="339" Column="10" TopLine="329"/>
       </Position14>
       <Position15>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="201" Column="38" TopLine="180"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="228" Column="33" TopLine="207"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="176" Column="12" TopLine="155"/>
       </Position16>
       <Position17>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="249" Column="33" TopLine="228"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="178" Column="12" TopLine="155"/>
       </Position17>
       <Position18>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="289" Column="11" TopLine="268"/>
+        <Filename Value="easydockhelpers.pas"/>
+        <Caret Line="180" Column="12" TopLine="155"/>
       </Position18>
       <Position19>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="491" Column="12" TopLine="470"/>
+        <Filename Value="easydocksite.pas"/>
+        <Caret Line="997" Column="1" TopLine="976"/>
       </Position19>
       <Position20>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="497" Column="16" TopLine="470"/>
+        <Filename Value="easydocksite.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position20>
       <Position21>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="581" Column="1" TopLine="547"/>
+        <Filename Value="easydocksite.pas"/>
+        <Caret Line="264" Column="12" TopLine="243"/>
       </Position21>
       <Position22>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="19" Column="21" TopLine="1"/>
+        <Filename Value="easydocksite.pas"/>
+        <Caret Line="359" Column="12" TopLine="338"/>
       </Position22>
       <Position23>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="144" Column="1" TopLine="122"/>
+        <Filename Value="easydocksite.pas"/>
+        <Caret Line="1126" Column="12" TopLine="1105"/>
       </Position23>
       <Position24>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="177" Column="1" TopLine="177"/>
+        <Filename Value="fmain.pas"/>
+        <Caret Line="124" Column="14" TopLine="99"/>
       </Position24>
       <Position25>
-        <Filename Value="EasyDockHelpers.pas"/>
-        <Caret Line="356" Column="1" TopLine="335"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="3614" Column="37" TopLine="3580"/>
       </Position25>
       <Position26>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="135" Column="29" TopLine="117"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position26>
       <Position27>
-        <Filename Value="EasyDockSite.pas"/>
-        <Caret Line="286" Column="34" TopLine="265"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="2998" Column="40" TopLine="2977"/>
       </Position27>
       <Position28>
-        <Filename Value="fMain.pas"/>
-        <Caret Line="143" Column="1" TopLine="1"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="3614" Column="49" TopLine="3593"/>
       </Position28>
       <Position29>
-        <Filename Value="fMain.pas"/>
-        <Caret Line="160" Column="1" TopLine="143"/>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position29>
+      <Position30>
+        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Caret Line="3001" Column="15" TopLine="2977"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

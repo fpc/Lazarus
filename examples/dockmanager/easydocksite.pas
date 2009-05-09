@@ -109,7 +109,7 @@ type
   TEasyTree = class(TDockManager)
   private
     FDockSite: TWinControl;
-    //FReplacingControl: TControl; - have no use for this Delphi field?
+    FReplacingControl: TControl;
     FTopZone: TEasyZone;
     FSiteRect: TRect; //to detect changed site extent
     FUpdateCount: integer;
@@ -347,6 +347,12 @@ In all other cases all zones have an orientation:
 Cases 2 and 3 can be merged, with an additional or redundant setting of the orientation.
 *)
 begin
+  if Control = FReplacingControl then begin
+  //hack for morphing DropCtl into notebook
+    FReplacingControl := nil;
+    exit;
+  end;
+
 //some checks
   if (Control = nil) or (not Control.Visible) or (DropCtl = Control) then begin
   //bug? The dock site is changed when a control is dropped onto itself!?
@@ -368,30 +374,21 @@ begin
 (* alCustom means: drop into notebook.
   Valid only when dropped onto an existing control, not into empty dock site.
   Create notebook, if required (put both controls into new notebook).
-
-  Problem: new notebook does not resize to fit into the zone???
 *)
   if (InsertAt = alCustom) and (FTopZone.FirstChild <> nil) then begin
   //dock into book
     if not (DropCtl is TPageControl) then begin
     //create new book
       NoteBook := TEasyBook.Create(FDockSite);
-      NoteBook.Parent := FDockSite;
-      NoteBook.HostDockSite := FDockSite; //notify dock manager when destroyed
-      DropZone.ChildControl := NoteBook;
+      NoteBook.Align := alNone;
+    //hack: manually dock the notebook
+      FReplacingControl := NoteBook; //ignore insert (see above)
+      NoteBook.ManualDock(FDockSite); //move into DockClients[]
+      DropZone.ChildControl := NoteBook; //put into the zone
 
-{ TODO -cdocking : new notebook does not resize to fit into the zone??? }
-      //DropZone.SetBounds(DropZone.GetBounds);
-      r := DropZone.GetPartRect(zpClient); //is okay
-      NoteBook.BoundsRect := r; //doesn't work!?
-        //does not work? okay only when the site is resized!
-      DropCtl.ManualDock(NoteBook);
-      DropCtl := NoteBook;
-      NoteBook.BoundsRect := r;
-      //NoteBook.Invalidate; //force resize?
-      DebugLn(Format('NoteBook to (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]));
-      r := NoteBook.BoundsRect;
-      DebugLn(Format('NoteBook is (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]));
+      DropCtl.ManualDock(NoteBook); //put the original control into the notebook
+      DropCtl := NoteBook; //put further controls into the notebook
+      ResetBounds(True); //for some reason only setting the size doesn't work
     end;
     Control.ManualDock(TPageControl(DropCtl));
     FDockSite.Invalidate;

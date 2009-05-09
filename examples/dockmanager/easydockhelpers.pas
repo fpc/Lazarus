@@ -147,7 +147,7 @@ const //zone decoration sizes
 
   Positive offsets mean self-relative adjustment, towards the opposite edge.
   This operation has highest precedence.
-  Negative offsets mean adjustment relative to the opposite edge.
+  Negative offsets mean adjustment relative to the adjusted opposite edge.
 
   The map reflects new splitter placement (past client area),
   and no restore button.
@@ -161,7 +161,8 @@ HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
   {$IFDEF restore}
   (...),    //zpRestoreButton,  // header restore button
   {$ENDIF}
-  (dTop:dBorder; dBottom:-dHeader; dLeft:-(dBorder+dButton); dRight:dBorder)    //zpCloseButton     // header close button
+  //(dTop:dBorder; dBottom:-dHeader; dLeft:-(dBorder+dButton); dRight:dBorder)    //zpCloseButton     // header close button
+  (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
 );
 
 constructor TEasyDockHeader.Create;
@@ -236,7 +237,7 @@ begin
       else if dRight < 0 then
         Result.Top := Result.Bottom + dRight;
       if dLeft < 0 then
-        Result.Bottom := Result.Top + dLeft;
+        Result.Bottom := Result.Top - dLeft;
     //handle client w/o splitter
       if (APart = zpClient) and HasSplitter then
         dec(Result.Right, dSizer);
@@ -335,6 +336,7 @@ const
     dy := (ARect.Bottom - ARect.Top - ABitmap.Height) div 2;
     ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
   {$ELSE}
+    //DebugLn(Format('Button: (%d,%d)-(%d,%d)', [ARect.Top, ARect.Left, ARect.Bottom, ARect.Right]));
     ACanvas.Draw(ARect.Left, ARect.Top, ABitmap);
   {$ENDIF}
   end;
