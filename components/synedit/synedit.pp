@@ -3360,6 +3360,7 @@ var
       CurPhysPos := 1;
       CurLogIndex := 0;
       // Delete the whole Line
+      fTextDrawer.BackColor := colEditorBG;
       SetBkColor(dc, ColorToRGB(colEditorBG));
       rcLine.Left := EraseLeft;
       InternalFillRect(dc, rcLine);
