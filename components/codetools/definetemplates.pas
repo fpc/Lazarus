@@ -243,6 +243,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ConsistencyCheck;
+    procedure CalcMemSize(Stats: TCTMemStats);
     function  CreateCopy(OnlyMarked: boolean = false;
                          WithSiblings: boolean = true;
                          WithChilds: boolean = true): TDefineTemplate;
@@ -314,12 +315,16 @@ type
 
   //---------------------------------------------------------------------------
   //
+
+  { TDirectoryDefines }
+
   TDirectoryDefines = class
   public
     Path: string;
     Values: TExpressionEvaluator;
     constructor Create;
     destructor Destroy; override;
+    procedure CalcMemSize(Stats: TCTMemStats);
   end;
   
   TOnGetVirtualDirectoryDefines = procedure(Sender: TDefineTree;
@@ -393,6 +398,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ConsistencyCheck;
+    procedure CalcMemSize(Stats: TCTMemStats);
     function  ExtractNonAutoCreated: TDefineTemplate;
     function  ExtractTemplatesOwnedBy(TheOwner: TObject; const MustFlags,
                                NotFlags: TDefineTemplateFlags): TDefineTemplate;
@@ -442,6 +448,9 @@ type
   end;
 
   //---------------------------------------------------------------------------
+
+  { TDefinePool }
+
   TDefinePool = class
   private
     FEnglishErrorMsgFilename: string;
@@ -502,6 +511,7 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    procedure CalcMemSize(Stats: TCTMemStats);
   end;
   
 const
@@ -1545,6 +1555,28 @@ begin
     RaiseCatchableException('');
 end;
 
+procedure TDefineTemplate.CalcMemSize(Stats: TCTMemStats);
+var
+  Child: TDefineTemplate;
+begin
+  Stats.Add('TDefineTemplate Instance Count',1);
+  Stats.Add('TDefineTemplate',
+    PtrUInt(InstanceSize)
+    +MemSizeString(FMergeNameBehind)
+    +MemSizeString(FMergeNameInFront)
+    +MemSizeString(Name)
+    +MemSizeString(Description)
+    +MemSizeString(Variable)
+    +MemSizeString(Value)
+    +MemSizeString(Value)
+    );
+  Child:=FFirstChild;
+  while Child<>nil do begin
+    Child.CalcMemSize(Stats);
+    Child:=Child.Next;
+  end;
+end;
+
 procedure TDefineTemplate.SetDefineOwner(NewOwner: TObject;
   WithSiblings: boolean);
 var
@@ -1782,6 +1814,14 @@ destructor TDirectoryDefines.Destroy;
 begin
   Values.Free;
   inherited Destroy;
+end;
+
+procedure TDirectoryDefines.CalcMemSize(Stats: TCTMemStats);
+begin
+  Stats.Add('TDirectoryDefines',PtrUInt(InstanceSize)
+    +MemSizeString(Path));
+  if Values<>nil then
+    Stats.Add('TDirectoryDefines.Values',Values.CalcMemSize);
 end;
 
 
@@ -2740,6 +2780,31 @@ begin
   CurResult:=FCache.ConsistencyCheck;
   if CurResult<>0 then
     RaiseCatchableException(IntToStr(CurResult));
+end;
+
+procedure TDefineTree.CalcMemSize(Stats: TCTMemStats);
+var
+  Node: TAVLTreeNode;
+begin
+  Stats.Add('TDefineTree',PtrUInt(InstanceSize)
+    +MemSizeString(FErrorDescription)
+    );
+  if FMacroFunctions<>nil then
+    Stats.Add('TDefineTree.FMacroFunctions',FMacroFunctions.CalcMemSize);
+  if FMacroVariables<>nil then
+    Stats.Add('TDefineTree.FMacroVariables',FMacroVariables.CalcMemSize);
+  if FFirstDefineTemplate<>nil then
+    FFirstDefineTemplate.CalcMemSize(Stats);
+  if FVirtualDirCache<>nil then
+    FVirtualDirCache.CalcMemSize(Stats);
+  if FCache<>nil then begin
+    Stats.Add('TDefineTree.FCache.Count',FCache.Count);
+    Node:=FCache.FindLowest;
+    while Node<>nil do begin
+      TDirectoryDefines(Node.Data).CalcMemSize(Stats);
+      Node:=FCache.FindSuccessor(Node);
+    end;
+  end;
 end;
 
 procedure TDefineTree.WriteDebugReport;
@@ -4881,6 +4946,19 @@ begin
   for i:=0 to Count-1 do
     Items[i].WriteDebugReport(false);
   ConsistencyCheck;
+end;
+
+procedure TDefinePool.CalcMemSize(Stats: TCTMemStats);
+var
+  i: Integer;
+begin
+  Stats.Add('TDefinePool',PtrUInt(InstanceSize)
+    +MemSizeString(FEnglishErrorMsgFilename));
+  if FItems<>nil then begin
+    Stats.Add('TDefinePool.Count',Count);
+    for i:=0 to Count-1 do
+      Items[i].CalcMemSize(Stats);
+  end;
 end;
 
 

@@ -1411,12 +1411,13 @@ procedure TLinkScanner.CalcMemSize(Stats: TCTMemStats);
 begin
   Stats.Add('TLinkScanner',
     PtrUInt(InstanceSize)
-    +MemSizeString(FCleanedSrc)
     +MemSizeString(FMainSourceFilename)
     +length(FDirectiveName)
     +MemSizeString(LastErrorMessage)
-    +MemSizeString(Src)
     +MemSizeString(SrcFilename));
+  Stats.Add('TLinkScanner.CleanedSrc',MemSizeString(FCleanedSrc));
+  // Note: Src belongs to the codebuffer
+
   if FLinks<>nil then
     Stats.Add('TLinkScanner.FLinks',
       FLinkCapacity*SizeOf(TSourceLink));
@@ -3431,7 +3432,7 @@ var
   i: Integer;
 begin
   Result:=PtrUInt(InstanceSize)
-    +SizeOf(Pointer)*Capacity;
+    +SizeOf(Pointer)*PtrUInt(Capacity);
   for i:=0 to Count-1 do
     inc(Result,Items[i].CalcMemSize);
 end;

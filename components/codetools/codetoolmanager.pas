@@ -5102,12 +5102,37 @@ begin
   DebugLn(['Memory stats: ']);
   Stats:=TCTMemStats.Create;
   // boss
-  Stats.Add('Boss',InstanceSize);
+  Stats.Add('Boss',
+    PtrUInt(InstanceSize)
+    +MemSizeString(FErrorMsg)
+    +MemSizeString(FSetPropertyVariablename)
+    +MemSizeString(FSourceExtensions)
+    );
+  if DefinePool<>nil then
+    DefinePool.CalcMemSize(Stats);
+  if DefineTree<>nil then
+    DefineTree.CalcMemSize(Stats);
+  if SourceCache<>nil then
+    SourceCache.CalcMemSize(Stats);
+  if SourceChangeCache<>nil then
+    SourceChangeCache.CalcMemSize(Stats);
+  if GlobalValues<>nil then
+    Stats.Add('GlobalValues',GlobalValues.CalcMemSize);
+  if DirectoryCachePool<>nil then
+    DirectoryCachePool.CalcMemSize(Stats);
+  if IdentifierList<>nil then
+    Stats.Add('IdentifierList',IdentifierList.CalcMemSize);
+  if IdentifierHistory<>nil then
+    Stats.Add('IdentifierHistory',IdentifierHistory.CalcMemSize);
+  if Positions<>nil then
+    Stats.Add('Positions',Positions.CalcMemSize);
+
   if FDirectivesTools<>nil then begin
-    DebugLn(['FDirectivesTools.Count=',FDirectivesTools.Count]);
+    Stats.Add('FDirectivesTools.Count',FDirectivesTools.Count);
+    // ToDo
   end;
   if FPascalTools<>nil then begin
-    debugln(['FPascalTools.Count=',FPascalTools.Count]);
+    Stats.Add('PascalTools.Count',FPascalTools.Count);
     Stats.Add('PascalTools',PtrUInt(FPascalTools.Count)*SizeOf(Node));
     Node:=FPascalTools.FindLowest;
     while Node<>nil do begin
@@ -5116,7 +5141,6 @@ begin
       Node:=FPascalTools.FindSuccessor(Node);
     end;
   end;
-  SourceCache.CalcMemSize(Stats);
   Stats.WriteReport;
   Stats.Free;
 end;

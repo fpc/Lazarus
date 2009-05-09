@@ -98,6 +98,7 @@ type
     NameStarts: PInteger; // offsets in 'Names'
     destructor Destroy; override;
     procedure Clear;
+    function CalcMemSize: PtrUInt;
   end;
   
   TCTDirectoryCachePool = class;
@@ -111,7 +112,7 @@ type
     FPool: TCTDirectoryCachePool;
     FRefCount: integer;
     FStrings: array[TCTDirCacheString] of TCTDirCacheStringRecord;
-    FUnitLinksTree: TAVLTree;
+    FUnitLinksTree: TAVLTree; // tree of TUnitNameLink
     FUnitLinksTreeTimeStamp: cardinal;
     FListing: TCTDirectoryListing;
     FUnitSources: array[TCTDirectoryUnitSources] of TCTDirCacheUnitSrcRecord;
@@ -128,6 +129,7 @@ type
     constructor Create(const TheDirectory: string;
                        ThePool: TCTDirectoryCachePool);
     destructor Destroy; override;
+    procedure CalcMemSize(Stats: TCTMemStats);
     procedure Reference;
     procedure Release;
     function FindUnitLink(const UnitName: string): string;
@@ -160,12 +162,13 @@ type
     FOnFindVirtualFile: TCTDirCacheFindVirtualFile;
     FOnGetString: TCTDirCacheGetString;
     FTimeStamp: cardinal;
-    FDirectories: TAVLTree;
+    FDirectories: TAVLTree;// tree of TCTDirectoryCache
     procedure DoRemove(ACache: TCTDirectoryCache);
     procedure OnFileStateCacheChangeTimeStamp(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
+    procedure CalcMemSize(Stats: TCTMemStats);
     function GetCache(const Directory: string;
                       CreateIfNotExists: boolean = true;
                       DoReference: boolean = true): TCTDirectoryCache;
@@ -198,10 +201,14 @@ function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
 function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
 
 type
+
+  { TUnitNameLink }
+
   TUnitNameLink = class
   public
     UnitName: string;
     Filename: string;
+    function CalcMemSize: PtrUInt;
   end;
 
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
@@ -602,6 +609,46 @@ begin
   for UnitSrc:=Low(TCTDirectoryUnitSources) to High(TCTDirectoryUnitSources) do
     FreeAndNil(FUnitSources[UnitSrc].Files);
   inherited Destroy;
+end;
+
+procedure TCTDirectoryCache.CalcMemSize(Stats: TCTMemStats);
+var
+  cs: TCTDirCacheString;
+  us: TCTDirectoryUnitSources;
+  Node: TAVLTreeNode;
+  m: PtrUInt;
+begin
+  Stats.Add('TCTDirectoryCache',PtrUInt(InstanceSize)
+    +MemSizeString(FDirectory));
+
+  m:=0;
+  for cs:=Low(FStrings) to high(FStrings) do begin
+    inc(m,SizeOf(TCTDirCacheStringRecord));
+    inc(m,MemSizeString(FStrings[cs].Value));
+  end;
+  Stats.Add('TCTDirectoryCache.FStrings',m);
+
+  m:=0;
+  for us:=Low(FUnitSources) to high(FUnitSources) do begin
+    inc(m,SizeOf(TCTDirectoryUnitSources));
+    if FUnitSources[us].Files<>nil then
+      inc(m,FUnitSources[us].Files.CalcMemSize);
+  end;
+  Stats.Add('TCTDirectoryCache.FUnitSources',m);
+
+  if FUnitLinksTree<>nil then begin
+    m:=PtrUInt(FUnitLinksTree.InstanceSize)
+      +SizeOf(TAVLTreeNode)*PtrUInt(FUnitLinksTree.Count);
+    Node:=FUnitLinksTree.FindLowest;
+    while Node<>nil do begin
+      inc(m,TUnitNameLink(Node.Data).CalcMemSize);
+      Node:=FUnitLinksTree.FindSuccessor(Node);
+    end;
+    Stats.Add('TCTDirectoryCache.FUnitLinksTree',m);
+  end;
+
+  if FListing<>nil then
+    Stats.Add('TCTDirectoryCache.FListing',FListing.CalcMemSize);
 end;
 
 procedure TCTDirectoryCache.Reference;
@@ -1050,6 +1097,19 @@ begin
   inherited Destroy;
 end;
 
+procedure TCTDirectoryCachePool.CalcMemSize(Stats: TCTMemStats);
+var
+  Node: TAVLTreeNode;
+begin
+  Stats.Add('TCTDirectoryCachePool',PtrUInt(InstanceSize));
+  Stats.Add('TCTDirectoryCachePool.Count',FDirectories.Count);
+  Node:=FDirectories.FindLowest;
+  while Node<>nil do begin
+    TCTDirectoryCache(Node.Data).CalcMemSize(Stats);
+    Node:=FDirectories.FindSuccessor(Node);
+  end;
+end;
+
 function TCTDirectoryCachePool.GetCache(const Directory: string;
   CreateIfNotExists: boolean; DoReference: boolean): TCTDirectoryCache;
 var
@@ -1198,6 +1258,21 @@ begin
     Names:=nil;
     NameCount:=0;
   end;
+end;
+
+function TCTDirectoryListing.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(NamesLength);
+end;
+
+{ TUnitNameLink }
+
+function TUnitNameLink.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(UnitName)
+    +MemSizeString(Filename);
 end;
 
 end.

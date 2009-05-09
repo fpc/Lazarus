@@ -173,6 +173,8 @@ type
              gtEmptyLine // at least two newlines
              );
 
+  { TSourceChangeCacheEntry }
+
   TSourceChangeCacheEntry = class
   public
     FrontGap, AfterGap: TGapTyp;
@@ -187,6 +189,7 @@ type
     function IsDeleteOperation: boolean;
     function IsDeleteOnlyOperation: boolean;
     function IsAtSamePos(AnEntry: TSourceChangeCacheEntry): boolean;
+    function CalcMemSize: PtrUint;
   end;
   
   //----------------------------------------------------------------------------
@@ -196,7 +199,7 @@ type
   TSourceChangeCache = class
   private
     FMainScanner: TLinkScanner;
-    FEntries: TAVLTree;
+    FEntries: TAVLTree; // tree of TSourceChangeCacheEntry
     FBuffersToModify: TFPList; // sorted list of TCodeBuffer
     FBuffersToModifyNeedsUpdate: boolean;
     FMainScannerNeeded: boolean;
@@ -240,6 +243,7 @@ type
     procedure Clear;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    procedure CalcMemSize(Stats: TCTMemStats);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -429,6 +433,12 @@ function TSourceChangeCacheEntry.IsAtSamePos(AnEntry: TSourceChangeCacheEntry
   ): boolean;
 begin
   Result:=(FromPos=AnEntry.FromPos) and (FromDirectPos=AnEntry.FromDirectPos);
+end;
+
+function TSourceChangeCacheEntry.CalcMemSize: PtrUint;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(Text);
 end;
 
 
@@ -652,6 +662,24 @@ begin
   DebugLn(FEntries.ReportAsString);
   BeautifyCodeOptions.WriteDebugReport;
   ConsistencyCheck;
+end;
+
+procedure TSourceChangeCache.CalcMemSize(Stats: TCTMemStats);
+var
+  Node: TAVLTreeNode;
+  m: PtrUInt;
+begin
+  Stats.Add('TSourceChangeCache',PtrUInt(InstanceSize)
+    +PtrUInt(FBuffersToModify.InstanceSize)
+    +PtrUInt(FBuffersToModify.Capacity)*SizeOf(Pointer));
+  m:=0;
+  Node:=FEntries.FindLowest;
+  while Node<>nil do begin
+    inc(m,TSourceChangeCacheEntry(Node.Data).CalcMemSize);
+    Node:=FEntries.FindSuccessor(Node);
+  end;
+  Stats.Add('TSourceChangeCache.FEntries',m);
+  // Note: Src is owned by the TLinkScanner
 end;
 
 function TSourceChangeCache.Apply: boolean;

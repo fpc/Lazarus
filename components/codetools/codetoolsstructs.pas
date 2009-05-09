@@ -80,6 +80,7 @@ type
     function Count: integer;
     procedure Delete(Index: integer);
     function CreateCopy: TCodeXYPositions;
+    function CalcMemSize: PtrUint;
   public
     property Items[Index: integer]: PCodeXYPosition
                                           read GetItems write SetItems; default;
@@ -108,7 +109,7 @@ type
   TStringToStringTree = class
   private
     FCompareKeyItemFunc: TListSortCompare;
-    FTree: TAVLTree;// tree of TStringToStringTreeItem
+    FTree: TAVLTree;// tree of PStringToStringTreeItem
     FCaseSensitive: boolean;
     function GetCompareItemsFunc: TListSortCompare;
     function GetStrings(const s: string): string;
@@ -127,6 +128,7 @@ type
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
     procedure WriteDebugReport;
+    function CalcMemSize: PtrUint;
     property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
     property CompareKeyItemFunc: TListSortCompare read FCompareKeyItemFunc;
     procedure SetCompareFuncs(
@@ -354,6 +356,14 @@ begin
   Result.Assign(Self);
 end;
 
+function TCodeXYPositions.CalcMemSize: PtrUint;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then
+    inc(Result,PtrUInt(FItems.InstanceSize)
+      +PtrUInt(FItems.Capacity)*SizeOf(TCodeXYPosition));
+end;
+
 { TStringToStringTree }
 
 function TStringToStringTree.GetStrings(const s: string): string;
@@ -488,6 +498,24 @@ begin
     Item:=PStringToStringTreeItem(Node.Data);
     DebugLn([Item^.Name,'=',Item^.Value]);
     Node:=Tree.FindSuccessor(Node);
+  end;
+end;
+
+function TStringToStringTree.CalcMemSize: PtrUint;
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(FTree.InstanceSize)
+    +PtrUint(FTree.Count)*SizeOf(TAVLTreeNode);
+  Node:=FTree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    inc(Result,MemSizeString(Item^.Name)
+       +MemSizeString(Item^.Value)
+       +SizeOf(TStringToStringTreeItem));
+    Node:=FTree.FindSuccessor(Node);
   end;
 end;
 
