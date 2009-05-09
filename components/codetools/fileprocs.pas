@@ -3130,15 +3130,32 @@ begin
 end;
 
 procedure TCTMemStats.WriteReport;
+
+  function ByteToStr(b: PtrUint): string;
+  const
+    Units = 'KMGTPE';
+  var
+    i: Integer;
+  begin
+    i:=0;
+    while b>10240 do begin
+      inc(i);
+      b:=b shr 10;
+    end;
+    Result:=dbgs(b);
+    if i>0 then
+      Result:=Result+Units[i];
+  end;
+
 var
   Node: TAVLTreeNode;
   CurStat: TCTMemStat;
 begin
-  DebugLn(['TCTMemStats.WriteReport Stats=',Tree.Count,' Total=',Total]);
+  DebugLn(['TCTMemStats.WriteReport Stats=',Tree.Count,' Total=',Total,' ',ByteToStr(Total)]);
   Node:=Tree.FindLowest;
   while Node<>nil do begin
     CurStat:=TCTMemStat(Node.Data);
-    DebugLn(['  ',CurStat.Name,'=',CurStat.Sum]);
+    DebugLn(['  ',CurStat.Name,'=',CurStat.Sum,' ',ByteToStr(CurStat.Sum)]);
     Node:=Tree.FindSuccessor(Node);
   end;
 end;

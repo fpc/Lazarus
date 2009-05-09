@@ -416,7 +416,7 @@ type
     procedure Clear;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
-    function CalcMemSize: PtrUInt;
+    procedure CalcMemSize(Stats: TCTMemStats);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -1407,36 +1407,47 @@ begin
   end;
 end;
 
-function TLinkScanner.CalcMemSize: PtrUInt;
+procedure TLinkScanner.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=PtrUInt(InstanceSize)
+  Stats.Add('TLinkScanner',
+    PtrUInt(InstanceSize)
     +MemSizeString(FCleanedSrc)
     +MemSizeString(FMainSourceFilename)
     +length(FDirectiveName)
     +MemSizeString(LastErrorMessage)
     +MemSizeString(Src)
-    +MemSizeString(SrcFilename);
+    +MemSizeString(SrcFilename));
   if FLinks<>nil then
-    inc(Result,FLinkCapacity*SizeOf(TSourceLink));
+    Stats.Add('TLinkScanner.FLinks',
+      FLinkCapacity*SizeOf(TSourceLink));
   if FInitValues<>nil then
-    inc(Result,FInitValues.CalcMemSize);
+    Stats.Add('TLinkScanner.FInitValues',
+      FInitValues.CalcMemSize);
   if FSourceChangeSteps<>nil then
-    inc(Result,FSourceChangeSteps.InstanceSize
+    Stats.Add('TLinkScanner.FSourceChangeSteps',
+      FSourceChangeSteps.InstanceSize
                +FSourceChangeSteps.Capacity*SizeOf(TSourceChangeStep));
   if FIncludeStack<>nil then
-    inc(Result,FIncludeStack.InstanceSize+FIncludeStack.Capacity*SizeOf(TSourceLink));
+    Stats.Add('TLinkScanner.FIncludeStack',
+      FIncludeStack.InstanceSize+FIncludeStack.Capacity*SizeOf(TSourceLink));
   if Values<>nil then
-    inc(Result,Values.CalcMemSize);
+    Stats.Add('TLinkScanner.Values',
+      Values.CalcMemSize);
   if FMissingIncludeFiles<>nil then
-    inc(Result,FMissingIncludeFiles.InstanceSize);
+    Stats.Add('TLinkScanner.FMissingIncludeFiles',
+      FMissingIncludeFiles.InstanceSize);
   if KeywordFuncList<>nil then
-    inc(Result,KeywordFuncList.CalcMemSize);
+    Stats.Add('TLinkScanner.KeywordFuncList',
+      KeywordFuncList.CalcMemSize);
   if FDirectiveFuncList<>nil then
-    inc(Result,FDirectiveFuncList.CalcMemSize);
+    Stats.Add('TLinkScanner.FDirectiveFuncList',
+      FDirectiveFuncList.CalcMemSize);
   if FDefaultDirectiveFuncList<>nil then
-    inc(Result,FDefaultDirectiveFuncList.CalcMemSize);
+    Stats.Add('TLinkScanner.FDefaultDirectiveFuncList',
+      FDefaultDirectiveFuncList.CalcMemSize);
   if FSkipDirectiveFuncList<>nil then
-    inc(Result,FSkipDirectiveFuncList.CalcMemSize);
+    Stats.Add('TLinkScanner.FSkipDirectiveFuncList',
+      FSkipDirectiveFuncList.CalcMemSize);
 end;
 
 function TLinkScanner.UpdateNeeded(
