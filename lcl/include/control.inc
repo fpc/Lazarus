@@ -2997,7 +2997,7 @@ end;
 
 function TControl.GetDefaultDockCaption: String;
 begin
-  Result := '';
+  Result := Name;
 end;
 
 {------------------------------------------------------------------------------
