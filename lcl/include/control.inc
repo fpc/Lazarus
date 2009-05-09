@@ -3615,7 +3615,7 @@ begin
     if FloatHost <> nil then
     begin
       // => dock this control into it.
-      FloatHost.Caption := GetDockCaption;
+      FloatHost.Caption := FloatHost.GetDockCaption(Self);
       FloatHost.Visible := True;
       Dock(FloatHost,Rect(0, 0, FloatHost.ClientWidth, FloatHost.ClientHeight))
     end 
