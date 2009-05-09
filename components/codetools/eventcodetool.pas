@@ -50,9 +50,11 @@ uses
 type
   TECTGetStringProc = procedure(const s: string) of object;
   
+  { TEventsCodeTool }
+
   TEventsCodeTool = class(TExtractProcTool)
   private
-    fGatheredCompatibleMethods: TAVLTree;
+    fGatheredCompatibleMethods: TAVLTree; // tree of PChar in Src
     SearchedExprList: TExprTypeList;
     SearchedCompatibilityList: TTypeCompatibilityList;
     function FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
@@ -111,6 +113,8 @@ type
         const AStartUnitName: string = ''): TFindContext;
     function MethodTypeDataToStr(TypeData: PTypeData;
         Attr: TProcHeadAttributes): string;
+
+    function CalcMemSize: PtrUInt; override;
   end;
 
 const
@@ -214,6 +218,15 @@ begin
   end;
   if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
   Result:=Result+';';
+end;
+
+function TEventsCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=(inherited CalcMemSize);
+  if fGatheredCompatibleMethods<>nil then
+    inc(Result,fGatheredCompatibleMethods.Count*SizeOf(TAVLTreeNode));
+  if SearchedExprList<>nil then
+    inc(Result,SearchedExprList.CalcMemSize);
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(

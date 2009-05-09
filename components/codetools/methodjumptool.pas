@@ -84,6 +84,7 @@ type
         out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
         
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
+    function CalcMemSize: PtrUInt; override;
   end;
 
 
@@ -1168,6 +1169,11 @@ begin
     DebugLn();
     AVLNode:=ExtTree.FindSuccessor(AVLNode);
   end;
+end;
+
+function TMethodJumpingCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize;
 end;
 
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;

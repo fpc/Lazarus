@@ -80,6 +80,7 @@ type
     property Tool: TPascalParserTool read FTool;
     property Complete: boolean read FComplete write SetComplete;
     property Items: TAVLTree read FItems;
+    function CalcMemSize: PtrUInt;
   end;
 
   {
@@ -125,6 +126,8 @@ type
     NextEntry: PCodeTreeNodeCacheEntry; // used for mem manager
   end;
 
+  { TCodeTreeNodeCache }
+
   TCodeTreeNodeCache = class
   private
     FItems: TAVLTree; // tree of PCodeTreeNodeCacheEntry
@@ -154,6 +157,7 @@ type
     destructor Destroy; override;
     procedure WriteDebugReport(const Prefix: string);
     procedure ConsistencyCheck;
+    function CalcMemSize: PtrUInt;
   end;
   
   {
@@ -170,6 +174,9 @@ type
       TBaseTypeCache(s). All four nodes will point directly to the range.
 
   }
+
+  { TBaseTypeCache }
+
   TBaseTypeCache = class
   private
   public
@@ -181,6 +188,7 @@ type
     procedure UnbindFromOwner;
     constructor Create(AnOwner: TCodeTreeNode);
     destructor Destroy; override;
+    function CalcMemSize: PtrUInt;
   end;
 
   {
@@ -492,6 +500,21 @@ begin
         end;
         Entry:=Entry^.Overloaded;
       end;
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
+end;
+
+function TInterfaceIdentifierCache.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then begin
+    inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      inc(Result,SizeOf(TInterfaceIdentCacheEntry));
       Node:=FItems.FindSuccessor(Node);
     end;
   end;
@@ -1012,6 +1035,21 @@ begin
   end;
 end;
 
+function TCodeTreeNodeCache.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then begin
+    inc(Result,SizeOf(TAVLTreeNode)*FItems.Count);
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      inc(Result,SizeOf(TCodeTreeNodeCacheEntry));
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
+end;
+
 procedure TCodeTreeNodeCache.WriteDebugReport(const Prefix: string);
 var Node: TAVLTreeNode;
   Entry: PCodeTreeNodeCacheEntry;
@@ -1253,6 +1291,11 @@ destructor TBaseTypeCache.Destroy;
 begin
   UnbindFromOwner;
   inherited Destroy;
+end;
+
+function TBaseTypeCache.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize);
 end;
 
 procedure TBaseTypeCache.UnbindFromOwner;

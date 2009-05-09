@@ -99,6 +99,7 @@ type
     function IsPCharInSrc(p: PChar): boolean;
     procedure MoveCursorToPos(APos: integer);
     procedure MoveCursorToPos(APos: PChar);
+    function CalcMemSize: PtrUInt;
   end;
   
   THybridCursorType = (
@@ -325,6 +326,7 @@ type
     function NodeSubDescToStr(Desc, SubDesc: integer): string;
     procedure ConsistencyCheck; virtual;
     procedure WriteDebugTreeReport;
+    function CalcMemSize: PtrUInt; virtual;
     procedure CheckNodeTool(Node: TCodeTreeNode);
     constructor Create;
     destructor Destroy; override;
@@ -2113,6 +2115,26 @@ begin
   ConsistencyCheck;
 end;
 
+function TCustomCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(LastErrorMessage);
+  if FScanner<>nil then
+    inc(Result,FScanner.CalcMemSize);
+  if (FScanner=nil) or (Pointer(FScanner.Src)<>Pointer(Src)) then
+    inc(Result,MemSizeString(Src));
+  if KeyWordFuncList<>nil then
+    inc(Result,KeyWordFuncList.CalcMemSize);
+  if WordIsKeyWordFuncList<>nil then
+    inc(Result,WordIsKeyWordFuncList.CalcMemSize);
+  if Tree<>nil then
+    inc(Result,Tree.NodeCount*TCodeTreeNode.InstanceSize);
+  if LastAtoms<>nil then
+    inc(Result,LastAtoms.CalcMemSize);
+  if DirtySrc<>nil then
+    inc(Result,DirtySrc.CalcMemSize);
+end;
+
 procedure TCustomCodeTool.CheckNodeTool(Node: TCodeTreeNode);
 
   procedure RaiseForeignNode;
@@ -2686,6 +2708,13 @@ begin
   if (NewPos<1) or (NewPos>length(Src)) then
     RaiseNotInSrc;
   MoveCursorToPos(NewPos);
+end;
+
+function TDirtySource.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(Src)
+    +MemSizeString(GapSrc);
 end;
 
 initialization

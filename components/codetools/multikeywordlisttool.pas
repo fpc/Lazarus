@@ -39,10 +39,14 @@ uses
   Classes, SysUtils, CodeAtom, CustomCodeTool, KeywordFuncLists, BasicCodeTools;
 
 type
+
+  { TMultiKeyWordListCodeTool }
+
   TMultiKeyWordListCodeTool = class(TCustomCodeTool)
   private
     FKeyWordLists: TFPList; // list of TKeyWordFunctionList
     FCurKeyWordListID: integer;
+    function GetKeyWordFuncList: TKeyWordFunctionList;
     procedure SetCurKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList);
   protected
     procedure SetKeyWordListID(NewID: integer);
@@ -50,12 +54,13 @@ type
     DefaultKeyWordFuncList: TKeyWordFunctionList;
     property KeyWordListID: integer read FCurKeyWordListID write SetKeyWordListID;
     property CurKeyWordFuncList: TKeyWordFunctionList
-       read KeyWordFuncList write SetCurKeyWordFuncList;
+       read GetKeyWordFuncList write SetCurKeyWordFuncList;
     function AddKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList): integer;
     procedure ClearKeyWordFuncLists;
 
     constructor Create;
     destructor Destroy; override;
+    function CalcMemSize: PtrUInt; override;
   end;
 
 
@@ -79,6 +84,12 @@ begin
   inherited Destroy;
 end;
 
+function TMultiKeyWordListCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize
+    +FKeyWordLists.InstanceSize+PtrUInt(FKeyWordLists.Capacity)*SizeOf(Pointer);
+end;
+
 procedure TMultiKeyWordListCodeTool.SetKeyWordListID(NewID: integer);
 begin
   if FCurKeyWordListID=NewID then exit;
@@ -100,6 +111,11 @@ begin
   end;
   SaveRaiseException(
     '[TMultiKeyWordListCodeTool.SetCurKeyWordFuncList] unknown list',true);
+end;
+
+function TMultiKeyWordListCodeTool.GetKeyWordFuncList: TKeyWordFunctionList;
+begin
+  Result:=KeyWordFuncList;
 end;
 
 function TMultiKeyWordListCodeTool.AddKeyWordFuncList(

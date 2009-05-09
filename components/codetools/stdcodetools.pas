@@ -300,6 +300,8 @@ type
     function GetPasDocComments(const StartPos: TCodeXYPosition;
                                InvokeBuildTree: boolean;
                                out ListOfPCodeXYPosition: TFPList): boolean;
+
+    function CalcMemSize: PtrUInt; override;
   end;
 
 
@@ -4276,6 +4278,11 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function TStandardCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize;
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(

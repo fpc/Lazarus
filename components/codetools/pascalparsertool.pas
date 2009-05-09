@@ -241,6 +241,7 @@ type
 
     constructor Create;
     destructor Destroy; override;
+    function CalcMemSize: PtrUInt; override;
   end;
   
 const
@@ -327,6 +328,21 @@ begin
   if ExtractMemStream<>nil then
     ExtractMemStream.Free;
   inherited Destroy;
+end;
+
+function TPascalParserTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize;
+  if TypeKeyWordFuncList<>nil then
+    inc(Result,TypeKeyWordFuncList.CalcMemSize);
+  if InnerClassKeyWordFuncList<>nil then
+    inc(Result,InnerClassKeyWordFuncList.CalcMemSize);
+  if ClassInterfaceKeyWordFuncList<>nil then
+    inc(Result,ClassInterfaceKeyWordFuncList.CalcMemSize);
+  if ClassVarTypeKeyWordFuncList<>nil then
+    inc(Result,ClassVarTypeKeyWordFuncList.CalcMemSize);
+  if ExtractMemStream<>nil then
+    inc(Result,ExtractMemStream.InstanceSize+ExtractMemStream.Size);
 end;
 
 procedure TPascalParserTool.BuildDefaultKeyWordFunctions;
@@ -1933,7 +1949,7 @@ begin
 //DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
-      Result:=CurKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
+      Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                       CurPos.EndPos-CurPos.StartPos)
     else begin
       if Src[CurPos.StartPos] in ['(','['] then

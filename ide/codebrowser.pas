@@ -700,6 +700,8 @@ begin
     Done:=false;
     UpdateStatusBar(fStage<cbwsFinished);
   end;
+  if fStage=cbwsFinished then
+    CodeToolBoss.WriteMemoryStats;
 end;
 
 procedure TCodeBrowserView.WorkGetScopeOptions;

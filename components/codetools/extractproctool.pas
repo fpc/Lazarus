@@ -105,6 +105,8 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       SourceChangeCache: TSourceChangeCache;
       FunctionResultVariableStartPos: integer = 0): boolean;
+
+    function CalcMemSize: PtrUInt; override;
   end;
   
 const
@@ -1112,6 +1114,11 @@ begin
     NewProcPath.Free;
   end;
   Result:=true;
+end;
+
+function TExtractProcTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize;
 end;
 
 function TExtractProcTool.ScanNodesForVariables(const StartPos,

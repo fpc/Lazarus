@@ -281,6 +281,7 @@ type
     constructor Create;
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
+    function CalcMemSize: PtrUInt;
   end;
 
 
@@ -972,6 +973,15 @@ begin
     DbgOut('Node=nil');
   DbgOut(' Position=',dbgs(Position),' Txt="'+Txt+'" ExtTxt1="'+ExtTxt1+'" ExtTxt2="'+ExtTxt2+'" ExtTxt3="'+ExtTxt3+'"');
   debugln;
+end;
+
+function TCodeTreeNodeExtension.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(Txt)
+    +MemSizeString(ExtTxt1)
+    +MemSizeString(ExtTxt2)
+    +MemSizeString(ExtTxt3);
 end;
 
 { TCodeTreeNodeMemManager }

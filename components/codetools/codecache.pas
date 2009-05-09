@@ -76,6 +76,7 @@ type
     procedure Clear; override;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    function CalcMemSize: PtrUInt; override;
     function LoadFromFile(const AFilename: string): boolean; override;
     function Reload: boolean; // = LoadFromFile(Filename)
     function Revert: boolean; // ignore changes and reload source
@@ -110,6 +111,8 @@ type
     property ReferenceCount: integer read FReferenceCount;
   end;
   
+  { TIncludedByLink }
+
   TIncludedByLink = class
   public
     IncludeFilename: string;
@@ -117,6 +120,7 @@ type
     LastTimeUsed: TDateTime;
     constructor Create(const AnIncludeFilename,AnIncludedByFile: string;
        ALastTimeUsed: TDateTime);
+    function CalcMemSize: PtrUInt;
   end;
 
   TOnCodeCacheDecodeLoaded = procedure(Code: TCodeBuffer; const Filename: string;
@@ -188,6 +192,7 @@ type
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
     procedure WriteAllFileNames;
     procedure WriteDebugReport;
+    function WriteMemoryStats: PtrUInt;
   public
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
@@ -784,6 +789,41 @@ begin
   ConsistencyCheck;
 end;
 
+function TCodeCache.WriteMemoryStats: PtrUInt;
+var
+  m: PtrUInt;
+  Node: TAVLTreeNode;
+  IncLink: TIncludedByLink;
+  Buf: TCodeBuffer;
+begin
+  Result:=PtrUInt(InstanceSize)
+     +MemSizeString(FDefaultEncoding)
+     +MemSizeString(fLastIncludeLinkFile);
+  debugln(['TCodeCache.WriteMemoryStats Size=',Result]);
+  if FItems<>nil then begin
+    m:=FItems.Count*SizeOf(Node);
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Buf:=TCodeBuffer(Node.Data);
+      inc(m,Buf.CalcMemSize);
+      Node:=FItems.FindSuccessor(Node);
+    end;
+    debugln(['FItems Count=',FItems.Count,' Size=',m]);
+    inc(Result,m);
+  end;
+  if FIncludeLinks<>nil then begin
+    m:=FIncludeLinks.Count*SizeOf(Node);
+    Node:=FIncludeLinks.FindLowest;
+    while Node<>nil do begin
+      IncLink:=TIncludedByLink(Node.Data);
+      inc(m,IncLink.CalcMemSize);
+      Node:=FIncludeLinks.FindSuccessor(Node);
+    end;
+    debugln(['FIncludeLinks Count=',FIncludeLinks.Count,' Size=',m]);
+    inc(Result,m);
+  end;
+end;
+
 procedure TCodeCache.WriteAllFileNames;
   procedure WriteNode(ANode: TAVLTreeNode);
   begin
@@ -1043,6 +1083,13 @@ begin
   ConsistencyCheck;
 end;
 
+function TCodeBuffer.CalcMemSize: PtrUInt;
+begin
+  Result:=(inherited CalcMemSize)
+    +MemSizeString(FFilename)
+    +MemSizeString(FLastIncludedByFile);
+end;
+
 { TIncludedByLink }
 
 constructor TIncludedByLink.Create(const AnIncludeFilename,
@@ -1052,6 +1099,13 @@ begin
   IncludeFilename:=AnIncludeFilename;
   IncludedByFile:=AnIncludedByFile;
   LastTimeUsed:=ALastTimeUsed;
+end;
+
+function TIncludedByLink.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(IncludedByFile)
+    +MemSizeString(IncludeFilename);
 end;
 
 

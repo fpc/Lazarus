@@ -96,6 +96,7 @@ type
   public
     Identifier: PChar;
     ParamList: string;
+    function CalcMemSize: PtrUInt;
   end;
 
   { TIdentifierListItem }
@@ -147,6 +148,7 @@ type
     function GetNodeHash(ANode: TCodeTreeNode): string;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
     function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
+    function CalcMemSize: PtrUInt;
   public
     property ParamList: string read GetParamList write SetParamList;
     property Node: TCodeTreeNode read GetNode write SetNode;
@@ -203,6 +205,7 @@ type
     function StartUpAtomBehindIs(const s: string): boolean;
     function CompletePrefix(const OldPrefix: string): string;
     procedure ToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
+    function CalcMemSize: PtrUInt;
   public
     property Context: TFindContext read FContext write FContext;
     property ContextFlags: TIdentifierListContextFlags
@@ -225,13 +228,18 @@ type
   //----------------------------------------------------------------------------
   // history list
 
+  { TIdentHistListItem }
+
   TIdentHistListItem = class
   public
     Identifier: string;
     NodeDesc: TCodeTreeNodeDesc;
     ParamList: string;
     HistoryIndex: integer;
+    function CalcMemSize: PtrUInt;
   end;
+
+  { TIdentifierHistoryList }
 
   TIdentifierHistoryList = class
   private
@@ -246,6 +254,7 @@ type
     procedure Add(NewItem: TIdentifierListItem);
     function GetHistoryIndex(AnItem: TIdentifierListItem): integer;
     function Count: integer;
+    function CalcMemSize: PtrUInt;
   public
     property Capacity: integer read FCapacity write SetCapacity;
   end;
@@ -278,6 +287,8 @@ type
     property ProcNameAtom: TAtomPosition read FProcNameAtom write FProcNameAtom;
     property StartPos: integer read FStartPos write FStartPos;// context is valid from StartPos to EndPos
     property EndPos: integer read FEndPos write FEndPos;
+
+    function CalcMemSize: PtrUInt;
   end;
 
   //----------------------------------------------------------------------------
@@ -334,6 +345,8 @@ type
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings): boolean;
+
+    function CalcMemSize: PtrUInt; override;
   end;
   
 const
@@ -785,6 +798,50 @@ begin
     end;
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
   end;
+end;
+
+function TIdentifierList.CalcMemSize: PtrUInt;
+var
+  i: Integer;
+  Node: TAVLTreeNode;
+  li: TIdentifierListItem;
+  hli: TIdentHistListItem;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FPrefix);
+  if FCreatedIdentifiers<>nil then begin
+    inc(Result,MemSizeFPList(FCreatedIdentifiers));
+    for i:=0 to FCreatedIdentifiers.Count-1 do
+      inc(Result,GetIdentLen(PChar(FCreatedIdentifiers[i])));
+  end;
+  if FFilteredList<>nil then begin
+    inc(Result,MemSizeFPList(FFilteredList));
+    for i:=0 to FFilteredList.Count-1 do
+      inc(Result,TIdentifierListItem(FFilteredList[i]).CalcMemSize);
+  end;
+  if FHistory<>nil then begin
+    inc(Result,FHistory.CalcMemSize);
+  end;
+  if FItems<>nil then begin
+    inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      li:=TIdentifierListItem(Node.Data);
+      inc(Result,li.CalcMemSize);
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
+  if FIdentView<>nil then begin
+    inc(Result,FIdentView.Count*SizeOf(TAVLTreeNode));
+    Node:=FIdentView.FindLowest;
+    while Node<>nil do begin
+      hli:=TIdentHistListItem(Node.Data);
+      inc(Result,hli.CalcMemSize);
+      Node:=FIdentView.FindSuccessor(Node);
+    end;
+  end;
+  if FIdentSearchItem<>nil then
+    inc(Result,FIdentSearchItem.CalcMemSize);
 end;
 
 { TIdentCompletionTool }
@@ -2047,6 +2104,32 @@ begin
   end;
 end;
 
+function TIdentCompletionTool.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+  Ext: TCodeTreeNodeExtension;
+begin
+  Result:=inherited CalcMemSize;
+  if ClassAndAncestors<>nil then
+    inc(Result,ClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
+  if FoundPublicProperties<>nil then
+    inc(Result,FoundPublicProperties.COunt*SizeOf(TAVLTreeNode));
+  if FoundMethods<>nil then begin
+    inc(Result,FoundMethods.Count*SizeOf(TAVLTreeNode));
+    Node:=FoundMethods.FindLowest;
+    while Node<>nil do begin
+      Ext:=TCodeTreeNodeExtension(Node.Data);
+      inc(Result,Ext.CalcMemSize);
+      Node:=FoundMethods.FindSuccessor(Node);
+    end;
+  end;
+  if CurrentIdentifierList<>nil then begin
+    inc(Result,CurrentIdentifierList.CalcMemSize);
+  end;
+  if CurrentContexts<>nil then
+    inc(Result,CurrentContexts.CalcMemSize);
+end;
+
 { TIdentifierListItem }
 
 function TIdentifierListItem.GetParamList: string;
@@ -2415,6 +2498,14 @@ begin
   Result:=CompareTextIgnoringSpace(ParamList,CompareItem.ParamList,false);
 end;
 
+function TIdentifierListItem.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FParamList)
+    +MemSizeString(FNodeHash)
+    +MemSizeString(Identifier);
+end;
+
 { TIdentifierHistoryList }
 
 procedure TIdentifierHistoryList.SetCapacity(const AValue: integer);
@@ -2516,6 +2607,23 @@ begin
   Result:=FItems.Count;
 end;
 
+function TIdentifierHistoryList.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+  Item: TIdentHistListItem;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then begin
+    inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Item:=TIdentHistListItem(Node.Data);
+      inc(Result,Item.CalcMemSize);
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
+end;
+
 { TCodeContextInfo }
 
 function TCodeContextInfo.GetItems(Index: integer): TExpressionType;
@@ -2551,6 +2659,30 @@ procedure TCodeContextInfo.Clear;
 begin
   FCount:=0;
   ReAllocMem(FItems,0);
+end;
+
+function TCodeContextInfo.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(FCount)*SizeOf(TExpressionType)
+    +MemSizeString(FProcName);
+end;
+
+{ TIdentifierListSearchItem }
+
+function TIdentifierListSearchItem.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(ParamList);
+end;
+
+{ TIdentHistListItem }
+
+function TIdentHistListItem.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(Identifier)
+    +MemSizeString(ParamList);
 end;
 
 initialization

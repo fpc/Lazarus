@@ -120,6 +120,8 @@ type
       SourceChangeCache: TSourceChangeCache): boolean;
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
       Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+
+    function CalcMemSize: PtrUInt; override;
   end;
 
 implementation
@@ -268,6 +270,11 @@ begin
   if ANode=nil then exit;
   ProcHead:=ExtractProcHead(ANode,Attributes);
   Result:=true;
+end;
+
+function TCodeTemplatesTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize;
 end;
 
 { TCodeToolTemplate }

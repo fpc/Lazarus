@@ -86,6 +86,9 @@ const
   CleanAtomPosition: TAtomPosition = (StartPos:0; EndPos:0; Flag:cafNone);
 
 type
+
+  { TAtomRing }
+
   TAtomRing = class
   private
     FSize: integer;
@@ -105,6 +108,7 @@ type
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
+    function CalcMemSize: PtrUInt;
   end;
   
   TAtomList = class
@@ -368,6 +372,12 @@ destructor TAtomRing.Destroy;
 begin
   if FItems<>nil then FreeMem(FItems);
   inherited Destroy;
+end;
+
+function TAtomRing.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+       +PtrUInt(FSize)*SizeOf(TAtomPosition);
 end;
 
 procedure TAtomRing.SetSize(NewSize: integer);

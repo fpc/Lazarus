@@ -165,6 +165,7 @@ type
     procedure DecWriteLock;
     procedure Clear;  virtual;
     function ConsistencyCheck: integer;
+    function CalcMemSize: PtrUInt; virtual;
     constructor Create(const ASource: string);
     destructor Destroy; override;
     
@@ -853,6 +854,18 @@ begin
     Result:=-1;  exit;
   end;
   Result:=0;
+end;
+
+function TSourceLog.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FDiskEncoding)
+    +PtrUint(FLineCount)*SizeOf(TLineRange)
+    +MemSizeString(FMemEncoding)
+    +FChangeHookCount*SizeOf(TOnSourceChange)
+    +MemSizeString(FSource)
+    +PtrUint(FLog.Count)*SizeOf(TSourceLogEntry)
+    +PtrUInt(FMarkers.Count*TSourceLogMarker.InstanceSize);
 end;
 
 function TSourceLog.IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;

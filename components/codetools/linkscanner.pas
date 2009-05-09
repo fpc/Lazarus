@@ -123,6 +123,7 @@ type
     DynamicExtension: boolean;
     constructor Create(const AFilename, AIncludePath: string;
                        aDynamicExtension: boolean);
+    function CalcMemSize: PtrUInt;
   end;
   
   { TMissingIncludeFiles is a list of TMissingIncludeFile }
@@ -133,6 +134,7 @@ type
   public
     procedure Clear; override;
     procedure Delete(Index: Integer);
+    function CalcMemSize: PtrUInt;
     property Items[Index: Integer]: TMissingIncludeFile
       read GetIncFile write SetIncFile; default;
   end;
@@ -414,6 +416,7 @@ type
     procedure Clear;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    function CalcMemSize: PtrUInt;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -1402,6 +1405,38 @@ begin
         ,' Code=',dbgs(FLinks[i].Code)
       );
   end;
+end;
+
+function TLinkScanner.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FCleanedSrc)
+    +MemSizeString(FMainSourceFilename)
+    +length(FDirectiveName)
+    +MemSizeString(LastErrorMessage)
+    +MemSizeString(Src)
+    +MemSizeString(SrcFilename);
+  if FLinks<>nil then
+    inc(Result,FLinkCapacity*SizeOf(TSourceLink));
+  if FInitValues<>nil then
+    inc(Result,FInitValues.CalcMemSize);
+  if FSourceChangeSteps<>nil then
+    inc(Result,FSourceChangeSteps.InstanceSize
+               +FSourceChangeSteps.Capacity*SizeOf(TSourceChangeStep));
+  if FIncludeStack<>nil then
+    inc(Result,FIncludeStack.InstanceSize+FIncludeStack.Capacity*SizeOf(TSourceLink));
+  if Values<>nil then
+    inc(Result,Values.CalcMemSize);
+  if FMissingIncludeFiles<>nil then
+    inc(Result,FMissingIncludeFiles.InstanceSize);
+  if KeywordFuncList<>nil then
+    inc(Result,KeywordFuncList.CalcMemSize);
+  if FDirectiveFuncList<>nil then
+    inc(Result,FDirectiveFuncList.CalcMemSize);
+  if FDefaultDirectiveFuncList<>nil then
+    inc(Result,FDefaultDirectiveFuncList.CalcMemSize);
+  if FSkipDirectiveFuncList<>nil then
+    inc(Result,FSkipDirectiveFuncList.CalcMemSize);
 end;
 
 function TLinkScanner.UpdateNeeded(
@@ -3347,6 +3382,13 @@ begin
   DynamicExtension:=aDynamicExtension;
 end;
 
+function TMissingIncludeFile.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(IncludePath)
+    +MemSizeString(Filename);
+end;
+
 { TMissingIncludeFiles }
 
 function TMissingIncludeFiles.GetIncFile(Index: Integer): TMissingIncludeFile;
@@ -3371,6 +3413,16 @@ procedure TMissingIncludeFiles.Delete(Index: Integer);
 begin
   Items[Index].Free;
   inherited Delete(Index);
+end;
+
+function TMissingIncludeFiles.CalcMemSize: PtrUInt;
+var
+  i: Integer;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +SizeOf(Pointer)*Capacity;
+  for i:=0 to Count-1 do
+    inc(Result,Items[i].CalcMemSize);
 end;
 
 

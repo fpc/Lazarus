@@ -174,6 +174,8 @@ type
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadNextUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
     procedure ReadPriorUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
+
+    function CalcMemSize: PtrUInt; override;
   end;
 
 implementation
@@ -1904,6 +1906,12 @@ begin
   end;
   AtomIsIdentifier(true);
   UnitNameAtom:=CurPos;
+end;
+
+function TPascalReaderTool.CalcMemSize: PtrUInt;
+begin
+  Result:=inherited CalcMemSize
+    +MemSizeString(CachedSourceName);
 end;
 
 end.

@@ -395,6 +395,7 @@ type
     property Capacity: integer read FCapacity write SetCapacity;
     destructor Destroy; override;
     function AsString: string;
+    function CalcMemSize: PtrUInt;
   end;
   
   //----------------------------------------------------------------------------
@@ -710,6 +711,7 @@ type
   public
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
+    function CalcMemSize: PtrUInt; override;
 
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure ValidateToolDependencies; override;
@@ -8320,6 +8322,34 @@ begin
   end;
 end;
 
+function TFindDeclarationTool.CalcMemSize: PtrUInt;
+var
+  NodeCache: TCodeTreeNodeCache;
+  TypeCache: TBaseTypeCache;
+begin
+  Result:=inherited CalcMemSize;
+  if FInterfaceIdentifierCache<>nil then
+    inc(Result,FInterfaceIdentifierCache.CalcMemSize);
+  if FFirstNodeCache<>nil then begin
+    NodeCache:=FFirstNodeCache;
+    while NodeCache<>nil do begin
+      inc(Result,NodeCache.CalcMemSize);
+      NodeCache:=NodeCache.Next;
+    end;
+  end;
+  if FFirstBaseTypeCache<>nil then begin
+    TypeCache:=FFirstBaseTypeCache;
+    while TypeCache<>nil do begin
+      inc(Result,TypeCache.CalcMemSize);
+      TypeCache:=TypeCache.Next;
+    end;
+  end;
+  if FDependentCodeTools<>nil then
+    inc(Result,FDependentCodeTools.Count*SizeOf(TAVLTreeNode));
+  if FDependsOnCodeTools<>nil then
+    inc(Result,FDependsOnCodeTools.Count*SizeOf(TAVLTreeNode));
+end;
+
 procedure TFindDeclarationTool.ValidateToolDependencies;
 begin
   //debugln(['TFindDeclarationTool.ValidateToolDependencies ',MainFilename]);
@@ -9063,6 +9093,12 @@ begin
   for i:=0 to Count-1 do begin
     Result:=Result+'{'+ExprTypeToString(Items[i])+'}'#13#10;
   end;
+end;
+
+function TExprTypeList.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(FCapacity)*SizeOf(TExpressionType);
 end;
 
 procedure TExprTypeList.SetCapacity(const AValue: integer);

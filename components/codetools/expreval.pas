@@ -87,6 +87,7 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
+    function CalcMemSize: PtrUInt;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp; inline;
   end;
@@ -754,6 +755,20 @@ procedure TExpressionEvaluator.WriteDebugReport;
 begin
   DebugLn('[TExpressionEvaluator.WriteDebugReport] ');
   ConsistencyCheck;
+end;
+
+function TExpressionEvaluator.CalcMemSize: PtrUInt;
+var
+  i: Integer;
+  m: Integer;
+begin
+  Result:=InstanceSize
+    +MemSizeString(Expr)
+    +SizeOf(Pointer)*FCount*2;
+  for i:=0 to FCount-1 do begin
+    inc(Result,MemSizeString(FNames[i]));
+    inc(Result,MemSizeString(FValues[i]));
+  end;
 end;
 
 procedure TExpressionEvaluator.IncreaseChangeStamp;

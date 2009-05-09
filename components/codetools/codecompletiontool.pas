@@ -287,6 +287,8 @@ type
                                         write FAddInheritedCodeToOverrideMethod;
     property OnGetNewVariableLocation: TOnGetNewVariableLocation
                  read FOnGetNewVariableLocation write FOnGetNewVariableLocation;
+
+    function CalcMemSize: PtrUInt; override;
   end;
 
   
@@ -1042,6 +1044,18 @@ begin
   finally
     Params.Free;
   end;
+end;
+
+function TCodeCompletionCodeTool.CalcMemSize: PtrUInt;
+begin
+  Result:=(inherited CalcMemSize)
+    +MemSizeString(FSetPropertyVariablename)
+    +MemSizeString(FJumpToProcName)
+    +length(NewClassSectionIndent)*SizeOf(integer)
+    +length(NewClassSectionInsertPos)*SizeOf(integer)
+    +MemSizeString(fFullTopLvlName);
+ if fNewMainUsesSectionUnits<>nil then
+   inc(Result,SizeOf(TAVLTreeNode)*fNewMainUsesSectionUnits.Count);
 end;
 
 function TCodeCompletionCodeTool.CompleteLocalVariableAssignment(

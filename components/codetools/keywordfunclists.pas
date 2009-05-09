@@ -95,6 +95,7 @@ type
     function IndexOf(const AKeyWord: shortstring): integer;
     constructor Create;
     destructor Destroy;  override;
+    function CalcMemSize: PtrUInt;
   end;
 
 var
@@ -196,6 +197,15 @@ destructor TKeyWordFunctionList.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+function TKeyWordFunctionList.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then
+    inc(Result,SizeOf(TKeyWordFunctionListItem)*FCapacity);
+  if FBucketStart<>nil then
+    inc(Result,FMaxHashIndex*SizeOf(integer));
 end;
 
 procedure TKeyWordFunctionList.Clear;

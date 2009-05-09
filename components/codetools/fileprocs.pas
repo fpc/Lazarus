@@ -295,6 +295,9 @@ function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; over
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string;
 
+function MemSizeString(const s: string): PtrUInt;
+function MemSizeFPList(const List: TFPList): PtrUInt;
+
 function GetTicks: int64;
 
 type
@@ -2584,6 +2587,20 @@ begin
       inc(i,length(s));
     end;
   end;
+end;
+
+function MemSizeString(const s: string): PtrUInt;
+begin
+  Result:=length(s);
+  if s<>'' then
+    inc(Result,SizeOf(Pointer)*4);
+end;
+
+function MemSizeFPList(const List: TFPList): PtrUInt;
+begin
+  if List=nil then exit(0);
+  Result:=PtrUInt(List.InstanceSize)
+    +PtrUInt(List.Capacity)*SizeOf(Pointer);
 end;
 
 function GetTicks: int64;
