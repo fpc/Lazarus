@@ -3,9 +3,10 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Width = 519
   ClientHeight = 427
   ClientWidth = 519
+  TabOrder = 0
   Visible = False
-  DesignLeft = 451
-  DesignTop = 213
+  DesignLeft = 812
+  DesignTop = 438
   object gbDebuggerType: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -20,8 +21,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Caption = 'Debugger type and path'
     ClientHeight = 60
     ClientWidth = 515
-    Ctl3D = False
-    ParentCtl3D = False
     TabOrder = 0
     object cmdOpenDebuggerPath: TSpeedButton
       AnchorSideTop.Control = cmbDebuggerPath
@@ -52,29 +51,28 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
       BorderSpacing.Around = 6
-      Ctl3D = False
       ItemHeight = 13
       ItemWidth = 0
       OnEditingDone = cmbDebuggerTypeEditingDone
       OnSelect = cmbDebuggerTypeEditingDone
-      ParentCtl3D = False
       TabOrder = 0
     end
     object cmbDebuggerPath: TComboBox
       AnchorSideLeft.Control = gbDebuggerType
       AnchorSideTop.Control = cmbDebuggerType
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = cmdOpenDebuggerPath
       Left = 6
       Height = 21
       Top = 33
-      Width = 474
+      Width = 480
       Anchors = [akTop, akLeft, akRight]
       AutoComplete = False
-      BorderSpacing.Around = 6
-      Ctl3D = False
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       ItemHeight = 13
       ItemWidth = 0
-      ParentCtl3D = False
       TabOrder = 1
     end
   end
@@ -94,8 +92,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Caption = 'Additional search path'
     ClientHeight = 33
     ClientWidth = 515
-    Ctl3D = False
-    ParentCtl3D = False
     TabOrder = 1
     object cmdOpenAdditionalPath: TSpeedButton
       AnchorSideTop.Control = txtAdditionalPath
@@ -117,12 +113,15 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     object txtAdditionalPath: TEdit
       AnchorSideLeft.Control = gbAdditionalSearchPath
       AnchorSideTop.Control = gbAdditionalSearchPath
+      AnchorSideRight.Control = cmdOpenAdditionalPath
       Left = 6
       Height = 21
       Top = 6
-      Width = 474
+      Width = 480
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       TabOrder = 0
     end
   end
@@ -148,7 +147,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    Ctl3D = False
     TabOrder = 2
   end
   object gbDebuggerSpecific: TGroupBox[3]
@@ -168,8 +166,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     Caption = 'Debugger specific options (depends on type of debugger)'
     ClientHeight = 206
     ClientWidth = 515
-    Ctl3D = False
-    ParentCtl3D = False
     TabOrder = 3
     object pnlDebugSpecific: TPanel
       Left = 6
