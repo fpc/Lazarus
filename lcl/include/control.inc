@@ -2493,16 +2493,20 @@ var
   P: TPoint;
   FloatHost: TWinControl;
 begin
-  if Floating and (Parent <> nil)then
+  if Floating and (Parent <> nil) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));
-    with ADockSource.DockRect do begin
+    with ADockSource.DockRect do
+    begin
       Parent.BoundsRect := Bounds(Left + Parent.Left - P.X, Top + Parent.Top - P.Y,
         Right - Left + Parent.Width - Width,  Bottom - Top + Parent.Height - Height);
     end;
-  end else begin
+  end else
+  begin
     FloatHost := CreateFloatingDockSite(ADockSource.DockRect);
-    if FloatHost <> nil then begin
+    if FloatHost <> nil then
+    begin
+      FloatHost.Caption := FloatHost.GetDockCaption(Self);
       ADockSource.DragTarget := FloatHost;
     end;
   end;
