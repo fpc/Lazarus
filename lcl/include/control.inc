@@ -3596,24 +3596,31 @@ var
 begin
   DebugLn(['TControl.ManualFloat ',DbgSName(Self)]);
   // undock from old host dock site
-  if HostDockSite=nil then
+  if HostDockSite = nil then
   begin
-    Result := true;
-    if Parent<>nil then
-      Parent.DoUndockClientMsg(nil,Self);
-  end else begin
-    Result := HostDockSite.DoUndock(nil,Self,KeepDockSiteSize);
+    Result := True;
+    if Parent <> nil then
+      Parent.DoUndockClientMsg(nil, Self);
+  end 
+  else 
+  begin
+    Result := HostDockSite.DoUndock(nil, Self, KeepDockSiteSize);
   end;
+
   // create new float dock site and dock this control into it.
-  if Result then begin
+  if Result then 
+  begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
     //debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect),' FloatHost=',dbgs(FloatHost<>nil));
-    if FloatHost<>nil then  begin
+    if FloatHost <> nil then
+    begin
       // => dock this control into it.
-      FloatHost.Visible := true;
-      Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
-    end else
-      Dock(nil,TheScreenRect);
+      FloatHost.Caption := GetDockCaption;
+      FloatHost.Visible := True;
+      Dock(FloatHost,Rect(0, 0, FloatHost.ClientWidth, FloatHost.ClientHeight))
+    end 
+    else
+      Dock(nil, TheScreenRect);
   end;
 end;
 
