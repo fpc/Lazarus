@@ -36,7 +36,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeAtom, CustomCodeTool, KeywordFuncLists, BasicCodeTools;
+  Classes, SysUtils, FileProcs, CodeAtom, CustomCodeTool, KeywordFuncLists,
+  BasicCodeTools;
 
 type
 
@@ -60,7 +61,7 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 
@@ -84,10 +85,12 @@ begin
   inherited Destroy;
 end;
 
-function TMultiKeyWordListCodeTool.CalcMemSize: PtrUInt;
+procedure TMultiKeyWordListCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize
-    +FKeyWordLists.InstanceSize+PtrUInt(FKeyWordLists.Capacity)*SizeOf(Pointer);
+  inherited CalcMemSize(Stats);
+  Stats.Add('TMultiKeyWordListCodeTool',
+     PtrUInt(FKeyWordLists.InstanceSize)
+     +PtrUInt(FKeyWordLists.Capacity)*SizeOf(Pointer));
 end;
 
 procedure TMultiKeyWordListCodeTool.SetKeyWordListID(NewID: integer);

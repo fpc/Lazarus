@@ -114,7 +114,7 @@ type
     function MethodTypeDataToStr(TypeData: PTypeData;
         Attr: TProcHeadAttributes): string;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 const
@@ -220,13 +220,14 @@ begin
   Result:=Result+';';
 end;
 
-function TEventsCodeTool.CalcMemSize: PtrUInt;
+procedure TEventsCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=(inherited CalcMemSize);
+  inherited CalcMemSize(Stats);
   if fGatheredCompatibleMethods<>nil then
-    inc(Result,fGatheredCompatibleMethods.Count*SizeOf(TAVLTreeNode));
+    Stats.Add('TEventsCodeTool.fGatheredCompatibleMethods',
+      fGatheredCompatibleMethods.Count*SizeOf(TAVLTreeNode));
   if SearchedExprList<>nil then
-    inc(Result,SearchedExprList.CalcMemSize);
+    Stats.Add('TEventsCodeTool.SearchedExprList',SearchedExprList.CalcMemSize);
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(

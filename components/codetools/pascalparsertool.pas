@@ -241,7 +241,7 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
 const
@@ -330,19 +330,24 @@ begin
   inherited Destroy;
 end;
 
-function TPascalParserTool.CalcMemSize: PtrUInt;
+procedure TPascalParserTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
   if TypeKeyWordFuncList<>nil then
-    inc(Result,TypeKeyWordFuncList.CalcMemSize);
+    Stats.Add('TPascalParserTool.TypeKeyWordFuncList',
+      TypeKeyWordFuncList.CalcMemSize);
   if InnerClassKeyWordFuncList<>nil then
-    inc(Result,InnerClassKeyWordFuncList.CalcMemSize);
+    Stats.Add('TPascalParserTool.InnerClassKeyWordFuncList',
+      InnerClassKeyWordFuncList.CalcMemSize);
   if ClassInterfaceKeyWordFuncList<>nil then
-    inc(Result,ClassInterfaceKeyWordFuncList.CalcMemSize);
+    Stats.Add('TPascalParserTool.ClassInterfaceKeyWordFuncList',
+      ClassInterfaceKeyWordFuncList.CalcMemSize);
   if ClassVarTypeKeyWordFuncList<>nil then
-    inc(Result,ClassVarTypeKeyWordFuncList.CalcMemSize);
+    Stats.Add('TPascalParserTool.ClassVarTypeKeyWordFuncList',
+      ClassVarTypeKeyWordFuncList.CalcMemSize);
   if ExtractMemStream<>nil then
-    inc(Result,ExtractMemStream.InstanceSize+ExtractMemStream.Size);
+    Stats.Add('TPascalParserTool.ExtractMemStream',
+      ExtractMemStream.InstanceSize+ExtractMemStream.Size);
 end;
 
 procedure TPascalParserTool.BuildDefaultKeyWordFunctions;

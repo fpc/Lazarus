@@ -38,8 +38,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, SourceChanger,
+  Classes, SysUtils, FileProcs, CodeTree, CodeAtom, KeywordFuncLists,
+  BasicCodeTools, LinkScanner, AVL_Tree, SourceChanger,
   CustomCodeTool, PascalParserTool, CodeToolsStructs, StdCodeTools;
 
 type
@@ -121,7 +121,7 @@ type
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
       Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 implementation
@@ -272,9 +272,9 @@ begin
   Result:=true;
 end;
 
-function TCodeTemplatesTool.CalcMemSize: PtrUInt;
+procedure TCodeTemplatesTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
 end;
 
 { TCodeToolTemplate }

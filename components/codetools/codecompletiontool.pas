@@ -288,7 +288,7 @@ type
     property OnGetNewVariableLocation: TOnGetNewVariableLocation
                  read FOnGetNewVariableLocation write FOnGetNewVariableLocation;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
   
@@ -1046,16 +1046,18 @@ begin
   end;
 end;
 
-function TCodeCompletionCodeTool.CalcMemSize: PtrUInt;
+procedure TCodeCompletionCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=(inherited CalcMemSize)
-    +MemSizeString(FSetPropertyVariablename)
+  inherited CalcMemSize(Stats);
+  Stats.Add('TCodeCompletionCodeTool',
+     MemSizeString(FSetPropertyVariablename)
     +MemSizeString(FJumpToProcName)
     +length(NewClassSectionIndent)*SizeOf(integer)
     +length(NewClassSectionInsertPos)*SizeOf(integer)
-    +MemSizeString(fFullTopLvlName);
+    +MemSizeString(fFullTopLvlName));
  if fNewMainUsesSectionUnits<>nil then
-   inc(Result,SizeOf(TAVLTreeNode)*fNewMainUsesSectionUnits.Count);
+   Stats.Add('TCodeCompletionCodeTool.fNewMainUsesSectionUnits',
+     SizeOf(TAVLTreeNode)*fNewMainUsesSectionUnits.Count);
 end;
 
 function TCodeCompletionCodeTool.CompleteLocalVariableAssignment(

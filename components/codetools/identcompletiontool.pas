@@ -346,7 +346,7 @@ type
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings): boolean;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
 const
@@ -2104,30 +2104,35 @@ begin
   end;
 end;
 
-function TIdentCompletionTool.CalcMemSize: PtrUInt;
+procedure TIdentCompletionTool.CalcMemSize(Stats: TCTMemStats);
 var
   Node: TAVLTreeNode;
   Ext: TCodeTreeNodeExtension;
+  m: PtrUint;
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
   if ClassAndAncestors<>nil then
-    inc(Result,ClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
+    Stats.Add('TIdentCompletionTool.ClassAndAncestors',
+        ClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
   if FoundPublicProperties<>nil then
-    inc(Result,FoundPublicProperties.COunt*SizeOf(TAVLTreeNode));
+    Stats.Add('TIdentCompletionTool.FoundPublicProperties',
+              FoundPublicProperties.COunt*SizeOf(TAVLTreeNode));
   if FoundMethods<>nil then begin
-    inc(Result,FoundMethods.Count*SizeOf(TAVLTreeNode));
+    m:=PtrUint(FoundMethods.Count)*SizeOf(TAVLTreeNode);
     Node:=FoundMethods.FindLowest;
     while Node<>nil do begin
       Ext:=TCodeTreeNodeExtension(Node.Data);
-      inc(Result,Ext.CalcMemSize);
+      inc(m,Ext.CalcMemSize);
       Node:=FoundMethods.FindSuccessor(Node);
     end;
+    STats.Add('TIdentCompletionTool.FoundMethods',m);
   end;
-  if CurrentIdentifierList<>nil then begin
-    inc(Result,CurrentIdentifierList.CalcMemSize);
-  end;
+  if CurrentIdentifierList<>nil then
+    Stats.Add('TIdentCompletionTool.CurrentIdentifierList',
+      CurrentIdentifierList.CalcMemSize);
   if CurrentContexts<>nil then
-    inc(Result,CurrentContexts.CalcMemSize);
+    Stats.Add('TIdentCompletionTool.CurrentContexts',
+              CurrentContexts.CalcMemSize);
 end;
 
 { TIdentifierListItem }

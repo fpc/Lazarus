@@ -192,7 +192,7 @@ type
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
     procedure WriteAllFileNames;
     procedure WriteDebugReport;
-    function WriteMemoryStats: PtrUInt;
+    function CalcMemSize(Stats: TCTMemStats): PtrUInt;
   public
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
@@ -789,7 +789,7 @@ begin
   ConsistencyCheck;
 end;
 
-function TCodeCache.WriteMemoryStats: PtrUInt;
+function TCodeCache.CalcMemSize(Stats: TCTMemStats): PtrUInt;
 var
   m: PtrUInt;
   Node: TAVLTreeNode;
@@ -799,7 +799,6 @@ begin
   Result:=PtrUInt(InstanceSize)
      +MemSizeString(FDefaultEncoding)
      +MemSizeString(fLastIncludeLinkFile);
-  debugln(['TCodeCache.WriteMemoryStats Size=',Result]);
   if FItems<>nil then begin
     m:=FItems.Count*SizeOf(Node);
     Node:=FItems.FindLowest;
@@ -808,7 +807,8 @@ begin
       inc(m,Buf.CalcMemSize);
       Node:=FItems.FindSuccessor(Node);
     end;
-    debugln(['FItems Count=',FItems.Count,' Size=',m]);
+    Stats.Add('TCodeCache.Items.Count',FItems.Count);
+    Stats.Add('TCodeCache.Items',m);
     inc(Result,m);
   end;
   if FIncludeLinks<>nil then begin
@@ -819,9 +819,11 @@ begin
       inc(m,IncLink.CalcMemSize);
       Node:=FIncludeLinks.FindSuccessor(Node);
     end;
-    debugln(['FIncludeLinks Count=',FIncludeLinks.Count,' Size=',m]);
+    Stats.Add('TCodeCache.FIncludeLinks.Count',FIncludeLinks.Count);
+    Stats.Add('TCodeCache.FIncludeLinks',m);
     inc(Result,m);
   end;
+  Stats.Add('TCodeCache',Result);
 end;
 
 procedure TCodeCache.WriteAllFileNames;

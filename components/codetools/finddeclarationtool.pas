@@ -711,7 +711,7 @@ type
   public
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
 
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure ValidateToolDependencies; override;
@@ -8322,32 +8322,40 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.CalcMemSize: PtrUInt;
+procedure TFindDeclarationTool.CalcMemSize(Stats: TCTMemStats);
 var
   NodeCache: TCodeTreeNodeCache;
   TypeCache: TBaseTypeCache;
+  m: PtrUInt;
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
   if FInterfaceIdentifierCache<>nil then
-    inc(Result,FInterfaceIdentifierCache.CalcMemSize);
+    Stats.Add('TFindDeclarationTool.FInterfaceIdentifierCache',
+      FInterfaceIdentifierCache.CalcMemSize);
   if FFirstNodeCache<>nil then begin
+    m:=0;
     NodeCache:=FFirstNodeCache;
     while NodeCache<>nil do begin
-      inc(Result,NodeCache.CalcMemSize);
+      inc(m,NodeCache.CalcMemSize);
       NodeCache:=NodeCache.Next;
     end;
+    Stats.Add('TFindDeclarationTool.NodeCache',m);
   end;
   if FFirstBaseTypeCache<>nil then begin
+    m:=0;
     TypeCache:=FFirstBaseTypeCache;
     while TypeCache<>nil do begin
-      inc(Result,TypeCache.CalcMemSize);
+      inc(m,TypeCache.CalcMemSize);
       TypeCache:=TypeCache.Next;
     end;
+    Stats.Add('TFindDeclarationTool.TypeCache',m);
   end;
   if FDependentCodeTools<>nil then
-    inc(Result,FDependentCodeTools.Count*SizeOf(TAVLTreeNode));
+    Stats.Add('TFindDeclarationTool.FDependentCodeTools',
+      FDependentCodeTools.Count*SizeOf(TAVLTreeNode));
   if FDependsOnCodeTools<>nil then
-    inc(Result,FDependsOnCodeTools.Count*SizeOf(TAVLTreeNode));
+    Stats.Add('TFindDeclarationTool.FDependsOnCodeTools',
+      FDependsOnCodeTools.Count*SizeOf(TAVLTreeNode));
 end;
 
 procedure TFindDeclarationTool.ValidateToolDependencies;

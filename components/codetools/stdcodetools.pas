@@ -301,7 +301,7 @@ type
                                InvokeBuildTree: boolean;
                                out ListOfPCodeXYPosition: TFPList): boolean;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 
@@ -4280,9 +4280,9 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.CalcMemSize: PtrUInt;
+procedure TStandardCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(

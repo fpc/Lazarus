@@ -238,6 +238,44 @@ const
     'fsciExecutable'
     );
 
+var
+  FPUpChars: array[char] of char;
+
+// AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
+// but normally these OS use UTF-8 as system encoding so the widestringmanager
+// is not needed.
+function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
+procedure SetNeedRTLAnsi(NewValue: boolean);
+function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
+function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+
+// file operations
+function FileExistsUTF8(const Filename: string): boolean;
+function FileAgeUTF8(const FileName: string): Longint;
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+function ExpandFileNameUTF8(const FileName: string): string;
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+procedure FindCloseUTF8(var F: TSearchrec);
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+function FileGetAttrUTF8(const FileName: String): Longint;
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+function DeleteFileUTF8(const FileName: String): Boolean;
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+function FileSearchUTF8(const Name, DirList : String): String;
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+function GetCurrentDirUTF8: String;
+function SetCurrentDirUTF8(const NewDir: String): Boolean;
+function CreateDirUTF8(const NewDir: String): Boolean;
+function RemoveDirUTF8(const Dir: String): Boolean;
+function ForceDirectoriesUTF8(const Dir: string): Boolean;
+
+// environment
+function ParamStrUTF8(Param: Integer): string;
+function GetEnvironmentStringUTF8(Index : Integer): String;
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+
+
 // basic utility -> should go to RTL
 function ComparePointers(p1, p2: Pointer): integer;
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
@@ -254,7 +292,10 @@ const DateAsCfgStrFormat='YYYYMMDD';
 function DateToCfgStr(const Date: TDateTime): string;
 function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
 
+
 // debugging
+procedure RaiseCatchableException(const Msg: string);
+
 procedure DebugLn(Args: array of const);
 procedure DebugLn(const S: String; Args: array of const);// similar to Format(s,Args)
 procedure DebugLn;
@@ -295,6 +336,31 @@ function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; over
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string;
 
+type
+  TCTMemStat = class
+  public
+    Name: string;
+    Sum: PtrUint;
+  end;
+
+  { TCTMemStats }
+
+  TCTMemStats = class
+  private
+    function GetItems(const Name: string): PtrUint;
+    procedure SetItems(const Name: string; const AValue: PtrUint);
+  public
+    Tree: TAVLTree; // tree of TCTMemStat sorted for Name with CompareText
+    Total: PtrUInt;
+    constructor Create;
+    destructor Destroy; override;
+    property Items[const Name: string]: PtrUint read GetItems write SetItems; default;
+    procedure Add(const Name: string; Size: PtrUint);
+    procedure WriteReport;
+  end;
+
+function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
+function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat): integer;
 function MemSizeString(const s: string): PtrUInt;
 function MemSizeFPList(const List: TFPList): PtrUInt;
 
@@ -316,47 +382,6 @@ function CTStackTraceAsString(const AStack: TCTStackTracePointers;
 function CTGetLineInfo(Addr: Pointer; UseCache: boolean): string;
 function CompareCTLineInfoCacheItems(Data1, Data2: Pointer): integer;
 function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
-
-var
-  FPUpChars: array[char] of char;
-
-// AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
-// but normally these OS use UTF-8 as system encoding so the widestringmanager
-// is not needed.
-function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
-procedure SetNeedRTLAnsi(NewValue: boolean);
-function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
-function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
-
-// file operations
-function FileExistsUTF8(const Filename: string): boolean;
-function FileAgeUTF8(const FileName: string): Longint;
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-function ExpandFileNameUTF8(const FileName: string): string;
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-procedure FindCloseUTF8(var F: TSearchrec);
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-function FileGetAttrUTF8(const FileName: String): Longint;
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-function DeleteFileUTF8(const FileName: String): Boolean;
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-function FileSearchUTF8(const Name, DirList : String): String;
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-function GetCurrentDirUTF8: String;
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-function CreateDirUTF8(const NewDir: String): Boolean;
-function RemoveDirUTF8(const Dir: String): Boolean;
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
-
-// environment
-function ParamStrUTF8(Param: Integer): string;
-function GetEnvironmentStringUTF8(Index : Integer): String;
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
-
-
-// other useful stuff
-procedure RaiseCatchableException(const Msg: string);
 
 
 implementation
@@ -2589,6 +2614,17 @@ begin
   end;
 end;
 
+function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
+begin
+  Result:=SysUtils.CompareText(Stat1.Name,Stat2.Name);
+end;
+
+function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat
+  ): integer;
+begin
+  Result:=SysUtils.CompareText(AnsiString(KeyAnsiString),Stat.Name);
+end;
+
 function MemSizeString(const s: string): PtrUInt;
 begin
   Result:=length(s);
@@ -3027,6 +3063,84 @@ begin
   end;
   LineInfoCache.Free;
   LineInfoCache:=nil;
+end;
+
+{ TCTMemStats }
+
+function TCTMemStats.GetItems(const Name: string): PtrUint;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=Tree.FindKey(Pointer(Name),TListSortCompare(@CompareNameWithCTMemStat));
+  if Node<>nil then
+    Result:=TCTMemStat(Node.Data).Sum
+  else
+    Result:=0;
+end;
+
+procedure TCTMemStats.SetItems(const Name: string; const AValue: PtrUint);
+var
+  Node: TAVLTreeNode;
+  NewStat: TCTMemStat;
+begin
+  Node:=Tree.FindKey(Pointer(Name),TListSortCompare(@CompareNameWithCTMemStat));
+  if Node<>nil then begin
+    if AValue<>0 then begin
+      TCTMemStat(Node.Data).Sum:=AValue;
+    end else begin
+      Tree.FreeAndDelete(Node);
+    end;
+  end else begin
+    if AValue<>0 then begin
+      NewStat:=TCTMemStat.Create;
+      NewStat.Name:=Name;
+      NewStat.Sum:=AValue;
+      Tree.Add(NewStat);
+    end;
+  end;
+end;
+
+constructor TCTMemStats.Create;
+begin
+  Tree:=TAVLTree.Create(TListSortCompare(@CompareCTMemStat));
+end;
+
+destructor TCTMemStats.Destroy;
+begin
+  Tree.FreeAndClear;
+  FreeAndNil(Tree);
+  inherited Destroy;
+end;
+
+procedure TCTMemStats.Add(const Name: string; Size: PtrUint);
+var
+  Node: TAVLTreeNode;
+  NewStat: TCTMemStat;
+begin
+  inc(Total,Size);
+  Node:=Tree.FindKey(Pointer(Name),TListSortCompare(@CompareNameWithCTMemStat));
+  if Node<>nil then begin
+    inc(TCTMemStat(Node.Data).Sum,Size);
+  end else begin
+    NewStat:=TCTMemStat.Create;
+    NewStat.Name:=Name;
+    NewStat.Sum:=Size;
+    Tree.Add(NewStat);
+  end;
+end;
+
+procedure TCTMemStats.WriteReport;
+var
+  Node: TAVLTreeNode;
+  CurStat: TCTMemStat;
+begin
+  DebugLn(['TCTMemStats.WriteReport Stats=',Tree.Count,' Total=',Total]);
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    CurStat:=TCTMemStat(Node.Data);
+    DebugLn(['  ',CurStat.Name,'=',CurStat.Sum]);
+    Node:=Tree.FindSuccessor(Node);
+  end;
 end;
 
 initialization

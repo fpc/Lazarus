@@ -326,7 +326,7 @@ type
     function NodeSubDescToStr(Desc, SubDesc: integer): string;
     procedure ConsistencyCheck; virtual;
     procedure WriteDebugTreeReport;
-    function CalcMemSize: PtrUInt; virtual;
+    procedure CalcMemSize(Stats: TCTMemStats); virtual;
     procedure CheckNodeTool(Node: TCodeTreeNode);
     constructor Create;
     destructor Destroy; override;
@@ -2115,24 +2115,31 @@ begin
   ConsistencyCheck;
 end;
 
-function TCustomCodeTool.CalcMemSize: PtrUInt;
+procedure TCustomCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=PtrUInt(InstanceSize)
-    +MemSizeString(LastErrorMessage);
+  Stats.Add(ClassName,InstanceSize);
+  Stats.Add('TCustomCodeTool',MemSizeString(LastErrorMessage));
   if FScanner<>nil then
-    inc(Result,FScanner.CalcMemSize);
+    Stats.Add('TCustomCodeTool.Scanner',
+      FScanner.CalcMemSize);
   if (FScanner=nil) or (Pointer(FScanner.Src)<>Pointer(Src)) then
-    inc(Result,MemSizeString(Src));
+    Stats.Add('TCustomCodeTool.Src',
+      MemSizeString(Src));
   if KeyWordFuncList<>nil then
-    inc(Result,KeyWordFuncList.CalcMemSize);
+    Stats.Add('TCustomCodeTool.KeyWordFuncList',
+      KeyWordFuncList.CalcMemSize);
   if WordIsKeyWordFuncList<>nil then
-    inc(Result,WordIsKeyWordFuncList.CalcMemSize);
+    Stats.Add('TCustomCodeTool.WordIsKeyWordFuncList',
+      WordIsKeyWordFuncList.CalcMemSize);
   if Tree<>nil then
-    inc(Result,Tree.NodeCount*TCodeTreeNode.InstanceSize);
+    Stats.Add('TCustomCodeTool.Tree',
+      Tree.NodeCount*TCodeTreeNode.InstanceSize);
   if LastAtoms<>nil then
-    inc(Result,LastAtoms.CalcMemSize);
+    Stats.Add('TCustomCodeTool.LastAtoms',
+      LastAtoms.CalcMemSize);
   if DirtySrc<>nil then
-    inc(Result,DirtySrc.CalcMemSize);
+    Stats.Add('TCustomCodeTool.DirtySrc',
+      DirtySrc.CalcMemSize);
 end;
 
 procedure TCustomCodeTool.CheckNodeTool(Node: TCodeTreeNode);

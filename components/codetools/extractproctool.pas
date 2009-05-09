@@ -106,7 +106,7 @@ type
       SourceChangeCache: TSourceChangeCache;
       FunctionResultVariableStartPos: integer = 0): boolean;
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
 const
@@ -1116,9 +1116,9 @@ begin
   Result:=true;
 end;
 
-function TExtractProcTool.CalcMemSize: PtrUInt;
+procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
 end;
 
 function TExtractProcTool.ScanNodesForVariables(const StartPos,

@@ -175,7 +175,7 @@ type
     procedure ReadNextUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
     procedure ReadPriorUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
 
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 implementation
@@ -1908,10 +1908,10 @@ begin
   UnitNameAtom:=CurPos;
 end;
 
-function TPascalReaderTool.CalcMemSize: PtrUInt;
+procedure TPascalReaderTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize
-    +MemSizeString(CachedSourceName);
+  inherited CalcMemSize(Stats);
+  Stats.Add('TPascalReaderTool',MemSizeString(CachedSourceName));
 end;
 
 end.

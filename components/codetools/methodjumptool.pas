@@ -84,7 +84,7 @@ type
         out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
         
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
-    function CalcMemSize: PtrUInt; override;
+    procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
 
@@ -1171,9 +1171,9 @@ begin
   end;
 end;
 
-function TMethodJumpingCodeTool.CalcMemSize: PtrUInt;
+procedure TMethodJumpingCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
-  Result:=inherited CalcMemSize;
+  inherited CalcMemSize(Stats);
 end;
 
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;

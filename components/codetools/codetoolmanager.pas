@@ -5096,30 +5096,29 @@ end;
 procedure TCodeToolManager.WriteMemoryStats;
 var
   Node: TAVLTreeNode;
-  m: PtrUInt;
   ATool: TEventsCodeTool;
-  ToolSize: PtrUInt;
+  Stats: TCTMemStats;
 begin
   DebugLn(['Memory stats: ']);
+  Stats:=TCTMemStats.Create;
   // boss
-  DebugLn(['Boss=',InstanceSize]);
+  Stats.Add('Boss',InstanceSize);
   if FDirectivesTools<>nil then begin
     DebugLn(['FDirectivesTools.Count=',FDirectivesTools.Count]);
   end;
   if FPascalTools<>nil then begin
     debugln(['FPascalTools.Count=',FPascalTools.Count]);
-    ToolSize:=PtrUInt(FPascalTools.Count)*SizeOf(Node);
+    Stats.Add('PascalTools',PtrUInt(FPascalTools.Count)*SizeOf(Node));
     Node:=FPascalTools.FindLowest;
     while Node<>nil do begin
       ATool:=TCodeTool(Node.Data);
-      inc(ToolSize,ATool.CalcMemSize);
+      ATool.CalcMemSize(Stats);
       Node:=FPascalTools.FindSuccessor(Node);
     end;
-    DebugLn(['FPascalTools total=',ToolSize]);
-    inc(m,ToolSize);
   end;
-  SourceCache.WriteMemoryStats;
-  DebugLn(['TCodeToolManager.WriteMemoryStats TOTAL: ',m]);
+  SourceCache.CalcMemSize(Stats);
+  Stats.WriteReport;
+  Stats.Free;
 end;
 
 //-----------------------------------------------------------------------------
