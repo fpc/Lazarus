@@ -2786,6 +2786,7 @@ var
   colEditorBG: TColor;
     // painting the background and the text
   rcLine, rcToken: TRect;
+  EraseLeft, DrawLeft: Integer;  // LeftSide for EraseBackground, Text
   CurLine: integer;         // Screen-line index for the loop
   CurTextIndex: Integer;    // Current Index in text
   CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
@@ -3358,6 +3359,11 @@ var
       TokenAccu.PhysicalEndPos := FirstCol - 1; // in case of an empty line
       CurPhysPos := 1;
       CurLogIndex := 0;
+      // Delete the whole Line
+      SetBkColor(dc, ColorToRGB(colEditorBG));
+      rcLine.Left := EraseLeft;
+      InternalFillRect(dc, rcLine);
+      rcLine.Left := DrawLeft;
 
       if not Assigned(fHighlighter) then begin
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
@@ -3463,13 +3469,11 @@ begin
   dc := Canvas.Handle;
   SetBkMode(dc, TRANSPARENT);
 
-  // Delete the whole area
-  SetBkColor(dc, ColorToRGB(colEditorBG));
-  InternalFillRect(dc, AClip);
-
   // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
+  EraseLeft := AClip.Left;
   if (AClip.Left < fGutterWidth + 2) then
     AClip.Left := fGutterWidth + 2;
+  DrawLeft := AClip.Left;
 
   if (LastLine >= FirstLine) then begin
     CalculateCtrlMouseLink;
@@ -3486,12 +3490,19 @@ begin
     end;
   end;
 
-  // Draw the right edge if necessary.
- AClip.Top := (LastLine+1) * fTextHeight;
-  if (AClip.Top < AClip.Bottom) and bDoRightEdge and
-     (not (eoHideRightMargin in Options)) then begin
-    LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
-    LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
+  AClip.Top := (LastLine+1) * fTextHeight;
+  if (AClip.Top < AClip.Bottom) then begin
+    // Delete the remaining area
+    SetBkColor(dc, ColorToRGB(colEditorBG));
+    AClip.Left := EraseLeft;
+    InternalFillRect(dc, AClip);
+    AClip.Left := DrawLeft;
+
+    // Draw the right edge if necessary.
+    if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
+      LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
+    end;
   end;
 
   fMarkupManager.EndMarkup;
