@@ -3,6 +3,7 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   Width = 461
   ClientHeight = 510
   ClientWidth = 461
+  TabOrder = 0
   Visible = False
   DesignLeft = 110
   DesignTop = 145
@@ -54,7 +55,7 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     RowSelect = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
-    OnMouseUp = KeyMappingTreeViewMouseUp
+    OnDblClick = KeyMappingTreeViewDblClick
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object KeyMappingFindKeyButton: TButton[3]

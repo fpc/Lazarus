@@ -48,8 +48,7 @@ type
     procedure KeyMappingFilterEditEnter(Sender: TObject);
     procedure KeyMappingFilterEditExit(Sender: TObject);
     procedure KeyMappingFindKeyButtonClick(Sender: TObject);
-    procedure KeyMappingTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure KeyMappingTreeViewDblClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     KeyMapNameFilter: string;
@@ -204,16 +203,18 @@ begin
   FillKeyMappingTreeView;
 end;
 
-procedure TEditorKeymappingOptionsFrame.KeyMappingTreeViewMouseUp(
-  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TEditorKeymappingOptionsFrame.KeyMappingTreeViewDblClick(
+  Sender: TObject);
 var
+  P: TPoint;
   i: integer;
   ARelation: TKeyCommandRelation;
   ANode: TTreeNode;
 begin
-  ANode := KeyMappingTreeView.GetNodeAt(X, Y);
+  P := KeyMappingTreeView.ScreenToClient(Mouse.CursorPos);
+  ANode := KeyMappingTreeView.GetNodeAt(P.X, P.Y);
   if (ANode <> nil) and (ANode.Data <> nil) and
-    (TObject(ANode.Data) is TKeyCommandRelation) then
+     (TObject(ANode.Data) is TKeyCommandRelation) then
   begin
     ARelation := TKeyCommandRelation(ANode.Data);
     i := EditingKeyMap.IndexOf(ARelation);

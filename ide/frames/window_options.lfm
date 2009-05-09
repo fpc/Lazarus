@@ -1,20 +1,20 @@
 inherited WindowOptionsFrame: TWindowOptionsFrame
   Height = 396
   Width = 463
-  ClientHeight = 392
-  ClientWidth = 459
+  ClientHeight = 396
+  ClientWidth = 463
   TabOrder = 0
   Visible = False
-  DesignLeft = 413
-  DesignTop = 210
+  DesignLeft = 66
+  DesignTop = 87
   object MinimizeAllOnMinimizeMainCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 22
+    Height = 17
     Top = 0
-    Width = 276
+    Width = 195
     Caption = 'MinimizeAllOnMinimizeMainCheckBox'
     Enabled = False
     TabOrder = 0
@@ -25,9 +25,9 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 22
-    Width = 183
+    Height = 17
+    Top = 17
+    Width = 141
     Caption = 'HideIDEOnRunCheckBox'
     TabOrder = 1
   end
@@ -40,13 +40,13 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 326
-    Top = 66
-    Width = 459
+    Height = 345
+    Top = 51
+    Width = 463
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'WindowPositionsGroupBox'
-    ClientHeight = 307
-    ClientWidth = 455
+    ClientHeight = 327
+    ClientWidth = 459
     TabOrder = 2
     object WindowPositionsListBox: TListBox
       AnchorSideLeft.Control = WindowPositionsGroupBox
@@ -56,13 +56,12 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Left = 6
       Height = 100
       Top = 6
-      Width = 443
+      Width = 447
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = WindowPositionsListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object HideMessagesIconsCheckBox: TCheckBox[3]
@@ -70,9 +69,9 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = HideIDEOnRunCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 44
-    Width = 218
+    Height = 17
+    Top = 34
+    Width = 163
     Caption = 'HideMessagesIconsCheckBox'
     TabOrder = 3
   end
