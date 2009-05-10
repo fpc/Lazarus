@@ -1252,21 +1252,21 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Strg"
 
+#: objinspstrconsts.srselect
+msgid "Select"
+msgstr "Auswahl"
+
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
 msgstr "Übernehmen"
 
 #: objinspstrconsts.srvk_apps
-msgid "Application Key"
+msgid "application key"
 msgstr "Anwendungstaste"
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
 msgstr "Rückschritt"
-
-#: objinspstrconsts.srvk_cancel
-msgid "Cancel"
-msgstr ""
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1288,14 +1288,6 @@ msgstr "Steuerung"
 #: objinspstrconsts.srvk_convert
 msgid "Convert"
 msgstr "Umwandlung"
-
-#: objinspstrconsts.srvk_delete
-msgid "Delete"
-msgstr ""
-
-#: objinspstrconsts.srvk_down
-msgid "Down"
-msgstr ""
 
 #: objinspstrconsts.srvk_end
 msgid "End"
@@ -1332,7 +1324,7 @@ msgid "Insert"
 msgstr "Einfügen"
 
 #: objinspstrconsts.srvk_irregular
-msgid "Irregular"
+msgid "Irregular "
 msgstr "Unregelmäßig"
 
 #: objinspstrconsts.srvk_junja
@@ -1353,7 +1345,7 @@ msgid "Left"
 msgstr "Links"
 
 #: objinspstrconsts.srvk_lwin
-msgid "Left Windows Key"
+msgid "left windows key"
 msgstr "Linke Windows-Taste"
 
 #: objinspstrconsts.srvk_mbutton
@@ -1420,16 +1412,12 @@ msgid "Right"
 msgstr "Rechts"
 
 #: objinspstrconsts.srvk_rwin
-msgid "Right Windows Key"
+msgid "right windows key"
 msgstr "Rechte Windows-Taste"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
 msgstr "Rollen"
-
-#: objinspstrconsts.srvk_select
-msgid "Select"
-msgstr ""
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"
