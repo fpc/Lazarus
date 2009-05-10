@@ -4190,7 +4190,6 @@ begin
     end;
     if CompilerOptions.Modified then
     begin
-      Modified := True;
       {$IFDEF VerboseProjectModified}
       DebugLn(['TProject.SomethingModified CompilerOptions']);
       {$ENDIF}
@@ -4199,7 +4198,6 @@ begin
     for i := 0 to UnitCount - 1 do
       if (Units[i].IsPartOfProject) and Units[i].Modified then
       begin
-        Modified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
         {$ENDIF}
@@ -4219,7 +4217,6 @@ begin
     begin
       if Units[i].SessionModified then
       begin
-        SessionModified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
         {$ENDIF}
@@ -4227,7 +4224,6 @@ begin
       end;
       if (not Units[i].IsPartOfProject) and Units[i].Modified then
       begin
-        SessionModified := True;
         {$IFDEF VerboseProjectModified}
         DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
         {$ENDIF}
