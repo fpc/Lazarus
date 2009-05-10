@@ -66,9 +66,19 @@ begin
   Buttons.LoadGlyphFromStock(FButtonGlyph, idButton);
 end;
 
+function TCustomBitBtn.CanShowGlyph: Boolean;
+begin
+  Result := not Glyph.Empty and (FButtonGlyph.Images <> nil);
+end;
+
 function TCustomBitBtn.GetGlyph : TBitmap;
 begin
   Result := FButtonGlyph.Glyph;
+end;
+
+function TCustomBitBtn.GetGlyphShowMode: TGlyphShowMode;
+begin
+  Result := FButtonGlyph.ShowMode;
 end;
 
 function TCustomBitBtn.GetNumGlyphs: Integer;
@@ -90,12 +100,15 @@ begin
   AdjustSize;
 end;
 
+procedure TCustomBitBtn.SetGlyphShowMode(const AValue: TGlyphShowMode);
+begin
+  FButtonGlyph.ShowMode := AValue;
+end;
+
 procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
 begin
-  if HandleAllocated 
-  then begin
+  if HandleAllocated then
     TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FButtonGlyph);
-  end;
   InvalidatePreferredSize;
   AdjustSize;
 end;
@@ -103,10 +116,12 @@ end;
 procedure TCustomBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   inherited ActionChange(Sender,CheckDefaults);
-  if Sender is TCustomAction then begin
-    with TCustomAction(Sender) do begin
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil)
-      and (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+  if Sender is TCustomAction then
+  begin
+    with TCustomAction(Sender) do
+    begin
+      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
+        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
         ActionList.Images.GetBitmap(ImageIndex, Glyph);
     end;
   end;

@@ -159,15 +159,16 @@ begin
   InflateRect(DrawRect, -4, -4);
   
   ButtonCaption := PWideChar(UTF8Decode(BitBtn.Caption));
+
   // gather info about bitbtn
-  if BitBtn.Glyph.Empty then
-  begin
-    srcWidth := 0;
-    srcHeight := 0;
-  end else
+  if BitBtn.CanShowGlyph then
   begin
     srcWidth := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Width;
     srcHeight := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Height;
+  end else
+  begin
+    srcWidth := 0;
+    srcHeight := 0;
   end;
   BitBtnLayout := BitBtn.Layout;
 

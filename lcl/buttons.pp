@@ -79,9 +79,16 @@ type
     gtmTransparent  // transparent = true
   );
   
+  TGlyphShowMode = (
+    gsmAlways,       // always show
+    gsmNever,        // never show
+    gsmApplication,  // depends on application settings
+    gsmSystem        // depends on system settings
+  );
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
+    FShowMode: TGlyphShowMode;
     FImageIndexes: array[TButtonState] of Integer;
     FImages: TCustomImageList;
     FOriginal: TBitmap;
@@ -93,6 +100,7 @@ type
     function GetWidth: Integer;
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
+    procedure SetShowMode(const AValue: TGlyphShowMode);
     procedure ClearImages;
   protected
     // IUnknown
@@ -120,6 +128,7 @@ type
     property Images: TCustomImageList read FImages;
     property Width: Integer read GetWidth;
     property Height: Integer read GetHeight;
+    property ShowMode: TGlyphShowMode read FShowMode write SetShowMode;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -140,9 +149,11 @@ type
     FMargin: integer;
     FSpacing: Integer;
     function GetGlyph: TBitmap;
+    function GetGlyphShowMode: TGlyphShowMode;
     function GetNumGlyphs: Integer;
     function IsGlyphStored: Boolean;
     procedure SetGlyph(AValue: TBitmap);
+    procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
     procedure SetKind(AValue: TBitBtnKind);
     procedure SetLayout(AValue: TButtonLayout);
     procedure SetMargin(const AValue: integer);
@@ -165,6 +176,7 @@ type
     procedure Click; override;
     procedure LoadGlyphFromLazarusResource(const AName: String);
     procedure LoadGlyphFromStock(idButton: Integer);
+    function CanShowGlyph: Boolean;
   public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
@@ -172,6 +184,7 @@ type
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
     property Spacing: Integer read FSpacing write SetSpacing default 3;
+    property GlyphShowMode: TGlyphShowMode read GetGlyphShowMode write SetGlyphShowMode default gsmApplication;
   end;
 
   { TBitBtn }
@@ -193,6 +206,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GlyphShowMode;
     property Kind;
     property Layout;
     property Margin;

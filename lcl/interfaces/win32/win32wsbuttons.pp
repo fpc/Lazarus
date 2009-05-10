@@ -234,16 +234,16 @@ var
 begin
   // gather info about bitbtn
   BitBtnHandle := BitBtn.Handle;
-  if BitBtn.Glyph.Empty then
-  begin
-    srcWidth := 0;
-    srcHeight := 0;
-  end else
+  if BitBtn.CanShowGlyph then
   begin
     srcWidth := BitBtn.Glyph.Width;
     srcHeight := BitBtn.Glyph.Height;
     if BitBtn.NumGlyphs > 1 then
       srcWidth := srcWidth div BitBtn.NumGlyphs;
+  end else
+  begin
+    srcWidth := 0;
+    srcHeight := 0;
   end;
   BitBtnLayout := BitBtn.Layout;
   BitBtnDC := GetDC(BitBtnHandle);

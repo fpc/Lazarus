@@ -63,11 +63,12 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{       TButtonGlyph Constructor                                                    }
+{       TButtonGlyph Constructor                                               }
 {------------------------------------------------------------------------------}
 constructor TButtonGlyph.Create;
 begin
   FImagesCache := nil;
+  FShowMode:= gsmApplication;
   FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := @GlyphChanged;
 end;
@@ -151,6 +152,13 @@ begin
   GlyphChanged(FOriginal);
 end;
 
+procedure TButtonGlyph.SetShowMode(const AValue: TGlyphShowMode);
+begin
+  if FShowMode = AValue then Exit;
+  FShowMode := AValue;
+  GlyphChanged(FOriginal);
+end;
+
 function TButtonGlyph.GetHeight: Integer;
 begin
   if FImages <> nil then
@@ -168,6 +176,22 @@ begin
 end;
 
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
+
+  function CanShow: Boolean;
+  begin
+    case ShowMode of
+      gsmAlways: Result := True;
+      gsmNever: Result := False;
+      gsmApplication: Result := True; // Application.ShowGlyphs
+      gsmSystem:
+        {$ifdef Windows}
+          Result := False;
+        {$else}
+          Result := True;
+        {$endif}
+    end;
+  end;
+
 begin
   if FImagesCache <> nil then
   begin
@@ -176,7 +200,7 @@ begin
     ClearImages;
   end;
 
-  if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
+  if CanShow and (FOriginal.Width > 0) and (FOriginal.Height > 0) then
   begin
     FImagesCache := GetImageListCache;
     FImagesCache.RegisterListener(Self);

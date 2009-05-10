@@ -90,8 +90,11 @@ class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
-  
-  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph);
+
+  if ABitBtn.CabShowGlyph then  
+    TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph)
+  else
+    TCarbonBitBtn(ABitBtn.Handle).SetGlyph(nil);
 end;
 
 {------------------------------------------------------------------------------

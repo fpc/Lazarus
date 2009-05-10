@@ -85,28 +85,32 @@ var
   Mode: QIconMode;
   ASize: TSize;
 begin
-  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') or
-     not Assigned(AValue.Images) then
+  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
     
   AIcon := QIcon_create();
-  AGlyph := TBitmap.Create;
-  APixmap := QPixmap_create();
-
-  for Mode := QIconNormal to QIconSelected do
+  if ABitBtn.CanShowGlyph then
   begin
-    AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
-    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
-    QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
-    QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
-  end;
-  QPixmap_destroy(APixmap);
-  AGlyph.Free;
+    AGlyph := TBitmap.Create;
+    APixmap := QPixmap_create();
 
-  ASize.cx := AValue.Images.Width;
-  ASize.cy := AValue.Images.Height;
-  TQtAbstractButton(ABitBtn.Handle).setIconSize(@ASize);
+    for Mode := QIconNormal to QIconSelected do
+    begin
+      AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
+      AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+      QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
+      QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
+    end;
+    QPixmap_destroy(APixmap);
+    AGlyph.Free;
+
+    ASize.cx := AValue.Images.Width;
+    ASize.cy := AValue.Images.Height;
+    TQtAbstractButton(ABitBtn.Handle).setIconSize(@ASize);
+  end;
+
   TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
+  QIcon_destroy(AIcon);
 end;
 
 end.

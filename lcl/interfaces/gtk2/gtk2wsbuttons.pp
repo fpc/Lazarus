@@ -75,12 +75,17 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
   BitBtnInfo := WidgetInfo^.UserData;
 
-  AGlyph := TBitmap.Create;
-  AValue.GetImageIndexAndEffect(AButtonState, AIndex, AEffect);
-  if (AIndex <> -1) and (AValue.Images <> nil) then
-    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+  if ABitBtn.CanShowGlyph then
+  begin
+    AGlyph := TBitmap.Create;
+    AValue.GetImageIndexAndEffect(AButtonState, AIndex, AEffect);
+    if (AIndex <> -1) and (AValue.Images <> nil) then
+      AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+  end
+  else
+    AGlyph := nil;
   // check if an image is needed
-  if AGlyph.Empty
+  if (AGlyph = nil) or AGlyph.Empty
   then begin
     if BitBtnInfo^.ImageWidget <> nil
     then begin
