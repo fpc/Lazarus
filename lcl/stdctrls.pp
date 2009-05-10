@@ -734,6 +734,7 @@ type
     procedure Undo; virtual;
   public
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property AutoSize default True;
     property BorderStyle default bsSingle;
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;

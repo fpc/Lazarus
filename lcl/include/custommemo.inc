@@ -38,6 +38,7 @@ begin
   //TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
+  AutoSize := False;
 end;
 
 {------------------------------------------------------------------------------

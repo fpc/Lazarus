@@ -59,6 +59,7 @@ begin
   BorderStyle := bsSingle;
   FAutoSelect := False;
   FAutoSelected := False;
+  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
