@@ -799,6 +799,7 @@ begin
   Result:=PtrUInt(InstanceSize)
      +MemSizeString(FDefaultEncoding)
      +MemSizeString(fLastIncludeLinkFile);
+  Stats.Add('TCodeCache',Result);
   if FItems<>nil then begin
     m:=FItems.Count*SizeOf(Node);
     Node:=FItems.FindLowest;
@@ -823,7 +824,6 @@ begin
     Stats.Add('TCodeCache.FIncludeLinks',m);
     inc(Result,m);
   end;
-  Stats.Add('TCodeCache',Result);
 end;
 
 procedure TCodeCache.WriteAllFileNames;
