@@ -250,7 +250,7 @@ begin
     Stream := TLazarusResourceStream.Create(ResName, nil);
     if LazarusResourceTypeValid(Stream.Res.ValueType)
     then LoadFromStream(Stream)
-    else raise EInvalidGraphic.Create(ClassName+': Unsupported Resourcetype: '+Stream.Res.ValueType);
+    else raise EInvalidGraphic.Create(ClassName+': Unsupported Resourcetype: '+Stream.Res.ValueType+' Resource Name: '+ResName);
    finally
      Stream.Free;
    end;
