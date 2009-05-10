@@ -760,9 +760,8 @@ end;
 function TExpressionEvaluator.CalcMemSize: PtrUInt;
 var
   i: Integer;
-  m: Integer;
 begin
-  Result:=InstanceSize
+  Result:=PtrUInt(InstanceSize)
     +MemSizeString(Expr)
     +SizeOf(Pointer)*FCount*2;
   for i:=0 to FCount-1 do begin

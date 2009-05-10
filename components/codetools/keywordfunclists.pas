@@ -28,6 +28,7 @@ unit KeywordFuncLists;
 {$ifdef FPC}{$mode objfpc}{$endif}{$H+}
 
 {$R-} // turn range checking off for speed
+{$inline on}
 
 interface
 
@@ -43,17 +44,17 @@ type
   TKeyWordFunction = function: boolean of object;
   TKeyWordDataFunction = function(Data: Pointer): boolean of object;
 
-  TKeyWordFunctionListItem = record
+  TBaseKeyWordFunctionListItem = record
     IsLast: boolean;
     KeyWord: shortstring;
     DoIt: TKeyWordFunction;
     DoDataFunction: TKeyWordDataFunction;
   end;
-  PKeyWordFunctionListItem = ^TKeyWordFunctionListItem;
+  PKeyWordFunctionListItem = ^TBaseKeyWordFunctionListItem;
 
-  { TKeyWordFunctionList }
+  { TBaseKeyWordFunctionList }
 
-  TKeyWordFunctionList = class
+  TBaseKeyWordFunctionList = class
   private
     FItems: PKeyWordFunctionListItem;
     FCount: integer;
@@ -68,34 +69,50 @@ type
     function KeyWordToHashIndex(Start: PChar; Len: integer): integer;
   public
     DefaultKeyWordFunction: TKeyWordFunction;
-    function DoItCaseSensitive(const AKeyWord: shortstring): boolean;
-    function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
-    function DoItCaseInsensitive(const ASource: string;
-                           KeyWordStart, KeyWordLen: integer): boolean;
-    function DoItCaseSensitive(const ASource: string;
-                           KeyWordStart, KeyWordLen: integer): boolean;
-    function DoItUppercase(const AnUpperSource: string;
-                           KeyWordStart, KeyWordLen: integer): boolean;
-    function DoItCaseInsensitive(Identifier: PChar): boolean;
-    function DoDataFunction(Start: PChar; Len: integer; Data: pointer): boolean;
     procedure Clear;
     procedure Add(const AKeyWord: shortstring;
                   const AFunction: TKeyWordFunction);
     procedure AddExtended(const AKeyWord: shortstring;
                           const AFunction: TKeyWordFunction;
                           const ADataFunction: TKeyWordDataFunction);
-    procedure Add(List: TKeyWordFunctionList);
+    procedure Add(List: TBaseKeyWordFunctionList);
     procedure Sort;
     property Sorted: boolean read FSorted;
     procedure WriteDebugListing;
     function AllwaysTrue: boolean;
     function AllwaysFalse: boolean;
     function Count: integer;
-    function GetItem(Index: integer): TKeyWordFunctionListItem;
+    function GetItem(Index: integer): TBaseKeyWordFunctionListItem;
     function IndexOf(const AKeyWord: shortstring): integer;
     constructor Create;
     destructor Destroy;  override;
     function CalcMemSize: PtrUInt;
+  end;
+
+  { TKeyWordFunctionList }
+
+  TKeyWordFunctionList = class(TBaseKeyWordFunctionList)
+  public
+    function DoItCaseSensitive(const AKeyWord: shortstring): boolean;
+    function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
+    function DoItCaseInsensitive(const ASource: string;
+                                 KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItCaseSensitive(const ASource: string;
+                               KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItUppercase(const AnUpperSource: string;
+                           KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItCaseInsensitive(Identifier: PChar): boolean;
+    function DoDataFunction(Start: PChar; Len: integer; Data: pointer): boolean;
+  end;
+
+  { TSharedKeyWordFunctionList }
+
+  TSharedKeyWordFunctionList = class(TBaseKeyWordFunctionList)
+  private
+    function Call(Target: TObject; Func: TKeyWordFunction): boolean; inline;
+  public
+    function DoItCaseInsensitive(Target: TObject; const ASource: string;
+                                 KeyWordStart, KeyWordLen: integer): boolean;
   end;
 
 var
@@ -183,9 +200,9 @@ begin
   Result:=i>l;
 end;
 
-{ TKeyWordFunctionList }
+{ TBaseKeyWordFunctionList }
 
-constructor TKeyWordFunctionList.Create;
+constructor TBaseKeyWordFunctionList.Create;
 begin
   inherited Create;
   FSorted:=true;
@@ -193,22 +210,22 @@ begin
   DefaultKeyWordFunction:={$ifdef FPC}@{$endif}AllwaysFalse;
 end;
 
-destructor TKeyWordFunctionList.Destroy;
+destructor TBaseKeyWordFunctionList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function TKeyWordFunctionList.CalcMemSize: PtrUInt;
+function TBaseKeyWordFunctionList.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize);
   if FItems<>nil then
-    inc(Result,SizeOf(TKeyWordFunctionListItem)*FCapacity);
+    inc(Result,SizeOf(TBaseKeyWordFunctionListItem)*FCapacity);
   if FBucketStart<>nil then
     inc(Result,FMaxHashIndex*SizeOf(integer));
 end;
 
-procedure TKeyWordFunctionList.Clear;
+procedure TBaseKeyWordFunctionList.Clear;
 begin
   if FItems<>nil then begin
     FreeMem(FItems);
@@ -224,7 +241,7 @@ begin
   FSorted:=true;
 end;
 
-function TKeyWordFunctionList.KeyWordToHashIndex(
+function TBaseKeyWordFunctionList.KeyWordToHashIndex(
   const AKeyWord: shortstring): integer;
 var KeyWordLen, i: integer;
 begin
@@ -236,7 +253,7 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
-function TKeyWordFunctionList.KeyWordToHashIndex(const ASource: string;
+function TBaseKeyWordFunctionList.KeyWordToHashIndex(const ASource: string;
   AStart, ALen: integer): integer;
 var i, AEnd: integer;
 begin
@@ -248,7 +265,7 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
-function TKeyWordFunctionList.KeyWordToHashIndex(Identifier: PChar): integer;
+function TBaseKeyWordFunctionList.KeyWordToHashIndex(Identifier: PChar): integer;
 var i: integer;
 begin
   Result:=0;
@@ -261,7 +278,7 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
-function TKeyWordFunctionList.KeyWordToHashIndex(Start: PChar; Len: integer
+function TBaseKeyWordFunctionList.KeyWordToHashIndex(Start: PChar; Len: integer
   ): integer;
 begin
   Result:=0;
@@ -274,7 +291,163 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
-function TKeyWordFunctionList.DoItCaseSensitive(const AKeyWord: shortstring): boolean;
+procedure TBaseKeyWordFunctionList.Add(const AKeyWord: shortstring;
+  const AFunction: TKeyWordFunction);
+begin
+  AddExtended(AKeyWord,AFunction,nil);
+end;
+
+procedure TBaseKeyWordFunctionList.AddExtended(const AKeyWord: shortstring;
+  const AFunction: TKeyWordFunction; const ADataFunction: TKeyWordDataFunction
+    );
+begin
+  FSorted:=false;
+  if FCount=FCapacity then begin
+    FCapacity:=FCapacity*2+10;
+    ReAllocMem(FItems,SizeOf(TBaseKeyWordFunctionListItem)*FCapacity);
+  end;
+  FillChar(FItems[FCount],SizeOF(TBaseKeyWordFunctionListItem),0);
+  with FItems[FCount] do begin
+    KeyWord:=AKeyWord;
+    DoIt:=AFunction;
+    DoDataFunction:=ADataFunction;
+  end;
+  inc(FCount);
+end;
+
+procedure TBaseKeyWordFunctionList.Add(List: TBaseKeyWordFunctionList);
+var
+  i: Integer;
+begin
+  for i:=0 to List.FCount-1 do begin
+    if IndexOf(List.FItems[i].KeyWord)<0 then begin
+      AddExtended(List.FItems[i].KeyWord,List.FItems[i].DoIt,
+                  List.FItems[i].DoDataFunction);
+    end;
+  end;
+end;
+
+procedure TBaseKeyWordFunctionList.Sort;
+// bucketsort
+var i, h, NewMaxHashIndex: integer;
+  UnsortedItems: PKeyWordFunctionListItem;
+  Size: Integer;
+begin
+  if FSorted then exit;
+  if FBucketStart<>nil then begin
+    FreeMem(FBucketStart);
+    FBucketStart:=nil;
+  end;
+  // find maximum hash index
+  FMaxHashIndex:=99999;
+  NewMaxHashIndex:=0;
+  for i:=0 to FCount-1 do begin
+    h:=KeyWordToHashIndex(FItems[i].KeyWord);
+    if h>NewMaxHashIndex then NewMaxHashIndex:=h;
+  end;
+  FMaxHashIndex:=NewMaxHashIndex;
+  // create hash index
+  GetMem(FBucketStart,(FMaxHashIndex+1) * SizeOf(integer));
+  // compute every hash value count
+  for i:=0 to FMaxHashIndex do FBucketStart[i]:=0;
+  for i:=0 to FCount-1 do begin
+    h:=KeyWordToHashIndex(FItems[i].KeyWord);
+    if h>=0 then inc(FBucketStart[h]);
+  end;
+  // change hash-count-index to bucket-end-index
+  h:=0;
+  for i:=0 to FMaxHashIndex-1 do begin
+    inc(h,FBucketStart[i]);
+    if FBucketStart[i]=0 then
+      FBucketStart[i]:=-1
+    else
+      FBucketStart[i]:=h;
+  end;
+  inc(FBucketStart[FMaxHashIndex],h);
+  // copy all items (just the data, not the string contents)
+  Size:=sizeof(TBaseKeyWordFunctionListItem)*FCount;
+  GetMem(UnsortedItems,Size);
+  Move(FItems^,UnsortedItems^,Size);
+  // copy unsorted items to Items back and do the bucket sort
+  for i:=FCount-1 downto 0 do begin
+    h:=KeyWordToHashIndex(UnsortedItems[i].KeyWord);
+    if h>=0 then begin
+      dec(FBucketStart[h]);
+      // copy item back (just the data, not the string contents)
+      Move(UnsortedItems[i],FItems[FBucketStart[h]],
+           SizeOf(TBaseKeyWordFunctionListItem));
+    end;
+  end;
+  // free UnsortedItems
+  FreeMem(UnsortedItems);
+  // set IsLast
+  if FCount>0 then begin
+    for i:=1 to FMaxHashIndex do
+      if FBucketStart[i]>0 then
+        FItems[FBucketStart[i]-1].IsLast:=true;
+    FItems[FCount-1].IsLast:=true;
+  end;
+  // tidy up
+  FSorted:=true;
+end;
+
+procedure TBaseKeyWordFunctionList.WriteDebugListing;
+var i: integer;
+begin
+  Sort;
+  DebugLn('[TBaseKeyWordFunctionList.WriteDebugListing]');
+  DebugLn('  ItemsCount=',dbgs(FCount),'  MaxHash=',dbgs(FMaxHashIndex)
+     ,'  Sorted=',dbgs(FSorted));
+  for i:=0 to FCount-1 do begin
+    DbgOut('    '+dbgs(i)+':');
+    with FItems[i] do begin
+      DbgOut(' "'+KeyWord+'"');
+      DbgOut(' Hash=',dbgs(KeyWordToHashIndex(KeyWord)));
+      DbgOut(' IsLast=',dbgs(IsLast));
+      DbgOut(' DoIt=',dbgs(Assigned(DoIt)));
+    end;
+    DebugLn('');
+  end;
+  DbgOut('  BucketStart array:');
+  for i:=0 to FMaxHashIndex do begin
+    if FBucketStart[i]>=0 then
+    DbgOut(' '+dbgs(i)+'->'+dbgs(FBucketStart[i]));
+  end;
+  DebugLn('');
+end;
+
+function TBaseKeyWordFunctionList.AllwaysTrue: boolean;
+begin
+  Result:=true;
+end;
+
+function TBaseKeyWordFunctionList.AllwaysFalse: boolean;
+begin
+  Result:=false;
+end;
+
+function TBaseKeyWordFunctionList.Count: integer;
+begin
+  Result:=FCount;
+end;
+
+function TBaseKeyWordFunctionList.GetItem(Index: integer
+  ): TBaseKeyWordFunctionListItem;
+begin
+  Result:=FItems[Index];
+end;
+
+function TBaseKeyWordFunctionList.IndexOf(const AKeyWord: shortstring): integer;
+begin
+  Result:=FCount-1;
+  while (Result>=0) and (CompareText(FItems[Result].KeyWord,AKeyWord)<>0) do
+    dec(Result);
+end;
+
+{ TKeyWordFunctionList }
+
+function TKeyWordFunctionList.DoItCaseSensitive(const AKeyWord: shortstring
+  ): boolean;
 var
   i: integer;
   KeyWordFuncItem: PKeyWordFunctionListItem;
@@ -284,8 +457,8 @@ begin
   if i>=0 then begin
     i:=FBucketStart[i];
     if i>=0 then begin
+      KeyWordFuncItem:=@FItems[i];
       repeat
-        KeyWordFuncItem:=@FItems[i];
         if (KeyWordFuncItem^.KeyWord=AKeyWord) then begin
           if Assigned(KeyWordFuncItem^.DoIt) then
             Result:=KeyWordFuncItem^.DoIt()
@@ -294,7 +467,7 @@ begin
           exit;  
         end;
         if KeyWordFuncItem^.IsLast then break;
-        inc(i);
+        inc(KeyWordFuncItem);
       until false;
     end;
   end;
@@ -460,159 +633,6 @@ begin
     end;
   end;
   Result:=DefaultKeyWordFunction();
-end;
-
-procedure TKeyWordFunctionList.Add(const AKeyWord: shortstring;
-  const AFunction: TKeyWordFunction);
-begin
-  AddExtended(AKeyWord,AFunction,nil);
-end;
-
-procedure TKeyWordFunctionList.AddExtended(const AKeyWord: shortstring;
-  const AFunction: TKeyWordFunction; const ADataFunction: TKeyWordDataFunction
-    );
-begin
-  FSorted:=false;
-  if FCount=FCapacity then begin
-    FCapacity:=FCapacity*2+10;
-    ReAllocMem(FItems,SizeOf(TKeyWordFunctionListItem)*FCapacity);
-  end;
-  FillChar(FItems[FCount],SizeOF(TKeyWordFunctionListItem),0);
-  with FItems[FCount] do begin
-    KeyWord:=AKeyWord;
-    DoIt:=AFunction;
-    DoDataFunction:=ADataFunction;
-  end;
-  inc(FCount);
-end;
-
-procedure TKeyWordFunctionList.Add(List: TKeyWordFunctionList);
-var
-  i: Integer;
-begin
-  for i:=0 to List.FCount-1 do begin
-    if IndexOf(List.FItems[i].KeyWord)<0 then begin
-      AddExtended(List.FItems[i].KeyWord,List.FItems[i].DoIt,
-                  List.FItems[i].DoDataFunction);
-    end;
-  end;
-end;
-
-procedure TKeyWordFunctionList.Sort;
-// bucketsort
-var i, h, NewMaxHashIndex: integer;
-  UnsortedItems: PKeyWordFunctionListItem;
-  Size: Integer;
-begin
-  if FSorted then exit;
-  if FBucketStart<>nil then begin
-    FreeMem(FBucketStart);
-    FBucketStart:=nil;
-  end;
-  // find maximum hash index
-  FMaxHashIndex:=99999;
-  NewMaxHashIndex:=0;
-  for i:=0 to FCount-1 do begin
-    h:=KeyWordToHashIndex(FItems[i].KeyWord);
-    if h>NewMaxHashIndex then NewMaxHashIndex:=h;
-  end;
-  FMaxHashIndex:=NewMaxHashIndex;
-  // create hash index
-  GetMem(FBucketStart,(FMaxHashIndex+1) * SizeOf(integer));
-  // compute every hash value count
-  for i:=0 to FMaxHashIndex do FBucketStart[i]:=0;
-  for i:=0 to FCount-1 do begin
-    h:=KeyWordToHashIndex(FItems[i].KeyWord);
-    if h>=0 then inc(FBucketStart[h]);
-  end;
-  // change hash-count-index to bucket-end-index
-  h:=0;
-  for i:=0 to FMaxHashIndex-1 do begin
-    inc(h,FBucketStart[i]);
-    if FBucketStart[i]=0 then
-      FBucketStart[i]:=-1
-    else
-      FBucketStart[i]:=h;
-  end;
-  inc(FBucketStart[FMaxHashIndex],h);
-  // copy all items (just the data, not the string contents)
-  Size:=sizeof(TKeyWordFunctionListItem)*FCount;
-  GetMem(UnsortedItems,Size);
-  Move(FItems^,UnsortedItems^,Size);
-  // copy unsorted items to Items back and do the bucket sort
-  for i:=FCount-1 downto 0 do begin
-    h:=KeyWordToHashIndex(UnsortedItems[i].KeyWord);
-    if h>=0 then begin
-      dec(FBucketStart[h]);
-      // copy item back (just the data, not the string contents)
-      Move(UnsortedItems[i],FItems[FBucketStart[h]],
-           SizeOf(TKeyWordFunctionListItem));
-    end;
-  end;
-  // free UnsortedItems
-  FreeMem(UnsortedItems);
-  // set IsLast
-  if FCount>0 then begin
-    for i:=1 to FMaxHashIndex do
-      if FBucketStart[i]>0 then
-        FItems[FBucketStart[i]-1].IsLast:=true;
-    FItems[FCount-1].IsLast:=true;
-  end;
-  // tidy up
-  FSorted:=true;
-end;
-
-procedure TKeyWordFunctionList.WriteDebugListing;
-var i: integer;
-begin
-  Sort;
-  DebugLn('[TKeyWordFunctionList.WriteDebugListing]');
-  DebugLn('  ItemsCount=',dbgs(FCount),'  MaxHash=',dbgs(FMaxHashIndex)
-     ,'  Sorted=',dbgs(FSorted));
-  for i:=0 to FCount-1 do begin
-    DbgOut('    '+dbgs(i)+':');
-    with FItems[i] do begin
-      DbgOut(' "'+KeyWord+'"');
-      DbgOut(' Hash=',dbgs(KeyWordToHashIndex(KeyWord)));
-      DbgOut(' IsLast=',dbgs(IsLast));
-      DbgOut(' DoIt=',dbgs(Assigned(DoIt)));
-    end;
-    DebugLn('');
-  end;
-  DbgOut('  BucketStart array:');
-  for i:=0 to FMaxHashIndex do begin
-    if FBucketStart[i]>=0 then
-    DbgOut(' '+dbgs(i)+'->'+dbgs(FBucketStart[i]));
-  end;
-  DebugLn('');
-end;
-
-function TKeyWordFunctionList.AllwaysTrue: boolean;
-begin
-  Result:=true;
-end;
-
-function TKeyWordFunctionList.AllwaysFalse: boolean;
-begin
-  Result:=false;
-end;
-
-function TKeyWordFunctionList.Count: integer;
-begin
-  Result:=FCount;
-end;
-
-function TKeyWordFunctionList.GetItem(Index: integer
-  ): TKeyWordFunctionListItem;
-begin
-  Result:=FItems[Index];
-end;
-
-function TKeyWordFunctionList.IndexOf(const AKeyWord: shortstring): integer;
-begin
-  Result:=FCount-1;
-  while (Result>=0) and (CompareText(FItems[Result].KeyWord,AKeyWord)<>0) do
-    dec(Result);
 end;
 
 function TKeyWordFunctionList.DoItCaseInsensitive(const AKeyWord: shortstring
@@ -1447,6 +1467,59 @@ begin
   KeyWordLists:=nil;
 end;
 
+
+{ TSharedKeyWordFunctionList }
+
+function TSharedKeyWordFunctionList.Call(Target: TObject;
+  Func: TKeyWordFunction): boolean; inline;
+var
+  AMethod: TMethod;
+begin
+  AMethod:=TMethod(Func);
+  AMethod.Data:=Target;
+  Func:=TKeyWordFunction(AMethod);
+  Result:=Func();
+end;
+
+function TSharedKeyWordFunctionList.DoItCaseInsensitive(Target: TObject;
+  const ASource: string; KeyWordStart, KeyWordLen: integer): boolean;
+// ! does not test if length(ASource) >= KeyWordStart+KeyWordLen -1
+var
+  i, KeyPos, WordPos: integer;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(ASource,KeyWordStart,KeyWordLen);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      dec(KeyWordStart);
+      repeat
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=KeyWordLen then begin
+          KeyPos:=KeyWordLen;
+          WordPos:=KeyWordStart+KeyWordLen;
+          while (KeyPos>=1)
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=ASource[WordPos]) do
+          begin
+            dec(KeyPos);
+            dec(WordPos);
+          end;
+          if KeyPos<1 then begin
+            if Assigned(KeyWordFuncItem^.DoIt) then
+              Result:=Call(Target,KeyWordFuncItem^.DoIt)
+            else
+              Result:=Call(Target,DefaultKeyWordFunction);
+            exit;
+          end;
+        end;
+        if (KeyWordFuncItem^.IsLast) then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
 
 initialization
   InternalInit;

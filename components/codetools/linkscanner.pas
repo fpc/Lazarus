@@ -242,9 +242,6 @@ type
   private
     // directives
     FDirectiveName: shortstring;
-    FDirectiveFuncList: TKeyWordFunctionList;
-    FDefaultDirectiveFuncList: TKeyWordFunctionList;
-    FSkipDirectiveFuncList: TKeyWordFunctionList;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
@@ -254,7 +251,6 @@ type
     FPascalCompiler: TPascalCompiler;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
-    function SkipIfDirective: boolean;
     function InternalIfDirective: boolean;
     
     function IfdefDirective: boolean;
@@ -279,7 +275,7 @@ type
     function LongSwitchDirective: boolean;
     function ModeDirective: boolean;
     function ThreadingDirective: boolean;
-    procedure BuildDirectiveFuncList;
+    function DoDirective(StartPos, DirLen: integer): boolean;
     
     function IncludeFile(const AFilename: string;
                          DynamicExtension: boolean): boolean;
@@ -656,7 +652,7 @@ begin
   FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
   FMainSourceFilename:='';
-  BuildDirectiveFuncList;
+  //BuildDirectiveFuncList;
   FIncludeStack:=TFPList.Create;
   FPascalCompiler:=pcFPC;
   FNestedComments:=true;
@@ -677,8 +673,6 @@ begin
   Values.Free;
   FInitValues.Free;
   ReAllocMem(FLinks,0);
-  FDefaultDirectiveFuncList.Free;
-  FSkipDirectiveFuncList.Free;
   inherited Destroy;
 end;
 
@@ -892,7 +886,7 @@ begin
   DirLen:=SrcPos-DirStart;
   if DirLen>255 then DirLen:=255;
   FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
-  FDirectiveFuncList.DoItCaseInsensitive(Src,DirStart,DirLen);
+  DoDirective(DirStart,DirLen);
   SrcPos:=CommentEndPos;
 end;
 
@@ -1105,7 +1099,6 @@ begin
   PascalCompiler:=pcFPC;
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
-  FDirectiveFuncList:=FDefaultDirectiveFuncList;
   //DebugLn('TLinkScanner.Scan D --------');
   
   // initialize Defines
@@ -1440,15 +1433,6 @@ begin
   if KeywordFuncList<>nil then
     Stats.Add('TLinkScanner.KeywordFuncList',
       KeywordFuncList.CalcMemSize);
-  if FDirectiveFuncList<>nil then
-    Stats.Add('TLinkScanner.FDirectiveFuncList',
-      FDirectiveFuncList.CalcMemSize);
-  if FDefaultDirectiveFuncList<>nil then
-    Stats.Add('TLinkScanner.FDefaultDirectiveFuncList',
-      FDefaultDirectiveFuncList.CalcMemSize);
-  if FSkipDirectiveFuncList<>nil then
-    Stats.Add('TLinkScanner.FSkipDirectiveFuncList',
-      FSkipDirectiveFuncList.CalcMemSize);
 end;
 
 function TLinkScanner.UpdateNeeded(
@@ -2077,51 +2061,92 @@ begin
     Result:=true;
 end;
 
-procedure TLinkScanner.BuildDirectiveFuncList;
-var c: char;
+function TLinkScanner.DoDirective(StartPos, DirLen: integer): boolean;
+var
+  p: PChar;
 begin
-  FDefaultDirectiveFuncList:=TKeyWordFunctionList.Create;
-  with FDefaultDirectiveFuncList do begin
-    for c:='A' to 'Z' do begin
-      if CompilerSwitchesNames[c]<>'' then begin
-        Add(c,{$ifdef FPC}@{$endif}ShortSwitchDirective);
-        Add(CompilerSwitchesNames[c],{$ifdef FPC}@{$endif}LongSwitchDirective);
+  Result:=false;
+  if StartPos>SrcLen then exit;
+  p:=@Src[StartPos];
+  //DebugLn(['TLinkScanner.DoDirective ',copy(Src,StartPos,DirLen),' FSkippingDirectives=',ord(FSkippingDirectives)]);
+  if DirLen=1 then begin
+    Result:=(CompilerSwitchesNames[UpChars[p^]]<>'')
+            and ShortSwitchDirective;
+  end else begin
+    case UpChars[p^] of
+    'A':
+      case UpChars[p[1]] of
+      'L': if CompareIdentifiers(p,'ALIGN')=0 then Result:=true;
+      'S': if CompareIdentifiers(p,'ASSERTIONS')=0 then Result:=true;
       end;
+    'B':
+      if CompareIdentifiers(p,'BOOLEVAL')=0 then Result:=true;
+    'D':
+      case UpChars[p[1]] of
+      'E':
+        case UpChars[p[2]] of
+        'F': if CompareIdentifiers(p,'DEFINE')=0 then Result:=DefineDirective;
+        'B': if CompareIdentifiers(p,'DEBUGINFO')=0 then Result:=true;
+        end;
+      end;
+    'E':
+      case UpChars[p[1]] of
+      'L':
+        case UpChars[p[2]] of
+        'I': if CompareIdentifiers(p,'ELIFC')=0 then Result:=ElIfCDirective;
+        'S':
+          case UpChars[p[3]] of
+          'E':
+            if CompareIdentifiers(p,'ELSE')=0 then Result:=ElseDirective
+            else if CompareIdentifiers(p,'ELSEC')=0 then Result:=ElseCDirective
+            else if CompareIdentifiers(p,'ELSEIF')=0 then Result:=ElseIfDirective;
+          end;
+        end;
+      'N':
+        if CompareIdentifiers(p,'ENDC')=0 then Result:=EndCDirective
+        else if CompareIdentifiers(p,'ENDIF')=0 then Result:=EndIfDirective;
+      'X':
+        if CompareIdentifiers(p,'EXTENDEDSYNTAX')=0 then Result:=true;
+      end;
+    'I':
+      case UpChars[p[1]] of
+      'F':
+        case UpChars[p[2]] of
+        'C': if CompareIdentifiers(p,'IFC')=0 then Result:=IfCDirective;
+        'D': if CompareIdentifiers(p,'IFDEF')=0 then Result:=IfDefDirective;
+        'E': if CompareIdentifiers(p,'IFEND')=0 then Result:=IfEndDirective;
+        'N': if CompareIdentifiers(p,'IFNDEF')=0 then Result:=IfndefDirective;
+        'O': if CompareIdentifiers(p,'IFOPT')=0 then Result:=IfOptDirective;
+        else if DirLen=2 then Result:=IfDirective;
+        end;
+      'N':
+        if CompareIdentifiers(p,'INCLUDE')=0 then Result:=IncludeDirective
+        else if CompareIdentifiers(p,'INCLUDEPATH')=0 then Result:=IncludePathDirective;
+      'O': if CompareIdentifiers(p,'IOCHECKS')=0 then Result:=true;
+      end;
+    'L':
+      if CompareIdentifiers(p,'LOCALSYMBOLS')=0 then Result:=true
+      else if CompareIdentifiers(p,'LONGSTRINGS')=0 then Result:=true;
+    'M':
+      if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective;
+    'O':
+      if CompareIdentifiers(p,'OPENSTRINGS')=0 then Result:=true
+      else if CompareIdentifiers(p,'OVERFLOWCHECKS')=0 then Result:=true;
+    'R':
+      if CompareIdentifiers(p,'RANGECHECKS')=0 then Result:=true
+      else if CompareIdentifiers(p,'REFERENCEINFO')=0 then Result:=true;
+    'S':
+      if CompareIdentifiers(p,'SETC')=0 then Result:=SetCDirective
+      else if CompareIdentifiers(p,'STACKFRAMES')=0 then Result:=true;
+    'T':
+      if CompareIdentifiers(p,'THREADING')=0 then Result:=ThreadingDirective
+      else if CompareIdentifiers(p,'TYPEADDRESS')=0 then Result:=true
+      else if CompareIdentifiers(p,'TYPEINFO')=0 then Result:=true;
+    'U':
+      if CompareIdentifiers(p,'UNDEF')=0 then Result:=UndefDirective;
+    'V':
+      if CompareIdentifiers(p,'VARSTRINGCHECKS')=0 then Result:=true;
     end;
-    Add('IFDEF',{$ifdef FPC}@{$endif}IfdefDirective);
-    Add('IFC',{$ifdef FPC}@{$endif}IfCDirective);
-    Add('IFNDEF',{$ifdef FPC}@{$endif}IfndefDirective);
-    Add('IF',{$ifdef FPC}@{$endif}IfDirective);
-    Add('IFOPT',{$ifdef FPC}@{$endif}IfOptDirective);
-    Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
-    Add('ENDC',{$ifdef FPC}@{$endif}EndCDirective);
-    Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
-    Add('ELSEC',{$ifdef FPC}@{$endif}ElseCDirective);
-    Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
-    Add('ELIFC',{$ifdef FPC}@{$endif}ElIfCDirective);
-    Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
-    Add('DEFINE',{$ifdef FPC}@{$endif}DefineDirective);
-    Add('UNDEF',{$ifdef FPC}@{$endif}UndefDirective);
-    Add('SETC',{$ifdef FPC}@{$endif}SetCDirective);
-    Add('INCLUDE',{$ifdef FPC}@{$endif}IncludeDirective);
-    Add('INCLUDEPATH',{$ifdef FPC}@{$endif}IncludePathDirective);
-    Add('MODE',{$ifdef FPC}@{$endif}ModeDirective);
-    Add('THREADING',{$ifdef FPC}@{$endif}ThreadingDirective);
-  end;
-  FSkipDirectiveFuncList:=TKeyWordFunctionList.Create;
-  with FSkipDirectiveFuncList do begin
-    Add('IFDEF',{$ifdef FPC}@{$endif}SkipIfDirective);
-    Add('IFNDEF',{$ifdef FPC}@{$endif}SkipIfDirective);
-    Add('IF',{$ifdef FPC}@{$endif}SkipIfDirective);
-    Add('IFOPT',{$ifdef FPC}@{$endif}SkipIfDirective);
-    Add('IFC',{$ifdef FPC}@{$endif}SkipIfDirective);
-    Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
-    Add('ENDC',{$ifdef FPC}@{$endif}EndCDirective);
-    Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
-    Add('ELSEC',{$ifdef FPC}@{$endif}ElseCDirective);
-    Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
-    Add('ELIFC',{$ifdef FPC}@{$endif}ElIfCDirective);
-    Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
   end;
 end;
 
@@ -2215,12 +2240,12 @@ begin
   if (SrcPos<=SrcLen) and (Src[SrcPos]=',') then begin
     inc(SrcPos);
     DirStart:=SrcPos;
-    while (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) do
+    while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
       inc(SrcPos);
     DirLen:=SrcPos-DirStart;
     if DirLen>255 then DirLen:=255;
     FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
-    Result:=FDirectiveFuncList.DoItCaseInsensitive(Src,DirStart,DirLen);
+    Result:=DoDirective(DirStart,DirLen);
   end else
     Result:=true;
 end;
@@ -2230,6 +2255,7 @@ function TLinkScanner.IfdefDirective: boolean;
 var VariableName: string;
 begin
   inc(IfLevel);
+  if FSkippingDirectives<>lssdNone then exit(true);
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') and (not Values.IsDefined(VariableName)) then
@@ -2242,6 +2268,7 @@ function TLinkScanner.IfCDirective: boolean;
 begin
   //DebugLn(['TLinkScanner.IfCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   inc(IfLevel);
+  if FSkippingDirectives<>lssdNone then exit(true);
   Result:=InternalIfDirective;
 end;
 
@@ -2286,6 +2313,7 @@ function TLinkScanner.IfndefDirective: boolean;
 var VariableName: string;
 begin
   inc(IfLevel);
+  if FSkippingDirectives<>lssdNone then exit(true);
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') and (Values.IsDefined(VariableName)) then
@@ -2746,6 +2774,7 @@ function TLinkScanner.IfDirective: boolean;
 // {$if expression} or indirectly called by {$elseif expression}
 begin
   inc(IfLevel);
+  if FSkippingDirectives<>lssdNone then exit(true);
   Result:=InternalIfDirective;
 end;
 
@@ -2754,6 +2783,7 @@ function TLinkScanner.IfOptDirective: boolean;
 var Option, c: char;
 begin
   inc(IfLevel);
+  if FSkippingDirectives<>lssdNone then exit(true);
   Result:=true;
   inc(SrcPos);
   Option:=UpChars[Src[SrcPos]];
@@ -2903,7 +2933,6 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
   end;
 
 var
-  OldDirectiveFuncList: TKeyWordFunctionList;
   c1: Char;
 begin
   if FSkippingDirectives<>lssdNone then begin
@@ -2918,9 +2947,6 @@ begin
   {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
   
-  OldDirectiveFuncList:=FDirectiveFuncList;
-  FDirectiveFuncList:=FSkipDirectiveFuncList;
-
   // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
   FSkipIfLevel:=IfLevel;
   if (SrcPos<=SrcLen) then begin
@@ -2962,7 +2988,6 @@ begin
     ' Src=',DbgStr(copy(Src,CommentStartPos-15,15))+'|'+DbgStr(copy(Src,CommentStartPos,15)));
   {$ENDIF}
 
-  FDirectiveFuncList:=OldDirectiveFuncList;
   FSkippingDirectives:=lssdNone;
 end;
 
@@ -2973,12 +2998,6 @@ begin
   FNestedComments:=(PascalCompiler=pcFPC)
                    and (FCompilerMode in [cmFPC,cmOBJFPC]);
   //DebugLn(['TLinkScanner.SetCompilerMode ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' Mode=',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
-end;
-
-function TLinkScanner.SkipIfDirective: boolean;
-begin
-  inc(IfLevel);
-  Result:=true;
 end;
 
 function TLinkScanner.InternalIfDirective: boolean;
