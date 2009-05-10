@@ -776,7 +776,7 @@ var
 begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(Expr)
-    +SizeOf(Pointer)*FCount*2;
+    +SizeOf(Pointer)*PtrUInt(FCount)*2;
   if WithNamesAndValues then begin
     for i:=0 to FCount-1 do begin
       if Original<>nil then begin
