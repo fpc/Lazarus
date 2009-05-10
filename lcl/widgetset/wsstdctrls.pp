@@ -222,6 +222,7 @@ type
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); virtual;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); virtual;
+    class procedure AllowGrayedChanged(const ACustomCheckbox: TCustomCheckbox); virtual;
   end;
   TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
 
@@ -575,6 +576,11 @@ begin
 end;
 
 class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+begin
+end;
+
+class procedure TWSCustomCheckBox.AllowGrayedChanged(
+  const ACustomCheckbox: TCustomCheckbox);
 begin
 end;
 
