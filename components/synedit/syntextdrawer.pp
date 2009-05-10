@@ -86,7 +86,6 @@ type
     Font: TFont;
     Handle: HFont;
     CharAdv: Integer;       // char advance of single-byte code
-    DBCharAdv: Integer;     // char advance of double-byte code
     CharHeight: Integer;
   end;
 
@@ -151,11 +150,9 @@ type
   protected
     function InternalGetDC: HDC; virtual;
     procedure InternalReleaseDC(Value: HDC); virtual;
-    function CalcFontAdvance(DC: HDC;
-      pCharHeight, pDBCharAdvance: PInteger): Integer; virtual;
+    function CalcFontAdvance(DC: HDC; pCharHeight: PInteger): Integer; virtual;
     function GetCharAdvance: Integer; virtual;
     function GetCharHeight: Integer; virtual;
-    function GetDBCharAdvance: Integer; virtual;
     function GetFontData(idx: Integer): PheFontData; virtual;
     procedure UseFontHandles;
     procedure ReleaseFontsInfo;
@@ -174,7 +171,6 @@ type
     property FontHandle: HFONT read FCrntFont;
     property CharAdvance: Integer read GetCharAdvance;
     property CharHeight: Integer read GetCharHeight;
-    property DBCharAdvance: Integer read GetDBCharAdvance;
   public
     // Info from the BaseFont
     property BaseFont: TFont read GetBaseFont;
@@ -561,8 +557,7 @@ end;
 
 // CalcFontAdvance : Calculation a advance of a character of a font.
 //  [*]hCalcFont will be selected as FDC's font if FDC wouldn't be zero.
-function TheFontStock.CalcFontAdvance(DC: HDC;
-  pCharHeight, pDBCharAdvance: PInteger): Integer;
+function TheFontStock.CalcFontAdvance(DC: HDC; pCharHeight: PInteger): Integer;
 var
   TM: TTextMetric;
   ABC: TABC;
@@ -609,50 +604,7 @@ begin
   // pCharHeight
   if Assigned(pCharHeight) then
     pCharHeight^ := Abs(TM.tmHeight) {+ TM.tmInternalLeading};
-  // pDBCharAdvance
-  if Assigned(pDBCharAdvance) then
-  begin
-    pDBCharAdvance^ := DBCHAR_CALCULATION_FALED;
-    if IsDBCSFont then
-    begin
-      case TM.tmCharSet of
-        SHIFTJIS_CHARSET:
-          if HasABC and
-             GetCharABCWidths(DC, $8201, $8201, ABC) and    // max width(maybe)
-             GetCharABCWidths(DC, $82A0, $82A0, ABC2) then  // HIRAGANA 'a'
-          begin
-            with ABC do
-              w := abcA + Integer(abcB) + abcC;
-            if w > (1.5 * Result) then // it should be over 150% wider than SBChar(I think)
-              with ABC2 do
-                if w = (abcA + Integer(abcB) + abcC) then
-                  pDBCharAdvance^ := w;
-          end;
-        // About the following character sets,
-        // I don't know with what character should be calculated.
-{
-        ANSI_CHARSET:
-        DEFAULT_CHARSET:
-        SYMBOL_CHARSET:
-        HANGUL_CHARSET:
-        GB2312_CHARSET:
-        CHINESEBIG5_CHARSET:
-        OEM_CHARSET:
-        JOHAB_CHARSET:
-        HEBREW_CHARSET:
-        ARABIC_CHARSET:
-        GREEK_CHARSET:
-        TURKISH_CHARSET:
-        VIETNAMESE_CHARSET:
-        THAI_CHARSET:
-        EASTEUROPE_CHARSET:
-        RUSSIAN_CHARSET:
-        MAC_CHARSET:
-        BALTIC_CHARSET:
-}
-      end;
-    end;
-  end;
+
 end;
 
 constructor TheFontStock.Create(InitialFont: TFont);
@@ -683,11 +635,6 @@ end;
 function TheFontStock.GetCharHeight: Integer;
 begin
   Result := FpCrntFontData^.CharHeight;
-end;
-
-function TheFontStock.GetDBCharAdvance: Integer;
-begin
-  Result := FpCrntFontData^.DBCharAdv;
 end;
 
 function TheFontStock.GetFontData(idx: Integer): PheFontData;
@@ -837,10 +784,7 @@ begin
   with FpCrntFontData^ do
   begin
     Handle := FCrntFont;
-    if IsDBCSFont then
-      CharAdv := CalcFontAdvance(DC, @CharHeight, @DBCharAdv)
-    else
-      CharAdv := CalcFontAdvance(DC, @CharHeight, nil);
+    CharAdv := CalcFontAdvance(DC, @CharHeight);
   end;
 
   {$IFDEF SYN_LAZARUS}
