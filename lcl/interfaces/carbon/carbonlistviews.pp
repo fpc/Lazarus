@@ -211,6 +211,8 @@ type
     procedure UpdateColumnView; override;
 
     procedure ClearIconCache;
+
+    function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
   end;
   
   { TCarbonListBox }
@@ -404,7 +406,9 @@ function TCarbonListColumn.GetHeaderPropertyFlags: Integer;
 begin
   Result := kDataBrowserPropertyIsMutable or
             kDataBrowserListViewSelectionColumn or
-            kDataBrowserListViewTypeSelectColumn;
+            kDataBrowserListViewTypeSelectColumn or
+            kDataBrowserListViewSortableColumn or
+            kDataBrowserListViewMovableColumn;
 end;
 
 constructor TCarbonListColumn.Create(AOwner: TCarbonDataBrowser;
@@ -1599,6 +1603,38 @@ begin
       ReleaseIconRef(FIcons[i]);
   end;
   FIcons.Clear;
+end;
+
+function TCarbonListView.NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean;
+var
+  h   : UInt16;
+  y   : Integer;
+type
+  PLMMouse = ^TLMMouse;
+  PLMMouseMove = ^TLMMouseMove;
+
+// for some unkown reason, HIViewConvertPoint does return inaccurate x,y position for ListView
+// (because of focus ring?)
+const
+  OfsY = -2;
+begin
+  if Assigned(LCLObject) and (TListView(LCLObject).Columns.Count > 0) and
+    (TListView(LCLObject).ViewStyle = vsReport) then
+  begin
+    case Msg of
+      LM_LBUTTONDOWN..LM_MBUTTONDBLCLK: y := PLMMouse(@AMessage)^.YPos;
+      LM_MOUSEMOVE: y := PLMMouseMove(@AMessage)^.YPos ;
+      LM_MOUSEWHEEL: y := PLMMouseEvent(@AMessage)^.Y;
+    else
+      Result := inherited NeedDeliverMouseEvent(msg, AMessage);
+      Exit;
+    end;
+    GetDataBrowserListViewHeaderBtnHeight(Content, h);
+    inc(y, OfsY);
+    Result := y > h;
+  end
+  else
+    Result := inherited NeedDeliverMouseEvent(msg, AMessage);
 end;
 
 { TCarbonListBox }

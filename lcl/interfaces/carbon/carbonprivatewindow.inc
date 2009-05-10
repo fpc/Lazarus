@@ -81,7 +81,7 @@ const
       SName, SGetEvent, 'kEventParamClickCount') then Exit;
 
     Result := ClickCount;
-    //debugln('GetClickCount ClickCount=',dbgs(ClickCount));
+    {debugln('GetClickCount ClickCount=',dbgs(ClickCount));}
   end;
 
   function GetMousePoint: TPoint;
@@ -141,9 +141,9 @@ const
     ClickCount := GetClickCount;
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
-    
+
     if (ClickCount < Low(MSGKIND)) or (ClickCount > High(MSGKIND)) then
-      ClickCount := 1;
+      ClickCount := (ClickCount mod High(MSGKIND))+1;
     
     if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
     Msg^.Msg := MSGKIND[ClickCount, MouseButton];
@@ -296,14 +296,18 @@ begin
   end
   else
   begin
-    // Msg is set in the Appropriate HandleMousexxx procedure
-    NotifyApplicationUserInput(Msg.Message.Msg);
-    if DeliverMessage(Widget.LCLObject, Msg) = 0 then
-    begin
-      Result := EventNotHandledErr;
+    if Widget.NeedDeliverMouseEvent(Msg.Message.Msg, Msg) then begin
+      // Msg is set in the Appropriate HandleMousexxx procedure
+      NotifyApplicationUserInput(Msg.Message.Msg);
+      if DeliverMessage(Widget.LCLObject, Msg) = 0 then
+      begin
+        Result := EventNotHandledErr;
+      end
+      else  // the LCL does not want the event propagated
+        Result := noErr;
     end
-    else  // the LCL does not want the event propagated
-      Result := noErr;
+    else
+      Result := CallNextEventHandler(ANextHandler, AEvent);
   end;
 
   // interactive design

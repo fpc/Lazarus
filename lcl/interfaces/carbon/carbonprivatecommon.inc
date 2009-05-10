@@ -173,8 +173,12 @@ begin
     Msg.XPos := P.X;
     Msg.YPos := P.Y;
     Msg.Keys := GetCarbonMsgKeyState;
-    NotifyApplicationUserInput(Msg.Msg);
-    DeliverMessage(Widget.LCLObject, Msg);
+
+    if Widget.NeedDeliverMouseEvent(Msg.Msg, Msg) then
+    begin
+      NotifyApplicationUserInput(Msg.Msg);
+      DeliverMessage(Widget.LCLObject, Msg);
+    end;
   end;
 end;
 
@@ -208,8 +212,11 @@ begin
   if PostponedDown then
   begin
     PostponedDown := False;
-    NotifyApplicationUserInput(PostponedDownMsg.Msg);
-    DeliverMessage(AWidget.LCLObject, PostponedDownMsg);
+    if AWidget.NeedDeliverMouseEvent(PostponedDownMsg.Msg, PostponedDownMsg) then
+    begin
+      NotifyApplicationUserInput(PostponedDownMsg.Msg);
+      DeliverMessage(AWidget.LCLObject, PostponedDownMsg);
+    end;
   end;
 
   MouseButton := GetCarbonMouseButton(AEvent);
@@ -262,10 +269,13 @@ begin
     end;
   end;
 
-  DeliverMessage(AWidget.LCLObject, Msg);
+  if AWidget.NeedDeliverMouseEvent(Msg.Msg, Msg) then
+  begin
+    DeliverMessage(AWidget.LCLObject, Msg);
   
-  NotifyApplicationUserInput(Msg.Msg);
-  CarbonWidgetSet.SetCaptureWidget(0); // capture is released
+    NotifyApplicationUserInput(Msg.Msg);
+    CarbonWidgetSet.SetCaptureWidget(0); // capture is released
+  end;
 end;
 
 {------------------------------------------------------------------------------

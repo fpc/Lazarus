@@ -87,6 +87,7 @@ type
     procedure ControlAdded; dynamic;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; dynamic;
     procedure ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus); virtual;
+    function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; virtual;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -612,6 +613,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus);
 begin
+end;
+
+function TCarbonWidget.NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean;
+begin
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------
