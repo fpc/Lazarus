@@ -5684,7 +5684,8 @@ begin
     NewSource.Add('  ErrorMsg:=CheckOptions(''h'',''help'');');
     NewSource.Add('  if ErrorMsg<>'''' then begin');
     NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
-    NewSource.Add('    Halt;');
+    NewSource.Add('    Terminate;');
+    NewSource.Add('    Exit;');
     NewSource.Add('  end;');
     NewSource.Add('');
     end;
@@ -5693,7 +5694,8 @@ begin
     NewSource.Add('  // parse parameters');
     NewSource.Add('  if HasOption(''h'',''help'') then begin');
     NewSource.Add('    WriteHelp;');
-    NewSource.Add('    Halt;');
+    NewSource.Add('    Terminate;');
+    NewSource.Add('    Exit;');
     NewSource.Add('  end;');
     end;
   NewSource.Add('');
