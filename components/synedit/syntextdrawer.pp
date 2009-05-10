@@ -75,7 +75,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Graphics;
+  SysUtils, Classes, Graphics, Types;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));
@@ -87,6 +87,7 @@ type
     Handle: HFont;
     CharAdv: Integer;       // char advance of single-byte code
     CharHeight: Integer;
+    NeedETO: Boolean;
   end;
 
   PheFontsData = ^TheFontsData;
@@ -147,10 +148,11 @@ type
     function GetBaseFont: TFont;
     function GetIsDBCSFont: Boolean;
     function GetIsTrueType: Boolean;
+    function GetNeedETO: Boolean;
   protected
     function InternalGetDC: HDC; virtual;
     procedure InternalReleaseDC(Value: HDC); virtual;
-    function CalcFontAdvance(DC: HDC; pCharHeight: PInteger): Integer; virtual;
+    Procedure CalcFontAdvance(DC: HDC; FontData: PheFontData; FontHeight: integer);
     function GetCharAdvance: Integer; virtual;
     function GetCharHeight: Integer; virtual;
     function GetFontData(idx: Integer): PheFontData; virtual;
@@ -171,6 +173,7 @@ type
     property FontHandle: HFONT read FCrntFont;
     property CharAdvance: Integer read GetCharAdvance;
     property CharHeight: Integer read GetCharHeight;
+    property NeedETO: Boolean read GetNeedETO;
   public
     // Info from the BaseFont
     property BaseFont: TFont read GetBaseFont;
@@ -557,54 +560,137 @@ end;
 
 // CalcFontAdvance : Calculation a advance of a character of a font.
 //  [*]hCalcFont will be selected as FDC's font if FDC wouldn't be zero.
-function TheFontStock.CalcFontAdvance(DC: HDC; pCharHeight: PInteger): Integer;
+Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
+  FontHeight: integer);
+
+  procedure GetWHOForChar(s: char; out w, h ,o : Integer; var eto: Boolean);
+  var
+    s1, s2, s3: String;
+    Size1, Size2, Size3: TSize;
+    w2: Integer;
+  begin
+    s1 := s;
+    s2 := s1 + s;
+    s3 := s2 + s;
+    if not(GetTextExtentPoint(DC, PChar(s1), 1, Size1) and
+           GetTextExtentPoint(DC, PChar(s2), 2, Size2) and
+           GetTextExtentPoint(DC, PChar(s3), 3, Size3)) then
+    begin
+      debugln('SynTextDrawer: Can not us GetTextExtentPoint');
+      w := 0;
+      h := 0;
+      o := 0;
+      eto := True;
+      exit;
+    end;
+    h := Size1.cy;
+    // Size may contain overhang (italic, bold)
+    // Size1 contains the size of 1 char + 1 overhang
+    // Size2 contains the width of 2 chars, with only 1 overhang
+    // Calculate the Width of 1 char, with NO overhang
+    w := Size2.cx - Size1.cx;
+    o := Size1.cx - w;
+    // And doublecheck it
+    w2 := Size3.cx - Size2.cx;
+    if w <> w2 then begin
+      debugln(['SynTextDrawer: Failed on checking CharWidth with 3 char w=',w, ' w2=',w2]);
+      w := Max(w, w2);
+      eto := True;
+    end;
+    if o < 0 then begin
+      debugln('SynTextDrawer: Negative Overhang');
+      w := Size1.cx;
+      eto := True;
+    end
+  end;
+
+  procedure AdjustWHOForChar(s: char; var w, h ,o : Integer; var eto: Boolean);
+  var
+    h2, w2, o2: Integer;
+  begin
+    GetWHOForChar(s, w2, h2, o2, eto);
+    h := Max(h, h2);
+    o := Max(o, o2);
+    if w <> w2 then begin
+      w := Max(w, w2);
+      eto := True;
+    end;
+  end;
+
 var
   TM: TTextMetric;
-  ABC: TABC;
-  ABC2: TABC;
-  w: Integer;
-  HasABC: Boolean;
-  //Size: TSize;
+  Height, Width, OverHang: Integer;
+  ETO: Boolean;
+  Size1: TSize;
 begin
   // Calculate advance of a character.
-  // The following code uses ABC widths instead TextMetric.tmAveCharWidth
-  // because ABC widths always tells truth but tmAveCharWidth does not.
-  // A true-type font will have ABC widths but others like raster type will not
-  // so if the function fails then use TextMetric.tmAveCharWidth.
-  //debugln('TheFontStock.CalcFontAdvance A ',dbgs(pCharHeight));
+
+  // TextMetric may fail, because:
+  // tmMaxCharWidth may be the width of a single Width (Latin) char, like "M"
+  //                or a double Width (Chinese) char
+  // tmAveCharWidth is to small for proprtional fonts, as we need he witdh of the
+  //                widest Latin char ("M").
+  //                Even Monospace fonts, may have a smaller tmAveCharWidth (seen with Japanese)
+
+  // take several samples
+  ETO := False;
+  GetWHOForChar('M', Width, Height, OverHang, ETO);
+  AdjustWHOForChar('W', Width, Height, OverHang, ETO);
+  AdjustWHOForChar('@', Width, Height, OverHang, ETO);
+  AdjustWHOForChar('X', Width, Height, OverHang, ETO);
+  AdjustWHOForChar('m', Width, Height, OverHang, ETO);
+  // Small Chars to detect proportional fonts
+  AdjustWHOForChar('i', Width, Height, OverHang, ETO);
+  AdjustWHOForChar(':', Width, Height, OverHang, ETO);
+  AdjustWHOForChar('''', Width, Height, OverHang, ETO);
+
+  // Negative Overhang ?
+  if (not ETO) and GetTextExtentPoint(DC, PChar('Ta'), 2, Size1) then
+    if Size1.cx < 2 * Width then begin
+      // debugln(['SynTextDrawer: Negative Overhang for "Ta" Width=', Width, ' Overh=',OverHang, ' Ta.cx=',Size1.cx]);
+      ETO := True;
+    end;
+
+  // Make sure we get the correct Height
+  if GetTextExtentPoint(DC, PChar('Tgq[_|^'), 7, Size1) then
+    Height := Max(Height, Size1.cy);
+
+  // DoubleCheck the result with GetTextMetrics
   GetTextMetrics(DC, TM);
   //GetTextExtentPoint(DC,'ABCgjp',6,Size);
   //debugln('TheFontStock.CalcFontAdvance B ',dbgs(pCharHeight),' TM.tmHeight=',dbgs(TM.tmHeight),' TM.tmAscent=',dbgs(TM.tmAscent),' TM.tmDescent=',dbgs(TM.tmDescent),' "',BaseFont.Name,'" ',dbgs(BaseFont.height),' ',dbgs(Size.cx),',',dbgs(Size.cy));
-  {$IFDEF FPC}
-  // the next two lines are only to suppress the stupid FPC warnings:
-  ABC.abcA:=0;
-  ABC2.abcA:=0;
-  {$ENDIF}
-  HasABC := GetCharABCWidths(DC, Ord('M'), Ord('M'), ABC);
-  if not HasABC then
-  begin
-    with ABC do
-    begin
-      abcA := 0;
-      abcB := TM.tmAveCharWidth;
-      abcC := 0;
-    end;
-    TM.tmOverhang := 0;
+
+  if Width = 0 then begin
+    debugln('SynTextDrawer: No Width from GetTextExtentPoint');
+    Width := TM.tmMaxCharWidth + Max(TM.tmOverhang,0);
+  end
+  else if (Width > TM.tmMaxCharWidth) and (TM.tmMaxCharWidth > 0) then begin
+    debugln('SynTextDrawer: Width > tmMaxWidth');
+    // take a guess, this is probably a broken font
+    Width := Min(Width, round((TM.tmMaxCharWidth + Max(TM.tmOverhang,0)) * 1.2));
+    ETO := True;
   end;
 
-  // Result(CharWidth)
-  with ABC do
-    Result := abcA + Integer(abcB) + abcC + TM.tmOverhang;
-  {$IFDEF SYN_LAZARUS}
-  // SynEdit would crash if a (defect) font returns 0.
-  if Result <= 0 then result := TM.tmAveCharWidth + Max(TM.tmOverhang,0);
-  if Result <= 0 then result := 1 + CharHeight * 8 div 10;
-  {$ENDIF}
+  if Height = 0 then begin
+    debugln('SynTextDrawer: No Height from GetTextExtentPoint');
+    Height := TM.tmHeight;
+  end
+  else if Height < TM.tmHeight then begin
+    debugln('SynTextDrawer: Height from GetTextExtentPoint to low');
+    Height := TM.tmHeight;
+  end;
+  if Height = 0 then begin
+    debugln('SynTextDrawer: Fallback on FontHeight');
+    Height := FontHeight;
+  end;
 
-  // pCharHeight
-  if Assigned(pCharHeight) then
-    pCharHeight^ := Abs(TM.tmHeight) {+ TM.tmInternalLeading};
+  // If we have a broken font, make sure we return a positive value
+  if Width <= 0 then Width := 1 + Height * 8 div 10;
 
+  //if OverHang >0 then debugln(['SynTextDrawer: Overhang=', OverHang]);;
+  FontData^.CharAdv := Width;
+  FontData^.CharHeight := Height;
+  FontData^.NeedETO := ETO;
 end;
 
 constructor TheFontStock.Create(InitialFont: TFont);
@@ -650,6 +736,11 @@ end;
 function TheFontStock.GetIsTrueType: Boolean;
 begin
   Result := FpInfo^.IsTrueType
+end;
+
+function TheFontStock.GetNeedETO: Boolean;
+begin
+  Result := FpCrntFontData^.NeedETO;
 end;
 
 function TheFontStock.InternalGetDC: HDC;
@@ -781,11 +872,9 @@ begin
   FpInfo^.IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
   //debugln('TheFontStock.SetStyle A IsDBCSFont=',IsDBCSFont);
   {$ENDIF}
-  with FpCrntFontData^ do
-  begin
-    Handle := FCrntFont;
-    CharAdv := CalcFontAdvance(DC, @CharHeight);
-  end;
+  FpCrntFontData^.Handle := FCrntFont;
+  CalcFontAdvance(DC, FpCrntFontData, Max(BaseFont.Size, BaseFont.Height));
+  //if FpCrntFontData^.NeedETO then debugln(['Needing ETO fot Font=',BaseFont.Name, ' Height=', BaseFont.Height, ' Style=', integer(Value) ]);
 
   {$IFDEF SYN_LAZARUS}
   hOldFont:=SelectObject(DC, hOldFont);
@@ -1103,8 +1192,8 @@ begin
     fuOptions := 0;
   end;
 
-  NeedDistArray:= (FCharExtra > 0) or (not MonoSpace)
-    or (not FFontStock.MonoSpace) or (FBaseCharWidth <> FFontStock.CharAdvance);
+  NeedDistArray:= (FCharExtra > 0) or
+    (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
   if NeedDistArray then begin
     if (FETOSizeInChar < Length) then
