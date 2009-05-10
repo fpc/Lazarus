@@ -40,7 +40,7 @@ const
 
 type
   TOnValuesChanged = procedure of object;
-  
+  TOnGetSameString = procedure(var s: string) of object;
   ArrayOfAnsiString = ^AnsiString;
   
 
@@ -85,9 +85,10 @@ type
     function AsString: string;
     constructor Create;
     destructor Destroy; override;
+    procedure RemoveDoubles(OnGetSameString: TOnGetSameString);
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
-    function CalcMemSize: PtrUInt;
+    function CalcMemSize(WithNamesAndValues: boolean = true; Original: TExpressionEvaluator = nil): PtrUInt;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp; inline;
   end;
@@ -222,6 +223,16 @@ destructor TExpressionEvaluator.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TExpressionEvaluator.RemoveDoubles(OnGetSameString: TOnGetSameString);
+var
+  i: Integer;
+begin
+  for i:=0 to FCount-1 do begin
+    OnGetSameString(FNames[i]);
+    OnGetSameString(FValues[i]);
+  end;
 end;
 
 function TExpressionEvaluator.Eval(const Expression: string): string;
@@ -757,16 +768,26 @@ begin
   ConsistencyCheck;
 end;
 
-function TExpressionEvaluator.CalcMemSize: PtrUInt;
+function TExpressionEvaluator.CalcMemSize(WithNamesAndValues: boolean;
+  Original: TExpressionEvaluator): PtrUInt;
 var
   i: Integer;
+  j: LongInt;
 begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(Expr)
     +SizeOf(Pointer)*FCount*2;
-  for i:=0 to FCount-1 do begin
-    inc(Result,MemSizeString(FNames[i]));
-    inc(Result,MemSizeString(FValues[i]));
+  if WithNamesAndValues then begin
+    for i:=0 to FCount-1 do begin
+      if Original<>nil then begin
+        j:=Original.IndexOfName(FNames[i],false);
+        if j>=0 then begin
+          if Pointer(FNames[i])=Pointer(Original.FNames[j]) then continue;
+        end;
+      end;
+      inc(Result,MemSizeString(FNames[i]));
+      inc(Result,MemSizeString(FValues[i]));
+    end;
   end;
 end;
 

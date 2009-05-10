@@ -55,7 +55,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  Laz_XMLCfg, AVL_Tree,
+  Laz_XMLCfg, AVL_Tree, CodeToolsStructs,
   Process, KeywordFuncLists, FileProcs;
 
 const
@@ -354,6 +354,7 @@ type
     FDirectoryCachePool: TCTDirectoryCachePool;
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
+    FDefineStrings: TStringTree;
     FChangeStep: integer;
     FErrorDescription: string;
     FErrorTemplate: TDefineTemplate;
@@ -368,6 +369,7 @@ type
     function Calculate(DirDef: TDirectoryDefines): boolean;
     procedure IncreaseChangeStep;
     procedure SetDirectoryCachePool(const AValue: TCTDirectoryCachePool);
+    procedure RemoveDoubles(Defines: TDirectoryDefines);
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
     function GetDirDefinesForDirectory(const Path: string;
@@ -1821,7 +1823,7 @@ begin
   Stats.Add('TDirectoryDefines',PtrUInt(InstanceSize)
     +MemSizeString(Path));
   if Values<>nil then
-    Stats.Add('TDirectoryDefines.Values',Values.CalcMemSize);
+    Stats.Add('TDirectoryDefines.Values',Values.CalcMemSize(false,nil));
 end;
 
 
@@ -1888,7 +1890,8 @@ begin
   inherited Create;
   FFirstDefineTemplate:=nil;
   FCache:=TAVLTree.Create(@CompareDirectoryDefines);
-  
+  FDefineStrings:=TStringTree.Create;
+
   FMacroFunctions:=TKeyWordFunctionList.Create;
   FMacroFunctions.AddExtended('Ext',nil,@MacroFuncExtractFileExt);
   FMacroFunctions.AddExtended('PATH',nil,@MacroFuncExtractFilePath);
@@ -1904,6 +1907,7 @@ begin
   FMacroVariables.Free;
   FMacroFunctions.Free;
   FCache.Free;
+  FreeAndNil(FDefineStrings);
   inherited Destroy;
 end;
 
@@ -1953,6 +1957,7 @@ begin
       //DebugLn('[TDefineTree.GetDirDefinesForDirectory] B ',ExpPath,' ');
       if Calculate(Result) then begin
         //DebugLn('[TDefineTree.GetDirDefinesForDirectory] C success');
+        RemoveDoubles(Result);
         FCache.Add(Result);
       end else begin
         //DebugLn('[TDefineTree.GetDirDefinesForDirectory] D failed');
@@ -1974,6 +1979,7 @@ begin
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin
       //DebugLn('TDefineTree.GetDirDefinesForVirtualDirectory ');
+      RemoveDoubles(FVirtualDirCache);
     end else begin
       FVirtualDirCache.Free;
       FVirtualDirCache:=nil;
@@ -2029,6 +2035,7 @@ begin
     FVirtualDirCache:=nil;
   end;
   IncreaseChangeStep;
+  FDefineStrings.Clear;
 end;
 
 procedure TDefineTree.DoPrepareTree;
@@ -2621,6 +2628,12 @@ begin
   FDirectoryCachePool:=AValue;
 end;
 
+procedure TDefineTree.RemoveDoubles(Defines: TDirectoryDefines);
+begin
+  if Defines=nil then exit;
+  Defines.Values.RemoveDoubles(@FDefineStrings.ReplaceString);
+end;
+
 procedure TDefineTree.Add(ADefineTemplate: TDefineTemplate);
 // add as last
 var LastDefTempl: TDefineTemplate;
@@ -2797,6 +2810,8 @@ begin
     FFirstDefineTemplate.CalcMemSize(Stats);
   if FVirtualDirCache<>nil then
     FVirtualDirCache.CalcMemSize(Stats);
+  if FDefineStrings<>nil then
+    Stats.Add('TDefineTree.FDefineStrings',FDefineStrings.CalcMemSize);
   if FCache<>nil then begin
     Stats.Add('TDefineTree.FCache.Count',FCache.Count);
     Node:=FCache.FindLowest;

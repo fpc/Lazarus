@@ -1416,7 +1416,7 @@ begin
       FLinkCapacity*SizeOf(TSourceLink));
   if FInitValues<>nil then
     Stats.Add('TLinkScanner.FInitValues',
-      FInitValues.CalcMemSize);
+      FInitValues.CalcMemSize(false)); // FInitValues are copies of strings of TDefineTree
   if FSourceChangeSteps<>nil then
     Stats.Add('TLinkScanner.FSourceChangeSteps',
       FSourceChangeSteps.InstanceSize
@@ -1426,7 +1426,7 @@ begin
       FIncludeStack.InstanceSize+FIncludeStack.Capacity*SizeOf(TSourceLink));
   if Values<>nil then
     Stats.Add('TLinkScanner.Values',
-      Values.CalcMemSize);
+      Values.CalcMemSize(true,FInitValues));
   if FMissingIncludeFiles<>nil then
     Stats.Add('TLinkScanner.FMissingIncludeFiles',
       FMissingIncludeFiles.InstanceSize);

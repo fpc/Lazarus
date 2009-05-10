@@ -141,6 +141,19 @@ type
   public
     constructor Create(CaseInsensitive: boolean);
   end;
+
+  { TStringTree }
+
+  TStringTree = class
+  public
+    Tree: TAVLTree;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function FindNode(const s: string): TAVLTreeNode; inline;
+    procedure ReplaceString(var s: string);
+    function CalcMemSize: PtrUInt;
+  end;
   
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
@@ -154,6 +167,7 @@ function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer
 function CompareFilenameToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): integer;
 
+function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 
 implementation
 
@@ -202,6 +216,11 @@ function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer
 begin
   Result:=CompareFilenamesIgnoreCase(String(Key),
                                      PStringToStringTreeItem(Data)^.Name);
+end;
+
+function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
 end;
 
 { TCodeXYPositions }
@@ -537,6 +556,66 @@ begin
   else
     SetCompareFuncs(@CompareFilenameToStringItems,
                     @CompareFilenameAndFilenameToStringTreeItem);
+end;
+
+{ TStringTree }
+
+constructor TStringTree.Create;
+begin
+  Tree:=TAVLTree.Create(@CompareAnsiStringPtrs);
+end;
+
+destructor TStringTree.Destroy;
+begin
+  Clear;
+  FreeAndNil(Tree);
+  inherited Destroy;
+end;
+
+procedure TStringTree.Clear;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    AnsiString(Node.Data):='';
+    Node:=Tree.FindSuccessor(Node);
+  end;
+  Tree.Clear;
+end;
+
+function TStringTree.FindNode(const s: string): TAVLTreeNode;
+begin
+  Result:=Tree.Find(Pointer(s));
+end;
+
+procedure TStringTree.ReplaceString(var s: string);
+var
+  Node: TAVLTreeNode;
+  h: String;
+begin
+  Node:=FindNode(s);
+  if Node=nil then begin
+    // increase refcount
+    h:=s;
+    Tree.Add(Pointer(h));
+    Pointer(h):=nil; // keep refcount
+  end else
+    s:=AnsiString(Node.Data);
+end;
+
+function TStringTree.CalcMemSize: PtrUInt;
+var
+  Node: TAVLTreeNode;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(Tree.InstanceSize)
+    +PtrUInt(TAVLTreeNode.InstanceSize)*PtrUInt(Tree.Count);
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    inc(Result,MemSizeString(AnsiString(Node.Data)));
+    Node:=Tree.FindSuccessor(Node);
+  end;
 end;
 
 end.
