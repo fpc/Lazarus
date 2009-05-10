@@ -2417,11 +2417,12 @@ begin
   Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,TDesignerIDECommandForm);
 end;
 
-Function TCustomFormEditor.CreateComponentInterface(
+function TCustomFormEditor.CreateComponentInterface(
   AComponent: TComponent; WithOwnedChilds: Boolean): TIComponentInterface;
-Begin
-  Result:=FindComponent(AComponent);
-  if Result=nil then begin
+begin
+  Result := FindComponent(AComponent);
+  if Result = nil then 
+  begin
     Result := TComponentInterface.Create(AComponent);
     FComponentInterfaces.Add(Result);
   end;
@@ -2429,15 +2430,15 @@ Begin
     CreateChildComponentInterfaces(AComponent);
 end;
 
-procedure TCustomFormEditor.CreateChildComponentInterfaces(
-  AComponent: TComponent);
+procedure TCustomFormEditor.CreateChildComponentInterfaces(AComponent: TComponent);
 var
   i: Integer;
   ChildComponent: TComponent;
 begin
   // create a component interface for each component owned by the new component
-  for i:=0 to AComponent.ComponentCount-1 do begin
-    ChildComponent:=AComponent.Components[i];
+  for i := 0 to AComponent.ComponentCount - 1 do 
+  begin
+    ChildComponent := AComponent.Components[i];
     CreateComponentInterface(ChildComponent,
                              csInline in ChildComponent.ComponentState);
   end;
