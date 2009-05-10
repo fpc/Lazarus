@@ -30,9 +30,9 @@ interface
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}
-{$IF (FPC_VERSION = 2) AND (FPC_RELEASE >= 3)}
+{$IFNDEF VER2_2}
   {$DEFINE OverrideClipping}
-{$IFEND}
+{$ENDIF}
 
 
 uses
