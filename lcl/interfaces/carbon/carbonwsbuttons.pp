@@ -91,7 +91,7 @@ class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
 
-  if ABitBtn.CabShowGlyph then  
+  if ABitBtn.CanShowGlyph then
     TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph)
   else
     TCarbonBitBtn(ABitBtn.Handle).SetGlyph(nil);
