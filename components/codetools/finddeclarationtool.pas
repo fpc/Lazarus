@@ -1805,6 +1805,21 @@ begin
   if (Tool=nil) or (Tool.MainFilename='') or (Tool=Self) then
     exit;
   Result:=ExtractFileNameOnly(Tool.MainFilename);
+  if Result='' then exit;
+
+  // check if system unit
+  if (CompareIdentifiers(PChar(Result),'system')=0)
+  or ((Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+    and (Scanner.PascalCompiler=pcFPC)
+    and (CompareIdentifiers(PChar(Result),'ObjPas')=0))
+  or ((Scanner.CompilerMode=cmMacPas)
+    and (Scanner.PascalCompiler=pcFPC)
+    and (CompareIdentifiers(PChar(Result),'MacPas')=0))
+  then begin
+    Result:='';
+    exit;
+  end;
+
   // check if already there
   UsesNode:=FindMainUsesSection;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
@@ -1818,6 +1833,7 @@ begin
     Result:='';
     exit;
   end;
+
   // beautify
   if Result=lowercase(Result) then begin
     Alternative:=Tool.GetSourceName(false);
