@@ -1468,18 +1468,23 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
   
   procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
   var
+    List: PGList;
     GtkColumn: PGtkTreeViewColumn;
     i: Integer;
   begin
-    for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
-      GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
-      if GtkColumn=nil then continue;
-      if not (Show)
-      or (Show and (PtrUInt(g_object_get_data(G_OBJECT(GtkColumn),
-                                             PChar('Visible')))<>0))
-      then
+    List := gtk_tree_view_get_columns(PGtkTreeView(Widgets^.MainView));
+    for i := 0 to g_list_length(List) - 1 do
+    begin
+      GtkColumn := g_list_nth_data(List, i);
+      if GtkColumn = nil then
+        Continue;
+
+      if not Show or
+        (Show and (PtrUInt(g_object_get_data(G_OBJECT(GtkColumn),
+                                             PChar('Visible'))) <> 0)) then
         gtk_tree_view_column_set_visible(GtkColumn, Show);
     end;
+    g_list_free(List)
   end;
 
 var
