@@ -7485,25 +7485,8 @@ begin
 end;
 
 procedure TCustomSynEdit.RecalcCharExtent;
-
-  function UsesFontStyle(AStyle: TFontStyle): boolean;
-  var
-    i: integer;
-  begin
-    if Assigned(fHighlighter) then begin
-      for i := 0 to Pred(fHighlighter.AttrCount) do
-        if AStyle in fHighlighter.Attribute[i].Style then begin
-          Result := TRUE;
-          exit;
-        end;
-      Result := FALSE;
-    end else
-      Result := AStyle in Font.Style;
-  end;
-
-const
-  BoldStyles: array[boolean] of TFontStyles = ([], [fsBold]);
-  ItalicStyles: array[boolean] of TFontStyles = ([], [fsItalic]);
+var
+  i: Integer;
 begin
   FFontDummy.Assign(Font);
   with FFontDummy do begin
@@ -7518,11 +7501,13 @@ begin
     //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
     //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
     BaseFont := FFontDummy;
-    BaseStyle := ItalicStyles[UsesFontStyle(fsItalic)];
-    //debugln('TCustomSynEdit.RecalcCharExtent B CharHeight=',dbgs(CharHeight));
+
+    if Assigned(fHighlighter) then
+      for i := 0 to Pred(fHighlighter.AttrCount) do
+        BaseStyle := fHighlighter.Attribute[i].Style;
+
+    CharExtra := fExtraCharSpacing;
     fTextHeight := CharHeight + fExtraLineSpacing;
-    BaseStyle := BoldStyles[UsesFontStyle(fsBold)];
-     {$IFDEF SYN_LAZARUS}CharExtra := fExtraCharSpacing;{$ENDIF}
     fCharWidth := CharWidth;
   end;
   {$IFDEF SYN_LAZARUS}

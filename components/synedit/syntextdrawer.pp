@@ -1037,8 +1037,8 @@ begin
     with FFontStock do
     begin
       Style := Value;
-      FBaseCharWidth := CharAdvance;
-      FBaseCharHeight := CharHeight;
+      FBaseCharWidth := Max(FBaseCharWidth, CharAdvance);
+      FBaseCharHeight := Max(FBaseCharHeight, CharHeight);
     end;
   end;
 end;
