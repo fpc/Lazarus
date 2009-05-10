@@ -657,6 +657,7 @@ type
   TQtTabWidget = class(TQtWidget)
   private
     FCurrentChangedHook: QTabWidget_hookH;
+    FCloseRequestedHook: QTabWidget_hookH;
     FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
@@ -672,6 +673,7 @@ type
     
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
+    procedure SignalCloseRequested(Index: Integer); cdecl;
   public
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
@@ -685,6 +687,7 @@ type
     procedure setCurrentWidget(APage: TQtWidget);
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: WideString);
+    procedure setTabsClosable(AValue: Boolean);
     function tabAt(APoint: TPoint): Integer;
 
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
@@ -5831,11 +5834,18 @@ begin
   FCurrentChangedHook := QTabWidget_hook_create(Widget);
   QTabWidget_currentChanged_Event(Method) := @SignalCurrentChanged;
   QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
+
+  FCloseRequestedHook := QTabWidget_hook_create(Widget);
+{$ifdef USE_QT_45}
+  QTabWidget_tabCloseRequested_Event(Method) := @SignalCloseRequested;
+  QTabWidget_hook_hook_tabCloseRequested(FCloseRequestedHook, Method);
+{$endif}
 end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
   QTabWidget_hook_destroy(FCurrentChangedHook);
+  QTabWidget_hook_destroy(FCloseRequestedHook);
   inherited DetachEvents;
 end;
 
@@ -5949,6 +5959,16 @@ begin
   DeliverMessage(Msg);
 end;
 
+procedure TQtTabWidget.SignalCloseRequested(Index: Integer); cdecl;
+var
+  APage: TCustomPage;
+begin
+  APage := TCustomNotebook(LCLObject).Page[GetLCLPageIndex(Index)];
+  if not APage.HandleAllocated then
+    Exit;
+  TCustomNoteBook(LCLObject).DoCloseTabClicked(APage);
+end;
+
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
 begin
   Result := QTabWidget_indexOf(QTabWidgetH(Widget), AWidget);
@@ -5957,6 +5977,13 @@ end;
 procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);
 begin
   QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
+end;
+
+procedure TQtTabWidget.setTabsClosable(AValue: Boolean);
+begin
+{$ifdef USE_QT_45}
+  QTabWidget_setTabsClosable(QTabWidgetH(Widget), AValue);
+{$endif}
 end;
 
 function TQtTabWidget.tabAt(APoint: TPoint): Integer;

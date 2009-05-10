@@ -276,6 +276,9 @@ begin
       end;
     end;
   end;
+
+  with TCustomNoteBook(ACustomPage.Parent) do
+    TQtTabWidget(Handle).setTabsClosable(nboShowCloseButtons in Options);
 end;
 
 { TQtWSCustomNotebook }
@@ -295,7 +298,7 @@ begin
     WriteLn('TQtWSCustomNotebook.CreateHandle');
   {$endif}
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
-  QtTabWidget.SetTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
+  QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
   QtTabWidget.AttachEvents;
 
   // Returns the Handle
