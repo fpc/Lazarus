@@ -505,6 +505,7 @@ var
 var
   ZoneExtent: TPoint;
   Acceptable: boolean;
+  ADockRect: TRect;
 begin
 (* New DockManager interface, called instead of the old version.
   Determine exact target (zone) and DropAlign.
@@ -542,7 +543,10 @@ begin
     end;
   //position DockRect
     if Acceptable then
-      PositionDockRect(Control, DropOnControl, DropAlign, DockRect);
+    begin
+      PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
+      DockRect := ADockRect;
+    end;
   end;
 end;
 
