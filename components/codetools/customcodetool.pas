@@ -2121,7 +2121,7 @@ begin
   Stats.Add('TCustomCodeTool',MemSizeString(LastErrorMessage));
   if FScanner<>nil then
     FScanner.CalcMemSize(Stats);
-  if (FScanner=nil) or (Pointer(FScanner.Src)<>Pointer(Src)) then
+  if (FScanner=nil) or (Pointer(FScanner.CleanedSrc)<>Pointer(Src)) then
     Stats.Add('TCustomCodeTool.Src',
       MemSizeString(Src));
   if KeyWordFuncList<>nil then
