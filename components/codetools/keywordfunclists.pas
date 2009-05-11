@@ -168,11 +168,14 @@ var
 function UpperCaseStr(const s: string): string;
 function IsUpperCaseStr(const s: string): boolean;
 
+function CalcMemSize: PtrUInt;
+
 implementation
 
 var
   CharToIHash: array[char] of integer;
   UpWords: array[word] of word;
+  KeyWordLists: TFPList;
 
 function UpperCaseStr(const s: string): string;
 var i, l, l2: integer;
@@ -198,6 +201,19 @@ begin
   i:=1;
   while (i<=l) and (UpChars[s[i]]=s[i]) do inc(i);
   Result:=i>l;
+end;
+
+function CalcMemSize: PtrUInt;
+var
+  i: Integer;
+begin
+  Result:=0;
+  if KeyWordLists<>nil then begin
+    inc(Result,PtrUInt(KeyWordLists.InstanceSize)
+      +SizeOf(Pointer)*PtrUInt(KeyWordLists.Capacity));
+    for i:=0 to KeyWordLists.Count-1 do
+      inc(Result,TBaseKeyWordFunctionList(KeyWordLists[i]).CalcMemSize);
+  end;
 end;
 
 { TBaseKeyWordFunctionList }
@@ -702,8 +718,6 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
-
-var KeyWordLists: TFPList;
 
 procedure InternalInit;
 var

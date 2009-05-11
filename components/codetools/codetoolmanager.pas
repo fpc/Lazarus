@@ -5141,6 +5141,7 @@ begin
       Node:=FPascalTools.FindSuccessor(Node);
     end;
   end;
+  Stats.Add('KeywordFuncLists.Global',KeywordFuncLists.CalcMemSize);
   Stats.WriteReport;
   Stats.Free;
 end;
