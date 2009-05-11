@@ -224,6 +224,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Count: integer;
+    function CalcMemSize: PtrUInt;
   end;
 
   //----------------------------------------------------------------------------
@@ -625,6 +626,17 @@ begin
     Result:=FItems.Count
   else
     Result:=0;
+end;
+
+function TGlobalIdentifierTree.CalcMemSize: PtrUInt;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUint(FItems.InstanceSize)
+    +PtrUInt(FItems.Count)*PtrUint(TAVLTreeNode.InstanceSize)
+    +PtrUInt(FFullDataBlocks.InstanceSize)
+    +PtrUInt(FFullDataBlocks.Capacity)*SizeOf(Pointer)
+    +PtrUInt(FFullDataBlocks.Count*FDefaultDataBlockSize)
+    +PtrUInt(FDataBlockSize);
 end;
 
 function TGlobalIdentifierTree.InternalGetMem(Size: integer): Pointer;

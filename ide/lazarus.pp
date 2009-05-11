@@ -43,7 +43,6 @@ program Lazarus;
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
-  //cmem,
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}

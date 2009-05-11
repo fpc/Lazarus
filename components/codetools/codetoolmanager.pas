@@ -43,10 +43,10 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo, FindOverloads,
-  DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree, PascalParserTool,
-  CodeToolsConfig, CustomCodeTool, FindDeclarationTool, IdentCompletionTool,
-  StdCodeTools, ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool,
-  ExtractProcTool;
+  FindDeclarationCache, DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree,
+  PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
+  IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
+  CodeTemplatesTool, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -5143,6 +5143,7 @@ begin
   end;
   Stats.Add('KeywordFuncLists.Global',KeywordFuncLists.CalcMemSize);
   Stats.Add('FileStateCache',FileStateCache.CalcMemSize);
+  Stats.Add('GlobalIdentifierTree',GlobalIdentifierTree.CalcMemSize);
   Stats.WriteReport;
   Stats.Free;
 end;
