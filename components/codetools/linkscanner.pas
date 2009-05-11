@@ -2063,26 +2063,89 @@ begin
   if StartPos>SrcLen then exit;
   p:=@Src[StartPos];
   //DebugLn(['TLinkScanner.DoDirective ',copy(Src,StartPos,DirLen),' FSkippingDirectives=',ord(FSkippingDirectives)]);
-  if DirLen=1 then begin
-    Result:=(CompilerSwitchesNames[UpChars[p^]]<>'')
-            and ShortSwitchDirective;
-  end else begin
-    case UpChars[p^] of
-    'A':
-      case UpChars[p[1]] of
-      'L': if CompareIdentifiers(p,'ALIGN')=0 then Result:=true;
-      'S': if CompareIdentifiers(p,'ASSERTIONS')=0 then Result:=true;
-      end;
-    'B':
-      if CompareIdentifiers(p,'BOOLEVAL')=0 then Result:=true;
-    'D':
-      case UpChars[p[1]] of
-      'E':
-        case UpChars[p[2]] of
-        'F': if CompareIdentifiers(p,'DEFINE')=0 then Result:=DefineDirective;
-        'B': if CompareIdentifiers(p,'DEBUGINFO')=0 then Result:=true;
+  if FSkippingDirectives=lssdNone then begin
+    if DirLen=1 then begin
+      Result:=(CompilerSwitchesNames[UpChars[p^]]<>'')
+              and ShortSwitchDirective;
+    end else begin
+      case UpChars[p^] of
+      'A':
+        case UpChars[p[1]] of
+        'L': if CompareIdentifiers(p,'ALIGN')=0 then Result:=true;
+        'S': if CompareIdentifiers(p,'ASSERTIONS')=0 then Result:=true;
         end;
+      'B':
+        if CompareIdentifiers(p,'BOOLEVAL')=0 then Result:=true;
+      'D':
+        case UpChars[p[1]] of
+        'E':
+          case UpChars[p[2]] of
+          'F': if CompareIdentifiers(p,'DEFINE')=0 then Result:=DefineDirective;
+          'B': if CompareIdentifiers(p,'DEBUGINFO')=0 then Result:=true;
+          end;
+        end;
+      'E':
+        case UpChars[p[1]] of
+        'L':
+          case UpChars[p[2]] of
+          'I': if CompareIdentifiers(p,'ELIFC')=0 then Result:=ElIfCDirective;
+          'S':
+            case UpChars[p[3]] of
+            'E':
+              if CompareIdentifiers(p,'ELSE')=0 then Result:=ElseDirective
+              else if CompareIdentifiers(p,'ELSEC')=0 then Result:=ElseCDirective
+              else if CompareIdentifiers(p,'ELSEIF')=0 then Result:=ElseIfDirective;
+            end;
+          end;
+        'N':
+          if CompareIdentifiers(p,'ENDC')=0 then Result:=EndCDirective
+          else if CompareIdentifiers(p,'ENDIF')=0 then Result:=EndIfDirective;
+        'X':
+          if CompareIdentifiers(p,'EXTENDEDSYNTAX')=0 then Result:=true;
+        end;
+      'I':
+        case UpChars[p[1]] of
+        'F':
+          case UpChars[p[2]] of
+          'C': if CompareIdentifiers(p,'IFC')=0 then Result:=IfCDirective;
+          'D': if CompareIdentifiers(p,'IFDEF')=0 then Result:=IfDefDirective;
+          'E': if CompareIdentifiers(p,'IFEND')=0 then Result:=IfEndDirective;
+          'N': if CompareIdentifiers(p,'IFNDEF')=0 then Result:=IfndefDirective;
+          'O': if CompareIdentifiers(p,'IFOPT')=0 then Result:=IfOptDirective;
+          else if DirLen=2 then Result:=IfDirective;
+          end;
+        'N':
+          if CompareIdentifiers(p,'INCLUDE')=0 then Result:=IncludeDirective
+          else if CompareIdentifiers(p,'INCLUDEPATH')=0 then Result:=IncludePathDirective;
+        'O': if CompareIdentifiers(p,'IOCHECKS')=0 then Result:=true;
+        end;
+      'L':
+        if CompareIdentifiers(p,'LOCALSYMBOLS')=0 then Result:=true
+        else if CompareIdentifiers(p,'LONGSTRINGS')=0 then Result:=true;
+      'M':
+        if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective;
+      'O':
+        if CompareIdentifiers(p,'OPENSTRINGS')=0 then Result:=true
+        else if CompareIdentifiers(p,'OVERFLOWCHECKS')=0 then Result:=true;
+      'R':
+        if CompareIdentifiers(p,'RANGECHECKS')=0 then Result:=true
+        else if CompareIdentifiers(p,'REFERENCEINFO')=0 then Result:=true;
+      'S':
+        if CompareIdentifiers(p,'SETC')=0 then Result:=SetCDirective
+        else if CompareIdentifiers(p,'STACKFRAMES')=0 then Result:=true;
+      'T':
+        if CompareIdentifiers(p,'THREADING')=0 then Result:=ThreadingDirective
+        else if CompareIdentifiers(p,'TYPEADDRESS')=0 then Result:=true
+        else if CompareIdentifiers(p,'TYPEINFO')=0 then Result:=true;
+      'U':
+        if CompareIdentifiers(p,'UNDEF')=0 then Result:=UndefDirective;
+      'V':
+        if CompareIdentifiers(p,'VARSTRINGCHECKS')=0 then Result:=true;
       end;
+    end;
+  end else begin
+    // skipping code, but still have to read if directives
+    case UpChars[p^] of
     'E':
       case UpChars[p[1]] of
       'L':
@@ -2099,8 +2162,6 @@ begin
       'N':
         if CompareIdentifiers(p,'ENDC')=0 then Result:=EndCDirective
         else if CompareIdentifiers(p,'ENDIF')=0 then Result:=EndIfDirective;
-      'X':
-        if CompareIdentifiers(p,'EXTENDEDSYNTAX')=0 then Result:=true;
       end;
     'I':
       case UpChars[p[1]] of
@@ -2113,33 +2174,7 @@ begin
         'O': if CompareIdentifiers(p,'IFOPT')=0 then Result:=IfOptDirective;
         else if DirLen=2 then Result:=IfDirective;
         end;
-      'N':
-        if CompareIdentifiers(p,'INCLUDE')=0 then Result:=IncludeDirective
-        else if CompareIdentifiers(p,'INCLUDEPATH')=0 then Result:=IncludePathDirective;
-      'O': if CompareIdentifiers(p,'IOCHECKS')=0 then Result:=true;
       end;
-    'L':
-      if CompareIdentifiers(p,'LOCALSYMBOLS')=0 then Result:=true
-      else if CompareIdentifiers(p,'LONGSTRINGS')=0 then Result:=true;
-    'M':
-      if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective;
-    'O':
-      if CompareIdentifiers(p,'OPENSTRINGS')=0 then Result:=true
-      else if CompareIdentifiers(p,'OVERFLOWCHECKS')=0 then Result:=true;
-    'R':
-      if CompareIdentifiers(p,'RANGECHECKS')=0 then Result:=true
-      else if CompareIdentifiers(p,'REFERENCEINFO')=0 then Result:=true;
-    'S':
-      if CompareIdentifiers(p,'SETC')=0 then Result:=SetCDirective
-      else if CompareIdentifiers(p,'STACKFRAMES')=0 then Result:=true;
-    'T':
-      if CompareIdentifiers(p,'THREADING')=0 then Result:=ThreadingDirective
-      else if CompareIdentifiers(p,'TYPEADDRESS')=0 then Result:=true
-      else if CompareIdentifiers(p,'TYPEINFO')=0 then Result:=true;
-    'U':
-      if CompareIdentifiers(p,'UNDEF')=0 then Result:=UndefDirective;
-    'V':
-      if CompareIdentifiers(p,'VARSTRINGCHECKS')=0 then Result:=true;
     end;
   end;
 end;
