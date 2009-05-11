@@ -219,7 +219,6 @@ type
     CommentEndPos: integer;        // postion after '}', '*)', #10
     LastCleanSrcPos: integer;
     IfLevel: integer;
-    KeywordFuncList: TKeyWordFunctionList;
     procedure ReadNextToken;
     function ReturnFromIncludeFileAndIsEnd: boolean;
     function ReadIdentifier: string;
@@ -235,7 +234,7 @@ type
     procedure HandleDirectives;
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
-    procedure InitKeyWordList;
+    function ParseKeyWord(StartPos, WordLen: integer): boolean;
     function DoEndToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function DoDefaultIdentToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function DoEndOfInterfaceToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
@@ -667,7 +666,6 @@ end;
 destructor TLinkScanner.Destroy;
 begin
   Clear;
-  KeywordFuncList.Free;
   FIncludeStack.Free;
   FSourceChangeSteps.Free;
   Values.Free;
@@ -960,7 +958,7 @@ begin
         while (SrcPos<=SrcLen)
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
-        KeywordFuncList.DoItCaseInsensitive(Src,TokenStart,SrcPos-TokenStart);
+        ParseKeyWord(TokenStart,SrcPos-TokenStart);
       end;
     '''','#':
       begin
@@ -1130,7 +1128,6 @@ begin
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
   // beging scanning
-  InitKeyWordList;
   AddLink(1,SrcPos,Code);
   LastTokenType:=lsttNone;
   LastProgressPos:=0;
@@ -1142,8 +1139,8 @@ begin
   try
     try
       repeat
-        // check every 10.000 bytes for abort
-        if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>10000) then begin
+        // check every 100.000 bytes for abort
+        if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>100000) then begin
           LastProgressPos:=LastCleanSrcPos;
           DoCheckAbort;
         end;
@@ -1430,9 +1427,6 @@ begin
   if FMissingIncludeFiles<>nil then
     Stats.Add('TLinkScanner.FMissingIncludeFiles',
       FMissingIncludeFiles.InstanceSize);
-  if KeywordFuncList<>nil then
-    Stats.Add('TLinkScanner.KeywordFuncList',
-      KeywordFuncList.CalcMemSize);
 end;
 
 function TLinkScanner.UpdateNeeded(
@@ -2892,17 +2886,22 @@ begin
   Result:=SrcPos<=SrcLen;
 end;
 
-procedure TLinkScanner.InitKeyWordList;
+function TLinkScanner.ParseKeyWord(StartPos, WordLen: integer): boolean;
+var
+  p: PChar;
 begin
-  if KeywordFuncList<>nil then exit;
-  KeywordFuncList:=TKeyWordFunctionList.Create;
-  with KeywordFuncList do begin
-    Add('END'            ,@DoEndToken);
-    Add('IMPLEMENTATION' ,@DoEndOfInterfaceToken);
-    Add('INITIALIZIATION',@DoEndOfInterfaceToken);
-    Add('FINALIZATION'   ,@DoEndOfInterfaceToken);
-    DefaultKeyWordFunction:=@DoDefaultIdentToken;
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  'E': if CompareIdentifiers(p,'END')=0 then exit(DoEndToken);
+  'F': if CompareIdentifiers(p,'FINALIZATION')=0 then exit(DoEndOfInterfaceToken);
+  'I':
+    case UpChars[p[1]] of
+    'M': if CompareIdentifiers(p,'IMPLEMENTATION')=0 then exit(DoEndOfInterfaceToken);
+    'N': if CompareIdentifiers(p,'INITIALIZIATION')=0 then exit(DoEndOfInterfaceToken);
+    end;
   end;
+  Result:=false;
 end;
 
 function TLinkScanner.DoEndToken: boolean;
