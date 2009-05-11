@@ -185,6 +185,7 @@ type
   published
     property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
+    property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
     property SeriesColor;
@@ -282,10 +283,10 @@ type
     procedure SetPen(AValue: TPen);
     procedure SetPos(AValue: Double);
     procedure SetStyle(AValue: TLineStyle);
-    procedure Changed;
   protected
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
+    procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -929,32 +930,6 @@ end;
 
 { TLine }
 
-procedure TLine.Changed;
-begin
-  //FIXME: not the best way of doing this
-  {if Visible then begin
-     NBPointsMax:=NBPointsMax+1;
-     case LineStyle of
-        lsHorizontal:
-           begin
-           if Position<YMinSeries then YMinSeries:=Position;
-           if Position>YMaxSeries then YMaxSeries:=Position;
-           end;
-        lsVertical:
-           begin
-           if Position<XMinSeries then XMinSeries:=Position;
-           if Position>XMaxSeries then XMaxSeries:=Position;
-           end;
-        end;
-     end;
-  end;}
-  case LineStyle of
-    lsHorizontal: begin YGraphMin := FPosGraph; YGraphMax := FPosGraph; end;
-    lsVertical: begin XGraphMin := FPosGraph; XGraphMax := FPosGraph; end;
-  end;
-  UpdateParentChart;
-end;
-
 constructor TLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -979,19 +954,29 @@ procedure TLine.SetStyle(AValue: TLineStyle);
 begin
   if FStyle = AValue then exit;
   FStyle := AValue;
-  Changed;
+  UpdateParentChart;
+end;
+
+procedure TLine.UpdateBounds(var ABounds: TDoubleRect);
+begin
+  case LineStyle of
+    lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
+    lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
+  end;
 end;
 
 procedure TLine.SetPos(AValue: Double);
 begin
   if FPosGraph = AValue then exit;
   FPosGraph := AValue;
-  Changed;
+  UpdateParentChart;
 end;
 
 procedure TLine.SetSeriesColor(const AValue: TColor);
 begin
+  if FPen.Color = AValue then exit;
   FPen.Color := AValue;
+  UpdateParentChart;
 end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
