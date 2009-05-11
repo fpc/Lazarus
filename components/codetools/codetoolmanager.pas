@@ -5142,6 +5142,7 @@ begin
     end;
   end;
   Stats.Add('KeywordFuncLists.Global',KeywordFuncLists.CalcMemSize);
+  Stats.Add('FileStateCache',FileStateCache.CalcMemSize);
   Stats.WriteReport;
   Stats.Free;
 end;

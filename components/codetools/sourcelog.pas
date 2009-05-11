@@ -862,7 +862,7 @@ begin
     +MemSizeString(FDiskEncoding)
     +PtrUint(FLineCount)*SizeOf(TLineRange)
     +MemSizeString(FMemEncoding)
-    +FChangeHookCount*SizeOf(TOnSourceChange)
+    +PtrUInt(FChangeHookCount)*SizeOf(TOnSourceChange)
     +MemSizeString(FSource)
     +PtrUint(FLog.Count)*SizeOf(TSourceLogEntry)
     +PtrUInt(FMarkers.Count*TSourceLogMarker.InstanceSize);

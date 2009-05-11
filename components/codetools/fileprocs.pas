@@ -169,6 +169,7 @@ type
     FTimeStamp: integer;
   public
     constructor Create(const TheFilename: string; NewTimeStamp: integer);
+    function CalcMemSize: PtrUint;
   public
     property Filename: string read FFilename;
     property Flags: TFileStateCacheItemFlags read FFlags;
@@ -180,7 +181,7 @@ type
 
   TFileStateCache = class
   private
-    FFiles: TAVLTree;
+    FFiles: TAVLTree; // tree of TFileStateCacheItem
     FTimeStamp: integer;
     FLockCount: integer;
     FChangeTimeStampHandler: array of TNotifyEvent;
@@ -207,6 +208,7 @@ type
     procedure WriteDebugReport;
     procedure AddChangeTimeStampHandler(const Handler: TNotifyEvent);
     procedure RemoveChangeTimeStampHandler(const Handler: TNotifyEvent);
+    function CalcMemSize: PtrUint;
   public
     property TimeStamp: integer read FTimeStamp;
   end;
@@ -2824,6 +2826,12 @@ begin
   FTimeStamp:=NewTimeStamp;
 end;
 
+function TFileStateCacheItem.CalcMemSize: PtrUint;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +MemSizeString(FFilename);
+end;
+
 { TFileStateCache }
 
 procedure TFileStateCache.SetFlag(AFile: TFileStateCacheItem;
@@ -3045,6 +3053,23 @@ begin
         System.Move(FChangeTimeStampHandler[i+1],FChangeTimeStampHandler[i],
                     SizeOf(TNotifyEvent)*(length(FChangeTimeStampHandler)-i-1));
       SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)-1);
+    end;
+  end;
+end;
+
+function TFileStateCache.CalcMemSize: PtrUint;
+var
+  Node: TAVLTreeNode;
+begin
+  Result:=PtrUInt(InstanceSize)
+    +PtrUInt(length(FChangeTimeStampHandler))*SizeOf(TNotifyEvent);
+  if FFiles<>nil then begin
+    inc(Result,PtrUInt(FFiles.InstanceSize)
+      +PtrUInt(FFiles.Count)*PtrUInt(TAVLTreeNode.InstanceSize));
+    Node:=FFiles.FindLowest;
+    while Node<>nil do begin
+      inc(Result,TFileStateCacheItem(Node.Data).CalcMemSize);
+      Node:=FFiles.FindSuccessor(Node);
     end;
   end;
 end;
