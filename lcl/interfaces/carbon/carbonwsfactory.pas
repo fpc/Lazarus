@@ -5,8 +5,13 @@ unit CarbonWSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, StdCtrls, Arrow, Spin, PairSplitter,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
-  WSLCLClasses;
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
+  WSLCLClasses,
+
+  // Carbon units
+  CarbonWSArrow, CarbonWSButtons, CarbonWSCheckLst, CarbonWSComCtrls, CarbonWSControls,
+  CarbonWSDialogs, CarbonWSExtCtrls, CarbonWSForms, CarbonWSMenus, CarbonWSPairSplitter,
+  CarbonWSSpin, CarbonWSStdCtrls, CarbonWSCalendar;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -97,19 +102,6 @@ function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
 
 implementation
-uses
-  CarbonWSArrow,
-  CarbonWSButtons,
-  CarbonWSCheckLst,
-  CarbonWSComCtrls,
-  CarbonWSControls,
-  CarbonWSDialogs,
-  CarbonWSExtCtrls,
-  CarbonWSForms,
-  CarbonWSMenus,
-  CarbonWSPairSplitter,
-  CarbonWSSpin,
-  CarbonWSStdCtrls;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -203,7 +195,8 @@ end;
 // calendar
 function RegisterCustomCalendar: Boolean; alias : 'WSRegisterCustomCalendar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCalendar, TCarbonWSCustomCalendar);
+  Result := True;
 end;
 
 // dialogs
