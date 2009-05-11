@@ -109,6 +109,14 @@ procedure Register;
 
 implementation
 
+const
+  INT_NOTIFIER_FORM_WIDTH  = 325;
+  INT_NOTIFIER_FORM_HEIGHT = 110;
+  INT_NOTIFIER_SCREEN_SPACING = 10;
+  INT_NOTIFIER_SPACING = 5;
+  INT_NOTIFIER_BUTTON_SIZE = 20;
+
+
 {$ifndef fpc}
   {$R *.DFM}
 {$endif}
@@ -192,13 +200,19 @@ begin
 
   BorderStyle := bsNone;
 
-  Width := 325;
-  Height := 110;
+  Width := INT_NOTIFIER_FORM_WIDTH;
+  Height := INT_NOTIFIER_FORM_HEIGHT;
+
+  // Check for small screens. An extra spacing is necessary
+  // in the Windows Mobile 5 emulator
+  if Screen.Width - INT_NOTIFIER_SCREEN_SPACING < Width then
+    Width := Screen.Width - INT_NOTIFIER_SCREEN_SPACING;
 
   ImgIcon := TPicture.Create;
 
   lblTitle := TLabel.Create(Self);
   lblTitle.Parent := Self;
+  lblTitle.AutoSize := False;
   lblTitle.Transparent := True;
   lblTitle.Font.Style := [FsBold];
   lblTitle.Caption := 'Caption';
@@ -207,8 +221,10 @@ begin
 
   lblText := TLabel.Create(Self);
   lblText.Parent := Self;
+  lblText.AutoSize := False;
   lblText.Transparent := True;
   lblText.Caption := 'Text';
+  lblText.WordWrap := True;
   lblText.ParentColor := True;
   lblText.OnClick := HideForm;
 
@@ -267,8 +283,10 @@ procedure TNotifierForm.HandleResize(Sender: TObject);
 var
   IconAdjust: Integer;
 begin
-  if (ImgIcon.Bitmap <> nil) then IconAdjust := 5 + imgIcon.Bitmap.Width
-  else IconAdjust := 0;
+  if (ImgIcon.Bitmap <> nil) then
+    IconAdjust := INT_NOTIFIER_SPACING + imgIcon.Bitmap.Width
+  else
+    IconAdjust := 0;
   
 {  if (ImgIcon.Bitmap <> nil) then
   begin
@@ -282,26 +300,26 @@ begin
 
   if (lblTitle <> nil) then
   begin
-    lblTitle.Left := IconAdjust + 5;
-    lblTitle.Top := 5;
-    lblTitle.Width := Width - 25;
+    lblTitle.Left := IconAdjust + INT_NOTIFIER_SPACING;
+    lblTitle.Top := INT_NOTIFIER_SPACING;
+    lblTitle.Width := Width - (lblTitle.Left + INT_NOTIFIER_SPACING);
     lblTitle.Height := 20;
   end;
 
   if (lblText <> nil) then
   begin
     lblText.Left := IconAdjust + 20;
-    lblText.Top := LblTitle.Top + LblTitle.Height + 5;
-    lblText.Width := Width - (IconAdjust + 5);
-    lblText.Height := Height - 10 - LblText.Top;
+    lblText.Top := LblTitle.Top + LblTitle.Height + INT_NOTIFIER_SPACING;
+    lblText.Width := Width - (lblText.Left + INT_NOTIFIER_SPACING);
+    lblText.Height := Height - (lblText.Top + INT_NOTIFIER_SPACING);
   end;
 
   if (BtnX <> nil) then
   begin
-    BtnX.Left := Width - 20;
-    BtnX.Top := 5;
-    BtnX.Width := 20;
-    BtnX.Height := 20;
+    BtnX.Left := Width - (INT_NOTIFIER_BUTTON_SIZE + 5);
+    BtnX.Top := INT_NOTIFIER_SPACING;
+    BtnX.Width := INT_NOTIFIER_BUTTON_SIZE;
+    BtnX.Height := INT_NOTIFIER_BUTTON_SIZE;
   end;
 end;
 
@@ -441,12 +459,18 @@ end;
 procedure TPopupNotifier.ShowAtPos(x: Integer; y: Integer);
 begin
   if x + vNotifierForm.Width > Screen.Width then
-    vNotifierForm.left := x - vNotifierForm.Width
+  begin
+    vNotifierForm.left := x - vNotifierForm.Width;
+    if vNotifierForm.Left < 0 then vNotifierForm.Left := 0;
+  end
   else
     vNotifierForm.left := x;
 
   if y + vNotifierForm.Height > Screen.Height then
-    vNotifierForm.top := y - vNotifierForm.Height
+  begin
+    vNotifierForm.top := y - vNotifierForm.Height;
+    if vNotifierForm.top < 0 then vNotifierForm.top := 0;
+  end
   else
     vNotifierForm.top := y;
 
