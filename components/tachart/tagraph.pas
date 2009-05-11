@@ -220,7 +220,9 @@ type
     procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
     procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-    procedure SaveToBitmapFile(const FileName: String);
+    procedure SaveToBitmapFile(const AFileName: String); inline;
+    procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
+    function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure ZoomFull;
 
   public // Coordinate conversion
@@ -1007,20 +1009,31 @@ begin
   end;
 end;
 
-procedure TChart.SaveToBitmapFile(const FileName: String);
-var
-  tmpR: TRect;
-  tmpBitmap: TBitmap;
+procedure TChart.SaveToBitmapFile(const AFileName: String);
 begin
+  SaveToFile(TBitmap, AFileName);
+end;
+
+procedure TChart.SaveToFile(AClass: TRasterImageClass; const AFileName: String);
+begin
+  with SaveToImage(AClass) do
+    try
+      SaveToFile(AFileName);
+    finally
+      Free;
+    end;
+end;
+
+function TChart.SaveToImage(AClass: TRasterImageClass): TRasterImage;
+begin
+  Result := AClass.Create;
   try
-    tmpBitmap := TBitmap.Create;
-    tmpR := GetRectangle;
-    tmpBitmap.Width := tmpR.Right - tmpR.Left;
-    tmpBitmap.Height:= tmpR.Bottom - tmpR.Top;
-    tmpBitmap.Canvas.CopyRect(tmpR, Canvas, tmpR);
-    tmpBitmap.SaveToFile(FileName);
-  finally
-    tmpBitmap.Free;
+    Result.Width := Width;
+    Result.Height := Height;
+    PaintOnCanvas(Result.Canvas, GetRectangle);
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -1032,20 +1045,13 @@ begin
 end;
 
 procedure TChart.CopyToClipboardBitmap;
-var
-  tmpBitmap: TBitmap;
-  tmpR: TRect;
 begin
-  try
-    tmpBitmap := TBitmap.Create;
-    tmpR := GetRectangle;
-    tmpBitmap.Width := tmpR.Right - tmpR.Left;
-    tmpBitmap.Height:= tmpR.Bottom - tmpR.Top;
-    tmpBitmap.Canvas.CopyRect(tmpR, Canvas, tmpR);
-    ClipBoard.Assign(tmpBitmap);
-  finally
-    tmpBitmap.Free;
-  end;
+  with SaveToImage(TBitmap) do
+    try
+      SaveToClipboardFormat(RegisterClipboardFormat(MimeType));
+    finally
+      Free;
+    end;
 end;
 
 procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);

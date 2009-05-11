@@ -1,0 +1,80 @@
+object Form1: TForm1
+  Left = 318
+  Height = 300
+  Top = 151
+  Width = 421
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 421
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object Chart1: TChart
+    Left = 0
+    Height = 276
+    Top = 24
+    Width = 421
+    BottomAxis.Grid.Style = psDot
+    BottomAxis.Grid.Visible = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = True
+    LeftAxis.Grid.Style = psDot
+    LeftAxis.Grid.Visible = True
+    LeftAxis.Title.Angle = 90
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clOlive
+      SeriesColor = clOlive
+    end
+    object Chart1FuncSeries1: TFuncSeries
+      Pen.Color = clRed
+      Pen.Width = 2
+      ZPosition = 1
+    end
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 421
+    ButtonWidth = 100
+    Caption = 'ToolBar1'
+    Flat = False
+    ShowCaptions = True
+    TabOrder = 1
+    object tbSaveAsBMP: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Save as BMP'
+      OnClick = tbSaveAsBMPClick
+    end
+    object tbSaveAsPNG: TToolButton
+      Left = 101
+      Top = 2
+      Caption = 'Save as PNG'
+      OnClick = tbSaveAsPNGClick
+    end
+    object tbCopyToClipboard: TToolButton
+      Left = 301
+      Top = 2
+      Caption = 'Copy to clipboard'
+      OnClick = tbCopyToClipboardClick
+    end
+    object tbSaveAsJPEG: TToolButton
+      Left = 201
+      Top = 2
+      Caption = 'Save as JPEG'
+      OnClick = tbSaveAsJPEGClick
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    left = 64
+    top = 56
+  end
+end
