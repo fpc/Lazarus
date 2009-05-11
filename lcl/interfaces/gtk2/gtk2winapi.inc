@@ -114,7 +114,7 @@ begin
 
       // if we have really default font
       if (lfHeight = 0) and
-         (lfWeight = 0) and
+         (lfWeight = FW_NORMAL) and
          (lfItalic = 0) and
          (lfUnderline = 0) and
          (lfOrientation = 0) and
