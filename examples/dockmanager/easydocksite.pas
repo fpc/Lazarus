@@ -29,6 +29,7 @@ done? (unclear whether this is really fixed in the trunk)
   Should call ResetBounds().
 *)
 
+{$H+}
 {$DEFINE splitter_color} //use colored splitter, for debugging?
 
 interface
@@ -55,7 +56,7 @@ type
     FFirstChild,
     FNextSibling, FPrevSibling, FParent: TEasyZone;
     FOrientation: TDockOrientation;
-    procedure SetControl(Control: TControl); //override;
+    procedure SetControl(Control: TControl);
     procedure SetOrientation(NewOrientation: TDockOrientation);
     function GetLeft: Integer;
     function GetTop: Integer;
@@ -73,7 +74,7 @@ type
     procedure SetBounds(TLBR: TRect);
 
     function  GetHandle: HWND; override;
-    function  GetHeaderSize: integer; override; //virtual;
+    function  GetHeaderSize: integer; override;
     function  GetVisible: boolean;
     function  GetVisibleControl: TControl;
     function  GetPartRect(APart: TEasyZonePart): TRect;
@@ -90,9 +91,9 @@ type
     procedure ScaleTo(ptOld, ptNew, ptOuter: TPoint);
   public //properties
     property ChildControl: TControl read FChildControl write SetControl;
-    property FirstChild: TEasyZone read FFirstChild;  // write SetFirstChild;
-    property NextSibling: TEasyZone read FNextSibling;  // write SetNextSibling;
-    property PrevSibling: TEasyZone read FPrevSibling;  // write SetPrevSibling;
+    property FirstChild: TEasyZone read FFirstChild;
+    property NextSibling: TEasyZone read FNextSibling;
+    property PrevSibling: TEasyZone read FPrevSibling;
     property Parent: TEasyZone read FParent write SetParent;
     property Orientation: TDockOrientation read FOrientation write SetOrientation;
     property Visible: boolean read GetVisible;
@@ -151,11 +152,16 @@ type
   end;
 
 (* Notebook for alCustom docking.
-  Added behaviour: free self on undock of the last client/page
+  Added behaviour: free self on undock of the last client/page.
+  The behaviour of TPageControl sucks :-(
 *)
   TEasyBook = class(TPageControl)
   protected
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
     procedure DoRemoveDockClient(Client: TControl); override;
+    function  GetDefaultDockCaption: string; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
   end;
 
 var //debug only
@@ -381,14 +387,23 @@ begin
     //create new book
       NoteBook := TEasyBook.Create(FDockSite);
       NoteBook.Align := alNone;
+      NoteBook.DragKind := dkDock;
+      NoteBook.DragMode := dmAutomatic;
     //hack: manually dock the notebook
       FReplacingControl := NoteBook; //ignore insert (see above)
       NoteBook.ManualDock(FDockSite); //move into DockClients[]
       DropZone.ChildControl := NoteBook; //put into the zone
+    { TODO -cdocking : make the notebook take the desired position }
+      r := DropZone.GetPartRect(zpClient);
+      DebugLn('NoteBook as (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
+      NoteBook.BoundsRect := r;
+      r := NoteBook.BoundsRect;
+      DebugLn('NoteBook is (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
 
       DropCtl.ManualDock(NoteBook); //put the original control into the notebook
       DropCtl := NoteBook; //put further controls into the notebook
       ResetBounds(True); //for some reason only setting the size doesn't work
+      NoteBook.Update;
     end;
     Control.ManualDock(TPageControl(DropCtl));
     FDockSite.Invalidate;
@@ -668,8 +683,8 @@ var
   begin
     if z.ChildControl <> nil then begin
     //paint header
-      //ACaption := DockSite.GetDockCaption(z.ChildControl); - bad result
-      ACaption := z.ChildControl.Name;
+      ACaption := DockSite.GetDockCaption(z.ChildControl);
+      //ACaption := z.ChildControl.Name;
       //ACaption := z.ChildControl.ClassName;
       //ACaption := z.ChildControl.DefaultDockCaption;
       FHeader.Draw(z, ACanvas, ACaption, MousePos);
@@ -832,7 +847,6 @@ end;
 
 procedure TEasyTree.UpdateTree;
 begin
-  //todo
   //FDockSite.Invalidate;
 end;
 
@@ -1251,6 +1265,23 @@ end;
 
 { TEasyBook }
 
+constructor TEasyBook.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+//this does not help :-(
+  DragKind := dkDock;
+  DragMode := dmAutomatic;
+end;
+
+procedure TEasyBook.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+begin
+  //test: do nothing
+  //inherited DoDock(NewDockSite, ARect);
+  //DebugLn('NoteBook as (%d,%d)-(%d,%d)', [ARect.Top, ARect.Left, ARect.Bottom, ARect.Right]);
+  //BoundsRect := ARect;
+  //DebugLn('NoteBook is (%d,%d)-(%d,%d)', [Top, Left, Height, Width]);
+end;
+
 procedure TEasyBook.DoRemoveDockClient(Client: TControl);
 begin
 (* Destroy notebook when it becomes empty.
@@ -1261,6 +1292,21 @@ begin
   //DebugLn('TEasyBook.DoRemoveDockClient: remaining ' + IntToStr(PageCount));
   if PageCount = 0 then
     Application.ReleaseComponent(self);
+end;
+
+function TEasyBook.GetDefaultDockCaption: string;
+var
+  i: integer;
+  pg: TTabSheet;
+begin
+  Result := '';
+  for i := 0 to PageCount - 1 do begin
+    pg := Pages[i];
+    if Result = '' then
+      Result := pg.Caption
+    else
+      Result := Result + ' ' + pg.Caption;
+  end;
 end;
 
 end.

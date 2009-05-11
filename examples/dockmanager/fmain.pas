@@ -15,7 +15,7 @@ unit fMain;
 //some defines, to demonstrate LCL flaws
 {$DEFINE docker}    //using control (undef: entire form) as dock site
 {$DEFINE easy}      //using EasyDockSite (undef: default LDockTree)
-{.$DEFINE dragForm}  //create a form from the draggable images (or drag images)
+{$DEFINE dragForm}  //create a form from the draggable images (or drag images)
   //dragging forms is not supported on all platforms!
 
 
@@ -41,7 +41,6 @@ type
     Shape3: TShape;
     Shape4: TShape;
     buDump: TButton;
-    procedure DockerResize(Sender: TObject);
     procedure Shape1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
@@ -153,18 +152,6 @@ procedure TEasyDockMain.DockerMouseMove(Sender: TObject;
 begin
   //sb.SimpleText := 'move';
   //Docker.DockManager.
-end;
-
-procedure TEasyDockMain.DockerResize(Sender: TObject);
-begin
-(* workaround:
-  Delphi notifies the docking manager of a changed dock site size,
-  Lazarus doesn't :-(
-*)
-{ TODO -cdocking : DockManager should receive resize notification from the dock site.
-Fix this in the LCL! }
-//check: already fixed?
-  //Docker.DockManager.ResetBounds(False);
 end;
 
 procedure TEasyDockMain.DockerDockOver(Sender: TObject;

@@ -63,9 +63,9 @@ type
     PartRect: TRect;
   public
     constructor Create;
-    class function  GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect;
+    class function  GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
     function  FindPart(AZone: TCustomDockZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
-    procedure Draw(AZone: TCustomDockZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
+    procedure Draw(AZone: TCustomDockZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint); virtual;
   end;
 
   TEasySplitter = TCustomSplitter;
