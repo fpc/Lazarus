@@ -2127,9 +2127,7 @@ begin
   if KeyWordFuncList<>nil then
     Stats.Add('TCustomCodeTool.KeyWordFuncList',
       KeyWordFuncList.CalcMemSize);
-  if WordIsKeyWordFuncList<>nil then
-    Stats.Add('TCustomCodeTool.WordIsKeyWordFuncList',
-      WordIsKeyWordFuncList.CalcMemSize);
+  // Note: WordIsKeyWordFuncList is using the global list
   if Tree<>nil then
     Stats.Add('TCustomCodeTool.Tree',
       Tree.NodeCount*TCodeTreeNode.InstanceSize);
