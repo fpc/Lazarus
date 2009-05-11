@@ -212,6 +212,7 @@ type
 
     procedure ClearIconCache;
 
+    procedure DoColumnClicked(MouseX,MouseY: Integer);
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
   end;
   
@@ -1605,33 +1606,110 @@ begin
   FIcons.Clear;
 end;
 
-function TCarbonListView.NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean;
+procedure TCarbonListView.DoColumnClicked(MouseX, MouseY: Integer);
+type
+  TColumnInfo = record
+    Index : Integer;
+    Width : Integer;
+  end;
 var
-  h   : UInt16;
-  y   : Integer;
+  cx, cl  : Integer;
+  ci      : DataBrowserTableViewColumnIndex;
+  order   : array of TColumnInfo;
+  i       : Integer;
+
+  msg     : TLMNotify;
+  NM      : TNMListView;
+begin
+  SetLength(order, FColumns.Count);
+  for i := 0 to FColumns.Count - 1 do
+  begin
+    if GetDataBrowserTableViewColumnPosition(Content, GetColumn(i).PropertyID, ci) = noErr then
+      if (ci >= 0) and (ci<FColumns.Count) then
+      begin
+        order[ci].Index := i;
+        order[ci].Width := GetColumn(i).GetWidth;
+      end;
+  end;
+
+  cx := 0;
+  cl := -1;
+  for i := 0 to length(order) - 1 do
+  begin
+    inc(cx, order[i].Width);
+    if MouseX < cx then
+    begin
+      cl := order[i].Index;
+      Break;
+    end;
+  end;
+
+  if (cl>=0) and (cl < FColumns.Count) then
+  begin
+    msg.Msg := CN_NOTIFY;
+    FillChar(NM, SizeOf(NM), 0);
+    NM.hdr.hwndfrom := PtrUInt(Self);
+    NM.hdr.code := LVN_COLUMNCLICK;
+    NM.iItem := -1;
+    NM.iSubItem := cl;
+    msg.NMHdr := @NM.hdr;
+    DeliverMessage(Self.LCLObject, msg);
+  end;
+end;
+
+function TCarbonListView.NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean;
 type
   PLMMouse = ^TLMMouse;
   PLMMouseMove = ^TLMMouseMove;
+var
+  h: UInt16;
+  x, y: Integer;
+  scrolltop, scrollleft : UInt32;
 
 // for some unkown reason, HIViewConvertPoint does return inaccurate x,y position for ListView
 // (because of focus ring?)
 const
   OfsY = -2;
+  OfsX = -4;
+
 begin
   if Assigned(LCLObject) and (TListView(LCLObject).Columns.Count > 0) and
     (TListView(LCLObject).ViewStyle = vsReport) then
   begin
     case Msg of
-      LM_LBUTTONDOWN..LM_MBUTTONDBLCLK: y := PLMMouse(@AMessage)^.YPos;
-      LM_MOUSEMOVE: y := PLMMouseMove(@AMessage)^.YPos ;
-      LM_MOUSEWHEEL: y := PLMMouseEvent(@AMessage)^.Y;
+      LM_LBUTTONDOWN..LM_MBUTTONDBLCLK:
+      begin
+        y := PLMMouse(@AMessage)^.YPos;
+        x := PLMMouse(@AMessage)^.XPos;
+      end;
+      LM_MOUSEMOVE:
+      begin
+        y := PLMMouseMove(@AMessage)^.YPos;
+        x := PLMMouseMove(@AMessage)^.XPos;
+      end;
+
+      LM_MOUSEWHEEL:
+      begin
+        y := PLMMouseEvent(@AMessage)^.Y;
+        x := PLMMouseEvent(@AMessage)^.X;
+      end;
     else
       Result := inherited NeedDeliverMouseEvent(msg, AMessage);
       Exit;
     end;
+
     GetDataBrowserListViewHeaderBtnHeight(Content, h);
     inc(y, OfsY);
     Result := y > h;
+
+    if not Result and (Msg = LM_LBUTTONUP) then
+    begin
+      GetDataBrowserScrollPosition(Content, scrolltop, scrollleft );
+      inc(x, Integer(scrollleft) + OfsX);
+
+      DoColumnClicked(x,y);
+    end;
+
   end
   else
     Result := inherited NeedDeliverMouseEvent(msg, AMessage);
