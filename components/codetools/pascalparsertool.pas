@@ -106,10 +106,6 @@ type
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
   protected
-    TypeKeyWordFuncList: TKeyWordFunctionList;
-    InnerClassKeyWordFuncList: TKeyWordFunctionList;
-    ClassInterfaceKeyWordFuncList: TKeyWordFunctionList;
-    ClassVarTypeKeyWordFuncList: TKeyWordFunctionList;
     ExtractMemStream: TMemoryStream;
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
@@ -173,10 +169,10 @@ type
     function KeyWordFuncClassVarTypeIdent: boolean;
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
-    procedure BuildTypeKeyWordFunctions; virtual;
-    procedure BuildInnerClassKeyWordFunctions; virtual;
-    procedure BuildClassVarTypeKeyWordFunctions; virtual;
-    procedure BuildClassInterfaceKeyWordFunctions; virtual;
+    function ParseType(StartPos, WordLen: integer): boolean;
+    function ParseInnerClass(StartPos, WordLen: integer): boolean;
+    function ParseClassVarType(StartPos, WordLen: integer): boolean;
+    function ParseInnerClassInterface(StartPos, WordLen: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -306,21 +302,6 @@ end;
 constructor TPascalParserTool.Create;
 begin
   inherited Create;
-  // keywords for parsing types
-  TypeKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildTypeKeyWordFunctions;
-  AddKeyWordFuncList(TypeKeyWordFuncList);
-  // KeyWord functions for parsing in a class
-  InnerClassKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildInnerClassKeyWordFunctions;
-  AddKeyWordFuncList(InnerClassKeyWordFuncList);
-  ClassVarTypeKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildClassVarTypeKeyWordFunctions;
-  AddKeyWordFuncList(ClassVarTypeKeyWordFuncList);
-  // KeyWord functions for parsing an class interface
-  ClassInterfaceKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildClassInterfaceKeyWordFunctions;
-  AddKeyWordFuncList(ClassInterfaceKeyWordFuncList);
 end;
 
 destructor TPascalParserTool.Destroy;
@@ -333,18 +314,6 @@ end;
 procedure TPascalParserTool.CalcMemSize(Stats: TCTMemStats);
 begin
   inherited CalcMemSize(Stats);
-  if TypeKeyWordFuncList<>nil then
-    Stats.Add('TPascalParserTool.TypeKeyWordFuncList',
-      TypeKeyWordFuncList.CalcMemSize);
-  if InnerClassKeyWordFuncList<>nil then
-    Stats.Add('TPascalParserTool.InnerClassKeyWordFuncList',
-      InnerClassKeyWordFuncList.CalcMemSize);
-  if ClassInterfaceKeyWordFuncList<>nil then
-    Stats.Add('TPascalParserTool.ClassInterfaceKeyWordFuncList',
-      ClassInterfaceKeyWordFuncList.CalcMemSize);
-  if ClassVarTypeKeyWordFuncList<>nil then
-    Stats.Add('TPascalParserTool.ClassVarTypeKeyWordFuncList',
-      ClassVarTypeKeyWordFuncList.CalcMemSize);
   if ExtractMemStream<>nil then
     Stats.Add('TPascalParserTool.ExtractMemStream',
       ExtractMemStream.InstanceSize+ExtractMemStream.Size);
@@ -389,86 +358,164 @@ begin
   end;
 end;
 
-procedure TPascalParserTool.BuildTypeKeyWordFunctions;
+function TPascalParserTool.ParseType(StartPos, WordLen: integer): boolean;
 // KeyWordFunctions for parsing types
+var
+  p: PChar;
 begin
-  with TypeKeyWordFuncList do begin
-    Add('CLASS',@KeyWordFuncClass);
-    Add('OBJECT',@KeyWordFuncClass);
-    Add('INTERFACE',@KeyWordFuncClassInterface);
-    Add('DISPINTERFACE',@KeyWordFuncClassInterface);
-    Add('PACKED',@KeyWordFuncTypePacked);
-    Add('BITPACKED',@KeyWordFuncTypeBitPacked);
-    Add('SPECIALIZE',@KeyWordFuncSpecialize);
-    Add('ARRAY',@KeyWordFuncTypeArray);
-    Add('PROCEDURE',@KeyWordFuncTypeProc);
-    Add('FUNCTION',@KeyWordFuncTypeProc);
-    Add('SET',@KeyWordFuncTypeSet);
-    Add('LABEL',@KeyWordFuncTypeLabel);
-    Add('TYPE',@KeyWordFuncTypeType);
-    Add('FILE',@KeyWordFuncTypeFile);
-    Add('RECORD',@KeyWordFuncTypeRecord);
-    Add('^',@KeyWordFuncTypePointer);
-    
-    DefaultKeyWordFunction:=@KeyWordFuncTypeDefault;
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  'A':
+    if CompareSrcIdentifiers('ARRAY',p) then exit(KeyWordFuncTypeArray);
+  'B':
+    if CompareSrcIdentifiers('BITPACKED',p) then exit(KeyWordFuncTypeBitPacked);
+  'C':
+    if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClass);
+  'D':
+    if CompareSrcIdentifiers('DISPINTERFACE',p) then exit(KeyWordFuncClassInterface);
+  'F':
+    case UpChars[p[1]] of
+    'I': if CompareSrcIdentifiers('FILE',p) then exit(KeyWordFuncTypeFile);
+    'U': if CompareSrcIdentifiers('FUNCTION',p) then exit(KeyWordFuncTypeProc);
+    end;
+  'I':
+    if CompareSrcIdentifiers('INTERFACE',p) then exit(KeyWordFuncClassInterface);
+  'L':
+    if CompareSrcIdentifiers('LABEL',p) then exit(KeyWordFuncTypeLabel);
+  'O':
+    if CompareSrcIdentifiers('OBJECT',p) then exit(KeyWordFuncClass);
+  'P':
+    case UpChars[p[1]] of
+    'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
+    'R': if CompareSrcIdentifiers('PROCEDURE',p) then exit(KeyWordFuncTypeProc);
+    end;
+  'R':
+    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncTypeRecord);
+  'S':
+    case UpChars[p[1]] of
+    'E': if CompareSrcIdentifiers('SET',p) then exit(KeyWordFuncTypeSet);
+    'P': if CompareSrcIdentifiers('SPECIALIZE',p) then exit(KeyWordFuncSpecialize);
+    end;
+  'T':
+    if CompareSrcIdentifiers('TYPE',p) then exit(KeyWordFuncTypeType);
+  '^': if WordLen=1 then exit(KeyWordFuncTypePointer);
   end;
+  Result:=KeyWordFuncTypeDefault;
 end;
 
-procedure TPascalParserTool.BuildInnerClassKeyWordFunctions;
+function TPascalParserTool.ParseInnerClass(StartPos, WordLen: integer
+  ): boolean;
 // KeyWordFunctions for parsing in a class/object
+var
+  p: PChar;
 begin
-  with InnerClassKeyWordFuncList do begin
-    Add('TYPE',@KeyWordFuncClassTypeSection);
-    Add('VAR',@KeyWordFuncClassVarSection);
-    Add('PUBLIC',@KeyWordFuncClassSection);
-    Add('PRIVATE',@KeyWordFuncClassSection);
-    Add('PUBLISHED',@KeyWordFuncClassSection);
-    Add('PROTECTED',@KeyWordFuncClassSection);
-
-    Add('PROCEDURE',@KeyWordFuncClassMethod);
-    Add('FUNCTION',@KeyWordFuncClassMethod);
-    Add('CONSTRUCTOR',@KeyWordFuncClassMethod);
-    Add('DESTRUCTOR',@KeyWordFuncClassMethod);
-    Add('CLASS',@KeyWordFuncClassMethod);
-    Add('STATIC',@KeyWordFuncClassMethod);
-
-    Add('PROPERTY',@KeyWordFuncClassProperty);
-    
-    Add('END',@AllwaysFalse);
-
-    DefaultKeyWordFunction:=@KeyWordFuncClassIdentifier;
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  'C':
+    case UpChars[p[1]] of
+    'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassMethod);
+    'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod);
+    end;
+  'D':
+    if CompareSrcIdentifiers(p,'DESTRUCTOR') then exit(KeyWordFuncClassMethod);
+  'E':
+    if CompareSrcIdentifiers(p,'END') then exit(false);
+  'F':
+    if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
+  'P':
+    case UpChars[p[1]] of
+    'R':
+      case UpChars[p[2]] of
+      'I': if CompareSrcIdentifiers(p,'PRIVATE') then exit(KeyWordFuncClassSection);
+      'O':
+        case UpChars[p[3]] of
+        'C': if CompareSrcIdentifiers(p,'PROCEDURE') then exit(KeyWordFuncClassMethod);
+        'P': if CompareSrcIdentifiers(p,'PROPERTY') then exit(KeyWordFuncClassProperty);
+        'T': if CompareSrcIdentifiers(p,'PROTECTED') then exit(KeyWordFuncClassSection);
+        end;
+      end;
+    'U':
+      if (UpChars[p[2]]='B') and (UpChars[p[3]]='L') and (UpChars[p[4]]='I') then
+        case UpChars[p[5]] of
+        'C': if CompareSrcIdentifiers(p,'PUBLIC') then exit(KeyWordFuncClassSection);
+        'S': if CompareSrcIdentifiers(p,'PUBLISHED') then exit(KeyWordFuncClassSection);
+        end;
+    end;
+  'S':
+    if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod);
+  'T':
+    if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
+  'V':
+    if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
+  '(','[':
+    begin
+      ReadTilBracketClose(true);
+      exit(true);
+    end;
+  ';': exit(true);
   end;
+  Result:=KeyWordFuncClassIdentifier;
 end;
 
-procedure TPascalParserTool.BuildClassVarTypeKeyWordFunctions;
+function TPascalParserTool.ParseClassVarType(StartPos, WordLen: integer
+  ): boolean;
 // KeywordFunctions for parsing the type of a variable in a class/object
+var
+  p: PChar;
 begin
-  with ClassVarTypeKeyWordFuncList do begin
-    Add('CLASS',@KeyWordFuncClassVarTypeClass);
-    Add('OBJECT',@KeyWordFuncClassVarTypeClass);
-    Add('PACKED',@KeyWordFuncClassVarTypePacked);
-    Add('BITPACKED',@KeyWordFuncClassVarTypeBitPacked);
-    Add('RECORD',@KeyWordFuncClassVarTypeRecord);
-    Add('ARRAY',@KeyWordFuncClassVarTypeArray);
-    Add('SET',@KeyWordFuncClassVarTypeSet);
-    Add('PROCEDURE',@KeyWordFuncClassVarTypeProc);
-    Add('FUNCTION',@KeyWordFuncClassVarTypeProc);
-
-    DefaultKeyWordFunction:=@KeyWordFuncClassVarTypeIdent;
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  'A':
+    if CompareSrcIdentifiers('ARRAY',p) then exit(KeyWordFuncClassVarTypeArray);
+  'B':
+    if CompareSrcIdentifiers('BITPACKED',p) then exit(KeyWordFuncClassVarTypeBitPacked);
+  'C':
+    if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClassVarTypeClass);
+  'F':
+    if CompareSrcIdentifiers('FUNCTION',p) then exit(KeyWordFuncClassVarTypeProc);
+  'O':
+    if CompareSrcIdentifiers('OBJECT',p) then exit(KeyWordFuncClassVarTypeClass);
+  'P':
+    case UpChars[p[1]] of
+    'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncClassVarTypePacked);
+    'R': if CompareSrcIdentifiers('PROCEDURE',p) then exit(KeyWordFuncClassVarTypeProc);
+    end;
+  'R':
+    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncClassVarTypeRecord);
+  'S':
+    if CompareSrcIdentifiers('SET',p) then exit(KeyWordFuncClassVarTypeSet);
   end;
+  Result:=KeyWordFuncClassVarTypeIdent;
 end;
 
-procedure TPascalParserTool.BuildClassInterfaceKeyWordFunctions;
+function TPascalParserTool.ParseInnerClassInterface(StartPos, WordLen: integer
+  ): boolean;
 // KeyWordFunctions for parsing in a class interface, dispinterface
+var
+  p: PChar;
 begin
-  with ClassInterfaceKeyWordFuncList do begin
-    Add('PROCEDURE',@KeyWordFuncClassMethod);
-    Add('FUNCTION',@KeyWordFuncClassMethod);
-    Add('PROPERTY',@KeyWordFuncClassProperty);
-    Add('END',@AllwaysFalse);
-
-    DefaultKeyWordFunction:=@AllwaysFalse;
+  if StartPos>SrcLen then exit(false);
+  p:=@Src[StartPos];
+  case UpChars[p^] of
+  'E': if CompareSrcIdentifiers(p,'END') then exit(false);
+  'F': if CompareSrcIdentifiers(p,'FUNCTION') then exit(KeyWordFuncClassMethod);
+  'P':
+    if (UpChars[p[1]]='R') and (UpChars[p[2]]='O') then
+      case UpChars[p[3]] of
+      'C': if CompareSrcIdentifiers(p,'PROCEDURE') then exit(KeyWordFuncClassMethod);
+      'P': if CompareSrcIdentifiers(p,'PROPERTY') then exit(KeyWordFuncClassProperty);
+      end;
+  '(','[':
+    begin
+      ReadTilBracketClose(true);
+      exit(true);
+    end;
+  ';': exit(true);
   end;
+  Result:=false;
 end;
 
 function TPascalParserTool.UnexpectedKeyWord: boolean;
@@ -664,23 +711,16 @@ begin
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
     // parse till "end" of class/object
-    CurKeyWordFuncList:=InnerClassKeyWordFuncList;
-    try
-      repeat
-        //DebugLn(['TPascalParserTool.BuildSubTreeForClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
-        if CurPos.StartPos>=ClassNode.EndPos then break;
-        if not DoAtom then begin
-          //DebugLn(['TPascalParserTool.BuildSubTreeForClass DoAtom=false']);
-          break;
-        end;
-        ReadNextAtom;
-      until false;
-      // end last class section (public, private, ...)
-      CurNode.EndPos:=CurPos.StartPos;
-      EndChildNode;
-    finally
-      CurKeyWordFuncList:=DefaultKeyWordFuncList;
-    end;
+    repeat
+      //DebugLn(['TPascalParserTool.BuildSubTreeForClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
+      if CurPos.StartPos>=ClassNode.EndPos then break;
+      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+        break;
+      ReadNextAtom;
+    until false;
+    // end last class section (public, private, ...)
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
     CurrentPhase:=OldPhase;
   except
     CurrentPhase:=OldPhase;
@@ -903,8 +943,7 @@ begin
   if not UpAtomIs('OF') then
     RaiseCharExpectedButAtomFound('[');
   ReadNextAtom;
-  Result:=ClassVarTypeKeyWordFuncList.DoItCaseInsensitive(Src,
-    CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseClassVarType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncClassVarTypeSet: boolean;
@@ -1951,7 +1990,7 @@ end;
 
 function TPascalParserTool.DoAtom: boolean;
 begin
-//DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
+  //DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
       Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
@@ -2655,8 +2694,7 @@ procedure TPascalParserTool.ReadVariableType;
 // creates nodes for variable type
 begin
   ReadNextAtom;
-  TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos);
+  ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   if UpAtomIs('ABSOLUTE') then begin
     ReadNextAtom;
     ReadConstant(true,false,[]);
@@ -2978,8 +3016,7 @@ begin
       if (CurPos.Flag=cafColon) then begin
         // read type
         ReadNextAtom;
-        TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos);
+        ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
       end;
       if (CurPos.Flag<>cafEqual) then
         RaiseCharExpectedButAtomFound('=');
@@ -3186,8 +3223,7 @@ begin
     RaiseCharExpectedButAtomFound('=');
   // read type
   ReadNextAtom;
-  TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos);
+  ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   // read ;
   if CurPos.Flag<>cafSemicolon then
     RaiseCharExpectedButAtomFound(';');
@@ -3200,8 +3236,7 @@ begin
     CurPos.EndPos-CurPos.StartPos)
   then
     RaiseStringExpectedButAtomFound('"record"');
-  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                            CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncTypeBitPacked: boolean;
@@ -3211,8 +3246,7 @@ begin
     CurPos.EndPos-CurPos.StartPos)
   then
     RaiseStringExpectedButAtomFound('"array"');
-  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                            CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
 function TPascalParserTool.KeyWordFuncSpecialize: boolean;
@@ -3399,16 +3433,13 @@ begin
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
     // parse till "end" of class/object
-    CurKeyWordFuncList:=ClassInterfaceKeyWordFuncList;
-    try
-      repeat
-        if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
-        if not DoAtom then break;
-        ReadNextAtom;
-      until false;
-    finally
-      CurKeyWordFuncList:=DefaultKeyWordFuncList;
-    end;
+    repeat
+      if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
+      if not ParseInnerClassInterface(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+      then
+        break;
+      ReadNextAtom;
+    until false;
   end else begin
     // forward definition
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
@@ -3458,8 +3489,7 @@ begin
   if not UpAtomIs('OF') then
     RaiseStringExpectedButAtomFound('"of"');
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                            CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   Result:=true;
@@ -3588,8 +3618,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnTypeType;
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
@@ -3601,8 +3630,7 @@ begin
   CurNode.Desc:=ctnFileType;
   if ReadNextUpAtomIs('OF') then begin
     ReadNextAtom;
-    Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos);
+    Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     if not Result then exit;
   end;
   CurNode.EndPos:=CurPos.EndPos;
@@ -3616,8 +3644,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
   ReadNextAtom;
-  Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos);
+  Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
@@ -3782,8 +3809,7 @@ begin
         ReadNextAtom; // read next variable name
       until false;
       ReadNextAtom;
-      Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos);
+      Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
       if not Result then exit;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode; // close variable
@@ -3859,8 +3885,7 @@ begin
           ReadNextAtom; // read next variable name
         until false;
         ReadNextAtom; // read type
-        Result:=TypeKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-           CurPos.EndPos-CurPos.StartPos);
+        Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
         if not Result then exit;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
