@@ -138,6 +138,8 @@ function PointDistY(const A, B: TPoint): Integer; inline;
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
 
+procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
+
 operator +(const A: TPoint; B: TSize): TPoint;
 
 implementation
@@ -299,6 +301,14 @@ procedure Unused(const A1, A2);
 begin
 end;
 {$HINTS ON}
+
+procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
+begin
+  if AValue < AMin then
+    AMin := AValue
+  else if AValue > AMax then
+    AMax := AValue;
+end;
 
 operator + (const A: TPoint; B: TSize): TPoint;
 begin

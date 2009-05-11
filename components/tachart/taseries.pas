@@ -704,8 +704,7 @@ begin
   Result := inherited AddXY(X, Y, XLabel, Color);
 
   // Update max
-  if X > XGraphMax then XGraphMax := X;
-  if X < XGraphMin then XGraphMin := X;
+  UpdateMinMax(X, FXGraphMin, FXGraphMax);
   if Y > YGraphMax then begin
     YGraphMax := Y;
     XOfYGraphMax := X;
@@ -915,16 +914,14 @@ begin
   XGraphMin := MaxDouble;
   for i := 0 to Count - 1 do begin
     Val := PChartCoord(FCoordList.Items[i])^.x;
-    if Val > XGraphMax then XGraphMax := Val;
-    if Val < XGraphMin then XGraphMin := Val;
+    UpdateMinMax(Val, FXGraphMin, FXGraphMax);
   end;
 
   YGraphMax := MinDouble;
   YGraphMin := MaxDouble;
   for i:=0 to Count-1 do begin
     Val := PChartCoord(FCoordList.Items[i])^.y;
-    if Val > YGraphMax then YGraphMax := Val;
-    if Val < YGraphMin then YGraphMin := Val;
+    UpdateMinMax(Val, FYGraphMin, FYGraphMax);
   end;
 
   UpdateParentChart;
@@ -1437,10 +1434,8 @@ begin
   Result := inherited AddXY(X, Y, XLabel, Color);
 
   // Update max
-  if X > XGraphMax then XGraphMax := X;
-  if X < XGraphMin then XGraphMin := X;
-  if Y > YGraphMax then YGraphMax := Y;
-  if Y < YGraphMin then YGraphMin := Y;
+  UpdateMinMax(X, FXGraphMin, FXGraphMax);
+  UpdateMinMax(Y, FYGraphMin, FYGraphMax);
 
   UpdateParentChart;
 end;
