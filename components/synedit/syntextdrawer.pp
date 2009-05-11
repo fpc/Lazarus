@@ -622,6 +622,7 @@ var
   Height, Width, OverHang: Integer;
   ETO: Boolean;
   Size1: TSize;
+  tmw: Integer;
 begin
   // Calculate advance of a character.
 
@@ -660,11 +661,12 @@ begin
   //GetTextExtentPoint(DC,'ABCgjp',6,Size);
   //debugln('TheFontStock.CalcFontAdvance B ',dbgs(pCharHeight),' TM.tmHeight=',dbgs(TM.tmHeight),' TM.tmAscent=',dbgs(TM.tmAscent),' TM.tmDescent=',dbgs(TM.tmDescent),' "',BaseFont.Name,'" ',dbgs(BaseFont.height),' ',dbgs(Size.cx),',',dbgs(Size.cy));
 
+  tmw := TM.tmMaxCharWidth + Max(TM.tmOverhang,0);
   if Width = 0 then begin
     debugln('SynTextDrawer: No Width from GetTextExtentPoint');
-    Width := TM.tmMaxCharWidth + Max(TM.tmOverhang,0);
+    Width := tmw;
   end
-  else if (Width > TM.tmMaxCharWidth) and (TM.tmMaxCharWidth > 0) then begin
+  else if (Width > tmw) and (TM.tmMaxCharWidth > 0) then begin
     debugln('SynTextDrawer: Width > tmMaxWidth');
     // take a guess, this is probably a broken font
     Width := Min(Width, round((TM.tmMaxCharWidth + Max(TM.tmOverhang,0)) * 1.2));
@@ -1018,10 +1020,10 @@ begin
     begin
       SetBaseFont(Value);
       //debugln('TheTextDrawer.SetBaseFont B ',Value.Name);
-      Style := FCalcExtentBaseStyle;
-      FBaseCharWidth := CharAdvance;
-      FBaseCharHeight := CharHeight;
+      FBaseCharWidth := 0;
+      FBaseCharHeight := 0;
     end;
+    BaseStyle := Value.Style;
     SetStyle(Value.Style);
   end
   else
@@ -1030,7 +1032,7 @@ end;
 
 procedure TheTextDrawer.SetBaseStyle(const Value: TFontStyles);
 begin
-  if FCalcExtentBaseStyle <> Value then
+  if (FCalcExtentBaseStyle <> Value) or (FBaseCharWidth = 0) then
   begin
     FCalcExtentBaseStyle := Value;
     ReleaseETODist;
