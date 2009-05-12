@@ -39,6 +39,14 @@
     {#done -oOwnerName -cCategoryName: Todo_text}
 
     the -o and -c tags are optional.
+
+    If the -o and -c tags are not used, then the variant without semicolon is
+    allowed too:
+    {TODO Todo_text}
+    {DONE Todo_text}
+    {#todo Todo_text}
+    {#done Todo_text}
+
     
     Sub comments in nested comments are ignored.
 *)
@@ -413,35 +421,38 @@ begin
     aTLFile.Add(Result);
   end;
 
-  n := 1;
-  TempStr := '';
-  Strlen  := Length(ParsingString);
-  
-  // Parse priority, owner and category
-  while (n <= StrLen) and (ParsingString[n]<>cSemiColon) do
+  if Pos(cSemiColon, ParsingString)>0 then
   begin
-  
-    aChar := ParsingString[n];
+    // Parse priority, owner and category
+    n := 1;
+    TempStr := '';
+    Strlen  := Length(ParsingString);
 
-    // Add char to temporary string
-    if (aChar<>cSemiColon) and (aChar<>cWhiteSpace) then
-      TempStr := TempStr + aChar
-
-    // Process temporary string
-    else
+    while (n <= StrLen) and (ParsingString[n]<>cSemiColon) do
     begin
-      SetItemFields(Result, TempStr);
-      TempStr := '';;
-    end;
-       
-    inc(N);
 
-  end;//while
-  
-  SetItemFields(Result, TempStr);
-  
-  Delete(ParsingString, 1, n);
-  
+      aChar := ParsingString[n];
+
+      // Add char to temporary string
+      if (aChar<>cSemiColon) and (aChar<>cWhiteSpace) then
+        TempStr := TempStr + aChar
+
+      // Process temporary string
+      else
+      begin
+        SetItemFields(Result, TempStr);
+        TempStr := '';;
+      end;
+
+      inc(N);
+
+    end;//while
+
+    SetItemFields(Result, TempStr);
+
+    Delete(ParsingString, 1, n);
+  end;
+
   // Set item text
   Result.Text := ParsingString;
   
