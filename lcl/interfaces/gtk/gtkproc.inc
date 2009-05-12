@@ -6597,6 +6597,11 @@ begin
     MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
     if not MessageDelivered then exit;
   end;
+  {$ifndef gtk1}
+  if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and
+     not (wwiNoEraseBkgnd in GetWidgetInfo(aWidget)^.Flags) then
+    gtk_widget_queue_draw(aWidget);
+  {$endif}
 end;
 
 procedure SendCachedGtkResizeNotifications;
