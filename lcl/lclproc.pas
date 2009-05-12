@@ -1513,10 +1513,10 @@ begin
 end;
 
 procedure DumpStack;
-Begin
-  if assigned(DebugText) then
+begin
+  if Assigned(DebugText) then
     Dump_Stack(DebugText^, get_frame);
-End;
+end;
 
 function GetStackTrace(UseCache: boolean): string;
 var

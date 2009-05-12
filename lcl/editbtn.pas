@@ -934,14 +934,14 @@ begin
   Result := ResBtnCalendar;
 end;
 
-procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
+procedure TDateEdit.DoButtonClick(Sender: TObject);//or onClick
 var
-  PopupOrigin:TPoint;
+  PopupOrigin: TPoint;
 begin
   inherited DoButtonClick(Sender);
 
-  PopupOrigin:=ControlToScreen(Point(0, Height));
-  if Trim(Text)=EmptyStr then
+  PopupOrigin := ControlToScreen(Point(0, Height));
+  if Trim(Text) = EmptyStr then
     ShowCalendarPopup(PopupOrigin, Now, @CalendarPopupReturnDate)
   else
     ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate)

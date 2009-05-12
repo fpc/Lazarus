@@ -879,15 +879,18 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.SetZOrder(Topmost: Boolean);
 begin
-  if Parent=nil then begin
-    if TopMost and HandleAllocated then begin
-      if (Screen.GetCurrentModalForm<>nil)
-      and (Screen.GetCurrentModalForm<>Self) then exit;
+  if Parent = nil then
+  begin
+    if TopMost and HandleAllocated then
+    begin
+      if (Screen.GetCurrentModalForm <> nil) and (Screen.GetCurrentModalForm <> Self) then
+        Exit;
       //TODO: call TWSCustomFormClass(Widgetset).SetZORder.
       Screen.MoveFormToZFront(Self);
       SetForegroundWindow(Handle);
     end;
-  end else
+  end
+  else
     inherited SetZOrder(Topmost);
 end;
 
