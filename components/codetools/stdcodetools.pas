@@ -690,7 +690,7 @@ begin
             // used unit found -> compute distance
             DiffPath:=CreateRelativePath(NewCode.Filename,ExtractFilePath(NewFilename));
             DiffCnt:=0;
-            for i:=0 to length(DiffPath) do
+            for i:=1 to length(DiffPath) do
               if DiffPath[i]=PathDelim then
                 inc(DiffCnt);
             //DebugLn(['TStandardCodeTool.AddUnitToUsesSection DiffCnt=',DiffCnt,' "',NewCode.Filename,'" "',NewFilename,'"']);
