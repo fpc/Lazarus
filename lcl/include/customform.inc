@@ -1458,9 +1458,6 @@ end;
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
-  FShowInTaskbar := stDefault;
-  FAllowDropFiles := False;
-
   GlobalNameSpace.BeginWrite;
   try
     BeginFormUpdate;
@@ -1503,6 +1500,7 @@ begin
   BeginFormUpdate;
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
+  FShowInTaskbar := stDefault;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;
@@ -1530,7 +1528,7 @@ begin
   Screen.AddForm(Self);
   EndFormUpdate;
   FAllowDropFiles := False;
-End;
+end;
 
 {------------------------------------------------------------------------------
   TCustomForm CreateParams
