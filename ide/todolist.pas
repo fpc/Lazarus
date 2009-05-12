@@ -614,13 +614,16 @@ var
 begin
   if fBuild then Exit;
 
-  DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
+  //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
+
+  if not LazarusIDE.BeginCodeTools then exit;
 
   Screen.Cursor:=crHourGlass;
   Owners:=nil;
   try
     fBuild:=True;
     CodeToolBoss.ActivateWriteLock;
+
     fScannedFiles.FreeAndClear;
     lvTodo.Items.Clear;
 

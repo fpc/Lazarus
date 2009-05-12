@@ -1,19 +1,20 @@
 object TodoDialog: TTodoDialog
   Left = 342
-  Height = 269
+  Height = 267
   Top = 202
   Width = 475
+  ActiveControl = TodoMemo
   Caption = 'Insert Todo'
-  ClientHeight = 269
+  ClientHeight = 267
   ClientWidth = 475
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object TodoLabel: TLabel
     Left = 8
-    Height = 14
+    Height = 18
     Top = 8
-    Width = 27
+    Width = 30
     Caption = 'Text:'
     FocusControl = TodoMemo
     ParentColor = False
@@ -22,9 +23,9 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = PriorityEdit
     Left = 10
-    Height = 14
-    Top = 189
-    Width = 35
+    Height = 18
+    Top = 179
+    Width = 45
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 2
     Caption = 'Priority'
@@ -33,18 +34,18 @@ object TodoDialog: TTodoDialog
   object OwnerLabel: TLabel
     AnchorSideTop.Control = PriorityLabel
     Left = 75
-    Height = 14
-    Top = 189
-    Width = 33
+    Height = 18
+    Top = 179
+    Width = 41
     Caption = 'Owner'
     ParentColor = False
   end
   object CategoryLabel: TLabel
     AnchorSideTop.Control = PriorityLabel
     Left = 248
-    Height = 14
-    Top = 189
-    Width = 46
+    Height = 18
+    Top = 179
+    Width = 59
     Caption = 'Category'
     ParentColor = False
   end
@@ -55,8 +56,8 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PriorityLabel
     Left = 6
-    Height = 159
-    Top = 24
+    Height = 145
+    Top = 28
     Width = 463
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 2
@@ -68,11 +69,10 @@ object TodoDialog: TTodoDialog
   object PriorityEdit: TEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 205
+    Height = 27
+    Top = 199
     Width = 38
     Anchors = [akLeft, akBottom]
-    AutoSize = True
     BorderSpacing.Bottom = 6
     OnKeyPress = PriorityEditKeyPress
     TabOrder = 1
@@ -80,10 +80,9 @@ object TodoDialog: TTodoDialog
   object OwnerEdit: TEdit
     AnchorSideTop.Control = PriorityEdit
     Left = 76
-    Height = 23
-    Top = 205
+    Height = 27
+    Top = 199
     Width = 162
-    AutoSize = True
     TabOrder = 2
   end
   object CategoryEdit: TEdit
@@ -91,18 +90,17 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 248
-    Height = 23
-    Top = 205
+    Height = 27
+    Top = 199
     Width = 221
     Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
     BorderSpacing.Right = 6
     TabOrder = 3
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 237
+    Height = 36
+    Top = 225
     Width = 463
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel]
