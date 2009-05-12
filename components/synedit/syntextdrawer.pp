@@ -563,11 +563,19 @@ end;
 Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
   FontHeight: integer);
 
+  Procedure DebugFont(s: String; a: array of const);
+  begin
+    if FontData^.Font <> nil then
+      s := 'Font=' + FontData^.Font.Name + ' Size=' + IntToStr(FontData^.Font.Size) + ' ' + s;
+    s := 'TheFontStock.CalcFontAdvance: ' + s;
+    DebugLn(Format(s, a));
+  end;
+
   procedure GetWHOForChar(s: char; out w, h ,o : Integer; var eto: Boolean);
   var
     s1, s2, s3: String;
     Size1, Size2, Size3: TSize;
-    w2: Integer;
+    w2, w3: Integer;
   begin
     s1 := s;
     s2 := s1 + s;
@@ -576,7 +584,7 @@ Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
            GetTextExtentPoint(DC, PChar(s2), 2, Size2) and
            GetTextExtentPoint(DC, PChar(s3), 3, Size3)) then
     begin
-      debugln('SynTextDrawer: Can not us GetTextExtentPoint');
+      DebugFont('Failed to get GetTextExtentPoint for %s', [s1]);
       w := 0;
       h := 0;
       o := 0;
@@ -587,21 +595,50 @@ Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
     // Size may contain overhang (italic, bold)
     // Size1 contains the size of 1 char + 1 overhang
     // Size2 contains the width of 2 chars, with only 1 overhang
-    // Calculate the Width of 1 char, with NO overhang
-    w := Size2.cx - Size1.cx;
-    o := Size1.cx - w;
-    // And doublecheck it
-    w2 := Size3.cx - Size2.cx;
-    if w <> w2 then begin
-      debugln(['SynTextDrawer: Failed on checking CharWidth with 3 char w=',w, ' w2=',w2]);
-      w := Max(w, w2);
-      eto := True;
-    end;
-    if o < 0 then begin
-      debugln('SynTextDrawer: Negative Overhang');
-      w := Size1.cx;
+
+    // Start simple
+    w := size1.cx;
+    o := 0;
+
+    w2 := Size2.cx - Size1.cx;
+    w3 := Size3.cx - Size2.cx;
+    {$IFDEF SYNFONTDEBUG}
+    DebugFont('Got TextExtends for %s=%d, %s=%d, %s=%d  Height=%d', [s1, Size1.cx, s2, Size2.cx, s3, Size3.cx, h]);
+    {$ENDIF}
+    if (w2 = w) and (w3 = w) then exit;
+
+    if (w2 <= w) and (w3 <= w) then begin
+      // w includes overhang
+      if w2 <> w3 then begin
+        DebugFont('Variable Overhang w=%d w2=%d w3=%d', [w, w2, w3]);
+        w2 := Max(w2, w3);
+      end;
+      o := w - w2;
+      w := w2;
       eto := True;
     end
+    else
+    if (w2 >= w) or (w3 >= w) then begin
+      // Width may be fractional, check sanity and keep w
+      o := 1;
+      eto := True;
+      if Max(w2, w3) > w + 1 then begin
+        DebugFont('Size diff to bi for fractioanl (greater 1) w=%d w2=%d w3=%d', [w, w2, w3]);
+        // Take a guess/average
+        w2 := Max(w2, w3);
+        o := w2 - w;
+        w := Max(w, (w+w2-1) div 2);
+      end;
+    end
+    else begin
+      // broken font? one of w2/w3 is smaller, the other wider than w
+      w := Max(w, (w+w2+w3-1) div 3);
+      o := w div 2;
+      eto := True;
+    end;
+    {$IFDEF SYNFONTDEBUG}
+    DebugFont('Final result for %s  Width=%d  Overhang=%d  eto=%s', [s1, w, o, dbgs(eto)]);
+    {$ENDIF}
   end;
 
   procedure AdjustWHOForChar(s: char; var w, h ,o : Integer; var eto: Boolean);
@@ -648,7 +685,9 @@ begin
   // Negative Overhang ?
   if (not ETO) and GetTextExtentPoint(DC, PChar('Ta'), 2, Size1) then
     if Size1.cx < 2 * Width then begin
-      // debugln(['SynTextDrawer: Negative Overhang for "Ta" Width=', Width, ' Overh=',OverHang, ' Ta.cx=',Size1.cx]);
+      {$IFDEF SYNFONTDEBUG}
+      DebugFont('Negative Overhang for "Ta" cx=%d  Width=%d Overhang=%d', [Size1.cx, Width, OverHang]);
+      {$ENDIF}
       ETO := True;
     end;
 
@@ -658,36 +697,40 @@ begin
 
   // DoubleCheck the result with GetTextMetrics
   GetTextMetrics(DC, TM);
-  //GetTextExtentPoint(DC,'ABCgjp',6,Size);
-  //debugln('TheFontStock.CalcFontAdvance B ',dbgs(pCharHeight),' TM.tmHeight=',dbgs(TM.tmHeight),' TM.tmAscent=',dbgs(TM.tmAscent),' TM.tmDescent=',dbgs(TM.tmDescent),' "',BaseFont.Name,'" ',dbgs(BaseFont.height),' ',dbgs(Size.cx),',',dbgs(Size.cy));
+  {$IFDEF SYNFONTDEBUG}
+  DebugFont('TextMetrics tmHeight=%d, tmAve=%d, tmMax=%d, tmOver=%d', [TM.tmHeight, TM.tmAveCharWidth, TM.tmMaxCharWidth, TM.tmOverhang]);
+  {$ENDIF}
 
   tmw := TM.tmMaxCharWidth + Max(TM.tmOverhang,0);
   if Width = 0 then begin
-    debugln('SynTextDrawer: No Width from GetTextExtentPoint');
+    DebugFont('No Width from GetTextExtentPoint', []);
     Width := tmw;
   end
   else if (Width > tmw) and (TM.tmMaxCharWidth > 0) then begin
-    debugln('SynTextDrawer: Width > tmMaxWidth');
+    DebugFont('Width(%d) > tmMaxWidth+Over(%d)', [Width, tmw]);
     // take a guess, this is probably a broken font
     Width := Min(Width, round((TM.tmMaxCharWidth + Max(TM.tmOverhang,0)) * 1.2));
     ETO := True;
   end;
 
   if Height = 0 then begin
-    debugln('SynTextDrawer: No Height from GetTextExtentPoint');
+    DebugFont('No Height from GetTextExtentPoint, tmHeight=%d', [TM.tmHeight]);
     Height := TM.tmHeight;
   end
   else if Height < TM.tmHeight then begin
-    debugln('SynTextDrawer: Height from GetTextExtentPoint to low');
+    DebugFont('Height from GetTextExtentPoint to low Height=%d, tmHeight=%d', [Height, TM.tmHeight]);
     Height := TM.tmHeight;
   end;
   if Height = 0 then begin
-    debugln('SynTextDrawer: Fallback on FontHeight');
+    DebugFont('SynTextDrawer: Fallback on FontHeight', []);
     Height := FontHeight;
   end;
 
   // If we have a broken font, make sure we return a positive value
-  if Width <= 0 then Width := 1 + Height * 8 div 10;
+  if Width <= 0 then begin
+    DebugFont('SynTextDrawer: Fallback on Width', []);
+    Width := 1 + Height * 8 div 10;
+  end;
 
   //if OverHang >0 then debugln(['SynTextDrawer: Overhang=', OverHang]);;
   FontData^.CharAdv := Width;
@@ -1015,6 +1058,9 @@ procedure TheTextDrawer.SetBaseFont(Value: TFont);
 begin
   if Assigned(Value) then
   begin
+    {$IFDEF SYNFONTDEBUG}
+    Debugln(['TheTextDrawer.SetBaseFont Name=', Value.Name, ' Size=', Value.Size, 'Style=', Integer(Value.Style)]);
+    {$ENDIF}
     ReleaseETODist;
     with FFontStock do
     begin
@@ -1041,6 +1087,11 @@ begin
       Style := Value;
       FBaseCharWidth := Max(FBaseCharWidth, CharAdvance);
       FBaseCharHeight := Max(FBaseCharHeight, CharHeight);
+      {$IFDEF SYNFONTDEBUG}
+      Debugln(['TheTextDrawer.SetBaseStyle =', Integer(Value),
+               ' CharAdvance=', CharAdvance, ' CharHeight=',CharHeight,
+               ' FBaseCharWidth=', FBaseCharWidth, ' FBaseCharHeight=',FBaseCharHeight]);
+      {$ENDIF}
     end;
   end;
 end;
