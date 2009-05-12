@@ -616,7 +616,7 @@ begin
 
   //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
 
-  if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1) then exit;
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
 
   Screen.Cursor:=crHourGlass;
   Owners:=nil;
