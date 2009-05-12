@@ -4211,18 +4211,19 @@ var
   i: Integer;
 begin
   ParentFont := False;
-  if HandleAllocated and ([csLoading, csDestroying]*ComponentState=[]) then
+  if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
-    Exclude(FWinControlFlags,wcfFontChanged);
+    Exclude(FWinControlFlags, wcfFontChanged);
     Invalidate;
     if AutoSize then
     begin
       InvalidatePreferredSize;
       AdjustSize;
     end;
-  end else
-    Include(FWinControlFlags,wcfFontChanged);
+  end
+  else
+    Include(FWinControlFlags, wcfFontChanged);
   for i := 0 to ControlCount - 1 do
     Controls[i].ParentFontChanged;
 end;
@@ -6688,12 +6689,14 @@ begin
     if (Width>0) and (Height>0) then
       DoSendBoundsToInterface;
 
-    if wcfColorChanged in FWinControlFlags then begin
+    if wcfColorChanged in FWinControlFlags then
+    begin
       // replace by update style call
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
       FWinControlFlags:=FWinControlFlags-[wcfColorChanged];
     end;
-    if wcfFontChanged in FWinControlFlags then begin
+    if wcfFontChanged in FWinControlFlags then
+    begin
       // replace by update style call
       TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
       FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
@@ -6894,6 +6897,10 @@ begin
     FinalizeWnd;
     TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
     Handle := 0;
+    // We don't know why we here. Maybe because handle is not needed at moment
+    // but later it will be created once again. To propely initialize control
+    // after we need to restore color and font. Therefore request update here.
+    FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
   end;
 end;
 

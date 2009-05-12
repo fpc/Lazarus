@@ -1528,7 +1528,7 @@ type
   TWinControlFlag = (
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
-    wcfFontChanged,
+    wcfFontChanged,          // Set if font was changed before handle creation
     wcfReAlignNeeded,
     wcfAligningControls,
     wcfEraseBackground,
