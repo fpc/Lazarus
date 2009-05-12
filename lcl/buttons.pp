@@ -123,6 +123,7 @@ type
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
                   BiDiFlags: Longint): TRect;
+    procedure Refresh;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
@@ -170,6 +171,7 @@ type
     procedure InitializeWnd; override;
     procedure TextChanged; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure CMAppShowGlyphChanged(var Message: TLMessage); message CM_APPSHOWGLYPHCHANGED;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

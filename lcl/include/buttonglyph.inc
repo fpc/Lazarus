@@ -149,14 +149,14 @@ begin
       FNumGlyphs := TNumGlyphs(GlyphCount);
     end;
   end;
-  GlyphChanged(FOriginal);
+  Refresh;
 end;
 
 procedure TButtonGlyph.SetShowMode(const AValue: TGlyphShowMode);
 begin
   if FShowMode = AValue then Exit;
   FShowMode := AValue;
-  GlyphChanged(FOriginal);
+  Refresh;
 end;
 
 function TButtonGlyph.GetHeight: Integer;
@@ -178,17 +178,32 @@ end;
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 
   function CanShow: Boolean;
+
+    function SystemShowGlyphs: Boolean; inline;
+    begin
+      {$ifdef Windows}
+        Result := False;
+      {$else}
+        Result := True;
+      {$endif}
+    end;
+
   begin
     case ShowMode of
-      gsmAlways: Result := True;
-      gsmNever: Result := False;
-      gsmApplication: Result := True; // Application.ShowGlyphs
+      gsmAlways:
+        Result := True;
+      gsmNever:
+        Result := False;
+      gsmApplication:
+        begin
+          case Application.ShowButtonGlyphs of
+            sbgAlways: Result := True;
+            sbgNever: Result := False;
+            sbgSystem: Result := SystemShowGlyphs;
+          end;
+        end;
       gsmSystem:
-        {$ifdef Windows}
-          Result := False;
-        {$else}
-          Result := True;
-        {$endif}
+        Result := SystemShowGlyphs;
     end;
   end;
 
@@ -238,6 +253,11 @@ begin
   // ToDo: VCL returns the text rectangle
 end;
 
+procedure TButtonGlyph.Refresh;
+begin
+  GlyphChanged(FOriginal);
+end;
+
 
 {------------------------------------------------------------------------------
        TButtonGlyph SetNumGlyphs
@@ -247,7 +267,7 @@ begin
   if Value <> FNumGlyphs then
   begin
     FNumGlyphs := Value;
-    GlyphChanged(FOriginal);
+    Refresh;
   end;
 end;
 

@@ -103,6 +103,7 @@ var
 begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
+  FShowButtonGlyphs := sbgAlways;
   FMainForm := nil;
   FMouseControl := nil;
   FHintColor := DefHintColor;
@@ -490,11 +491,21 @@ begin
   FFlags := Flags - [AppNoExceptionMessages] + AValue*[AppNoExceptionMessages];
 end;
 
-procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions
-  );
+procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions);
 begin
   if FNavigation=AValue then exit;
   FNavigation:=AValue;
+end;
+
+procedure TApplication.SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+var
+  i: integer;
+begin
+  if FShowButtonGlyphs = AValue then
+    Exit;
+  FShowButtonGlyphs := AValue;
+  for i := 0 to Screen.CustomFormCount - 1 do
+    Screen.CustomForms[i].NotifyControls(CM_APPSHOWGLYPHCHANGED);
 end;
 
 {------------------------------------------------------------------------------
@@ -2013,5 +2024,5 @@ end;
 function TApplication.UpdateAction(TheAction: TBasicAction): Boolean;
 begin
   Result := False;
-  if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction,Result);
+  if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction, Result);
 end;

@@ -1048,7 +1048,19 @@ type
     NextItem: PAsyncCallQueueItem;
   end;
   
-  TApplicationType = (atDefault,atDesktop,atHandheld,atPDA,atSmartphone);
+  TApplicationType = (
+    atDefault,
+    atDesktop,
+    atHandheld,
+    atPDA,
+    atSmartphone
+  );
+
+  TShowButtonGlyphs = (
+    sbgAlways,  // show them always (default)
+    sbgNever,   // show them never
+    sbgSystem   // show them depending on OS
+  );
 
   { TApplication }
 
@@ -1074,6 +1086,7 @@ type
     FHintWindow: THintWindow;
     FIcon: TIcon;
     FBigIconHandle: HICON;
+    FShowButtonGlyphs: TShowButtonGlyphs;
     FSmallIconHandle: HICON;
     FIdleLockCount: Integer;
     FFormList: TList;
@@ -1122,6 +1135,7 @@ type
     procedure SetBidiMode ( const AValue : TBiDiMode ) ;
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
+    procedure SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
@@ -1295,6 +1309,7 @@ type
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default true;
     property Title: String read GetTitle write SetTitle;

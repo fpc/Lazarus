@@ -268,4 +268,10 @@ begin
   Result.Y:=30;
 end;
 
+procedure TCustomBitBtn.CMAppShowGlyphChanged(var Message: TLMessage);
+begin
+  if GlyphShowMode = gsmApplication then
+    FButtonGlyph.Refresh;
+end;
+
 // included by buttons.pp
