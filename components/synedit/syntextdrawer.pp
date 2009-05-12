@@ -565,8 +565,10 @@ Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
 
   Procedure DebugFont(s: String; a: array of const);
   begin
-    if FontData^.Font <> nil then
+    if FontData^.Font <> nil then begin
+      if FontData^.Font.Size = 0 then exit;
       s := 'Font=' + FontData^.Font.Name + ' Size=' + IntToStr(FontData^.Font.Size) + ' ' + s;
+    end;
     s := 'TheFontStock.CalcFontAdvance: ' + s;
     DebugLn(Format(s, a));
   end;
@@ -608,8 +610,9 @@ Procedure TheFontStock.CalcFontAdvance(DC: HDC; FontData: PheFontData;
     if (w2 = w) and (w3 = w) then exit;
 
     if (w2 <= w) and (w3 <= w) then begin
-      // w includes overhang
+      // w includes overhang (may be fractional
       if w2 <> w3 then begin
+        {$IFNDEF SYNFONTDEBUG} if abs(w3-w2) > 1 then {$ENDIF}
         DebugFont('Variable Overhang w=%d w2=%d w3=%d', [w, w2, w3]);
         w2 := Max(w2, w3);
       end;
