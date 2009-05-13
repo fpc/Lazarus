@@ -407,9 +407,9 @@ function TCarbonListColumn.GetHeaderPropertyFlags: Integer;
 begin
   Result := kDataBrowserPropertyIsMutable or
             kDataBrowserListViewSelectionColumn or
-            kDataBrowserListViewTypeSelectColumn or
+            kDataBrowserListViewTypeSelectColumn{or
             kDataBrowserListViewSortableColumn or
-            kDataBrowserListViewMovableColumn;
+            kDataBrowserListViewMovableColumn};
 end;
 
 constructor TCarbonListColumn.Create(AOwner: TCarbonDataBrowser;
