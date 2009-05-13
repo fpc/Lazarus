@@ -216,7 +216,7 @@ begin
     if PtInRect(R, APoint) then
       Exit(cpTitleBtn);
     R.Left := R.Right + 1;
-    R.Right := FrameW + ArrowW + PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_month_width + 1;
+    R.Right := FrameW + ArrowW + integer(PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_month_width) + 1;
     if PtInRect(R, APoint) then
       Exit(cpTitleMonth);
     R.Left := R.Right;

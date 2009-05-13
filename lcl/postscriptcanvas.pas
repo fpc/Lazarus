@@ -551,7 +551,7 @@ type
 
 procedure TAscii85Encoder.EmitData;
 const
-  Cn: array[0..4] of longint = (85*85*85*85,85*85*85,85*85,85,1);
+  Cn: array[0..4] of longword = (85*85*85*85,85*85*85,85*85,85,1);
 var
   B: byte;
   i,n: Integer;
