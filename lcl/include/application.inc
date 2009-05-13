@@ -19,13 +19,6 @@
 
 { $define DebugHintWindow}
 
-const
-  DefHintColor = clInfoBk;  { default hint window color }
-  DefHintPause = 500;       { default pause before hint window displays (ms) }
-  DefHintShortPause = 0;    { default reshow pause }
-  DefHintHidePause = 5*DefHintPause; { default pause before hint is hidden (ms) }
-  DefHintHidePausePerChar = 200;     { added to DefHintHidePause (ms) }
-
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
   if Application.FindGlobalComponentEnabled then

@@ -17,75 +17,75 @@
  *****************************************************************************
 }
 
-procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
+procedure TApplicationProperties.SetCaptureExceptions(const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.CaptureExceptions := AValue;
 end;
 
-procedure TApplicationProperties.SetHelpFile(Const AValue : string);
+procedure TApplicationProperties.SetHelpFile(const AValue : string);
 begin
   FHelpFile := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HelpFile := AValue;
 end;
 
-procedure TApplicationProperties.SetHint(Const AValue : string);
+procedure TApplicationProperties.SetHint(const AValue : string);
 begin
   FHint := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.Hint := AValue;
 end;
 
-procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
+procedure TApplicationProperties.SetHintColor(const AValue : TColor);
 begin
   FHintColor := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HintColor := AValue;
 end;
 
-procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintHidePause(const AValue : Integer);
 begin
   FHintHidePause := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HintHidePause := AValue;
 end;
 
-procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintPause(const AValue : Integer);
 begin
   FHintPause := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HintPause := AValue;
 end;
 
-procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
+procedure TApplicationProperties.SetHintShortCuts(const AValue : Boolean);
 begin
   FHintShortCuts := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HintShortCuts := AValue;
 end;
 
-procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintShortPause(const AValue : Integer);
 begin
   FHintShortPause := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.HintShortPause := AValue;
 end;
 
-procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
+procedure TApplicationProperties.SetShowHint(const AValue : Boolean);
 begin
   FShowHint := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.ShowHint := AValue;
 end;
 
@@ -97,15 +97,23 @@ begin
     Application.ShowMainForm := AValue;
 end;
 
-procedure TApplicationProperties.SetTitle(Const AValue : String);
+procedure TApplicationProperties.SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+begin
+  FShowButtonGlyphs := AValue;
+
+  if not (csDesigning in ComponentState) then
+    Application.ShowButtonGlyphs := AValue;
+end;
+
+procedure TApplicationProperties.SetTitle(const AValue : String);
 begin
   FTitle := AValue;
 
-  If not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
     Application.Title := AValue;
 end;
 
-procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
+procedure TApplicationProperties.SetOnException(const AValue : TExceptionEvent);
 begin
   if (TMethod(FOnException).Data=TMethod(AValue).Data)
   and (TMethod(FOnException).Code=TMethod(AValue).Code) then exit;
@@ -118,7 +126,7 @@ begin
     Application.AddOnExceptionHandler(FOnException);
 end;
 
-procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
+procedure TApplicationProperties.SetOnIdle(const AValue : TIdleEvent);
 begin
   if (TMethod(FOnIdle).Data=TMethod(AValue).Data)
   and (TMethod(FOnIdle).Code=TMethod(AValue).Code) then exit;
@@ -131,7 +139,7 @@ begin
     Application.AddOnIdleHandler(FOnIdle);
 end;
 
-procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnIdleEnd(const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnIdleEnd).Data=TMethod(AValue).Data)
   and (TMethod(FOnIdleEnd).Code=TMethod(AValue).Code) then exit;
@@ -145,7 +153,7 @@ begin
 end;
 
 
-procedure TApplicationProperties.SetOnEndSession(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnEndSession(const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnEndSession).Data=TMethod(AValue).Data)
   and (TMethod(FOnEndSession).Code=TMethod(AValue).Code) then exit;
@@ -159,7 +167,7 @@ begin
 end;
 
 
-procedure TApplicationProperties.SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
+procedure TApplicationProperties.SetOnQueryEndSession(const AValue : TQueryEndSessionEvent);
 begin
   if (TMethod(FOnQueryEndSession).Data=TMethod(AValue).Data)
   and (TMethod(FOnQueryEndSession).Code=TMethod(AValue).Code) then exit;
@@ -211,7 +219,7 @@ begin
     Application.AddOnDropFilesHandler(FOnDropFiles);
 end;
 
-procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
+procedure TApplicationProperties.SetOnHelp(const AValue : THelpEvent);
 begin
   if (TMethod(FOnHelp).Data=TMethod(AValue).Data)
   and (TMethod(FOnHelp).Code=TMethod(AValue).Code) then exit;
@@ -224,7 +232,7 @@ begin
     Application.AddOnHelpHandler(FOnHelp);
 end;
 
-procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnHint(const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnHint).Data=TMethod(AValue).Data)
   and (TMethod(FOnHint).Code=TMethod(AValue).Code) then exit;
@@ -237,7 +245,7 @@ begin
     Application.AddOnHintHandler(FOnHint);
 end;
 
-procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
+procedure TApplicationProperties.SetOnShowHint(const AValue : TShowHintEvent);
 begin
   if (TMethod(FOnShowHint).Data=TMethod(AValue).Data)
   and (TMethod(FOnShowHint).Code=TMethod(AValue).Code) then exit;
@@ -250,7 +258,7 @@ begin
     Application.AddOnShowHintHandler(FOnShowHint);
 end;
 
-procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent);
+procedure TApplicationProperties.SetOnUserInput(const AValue : TOnUserInputEvent);
 begin
   if (TMethod(FOnUserInput).Data=TMethod(AValue).Data)
   and (TMethod(FOnUserInput).Code=TMethod(AValue).Code) then exit;
@@ -267,16 +275,19 @@ constructor TApplicationProperties.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  if (csDesigning in ComponentState) then begin
-    FCaptureExceptions:=true;
+  if (csDesigning in ComponentState) then
+  begin
+    FCaptureExceptions := True;
     FHintColor := DefHintColor;
     FHintPause := DefHintPause;
     FHintShortCuts := True;
     FHintShortPause := DefHintShortPause;
     FHintHidePause := DefHintHidePause;
-    FShowHint := true;
+    FShowButtonGlyphs := sbgAlways;
+    FShowHint := True;
   end
-  else begin
+  else
+  begin
     FCaptureExceptions := Application.CaptureExceptions;
     FHelpFile := Application.HelpFile;
     FHint := Application.Hint;
@@ -285,10 +296,11 @@ begin
     FHintPause := Application.HintPause;
     FHintShortCuts := Application.HintShortCuts;
     FHintShortPause := Application.HintShortPause;
+    FShowButtonGlyphs := Application.ShowButtonGlyphs;
     FShowHint := Application.ShowHint;
     FTitle := Application.Title;
   end;
-  FShowMainForm := true;
+  FShowMainForm := True;
 
   FOnException := nil;
   FOnIdle := nil;
@@ -303,7 +315,8 @@ end;
 
 destructor TApplicationProperties.Destroy;
 begin
-  If not (csDesigning in ComponentState) then begin
+  if not (csDesigning in ComponentState) then
+  begin
     Application.RemoveOnExceptionHandler(FOnException);
     Application.RemoveOnIdleHandler(FOnIdle);
     Application.RemoveOnIdleEndHandler(FOnIdleEnd);

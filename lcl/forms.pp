@@ -1311,10 +1311,18 @@ type
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
     property ShowHint: Boolean read FShowHint write SetShowHint;
-    property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default true;
+    property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default True;
     property Title: String read GetTitle write SetTitle;
   end;
 
+const
+  DefHintColor = clInfoBk;           // default hint window color
+  DefHintPause = 500;                // default pause before hint window displays (ms)
+  DefHintShortPause = 0;             // default reshow pause
+  DefHintHidePause = 5*DefHintPause; // default pause before hint is hidden (ms)
+  DefHintHidePausePerChar = 200;     // added to DefHintHidePause (ms)
+
+type
   { TApplicationProperties }
 
   TApplicationProperties = class(TLCLComponent)
@@ -1328,6 +1336,7 @@ type
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FOnDropFiles: TDropFilesEvent;
+    FShowButtonGlyphs: TShowButtonGlyphs;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     FTitle: String;
@@ -1343,46 +1352,48 @@ type
     FOnQueryEndSession : TQueryEndSessionEvent;
     FOnMinimize : TNotifyEvent;
     FOnRestore : TNotifyEvent;
-    procedure SetShowMainForm(const AValue: Boolean);
   protected
-    procedure SetCaptureExceptions(Const AValue : boolean);
-    procedure SetHelpFile(Const AValue : string);
-    procedure SetHint(Const AValue : string);
-    procedure SetHintColor(Const AValue : TColor);
-    procedure SetHintHidePause(Const AValue : Integer);
-    procedure SetHintPause(Const AValue : Integer);
-    procedure SetHintShortCuts(Const AValue : Boolean);
-    procedure SetHintShortPause(Const AValue : Integer);
-    procedure SetShowHint(Const AValue : Boolean);
-    procedure SetTitle(Const AValue : String);
+    procedure SetCaptureExceptions(const AValue : boolean);
+    procedure SetHelpFile(const AValue : string);
+    procedure SetHint(const AValue : string);
+    procedure SetHintColor(const AValue : TColor);
+    procedure SetHintHidePause(const AValue : Integer);
+    procedure SetHintPause(const AValue : Integer);
+    procedure SetHintShortCuts(const AValue : Boolean);
+    procedure SetHintShortPause(const AValue : Integer);
+    procedure SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+    procedure SetShowHint(const AValue : Boolean);
+    procedure SetShowMainForm(const AValue: Boolean);
+    procedure SetTitle(const AValue : String);
 
-    procedure SetOnException(Const AValue : TExceptionEvent);
-    procedure SetOnIdle(Const AValue : TIdleEvent);
-    procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
-    procedure SetOnEndSession(Const AValue : TNotifyEvent);
-    procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
-    procedure SetOnMinimize(Const AValue : TNotifyEvent);
-    procedure SetOnRestore(Const AValue : TNotifyEvent);
+    procedure SetOnException(const AValue : TExceptionEvent);
+    procedure SetOnIdle(const AValue : TIdleEvent);
+    procedure SetOnIdleEnd(const AValue : TNotifyEvent);
+    procedure SetOnEndSession(const AValue : TNotifyEvent);
+    procedure SetOnQueryEndSession(const AValue : TQueryEndSessionEvent);
+    procedure SetOnMinimize(const AValue : TNotifyEvent);
+    procedure SetOnRestore(const AValue : TNotifyEvent);
     procedure SetOnDropFiles(const AValue: TDropFilesEvent);
-    procedure SetOnHelp(Const AValue : THelpEvent);
-    procedure SetOnHint(Const AValue : TNotifyEvent);
-    procedure SetOnShowHint(Const AValue : TShowHintEvent);
-    procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
+    procedure SetOnHelp(const AValue : THelpEvent);
+    procedure SetOnHint(const AValue : TNotifyEvent);
+    procedure SetOnShowHint(const AValue : TShowHintEvent);
+    procedure SetOnUserInput(const AValue : TOnUserInputEvent);
   public
     constructor Create(AOwner: TComponent); Override;
     destructor Destroy; override;
   published
     property CaptureExceptions: boolean read FCaptureExceptions
-                                        write SetCaptureExceptions;
+                                        write SetCaptureExceptions default True;
     property HelpFile: string read FHelpFile write SetHelpFile;
     property Hint: string read FHint write SetHint;
-    property HintColor: TColor read FHintColor write SetHintColor;
-    property HintHidePause: Integer read FHintHidePause write SetHintHidePause;
-    property HintPause: Integer read FHintPause write SetHintPause;
-    property HintShortCuts: Boolean read FHintShortCuts write SetHintShortCuts;
-    property HintShortPause: Integer read FHintShortPause write SetHintShortPause;
-    property ShowHint: Boolean read FShowHint write SetShowHint;
-    property ShowMainForm: Boolean read FShowMainForm write SetShowMainForm default true;
+    property HintColor: TColor read FHintColor write SetHintColor default DefHintColor;
+    property HintHidePause: Integer read FHintHidePause write SetHintHidePause default DefHintHidePause;
+    property HintPause: Integer read FHintPause write SetHintPause default DefHintPause;
+    property HintShortCuts: Boolean read FHintShortCuts write SetHintShortCuts default True;
+    property HintShortPause: Integer read FHintShortPause write SetHintShortPause default DefHintShortPause;
+    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
+    property ShowHint: Boolean read FShowHint write SetShowHint default True;
+    property ShowMainForm: Boolean read FShowMainForm write SetShowMainForm default True;
     property Title: String read FTitle write SetTitle;
 
     property OnException: TExceptionEvent read FOnException write SetOnException;
