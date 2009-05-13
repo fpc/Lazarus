@@ -6,7 +6,7 @@ program EasyDocking;
 
 uses
   Interfaces,
-  Forms, LDockTree,
+  Forms,
   fMain in 'fMain.pas' {EasyDockMain},
   fDockable in 'fDockable.pas' {Dockable},
   EasyDockSite in 'EasyDockSite.pas',

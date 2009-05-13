@@ -32,7 +32,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="7">
       <Unit0>
         <Filename Value="easydocking.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -76,28 +76,17 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="EasyDockHelpers"/>
       </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="LDockTree"/>
-      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="..\..\..\lcl\"/>
-    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Other>
-      <Verbosity>
-        <ShowAll Value="True"/>
-      </Verbosity>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

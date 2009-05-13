@@ -63,7 +63,7 @@ type
     function GetLeft: Integer;
     function GetTop: Integer;
     function GetTopOrLeft(fTop: boolean): Integer;
-  private //very basic liniking
+  private //very basic linking
   (* Beware: Lazarus tends to insert a private member FChildControl,
     which hides the inherited member of the same name!
   *)
@@ -671,6 +671,7 @@ var
 
 var
   ZoneExtent: TPoint;
+  ADockRect: TRect;
 begin
 (* New DockManager interface, called instead of the old version.
   Determine exact target (zone) and DropAlign.
@@ -696,11 +697,11 @@ Signal results:
         DropAlign := alClient; //first element in entire site
       end else begin
       //determined the alignment within the zone.
-        DockRect := zone.GetBounds; //include header
+        ADockRect := zone.GetBounds; //include header
         DropAlign := DetectAlign(zone.BR, DragTargetPos);
       //to screen coords
-        DockRect.TopLeft := FDockSite.ClientToScreen(DockRect.TopLeft);
-        DockRect.BottomRight := FDockSite.ClientToScreen(DockRect.BottomRight);
+        ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
+        ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
       end;
     end;
   //position DockRect
@@ -714,8 +715,9 @@ Signal results:
       //DockRect := Rect(MaxInt, 0, MaxInt, 0); //LTRB
     {$ENDIF}
     end else begin
-      PositionDockRect(Control, DropOnControl, DropAlign, DockRect);
+      PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
     end;
+    DockRect := ADockRect;
   end;
 end;
 

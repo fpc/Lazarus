@@ -80,7 +80,7 @@ const
 implementation
 
 uses
-  Classes, SysUtils, math, Themes, LResources, LCLIntf, LCLProc;
+  Classes, SysUtils, Themes, LResources, LCLIntf, LCLProc;
 
 type
 {
@@ -100,8 +100,8 @@ type
 const
   DockHeaderImageNames: array[TDockHeaderImageKind] of String =
   (
-{ dhiRestore } 'lcl_dock_restore',
-{ dhiClose   } 'lcl_dock_close'
+{ dhiRestore } 'easy_dock_restore',
+{ dhiClose   } 'easy_dock_close'
   );
 
 var
@@ -188,8 +188,6 @@ end;
 
 class function TEasyDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
   APart: TEasyZonePart; HasSplitter: boolean): TRect;
-var
-  d, dRight, dWidth: Integer;
 begin
 (* AHeaderRect is (must be) TLBR zone rectangle, on input.
 *)
@@ -326,7 +324,10 @@ const
     );
   var
     Details: TThemedElementDetails;
+  {$IFDEF old}
     dx, dy: integer;
+  {$ELSE}
+  {$ENDIF}
   begin
     Details := ThemeServices.GetElementDetails(BtnDetail[IsMouseDown, IsMouseOver]);
     ThemeServices.DrawElement(ACanvas.Handle, Details, ARect);
@@ -457,7 +458,7 @@ end;
 
 
 initialization
-{$I lcl_dock_images.lrs}
+{$I easy_dock_images.lrs}
   CreateDockHeaderImages;
 finalization
   DestroyDockHeaderImages;
