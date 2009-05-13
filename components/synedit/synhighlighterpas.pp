@@ -2810,7 +2810,7 @@ end;
 
 procedure TSynPasSyn.SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
 var
-  i: Integer;
+  i, nc: Integer;
   t: TPascalCodeFoldBlockType;
 begin
   // Close unfinished blocks, IF the expected type is found
@@ -2829,7 +2829,8 @@ begin
 
   while i > 0 do begin
     EndCodeFoldBlockLastLine;
-    if FCatchNodeInfo then
+    nc := FNodeInfoCount;
+    if FCatchNodeInfo and (FNodeInfoCount > nc) then
       exclude(FNodeInfoList[FNodeInfoCount-1].FoldAction, sfaMarkup);
     dec(i);
   end;
