@@ -957,9 +957,18 @@ resourcestring
   dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
+  dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
-  lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
+  dlgDesktopButtonGlyphs = 'Glyphs for Buttons';
+  dlgGlyphShowAlways = 'Show Always';
+  dlgGlyphShowNever = 'Show Never';
+  dlgGlyphShowSystem = 'Use System Defaults';
+
+  dlgDesktopMisc = 'Misc Options';
+
+  lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
+
   lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick = 'Double click on '
     +'messages jumps (otherwise: single click)';
   dlgWinPos = 'Window Positions';

@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, LCLProc,
-  EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory, IDEProcs,
-  IDEOptionsIntf;
+  ExtCtrls, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
+  IDEProcs, IDEOptionsIntf;
 
 type
 
@@ -35,17 +35,36 @@ type
 
   TDesktopOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoSaveEditorFilesCheckBox: TCheckBox;
-    AutoSaveGroupBox: TGroupBox;
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
+    Bevel1: TBevel;
+    Bevel10: TBevel;
+    Bevel11: TBevel;
+    Bevel12: TBevel;
+    Bevel2: TBevel;
+    Bevel3: TBevel;
+    Bevel4: TBevel;
+    Bevel5: TBevel;
+    Bevel6: TBevel;
+    Bevel7: TBevel;
+    Bevel8: TBevel;
+    Bevel9: TBevel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
-    DesktopFilesGroupBox: TGroupBox;
+    lblHints: TLabel;
+    lblCenter: TLabel;
     LanguageComboBox: TComboBox;
-    LanguageGroupBox: TGroupBox;
+    lblDesktopFiles: TLabel;
+    lblButtonGlyphs: TLabel;
+    lblMisc: TLabel;
+    lblLanguage: TLabel;
+    lblAutoSave: TLabel;
     LoadDesktopSettingsFromFileButton: TButton;
     MsgViewDblClickJumpsCheckBox: TCheckBox;
     MsgViewFocusCheckBox: TCheckBox;
+    rbGlyphShowAlways: TRadioButton;
+    rbGlyphShowNever: TRadioButton;
+    rbGlyphShowSystem: TRadioButton;
     SaveDesktopSettingsToFileButton: TButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
@@ -81,7 +100,7 @@ var
   sl: TStringList;
 begin
   // language
-  LanguageGroupBox.Caption:=dlgEnvLanguage;
+  lblLanguage.Caption := dlgEnvLanguage;
 
   // languages: first the automatic, then sorted the rest
   sl:=TStringList.Create;
@@ -97,24 +116,32 @@ begin
   sl.Free;
 
   // auto save
-  AutoSaveGroupBox.Caption:=dlgAutoSave;
-  AutoSaveEditorFilesCheckBox.Caption:=dlgEdFiles;
-  AutoSaveProjectCheckBox.Caption:=dlgEnvProject;
-  AutoSaveIntervalInSecsLabel.Caption:=dlgIntvInSec;
+  lblAutoSave.Caption := dlgAutoSave;
+  AutoSaveEditorFilesCheckBox.Caption := dlgEdFiles;
+  AutoSaveProjectCheckBox.Caption := dlgEnvProject;
+  AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
 
   // desktop files
-  DesktopFilesGroupBox.Caption:=dlgDesktopFiles;
-  SaveDesktopSettingsToFileButton.Caption:=dlgSaveDFile;
-  LoadDesktopSettingsFromFileButton.Caption:=dlgLoadDFile;
+  lblDesktopFiles.Caption := dlgDesktopFiles;
+  SaveDesktopSettingsToFileButton.Caption := dlgSaveDFile;
+  LoadDesktopSettingsFromFileButton.Caption := dlgLoadDFile;
+
+  // button glyphs
+  lblButtonGlyphs.Caption := dlgDesktopButtonGlyphs;
+  rbGlyphShowAlways.Caption := dlgGlyphShowAlways;
+  rbGlyphShowNever.Caption := dlgGlyphShowNever;
+  rbGlyphShowSystem.Caption := dlgGlyphShowSystem;
 
   // hints
-  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckChangesOnDiskWithLoading;
-  ShowHintsForComponentPaletteCheckBox.Caption:=dlgPalHints;
-  ShowHintsForMainSpeedButtonsCheckBox.Caption:=dlgSpBHints;
+  lblHints.Caption := dlgDesktopHints;
+  ShowHintsForComponentPaletteCheckBox.Caption := dlgPalHints;
+  ShowHintsForMainSpeedButtonsCheckBox.Caption := dlgSpBHints;
 
-  // messages view
+  // messages view + misc
+  lblMisc.Caption := dlgDesktopMisc;
   MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
   MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
+  CheckDiskChangesWithLoadingCheckBox.Caption := lisCheckChangesOnDiskWithLoading;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -142,6 +169,13 @@ begin
     // messages view
     MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
     MsgViewFocusCheckBox.Checked:=MsgViewFocus;
+
+    // button glyphs
+    case ShowButtonGlyphs of
+      sbgAlways: rbGlyphShowAlways.Checked := True;
+      sbgNever: rbGlyphShowNever.Checked := True;
+      sbgSystem: rbGlyphShowSystem.Checked := True;
+    end;
   end;
 end;
 
@@ -167,6 +201,14 @@ begin
     // messages view
     MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
     MsgViewFocus:=MsgViewFocusCheckBox.Checked;
+    // button glyphs
+    if rbGlyphShowAlways.Checked then
+      ShowButtonGlyphs := sbgAlways
+    else
+    if rbGlyphShowNever.Checked then
+      ShowButtonGlyphs := sbgNever
+    else
+      ShowButtonGlyphs := sbgSystem;
   end;
 end;
 

@@ -143,6 +143,7 @@ type
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
     FIDESpeedButtonsVisible: boolean;
+    FShowButtonGlyphs: TShowButtonGlyphs;
     FXMLCfg: TXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
@@ -458,6 +459,9 @@ type
                                            write fMsgViewDblClickJumps;
     property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
 
+    // button glyphs
+    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
+
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
@@ -649,6 +653,9 @@ begin
   // messages view
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
+
+  // button glyphs
+  FShowButtonGlyphs := sbgSystem;
 
   // files
   LazarusDirectory:=IDEProcs.ProgramDirectory;
@@ -964,6 +971,10 @@ begin
     fMsgViewFocus:=XMLConfig.GetValue(
       Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
 
+    // button glyphs
+    FShowButtonGlyphs := TShowButtonGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
+      Ord(sbgSystem)));
+
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
       Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
@@ -1189,6 +1200,10 @@ begin
       fMsgViewDblClickJumps,false);
     XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
       fMsgViewFocus,DefaultMsgViewFocus);
+
+    // button glyphs
+    XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
+      Ord(FShowButtonGlyphs), Ord(sbgSystem));
 
     // recent files and directories
     XMLConfig.SetValue(
