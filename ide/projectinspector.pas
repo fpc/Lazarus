@@ -64,13 +64,13 @@ type
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
-    AddBitBtn: TBitBtn;
-    OptionsBitBtn: TBitBtn;
-    RemoveBitBtn: TBitBtn;
-    OpenBitBtn: TBitBtn;
+    AddBitBtn: TSpeedButton;
+    OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
     ControlDocker: TLazControlDocker;
+    OptionsBitBtn: TSpeedButton;
+    RemoveBitBtn: TSpeedButton;
     procedure AddBitBtnClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);

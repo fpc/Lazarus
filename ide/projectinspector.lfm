@@ -10,9 +10,64 @@ object ProjectInspectorForm: TProjectInspectorForm
   ClientWidth = 433
   OnShow = ProjectInspectorFormShow
   LCLVersion = '0.9.27'
+  object OpenBitBtn: TSpeedButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 23
+    Top = 0
+    Width = 60
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = OpenBitBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object AddBitBtn: TSpeedButton
+    AnchorSideLeft.Control = OpenBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 60
+    Height = 23
+    Top = 0
+    Width = 60
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = AddBitBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object RemoveBitBtn: TSpeedButton
+    AnchorSideLeft.Control = AddBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 120
+    Height = 23
+    Top = 0
+    Width = 60
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = RemoveBitBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object OptionsBitBtn: TSpeedButton
+    AnchorSideLeft.Control = RemoveBitBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 180
+    Height = 23
+    Top = 0
+    Width = 60
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = OptionsBitBtnClick
+    ShowHint = True
+    ParentShowHint = False
+  end
   object ItemsTreeView: TTreeView
-    AnchorSideTop.Control = OpenBitBtn
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 284
     Top = 25
     Width = 433
@@ -28,58 +83,6 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-  end
-  object OpenBitBtn: TBitBtn
-    Height = 23
-    Width = 80
-    AutoSize = True
-    Caption = 'OpenBitBtn'
-    OnClick = OpenBitBtnClick
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 1
-  end
-  object AddBitBtn: TBitBtn
-    AnchorSideLeft.Control = OpenBitBtn
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = OpenBitBtn
-    Left = 80
-    Height = 23
-    Width = 73
-    AutoSize = True
-    Caption = 'AddBitBtn'
-    OnClick = AddBitBtnClick
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 2
-  end
-  object RemoveBitBtn: TBitBtn
-    AnchorSideLeft.Control = AddBitBtn
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = OpenBitBtn
-    Left = 153
-    Height = 23
-    Width = 93
-    AutoSize = True
-    Caption = 'RemoveBitBtn'
-    OnClick = RemoveBitBtnClick
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-  end
-  object OptionsBitBtn: TBitBtn
-    AnchorSideLeft.Control = RemoveBitBtn
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = OpenBitBtn
-    Left = 246
-    Height = 23
-    Width = 91
-    AutoSize = True
-    Caption = 'OptionsBitBtn'
-    OnClick = OptionsBitBtnClick
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 4
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
