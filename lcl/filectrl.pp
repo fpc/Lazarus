@@ -136,6 +136,72 @@ Type
     property Visible;
   end;
 
+  { TFilterComboBox }
+
+  TFilterComboBox = class(TCustomComboBox)
+  private
+    FFilter: string;
+    function GetMask: string;
+    procedure SetFilter(const AValue: string);
+  public
+    { Base methods }
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    { Externally available methods }
+    class procedure ConvertFilterToStrings(AFilter: string;
+      AStrings: TStrings; AClearStrings, AAddDescription, AAddFilter: Boolean);
+    { properties }
+    property Mask: string read GetMask; // Can be used to conect to other controls
+  published
+    { properties }
+    property Align;
+    property Anchors;
+    property AutoComplete;
+    property AutoDropDown;
+    property AutoSize;// Note: windows has a fixed height in some styles
+    property BidiMode;
+    property Color;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    // property FileList: TFileList
+    property Filter: string read FFilter write SetFilter;
+    property Font;
+    property ItemIndex;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    { events }
+    property OnChange;
+    property OnClick;
+    property OnCloseUp;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnDropDown;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property OnSelect;
+    property OnUTF8KeyPress;
+  end;
+
 function MiniMizeName(FileName: String; Canvas: TCanvas; MaxWidth: Integer): String;
 
 procedure Register;
@@ -402,9 +468,111 @@ begin
   inherited Destroy; 
 end;
 
+{ TFilterComboBox }
+
+function TFilterComboBox.GetMask: string;
+var
+  FilterList: TStrings;
+begin
+  Result := '';
+
+  FilterList := TStringList.Create;
+  try
+    TFilterComboBox.ConvertFilterToStrings(FFilter, FilterList, True, False, True);
+
+    if (ItemIndex >= 0) and (ItemIndex <= FilterList.Count) then
+    begin
+      Result := FilterList[ItemIndex];
+    end;
+  finally
+    FilterList.Free;
+  end;
+end;
+
+procedure TFilterComboBox.SetFilter(const AValue: string);
+begin
+  if AValue = FFilter then Exit;
+
+  FFilter := AValue;
+
+  TFilterComboBox.ConvertFilterToStrings(AValue, Items, True, True, False);
+
+  ItemIndex := 0;
+end;
+
+{------------------------------------------------------------------------------
+This is a parser that converts LCL filter strings to a TStringList
+
+The parses states are:
+
+0 - Initial state, is reading a string to be displayed on the filter
+1 - Is reading the extensions
+
+A LCL filter string looks like this:
+
+Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe
+
+The TStrings will contain the following strings if
+AAddDescription = True, AAddFilter = False
+
+Text files (*.txt *.pas)
+Binaries (*.exe)
+
+Adapted from the converter initially created for QtWSDialogs.pas
+------------------------------------------------------------------------------}
+class procedure TFilterComboBox.ConvertFilterToStrings(AFilter: string;
+  AStrings: TStrings; AClearStrings, AAddDescription, AAddFilter: Boolean);
+var
+  TmpFilter, strExtensions: string;
+  ParserState, Position, i: Integer;
+begin
+  if AStrings = nil then Exit;
+
+  if AClearStrings then AStrings.Clear;
+
+  ParserState := 0;
+  Position := 1;
+
+  for i := 1 to Length(AFilter) do
+  begin
+    if Copy(AFilter, i, 1) = '|' then
+    begin
+      case ParserState of
+      0:
+      begin
+        if AAddDescription then
+          AStrings.Add(Copy(AFilter, Position, i - Position));
+        ParserState := 1;
+      end;
+      1:
+      begin
+        if AAddFilter then
+          AStrings.Add(Copy(AFilter, Position, i - Position));
+        ParserState := 0;
+      end;
+      end;// case
+
+      Position := i + 1;
+    end;
+  end;
+end;
+
+constructor TFilterComboBox.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  Text := '';
+end;
+
+destructor TFilterComboBox.Destroy;
+begin
+
+  inherited Destroy;
+end;
+
 procedure Register;
 begin
-  RegisterComponents('Misc',[TFileListBox]);
+  RegisterComponents('Misc',[TFileListBox, TFilterComboBox]);
 end;
 
 end.
