@@ -42,6 +42,8 @@ constructor TCustomSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyph := TButtonGlyph.Create;
+  FGlyph.IsDesigning := csDesigning in ComponentState;
+  FGlyph.ShowMode := gsmAlways;
   FGlyph.SetTransparentMode(gtmTransparent);
   FGlyph.OnChange := @GlyphChanged;
 

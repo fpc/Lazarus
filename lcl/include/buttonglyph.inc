@@ -68,6 +68,7 @@ end;
 constructor TButtonGlyph.Create;
 begin
   FImagesCache := nil;
+  FIsDesigning := False;
   FShowMode:= gsmApplication;
   FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := @GlyphChanged;
@@ -156,7 +157,8 @@ procedure TButtonGlyph.SetShowMode(const AValue: TGlyphShowMode);
 begin
   if FShowMode = AValue then Exit;
   FShowMode := AValue;
-  Refresh;
+  if not IsDesigning then
+    Refresh;
 end;
 
 function TButtonGlyph.GetHeight: Integer;
@@ -189,6 +191,8 @@ procedure TButtonGlyph.GlyphChanged(Sender: TObject);
     end;
 
   begin
+    if IsDesigning then
+      Exit(True);
     case ShowMode of
       gsmAlways:
         Result := True;

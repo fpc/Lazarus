@@ -88,6 +88,7 @@ type
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
+    FIsDesigning: Boolean;
     FShowMode: TGlyphShowMode;
     FImageIndexes: array[TButtonState] of Integer;
     FImages: TCustomImageList;
@@ -125,6 +126,7 @@ type
                   BiDiFlags: Longint): TRect;
     procedure Refresh;
     property Glyph: TBitmap read FOriginal write SetGlyph;
+    property IsDesigning: Boolean read FIsDesigning write FIsDesigning;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
     property Width: Integer read GetWidth;

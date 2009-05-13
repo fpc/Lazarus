@@ -29,6 +29,7 @@ begin
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.NumGlyphs := 1;
   FButtonGlyph.OnChange := @GlyphChanged;
+  FButtonGlyph.IsDesigning := csDesigning in ComponentState;
   Align := alNone;
   RealizeKind;
 end;
