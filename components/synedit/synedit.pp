@@ -6924,7 +6924,7 @@ begin
   nReplaceLen := Length(AReplace);
   {$ENDIF}
   // search while the current search position is inside of the search range
-  if bReplaceAll then IncPaintLock;
+  IncPaintLock;
   try
     {$IFDEF SYN_LAZARUS}
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
@@ -6953,8 +6953,13 @@ begin
           CurReplace:=fTSearch.RegExprReplace;
         if bPrompt and Assigned(fOnReplaceText) then begin
           EnsureCursorPosVisible;
-          nAction := DoOnReplaceText(ASearch,CurReplace,
-                                     ptFoundStart.Y,ptFoundStart.X);
+          try
+            DecPaintLock;
+            nAction := DoOnReplaceText(ASearch,CurReplace,
+                                       ptFoundStart.Y,ptFoundStart.X);
+          finally
+            IncPaintLock;
+          end;
           if nAction = raCancel then exit;
         end else
           nAction := raReplace;
@@ -6964,7 +6969,6 @@ begin
           if nAction = raReplaceAll then begin
             if not bReplaceAll then begin
               bReplaceAll := TRUE;
-              IncPaintLock;
             end;
             bPrompt := False;
           end;
@@ -7033,7 +7037,6 @@ begin
           if nAction = raReplaceAll then begin
             if not bReplaceAll then begin
               bReplaceAll := TRUE;
-              IncPaintLock;
             end;
             bPrompt := False;
           end;
@@ -7053,7 +7056,7 @@ begin
     end;
     {$ENDIF}
   finally
-    if bReplaceAll then DecPaintLock;
+    DecPaintLock;
   end;
 end;
 
