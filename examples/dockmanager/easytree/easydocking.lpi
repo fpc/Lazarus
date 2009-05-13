@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="EasyDocking"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="D:\Tests\dockmanager"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="8">
+      <Unit0>
+        <Filename Value="easydocking.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="EasyDocking"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fdockable.pas"/>
+        <ComponentName Value="Dockable"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fDockable"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="fmain.pas"/>
+        <ComponentName Value="EasyDockMain"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fMain"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="easydocksite.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="EasyDockSite"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="fTree.pas"/>
+        <ComponentName Value="DumpBox"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fTree"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="BUGS.txt"/>
+        <IsPartOfProject Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="easydockhelpers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="EasyDockHelpers"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LDockTree"/>
+      </Unit7>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\..\..\lcl\"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Other>
+      <Verbosity>
+        <ShowAll Value="True"/>
+      </Verbosity>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

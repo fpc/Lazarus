@@ -88,7 +88,7 @@ object EasyDockMain: TEasyDockMain
       Text = 'Drag Me!'
     end
   end
-  object Docker: TPanel
+  object pnlDocker: TPanel
     Left = 0
     Height = 236
     Top = 29
@@ -97,5 +97,6 @@ object EasyDockMain: TEasyDockMain
     Caption = 'Dock here!'
     TabOrder = 2
     UseDockManager = False
+    OnDockOver = DockerDockOver
   end
 end

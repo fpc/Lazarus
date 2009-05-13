@@ -15,6 +15,20 @@ http://wiki.lazarus.freepascal.org/LCL_Drag_Drop
 See also:
 http://wiki.lazarus.freepascal.org/Anchor_Docking
 
+Configuration Options
+---------------------
+Various test scenarios can be selected by $defines.
+In fMain:
+- docker: use panel or entire form as docksite
+- easy: use default or EasyTree dockmanager
+- dragform: dragging controls or forms (forms not on all platforms)
+
+In EasyDockSite:
+- NoDrop: required patch applied to the dragmanager?
+- splitter_color: use special color for splitter (debug splitters)
+
+In EasyDockHelpers:
+- restore: show restore button (purpose?)
 
 ToDos:
 At the time of writing this README the following does not yet work:

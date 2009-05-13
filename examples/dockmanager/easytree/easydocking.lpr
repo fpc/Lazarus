@@ -6,7 +6,7 @@ program EasyDocking;
 
 uses
   Interfaces,
-  Forms, Controls,
+  Forms, LDockTree,
   fMain in 'fMain.pas' {EasyDockMain},
   fDockable in 'fDockable.pas' {Dockable},
   EasyDockSite in 'EasyDockSite.pas',
@@ -15,6 +15,7 @@ uses
 {.$R *.res}
 
 begin
+  Application.Title:='EasyDocking';
   Application.Initialize;
   Application.CreateForm(TEasyDockMain, EasyDockMain);
   Application.CreateForm(TDumpBox, DumpBox);

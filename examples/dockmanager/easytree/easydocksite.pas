@@ -1,7 +1,7 @@
 unit EasyDockSite;
 (* A tree docking manager by DoDi <DrDiettrich1@aol.com>.
 
-This project can be used instead of the LDock manager.
+This project can be used instead of the LDockTree manager.
 
 To be added or ported:
   - field and method argument names
@@ -30,7 +30,9 @@ done? (unclear whether this is really fixed in the trunk)
 *)
 
 {$H+}
+
 {$DEFINE splitter_color} //use colored splitter, for debugging?
+{.$DEFINE NoDrop} //patched dragobject?
 
 interface
 
@@ -164,8 +166,14 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+const
+  AlignNames: array[TAlign] of string = (
+    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
+  );
+
 var //debug only
   DropOn: TControl;
+  DockObj: TDragDockObject;
 
 implementation
 
@@ -472,99 +480,6 @@ begin
   FDockSite.Invalidate;
 end;
 
-procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
-var
-  i: integer;
-  zone: TEasyZone;
-
-  function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
-  var
-    w, h, zphi: integer;
-    dx, dy: integer;
-    phi: double;
-    izone: integer;
-    //zone: eZone;
-    dir: TAlign;
-  const
-    k = 5; //matrix dimension
-  //mapping octants into aligns, assuming k=5
-    cDir: array[-4..4] of TAlign = (
-      alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
-    );
-  begin
-  //center of dock zone
-    w := ZoneSize.x div 2;
-    h := ZoneSize.y div 2;
-  //mouse position within k*k rectangles (squares)
-    dx := trunc((MousePos.x - w) / w * k);
-    dy := trunc((MousePos.y - h) / h * k);
-    izone := max(abs(dx), abs(dy)); //0..k
-  //map into 0=innermost (custom), 1=inner, 2=outer
-    if izone = 0 then begin
-      //zone := zInnermost;
-      dir := alCustom; //alClient?
-    end else begin
-    {
-      if izone >= k-1 then
-        zone := zOuter
-      else //if izone > 0 then
-        zone := zInner;
-    }
-      phi := arctan2(dy, dx);
-      zphi := trunc(radtodeg(phi)) div 45;
-      dir := cDir[zphi];
-    end;
-    Result := dir;
-  end;
-
-var
-  ZoneExtent: TPoint;
-  Acceptable: boolean;
-  ADockRect: TRect;
-begin
-(* New DockManager interface, called instead of the old version.
-  Determine exact target (zone) and DropAlign.
-  Prevent docking into itself.
-*)
-//determine the zone containing the DragTargetPos
-  with ADockObject do begin
-  //mouse position within dock site
-    DragTargetPos := DragTarget.ScreenToClient(DragPos);
-  //find zone
-    zone := ZoneFromPoint(DragTargetPos);
-
-    if zone = nil then begin
-      DropAlign := alNone; //signal reject
-      Acceptable := False;
-    end else if Control = zone.ChildControl then begin
-    //drag control over itself
-      DropOnControl := Control; //signal drop on itself
-      //DragTarget := nil; //this means: become floating!
-      DropAlign := alNone;
-      Acceptable := False;
-    end else begin
-      DropOnControl := zone.ChildControl;
-      if DropOnControl = nil then
-        DropAlign := alClient //first element in entire site
-      else begin
-      //The alignment should be determined from the zone (later).
-      //We just use the control instead.
-        DragTargetPos := DropOnControl.ScreenToClient(DragPos);
-        ZoneExtent.X := DropOnControl.Width;
-        ZoneExtent.Y := DropOnControl.Height;
-        DropAlign := DetectAlign(ZoneExtent, DragTargetPos);
-        //todo: map alCustom into page, in InsertControl
-      end;
-    end;
-  //position DockRect
-    if Acceptable then
-    begin
-      PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
-      DockRect := ADockRect;
-    end;
-  end;
-end;
-
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 begin
   //todo
@@ -704,10 +619,104 @@ begin
     exit; //no zones - nothing to paint
   ACanvas := TCanvas.Create;
   ACanvas.Handle := DC;
-  //ACanvas.Brush.Color := clGreen; //test for missing text
   GetCursorPos(MousePos);
   MousePos := DockSite.ScreenToClient(MousePos);
   PaintZone(FTopZone);
+end;
+
+procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
+var
+  i: integer;
+  zone: TEasyZone;
+
+  function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
+  var
+    w, h, zphi: integer;
+    dx, dy: integer;
+    phi: double;
+    izone: integer;
+    //zone: eZone;
+    dir: TAlign;
+  const
+    k = 5; //matrix dimension
+  //mapping octants into aligns, assuming k=5
+    cDir: array[-4..4] of TAlign = (
+      alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
+    );
+  begin
+  //center of dock zone
+    w := ZoneSize.x div 2;
+    h := ZoneSize.y div 2;
+  //mouse position within k*k rectangles (squares)
+    dx := trunc((MousePos.x - w) / w * k);
+    dy := trunc((MousePos.y - h) / h * k);
+    izone := max(abs(dx), abs(dy)); //0..k
+  //map into 0=innermost (custom), 1=inner, 2=outer
+    if izone = 0 then begin
+      //zone := zInnermost;
+      dir := alCustom; //alClient?
+    end else begin
+    {
+      if izone >= k-1 then
+        zone := zOuter
+      else //if izone > 0 then
+        zone := zInner;
+    }
+      phi := arctan2(dy, dx);
+      zphi := trunc(radtodeg(phi)) div 45;
+      dir := cDir[zphi];
+    end;
+    Result := dir;
+  end;
+
+var
+  ZoneExtent: TPoint;
+begin
+(* New DockManager interface, called instead of the old version.
+  Determine exact target (zone) and DropAlign.
+Signal results:
+  Prevent docking by setting DropOnControl=Control (prevent changes when dropped).
+  DragTarget=nil means: become floating.
+
+  Unfortunately there exists no way to signal invalid docking attempts :-(
+*)
+//determine the zone containing the DragTargetPos
+  DockObj := ADockObject;
+  with ADockObject do begin
+  //mouse position within dock site
+    DragTargetPos := DragTarget.ScreenToClient(DragPos);
+  //find zone
+    zone := ZoneFromPoint(DragTargetPos);
+
+    if (zone = nil) or (Control = zone.ChildControl) then begin
+      DropAlign := alNone; //prevent drop (below)
+    end else begin
+      DropOnControl := zone.ChildControl;
+      if DropOnControl = nil then begin
+        DropAlign := alClient; //first element in entire site
+      end else begin
+      //determined the alignment within the zone.
+        DockRect := zone.GetBounds; //include header
+        DropAlign := DetectAlign(zone.BR, DragTargetPos);
+      //to screen coords
+        DockRect.TopLeft := FDockSite.ClientToScreen(DockRect.TopLeft);
+        DockRect.BottomRight := FDockSite.ClientToScreen(DockRect.BottomRight);
+      end;
+    end;
+  //position DockRect
+    if DropAlign = alNone then begin
+      DropOnControl := Control; //prevent drop - signal drop onto self
+    {$IFDEF NoDrop}
+      NoDrop := True;
+    {$ELSE}
+      //DragTarget := FDockSite; //prevent floating - doesn't work :-(
+      //DockRect := Rect(MaxInt, MaxInt, 0, 0); //LTRB - very strange effect!
+      //DockRect := Rect(MaxInt, 0, MaxInt, 0); //LTRB
+    {$ENDIF}
+    end else begin
+      PositionDockRect(Control, DropOnControl, DropAlign, DockRect);
+    end;
+  end;
 end;
 
 procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
@@ -715,19 +724,26 @@ procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
 var
   wh: integer;
 begin
-(* DockRect is initialized to the client rect of the dock site.
+(* DockRect is initialized to the screen rect of the dock site by TControl,
+  or to the zone rect by TEasyTree!
+
+  We assume call by TEasyTree...
 *)
 //debug!
   DropOn := DropCtl;
 
-  if (DropCtl = nil) {or (DropCtl = FTopZone.ChildControl)} then
+  if (DropCtl = nil) then begin
+    //DebugLn('no DropCtl');
     exit; //empty dock site
-
-  DockRect := DropCtl.BoundsRect;
-  DockRect.TopLeft := FDockSite.ClientToScreen(DockRect.TopLeft);
-  DockRect.BottomRight := FDockSite.ClientToScreen(DockRect.BottomRight);
-
+  end;
+{
+  with DockRect do
+  DebugLn('drop onto %s[%d,%d - %d,%d] %s', [
+      DropCtl.Name, Top, Left, Bottom, Right, AlignNames[DropAlign]
+      ]);
+}
   case DropAlign of
+  //alClient: as is
   alTop:    DockRect.Bottom := (DockRect.Top + DockRect.Bottom) div 2;
   alBottom: DockRect.Top := (DockRect.Top + DockRect.Bottom) div 2;
   alLeft:   DockRect.Right := (DockRect.Left + DockRect.Right) div 2;

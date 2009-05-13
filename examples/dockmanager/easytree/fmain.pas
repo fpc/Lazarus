@@ -13,9 +13,9 @@ unit fMain;
 *)
 
 //some defines, to demonstrate LCL flaws
-{$DEFINE docker}    //using control (undef: entire form) as dock site
-{$DEFINE easy}      //using EasyDockSite (undef: default LDockTree)
-{$DEFINE dragForm}  //create a form from the draggable images (or drag images)
+{$DEFINE Docker}    //using control (undef: entire form) as dock site
+{.$DEFINE easy}      //using EasyDockSite (undef: default LDockTree)
+{.$DEFINE dragForm}  //create a form from the draggable images (or drag images)
   //dragging forms is not supported on all platforms!
 
 
@@ -24,6 +24,11 @@ interface
 uses
   LCLIntf,
   SysUtils, Classes, Graphics, Controls, Forms,
+{$IFDEF easy}
+  //use EasyDockSite
+{$ELSE}
+  LDockTree,
+{$ENDIF}
   Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, LResources;
 
 type
@@ -31,7 +36,7 @@ type
   { TEasyDockMain }
 
   TEasyDockMain = class(TForm)
-    Docker: TPanel;
+    pnlDocker: TPanel;
     edDock: TEdit;
     lbDock: TLabel;
     sb: TStatusBar;
@@ -41,6 +46,8 @@ type
     Shape3: TShape;
     Shape4: TShape;
     buDump: TButton;
+    procedure DockerUnDock(Sender: TObject; Client: TControl;
+      NewTarget: TWinControl; var Allow: Boolean);
     procedure Shape1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
@@ -53,9 +60,11 @@ type
     procedure buDumpClick(Sender: TObject);
   private
   {$IFDEF docker}
+    //Docker: TPanel;
   {$ELSE}
-    Docker: TForm;
+    //Docker: TForm;
   {$ENDIF}
+    Docker: TWinControl;
     ShapeCount: integer;
   public
     { Public declarations }
@@ -72,6 +81,7 @@ uses
   EasyDockSite,
 {$ELSE}
 {$ENDIF}
+  LCLProc,
   Interfacebase,
   fTree;
 
@@ -129,16 +139,22 @@ end;
 procedure TEasyDockMain.FormCreate(Sender: TObject);
 begin
 {$IFDEF docker}
+  pnlDocker.Visible := True;
+  Docker := pnlDocker;
 {$ELSE}
+  pnlDocker.Visible := False;
   Docker := self;
 {$ENDIF}
 {$IFDEF easy}
   Docker.DockManager := TEasyTree.Create(Docker);
 {$ELSE}
+  //use default dockmanager
 {$ENDIF}
   Docker.DockSite := True;
   Docker.UseDockManager := True;
-  Mouse.DragImmediate := False;
+  Docker.OnDockOver:=@self.DockerDockOver;
+  Docker.OnDockDrop := @self.DockerDockDrop;
+  Mouse.DragImmediate := False; //appropriate at least for docking
 end;
 
 procedure TEasyDockMain.DockerDockDrop(Sender: TObject;
@@ -154,22 +170,62 @@ begin
   //Docker.DockManager.
 end;
 
+procedure TEasyDockMain.DockerUnDock(Sender: TObject; Client: TControl;
+  NewTarget: TWinControl; var Allow: Boolean);
+var
+  s, n: string;
+  r: TRect;
+begin
+(* problem: DockObj seems to be invalid - here? how?
+*)
+{ debug only - problem with exception handling!
+  DebugLn('--- UnDock ---');
+  try
+    if DockObj <> nil then begin
+      r := DockObj.DockRect;
+      if DockObj.DropOnControl = nil then
+        n := '<none>'
+      else
+        n := '...'; // DockObj.DropOnControl.Name;
+      s := Format('drop onto %s[%d,%d - %d,%d] %s', [
+        n, r.Top, r.Left, r.Bottom, r.Right, AlignNames[DockObj.DropAlign]]);
+      sb.SimpleText := s;
+      if DockObj.DropOnControl = DockObj.Control then begin
+        sb.SimpleText := 'NO undock to self';
+        Allow := False;
+      end;
+    end;
+  except
+    sb.SimpleText := '<invalid undock obj>';
+  end;
+}
+end;
+
 procedure TEasyDockMain.DockerDockOver(Sender: TObject;
   Source: TDragDockObject; X, Y: Integer; State: TDragState;
   var Accept: Boolean);
 var
   s: string;
+  DropOn: TControl;
+  r: TRect;
 begin
 {$IFDEF easy}
-  if DropOn = nil then
+  //if DropOn = nil then
+  if Source.DragTarget = nil then
     sb.SimpleText := '<drop nowhere>'
   else begin
-    s := Format('drop onto %s[%d,%d - %d,%d]', [
-      DropOn.Name, DropOn.Top, DropOn.Left, DropOn.Width, DropOn.Height]);
+    DropOn := Source.DragTarget;
+    r := Source.DockRect;
+    s := Format('drop onto %s[%d,%d - %d,%d] %s', [
+      DropOn.Name, r.Top, r.Left, r.Bottom, r.Right, AlignNames[Source.DropAlign]]);
     sb.SimpleText := s;
   end;
 {$ELSE}
 {$ENDIF}
+{ we cannot prevent undocking right now :-(
+  if Source.DropOnControl = Source.Control then
+    Accept := False;
+}
 end;
 
 procedure TEasyDockMain.buDumpClick(Sender: TObject);
