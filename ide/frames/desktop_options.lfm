@@ -231,7 +231,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Control = lblMisc
     Left = 0
     Height = 3
-    Top = 318
+    Top = 312
     Width = 64
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 6
@@ -241,7 +241,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 14
-    Top = 312
+    Top = 306
     Width = 39
     BorderSpacing.Top = 6
     Caption = 'lblMisc'
@@ -258,7 +258,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 115
     Height = 3
-    Top = 318
+    Top = 312
     Width = 482
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -269,10 +269,9 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 378
+    Top = 360
     Width = 221
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
     TabOrder = 0
   end
@@ -284,7 +283,8 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     Height = 17
     Top = 266
     Width = 220
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'ShowHintsForComponentPaletteCheckBox'
     TabOrder = 1
   end
@@ -294,9 +294,9 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 289
+    Top = 283
     Width = 223
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
     TabOrder = 2
   end
@@ -306,9 +306,10 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 332
+    Top = 326
     Width = 179
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'MsgViewDblClickJumpsCheckBox'
     TabOrder = 3
   end
@@ -318,9 +319,9 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 355
+    Top = 343
     Width = 139
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'MsgViewFocusCheckBox'
     TabOrder = 4
   end

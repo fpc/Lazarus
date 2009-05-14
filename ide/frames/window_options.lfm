@@ -3,9 +3,8 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
   Width = 463
   ClientHeight = 396
   ClientWidth = 463
-  TabOrder = 0
   Visible = False
-  DesignLeft = 44
+  DesignLeft = 231
   DesignTop = 58
   object MinimizeAllOnMinimizeMainCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
@@ -26,9 +25,8 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 23
+    Top = 17
     Width = 141
-    BorderSpacing.Top = 6
     Caption = 'HideIDEOnRunCheckBox'
     TabOrder = 1
   end
@@ -41,13 +39,13 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 327
-    Top = 69
+    Height = 339
+    Top = 57
     Width = 463
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'WindowPositionsGroupBox'
-    ClientHeight = 309
+    ClientHeight = 321
     ClientWidth = 459
     TabOrder = 2
     object Bevel1: TBevel
@@ -219,7 +217,6 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Top = 181
       Width = 60
       Anchors = [akTop, akRight]
-      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 60
       MaxValue = 4096
@@ -234,7 +231,6 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Top = 210
       Width = 60
       Anchors = [akTop, akRight]
-      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 60
       MaxValue = 4096
@@ -250,7 +246,6 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Top = 181
       Width = 60
       Anchors = [akTop, akRight]
-      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       MaxValue = 4096
@@ -266,7 +261,6 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
       Top = 210
       Width = 60
       Anchors = [akTop, akRight]
-      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       MaxValue = 4096
@@ -325,9 +319,8 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 17
-    Top = 46
+    Top = 34
     Width = 163
-    BorderSpacing.Top = 6
     Caption = 'HideMessagesIconsCheckBox'
     TabOrder = 3
   end
