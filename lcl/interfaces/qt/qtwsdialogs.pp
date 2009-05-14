@@ -303,6 +303,12 @@ begin
     QtFileDialog.setFileMode(QFileDialogExistingFile)
   else
     QtFileDialog.setFileMode(QFileDialogAnyFile);
+
+  if AFileDialog.FileName <> '' then
+  begin
+    ATitle := GetUTF8String(AFileDialog.FileName);
+    QFileDialog_selectFile(QFileDialogH(QtFileDialog.Widget), @ATitle);
+  end;
 end;
 
 class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
