@@ -291,7 +291,8 @@ function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
 function UTF8Length(p: PChar; ByteCount: integer): integer;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF8(u: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
+function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
 function UnicodeToUTF8(u: cardinal): shortstring; inline;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
@@ -3149,6 +3150,13 @@ function UnicodeToUTF8(u: cardinal; Buf: PChar): integer;
   end;
 
 begin
+  Result:=UnicodeToUTF8SkipErrors(u,Buf);
+  if Result=0 then
+    RaiseInvalidUnicode;
+end;
+
+function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
+begin
   case u of
     0..$7f:
       begin
@@ -3177,7 +3185,7 @@ begin
         Buf[3]:=char(byte(u and $3f) or $80);
       end;
   else
-    RaiseInvalidUnicode;
+    Result:=0;
   end;
 end;
 
