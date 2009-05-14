@@ -208,8 +208,17 @@ begin
 
   ParserState := 0;
   Position := 1;
-  TmpFilter := '';
+  TmpFilter := AFileDialog.Filter;
   ASelectedFilter := '';
+  {$ifdef USE_QT_45}
+  {we must remove all brackets since qt-45 doesn't like brackets
+   outside filters,so our eg. Pascal source (*.pas;*.pp) | *.pas;*.pp
+   becomes invalid after filters processing.}
+  TmpFilter := StringReplace(TmpFilter,'(','',[rfReplaceAll]);
+  TmpFilter := StringReplace(TmpFilter,')','',[rfReplaceAll]);
+  AFileDialog.Filter := TmpFilter;
+  {$endif}
+  TmpFilter := '';
 
   List := TStringList.Create;
   try
@@ -304,6 +313,12 @@ begin
   {$ifdef darwin}
   QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
+  {$ifdef USE_QT_45}
+  {$note qt-4.5.0,qt-4.5.1 currently supports macosx only,
+   others are non native when NOT QT_NATIVE_DIALOGS setted up.}
+  QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
+    QFileDialogDontUseNativeDialog, False);
+  {$endif}
   FileDialog.AttachEvents;
   
   Result := THandle(FileDialog);
@@ -350,21 +365,33 @@ begin
 
   if ACommonDialog is TSaveDialog then
   begin
+    {$ifdef QT_NATIVE_DIALOGS}
     saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
     saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
     saveTitle := GetUTF8String(FileDialog.Title);
+
     Flags := 0;
-    if not (ofOverwritePrompt in TOpenDialog(FileDialog).Options) then
+    if not (ofOverwritePrompt in TSaveDialog(FileDialog).Options) then
       Flags := Flags or QFileDialogDontConfirmOverwrite;
-    QFileDialog_getSaveFileName(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName, @saveFilter, @selectedFilter, Flags);
+
+    QFileDialog_getSaveFileName(@ReturnText,
+      QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
+      @saveFilter, @selectedFilter, Flags);
+
     if ReturnText <> '' then
     begin
       FileDialog.FileName := UTF16ToUTF8(ReturnText);
       FileDialog.UserChoice := mrOK;
     end else
       FileDialog.UserChoice := mrCancel;
-  end else
-  begin
+    {$else}
+
+    {$ifdef USE_QT_45}
+    QFileDialog_setOption(QFileDialogH(QtFileDialog.Widget),
+      QFileDialogDontConfirmOverwrite,
+      not (ofOverwritePrompt in TSaveDialog(FileDialog).Options));
+    {$endif}
+
     FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
     ReturnList := QStringList_create;
     try
@@ -380,6 +407,69 @@ begin
     finally
       QStringList_destroy(ReturnList);
     end;
+    {$endif}
+  end else
+  begin
+    {$ifdef QT_NATIVE_DIALOGS}
+    saveFilter := GetQtFilterString(TOpenDialog(ACommonDialog), selectedFilter);
+    saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
+    saveTitle := GetUTF8String(FileDialog.Title);
+
+    Flags := 0;
+    if (ofReadOnly in TOpenDialog(FileDialog).Options) then
+      Flags := Flags or QFileDialogReadOnly;
+
+    if (ofAllowMultiSelect in TOpenDialog(FileDialog).Options) then
+    begin
+      ReturnText := '';
+      ReturnList := QStringList_create;
+      try
+        QFileDialog_getOpenFileNames(ReturnList,
+          QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
+          @saveFilter, @selectedFilter, Flags);
+
+        for i := 0 to QStringList_size(ReturnList) - 1 do
+        begin
+          QStringList_at(ReturnList, @ReturnText, i);
+          FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
+          if i = 0 then
+            FileDialog.FileName := UTF16ToUTF8(ReturnText);
+        end;
+        {assign to ReturnText first filename}
+        if QStringList_size(ReturnList) > 0 then
+          QStringList_at(ReturnList, @ReturnText, 0);
+
+      finally
+        QStringList_destroy(ReturnList);
+      end;
+    end else
+      QFileDialog_getOpenFileName(@ReturnText,
+        QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
+        @saveFilter, @selectedFilter, Flags);
+
+    if ReturnText <> '' then
+    begin
+      FileDialog.FileName := UTF16ToUTF8(ReturnText);
+      FileDialog.UserChoice := mrOK;
+    end else
+      FileDialog.UserChoice := mrCancel;
+    {$else}
+    FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
+    ReturnList := QStringList_create;
+    try
+      QtFileDialog.selectedFiles(ReturnList);
+      for i := 0 to QStringList_size(ReturnList) - 1 do
+      begin
+        QStringList_at(ReturnList, @ReturnText, i);
+        FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
+        if i = 0 then
+          FileDialog.FileName := UTF16ToUTF8(ReturnText);
+      end;
+      ReturnText := FileDialog.Files.Text;
+    finally
+      QStringList_destroy(ReturnList);
+    end;
+    {$endif}
   end;
 end;
 
@@ -399,9 +489,6 @@ begin
     QtFileDialog.setViewMode(QFileDialogDetail)
   else
     QtFileDialog.setViewMode(QFileDialogList);
-
-  QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
-
 end;
 
 class function TQtWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -409,9 +496,20 @@ var
   FileDialog: TQtFileDialog;
 begin
   FileDialog := TQtFileDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+
   {$ifdef darwin}
-  QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+  QWidget_setWindowFlags(FileDialog.Widget, QtDialog or
+    QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
+
+  {$ifdef USE_QT_45}
+  {$note qt-4.5.0,qt-4.5.1 currently supports macosx only.}
+  QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
+    QFileDialogDontUseNativeDialog, False);
+  {$endif}
+
+  FileDialog.setFileMode(QFileDialogDirectoryOnly);
+
   FileDialog.AttachEvents;
 
   Result := THandle(FileDialog);
@@ -427,6 +525,8 @@ var
   ReturnText, saveFileName, saveTitle: WideString;
   FileDialog: TSelectDirectoryDialog;
   QtFileDialog: TQtFileDialog;
+  ReturnList: QStringListH;
+  i: Integer;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
@@ -443,16 +543,34 @@ begin
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
-
+  {$ifdef QT_NATIVE_DIALOGS}
   saveTitle := GetUTF8String(FileDialog.Title);
   saveFileName := GetUtf8String(FileDialog.InitialDir);
-  QFileDialog_getExistingDirectory(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
+  QFileDialog_getExistingDirectory(@ReturnText,
+    QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
   if ReturnText <> '' then
   begin
     FileDialog.FileName := UTF16ToUTF8(ReturnText);
     FileDialog.UserChoice := mrOK;
   end else
     FileDialog.UserChoice := mrCancel;
+  {$else}
+  FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
+  ReturnList := QStringList_create;
+  try
+    QtFileDialog.selectedFiles(ReturnList);
+    for i := 0 to QStringList_size(ReturnList) - 1 do
+    begin
+      QStringList_at(ReturnList, @ReturnText, i);
+      FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
+      if i = 0 then
+        FileDialog.FileName := UTF16ToUTF8(ReturnText);
+    end;
+    ReturnText := FileDialog.Files.Text;
+  finally
+    QStringList_destroy(ReturnList);
+  end;
+  {$endif}
 end;
 
 { TQtWSColorDialog }
