@@ -523,7 +523,6 @@ Adapted from the converter initially created for QtWSDialogs.pas
 class procedure TFilterComboBox.ConvertFilterToStrings(AFilter: string;
   AStrings: TStrings; AClearStrings, AAddDescription, AAddFilter: Boolean);
 var
-  TmpFilter, strExtensions: string;
   ParserState, Position, i: Integer;
 begin
   if AStrings = nil then Exit;
