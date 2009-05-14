@@ -3650,8 +3650,8 @@ begin
     Result:=s;
     exit;
   end;
-  len:=length(s);
-  SetLength(Result,len*2);// UTF-8 is at most twice the size
+  len:=length(s) div 2;
+  SetLength(Result,len*3);// UTF-8 is at most three times the size
   Src:=PWord(Pointer(s));
   Dest:=PChar(Result);
   for i:=1 to len do begin
