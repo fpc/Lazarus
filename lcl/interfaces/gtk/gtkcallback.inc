@@ -1177,20 +1177,22 @@ begin
     {$ENDIF}
   end;
 
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
+  if not (csDesigning in TComponent(Data).ComponentState) then
+  begin
+    DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMouseMotion);
     if DesignOnlySignal then exit;
     if not ControlGetsMouseMoveBefore(TControl(Data)) then exit;
-  end else begin
+  end else
+  begin
     // stop the signal, so that the widget does not auto react
-    g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
-    Result:=CallBackDefaultReturn;
+    g_signal_stop_emission_by_name(PGTKObject(Widget), 'motion-notify-event');
+    Result := CallBackDefaultReturn; // why not True if we want to stop it?
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
   {$IFDEF gtk2}
   if TControl(Data).FCompStyle = csWinControl then
-    Result := not CallBackDefaultReturn; // stop signal
+    Result := True; // stop signal
   {$ENDIF}
 end;
 
@@ -1204,8 +1206,8 @@ end;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
-  Result := CallBackDefaultReturn;
-  MousePositionValid:=false;
+  Result := True; // stop event propagation
+  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',
@@ -1220,7 +1222,7 @@ begin
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
 
-  DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
+  DeliverMouseMoveMessage(Widget,Event, TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
