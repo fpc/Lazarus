@@ -362,7 +362,10 @@ Cases 2 and 3 can be merged, with an additional or redundant setting of the orie
 *)
 begin
   if Control = FReplacingControl then begin
-  //hack for morphing DropCtl into notebook
+  (* hack for morphing DropCtl into notebook,
+    or initial docking of undocked controls in the dock site.
+    Everything is done by the caller, after ManualDock.
+  *)
     FReplacingControl := nil;
     exit;
   end;
@@ -412,7 +415,7 @@ begin
       DropCtl := NoteBook; //put further controls into the notebook
       ResetBounds(True); //for some reason only setting the size doesn't work
       NoteBook.Update;
-    end;
+    end; //else use existing control
     Control.ManualDock(TPageControl(DropCtl));
     FDockSite.Invalidate;
     exit;
@@ -599,9 +602,6 @@ var
     if z.ChildControl <> nil then begin
     //paint header
       ACaption := DockSite.GetDockCaption(z.ChildControl);
-      //ACaption := z.ChildControl.Name;
-      //ACaption := z.ChildControl.ClassName;
-      //ACaption := z.ChildControl.DefaultDockCaption;
       FHeader.Draw(z, ACanvas, ACaption, MousePos);
     end else begin
     //paint children
@@ -656,7 +656,8 @@ var
       //zone := zInnermost;
       dir := alCustom; //alClient?
     end else begin
-    {
+    { future feature: inner and outer location.
+      outmost location intended to span all siblings.
       if izone >= k-1 then
         zone := zOuter
       else //if izone > 0 then
@@ -681,8 +682,9 @@ Signal results:
 
   Unfortunately there exists no way to signal invalid docking attempts :-(
 *)
-//determine the zone containing the DragTargetPos
+//debug only
   DockObj := ADockObject;
+//determine the zone containing the DragTargetPos
   with ADockObject do begin
   //mouse position within dock site
     DragTargetPos := DragTarget.ScreenToClient(DragPos);
@@ -692,32 +694,33 @@ Signal results:
     if (zone = nil) or (Control = zone.ChildControl) then begin
       DropAlign := alNone; //prevent drop (below)
     end else begin
+      ADockRect := zone.GetBounds; //include header
       DropOnControl := zone.ChildControl;
       if DropOnControl = nil then begin
         DropAlign := alClient; //first element in entire site
-      end else begin
-      //determined the alignment within the zone.
-        ADockRect := zone.GetBounds; //include header
+      end else //determine the alignment within the zone.
         DropAlign := DetectAlign(zone.BR, DragTargetPos);
-      //to screen coords
-        ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
-        ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
-      end;
+    //to screen coords
+      ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
+      ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
     end;
   //position DockRect
     if DropAlign = alNone then begin
+    //force DockRect update by DockTrackNoTarget
       DropOnControl := Control; //prevent drop - signal drop onto self
     {$IFDEF NoDrop}
       NoDrop := True;
     {$ELSE}
+      DragTarget := nil;
+      //Control.DockTrackNoTarget
       //DragTarget := FDockSite; //prevent floating - doesn't work :-(
       //DockRect := Rect(MaxInt, MaxInt, 0, 0); //LTRB - very strange effect!
       //DockRect := Rect(MaxInt, 0, MaxInt, 0); //LTRB
     {$ENDIF}
     end else begin
       PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
+      DockRect := ADockRect;
     end;
-    DockRect := ADockRect;
   end;
 end;
 
@@ -1260,13 +1263,25 @@ end;
 procedure TEasyZone.SetBounds(TLBR: TRect);
 var
   z: TEasyZone;
+  r, rc: TRect;
 begin
 (* Zone cannot be the root zone. If so, ignore?
   Recurse into child zones.
 *)
   BR := TLBR.BottomRight;
   if ChildControl <> nil then begin //is control zone
-    ChildControl.BoundsRect := GetPartRect(zpClient);
+    ChildControl.Align := alNone;
+    r := GetPartRect(zpClient);
+    ChildControl.BoundsRect := r;
+    rc := ChildControl.BoundsRect;
+  //check control reacted properly
+    if not CompareMem(@r, @rc, sizeof(r)) then begin
+      with r do begin
+        DebugLn('BoundsRect as (%d,%d)-(%d,%d)', [Top, Left, Bottom, Right]);
+      end;
+      with rc do
+        DebugLn('BoundsRect is (%d,%d)-(%d,%d)', [Top, Left, Bottom, Right]);
+    end;
   end else if FirstChild <> nil then begin
     z := FirstChild;
     while z <> nil do begin
