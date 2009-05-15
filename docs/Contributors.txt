@@ -24,6 +24,7 @@ Boguslaw Brandys
 Boris Arko
 Boris Glavin
 Brad Campbell
+Bruce Tulloch
 Chris Rorden
 Christian Iversen
 Christian Ulrich
