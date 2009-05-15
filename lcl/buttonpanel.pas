@@ -19,8 +19,8 @@ unit ButtonPanel;
 interface
 
 uses
-  Buttons, Classes, LCLProc, Controls, Dialogs, ExtCtrls, Forms, Graphics,
-  GraphType, LCLType, SysUtils, LCLStrConsts;
+  Buttons, Classes, Controls, ExtCtrls, Forms, Graphics, GraphType, SysUtils,
+  LCLStrConsts;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);

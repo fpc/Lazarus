@@ -33,8 +33,7 @@ begin
     begin
       Parent := Form;
       Caption := InputPrompt;
-      Top := 8;
-      Left := 8;
+      Align := alTop;
       Visible := True;
       AutoSize := True;
     end;
@@ -43,9 +42,8 @@ begin
     with Edit do
     begin
       Parent := Form;
-      Left := Prompt.Left;
-      AnchorToNeighbour(akTop, 8, Prompt);
-      AnchorParallel(akRight, 0, Prompt);
+      Align := alTop;
+      AnchorToNeighbour(akTop, 6, Prompt);
       MinEditWidth := max(260, Screen.Width div 4);
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
@@ -62,39 +60,20 @@ begin
       end; 
       TabOrder := 0;
     end;
-    with TBitBtn.Create(Form) do
+
+    with TButtonPanel.Create(Form) do
     begin
       Parent := Form;
-      Kind := bkOk;
-      Default := True;
-      ModalResult := mrOk;
-      Left := MinEditWidth div 6;
-      AnchorToNeighbour(akTop, 8, Edit);
-      AutoSize := True;
-      TabStop := True;
+      ShowBevel := False;
+      ShowButtons := [pbOK, pbCancel];
+      Align := alTop;
+      AnchorToNeighbour(akTop, 0, Edit);
       Visible := True;
-      TabOrder := 1;
     end;
-    with TBitBtn.Create(Form) do
-    begin
-      Parent := Form;
-      Kind := bkCancel;
-      Cancel := True;
-      AnchorToNeighbour(akTop, 8, Edit);
-      AnchorSide[akRight].Control := Edit;
-      AnchorSide[akRight].Side := asrRight;
-      BorderSpacing.Right := MinEditWidth div 6;
-      Anchors := [akTop, akRight];
-      
-      AutoSize := True;
-      TabStop := True;
-      Visible := True;
-      TabOrder := 2;
-    end;
-    
-    ChildSizing.TopBottomSpacing := 8;
-    ChildSizing.LeftRightSpacing := 8;
-    AutoSize := true;
+
+    ChildSizing.TopBottomSpacing := 6;
+    ChildSizing.LeftRightSpacing := 6;
+    AutoSize := True;
 
     // upon show, the edit control will be focused for editing, because it's
     // the first in the tab order

@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, LResources, SysUtils, LCLIntf, InterfaceBase, FileUtil,
   LCLStrConsts, LCLType, LCLProc, Forms, Controls, Themes,
-  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses;
+  GraphType, Graphics, Buttons, ButtonPanel, StdCtrls, ExtCtrls, LCLClasses;
 
 
 type
