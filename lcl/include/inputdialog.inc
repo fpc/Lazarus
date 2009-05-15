@@ -34,7 +34,6 @@ begin
       Parent := Form;
       Caption := InputPrompt;
       Align := alTop;
-      Visible := True;
       AutoSize := True;
     end;
     Position := poScreenCenter;
@@ -43,20 +42,19 @@ begin
     begin
       Parent := Form;
       Align := alTop;
-      AnchorToNeighbour(akTop, 6, Prompt);
+      BorderSpacing.Top := 3;
       MinEditWidth := max(260, Screen.Width div 4);
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;
-      Visible := True;
       if MaskInput then
       begin 
         EchoMode := emPassword; 
-        PasswordChar:='*'; 
+        PasswordChar := '*';
       end else 
       begin 
         EchoMode := emNormal;
-        PasswordChar:=#0; 
+        PasswordChar := #0;
       end; 
       TabOrder := 0;
     end;
@@ -67,8 +65,6 @@ begin
       ShowBevel := False;
       ShowButtons := [pbOK, pbCancel];
       Align := alTop;
-      AnchorToNeighbour(akTop, 0, Edit);
-      Visible := True;
     end;
 
     ChildSizing.TopBottomSpacing := 6;
