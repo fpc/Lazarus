@@ -9727,20 +9727,23 @@ end;
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+function TGtkWidgetSet.WindowFromPoint(APoint: TPoint): HWND;
 var
   ev: TgdkEvent;
   Window: PgdkWindow;
   Widget: PgtkWidget;
   p: TPoint;
 begin
-  //DebugLn('WindowFromPoint: ', dbgs(Point));
+  // return cached value to prevent heavy gdk_window_at_pointer call
+  if APoint = FLastWFPMousePos then
+    Exit(FLastWFPResult);
+  //DebugLn('WindowFromPoint: ', dbgs(APoint));
   //DumpStack;
   Result := 0;
 
   // !!!gdk_window_at_pointer changes the coordinates!!!
   // -> using local variable p
-  p := Point;
+  p := APoint;
   Window := gdk_window_at_pointer(@p.x, @p.Y);
   if window <> nil then
   begin
@@ -9749,6 +9752,8 @@ begin
     Widget := gtk_get_event_widget(@ev);
     Result := PtrUInt(Widget);
   end;
+  FLastWFPMousePos := APoint;
+  FLastWFPResult := Result;
 end;
 
 //##apiwiz##eps##   // Do not remove

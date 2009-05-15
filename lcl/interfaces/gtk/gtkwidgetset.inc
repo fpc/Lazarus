@@ -179,6 +179,8 @@ begin
 
   inherited Create;
 
+  FLastWFPMousePos := Point(MaxInt, MaxInt);
+
   {$IFDEF EnabledGtkThreading}
   if {$IFDEF Win32}true{$ELSE}GetThreadManager(TM) and Assigned(TM.InitManager){$ENDIF}
   then begin

@@ -76,7 +76,6 @@ uses
   GtkDebug,
   GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, WSLCLClasses;
 
-
 type
 
   { TGTKWidgetSet }
@@ -131,6 +130,10 @@ type
     FDragImageList: PGtkWidget;
     FDragImageListIcon: PGtkWidget;
     FDragHotStop: TPoint;
+
+    // cache for WindowFromPoint
+    FLastWFPMousePos: TPoint;
+    FLastWFPResult: HWND;
 
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; virtual; abstract;
