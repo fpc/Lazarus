@@ -18,20 +18,17 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  ExtCtrls, Buttons, ComCtrls, IDEImagesIntf, ObjInspStrConsts;
+  ExtCtrls, Buttons, ComCtrls, ButtonPanel, IDEImagesIntf, ObjInspStrConsts,
+  LCLType;
 
 type
 
   { TCheckListBoxEditorDlg }
 
   TCheckListBoxEditorDlg = class(TForm)
-    BtnApply: TBitBtn;
-    BtnCancel: TBitBtn;
-    BtnHelp: TBitBtn;
-    BtnOK: TBitBtn;
+    BtnPanel: TButtonPanel;
     FCheck: TCheckListBox;
     aCheck: TCheckListBox;
-    FPanelOKCancel: TPanel;
     ToolBar: TToolBar;
     tbAdd: TToolButton;
     tbDelete: TToolButton;
@@ -110,10 +107,14 @@ begin
   tbEdit.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
 
   Caption := clbCheckListBoxEditor;
-  BtnOK.Caption := oisOk;
-  BtnCancel.Caption := oisCancel;
-  BtnHelp.Caption := cActionListEditorHelpCategory;
-  
+  BtnPanel.OKButton.Caption := oisOk;
+  BtnPanel.CancelButton.Caption := oisCancel;
+  BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
+  BtnPanel.CloseButton.Kind := bkCustom;
+  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
+  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.OnClick := @ApplyCheck;
+
   tbAdd.Hint := clbAdd;
   tbDelete.Hint := clbDeleteHint;
   tbUp.Hint := clbUp;

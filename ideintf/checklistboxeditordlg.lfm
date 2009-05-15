@@ -3,8 +3,6 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Height = 294
   Top = 154
   Width = 445
-  HorzScrollBar.Page = 444
-  VertScrollBar.Page = 293
   ActiveControl = FCheck
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -15,95 +13,25 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Constraints.MinWidth = 200
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object FCheck: TCheckListBox
-    Height = 234
+    Left = 0
+    Height = 232
     Top = 24
     Width = 445
     Align = alClient
+    ItemHeight = 0
     OnClick = FCheckClick
     TabOrder = 0
   end
-  object FPanelOKCancel: TPanel
-    Height = 36
-    Top = 258
-    Width = 445
-    Align = alBottom
-    BevelInner = bvLowered
-    ClientHeight = 36
-    ClientWidth = 445
-    TabOrder = 1
-    object BtnHelp: TBitBtn
-      AnchorSideRight.Control = FPanelOKCancel
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = FPanelOKCancel
-      AnchorSideBottom.Side = asrBottom
-      Left = 364
-      Height = 25
-      Top = 5
-      Width = 75
-      Anchors = [akRight, akBottom]
-      BorderSpacing.Around = 6
-      Caption = '&Help'
-      Kind = bkHelp
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object BtnApply: TBitBtn
-      AnchorSideRight.Control = BtnHelp
-      AnchorSideBottom.Control = FPanelOKCancel
-      AnchorSideBottom.Side = asrBottom
-      Left = 283
-      Height = 25
-      Top = 5
-      Width = 75
-      Anchors = [akRight, akBottom]
-      BorderSpacing.Around = 6
-      Caption = '&Apply'
-      NumGlyphs = 0
-      OnClick = ApplyCheck
-      TabOrder = 1
-    end
-    object BtnCancel: TBitBtn
-      AnchorSideRight.Control = BtnApply
-      AnchorSideBottom.Control = FPanelOKCancel
-      AnchorSideBottom.Side = asrBottom
-      Left = 202
-      Height = 25
-      Top = 5
-      Width = 75
-      Anchors = [akRight, akBottom]
-      BorderSpacing.Around = 6
-      Caption = 'Cancel'
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 2
-    end
-    object BtnOK: TBitBtn
-      AnchorSideRight.Control = BtnCancel
-      AnchorSideBottom.Control = FPanelOKCancel
-      AnchorSideBottom.Side = asrBottom
-      Left = 121
-      Height = 25
-      Top = 5
-      Width = 75
-      Anchors = [akRight, akBottom]
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      TabOrder = 3
-    end
-  end
   object ToolBar: TToolBar
+    Left = 0
     Height = 24
+    Top = 0
     Width = 445
     AutoSize = True
     Caption = 'ToolBar'
-    Flat = True
-    TabOrder = 2
+    TabOrder = 1
     object tbAdd: TToolButton
       Left = 1
       Top = 2
@@ -162,5 +90,13 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       ShowHint = True
       OnClick = ModifyItem
     end
+  end
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 262
+    Width = 433
+    TabOrder = 2
+    ShowBevel = False
   end
 end
