@@ -145,12 +145,6 @@ begin
       // size information, and later modify font size
       
       // using method 2
-      if (aSize=0) and (lfHeight=0) then
-        FullString:='10' // use some default: TODO: find out the default size of the widget
-      else if aSize>0 then
-        FullString:=IntToStr(aSize)
-      else
-        FullString:='';
 
       if aFamily = 'default' then
       begin
@@ -161,8 +155,22 @@ begin
           if PangoDesc = nil then
             PangoDesc := pango_context_get_font_description(pango_layout_get_context(CurFont));
           aFamily := StrPas(pango_font_description_get_family(PangoDesc));
+          if (aSize = 0) then
+          begin
+            aSize := pango_font_description_get_size(PangoDesc);
+            if not pango_font_description_get_size_is_absolute(PangoDesc) then
+              aSize := aSize div PANGO_SCALE;
+          end;
         end;
       end;
+
+      if (aSize = 0) and (lfHeight = 0) then
+        FullString := '10' // use some default: TODO: find out the default size of the widget
+      else
+      if aSize > 0 then
+        FullString := IntToStr(aSize)
+      else
+        FullString := '';
 
       FullString := AFamily + ' ' + aStyle + ' ' + FullString;
       PangoDesc := pango_font_description_from_string(PChar(FullString));
