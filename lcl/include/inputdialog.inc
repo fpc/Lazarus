@@ -16,6 +16,18 @@
 
 function ShowInputDialog(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
+
+  function ActiveMonitor: TMonitor; inline;
+  begin
+    if Screen.ActiveCustomForm <> nil then
+      Result := Screen.ActiveCustomForm.Monitor
+    else
+    if Application.MainForm <> nil then
+      Result := Application.MainForm.Monitor
+    else
+      Result := Screen.PrimaryMonitor;
+  end;
+
 var
   Form : TForm;
   Prompt : TLabel;
@@ -43,7 +55,7 @@ begin
       Parent := Form;
       Align := alTop;
       BorderSpacing.Top := 3;
-      MinEditWidth := max(260, Screen.Width div 4);
+      MinEditWidth := max(260, ActiveMonitor.Width div 4);
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;
