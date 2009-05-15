@@ -9727,25 +9727,27 @@ end;
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
+function TGtkWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var
-  ev : TgdkEvent;
-  Window : PgdkWindow;
-  Widget : PgtkWidget;
+  ev: TgdkEvent;
+  Window: PgdkWindow;
+  Widget: PgtkWidget;
   p: TPoint;
 begin
+  //DebugLn('WindowFromPoint: ', dbgs(Point));
+  //DumpStack;
   Result := 0;
 
   // !!!gdk_window_at_pointer changes the coordinates!!!
   // -> using local variable p
-  p:=Point;
-  Window := gdk_window_at_pointer(@p.x,@p.Y);
+  p := Point;
+  Window := gdk_window_at_pointer(@p.x, @p.Y);
   if window <> nil then
   begin
-    FillChar(ev,SizeOf(ev),0);
+    FillChar(ev, SizeOf(ev), 0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    Result := PtrUInt(widget);
+    Result := PtrUInt(Widget);
   end;
 end;
 

@@ -39,35 +39,38 @@ begin
   Result := Control;
   while (Result <> nil) and (not Result.ShowHint) do
     Result := Result.Parent;
-  if (Result <> nil)
-  and ([csDesigning,csDestroying,csLoading]*Result.ComponentState<>[]) then
+  if (Result <> nil)and
+     ([csDesigning, csDestroying, csLoading] * Result.ComponentState <> []) then
     Result := nil;
 end;
 
 function GetHintInfoAtMouse: THintInfoAtMouse;
 begin
-  if Mouse<>nil then begin
-    Result.MousePos:=Mouse.CursorPos;
-    Result.Control:=GetHintControl(FindControlAtPosition(Result.MousePos, True));
+  if Mouse <> nil then
+  begin
+    Result.MousePos := Mouse.CursorPos;
+    Result.Control := GetHintControl(FindControlAtPosition(Result.MousePos, True));
     Result.ControlHasHint:=
-      (Result.Control<>nil)
-      and (Application<>nil) and (Application.ShowHint)
-      and (GetCapture=0)
-      and ((GetKeyState(VK_LBUTTON) and $80)=0)
-      and ((GetKeyState(VK_MBUTTON) and $80)=0)
-      and ((GetKeyState(VK_RBUTTON) and $80)=0);
-    if Result.ControlHasHint then begin
+      (Result.Control <> nil)
+      and (Application <> nil) and (Application.ShowHint)
+      and (GetCapture = 0)
+      and ((GetKeyState(VK_LBUTTON) and $80) = 0)
+      and ((GetKeyState(VK_MBUTTON) and $80) = 0)
+      and ((GetKeyState(VK_RBUTTON) and $80) = 0);
+    if Result.ControlHasHint then
+    begin
       // if there is a modal form, then don't show hints for other forms
       if (Screen.FFocusedForm<>nil)
       and (fsModal in Screen.FFocusedForm.FormState)
-      and (GetParentForm(Result.Control)<>Screen.FFocusedForm)
+      and (GetParentForm(Result.Control) <> Screen.FFocusedForm)
       then
-        Result.ControlHasHint:=false;
+        Result.ControlHasHint := False;
     end;
-  end else begin
-    Result.MousePos:=Point(0,0);
-    Result.Control:=nil;
-    Result.ControlHasHint:=false;
+  end else
+  begin
+    Result.MousePos := Point(0, 0);
+    Result.Control := nil;
+    Result.ControlHasHint := False;
   end;
 end;
 
@@ -1405,17 +1408,20 @@ procedure TApplication.NotifyUserInputHandler(Msg: Cardinal);
 var
   i: integer;
 begin
-  FLastMouseControlValid:=false;
+  FLastMouseControlValid := False;
   case Msg of
-  LM_MOUSEMOVE: DoOnMouseMove;
-  else          CancelHint;
+    LM_MOUSEMOVE:
+      DoOnMouseMove;
+    else
+      CancelHint;
   end;
   
-  if Assigned(FOnUserInput) then FOnUserInput(Self, Msg);
+  if Assigned(FOnUserInput) then
+    FOnUserInput(Self, Msg);
 
-  i:=FApplicationHandlers[ahtUserInput].Count;
+  i := FApplicationHandlers[ahtUserInput].Count;
   while FApplicationHandlers[ahtUserInput].NextDownIndex(i) do
-    TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Self,Msg);
+    TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Self, Msg);
 end;
 
 procedure TApplication.NotifyKeyDownBeforeHandler(Sender: TObject;

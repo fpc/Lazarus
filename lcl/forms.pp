@@ -1528,7 +1528,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure NotifyApplicationUserInput(Msg: Cardinal);
 begin
-  if Application<>nil then
+  if Application <> nil then
     Application.NotifyUserInputHandler(Msg);
 end;
 

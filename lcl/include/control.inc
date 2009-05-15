@@ -3226,9 +3226,9 @@ begin
   {$ENDIF}
   DoBeforeMouseMessage;
   UpdateMouseCursor(Message.XPos,Message.YPos);
-  if not (csNoStdEvents in ControlStyle)
-  then with Message do
-    MouseMove(KeystoShiftState(Word(Keys)), XPos, YPos);
+  if not (csNoStdEvents in ControlStyle) then
+    with Message do
+      MouseMove(KeystoShiftState(Word(Keys)), XPos, YPos);
 end;
 
 {------------------------------------------------------------------------------

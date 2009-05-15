@@ -1074,16 +1074,15 @@ end;
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
 -------------------------------------------------------------------------------}
-procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
+procedure DeliverMouseMoveMessage(Widget: PGTKWidget; Event: PGDKEventMotion;
   AWinControl: TWinControl);
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
   MappedXY: TPoint;
 begin
-  if (Widget=nil) then ;
-  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
-                               Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
+  MappedXY := TranslateGdkPointToClientArea(Event^.Window,
+                               Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
 
   ShiftState := GTKEventStateToShiftState(Event^.State);

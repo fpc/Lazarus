@@ -2597,13 +2597,14 @@ var
 begin
   Result := nil;
   WinControl := FindLCLWindow(Position);
-  if WinControl <> nil
-  then begin
+  if WinControl <> nil then
+  begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
                         [capfAllowDisabled,capfAllowWinControls,capfRecursive]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
-    if Control <> nil then Result := Control;
+    if Control <> nil then
+      Result := Control;
   end;
 end;
 
