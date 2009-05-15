@@ -89,7 +89,7 @@ type
     FLineRotation: Fixed;
   public
     procedure Apply(ADC: TCarbonContext); virtual; abstract;
-    function Draw(X, Y: Integer): Boolean; virtual; abstract;
+    function Draw(X, Y: Integer; DX: PInteger): Boolean; virtual; abstract;
     procedure Release; virtual;
 
     function GetHeight: Integer;
@@ -110,10 +110,13 @@ type
     FWidget: HIViewRef;
     FTextBuffer: WideString;
     FDC: TCarbonContext;
+    FDX: Integer;
+  protected
+    procedure DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
   public
     constructor Create(const Text: String; Font: TCarbonFont; TextFractional: Boolean);
     procedure Apply(ADC: TCarbonContext); override;
-    function Draw(X, Y: Integer): Boolean; override;
+    function Draw(X, Y: Integer; DX: PInteger): Boolean; override;
     procedure Release; override;
 
     property Layout: ATSUTextLayout read FLayout;
@@ -129,7 +132,7 @@ type
   public
     constructor Create(const Text: String; Font: TCarbonFont);
     procedure Apply(ADC: TCarbonContext); override;
-    function Draw(X, Y: Integer): Boolean; override;
+    function Draw(X, Y: Integer; DX: PInteger): Boolean; override;
   end;
 
   { TCarbonFont }
@@ -803,7 +806,6 @@ begin
     -Y, X + RoundFixed(FTextAfter), -Y - RoundFixed(FAscent + FDescent));
 end;
 
-{ TCarbonTextLayoutBuffer }
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTextLayoutBuffer.Create
@@ -907,10 +909,54 @@ begin
     Self, 'Apply', SGetUnjustifiedBounds) then Exit;
 end;
 
-function TCarbonTextLayoutBuffer.Draw(X, Y: Integer): Boolean;
+
+function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; iOperationCallbackParameterPtr: UnivPtr;
+  var oCallbackStatus: ATSULayoutOperationCallbackStatus ): OSStatus; {$ifdef DARWIN}mwpascal;{$endif}
+var
+  Buffer  : TCarbonTextLayoutBuffer;
+  Handled : Boolean;
+begin
+  Buffer := TCarbonTextLayoutBuffer(iRefCon);
+  if not Assigned(Buffer) then
+    Result := noErr
+  else
+  begin
+    Handled := false;
+    case iCurrentOperation of
+      kATSULayoutOperationJustification:
+        Buffer.DoJustify(iLineRef, Handled);
+    end;
+    Result := noErr;
+  end;
+end;
+
+procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
+type
+  TFixedArray = array [Word] of Fixed;
+  PFixedArray = ^TFixedArray;
+var
+  Deltas  : PFixedArray;
+  Count   : ItemCount;
+  i       : Integer;
+begin
+  ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
+    kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
+  if Assigned(Deltas) and (Count > 0) then
+  begin
+    for i := 1 to Count - 1 do
+      Deltas^[i] := Long2Fix(FDX);
+    Handled := true;
+  end;
+end;
+
+function TCarbonTextLayoutBuffer.Draw(X, Y: Integer; Dx: PInteger): Boolean;
 var
   MX, MY: ATSUTextMeasurement;
   A: Single;
+  theTag    : ATSUAttributeTag;
+  theSize   : ByteCount;
+  theValue  : ATSUAttributeValuePtr;
+  OverSpec  : ATSULayoutOperationOverrideSpecifier;
 begin
   Result := False;
   
@@ -926,9 +972,24 @@ begin
     MY := 0;
   end;
 
+  if Assigned(Dx) then begin
+    FDX := Dx^;
+    OverSpec.operationSelector := kATSULayoutOperationJustification;
+    OverSpec.overrideUPP := NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback);
+    theTag := kATSULayoutOperationOverrideTag;
+    theSize := sizeof (ATSULayoutOperationOverrideSpecifier);
+    theValue := @OverSpec;
+  end;
+
   if OSError(ATSUDrawText(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
       X shl 16 - FTextBefore + MX, -(Y shl 16) - FAscent + MY),
     Self, 'Draw', 'ATSUDrawText') then Exit;
+
+  if Assigned(Dx) then begin
+    DisposeATSUDirectLayoutOperationOverrideUPP(OverSpec.overrideUPP);
+    OverSpec.overrideUPP := nil;
+    ATSUSetLayoutControls (FLayout, 1, @theTag, @theSize, @theValue);
+  end;
     
   Result := True;
 end;
@@ -991,7 +1052,7 @@ begin
   end;
 end;
 
-function TCarbonTextLayoutArray.Draw(X, Y: Integer): Boolean;
+function TCarbonTextLayoutArray.Draw(X, Y: Integer; Dx: PInteger): Boolean;
 var
   I: Integer;
 begin
@@ -999,8 +1060,9 @@ begin
   
   for I := 1 to Length(FText) do
   begin
-    Result := FFont.FCachedLayouts[Ord(FText[I])].Draw(X, Y);
-    Inc(X, FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
+    Result := FFont.FCachedLayouts[Ord(FText[I])].Draw(X, Y, nil);
+    if Assigned(dx) then Inc(X, Dx^)
+    else Inc(X, FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
   end;
 
   Result := True;

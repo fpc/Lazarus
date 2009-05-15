@@ -840,7 +840,7 @@ end;
            Rect    - Optional clipping and/or opaquing rectangle (TODO)
            Str     - Character string to be drawn
            Count   - Number of characters in string
-           Dx      - Pointer to array of intercharacter spacing values (IGNORED)
+           Dx      - Pointer to array of intercharacter spacing values
   Returns: If the string was drawn
 
   Draws a character string by using the currently selected font
@@ -854,7 +854,7 @@ begin
   Result := False;
   //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
   //  ' S: ' + Str + ' C: ' + DbgS(Count));
-  
+
   if Rect <> nil then
   begin
     // fill background
@@ -887,7 +887,7 @@ begin
     TextBrush.Apply(Self, False); // do not use ROP2
 
     // finally draw the text
-    if not TextLayout.Draw(X, Y) then Exit;
+    if not TextLayout.Draw(X, Y, DX) then Exit;
     Result := True;
   finally
     EndTextRender(TextLayout);
