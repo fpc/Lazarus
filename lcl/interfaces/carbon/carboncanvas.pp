@@ -887,7 +887,7 @@ begin
     TextBrush.Apply(Self, False); // do not use ROP2
 
     // finally draw the text
-    if not TextLayout.Draw(X, Y, DX) then Exit;
+    if not TextLayout.Draw(X, Y, DX, Count) then Exit;
     Result := True;
   finally
     EndTextRender(TextLayout);
