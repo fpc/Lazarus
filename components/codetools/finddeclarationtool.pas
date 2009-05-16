@@ -5434,9 +5434,9 @@ var
   Node: TCodeTreeNode;
 begin
   // build tree for pascal source
-  debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
+  //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
   BuildTree(true);
-  debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
+  //debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
