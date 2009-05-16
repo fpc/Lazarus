@@ -88,7 +88,8 @@ type
     Next: PSourceLink;
   end;
 
-  { TSourceChangeStep is used save the ChangeStep of every used file }
+  { TSourceChangeStep is used to save the ChangeStep of every used file
+    A ChangeStep is switching to or from an include file }
   PSourceChangeStep = ^TSourceChangeStep;
   TSourceChangeStep = record
     Code: Pointer;
@@ -99,7 +100,16 @@ type
   TLinkScannerRange = (
     lsrNone, // undefined
     lsrInit, // init, but do not scan any code
-    lsrInterface, // scan only interface
+    lsrSourceType, // read till source type (e.g. keyword program or unit)
+    lsrSourceName, // read till source name
+    lsrInterfaceStart, // read till keyword interface
+    lsrMainUsesSectionStart, // uses section of interface/program
+    lsrMainUsesSectionEnd, // uses section of interface/program
+    lsrImplementationStart, // scan only interface
+    lsrImplementationUsesSectionStart, // uses section of implementation
+    lsrImplementationUsesSectionEnd, // uses section of implementation
+    lsrInitializationStart,
+    lsrFinalizationStart,
     lsrEnd // scan till 'end.'
     );
 
@@ -141,8 +151,16 @@ type
   
   { LinkScanner Token Types }
   TLSTokenType = (
-    lsttNone, lsttSrcEnd, lsttIdentifier, lsttEqual, lsttPoint, lsttEnd,
-    lsttEndOfInterface);
+    lsttNone,
+    lsttSrcEnd, // no more tokens
+    lsttWord,
+    lsttEqual,
+    lsttPoint,
+    lsttSemicolon,
+    lsttComma,
+    lsttStringConstant,
+    lsttEnd
+    );
 
   { Error handling }
   ELinkScannerError = class(Exception)
@@ -234,10 +252,17 @@ type
     procedure HandleDirectives;
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
-    function ParseKeyWord(StartPos, WordLen: integer): boolean;
+    function ParseKeyWord(StartPos, WordLen: integer; LastTokenType: TLSTokenType
+                          ): boolean;
     function DoEndToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoDefaultIdentToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoEndOfInterfaceToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoSourceTypeToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoInterfaceToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoImplementationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoFinalizationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoInitializationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoUsesToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function IsUsesToken: boolean;
+    function TokenIsWord(p: PChar): boolean;
   private
     // directives
     FDirectiveName: shortstring;
@@ -287,7 +312,7 @@ type
     function MissingIncludeFilesNeedsUpdate: boolean;
     procedure ClearMissingIncludeFiles;
   protected
-    // errors
+    // error: the error is in range Succ(ScannedRange)
     LastErrorMessage: string;
     LastErrorSrcPos: integer;
     LastErrorCode: pointer;
@@ -482,13 +507,29 @@ var
   PSourceLinkMemManager: TPSourceLinkMemManager;
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
+const
+  LinkScannerRangeNames: array[TLinkScannerRange] of string = (
+    'lsrNone',
+    'lsrInit',
+    'lsrSourceType',
+    'lsrSourceName',
+    'lsrInterfaceStart',
+    'lsrMainUsesSectionStart',
+    'lsrMainUsesSectionEnd',
+    'lsrImplementationStart',
+    'lsrImplementationUsesSectionStart',
+    'lsrImplementationUsesSectionEnd',
+    'lsrInitializationStart',
+    'lsrFinalizationStart',
+    'lsrEnd'
+    );
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TList): integer;
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TFPList): integer;
-
+function dbgs(r: TLinkScannerRange): string; overload;
 
 implementation
 
@@ -535,6 +576,11 @@ begin
     end;
   end;
   Result:=-1;
+end;
+
+function dbgs(r: TLinkScannerRange): string; overload;
+begin
+  Result:=LinkScannerRangeNames[r];
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
@@ -916,36 +962,35 @@ var
   c1: char;
   c2: char;
 begin
-  // Skip all spaces and comments
   //DebugLn(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
+  // Skip all spaces and comments
   c1:=Src[SrcPos];
-  if IsCommentStartChar[c1] or IsSpaceChar[c1] then begin
-    while true do begin
-      if IsCommentStartChar[c1] then begin
-        case c1 of
-        '{' :
-          SkipComment;
-        '/':
-          if (SrcPos<SrcLen) and (Src[SrcPos+1]='/') then
-            SkipDelphiComment
-          else
-            break;
-        '(':
-          if (SrcPos<SrcLen) and (Src[SrcPos+1]='*') then
-            SkipOldTPComment
-          else
-            break;
-        end;
-      end else if IsSpaceChar[c1] then begin
+  while true do begin
+    case c1 of
+    '{' :
+      SkipComment;
+    '/':
+      if (SrcPos<SrcLen) and (Src[SrcPos+1]='/') then
+        SkipDelphiComment
+      else
+        break;
+    '(':
+      if (SrcPos<SrcLen) and (Src[SrcPos+1]='*') then
+        SkipOldTPComment
+      else
+        break;
+     ' ',#9,#10,#13:
         repeat
           inc(SrcPos);
         until (SrcPos>SrcLen) or (not (IsSpaceChar[Src[SrcPos]]));
-      end else
-        break;
-      if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
-      c1:=Src[SrcPos];
+    else
+      break;
     end;
+    if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
+    c1:=Src[SrcPos];
   end;
   TokenStart:=SrcPos;
   TokenType:=lsttNone;
@@ -953,15 +998,16 @@ begin
   case c1 of
     '_','A'..'Z','a'..'z':
       begin
-        // identifier
+        // keyword or identifier
         inc(SrcPos);
         while (SrcPos<=SrcLen)
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
-        ParseKeyWord(TokenStart,SrcPos-TokenStart);
+        TokenType:=lsttWord;
       end;
     '''','#':
       begin
+        TokenType:=lsttStringConstant;
         while (SrcPos<=SrcLen) do begin
           case (Src[SrcPos]) of
           '#':
@@ -1036,6 +1082,16 @@ begin
         inc(SrcPos);
         TokenType:=lsttPoint;
       end;
+    ';':
+      begin
+        inc(SrcPos);
+        TokenType:=lsttSemicolon;
+      end;
+    ',':
+      begin
+        inc(SrcPos);
+        TokenType:=lsttComma;
+      end;
     else
       inc(SrcPos);
       if SrcPos<=SrcLen then begin
@@ -1050,6 +1106,7 @@ begin
         then inc(SrcPos);
       end;
   end;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure TLinkScanner.Scan(Range: TLinkScannerRange; CheckFilesOnDisk: boolean);
@@ -1064,20 +1121,24 @@ var
 begin
   if (not UpdateNeeded(Range,CheckFilesOnDisk)) then begin
     // input is the same as last time -> output is the same
-    // -> if there was an error, raise it again
-    if LastErrorIsValid
-    and ((not IgnoreErrorAfterValid)
-      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
-    then
-      RaiseLastError;
+    // -> if there was an error and it was in a needed range, raise it again
+    if LastErrorIsValid then begin
+      // the error is happened in ScannedRange
+      if ord(ScannedRange)>ord(Range) then begin
+        // error was not in needed range
+      end else if (ScannedRange=Range)
+      and ((not IgnoreErrorAfterValid)
+          or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+      then
+        RaiseLastError;
+    end;
     exit;
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan A -------- TillInterfaceEnd=',dbgs(TillInterfaceEnd));
+  DebugLn('TLinkScanner.Scan A -------- Range=',dbgs(Range));
   {$ENDIF}
   ScanTill:=Range;
   Clear;
-  IncreaseChangeStep;
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan B ');
   {$ENDIF}
@@ -1124,10 +1185,9 @@ begin
   //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' ',FInitValues.IsDefined(NestedCompilerDefine),' FNestedComments=',FNestedComments]);
     
   //DebugLn(Values.AsString);
-  //DebugLn('TLinkScanner.Scan E --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
-  // beging scanning
+  // begin scanning
   AddLink(1,SrcPos,Code);
   LastTokenType:=lsttNone;
   LastProgressPos:=0;
@@ -1135,28 +1195,34 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan F ',dbgs(SrcLen));
   {$ENDIF}
+  ScannedRange:=lsrInit;
   if ScanTill=lsrInit then exit;
   try
     try
-      repeat
+      ReadNextToken;
+      if IsUsesToken then
+        DoUsesToken
+      else
+        SrcPos:=TokenStart;
+      while ord(ScanTill)>ord(ScannedRange) do begin
         // check every 100.000 bytes for abort
         if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>100000) then begin
           LastProgressPos:=LastCleanSrcPos;
           DoCheckAbort;
         end;
         ReadNextToken;
+        if TokenType=lsttWord then
+          ParseKeyWord(TokenStart,SrcPos-TokenStart,LastTokenType);
+
         //DebugLn('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
-        if (TokenType=lsttEndOfInterface) and (LastTokenType<>lsttEqual) then
-        begin
-          ScannedRange:=lsrInterface;
-          if ScanTill=lsrInterface then break;
-        end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
+        if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
           ScannedRange:=lsrEnd;
           break;
-        end else if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then
+        end;
+        if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then
           break;
         LastTokenType:=TokenType;
-      until false;
+      end;
     finally
       if FSkippingDirectives=lssdNone then begin
         {$IFDEF ShowUpdateCleanedSrc}
@@ -1183,7 +1249,7 @@ begin
     end;
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan END ',dbgs(CleanedLen));
+  DebugLn('TLinkScanner.Scan END ',dbgs(CleanedLen),' ',dbgs(ScannedRange));
   {$ENDIF}
 end;
 
@@ -1432,10 +1498,12 @@ end;
 function TLinkScanner.UpdateNeeded(
   Range: TLinkScannerRange; CheckFilesOnDisk: boolean): boolean;
 { the clean source must be rebuilt if
-   1. scanrange changed from only interface to whole source
+   1. scanrange increased
    2. unit source changed
    3. one of its include files changed
    4. init values changed (e.g. initial compiler defines)
+   5. FForceUpdateNeeded is set
+   6. a missing include file can now be found
 }
 var i: integer;
   SrcLog: TSourceLog;
@@ -1468,14 +1536,20 @@ begin
     end;
   end;
   
-  // check if any input has changed ...
-  FForceUpdateNeeded:=true;
-  
   // check if ScanRange has increased
   if ord(Range)>ord(ScannedRange) then exit;
 
+  // check if any input has changed ...
+  FForceUpdateNeeded:=true;
+  
   // check all used files
   if Assigned(FOnGetSource) then begin
+    for i:=0 to FSourceChangeSteps.Count-1 do begin
+      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
+      //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
+      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then exit;
+    end;
     if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
       // if files changed on disk, reload them
       for i:=0 to FSourceChangeSteps.Count-1 do begin
@@ -1483,12 +1557,6 @@ begin
         SrcLog:=FOnGetSource(Self,SrcChange^.Code);
         FOnCheckFileOnDisk(SrcLog);
       end;
-    end;
-    for i:=0 to FSourceChangeSteps.Count-1 do begin
-      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
-      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
-      //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
-      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then exit;
     end;
   end;
   
@@ -2921,7 +2989,8 @@ begin
   Result:=SrcPos<=SrcLen;
 end;
 
-function TLinkScanner.ParseKeyWord(StartPos, WordLen: integer): boolean;
+function TLinkScanner.ParseKeyWord(StartPos, WordLen: integer;
+  LastTokenType: TLSTokenType): boolean;
 var
   p: PChar;
 begin
@@ -2929,12 +2998,24 @@ begin
   p:=@Src[StartPos];
   case UpChars[p^] of
   'E': if CompareIdentifiers(p,'END')=0 then exit(DoEndToken);
-  'F': if CompareIdentifiers(p,'FINALIZATION')=0 then exit(DoEndOfInterfaceToken);
+  'F': if CompareIdentifiers(p,'FINALIZATION')=0 then exit(DoFinalizationToken);
   'I':
     case UpChars[p[1]] of
-    'M': if CompareIdentifiers(p,'IMPLEMENTATION')=0 then exit(DoEndOfInterfaceToken);
-    'N': if CompareIdentifiers(p,'INITIALIZIATION')=0 then exit(DoEndOfInterfaceToken);
+    'M': if CompareIdentifiers(p,'IMPLEMENTATION')=0 then exit(DoImplementationToken);
+    'N':
+      case UpChars[p[2]] of
+      'I': if CompareIdentifiers(p,'INITIALIZATION')=0 then exit(DoInitializationToken);
+      'T': if (LastTokenType<>lsttEqual)
+              and (CompareIdentifiers(p,'INTERFACE')=0) then exit(DoInterfaceToken);
+      end;
     end;
+  'L': if CompareIdentifiers(p,'LIBRARY')=0 then exit(DoSourceTypeToken);
+  'P':
+    case UpChars[p[1]] of
+    'R': if CompareIdentifiers(p,'PROGRAM')=0 then exit(DoSourceTypeToken);
+    'A': if CompareIdentifiers(p,'PACKAGE')=0 then exit(DoSourceTypeToken);
+    end;
+  'U': if CompareIdentifiers(p,'UNIT')=0 then exit(DoSourceTypeToken);
   end;
   Result:=false;
 end;
@@ -2945,16 +3026,95 @@ begin
   Result:=true;
 end;
 
-function TLinkScanner.DoDefaultIdentToken: boolean;
+function TLinkScanner.DoSourceTypeToken: boolean;
+// program, unit, library, package
+// unit unit1;
+// unit unit1 platform;
+// unit unit1 unimplemented;
 begin
-  TokenType:=lsttIdentifier;
+  if ScannedRange<>lsrInit then exit(false);
+  Result:=true;
+  ScannedRange:=lsrSourceType;
+  if ScannedRange=ScanTill then exit;
+  ReadNextToken;
+  ScannedRange:=lsrSourceName;
+  if ScannedRange=ScanTill then exit;
+  ReadNextToken;
+  if IsUsesToken then Result:=DoUsesToken;
+end;
+
+function TLinkScanner.DoInterfaceToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrInterfaceStart) then exit(false);
+  ScannedRange:=lsrInterfaceStart;
+  Result:=true;
+  if ScannedRange=ScanTill then exit;
+  ReadNextToken;
+  if IsUsesToken then Result:=DoUsesToken;
+end;
+
+function TLinkScanner.DoFinalizationToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrFinalizationStart) then exit(false);
+  ScannedRange:=lsrFinalizationStart;
   Result:=true;
 end;
 
-function TLinkScanner.DoEndOfInterfaceToken: boolean;
+function TLinkScanner.DoInitializationToken: boolean;
 begin
-  TokenType:=lsttEndOfInterface;
+  if ord(ScannedRange)>=ord(lsrInitializationStart) then exit(false);
+  ScannedRange:=lsrInitializationStart;
   Result:=true;
+end;
+
+function TLinkScanner.DoUsesToken: boolean;
+// uses name, name in 'string';
+begin
+  if ord(ScannedRange)<=ord(lsrInterfaceStart) then
+    ScannedRange:=lsrMainUsesSectionStart
+  else if ScannedRange=lsrImplementationStart then
+    ScannedRange:=lsrImplementationUsesSectionStart;
+  repeat
+    // read unit name
+    ReadNextToken;
+    if (TokenType<>lsttWord)
+    or WordIsKeyWord.DoItCaseInsensitive(@Src[SrcPos]) then exit(false);
+    ReadNextToken;
+    if TokenIs('in') then begin
+      // read "in" filename
+      ReadNextToken;
+      if TokenType=lsttStringConstant then
+        ReadNextToken;
+    end;
+    if TokenType=lsttSemicolon then break;
+    if TokenType<>lsttComma then begin
+      // syntax error -> this token does not belong to the uses section
+      SrcPos:=TokenStart;
+      break;
+    end;
+  until false;
+  ScannedRange:=succ(ScannedRange);   // lsrMainUsesSectionEnd, lsrImplementationUsesSectionEnd;
+  Result:=true;
+end;
+
+function TLinkScanner.IsUsesToken: boolean;
+begin
+  Result:=(TokenType=lsttWord) and (CompareIdentifiers(@Src[SrcPos],'USES')=0);
+end;
+
+function TLinkScanner.TokenIsWord(p: PChar): boolean;
+begin
+  Result:=(TokenType=lsttWord) and (CompareIdentifiers(p,@Src[SrcPos])=0);
+end;
+
+function TLinkScanner.DoImplementationToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrImplementationStart) then exit(false);
+  ScannedRange:=lsrImplementationStart;
+  Result:=true;
+  if ScannedRange=ScanTill then exit;
+  ReadNextToken;
+  if IsUsesToken then Result:=DoUsesToken;
 end;
 
 procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);

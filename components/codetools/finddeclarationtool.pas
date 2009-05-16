@@ -1920,8 +1920,8 @@ var
   NewInFilename: String;
   NewCompiledUnitname: String;
 begin
-  {$IFDEF ShowTriedFiles}
-  DebugLn('TFindDeclarationTool.FindUnitSource A AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'" Self="',MainFilename,'"');
+  {$IF defined(ShowTriedFiles) or defined(ShowTriedUnits)}
+  DebugLn('TFindDeclarationTool.FindUnitSource Self="',MainFilename,'" AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'"');
   {$ENDIF}
   Result:=nil;
   if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
@@ -3005,7 +3005,7 @@ begin
       raise;
     end;
   end;}
-  // if we are here, the identifier was not found
+  // if we are here, the identifier was not found and there was no error
   if (FirstSearchedNode<>nil) and (Params.FoundProc=nil)
   and (not (fdfCollect in Params.Flags)) then begin
     // add result to cache
@@ -5203,7 +5203,7 @@ begin
       RaiseException('unit '+AnUnitName+' not found');
   end else begin
     // source found -> get codetool for it
-    {$IFDEF ShowTriedFiles}
+    {$IF defined(ShowTriedFiles) or defined(ShowTriedUnits)}
     DebugLn('[TFindDeclarationTool.FindCodeToolForUsedUnit] ',
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
     ' NewCode=',NewCode.Filename);
@@ -5434,7 +5434,9 @@ var
   Node: TCodeTreeNode;
 begin
   // build tree for pascal source
+  debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache BEFORE ',MainFilename]);
   BuildTree(true);
+  debugln(['TFindDeclarationTool.BuildInterfaceIdentifierCache AFTER ',MainFilename]);
 
   // search interface section
   InterfaceNode:=FindInterfaceNode;
@@ -6527,7 +6529,7 @@ begin
     ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(copy(StartContext.Tool.Src,StartContext.Node.StartPos,15))
   );
   {$ENDIF}
-  
+
   if not InitAtomQueue then exit;
   {$IFDEF ShowExprEval}
   DebugLn(['TFindDeclarationTool.FindExpressionTypeOfVariable Expression="',copy(Src,StartPos,EndPos-StartPos),'"']);
@@ -8465,7 +8467,7 @@ begin
   end;
 
   {$IFDEF ShowNodeCache}
-  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'InitDecompressor');
+  beVerbose:=true; //CompareSrcIdentifiers(Params.Identifier,'InitDecompressor');
   if beVerbose then begin
     DebugLn('(((((((((((((((((((((((((((==================');
     
@@ -8503,6 +8505,7 @@ begin
                  ' NewTool=',ExtractFileName(NewTool.MainFilename));
     end else begin
       DebugLn('       NOT FOUND');
+      //RaiseCatchableException('');
     end;
     
     DebugLn('  CleanStartPos=',DbgS(CleanStartPos),' ',WriteSrcPos(Self,CleanStartPos));

@@ -7500,6 +7500,7 @@ begin
     // TODO: Clear style only, if Highlighter uses styles
     Style := [];        // Reserved for Highlighter
   end;
+  //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
   with fTextDrawer do begin
     //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
     //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));

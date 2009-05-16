@@ -2229,7 +2229,7 @@ var SrcStart: integer;
         begin
           dec(P);
           while (P>=SrcStart) and (Source[P]<>'{') do begin
-            if NestedComments and (Source[P] in ['}',')']) then
+            if NestedComments and (Source[P]='}') then
               ReadComment(P)
             else
               dec(P);
@@ -2245,7 +2245,7 @@ var SrcStart: integer;
             dec(P);
             while (P>SrcStart)
             and ((Source[P-1]<>'(') or (Source[P]<>'*')) do begin
-              if NestedComments and (Source[P] in ['}',')']) then
+              if NestedComments and ((Source[P]=')') and (Source[P-1]='*')) then
                 ReadComment(P)
               else
                 dec(P);

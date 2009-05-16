@@ -1697,7 +1697,7 @@ begin
   CurrentPhase:=CodeToolPhaseScan;
   try
     if OnlyInterfaceNeeded then
-      LinkScanRange:=lsrInterface
+      LinkScanRange:=lsrImplementationStart
     else
       LinkScanRange:=lsrEnd;
     Scanner.Scan(LinkScanRange,CheckFilesOnDisk);
@@ -2460,7 +2460,7 @@ begin
     Result:=true;
   end else begin
     if OnlyInterfaceNeeded then
-      LinkScanRange:=lsrInterface
+      LinkScanRange:=lsrImplementationStart
     else
       LinkScanRange:=lsrEnd;
     Result:=Scanner.UpdateNeeded(LinkScanRange, CheckFilesOnDisk);
