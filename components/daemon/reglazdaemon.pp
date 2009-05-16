@@ -66,7 +66,7 @@ uses daemonapp;
 Resourcestring
   SDaemonApps     = 'Daemon (service) applications';
   SDaemonAppName  = 'Daemon (service) application';
-  SDaemonAppDescr = 'Daemon (service) application are non-gui applications that run in the backrgound.';
+  SDaemonAppDescr = 'Daemon (service) application are non-gui applications that run in the background.';
   SDaemonName     = 'Daemon Module';
   SDaemonDescr    = 'Daemon Module for inclusion in a daemon application';
   SDaemonMapperName  = 'Daemon mapper';
