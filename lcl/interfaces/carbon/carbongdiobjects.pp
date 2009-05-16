@@ -89,7 +89,7 @@ type
     FLineRotation: Fixed;
   public
     procedure Apply(ADC: TCarbonContext); virtual; abstract;
-    function Draw(X, Y: Integer; DX: PInteger): Boolean; virtual; abstract;
+    function Draw(X, Y: Integer; DX: PInteger; DXCount: Integer): Boolean; virtual; abstract;
     procedure Release; virtual;
 
     function GetHeight: Integer;
@@ -110,13 +110,15 @@ type
     FWidget: HIViewRef;
     FTextBuffer: WideString;
     FDC: TCarbonContext;
-    FDX: Integer;
+    FDXCount: Integer;
+    FDX: PInteger;
+    Idx: Integer;
   protected
     procedure DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
   public
     constructor Create(const Text: String; Font: TCarbonFont; TextFractional: Boolean);
     procedure Apply(ADC: TCarbonContext); override;
-    function Draw(X, Y: Integer; DX: PInteger): Boolean; override;
+    function Draw(X, Y: Integer; DX: PInteger; DXCount: Integer): Boolean; override;
     procedure Release; override;
 
     property Layout: ATSUTextLayout read FLayout;
@@ -132,7 +134,7 @@ type
   public
     constructor Create(const Text: String; Font: TCarbonFont);
     procedure Apply(ADC: TCarbonContext); override;
-    function Draw(X, Y: Integer; DX: PInteger): Boolean; override;
+    function Draw(X, Y: Integer; DX: PInteger; DXCount: Integer): Boolean; override;
   end;
 
   { TCarbonFont }
@@ -939,17 +941,23 @@ var
   Count   : ItemCount;
   i       : Integer;
 begin
-  ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
-    kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
-  if Assigned(Deltas) and (Count > 0) then
+  if idx < FDXCount then
   begin
-    for i := 1 to Count - 1 do
-      Deltas^[i] := Long2Fix(FDX);
-    Handled := true;
+    ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
+      kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
+    if Assigned(Deltas) and (Count > 0) then
+    begin
+      for i := 1 to Min(FDXCount - idx, Count) - 1 do
+      begin
+        Deltas^[i] := Long2Fix(FDX[idx]);
+        inc(idx);
+      end;
+      Handled := true;
+    end;
   end;
 end;
 
-function TCarbonTextLayoutBuffer.Draw(X, Y: Integer; Dx: PInteger): Boolean;
+function TCarbonTextLayoutBuffer.Draw(X, Y: Integer; Dx: PInteger; DXCount: Integer): Boolean;
 var
   MX, MY: ATSUTextMeasurement;
   A: Single;
@@ -973,7 +981,9 @@ begin
   end;
 
   if Assigned(Dx) then begin
-    FDX := Dx^;
+    FDX := Dx;
+    FDxCount := DXCount;
+    idx:=0;
     OverSpec.operationSelector := kATSULayoutOperationJustification;
     OverSpec.overrideUPP := NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback);
     theTag := kATSULayoutOperationOverrideTag;
@@ -1052,17 +1062,23 @@ begin
   end;
 end;
 
-function TCarbonTextLayoutArray.Draw(X, Y: Integer; Dx: PInteger): Boolean;
+function TCarbonTextLayoutArray.Draw(X, Y: Integer; Dx: PInteger; DXCount: Integer): Boolean;
 var
-  I: Integer;
+  I   : Integer;
+  ix  : Integer;
 begin
   Result := False;
-  
+  ix := 0;
   for I := 1 to Length(FText) do
   begin
-    Result := FFont.FCachedLayouts[Ord(FText[I])].Draw(X, Y, nil);
-    if Assigned(dx) then Inc(X, Dx^)
-    else Inc(X, FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
+    Result := FFont.FCachedLayouts[Ord(FText[I])].Draw(X, Y, nil, 0);
+    if Assigned(dx) and (ix < DXCount) then
+    begin
+      Inc(X, Dx[ix]);
+      inc(ix);
+    end
+    else
+      Inc(X, FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
   end;
 
   Result := True;
