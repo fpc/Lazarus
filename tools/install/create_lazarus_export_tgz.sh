@@ -24,19 +24,20 @@ rm -rf $TmpLazDir
 if [ "x$Download" = "xyes" ]; then
   echo "downloading lazarus svn ..."
   mkdir -p $TmpLazDir
+  Revision=Exported
   cd $TmpDir
   svn export http://svn.freepascal.org/svn/lazarus/trunk $TmpLazDir
   cd -
 else
   echo "extracting lazarus from local svn ..."
   SourceDir=$(pwd | sed -e 's#lazarus[_0-9]*/tools.*$#lazarus#')
+  Revision=$(svnversion $SourceDir)
   cd $TmpDir
   svn export $SourceDir $TmpLazDir
   cd -
 fi
 
 # add ide/revision.inc
-Revision=$(svnversion $TmpLazDir)
 echo "const RevisionStr = '$Revision';" > $TmpLazDir/ide/revision.inc
 
 cd $TmpDir
