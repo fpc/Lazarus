@@ -9,6 +9,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+  This unit installs the IDE items.
+  It is not needed by daemons.
 }
 unit RegLazDaemon;
 

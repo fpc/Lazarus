@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="lazdaemon"/>
+    <AddToProjectUsesSection Value="False"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <IncludeFiles Value="unix/"/>
         <OtherUnitFiles Value="unix/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -33,6 +31,7 @@
       </Item2>
       <Item3>
         <Filename Value="lazdaemonapp.pp"/>
+        <UnitName Value="lazdaemonapp"/>
       </Item3>
     </Files>
     <Type Value="DesignTime"/>
