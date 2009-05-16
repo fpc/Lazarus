@@ -34,6 +34,7 @@ const
   EncodingAnsi = 'ansi';
   EncodingUTF8BOM = 'utf8bom'; // UTF-8 with byte order mark
   EncodingUCS2LE = 'ucs2le'; // UCS 2 byte little endian
+  EncodingUCS2BE = 'ucs2le'; // UCS 2 byte big endian
 
 function GuessEncoding(const s: string): string;
 
@@ -67,6 +68,7 @@ function KOI8ToUTF8(const s: string): string;  // russian cyrillic
 function SingleByteToUTF8(const s: string;
                           const Table: TCharToUTF8Table): string;
 function UCS2LEToUTF8(const s: string): string; // UCS2-LE 2byte little endian
+function UCS2BEToUTF8(const s: string): string; // UCS2-BE 2byte big endian
 
 function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
 function UTF8ToISO_8859_1(const s: string): string; // central europe
@@ -85,6 +87,7 @@ function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian
+function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian
 
 procedure GetSupportedEncodings(List: TStrings);
 
@@ -3670,6 +3673,38 @@ begin
   SetLength(Result,len);
 end;
 
+function UCS2BEToUTF8(const s: string): string;
+var
+  len: Integer;
+  Src: PWord;
+  Dest: PChar;
+  i: Integer;
+  c: Word;
+begin
+  if s='' then begin
+    Result:=s;
+    exit;
+  end;
+  len:=length(s) div 2;
+  SetLength(Result,len*3);// UTF-8 is at most three times the size
+  Src:=PWord(Pointer(s));
+  Dest:=PChar(Result);
+  for i:=1 to len do begin
+    c:=BEtoN(Src^);
+    inc(Src);
+    if ord(c)<128 then begin
+      Dest^:=chr(c);
+      inc(Dest);
+    end else begin
+      inc(Dest,UnicodeToUTF8SkipErrors(c,Dest));
+    end;
+  end;
+  len:=PtrUInt(Dest)-PtrUInt(Result);
+  if len>length(Result) then
+    RaiseGDBException('');
+  SetLength(Result,len);
+end;
+
 function UnicodeToCP1250(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -4492,6 +4527,46 @@ begin
   SetLength(Result,len);
 end;
 
+function UTF8ToUCS2BE(const s: string): string;
+var
+  len: Integer;
+  Src: PChar;
+  Dest: PWord;
+  c: Char;
+  Unicode: LongWord;
+  CharLen: integer;
+begin
+  if s='' then begin
+    Result:='';
+    exit;
+  end;
+  len:=length(s);
+  SetLength(Result,len*2);
+  Src:=PChar(s);
+  Dest:=PWord(Pointer(Result));
+  while len>0 do begin
+    c:=Src^;
+    if c<#128 then begin
+      Dest^:=NtoBE(Word(ord(c)));
+      inc(Dest);
+      inc(Src);
+      dec(len);
+    end else begin
+      Unicode:=UTF8CharacterToUnicode(Src,CharLen);
+      inc(Src,CharLen);
+      dec(len,CharLen);
+      if Unicode<=$ffff then begin
+        Dest^:=NtoBE(Word(Unicode));
+        inc(Dest);
+      end;
+    end;
+  end;
+  len:=PtrUInt(Dest)-PtrUInt(Result);
+  if len>length(Result) then
+    RaiseGDBException('');
+  SetLength(Result,len);
+end;
+
 procedure GetSupportedEncodings(List: TStrings);
 begin
   List.Add('UTF-8');
@@ -4511,6 +4586,7 @@ begin
   List.Add('ISO-8859-1');
   List.Add('KOI-8');
   List.Add('UCS-2LE');
+  List.Add('UCS-2BE');
 end;
 
 function GuessEncoding(const s: string): string;
@@ -4586,7 +4662,13 @@ begin
     Result:=EncodingUCS2LE;
     exit;
   end;
-  
+
+  // try BOM FE FF for ucs-2be
+  if (length(s)>=2) and (s[1]=#$FE) and (s[2]=#$FF) then begin
+    Result:=EncodingUCS2BE;
+    exit;
+  end;
+
   // try {%encoding eee}
   if CompareI(@s[1],'{%encoding ',11) then begin
     p:=12;
@@ -4666,6 +4748,7 @@ begin
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
     if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
     if ATo=EncodingUCS2LE then begin Result:=UTF8ToUCS2LE(s); exit; end;
+    if ATo=EncodingUCS2BE then begin Result:=UTF8ToUCS2BE(s); exit; end;
 
     if (ATo=SysEnc) and Assigned(ConvertUTF8ToAnsi) then begin
       Result:=ConvertUTF8ToAnsi(s);
@@ -4687,6 +4770,7 @@ begin
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
     if AFrom=EncodingUCS2LE then begin Result:=UCS2LEToUTF8(s); exit; end;
+    if AFrom=EncodingUCS2BE then begin Result:=UCS2BEToUTF8(s); exit; end;
 
     if (AFrom=SysEnc) and Assigned(ConvertAnsiToUTF8) then begin
       Result:=ConvertAnsiToUTF8(s);
