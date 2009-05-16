@@ -4423,10 +4423,12 @@ var
     if AtomIsChar(';') then exit;
     AtomIsIdentifier(true);
     if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then exit;
+      CurPos.EndPos-CurPos.StartPos)
+    then
+      exit;
     Parts[SpecParam]:=CurPos;
     ReadNextAtom;
-    if CurPos.Flag=cafPoint then begin
+    while CurPos.Flag=cafPoint do begin
       ReadNextAtom;
       AtomIsIdentifier(true);
       ReadNextAtom;
