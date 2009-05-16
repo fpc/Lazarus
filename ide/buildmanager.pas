@@ -93,6 +93,8 @@ type
                                   var Abort: boolean): string;
     function MacroFuncProjOutDir(const Param: string; const Data: PtrInt;
                                  var Abort: boolean): string;
+    function MacroFuncEnv(const Param: string; const Data: PtrInt;
+                          var Abort: boolean): string;
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -267,6 +269,8 @@ begin
                     lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjOutDir','',
                     lisProjectOutDir,@MacroFuncProjOutDir,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Env','',
+                    lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1262,6 +1266,12 @@ begin
     Result:=Project1.CompilerOptions.GetUnitOutPath(false)
   else
     Result:='';
+end;
+
+function TBuildManager.MacroFuncEnv(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result:=GetEnvironmentVariableUTF8(Param);
 end;
 
 function TBuildManager.CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
