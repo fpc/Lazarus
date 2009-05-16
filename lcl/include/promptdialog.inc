@@ -840,7 +840,7 @@ begin
   // find default and cancel button
   DefaultControl:=FindButton([mrYes,mrOk,mrYesToAll,mrAll,mrRetry,mrCancel,
                               mrNo,mrNoToAll,mrAbort,mrIgnore]);
-  CancelControl:=FindButton([mrNo,mrAbort,mrCancel,mrIgnore,mrNoToAll,mrYes,
+  CancelControl:=FindButton([mrAbort,mrCancel,mrNo,mrIgnore,mrNoToAll,mrYes,
                              mrOk,mrRetry,mrAll,mrYesToAll])
 end;
 
