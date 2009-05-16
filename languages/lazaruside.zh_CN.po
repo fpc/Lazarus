@@ -2210,6 +2210,7 @@ msgstr "全选"
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "显示窗体编辑选项"
 
@@ -6452,9 +6453,9 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr "新建单元"
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "提示:所有的键将映射到所选的配置的值"
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
+msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
@@ -11959,7 +11960,7 @@ msgid "Enable i18n"
 msgstr "启用多语言支持"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression

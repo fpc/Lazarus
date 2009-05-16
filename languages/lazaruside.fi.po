@@ -2202,6 +2202,7 @@ msgstr ""
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "Näytä lomake editorin asetukset"
 
@@ -6444,8 +6445,8 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr ""
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
 msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
@@ -11949,7 +11950,7 @@ msgid "Enable i18n"
 msgstr ""
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression

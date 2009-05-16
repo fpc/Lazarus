@@ -2206,6 +2206,7 @@ msgstr "すべて選択"
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "フォーム編集のオプションを表示"
 
@@ -6448,9 +6449,9 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr ""
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "注意：全てのキーは選択されたスキームの値にセットされます。"
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
+msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
@@ -11957,7 +11958,7 @@ msgid "Enable i18n"
 msgstr "国際化を有効に"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression

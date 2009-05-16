@@ -2212,6 +2212,7 @@ msgstr "Vybrať všetky"
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "Zobraziť voľby pre úpravu formulára"
 
@@ -6454,9 +6455,9 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr "Nová jednotka"
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "Poznámka: Všetky klávesy budú nastavené na hodnoty zvolenej schémy."
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
+msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
@@ -11965,7 +11966,9 @@ msgid "Enable i18n"
 msgstr "Zapnúť i18n"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+#, fuzzy
+#| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr "zadajte jednu alebo viac frází, ktoré chcete hľadať alebo filtrovať v zozname, oddeľte medzerami alebo čiarkami"
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression

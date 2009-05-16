@@ -2222,6 +2222,7 @@ msgstr "Žymėti viską"
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "Formos konstravimo parinktys"
 
@@ -6470,9 +6471,9 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr "Naujas modulis"
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "Pastaba: visi klavišai bus nustatyti pagal pasirinktą schemą."
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
+msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
@@ -11993,7 +11994,9 @@ msgid "Enable i18n"
 msgstr "Įgalinti internacionalizaciją"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+#, fuzzy
+#| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr "Įveskite vieną ar daugiau ieškomų frazių, arba filtruokite sąrašą (kuriame skirtukas yra tarpo arba kablelio simbolis)"
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression

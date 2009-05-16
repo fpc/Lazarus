@@ -2213,6 +2213,7 @@ msgstr "Alles auswählen"
 #: lazarusidestrconsts.fdmshowoptions
 #, fuzzy
 #| msgid "Show Options for form editing"
+msgctxt "lazarusidestrconsts.fdmshowoptions"
 msgid "Options"
 msgstr "Einstellungen für das Bearbeiten von Formularen anzeigen"
 
@@ -6455,9 +6456,9 @@ msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr "Neue Unit"
 
-#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
-msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "Hinweis: Alle Tasten werden auf die Werte der gewählten Belegung gesetzt."
+#: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
+msgid "Note: All keys will be set to the values of the chosen scheme."
+msgstr ""
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
@@ -11953,7 +11954,9 @@ msgid "Enable i18n"
 msgstr "i18n einschalten"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+#, fuzzy
+#| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
 msgstr "Geben Sie ein oder mehr Begriffe ein (mit Leerzeichen- oder Kommata getrennt), nach denen in der Liste gesucht oder nach denen gefiltert wird"
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
