@@ -567,9 +567,21 @@ msgstr "Kompatibilné s Deplhi"
 msgid "Desktop"
 msgstr "Plocha"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Súbory plochy"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -997,6 +1009,18 @@ msgstr "Získať pozíciu"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globálne"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2186,7 +2210,9 @@ msgid "Select All"
 msgstr "Vybrať všetky"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Zobraziť voľby pre úpravu formulára"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2794,6 +2820,10 @@ msgstr "Zmena mena alebo verzie balíčka poruší závislosti. Majú byť zmene
 msgid "begins"
 msgstr "začína"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Pred spustením vždy vybudovať"
@@ -3373,6 +3403,10 @@ msgstr "Zvoľte štruktúru pre uzavretie výberu"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5568,6 +5602,10 @@ msgstr "Len &celé slová"
 msgid "Find key combination"
 msgstr "Nájsť kombináciu klávesov"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Opraviť súbor LFM"
@@ -5997,6 +6035,10 @@ msgstr "Upozornenia:"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informácie o %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8226,6 +8268,10 @@ msgstr "Nové kódovanie:"
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nový projekt)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12440,6 +12486,10 @@ msgstr "Nájsť ďalšie"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Nájsť ďalší výskyt slova"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

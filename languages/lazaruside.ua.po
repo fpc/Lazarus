@@ -557,9 +557,21 @@ msgstr "Сумісне з Delphi"
 msgid "Desktop"
 msgstr "Стільниця"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Файли стільниці"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -986,6 +998,18 @@ msgstr "Задіяти позицію"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
 msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
@@ -2176,7 +2200,9 @@ msgid "Select All"
 msgstr "Виділити всі"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Показувати параметри для редагування форм"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2784,6 +2810,10 @@ msgstr "Зміна назви пакунку або версії порушит�
 msgid "begins"
 msgstr "починається"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Завжди Будувати перед Виконанням"
@@ -3363,6 +3393,10 @@ msgstr "Виберіть структуру для включення в неї 
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5558,6 +5592,10 @@ msgstr ""
 msgid "Find key combination"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Виправити файл LFM"
@@ -5987,6 +6025,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Інформація про %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8216,6 +8258,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (новий проект)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12430,6 +12476,10 @@ msgstr "Знайти наступне"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Знайти наступне слово"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

@@ -566,9 +566,21 @@ msgstr "Compatible Delphi"
 msgid "Desktop"
 msgstr "Bureau"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Fichiers du bureau"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -996,6 +1008,18 @@ msgstr "Lire la position"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Global"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2195,7 +2219,9 @@ msgid "Select All"
 msgstr "Tout sélectionner"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Afficher les options d'édition de fiche"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2803,6 +2829,10 @@ msgstr "Le changement du nom ou de la version d'un paquet brise les dépendances
 msgid "begins"
 msgstr "begins"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Toujours construire avant l'exécution"
@@ -3383,6 +3413,10 @@ msgstr "Choisissez la structure pour entourer la sélection"
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Choisissez le répertoire de tests"
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
+msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
@@ -5578,6 +5612,10 @@ msgstr "&Mots entiers seulement"
 msgid "Find key combination"
 msgstr "Trouver la combinaison de touches"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Corriger fichier LFM"
@@ -6008,6 +6046,10 @@ msgstr "Avertissements"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informations sur %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8238,6 +8280,10 @@ msgstr "Nouveau codage :"
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nouveau projet)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12453,6 +12499,10 @@ msgstr "Trouver l'occurence suivante"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Rechercher l'occurrence de mot suivante"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

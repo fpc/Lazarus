@@ -561,9 +561,21 @@ msgstr "Delphi互換"
 msgid "Desktop"
 msgstr "デスクトップ"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "デスクトップパッケージ"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -991,6 +1003,18 @@ msgstr "位置を取得"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "グローバル(&G)"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2180,7 +2204,9 @@ msgid "Select All"
 msgstr "すべて選択"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "フォーム編集のオプションを表示"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2788,6 +2814,10 @@ msgstr "パッケージ名もしくはバージョンの変更は依存性を壊
 msgid "begins"
 msgstr ""
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "実行の前に常に構築"
@@ -3367,6 +3397,10 @@ msgstr "選択部分を囲う構造を選択してください。"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5562,6 +5596,10 @@ msgstr "単語全体のみ(&W)"
 msgid "Find key combination"
 msgstr "キーの組み合わせを検索"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFMファイルを修復"
@@ -5991,6 +6029,10 @@ msgstr "警告"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "%s に関する情報"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8220,6 +8262,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (新規プロジェクト)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12432,6 +12478,10 @@ msgstr "次を検索"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "次の単語の位置を検索"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

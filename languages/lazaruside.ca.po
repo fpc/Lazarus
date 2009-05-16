@@ -562,9 +562,21 @@ msgstr "Compatible amb Delphi"
 msgid "Desktop"
 msgstr "Escriptori"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Fitxers de l'escriptori"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -991,6 +1003,18 @@ msgstr "Posició"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
 msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
@@ -2181,7 +2205,9 @@ msgid "Select All"
 msgstr "Selecciona-ho tot"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Mostra les opcions per editar la forma"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2789,6 +2815,10 @@ msgstr "Canviar el nom del paquet o versió, trenca les dependències. Voleu can
 msgid "begins"
 msgstr ""
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr ""
@@ -3368,6 +3398,10 @@ msgstr "Tria l'estructura per a contenir la selecció"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5563,6 +5597,10 @@ msgstr ""
 msgid "Find key combination"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Fixa el fitxer LFM"
@@ -5992,6 +6030,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informació de %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8219,6 +8261,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nou projecte)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12433,6 +12479,10 @@ msgstr "Cerca el següent"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Cerca següent ocurrència de la paraula"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

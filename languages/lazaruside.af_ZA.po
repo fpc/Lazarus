@@ -564,8 +564,20 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -993,6 +1005,18 @@ msgstr "Kry posisie"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
 msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
@@ -2179,7 +2203,7 @@ msgid "Select All"
 msgstr ""
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+msgid "Options"
 msgstr ""
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2787,6 +2811,10 @@ msgstr ""
 msgid "begins"
 msgstr ""
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr ""
@@ -3366,6 +3394,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5561,6 +5593,10 @@ msgstr ""
 msgid "Find key combination"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -5989,6 +6025,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
@@ -8202,6 +8242,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
 msgstr ""
 
 #: lazarusidestrconsts.lisno
@@ -12414,6 +12458,10 @@ msgstr "Vind volgende"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious

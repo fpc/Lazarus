@@ -566,9 +566,21 @@ msgstr "Delphikompatibel"
 msgid "Desktop"
 msgstr "Desktop"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Desktopeinstellungen"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -606,7 +618,7 @@ msgstr "Linienfarbe"
 #: lazarusidestrconsts.dlgdividertopcolordefault
 msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
 msgid "Use Default"
-msgstr ""
+msgstr "Voreinstellungen gelten"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
@@ -995,6 +1007,18 @@ msgstr "Position ermitteln"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Global"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2187,7 +2211,9 @@ msgid "Select All"
 msgstr "Alles auswählen"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Einstellungen für das Bearbeiten von Formularen anzeigen"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2795,6 +2821,10 @@ msgstr "Das Ändern des Package-Namens oder der Version zerstört Abhängigkeite
 msgid "begins"
 msgstr "beginnt"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Vor dem Start immer neu erzeugen"
@@ -3375,6 +3405,10 @@ msgstr "Wählen Sie die Struktur um die Auswahl einzuschließen"
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Verzeichnis für Tests auswählen"
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
+msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
@@ -5569,6 +5603,10 @@ msgstr "&Nur ganze Wörter"
 msgid "Find key combination"
 msgstr "Tastenkombination suchen"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ".LFM-Datei korrigieren"
@@ -5998,6 +6036,10 @@ msgstr "Warnungen:"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informationen zu %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8215,6 +8257,10 @@ msgstr "Neue Kodierung:"
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (Neues Projekt)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12428,6 +12474,10 @@ msgstr "Nächstes suchen"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Nächste Fundstelle des Worts"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

@@ -567,9 +567,21 @@ msgstr "Suderinamumas su Delphi"
 msgid "Desktop"
 msgstr "Darbastalis"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Darbastalio failai"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -997,6 +1009,18 @@ msgstr "Sužinoti poziciją"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globaliai"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2196,7 +2220,9 @@ msgid "Select All"
 msgstr "Žymėti viską"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Formos konstravimo parinktys"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2806,6 +2832,10 @@ msgstr "Keičiant paketo pavadinimą ar versiją bus sugadintos priklausomybės.
 msgid "begins"
 msgstr "prasideda"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Prieš startuojant visada daryti"
@@ -3390,6 +3420,10 @@ msgstr "Nurodykite kokią struktūrą apgaubti pažymėtąjį kodą"
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Nurodykite aplanką testams"
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
+msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
@@ -5584,6 +5618,10 @@ msgstr "Tik vie&ntisi žodžiai"
 msgid "Find key combination"
 msgstr "Klavišų kombinacijos paieška"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM failo taisa"
@@ -6013,6 +6051,10 @@ msgstr "Įspėjimai:"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informacija apie modulį %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8246,6 +8288,10 @@ msgstr "Nauja koduotė:"
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (naujas projektas)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12468,6 +12514,10 @@ msgstr "Ieškoti toliau"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Ieškoti žodžio toliau"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"

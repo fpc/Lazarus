@@ -562,9 +562,21 @@ msgstr "Delphi compatibel"
 msgid "Desktop"
 msgstr "Bureaublad"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Bureaubladbestanden"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -991,6 +1003,18 @@ msgstr "positie"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
 msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
@@ -2181,7 +2205,9 @@ msgid "Select All"
 msgstr "Selecteer Alles"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Toon opties voor form bewerkingen"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2789,6 +2815,10 @@ msgstr "Wijzigen van de package naam of de versie verbreekt afhankelijkheden. Mo
 msgid "begins"
 msgstr "begint met"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr ""
@@ -3368,6 +3398,10 @@ msgstr "Kies structuur om selectie te omsluiten"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
+msgstr ""
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
@@ -5563,6 +5597,10 @@ msgstr ""
 msgid "Find key combination"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Repareer .lfm-bestand"
@@ -5992,6 +6030,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informatie over %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8221,6 +8263,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nieuw project)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12434,6 +12480,10 @@ msgstr "Vind volgende"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious

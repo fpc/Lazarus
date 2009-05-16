@@ -562,9 +562,21 @@ msgstr "Совместимость с Delphi"
 msgid "Desktop"
 msgstr "Рабочий стол"
 
+#: lazarusidestrconsts.dlgdesktopbuttonglyphs
+msgid "Glyphs for Buttons"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Файлы рабочего стола"
+
+#: lazarusidestrconsts.dlgdesktophints
+msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmisc
+msgid "Misc Options"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -990,6 +1002,18 @@ msgstr "Принять позицию"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "Во всём т&ексте"
+
+#: lazarusidestrconsts.dlgglyphshowalways
+msgid "Show Always"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshownever
+msgid "Show Never"
+msgstr ""
+
+#: lazarusidestrconsts.dlgglyphshowsystem
+msgid "Use System Defaults"
+msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2175,7 +2199,9 @@ msgid "Select All"
 msgstr "Выделить все"
 
 #: lazarusidestrconsts.fdmshowoptions
-msgid "Show Options for form editing"
+#, fuzzy
+#| msgid "Show Options for form editing"
+msgid "Options"
 msgstr "Показать параметры редактирования форм"
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2783,6 +2809,10 @@ msgstr "Изменение имени пакета или версии нару�
 msgid "begins"
 msgstr "начинается"
 
+#: lazarusidestrconsts.lisbehindrelated
+msgid "Behind related"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Всегда собирать перед запуском"
@@ -3364,6 +3394,10 @@ msgstr "Выберите структуру для заключения в не�
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Выберите каталог для проб"
+
+#: lazarusidestrconsts.lisclasscompletion
+msgid "Class Completion"
+msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
@@ -5555,6 +5589,10 @@ msgstr "&Только целые слова"
 msgid "Find key combination"
 msgstr "Найти комбинацию клавиш"
 
+#: lazarusidestrconsts.lisfirst
+msgid "First"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Исправить файл LFM"
@@ -5984,6 +6022,10 @@ msgstr "Предупреждений:"
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Информация о %s"
+
+#: lazarusidestrconsts.lisinfrontofrelated
+msgid "In front of related"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
@@ -8201,6 +8243,10 @@ msgstr "Новая кодировка:"
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (новый проект)"
+
+#: lazarusidestrconsts.lisnewunitsareaddedtousessections
+msgid "New units are added to uses sections:"
+msgstr ""
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12414,6 +12460,10 @@ msgstr "Найти далее"
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
 msgstr "Найти следующее вхождение слова"
+
+#: lazarusidestrconsts.srkmecfindoverloads
+msgid "Find overloads"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
