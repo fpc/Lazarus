@@ -3861,8 +3861,8 @@ resourcestring
   liswlWatchList = 'Watch list';
   liswlExpression = 'Expression';
   lisKMChooseKeymappingScheme = 'Choose Keymapping scheme';
-  lisKMNoteAllKeysWillBeSetToTheValuesOfTheChoosenScheme = 'Note: All keys '
-    +'will be set to the values of the choosen scheme.';
+  lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme = 'Note: All keys '
+    +'will be set to the values of the chosen scheme.';
   lisKMKeymappingScheme = 'Keymapping Scheme';
   lisIFDOK = 'OK';
   lisPVUEditVirtualUnit = 'Edit virtual unit';
@@ -3913,7 +3913,7 @@ resourcestring
   rsGoToTheNextItemInTheSearchList = 'Go to the next item in the search list';
   rsResetFilter = 'Reset filter';
   rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn = 'Enter one or more '
-    +'phrases that you want to Search or Filter in the list, seperated by '
+    +'phrases that you want to Search or Filter in the list, separated by '
     +'space, or comma';
   lisTDDInsertToDo = 'Insert ToDo';
 

@@ -74,7 +74,7 @@ end;
 procedure TChooseKeySchemeDlg.ChooseKeySchemeDlgCREATE(Sender: TObject);
 begin
   Caption:=lisKMChooseKeymappingScheme;
-  NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChoosenScheme;
+  NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme;
   SchemeRadiogroup.Caption:=lisKMKeymappingScheme;
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
