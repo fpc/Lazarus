@@ -2347,6 +2347,7 @@ Begin
     FEditor.BeginUpdate;
     with FEditor do begin
       Name:=NewName;
+      Text:='';
       Parent := AParent;
       Align := alClient;
       BookMarkOptions.EnableKeys := false;
