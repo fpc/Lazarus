@@ -837,11 +837,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetHeight(Value: Integer);
 begin
-  if FHeight = Value then exit;
+  if FHeight = Value then Exit;
   // set Size first. This will set FHeight to a rounded equivalent
   Size := -MulDiv(Value, 72, FPixelsPerInch);
   // store the real FHeight
-  FHeight:=Value;
+  FHeight := Value;
 end;
 
 {------------------------------------------------------------------------------

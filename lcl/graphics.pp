@@ -490,7 +490,7 @@ type
     FReference: TWSFontReference;
     procedure FreeReference;
     function GetCanUTF8: boolean;
-    function  GetHandle: HFONT;
+    function GetHandle: HFONT;
     procedure GetData(var FontData: TFontData);
     function GetIsMonoSpace: boolean;
     function GetReference: TWSFontReference;
@@ -500,13 +500,13 @@ type
     procedure SetHandle(const Value: HFONT);
     procedure ReferenceNeeded;
   protected
-    function  GetCharSet: TFontCharSet;
-    function  GetHeight: Integer;
-    function  GetName: string;
-    function  GetOrientation: Integer;
-    function  GetPitch: TFontPitch;
-    function  GetSize: Integer;
-    function  GetStyle: TFontStyles;
+    function GetCharSet: TFontCharSet;
+    function GetHeight: Integer;
+    function GetName: string;
+    function GetOrientation: Integer;
+    function GetPitch: TFontPitch;
+    function GetSize: Integer;
+    function GetStyle: TFontStyles;
     procedure Changed; override;
     procedure DoAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
