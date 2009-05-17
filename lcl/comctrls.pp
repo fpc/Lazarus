@@ -2172,7 +2172,7 @@ const
                             tvoKeepCollapsedNodes, tvoAutoItemHeight];
 
 type
-  TTreeViewExpandSignType = (tvestPlusMinus, tvestArrow);
+  TTreeViewExpandSignType = (tvestTheme, tvestPlusMinus, tvestArrow);
   TTreeViewInsertMarkType = (
     tvimNone,
     tvimAsFirstChild, // or as root
@@ -2453,7 +2453,7 @@ type
       read FDefItemHeight write SetDefaultItemHeight default 20;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
-      read FExpandSignType write SetExpandSignType default tvestPlusMinus;
+      read FExpandSignType write SetExpandSignType default tvestTheme;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property KeepCollapsedNodes: boolean

@@ -2772,9 +2772,9 @@ begin
   TabStop := True;
   ParentColor := False;
   FBackgroundColor := clWindow;
-  FDefItemHeight:=20;
-  FExpandSignType:=tvestPlusMinus;
-  FExpandSignSize:=9;
+  FDefItemHeight := 20;
+  FExpandSignType := tvestTheme;
+  FExpandSignSize := 9;
   FTreeNodes := TTreeNodes.Create(Self);
   BorderStyle := bsSingle;
   BorderWidth := 0;
@@ -4290,11 +4290,23 @@ var
       ARight:=ALeft+(HalfSize shl 1);
       ABottom:=ATop+(HalfSize shl 1);
       case ExpandSignType of
+      tvestTheme:
+        begin
+          //draw a themed expand sign
+          Details := ThemeServices.GetElementDetails(PlusMinusDetail[CollapseSign]);
+          ThemeServices.DrawElement(Canvas.Handle, Details, Rect(ALeft, ATop, ARight + 1, ABottom + 1), nil);
+        end;
       tvestPlusMinus:
         begin
           // draw a plus or a minus sign
-          Details := ThemeServices.GetElementDetails(PlusMinusDetail[CollapseSign]);
-          ThemeServices.DrawElement(Canvas.Handle, Details, Rect(ALeft, ATop, ARight + 1, ABottom + 1), nil);
+          Rectangle(ALeft, ATop, ARight+1, ABottom+1);
+          MoveTo(ALeft+2,MidY);
+          LineTo(ARight-2+1,MidY);
+          if not CollapseSign then
+          begin
+            MoveTo(MidX,ATop+2);
+            LineTo(MidX,ABottom-2+1);
+	  end;
         end;
       tvestArrow:
         begin
