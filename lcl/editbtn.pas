@@ -826,6 +826,7 @@ end;
 function TDirectoryEdit.CreateDialog: TCommonDialog;
 begin
   Result:=TSelectDirectoryDialog.Create(Self);
+  TSelectDirectoryDialog(Result).Title:=DialogTitle;
   if DirPathExists(Directory) then
   begin
     TSelectDirectoryDialog(Result).InitialDir:=Directory;
