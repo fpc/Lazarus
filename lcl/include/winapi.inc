@@ -123,7 +123,7 @@ end;
 function CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 begin
-  Result := WidgetSet.CreateFontIndirectEx(LogFont,LongFontName);
+  Result := WidgetSet.CreateFontIndirectEx(LogFont, LongFontName);
 end;
 
 function CreateIconIndirect(IconInfo: PIconInfo): HICON;

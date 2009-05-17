@@ -188,7 +188,7 @@ begin
         // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
         // which would be great with the given lfheight value, but older gtk2 version
         // doesn't have this function
-        if lfHeight<0 then
+        if lfHeight < 0 then
           aSize := -MulDiv(lfheight, 72, ScreenInfo.PixelsPerInchY) * PANGO_SCALE
         else
           aSize := lfHeight * PANGO_SCALE;

@@ -516,7 +516,7 @@ type
     procedure SetColor(Value: TColor);
     procedure SetFlags(Index: integer; AValue: boolean); override;
     procedure SetFPColor(const AValue: TFPColor); override;
-    procedure SetHeight(value: Integer);
+    procedure SetHeight(Avalue: Integer);
     procedure SetName(AValue: string); override;
     procedure SetOrientation(AValue: Integer);
     procedure SetPitch(Value: TFontPitch);

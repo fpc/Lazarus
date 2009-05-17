@@ -835,13 +835,25 @@ end;
 
   Sets the height of a font
  ------------------------------------------------------------------------------}
-procedure TFont.SetHeight(Value: Integer);
+procedure TFont.SetHeight(AValue: Integer);
 begin
-  if FHeight = Value then Exit;
-  // set Size first. This will set FHeight to a rounded equivalent
-  Size := -MulDiv(Value, 72, FPixelsPerInch);
-  // store the real FHeight
-  FHeight := Value;
+  // Don't update Size only. The LogFont contains a lfHeight value and on Windows,
+  // Qt and Carbon it is the main parameter which determins the font height.
+  if Height <> AValue then
+  begin
+    BeginUpdate;
+    try
+      FreeReference;
+      FHeight := AValue;
+      // update size to equivalent value
+      inherited SetSize(-MulDiv(AValue, 72, FPixelsPerInch));
+      if IsFontNameXLogicalFontDesc(Name) then
+        Name := ClearXLFDHeight(Name);
+      Changed;
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
