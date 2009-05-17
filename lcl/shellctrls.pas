@@ -539,6 +539,8 @@ begin
   Self.Column[1].Caption := 'Size';
   Self.Columns.Add;
   Self.Column[2].Caption := 'Type';
+  // Initial sizes, necessary under Windows CE
+  HandleResize(Self);
 
   // Internal event handlers
   OnResize := @HandleResize;
