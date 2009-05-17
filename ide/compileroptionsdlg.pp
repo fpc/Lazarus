@@ -1546,7 +1546,6 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtOtherUnits.AnchorToNeighbour(akRight,0,OtherUnitsPathEditBtn);
 
@@ -1565,7 +1564,6 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtIncludeFiles.AnchorToNeighbour(akRight,0,IncludeFilesPathEditBtn);
 
@@ -1584,7 +1582,6 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtOtherSources.AnchorToNeighbour(akRight,0,OtherSourcesPathEditBtn);
 
@@ -1603,7 +1600,6 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtLibraries.AnchorToNeighbour(akRight,0,LibrariesPathEditBtn);
 
@@ -1621,7 +1617,6 @@ begin
     Caption:='...';
     OnClick:=@FileBrowseBtnClick;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtUnitOutputDir.AnchorToNeighbour(akRight,0,btnUnitOutputDir);
 
@@ -1640,7 +1635,6 @@ begin
     OnClick:=@PathEditBtnClick;
     OnExecuted:=@PathEditBtnExecuted;
     Parent:=PathPage;
-    Constraints.MinHeight:= 25;
   end;
   edtDebugPath.AnchorToNeighbour(akRight,0,DebugPathEditBtn);
 
