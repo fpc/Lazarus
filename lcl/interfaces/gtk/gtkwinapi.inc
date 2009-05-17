@@ -6842,7 +6842,7 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
-  {$IfDef GTK2}
+  {$IfNDef GTK1}
   WidgetInfo: PWidgetInfo;
   {$ENDIF}
   r: TRect;
@@ -6885,7 +6885,7 @@ begin
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
 
-  {$IfDef GTK2}
+  {$IfNDef GTK1}
     if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
       and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
       and (Rect<>nil)
@@ -6905,7 +6905,7 @@ begin
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  {$IfDef GTK2}
+  {$IfNDef GTK1}
   //DebugLn(['TGtkWidgetSet.InvalidateRect ',GetWidgetDebugReport(Widget),' IsAPI=',GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType)]);
   if GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType) then
     GTKAPIWidget_InvalidateCaret(PGTKAPIWidget(Widget));

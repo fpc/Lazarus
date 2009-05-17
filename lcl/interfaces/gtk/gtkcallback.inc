@@ -28,7 +28,7 @@
 {$ENDIF}
 
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
-{$ifdef gtk2}
+{$ifndef gtk1}
 var
   WidgetInfo: PWidgetInfo;
 {$endif}
@@ -51,7 +51,7 @@ begin
 
   Result := DeliverMessage(Target, PaintMsg);
 
-  {$ifdef gtk2}
+  {$ifndef gtk1}
   if (TObject(Target) is TCustomControl) then begin
     WidgetInfo := GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle), False);
     if WidgetInfo <> nil then
