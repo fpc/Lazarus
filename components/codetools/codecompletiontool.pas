@@ -263,6 +263,8 @@ type
                               out AllRemoved: boolean;
                               const Attr: TProcHeadAttributes;
                               out RemovedProcHeads: TStrings): boolean;
+    function GatherPublishedMethods(ClassNode: TCodeTreeNode;
+                              out ListOfPFindContext: TFPList): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -4120,9 +4122,20 @@ var
   s: TPascalClassSection;
   
   procedure GatherClassProcs;
+  var
+    PublishedMethods: TFPList;
   begin
     // gather existing proc definitions in the class
     if ClassProcs=nil then begin
+      PublishedMethods:=nil;
+      try
+        {$IFDEF EnableInheritedEmptyMethods}
+        DebugLn(['GatherClassProcs AAA1']);
+        GatherPublishedMethods(FCompletingStartNode,PublishedMethods);
+        {$ENDIF}
+      finally
+        FreeListOfPFindContext(PublishedMethods);
+      end;
       ClassProcs:=GatherProcNodes(FCompletingStartNode,
          [phpInUpperCase,phpAddClassName],
          ExtractClassName(FCodeCompleteClassNode,true));
@@ -4323,6 +4336,28 @@ begin
       ProcDefNodes.FreeAndClear;
       ProcDefNodes.Free;
     end;
+  end;
+end;
+
+function TCodeCompletionCodeTool.GatherPublishedMethods(
+  ClassNode: TCodeTreeNode; out ListOfPFindContext: TFPList): boolean;
+var
+  Ancestors: TFPList; // list of PFindContext
+  i: Integer;
+  Context: PFindContext;
+begin
+  Result:=false;
+  Ancestors:=nil;
+  ListOfPFindContext:=nil;
+  try
+    if not FindClassAndAncestors(ClassNode,Ancestors) then exit;
+    if Ancestors=nil then exit(true);
+    for i:=0 to Ancestors.Count-1 do begin
+      Context:=PFindContext(Ancestors[i]);
+      DebugLn(['TCodeCompletionCodeTool.GatherPublishedMethods ',Context^.Node.DescAsString]);
+    end;
+  finally
+    FreeListOfPFindContext(Ancestors);
   end;
 end;
 
