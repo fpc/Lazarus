@@ -176,6 +176,7 @@ function gdk_pixbuf_flip(src: PGdkPixbuf; horizontal: gboolean): PGdkPixbuf; cde
 // gdk 2.8
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
 function gdk_screen_get_rgba_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
+procedure gdk_window_move_region(window: PGdkWindow ; region: PGdkRegion; dx, dy: gint);cdecl; external gdklib;
 
 type
   TGtkPackDirection = longint;

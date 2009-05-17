@@ -599,8 +599,12 @@ function TGtk2WidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, p
 var
   Widget: PGtkWidget;
   Window: PGdkWindow;
+  {$ifdef GTK_2_8}
   Region: PGdkRegion;
-  Rect: TGdkRectangle;
+  Rect1: TGdkRectangle;
+  Rect2: TRect;
+  WidgetInfo: PWidgetInfo;
+  {$ENDIF}
 begin
   Result := False;
   {$IFDEF DisableGtk2ScrollWindow}
@@ -608,10 +612,35 @@ begin
   {$ENDIF}
   // prcScroll, prcClip are not supported under gdk yet
   if (hWnd = 0) or (prcScroll <> nil) or (prcClip <> nil) then Exit;
+
   Widget := pgtkwidget(hWnd);
   Widget := GetFixedWidget(Widget);
   Window:=GetControlWindow(Widget);
+  {$ifdef GTK_2_8}
+  Rect1.X := 0;//Widget^.Allocation.X;
+  Rect1.Y := 0; //Widget^.Allocation.Y;
+  Rect1.width := Widget^.Allocation.Width;
+  Rect1.height := Widget^.Allocation.Height;
+
+  WidgetInfo := GetWidgetInfo(Widget, False);
+  if WidgetInfo <> nil then begin
+    if (dy < 0) and (WidgetInfo^.UpdateRect.Bottom > 0) then begin
+      Rect1.Height := Min(Rect1.height, WidgetInfo^.UpdateRect.Top);
+      Rect2 := Rect(0, Rect1.height, Rect1.width, Widget^.Allocation.Height);
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+    if dy > 0 then begin
+      Rect1.y := Max(Rect1.y, WidgetInfo^.UpdateRect.Bottom);
+      Rect2 := Rect(0, 0, Rect1.width, Rect1.y);
+      InvalidateRect(hWnd, @Rect2, false);
+    end;
+  end;
+
+  Region := gdk_region_rectangle(@Rect1);
+  gdk_window_move_region(Window, Region, dx, dy);
+  {$ELSE}
   gdk_window_scroll(Window, dx, dy);
+  {$ENDIF}
   Result := true;
 end;
 

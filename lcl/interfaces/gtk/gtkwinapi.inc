@@ -6842,6 +6842,10 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
+  {$IfDef GTK2}
+  WidgetInfo: PWidgetInfo;
+  {$ENDIF}
+  r: TRect;
 begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -6870,18 +6874,16 @@ begin
   if PaintWidget=nil then PaintWidget:=Widget;
 
   if Rect = nil then begin
-    gdkRect.X := 0;//PaintWidget^.Allocation.X;
-    gdkRect.Y := 0;//PaintWidget^.Allocation.Y;
-    gdkRect.Width:=PaintWidget^.Allocation.Width;
-    gdkRect.Height:=PaintWidget^.Allocation.Height;
-
-  end else begin
-    gdkRect.X := Rect^.Left;
-    gdkRect.Y := Rect^.Top;
-    gdkRect.Width := (Rect^.Right - Rect^.Left);
-    gdkRect.Height := (Rect^.Bottom - Rect^.Top);
-  end;
-
+    Rect := @r;
+    Rect^.Left := 0;//PaintWidget^.Allocation.X;
+    Rect^.Top := 0;//PaintWidget^.Allocation.Y;
+    Rect^.Right := PaintWidget^.Allocation.Width;
+    Rect^.Bottom := PaintWidget^.Allocation.Height;
+   end;
+  gdkRect.X := Rect^.Left;
+  gdkRect.Y := Rect^.Top;
+  gdkRect.Width := (Rect^.Right - Rect^.Left);
+  gdkRect.Height := (Rect^.Bottom - Rect^.Top);
 
   {$IfDef GTK2}
     if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
@@ -6891,6 +6893,10 @@ begin
       Inc(gdkRect.X, PaintWidget^.Allocation.x);
       Inc(gdkRect.Y, PaintWidget^.Allocation.y);
     end;
+
+  WidgetInfo := GetWidgetInfo(Widget, False); // True ??
+  if WidgetInfo <> nil then
+    UnionRect(WidgetInfo^.UpdateRect, WidgetInfo^.UpdateRect, Rect^);
   {$EndIf}
 
   if bErase then

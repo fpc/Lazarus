@@ -28,6 +28,10 @@
 {$ENDIF}
 
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
+{$ifdef gtk2}
+var
+  WidgetInfo: PWidgetInfo;
+{$endif}
 begin
   {
     erase backgound of custom controls
@@ -46,6 +50,14 @@ begin
   end;
 
   Result := DeliverMessage(Target, PaintMsg);
+
+  {$ifdef gtk2}
+  if (TObject(Target) is TCustomControl) then begin
+    WidgetInfo := GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle), False);
+    if WidgetInfo <> nil then
+      WidgetInfo^.UpdateRect := Rect(0,0,0,0);
+  end;
+  {$endif}
 end;
 
 function DeliverPaintMessage(const Target: Pointer; var TheMessage): GBoolean;
