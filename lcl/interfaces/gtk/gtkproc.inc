@@ -5865,6 +5865,7 @@ var
     ShortCutPos: integer;
     s: string;
     LabelWidget: PGtkLabel;
+    pattern: String;
   begin
     if (MenuItemWidget=nil) or (LCLMenuItem=nil) then exit;
     LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
@@ -5883,7 +5884,8 @@ var
         // -> accelerator should be Alt+Key
         System.Delete(s,ShortCutPos,1);
         gtk_label_set_text(LabelWidget,PChar(s));
-        gtk_label_set_pattern(LabelWidget, PChar(StringOfChar(' ', ShortCutPos-1)+'_'));
+        pattern:=StringOfChar(' ', ShortCutPos-1)+'_';
+        gtk_label_set_pattern(LabelWidget, PChar(pattern));
       end else begin
         // Because gnome changes menuitem shortcuts via keyboard, we can't
         // set the accelerator.
@@ -5896,7 +5898,8 @@ var
         // Do not use gtk_label_parse_uline as it mangles underscore characters
         System.Delete(s,ShortCutPos,1);
         gtk_label_set_text(LabelWidget,PChar(s));
-        gtk_label_set_pattern(LabelWidget, PChar(StringOfChar(' ', ShortCutPos-1)+'_'));
+        pattern:=StringOfChar(' ', ShortCutPos-1)+'_';
+        gtk_label_set_pattern(LabelWidget, PChar(pattern));
       end;
     end
     else begin
@@ -5920,15 +5923,16 @@ var
 
     // check if shortcut is needed
     NeedShortCut:=Key<>0;
+
     if NeedShortCut
     and (LCLMenuItem.Parent<>nil)
     and (LCLMenuItem.Parent.HandleAllocated)
     and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
     then begin
-      // no shortcuts for items in menubar
+      // no shortcut captions for items in menubar
       NeedShortCut:=false;
     end;
-    
+
     LabelWidget:=PGtkLabel(gtk_object_get_data(
                                PGtkObject(MenuItemWidget), 'LCLShortCutLabel'));
                                
