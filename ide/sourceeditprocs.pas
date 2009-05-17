@@ -488,12 +488,14 @@ begin
   case IdentItem.GetDesc of
 
     ctnProcedure:
+    begin
       if (ilcfCanProcDeclaration in IdentList.ContextFlags)
       and (IdentItem.Node<>nil) then begin
         //DebugLn(['GetIdentCompletionValue icvCompleteProcDeclaration']);
         ValueType:=icvCompleteProcDeclaration;
       end else if IdentItem.IsProcNodeWithParams then
         ValueType:=icvProcWithParams;
+    end;
 
     ctnProperty:
       if IdentItem.IsPropertyWithParams then

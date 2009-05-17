@@ -1057,6 +1057,7 @@ const
         nil,
         ctnProcedure);
     NewItem.ParamList:=AParameterList;
+    NewItem.Flags:=NewItem.Flags+[iliParamListValid];
     CurrentIdentifierList.Add(NewItem);
   end;
   
@@ -1075,7 +1076,7 @@ const
         nil,
         ctnProcedure);
     NewItem.ParamList:=AParameterList;
-    NewItem.Flags:=NewItem.Flags+[iliIsFunction,iliIsFunctionValid];
+    NewItem.Flags:=NewItem.Flags+[iliParamListValid,iliIsFunction,iliIsFunctionValid];
     CurrentIdentifierList.Add(NewItem);
   end;
 
@@ -1095,6 +1096,7 @@ begin
     AddCompilerFunction('Low','Argument','ordinal');
     AddCompilerProcedure('Include','set of enum; enum');
     AddCompilerProcedure('Exclude','set of enum; enum');
+    AddCompilerProcedure('Assigned','pointer');
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
@@ -2258,6 +2260,9 @@ function TIdentifierListItem.IsProcNodeWithParams: boolean;
 var
   ANode: TCodeTreeNode;
 begin
+  Result:=(GetDesc=ctnProcedure);
+  if not Result then exit;
+  if (iliParamListValid in Flags) and (ParamList<>'') then exit(true);
   ANode:=Node;
   Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
 end;
