@@ -355,6 +355,8 @@ type
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
       virtual;
     procedure EditorKeyPress(Sender: TObject; var Key: char); virtual;
+    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+      virtual;
     function GetPreviousToken(aEditor: TCustomSynEdit): string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1633,12 +1635,14 @@ begin
     new(p);
     p^.kp := aEditor.OnKeyPress;
     p^.kd := aEditor.OnKeyDown;
+    p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
     p^.NoNextKey := false;
     fEditstuffs.add(p);
     aEditor.FreeNotification(self);
     if not (csDesigning in ComponentState) then begin
       aEditor.OnKeyDown := {$IFDEF FPC}@{$ENDIF}EditorKeyDown;
       aEditor.OnKeyPress := {$IFDEF FPC}@{$ENDIF}EditorKeyPress;
+      aEditor.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}EditorUTF8KeyPress;
     end;
   end;
 end;
@@ -1707,6 +1711,22 @@ begin
     end;
     if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp) then
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp(sender, key);
+  end;
+end;
+
+procedure TSynAutoComplete.EditorUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+var
+  i: integer;
+begin
+  i := fEditors.IndexOf(Sender);
+  if i <> -1 then begin
+    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
+      UTF8Key := #0;
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
+    end;
+    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress(sender, UTF8Key);
   end;
 end;
 
