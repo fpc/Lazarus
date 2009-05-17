@@ -1094,9 +1094,16 @@ begin
     AddCompilerFunction('Length','array of type','ordinal');
     AddCompilerFunction('High','Argument','ordinal');
     AddCompilerFunction('Low','Argument','ordinal');
+    AddCompilerFunction('SizeOf','identifier','ordinal');
     AddCompilerProcedure('Include','set of enum; enum');
     AddCompilerProcedure('Exclude','set of enum; enum');
     AddCompilerProcedure('Assigned','pointer');
+    AddCompilerProcedure('Dispose','pointer');
+    AddCompilerProcedure('New','pointer');
+    AddCompilerProcedure('Assert','boolean; const message: string');
+    AddCompilerProcedure('exit','');
+    AddCompilerProcedure('continue','');
+    AddCompilerProcedure('break','');
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
