@@ -2266,12 +2266,24 @@ end;
 function TIdentifierListItem.IsProcNodeWithParams: boolean;
 var
   ANode: TCodeTreeNode;
+  StartPos: Integer;
 begin
   Result:=(GetDesc=ctnProcedure);
   if not Result then exit;
-  if (iliParamListValid in Flags) and (ParamList<>'') then exit(true);
-  ANode:=Node;
-  Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
+  if (iliParamListValid in Flags) then begin
+    StartPos:=1;
+    while (StartPos<=length(FParamList))
+    and (FParamList[StartPos] in [' ',#9,'(','[']) do
+      inc(StartPos);
+    if (StartPos<=length(FParamList))
+    and (FParamList[StartPos] in [')',']',';']) then
+      Result:=false
+    else
+      Result:=true;
+  end else begin
+    ANode:=Node;
+    Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
+  end;
 end;
 
 function TIdentifierListItem.IsPropertyWithParams: boolean;
