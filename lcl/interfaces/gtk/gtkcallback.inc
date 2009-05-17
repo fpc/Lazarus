@@ -471,6 +471,23 @@ end;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
+
+  procedure ChangeCheckbox(AGrayed,AChecked: boolean);
+  begin
+    LockOnChange(PgtkObject(Widget),1);
+    {$IFDEF GTK1}
+    if AGrayed then
+      gtk_object_set_data(PgtkObject(Widget), 'Grayed', Widget)
+    else
+      gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
+    {$ENDIF}
+    {$IFDEF GTK2}
+    gtk_toggle_button_set_Inconsistent(PGtkToggleButton(Widget), AGrayed);
+    {$ENDIF}
+    gtk_toggle_button_set_active(PGtkToggleButton(Widget), AChecked);
+    LockOnChange(PgtkObject(Widget),-1);
+  end;
+
 begin
   //DebugLn('gtktoggledCB ',DbgSName(TObject(Data)));
   Result := CallBackDefaultReturn;
@@ -480,7 +497,26 @@ begin
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
-    gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
+
+    if TObject(Data) is TCustomCheckbox then begin
+    {$IFDEF GTK1}
+      if gtk_object_get_data(PgtkObject(Widget), 'Grayed')<>nil then
+        ChangeCheckbox(false, true)
+      else
+      if TCustomCheckbox(Data).AllowGrayed and
+         gtk_toggle_button_get_active(PGtkToggleButton(Widget)) then
+        ChangeCheckbox(true, false);
+    {$ENDIF}
+    {$IFDEF GTK2}
+      if gtk_toggle_button_get_inconsistent(PGtkToggleButton(Widget)) then
+        ChangeCheckbox(false, true)
+      else
+      if TCustomCheckbox(Data).AllowGrayed and
+         gtk_toggle_button_get_active(PGtkToggleButton(Widget)) then
+        ChangeCheckbox(true, false);
+    {$ENDIF}
+    end;
+
   end;
 
   Mess.Msg := LM_CHANGED;

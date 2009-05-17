@@ -38,15 +38,6 @@ begin
   end;
 end;
 
-procedure TCustomCheckBox.SetAllowGrayed(const AValue: Boolean);
-begin
-  if AValue<>FAllowGrayed then begin
-    FAllowGrayed := AValue;
-    if HandleAllocated then
-      TWSCustomCheckBoxClass(WidgetSetClass).AllowGrayedChanged(Self);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomCheckBox.GetState
   Params:  none

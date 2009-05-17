@@ -800,13 +800,13 @@ var
   ToggleButton: PGtkToggleButton;
 begin
   ToggleButton:=PGtkToggleButton(ACustomCheckBox.Handle);
-  if ACustomCheckBox.AllowGrayed
-  and gtk_toggle_button_get_inconsistent(ToggleButton) then
-    Result:=cbGrayed
-  else if gtk_toggle_button_get_active(ToggleButton) then
+  if gtk_toggle_button_get_inconsistent(ToggleButton) then
+    Result := cbGrayed
+  else
+  if gtk_toggle_button_get_active(ToggleButton) then
     Result := cbChecked
   else
-    Result := cbUnChecked;
+    Result := cbUnchecked;
 end;
 
 class procedure TGtk2WSCustomCheckBox.SetShortCut(
@@ -830,8 +830,8 @@ begin
   GtkObject := PGtkObject(ACustomCheckBox.Handle);
   LockOnChange(GtkObject,1);
   ToggleButton:=PGtkToggleButton(GtkObject);
-  gtk_toggle_button_set_active(ToggleButton, NewState=cbChecked);
   gtk_toggle_button_set_inconsistent(ToggleButton, NewState=cbGrayed);
+  gtk_toggle_button_set_active(ToggleButton, NewState=cbChecked);
   LockOnChange(GtkObject,-1);
 end;
 

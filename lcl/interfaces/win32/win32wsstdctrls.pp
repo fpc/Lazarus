@@ -257,7 +257,6 @@ type
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
       UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-    class procedure AllowGrayedChanged(const ACustomCheckbox: TCustomCheckbox); override;
   end;
 
   { TWin32WSCheckBox }
@@ -1467,10 +1466,7 @@ begin
   begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    if TCustomCheckBox(AWinControl).AllowGrayed then
-      Flags := Flags or BS_AUTO3STATE
-    else
-      Flags := Flags or BS_AUTOCHECKBOX;
+    Flags := Flags or BS_3STATE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1536,12 +1532,6 @@ begin
     Flags := Windows.WParam(BST_INDETERMINATE);
   end;
   Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, 0);
-end;
-
-class procedure TWin32WSCustomCheckBox.AllowGrayedChanged(
-  const ACustomCheckbox: TCustomCheckbox);
-begin
-  RecreateWnd(ACustomCheckbox);
 end;
 
 { TWin32WSToggleBox }

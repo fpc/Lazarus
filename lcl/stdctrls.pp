@@ -1166,7 +1166,6 @@ type
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
     FShortCut: TShortcut;
-    procedure SetAllowGrayed(const AValue: Boolean);
     procedure SetState(Value: TCheckBoxState);
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
@@ -1189,7 +1188,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   public
     property AutoSize default true;
-    property AllowGrayed: Boolean read FAllowGrayed write SetAllowGrayed default false;
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
     property TabStop default true;
     property OnChange;
