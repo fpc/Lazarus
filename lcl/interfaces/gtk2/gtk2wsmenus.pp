@@ -30,7 +30,7 @@ uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
-  Graphics, Menus, Forms, LCLIntf;
+  LMessages, Graphics, Menus, Forms, LCLIntf;
 
 type
 
@@ -77,6 +77,66 @@ implementation
 
 {$I gtkdefines.inc}
 
+function Gtk2MenuItemActivate(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  Mess: TLMActivate;
+  LCLMenuItem: TMenuItem;
+begin
+  Result:= True;
+  {$IFDEF EventTrace}
+  EventTrace('activate', data);
+  {$ENDIF}
+
+  ResetDefaultIMContext;
+
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
+  LCLMenuItem := TMenuItem(Data);
+
+  // the gtk fires toggle for radio buttons when unchecking them
+  // the LCL expects only uncheck to check changes
+  if LCLMenuItem.RadioItem
+  and GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM)
+  and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
+
+  FillChar(Mess,SizeOf(Mess),#0);
+  Mess.Msg := LM_ACTIVATE;
+  Mess.Active:=true;
+  Mess.Minimized:=false;
+  Mess.ActiveWindow:=0;
+  Mess.Result := 0;
+  DeliverMessage(Data, Mess);
+
+  Result := CallBackDefaultReturn;
+end;
+
+function Gtk2MenuItemToggled(AMenuItem: PGTKCheckMenuItem;
+                             AData: gPointer): GBoolean; cdecl;
+// AData --> LCLMenuItem
+var
+  LCLMenuItem: TMenuItem;
+begin
+  Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
+  EventTrace('toggled', AData);
+  {$ENDIF}
+
+  LCLMenuItem := TMenuItem(AData);
+  // some sanity checks
+  if LCLMenuItem = nil then Exit;
+  if not LCLMenuItem.IsCheckItem then Exit;
+
+  // the gtk always toggles the check flag
+  // -> restore 'checked' flag if needed
+  if gtk_check_menu_item_get_active(AMenuItem) = LCLMenuItem.Checked then Exit;
+  if LCLMenuItem.AutoCheck then Exit;
+
+  // restore it
+  LockOnChange(PgtkObject(AMenuItem), +1);
+  gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
+  LockOnChange(PgtkObject(AMenuItem), -1);
+end;
+
 function Gtk2MenuItemSelect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
 begin
   AMenuItem.IntfDoSelect;
@@ -96,7 +156,7 @@ class procedure TGtk2WSMenuItem.SetCallbacks(const AGtkWidget: PGtkWidget;
 begin
   // connect activate signal (i.e. clicked)
   g_signal_connect(PGTKObject(AGtkWidget), 'activate',
-                   TGTKSignalFunc(@gtkactivateCB), AWidgetInfo^.LCLObject);
+                   TGTKSignalFunc(@Gtk2MenuItemActivate), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'select',
     TGTKSignalFunc(@Gtk2MenuItemSelect), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'deselect',
@@ -189,6 +249,7 @@ begin
 
   if GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM) then
   begin
+    // check or radio
     // set 'ShowAlwaysCheckable'
     gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(Widget),
       AMenuItem.ShowAlwaysCheckable);
@@ -198,17 +259,18 @@ begin
 
     if (OldCheckMenuItemToggleSize=0) then
     begin
-      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(Widget), @OldCheckMenuItemToggleSize);
+      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(Widget),
+                                        @OldCheckMenuItemToggleSize);
       OldCheckMenuItemToggleSize := GTK_MENU_ITEM(Widget)^.toggle_size;
     end;
 
     g_signal_connect_after(PGTKObject(Widget), 'toggled',
-      TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(AMenuItem));
+      TGTKSignalFunc(@Gtk2MenuItemToggled), Pointer(AMenuItem));
   end;
 
   // set attributes (enabled and rightjustify)
   gtk_widget_set_sensitive(Widget,
-                           AMenuItem.Enabled and (AMenuItem.Caption <> cLineCaption));
+                     AMenuItem.Enabled and (AMenuItem.Caption <> cLineCaption));
   if AMenuItem.RightJustify then
     gtk_menu_item_right_justify(PGtkMenuItem(Widget));
 
