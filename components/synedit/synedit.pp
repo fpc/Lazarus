@@ -2268,7 +2268,7 @@ end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
-  if Key='' then exit;
+    if Key='' then exit;
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
@@ -2281,7 +2281,7 @@ begin
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
     // Check if ecChar has handled the Key; Todo: move the condition, in one common place
-    if not ReadOnly and (Key >= #32) and (Key <> #127) then
+    if not ReadOnly and ((Key = #13) or (Key >= #32)) and (Key <> #127) then
       Key:='';
   end else begin
     // don't ignore further keys
@@ -2302,7 +2302,7 @@ begin
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     CommandProcessor(ecChar, Key, nil);
     // Check if ecChar has handled the Key; Todo: move the condition, in one common place
-    if not ReadOnly and (Key >= #32) and (Key <> #127) then
+    if not ReadOnly and ((Key = #13) or (Key >= #32)) and (Key <> #127) then
       Key:=#0;
   end else begin
     // don't ignore further keys
@@ -6073,6 +6073,19 @@ begin
               FCaret.DecForcePastEOL;
             end;
           end;
+        end
+        else if not ReadOnly and (AChar = #13) then begin
+          // ecLineBreak is not assigned
+          // Insert a linebreak, but do not apply any other functionality (such as indent)
+          if FTheLinesView.Count = 0 then
+            FTheLinesView.Add('');
+          if SelAvail then
+            SetSelTextExternal('');
+          LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+          FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
+          CaretXY := Point(1, CaretY + 1);
+          EnsureCursorPosVisible;
+          fLastCaretX := CaretX;
         end;
       ecUndo:
         begin
