@@ -96,10 +96,28 @@ end;
 procedure TDBCheckBox.DataChange(Sender: TObject);
 begin
   State:=GetFieldCheckState;
-  // if original state was unchecked and after editing is checked
-  // but if before post, edits are cancelled, FlastcheckedOnChange has a
-  // wrong value it won't detect changes next time, correct here.
-  fLastCheckedOnChange:=Checked;
+end;
+
+procedure TDBCheckBox.DoOnChange;
+var
+  EditingOk: boolean;
+begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then begin
+    exit;
+  end;
+
+  // enter edit state avoiding FDatalink.Reset which would
+  // not honour external event (generated perhaps by user interaction)
+  FDatalink.OnDataChange:=nil;
+  EditingOk := FDatalink.Edit;
+  FDatalink.OnDataChange:=@DataChange;
+
+  EditingDone;
+
+  if EditingOk then begin
+    if Assigned(OnChange) then
+      OnChange(Self);
+  end;
 end;
 
 procedure TDBCheckBox.UpdateData(Sender: TObject);
@@ -148,7 +166,7 @@ end;
 
 procedure TDBCheckBox.EditingDone;
 begin
-  if FDatalink.Edit then begin
+  if FDatalink.Editing then begin
     FDatalink.Modified;
     FDataLink.UpdateRecord;
   end else
