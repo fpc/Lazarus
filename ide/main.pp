@@ -6973,6 +6973,7 @@ var
   LFMSourceText: String;
   LFMCode: TCodeBuffer;
   AProject: TProject;
+  LRSFilename: String;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -7080,6 +7081,11 @@ begin
         //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
         Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
+        // make sure the .lrs file exists
+        if NewUnitInfo.IsVirtual then begin
+          LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
+          CodeToolBoss.CreateFile(LRSFilename);
+        end;
       end else begin
         // create a designer form for a form/datamodule/frame
         //DebugLn(['TMainIDE.DoNewFile Name=',NewFileDescriptor.Name,' Class=',NewFileDescriptor.ClassName]);
