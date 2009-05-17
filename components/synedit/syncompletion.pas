@@ -311,6 +311,7 @@ type
     {$ENDIF}
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: char);
+    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
     function GetFEditor: TCustomSynEdit;
     function GetEditor(i: integer): TCustomSynEdit;
@@ -1283,6 +1284,7 @@ type
   TRecordUsedToStoreEachEditorVars = record
     kp: TKeyPressEvent;
     kd: TKeyEvent;
+    UTF8KeyPress: TUTF8KeyPressEvent;
     NoNextKey: boolean;
   end;
   PRecordUsedToStoreEachEditorVars = ^TRecordUsedToStoreEachEditorVars;
@@ -1530,6 +1532,22 @@ begin
   end;
 end;
 
+procedure TSynCompletion.EditorUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+var
+  i: integer;
+begin
+  i := fEditors.IndexOf(Sender);
+  if i <> -1 then begin
+    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
+      UTF8Key := #0;
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
+    end;
+    if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress(sender,UTF8Key);
+  end;
+end;
+
 destructor TSynCompletion.Destroy;
 begin
   // necessary to get Notification called before fEditors is freed
@@ -1562,6 +1580,7 @@ begin
     fEditors.Add(aEditor);
     new(p);
     p^.kp := aEditor.OnKeyPress;
+    p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
     p^.kd := aEditor.OnKeyDown;
     p^.NoNextKey := false;
     fEditstuffs.add(p);
@@ -1569,6 +1588,7 @@ begin
     if not (csDesigning in ComponentState) then begin
       aEditor.OnKeyDown := {$IFDEF FPC}@{$ENDIF}EditorKeyDown;
       aEditor.OnKeyPress := {$IFDEF FPC}@{$ENDIF}EditorKeyPress;
+      aEditor.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}EditorUTF8KeyPress;
     end;
   end;
 end;
