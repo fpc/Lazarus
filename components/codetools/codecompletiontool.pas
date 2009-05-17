@@ -5758,7 +5758,8 @@ var
       while DefAVLNode<>nil do begin
         DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
         DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
-        if ProcBodyNodes.Find(DefNodeExt)=nil then begin
+        if (ProcBodyNodes.Find(DefNodeExt)=nil)
+        and (not ProcNodeHasSpecifier(DefNodeExt.Node,psABSTRACT)) then begin
           // move proc definition from ClassProcs to DefsWithoutBodies
           DefsWithoutBodies:=TAVLTree.Create(@CompareCodeTreeNodeExt);
           DefsWithoutBodies.Add(DefNodeExt);
