@@ -939,6 +939,7 @@ begin
               begin
                 //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
                 inc(CommentLvl);
+                inc(CurPos.StartPos);
               end;
             '*':
               if (Src[CurPos.StartPos+1]=')') then begin
