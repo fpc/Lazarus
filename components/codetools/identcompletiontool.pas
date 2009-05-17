@@ -1044,6 +1044,9 @@ const
   var
     NewItem: TIdentifierListItem;
   begin
+    //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartIsLValue in CurrentIdentifierList.ContextFlags]);
+    if not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags) then exit;
+
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
@@ -1714,12 +1717,6 @@ begin
         GatherContext.Tool.FindIdentifierInContext(Params);
       end;
 
-      // add useful identifiers without context
-      {$IFDEF CTDEBUG}
-      DebugLn('TIdentCompletionTool.GatherIdentifiers G');
-      {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,CursorContext,BeautifyCodeOptions);
-
       // check for incomplete context
       
       // context bracket level
@@ -1800,6 +1797,12 @@ begin
 
       // check for procedure/method declaration context
       CheckProcedureDeclarationContext;
+
+      // add useful identifiers
+      {$IFDEF CTDEBUG}
+      DebugLn('TIdentCompletionTool.GatherIdentifiers G');
+      {$ENDIF}
+      GatherUsefulIdentifiers(IdentStartPos,CursorContext,BeautifyCodeOptions);
     end;
 
     Result:=true;
