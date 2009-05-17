@@ -1308,12 +1308,26 @@ begin
   inc(SrcPos,2);
   CommentInnerStartPos:=SrcPos;
   while (SrcPos<SrcLen) do begin
-    if ((Src[SrcPos]<>'*') or (Src[SrcPos+1]<>')')) then
-      inc(SrcPos)
-    else begin
-      DecCommentLevel;
-      inc(SrcPos,2);
-      break;
+    case Src[SrcPos] of
+    '*':
+      begin
+        inc(SrcPos);
+        if (SrcPos<=SrcLen) and (Src[SrcPos]=')') then begin
+          inc(SrcPos);
+          DecCommentLevel;
+          if CommentLevel=0 then break;
+        end;
+      end;
+    '(':
+      begin
+        inc(SrcPos);
+        if FNestedComments and (SrcPos<=SrcLen) and (Src[SrcPos]='*') then begin
+          inc(SrcPos);
+          IncCommentLevel;
+        end;
+      end;
+    else
+      inc(SrcPos);
     end;
   end;
   CommentEndPos:=SrcPos;
