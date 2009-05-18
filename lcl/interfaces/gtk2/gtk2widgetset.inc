@@ -118,13 +118,28 @@ end;
 function gtk2PopupMenuCB(Widget: PGtkWidget; data: gPointer): gboolean; cdecl;
 var
   Msg: TLMMouse;
+  x, y: gint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_CONTEXTMENU;
   Msg.Keys := 0; // todo: true keystate
-  Msg.XPos := Widget^.allocation.width div 2;
-  Msg.YPos := Widget^.allocation.height div 2;
+  gtk_widget_get_pointer(Widget, @x, @y);
+
+  if x > Widget^.allocation.width then
+    x := Widget^.allocation.width
+  else
+  if x < 0 then
+    x := 0;
+
+  if y > Widget^.allocation.height then
+    y := Widget^.allocation.height
+  else
+  if y < 0 then
+    y := 0;
+
+  Msg.XPos := x;
+  Msg.YPos := y;
 
   Result := DeliverMessage(TComponent(data), Msg) <> 0;
 end;
