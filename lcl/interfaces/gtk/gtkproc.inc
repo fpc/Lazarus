@@ -5842,10 +5842,9 @@ begin
   //DebugLn('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
 end;
 
-procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget
-  );
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget);
 begin
-  UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget,LCLMenuItem.ShortCut);
+  UpdateInnerMenuItem(LCLMenuItem, MenuItemWidget, LCLMenuItem.ShortCut);
 end;
 
 {------------------------------------------------------------------------------
@@ -5867,26 +5866,29 @@ var
     LabelWidget: PGtkLabel;
     pattern: String;
   begin
-    if (MenuItemWidget=nil) or (LCLMenuItem=nil) then exit;
-    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    if LabelWidget=nil then begin
-    end;
+    if (MenuItemWidget = nil) or (LCLMenuItem = nil) then
+      Exit;
+    LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
+    if LabelWidget = nil then
+      Exit;
     //Check for a shortcut key
-    s:=LCLMenuItem.Caption;
+    s := LCLMenuItem.Caption;
     ShortCutPos := pos('&', s);
     //DebugLn(['SetMenuItemLabelText ',dbgsName(LCLMenuItem),' s="',s,'"']);
-    if ShortCutPos > 0 then begin
-      if (LCLMenuItem.Parent<>nil)
-      and (LCLMenuItem.Parent.HandleAllocated)
-      and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
-      then begin
+    if ShortCutPos > 0 then
+    begin
+      if (LCLMenuItem.Parent <> nil) and
+         LCLMenuItem.Parent.HandleAllocated and
+         GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) then
+      begin
         // this is a menu item in the main bar of a form
         // -> accelerator should be Alt+Key
-        System.Delete(s,ShortCutPos,1);
-        gtk_label_set_text(LabelWidget,PChar(s));
-        pattern:=StringOfChar(' ', ShortCutPos-1)+'_';
+        System.Delete(s, ShortCutPos, 1);
+        gtk_label_set_text(LabelWidget, PChar(s));
+        pattern := StringOfChar(' ', ShortCutPos - 1) + '_';
         gtk_label_set_pattern(LabelWidget, PChar(pattern));
-      end else begin
+      end else
+      begin
         // Because gnome changes menuitem shortcuts via keyboard, we can't
         // set the accelerator.
         // It would be cool, to know if a window manager with the gnome feature
@@ -5896,14 +5898,15 @@ var
         // gtk_label_set_text(LabelWidget,PChar(s));
 
         // Do not use gtk_label_parse_uline as it mangles underscore characters
-        System.Delete(s,ShortCutPos,1);
-        gtk_label_set_text(LabelWidget,PChar(s));
-        pattern:=StringOfChar(' ', ShortCutPos-1)+'_';
+        System.Delete(s, ShortCutPos, 1);
+        gtk_label_set_text(LabelWidget, PChar(s));
+        pattern := StringOfChar(' ', ShortCutPos - 1) + '_';
         gtk_label_set_pattern(LabelWidget, PChar(pattern));
       end;
     end
-    else begin
-      gtk_label_set_text(LabelWidget,PChar(s));
+    else
+    begin
+      gtk_label_set_text(LabelWidget, PChar(s));
       gtk_label_set_pattern(LabelWidget, #0);  // Ensure any underlines removed
     end;
   end;
@@ -5915,45 +5918,46 @@ var
     Key: Word;
     Shift: TShiftState;
     s: String;
-    CurKey: Word;
-    CurShift: TShiftState;
   begin
     //DebugLn(['UpdateShortCutLabel ',dbgsName(LCLMenuItem),' ',ShortCutToText(NewShortCut)]);
-    ShortCutToKey(NewShortCut,Key,Shift);
+    ShortCutToKey(NewShortCut, Key, Shift);
 
     // check if shortcut is needed
-    NeedShortCut:=Key<>0;
+    NeedShortCut := Key <> 0;
 
-    if NeedShortCut
-    and (LCLMenuItem.Parent<>nil)
-    and (LCLMenuItem.Parent.HandleAllocated)
-    and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
-    then begin
+    if NeedShortCut and
+       (LCLMenuItem.Parent <> nil) and
+       LCLMenuItem.Parent.HandleAllocated and
+       GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) then
+    begin
       // no shortcut captions for items in menubar
-      NeedShortCut:=false;
+      NeedShortCut := False;
     end;
 
-    LabelWidget:=PGtkLabel(gtk_object_get_data(
-                               PGtkObject(MenuItemWidget), 'LCLShortCutLabel'));
+    LabelWidget := PGtkLabel(gtk_object_get_data(PGtkObject(MenuItemWidget),
+      'LCLShortCutLabel'));
                                
-    if NeedShortCut then begin
-      ShortCutToKey(NewShortCut,CurKey,CurShift);
-      s:='    '+GetAcceleratorString(CurKey,CurShift);
+    if NeedShortCut then
+    begin
+      ShortCutToKey(NewShortCut, Key, Shift);
+      s := '    ' + GetAcceleratorString(Key, Shift);
       //  ShortCutToText(NewShortCut);
-      if LabelWidget=nil then begin
+      if LabelWidget = nil then
+      begin
         // create a label for the ShortCut
-        LabelWidget:=PGtkLabel(gtk_label_new(PChar(Pointer(s))));
-        gtk_misc_set_alignment(GTK_MISC (LabelWidget), 1.0, 0.5);
+        LabelWidget := PGtkLabel(gtk_label_new(PChar(Pointer(s))));
+        gtk_misc_set_alignment(GTK_MISC(LabelWidget), 1.0, 0.5);
         gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
-        gtk_container_add(GTK_CONTAINER(HBoxWidget),PGtkWidget(LabelWidget));
+        gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
         gtk_widget_show(PGtkWidget(LabelWidget));
-      end else begin
-        gtk_label_set_text(LabelWidget,PChar(Pointer(s)));
+      end
+      else
+      begin
+        gtk_label_set_text(LabelWidget, PChar(Pointer(s)));
       end;
-    end else begin
-      if LabelWidget<>nil then
-        gtk_widget_destroy(PGtkWidget(LabelWidget));
-    end;
+    end else
+    if LabelWidget <> nil then
+      gtk_widget_destroy(PGtkWidget(LabelWidget));
   end;
 
   procedure CreateIcon;
@@ -5965,12 +5969,13 @@ var
     // the icon will be painted instead of the toggle
     // of a normal gtkcheckmenuitem
 
-    if LCLMenuItem.HasIcon then begin
-      IconSize:=LCLMenuItem.GetIconSize;
-      IconWidth:=IconSize.X;
-      IconHeight:=IconSize.Y;
+    if LCLMenuItem.HasIcon then
+    begin
+      IconSize := LCLMenuItem.GetIconSize;
+      IconWidth := IconSize.X;
+      IconHeight := IconSize.Y;
       // set the toggle width
-      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=guint16(IconWidth);
+      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size := guint16(IconWidth);
       
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
         PGtkMenuItem(MenuItemWidget)^.flag0 or
@@ -5981,20 +5986,20 @@ var
           {$ENDIF}
 
       // set our own draw handler
-      if OldCheckMenuItemDrawProc=nil then
-        OldCheckMenuItemDrawProc:=
-          CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
-      CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator:=@DrawMenuItemIcon;
+      if OldCheckMenuItemDrawProc = nil then
+        OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
+      CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator := @DrawMenuItemIcon;
 
       // add a dummy widget for the icon height
-      MinHeightWidget:=gtk_label_new('');
+      MinHeightWidget := gtk_label_new('');
       gtk_widget_show(MinHeightWidget);
-      gtk_widget_set_usize(MinHeightWidget,1,IconHeight);
-      gtk_box_pack_start(GTK_BOX(HBoxWidget),MinHeightWidget,false,false,0);
-    end else
-      MinHeightWidget:=nil;
+      gtk_widget_set_usize(MinHeightWidget, 1, IconHeight);
+      gtk_box_pack_start(GTK_BOX(HBoxWidget), MinHeightWidget, False, False, 0);
+    end
+    else
+      MinHeightWidget := nil;
     gtk_object_set_data(PGtkObject(MenuItemWidget),
-                        'LCLMinHeight',MinHeightWidget);
+                        'LCLMinHeight', MinHeightWidget);
   end;
 
   procedure CreateLabel;
@@ -6002,41 +6007,44 @@ var
     LabelWidget: PGtkLabel;
   begin
     // create a label for the Caption
-    LabelWidget:=PGtkLabel(gtk_label_new(''));
+    LabelWidget := PGtkLabel(gtk_label_new(''));
     gtk_misc_set_alignment(GTK_MISC (LabelWidget), 0.0, 0.5);
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
-    gtk_container_add(GTK_CONTAINER(HBoxWidget),PGtkWidget(LabelWidget));
-    SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
+    gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
+    SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
     //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
     gtk_widget_show(PGtkWidget(LabelWidget));
   end;
   
 begin
-  HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
-  if HBoxWidget=nil then begin
+  HBoxWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
+  if HBoxWidget = nil then
+  begin
     // create inner widgets
     if LCLMenuItem.Caption = cLineCaption then 
     begin
       // a separator is an empty gtkmenuitem
       exit;
     end;
-    HBoxWidget:=gtk_hbox_new(false,0);
+    HBoxWidget := gtk_hbox_new(false,0);
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
     UpdateShortCutLabel;
-    gtk_container_add(GTK_CONTAINER(MenuItemWidget),HBoxWidget);
+    gtk_container_add(GTK_CONTAINER(MenuItemWidget), HBoxWidget);
     gtk_widget_show(HBoxWidget);
-  end else begin
+  end else
+  begin
     // there are already inner widgets
     if LCLMenuItem.Caption = cLineCaption then 
     begin
       // a separator is an empty gtkmenuitem -> delete the inner widgets
       DestroyWidget(HBoxWidget);
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
-    end else begin
+    end else
+    begin
       // just update the content
-      SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
+      SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
       UpdateShortCutLabel;
     end;
   end;
