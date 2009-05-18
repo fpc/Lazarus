@@ -29,10 +29,11 @@ function ShowInputDialog(const InputCaption, InputPrompt : String;
   end;
 
 var
-  Form : TForm;
-  Prompt : TLabel;
-  Edit : TEdit;
+  Form: TForm;
+  Prompt: TLabel;
+  Edit: TEdit;
   MinEditWidth: integer;
+  AMonitor: TMonitor;
 begin
   Result := False;
   Form := TForm.CreateNew(nil, 0);
@@ -55,7 +56,10 @@ begin
       Parent := Form;
       Align := alTop;
       BorderSpacing.Top := 3;
-      MinEditWidth := max(260, ActiveMonitor.Width div 4);
+      AMonitor := ActiveMonitor;
+      // check that edit is smaller than our monitor, it must be smaller at least
+      // by 6 * 2 pixels (spacing from window borders) + window border
+      MinEditWidth := Min(AMonitor.Width - 20, Max(260, AMonitor.Width div 4));
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;
