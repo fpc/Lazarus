@@ -5861,48 +5861,21 @@ var
   procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
     MenuItemWidget: PGtkWidget);
   var
-    ShortCutPos: integer;
     s: string;
     LabelWidget: PGtkLabel;
-    pattern: String;
   begin
     if (MenuItemWidget = nil) or (LCLMenuItem = nil) then
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    if LabelWidget = nil then
-      Exit;
-    //Check for a shortcut key
     s := LCLMenuItem.Caption;
-    ShortCutPos := pos('&', s);
-    //DebugLn(['SetMenuItemLabelText ',dbgsName(LCLMenuItem),' s="',s,'"']);
-    if ShortCutPos > 0 then
+    //Check for a shortcut key
+    if pos('&', s) > 0 then
     begin
-      if (LCLMenuItem.Parent <> nil) and
-         LCLMenuItem.Parent.HandleAllocated and
-         GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) then
-      begin
-        // this is a menu item in the main bar of a form
-        // -> accelerator should be Alt+Key
-        System.Delete(s, ShortCutPos, 1);
-        gtk_label_set_text(LabelWidget, PChar(s));
-        pattern := StringOfChar(' ', ShortCutPos - 1) + '_';
-        gtk_label_set_pattern(LabelWidget, PChar(pattern));
-      end else
-      begin
-        // Because gnome changes menuitem shortcuts via keyboard, we can't
-        // set the accelerator.
-        // It would be cool, to know if a window manager with the gnome feature
-        // is running, but there is probably no reliable code to do that, so we
-        // simply delete all ampersands and don't set the letter shortcut.
-        // DeleteAmpersands(s);
-        // gtk_label_set_text(LabelWidget,PChar(s));
-
-        // Do not use gtk_label_parse_uline as it mangles underscore characters
-        System.Delete(s, ShortCutPos, 1);
-        gtk_label_set_text(LabelWidget, PChar(s));
-        pattern := StringOfChar(' ', ShortCutPos - 1) + '_';
-        gtk_label_set_pattern(LabelWidget, PChar(pattern));
-      end;
+      // replace all _ with __ to correctly set mnemonic
+      s := StringReplace(s, '_', '__', [rfReplaceAll]);
+      // replace & with _ => this is how gtk understand mnemonic
+      s := StringReplace(s, '&', '_', []);
+      gtk_label_set_text_with_mnemonic(LabelWidget, PChar(s));
     end
     else
     begin
@@ -6012,7 +5985,7 @@ var
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
     gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
     SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
-    //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
+    //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget), MenuItemWidget);
     gtk_widget_show(PGtkWidget(LabelWidget));
   end;
   
