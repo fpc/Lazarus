@@ -41,19 +41,48 @@ uses
   LCLType, //HDC
   LMessages, //TLMessage
   Classes, //TStream
+  Graphics, //TCanvas
   Forms,
   ExtCtrls, //splitter
   Controls,
-  ComCtrls, //TPageControl
-  EasyDockHelpers;
+  ComCtrls; //TPageControl
 
 type
   TEasyTree = class; //forward declaration
+  TEasyZone = class; //forward declaration
+  TEasySplitter = TCustomSplitter;
 
-  { TEasyZone }
+  TEasyZonePart =
+  (
+    zpNowhere,        // not in any zone
+    zpClient,         // on client control
+    zpAll,            // total header rect
+    zpCaption,        // header caption
+    zpSizer,          // splitter/sizer
+  {$IFDEF restore}
+    zpRestoreButton,  // header restore button
+  {$ENDIF}
+    zpCloseButton     // header close button
+  );
 
-  TEasyZone = class(TCustomDockZone)
+  TEasyDockHeader = class
+  public
+    HeaderSize: integer;
+  //state last drawn
+    MouseZone: TEasyZone;
+    MouseDown: boolean;
+    MousePart: TEasyZonePart;
+    PartRect: TRect;
+  public
+    constructor Create;
+    class function  GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
+    function  FindPart(AZone: TEasyZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
+    procedure Draw(AZone: TEasyZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
+  end;
+
+  TEasyZone = class
   private
+    FChildControl: TControl;
     FTree: TEasyTree;
     FFirstChild,
     FNextSibling, FPrevSibling, FParent: TEasyZone;
@@ -63,10 +92,7 @@ type
     function GetLeft: Integer;
     function GetTop: Integer;
     function GetTopOrLeft(fTop: boolean): Integer;
-  private //very basic linking
-  (* Beware: Lazarus tends to insert a private member FChildControl,
-    which hides the inherited member of the same name!
-  *)
+  private //very basic liniking
     procedure InsertAfter(LinkAfter, NewZone: TEasyZone);
       //do not handle orientation!
     procedure SetParent(zone: TEasyZone);
@@ -75,8 +101,8 @@ type
     BR: TPoint;
     procedure SetBounds(TLBR: TRect);
 
-    function  GetHandle: HWND; override;
-    function  GetHeaderSize: integer; override;
+    function  GetHandle: HWND;
+    function  GetHeaderSize: integer;
     function  GetVisible: boolean;
     function  GetVisibleControl: TControl;
     function  GetPartRect(APart: TEasyZonePart): TRect;
@@ -85,8 +111,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     function  DockSite: TWinControl;
-    function  HasSizer: boolean; override;
-    function  GetBounds: TRect; override;
+    function  HasSizer: boolean;
+    function  GetBounds: TRect;
 
     procedure AddSibling(NewZone: TEasyZone; where: TAlign);
     procedure ReplaceChild(OldChild, NewChild: TEasyZone);
@@ -121,6 +147,7 @@ type
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
   //extended interface
+    //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
     function ZoneFromPoint(SitePos: TPoint): TEasyZone;
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect);  override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
@@ -129,7 +156,7 @@ type
       var DockRect: TRect);  override;
     procedure RemoveControl(Control: TControl);  override;
     procedure ResetBounds(Force: Boolean);  override; //site resized
-    procedure SetReplacingControl(Control: TControl); override; //unused, Delphi compatible
+    procedure SetReplacingControl(Control: TControl); override; //unused
     procedure LoadFromStream(Stream: TStream);  override;
     procedure SaveToStream(Stream: TStream);  override;
   protected //added
@@ -142,7 +169,7 @@ type
   private
     FHeader: TEasyDockHeader;
     FSplitter: TEasySplitter;
-    FSizeZone: TEasyZone; //zone to be resized, along with NextSibling
+    FSizeZone: TEasyZone; //zone to be resized, also PrevSibling
     procedure SplitterMoved(Sender: TObject); //hide and reposition zone
   public
     procedure MouseMessage(var Message: TLMessage); override;
@@ -178,14 +205,17 @@ var //debug only
 implementation
 
 uses
-  SysUtils, Types, Graphics,
+  SysUtils, Types,
   math,
+  Themes, LResources,
   LCLproc; //debugging
 
 const
-  ParentChildOrientation: array[TDockOrientation] of TDockOrientation = (
-    doNoOrient, doVertical, doHorizontal, doPages
-  );
+{$IFDEF restore}
+  HeaderButtons = [zpCloseButton, zpRestoreButton];
+{$ELSE}
+  HeaderButtons = [zpCloseButton];
+{$ENDIF}
 
 //from CustomFormEditor.pp
 function {TCustomFormEditor.}CreateUniqueComponentName(const AClassName: string;
@@ -236,10 +266,9 @@ begin
   //FreeAndNil(DockSite.DockManager); - seems to be fixed
   DockSite.DockManager := self;
 //init node class - impossible due to visibility restrictions!
-
   inherited Create; //(DockSite);
 //init top zone
-  FSiteRect := DockSite.ClientRect; //handle resize of the dock site
+  FSiteRect := DockSite.ClientRect;
   FTopZone := TEasyZone.Create(self);
   FTopZone.SetBounds(FSiteRect);
 //init helpers
@@ -277,7 +306,6 @@ begin
   if (FUpdateCount = 0) and (FTopZone.FirstChild <> nil) then begin
     DebugLn('EndUpdate---');
     UpdateTree;
-    //BuildDockLayout(FTopZone);
   end;
 end;
 
@@ -285,7 +313,7 @@ function TEasyTree.ZoneFromPoint(SitePos: TPoint): TEasyZone;
 var
   zone: TEasyZone;
 begin
-(* Return zone a site client coordinates.
+(* Return zone in site client coordinates.
 *)
   zone := FTopZone;
   while zone <> nil do begin
@@ -308,7 +336,6 @@ end;
 procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
 //get the client area within the given zone rectangle
-//raw extimate, lacking exact (not yet existing) zone information
   if Control.DockOrientation = doVertical then
     inc(ARect.Top, DockHeaderSize)
   else
@@ -341,6 +368,7 @@ begin
   if zone = nil then
     CtlBounds := Rect(0,0,0,0)
   else begin
+  { TODO -cdocking : zpClient }
     CtlBounds := zone.GetBounds;
   end;
 end;
@@ -360,6 +388,7 @@ In all other cases all zones have an orientation:
 
 Cases 2 and 3 can be merged, with an additional or redundant setting of the orientation.
 *)
+
 begin
   if Control = FReplacingControl then begin
   (* hack for morphing DropCtl into notebook,
@@ -421,16 +450,16 @@ begin
     exit;
   end;
 
-
   NewZone := TEasyZone.Create(self);
   NewZone.ChildControl := Control as TControl;
-  Control.Align := alNone; //hack: prevent reposition by host
+  Control.Align := alNone;
+
+//special case: in root zone (empty dock site)
 
   if FTopZone.FirstChild = nil then begin
-  //special case: in root zone (empty dock site)
     FTopZone.InsertAfter(nil, NewZone);
     NewZone.SetBounds(FDockSite.ClientRect);
-  end else begin //normal dock, along with existing zones
+  end else begin
   //more checks
     OldZone := FindControlZone(FTopZone, Control);
       //check after placing the control
@@ -442,7 +471,7 @@ begin
     else //unhandled or unspecific
       if DropCtl.DockOrientation = doNoOrient then
         DropCtl.DockOrientation := doHorizontal; //assume
-      Control.DockOrientation := ParentChildOrientation[DropCtl.DockOrientation];
+      Control.DockOrientation := DropCtl.DockOrientation;
     //fix alignment
       if Control.DockOrientation = doVertical then
         InsertAt := alBottom
@@ -454,22 +483,23 @@ begin
       InsertAt is one of alLeft/Right/Top/Bottom
     *)
 
-  //check orientation - control orientation cannot be doNoOrient!
+  //check orientation - control orientation cannot be doNone!
     OldParent := DropZone.Parent;
     (* One special case remains: top zone without orientation
     *)
     if (OldParent.Orientation = doNoOrient) then begin
       assert(OldParent = FTopZone, '???');
-      FTopZone.Orientation := ParentChildOrientation[Control.DockOrientation]; //easy
+      FTopZone.Orientation := Control.DockOrientation; //easy
     end;
   //iso or orthogonal insert?
-    if (OldParent.Orientation <> ParentChildOrientation[Control.DockOrientation]) then begin
-    //need intermediate zone, due to different alignment
+    if (OldParent.Orientation <> Control.DockOrientation) then begin
+    //need intermediate zone
       NewParent := TEasyZone.Create(self);
       NewParent.Orientation := Control.DockOrientation;
       NewParent.BR := r.BottomRight;
       OldParent.ReplaceChild(DropZone, NewParent); //unlink DropZone
-    //now: orthogonal orientation
+    //orthogonal orientation
+      //DropZone.SetBounds(r);
       NewParent.InsertAfter(nil, DropZone);
     end;
   //set control orientation
@@ -481,6 +511,138 @@ begin
     end;
   end;
   FDockSite.Invalidate;
+end;
+
+procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
+var
+  i: integer;
+  zone: TEasyZone;
+
+  function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
+  var
+    w, h, zphi: integer;
+    dx, dy: integer;
+    phi: double;
+    izone: integer;
+    //zone: eZone;
+    dir: TAlign;
+  const
+    k = 5; //matrix dimension
+  //mapping octants into aligns, assuming k=5
+    cDir: array[-4..4] of TAlign = (
+      alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
+    );
+  begin
+  //center of dock zone
+    w := ZoneSize.x div 2;
+    h := ZoneSize.y div 2;
+  //mouse position within k*k rectangles (squares)
+    dx := trunc((MousePos.x - w) / w * k);
+    dy := trunc((MousePos.y - h) / h * k);
+    izone := max(abs(dx), abs(dy)); //0..k
+  //map into 0=innermost (custom), 1=inner, 2=outer
+    if izone = 0 then begin
+      //zone := zInnermost;
+      dir := alCustom; //pages
+    end else begin
+    {
+      if izone >= k-1 then
+        zone := zOuter
+      else //if izone > 0 then
+        zone := zInner;
+    }
+      phi := arctan2(dy, dx);
+      zphi := trunc(radtodeg(phi)) div 45;
+      dir := cDir[zphi];
+    end;
+    Result := dir;
+  end;
+
+var
+  ZoneExtent: TPoint;
+  ADockRect: TRect;
+begin
+(* New DockManager interface, called instead of the old version.
+  Determine exact target (zone) and DropAlign.
+Signal results:
+  Prevent docking by setting DropOnControl=Control (prevent changes when dropped).
+  DragTarget=nil means: become floating.
+
+  Unfortunately there exists no way to signal invalid docking attempts :-(
+*)
+//debug only
+  DockObj := ADockObject;
+
+//determine the zone containing the DragTargetPos
+  with ADockObject do begin
+  //mouse position within dock site
+    DragTargetPos := DragTarget.ScreenToClient(DragPos);
+  //find zone
+    zone := ZoneFromPoint(DragTargetPos);
+
+    if (zone = nil) or (Control = zone.ChildControl) then begin
+      DropAlign := alNone; //prevent drop (below)
+    end else begin
+      ADockRect := zone.GetBounds; //include header
+      DropOnControl := zone.ChildControl;
+      if DropOnControl = nil then begin
+        DropAlign := alClient //first element in entire site
+      end else //determine the alignment within the zone.
+        DropAlign := DetectAlign(zone.BR, DragTargetPos);
+    //to screen coords
+      ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
+      ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
+    end;
+  //position DockRect
+    if DropAlign = alNone then begin
+    //force DockRect update by DockTrackNoTarget
+      DropOnControl := Control; //prevent drop - signal drop onto self
+    {$IFDEF NoDrop}
+      NoDrop := True;
+    {$ELSE}
+      DragTarget := nil;
+      //Control.DockTrackNoTarget
+      //DragTarget := FDockSite; //prevent floating - doesn't work :-(
+      //DockRect := Rect(MaxInt, MaxInt, 0, 0); //LTRB - very strange effect!
+      //DockRect := Rect(MaxInt, 0, MaxInt, 0); //LTRB
+    {$ENDIF}
+    end else begin
+      PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
+      DockRect := ADockRect;
+    end;
+  end;
+end;
+
+procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
+  DropAlign: TAlign; var DockRect: TRect);
+var
+  wh: integer;
+begin
+(* DockRect is initialized to the screen rect of the dock site by TControl,
+  or to the zone rect by TEasyTree.
+*)
+//debug!
+  DropOn := DropCtl;
+
+  if (DropCtl = nil) then
+    exit; //empty dock site
+
+  case DropAlign of
+  //alClient: as is
+  alTop:    DockRect.Bottom := (DockRect.Top + DockRect.Bottom) div 2;
+  alBottom: DockRect.Top := (DockRect.Top + DockRect.Bottom) div 2;
+  alLeft:   DockRect.Right := (DockRect.Left + DockRect.Right) div 2;
+  alRight:  DockRect.Left := (DockRect.Left + DockRect.Right) div 2;
+  alCustom: //pages
+    begin
+      wh := (DockRect.Right - DockRect.Left) div 3;
+      inc(DockRect.Left, wh);
+      dec(DockRect.Right, wh);
+      wh := (DockRect.Bottom - DockRect.Top) div 3;
+      inc(DockRect.Top, wh);
+      dec(DockRect.Bottom, wh);
+    end;
+  end;
 end;
 
 procedure TEasyTree.LoadFromStream(Stream: TStream);
@@ -519,7 +681,7 @@ var
   //also set splitter range! (todo)
     FSizeZone := z; //now: the zone with the header (second sibling!)
     FSplitter.BoundsRect := FHeader.PartRect;
-    if z.Parent.Orientation = doHorizontal then begin
+    if z.Parent.Orientation = doVertical then begin
       FSplitter.ResizeAnchor := akTop
     end else begin
       FSplitter.ResizeAnchor := akLeft;
@@ -571,21 +733,20 @@ end;
 
 procedure TEasyTree.SplitterMoved(Sender: TObject);
 var
-  ptNew, ptOuter: TPoint;
+  ptNew: TPoint;
 begin
 (* The unbound splitter has been moved.
-  Reflect new sizes in FSizeZone and next sibling.
+  Reflect new sizes in FSizeZone and prev(!) sibling.
   ptOuter is the new parent extent, BR of the last sibling.
 *)
   FSplitter.Hide;
-  ptNew := FSizeZone.BR;
-  if FSizeZone.Parent.Orientation = doHorizontal then
-    ptNew.y := FSplitter.Top + FSplitter.Height //above (and including) splitter
+  ptNew := FSizeZone.PrevSibling.BR;
+  if FSizeZone.Parent.Orientation = doVertical then
+    ptNew.y := FSplitter.Top //above splitter
   else
-    ptNew.x := FSplitter.Left + FSplitter.Width; //left of splitter
-  ptOuter := FSizeZone.Parent.BR; //not affected
-  FSizeZone.ScaleTo(FSizeZone.BR, ptNew, ptNew);  // ptOuter);
-  FSizeZone.NextSibling.SetBounds(FSizeZone.NextSibling.GetBounds); //BR unchanged, only update the control
+    ptNew.x := FSplitter.Left; //left of splitter
+  FSizeZone.PrevSibling.ScaleTo(FSizeZone.PrevSibling.BR, ptNew, ptNew);
+  FSizeZone.SetBounds(FSizeZone.GetBounds); //BR unchanged, only update the control
 { TODO -cdocking : Invalidate seems to miss a repaint of the docked controls, sometimes? }
   FDockSite.Invalidate;
 end;
@@ -624,147 +785,6 @@ begin
   PaintZone(FTopZone);
 end;
 
-procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
-var
-  i: integer;
-  zone: TEasyZone;
-
-  function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
-  var
-    w, h, zphi: integer;
-    dx, dy: integer;
-    phi: double;
-    izone: integer;
-    //zone: eZone;
-    dir: TAlign;
-  const
-    k = 5; //matrix dimension
-  //mapping octants into aligns, assuming k=5
-    cDir: array[-4..4] of TAlign = (
-      alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
-    );
-  begin
-  //center of dock zone
-    w := ZoneSize.x div 2;
-    h := ZoneSize.y div 2;
-  //mouse position within k*k rectangles (squares)
-    dx := trunc((MousePos.x - w) / w * k);
-    dy := trunc((MousePos.y - h) / h * k);
-    izone := max(abs(dx), abs(dy)); //0..k
-  //map into 0=innermost (custom), 1=inner, 2=outer
-    if izone = 0 then begin
-      //zone := zInnermost;
-      dir := alCustom; //alClient?
-    end else begin
-    { future feature: inner and outer location.
-      outmost location intended to span all siblings.
-      if izone >= k-1 then
-        zone := zOuter
-      else //if izone > 0 then
-        zone := zInner;
-    }
-      phi := arctan2(dy, dx);
-      zphi := trunc(radtodeg(phi)) div 45;
-      dir := cDir[zphi];
-    end;
-    Result := dir;
-  end;
-
-var
-  ZoneExtent: TPoint;
-  ADockRect: TRect;
-begin
-(* New DockManager interface, called instead of the old version.
-  Determine exact target (zone) and DropAlign.
-Signal results:
-  Prevent docking by setting DropOnControl=Control (prevent changes when dropped).
-  DragTarget=nil means: become floating.
-
-  Unfortunately there exists no way to signal invalid docking attempts :-(
-*)
-//debug only
-  DockObj := ADockObject;
-//determine the zone containing the DragTargetPos
-  with ADockObject do begin
-  //mouse position within dock site
-    DragTargetPos := DragTarget.ScreenToClient(DragPos);
-  //find zone
-    zone := ZoneFromPoint(DragTargetPos);
-
-    if (zone = nil) or (Control = zone.ChildControl) then begin
-      DropAlign := alNone; //prevent drop (below)
-    end else begin
-      ADockRect := zone.GetBounds; //include header
-      DropOnControl := zone.ChildControl;
-      if DropOnControl = nil then begin
-        DropAlign := alClient; //first element in entire site
-      end else //determine the alignment within the zone.
-        DropAlign := DetectAlign(zone.BR, DragTargetPos);
-    //to screen coords
-      ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
-      ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
-    end;
-  //position DockRect
-    if DropAlign = alNone then begin
-    //force DockRect update by DockTrackNoTarget
-      DropOnControl := Control; //prevent drop - signal drop onto self
-    {$IFDEF NoDrop}
-      NoDrop := True;
-    {$ELSE}
-      DragTarget := nil;
-      //Control.DockTrackNoTarget
-      //DragTarget := FDockSite; //prevent floating - doesn't work :-(
-      //DockRect := Rect(MaxInt, MaxInt, 0, 0); //LTRB - very strange effect!
-      //DockRect := Rect(MaxInt, 0, MaxInt, 0); //LTRB
-    {$ENDIF}
-    end else begin
-      PositionDockRect(Control, DropOnControl, DropAlign, ADockRect);
-      DockRect := ADockRect;
-    end;
-  end;
-end;
-
-procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
-  DropAlign: TAlign; var DockRect: TRect);
-var
-  wh: integer;
-begin
-(* DockRect is initialized to the screen rect of the dock site by TControl,
-  or to the zone rect by TEasyTree!
-
-  We assume call by TEasyTree...
-*)
-//debug!
-  DropOn := DropCtl;
-
-  if (DropCtl = nil) then begin
-    //DebugLn('no DropCtl');
-    exit; //empty dock site
-  end;
-{
-  with DockRect do
-  DebugLn('drop onto %s[%d,%d - %d,%d] %s', [
-      DropCtl.Name, Top, Left, Bottom, Right, AlignNames[DropAlign]
-      ]);
-}
-  case DropAlign of
-  //alClient: as is
-  alTop:    DockRect.Bottom := (DockRect.Top + DockRect.Bottom) div 2;
-  alBottom: DockRect.Top := (DockRect.Top + DockRect.Bottom) div 2;
-  alLeft:   DockRect.Right := (DockRect.Left + DockRect.Right) div 2;
-  alRight:  DockRect.Left := (DockRect.Left + DockRect.Right) div 2;
-  alCustom:
-    begin
-      wh := (DockRect.Right - DockRect.Left) div 3;
-      inc(DockRect.Left, wh);
-      dec(DockRect.Right, wh);
-      wh := (DockRect.Bottom - DockRect.Top) div 3;
-      inc(DockRect.Top, wh);
-      dec(DockRect.Bottom, wh);
-    end;
-  end;
-end;
-
 procedure TEasyTree.RemoveControl(Control: TControl);
 var
   zone: TEasyZone;
@@ -786,14 +806,15 @@ begin
     exit; //not the right time to do anything
   if FTopZone.FirstChild = nil then
     exit; //zone is empty, nothing to do
-//how to determine old bounds? We use saved size in FSiteRect.
+//how to determine old bounds?
   rNew := FDockSite.ClientRect;
-  if not Force and not CompareMem(@rNew, @FSiteRect, sizeof(rNew)) then
+  if not CompareMem(@rNew, @FSiteRect, sizeof(rNew)) then
     Force := True;  //something has changed
   if not Force then
     exit;
   FTopZone.ScaleTo(FSiteRect.BottomRight, rNew.BottomRight, rNew.BottomRight);
   FSiteRect := rNew;
+  FSplitter.Hide;
   FDockSite.Invalidate; //force repaint of headers
 end;
 
@@ -819,14 +840,14 @@ const
     else
       s := '''''';
     r := zone.GetBounds;
-    s := Format('%s%s (%d,%d)-(%d,%d)%s', [ind, OrientString[zone.orientation], //zone.Limit,
+    s := Format('%s%s (%d,%d)-(%d,%d)%s', [ind, OrientString[zone.orientation],
       r.Top, r.Left, r.Bottom, r.Right, eol]);
     Stream.Write(s[1], length(s));
   //control
     ctl := zone.ChildControl;
     if ctl <> nil then begin
       r := ctl.BoundsRect;
-      s := Format('%s%s %s.%s (%d,%d)-(%d,%d)%s', [ind, OrientString[zone.orientation],
+      s := Format('%s%s %s.%s (%d,%d)-(%d,%d)%s', [ind, OrientString[ctl.DockOrientation],
         ctl.ClassName, ctl.Name,
         r.Top, r.Left, r.Bottom, r.Right, eol]);
       Stream.Write(s[1], length(s));
@@ -846,10 +867,6 @@ const
   end;
 
 begin
-(* This is a debug version of SaveToStream.
-  It only produces a readable representation of the internal structure,
-  not suited for restoring the layout with LoadFromStream.
-*)
 //for now: dump tree
 //splitter
   if FSplitter.Visible then begin
@@ -868,6 +885,7 @@ end;
 
 procedure TEasyTree.UpdateTree;
 begin
+  //nothing to do?
   //FDockSite.Invalidate;
 end;
 
@@ -934,7 +952,7 @@ begin
     //more than 1 child - check next level
     end else if ch.FirstChild = nil then begin
     //contains control, move up
-      ch.ChildControl.DockOrientation := ParentChildOrientation[zone.Parent.Orientation];
+      ch.ChildControl.DockOrientation := zone.Parent.Orientation;
       p.ReplaceChild(zone, ch); //move control up
       zone.Free;
       affected := p;
@@ -947,13 +965,17 @@ begin
     zone := p;
   end;
 //update parent(?) zone, to close the gap
+  //Zone := p.FirstChild;
   if affected <> nil then begin
     Zone := affected.FirstChild;
     while Zone <> nil do begin
       if Zone.NextSibling = nil then
+        //Zone.BR := p.BR; //resize last zone
         Zone.BR := affected.BR; //resize last zone
       if Zone.ChildControl <> nil then begin
-        Zone.ChildControl.BoundsRect := Zone.GetPartRect(zpClient);
+        r := Zone.GetBounds;
+        AdjustDockRect(Zone.ChildControl, r);
+        Zone.ChildControl.BoundsRect := r;
       end;
       zone := Zone.NextSibling;
     end;
@@ -1030,9 +1052,7 @@ end;
 
 function TEasyZone.HasSizer: boolean;
 begin
-(* New sizer at bottom/right of zone (was: part of header)
-*)
-  Result := NextSibling <> nil;
+  Result := PrevSibling <> nil;
 end;
 
 //-------------- basic linking ----------------
@@ -1070,13 +1090,14 @@ begin
       LinkAfter.NextSibling.FPrevSibling := NewZone;
     LinkAfter.FNextSibling := NewZone;
   end;
+  //NewZone.Orientation := LinkAfter.Orientation;
 end;
 
 procedure TEasyZone.AddSibling(NewZone: TEasyZone; where: TAlign);
 var
   LinkAfter: TEasyZone;
   r, r2: TRect;
-  NewOrientation: TDockOrientation; //of the child control
+  NewOrientation: TDockOrientation;
 begin
 //orientation is NOT checked!
   r := GetBounds; //valid old values
@@ -1119,7 +1140,7 @@ begin
   end;
 //parent orientation? (if in rootzone)
   //if parent.Orientation = doNoOrient then
-    Parent.Orientation := ParentChildOrientation[NewOrientation];
+    Parent.Orientation := NewOrientation;
   if ChildControl <> nil then
     ChildControl.DockOrientation := NewOrientation;
   if NewZone.ChildControl <> nil then
@@ -1167,7 +1188,7 @@ begin
   //exact boundary in parent orientation
   if (Parent = nil) or (Parent.Orientation = doNoOrient) then
     br := ptOuter
-  else if Parent.Orientation <> doVertical then begin
+  else if Parent.Orientation = doVertical then begin
     br.X := ptOuter.X;
     if NextSibling = nil then
       br.Y := ptOuter.Y
@@ -1182,9 +1203,9 @@ begin
   end;
 
   if ChildControl <> nil then begin
-    //r := GetBounds;
-    //FTree.AdjustDockRect(ChildControl, r);
-    ChildControl.BoundsRect := GetPartRect(zpClient);
+    r := GetBounds;
+    FTree.AdjustDockRect(ChildControl, r);
+    ChildControl.BoundsRect := r;
   end else begin
     ch := FirstChild;
     while ch <> nil do begin
@@ -1215,10 +1236,10 @@ function TEasyZone.GetTopOrLeft(fTop: boolean): Integer;
 var
   zone, prev: TEasyZone;
 begin
-// In a parent zone of vertical orientation the zone.PrevSibling.Bottom is zone.Left
+// In a parent zone of vertical orientation the zone.PrevSibling.Bottom is zone.Top
   zone := self;
   while zone.Parent <> nil do begin
-    if (fTop = (zone.Parent.Orientation = doHorizontal)) then begin
+    if (fTop = (zone.Parent.Orientation = doVertical)) then begin
       prev := zone.PrevSibling;
       while prev <> nil do begin
         if prev.Visible then begin
@@ -1263,30 +1284,20 @@ end;
 procedure TEasyZone.SetBounds(TLBR: TRect);
 var
   z: TEasyZone;
-  r, rc: TRect;
 begin
 (* Zone cannot be the root zone. If so, ignore?
   Recurse into child zones.
 *)
   BR := TLBR.BottomRight;
   if ChildControl <> nil then begin //is control zone
-    ChildControl.Align := alNone;
-    r := GetPartRect(zpClient);
-    ChildControl.BoundsRect := r;
-    rc := ChildControl.BoundsRect;
-  //check control reacted properly
-    if not CompareMem(@r, @rc, sizeof(r)) then begin
-      with r do begin
-        DebugLn('BoundsRect as (%d,%d)-(%d,%d)', [Top, Left, Bottom, Right]);
-      end;
-      with rc do
-        DebugLn('BoundsRect is (%d,%d)-(%d,%d)', [Top, Left, Bottom, Right]);
-    end;
+    FTree.AdjustDockRect(ChildControl, TLBR);
+    ChildControl.BoundsRect := TLBR;
   end else if FirstChild <> nil then begin
+    //if Orientation = doVertical then TLBR.;
     z := FirstChild;
     while z <> nil do begin
     //resize - for splitter move only!
-      if Orientation = doHorizontal then //left/right changed
+      if Orientation = doVertical then //left/right changed
         z.BR.x := TLBR.Right
       else
         z.BR.y := TLBR.Bottom;
@@ -1342,5 +1353,13 @@ begin
   end;
 end;
 
+//implement various headers
+{$I zoneheader.inc}
+
+initialization
+{$I easy_dock_images.lrs}
+  CreateDockHeaderImages;
+finalization
+  DestroyDockHeaderImages;
 end.
 
