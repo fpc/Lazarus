@@ -1053,7 +1053,7 @@ begin
   EndGDKErrorTrap;
 end;
 
-function CreatePixbufFromImageAndMask(ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth,
+function CreatePixbufFromImageAndMask(ASrc: PGdkDrawable; ASrcX, ASrcY, ASrcWidth,
   ASrcHeight: integer; ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap): PGdkPixbuf;
 
   procedure Warn(const AText: String);

@@ -2493,7 +2493,7 @@ var
   FlipHorz, FlipVert: Boolean;
 
   function ScaleAndROP(DestGC: PGDKGC;
-    Src: PGDKDrawable; SrcPixmap: PGdkPixmap; SrcMaskBitmap: PGdkBitmap): Boolean;
+    Src: PGDKDrawable; SrcPixmap: PGdkDrawable; SrcMaskBitmap: PGdkBitmap): Boolean;
   var
     Depth: Integer;
     ScaleMethod: TGdkInterpType;
@@ -2616,7 +2616,7 @@ var
 
   function SrcDevBitmapToDrawable: Boolean;
   var
-    SrcPixmap: PGdkPixmap;
+    SrcDrawable: PGdkDrawable;
     MskBitmap: PGdkBitmap;
     ClipMask: PGdkBitmap;
     SrcGDIBitmap: PGdiObject;
@@ -2629,12 +2629,18 @@ var
     SrcGDIBitmap := SrcDevContext.CurrentBitmap;
     if SrcGDIBitmap = nil
     then begin
-      DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil');
-      exit;
+      SrcDrawable := SrcDevContext.Drawable;
+      MskBitmap := nil;
+      if SrcDrawable = nil then
+      begin
+        DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil, SrcDevContext.Drawable = nil');
+        exit;
+      end;
+    end
+    else begin
+      SrcDrawable := SrcGDIBitmap^.GDIPixmapObject.Image;
+      MskBitmap := CreateGdkMaskBitmap(HBITMAP(PtrUInt(SrcGDIBitmap)), Mask);
     end;
-
-    SrcPixmap := SrcGDIBitmap^.GDIPixmapObject.Image;
-    MskBitmap := CreateGdkMaskBitmap(HBITMAP(PtrUInt(SrcGDIBitmap)), Mask);
     
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
@@ -2648,14 +2654,14 @@ var
       DebugLn('SrcDevBitmapToDrawable Simple copy');
       {$ENDIF}
       gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
-        SrcPixmap, XSrc, YSrc, Width, Height);
+        SrcDrawable, XSrc, YSrc, Width, Height);
       Exit;
     end;
 
 
     // perform raster operation and scaling into Scale and fGC
     DstDevContext.SelectedColors := dcscCustom;
-    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcPixmap, MskBitmap)
+    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcDrawable, MskBitmap)
     then begin
       DebugLn('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
       Exit;
@@ -2666,7 +2672,7 @@ var
     {$ENDIF}
     if TempPixmap <> nil
     then begin
-      SrcPixmap := TempPixmap;
+      SrcDrawable := TempPixmap;
       XSrc := 0;
       YSrc := 0;
       SrcWidth := Width;
@@ -2700,7 +2706,7 @@ var
     // draw image
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
-      SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight);
+      SrcDrawable, XSrc, YSrc, SrcWidth, SrcHeight);
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
     // unset clipping mask for transparency
