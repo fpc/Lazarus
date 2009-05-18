@@ -989,6 +989,8 @@ begin
     theTag := kATSULayoutOperationOverrideTag;
     theSize := sizeof (ATSULayoutOperationOverrideSpecifier);
     theValue := @OverSpec;
+    ATSUSetTextLayoutRefCon(FLayout, UInt32(Self));
+    ATSUSetLayoutControls (FLayout, 1, @theTag, @theSize, @theValue);
   end;
 
   if OSError(ATSUDrawText(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
@@ -999,6 +1001,7 @@ begin
     DisposeATSUDirectLayoutOperationOverrideUPP(OverSpec.overrideUPP);
     OverSpec.overrideUPP := nil;
     ATSUSetLayoutControls (FLayout, 1, @theTag, @theSize, @theValue);
+    fDX := nil;
   end;
     
   Result := True;
