@@ -1542,7 +1542,7 @@ var
   MappedXY: TPoint;
 begin
   Result := CallBackDefaultReturn;
-  MousePositionValid:=false;
+  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
@@ -1555,14 +1555,6 @@ begin
     ' '+dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),
     ' Type='+dbgs(gdk_event_get_type(Event)));
   {$ENDIF}
-  //DebugLn('DDD1 MousePress Widget=',DbgS(Widget),
-  //' ClientWidget=',DbgS(GetFixedWidget(Widget)),
-  //' EventMask=',DbgS(gdk_window_get_events(Widget^.Window)),
-  //' GDK_BUTTON_RELEASE_MASK=',DbgS(GDK_BUTTON_RELEASE_MASK),
-  //' Window=',DbgS(Widget^.Window)
-  //);
-  //if GetFixedWidget(Widget)<>nil then
-  //  DebugLn('DDD2 ClientWindow=',DbgS(PGtkWidget(GetFixedWidget(Widget))^.Window));
 
   {$IFDEF EventTrace}
   EventTrace('Mouse button Press', data);
@@ -1571,48 +1563,45 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
+  if not (csDesigning in TComponent(Data).ComponentState) then
+  begin
     // fix gtklist selection first
     CheckListSelection;
 
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
+    DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMousePress);
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
 
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
-    if Event^.button=1 then begin
+    if Event^.button = 1 then
+    begin
       EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
       MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,CaptureWidget);
       SetCaptureControl(TWinControl(Data),MappedXY);
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
-    end;
+    end
+    else
+    // how to skip default right click handling? LCL can tell only on mouse up
+    // if handling can be skiped but gtk needs on mouse down
+    if (Event^.button = 3) and
+       ((TWinControl(Data).PopupMenu <> nil) or
+        (TWinControlAccess(Data).OnContextPopup <> nil)) then
+      Result := True;
   end else begin
-    if (event^.Button=1)
-    and ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl))
-    then begin
+    if (event^.Button=1) and
+       ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl)) then
+    begin
       // clicks on the notebook should be handled by the gtk (switching page)
-      {DebugLn(['gtkMouseBtnPress notebook ',
-        ' _type=',Event^._type,
-        ' window=',Event^.window,
-        ' send_event=',Event^.send_event,
-        ' time=',Event^.time,
-        ' x=',Event^.x,
-        ' y=',Event^.y,
-        ' axes=',Event^.axes,
-        ' state=',Event^.state,
-        ' button=',Event^.button,
-        ' device=',Event^.device,
-        ' x_root=',Event^.x_root,
-        ' y_root=',Event^.y_root,
-        '']);}
-    end else begin
+    end
+    else
+    begin
       // stop the signal, so that the widget does not auto react
       //DebugLn(['gtkMouseBtnPress stop signal']);
-      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
+      g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
     end;
   end;
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
-  DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
+  DeliverMouseDownMessage(Widget, Event, TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
@@ -1627,7 +1616,7 @@ function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
-  MousePositionValid:=false;
+  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
@@ -1640,13 +1629,13 @@ begin
   UpdateMouseCaptureControl;
 
   // stop the signal, so that it is not sent to the parent widgets
-  g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
+  g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
 
   //debugln('[gtkMouseBtnPressAfter] calling DeliverMouseDownMessage');
-  DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
+  DeliverMouseDownMessage(Widget, Event, TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
