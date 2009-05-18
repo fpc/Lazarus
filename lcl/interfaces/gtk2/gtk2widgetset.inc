@@ -115,6 +115,20 @@ begin
     Result := False;
 end;
 
+function gtk2PopupMenuCB(Widget: PGtkWidget; data: gPointer): gboolean; cdecl;
+var
+  Msg: TLMMouse;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_CONTEXTMENU;
+  Msg.Keys := 0; // todo: true keystate
+  Msg.XPos := Widget^.allocation.width div 2;
+  Msg.YPos := Widget^.allocation.height div 2;
+
+  Result := DeliverMessage(TComponent(data), Msg) <> 0;
+end;
+
 function gtk2showCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Status : GBoolean;
@@ -380,6 +394,9 @@ begin
       ConnectSenderSignal(gObject, 'show', @gtk2showCB);
       ConnectSenderSignal(gObject, 'hide', @gtk2hideCB);
     end;
+
+    LM_CONTEXTMENU:
+      ConnectSenderSignal(gCore, 'popup-menu', @gtk2PopupMenuCB);
 
   else
     inherited SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);

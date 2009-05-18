@@ -358,6 +358,7 @@ begin
   GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_DROPFILES, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_CONTEXTMENU, AGtkObject, AComponent);
 end;
 
 {$IFDEF GTK1}
