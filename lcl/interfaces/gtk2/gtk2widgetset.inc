@@ -418,6 +418,34 @@ begin
   end;
 end;
 
+procedure TGtk2WidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
+  const ACaption: String);
+var
+  s: String;
+  i: Integer;
+begin
+  s := '';
+  i := 1;
+  while i <=  Length(ACaption) do
+  begin
+    case ACaption[i] of
+      '_': s := s + '__';
+      '&':
+        if (i < Length(ACaption)) and (ACaption[i + 1] = '&') then
+        begin
+          s := s + '&';
+          inc(i);
+        end
+        else
+          s := s + '_';
+    else
+      s := s + ACaption[i];
+    end;
+    inc(i);
+  end;
+  gtk_label_set_text_with_mnemonic(ALabel, PChar(s));
+end;
+
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
     MultiSelect, ExtendedSelect: boolean);

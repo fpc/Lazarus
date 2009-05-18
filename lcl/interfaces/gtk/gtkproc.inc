@@ -5861,39 +5861,12 @@ var
   procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
     MenuItemWidget: PGtkWidget);
   var
-    s: string;
     LabelWidget: PGtkLabel;
-    ShortCutPos: Integer;
-  {$ifdef gtk1}
-    pattern: String;
-  {$endif}
   begin
     if (MenuItemWidget = nil) or (LCLMenuItem = nil) then
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    s := LCLMenuItem.Caption;
-    //Check for a shortcut key
-    ShortCutPos := pos('&', s);
-    if ShortCutPos > 0 then
-    begin
-    {$ifdef gtk1}
-      System.Delete(s, ShortCutPos, 1);
-      gtk_label_set_text(LabelWidget, PChar(s));
-      pattern := StringOfChar(' ', ShortCutPos - 1) + '_';
-      gtk_label_set_pattern(LabelWidget, PChar(pattern));
-    {$else}
-      // replace all _ with __ to correctly set mnemonic
-      s := StringReplace(s, '_', '__', [rfReplaceAll]);
-      // replace & with _ => this is how gtk understand mnemonic
-      s := StringReplace(s, '&', '_', []);
-      gtk_label_set_text_with_mnemonic(LabelWidget, PChar(s));
-    {$endif}
-    end
-    else
-    begin
-      gtk_label_set_text(LabelWidget, PChar(s));
-      gtk_label_set_pattern(LabelWidget, #0);  // Ensure any underlines removed
-    end;
+    GtkWidgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
   end;
   
   procedure UpdateShortCutLabel;

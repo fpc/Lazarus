@@ -998,45 +998,6 @@ begin
   SendCachedGtkResizeNotifications;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetLabelCaption
-  Params:  ALabel: The label to set the caption for
-           ACaption: The caption to set
-           AComponent: The component the label belongs to
-           ASignalWidget: A widget to connect the accelerator to
-           ASignal: The signal to connect
-  Returns: Nothing
-
-  Sets the Caption of a gtklabel. If a accelerator is present, it is connected.
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
-  const ACaption: String
-  {$IFDEF Gtk1}
-  ; const AComponent: TComponent;
-  const ASignalWidget: PGTKWidget; const ASignal: PChar
-  {$ENDIF});
-var
-  Caption, Pattern: String;
-  AccelKey: Char;
-begin
-  Caption := ACaption;
-  LabelFromAmpersands(Caption, Pattern, AccelKey);
-  //DebugLn(['TGtkWidgetSet.SetLabelCaption ',GetWidgetDebugReport(PGtkWIdget(ALabel)),' Caption=',dbgstr(Caption),' Pattern=',dbgstr(Pattern),' aCaption=',dbgstr(aCaption)]);
-  gtk_label_set_text(ALabel, PChar(Caption));
-  gtk_label_set_pattern(ALabel, PChar(Pattern));
-
-  {$IFDEF Gtk1}
-  if AComponent = nil then Exit;
-  if ASignalWidget = nil then Exit;
-  if ASignal = '' then Exit;
-
-  // update the Accelerator
-  if AccelKey = #0
-  then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
-  else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
-  {$ENDIF}
-end;
-
 {
  Changes some colors of the widget style
 

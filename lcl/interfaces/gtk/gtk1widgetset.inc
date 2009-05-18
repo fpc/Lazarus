@@ -54,3 +54,25 @@ begin
   windowstyle^.font := Pointer(FontGdiObject^.GdiFontObject);
   gtk_widget_set_style(aWidget, windowStyle);
 end;
+
+procedure TGtk1WidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;
+  const AComponent: TComponent = nil; const ASignalWidget: PGTKWidget = nil;
+  const ASignal: PChar = nil);
+var
+  Caption, Pattern: String;
+  AccelKey: Char;
+begin
+  Caption := ACaption;
+  LabelFromAmpersands(Caption, Pattern, AccelKey);
+  gtk_label_set_text(ALabel, PChar(Caption));
+  gtk_label_set_pattern(ALabel, PChar(Pattern));
+
+  if AComponent = nil then Exit;
+  if ASignalWidget = nil then Exit;
+  if ASignal = '' then Exit;
+
+  // update the Accelerator
+  if AccelKey = #0
+  then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
+  else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
+end;

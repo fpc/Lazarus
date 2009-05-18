@@ -233,9 +233,9 @@ type
     // for gtk specific components:
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String
                               {$IFDEF Gtk1}
-                              ; const AComponent: TComponent;
-                                const ASignalWidget: PGTKWidget;
-                                const ASignal: PChar{$ENDIF}); virtual;
+                              ; const AComponent: TComponent = nil;
+                                const ASignalWidget: PGTKWidget = nil;
+                                const ASignal: PChar = nil{$ENDIF}); virtual; abstract;
     procedure SetWidgetColor(const AWidget : PGtkWidget;
                              const FGColor,BGColor : TColor;
                              const Mask : tGtkStateEnum);

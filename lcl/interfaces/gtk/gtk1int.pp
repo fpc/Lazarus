@@ -74,6 +74,10 @@ type
     function GetDeviceContextClass: TGtkDeviceContextClass; override;
   public
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
+    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;
+                              const AComponent: TComponent = nil;
+                              const ASignalWidget: PGTKWidget = nil;
+                              const ASignal: PChar = nil); override;
   end;
   
 var
