@@ -232,10 +232,12 @@ resourcestring
   lisMenuInsertChangeLogEntry = 'ChangeLog entry';
 
   lisMenuFind = 'Find';
+  lisBtnFind = '&Find';
   lisMenuFindNext = 'Find &Next';
   lisMenuFind2 = '&Find ...';
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in files ...';
+  lisBtnReplace = '&Replace';
   lisMenuReplace = 'Replace';
   lisMenuIncrementalFind = 'Incremental Find';
   lisMenuReplace2 = '&Replace ...';

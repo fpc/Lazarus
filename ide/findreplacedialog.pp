@@ -227,12 +227,14 @@ begin
   ReplaceAllButton.Visible:=ReplaceWithCheckbox.Checked;
   ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
-  if ReplaceAllButton.Visible then begin
-    Caption:=lisMenuReplace;
-    OkButton.Caption:=lisMenuReplace;
-  end else begin
-    Caption:=lisMenuFind;
-    OkButton.Caption:=lisMenuFind;
+  if ReplaceAllButton.Visible then
+  begin
+    Caption := lisMenuReplace;
+    OkButton.Caption := lisBtnReplace;
+  end else
+  begin
+    Caption := lisMenuFind;
+    OkButton.Caption := lisBtnFind;
   end;
 end;
 
@@ -347,12 +349,14 @@ begin
   ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
 
-  if ssoReplace in NewOptions then begin
-    Caption:=lisMenuReplace;
-    OkButton.Caption:=lisMenuReplace;
-  end else begin
-    Caption:=lisMenuFind;
-    OkButton.Caption:=lisMenuFind;
+  if ssoReplace in NewOptions then
+  begin
+    Caption := lisMenuReplace;
+    OkButton.Caption := lisBtnReplace;
+  end else
+  begin
+    Caption := lisMenuFind;
+    OkButton.Caption := lisBtnFind;
   end;
   //DebugLn(['TLazFindReplaceDialog.SetOptions END ssoSelectedOnly=',ssoSelectedOnly in NewOptions,' SelectedRadioButton.Checked=',SelectedRadioButton.Checked]);
 end;

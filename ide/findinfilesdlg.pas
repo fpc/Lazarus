@@ -242,9 +242,9 @@ procedure TLazFindInFilesDialog.UpdateReplaceCheck;
 begin
   ReplaceTextComboBox.Enabled:=ReplaceCheckBox.Checked;
   if ReplaceCheckBox.Checked then
-    ButtonPanel1.OKButton.Caption := lisMenuReplace
+    ButtonPanel1.OKButton.Caption := lisBtnReplace
   else
-    ButtonPanel1.OKButton.Caption := lisMenuFind;
+    ButtonPanel1.OKButton.Caption := lisBtnFind;
 end;
 
 initialization
