@@ -271,7 +271,9 @@ procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
   if not FDatalink.Editing then
-    FDatalink.Reset;
+    FDatalink.Reset
+  else
+    FDatalink.UpdateRecord;
 end;
 
 procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
