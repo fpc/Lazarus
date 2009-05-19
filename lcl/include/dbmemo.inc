@@ -156,7 +156,8 @@ begin
   if FDataLink.CanModify and FDatalink.Editing then begin
     FDataLink.UpdateRecord;
     inherited EditingDone;
-  end;
+  end else
+    FDatalink.Reset;
 end;
 
 procedure TDBMemo.Change;
