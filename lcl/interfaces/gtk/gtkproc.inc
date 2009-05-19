@@ -944,27 +944,27 @@ end;
 
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 begin
-  Case ROP of
+  case ROP of
     WHITENESS,
     BLACKNESS,
     SRCCOPY :
-      GDK_GC_Set_Function(TheGC, GDK_Copy);
+      gdk_gc_set_function(TheGC, GDK_Copy);
     SRCPAINT :
-      GDK_GC_Set_Function(TheGC, GDK_NOOP);
+      gdk_gc_set_function(TheGC, GDK_NOOP);
     SRCAND :
-      GDK_GC_Set_Function(TheGC, GDK_Clear);
+      gdk_gc_set_function(TheGC, GDK_Clear);
     SRCINVERT :
-      GDK_GC_Set_Function(TheGC, GDK_XOR);
+      gdk_gc_set_function(TheGC, GDK_XOR);
     SRCERASE :
-      GDK_GC_Set_Function(TheGC, GDK_AND);
+      gdk_gc_set_function(TheGC, GDK_AND);
     NOTSRCCOPY :
-      GDK_GC_Set_Function(TheGC, GDK_OR_REVERSE);
+      gdk_gc_set_function(TheGC, GDK_OR_REVERSE);
     NOTSRCERASE :
-      GDK_GC_Set_Function(TheGC, GDK_AND);
+      gdk_gc_set_function(TheGC, GDK_AND);
     MERGEPAINT :
-      GDK_GC_Set_Function(TheGC, GDK_Copy_Invert);
+      gdk_gc_set_function(TheGC, GDK_Copy_Invert);
     DSTINVERT :
-      GDK_GC_Set_Function(TheGC, GDK_INVERT);
+      gdk_gc_set_function(TheGC, GDK_INVERT);
     else begin
       gdk_gc_set_function(TheGC, GDK_COPY);
       DebugLn('WARNING: [SetRasterOperation] Got unknown/unsupported CopyMode!!');

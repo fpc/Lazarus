@@ -9627,7 +9627,7 @@ begin
   Result:=StretchCopyArea(DestDC,X,Y,Width,Height,
                           SrcDC,XSrc,YSrc,SrcWidth,SrcHeight,
                           Mask,XMask,YMask,
-                          ROp);
+                          Rop);
 end;
 
 {------------------------------------------------------------------------------
