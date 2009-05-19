@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="6">
       <Unit0>
         <Filename Value="easydocking.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -72,11 +72,6 @@
         <Filename Value="BUGS.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
-      <Unit6>
-        <Filename Value="easydockhelpers.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EasyDockHelpers"/>
-      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
