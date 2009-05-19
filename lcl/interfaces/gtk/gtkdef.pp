@@ -318,8 +318,6 @@ type
     procedure CreateBitmap; virtual;
     
     function GetFunction: TGdkFunction; virtual; abstract;
-
-    property GCValues: TGdkGCValues read FGCValues;
   protected
     // winapi
     function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
@@ -333,7 +331,6 @@ type
     
     procedure SelectRegion;
   public
-
     // device handles
 
     procedure SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
@@ -362,6 +359,7 @@ type
     property CurrentBrush: PGdiObject read FCurrentBrush write SetCurrentBrush;
     property CurrentPalette: PGdiObject read FCurrentPalette write SetCurrentPalette;
     property ClipRegion: PGdiObject read FClipRegion write SetClipRegion;
+    property GCValues: TGdkGCValues read FGCValues;
     property GDIObjects[ID: TGDIType]: PGdiObject read GetGDIObjects write SetGDIObjects;
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;

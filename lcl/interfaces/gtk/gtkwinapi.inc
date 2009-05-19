@@ -3941,8 +3941,8 @@ begin
   BeginGDKErrorTrap;
   {$ENDIF}
 
-  If not DevCtx.IsNullBrush
-  then begin
+  if not DevCtx.IsNullBrush then
+  begin
     DevCtx.SelectBrushProps;
     gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 1,
                  Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
@@ -3951,16 +3951,17 @@ begin
   // Draw outline
 
   DevCtx.SelectPenProps;
-  if (dcfPenSelected in DevCtx.Flags)
-  then begin
+  if (dcfPenSelected in DevCtx.Flags) then
+  begin
     Result := True;
-    if not DevCtx.IsNullPen
-    then begin
+    if not DevCtx.IsNullPen then
+    begin
       gdk_draw_arc(DevCtx.Drawable, DevCtx.GC, 0,
                    Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height, 0, 360 shl 6);
     end;
   end
-  else Result := False;
+  else
+    Result := False;
 
   {$IFDEF DebugGDKTraps}
   EndGDKErrorTrap;
@@ -4304,13 +4305,15 @@ begin
     exit;
   with TGtkDeviceContext(DC) do
   begin
-    if not IsNullBrush then begin
+    if not IsNullBrush then
+    begin
       Width := Rect.Right - Rect.Left;
       Height := Rect.Bottom - Rect.Top;
       // Temporary hold the old brush to
       // replace it with the given brush
       OldCurrentBrush := GetBrush;
-      if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
+      if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then
+      begin
         BrushChanged:=true;
         CurrentBrush := PGdiObject(Brush);
         SelectedColors:=dcscCustom;
@@ -4320,21 +4323,23 @@ begin
       SelectBrushProps;
 
       DCOrigin := Offset;
-      if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-      and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
-      then begin
+      if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
+         (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
+      begin
         StyleFillRectangle(Drawable, GC,
                            CurrentBrush^.GDIBrushColor.ColorRef,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height)
-      end else begin
+      end else
+      begin
         gdk_draw_rectangle(Drawable, GC, 1,
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height);
       end;
 
       // Restore current brush
-      if BrushChanged then begin
+      if BrushChanged then
+      begin
         SelectedColors:=dcscCustom;
         CurrentBrush := OldCurrentBrush;
       end;
