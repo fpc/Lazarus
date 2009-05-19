@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-23 03:04+0300\n"
+"PO-Revision-Date: 2009-05-19 03:25+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -577,6 +577,7 @@ msgid "Color Select"
 msgstr "Выбор цвета"
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -1256,15 +1257,16 @@ msgstr "Accept"
 
 #: objinspstrconsts.srvk_apps
 msgid "Application Key"
-msgstr "Клавиша application"
+msgstr "Клавиша Application"
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
 msgstr "Забой"
 
 #: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1288,12 +1290,14 @@ msgid "Convert"
 msgstr "Convert"
 
 #: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Delete"
 
 #: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "Стрелка вниз"
 
 #: objinspstrconsts.srvk_end
 msgid "End"
@@ -1352,7 +1356,7 @@ msgstr "Стрелка влево"
 
 #: objinspstrconsts.srvk_lwin
 msgid "Left Windows Key"
-msgstr "Левая клавиша windows"
+msgstr "Левая клавиша Windows"
 
 #: objinspstrconsts.srvk_mbutton
 msgid "Mouse Button Middle"
@@ -1419,7 +1423,7 @@ msgstr "Стрелка вправо"
 
 #: objinspstrconsts.srvk_rwin
 msgid "Right Windows Key"
-msgstr "Правая клавиша windows"
+msgstr "Правая клавиша Windows"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
@@ -1427,7 +1431,7 @@ msgstr "ScrollLock"
 
 #: objinspstrconsts.srvk_select
 msgid "Select"
-msgstr ""
+msgstr "Select"
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"
