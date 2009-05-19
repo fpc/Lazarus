@@ -5307,7 +5307,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
       Result := not SonColsIguales(TCustomGrid(Filer.Ancestor))
     else
       Result := not SonDefault(True, FCols);
-    result := Result and not AutoFillColumns;
+    //result := Result and not AutoFillColumns;
   end;
   function NeedHeights: boolean;
   begin
