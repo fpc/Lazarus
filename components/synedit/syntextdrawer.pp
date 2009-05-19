@@ -212,6 +212,7 @@ type
 
     // Begin/EndDrawing calling count
     FDrawingCount: Integer;
+    ForceEto: Boolean;
   protected
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
@@ -238,6 +239,7 @@ type
     procedure TextOut(X, Y: Integer; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
       Text: PChar; Length: Integer; FrameBottom: Integer = -1); virtual;
+    procedure ForceNextTokenWithEto;
     procedure DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
     procedure SetBaseFont(Value: TFont); virtual;
     procedure SetBaseStyle(const Value: TFontStyles); virtual;
@@ -1248,8 +1250,9 @@ begin
     fuOptions := 0;
   end;
 
-  NeedDistArray:= (FCharExtra > 0) or
+  NeedDistArray:= ForceEto or (FCharExtra > 0) or
     (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
+  ForceEto := False;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
   if NeedDistArray then begin
     if (FETOSizeInChar < Length) then
@@ -1262,6 +1265,11 @@ begin
     LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
   else
     LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
+end;
+
+procedure TheTextDrawer.ForceNextTokenWithEto;
+begin
+  ForceEto := True;
 end;
 
 procedure TheTextDrawer.DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);

@@ -2896,6 +2896,8 @@ var
               inc(DestPos);
             end;
           end;
+          // ToDo: pass the eto with to fTextDrawer, instead of filling with spaces
+          if Fill > 0 then fTextDrawer.ForceNextTokenWithEto;
         end;
       end;
     end else begin
@@ -2905,8 +2907,10 @@ var
         Fill := CharWidths[CurLogIndex + SrcPos] - 1;
         if c = #9 then // tab char
           Dest[DestPos] := ' '
-        else
+        else begin
           Dest[DestPos] := p[SrcPos];
+          if Fill > 0 then fTextDrawer.ForceNextTokenWithEto;
+        end;
         inc(DestPos);
         inc(SrcPos);
         for i := 1 to Fill do begin
