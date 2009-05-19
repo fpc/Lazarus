@@ -797,21 +797,21 @@ procedure TCanvas.Polygon(const Points: array of TPoint; Winding: Boolean;
 var
   NPoints: integer;
 begin
-  if NumPts<0 then
-    NPoints:=High(Points)-StartIndex+1
+  if NumPts < 0 then
+    NPoints := High(Points) - StartIndex + 1
   else
-    NPoints:=NumPts;
-  if NPoints<=0 then exit;
-  Polygon(@Points[StartIndex],NPoints,Winding);
+    NPoints := NumPts;
+  if NPoints <= 0 then Exit;
+  Polygon(@Points[StartIndex], NPoints, Winding);
 end;
 
 procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
   Winding: boolean = False);
 begin
-  if NumPts<=0 then exit;
+  if NumPts <= 0 then Exit;
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.Polygon(FHandle,Points,NumPts,Winding);
+  LCLIntf.Polygon(FHandle, Points, NumPts, Winding);
   Changed;
 end;
 

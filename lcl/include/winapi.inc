@@ -648,7 +648,7 @@ end;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 begin
-  Result := WidgetSet.Polygon(DC,Points,NumPts,Winding);
+  Result := WidgetSet.Polygon(DC, Points, NumPts, Winding);
 end;
 
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
