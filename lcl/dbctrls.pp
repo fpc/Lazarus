@@ -1473,7 +1473,8 @@ begin
   if (FEditing <> RealEditState) then
   begin
     FEditing := RealEditState;
-    IsModified := False;
+    if not FEditing then
+      IsModified := False;
     if Assigned(FOnEditingChange) then
       FOnEditingChange(Self);
   end;
