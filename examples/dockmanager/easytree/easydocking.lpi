@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="easydocking.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -72,6 +72,13 @@
         <Filename Value="BUGS.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="fdockbook.pas"/>
+        <ComponentName Value="DockBook"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fdockbook"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -10,7 +10,7 @@ uses
   fMain in 'fmain.pas' {EasyDockMain},
   fDockable in 'fdockable.pas' {Dockable},
   EasyDockSite in 'easydocksite.pas',
-  fTree in 'ftree.pas';
+  fTree in 'ftree.pas', fdockbook;
 
 {.$R *.res}
 
