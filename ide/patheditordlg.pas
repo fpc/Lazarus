@@ -152,8 +152,6 @@ begin
   TemplateGroupBox.Caption:=lisPathEditPathTemplates;
   AddTemplateButton.Caption:=lisCodeTemplAdd;
 
-  OKBitBtn.Caption:=lisOkBtn;
-  CancelBitBtn.Caption:=dlgCancel;
   AddTemplateButton.LoadGlyphFromLazarusResource('laz_add');
   MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
   MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');

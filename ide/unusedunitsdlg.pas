@@ -137,7 +137,6 @@ begin
 
   RemoveSelectedBitBtn.Caption:=lisRemoveSelectedUnits;
   RemoveAllBitBtn.Caption:=lisRemoveAllUnits;
-  CancelBitBtn.Caption:=dlgCancel;
 
   UnitsTreeView.StateImages := IDEImages.Images_16;
   ImgIDInterface := IDEImages.LoadImage(16, 'ce_interface');

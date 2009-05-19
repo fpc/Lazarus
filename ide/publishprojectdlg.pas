@@ -169,8 +169,6 @@ begin
   ButtonPanel1.OkButton.Caption := lisLazBuildOk;
   ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
 
-  ButtonPanel1.CancelButton.Caption := dlgCancel;
-
   ButtonPanel1.CloseButton.Caption := lisSaveSettings;
   ButtonPanel1.CloseButton.ModalResult := mrNone;
   ButtonPanel1.CloseButton.Kind := bkCustom;

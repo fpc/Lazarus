@@ -303,8 +303,6 @@ begin
   NewGroupBox.Caption:=lisNewClass;
   OldAncestorGroupBox.Caption:=lisOldAncestors;
   NewAncestorGroupBox.Caption:=lisNewAncestors;
-  BtnPanel.OkButton.Caption := lisOkBtn;
-  BtnPanel.CancelButton.Caption := dlgCancel;
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);

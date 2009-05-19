@@ -410,7 +410,6 @@ begin
   DependMaxVersionEdit.Text:='';
 
   NewDependButton.Caption:=lisLazBuildOk;
-  CancelDependButton.Caption:=dlgCancel;
 end;
 
 procedure TAddToProjectDialog.SetupAddFilesPage(index: integer);

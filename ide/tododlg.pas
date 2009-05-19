@@ -76,8 +76,6 @@ begin
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;
   CategoryLabel.Caption:=listToDoLCategory;
-  BtnPanel.OKButton.Caption:=lisOkBtn;
-  BtnPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 function ExecuteTodoDialog: TTodoItem;

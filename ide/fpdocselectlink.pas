@@ -79,9 +79,6 @@ begin
   LinkLabel.Hint:=Format(lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac,
     [#13, #13, #13, #13]);
   TitleLabel.Caption:=lisTitleLeaveEmptyForDefault;
-  ButtonPanel1.OKButton.Caption:=lisOkBtn;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
-  ButtonPanel1.HelpButton.Caption:=lisPckEditHelp;
   
   LinkEdit.Text:='';
   TitleEdit.Text:='';

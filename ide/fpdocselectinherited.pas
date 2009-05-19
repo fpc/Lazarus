@@ -45,8 +45,6 @@ implementation
 procedure TFPDocSelectInheritedDlg.FormCreate(Sender: TObject);
 begin
   Caption:=rsSelectAnInheritedEntry;
-  ButtonPanel1.OKButton.Caption:=lisOkBtn;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 end;
 
 initialization

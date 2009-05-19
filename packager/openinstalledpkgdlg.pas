@@ -154,7 +154,6 @@ begin
   end;
 
   OpenButton.Caption:=lisMenuOpen;
-  CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);

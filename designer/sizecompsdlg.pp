@@ -115,9 +115,6 @@ begin
 
   WidthEdit.Text:='';
   HeightEdit.Text:='';
-
-  ButtonPanel1.OkButton.Caption := lisOkBtn;
-  ButtonPanel1.CancelButton.Caption := dlgCancel;
 end;
 
 initialization

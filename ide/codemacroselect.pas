@@ -86,7 +86,6 @@ begin
   MacrosGroupBox.Caption:=lisEdtExtToolMacros;
   DescriptionGroupBox.Caption:=lisToDoLDescription;
   ButtonPanel1.OkButton.Caption:=lisCTInsertMacro;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   ParameterGroupBox.Caption:=lisCMParameter;
   ParameterEdit.Text:='';
   

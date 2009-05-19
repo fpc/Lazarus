@@ -83,8 +83,6 @@ end;
 procedure TEditVirtualUnitDialog.EditVirtualUnitDialogCreate(Sender: TObject);
 begin
   Caption:=lisPVUEditVirtualUnit;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
   FilenameLabel.Caption:=lisPEFilename;
   UnitnameLabel.Caption:=lisPEUnitname;
   UnitnameEdit.Hint:=lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses;

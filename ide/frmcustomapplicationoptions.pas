@@ -115,9 +115,6 @@ begin
   // set all defaults to true
   for i:=0 to CGOptions.Items.Count-1 do
     CGOptions.Checked[i]:= true;
-
-  BOK.Caption:= lisOkBtn;
-  BCancel.Caption:= dlgCancel;
 end;
 
 function TCustomApplicationOptionsForm.GetBool(Index: integer): Boolean;

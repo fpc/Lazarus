@@ -146,7 +146,6 @@ begin
 
   ButtonPanel1.OkButton.Caption := lisLazBuildOk;
   ButtonPanel1.OKButton.OnClick:= @OKButtonClick;
-  ButtonPanel1.CancelButton.Caption := dlgCancel;
   ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
 
   ReplaceCheckBox.Enabled:=true;

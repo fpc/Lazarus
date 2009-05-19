@@ -152,10 +152,6 @@ begin
   FBreakpointsNotification.OnRemove := @BreakPointRemove;
   UpdateInfo;
 
-  ButtonPanel.OKButton.Caption:= lisOkBtn;
-  ButtonPanel.CancelButton.Caption:= dlgCancel;
-  ButtonPanel.HelpButton.Caption:= lisPckEditHelp;
-
   ButtonPanel.OKButton.OnClick := @btnOKClick;
   ButtonPanel.HelpButton.OnClick := @btnHelpClick;
 end;

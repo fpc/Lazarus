@@ -84,9 +84,7 @@ end;
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
   ShowOldValuesCheckbox.Caption := lisShowOldTabOrder;
-  BtnPanel.OkButton.Caption := lisOkBtn;
   BtnPanel.OKButton.OnClick := @OkButtonCLICK;
-  BtnPanel.CancelButton.Caption := dlgCancel;
 
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');

@@ -173,7 +173,6 @@ begin
   BackwardRadioButton.Caption := lisFRBackwardSearch;
 
   ReplaceAllButton.Caption:=dlgReplaceAll;
-  CancelButton.Caption:=dlgCancel;
 
   fReplaceAllClickedLast:=false;
 end;

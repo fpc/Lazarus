@@ -2026,11 +2026,6 @@ begin
   Label_template_view.Caption:=lisMenuEditorTemplatePreview;
   Edit_template_description.Text:=lisMenuEditorNewTemplateDescription;
   
-  OKBitBtn.Caption:=lisOkBtn;
-  CancelBitBtn.Caption:=dlgCancel;
-  OKBitBtn.LoadGlyphFromLazarusResource('btn_ok');
-  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
-
   // Templates from menutemplates.xml
   i:=1;
   Str(i,str_i);

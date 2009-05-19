@@ -117,9 +117,6 @@ begin
   lblDigits.Caption:= lisDigits;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
-  ButtonPanel.OKButton.Caption:= lisOkBtn;
-  ButtonPanel.CancelButton.Caption:= dlgCancel;
-  ButtonPanel.HelpButton.Caption:= lisPckEditHelp;
   rgStyle.Caption:= lisStyle;
   rgStyle.Items[0]:= lisCharacter;
   rgStyle.Items[1]:= lisString;

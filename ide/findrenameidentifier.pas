@@ -498,7 +498,6 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,450,480);
 
   Caption:=lisFRIFindOrRenameIdentifier;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;

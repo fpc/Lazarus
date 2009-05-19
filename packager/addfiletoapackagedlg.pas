@@ -203,7 +203,6 @@ begin
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
   BtnPanel.OkButton.Caption:=lisLazBuildOk;
-  BtnPanel.CancelButton.Caption:=dlgCancel;
   BtnPanel.OkButton.OnClick:=@OkButtonClick;
   BtnPanel.OkButton.ModalResult:=mrNone;
   BtnPanel.HelpButton.OnClick:=@HelpButtonClick;

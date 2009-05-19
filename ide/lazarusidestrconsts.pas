@@ -903,7 +903,6 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   lisFPDocEditor = 'FPDoc Editor';
-  lisOkBtn = 'OK';
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
@@ -1490,7 +1489,7 @@ resourcestring
   dlgUnitOutp = 'Unit output directory (-FU):';
   lisCOdefault = 'default (%s)';
   dlgButApply = 'Apply';
-  dlgCOShowOptions = 'Show Options';
+  dlgCOShowOptions = '&Show Options';
   dlgCOLoadSave = 'Load/Save';
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
@@ -3648,7 +3647,7 @@ resourcestring
   lisErrors = 'Errors';
   lisLFMFile = 'LFM file';
   lisRemoveAllInvalidProperties = 'Remove all invalid properties';
-  lisCompTest = 'Test';
+  lisCompTest = '&Test';
 
   lisA2PSwitchPaths = 'Switch Paths';
   lisA2PAddFilesToPackage = 'Add files to package';

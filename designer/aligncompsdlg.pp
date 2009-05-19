@@ -108,9 +108,6 @@ begin
       EndUpdate;
     end;
   end;
-
-  BtnPanel.OKButton.Caption := lisOkBtn;
-  BtnPanel.CancelButton.Caption := dlgCancel;
 end;
 
 initialization

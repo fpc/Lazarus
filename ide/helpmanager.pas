@@ -583,7 +583,6 @@ begin
   Caption := lisHelpSelectorDialog;
   NodesGroupBox.Caption:=lisSelectAHelpItem;
   BtnPanel.OKButton.Caption:=lisLazBuildOk;
-  BtnPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 { TIDEHelpDatabases }

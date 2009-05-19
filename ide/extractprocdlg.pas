@@ -178,9 +178,7 @@ begin
   CreateFunctionCheckBox.Caption:=lisCreateFunction;
   FuncVariableLabel.Caption:=lisResult2;
   
-  HelpButton.Caption:=lisPckEditHelp;
   OkButton.Caption:=lisExtract;
-  CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);

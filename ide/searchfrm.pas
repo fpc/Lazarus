@@ -619,7 +619,6 @@ begin
   MatchesLabel.Caption:=lissMatches;
   SearchingLabel.Caption:=lissSearching;
   SearchTextLabel.Caption:=lissSearchText;
-  btnCancel.Caption:=dlgCancel;
   Caption:=dlgSearchCaption;
 
   fProgress:=TIDESearchInTextProgress.Create;

@@ -89,7 +89,6 @@ begin
   Caption:=lisFPFindPaletteComponent;
   ComponentsGroupBox.Caption:=lisFPComponents;
   BtnPanel.OKButton.Caption:=lisMenuSelect;
-  BtnPanel.CancelButton.Caption:=dlgCancel;
 
   PatternEdit.Text:='';
   SearchPatternGroupBox.Caption:=lisMenuFind;

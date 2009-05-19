@@ -1389,8 +1389,8 @@ begin
   HelpBitBtn:=TBitBtn.Create(Self);
   with HelpBitBtn do begin
     Name:='HelpBitBtn';
+    Kind := bkHelp;
     Parent:=Self;
-    Caption:=lisPckEditHelp;
     OnClick:=@HelpBitBtnClick;
     Hint:=lisPkgEdThereAreMoreFunctionsInThePopupmenu;
     ShowHint:=true;

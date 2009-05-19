@@ -559,7 +559,6 @@ end;
 procedure TCheckLFMDialog.SetupComponents;
 begin
   NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
-  CancelButton.Caption:=dlgCancel;
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;

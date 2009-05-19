@@ -74,9 +74,6 @@ begin
 
   ScaleLabel.Caption := lisScalingFactor;
   PercentLabel.Caption := '%';
-
-  ButtonPanel1.OkButton.Caption := lisOkBtn;
-  ButtonPanel1.CancelButton.Caption := dlgCancel;
 end;
 
 initialization

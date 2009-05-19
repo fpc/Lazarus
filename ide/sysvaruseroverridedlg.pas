@@ -100,7 +100,6 @@ begin
   ValueLabel.Caption:='Value:';
 
   OkButton.Caption:=lisSVUOOk;
-  CancelButton.Caption:=dlgCancel;
 end;
 
 initialization

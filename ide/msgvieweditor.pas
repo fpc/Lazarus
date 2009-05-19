@@ -89,14 +89,10 @@ begin
   Caption:= lisMessagesEditor;
   AddNewSetButton.Caption:=lisAddNewSet;
   ActiveFilterSetGroupBox.Caption:=lisActiveFilter;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
   RenameSetButton.Caption:=lisFRIRename;
   DeleteSetButton.Caption:=dlgEdDelete;
   FilterSetGroupBox.Caption:=lisFilterSets;
 
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   AddNewSetButton.LoadGlyphFromLazarusResource('laz_add');
   DeleteSetButton.LoadGlyphFromLazarusResource('laz_delete');
   RenameSetButton.LoadGlyphFromLazarusResource('laz_edit');
