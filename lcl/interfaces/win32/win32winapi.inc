@@ -2355,6 +2355,13 @@ begin
     AdjustForBuddySize;
 end;
 
+function TWin32WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
+  NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint): Boolean;
+begin
+  Result := Win32Extra.GradientFill(DC, Windows.PTRIVERTEX(Vertices),
+    NumVertices, Meshes, NumMeshes, Mode);
+end;
+
 {------------------------------------------------------------------------------
   Method:  HideCaret
   Params:  HWnd - handle to the window with the caret

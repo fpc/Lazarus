@@ -127,6 +127,8 @@ function GetWindowOrgEx(DC: HDC; P: PPoint): Integer; override;
 function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle : HWND; var Left, Top:integer): boolean; override;
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
+function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 function HideCaret(HWnd: HWND): Boolean; override;
 

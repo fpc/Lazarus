@@ -387,14 +387,13 @@ const
 // load dynamic and use ownfunction if not defined
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+  GradientFill: function(DC: HDC; p2: PTriVertex; p3: ULONG; p4: Pointer; p5, p6: ULONG): BOOL; stdcall;
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
   EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
   GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
   MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
   MonitorFromRect: function(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
   MonitorFromPoint: function(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
-
-
 
 const
   // ComCtlVersions
@@ -900,6 +899,11 @@ begin
   Result := _AlphaBlend(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, blendFunction);
 end;
 
+function _GradientFill(DC: HDC; p2: PTriVertex; p3: ULONG; p4: Pointer; p5, p6: ULONG): BOOL;
+begin
+  Result := False;
+end;
+
 function _GetComboboxInfo(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
 begin
   Result := (pcbi <> nil) and (pcbi^.cbSize = SizeOf(TComboboxInfo));
@@ -1082,6 +1086,11 @@ begin
         Pointer(AlphaBlend) := p;
       end;
     end;
+    p := GetProcAddress(msimg32handle, 'GradientFill');
+    if p <> nil then
+      Pointer(GradientFill) := p
+    else
+      Pointer(GradientFill) := @_GradientFill;
   end;
   
   user32handle := LoadLibrary(user32lib);
