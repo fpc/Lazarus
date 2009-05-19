@@ -487,7 +487,7 @@ begin
                          Width, Height);
 
     if SkipRop then
-      gdk_gc_set_function(GC, GCValues._function);
+      gdk_gc_set_function(GC, GetFunction);
 
     // Restore current brush
     if BrushChanged then
