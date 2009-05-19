@@ -2790,6 +2790,7 @@ var
   CurLine: integer;         // Screen-line index for the loop
   CurTextIndex: Integer;    // Current Index in text
   CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
+  ForceEto: Boolean;
   TokenAccu: record
     Len, MaxLen: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
@@ -2897,7 +2898,7 @@ var
             end;
           end;
           // ToDo: pass the eto with to fTextDrawer, instead of filling with spaces
-          if Fill > 0 then fTextDrawer.ForceNextTokenWithEto;
+          if Fill > 0 then ForceEto := True;
         end;
       end;
     end else begin
@@ -2909,7 +2910,7 @@ var
           Dest[DestPos] := ' '
         else begin
           Dest[DestPos] := p[SrcPos];
-          if Fill > 0 then fTextDrawer.ForceNextTokenWithEto;
+          if Fill > 0 then ForceEto := True;
         end;
         inc(DestPos);
         inc(SrcPos);
@@ -2941,6 +2942,7 @@ var
     if (rcToken.Right <= rcToken.Left) then exit;
     // Draw the right edge under the text if necessary
     nX := ScreenColumnToXValue(FirstPhysical); // == rcToken.Left
+    if ForceEto then fTextDrawer.ForceNextTokenWithEto;
     if bDoRightEdge and (not (eoHideRightMargin in Options))
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
     then begin
@@ -3084,9 +3086,11 @@ var
           FTextDrawer.FrameEndX := rcToken.Right;
         end;
         rcToken.Right := Min(rcToken.Right, rcLine.Right);
-        if rcToken.Right > rcToken.Left then
+        if rcToken.Right > rcToken.Left then begin
+          if ForceEto then fTextDrawer.ForceNextTokenWithEto;
           fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
                                  rcToken, '...', 3, rcLine.Bottom);
+        end;
       end;
     end;
   end;
@@ -3369,6 +3373,7 @@ var
       rcLine.Left := EraseLeft;
       InternalFillRect(dc, rcLine);
       rcLine.Left := DrawLeft;
+      ForceEto := False;
 
       if not Assigned(fHighlighter) then begin
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
