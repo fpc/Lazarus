@@ -4321,6 +4321,7 @@ begin
       //DebugLn('TGtkWidgetSet.FillRect Color=',DbgS(CurrentBrush^.GDIBrushColor.ColorRef));
 
       SelectBrushProps;
+      gdk_gc_set_function(GC, GDK_COPY);
 
       DCOrigin := Offset;
       if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
@@ -4336,6 +4337,7 @@ begin
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height);
       end;
+      gdk_gc_set_function(GC, GCValues._function);
 
       // Restore current brush
       if BrushChanged then
