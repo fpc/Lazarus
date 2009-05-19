@@ -60,12 +60,17 @@ procedure TGtk1WidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption
   const ASignal: PChar = nil);
 var
   Caption, Pattern: String;
+  CurText: PChar;
   AccelKey: Char;
 begin
   Caption := ACaption;
   LabelFromAmpersands(Caption, Pattern, AccelKey);
-  gtk_label_set_text(ALabel, PChar(Caption));
-  gtk_label_set_pattern(ALabel, PChar(Pattern));
+  gtk_label_get(ALabel, @CurText);
+  if Caption <> StrPas(CurText) then
+  begin
+    gtk_label_set_text(ALabel, PChar(Caption));
+    gtk_label_set_pattern(ALabel, PChar(Pattern));
+  end;
 
   if AComponent = nil then Exit;
   if ASignalWidget = nil then Exit;

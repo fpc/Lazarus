@@ -4303,34 +4303,13 @@ var
 
   procedure UpdateTabLabel;
   var
-    TheCaption, TheLabel: PChar;
-    CaptionStr, Pattern: String;
-    AccelKey: Char;
+    ACaption: String;
   begin
-    CaptionStr := ThePage.Caption;
-    LabelFromAmpersands(CaptionStr, Pattern, AccelKey);
-    TheCaption := PChar(CaptionStr);
-    if TheCaption = nil then
-      TheCaption := #0;
-
-    gtk_label_get(PGtkLabel(TabLabelWidget), @TheLabel);
-
-    // uneeded pattern updates cause bugs: #0011306
-    if CaptionStr <> StrPas(TheLabel) then
-    begin
-      gtk_label_set_text(PGtkLabel(TabLabelWidget), PChar(TheCaption));
-      {$ifdef gtk1}
-      gtk_label_set_pattern(PGtkLabel(TabLabelWidget), PChar(Pattern));
-      {$endif gtk1}
-    end;
+    ACaption := ThePage.Caption;
+    GTKWidgetSet.SetLabelCaption(PGtkLabel(TabLabelWidget), ACaption);
 
     if MenuLabelWidget <> nil then
-    begin
-      gtk_label_set_text(PGtkLabel(MenuLabelWidget), TheCaption);
-      {$ifdef gtk1}
-      gtk_label_set_pattern(PGtkLabel(MenuLabelWidget), PChar(Pattern));
-      {$endif gtk1}
-    end;
+      GTKWidgetSet.SetLabelCaption(PGtkLabel(MenuLabelWidget), ACaption);
   end;
 
   procedure UpdateTabCloseBtn;
