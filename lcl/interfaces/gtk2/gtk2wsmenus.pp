@@ -93,8 +93,8 @@ begin
 
   LCLMenuItem := TMenuItem(Data);
 
-  // the gtk fires toggle for radio buttons when unchecking them
-  // the LCL expects only uncheck to check changes
+  // the gtk fires activate for radio buttons when unchecking them
+  // the LCL expects only uncheck
   if LCLMenuItem.RadioItem
   and GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM)
   and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
@@ -112,29 +112,12 @@ end;
 
 function Gtk2MenuItemToggled(AMenuItem: PGTKCheckMenuItem;
                              AData: gPointer): GBoolean; cdecl;
-// AData --> LCLMenuItem
-var
-  LCLMenuItem: TMenuItem;
+// AData --> LCLMenuItem: TMenuItem
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
   EventTrace('toggled', AData);
   {$ENDIF}
-
-  LCLMenuItem := TMenuItem(AData);
-  // some sanity checks
-  if LCLMenuItem = nil then Exit;
-  if not LCLMenuItem.IsCheckItem then Exit;
-
-  // the gtk always toggles the check flag
-  // -> restore 'checked' flag if needed
-  if gtk_check_menu_item_get_active(AMenuItem) = LCLMenuItem.Checked then Exit;
-  if LCLMenuItem.AutoCheck then Exit;
-
-  // restore it
-  LockOnChange(PgtkObject(AMenuItem), +1);
-  gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
-  LockOnChange(PgtkObject(AMenuItem), -1);
 end;
 
 function Gtk2MenuItemSelect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
