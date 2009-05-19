@@ -193,8 +193,9 @@ begin
   else
     Func := GDK_COPY;
   end;
-  
+
   gdk_gc_set_function(GC, Func);
+  gdk_gc_get_values(GC, @FGCValues);
 end;
 
 procedure TGtkDeviceContext.SetSelectedColors(AValue: TDevContextSelectedColorsType);
