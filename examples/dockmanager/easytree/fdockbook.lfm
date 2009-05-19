@@ -1,0 +1,22 @@
+object DockBook: TDockBook
+  Left = 298
+  Height = 300
+  Top = 151
+  Width = 400
+  Caption = 'DockBook'
+  ClientHeight = 300
+  ClientWidth = 400
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  LCLVersion = '0.9.27'
+  Visible = True
+  object Pages: TPageControl
+    Left = 0
+    Height = 300
+    Top = 0
+    Width = 400
+    Align = alClient
+    DockSite = True
+    TabOrder = 0
+  end
+end
