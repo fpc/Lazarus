@@ -1912,16 +1912,6 @@ begin
         HandleDropFiles;
       end;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
-    WM_NCACTIVATE:
-    begin
-      // only allow main form to be deactivated, if it is disabled
-      if (WParam=0) and (Application <> nil) and (Application.MainForm <> nil) and
-          Application.MainForm.HandleAllocated and (Window = Application.MainForm.Handle) and
-          Windows.IsWindowEnabled(Window) then
-      begin
-        WParam := 1;
-      end;
-    end;
     WM_NCHITTEST:
     begin
       if (lWinControl <> nil) then
