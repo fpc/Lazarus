@@ -37,106 +37,149 @@ end;
 
 { TEasyDockHeader }
 
-const
+type
+  TZonePartMap = record
+    dTop, dBottom, dLeft, dRight: integer;
+  end;
+
+const //zone decoration sizes
   dSizer = 4;
   dBorder = 2; //frame and inner bevel
   dDist = 1; //button distance
-{$IFDEF newsplitter}
-  dHeader = 22 - dSizer; //splitter outside header!
+  dButton = 14; //include some space for themes
+  dHeader = dButton + 2*dBorder; // 22 - dSizer; //splitter outside header!
+
+(* Zone part map.
+  In portrait mode (header on top), the zone rectangle is adjusted according
+  to the given offsets. In landscape mode (header on the left), the offsets
+  have to be applied to the rotated coordinates.
+
+  Positive offsets mean self-relative adjustment, towards the opposite edge.
+  This operation has highest precedence.
+  Negative offsets mean adjustment relative to the adjusted opposite edge.
+
+  zpAll excludes the splitter and client area.
+  zpCaption excludes borders and buttons from zpAll.
+*)
+{$IFDEF newSplitter}
+(*
+  The map reflects new splitter placement (past client area),
+  and no restore button.
+*)
+HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
+  (),    //zpNowhere
+  (dTop:dHeader; dBottom:0),    //zpClient
+  (dTop:0; dBottom:-dHeader),    //zpAll
+  (dTop:dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
+  (dTop:-dSizer),    //zpSizer
+  {$IFDEF restore}
+  (...),    //zpRestoreButton
+  {$ENDIF}
+  (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton
+);
 {$ELSE}
-  dHeader = 22;
+(* Sizer in header, just before caption
+*)
+HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
+  (),    //zpNowhere - not in any zone
+  (dTop:dHeader+dSizer; dBottom:0),    //zpClient - on client control
+  (dTop:dSizer; dBottom:-dHeader),    //zpAll - total header rect
+  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
+  (dTop:0; dBottom:-dSizer),    //zpSizer - splitter/sizer
+  {$IFDEF restore}
+  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
+  {$ENDIF}
+  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
+);
 {$ENDIF}
 
 constructor TEasyDockHeader.Create;
-{
+
   procedure dump;
   var
     r, r2: TRect;
+  const
+    hc = true;
+    orn = doVertical;
   begin
-    r := Rect(0, 0, 200, HeaderSize); //LTBR
-    r2 := GetRectOfPart(r, doVertical, zpCaption);
+    r := Rect(0, 0, 200, 200); //LTBR
+    r2 := GetRectOfPart(r, orn, zpAll, hc);
+    DebugLn('%s (%d,%d)-(%d,%d)', ['header ', r2.Top, r2.Left, r2.Bottom, r2.Right]);
+    r2 := GetRectOfPart(r, orn, zpCaption, hc);
     DebugLn('%s (%d,%d)-(%d,%d)', ['caption', r2.Top, r2.Left, r2.Bottom, r2.Right]);
-    r2 := GetRectOfPart(r, doVertical, zpCloseButton);
+    r2 := GetRectOfPart(r, orn, zpCloseButton, hc);
     DebugLn('%s (%d,%d)-(%d,%d)', ['closer ', r2.Top, r2.Left, r2.Bottom, r2.Right]);
-    r2 := GetRectOfPart(r, doVertical, zpSizer);
+    r2 := GetRectOfPart(r, orn, zpClient, hc);
+    DebugLn('%s (%d,%d)-(%d,%d)', ['client ', r2.Top, r2.Left, r2.Bottom, r2.Right]);
+    r2 := GetRectOfPart(r, orn, zpSizer, hc);
     DebugLn('%s (%d,%d)-(%d,%d)', ['sizer  ', r2.Top, r2.Left, r2.Bottom, r2.Right]);
   end;
-}
+
 begin
   HeaderSize := dHeader; //some meaningful value?
 //debug
   //dump;
 end;
 
-class function TEasyDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
+class function TEasyDockHeader.GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation;
   APart: TEasyZonePart; HasSplitter: boolean): TRect;
-var
-  d, dRight, dWidth: Integer;
 begin
-  if (APart = zpNowhere) or (APart = zpClient)
-  or ((APart = zpSizer) and not HasSplitter) then begin
+(* ARect is (must be) TLBR zone rectangle, on input.
+*)
+  if (APart = zpNowhere) or ((APart = zpSizer) and not HasSplitter) then begin
     Result := Rect(0,0,0,0);
     exit;
   end;
 
-  Result := AHeaderRect;
-  //if APart = zpAll then Exit; //include sizer?
+  Result := ARect;
+  with HeaderPartMap[APart] do begin
+    if AOrientation = doVertical then begin //portrait
+      if dTop > 0 then
+        inc(Result.Top, dTop);
+      if dBottom > 0 then
+        dec(Result.Bottom, dBottom)
+      else if dBottom < 0 then
+        Result.Bottom := Result.Top - dBottom;
+      if dTop < 0 then
+        Result.Top := Result.Bottom + dTop;
+      if dLeft > 0 then
+        inc(Result.Left, dLeft);
+      if dRight > 0 then
+        dec(Result.Right, dRight)
+      else if dRight < 0 then
+        Result.Right := Result.Left + dRight;
+      if dLeft < 0 then
+        Result.Left := Result.Right + dLeft;
+    {$IFDEF newSplitter}
+    //handle client w/o splitter
+      if (APart = zpClient) and HasSplitter then
+        dec(Result.Bottom, dSizer);
+    {$ELSE}
+    {$ENDIF}
+    end else begin //landscape
+      if dTop > 0 then
+        inc(Result.Left, dTop);
+      if dBottom > 0 then
+        dec(Result.Right, dBottom)
+      else if dBottom < 0 then
+        Result.Right := Result.Left - dBottom;
+      if dTop < 0 then
+        Result.Left := Result.Right + dTop;
 
-  if APart = zpSizer then begin
-  //at top/left - visible only if HasSplitter
-    if AOrientation = doVertical then
-      Result.Bottom := Result.Top + dSizer
-    else
-      Result.Right := Result.Left + dSizer;
-    exit;
-  end;
-//exclude sizer
-if not HasSplitter then begin
-  if AOrientation = doVertical then
-    inc(Result.Top, dSizer)
-  else
-    inc(Result.Left, dSizer);
-end;
-
-  if APart = zpAll then
-    Exit; //exclude sizer
-
-//exclude border, assume 1 pixel border, 1 pixel inner distance
-  InflateRect(Result, -dBorder, -dBorder); //border(2), remaining = rectangular button width/height
-//get remaining size for buttons
-  if AOrientation = doVertical then
-    d := Result.Bottom - Result.Top
-  else
-    d := Result.Right - Result.Left;
-
-  dWidth := 0;
-  case APart of
-  //zpAll: - see above
-  zpCloseButton: dRight := dDist;
-{$IFDEF restore}
-  zpRestoreButton: dRight := d + 2*dDist;
-  zpCaption: dWidth := 2*(d + dDist); //2 * (button + dist)
-{$ELSE}
-  zpCaption: dWidth := (d + dDist); //1 * (button + dist)
-{$ENDIF}
-  //zpSizer: - see above
-  //zpClient, //here: invalid argument!
-  //zpNowhere:  Result := Rect(0,0,0,0);
-  end;
-
-  if AOrientation = doVertical then begin
-    if dWidth > 0 then begin //caption
-      dec(Result.Right, dBorder+dWidth);
-    end else begin //buttons
-      dec(Result.Right, dBorder+dRight);
-      Result.Left := Result.Right - d;
-    end;
-  end else begin
-    if dWidth > 0 then begin //caption
-      inc(Result.Top, dBorder+dWidth);
-    end else begin //buttons
-      inc(Result.Top, dBorder+dRight);
-      Result.Bottom := Result.Top + d;
+      if dLeft > 0 then
+        dec(Result.Bottom, dLeft);
+      if dRight > 0 then
+        inc(Result.Top, dRight)
+      else if dRight < 0 then
+        Result.Top := Result.Bottom + dRight;
+      if dLeft < 0 then
+        Result.Bottom := Result.Top - dLeft;
+    {$IFDEF newSplitter}
+    //handle client w/o splitter
+      if (APart = zpClient) and HasSplitter then
+        dec(Result.Right, dSizer);
+    {$ELSE}
+    {$ENDIF}
     end;
   end;
 end;
@@ -163,36 +206,30 @@ begin
 *)
   r := AZone.GetBounds;
   if (AZone.FChildControl = nil) or not PtInRect(r, MousePos) then
+  //possibly empty root zone
     Result := zpNowhere
   else begin
     Control := AZone.FChildControl;
-    if Control.DockOrientation = doVertical then
-      r.Bottom := Control.Top
-    else
-      r.Right := Control.Left;
-    if not PtInRect(r, MousePos) then
-      Part := zpClient //if not in header, must be in control
-    else if MouseInPart(zpSizer) or MouseInPart(zpCloseButton)
+    if MouseInPart(zpSizer) or MouseInPart(zpCloseButton)
     {$IFDEF restore}
       or MouseInPart(zpRestoreButton)
     {$ENDIF}
+    or MouseInPart(zpClient)
     then
-      //all done
+      //all done, result stored in Part
     else
-      Part := zpCaption;
+      Part := zpCaption; //include borders
   end;
 
   aHandle:=AZone.GetHandle;
-//check old state changed
-  if (self.MouseZone <> nil)
-  and ((MouseZone <> AZone) or (MousePart <> Part) or (MouseDown <> fButtonDown)) then begin
-  //reset state?
-    if MousePart in HeaderButtons then
+//check old state changed - buttons also change state on mouse enter/exit
+  if (self.MouseZone <> nil) //else Mouse... invalid
+  and ((MouseZone <> AZone) or (MousePart in HeaderButtons)) then
       InvalidateRect(aHandle, @PartRect, false); //old button
-  end;
 //check new state
-  if (MouseDown <> fButtonDown) and (MousePart in HeaderButtons) then
-    InvalidateRect(aHandle, @SubRect, false); //new button
+  if (Part in HeaderButtons) then begin
+    InvalidateRect(aHandle, @SubRect, false); //refresh button
+  end;
 //set new state
   MouseZone := AZone;
   MousePart := Part;
@@ -205,12 +242,15 @@ end;
 procedure TEasyDockHeader.Draw(AZone: TEasyZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
 (* Problem with colors on other than win32 widgetsets (gtk2...)
 *)
-{$DEFINE LDock} //mimic LDockTree?
 const
   clBack = clHighlight;
   clFont = clHighlightText;
 
-  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; ABitmap: TCustomBitmap); inline;
+var
+  IsMouseDown: Boolean;
+
+  //procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; ABitmap: TCustomBitmap); inline;
+  procedure DrawButton(ARect: TRect; ABitmap: TCustomBitmap);
   const
     // ------------- Pressed, Hot -----------------------
     BtnDetail: array[Boolean, Boolean] of TThemedToolBar =
@@ -221,18 +261,17 @@ const
   var
     Details: TThemedElementDetails;
     dx, dy: integer;
+    IsMouseOver: boolean;
   begin
+    ACanvas.FillRect(ARect);
+    IsMouseOver := PtInRect(ARect, MousePos);
     Details := ThemeServices.GetElementDetails(BtnDetail[IsMouseDown, IsMouseOver]);
     ThemeServices.DrawElement(ACanvas.Handle, Details, ARect);
     ARect := ThemeServices.ContentRect(ACanvas.Handle, Details, ARect);
-  //zoom button into rect?
-  {$IFDEF LDock}
+  //move button into rect, excluding border
     dx := (ARect.Right - ARect.Left - ABitmap.Width) div 2;
     dy := (ARect.Bottom - ARect.Top - ABitmap.Height) div 2;
     ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
-  {$ELSE}
-    ACanvas.Draw(ARect.Left, ARect.Top, ABitmap);
-  {$ENDIF}
   end;
 
 var
@@ -242,74 +281,48 @@ var
   OldFont, RotatedFont: HFONT;
   OldMode: Integer;
   ALogFont: TLogFont;
-  IsMouseDown: Boolean; //obsolete
   AOrientation: TDockOrientation;
   AControl: TControl;
 begin
 (* Some colors inavailable on some widgetsets!
-  (NewSplitter at opposite side of header! - not in this version)
 *)
-  //IsMouseDown := self.MouseDown;  // not always correct?
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 //debug
   AControl := AZone.FChildControl;
   AOrientation := AControl.DockOrientation;
 
   ARect := AZone.GetBounds;
-  BtnRect := ARect;
-  if AZone.FChildControl.DockOrientation = doVertical then begin
-    ARect.Bottom := ARect.Top + HeaderSize; //entire header area
-    BtnRect.Top := BtnRect.Bottom - dSizer; //splitter
-  end else begin
-    ARect.Right := ARect.Left + HeaderSize;
-    BtnRect.Left := BtnRect.Right - dSizer;
-  end;
-  DrawRect := ARect;
   ACanvas.Brush.Color := clBtnFace;
 
-  if AZone.HasSizer then begin
-{$IFDEF newsplitter}
-// splitter no more in header! - BtnRect initialized above
-    ACanvas.FillRect(BtnRect);
-{$ELSE}
 //draw splitter?
-  BtnRect := GetRectOfPart(ARect, AOrientation, zpSizer, AZone.HasSizer);
-{$IFDEF LDock}
-{$ELSE}
-  ACanvas.Brush.Color := clBtnFace;
-{$ENDIF}
-  ACanvas.FillRect(BtnRect);
-{$ENDIF}
+  if AZone.HasSizer then begin
+  // border?
+    BtnRect := GetRectOfPart(ARect, AOrientation, zpSizer, AZone.HasSizer);
+    ACanvas.FillRect(BtnRect);
   end;
 
-//erase?
+//erase - which color(s)?
   DrawRect := GetRectOfPart(ARect, AOrientation, zpAll, AZone.HasSizer);
-{$IFDEF LDock}
-{$ELSE}
-  ACanvas.Brush.Color := clBack; // clActiveCaption;
-{$ENDIF}
+  //ACanvas.Brush.Color := clBack; // clActiveCaption;
   ACanvas.FillRect(DrawRect);
 
-//what's this?
+//border
   InflateRect(DrawRect, -1, -1); //outer bevel?
   ACanvas.Brush.Color := clBtnShadow;
-  ACanvas.FrameRect(DrawRect);
-{$IFDEF LDock}
-  InflateRect(DrawRect, -1, -1); //inner bevel?
-  //the value is not used any more!
-{$ELSE}
-{$ENDIF}
+  ACanvas.FrameRect(DrawRect); //1 pixel border
+  //InflateRect(DrawRect, -1, -1); //inner bevel?
+    //the value is not used any more!
+  ACanvas.Brush.Color := clBtnFace;
 
 // draw caption
-{$IFDEF LDock}
-{$ELSE}
-  ACanvas.Font.Color := clFont; //clCaptionText;
-{$ENDIF}
+  //ACanvas.Font.Color := clFont; //clCaptionText;
   DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
 
   OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
 
+//for some reason the caption is not offset properly?
   if AOrientation = doVertical then begin
+    inc(DrawRect.Left, 2);
     DrawText(ACanvas.Handle, PChar(ACaption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
   end else begin
     OldFont := 0;
@@ -321,29 +334,25 @@ begin
         OldFont := SelectObject(ACanvas.Handle, RotatedFont);
     end;
     // from msdn: DrawText doesnot support font with orientation and escapement <> 0
-    TextOut(ACanvas.Handle, DrawRect.Left, DrawRect.Bottom, PChar(ACaption), Length(ACaption));
+    //TextOut(ACanvas.Handle, DrawRect.Left, DrawRect.Bottom, PChar(ACaption), Length(ACaption));
+    TextOut(ACanvas.Handle, DrawRect.Left-2, DrawRect.Bottom-2, PChar(ACaption), Length(ACaption));
     if OldFont <> 0 then
       DeleteObject(SelectObject(ACanvas.Handle, OldFont));
   end;
   SetBkMode(ACanvas.Handle, OldMode);
 
 // buttons - which colors to use?
-{$IFDEF LDock}
-{$ELSE}
   ACanvas.Brush.Color := clBtnFace;
   //ACanvas.Pen.Color := clButtonText;
-{$ENDIF}
 
 // draw close button
   BtnRect := GetRectOfPart(ARect, AOrientation, zpCloseButton, AZone.HasSizer);
-  ACanvas.FillRect(BtnRect);
-  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), DockBtnImages[dhiClose]);
+  DrawButton(BtnRect, DockBtnImages[dhiClose]);
 
 {$IFDEF restore}
 // draw restore button
   BtnRect := GetRectOfPart(ARect, AOrientation, zpRestoreButton, AZone.HasSizer);
-  ACanvas.FillRect(BtnRect);
-  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), DockBtnImages[dhiRestore]);
+  DrawButton(BtnRect, DockBtnImages[dhiRestore]);
 {$ENDIF}
 end;
 

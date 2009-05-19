@@ -5,7 +5,16 @@ This project can be used instead of the LDockTree manager.
 
 To be added or ported:
   - field and method argument names
-  - persistence
+
+Possible extensions:
+  - separate docking management and dock site layout
+  - various dock headers
+  - multiple splitters (on zones without controls)
+  - persistence (requires application wide management of dock sources!)
+  - purpose of Restore button?
+
+Known bugs:
+  - Problem with dragging header, seems to interfere with dragmanager (capture)?
 
 More issues, concerning the rest of the LCL (mainly unit Controls):
 
@@ -18,10 +27,18 @@ LCL TODO:
   becomes a DockSite.
 
   LCL does not handle docking managers as interfaces.
+  (this will most probably never come)
 
-  LCL undocks a control when it just is clicked.
+  LCL undocks a control when it just is clicked. (Delphi flaw)
 
   LCL controls don't notify the dock manager about visibility changes.
+
+  LCL doesn't handle properly the possible start of a drag operation (WM_LBUTTONDOWN).
+  In DragMode=dmAutomatic the drag manager should capture mouse input.
+  When an LB_UP occurs while waiting for the threshold, a normal Click should
+  occur (perform LB_DOWN and LB_UP).
+  Otherwise dragging starts, and the control has to be reset into "no button down"
+  state.
 
 done? (unclear whether this is really fixed in the trunk)
 =====
@@ -31,8 +48,10 @@ done? (unclear whether this is really fixed in the trunk)
 
 {$H+}
 
-{$DEFINE splitter_color} //use colored splitter, for debugging?
+{.$DEFINE splitter_color} //use colored splitter, for debugging?
 {.$DEFINE NoDrop} //patched dragobject?
+{.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
+{.$DEFINE restore} //restore button?
 
 interface
 
@@ -75,7 +94,7 @@ type
     PartRect: TRect;
   public
     constructor Create;
-    class function  GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
+    class function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
     function  FindPart(AZone: TEasyZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
     procedure Draw(AZone: TEasyZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
   end;
@@ -336,10 +355,14 @@ end;
 procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
 //get the client area within the given zone rectangle
+{$IFDEF old}
   if Control.DockOrientation = doVertical then
     inc(ARect.Top, DockHeaderSize)
   else
     inc(ARect.Left, DockHeaderSize);
+{$ELSE}
+  ARect := FHeader.GetRectOfPart(ARect, Control.DockOrientation, zpClient, true);
+{$ENDIF}
 end;
 
 function TEasyTree.FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
@@ -700,17 +723,25 @@ begin
     {$ENDIF}
       zpCloseButton:
         begin
+        {$IFDEF visibility}
+        //handling of invisible clients deserves dock manager notification!
           if Control is TCustomForm then
             TCustomForm(Control).Close
           else // not a form => doesnot have close => just hide
             Control.Visible := False;
           DockSite.Invalidate;
+        {$ELSE}
+          Control.ManualDock(nil, nil, alNone); //do float
+        {$ENDIF}
         end;
       end;
     LM_LBUTTONDOWN:
       case FindZone(False) of
       zpCaption: // mouse down on not buttons => start drag
-        Control.BeginDrag(False);
+        begin //problem here - app hangs!
+          DebugLn('start dragging from header: %s', [FDockSite.GetDockCaption(Control)]);
+          Control.BeginDrag(False);
+        end;
       end;
     LM_MOUSEMOVE:
       begin //what's Message.Keys???
@@ -1290,10 +1321,10 @@ begin
 *)
   BR := TLBR.BottomRight;
   if ChildControl <> nil then begin //is control zone
-    FTree.AdjustDockRect(ChildControl, TLBR);
+    //FTree.AdjustDockRect(ChildControl, TLBR);
+    TLBR := FTree.FHeader.GetRectOfPart(TLBR, ChildControl.DockOrientation, zpClient, HasSizer);
     ChildControl.BoundsRect := TLBR;
   end else if FirstChild <> nil then begin
-    //if Orientation = doVertical then TLBR.;
     z := FirstChild;
     while z <> nil do begin
     //resize - for splitter move only!

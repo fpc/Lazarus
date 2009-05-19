@@ -5,6 +5,7 @@
     <Version Value="7"/>
     <General>
       <Flags>
+        <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
