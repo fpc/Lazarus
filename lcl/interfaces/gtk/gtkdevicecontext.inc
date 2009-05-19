@@ -448,6 +448,58 @@ begin
   SavedContext := nil;
 end;
 
+function TGtkDeviceContext.FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
+var
+  Width, Height: Integer;
+  OldCurrentBrush: PGdiObject;
+  DCOrigin: TPoint;
+  BrushChanged: Boolean;
+begin
+  BrushChanged := False;
+  if not IsNullBrush then
+  begin
+    Width := ARect.Right - ARect.Left;
+    Height := ARect.Bottom - ARect.Top;
+
+    // Temporary hold the old brush to replace it with the given brush
+    OldCurrentBrush := GetBrush;
+    if not CompareGDIBrushes(PGdiObject(ABrush), OldCurrentBrush) then
+    begin
+      BrushChanged := True;
+      CurrentBrush := PGdiObject(ABrush);
+      SelectedColors := dcscCustom;
+    end;
+
+    SelectBrushProps;
+    if SkipRop then
+      gdk_gc_set_function(GC, GDK_COPY);
+
+    DCOrigin := Offset;
+    if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
+       (IsBackgroundColor(CurrentBrush^.GDIBrushColor.ColorRef)) then
+      StyleFillRectangle(Drawable, GC,
+                         CurrentBrush^.GDIBrushColor.ColorRef,
+                         ARect.Left + DCOrigin.X, ARect.Top + DCOrigin.Y,
+                         Width, Height)
+    else
+      gdk_draw_rectangle(Drawable, GC, 1,
+                         ARect.Left + DCOrigin.X, ARect.Top + DCOrigin.Y,
+                         Width, Height);
+
+    if SkipRop then
+      gdk_gc_set_function(GC, GCValues._function);
+
+    // Restore current brush
+    if BrushChanged then
+    begin
+      SelectedColors := dcscCustom;
+      CurrentBrush := OldCurrentBrush;
+    end;
+  end;
+
+  Result := True;
+end;
+
 procedure TGtkDeviceContext.CreateBrush;
 begin
   if FCurrentBrush <> nil then Exit;

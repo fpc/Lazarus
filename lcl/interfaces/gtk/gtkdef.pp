@@ -383,6 +383,7 @@ type
     function IsNullPen: boolean;
 
     function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
+    function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
   public
     // winapi
     function SelectObject(AGdiObject: PGdiObject): PGdiObject;

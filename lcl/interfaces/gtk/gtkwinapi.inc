@@ -4293,62 +4293,11 @@ end;
   bottom borders of the rectangle.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
-var
-  Width, Height: Integer;
-  OldCurrentBrush: PGdiObject;
-  DCOrigin: TPoint;
-  BrushChanged: Boolean;
 begin
-  BrushChanged := false;
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if not Result or IsRectEmpty(Rect) then
     exit;
-  with TGtkDeviceContext(DC) do
-  begin
-    if not IsNullBrush then
-    begin
-      Width := Rect.Right - Rect.Left;
-      Height := Rect.Bottom - Rect.Top;
-      // Temporary hold the old brush to
-      // replace it with the given brush
-      OldCurrentBrush := GetBrush;
-      if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then
-      begin
-        BrushChanged:=true;
-        CurrentBrush := PGdiObject(Brush);
-        SelectedColors:=dcscCustom;
-      end;
-      //DebugLn('TGtkWidgetSet.FillRect Color=',DbgS(CurrentBrush^.GDIBrushColor.ColorRef));
-
-      SelectBrushProps;
-      gdk_gc_set_function(GC, GDK_COPY);
-
-      DCOrigin := Offset;
-      if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
-         (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
-      begin
-        StyleFillRectangle(Drawable, GC,
-                           CurrentBrush^.GDIBrushColor.ColorRef,
-                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                           Width, Height)
-      end else
-      begin
-        gdk_draw_rectangle(Drawable, GC, 1,
-                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                           Width, Height);
-      end;
-      gdk_gc_set_function(GC, GCValues._function);
-
-      // Restore current brush
-      if BrushChanged then
-      begin
-        SelectedColors:=dcscCustom;
-        CurrentBrush := OldCurrentBrush;
-      end;
-    end;
-
-    Result := True;
-  end;
+  Result := TGtkDeviceContext(DC).FillRect(Rect, Brush, True);
   Assert(False, Format('trace:< [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
 
@@ -7266,28 +7215,27 @@ begin
   if NumPts <= 0 then Exit(True);
   
   DCOrigin := DevCtx.Offset;
-  OldNumPts:=NumPts;
+  OldNumPts := NumPts;
 
   // create the PointsArray, which is a copy of Points moved by the DCOrigin
   // only if needed
-  if (DevCtx.IsNullPen and (DevCtx.IsNullBrush or Winding))
-  then begin
-    PointArray := nil;
-  end
-  else begin
-    GetMem(PointArray, SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
-    for i:=0 to NumPts-1 do
+  if (DevCtx.IsNullPen and (DevCtx.IsNullBrush or Winding)) then
+    PointArray := nil
+  else
+  begin
+    GetMem(PointArray, SizeOf(TGdkPoint) * (NumPts + 1)); // +1 for return line
+    for i := 0 to NumPts - 1 do
     begin
       PointArray[i].x := Points[i].x + DCOrigin.X;
       PointArray[i].y := Points[i].y + DCOrigin.Y;
     end;
 
-    if (Points[NumPts-1].X <> Points[0].X)
-    or (Points[NumPts-1].Y <> Points[0].Y)
-    then begin
+    if (Points[NumPts-1].X <> Points[0].X) or
+       (Points[NumPts-1].Y <> Points[0].Y) then
+    begin
       // add last point to return to first
-      PointArray[NumPts].x:=PointArray[0].x;
-      PointArray[NumPts].y:=PointArray[0].y;
+      PointArray[NumPts].x := PointArray[0].x;
+      PointArray[NumPts].y := PointArray[0].y;
       Inc(NumPts);
     end;
   end;
@@ -7295,10 +7243,10 @@ begin
   // first draw interior in brush color
 
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  if not DevCtx.IsNullBrush
-  then begin
-    if Winding
-    then begin
+  if not DevCtx.IsNullBrush then
+  begin
+    if Winding then
+    begin
       // store old clipping
       Tmp := CreateEmptyRegion;
       GetClipRGN(DC, Tmp);
@@ -7308,12 +7256,13 @@ begin
       DeleteObject(RGN);
       GetClipBox(DC, @ClipRect);
       // draw polygon area
-      FillRect(DC, ClipRect, HBrush(PtrUInt(DevCtx.GetBrush)));
+      DevCtx.FillRect(ClipRect, HBrush(PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
       SelectClipRGN(DC, Tmp);
       DeleteObject(Tmp);
     end
-    else begin
+    else
+    begin
       DevCtx.SelectBrushProps;
       gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 1, PointArray, NumPts);
     end;
