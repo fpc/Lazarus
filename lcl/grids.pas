@@ -7182,6 +7182,7 @@ begin
   FStringEditor.name :='StringEditor';
   FStringEditor.Text:='';
   FStringEditor.Visible:=False;
+  FStringEditor.AutoSize:=False;
   FStringEditor.Align:=alNone;
 
   FPicklistEditor := TPickListCellEditor.Create(nil);
