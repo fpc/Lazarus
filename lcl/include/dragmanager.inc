@@ -229,6 +229,7 @@ begin
     else
       TargetPos := ADragObjectCopy.DragPos; //otherwise take the current position
     Accepted := ADropped and SendCmDragMsg(ADragObjectCopy, dmDragLeave);
+    ADragObjectCopy.FDropped := Accepted;
 
     if ADragObjectCopy.DragTarget <> nil then
     begin
@@ -496,6 +497,8 @@ begin
     else
       TargetPos := ADockObjectCopy.DragPos; //otherwise take the current position
     Accepted := Accepted and (ADockObjectCopy.Floating or SendCmDragMsg(ADockObjectCopy, dmDragLeave)) and ADropped;
+    ADockObjectCopy.FDropped := Accepted;
+
     if Accepted and ADockObjectCopy.Floating then
     begin
       ParentForm := GetParentForm(ADockObjectCopy.Control);
