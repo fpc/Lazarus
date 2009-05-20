@@ -7608,15 +7608,13 @@ end;
 
 function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
 begin
-  if Styles=nil then exit(nil);
+  if Styles = nil then Exit(nil);
   if aStyle in [lgsUserDefined] then
-    RaiseGDBException('');// user styles are defined by name
-  if StandardStyles[aStyle]<>nil then
-    // already created
-    Result:=StandardStyles[aStyle]^.Style
-  else
-    // create it
-    Result:=GetStyleWithName(LazGtkStyleNames[aStyle]);
+    RaiseGDBException(''); // user styles are defined by name
+  if StandardStyles[aStyle] <> nil then // already created
+    Result := StandardStyles[aStyle]^.Style
+  else // create it
+    Result := GetStyleWithName(LazGtkStyleNames[aStyle]);
 end;
 
 procedure tooltip_window_style_set(Widget: PGtkWidget; PreviousStyle: PGtkStyle;

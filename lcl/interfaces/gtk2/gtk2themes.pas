@@ -136,6 +136,7 @@ function TGtk2ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBi
 var
   GDIObj: PGDIObject;
   StockName: PChar;
+  Style: PGtkStyle;
   IconSet: PGtkIconSet;
   Pixbuf: PGDKPixbuf;
 begin
@@ -170,9 +171,17 @@ begin
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsButton), StockName)
+    Style := GetStyle(lgsButton)
   else
-    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsWindow), StockName);
+    Style := GetStyle(lgsWindow);
+
+  if (Style = nil) and not GTK_IS_STYLE(Style) then
+  begin
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
+  end;
+
+  IconSet := gtk_style_lookup_icon_set(Style, StockName);
 
   if (IconSet = nil) then
   begin
@@ -181,10 +190,10 @@ begin
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton),
+    Pixbuf := gtk_icon_set_render_icon(IconSet, Style,
       GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
   else
-    Pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow),
+    Pixbuf := gtk_icon_set_render_icon(IconSet, Style,
       GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
 
   GDIObj := Gtk2Widgetset.NewGDIObject(gdiBitmap);
