@@ -71,11 +71,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
-{ TODO -cdocking : Automatic drag-dock never should start immediately.
-A docked control should not try to undock itself, at least not immediately.
-A docked control also should stay docked until it is really dropped into a different location,
-so that a docking mangager can detect and handle (abort) an drop into the old place.
- }
   BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 

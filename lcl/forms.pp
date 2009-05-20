@@ -507,6 +507,7 @@ type
     procedure SetAutoSize(Value: Boolean); override;
   protected
     // drag and dock
+    procedure BeginAutoDrag; override;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
     function GetFloating: Boolean; override;
     function GetDefaultDockCaption: String; override;

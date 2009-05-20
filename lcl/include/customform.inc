@@ -1073,6 +1073,13 @@ begin
   inherited SetAutoSize(Value);
 end;
 
+procedure TCustomForm.BeginAutoDrag;
+begin
+  // allow form dragging only if it is docked into a site without DockManager
+  if (HostDockSite <> nil) and not HostDockSite.UseDockManager then
+    BeginDrag(False);
+end;
+
 class function TCustomForm.GetControlClassDefaultSize: TPoint;
 begin
   Result.X:=320;
