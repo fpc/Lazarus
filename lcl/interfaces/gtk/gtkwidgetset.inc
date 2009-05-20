@@ -1094,27 +1094,29 @@ begin
   //RaiseGDBException('');
   if ChangeFGColor then
   begin
-    xfg := AllocGDKColor(colorToRGB(FGColor));
+    xfg := AllocGDKColor(ColorToRGB(FGColor));
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
       if i in mask then
       begin
         if GTK_STYLE_TEXT in mask then
           gtk_widget_modify_text(AWidget, i ,@xfg)
-        else gtk_widget_modify_fg(AWidget, i ,@xfg);
+        else
+          gtk_widget_modify_fg(AWidget, i ,@xfg);
       end;
     end;
   end;
   if ChangeBGColor then
   begin
-    xbg := AllocGDKColor(colorToRGB(BGColor));
+    xbg := AllocGDKColor(ColorToRGB(BGColor));
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
       if i in mask then
       begin
         if GTK_STYLE_BASE in mask then
           gtk_widget_modify_base(AWidget, i ,@xbg)
-        else gtk_widget_modify_bg(AWidget, i ,@xbg);
+        else
+          gtk_widget_modify_bg(AWidget, i ,@xbg);
       end;
     end;
   end;

@@ -33,7 +33,7 @@
 procedure TGTKWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
   AOperation: TDockImageOperation);
 const
-  LineWidth = 3;
+  LineWidth = 2;
 var
   Mask: PGdkBitmap;
   gc: PGdkGC;
