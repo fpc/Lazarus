@@ -3756,7 +3756,7 @@ procedure TControl.RealSetText(const Value: TCaption);
 begin
   if RealGetText = Value then Exit;
   FCaption := Value;
-  TextChanged;
+  Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
 procedure TControl.TextChanged;
