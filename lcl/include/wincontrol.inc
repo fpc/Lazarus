@@ -4801,8 +4801,7 @@ begin
         if FDockSite and FUseDockManager and Assigned(DockManager) then
           DockManager.MessageHandler(Self, Message);
       end;
-    CM_TEXTCHANGED,
-    CM_VISIBLECHANGED:
+    CM_TEXTCHANGED, CM_VISIBLECHANGED, LM_SIZE, LM_MOVE:
       begin
         // forward message to the dock manager is we are docked
         if (HostDockSite <> nil) and (HostDockSite.UseDockManager) and

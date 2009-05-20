@@ -1665,6 +1665,11 @@ begin
             BuildDockLayout(TLazDockZone(AZone.Parent));
         end;
       end;
+    LM_SIZE, LM_MOVE:
+      begin
+        if GetControlHeaderRect(Sender, ARect) then
+          InvalidateRect(DockSite.Handle, @ARect, False);
+      end;
   end
 end;
 
