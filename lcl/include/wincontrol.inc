@@ -4734,10 +4734,11 @@ begin
         {$IFDEF VerboseFocus}
         DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
         {$ENDIF}
-        if not (csDestroyingHandle in ControlState) then begin
+        if not (csDestroyingHandle in ControlState) then 
+        begin
           Form := GetParentForm(Self);
           if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
-          Message.Result:=0;
+          Message.Result := 0;
         end;
       end;
 

@@ -1762,7 +1762,7 @@ begin
     // delegate to topmost form
     ParentForm := GetParentForm(Self);
     if ParentForm <> nil then
-      ParentForm.SetFocusedControl(Control);
+      Result := ParentForm.SetFocusedControl(Control);
     Exit;
   end;
 
@@ -1795,10 +1795,9 @@ begin
   DebugLn();
   {$ENDIF}
 
-  Result := True;
-
   if (Control <> nil) and (not (csFocusing in Control.ControlState)) then
   begin
+    Control.ControlState := Control.ControlState + [csFocusing];
     // prevent looping
     // update ActiveControls of all parent forms
     CurControl := Control.Parent;
@@ -1808,6 +1807,8 @@ begin
         TCustomForm(CurControl).FActiveControl := Control;
       CurControl := CurControl.Parent;
     end;
+    Control.ControlState := Control.ControlState - [csFocusing];
+    Result := True;
   end;
 end;
 
