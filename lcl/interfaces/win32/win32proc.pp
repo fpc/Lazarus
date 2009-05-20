@@ -394,6 +394,7 @@ begin
     $0290: Result := 'WM_IME_KEYDOWN';
     $0291: Result := 'WM_IME_KEYUP';
     $02A1: Result := 'WM_MOUSEHOVER';
+    $02A2: Result := 'WM_NCMOUSELEAVE';
     $02A3: Result := 'WM_MOUSELEAVE';
     $0300: Result := 'WM_CUT';
     $0301: Result := 'WM_COPY';

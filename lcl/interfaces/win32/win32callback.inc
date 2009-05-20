@@ -1823,12 +1823,12 @@ begin
     WM_MOUSEHOVER:
     begin
       NotifyUserInput := True;
-      LMessage.Msg := LM_ENTER;
+      LMessage.Msg := LM_MOUSEENTER;
     end;
     WM_MOUSELEAVE:
     begin
       NotifyUserInput := True;
-      LMessage.Msg := LM_LEAVE;
+      LMessage.Msg := LM_MOUSELEAVE;
     end;
     WM_MOUSEMOVE:
     begin
@@ -1948,6 +1948,11 @@ begin
         end;
       end;
 
+    end;
+    WM_NCMOUSEMOVE, WM_NCMOUSELEAVE:
+    begin
+      NotifyUserInput := True;
+      Application.DoBeforeMouseMessage(nil);
     end;
     WM_NOTIFY:
     begin

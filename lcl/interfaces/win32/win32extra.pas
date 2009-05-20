@@ -331,15 +331,17 @@ const
 // for GetRandomRgn
   SYSRGN                  = 4;
 
-// for SetWindowPos
+  // for SetWindowPos
 
-SWP_DEFERERASE     = $2000;
-SWP_ASYNCWINDOWPOS = $4000;
-SWP_STATECHANGED   = $8000; // used by windows but not documented (used even in wine)
+  SWP_DEFERERASE     = $2000;
+  SWP_ASYNCWINDOWPOS = $4000;
+  SWP_STATECHANGED   = $8000; // used by windows but not documented (used even in wine)
 
-// addition XP messages
-WM_THEMECHANGED = $31A;
-  
+  // addition XP messages
+  WM_THEMECHANGED = $31A;
+  // other messages
+  WM_NCMOUSELEAVE = $2A2;
+
 // missing imagelist macros and constants
 
 const
