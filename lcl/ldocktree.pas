@@ -100,7 +100,7 @@ type
     function GetAnchorControl(Zone: TLazDockZone; Side: TAnchorKind;
                               OutSide: boolean): TControl;
     procedure PaintSite(DC: HDC); override;
-    procedure MessageHandler(var Message: TLMessage); override;
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
     procedure DumpLayout(FileName: String); override;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
@@ -258,7 +258,7 @@ type
     procedure UpdateTitlePosition(Control: TControl);
 
     procedure PaintSite(DC: HDC); override;
-    procedure MessageHandler(var Message: TLMessage); override;// not implemented
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;// not implemented
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;// not implemented
     procedure ResetBounds(Force: Boolean); override;// not implemented
@@ -1550,7 +1550,7 @@ begin
   end;
 end;
 
-procedure TLazDockTree.MessageHandler(var Message: TLMessage);
+procedure TLazDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
 
   procedure CheckNeedRedraw(AControl: TControl; ARect: TRect; APart: TLazDockHeaderPart);
   var
@@ -2856,7 +2856,7 @@ begin
   RaiseGDBException('TCustomAnchoredDockManager.SetReplacingControl TODO');
 end;
 
-procedure TCustomAnchoredDockManager.MessageHandler(var Message: TLMessage);
+procedure TCustomAnchoredDockManager.MessageHandler(Sender: TControl; var Message: TLMessage);
 begin
 
 end;

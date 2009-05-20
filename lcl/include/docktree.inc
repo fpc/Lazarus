@@ -99,7 +99,7 @@ begin
   // ToDo
 end;
 
-procedure TDockTree.MessageHandler(var Message: TLMessage);
+procedure TDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
 begin
   // ToDo
 end;

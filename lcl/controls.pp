@@ -492,7 +492,7 @@ type
                             DropCtl: TControl); virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
-    procedure MessageHandler(var Message: TLMessage); virtual; abstract;
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); virtual; abstract;
     procedure PositionDockRect(ADockObject: TDragDockObject); virtual; overload;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); virtual; abstract; overload;
@@ -2144,7 +2144,7 @@ type
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
                             DropControl: TControl); override;
     procedure LoadFromStream(SrcStream: TStream); override;
-    procedure MessageHandler(var Message: TLMessage); override;
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
     procedure PositionDockRect(AClient, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;
     procedure RemoveControl(AControl: TControl); override;
