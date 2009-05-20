@@ -1573,6 +1573,26 @@ procedure TLazDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
     end;
   end;
 
+  function GetControlHeaderRect(AControl: TControl; out ARect: TRect): Boolean;
+  begin
+    Result := True;
+    ARect := AControl.BoundsRect;
+    case AControl.DockOrientation of
+      doHorizontal:
+        begin
+          ARect.Bottom := ARect.Top;
+          Dec(ARect.Top, DefaultDockGrabberSize);
+        end;
+      doVertical:
+        begin
+          ARect.Right := ARect.Left;
+          Dec(ARect.Left, DefaultDockGrabberSize);
+        end;
+      else
+        Result := False;
+    end;
+  end;
+
   function FindControlAndPart(MouseMsg: TLMMouse; out ARect: TRect; out APart: TLazDockHeaderPart): TControl;
   var
     i: integer;
@@ -1583,21 +1603,8 @@ procedure TLazDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
     begin
       if DockSite.Controls[i].HostDockSite = DockSite then
       begin
-        ARect := DockSite.Controls[i].BoundsRect;
-        case DockSite.Controls[i].DockOrientation of
-          doHorizontal:
-            begin
-              ARect.Bottom := ARect.Top;
-              Dec(ARect.Top, DefaultDockGrabberSize);
-            end;
-          doVertical:
-            begin
-              ARect.Right := ARect.Left;
-              Dec(ARect.Left, DefaultDockGrabberSize);
-            end;
-          else
-            Continue;
-        end;
+        if not GetControlHeaderRect(DockSite.Controls[i], ARect) then
+          Continue;
         if not PtInRect(ARect, Pt) then
           Continue;
         // we have control here
@@ -1634,6 +1641,14 @@ begin
       end;
     CM_MOUSELEAVE:
       CheckNeedRedraw(nil, Rect(0,0,0,0), ldhpAll);
+    CM_TEXTCHANGED:
+      begin
+        if GetControlHeaderRect(Sender, ARect) then
+        begin
+          ARect := TDockHeader.GetRectOfPart(ARect, Sender.DockOrientation, ldhpCaption);
+          InvalidateRect(DockSite.Handle, @ARect, False);
+        end;
+      end;
   end
 end;
 
