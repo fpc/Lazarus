@@ -2125,11 +2125,11 @@ type
     FDockSite: TWinControl;
     FDockZoneClass: TDockZoneClass;
     FFlags: TDockTreeFlags;
-    FRootZone: TDockZone;
     FUpdateCount: Integer;
     procedure DeleteZone(Zone: TDockZone);
     procedure SetDockSite(const AValue: TWinControl);
   protected
+    FRootZone: TDockZone;
     function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); virtual;

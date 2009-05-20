@@ -1122,7 +1122,8 @@ begin
       //DebugLn(['TLazDockTree.AnchorDockLayout CurControl.Parent=',DbgSName(CurControl.Parent),' ',CurControl.Visible]);
       for a := Low(TAnchorKind) to High(TAnchorKind) do
       begin
-        CurControl.AnchorSide[a].Control := AnchorControls[a];
+        if AnchorControls[a] <> CurControl then
+          CurControl.AnchorSide[a].Control := AnchorControls[a];
         if (AnchorControls[a] <> nil) and (AnchorControls[a].Parent = CurControl.Parent) then
           CurControl.AnchorSide[a].Side := DefaultSideForAnchorKind[a]
         else
@@ -1307,6 +1308,8 @@ begin
       if OldParentZone <> nil then
         OldParentZone.ReplaceChild(DropZone, NewParentZone);
       NewParentZone.AddAsFirstChild(DropZone);
+      if RootZone = DropZone then
+        FRootZone := NewParentZone;
     end;
 
     if DropZone.Parent = nil then
@@ -1808,19 +1811,23 @@ function TLazDockZone.GetParentControl: TWinControl;
 var
   Zone: TDockZone;
 begin
-  Result:=nil;
-  Zone:=Parent;
-  while Zone<>nil do begin
-    if Zone.Orientation=doPages then begin
-      Result:=(Zone as TLazDockZone).Pages;
-      exit;
-    end;
-    if (Zone.Parent=nil) then begin
+  Result := nil;
+  Zone := Parent;
+  while Zone <> nil do
+  begin
+    if Zone.Orientation = doPages then
+      Exit((Zone as TLazDockZone).Pages);
+
+    if (Zone.Parent = nil) then
+    begin
       if Zone.ChildControl is TWinControl then
-        Result:=TWinControl(Zone.ChildControl);
-      exit;
+        Result := TWinControl(Zone.ChildControl)
+      else
+      if Zone = Tree.RootZone then
+        Result := Tree.DockSite;
+      Exit;
     end;
-    Zone:=Zone.Parent;
+    Zone := Zone.Parent;
   end;
 end;
 

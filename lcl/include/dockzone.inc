@@ -87,15 +87,13 @@ end;
 function TDockZone.GetHeight: Integer;
 begin
   if not Visible then
-    Result := 0
+    Exit(0);
+
+  if FTree.RootZone = Self then
+    Result := FTree.FDockSite.ClientHeight
   else
   if (FChildControl <> nil) then
-  begin
-    if FTree.RootZone = Self then
-      Result := FChildControl.ClientHeight
-    else
-      Result := FChildControl.Height
-  end
+    Result := FChildControl.Height
   else
   begin
     if FParentZone.Orientation = doHorizontal then
@@ -108,15 +106,13 @@ end;
 function TDockZone.GetLeft: Integer;
 begin
   if not Visible then
+    Exit(0);
+
+  if FTree.RootZone = Self then
     Result := 0
   else
   if (FChildControl <> nil) then
-  begin
-    if FTree.RootZone = Self then
-      Result := 0
-    else
-      Result := FChildControl.Left
-  end
+    Result := FChildControl.Left
   else
   begin
     if FParentZone.Orientation = doVertical then
@@ -153,13 +149,11 @@ begin
   if not Visible then
     Exit(0);
 
+  if FTree.RootZone = Self then
+    Result := 0
+  else
   if (FChildControl <> nil) then
-  begin
-    if FTree.RootZone = Self then
-      Result := 0
-    else
-      Result := FChildControl.Top
-  end
+    Result := FChildControl.Top
   else
   begin
     if FParentZone.Orientation = doHorizontal then
@@ -195,13 +189,11 @@ begin
   if not Visible then
     Exit(0);
 
+  if FTree.RootZone = Self then
+    Result := FTree.FDockSite.ClientWidth
+  else
   if (FChildControl <> nil) then
-  begin
-    if FTree.RootZone = Self then
-      Result := FChildControl.ClientWidth
-    else
-      Result := FChildControl.Width
-  end
+    Result := FChildControl.Width
   else
   begin
     if FParentZone.Orientation = doVertical then
