@@ -305,7 +305,7 @@ type
     procedure SetSelectedColors(AValue: TDevContextSelectedColorsType);
 
     function GetGC: pgdkGC;
-  private
+
     // winapi
     function  GetROP2: Integer;
     procedure SetROP2(AROP: Integer);
@@ -316,40 +316,49 @@ type
     procedure CreateBrush; virtual;
     procedure CreatePen; virtual;
     procedure CreateBitmap; virtual;
-  protected
+
     // winapi
     function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
     function SelectPen(AGdiObject: PGdiObject): PGdiObject; virtual;
   public
+    {$ifdef TraceGdiCalls}
+    StackAddrs: TCallBacksArray;
+    {$endif}
+    PenPos: TPoint;
+    CurrentTextColor: TGDIColor;
+    CurrentBackColor: TGDIColor;
+    DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
+    PaintRectangle: TRect;// set during paint, BeginPaint/EndPaint
+    SavedContext: TGtkDeviceContext; // linked list of saved DCs
+
     constructor Create; virtual;
     procedure CreateGDIObject(AGDIType: TGDIType);
     procedure SelectBrushProps; virtual;
     procedure SelectTextProps; virtual;
     procedure SelectPenProps; virtual;
     procedure SelectRegion;
-    function GetFunction: TGdkFunction; virtual; abstract;
-  public
     // device handles
-
     procedure SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
                         AWithChildWindows: Boolean; ADoubleBuffer: PGdkDrawable = nil);
-    property Drawable: PGDKDrawable read FDrawable;
-    property Widget: PGtkWidget read FWidget; // the owner
-
-    property GC: pgdkGC read GetGC write FGC;
     function HasGC: Boolean;
     procedure ResetGCClipping;
+    procedure Clear;
+    function GetFont: PGdiObject;
+    function GetBrush: PGdiObject;
+    function GetPen: PGdiObject;
+    function GetBitmap: PGdiObject;
+    function GetFunction: TGdkFunction; virtual; abstract;
+    function IsNullBrush: boolean;
+    function IsNullPen: boolean;
+    function SelectObject(AGdiObject: PGdiObject): PGdiObject;
+    procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
+    // help functions
+    function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
+    function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
 
     // origins
     property Origin: TPoint read FOrigin write FOrigin;
-    PenPos: TPoint;
-    
     property Offset: TPoint read GetOffset;
-    
-    {$ifdef TraceGdiCalls}
-    StackAddrs: TCallBacksArray;
-    {$endif}
-    
     // drawing settings
     property CurrentBitmap: PGdiObject read FCurrentBitmap write SetCurrentBitmap;
     property CurrentFont: PGdiObject read FCurrentFont write SetCurrentFont;
@@ -359,35 +368,15 @@ type
     property ClipRegion: PGdiObject read FClipRegion write SetClipRegion;
     property GCValues: TGdkGCValues read FGCValues;
     property GDIObjects[ID: TGDIType]: PGdiObject read GetGDIObjects write SetGDIObjects;
-    CurrentTextColor: TGDIColor;
-    CurrentBackColor: TGDIColor;
-    DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
-    PaintRectangle: TRect;// set during paint, BeginPaint/EndPaint
-
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
-    SavedContext: TGtkDeviceContext; // linked list of saved DCs
     property Flags: TDeviceContextsFlags read FFlags write FFlags;
-    procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
     property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
-
-    procedure Clear;
-    function GetFont: PGdiObject;
-    function GetBrush: PGdiObject;
-    function GetPen: PGdiObject;
-    function GetBitmap: PGdiObject;
-    
-    function IsNullBrush: boolean;
-    function IsNullPen: boolean;
-
-    function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
-    function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
-  public
+    property Drawable: PGDKDrawable read FDrawable;
+    property Widget: PGtkWidget read FWidget; // the owner
+    property GC: pgdkGC read GetGC write FGC;
     // winapi
-    function SelectObject(AGdiObject: PGdiObject): PGdiObject;
-    
     property ROP2: Integer read GetRop2 write SetRop2;
-    
   end;
 
   // memory system for TDeviceContext(s) ---------------------------------------------
