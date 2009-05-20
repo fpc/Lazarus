@@ -507,7 +507,7 @@ begin
   case APart of
     ldhpAll, ldhpCaption:
       // mouse down on not buttons => start drag
-      AControl.BeginDrag(True);
+      AControl.BeginDrag(False);
   end;
 end;
 
