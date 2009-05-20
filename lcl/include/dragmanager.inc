@@ -408,7 +408,11 @@ begin
     Exit;
 
   //Inform user of entering and leaving
-  ATarget := FindDockSiteAtPosition;
+  if (GetKeyState(VK_CONTROL) and $8000) <> 0 then
+    ATarget := nil
+  else
+    ATarget := FindDockSiteAtPosition;
+
   if ATarget <> FDockObject.DragTarget then
   begin
     SendCmDragMsg(FDockObject, dmDragLeave);
@@ -629,19 +633,20 @@ end;
 
 procedure TDragManagerDefault.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-  begin
-    DragStop(False);
-    Key := 0;
-  end;
+  if Key = VK_CONTROL then
+    DragMove(Mouse.CursorPos);
 end;
 
 procedure TDragManagerDefault.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-  begin
-    DragStop(False);
-    Key := 0;
+  case Key of
+    VK_CONTROL:
+      DragMove(Mouse.CursorPos);
+    VK_ESCAPE:
+    begin
+      DragStop(False);
+      Key := 0;
+    end;
   end;
 end;
 
@@ -683,7 +688,7 @@ end;
 
 procedure TDragManagerDefault.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DragStop(true);
+  DragStop(not FWaitForTreshold);
 end;
 
 procedure TDragManagerDefault.CaptureChanged(OldCaptureControl: TControl);
