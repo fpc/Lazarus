@@ -1620,6 +1620,7 @@ var
   ARect: TRect;
   Part: TLazDockHeaderPart;
   Control: TControl;
+  AZone: TLazDockZone;
 begin
   case Message.msg of
     LM_LBUTTONUP:
@@ -1647,6 +1648,15 @@ begin
         begin
           ARect := TDockHeader.GetRectOfPart(ARect, Sender.DockOrientation, ldhpCaption);
           InvalidateRect(DockSite.Handle, @ARect, False);
+        end;
+      end;
+    CM_VISIBLECHANGED:
+      begin
+        if not (csDestroying in Sender.ComponentState) then
+        begin
+          AZone := RootZone.FindZone(Sender) as TLazDockZone;
+          if AZone <> nil then
+            BuildDockLayout(TLazDockZone(AZone.Parent));
         end;
       end;
   end
