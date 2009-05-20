@@ -431,6 +431,13 @@ class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImag
     ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
   end;
 
+  procedure DrawTitle(ARect: TRect); inline;
+  begin
+    ACanvas.Pen.Color := clBtnShadow;
+    ACanvas.Brush.Color := clBtnFace;
+    ACanvas.Rectangle(ARect);
+  end;
+
 var
   BtnRect: TRect;
   DrawRect: TRect;
@@ -442,8 +449,7 @@ var
 begin
   DrawRect := ARect;
   InflateRect(DrawRect, -1, -1);
-  ACanvas.Brush.Color := clBtnShadow;
-  ACanvas.FrameRect(DrawRect);
+  DrawTitle(DrawRect);
   InflateRect(DrawRect, -1, -1);
 
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
@@ -1556,10 +1562,10 @@ procedure TLazDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
   var
     NewMouseState: TDockHeaderMouseState;
   begin
-    if AControl <> nil then
-      ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart)
+    if AControl = nil then
+      FillChar(ARect, SizeOf(ARect), 0)
     else
-      FillChar(ARect, SizeOf(ARect), 0);
+      ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart);
     // we cannot directly redraw this part since we should paint only in paint events
     FillChar(NewMouseState, SizeOf(NewMouseState), 0);
     NewMouseState.Rect := ARect;
