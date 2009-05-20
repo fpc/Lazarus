@@ -1755,15 +1755,15 @@ var
   CurControl: TWinControl;
 begin
   Result := False;
-  if (Control<>nil)
-  and (csDestroying in Control.ComponentState) then exit;
+  if (Control <> nil) and (csDestroying in Control.ComponentState) then Exit;
 
-  if (Parent<>nil) then begin
+  if (Parent <> nil) then
+  begin
     // delegate to topmost form
-    ParentForm:=GetParentForm(Self);
-    if ParentForm<>nil then
+    ParentForm := GetParentForm(Self);
+    if ParentForm <> nil then
       ParentForm.SetFocusedControl(Control);
-    exit;
+    Exit;
   end;
 
   // update FActiveControl
@@ -1797,14 +1797,16 @@ begin
 
   Result := True;
 
-  if (Control<>nil) and (not (csFocusing in Control.ControlState)) then begin
+  if (Control <> nil) and (not (csFocusing in Control.ControlState)) then
+  begin
     // prevent looping
     // update ActiveControls of all parent forms
-    CurControl:=Control.Parent;
-    while CurControl<>nil do begin
+    CurControl := Control.Parent;
+    while CurControl <> nil do
+    begin
       if CurControl is TCustomForm then
-        TCustomForm(CurControl).FActiveControl:=Control;
-      CurControl:=CurControl.Parent;
+        TCustomForm(CurControl).FActiveControl := Control;
+      CurControl := CurControl.Parent;
     end;
   end;
 end;
