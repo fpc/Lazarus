@@ -52,7 +52,7 @@ done? (unclear whether this is really fixed in the trunk)
 {.$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
-{$DEFINE bookform} //using notebook within form?
+{.$DEFINE bookform} //using notebook within form?
 
 interface
 
@@ -192,7 +192,7 @@ type
     FSizeZone: TEasyZone; //zone to be resized, also PrevSibling
     procedure SplitterMoved(Sender: TObject); //hide and reposition zone
   public
-    procedure MouseMessage(var Message: TLMessage); override;
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
   public
     constructor Create(ADockSite: TWinControl);
     destructor Destroy; override;
@@ -200,9 +200,6 @@ type
     procedure PaintSite(DC: HDC); override;
   end;
 
-{$IFDEF bookform}
-  //use a notebook in it's own form
-{$ELSE}
 (* Notebook for alCustom docking.
   Added behaviour: free self on undock of the last client/page.
   The behaviour of TPageControl sucks :-(
@@ -215,7 +212,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   end;
-{$ENDIF}
 
 const
   AlignNames: array[TAlign] of string = (
@@ -244,6 +240,19 @@ const
 {$ELSE}
   HeaderButtons = [zpCloseButton];
 {$ENDIF}
+
+type
+{$IFDEF bookform}
+  //use a notebook in it's own form
+  TEasyPages = TDockBook;
+{$ELSE}
+  TEasyPages = TEasyBook;
+{$ENDIF}
+
+{ to come...
+function  NoteBookCreate(AOwner: TWinControl): TEasyPages;
+procedure NoteBookAdd(ABook: TEasyPages; AItem: TControl);
+}
 
 //from CustomFormEditor.pp
 function {TCustomFormEditor.}CreateUniqueComponentName(const AClassName: string;
@@ -740,7 +749,8 @@ begin
   //todo
 end;
 
-procedure TEasyTree.MouseMessage(var Message: TLMessage);
+procedure TEasyTree.MessageHandler(Sender: TControl; var Message: TLMessage);
+//was: procedure TEasyTree.MouseMessage(var Message: TLMessage);
 var
   r: TRect;
   Part: TEasyZonePart;
@@ -818,13 +828,20 @@ begin
             ShowSplitter(zone);
           end;
         else
-          //DockSite.Cursor := crDefault;
           FSplitter.Hide;
         end;
       end;
 {
-    CM_MOUSELEAVE: //reset states?
+    CM_MOUSELEAVE:
       CheckNeedRedraw(nil, Rect(0,0,0,0), ldhpAll);
+    CM_TEXTCHANGED:
+      begin
+        if GetControlHeaderRect(Sender, ARect) then
+        begin
+          ARect := TDockHeader.GetRectOfPart(ARect, Sender.DockOrientation, ldhpCaption);
+          InvalidateRect(DockSite.Handle, @ARect, False);
+        end;
+      end;
 }
   end;
 end;
@@ -1413,9 +1430,10 @@ end;
 constructor TEasyBook.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-//this does not help :-(
+{ this does not help :-(
   DragKind := dkDock;
   DragMode := dmAutomatic;
+}
 end;
 
 procedure TEasyBook.DoDock(NewDockSite: TWinControl; var ARect: TRect);
@@ -1435,8 +1453,11 @@ begin
 *)
   inherited;
   //DebugLn('TEasyBook.DoRemoveDockClient: remaining ' + IntToStr(PageCount));
-  if PageCount = 0 then
+  if PageCount = 0 then begin
+  { TODO -cdocking : When standalone and docked, undock from HostDockSite.
+    When wrapped into a dockable form, undock the form? }
     Application.ReleaseComponent(self);
+  end;
 end;
 
 function TEasyBook.GetDefaultDockCaption: string;
@@ -1450,7 +1471,7 @@ begin
     if Result = '' then
       Result := pg.Caption
     else
-      Result := Result + ' ' + pg.Caption;
+      Result := Result + ', ' + pg.Caption;
   end;
 end;
 {$ENDIF}
