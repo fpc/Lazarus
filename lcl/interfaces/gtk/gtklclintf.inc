@@ -32,22 +32,35 @@
 
 procedure TGTKWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
   AOperation: TDockImageOperation);
-{$ifdef GTK_2_10}
+const
+  LineWidth = 3;
 var
+  Mask: PGdkBitmap;
+  gc: PGdkGC;
+  dx, dy: integer;
+  AColor: TGdkColor;
+{$ifdef GTK_2_10}
   Colormap: PGdkColormap;
   Screen: PGdkScreen;
 {$endif}
 begin
+  dx := ANewRect.Right - ANewRect.Left;
+  dy := ANewRect.Bottom - ANewRect.Top;
+  if dx < 0 then
+    dx := 0;
+  if dy < 0 then
+    dy := 0;
   if FDockImage = nil then
   begin
-    // dock image is just a blue window without title
+    // dock image is just a window without title
     FDockImage := gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(PGtkWindow(FDockImage),
-      ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top);
+      dx, dy);
     gtk_widget_realize(FDockImage);
     gdk_window_set_decorations(FDockImage^.window, 0);
     gdk_window_set_functions(FDockImage^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
-    SetWidgetColor(FDockImage, clNone, clBlue, [GTK_STATE_NORMAL]);
+    SetWidgetColor(FDockImage, clNone,
+      {$ifdef gtk1}clBlue{$else}clGradientActiveCaption{$endif}, [GTK_STATE_NORMAL]);
     {$ifdef GTK_2_10}
     // attemp to make window semi-transparent
     Screen := gtk_widget_get_screen(FDockImage);
@@ -58,7 +71,23 @@ begin
   end;
 
   gdk_window_move_resize(FDockImage^.window, ANewRect.Left, ANewRect.Top,
-    ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top);
+    dx, dy);
+  if (dx > 0) and (dy > 0) then
+  begin
+    // create a hole inside window
+    Mask := gdk_pixmap_new(nil, dx, dy, 1);
+    gc := gdk_gc_new(Mask);
+    AColor.pixel := 1;
+    gdk_gc_set_foreground(gc, @AColor);
+    gdk_draw_rectangle(Mask, gc, 1, 0, 0, dx, dy);
+    AColor.pixel := 0;
+    gdk_gc_set_foreground(gc, @AColor);
+    gdk_draw_rectangle(Mask, gc, 1, LineWidth, LineWidth,
+      dx - LineWidth * 2, dy - LineWidth * 2);
+    gdk_gc_unref(gc);
+    gtk_widget_shape_combine_mask(FDockImage, Mask, 0, 0);
+    gdk_pixmap_unref(Mask);
+  end;
   case AOperation of
     disShow: gtk_widget_show(FDockImage);
     disHide: gtk_widget_hide(FDockImage);
