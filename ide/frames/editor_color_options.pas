@@ -75,6 +75,8 @@ type
     ElementAttributesGroupBox: TGroupBox;
     procedure ColorElementListBoxClick(Sender: TObject);
     procedure ColorElementListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ForegroundColorBoxChange(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
@@ -163,6 +165,41 @@ procedure TEditorColorOptionsFrame.ColorElementListBoxSelectionChange(
   Sender: TObject; User: boolean);
 begin
   FindCurHighlightElement;
+end;
+
+procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  NewIndex: Integer;
+  Token: String;
+  Attri: TSynHighlightElement;
+  MouseXY, XY: TPoint;
+  AddAttr: TAdditionalHilightAttribute;
+begin
+  MouseXY := Point(X, Y);
+  XY := ColorPreview.PixelsToRowColumn(MouseXY);
+  NewIndex := -1;
+  if CurLanguageID >= 0 then
+  begin
+    AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
+    if AddAttr <> ahaNone then
+      NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[AddAttr]);
+  end;
+  if NewIndex < 0 then
+  begin
+    Token := '';
+    Attri := nil;
+    ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
+    if Attri = nil then
+      Attri := PreviewSyn.WhitespaceAttribute;
+    if Attri <> nil then
+      NewIndex := ColorElementListBox.Items.IndexOf(Attri.Name);
+  end;
+  if NewIndex >= 0 then
+  begin
+    ColorElementListBox.ItemIndex := NewIndex;
+    FindCurHighlightElement;
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
