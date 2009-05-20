@@ -4780,7 +4780,7 @@ begin
          else
          begin
            if FDockSite and FUseDockManager and Assigned(DockManager) then
-             DockManager.MouseMessage(Message);
+             DockManager.MessageHandler(Message);
          end;
          {$IFDEF VerboseMouseBugfix}
          DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
@@ -4799,7 +4799,7 @@ begin
     CM_MOUSELEAVE:
       begin
         if FDockSite and FUseDockManager and Assigned(DockManager) then
-          DockManager.MouseMessage(Message);
+          DockManager.MessageHandler(Message);
       end;
   end;
 
