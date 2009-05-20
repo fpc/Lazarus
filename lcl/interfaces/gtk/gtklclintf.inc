@@ -53,7 +53,7 @@ begin
   if FDockImage = nil then
   begin
     // dock image is just a window without title
-    FDockImage := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    FDockImage := gtk_window_new(GTK_WINDOW_POPUP);
     gtk_window_set_default_size(PGtkWindow(FDockImage),
       dx, dy);
     gtk_widget_realize(FDockImage);
