@@ -2614,8 +2614,10 @@ var
       {$IFDEF VerboseStretchCopyArea}
       DebugLn('SrcDevBitmapToDrawable Simple copy');
       {$ENDIF}
+      gdk_gc_set_function(DstDevContext.GC, GDK_COPY);
       gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
         SrcDrawable, XSrc, YSrc, Width, Height);
+      gdk_gc_set_function(DstDevContext.GC, DstDevContext.GetFunction);
       Exit;
     end;
 
@@ -2803,7 +2805,7 @@ begin
   if (SrcWidth = 0) or (SrcHeight = 0) then exit;
 
   SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight) or FlipVert or FlipHorz;
-  ROpIsSpecial := (ROp <> SRCCOPY);
+  ROpIsSpecial := (Rop <> SRCCOPY);
 
   SrcDCOrigin := SrcDevContext.Offset;
   Inc(XSrc, SrcDCOrigin.X);

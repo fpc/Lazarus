@@ -316,8 +316,6 @@ type
     procedure CreateBrush; virtual;
     procedure CreatePen; virtual;
     procedure CreateBitmap; virtual;
-    
-    function GetFunction: TGdkFunction; virtual; abstract;
   protected
     // winapi
     function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
@@ -328,8 +326,8 @@ type
     procedure SelectBrushProps; virtual;
     procedure SelectTextProps; virtual;
     procedure SelectPenProps; virtual;
-    
     procedure SelectRegion;
+    function GetFunction: TGdkFunction; virtual; abstract;
   public
     // device handles
 

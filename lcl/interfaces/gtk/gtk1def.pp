@@ -42,10 +42,8 @@ type
   { TGtk1DeviceContext }
 
   TGtk1DeviceContext = class(TGtkDeviceContext)
-  private
-  protected
-    function GetFunction: TGdkFunction; override;
   public
+    function GetFunction: TGdkFunction; override;
   end;
 
 implementation

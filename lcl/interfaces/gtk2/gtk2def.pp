@@ -38,10 +38,9 @@ type
   { TGtk2DeviceContext }
 
   TGtk2DeviceContext = class(TGtkDeviceContext)
-  protected
-    function GetFunction: TGdkFunction; override;
   public
     procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
+    function GetFunction: TGdkFunction; override;
   end;
   
   procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
