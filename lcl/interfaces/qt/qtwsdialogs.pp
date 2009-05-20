@@ -174,7 +174,7 @@ class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog;
   end;
   
 var
-  TmpFilter, strExtensions: string;
+  TmpFilter, strExtensions, DialogFilter: string;
   ParserState, Position, i: Integer;
   List: TStrings;
 begin
@@ -209,6 +209,7 @@ begin
   ParserState := 0;
   Position := 1;
   TmpFilter := AFileDialog.Filter;
+  DialogFilter := AFileDialog.Filter;
   ASelectedFilter := '';
   {$ifdef USE_QT_45}
   {we must remove all brackets since qt-45 doesn't like brackets
@@ -216,26 +217,26 @@ begin
    becomes invalid after filters processing.}
   TmpFilter := StringReplace(TmpFilter,'(','',[rfReplaceAll]);
   TmpFilter := StringReplace(TmpFilter,')','',[rfReplaceAll]);
-  AFileDialog.Filter := TmpFilter;
+  DialogFilter := TmpFilter;
   {$endif}
   TmpFilter := '';
 
   List := TStringList.Create;
   try
-    for i := 1 to Length(AFileDialog.Filter) do
+    for i := 1 to Length(DialogFilter) do
     begin
-      if Copy(AFileDialog.Filter, i, 1) = '|' then
+      if Copy(DialogFilter, i, 1) = '|' then
       begin
         ParserState := ParserState + 1;
 
         if ParserState = 1 then
         begin
-          List.Add(Copy(AFileDialog.Filter, Position, i - Position));
-          TmpFilter := TmpFilter + Copy(AFileDialog.Filter, Position, i - Position);
+          List.Add(Copy(DialogFilter, Position, i - Position));
+          TmpFilter := TmpFilter + Copy(DialogFilter, Position, i - Position);
         end else
         if ParserState = 2 then
         begin
-          strExtensions := GetExtensionString(AFileDialog.Filter, Position, i - Position);
+          strExtensions := GetExtensionString(DialogFilter, Position, i - Position);
 
           if Pos(strExtensions, TmpFilter) = 0 then
           begin
@@ -249,12 +250,12 @@ begin
           ParserState := 0;
         end;
 
-        if i <> Length(AFileDialog.Filter) then
+        if i <> Length(DialogFilter) then
           Position := i + 1;
       end;
     end;
 
-    strExtensions := GetExtensionString(AFileDialog.Filter, Position, i + 1 - Position);
+    strExtensions := GetExtensionString(DialogFilter, Position, i + 1 - Position);
 
     if Pos(strExtensions, TmpFilter) = 0 then
     begin
