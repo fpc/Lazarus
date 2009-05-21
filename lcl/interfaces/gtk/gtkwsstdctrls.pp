@@ -1942,7 +1942,7 @@ begin
   {$else}
   EventBox := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
-  TempWidget := CreateFixedClientWidget(false);
+  TempWidget := CreateFixedClientWidget(False);
   gtk_container_add(GTK_CONTAINER(EventBox), TempWidget);
   gtk_container_add(GTK_CONTAINER(p), EventBox);
   gtk_widget_show(EventBox);

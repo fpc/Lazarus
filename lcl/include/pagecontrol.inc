@@ -95,6 +95,16 @@ begin
   end;
 end;
 
+procedure TPageControl.DockOver(Source: TDragDockObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  P: TPoint;
+begin
+  P := Parent.ClientToScreen(Point(Left, Top));
+  Source.DockRect := Rect(P.X, P.Y, P.X + Width, P.Y + Height);
+  DoDockOver(Source, X, Y, State, Accept);
+end;
+
 procedure TPageControl.DoRemoveDockClient(Client: TControl);
 begin
   // we cannot search for client page here since Client.Parent
@@ -106,14 +116,6 @@ function TPageControl.DoUndockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   FPageToUndock := FindPageWithDockClient(Client);
   Result := inherited DoUndockClientMsg(NewTarget, Client);
-end;
-
-procedure TPageControl.PositionDockRect(DragDockObject: TDragDockObject);
-var
-  P: TPoint;
-begin
-  P := Parent.ClientToScreen(Point(Left, Top));
-  DragDockObject.DockRect := Rect(P.X, P.Y, P.X + Width, P.Y + Height);
 end;
 
 constructor TPageControl.Create(TheOwner: TComponent);

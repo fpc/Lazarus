@@ -279,9 +279,10 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    procedure DockOver(Source: TDragDockObject; X, Y: Integer;
+                       State: TDragState; var Accept: Boolean); override;
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
-    procedure PositionDockRect(DragDockObject: TDragDockObject); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
