@@ -335,11 +335,11 @@ constructor TChart.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FAllowZoom := True;
+  FAllowZoom := true;
   FAxisVisible := true; 
 
-  Width := 400;
-  Height := 300;
+  Width := 300;
+  Height := 200;
 
   FReticulePos := Point(-1, -1);
   FReticuleMode := rmNone;
@@ -365,17 +365,12 @@ begin
 
   FLeftAxis := TChartAxis.Create(Self);
   FLeftAxis.Title.Angle := 90;
-  FLeftAxis.Inverted := false;
-  FLeftAxis.Grid.Visible := True;
   FLeftAxis.Grid.Style := psDot;
   FBottomAxis := TChartAxis.Create(Self);
   FBottomAxis.Title.Angle := 0;
-  FBottomAxis.Inverted := false;
-  FBottomAxis.Grid.Visible := True;
   FBottomAxis.Grid.Style := psDot;
 
   FFrame :=  TChartPen.Create;
-  FFrame.Visible := true;
   FFrame.OnChange := @StyleChanged;
 
   FExtent := TChartExtent.Create(Self);

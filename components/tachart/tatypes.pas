@@ -34,14 +34,17 @@ uses
 type
   TCustomChart = class(TCustomControl);
 
+  { TChartPen }
+
   TChartPen = class(TPen)
   private
     FVisible: Boolean;
     procedure SetVisible(AValue: Boolean);
   public
+    constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
-    property Visible: Boolean read FVisible write SetVisible default false;
+    property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
   TLegendAlignment = (laLeft, laRight, laTop, laBottom);
@@ -286,6 +289,12 @@ begin
     with TChartPen(Source) do
       FVisible := Visible;
   inherited Assign( Source );
+end;
+
+constructor TChartPen.Create;
+begin
+  inherited Create;
+  FVisible := true;
 end;
 
 procedure TChartPen.SetVisible(AValue: Boolean);
