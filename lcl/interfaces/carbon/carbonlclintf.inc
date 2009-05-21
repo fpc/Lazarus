@@ -564,7 +564,6 @@ begin
   ARawImage.Data := GetImagePixelData(ScreenImage, ARawImage.DataSize);
 
   { clean-up }
-  CGDataProviderRelease(dataProvider);
   CGImageRelease(ScreenImage);
 
   Result := True;
