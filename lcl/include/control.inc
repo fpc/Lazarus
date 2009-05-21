@@ -1633,10 +1633,20 @@ end;
        TControl DoMouseUp  "Event Handler"
 ------------------------------------------------------------------------------}
 procedure TControl.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+var
+  P: TPoint;
 begin
-  if not (csNoStdEvents in ControlStyle)
-  then with Message do
-    MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+  if not (csNoStdEvents in ControlStyle) then
+    with Message do
+    begin
+      if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
+      begin
+        P := ClientToScreen(Point(XPos, YPos));
+        DragManager.MouseUp(Button, KeysToShiftState(Keys), P.X, P.Y);
+        Message.Result := 1;
+      end;
+      MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3272,14 +3282,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
-var
-  P: TPoint;
 begin
-  if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
-  begin
-    P := ClientToScreen(Point(X, Y));
-    DragManager.MouseUp(Button, Shift, P.X, P.Y);
-  end;
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
 
