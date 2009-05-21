@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
+  FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit, EnvironmentOpts,
   ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, ButtonPanel;
 
@@ -149,20 +149,28 @@ begin
   DataBasesPropsGroupBox.Caption:=lisHlpOptsProperties;
   DatabasesLabel.Caption:=lisHlpOptsDatabases;
 
-  ViewersPropertiesGrid:=TCustomPropertiesGrid.Create(Self);
-  with ViewersPropertiesGrid do begin
-    Name:='ViewersPropertiesGrid';
-    Parent:=ViewerPropsGroupBox;
-    Align:=alClient;
+  ViewersPropertiesGrid := TCustomPropertiesGrid.Create(Self);
+  with ViewersPropertiesGrid do
+  begin
+    Name := 'ViewersPropertiesGrid';
+    Parent := ViewerPropsGroupBox;
+    Align := alClient;
     BorderSpacing.Around := 6;
   end;
-  
-  DatabasesPropertiesGrid:=TCustomPropertiesGrid.Create(Self);
-  with DatabasesPropertiesGrid do begin
-    Name:='DatabasesPropertiesGrid';
-    Parent:=DataBasesPropsGroupBox;
-    Align:=alClient;
+
+  DatabasesPropertiesGrid := TCustomPropertiesGrid.Create(Self);
+  with DatabasesPropertiesGrid do
+  begin
+    Name := 'DatabasesPropertiesGrid';
+    Parent := DataBasesPropsGroupBox;
+    Align := alClient;
     BorderSpacing.Around := 6;
+  end;
+
+  with EnvironmentOptions.ObjectInspectorOptions do
+  begin
+    AssignTo(ViewersPropertiesGrid);
+    AssignTo(DatabasesPropertiesGrid);
   end;
 
   FillGeneralPage;

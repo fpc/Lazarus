@@ -20,17 +20,17 @@ object HelpOptionsDialog: THelpOptionsDialog
     Width = 500
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
       ClientWidth = 492
-      ClientHeight = 283
+      ClientHeight = 299
       object FPCDocHTMLLabel: TLabel
         AnchorSideLeft.Control = GeneralPage
         AnchorSideTop.Control = GeneralPage
         Left = 6
-        Height = 18
+        Height = 14
         Top = 6
         Width = 480
         Align = alTop
@@ -45,10 +45,12 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideRight.Control = FPCDocHTMLBrowseButton
         Left = 6
         Height = 23
-        Top = 30
-        Width = 451
+        Top = 26
+        Width = 457
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Around = 6
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
         TabOrder = 0
         Text = 'FPCDocHTMLEdit'
       end
@@ -59,10 +61,12 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideRight.Side = asrBottom
         Left = 463
         Height = 23
-        Top = 30
+        Top = 26
         Width = 23
         Anchors = [akTop, akRight]
-        BorderSpacing.Around = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
         Caption = '...'
         OnClick = FPCDocHTMLBrowseButtonClick
         TabOrder = 1
@@ -115,13 +119,13 @@ object HelpOptionsDialog: THelpOptionsDialog
     object DataBasePage: TPage
       Caption = 'DataBasePage'
       ClientWidth = 492
-      ClientHeight = 283
+      ClientHeight = 299
       object DatabasesLabel: TLabel
         AnchorSideTop.Control = DataBasesPropsGroupBox
         Left = 6
-        Height = 18
+        Height = 14
         Top = 6
-        Width = 104
+        Width = 77
         Caption = 'DatabasesLabel'
         ParentColor = False
       end
@@ -132,8 +136,8 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideBottom.Control = DataBasePage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 247
-        Top = 30
+        Height = 267
+        Top = 26
         Width = 152
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -146,7 +150,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideLeft.Control = DatabasesListBox
         AnchorSideLeft.Side = asrBottom
         Left = 164
-        Height = 271
+        Height = 287
         Top = 6
         Width = 322
         Align = alRight
