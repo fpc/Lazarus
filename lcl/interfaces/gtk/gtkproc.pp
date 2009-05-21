@@ -53,11 +53,10 @@ uses
     glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Math, // Math after gtk to get the correct Float type
-  LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
-  GraphType, GraphMath, Graphics, LResources, Controls, Forms,
-  Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra, GtkDebug;
-
+  LMessages, LCLMessageGlue, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  DynHashArray, Masks, GraphType, GraphMath, Graphics, Controls,
+  Forms, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
+  FileUtil, ImgList, GtkFontCache, GTKGlobals, GtkDef, GtkExtra, GtkDebug;
 
 const
   GtkListItemGtkListTag = 'GtkList';

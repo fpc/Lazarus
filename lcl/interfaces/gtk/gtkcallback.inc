@@ -1678,39 +1678,31 @@ var
   begin
     MessI.Msg := MsgUp;
     LastMouse.Down := False;
-    Result:=true;
+    Result := True;
  end;
 
 begin
-  Result:=false;
-  if (Widget=nil) then ;
-  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
-                               Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
+  Result := False;
+  MappedXY := TranslateGdkPointToClientArea(Event^.Window,
+                               Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of
-
-  1: if not CheckMouseButtonUp(LastLeft, LM_LBUTTONUP)
-     then exit;
-
-  2: if not CheckMouseButtonUp(LastMiddle, LM_MBUTTONUP)
-     then exit;
-
-  3: if not CheckMouseButtonUp(LastRight, LM_RBUTTONUP)
-     then exit;
-
+    1: if not CheckMouseButtonUp(LastLeft, LM_LBUTTONUP) then Exit;
+    2: if not CheckMouseButtonUp(LastMiddle, LM_MBUTTONUP) then Exit;
+    3: if not CheckMouseButtonUp(LastRight, LM_RBUTTONUP) then exit;
   else
     begin
       MessI.Msg := LM_NULL;
-      exit;
+      Exit;
     end;
   end; // case
 
   MessI.XPos := MappedXY.X;
   MessI.YPos := MappedXY.Y;
 
-  ShiftState := gtkeventstateToshiftstate(Event^.State);
+  ShiftState := GTKEventStateToShiftState(Event^.State);
   MessI.Keys := 0;
   if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
   if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
@@ -1718,18 +1710,20 @@ begin
   if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
 
-  if MessI.Msg <> LM_NULL then begin
+  if MessI.Msg <> LM_NULL then
+  begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
     MessI.Result := 0;
     NotifyApplicationUserInput(MessI.Msg);
     DeliverMessage(AWinControl, MessI);
-    if MessI.Result<>0 then begin
+    if MessI.Result <> 0 then
+    begin
       // handled by the LCL
       //DebugLn(['DeliverMouseUpMessage msg was handled by the LCL, Stopping signal ...']);
-      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
-      Result:=true;
+      g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
+      Result := True;
     end;
   end;
 end;
@@ -1747,7 +1741,7 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
-  MousePositionValid:=false;
+  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1765,25 +1759,24 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-
+  if not (csDesigning in TComponent(Data).ComponentState) then
+  begin
+    DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMouseRelease);
     ReleaseMouseCapture;
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
-    begin
-      exit;
-    end;
-  end else begin
+      Exit;
+  end else
+  begin
     // stop the signal, so that the widget does not auto react
-    if (not (TControl(Data) is TCustomNoteBook))
-    and (not (TControl(Data) is TCustomTabControl))
+    if (not (TControl(Data) is TCustomNoteBook)) and
+       (not (TControl(Data) is TCustomTabControl))
     then begin
-      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
+      g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
       Result := not CallBackDefaultReturn;
     end;
   end;
 
-  if DeliverMouseUpMessage(Widget,Event,TWinControl(Data)) then
+  if DeliverMouseUpMessage(Widget, Event, TWinControl(Data)) then
     Result := not CallBackDefaultReturn;
 end;
 

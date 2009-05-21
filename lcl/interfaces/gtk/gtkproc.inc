@@ -3566,30 +3566,13 @@ end;
  ------------------------------------------------------------------------------}
 function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
 begin
-  if Target=nil then DebugLn('[DeliverMessage] Target = nil');
-  {$IFDEF VerboseDeliverMessage}
-  if  (TLMessage(AMessage).Msg <>LM_MOUSEMOVE)
-    and (TLMessage(AMessage).Msg <>LM_PAINT)
-    and (TLMessage(AMessage).Msg <>LM_KEYDOWN)
-    and (TLMessage(AMessage).Msg <>LM_KEYUP)
-    and (TLMessage(AMessage).Msg <CN_KEYDOWN ) then
-    DebugLn('DeliverMessage ',DbgS(Target),
-    ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
-    ' Message=',GetMessageName(TLMessage(AMessage).Msg));
-  {$ENDIF}
-  if (TLMessage(AMessage).Msg=LM_PAINT)
-  or (TLMessage(AMessage).Msg=LM_GTKPAINT) then
-    CurrentSentPaintMessageTarget:=TObject(Target);
-  try
-    if TObject(Target) is TControl
-    then TControl(Target).WindowProc(TLMessage(AMessage))
-    else TObject(Target).Dispatch(TLMessage(AMessage));
-  except
-    Application.HandleException(nil);
-  end;
+  if (TLMessage(AMessage).Msg = LM_PAINT) or
+     (TLMessage(AMessage).Msg = LM_GTKPAINT) then
+    CurrentSentPaintMessageTarget := TObject(Target);
 
-  Result := TLMessage(AMessage).Result;
-  CurrentSentPaintMessageTarget:=nil;
+  Result := LCLMessageGlue.DeliverMessage(TObject(Target), AMessage);
+
+  CurrentSentPaintMessageTarget := nil;
 end;
 
 {------------------------------------------------------------------------------
