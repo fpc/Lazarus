@@ -265,9 +265,9 @@ const
   ecExtToolSettings         = ecFirstLazarus + 802;
   ecConfigBuildLazarus      = ecFirstLazarus + 803;
   ecEnvironmentOptions      = ecFirstLazarus + 804;
-  ecEditorOptions           = ecFirstLazarus + 805;
+  ecReserved1               = ecFirstLazarus + 805; // reserved
   ecEditCodeTemplates       = ecFirstLazarus + 806;
-  ecCodeToolsOptions        = ecFirstLazarus + 807;
+  ecReserved2               = ecFirstLazarus + 807; // reserved
   ecCodeToolsDefinesEd      = ecFirstLazarus + 808;
   ecRescanFPCSrcDir         = ecFirstLazarus + 809;
 

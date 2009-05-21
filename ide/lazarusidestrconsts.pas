@@ -2151,17 +2151,17 @@ resourcestring
   srkmecCustomTool                = 'Custom tool %d';
 
   // environment menu
-  srkmecEnvironmentOptions        = 'General environment options';
-  lisKMEditorOptions = 'Editor options';
-  lisKMEditCodeTemplates = 'Edit Code Templates';
-  lisKMCodeToolsOptions = 'CodeTools options';
-  lisKMCodeToolsDefinesEditor = 'CodeTools defines editor';
+  srkmecEnvironmentOptions        = 'IDE options';
+  lisKMEditorOptions              = 'Editor options';
+  lisKMEditCodeTemplates          = 'Edit Code Templates';
+  lisKMCodeToolsOptions           = 'CodeTools options';
+  lisKMCodeToolsDefinesEditor     = 'CodeTools defines editor';
   srkmecCodeToolsOptions          = 'Codetools options';
   srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC source directory';
   srkmecMakeResourceString        = 'Make resource string';
-  lisKMDiffEditorFiles = 'Diff editor files';
-  lisKMConvertDFMFileToLFM = 'Convert DFM file to LFM';
+  lisKMDiffEditorFiles            = 'Diff editor files';
+  lisKMConvertDFMFileToLFM        = 'Convert DFM file to LFM';
   lisKMConvertDelphiUnitToLazarusUnit = 'Convert Delphi unit to Lazarus unit';
   lisKMConvertDelphiProjectToLazarusProject = 'Convert Delphi project to '
     +'Lazarus project';
@@ -2175,7 +2175,7 @@ resourcestring
   srkmCatSelection      = 'Text selection commands';
   srkmCatColSelection   = 'Text column selection commands';
   srkmCatEditing        = 'Text editing commands';
-  lisKMDeleteLastChar = 'Delete last char';
+  lisKMDeleteLastChar   = 'Delete last char';
   srkmCatCmdCmd         = 'Command commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
   srkmCatMarker         = 'Text marker commands';

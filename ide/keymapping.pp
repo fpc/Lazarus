@@ -533,9 +533,7 @@ begin
 
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -878,9 +876,7 @@ begin
 
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -1411,9 +1407,7 @@ begin
 
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -1821,9 +1815,7 @@ begin
 
     // environment menu
     ecEnvironmentOptions      : Result:= srkmecEnvironmentOptions;
-    ecEditorOptions           : Result:= lisMenuEditorOptions;
     ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
-    ecCodeToolsOptions        : Result:= srkmecCodeToolsOptions;
     ecCodeToolsDefinesEd      : Result:= srkmecCodeToolsDefinesEd;
     ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
 
@@ -2392,10 +2384,8 @@ begin
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
   AddDefault(C, 'General environment options', srkmecEnvironmentOptions,
     ecEnvironmentOptions);
-  AddDefault(C, 'Editor options', lisKMEditorOptions, ecEditorOptions);
   AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates,
     ecEditCodeTemplates);
-  AddDefault(C, 'CodeTools options', lisKMCodeToolsOptions, ecCodeToolsOptions);
   AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor,
     ecCodeToolsDefinesEd);
   AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory,
