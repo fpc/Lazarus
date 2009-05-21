@@ -1296,68 +1296,29 @@ procedure TChart.UpdateExtent;
 
   procedure SetBounds(
     var ALo, AHi: Double; AMin, AMax: Double; AUseMin, AUseMax: Boolean);
-
-    procedure SetLo(AValue: Double);
-    begin
-      ALo := IfThen(AUseMin and (AValue < AMin), AMin, AValue);
-    end;
-
-    procedure SetHi(AValue: Double);
-    begin
-      AHi := IfThen(AUseMax and (AValue > AMax), AMax, AValue);
-    end;
-
   const
     PERCENT = 0.01;
+    DEFAULT_WIDTH = 2.0;
   var
     ext: Double;
   begin
-    if (ALo = Infinity) and (AHi = NegInfinity) then begin
-      // No boundaries, try to use extent
-      if not AUseMin and not AUseMax then begin
-        // Nothing we can do, give up
-        ALo := -1;
-        AHi := 1;
-      end
-      else if AUseMin then begin
-        ALo := AMin;
-        AHi := IfThen(AUseMax, AMax, ALo + 1);
-      end
-      else begin // Only AUseMax is true
-        AHi := AMax;
-        ALo := AHi - 1;
+    if AUseMin then ALo := AMin;
+    if AUseMax then AHi := AMax;
+    case Ord(ALo = Infinity) * 2 + Ord(AHi = NegInfinity) of
+      0: begin // Both high and low boundary defined
+        if ALo > AHi then Exchange(ALo, AHi);
+        // Expand view slightly to avoid puttind data points on the chart edge.
+        ext := ExpandPercentage * PERCENT * Max(AHi - ALo, 1);
+        SetLo(ALo - ext);
+        SetHi(AHi + ext);
       end;
-    end
-    else if ALo = Infinity then begin
-      SetHi(AHi);
-      if AUseMin then begin
-        ALo := AMin;
-        if ALo >= AHi then SetHi(ALo + 1);
-      end
-      else
-        ALo := AHi - 1;
-    end
-    else if AHi = NegInfinity then begin
-      SetLo(ALo);
-      if AUseMax then begin
-        AHi := AMax;
-        if ALo >= AHi then SetLo(AHi - 1);
-      end
-      else
-        AHi := ALo + 1;
-    end
-    else begin
-      // Both high and low boundary defined
-      SetLo(ALo);
-      if ALo >= AHi then SetHi(ALo + 1);
-      SetHi(AHi);
-      if ALo >= AHi then SetLo(AHi - 1);
-      // Expand view slightly to avoid puttind data points on the chart edge.
-      ext := ExpandPercentage * PERCENT * (AHi - ALo);
-      SetLo(ALo - ext);
-      SetHi(AHi + ext);
+      1: AHi := ALo + DEFAULT_WIDTH;
+      2: ALo := AHi - DEFAULT_WIDTH;
+      3: begin // No boundaries defined, take some arbitrary values
+        ALo := -DEFAULT_WIDTH / 2;
+        AHi := DEFAULT_WIDTH / 2;
+      end;
     end;
-
   end;
 
 var
