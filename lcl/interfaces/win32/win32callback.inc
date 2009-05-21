@@ -2013,7 +2013,7 @@ begin
           with NMHdr^ do
             case code of
               TCN_SELCHANGE:
-                idFrom := ShowHideTabPage(HWndFrom, true);
+                idFrom := ShowHideTabPage(HWndFrom, True);
               NM_CUSTOMDRAW:
               begin
                 if WindowInfo^.WinControl is TCustomListView then

@@ -262,6 +262,21 @@ end;
 
 { TGtkWSCustomNotebook }
 
+function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+var
+  I: Integer;
+begin
+  Result := AIndex;
+  if csDesigning in ANotebook.ComponentState then exit;
+  I := 0;
+  while (I < ANotebook.PageCount) and (I <= Result) do
+  begin
+    if not ANotebook.Page[I].TabVisible then Inc(Result);
+    Inc(I);
+  end;
+end;
+
+
 function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMNotify;
@@ -288,7 +303,7 @@ begin
     FillChar(NMHdr, SizeOf(NMHdr), 0);
     NMHdr.code := TCN_SELCHANGING;
     NMHdr.hwndFrom := PtrUInt(widget);
-    NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
+    NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
     Mess.NMHdr := @NMHdr;
     Mess.Result := 0;
     DeliverMessage(Data, Mess);
@@ -306,7 +321,7 @@ begin
   FillChar(NMHdr, SizeOf(NMHdr), 0);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
+  NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);
 end;
