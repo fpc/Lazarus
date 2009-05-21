@@ -4361,10 +4361,6 @@ begin
     {DebugLn(['Frame3D: Drawable = ', dbgs(Drawable),
       ' StyleWidget = ', dbgs(StyleWidget), ' Style = ', dbgs(TheStyle),
       ' Offset = ', dbgs(Offset), ' ARect = ', dbgs(ARect)]);}
-    Area.X := ARect.Left + Offset.X;
-    Area.Y := ARect.Top + Offset.Y;
-    Area.Width := ARect.Right - ARect.Left;
-    Area.Height := ARect.Bottom - ARect.Top;
     if FrameWidth = 1 then
       ShadowType := GTKThinShadowType[Style]
     else
@@ -4372,6 +4368,10 @@ begin
 
     for i := 1 to FrameWidth do
     begin
+      Area.X := ARect.Left + Offset.X;
+      Area.Y := ARect.Top + Offset.Y;
+      Area.Width := ARect.Right - ARect.Left;
+      Area.Height := ARect.Bottom - ARect.Top;
       gtk_paint_shadow(TheStyle,
                        Drawable, GTK_STATE_NORMAL,
                        ShadowType,
