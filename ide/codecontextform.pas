@@ -582,6 +582,7 @@ var
   HorizontalSpace: Integer;
   VerticalSpace: Integer;
   BackgroundColor, TextGrayColor, TextColor, PenColor: TColor;
+  TextGrayStyle, TextStyle: TFontStyles;
 
   procedure DrawHint(const Line: string; var AHintRect: TRect);
   var
@@ -623,6 +624,7 @@ var
             begin
               // switch to normal font
               Canvas.Font.Color:=TextGrayColor;
+              Canvas.Font.Style:=TextGrayStyle;
               //DebugLn('DrawHint gray');
               continue;
             end;
@@ -631,6 +633,7 @@ var
             begin
               // switch to normal font
               Canvas.Font.Color:=TextColor;
+              Canvas.Font.Style:=TextStyle;
               //DebugLn('DrawHint normal');
               continue;
             end;
@@ -697,8 +700,10 @@ begin
   if Draw then begin
     // make colors theme dependent
     BackgroundColor:=clInfoBk;
-    TextGrayColor:=clGrayText;
+    TextGrayColor:=clInfoText;
+    TextGrayStyle:=[];
     TextColor:=clInfoText;
+    TextStyle:=[fsBold];
     PenColor:=clBlack;
   end;
   HorizontalSpace:=2;
@@ -707,6 +712,7 @@ begin
   if Draw then begin
     Canvas.Brush.Color:=BackgroundColor;
     Canvas.Font.Color:=TextGrayColor;
+    Canvas.Font.Style:=TextGrayStyle;
     Canvas.Pen.Color:=PenColor;
   end;
   NewMaxWidth:=0;
