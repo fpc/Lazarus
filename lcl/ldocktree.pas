@@ -1367,6 +1367,7 @@ begin
   begin
     ParentZone := RemoveZone.Parent as TLazDockZone;
     RemoveZone.FreeSubComponents;
+    BreakAnchors(RemoveZone);
     if ParentZone <> nil then
       ParentZone.Remove(RemoveZone);
     RemoveZone.Free;
