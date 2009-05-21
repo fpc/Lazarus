@@ -305,8 +305,8 @@ end;
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 begin
   if AValue < AMin then
-    AMin := AValue
-  else if AValue > AMax then
+    AMin := AValue;
+  if AValue > AMax then
     AMax := AValue;
 end;
 
