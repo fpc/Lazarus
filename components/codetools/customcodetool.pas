@@ -979,6 +979,7 @@ begin
           if (CurPos.EndPos-CurPos.StartPos=3)
           and (Src[CurPos.StartPos+1] in ['n','N'])
           and (Src[CurPos.StartPos+2] in ['d','D'])
+          and ((CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@'))
           then
             CurPos.Flag:=cafEnd;
         'r','R':

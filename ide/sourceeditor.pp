@@ -1550,10 +1550,8 @@ begin
       if AutoCompleteChar(aChar,AddChar,acoLineBreak) then ;
       //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
-      {$IFDEF EnableCompleteBlock}
       if EditorOpts.AutoBlockCompletion then
         AutoCompleteBlock;
-      {$ENDIF}
     end;
 
   ecPrevBookmark: // Note: book mark commands lower than ecUserFirst must be handled here
@@ -2342,10 +2340,21 @@ var
 begin
   if not LazarusIDE.SaveSourceEditorChangesToCodeCache(PageIndex) then exit;
   XY:=FEditor.LogicalCaretXY;
-  if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,
-                                    NewCode,NewX,NewY,NewTopLine) then exit;
-  if (NewCode<>CodeBuffer) or (NewX<>XY.X) or (NewY<>XY.Y) or (NewTopLine>0)
-  then ;
+  FEditor.BeginUndoBlock;
+  try
+    if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,
+                                      NewCode,NewX,NewY,NewTopLine) then exit;
+    XY:=FEditor.LogicalCaretXY;
+    //DebugLn(['TSourceEditor.AutoCompleteBlock XY=',dbgs(XY),' NewX=',NewX,' NewY=',NewY]);
+    if (NewCode<>CodeBuffer) or (NewX<>XY.X) or (NewY<>XY.Y) or (NewTopLine>0)
+    then begin
+      XY.X:=NewX;
+      XY.Y:=NewY;
+      FEditor.LogicalCaretXY:=XY;
+    end;
+  finally
+    FEditor.EndUndoBlock;
+  end;
 end;
 
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);

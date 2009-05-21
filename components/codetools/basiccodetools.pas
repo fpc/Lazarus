@@ -69,6 +69,7 @@ function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
+function GetPosInLine(const Source: string; Position: integer): integer;
 function GetBlockMinIndent(const Source: string;
     StartPos, EndPos: integer): integer;
 function GetIndentStr(Indent: integer): string;
@@ -3524,6 +3525,15 @@ begin
     end;
     if not IsIdentChar[NamePair[p]] then exit;
   until false;
+end;
+
+function GetPosInLine(const Source: string; Position: integer): integer;
+begin
+  Result:=0;
+  while (Position>1) and (not (Source[Position] in [#10,#13])) do begin
+    inc(Result);
+    dec(Position);
+  end;
 end;
 
 function GetBlockMinIndent(const Source: string;

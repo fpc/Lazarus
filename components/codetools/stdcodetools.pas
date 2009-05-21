@@ -5086,32 +5086,338 @@ end;
 function TStandardCodeTool.CompleteBlock(const CursorPos: TCodeXYPosition;
   SourceChangeCache: TSourceChangeCache;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-{ begin: end;
-  asm: end;
-  try: finally end;
-  finally: end;
-  except: end;
-  repeat: until ;
-  case of: end;
-  case :: ;
-  case else: end;
-  (: )
-  [: ]
-  record: end;
-  class: end;
-  object: end;
-  interface: end;
+{ For example:
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    begin
+      |
+      ...
+  something
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if then begin
+      |
+      ...
+  something
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  begin
+    |
+
+  procedure
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ToDo:
+
+  if then begin
+    |
+  else
+
+  while do begin
+    |
+    foo;
+  bar;
+
+
+  Statements:
+    begin: end;
+    asm: end;
+    try: finally end;
+    finally: end;
+    except: end;
+    repeat: until ;
+    case of: end;
+    case :: ;
+    case else: end;
+    (: )
+    [: ]
+
+  Types:
+    (: )
+    [: ]
+    record: end;
+    class: end;
+    object: end;
+    interface: end;
 }
+type
+  TBlockType = (
+    btNone,
+    btBegin,
+    btAsm,
+    btEdgedBracket,
+    btRoundBracket,
+    btTry,
+    btFinally,
+    btExcept,
+    btCase,
+    btCaseOf,
+    btCaseColon,
+    btCaseElse,
+    btRepeat,
+    btClass,
+    btInterface,
+    btObject,
+    btRecord
+    );
+  TBlock = record
+    Typ: TBlockType;
+    StartPos: integer;
+  end;
+  PBlock = ^TBlock;
+  TBlockStack = record
+    Stack: PBlock;
+    Capacity: integer;
+    Top: integer;
+  end;
 var
   CleanCursorPos: integer;
-  Node: TCodeTreeNode;
+  StartNode: TCodeTreeNode;
+
+  procedure InitStack(out Stack: TBlockStack);
+  begin
+    FillByte(Stack,SizeOf(Stack),0);
+    Stack.Top:=-1;
+  end;
+
+  procedure FreeStack(var Stack: TBlockStack);
+  begin
+    ReAllocMem(Stack.Stack,0);
+    Stack.Capacity:=0;
+    Stack.Top:=-1;
+  end;
+
+  procedure BeginBlock(var Stack: TBlockStack; Typ: TBlockType;
+    StartPos: integer);
+  var
+    Block: PBlock;
+  begin
+    inc(Stack.Top);
+    if Stack.Top>=Stack.Capacity then begin
+      if Stack.Capacity=0 then
+        Stack.Capacity:=16
+      else
+        Stack.Capacity:=Stack.Capacity*2;
+      ReAllocMem(Stack.Stack,SizeOf(TBlock)*Stack.Capacity);
+    end;
+    Block:=@Stack.Stack[Stack.Top];
+    Block^.Typ:=Typ;
+    Block^.StartPos:=StartPos;
+  end;
+
+  procedure EndBlock(var Stack: TBlockStack);
+  begin
+    dec(Stack.Top);
+  end;
+
+  function TopBlockType(const Stack: TBlockStack): TBlockType;
+  begin
+    if Stack.Top>=0 then
+      Result:=Stack.Stack[Stack.Top].Typ
+    else
+      Result:=btNone;
+  end;
+
+  function ReadStatements(var Stack: TBlockStack): Boolean;
+  var
+    CursorBlockLvl: Integer; // the stack level of the cursor
+    LastPos: Integer;
+    LineStart: boolean; // Atom is first atom of a line in cursor block (not in sub block)
+    Indent: Integer;
+    CursorBlockIndent: LongInt;
+    CursorBlock: TBlock;
+    BehindCursorBlock: Boolean; // atom behind cursor block
+    InCursorBlock: Boolean;
+    NeedCompletion: Boolean;
+    InsertPos: LongInt;
+    NewCode: String;
+
+    function EndBlockIsOk: boolean;
+    begin
+      //DebugLn(['EndBlockIsOk ']);
+      EndBlock(Stack);
+      Result:=true;
+      if (not BehindCursorBlock) and (Stack.Top<CursorBlockLvl) then
+        BehindCursorBlock:=true;
+    end;
+
+  begin
+    Result:=false;
+    MoveCursorToNodeStart(StartNode);
+    CursorBlockLvl:=-2;
+    LastPos:=-1;
+    CursorBlockIndent:=0;
+    Indent:=0;
+    CursorBlock.StartPos:=0;
+    BehindCursorBlock:=false;
+    NeedCompletion:=false;
+    repeat
+      ReadNextAtom;
+
+      //DebugLn(['ReadStatements Atom=',GetAtom,' TopTyp=',ord(TopBlockType(Stack)),' Top=',Stack.Top]);
+
+      // check if cursor reached
+      if (CurPos.StartPos>=CleanCursorPos) and (CursorBlockLvl<0) then begin
+        // reached cursor
+        CursorBlockLvl:=Stack.Top;
+        if CursorBlockLvl<0 then
+          CursorBlockIndent:=GetLineIndent(Src,CurPos.StartPos)
+        else begin
+          CursorBlock:=Stack.Stack[CursorBlockLvl];
+          CursorBlockIndent:=GetLineIndent(Src,CursorBlock.StartPos);
+        end;
+        //DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Indent=',CursorBlockIndent]);
+      end;
+
+      // check if end of node
+      if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
+        break;
+
+      // check if line start
+      InCursorBlock:=(CursorBlockLvl=Stack.Top) and (not BehindCursorBlock);
+      LineStart:=InCursorBlock and (LastPos>0)
+                 and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
+      if LineStart then
+        Indent:=GetLineIndent(Src,CurPos.StartPos);
+
+      if LineStart then begin
+        // atom is in same block as cursor (not sub block)
+        // and first atom of a line
+        // => check indent
+        if Indent<CursorBlockIndent then begin
+          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+          NeedCompletion:=true;
+        end;
+      end;
+
+      // check block starts/ends
+      case CurPos.Flag of
+      cafEnd:
+        begin
+          case TopBlockType(Stack) of
+          btBegin,btFinally,btExcept,btCase,btCaseOf,btCaseColon,btCaseElse:
+            if not EndBlockIsOk then exit;
+          btAsm:
+            if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]<>'@') then begin
+              if not EndBlockIsOk then exit;
+            end;
+          else
+            // missing begin
+            exit;
+          end;
+        end;
+      cafEdgedBracketOpen:
+        BeginBlock(Stack,btEdgedBracket,CurPos.StartPos);
+      cafEdgedBracketClose:
+        if TopBlockType(Stack)=btEdgedBracket then begin
+          if not EndBlockIsOk then exit;
+        end else begin
+          // missing [
+          exit;
+        end;
+      cafRoundBracketOpen:
+        BeginBlock(Stack,btRoundBracket,CurPos.StartPos);
+      cafRoundBracketClose:
+        if TopBlockType(Stack)=btRoundBracket then begin
+          if not EndBlockIsOk then exit;
+        end else begin
+          // missing (
+          exit;
+        end;
+      cafColon:
+        if TopBlockType(Stack)=btCaseOf then
+          BeginBlock(Stack,btCaseColon,CurPos.StartPos);
+      cafSemicolon:
+        if TopBlockType(Stack)=btCaseColon then
+          if not EndBlockIsOk then exit;
+      cafBegin:
+        BeginBlock(Stack,btBegin,CurPos.StartPos);
+      cafWord:
+        if TopBlockType(Stack)<>btAsm then begin
+          if UpAtomIs('TRY') then
+            BeginBlock(Stack,btTry,CurPos.StartPos)
+          else if UpAtomIs('FINALLY') then
+            BeginBlock(Stack,btFinally,CurPos.StartPos)
+          else if UpAtomIs('EXCEPT') then
+            BeginBlock(Stack,btExcept,CurPos.StartPos)
+          else if UpAtomIs('REPEAT') then
+            BeginBlock(Stack,btRepeat,CurPos.StartPos)
+          else if UpAtomIs('UNTIL') then begin
+            if TopBlockType(Stack)=btRepeat then begin
+              if not EndBlockIsOk then exit;
+            end else begin
+              // until without repeat
+            end;
+          end else if UpAtomIs('ASM') then begin
+            BeginBlock(Stack,btAsm,CurPos.StartPos);
+          end else if UpAtomIs('CASE') then begin
+            BeginBlock(Stack,btCase,CurPos.StartPos)
+          end else if UpAtomIs('OF') then begin
+            if TopBlockType(Stack)=btCase then
+              BeginBlock(Stack,btCaseOf,CurPos.StartPos);
+          end else if UpAtomIs('ELSE') then begin
+            if TopBlockType(Stack)=btCaseOf then begin
+              if not EndBlockIsOk then exit;
+              BeginBlock(Stack,btCaseElse,CurPos.StartPos);
+            end;
+          end;
+        end;
+      end;
+
+      LastPos:=CurPos.StartPos;
+    until false;
+
+    //DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
+
+    if (not NeedCompletion) and (Stack.Top>=0)
+    and (not BehindCursorBlock) and (CursorBlockLvl=Stack.Top) then begin
+      NeedCompletion:=true;
+    end;
+
+    if NeedCompletion then begin
+      InsertPos:=CleanCursorPos;
+      Indent:=CursorBlockIndent;
+      NewCode:='';
+      case CursorBlock.Typ of
+      btBegin,btFinally,btExcept,btAsm,btCaseOf,btCaseElse:
+        NewCode:='end;';
+      btRepeat:
+        NewCode:='until ;';
+      btTry:
+        NewCode:='finally'+SourceChangeCache.BeautifyCodeOptions.LineEnd
+           +'end;';
+      end;
+      if NewCode<>'' then begin
+        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                         NewCode,Indent,[bcfIndentExistingLineBreaks]);
+        if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+          InsertPos,InsertPos,NewCode) then exit;
+        if not SourceChangeCache.Apply then exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+var
+  Stack: TBlockStack;
 begin
   Result:=false;
+  NewPos:=CursorPos;
   BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                 [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
-  Node:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  SourceChangeCache.MainScanner:=Scanner;
+  InitStack(Stack);
+  try
+    //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
 
-  DebugLn(['TStandardCodeTool.CompleteBlock ',Node.DescAsString]);
+    if StartNode.Desc in AllPascalStatements then begin
+      if (StartNode.Parent<>nil)
+      and (StartNode.Parent.Desc in AllPascalStatements) then
+        StartNode:=StartNode.Parent;
+      if not ReadStatements(Stack) then exit;
+    end;
+  finally
+    FreeStack(Stack);
+  end;
+  Result:=true;
 end;
 
 function TStandardCodeTool.GuessMisplacedIfdefEndif(

@@ -1222,7 +1222,7 @@ resourcestring
   dlgEdOff = 'Off';
   dlgEdInvert = 'Invert';
   dlgEdIdComlet = 'Identifier completion';
-  dlgEdCodeParams = 'Code parameters';
+  dlgEdCompleteBlocks = 'Complete blocks';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupWordFull = 'Current Word match word boundaries';

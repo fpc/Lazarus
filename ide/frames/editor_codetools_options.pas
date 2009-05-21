@@ -32,7 +32,7 @@ type
   { TEditorCodetoolsOptionsFrame }
 
   TEditorCodetoolsOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AutoCodeParametersCheckBox: TCheckBox;
+    AutoCompleteBlockCheckBox: TCheckBox;
     AutoDelayLabel: TLabel;
     AutoDelayMaxLabel: TLabel;
     AutoDelayMinLabel: TLabel;
@@ -73,7 +73,7 @@ end;
 procedure TEditorCodetoolsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   AutoIdentifierCompletionCheckBox.Caption := dlgEdIdComlet;
-  AutoCodeParametersCheckBox.Caption := dlgEdCodeParams;
+  AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoToolTipExprEvalCheckBox.Caption := dlgTooltipEval;
   AutoToolTipSymbToolsCheckBox.Caption := dlgTooltipTools;
   AutoRemoveEmptyMethodsOnSave.Caption := dlgAutoRemoveEmptyMethods;
@@ -97,7 +97,7 @@ begin
   with AOptions as TEditorOptions do
   begin
     AutoIdentifierCompletionCheckBox.Checked := AutoIdentifierCompletion;
-    AutoCodeParametersCheckBox.Checked := AutoCodeParameters;
+    AutoCompleteBlockCheckBox.Checked := AutoBlockCompletion;
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
@@ -116,7 +116,7 @@ begin
   with AOptions as TEditorOptions do
   begin
     AutoIdentifierCompletion := AutoIdentifierCompletionCheckBox.Checked;
-    AutoCodeParameters := AutoCodeParametersCheckBox.Checked;
+    AutoBlockCompletion := AutoCompleteBlockCheckBox.Checked;
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
