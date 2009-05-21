@@ -43,8 +43,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  Translations, ClipBrd, TypInfo, Extctrls, Menus, HelpIntfs, LazHelpIntf,
-  LConvEncoding, LDockCtrl,
+  Translations, ClipBrd, TypInfo, types, Extctrls, Menus, HelpIntfs,
+  LazHelpIntf, LConvEncoding, LDockCtrl,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -192,6 +192,7 @@ type
     procedure ccAddMessage(Texts: String);
     function AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
        Category: TAutoCompleteOption): boolean;
+    procedure AutoCompleteBlock;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -1549,6 +1550,10 @@ begin
       if AutoCompleteChar(aChar,AddChar,acoLineBreak) then ;
       //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
+      {$IFDEF EnableCompleteBlock}
+      if EditorOpts.AutoBlockCompletion then
+        AutoCompleteBlock;
+      {$ENDIF}
     end;
 
   ecPrevBookmark: // Note: book mark commands lower than ecUserFirst must be handled here
@@ -2327,6 +2332,20 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TSourceEditor.AutoCompleteBlock;
+var
+  XY: TPoint;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not LazarusIDE.SaveSourceEditorChangesToCodeCache(PageIndex) then exit;
+  XY:=FEditor.LogicalCaretXY;
+  if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,
+                                    NewCode,NewX,NewY,NewTopLine) then exit;
+  if (NewCode<>CodeBuffer) or (NewX<>XY.X) or (NewY<>XY.Y) or (NewTopLine>0)
+  then ;
 end;
 
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);

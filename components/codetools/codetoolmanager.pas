@@ -354,6 +354,9 @@ type
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function CompleteBlock(Code: TCodeBuffer; X,Y: integer;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
 
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
@@ -3034,6 +3037,36 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GuessUnclosedBlock END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.CompleteBlock(Code: TCodeBuffer; X, Y: integer; out
+  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
+var
+  CursorPos, NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  NewCode:=Code;
+  NewX:=X;
+  NewY:=Y;
+  NewTopLine:=-1;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.CompleteBlock A ',Code.Filename,' x=',dbgs(X),' y=',dbgs(Y));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.CompleteBlock(CursorPos,SourceChangeCache,
+                                       NewPos,NewTopLine);
+    if Result then begin
+      NewCode:=NewPos.Code;
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+    end;
+  except
+    on e: Exception do HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;

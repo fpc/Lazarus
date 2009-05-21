@@ -200,6 +200,9 @@ type
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
           out BlockCleanStart, BlockCleanEnd: integer): boolean;
+    function CompleteBlock(const CursorPos: TCodeXYPosition;
+          SourceChangeCache: TSourceChangeCache;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
       
     // compiler directives
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
@@ -5078,6 +5081,37 @@ begin
   end;
   BlockCleanEnd:=CurPos.StartPos;
   Result:=true;
+end;
+
+function TStandardCodeTool.CompleteBlock(const CursorPos: TCodeXYPosition;
+  SourceChangeCache: TSourceChangeCache;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+{ begin: end;
+  asm: end;
+  try: finally end;
+  finally: end;
+  except: end;
+  repeat: until ;
+  case of: end;
+  case :: ;
+  case else: end;
+  (: )
+  [: ]
+  record: end;
+  class: end;
+  object: end;
+  interface: end;
+}
+var
+  CleanCursorPos: integer;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+  Node:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+  DebugLn(['TStandardCodeTool.CompleteBlock ',Node.DescAsString]);
 end;
 
 function TStandardCodeTool.GuessMisplacedIfdefEndif(

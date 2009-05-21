@@ -12274,11 +12274,14 @@ var i: integer;
     AnUnitInfo: TUnitInfo;
   begin
     GetUnitWithPageIndex(APageIndex,SrcEdit,AnUnitInfo);
-    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and SrcEdit.NeedsUpdateCodeBuffer then
+    if (SrcEdit<>nil) and (AnUnitInfo<>nil) then
     begin
-      SrcEdit.UpdateCodeBuffer;
-      AnUnitInfo.Modified:=true;
       SaveSourceEditorChangesToCodeCache:=true;
+      if SrcEdit.NeedsUpdateCodeBuffer then
+      begin
+        SrcEdit.UpdateCodeBuffer;
+        AnUnitInfo.Modified:=true;
+      end;
     end;
   end;
 

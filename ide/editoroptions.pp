@@ -640,14 +640,15 @@ type
     FMarkupCurWordNoTimer: Boolean;
 
     // Code tools options (MG: these will move to an unit of their own)
-    fAutoIdentifierCompletion: Boolean;
+    fAutoBlockCompletion: Boolean;
     fAutoCodeParameters: Boolean;
+    fAutoDelayInMSec: Integer;
+    fAutoIdentifierCompletion: Boolean;
+    FAutoRemoveEmptyMethods: Boolean;
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
-    fAutoDelayInMSec: Integer;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
-    FAutoRemoveEmptyMethods: Boolean;
 
     // Code Folding
     FUseCodeFolding: Boolean;
@@ -791,6 +792,8 @@ type
     // Code Tools options
     property AutoIdentifierCompletion: Boolean
       read fAutoIdentifierCompletion write fAutoIdentifierCompletion default True;
+    property AutoBlockCompletion: Boolean
+      read fAutoBlockCompletion write FAutoBlockCompletion default True;
     property AutoCodeParameters: Boolean
       read fAutoCodeParameters write fAutoCodeParameters default True;
     property AutoToolTipExprEval: Boolean
@@ -1825,6 +1828,9 @@ begin
     fAutoIdentifierCompletion :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/AutoIdentifierCompletion', True);
+    fAutoBlockCompletion :=
+      XMLConfig.GetValue(
+      'EditorOptions/CodeTools/AutoBlockCompletion', True);
     fAutoCodeParameters :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters', True);
     fAutoToolTipExprEval :=
@@ -2055,6 +2061,8 @@ begin
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
       , fAutoIdentifierCompletion, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'
+      , fAutoBlockCompletion, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoCodeParameters'
       , fAutoCodeParameters, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipExprEval'
