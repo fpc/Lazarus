@@ -278,11 +278,13 @@ type
   private
     FPen: TPen;
     FPosGraph: Double;                      // Graph coordinates of line
-    FStyle: TLineStyle;
+    FLineStyle: TLineStyle;
+    FUseBounds: Boolean;
 
+    procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPos(AValue: Double);
-    procedure SetStyle(AValue: TLineStyle);
+    procedure SetUseBounds(AValue: Boolean);
   protected
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
@@ -294,10 +296,12 @@ type
     procedure Draw(ACanvas: TCanvas); override;
 
   published
-    property LineStyle: TLineStyle read FStyle write SetStyle default lsHorizontal;
+    property LineStyle: TLineStyle
+      read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
     property SeriesColor;
+    property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
   end;
 
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
@@ -934,9 +938,10 @@ constructor TLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FLineStyle := lsHorizontal;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
-  LineStyle := lsHorizontal;
+  FUseBounds := true;
 end;
 
 destructor TLine.Destroy;
@@ -945,20 +950,28 @@ begin
   FPen.Free;
 end;
 
+procedure TLine.SetLineStyle(AValue: TLineStyle);
+begin
+  if FLineStyle = AValue then exit;
+  FLineStyle := AValue;
+  UpdateParentChart;
+end;
+
 procedure TLine.SetPen(AValue: TPen);
 begin
   FPen.Assign(AValue);
 end;
 
-procedure TLine.SetStyle(AValue: TLineStyle);
+procedure TLine.SetUseBounds(AValue: Boolean);
 begin
-  if FStyle = AValue then exit;
-  FStyle := AValue;
+  if FUseBounds = AValue then exit;
+  FUseBounds := AValue;
   UpdateParentChart;
 end;
 
 procedure TLine.UpdateBounds(var ABounds: TDoubleRect);
 begin
+  if not UseBounds then exit;
   case LineStyle of
     lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
     lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
