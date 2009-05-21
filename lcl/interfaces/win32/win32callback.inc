@@ -895,7 +895,7 @@ var
             if (Application.MainForm <> nil) and Application.MainForm.HandleAllocated then
             begin
               if Application.MainForm.HandleObjectShouldBeVisible then
-                Windows.ShowWindow(Application.MainForm.Handle, SW_SHOWNOACTIVATE);
+                Windows.ShowWindow(Application.MainForm.Handle, SW_SHOWNA);
             end;
             Application.IntfAppRestore;
           end;
