@@ -62,6 +62,9 @@ change it's size or position in the dock site.
 7. Floating controls should be dockable by default.
 
 8. Docked controls should retain their undocked extent.
+When a control is undocked into floating state, it retains its size.
+When docked and floated again, it has the docked size,
+not the original (undocked) size.
 
 Title text
 ==========

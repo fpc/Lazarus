@@ -52,7 +52,7 @@ done? (unclear whether this is really fixed in the trunk)
 {.$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
-{.$DEFINE bookform} //using notebook within form?
+{$DEFINE bookform} //using notebook within form? Seems to work ONLY if defined
 
 interface
 
@@ -200,6 +200,8 @@ type
     procedure PaintSite(DC: HDC); override;
   end;
 
+{$IFDEF bookform}
+{$ELSE}
 (* Notebook for alCustom docking.
   Added behaviour: free self on undock of the last client/page.
   The behaviour of TPageControl sucks :-(
@@ -212,6 +214,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   end;
+{$ENDIF}
 
 const
   AlignNames: array[TAlign] of string = (
@@ -229,7 +232,7 @@ uses
   math,
   Themes, LResources,
 {$IFDEF bookform}
-  fDockBook,
+  //fDockBook,
 {$ELSE}
 {$ENDIF}
   LCLproc; //debugging
@@ -244,15 +247,54 @@ const
 type
 {$IFDEF bookform}
   //use a notebook in it's own form
-  TEasyPages = TDockBook;
+  TEasyPages = class(TCustomForm) // TDockBook;
+  protected
+    Pages: TPageControl;
+  public
+    property DragMode;
+    property DragKind;
+  end;
 {$ELSE}
   TEasyPages = TEasyBook;
 {$ENDIF}
 
-{ to come...
 function  NoteBookCreate(AOwner: TWinControl): TEasyPages;
+{$IFDEF bookform}
+(* Create a form, containing a page control.
+  The form must be dockable.
+  The page control must be a dock site. (is?)
+*)
+var
+  Pages: TPageControl;
+begin
+  Result := TEasyPages.Create(AOwner);
+  Result.Visible := True;
+  Result.DragMode := dmAutomatic;
+  Result.DragKind := dkDock;
+  Pages := TPageControl.Create(Result);
+  Result.Pages := Pages;
+  Pages.Parent := Result;
+  Pages.Visible := True;
+  Pages.Align := alClient; //doesn't work? minimal values too large?
+  Pages.DockSite := True; //problem?
+{$ELSE}
+begin
+  Result := TEasyPages.Create(AOwner);
+  Result.Align := alNone; //doesn't help :-(
+{$ENDIF}
+end;
+
 procedure NoteBookAdd(ABook: TEasyPages; AItem: TControl);
-}
+begin
+{$IFDEF bookform}
+  AItem.Align := alClient;
+  AItem.ManualDock(ABook.Pages);
+  ABook.Pages.ActivePageIndex := ABook.Pages.PageCount - 1;
+{$ELSE}
+  AItem.ManualDock(ABook);
+  ABook.ActivePageIndex := ABook.PageCount - 1;
+{$ENDIF}
+end;
 
 //from CustomFormEditor.pp
 function {TCustomFormEditor.}CreateUniqueComponentName(const AClassName: string;
@@ -419,11 +461,7 @@ procedure TEasyTree.InsertControl(Control: TControl; InsertAt: TAlign;
 var
   DropZone, OldZone, NewZone, OldParent, NewParent: TEasyZone;
   r: TRect;
-{$IFDEF bookform}
-  NoteBook: TDockBook;
-{$ELSE}
-  NoteBook: TPageControl;
-{$ENDIF}
+  NoteBook: TEasyPages;
 (* special cases:
   1) first child in top zone - no orientation
   2) second child in top zone - determines orientation
@@ -468,12 +506,11 @@ begin
 *)
   if (InsertAt = alCustom) and (FTopZone.FirstChild <> nil) then begin
   //dock into book
-  {$IFnDEF bookform}
-    if (DropCtl is TPageControl) then begin
-      NoteBook := DropCtl as TPageControl;
+    if (DropCtl is TEasyPages) then begin
+      NoteBook := DropCtl as TEasyPages;
     end else begin
     //create new book
-      NoteBook := TEasyBook.Create(FDockSite);
+      NoteBook := NoteBookCreate(FDockSite); // TEasyBook.Create(FDockSite);
     {$IFDEF old}
       NoteBook.Align := alNone;
       NoteBook.DragKind := dkDock;
@@ -498,54 +535,17 @@ begin
       ResetBounds(True); //for some reason only setting the size doesn't work
       NoteBook.Update;
     {$ELSE}
+      NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
       NoteBook.BoundsRect := r;
-      r := NoteBook.BoundsRect;
-      DropCtl.ManualDock(NoteBook); //put the original control into the notebook
-      //DropCtl := NoteBook; //put further controls into the notebook
     {$ENDIF}
     end; //else use existing control
+  {$IFDEF old}
     Control.ManualDock(NoteBook);
     NoteBook.ActivePageIndex:=NoteBook.PageCount - 1;
-    //FDockSite.Invalidate;
   {$ELSE}
-    if (DropCtl is TDockBook) then begin
-    //will this ever happen?
-      NoteBook := DropCtl as TDockBook;
-    end else begin
-    //create new book
-      NoteBook := TDockBook.Create(FDockSite);
-    {$IFDEF old}
-      NoteBook.Align := alNone;
-      NoteBook.DragKind := dkDock;
-      NoteBook.DragMode := dmAutomatic;
-    {$ELSE}
-      NoteBook.ManualDock(nil, nil);
-    {$ENDIF}
-    //hack: manually dock the notebook
-      FReplacingControl := NoteBook; //ignore insert (see above)
-      NoteBook.ManualDock(FDockSite); //move into DockClients[]
-      DropZone.ChildControl := NoteBook; //put into the zone
-    { TODO -cdocking : make the notebook take the desired position }
-      r := DropZone.GetPartRect(zpClient);
-    {$IFDEF debug}
-      DebugLn('NoteBook as (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
-      NoteBook.BoundsRect := r;
-      r := NoteBook.BoundsRect;
-      DebugLn('NoteBook is (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
-
-      DropCtl.ManualDock(NoteBook); //put the original control into the notebook
-      DropCtl := NoteBook; //put further controls into the notebook
-      ResetBounds(True); //for some reason only setting the size doesn't work
-      NoteBook.Update;
-    {$ELSE}
-      NoteBook.BoundsRect := r;
-      DropCtl.ManualDock(NoteBook.Pages); //put the original control into the notebook
-      //DropCtl := NoteBook; //put further controls into the notebook
-    {$ENDIF}
-    end; //else use existing control
-    Control.ManualDock(NoteBook.Pages);
-    NoteBook.Pages.ActivePageIndex:=NoteBook.Pages.PageCount - 1;
+    NoteBookAdd(NoteBook, Control);
   {$ENDIF}
+    //FDockSite.Invalidate;
     exit;
   end;
 
@@ -617,9 +617,11 @@ var
   i: integer;
   zone: TEasyZone;
 
-  function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
+  //function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
+  function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
   var
     w, h, zphi: integer;
+    cx, cy: integer;
     dx, dy: integer;
     phi: double;
     izone: integer;
@@ -632,12 +634,14 @@ var
       alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
     );
   begin
-  //center of dock zone
-    w := ZoneSize.x div 2;
-    h := ZoneSize.y div 2;
+  //center and extent of dock zone
+    cx := (ZoneRect.Right + ZoneRect.Left) div 2;
+    cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
+    w := ZoneRect.Right - ZoneRect.Left;
+    h := ZoneRect.Bottom - ZoneRect.Top;
   //mouse position within k*k rectangles (squares)
-    dx := trunc((MousePos.x - w) / w * k);
-    dy := trunc((MousePos.y - h) / h * k);
+    dx := trunc((MousePos.x - cx) / w * k);
+    dy := trunc((MousePos.y - cy) / h * k);
     izone := max(abs(dx), abs(dy)); //0..k
   //map into 0=innermost (custom), 1=inner, 2=outer
     if izone = 0 then begin
@@ -687,7 +691,7 @@ Signal results:
       if DropOnControl = nil then begin
         DropAlign := alClient //first element in entire site
       end else //determine the alignment within the zone.
-        DropAlign := DetectAlign(zone.BR, DragTargetPos);
+        DropAlign := DetectAlign(ADockRect, DragTargetPos);
     //to screen coords
       ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
       ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
@@ -840,6 +844,15 @@ begin
         begin
           ARect := TDockHeader.GetRectOfPart(ARect, Sender.DockOrientation, ldhpCaption);
           InvalidateRect(DockSite.Handle, @ARect, False);
+        end;
+      end;
+    CM_VISIBLECHANGED:
+      begin
+        if not (csDestroying in Sender.ComponentState) then
+        begin
+          AZone := RootZone.FindZone(Sender) as TLazDockZone;
+          if AZone <> nil then
+            BuildDockLayout(TLazDockZone(AZone.Parent));
         end;
       end;
 }
