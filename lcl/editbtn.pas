@@ -75,7 +75,7 @@ type
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     // New properties.
     property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
-    property DirectInput : Boolean read GetDirectInput write SetDirectInput default true;
+    property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
     property Glyph : TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
     property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
@@ -589,12 +589,12 @@ end;
 procedure TCustomEditButton.SetDirectInput(const AValue: Boolean);
 begin
   FDirectInput := AValue;
-  Inherited SetReadOnly((not FDirectInput) or (FIsReadOnly))
+  inherited SetReadOnly((not FDirectInput) or (FIsReadOnly))
 end;
 
 procedure TCustomEditButton.SetFlat(const AValue: Boolean);
 begin
-  If Assigned(FButton) then
+  if Assigned(FButton) then
     FButton.Flat:=AValue;
 end;
 

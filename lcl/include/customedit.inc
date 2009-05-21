@@ -52,7 +52,7 @@ begin
   ControlStyle := ControlStyle - [csCaptureMouse];
   FCompStyle := csEdit;
   FMaxLength := 0;
-  ParentColor := false;
+  ParentColor := False;
   TabStop := true;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FEchoMode := emNormal;
@@ -367,7 +367,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetReadOnly(Value : Boolean);
 begin
-  if FReadOnly <> Value then begin
+  if FReadOnly <> Value then
+  begin
     FReadOnly := Value;
     if HandleAllocated then
       TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, Value);

@@ -1074,9 +1074,9 @@ class procedure TGtkWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomC
 var
   Widget: PGtkWidget;
 begin
-  Widget:=PGtkCombo(ACustomComboBox.Handle)^.entry;
+  Widget := PGtkCombo(ACustomComboBox.Handle)^.entry;
   if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
-    gtk_entry_set_editable(PGtkEntry(Widget), not ACustomComboBox.ReadOnly);
+    gtk_entry_set_editable(PGtkEntry(Widget), not NewReadOnly);
 end;
 
 class function  TGtkWSCustomComboBox.GetItems(
@@ -1213,9 +1213,9 @@ class procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
 var
   Widget: PGtkWidget;
 begin
-  Widget:=PGtkWidget(ACustomEdit.Handle);
+  Widget := PGtkWidget(ACustomEdit.Handle);
   if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
-    gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
+    gtk_entry_set_editable(GTK_ENTRY(Widget), not NewReadOnly);
 end;
 
 class procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;

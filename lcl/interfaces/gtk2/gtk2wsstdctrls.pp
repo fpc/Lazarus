@@ -179,6 +179,7 @@ type
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
@@ -924,6 +925,16 @@ begin
       PWChar:=9679;
   end;
   gtk_entry_set_invisible_char(Entry,PWChar);
+end;
+
+class procedure TGtk2WSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
+  NewReadOnly: boolean);
+var
+  Widget: PGtkWidget;
+begin
+  Widget := PGtkWidget(ACustomEdit.Handle);
+  if GTK_IS_EDITABLE(Widget) then
+    gtk_editable_set_editable(PGtkEditable(Widget), not NewReadOnly);
 end;
 
 class procedure TGtk2WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
