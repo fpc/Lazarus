@@ -95,17 +95,15 @@ var
 begin
   ARect := GetClientRect;
   if BevelOuter <> bvNone then
-  begin
     Canvas.Frame3d(ARect, BevelWidth, BevelOuter);
-    InflateRect(ARect, -1, -1);
-  end;
 
   if BevelInner <> bvNone then 
   begin
-    if BorderWidth > 0 then InflateRect(ARect, -BorderWidth, -BorderWidth);
+    if BorderWidth > 0 then
+      InflateRect(ARect, -BorderWidth, -BorderWidth);
     Canvas.Frame3d(ARect, BevelWidth, BevelInner);
-    InflateRect(ARect, -1, -1);
   end;
+
   if Caption <> '' then
   begin
     TS := Canvas.TextStyle;
