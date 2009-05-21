@@ -994,6 +994,7 @@ end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
 begin
+  ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Assign(FPen);
 
   with ParentChart do
@@ -1478,6 +1479,8 @@ begin
   ACanvas.Pen.Mode := pmCopy;
   ACanvas.Pen.Style := psSolid;
   ACanvas.Pen.Width := 1;
+  ACanvas.Brush.Assign(AreaBrush);
+
   ymin := ParentChart.ClipRect.Bottom - 1;
 
   for i := 0 to Count - 2 do begin
