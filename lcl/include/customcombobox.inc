@@ -758,13 +758,14 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FItems := TStringlist.Create;
   FItemIndex := -1;
+  FItemWidth := 0;
   FMaxLength := 0;
   FDropDownCount := 8;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;
-  TabStop := true;
-  ParentColor := false;
+  TabStop := True;
+  ParentColor := False;
   FAutoCompleteText := DefaultComboBoxAutoCompleteText;
   FAutoSelect := False;
   FAutoSelected := False;

@@ -227,24 +227,24 @@ type
 
   { TCustomComboBox }
   TComboBoxAutoCompleteTextOption = (
-    cbactEnabled,//Enable Auto-Completion Feature
-    cbactEndOfLineComplete,//Perform Auto-Complete only when cursor is at end of line
-    cbactRetainPrefixCase,//Retains the case of characters user has typed if is cbactEndOfLineComplete
-    cbactSearchCaseSensitive,//Search Text with CaseSensitivity
-    cbactSearchAscending//Search Text from top of the list
-    );
+    cbactEnabled,             //Enable Auto-Completion Feature
+    cbactEndOfLineComplete,   //Perform Auto-Complete only when cursor is at end of line
+    cbactRetainPrefixCase,    //Retains the case of characters user has typed if is cbactEndOfLineComplete
+    cbactSearchCaseSensitive, //Search Text with CaseSensitivity
+    cbactSearchAscending      //Search Text from top of the list
+  );
   TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;
 const
   DefaultComboBoxAutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending];
 
 type
   TComboBoxStyle = (
-    csDropDown,       // like an TEdit plus a button to drop down the list, default
-    csSimple,         // like an TEdit plus a TListBox
-    csDropDownList,   // like TLabel plus a button to drop down the list
-    csOwnerDrawFixed, // like csDropDownList, but custom drawn
+    csDropDown,         // like an TEdit plus a button to drop down the list, default
+    csSimple,           // like an TEdit plus a TListBox
+    csDropDownList,     // like TLabel plus a button to drop down the list
+    csOwnerDrawFixed,   // like csDropDownList, but custom drawn
     csOwnerDrawVariable // like csDropDownList, but custom drawn and with each item can have another height
-    );
+  );
 
   TOwnerDrawState = TBaseOwnerDrawState;
 
@@ -343,7 +343,7 @@ type
     function SelectItem(const AnItem: String): Boolean;
 
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
-    property ItemWidth: Integer read GetItemWidth write SetItemWidth;
+    property ItemWidth: Integer read GetItemWidth write SetItemWidth default 0;
     property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
@@ -370,7 +370,8 @@ type
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
-    property AutoComplete: boolean read GetAutoComplete write SetAutoComplete;
+    property AutoComplete: boolean
+      read GetAutoComplete write SetAutoComplete default False;
     property AutoCompleteText: TComboBoxAutoCompleteText
                            read FAutoCompleteText write FAutoCompleteText
                            default DefaultComboBoxAutoCompleteText;
