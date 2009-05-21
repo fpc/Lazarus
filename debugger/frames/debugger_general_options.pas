@@ -44,7 +44,6 @@ type
     gbDebuggerSpecific: TGroupBox;
     gbDebuggerType: TGroupBox;
     gcbDebuggerGeneralOptions: TCheckGroup;
-    pnlDebugSpecific: TPanel;
     txtAdditionalPath: TEdit;
     procedure cmbDebuggerTypeEditingDone(Sender: TObject);
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
@@ -238,12 +237,13 @@ begin
   with PropertyGrid do
   begin
     Name:='PropertyGrid';
-    // Use panel for border
-    Parent := pnlDebugSpecific;   //gbDebuggerSpecific;
+    Parent := gbDebuggerSpecific;
+    BorderSpacing.Around := 6;
     Visible := True;
     Align := alClient;
-    Layout := oilVertical;
-    RowSpacing := 4;
+    PrefferedSplitterX := 200;
+    SplitterX := 200;
+    Layout := oilHorizontal;
   end;
 end;
 
@@ -285,6 +285,7 @@ procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOption
 begin
   with AOptions as TEnvironmentOptions do
   begin
+    TEnvironmentOptions(AOptions).ObjectInspectorOptions.AssignTo(PropertyGrid);
     FOldDebuggerPathAndParams := DebuggerFilename;
     cmbDebuggerPath.Text := FOldDebuggerPathAndParams;
     FetchDebuggerClass;

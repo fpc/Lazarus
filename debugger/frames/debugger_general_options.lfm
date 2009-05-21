@@ -3,7 +3,6 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Width = 519
   ClientHeight = 427
   ClientWidth = 519
-  TabOrder = 0
   Visible = False
   DesignLeft = 812
   DesignTop = 438
@@ -83,14 +82,14 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 51
+    Height = 53
     Top = 84
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Additional search path'
-    ClientHeight = 33
+    ClientHeight = 35
     ClientWidth = 515
     TabOrder = 1
     object cmdOpenAdditionalPath: TSpeedButton
@@ -100,7 +99,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideBottom.Control = txtAdditionalPath
       AnchorSideBottom.Side = asrBottom
       Left = 486
-      Height = 21
+      Height = 23
       Top = 6
       Width = 23
       Anchors = [akTop, akRight, akBottom]
@@ -115,7 +114,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideTop.Control = gbAdditionalSearchPath
       AnchorSideRight.Control = cmdOpenAdditionalPath
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
       Width = 480
       Anchors = [akTop, akLeft, akRight]
@@ -133,7 +132,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 56
-    Top = 141
+    Top = 143
     Width = 519
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -158,27 +157,12 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 224
-    Top = 203
+    Height = 222
+    Top = 205
     Width = 519
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'Debugger specific options (depends on type of debugger)'
-    ClientHeight = 206
-    ClientWidth = 515
     TabOrder = 3
-    object pnlDebugSpecific: TPanel
-      Left = 6
-      Height = 194
-      Top = 6
-      Width = 503
-      Align = alClient
-      BorderSpacing.Around = 6
-      BevelOuter = bvNone
-      BorderWidth = 4
-      FullRepaint = False
-      TabOrder = 0
-      TabStop = True
-    end
   end
 end

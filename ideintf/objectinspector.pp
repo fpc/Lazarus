@@ -65,6 +65,7 @@ type
   EObjectInspectorException = class(Exception);
 
   TObjectInspectorDlg = class;
+  TOICustomPropertyGrid = class;
 
   // standard ObjectInspector pages
   TObjectInspectorPage = (
@@ -118,7 +119,8 @@ type
     function Load: boolean;
     function Save: boolean;
     procedure Assign(AnObjInspector: TObjectInspectorDlg);
-    procedure AssignTo(AnObjInspector: TObjectInspectorDlg);
+    procedure AssignTo(AnObjInspector: TObjectInspectorDlg); overload;
+    procedure AssignTo(AGrid: TOICustomPropertyGrid); overload;
 
     property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
 
@@ -156,9 +158,6 @@ type
     property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
     property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
   end;
-
-  TOICustomPropertyGrid = class;
-
 
   { TOIPropertyGridRow }
 
@@ -3651,28 +3650,12 @@ begin
 
   for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
   begin
-    Grid:=AnObjInspector.GridControl[Page];
-    if Grid=nil then
+    Grid := AnObjInspector.GridControl[Page];
+    if Grid = nil then
       Continue;
     Grid.PrefferedSplitterX := FGridSplitterX[Page];
     Grid.SplitterX := FGridSplitterX[Page];
-    Grid.BackgroundColor := FGridBackgroundColor;
-    Grid.SubPropertiesColor := FSubPropertiesColor;
-    Grid.ReferencesColor := FReferencesColor;
-    Grid.ValueFont.Color := FValueColor;
-    if FBoldNonDefaultValues then
-      Grid.ValueFont.Style := [fsBold]
-    else
-      Grid.ValueFont.Style := [];
-    Grid.DefaultValueFont.Color := FDefaultValueColor;
-    Grid.NameFont.Color := FPropertyNameColor;
-    Grid.HighlightColor := FHighlightColor;
-    Grid.HighlightFont.Color := FHighlightFontColor;
-    Grid.GutterColor := FGutterColor;
-    Grid.GutterEdgeColor := FGutterEdgeColor;
-    Grid.ShowHint := FShowHints;
-    Grid.DrawHorzGridLines := FDrawGridLines;
-    Grid.ShowGutter := FShowGutter;
+    AssignTo(Grid);
   end;
   AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
   AnObjInspector.ShowComponentTree := FShowComponentTree;
@@ -3680,6 +3663,27 @@ begin
   AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
   AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.ShowStatusBar := ShowStatusBar;
+end;
+
+procedure TOIOptions.AssignTo(AGrid: TOICustomPropertyGrid);
+begin
+  AGrid.BackgroundColor := FGridBackgroundColor;
+  AGrid.SubPropertiesColor := FSubPropertiesColor;
+  AGrid.ReferencesColor := FReferencesColor;
+  AGrid.ValueFont.Color := FValueColor;
+  if FBoldNonDefaultValues then
+    AGrid.ValueFont.Style := [fsBold]
+  else
+    AGrid.ValueFont.Style := [];
+  AGrid.DefaultValueFont.Color := FDefaultValueColor;
+  AGrid.NameFont.Color := FPropertyNameColor;
+  AGrid.HighlightColor := FHighlightColor;
+  AGrid.HighlightFont.Color := FHighlightFontColor;
+  AGrid.GutterColor := FGutterColor;
+  AGrid.GutterEdgeColor := FGutterEdgeColor;
+  AGrid.ShowHint := FShowHints;
+  AGrid.DrawHorzGridLines := FDrawGridLines;
+  AGrid.ShowGutter := FShowGutter;
 end;
 
 
