@@ -1051,7 +1051,7 @@ begin
                                                     uemEncoding);
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-           'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
+           'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
   SrcEditMenuDocking:=RegisterIDEMenuCommand(SourceEditorMenuRoot, 'Docking',
            lisMVDocking);
   {$IFNDEF EnableIDEDocking}

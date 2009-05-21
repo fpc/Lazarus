@@ -449,7 +449,7 @@ begin
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                'Snap to guide lines',fdmSnapToGuideLinesOption);
     DesignerMenuShowOptions:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
-                                                 'Show options',fdmShowOptions, nil, nil, nil, 'menu_environment_options');
+                                                 'Show options',dlgFROpts, nil, nil, nil, 'menu_environment_options');
 end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
