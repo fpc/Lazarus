@@ -4890,21 +4890,22 @@ because then the docking manager (DragDockObject) would refer to an invalid (no 
 existing) target.
  }
 
-  if not KeepDockSiteSize then begin
-    NewBounds:=BoundsRect;
+  if not KeepDockSiteSize then
+  begin
+    NewBounds := BoundsRect;
     case Client.Align of
-    alLeft:
-      inc(NewBounds.Left,Client.Width);
-    alTop:
-      inc(NewBounds.Top,Client.Height);
-    alRight:
-      dec(NewBounds.Right,Client.Width);
-    alBottom:
-      dec(NewBounds.Bottom,Client.Height);
+      alLeft:
+        inc(NewBounds.Left, Client.Width);
+      alTop:
+        inc(NewBounds.Top, Client.Height);
+      alRight:
+        dec(NewBounds.Right, Client.Width);
+      alBottom:
+        dec(NewBounds.Bottom, Client.Height);
     end;
-    SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
-                      NewBounds.Right-NewBounds.Left,
-                      NewBounds.Bottom-NewBounds.Top);
+    SetBoundsKeepBase(NewBounds.Left, NewBounds.Top,
+                      NewBounds.Right - NewBounds.Left,
+                      NewBounds.Bottom - NewBounds.Top);
   end;
 
   Result := Result and DoUndockClientMsg(NewTarget, Client);
@@ -7102,7 +7103,7 @@ end;
 
 function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
 begin
-  Result := true;
+  Result := True;
   DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' ',DbgSName(Client),' ',DbgSName(Client.Parent)]);
   if FUseDockManager and (DockManager <> nil) then
     DockManager.RemoveControl(Client);

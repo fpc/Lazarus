@@ -863,7 +863,7 @@ end;
 
 constructor TLazDockPages.Create(TheOwner: TComponent);
 begin
-  PageClass:=TLazDockPage;
+  PageClass := TLazDockPage;
   inherited Create(TheOwner);
 end;
 
@@ -878,22 +878,26 @@ var
 begin
   DebugLn(['TLazDockTree.UndockControlForDocking AControl=',DbgSName(AControl),' AControl.Parent=',DbgSName(AControl.Parent)]);
   // undock AControl
-  if AControl is TWinControl then begin
-    AWinControl:=TWinControl(AControl);
-    if (AWinControl.DockManager<>nil)
-    and (AWinControl.DockManager<>Self) then begin
+  if AControl is TWinControl then
+  begin
+    AWinControl := TWinControl(AControl);
+    if (AWinControl.DockManager<>nil) and (AWinControl.DockManager<>Self) then
+    begin
       raise Exception.Create('TLazDockTree.UndockControlForDocking mixing docking managers is not supported');
     end;
   end;
-  if AControl.Parent<>nil then begin
-    AControl.Parent:=nil;
+  if AControl.Parent <> nil then
+  begin
+    AControl.Parent := nil;
   end;
-  for i:=AControl.AnchoredControlCount-1 downto 0 do begin
-    Sibling:=AControl.AnchoredControls[i];
-    if (Sibling<>AControl.Parent) and (Sibling.Parent<>AControl) then begin
-      for a:=low(TAnchorKind) to high(TAnchorKind) do
-        if Sibling.AnchorSide[a].Control=AControl then
-          Sibling.AnchorSide[a].Control:=nil;
+  for i:=AControl.AnchoredControlCount - 1 downto 0 do
+  begin
+    Sibling := AControl.AnchoredControls[i];
+    if (Sibling <> AControl.Parent) and (Sibling.Parent <> AControl) then
+    begin
+      for a := Low(TAnchorKind) to High(TAnchorKind) do
+        if Sibling.AnchorSide[a].Control = AControl then
+          Sibling.AnchorSide[a].Control := nil;
     end;
   end;
 end;
@@ -905,14 +909,14 @@ end;
 
 procedure TLazDockTree.BreakAnchors(Zone: TDockZone);
 begin
-  if Zone=nil then exit;
-  if (Zone.ChildControl<>nil) and (Zone.ChildControl<>DockSite) then
+  if Zone = nil then Exit;
+  if (Zone.ChildControl <> nil) and (Zone.ChildControl <> DockSite) then
   begin
-    Zone.ChildControl.AnchorSide[akLeft].Control:=nil;
-    Zone.ChildControl.AnchorSide[akTop].Control:=nil;
-    Zone.ChildControl.Anchors:=[akLeft,akTop];
-    Zone.ChildControl.BorderSpacing.Left:=0;
-    Zone.ChildControl.BorderSpacing.Top:=0;
+    Zone.ChildControl.AnchorSide[akLeft].Control := nil;
+    Zone.ChildControl.AnchorSide[akTop].Control := nil;
+    Zone.ChildControl.Anchors := [akLeft, akTop];
+    Zone.ChildControl.BorderSpacing.Left := 0;
+    Zone.ChildControl.BorderSpacing.Top := 0;
   end;
   BreakAnchors(Zone.FirstChild);
   BreakAnchors(Zone.NextSibling);
