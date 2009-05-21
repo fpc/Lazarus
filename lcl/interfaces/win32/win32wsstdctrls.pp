@@ -797,6 +797,8 @@ class procedure TWin32WSCustomComboBox.AdaptBounds(const AWinControl: TWinContro
 var
   StringList: TWin32ComboBoxStringList;
 begin
+  if TCustomComboBox(AWinControl).Style=csSimple
+    then exit;
   StringList := GetStringList(TCustomComboBox(AWinControl));
   if StringList <> nil then
     Height := StringList.ComboHeight;

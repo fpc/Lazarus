@@ -379,8 +379,8 @@ begin
   if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then
   begin
     // combobox workaround:
-    // if style = csSimple FEditHeight = Edit Height + Listbox Height
-    Result := FEditHeight;
+    // if style = csSimple follow the LCL height.
+    Result := FSender.Height;
   end else
   begin
     if Count = 0 then
