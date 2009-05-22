@@ -234,8 +234,8 @@ type
     function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function  GetXValue(AIndex: Integer): Double;
     function  GetYValue(AIndex: Integer): Double;
-    procedure SetXValue(AIndex: Integer; Value: Double);
-    procedure SetYValue(AIndex: Integer; Value: Double);
+    procedure SetXValue(AIndex: Integer; AValue: Double);
+    procedure SetYValue(AIndex: Integer; AValue: Double);
     function  GetXImgValue(AIndex: Integer): Integer;
     function  GetYImgValue(AIndex: Integer): Integer;
     procedure GetMin(var X, Y: Double);
@@ -697,79 +697,62 @@ begin
   Result := Source[AIndex]^.Y;
 end;
 
-procedure TLineSeries.SetXValue(AIndex: Integer; Value: Double);
+procedure TLineSeries.SetXValue(AIndex: Integer; AValue: Double);
 var
   i: Integer;
-  Val: Double;
+  oldX: Double;
 begin
-  if not UpdateInProgress then begin
-     if Value < XGraphMin then XGraphMin := Value
-     else if Value > XGraphMax then XGraphMax := Value
-     else begin
-       if Source[AIndex]^.X = XGraphMax then begin
-         Source[AIndex]^.X := Value;
-         if Value < XGraphMax then begin
-           XGraphMax := MinDouble;
-           for i := 0 to Count - 1 do begin
-             Val := Source[AIndex]^.X;
-             if Val > XGraphMax then XGraphMax := Val;
-           end;
-         end;
-       end
-       else if Source[AIndex]^.X = XGraphMin then begin
-         Source[AIndex]^.X := Value;
-         if Value > XGraphMin then begin
-           XGraphMin := MaxDouble;
-           for i := 0 to Count - 1 do begin
-             Val := Source[AIndex]^.X;
-             if Val < XGraphMin then XGraphMin := Val;
-           end;
-         end;
-       end;
-     end;
-  end;
+  // TODO: Ensure that points are sorted by X.
 
-  Source[AIndex]^.X := Value;
-
+  oldX := Source[AIndex]^.X;
+  ListSource.InvalidateValues;
+  Source[AIndex]^.X := AValue;
   UpdateParentChart;
-end;
 
-procedure TLineSeries.SetYValue(AIndex: Integer; Value: Double);
-var
-  i: Integer;
-  Val: Double;
-begin
-  if not UpdateInProgress then begin
-    if Value<YGraphMin then YGraphMin:=Value
-    else if Value>YGraphMax then YGraphMax:=Value
-    else begin
-      if Source[AIndex]^.Y = YGraphMax then begin
-        Source[AIndex]^.Y := Value;
-        if Value < YGraphMax then begin
-          YGraphMax := MinDouble;
-          for i := 0 to Count - 1 do begin
-            Val := Source[AIndex]^.Y;
-            if Val > YGraphMax then YGraphMax := Val;
-          end;
-        end;
-      end
-      else if Source[AIndex]^.Y = YGraphMin then begin
-        Source[AIndex]^.Y := Value;
-        if Value > YGraphMin then begin
-          YGraphMin := MaxDouble;
-          for i := 0 to Count - 1 do begin
-            Val:= Source[AIndex]^.Y;
-            if Val < YGraphMin then YGraphMin := Val;
-          end;
-        end;
-      end;
+  if UpdateInProgress then exit;
+
+  if AValue <= XGraphMin then XGraphMin := AValue
+  else if AValue >= XGraphMax then XGraphMax := AValue
+  else begin
+    if oldX = XGraphMax then begin
+      XGraphMax := -Infinity;
+      for i := 0 to Count - 1 do
+        XGraphMax := Max(XGraphMax, Source[i]^.X);
+    end;
+    if oldX = XGraphMin then begin
+      XGraphMin := Infinity;
+      for i := 0 to Count - 1 do
+        XGraphMin := Min(XGraphMin, Source[i]^.X);
     end;
   end;
+end;
 
+procedure TLineSeries.SetYValue(AIndex: Integer; AValue: Double);
+var
+  i: Integer;
+  oldY: Double;
+begin
+  oldY := Source[AIndex]^.Y;
   ListSource.InvalidateValues;
-  Source[AIndex]^.Y := Value;
-
+  Source[AIndex]^.Y := AValue;
   UpdateParentChart;
+
+  if UpdateInProgress then exit;
+
+  if AValue <= YGraphMin then YGraphMin := AValue
+  else if AValue >= YGraphMax then YGraphMax := AValue
+  else begin
+    if oldY = YGraphMax then begin
+      YGraphMax := -Infinity;
+      for i := 0 to Count - 1 do
+        YGraphMax := Max(YGraphMax, Source[i]^.Y);
+    end;
+    if oldY = YGraphMin then begin
+      YGraphMin := Infinity;
+      for i := 0 to Count - 1 do
+        YGraphMin := Min(YGraphMin, Source[i]^.Y);
+    end;
+  end;
 end;
 
 function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
