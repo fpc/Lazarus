@@ -574,8 +574,7 @@ class procedure TCarbonWSCustomListView.SetSort(const ALV: TCustomListView; cons
   const AColumn: Integer);
 begin
   if not CheckHandle(ALV, Self, 'SetSort') then Exit;
-
-  // TODO
+  TCarbonListView(ALV.Handle).UpdateItems;
 end;
 
 class procedure TCarbonWSCustomListView.SetViewOrigin(const ALV: TCustomListView;
