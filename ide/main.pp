@@ -457,7 +457,7 @@ type
     procedure OnDesignerSaveAsXML(Sender: TObject);
 
     // control selection
-    procedure OnControlSelectionChanged(Sender: TObject);
+    procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
     procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
                                             NewForm: TCustomForm);
@@ -11816,7 +11816,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
+procedure TMainIDE.OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
 var
   NewSelection: TPersistentSelectionList;
   i: integer;
@@ -11824,12 +11824,13 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.OnControlSelectionChanged]');
   {$ENDIF}
-  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  if (TheControlSelection = nil) or (FormEditor1 = nil) then Exit;
 
-  NewSelection:=TPersistentSelectionList.Create;
-  for i:=0 to TheControlSelection.Count-1 do
+  NewSelection := TPersistentSelectionList.Create;
+  NewSelection.ForceUpdate := ForceUpdate;
+  for i := 0 to TheControlSelection.Count - 1 do
     NewSelection.Add(TheControlSelection[i].Persistent);
-  FormEditor1.Selection:=NewSelection;
+  FormEditor1.Selection := NewSelection;
   NewSelection.Free;
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.OnControlSelectionChanged] END');

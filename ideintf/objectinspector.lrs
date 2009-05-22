@@ -8,9 +8,8 @@ LazarusResources.Add('TObjectInspectorDlg','FORMDATA',[
   +#6#6'0.9.27'#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#23#3'Top'
   +#3#134#2#5'Width'#3#19#1#6'Panels'#14#1#5'Width'#2'd'#0#1#5'Width'#2'2'#0#0
   +#11'SimplePanel'#8#0#0#9'TComboBox'#23'AvailPersistentComboBox'#4'Left'#2#0#6
-  +'Height'#2#21#3'Top'#2#0#5'Width'#3#19#1#5'Align'#7#5'alTop'#12'AutoComplete'
-  +#8#10'ItemHeight'#2#13#9'ItemWidth'#2#0#9'OnCloseUp'#7#20'AvailComboBoxClose'
-  +'Up'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#0#0#10'TPopupMenu'#13'Mai'
-  +'nPopupMenu'#7'OnPopup'#7#20'OnMainPopupMenuPopup'#4'left'#2#9#3'top'#2#11#0
-  +#0#0
+  +'Height'#2#21#3'Top'#2#0#5'Width'#3#19#1#5'Align'#7#5'alTop'#10'ItemHeight'#2
+  +#13#9'OnCloseUp'#7#20'AvailComboBoxCloseUp'#5'Style'#7#14'csDropDownList'#8
+  +'TabOrder'#2#0#0#0#10'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#20'OnMainPo'
+  +'pupMenuPopup'#4'left'#2#9#3'top'#2#11#0#0#0
 ]);

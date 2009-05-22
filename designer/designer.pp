@@ -2336,29 +2336,34 @@ var
   CurControl: TControl;
   NewParent: TWinControl;
 begin
-  if not (Sender is TIDEMenuCommand) then exit;
-  Item:=TIDEMenuCommand(Sender);
-  NewParentName:=Item.Caption;
-  if SysUtils.CompareText(LookupRoot.Name,NewParentName)=0 then
-    NewParent:=TWinControl(LookupRoot)
+  if not (Sender is TIDEMenuCommand) then Exit;
+  Item := TIDEMenuCommand(Sender);
+  NewParentName := Item.Caption;
+  if SysUtils.CompareText(LookupRoot.Name, NewParentName) = 0 then
+    NewParent := TWinControl(LookupRoot)
   else
-    NewParent:=TWinControl(LookupRoot.FindComponent(NewParentName));
-  if (NewParent=nil) or (not (NewParent is TWinControl)) then exit;
+    NewParent := TWinControl(LookupRoot.FindComponent(NewParentName));
+  if (NewParent=nil) or (not (NewParent is TWinControl)) then Exit;
+
   Form.DisableAlign;
   try
-    i:=ControlSelection.Count-1;
-    while (i>=0) do begin
-      if i<ControlSelection.Count then begin
-        if ControlSelection[i].IsTControl then begin
-          CurControl:=TControl(ControlSelection[i].Persistent);
-          CurControl.Parent:=NewParent;
+    i := ControlSelection.Count - 1;
+    while (i >= 0) do 
+    begin
+      if i < ControlSelection.Count then 
+      begin
+        if ControlSelection[i].IsTControl then 
+        begin
+          CurControl := TControl(ControlSelection[i].Persistent);
+          CurControl.Parent := NewParent;
         end;
       end;
       dec(i);
     end;
   finally
-    if Form<>nil then
+    if Form <> nil then
       Form.EnableAlign;
+    ControlSelection.DoChange(True); // request updates since control hierarchi change
   end;
 end;
 

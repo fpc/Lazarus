@@ -202,6 +202,7 @@ type
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
   TOnSelectionFormChanged = procedure(Sender: TObject;
     OldForm, NewForm: TCustomForm) of object;
+  TOnSelectionUpdate = procedure(Sender: TObject; ForceUpdate: Boolean) of object;
 
   TNearestInt = record
     Level: integer;
@@ -295,7 +296,7 @@ type
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
     FMarkerSize: integer;
-    FOnChange: TNotifyEvent;
+    FOnChange: TOnSelectionUpdate;
     FOnPropertiesChanged: TNotifyEvent;
     FOnSelectionFormChanged: TOnSelectionFormChanged;
     FResizeLockCount: integer;
@@ -325,7 +326,6 @@ type
     function GetSelectionOwner: TComponent;
     function GetSnapping: boolean;
     function GetVisible: boolean;
-    procedure DoChange;
     procedure DoChangeProperties;
     procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
     procedure SetActiveGrabber(AGrabber: TGrabber);
@@ -382,6 +382,7 @@ type
 
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure DoChange(ForceUpdate: Boolean = False);
     property UpdateLock: integer read FUpdateLock;
 
     function IndexOf(APersistent: TPersistent):integer;
@@ -444,7 +445,7 @@ type
       read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property MarkerColor: TColor read GetMarkerColor;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChange: TOnSelectionUpdate read FOnChange write FOnChange;
     property OnPropertiesChanged: TNotifyEvent
       read FOnPropertiesChanged write FOnPropertiesChanged;
     procedure DrawMarker(AComponent: TComponent; DC: TDesignerDeviceContext);
@@ -1789,14 +1790,15 @@ begin
   ImproveNearestInt(NearestInt,NearestGridX);
 end;
 
-procedure TControlSelection.DoChange;
+procedure TControlSelection.DoChange(ForceUpdate: Boolean = False);
 begin
-  if (FUpdateLock>0) then
-    Include(FStates,cssChangedDuringLock)
+  if (FUpdateLock > 0) then
+    Include(FStates, cssChangedDuringLock)
   else
   begin
-    Exclude(FStates,cssChangedDuringLock);
-    if Assigned(fOnChange) then fOnChange(Self);
+    Exclude(FStates, cssChangedDuringLock);
+    if Assigned(FOnChange) then
+      FOnChange(Self, ForceUpdate);
   end;
 end;
 

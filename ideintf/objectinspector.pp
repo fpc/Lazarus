@@ -692,6 +692,7 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure RefreshSelection;
+    procedure RefreshComponentTreeSelection;
     procedure SaveChanges;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
@@ -4068,7 +4069,8 @@ end;
 procedure TObjectInspectorDlg.SetSelection(
   const ASelection:TPersistentSelectionList);
 begin
-  if FSelection.IsEqual(ASelection) then exit;
+  if not ASelection.ForceUpdate and FSelection.IsEqual(ASelection) then
+    Exit;
   //if (FSelection.Count=1) and (FSelection[0] is TCollectionItem)
   //and (ASelection.Count=0) then RaiseGDBException('');
   FSelection.Assign(ASelection);
@@ -4094,10 +4096,15 @@ begin
   for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page] <> nil then
       GridControl[Page].Selection := FSelection;
-  ComponentTree.Selection := FSelection;
-  ComponentTree.MakeSelectionVisible;
+  RefreshComponentTreeSelection;
   if (not Visible) and AutoShow and (FSelection.Count > 0) then
     Visible := True;
+end;
+
+procedure TObjectInspectorDlg.RefreshComponentTreeSelection;
+begin
+  ComponentTree.Selection := FSelection;
+  ComponentTree.MakeSelectionVisible;
 end;
 
 procedure TObjectInspectorDlg.SaveChanges;

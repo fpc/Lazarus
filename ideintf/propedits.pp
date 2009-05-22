@@ -1082,7 +1082,8 @@ type
   { TPersistentSelectionList }
 
   TPersistentSelectionList = class
-  protected
+  private
+    FForceUpdate: Boolean;
     FUpdateLock: integer;
     FPersistentList: TFPList;
     function GetItems(AIndex: integer): TPersistent;
@@ -1108,6 +1109,7 @@ type
     procedure Assign(SourceSelectionList: TPersistentSelectionList);
     property Items[AIndex: integer]: TPersistent read GetItems write SetItems; default;
     procedure WriteDebugReport;
+    property ForceUpdate: Boolean read FForceUpdate write FForceUpdate;
   end;
 
   TBackupComponentList = class
@@ -5436,15 +5438,17 @@ begin
   while (Result>=0) and (Items[Result]<>APersistent) do dec(Result);
 end;
 
-procedure TPersistentSelectionList.Assign(
-  SourceSelectionList:TPersistentSelectionList);
-var a:integer;
+procedure TPersistentSelectionList.Assign(SourceSelectionList: TPersistentSelectionList);
+var
+  a: integer;
 begin
-  if SourceSelectionList=Self then exit;
+  if SourceSelectionList = Self then Exit;
   Clear;
-  if (SourceSelectionList<>nil) and (SourceSelectionList.Count>0) then begin
-    FPersistentList.Count:=SourceSelectionList.Count;
-    for a:=0 to SourceSelectionList.Count-1 do
+  if (SourceSelectionList <> nil) and (SourceSelectionList.Count > 0) then
+  begin
+    FForceUpdate := SourceSelectionList.ForceUpdate;
+    FPersistentList.Count := SourceSelectionList.Count;
+    for a := 0 to SourceSelectionList.Count - 1 do
       FPersistentList[a] := SourceSelectionList[a];
   end;
 end;

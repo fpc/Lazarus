@@ -30,9 +30,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Top = 0
     Width = 275
     Align = alTop
-    AutoComplete = False
     ItemHeight = 13
-    ItemWidth = 0
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0

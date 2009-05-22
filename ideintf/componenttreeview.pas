@@ -139,21 +139,22 @@ end;
   
 { TComponentTreeView }
 
-procedure TComponentTreeView.SetSelection(
-  const NewSelection: TPersistentSelectionList);
+procedure TComponentTreeView.SetSelection(const NewSelection: TPersistentSelectionList);
 begin
-  if (PropertyEditorHook=nil) then begin
-    if (FComponentList.LookupRoot=nil) then
-      exit;
+  if (PropertyEditorHook = nil) then
+  begin
+    if (FComponentList.LookupRoot = nil) then
+      Exit;
     FComponentList.Clear;
   end
-  else if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelection)
-  then begin
+  else
+  if not NewSelection.ForceUpdate and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
+  begin
     // nodes ok, but maybe node values need update
     UpdateComponentNodesValues;
-    exit;
+    Exit;
   end;
-  FComponentList.LookupRoot:=PropertyEditorHook.LookupRoot;
+  FComponentList.LookupRoot := PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelection);
   RebuildComponentNodes;
 end;
