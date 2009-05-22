@@ -5257,9 +5257,10 @@ var
       if (CurPos.StartPos>=CleanCursorPos) and (CursorBlockLvl<0) then begin
         // reached cursor
         CursorBlockLvl:=Stack.Top;
-        if CursorBlockLvl<0 then
-          CursorBlockIndent:=GetLineIndent(Src,CurPos.StartPos)
-        else begin
+        if CursorBlockLvl<0 then begin
+          // cursor outside blocks or on first atom of first block
+          exit;
+        end else begin
           CursorBlock:=Stack.Stack[CursorBlockLvl];
           CursorBlockIndent:=GetLineIndent(Src,CursorBlock.StartPos);
         end;
@@ -5271,7 +5272,8 @@ var
         break;
 
       // check if line start
-      InCursorBlock:=(CursorBlockLvl=Stack.Top) and (not BehindCursorBlock);
+      InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
+                     and (not BehindCursorBlock);
       LineStart:=InCursorBlock and (LastPos>0)
                  and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
       if LineStart then
@@ -5292,7 +5294,12 @@ var
       cafEnd:
         begin
           case TopBlockType(Stack) of
-          btBegin,btFinally,btExcept,btCase,btCaseOf,btCaseColon,btCaseElse:
+          btCaseOf,btCaseElse:
+            begin
+              if not EndBlockIsOk then exit; // close btCaseOf,btCaseElse
+              if not EndBlockIsOk then exit; // close btCase
+            end;
+          btBegin,btFinally,btExcept,btCase:
             if not EndBlockIsOk then exit;
           btAsm:
             if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]<>'@') then begin
