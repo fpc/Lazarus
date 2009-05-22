@@ -374,6 +374,7 @@ var
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
+    SrcEditMenuSectionPages: TIDEMenuSection;
       SrcEditSubMenuOpenFile: TIDEMenuSection;
         // Source Editor: File Specific dynamic section
         //                The items are cleared automatically after each popup.
@@ -383,7 +384,8 @@ var
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuToggleBookmarks: TIDEMenuSection;
-    SrcEditSubMenuDebug: TIDEMenuSection;
+    SrcEditMenuSectionDebug: TIDEMenuSection;
+      SrcEditSubMenuDebug: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;
       SrcEditSubMenuHighlighter: TIDEMenuSection;

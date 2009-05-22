@@ -70,7 +70,7 @@ begin
                          nil,nil,CmdFormatSelection, 'menu_file_print');
 
   //source editor popup
-  RegisterIDEMenuCommand(SourceEditorMenuRoot,
+  RegisterIDEMenuCommand(SrcEditMenuSectionPages,
                          'PrintSelection',
                          SDescrPFSelection, 
                          nil,nil,CmdFormatSelection, 'menu_file_print');

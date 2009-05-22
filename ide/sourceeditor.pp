@@ -928,18 +928,14 @@ begin
                   'Find previous word occurrence', srkmecFindPrevWordOccurrence, nil, nil, nil, 'menu_search_find_previous');
       SrcEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,
                   'Find in files', srkmecFindInFiles, nil, nil, nil, 'menu_search_files');
-    // register the sub menu Open File
-    SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
-      'Open File ...', lisOpenFile2);
-      AParent:=SrcEditSubMenuOpenFile;
-      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
-                                     'Open File At Cursor',uemOpenFileAtCursor, nil, nil, nil, 'menu_search_openfile_atcursor');
-      // register the File Specific dynamic section
-      SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
-                                                        'File dynamic section');
+  SrcEditMenuSectionPages := RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                      'Pages');
+
+    SrcEditMenuClosePage:=RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                                                     'Close Page',uemClosePage, nil, nil, nil, 'menu_close');
 
     // register the Move Page sub menu
-    SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
+    SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionPages,
                                                'Move Page ...', lisMovePage);
     AParent:=SrcEditSubMenuMovePage;
       SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
@@ -951,9 +947,31 @@ begin
       SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
                                                         uemMoveEditorRightmost);
 
-    AParent:=SrcEditMenuSectionFirstStatic;
-    SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
-                                                     'Close Page',uemClosePage, nil, nil, nil, 'menu_close');
+    // register the sub menu Open File
+    SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionPages,
+      'Open File ...', lisOpenFile2);
+      AParent:=SrcEditSubMenuOpenFile;
+      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
+                                     'Open File At Cursor',uemOpenFileAtCursor, nil, nil, nil, 'menu_search_openfile_atcursor');
+      // register the File Specific dynamic section
+      SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
+                                                        'File dynamic section');
+
+    // register the Flags section
+    SrcEditSubMenuFlags:=RegisterIDESubMenu(SrcEditMenuSectionPages,
+                                            'Flags section', lisFileSettings);
+    AParent:=SrcEditSubMenuFlags;
+      SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
+      SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
+      SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,
+                                            'ShowLineNumbers',uemShowLineNumbers);
+      SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
+      SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
+                                                      uemShowUnitInfo);
+      SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
+                                                      uemHighlighter);
+      SrcEditSubMenuEncoding:=RegisterIDESubMenu(AParent,'Encoding',
+                                                      uemEncoding);
 
   // register the Clipboard section
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -990,8 +1008,11 @@ begin
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
                                       'Set a free Bookmark',uemSetFreeBookmark);
 
+  // register the Debug section
+  SrcEditMenuSectionDebug:=RegisterIDEMenuSection(SourceEditorMenuRoot,
+                                                  'Debug section');
     // register the Debug submenu
-    SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
+    SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionDebug,
                                             'Debug',uemDebugWord);
     AParent:=SrcEditSubMenuDebug;
       // register the Debug submenu items
@@ -1034,22 +1055,6 @@ begin
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
-
-  // register the Flags section
-  SrcEditSubMenuFlags:=RegisterIDESubMenu(SourceEditorMenuRoot,
-                                          'Flags section', lisFileSettings);
-  AParent:=SrcEditSubMenuFlags;
-    SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
-    SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
-    SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,
-                                          'ShowLineNumbers',uemShowLineNumbers);
-    SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
-    SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
-                                                    uemShowUnitInfo);
-    SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
-                                                    uemHighlighter);
-    SrcEditSubMenuEncoding:=RegisterIDESubMenu(AParent,'Encoding',
-                                                    uemEncoding);
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
