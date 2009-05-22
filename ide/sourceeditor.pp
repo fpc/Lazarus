@@ -4061,7 +4061,8 @@ Begin
           else
             Pages.Add('unit1');
           PageIndex := 0;   // Set it to the first page
-          PopupMenu := SrcPopupMenu;
+          if not (nbcPageListPopup in GetCapabilities) then
+            PopupMenu := SrcPopupMenu;
           if EditorOpts.ShowTabCloseButtons then
             Options:=Options+[nboShowCloseButtons]
           else
