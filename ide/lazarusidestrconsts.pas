@@ -1769,6 +1769,7 @@ resourcestring
   uemOpenFileAtCursor = '&Open file at cursor';
   uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
+  uemCloseOtherPages = 'Close All &Other Pages';
   uemCut = 'Cut';
   uemCopy = 'Copy';
   uemPaste = 'Paste';

@@ -685,6 +685,7 @@ type
 
     procedure CloseTabClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject);
+    procedure CloseOtherPagesClicked(Sender: TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
@@ -842,6 +843,7 @@ var
     // open file
     SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
+  SrcEditMenuCloseOtherPages: TIDEMenuCommand;
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
   SrcEditMenuPaste: TIDEMenuCommand;
@@ -931,8 +933,10 @@ begin
   SrcEditMenuSectionPages := RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                       'Pages');
 
-    SrcEditMenuClosePage:=RegisterIDEMenuCommand(SrcEditMenuSectionPages,
-                                                     'Close Page',uemClosePage, nil, nil, nil, 'menu_close');
+    SrcEditMenuClosePage := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                        'Close Page',uemClosePage, nil, nil, nil, 'menu_close');
+    SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                        'Close All Other Pages',uemCloseOtherPages, nil, nil, nil);
 
     // register the Move Page sub menu
     SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionPages,
@@ -4449,6 +4453,7 @@ begin
   SrcEditMenuOpenFileAtCursor.OnClick:=@OpenAtCursorClicked;
 
   SrcEditMenuClosePage.OnClick:=@CloseClicked;
+  SrcEditMenuCloseOtherPages.OnClick:=@CloseOtherPagesClicked;
   SrcEditMenuCut.OnClick:=@CutClicked;
   SrcEditMenuCopy.OnClick:=@CopyClicked;
   SrcEditMenuPaste.OnClick:=@PasteClicked;
@@ -6044,7 +6049,12 @@ end;
 
 Procedure TSourceNotebook.CloseClicked(Sender: TObject);
 Begin
-  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender,false);
+  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender, False);
+end;
+
+procedure TSourceNotebook.CloseOtherPagesClicked(Sender: TObject);
+begin
+  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender, True);
 end;
 
 Function TSourceNotebook.FindUniquePageName(FileName:string;
@@ -6855,7 +6865,7 @@ end;
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
   if Assigned(FOnCloseClicked) then
-    FOnCloseClicked(Sender,GetKeyState(VK_CONTROL)<0);
+    FOnCloseClicked(Sender, GetKeyState(VK_CONTROL) < 0);
 end;
 
 { TSynEditPlugin1 }
