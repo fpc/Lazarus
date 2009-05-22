@@ -5228,6 +5228,9 @@ var
     NeedCompletion: Boolean;
     InsertPos: LongInt;
     NewCode: String;
+    AfterGap: TGapTyp;
+    FrontGap: TGapTyp;
+    BeautifyFlags: TBeautifyCodeFlags;
 
     function EndBlockIsOk: boolean;
     begin
@@ -5301,6 +5304,12 @@ var
             end;
           btBegin,btFinally,btExcept,btCase:
             if not EndBlockIsOk then exit;
+          btCaseColon,btRepeat:
+            begin
+              // missing semicolon or until
+              NeedCompletion:=true;
+              break;
+            end;
           btAsm:
             if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]<>'@') then begin
               if not EndBlockIsOk then exit;
@@ -5360,9 +5369,18 @@ var
             if TopBlockType(Stack)=btCase then
               BeginBlock(Stack,btCaseOf,CurPos.StartPos);
           end else if UpAtomIs('ELSE') then begin
-            if TopBlockType(Stack)=btCaseOf then begin
-              if not EndBlockIsOk then exit;
-              BeginBlock(Stack,btCaseElse,CurPos.StartPos);
+            case TopBlockType(Stack) of
+            btCaseOf:
+              begin
+                if not EndBlockIsOk then exit;
+                BeginBlock(Stack,btCaseElse,CurPos.StartPos);
+              end;
+            btCaseColon,btRepeat:
+              begin
+                // missing semicolon
+                NeedCompletion:=true;
+                break;
+              end;
             end;
           end;
         end;
@@ -5382,6 +5400,9 @@ var
       InsertPos:=CleanCursorPos;
       Indent:=CursorBlockIndent;
       NewCode:='';
+      FrontGap:=gtNewLine;
+      AfterGap:=gtNewLine;
+      BeautifyFlags:=[bcfIndentExistingLineBreaks];
       case CursorBlock.Typ of
       btBegin,btFinally,btExcept,btAsm,btCaseOf,btCaseElse:
         NewCode:='end;';
@@ -5390,11 +5411,18 @@ var
       btTry:
         NewCode:='finally'+SourceChangeCache.BeautifyCodeOptions.LineEnd
            +'end;';
+      btCaseColon:
+        begin
+          NewCode:=';';
+          FrontGap:=gtNone;
+          AfterGap:=gtNone;
+          Include(BeautifyFlags,bcfDoNotIndentFirstLine);
+        end;
       end;
       if NewCode<>'' then begin
         NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                         NewCode,Indent,[bcfIndentExistingLineBreaks]);
-        if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+                         NewCode,Indent,BeautifyFlags);
+        if not SourceChangeCache.Replace(FrontGap,AfterGap,
           InsertPos,InsertPos,NewCode) then exit;
         if not SourceChangeCache.Apply then exit;
       end;
