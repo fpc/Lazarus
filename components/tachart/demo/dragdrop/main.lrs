@@ -1,0 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'>'#1#6'Height'#3','#1#3'Top'#3#151#0#5'Wi'
+  +'dth'#3#144#1#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'ClientWidth'#3
+  +#144#1#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.27'#0#6'TChart'#6
+  +'Chart1'#4'Left'#2#0#6'Height'#3','#1#3'Top'#2#0#5'Width'#3#144#1#21'BottomA'
+  +'xis.Grid.Style'#7#5'psDot'#16'Foot.Brush.Color'#7#9'clBtnFace'#15'Foot.Font'
+  +'.Color'#7#6'clBlue'#19'LeftAxis.Grid.Style'#7#5'psDot'#20'LeftAxis.Title.An'
+  +'gle'#2'Z'#17'Title.Brush.Color'#7#9'clBtnFace'#16'Title.Font.Color'#7#6'clB'
+  +'lue'#18'Title.Text.Strings'#1#6#24'You can drag data points'#6#23'while hol'
+  +'ding Shift key'#0#13'Title.Visible'#9#5'Align'#7#8'alClient'#14'DoubleBuffe'
+  +'red'#9#11'ParentColor'#8#11'OnMouseDown'#7#15'Chart1MouseDown'#11'OnMouseMo'
+  +'ve'#7#15'Chart1MouseMove'#9'OnMouseUp'#7#13'Chart1MouseUp'#0#11'TLineSeries'
+  +#17'Chart1LineSeries1'#19'Pointer.Brush.Color'#7#8'clPurple'#17'Pointer.Hori'
+  +'zSize'#2#6#13'Pointer.Style'#7#9'psDiamond'#16'Pointer.VertSize'#2#6#11'Ser'
+  +'iesColor'#7#7'clBlack'#10'ShowPoints'#9#0#0#0#0
+]);
