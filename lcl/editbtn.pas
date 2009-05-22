@@ -500,7 +500,7 @@ var
   B: TBitmap;
 begin
   inherited Create(AOwner);
-  FDirectInput:=true;
+  FDirectInput := True;
   FButton := TSpeedButton.Create(Self);
   FButton.Width := Self.Height;
   FButton.Height := Self.Height;

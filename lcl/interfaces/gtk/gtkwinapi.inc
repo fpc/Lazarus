@@ -4334,52 +4334,53 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
-  const FrameWidth : integer; const Style : TBevelCut) : boolean;
-
-const GTKThinShadowType: array[TBevelCut] of integer =
-  (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_NONE);
-const GTKStrongShadowType: array[TBevelCut] of integer =
-  (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT, GTK_SHADOW_NONE);
-
+function TGtkWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
+  const FrameWidth: integer; const Style: TBevelCut): boolean;
 var
-  StyleWidget: PGtkWidget;
   TheStyle: PGtkStyle;
   i: integer;
-  Area: TGdkRectangle;
-  ShadowType: Integer;
+  gc1, gc2: PGdkGC;
 begin
   Result := IsValidDC(DC);
-  if not Result then exit;
-  if FrameWidth = 0 then exit;
-  StyleWidget := GetStyleWidget(lgsButton);
-  TheStyle := gtk_widget_get_style(StyleWidget);
+  if not Result or (FrameWidth = 0) then Exit;
+  TheStyle := gtk_widget_get_style(GetStyleWidget(lgsButton));
   if TheStyle = nil then exit;
+
+  case Style of
+    bvNone:
+      begin
+        InflateRect(ARect, -FrameWidth, -FrameWidth);
+        Exit;
+      end;
+    bvLowered:
+      begin
+        gc1 := TheStyle^.dark_gc[GTK_STATE_NORMAL];
+        gc2 := TheStyle^.light_gc[GTK_STATE_NORMAL];
+      end;
+    bvRaised:
+     begin
+        gc1 := TheStyle^.light_gc[GTK_STATE_NORMAL];
+        gc2 := TheStyle^.dark_gc[GTK_STATE_NORMAL];
+     end;
+    bvSpace:
+     begin
+        InflateRect(ARect, -FrameWidth, -FrameWidth);
+        Exit;
+     end;
+  end;
 
   with TGtkDeviceContext(DC) do
   begin
-    {DebugLn(['Frame3D: Drawable = ', dbgs(Drawable),
-      ' StyleWidget = ', dbgs(StyleWidget), ' Style = ', dbgs(TheStyle),
-      ' Offset = ', dbgs(Offset), ' ARect = ', dbgs(ARect)]);}
-    if FrameWidth = 1 then
-      ShadowType := GTKThinShadowType[Style]
-    else
-      ShadowType := GTKStrongShadowType[Style];
-
     for i := 1 to FrameWidth do
     begin
-      Area.X := ARect.Left + Offset.X;
-      Area.Y := ARect.Top + Offset.Y;
-      Area.Width := ARect.Right - ARect.Left;
-      Area.Height := ARect.Bottom - ARect.Top;
-      gtk_paint_shadow(TheStyle,
-                       Drawable, GTK_STATE_NORMAL,
-                       ShadowType,
-                       @Area,
-                       StyleWidget,
-                       'button',
-                       Area.X, Area.Y,
-                       Area.Width, Area.Height);
+      gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
+        ARect.Right + Offset.x - 2, ARect.Top + Offset.y);
+      gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
+        ARect.Left + Offset.x, ARect.Bottom + Offset.y - 2);
+      gdk_draw_line(Drawable, gc2, ARect.Left + Offset.x, ARect.Bottom + Offset.y - 1,
+        ARect.Right + Offset.x - 1, ARect.Bottom + Offset.y - 1);
+      gdk_draw_line(Drawable, gc2, ARect.Right + Offset.x - 1, ARect.Top + Offset.y,
+        ARect.Right + Offset.x - 1, ARect.Bottom + Offset.y - 1);
       // inflate the rectangle (! ARect will be returned to the user with this)
       InflateRect(ARect, -1, -1);
     end;
