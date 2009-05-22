@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAGraph, TAChartUtils, TATypes;
+  TAGraph, TAChartUtils, TATypes, TASources;
 
 type
   EBarError = class(EChartError);
@@ -42,17 +42,18 @@ type
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
-    FCoordList: TList;
+    FSource: TCustomChartSource;
     FMarks: TChartMarks;
     FValuesTotal: Double;
     FValuesTotalValid: Boolean;
 
-    function GetXMinVal: Integer;
+    function GetXMaxVal: Integer;
     procedure SetMarks(const AValue: TChartMarks);
   protected
     procedure AfterAdd; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function ListSource: TListChartSource;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
@@ -65,7 +66,7 @@ type
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
 
-    property Coord: TList read FCoordList;
+    property Source: TCustomChartSource read FSource;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -79,7 +80,7 @@ type
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual; overload;
     function AddXY(X, Y: Double): Longint; virtual; overload;
     procedure Clear;
-    function Count: Integer;
+    function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function FormattedMark(AIndex: integer): String;
     function IsEmpty: Boolean; override;
@@ -369,17 +370,13 @@ begin
 
   FActive := true;
   FShowInLegend := true;
-  FCoordList := TList.Create;
+  FSource := TListChartSource.Create;
   FMarks := TChartMarks.Create(FChart);
 end;
 
 destructor TChartSeries.Destroy;
-var
-  i: Integer;
 begin
-  for i := 0 to FCoordList.Count - 1 do
-    Dispose(PChartCoord(FCoordList.Items[i]));
-  FCoordList.Free;
+  FSource.Free;
   FMarks.Free;
   UpdateParentChart;
 
@@ -391,24 +388,31 @@ begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
 end;
 
+function TChartSeries.ListSource: TListChartSource;
+begin
+  if not (FSource is TListChartSource) then
+    raise EFixedSourceRequired.Create('Fixed chart source required');
+  Result := FSource as TListChartSource;
+end;
+
 function TChartSeries.FormattedMark(AIndex: integer): String;
 var
   total, percent: Double;
 begin
   total := GetValuesTotal;
-  with PChartCoord(FCoordList[AIndex])^ do begin
+  with FSource[AIndex]^ do begin
     if total = 0 then
       percent := 0
     else
-      percent := y / total * 100;
-    Result := Format(FMarks.Format, [y, percent, Text, total, x]);
+      percent := Y / total * 100;
+    Result := Format(FMarks.Format, [y, percent, Text, total, X]);
   end;
 end;
 
 procedure TChartSeries.GetCoords(
   AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
 begin
-  AG := DoublePoint(PChartCoord(FCoordList[AIndex])^);
+  AG := DoublePoint(FSource[AIndex]^);
   AI := ParentChart.GraphToImage(AG);
 end;
 
@@ -428,17 +432,17 @@ var
 begin
   if not FValuesTotalValid then begin
     FValuesTotal := 0;
-    for i := 0 to FCoordList.Count - 1 do
-      FValuesTotal += PChartCoord(FCoordList[i])^.y;
+    for i := 0 to FSource.Count - 1 do
+      FValuesTotal += FSource[i]^.Y;
     FValuesTotalValid := true;
   end;
   Result := FValuesTotal;
 end;
 
-function TChartSeries.GetXMinVal: Integer;
+function TChartSeries.GetXMaxVal: Integer;
 begin
   if Count > 0 then
-    Result := Round(PChartCoord(FCoordList[FCoordList.Count-1])^.x)
+    Result := Round(FSource[Count - 1]^.X)
   else
     Result := 0;
 end;
@@ -449,24 +453,8 @@ begin
 end;
 
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
-var
-  pcc: PChartCoord;
 begin
-  New(pcc);
-  pcc^.x := X;
-  pcc^.y := Y;
-  pcc^.Color := Color;
-  pcc^.Text := XLabel;
-
-  // We keep FCoordList ordered by X coordinate.
-  // Note that this leads to O(N^2) time except
-  // for the case of adding already ordered points.
-  // So, is the user wants to add many (>10000) points to a graph,
-  // he should pre-sort them to avoid performance penalty.
-  Result := FCoordList.Count;
-  while (Result > 0) and (PChartCoord(FCoordList.Items[Result - 1])^.x > X) do
-    Dec(Result);
-  FCoordList.Insert(Result, pcc);
+  Result := ListSource.Add(X, Y, XLabel, Color);
   if FValuesTotalValid then
     FValuesTotal += Y;
 end;
@@ -477,14 +465,8 @@ begin
 end;
 
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
-var
-  XVal: Integer;
 begin
-  if FCoordList.Count = 0 then
-    XVal := 0
-  else
-    XVal := Round(PChartCoord(FCoordList.Items[FCoordList.Count - 1])^.x);
-  Result := AddXY(XVal + 1, AValue, XLabel, Color);
+  Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
 end;
 
 function TChartSeries.AddXY(X, Y: Double): Longint;
@@ -494,15 +476,14 @@ end;
 
 procedure TChartSeries.Delete(AIndex:Integer);
 begin
-  Dispose(PChartCoord(FCoordList.Items[AIndex]));
-  FCoordList.Delete(AIndex);
+  ListSource.Delete(AIndex);
   FValuesTotalValid := false;
   UpdateParentChart;
 end;
 
 procedure TChartSeries.Clear;
 begin
-  FCoordList.Clear;
+  ListSource.Clear;
 
   XGraphMin := MaxDouble;
   YGraphMin := MaxDouble;
@@ -522,9 +503,9 @@ begin
   Result := SeriesColor;
 end;
 
-function TChartSeries.Count:Integer;
+function TChartSeries.Count: Integer;
 begin
-  Result := FCoordList.Count;
+  Result := FSource.Count;
 end;
 
 procedure TChartSeries.SetActive(AValue: Boolean);
@@ -666,7 +647,6 @@ var
 
 var
   i: Integer;
-  c: TColor;
 begin
   if Count = 0 then exit;
 
@@ -679,15 +659,14 @@ begin
 
     if PrepareLine then begin
       ACanvas.Pen.Style := FStyle;
-      c := PChartCoord(FCoordList[i])^.Color;
       if Depth = 0 then begin
-        ACanvas.Pen.Color := c;
+        ACanvas.Pen.Color := GetColor(i);
         ACanvas.Line(i1, i2);
       end
       else begin
         ACanvas.Brush.Style := bsSolid;
         ACanvas.Pen.Color := clBlack;
-        ACanvas.Brush.Color := c;
+        ACanvas.Brush.Color := GetColor(i);
         DrawLineDepth(ACanvas, i1, i2, Depth);
       end;
     end;
@@ -730,12 +709,12 @@ end;
 
 function TLineSeries.GetXValue(AIndex: Integer): Double;
 begin
-  Result := PChartCoord(FCoordList.Items[AIndex])^.x;
+  Result := Source[AIndex]^.X;
 end;
 
 function TLineSeries.GetYValue(AIndex: Integer): Double;
 begin
-  Result := PChartCoord(FCoordList.Items[AIndex])^.y;
+  Result := Source[AIndex]^.Y;
 end;
 
 procedure TLineSeries.SetXValue(AIndex: Integer; Value: Double);
@@ -747,22 +726,22 @@ begin
      if Value < XGraphMin then XGraphMin := Value
      else if Value > XGraphMax then XGraphMax := Value
      else begin
-       if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMax then begin
-         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
+       if Source[AIndex]^.X = XGraphMax then begin
+         Source[AIndex]^.X := Value;
          if Value < XGraphMax then begin
            XGraphMax := MinDouble;
-           for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
+           for i := 0 to Count - 1 do begin
+             Val := Source[AIndex]^.X;
              if Val > XGraphMax then XGraphMax := Val;
            end;
          end;
        end
-       else if PChartCoord(FCoordList.Items[AIndex])^.x = XGraphMin then begin
-         PChartCoord(FCoordList.Items[AIndex])^.x := Value;
+       else if Source[AIndex]^.X = XGraphMin then begin
+         Source[AIndex]^.X := Value;
          if Value > XGraphMin then begin
            XGraphMin := MaxDouble;
-           for i := 0 to FCoordList.Count - 1 do begin
-             Val := PChartCoord(FCoordList.Items[AIndex])^.x;
+           for i := 0 to Count - 1 do begin
+             Val := Source[AIndex]^.X;
              if Val < XGraphMin then XGraphMin := Val;
            end;
          end;
@@ -770,7 +749,7 @@ begin
      end;
   end;
 
-  PChartCoord(FCoordList.Items[AIndex])^.x := Value;
+  Source[AIndex]^.X := Value;
 
   UpdateParentChart;
 end;
@@ -784,42 +763,42 @@ begin
     if Value<YGraphMin then YGraphMin:=Value
     else if Value>YGraphMax then YGraphMax:=Value
     else begin
-      if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMax then begin
-        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
-        if Value<YGraphMax then begin
-          YGraphMax:=MinDouble;
-          for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
-            if Val>YGraphMax then YGraphMax:=Val;
+      if Source[AIndex]^.Y = YGraphMax then begin
+        Source[AIndex]^.Y := Value;
+        if Value < YGraphMax then begin
+          YGraphMax := MinDouble;
+          for i := 0 to Count - 1 do begin
+            Val := Source[AIndex]^.Y;
+            if Val > YGraphMax then YGraphMax := Val;
           end;
         end;
       end
-      else if PChartCoord(FCoordList.Items[AIndex])^.y=YGraphMin then begin
-        PChartCoord(FCoordList.Items[AIndex])^.y:=Value;
-        if Value>YGraphMin then begin
-          YGraphMin:=MaxDouble;
-          for i:=0 to FCoordList.Count-1 do begin
-            Val:=PChartCoord(FCoordList.Items[AIndex])^.y;
-            if Val<YGraphMin then YGraphMin:=Val;
+      else if Source[AIndex]^.Y = YGraphMin then begin
+        Source[AIndex]^.Y := Value;
+        if Value > YGraphMin then begin
+          YGraphMin := MaxDouble;
+          for i := 0 to Count - 1 do begin
+            Val:= Source[AIndex]^.Y;
+            if Val < YGraphMin then YGraphMin := Val;
           end;
         end;
       end;
     end;
   end;
 
-  PChartCoord(FCoordList.Items[AIndex])^.y := Value;
+  Source[AIndex]^.Y := Value;
 
   UpdateParentChart;
 end;
 
 function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
 begin
-  Result := ParentChart.XGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.x);
+  Result := ParentChart.XGraphToImage(Source[AIndex]^.X);
 end;
 
 function TLineSeries.GetYImgValue(AIndex: Integer): Integer;
 begin
-  Result := ParentChart.YGraphToImage(PChartCoord(FCoordList.Items[AIndex])^.y);
+  Result := ParentChart.YGraphToImage(Source[AIndex]^.Y);
 end;
 
 function TLineSeries.GetXMin: Double;
@@ -883,12 +862,12 @@ end;
 
 procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
-  PChartCoord(FCoordList.items[AIndex])^.Color := AColor;
+  Source[AIndex]^.Color := AColor;
 end;
 
 function TLineSeries.GetColor(AIndex: Integer): TColor;
 begin
-  Result := PChartCoord(FCoordList.items[AIndex])^.Color;
+  Result := Source[AIndex]^.Color;
 end;
 
 procedure TLineSeries.SetShowPoints(Value: Boolean);
@@ -911,22 +890,16 @@ end;
 procedure TLineSeries.EndUpdate;
 var
   i: Integer;
-  Val: Double;
 begin
   UpdateInProgress := false;
 
   XGraphMax := MinDouble;
   XGraphMin := MaxDouble;
-  for i := 0 to Count - 1 do begin
-    Val := PChartCoord(FCoordList.Items[i])^.x;
-    UpdateMinMax(Val, FXGraphMin, FXGraphMax);
-  end;
-
   YGraphMax := MinDouble;
   YGraphMin := MaxDouble;
-  for i:=0 to Count-1 do begin
-    Val := PChartCoord(FCoordList.Items[i])^.y;
-    UpdateMinMax(Val, FYGraphMin, FYGraphMax);
+  for i := 0 to Count - 1 do begin
+    UpdateMinMax(Source[i]^.X, FXGraphMin, FXGraphMax);
+    UpdateMinMax(Source[i]^.Y, FYGraphMin, FYGraphMax);
   end;
 
   UpdateParentChart;
@@ -1155,7 +1128,7 @@ var
   var
     barBottomY: Double;
   begin
-    barTop := DoublePoint(PChartCoord(FCoordList.Items[i])^);
+    barTop := DoublePoint(Source[i]^);
     barBottomY := 0;
     if barTop.Y < barBottomY then
       Exchange(barTop.Y, barBottomY);
@@ -1181,15 +1154,15 @@ var
   end;
 
 begin
-  if FCoordList.Count = 0 then exit;
+  if IsEmpty then exit;
 
   totalbarWidth :=
-    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / FCoordList.Count);
+    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / Count);
   ExamineAllBarSeries(totalBarSeries, myPos);
   barWidth := totalbarWidth div totalBarSeries;
 
   ACanvas.Brush.Assign(BarBrush);
-  for i := 0 to FCoordList.Count - 1 do begin
+  for i := 0 to Count - 1 do begin
     if not PrepareBar then continue;
     // Draw a line instead of an empty rectangle.
     if r.Bottom = r.Top then Inc(r.Bottom);
@@ -1212,7 +1185,7 @@ begin
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to FCoordList.Count - 1 do
+  for i := 0 to Count - 1 do
     if PrepareBar then
       DrawLabel(
         ACanvas, i,
@@ -1264,7 +1237,7 @@ end;
 
 function TPieSeries.AddPie(Value: Double; Text: String; Color: TColor): Longint;
 begin
-  Result := AddXY(getXMinVal + 1, Value, Text, Color);
+  Result := AddXY(GetXMaxVal + 1, Value, Text, Color);
 end;
 
 function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
@@ -1295,7 +1268,7 @@ procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
   i, radius: Integer;
   prevAngle, angleStep: Double;
-  graphCoord: PChartCoord;
+  graphCoord: PChartDataItem;
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
   a, b, center: TPoint;
@@ -1303,12 +1276,12 @@ var
 const
   MARGIN = 8;
 begin
-  if FCoordList.Count = 0 then exit;
+  if IsEmpty then exit;
 
-  SetLength(labelWidths, FCoordList.Count);
-  SetLength(labelHeights, FCoordList.Count);
-  SetLength(labelTexts, FCoordList.Count);
-  for i := 0 to FCoordList.Count - 1 do begin
+  SetLength(labelWidths, Count);
+  SetLength(labelHeights, Count);
+  SetLength(labelTexts, Count);
+  for i := 0 to Count - 1 do begin
     labelTexts[i] := FormattedMark(i);
     with ACanvas.TextExtent(labelTexts[i]) do begin
       labelWidths[i] := cx;
@@ -1328,12 +1301,12 @@ begin
   radius := Max(radius - MARGIN, 0);
 
   prevAngle := 0;
-  for i := 0 to FCoordList.Count - 1 do begin
+  for i := 0 to Count - 1 do begin
     // if y < 0 then y := -y;
     // if y = 0 then y := 0.1; // just to simulate tchart when y=0
 
-    graphCoord := FCoordList[i];
-    angleStep := graphCoord^.y / GetValuesTotal * 360 * 16;
+    graphCoord := Source[i];
+    angleStep := graphCoord^.Y / GetValuesTotal * 360 * 16;
     ACanvas.Brush.Color := graphCoord^.Color;
 
     ACanvas.RadialPie(
@@ -1374,8 +1347,8 @@ begin
   for i := 0 to Count - 1 do begin
     ACanvas.Pen.Color := pc;
     ACanvas.Brush.Color := bc;
-    with PChartCoord(Coord.Items[i])^ do begin
-      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [y, Text]));
+    with Source[i]^ do begin
+      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [Y, Text]));
       ACanvas.Pen.Color := clBlack;
       ACanvas.Brush.Color := Color;
     end;
@@ -1395,8 +1368,8 @@ var
 begin
   Result := 0;
   for i := 0 to Count - 1 do
-    with PChartCoord(Coord.Items[i])^ do
-      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [y, Text])), Result);
+    with Source[i]^ do
+      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [Y, Text])), Result);
 end;
 
 function TPieSeries.GetSeriesColor: TColor;
@@ -1488,7 +1461,7 @@ begin
     GetCoords(i + 1, g2, i2);
 
     ACanvas.Pen.Color:= clBlack;
-    ACanvas.Brush.Color:= PChartCoord(FCoordList.Items[i])^.Color;
+    ACanvas.Brush.Color:= Source[i]^.Color;
 
     // top line is totally inside the viewport
     if

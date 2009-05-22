@@ -40,13 +40,6 @@ const
 type
   EChartError = class(Exception);
 
-  TChartCoord = record
-    x, y: Double;
-    Color: TColor;
-    Text: String;
-  end;
-  PChartCoord = ^TChartCoord;
-
   TDoublePoint = record
     X, Y: Double;
   end;
@@ -117,7 +110,6 @@ const
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
-function DoublePoint(const ACoord: TChartCoord): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -214,12 +206,6 @@ begin
       while AStart < AMax do AStart += AStep;
     end;
   end; {case AxisScale}
-end;
-
-function DoublePoint(const ACoord: TChartCoord): TDoublePoint;
-begin
-  Result.X := ACoord.x;
-  Result.Y := ACoord.y;
 end;
 
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;

@@ -1563,6 +1563,7 @@ components/tachart/taseries.pas svneol=native#text/plain
 components/tachart/taserieseditor.lfm svneol=native#text/plain
 components/tachart/taserieseditor.lrs svneol=native#text/plain
 components/tachart/taserieseditor.pas svneol=native#text/plain
+components/tachart/tasources.pas svneol=native#text/pascal
 components/tachart/tatypes.pas svneol=native#text/plain
 components/tachart/tchart.png -text svneol=unset#images/png
 components/tdbf/Makefile svneol=native#text/plain

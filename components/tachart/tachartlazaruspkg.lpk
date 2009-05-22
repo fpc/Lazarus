@@ -20,7 +20,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="taseries.pas"/>
         <UnitName Value="TASeries"/>
@@ -43,6 +43,10 @@
         <Filename Value="tatypes.pas"/>
         <UnitName Value="TATypes"/>
       </Item5>
+      <Item6>
+        <Filename Value="tasources.pas"/>
+        <UnitName Value="TASources"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
