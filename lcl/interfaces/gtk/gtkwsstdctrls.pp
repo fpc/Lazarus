@@ -730,10 +730,11 @@ end;
 
 class procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
 var
-  aWidget,ListWidget : PGTKWidget;
+  AWidget, ListWidget: PGTKWidget;
 begin
-  AWidget:=PGtkWidget(AWinControl.Handle);
-  ListWidget:=GetWidgetInfo(AWidget, True)^.CoreWidget;
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  ListWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
   GtkWidgetSet.SetWidgetColor(ListWidget, AWinControl.Font.Color,
     AWinControl.Color,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
@@ -1094,11 +1095,13 @@ end;
 
 class procedure TGtkWSCustomComboBox.SetColor(const AWinControl: TWinControl);
 var
-  AWidget,EntryWidget : PGTKWidget;
+  AWidget, EntryWidget: PGTKWidget;
 begin
-  AWidget:=PGtkWidget(AWinControl.Handle);
-  EntryWidget:=PGtkCombo(AWidget)^.entry;
-  GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  EntryWidget := PGtkCombo(AWidget)^.entry;
+  GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.Font.Color, AWinControl.Color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
 end;
 
 class procedure TGtkWSCustomComboBox.SetFont(const AWinControl: TWinControl;
@@ -1267,11 +1270,12 @@ end;
 
 class procedure TGtkWSCustomEdit.SetColor(const AWinControl: TWinControl);
 var
-  aWidget : PGTKWidget;
+  AWidget: PGTKWidget;
 begin
-  AWidget:=PGtkWidget(AWinControl.Handle);
-  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.color,
-    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STATE_SELECTED, GTK_STYLE_BASE]);
 end;
 
 { TGtkWSCustomStaticText }
@@ -1419,11 +1423,9 @@ begin
   SignalConnect(AGtkWidget, 'grab_focus', @gtkActivateCB, AWidgetInfo);
 end;
 
-class procedure TGtkWSCustomStaticText.SetColor(const AWinControl: TWinControl
-  );
+class procedure TGtkWSCustomStaticText.SetColor(const AWinControl: TWinControl);
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetColor')
-  then Exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
 
   GtkWidgetSet.SetWidgetColor(PGtkWidget(GetBoxWidget(PGtkFrame(AWinControl.Handle))),
                               clNone, AWinControl.Color,
@@ -1559,8 +1561,9 @@ class procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
 var
   Widget: PGTKWidget;
 begin
-  Widget:= PGtkWidget(AWinControl.Handle);
-  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  Widget := PGtkWidget(AWinControl.Handle);
+  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.Color,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
@@ -1823,13 +1826,13 @@ end;
 
 class procedure TGtkWSCustomMemo.SetColor(const AWinControl: TWinControl);
 var
-  aWidget : PGTKWidget;
+  AWidget: PGTKWidget;
 begin
-  if not AWinControl.HandleAllocated then exit;
-  AWidget:=PGtkWidget(AWinControl.Handle);
-  AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
-  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.color,
-    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  AWidget := GetWidgetInfo(AWidget, true)^.CoreWidget;
+  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STATE_SELECTED,
      GTK_STYLE_BASE]);
 end;
 
