@@ -23,7 +23,8 @@
   Abstract:
     Functions to beautify code.
     Goals:
-      - Highly customizable.
+      - Customizable
+      - fully automatic
       - Beautification of whole sources. For example a unit, or several
         sources.
       - Beautification of parts of sources. For example selections.
@@ -45,6 +46,59 @@
       ...
     else
       ...;
+
+  Indentations:
+    uses
+      unit;
+    begin
+      if expr then
+      begin
+        repeat // cbcRepeat
+          if expr then
+            ;
+        until ;
+        try
+          Code;
+        finally
+          Code;
+        end;
+        try
+          Code;
+        except
+          on e: exception do
+            ;
+        end;
+      end
+      else
+      begin
+        case of
+        1: Code;
+        2:
+          begin
+            code;
+          end;
+        else
+          code;
+        end;
+      end;
+    end;
+    procedure DoSomething(param1: tparam;
+                          param2: tparam;
+    var
+      i: integer;
+    begin
+    end;
+    type
+      TMyClass = class
+      public
+        c: char;
+      end;
+      TEnums = (
+        enum1
+        );
+      TMyRecord = record
+        i: integer;
+      end;
 }
 unit CodeBeautifier;
 
@@ -53,7 +107,7 @@ unit CodeBeautifier;
 interface
 
 uses
-  Classes, SysUtils, CodeCache, BasicCodeTools;
+  Classes, SysUtils, KeywordFuncLists, CodeCache, BasicCodeTools;
   
 type
   TBeautifySplit =(
@@ -75,10 +129,9 @@ type
     wpLowerCaseFirstLetterUp
     );
 
-  TFABContext = (
-    cbcNone,
-    cbcRepeat,
-    cbcUntil
+  TFABBlockType = (
+    bbtNone,
+    bbtRepeat
     );
 
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
@@ -100,6 +153,7 @@ type
     FAtomCount: integer;
     procedure ParseSource(const Source: string; NewNestedComments: boolean);
     function IndexOfAtomInFront(CleanPos: integer): integer;
+    function FindContext(CleanPos: integer): TFABBlockType;
   public
     Src: string;
     SrcLen: integer;
@@ -114,6 +168,63 @@ type
   end;
 
 implementation
+
+type
+  TBlock = record
+    Typ: TFABBlockType;
+    StartPos: integer;
+  end;
+  PBlock = ^TBlock;
+
+  { TBlockStack }
+
+  TBlockStack = class
+  public
+    Stack: PBlock;
+    Capacity: integer;
+    Top: integer;
+    constructor Create;
+    destructor Destroy; override;
+    procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
+    procedure EndBlock;
+  end;
+
+{ TBlockStack }
+
+constructor TBlockStack.Create;
+begin
+  Top:=-1;
+end;
+
+destructor TBlockStack.Destroy;
+begin
+  ReAllocMem(Stack,0);
+  Capacity:=0;
+  Top:=-1;
+  inherited Destroy;
+end;
+
+procedure TBlockStack.BeginBlock(Typ: TFABBlockType; StartPos: integer);
+var
+  Block: PBlock;
+begin
+  inc(Top);
+  if Top>=Capacity then begin
+    if Capacity=0 then
+      Capacity:=16
+    else
+      Capacity:=Capacity*2;
+    ReAllocMem(Stack,SizeOf(TBlock)*Capacity);
+  end;
+  Block:=@Stack[Top];
+  Block^.Typ:=Typ;
+  Block^.StartPos:=StartPos;
+end;
+
+procedure TBlockStack.EndBlock;
+begin
+  dec(Top);
+end;
 
 { TFullyAutomaticBeautifier }
 
@@ -175,6 +286,29 @@ begin
   Result:=-1;
 end;
 
+function TFullyAutomaticBeautifier.FindContext(CleanPos: integer): TFABBlockType;
+var
+  AtomIndex: LongInt;
+  i: LongInt;
+  StartPos: LongInt;
+  p: PChar;
+begin
+  AtomIndex:=IndexOfAtomInFront(CleanPos);
+  if AtomIndex<0 then exit(bbtNone);
+  i:=AtomIndex;
+  while i>=0 do begin
+    StartPos:=FAtomStarts[i];
+    p:=@Src[StartPos];
+    case UpChars[p^] of
+    'R':
+      if CompareIdentifiers('REPEAT',p)=0 then begin
+        Result:=bbtRepeat;
+        exit;
+      end;
+    end;
+  end;
+end;
+
 constructor TFullyAutomaticBeautifier.Create;
 begin
 
@@ -211,7 +345,7 @@ begin
     exit(false);
   end;
 
-
+  FindContext(CleanPos);
 end;
 
 end.
