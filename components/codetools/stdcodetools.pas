@@ -5430,6 +5430,40 @@ var
     Result:=true;
   end;
 
+  function ReadClassSection(var Stack: TBlockStack): Boolean;
+  {  type
+       TMyClass = class
+         |
+  }
+  var
+    LastIndent: LongInt;
+    Indent: LongInt;
+    InsertPos: LongInt;
+    NewCode: String;
+  begin
+    Result:=false;
+    if CleanCursorPos<StartNode.StartPos then exit;
+    LastIndent:=GetLineIndent(Src,StartNode.Parent.StartPos);
+    MoveCursorToNodeStart(StartNode);
+    Indent:=GetLineIndent(Src,CurPos.StartPos);
+    if Indent<LastIndent then
+      LastIndent:=Indent;
+    ReadNextAtom;
+    if CurPos.Flag=cafEnd then exit(true);
+    if CleanCursorPos<=CurPos.StartPos then begin
+      Indent:=GetLineIndent(Src,CurPos.StartPos);
+      if Indent<LastIndent then begin
+        InsertPos:=CleanCursorPos;
+        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                         'end;',LastIndent,[bcfIndentExistingLineBreaks]);
+        if not SourceChangeCache.Replace(gtNewLine,gtEmptyLine,
+          InsertPos,InsertPos,NewCode) then exit;
+        if not SourceChangeCache.Apply then exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
 var
   Stack: TBlockStack;
 begin
@@ -5441,13 +5475,16 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   InitStack(Stack);
   try
-    //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
 
     if StartNode.Desc in AllPascalStatements then begin
       if (StartNode.Parent<>nil)
       and (StartNode.Parent.Desc in AllPascalStatements) then
         StartNode:=StartNode.Parent;
       if not ReadStatements(Stack) then exit;
+    end;
+    if StartNode.Desc in AllClassSections then begin
+      if not ReadClassSection(Stack) then exit;
     end;
   finally
     FreeStack(Stack);
