@@ -44,8 +44,6 @@ type
     FXGraphMax, FYGraphMax: Double;
     FSource: TCustomChartSource;
     FMarks: TChartMarks;
-    FValuesTotal: Double;
-    FValuesTotalValid: Boolean;
 
     function GetXMaxVal: Integer;
     procedure SetMarks(const AValue: TChartMarks);
@@ -57,7 +55,6 @@ type
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    function GetValuesTotal: Double;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartZPosition); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -76,9 +73,9 @@ type
     property XGraphMax: Double read FXGraphMax write FXGraphMax;
     property YGraphMax: Double read FYGraphMax write FYGraphMax;
 
-    function Add(AValue: Double; XLabel: String; Color: TColor): Longint; virtual;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; virtual; overload;
-    function AddXY(X, Y: Double): Longint; virtual; overload;
+    function Add(AValue: Double; XLabel: String; Color: TColor): Integer; virtual;
+    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
+    function AddXY(X, Y: Double): Integer; virtual; overload;
     procedure Clear;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
@@ -399,8 +396,8 @@ function TChartSeries.FormattedMark(AIndex: integer): String;
 var
   total, percent: Double;
 begin
-  total := GetValuesTotal;
-  with FSource[AIndex]^ do begin
+  total := Source.ValuesTotal;
+  with Source[AIndex]^ do begin
     if total = 0 then
       percent := 0
     else
@@ -426,19 +423,6 @@ begin
   Result := ACanvas.TextWidth(Title);
 end;
 
-function TChartSeries.GetValuesTotal: Double;
-var
-  i: Integer;
-begin
-  if not FValuesTotalValid then begin
-    FValuesTotal := 0;
-    for i := 0 to FSource.Count - 1 do
-      FValuesTotal += FSource[i]^.Y;
-    FValuesTotalValid := true;
-  end;
-  Result := FValuesTotal;
-end;
-
 function TChartSeries.GetXMaxVal: Integer;
 begin
   if Count > 0 then
@@ -452,11 +436,9 @@ begin
   Result := Count = 0;
 end;
 
-function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
+function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
 begin
   Result := ListSource.Add(X, Y, XLabel, Color);
-  if FValuesTotalValid then
-    FValuesTotal += Y;
 end;
 
 procedure TChartSeries.AfterAdd;
@@ -464,20 +446,19 @@ begin
   FMarks.SetOwner(FChart);
 end;
 
-function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Longint;
+function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
 begin
   Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
 end;
 
-function TChartSeries.AddXY(X, Y: Double): Longint;
+function TChartSeries.AddXY(X, Y: Double): Integer;
 begin
   Result := AddXY(X, Y, '', clTAColor);
 end;
 
-procedure TChartSeries.Delete(AIndex:Integer);
+procedure TChartSeries.Delete(AIndex: Integer);
 begin
   ListSource.Delete(AIndex);
-  FValuesTotalValid := false;
   UpdateParentChart;
 end;
 
@@ -489,7 +470,6 @@ begin
   YGraphMin := MaxDouble;
   XGraphMax := MinDouble;
   YGraphMax := MinDouble;
-  FValuesTotalValid := false;
 
   UpdateParentChart;
 end;
@@ -786,6 +766,7 @@ begin
     end;
   end;
 
+  ListSource.InvalidateValues;
   Source[AIndex]^.Y := Value;
 
   UpdateParentChart;
@@ -1306,7 +1287,7 @@ begin
     // if y = 0 then y := 0.1; // just to simulate tchart when y=0
 
     graphCoord := Source[i];
-    angleStep := graphCoord^.Y / GetValuesTotal * 360 * 16;
+    angleStep := graphCoord^.Y / Source.ValuesTotal * 360 * 16;
     ACanvas.Brush.Color := graphCoord^.Color;
 
     ACanvas.RadialPie(
