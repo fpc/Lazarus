@@ -315,7 +315,7 @@ var
   i: Integer;
   sc: TSeriesClass;
 begin
-  RegisterComponents('Additional', [TChart]);
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChart]);
   for i := 0 to SeriesClassRegistry.Count - 1 do begin
     sc := TSeriesClass(SeriesClassRegistry.Objects[i]);
     RegisterClass(sc);

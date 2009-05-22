@@ -45,6 +45,7 @@
       </Item5>
       <Item6>
         <Filename Value="tasources.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="TASources"/>
       </Item6>
     </Files>

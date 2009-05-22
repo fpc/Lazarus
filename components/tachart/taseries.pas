@@ -42,19 +42,22 @@ type
     // Graph = coordinates in the graph
     FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
     FXGraphMax, FYGraphMax: Double;
-    FSource: TCustomChartSource;
     FMarks: TChartMarks;
+    FBuiltinSource: TCustomChartSource;
+    FSource: TCustomChartSource;
 
+    function GetSource: TCustomChartSource;
     function GetXMaxVal: Integer;
     procedure SetMarks(const AValue: TChartMarks);
+    procedure SetSource(AValue: TCustomChartSource);
   protected
     procedure AfterAdd; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function ListSource: TListChartSource;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    function ListSource: TListChartSource;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartZPosition); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -62,8 +65,6 @@ type
     procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
-
-    property Source: TCustomChartSource read FSource;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -86,6 +87,7 @@ type
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
+    property Source: TCustomChartSource read GetSource write SetSource;
     property Title;
     property ZPosition;
   end;
@@ -366,14 +368,16 @@ begin
   YGraphMax := NegInfinity;
 
   FActive := true;
-  FShowInLegend := true;
-  FSource := TListChartSource.Create;
+  FBuiltinSource := TListChartSource.Create(Self);
+  FBuiltinSource.Name := 'Builtin';
+  (FBuiltinSource as TListChartSource).OnSetDataPoints := @UpdateParentChart;
   FMarks := TChartMarks.Create(FChart);
+  FShowInLegend := true;
 end;
 
 destructor TChartSeries.Destroy;
 begin
-  FSource.Free;
+  FBuiltinSource.Free;
   FMarks.Free;
   UpdateParentChart;
 
@@ -387,9 +391,9 @@ end;
 
 function TChartSeries.ListSource: TListChartSource;
 begin
-  if not (FSource is TListChartSource) then
+  if not (Source is TListChartSource) then
     raise EFixedSourceRequired.Create('Fixed chart source required');
-  Result := FSource as TListChartSource;
+  Result := Source as TListChartSource;
 end;
 
 function TChartSeries.FormattedMark(AIndex: integer): String;
@@ -409,7 +413,7 @@ end;
 procedure TChartSeries.GetCoords(
   AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
 begin
-  AG := DoublePoint(FSource[AIndex]^);
+  AG := DoublePoint(Source[AIndex]^);
   AI := ParentChart.GraphToImage(AG);
 end;
 
@@ -423,10 +427,18 @@ begin
   Result := ACanvas.TextWidth(Title);
 end;
 
+function TChartSeries.GetSource: TCustomChartSource;
+begin
+  if Assigned(FSource) then
+    Result := FSource
+  else
+    Result := FBuiltinSource;
+end;
+
 function TChartSeries.GetXMaxVal: Integer;
 begin
   if Count > 0 then
-    Result := Round(FSource[Count - 1]^.X)
+    Result := Round(Source[Count - 1]^.X)
   else
     Result := 0;
 end;
@@ -485,7 +497,7 @@ end;
 
 function TChartSeries.Count: Integer;
 begin
-  Result := FSource.Count;
+  Result := Source.Count;
 end;
 
 procedure TChartSeries.SetActive(AValue: Boolean);
@@ -511,6 +523,17 @@ procedure TChartSeries.SetShowInLegend(AValue: Boolean);
 begin
   if FShowInLegend = AValue then exit;
   FShowInLegend := AValue;
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.SetSource(AValue: TCustomChartSource);
+begin
+  if FSource = AValue then exit;
+  if FSource is TListChartSource then
+    (FSource as TListChartSource).OnSetDataPoints := nil;
+  FSource := AValue;
+  if FSource is TListChartSource then
+    (FSource as TListChartSource).OnSetDataPoints := @UpdateParentChart;
   UpdateParentChart;
 end;
 

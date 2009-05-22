@@ -16,6 +16,7 @@ procedure Register;
 begin
   RegisterUnit('TAGraph', @TAGraph.Register); 
   RegisterUnit('TASeriesEditor', @TASeriesEditor.Register); 
+  RegisterUnit('TASources', @TASources.Register); 
 end; 
 
 initialization
