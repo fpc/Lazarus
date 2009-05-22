@@ -1960,6 +1960,9 @@ begin
         // protocol that the IDE was able to open the project without crashing
         IDEProtocolOpts.LastProjectLoadingCrashed := false;
         IDEProtocolOpts.Save;
+        if not ProjectLoaded then begin
+          DoCloseProject;
+        end;
       end;
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
