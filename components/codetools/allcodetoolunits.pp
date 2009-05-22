@@ -24,7 +24,7 @@ uses
   CodeCache, KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs,
   CodeToolsStrConsts, DirectoryCacher, CCodeParserTool, H2PasTool,
   MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs, CacheCodeTools,
-  PPUParser, PPUGraph, CodeIndex, FindOverloads,
+  CodeBeautifier, PPUParser, PPUGraph, CodeIndex, FindOverloads,
   // fast xml units, changes not merged in current fpc
   Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLWrite, Laz_XMLStreaming;
 
