@@ -5497,6 +5497,39 @@ var
     Result:=true;
   end;
 
+  function ReadRecord(var Stack: TBlockStack): Boolean;
+  {  type
+       TMyClass = record
+         |
+  }
+  var
+    LastIndent: LongInt;
+    Indent: LongInt;
+    InsertPos: LongInt;
+    NewCode: String;
+  begin
+    Result:=false;
+    if CleanCursorPos<StartNode.StartPos then exit;
+    LastIndent:=GetLineIndent(Src,StartNode.StartPos);
+    MoveCursorToNodeStart(StartNode);
+    ReadNextAtom;
+    if CleanCursorPos<CurPos.EndPos then exit(true);
+    ReadNextAtom;
+    if CurPos.Flag=cafEnd then exit(true);
+    if CleanCursorPos<=CurPos.StartPos then begin
+      Indent:=GetLineIndent(Src,CurPos.StartPos);
+      if Indent<LastIndent then begin
+        InsertPos:=CleanCursorPos;
+        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                         'end;',LastIndent,[bcfIndentExistingLineBreaks]);
+        if not SourceChangeCache.Replace(gtNewLine,gtEmptyLine,
+          InsertPos,InsertPos,NewCode) then exit;
+        if not SourceChangeCache.Apply then exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
 var
   Stack: TBlockStack;
 begin
@@ -5521,6 +5554,9 @@ begin
     end;
     if StartNode.Desc=ctnClassInterface then begin
       if not ReadClassInterface(Stack) then exit;
+    end;
+    if StartNode.Desc=ctnRecordType then begin
+      if not ReadRecord(Stack) then exit;
     end;
   finally
     FreeStack(Stack);
