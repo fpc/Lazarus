@@ -1100,51 +1100,69 @@ end;
 
 procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Unused(Button, Shift);
-  if PtInRect(FClipRect, Point(X, Y)) and FAllowZoom then begin
+  if
+    (Shift = [ssLeft]) and FAllowZoom and PtInRect(FClipRect, Point(X, Y))
+  then begin
     FIsMouseDown := true;
     FSelectionRect := Rect(X, Y, X, Y);
-  end;
+  end
+  else
+    inherited;
 end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
-const
-  DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
-    nil, @PointDistX, @PointDistY, @PointDist);
-var
-  i, pointIndex: Integer;
-  pt, newRetPos: TPoint;
-  value: TDoublePoint;
-begin
-  Unused(Shift);
-  pt := Point(X, Y);
-  if FIsMouseDown then begin
+
+  procedure UpdateSelectionRect(const APoint: TPoint);
+  begin
     PrepareXorPen;
     Canvas.Rectangle(FSelectionRect);
-    FSelectionRect.BottomRight := pt;
+    FSelectionRect.BottomRight := APoint;
     Canvas.Rectangle(FSelectionRect);
-    exit;
   end;
 
-  if FReticuleMode = rmNone then exit;
-  for i := 0 to SeriesCount - 1 do begin
-    if
-      Series[i].GetNearestPoint(
-        DIST_FUNCS[FReticuleMode], pt, pointIndex, newRetPos, value) and
-      (newRetPos <> FReticulePos) and PtInRect(FClipRect, newRetPos)
-    then begin
-      DoDrawReticule(i, pointIndex, newRetPos, value);
-      DrawReticule(Canvas);
-      FReticulePos := newRetPos;
-      DrawReticule(Canvas);
+  procedure UpdateReticule(const APoint: TPoint);
+  const
+    DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
+      nil, @PointDistX, @PointDistY, @PointDist);
+  var
+    i, pointIndex: Integer;
+    value: TDoublePoint;
+    newRetPos: TPoint;
+  begin
+    for i := 0 to SeriesCount - 1 do begin
+      if
+        Series[i].GetNearestPoint(
+          DIST_FUNCS[FReticuleMode], APoint, pointIndex, newRetPos, value) and
+        (newRetPos <> FReticulePos) and PtInRect(FClipRect, newRetPos)
+      then begin
+        DoDrawReticule(i, pointIndex, newRetPos, value);
+        DrawReticule(Canvas);
+        FReticulePos := newRetPos;
+        DrawReticule(Canvas);
+        exit;
+      end;
     end;
+  end;
+
+var
+  pt: TPoint;
+begin
+  pt := Point(X, Y);
+  if FIsMouseDown then
+    UpdateSelectionRect(pt)
+  else begin
+    inherited;
+    if FReticuleMode <> rmNone then
+      UpdateReticule(pt);
   end;
 end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Unused(Button, Shift);
-  if not FIsMouseDown then exit;
+  if not FIsMouseDown then begin
+    inherited;
+    exit;
+  end;
   FReticulePos := Point(X, Y);
 
   PrepareXorPen;
