@@ -141,6 +141,28 @@ type
     Single: array[TSingleColorAttribute] of TColor;
   end;
 
+  TColorSchemeMapping = class(TObject)
+  private
+    FName: string;
+    FColorScheme: TPascalColorScheme;
+  public
+    constructor CreateEx(const AName: string; const AColorScheme: TPascalColorScheme);
+    property    Name: string read FName;
+    property    ColorScheme: TPascalColorScheme read FColorScheme;
+  end;
+
+  TColorSchemeFactory = class(TObject)
+  private
+    FMappings: TStringList;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+    procedure   RegisterScheme(const AName: string; const AColorScheme: TPascalColorScheme);
+    function    GetColorScheme(const AName: string): TPascalColorScheme;
+    procedure   GetRegisteredSchemes(AList: TStrings);
+  end;
+
+
 const
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
@@ -843,6 +865,7 @@ procedure RepairEditorFontHeight(var FontHeight: integer);
 procedure CopyHiLightAttributeValues(Src, Dest: TSynHighlightElement);
 
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
+function ColorSchemeFactory: TColorSchemeFactory;
 
 implementation
 
@@ -992,6 +1015,16 @@ begin
   finally
     sl.Free;
   end;
+end;
+
+// The lazy-man color scheme factory
+function ColorSchemeFactory: TColorSchemeFactory;
+const
+  Singleton: TColorSchemeFactory = nil;
+begin
+  if not Assigned(Singleton) then
+    Singleton := TColorSchemeFactory.Create;
+  Result := Singleton;
 end;
 
 function StrToValidXMLName(const s: String): String;
@@ -2314,19 +2347,7 @@ end;
 
 function TEditorOptions.GetColorScheme(const SynColorScheme: String): TPascalColorScheme;
 begin
-  case StringCase(SynColorScheme, [
-         TWILIGHT_COLOR_SCHEME.Name,
-         CLASSIC_COLOR_SCHEME.Name,
-         OCEAN_COLOR_SCHEME.Name,
-         DELPHI_COLOR_SCHEME.Name
-       ], True, False) of
-    0: Result := TWILIGHT_COLOR_SCHEME;
-    1: Result := CLASSIC_COLOR_SCHEME;
-    2: Result := OCEAN_COLOR_SCHEME;
-    3: Result := DELPHI_COLOR_SCHEME;
-  else
-    Result := DEFAULT_COLOR_SCHEME;
-  end;
+  Result := ColorSchemeFactory.GetColorScheme(SynColorScheme);
 end;
 
 procedure TEditorOptions.GetDefaultsForPascalAttribute(
@@ -3073,7 +3094,89 @@ begin
 end;
 
 
+{ TColorSchemeMapping }
+
+constructor TColorSchemeMapping.CreateEx(const AName: string;
+  const AColorScheme: TPascalColorScheme);
+begin
+  Create;   // don't call inherited Create
+  FName := AName;
+  FColorScheme := AColorScheme;
+end;
+
+{ TColorSchemeFactory }
+
+constructor TColorSchemeFactory.Create;
+begin
+  inherited Create;
+  FMappings := TStringList.Create;
+end;
+
+destructor TColorSchemeFactory.Destroy;
+var
+  i: integer;
+begin
+  if Assigned(FMappings) then
+  begin
+    for i := 0 to FMappings.Count - 1 do
+      TColorSchemeMapping(FMappings.Objects[i]).Free;
+    FMappings.Free;
+  end;
+  inherited Destroy;
+end;
+
+procedure TColorSchemeFactory.RegisterScheme(const AName: string;
+  const AColorScheme: TPascalColorScheme);
+var
+  i: integer;
+  lMapping: TColorSchemeMapping;
+begin
+  i := FMappings.IndexOf(UpperCase(AName));
+  if i <> -1 then
+    raise Exception.Create('Registering a duplicate color scheme name <' + AName + '>')
+  else
+  begin
+    lMapping := TColorSchemeMapping.CreateEx(AName, AColorScheme);
+    FMappings.AddObject(UpperCase(AName), lMapping);
+  end;
+end;
+
+function TColorSchemeFactory.GetColorScheme(const AName: string): TPascalColorScheme;
+var
+  Idx: integer;
+begin
+  Idx := FMappings.IndexOf(UpperCase(AName));
+  if Idx = -1 then
+    raise Exception.Create('No color scheme was registered by the name <' + AName + '>')
+  else
+    Result := TColorSchemeMapping(FMappings.Objects[Idx]).ColorScheme;
+end;
+
+procedure TColorSchemeFactory.GetRegisteredSchemes(AList: TStrings);
+var
+  i: integer;
+begin
+  AList.BeginUpdate;
+  try
+    AList.Clear;
+    for i := 0 to FMappings.Count - 1 do
+      AList.Add(TColorSchemeMapping(FMappings.Objects[i]).Name);
+  finally
+    AList.EndUpdate;
+  end;
+end;
+
 initialization
   RegisterIDEOptionsGroup(GroupEditor, dlgGroupEditor);
+  // register all built-in color schemes
+  ColorSchemeFactory.RegisterScheme(DEFAULT_COLOR_SCHEME.Name, DEFAULT_COLOR_SCHEME);
+  ColorSchemeFactory.RegisterScheme(TWILIGHT_COLOR_SCHEME.Name, TWILIGHT_COLOR_SCHEME);
+  ColorSchemeFactory.RegisterScheme(CLASSIC_COLOR_SCHEME.Name, CLASSIC_COLOR_SCHEME);
+  ColorSchemeFactory.RegisterScheme(OCEAN_COLOR_SCHEME.Name, OCEAN_COLOR_SCHEME);
+  ColorSchemeFactory.RegisterScheme(DELPHI_COLOR_SCHEME.Name, DELPHI_COLOR_SCHEME);
   {$I lazarus_dci.lrs}
+
+finalization
+  ColorSchemeFactory.Free;
+
 end.

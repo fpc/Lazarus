@@ -945,17 +945,7 @@ begin
 
   with ColorSchemeComboBox do
   begin
-    with Items do
-    begin
-      BeginUpdate;
-      // ToDo: fill also with custom color schemes
-      Add(DEFAULT_COLOR_SCHEME.Name);
-      Add(DELPHI_COLOR_SCHEME.Name);
-      Add(CLASSIC_COLOR_SCHEME.Name);
-      Add(TWILIGHT_COLOR_SCHEME.Name);
-      Add(OCEAN_COLOR_SCHEME.Name);
-      EndUpdate;
-    end;
+    ColorSchemeFactory.GetRegisteredSchemes(Items);
     Text := DEFAULT_COLOR_SCHEME.Name;
   end;
 
