@@ -1274,8 +1274,9 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
   AWidget := PGtkWidget(AWinControl.Handle);
+  // don't change selected state
   GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.Color,
-    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STATE_SELECTED, GTK_STYLE_BASE]);
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STYLE_BASE]);
 end;
 
 { TGtkWSCustomStaticText }
