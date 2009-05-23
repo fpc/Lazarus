@@ -3319,6 +3319,8 @@ var
   Level: integer;
   ContextDesc: Word;
   IsForward: Boolean;
+  p: PChar;
+  BracketLvl: Integer;
 begin
   ContextDesc:=CurNode.Desc;
   if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
@@ -3377,14 +3379,54 @@ begin
   end else begin
     if ChildCreated and (CurNode.Desc=ctnClass) then
       CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
+    // read til end or any suspicious keyword
     Level:=1;
+    BracketLvl:=0;
     while (CurPos.StartPos<=SrcLen) do begin
-      if CurPos.Flag=cafEND then begin
-        dec(Level);
-        if Level=0 then break;
-      end
-      else if CurPos.Flag=cafRECORD then
+      case CurPos.Flag of
+      cafEND:
+        begin
+          dec(Level);
+          if Level=0 then break;
+        end;
+      cafRECORD:
         inc(Level);
+      cafRoundBracketOpen,cafEdgedBracketOpen:
+        inc(BracketLvl);
+      cafRoundBracketClose,cafEdgedBracketClose:
+        dec(BracketLvl);
+      cafEqual:
+        if BracketLvl<=0 then
+          SaveRaiseException(ctsEndForClassNotFound);
+      cafWord:
+        begin
+          p:=@Src[CurPos.StartPos];
+          case UpChars[p^] of
+          'B':
+            if CompareSrcIdentifiers(p,'BEGIN') then
+              SaveRaiseException(ctsEndForClassNotFound);
+          'C':
+            if CompareSrcIdentifiers(p,'CONST')
+            and (BracketLvl=0) then
+              SaveRaiseException(ctsEndForClassNotFound);
+          'I':
+            if CompareSrcIdentifiers(p,'IMPLEMENTATION') then
+              SaveRaiseException(ctsEndForClassNotFound);
+          'R':
+            if CompareSrcIdentifiers(p,'RESOURCESTRING') then
+              SaveRaiseException(ctsEndForClassNotFound);
+          'T':
+            if CompareSrcIdentifiers(p,'TYPE')
+            and (not CurNode.HasParentOfType(ctnGenericType)) then
+              SaveRaiseException(ctsEndForClassNotFound);
+          'V':
+            if CompareSrcIdentifiers(p,'VAR')
+            and (BracketLvl=0)
+            and (not CurNode.HasParentOfType(ctnGenericType)) then
+              SaveRaiseException(ctsEndForClassNotFound);
+          end;
+        end;
+      end;
       ReadNextAtom;
     end;
     if (CurPos.StartPos>SrcLen) then
