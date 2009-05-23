@@ -1324,11 +1324,17 @@ procedure TChart.UpdateExtent;
     if AUseMax then AHi := AMax;
     case Ord(ALo = Infinity) * 2 + Ord(AHi = NegInfinity) of
       0: begin // Both high and low boundary defined
-        if ALo > AHi then Exchange(ALo, AHi);
-        // Expand view slightly to avoid puttind data points on the chart edge.
-        ext := ExpandPercentage * PERCENT * Max(AHi - ALo, 1);
-        ALo -= ext;
-        AHi += ext;
+        if ALo = AHi then begin
+          ALo -= DEFAULT_WIDTH / 2;
+          AHi += DEFAULT_WIDTH / 2;
+        end
+        else begin
+          if ALo > AHi then Exchange(ALo, AHi);
+          // Expand view slightly to avoid data points on the chart edge.
+          ext := ExpandPercentage * PERCENT * Max(AHi - ALo, 1);
+          ALo -= ext;
+          AHi += ext;
+        end;
       end;
       1: AHi := ALo + DEFAULT_WIDTH;
       2: ALo := AHi - DEFAULT_WIDTH;

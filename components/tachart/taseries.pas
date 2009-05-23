@@ -1115,7 +1115,7 @@ begin
   Result.b.Y := Max(Result.b.Y, 0);
   // The 0.6 is a hack to allow the bars to have some space apart
   Result.a.X -= 0.6;
-  Result.a.X += 0.6;
+  Result.b.X += 0.6;
 end;
 
 function TBarSeries.GetSeriesColor: TColor;
