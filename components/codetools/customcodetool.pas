@@ -1375,7 +1375,7 @@ begin
           if (IsIdentChar[Src[CurPos.StartPos-1]]) then
             dec(CurPos.StartPos)
           else begin
-            case Src[CurPos.StartPos-1] of
+            case UpChars[Src[CurPos.StartPos-1]] of
             '@':
               // assembler label
               if (CurPos.StartPos>2)
@@ -1384,12 +1384,23 @@ begin
             '$':
               // hex number
               dec(CurPos.StartPos);
-            else
-              WordToAtomFlag.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                           CurPos.EndPos-CurPos.StartPos);
-              CurPos.Flag:=WordToAtomFlag.Flag;
-              if CurPos.Flag=cafNone then
+            'E':
+              if CompareSrcIdentifiers(CurPos.StartPos,'END') then
+                CurPos.Flag:=cafEnd
+              else
                 CurPos.Flag:=cafWord;
+            'B':
+              if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
+                CurPos.Flag:=cafBegin
+              else
+                CurPos.Flag:=cafWord;
+            'R':
+              if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
+                CurPos.Flag:=cafRecord
+              else
+                CurPos.Flag:=cafWord;
+            else
+              CurPos.Flag:=cafWord;
             end;
             break;
           end;
@@ -1493,11 +1504,18 @@ begin
         end;
         if IsIdentStartChar[Src[CurPos.StartPos]] then begin
           // it is an identifier
-          WordToAtomFlag.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                       CurPos.EndPos-CurPos.StartPos);
-          CurPos.Flag:=WordToAtomFlag.Flag;
-          if CurPos.Flag=cafNone then
-            CurPos.Flag:=cafWord;
+          CurPos.Flag:=cafWord;
+          case UpChars[Src[CurPos.StartPos]] of
+          'E':
+            if CompareSrcIdentifiers(CurPos.StartPos,'END') then
+              CurPos.Flag:=cafEnd;
+          'B':
+            if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
+              CurPos.Flag:=cafBegin;
+          'R':
+            if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
+              CurPos.Flag:=cafRecord;
+          end;
         end;
       end;
       

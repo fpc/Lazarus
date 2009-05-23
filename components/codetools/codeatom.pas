@@ -130,18 +130,6 @@ type
     property Items[Index: integer]: TAtomPosition read GetItems write SetItems; default;
   end;
   
-  
-  TWordToAtomFlag = class(TKeyWordFunctionList)
-  private
-    function SetFlagToBegin: boolean;
-    function SetFlagToEnd: boolean;
-    function SetFlagToRecord: boolean;
-    function SetDefaultFlag: boolean;
-  public
-    Flag: TCommonAtomFlag;
-    constructor Create;
-  end;
-
 //-----------------------------------------------------------------------------
 // useful functions
 function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
@@ -163,9 +151,6 @@ procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
 procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
                           DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 
-var
-  WordToAtomFlag: TWordToAtomFlag;
-  
 function DbgsCXY(const p: TCodeXYPosition): string;
 function DbgsCP(const p: TCodePosition): string;
 function dbgs(const a: TAtomPosition): string; overload;
@@ -447,42 +432,6 @@ begin
   DebugLn('');
 end;
 
-{ TWordToAtomFlag }
-
-function TWordToAtomFlag.SetFlagToBegin: boolean;
-begin
-  Flag:=cafBegin;
-  Result:=true;
-end;
-
-function TWordToAtomFlag.SetFlagToEnd: boolean;
-begin
-  Flag:=cafEnd;
-  Result:=true;
-end;
-
-function TWordToAtomFlag.SetFlagToRecord: boolean;
-begin
-  Flag:=cafRecord;
-  Result:=true;
-end;
-
-function TWordToAtomFlag.SetDefaultFlag: boolean;
-begin
-  Flag:=cafNone;
-  Result:=true;
-end;
-
-constructor TWordToAtomFlag.Create;
-begin
-  inherited Create;
-  DefaultKeyWordFunction:={$ifdef FPC}@{$endif}SetDefaultFlag;
-  Add('BEGIN',   {$ifdef FPC}@{$endif}SetFlagToBegin);
-  Add('END',     {$ifdef FPC}@{$endif}SetFlagToEnd);
-  Add('RECORD',  {$ifdef FPC}@{$endif}SetFlagToRecord);
-end;
-
-
 { TAtomList }
 
 function TAtomList.GetItems(Index: integer): TAtomPosition;
@@ -540,23 +489,6 @@ begin
   Clear;
   inherited Destroy;
 end;
-
-//-----------------------------------------------------------------------------
-procedure InternalInit;
-begin
-  WordToAtomFlag:=TWordToAtomFlag.Create;
-end;
-
-procedure InternalFinal;
-begin
-  FreeAndNil(WordToAtomFlag);
-end;
-
-initialization
-  InternalInit;
-
-finalization
-  InternalFinal;
 
 end.
 
