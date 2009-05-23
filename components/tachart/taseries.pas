@@ -39,11 +39,8 @@ type
 
   TChartSeries = class(TBasicChartSeries)
   private
-    // Graph = coordinates in the graph
-    FXGraphMin, FYGraphMin: Double;                // Max Graph value of points
-    FXGraphMax, FYGraphMax: Double;
-    FMarks: TChartMarks;
     FBuiltinSource: TCustomChartSource;
+    FMarks: TChartMarks;
     FSource: TCustomChartSource;
 
     function GetSource: TCustomChartSource;
@@ -68,26 +65,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    property XGraphMin: Double read FXGraphMin write FXGraphMin;
-    property YGraphMin: Double read FYGraphMin write FYGraphMin;
-    property XGraphMax: Double read FXGraphMax write FXGraphMax;
-    property YGraphMax: Double read FYGraphMax write FYGraphMax;
-
+  public
     function Add(AValue: Double; XLabel: String; Color: TColor): Integer; virtual;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
     function AddXY(X, Y: Double): Integer; virtual; overload;
     procedure Clear;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
+    function Extent: TDoubleRect; virtual;
     function FormattedMark(AIndex: integer): String;
     function IsEmpty: Boolean; override;
-
+    property Source: TCustomChartSource read GetSource write SetSource;
   published
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
-    property Source: TCustomChartSource read GetSource write SetSource;
     property Title;
     property ZPosition;
   end;
@@ -126,9 +118,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure Draw(ACanvas: TCanvas); override;
+  public
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
+    procedure Draw(ACanvas: TCanvas); override;
+    function Extent: TDoubleRect; override;
   published
     property AdjustBarWidth: Boolean
       read FAdjustBarWidth write SetAdjustBarWidth default false;
@@ -138,6 +131,7 @@ type
       read FBarWidthPercent write SetBarWidthPercent default 70;
     property Depth;
     property SeriesColor;
+    property Source;
   end;
 
   { TPieSeries }
@@ -154,10 +148,12 @@ type
     procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
-
-    procedure Draw(ACanvas: TCanvas); override;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
+  public
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
+    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
+    procedure Draw(ACanvas: TCanvas); override;
+  published
+    property Source;
   end;
 
   { TAreaSeries }
@@ -189,6 +185,7 @@ type
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
     property SeriesColor;
+    property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
   end;
 
@@ -212,10 +209,8 @@ type
     FStyle: TPenStyle;
     FSeriesColor: TColor;
 
-    XOfYGraphMin, XOfYGraphMax: Double;          // X max value of points
     FShowPoints: Boolean;
     FShowLines: Boolean;
-    UpdateInProgress: Boolean;
 
     procedure SetShowPoints(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
@@ -236,12 +231,12 @@ type
     function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function  GetXValue(AIndex: Integer): Double;
     function  GetYValue(AIndex: Integer): Double;
-    procedure SetXValue(AIndex: Integer; AValue: Double);
-    procedure SetYValue(AIndex: Integer; AValue: Double);
+    procedure SetXValue(AIndex: Integer; AValue: Double); inline;
+    procedure SetYValue(AIndex: Integer; AValue: Double); inline;
     function  GetXImgValue(AIndex: Integer): Integer;
     function  GetYImgValue(AIndex: Integer): Integer;
-    procedure GetMin(var X, Y: Double);
-    procedure GetMax(var X, Y: Double);
+    procedure GetMin(out X, Y: Double);
+    procedure GetMax(out X, Y: Double);
     function  GetXMin: Double;
     function  GetXMax: Double;
     function  GetYMin: Double;
@@ -251,11 +246,6 @@ type
 
     procedure BeginUpdate;
     procedure EndUpdate;
-
-    property XGraphMin;
-    property YGraphMin;
-    property XGraphMax;
-    property YGraphMax;
   published
     property Depth;
     property OnDrawPointer: TSeriesPointerDrawEvent
@@ -264,6 +254,7 @@ type
     property SeriesColor;
     property ShowLines: Boolean read FShowLines write SetShowLines default true;
     property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
+    property Source;
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
@@ -358,14 +349,49 @@ implementation
 uses
   GraphMath, Math, Types;
 
+function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
+begin
+  Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
+end;
+
+function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
+begin
+  Result := ListSource.Add(X, Y, XLabel, Color);
+end;
+
+function TChartSeries.AddXY(X, Y: Double): Integer;
+begin
+  Result := AddXY(X, Y, '', clTAColor);
+end;
+
+procedure TChartSeries.AfterAdd;
+begin
+  FMarks.SetOwner(FChart);
+end;
+
+procedure TChartSeries.Clear;
+begin
+  ListSource.Clear;
+  UpdateParentChart;
+end;
+
+function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
+begin
+  Result := AColor;
+  if Result <> clTAColor then exit;
+  Result := ADefault;
+  if Result <> clTAColor then exit;
+  Result := SeriesColor;
+end;
+
+function TChartSeries.Count: Integer;
+begin
+  Result := Source.Count;
+end;
+
 constructor TChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  XGraphMin := Infinity;
-  YGraphMin := Infinity;
-  XGraphMax := NegInfinity;
-  YGraphMax := NegInfinity;
 
   FActive := true;
   FBuiltinSource := TListChartSource.Create(Self);
@@ -373,6 +399,12 @@ begin
   (FBuiltinSource as TListChartSource).OnSetDataPoints := @UpdateParentChart;
   FMarks := TChartMarks.Create(FChart);
   FShowInLegend := true;
+end;
+
+procedure TChartSeries.Delete(AIndex: Integer);
+begin
+  ListSource.Delete(AIndex);
+  UpdateParentChart;
 end;
 
 destructor TChartSeries.Destroy;
@@ -389,11 +421,9 @@ begin
   ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
 end;
 
-function TChartSeries.ListSource: TListChartSource;
+function TChartSeries.Extent: TDoubleRect;
 begin
-  if not (Source is TListChartSource) then
-    raise EFixedSourceRequired.Create('Fixed chart source required');
-  Result := Source as TListChartSource;
+  Result := Source.Extent;
 end;
 
 function TChartSeries.FormattedMark(AIndex: integer): String;
@@ -448,56 +478,11 @@ begin
   Result := Count = 0;
 end;
 
-function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
+function TChartSeries.ListSource: TListChartSource;
 begin
-  Result := ListSource.Add(X, Y, XLabel, Color);
-end;
-
-procedure TChartSeries.AfterAdd;
-begin
-  FMarks.SetOwner(FChart);
-end;
-
-function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
-begin
-  Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
-end;
-
-function TChartSeries.AddXY(X, Y: Double): Integer;
-begin
-  Result := AddXY(X, Y, '', clTAColor);
-end;
-
-procedure TChartSeries.Delete(AIndex: Integer);
-begin
-  ListSource.Delete(AIndex);
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.Clear;
-begin
-  ListSource.Clear;
-
-  XGraphMin := MaxDouble;
-  YGraphMin := MaxDouble;
-  XGraphMax := MinDouble;
-  YGraphMax := MinDouble;
-
-  UpdateParentChart;
-end;
-
-function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
-begin
-  Result := AColor;
-  if Result <> clTAColor then exit;
-  Result := ADefault;
-  if Result <> clTAColor then exit;
-  Result := SeriesColor;
-end;
-
-function TChartSeries.Count: Integer;
-begin
-  Result := Source.Count;
+  if not (Source is TListChartSource) then
+    raise EFixedSourceRequired.Create('Fixed chart source required');
+  Result := Source as TListChartSource;
 end;
 
 procedure TChartSeries.SetActive(AValue: Boolean);
@@ -552,10 +537,12 @@ end;
 procedure TChartSeries.UpdateBounds(var ABounds: TDoubleRect);
 begin
   if not Active or (Count = 0) then exit;
-  if XGraphMin < ABounds.a.X then ABounds.a.X := XGraphMin;
-  if YGraphMin < ABounds.a.Y then ABounds.a.Y := YGraphMin;
-  if XGraphMax > ABounds.b.X then ABounds.b.X := XGraphMax;
-  if YGraphMax > ABounds.b.Y then ABounds.b.Y := YGraphMax;
+  with Extent do begin
+    if a.X < ABounds.a.X then ABounds.a.X := a.X;
+    if a.Y < ABounds.a.Y then ABounds.a.Y := a.Y;
+    if b.X > ABounds.b.X then ABounds.b.X := b.X;
+    if b.Y > ABounds.b.Y then ABounds.b.Y := b.Y;
+  end;
 end;
 
 procedure TChartSeries.UpdateParentChart;
@@ -572,8 +559,6 @@ begin
   FPointer := TSeriesPointer.Create(FChart);
   FStyle := psSolid;
   FShowLines := true;
-
-  UpdateInProgress := false;
 end;
 
 destructor TLineSeries.Destroy;
@@ -687,20 +672,7 @@ end;
 function TLineSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
   Color := ColorOrDefault(Color);
-
   Result := inherited AddXY(X, Y, XLabel, Color);
-
-  // Update max
-  UpdateMinMax(X, FXGraphMin, FXGraphMax);
-  if Y > YGraphMax then begin
-    YGraphMax := Y;
-    XOfYGraphMax := X;
-  end;
-  if Y < YGraphMin then begin
-    YGraphMin := Y;
-    XOfYGraphMin := X;
-  end;
-
   UpdateParentChart;
 end;
 
@@ -721,61 +693,15 @@ begin
 end;
 
 procedure TLineSeries.SetXValue(AIndex: Integer; AValue: Double);
-var
-  i: Integer;
-  oldX: Double;
 begin
-  // TODO: Ensure that points are sorted by X.
-
-  oldX := Source[AIndex]^.X;
-  ListSource.InvalidateValues;
-  Source[AIndex]^.X := AValue;
+  ListSource.SetXValue(AIndex, AValue);
   UpdateParentChart;
-
-  if UpdateInProgress then exit;
-
-  if AValue <= XGraphMin then XGraphMin := AValue
-  else if AValue >= XGraphMax then XGraphMax := AValue
-  else begin
-    if oldX = XGraphMax then begin
-      XGraphMax := -Infinity;
-      for i := 0 to Count - 1 do
-        XGraphMax := Max(XGraphMax, Source[i]^.X);
-    end;
-    if oldX = XGraphMin then begin
-      XGraphMin := Infinity;
-      for i := 0 to Count - 1 do
-        XGraphMin := Min(XGraphMin, Source[i]^.X);
-    end;
-  end;
 end;
 
 procedure TLineSeries.SetYValue(AIndex: Integer; AValue: Double);
-var
-  i: Integer;
-  oldY: Double;
 begin
-  oldY := Source[AIndex]^.Y;
-  ListSource.InvalidateValues;
-  Source[AIndex]^.Y := AValue;
+  ListSource.SetXValue(AIndex, AValue);
   UpdateParentChart;
-
-  if UpdateInProgress then exit;
-
-  if AValue <= YGraphMin then YGraphMin := AValue
-  else if AValue >= YGraphMax then YGraphMax := AValue
-  else begin
-    if oldY = YGraphMax then begin
-      YGraphMax := -Infinity;
-      for i := 0 to Count - 1 do
-        YGraphMax := Max(YGraphMax, Source[i]^.Y);
-    end;
-    if oldY = YGraphMin then begin
-      YGraphMin := Infinity;
-      for i := 0 to Count - 1 do
-        YGraphMin := Min(YGraphMin, Source[i]^.Y);
-    end;
-  end;
 end;
 
 function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
@@ -790,34 +716,34 @@ end;
 
 function TLineSeries.GetXMin: Double;
 begin
-  Result := XGraphMin;
+  Result := Extent.a.X;
 end;
 
 function TLineSeries.GetXMax: Double;
 begin
-  Result := XGraphMax;
+  Result := Extent.b.X;
 end;
 
 function TLineSeries.GetYMin: Double;
 begin
-  Result := YGraphMin;
+  Result := Extent.a.Y;
 end;
 
 function TLineSeries.GetYMax: Double;
 begin
-  Result := YGraphMax;
+  Result := Extent.b.Y;
 end;
 
-procedure TLineSeries.GetMax(var X, Y: Double);
+procedure TLineSeries.GetMax(out X, Y: Double);
 begin
-  X := XOfYGraphMax;
-  Y := YGraphMax;
+  X := Source.XOfMax;
+  Y := Extent.b.Y;
 end;
 
-procedure TLineSeries.GetMin(var X, Y: Double);
+procedure TLineSeries.GetMin(out X, Y: Double);
 begin
-  X := XOfYGraphMin;
-  Y := YGraphMin;
+  X := Source.XOfMin;
+  Y := Extent.a.Y;
 end;
 
 function TLineSeries.GetNearestPoint(
@@ -871,24 +797,12 @@ end;
 
 procedure TLineSeries.BeginUpdate;
 begin
-  UpdateInProgress := true;
+  ListSource.BeginUpdate;
 end;
 
 procedure TLineSeries.EndUpdate;
-var
-  i: Integer;
 begin
-  UpdateInProgress := false;
-
-  XGraphMax := MinDouble;
-  XGraphMin := MaxDouble;
-  YGraphMax := MinDouble;
-  YGraphMin := MaxDouble;
-  for i := 0 to Count - 1 do begin
-    UpdateMinMax(Source[i]^.X, FXGraphMin, FXGraphMax);
-    UpdateMinMax(Source[i]^.Y, FYGraphMin, FYGraphMax);
-  end;
-
+  ListSource.EndUpdate;
   UpdateParentChart;
 end;
 
@@ -1087,21 +1001,7 @@ end;
 function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
   Color := ColorOrDefault(Color);
-
   Result := inherited AddXY(X, Y, XLabel, Color);
-
-  //update the interval - the 0.6 is a hack to allow the bars to have some space apart
-  if X > XGraphMax - 0.6 then XGraphMax := X + 0.6;
-  if X < XGraphMin + 0.6 then XGraphMin := X - 0.6;
-  //check if the bar is abouve 0 or not
-  if Y >= 0 then begin
-    if Y > YGraphMax then YGraphMax := Y;
-    if YGraphMin > 0 then YGraphMin := 0;
-  end else begin
-    if Y < YGraphMin then YGraphMin := Y;
-    if YGraphMax < 0 then YGraphMax := 0;
-  end;
-
   UpdateParentChart;
 end;
 
@@ -1176,7 +1076,7 @@ begin
     if PrepareBar then
       DrawLabel(
         ACanvas, i,
-        Point((r.Left + r.Right) div 2, ifthen(barTop.Y = 0, r.Bottom, r.Top)),
+        Point((r.Left + r.Right) div 2, IfThen(barTop.Y = 0, r.Bottom, r.Top)),
         barTop.Y = 0);
 end;
 
@@ -1206,6 +1106,16 @@ begin
       Inc(ATotalNumber);
   end;
   Assert(AMyPos >= 0);
+end;
+
+function TBarSeries.Extent: TDoubleRect;
+begin
+  Result := inherited Extent;
+  Result.a.Y := Min(Result.a.Y, 0);
+  Result.b.Y := Max(Result.b.Y, 0);
+  // The 0.6 is a hack to allow the bars to have some space apart
+  Result.a.X -= 0.6;
+  Result.a.X += 0.6;
 end;
 
 function TBarSeries.GetSeriesColor: TColor;
@@ -1389,13 +1299,7 @@ end;
 function TAreaSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
 begin
   Color := ColorOrDefault(Color);
-
   Result := inherited AddXY(X, Y, XLabel, Color);
-
-  // Update max
-  UpdateMinMax(X, FXGraphMin, FXGraphMax);
-  UpdateMinMax(Y, FYGraphMin, FYGraphMax);
-
   UpdateParentChart;
 end;
 

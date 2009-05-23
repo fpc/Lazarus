@@ -1345,7 +1345,7 @@ begin
   if FIsZoomed then exit;
   Extent.CheckBoundsOrder;
 
-  FCurrentExtent := DoubleRect(Infinity, Infinity, NegInfinity, NegInfinity);
+  FCurrentExtent := EmptyExtent;
   for i := 0 to SeriesCount - 1 do
     with Series[i] do
       if Active then

@@ -29,7 +29,7 @@ unit TAChartUtils;
 interface
 
 uses
-  Graphics, Types, SysUtils;
+  Graphics, Math, Types, SysUtils;
 
 const
   MaxColor = 15;
@@ -107,6 +107,8 @@ const
     '%4:g' // smsXValue
   );
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
+  EmptyExtent: TDoubleRect =
+    (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -138,7 +140,7 @@ operator +(const A: TPoint; B: TSize): TPoint;
 implementation
 
 uses
-  Math, LCLIntf, LCLType;
+  LCLIntf, LCLType;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
