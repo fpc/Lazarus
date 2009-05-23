@@ -3396,8 +3396,7 @@ begin
       cafRoundBracketClose,cafEdgedBracketClose:
         dec(BracketLvl);
       cafEqual:
-        if BracketLvl<=0 then
-          SaveRaiseException(ctsEndForClassNotFound);
+        ; // Note: this is allowed: function a=b;
       cafWord:
         begin
           p:=@Src[CurPos.StartPos];
