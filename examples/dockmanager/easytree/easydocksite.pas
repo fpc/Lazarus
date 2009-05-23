@@ -48,6 +48,7 @@ done? (unclear whether this is really fixed in the trunk)
 
 {$H+}
 
+{.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
 {.$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
@@ -200,13 +201,18 @@ type
     procedure PaintSite(DC: HDC); override;
   end;
 
-{$IFDEF bookform}
-{$ELSE}
+(* Docking into a notebook
+  Notebook base class is TCustomPageControl (TPageControl?)
+  Dockable control is either the notebook or a form with a notebook.
+  TEasyPages is the page control itself, for docking clients.
+  TEasyBook is the dockable control or wrapper form.
+*)
+
 (* Notebook for alCustom docking.
   Added behaviour: free self on undock of the last client/page.
   The behaviour of TPageControl sucks :-(
 *)
-  TEasyBook = class(TPageControl)
+  TEasyPages = class(TPageControl)
   protected
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
     procedure DoRemoveDockClient(Client: TControl); override;
@@ -214,7 +220,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   end;
-{$ENDIF}
 
 const
   AlignNames: array[TAlign] of string = (
@@ -247,50 +252,53 @@ const
 type
 {$IFDEF bookform}
   //use a notebook in it's own form
-  TEasyPages = class(TCustomForm) // TDockBook;
+  TEasyBook = class(TCustomForm) // TDockBook;
   protected
     Pages: TPageControl;
+    //function GetDockCaption(AControl: TControl): String; override;
   public
     property DragMode;
     property DragKind;
   end;
 {$ELSE}
-  TEasyPages = TEasyBook;
+  TEasyBook = TEasyPages;
 {$ENDIF}
 
-function  NoteBookCreate(AOwner: TWinControl): TEasyPages;
+function  NoteBookCreate(AOwner: TWinControl): TEasyBook;
 {$IFDEF bookform}
 (* Create a form, containing a page control.
   The form must be dockable.
   The page control must be a dock site. (is?)
 *)
 var
-  Pages: TPageControl;
+  Pages: TEasyPages;
 begin
-  Result := TEasyPages.Create(AOwner);
+  Result := TEasyBook.Create(AOwner);
   Result.Visible := True;
   Result.DragMode := dmAutomatic;
   Result.DragKind := dkDock;
-  Pages := TPageControl.Create(Result);
+  Pages := TEasyPages.Create(Result);
   Result.Pages := Pages;
   Pages.Parent := Result;
   Pages.Visible := True;
-  Pages.Align := alClient; //doesn't work? minimal values too large?
-  Pages.DockSite := True; //problem?
+  Pages.Align := alClient;
+  Pages.DockSite := True; //default?
 {$ELSE}
 begin
   Result := TEasyPages.Create(AOwner);
-  Result.Align := alNone; //doesn't help :-(
+  //Result.Align := alNone; //doesn't help :-(
 {$ENDIF}
 end;
 
-procedure NoteBookAdd(ABook: TEasyPages; AItem: TControl);
+procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl);
 begin
 {$IFDEF bookform}
+//dock into client
   AItem.Align := alClient;
   AItem.ManualDock(ABook.Pages);
   ABook.Pages.ActivePageIndex := ABook.Pages.PageCount - 1;
 {$ELSE}
+//dock into control
   AItem.ManualDock(ABook);
   ABook.ActivePageIndex := ABook.PageCount - 1;
 {$ENDIF}
@@ -330,9 +338,10 @@ constructor TEasyTree.Create(ADockSite: TWinControl);
     i: integer;
     ctl: TControl;
   begin
-    for i := 0 to DockSite.ControlCount - 1 do begin
+    for i := DockSite.ControlCount - 1 downto 0 do begin
       ctl := DockSite.Controls[i];
-      InsertControl(ctl, ctl.Align, nil);
+      //InsertControl(ctl, ctl.Align, nil); //this is what Delphi does
+      ctl.ManualDock(FDockSite, nil, ctl.Align); //this is what should be done
     end;
   end;
 
@@ -360,10 +369,11 @@ begin
   FSplitter.ResizeStyle := rsLine;
 {$IFDEF splitter_color}
   FSplitter.Color := clPurple; //test!!!
-{$ELSE}
 {$ENDIF}
+{$IFDEF handle_existing}
 //handle controls, already residing in the site
-  //DockExisting; //doesn't work in the current LCL :-(
+  DockExisting; //doesn't work in the current LCL :-(
+{$ENDIF}
 end;
 
 destructor TEasyTree.Destroy;
@@ -461,7 +471,7 @@ procedure TEasyTree.InsertControl(Control: TControl; InsertAt: TAlign;
 var
   DropZone, OldZone, NewZone, OldParent, NewParent: TEasyZone;
   r: TRect;
-  NoteBook: TEasyPages;
+  NoteBook: TEasyBook;
 (* special cases:
   1) first child in top zone - no orientation
   2) second child in top zone - determines orientation
@@ -506,18 +516,12 @@ begin
 *)
   if (InsertAt = alCustom) and (FTopZone.FirstChild <> nil) then begin
   //dock into book
-    if (DropCtl is TEasyPages) then begin
-      NoteBook := DropCtl as TEasyPages;
+    if (DropCtl is TEasyBook) then begin
+      NoteBook := DropCtl as TEasyBook;
     end else begin
     //create new book
-      NoteBook := NoteBookCreate(FDockSite); // TEasyBook.Create(FDockSite);
-    {$IFDEF old}
-      NoteBook.Align := alNone;
-      NoteBook.DragKind := dkDock;
-      NoteBook.DragMode := dmAutomatic;
-    {$ELSE}
+      NoteBook := NoteBookCreate(FDockSite); // TEasyPages.Create(FDockSite);
       NoteBook.ManualDock(nil, nil);
-    {$ENDIF}
     //hack: manually dock the notebook
       FReplacingControl := NoteBook; //ignore insert (see above)
       NoteBook.ManualDock(FDockSite); //move into DockClients[]
@@ -539,12 +543,7 @@ begin
       NoteBook.BoundsRect := r;
     {$ENDIF}
     end; //else use existing control
-  {$IFDEF old}
-    Control.ManualDock(NoteBook);
-    NoteBook.ActivePageIndex:=NoteBook.PageCount - 1;
-  {$ELSE}
     NoteBookAdd(NoteBook, Control);
-  {$ENDIF}
     //FDockSite.Invalidate;
     exit;
   end;
@@ -648,7 +647,7 @@ var
       //zone := zInnermost;
       dir := alCustom; //pages
     end else begin
-    {
+    { not yet: outer zones, meaning docking into parent zone
       if izone >= k-1 then
         zone := zOuter
       else //if izone > 0 then
@@ -1435,12 +1434,10 @@ begin
   end; //else empty root zone?
 end;
 
-{$IFDEF bookform}
-  //notebook is a form
-{$ELSE}
-{ TEasyBook }
 
-constructor TEasyBook.Create(TheOwner: TComponent);
+{ TEasyPages }
+
+constructor TEasyPages.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 { this does not help :-(
@@ -1449,7 +1446,7 @@ begin
 }
 end;
 
-procedure TEasyBook.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+procedure TEasyPages.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
   //test: do nothing
   //inherited DoDock(NewDockSite, ARect);
@@ -1458,7 +1455,7 @@ begin
   //DebugLn('NoteBook is (%d,%d)-(%d,%d)', [Top, Left, Height, Width]);
 end;
 
-procedure TEasyBook.DoRemoveDockClient(Client: TControl);
+procedure TEasyPages.DoRemoveDockClient(Client: TControl);
 begin
 (* Destroy notebook when it becomes empty.
   Notebook clients are organized in pages, not in dock clients.
@@ -1473,7 +1470,7 @@ begin
   end;
 end;
 
-function TEasyBook.GetDefaultDockCaption: string;
+function TEasyPages.GetDefaultDockCaption: string;
 var
   i: integer;
   pg: TTabSheet;
@@ -1487,7 +1484,6 @@ begin
       Result := Result + ', ' + pg.Caption;
   end;
 end;
-{$ENDIF}
 
 //implement various headers
 {$I zoneheader.inc}

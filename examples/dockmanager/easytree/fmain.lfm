@@ -87,6 +87,15 @@ object EasyDockMain: TEasyDockMain
       TabOrder = 1
       Text = 'Drag Me!'
     end
+    object buManDock: TButton
+      Left = 329
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'buManDock'
+      OnClick = buManDockClick
+      TabOrder = 2
+    end
   end
   object pnlDocker: TPanel
     Left = 0

@@ -15,7 +15,7 @@ unit fMain;
 //some defines, to demonstrate LCL flaws
 {$DEFINE Docker}    //using control (undef: entire form) as dock site
 {$DEFINE easy}      //using EasyDockSite (undef: default LDockTree)
-{.$DEFINE dragForm}  //create a form from the draggable images (or drag images)
+{$DEFINE dragForm}  //create a form from the draggable images (or drag images)
   //dragging forms is not supported on all platforms!
 
 
@@ -36,6 +36,7 @@ type
   { TEasyDockMain }
 
   TEasyDockMain = class(TForm)
+    buManDock: TButton;
     pnlDocker: TPanel;
     edDock: TEdit;
     lbDock: TLabel;
@@ -46,6 +47,7 @@ type
     Shape3: TShape;
     Shape4: TShape;
     buDump: TButton;
+    procedure buManDockClick(Sender: TObject);
     procedure DockerUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
     procedure Shape1MouseUp(Sender: TObject; Button: TMouseButton;
@@ -99,6 +101,8 @@ begin
     shp := Sender as TShape;
   {$IFDEF dragForm}
     df := TDockable.Create(self);
+    df.Name := 'test' + IntToStr(ShapeCount);
+    inc(ShapeCount);
     sb.SimpleText := df.Name;
     c := shp.Brush.Color;
     //df.Color := c; - not all widgetsets support TForm.Color!?
@@ -241,6 +245,12 @@ begin
   end;
   DumpBox.Visible := True;
   sb.SimpleText := lbDock.Name;
+end;
+
+procedure TEasyDockMain.buManDockClick(Sender: TObject);
+begin
+  if buManDock.HostDockSite = nil then
+    buManDock.ManualDock(Docker);
 end;
 
 initialization

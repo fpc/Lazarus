@@ -22,7 +22,7 @@ Inconsistent DockRect
 =====================
 1. The DockRect should be drawn as an outline, as is on Windows.
 Using gtk, a filled rectangle is drawn instead.
-[acknowledged by Paul]
+[fixed]
 
 2. The DockRect should reflect the possible placement of the dragged control on a
 dock site, as is on Windows.
@@ -96,10 +96,11 @@ TPageControl
 Controls can be docked into a notebook (with tabs).
 
 1. A docked TPageControl rejects an initial placement (set BoundsRect).
+[fixed]
 
 2. TPageControl does not always allow to undock individual pages.
 TControls can be undocked, but not forms.
 
 3. A TPageControl does not resize properly (retains initial place).
 (Okay when wrapped into a form, and the form is docked)
-
+[fixed]
