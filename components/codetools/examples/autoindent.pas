@@ -29,17 +29,53 @@ program AutoIndent;
 
 uses
   Classes, SysUtils, DefineTemplates, CodeToolsConfig, FileProcs,
-  CodeToolsStructs, CodeToolManager, CodeCache;
+  CodeToolsStructs, CodeToolManager, CodeCache, CodeBeautifier;
 
 var
   Code: TCodeBuffer;
   Filename: String;
+  FAB: TFullyAutomaticBeautifier;
+  Y: LongInt;
+  X: LongInt;
+  p: integer;
+  Indentation: TFABIndentation;
 begin
+  if Paramcount>0 then begin
+    if Paramcount<>3 then begin
+      writeln('Usage: '+ParamStrUTF8(0)+' filename line column');
+      exit;
+    end;
+    Filename:=ParamStrUTF8(1);
+    Y:=StrToInt(ParamStrUTF8(2));
+    X:=StrToInt(ParamStrUTF8(3));
+  end else begin
+    Filename:=ExpandFileNameUTF8('scanexamples/indentation.pas');
+    X:=5;
+    Y:=41;
+  end;
+
   // load the example unit
-  Filename:=ExpandFileNameUTF8('scanexamples/indentation.pas');
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('unable to read '+Filename);
-    
+
+  FAB:=TFullyAutomaticBeautifier.Create;
+  try
+    Code.LineColToPosition(Y,X,p);
+    if p<1 then begin
+      writeln('ERROR: invalid position: X=',X,' Y=',Y);
+      exit;
+    end;
+    if FAB.GetIndent(Code.Source,p,true,Indentation) then begin
+      writeln('Indent=',Indentation.Indent);
+      writeln('UseTabs=',Indentation.UseTabs);
+      writeln('InsertEmptyLines=',Indentation.InsertEmptyLines);
+    end else begin
+      writeln('Error: GetIndent failed');
+    end;
+
+  finally
+    FAB.Free;
+  end;
 end.
 
