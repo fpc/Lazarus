@@ -133,6 +133,7 @@ type
     bbtNone,
     bbtRepeat
     );
+  TFABBlockTypes = set of TFABBlockType;
 
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 out CodeBuffers: TFPList) of object;
@@ -141,6 +142,16 @@ type
     Indent: integer;
     UseTabs: boolean;
     InsertEmptyLines: integer;
+  end;
+
+  { TFABPolicies }
+
+  TFABPolicies = class
+  public
+    Indentations: array[TFABBlockType] of TFABIndentation;
+    IndentationsFound: array[TFABBlockType] of boolean;
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   { TFullyAutomaticBeautifier }
@@ -155,6 +166,7 @@ type
     function IndexOfAtomInFront(CleanPos: integer): integer;
     function FindContext(CleanPos: integer; out AtomInFront: integer
                          ): TFABBlockType;
+    procedure FindPolicies(Types: TFABBlockTypes; Policies: TFABPolicies);
   public
     Src: string;
     SrcLen: integer;
@@ -165,8 +177,20 @@ type
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean;
                        out Indent: TFABIndentation): boolean;
+    { ToDo:
+      - indent on paste  (position + new source)
+      - indent auto generated code (several snippets)
+      - learn from source
+      - learn from nearest lines in source
+       }
     property OnGetExamples: TOnGetFABExamples read FOnGetExamples write FOnGetExamples;
   end;
+
+const
+  FABBlockTypeNames: array[TFABBlockType] of string = (
+    'None',
+    'Repeat'
+    );
 
 implementation
 
@@ -289,26 +313,95 @@ end;
 
 function TFullyAutomaticBeautifier.FindContext(CleanPos: integer; out
   AtomInFront: integer): TFABBlockType;
+{  Examples:
+
+   repeat
+     |
+
+   procedure DoSomething;
+   ...
+   begin
+     |
+
+   if expr then
+     begin
+       |
+
+   procedure DoSomething(...;...;
+     |
+
+  if expr then
+    begin
+    end
+    else
+      begin
+      end
+  |
+
+  TMyClass = class
+    end;
+  |
+
+  case expr of
+  |
+
+  case expr of
+  1:
+    |
+
+  case expr of
+  else
+    |
+}
 var
   i: LongInt;
-  StartPos: LongInt;
   p: PChar;
+  Stack: TBlockStack;
 begin
+  Result:=bbtNone;
   AtomInFront:=IndexOfAtomInFront(CleanPos);
-  if AtomInFront<0 then exit(bbtNone);
-  i:=AtomInFront;
-  while i>=0 do begin
-    StartPos:=FAtomStarts[i];
-    p:=@Src[StartPos];
-    DebugLn(['TFullyAutomaticBeautifier.FindContext Atom=',GetAtomString(p,NestedComments)]);
+  if AtomInFront<0 then exit;
+  Stack:=TBlockStack.Create;
+  try
+    i:=0;
+    p:=@Src[FAtomStarts[i]];
+    //DebugLn(['TFullyAutomaticBeautifier.FindContext Atom=',GetAtomString(p,NestedComments)]);
     case UpChars[p^] of
+    'B':
+      if CompareIdentifiers('BEGIN',p)=0 then
+        // procedure-begin
+        // then-begin
+        // do-begin
+        // semicolon-begin
+        ;
+    'E':
+      if CompareIdentifiers('ELSE',p)=0 then
+        // case-else
+        // if-else
+        ;
+    'O':
+      if CompareIdentifiers('OF',p)=0 then
+        // case-of, array-of, class-of
+        ;
     'R':
-      if CompareIdentifiers('REPEAT',p)=0 then begin
+      if CompareIdentifiers('REPEAT',p)=0 then
         Result:=bbtRepeat;
-        exit;
-      end;
+    ':':
+      // case-colon
+      ;
+    ';':
+      // statement or parameter
+      ;
     end;
+  finally
+    Stack.Free;
   end;
+end;
+
+procedure TFullyAutomaticBeautifier.FindPolicies(Types: TFABBlockTypes;
+  Policies: TFABPolicies);
+begin
+
 end;
 
 constructor TFullyAutomaticBeautifier.Create;
@@ -348,7 +441,21 @@ begin
     exit(false);
   end;
 
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent BlockType=',FABBlockTypeNames[BlockType]]);
 
+  //Policies:=
+end;
+
+{ TFABPolicies }
+
+constructor TFABPolicies.Create;
+begin
+
+end;
+
+destructor TFABPolicies.Destroy;
+begin
+  inherited Destroy;
 end;
 
 end.

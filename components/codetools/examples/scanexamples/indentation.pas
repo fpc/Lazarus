@@ -67,5 +67,13 @@ begin
   end;
 end;
 
+procedure TMyClass.Code;
+begin
+  writeln('TMyClass.Code ');
+  repeat
+
+  until ;
+end;
+
 end.
 

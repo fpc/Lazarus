@@ -5215,6 +5215,23 @@ var
       Result:=btNone;
   end;
 
+  function Replace(NewCode: string; FromPos, ToPos, Indent: integer;
+    FrontGap, AfterGap: TGapTyp; BeautifyFlags: TBeautifyCodeFlags): boolean;
+  begin
+    if NewCode='' then exit(true);
+    while (ToPos<=SrcLen) and (Src[ToPos] in [' ',#9]) do inc(ToPos);
+    if (NewCode[length(NewCode)]=';')
+    and (ToPos<=SrcLen) and (Src[ToPos]=';') then begin
+      AfterGap:=gtNone;
+      inc(ToPos);
+    end;
+    NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                     NewCode,Indent,BeautifyFlags);
+    if not SourceChangeCache.Replace(FrontGap,AfterGap,
+      FromPos,ToPos,NewCode) then exit;
+    if not SourceChangeCache.Apply then exit;
+  end;
+
   function ReadStatements(var Stack: TBlockStack): Boolean;
   var
     CursorBlockLvl: Integer; // the stack level of the cursor
@@ -5419,13 +5436,8 @@ var
           Include(BeautifyFlags,bcfDoNotIndentFirstLine);
         end;
       end;
-      if NewCode<>'' then begin
-        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                         NewCode,Indent,BeautifyFlags);
-        if not SourceChangeCache.Replace(FrontGap,AfterGap,
-          InsertPos,InsertPos,NewCode) then exit;
-        if not SourceChangeCache.Apply then exit;
-      end;
+      if not Replace(NewCode,InsertPos,InsertPos,Indent,FrontGap,AfterGap,
+        BeautifyFlags) then exit;
     end;
     Result:=true;
   end;
@@ -5439,7 +5451,6 @@ var
     LastIndent: LongInt;
     Indent: LongInt;
     InsertPos: LongInt;
-    NewCode: String;
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
@@ -5452,13 +5463,13 @@ var
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
       Indent:=GetLineIndent(Src,CurPos.StartPos);
+      InsertPos:=CleanCursorPos;
       if Indent<LastIndent then begin
-        InsertPos:=CleanCursorPos;
-        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                         'end;',LastIndent,[bcfIndentExistingLineBreaks]);
-        if not SourceChangeCache.Replace(gtNewLine,gtEmptyLine,
-          InsertPos,InsertPos,NewCode) then exit;
-        if not SourceChangeCache.Apply then exit;
+        if not Replace('end;',InsertPos,InsertPos,LastIndent,
+          gtNewLine,gtEmptyLine,
+          [bcfIndentExistingLineBreaks])
+        then
+          exit;
       end;
     end;
     Result:=true;
@@ -5473,7 +5484,6 @@ var
     LastIndent: LongInt;
     Indent: LongInt;
     InsertPos: LongInt;
-    NewCode: String;
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
@@ -5485,13 +5495,13 @@ var
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
       Indent:=GetLineIndent(Src,CurPos.StartPos);
+      InsertPos:=CleanCursorPos;
       if Indent<LastIndent then begin
-        InsertPos:=CleanCursorPos;
-        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                         'end;',LastIndent,[bcfIndentExistingLineBreaks]);
-        if not SourceChangeCache.Replace(gtNewLine,gtEmptyLine,
-          InsertPos,InsertPos,NewCode) then exit;
-        if not SourceChangeCache.Apply then exit;
+        if not Replace('end;',InsertPos,InsertPos,LastIndent,
+          gtNewLine,gtEmptyLine,
+          [bcfIndentExistingLineBreaks])
+        then
+          exit;
       end;
     end;
     Result:=true;
@@ -5506,7 +5516,6 @@ var
     LastIndent: LongInt;
     Indent: LongInt;
     InsertPos: LongInt;
-    NewCode: String;
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
@@ -5518,13 +5527,13 @@ var
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
       Indent:=GetLineIndent(Src,CurPos.StartPos);
+      InsertPos:=CleanCursorPos;
       if Indent<LastIndent then begin
-        InsertPos:=CleanCursorPos;
-        NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                         'end;',LastIndent,[bcfIndentExistingLineBreaks]);
-        if not SourceChangeCache.Replace(gtNewLine,gtEmptyLine,
-          InsertPos,InsertPos,NewCode) then exit;
-        if not SourceChangeCache.Apply then exit;
+        if not Replace('end;',InsertPos,InsertPos,LastIndent,
+          gtNewLine,gtEmptyLine,
+          [bcfIndentExistingLineBreaks])
+        then
+          exit;
       end;
     end;
     Result:=true;

@@ -50,8 +50,10 @@ begin
     X:=StrToInt(ParamStrUTF8(3));
   end else begin
     Filename:=ExpandFileNameUTF8('scanexamples/indentation.pas');
-    X:=5;
-    Y:=41;
+    X:=3;
+    Y:=73;
+  end;
+  begin
   end;
 
   // load the example unit
