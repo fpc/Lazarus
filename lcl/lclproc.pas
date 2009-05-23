@@ -3749,7 +3749,7 @@ begin
   Result:=UTF16Length(PWideChar(s),length(s));
 end;
 
-function UTF16Length(p: PWideChar; WordCount: integer): integer;
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 var
   CharLen: LongInt;
 begin
