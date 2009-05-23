@@ -42,8 +42,9 @@ uses
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
-  BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CodeTree,
-  KeywordFuncLists, FindDeclarationTool, DirectivesTree, PascalParserTool,
+  BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom, CodeCache,
+  CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
+  PascalParserTool,
   // IDE Intf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
   // IDE
@@ -517,32 +518,37 @@ end;
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode): string;
 begin
-  case CodeNode.Desc of
-  
-  ctnUnit, ctnProgram, ctnLibrary, ctnPackage:
-    Result:=CodeNode.DescAsString+' '+ACodeTool.ExtractSourceName;
+  Result:='?';
+  try
+    case CodeNode.Desc of
 
-  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
-    Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+    ctnUnit, ctnProgram, ctnLibrary, ctnPackage:
+      Result:=CodeNode.DescAsString+' '+ACodeTool.ExtractSourceName;
 
-  ctnClass:
-    Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
-            
-  ctnEnumIdentifier:
-    Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
-    
-  ctnProcedure:
-    Result:=ACodeTool.ExtractProcHead(CodeNode,
-                  [// phpWithStart is no needed because there are icons
-                   phpWithVarModifiers,
-                   phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-                   phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
-                   
-  ctnProperty:
-    Result:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
+    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+      Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
-  else
-    Result:=CodeNode.DescAsString;
+    ctnClass:
+      Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
+
+    ctnEnumIdentifier:
+      Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+    ctnProcedure:
+      Result:=ACodeTool.ExtractProcHead(CodeNode,
+                    [// phpWithStart is no needed because there are icons
+                     phpWithVarModifiers,
+                     phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+                     phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
+
+    ctnProperty:
+      Result:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
+
+    else
+      Result:=CodeNode.DescAsString;
+    end;
+  except
+    on E: ECodeToolError do ; // ignore syntax errors
   end;
 end;
 
