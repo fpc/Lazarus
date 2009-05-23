@@ -107,7 +107,7 @@ unit CodeBeautifier;
 interface
 
 uses
-  Classes, SysUtils, KeywordFuncLists, CodeCache, BasicCodeTools;
+  Classes, SysUtils, FileProcs, KeywordFuncLists, CodeCache, BasicCodeTools;
   
 type
   TBeautifySplit =(
@@ -153,7 +153,8 @@ type
     FAtomCount: integer;
     procedure ParseSource(const Source: string; NewNestedComments: boolean);
     function IndexOfAtomInFront(CleanPos: integer): integer;
-    function FindContext(CleanPos: integer): TFABBlockType;
+    function FindContext(CleanPos: integer; out AtomInFront: integer
+                         ): TFABBlockType;
   public
     Src: string;
     SrcLen: integer;
@@ -286,19 +287,20 @@ begin
   Result:=-1;
 end;
 
-function TFullyAutomaticBeautifier.FindContext(CleanPos: integer): TFABBlockType;
+function TFullyAutomaticBeautifier.FindContext(CleanPos: integer; out
+  AtomInFront: integer): TFABBlockType;
 var
-  AtomIndex: LongInt;
   i: LongInt;
   StartPos: LongInt;
   p: PChar;
 begin
-  AtomIndex:=IndexOfAtomInFront(CleanPos);
-  if AtomIndex<0 then exit(bbtNone);
-  i:=AtomIndex;
+  AtomInFront:=IndexOfAtomInFront(CleanPos);
+  if AtomInFront<0 then exit(bbtNone);
+  i:=AtomInFront;
   while i>=0 do begin
     StartPos:=FAtomStarts[i];
     p:=@Src[StartPos];
+    DebugLn(['TFullyAutomaticBeautifier.FindContext Atom=',GetAtomString(p,NestedComments)]);
     case UpChars[p^] of
     'R':
       if CompareIdentifiers('REPEAT',p)=0 then begin
@@ -331,21 +333,22 @@ function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
   out Indent: TFABIndentation): boolean;
 var
-  AtomIndex: LongInt;
+  AtomInFront: LongInt;
+  BlockType: TFABBlockType;
 begin
   FillByte(Indent,SizeOf(Indent),0);
 
   // parse source
   ParseSource(Source,NewNestedComments);
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent FAtomCount=',FAtomCount]);
 
-  // find context
-  AtomIndex:=IndexOfAtomInFront(CleanPos);
-  if AtomIndex<0 then begin
+  BlockType:=FindContext(CleanPos,AtomInFront);
+  if AtomInFront<0 then begin
     // in comments/space in front of any code
     exit(false);
   end;
 
-  FindContext(CleanPos);
+
 end;
 
 end.
