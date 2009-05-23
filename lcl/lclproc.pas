@@ -288,41 +288,41 @@ type
   PUTF16String = ^UTF16String;
 
 function UTF8CharacterLength(p: PChar): integer;
-function UTF8Length(const s: string): integer;
-function UTF8Length(p: PChar; ByteCount: integer): integer;
+function UTF8Length(const s: string): PtrInt;
+function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
 function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
 function UnicodeToUTF8(u: cardinal): shortstring; inline;
 function UTF8ToDoubleByteString(const s: string): string;
-function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
+function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer;
 // find the n-th UTF8 character, ignoring BIDI
-function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: integer): PChar;
+function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
-function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: integer): Integer;
+function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CharacterStrictLength(P: PChar): integer;
-function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
-function UTF8Pos(const SearchForText, SearchInText: string): integer;
-function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
-procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
-procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
+function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
+function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
+function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
+procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
+procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
 function UTF8LowerCase(const s: String): String;
 function UTF8UpperCase(const s: String): String;
 {$ifdef NewLowerCase}
 function UTF8LowerCaseNew(const s: String): String;
 {$endif}
-function FindInvalidUTF8Character(p: PChar; Count: integer;
-                                  StopOnNonASCII: Boolean = false): integer;
+function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+                                  StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: widestring): integer;
-function UTF16Length(p: PWideChar; WordCount: integer): integer;
+function UTF16Length(const s: widestring): PtrInt;
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
 
@@ -3066,12 +3066,12 @@ begin
     Result:=0;
 end;
 
-function UTF8Length(const s: string): integer;
+function UTF8Length(const s: string): PtrInt;
 begin
   Result:=UTF8Length(PChar(s),length(s));
 end;
 
-function UTF8Length(p: PChar; ByteCount: integer): integer;
+function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
 var
   CharLen: LongInt;
 begin
@@ -3205,7 +3205,7 @@ begin
 end;
 
 { returns number of double bytes }
-function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
+function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 var
   SrcPos: PChar;
   CharLen: LongInt;
@@ -3251,7 +3251,7 @@ end;
 
   This function is similar to UTF8FindNearestCharStart
 }
-function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: integer): PChar;
+function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 var
   CharLen: LongInt;
 begin
@@ -3268,7 +3268,7 @@ begin
   end;
 end;
 
-function UTF8CharToByteIndex(UTF8Str : PChar; Len, CharIndex : integer) : Integer;
+function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
 var
   p: PChar;
 begin
@@ -3361,7 +3361,7 @@ begin
     exit(0);
 end;
 
-function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
+function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
 var
   Source: PChar;
   Dest: PChar;
@@ -3423,7 +3423,7 @@ begin
   SetLength(Result, Dest - PChar(Result));
 end;
 
-function UTF8Pos(const SearchForText, SearchInText: string): integer;
+function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
 // returns the character index, where the SearchForText starts in SearchInText
 var
   p: LongInt;
@@ -3435,7 +3435,7 @@ begin
     Result:=0;
 end;
 
-function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
+function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 // returns substring
 var
   StartBytePos: PChar;
@@ -3455,7 +3455,7 @@ begin
   end;
 end;
 
-procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
+procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 var
   StartBytePos: PChar;
   EndBytePos: PChar;
@@ -3473,7 +3473,7 @@ begin
   end;
 end;
 
-procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
+procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
 var
   StartBytePos: PChar;
 begin
@@ -3621,8 +3621,8 @@ begin
 end;
 {$endif NewLowerCase}
 
-function FindInvalidUTF8Character(p: PChar; Count: integer;
-  StopOnNonASCII: Boolean): integer;
+function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+  StopOnNonASCII: Boolean): PtrInt;
 // return -1 if ok
 var
   CharLen: Integer;
@@ -3744,7 +3744,7 @@ begin
   end;
 end;
 
-function UTF16Length(const s: widestring): integer;
+function UTF16Length(const s: widestring): PtrInt;
 begin
   Result:=UTF16Length(PWideChar(s),length(s));
 end;
