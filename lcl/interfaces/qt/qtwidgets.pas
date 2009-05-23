@@ -4188,9 +4188,13 @@ begin
       FilesList := TStringList.Create;
       try
         FilesList.Text := UTF16ToUTF8(WStr);
+        {$IFDEF USE_QT_45}
+        SetLength(Files, FilesList.Count);
+        {$ELSE}
         {last member of TStringList always contains empty string
          since QMimeData always have #13#10#0 at the end.So we cut it here.}
         SetLength(Files, FilesList.Count - 1);
+        {$ENDIF}
         for i := 0 to High(Files) do
           Files[i] := FilesList.Strings[i];
       finally
