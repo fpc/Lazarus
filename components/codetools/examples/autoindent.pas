@@ -53,8 +53,6 @@ begin
     X:=3;
     Y:=73;
   end;
-  begin
-  end;
 
   // load the example unit
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
