@@ -9,6 +9,7 @@ uses
 
 type
   EFixedSourceRequired = class(EChartError);
+  EListenerError = class(EChartError);
 
   TChartDataItem = record
     X, Y: Double;
@@ -17,11 +18,23 @@ type
   end;
   PChartDataItem = ^TChartDataItem;
 
-  TSimpleNotifyEvent = procedure of object;
+  { TListener }
+
+  TListener = class
+  private
+    FIsListening: Boolean;
+  public
+    procedure Notify; virtual; abstract;
+    property IsListening: Boolean read FIsListening write FIsListening;
+  end;
 
   { TCustomChartSource }
 
   TCustomChartSource = class(TComponent)
+  private
+    FListeners: array of TListener;
+    FUpdateCount: Integer;
+    function FindListener(AListener: TListener): Integer;
   protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
@@ -30,6 +43,15 @@ type
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
+    procedure Notify;
+  public
+    destructor Destroy; override;
+  public
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function IsUpdating: Boolean; inline;
+    procedure Subscribe(AListener: TListener);
+    procedure Unsubscribe(AListener: TListener);
   public
     function Extent: TDoubleRect; virtual;
     function ValuesTotal: Double; virtual;
@@ -46,8 +68,6 @@ type
   private
     FData: TList;
     FDataPoints: TStrings;
-    FOnSetDataPoints: TSimpleNotifyEvent;
-    FUpdateCount: Integer;
     procedure ClearCaches;
     procedure SetDataPoints(AValue: TStrings);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
@@ -59,16 +79,10 @@ type
     destructor Destroy; override;
   public
     function Add(AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
-    procedure BeginUpdate;
     procedure Clear;
     procedure Delete(AIndex: Integer); inline;
-    procedure EndUpdate;
-    function IsUpdating: Boolean; inline;
     procedure SetXValue(AIndex: Integer; AValue: Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
-
-    property OnSetDataPoints: TSimpleNotifyEvent
-      read FOnSetDataPoints write FOnSetDataPoints;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
   end;
@@ -169,6 +183,27 @@ end;
 
 { TCustomChartSource }
 
+procedure TCustomChartSource.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+destructor TCustomChartSource.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to High(FListeners) do
+    FListeners[i].IsListening := false;
+  FListeners := nil;
+  inherited Destroy;
+end;
+
+procedure TCustomChartSource.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  Notify;
+end;
+
 function TCustomChartSource.Extent: TDoubleRect;
 var
   i: Integer;
@@ -184,10 +219,57 @@ begin
   Result := FExtent;
 end;
 
+function TCustomChartSource.FindListener(AListener: TListener): Integer;
+begin
+  for Result := 0 to High(FListeners) do
+    if FListeners[Result] = AListener then exit;
+  Result := -1;
+end;
+
 procedure TCustomChartSource.InvalidateCaches;
 begin
   FExtentIsValid := false;
   FValuesTotalIsValid := false;
+end;
+
+function TCustomChartSource.IsUpdating: Boolean; inline;
+begin
+  Result := FUpdateCount > 0;
+end;
+
+procedure TCustomChartSource.Notify;
+var
+  i: Integer;
+begin
+  if IsUpdating then exit;
+  for i := 0 to High(FListeners) do
+    FListeners[i].Notify;
+end;
+
+procedure TCustomChartSource.Subscribe(AListener: TListener);
+begin
+  if AListener.IsListening then
+    raise EListenerError.Create('Listener subscribed twice');
+  if FindListener(AListener) >= 0 then
+    raise EListenerError.Create('Duplicate listener');
+  AListener.IsListening := true;
+  SetLength(FListeners, Length(FListeners) + 1);
+  FListeners[High(FListeners)] := AListener;
+end;
+
+procedure TCustomChartSource.Unsubscribe(AListener: TListener);
+var
+  i, j: Integer;
+begin
+  if not AListener.IsListening then
+    raise EListenerError.Create('Listener not subscribed');
+  AListener.IsListening := false;
+  j := FindListener(AListener);
+  if j < 0 then
+    raise EListenerError.Create('Listener not found');
+  for i := j + 1 to High(FListeners) do
+    FListeners[i] := FListeners[i + 1];
+  SetLength(FListeners, Length(FListeners) - 1);
 end;
 
 function TCustomChartSource.ValuesTotal: Double;
@@ -303,13 +385,7 @@ begin
   while (Result > 0) and (Item[Result - 1]^.X > AX) do
     Dec(Result);
   FData.Insert(Result, pcc);
-end;
-
-procedure TListChartSource.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-  FValuesTotalIsValid := false;
-  FExtentIsValid := false;
+  Notify;
 end;
 
 procedure TListChartSource.Clear; inline;
@@ -320,6 +396,7 @@ begin
     Dispose(Item[i]);
   FData.Clear;
   ClearCaches;
+  Notify;
 end;
 
 procedure TListChartSource.ClearCaches;
@@ -350,6 +427,7 @@ begin
   end;
   Dispose(Item[AIndex]);
   FData.Delete(AIndex);
+  Notify;
 end;
 
 destructor TListChartSource.Destroy;
@@ -358,11 +436,6 @@ begin
   FDataPoints.Free;
   FData.Free;
   inherited Destroy;
-end;
-
-procedure TListChartSource.EndUpdate;
-begin
-  Dec(FUpdateCount);
 end;
 
 function TListChartSource.GetCount: Integer;
@@ -375,11 +448,6 @@ begin
   Result := PChartDataItem(FData.Items[AIndex]);
 end;
 
-function TListChartSource.IsUpdating: Boolean; inline;
-begin
-  Result := FUpdateCount > 0;
-end;
-
 procedure TListChartSource.SetDataPoints(AValue: TStrings);
 begin
   if FDataPoints = AValue then exit;
@@ -389,8 +457,6 @@ begin
   finally
     EndUpdate;
   end;
-  if Assigned(FOnSetDataPoints) then
-    FOnSetDataPoints;
 end;
 
 procedure TListChartSource.SetXValue(AIndex: Integer; AValue: Double);
@@ -403,22 +469,23 @@ begin
   oldX := Item[AIndex]^.X;
   Item[AIndex]^.X := AValue;
 
-  if not FExtentIsValid then exit;
-
-  if AValue <= FExtent.a.X then FExtent.a.X := AValue
-  else if AValue >= FExtent.b.X then FExtent.b.X := AValue
-  else begin
-    if oldX = FExtent.b.X then begin
-      FExtent.b.X := NegInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
-    end;
-    if oldX = FExtent.a.X then begin
-      FExtent.a.X := Infinity;
-      for i := 0 to Count - 1 do
-        FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
+  if FExtentIsValid then begin
+    if AValue <= FExtent.a.X then FExtent.a.X := AValue
+    else if AValue >= FExtent.b.X then FExtent.b.X := AValue
+    else begin
+      if oldX = FExtent.b.X then begin
+        FExtent.b.X := NegInfinity;
+        for i := 0 to Count - 1 do
+          FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
+      end;
+      if oldX = FExtent.a.X then begin
+        FExtent.a.X := Infinity;
+        for i := 0 to Count - 1 do
+          FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
+      end;
     end;
   end;
+  Notify;
 end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
@@ -431,22 +498,23 @@ begin
   if FValuesTotalIsValid then
     FValuesTotal += AValue - oldY;
 
-  if not FExtentIsValid then exit;
-
-  if AValue <= FExtent.a.Y then FExtent.a.Y := AValue
-  else if AValue >= FExtent.b.Y then FExtent.b.Y := AValue
-  else begin
-    if oldY = FExtent.b.Y then begin
-      FExtent.b.Y := NegInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
-    end;
-    if oldY = FExtent.a.Y then begin
-      FExtent.a.Y := Infinity;
-      for i := 0 to Count - 1 do
-        FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
+  if FExtentIsValid then begin
+    if AValue <= FExtent.a.Y then FExtent.a.Y := AValue
+    else if AValue >= FExtent.b.Y then FExtent.b.Y := AValue
+    else begin
+      if oldY = FExtent.b.Y then begin
+        FExtent.b.Y := NegInfinity;
+        for i := 0 to Count - 1 do
+          FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
+      end;
+      if oldY = FExtent.a.Y then begin
+        FExtent.a.Y := Infinity;
+        for i := 0 to Count - 1 do
+          FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
+      end;
     end;
   end;
+  Notify;
 end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
@@ -486,7 +554,7 @@ begin
   m := AMax - AMin + 1;
   m *= Get;
   // m is now equidistributed on [0, (2^32-1) * range],
-  // so it's upper double word is equidistributed on [0, range].
+  // so its upper double word is equidistributed on [0, range].
   Result := Integer(Hi(m)) + AMin;
 end;
 
@@ -545,7 +613,7 @@ begin
     if YMax <= YMin then
       FCurItem.Y := YMin
     else
-      FCurItem.Y := FRNG.Get / MaxInt * (YMax - YMin) + YMin;
+      FCurItem.Y := FRNG.Get / High(LongWord) * (YMax - YMin) + YMin;
   end;
   Result := @FCurItem;
 end;
@@ -555,6 +623,7 @@ begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetRandomX(const AValue: Boolean);
@@ -562,6 +631,7 @@ begin
   if FRandomX = AValue then exit;
   FRandomX := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetRandSeed(const AValue: Integer);
@@ -570,6 +640,7 @@ begin
   FRandSeed := AValue;
   FRNG.Seed := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetXMax(const AValue: Double);
@@ -577,6 +648,7 @@ begin
   if FXMax = AValue then exit;
   FXMax := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetXMin(const AValue: Double);
@@ -584,6 +656,7 @@ begin
   if FXMin = AValue then exit;
   FXMin := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetYMax(const AValue: Double);
@@ -591,6 +664,7 @@ begin
   if FYMax = AValue then exit;
   FYMax := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 procedure TRandomChartSource.SetYMin(const AValue: Double);
@@ -598,6 +672,7 @@ begin
   if FYMin = AValue then exit;
   FYMin := AValue;
   InvalidateCaches;
+  Notify;
 end;
 
 end.

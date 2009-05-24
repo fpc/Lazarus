@@ -40,11 +40,13 @@ type
   TChartSeries = class(TBasicChartSeries)
   private
     FBuiltinSource: TCustomChartSource;
+    FListener: TListener;
     FMarks: TChartMarks;
     FSource: TCustomChartSource;
 
     function GetSource: TCustomChartSource;
     function GetXMaxVal: Integer;
+    function IsSourceStored: boolean;
     procedure SetMarks(const AValue: TChartMarks);
     procedure SetSource(AValue: TCustomChartSource);
   protected
@@ -66,16 +68,17 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function Add(AValue: Double; XLabel: String; Color: TColor): Integer; virtual;
+    function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
-    function AddXY(X, Y: Double): Integer; overload;
-    procedure Clear;
+    function AddXY(X, Y: Double): Integer; overload; inline;
+    procedure Clear; inline;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
     function FormattedMark(AIndex: integer): String;
     function IsEmpty: Boolean; override;
-    property Source: TCustomChartSource read GetSource write SetSource;
+    property Source: TCustomChartSource
+      read GetSource write SetSource stored IsSourceStored;
   published
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
@@ -341,6 +344,32 @@ implementation
 uses
   GraphMath, Math, Types;
 
+type
+
+  { TChartSeriesListener }
+
+  TChartSeriesListener = class(TListener)
+  private
+    FSeries: TChartSeries;
+  public
+    constructor Create(ASeries: TChartSeries);
+    procedure Notify; override;
+  end;
+
+{ TChartSeriesListener }
+
+constructor TChartSeriesListener.Create(ASeries: TChartSeries);
+begin
+  FSeries := ASeries;
+end;
+
+procedure TChartSeriesListener.Notify;
+begin
+  FSeries.UpdateParentChart;
+end;
+
+{ TChartSeries }
+
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
 begin
   Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
@@ -349,7 +378,6 @@ end;
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
 begin
   Result := ListSource.Add(X, Y, XLabel, Color);
-  UpdateParentChart;
 end;
 
 function TChartSeries.AddXY(X, Y: Double): Integer;
@@ -365,7 +393,6 @@ end;
 procedure TChartSeries.Clear;
 begin
   ListSource.Clear;
-  UpdateParentChart;
 end;
 
 function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
@@ -387,9 +414,10 @@ begin
   inherited Create(AOwner);
 
   FActive := true;
+  FListener := TChartSeriesListener.Create(Self);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := 'Builtin';
-  (FBuiltinSource as TListChartSource).OnSetDataPoints := @UpdateParentChart;
+  FBuiltinSource.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
   FShowInLegend := true;
 end;
@@ -397,14 +425,14 @@ end;
 procedure TChartSeries.Delete(AIndex: Integer);
 begin
   ListSource.Delete(AIndex);
-  UpdateParentChart;
 end;
 
 destructor TChartSeries.Destroy;
 begin
+  if FListener.IsListening then
+    Source.Unsubscribe(FListener);
   FBuiltinSource.Free;
   FMarks.Free;
-  UpdateParentChart;
 
   inherited Destroy;
 end;
@@ -471,6 +499,11 @@ begin
   Result := Count = 0;
 end;
 
+function TChartSeries.IsSourceStored: boolean;
+begin
+  Result := FSource <> nil;
+end;
+
 function TChartSeries.ListSource: TListChartSource;
 begin
   if not (Source is TListChartSource) then
@@ -507,11 +540,10 @@ end;
 procedure TChartSeries.SetSource(AValue: TCustomChartSource);
 begin
   if FSource = AValue then exit;
-  if FSource is TListChartSource then
-    (FSource as TListChartSource).OnSetDataPoints := nil;
+  if FListener.IsListening then
+    Source.Unsubscribe(FListener);
   FSource := AValue;
-  if FSource is TListChartSource then
-    (FSource as TListChartSource).OnSetDataPoints := @UpdateParentChart;
+  Source.Subscribe(FListener);
   UpdateParentChart;
 end;
 
