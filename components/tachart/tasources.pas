@@ -324,34 +324,7 @@ end;
 
 procedure TListChartSource.ClearCaches;
 begin
-  FExtent := TMainIDE.ParseCmdLineOptions:
-  PrimaryConfigPath="C:\Documents and Settings\ask\Local Settings\Application Data\lazarus"
-  SecondaryConfigPath="C:\lazarus"
-TMainIDE.DoLoadLFM A C:\lazarus\components\tachart\demo\3d\main.pas IsPartOfProject=True
-QuickCheckLFMBuffer LFMBuffer=C:\lazarus\components\tachart\demo\3d\main.lfm
-TApplication.HandleException identifier expected, but end found
-  Stack trace:
-  $007DDACF  TCUSTOMCODETOOL__RAISEEXCEPTIONINSTANCE,  line 2054 of customcodetool.pas
-  $007DDB25  TCUSTOMCODETOOL__RAISEEXCEPTIONCLASS,  line 2063 of customcodetool.pas
-  $007D9B0A  TCUSTOMCODETOOL__RAISEEXCEPTION,  line 379 of customcodetool.pas
-  $007D9C50  TCUSTOMCODETOOL__SAVERAISEEXCEPTION,  line 401 of customcodetool.pas
-  $007D9CC5  TCUSTOMCODETOOL__SAVERAISEEXCEPTIONFMT,  line 407 of customcodetool.pas
-  $007DEC26  TCUSTOMCODETOOL__RAISEIDENTEXPECTEDBUTATOMFOUND,  line 2549 of customcodetool.pas
-  $007DA63B  TCUSTOMCODETOOL__ATOMISIDENTIFIER,  line 698 of customcodetool.pas
-  $007EB46F  TPASCALREADERTOOL__MOVECURSORTOPROPNAME,  line 876 of pascalreadertool.pas
-  $007EB70D  TPASCALREADERTOOL__EXTRACTPROPNAME,  line 947 of pascalreadertool.pas
-  $007BAD0B  TCODEEXPLORERVIEW__GETCODENODEDESCRIPTION,  line 542 of codeexplorer.pas
-  $007BB4C4  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 740 of codeexplorer.pas
-  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
-  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
-  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
-  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
-  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
-  $007BDB66  TCODEEXPLORERVIEW__REFRESHCODE,  line 1635 of codeexplorer.pas
-[TMainIDE.Destroy] A
-[TMainIDE.Destroy] B  -> inherited Destroy... TMainIDE
-[TMainIDE.Destroy] END
-EmptyExtent;
+  FExtent := EmptyExtent;
   FExtentIsValid := true;
   FValuesTotal := 0;
   FValuesTotalIsValid := true;
@@ -559,6 +532,7 @@ begin
     FCurIndex := -1;
   end;
   while FCurIndex < AIndex do begin
+    Inc(FCurIndex);
     if XMax <= XMin then
       FCurItem.X := XMin
     else begin
@@ -572,7 +546,6 @@ begin
       FCurItem.Y := YMin
     else
       FCurItem.Y := FRNG.Get / MaxInt * (YMax - YMin) + YMin;
-    Inc(FCurIndex);
   end;
   Result := @FCurItem;
 end;

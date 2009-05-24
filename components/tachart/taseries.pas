@@ -68,7 +68,7 @@ type
   public
     function Add(AValue: Double; XLabel: String; Color: TColor): Integer; virtual;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
-    function AddXY(X, Y: Double): Integer; virtual; overload;
+    function AddXY(X, Y: Double): Integer; overload;
     procedure Clear;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
@@ -119,7 +119,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     procedure Draw(ACanvas: TCanvas); override;
     function Extent: TDoubleRect; override;
   published
@@ -137,20 +136,15 @@ type
   { TPieSeries }
 
   TPieSeries = class(TChartSeries)
-  private
-    ColorIndex: Integer;
   protected
+    procedure AfterAdd; override;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    procedure AfterAdd; override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
-    constructor Create(AOwner: TComponent); override;
-  public
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     procedure Draw(ACanvas: TCanvas); override;
   published
     property Source;
@@ -177,7 +171,6 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
   published
     property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
@@ -228,7 +221,6 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    function  AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint; override;
     function  GetXValue(AIndex: Integer): Double;
     function  GetYValue(AIndex: Integer): Double;
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
@@ -357,6 +349,7 @@ end;
 function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
 begin
   Result := ListSource.Add(X, Y, XLabel, Color);
+  UpdateParentChart;
 end;
 
 function TChartSeries.AddXY(X, Y: Double): Integer;
@@ -669,13 +662,6 @@ begin
 end;
 
 
-function TLineSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
-begin
-  Color := ColorOrDefault(Color);
-  Result := inherited AddXY(X, Y, XLabel, Color);
-  UpdateParentChart;
-end;
-
 procedure TLineSeries.AfterAdd;
 begin
   inherited AfterAdd;
@@ -780,7 +766,7 @@ end;
 
 function TLineSeries.GetColor(AIndex: Integer): TColor;
 begin
-  Result := Source[AIndex]^.Color;
+  Result := ColorOrDefault(Source[AIndex]^.Color);
 end;
 
 procedure TLineSeries.SetShowPoints(Value: Boolean);
@@ -998,13 +984,6 @@ begin
   FBarBrush.Color := AValue;
 end;
 
-function TBarSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
-begin
-  Color := ColorOrDefault(Color);
-  Result := inherited AddXY(X, Y, XLabel, Color);
-  UpdateParentChart;
-end;
-
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 var
   barTop: TDoublePoint;
@@ -1055,11 +1034,12 @@ begin
     if r.Bottom = r.Top then Inc(r.Bottom);
     if r.Left = r.Right then Inc(r.Right);
 
+    ACanvas.Brush.Color := ColorOrDefault(Source[i]^.Color);
     if (barWidth > 2) and (r.Bottom - r.Top > 2) then
       ACanvas.Pen.Assign(BarPen)
     else begin
       // Bars are too small to distinguish border from interior.
-      ACanvas.Pen.Color := BarBrush.Color;
+      ACanvas.Pen.Color := ACanvas.Brush.Color;
       ACanvas.Pen.Style := psSolid;
     end;
 
@@ -1137,28 +1117,11 @@ begin
   Result := AddXY(GetXMaxVal + 1, Value, Text, Color);
 end;
 
-function TPieSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
-begin
-  Color := ColorOrDefault(Color, Colors[ColorIndex]);
-  Inc(ColorIndex);
-  if ColorIndex > MaxColor then ColorIndex := 1;
-
-  Result := inherited AddXY(X, Y, XLabel, Color);
-
-  UpdateParentChart;
-end;
-
 procedure TPieSeries.AfterAdd;
 begin
   // disable axis when we have TPie series
   ParentChart.LeftAxis.Visible := false;
   ParentChart.BottomAxis.Visible := false;
-end;
-
-constructor TPieSeries.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ColorIndex := 1;
 end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
@@ -1204,7 +1167,8 @@ begin
 
     graphCoord := Source[i];
     angleStep := graphCoord^.Y / Source.ValuesTotal * 360 * 16;
-    ACanvas.Brush.Color := graphCoord^.Color;
+    ACanvas.Brush.Color :=
+      ColorOrDefault(graphCoord^.Color, Colors[i mod MaxColor + 1]);
 
     ACanvas.RadialPie(
       center.x - radius, center.y - radius,
@@ -1296,13 +1260,6 @@ begin
   inherited Destroy;
 end;
 
-function TAreaSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Longint;
-begin
-  Color := ColorOrDefault(Color);
-  Result := inherited AddXY(X, Y, XLabel, Color);
-  UpdateParentChart;
-end;
-
 procedure TAreaSeries.SetAreaBrush(Value: TBrush);
 begin
   FAreaBrush.Assign(Value);
@@ -1352,7 +1309,7 @@ begin
     GetCoords(i + 1, g2, i2);
 
     ACanvas.Pen.Color:= clBlack;
-    ACanvas.Brush.Color:= Source[i]^.Color;
+    ACanvas.Brush.Color:= ColorOrDefault(Source[i]^.Color);
 
     // top line is totally inside the viewport
     if
