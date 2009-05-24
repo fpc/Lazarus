@@ -24,8 +24,9 @@ type
   private
     FIsListening: Boolean;
   public
+    procedure Forget; virtual;
     procedure Notify; virtual; abstract;
-    property IsListening: Boolean read FIsListening write FIsListening;
+    property IsListening: Boolean read FIsListening;
   end;
 
   { TCustomChartSource }
@@ -193,7 +194,7 @@ var
   i: Integer;
 begin
   for i := 0 to High(FListeners) do
-    FListeners[i].IsListening := false;
+    FListeners[i].Forget;
   FListeners := nil;
   inherited Destroy;
 end;
@@ -252,7 +253,7 @@ begin
     raise EListenerError.Create('Listener subscribed twice');
   if FindListener(AListener) >= 0 then
     raise EListenerError.Create('Duplicate listener');
-  AListener.IsListening := true;
+  AListener.FIsListening := true;
   SetLength(FListeners, Length(FListeners) + 1);
   FListeners[High(FListeners)] := AListener;
 end;
@@ -263,7 +264,7 @@ var
 begin
   if not AListener.IsListening then
     raise EListenerError.Create('Listener not subscribed');
-  AListener.IsListening := false;
+  AListener.FIsListening := false;
   j := FindListener(AListener);
   if j < 0 then
     raise EListenerError.Create('Listener not found');
@@ -674,6 +675,13 @@ begin
   FYMin := AValue;
   InvalidateCaches;
   Notify;
+end;
+
+{ TListener }
+
+procedure TListener.Forget;
+begin
+  FIsListening := false;
 end;
 
 end.

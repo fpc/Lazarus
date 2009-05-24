@@ -353,6 +353,7 @@ type
     FSeries: TChartSeries;
   public
     constructor Create(ASeries: TChartSeries);
+    procedure Forget; override;
     procedure Notify; override;
   end;
 
@@ -361,6 +362,12 @@ type
 constructor TChartSeriesListener.Create(ASeries: TChartSeries);
 begin
   FSeries := ASeries;
+end;
+
+procedure TChartSeriesListener.Forget;
+begin
+  inherited Forget;
+  FSeries.FSource := nil;
 end;
 
 procedure TChartSeriesListener.Notify;
@@ -713,13 +720,11 @@ end;
 procedure TLineSeries.SetXValue(AIndex: Integer; AValue: Double);
 begin
   ListSource.SetXValue(AIndex, AValue);
-  UpdateParentChart;
 end;
 
 procedure TLineSeries.SetYValue(AIndex: Integer; AValue: Double);
 begin
-  ListSource.SetXValue(AIndex, AValue);
-  UpdateParentChart;
+  ListSource.SetYValue(AIndex, AValue);
 end;
 
 function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
