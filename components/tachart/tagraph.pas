@@ -33,7 +33,6 @@ uses
   TAChartUtils, TATypes;
 
 const
-  clTAColor = clScrollBar;
   LEGEND_SPACING = 5;
 
 type

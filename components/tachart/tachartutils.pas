@@ -36,6 +36,7 @@ const
   Colors: array [1..MaxColor] of TColor = (
     clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
+  clTAColor = clScrollBar;
   CHART_COMPONENT_IDE_PAGE = 'Chart';
 
 type

@@ -481,7 +481,7 @@ end;
 function TChartSeries.ListSource: TListChartSource;
 begin
   if not (Source is TListChartSource) then
-    raise EFixedSourceRequired.Create('Fixed chart source required');
+    raise EFixedSourceRequired.Create('Editable chart source required');
   Result := Source as TListChartSource;
 end;
 
