@@ -787,6 +787,10 @@ begin
     while (i<=length(s)) and (s[i] in ['0'..'9','.']) do inc(i);
     if (i<=length(s)) and (s[i]=']') then inc(i);
     while (i<=length(s)) and (s[i] in [' ']) do inc(i);
+    // the user enabled extreme verbosity
+    // show all
+    DoAddFilteredLine(Copy(s, i, length(s)));
+    exit(true);
   end;
   
   // check for 'Compiling <filename>'

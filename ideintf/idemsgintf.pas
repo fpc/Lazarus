@@ -313,22 +313,36 @@ function ParseFPCMessage(const Line: string; out Filename: string; out
 <filename>(456) <ErrorType>: <some text> in line (123)
 Fatal: <some text>
 }
-var StartPos, EndPos: integer;
+var
+  StartPos, EndPos: integer;
 begin
   Result:=false;
-  if copy(Line,1,7)='Fatal: ' then begin
+  StartPos:=1;
+
+  // skip time [0.000]
+  if (Line<>'') and (Line[StartPos]='[') then begin
+    inc(StartPos);
+    while (StartPos<=length(Line)) and (Line[StartPos] in ['0'..'9','.']) do
+      inc(StartPos);
+    if (StartPos<=length(Line)) and (Line[StartPos]=']') then
+      inc(StartPos);
+    while (StartPos<=length(Line)) and (Line[StartPos] in [' ']) do
+      inc(StartPos);
+  end;
+
+  if copy(Line,StartPos,7)='Fatal: ' then begin
     Result:=true;
     Filename:='';
     MsgType:=etFatal;
     exit;
   end;
-  if copy(Line,1,7)='Panic: ' then begin
+  if copy(Line,StartPos,7)='Panic: ' then begin
     Result:=true;
     Filename:='';
     MsgType:=etPanic;
     exit;
   end;
-  StartPos:=1;
+
   // find filename
   EndPos:=StartPos;
   while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
