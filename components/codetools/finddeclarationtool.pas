@@ -639,9 +639,12 @@ type
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
-    function FindTermTypeAsString(TermAtom: TAtomPosition;
+    function FindTermTypeAsString(TermPos: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
       out ExprType: TExpressionType): string;
+    function IsTermEdgedBracket(TermPos: TAtomPosition;
+      out EdgedBracketsStartPos: integer): boolean;
+    function FindSetOfEnumerationType(EnumNode: TCodeTreeNode): TCodeTreeNode;
     function FindExprTypeAsString(const ExprType: TExpressionType;
       TermCleanPos: integer; Params: TFindDeclarationParams): string;
   protected
@@ -8629,18 +8632,133 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindTermTypeAsString(TermAtom: TAtomPosition;
+function TFindDeclarationTool.FindTermTypeAsString(TermPos: TAtomPosition;
   CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
   out ExprType: TExpressionType): string;
+var
+  EdgedBracketsStartPos: integer;
+  SetNode: TCodeTreeNode;
+  SetTool: TFindDeclarationTool;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
+  if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
+    MoveCursorToCleanPos(EdgedBracketsStartPos);
+    ReadNextAtom;
+    ReadNextAtom;
+    if CurPos.Flag=cafWord then begin
+      ExprType:=FindExpressionResultType(Params,EdgedBracketsStartPos+1,-1);
+      if (ExprType.Desc=xtContext)
+      and (ExprType.Context.Node.Desc=ctnEnumerationType) then begin
+        SetTool:=ExprType.Context.Tool;
+        SetNode:=SetTool.FindSetOfEnumerationType(ExprType.Context.Node);
+        if SetNode<>nil then begin
+          ExprType:=CleanExpressionType;
+          ExprType.Desc:=xtContext;
+          ExprType.SubDesc:=xtNone;
+          ExprType.Context.Tool:=SetTool;
+          ExprType.Context.Node:=SetNode;
+          Result:=SetTool.ExtractDefinitionName(SetNode);
+          exit;
+        end;
+      end;
+    end;
+  end;
   ExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFunctionResult];
-  ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
-  Result:=FindExprTypeAsString(ExprType,TermAtom.StartPos,Params);
+  ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+end;
+
+function TFindDeclarationTool.IsTermEdgedBracket(TermPos: TAtomPosition; out
+  EdgedBracketsStartPos: integer): boolean;
+{ allowed:
+   - at least one edged brackets
+   - identifiers
+   - functions
+   - operators: + and -
+
+    [a,b]+[c]-A()
+
+  not allowed:
+    []*[]
+    []<>[]
+}
+var
+  Lvl: Integer;
+  EndPos: LongInt;
+begin
+  Result:=false;
+  EdgedBracketsStartPos:=0;
+  EndPos:=TermPos.EndPos;
+  if EndPos>SrcLen then
+    EndPos:=SrcLen;
+  MoveCursorToCleanPos(TermPos.StartPos);
+  Lvl:=0;
+  repeat
+    ReadNextAtom;
+    if (CurPos.StartPos>=EndPos) then
+      break;
+    case CurPos.Flag of
+    cafRoundBracketOpen: ReadTilBracketClose(false);
+    cafEdgedBracketOpen:
+      begin
+        inc(Lvl);
+        if (Lvl=1) and (EdgedBracketsStartPos<1) then begin
+          if (LastAtoms.Count=0) or LastAtomIs(-1,'+') or LastAtomIs(-1,'-')
+          then
+            EdgedBracketsStartPos:=CurPos.StartPos;
+        end;
+      end;
+    cafEdgedBracketClose:
+      dec(Lvl);
+    cafWord:
+      ;
+    else
+      if AtomIsChar('+') or AtomIsChar('-') then begin
+        // allowed
+      end else begin
+        // not allowed
+        exit;
+      end;
+    end;
+  until false;
+  Result:=EdgedBracketsStartPos>0;
+end;
+
+function TFindDeclarationTool.FindSetOfEnumerationType(EnumNode: TCodeTreeNode
+  ): TCodeTreeNode;
+// find search in the same type section for a 'set of ' node
+var
+  p: PChar;
+
+ function IsSetOfEnum(Node: TCodeTreeNode): boolean;
+ begin
+   Result:=false;
+   if (Node.Desc<>ctnTypeDefinition)
+   or (Node.FirstChild=nil)
+   or (Node.FirstChild.Desc<>ctnSetType) then exit;
+   MoveCursorToNodeStart(Node.FirstChild);
+   ReadNextAtom; // read set
+   if not UpAtomIs('SET') then exit;
+   ReadNextAtom; // read of
+   if not UpAtomIs('OF') then exit;
+   ReadNextAtom; // read of
+   if CurPos.Flag<>cafWord then exit;
+   Result:=CompareSrcIdentifiers(CurPos.StartPos,p);
+ end;
+
+begin
+  if EnumNode.Desc=ctnEnumIdentifier then EnumNode:=EnumNode.Parent;
+  if EnumNode.Desc=ctnEnumerationType then EnumNode:=EnumNode.Parent;
+  p:=@Src[EnumNode.StartPos];
+  Result:=EnumNode.Parent.FirstChild;
+  while Result<>nil do begin
+    if IsSetOfEnum(Result) then exit;
+    Result:=Result.NextBrother;
+  end;
 end;
 
 function TFindDeclarationTool.FindExprTypeAsString(
