@@ -208,26 +208,13 @@ end;
 class procedure TGtk2WSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
-  TextView: PGtkTextView;
-  TextBuffer: PGtkTextBuffer;
-  StartIter: TGtkTextIter;
-  SelStart: Integer;
+  MemoStrings: TGtk2MemoStrings;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
     Exit;
-    
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle))^.CoreWidget);
-  TextBuffer := gtk_text_view_get_buffer(TextView);
-  SelStart := GetSelStart(ACustomEdit);
 
-  gtk_text_buffer_get_iter_at_offset(TextBuffer, @StartIter, SelStart);
-  gtk_text_buffer_get_iter_at_offset(TextBuffer, @StartIter, SelStart+NewLength);
-
-  // missing in the bindings!
-  //gtk_text_buffer_select_range(TextBuffer, @StartIter, @EndIter);
-  
-  // remove this line when gtk_text_buffer_select_range is available
-  gtk_text_buffer_move_mark(TextBuffer, gtk_text_buffer_get_insert(TextBuffer), @StartIter);
+  MemoStrings := TCustomMemo(ACustomEdit).Lines as TGtk2MemoStrings;
+  MemoStrings.QueueSelectLength(NewLength);
 end;
 
 class procedure TGtk2WSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
