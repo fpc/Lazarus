@@ -215,6 +215,7 @@ begin
   SetValue(ProgressBar.Position);
   SetMinimum(ProgressBar.Min);
   SetMaximum(ProgressBar.Max);
+  SetIndetermine(ProgressBar.Style = pbstMarquee);
 end;
 
 { TCarbonMovableBar }
