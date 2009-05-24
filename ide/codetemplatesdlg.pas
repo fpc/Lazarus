@@ -42,7 +42,7 @@ uses
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
-  IDEContextHelpEdit, ButtonPanel;
+  IDEContextHelpEdit, ButtonPanel, SynRegExpr;
 
 type
   TAutoCompleteOption = (
@@ -184,7 +184,10 @@ function CodeMacroAddMissingEnd(const Parameter: string;
 function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-
+function CodeMacroPrevWord(const Parameter: string;
+                        InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -516,6 +519,92 @@ begin
   Result:=true;
 end;
 
+function CodeMacroPrevWord(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+{ gets word previous to the cursor position in current line
+  Examples:
+
+  line
+  i 0 count-1 forb|
+
+  with code template
+  for $PrevWord(1) := $PrevWord(2) to $PrevWord(3) do // template:$PrevWord(0)
+  begin
+    |
+  end;$PrevWord(-1)
+
+  is expanded to
+  for i := 0 to count-1 do // template:forb
+  begin
+    |
+  end;
+
+  if $PrevWord(2) is empty, then template
+  is expanded to
+  for i := | to  do // template:forb
+  begin
+
+  end;
+
+  $PrevWord(0) expands to template itself, i.e. 'forb'
+  $PrevWord(-1) expands to empty string and is used in the end
+  if macro to delete words in the beginning of the line
+}
+var
+  Line,s: String;
+  p: TPoint;
+  CodeXYPos: TCodeXYPosition;
+  re : TRegExpr;
+  iParam,lastword,firstword,Position : Integer;
+  st: TStringList;
+begin
+  iParam:=StrToIntDef(Parameter,-1);
+  Result:=true;
+  Value:='';
+  Line:=SrcEdit.CurrentLineText;
+  p:=SrcEdit.CursorTextXY;
+  if p.y<1 then exit;
+  CodeXYPos.X:=p.x;
+  CodeXYPos.Y:=p.y;
+  CodeXYPos.Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  if CodeXYPos.Code=nil then exit;
+
+  st:=TStringList.Create;
+  re:=TRegExpr.Create;
+  re.Expression:='[\w\-+*\(\)\[\].^@]+';
+  if(re.Exec(Line))then
+  begin
+    firstword:=re.MatchPos[0];
+    repeat
+      st.Add(re.Match[0]);
+      lastword:=re.MatchPos[0];
+    until (not re.ExecNext);
+  end;
+  s:=st[st.count-1];
+  st.Delete(st.count-1);
+  st.Insert(0,s);
+  if(iParam<0)then
+  begin
+    p.X:=SrcEdit.CursorTextXY.x;
+    CodeXYPos.Code.LineColToPosition(CodeXYPos.Y,firstword,Position);
+    CodeXYPos.Code.Delete(Position,lastword-firstword);
+    p.X:=p.X-(lastword-firstword);
+    SrcEdit.CursorTextXY:=p;
+    Value:='';
+  end
+  else
+  begin
+    if(iParam<st.count)then
+      Value:=st[iParam]
+    else
+      Value:='|';
+  end;
+  st.Free;
+  re.Free;
+end;
+
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -587,7 +676,18 @@ begin
   RegisterCodeMacro('OfAll','list of all case values',
                     'returns list of all values of case variable in front of variable',
                     @CodeMacroOfAll,nil);
-end;
+  RegisterCodeMacro('PrevWord','Preceding word',
+                    'Returns parameter-indexed word from the current line preceding cursor position.'+LineEnding+LineEnding+
+                    'Words in a line are numbered 1,2,3,... from left to right, but the last word'+LineEnding+
+                    'which is always a macro command to be expanded has number 0, thus $PrevWord(0)'+LineEnding+
+                    'is always the current macro'+LineEnding+LineEnding+
+                    'Example line:'+LineEnding+
+                    'i 0 count-1 forb|'+LineEnding+
+                    'Here $PrevWord(0)=forb, $PrevWord(1)=1, $PrevWord(2)=0, $PrevWord(2)=count-1'+LineEnding+LineEnding+
+                    'In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an '+
+                    'importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used'+
+                    'to detect words for this macro: [\w\-+*\(\)\[\].^@]+',
+                    @CodeMacroPrevWord,nil);end;
 
 { TCodeTemplateEditForm }
 

@@ -135,17 +135,21 @@ begin
       begin
         s := Temp[i];
         j := Pos('|', s);
-        if j > 0 then
+        while j > 0 do
         begin
           Delete(s, j, 1);
           Temp[i] := s;
-          NewCaretPos := TRUE;
-          Inc(p.y, i);
-          if i = 0 then
-            Inc(p.x, j - 1)
-          else
-            p.x := j;
-          break;
+          if (not NewCaretPos) then
+          begin
+            Inc(p.y, i);
+            if i = 0 then
+              Inc(p.x, j - 1)
+            else
+              p.x := j;
+            NewCaretPos := TRUE;
+          end;
+          j := Pos('|', s);
+          //break;
         end;
       end;
       s := Temp.Text;
