@@ -6,7 +6,6 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 300
   ClientWidth = 560
-  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Chart1: TChart
@@ -33,6 +32,7 @@ object Form1: TForm1
       BarWidthPercent = 50
       Depth = 10
       SeriesColor = clTeal
+      Source = RandomChartSource1
     end
     object Chart1BarSeries2: TBarSeries
       ZPosition = 30
@@ -40,11 +40,33 @@ object Form1: TForm1
       BarWidthPercent = 50
       Depth = 10
       SeriesColor = clMaroon
+      Source = RandomChartSource2
     end
     object Chart1LineSeries1: TLineSeries
       ZPosition = 50
       Depth = 10
       SeriesColor = clBlue
+      Source = RandomChartSource1
     end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 545516281
+    XMax = 7
+    XMin = 1
+    YMax = 12
+    YMin = 4
+    left = 120
+    top = 52
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 87568756
+    XMax = 7
+    XMin = 1
+    YMax = 12
+    YMin = 1
+    left = 120
+    top = 100
   end
 end

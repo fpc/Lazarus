@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, LResources, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries;
+  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources;
 
 type
 
@@ -23,6 +23,7 @@ type
     fseBounds: TFloatSpinEdit;
     lblBoundValue: TLabel;
     Panel1: TPanel;
+    RandomChartSource1: TRandomChartSource;
     procedure cgUseBoundsItemClick(Sender: TObject; Index: integer);
     procedure FormCreate(Sender: TObject);
     procedure fseBoundsChange(Sender: TObject);
@@ -46,12 +47,7 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  i: Integer;
 begin
-  RandSeed := 342432;
-  for i := -10 to 10 do
-    Chart1LineSeries.AddXY(i * 0.5, Random(20) * 0.5 - 5);
   fseBoundsChange(nil);
 end;
 

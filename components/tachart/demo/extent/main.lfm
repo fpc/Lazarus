@@ -36,6 +36,7 @@ object Form1: TForm1
       Pointer.Pen.Color = clRed
       SeriesColor = clRed
       ShowPoints = True
+      Source = RandomChartSource1
     end
     object clRight: TLine
       LineStyle = lsVertical
@@ -125,5 +126,15 @@ object Form1: TForm1
       TabOrder = 1
       Value = 1.7
     end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 628509515
+    XMax = 5
+    XMin = -5
+    YMax = 5
+    YMin = -5
+    left = 176
+    top = 118
   end
 end
