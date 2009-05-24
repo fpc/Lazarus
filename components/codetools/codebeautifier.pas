@@ -131,10 +131,29 @@ type
 
   TFABBlockType = (
     bbtNone,
+    // code sections
+    bbtInterface,
+    bbtImplementation,
+    bbtInitialization,
+    bbtFinalization,
+    // identifier sections
+    bbtUsesSection,
+    bbtTypeSection,
+    bbtConstSection,
+    bbtVarSection,
+    bbtResourceStringSection,
+    bbtLabelSection,
+    // statement blocks
     bbtRepeat
     );
   TFABBlockTypes = set of TFABBlockType;
 
+const
+  bbtAllIdentifierSections = [bbtTypeSection,bbtConstSection,bbtVarSection,
+       bbtResourceStringSection,bbtLabelSection];
+  bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
+                        bbtFinalization];
+type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 out CodeBuffers: TFPList) of object;
 
@@ -162,7 +181,8 @@ type
     FAtomStarts: PInteger;
     FAtomCapacity: integer;
     FAtomCount: integer;
-    procedure ParseSource(const Source: string; NewNestedComments: boolean);
+    procedure ParseSource(const Source: string; NewSrcLen: integer;
+                          NewNestedComments: boolean);
     function IndexOfAtomInFront(CleanPos: integer): integer;
     function FindContext(CleanPos: integer; out AtomInFront: integer
                          ): TFABBlockType;
@@ -188,8 +208,21 @@ type
 
 const
   FABBlockTypeNames: array[TFABBlockType] of string = (
-    'None',
-    'Repeat'
+    'bbtNone',
+    // code sections
+    'bbtInterface',
+    'bbtImplementation',
+    'bbtInitialization',
+    'bbtFinalization',
+    // identifier sections
+    'bbtUsesSection',
+    'bbtTypeSection',
+    'bbtConstSection',
+    'bbtVarSection',
+    'bbtResourceStringSection',
+    'bbtLabelSection',
+    // statement blocks
+    'bbtRepeat'
     );
 
 implementation
@@ -208,6 +241,7 @@ type
     Stack: PBlock;
     Capacity: integer;
     Top: integer;
+    TopType: TFABBlockType;
     constructor Create;
     destructor Destroy; override;
     procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
@@ -244,24 +278,31 @@ begin
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
   Block^.StartPos:=StartPos;
+  TopType:=Typ;
 end;
 
 procedure TBlockStack.EndBlock;
 begin
   dec(Top);
+  if Top>=0 then
+    TopType:=Stack[Top].Typ
+  else
+    TopType:=bbtNone;
 end;
 
 { TFullyAutomaticBeautifier }
 
 procedure TFullyAutomaticBeautifier.ParseSource(const Source: string;
-  NewNestedComments: boolean);
+  NewSrcLen: integer; NewNestedComments: boolean);
 var
   AtomStart: integer;
   MinAtomCapacity: Integer;
   p: Integer;
+  Stack: TBlockStack;
+  r: PChar;
 begin
   Src:=Source;
-  SrcLen:=length(Src);
+  SrcLen:=NewSrcLen;
   NestedComments:=NewNestedComments;
   FAtomCount:=0;
   MinAtomCapacity:=SrcLen div 4;
@@ -271,17 +312,70 @@ begin
     FAtomCapacity:=MinAtomCapacity;
     ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
   end;
-  p:=1;
-  repeat
-    ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
-    if p>SrcLen then break;
-    FAtomStarts[FAtomCount]:=AtomStart;
-    inc(FAtomCount);
-    if FAtomCount>FAtomCapacity then begin
-      FAtomCapacity:=FAtomCapacity*2;
-      ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
-    end;
-  until false;
+  Stack:=TBlockStack.Create;
+  try
+    p:=1;
+    repeat
+      ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
+      if p>SrcLen then break;
+      FAtomStarts[FAtomCount]:=AtomStart;
+      inc(FAtomCount);
+      if FAtomCount>FAtomCapacity then begin
+        FAtomCapacity:=FAtomCapacity*2;
+        ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
+      end;
+      r:=@Src[p];
+      case UpChars[r^] of
+      'F':
+        if CompareIdentifiers('FINALIZATION',r)=0 then begin
+          while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+          do
+            Stack.EndBlock;
+          if Stack.TopType=bbtNone then
+            Stack.BeginBlock(bbtInitialization,p);
+        end;
+      'I':
+        case UpChars[Src[1]] of
+        'N':
+          case UpChars[Src[2]] of
+          'I':
+            if CompareIdentifiers('INITIALIZATION',r)=0 then begin
+              while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+              do
+                Stack.EndBlock;
+              if Stack.TopType=bbtNone then
+                Stack.BeginBlock(bbtInitialization,p);
+            end;
+          'T':
+            if CompareIdentifiers('INTERFACE',r)=0 then begin
+              if Stack.TopType=bbtNone then
+                Stack.BeginBlock(bbtInterface,p);
+            end;
+          end;
+        'M':
+          if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
+            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+            do
+              Stack.EndBlock;
+            if Stack.TopType=bbtNone then
+              Stack.BeginBlock(bbtImplementation,p);
+          end;
+        end;
+      'U':
+        if CompareIdentifiers('USES',r)=0 then begin
+          if Stack.TopType in [bbtNone,bbtInterface,bbtImplementation] then
+            Stack.BeginBlock(bbtUsesSection,p);
+        end;
+      ';':
+        case Stack.TopType of
+        bbtUsesSection:
+          Stack.EndBlock;
+        end;
+      end;
+    until false;
+  finally
+    Stack.Free;
+  end;
 end;
 
 function TFullyAutomaticBeautifier.IndexOfAtomInFront(CleanPos: integer
@@ -432,7 +526,7 @@ begin
   FillByte(Indent,SizeOf(Indent),0);
 
   // parse source
-  ParseSource(Source,NewNestedComments);
+  ParseSource(Source,length(Source),NewNestedComments);
   DebugLn(['TFullyAutomaticBeautifier.GetIndent FAtomCount=',FAtomCount]);
 
   BlockType:=FindContext(CleanPos,AtomInFront);
