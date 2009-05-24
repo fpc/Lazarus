@@ -15,13 +15,10 @@ object Form1: TForm1
     Top = 0
     Width = 461
     BottomAxis.Grid.Style = psDot
-    BottomAxis.Grid.Visible = True
     ExpandPercentage = 10
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    Frame.Visible = True
     LeftAxis.Grid.Style = psDot
-    LeftAxis.Grid.Visible = True
     LeftAxis.Title.Angle = 90
     Legend.Visible = True
     Title.Brush.Color = clBtnFace
@@ -56,5 +53,16 @@ object Form1: TForm1
       Position = 0
       SeriesColor = clBlack
     end
+    object Chart1BarSeries1: TBarSeries
+      Title = 'Cos(x)'
+      BarBrush.Color = clMoneyGreen
+      SeriesColor = clMoneyGreen
+      Source = UserDefinedChartSource1
+    end
+  end
+  object UserDefinedChartSource1: TUserDefinedChartSource
+    PointsNumber = 14
+    left = 135
+    top = 114
   end
 end
