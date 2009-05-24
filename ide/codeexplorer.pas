@@ -1481,7 +1481,7 @@ begin
   FLastCodeFilter:=TheFilter;
   CodeTreeview.BeginUpdate;
   CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
-  DebugLn(['TCodeExplorerView.ApplyCodeFilter =====================']);
+  //DebugLn(['TCodeExplorerView.ApplyCodeFilter =====================']);
   ANode:=CodeTreeview.Items.GetFirstNode;
   while ANode<>nil do begin
     FilterNode(ANode,TheFilter);
@@ -1584,8 +1584,6 @@ begin
   try
     Include(FFlags,cevRefreshing);
     
-    CodeFilterEdit.Text:=lisCEFilter;
-
     // get the codetool with the updated codetree
     ACodeTool:=nil;
     if Assigned(OnGetCodeTree) then
@@ -1655,6 +1653,8 @@ begin
 
     BuildCodeSortedForStartPos;
     ClearCTNodes(CodeTreeview);
+
+    ApplyCodeFilter;
     CodeTreeview.EndUpdate;
 
   finally
@@ -1677,8 +1677,6 @@ begin
 
   try
     Include(FFlags,cevRefreshing);
-
-    DirectivesFilterEdit.Text:=lisCEFilter;
 
     // get the directivestool with the updated tree
     ADirectivesTool:=nil;
@@ -1725,6 +1723,9 @@ begin
     OldExpanded.Apply(DirectivesTreeView);
     OldExpanded.Free;
     ClearCTNodes(DirectivesTreeView);
+
+    ApplyDirectivesFilter;
+
     DirectivesTreeView.EndUpdate;
 
   finally
