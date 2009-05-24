@@ -193,12 +193,13 @@ const
   OIC_ERROR          = OIC_HAND;
   OIC_INFORMATION    = OIC_NOTE;
 
-  { Get the progress bar range }
-  PBM_GETRANGE = 1031;
-  { Smooth progrss bar }
-  PBS_SMOOTH = 1;
-  { Vertical progress bar }
-  PBS_VERTICAL = 4;
+  // progress bar
+  PBM_GETRANGE    = WM_USER + 7;
+  PBM_SETMARQUEE  = WM_USER + 10;
+  PBS_SMOOTH   = $01;
+  PBS_VERTICAL = $04;
+  PBS_MARQUEE  = $08;
+
   { Left-to-right reading text }
   WS_EX_LTRLEADING = 0;
 

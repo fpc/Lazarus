@@ -156,10 +156,11 @@ type
 
   TWin32WSProgressBar = class(TWSProgressBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
+    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
   { TWin32WSCustomUpDown }
@@ -218,6 +219,9 @@ type
 
 
 implementation
+
+const
+  DefMarqueeTime = 50; // ms
 
 type
   TStatusPanelAccess = class(TStatusPanel);
@@ -550,12 +554,17 @@ begin
         Flags := Flags or PBS_SMOOTH;
       if (Orientation = pbVertical) or (Orientation = pbTopDown) then
         Flags := Flags or PBS_VERTICAL;
+      if ThemeServices.ThemesEnabled and (Style = pbstMarquee) then
+        Flags := Flags or PBS_MARQUEE;
     end;
     pClassName := PROGRESS_CLASS;
   end;
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
+  FinishCreateWindow(AWinControl, Params, False);
   Result := Params.Window;
+  if (ThemeServices.ThemesEnabled) and
+     (TCustomProgressBar(AWinControl).Style = pbstMarquee) then
+    SendMessage(Result, PBM_SETMARQUEE, WParam(LongBool(True)), DefMarqueeTime);
 end;
 
 class procedure TWin32WSProgressBar.ApplyChanges(
@@ -588,6 +597,28 @@ class procedure TWin32WSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   Windows.SendMessage(AProgressBar.Handle, PBM_SETPOS, Windows.WPARAM(NewPosition), 0);
+end;
+
+class procedure TWin32WSProgressBar.SetStyle(
+  const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle);
+var
+  Style: DWord;
+begin
+  if not WSCheckHandleAllocated(AProgressBar, 'SetStyle') then
+    Exit;
+  if ThemeServices.ThemesEnabled then
+  begin
+    // Comctl32 >= 6
+    Style := GetWindowLong(AProgressBar.Handle, GWL_STYLE);
+    if NewStyle = pbstMarquee then
+      Style := Style or PBS_MARQUEE
+    else
+      Style := Style and not PBS_MARQUEE;
+    SetWindowLong(AProgressBar.Handle, GWL_STYLE, Style);
+    SendMessage(AProgressBar.Handle, PBM_SETMARQUEE, Ord(NewStyle = pbstMarquee), DefMarqueeTime);
+    if NewStyle = pbstNormal then
+      SetPosition(AProgressBar, AProgressBar.Position);
+  end;
 end;
 
 { TWin32WSToolbar}

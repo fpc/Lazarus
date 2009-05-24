@@ -167,10 +167,12 @@ type
   TGtk2WSProgressBar = class(TWSProgressBar)
   private
     class procedure UpdateProgressBarText(const AProgressBar: TCustomProgressBar); virtual;
+    class procedure InternalSetStyle(AProgressBar: PGtkProgressBar; AStyle: TProgressBarStyle);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
+    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
   { TGtk2WSCustomUpDown }
@@ -375,6 +377,32 @@ begin
   end;
 end;
 
+function ProgressPulseTimeout(data: gpointer): gboolean; cdecl;
+var
+  AProgressBar: PGtkProgressBar absolute data;
+begin
+  Result := PtrUInt(g_object_get_data(data, 'ProgressStyle')) = 1;
+  if Result then
+    gtk_progress_bar_pulse(AProgressBar);
+end;
+
+procedure ProgressDestroy(data: gpointer); cdecl;
+begin
+  g_source_remove(PtrUInt(data));
+end;
+
+class procedure TGtk2WSProgressBar.InternalSetStyle(
+  AProgressBar: PGtkProgressBar; AStyle: TProgressBarStyle);
+begin
+  g_object_set_data(PGObject(AProgressBar), 'ProgressStyle', Pointer(Ord(AStyle)));
+  if AStyle = pbstMarquee then
+  begin
+    g_object_set_data_full(PGObject(AProgressBar), 'timeout',
+      Pointer(g_timeout_add(100, @ProgressPulseTimeout, AProgressBar)), @ProgressDestroy);
+    gtk_progress_bar_pulse(AProgressBar);
+  end;
+end;
+
 class function TGtk2WSProgressBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -385,6 +413,8 @@ begin
   Result := TLCLIntfHandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
+
+  InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
 
   TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
@@ -437,6 +467,16 @@ begin
     (AProgressBar.Max - AProgressBar.Min));
 
   UpdateProgressBarText(AProgressBar);
+end;
+
+class procedure TGtk2WSProgressBar.SetStyle(
+  const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle);
+begin
+  if not WSCheckHandleAllocated(AProgressBar, 'SetStyle') then
+    Exit;
+  InternalSetStyle(PGtkProgressBar(AProgressBar.Handle), NewStyle);
+  if NewStyle = pbstNormal then
+    SetPosition(AProgressBar, AProgressBar.Position);
 end;
 
 { TGtk2WSStatusBar }

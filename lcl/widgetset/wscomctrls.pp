@@ -151,6 +151,7 @@ type
   published
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); virtual;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); virtual;
+    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); virtual;
   end;
 
   { TWSCustomUpDown }
@@ -488,6 +489,11 @@ end;
 
 class procedure TWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar;
   const NewPosition: integer);
+begin
+end;
+
+class procedure TWSProgressBar.SetStyle(const AProgressBar: TCustomProgressBar;
+  const NewStyle: TProgressBarStyle);
 begin
 end;
 

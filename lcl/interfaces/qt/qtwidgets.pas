@@ -1134,6 +1134,7 @@ type
     procedure DetachEvents; override;
     procedure SignalValueChanged(Value: Integer); cdecl;
   public
+    procedure reset;
     procedure setRange(minimum: Integer; maximum: Integer);
     procedure setTextVisible(visible: Boolean);
     procedure setAlignment(const AAlignment: QtAlignment);
@@ -8430,6 +8431,11 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   DeliverMessage(Msg);
+end;
+
+procedure TQtProgressBar.reset;
+begin
+  QProgressBar_reset(QProgressBarH(Widget));
 end;
 
 { TQtStatusBar }

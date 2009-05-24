@@ -1156,6 +1156,8 @@ type
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
 
+  TProgressBarStyle = (pbstNormal, pbstMarquee);
+
   { TCustomProgressBar }
   {
     @abstract(Simple progressbar.)
@@ -1164,14 +1166,15 @@ type
   }
   TCustomProgressBar = class(TWinControl)
   private
-    FMin              : Integer;
-    FMax              : Integer;
-    FStep             : Integer;
-    FPosition         : Integer;
-    FSmooth           : boolean;
-    FBarShowText      : boolean;
-    FBarTextFormat    : string;
-    FOrientation      : TProgressBarOrientation;
+    FMin: Integer;
+    FMax: Integer;
+    FStep: Integer;
+    FPosition: Integer;
+    FSmooth: boolean;
+    FBarShowText: boolean;
+    FBarTextFormat: string;
+    FOrientation: TProgressBarOrientation;
+    FStyle: TProgressBarStyle;
     function GetMin: Integer;
     function GetMax: Integer;
     function GetPosition: Integer;
@@ -1183,6 +1186,7 @@ type
     procedure SetSmooth (Value : boolean);
     procedure SetBarShowText (Value : boolean);
     procedure SetOrientation (Value : TProgressBarOrientation);
+    procedure SetStyle(const AValue: TProgressBarStyle);
   protected
     class procedure WSRegisterClass; override;
     procedure ApplyChanges;
@@ -1200,6 +1204,7 @@ type
     property Position: Integer read GetPosition write SetPosition default 0;
     property Smooth : boolean read FSmooth write SetSmooth default False;
     property Step: Integer read FStep write SetStep default 10;
+    property Style: TProgressBarStyle read FStyle write SetStyle default pbstNormal;
     property BarShowText : boolean read FBarShowText write SetBarShowText default False;
   end;
  
@@ -1238,6 +1243,7 @@ type
     property ShowHint;
     property Smooth;
     property Step;
+    property Style;
     property TabOrder;
     property TabStop;
     property Visible;

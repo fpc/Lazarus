@@ -157,10 +157,13 @@ type
   { TQtWSProgressBar }
 
   TQtWSProgressBar = class(TWSProgressBar)
+  protected
+    class procedure SetRangeStyle(AProgressBar: TQtProgressBar; AStyle: TProgressBarStyle; AMin, AMax: Integer);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
+    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
   { TQtWSCustomUpDown }
@@ -377,6 +380,20 @@ end;
 
 { TQtWSProgressBar }
 
+class procedure TQtWSProgressBar.SetRangeStyle(AProgressBar: TQtProgressBar;
+  AStyle: TProgressBarStyle; AMin, AMax: Integer);
+begin
+  if AStyle = pbstNormal then
+  begin
+    if (AMin = 0) and (AMax = 0) then
+      AProgressBar.setRange(0, 1)
+    else
+      AProgressBar.setRange(AMin, AMax)
+  end
+  else
+    AProgressBar.setRange(0, 0);
+end;
+
 class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtProgressBar: TQtProgressBar;
@@ -420,14 +437,27 @@ begin
   QtProgressBar.setTextVisible(AProgressBar.BarShowText);
 
   // The position, minumum and maximum values
+  SetRangeStyle(QtProgressBar, AProgressBar.Style, AProgressBar.Min, AProgressBar.Max);
   QtProgressBar.setValue(AProgressBar.Position);
-
-  QtProgressBar.setRange(AProgressBar.Min, AProgressBar.Max);
 end;
 
 class procedure TQtWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   TQtProgressBar(AProgressBar.Handle).setValue(NewPosition);
+end;
+
+class procedure TQtWSProgressBar.SetStyle(
+  const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle);
+var
+  QProgressBar: TQtProgressBar;
+begin
+  if not WSCheckHandleAllocated(AProgressBar, 'SetStyle') then
+    Exit;
+  QProgressBar := TQtProgressBar(AProgressBar.Handle);
+  QProgressBar.reset;
+  SetRangeStyle(QProgressBar, NewStyle, AProgressBar.Min, AProgressBar.Max);
+  if NewStyle = pbstNormal then
+    QProgressBar.setValue(AProgressBar.Position);
 end;
 
 { TQtWSStatusBar }

@@ -45,14 +45,15 @@ begin
   inherited Create(AOwner);
   fCompStyle := csProgressBar;
   FPosition  := 0;
-  FStep      := 10;
-  FMin       := 0;
-  FMax       := 100;
-  FSmooth    := false;
-  FOrientation      := pbHorizontal;
-  FBarShowText      := false;
-  FBarTextFormat    := '%v from [%l-%u] (=%p%%)';
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  FStep := 10;
+  FMin := 0;
+  FMax := 100;
+  FSmooth := False;
+  FOrientation := pbHorizontal;
+  FBarShowText := False;
+  FBarTextFormat := '%v from [%l-%u] (=%p%%)';
+  FStyle := pbstNormal;
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
 end;   
 
 {------------------------------------------------------------------------------
@@ -77,8 +78,8 @@ end;
 
 class function TCustomProgressBar.GetControlClassDefaultSize: TPoint;
 begin
-  Result.X:=100;
-  Result.Y:=20;
+  Result.X := 100;
+  Result.Y := 20;
 end;
 
 {------------------------------------------------------------------------------
@@ -213,6 +214,16 @@ begin
   end;
 end;
 
+procedure TCustomProgressBar.SetStyle(const AValue: TProgressBarStyle);
+begin
+  if FStyle <> AValue then
+  begin
+    FStyle := AValue;
+    if HandleAllocated then
+      TWSProgressBarClass(WidgetSetClass).SetStyle(Self, AValue);
+  end;
+end;
+
 class procedure TCustomProgressBar.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -228,10 +239,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomProgressBar.StepIt;
 begin
-  inc (FPosition, FStep);
+  inc(FPosition, FStep);
   if FPosition > FMax then FPosition := FMax;
   if FPosition < FMin then FPosition := FMin;
-  TWSProgressBarClass(WidgetSetClass).SetPosition(Self, FPosition);
+  if HandleAllocated then
+    TWSProgressBarClass(WidgetSetClass).SetPosition(Self, FPosition);
 end;
 
 
@@ -261,13 +273,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomProgressBar.ApplyChanges;
 begin
-  if not (csLoading in ComponentState) then begin
-    if FMin>Max then FMin:=Max;
-    if Position<Min then FPosition:=Min;
-    if Position>Max then FPosition:=Max;
-    if HandleAllocated then begin
+  if not (csLoading in ComponentState) then
+  begin
+    if FMin > Max then FMin := Max;
+    if Position < Min then FPosition := Min;
+    if Position > Max then FPosition := Max;
+    if HandleAllocated then
       TWSProgressBarClass(WidgetSetClass).ApplyChanges(Self);
-    end;
   end;
 end;
 
@@ -304,7 +316,7 @@ procedure TCustomProgressBar.SetBarShowText (Value : boolean);
 begin
   if FBarShowText <> Value then
   begin
-    FBarShowText      := Value;
+    FBarShowText := Value;
     ApplyChanges;
   end;
 end;
