@@ -8,7 +8,7 @@ uses
   Classes, Graphics, SysUtils, TAChartUtils;
 
 type
-  EFixedSourceRequired = class(EChartError);
+  EEditableSourceRequired = class(EChartError);
   EListenerError = class(EChartError);
 
   TChartDataItem = record
@@ -98,26 +98,26 @@ type
     FHistory: array [0..4] of LongWord;
     procedure SetSeed(const AValue: Integer);
   public
-    property Seed: Integer write SetSeed;
     function Get: LongWord;
     function GetInRange(AMin, AMax: Integer): Integer;
+    property Seed: Integer write SetSeed;
   end;
 
   { TRandomChartSource }
 
   TRandomChartSource = class(TCustomChartSource)
   private
-    FRandomX: Boolean;
     FPointsNumber: Integer;
+    FRandomX: Boolean;
     FRandSeed: Integer;
     FXMax: Double;
     FXMin: Double;
     FYMax: Double;
     FYMin: Double;
   private
-    FRNG: TMWCRandomGenerator;
     FCurIndex: Integer;
     FCurItem: TChartDataItem;
+    FRNG: TMWCRandomGenerator;
 
     procedure SetPointsNumber(const AValue: Integer);
     procedure SetRandomX(const AValue: Boolean);
@@ -565,7 +565,7 @@ var
 begin
   FHistory[0] := AValue;
   // Use trivial LCG for seeding
-  for i := 0 to High(FHistory) do
+  for i := 1 to High(FHistory) do
     FHistory[i] := Lo(Int64(FHistory[i - 1]) * 29943829 - 1);
   // Skip some initial values to increase randomness.
   for i := 1 to 20 do
@@ -577,10 +577,9 @@ end;
 constructor TRandomChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCurItem.Color := clTAColor;
   FRNG := TMWCRandomGenerator.Create;
   RandSeed := GetTickCount;
-  FCurItem.Color := clTAColor;
-  FCurIndex := -1;
 end;
 
 destructor TRandomChartSource.Destroy;
@@ -640,6 +639,7 @@ begin
   if FRandSeed = AValue then exit;
   FRandSeed := AValue;
   FRNG.Seed := AValue;
+  FCurIndex := -1;
   InvalidateCaches;
   Notify;
 end;
