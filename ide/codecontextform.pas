@@ -623,8 +623,10 @@ var
           '*':
             begin
               // switch to normal font
-              Canvas.Font.Color:=TextGrayColor;
-              Canvas.Font.Style:=TextGrayStyle;
+              if Draw then begin
+                Canvas.Font.Color:=TextGrayColor;
+                Canvas.Font.Style:=TextGrayStyle;
+              end;
               //DebugLn('DrawHint gray');
               continue;
             end;
@@ -632,8 +634,10 @@ var
           'b':
             begin
               // switch to normal font
-              Canvas.Font.Color:=TextColor;
-              Canvas.Font.Style:=TextStyle;
+              if Draw then begin
+                Canvas.Font.Color:=TextColor;
+                Canvas.Font.Style:=TextStyle;
+              end;
               //DebugLn('DrawHint normal');
               continue;
             end;
@@ -714,6 +718,8 @@ begin
     Canvas.Font.Color:=TextGrayColor;
     Canvas.Font.Style:=TextGrayStyle;
     Canvas.Pen.Color:=PenColor;
+  end else begin
+    Canvas.Font.Style:=[fsBold];
   end;
   NewMaxWidth:=0;
   NewMaxHeight:=0;

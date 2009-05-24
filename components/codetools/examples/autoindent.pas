@@ -29,7 +29,7 @@ program AutoIndent;
 
 uses
   Classes, SysUtils, DefineTemplates, CodeToolsConfig, FileProcs,
-  CodeToolsStructs, CodeToolManager, CodeCache, CodeBeautifier, cwstring;
+  CodeToolsStructs, CodeToolManager, CodeCache, CodeBeautifier;
 
 var
   Code: TCodeBuffer;
