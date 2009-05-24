@@ -433,10 +433,13 @@ begin
 end;
 
 function THeaderSections.AddItem(Item: THeaderSection; Index: Integer): THeaderSection;
-var i:longint;
+var
+  i: longint;
 begin
   if Item = nil then
-    Result := FHeaderControl.CreateSection;
+    Result := FHeaderControl.CreateSection
+  else
+    Result := Item;
 
   Result.Collection := Self;
   if Index > Count then
@@ -444,11 +447,10 @@ begin
   Result.Index := Index;
   //updates OriginalIndex so that it has the value Index would have if there
   //never was a move
-  for i:=0 to Count - 1 do
-    if Items[i].FOriginalIndex>=Index then
-      Items[i].FOriginalIndex:=Items[i].FOriginalIndex + 1;
+  for i := 0 to Count - 1 do
+    if Items[i].FOriginalIndex >= Index then
+      Items[i].FOriginalIndex := Items[i].FOriginalIndex + 1;
   Result.FOriginalIndex := Index;
-  
 end;
 
 function THeaderSections.Insert(Index: Integer): THeaderSection;
