@@ -144,6 +144,33 @@ type
     property YMin: Double read FYMin write SetYMin;
   end;
 
+  TUserDefinedChartSource = class;
+
+  TGetChartDataItemEvent = procedure (
+    ASource: TUserDefinedChartSource; AIndex: Integer;
+    var AItem: TChartDataItem) of object;
+
+  { TUserDefinedChartSource }
+
+  TUserDefinedChartSource = class(TCustomChartSource)
+  private
+    FItem: TChartDataItem;
+    FOnGetChartDataItem: TGetChartDataItemEvent;
+    FPointsNumber: Integer;
+    procedure SetOnGetChartDataItem(const AValue: TGetChartDataItemEvent);
+    procedure SetPointsNumber(const AValue: Integer);
+  protected
+    function GetCount: Integer; override;
+    function GetItem(AIndex: Integer): PChartDataItem; override;
+  public
+    procedure Reset; inline;
+  published
+    property OnGetChartDataItem: TGetChartDataItemEvent
+      read FOnGetChartDataItem write SetOnGetChartDataItem;
+    property PointsNumber: Integer
+      read FPointsNumber write SetPointsNumber default 0;
+  end;
+
 function DoublePoint(const ACoord: TChartDataItem): TDoublePoint; inline; overload;
 procedure Register;
 
@@ -179,7 +206,8 @@ end;
 procedure Register;
 begin
   RegisterComponents(
-    CHART_COMPONENT_IDE_PAGE, [TListChartSource, TRandomChartSource]);
+    CHART_COMPONENT_IDE_PAGE,
+    [TListChartSource, TRandomChartSource, TUserDefinedChartSource]);
 end;
 
 { TCustomChartSource }
@@ -682,6 +710,44 @@ end;
 procedure TListener.Forget;
 begin
   FIsListening := false;
+end;
+
+{ TUserDefinedChartSource }
+
+function TUserDefinedChartSource.GetCount: Integer;
+begin
+  Result := FPointsNumber;
+end;
+
+function TUserDefinedChartSource.GetItem(AIndex: Integer): PChartDataItem;
+begin
+  FItem.X := 0;
+  FItem.Y := 0;
+  FItem.Color := clTAColor;
+  if Assigned(FOnGetChartDataItem) then
+    FOnGetChartDataItem(Self, AIndex, FItem);
+  Result := @FItem;
+end;
+
+procedure TUserDefinedChartSource.Reset;
+begin
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TUserDefinedChartSource.SetOnGetChartDataItem(
+  const AValue: TGetChartDataItemEvent);
+begin
+  if FOnGetChartDataItem = AValue then exit;
+  FOnGetChartDataItem := AValue;
+  Reset;
+end;
+
+procedure TUserDefinedChartSource.SetPointsNumber(const AValue: Integer);
+begin
+  if FPointsNumber = AValue then exit;
+  FPointsNumber := AValue;
+  Reset;
 end;
 
 end.

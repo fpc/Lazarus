@@ -1581,6 +1581,7 @@ components/tachart/tatypes.pas svneol=native#text/plain
 components/tachart/tchart.png -text svneol=unset#images/png
 components/tachart/tlistchartsource.png -text
 components/tachart/trandomchartsource.png -text
+components/tachart/tuserdefinedchartsource.png -text
 components/tdbf/Makefile svneol=native#text/plain
 components/tdbf/Makefile.fpc svneol=native#text/plain
 components/tdbf/dbflaz.lpk svneol=native#text/pascal
