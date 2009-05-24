@@ -23,11 +23,16 @@ type
 
   TCustomChartSource = class(TComponent)
   protected
+    FExtent: TDoubleRect;
+    FExtentIsValid: Boolean;
+    FValuesTotal: Double;
+    FValuesTotalIsValid: Boolean;
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
+    procedure InvalidateCaches;
   public
-    function Extent: TDoubleRect; virtual; abstract;
-    function ValuesTotal: Double; virtual; abstract;
+    function Extent: TDoubleRect; virtual;
+    function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
 
@@ -41,12 +46,8 @@ type
   private
     FData: TList;
     FDataPoints: TStrings;
-    FExtent: TDoubleRect;
-    FExtentIsValid: Boolean;
     FOnSetDataPoints: TSimpleNotifyEvent;
     FUpdateCount: Integer;
-    FValuesTotal: Double;
-    FValuesTotalIsValid: Boolean;
     procedure ClearCaches;
     procedure SetDataPoints(AValue: TStrings);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
@@ -62,17 +63,70 @@ type
     procedure Clear;
     procedure Delete(AIndex: Integer); inline;
     procedure EndUpdate;
-    function Extent: TDoubleRect; override;
-    procedure InvalidateValues; inline;
     function IsUpdating: Boolean; inline;
     procedure SetXValue(AIndex: Integer; AValue: Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
-    function ValuesTotal: Double; override;
 
     property OnSetDataPoints: TSimpleNotifyEvent
       read FOnSetDataPoints write FOnSetDataPoints;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
+  end;
+
+  { TMWCRandomGenerator }
+
+  // Mutliply-with-carry random number generator.
+  // Algorithm by George Marsaglia.
+  // A generator is incapsulated in a class to allow using many simultaneous
+  // random sequences, each determined by its own seed.
+  TMWCRandomGenerator = class
+  private
+    FHistory: array [0..4] of LongWord;
+    procedure SetSeed(const AValue: Integer);
+  public
+    property Seed: Integer write SetSeed;
+    function Get: LongWord;
+    function GetInRange(AMin, AMax: Integer): Integer;
+  end;
+
+  { TRandomChartSource }
+
+  TRandomChartSource = class(TCustomChartSource)
+  private
+    FRandomX: Boolean;
+    FPointsNumber: Integer;
+    FRandSeed: Integer;
+    FXMax: Double;
+    FXMin: Double;
+    FYMax: Double;
+    FYMin: Double;
+  private
+    FRNG: TMWCRandomGenerator;
+    FCurIndex: Integer;
+    FCurItem: TChartDataItem;
+
+    procedure SetPointsNumber(const AValue: Integer);
+    procedure SetRandomX(const AValue: Boolean);
+    procedure SetRandSeed(const AValue: Integer);
+    procedure SetXMax(const AValue: Double);
+    procedure SetXMin(const AValue: Double);
+    procedure SetYMax(const AValue: Double);
+    procedure SetYMin(const AValue: Double);
+  protected
+    function GetCount: Integer; override;
+    function GetItem(AIndex: Integer): PChartDataItem; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property PointsNumber: Integer
+      read FPointsNumber write SetPointsNumber default 0;
+    property RandomX: Boolean read FRandomX write SetRandomX default false;
+    property RandSeed: Integer read FRandSeed write SetRandSeed;
+    property XMax: Double read FXMax write SetXMax;
+    property XMin: Double read FXMin write SetXMin;
+    property YMax: Double read FYMax write SetYMax;
+    property YMin: Double read FYMin write SetYMin;
   end;
 
 function DoublePoint(const ACoord: TChartDataItem): TDoublePoint; inline; overload;
@@ -81,7 +135,7 @@ procedure Register;
 implementation
 
 uses
-  Math, StrUtils;
+  LCLIntf, Math, StrUtils;
 
 type
 
@@ -109,10 +163,44 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TListChartSource]);
+  RegisterComponents(
+    CHART_COMPONENT_IDE_PAGE, [TListChartSource, TRandomChartSource]);
 end;
 
 { TCustomChartSource }
+
+function TCustomChartSource.Extent: TDoubleRect;
+var
+  i: Integer;
+begin
+  if FExtentIsValid then exit(FExtent);
+  FExtent := EmptyExtent;
+  for i := 0 to Count - 1 do
+    with Item[i]^ do begin
+      UpdateMinMax(X, FExtent.a.X, FExtent.b.X);
+      UpdateMinMax(Y, FExtent.a.Y, FExtent.b.Y);
+    end;
+  FExtentIsValid := true;
+  Result := FExtent;
+end;
+
+procedure TCustomChartSource.InvalidateCaches;
+begin
+  FExtentIsValid := false;
+  FValuesTotalIsValid := false;
+end;
+
+function TCustomChartSource.ValuesTotal: Double;
+var
+  i: Integer;
+begin
+  if FValuesTotalIsValid then exit(FValuesTotal);
+  FValuesTotal := 0;
+  for i := 0 to Count - 1 do
+    FValuesTotal += Item[i]^.Y;
+  FValuesTotalIsValid := true;
+  Result := FValuesTotal;
+end;
 
 function TCustomChartSource.XOfMax: Double;
 var
@@ -236,7 +324,34 @@ end;
 
 procedure TListChartSource.ClearCaches;
 begin
-  FExtent := EmptyExtent;
+  FExtent := TMainIDE.ParseCmdLineOptions:
+  PrimaryConfigPath="C:\Documents and Settings\ask\Local Settings\Application Data\lazarus"
+  SecondaryConfigPath="C:\lazarus"
+TMainIDE.DoLoadLFM A C:\lazarus\components\tachart\demo\3d\main.pas IsPartOfProject=True
+QuickCheckLFMBuffer LFMBuffer=C:\lazarus\components\tachart\demo\3d\main.lfm
+TApplication.HandleException identifier expected, but end found
+  Stack trace:
+  $007DDACF  TCUSTOMCODETOOL__RAISEEXCEPTIONINSTANCE,  line 2054 of customcodetool.pas
+  $007DDB25  TCUSTOMCODETOOL__RAISEEXCEPTIONCLASS,  line 2063 of customcodetool.pas
+  $007D9B0A  TCUSTOMCODETOOL__RAISEEXCEPTION,  line 379 of customcodetool.pas
+  $007D9C50  TCUSTOMCODETOOL__SAVERAISEEXCEPTION,  line 401 of customcodetool.pas
+  $007D9CC5  TCUSTOMCODETOOL__SAVERAISEEXCEPTIONFMT,  line 407 of customcodetool.pas
+  $007DEC26  TCUSTOMCODETOOL__RAISEIDENTEXPECTEDBUTATOMFOUND,  line 2549 of customcodetool.pas
+  $007DA63B  TCUSTOMCODETOOL__ATOMISIDENTIFIER,  line 698 of customcodetool.pas
+  $007EB46F  TPASCALREADERTOOL__MOVECURSORTOPROPNAME,  line 876 of pascalreadertool.pas
+  $007EB70D  TPASCALREADERTOOL__EXTRACTPROPNAME,  line 947 of pascalreadertool.pas
+  $007BAD0B  TCODEEXPLORERVIEW__GETCODENODEDESCRIPTION,  line 542 of codeexplorer.pas
+  $007BB4C4  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 740 of codeexplorer.pas
+  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
+  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
+  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
+  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
+  $007BB597  TCODEEXPLORERVIEW__CREATEIDENTIFIERNODES,  line 757 of codeexplorer.pas
+  $007BDB66  TCODEEXPLORERVIEW__REFRESHCODE,  line 1635 of codeexplorer.pas
+[TMainIDE.Destroy] A
+[TMainIDE.Destroy] B  -> inherited Destroy... TMainIDE
+[TMainIDE.Destroy] END
+EmptyExtent;
   FExtentIsValid := true;
   FValuesTotal := 0;
   FValuesTotalIsValid := true;
@@ -277,21 +392,6 @@ begin
   Dec(FUpdateCount);
 end;
 
-function TListChartSource.Extent: TDoubleRect;
-var
-  i: Integer;
-begin
-  if FExtentIsValid then exit(FExtent);
-  FExtent := EmptyExtent;
-  for i := 0 to Count - 1 do
-    with Item[i]^ do begin
-      UpdateMinMax(X, FExtent.a.X, FExtent.b.X);
-      UpdateMinMax(Y, FExtent.a.Y, FExtent.b.Y);
-    end;
-  FExtentIsValid := true;
-  Result := FExtent;
-end;
-
 function TListChartSource.GetCount: Integer;
 begin
   Result := FData.Count;
@@ -300,11 +400,6 @@ end;
 function TListChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Result := PChartDataItem(FData.Items[AIndex]);
-end;
-
-procedure TListChartSource.InvalidateValues; inline;
-begin
-  FValuesTotalIsValid := false;
 end;
 
 function TListChartSource.IsUpdating: Boolean; inline;
@@ -391,16 +486,145 @@ begin
     FValuesTotal += AY;
 end;
 
-function TListChartSource.ValuesTotal: Double;
+{ TMWCRandomGenerator }
+
+function TMWCRandomGenerator.Get: LongWord;
+const
+  MULT: array [0..4] of UInt64 = (5115, 1776, 1492, 2111111111, 1);
+var
+  i: Integer;
+  s: UInt64;
+begin
+  s := 0;
+  for i := 0 to High(FHistory) do
+    s += MULT[i] * FHistory[i];
+  FHistory[3] := FHistory[2];
+  FHistory[2] := FHistory[1];
+  FHistory[1] := FHistory[0];
+  FHistory[4] := Hi(s);
+  FHistory[0] := Lo(s);
+  Result := FHistory[0];
+end;
+
+function TMWCRandomGenerator.GetInRange(AMin, AMax: Integer): Integer;
+var
+  m: UInt64;
+begin
+  m := AMax - AMin + 1;
+  m *= Get;
+  // m is now equidistributed on [0, (2^32-1) * range],
+  // so it's upper double word is equidistributed on [0, range].
+  Result := Integer(Hi(m)) + AMin;
+end;
+
+procedure TMWCRandomGenerator.SetSeed(const AValue: Integer);
 var
   i: Integer;
 begin
-  if FValuesTotalIsValid then exit(FValuesTotal);
-  FValuesTotal := 0;
-  for i := 0 to Count - 1 do
-    FValuesTotal += Item[i]^.Y;
-  FValuesTotalIsValid := true;
-  Result := FValuesTotal;
+  FHistory[0] := AValue;
+  // Use trivial LCG for seeding
+  for i := 0 to High(FHistory) do
+    FHistory[i] := Lo(Int64(FHistory[i - 1]) * 29943829 - 1);
+  // Skip some initial values to increase randomness.
+  for i := 1 to 20 do
+    Get;
+end;
+
+{ TRandomChartSource }
+
+constructor TRandomChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRNG := TMWCRandomGenerator.Create;
+  RandSeed := GetTickCount;
+  FCurItem.Color := clTAColor;
+  FCurIndex := -1;
+end;
+
+destructor TRandomChartSource.Destroy;
+begin
+  FRNG.Free;
+  inherited Destroy;
+end;
+
+function TRandomChartSource.GetCount: Integer;
+begin
+  Result := FPointsNumber;
+end;
+
+function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
+begin
+  if FCurIndex > AIndex then begin
+    FRNG.Seed := FRandSeed;
+    FCurIndex := -1;
+  end;
+  while FCurIndex < AIndex do begin
+    if XMax <= XMin then
+      FCurItem.X := XMin
+    else begin
+      if FRandomX then
+        FCurItem.X := FRNG.Get / High(LongWord)
+      else
+        FCurItem.X := FCurIndex / (Count - 1);
+      FCurItem.X := FCurItem.X * (XMax - XMin) + XMin;
+    end;
+    if YMax <= YMin then
+      FCurItem.Y := YMin
+    else
+      FCurItem.Y := FRNG.Get / MaxInt * (YMax - YMin) + YMin;
+    Inc(FCurIndex);
+  end;
+  Result := @FCurItem;
+end;
+
+procedure TRandomChartSource.SetPointsNumber(const AValue: Integer);
+begin
+  if FPointsNumber = AValue then exit;
+  FPointsNumber := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetRandomX(const AValue: Boolean);
+begin
+  if FRandomX = AValue then exit;
+  FRandomX := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetRandSeed(const AValue: Integer);
+begin
+  if FRandSeed = AValue then exit;
+  FRandSeed := AValue;
+  FRNG.Seed := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetXMax(const AValue: Double);
+begin
+  if FXMax = AValue then exit;
+  FXMax := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetXMin(const AValue: Double);
+begin
+  if FXMin = AValue then exit;
+  FXMin := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetYMax(const AValue: Double);
+begin
+  if FYMax = AValue then exit;
+  FYMax := AValue;
+  InvalidateCaches;
+end;
+
+procedure TRandomChartSource.SetYMin(const AValue: Double);
+begin
+  if FYMin = AValue then exit;
+  FYMin := AValue;
+  InvalidateCaches;
 end;
 
 end.
