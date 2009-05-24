@@ -466,7 +466,8 @@ end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
 begin
-  if (cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle) then
+  if ((cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle))
+  and (not Active) then
     Refresh(true);
 end;
 
