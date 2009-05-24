@@ -50,6 +50,9 @@ type
 
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
+
+    procedure SetIndetermine(AValue: Boolean);
+    function GetIndetermine: Boolean;
   end;
 
   { TCarbonProgressBar }
@@ -147,6 +150,17 @@ end;
 procedure TCarbonCustomBar.SetFont(const AFont: TFont);
 begin
   // not supported
+end;
+
+procedure TCarbonCustomBar.SetIndetermine(AValue: Boolean);
+begin
+  SetControlData(Content, kControlEntireControl, kControlProgressBarIndeterminateTag, sizeof(AValue), @AValue);
+end;
+
+function TCarbonCustomBar.GetIndetermine: Boolean;
+begin
+  Result := false;
+  GetControlData(Content, kControlEntireControl, kControlProgressBarIndeterminateTag, sizeof(Result), @Result, nil);
 end;
 
 { TCarbonProgressBar }

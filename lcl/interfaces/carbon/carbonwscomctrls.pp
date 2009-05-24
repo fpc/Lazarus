@@ -138,6 +138,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
+    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const AStyle: TProgressBarStyle); override;
   end;
 
   { TCarbonWSCustomUpDown }
@@ -636,6 +637,12 @@ begin
   if not CheckHandle(AProgressBar, Self, 'SetPosition') then Exit;
 
   TCarbonCustomBar(AProgressBar.Handle).SetPosition(AProgressBar.Position);
+end;
+
+class procedure TCarbonWSProgressBar.SetStyle(const AProgressBar: TCustomProgressBar;
+  const AStyle: TProgressBarStyle);
+begin
+  TCarbonCustomBar(AProgressBar.Handle).SetIndetermine(AStyle = pbstMarquee)
 end;
 
 { TCarbonWSTrackBar }
