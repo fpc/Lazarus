@@ -253,8 +253,20 @@ begin
     theDialog := TFileDialog(user_data);
     GtkFilter := gtk_file_chooser_get_filter(dialog);
     GtkFilterList := gtk_file_chooser_list_filters(dialog);
-    NewFilterIndex := g_slist_index(GtkFilterList, GtkFilter);
-    theDialog.IntfFileTypeChanged(NewFilterIndex + 1);
+    if (GtkFilter = nil) and (theDialog.Filter <> '') then
+    begin
+      // Either we don't have filter or gtk reset it.
+      // Gtk resets filter if we set both filename and filter but filename
+      // does not fit into filter. Gtk comparision has bug - it compares only by
+      // mime-type, not by pattern. LCL set all filters by pattern.
+      GtkFilter := g_slist_nth_data(GtkFilterList, theDialog.FilterIndex - 1);
+      gtk_file_chooser_set_filter(dialog, GtkFilter);
+    end
+    else
+    begin
+      NewFilterIndex := g_slist_index(GtkFilterList, GtkFilter);
+      theDialog.IntfFileTypeChanged(NewFilterIndex + 1);
+    end;
     g_slist_free(GtkFilterList);
   end;
 end;
@@ -779,10 +791,10 @@ begin
     begin
       GtkFilter := gtk_file_filter_new();
 
-      FilterEntry:=TFileSelFilterEntry(ListOfFileSelFilterEntry[i]);
+      FilterEntry := TFileSelFilterEntry(ListOfFileSelFilterEntry[i]);
       MaskList.DelimitedText := FilterEntry.Mask;
 
-      for k := 0 to MaskList.Count-1 do
+      for k := 0 to MaskList.Count - 1 do
         gtk_file_filter_add_pattern(GtkFilter, PChar(MaskList.Strings[k]));
 
       gtk_file_filter_set_name(GtkFilter, FilterEntry.Description);
@@ -801,7 +813,7 @@ begin
   FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry);
   //gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
 
-  if GtkSelFilter<>nil then
+  if GtkSelFilter <> nil then
     gtk_file_chooser_set_filter(SelWidget, GtkSelFilter);
 
   Result := 'hm'; { Don't use '' as null return as this is used for *.* }
@@ -990,7 +1002,7 @@ begin
     CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), PGtkWidget(FileSelWidget));
 
   // set initial filename (gtk expects an absolute filename)
-  InitialFilename := TrimFilename(OpenDialog.Filename);
+  InitialFilename := TrimFilename(OpenDialog.FileName);
   if InitialFilename <> '' then
   begin
     if not FilenameIsAbsolute(InitialFilename) and (OpenDialog.InitialDir <> '') then
