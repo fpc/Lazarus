@@ -269,7 +269,7 @@ begin
   Result.Y:=30;
 end;
 
-procedure TCustomBitBtn.CMAppShowGlyphChanged(var Message: TLMessage);
+procedure TCustomBitBtn.CMAppShowBtnGlyphChanged(var Message: TLMessage);
 begin
   if GlyphShowMode = gsmApplication then
     FButtonGlyph.Refresh;

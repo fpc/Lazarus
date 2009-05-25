@@ -493,15 +493,20 @@ begin
   FNavigation:=AValue;
 end;
 
-procedure TApplication.SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
-var
-  i: integer;
+procedure TApplication.SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
 begin
   if FShowButtonGlyphs = AValue then
     Exit;
   FShowButtonGlyphs := AValue;
-  for i := 0 to Screen.CustomFormCount - 1 do
-    Screen.CustomForms[i].NotifyControls(CM_APPSHOWGLYPHCHANGED);
+  NotifyCustomForms(CM_APPSHOWBTNGLYPHCHANGED);
+end;
+
+procedure TApplication.SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
+begin
+  if FShowMenuGlyphs = AValue then
+    Exit;
+  FShowMenuGlyphs := AValue;
+  NotifyCustomForms(CM_APPSHOWMENUGLYPHCHANGED);
 end;
 
 {------------------------------------------------------------------------------
@@ -618,6 +623,14 @@ procedure TApplication.NotifyDeactivateHandler;
 begin
   if Assigned(OnDeactivate) then OnDeactivate(Self);
   FApplicationHandlers[ahtDeactivate].CallNotifyEvents(Self);
+end;
+
+procedure TApplication.NotifyCustomForms(Msg: Word);
+var
+  i: integer;
+begin
+  for i := 0 to Screen.CustomFormCount - 1 do
+    Screen.CustomForms[i].Perform(Msg, 0, 0);
 end;
 
 {------------------------------------------------------------------------------

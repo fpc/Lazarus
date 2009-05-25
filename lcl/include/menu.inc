@@ -77,6 +77,11 @@ begin
   ParentBidiModeChanged;
 end;
 
+procedure TMenu.CMAppShowMenuGlyphChanged(var Message: TLMessage);
+begin
+  FItems.UpdateImages;
+end;
+
 procedure TMenu.BidiModeChanged;
 begin
   if HandleAllocated then

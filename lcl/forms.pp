@@ -458,6 +458,8 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
+    procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
     procedure CMIconChanged(var Message: TLMessage); message CM_ICONCHANGED;
     procedure AddHandler(HandlerType: TFormHandlerType;
                          const Handler: TMethod; AsLast: Boolean);
@@ -1057,7 +1059,7 @@ type
     atSmartphone
   );
 
-  TShowButtonGlyphs = (
+  TApplicationShowGlyphs = (
     sbgAlways,  // show them always (default)
     sbgNever,   // show them never
     sbgSystem   // show them depending on OS
@@ -1087,7 +1089,8 @@ type
     FHintWindow: THintWindow;
     FIcon: TIcon;
     FBigIconHandle: HICON;
-    FShowButtonGlyphs: TShowButtonGlyphs;
+    FShowButtonGlyphs: TApplicationShowGlyphs;
+    FShowMenuGlyphs: TApplicationShowGlyphs;
     FSmallIconHandle: HICON;
     FIdleLockCount: Integer;
     FFormList: TList;
@@ -1136,7 +1139,8 @@ type
     procedure SetBidiMode ( const AValue : TBiDiMode ) ;
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
-    procedure SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+    procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
+    procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
@@ -1161,6 +1165,7 @@ type
     procedure NotifyIdleEndHandler;
     procedure NotifyActivateHandler;
     procedure NotifyDeactivateHandler;
+    procedure NotifyCustomForms(Msg: Word);
     function IsHintMsg(var Msg: TMsg): Boolean;
     procedure DoOnMouseMove; virtual;
     procedure ShowHintWindow(const Info: THintInfoAtMouse);
@@ -1310,7 +1315,8 @@ type
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
+    property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
+    property ShowMenuGlyphs: TApplicationShowGlyphs read FShowMenuGlyphs write SetShowMenuGlyphs default sbgAlways;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default True;
     property Title: String read GetTitle write SetTitle;
@@ -1337,9 +1343,10 @@ type
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FOnDropFiles: TDropFilesEvent;
-    FShowButtonGlyphs: TShowButtonGlyphs;
+    FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
+    FShowMenuGlyphs: TApplicationShowGlyphs;
     FTitle: String;
 
     FOnException: TExceptionEvent;
@@ -1353,6 +1360,7 @@ type
     FOnQueryEndSession : TQueryEndSessionEvent;
     FOnMinimize : TNotifyEvent;
     FOnRestore : TNotifyEvent;
+    procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
   protected
     procedure SetCaptureExceptions(const AValue : boolean);
     procedure SetHelpFile(const AValue : string);
@@ -1362,7 +1370,7 @@ type
     procedure SetHintPause(const AValue : Integer);
     procedure SetHintShortCuts(const AValue : Boolean);
     procedure SetHintShortPause(const AValue : Integer);
-    procedure SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+    procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
     procedure SetShowHint(const AValue : Boolean);
     procedure SetShowMainForm(const AValue: Boolean);
     procedure SetTitle(const AValue : String);
@@ -1392,7 +1400,8 @@ type
     property HintPause: Integer read FHintPause write SetHintPause default DefHintPause;
     property HintShortCuts: Boolean read FHintShortCuts write SetHintShortCuts default True;
     property HintShortPause: Integer read FHintShortPause write SetHintShortPause default DefHintShortPause;
-    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
+    property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;
+    property ShowMenuGlyphs: TApplicationShowGlyphs read FShowMenuGlyphs write SetShowMenuGlyphs default sbgAlways;
     property ShowHint: Boolean read FShowHint write SetShowHint default True;
     property ShowMainForm: Boolean read FShowMainForm write SetShowMainForm default True;
     property Title: String read FTitle write SetTitle;

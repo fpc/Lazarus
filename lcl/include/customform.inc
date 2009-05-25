@@ -603,12 +603,22 @@ begin
   lMessage.Result := 0;
   for i := 0 to ComponentCount - 1 do
   begin
-    if not (Components[i] is TCustomControl) then//TCustomControl already has this notification
+    if not (Components[i] is TCustomControl) then //TCustomControl already has this notification
       Components[i].Dispatch(lMessage);
-//the old way
-//    if Components[i] is TMenu then
-//      TMenu(Components[i]).ParentBiDiModeChanged;
   end;
+end;
+
+procedure TCustomForm.CMAppShowBtnGlyphChanged(var Message: TLMessage);
+begin
+  NotifyControls(Message.msg);
+end;
+
+procedure TCustomForm.CMAppShowMenuGlyphChanged(var Message: TLMessage);
+var
+  i: integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+    Components[i].Dispatch(Message);
 end;
 
 procedure TCustomForm.CMIconChanged(var Message: TLMessage);

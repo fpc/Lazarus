@@ -97,12 +97,20 @@ begin
     Application.ShowMainForm := AValue;
 end;
 
-procedure TApplicationProperties.SetShowButtonGlyphs(const AValue: TShowButtonGlyphs);
+procedure TApplicationProperties.SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
 begin
   FShowButtonGlyphs := AValue;
 
   if not (csDesigning in ComponentState) then
     Application.ShowButtonGlyphs := AValue;
+end;
+
+procedure TApplicationProperties.SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
+begin
+  FShowMenuGlyphs := AValue;
+
+  if not (csDesigning in ComponentState) then
+    Application.ShowMenuGlyphs := AValue;
 end;
 
 procedure TApplicationProperties.SetTitle(const AValue : String);

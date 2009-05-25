@@ -78,13 +78,6 @@ type
     gtmOpaque,      // transparent = false is defined by the owner (speedbutton)
     gtmTransparent  // transparent = true
   );
-  
-  TGlyphShowMode = (
-    gsmAlways,       // always show
-    gsmNever,        // never show
-    gsmApplication,  // depends on application settings
-    gsmSystem        // depends on system settings
-  );
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
@@ -173,7 +166,7 @@ type
     procedure InitializeWnd; override;
     procedure TextChanged; override;
     class function GetControlClassDefaultSize: TPoint; override;
-    procedure CMAppShowGlyphChanged(var Message: TLMessage); message CM_APPSHOWGLYPHCHANGED;
+    procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

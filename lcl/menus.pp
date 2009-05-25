@@ -46,14 +46,19 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
-  LMessages, ActnList, Graphics, ImgList, LCLClasses;
-
+  LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
 
 type
   TMenu = class;
   EMenuError = class(Exception);
-
   TMenuItem = class;
+
+  TGlyphShowMode = (
+    gsmAlways,       // always show
+    gsmNever,        // never show
+    gsmApplication,  // depends on application settings
+    gsmSystem        // depends on system settings
+  );
 
   TMenuChangeEvent = procedure (Sender: TObject; Source: TMenuItem;
                                 Rebuild: Boolean) of object;
@@ -104,6 +109,7 @@ type
     FCaption: string;
     FCommand: integer;
     FBitmap: TBitmap;
+    FGlyphShowMode: TGlyphShowMode;
     FHandle: HMenu;
     FHelpContext: THelpContext;
     FHint: String;
@@ -150,6 +156,7 @@ type
     procedure SetDefault(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
     procedure SetBitmap(const AValue: TBitmap);
+    procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
     procedure SetMenuIndex(AValue: Integer);
     procedure SetRadioItem(const AValue: Boolean);
     procedure SetRightJustify(const AValue: boolean);
@@ -252,6 +259,7 @@ type
                               stored IsEnabledStored default True;
     property Bitmap: TBitmap read GetBitmap write SetBitmap stored IsBitmapStored;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
+    property GlyphShowMode: TGlyphShowMode read FGlyphShowMode write SetGlyphShowMode default gsmApplication;
     property HelpContext: THelpContext read FHelpContext write FHelpContext
                                            stored IsHelpContextStored default 0;
     property Hint: TTranslateString read FHint write FHint stored IsHintStored;
@@ -290,6 +298,7 @@ type
     FShortcutHandled: boolean;
 //See TCustomForm.CMBiDiModeChanged
     procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
+    procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
     function IsBiDiModeStored: Boolean;
     procedure ImageListChange(Sender: TObject);
     procedure SetBiDiMode(const AValue: TBiDiMode);

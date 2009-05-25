@@ -103,6 +103,7 @@ begin
   FBitmapIsValid := True;
   FRightJustify := False;
   FShowAlwaysCheckable := False;
+  FGlyphShowMode := gsmApplication;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
@@ -600,9 +601,41 @@ end;
   Returns true if there is an icon
  ------------------------------------------------------------------------------}
 function TMenuItem.HasIcon: boolean;
+
+  function CanShowIcon: Boolean;
+
+    function SystemShowGlyphs: Boolean; inline;
+    begin
+      Result := ThemeServices.GetOption(toShowMenuImages) = 1;
+    end;
+
+  begin
+    if csDesigning in ComponentState then
+      Exit(True);
+    case GlyphShowMode of
+      gsmAlways:
+        Result := True;
+      gsmNever:
+        Result := False;
+      gsmApplication:
+        begin
+          case Application.ShowMenuGlyphs of
+            sbgAlways: Result := True;
+            sbgNever: Result := False;
+            sbgSystem: Result := SystemShowGlyphs;
+          end;
+        end;
+      gsmSystem:
+        Result := SystemShowGlyphs;
+    end;
+  end;
+
 var
   AImageList: TCustomImageList;
 begin
+  Result := CanShowIcon;
+  if not Result then
+    Exit;
   AImageList := GetImageList;
   Result := (AImageList <> nil) and (ImageIndex >= 0) and (ImageIndex < AImageList.Count);
   if not Result then
@@ -1042,6 +1075,13 @@ begin
   MenuChanged(False);
 end;
 
+procedure TMenuItem.SetGlyphShowMode(const AValue: TGlyphShowMode);
+begin
+  if FGlyphShowMode = AValue then Exit;
+  FGlyphShowMode := AValue;
+  UpdateImage;
+end;
+
 {------------------------------------------------------------------------------
   procedure TMenuItem.SetMenuIndex(const AValue: Integer);
 
@@ -1268,7 +1308,7 @@ procedure TMenuItem.UpdateImage;
 var
   ImgList: TCustomImageList;
 begin
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
   begin
     ImgList := GetImageList;
     if FBitmapIsValid then // Bitmap is assigned through Bitmap property

@@ -143,7 +143,7 @@ type
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
     FIDESpeedButtonsVisible: boolean;
-    FShowButtonGlyphs: TShowButtonGlyphs;
+    FShowButtonGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
@@ -460,7 +460,7 @@ type
     property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
 
     // button glyphs
-    property ShowButtonGlyphs: TShowButtonGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
+    property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
 
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
@@ -972,7 +972,7 @@ begin
       Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
 
     // button glyphs
-    FShowButtonGlyphs := TShowButtonGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
+    FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
       Ord(sbgSystem)));
 
     // recent files and directories
