@@ -183,10 +183,10 @@ procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 
     function SystemShowGlyphs: Boolean; inline;
     begin
+      Result := ThemeServices.GetOption(toShowButtonImages) = 1;
       {$ifdef Windows}
+      // force False on windows since gtk and qt can return True
         Result := False;
-      {$else}
-        Result := True;
       {$endif}
     end;
 

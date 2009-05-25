@@ -396,6 +396,11 @@ type
     State: Integer;
   end;
 
+  TThemeOption = (
+    toShowButtonImages, // show images on buttons
+    toShowMenuImages    // show images on menus
+  );
+
   // TThemeServices is a small foot print class to provide the user with pure
   // Windows XP theme related abilities like painting elements and text or
   // retrieving certain info.
@@ -456,6 +461,7 @@ type
     
     function GetDetailSize(Details: TThemedElementDetails): Integer; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
+    function GetOption(AOption: TThemeOption): Integer; virtual;
 
     function ColorToRGB(Color: LongInt; Details: PThemedElementDetails = nil): COLORREF;
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; virtual;
@@ -1784,6 +1790,16 @@ end;
 function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
 begin
   Result := False;
+end;
+
+function TThemeServices.GetOption(AOption: TThemeOption): Integer;
+begin
+  case AOption of
+    toShowButtonImages: Result := 1;
+    toShowMenuImages: Result := 1;
+  else
+    Result := 0;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

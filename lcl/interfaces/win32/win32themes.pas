@@ -36,6 +36,7 @@ type
 
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
+    function GetOption(AOption: TThemeOption): Integer; override;
 
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       ClipRect: PRect = nil); override;
@@ -219,6 +220,15 @@ begin
       Inc(Pixel);
     end;
     Inc(LinePtr, Bitmap.bmWidthBytes);
+  end;
+end;
+
+function TWin32ThemeServices.GetOption(AOption: TThemeOption): Integer;
+begin
+  case AOption of
+    toShowButtonImages: Result := 0;
+  else
+    Result := inherited GetOption(AOption);
   end;
 end;
 
