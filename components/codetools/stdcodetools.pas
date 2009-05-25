@@ -43,6 +43,7 @@ interface
 
 { $DEFINE DisableIgnoreErrorAfter}
 { $DEFINE VerboseGetStringConstBounds}
+{ $DEFINE ShowCompleteBlock}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -5152,6 +5153,8 @@ type
     btCaseColon,
     btCaseElse,
     btRepeat,
+    btIf,
+    btIfElse,
     btClass,
     btInterface,
     btObject,
@@ -5197,6 +5200,9 @@ var
         Stack.Capacity:=Stack.Capacity*2;
       ReAllocMem(Stack.Stack,SizeOf(TBlock)*Stack.Capacity);
     end;
+    {$IFDEF ShowCompleteBlock}
+    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',CleanPosToStr(StartPos),' ',GetAtom]);
+    {$ENDIF}
     Block:=@Stack.Stack[Stack.Top];
     Block^.Typ:=Typ;
     Block^.StartPos:=StartPos;
@@ -5204,6 +5210,9 @@ var
 
   procedure EndBlock(var Stack: TBlockStack);
   begin
+    {$IFDEF ShowCompleteBlock}
+    DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',GetAtom,' ',CleanPosToStr(CurPos.StartPos),', started at ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+    {$ENDIF}
     dec(Stack.Top);
   end;
 
@@ -5291,23 +5300,8 @@ var
       if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
         break;
 
-      // check if line start
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
-      LineStart:=InCursorBlock and (LastPos>0)
-                 and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
-      if LineStart then
-        Indent:=GetLineIndent(Src,CurPos.StartPos);
-
-      if LineStart then begin
-        // atom is in same block as cursor (not sub block)
-        // and first atom of a line
-        // => check indent
-        if Indent<CursorBlockIndent then begin
-          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
-          NeedCompletion:=true;
-        end;
-      end;
 
       // check block starts/ends
       case CurPos.Flag of
@@ -5324,7 +5318,25 @@ var
           btCaseColon,btRepeat:
             begin
               // missing semicolon or until
-              NeedCompletion:=true;
+              if InCursorBlock then begin
+                {$IFDEF ShowCompleteBlock}
+                DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+                {$ENDIF}
+                NeedCompletion:=true;
+              end;
+              break;
+            end;
+          btTry:
+            begin
+              // missing finally/except
+              DebugLn(['ReadStatements AAA1 CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
+              DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+              if InCursorBlock then begin
+                {$IFDEF ShowCompleteBlock}
+                DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+                {$ENDIF}
+                NeedCompletion:=true;
+              end;
               break;
             end;
           btAsm:
@@ -5358,7 +5370,7 @@ var
         if TopBlockType(Stack)=btCaseOf then
           BeginBlock(Stack,btCaseColon,CurPos.StartPos);
       cafSemicolon:
-        if TopBlockType(Stack)=btCaseColon then
+        if TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] then
           if not EndBlockIsOk then exit;
       cafBegin:
         BeginBlock(Stack,btBegin,CurPos.StartPos);
@@ -5366,11 +5378,15 @@ var
         if TopBlockType(Stack)<>btAsm then begin
           if UpAtomIs('TRY') then
             BeginBlock(Stack,btTry,CurPos.StartPos)
-          else if UpAtomIs('FINALLY') then
+          else if UpAtomIs('FINALLY') then begin
+            if TopBlockType(Stack)=btTry then
+              if not EndBlockIsOk then exit;
             BeginBlock(Stack,btFinally,CurPos.StartPos)
-          else if UpAtomIs('EXCEPT') then
+          end else if UpAtomIs('EXCEPT') then begin
+            if TopBlockType(Stack)=btTry then
+              if not EndBlockIsOk then exit;
             BeginBlock(Stack,btExcept,CurPos.StartPos)
-          else if UpAtomIs('REPEAT') then
+          end else if UpAtomIs('REPEAT') then
             BeginBlock(Stack,btRepeat,CurPos.StartPos)
           else if UpAtomIs('UNTIL') then begin
             if TopBlockType(Stack)=btRepeat then begin
@@ -5380,6 +5396,8 @@ var
             end;
           end else if UpAtomIs('ASM') then begin
             BeginBlock(Stack,btAsm,CurPos.StartPos);
+          end else if UpAtomIs('IF') then begin
+            BeginBlock(Stack,btIf,CurPos.StartPos)
           end else if UpAtomIs('CASE') then begin
             BeginBlock(Stack,btCase,CurPos.StartPos)
           end else if UpAtomIs('OF') then begin
@@ -5387,6 +5405,11 @@ var
               BeginBlock(Stack,btCaseOf,CurPos.StartPos);
           end else if UpAtomIs('ELSE') then begin
             case TopBlockType(Stack) of
+            btIf:
+              begin
+                if not EndBlockIsOk then exit;
+                BeginBlock(Stack,btIfElse,CurPos.StartPos);
+              end;
             btCaseOf:
               begin
                 if not EndBlockIsOk then exit;
@@ -5395,11 +5418,37 @@ var
             btCaseColon,btRepeat:
               begin
                 // missing semicolon
-                NeedCompletion:=true;
+                if InCursorBlock then begin
+                  {$IFDEF ShowCompleteBlock}
+                  DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+                  {$ENDIF}
+                  NeedCompletion:=true;
+                end;
                 break;
               end;
             end;
           end;
+        end;
+      end;
+
+      // check if line start
+      InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
+                     and (not BehindCursorBlock);
+      LineStart:=InCursorBlock and (LastPos>0)
+                 and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
+      if LineStart then
+        Indent:=GetLineIndent(Src,CurPos.StartPos);
+
+      if LineStart then begin
+        // atom is in same block as cursor (not sub block)
+        // and first atom of a line
+        // => check indent
+        if Indent<CursorBlockIndent then begin
+          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+          {$ENDIF}
+          NeedCompletion:=true;
         end;
       end;
 
@@ -5410,6 +5459,9 @@ var
 
     if (not NeedCompletion) and (Stack.Top>=0)
     and (not BehindCursorBlock) and (CursorBlockLvl=Stack.Top) then begin
+      {$IFDEF ShowCompleteBlock}
+      DebugLn(['ReadStatements NeedCompletion: in cursor block, block not closed']);
+      {$ENDIF}
       NeedCompletion:=true;
     end;
 
@@ -5435,6 +5487,8 @@ var
           AfterGap:=gtNone;
           Include(BeautifyFlags,bcfDoNotIndentFirstLine);
         end;
+      else
+        exit;
       end;
       if not Replace(NewCode,InsertPos,InsertPos,Indent,FrontGap,AfterGap,
         BeautifyFlags) then exit;
