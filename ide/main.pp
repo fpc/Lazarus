@@ -7182,6 +7182,8 @@ var ActiveSrcEdit:TSourceEditor;
   NewUnitName: String;
   NewFilename: String;
   CanAbort: boolean;
+  WasVirtual: Boolean;
+  Confirm: Boolean;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7202,6 +7204,7 @@ begin
     Result:=mrOk;
     exit;
   end;
+  WasVirtual:=ActiveUnitInfo.IsVirtual;
 
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
@@ -7353,9 +7356,14 @@ begin
   or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
     if EnvironmentOptions.UnitRenameReferencesAction=urraNever then
       Result:=mrOK
-    else
+    else begin
+      // silently update references of new units (references were auto created
+      // and keeping old references makes no sense)
+      Confirm:=(EnvironmentOptions.UnitRenameReferencesAction=urraAsk)
+               and (not WasVirtual);
       Result:=DoReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
-               true,true,EnvironmentOptions.UnitRenameReferencesAction=urraAsk);
+               true,true,Confirm);
+    end;
     if Result<>mrOk then exit;
   end;
 
