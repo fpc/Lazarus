@@ -66,7 +66,6 @@ end;
 
 function UpdateMemoSelLengthCB(AStrings: TGtk2MemoStrings): gboolean; cdecl;
 var
-  TextBuffer: PGtkTextBuffer;
   TextMark: PGtkTextMark;
   StartIter,
   EndIter: TGtkTextIter;
