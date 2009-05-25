@@ -4561,8 +4561,7 @@ end;
 function SubtractScoll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
 begin
   Result := APosition;
-  if not GTK_IS_SCROLLED_WINDOW(AWidget) then
-    AWidget := gtk_object_get_data(PGTKObject(AWidget), odnScrollArea);
+  AWidget := gtk_object_get_data(PGTKObject(AWidget), odnScrollArea);
   if GTK_IS_SCROLLED_WINDOW(AWidget) then
   begin
     dec(Result.x, Round(gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(AWidget))^.value));
