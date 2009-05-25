@@ -1,0 +1,251 @@
+inherited HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
+  Height = 500
+  Width = 500
+  ClientHeight = 500
+  ClientWidth = 500
+  DesignLeft = 476
+  DesignTop = 241
+  object FPCDocHTMLLabel: TLabel[0]
+    AnchorSideTop.Control = Owner
+    Left = 70
+    Height = 14
+    Top = 0
+    Width = 103
+    Caption = 'FPCDocHTMLLabel'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel1: TBevel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblViewers
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = lblViewers
+    Left = 0
+    Height = 3
+    Top = 55
+    Width = 64
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+  end
+  object lblViewers: TLabel[2]
+    AnchorSideTop.Control = FPCDocHTMLEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 14
+    Top = 49
+    Width = 58
+    BorderSpacing.Top = 6
+    Caption = 'lblViewers'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel2: TBevel[3]
+    AnchorSideLeft.Control = lblViewers
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblViewers
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 134
+    Height = 3
+    Top = 55
+    Width = 366
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+  end
+  object lblMiddle: TLabel[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 250
+    Height = 1
+    Top = 250
+    Width = 1
+    AutoSize = False
+    ParentColor = False
+  end
+  object Bevel3: TBevel[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblDatabases
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = lblDatabases
+    Left = 0
+    Height = 3
+    Top = 282
+    Width = 64
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+  end
+  object lblDatabases: TLabel[6]
+    AnchorSideTop.Control = lblMiddle1
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 14
+    Top = 276
+    Width = 74
+    Caption = 'lblDatabases'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel4: TBevel[7]
+    AnchorSideLeft.Control = lblDatabases
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblDatabases
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 150
+    Height = 3
+    Top = 282
+    Width = 350
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+  end
+  object lblMiddle1: TLabel[8]
+    AnchorSideTop.Control = lblMiddle
+    Left = 222
+    Height = 1
+    Top = 275
+    Width = 1
+    AutoSize = False
+    BorderSpacing.Top = 25
+    ParentColor = False
+  end
+  object Bevel5: TBevel[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FPCDocHTMLLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = FPCDocHTMLLabel
+    Left = 0
+    Height = 3
+    Top = 6
+    Width = 64
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+  end
+  object Bevel6: TBevel[10]
+    AnchorSideLeft.Control = FPCDocHTMLLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FPCDocHTMLLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 179
+    Height = 3
+    Top = 6
+    Width = 321
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+  end
+  object FPCDocHTMLEdit: TEdit[11]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FPCDocHTMLLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FPCDocHTMLBrowseButton
+    Left = 6
+    Height = 23
+    Top = 20
+    Width = 465
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    TabOrder = 0
+    Text = 'FPCDocHTMLEdit'
+  end
+  object FPCDocHTMLBrowseButton: TButton[12]
+    AnchorSideTop.Control = FPCDocHTMLEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FPCDocHTMLEdit
+    AnchorSideBottom.Side = asrBottom
+    Left = 471
+    Height = 23
+    Top = 20
+    Width = 23
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = FPCDocHTMLBrowseButtonClick
+    TabOrder = 1
+  end
+  object ViewersListBox: TListBox[13]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblViewers
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblMiddle
+    AnchorSideBottom.Control = lblDatabases
+    Left = 6
+    Height = 201
+    Top = 69
+    Width = 198
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    ClickOnSelChange = False
+    ItemHeight = 0
+    OnSelectionChange = ViewersListBoxSelectionChange
+    TabOrder = 2
+  end
+  object ViewerPropsGroupBox: TGroupBox[14]
+    AnchorSideLeft.Control = ViewersListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblViewers
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = lblDatabases
+    Left = 210
+    Height = 201
+    Top = 69
+    Width = 284
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'ViewerPropsGroupBox'
+    TabOrder = 3
+  end
+  object DatabasesListBox: TListBox[15]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblDatabases
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 204
+    Top = 296
+    Width = 198
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ClickOnSelChange = False
+    ItemHeight = 0
+    OnSelectionChange = DatabasesListBoxSelectionChange
+    TabOrder = 4
+  end
+  object DataBasesPropsGroupBox: TGroupBox[16]
+    AnchorSideLeft.Control = DatabasesListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblDatabases
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 210
+    Height = 204
+    Top = 296
+    Width = 284
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'DataBasesPropsGroupBox'
+    TabOrder = 5
+  end
+end
