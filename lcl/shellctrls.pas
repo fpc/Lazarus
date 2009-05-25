@@ -442,6 +442,9 @@ var
   pDrive: PChar;
   NewNode: TTreeNode;
 begin
+  // avoids crashes in the IDE by not populating during design
+  if (csDesigning in ComponentState) then Exit;
+
   r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
   if r = 0 then Exit;
   if r > SizeOf(Drives) then Exit;
@@ -460,6 +463,9 @@ begin
 end;
   {$else}
 begin
+  // avoids crashes in the IDE by not populating during design
+  if (csDesigning in ComponentState) then Exit;
+
   PopulateTreeNodeWithFiles(nil, GetBasePath());
 end;
   {$endif}
@@ -560,6 +566,9 @@ var
   CurFileName, CurFilePath: string;
   CurFileSize: Int64;
 begin
+  // avoids crashes in the IDE by not populating during design
+  if (csDesigning in ComponentState) then Exit;
+
   // Check inputs
   if FRoot = '' then Exit;
 
