@@ -7790,8 +7790,11 @@ begin
         lgs:=lgsMenuitem;
         {$IFDEF Gtk1}
         AddToStyleWindow:=false;
-        {$ENDIF}
         StyleObject^.Widget := gtk_menu_item_new;
+        {$ELSE}
+        // image menu item is needed to correctly return theme options
+        StyleObject^.Widget := gtk_image_menu_item_new;
+        {$ENDIF}
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsStatusBar])=0 then begin

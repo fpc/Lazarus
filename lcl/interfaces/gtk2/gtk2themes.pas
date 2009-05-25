@@ -23,6 +23,7 @@ type
   public
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
+    function GetOption(AOption: TThemeOption): Integer; override;
   end;
 
 implementation
@@ -210,6 +211,24 @@ begin
   Image := HBitmap(PtrUInt(GDIObj));
   Mask := 0;
   Result := True;
+end;
+
+function TGtk2ThemeServices.GetOption(AOption: TThemeOption): Integer;
+var
+  ASettings: PGtkSettings;
+  BoolSetting: gboolean;
+begin
+  case AOPtion of
+    toShowMenuImages:
+      begin
+        ASettings := gtk_widget_get_settings(GetStyleWidget(lgsMenuitem));
+        BoolSetting := False; // default
+        g_object_get(ASettings, 'gtk-menu-images', @BoolSetting, nil);
+        Result := Ord(BoolSetting = True);
+      end;
+  else
+    Result := inherited GetOption(AOption);
+  end;
 end;
 
 end.
