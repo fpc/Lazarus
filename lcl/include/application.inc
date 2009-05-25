@@ -1752,6 +1752,19 @@ begin
     TDropFilesEvent(FApplicationHandlers[ahtDropFiles][i])(Self,Filenames);
 end;
 
+procedure TApplication.IntfThemeOptionChange(AThemeServices: TThemeServices;
+  AOption: TThemeOption);
+begin
+  case AOption of
+    toShowButtonImages:
+      if ShowButtonGlyphs = sbgSystem then
+        NotifyCustomForms(CM_APPSHOWBTNGLYPHCHANGED);
+    toShowMenuImages:
+      if ShowMenuGlyphs = sbgSystem then
+        NotifyCustomForms(CM_APPSHOWMENUGLYPHCHANGED);
+  end;
+end;
+
 procedure TApplication.DoArrowKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 begin

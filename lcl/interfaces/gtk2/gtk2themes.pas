@@ -213,9 +213,10 @@ begin
   Result := True;
 end;
 
-procedure MenuImagesChange(ASettings: PGtkSettings; Services: TGtk2ThemeServices); cdecl;
+procedure MenuImagesChange(ASettings: PGtkSettings; pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
 begin
-  //Services.IntfDoOnThemeChange;
+  Application.IntfThemeOptionChange(Services, toShowMenuImages);
+  Services.IntfDoOnThemeChange;
 end;
 
 function TGtk2ThemeServices.GetOption(AOption: TThemeOption): Integer;

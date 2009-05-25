@@ -1268,6 +1268,7 @@ type
     procedure IntfAppMinimize;
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);
+    procedure IntfThemeOptionChange(AThemeServices: TThemeServices; AOption: TThemeOption);
   public
     procedure DoArrowKey(AControl: TWinControl; var Key: Word;
       Shift: TShiftState);
