@@ -292,6 +292,7 @@ begin
     FHintShortPause := DefHintShortPause;
     FHintHidePause := DefHintHidePause;
     FShowButtonGlyphs := sbgAlways;
+    FShowMenuGlyphs := sbgAlways;
     FShowHint := True;
   end
   else
@@ -305,6 +306,7 @@ begin
     FHintShortCuts := Application.HintShortCuts;
     FHintShortPause := Application.HintShortPause;
     FShowButtonGlyphs := Application.ShowButtonGlyphs;
+    FShowMenuGlyphs := Application.ShowMenuGlyphs;
     FShowHint := Application.ShowHint;
     FTitle := Application.Title;
   end;

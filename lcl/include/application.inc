@@ -100,6 +100,7 @@ begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
   FShowButtonGlyphs := sbgAlways;
+  FShowMenuGlyphs := sbgAlways;
   FMainForm := nil;
   FMouseControl := nil;
   FHintColor := DefHintColor;
