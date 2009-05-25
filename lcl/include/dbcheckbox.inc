@@ -84,8 +84,7 @@ begin
       Result:=cbUnchecked;
   end else begin
     Result:=cbGrayed;
-    // ToDo: use Field.Text
-    FieldText:=FDataLink.Field.DisplayText;
+    FieldText:=FDatalink.Field.AsString;
     if ValueEqualsField(FValueCheck,FieldText) then
       Result:=cbChecked
     else if ValueEqualsField(FValueUncheck,FieldText) then
