@@ -2646,7 +2646,6 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then begin
       ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
-      ExceptionMessage := DeleteEscapeChars(ExceptionMessage);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
