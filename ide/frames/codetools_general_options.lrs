@@ -2,36 +2,42 @@
 
 LazarusResources.Add('TCodetoolsGeneralOptionsFrame','FORMDATA',[
   'TPF0'#241#29'TCodetoolsGeneralOptionsFrame'#28'CodetoolsGeneralOptionsFrame'
-  +#6'Height'#3#199#0#5'Width'#3'('#2#12'ClientHeight'#3#195#0#11'ClientWidth'#3
+  +#6'Height'#3#231#0#5'Width'#3'('#2#12'ClientHeight'#3#227#0#11'ClientWidth'#3
   +'$'#2#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#176#0#9'DesignTop'#3#232
   +#0#0#242#2#0#9'TGroupBox'#15'SrcPathGroupBox'#22'AnchorSideLeft.Control'#7#5
   +'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5
   +'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2':'#3
   +'Top'#2#0#5'Width'#3'$'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'Au'
   +'toSize'#9#7'Caption'#6#15'SrcPathGroupBox'#12'ClientHeight'#2''''#11'Client'
-  +'Width'#3' '#2#8'TabOrder'#2#0#0#5'TEdit'#11'SrcPathEdit'#22'AnchorSideLeft.'
-  +'Control'#7#15'SrcPathGroupBox'#23'AnchorSideRight.Control'#7#15'SrcPathGrou'
-  +'pBox'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#27#3
-  +'Top'#2#6#5'Width'#3#20#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'B'
-  +'orderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#11'SrcPathEdit'#0#0#0#242
-  +#2#1#9'TGroupBox'#15'JumpingGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'
-  +#21'AnchorSideTop.Control'#7#15'SrcPathGroupBox'#18'AnchorSideTop.Side'#7#9
-  +'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7
-  +#9'asrBottom'#4'Left'#2#0#6'Height'#2'y'#3'Top'#2'@'#5'Width'#3'$'#2#7'Ancho'
-  +'rs'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2
-  +#6#7'Caption'#6#15'JumpingGroupBox'#12'ClientHeight'#2'f'#11'ClientWidth'#3
-  +' '#2#8'TabOrder'#2#1#0#9'TCheckBox!AdjustTopLineDueToCommentCheckBox'#22'An'
-  +'chorSideLeft.Control'#7#15'JumpingGroupBox'#21'AnchorSideTop.Control'#7#15
-  +'JumpingGroupBox'#4'Left'#2#6#6'Height'#2#22#3'Top'#2#6#5'Width'#3#27#1#20'B'
-  +'orderSpacing.Around'#2#6#7'Caption'#6'!AdjustTopLineDueToCommentCheckBox'#8
-  +'TabOrder'#2#0#0#0#9'TCheckBox'#20'JumpCenteredCheckBox'#22'AnchorSideLeft.C'
-  +'ontrol'#7#15'JumpingGroupBox'#21'AnchorSideTop.Control'#7'!AdjustTopLineDue'
-  +'ToCommentCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Heig'
-  +'ht'#2#22#3'Top'#2'('#5'Width'#3#181#0#17'BorderSpacing.Top'#2#6#20'BorderSp'
-  +'acing.Around'#2#6#7'Caption'#6#20'JumpCenteredCheckBox'#8'TabOrder'#2#1#0#0
-  +#9'TCheckBox'#23'CursorBeyondEOLCheckBox'#22'AnchorSideLeft.Control'#7#15'Ju'
-  +'mpingGroupBox'#21'AnchorSideTop.Control'#7#20'JumpCenteredCheckBox'#18'Anch'
-  +'orSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'J'#5'Wid'
-  +'th'#3#205#0#17'BorderSpacing.Top'#2#6#20'BorderSpacing.Around'#2#6#7'Captio'
-  +'n'#6#23'CursorBeyondEOLCheckBox'#8'TabOrder'#2#2#0#0#0#0
+  +'Width'#3' '#2#5'Ctl3D'#8#8'TabOrder'#2#0#0#5'TEdit'#11'SrcPathEdit'#22'Anch'
+  +'orSideLeft.Control'#7#15'SrcPathGroupBox'#23'AnchorSideRight.Control'#7#15
+  +'SrcPathGroupBox'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Heig'
+  +'ht'#2#27#3'Top'#2#6#5'Width'#3#20#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRi'
+  +'ght'#0#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#11'SrcPathEdi'
+  +'t'#0#0#0#242#2#1#9'TGroupBox'#15'JumpingGroupBox'#22'AnchorSideLeft.Control'
+  +#7#5'Owner'#21'AnchorSideTop.Control'#7#15'SrcPathGroupBox'#18'AnchorSideTop'
+  +'.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideR'
+  +'ight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#3#155#0#3'Top'#2'@'#5'Width'
+  +#3'$'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#17'Borde'
+  +'rSpacing.Top'#2#6#7'Caption'#6#15'JumpingGroupBox'#12'ClientHeight'#3#136#0
+  +#11'ClientWidth'#3' '#2#5'Ctl3D'#8#8'TabOrder'#2#1#0#9'TCheckBox!AdjustTopLi'
+  +'neDueToCommentCheckBox'#22'AnchorSideLeft.Control'#7#15'JumpingGroupBox'#21
+  +'AnchorSideTop.Control'#7#15'JumpingGroupBox'#4'Left'#2#6#6'Height'#2#22#3'T'
+  +'op'#2#6#5'Width'#3#29#1#20'BorderSpacing.Around'#2#6#7'Caption'#6'!AdjustTo'
+  +'pLineDueToCommentCheckBox'#8'TabOrder'#2#0#0#0#9'TCheckBox'#20'JumpCentered'
+  +'CheckBox'#22'AnchorSideLeft.Control'#7#15'JumpingGroupBox'#21'AnchorSideTop'
+  +'.Control'#7'!AdjustTopLineDueToCommentCheckBox'#18'AnchorSideTop.Side'#7#9
+  +'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'('#5'Width'#3#181#0#17'Borde'
+  +'rSpacing.Top'#2#6#20'BorderSpacing.Around'#2#6#7'Caption'#6#20'JumpCentered'
+  +'CheckBox'#8'TabOrder'#2#1#0#0#9'TCheckBox'#23'CursorBeyondEOLCheckBox'#22'A'
+  +'nchorSideLeft.Control'#7#15'JumpingGroupBox'#21'AnchorSideTop.Control'#7#20
+  +'JumpCenteredCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'H'
+  +'eight'#2#22#3'Top'#2'J'#5'Width'#3#205#0#17'BorderSpacing.Top'#2#6#20'Borde'
+  +'rSpacing.Around'#2#6#7'Caption'#6#23'CursorBeyondEOLCheckBox'#8'TabOrder'#2
+  +#2#0#0#9'TCheckBox'#31'SkipForwardDeclarationsCheckBox'#22'AnchorSideLeft.Co'
+  +'ntrol'#7#15'JumpingGroupBox'#21'AnchorSideTop.Control'#7#23'CursorBeyondEOL'
+  +'CheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3
+  +'Top'#2'l'#5'Width'#3#252#0#17'BorderSpacing.Top'#2#6#20'BorderSpacing.Aroun'
+  +'d'#2#6#7'Caption'#6#31'SkipForwardDeclarationsCheckBox'#8'TabOrder'#2#3#0#0
+  +#0#0
 ]);

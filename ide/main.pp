@@ -12598,6 +12598,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  FindFlags: TFindSmartFlags;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
@@ -12606,10 +12607,12 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   //DebugLn(['TMainIDE.DoFindDeclarationAtCaret LogCaretXY=',dbgs(LogCaretXY),' SynEdit.Log=',dbgs(ActiveSrcEdit.EditorComponent.LogicalCaretXY),' SynEdit.Caret=',dbgs(ActiveSrcEdit.EditorComponent.CaretXY)]);
+  FindFlags := DefaultFindSmartFlags;
+  if CodeToolsOpts.SkipForwardDeclarations then
+    Include(FindFlags, fsfSkipClassForward);
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     LogCaretXY.X,LogCaretXY.Y,
-    NewSource,NewX,NewY,NewTopLine,DefaultFindSmartFlags
-    //+[fsfSkipClassForward]
+    NewSource,NewX,NewY,NewTopLine,FindFlags
     )
   then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);

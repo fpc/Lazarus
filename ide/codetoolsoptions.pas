@@ -56,6 +56,7 @@ type
     FAdjustTopLineDueToComment: boolean;
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
+    FSkipForwardDeclarations: boolean;
     
     // Define Templates
     FGlobalDefineTemplates: TDefineTemplate;
@@ -111,6 +112,7 @@ type
     property JumpCentered: boolean read FJumpCentered write FJumpCentered;
     property CursorBeyondEOL: boolean
       read FCursorBeyondEOL write FCursorBeyondEOL;
+    property SkipForwardDeclarations: boolean read FSkipForwardDeclarations write FSkipForwardDeclarations;
 
     // Define Templates
     property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
@@ -311,6 +313,8 @@ begin
       true);
     FCursorBeyondEOL:=XMLConfig.GetValue(
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
+    FSkipForwardDeclarations:=XMLConfig.GetValue(
+      'CodeToolsOptions/SkipForwardDeclarations/Value',false);
       
     // Define templates
     LoadGlobalDefineTemplates;
@@ -412,6 +416,8 @@ begin
                              FJumpCentered,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/CursorBeyondEOL/Value',
                              FCursorBeyondEOL,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SkipForwardDeclarations/Value',
+                             FSkipForwardDeclarations,false);
 
     // Define templates
     SaveGlobalDefineTemplates;
@@ -526,6 +532,7 @@ begin
     FCursorBeyondEOL:=CodeToolsOpts.FCursorBeyondEOL;
     FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
+    FSkipForwardDeclarations:=CodeToolsOpts.FSkipForwardDeclarations;
 
     // define templates
     ClearGlobalDefineTemplates;
@@ -628,6 +635,7 @@ begin
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)
+    and (FSkipForwardDeclarations=CodeToolsOpts.FSkipForwardDeclarations)
     
     // define templates
     and (FGlobalDefineTemplates.IsEqual(

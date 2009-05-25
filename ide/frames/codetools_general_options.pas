@@ -37,6 +37,7 @@ type
     CursorBeyondEOLCheckBox: TCheckBox;
     JumpCenteredCheckBox: TCheckBox;
     JumpingGroupBox: TGroupBox;
+    SkipForwardDeclarationsCheckBox: TCheckBox;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
   private
@@ -74,6 +75,8 @@ begin
 
   with CursorBeyondEOLCheckBox do
     Caption:=dlgcursorbeyondeol;
+
+  SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
@@ -85,6 +88,7 @@ begin
     AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
+    SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
   end;
 end;
 
@@ -97,6 +101,7 @@ begin
     AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
+    SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
   end;
 end;
 

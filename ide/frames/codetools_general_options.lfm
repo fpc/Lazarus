@@ -1,7 +1,7 @@
 inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
-  Height = 199
+  Height = 231
   Width = 552
-  ClientHeight = 195
+  ClientHeight = 227
   ClientWidth = 548
   TabOrder = 0
   Visible = False
@@ -21,6 +21,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     Caption = 'SrcPathGroupBox'
     ClientHeight = 39
     ClientWidth = 544
+    Ctl3D = False
     TabOrder = 0
     object SrcPathEdit: TEdit
       AnchorSideLeft.Control = SrcPathGroupBox
@@ -43,15 +44,16 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 121
+    Height = 155
     Top = 64
     Width = 548
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'JumpingGroupBox'
-    ClientHeight = 102
+    ClientHeight = 136
     ClientWidth = 544
+    Ctl3D = False
     TabOrder = 1
     object AdjustTopLineDueToCommentCheckBox: TCheckBox
       AnchorSideLeft.Control = JumpingGroupBox
@@ -59,7 +61,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Left = 6
       Height = 22
       Top = 6
-      Width = 283
+      Width = 285
       BorderSpacing.Around = 6
       Caption = 'AdjustTopLineDueToCommentCheckBox'
       TabOrder = 0
@@ -89,6 +91,19 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       BorderSpacing.Around = 6
       Caption = 'CursorBeyondEOLCheckBox'
       TabOrder = 2
+    end
+    object SkipForwardDeclarationsCheckBox: TCheckBox
+      AnchorSideLeft.Control = JumpingGroupBox
+      AnchorSideTop.Control = CursorBeyondEOLCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 108
+      Width = 252
+      BorderSpacing.Top = 6
+      BorderSpacing.Around = 6
+      Caption = 'SkipForwardDeclarationsCheckBox'
+      TabOrder = 3
     end
   end
 end
