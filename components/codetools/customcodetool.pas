@@ -694,10 +694,12 @@ begin
              CurPos.EndPos-CurPos.StartPos)
   then
     exit(true);
-  if ExceptionOnNotFound then
-    RaiseIdentExpectedButAtomFound
+  if not ExceptionOnNotFound then
+    exit(false);
+  if CurPos.StartPos>SrcLen then
+    RaiseIdentExpectedButEOFFound
   else
-    Result:=false;
+    RaiseIdentExpectedButAtomFound;
 end;
 
 function TCustomCodeTool.AtomIsNumber: boolean;
