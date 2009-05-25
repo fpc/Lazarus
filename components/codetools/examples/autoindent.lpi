@@ -52,7 +52,7 @@
       <Unit4>
         <Filename Value="scanexamples/indentation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="indentation"/>
+        <UnitName Value="Indentation"/>
       </Unit4>
     </Units>
   </ProjectOptions>

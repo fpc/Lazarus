@@ -43,6 +43,9 @@ unit CodeBeautifier;
 
 interface
 
+{ $DEFINE ShowCodeBeautifier}
+{$DEFINE ShowCodeBeautifierParser}
+
 uses
   Classes, SysUtils, FileProcs, KeywordFuncLists, CodeCache, BasicCodeTools;
   
@@ -196,6 +199,10 @@ type
     procedure EndBlock;
     function TopMostIndexOf(Typ: TFABBlockType): integer;
     function EndTopMostBlock(Typ: TFABBlockType): boolean;
+    {$IFDEF ShowCodeBeautifier}
+    Src: string;
+    function PosToStr(p: integer): string;
+    {$ENDIF}
   end;
 
 { TBlockStack }
@@ -226,7 +233,7 @@ begin
     ReAllocMem(Stack,SizeOf(TBlock)*Capacity);
   end;
   {$IFDEF ShowCodeBeautifier}
-  DebugLn([GetIndentStr(Top*2),'TBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos]);
+  DebugLn([GetIndentStr(Top*2),'TBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos,' at ',PosToStr(StartPos)]);
   {$ENDIF}
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
@@ -259,8 +266,22 @@ var
 begin
   i:=TopMostIndexOf(Typ);
   if i<0 then exit(false);
+  Result:=true;
   while Top>=i do EndBlock;
 end;
+
+{$IFDEF ShowCodeBeautifier}
+function TBlockStack.PosToStr(p: integer): string;
+var
+  X: integer;
+  Y: LongInt;
+begin
+  Result:='';
+  if Src='' then exit;
+  Y:=LineEndCount(Src,1,p,X)+1;
+  Result:='Line='+dbgs(Y)+' Col='+dbgs(X);
+end;
+{$ENDIF}
 
 { TFullyAutomaticBeautifier }
 
@@ -269,6 +290,43 @@ procedure TFullyAutomaticBeautifier.ParseSource(const Source: string;
 var
   Stack: TBlockStack;
   p: Integer;
+  AtomStart: integer;
+
+  {$IFDEF ShowCodeBeautifierParser}
+  function PosToStr(p: integer): string;
+  var
+    X: integer;
+    Y: LongInt;
+  begin
+    Y:=LineEndCount(Source,1,p,X)+1;
+    Result:='Line='+dbgs(Y)+' Col='+dbgs(X);
+  end;
+  {$ENDIF}
+
+  procedure BeginBlock(Typ: TFABBlockType);
+  begin
+    Stack.BeginBlock(Typ,AtomStart);
+    {$IFDEF ShowCodeBeautifierParser}
+    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',FABBlockTypeNames[Typ],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
+    {$ENDIF}
+  end;
+
+  procedure EndBlock;
+  begin
+    {$IFDEF ShowCodeBeautifierParser}
+    DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
+    {$ENDIF}
+    Stack.EndBlock;
+  end;
+
+  procedure EndTopMostBlock(Typ: TFABBlockType);
+  var
+    i: LongInt;
+  begin
+    i:=Stack.TopMostIndexOf(Typ);
+    if i<0 then exit;
+    while Stack.Top>=i do EndBlock;
+  end;
 
   procedure StartIdentifierSection(Section: TFABBlockType);
   begin
@@ -278,17 +336,33 @@ var
         // procedure with begin..end
       end else begin
         // procedure without begin..end
-        Stack.EndBlock;
+        EndBlock;
       end;
     end;
     if Stack.TopType in bbtAllIdentifierSections then
-      Stack.EndBlock;
-    if Stack.TopType in bbtAllCodeSections then
-      Stack.BeginBlock(Section,p);
+      EndBlock;
+    if Stack.TopType in (bbtAllCodeSections+[bbtProcedure,bbtFunction]) then
+      BeginBlock(Section);
+  end;
+
+  procedure StartProcedure(Typ: TFABBlockType);
+  begin
+    if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+      if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
+      then begin
+        // procedure with begin..end
+      end else begin
+        // procedure without begin..end
+        EndBlock;
+      end;
+    end;
+    if Stack.TopType in bbtAllIdentifierSections then
+      EndBlock;
+    if Stack.TopType in (bbtAllCodeSections+[bbtProcedure,bbtFunction]) then
+      BeginBlock(Typ);
   end;
 
 var
-  AtomStart: integer;
   MinAtomCapacity: Integer;
   r: PChar;
 begin
@@ -308,6 +382,7 @@ begin
     p:=1;
     repeat
       ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
+      DebugLn(['TFullyAutomaticBeautifier.ParseSource ',copy(Src,AtomStart,p-AtomStart)]);
       if p>SrcLen then break;
       FAtomStarts[FAtomCount]:=AtomStart;
       inc(FAtomCount);
@@ -315,17 +390,19 @@ begin
         FAtomCapacity:=FAtomCapacity*2;
         ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
       end;
-      r:=@Src[p];
+      r:=@Src[AtomStart];
       case UpChars[r^] of
       'B':
         if CompareIdentifiers('BEGIN',r)=0 then begin
           while Stack.TopType in (bbtAllIdentifierSections+bbtAllCodeSections) do
-            Stack.EndBlock;
+            EndBlock;
           case Stack.TopType of
           bbtNone:
-            Stack.BeginBlock(bbtMainBegin,p);
+            BeginBlock(bbtMainBegin);
+          bbtProcedure,bbtFunction:
+            BeginBlock(bbtProcedureBegin);
           bbtMainBegin:
-            Stack.BeginBlock(bbtCommentaryBegin,p);
+            BeginBlock(bbtCommentaryBegin);
           end;
         end;
       'C':
@@ -336,7 +413,13 @@ begin
         if CompareIdentifiers('END',r)=0 then begin
           case Stack.TopType of
           bbtMainBegin,bbtCommentaryBegin:
-            Stack.EndBlock;
+            EndBlock;
+          bbtProcedureBegin:
+            begin
+              EndBlock;
+              if Stack.TopType in [bbtProcedure,bbtFunction] then
+                EndBlock;
+            end;
           end;
           StartIdentifierSection(bbtConstSection);
         end;
@@ -346,16 +429,19 @@ begin
           if CompareIdentifiers('FINALIZATION',r)=0 then begin
             while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
             do
-              Stack.EndBlock;
+              EndBlock;
             if Stack.TopType=bbtNone then
-              Stack.BeginBlock(bbtInitialization,p);
+              BeginBlock(bbtInitialization);
           end;
         'O':
           if CompareIdentifiers('FORWARD',r)=0 then begin
             if Stack.TopType in [bbtProcedure,bbtFunction] then begin
-              Stack.EndBlock;
+              EndBlock;
             end;
           end;
+        'U':
+          if CompareIdentifiers('FUNCTION',r)=0 then
+            StartProcedure(bbtFunction);
         end;
       'I':
         case UpChars[Src[1]] of
@@ -365,23 +451,23 @@ begin
             if CompareIdentifiers('INITIALIZATION',r)=0 then begin
               while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
               do
-                Stack.EndBlock;
+                EndBlock;
               if Stack.TopType=bbtNone then
-                Stack.BeginBlock(bbtInitialization,p);
+                BeginBlock(bbtInitialization);
             end;
           'T':
             if CompareIdentifiers('INTERFACE',r)=0 then begin
               if Stack.TopType=bbtNone then
-                Stack.BeginBlock(bbtInterface,p);
+                BeginBlock(bbtInterface);
             end;
           end;
         'M':
           if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
             while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
             do
-              Stack.EndBlock;
+              EndBlock;
             if Stack.TopType=bbtNone then
-              Stack.BeginBlock(bbtImplementation,p);
+              BeginBlock(bbtImplementation);
           end;
         end;
       'L':
@@ -389,7 +475,7 @@ begin
           StartIdentifierSection(bbtLabelSection);
       'P':
         if CompareIdentifiers('PROCEDURE',r)=0 then
-          Stack.BeginBlock(bbtProcedure,p);
+          StartProcedure(bbtProcedure);
       'R':
         case UpChars[r[1]] of
         'E':
@@ -397,7 +483,7 @@ begin
           'P':
             if CompareIdentifiers('REPEAT',r)=0 then begin
               if Stack.TopType in bbtAllStatements then
-                Stack.BeginBlock(bbtRepeat,p);
+                BeginBlock(bbtRepeat);
             end;
           'S':
             if CompareIdentifiers('RESOURCESTRING',r)=0 then
@@ -413,11 +499,11 @@ begin
         'S':
           if CompareIdentifiers('USES',r)=0 then begin
             if Stack.TopType in [bbtNone,bbtInterface,bbtImplementation] then
-              Stack.BeginBlock(bbtUsesSection,p);
+              BeginBlock(bbtUsesSection);
           end;
         'N':
           if CompareIdentifiers('UNTIL',r)=0 then begin
-            Stack.EndTopMostBlock(bbtRepeat);
+            EndTopMostBlock(bbtRepeat);
           end;
         end;
       'V':
@@ -427,7 +513,7 @@ begin
       ';':
         case Stack.TopType of
         bbtUsesSection:
-          Stack.EndBlock;
+          EndBlock;
         end;
       end;
     until false;
