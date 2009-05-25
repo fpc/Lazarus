@@ -924,6 +924,7 @@ var
   InitialDirW: widestring;
   Title: widestring;
   {$endif}
+  DirName: string;
 begin
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
 
@@ -965,7 +966,7 @@ begin
     begin
       SHGetPathFromIDListW(iidl, BufferW);
       CoTaskMemFree(iidl);
-      TSelectDirectoryDialog(ACommonDialog).FileName := UTF16ToUTF8(widestring(BufferW));
+      DirName := UTF16ToUTF8(widestring(BufferW));
     end;
   end
   else begin
@@ -991,7 +992,7 @@ begin
     begin
       SHGetPathFromIDList(iidl, Buffer);
       CoTaskMemFree(iidl);
-      TSelectDirectoryDialog(ACommonDialog).FileName := AnsiToUtf8(Buffer);
+      DirName := AnsiToUtf8(Buffer);
     end;
   end;
   {$else}
@@ -1016,10 +1017,15 @@ begin
   begin
     SHGetPathFromIDList(iidl, Buffer);
     CoTaskMemFree(iidl);
-    TSelectDirectoryDialog(ACommonDialog).FileName := Buffer;
+    DirName := Buffer;
   end;
   {$endif}
-  
+
+  if Assigned(iidl) then
+  begin
+    TSelectDirectoryDialog(ACommonDialog).FileName := DirName;
+    TSelectDirectoryDialog(ACommonDialog).Files.Text := DirName;
+  end;
   SetDialogResult(ACommonDialog, assigned(iidl));
 
   CoTaskMemFree(Buffer);
