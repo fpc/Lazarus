@@ -964,7 +964,9 @@ resourcestring
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
-  dlgDesktopButtonGlyphs = 'Glyphs for Buttons';
+  dlgDesktopGlyphsFor = 'Glyphs for:';
+  dlgDesktopButtons = 'Buttons - ';
+  dlgDesktopMenus = 'Menus - ';
   dlgGlyphShowAlways = 'Show Always';
   dlgGlyphShowNever = 'Show Never';
   dlgGlyphShowSystem = 'Use System Defaults';

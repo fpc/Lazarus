@@ -1097,6 +1097,7 @@ begin
     ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
     OnApplyWindowLayout := @Self.OnApplyWindowLayout;
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
+    Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
   UpdateDefaultPascalFileExtensions;
 
@@ -4181,6 +4182,7 @@ begin
       UpdateObjectInspector;
       SetupHints;
       Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
+      Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
 
       // reload lazarus packages
       if LazarusSrcDirChanged then

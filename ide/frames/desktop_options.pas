@@ -51,20 +51,27 @@ type
     Bevel8: TBevel;
     Bevel9: TBevel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
+    lblButtons: TLabel;
+    lblMenus: TLabel;
     lblHints: TLabel;
     lblCenter: TLabel;
     LanguageComboBox: TComboBox;
     lblDesktopFiles: TLabel;
-    lblButtonGlyphs: TLabel;
+    lblGlyphs: TLabel;
     lblMisc: TLabel;
     lblLanguage: TLabel;
     lblAutoSave: TLabel;
     LoadDesktopSettingsFromFileButton: TButton;
     MsgViewDblClickJumpsCheckBox: TCheckBox;
     MsgViewFocusCheckBox: TCheckBox;
-    rbGlyphShowAlways: TRadioButton;
-    rbGlyphShowNever: TRadioButton;
-    rbGlyphShowSystem: TRadioButton;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    rbMenuGlyphShowAlways: TRadioButton;
+    rbMenuGlyphShowNever: TRadioButton;
+    rbMenuGlyphShowSystem: TRadioButton;
+    rbBtnGlyphShowAlways: TRadioButton;
+    rbBtnGlyphShowNever: TRadioButton;
+    rbBtnGlyphShowSystem: TRadioButton;
     SaveDesktopSettingsToFileButton: TButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
@@ -127,10 +134,15 @@ begin
   LoadDesktopSettingsFromFileButton.Caption := dlgLoadDFile;
 
   // button glyphs
-  lblButtonGlyphs.Caption := dlgDesktopButtonGlyphs;
-  rbGlyphShowAlways.Caption := dlgGlyphShowAlways;
-  rbGlyphShowNever.Caption := dlgGlyphShowNever;
-  rbGlyphShowSystem.Caption := dlgGlyphShowSystem;
+  lblGlyphs.Caption := dlgDesktopGlyphsFor;
+  lblButtons.Caption := dlgDesktopButtons;
+  lblMenus.Caption := dlgDesktopMenus;
+  rbBtnGlyphShowAlways.Caption := dlgGlyphShowAlways;
+  rbBtnGlyphShowNever.Caption := dlgGlyphShowNever;
+  rbBtnGlyphShowSystem.Caption := dlgGlyphShowSystem;
+  rbMenuGlyphShowAlways.Caption := dlgGlyphShowAlways;
+  rbMenuGlyphShowNever.Caption := dlgGlyphShowNever;
+  rbMenuGlyphShowSystem.Caption := dlgGlyphShowSystem;
 
   // hints
   lblHints.Caption := dlgDesktopHints;
@@ -170,11 +182,16 @@ begin
     MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
     MsgViewFocusCheckBox.Checked:=MsgViewFocus;
 
-    // button glyphs
+    // glyphs
     case ShowButtonGlyphs of
-      sbgAlways: rbGlyphShowAlways.Checked := True;
-      sbgNever: rbGlyphShowNever.Checked := True;
-      sbgSystem: rbGlyphShowSystem.Checked := True;
+      sbgAlways: rbBtnGlyphShowAlways.Checked := True;
+      sbgNever: rbBtnGlyphShowNever.Checked := True;
+      sbgSystem: rbBtnGlyphShowSystem.Checked := True;
+    end;
+    case ShowMenuGlyphs of
+      sbgAlways: rbMenuGlyphShowAlways.Checked := True;
+      sbgNever: rbMenuGlyphShowNever.Checked := True;
+      sbgSystem: rbMenuGlyphShowSystem.Checked := True;
     end;
   end;
 end;
@@ -201,14 +218,21 @@ begin
     // messages view
     MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
     MsgViewFocus:=MsgViewFocusCheckBox.Checked;
-    // button glyphs
-    if rbGlyphShowAlways.Checked then
+    // glyphs
+    if rbBtnGlyphShowAlways.Checked then
       ShowButtonGlyphs := sbgAlways
     else
-    if rbGlyphShowNever.Checked then
+    if rbBtnGlyphShowNever.Checked then
       ShowButtonGlyphs := sbgNever
     else
       ShowButtonGlyphs := sbgSystem;
+    if rbMenuGlyphShowAlways.Checked then
+      ShowMenuGlyphs := sbgAlways
+    else
+    if rbMenuGlyphShowNever.Checked then
+      ShowMenuGlyphs := sbgNever
+    else
+      ShowMenuGlyphs := sbgSystem;
   end;
 end;
 
