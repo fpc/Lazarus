@@ -10,7 +10,7 @@ uses
   // os
   glib2,  gdk2, gtk2, gdk2pixbuf, Pango,
   // lcl
-  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
+  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema, Forms,
   // widgetset
   GtkDef, Gtk2Int, GtkProc, GtkThemes, GtkGlobals;
   
@@ -213,18 +213,31 @@ begin
   Result := True;
 end;
 
+procedure MenuImagesChange(ASettings: PGtkSettings; Services: TGtk2ThemeServices); cdecl;
+begin
+  //Services.IntfDoOnThemeChange;
+end;
+
 function TGtk2ThemeServices.GetOption(AOption: TThemeOption): Integer;
 var
   ASettings: PGtkSettings;
   BoolSetting: gboolean;
+  Widget: PGtkWidget;
+  Signal: guint;
 begin
   case AOPtion of
     toShowMenuImages:
       begin
-        ASettings := gtk_widget_get_settings(GetStyleWidget(lgsMenuitem));
+        Widget := GetStyleWidget(lgsMenuitem);
+        ASettings := gtk_widget_get_settings(Widget);
         BoolSetting := False; // default
         g_object_get(ASettings, 'gtk-menu-images', @BoolSetting, nil);
         Result := Ord(BoolSetting = True);
+        if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
+        begin
+          Signal := g_signal_connect(ASettings, 'notify::gtk-menu-images', TGCallback(@MenuImagesChange), Self);
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(Signal))
+        end;
       end;
   else
     Result := inherited GetOption(AOption);
