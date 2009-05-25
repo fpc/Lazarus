@@ -47,6 +47,7 @@ type
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetOption(AOption: TThemeOption): Integer; override;
   end;
 
 implementation
@@ -426,6 +427,16 @@ begin
   end
   else
     Result := inherited GetDetailSize(Details);
+end;
+
+function TCarbonThemeServices.GetOption(AOption: TThemeOption): Integer;
+begin
+  case AOption of
+    toShowButtonImages: Result := 0;
+    toShowMenuImages: Result := 0;
+  else
+    Result := inherited GetOption(AOption);
+  end;
 end;
 
 {------------------------------------------------------------------------------
