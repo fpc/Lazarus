@@ -1,4 +1,4 @@
-inherited IDEOptionsDialog: TIDEOptionsDialog
+object IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
@@ -8,18 +8,19 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
   ClientWidth = 700
-  Constraints.MinHeight = 300
-  Constraints.MinWidth = 300
+  Constraints.MinHeight = 350
+  Constraints.MinWidth = 600
   OnShow = FormShow
   Position = poScreenCenter
-  object ButtonPanel: TButtonPanel[0]
+  LCLVersion = '0.9.27'
+  object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 44
-    Top = 450
+    Height = 34
+    Top = 460
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -28,19 +29,19 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CategoryTree: TTreeView[1]
+  object CategoryTree: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 444
+    Height = 454
     Top = 6
     Width = 206
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Constraints.MinWidth = 206
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     ReadOnly = True
     TabOrder = 0
     OnChange = CategoryTreeChange
