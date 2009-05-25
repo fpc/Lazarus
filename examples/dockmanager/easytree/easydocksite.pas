@@ -201,26 +201,6 @@ type
     procedure PaintSite(DC: HDC); override;
   end;
 
-(* Docking into a notebook
-  Notebook base class is TCustomPageControl (TPageControl?)
-  Dockable control is either the notebook or a form with a notebook.
-  TEasyPages is the page control itself, for docking clients.
-  TEasyBook is the dockable control or wrapper form.
-*)
-
-(* Notebook for alCustom docking.
-  Added behaviour: free self on undock of the last client/page.
-  The behaviour of TPageControl sucks :-(
-*)
-  TEasyPages = class(TPageControl)
-  protected
-    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
-    procedure DoRemoveDockClient(Client: TControl); override;
-    function  GetDefaultDockCaption: string; override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-  end;
-
 const
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
@@ -235,11 +215,8 @@ implementation
 uses
   SysUtils, Types,
   math,
+  fDockBook,
   Themes, LResources,
-{$IFDEF bookform}
-  //fDockBook,
-{$ELSE}
-{$ENDIF}
   LCLproc; //debugging
 
 const
@@ -250,58 +227,16 @@ const
 {$ENDIF}
 
 type
-{$IFDEF bookform}
-  //use a notebook in it's own form
-  TEasyBook = class(TCustomForm) // TDockBook;
-  protected
-    Pages: TPageControl;
-    //function GetDockCaption(AControl: TControl): String; override;
-  public
-    property DragMode;
-    property DragKind;
-  end;
-{$ELSE}
-  TEasyBook = TEasyPages;
-{$ENDIF}
+  TEasyBook = TEasyDockBook;
 
-function  NoteBookCreate(AOwner: TWinControl): TEasyBook;
-{$IFDEF bookform}
-(* Create a form, containing a page control.
-  The form must be dockable.
-  The page control must be a dock site. (is?)
-*)
-var
-  Pages: TEasyPages;
+function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
 begin
-  Result := TEasyBook.Create(AOwner);
-  Result.Visible := True;
-  Result.DragMode := dmAutomatic;
-  Result.DragKind := dkDock;
-  Pages := TEasyPages.Create(Result);
-  Result.Pages := Pages;
-  Pages.Parent := Result;
-  Pages.Visible := True;
-  Pages.Align := alClient;
-  Pages.DockSite := True; //default?
-{$ELSE}
-begin
-  Result := TEasyPages.Create(AOwner);
-  //Result.Align := alNone; //doesn't help :-(
-{$ENDIF}
+  Result := TEasyDockBook.Create(AOwner);
 end;
 
-procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl);
+procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
 begin
-{$IFDEF bookform}
-//dock into client
-  AItem.Align := alClient;
-  AItem.ManualDock(ABook.Pages);
-  ABook.Pages.ActivePageIndex := ABook.Pages.PageCount - 1;
-{$ELSE}
-//dock into control
-  AItem.ManualDock(ABook);
-  ABook.ActivePageIndex := ABook.PageCount - 1;
-{$ENDIF}
+  AItem.ManualDock(ABook.pnlDock);
 end;
 
 //from CustomFormEditor.pp
@@ -349,7 +284,7 @@ begin
   FDockSite := ADockSite;
 //reset inappropriate docking defaults - should be fixed in Controls/DragManager!
   DragManager.DragImmediate := False;
-  DragManager.DragThreshold:=5;
+  //DragManager.DragThreshold:=5;
 //workaround: check for already assigned docking manager
   //FreeAndNil(DockSite.DockManager); - seems to be fixed
   DockSite.DockManager := self;
@@ -393,7 +328,7 @@ procedure TEasyTree.EndUpdate;
 begin
   dec(FUpdateCount);
   if (FUpdateCount = 0) and (FTopZone.FirstChild <> nil) then begin
-    DebugLn('EndUpdate---');
+    //DebugLn('EndUpdate---');
     UpdateTree;
   end;
 end;
@@ -411,7 +346,7 @@ begin
     else if zone.FirstChild <> nil then
       zone := zone.FirstChild
     else begin
-      break; //here?
+      break; //found it
     end;
   end;
   Result := zone;
@@ -425,14 +360,7 @@ end;
 procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
 //get the client area within the given zone rectangle
-{$IFDEF old}
-  if Control.DockOrientation = doVertical then
-    inc(ARect.Top, DockHeaderSize)
-  else
-    inc(ARect.Left, DockHeaderSize);
-{$ELSE}
   ARect := FHeader.GetRectOfPart(ARect, Control.DockOrientation, zpClient, true);
-{$ENDIF}
 end;
 
 function TEasyTree.FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
@@ -461,8 +389,7 @@ begin
   if zone = nil then
     CtlBounds := Rect(0,0,0,0)
   else begin
-  { TODO -cdocking : zpClient }
-    CtlBounds := zone.GetBounds;
+    CtlBounds := zone.GetPartRect(zpClient);
   end;
 end;
 
@@ -616,7 +543,6 @@ var
   i: integer;
   zone: TEasyZone;
 
-  //function DetectAlign(ZoneSize, MousePos: TPoint): TAlign;
   function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
   var
     w, h, zphi: integer;
@@ -1432,57 +1358,6 @@ begin
       z := z.NextSibling;
     end;
   end; //else empty root zone?
-end;
-
-
-{ TEasyPages }
-
-constructor TEasyPages.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-{ this does not help :-(
-  DragKind := dkDock;
-  DragMode := dmAutomatic;
-}
-end;
-
-procedure TEasyPages.DoDock(NewDockSite: TWinControl; var ARect: TRect);
-begin
-  //test: do nothing
-  //inherited DoDock(NewDockSite, ARect);
-  //DebugLn('NoteBook as (%d,%d)-(%d,%d)', [ARect.Top, ARect.Left, ARect.Bottom, ARect.Right]);
-  //BoundsRect := ARect;
-  //DebugLn('NoteBook is (%d,%d)-(%d,%d)', [Top, Left, Height, Width]);
-end;
-
-procedure TEasyPages.DoRemoveDockClient(Client: TControl);
-begin
-(* Destroy notebook when it becomes empty.
-  Notebook clients are organized in pages, not in dock clients.
-  Hence we have to test for PageCount, instead of DockClientCount.
-*)
-  inherited;
-  //DebugLn('TEasyBook.DoRemoveDockClient: remaining ' + IntToStr(PageCount));
-  if PageCount = 0 then begin
-  { TODO -cdocking : When standalone and docked, undock from HostDockSite.
-    When wrapped into a dockable form, undock the form? }
-    Application.ReleaseComponent(self);
-  end;
-end;
-
-function TEasyPages.GetDefaultDockCaption: string;
-var
-  i: integer;
-  pg: TTabSheet;
-begin
-  Result := '';
-  for i := 0 to PageCount - 1 do begin
-    pg := Pages[i];
-    if Result = '' then
-      Result := pg.Caption
-    else
-      Result := Result + ', ' + pg.Caption;
-  end;
 end;
 
 //implement various headers

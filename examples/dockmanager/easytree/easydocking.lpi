@@ -74,10 +74,10 @@
       </Unit5>
       <Unit6>
         <Filename Value="fdockbook.pas"/>
-        <ComponentName Value="DockBook"/>
+        <ComponentName Value="EasyDockBook"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fdockbook"/>
+        <UnitName Value="fDockBook"/>
       </Unit6>
     </Units>
   </ProjectOptions>

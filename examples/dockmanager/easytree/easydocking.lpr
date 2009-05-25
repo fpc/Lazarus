@@ -19,6 +19,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TEasyDockMain, EasyDockMain);
   Application.CreateForm(TDumpBox, DumpBox);
+  Application.CreateForm(TEasyDockBook, EasyDockBook);
   Application.Run;
 end.
 

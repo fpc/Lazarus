@@ -1,10 +1,35 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TDockBook','FORMDATA',[
-  'TPF0'#9'TDockBook'#8'DockBook'#4'Left'#3'*'#1#6'Height'#3','#1#3'Top'#3#151#0
+  'TPF0'#9'TDockBook'#8'DockBook'#4'Left'#3#10#1#6'Height'#3','#1#3'Top'#3#150#0
   +#5'Width'#3#144#1#7'Caption'#6#8'DockBook'#12'ClientHeight'#3','#1#11'Client'
-  +'Width'#3#144#1#8'DragKind'#7#6'dkDock'#8'DragMode'#7#11'dmAutomatic'#10'LCL'
-  +'Version'#6#6'0.9.27'#7'Visible'#9#0#12'TPageControl'#5'Pages'#4'Left'#2#0#6
-  +'Height'#3','#1#3'Top'#2#0#5'Width'#3#144#1#5'Align'#7#8'alClient'#8'DockSit'
-  +'e'#9#8'TabOrder'#2#0#0#0#0
+  +'Width'#3#144#1#8'DockSite'#9#8'DragKind'#7#6'dkDock'#8'DragMode'#7#11'dmAut'
+  +'omatic'#10'OnDockOver'#7#12'FormDockOver'#10'LCLVersion'#6#6'0.9.27'#7'Visi'
+  +'ble'#9#0#6'TPanel'#7'pnlDock'#4'Left'#2#0#6'Height'#3#254#0#3'Top'#2#26#5'W'
+  +'idth'#3#144#1#5'Align'#7#8'alClient'#7'Caption'#6#7'pnlDock'#8'DockSite'#9#8
+  +'TabOrder'#2#0#8'OnUnDock'#7#13'pnlDockUnDock'#0#0#10'TStatusBar'#2'sb'#4'Le'
+  +'ft'#2#0#6'Height'#2#20#3'Top'#3#24#1#5'Width'#3#144#1#6'Panels'#14#0#0#0#8
+  +'TToolBar'#4'Tabs'#4'Left'#2#0#6'Height'#2#26#3'Top'#2#0#5'Width'#3#144#1#8
+  +'AutoSize'#9#7'Caption'#6#4'Tabs'#18'ChildSizing.Layout'#7#29'cclLeftToRight'
+  +'ThenTopToBottom'#11'EdgeBorders'#11#5'ebTop'#8'ebBottom'#0#4'Flat'#8#4'List'
+  +#9#12'ShowCaptions'#9#8'TabOrder'#2#2#0#11'TToolButton'#11'ToolButton1'#4'Le'
+  +'ft'#2#1#3'Top'#2#2#7'Caption'#6#11'ToolButton1'#5'Style'#7#8'tbsCheck'#7'On'
+  +'Click'#7#16'ToolButton1Click'#0#0#0#0
+]);
+
+LazarusResources.Add('TEasyDockBook','FORMDATA',[
+  'TPF0'#13'TEasyDockBook'#12'EasyDockBook'#4'Left'#3#7#1#6'Height'#3','#1#3'To'
+  +'p'#3#146#0#5'Width'#3#144#1#7'Caption'#6#12'EasyDockBook'#12'ClientHeight'#3
+  +','#1#11'ClientWidth'#3#144#1#8'DragKind'#7#6'dkDock'#8'DragMode'#7#11'dmAut'
+  +'omatic'#10'LCLVersion'#6#6'0.9.27'#7'Visible'#9#0#8'TToolBar'#4'Tabs'#4'Lef'
+  +'t'#2#1#6'Height'#2#26#3'Top'#2#1#5'Width'#3#142#1#8'AutoSize'#9#20'BorderSp'
+  +'acing.Around'#2#1#11'BorderWidth'#2#1#7'Caption'#6#4'Tabs'#29'ChildSizing.H'
+  +'orizontalSpacing'#2#2#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousS'
+  +'paceResize'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#5'Co'
+  +'lor'#7#9'clBtnFace'#11'EdgeBorders'#11#5'ebTop'#8'ebBottom'#0#4'Flat'#8#10
+  +'Font.Style'#11#6'fsBold'#0#4'List'#9#11'ParentColor'#8#10'ParentFont'#8#12
+  +'ShowCaptions'#9#8'TabOrder'#2#0#0#0#6'TPanel'#7'pnlDock'#4'Left'#2#0#6'Heig'
+  +'ht'#3#16#1#3'Top'#2#28#5'Width'#3#144#1#5'Align'#7#8'alClient'#7'Caption'#6
+  +#7'pnlDock'#8'DockSite'#9#8'TabOrder'#2#1#10'OnDockDrop'#7#15'pnlDockDockDro'
+  +'p'#8'OnUnDock'#7#13'pnlDockUnDock'#0#0#0
 ]);
