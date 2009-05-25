@@ -1132,6 +1132,7 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
   with Msg do
@@ -1410,28 +1411,29 @@ var
 
     //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
     case LastMouse.ClickCount of
-    1: MessI.Msg := MsgNormal;
-    2: MessI.Msg := MsgDouble;
-    3: MessI.Msg := MsgTriple;
-    4: MessI.Msg := MsgQuad;
-    else
-      MessI.Msg := LM_NULL;
+      1: MessI.Msg := MsgNormal;
+      2: MessI.Msg := MsgDouble;
+      3: MessI.Msg := MsgTriple;
+      4: MessI.Msg := MsgQuad;
+      else
+        MessI.Msg := LM_NULL;
     end;
 
     Result:=true;
   end;
 
 begin
-  if (Widget=nil) then ;
-  MousePositionValid:=false;
+  MousePositionValid := False;
 
-  EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
+  EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
-  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
-                                          PGtkWidget(AWinControl.Handle));
+  MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
+                                            PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
-  if event^.Button in [4,5] then begin
+  if event^.Button in [4, 5] then
+  begin
     // this is a mouse wheel event
     MessE.Msg := LM_MOUSEWHEEL;
     MessE.WheelDelta := WHEEL_DELTA[event^.Button = 4];
@@ -1445,31 +1447,25 @@ begin
     NotifyApplicationUserInput(MessE.Msg);
     DeliverMessage(AWinControl, MessE);
   end
-  else begin
+  else
+  begin
     // a normal mouse button is pressed
     MessI.Keys := 0;
     case event^.Button of
-
-    1: if not CheckMouseButtonDown(LastLeft,
-              MK_LBUTTON, LM_LBUTTONDOWN,
-              LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK)
-       then exit;
-
-    2: if not CheckMouseButtonDown(LastMiddle,
-              MK_MBUTTON, LM_MBUTTONDOWN,
-              LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK)
-       then exit;
-
-    3: if not CheckMouseButtonDown(LastRight,
-              MK_RBUTTON, LM_RBUTTONDOWN,
-              LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK)
-       then exit;
-
-    else
-      begin
-        MessI.Msg := LM_NULL;
-        exit;
-      end;
+      1: if not CheckMouseButtonDown(LastLeft,
+                MK_LBUTTON, LM_LBUTTONDOWN,
+                LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK) then Exit;
+      2: if not CheckMouseButtonDown(LastMiddle,
+                MK_MBUTTON, LM_MBUTTONDOWN,
+                LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK) then Exit;
+      3: if not CheckMouseButtonDown(LastRight,
+                MK_RBUTTON, LM_RBUTTONDOWN,
+                LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK) then Exit;
+      else
+        begin
+          MessI.Msg := LM_NULL;
+          exit;
+        end;
     end; // case
 
     MessI.XPos := MappedXY.X;
@@ -1686,6 +1682,7 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of

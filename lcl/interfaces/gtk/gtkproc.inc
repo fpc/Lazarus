@@ -4496,16 +4496,18 @@ var
   ClientWindow: PGdkWindow;
 begin
   ClientWidget:=GetFixedWidget(TheWidget);
-  if ClientWidget<>TheWidget then begin
-    ClientWindow:=GetControlWindow(ClientWidget);
-    if ClientWindow<>nil then begin
+  if ClientWidget <> TheWidget then
+  begin
+    ClientWindow := GetControlWindow(ClientWidget);
+    if ClientWindow <> nil then
+    begin
       {$IFDEF DebugGDK}
       BeginGDKErrorTrap;
       {$ENDIF}
-      gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
+      gdk_window_get_origin(ClientWindow, @Result.X, @Result.Y);
       {$Ifdef GTK2}
-      if GTK_WIDGET_NO_WINDOW(ClientWidget)
-      then begin
+      if GTK_WIDGET_NO_WINDOW(ClientWidget) then
+      begin
         Inc(Result.X, ClientWidget^.Allocation.X);
         Inc(Result.Y, ClientWidget^.Allocation.Y);
       end;
@@ -4516,12 +4518,15 @@ begin
       exit;
     end;
   {$IFDEF Gtk2}
-  end else if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then begin
+  end
+  else
+  if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then
+  begin
     GetNoteBookClientOrigin(PGtkNoteBook(TheWidget));
-    exit;
+    Exit;
   {$ENDIF}
   end;
-  Result:=GetWidgetOrigin(TheWidget);
+  Result := GetWidgetOrigin(TheWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4531,25 +4536,38 @@ end;
   client area of the LCL WinControl.
 -------------------------------------------------------------------------------}
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
-  SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
+  SourcePos: TPoint; DestinationWidget: PGtkWidget): TPoint;
 var
   SrcWindowOrigin: TPoint;
   ClientAreaWindowOrigin: TPoint;
   Src2ClientAreaVector: TPoint;
 begin
-  if SourceWindow=nil then begin
+  if SourceWindow = nil then
+  begin
     {$IFDEF RaiseExceptionOnNilPointers}
     RaiseException('TranslateGdkPointToClientArea Window=nil');
     {$ENDIF}
     DebugLn('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
   end;
-  gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
+  gdk_window_get_origin(SourceWindow, @SrcWindowOrigin.X, @SrcWindowOrigin.Y);
 
-  ClientAreaWindowOrigin:=GetWidgetClientOrigin(DestinationWidget);
-  Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
-  Src2ClientAreaVector.Y:=ClientAreaWindowOrigin.Y-SrcWindowOrigin.Y;
-  Result.X:=SourcePos.X-Src2ClientAreaVector.X;
-  Result.Y:=SourcePos.Y-Src2ClientAreaVector.Y;
+  ClientAreaWindowOrigin := GetWidgetClientOrigin(DestinationWidget);
+  Src2ClientAreaVector.X := ClientAreaWindowOrigin.X - SrcWindowOrigin.X;
+  Src2ClientAreaVector.Y := ClientAreaWindowOrigin.Y - SrcWindowOrigin.Y;
+  Result.X := SourcePos.X - Src2ClientAreaVector.X;
+  Result.Y := SourcePos.Y - Src2ClientAreaVector.Y;
+end;
+
+function SubtractScoll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
+begin
+  Result := APosition;
+  if not GTK_IS_SCROLLED_WINDOW(AWidget) then
+    AWidget := gtk_object_get_data(PGTKObject(AWidget), odnScrollArea);
+  if GTK_IS_SCROLLED_WINDOW(AWidget) then
+  begin
+    dec(Result.x, Round(gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(AWidget))^.value));
+    dec(Result.y, Round(gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(AWidget))^.value));
+  end;
 end;
 
 {------------------------------------------------------------------------------
