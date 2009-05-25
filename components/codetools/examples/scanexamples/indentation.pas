@@ -1,4 +1,4 @@
-unit indentation; 
+unit Indentation;
 
 {$mode objfpc}{$H+}
 

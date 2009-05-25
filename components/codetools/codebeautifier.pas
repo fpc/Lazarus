@@ -35,70 +35,7 @@
       - Does not ignore comments and directives
       - Contexts: statements, declarations
 
-  Examples for beautification styles:
-
-    if expr then
-    begin
-      ;
-    end;
-
-    if expr then
-      ...
-    else
-      ...;
-
-  Indentations:
-    uses
-      unit;
-    begin
-      if expr then
-      begin
-        repeat // cbcRepeat
-          if expr then
-            ;
-        until ;
-        try
-          Code;
-        finally
-          Code;
-        end;
-        try
-          Code;
-        except
-          on e: exception do
-            ;
-        end;
-      end
-      else
-      begin
-        case of
-        1: Code;
-        2:
-          begin
-            code;
-          end;
-        else
-          code;
-        end;
-      end;
-    end;
-    procedure DoSomething(param1: tparam;
-                          param2: tparam;
-    var
-      i: integer;
-    begin
-    end;
-    type
-      TMyClass = class
-      public
-        c: char;
-      end;
-      TEnums = (
-        enum1
-        );
-      TMyRecord = record
-        i: integer;
-      end;
+  Examples for beautification styles: see scanexamples/indentation.pas
 }
 unit CodeBeautifier;
 
@@ -144,6 +81,8 @@ type
     bbtResourceStringSection,
     bbtLabelSection,
     // statement blocks
+    bbtProcedure, // procedure, constructor, destructor
+    bbtFunction,
     bbtMainBegin,
     bbtCommentaryBegin, // begin without any need
     bbtRepeat,
@@ -226,6 +165,8 @@ const
     'bbtResourceStringSection',
     'bbtLabelSection',
     // statement blocks
+    'bbtProcedure',
+    'bbtFunction',
     'bbtMainBegin',
     'bbtCommentaryBegin',
     'bbtRepeat',
@@ -284,6 +225,9 @@ begin
       Capacity:=Capacity*2;
     ReAllocMem(Stack,SizeOf(TBlock)*Capacity);
   end;
+  {$IFDEF ShowCodeBeautifier}
+  DebugLn([GetIndentStr(Top*2),'TBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos]);
+  {$ENDIF}
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
   Block^.StartPos:=StartPos;
@@ -292,6 +236,9 @@ end;
 
 procedure TBlockStack.EndBlock;
 begin
+  {$IFDEF ShowCodeBeautifier}
+  DebugLn([GetIndentStr(Top*2),'TBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
+  {$ENDIF}
   dec(Top);
   if Top>=0 then
     TopType:=Stack[Top].Typ
@@ -325,6 +272,15 @@ var
 
   procedure StartIdentifierSection(Section: TFABBlockType);
   begin
+    if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+      if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
+      then begin
+        // procedure with begin..end
+      end else begin
+        // procedure without begin..end
+        Stack.EndBlock;
+      end;
+    end;
     if Stack.TopType in bbtAllIdentifierSections then
       Stack.EndBlock;
     if Stack.TopType in bbtAllCodeSections then
@@ -385,12 +341,21 @@ begin
           StartIdentifierSection(bbtConstSection);
         end;
       'F':
-        if CompareIdentifiers('FINALIZATION',r)=0 then begin
-          while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
-          do
-            Stack.EndBlock;
-          if Stack.TopType=bbtNone then
-            Stack.BeginBlock(bbtInitialization,p);
+        case UpChars[r[1]] of
+        'I':
+          if CompareIdentifiers('FINALIZATION',r)=0 then begin
+            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+            do
+              Stack.EndBlock;
+            if Stack.TopType=bbtNone then
+              Stack.BeginBlock(bbtInitialization,p);
+          end;
+        'O':
+          if CompareIdentifiers('FORWARD',r)=0 then begin
+            if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+              Stack.EndBlock;
+            end;
+          end;
         end;
       'I':
         case UpChars[Src[1]] of
@@ -422,6 +387,9 @@ begin
       'L':
         if CompareIdentifiers('LABEL',r)=0 then
           StartIdentifierSection(bbtLabelSection);
+      'P':
+        if CompareIdentifiers('PROCEDURE',r)=0 then
+          Stack.BeginBlock(bbtProcedure,p);
       'R':
         case UpChars[r[1]] of
         'E':
