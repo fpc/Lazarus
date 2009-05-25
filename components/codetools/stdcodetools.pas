@@ -5247,7 +5247,7 @@ var
     LastPos: Integer;
     LineStart: boolean; // Atom is first atom of a line in cursor block (not in sub block)
     Indent: Integer;
-    CursorBlockIndent: LongInt;
+    CursorBlockInnerIndent, CursorBlockOuterIndent: LongInt;
     CursorBlock: TBlock;
     BehindCursorBlock: Boolean; // atom behind cursor block
     InCursorBlock: Boolean;
@@ -5272,7 +5272,8 @@ var
     MoveCursorToNodeStart(StartNode);
     CursorBlockLvl:=-2;
     LastPos:=-1;
-    CursorBlockIndent:=0;
+    CursorBlockOuterIndent:=0;
+    CursorBlockInnerIndent:=0;
     Indent:=0;
     CursorBlock.StartPos:=0;
     BehindCursorBlock:=false;
@@ -5291,7 +5292,8 @@ var
           exit;
         end else begin
           CursorBlock:=Stack.Stack[CursorBlockLvl];
-          CursorBlockIndent:=GetLineIndent(Src,CursorBlock.StartPos);
+          CursorBlockOuterIndent:=GetLineIndent(Src,CursorBlock.StartPos);
+          CursorBlockInnerIndent:=GetLineIndent(Src,CurPos.StartPos);
         end;
         //DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Indent=',CursorBlockIndent]);
       end;
@@ -5300,8 +5302,30 @@ var
       if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
         break;
 
+      // check if line start vs outer indent
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
+      LineStart:=InCursorBlock and (LastPos>0)
+                 and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
+      if LineStart then
+        Indent:=GetLineIndent(Src,CurPos.StartPos);
+
+      if LineStart then begin
+        // atom is in same block as cursor (not sub block)
+        // and first atom of a line
+        // => check indent
+        if Indent<CursorBlockOuterIndent then begin
+          // for example:
+          //    begin
+          //    |
+          //  end;
+          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent]);
+          {$ENDIF}
+          NeedCompletion:=true;
+        end;
+      end;
 
       // check block starts/ends
       case CurPos.Flag of
@@ -5434,19 +5458,19 @@ var
       // check if line start
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
-      LineStart:=InCursorBlock and (LastPos>0)
-                 and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
-      if LineStart then
+      if LineStart and InCursorBlock then begin
         Indent:=GetLineIndent(Src,CurPos.StartPos);
-
-      if LineStart then begin
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
-        if Indent<CursorBlockIndent then begin
+        if Indent<CursorBlockInnerIndent then begin
+          // for example:
+          //    Code;
+          //    |
+          //  Code;
           //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
           {$IFDEF ShowCompleteBlock}
-          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
           {$ENDIF}
           NeedCompletion:=true;
         end;
@@ -5467,7 +5491,7 @@ var
 
     if NeedCompletion then begin
       InsertPos:=CleanCursorPos;
-      Indent:=CursorBlockIndent;
+      Indent:=CursorBlockInnerIndent;
       NewCode:='';
       FrontGap:=gtNewLine;
       AfterGap:=gtNewLine;
