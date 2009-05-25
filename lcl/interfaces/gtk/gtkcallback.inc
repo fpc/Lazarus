@@ -1570,14 +1570,14 @@ begin
 
     DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMousePress);
     if DesignOnlySignal then exit;
-    if not ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
+    if not ControlGetsMouseDownBefore(TControl(Data), Widget) then Exit;
 
-    CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
+    CaptureWidget := PGtkWidget(TWinControl(Data).Handle);
     if Event^.button = 1 then
     begin
-      EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
-      MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,CaptureWidget);
-      SetCaptureControl(TWinControl(Data),MappedXY);
+      EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
+      MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
+      SetCaptureControl(TWinControl(Data), MappedXY);
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end
     else

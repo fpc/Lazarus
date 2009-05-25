@@ -4669,9 +4669,8 @@ begin
 
     SB_HORZ:
     begin
-      if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
-      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState)
-      then
+      if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
+         (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
         exit;
 
       if TQtWidget(Handle) is TQtAbstractScrollArea then
@@ -4688,9 +4687,8 @@ begin
 
     SB_VERT:
     begin
-      if (csReading in TQtWidget(Handle).LCLObject.ComponentState)
-      or (csDestroying in TQtWidget(Handle).LCLObject.ComponentState)
-      then
+      if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
+        (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
         exit;
 
       if TQtWidget(Handle) is TQtAbstractScrollArea then
@@ -4880,6 +4878,7 @@ var
   SrcRect, DstRect, MaskRect: TRect;
   SrcWidthOrig, SrcHeightOrig: Integer;
   Image, TmpImage, QMask, TmpMask: QImageH;
+  TmpPixmap: QPixmapH;
   SrcMatrix: QMatrixH;
   dx, dy: integer;
 begin
@@ -4894,8 +4893,25 @@ begin
      ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
   {$endif}
 
+  Result := False;
+
   SrcMatrix := QPainter_Matrix(SrcQDC.Widget);
-  Image := SrcQDC.vImage.Handle;
+  if SrcQDC.vImage = nil then
+  begin
+    if SrcQDC.Parent <> nil then
+    begin
+      with SrcQDC.getDeviceSize do
+        TmpPixmap := QPixmap_create(x, y);
+      QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
+      Image := QImage_create();
+      QPixmap_toImage(TmpPixmap, Image);
+      QPixmap_destroy(TmpPixmap);
+    end
+    else
+      Exit;
+  end
+  else
+    Image := SrcQDC.vImage.Handle;
   SrcWidthOrig := QImage_width(Image);
   SrcHeightOrig := QImage_height(Image);
   QMatrix_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
@@ -4974,6 +4990,9 @@ begin
   end
   else
     DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+
+  if SrcQDC.vImage = nil then
+    QImage_destroy(Image);
 
   Result := True;
 end;
