@@ -158,6 +158,9 @@ const
     DbgOptionsLanguageExceptions = 300;
     DbgOptionsSignals            = 400;
 
+  GroupHelp         = 500;
+    HlpOptionsGeneral = 100;
+
 implementation
 var
   FIDEEditorGroups: TIDEOptionsGroupList;

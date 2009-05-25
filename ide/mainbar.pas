@@ -321,7 +321,7 @@ type
       //itmOnlineHelps: TIDEMenuSection;
         itmHelpOnlineHelp: TIDEMenuCommand;
         itmHelpReportingBug: TIDEMenuCommand;
-        itmHelpConfigureHelp: TIDEMenuCommand;
+        //itmHelpConfigureHelp: TIDEMenuCommand;
       //itmInfoHelps: TIDEMenuSection;
         itmHelpAboutLazarus: TIDEMenuCommand;
       //itmHelpTools: TIDEMenuSection;

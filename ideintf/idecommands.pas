@@ -274,7 +274,7 @@ const
   // help menu
   ecAboutLazarus            = ecFirstLazarus + 900;
   ecOnlineHelp              = ecFirstLazarus + 901;
-  ecConfigureHelp           = ecFirstLazarus + 902;
+  ecReserved3               = ecFirstLazarus + 902; // reserved
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
   ecReportingBug            = ecFirstLazarus + 905;

@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="39">
+    <Units Count="41">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -311,6 +311,21 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codeobserver_options"/>
       </Unit38>
+      <Unit39>
+        <Filename Value="frames/compiler_conditionals_options.pas"/>
+        <ComponentName Value="CompOptsConditionalsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Compiler_Conditionals_Options"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="frames/help_general_options.pas"/>
+        <ComponentName Value="HelpGeneralOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="help_general_options"/>
+      </Unit40>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

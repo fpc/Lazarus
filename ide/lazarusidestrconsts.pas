@@ -870,6 +870,7 @@ resourcestring
   dlgGroupCodetools = 'Codetools';
   dlgGroupCodeExplorer = 'Code Explorer';
   dlgGroupDebugger = 'Debugger';
+  dlgGroupHelp = 'Help';
 
   // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';

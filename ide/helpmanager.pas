@@ -130,7 +130,6 @@ type
   TIDEHelpManager = class(TBaseHelpManager)
     // help menu of the IDE menu bar
     procedure mnuHelpAboutLazarusClicked(Sender: TObject);
-    procedure mnuHelpConfigureHelpClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
     procedure mnuHelpReportBugClicked(Sender: TObject);
   private
@@ -652,12 +651,6 @@ begin
   ShowAboutForm;
 end;
 
-procedure TIDEHelpManager.mnuHelpConfigureHelpClicked(Sender: TObject);
-begin
-  if ShowHelpOptionsDialog=mrOk then
-    SaveHelpOptions;
-end;
-
 procedure TIDEHelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
 begin
   ShowLazarusHelpStartPage;
@@ -941,11 +934,11 @@ end;
 
 procedure TIDEHelpManager.ConnectMainBarEvents;
 begin
-  with MainIDEBar do begin
-  itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-  itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
-  itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
-  itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
+  with MainIDEBar do
+  begin
+    itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
+    itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
+    itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
   end;
 end;
 

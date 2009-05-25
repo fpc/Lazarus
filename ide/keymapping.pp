@@ -540,7 +540,6 @@ begin
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -883,7 +882,6 @@ begin
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssCtrl,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1414,7 +1412,6 @@ begin
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_HELP,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_HELP,[ssShift,ssCtrl],VK_HELP,[ssCtrl]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1822,7 +1819,6 @@ begin
     // help menu
     ecAboutLazarus            : Result:= lisAboutLazarus;
     ecOnlineHelp              : Result:= lisMenuOnlineHelp;
-    ecConfigureHelp           : Result:= lisMenuConfigureHelp;
     ecContextHelp             : Result:= lisMenuContextHelp;
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
     ecReportingBug            : Result:= lisMenuReportingBug;
@@ -2395,7 +2391,6 @@ begin
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];
   AddDefault(C, 'About Lazarus', lisAboutLazarus, ecAboutLazarus);
   AddDefault(C, 'Online Help', lisMenuOnlineHelp, ecOnlineHelp);
-  AddDefault(C, 'Configure Help', lisKMConfigureHelp, ecConfigureHelp);
   AddDefault(C, 'Context sensitive help', lisKMContextSensitiveHelp,
     ecContextHelp);
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp,

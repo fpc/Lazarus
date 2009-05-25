@@ -95,7 +95,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp,
+  IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, ComponentReg,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
@@ -131,6 +131,7 @@ uses
   debugger_language_exceptions_options, debugger_signals_options,
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options,
+  help_general_options,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -4121,6 +4122,8 @@ begin
       ReadSettings(CodeToolsOpts);
       // load settings from CodeExplorerOptions to IDEOptionsDialog
       ReadSettings(CodeExplorerOptions);
+      // load settings from HelpOptions to IDEOptionsDialog
+      ReadSettings(HelpOpts);
       // load other settings that does not belong to any group
       ReadSettings(nil);
     end;
@@ -4136,6 +4139,7 @@ begin
       IDEOptionsDialog.WriteSettings(EditorOpts);
       IDEOptionsDialog.WriteSettings(CodeToolsOpts);
       IDEOptionsDialog.WriteSettings(CodeExplorerOptions);
+      IDEOptionsDialog.WriteSettings(HelpOpts);
       IDEOptionsDialog.WriteSettings(nil);
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
@@ -4170,6 +4174,7 @@ begin
       CodeToolsOpts.AssignTo(CodeToolBoss);
       CodeToolsOpts.Save;
       CodeExplorerOptions.Save;
+      HelpBoss.SaveHelpOptions;
 
       // update environment
       UpdateDesigners;

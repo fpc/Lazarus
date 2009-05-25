@@ -777,8 +777,6 @@ begin
                    lisMenuOnlineHelp, 'menu_help');
     CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
                    lisMenuReportingBug, 'menu_reportingbug');
-    CreateMenuItem(ParentMI,itmHelpConfigureHelp,'itmHelpConfigureHelp',
-                   lisMenuConfigureHelp, 'menu_configure_help');
 
     CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
     ParentMI:=itmInfoHelps;
@@ -975,7 +973,6 @@ begin
     itmHelpAboutLazarus.Command:=GetCommand(ecAboutLazarus);
     itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
     itmHelpReportingBug.Command:=GetCommand(ecReportingBug);
-    itmHelpConfigureHelp.Command:=GetCommand(ecConfigureHelp);
   end;
 end;
 
