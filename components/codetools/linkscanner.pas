@@ -3184,13 +3184,19 @@ begin
         inc(SrcPos);
       end else begin
         inc(SrcPos);
-        if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
+        if (SrcPos>SrcLen) and not ReturnFromIncludeFile then begin
+          CommentStartPos:=0;
           break;
+        end;
       end;
     end;
   end;
-  LastCleanSrcPos:=CommentStartPos-1;
-  AddLink(CleanedLen+1,CommentStartPos,Code);
+  if CommentStartPos>0 then begin
+    LastCleanSrcPos:=CommentStartPos-1;
+    AddLink(CleanedLen+1,CommentStartPos,Code);
+  end else begin
+    LastCleanSrcPos:=SrcLen+1;
+  end;
   {$IFDEF ShowUpdateCleanedSrc}
   DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
     ' Src=',DbgStr(copy(Src,CommentStartPos-15,15))+'|'+DbgStr(copy(Src,CommentStartPos,15)));
