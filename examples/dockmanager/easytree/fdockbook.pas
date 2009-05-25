@@ -86,6 +86,10 @@ begin
     CurTab := Tabs.Buttons[i] as TTabButton;
     CurTab.Down := True;
     CurTab.Click;
+  end else if HostDockSite <> nil then begin
+  //undock before closing
+    ManualDock(nil);
+    Close;
   end else
     close;
 end;
