@@ -405,7 +405,8 @@ class procedure TGtk2WSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
-  // TODO
+  if gtk_is_check_menu_item(Pointer(AMenuItem.Handle)) <> HasIcon then
+    AMenuItem.RecreateHandle;
 end;
 
 { TGtk2WSMenu }
