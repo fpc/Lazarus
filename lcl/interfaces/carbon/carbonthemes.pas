@@ -429,7 +429,9 @@ begin
           GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
           GetCarbonThemeMetric(kThemeMetricDisclosureTriangleHeight)
         );
-      end;
+      end
+      else
+        Result := inherited GetDetailSize(Details);
     teButton:
       if Details.Part = BP_PUSHBUTTON then
       begin
@@ -437,7 +439,8 @@ begin
           DefaultPushButtonWidth,
           GetCarbonThemeMetric(kThemeMetricPushButtonHeight)
         );
-      end;
+      end else
+        Result := inherited GetDetailSize(Details);
   else
     Result := inherited GetDetailSize(Details);
   end;
