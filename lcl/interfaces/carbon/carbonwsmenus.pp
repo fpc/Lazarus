@@ -60,6 +60,7 @@ type
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     //class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
   end;
 
   { TCarbonWSMenu }
@@ -282,6 +283,13 @@ class function TCarbonWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
   Result := SetCheck(AMenuItem, AMenuItem.Checked);
+end;
+
+class procedure TCarbonWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
+  const HasIcon: Boolean; const AIcon: TBitmap);
+begin
+  if not CheckMenu(AMenuItem, 'UpdateMenuIcon') then Exit;
+  TCarbonMenu(AMenuItem.Handle).Update;
 end;
 
 { TCarbonWSPopupMenu }
