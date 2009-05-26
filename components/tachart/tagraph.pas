@@ -129,6 +129,7 @@ type
     FAllowZoom: Boolean;
     FAxisColor: TColor;
     FAxisVisible: Boolean;
+    FBackColor: TColor;
     FBottomAxis: TChartAxis;
     FDepth: TChartZPosition;
     FExpandPercentage: Integer;
@@ -167,6 +168,7 @@ type
 
     procedure SetAxisColor(const AValue: TColor);
     procedure SetAxisVisible(Value: Boolean);
+    procedure SetBackColor(const AValue: TColor);
     procedure SetBottomAxis(Value: TChartAxis);
     procedure SetDepth(AValue: TChartZPosition);
     procedure SetExpandPercentage(AValue: Integer);
@@ -250,6 +252,7 @@ type
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
     property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
+    property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
     property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
     property Depth: TChartZPosition read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
@@ -351,6 +354,7 @@ begin
   FSeries := TChartSeriesList.Create(Self);
 
   Color := clBtnFace;
+  FBackColor := clBtnFace;
   AxisColor := clBlack;
 
   FCurrentExtent := EmptyDoubleRect;
@@ -729,7 +733,7 @@ begin
       Pen.Assign(FFrame)
     else
       Pen.Style := psClear;
-    Brush.Color := Color;
+    Brush.Color := BackColor;
     with FClipRect do
       Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
@@ -1291,6 +1295,12 @@ begin
   Invalidate;
 end; 
 
+procedure TChart.SetBackColor(const AValue: TColor);
+begin
+  FBackColor:= AValue;
+  Invalidate;
+end;
+
 function TChart.GetChartHeight: Integer;
 begin
   Result := FClipRect.Right - FClipRect.Left;
@@ -1497,7 +1507,6 @@ const
 var
   i: Integer;
 begin
-  RegisterPropertyToSkip(TChart, 'BackColor', 'Obsolete, use Color instead', '');
   for i := 1 to High(NAMES) do begin
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Min', NOTE, '');
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Max', NOTE, '');

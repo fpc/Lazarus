@@ -13,18 +13,21 @@ object Form1: TForm1
     Height = 300
     Top = 0
     Width = 560
+    BackColor = clSilver
     BottomAxis.Grid.Style = psDot
     Depth = 50
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     LeftAxis.Grid.Style = psDot
     LeftAxis.Title.Angle = 90
+    Margins.Bottom = 0
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
       'TAChart'
     )
     Align = alClient
+    Color = clWhite
     ParentColor = False
     object Chart1BarSeries1: TBarSeries
       ZPosition = 10
@@ -45,6 +48,7 @@ object Form1: TForm1
     object Chart1LineSeries1: TLineSeries
       ZPosition = 50
       Depth = 10
+      LinePen.Color = clBlue
       SeriesColor = clBlue
       Source = RandomChartSource1
     end
