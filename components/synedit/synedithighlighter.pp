@@ -259,6 +259,7 @@ type
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
+    function GetEndOfLineAttribute: TSynHighlighterAttributes; virtual;
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract;
@@ -1077,6 +1078,11 @@ end;
 function TSynCustomHighlighter.GetIdentChars: TSynIdentChars;
 begin
   Result := [#33..#255];
+end;
+
+function TSynCustomHighlighter.GetEndOfLineAttribute: TSynHighlighterAttributes;
+begin
+  Result := nil;
 end;
 
 procedure TSynCustomHighlighter.SetWordBreakChars(AChars: TSynIdentChars);

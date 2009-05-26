@@ -2982,9 +2982,10 @@ var
     nX1, eolx: integer;
     NextPos : Integer;
     MarkupInfo, FoldedCodeInfo: TSynSelectedColor;
-    FGFold, BGfold, FFfold : TColor;
-    Sfold: TFontStyles;
+    FillFCol, FillBCol, FillFrame : TColor;
+    FillStyle: TFontStyles;
     tok: TRect;
+    Attr: TSynHighlighterAttributes;
   begin
     {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -3009,22 +3010,32 @@ var
     if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
       eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
       NextPos := Min(LastCol, TokenAccu.PhysicalEndPos+1);
+      if Assigned(fHighlighter) then
+        Attr := fHighlighter.GetEndOfLineAttribute
+      else
+        Attr := nil;
       Repeat
         MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
         NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
 
-        with fTextDrawer do
-          if MarkupInfo = nil
-          then begin
-            SetBackColor(colEditorBG);
-            //SetForeColor(TokenAccu.FG); // for underline
-            //SetStyle(TokenAccu.Style);
-          end
-          else begin
-            SetBackColor(MarkupInfo.Background);
-            //SetForeColor(TokenAccu.FG);
-            //SetStyle(TokenAccu.Style);
-          end;
+        if assigned(Attr) then begin
+          FillFCol := Attr.Foreground;
+          FillBCol := Attr.Background;
+          FillFrame := Attr.FrameColor;
+          FillStyle := Attr.Style;
+        end else begin
+          FillFCol := Font.Color;
+          FillBCol := colEditorBG;
+          FillFrame := clNone;
+          FillStyle := Font.Style;
+        end;
+
+        if assigned(MarkupInfo) then
+          MarkupInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle);
+
+        fTextDrawer.BackColor := FillBCol;
+        //fTextDrawer.ForeColor := FillFCol; // for underline
+        //fTextDrawer.Style := FillStyle;
 
         if NextPos < 1
         then nX1 := rcLine.Right
@@ -3057,29 +3068,29 @@ var
 
       if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
       begin
-        FGfold := Font.Color;
-        BGfold := colEditorBG;
-        FFfold := Font.Color;
-        Sfold  := [];
+        FillFCol := Font.Color;
+        FillBCol := colEditorBG;
+        FillFrame := Font.Color;
+        FillStyle  := [];
         MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos + 3);
         if MarkupInfo <> nil then
-          MarkupInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
+          MarkupInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle);
         FoldedCodeInfo := FoldedCodeColor;
         If assigned(FoldedCodeInfo) then
-          FoldedCodeInfo.ModifyColors(FGfold, BGfold, FFfold, Sfold);
-        if (BGfold = FGfold) then begin // or if diff(gb,fg) < x
-          if BGfold = colEditorBG
-          then FGFold := not(BGfold) and $00ffffff // or maybe Font.color ?
-          else FGFold := colEditorBG;
+          FoldedCodeInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle);
+        if (FillBCol = FillFCol) then begin // or if diff(gb,fg) < x
+          if FillBCol = colEditorBG
+          then FillFCol := not(FillBCol) and $00ffffff // or maybe Font.color ?
+          else FillFCol := colEditorBG;
         end;
 
         rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
         rcToken.Right := ScreenColumnToXValue(CurPhysPos+6);
 
-        FTextDrawer.FrameColor := FFfold;
-        FTextDrawer.ForeColor := FGfold;
-        FTextDrawer.BackColor := BGfold;
-        FTextDrawer.SetStyle(Sfold);
+        FTextDrawer.FrameColor := FillFrame;
+        FTextDrawer.ForeColor := FillFCol;
+        FTextDrawer.BackColor := FillBCol;
+        FTextDrawer.SetStyle(FillStyle);
 
         If assigned(FoldedCodeInfo) and (FoldedCodeInfo.FrameColor <> clNone) then
         begin
