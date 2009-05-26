@@ -108,8 +108,11 @@ const
       GetEventParameter(AEvent, kEventParamMouseWheelDelta, typeSInt32, nil,
         SizeOf(WheelDelta), nil, @WheelDelta),
       SName, SGetEvent, 'kEventParamMouseWheelDelta') then Exit;
-      
-    Result := WheelDelta;
+
+    // Carbon's WheelDelta is the number of lines to be scrolled
+    // LCL expects the delta to be 120 for each wheel step, which should scroll
+    // Mouse.WheelScrollLines lines (defaults to three)
+    Result := (120 * WheelDelta) div Mouse.WheelScrollLines;
     {$IFDEF VerboseMouse}
       DebugLn('GetMouseWheelDelta WheelDelta=', DbgS(WheelDelta), ' ', HexStr(WheelDelta, 8));
     {$ENDIF}
