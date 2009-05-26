@@ -112,9 +112,9 @@ begin
   if (AEditor <> nil) and (AEditor <> PrevEditor) then
   begin
     if PrevEditor <> nil then
-      PrevEditor.Parent := nil;
+      PrevEditor.Visible := False;
+      //PrevEditor.Parent := nil;
 
-    AEditor.Parent := Self;
     AEditor.Anchors := [akLeft, akTop, akRight, akBottom];
     AEditor.AnchorSideLeft.Side := asrBottom;
     AEditor.AnchorSideLeft.Control := CategoryTree;
@@ -124,6 +124,7 @@ begin
     AEditor.AnchorSideBottom.Side := asrTop;
     AEditor.AnchorSideBottom.Control := ButtonPanel;
     AEditor.BorderSpacing.Around := 6;
+    //AEditor.Parent := Self;
     AEditor.Visible := True;
 
     PrevEditor := AEditor;
@@ -281,6 +282,8 @@ begin
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
         Instance.Setup(Self);
         Instance.Tag := Rec^.Items[j]^.Index;
+        Instance.Visible := False;
+        Instance.Parent := Self;
 
         if Rec^.Items[j]^.Parent = NoParent then
           ItemParent := GroupNode

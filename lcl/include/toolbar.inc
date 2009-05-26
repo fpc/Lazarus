@@ -55,6 +55,8 @@ end;
   Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TToolbar.Create(TheOwner : TComponent);
+var
+  Details: TThemedElementDetails;
 begin
   inherited Create(TheOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
@@ -62,7 +64,8 @@ begin
   FFlat := True;
   FButtonWidth := 23;
   FButtonHeight := 22;
-  FDropDownWidth := 12;
+  Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
+  FDropDownWidth := ThemeServices.GetDetailSize(Details).cx;
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;

@@ -164,6 +164,8 @@ procedure TToolButton.Paint;
     if (tbfArrowPressed in FToolButtonFlags) and FMouseInControl and Enabled then
       ArrowState := ttbSplitButtonDropDownPressed;
     Details := ThemeServices.GetElementDetails(ArrowState);
+    if ((FToolBar <> nil) and not FToolBar.Flat) and (Details.State in [1, 4]) then
+      Details.State := 2;
     ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
   end;
   

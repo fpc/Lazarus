@@ -459,7 +459,7 @@ type
     function GetElementDetails(Detail: TThemedTreeview): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
     
-    function GetDetailSize(Details: TThemedElementDetails): Integer; virtual;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
     function GetOption(AOption: TThemeOption): Integer; virtual;
 
@@ -1766,24 +1766,27 @@ begin
   end;
 end;
 
-function TThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+function TThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   // default values here
   // -1 mean that we dont know size of detail
-  Result := -1;
+  Result := Size(-1, -1);
   case Details.Element of
     teButton:
       if Details.Part in [BP_RADIOBUTTON, BP_CHECKBOX] then
-        Result := 13;
+        Result := Size(13, 13);
     teRebar:
-      if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
-        Result := 30;
+      if Details.Part = RP_GRIPPER then
+        Result.cy := 30
+      else
+      if Details.Part = RP_GRIPPERVERT then
+        Result.cx := 30;
     teToolBar:
       if Details.Part = TP_SPLITBUTTONDROPDOWN then
-        Result := 10;
+        Result.cx := 12;
     teTreeView:
       if Details.Part = TVP_GLYPH then
-        Result := 9;
+        Result := Size(9, 9);
   end;
 end;
 
@@ -1851,17 +1854,17 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
     OldBrush, Brush: HBrush;
   begin
     ArrowRect := DropDownButtonRect;
-    ArrowRect.Left:=DropDownButtonRect.Left+2;
-    ArrowRect.Right:=Max(DropDownButtonRect.Right - 3, ArrowRect.Left);
-    ArrowRect.Top:=(DropDownButtonRect.Top+DropDownButtonRect.Bottom
-                    +ArrowRect.Left-ArrowRect.Right) div 2;
-    ArrowRect.Bottom:=ArrowRect.Top-ArrowRect.Left+ArrowRect.Right;
-    Points[1] := Point(ArrowRect.Left,ArrowRect.Top);
-    Points[2] := Point((ArrowRect.Left+ArrowRect.Right) div 2,ArrowRect.Bottom);
-    Points[3] := Point(ArrowRect.Right,ArrowRect.Top);
+    ArrowRect.Left := DropDownButtonRect.Left + 3;
+    ArrowRect.Right := Max(DropDownButtonRect.Right - 3, ArrowRect.Left);
+    ArrowRect.Top := (DropDownButtonRect.Top + DropDownButtonRect.Bottom +
+                      ArrowRect.Left - ArrowRect.Right) div 2;
+    ArrowRect.Bottom := ArrowRect.Top + Min(2, ArrowRect.Right - ArrowRect.Left);
+    Points[1] := Point(ArrowRect.Left, ArrowRect.Top);
+    Points[2] := Point((ArrowRect.Left + ArrowRect.Right) div 2, ArrowRect.Bottom);
+    Points[3] := Point(ArrowRect.Right, ArrowRect.Top);
     Brush := CreateSolidBrush(clBlack);
     OldBrush := SelectObject(DC, Brush);
-    Polygon(Dc, @Points[1], 3, false);
+    Polygon(Dc, @Points[1], 3, False);
     DeleteObject(SelectObject(DC, OldBrush));
   end;
   

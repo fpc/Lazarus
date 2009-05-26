@@ -58,7 +58,7 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
@@ -322,12 +322,12 @@ begin
   end;
 end;
 
-function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   case Details.Element of
     teRebar :
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
-        Result := -1;
+        Result := Size(-1, -1);
     else
       Result := inherited;
   end;

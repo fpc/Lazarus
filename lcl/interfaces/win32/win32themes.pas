@@ -34,7 +34,7 @@ type
   public
     destructor Destroy; override;
 
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
 
@@ -131,19 +131,19 @@ begin
   FreeThemeLibrary;
 end;
 
-function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   // GetThemeInt(Theme[Details.Element], Details.Part, Details.State, TMT_HEIGHT, Result);
   // does not work for some reason
   if ThemesEnabled then
   begin
     if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
-       Result := 12
+       Result.cx := 12
     else
-      Result:=inherited GetDetailSize(Details);
+      Result := inherited GetDetailSize(Details);
   end
   else
-    Result:=inherited GetDetailSize(Details);
+    Result := inherited GetDetailSize(Details);
 end;
 
 function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;

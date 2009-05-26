@@ -756,7 +756,7 @@ procedure TCustomSplitter.Paint;
     GripperRect: TRect;
     BgPart: TThemedRebar;
     BgDetails, GripperDetails: TThemedElementDetails;
-    GripperSize: Integer;
+    GripperSize: TSize;
   begin
     GripperDetails := ThemeServices.GetElementDetails(GripperDetailsPart[ResizeAnchor in [akLeft,akRight]]);
 
@@ -777,22 +777,22 @@ procedure TCustomSplitter.Paint;
 
     GripperRect := ARect;
     GripperSize := ThemeServices.GetDetailSize(GripperDetails);
-    if GripperSize <> -1 then
+    if (GripperSize.cx <> -1) or (GripperSize.cy <> -1) then
     begin
       if ResizeAnchor in [akLeft,akRight] then
       begin
-        if (GripperRect.Bottom - GripperRect.Top) > GripperSize then
+        if (GripperRect.Bottom - GripperRect.Top) > GripperSize.cy then
         begin
-          GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize) div 2;
-          GripperRect.Bottom := GripperRect.Top + GripperSize;
+          GripperRect.Top := (GripperRect.Top + GripperRect.Bottom - GripperSize.cy) div 2;
+          GripperRect.Bottom := GripperRect.Top + GripperSize.cy;
         end;
       end
       else
       begin
-        if (GripperRect.Right - GripperRect.Left) > GripperSize then
+        if (GripperRect.Right - GripperRect.Left) > GripperSize.cx then
         begin
-          GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize) div 2;
-          GripperRect.Right := GripperRect.Left + GripperSize;
+          GripperRect.Left := (GripperRect.Left + GripperRect.Right - GripperSize.cx) div 2;
+          GripperRect.Right := GripperRect.Left + GripperSize.cx;
         end;
       end;
     end;

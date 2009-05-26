@@ -3488,17 +3488,18 @@ const
     (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal, tbCheckBoxMixedNormal);
 var
   ChkBitmap: TBitmap;
-  XPos,YPos,CSize: Integer;
+  XPos,YPos: Integer;
   details: TThemedElementDetails;
   PaintRect: TRect;
+  CSize: TSize;
 begin
   if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
-    CSize:= ThemeServices.GetDetailSize(Details);
+    CSize := ThemeServices.GetDetailSize(Details);
     with PaintRect do begin
-      Left := Trunc((aRect.Left + aRect.Right - CSize)/2);
-      Top  := Trunc((aRect.Top + aRect.Bottom - CSize)/2);
-      PaintRect := Bounds(Left, Top, CSize, CSize);
+      Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+      Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
+      PaintRect := Bounds(Left, Top, CSize.cx, CSize.cy);
     end;
     ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
   end else begin

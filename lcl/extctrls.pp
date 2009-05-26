@@ -33,7 +33,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
+  SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
   LCLClasses, Menus, popupnotifier;
 

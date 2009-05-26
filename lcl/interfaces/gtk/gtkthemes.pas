@@ -82,9 +82,9 @@ type
     function ThemedControlsEnabled: Boolean; override;
 
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
-    function GetBaseDetailsSize(Details: TThemedElementDetails): Integer;
+    function GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
   public
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
@@ -604,17 +604,17 @@ begin
   // ?
 end;
 
-function TGtkThemeServices.GetBaseDetailsSize(Details: TThemedElementDetails): Integer;
+function TGtkThemeServices.GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
 begin
   Result := inherited GetDetailSize(Details);
 end;
 
-function TGtkThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+function TGtkThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   case Details.Element of
     teRebar :
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
-        Result := -1;
+        Result := Size(-1, -1);
     else
       Result := GetBaseDetailsSize(Details);
   end;

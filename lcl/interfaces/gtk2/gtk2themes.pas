@@ -21,7 +21,7 @@ type
   protected
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; override;
   public
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
   end;
@@ -112,13 +112,13 @@ begin
             else
               Result.Expander := GTK_EXPANDER_EXPANDED;
 
-            Result.ExpanderSize := GetDetailSize(Details);
+            Result.ExpanderSize := GetDetailSize(Details).cx;
           end;
         end;
     end;
 end;
 
-function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 var
   AValue: TGValue;
 begin
@@ -127,7 +127,7 @@ begin
     FillChar(AValue, SizeOf(AValue), 0);
     g_value_init(@AValue, G_TYPE_INT);
     gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
-    Result := AValue.data[0].v_int;
+    Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
   end
   else
     Result := GetBaseDetailsSize(Details);

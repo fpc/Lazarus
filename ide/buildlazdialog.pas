@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
-  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
+  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
   LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, IDEMsgIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
@@ -902,13 +902,14 @@ procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
 var
   ButtonState: TThemedButton;
   ButtonDetails: TThemedElementDetails;
-  x, RadioSize: Integer;
+  x: Integer;
   ButtonRect: TRect;
   CurItem: TBuildLazarusItem;
   CurStr: String;
   TxtH: Integer;
   CurRect: TRect;
   mm: TMakeMode;
+  RadioSize: TSize;
 begin
   if (Index<0) or (Index>=Options.Count) then exit;
   CurItem:=Options.Items[Index];
@@ -937,12 +938,12 @@ begin
       ItemsListBox.Canvas.FillRect(ButtonRect);
 
     RadioSize := ThemeServices.GetDetailSize(ButtonDetails);
-    if (RadioSize <> -1) then
+    if (RadioSize.cx <> -1) and (RadioSize.cy <> -1) then
     begin
-      ButtonRect.Left := (ButtonRect.Left + ButtonRect.Right - RadioSize) div 2;
-      ButtonRect.Right := ButtonRect.Left + RadioSize;
-      ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - RadioSize) div 2;
-      ButtonRect.Bottom := ButtonRect.Top + RadioSize;
+      ButtonRect.Left := (ButtonRect.Left + ButtonRect.Right - RadioSize.cx) div 2;
+      ButtonRect.Right := ButtonRect.Left + RadioSize.cx;
+      ButtonRect.Top := (ButtonRect.Top + ButtonRect.Bottom - RadioSize.cy) div 2;
+      ButtonRect.Bottom := ButtonRect.Top + RadioSize.cy;
     end;
 
     ThemeServices.DrawElement(ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]), ButtonDetails, ButtonRect);

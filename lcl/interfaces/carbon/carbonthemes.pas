@@ -46,7 +46,7 @@ type
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
-    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetOption(AOption: TThemeOption): Integer; override;
   end;
 
@@ -417,12 +417,11 @@ begin
   Result := True;
 end;
 
-function TCarbonThemeServices.GetDetailSize(Details: TThemedElementDetails
-  ): Integer;
+function TCarbonThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
   begin
-    Result := Max(GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
+    Result := Size(GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
       GetCarbonThemeMetric(kThemeMetricDisclosureTriangleHeight));
   end
   else
