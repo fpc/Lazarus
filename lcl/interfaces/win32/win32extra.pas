@@ -37,10 +37,7 @@ uses
 { Win32 API constants not included in windows.pp }
 const
   // progress bar
-  PBM_GETRANGE    = WM_USER + 7;
-  PBM_SETMARQUEE  = WM_USER + 10;
-  PBS_SMOOTH   = $01;
-  PBS_VERTICAL = $04;
+  PBM_SETMARQUEE = WM_USER + 10;
   PBS_MARQUEE  = $08;
 
   // missed messages
