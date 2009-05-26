@@ -51,7 +51,6 @@ type
     procedure MenuNeeded;
     function GetIndex: Integer;
   protected
-    procedure Update;
     procedure RegisterEvents;
     procedure Opening;
     procedure Closed;
@@ -74,6 +73,8 @@ type
     procedure SetCheck(AChecked: Boolean);
     procedure SetShortCut(AShortCut: TShortCut);
     procedure SetStyle;
+
+    procedure Update;
   end;
   
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
@@ -206,7 +207,10 @@ begin
       Self, 'Update', 'SetMenuItemHierarchicalMenu');
 
   SetCheck(LCLMenuItem.Checked);
-  SetBitmap(LCLMenuItem.Bitmap);
+  if (LCLMenuItem.HasIcon) then
+    SetBitmap(LCLMenuItem.Bitmap)
+  else
+    SetBitmap(nil);
   SetStyle;
 
   SetVisible(LCLMenuItem.Visible);
@@ -582,7 +586,7 @@ begin
   AHandle := nil;
   CGImage := nil;
   
-  if (LCLMenuItem.HasIcon) and (ABitmap <> nil) and (ABitmap.Width > 0) and (ABitmap.Height > 0) then
+  if (ABitmap <> nil) and (ABitmap.Width > 0) and (ABitmap.Height > 0) then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
 
