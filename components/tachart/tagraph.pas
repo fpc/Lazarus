@@ -140,7 +140,6 @@ type
     FLeftAxis: TChartAxis;
     FLegend: TChartLegend;
     FMargins: TChartMargins;
-    FMirrorX: Boolean;                // From right to left ?
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
@@ -179,7 +178,6 @@ type
     procedure SetLeftAxis(Value: TChartAxis);
     procedure SetLegend(Value: TChartLegend);
     procedure SetMargins(AValue: TChartMargins);
-    procedure SetMirrorX(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetTitle(Value: TChartTitle);
 
@@ -219,6 +217,7 @@ type
 
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
+    procedure ClearSeries;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
@@ -264,7 +263,6 @@ type
     property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
-    property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
     property ReticuleMode: TReticuleMode
       read FReticuleMode write SetReticuleMode default rmNone;
     property Series: TChartSeriesList read FSeries;
@@ -359,7 +357,6 @@ begin
 
   FCurrentExtent := EmptyDoubleRect;
 
-  MirrorX := false;
   FIsZoomed := false;
 
   FGraphBrush := TBrush.Create;
@@ -512,6 +509,12 @@ begin
   ACanvas.Rectangle(ARect);
 end;
 
+procedure TChart.ClearSeries;
+begin
+  FSeries.FList.Clear;
+  Invalidate;
+end;
+
 procedure TChart.DrawTitleFoot(ACanvas: TCanvas);
 
   function AlignedTextPos(AAlign: TAlignment; const AText: String): TSize;
@@ -586,14 +589,8 @@ var
     s := FLeftAxis.Title.Caption;
     if FLeftAxis.Visible and (s <> '') then begin
       w := ACanvas.TextHeight(FLeftAxis.Title.Caption);
-      if FMirrorX then begin
-        x := FClipRect.Right - w;
-        FClipRect.Right := x - 4;
-      end
-      else begin
-        x := FClipRect.Left;
-        leftOffset := w + 4;
-      end;
+      x := FClipRect.Left;
+      leftOffset := w + 4;
       ACanvas.Font.Orientation := FLeftAxis.Title.Angle * DEGREES_TO_ORIENT;
       ACanvas.TextOut(x, c.Y - w div 2, s);
     end;
@@ -658,10 +655,7 @@ var
     markText := MarkToText(AMark);
     w := ACanvas.TextWidth(markText);
     h := ACanvas.TextHeight(markText) div 2;
-    if FMirrorX then
-      x := FClipRect.Right + 5
-    else
-      x := FClipRect.Left - 5 - w;
+    x := FClipRect.Left - 5 - w;
     ACanvas.TextOut(x, y - h, markText);
   end;
 
@@ -713,10 +707,7 @@ begin
     // requiring another call to CalculateTransformationCoeffs...
     // So punt for now and just reserve space for extra digit unconditionally.
     leftAxisWidth += ACanvas.TextWidth('0');
-    if FMirrorX then
-      FClipRect.Right -= leftAxisWidth
-    else
-      leftOffset += leftAxisWidth;
+    leftOffset += leftAxisWidth;
   end;
 
   if FBottomAxis.Visible then
@@ -838,13 +829,6 @@ procedure TChart.DrawLineVert(ACanvas: TCanvas; AX: Integer);
 begin
   if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
     ACanvas.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
-end;
-
-procedure TChart.SetMirrorX(AValue: Boolean);
-begin
-  if AValue = FMirrorX then exit;
-  FMirrorX := AValue;
-  Invalidate;
 end;
 
 procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
@@ -1501,12 +1485,14 @@ end;
 
 procedure SkipObsoleteChartProperties;
 const
+  MIRRORX_NOTE = 'Obsolete, use BottomAxis.Invert instead';
   NOTE = 'Obsolete, use Extent instead';
   NAMES: array [1..4] of String = (
     'XGraph', 'YGraph', 'AutoUpdateX', 'AutoUpdateY');
 var
   i: Integer;
 begin
+  RegisterPropertyToSkip(TChart, 'MirrorX', MIRRORX_NOTE, '');
   for i := 1 to High(NAMES) do begin
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Min', NOTE, '');
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Max', NOTE, '');
