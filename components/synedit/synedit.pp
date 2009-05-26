@@ -2044,7 +2044,7 @@ procedure TCustomSynEdit.HideCaret;
 begin
   //DebugLn('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
   if sfCaretVisible in fStateFlags then begin
-    if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
+    if LCLIntf.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
   end;
 end;
@@ -3969,10 +3969,8 @@ begin
   //DebugLn(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in fOptions);
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
   begin
-    {$IFDEF SYN_LAZARUS}
     SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
-    {$ENDIF}
-    if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
+    if LCLIntf.ShowCaret(Handle) then
     begin
       //DebugLn('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible);
@@ -4033,25 +4031,18 @@ var
 {$ENDIF}
 begin
   if (PaintLock <> 0)
-  {$IFDEF SYN_LAZARUS}
-  or ((not Focused) and (not (eoPersistentCaret in fOptions)))
-  {$ELSE}
-  or not Focused
-  {$ENDIF}
-  then begin
+  or ((not Focused) and (not (eoPersistentCaret in fOptions))) then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
     Exclude(fStateFlags, sfCaretChanged);
-    {$IFDEF SYN_LAZARUS}
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
-    {$ENDIF}
     CX := CaretXPix;
     CY := CaretYPix;
     if (CX >= fGutterWidth)
-      and (CX < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+      and (CX < ClientWidth-ScrollBarWidth)
       and (CY >= 0)
-      and (CY <{=} ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{-fTextHeight}{$ENDIF})
+      and (CY < ClientHeight-ScrollBarWidth)
     then begin
       SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
       //DebugLn(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
@@ -4211,16 +4202,11 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
   {$ENDIF}
-  {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
   if not (eoPersistentCaret in fOptions) then begin
     HideCaret;
     LCLIntf.DestroyCaret(Handle);
   end;
-  {$ELSE}
-  HideCaret;
-  Windows.DestroyCaret;
-  {$ENDIF}
   if FHideSelection and SelAvail then
     Invalidate;
 end;
