@@ -38,15 +38,12 @@ uses
 const
   // progress bar
   PBM_SETMARQUEE = WM_USER + 10;
-  PBS_MARQUEE  = $08;
+  PBS_MARQUEE    = $08;
 
   // missed messages
-  WM_NCMOUSELEAVE = $2A2;
+  WM_NCMOUSELEAVE = $2A2; // declared in fpc 2.3.1
 
-  // missed class styles
-  CS_DROPSHADOW = $00020000;
-
-// AlphaBlend is only defined for win98&2k and up 
+// AlphaBlend is only defined for win98&2k and up
 // load dynamic and use ownfunction if not defined
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
@@ -95,42 +92,7 @@ uses
 const
   xPRIMARY_MONITOR = $12340042;
 
-
 {$PACKRECORDS NORMAL}
-
-{$ifdef VER2_0}
-function GET_X_LPARAM(lp : Windows.LParam) : longint;
-begin
-  result:=smallint(LOWORD(lp));
-end;
-
-
-function GET_Y_LPARAM(lp : Windows.LParam) : longint;
-begin
-  result:=smallint(HIWORD(lp));
-end;
-
-function GetFileVersion(FileName: string): dword;
-var
-  buf: pointer;
-  lenBuf: dword;
-  fixedInfo: ^VS_FIXEDFILEINFO;
-begin
-  Result := $FFFFFFFF;
-  lenBuf := GetFileVersionInfoSize(PChar(FileName), lenBuf);
-  if lenBuf > 0 then
-  begin
-    GetMem(buf, lenBuf);
-    if GetFileVersionInfo(PChar(FileName), 0, lenBuf, buf) then
-    begin
-      VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
-      Result := fixedInfo^.dwFileVersionMS;
-    end;
-    FreeMem(buf);
-  end;
-end;
-
-{$endif VER2_0}
 
 function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
 var
