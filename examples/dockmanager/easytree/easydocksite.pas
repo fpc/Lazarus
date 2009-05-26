@@ -471,7 +471,7 @@ begin
     {$ENDIF}
     end; //else use existing control
     NoteBookAdd(NoteBook, Control);
-    //FDockSite.Invalidate;
+    FDockSite.Invalidate; //update notebook caption
     exit;
   end;
 

@@ -21,7 +21,6 @@ object EasyDockBook: TEasyDockBook
     Caption = 'Tabs'
     ChildSizing.HorizontalSpacing = 2
     ChildSizing.EnlargeHorizontal = crsHomogenousSpaceResize
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
     Color = clBtnFace
     EdgeBorders = [ebTop, ebBottom]
     Flat = False
