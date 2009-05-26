@@ -3023,6 +3023,8 @@ var
           FillBCol := Attr.Background;
           FillFrame := Attr.FrameColor;
           FillStyle := Attr.Style;
+          if FillFCol = clNone then FillFCol := Font.Color;
+          if FillBCol = clNone then FillBCol := colEditorBG;
         end else begin
           FillFCol := Font.Color;
           FillBCol := colEditorBG;
