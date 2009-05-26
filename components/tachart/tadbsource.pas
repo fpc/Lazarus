@@ -29,12 +29,14 @@ type
 
   TDbChartSource = class(TCustomChartSource)
   private
+    FBookmark: TBookmark;
+    FCurItem: TChartDataItem;
     FDataLink: TDataLink;
     FFieldColor: String;
     FFieldText: String;
     FFieldX: String;
     FFieldY: String;
-    FCurItem: TChartDataItem;
+
     function GetDataSource: TDataSource;
     procedure SetDataSource(AValue: TDataSource);
     procedure SetFieldColor(const AValue: String);
@@ -47,6 +49,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    procedure AfterDraw; override;
+    procedure BeforeDraw; override;
     procedure Reset;
   published
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -86,19 +91,21 @@ end;
 procedure TDbChartSourceDataLink.DataSetChanged;
 begin
   inherited DataSetChanged;
-  //FChartSrc.Reset;
+  if (FChartSrc.FBookmark = nil) and (DataSet.State = dsBrowse) then
+    FChartSrc.Reset;
 end;
 
 procedure TDbChartSourceDataLink.DataSetScrolled(Distance: Integer);
 begin
-  inherited DataSetChanged;
+  Unused(Distance);
   // No need to react on scrolling
 end;
 
 procedure TDbChartSourceDataLink.UpdateData;
 begin
   inherited UpdateData;
-  FChartSrc.Reset;
+  if FChartSrc.FBookmark = nil then
+    FChartSrc.Reset;
 end;
 
 
@@ -108,6 +115,23 @@ begin
 end;
 
 { TDbChartSource }
+
+procedure TDbChartSource.AfterDraw;
+begin
+  if not FDataLink.Active or (FBookmark = nil) then exit;
+  try
+    FDataLink.DataSet.GotoBookmark(FBookmark);
+    FDataLink.DataSet.FreeBookmark(FBookmark);
+  finally
+    FBookmark := nil;
+  end;
+end;
+
+procedure TDbChartSource.BeforeDraw;
+begin
+  if FDataLink.Active then
+    FBookmark := FDataLink.DataSet.GetBookmark;
+end;
 
 constructor TDbChartSource.Create(AOwner: TComponent);
 begin

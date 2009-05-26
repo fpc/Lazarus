@@ -51,6 +51,8 @@ type
     procedure SetSource(AValue: TCustomChartSource);
   protected
     procedure AfterAdd; override;
+    procedure AfterDraw; override;
+    procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
@@ -395,6 +397,16 @@ end;
 procedure TChartSeries.AfterAdd;
 begin
   FMarks.SetOwner(FChart);
+end;
+
+procedure TChartSeries.AfterDraw;
+begin
+  Source.AfterDraw;
+end;
+
+procedure TChartSeries.BeforeDraw;
+begin
+  Source.BeforeDraw;
 end;
 
 procedure TChartSeries.Clear;

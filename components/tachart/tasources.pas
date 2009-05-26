@@ -65,6 +65,8 @@ type
   public
     destructor Destroy; override;
   public
+    procedure AfterDraw; virtual;
+    procedure BeforeDraw; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: Boolean; inline;
@@ -228,6 +230,16 @@ begin
 end;
 
 { TCustomChartSource }
+
+procedure TCustomChartSource.AfterDraw;
+begin
+  // empty
+end;
+
+procedure TCustomChartSource.BeforeDraw;
+begin
+  // empty
+end;
 
 procedure TCustomChartSource.BeginUpdate;
 begin

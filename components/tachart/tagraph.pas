@@ -58,6 +58,8 @@ type
     FZPosition: TChartZPosition;
 
     procedure AfterAdd; virtual;
+    procedure AfterDraw; virtual;
+    procedure BeforeDraw; virtual;
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
     function GetLegendCount: Integer; virtual; abstract;
     function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
@@ -417,11 +419,16 @@ begin
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
+var
+  i: Integer;
 begin
   Clean(ACanvas, ARect);
 
   FClipRect := ARect;
   InflateRect(FClipRect, -2, -2);
+
+  for i := 0 to SeriesCount - 1 do
+    Series[i].BeforeDraw;
 
   UpdateExtent;
   DrawTitleFoot(ACanvas);
@@ -429,6 +436,9 @@ begin
   DrawAxis(ACanvas, ARect);
   DisplaySeries(ACanvas);
   DrawReticule(ACanvas);
+
+  for i := 0 to SeriesCount - 1 do
+    Series[i].AfterDraw;
 end;
 
 procedure TChart.PrepareXorPen;
@@ -1085,7 +1095,6 @@ begin
   finally
     seriesInZOrder.Free;
   end;
-
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
@@ -1372,6 +1381,16 @@ end;
 procedure TBasicChartSeries.AfterAdd;
 begin
   // nothing
+end;
+
+procedure TBasicChartSeries.AfterDraw;
+begin
+  // empty
+end;
+
+procedure TBasicChartSeries.BeforeDraw;
+begin
+  // empty
 end;
 
 destructor TBasicChartSeries.Destroy;
