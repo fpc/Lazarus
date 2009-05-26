@@ -2744,7 +2744,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteWindow, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -2774,7 +2774,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteWindowText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -3749,7 +3749,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteButton, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteButton, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -3764,7 +3764,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteButtonText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteButtonText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -4778,7 +4778,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteWindowText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5348,7 +5348,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5361,7 +5361,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5516,7 +5516,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5529,7 +5529,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -6168,7 +6168,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -6181,7 +6181,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -6723,7 +6723,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -6736,7 +6736,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -8851,7 +8851,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(viewport.Widget));
   try
-    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteWindow, Value);
     QWidget_setPalette(viewport.Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -8894,7 +8894,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(viewport.Widget));
   try
-    QPalette_setColor(Palette, QPaletteWindowText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
     QWidget_setPalette(viewport.Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -9506,7 +9506,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -9519,7 +9519,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
