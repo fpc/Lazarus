@@ -208,6 +208,9 @@ begin
     if AddAttr <> ahaNone then
       NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[AddAttr]);
   end;
+  if (NewIndex < 0) and (XY.Y = ColorPreview.CaretY) and
+     (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1) then
+    NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[ahaLineHighlight]);
   // Pascal Highlights
   if NewIndex < 0 then
   begin
