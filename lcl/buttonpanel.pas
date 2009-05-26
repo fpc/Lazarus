@@ -19,8 +19,8 @@ unit ButtonPanel;
 interface
 
 uses
-  Buttons, Classes, Controls, ExtCtrls, Forms, Graphics, GraphType, SysUtils,
-  LCLStrConsts;
+  Types, SysUtils, Classes, Controls, ExtCtrls, Buttons, Forms, GraphType,
+  Graphics, LCLStrConsts, Themes;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -151,8 +151,6 @@ const
   DEFAULT_BUTTONPANEL_BORDERSPACING: TControlBorderSpacingDefault = (
     Left:0; Top:0; Right:0; Bottom:0; Around:6;
   );
-  DefMinWidth = 75;
-  DefMinHeight = 25;
 
 procedure Register;
 begin
@@ -254,11 +252,17 @@ procedure TCustomButtonPanel.UpdateSizes;
 var
   btn: TPanelButton;
   BtnWidth, BtnHeight: Integer;
+  Details: TThemedElementDetails;
+  DefButtonSize: TSize;
 begin
   if csDestroying in ComponentState then
     Exit;
-  FButtonsHeight := DefMinHeight;
-  FButtonsWidth := DefMinWidth;
+
+  Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+  DefButtonSize := ThemeServices.GetDetailSize(Details);
+  FButtonsWidth := DefButtonSize.cx;
+  FButtonsHeight := DefButtonSize.cy;
+
   for btn := Low(btn) to High(btn) do
   begin
     if FButtons[btn] = nil then Continue;
@@ -446,8 +450,14 @@ const
     end;
   end;
 
+var
+  Details: TThemedElementDetails;
+  DefButtonSize: TSize;
 begin
   if FButtons[AButton] <> nil then Exit;
+
+  Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+  DefButtonSize := ThemeServices.GetDetailSize(Details);
 
   FButtons[AButton] := TPanelBitBtn.Create(Self);
   with FButtons[AButton] do
@@ -455,8 +465,8 @@ begin
     Name     := NAMES[AButton];
     Parent   := Self;
     Kind     := KINDS[AButton];
-    Constraints.MinWidth := DefMinWidth;
-    Constraints.MinHeight := DefMinHeight;
+    Constraints.MinWidth := DefButtonSize.cx;
+    Constraints.MinHeight := DefButtonSize.cy;
     Caption  := GetCaption(AButton);
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;

@@ -1774,7 +1774,10 @@ begin
   case Details.Element of
     teButton:
       if Details.Part in [BP_RADIOBUTTON, BP_CHECKBOX] then
-        Result := Size(13, 13);
+        Result := Size(13, 13)
+      else
+      if Details.Part = BP_PUSHBUTTON then
+        Result := Size(75, 25);
     teRebar:
       if Details.Part = RP_GRIPPER then
         Result.cy := 30
