@@ -27,7 +27,9 @@ object Form1: TForm1
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
       ZPosition = 1
-      SeriesColor = clBlack
+      LinePen.Color = clTeal
+      LinePen.Width = 3
+      SeriesColor = clTeal
       Source = DbChartSource1
     end
     object Chart1BarSeries1: TBarSeries

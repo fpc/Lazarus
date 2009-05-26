@@ -5,7 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, db, DBGrids, memds, StdCtrls, SysUtils, FileUtil,
+  Classes, ComCtrls, db, DBGrids, memds, SysUtils, FileUtil,
   LResources, Forms, Controls, Graphics, Dialogs, TADbSource, TAGraph, TASeries;
 
 type

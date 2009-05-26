@@ -200,15 +200,17 @@ type
 
   { TLineSerie }
 
+  { TLineSeries }
+
   TLineSeries = class(TBasicLineSeries)
   private
+    FLinePen: TPen;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
-    FSeriesColor: TColor;
     FShowLines: Boolean;
     FShowPoints: Boolean;
-    FStyle: TPenStyle;
 
+    procedure SetLinePen(AValue: TPen);
     procedure SetPointer(Value: TSeriesPointer);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
@@ -244,6 +246,7 @@ type
     procedure EndUpdate;
   published
     property Depth;
+    property LinePen: TPen read FLinePen write SetLinePen;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
@@ -599,8 +602,9 @@ constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FLinePen := TPen.Create;
+  FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
-  FStyle := psSolid;
   FShowLines := true;
 end;
 
@@ -618,7 +622,7 @@ end;
 
 procedure TLineSeries.SetSeriesColor(const AValue: TColor);
 begin
-  FSeriesColor := AValue;
+  FLinePen.Color := AValue;
 end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
@@ -680,16 +684,12 @@ var
   i: Integer;
 begin
   if Count = 0 then exit;
-
-  ACanvas.Pen.Mode := pmCopy;
-  ACanvas.Pen.Width := 1;
-
   for i := 0 to Count - 2 do begin
     GetCoords(i, g1, i1);
     GetCoords(i + 1, g2, i2);
 
     if PrepareLine then begin
-      ACanvas.Pen.Style := FStyle;
+      ACanvas.Pen.Assign(LinePen);
       if Depth = 0 then begin
         ACanvas.Pen.Color := GetColor(i);
         ACanvas.Line(i1, i2);
@@ -804,12 +804,17 @@ end;
 
 function TLineSeries.GetSeriesColor: TColor;
 begin
-  Result := FSeriesColor;
+  Result := FLinePen.Color;
 end;
 
 procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
   Source[AIndex]^.Color := AColor;
+end;
+
+procedure TLineSeries.SetLinePen(AValue: TPen);
+begin
+  FLinePen.Assign(AValue);
 end;
 
 function TLineSeries.GetColor(AIndex: Integer): TColor;
@@ -897,7 +902,6 @@ procedure TLine.SetSeriesColor(const AValue: TColor);
 begin
   if FPen.Color = AValue then exit;
   FPen.Color := AValue;
-  UpdateParentChart;
 end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
