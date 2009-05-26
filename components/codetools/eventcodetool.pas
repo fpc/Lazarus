@@ -1049,13 +1049,15 @@ begin
   BuildSubTreeForClass(ClassNode);
   VisibilityNode:=ClassNode.FirstChild;
   while (VisibilityNode<>nil) do begin
-    Result:=VisibilityNode.FirstChild;
-    while Result<>nil do begin
-      if CompareSrcIdentifiers(Result.FirstChild.StartPos,Identifier) then
-      begin
-        exit;
+    if VisibilityNode.Desc in AllClassBaseSections then begin
+      Result:=VisibilityNode.FirstChild;
+      while Result<>nil do begin
+        if CompareSrcIdentifiers(Result.FirstChild.StartPos,Identifier) then
+        begin
+          exit;
+        end;
+        Result:=Result.NextBrother;
       end;
-      Result:=Result.NextBrother;
     end;
     VisibilityNode:=VisibilityNode.NextBrother;
   end;
