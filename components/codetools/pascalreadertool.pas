@@ -80,7 +80,7 @@ type
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
     function PropertyHasSpecifier(PropNode: TCodeTreeNode;
-                                  const s: string): boolean;
+                 const s: string; ExceptionOnNotFound: boolean = true): boolean;
 
     // procs
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -1773,7 +1773,7 @@ begin
 end;
 
 function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
-  const s: string): boolean;
+  const s: string; ExceptionOnNotFound: boolean): boolean;
 begin
 
   // ToDo: ppu, ppw, dcu
@@ -1784,22 +1784,26 @@ begin
     exit;
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
-  if not UpAtomIs('PROPERTY') then RaiseStringExpectedButAtomFound('property');
+  if not UpAtomIs('PROPERTY') then begin
+    if ExceptionOnNotFound then
+      RaiseStringExpectedButAtomFound('property');
+    exit;
+  end;
   ReadNextAtom;
-  AtomIsIdentifier(true);
+  if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
-    ReadTilBracketClose(true);
+    if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
     ReadNextAtom;
   end;
   if CurPos.Flag=cafColon then begin
     // read type
     ReadNextAtom;
-    AtomIsIdentifier(true);
+    if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
     ReadNextAtom;
     if CurPos.Flag=cafPoint then begin
       ReadNextAtom;
-      AtomIsIdentifier(true);
+      if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
       ReadNextAtom;
     end;
   end;
@@ -1809,7 +1813,7 @@ begin
     then begin
       if AtomIs(s) then exit(true);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
-      ReadTilBracketClose(true);
+      if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
       ReadNextAtom;
     end;
     ReadNextAtom;
