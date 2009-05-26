@@ -670,7 +670,7 @@ type
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
     procedure SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
-    function DoShowSaveProjectAsDialog: TModalResult;
+    function DoShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
 
     // methods for open project, create project from source
     function DoCompleteLoadingProjectInfo: TModalResult;
@@ -6602,58 +6602,71 @@ begin
   end;
 end;
 
-function TMainIDE.DoShowSaveProjectAsDialog: TModalResult;
+function TMainIDE.DoShowSaveProjectAsDialog(UseMainSourceFile: boolean
+  ): TModalResult;
 var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
-  NewFilename, NewProgramFilename, NewProgramName, AText, ACaption,
+  NewLPIFilename, NewProgramFilename, NewProgramName, AText, ACaption,
   Ext: string;
   NewBuf: TCodeBuffer;
-  OldProjectPath: string;
+  OldProjectDir: string;
   TitleWasDefault: Boolean;
   OldSource: String;
+  AFilename: String;
 begin
-  OldProjectPath:=Project1.ProjectDirectory;
+  OldProjectDir:=Project1.ProjectDirectory;
+
+  if Project1.MainUnitInfo=nil then
+    UseMainSourceFile:=false;
 
   SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
-
+    AFilename:='';
     // build a nice project info filename suggestion
-    NewFilename:='';
     if (Project1.MainUnitID>=0) then
-      NewFileName:=Project1.MainUnitInfo.UnitName;
-    if NewFilename='' then
-      NewFilename:=ExtractFileName(Project1.ProjectInfoFile);
-    if NewFilename='' then
-      NewFilename:=ExtractFileName(Project1.MainFilename);
-    if NewFilename='' then
-      NewFilename:=Trim(Project1.Title);
-    if NewFilename='' then
-      NewFilename:='project1';
-    Ext:=lowercase(ExtractFileExt(NewFilename));
-    if (Ext='') or FilenameIsPascalSource(NewFilename) then
-      NewFilename:=ChangeFileExt(NewFilename,'.lpi');
-    SaveDialog.FileName:=NewFilename;
+      AFilename:=Project1.MainUnitInfo.UnitName;
+    if AFilename='' then
+      AFilename:=ExtractFileName(Project1.ProjectInfoFile);
+    if AFilename='' then
+      AFilename:=ExtractFileName(Project1.MainFilename);
+    if AFilename='' then
+      AFilename:=Trim(Project1.Title);
+    if AFilename='' then
+      AFilename:='project1';
+    Ext:=lowercase(ExtractFileExt(AFilename));
+    if UseMainSourceFile then begin
+      if (Ext='') or (not FilenameIsPascalSource(AFilename)) then
+        AFilename:=ChangeFileExt(AFilename,'.pas');
+      SaveDialog.Title:='Save project '+Project1.Title+' (*.'+ExtractFileExt(AFilename)+')';
+    end else begin
+      if (Ext='') or FilenameIsPascalSource(AFilename) then
+        AFilename:=ChangeFileExt(AFilename,'.lpi');
+      SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
+    end;
+    SaveDialog.FileName:=AFilename;
+    if not Project1.IsVirtual then
+      SaveDialog.InitialDir:=Project1.ProjectDirectory;
 
-    NewProgramName:='';     // the pascal program identifier
-    NewProgramFilename:=''; // the program source filename
     repeat
       Result:=mrCancel;
+      NewLPIFilename:='';     // the project info file name
+      NewProgramName:='';     // the pascal program identifier
+      NewProgramFilename:=''; // the program source filename
 
       if not SaveDialog.Execute then begin
         // user cancels
         Result:=mrCancel;
         exit;
       end;
-      NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
-      if not FilenameIsAbsolute(NewFilename) then
+      AFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+      if not FilenameIsAbsolute(AFilename) then
         RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
-      NewProgramName:=ExtractFileNameOnly(NewFilename);
 
-      // check programname
+      // check program name
+      NewProgramName:=ExtractFileNameOnly(AFilename);
       if (NewProgramName='') or (not IsValidIdent(NewProgramName)) then begin
         Result:=MessageDlg(lisInvalidProjectFilename,
           Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject, ['"',
@@ -6664,42 +6677,33 @@ begin
       end;
 
       // append default extension
-      Ext:=ExtractFileExt(NewFilename);
-      if Ext='' then begin
-        NewFilename:=NewFilename+'.lpi';
-        Ext:='.lpi';
-      end;
-
-      // check pascal identifier
-      if FilenameIsPascalSource(NewFilename) then begin
-        if not IsValidIdent(NewProgramName) then begin
-          Result:=MessageDlg(lisInvalidPascalIdentifierCap,
-            Format(lisTheNameIsNotAValidPascalIdentifier, ['"', NewProgramName,
-              '"'])
-            ,mtWarning,[mbIgnore,mbCancel],0);
-          if Result=mrCancel then exit;
-          Result:=mrCancel;
-        end;
+      if UseMainSourceFile then
+      begin
+        NewLPIFilename:=ChangeFileExt(AFilename,'.lpi');
+      end else
+      begin
+        NewLPIFilename:=AFilename;
+        if ExtractFileExt(NewLPIFilename)='' then
+          NewLPIFilename:=NewLPIFilename+'.lpi';
       end;
 
       // apply naming conventions
-      NewProgramName:=ExtractFileNameOnly(NewFilename);
-
-      if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
-        NewFileName:=ExtractFilePath(NewFilename)
-                    +lowercase(ExtractFileName(NewFilename));
+      // rename to lowercase is not needed for main source
 
       if Project1.MainUnitID >= 0 then
       begin
         // check mainunit filename
         Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
         if Ext='' then Ext:='.pas';
-        NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
-        if CompareFilenames(NewFilename,NewProgramFilename)=0 then
+        if UseMainSourceFile then
+          NewProgramFilename:=AFilename
+        else
+          NewProgramFilename:=NewProgramName+Ext;
+        if (CompareFilenames(NewLPIFilename,NewProgramFilename)=0) then
         begin
           ACaption:=lisChooseADifferentName;
           AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
-            '"', NewFilename, '"', #13]);
+            '"', NewLPIFilename, '"', #13]);
           Result:=MessageDlg(ACaption, AText, mtError, [mbAbort,mbRetry],0);
           if Result=mrAbort then exit;
           continue; // try again
@@ -6728,10 +6732,10 @@ begin
   end;
 
   // check if info file or source file already exists
-  if FileExistsUTF8(NewFilename) then
+  if FileExistsUTF8(NewLPIFilename) then
   begin
     ACaption:=lisOverwriteFile;
-    AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
+    AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewLPIFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
   end
@@ -6750,8 +6754,8 @@ begin
   TitleWasDefault := Project1.TitleIsDefault(true);
 
   // set new project filename
-  Project1.ProjectInfoFile:=NewFilename;
-  EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
+  Project1.ProjectInfoFile:=NewLPIFilename;
+  EnvironmentOptions.AddToRecentProjectFiles(NewLPIFilename);
   SetRecentProjectFilesMenu;
 
   // change main source
@@ -6795,22 +6799,22 @@ begin
 
   // update paths
   Project1.CompilerOptions.OtherUnitFiles:=
-    RebaseSearchPath(Project1.CompilerOptions.OtherUnitFiles,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.OtherUnitFiles,OldProjectDir,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.IncludePath:=
-    RebaseSearchPath(Project1.CompilerOptions.IncludePath,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.IncludePath,OldProjectDir,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.Libraries:=
-    RebaseSearchPath(Project1.CompilerOptions.Libraries,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.Libraries,OldProjectDir,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.ObjectPath:=
-    RebaseSearchPath(Project1.CompilerOptions.ObjectPath,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.ObjectPath,OldProjectDir,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.SrcPath:=
-    RebaseSearchPath(Project1.CompilerOptions.SrcPath,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.SrcPath,OldProjectDir,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.DebugPath:=
-    RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectPath,
+    RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectDir,
                      Project1.ProjectDirectory,true);
 
   // change title
@@ -7184,6 +7188,7 @@ var ActiveSrcEdit:TSourceEditor;
   CanAbort: boolean;
   WasVirtual: Boolean;
   Confirm: Boolean;
+  SaveProjectFlags: TSaveFlags;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7218,7 +7223,10 @@ begin
   if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
   and ActiveUnitInfo.IsPartOfProject then
   begin
-    Result:=DoSaveProject(Flags*[sfSaveToTestDir]);
+    SaveProjectFlags:=Flags*[sfSaveToTestDir];
+    if ActiveUnitInfo=Project1.MainUnitInfo then
+      Include(SaveProjectFlags,sfSaveMainSourceAs);
+    Result:=DoSaveProject(SaveProjectFlags);
     exit;
   end;
 
@@ -7239,10 +7247,8 @@ begin
   MainUnitInfo:=ActiveUnitInfo.Project.MainUnitInfo;
   if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags))
   and (ActiveUnitInfo=MainUnitInfo)
-  and (CompareFilenames(ExtractFileNameWithoutExt(ActiveUnitInfo.Filename),
-                        ExtractFileNameWithoutExt(MainUnitInfo.Filename))=0) then
-  begin
-    Result:=DoSaveProject([sfSaveAs]);
+  then begin
+    Result:=DoSaveProject([sfSaveAs,sfSaveMainSourceAs]);
     exit;
   end;
 
@@ -8551,7 +8557,7 @@ begin
     Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
-    Result:=DoShowSaveProjectAsDialog;
+    Result:=DoShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
     if Result<>mrOk then exit;
   end;
 

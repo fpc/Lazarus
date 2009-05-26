@@ -68,7 +68,8 @@ type
     sfCheckAmbiguousFiles,
     sfSaveNonProjectFiles,
     sfDoNotSaveVirtualFiles,
-    sfCanAbort  // show 'Cancel all' button in error messages
+    sfCanAbort,  // show 'Cancel all' button in error messages
+    sfSaveMainSourceAs  // on sfSaveAs use .lpr file instead of .lpi file
     );
   TSaveFlags = set of TSaveFlag;
   
