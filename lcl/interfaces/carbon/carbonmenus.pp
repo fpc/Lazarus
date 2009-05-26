@@ -582,13 +582,12 @@ begin
   AHandle := nil;
   CGImage := nil;
   
-  if (ABitmap <> nil) and (ABitmap.Width > 0) and (ABitmap.Height > 0) then
+  if (LCLMenuItem.HasIcon) and (ABitmap <> nil) and (ABitmap.Width > 0) and (ABitmap.Height > 0) then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
 
     IconType := kMenuCGImageRefType;
-    CGImage :=
-      TCarbonBitmap(ABitmap.Handle).CreateMaskedImage(TCarbonBitmap(ABitmap.MaskHandle));
+    CGImage := TCarbonBitmap(ABitmap.Handle).CreateMaskedImage(TCarbonBitmap(ABitmap.MaskHandle));
     if CGImage <> nil then
       AHandle := Pointer(CGImage);
   end;
