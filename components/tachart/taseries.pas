@@ -95,11 +95,11 @@ type
   private
     FPrevLabelRect: TRect;
   protected
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
       ADown: Boolean);
     procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
   end;
 
   { TBarSeries }
@@ -113,9 +113,9 @@ type
 
     procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
     procedure SetAdjustBarWidth(AValue: Boolean);
-    procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
+    procedure SetBarWidthPercent(Value: Integer);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetSeriesColor: TColor; override;
@@ -159,14 +159,14 @@ type
 
   TAreaSeries = class(TBasicPointSeries)
   private
-    FAreaLinesPen: TChartPen;
     FAreaBrush: TBrush;
-    FStairs: Boolean;
+    FAreaLinesPen: TChartPen;
     FInvertedStairs: Boolean;
+    FStairs: Boolean;
 
     procedure SetAreaBrush(Value: TBrush);
-    procedure SetStairs(Value: Boolean);
     procedure SetInvertedStairs(Value: Boolean);
+    procedure SetStairs(Value: Boolean);
   protected
     procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     function GetSeriesColor: TColor; override;
@@ -177,8 +177,8 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
   published
-    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
+    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
     property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
@@ -204,15 +204,14 @@ type
   private
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
-    FStyle: TPenStyle;
     FSeriesColor: TColor;
-
-    FShowPoints: Boolean;
     FShowLines: Boolean;
+    FShowPoints: Boolean;
+    FStyle: TPenStyle;
 
-    procedure SetShowPoints(Value: Boolean);
-    procedure SetShowLines(Value: Boolean);
     procedure SetPointer(Value: TSeriesPointer);
+    procedure SetShowLines(Value: Boolean);
+    procedure SetShowPoints(Value: Boolean);
   protected
     procedure AfterAdd; override;
     function GetNearestPoint(
@@ -226,21 +225,21 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
+    function  GetColor(AIndex: Integer): TColor;
+    procedure GetMax(out X, Y: Double);
+    procedure GetMin(out X, Y: Double);
+    function  GetXImgValue(AIndex: Integer): Integer;
+    function  GetXMax: Double;
+    function  GetXMin: Double;
     function  GetXValue(AIndex: Integer): Double;
+    function  GetYImgValue(AIndex: Integer): Integer;
+    function  GetYMax: Double;
+    function  GetYMin: Double;
     function  GetYValue(AIndex: Integer): Double;
+    procedure SetColor(AIndex: Integer; AColor: TColor);
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
-    function  GetXImgValue(AIndex: Integer): Integer;
-    function  GetYImgValue(AIndex: Integer): Integer;
-    procedure GetMin(out X, Y: Double);
-    procedure GetMax(out X, Y: Double);
-    function  GetXMin: Double;
-    function  GetXMax: Double;
-    function  GetYMin: Double;
-    function  GetYMax: Double;
-    procedure SetColor(AIndex: Integer; AColor: TColor);
-    function  GetColor(AIndex: Integer): TColor;
-
+  public
     procedure BeginUpdate;
     procedure EndUpdate;
   published
@@ -264,9 +263,9 @@ type
 
   TLine = class(TBasicLineSeries)
   private
+    FLineStyle: TLineStyle;
     FPen: TPen;
     FPosGraph: Double;                      // Graph coordinates of line
-    FLineStyle: TLineStyle;
     FUseBounds: Boolean;
 
     procedure SetLineStyle(AValue: TLineStyle);
@@ -333,8 +332,8 @@ type
   published
     property Active default true;
     property Extent: TChartExtent read FExtent write SetExtent;
-    property Pen: TChartPen read FPen write SetPen;
     property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
+    property Pen: TChartPen read FPen write SetPen;
     property ShowInLegend;
     property Step: TFuncSeriesStep read FStep write SetStep default 2;
     property Title;
