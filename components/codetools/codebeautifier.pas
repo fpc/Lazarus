@@ -85,6 +85,8 @@ type
     bbtLabelSection,
     // type blocks
     bbtRecord,
+    bbtClass,
+    bbtClassInterface,
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,
@@ -96,7 +98,14 @@ type
     bbtCaseOf,    // child of bbtCase
     bbtCaseColon, // child of bbtCase
     bbtCaseBegin, // child of bbtCaseColon
-    bbtCaseElse   // child of bbtCase
+    bbtCaseElse,  // child of bbtCase
+    bbtTry,
+    bbtFinally,
+    bbtExcept,
+    bbtIf,
+    bbtIfThen,    // child of bbtIf
+    bbtIfElse,    // child of bbtIf
+    bbtIfBegin    // child of bbtIfThen or bbtIfElse
     );
   TFABBlockTypes = set of TFABBlockType;
 
@@ -105,8 +114,10 @@ const
        bbtResourceStringSection,bbtLabelSection];
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
-  bbtAllStatements = [bbtMainBegin,bbtCommentaryBegin,bbtRepeat,
-                      bbtCaseColon,bbtCaseBegin,bbtCaseElse];
+  bbtAllStatements = [bbtMainBegin,bbtCommentaryBegin,bbtRepeat,bbtProcedureBegin,
+                      bbtCaseColon,bbtCaseBegin,bbtCaseElse,
+                      bbtTry,bbtFinally,bbtExcept,
+                      bbtIfThen,bbtIfElse];
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 out CodeBuffers: TFPList) of object;
@@ -177,6 +188,8 @@ const
     'bbtLabelSection',
     // type blocks
     'bbtRecord',
+    'bbtClass',
+    'bbtClassInterface',
     // statement blocks
     'bbtProcedure',
     'bbtFunction',
@@ -188,7 +201,13 @@ const
     'bbtCaseOf',
     'bbtCaseColon',
     'bbtCaseBegin',
-    'bbtCaseElse'
+    'bbtCaseElse',
+    'bbtTry',
+    'bbtFinally',
+    'bbtExcept',
+    'bbtIf',
+    'bbtIfThen',
+    'bbtIfElse'
     );
 
 implementation
@@ -420,6 +439,8 @@ begin
             BeginBlock(bbtCommentaryBegin);
           bbtCaseElse,bbtCaseColon:
             BeginBlock(bbtCaseBegin);
+          bbtIfThen,bbtIfElse:
+            BeginBlock(bbtIfBegin);
           end;
         end;
       'C':
@@ -428,6 +449,11 @@ begin
           if CompareIdentifiers('CASE',r)=0 then begin
             if Stack.TopType in bbtAllStatements then
               BeginBlock(bbtCase);
+          end;
+        'L': // CL
+          if CompareIdentifiers('CLASS',r)=0 then begin
+            if Stack.TopType=bbtTypeSection then
+              BeginBlock(bbtClass);
           end;
         'O': // CO
           if CompareIdentifiers('CONST',r)=0 then
@@ -443,14 +469,19 @@ begin
                 EndBlock;
                 BeginBlock(bbtCaseElse);
               end;
+            bbtIfThen:
+              begin
+                EndBlock;
+                BeginBlock(bbtIfElse);
+              end;
             end;
           end;
         'N': // EN
           if CompareIdentifiers('END',r)=0 then begin
             case Stack.TopType of
             bbtMainBegin,bbtCommentaryBegin,
-            bbtRecord,
-            bbtCase,bbtCaseBegin:
+            bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
+            bbtCase,bbtCaseBegin,bbtIfBegin:
               EndBlock;
             bbtCaseOf,bbtCaseElse,bbtCaseColon:
               begin
@@ -466,6 +497,13 @@ begin
               end;
             end;
           end;
+        'X': // EX
+          if CompareIdentifiers('EXCEPT',r)=0 then begin
+            if Stack.TopType=bbtTry then begin
+              EndBlock;
+              BeginBlock(bbtExcept);
+            end;
+          end;
         end;
       'F':
         case UpChars[r[1]] of
@@ -476,6 +514,11 @@ begin
               EndBlock;
             if Stack.TopType=bbtNone then
               BeginBlock(bbtInitialization);
+          end else if CompareIdentifiers('FINALLY',r)=0 then begin
+            if Stack.TopType=bbtTry then begin
+              EndBlock;
+              BeginBlock(bbtFinally);
+            end;
           end;
         'O': // FO
           if CompareIdentifiers('FORWARD',r)=0 then begin
@@ -488,9 +531,15 @@ begin
             StartProcedure(bbtFunction);
         end;
       'I':
-        case UpChars[Src[1]] of
+        case UpChars[r[1]] of
+        'F': // IF
+          if p-AtomStart=2 then begin
+            // 'IF'
+            if Stack.TopType in bbtAllStatements then
+              BeginBlock(bbtIf);
+          end;
         'N': // IN
-          case UpChars[Src[2]] of
+          case UpChars[r[2]] of
           'I': // INI
             if CompareIdentifiers('INITIALIZATION',r)=0 then begin
               while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
@@ -501,8 +550,12 @@ begin
             end;
           'T': // INT
             if CompareIdentifiers('INTERFACE',r)=0 then begin
-              if Stack.TopType=bbtNone then
+              case Stack.TopType of
+              bbtNone:
                 BeginBlock(bbtInterface);
+              bbtTypeSection:
+                BeginBlock(bbtClassInterface);
+              end;
             end;
           end;
         'M': // IM
@@ -519,8 +572,12 @@ begin
           StartIdentifierSection(bbtLabelSection);
       'O':
         if CompareIdentifiers('OF',r)=0 then begin
-          if Stack.TopType=bbtCase then
+          case Stack.TopType of
+          bbtCase:
             BeginBlock(bbtCaseOf);
+          bbtClass,bbtClassInterface:
+            EndBlock;
+          end;
         end;
       'P':
         if CompareIdentifiers('PROCEDURE',r)=0 then
@@ -542,8 +599,21 @@ begin
           end;
         end;
       'T':
-        if CompareIdentifiers('TYPE',r)=0 then begin
-          StartIdentifierSection(bbtTypeSection);
+        case UpChars[r[1]] of
+        'H': // TH
+          if CompareIdentifiers('THEN',r)=0 then begin
+            if Stack.TopType=bbtIf then
+              BeginBlock(bbtIfThen);
+          end;
+        'R': // TR
+          if CompareIdentifiers('TRY',r)=0 then begin
+            if Stack.TopType in bbtAllStatements then
+              BeginBlock(bbtTry);
+          end;
+        'Y': // TY
+          if CompareIdentifiers('TYPE',r)=0 then begin
+            StartIdentifierSection(bbtTypeSection);
+          end;
         end;
       'U':
         case UpChars[r[1]] of
@@ -579,6 +649,14 @@ begin
             begin
               EndBlock;
               BeginBlock(bbtCaseColon);
+            end;
+          bbtIf:
+            EndBlock;
+          bbtIfThen,bbtIfElse:
+            begin
+              EndBlock;
+              if Stack.TopType=bbtIf then
+                EndBlock;
             end;
           end;
         end;
