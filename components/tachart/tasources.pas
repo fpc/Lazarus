@@ -193,6 +193,7 @@ type
 
 function DoublePoint(const ACoord: TChartDataItem): TDoublePoint; inline; overload;
 procedure Register;
+procedure SetDataItemDefaults(var AItem: TChartDataItem);
 
 implementation
 
@@ -228,6 +229,14 @@ begin
   RegisterComponents(
     CHART_COMPONENT_IDE_PAGE,
     [TListChartSource, TRandomChartSource, TUserDefinedChartSource]);
+end;
+
+procedure SetDataItemDefaults(var AItem: TChartDataItem);
+begin
+  AItem.X := 0;
+  AItem.Y := 0;
+  AItem.Color := clTAColor;
+  AItem.Text := '';
 end;
 
 { TCustomChartSource }
@@ -766,9 +775,7 @@ end;
 
 function TUserDefinedChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
-  FItem.X := 0;
-  FItem.Y := 0;
-  FItem.Color := clTAColor;
+  SetDataItemDefaults(FItem);
   if Assigned(FOnGetChartDataItem) then
     FOnGetChartDataItem(Self, AIndex, FItem);
   Result := @FItem;

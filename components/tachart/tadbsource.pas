@@ -163,8 +163,10 @@ var
   ds: TDataSet;
 begin
   Result := @FCurItem;
-  Inc(AIndex); // RecNo is counted from 1
+  SetDataItemDefaults(FCurItem);
   if not FDataLink.Active then exit;
+
+  Inc(AIndex); // RecNo is counted from 1
   ds := FDataLink.DataSet;
   if ds.IsUniDirectional then begin
     if ds.RecNo < AIndex then
