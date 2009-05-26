@@ -1,8 +1,10 @@
 Unit gendata;
 
+{$mode objfpc}{$H+}
+
 Interface
 
-Uses Classes,SysUtils, DB, dbf;
+Uses Classes, SysUtils, DB, dbf;
 
 Const
   DefFirstNamesFile = 'firstnames.txt';
@@ -124,10 +126,10 @@ begin
     Randomize;
     FN:=TStringList.Create;
     Try
-      FN.LoadFromFile(UTF8ToSys(FFirstNamesFile));
+      FN.LoadFromFile(UTF8ToAnsi(FFirstNamesFile));
       LN:=TStringList.Create;
       Try
-        LN.LoadFromFile(UTF8ToSys(FLastNamesFile));
+        LN.LoadFromFile(UTF8ToAnsi(FLastNamesFile));
         Assign(F,FOutputFile);
         Rewrite(F);
         Try
