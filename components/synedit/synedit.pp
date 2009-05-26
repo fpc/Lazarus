@@ -217,7 +217,7 @@ type
     eoBracketHighlight,        // Highlight matching bracket
     eoDoubleClickSelectsLine,  // Select line on double click
     eoHideRightMargin,         // Hides the right margin line
-    eoPersistentCaret,         // Do not hide caret when focus lost
+    eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
     eoShowCtrlMouseLinks,      // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
@@ -2044,6 +2044,7 @@ procedure TCustomSynEdit.HideCaret;
 begin
   //DebugLn('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
   if sfCaretVisible in fStateFlags then begin
+    // Todo: If Show/HideCaret fails while we have the Focus => somone else may have stolen the caret(Windows)
     if LCLIntf.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
   end;
@@ -3970,6 +3971,7 @@ begin
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
   begin
     SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+    // Todo: If Show/HideCaret fails while we have the Focus => somone else may have stolen the caret(Windows)
     if LCLIntf.ShowCaret(Handle) then
     begin
       //DebugLn('[TCustomSynEdit.ShowCaret] A ',Name);
@@ -4203,6 +4205,7 @@ begin
   DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
   {$ENDIF}
   LastMouseCaret:=Point(-1,-1);
+  // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
   if not (eoPersistentCaret in fOptions) then begin
     HideCaret;
     LCLIntf.DestroyCaret(Handle);
@@ -5377,10 +5380,16 @@ begin
   // CreateCaret automatically destroys the previous one, so we don't have to
   // worry about cleaning up the old one here with DestroyCaret.
   // Ideally, we will have properties that control what these two carets look like.
-  if InsertMode then
-    ct := FInsertCaret
-  else
-    ct := FOverwriteCaret;
+
+  Exclude(fStateFlags, sfCaretVisible);
+  // Windows allows only one Caret per "Queue" (App/Window ?)
+  // an unfocused SynEdit must not steal the caret
+  if not Focused then exit;
+
+  if InsertMode
+  then ct := FInsertCaret
+  else ct := FOverwriteCaret;
+
   case ct of
     ctHorizontalLine:
       begin
@@ -5406,7 +5415,6 @@ begin
       FCaretOffset := Point(-1, 1);
     end;
   end;
-  Exclude(fStateFlags, sfCaretVisible);
   CreateCaret(Handle, 0, cw, ch);
   UpdateCaret;
 end;
