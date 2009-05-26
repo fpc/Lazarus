@@ -25,8 +25,9 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
-  Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit,
+  SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
+  ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
   IDEProcs, ColorBox, SynEditMarkupBracket;
 
@@ -170,7 +171,7 @@ end;
 procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  NewIndex: Integer;
+  i, NewIndex: Integer;
   Token: String;
   Attri: TSynHighlightElement;
   MouseXY, XY: TPoint;
@@ -179,12 +180,35 @@ begin
   MouseXY := Point(X, Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
   NewIndex := -1;
+  // Gutter Colors
+  if X <= ColorPreview.GutterWidth then begin
+    for i := 0 to ColorPreview.Gutter.Parts.Count-1 do begin
+      if ColorPreview.Gutter.Parts[i].Width > X then begin
+        if ColorPreview.Gutter.Parts[i] is TSynGutterLineNumber then
+          Token := AdditionalHighlightAttributes[ahaLineNumber]
+        else
+        if ColorPreview.Gutter.Parts[i] is TSynGutterChanges then
+          Token := AdditionalHighlightAttributes[ahaModifiedLine]
+        else
+        if ColorPreview.Gutter.Parts[i] is TSynGutterCodeFolding then
+          Token := AdditionalHighlightAttributes[ahaCodeFoldingTree]
+        else
+          Token := dlgGutter;
+        NewIndex := ColorElementListBox.Items.IndexOf(Token);
+        break;
+      end;
+      X := X - ColorPreview.Gutter.Parts[i].Width;
+    end;
+  end
+  // Line Highlights
+  else
   if CurLanguageID >= 0 then
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr <> ahaNone then
       NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[AddAttr]);
   end;
+  // Pascal Highlights
   if NewIndex < 0 then
   begin
     Token := '';
