@@ -100,6 +100,7 @@ type
   public
     function Add(AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
     procedure Clear;
+    procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
     procedure SetXValue(AIndex: Integer; AValue: Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
@@ -464,6 +465,21 @@ begin
   FExtentIsValid := true;
   FValuesTotal := 0;
   FValuesTotalIsValid := true;
+end;
+
+procedure TListChartSource.CopyForm(ASource: TCustomChartSource);
+var
+  i: Integer;
+begin
+  BeginUpdate;
+  try
+    Clear;
+    for i := 0 to ASource.Count - 1 do
+      with ASource[i]^ do
+        Add(X, Y, Text, Color);
+  finally
+    EndUpdate;
+  end;
 end;
 
 constructor TListChartSource.Create(AOwner: TComponent);

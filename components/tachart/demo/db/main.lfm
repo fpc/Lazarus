@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 318
+  Left = 329
   Height = 300
-  Top = 151
+  Top = 190
   Width = 547
   Caption = 'Form1'
   ClientHeight = 300
@@ -10,8 +10,8 @@ object Form1: TForm1
   LCLVersion = '0.9.27'
   object Chart1: TChart
     Left = 0
-    Height = 300
-    Top = 0
+    Height = 274
+    Top = 26
     Width = 347
     BottomAxis.Grid.Style = psDot
     Foot.Brush.Color = clBtnFace
@@ -26,19 +26,39 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
+      ZPosition = 1
       SeriesColor = clBlack
       Source = DbChartSource1
+    end
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      SeriesColor = clRed
     end
   end
   object DBGrid1: TDBGrid
     Left = 347
-    Height = 300
-    Top = 0
+    Height = 274
+    Top = 26
     Width = 200
     Align = alRight
     DataSource = Datasource1
     Scrollbars = ssAutoBoth
     TabOrder = 1
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 547
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 2
+    object tbCopy: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Copy db to list'
+      OnClick = tbCopyClick
+    end
   end
   object MemDataset1: TMemDataset
     Active = True

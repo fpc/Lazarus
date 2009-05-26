@@ -58,7 +58,6 @@ type
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    function ListSource: TListChartSource;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartZPosition); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -79,6 +78,7 @@ type
     function Extent: TDoubleRect; virtual;
     function FormattedMark(AIndex: integer): String;
     function IsEmpty: Boolean; override;
+    function ListSource: TListChartSource;
     property Source: TCustomChartSource
       read GetSource write SetSource stored IsSourceStored;
   published
