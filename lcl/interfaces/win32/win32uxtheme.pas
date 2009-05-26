@@ -15,6 +15,9 @@
 { Portions created by Mike Lischke are Copyright (C) 1999-2002                 }
 { Mike Lischke. All Rights Reserved.                                           }
 {                                                                              }
+{ Potions created by Paul Ishenin are Copyright (C) 2009                       }
+{ Paul Ishenin. All Rights Reserved                                            }
+{                                                                              }
 { Obtained through: Joint Endeavour of Delphi Innovators (Project JEDI)        }
 {                                                                              }
 { You may retrieve the latest version of this file at the Project JEDI home    }
@@ -68,6 +71,84 @@ type
   HTHEME = THANDLE;     // handle to a section of theme data for class
   {$EXTERNALSYM HTHEME}
 
+const
+//if (_WIN32_WINNT >= 0x0600)
+  MAX_THEMECOLOR  = 64;
+  {$EXTERNALSYM MAX_THEMECOLOR}
+  MAX_THEMESIZE   = 64;
+  {$EXTERNALSYM MAX_THEMESIZE}
+//endif
+
+//if (NTDDI_VERSION>= NTDDI_WIN7)
+//---------------------------------------------------------------------------
+// BeginPanningFeedback - Visual feedback init function related to pan gesture
+//   - internally called by DefaultGestureHandler
+//   - called by application
+//
+//  HWND hwnd - The handle to the Target window that will receive feedback
+//
+//---------------------------------------------------------------------------
+
+var
+  BeginPanningFeedback: function(hwnd: HWND): BOOL; stdcall;
+{$EXTERNALSYM BeginPanningFeedback}
+
+//---------------------------------------------------------------------------
+// UpdatePanningFeedback : Visual feedback function related to pan gesture
+// Can Be called only after a BeginPanningFeedback call
+//   - internally called by DefaultGestureHandler
+//   - called by application
+//
+// HWND hwnd                 - The handle to the Target window that will receive feedback
+//                             For the method to succeed this must be the same hwnd as provided in
+//                             BeginPanningFeedback
+//
+// LONG lTotalOverpanOffsetX - The Total displacement that the window has moved in the horizontal direction
+//                             since the end of scrollable region was reached. The API would move the window by the distance specified
+//                             A maximum displacement of 30 pixels is allowed
+//
+// LONG lTotalOverpanOffsetY - The Total displacement that the window has moved in the horizontal direction
+//                             since the end of scrollable
+//                             region was reached. The API would move the window by the distance specified
+//                             A maximum displacement of 30 pixels is allowed
+//
+// BOOL fInInertia           - Flag dictating whether the Application is handling a WM_GESTURE message with the
+//                             GF_INERTIA FLAG set
+//
+//   Incremental calls to UpdatePanningFeedback should make sure they always pass
+//   the sum of the increments and not just the increment themselves
+//   Eg : If the initial displacement is 10 pixels and the next displacement 10 pixels
+//        the second call would be with the parameter as 20 pixels as opposed to 10
+//   Eg : UpdatePanningFeedback(hwnd, 10, 10, TRUE)
+//
+
+var
+  UpdatePanningFeedback: function(hwnd: HWND; lTotalOverpanOffsetX: LONG; lTotalOverpanOffsetY: LONG;
+    fInInertia: BOOL): BOOL; stdcall;
+{$EXTERNALSYM UpdatePanningFeedback}
+
+//---------------------------------------------------------------------------
+//
+// EndPanningFeedback :Visual feedback reset function related to pan gesture
+//   - internally called by DefaultGestureHandler
+//   - called by application
+//   Terminates any existing animation that was in process or set up by BeginPanningFeedback and UpdatePanningFeedback
+//   The EndPanningFeedBack needs to be called Prior to calling any BeginPanningFeedBack if we have already
+//   called a BeginPanningFeedBack followed by one/ more UpdatePanningFeedback calls
+//
+//  HWND hwnd         - The handle to the Target window that will receive feedback
+//
+//  BOOL fAnimateBack - Flag to indicate whether you wish the displaced window to move back
+//                      to the original position via animation or a direct jump.
+//                      Either ways the method will try to restore the moved window.
+//                      The latter case exists for compatibility with legacy apps.
+//
+
+var
+  EndPanningFeedback: function(hwnd: HWND; fAnimateBack: BOOL): BOOL; stdcall;
+{$EXTERNALSYM EndPanningFeedback}
+//endif
+
 //----------------------------------------------------------------------------------------------------------------------
 // NOTE: PartId's and StateId's used in the theme API are defined in the
 //       hdr file <tmschema.h> using the TM_PART and TM_STATE macros.  For
@@ -106,6 +187,52 @@ type
 var
   OpenThemeData: function(hwnd: HWND; pszClassList: LPCWSTR): HTHEME; stdcall;
 {$EXTERNALSYM OpenThemeData}
+
+const
+  OTD_FORCE_RECT_SIZING = $00000001;          // make all parts size to rect
+{$EXTERNALSYM OTD_FORCE_RECT_SIZING}
+  OTD_NONCLIENT         = $00000002;          // set if hTheme to be used for nonclient area
+{$EXTERNALSYM OTD_NONCLIENT}
+  OTD_VALIDBITS         = (OTD_FORCE_RECT_SIZING or OTD_NONCLIENT);
+{$EXTERNALSYM OTD_VALIDBITS}
+
+//---------------------------------------------------------------------------
+//  OpenThemeDataEx     - Open the theme data for the specified HWND and
+//                        semi-colon separated list of class names.
+//
+//                        OpenThemeData() will try each class name, one at
+//                        a time, and use the first matching theme info
+//                        found.  If a match is found, a theme handle
+//                        to the data is returned.  If no match is found,
+//                        a "NULL" handle is returned.
+//
+//                        When the window is destroyed or a WM_THEMECHANGED
+//                        msg is received, "CloseThemeData()" should be
+//                        called to close the theme handle.
+//
+//  hwnd                - window handle of the control/window to be themed
+//
+//  pszClassList        - class name (or list of names) to match to theme data
+//                        section.  if the list contains more than one name,
+//                        the names are tested one at a time for a match.
+//                        If a match is found, OpenThemeData() returns a
+//                        theme handle associated with the matching class.
+//                        This param is a list (instead of just a single
+//                        class name) to provide the class an opportunity
+//                        to get the "best" match between the class and
+//                        the current theme.  For example, a button might
+//                        pass L"OkButton, Button" if its ID=ID_OK.  If
+//                        the current theme has an entry for OkButton,
+//                        that will be used.  Otherwise, we fall back on
+//                        the normal Button entry.
+//
+//  dwFlags              - allows certain overrides of std features
+//                         (see OTD_XXX defines above)
+//---------------------------------------------------------------------------
+
+var
+  OpenThemeDataEx: function(hwnd: HWND; pszClassList: LPCWSTR; dwFlags: DWORD): HTHEME; stdcall;
+{$EXTERNALSYM OpenThemeDataEx}
 
 //----------------------------------------------------------------------------------------------------------------------
 //  CloseTHemeData()    - closes the theme data handle.  This should be done
@@ -161,6 +288,69 @@ var
   DrawThemeBackground: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer; const pRect: TRect;
     pClipRect: PRECT): HRESULT; stdcall;
 {$EXTERNALSYM DrawThemeBackground}
+
+//------------------------------------------------------------------------
+//---- bits used in dwFlags of DTBGOPTS ----
+const
+  DTBG_CLIPRECT        = $00000001;  // rcClip has been specified
+{$EXTERNALSYM DTBG_CLIPRECT}
+  DTBG_DRAWSOLID       = $00000002;  // DEPRECATED: draw transparent/alpha images as solid
+{$EXTERNALSYM DTBG_DRAWSOLID}
+  DTBG_OMITBORDER      = $00000004;  // don't draw border of part
+{$EXTERNALSYM DTBG_OMITBORDER}
+  DTBG_OMITCONTENT     = $00000008;  // don't draw content area of part
+{$EXTERNALSYM DTBG_OMITCONTENT}
+  DTBG_COMPUTINGREGION = $00000010;  // TRUE if calling to compute region
+{$EXTERNALSYM DTBG_COMPUTINGREGION}
+  DTBG_MIRRORDC        = $00000020;  // assume the hdc is mirrorred and
+                                            // flip images as appropriate (currently
+                                            // only supported for bgtype=imagefile)
+{$EXTERNALSYM DTBG_MIRRORDC}
+  DTBG_NOMIRROR        = $00000040;  // don't mirror the output, overrides everything else
+{$EXTERNALSYM DTBG_NOMIRROR}
+  DTBG_VALIDBITS       = (DTBG_CLIPRECT or
+                          DTBG_DRAWSOLID or
+                          DTBG_OMITBORDER or
+                          DTBG_OMITCONTENT or
+                          DTBG_COMPUTINGREGION or
+                          DTBG_MIRRORDC or
+                          DTBG_NOMIRROR);
+{$EXTERNALSYM DTBG_VALIDBITS}
+
+type
+  _DTBGOPTS = record
+    dwSize: DWORD;           // size of the struct
+    dwFlags: DWORD;          // which options have been specified
+    rcClip: TRect;            // clipping rectangle
+  end;
+{$EXTERNALSYM _DTBGOPTS}
+  DTBGOPTS = _DTBGOPTS;
+{$EXTERNALSYM DTBGOPTS}
+  PDTBGOPTS = ^_DTBGOPTS;
+{$EXTERNALSYM PDTBGOPTS}
+  TDTBgOpts = DTBGOPTS;
+
+//------------------------------------------------------------------------
+//  DrawThemeBackgroundEx()
+//                      - draws the theme-specified border and fill for
+//                        the "iPartId" and "iStateId".  This could be
+//                        based on a bitmap file, a border and fill, or
+//                        other image description.  NOTE: This will be
+//                        merged back into DrawThemeBackground() after
+//                        BETA 2.
+//
+//  hTheme              - theme data handle
+//  hdc                 - HDC to draw into
+//  iPartId             - part number to draw
+//  iStateId            - state number (of the part) to draw
+//  pRect               - defines the size/location of the part
+//  pOptions            - ptr to optional params
+//------------------------------------------------------------------------
+
+var
+  DrawThemeBackgroundEx: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer; const pRect: TRect;
+    pOptions: PDTBGOPTS): HRESULT; stdcall;
+{$EXTERNALSYM DrawThemeBackgroundEx}
 
 //----------------------------------------------------------------------------------------------------------------------
 //----- DrawThemeText() flags ----
@@ -228,6 +418,27 @@ var
 {$EXTERNALSYM GetThemeBackgroundExtent}
 
 //----------------------------------------------------------------------------------------------------------------------
+//  GetThemeBackgroundRegion()
+//                      - computes the region for a regular or partially
+//                        transparent theme-specified background that is
+//                        bound by the specified "pRect".
+//                        If the rectangle is empty, sets the HRGN to NULL
+//                        and return S_FALSE.
+//
+//  hTheme              - theme data handle
+//  hdc                 - optional HDC to draw into (DPI scaling)
+//  iPartId             - part number to draw
+//  iStateId            - state number (of the part)
+//  pRect               - the RECT used to draw the part
+//  pRegion             - receives handle to calculated region
+//----------------------------------------------------------------------------------------------------------------------
+
+var
+  GetThemeBackgroundRegion: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer; const pRect: TRect;
+    var pRegion: HRGN): HRESULT; stdcall;
+{$EXTERNALSYM GetThemeBackgroundRegion}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 type
   THEMESIZE = (
@@ -291,27 +502,6 @@ var
   GetThemeTextMetrics: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer;
     var ptm: TEXTMETRIC): HRESULT; stdcall;
 {$EXTERNALSYM GetThemeTextMetrics}
-
-//----------------------------------------------------------------------------------------------------------------------
-//  GetThemeBackgroundRegion()
-//                      - computes the region for a regular or partially
-//                        transparent theme-specified background that is
-//                        bound by the specified "pRect".
-//                        If the rectangle is empty, sets the HRGN to NULL
-//                        and return S_FALSE.
-//
-//  hTheme              - theme data handle
-//  hdc                 - optional HDC to draw into (DPI scaling)
-//  iPartId             - part number to draw
-//  iStateId            - state number (of the part)
-//  pRect               - the RECT used to draw the part
-//  pRegion             - receives handle to calculated region
-//----------------------------------------------------------------------------------------------------------------------
-
-var
-  GetThemeBackgroundRegion: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer; const pRect: TRect;
-    var pRegion: HRGN): HRESULT; stdcall;
-{$EXTERNALSYM GetThemeBackgroundRegion}
 
 //----------------------------------------------------------------------------------------------------------------------
 //----- HitTestThemeBackground, HitTestThemeBackgroundRegion flags ----
@@ -650,6 +840,13 @@ var
 
 //----------------------------------------------------------------------------------------------------------------------
 
+(* how to translate?
+{$IF _WIN32_WINNT >= 0x0600}
+  MAX_INTLIST_COUNT = 402;
+{$ELSE}
+  MAX_INTLIST_COUNT = 10;
+{$ENDIF}
+*)
 const
   MAX_INTLIST_COUNT = 10;
   {$EXTERNALSYM MAX_INTLIST_COUNT}
@@ -974,6 +1171,8 @@ const
   {$EXTERNALSYM STAP_ALLOW_CONTROLS}
   STAP_ALLOW_WEBCONTENT  = (1 shl 2);
   {$EXTERNALSYM STAP_ALLOW_WEBCONTENT}
+  STAP_VALIDBITS         = (STAP_ALLOW_NONCLIENT or STAP_ALLOW_CONTROLS or STAP_ALLOW_WEBCONTENT);
+  {$EXTERNALSYM STAP_VALIDBITS}
 
 //----------------------------------------------------------------------------------------------------------------------
 //  GetThemeAppProperties()
@@ -1091,6 +1290,455 @@ var
   EnableTheming: function(fEnable: BOOL): HRESULT; stdcall;
 {$EXTERNALSYM EnableTheming}
 
+const
+  GBF_DIRECT    = $00000001;      // direct dereferencing.
+{$EXTERNALSYM GBF_DIRECT}
+  GBF_COPY      = $00000002;      // create a copy of the bitmap
+{$EXTERNALSYM GBF_COPY}
+  GBF_VALIDBITS = (GBF_DIRECT or GBF_COPY);
+{$EXTERNALSYM GBF_VALIDBITS}
+
+// if (_WIN32_WINNT >= 0x0600)
+const
+  DTPB_WINDOWDC          = $00000001;
+{$EXTERNALSYM DTPB_WINDOWDC}
+  DTPB_USECTLCOLORSTATIC = $00000002;
+{$EXTERNALSYM DTPB_USECTLCOLORSTATIC}
+  DTPB_USEERASEBKGND     = $00000004;
+{$EXTERNALSYM DTPB_USEERASEBKGND}
+
+//---------------------------------------------------------------------------
+// DrawThemeParentBackgroundEx()
+//                      - used by partially-transparent or alpha-blended
+//                        child controls to draw the part of their parent
+//                        that they appear in front of.
+//                        Sends a WM_ERASEBKGND message followed by a WM_PRINTCLIENT.
+//
+//  hwnd                - handle of the child control
+//
+//  hdc                 - hdc of the child control
+//
+//  dwFlags             - if 0, only returns S_OK if the parent handled
+//                        WM_PRINTCLIENT.
+//                      - if DTPB_WINDOWDC is set, hdc is assumed to be a window DC,
+//                        not a client DC.
+//                      - if DTPB_USEERASEBKGND is set, the function will return S_OK
+//                        without sending a WM_CTLCOLORSTATIC message if the parent
+//                        actually painted on WM_ERASEBKGND.
+//                      - if DTPB_CTLCOLORSTATIC is set, the function will send
+//                        a WM_CTLCOLORSTATIC message to the parent and use the
+//                        brush if one is provided, else COLOR_BTNFACE.
+//
+//  prc                 - (optional) rect that defines the area to be
+//                        drawn (CHILD coordinates)
+//
+//  Return value        - S_OK if something was painted, S_FALSE if not.
+//---------------------------------------------------------------------------
+
+var
+  DrawThemeParentBackgroundEx: function(hwnd: HWND; hdc: HDC; dwFlags: DWORD; prc: PRect): HRESULT; stdcall;
+{$EXTERNALSYM DrawThemeParentBackgroundEx}
+
+const
+  WTA_NONCLIENT = 1;
+{$EXTERNALSYM WTA_NONCLIENT}
+
+type
+  _WTA_OPTIONS = record
+    dwFlags: DWORD;          // values for each style option specified in the bitmask
+    dwMask: DWORD;           // bitmask for flags that are changing
+                             // valid options are: WTNCA_NODRAWCAPTION, WTNCA_NODRAWICON, WTNCA_NOSYSMENU
+  end;
+{$EXTERNALSYM _WTA_OPTIONS}
+  WTA_OPTIONS = _WTA_OPTIONS;
+{$EXTERNALSYM WTA_OPTIONS}
+  PWTA_OPTIONS = ^_WTA_OPTIONS;
+{$EXTERNALSYM PWTA_OPTIONS}
+  TWTA_Options = WTA_OPTIONS;
+
+const
+  WTNCA_NODRAWCAPTION = $00000001;    // don't draw the window caption
+{$EXTERNALSYM WTNCA_NODRAWCAPTION}
+  WTNCA_NODRAWICON    = $00000002;    // don't draw the system icon
+{$EXTERNALSYM WTNCA_NODRAWICON}
+  WTNCA_NOSYSMENU     = $00000004;    // don't expose the system menu icon functionality
+{$EXTERNALSYM WTNCA_NOSYSMENU}
+  WTNCA_NOMIRRORHELP  = $00000008;    // don't mirror the question mark, even in RTL layout
+{$EXTERNALSYM WTNCA_NOMIRRORHELP}
+  WTNCA_VALIDBITS     = (WTNCA_NODRAWCAPTION or WTNCA_NODRAWICON or WTNCA_NOSYSMENU or WTNCA_NOMIRRORHELP);
+{$EXTERNALSYM WTNCA_VALIDBITS}
+
+var
+  SetWindowThemeAttribute: function(hwnd: HWND; eAttribute: LongWord; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT; stdcall;
+{$EXTERNALSYM SetWindowThemeAttribute}
+
+function SetWindowThemeNonClientAttributes(hwnd: HWND; dwMask: DWORD; dwAttributes: DWORD): HRESULT;
+{$EXTERNALSYM SetWindowThemeNonClientAttributes}
+
+// endif // if (_WIN32_WINNT >= 0x0600)
+
+//---------------------------------------------------------------------------
+//
+// DrawThemeTextEx
+//
+// Note: DrawThemeTextEx only exists on Windows Vista and higher, but the
+// following declarations are provided to enable declaring its prototype when
+// compiling for all platforms.
+
+// Callback function used by DrawThemeTextEx, instead of DrawText
+type
+  DTT_CALLBACK_PROC = function(hdc: HDC; pszText: LPCWSTR; cchText: Integer; prc: PRect;
+    dwFlags: UINT; lParam: LPARAM): Integer; stdcall;
+{$EXTERNALSYM DTT_CALLBACK_PROC}
+
+//---- bits used in dwFlags of DTTOPTS ----
+const
+  DTT_TEXTCOLOR    = (1 shl 0);      // crText has been specified
+{$EXTERNALSYM DTT_TEXTCOLOR}
+  DTT_BORDERCOLOR  = (1 shl 1);      // crBorder has been specified
+{$EXTERNALSYM DTT_BORDERCOLOR}
+  DTT_SHADOWCOLOR  = (1 shl 2);      // crShadow has been specified
+{$EXTERNALSYM DTT_SHADOWCOLOR}
+  DTT_SHADOWTYPE   = (1 shl 3);      // iTextShadowType has been specified
+{$EXTERNALSYM DTT_SHADOWTYPE}
+  DTT_SHADOWOFFSET = (1 shl 4);      // ptShadowOffset has been specified
+{$EXTERNALSYM DTT_SHADOWOFFSET}
+  DTT_BORDERSIZE   = (1 shl 5);      // iBorderSize has been specified
+{$EXTERNALSYM DTT_BORDERSIZE}
+  DTT_FONTPROP     = (1 shl 6);      // iFontPropId has been specified
+{$EXTERNALSYM DTT_FONTPROP}
+  DTT_COLORPROP    = (1 shl 7);      // iColorPropId has been specified
+{$EXTERNALSYM DTT_COLORPROP}
+  DTT_STATEID      = (1 shl 8);      // IStateId has been specified
+{$EXTERNALSYM DTT_STATEID}
+  DTT_CALCRECT     = (1 shl 9);      // Use pRect as and in/out parameter
+{$EXTERNALSYM DTT_CALCRECT}
+  DTT_APPLYOVERLAY = (1 shl 10);     // fApplyOverlay has been specified
+{$EXTERNALSYM DTT_APPLYOVERLAY}
+  DTT_GLOWSIZE     = (1 shl 11);     // iGlowSize has been specified
+{$EXTERNALSYM DTT_GLOWSIZE}
+  DTT_CALLBACK     = (1 shl 12);     // pfnDrawTextCallback has been specified
+{$EXTERNALSYM DTT_CALLBACK}
+  DTT_COMPOSITED   = (1 shl 13);     // Draws text with antialiased alpha (needs a DIB section)
+{$EXTERNALSYM DTT_COMPOSITED}
+  DTT_VALIDBITS    = (DTT_TEXTCOLOR or DTT_BORDERCOLOR or DTT_SHADOWCOLOR or
+                      DTT_SHADOWTYPE or DTT_SHADOWOFFSET or DTT_BORDERSIZE or
+                      DTT_FONTPROP or DTT_COLORPROP or DTT_STATEID or
+                      DTT_CALCRECT or DTT_APPLYOVERLAY or DTT_GLOWSIZE or
+                      DTT_COMPOSITED);
+{$EXTERNALSYM DTT_VALIDBITS}
+
+type
+  _DTTOPTS = record
+    dwSize: DWORD;                          // size of the struct
+    dwFlags: DWORD;                         // which options have been specified
+    crText: COLORREF;                       // color to use for text fill
+    crBorder: COLORREF;                     // color to use for text outline
+    crShadow: COLORREF;                     // color to use for text shadow
+    iTextShadowType: Integer;               // TST_SINGLE or TST_CONTINUOUS
+    ptShadowOffset: TPoint;                 // where shadow is drawn (relative to text)
+    iBorderSize: Integer;                   // Border radius around text
+    iFontPropId: Integer;                   // Font property to use for the text instead of TMT_FONT
+    iColorPropId: Integer;                  // Color property to use for the text instead of TMT_TEXTCOLOR
+    iStateId: Integer;                      // Alternate state id
+    fApplyOverlay: BOOL;                    // Overlay text on top of any text effect?
+    iGlowSize: Integer;                     // Glow radious around text
+    pfnDrawTextCallback: DTT_CALLBACK_PROC; // Callback for DrawText
+    lParam: LPARAM;                         // Parameter for callback
+  end;
+{$EXTERNALSYM _DTTOPTS}
+  DTTOPTS = _DTTOPTS;
+{$EXTERNALSYM DTTOPTS}
+  PDTTOPTS = ^_DTTOPTS;
+{$EXTERNALSYM PDTTOPTS}
+  TDTOpts = DTTOPTS;
+
+// if (_WIN32_WINNT >= 0x0600)
+
+var
+  DrawThemeTextEx: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId: Integer; pszText: LPCWSTR;
+    cchText: Integer; dwTextFlags: DWORD; pRect: PRect; pOptions: PDTTOPTS): HRESULT; stdcall;
+{$EXTERNALSYM DrawThemeTextEx}
+
+//-----------------------------------------------------------------------
+//  GetThemeStream() - Get the value for the specified STREAM property
+//
+//      hTheme      - theme data handle
+//      iPartId     - part number
+//      iStateId    - state number of part
+//      iPropId     - the property number to get the value for
+//      ppvStream   - if non-null receives the value of the STREAM property (not to be freed)
+//      pcbStream   - if non-null receives the size of the STREAM property
+//      hInst       - NULL when iPropId==TMT_STREAM, HINSTANCE of a loaded msstyles
+//                    file when iPropId==TMT_DISKSTREAM (use GetCurrentThemeName
+//                    and LoadLibraryEx(LOAD_LIBRARY_AS_DATAFILE)
+//-----------------------------------------------------------------------
+
+var
+  GetThemeBitmap: function(hTheme: HTHEME; iPartId, iStateId, iPropId: Integer; dwFlags: ULONG;
+    var phBitmap: HBITMAP): HRESULT; stdcall;
+{$EXTERNALSYM GetThemeBitmap}
+
+//-----------------------------------------------------------------------
+//  GetThemeStream() - Get the value for the specified STREAM property
+//
+//      hTheme      - theme data handle
+//      iPartId     - part number
+//      iStateId    - state number of part
+//      iPropId     - the property number to get the value for
+//      ppvStream   - if non-null receives the value of the STREAM property (not to be freed)
+//      pcbStream   - if non-null receives the size of the STREAM property
+//      hInst       - NULL when iPropId==TMT_STREAM, HINSTANCE of a loaded msstyles
+//                    file when iPropId==TMT_DISKSTREAM (use GetCurrentThemeName
+//                    and LoadLibraryEx(LOAD_LIBRARY_AS_DATAFILE)
+//-----------------------------------------------------------------------
+
+var
+  GetThemeStream: function(hTheme: HTHEME; iPartId, iStateId, iPropId: Integer; ppvStream: PPointer;
+    pcbStream: PDWORD; hInst: HINST): HRESULT; stdcall;
+{$EXTERNALSYM GetThemeStream}
+
+//------------------------------------------------------------------------
+//  BufferedPaintInit() - Initialize the Buffered Paint API.
+//                        Should be called prior to BeginBufferedPaint,
+//                        and should have a matching BufferedPaintUnInit.
+//------------------------------------------------------------------------
+var
+  BufferedPaintInit: function: HRESULT; stdcall;
+{$EXTERNALSYM BufferedPaintInit}
+
+//------------------------------------------------------------------------
+//  BufferedPaintUnInit() - Uninitialize the Buffered Paint API.
+//                          Should be called once for each call to BufferedPaintInit,
+//                          when calls to BeginBufferedPaint are no longer needed.
+//------------------------------------------------------------------------
+
+var
+  BufferedPaintUnInit: function: HRESULT; stdcall;
+{$EXTERNALSYM BufferedPaintUnInit}
+
+//------------------------------------------------------------------------
+//  BeginBufferedPaint() - Begins a buffered paint operation.
+//
+//    hdcTarget          - Target DC on which the buffer will be painted
+//    rcTarget           - Rectangle specifying the area of the target DC to paint to
+//    dwFormat           - Format of the buffer (see BP_BUFFERFORMAT)
+//    pPaintParams       - Paint operation parameters (see BP_PAINTPARAMS)
+//    phBufferedPaint    - Pointer to receive handle to new buffered paint context
+//------------------------------------------------------------------------
+
+// HPAINTBUFFER
+type
+  HPAINTBUFFER = HANDLE;  // handle to a buffered paint context
+{$EXTERNALSYM HPAINTBUFFER}
+
+// BP_BUFFERFORMAT
+const
+  BPBF_COMPATIBLEBITMAP = 0;    // Compatible bitmap
+{$EXTERNALSYM BPBF_COMPATIBLEBITMAP}
+  BPBF_DIB              = 1;    // Device-independent bitmap
+{$EXTERNALSYM BPBF_DIB}
+  BPBF_TOPDOWNDIB       = 2;    // Top-down device-independent bitmap
+{$EXTERNALSYM BPBF_TOPDOWNDIB}
+  BPBF_TOPDOWNMONODIB   = 3;    // Top-down monochrome device-independent bitmap
+{$EXTERNALSYM BPBF_TOPDOWNMONODIB}
+  BPBF_COMPOSITED       = BPBF_TOPDOWNDIB;
+{$EXTERNALSYM BPBF_COMPOSITED}
+
+
+// BP_ANIMATIONSTYLE
+const
+  BPAS_NONE   = 0;              // No animation
+{$EXTERNALSYM BPAS_NONE}
+  BPAS_LINEAR = 1;              // Linear fade animation
+{$EXTERNALSYM BPAS_LINEAR}
+  BPAS_CUBIC  = 2;              // Cubic fade animation
+{$EXTERNALSYM BPAS_CUBIC}
+  BPAS_SINE   = 3;              // Sinusoid fade animation
+{$EXTERNALSYM BPAS_SINE}
+
+// BP_ANIMATIONPARAMS
+type
+   _BP_ANIMATIONPARAMS = record
+    cbSize: DWORD;
+    dwFlags: DWORD;           // BPAF_ flags
+    style: LongWord;          // BP_ANIMATIONSTYLE
+    dwDuration: DWORD;
+  end;
+{$EXTERNALSYM _BP_ANIMATIONPARAMS}
+  BP_ANIMATIONPARAMS = _BP_ANIMATIONPARAMS;
+{$EXTERNALSYM BP_ANIMATIONPARAMS}
+  PBP_ANIMATIONPARAMS = ^_BP_ANIMATIONPARAMS;
+{$EXTERNALSYM BP_ANIMATIONPARAMS}
+  TBP_AnimationParams = _BP_ANIMATIONPARAMS;
+
+const
+  BPPF_ERASE     = $0001; // Empty the buffer during BeginBufferedPaint()
+{$EXTERNALSYM BPPF_ERASE}
+  BPPF_NOCLIP    = $0002; // Don't apply the target DC's clip region to the double buffer
+{$EXTERNALSYM BPPF_NOCLIP}
+  BPPF_NONCLIENT = $0004; // Using a non-client DC
+{$EXTERNALSYM BPPF_NONCLIENT}
+
+// BP_PAINTPARAMS
+type
+  _BP_PAINTPARAMS = record
+    cbSize: DWORD;
+    dwFlags: DWORD;                // BPPF_ flags
+    prcExclude: PRect;
+    pBlendFunction: PBLENDFUNCTION;
+  end;
+{$EXTERNALSYM _BP_PAINTPARAMS}
+  BP_PAINTPARAMS = _BP_PAINTPARAMS;
+{$EXTERNALSYM BP_PAINTPARAMS}
+  PBP_PAINTPARAMS = ^_BP_PAINTPARAMS;
+{$EXTERNALSYM PBP_PAINTPARAMS}
+  TBP_PaintParams = _BP_PAINTPARAMS;
+
+var
+  BeginBufferedPaint: function(hdcTarget: HDC; prcTarget: PRECT; dwFormat: LongWord;
+    pPaintParams: PBP_PAINTPARAMS; var phdc: HDC): HPAINTBUFFER; stdcall;
+{$EXTERNALSYM BeginBufferedPaint}
+
+//------------------------------------------------------------------------
+//  EndBufferedPaint() - Ends a buffered paint operation.
+//
+//    hBufferedPaint   - handle to buffered paint context
+//    fUpdateTarget    - update target DC
+//------------------------------------------------------------------------
+
+var
+  EndBufferedPaint: function(hBufferedPaint: HPAINTBUFFER; fUpdateTarget: BOOL): HRESULT; stdcall;
+{$EXTERNALSYM EndBufferedPaint}
+
+//------------------------------------------------------------------------
+//  GetBufferedPaintTargetRect() - Returns the target rectangle specified during BeginBufferedPaint
+//
+//    hBufferedPaint             - handle to buffered paint context
+//    prc                        - pointer to receive target rectangle
+//------------------------------------------------------------------------
+
+var
+  GetBufferedPaintTargetRect: function(hBufferedPaint: HPAINTBUFFER; var prc: TRect): HRESULT; stdcall;
+{$EXTERNALSYM GetBufferedPaintTargetRect}
+
+//------------------------------------------------------------------------
+//  GetBufferedPaintTargetDC() - Returns the target DC specified during BeginBufferedPaint
+//
+//    hBufferedPaint           - handle to buffered paint context
+//------------------------------------------------------------------------
+
+var
+  GetBufferedPaintTargetDC: function(hBufferedPaint: HPAINTBUFFER): HDC; stdcall;
+{$EXTERNALSYM GetBufferedPaintTargetDC}
+
+//------------------------------------------------------------------------
+//  GetBufferedPaintDC() - Returns the same paint DC returned by BeginBufferedPaint
+//
+//    hBufferedPaint     - handle to buffered paint context
+//------------------------------------------------------------------------
+
+var
+  GetBufferedPaintDC: function(hBufferedPaint: HPAINTBUFFER): HDC; stdcall;
+{$EXTERNALSYM GetBufferedPaintDC}
+
+//------------------------------------------------------------------------
+//  GetBufferedPaintBits() - Obtains a pointer to the buffer bitmap, if the buffer is a DIB
+//
+//    hBufferedPaint       - handle to buffered paint context
+//    ppbBuffer            - pointer to receive pointer to buffer bitmap pixels
+//    pcxRow               - pointer to receive width of buffer bitmap, in pixels;
+//                           this value may not necessarily be equal to the buffer width
+//------------------------------------------------------------------------
+
+var
+  GetBufferedPaintBits: function(hBufferedPaint: HPAINTBUFFER; var ppbBuffer: PRGBQUAD;
+    var pcxRow: Integer): HRESULT; stdcall;
+{$EXTERNALSYM GetBufferedPaintBits}
+
+//------------------------------------------------------------------------
+//  BufferedPaintClear() - Clears given rectangle to ARGB = {0, 0, 0, 0}
+//
+//    hBufferedPaint     - handle to buffered paint context
+//    prc                - rectangle to clear; NULL specifies entire buffer
+//------------------------------------------------------------------------
+
+var
+  BufferedPaintClear: function(hBufferedPaint: HPAINTBUFFER; prc: PRect): HRESULT; stdcall;
+{$EXTERNALSYM BufferedPaintClear}
+
+//------------------------------------------------------------------------
+//  BufferedPaintSetAlpha() - Set alpha to given value in given rectangle
+//
+//    hBufferedPaint        - handle to buffered paint context
+//    prc                   - rectangle to set alpha in; NULL specifies entire buffer
+//    alpha                 - alpha value to set in the given rectangle
+//------------------------------------------------------------------------
+
+var
+  BufferedPaintSetAlpha: function(hBufferedPaint: HPAINTBUFFER; prc: PRect; alpha: Byte): HRESULT; stdcall;
+{$EXTERNALSYM BufferedPaintSetAlpha}
+
+// Macro for setting the buffer to opaque (alpha = 255)
+function BufferedPaintMakeOpaque(hBufferedPaint: HPAINTBUFFER; prc: PRect): HRESULT;
+{$EXTERNALSYM BufferedPaintMakeOpaque}
+
+//------------------------------------------------------------------------
+//  BufferedPaintStopAllAnimations() - Stop all buffer animations for the given window
+//
+//    hwnd                           - window on which to stop all animations
+//------------------------------------------------------------------------
+
+var
+  BufferedPaintStopAllAnimations: function(hwnd: HWND): HRESULT; stdcall;
+{$EXTERNALSYM BufferedPaintStopAllAnimations}
+
+type
+  HANIMATIONBUFFER = HANDLE;  // handle to a buffered paint animation
+{$EXTERNALSYM HANIMATIONBUFFER}
+
+var
+  BeginBufferedAnimation: function(hwnd: HWND; hdcTarget: HDC; var prcTarget: TRect;
+    dwFormat: LongWord; pPaintParams: PBP_PAINTPARAMS; pAnimationParams: PBP_ANIMATIONPARAMS;
+    var phdcFrom: HDC; var phdcTo: HDC): HANIMATIONBUFFER; stdcall;
+{$EXTERNALSYM BeginBufferedAnimation}
+
+var
+  EndBufferedAnimation: function(hbpAnimation: HANIMATIONBUFFER; fUpdateTarget: BOOL): HRESULT; stdcall;
+{$EXTERNALSYM EndBufferedAnimation}
+
+var
+  BufferedPaintRenderAnimation: function(hwnd: HWND; hdcTarget: HDC): BOOL; stdcall;
+{$EXTERNALSYM BufferedPaintRenderAnimation}
+
+//----------------------------------------------------------------------------
+// Tells if the DWM is running, and composition effects are possible for this
+// process (themes are active).
+// Roughly equivalent to "DwmIsCompositionEnabled() && IsAppthemed()"
+//----------------------------------------------------------------------------
+var
+  IsCompositionActive: function: BOOL; stdcall;
+{$EXTERNALSYM IsCompositionActive}
+
+//------------------------------------------------------------------------
+//  GetThemeTransitionDuration()
+//                      - Gets the duration for the specified transition
+//
+//  hTheme              - theme data handle
+//  iPartId             - part number
+//  iStateIdFrom        - starting state number of part
+//  iStateIdTo          - ending state number of part
+//  iPropId             - property id
+//  pdwDuration         - receives the transition duration
+//------------------------------------------------------------------------
+
+var
+  GetThemeTransitionDuration: function(hTheme: HTHEME; iPartId, iStateIdFrom, iStateIdTo, iPropId: Integer;
+    var pdwDuration: DWORD): HRESULT;
+{$EXTERNALSYM GetThemeTransitionDuration}
+
+// endif // if (_WIN32_WINNT >= 0x0600)
+
 implementation
 
 uses
@@ -1165,6 +1813,32 @@ begin
       GetThemeDocumentationProperty := nil;
       DrawThemeParentBackground := nil;
       EnableTheming := nil;
+      OpenThemeDataEx := nil;
+      DrawThemeBackgroundEx := nil;
+      DrawThemeParentBackgroundEx := nil;
+      SetWindowThemeAttribute := nil;
+      DrawThemeTextEx := nil;
+      GetThemeBitmap := nil;
+      GetThemeStream := nil;
+      BufferedPaintInit := nil;
+      BufferedPaintUnInit := nil;
+      BeginBufferedPaint := nil;
+      EndBufferedPaint := nil;
+      GetBufferedPaintTargetRect := nil;
+      GetBufferedPaintTargetDC := nil;
+      GetBufferedPaintDC := nil;
+      GetBufferedPaintBits := nil;
+      BufferedPaintClear := nil;
+      BufferedPaintSetAlpha := nil;
+      BufferedPaintStopAllAnimations := nil;
+      BeginBufferedAnimation := nil;
+      EndBufferedAnimation := nil;
+      BufferedPaintRenderAnimation := nil;
+      IsCompositionActive := nil;
+      GetThemeTransitionDuration := nil;
+      BeginPanningFeedback := nil;
+      UpdatePanningFeedback := nil;
+      EndPanningFeedback := nil;
     end;
   finally
     Lock.Leave;
@@ -1185,6 +1859,7 @@ begin
       ThemeLibrary := LoadLibrary(themelib);
       if ThemeLibrary > 0 then
       begin
+        // windows XP
         Pointer(OpenThemeData) := GetProcAddress(ThemeLibrary, 'OpenThemeData');
         Pointer(CloseThemeData) := GetProcAddress(ThemeLibrary, 'CloseThemeData');
         Pointer(DrawThemeBackground) := GetProcAddress(ThemeLibrary, 'DrawThemeBackground');
@@ -1232,6 +1907,34 @@ begin
         Pointer(GetThemeDocumentationProperty) := GetProcAddress(ThemeLibrary, 'GetThemeDocumentationProperty');
         Pointer(DrawThemeParentBackground) := GetProcAddress(ThemeLibrary, 'DrawThemeParentBackground');
         Pointer(EnableTheming) := GetProcAddress(ThemeLibrary, 'EnableTheming');
+        // windows Vista
+        Pointer(OpenThemeDataEx) := GetProcAddress(ThemeLibrary, 'OpenThemeDataEx');
+        Pointer(DrawThemeBackgroundEx) := GetProcAddress(ThemeLibrary, 'DrawThemeBackgroundEx');
+        Pointer(DrawThemeParentBackgroundEx) := GetProcAddress(ThemeLibrary, 'DrawThemeParentBackgroundEx');
+        Pointer(SetWindowThemeAttribute) := GetProcAddress(ThemeLibrary, 'SetWindowThemeAttribute');
+        Pointer(DrawThemeTextEx) := GetProcAddress(ThemeLibrary, 'DrawThemeTextEx');
+        Pointer(GetThemeBitmap) := GetProcAddress(ThemeLibrary, 'GetThemeBitmap');
+        Pointer(GetThemeStream) := GetProcAddress(ThemeLibrary, 'GetThemeStream');
+        Pointer(BufferedPaintInit) := GetProcAddress(ThemeLibrary, 'BufferedPaintInit');
+        Pointer(BufferedPaintUnInit) := GetProcAddress(ThemeLibrary, 'BufferedPaintUnInit');
+        Pointer(BeginBufferedPaint) := GetProcAddress(ThemeLibrary, 'BeginBufferedPaint');
+        Pointer(EndBufferedPaint) := GetProcAddress(ThemeLibrary, 'EndBufferedPaint');
+        Pointer(GetBufferedPaintTargetRect) := GetProcAddress(ThemeLibrary, 'GetBufferedPaintTargetRect');
+        Pointer(GetBufferedPaintTargetDC) := GetProcAddress(ThemeLibrary, 'GetBufferedPaintTargetDC');
+        Pointer(GetBufferedPaintDC) := GetProcAddress(ThemeLibrary, 'GetBufferedPaintDC');
+        Pointer(GetBufferedPaintBits) := GetProcAddress(ThemeLibrary, 'GetBufferedPaintBits');
+        Pointer(BufferedPaintClear) := GetProcAddress(ThemeLibrary, 'BufferedPaintClear');
+        Pointer(BufferedPaintSetAlpha) := GetProcAddress(ThemeLibrary, 'BufferedPaintSetAlpha');
+        Pointer(BufferedPaintStopAllAnimations) := GetProcAddress(ThemeLibrary, 'BufferedPaintStopAllAnimations');
+        Pointer(BeginBufferedAnimation) := GetProcAddress(ThemeLibrary, 'BeginBufferedAnimation');
+        Pointer(EndBufferedAnimation) := GetProcAddress(ThemeLibrary, 'EndBufferedAnimation');
+        Pointer(BufferedPaintRenderAnimation) := GetProcAddress(ThemeLibrary, 'BufferedPaintRenderAnimation');
+        Pointer(IsCompositionActive) := GetProcAddress(ThemeLibrary, 'IsCompositionActive');
+        Pointer(GetThemeTransitionDuration) := GetProcAddress(ThemeLibrary, 'GetThemeTransitionDuration');
+        // windows 7
+        Pointer(BeginPanningFeedback) := GetProcAddress(ThemeLibrary, 'BeginPanningFeedback');
+        Pointer(UpdatePanningFeedback) := GetProcAddress(ThemeLibrary, 'UpdatePanningFeedback');
+        Pointer(EndPanningFeedback) := GetProcAddress(ThemeLibrary, 'EndPanningFeedback');
       end;
     end;
     Result := ThemeLibrary > 0;
@@ -1249,6 +1952,22 @@ begin
     Result := IsAppThemed() and IsThemeActive();
 end;
 
+//----------------------------------------------------------------------------------------------------------------------
+
+function SetWindowThemeNonClientAttributes(hwnd: HWND; dwMask: DWORD; dwAttributes: DWORD): HRESULT;
+var
+  wta: WTA_OPTIONS;
+begin
+  wta.dwFlags := dwAttributes;
+  wta.dwMask := dwMask;
+  Result := SetWindowThemeAttribute(hwnd, WTA_NONCLIENT, @wta, sizeof(wta));
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+function BufferedPaintMakeOpaque(hBufferedPaint: HPAINTBUFFER; prc: PRect): HRESULT;
+begin
+  Result := BufferedPaintSetAlpha(hBufferedPaint, prc, 255);
+end;
 //----------------------------------------------------------------------------------------------------------------------
 
 initialization
