@@ -207,7 +207,8 @@ const
     'bbtExcept',
     'bbtIf',
     'bbtIfThen',
-    'bbtIfElse'
+    'bbtIfElse',
+    'bbtIfBegin'
     );
 
 implementation
