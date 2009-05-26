@@ -20,7 +20,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="taseries.pas"/>
         <UnitName Value="TASeries"/>
@@ -48,6 +48,11 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="TASources"/>
       </Item6>
+      <Item7>
+        <Filename Value="tadbsource.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TADbSource"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

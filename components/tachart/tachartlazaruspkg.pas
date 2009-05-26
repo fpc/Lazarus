@@ -8,7 +8,7 @@ interface
 
 uses
   TASeries, TAGraph, TAChartUtils, TASeriesEditor, TATypes, TASources, 
-  LazarusPackageIntf;
+  TADbSource, LazarusPackageIntf;
 
 implementation
 
@@ -17,6 +17,7 @@ begin
   RegisterUnit('TAGraph', @TAGraph.Register); 
   RegisterUnit('TASeriesEditor', @TASeriesEditor.Register); 
   RegisterUnit('TASources', @TASources.Register); 
+  RegisterUnit('TADbSource', @TADbSource.Register); 
 end; 
 
 initialization
