@@ -534,7 +534,6 @@ var
   Desc: TRawImageDescription absolute ARawImage.Description;
   displayID: CGDirectDisplayID;
   ScreenImage: CGImageRef;
-  dataProvider: CGDataProviderRef;
 begin
   Result := False;
 
@@ -551,7 +550,7 @@ begin
   { Get's a screenshot }
   displayID := CGMainDisplayID();
   ScreenImage := grabViaOpenGL(displayID, CGDisplayBounds(displayID));
-  dataProvider := CGImageGetDataProvider(ScreenImage);
+  //dataProvider := CGImageGetDataProvider(ScreenImage);
 
   { Fills the image description }
   ARawImage.Init;

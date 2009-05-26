@@ -106,7 +106,6 @@ var
   QuitHandler: EventHandlerRef;
   TmpSpec: EventTypeSpec;
   Loop: TApplicationMainLoop = nil;
-  Dummy: LongWord;
 begin
   // Get our TApplicationMainLoop
   Result := noErr;
