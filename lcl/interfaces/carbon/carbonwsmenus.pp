@@ -288,7 +288,7 @@ end;
 class procedure TCarbonWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
   const HasIcon: Boolean; const AIcon: TBitmap);
 begin
-  if not CheckMenu(AMenuItem, 'UpdateMenuIcon') then Exit;
+  if not CheckMenu(AMenuItem.Handle, 'UpdateMenuIcon') then Exit;
   TCarbonMenu(AMenuItem.Handle).Update;
 end;
 
