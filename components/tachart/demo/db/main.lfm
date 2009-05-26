@@ -1,0 +1,73 @@
+object Form1: TForm1
+  Left = 318
+  Height = 300
+  Top = 151
+  Width = 547
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 547
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object Chart1: TChart
+    Left = 0
+    Height = 300
+    Top = 0
+    Width = 347
+    BottomAxis.Grid.Style = psDot
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    LeftAxis.Grid.Style = psDot
+    LeftAxis.Title.Angle = 90
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      SeriesColor = clBlack
+      Source = DbChartSource1
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 347
+    Height = 300
+    Top = 0
+    Width = 200
+    Align = alRight
+    DataSource = Datasource1
+    Scrollbars = ssAutoBoth
+    TabOrder = 1
+  end
+  object MemDataset1: TMemDataset
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'X'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end    
+      item
+        Name = 'Y'
+        DataType = ftFloat
+        Precision = 0
+        Size = 0
+      end>
+    left = 271
+    top = 60
+  end
+  object Datasource1: TDatasource
+    DataSet = MemDataset1
+    left = 271
+    top = 108
+  end
+  object DbChartSource1: TDbChartSource
+    DataSource = Datasource1
+    FieldX = 'X'
+    FieldY = 'Y'
+    left = 271
+    top = 156
+  end
+end
