@@ -418,14 +418,29 @@ begin
 end;
 
 function TCarbonThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
+const
+  DefaultPushButtonWidth = 70;
 begin
-  if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
-  begin
-    Result := Size(GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
-      GetCarbonThemeMetric(kThemeMetricDisclosureTriangleHeight));
-  end
+  case Details.Element of
+    teTreeView:
+      if (Details.Part = TVP_GLYPH) then
+      begin
+        Result := Types.Size(
+          GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
+          GetCarbonThemeMetric(kThemeMetricDisclosureTriangleHeight)
+        );
+      end;
+    teButton:
+      if Details.Part = BP_PUSHBUTTON then
+      begin
+        Result := Types.Size(
+          DefaultPushButtonWidth,
+          GetCarbonThemeMetric(kThemeMetricPushButtonHeight)
+        );
+      end;
   else
     Result := inherited GetDetailSize(Details);
+  end;
 end;
 
 function TCarbonThemeServices.GetOption(AOption: TThemeOption): Integer;
