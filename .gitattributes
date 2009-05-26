@@ -1580,6 +1580,7 @@ components/tachart/taserieseditor.pas svneol=native#text/plain
 components/tachart/tasources.pas svneol=native#text/pascal
 components/tachart/tatypes.pas svneol=native#text/plain
 components/tachart/tchart.png -text svneol=unset#images/png
+components/tachart/tdbchartsource.png -text
 components/tachart/tlistchartsource.png -text svneol=unset#images/png
 components/tachart/trandomchartsource.png -text svneol=unset#images/png
 components/tachart/tuserdefinedchartsource.png -text svneol=unset#images/png
