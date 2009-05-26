@@ -8680,10 +8680,9 @@ function TFindDeclarationTool.IsTermEdgedBracket(TermPos: TAtomPosition; out
    - functions
    - operators: + and -
 
-    [a,b]+[c]-A()
+    [a,b]+[c]-D()*inherited E
 
   not allowed:
-    []*[]
     []<>[]
 }
 var
@@ -8707,7 +8706,8 @@ begin
       begin
         inc(Lvl);
         if (Lvl=1) and (EdgedBracketsStartPos<1) then begin
-          if (LastAtoms.Count=0) or LastAtomIs(-1,'+') or LastAtomIs(-1,'-')
+          if (LastAtoms.Count=0)
+          or LastAtomIs(-1,'+') or LastAtomIs(-1,'-') or LastAtomIs(-1,'*')
           then
             EdgedBracketsStartPos:=CurPos.StartPos;
         end;
