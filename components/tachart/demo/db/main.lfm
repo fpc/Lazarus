@@ -18,6 +18,10 @@ object Form1: TForm1
     Foot.Font.Color = clBlue
     LeftAxis.Grid.Style = psDot
     LeftAxis.Title.Angle = 90
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 0
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (

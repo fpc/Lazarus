@@ -31,6 +31,11 @@ uses
   Classes, SysUtils, Graphics, Controls, FPCanvas,
   TAChartUtils;
 
+const
+  MARKS_MARGIN_X = 4;
+  MARKS_MARGIN_Y = 2;
+  DEF_MARGIN = 4;
+
 type
   TCustomChart = class(TCustomControl);
 
@@ -272,9 +277,30 @@ type
     property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds default false;
   end;
 
-const
-  MARKS_MARGIN_X = 4;
-  MARKS_MARGIN_Y = 2;
+  TChartMargin = 0..MaxInt;
+
+  { TChartMargins }
+
+  TChartMargins = class (TChartElement)
+  private
+    FData: record
+      case Integer of
+        0: (FRect: TRect;);
+        1: (FCoords: array [1..4] of Integer;);
+      end;
+    function GetValue(AIndex: Integer): integer;
+    procedure SetValue(AIndex: integer; AValue: TChartMargin);
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    procedure Assign(Source: TPersistent); override;
+    property Data: TRect read FData.FRect;
+  published
+    property Left: TChartMargin index 1 read GetValue write SetValue default DEF_MARGIN;
+    property Top: TChartMargin index 2 read GetValue write SetValue default DEF_MARGIN;
+    property Right: TChartMargin index 3 read GetValue write SetValue default DEF_MARGIN;
+    property Bottom: TChartMargin index 4 read GetValue write SetValue default DEF_MARGIN;
+  end;
 
 implementation
 
@@ -829,6 +855,32 @@ begin
   StyleChanged(Self);
 end;
 
+{ TChartMargins }
+
+procedure TChartMargins.Assign(Source: TPersistent);
+begin
+  if Source is TChartMargins then
+    TChartMargins(Source).FData.FRect := Data;
+  inherited Assign(Source);
+end;
+
+constructor TChartMargins.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FData.FRect := Rect(DEF_MARGIN, DEF_MARGIN, DEF_MARGIN, DEF_MARGIN);
+end;
+
+function TChartMargins.GetValue(AIndex: Integer): integer;
+begin
+  Result := FData.FCoords[AIndex];
+end;
+
+procedure TChartMargins.SetValue(AIndex: integer; AValue: TChartMargin);
+begin
+  if FData.FCoords[AIndex] = AValue then exit;
+  FData.FCoords[AIndex] := AValue;
+  StyleChanged(Self);
+end;
 
 end.
 

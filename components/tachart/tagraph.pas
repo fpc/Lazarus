@@ -138,6 +138,7 @@ type
     FGraphBrush: TBrush;
     FLeftAxis: TChartAxis;
     FLegend: TChartLegend;
+    FMargins: TChartMargins;
     FMirrorX: Boolean;                // From right to left ?
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
@@ -175,6 +176,7 @@ type
     procedure SetGraphBrush(Value: TBrush);
     procedure SetLeftAxis(Value: TChartAxis);
     procedure SetLegend(Value: TChartLegend);
+    procedure SetMargins(AValue: TChartMargins);
     procedure SetMirrorX(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetTitle(Value: TChartTitle);
@@ -258,6 +260,7 @@ type
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
     property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
     property Legend: TChartLegend read FLegend write SetLegend;
+    property Margins: TChartMargins read FMargins write SetMargins;
     property MirrorX: Boolean read FMirrorX write SetMirrorX default false;
     property ReticuleMode: TReticuleMode
       read FReticuleMode write SetReticuleMode default rmNone;
@@ -375,6 +378,7 @@ begin
   FFrame.OnChange := @StyleChanged;
 
   FExtent := TChartExtent.Create(Self);
+  FMargins := TChartMargins.Create(Self);
 end;
 
 destructor TChart.Destroy;
@@ -389,6 +393,7 @@ begin
   FBottomAxis.Free;
   FFrame.Free;
   FExtent.Free;
+  FMargins.Free;
 
   inherited Destroy;
 end;
@@ -876,12 +881,10 @@ begin
 end;
 
 function TChart.GetMargins(ACanvas: TCanvas): TRect;
-const
-  DEF_MARGIN = 4;
 var
   i: Integer;
 begin
-  Result := Rect(DEF_MARGIN, DEF_MARGIN, DEF_MARGIN, DEF_MARGIN);
+  Result := FMargins.Data;
   for i := 0 to SeriesCount - 1 do
     if Series[i].Active then
       Series[i].UpdateMargins(ACanvas, Result);
@@ -1238,6 +1241,12 @@ end;
 procedure TChart.SetBottomAxis(Value: TChartAxis);
 begin
   FBottomAxis.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetMargins(AValue: TChartMargins);
+begin
+  FMargins.Assign(AValue);
   Invalidate;
 end;
 
