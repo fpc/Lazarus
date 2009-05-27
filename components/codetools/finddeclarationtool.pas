@@ -531,7 +531,8 @@ type
 
   TFindDeclarationListFlag = (
     fdlfWithoutEmptyProperties, // omit properties without type and attributes
-    fdlfWithoutForwards         // omit foward classes and procedures
+    fdlfWithoutForwards,        // omit foward classes and procedures
+    fdlfIfStartIsDefinitionStop // omit overloads when start is a definition
     );
   TFindDeclarationListFlags = set of TFindDeclarationListFlag;
   
@@ -3551,6 +3552,7 @@ var
   OldPositions: TFPList;
   NodeList: TFPList;
   CleanPos: integer;
+  AtDefinition: Boolean;
 
   procedure AddPos;
   begin
@@ -3606,8 +3608,11 @@ begin
     NewTool:=Self;
     NewNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,true);
     NewPos:=CursorPos;
-    if StartPositionAtDefinition then
+    AtDefinition:=StartPositionAtDefinition;
+    if AtDefinition then begin
       AddPos;
+      if fdlfIfStartIsDefinitionStop in Flags then exit;
+    end;
 
     CurCursorPos:=CursorPos;
     CurTool:=Self;
