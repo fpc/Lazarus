@@ -6699,6 +6699,7 @@ begin
           NewProgramFilename:=AFilename
         else
           NewProgramFilename:=NewProgramName+Ext;
+        NewProgramFilename:=ExtractFilePath(NewLPIFilename)+NewProgramFilename;
         if (CompareFilenames(NewLPIFilename,NewProgramFilename)=0) then
         begin
           ACaption:=lisChooseADifferentName;
@@ -6730,6 +6731,8 @@ begin
     InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
   end;
+
+  DebugLn(['TMainIDE.DoShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFilename]);
 
   // check if info file or source file already exists
   if FileExistsUTF8(NewLPIFilename) then
@@ -6827,6 +6830,7 @@ begin
   IncreaseCompilerParseStamp;
 
   Result:=mrOk;
+  DebugLn(['TMainIDE.DoShowSaveProjectAsDialog END OK']);
 end;
 
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
