@@ -1701,11 +1701,15 @@ begin
       // search in JIT method of stream class (e.g. ancestor)
       JITMethod:=JITMethods.Find(FCurReadStreamClass,TheMethodName);
     end;
-    if JITMethod=nil then begin
+    if (JITMethod=nil) and (Reader.LookupRoot<>nil) then begin
       // create a fake TJITMethod
+      //DebugLn(['TJITComponentList.ReaderSetMethodProperty ',DbgSName(reader.LookupRoot),' TheMethodName=',TheMethodName]);
       JITMethod:=JITMethods.Add(Reader.LookupRoot.ClassType,TheMethodName);
     end;
-    Method:=JITMethod.Method;
+    if JITMethod<>nil then
+      Method:=JITMethod.Method
+    else
+      Method.Data:=nil;
   end;
   SetMethodProp(Instance, PropInfo, Method);
   
