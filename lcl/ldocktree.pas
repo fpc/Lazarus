@@ -2528,6 +2528,10 @@ begin
             //DebugLn('TCustomAnchoredDockManager.UndockControl Splitter not needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),')');
             DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
                                OldAnchorControls[OppositeAnchor[a]]);
+            //update caption
+            if (ParentControl is TLazDockPage) and (TLazDockPage(ParentControl).ControlCount > 1) and
+               (TLazDockPage(ParentControl).Controls[0] = Control) then
+               TLazDockPage(ParentControl).Caption := TLazDockPage(ParentControl).Controls[1].Caption;
             Done:=true;
           end;
         end;
