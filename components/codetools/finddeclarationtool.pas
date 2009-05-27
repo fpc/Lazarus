@@ -3592,6 +3592,25 @@ var
       Result:=false;
   end;
 
+  function StartPositionAtFunctionResult: boolean;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Result:=false;
+    if (NewNode.Desc=ctnProcedureHead)
+    and PositionInFuncResultName(NewNode,CleanPos) then begin
+      Node:=NewNode.FirstChild;
+      if Node=nil then exit;
+      if Node.Desc=ctnParameterList then Node:=Node.NextBrother;
+      if Node=nil then exit;
+      if Node.Desc in [ctnVarDefinition,ctnIdentifier] then begin
+        // return the function result type or the operator variable name
+        NewNode:=Node;
+        Result:=true;
+      end;
+    end;
+  end;
+
 begin
   Result:=true;
   ListOfPCodeXYPosition:=nil;
@@ -3612,6 +3631,11 @@ begin
     if AtDefinition then begin
       AddPos;
       if fdlfIfStartIsDefinitionStop in Flags then exit;
+    end;
+    if StartPositionAtFunctionResult then begin
+      AddPos;
+      // the function result has no overloads => stop search
+      exit;
     end;
 
     CurCursorPos:=CursorPos;

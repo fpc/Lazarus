@@ -198,20 +198,16 @@ begin
 
   CacheWasUsed:=false;
 
-  if IsIdentChar[Code.Source[CodePos.P]] then begin
-    //DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
+  //DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
 
-    // ask the codetools
-    if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
-    and (ListOfPCodeXYPosition<>nil)
-    and (ListOfPCodeXYPosition.Count>0) then begin
-      Result:=true;
-    end else begin
-      FreeAndNil(ListOfPCodeXYPosition);
-      Result:=false;
-    end;
+  // ask the codetools
+  if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
+  and (ListOfPCodeXYPosition<>nil)
+  and (ListOfPCodeXYPosition.Count>0) then begin
+    Result:=true;
   end else begin
-    exit;
+    FreeAndNil(ListOfPCodeXYPosition);
+    Result:=false;
   end;
 
   // save to cache

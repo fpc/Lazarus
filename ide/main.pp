@@ -13341,22 +13341,6 @@ var
 begin
   if (SrcEdit=nil) then exit;
 
-  // check if there is an identifier
-  case ToolStatus of
-    itNone: begin
-      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
-      if (Identifier='') or (not IsValidIdent(Identifier)) then exit;
-    end;
-    itDebugger: begin
-//      Identifier := SrcEdit.GetWordFromCaretEx(CaretPos,
-//        ['A'..'Z', 'a'..'z', '0'..'9', '(', '[', '.', ''''],
-//        ['A'..'Z', 'a'..'z', '0'..'9', ')', ']', '^', '''']);
-      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
-      if Identifier = '' then Exit;
-    end;
-  else
-    Exit;
-  end;
   SourceNotebook.SetActiveSE(SrcEdit);
 
   if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
@@ -13375,6 +13359,8 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
     end;
     itDebugger: begin
+      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
+      if Identifier = '' then Exit;
       if SrcEdit.SelectionAvailable
       and SrcEdit.CaretInSelection(CaretPos)
       then Expression := SrcEdit.GetText(True)

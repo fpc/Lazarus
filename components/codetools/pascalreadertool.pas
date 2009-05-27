@@ -104,6 +104,8 @@ type
         SkipClassName: boolean);
     function PositionInProcName(ProcNode: TCodeTreeNode;
                                 SkipClassName: boolean; CleanPos: integer): boolean;
+    function PositionInFuncResultName(ProcNode: TCodeTreeNode;
+                                      CleanPos: integer): boolean;
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
@@ -832,6 +834,45 @@ begin
   if (not SkipClassName) and InFirstAtom then
     exit(true); // position at classname
   Result:=false;
+end;
+
+function TPascalReaderTool.PositionInFuncResultName(ProcNode: TCodeTreeNode;
+  CleanPos: integer): boolean;
+// true if position between ) and :
+begin
+  Result:=false;
+  if ProcNode.Desc=ctnProcedure then begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+  end;
+  // read behind parameter list
+  if ProcNode.Desc<>ctnProcedureHead then exit;
+  if (ProcNode.FirstChild<>nil) and (ProcNode.FirstChild.Desc=ctnParameterList)
+  then begin
+    if (CleanPos<ProcNode.FirstChild.EndPos) then
+      exit;
+    MoveCursorToCleanPos(ProcNode.FirstChild.EndPos);
+  end else begin
+    MoveCursorToNodeStart(ProcNode.FirstChild);
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      // read name
+      ReadNextAtom;
+      if (CurPos.Flag=cafPoint) then begin
+        // read method name
+        ReadNextAtom;
+        ReadNextAtom;
+      end;
+    end;
+    if CurPos.Flag=cafRoundBracketOpen then
+      if not ReadTilBracketClose(false) then exit;
+  end;
+  if CurPos.StartPos>CleanPos then exit;
+  // read optional result variable (e.g. operator can have them)
+  ReadNextAtom;
+  if AtomIsIdentifier(false) then ReadNextAtom;
+  if CurPos.Flag<>cafColon then exit;
+  Result:=CleanPos<=CurPos.StartPos;
 end;
 
 function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode
