@@ -15,7 +15,6 @@
 unit LConvEncoding;
 
 {$mode objfpc}{$H+}
-//As iconv is Linux command, there is no sense in Windows
 {$IFDEF WINDOWS}
 {$WARNING Windows/Wine/ReactOS locale conversion is not fully supported yet. Sorry.}
 {$ENDIF}
