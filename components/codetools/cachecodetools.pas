@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   FileProcs, CodeAtom, CodeCache, KeywordFuncLists, CustomCodeTool,
-  FindDeclarationTool, AVL_Tree;
+  BasicCodeTools, FindDeclarationTool, AVL_Tree;
 
 type
 
@@ -181,10 +181,7 @@ begin
   if (CodePos.P<1) or (CodePos.P>Code.SourceLength) then exit;
 
   // move cursor to start of atom (needed to find CodePos in cache)
-
-  while (CodePos.P>1) and (IsIdentChar[Code.Source[CodePos.P-1]]) do
-    dec(CodePos.P);
-  if not IsIdentChar[Code.Source[CodePos.P]] then exit;
+  CodePos.P:=FindStartOfAtom(Code.Source,CodePos.P);
 
   // search in cache
   CheckCurrentIsValid;
@@ -201,16 +198,20 @@ begin
 
   CacheWasUsed:=false;
 
-  //DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
+  if IsIdentChar[Code.Source[CodePos.P]] then begin
+    //DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
 
-  // ask the codetools
-  if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
-  and (ListOfPCodeXYPosition<>nil)
-  and (ListOfPCodeXYPosition.Count>0) then begin
-    Result:=true;
+    // ask the codetools
+    if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
+    and (ListOfPCodeXYPosition<>nil)
+    and (ListOfPCodeXYPosition.Count>0) then begin
+      Result:=true;
+    end else begin
+      FreeAndNil(ListOfPCodeXYPosition);
+      Result:=false;
+    end;
   end else begin
-    FreeAndNil(ListOfPCodeXYPosition);
-    Result:=false;
+    exit;
   end;
 
   // save to cache
