@@ -4313,8 +4313,7 @@ begin
   if ProcNode.Desc=ctnMethodMap then begin
     exit;
   end;
-  if (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]))
-  or (ProcNode.FirstChild=nil) then begin
+  if (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType])) then begin
     {$IFDEF CheckNodeTool}
     CTDumpStack;
     {$ENDIF}
@@ -4326,9 +4325,11 @@ begin
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
   end;
-  if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
-  ProcNode.FirstChild.SubDesc:=
+  if ProcNode.FirstChild<>nil then begin
+    if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
+    ProcNode.FirstChild.SubDesc:=
                        ProcNode.FirstChild.SubDesc and (not ctnsNeedJITParsing);
+  end;
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
@@ -4341,8 +4342,10 @@ begin
     IsOperator:=UpAtomIs('OPERATOR');
     IsProcType:=ProcNode.Desc=ctnProcedureType;
     // read procedure head (= [name] + parameterlist + resulttype;)
-    CurNode:=ProcNode.FirstChild;
     ReadNextAtom;// read first atom of head
+    CurNode:=ProcNode.FirstChild;
+    if CurNode=nil then
+      RaiseStringExpectedButAtomFound('identifier');
     if not IsProcType then begin
       if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;

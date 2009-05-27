@@ -3279,7 +3279,8 @@ begin
         // this is the ON variable node, the type comes right behind
         Result.Node:=Result.Node.NextBrother;
       end else
-      if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier]) then begin
+      if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier])
+      then begin
         // this type is just an alias for another type
         // -> search the basic type
         if Result.Node.Parent=nil then
@@ -8824,10 +8825,10 @@ begin
           begin
             FindContext.Node:=FindContext.Node.Parent;
           end else begin
-          Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                         fdfTopLvlResolving,fdfFunctionResult];
-          FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                       ExprType.Context.Node);
+            Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                           fdfTopLvlResolving,fdfFunctionResult];
+            FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                                         ExprType.Context.Node);
           end;
         end;
 

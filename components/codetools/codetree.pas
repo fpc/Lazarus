@@ -101,7 +101,7 @@ const
   ctnMethodMap          = 51;
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
-  ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnIdentifier
+  ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
   ctnParameterList      = 62;  // childs: ctnVarDefinition
 
   ctnIdentifier         = 70;

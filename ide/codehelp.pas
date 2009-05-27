@@ -1624,11 +1624,19 @@ begin
   end;
 
   // use only definition nodes
-  if (Node.Desc=ctnProcedureHead)
-  and (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
-    Node:=Node.Parent;
-  if not (Node.Desc in
-    (AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnEnumIdentifier]))
+  if (Node.Desc=ctnProcedureHead) then begin
+    if CurTool.PositionInFuncResultName(Node,CleanPos)
+    and (Node.LastChild<>nil) and (Node.LastChild.Desc=ctnIdentifier) then begin
+      // cursor on function result
+      // use the result type node
+      Node:=Node.LastChild;
+    end else if (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
+      Node:=Node.Parent;
+  end;
+  if (not (Node.Desc in
+    (AllIdentifierDefinitions
+      +[ctnProperty,ctnProcedure,ctnEnumIdentifier])))
+  and (not CurTool.NodeIsResultType(Node))
   then begin
     DebugLn(['TCodeHelpManager.GetElementChain ignoring node ',Node.DescAsString]);
     exit;
@@ -1692,7 +1700,7 @@ begin
       CHElement:=Chain.Add;
       CHElement.CodeXYPos:=CodePos^;
       CHElement.CodeContext:=FindContext;
-      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
+      DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
 
       // find corresponding FPDoc file
       CHElement.ElementUnitFileName:=CHElement.CodeContext.Tool.MainFilename;
