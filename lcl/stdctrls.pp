@@ -1087,6 +1087,7 @@ type
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
     procedure Loaded; override;
+    procedure UpdateDefaultCancel;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;

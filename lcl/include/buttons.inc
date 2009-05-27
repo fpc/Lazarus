@@ -50,7 +50,7 @@ begin
   inherited CreateWnd;
   //this is done in TWinControl
   //SetText(Caption);//To ensure shortcut is set
-  WSSetDefault;
+  UpdateDefaultCancel;
 end;
 
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
@@ -290,11 +290,16 @@ begin
 end;
 
 procedure TCustomButton.Loaded;
-var
-  Form: TCustomForm;
 begin
   inherited Loaded;
 
+  UpdateDefaultCancel;
+end;
+
+procedure TCustomButton.UpdateDefaultCancel;
+var
+  Form: TCustomForm;
+begin
   Form := GetParentForm(Self);
   if Form <> nil then
   begin
