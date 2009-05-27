@@ -230,7 +230,6 @@ begin
   
   if ListBox.ItemIndex <> -1 then
     Edit.Text := ListBox.Items[ListBox.ItemIndex];
-  FocusEdit;
   
   FBlockListBoxChange := false;
 end;
