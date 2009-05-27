@@ -2053,6 +2053,15 @@ var
       exit;
     end;
   end;
+
+  function GetSpecialKey: TUTF8Char;
+  begin
+    if (AEvent^.keyval > $FF00) and (AEvent^.keyval < $FF20) and
+       (AEvent^.keyval <> GDK_KEY_Tab) then
+      Result := Chr(AEvent^.keyval xor $FF00)
+    else
+      Result := '';
+  end;
   
   function KeyActivatedAccelerator: boolean;
   
@@ -2352,9 +2361,13 @@ begin
           System.Move(AEvent^.thestring^, Character[1], length(Character));
         end;
       {$ELSE GTK2}
-        Character := UTF8Copy(im_context_string,1,1);
-        im_context_string:='';// clear, to avoid sending again
-        // Character := UnicodeToUTF8(gdk_keyval_to_unicode(AEvent^.KeyVal));
+        if im_context_string <> '' then
+        begin
+          Character := UTF8Copy(im_context_string,1,1);
+          im_context_string:='';// clear, to avoid sending again
+        end
+        else
+          Character := GetSpecialKey;
       {$ENDIF GTK2}
 
       {$IFDEF VerboseKeyboard}
