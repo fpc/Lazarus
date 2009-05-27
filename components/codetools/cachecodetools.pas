@@ -180,7 +180,8 @@ begin
   Code.LineColToPosition(Y,X,CodePos.P);
   if (CodePos.P<1) or (CodePos.P>Code.SourceLength) then exit;
 
-  // move cursor to start of identifier (needed to find CodePos in cache)
+  // move cursor to start of atom (needed to find CodePos in cache)
+
   while (CodePos.P>1) and (IsIdentChar[Code.Source[CodePos.P-1]]) do
     dec(CodePos.P);
   if not IsIdentChar[Code.Source[CodePos.P]] then exit;

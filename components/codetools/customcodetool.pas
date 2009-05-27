@@ -1169,8 +1169,8 @@ end;
 
 procedure TCustomCodeTool.ReadPriorAtom;
 var
- CommentLvl, PrePos, OldPrePos: integer;
- IsStringConstant: boolean;
+  CommentLvl, PrePos, OldPrePos: integer;
+  IsStringConstant: boolean;
 
   procedure ReadStringConstantBackward;
   var PrePos: integer;

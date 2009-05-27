@@ -305,6 +305,7 @@ function ReadTilPascalBracketClose(const Source: string;
    var Position: integer; NestedComments: boolean = false): boolean;
 function GetAtomLength(p: PChar; NestedComments: boolean): integer;
 function GetAtomString(p: PChar; NestedComments: boolean): string;
+function FindStartOfAtom(const Source: string; Position: integer): integer;
 
 //-----------------------------------------------------------------------------
 
@@ -2020,6 +2021,202 @@ begin
   SetLength(Result,l);
   if l>0 then
     System.Move(p^,Result[1],length(Result));
+end;
+
+function FindStartOfAtom(const Source: string; Position: integer): integer;
+
+  procedure ReadStringConstantBackward(var p: integer);
+  var PrePos: integer;
+  begin
+    while (p>1) do begin
+      case Source[p-1] of
+      '''':
+        begin
+          dec(p);
+          repeat
+            dec(p);
+          until (p<1) or (Source[p]='''');
+        end;
+      '0'..'9','A'..'Z','a'..'z':
+        begin
+          // test if char constant
+          PrePos:=p-1;
+          while (PrePos>1) and (IsHexNumberChar[Source[PrePos]]) do
+            dec(PrePos);
+          if (PrePos<1) then break;
+          if (Source[PrePos]='$') then begin
+            dec(PrePos);
+            if (PrePos<1) then break;
+          end;
+          if (Source[PrePos]='#') then
+            p:=PrePos
+          else
+            break;
+        end;
+      else
+        break;
+      end;
+    end;
+  end;
+
+type
+  TNumberType = (ntDecimal, ntHexadecimal, ntBinary, ntIdentifier,
+    ntCharConstant, ntFloat, ntFloatWithExponent);
+  TNumberTypes = set of TNumberType;
+
+const
+  AllNumberTypes: TNumberTypes = [ntDecimal, ntHexadecimal, ntBinary,
+    ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
+var
+  c: Char;
+  ForbiddenNumberTypes: TNumberTypes;
+  c2: Char;
+begin
+  Result:=Position;
+  if (Result<1)  then exit;
+  if Result>length(Source) then begin
+    Result:=length(Source);
+    exit;
+  end;
+  c:=Source[Result];
+  case c of
+  '_','A'..'Z','a'..'z':
+    begin
+      // identifier or keyword or hexnumber
+      while (Result>1) do begin
+        if (IsIdentChar[Source[Result-1]]) then
+          dec(Result)
+        else begin
+          case UpChars[Source[Result-1]] of
+          '@':
+            // assembler label
+            if (Result>2)
+            and (Source[Result-2]='@') then
+              dec(Result,2);
+          '$':
+            // hex number
+            dec(Result);
+          end;
+          break;
+        end;
+      end;
+    end;
+  '''':
+    begin
+      inc(Result);
+      ReadStringConstantBackward(Result);
+    end;
+  '0'..'9':
+    begin
+      // could be a decimal number, an identifier, a hex number,
+      // a binary number, a char constant, a float, a float with exponent
+      ForbiddenNumberTypes:=[];
+      while true do begin
+        case UpChars[Source[Result]] of
+        '0'..'1':
+          ;
+        '2'..'9':
+          ForbiddenNumberTypes:=ForbiddenNumberTypes+[ntBinary];
+        'A'..'D','F':
+          ForbiddenNumberTypes:=ForbiddenNumberTypes
+             +[ntBinary,ntDecimal,ntCharConstant,ntFloat,ntFloatWithExponent];
+        'E':
+          ForbiddenNumberTypes:=ForbiddenNumberTypes
+             +[ntBinary,ntDecimal,ntCharConstant,ntFloat];
+        'G'..'Z','_':
+          ForbiddenNumberTypes:=AllNumberTypes-[ntIdentifier];
+        '.':
+          begin
+            // could be the point of a float
+            if (ntFloat in ForbiddenNumberTypes)
+            or (Result<=1) or (Source[Result-1]='.') then begin
+              inc(Result);
+              break;
+            end;
+            dec(Result);
+            // this was the part of a float after the point
+            //  -> read decimal in front
+            ForbiddenNumberTypes:=AllNumberTypes-[ntDecimal];
+          end;
+        '+','-':
+          begin
+            // could be part of an exponent
+            if (ntFloatWithExponent in ForbiddenNumberTypes)
+            or (Result<=1)
+            or (not (Source[Result-1] in ['e','E']))
+            then begin
+              inc(Result);
+              break;
+            end;
+            dec(Result);
+            // this was the exponent of a float -> read the float
+            ForbiddenNumberTypes:=AllNumberTypes-[ntFloat];
+          end;
+        '#': // char constant found
+          begin
+            if (ntCharConstant in ForbiddenNumberTypes) then
+              inc(Result);
+            ReadStringConstantBackward(Result);
+            break;
+          end;
+        '$':
+          begin
+            // hexadecimal number found
+            if (ntHexadecimal in ForbiddenNumberTypes) then
+              inc(Result);
+            break;
+          end;
+        '%':
+          begin
+            // binary number found
+            if (ntBinary in ForbiddenNumberTypes) then
+              inc(Result);
+            break;
+          end;
+        '@':
+          begin
+            if (Result=1) or (Source[Result-1]<>'@')
+            or (([ntIdentifier,ntDecimal]*ForbiddenNumberTypes)=[]) then
+              // atom start found
+              inc(Result)
+            else
+              // label found
+              dec(Result);
+            break;
+          end;
+        else
+          begin
+            inc(Result);
+            break;
+          end;
+        end;
+        if ForbiddenNumberTypes=AllNumberTypes then begin
+          inc(Result);
+          break;
+        end;
+        if Result<=1 then break;
+        dec(Result);
+      end;
+      if IsIdentStartChar[Source[Result]] then begin
+        // it is an identifier
+      end;
+    end;
+
+  else
+    if Result>1 then begin
+      c2:=Source[Result-1];
+      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+      if ((c2='=') and  (IsEqualOperatorStartChar[c]))
+      or ((c='<') and (c2='>'))
+      or ((c='>') and (c2='<'))
+      or ((c='.') and (c2='.'))
+      or ((c='*') and (c2='*'))
+      or ((c='@') and (c2='@'))
+      then begin
+        dec(Result);
+      end;
+    end;
+  end;
 end;
 
 function LineEndCount(const Txt: string;

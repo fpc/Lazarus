@@ -100,9 +100,9 @@ const
   ctnProperty           = 50;
   ctnMethodMap          = 51;
   
-  ctnProcedure          = 60;
-  ctnProcedureHead      = 61;
-  ctnParameterList      = 62;
+  ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
+  ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnIdentifier
+  ctnParameterList      = 62;  // childs: ctnVarDefinition
 
   ctnIdentifier         = 70;
   ctnRangedArrayType    = 71;
