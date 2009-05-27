@@ -420,7 +420,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then
     Exit;
-  Widget:=GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
@@ -476,10 +476,7 @@ begin
 
   Inc(WidgetInfo^.ChangeLock);
   if (AIndex < 0) then
-    if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) then
-      Path := gtk_tree_path_new_first
-    else
-      Path := nil
+    Path := nil
   else
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
 
@@ -490,7 +487,6 @@ begin
       gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
   end
   else
-  if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
   begin
     ClearCursor;
     gtk_tree_selection_unselect_all(Selection);
