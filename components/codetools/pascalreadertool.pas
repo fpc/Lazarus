@@ -842,6 +842,7 @@ function TPascalReaderTool.PositionInFuncResultName(ProcNode: TCodeTreeNode;
 // true if position between ) and :
 begin
   Result:=false;
+  if ProcNode=nil then exit;
   if ProcNode.Desc=ctnProcedure then begin
     ProcNode:=ProcNode.FirstChild;
     if ProcNode=nil then exit;
@@ -854,7 +855,7 @@ begin
       exit;
     MoveCursorToCleanPos(ProcNode.FirstChild.EndPos);
   end else begin
-    MoveCursorToNodeStart(ProcNode.FirstChild);
+    MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if AtomIsIdentifier(false) then begin
       // read name
