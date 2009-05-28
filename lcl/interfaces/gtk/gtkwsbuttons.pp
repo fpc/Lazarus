@@ -237,6 +237,7 @@ begin
   //debugln('TGtkWSBitBtn.SetText ',DbgStr(AText));
   GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
      {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
+  UpdateLayout(BitBtnInfo, TBitBtn(AWincontrol).Layout, TBitBtn(AWincontrol).Margin);
 end;
 
 class procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);
@@ -358,7 +359,17 @@ begin
     if PGtkWidget(AInfo^.SpaceWidget)^.Parent <> nil
     then gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
   end;
-  
+
+  if (AInfo^.LabelWidget = nil) or
+     (PGtkLabel(AInfo^.LabelWidget)^.text = '') and
+     (AInfo^.ImageWidget <> nil) then
+  begin
+    gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                     1, 3, 1, 3, GTK_EXPAND, GTK_EXPAND, 0, 0);
+    gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
+                     0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+  end
+  else
   case ALayout of 
     blGlyphLeft: begin
       if AInfo^.ImageWidget <> nil
