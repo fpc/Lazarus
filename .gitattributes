@@ -110,6 +110,7 @@ components/codetools/examples/completeblock.lpi svneol=native#text/plain
 components/codetools/examples/completeblock.pas svneol=native#text/plain
 components/codetools/examples/completeblocktests/procedurebegin1.inc svneol=native#text/plain
 components/codetools/examples/completeblocktests/unit1.pas svneol=native#text/plain
+components/codetools/examples/completeblocktests/whilebegin1.inc svneol=native#text/plain
 components/codetools/examples/finddeclaration.lpi svneol=native#text/plain
 components/codetools/examples/finddeclaration.lpr svneol=native#text/plain
 components/codetools/examples/findunusedunits.lpi svneol=native#text/plain

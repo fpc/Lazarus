@@ -13,5 +13,9 @@ implementation
 {$I procedurebegin1.inc}
 {$ENDIF}
 
+{$IFDEF whilebegin}
+{$I whilebegin1.inc}
+{$ENDIF}
+
 end.
 
