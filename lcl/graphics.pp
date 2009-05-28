@@ -1798,11 +1798,13 @@ type
   TOnSaveGraphicToClipboardFormat =
     procedure(Src: TGraphic; ClipboardType: TClipboardType;
               FormatID: TClipboardFormat);
+  TOnGetSystemFont = function: HFONT;
 
 var
   OnLoadSaveClipBrdGraphicValid: boolean = false;
   OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat=nil;
   OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat=nil;
+  OnGetSystemFont: TOnGetSystemFont = nil;
 
 function TestStreamIsBMP(const AStream: TStream): boolean;
 function TestStreamIsXPM(const AStream: TStream): boolean;
@@ -2460,6 +2462,10 @@ end;
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
 
+function LocalGetSystemFont: HFont;
+begin
+  Result := GetStockObject(DEFAULT_GUI_FONT);
+end;
 
 procedure InterfaceInit;
 begin
@@ -2479,6 +2485,7 @@ end;
 
 initialization
   UpdateLock := TCriticalSection.Create;
+  OnGetSystemFont := @LocalGetSystemFont;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
   RegisterInterfaceInitializationHandler(@InterfaceInit);

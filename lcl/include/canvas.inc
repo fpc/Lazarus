@@ -1137,7 +1137,7 @@ begin
   if Style.SystemFont then
   begin
     Options := Options or DT_INTERNAL;
-    SelectObject(DC, GetStockObject(DEFAULT_GUI_FONT));
+    SelectObject(DC, OnGetSystemFont());
   end;
 
   // calculate text rectangle

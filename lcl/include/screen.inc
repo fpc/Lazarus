@@ -52,6 +52,11 @@ begin
   Result := 1;
 end;
 
+function ScreenGetSystemFont: HFont;
+begin
+  Result := Screen.SystemFont.Reference.Handle;
+end;
+
 {------------------------------------------------------------------------------
   Method: TScreen.Create
   Params:  AOwner: the owner of the class
@@ -75,6 +80,7 @@ begin
 
   AddDataModule := @DoAddDataModule;
   RemoveDataModule := @DoRemoveDataModule;
+  OnGetSystemFont := @ScreenGetSystemFont;
 end;
 
 {------------------------------------------------------------------------------
