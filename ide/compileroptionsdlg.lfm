@@ -233,10 +233,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         Height = 21
         Top = 267
         Width = 171
-        AutoComplete = False
         BorderSpacing.Left = 6
         ItemHeight = 13
-        ItemWidth = 0
         Style = csDropDownList
         TabOrder = 6
       end
@@ -302,10 +300,8 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 6
           Width = 337
           Align = alLeft
-          AutoComplete = False
           BorderSpacing.Around = 6
           ItemHeight = 13
-          ItemWidth = 0
           TabOrder = 0
           Text = 'cmbSyntaxMode'
         end
@@ -501,11 +497,9 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 6
           Width = 411
           Anchors = [akTop, akLeft, akRight]
-          AutoComplete = False
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           ItemHeight = 13
-          ItemWidth = 0
           TabOrder = 0
           Text = 'TargetOSComboBox'
         end
@@ -521,11 +515,9 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 33
           Width = 405
           Anchors = [akTop, akLeft, akRight]
-          AutoComplete = False
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           ItemHeight = 13
-          ItemWidth = 0
           TabOrder = 1
           Text = 'TargetCPUComboBox'
         end
@@ -541,11 +533,9 @@ object frmCompilerOptions: TfrmCompilerOptions
           Top = 60
           Width = 357
           Anchors = [akTop, akLeft, akRight]
-          AutoComplete = False
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           ItemHeight = 13
-          ItemWidth = 0
           TabOrder = 2
           Text = 'TargetProcessorProcComboBox'
         end
@@ -568,7 +558,18 @@ object frmCompilerOptions: TfrmCompilerOptions
         ClientHeight = 211
         ClientWidth = 645
         TabOrder = 4
-        OnResize = grpOptimizationsResize
+        object lblOptMiddle: TLabel
+          AnchorSideLeft.Control = grpOptimizations
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = grpOptimizations
+          AnchorSideTop.Side = asrCenter
+          Left = 322
+          Height = 1
+          Top = 105
+          Width = 1
+          AutoSize = False
+          ParentColor = False
+        end
         object radOptLevelNone: TRadioButton
           AnchorSideLeft.Control = grpOptimizations
           AnchorSideTop.Control = grpOptimizations
@@ -622,31 +623,37 @@ object frmCompilerOptions: TfrmCompilerOptions
           TabStop = False
         end
         object chkOptVarsInReg: TCheckBox
+          AnchorSideLeft.Control = lblOptMiddle
           AnchorSideTop.Control = grpOptimizations
-          Left = 205
+          Left = 322
           Height = 17
           Top = 6
           Width = 103
-          BorderSpacing.Around = 6
+          BorderSpacing.Top = 6
           Caption = 'chkOptVarsInReg'
           TabOrder = 4
         end
         object chkOptUncertain: TCheckBox
+          AnchorSideLeft.Control = lblOptMiddle
           AnchorSideTop.Control = chkOptVarsInReg
           AnchorSideTop.Side = asrBottom
-          Left = 205
+          Left = 322
           Height = 17
           Top = 29
           Width = 99
-          BorderSpacing.Around = 6
+          BorderSpacing.Top = 6
           Caption = 'chkOptUncertain'
           TabOrder = 5
         end
         object chkOptSmaller: TCheckBox
-          Left = 205
+          AnchorSideLeft.Control = lblOptMiddle
+          AnchorSideTop.Control = chkOptUncertain
+          AnchorSideTop.Side = asrBottom
+          Left = 322
           Height = 17
-          Top = 62
+          Top = 52
           Width = 87
+          BorderSpacing.Top = 6
           Caption = 'chkOptSmaller'
           TabOrder = 6
         end

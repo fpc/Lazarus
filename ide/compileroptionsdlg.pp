@@ -63,6 +63,7 @@ type
 
   TfrmCompilerOptions = class(TForm)
     chkGenerateDwarf: TCheckBox;
+    lblOptMiddle: TLabel;
     MainNoteBook: TNoteBook;
 
     { Search Paths Controls }
@@ -250,8 +251,6 @@ type
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure grpOptimizationsResize(Sender: TObject);
-
     procedure btnBrowseMsgClick(Sender: TObject);
     procedure chklistCompMsgClick(Sender: TObject);
     procedure chkUseMsgFileChange(Sender: TObject);
@@ -1830,16 +1829,6 @@ procedure TfrmCompilerOptions.frmCompilerOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TfrmCompilerOptions.grpOptimizationsResize(Sender: TObject);
-var
-  x: Integer;
-begin
-  x:=radOptLevel1.Left+Max(radOptLevel1.Width,radOptLevel2.Width)+6;
-  chkOptVarsInReg.Left:=x;
-  chkOptUncertain.Left:=x;
-  chkOptSmaller.Left:=x;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);
