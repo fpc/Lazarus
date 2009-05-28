@@ -286,8 +286,8 @@ begin
   // calculate the width & height we need to display the Message
 
   // calculate the needed size for the text
-  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
-  SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
+  TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
+  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
     TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
 
@@ -415,7 +415,7 @@ begin
 
   // calculate the needed size for the text
   TextBox := Rect(0, 0, cTextWidth, Screen.Height - 100);
-  SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
+  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
     TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
 
@@ -602,7 +602,7 @@ begin
     MessageTxt := '   ';
   TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
   Flags := DT_CalcRect or DT_INTERNAL or DT_WordBreak;
-  SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
+  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MessageTxt), Length(MessageTxt), TextBox, Flags);
 
   // calculate the width we need to display the buttons
