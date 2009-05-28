@@ -1429,6 +1429,7 @@ begin
     PopupMenu:=FilesPopupMenu;
     OnSelectionChanged:=@FilesTreeViewSelectionChanged;
     Options:=Options+[tvoRightClickSelect];
+    ReadOnly := True;
     OnDblClick:=@FilesTreeViewDblClick;
     Anchors:=[akLeft,akRight,akTop,akBottom];
   end;
