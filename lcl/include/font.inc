@@ -1167,7 +1167,8 @@ begin
   Changing;
   if FFontHandleCached then
   begin
-    FontResourceCache.FindFont(FReference.Handle).DecreaseRefCount;
+    if FontResourceCache <> nil then
+      FontResourceCache.FindFont(FReference.Handle).DecreaseRefCount;
     FFontHandleCached := False;
   end else
     DeleteObject(HGDIOBJ(FReference.Handle));
