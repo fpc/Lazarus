@@ -5163,6 +5163,7 @@ type
   TBlock = record
     Typ: TBlockType;
     StartPos: integer;
+    InnerIndent: integer;
   end;
   PBlock = ^TBlock;
   TBlockStack = record
@@ -5206,6 +5207,7 @@ var
     Block:=@Stack.Stack[Stack.Top];
     Block^.Typ:=Typ;
     Block^.StartPos:=StartPos;
+    Block^.InnerIndent:=-1;
   end;
 
   procedure EndBlock(var Stack: TBlockStack);
@@ -5226,22 +5228,44 @@ var
 
   function Replace(NewCode: string; FromPos, ToPos, Indent: integer;
     FrontGap, AfterGap: TGapTyp; BeautifyFlags: TBeautifyCodeFlags): boolean;
+  var
+    p: LongInt;
   begin
     if NewCode='' then exit(true);
+    // avoid changing current line
+    if (FrontGap=gtEmptyLine) then begin
+      p:=FromPos;
+      while (p>1) and (Src[p-1] in [' ',#9]) do dec(p);
+      if (p=1) or (Src[p] in [#10,#13]) then begin
+        while (p<=SrcLen) and (Src[p] in [' ',#9]) do inc(p);
+        if (p>SrcLen) or (Src[p] in [#10,#13]) then begin
+          // inserting at an empty line
+          inc(p);
+          if (p<=SrcLen) and (Src[p] in [#10,#13]) and (Src[p]<>Src[p-1]) then
+            inc(p);
+          FrontGap:=gtNewLine;
+          FromPos:=p;
+          if ToPos<FromPos then ToPos:=FromPos;
+        end;
+      end;
+    end;
+    // use existing semicolon
     while (ToPos<=SrcLen) and (Src[ToPos] in [' ',#9]) do inc(ToPos);
     if (NewCode[length(NewCode)]=';')
     and (ToPos<=SrcLen) and (Src[ToPos]=';') then begin
       AfterGap:=gtNone;
       inc(ToPos);
     end;
+    // beautify
     NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      NewCode,Indent,BeautifyFlags);
+    // insert
     if not SourceChangeCache.Replace(FrontGap,AfterGap,
       FromPos,ToPos,NewCode) then exit;
     if not SourceChangeCache.Apply then exit;
   end;
 
-  function ReadStatements(var Stack: TBlockStack): Boolean;
+  function CompleteStatements(var Stack: TBlockStack): Boolean;
   var
     CursorBlockLvl: Integer; // the stack level of the cursor
     LastPos: Integer;
@@ -5282,6 +5306,12 @@ var
       ReadNextAtom;
 
       //DebugLn(['ReadStatements Atom=',GetAtom,' TopTyp=',ord(TopBlockType(Stack)),' Top=',Stack.Top]);
+      if (Stack.Top>=0) and (Stack.Stack[Stack.Top].InnerIndent<0)
+      and (PositionsInSameLine(Src,Stack.Stack[Stack.Top].StartPos,CurPos.StartPos))
+      then begin
+        // the first atom of this block on a new line
+        Stack.Stack[Stack.Top].InnerIndent:=GetLineIndent(Src,CurPos.StartPos);
+      end;
 
       // check if cursor reached
       if (CurPos.StartPos>=CleanCursorPos) and (CursorBlockLvl<0) then begin
@@ -5293,7 +5323,7 @@ var
         end else begin
           CursorBlock:=Stack.Stack[CursorBlockLvl];
           CursorBlockOuterIndent:=GetLineIndent(Src,CursorBlock.StartPos);
-          CursorBlockInnerIndent:=GetLineIndent(Src,CurPos.StartPos);
+          CursorBlockInnerIndent:=Stack.Stack[Stack.Top].InnerIndent;
         end;
         //DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Indent=',CursorBlockIndent]);
       end;
@@ -5421,7 +5451,10 @@ var
           end else if UpAtomIs('ASM') then begin
             BeginBlock(Stack,btAsm,CurPos.StartPos);
           end else if UpAtomIs('IF') then begin
-            BeginBlock(Stack,btIf,CurPos.StartPos)
+            BeginBlock(Stack,btIf,CurPos.StartPos);
+          end else if UpAtomIs('THEN') then begin
+            if TopBlockType(Stack)=btIf then
+              Stack.Stack[Stack.Top].InnerIndent:=-1;
           end else if UpAtomIs('CASE') then begin
             BeginBlock(Stack,btCase,CurPos.StartPos)
           end else if UpAtomIs('OF') then begin
@@ -5491,9 +5524,9 @@ var
 
     if NeedCompletion then begin
       InsertPos:=CleanCursorPos;
-      Indent:=CursorBlockInnerIndent;
+      Indent:=CursorBlockOuterIndent;
       NewCode:='';
-      FrontGap:=gtNewLine;
+      FrontGap:=gtEmptyLine;
       AfterGap:=gtNewLine;
       BeautifyFlags:=[bcfIndentExistingLineBreaks];
       case CursorBlock.Typ of
@@ -5514,13 +5547,15 @@ var
       else
         exit;
       end;
+      if (CursorBlockLvl=0) and (AfterGap=gtNewLine) then
+        AfterGap:=gtEmptyLine;
       if not Replace(NewCode,InsertPos,InsertPos,Indent,FrontGap,AfterGap,
         BeautifyFlags) then exit;
     end;
     Result:=true;
   end;
 
-  function ReadClassSection(var Stack: TBlockStack): Boolean;
+  function CompleteClassSection(var Stack: TBlockStack): Boolean;
   {  type
        TMyClass = class
          |
@@ -5553,7 +5588,7 @@ var
     Result:=true;
   end;
 
-  function ReadClassInterface(var Stack: TBlockStack): Boolean;
+  function CompleteClassInterface(var Stack: TBlockStack): Boolean;
   {  type
        TMyClass = interface
          |
@@ -5585,7 +5620,7 @@ var
     Result:=true;
   end;
 
-  function ReadRecord(var Stack: TBlockStack): Boolean;
+  function CompleteRecord(var Stack: TBlockStack): Boolean;
   {  type
        TMyClass = record
          |
@@ -5634,16 +5669,16 @@ begin
       if (StartNode.Parent<>nil)
       and (StartNode.Parent.Desc in AllPascalStatements) then
         StartNode:=StartNode.Parent;
-      if not ReadStatements(Stack) then exit;
+      if not CompleteStatements(Stack) then exit;
     end;
     if StartNode.Desc in AllClassSections then begin
-      if not ReadClassSection(Stack) then exit;
+      if not CompleteClassSection(Stack) then exit;
     end;
     if StartNode.Desc=ctnClassInterface then begin
-      if not ReadClassInterface(Stack) then exit;
+      if not CompleteClassInterface(Stack) then exit;
     end;
     if StartNode.Desc=ctnRecordType then begin
-      if not ReadRecord(Stack) then exit;
+      if not CompleteRecord(Stack) then exit;
     end;
   finally
     FreeStack(Stack);

@@ -49,7 +49,7 @@ begin
         writeln('Usage: '+ParamStrUTF8(0)+' filename line column define1 define2');
         exit;
       end;
-      Filename:=ParamStrUTF8(1);
+      Filename:=ExpandFileNameUTF8(ParamStrUTF8(1));
       Y:=StrToInt(ParamStrUTF8(2));
       X:=StrToInt(ParamStrUTF8(3));
       for p:=4 to Paramcount do
