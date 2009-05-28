@@ -2062,6 +2062,21 @@ var
     else
       Result := '';
   end;
+
+  procedure CharToKeyVal(C: Char; out KeyVal: guint; out Length: gint);
+  begin
+    Length := 1;
+    {$ifndef gtk1}
+    if C in [#1..#20] then
+    begin
+      KeyVal := $FF00 or Ord(C);
+      if KeyVal = GDK_KEY_BackSpace then
+        Length := 0;
+    end
+    else
+    {$endif}
+      KeyVal := Ord(C);
+  end;
   
   function KeyActivatedAccelerator: boolean;
   
@@ -2389,10 +2404,14 @@ begin
           and (Character[1] in [#32..#126])
           {$ENDIF}
           then begin
-            AEvent^.KeyVal:=ord(Character[1]);
-            AEvent^.length:=1;
-            EventString^:=Character[1];
-            EventString[1]:=#0;
+            CharToKeyVal(Character[1], AEvent^.KeyVal, AEvent^.length);
+            if AEvent^.length = 1 then
+            begin
+              EventString^ := Character[1];
+              EventString[1] := #0;
+            end
+            else
+              EventString^ := #0;
           end;
         end;
       end;
