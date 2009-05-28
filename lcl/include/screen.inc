@@ -770,21 +770,29 @@ end;
 
 procedure TScreen.SetHintFont(const AValue: TFont);
 begin
+  if (FHintFont = nil) then
+    FHintFont := TFont.Create;
   FHintFont.Assign(AValue);
 end;
 
 procedure TScreen.SetIconFont(const AValue: TFont);
 begin
+  if (FIconFont = nil) then
+    FIconFont := TFont.Create;
   FIconFont.Assign(AValue);
 end;
 
 procedure TScreen.SetMenuFont(const AValue: TFont);
 begin
+  if (FMenuFont = nil) then
+    FMenuFont := TFont.Create;
   FMenuFont.Assign(AValue);
 end;
 
 procedure TScreen.SetSystemFont(const AValue: TFont);
 begin
+  if (FSystemFont = nil) then
+    FSystemFont := TFont.Create;
   FSystemFont.Assign(AValue);
 end;
 
