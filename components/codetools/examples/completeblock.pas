@@ -55,7 +55,7 @@ begin
       for p:=4 to Paramcount do
         Defines.Add(ParamStrUTF8(p));
     end else begin
-      Filename:=ExpandFileNameUTF8('completeblocktests/procedurebegin1.inc');
+      Filename:=ExpandFileNameUTF8('testscompleteblock/procedurebegin1.inc');
       X:=3;
       Y:=4;
       Defines.Add('procedurebegin');
