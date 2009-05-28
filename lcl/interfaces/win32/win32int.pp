@@ -127,6 +127,7 @@ type
 
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
+    FDefaultFont: HFONT;
 
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
@@ -175,8 +176,8 @@ type
     procedure AppSetTitle(const ATitle: string); override;
     procedure AppSetVisible(const AVisible: Boolean); override;
 
-    function  InitHintFont(HintFont: TObject): Boolean; Override;
-    procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+    function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
 
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -192,6 +193,7 @@ type
     // thread synchronize support
     procedure HandleWakeMainThread(Sender: TObject);
     function AppHandle: THandle; override;
+    property DefaultFont: HFONT read FDefaultFont;
 
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}

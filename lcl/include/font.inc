@@ -1199,16 +1199,19 @@ begin
   end;
 end;
 
-procedure TFont.GetData(var FontData: TFontData);
+function TFont.GetData: TFontData;
 begin
-  FontData := DefFontData;
-  FontData.Handle := 0;
-  FontData.Height := Height;
-  FontData.Pitch := Pitch;
-  FontData.Style := Style;
-  FontData.CharSet := CharSet;
-  FontData.Quality := Quality;
-  FontData.Name := LeftStr(Name, SizeOf(FontData.Name) - 1);
+  Result := DefFontData;
+  if HandleAllocated then
+    Result.Handle := Reference.Handle
+  else
+    Result.Handle := 0;
+  Result.Height := Height;
+  Result.Pitch := Pitch;
+  Result.Style := Style;
+  Result.CharSet := CharSet;
+  Result.Quality := Quality;
+  Result.Name := LeftStr(Name, SizeOf(Result.Name) - 1);
 end;
 
 function TFont.GetIsMonoSpace: boolean;

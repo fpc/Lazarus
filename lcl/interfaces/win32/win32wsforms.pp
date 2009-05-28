@@ -179,7 +179,7 @@ class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
         if SubClassWndProc <> nil then
           WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
             Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
-        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+        lhFont := FDefaultFont;
         Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);}
       end;
     end;

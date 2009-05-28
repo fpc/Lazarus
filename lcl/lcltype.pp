@@ -1584,7 +1584,6 @@ const
   DC_PEN = 19;
   STOCK_LAST = 19;
 
-
 //==============================================
 // Stock Pixmap Types
 //==============================================
@@ -2655,6 +2654,13 @@ type
   NM_LISTVIEW = TNMListView;
   tagNMLISTVIEW = TNMListView;
 
+  // enum to use with InitStockFont
+  TStockFont = (
+    sfSystem,  // stock system font
+    sfHint,    // stock hint font
+    sfIcon,    // stock icon font
+    sfMenu     // stock menu font
+  );
 
 function CS_To_String(CompStyle: Integer): String;
 // key mapping

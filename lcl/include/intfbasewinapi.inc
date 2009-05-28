@@ -1052,9 +1052,9 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.InitHintFont(HintFont: TObject): Boolean;
+function TWidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 function TWidgetSet.IsHelpKey(Key: Word; Shift: TShiftState): Boolean;

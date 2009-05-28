@@ -91,6 +91,9 @@ begin
   for HandlerType := Low(FScreenHandlers) to High(FScreenHandlers) do
     FreeThenNil(FScreenHandlers[HandlerType]);
   FreeThenNil(FHintFont);
+  FreeThenNil(FIconFont);
+  FreeThenNil(FMenuFont);
+  FreeThenNil(FSystemFont);
   FreeThenNil(FDataModuleList);
   FreeThenNil(FFormList);
   FreeThenNil(FCustomForms);
@@ -663,20 +666,52 @@ begin
   Result := nil;
 end;
 
+function TScreen.GetSystemFont: TFont;
+begin
+  if (FSystemFont = nil) then
+    FSystemFont := TFont.Create;
+  if not WidgetSet.InitStockFont(FSystemFont, sfSystem) then
+  begin
+    FSystemFont.FontData := DefFontData;
+    FSystemFont.Color := clWindowText;
+  end;
+  Result := FSystemFont;
+end;
+
 function TScreen.GetHintFont: TFont;
 begin
-  if (FHintFont=nil) then
+  if (FHintFont = nil) then
     FHintFont := TFont.Create;
-  if not WidgetSet.InitHintFont(FHintFont) then
+  if not WidgetSet.InitStockFont(FHintFont, sfHint) then
   begin
-//    FHintFont.Name := 'courier';
-    FHintFont.Name:=DefFontData.Name;
-    FHintFont.Style := [];
-    FHintFont.Size := DefFontData.Height;
+    FHintFont.FontData := DefFontData;
     FHintFont.Color := clInfoText;
-    FHintFont.Pitch := fpDefault;
   end;
   Result := FHintFont;
+end;
+
+function TScreen.GetIconFont: TFont;
+begin
+  if (FIconFont = nil) then
+    FIconFont := TFont.Create;
+  if not WidgetSet.InitStockFont(FIconFont, sfIcon) then
+  begin
+    FIconFont.FontData := DefFontData;
+    FIconFont.Color := clWindowText;
+  end;
+  Result := FIconFont;
+end;
+
+function TScreen.GetMenuFont: TFont;
+begin
+  if (FMenuFont = nil) then
+    FMenuFont := TFont.Create;
+  if not WidgetSet.InitStockFont(FMenuFont, sfMenu) then
+  begin
+    FMenuFont.FontData := DefFontData;
+    FMenuFont.Color := clMenuText;
+  end;
+  Result := FMenuFont;
 end;
 
 {------------------------------------------------------------------------------
@@ -731,6 +766,26 @@ begin
     if AValue <> 0 then
       FCursorMap.Add(AIndex, AValue);
   end;
+end;
+
+procedure TScreen.SetHintFont(const AValue: TFont);
+begin
+  FHintFont.Assign(AValue);
+end;
+
+procedure TScreen.SetIconFont(const AValue: TFont);
+begin
+  FIconFont.Assign(AValue);
+end;
+
+procedure TScreen.SetMenuFont(const AValue: TFont);
+begin
+  FMenuFont.Assign(AValue);
+end;
+
+procedure TScreen.SetSystemFont(const AValue: TFont);
+begin
+  FSystemFont.Assign(AValue);
 end;
 
 {------------------------------------------------------------------------------

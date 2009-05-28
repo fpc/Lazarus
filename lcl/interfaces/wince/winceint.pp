@@ -194,7 +194,6 @@ type
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
-    //function  InitHintFont(HintFont: TObject): Boolean; override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

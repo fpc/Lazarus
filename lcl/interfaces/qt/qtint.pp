@@ -113,8 +113,6 @@ type
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
-    function  InitHintFont(HintFont: TObject): Boolean; override;
-
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;

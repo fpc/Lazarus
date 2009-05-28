@@ -272,18 +272,6 @@ begin
   if Window=0 then exit;
 end;
 
-//roozbeh : how can we have hints on ce?
-{
-function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;
-begin
-  TFont(HintFont).Name := FMetrics.lfStatusFont.lfFaceName;
-  TFont(HintFont).Style := [];
-  TFont(HintFont).Height := FMetrics.lfStatusFont.lfHeight;
-  TFont(HintFont).Color := clInfoText;
-  TFont(HintFont).Pitch := fpDefault;
-  Result := true;
-end;
-}
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppProcessMessages
   Params:  None

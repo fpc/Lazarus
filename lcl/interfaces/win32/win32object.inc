@@ -39,6 +39,11 @@ begin
   if FMetricsFailed then
   begin
     FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
+    FDefaultFont := GetStockObject(DEFAULT_GUI_FONT);
+  end
+  else
+  begin
+    FDefaultFont := Windows.CreateFontIndirect(FMetrics.lfMessageFont);
   end;
   OnClipBoardRequest := nil;
   Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle(comctl32), 'InitCommonControlsEx');
@@ -91,6 +96,9 @@ begin
     Windows.UnregisterClass(@ClsName, System.HInstance);
     Windows.UnregisterClass(@ClsHintName, System.HInstance);
   end;
+
+  if FDefaultFont <> 0 then
+    Windows.DeleteObject(FDefaultFont);
   inherited Destroy;
 end;
 
@@ -270,14 +278,48 @@ begin
   if Window = 0 then Exit;
 end;
 
-function TWin32WidgetSet.InitHintFont(HintFont: TObject): Boolean;
+function TWin32WidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean;
+var
+  Font: TFont absolute AFont;
+  LogFont: TLogFont;
+
+  procedure AssignDefault;
+  var
+    LogFont: TLogFont;
+  begin
+    GetObject(DefaultFont, SizeOf(LogFont), @LogFont);
+    Font.Assign(LogFont);
+  end;
+
 begin
-  TFont(HintFont).Name := FMetrics.lfStatusFont.lfFaceName;
-  TFont(HintFont).Style := [];
-  TFont(HintFont).Height := FMetrics.lfStatusFont.lfHeight;
-  TFont(HintFont).Color := clInfoText;
-  TFont(HintFont).Pitch := fpDefault;
-  Result := true;
+  case AStockFont of
+    sfSystem:
+      Font.FontData := GetFontData(DefaultFont);
+    sfHint:
+      begin
+        if FMetricsFailed then
+          AssignDefault
+        else
+          Font.Assign(FMetrics.lfStatusFont);
+        Font.Color := clInfoText;
+      end;
+    sfIcon:
+      begin
+        if SystemParametersInfo(SPI_GETICONTITLELOGFONT, SizeOf(LogFont), @LogFont, 0) then
+          Font.Assign(LogFont)
+        else
+          AssignDefault
+      end;
+    sfMenu:
+      begin
+        if FMetricsFailed then
+          AssignDefault
+        else
+          Font.Assign(FMetrics.lfMenuFont);
+        Font.Color := clMenuText;
+      end;
+  end;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

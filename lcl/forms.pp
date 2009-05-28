@@ -852,6 +852,8 @@ type
     FFonts : TStrings;
     FFormList: TList;
     FDataModuleList: TList;
+    FIconFont: TFont;
+    FMenuFont: TFont;
     FScreenHandlers: array[TScreenNotification] of TMethodList;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
@@ -860,6 +862,7 @@ type
     FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
+    FSystemFont: TFont;
     procedure DeleteCursor(AIndex: Integer);
     procedure DestroyCursors;
     procedure DestroyMonitors;
@@ -884,6 +887,10 @@ type
     procedure RemoveForm(AForm: TCustomForm);
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
+    procedure SetHintFont(const AValue: TFont);
+    procedure SetIconFont(const AValue: TFont);
+    procedure SetMenuFont(const AValue: TFont);
+    procedure SetSystemFont(const AValue: TFont);
     procedure UpdateLastActive;
     procedure UpdateMonitors;
     procedure RestoreLastActive;
@@ -895,6 +902,9 @@ type
     procedure DoRemoveDataModule(DataModule: TDataModule);
   protected
     function GetHintFont: TFont; virtual;
+    function GetIconFont: TFont; virtual;
+    function GetMenuFont: TFont; virtual;
+    function GetSystemFont: TFont; virtual;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -955,9 +965,13 @@ type
     property DataModuleCount: Integer read GetDataModuleCount;
     property DataModules[Index: Integer]: TDataModule read GetDataModules;
     
+    property HintFont: TFont read GetHintFont write SetHintFont;
+    property IconFont: TFont read GetIconFont write SetIconFont;
+    property MenuFont: TFont read GetMenuFont write SetMenuFont;
+    property SystemFont: TFont read GetSystemFont write SetSystemFont;
     property Fonts: TStrings read GetFonts;
+
     property Height: Integer read Getheight;
-    property HintFont: TFont read GetHintFont;
     property MonitorCount: Integer read GetMonitorCount;
     property Monitors[Index: Integer]: TMonitor read GetMonitor;
     property PixelsPerInch: integer read FPixelsPerInch;

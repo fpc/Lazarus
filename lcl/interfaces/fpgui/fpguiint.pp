@@ -70,10 +70,7 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-    procedure SetDesigning(AComponent: TComponent); override;
-
-    function  InitHintFont(HintFont: TObject): Boolean; override;
-    
+    procedure SetDesigning(AComponent: TComponent); override;  
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;

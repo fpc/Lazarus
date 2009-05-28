@@ -111,7 +111,7 @@ type
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); virtual;
     procedure SetDesigning(AComponent: TComponent); virtual; abstract;
 
-    function  InitHintFont(HintFont: TObject): Boolean; virtual;
+    function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; virtual;
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; virtual;
 
     // create and destroy

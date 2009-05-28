@@ -491,7 +491,7 @@ type
     procedure FreeReference;
     function GetCanUTF8: boolean;
     function GetHandle: HFONT;
-    procedure GetData(var FontData: TFontData);
+    function GetData: TFontData;
     function GetIsMonoSpace: boolean;
     function GetReference: TWSFontReference;
     function IsHeightStored: boolean;
@@ -530,6 +530,7 @@ type
     procedure Assign(const ALogFont: TLogFont);
     procedure BeginUpdate;
     procedure EndUpdate;
+    property FontData: TFontData read GetData write SetData;
     function HandleAllocated: boolean;
     property Handle: HFONT read GetHandle write SetHandle; deprecated;
     function IsDefault: boolean;
@@ -1774,6 +1775,7 @@ function TColorToFPColor(const c: TColor): TFPColor;
 procedure GetCharsetValues(Proc: TGetStrProc);
 function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
 function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
+function GetFontData(Font: HFont): TFontData;
 
 function GetDefFontCharSet: TFontCharSet;
 function IsFontNameXLogicalFontDesc(const LongFontName: string): boolean;

@@ -433,11 +433,6 @@ begin
 
 end;
 
-function TQtWidgetSet.InitHintFont(HintFont: TObject): Boolean;
-begin
-  Result := False;
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtWidgetSet.IsValidDC
   Params:   DC     -  handle to a device context (TQtDeviceContext)

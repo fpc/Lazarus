@@ -248,7 +248,7 @@ begin
         WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
           Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
-        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+        lhFont := Win32WidgetSet.DefaultFont
       else
         lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);
@@ -277,7 +277,7 @@ begin
       BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
         Buddy, GWL_WNDPROC, PtrInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
-        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+        lhFont := Win32Widgetset.DefaultFont
       else
         lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Buddy, WM_SETFONT, WPARAM(lhFont), 0);

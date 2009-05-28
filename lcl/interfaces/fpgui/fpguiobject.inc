@@ -193,11 +193,6 @@ begin
 //  Include(AComponent.ComponentState, csDesigning);
 end;
 
-function TFpGuiWidgetSet.InitHintFont(HintFont: TObject): Boolean;
-begin
-  Result:=false;
-end;
-
 {------------------------------------------------------------------------------
   Function: TFpGuiWidgetSet.IsValidDC
   Params:   DC     -  handle to a device context (TFpGuiDeviceContext)
