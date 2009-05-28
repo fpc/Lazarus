@@ -995,9 +995,13 @@ var
     Stage: TCustomDrawStage;
     DrawResult: TCustomDrawResult;
     ResultFlag: TCustomDrawResultFlag;
+    OldDC: HDC;
   begin
     lmNotify.result := CDRF_DODEFAULT;
     WinProcess := False;
+    if not ALV.IsCustomDrawn(dtControl, cdPrePaint) then
+      exit;
+
     case DrawInfo^.nmcd.dwDrawStage and $7 of //Get drawing state
       CDDS_PREPAINT:  Stage := cdPrePaint;
       CDDS_POSTPAINT: Stage := cdPostPaint;
@@ -1007,20 +1011,35 @@ var
       Exit;
     end;
 
-    case DrawInfo^.nmcd.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of
-      0:
-        DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
-      CDDS_ITEM:
-        DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec, -1, ConvState(DrawInfo^.nmcd.uItemState), nil);
-      CDDS_SUBITEM:
-        begin
-          // subitem 0 is handled by dtItem
-          if DrawInfo^.iSubItem = 0 then Exit;
-          DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec, DrawInfo^.iSubItem, ConvState(DrawInfo^.nmcd.uItemState), nil);
-        end;
+    OldDC := ALV.Canvas.Handle;
+    ALV.Canvas.Handle := DrawInfo^.nmcd.hdc;
+    ALV.Canvas.Font.Assign(ALV.Font);
+    ALV.Canvas.Brush.Assign(ALV.Brush);
+
+    if DrawInfo^.nmcd.dwDrawStage and CDDS_SUBITEM <> 0 then
+    begin
+      // subitem 0 is handled by dtItem
+      if DrawInfo^.iSubItem = 0 then Exit;
+      DrawResult := ALV.IntfCustomDraw(dtSubItem, Stage,
+        DrawInfo^.nmcd.dwItemSpec, DrawInfo^.iSubItem,
+        ConvState(DrawInfo^.nmcd.uItemState), nil);
+    end
     else
-      Exit;
+    if DrawInfo^.nmcd.dwDrawStage and CDDS_ITEM <> 0 then
+      DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec,
+        -1, ConvState(DrawInfo^.nmcd.uItemState), nil)
+    else
+      DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
+
+    if DrawResult <> [] then
+      lmNotify.result := 0;
+
+    if not (cdrSkipDefault in DrawResult) then
+    begin
+      DrawInfo^.clrText := ColorToRGB(ALV.Canvas.Font.Color);
+      DrawInfo^.clrTextBk := ColorToRGB(ALV.Canvas.Brush.Color);
     end;
+    ALV.Canvas.Handle := OldDC;
 
     for ResultFlag := Low(ResultFlag) to High(ResultFlag) do
     begin
