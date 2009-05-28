@@ -294,7 +294,7 @@ var
 begin
   case AStockFont of
     sfSystem:
-      Font.FontData := GetFontData(DefaultFont);
+      AssignDefault;
     sfHint:
       begin
         if FMetricsFailed then
