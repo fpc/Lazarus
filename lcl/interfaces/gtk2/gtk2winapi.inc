@@ -155,7 +155,7 @@ begin
           if PangoDesc = nil then
             PangoDesc := pango_context_get_font_description(pango_layout_get_context(CurFont));
           aFamily := StrPas(pango_font_description_get_family(PangoDesc));
-          if (aSize = 0) then
+          if (aSize = 0) and (lfHeight = 0) then
           begin
             aSize := pango_font_description_get_size(PangoDesc);
             if not pango_font_description_get_size_is_absolute(PangoDesc) then
