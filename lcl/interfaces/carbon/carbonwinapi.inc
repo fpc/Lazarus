@@ -1429,15 +1429,20 @@ begin
     DebugLn('TCarbonWidgetSet.GetFocus');
   {$ENDIF}
   
-  Window := WindowRef(GetUserFocusWindow);
-  if Window = nil then Exit;
-  
-  Control := nil;
-  OSError(GetKeyboardFocus(Window, Control), Self, 'GetFocus', SGetKeyboardFocus);
-  
-  if Control <> nil then
-    Result := HWND(GetCarbonControl(Control))
-  else Result := HWND(GetCarbonWindow(Window));
+  if FFocusedWidget = 0 then
+  begin
+    Window := WindowRef(GetUserFocusWindow);
+    if Window = nil then Exit;
+
+    Control := nil;
+    OSError(GetKeyboardFocus(Window, Control), Self, 'GetFocus', SGetKeyboardFocus);
+
+    if Control <> nil then
+      Result := HWND(GetCarbonControl(Control))
+    else Result := HWND(GetCarbonWindow(Window));
+  end
+  else
+    Result := FFocusedWidget;
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetFocus Result: ' + DbgS(Result));
@@ -3517,6 +3522,15 @@ begin
   {$ENDIF}
 end;
 
+procedure TCarbonWidgetSet.SetFocusedWidget(const AWidget: HWND);
+begin
+  FFocusedWidget := AWidget;
+end;
+
+function TCarbonWidgetSet.GetFocusedWidget: HWND;
+begin
+  Result := FFocusedWidget;
+end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

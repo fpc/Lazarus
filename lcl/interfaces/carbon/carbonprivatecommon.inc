@@ -409,9 +409,17 @@ begin
   end;
 
   if FocusPart <> kControlFocusNoPart then
-    AWidget.FocusSet
+  begin
+    CarbonWidgetSet.SetFocusedWidget(HWND(AWidget));
+    AWidget.FocusSet;
+    CarbonWidgetSet.SetFocusedWidget(0);
+  end
   else
+  begin
+    if CarbonWidgetSet.GetFocusedWidget = HWND(AWidget) then
+      CarbonWidgetSet.SetFocusedWidget(0);
     AWidget.FocusKilled;
+  end;
 end;
 
 {------------------------------------------------------------------------------

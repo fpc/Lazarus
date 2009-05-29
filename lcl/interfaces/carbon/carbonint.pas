@@ -69,6 +69,7 @@ type
     FCurrentCursor: HCURSOR;
     FMainMenu: TMainMenu; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
+    FFocusedWidget: HWND; // Forced Focus widgetset (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
     FQuitEventHandlerUPP: AEEventHandlerUPP;
 
@@ -138,6 +139,8 @@ type
   public
     procedure SetCaptureWidget(const AWidget: HWND);
     procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);
+    procedure SetFocusedWidget(const AWidget: HWND);
+    function GetFocusedWidget: HWND;
   end;
   
 const
