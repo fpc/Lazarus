@@ -87,6 +87,7 @@ type
     bbtRecord,
     bbtClass,
     bbtClassInterface,
+    bbtClassSection, // public, private, protected, published
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,
@@ -183,6 +184,7 @@ const
     'bbtRecord',
     'bbtClass',
     'bbtClassInterface',
+    'bbtClassSection',
     // statement blocks
     'bbtProcedure',
     'bbtFunction',
@@ -342,10 +344,23 @@ var
   end;
 
   procedure EndBlock;
+  var
+    Block: PBlock;
   begin
     {$IFDEF ShowCodeBeautifierParser}
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
+    Block:=@Stack.Stack[Stack.Top];
+    if (Policies<>nil)
+    and (not Policies.Indentations[Block^.Typ].IndentBeforeValid) then begin
+      with Policies.Indentations[Block^.Typ] do begin
+        IndentBefore:=-IndentAfter;
+        IndentBeforeValid:=IndentAfterValid;
+        {$IFDEF ShowCodeBeautifierParser}
+        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' IndentBefore=',IndentBefore]);
+        {$ENDIF}
+      end;
+    end;
     Stack.EndBlock;
   end;
 
@@ -399,6 +414,14 @@ var
       BeginBlock(Typ);
   end;
 
+  procedure StartClassSection;
+  begin
+    if Stack.TopType=bbtClassSection then
+      EndBlock;
+    if Stack.TopType=bbtClass then
+      BeginBlock(bbtClassSection);
+  end;
+
 var
   r: PChar;
   Block: PBlock;
@@ -426,6 +449,9 @@ begin
               Indent:=Block^.InnerIdent-GetLineIndent(Src,Block^.StartPos);
             Policies.Indentations[Block^.Typ].IndentAfter:=Indent;
             Policies.Indentations[Block^.Typ].IndentAfterValid:=true;
+            {$IFDEF ShowCodeBeautifierParser}
+            DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' IndentAfter=',Policies.Indentations[Block^.Typ].IndentAfter]);
+            {$ENDIF}
           end;
         end;
       end;
@@ -486,6 +512,8 @@ begin
           if CompareIdentifiers('END',r)=0 then begin
             // if statements can be closed by end without semicolon
             while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
+            if Stack.TopType=bbtClassSection then
+              EndBlock;
 
             case Stack.TopType of
             bbtMainBegin,bbtCommentaryBegin,
@@ -591,8 +619,27 @@ begin
           end;
         end;
       'P':
-        if CompareIdentifiers('PROCEDURE',r)=0 then
-          StartProcedure(bbtProcedure);
+        case UpChars[r[1]] of
+        'R': // PR
+          case UpChars[r[2]] of
+          'I': // PRI
+            if (CompareIdentifiers('PRIVATE',r)=0) then
+              StartClassSection;
+          'O': // PRO
+            case UpChars[r[3]] of
+            'T': // PROT
+              if (CompareIdentifiers('PROTECTED',r)=0) then
+                StartClassSection;
+            'C': // PROC
+              if CompareIdentifiers('PROCEDURE',r)=0 then
+                StartProcedure(bbtProcedure);
+            end;
+          end;
+        'U': // PU
+          if (CompareIdentifiers('PUBLIC',r)=0)
+          or (CompareIdentifiers('PUBLISHED',r)=0) then
+            StartClassSection;
+        end;
       'R':
         case UpChars[r[1]] of
         'E': // RE

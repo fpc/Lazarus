@@ -38,7 +38,7 @@ var
   Y: LongInt;
   X: LongInt;
   p: integer;
-  Indentation: TFABIndentation;
+  Indentation: TFABIndentationPolicy;
 begin
   if Paramcount>0 then begin
     if Paramcount<>3 then begin
@@ -67,9 +67,8 @@ begin
       exit;
     end;
     if FAB.GetIndent(Code.Source,p,true,Indentation) then begin
-      writeln('Indent=',Indentation.Indent);
-      writeln('UseTabs=',Indentation.UseTabs);
-      writeln('InsertEmptyLines=',Indentation.InsertEmptyLines);
+      writeln('IndentAfter=',Indentation.IndentAfter);
+      writeln('IndentBefore=',Indentation.IndentBefore);
     end else begin
       writeln('Error: GetIndent failed');
     end;
