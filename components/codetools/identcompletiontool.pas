@@ -1736,6 +1736,7 @@ begin
         CurrentIdentifierList.ContextFlags:=
           CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
       end;
+
       // context in front of
       StartPosOfVariable:=FindStartOfVariable(IdentStartPos);
       if StartPosOfVariable>0 then begin

@@ -3269,190 +3269,207 @@ var
   MaxChainLength: LongInt;
   OwnerBorderSpacing: LongInt;
   OwnerParent: TWinControl;
+  Found: Boolean;
+  CurReferenceControl: TControl;
+  CurReferenceSide: TAnchorSideReference;
 begin
-  ReferenceControl:=Control;
+  ReferenceControl:=nil;
   ReferenceSide:=Side;
   Position:=0;
   OwnerParent:=FOwner.Parent;
   if OwnerParent=nil then begin
     // AnchorSide is only between siblings or its direct parent allowed
     //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition OwnerParent=nil']);
-    ReferenceControl:=nil;
     exit;
   end;
   ChainLength:=0;
   MaxChainLength:=OwnerParent.ControlCount;
-  while ReferenceControl<>nil do begin
+  Found:=false;
+  CurReferenceControl:=Control;
+  CurReferenceSide:=Side;
+  while CurReferenceControl<>nil do begin
 
     // check for circles
     inc(ChainLength);
     if ChainLength>MaxChainLength then begin
       // the chain has more elements than there are siblings -> circle
-      //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition Circle']);
+      //if CheckPosition(Owner) then
+      DebugLn(['TAnchorSide.GetSidePosition Circle ',DbgSName(Owner)]);
       ReferenceControl:=nil;
       exit;
     end;
 
     // check if ReferenceControl is valid
-    if (ReferenceControl.Parent<>OwnerParent)
-    and (ReferenceControl<>OwnerParent) then begin
+    if (CurReferenceControl.Parent<>OwnerParent)
+    and (CurReferenceControl<>OwnerParent) then begin
       // not a sibling and not the parent -> invalid AnchorSide
       //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition invalid AnchorSide ',dbgsName(ReferenceControl)]);
       ReferenceControl:=nil;
       exit;
     end;
 
-    if ReferenceControl.IsControlVisible then begin
+    if CurReferenceControl.IsControlVisible then begin
       // ReferenceControl is visible
-      // -> calculate Position
-      OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
-      //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
-      case ReferenceSide of
+      if not Found then begin
+        Found:=true;
+        ReferenceControl:=CurReferenceControl;
+        ReferenceSide:=CurReferenceSide;
 
-      asrTop: // asrTop = asrLeft
-        if Kind in [akLeft,akRight] then begin
-          // anchor to left side of ReferenceControl
-          if ReferenceControl=OwnerParent then
-            Position:=0
-          else
-            Position:=ReferenceControl.Left;
-          if ReferenceControl=OwnerParent then
-            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                    OwnerParent.ChildSizing.LeftRightSpacing)
-          else if Kind=akRight then
-            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
-                 OwnerParent.ChildSizing.HorizontalSpacing);
-          if Kind=akLeft then begin
-            // anchor left of ReferenceControl and left of Owner
-            inc(Position,OwnerBorderSpacing);
+        // -> calculate Position
+        OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
+        //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
+        case ReferenceSide of
+
+        asrTop: // asrTop = asrLeft
+          if Kind in [akLeft,akRight] then begin
+            // anchor to left side of ReferenceControl
+            if ReferenceControl=OwnerParent then
+              Position:=0
+            else
+              Position:=ReferenceControl.Left;
+            if ReferenceControl=OwnerParent then
+              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                      OwnerParent.ChildSizing.LeftRightSpacing)
+            else if Kind=akRight then
+              OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   OwnerParent.ChildSizing.HorizontalSpacing);
+            if Kind=akLeft then begin
+              // anchor left of ReferenceControl and left of Owner
+              inc(Position,OwnerBorderSpacing);
+            end else begin
+              // anchor left of ReferenceControl and right of Owner
+              dec(Position,OwnerBorderSpacing);
+            end;
           end else begin
-            // anchor left of ReferenceControl and right of Owner
-            dec(Position,OwnerBorderSpacing);
+            // anchor to top side of ReferenceControl
+            if ReferenceControl=OwnerParent then
+              Position:=0
+            else
+              Position:=ReferenceControl.Top;
+            if ReferenceControl=OwnerParent then
+              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                      OwnerParent.ChildSizing.TopBottomSpacing)
+            else if Kind=akBottom then
+              OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   OwnerParent.ChildSizing.VerticalSpacing);
+            if Kind=akTop then begin
+              // anchor top of ReferenceControl and top of Owner
+              inc(Position,OwnerBorderSpacing);
+            end else begin
+              // anchor top of ReferenceControl and bottom of Owner
+              dec(Position,OwnerBorderSpacing);
+            end;
           end;
-        end else begin
-          // anchor to top side of ReferenceControl
-          if ReferenceControl=OwnerParent then
-            Position:=0
-          else
-            Position:=ReferenceControl.Top;
-          if ReferenceControl=OwnerParent then
-            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                    OwnerParent.ChildSizing.TopBottomSpacing)
-          else if Kind=akBottom then
-            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
-                 OwnerParent.ChildSizing.VerticalSpacing);
-          if Kind=akTop then begin
-            // anchor top of ReferenceControl and top of Owner
-            inc(Position,OwnerBorderSpacing);
+
+        asrBottom: // asrBottom = asrRight
+          if Kind in [akLeft,akRight] then begin
+            // anchor to right side of ReferenceControl
+            if ReferenceControl=OwnerParent then
+              Position:=OwnerParent.GetLogicalClientRect.Right
+            else
+              Position:=ReferenceControl.Left+ReferenceControl.Width;
+            if ReferenceControl=OwnerParent then
+              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                      OwnerParent.ChildSizing.LeftRightSpacing)
+            else if Kind=akLeft then
+              OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   OwnerParent.ChildSizing.HorizontalSpacing);
+            if Kind=akLeft then begin
+              // anchor right of ReferenceControl and left of Owner
+              inc(Position,OwnerBorderSpacing);
+            end else begin
+              // anchor right of ReferenceControl and right of Owner
+              dec(Position,OwnerBorderSpacing);
+            end;
           end else begin
-            // anchor top of ReferenceControl and bottom of Owner
-            dec(Position,OwnerBorderSpacing);
+            // anchor to bottom side of ReferenceControl
+            if ReferenceControl=OwnerParent then
+              Position:=OwnerParent.GetLogicalClientRect.Bottom
+            else
+              Position:=ReferenceControl.Top+ReferenceControl.Height;
+            if ReferenceControl=OwnerParent then
+              OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                      OwnerParent.ChildSizing.TopBottomSpacing)
+            else if Kind=akTop then
+              OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
+                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   OwnerParent.ChildSizing.VerticalSpacing);
+            if Kind=akTop then begin
+              // anchor bottom of ReferenceControl and top of Owner
+              inc(Position,OwnerBorderSpacing);
+            end else begin
+              // anchor bottom of ReferenceControl and bottom of Owner
+              dec(Position,OwnerBorderSpacing);
+            end;
           end;
+
+        asrCenter:
+          if Kind in [akLeft,akRight] then begin
+            // center horizontally
+            if ReferenceControl=OwnerParent then
+              Position:=OwnerParent.ClientWidth div 2
+            else
+              Position:=ReferenceControl.Left+(ReferenceControl.Width div 2);
+            if Kind=akLeft then
+              dec(Position,FOwner.Width div 2)
+            else
+              inc(Position,FOwner.Width div 2);
+          end else begin
+            // center vertically
+            if ReferenceControl=OwnerParent then
+              Position:=OwnerParent.ClientHeight div 2
+            else
+              Position:=ReferenceControl.Top+(ReferenceControl.Height div 2);
+            if Kind=akTop then
+              dec(Position,FOwner.Height div 2)
+            else
+              inc(Position,FOwner.Height div 2);
+          end;
+
+        else
+          RaiseInvalidSide;
         end;
-
-      asrBottom: // asrBottom = asrRight
-        if Kind in [akLeft,akRight] then begin
-          // anchor to right side of ReferenceControl
-          if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.GetLogicalClientRect.Right
-          else
-            Position:=ReferenceControl.Left+ReferenceControl.Width;
-          if ReferenceControl=OwnerParent then
-            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                    OwnerParent.ChildSizing.LeftRightSpacing)
-          else if Kind=akLeft then
-            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
-                 OwnerParent.ChildSizing.HorizontalSpacing);
-          if Kind=akLeft then begin
-            // anchor right of ReferenceControl and left of Owner
-            inc(Position,OwnerBorderSpacing);
-          end else begin
-            // anchor right of ReferenceControl and right of Owner
-            dec(Position,OwnerBorderSpacing);
-          end;
-        end else begin
-          // anchor to bottom side of ReferenceControl
-          if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.GetLogicalClientRect.Bottom
-          else
-            Position:=ReferenceControl.Top+ReferenceControl.Height;
-          if ReferenceControl=OwnerParent then
-            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
-                                    OwnerParent.ChildSizing.TopBottomSpacing)
-          else if Kind=akTop then
-            OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                 ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
-                 OwnerParent.ChildSizing.VerticalSpacing);
-          if Kind=akTop then begin
-            // anchor bottom of ReferenceControl and top of Owner
-            inc(Position,OwnerBorderSpacing);
-          end else begin
-            // anchor bottom of ReferenceControl and bottom of Owner
-            dec(Position,OwnerBorderSpacing);
-          end;
-        end;
-
-      asrCenter:
-        if Kind in [akLeft,akRight] then begin
-          // center horizontally
-          if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.ClientWidth div 2
-          else
-            Position:=ReferenceControl.Left+(ReferenceControl.Width div 2);
-          if Kind=akLeft then
-            dec(Position,FOwner.Width div 2)
-          else
-            inc(Position,FOwner.Width div 2);
-        end else begin
-          // center vertically
-          if ReferenceControl=OwnerParent then
-            Position:=OwnerParent.ClientHeight div 2
-          else
-            Position:=ReferenceControl.Top+(ReferenceControl.Height div 2);
-          if Kind=akTop then
-            dec(Position,FOwner.Height div 2)
-          else
-            inc(Position,FOwner.Height div 2);
-        end;
-
-      else
-        RaiseInvalidSide;
       end;
       // side found
-      exit;
+      // continue to detect circles
     end;
 
-    // ReferenceControl is not visible -> try next
+    // try next
     NextReferenceSide:=nil;
-    if ReferenceControl<>OwnerParent then begin
-      if ReferenceSide=asrCenter then begin
+    if CurReferenceControl<>OwnerParent then
+    begin
+      if CurReferenceSide=asrCenter then
+      begin
         // center can only be anchored to another centered anchor
-        if Kind in [akLeft,akRight] then begin
-          if not GetNextCentered(ReferenceControl,akLeft,NextReferenceSide)
-          then   GetNextCentered(ReferenceControl,akRight,NextReferenceSide);
+        if Kind in [akLeft,akRight] then
+        begin
+          if not GetNextCentered(CurReferenceControl,akLeft,NextReferenceSide)
+          then   GetNextCentered(CurReferenceControl,akRight,NextReferenceSide);
         end else begin
-          if not GetNextCentered(ReferenceControl,akTop,NextReferenceSide)
-          then   GetNextCentered(ReferenceControl,akBottom,NextReferenceSide);
+          if not GetNextCentered(CurReferenceControl,akTop,NextReferenceSide)
+          then   GetNextCentered(CurReferenceControl,akBottom,NextReferenceSide);
         end;
-      end else if (ReferenceSide=asrLeft) = (Kind in [akLeft,akTop]) then begin
+      end else if (CurReferenceSide=asrLeft) = (Kind in [akLeft,akTop]) then
+      begin
         // anchor parallel (e.g. a left side to a left side)
-        NextReferenceSide:=ReferenceControl.AnchorSide[Kind];
+        NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
       end else begin
         // anchor opposite (e.g. a left side to a right side)
-        NextReferenceSide:=ReferenceControl.AnchorSide[Kind];
+        NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
       end;
     end;
-    if (NextReferenceSide=nil) then begin
+    if (NextReferenceSide=nil) then
+    begin
+      // no further side => anchor ok
       //if CheckPosition(Owner) and (Kind=akRight) then
       //  DebugLn(['TAnchorSide.GetSidePosition not IsControlVisible ReferenceControl=',dbgsName(ReferenceControl)]);
-      ReferenceControl:=nil;
       exit;
     end;
-    ReferenceControl:=NextReferenceSide.Control;
-    ReferenceSide:=NextReferenceSide.Side;
+    CurReferenceControl:=NextReferenceSide.Control;
+    CurReferenceSide:=NextReferenceSide.Side;
     //DebugLn(['TAnchorSide.GetSidePosition ',DbgSName(FOwner),' ReferenceControl=',DbgSName(ReferenceControl),' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
   end;
 end;
