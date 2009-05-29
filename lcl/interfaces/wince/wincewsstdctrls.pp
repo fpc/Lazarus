@@ -1257,10 +1257,7 @@ begin
   begin
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    if TCustomCheckBox(AWinControl).AllowGrayed then
-      Flags := Flags Or BS_AUTO3STATE
-    else
-      Flags := Flags Or BS_AUTOCHECKBOX;
+    Flags := Flags or BS_3STATE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

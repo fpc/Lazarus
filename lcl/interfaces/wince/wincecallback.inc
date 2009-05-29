@@ -1148,6 +1148,33 @@ begin
           // buddy controls use 'awincontrol' to designate associated wincontrol
           if lWinControl = nil then
             lWinControl := GetWindowInfo(LParam)^.AWinControl;
+
+          if lWinControl is TCustomCheckbox then begin
+            case HIWORD(WParam) of
+              BN_CLICKED:
+                begin
+                  // to allow cbGrayed state at the same time as not AllowGrayed
+                  // in checkboxes (needed by dbcheckbox for null fields) we need
+                  // to handle checkbox state ourselves, according to msdn state
+                  // sequence goes from checked->cleared->grayed etc.
+                  Flags := SendMessageW(lWinControl.Handle, BM_GETCHECK, 0, 0);
+                  if (Flags=BST_CHECKED) then
+                    Flags := BST_UNCHECKED
+                  else
+                  if (Flags=BST_UNCHECKED) and
+                     TCustomCheckbox(lWinControl).AllowGrayed then
+                    Flags := BST_INDETERMINATE
+                  else
+                    Flags := BST_CHECKED;
+                  Windows.SendMessageW(lWinControl.Handle, BM_SETCHECK,
+                                                      Windows.WPARAM(flags), 0);
+
+                  LMessage.Msg := LM_CLICKED;
+                end;
+              BN_KILLFOCUS:
+                LMessage.Msg := LM_EXIT;
+            end
+          end else
           if lWinControl is TCustomButton then
             case Hi(WParam) of
               BN_CLICKED:   LMessage.Msg := LM_CLICKED;
