@@ -48,7 +48,7 @@ uses
   LazarusIDEStrConsts, Project, JITForms,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
-  DesignerProcs;
+  EnvironmentOpts, DesignerProcs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
@@ -1273,7 +1273,8 @@ begin
   else
   begin
     DesignerForm := GetDesignerForm(AComponent);
-    if DesignerForm <> nil then
+    if (DesignerForm <> nil) and (DesignerForm.Designer <> nil) and
+       EnvironmentOptions.ShowComponentCaptions then
       DesignerForm.Invalidate;
   end;
 end;
