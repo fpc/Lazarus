@@ -860,8 +860,13 @@ class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
 begin
   Result := TGtkWSCustomEdit{(ClassParent)}.CreateHandle(AWinControl, AParams);
   if Result <> 0 then
+  begin
     gtk_entry_set_has_frame(PGtkEntry(Result),
       TCustomEdit(AWinControl).BorderStyle <> bsNone);
+    // don't select it on focus since LCL do this itself
+    g_object_set(gtk_widget_get_settings(PGtkWidget(Result)),
+	                'gtk-entry-select-on-focus', [0, nil]);
+  end;
 end;
 
 class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
