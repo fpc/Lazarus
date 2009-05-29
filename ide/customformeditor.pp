@@ -195,6 +195,7 @@ each control that's dropped onto the form
     procedure RenameJITComponentUnitname(AComponent: TComponent;
                                          const NewUnitName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
+    procedure UpdateComponentName(AComponent: TComponent);
     function CreateNewJITMethod(AComponent: TComponent;
                                 const AMethodName: shortstring): TMethod;
     procedure RenameJITMethod(AComponent: TComponent;
@@ -1192,11 +1193,11 @@ function TCustomFormEditor.GetDesignerForm(AComponent: TComponent): TCustomForm;
 var
   OwnerComponent: TComponent;
 begin
-  Result:=nil;
-  if AComponent=nil then exit;
-  OwnerComponent:=AComponent;
-  while OwnerComponent.Owner<>nil do
-    OwnerComponent:=OwnerComponent.Owner;
+  Result := nil;
+  if AComponent = nil then exit;
+  OwnerComponent := AComponent;
+  while OwnerComponent.Owner <> nil do
+    OwnerComponent := OwnerComponent.Owner;
   if OwnerComponent is TCustomForm then
     Result := TCustomForm(OwnerComponent)
   else
@@ -1261,6 +1262,20 @@ begin
   //DebugLn(['TCustomFormEditor.UpdateDesignerFormName ',ANonFormForm<>nil, ' ',AComponent.Name]);
   if ANonFormForm <> nil then
     ANonFormForm.Caption := AComponent.Name;
+end;
+
+procedure TCustomFormEditor.UpdateComponentName(AComponent: TComponent);
+var
+  DesignerForm: TCustomForm;
+begin
+  if AComponent.Owner = nil then
+    UpdateDesignerFormName(AComponent)
+  else
+  begin
+    DesignerForm := GetDesignerForm(AComponent);
+    if DesignerForm <> nil then
+      DesignerForm.Invalidate;
+  end;
 end;
 
 function TCustomFormEditor.CreateNewJITMethod(AComponent: TComponent;

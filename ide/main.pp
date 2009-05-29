@@ -14602,8 +14602,7 @@ end;
 
 procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
 begin
-  if (AComponent.Owner=nil) then
-    FormEditor1.UpdateDesignerFormName(AComponent);
+  FormEditor1.UpdateComponentName(AComponent);
   ObjectInspector1.FillPersistentComboBox;
 end;
 
