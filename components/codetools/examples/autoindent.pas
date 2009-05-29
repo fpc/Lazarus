@@ -51,7 +51,7 @@ begin
   end else begin
     Filename:=ExpandFileNameUTF8('scanexamples/indentation.pas');
     X:=3;
-    Y:=73;
+    Y:=74;
   end;
 
   // load the example unit
@@ -67,8 +67,7 @@ begin
       exit;
     end;
     if FAB.GetIndent(Code.Source,p,true,Indentation) then begin
-      writeln('IndentAfter=',Indentation.IndentAfter);
-      writeln('IndentBefore=',Indentation.IndentBefore);
+      writeln('Indent=',Indentation.Indent);
     end else begin
       writeln('Error: GetIndent failed');
     end;

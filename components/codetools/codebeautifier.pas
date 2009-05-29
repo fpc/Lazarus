@@ -124,10 +124,8 @@ type
                                 out CodeBuffers: TFPList) of object;
 
   TFABIndentationPolicy = record
-    IndentBefore: integer;
-    IndentBeforeValid: boolean;
-    IndentAfter: integer;
-    IndentAfterValid: boolean;
+    Indent: integer;
+    IndentValid: boolean;
   end;
 
   { TFABPolicies }
@@ -150,6 +148,7 @@ type
                           NestedComments: boolean; Policies: TFABPolicies);
     procedure FindPolicies(Types: TFABBlockTypes; Policies: TFABPolicies);
   public
+    DefaultTabWidth: integer;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -344,23 +343,10 @@ var
   end;
 
   procedure EndBlock;
-  var
-    Block: PBlock;
   begin
     {$IFDEF ShowCodeBeautifierParser}
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
-    Block:=@Stack.Stack[Stack.Top];
-    if (Policies<>nil)
-    and (not Policies.Indentations[Block^.Typ].IndentBeforeValid) then begin
-      with Policies.Indentations[Block^.Typ] do begin
-        IndentBefore:=-IndentAfter;
-        IndentBeforeValid:=IndentAfterValid;
-        {$IFDEF ShowCodeBeautifierParser}
-        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' IndentBefore=',IndentBefore]);
-        {$ENDIF}
-      end;
-    end;
     Stack.EndBlock;
   end;
 
@@ -438,19 +424,22 @@ begin
       if (Stack.Top>=0) then begin
         Block:=@Stack.Stack[Stack.Top];
         if (Policies<>nil)
-        and (not Policies.Indentations[Block^.Typ].IndentAfterValid) then begin
+        and (not Policies.Indentations[Block^.Typ].IndentValid) then begin
           // set block InnerIdent
           if (Block^.InnerIdent<0)
           and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
-            Block^.InnerIdent:=GetLineIndent(Src,AtomStart);
+            Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
             if Block^.Typ in [bbtIfThen,bbtIfElse] then
-              Indent:=Block^.InnerIdent-GetLineIndent(Src,Stack.Stack[Stack.Top-1].StartPos)
+              Indent:=Block^.InnerIdent
+                 -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
+                                        DefaultTabWidth)
             else
-              Indent:=Block^.InnerIdent-GetLineIndent(Src,Block^.StartPos);
-            Policies.Indentations[Block^.Typ].IndentAfter:=Indent;
-            Policies.Indentations[Block^.Typ].IndentAfterValid:=true;
+              Indent:=Block^.InnerIdent
+                 -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
+            Policies.Indentations[Block^.Typ].Indent:=Indent;
+            Policies.Indentations[Block^.Typ].IndentValid:=true;
             {$IFDEF ShowCodeBeautifierParser}
-            DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' IndentAfter=',Policies.Indentations[Block^.Typ].IndentAfter]);
+            DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Policies.Indentations[Block^.Typ].Indent]);
             {$ENDIF}
           end;
         end;
@@ -736,7 +725,7 @@ end;
 
 constructor TFullyAutomaticBeautifier.Create;
 begin
-
+  DefaultTabWidth:=4;
 end;
 
 destructor TFullyAutomaticBeautifier.Destroy;

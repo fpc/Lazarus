@@ -69,6 +69,8 @@ function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
+function GetLineIndentWithTabs(const Source: string; Position: integer;
+                               TabWidth: integer): integer;
 function GetPosInLine(const Source: string; Position: integer): integer;
 function GetBlockMinIndent(const Source: string;
     StartPos, EndPos: integer): integer;
@@ -2248,10 +2250,8 @@ begin
   if (LineStart<0) then LineStart:=1;
   if (LineStart>length(Source)+1) then LineStart:=length(Source)+1;
   // search beginning of line
-  repeat
+  while (LineStart>1) and not (Source[LineStart-1] in [#10,#13]) do
     dec(LineStart);
-  until (LineStart<1) or (Source[LineStart] in [#10,#13]);
-  inc(LineStart);
   // search code
   Result:=LineStart;
   while (Result<=length(Source)) and (Source[Result]=' ') do inc(Result);
@@ -3722,6 +3722,34 @@ begin
     end;
     if not IsIdentChar[NamePair[p]] then exit;
   until false;
+end;
+
+function GetLineIndentWithTabs(const Source: string; Position: integer;
+  TabWidth: integer): integer;
+var p: integer;
+begin
+  Result:=0;
+  p:=Position;
+  if p=0 then exit;
+  if (p<0) then p:=1;
+  if (p>length(Source)+1) then p:=length(Source)+1;
+  // search beginning of line
+  while (p>1) and not (Source[p-1] in [#10,#13]) do
+    dec(p);
+  // search code
+  Result:=0;
+  while (p<=length(Source)) do begin
+    case Source[p] of
+    ' ': inc(Result);
+    #9:
+      begin
+        Result:=Result+TabWidth;
+        Result:=Result-(Result mod TabWidth);
+      end;
+    else break;
+    end;
+    inc(p);
+  end;
 end;
 
 function GetPosInLine(const Source: string; Position: integer): integer;
