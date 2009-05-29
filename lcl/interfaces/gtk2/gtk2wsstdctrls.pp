@@ -79,6 +79,8 @@ type
   { TGtk2WSCustomGroupBox }
 
   TGtk2WSCustomGroupBox = class(TGtkWSCustomGroupBox)
+  protected
+    class procedure SetLabel(AFrame: PGtkFrame; AText: String);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
@@ -1678,6 +1680,28 @@ end;
 
 { TGtk2WSCustomGroupBox }
 
+class procedure TGtk2WSCustomGroupBox.SetLabel(AFrame: PGtkFrame; AText: String);
+var
+  Lbl: PGtkWidget;
+begin
+  Lbl := gtk_frame_get_label_widget(AFrame);
+  if (AText = '') then
+  begin
+    if Lbl <> nil then
+      gtk_widget_destroy(Lbl);
+  end
+  else
+  begin
+    if Lbl = nil then
+    begin
+      Lbl := gtk_label_new(nil);
+      gtk_widget_show(Lbl);
+    end;
+    gtk_frame_set_label_widget(AFrame, Lbl);
+    Gtk2Widgetset.SetLabelCaption(PGtkLabel(Lbl), AText);
+  end;
+end;
+
 class function TGtk2WSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
@@ -1687,14 +1711,11 @@ var
 {$endif}
   TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p : pointer;          // ptr to the newly created GtkWidget
-  L : PGTKWidget;
   Allocation: TGTKAllocation;
   WidgetInfo: PWidgetInfo;
 begin
-  L := gtk_label_new(AParams.Caption);
-  gtk_widget_show(L);
   P := gtk_frame_new(nil);
-  gtk_frame_set_label_widget(GTK_FRAME(P), GTK_WIDGET(L));
+  SetLabel(P, AParams.Caption);
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
   {$if defined(GtkFixedWithWindow)}
   TempWidget := CreateFixedClientWidget;
@@ -1779,7 +1800,7 @@ var
   Frame: PGtkFrame;
   Lbl: PGtkWidget;
 begin
-  Frame:=PGtkFrame(Pointer(AWinControl.Handle));
+  Frame := PGtkFrame(Pointer(AWinControl.Handle));
   Lbl := gtk_frame_get_label_widget(Frame);
 
   if Lbl <> nil then
@@ -1793,12 +1814,9 @@ end;
 
 class procedure TGtk2WSCustomGroupBox.SetText(const AWinControl: TWinControl;
   const AText: string);
-var
-  AFrame: PGtkFrame;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
-  AFrame := PGtkFrame(AWinControl.Handle);
-  Gtk2Widgetset.SetLabelCaption(PGtkLabel(gtk_frame_get_label_widget(AFrame)), ATExt);
+  SetLabel(PGtkFrame(AWinControl.Handle), AText);
 end;
 
 function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
