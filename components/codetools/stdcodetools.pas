@@ -5256,6 +5256,12 @@ var
       AfterGap:=gtNone;
       inc(ToPos);
     end;
+    // adjust indent of first line
+    if FrontGap in [gtNone,gtSpace] then begin
+      BeautifyFlags:=BeautifyFlags+[bcfDoNotIndentFirstLine];
+      NewCode:=GetIndentStr(Indent-GetPosInLine(Src,FromPos))+NewCode;
+    end;
+    debugln(['Replace Indent=',Indent,' NewCode=',NewCode]);
     // beautify
     NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      NewCode,Indent,BeautifyFlags);
@@ -5542,7 +5548,6 @@ var
           NewCode:=';';
           FrontGap:=gtNone;
           AfterGap:=gtNone;
-          Include(BeautifyFlags,bcfDoNotIndentFirstLine);
         end;
       else
         exit;

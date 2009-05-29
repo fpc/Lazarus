@@ -117,25 +117,27 @@ const
   bbtAllStatements = [bbtMainBegin,bbtCommentaryBegin,bbtRepeat,bbtProcedureBegin,
                       bbtCaseColon,bbtCaseBegin,bbtCaseElse,
                       bbtTry,bbtFinally,bbtExcept,
-                      bbtIfThen,bbtIfElse];
+                      bbtIfThen,bbtIfElse,bbtIfBegin];
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 out CodeBuffers: TFPList) of object;
 
-  TFABIndentation = record
-    Indent: integer;
-    UseTabs: boolean;
-    InsertEmptyLines: integer;
+  TFABIndentationPolicy = record
+    IndentBefore: integer;
+    IndentBeforeValid: boolean;
+    IndentAfter: integer;
+    IndentAfterValid: boolean;
   end;
 
   { TFABPolicies }
 
   TFABPolicies = class
   public
-    Indentations: array[TFABBlockType] of TFABIndentation;
+    Indentations: array[TFABBlockType] of TFABIndentationPolicy;
     IndentationsFound: array[TFABBlockType] of boolean;
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
   end;
 
   { TFullyAutomaticBeautifier }
@@ -143,25 +145,16 @@ type
   TFullyAutomaticBeautifier = class
   private
     FOnGetExamples: TOnGetFABExamples;
-    FAtomStarts: PInteger;
-    FAtomCapacity: integer;
-    FAtomCount: integer;
-    procedure ParseSource(const Source: string; NewSrcLen: integer;
-                          NewNestedComments: boolean);
-    function IndexOfAtomInFront(CleanPos: integer): integer;
-    function FindContext(CleanPos: integer; out AtomInFront: integer
-                         ): TFABBlockType;
+    procedure ParseSource(const Src: string; SrcLen: integer;
+                          NestedComments: boolean; Policies: TFABPolicies);
     procedure FindPolicies(Types: TFABBlockTypes; Policies: TFABPolicies);
   public
-    Src: string;
-    SrcLen: integer;
-    NestedComments: boolean;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean;
-                       out Indent: TFABIndentation): boolean;
+                       out Indent: TFABIndentationPolicy): boolean;
     { ToDo:
       - indent on paste  (position + new source)
       - indent auto generated code (several snippets)
@@ -217,6 +210,7 @@ type
   TBlock = record
     Typ: TFABBlockType;
     StartPos: integer;
+    InnerIdent: integer;
   end;
   PBlock = ^TBlock;
 
@@ -273,6 +267,7 @@ begin
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
   Block^.StartPos:=StartPos;
+  Block^.InnerIdent:=-1;
   TopType:=Typ;
 end;
 
@@ -320,8 +315,8 @@ end;
 
 { TFullyAutomaticBeautifier }
 
-procedure TFullyAutomaticBeautifier.ParseSource(const Source: string;
-  NewSrcLen: integer; NewNestedComments: boolean);
+procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
+  SrcLen: integer; NestedComments: boolean; Policies: TFABPolicies);
 var
   Stack: TBlockStack;
   p: Integer;
@@ -333,7 +328,7 @@ var
     X: integer;
     Y: LongInt;
   begin
-    Y:=LineEndCount(Source,1,p,X)+1;
+    Y:=LineEndCount(Src,1,p,X)+1;
     Result:='Line='+dbgs(Y)+' Col='+dbgs(X);
   end;
   {$ENDIF}
@@ -363,8 +358,14 @@ var
     while Stack.Top>=i do EndBlock;
   end;
 
+  procedure EndStatements;
+  begin
+    while Stack.TopType in bbtAllStatements do EndBlock;
+  end;
+
   procedure StartIdentifierSection(Section: TFABBlockType);
   begin
+    EndStatements;  // fix dangling statements
     if Stack.TopType in [bbtProcedure,bbtFunction] then begin
       if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
       then begin
@@ -382,6 +383,7 @@ var
 
   procedure StartProcedure(Typ: TFABBlockType);
   begin
+    EndStatements; // fix dangling statements
     if Stack.TopType in [bbtProcedure,bbtFunction] then begin
       if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
       then begin
@@ -398,20 +400,10 @@ var
   end;
 
 var
-  MinAtomCapacity: Integer;
   r: PChar;
+  Block: PBlock;
+  Indent: Integer;
 begin
-  Src:=Source;
-  SrcLen:=NewSrcLen;
-  NestedComments:=NewNestedComments;
-  FAtomCount:=0;
-  MinAtomCapacity:=SrcLen div 4;
-  if MinAtomCapacity<1024 then
-    MinAtomCapacity:=1024;
-  if FAtomCapacity<MinAtomCapacity then begin
-    FAtomCapacity:=MinAtomCapacity;
-    ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
-  end;
   Stack:=TBlockStack.Create;
   try
     p:=1;
@@ -419,12 +411,25 @@ begin
       ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
       DebugLn(['TFullyAutomaticBeautifier.ParseSource ',copy(Src,AtomStart,p-AtomStart)]);
       if p>SrcLen then break;
-      FAtomStarts[FAtomCount]:=AtomStart;
-      inc(FAtomCount);
-      if FAtomCount>FAtomCapacity then begin
-        FAtomCapacity:=FAtomCapacity*2;
-        ReAllocMem(FAtomStarts,FAtomCapacity*SizeOf(integer));
+
+      if (Stack.Top>=0) then begin
+        Block:=@Stack.Stack[Stack.Top];
+        if (Policies<>nil)
+        and (not Policies.Indentations[Block^.Typ].IndentAfterValid) then begin
+          // set block InnerIdent
+          if (Block^.InnerIdent<0)
+          and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
+            Block^.InnerIdent:=GetLineIndent(Src,AtomStart);
+            if Block^.Typ in [bbtIfThen,bbtIfElse] then
+              Indent:=Block^.InnerIdent-GetLineIndent(Src,Stack.Stack[Stack.Top-1].StartPos)
+            else
+              Indent:=Block^.InnerIdent-GetLineIndent(Src,Block^.StartPos);
+            Policies.Indentations[Block^.Typ].IndentAfter:=Indent;
+            Policies.Indentations[Block^.Typ].IndentAfterValid:=true;
+          end;
+        end;
       end;
+
       r:=@Src[AtomStart];
       case UpChars[r^] of
       'B':
@@ -479,6 +484,9 @@ begin
           end;
         'N': // EN
           if CompareIdentifiers('END',r)=0 then begin
+            // if statements can be closed by end without semicolon
+            while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
+
             case Stack.TopType of
             bbtMainBegin,bbtCommentaryBegin,
             bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
@@ -496,6 +504,8 @@ begin
                 if Stack.TopType in [bbtProcedure,bbtFunction] then
                   EndBlock;
               end;
+            bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
+              EndBlock;
             end;
           end;
         'X': // EX
@@ -510,7 +520,7 @@ begin
         case UpChars[r[1]] of
         'I': // FI
           if CompareIdentifiers('FINALIZATION',r)=0 then begin
-            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
             do
               EndBlock;
             if Stack.TopType=bbtNone then
@@ -543,7 +553,7 @@ begin
           case UpChars[r[2]] of
           'I': // INI
             if CompareIdentifiers('INITIALIZATION',r)=0 then begin
-              while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+              while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
               do
                 EndBlock;
               if Stack.TopType=bbtNone then
@@ -561,7 +571,7 @@ begin
           end;
         'M': // IM
           if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
-            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections)
+            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
             do
               EndBlock;
             if Stack.TopType=bbtNone then
@@ -641,6 +651,9 @@ begin
             EndBlock;
             BeginBlock(bbtCaseOf);
           end;
+        bbtIfThen,bbtIfElse:
+          while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+            EndBlock;
         end;
       ':':
         if p-AtomStart=1 then begin
@@ -668,120 +681,6 @@ begin
   end;
 end;
 
-function TFullyAutomaticBeautifier.IndexOfAtomInFront(CleanPos: integer
-  ): integer;
-// returns index in FAtomStarts of atom in front
-// if CleanPos is start of an atom the atom in front is returned
-// default: -1
-var
-  l: Integer;
-  r: LongInt;
-  m: Integer;
-  p: LongInt;
-begin
-  l:=0;
-  r:=FAtomCount-1;
-  while l<=r do begin
-    m:=(l+r) shr 1;
-    p:=FAtomStarts[m];
-    if p>CleanPos then
-      r:=m-1
-    else if p<CleanPos then begin
-      if l=r then exit(m);
-      l:=m+1;
-    end else
-      exit(m-1);
-  end;
-  Result:=-1;
-end;
-
-function TFullyAutomaticBeautifier.FindContext(CleanPos: integer; out
-  AtomInFront: integer): TFABBlockType;
-{  Examples:
-
-   repeat
-     |
-
-   procedure DoSomething;
-   ...
-   begin
-     |
-
-   if expr then
-     begin
-       |
-
-   procedure DoSomething(...;...;
-     |
-
-  if expr then
-    begin
-    end
-    else
-      begin
-      end
-  |
-
-  TMyClass = class
-    end;
-  |
-
-  case expr of
-  |
-
-  case expr of
-  1:
-    |
-
-  case expr of
-  else
-    |
-}
-var
-  i: LongInt;
-  p: PChar;
-  Stack: TBlockStack;
-begin
-  Result:=bbtNone;
-  AtomInFront:=IndexOfAtomInFront(CleanPos);
-  if AtomInFront<0 then exit;
-  Stack:=TBlockStack.Create;
-  try
-    i:=0;
-    p:=@Src[FAtomStarts[i]];
-    //DebugLn(['TFullyAutomaticBeautifier.FindContext Atom=',GetAtomString(p,NestedComments)]);
-    case UpChars[p^] of
-    'B':
-      if CompareIdentifiers('BEGIN',p)=0 then
-        // procedure-begin
-        // then-begin
-        // do-begin
-        // semicolon-begin
-        ;
-    'E':
-      if CompareIdentifiers('ELSE',p)=0 then
-        // case-else
-        // if-else
-        ;
-    'O':
-      if CompareIdentifiers('OF',p)=0 then
-        // case-of, array-of, class-of
-        ;
-    'R':
-      if CompareIdentifiers('REPEAT',p)=0 then
-        Result:=bbtRepeat;
-    ':':
-      // case-colon
-      ;
-    ';':
-      // statement or parameter
-      ;
-    end;
-  finally
-    Stack.Free;
-  end;
-end;
-
 procedure TFullyAutomaticBeautifier.FindPolicies(Types: TFABBlockTypes;
   Policies: TFABPolicies);
 begin
@@ -796,38 +695,33 @@ end;
 destructor TFullyAutomaticBeautifier.Destroy;
 begin
   Clear;
-  ReAllocMem(FAtomStarts,0);
-  FAtomCapacity:=0;
   inherited Destroy;
 end;
 
 procedure TFullyAutomaticBeautifier.Clear;
 begin
-  FAtomCount:=0;
+
 end;
 
 function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
-  out Indent: TFABIndentation): boolean;
+  out Indent: TFABIndentationPolicy): boolean;
 var
-  AtomInFront: LongInt;
-  BlockType: TFABBlockType;
+  Policies: TFABPolicies;
 begin
+  Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
 
-  // parse source
-  ParseSource(Source,length(Source),NewNestedComments);
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent FAtomCount=',FAtomCount]);
+  Policies:=TFABPolicies.Create;
+  try
+    // parse source
+    ParseSource(Source,length(Source),NewNestedComments,Policies);
 
-  BlockType:=FindContext(CleanPos,AtomInFront);
-  if AtomInFront<0 then begin
-    // in comments/space in front of any code
-    exit(false);
+  finally
+    Policies.Free;
   end;
 
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent BlockType=',FABBlockTypeNames[BlockType]]);
-
-  //Policies:=
+  //SrcPolicies:=
 end;
 
 { TFABPolicies }
@@ -840,6 +734,14 @@ end;
 destructor TFABPolicies.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TFABPolicies.Clear;
+var
+  i: TFABBlockType;
+begin
+  for i:=low(Indentations) to High(Indentations) do
+    IndentationsFound[i]:=false;
 end;
 
 end.
