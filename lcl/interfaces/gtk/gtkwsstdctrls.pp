@@ -60,10 +60,13 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  {$ifdef gtk1}
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+  {$endif}
   end;
 
   { TGtkWSGroupBox }
@@ -1911,50 +1914,25 @@ begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 end;
 
+{$ifdef gtk1}
 class function TGtkWSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-{$if not defined(gtk1) and not defined(GtkFixedWithWindow)}
-  EventBox: PGtkWidget;
-{$endif}
   TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
-  p         : pointer;          // ptr to the newly created GtkWidget
-  {$IFDEF Gtk2}
-  L          : PGTKWidget;
-  {$ENDIF}
+  p : pointer;          // ptr to the newly created GtkWidget
   Allocation: TGTKAllocation;
   WidgetInfo: PWidgetInfo;
 begin
-  {$IFDEF Gtk1}
   if AParams.Caption <> '' then
     P := gtk_frame_new(AParams.Caption)
   else
     P := gtk_frame_new(nil);
-  {$ELSE}
-  L := gtk_label_new(AParams.Caption);
-  gtk_widget_show(L);
-  P := gtk_frame_new(nil);
-  gtk_frame_set_label_widget(GTK_FRAME(P), GTK_WIDGET(L));
-  {$ENDIF}
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
-  {$if defined(gtk1) or defined(GtkFixedWithWindow)}
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(p), TempWidget);
   WidgetInfo^.ClientWidget := TempWidget;
   WidgetInfo^.CoreWidget := TempWidget;
   gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
-  {$else}
-  EventBox := gtk_event_box_new;
-  gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
-  TempWidget := CreateFixedClientWidget(False);
-  gtk_container_add(GTK_CONTAINER(EventBox), TempWidget);
-  gtk_container_add(GTK_CONTAINER(p), EventBox);
-  gtk_widget_show(EventBox);
-  WidgetInfo^.ClientWidget := TempWidget;
-  WidgetInfo^.CoreWidget := EventBox;
-  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
-  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
-  {$endif}
   gtk_widget_show(TempWidget);
   gtk_widget_show(P);
 
@@ -1979,17 +1957,9 @@ begin
   Widget := PGtkWidget(AWinControl.Handle);
 
   PreferredWidth := (gtk_widget_get_xthickness(Widget)) * 2
-                    {$ifdef gtk1}
                     +PGtkFrame(Widget)^.label_width;
-                    {$else}
-                    +gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
-                    {$endif}
   PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
-                         {$ifdef gtk1}
                          PGtkFrame(Widget)^.label_height)
-                         {$else}
-                         gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget))
-                         {$endif}
                      + gtk_widget_get_ythickness(Widget);
 
   if WithThemeSpace then begin
@@ -1998,8 +1968,18 @@ begin
     inc(PreferredWidth, border_width);
     inc(PreferredHeight,2*border_width);
   end;
-  //debugln('TGtkWSCustomGroupBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
+
+class procedure TGtkWSCustomGroupBox.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
+  if AText <> '' then
+    gtk_frame_set_label(PGtkFrame(AWinControl.Handle), PChar(AText))
+  else
+    gtk_frame_set_label(PGtkFrame(AWinControl.Handle), nil);
+end;
+{$endif}
 
 { TGtkWSRadioButton }
 

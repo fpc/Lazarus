@@ -632,23 +632,6 @@ begin
       end;
     end;
 
-  csGroupBox:
-    {$IFDEF Gtk1}
-    if AText <> '' then
-      gtk_frame_set_label(pgtkFrame(P), pLabel)
-    else
-      gtk_frame_set_label(pgtkFrame(P), nil);
-    {$ELSE}
-    begin
-      aLabel := Ampersands2Underscore(pLabel);
-      try
-        gtk_label_set_text_with_mnemonic(PGtkLabel(gtk_frame_get_label_widget(pgtkFrame(P))), aLabel);
-      finally
-        StrDispose(aLabel);
-      end;
-    end;
-    {$ENDIF}
-
   csEdit        : begin
                     LockOnChange(PGtkObject(p),+1);
                     gtk_entry_set_text(pGtkEntry(P), pLabel);

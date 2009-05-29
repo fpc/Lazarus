@@ -80,10 +80,15 @@ type
 
   TGtk2WSCustomGroupBox = class(TGtkWSCustomGroupBox)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TGtk2WSGroupBox }
@@ -1673,6 +1678,57 @@ end;
 
 { TGtk2WSCustomGroupBox }
 
+class function TGtk2WSCustomGroupBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+{$if not defined(GtkFixedWithWindow)}
+  EventBox: PGtkWidget;
+{$endif}
+  TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p : pointer;          // ptr to the newly created GtkWidget
+  L : PGTKWidget;
+  Allocation: TGTKAllocation;
+  WidgetInfo: PWidgetInfo;
+begin
+  L := gtk_label_new(AParams.Caption);
+  gtk_widget_show(L);
+  P := gtk_frame_new(nil);
+  gtk_frame_set_label_widget(GTK_FRAME(P), GTK_WIDGET(L));
+  WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
+  {$if defined(GtkFixedWithWindow)}
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(p), TempWidget);
+  WidgetInfo^.ClientWidget := TempWidget;
+  WidgetInfo^.CoreWidget := TempWidget;
+  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
+  {$else}
+  EventBox := gtk_event_box_new;
+  gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
+  TempWidget := CreateFixedClientWidget(False);
+  gtk_container_add(GTK_CONTAINER(EventBox), TempWidget);
+  gtk_container_add(GTK_CONTAINER(p), EventBox);
+  gtk_widget_show(EventBox);
+  WidgetInfo^.ClientWidget := TempWidget;
+  WidgetInfo^.CoreWidget := EventBox;
+  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
+  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
+  {$endif}
+  gtk_widget_show(TempWidget);
+  gtk_widget_show(P);
+
+  Result := TLCLIntfHandle(PtrUInt(P));
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(P, @Allocation);
+
+  Set_RC_Name(AWinControl, P);
+  SetCallbacks(P, WidgetInfo);
+end;
+
 class function TGtk2WSCustomGroupBox.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
   var aClientRect: TRect): boolean;
@@ -1693,6 +1749,30 @@ begin
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
 
+class procedure TGtk2WSCustomGroupBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  Widget: PGtkWidget;
+  border_width: Integer;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+
+  PreferredWidth := gtk_widget_get_xthickness(Widget) * 2 +
+                    gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
+  PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
+                         gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget)) +
+                     gtk_widget_get_ythickness(Widget);
+
+  if WithThemeSpace then
+  begin
+    border_width := (PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width) shr
+                    bp_TGtkContainer_border_width;
+    inc(PreferredWidth, border_width);
+    inc(PreferredHeight, 2 * border_width);
+  end;
+end;
+
 class procedure TGtk2WSCustomGroupBox.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
@@ -1709,6 +1789,16 @@ begin
     Gtk2WidgetSet.SetWidgetFont(Lbl, AFont);
   end;
   inherited SetFont(AWinControl, AFont);
+end;
+
+class procedure TGtk2WSCustomGroupBox.SetText(const AWinControl: TWinControl;
+  const AText: string);
+var
+  AFrame: PGtkFrame;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
+  AFrame := PGtkFrame(AWinControl.Handle);
+  Gtk2Widgetset.SetLabelCaption(PGtkLabel(gtk_frame_get_label_widget(AFrame)), ATExt);
 end;
 
 function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
