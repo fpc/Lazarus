@@ -64,9 +64,9 @@ type
     procedure SetVisible(const AValue: Boolean);
   protected
     FOwner: TCustomChart;
-    procedure StyleChanged(Sender: TObject);
     procedure InitHelper(
       var AResult: TFPCanvasHelper; AClass: TFPCanvasHelperClass);
+    procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
     procedure Assign(Source: TPersistent); override;
@@ -147,26 +147,57 @@ type
     property Visible default false;
   end;
 
-  TChartAxis = class(TChartElement)
+  TChartAxisAlignment = (calLeft, calTop, calRight, calBottom);
+
+  { TChartAxis }
+
+  TChartAxis = class(TCollectionItem)
   private
+    FAlignment: TChartAxisAlignment;
     FGrid: TChartPen;
     FInverted: Boolean;
     FTitle: TChartAxisTitle;
+    FVisible: Boolean;
 
+    procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartPen);
     procedure SetInverted(AValue: Boolean);
     procedure SetTitle(AValue: TChartAxisTitle);
+    procedure SetVisible(const AValue: Boolean);
+
+    procedure StyleChanged(ASender: TObject);
   public
-    constructor Create(AOwner: TCustomChart);
+    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
 
     procedure Assign(Source: TPersistent); override;
   published
+    property Alignment: TChartAxisAlignment read FAlignment write SetAlignment;
     property Grid: TChartPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Title: TChartAxisTitle read FTitle write SetTitle;
-    property Visible default true;
+    property Visible: Boolean read FVisible write SetVisible default true;
+  end;
+
+  { TChartAxisList }
+
+  TChartAxisList = class(TCollection)
+  private
+    FChart: TCustomChart;
+    function GetAxes(AIndex: Integer): TChartAxis;
+  protected
+    function GetOwner: TPersistent; override;
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    function Add: TChartAxis; inline;
+    function GetAxis(AIndex: Integer): TChartAxis;
+    procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
+
+    property Axes[AIndex: Integer]: TChartAxis read GetAxes; default;
+    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis;
+    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis;
   end;
 
   TChartLinkPen = class(TChartPen)
@@ -333,7 +364,7 @@ end;
 
 procedure TChartElement.Assign(Source: TPersistent);
 begin
-  inherited Assign(Source);
+  //inherited Assign(Source);
   if Source is TChartElement then
     Self.FVisible := TChartElement(Source).FVisible;
 end;
@@ -542,14 +573,15 @@ begin
       FInverted := Inverted;
       FTitle.Assign(Title);
     end;
-  inherited Assign(Source);
+  //inherited Assign(Source);
 end;
 
-constructor TChartAxis.Create(AOwner: TCustomChart);
+constructor TChartAxis.Create(ACollection: TCollection);
 begin
-  inherited Create(AOwner);
-  FTitle := TChartAxisTitle.Create(AOwner);
-  InitHelper(FGrid, TChartPen);
+  inherited Create(ACollection);
+  FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
+  FGrid := TChartPen.Create;
+  FGrid.OnChange := @StyleChanged;
   FVisible := true;
 end;
 
@@ -558,6 +590,13 @@ begin
   FTitle.Free;
   FGrid.Free;
   inherited;
+end;
+
+procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
+begin
+  if FAlignment = AValue then exit;
+  FAlignment := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartAxis.SetGrid(AValue: TChartPen);
@@ -576,6 +615,19 @@ procedure TChartAxis.SetTitle(AValue: TChartAxisTitle);
 begin
   FTitle.Assign(AValue);
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetVisible(const AValue: Boolean);
+begin
+  if FVisible = AValue then exit;
+  FVisible := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.StyleChanged(ASender: TObject);
+begin
+  Unused(ASender);
+  (Collection.Owner as TCustomChart).Invalidate;
 end;
 
 { TChartMarks }
@@ -880,6 +932,53 @@ begin
   if FData.FCoords[AIndex] = AValue then exit;
   FData.FCoords[AIndex] := AValue;
   StyleChanged(Self);
+end;
+
+const
+  AXIS_INDEX: array [1..2] of TChartAxisAlignment = (calBottom, calLeft);
+
+{ TChartAxisList }
+
+function TChartAxisList.Add: TChartAxis; inline;
+begin
+  Result := TChartAxis(inherited Add);
+end;
+
+constructor TChartAxisList.Create(AOwner: TCustomChart);
+begin
+  inherited Create(TChartAxis);
+  FChart := AOwner;
+end;
+
+function TChartAxisList.GetAxes(AIndex: Integer): TChartAxis;
+begin
+  Result := TChartAxis(Items[AIndex]);
+end;
+
+function TChartAxisList.GetAxis(AIndex: Integer): TChartAxis;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Axes[i].Alignment = AXIS_INDEX[AIndex] then
+      exit(Axes[i]);
+  Result := nil;
+end;
+
+function TChartAxisList.GetOwner: TPersistent;
+begin
+  Result := FChart;
+end;
+
+procedure TChartAxisList.SetAxis(AIndex: Integer; AValue: TChartAxis);
+var
+  a: TChartAxis;
+begin
+  a := GetAxis(AIndex);
+  if a = nil then
+    a := Add;
+  a.Assign(AValue);
+  a.FAlignment := AXIS_INDEX[AIndex];
 end;
 
 end.

@@ -107,19 +107,15 @@ type
 
   TChartSeriesList = class(TPersistent)
   private
-    FChart: TChart;
     FList: TFPList;
     function GetItem(AIndex: Integer): TBasicChartSeries;
-    procedure SetItem(AIndex: Integer; const AValue: TBasicChartSeries);
   public
     function Count: Integer;
-    constructor Create(AOwner: TChart);
+    constructor Create;
     destructor Destroy; override;
 
   public
-    property Chart: TChart read FChart;
-    property Items[AIndex: Integer]: TBasicChartSeries
-      read GetItem write SetItem; default;
+    property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
   end;
 
   { TChart }
@@ -130,14 +126,12 @@ type
     FAxisColor: TColor;
     FAxisVisible: Boolean;
     FBackColor: TColor;
-    FBottomAxis: TChartAxis;
     FDepth: TChartZPosition;
     FExpandPercentage: Integer;
     FExtent: TChartExtent;
     FFoot: TChartTitle;
     FFrame: TChartPen;
     FGraphBrush: TBrush;
-    FLeftAxis: TChartAxis;
     FLegend: TChartLegend;
     FMargins: TChartMargins;
     FOnDrawReticule: TDrawReticuleEvent;
@@ -145,6 +139,7 @@ type
     FTitle: TChartTitle;
 
   private
+    FAxisList: TChartAxisList;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FIsMouseDown: Boolean;
@@ -157,6 +152,7 @@ type
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ACanvas: TCanvas);
+    function GetAxis(AIndex: integer): TChartAxis; inline;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
     function GetLegendWidth(ACanvas: TCanvas): Integer;
@@ -165,17 +161,16 @@ type
     function GetSeriesInZOrder: TFPList;
     procedure PrepareXorPen;
 
+    procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisColor(const AValue: TColor);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBackColor(const AValue: TColor);
-    procedure SetBottomAxis(Value: TChartAxis);
     procedure SetDepth(AValue: TChartZPosition);
     procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(const AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
     procedure SetGraphBrush(Value: TBrush);
-    procedure SetLeftAxis(Value: TChartAxis);
     procedure SetLegend(Value: TChartLegend);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetReticuleMode(const AValue: TReticuleMode);
@@ -203,7 +198,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure GetChildren(AProc: TGetChildProc; ARoot: TComponent); override;
     procedure Paint; override;
@@ -252,7 +247,7 @@ type
     property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
-    property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
+    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis;
     property Depth: TChartZPosition read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
@@ -260,7 +255,7 @@ type
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
-    property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
+    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
     property ReticuleMode: TReticuleMode
@@ -349,7 +344,7 @@ begin
   FReticulePos := Point(-1, -1);
   FReticuleMode := rmNone;
 
-  FSeries := TChartSeriesList.Create(Self);
+  FSeries := TChartSeriesList.Create;
 
   Color := clBtnFace;
   FBackColor := clBtnFace;
@@ -368,12 +363,17 @@ begin
   FTitle.Text.Add('TAChart');
   FFoot := TChartTitle.Create(Self);
 
-  FLeftAxis := TChartAxis.Create(Self);
-  FLeftAxis.Title.Angle := 90;
-  FLeftAxis.Grid.Style := psDot;
-  FBottomAxis := TChartAxis.Create(Self);
-  FBottomAxis.Title.Angle := 0;
-  FBottomAxis.Grid.Style := psDot;
+  FAxisList := TChartAxisList.Create(Self);
+  with TChartAxis.Create(FAxisList) do begin
+    Alignment := calLeft;
+    Title.Angle := 90;
+    Grid.Style := psDot;
+  end;
+  with TChartAxis.Create(FAxisList) do begin
+    Alignment := calBottom;
+    Title.Angle := 0;
+    Grid.Style := psDot;
+  end;
 
   FFrame :=  TChartPen.Create;
   FFrame.OnChange := @StyleChanged;
@@ -390,8 +390,7 @@ begin
   FLegend.Free;
   FTitle.Free;
   FFoot.Free;
-  FLeftAxis.Free;
-  FBottomAxis.Free;
+  FAxisList.Free;
   FFrame.Free;
   FExtent.Free;
   FMargins.Free;
@@ -412,6 +411,11 @@ procedure TChart.EraseBackground(DC: HDC);
 begin
   // do not erase, since we will paint over it anyway
   Unused(DC);
+end;
+
+function TChart.GetAxis(AIndex: integer): TChartAxis;
+begin
+  Result := FAxisList.GetAxis(AIndex);
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);
@@ -462,7 +466,7 @@ type
   TConvFunc = function (AX: Integer): Double of object;
 
   procedure CalcOneCoord(
-    AInverted: boolean; AConv: TConvFunc; var AGraphMin, AGraphMax: Double;
+    AAxis: TChartAxis; AConv: TConvFunc; var AGraphMin, AGraphMax: Double;
     AImageLo, AImageHi, AMarginLo, AMarginHi, ASign: Integer;
     out AScale, AOffset: Double);
   var
@@ -477,24 +481,24 @@ type
       exit;
     end;
 
-    if AInverted then
+    if (AAxis <> nil) and AAxis.Inverted then
       Exchange(lo, hi);
 
     AScale := (hi - lo) / (AGraphMax - AGraphMin);
     AOffset := hi - AScale * AGraphMax;
     AGraphMin := AConv(AImageLo);
     AGraphMax := AConv(AImageHi);;
-    if AInverted then
+    if (AAxis <> nil) and AAxis.Inverted then
       Exchange(AGraphMin, AGraphMax);
   end;
 
 begin
   CalcOneCoord(
-    BottomAxis.Inverted, @XImageToGraph, FCurrentExtent.a.X, FCurrentExtent.b.X,
+    BottomAxis, @XImageToGraph, FCurrentExtent.a.X, FCurrentExtent.b.X,
     FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right, 1,
     FScale.X, FOffset.X);
   CalcOneCoord(
-    LeftAxis.Inverted, @YImageToGraph, FCurrentExtent.a.Y, FCurrentExtent.b.Y,
+    LeftAxis, @YImageToGraph, FCurrentExtent.a.Y, FCurrentExtent.b.Y,
     FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top, -1,
     FScale.Y, FOffset.Y);
 end;
@@ -586,21 +590,26 @@ var
   begin
     // FIXME: Angle assumed to be around 0 for bottom and 90 for left axis.
     c := CenterPoint(FClipRect);
-    s := FLeftAxis.Title.Caption;
-    if FLeftAxis.Visible and (s <> '') then begin
-      w := ACanvas.TextHeight(FLeftAxis.Title.Caption);
-      x := FClipRect.Left;
-      leftOffset := w + 4;
-      ACanvas.Font.Orientation := FLeftAxis.Title.Angle * DEGREES_TO_ORIENT;
-      ACanvas.TextOut(x, c.Y - w div 2, s);
+
+    if LeftAxis <> nil then begin
+      s := LeftAxis.Title.Caption;
+      if LeftAxis.Visible and (s <> '') then begin
+        w := ACanvas.TextHeight(LeftAxis.Title.Caption);
+        x := FClipRect.Left;
+        leftOffset := w + 4;
+        ACanvas.Font.Orientation := LeftAxis.Title.Angle * DEGREES_TO_ORIENT;
+        ACanvas.TextOut(x, c.Y - w div 2, s);
+      end;
     end;
 
-    s := FBottomAxis.Title.Caption;
-    if FBottomAxis.Visible and (s <> '') then begin
-      sz := ACanvas.TextExtent(s);
-      ACanvas.Font.Orientation := FBottomAxis.Title.Angle * DEGREES_TO_ORIENT;
-      ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
-      bottomOffset := sz.cy + 4;
+    if BottomAxis <> nil then begin
+      s := BottomAxis.Title.Caption;
+      if BottomAxis.Visible and (s <> '') then begin
+        sz := ACanvas.TextExtent(s);
+        ACanvas.Font.Orientation := BottomAxis.Title.Angle * DEGREES_TO_ORIENT;
+        ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
+        bottomOffset := sz.cy + 4;
+      end;
     end;
     ACanvas.Font.Orientation := 0;
   end;
@@ -612,8 +621,8 @@ var
   begin
     x := XGraphToImage(AMark);
 
-    if FBottomAxis.Grid.Visible then begin
-      ACanvas.Pen.Assign(FBottomAxis.Grid);
+    if BottomAxis.Grid.Visible then begin
+      ACanvas.Pen.Assign(BottomAxis.Grid);
       ACanvas.Brush.Style := bsClear;
       DrawLineVert(ACanvas, x);
     end;
@@ -639,8 +648,8 @@ var
   begin
     y := YGraphToImage(AMark);
 
-    if FLeftAxis.Grid.Visible then begin
-      ACanvas.Pen.Assign(FLeftAxis.Grid);
+    if LeftAxis.Grid.Visible then begin
+      ACanvas.Pen.Assign(LeftAxis.Grid);
       ACanvas.Brush.Style := bsClear;
       DrawLineHoriz(ACanvas, y);
     end;
@@ -675,11 +684,11 @@ begin
   DrawAxisTitles;
 
   // Check AxisScale for both axes
-  leftAxisScale := INV_TO_SCALE[LeftAxis.Inverted];
-  bottomAxisScale := INV_TO_SCALE[BottomAxis.Inverted];
+  leftAxisScale := INV_TO_SCALE[(LeftAxis <> nil) and LeftAxis.Inverted];
+  bottomAxisScale := INV_TO_SCALE[(BottomAxis <> nil) and BottomAxis.Inverted];
 
   leftAxisWidth := 0;
-  if FLeftAxis.Visible then begin
+  if (LeftAxis <> nil) and LeftAxis.Visible then begin
     // Find max mark width
     maxWidth := 0;
     if YGraphMin <> YGraphMax then begin
@@ -710,7 +719,7 @@ begin
     leftOffset += leftAxisWidth;
   end;
 
-  if FBottomAxis.Visible then
+  if (BottomAxis <> nil) and BottomAxis.Visible then
     bottomOffset += ACanvas.TextHeight('0') + 5;
 
   FClipRect.Left += Max(leftOffset, Depth);
@@ -730,7 +739,7 @@ begin
   end;
 
   // X graduations
-  if FBottomAxis.Visible and (XGraphMin <> XGraphMax) then begin
+  if (BottomAxis <> nil) and BottomAxis.Visible and (XGraphMin <> XGraphMax) then begin
     CalculateIntervals(XGraphMin, XGraphMax, bottomAxisScale, mark, step);
     case bottomAxisScale of
       asIncreasing:
@@ -749,7 +758,7 @@ begin
   end;
 
   // Y graduations
-  if FLeftAxis.Visible and (YGraphMin <> YGraphMax) then begin
+  if (LeftAxis <> nil) and LeftAxis.Visible and (YGraphMin <> YGraphMax) then begin
     CalculateIntervals(YGraphMin, YGraphMax, leftAxisScale, mark, step);
     case leftAxisScale of
       asIncreasing:
@@ -1032,6 +1041,12 @@ begin
   end;
 end;
 
+procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
+begin
+  FAxisList.SetAxis(AIndex, AValue);
+  Invalidate;
+end;
+
 procedure TChart.SetAxisColor(const AValue: TColor);
 begin
   if FAxisColor = AValue then exit;
@@ -1217,18 +1232,6 @@ end;
 procedure TChart.SetLegend(Value: TChartLegend);
 begin
   FLegend.Assign(Value);
-  Invalidate;
-end;
-
-procedure TChart.SetLeftAxis(Value: TChartAxis);
-begin
-  FLeftAxis.Assign(Value);
-  Invalidate;
-end;
-
-procedure TChart.SetBottomAxis(Value: TChartAxis);
-begin
-  FBottomAxis.Assign(Value);
   Invalidate;
 end;
 
@@ -1454,9 +1457,8 @@ begin
   Result := FList.Count;
 end;
 
-constructor TChartSeriesList.Create(AOwner: TChart);
+constructor TChartSeriesList.Create;
 begin
-  FChart := AOwner;
   FList := TFPList.Create;
 end;
 
@@ -1475,12 +1477,6 @@ end;
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
 begin
   Result := TBasicChartSeries(FList.Items[AIndex]);
-end;
-
-procedure TChartSeriesList.SetItem(
-  AIndex: Integer; const AValue: TBasicChartSeries);
-begin
-  GetItem(AIndex).Assign(AValue);
 end;
 
 procedure SkipObsoleteChartProperties;
