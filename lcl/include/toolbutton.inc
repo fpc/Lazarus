@@ -866,7 +866,7 @@ begin
       FToolBar.AddButton(Self);
     UpdateVisibleToolbar;
   end;
-  //DebugLn('TToolButton.SetParent A ',Name,' NewIndex=',Index);
+  //DebugLn(['TToolButton.SetParent A ',Name,' NewIndex=',Index]);
 end;
 
 procedure TToolButton.UpdateVisibleToolbar;

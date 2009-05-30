@@ -439,6 +439,8 @@ procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
 var
   ARect, Adjusted: TRect;
   ACount: Integer;
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
   ARect := ClientRect;
   Adjusted := ARect;
@@ -459,8 +461,16 @@ begin
 
   if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
     // the width depends on the parent or siblings
-    if (AnchorSide[akLeft].Control=nil) then begin
-
+    // use a simpe heuristic to find out if the width is fixed
+    if (AnchorSide[akLeft].Control=nil)
+    and (AnchorSide[akRight].Control=nil)
+    and (Parent.AutoSize=false)
+    then begin
+      // the width is fixed
+      WrapButtons(Width,NewWidth,NewHeight,true);
+      PreferredWidth:=NewWidth;
+      PreferredHeight:=NewHeight;
+      //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
     end;
   end;
 end;
@@ -555,6 +565,8 @@ begin
   NewHeight:=0;
   AlignedControls:=TFPList.Create;
   OrderedControls:=TFPList.Create;
+  if not Simulate then
+    FRowCount:=0;
   DisableAlign;
   BeginUpdate;
   try
@@ -625,6 +637,8 @@ begin
         // user forced wrap -> start new line
         x:=StartX;
         inc(y,ButtonHeight);
+        if not Simulate then
+          inc(FRowCount);
       end;
     end;
     FRealizedButtonHeight:=FButtonHeight;
