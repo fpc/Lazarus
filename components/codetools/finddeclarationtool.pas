@@ -1749,13 +1749,17 @@ begin
   NamePos:=CleanAtomPosition;
   InPos:=CleanAtomPosition;
   if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255)
-  or (UsesNode.Desc<>ctnUsesSection) then exit;
+  or (UsesNode.Desc<>ctnUsesSection) then begin
+    DebugLn(['TFindDeclarationTool.FindUnitInUsesSection invalid AnUnitName']);
+    exit;
+  end;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
   repeat
     ReadNextAtom; // read name
     if AtomIsChar(';') then break;
-    if AtomIs(AnUnitName) then begin
+    if (CurPos.StartPos>SrcLen) then break;
+    if CompareSrcIdentifiers(CurPos.StartPos,@AnUnitName[1]) then begin
       NamePos:=CurPos;
       InPos.StartPos:=-1;
       ReadNextAtom;
@@ -1773,7 +1777,7 @@ begin
     end;
     if AtomIsChar(';') then break;
     if not AtomIsChar(',') then break;
-  until (CurPos.StartPos>SrcLen);;
+  until (CurPos.StartPos>SrcLen);
 end;
 
 function TFindDeclarationTool.FindUnitInAllUsesSections(
@@ -1783,7 +1787,10 @@ begin
   Result:=false;
   NamePos.StartPos:=-1;
   InPos.StartPos:=-1;
-  if (AnUnitName='') or (length(AnUnitName)>255) then exit;
+  if (AnUnitName='') or (length(AnUnitName)>255) then begin
+    DebugLn(['TFindDeclarationTool.FindUnitInAllUsesSections invalid AnUnitName']);
+    exit;
+  end;
   BuildTree(false);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,

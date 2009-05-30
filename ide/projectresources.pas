@@ -403,7 +403,6 @@ begin
 
     // update {$I filename} directive
     Filename := ExtractFileName(lrsFileName);
-    DebugLn(['TProjectResources.UpdateMainSourceFile AAA1 ',CodeBuf.Filename]);
     if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
                                NewTopLine, Filename, false) then
