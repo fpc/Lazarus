@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
-  ProjectResourcesIntf,
+  ProjectResourcesIntf, LazarusIDEStrConsts,
   W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
   BasicCodeTools, CodeToolManager, CodeCache, CodeAtom;
 
@@ -354,7 +354,8 @@ begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
           Result := False;
-          Messages.Add('Could not remove "' + LazResourcesUnit + '" from main source!');
+          Messages.Add(Format(lisCouldNotRemoveFromMainSource, ['"',
+            LazResourcesUnit, '"']));
           debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
         end;
       end;
@@ -365,7 +366,8 @@ begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
         Result := False;
-        Messages.Add('Could not add "' + LazResourcesUnit + '" to main source!');
+        Messages.Add(Format(lisCouldNotAddToMainSource, ['"', LazResourcesUnit,
+          '"']));
         debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
       end;
     end;
@@ -381,7 +383,8 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add('Could not remove "{$R '+ Filename +'"} from main source!');
+          Messages.Add(Format(lisCouldNotRemoveRFromMainSource, ['"', Filename,
+            '"']));
           debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
         end;
       end;
@@ -393,25 +396,27 @@ begin
         Filename, false, '{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
       begin
         Result := False;
-        Messages.Add('Could not add "{$R '+ Filename +'"} to main source!');
+        Messages.Add(Format(lisCouldNotAddRToMainSource, ['"', Filename, '"']));
         debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
       end;
     end;
 
     // update {$I filename} directive
     Filename := ExtractFileName(lrsFileName);
+    DebugLn(['TProjectResources.UpdateMainSourceFile AAA1 ',CodeBuf.Filename]);
     if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
                                NewTopLine, Filename, false) then
     begin
       // there is a resource directive in the source
-      //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive found: FCanHasLrsInclude=',FCanHasLrsInclude,' HasLazarusResources=',HasLazarusResources]);
       if not (FCanHasLrsInclude and HasLazarusResources) then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add('Could not remove "{$I '+ Filename +'"} from main source!');
+          Messages.Add(Format(lisCouldNotRemoveIFromMainSource, ['"', Filename,
+            '"']));
           debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
           Exit;
         end;
@@ -420,12 +425,12 @@ begin
     else
     if FCanHasLrsInclude and HasLazarusResources then
     begin
-      //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive not found: FCanHasLrsInclude=',FCanHasLrsInclude,' HasLazarusResources=',HasLazarusResources]);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
         Filename,'') then
       begin
         Result := False;
-        Messages.Add('Could not add "{$I '+ Filename +'"} to main source!');
+        Messages.Add(Format(lisCouldNotAddIToMainSource, ['"', Filename, '"']));
         debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
         Exit;
       end;

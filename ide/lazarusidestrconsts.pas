@@ -4203,6 +4203,14 @@ resourcestring
     +'target OS=%s and CPU=%s.%sThe system.ppu for this target was not found '
     +'in the FPC binary directories. %sMake sure fpc is installed correctly '
     +'for this target and the fpc.cfg contains the right directories.';
+  lisCouldNotRemoveFromMainSource = 'Could not remove %s%s%s from main source!';
+  lisCouldNotAddToMainSource = 'Could not add %s%s%s to main source!';
+  lisCouldNotRemoveRFromMainSource = 'Could not remove %s{$R %s%s} from main '
+    +'source!';
+  lisCouldNotAddRToMainSource = 'Could not add %s{$R %s%s} to main source!';
+  lisCouldNotRemoveIFromMainSource = 'Could not remove %s{$I %s%s} from main '
+    +'source!';
+  lisCouldNotAddIToMainSource = 'Could not add %s{$I %s%s} to main source!';
 
 implementation
 
