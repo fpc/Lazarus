@@ -158,7 +158,7 @@ var
   i: LongInt;
 begin
   if FOldTrees<>nil then begin
-    for i:=FOldTrees.Count downto 0 do
+    for i:=FOldTrees.Count-1 downto 0 do
       TDeclarationInheritanceCacheTree(FOldTrees[i]).Free;
     FreeAndNil(FOldTrees);
   end;
