@@ -186,7 +186,7 @@ type
     { ToDo:
       - indent on paste  (position + new source)
       - indent auto generated code (several snippets)
-      - learn from source
+      - learn from sources
       - learn from nearest lines in source
        }
     property OnGetExamples: TOnGetFABExamples read FOnGetExamples write FOnGetExamples;
@@ -416,7 +416,7 @@ begin
   p:=StartPos;
   repeat
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
-    DebugLn(['TFullyAutomaticBeautifier.ParseSource ',copy(Src,AtomStart,p-AtomStart)]);
+    DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>=EndPos then break;
 
     if (Stack.Top>=0) then begin
