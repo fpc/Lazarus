@@ -734,15 +734,36 @@ function TFullyAutomaticBeautifier.GetIndent(const Source: string;
 var
   Policies: TFABPolicies;
   Stack: TFABBlockStack;
+  Block: TBlock;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
 
+  CleanPos:=FindStartOfAtom(Source,CleanPos);
+  if CleanPos<1 then exit;
+
   Policies:=TFABPolicies.Create;
   Stack:=TFABBlockStack.Create;
   try
-    // parse source
-    ParseSource(Source,1,length(Source)+1,NewNestedComments,Stack,Policies);
+    // parse source in front
+    ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies);
+    if Stack.Top<0 then begin
+      // no context
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      exit;
+    end;
+
+    Block:=Stack.Stack[Stack.Top];
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+
+    if Policies.Indentations[Block.Typ].IndentValid then begin
+      // policy already found
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: policy found: InnerIndent=',Policies.Indentations[Block.Typ].Indent]);
+      Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
+                     +Policies.Indentations[Block.Typ].Indent;
+      Indent.IndentValid:=true;
+      exit(true);
+    end;
 
   finally
     Stack.Free;
