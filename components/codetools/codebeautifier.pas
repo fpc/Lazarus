@@ -47,7 +47,8 @@ interface
 {$DEFINE ShowCodeBeautifierParser}
 
 uses
-  Classes, SysUtils, FileProcs, KeywordFuncLists, CodeCache, BasicCodeTools;
+  Classes, SysUtils, AVL_Tree, FileProcs, KeywordFuncLists, CodeCache,
+  BasicCodeTools;
   
 type
   TBeautifySplit =(
@@ -121,7 +122,9 @@ const
                       bbtIfThen,bbtIfElse,bbtIfBegin];
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
-                                out CodeBuffers: TFPList) of object;
+                                Step: integer; // starting at 0
+                                out CodeBuffers: TFPList // stopping when CodeBuffers=nil
+                                ) of object;
 
   TFABIndentationPolicy = record
     Indent: integer;
@@ -133,7 +136,8 @@ type
   TFABPolicies = class
   public
     Indentations: array[TFABBlockType] of TFABIndentationPolicy;
-    IndentationsFound: array[TFABBlockType] of boolean;
+    Code: TCodeBuffer;
+    CodeChangeStep: integer;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -172,9 +176,13 @@ type
   TFullyAutomaticBeautifier = class
   private
     FOnGetExamples: TOnGetFABExamples;
+    FCodePolicies: TAVLTree;// tree of TFABPolicies sorted for Code
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies);
+    function FindPolicyInExamples(StartCode: TCodeBuffer;
+                                  Typ: TFABBlockType): TFABPolicies;
+    function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
   public
     DefaultTabWidth: integer;
     constructor Create;
@@ -233,7 +241,25 @@ const
     'bbtIfBegin'
     );
 
+function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
+function CompareCodeWithFABPolicy(Key, Data: Pointer): integer;
+
 implementation
+
+function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
+var
+  Policies1: TFABPolicies absolute Data1;
+  Policies2: TFABPolicies absolute Data2;
+begin
+  Result:=ComparePointers(Policies1.Code,Policies2.Code);
+end;
+
+function CompareCodeWithFABPolicy(Key, Data: Pointer): integer;
+var
+  Policies: TFABPolicies absolute Data;
+begin
+  Result:=ComparePointers(Key,Policies.Code);
+end;
 
 { TFABBlockStack }
 
@@ -712,32 +738,93 @@ begin
   until false;
 end;
 
+function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
+  Typ: TFABBlockType): TFABPolicies;
+var
+  CodeBuffers: TFPList;
+  i: Integer;
+  Code: TCodeBuffer;
+  AVLNode: TAVLTreeNode;
+  Policies: TFABPolicies;
+  Stack: TFABBlockStack;
+  Step: Integer;
+begin
+  Result:=nil;
+  if not Assigned(OnGetExamples) then exit;
+  Step:=0;
+  repeat
+    // get examples for current step
+    OnGetExamples(Self,StartCode,Step,CodeBuffers);
+    if CodeBuffers=nil then exit;
+    // search policy in every example
+    for i:=0 to CodeBuffers.Count-1 do begin
+      Code:=TCodeBuffer(CodeBuffers[i]);
+      if Code=nil then continue;
+      // search Policies for code
+      AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
+      if AVLNode=nil then begin
+        Policies:=TFABPolicies.Create;
+        Policies.Code:=Code;
+        FCodePolicies.Add(Policies);
+      end else
+        Policies:=TFABPolicies(AVLNode.Data);
+      if Policies.CodeChangeStep<>Code.ChangeStep then begin
+        // parse code
+        Policies.Clear;
+        Policies.CodeChangeStep:=Code.ChangeStep;
+        Stack:=TFABBlockStack.Create;
+        try
+          ParseSource(Code.Source,1,length(Code.Source)+1,
+             GetNestedCommentsForCode(Code),Stack,Policies);
+        finally
+          Stack.Free;
+        end;
+      end;
+      // search policy
+      if Policies.Indentations[Typ].IndentValid then begin
+        Result:=Policies;
+        exit;
+      end;
+    end;
+    // next step
+    inc(Step);
+  until false;
+end;
+
+function TFullyAutomaticBeautifier.GetNestedCommentsForCode(Code: TCodeBuffer
+  ): boolean;
+begin
+  Result:=true;
+end;
+
 constructor TFullyAutomaticBeautifier.Create;
 begin
+  FCodePolicies:=TAVLTree.Create(@CompareFABPoliciesWithCode);
   DefaultTabWidth:=4;
 end;
 
 destructor TFullyAutomaticBeautifier.Destroy;
 begin
   Clear;
+  FreeAndNil(FCodePolicies);
   inherited Destroy;
 end;
 
 procedure TFullyAutomaticBeautifier.Clear;
 begin
-
+  FCodePolicies.FreeAndClear;
 end;
 
 function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
   out Indent: TFABIndentationPolicy): boolean;
 var
-  Policies: TFABPolicies;
   Block: TBlock;
 
-  function CheckPolicies(var Found: boolean): boolean;
+  function CheckPolicies(Policies: TFABPolicies; var Found: boolean): boolean;
   begin
-    if Policies.Indentations[Block.Typ].IndentValid then begin
+    if (Policies<>nil)
+    and (Policies.Indentations[Block.Typ].IndentValid) then begin
       // policy found
       DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: InnerIndent=',Policies.Indentations[Block.Typ].Indent]);
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
@@ -753,6 +840,7 @@ var
 
 var
   Stack: TFABBlockStack;
+  Policies: TFABPolicies;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -774,18 +862,20 @@ begin
     Block:=Stack.Stack[Stack.Top];
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
 
-    if CheckPolicies(Result) then exit;
+    if CheckPolicies(Policies,Result) then exit;
 
     // parse source behind
     ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
-    if CheckPolicies(Result) then exit;
+    if CheckPolicies(Policies,Result) then exit;
 
   finally
     Stack.Free;
     Policies.Free;
   end;
 
-  //SrcPolicies:=
+  // parse examples
+  Policies:=FindPolicyInExamples(nil,Block.Typ);
+  if CheckPolicies(Policies,Result) then exit;
 end;
 
 { TFABPolicies }
@@ -805,7 +895,7 @@ var
   i: TFABBlockType;
 begin
   for i:=low(Indentations) to High(Indentations) do
-    IndentationsFound[i]:=false;
+    FillByte(Indentations[i],SizeOf(TFABIndentationPolicy),0);
 end;
 
 end.
