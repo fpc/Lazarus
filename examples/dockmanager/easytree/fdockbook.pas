@@ -31,6 +31,7 @@ type
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
     Tabs: TToolBar;
+    ToolButton1: TToolButton;
     procedure pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
     procedure pnlDockUnDock(Sender: TObject; Client: TControl;
@@ -158,15 +159,20 @@ end;
 { TTabButton }
 
 constructor TTabButton.Create(TheOwner: TComponent);
+var
+  i, last: integer;
 begin
+{ TODO : create as last button }
   inherited Create(TheOwner);
-  Parent := TWinControl(TheOwner);
-  Grouped := True;
-  AllowAllUp := False;
+//these properties must be set before Parent
+  //AllowAllUp := False;
   Style := tbsCheck;
-  //self.Constraints.MinWidth:=200; //.Options;
-  self.Width := 100;
+  //self.Width := 100;
   AutoSize := True;
+  Parent := TWinControl(TheOwner);
+//these properties must be set after Parent
+  Grouped := True;
+  //AdjustSize; //doesn't help
 end;
 
 procedure TTabButton.MouseMove(Shift: TShiftState; X, Y: Integer);

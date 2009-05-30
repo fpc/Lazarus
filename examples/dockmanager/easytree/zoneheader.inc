@@ -30,8 +30,11 @@ procedure DestroyDockHeaderImages;
 var
   ImageKind: TDockHeaderImageKind;
 begin
+//called from unit finalization only!
+{ this code can result in crashes, due to missing handles
   for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
     FreeAndNil(DockBtnImages[ImageKind]);
+}
 end;
 
 

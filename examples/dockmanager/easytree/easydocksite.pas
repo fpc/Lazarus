@@ -195,6 +195,7 @@ type
   public
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
   public
+    SingleTab: boolean; //always create notebook for alCustom?
     constructor Create(ADockSite: TWinControl);
     destructor Destroy; override;
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
@@ -284,12 +285,13 @@ begin
   FDockSite := ADockSite;
 //reset inappropriate docking defaults - should be fixed in Controls/DragManager!
   DragManager.DragImmediate := False;
-  //DragManager.DragThreshold:=5;
 //workaround: check for already assigned docking manager
   //FreeAndNil(DockSite.DockManager); - seems to be fixed
   DockSite.DockManager := self;
 //init node class - impossible due to visibility restrictions!
   inherited Create; //(DockSite);
+//test: notebook with 1 tab in root zone
+  SingleTab := True;
 //init top zone
   FSiteRect := DockSite.ClientRect;
   FTopZone := TEasyZone.Create(self);
@@ -440,39 +442,39 @@ begin
 (* alCustom means: drop into notebook.
   Valid only when dropped onto an existing control, not into empty dock site.
   Create notebook, if required (put both controls into new notebook).
-*)
-  if (InsertAt = alCustom) and (FTopZone.FirstChild <> nil) then begin
-  //dock into book
-    if (DropCtl is TEasyBook) then begin
-      NoteBook := DropCtl as TEasyBook;
-    end else begin
-    //create new book
-      NoteBook := NoteBookCreate(FDockSite); // TEasyPages.Create(FDockSite);
-      NoteBook.ManualDock(nil, nil);
-    //hack: manually dock the notebook
-      FReplacingControl := NoteBook; //ignore insert (see above)
-      NoteBook.ManualDock(FDockSite); //move into DockClients[]
-      DropZone.ChildControl := NoteBook; //put into the zone
-    { TODO -cdocking : make the notebook take the desired position }
-      r := DropZone.GetPartRect(zpClient);
-    {$IFDEF debug}
-      DebugLn('NoteBook as (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
-      NoteBook.BoundsRect := r;
-      r := NoteBook.BoundsRect;
-      DebugLn('NoteBook is (%d,%d)-(%d,%d)', [r.Top, r.Left, r.Bottom, r.Right]);
 
-      DropCtl.ManualDock(NoteBook); //put the original control into the notebook
-      DropCtl := NoteBook; //put further controls into the notebook
-      ResetBounds(True); //for some reason only setting the size doesn't work
-      NoteBook.Update;
-    {$ELSE}
-      NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
-      NoteBook.BoundsRect := r;
-    {$ENDIF}
-    end; //else use existing control
-    NoteBookAdd(NoteBook, Control);
-    FDockSite.Invalidate; //update notebook caption
-    exit;
+  Try: create notebook already for first dropped control.
+*)
+  if (InsertAt = alCustom) then begin
+  //dock into book
+    if (FTopZone.FirstChild <> nil) then begin
+    //root zone is not empty
+      if (DropCtl is TEasyBook) then begin
+        NoteBook := DropCtl as TEasyBook;
+      end else begin
+      //create new book
+        NoteBook := NoteBookCreate(FDockSite);
+        NoteBook.ManualDock(nil, nil);
+      //hack: manually dock the notebook
+        FReplacingControl := NoteBook; //ignore insert (see above)
+        NoteBook.ManualDock(FDockSite); //move into DockClients[]
+        DropZone.ChildControl := NoteBook; //put into the zone
+        r := DropZone.GetPartRect(zpClient);
+        NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
+        NoteBook.BoundsRect := r;
+      end; //else use existing control
+      NoteBookAdd(NoteBook, Control);
+      FDockSite.Invalidate; //update notebook caption
+      exit;
+    end else if SingleTab and not (DropCtl is TEasyBook)  then begin
+    //empty root zone, create new notebook
+      NoteBook := NoteBookCreate(FDockSite);
+      NoteBook.ManualDock(FDockSite, nil, alClient);
+      NoteBookAdd(NoteBook, Control);
+      FDockSite.Invalidate; //update notebook caption
+      exit;
+    end;  // else //continue docking of the notebook
+    InsertAt := alNone; //force automatic orientation
   end;
 
   NewZone := TEasyZone.Create(self);
@@ -613,10 +615,13 @@ Signal results:
     end else begin
       ADockRect := zone.GetBounds; //include header
       DropOnControl := zone.ChildControl;
+      DropAlign := DetectAlign(ADockRect, DragTargetPos);
       if DropOnControl = nil then begin
-        DropAlign := alClient //first element in entire site
-      end else //determine the alignment within the zone.
-        DropAlign := DetectAlign(ADockRect, DragTargetPos);
+        if SingleTab and (DropAlign = alCustom) then begin
+          //notebook in top zone
+        end else
+          DropAlign := alClient; //first element in entire site
+      end; //else //determine the alignment within the zone.
     //to screen coords
       ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
       ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
@@ -652,7 +657,7 @@ begin
 //debug!
   DropOn := DropCtl;
 
-  if (DropCtl = nil) then
+  if (DropCtl = nil) and not SingleTab then
     exit; //empty dock site
 
   case DropAlign of
@@ -800,7 +805,6 @@ begin
     ptNew.x := FSplitter.Left; //left of splitter
   FSizeZone.PrevSibling.ScaleTo(FSizeZone.PrevSibling.BR, ptNew, ptNew);
   FSizeZone.SetBounds(FSizeZone.GetBounds); //BR unchanged, only update the control
-{ TODO -cdocking : Invalidate seems to miss a repaint of the docked controls, sometimes? }
   FDockSite.Invalidate;
 end;
 
