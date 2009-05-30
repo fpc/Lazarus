@@ -139,14 +139,42 @@ type
     procedure Clear;
   end;
 
+type
+  TBlock = record
+    Typ: TFABBlockType;
+    StartPos: integer;
+    InnerIdent: integer;
+  end;
+  PBlock = ^TBlock;
+
+  { TFABBlockStack }
+
+  TFABBlockStack = class
+  public
+    Stack: PBlock;
+    Capacity: integer;
+    Top: integer;
+    TopType: TFABBlockType;
+    constructor Create;
+    destructor Destroy; override;
+    procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
+    procedure EndBlock;
+    function TopMostIndexOf(Typ: TFABBlockType): integer;
+    function EndTopMostBlock(Typ: TFABBlockType): boolean;
+    {$IFDEF ShowCodeBeautifier}
+    Src: string;
+    function PosToStr(p: integer): string;
+    {$ENDIF}
+  end;
+
   { TFullyAutomaticBeautifier }
 
   TFullyAutomaticBeautifier = class
   private
     FOnGetExamples: TOnGetFABExamples;
-    procedure ParseSource(const Src: string; SrcLen: integer;
-                          NestedComments: boolean; Policies: TFABPolicies);
-    procedure FindPolicies(Types: TFABBlockTypes; Policies: TFABPolicies);
+    procedure ParseSource(const Src: string; StartPos, EndPos: integer;
+                          NestedComments: boolean;
+                          Stack: TFABBlockStack; Policies: TFABPolicies);
   public
     DefaultTabWidth: integer;
     constructor Create;
@@ -207,42 +235,14 @@ const
 
 implementation
 
-type
-  TBlock = record
-    Typ: TFABBlockType;
-    StartPos: integer;
-    InnerIdent: integer;
-  end;
-  PBlock = ^TBlock;
+{ TFABBlockStack }
 
-  { TBlockStack }
-
-  TBlockStack = class
-  public
-    Stack: PBlock;
-    Capacity: integer;
-    Top: integer;
-    TopType: TFABBlockType;
-    constructor Create;
-    destructor Destroy; override;
-    procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
-    procedure EndBlock;
-    function TopMostIndexOf(Typ: TFABBlockType): integer;
-    function EndTopMostBlock(Typ: TFABBlockType): boolean;
-    {$IFDEF ShowCodeBeautifier}
-    Src: string;
-    function PosToStr(p: integer): string;
-    {$ENDIF}
-  end;
-
-{ TBlockStack }
-
-constructor TBlockStack.Create;
+constructor TFABBlockStack.Create;
 begin
   Top:=-1;
 end;
 
-destructor TBlockStack.Destroy;
+destructor TFABBlockStack.Destroy;
 begin
   ReAllocMem(Stack,0);
   Capacity:=0;
@@ -250,7 +250,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TBlockStack.BeginBlock(Typ: TFABBlockType; StartPos: integer);
+procedure TFABBlockStack.BeginBlock(Typ: TFABBlockType; StartPos: integer);
 var
   Block: PBlock;
 begin
@@ -263,7 +263,7 @@ begin
     ReAllocMem(Stack,SizeOf(TBlock)*Capacity);
   end;
   {$IFDEF ShowCodeBeautifier}
-  DebugLn([GetIndentStr(Top*2),'TBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos,' at ',PosToStr(StartPos)]);
+  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos,' at ',PosToStr(StartPos)]);
   {$ENDIF}
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
@@ -272,10 +272,10 @@ begin
   TopType:=Typ;
 end;
 
-procedure TBlockStack.EndBlock;
+procedure TFABBlockStack.EndBlock;
 begin
   {$IFDEF ShowCodeBeautifier}
-  DebugLn([GetIndentStr(Top*2),'TBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
+  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
   {$ENDIF}
   dec(Top);
   if Top>=0 then
@@ -284,13 +284,13 @@ begin
     TopType:=bbtNone;
 end;
 
-function TBlockStack.TopMostIndexOf(Typ: TFABBlockType): integer;
+function TFABBlockStack.TopMostIndexOf(Typ: TFABBlockType): integer;
 begin
   Result:=Top;
   while (Result>=0) and (Stack[Result].Typ<>Typ) do dec(Result);
 end;
 
-function TBlockStack.EndTopMostBlock(Typ: TFABBlockType): boolean;
+function TFABBlockStack.EndTopMostBlock(Typ: TFABBlockType): boolean;
 // check if there is this type on the stack and if yes, end it
 var
   i: LongInt;
@@ -302,7 +302,7 @@ begin
 end;
 
 {$IFDEF ShowCodeBeautifier}
-function TBlockStack.PosToStr(p: integer): string;
+function TFABBlockStack.PosToStr(p: integer): string;
 var
   X: integer;
   Y: LongInt;
@@ -317,9 +317,9 @@ end;
 { TFullyAutomaticBeautifier }
 
 procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
-  SrcLen: integer; NestedComments: boolean; Policies: TFABPolicies);
+  StartPos, EndPos: integer; NestedComments: boolean; Stack: TFABBlockStack;
+  Policies: TFABPolicies);
 var
-  Stack: TBlockStack;
   p: Integer;
   AtomStart: integer;
 
@@ -413,314 +413,303 @@ var
   Block: PBlock;
   Indent: Integer;
 begin
-  Stack:=TBlockStack.Create;
-  try
-    p:=1;
-    repeat
-      ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
-      DebugLn(['TFullyAutomaticBeautifier.ParseSource ',copy(Src,AtomStart,p-AtomStart)]);
-      if p>SrcLen then break;
+  p:=StartPos;
+  repeat
+    ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
+    DebugLn(['TFullyAutomaticBeautifier.ParseSource ',copy(Src,AtomStart,p-AtomStart)]);
+    if p>=EndPos then break;
 
-      if (Stack.Top>=0) then begin
-        Block:=@Stack.Stack[Stack.Top];
-        if (Policies<>nil)
-        and (not Policies.Indentations[Block^.Typ].IndentValid) then begin
-          // set block InnerIdent
-          if (Block^.InnerIdent<0)
-          and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
-            Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
-            if Block^.Typ in [bbtIfThen,bbtIfElse] then
-              Indent:=Block^.InnerIdent
-                 -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
-                                        DefaultTabWidth)
-            else
-              Indent:=Block^.InnerIdent
-                 -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
-            Policies.Indentations[Block^.Typ].Indent:=Indent;
-            Policies.Indentations[Block^.Typ].IndentValid:=true;
-            {$IFDEF ShowCodeBeautifierParser}
-            DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Policies.Indentations[Block^.Typ].Indent]);
-            {$ENDIF}
+    if (Stack.Top>=0) then begin
+      Block:=@Stack.Stack[Stack.Top];
+      if (Policies<>nil)
+      and (not Policies.Indentations[Block^.Typ].IndentValid) then begin
+        // set block InnerIdent
+        if (Block^.InnerIdent<0)
+        and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
+          Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
+          if Block^.Typ in [bbtIfThen,bbtIfElse] then
+            Indent:=Block^.InnerIdent
+               -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
+                                      DefaultTabWidth)
+          else
+            Indent:=Block^.InnerIdent
+               -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
+          Policies.Indentations[Block^.Typ].Indent:=Indent;
+          Policies.Indentations[Block^.Typ].IndentValid:=true;
+          {$IFDEF ShowCodeBeautifierParser}
+          DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Policies.Indentations[Block^.Typ].Indent]);
+          {$ENDIF}
+        end;
+      end;
+    end;
+
+    r:=@Src[AtomStart];
+    case UpChars[r^] of
+    'B':
+      if CompareIdentifiers('BEGIN',r)=0 then begin
+        while Stack.TopType in (bbtAllIdentifierSections+bbtAllCodeSections) do
+          EndBlock;
+        case Stack.TopType of
+        bbtNone:
+          BeginBlock(bbtMainBegin);
+        bbtProcedure,bbtFunction:
+          BeginBlock(bbtProcedureBegin);
+        bbtMainBegin:
+          BeginBlock(bbtCommentaryBegin);
+        bbtCaseElse,bbtCaseColon:
+          BeginBlock(bbtCaseBegin);
+        bbtIfThen,bbtIfElse:
+          BeginBlock(bbtIfBegin);
+        end;
+      end;
+    'C':
+      case UpChars[r[1]] of
+      'A': // CA
+        if CompareIdentifiers('CASE',r)=0 then begin
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtCase);
+        end;
+      'L': // CL
+        if CompareIdentifiers('CLASS',r)=0 then begin
+          if Stack.TopType=bbtTypeSection then
+            BeginBlock(bbtClass);
+        end;
+      'O': // CO
+        if CompareIdentifiers('CONST',r)=0 then
+          StartIdentifierSection(bbtConstSection);
+      end;
+    'E':
+      case UpChars[r[1]] of
+      'L': // EL
+        if CompareIdentifiers('ELSE',r)=0 then begin
+          case Stack.TopType of
+          bbtCaseOf,bbtCaseColon:
+            begin
+              EndBlock;
+              BeginBlock(bbtCaseElse);
+            end;
+          bbtIfThen:
+            begin
+              EndBlock;
+              BeginBlock(bbtIfElse);
+            end;
+          end;
+        end;
+      'N': // EN
+        if CompareIdentifiers('END',r)=0 then begin
+          // if statements can be closed by end without semicolon
+          while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
+          if Stack.TopType=bbtClassSection then
+            EndBlock;
+
+          case Stack.TopType of
+          bbtMainBegin,bbtCommentaryBegin,
+          bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
+          bbtCase,bbtCaseBegin,bbtIfBegin:
+            EndBlock;
+          bbtCaseOf,bbtCaseElse,bbtCaseColon:
+            begin
+              EndBlock;
+              if Stack.TopType=bbtCase then
+                EndBlock;
+            end;
+          bbtProcedureBegin:
+            begin
+              EndBlock;
+              if Stack.TopType in [bbtProcedure,bbtFunction] then
+                EndBlock;
+            end;
+          bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
+            EndBlock;
+          end;
+        end;
+      'X': // EX
+        if CompareIdentifiers('EXCEPT',r)=0 then begin
+          if Stack.TopType=bbtTry then begin
+            EndBlock;
+            BeginBlock(bbtExcept);
           end;
         end;
       end;
-
-      r:=@Src[AtomStart];
-      case UpChars[r^] of
-      'B':
-        if CompareIdentifiers('BEGIN',r)=0 then begin
-          while Stack.TopType in (bbtAllIdentifierSections+bbtAllCodeSections) do
+    'F':
+      case UpChars[r[1]] of
+      'I': // FI
+        if CompareIdentifiers('FINALIZATION',r)=0 then begin
+          while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
+          do
             EndBlock;
-          case Stack.TopType of
-          bbtNone:
-            BeginBlock(bbtMainBegin);
-          bbtProcedure,bbtFunction:
-            BeginBlock(bbtProcedureBegin);
-          bbtMainBegin:
-            BeginBlock(bbtCommentaryBegin);
-          bbtCaseElse,bbtCaseColon:
-            BeginBlock(bbtCaseBegin);
-          bbtIfThen,bbtIfElse:
-            BeginBlock(bbtIfBegin);
+          if Stack.TopType=bbtNone then
+            BeginBlock(bbtInitialization);
+        end else if CompareIdentifiers('FINALLY',r)=0 then begin
+          if Stack.TopType=bbtTry then begin
+            EndBlock;
+            BeginBlock(bbtFinally);
           end;
         end;
-      'C':
-        case UpChars[r[1]] of
-        'A': // CA
-          if CompareIdentifiers('CASE',r)=0 then begin
-            if Stack.TopType in bbtAllStatements then
-              BeginBlock(bbtCase);
-          end;
-        'L': // CL
-          if CompareIdentifiers('CLASS',r)=0 then begin
-            if Stack.TopType=bbtTypeSection then
-              BeginBlock(bbtClass);
-          end;
-        'O': // CO
-          if CompareIdentifiers('CONST',r)=0 then
-            StartIdentifierSection(bbtConstSection);
-        end;
-      'E':
-        case UpChars[r[1]] of
-        'L': // EL
-          if CompareIdentifiers('ELSE',r)=0 then begin
-            case Stack.TopType of
-            bbtCaseOf,bbtCaseColon:
-              begin
-                EndBlock;
-                BeginBlock(bbtCaseElse);
-              end;
-            bbtIfThen:
-              begin
-                EndBlock;
-                BeginBlock(bbtIfElse);
-              end;
-            end;
-          end;
-        'N': // EN
-          if CompareIdentifiers('END',r)=0 then begin
-            // if statements can be closed by end without semicolon
-            while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
-            if Stack.TopType=bbtClassSection then
-              EndBlock;
-
-            case Stack.TopType of
-            bbtMainBegin,bbtCommentaryBegin,
-            bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
-            bbtCase,bbtCaseBegin,bbtIfBegin:
-              EndBlock;
-            bbtCaseOf,bbtCaseElse,bbtCaseColon:
-              begin
-                EndBlock;
-                if Stack.TopType=bbtCase then
-                  EndBlock;
-              end;
-            bbtProcedureBegin:
-              begin
-                EndBlock;
-                if Stack.TopType in [bbtProcedure,bbtFunction] then
-                  EndBlock;
-              end;
-            bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
-              EndBlock;
-            end;
-          end;
-        'X': // EX
-          if CompareIdentifiers('EXCEPT',r)=0 then begin
-            if Stack.TopType=bbtTry then begin
-              EndBlock;
-              BeginBlock(bbtExcept);
-            end;
+      'O': // FO
+        if CompareIdentifiers('FORWARD',r)=0 then begin
+          if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+            EndBlock;
           end;
         end;
-      'F':
-        case UpChars[r[1]] of
-        'I': // FI
-          if CompareIdentifiers('FINALIZATION',r)=0 then begin
+      'U': // FU
+        if CompareIdentifiers('FUNCTION',r)=0 then
+          StartProcedure(bbtFunction);
+      end;
+    'I':
+      case UpChars[r[1]] of
+      'F': // IF
+        if p-AtomStart=2 then begin
+          // 'IF'
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtIf);
+        end;
+      'N': // IN
+        case UpChars[r[2]] of
+        'I': // INI
+          if CompareIdentifiers('INITIALIZATION',r)=0 then begin
             while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
             do
               EndBlock;
             if Stack.TopType=bbtNone then
               BeginBlock(bbtInitialization);
-          end else if CompareIdentifiers('FINALLY',r)=0 then begin
-            if Stack.TopType=bbtTry then begin
-              EndBlock;
-              BeginBlock(bbtFinally);
-            end;
           end;
-        'O': // FO
-          if CompareIdentifiers('FORWARD',r)=0 then begin
-            if Stack.TopType in [bbtProcedure,bbtFunction] then begin
-              EndBlock;
+        'T': // INT
+          if CompareIdentifiers('INTERFACE',r)=0 then begin
+            case Stack.TopType of
+            bbtNone:
+              BeginBlock(bbtInterface);
+            bbtTypeSection:
+              BeginBlock(bbtClassInterface);
             end;
-          end;
-        'U': // FU
-          if CompareIdentifiers('FUNCTION',r)=0 then
-            StartProcedure(bbtFunction);
-        end;
-      'I':
-        case UpChars[r[1]] of
-        'F': // IF
-          if p-AtomStart=2 then begin
-            // 'IF'
-            if Stack.TopType in bbtAllStatements then
-              BeginBlock(bbtIf);
-          end;
-        'N': // IN
-          case UpChars[r[2]] of
-          'I': // INI
-            if CompareIdentifiers('INITIALIZATION',r)=0 then begin
-              while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
-              do
-                EndBlock;
-              if Stack.TopType=bbtNone then
-                BeginBlock(bbtInitialization);
-            end;
-          'T': // INT
-            if CompareIdentifiers('INTERFACE',r)=0 then begin
-              case Stack.TopType of
-              bbtNone:
-                BeginBlock(bbtInterface);
-              bbtTypeSection:
-                BeginBlock(bbtClassInterface);
-              end;
-            end;
-          end;
-        'M': // IM
-          if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
-            while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
-            do
-              EndBlock;
-            if Stack.TopType=bbtNone then
-              BeginBlock(bbtImplementation);
           end;
         end;
-      'L':
-        if CompareIdentifiers('LABEL',r)=0 then
-          StartIdentifierSection(bbtLabelSection);
-      'O':
-        if CompareIdentifiers('OF',r)=0 then begin
-          case Stack.TopType of
-          bbtCase:
-            BeginBlock(bbtCaseOf);
-          bbtClass,bbtClassInterface:
+      'M': // IM
+        if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
+          while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
+          do
             EndBlock;
-          end;
+          if Stack.TopType=bbtNone then
+            BeginBlock(bbtImplementation);
         end;
-      'P':
-        case UpChars[r[1]] of
-        'R': // PR
-          case UpChars[r[2]] of
-          'I': // PRI
-            if (CompareIdentifiers('PRIVATE',r)=0) then
-              StartClassSection;
-          'O': // PRO
-            case UpChars[r[3]] of
-            'T': // PROT
-              if (CompareIdentifiers('PROTECTED',r)=0) then
-                StartClassSection;
-            'C': // PROC
-              if CompareIdentifiers('PROCEDURE',r)=0 then
-                StartProcedure(bbtProcedure);
-            end;
-          end;
-        'U': // PU
-          if (CompareIdentifiers('PUBLIC',r)=0)
-          or (CompareIdentifiers('PUBLISHED',r)=0) then
-            StartClassSection;
-        end;
-      'R':
-        case UpChars[r[1]] of
-        'E': // RE
-          case UpChars[r[2]] of
-          'C': // REC
-            if CompareIdentifiers('RECORD',r)=0 then
-              BeginBlock(bbtRecord);
-          'P': // REP
-            if CompareIdentifiers('REPEAT',r)=0 then
-              if Stack.TopType in bbtAllStatements then
-                BeginBlock(bbtRepeat);
-          'S': // RES
-            if CompareIdentifiers('RESOURCESTRING',r)=0 then
-              StartIdentifierSection(bbtResourceStringSection);
-          end;
-        end;
-      'T':
-        case UpChars[r[1]] of
-        'H': // TH
-          if CompareIdentifiers('THEN',r)=0 then begin
-            if Stack.TopType=bbtIf then
-              BeginBlock(bbtIfThen);
-          end;
-        'R': // TR
-          if CompareIdentifiers('TRY',r)=0 then begin
-            if Stack.TopType in bbtAllStatements then
-              BeginBlock(bbtTry);
-          end;
-        'Y': // TY
-          if CompareIdentifiers('TYPE',r)=0 then begin
-            StartIdentifierSection(bbtTypeSection);
-          end;
-        end;
-      'U':
-        case UpChars[r[1]] of
-        'S': // US
-          if CompareIdentifiers('USES',r)=0 then begin
-            if Stack.TopType in [bbtNone,bbtInterface,bbtImplementation] then
-              BeginBlock(bbtUsesSection);
-          end;
-        'N': // UN
-          if CompareIdentifiers('UNTIL',r)=0 then begin
-            EndTopMostBlock(bbtRepeat);
-          end;
-        end;
-      'V':
-        if CompareIdentifiers('VAR',r)=0 then begin
-          StartIdentifierSection(bbtVarSection);
-        end;
-      ';':
+      end;
+    'L':
+      if CompareIdentifiers('LABEL',r)=0 then
+        StartIdentifierSection(bbtLabelSection);
+    'O':
+      if CompareIdentifiers('OF',r)=0 then begin
         case Stack.TopType of
-        bbtUsesSection:
+        bbtCase:
+          BeginBlock(bbtCaseOf);
+        bbtClass,bbtClassInterface:
           EndBlock;
-        bbtCaseColon:
+        end;
+      end;
+    'P':
+      case UpChars[r[1]] of
+      'R': // PR
+        case UpChars[r[2]] of
+        'I': // PRI
+          if (CompareIdentifiers('PRIVATE',r)=0) then
+            StartClassSection;
+        'O': // PRO
+          case UpChars[r[3]] of
+          'T': // PROT
+            if (CompareIdentifiers('PROTECTED',r)=0) then
+              StartClassSection;
+          'C': // PROC
+            if CompareIdentifiers('PROCEDURE',r)=0 then
+              StartProcedure(bbtProcedure);
+          end;
+        end;
+      'U': // PU
+        if (CompareIdentifiers('PUBLIC',r)=0)
+        or (CompareIdentifiers('PUBLISHED',r)=0) then
+          StartClassSection;
+      end;
+    'R':
+      case UpChars[r[1]] of
+      'E': // RE
+        case UpChars[r[2]] of
+        'C': // REC
+          if CompareIdentifiers('RECORD',r)=0 then
+            BeginBlock(bbtRecord);
+        'P': // REP
+          if CompareIdentifiers('REPEAT',r)=0 then
+            if Stack.TopType in bbtAllStatements then
+              BeginBlock(bbtRepeat);
+        'S': // RES
+          if CompareIdentifiers('RESOURCESTRING',r)=0 then
+            StartIdentifierSection(bbtResourceStringSection);
+        end;
+      end;
+    'T':
+      case UpChars[r[1]] of
+      'H': // TH
+        if CompareIdentifiers('THEN',r)=0 then begin
+          if Stack.TopType=bbtIf then
+            BeginBlock(bbtIfThen);
+        end;
+      'R': // TR
+        if CompareIdentifiers('TRY',r)=0 then begin
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtTry);
+        end;
+      'Y': // TY
+        if CompareIdentifiers('TYPE',r)=0 then begin
+          StartIdentifierSection(bbtTypeSection);
+        end;
+      end;
+    'U':
+      case UpChars[r[1]] of
+      'S': // US
+        if CompareIdentifiers('USES',r)=0 then begin
+          if Stack.TopType in [bbtNone,bbtInterface,bbtImplementation] then
+            BeginBlock(bbtUsesSection);
+        end;
+      'N': // UN
+        if CompareIdentifiers('UNTIL',r)=0 then begin
+          EndTopMostBlock(bbtRepeat);
+        end;
+      end;
+    'V':
+      if CompareIdentifiers('VAR',r)=0 then begin
+        StartIdentifierSection(bbtVarSection);
+      end;
+    ';':
+      case Stack.TopType of
+      bbtUsesSection:
+        EndBlock;
+      bbtCaseColon:
+        begin
+          EndBlock;
+          BeginBlock(bbtCaseOf);
+        end;
+      bbtIfThen,bbtIfElse:
+        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+          EndBlock;
+      end;
+    ':':
+      if p-AtomStart=1 then begin
+        // colon
+        case Stack.TopType of
+        bbtCaseOf:
           begin
             EndBlock;
-            BeginBlock(bbtCaseOf);
+            BeginBlock(bbtCaseColon);
           end;
+        bbtIf:
+          EndBlock;
         bbtIfThen,bbtIfElse:
-          while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+          begin
             EndBlock;
-        end;
-      ':':
-        if p-AtomStart=1 then begin
-          // colon
-          case Stack.TopType of
-          bbtCaseOf:
-            begin
+            if Stack.TopType=bbtIf then
               EndBlock;
-              BeginBlock(bbtCaseColon);
-            end;
-          bbtIf:
-            EndBlock;
-          bbtIfThen,bbtIfElse:
-            begin
-              EndBlock;
-              if Stack.TopType=bbtIf then
-                EndBlock;
-            end;
           end;
         end;
       end;
-    until false;
-  finally
-    Stack.Free;
-  end;
-end;
-
-procedure TFullyAutomaticBeautifier.FindPolicies(Types: TFABBlockTypes;
-  Policies: TFABPolicies);
-begin
-
+    end;
+  until false;
 end;
 
 constructor TFullyAutomaticBeautifier.Create;
@@ -744,16 +733,19 @@ function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   out Indent: TFABIndentationPolicy): boolean;
 var
   Policies: TFABPolicies;
+  Stack: TFABBlockStack;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
 
   Policies:=TFABPolicies.Create;
+  Stack:=TFABBlockStack.Create;
   try
     // parse source
-    ParseSource(Source,length(Source),NewNestedComments,Policies);
+    ParseSource(Source,1,length(Source)+1,NewNestedComments,Stack,Policies);
 
   finally
+    Stack.Free;
     Policies.Free;
   end;
 
