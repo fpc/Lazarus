@@ -13,6 +13,7 @@ object Form1: TForm1
     Height = 26
     Top = 0
     Width = 400
+    AutoSize = True
     BorderWidth = 2
     Caption = 'ToolBar1'
     EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
@@ -40,17 +41,17 @@ object Form1: TForm1
   end
   object swInitSize: TCheckBox
     Left = 112
-    Height = 17
+    Height = 22
     Top = 88
-    Width = 90
+    Width = 118
     Caption = 'init button size'
     TabOrder = 2
   end
   object swView1: TCheckBox
     Left = 112
-    Height = 17
+    Height = 22
     Top = 112
-    Width = 108
+    Width = 139
     Caption = 'First button visible'
     OnClick = swView1Click
     TabOrder = 3

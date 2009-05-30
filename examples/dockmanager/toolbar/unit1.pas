@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls;
+  ComCtrls, StdCtrls, LCLProc;
 
 type
   TForm1 = class(TForm)
@@ -35,6 +35,7 @@ var
   btn: TToolButton;
 begin
   btn := TToolButton.Create(ToolBar1);
+  btn.Name:='TestButton'+IntToStr(ToolBar1.ComponentCount);
   btn.Parent := ToolBar1;
   btn.Style := tbsCheck;
   btn.AutoSize := True;

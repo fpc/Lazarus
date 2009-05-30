@@ -4,16 +4,14 @@
     <PathDelim Value="\"/>
     <Version Value="7"/>
     <General>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="test1"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -25,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -38,11 +36,6 @@
         <Filename Value="test1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test1"/>
-        <CursorPos X="14" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="21"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
@@ -50,24 +43,12 @@
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="17" Y="16"/>
-        <TopLine Value="15"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="21"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="README.txt"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="1" Y="31"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="None"/>
       </Unit2>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
