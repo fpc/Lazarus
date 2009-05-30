@@ -13,10 +13,22 @@ object Form1: TForm1
     Height = 392
     Top = 0
     Width = 585
-    BottomAxis.Grid.Color = clGray
-    BottomAxis.Grid.Style = psDot
-    BottomAxis.Title.Font.Height = -11
-    BottomAxis.Title.Font.Name = 'MS Sans Serif'
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Grid.Color = clGray
+        Grid.Style = psDot
+        Title.Angle = 90
+        Title.Font.Height = -11
+        Title.Font.Name = 'MS Sans Serif'
+      end    
+      item
+        Alignment = calBottom
+        Grid.Color = clGray
+        Grid.Style = psDot
+        Title.Font.Height = -11
+        Title.Font.Name = 'MS Sans Serif'
+      end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
     Foot.Font.Height = -13
@@ -25,11 +37,6 @@ object Form1: TForm1
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
     )
-    LeftAxis.Grid.Color = clGray
-    LeftAxis.Grid.Style = psDot
-    LeftAxis.Title.Angle = 90
-    LeftAxis.Title.Font.Height = -11
-    LeftAxis.Title.Font.Name = 'MS Sans Serif'
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
     Title.Brush.Color = clBtnFace
@@ -149,7 +156,7 @@ object Form1: TForm1
       Left = 384
       Height = 17
       Top = 8
-      Width = 56
+      Width = 55
       Caption = 'Legend'
       OnChange = cbLegendChange
       TabOrder = 4
@@ -158,7 +165,7 @@ object Form1: TForm1
       Left = 384
       Height = 17
       Top = 24
-      Width = 75
+      Width = 77
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
@@ -169,7 +176,7 @@ object Form1: TForm1
       Left = 384
       Height = 17
       Top = 40
-      Width = 60
+      Width = 62
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
@@ -191,7 +198,7 @@ object Form1: TForm1
       Left = 496
       Height = 17
       Top = 24
-      Width = 50
+      Width = 52
       Caption = 'Footer'
       OnChange = cbFooterChange
       TabOrder = 8
@@ -200,7 +207,7 @@ object Form1: TForm1
       Left = 496
       Height = 17
       Top = 40
-      Width = 59
+      Width = 62
       Caption = 'Inverted'
       OnChange = cbInvertedChange
       TabOrder = 9
@@ -270,7 +277,7 @@ object Form1: TForm1
       Left = 496
       Height = 17
       Top = 56
-      Width = 63
+      Width = 66
       Caption = 'Axis titles'
       OnChange = cbShowAxisTitlesChange
       TabOrder = 16

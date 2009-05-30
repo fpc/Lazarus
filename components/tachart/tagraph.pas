@@ -163,6 +163,7 @@ type
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisColor(const AValue: TColor);
+    procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBackColor(const AValue: TColor);
     procedure SetDepth(AValue: TChartZPosition);
@@ -245,9 +246,10 @@ type
   published
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
     property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
+    property AxisList: TChartAxisList read FAxisList write SetAxisList;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
-    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis;
+    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis stored false;
     property Depth: TChartZPosition read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
@@ -255,7 +257,7 @@ type
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
-    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis;
+    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
     property ReticuleMode: TReticuleMode
@@ -1048,6 +1050,12 @@ procedure TChart.SetAxisColor(const AValue: TColor);
 begin
   if FAxisColor = AValue then exit;
   FAxisColor := AValue;
+  Invalidate;
+end;
+
+procedure TChart.SetAxisList(AValue: TChartAxisList);
+begin
+  FAxisList.Assign(AValue);
   Invalidate;
 end;
 
