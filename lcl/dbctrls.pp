@@ -573,6 +573,7 @@ Type
     property State;
   published
     property AllowGrayed;
+    property Align;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
