@@ -112,7 +112,7 @@ type
     procedure EndComment(CommentStart: char; p: integer);
   public
     LineLength: integer;
-    LineEnd: string; // default: #13#10
+    LineEnd: string;
     Indent: integer;
     TabWidth: integer;
     KeyWordPolicy: TWordPolicy;
@@ -164,7 +164,7 @@ type
   { TSourceChangeCache }
 
   //----------------------------------------------------------------------------
-  // in front of and after a text change can be set a gap.
+  // in front of and after a text change can a gap be set.
   // A Gap is for example a space char or a newline. TSourceChangeLog will add
   // the gap if it is not already in the code
   TGapTyp = (gtNone,     // no special gap
@@ -259,10 +259,23 @@ type
 
 const
   AtomTypeNames: array[TAtomType] of shortstring = (
-      'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
-      'At', 'Number', 'StringConstant', 'NewLine', 'Space',
-      'CommentStart', 'DirectiveStart', 'CommentEnd',
-      'Symbol', 'Bracket'
+      'None',
+      'Keyword',
+      'Identifier',
+      'Colon',
+      'Semicolon',
+      'Comma',
+      'Point',
+      'At',
+      'Number',
+      'StringConstant',
+      'NewLine',
+      'Space',
+      'CommentStart',
+      'DirectiveStart',
+      'CommentEnd',
+      'Symbol',
+      'Bracket'
     );
 
   WordPolicyNames: array[TWordPolicy] of shortstring = (
@@ -278,8 +291,11 @@ const
     );
     
   ForwardProcBodyInsertPolicyNames: array[TForwardProcBodyInsertPolicy] of
-    shortstring =
-    ('Last', 'InFrontOfMethods', 'BehindMethods');
+    shortstring = (
+      'Last',
+      'InFrontOfMethods',
+      'BehindMethods'
+    );
     
   UsesInsertPolicyNames: array[TUsesInsertPolicy] of shortstring = (
       'First',

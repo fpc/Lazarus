@@ -125,6 +125,8 @@ type
                                 Step: integer; // starting at 0
                                 out CodeBuffers: TFPList // stopping when CodeBuffers=nil
                                 ) of object;
+  TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
+                                      out NestedComments) of object;
 
   TFABIndentationPolicy = record
     Indent: integer;
@@ -177,6 +179,7 @@ type
   private
     FOnGetExamples: TOnGetFABExamples;
     FCodePolicies: TAVLTree;// tree of TFABPolicies sorted for Code
+    FOnGetNestedComments: TOnGetFABNestedComments;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies);
@@ -197,7 +200,10 @@ type
       - learn from sources
       - learn from nearest lines in source
        }
-    property OnGetExamples: TOnGetFABExamples read FOnGetExamples write FOnGetExamples;
+    property OnGetExamples: TOnGetFABExamples read FOnGetExamples
+                                              write FOnGetExamples;
+    property OnGetNestedComments: TOnGetFABNestedComments
+                           read FOnGetNestedComments write FOnGetNestedComments;
   end;
 
 const
@@ -795,6 +801,8 @@ function TFullyAutomaticBeautifier.GetNestedCommentsForCode(Code: TCodeBuffer
   ): boolean;
 begin
   Result:=true;
+  if Assigned(OnGetNestedComments) then
+    OnGetNestedComments(Self,Code,Result);
 end;
 
 constructor TFullyAutomaticBeautifier.Create;
