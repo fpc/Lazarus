@@ -1696,8 +1696,8 @@ begin
     begin
       Lbl := gtk_label_new(nil);
       gtk_widget_show(Lbl);
+      gtk_frame_set_label_widget(AFrame, Lbl);
     end;
-    gtk_frame_set_label_widget(AFrame, Lbl);
     Gtk2Widgetset.SetLabelCaption(PGtkLabel(Lbl), AText);
   end;
 end;
