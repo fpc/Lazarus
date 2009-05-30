@@ -123,7 +123,7 @@ begin
   if tbfPlacingControls in FToolBarFlags then exit;
   Include(FToolBarFlags,tbfPlacingControls);
   try
-    WrapButtons(NewWidth,NewHeight);
+    WrapButtons(Width,NewWidth,NewHeight,false);
   finally
     Exclude(FToolBarFlags,tbfPlacingControls);
   end;
@@ -431,7 +431,7 @@ end;
 
 function TToolBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-  Result := WrapButtons(NewWidth, NewHeight);
+  Result := WrapButtons(Width, NewWidth, NewHeight, true);
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
@@ -456,6 +456,13 @@ begin
   else
     PreferredHeight := ButtonHeight;
   inc(PreferredHeight, (Adjusted.Top - ARect.Top) - (Adjusted.Bottom - ARect.Bottom));
+
+  if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
+    // the width depends on the parent or siblings
+    if (AnchorSide[akLeft].Control=nil) then begin
+
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -468,7 +475,8 @@ end;
   If Wrapable=false, then the row is wrapped after the first button with
   Wrap=true.
 ------------------------------------------------------------------------------}
-function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+function TToolBar.WrapButtons(UseWidth: integer;
+  var NewWidth, NewHeight: Integer; Simulate: boolean): Boolean;
 var
   ARect: TRect;
   x: Integer;
@@ -541,7 +549,7 @@ var
   AdjustClientFrame: TRect;
   i: Integer;
 begin
-  //DebugLn('WrapButtons ');
+  //DebugLn('WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable);
   Result:=true;
   NewWidth:=0;
   NewHeight:=0;
@@ -564,6 +572,7 @@ begin
 
     // position OrderedControls
     CurClientRect:=ClientRect;
+    inc(CurClientRect.Right,UseWidth-Width);
     ARect:=CurClientRect;
     AdjustClientRect(ARect);
     AdjustClientFrame.Left:=ARect.Left-CurClientRect.Left;
@@ -601,14 +610,13 @@ begin
       if (CurControl.Left<>x) or (CurControl.Top<>y)
       or (CurControl.Width<>w) or (CurControl.Height<>h) then begin
         //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
-        CurControl.SetBoundsKeepBase(x,y,w,h);
+        if not Simulate then
+          CurControl.SetBoundsKeepBase(x,y,w,h);
       end;
       
       // adjust NewWidth, NewHeight
-      NewWidth:=Max(NewWidth,
-                    CurControl.Left+CurControl.Width+AdjustClientFrame.Right);
-      NewHeight:=Max(NewHeight,
-                   CurControl.Top+CurControl.Height+AdjustClientFrame.Bottom);
+      NewWidth:=Max(NewWidth,x+w+AdjustClientFrame.Right);
+      NewHeight:=Max(NewHeight,y+h+AdjustClientFrame.Bottom);
 
       // step to next position
       inc(x,w);

@@ -1588,7 +1588,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
-    function WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+    function WrapButtons(UseWidth: integer;
+                         var NewWidth, NewHeight: Integer;
+                         Simulate: boolean): Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
