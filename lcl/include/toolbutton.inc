@@ -396,6 +396,26 @@ begin
   RequestAlign;
 end;
 
+procedure TToolButton.RealSetText(const AValue: TCaption);
+begin
+  if ([csLoading,csDestroying]*ComponentState=[]) then
+  begin
+    InvalidatePreferredSize;
+    inherited RealSetText(AValue);
+    AdjustSize;
+  end
+  else inherited RealSetText(AValue);
+end;
+
+procedure TToolButton.DoAutoSize;
+var
+  PreferredWidth: integer;
+  PreferredHeight: integer;
+begin
+  GetPreferredSize(PreferredWidth,PreferredHeight);
+  SetBounds(Left,Top,PreferredWidth,PreferredHeight);
+end;
+
 procedure TToolButton.SetToolBar(NewToolBar: TToolBar);
 begin
   if FToolBar = NewToolBar then exit;
@@ -683,7 +703,9 @@ begin
     Result := -1;
 end;
 
-procedure TToolButton.GetPreferredSize(var PreferredWidth, PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
+procedure TToolButton.GetPreferredSize(
+  var PreferredWidth, PreferredHeight: integer; Raw: boolean;
+  WithThemeSpace: boolean);
 begin
   inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw, WithThemeSpace);
 
@@ -959,6 +981,7 @@ begin
       inc(PreferredWidth, FToolBar.FDropDownWidth);
     end;
   end;
+  //DebugLn(['TToolButton.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,',',PreferredHeight,' Caption=',Caption]);
 end;
 
 class function TToolButton.GetControlClassDefaultSize: TPoint;

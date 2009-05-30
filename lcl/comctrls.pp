@@ -1458,6 +1458,8 @@ type
     function GroupAllUpAllowed: boolean;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure SetAutoSize(Value: Boolean); override;
+    procedure RealSetText(const AValue: TCaption); override;
+    procedure DoAutoSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
