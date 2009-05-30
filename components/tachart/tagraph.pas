@@ -580,36 +580,33 @@ var
   end;
 
   procedure DrawAxisTitles;
-  const
-    DEGREES_TO_ORIENT = 10;
   var
-    x, w: Integer;
     c: TPoint;
     sz: TSize;
     s: String;
+
+    function PrepareAxis(AAxis: TChartAxis): Boolean;
+    const
+      DEGREES_TO_ORIENT = 10;
+    begin
+      if (AAxis = nil) or not AAxis.Visible then exit(false);
+      s := AAxis.Title.Caption;
+      if s = '' then exit(false);
+      sz := ACanvas.TextExtent(s);
+      ACanvas.Font.Orientation := AAxis.Title.Angle * DEGREES_TO_ORIENT;
+      Result := true;
+    end;
+
   begin
     // FIXME: Angle assumed to be around 0 for bottom and 90 for left axis.
     c := CenterPoint(FClipRect);
-
-    if LeftAxis <> nil then begin
-      s := LeftAxis.Title.Caption;
-      if LeftAxis.Visible and (s <> '') then begin
-        w := ACanvas.TextHeight(LeftAxis.Title.Caption);
-        x := FClipRect.Left;
-        leftOffset := w + 4;
-        ACanvas.Font.Orientation := LeftAxis.Title.Angle * DEGREES_TO_ORIENT;
-        ACanvas.TextOut(x, c.Y - w div 2, s);
-      end;
+    if PrepareAxis(LeftAxis) then begin
+      ACanvas.TextOut(FClipRect.Left, c.Y + sz.cx div 2, s);
+      leftOffset := sz.cy + 4;
     end;
-
-    if BottomAxis <> nil then begin
-      s := BottomAxis.Title.Caption;
-      if BottomAxis.Visible and (s <> '') then begin
-        sz := ACanvas.TextExtent(s);
-        ACanvas.Font.Orientation := BottomAxis.Title.Angle * DEGREES_TO_ORIENT;
-        ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
-        bottomOffset := sz.cy + 4;
-      end;
+    if PrepareAxis(BottomAxis) then begin
+      ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
+      bottomOffset := sz.cy + 4;
     end;
     ACanvas.Font.Orientation := 0;
   end;
