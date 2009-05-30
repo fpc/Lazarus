@@ -733,8 +733,26 @@ function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   out Indent: TFABIndentationPolicy): boolean;
 var
   Policies: TFABPolicies;
-  Stack: TFABBlockStack;
   Block: TBlock;
+
+  function CheckPolicies(var Found: boolean): boolean;
+  begin
+    if Policies.Indentations[Block.Typ].IndentValid then begin
+      // policy found
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: InnerIndent=',Policies.Indentations[Block.Typ].Indent]);
+      Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
+                     +Policies.Indentations[Block.Typ].Indent;
+      Indent.IndentValid:=true;
+      Result:=true;
+      Found:=true;
+    end else begin
+      Result:=false;
+      Found:=false;
+    end;
+  end;
+
+var
+  Stack: TFABBlockStack;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -756,14 +774,11 @@ begin
     Block:=Stack.Stack[Stack.Top];
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
 
-    if Policies.Indentations[Block.Typ].IndentValid then begin
-      // policy already found
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: policy found: InnerIndent=',Policies.Indentations[Block.Typ].Indent]);
-      Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
-                     +Policies.Indentations[Block.Typ].Indent;
-      Indent.IndentValid:=true;
-      exit(true);
-    end;
+    if CheckPolicies(Result) then exit;
+
+    // parse source behind
+    ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+    if CheckPolicies(Result) then exit;
 
   finally
     Stack.Free;

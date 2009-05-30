@@ -45,7 +45,7 @@ begin
       writeln('Usage: '+ParamStrUTF8(0)+' filename line column');
       exit;
     end;
-    Filename:=ParamStrUTF8(1);
+    Filename:=ExpandFileNameUTF8(ParamStrUTF8(1));
     Y:=StrToInt(ParamStrUTF8(2));
     X:=StrToInt(ParamStrUTF8(3));
   end else begin
@@ -63,7 +63,7 @@ begin
   try
     Code.LineColToPosition(Y,X,p);
     if p<1 then begin
-      writeln('ERROR: invalid position: X=',X,' Y=',Y);
+      writeln('ERROR: invalid position: X=',X,' Y=',Y,' in ',Code.Filename);
       exit;
     end;
     if FAB.GetIndent(Code.Source,p,true,Indentation) then begin
