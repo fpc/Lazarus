@@ -43,8 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  LinkScanner, AVL_Tree,
-  KeywordFuncLists;
+  LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -220,6 +219,7 @@ type
     procedure RaiseException(const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
+    Indenter: TFullyAutomaticBeautifier;
     procedure BeginUpdate;
     function EndUpdate: boolean;
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
@@ -468,6 +468,7 @@ begin
   FBuffersToModify:=TFPList.Create;
   FBuffersToModifyNeedsUpdate:=false;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;
+  Indenter:=TFullyAutomaticBeautifier.Create;
 end;
 
 destructor TSourceChangeCache.Destroy;
@@ -476,7 +477,8 @@ begin
   BeautifyCodeOptions.Free;
   FBuffersToModify.Free;
   FEntries.FreeAndClear;
-  FEntries.Free;
+  FreeAndNil(FEntries);
+  FreeAndNil(Indenter);
   inherited Destroy;
 end;
 

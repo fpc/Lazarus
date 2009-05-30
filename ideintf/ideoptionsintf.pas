@@ -162,6 +162,7 @@ const
     HlpOptionsGeneral = 100;
 
 implementation
+
 var
   FIDEEditorGroups: TIDEOptionsGroupList;
 

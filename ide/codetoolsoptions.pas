@@ -88,6 +88,7 @@ type
     // identifier completion
     FIdentComplAddSemicolon: Boolean;
     FUsesInsertPolicy: TUsesInsertPolicy;
+
     procedure SetFilename(const AValue: string);
   public
     constructor Create;

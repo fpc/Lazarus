@@ -126,7 +126,7 @@ type
                                 out CodeBuffers: TFPList // stopping when CodeBuffers=nil
                                 ) of object;
   TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
-                                      out NestedComments) of object;
+                                      out NestedComments: boolean) of object;
 
   TFABIndentationPolicy = record
     Indent: integer;

@@ -136,6 +136,8 @@ type
     procedure AfterApplyingChanges;
     procedure AdjustErrorTopLine;
     procedure WriteError;
+    procedure OnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
+      NestedComments: boolean);
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
@@ -796,6 +798,7 @@ begin
   SourceChangeCache:=TSourceChangeCache.Create;
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
+  SourceChangeCache.Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
   GlobalValues:=TExpressionEvaluator.Create;
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
@@ -4676,6 +4679,12 @@ begin
   if not FAbortable then exit;
   if not Assigned(OnCheckAbort) then exit;
   Result:=not OnCheckAbort();
+end;
+
+procedure TCodeToolManager.OnFABGetNestedComments(Sender: TObject;
+  Code: TCodeBuffer; out NestedComments: boolean);
+begin
+  NestedComments:=GetNestedCommentsFlagForFile(Code.Filename);
 end;
 
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
