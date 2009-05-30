@@ -611,8 +611,7 @@ begin
       then begin
         // TODO: center vertically
         w:=CurControl.Width;
-        if not (align in [alTop, alBottom])
-        then h := CurControl.Height; // buttonheight overrules autosize in hor toolbar
+        h:=CurControl.Height;
       end
       else begin
         w:=NewControlWidth;
