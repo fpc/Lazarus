@@ -2720,8 +2720,8 @@ type
     procedure SectionResize(Section: THeaderSection); dynamic;
     procedure SectionTrack(Section: THeaderSection; State: TSectionTrackState); dynamic;
     procedure SectionSeparatorDblClick(Section: THeaderSection); dynamic;
-    procedure SectionEndDrag(); dynamic;
-    function SectionDrag(FromSection, ToSection: THeaderSection):boolean; dynamic;
+    procedure SectionEndDrag; dynamic;
+    function SectionDrag(FromSection, ToSection: THeaderSection): Boolean; dynamic;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -2771,6 +2771,7 @@ type
     property Anchors;
     property BiDiMode;
     property BorderWidth;
+    property BorderSpacing;
     property DragCursor;
     property DragKind;
     property DragMode;

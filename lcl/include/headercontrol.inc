@@ -164,7 +164,7 @@ begin
 end;
 
 function TCustomHeaderControl.SectionDrag(FromSection,
-  ToSection: THeaderSection): boolean;
+  ToSection: THeaderSection): Boolean;
 begin
   Result:=DragReorder;
   if Result and Assigned(FOnSectionDrag) then
@@ -343,13 +343,13 @@ begin
 
   if FDragging then
   begin
-    canvas.Pen.Width:=2;
-    canvas.Pen.Color:=clHotLight;
+    Canvas.Pen.Width:=2;
+    Canvas.Pen.Color:=clHotLight;
     if FEndDragSectionIndex < Sections.Count then
-      canvas.MoveTo(Sections[FEndDragSectionIndex].Left,0)
+      Canvas.MoveTo(Sections[FEndDragSectionIndex].Left,0)
      else
-      canvas.MoveTo(Sections[Sections.Count - 1].Right,0);
-    canvas.LineTo(canvas.PenPos.x,ClientHeight);
+      Canvas.MoveTo(Sections[Sections.Count - 1].Right,0);
+    Canvas.LineTo(canvas.PenPos.x,ClientHeight);
   end;
 end;
 
@@ -368,7 +368,7 @@ const
     thHeaderItemPressed
   );
 var
-  ARect: TRect;
+  ARect, ContentRect: TRect;
   Details: TThemedElementDetails;
   Section: THeaderSection;
 begin
@@ -381,19 +381,21 @@ begin
   Details := ThemeServices.GetElementDetails(HeaderStateMap[Section.State]);
     
   ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
-  ARect := ThemeServices.ContentRect(Canvas.Handle, Details, ARect);
+  ContentRect := ThemeServices.ContentRect(Canvas.Handle, Details, ARect);
+  if CompareMem(@ContentRect, @ARect, SizeOf(ARect)) then
+    InflateRect(ContentRect, -3, -3);
   
   if (Images <> nil) and (Section.ImageIndex <> -1) then
   begin
-    inc(ARect.Left);
+    inc(ContentRect.Left);
     ThemeServices.DrawIcon(Canvas, Details,
-      Point(ARect.Left, (ARect.Top + ARect.Bottom - Images.Height) div 2),
+      Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - Images.Height) div 2),
       Images, Section.ImageIndex);
-    inc(ARect.Left, Images.Width + 2);
+    inc(ContentRect.Left, Images.Width + 2);
   end;
   
   if Section.Text <> '' then
-    ThemeServices.DrawText(Canvas, Details, Section.Text, Arect, AlignmentMap[Section.Alignment] or DT_VCENTER or DT_SINGLELINE, 0);
+    ThemeServices.DrawText(Canvas, Details, Section.Text, ContentRect, AlignmentMap[Section.Alignment] or DT_VCENTER or DT_SINGLELINE, 0);
 end;
 
 { THeaderSections }
