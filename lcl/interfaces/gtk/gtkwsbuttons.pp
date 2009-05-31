@@ -360,10 +360,9 @@ begin
     then gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
   end;
 
-  if (AInfo^.LabelWidget = nil) or
-     (PGtkLabel(AInfo^.LabelWidget)^.text = '') and
-     (AInfo^.ImageWidget <> nil) then
-  begin
+  if  ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.{$ifdef gtk1}thelabel{$else}text{$endif} = ''))
+  and (AInfo^.ImageWidget <> nil)
+  then begin
     gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
                      1, 3, 1, 3, GTK_EXPAND, GTK_EXPAND, 0, 0);
     gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
