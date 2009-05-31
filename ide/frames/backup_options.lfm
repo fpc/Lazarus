@@ -1,18 +1,20 @@
 inherited BackupOptionsFrame: TBackupOptionsFrame
   Height = 324
   Width = 562
-  ClientHeight = 324
-  ClientWidth = 562
+  ClientHeight = 320
+  ClientWidth = 558
   TabOrder = 0
   Visible = False
-  DesignLeft = 66
-  DesignTop = 87
+  DesignLeft = 346
+  DesignTop = 375
   object BackupHelpLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 14
-    Width = 81
+    Left = 0
+    Height = 18
+    Top = 0
+    Width = 111
     Caption = 'BackupHelpLabel'
     ParentColor = False
   end
@@ -22,15 +24,16 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 141
-    Top = 20
-    Width = 562
+    Left = 0
+    Height = 166
+    Top = 24
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'BackupProjectGroupBox'
-    ClientHeight = 123
-    ClientWidth = 558
+    ClientHeight = 147
+    ClientWidth = 554
     TabOrder = 0
     object BakProjAddExtLabel: TLabel
       AnchorSideLeft.Control = BakProjAddExtComboBox
@@ -40,9 +43,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupProjectGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 45
-      Width = 440
+      Height = 18
+      Top = 47
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakProjAddExtLabel'
@@ -56,9 +59,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupProjectGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 72
-      Width = 440
+      Height = 18
+      Top = 82
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakProjMaxCounterLabel'
@@ -72,9 +75,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupProjectGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 99
-      Width = 440
+      Height = 18
+      Top = 117
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakProjSubDirLabel'
@@ -86,7 +89,7 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       Left = 6
       Height = 30
       Top = 6
-      Width = 546
+      Width = 542
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
@@ -109,12 +112,12 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakProjTypeRadioGroup
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 29
       Top = 42
       Width = 100
       AutoSelect = True
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 1
       Text = 'BakProjAddExtComboBox'
     end
@@ -122,12 +125,12 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakProjAddExtComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 69
+      Height = 29
+      Top = 77
       Width = 100
       AutoSelect = True
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 2
       Text = 'BakProjMaxCounterComboBox'
     end
@@ -135,12 +138,12 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakProjMaxCounterComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 96
+      Height = 29
+      Top = 112
       Width = 100
       AutoSelect = True
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 3
       Text = 'BakProjSubDirComboBox'
     end
@@ -151,15 +154,16 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 141
-    Top = 167
-    Width = 562
+    Left = 0
+    Height = 166
+    Top = 196
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'BackupOtherGroupBox'
-    ClientHeight = 123
-    ClientWidth = 558
+    ClientHeight = 147
+    ClientWidth = 554
     TabOrder = 1
     object BakOtherAddExtLabel: TLabel
       AnchorSideLeft.Control = BakOtherAddExtComboBox
@@ -169,9 +173,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupOtherGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 45
-      Width = 440
+      Height = 18
+      Top = 47
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakOtherAddExtLabel'
@@ -185,9 +189,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupOtherGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 72
-      Width = 440
+      Height = 18
+      Top = 82
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakOtherMaxCounterLabel'
@@ -201,9 +205,9 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideRight.Control = BackupOtherGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 112
-      Height = 14
-      Top = 99
-      Width = 440
+      Height = 18
+      Top = 117
+      Width = 436
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'BakOtherSubDirLabel'
@@ -215,7 +219,7 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       Left = 6
       Height = 30
       Top = 6
-      Width = 546
+      Width = 542
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
@@ -238,11 +242,11 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakOtherTypeRadioGroup
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 29
       Top = 42
       Width = 100
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 1
       Text = 'BakOtherAddExtComboBox'
     end
@@ -250,11 +254,11 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakOtherAddExtComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 69
+      Height = 29
+      Top = 77
       Width = 100
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 2
       Text = 'BakOtherMaxCounterComboBox'
     end
@@ -262,11 +266,11 @@ inherited BackupOptionsFrame: TBackupOptionsFrame
       AnchorSideTop.Control = BakOtherMaxCounterComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 96
+      Height = 29
+      Top = 112
       Width = 100
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 3
       Text = 'BakOtherSubDirComboBox'
     end
