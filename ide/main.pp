@@ -1065,7 +1065,7 @@ begin
   end;
   if IsVersionRequested then
   begin
-    WriteHelp(GetLazarusVersionString);
+    WriteHelp(GetLazarusVersionString+' '+lisSVNRevision+LazarusRevisionStr);
     exit;
   end;
 
