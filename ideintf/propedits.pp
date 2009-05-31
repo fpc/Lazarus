@@ -6910,7 +6910,7 @@ procedure TCustomShortCutGrabBox.OnGrabButtonClick(Sender: TObject);
 begin
   FGrabForm:=TForm.Create(Self);
   FGrabForm.KeyPreview:=true;
-  FGrabForm.Position:=poDesktopCenter;
+  FGrabForm.Position:=poScreenCenter;
   FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
   FGrabForm.Caption:='Press a key ...';
   with TLabel.Create(Self) do begin
