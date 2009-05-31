@@ -180,7 +180,7 @@ type
     property Childs[AControl: TControl]: TAutoSizeCtrlData read GetChilds; default;
     procedure WriteDebugReport(const Title, Prefix: string);
   end;
-  
+
 const
   SizeBoxOrthogonal: array[TAutoSizeBoxOrientation] of TAutoSizeBoxOrientation
     = (asboVertical,asboHorizontal);
@@ -567,8 +567,12 @@ type
               NewDist:=SiblingData.Sides[akRight].Distance[Direction]
                      -(SiblingData.PreferredSize[asboHorizontal] div 2);
             end;
-            //DebugLn(['ComputePosition ',DbgSName(Child),' center to ',DbgSName(SiblingData.Control),' FoundSides=',dbgs(FoundSides),' NewDist=',NewDist]);
+            //DebugLn(['ComputePosition BEFORE ',DbgSName(Child),' center to ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' FoundSides=',dbgs(FoundSides),' NewDist=',NewDist,' Direction=',AutoSizeSideDistDirectionNames[Direction],' PreferredSize=',ChildData.PreferredSize[asboHorizontal]]);
             dec(NewDist,ChildData.PreferredSize[asboHorizontal] div 2);
+            // use at least the size of the child
+            if (Side=akLeft)=(Direction=assddRightBottom) then
+              NewDist:=Max(NewDist,ChildData.PreferredSize[asboHorizontal]);
+            //DebugLn(['ComputePosition AFTER ',DbgSName(Child),' center to ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' FoundSides=',dbgs(FoundSides),' NewDist=',NewDist,' Direction=',AutoSizeSideDistDirectionNames[Direction],' PreferredSize=',ChildData.PreferredSize[asboHorizontal]]);
           end else begin
             if FoundSides=[akTop,akBottom] then begin
               NewDist:=((SiblingData.Sides[akTop].Distance[Direction]
@@ -581,6 +585,9 @@ type
                      -(SiblingData.PreferredSize[asboVertical] div 2);
             end;
             dec(NewDist,ChildData.PreferredSize[asboVertical] div 2);
+            // use at least the size of the child
+            if (Side=akTop)=(Direction=assddRightBottom) then
+              NewDist:=Max(NewDist,ChildData.PreferredSize[asboVertical]);
           end;
         end;
         ChildData.Sides[Side].Distance[Direction]:=NewDist;
