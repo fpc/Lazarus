@@ -27,26 +27,18 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="DBFLaz"/>
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="SDFLaz"/>
-        <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item2>
-      <Item3>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
-      <Item4>
-        <PackageName Value="MemDSLaz"/>
-        <MinVersion Major="1" Minor="2" Release="1" Valid="True"/>
-      </Item4>
-      <Item5>
+      </Item2>
+      <Item3>
         <PackageName Value="LCL"/>
-      </Item5>
+      </Item3>
     </RequiredPackages>
     <Units Count="76">
       <Unit0>
@@ -63,8 +55,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="40" Y="54"/>
-        <TopLine Value="44"/>
+        <CursorPos X="6" Y="38"/>
+        <TopLine Value="6"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="259"/>
         <Loaded Value="True"/>
