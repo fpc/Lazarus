@@ -404,6 +404,7 @@ type
     IsSideLeftTop, IsOutwards, IsParentInwards: boolean;
     CurAnchors: TAnchors;
     CurSize: LongInt;
+    FoundSides: TAnchors;
   begin
     if ChildData.Sides[Side].DistanceState[Direction]
       in [assdfValid,assdfUncomputable]
@@ -488,13 +489,13 @@ type
         // first compute needed sides of sibling
         NeededSiblingSides:=[];
         case ChildData.Sides[Side].Side of
-        asrLeft: // asrLeft=asrTop
+        asrLeft: // Note: asrLeft=asrTop
           if Side in [akLeft,akRight] then begin
             Include(NeededSiblingSides,akLeft);
           end else begin
             Include(NeededSiblingSides,akTop);
           end;
-        asrRight: // asrRight=asrBottom
+        asrRight: // Note: asrRight=asrBottom
           if Side in [akLeft,akRight] then begin
             Include(NeededSiblingSides,akRight);
           end else begin
@@ -507,6 +508,7 @@ type
             NeededSiblingSides:=NeededSiblingSides+[akTop,akBottom];
           end;
         end;
+        FoundSides:=[];
         for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
           if a in NeededSiblingSides then begin
             Result:=ComputePosition(SiblingData,a,Direction);
@@ -523,15 +525,16 @@ type
               DebugLn(['ComputePosition FAILED sibling dependency: ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' a=',dbgs(a),' ',AutoSizeSideDistDirectionNames[Direction]]);
               exit;
             end;
-            if SiblingData.Sides[a].DistanceState[Direction]<>assdfValid then
-            begin
-              ChildData.Sides[Side].DistanceState[Direction]:=assdfUncomputable;
-              exit;
-            end;
+            if SiblingData.Sides[a].DistanceState[Direction]=assdfValid then
+              Include(FoundSides,a);
           end;
         end;
-        
-        // this side is anchored to a sibling and all needed sibling sides are valid
+        if FoundSides=[] then begin
+          ChildData.Sides[Side].DistanceState[Direction]:=assdfUncomputable;
+          exit;
+        end;
+
+        // this side is anchored to a sibling and some needed sibling sides are valid
         case ChildData.Sides[Side].Side of
         asrLeft,asrRight: // asrLeft=asrTop,asrRight=asrBottom
           begin
@@ -554,13 +557,30 @@ type
           end;
         asrCenter:
           if Side in [akLeft,akRight] then begin
-            NewDist:=((SiblingData.Sides[akLeft].Distance[Direction]
-                      +SiblingData.Sides[akRight].Distance[Direction]) div 2)
-                    -(ChildData.PreferredSize[asboHorizontal] div 2);
+            if FoundSides=[akLeft,akRight] then begin
+              NewDist:=((SiblingData.Sides[akLeft].Distance[Direction]
+                        +SiblingData.Sides[akRight].Distance[Direction]) div 2);
+            end else if (FoundSides=[akLeft]) then begin
+              NewDist:=SiblingData.Sides[akLeft].Distance[Direction]
+                     +(SiblingData.PreferredSize[asboHorizontal] div 2);
+            end else begin
+              NewDist:=SiblingData.Sides[akRight].Distance[Direction]
+                     -(SiblingData.PreferredSize[asboHorizontal] div 2);
+            end;
+            //DebugLn(['ComputePosition ',DbgSName(Child),' center to ',DbgSName(SiblingData.Control),' FoundSides=',dbgs(FoundSides),' NewDist=',NewDist]);
+            dec(NewDist,ChildData.PreferredSize[asboHorizontal] div 2);
           end else begin
-            NewDist:=((SiblingData.Sides[akTop].Distance[Direction]
-                      +SiblingData.Sides[akBottom].Distance[Direction]) div 2)
-                    -(ChildData.PreferredSize[asboVertical] div 2);
+            if FoundSides=[akTop,akBottom] then begin
+              NewDist:=((SiblingData.Sides[akTop].Distance[Direction]
+                        +SiblingData.Sides[akBottom].Distance[Direction]) div 2);
+            end else if (FoundSides=[akTop]) then begin
+              NewDist:=SiblingData.Sides[akTop].Distance[Direction]
+                     +(SiblingData.PreferredSize[asboVertical] div 2);
+            end else begin
+              NewDist:=SiblingData.Sides[akBottom].Distance[Direction]
+                     -(SiblingData.PreferredSize[asboVertical] div 2);
+            end;
+            dec(NewDist,ChildData.PreferredSize[asboVertical] div 2);
           end;
         end;
         ChildData.Sides[Side].Distance[Direction]:=NewDist;
