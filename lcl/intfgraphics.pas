@@ -434,7 +434,34 @@ type
   // (*) Note: when reading images with an alpha channel and the alpha channel
   //           has no influence on the mask (unless the maskcolor is transparent)
 
+  TLazReaderDIBEncoding = (
+    lrdeRGB,
+    lrdeRLE,
+    lrdeBitfield,
+    lrdeJpeg,     // for completion, don't know if they exist
+    lrdePng,      // for completion, don't know if they exist
+    lrdeHuffman   // for completion, don't know if they exist
+  );
 
+  TLazReaderDIBInfo = record
+    Width: Cardinal;
+    Height: Cardinal;
+    BitCount: Byte;
+    Encoding: TLazReaderDIBEncoding;
+    PaletteCount: Word;
+    UpsideDown: Boolean;
+    PixelMasks: packed record
+      R, G, B, A: LongWord;
+    end;
+    MaskShift: record
+      R, G, B, A: Byte;
+    end;
+    MaskSize: record
+      R, G, B, A: Byte;
+    end;
+  end;
+
+  { TLazReaderDIB }
 
   TLazReaderDIB = class (TFPCustomImageReader, ILazImageReader)
   private
@@ -444,38 +471,41 @@ type
     FMaskColor: TFPColor; // color which should be interpreted as masked
     FMaskIndex: Integer;  // for palette based images, index of the color which should be interpreted as masked
 
-    FReadSize: Integer;      // Size (in bytes) of 1 scanline.
-    FBFI: TBitMapInfoHeader; // The header as read from the stream.
-    FPalette: PFPColor;      // Buffer with Palette entries.
-    FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
-    FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
-    FIsRLE: Boolean;         // Is data RLE compressed?
+    FReadSize: Integer;          // Size (in bytes) of 1 scanline.
+    FDIBinfo: TLazReaderDIBInfo; // Info about the bitmap as read from the stream
+    FPalette: array of TFPColor; // Buffer with Palette entries.
+    FLineBuf: PByte;             // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
     FUpdateDescription: Boolean; // If set, update rawimagedescription
-    FContinue: Boolean;      // for progress support
+    FContinue: Boolean;          // for progress support
 
-    procedure FreeBufs;      // Free (and nil) buffers.
-    function GetUpdateDescription: Boolean;
+    function BitfieldsToFPColor(const AColor: Cardinal): TFPcolor;
+    function RGBToFPColor(const AColor: TColorRGBA): TFPcolor;
+    function RGBToFPColor(const AColor: TColorRGB): TFPcolor;
+    function RGBToFPColor(const AColor: Word): TFPcolor;
+
+
+    function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
   protected
     function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
     function _AddRef: LongInt; stdcall;
     function _Release: LongInt; stdcall;
   protected
+    procedure InitLineBuf;
+    procedure FreeLineBuf;
 
-    // SetupRead will allocate the needed buffers, and read the colormap if needed.
-    procedure SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean); virtual;
+
     procedure ReadScanLine(Row: Integer); virtual;
     procedure WriteScanLine(Row: Cardinal); virtual;
     // required by TFPCustomImageReader
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-    procedure InternalReadHead;
-    procedure InternalReadBody;
+    procedure InternalReadHead; virtual;
+    procedure InternalReadBody; virtual;
     function  InternalCheck(Stream: TStream) : boolean; override;
     
     property ReadSize: Integer read FReadSize;
     property LineBuf: PByte read FLineBuf;
-    property BFI: TBitMapInfoHeader read FBFI;
-    property IsRLE: Boolean read FIsRLE;
+    property Info: TLazReaderDIBInfo read FDIBInfo;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -487,8 +517,11 @@ type
   { TLazReaderBMP }
 
   TLazReaderBMP = class(TLazReaderDIB)
+  private
+    FDataOffset: Int64; // some bitmaps can specify the data offset
   protected
-    function InternalCheck(Stream: TStream) : boolean; override;
+    function  InternalCheck(Stream: TStream) : boolean; override;
+    procedure InternalReadHead; override;
   end;
 
   { TLazReaderIconDIB }
@@ -4566,128 +4599,45 @@ begin
     Root.ConsistencyCheck;
 end;
 
-{ TLazReaderDIB_ }
+{ TLazReaderBMP }
 
 function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
 var
   BFH: TBitMapFileHeader;
 begin
-  stream.Read(BFH, SizeOf(BFH));
-  with BFH do
-    Result := (LEtoN(bfType) = BMmagic); // Just check magic number
+  Stream.Read(BFH, SizeOf(BFH));
+  Result := (LEtoN(BFH.bfType) = BMmagic); // Just check magic number
+
+  // store the data offset
+  if Result and (BFH.bfOffBits <> 0)
+  then FDataOffset := Stream.Position + LEtoN(BFH.bfOffBits) - SizeOf(BFH);
+end;
+
+procedure TLazReaderBMP.InternalReadHead;
+begin
+  inherited InternalReadHead;
+  if FDataOffset <> 0
+  then TheStream.Position := FDataOffset;
 end;
 
 { TLazReaderDIB }
 
-function BmpRGBAToFPColor(const RGBA: TColorRGBA): TFPcolor;
+procedure TLazReaderDIB.InitLineBuf;
 begin
-  Result.Red   := (RGBA.R shl 8) or RGBA.R;
-  Result.Green := (RGBA.G shl 8) or RGBA.G;
-  Result.Blue  := (RGBA.B shl 8) or RGBA.B;
-  Result.Alpha := (RGBA.A shl 8) or RGBA.A;
+  FreeLineBuf;
+
+  if Info.BitCount < 8
+  then FReadSize := ((Info.BitCount * Info.Width + 31) shr 5) shl 2
+  else FReadSize := (((Info.BitCount shr 3) * Info.Width + 3) shr 2) shl 2;
+
+  // allocate 3 bytes more so we can always use a cardinal to read (in case of bitfields)
+  GetMem(FLineBuf, FReadSize+3);
 end;
 
-function BmpRGBToFPColor(const RGBA: TColorRGBA): TFPcolor;
-begin
-  Result.Red   := (RGBA.R shl 8) or RGBA.R;
-  Result.Green := (RGBA.G shl 8) or RGBA.G;
-  Result.Blue  := (RGBA.B shl 8) or RGBA.B;
-  Result.Alpha := AlphaOpaque;
-end;
-
-function BmpRGBToFPColor(const RGB: TColorRGB) : TFPColor;
-begin
-  Result.Red   := (RGB.R shl 8) + RGB.R;
-  Result.Green := (RGB.G shl 8) + RGB.G;
-  Result.Blue  := (RGB.B shl 8) + RGB.B;
-  Result.Alpha := AlphaOpaque;
-end;
-
-function Bmp16BitToFPColor(Const RGB: Word): TFPColor;
-var
-  V1, V2: Cardinal;
-begin
-{
-  // 5 bit for red  -> 16 bit for TFPColor
-  Result.Red:=(RGB shr 11) and $1f;
-  Result.Red:=(Result.Red shl 11) or MissingBits[5,Result.Red shr 2];
-  // 6 bit for green -> 16 bit for TFPColor
-  Result.Green:=(RGB shr 5) and $3f;
-  Result.Green:=(Result.Green shl 10) or MissingBits[6,Result.Green shr 3];
-  // 5 bit for blue -> 16 bit for TFPColor
-  Result.Blue:=RGB and $1f;
-  Result.Blue  := (Result.Blue shl 11) or MissingBits[5, Result.Blue shr 2];
-}
-  // 5 bit for red  -> 16 bit for TFPColor
-  V1 := RGB and $F800;             // 15..11
-  V2 := V1;
-  V1 := V1 shr 5;                  // 10..6
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 5..1
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 0
-  Result.Red := Word(V2 or V1);
-  // 6 bit for green -> 16 bit for TFPColor
-  V1 := (RGB shl 5) and $FC00;     // 15..10
-  V2 := V1;
-  V1 := V1 shr 6;                  // 9..4
-  V2 := V2 or V1;
-  V1 := V1 shr 6;                  // 4..0
-  Result.Green := Word(V2 or V1);
-  // 5 bit for blue -> 16 bit for TFPColor
-  V1 := (RGB shl 11) and $F800;    // 15..11
-  V2 := V1;
-  V1 := V1 shr 5;
-  V2 := V2 or V1;                  // 10..6
-  V1 := V1 shr 5;
-  V2 := V2 or V1;                  // 5..1
-  V1 := V1 shr 5;
-  Result.Blue := Word(V2 or V1);   // 0
-  // opaque, no mask
-  Result.Alpha := AlphaOpaque;
-end;
-
-function Bmp15BitToFPColor(const RGB: Word): TFPColor;
-var
-  V1, V2: Cardinal;
-begin
-  // 5 bit for red  -> 16 bit for TFPColor
-  V1 := (RGB shl 1) and $F800;     // 15..11
-  V2 := V1;
-  V1 := V1 shr 5;                  // 10..6
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 5..1
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 0
-  Result.Red := Word(V2 or V1);
-  // 5 bit for red  -> 16 bit for TFPColor
-  V1 := (RGB shl 6) and $F800;     // 15..11
-  V2 := V1;
-  V1 := V1 shr 5;                  // 10..6
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 5..1
-  V2 := V2 or V1;
-  V1 := V1 shr 5;                  // 0
-  Result.Green := Word(V2 or V1);
-  // 5 bit for blue -> 16 bit for TFPColor
-  V1 := (RGB shl 11) and $F800;    // 15..11
-  V2 := V1;
-  V1 := V1 shr 5;
-  V2 := V2 or V1;                  // 10..6
-  V1 := V1 shr 5;
-  V2 := V2 or V1;                  // 5..1
-  V1 := V1 shr 5;
-  Result.Blue := Word(V2 or V1);   // 0
-  // opaque, no mask
-  Result.Alpha:=alphaOpaque;
-end;
-
-procedure TLazReaderDIB.FreeBufs;
+procedure TLazReaderDIB.FreeLineBuf;
 begin
   FreeMem(FLineBuf);
   FLineBuf := nil;
-  FreeMem(FPalette);
-  FPalette := nil;
 end;
 
 function TLazReaderDIB.GetUpdateDescription: Boolean;
@@ -4695,50 +4645,81 @@ begin
   Result := FUpdateDescription;
 end;
 
-procedure TLazReaderDIB.SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean);
-var
-  ColInfo: array of TColorRGBA;
-  i: Integer;
-begin
-  FIsRLE := AIsRLE;
-  if nPalette > 0
-  then begin
-    GetMem(FPalette, nPalette*SizeOf(TFPColor));
-    SetLength(ColInfo, nPalette);
-    if ReadPalette then begin
-      if  (BFI.biClrUsed > 0)
-      and (BFI.biClrUsed <= Cardinal(nPalette)) // prevent buffer overflow
-      then TheStream.Read(ColInfo[0], BFI.biClrUsed * SizeOf(ColInfo[0]))
-      else TheStream.Read(ColInfo[0], nPalette * SizeOf(ColInfo[0]));
-      for i := 0 to nPalette-1 do
-        FPalette[i] := BmpRGBToFPColor(ColInfo[i]);
-    end;
-  end
-  else begin
-    { Skip palette }
-    if BFI.biClrUsed > 0
-    then TheStream.Position := TheStream.Position
-                          + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorRGBA));
-  end;
-  FReadSize := ((nRowBits + 31) div 32) shl 2;
-  GetMem(FLineBuf, FReadSize);
-end;
-
 procedure TLazReaderDIB.ReadScanLine(Row: Integer);
-//{$IFDEF FPC_BIG_ENDIAN}
-//var
-//  n: Integer;
-//{$ENDIF}
-var
-  d: array[0..1] of Byte;
-  Offset: Integer;
-begin
-  // Add here support for compressed lines. The 'readsize' is the same in the end.
+  procedure DoRLE4;
+  var
+    d: array[0..1] of Byte;
+    idx: Integer; // buffer index
+    pix: Integer; // pixel index
+    b: Byte;
+    NeedShift: Boolean;
+  begin
+    pix := 0;
+    idx := 0;
+    while True do
+    begin
+      TheStream.Read(d[0], 2);
+      if d[0] > 0 then
+      begin
+        if pix and 1 = 1
+        then begin
+          // low nibble needs to be written
+          // swap pixels so that they are in order after this nibble
+          b := d[1];
+          d[1] := (d[1] shl 4) or (b shr 4);
+          LineBuf[idx] := (LineBuf[idx] and $F0) or (d[1] and $0F);
+          Inc(pix);
+          Inc(idx);
+          Dec(d[0]);
+        end;
+        Inc(pix, d[0]);
+        // d[0] contains the count in pixels (=nibbles) so devide it and write pixel pairs
+        d[0] := (d[0] + 1) shr 1;
+        while d[0] > 0 do
+        begin
+          LineBuf[idx] := d[1];
+          Inc(idx);
+          Dec(d[0]);
+        end;
+      end
+      else begin
+        case d[1] of
+          0, 1: break;       // End of scanline or end of bitmap
+          2: raise FPImageException.Create('RLE code #2 is not supported');
+        else
+          NeedShift := pix and 1 = 1;
+          Inc(pix, d[1]);
+          // d[1] contains the count in pixels (=nibbles) so devide it and write pixel pairs
+          d[1] := (d[1] + 1) shr 1;
 
-  // MWE: Note: when doing so, keep in mind that the bufer is expected to be in Little Endian.
-  // for better performance, the conversion is done when writeing the buffer.
+          if NeedShift
+          then begin
+            TheStream.Read(LineBuf[idx+1], d[1]);
+            while d[1] > 0 do
+            begin
+              LineBuf[idx] := (LineBuf[idx] and $F0) or (LineBuf[idx+1] shr 4);
+              LineBuf[idx+1] := LineBuf[idx+1] shl 4;
+              Inc(idx);
+            end;
+          end
+          else begin
+            TheStream.Read(LineBuf[idx], d[1]);
+            Inc(idx, d[1]);
+          end;
+          if pix and 1 = 1
+          then dec(idx); // we still need to write the low nibble
 
-  if IsRLE then
+          if d[1] and 1 = 1
+          then TheStream.Read(d[1], 1);      // Jump to even file position
+        end;
+      end;
+    end
+  end;
+
+  procedure DoRLE8;
+  var
+    d: array[0..1] of Byte;
+    Offset: Integer;
   begin
     Offset := 0;
     while True do
@@ -4752,35 +4733,146 @@ begin
           Inc(Offset);
           Dec(d[0]);
         end;
-      end else
+      end
+      else begin
         case d[1] of
           0, 1: break;       // End of scanline or end of bitmap
           2: raise FPImageException.Create('RLE code #2 is not supported');
         else
-           begin
-             TheStream.Read(LineBuf[Offset], d[1]);
-             Inc(Offset, d[1]);
-             if Odd(d[1]) then
-               TheStream.Read(d[1], 1);      // Jump to even file position
-           end;
+          TheStream.Read(LineBuf[Offset], d[1]);
+          Inc(Offset, d[1]);
+          if d[1] and 1 = 1
+          then TheStream.Read(d[1], 1);      // Jump to even file position
         end;
-    end;
-  end else
-    TheStream.Read(LineBuf[0], ReadSize);
-
-
-(*
-  {$ifdef FPC_BIG_ENDIAN}
-
-  if (FBitsPerPixel = 15)
-  or (FBitsPerPixel = 16)
-  then begin
-    for n := 0 to (ReadSize div 2) - 1 do
-      PWord(LineBuf)[n] := LEtoN(PWord(LineBuf)[n]);
+      end;
+    end
   end;
+begin
+  // Add here support for compressed lines. The 'readsize' is the same in the end.
 
-  {$ENDIF}
-*)
+  // MWE: Note: when doing so, keep in mind that the bufer is expected to be in Little Endian.
+  // for better performance, the conversion is done when writeing the buffer.
+
+  if Info.Encoding = lrdeRLE
+  then begin
+    case Info.BitCount of
+      4: DoRLE4;
+      8: DoRLE8;
+     //24: DoRLE24;
+    end;
+  end
+  else begin
+    TheStream.Read(LineBuf[0], ReadSize);
+  end;
+end;
+
+function TLazReaderDIB.BitfieldsToFPColor(const AColor: Cardinal): TFPcolor;
+var
+  V: Word;
+begin
+  //--- red ---
+  V := ((AColor and Info.PixelMasks.R) shl (32 - Info.MaskShift.R - Info.MaskSize.R)) shr 16;
+  Result.Red := V;
+  repeat
+    V := V shr Info.MaskSize.R;
+    Result.Red := Result.Red or V;
+  until V = 0;
+
+  //--- green ---
+  V := ((AColor and Info.PixelMasks.G) shl (32 - Info.MaskShift.G - Info.MaskSize.G)) shr 16;
+  Result.Green := V;
+  repeat
+    V := V shr Info.MaskSize.G;
+    Result.Green := Result.Green or V;
+  until V = 0;
+
+  //--- blue ---
+  V := ((AColor and Info.PixelMasks.B) shl (32 - Info.MaskShift.B - Info.MaskSize.B)) shr 16;
+  Result.Blue := V;
+  repeat
+    V := V shr Info.MaskSize.B;
+    Result.Blue := Result.Blue or V;
+  until V = 0;
+
+  //--- alpha ---
+  if Info.MaskSize.A = 0
+  then begin
+    Result.Alpha := AlphaOpaque;
+  end
+  else begin
+    V := ((AColor and Info.PixelMasks.A) shl (32 - Info.MaskShift.A - Info.MaskSize.A)) shr 16;
+    Result.Alpha := V;
+    repeat
+      V := V shr Info.MaskSize.A;
+      Result.Alpha := Result.Alpha or V;
+    until V = 0;
+  end;
+end;
+
+function TLazReaderDIB.RGBToFPColor(const AColor: TColorRGB): TFPcolor;
+var
+  RBytes: TFPColorBytes absolute Result;
+begin
+  RBytes.Bh := AColor.B;
+  RBytes.Bl := AColor.B;
+  RBytes.Gh := AColor.G;
+  RBytes.Gl := AColor.G;
+  RBytes.Rh := AColor.R;
+  RBytes.Rl := AColor.R;
+  Result.Alpha := AlphaOpaque;
+end;
+
+function TLazReaderDIB.RGBToFPColor(const AColor: TColorRGBA): TFPcolor;
+var
+  RBytes: TFPColorBytes absolute Result;
+begin
+  RBytes.Bh := AColor.B;
+  RBytes.Bl := AColor.B;
+  RBytes.Gh := AColor.G;
+  RBytes.Gl := AColor.G;
+  RBytes.Rh := AColor.R;
+  RBytes.Rl := AColor.R;
+  if Info.MaskSize.A = 0
+  then Result.Alpha := AlphaOpaque
+  else begin
+    RBytes.Ah := AColor.A;
+    RBytes.Al := AColor.A;
+  end;
+end;
+
+function TLazReaderDIB.RGBToFPColor(const AColor: Word): TFPcolor;
+var
+  V1, V2: Cardinal;
+begin
+  // 5 bit for red  -> 16 bit for TFPColor
+  V1 := (AColor shl 1) and $F800;     // 15..11
+  V2 := V1;
+  V1 := V1 shr 5;                  // 10..6
+  V2 := V2 or V1;
+  V1 := V1 shr 5;                  // 5..1
+  V2 := V2 or V1;
+  V1 := V1 shr 5;                  // 0
+  Result.Red := Word(V2 or V1);
+  // 5 bit for red  -> 16 bit for TFPColor
+  V1 := (AColor shl 6) and $F800;     // 15..11
+  V2 := V1;
+  V1 := V1 shr 5;                  // 10..6
+  V2 := V2 or V1;
+  V1 := V1 shr 5;                  // 5..1
+  V2 := V2 or V1;
+  V1 := V1 shr 5;                  // 0
+  Result.Green := Word(V2 or V1);
+  // 5 bit for blue -> 16 bit for TFPColor
+  V1 := (AColor shl 11) and $F800;    // 15..11
+  V2 := V1;
+  V1 := V1 shr 5;
+  V2 := V2 or V1;                  // 10..6
+  V1 := V1 shr 5;
+  V2 := V2 or V1;                  // 5..1
+  V1 := V1 shr 5;
+  Result.Blue := Word(V2 or V1);   // 0
+  // opaque, no mask
+  Result.Alpha:=alphaOpaque;
 end;
 
 procedure TLazReaderDIB.SetUpdateDescription(AValue: Boolean);
@@ -4797,7 +4889,7 @@ var
 begin
   if FMaskMode = lrmmNone
   then begin
-    case FBitsPerPixel of
+    case Info.BitCount of
      1 :
        for Column := 0 to TheImage.Width - 1 do
          TheImage.colors[Column,Row] := FPalette[Ord(LineBuf[Column div 8] and ($80 shr (Column and 7)) <> 0)];
@@ -4807,22 +4899,40 @@ begin
      8 :
        for Column := 0 to TheImage.Width - 1 do
          TheImage.colors[Column,Row] := FPalette[LineBuf[Column]];
-     15:
-       for Column := 0 to TheImage.Width - 1 do
-         TheImage.colors[Column,Row] := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
-     16:
-       for Column := 0 to TheImage.Width - 1 do
-         TheImage.colors[Column,Row] := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
-     24:
-       for Column := 0 to TheImage.Width - 1 do
-         TheImage.colors[Column,Row] := BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
-     32:
-       for Column := 0 to TheImage.Width - 1 do
-         TheImage.colors[Column,Row] := BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+    else
+      if Info.Encoding = lrdeBitfield
+      then begin
+        // always cast to cardinal without conversion
+        // this way the value will have the same order as the bitfields
+        case Info.BitCount of
+          16:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := BitfieldsToFPColor(PCardinal(@PWord(LineBuf)[Column])^);
+          24:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := BitfieldsToFPColor(PCardinal(@PColorRGB(LineBuf)[Column])^);
+          32:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := BitfieldsToFPColor(PCardinal(@PColorRGBA(LineBuf)[Column])^);
+        end;
+      end
+      else begin
+        case Info.BitCount of
+          16:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := RGBToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+          24:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := RGBToFPColor(PColorRGB(LineBuf)[Column]);
+          32:
+            for Column := 0 to TheImage.Width - 1 do
+              TheImage.colors[Column,Row] := RGBToFPColor(PColorRGBA(LineBuf)[Column]);
+        end;
+      end;
     end;
   end
   else begin
-    case FBitsPerPixel of
+    case Info.BitCount of
      1 :
        for Column := 0 to TheImage.Width - 1 do
        begin
@@ -4844,34 +4954,60 @@ begin
          FImage.colors[Column,Row] := FPalette[Index];
          FImage.Masked[Column,Row] := Index = FMaskIndex;
        end;
-     15:
-       for Column := 0 to TheImage.Width - 1 do
-       begin
-         Color := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
-         FImage.colors[Column,Row] := Color;
-         FImage.Masked[Column,Row] := Color = FMaskColor;
-       end;
-     16:
-       for Column := 0 to TheImage.Width - 1 do
-       begin
-         Color := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
-         FImage.colors[Column,Row] := Color;
-         FImage.Masked[Column,Row] := Color = FMaskColor;
-       end;
-     24:
-       for Column := 0 to TheImage.Width - 1 do
-       begin
-         Color := BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
-         FImage.colors[Column,Row] := Color;
-         FImage.Masked[Column,Row] := Color = FMaskColor;
-       end;
-     32:
-       for Column := 0 to TheImage.Width - 1 do
-       begin
-         Color := BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
-         FImage.colors[Column,Row] := Color;
-         FImage.Masked[Column,Row] := Color = FMaskColor;
-       end;
+    else
+      if Info.Encoding = lrdeBitfield
+      then begin
+        // always cast to cardinal without conversion
+        // this way the value will have the same order as the bitfields
+        case Info.BitCount of
+         16:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := BitfieldsToFPColor(PCardinal(@PWord(LineBuf)[Column])^);
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+         24:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := BitfieldsToFPColor(PCardinal(@PColorRGB(LineBuf)[Column])^);
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+         32:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := BitfieldsToFPColor(PCardinal(@PColorRGBA(LineBuf)[Column])^);
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+        end;
+      end
+      else begin
+        case Info.BitCount of
+         16:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := RGBToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[Column]));
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+         24:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := RGBToFPColor(PColorRGB(LineBuf)[Column]);
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+         32:
+           for Column := 0 to TheImage.Width - 1 do
+           begin
+             Color := RGBToFPColor(PColorRGBA(LineBuf)[Column]);
+             FImage.colors[Column,Row] := Color;
+             FImage.Masked[Column,Row] := Color = FMaskColor;
+           end;
+        end;
+      end;
     end;
   end;
 end;
@@ -4897,32 +5033,208 @@ begin
   
   if FUpdateDescription
   then begin
-    DefaultReaderDescription(FBFI.biWidth, FBFI.biHeight, FBFI.biBitCount, Desc);
+    DefaultReaderDescription(Info.Width, Info.Height, Info.BitCount, Desc);
 //    if FMaskMode = lrmmNone
 //    then Desc.MaskBitsPerPixel := 0;
     FImage.DataDescription := Desc;
   end;
-  
+
   InternalReadBody;
   Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
 procedure TLazReaderDIB.InternalReadHead;
+const
+  SUnknownCompression = 'Bitmap with unknown compression (%d)';
+  SUnsupportedCompression = 'Bitmap with unsupported compression (%s)';
+  SWrongCombination = 'Bitmap with wrong combination of bit count (%d) and compression (%s)';
+  SUnsupportedPixelMask = 'Bitmap with non-standard pixel masks not supported';
+
+  SEncoding: array[TLazReaderDIBEncoding] of string = (
+    'RGB',
+    'RLE',
+    'Bitfield',
+    'Jpeg',
+    'Png',
+    'Huffman'
+  );
+
+  function ValidCompression: Boolean;
+  begin
+    case Info.BitCount of
+      1:   Result := FDibInfo.Encoding in [lrdeRGB, lrdeHuffman];
+      4,8: Result := FDibInfo.Encoding in [lrdeRGB, lrdeRLE];
+      16:  Result := FDibInfo.Encoding in [lrdeRGB, lrdeBitfield];
+      24:  Result := FDibInfo.Encoding in [lrdeRGB, lrdeBitfield, lrdeRLE];
+      32:  Result := FDibInfo.Encoding in [lrdeRGB, lrdeBitfield];
+    else
+      raise FPImageException.CreateFmt('Wrong bitmap bit count: %d', [Info.BitCount]);
+    end;
+  end;
+
+  procedure GetMaskShiftSize(AMask: LongWord; var AShift, ASize: Byte);
+  begin
+    AShift := 0;
+    repeat
+      if (AMask and 1) <> 0 then Break;
+      AMask := AMask shr 1;
+      Inc(AShift);
+    until AShift >= 32;
+
+    ASize := 0;
+    repeat
+      if (AMask and 1) = 0 then Break;
+      AMask := AMask shr 1;
+      Inc(ASize);
+    until AShift + ASize >= 32;
+  end;
+
+  procedure ReadPalette(APaletteIsOS2: Boolean);
+  var
+    ColorSize: Byte;
+    C: TColorRGBA;
+    n, len, maxlen: Integer;
+  begin
+    SetLength(FPalette, 0);
+    if Info.PaletteCount = 0 then Exit;
+
+    if APaletteIsOS2
+    then ColorSize := 3
+    else ColorSize := 4;
+
+    if FDibInfo.BitCount > 8
+    then begin
+      // Bitmaps can have a color table stored in the palette entries,
+      // skip them, since we don't use it
+      TheStream.Seek(Info.PaletteCount * ColorSize, soCurrent);
+      Exit;
+    end;
+
+    maxlen := 1 shl Info.BitCount;
+    if Info.PaletteCount <= maxlen
+    then len := maxlen
+    else len := Info.PaletteCount; // more colors ???
+
+    SetLength(FPalette, len);
+
+    for n := 0 to Info.PaletteCount - 1 do
+    begin
+      TheStream.Read(C, ColorSize);
+      C.A := $FF; //palette has no alpha
+      FPalette[n] := RGBToFPColor(C);
+    end;
+
+    // fill remaining with black color, so we don't have to check for out of index values
+    for n := Info.PaletteCount to maxlen - 1 do
+      FPalette[n] := colBlack;
+  end;
+
+var
+  BIH: TBitmapInfoHeader;
+  BCH: TBitmapCoreHeader;
+  H: Integer;
+  StreamStart: Int64;
 begin
-  TheStream.Read(FBFI,SizeOf(FBFI));
+  StreamStart := theStream.Position;
+  TheStream.Read(BIH.biSize,SizeOf(BIH.biSize));
   {$IFDEF FPC_BIG_ENDIAN}
-  FBFI.biSize          := LEtoN(FBFI.biSize         );
-  FBFI.biWidth         := LEtoN(FBFI.biWidth        );
-  FBFI.biHeight        := LEtoN(FBFI.biHeight       );
-  FBFI.biPlanes        := LEtoN(FBFI.biPlanes       );
-  FBFI.biBitCount      := LEtoN(FBFI.biBitCount     );
-  FBFI.biCompression   := LEtoN(FBFI.biCompression  );
-  FBFI.biSizeImage     := LEtoN(FBFI.biSizeImage    );
-  FBFI.biXPelsPerMeter := LEtoN(FBFI.biXPelsPerMeter);
-  FBFI.biYPelsPerMeter := LEtoN(FBFI.biYPelsPerMeter);
-  FBFI.biClrUsed       := LEtoN(FBFI.biClrUsed      );
-  FBFI.biClrImportant  := LEtoN(FBFI.biClrImportant );
+  BIH.biSize := LEtoN(BIH.biSize);
   {$ENDIF}
+
+  if BIH.biSize = 12
+  then begin
+    // OS2 V1 header
+    TheStream.Read(BCH.bcWidth, BIH.biSize - SizeOf(BIH.biSize));
+
+    FDibInfo.Width := LEtoN(BCH.bcWidth);
+    FDibInfo.Height := LEtoN(BCH.bcHeight);
+    FDibInfo.BitCount := LEtoN(BCH.bcBitCount);
+    FDibInfo.Encoding := lrdeRGB;
+    FDibInfo.UpsideDown := True;
+
+    if FDibInfo.BitCount > 8
+    then FDibInfo.PaletteCount := 0
+    else FDibInfo.PaletteCount := 1 shl FDibInfo.BitCount;
+  end
+  else begin
+    // Windows Vx header or OSX V2, all start with BitmapInfoHeader
+    TheStream.Read(BIH.biWidth, SizeOf(BIH) - SizeOf(BIH.biSize));
+
+    FDibInfo.Width := LEtoN(BIH.biWidth);
+    H := LEtoN(BIH.biHeight);
+    // by default bitmaps are stored upside down
+    if H >= 0
+    then begin
+      FDibInfo.UpsideDown := True;
+      FDibInfo.Height := H;
+    end
+    else begin
+      FDibInfo.UpsideDown := False;
+      FDibInfo.Height := -H;
+    end;
+
+    FDibInfo.BitCount := LEtoN(BIH.biBitCount);
+    case LEtoN(BIH.biCompression) of
+      BI_RGB        : FDibInfo.Encoding := lrdeRGB;
+      4, {BCA_RLE24}
+      BI_RLE8,
+      BI_RLE4       : FDibInfo.Encoding := lrdeRLE;
+      {BCA_HUFFMAN1D, }
+      BI_BITFIELDS  : begin
+        // OS2 can use huffman encoding for mono bitmaps
+        // bitfields only work for 16 and 32
+        if FDibInfo.BitCount = 1
+        then FDibInfo.Encoding := lrdeHuffman
+        else FDibInfo.Encoding := lrdeBitfield;
+      end;
+    else
+      raise FPImageException.CreateFmt(SUnknownCompression, [LEtoN(BIH.biCompression)]);
+    end;
+
+    if not (FDibInfo.Encoding in [lrdeRGB, lrdeRLE, lrdeBitfield])
+    then raise FPImageException.CreateFmt(SUnsupportedCompression, [SEncoding[FDibInfo.Encoding]]);
+
+    FDibInfo.PaletteCount := LEtoN(BIH.biClrUsed);
+    if  (FDibInfo.PaletteCount = 0)
+    and (FDibInfo.BitCount <= 8)
+    then FDibInfo.PaletteCount := 1 shl FDibInfo.BitCount;
+  end;
+
+  if not ValidCompression
+  then raise FPImageException.CreateFmt(SWrongCombination, [FDibInfo.BitCount, SEncoding[FDibInfo.Encoding]]);
+
+  if BIH.biSize >= 108
+  then begin
+    // at least a V4 header -> has alpha mask, which is always valid (read other masks too)
+    TheStream.Read(FDibInfo.PixelMasks, 4 * SizeOf(FDibInfo.PixelMasks.R));
+    GetMaskShiftSize(FDibInfo.PixelMasks.A, FDibInfo.MaskShift.A, FDibInfo.MaskSize.A);
+  end
+  else begin
+    FDibInfo.PixelMasks.A := 0;
+    FDibInfo.MaskShift.A := 0;
+    FDibInfo.MaskSize.A := 0;
+  end;
+
+  if Info.Encoding = lrdeBitfield
+  then begin
+    if BIH.biSize < 108
+    then begin
+      // not read yet
+      TheStream.Read(FDibInfo.PixelMasks, 3 * SizeOf(FDibInfo.PixelMasks.R));
+    end;
+    GetMaskShiftSize(FDibInfo.PixelMasks.R, FDibInfo.MaskShift.R, FDibInfo.MaskSize.R);
+    GetMaskShiftSize(FDibInfo.PixelMasks.G, FDibInfo.MaskShift.G, FDibInfo.MaskSize.G);
+    GetMaskShiftSize(FDibInfo.PixelMasks.B, FDibInfo.MaskShift.B, FDibInfo.MaskSize.B);
+
+    TheStream.Seek(StreamStart + BIH.biSize, soBeginning);
+  end
+  else begin
+    TheStream.Seek(StreamStart + BIH.biSize, soBeginning);
+    ReadPalette(BIH.biSize = 12);
+  end;
+
+  if Info.MaskSize.A <> 0 {Info.BitCount = 32}
+  then CheckAlphaDescription(TheImage);
 end;
 
 function TLazReaderDIB.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
@@ -4933,30 +5245,32 @@ begin
 end;
 
 procedure TLazReaderDIB.InternalReadBody;
-type
-  TPixelMasks = packed record
-    R, G, B: LongWord;
-  end;
 
-const
-  SWrongCombination = 'Bitmap with wrong combination of bit count (%d) and compression (%d)';
-  SUnsupportedPixelMask = 'Bitmap with non-standard pixel masks not supported';
 
   procedure SaveTransparentColor;
   begin
-    //DebugLn('SaveTransparentColor ',dbgs(UseLeftBottomAsTransparent),' ',dbgs(FBitsPerPixel));
     if FMaskMode <> lrmmAuto then Exit;
 
     // define transparent color: 1-8 use palette, 15-24 use fixed color
-    FMaskIndex := -1;
-    case FBitsPerPixel of
-     1 : FMaskIndex := (LineBuf[0] shr 7) and 1;
-     4 : FMaskIndex := (LineBuf[0] shr 4) and $f;
-     8 : FMaskIndex := LineBuf[0];
-     15: FMaskColor := Bmp15BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[0]));
-     16: FMaskColor := Bmp16BitToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[0]));
-     24: FMaskColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
-     32: FMaskCOlor := BmpRGBAToFPColor(PColorRGBA(LineBuf)[0]);
+    case Info.BitCount of
+      1: FMaskIndex := (LineBuf[0] shr 7) and 1;
+      4: FMaskIndex := (LineBuf[0] shr 4) and $f;
+      8: FMaskIndex := LineBuf[0];
+    else
+      FMaskIndex := -1;
+      if Info.Encoding = lrdeBitfield
+      then begin
+        FMaskColor := BitfieldsToFPColor(PCardinal(LineBuf)[0]);
+        Exit;
+      end;
+
+      case Info.BitCount of
+        16: FMaskColor := RGBToFPColor({$ifdef FPC_BIG_ENDIAN}LeToN{$endif}(PWord(LineBuf)[0]));
+        24: FMaskColor := RGBToFPColor(PColorRGB(LineBuf)[0]);
+        32: FMaskColor := RGBToFPColor(PColorRGBA(LineBuf)[0]);
+      end;
+
+      Exit;
     end;
     if FMaskIndex <> -1
     then FMaskColor := FPalette[FMaskIndex];
@@ -4969,151 +5283,41 @@ const
   end;
 
 var
-  PixelMasks: TPixelMasks;
   Row : Cardinal;
 begin
+  TheImage.SetSize(Info.Width, Info.Height);
 
-  { This will move past any junk after the BFI header }
-  TheStream.Position := TheStream.Position + TStreamSeekType(BFI.biSize-SizeOf(BFI));
-  TheImage.SetSize(BFI.biWidth, Abs(BFI.biHeight));
-  // Note for Abs - height can be negative if bitmap data is not stored upside-down
-  FBitsPerPixel := BFI.biBitCount;
+  if Info.Height = 0 then Exit;
+  if Info.Width = 0 then Exit;
 
-  case BFI.biBitCount of
-    1: begin  { Monochrome }
-      if BFI.biCompression <> BI_RGB then
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      SetupRead(2, TheImage.Width, True, False);
-    end;
-    4: begin
-      case BFI.biCompression of
-        BI_RGB: SetupRead(16, TheImage.Width * 4, True, False);
-        BI_RLE4: SetupRead(16, TheImage.Width * 4, True, True);
-      else
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      end;
-    end;
-    8: begin
-      case BFI.biCompression of
-        BI_RGB: SetupRead(256, TheImage.Width * 8, True, False);
-        BI_RLE8: SetupRead(256, TheImage.Width * 8, True, True);
-      else
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      end;
-    end;
-    16: begin
-      case BFI.biCompression of
-        BI_RGB:                                          // 5-5-5
-          FBitsPerPixel := 15;
-        BI_BITFIELDS: begin                              // 5-5-5 or 5-6-5
-          THeStream.Read(PixelMasks, SizeOf(PixelMasks));
-          {$IFDEF FPC_BIG_ENDIAN}
-            PixelMasks.R := LEtoN(PixelMasks.R);
-            PixelMasks.G := LEtoN(PixelMasks.G);
-            PixelMasks.B := LEtoN(PixelMasks.B);
-          {$ENDIF}
-          if (PixelMasks.R = $7C00) and     // 5 red
-             (PixelMasks.G = $03E0) and     // 5 green
-             (PixelMasks.B = $001F) then    // 5 blue
-            FBitsPerPixel := 15
-          else
-          if (PixelMasks.R = $F800) and     // 5 red
-             (PixelMasks.G = $07E0) and     // 6 green
-             (PixelMasks.B = $001F) then    // 5 blue
-            FBitsPerPixel := 16
-          else
-            raise FPImageException.Create(SUnsupportedPixelMask);
-        end;
-      else
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      end;
-      SetupRead(0, TheImage.Width * 16, True, False);
-    end;
-    24: begin
-      case BFI.biCompression of
-        BI_RGB: ;
-        BI_BITFIELDS: begin  // actually not a valid value
-          TheStream.Read(PixelMasks, SizeOf(PixelMasks));
-          {$IFDEF FPC_BIG_ENDIAN}
-            PixelMasks.R := LEtoN(PixelMasks.R);
-            PixelMasks.G := LEtoN(PixelMasks.G);
-            PixelMasks.B := LEtoN(PixelMasks.B);
-          {$ENDIF}
-          if (PixelMasks.R <> $FF0000) or     // 8 red
-             (PixelMasks.G <> $00FF00) or     // 8 green
-             (PixelMasks.B <> $0000FF) then   // 8 blue
-            raise FPImageException.Create(SUnsupportedPixelMask);
-        end;
-      else
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      end;
-      SetupRead(0, TheImage.Width * 24, True, False);
-    end;
-    32: begin
-      case BFI.biCompression of
-        BI_RGB: ;
-        BI_BITFIELDS: begin
-          TheStream.Read(PixelMasks, SizeOf(PixelMasks));
-          {$IFDEF FPC_BIG_ENDIAN}
-            PixelMasks.R := LEtoN(PixelMasks.R);
-            PixelMasks.G := LEtoN(PixelMasks.G);
-            PixelMasks.B := LEtoN(PixelMasks.B);
-          {$ENDIF}
-          if (PixelMasks.R <> $00FF0000) or     // 8 red
-             (PixelMasks.G <> $0000FF00) or     // 8 green
-             (PixelMasks.B <> $000000FF) then   // 8 blue
-            raise FPImageException.Create(SUnsupportedPixelMask);
-        end;
-      else
-        raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      end;
-      // force alpha description
-      
-      CheckAlphaDescription(TheImage);
-      SetupRead(0, TheImage.Width * 32, True, False);
-    end;
-  else
-    raise FPImageException.CreateFmt('Wrong bitmap bit count: %d', [BFI.biBitCount]);
-  end;
-
-  if (TheImage.Height = 0)
-  or (TheImage.Width = 0)
-  then begin
-    FreeBufs;
-    Exit;
-  end;
-
+  InitLineBuf;
   try
-    if not FContinue then
-      Exit;
+    if not FContinue then Exit;
 
-    Row := TheImage.Height - 1;
+    Row := Info.Height - 1;
     ReadScanLine(Row);
     SaveTransparentColor;
     
-    if BFI.biHeight > 0 then
-      WriteScanLine(Row) // upside-down
-    else
-      WriteScanLine(TheImage.Height - 1 - Row);
+    if Info.UpsideDown
+    then WriteScanLine(Row)
+    else WriteScanLine(Info.Height - 1 - Row);
 
     UpdateProgress(Row);
 
     while Row > 0 do
     begin
-      if not FContinue then
-        Exit;
+      if not FContinue then Exit;
       Dec(Row);
       ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
 
-      if BFI.biHeight > 0 then
-        WriteScanLine(Row) // upside-down
-      else
-        WriteScanLine(TheImage.Height - 1 - Row);
+      if Info.UpsideDown
+      then WriteScanLine(Row)
+      else WriteScanLine(Info.Height - 1 - Row);
 
       UpdateProgress(Row);
     end;
   finally
-    FreeBufs;
+    FreeLineBuf;
   end;
 end;
 
@@ -5131,7 +5335,7 @@ end;
 
 destructor TLazReaderDIB.Destroy;
 begin
-  FreeBufs;
+  FreeLineBuf;
   inherited Destroy;
 end;
 
@@ -5181,10 +5385,10 @@ begin
   // Height field is doubled, to (sort of) accomodate mask
   // MWE: it shoud be safer to verify the division agains the dirinfo.height
   //      anyway I haven't encountered an icon in the wild which doesn't have a mask
-  FBFI.biHeight := FBFI.biHeight div 2;
+  FDIBinfo.Height := FDIBinfo.Height div 2;
   if FUpdateDescription
   then begin
-    DefaultReaderDescription(FBFI.biWidth, FBFI.biHeight, FBFI.biBitCount, Desc);
+    DefaultReaderDescription(Info.Width, Info.Height, Info.BitCount, Desc);
 //    if FMaskMode = lrmmNone
 //    then Desc.MaskBitsPerPixel := 0;
     FImage.DataDescription := Desc;
@@ -5196,8 +5400,9 @@ begin
   // MWE: Correction, it seems that even 32bit icons can have a mask following
   // if BFI.biBitCount >= 32 then Exit;
 
-  FReadSize := ((Desc.Width + 31) div 32) shl 2;
-  SetupRead(2, Desc.Width, False, False);
+  Info.Encoding := lrdeRGB;
+  Info.BitCount := 1;
+  InitLineBuf;
   try
     for Row := Desc.Height - 1 downto 0 do
     begin
@@ -5233,7 +5438,7 @@ begin
       end;
     end;
   finally
-    FreeBufs;
+    FreeLineBuf;
   end;
 end;
 
