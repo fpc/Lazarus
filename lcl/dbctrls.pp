@@ -734,6 +734,7 @@ Type
     property Align;
     property Anchors;
     property ArrowKeysTraverseList;
+    property AutoComplete;
     property AutoDropDown;
     property AutoSize;
     property BorderSpacing;
