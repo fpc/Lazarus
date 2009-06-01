@@ -305,7 +305,9 @@ begin
   then Exit;
 
   UnshareImage(False);
-  
+  // FSHaredImage might have been changed by UnshareImage
+  SCB := TSharedCustomBitmap(FSharedImage);
+
   // for delphi compatibility copy old image
   RawImageNeeded(False);
   if  (SCB.FImage.Description.Height >= cardinal(AHeight))
@@ -373,6 +375,10 @@ begin
       // force a complete rawimage, so we can copy it
       RawimageNeeded(False);
       OldImage.FImage.ExtractRect(Rect(0, 0, Width, Height), NewImage.FImage);
+    end
+    else begin
+      // keep width, height and bpp
+      NewImage.FImage.Description := OldImage.FImage.Description;
     end;
 
     FreeCanvasContext;
