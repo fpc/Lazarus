@@ -105,3 +105,15 @@ begin
   FLookup.LookupCache := Value;
 end;
 
+procedure TDBLookupComboBox.FinalizeWnd;
+begin
+  inherited FinalizeWnd;
+  FLookup.FControlItems := Items;
+end;
+
+procedure TDBLookupComboBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  FLookup.FControlItems := Items;
+end;
+

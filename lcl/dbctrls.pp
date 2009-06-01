@@ -419,6 +419,8 @@ Type
     procedure SetLookupCache(const Value: boolean);
   protected
     procedure DataChange(Sender: TObject); override;
+    procedure FinalizeWnd; override;
+    procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
   public
@@ -725,6 +727,8 @@ Type
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
   protected
+    procedure FinalizeWnd; override;
+    procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure UpdateText; override;

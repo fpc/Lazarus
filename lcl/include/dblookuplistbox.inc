@@ -59,6 +59,18 @@ begin
   ItemIndex:= Items.IndexOf(FLookup.ListFieldValue);
 end;
 
+procedure TDBLookupListBox.FinalizeWnd;
+begin
+  inherited FinalizeWnd;
+  FLookup.FControlItems := Items;
+end;
+
+procedure TDBLookupListBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  FLookup.FControlItems := Items;
+end;
+
 function TDBLookupListBox.GetKeyField: string;
 begin
   Result := FLookup.KeyField;
