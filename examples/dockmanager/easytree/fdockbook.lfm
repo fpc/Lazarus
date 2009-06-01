@@ -30,14 +30,6 @@ object EasyDockBook: TEasyDockBook
     ParentFont = False
     ShowCaptions = True
     TabOrder = 0
-    object ToolButton1: TToolButton
-      Left = 0
-      Top = 0
-      AutoSize = True
-      Caption = 'ToolButton1'
-      Style = tbsCheck
-      Visible = False
-    end
   end
   object pnlDock: TPanel
     Left = 0

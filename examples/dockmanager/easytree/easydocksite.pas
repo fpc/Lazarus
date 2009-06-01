@@ -53,6 +53,8 @@ done? (unclear whether this is really fixed in the trunk)
 {.$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
+{.$DEFINE singleTab} //allow to create notebooks with 1 tab (in the topzone)?
+  //doesn't look nice, with both a header AND a button list
 {$DEFINE bookform} //using notebook within form? Seems to work ONLY if defined
 
 interface
@@ -195,7 +197,9 @@ type
   public
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
   public
+  {$IFDEF singleTab}
     SingleTab: boolean; //always create notebook for alCustom?
+  {$ENDIF}
     constructor Create(ADockSite: TWinControl);
     destructor Destroy; override;
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
@@ -290,8 +294,10 @@ begin
   DockSite.DockManager := self;
 //init node class - impossible due to visibility restrictions!
   inherited Create; //(DockSite);
+{$IFDEF singleTab}
 //test: notebook with 1 tab in root zone
   SingleTab := True;
+{$ENDIF}
 //init top zone
   FSiteRect := DockSite.ClientRect;
   FTopZone := TEasyZone.Create(self);
@@ -466,6 +472,7 @@ begin
       NoteBookAdd(NoteBook, Control);
       FDockSite.Invalidate; //update notebook caption
       exit;
+  {$IFDEF singleTab}
     end else if SingleTab and not (DropCtl is TEasyBook)  then begin
     //empty root zone, create new notebook
       NoteBook := NoteBookCreate(FDockSite);
@@ -473,6 +480,8 @@ begin
       NoteBookAdd(NoteBook, Control);
       FDockSite.Invalidate; //update notebook caption
       exit;
+  {$ELSE}
+  {$ENDIF}
     end;  // else //continue docking of the notebook
     InsertAt := alNone; //force automatic orientation
   end;
@@ -617,9 +626,11 @@ Signal results:
       DropOnControl := zone.ChildControl;
       DropAlign := DetectAlign(ADockRect, DragTargetPos);
       if DropOnControl = nil then begin
+      {$IFDEF singleTab}
         if SingleTab and (DropAlign = alCustom) then begin
           //notebook in top zone
         end else
+      {$ENDIF}
           DropAlign := alClient; //first element in entire site
       end; //else //determine the alignment within the zone.
     //to screen coords
@@ -631,8 +642,9 @@ Signal results:
     //force DockRect update by DockTrackNoTarget
       DropOnControl := Control; //prevent drop - signal drop onto self
     {$IFDEF NoDrop}
-      NoDrop := True;
+      NoDrop := True; //signal that nothing will happen on a drop
     {$ELSE}
+    //all these are lousy features, do not allow to signal an invalid drop
       DragTarget := nil;
       //Control.DockTrackNoTarget
       //DragTarget := FDockSite; //prevent floating - doesn't work :-(
@@ -657,7 +669,7 @@ begin
 //debug!
   DropOn := DropCtl;
 
-  if (DropCtl = nil) and not SingleTab then
+  if (DropCtl = nil) {$IFDEF singleTab} and not SingleTab {$ENDIF}  then
     exit; //empty dock site
 
   case DropAlign of

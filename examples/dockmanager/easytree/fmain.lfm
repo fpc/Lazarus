@@ -1,7 +1,7 @@
 object EasyDockMain: TEasyDockMain
-  Left = 680
+  Left = 280
   Height = 285
-  Top = 125
+  Top = 123
   Width = 461
   ActiveControl = buDump
   Caption = 'EasyDockMain'
@@ -80,7 +80,7 @@ object EasyDockMain: TEasyDockMain
     end
     object edDock: TEdit
       Left = 249
-      Height = 22
+      Height = 23
       Top = 2
       Width = 80
       DragKind = dkDock

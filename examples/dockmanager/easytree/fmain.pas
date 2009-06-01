@@ -1,6 +1,9 @@
 unit fMain;
 (* EasyDockSite dock test form by DoDi.
   Demonstrates docking of various controls, and related bugs in the LCL.
+
+  Beware: writing to e.g. the StatusBar from dock event handlers
+    can cause relicts of a docking rectangle in the changed text.
 *)
 
 (* A dock site should contain no other (not docked) controls.
@@ -8,8 +11,6 @@ unit fMain;
   This does not (yet) work with the LCL :-(
   When a docking manager is replaced, the controls should be undocked again?
   (depends on the lists, where docked and undocked controls reside in the dock site)
-
-  LCL does not notify the docking manager of a resized dock site?
 *)
 
 //some defines, to demonstrate LCL flaws
@@ -61,11 +62,6 @@ type
       Y: Integer; State: TDragState; var Accept: Boolean);
     procedure buDumpClick(Sender: TObject);
   private
-  {$IFDEF docker}
-    //Docker: TPanel;
-  {$ELSE}
-    //Docker: TForm;
-  {$ENDIF}
     Docker: TWinControl;
     ShapeCount: integer;
   public
@@ -97,6 +93,8 @@ var
   ctl: TShape;
   r: TRect;
 begin
+(* Clone the clicked shape and make it floating.
+*)
   if sender is TShape then begin
     shp := Sender as TShape;
   {$IFDEF dragForm}
@@ -106,7 +104,6 @@ begin
     sb.SimpleText := df.Name;
     c := shp.Brush.Color;
     //df.Color := c; - not all widgetsets support TForm.Color!?
-    //c := df.Color;
     df.Shape1.Brush.Color := c;
 
   { TODO -cdocking : form is not dockable with some widgetsets? }
@@ -130,13 +127,12 @@ begin
     ctl.Brush.Color := shp.Brush.Color;
     ctl.DragMode := dmAutomatic;
     ctl.DragKind := dkDock;
+  //position the floating control near the clicked shape
     r.TopLeft := self.BoundsRect.TopLeft;
-    //r.Left := x; r.Top := y;
     r.Right := r.Left + 100;
     r.Bottom := r.Top + 100;
-    ctl.ManualFloat(r); //(ctl.BoundsRect);
+    ctl.ManualFloat(r);
   {$ENDIF}
-    //df.Name := shp.Name;
   end;
 end;
 

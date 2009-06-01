@@ -31,7 +31,6 @@ type
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
     Tabs: TToolBar;
-    ToolButton1: TToolButton;
     procedure pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
     procedure pnlDockUnDock(Sender: TObject; Client: TControl;
@@ -130,7 +129,7 @@ begin
     if CurTab = nil then begin //current button removed
     //find next tab to show
       if i >= Tabs.ButtonCount then
-        dec(i);
+        i := Pred(Tabs.ButtonCount);  //  dec(i);
     //activate new tab
       CurTab := Tabs.Buttons[i] as TTabButton;
       CurTab.Down := True;
