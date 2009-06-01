@@ -135,6 +135,19 @@ const
 const
   ExitCodeRestartLazarus = 99;
 
+var
+  // set by lazbuild.lpr and used by GetDefaultLCLWidgetType
+  BuildLCLWidgetType: TLCLPlatform =
+    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
+    lpWin32;
+    {$ENDIF}
+    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
+    lpCarbon;
+    {$ENDIF}
+    {$IFNDEF WidgetSetDefined}
+    lpGtk2;
+    {$ENDIF}
+
 implementation
 
 {$I lazconf.inc}
@@ -196,19 +209,10 @@ end;
 
 function GetDefaultLCLWidgetType: TLCLPlatform;
 begin
-  if WidgetSet<>nil then
+  if (WidgetSet<>nil) and (WidgetSet.LCLPlatform<>lpNoGUI) then
     Result:=WidgetSet.LCLPlatform
-  else begin
-    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
-    Result:= lpWin32;
-    {$ENDIF}
-    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
-    Result:= lpCarbon;
-    {$ENDIF}
-    {$IFNDEF WidgetSetDefined}
-    Result:= lpGtk2;
-    {$ENDIF}
-  end;
+  else
+    Result:=BuildLCLWidgetType;
 end;
 
 function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;

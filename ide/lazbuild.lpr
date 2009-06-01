@@ -1178,6 +1178,19 @@ begin
 end;
 
 begin
+  // When quick rebuilding lazbuild, FPC rebuilds only the lazbuild.lpr, so any
+  // flag that should work with quick build must be set here.
+
+  {$IFDEF BuildWidgetSetWin32}  Result:=lpWin32;  {$ENDIF}
+  {$IFDEF BuildWidgetSetWinCE}  Result:=lpWinCE;  {$ENDIF}
+  {$IFDEF BuildWidgetSetGTK}    Result:=lpGtk;    {$ENDIF}
+  {$IFDEF BuildWidgetSetGTK2}   Result:=lpGtk2;   {$ENDIF}
+  {$IFDEF BuildWidgetSetQT}     Result:=lpQT;     {$ENDIF}
+  {$IFDEF BuildWidgetSetFPGui}  Result:=lpfpGUI;  {$ENDIF}
+  {$IFDEF BuildWidgetSetCarbon} Result:=lpCarbon; {$ENDIF}
+  {$IFDEF BuildWidgetSetCocoa}  Result:=lpCocoa;  {$ENDIF}
+  {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
+
   // free LCL application
   FreeAndNil(Forms.Application);
   // start our own application

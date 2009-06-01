@@ -85,6 +85,8 @@ begin
   // When quick rebuilding the IDE, FPC rebuilds only the lazarus.pp, so any
   // flag that should work with quick build must be set here.
   KeepInstalledPackages:={$IFDEF BigIDE}True{$ELSE}False{$ENDIF};
+
+  // end of build flags
   
   LazarusRevisionStr:=RevisionStr;
   Application.Title:='Lazarus';
