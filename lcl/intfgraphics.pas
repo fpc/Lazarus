@@ -5025,6 +5025,7 @@ end;
 procedure TLazReaderDIB.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
   Desc: TRawImageDescription;
+  Depth: Byte;
 begin
   FContinue := True;
   Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
@@ -5033,9 +5034,10 @@ begin
   
   if FUpdateDescription
   then begin
-    DefaultReaderDescription(Info.Width, Info.Height, Info.BitCount, Desc);
-//    if FMaskMode = lrmmNone
-//    then Desc.MaskBitsPerPixel := 0;
+    if (Info.BitCount = 32) and (Info.MaskSize.A = 0)
+    then Depth := 24
+    else Depth := Info.BitCount;
+    DefaultReaderDescription(Info.Width, Info.Height, Depth, Desc);
     FImage.DataDescription := Desc;
   end;
 
@@ -5389,8 +5391,6 @@ begin
   if FUpdateDescription
   then begin
     DefaultReaderDescription(Info.Width, Info.Height, Info.BitCount, Desc);
-//    if FMaskMode = lrmmNone
-//    then Desc.MaskBitsPerPixel := 0;
     FImage.DataDescription := Desc;
   end
   else Desc := FImage.DataDescription;
@@ -5420,7 +5420,8 @@ begin
           // transparent
           FImage.Masked[Column, Row] := True;
           // add alpha when source wasn't 32bit
-          if (Desc.AlphaPrec <> 0) and (Desc.Depth < 32)
+          if  (Desc.AlphaPrec <> 0)
+          and ((Desc.Depth < 32) or (Info.MaskSize.A = 0))
           then begin
             NewColor := FImage.Colors[Column, Row];
             NewColor.Alpha := alphaTransparent;

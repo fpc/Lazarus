@@ -274,15 +274,21 @@ end;
   Returns: HICON
  ------------------------------------------------------------------------------}
 function TCustomForm.BigIconHandle: HICON;
+var
+  OldChange: TNotifyEvent;
+  OldCurrent: Integer;
 begin
   if not FIcon.Empty then
   begin
     if FBigIconHandle = 0 then
     begin
+      OldChange := FIcon.OnChange;
+      OldCurrent := FIcon.Current;
       FIcon.OnChange := nil;
       FIcon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
       FBigIconHandle := FIcon.ReleaseHandle;
-      FIcon.OnChange := @IconChanged;
+      FIcon.Current := OldCurrent;
+      FIcon.OnChange := OldChange;
     end;
     Result := FBigIconHandle;
   end
@@ -295,15 +301,21 @@ end;
   Returns: HICON
  ------------------------------------------------------------------------------}
 function TCustomForm.SmallIconHandle: HICON;
+var
+  OldChange: TNotifyEvent;
+  OldCurrent: Integer;
 begin
   if not FIcon.Empty then
   begin
     if FSmallIconHandle = 0 then
     begin
+      OldChange := FIcon.OnChange;
+      OldCurrent := FIcon.Current;
       FIcon.OnChange := nil;
       FIcon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON)));
       FSmallIconHandle := FIcon.ReleaseHandle;
-      FIcon.OnChange := @IconChanged;
+      FIcon.Current := OldCurrent;
+      FIcon.OnChange := OldChange;
     end;
     Result := FSmallIconHandle;
   end

@@ -326,12 +326,13 @@ begin
 
   if Source is TCustomIcon
   then begin
-    FCurrent := TCustomIcon(Source).Current
+    FCurrent := TCustomIcon(Source).Current;
+
+    // temporary hack since TRasterImage assign cannot handle multiply rawimages
+    if TCustomIcon(Source).GetSharedImageClass <> GetSharedImageClass
+    then UnshareImage(True);
   end;
 
-  // temporary hack since TRasterImage assign cannot handle multiply rawimages
-  if (Source is TCustomIcon) and (TCustomIcon(Source).GetSharedImageClass <> GetSharedImageClass) then
-    UnshareImage(True);
   EndUpdate;
 end;
 
@@ -504,7 +505,7 @@ end;
 
 function TCustomIcon.GetMasked: Boolean;
 begin
-  // per definition an icon is maked, but maybe we should make it settable for alpha images
+  // per definition an icon is masked, but maybe we should make it settable for alpha images
   Result := True;
 end;
 
@@ -977,7 +978,6 @@ end;
 
 procedure TCustomIcon.UpdateCurrentView;
 begin
-  {$IFDEF VerboseLCLTodos}{$note implement me}{$ENDIF}
   FreeCanvasContext;
   Changed(Self);
 end;
