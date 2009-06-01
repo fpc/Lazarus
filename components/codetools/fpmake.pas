@@ -34,30 +34,24 @@ program fpmake;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, fpmkunit2;
+  SysUtils, fpmkunit;
 
-procedure AddDependencies(T: TTarget);
+procedure AddUnitDependency(P: TPackage; T: TTarget; Filename: string);
 var
-  Info: TSearchRec;
-  Ext: String;
+  UnitName: String;
 begin
-  if FindFirst('*',faAnyFile,Info)=0 then
-  begin
-    repeat
-      if (Info.Name<>T.Name) then begin
-        Ext:=ExtractFileExt(Info.Name);
-        if (Ext='.pas') or (Ext='.pp') then
-          //T.Dependencies.AddUnit(copy(Info.Name,1,length(Info.Name)-length(Ext)))
-          //writeln(copy(Info.Name,1,length(Info.Name)-length(Ext)))
-        else if Ext='.inc' then
-          T.Dependencies.AddInclude(Info.Name)
-        else if Ext='.lpk' then
-          T.Dependencies.Add(Info.Name);
-      end;
-    until FindNext(Info)<>0;
-    writeln();
-  end;
-  FindClose(Info);
+  if Filename='' then exit;
+  UnitName:=copy(Filename,1,length(Filename)-length(ExtractFileExt(Filename)));
+  T.Dependencies.AddUnit(UnitName);
+  P.Targets.AddUnit(Filename);
+end;
+
+procedure AddUnitDependencies(P: TPackage; T: TTarget; Filenames: array of const);
+var
+  i: Integer;
+begin
+  for i:=low(Filenames) to high(Filenames) do
+    AddUnitDependency(P,T,AnsiString(Filenames[i].VAnsiString));
 end;
 
 var
@@ -66,12 +60,66 @@ var
 begin
   with Installer do begin
     P:=AddPackage('codetools');
+    P.Version:='1.0-0';
+    P.Author:='Mattias Gaertner';
+    P.License:='GPL-2 or any later';
+    P.Description:='CodeTools - '
+                +'tools and functions to parse, browse and edit pascal sources';
     P.OSes:=AllOSes;
     T:=P.Targets.AddUnit('allcodetoolunits.pp');
-    T.Options:='-gl';
-    // AddUnit gives error: Unknown target in dependencies for allcodetoolunits: keywordfunclists
-    //T.Dependencies.AddUnit('keywordfunclists');
-    AddDependencies(T);
+    T.Options.Add('-gl');
+    T.Dependencies.AddInclude('codetools.inc');
+    AddUnitDependencies(P,T,[
+      'basiccodetools.pas',
+      'cachecodetools.pas',
+      'ccodeparsertool.pas',
+      'codeatom.pas',
+      'codebeautifier.pas',
+      'codecache.pas',
+      'codecompletiontool.pas',
+      'codegraph.pas',
+      'codeindex.pas',
+      'codetemplatestool.pas',
+      'codetoolmanager.pas',
+      'codetoolmemmanager.pas',
+      'codetoolsconfig.pas',
+      'codetoolsstrconsts.pas',
+      'codetoolsstructs.pas',
+      'codetree.pas',
+      'customcodetool.pas',
+      'definetemplates.pas',
+      'directivestree.pas',
+      'directorycacher.pas',
+      'eventcodetool.pas',
+      'expreval.pas',
+      'extractproctool.pas',
+      'fileprocs.pas',
+      'finddeclarationcache.pas',
+      'finddeclarationtool.pas',
+      'findoverloads.pas',
+      'h2pastool.pas',
+      'identcompletiontool.pas',
+      'keywordfunclists.pas',
+      'laz_dom.pas',
+      'laz_xmlcfg.pas',
+      'laz_xmlread.pas',
+      'laz_xmlstreaming.pas',
+      'laz_xmlwrite.pas',
+      'lfmtrees.pas',
+      'linkscanner.pas',
+      'methodjumptool.pas',
+      'multikeywordlisttool.pas',
+      'nonpascalcodetools.pas',
+      'pascalparsertool.pas',
+      'pascalreadertool.pas',
+      'ppucodetools.pas',
+      'ppugraph.pas',
+      'ppuparser.pas',
+      'resourcecodetool.pas',
+      'sourcechanger.pas',
+      'sourcelog.pas',
+      'stdcodetools.pas',
+      '']);
     Run;
   end;
 end.
