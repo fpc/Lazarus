@@ -57,6 +57,7 @@
       <IncludeFiles Value="include/;include/$(TargetOS)/"/>
       <OtherUnitFiles Value="../designer/;../packager/;../components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
+      <LCLWidgetType Value="nogui"/>
     </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
