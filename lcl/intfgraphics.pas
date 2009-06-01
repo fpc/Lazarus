@@ -5400,8 +5400,8 @@ begin
   // MWE: Correction, it seems that even 32bit icons can have a mask following
   // if BFI.biBitCount >= 32 then Exit;
 
-  Info.Encoding := lrdeRGB;
-  Info.BitCount := 1;
+  FDIBinfo.Encoding := lrdeRGB;
+  FDIBinfo.BitCount := 1;
   InitLineBuf;
   try
     for Row := Desc.Height - 1 downto 0 do
