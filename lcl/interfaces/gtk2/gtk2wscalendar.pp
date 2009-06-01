@@ -35,7 +35,7 @@ uses
   {$ENDIF}
   // RTL, FCL, LCL
   SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
-  InterfaceBase,
+  InterfaceBase, LCLProc,
   // Widgetset
   GtkProc, GtkDef, Gtk2Int, Gtk2WsControls,
   WSCalendar, WSLCLClasses, WSProc;
@@ -52,6 +52,7 @@ type
     class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -141,6 +142,18 @@ begin
 
   Set_RC_Name(AWinControl, FrameWidget);
   SetCallBacks(FrameWidget, WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomCalendar.DestroyHandle(
+  const AWinControl: TWinControl);
+var
+  CalendarCtrl: TCustomCalendar;
+  CalendarWidget: PGtkCalendar;
+begin
+  CalendarCtrl:=TCustomCalendar(AWinControl);
+  CalendarWidget:=GetCalendar(CalendarCtrl);
+  gtk_calendar_thaw(CalendarWidget);
+  inherited DestroyHandle(AWinControl);
 end;
 
 class function TGtk2WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
