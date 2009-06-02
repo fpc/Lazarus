@@ -147,7 +147,14 @@ type
     property Visible default false;
   end;
 
+  ICoordTransformer = interface
+  ['{6EDA0F9F-ED59-4CA6-BA68-E247EB88AE3D}']
+    function XGraphToImage(AX: Double): Integer;
+    function YGraphToImage(AY: Double): Integer;
+  end;
+
   TChartAxisAlignment = (calLeft, calTop, calRight, calBottom);
+  TChartAxisMargins = array [TChartAxisAlignment] of Integer;
 
   { TChartAxis }
 
@@ -158,6 +165,9 @@ type
     FInverted: Boolean;
     FTitle: TChartAxisTitle;
     FVisible: Boolean;
+  private
+    FSize: Integer;
+    FTitleSize: Integer;
 
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartPen);
@@ -170,7 +180,17 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
 
+  public
     procedure Assign(Source: TPersistent); override;
+    procedure Draw(
+      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      const ATransf: ICoordTransformer; var ARect: TRect);
+    procedure DrawTitle(
+      ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
+    function IsVertical: Boolean; inline;
+    procedure Measure(
+      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      var AMargins: TChartAxisMargins);
   published
     property Alignment: TChartAxisAlignment read FAlignment write SetAlignment;
     property Grid: TChartPen read FGrid write SetGrid;
@@ -333,10 +353,35 @@ type
     property Bottom: TChartMargin index 4 read GetValue write SetValue default DEF_MARGIN;
   end;
 
+function SideByAlignment(
+  var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
+
 implementation
 
 uses
-  Types;
+  Math, Types;
+
+const
+  TICK_LENGTH = 4;
+  CAPTION_DIST = 4;
+  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
+
+function MarkToText(AMark: Double): String;
+begin
+  if Abs(AMark) <= 1e-16 then AMark := 0;
+  Result := Trim(FloatToStr(AMark));
+end;
+
+function SideByAlignment(
+  var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
+var
+  a: TChartAxisMargins absolute ARect;
+begin
+  Result := a[AAlignment];
+  if AAlignment in [calLeft, calTop] then
+    ADelta := -ADelta;
+  a[AAlignment] += ADelta;
+end;
 
 { TChartPen }
 
@@ -590,6 +635,217 @@ begin
   FTitle.Free;
   FGrid.Free;
   inherited;
+end;
+
+procedure TChartAxis.Draw(
+  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  const ATransf: ICoordTransformer; var ARect: TRect);
+
+  procedure DrawXMark(AY: Integer; AMark: Double);
+  var
+    x, dy: Integer;
+    sz: TSize;
+    markText: String;
+  begin
+    x := ATransf.XGraphToImage(AMark);
+
+    if Grid.Visible then begin
+      ACanvas.Pen.Assign(Grid);
+      ACanvas.Brush.Style := bsClear;
+      ACanvas.Line(
+        x, ATransf.YGraphToImage(AExtent.a.Y),
+        x, ATransf.YGraphToImage(AExtent.b.Y));
+    end;
+
+    ACanvas.Pen.Color := clBlack; //AxisColor;
+    ACanvas.Pen.Style := psSolid;
+    ACanvas.Pen.Mode := pmCopy;
+    ACanvas.Line(x, AY - TICK_LENGTH, x, AY + TICK_LENGTH);
+
+    //ACanvas.Brush.Assign(FGraphBrush);
+    //ACanvas.Brush.Color := Color;
+    markText := MarkToText(AMark);
+    sz := ACanvas.TextExtent(markText);
+    if Alignment = calTop then
+      dy := -TICK_LENGTH - 1 - sz.cy
+    else
+      dy := TICK_LENGTH + 1;
+    ACanvas.TextOut(x - sz.cx div 2, AY + dy, markText);
+  end;
+
+  procedure DrawYMark(AX: Integer; AMark: Double);
+  var
+    dx, y: Integer;
+    markText: String;
+    sz: TSize;
+  begin
+    y := ATransf.YGraphToImage(AMark);
+
+    if Grid.Visible then begin
+      ACanvas.Pen.Assign(Grid);
+      ACanvas.Brush.Style := bsClear;
+      ACanvas.Line(
+        ATransf.XGraphToImage(AExtent.a.X), y,
+        ATransf.XGraphToImage(AExtent.b.X), y);
+    end;
+
+    ACanvas.Pen.Color := clBlack; //AxisColor;
+    ACanvas.Pen.Style := psSolid;
+    ACanvas.Pen.Mode := pmCopy;
+    ACanvas.Line(AX - TICK_LENGTH, y, AX + TICK_LENGTH, y);
+
+    //ACanvas.Brush.Assign(FGraphBrush);
+    //ACanvas.Brush.Color := Color;
+    markText := MarkToText(AMark);
+    sz := ACanvas.TextExtent(markText);
+    if Alignment = calLeft then
+      dx := -TICK_LENGTH - 1 - sz.cx
+    else
+      dx := TICK_LENGTH + 1;
+    ACanvas.TextOut(AX + dx, y - sz.cy div 2, markText)
+  end;
+
+  procedure DrawVertical;
+  var
+    mark, step: Double;
+    x: Integer;
+  begin
+    if AExtent.a.Y = AExtent.b.Y then exit;
+    CalculateIntervals(
+      AExtent.a.Y, AExtent.b.Y, INV_TO_SCALE[Inverted], mark, step);
+    x := SideByAlignment(ARect, Alignment, FSize);
+    case INV_TO_SCALE[Inverted] of
+      asIncreasing:
+        while mark <= AExtent.b.Y + step * 10e-10 do begin
+          if mark >= AExtent.a.Y then
+            DrawYMark(x, mark);
+          mark += step;
+        end;
+      asDecreasing:
+        while mark >= AExtent.a.Y - step * 10e-10 do begin
+          if mark <= AExtent.b.Y then
+            DrawYMark(x, mark);
+          mark -= step;
+        end;
+    end;
+  end;
+
+  procedure DrawHorizontal;
+  var
+    mark, step: Double;
+    y: Integer;
+  begin
+    if AExtent.a.X = AExtent.b.X then exit;
+    CalculateIntervals(
+      AExtent.a.X, AExtent.b.X, INV_TO_SCALE[Inverted], mark, step);
+    y := SideByAlignment(ARect, Alignment, FSize);
+    case INV_TO_SCALE[Inverted] of
+      asIncreasing:
+        while mark <= AExtent.b.X + step * 10e-10 do begin
+          if mark >= AExtent.a.X then
+            DrawXMark(y, mark);
+          mark += step;
+        end;
+      asDecreasing:
+        while mark >= AExtent.a.X - step * 10e-10 do begin
+          if mark <= AExtent.b.X then
+            DrawXMark(y, mark);
+          mark -= step;
+        end;
+    end;
+  end;
+
+begin
+  if not Visible then exit;
+  if IsVertical then
+    DrawVertical
+  else
+    DrawHorizontal;
+end;
+
+procedure TChartAxis.DrawTitle(
+  ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
+const
+  DEGREES_TO_ORIENT = 10;
+var
+  p: TPoint;
+  sz: TSize;
+begin
+  if not Visible or (FTitleSize = 0) then exit;
+  // FIXME: Angle assumed to be either ~0 or ~90 degrees
+  ACanvas.Font.Orientation := Title.Angle * DEGREES_TO_ORIENT;
+  sz := ACanvas.TextExtent(Title.Caption);
+  if Title.Angle >= 45 then begin
+    Exchange(sz.cx, sz.cy);
+    sz.cy := -sz.cy;
+  end;
+  p.X := ACenter.X - sz.cx div 2;
+  p.Y := ACenter.Y - sz.cy div 2;
+  case Alignment of
+    calLeft: p.X := ARect.Left - FTitleSize;
+    calTop: p.Y := ARect.Top - FTitleSize;
+    calRight: p.X := ARect.Right + CAPTION_DIST;
+    calBottom: p.Y := ARect.Bottom + CAPTION_DIST;
+  end;
+  ACanvas.TextOut(p.X, p.Y, Title.Caption);
+  ACanvas.Font.Orientation := 0;
+  SideByAlignment(ARect, Alignment, FTitleSize);
+end;
+
+function TChartAxis.IsVertical: Boolean; inline;
+begin
+  Result := Alignment in [calLeft, calRight];
+end;
+
+procedure TChartAxis.Measure(
+  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  var AMargins: TChartAxisMargins);
+var
+  sz: TSize;
+  mark, step: Double;
+  d, maxWidth: Integer;
+begin
+  FSize := 0;
+  FTitleSize := 0;
+  if not Visible then exit;
+
+  if Title.Visible and (Title.Caption <> '') then begin
+    sz := ACanvas.TextExtent(Title.Caption);
+    if (Title.Angle < 45) = IsVertical then
+      d := sz.cx
+    else
+      d := sz.cy;
+    FTitleSize := d + CAPTION_DIST;
+  end;
+
+  if IsVertical and (AExtent.a.Y <> AExtent.b.Y) then begin
+    maxWidth := 0;
+    CalculateIntervals(
+      AExtent.a.Y, AExtent.b.Y, INV_TO_SCALE[Inverted], mark, step);
+    case INV_TO_SCALE[Inverted] of
+      asIncreasing:
+        while mark <= AExtent.b.Y + step * 10e-10 do begin
+          if mark >= AExtent.a.Y then
+            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
+          mark += step;
+        end;
+      asDecreasing:
+        while mark >= AExtent.a.Y - step * 10e-10 do begin
+          if mark <= AExtent.b.Y then
+            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
+          mark -= step;
+        end;
+    end;
+  end;
+
+  // CalculateTransformationCoeffs changes axis interval, so it is possibile
+  // that a new mark longer then existing ones is introduced.
+  // That will change marks width and reduce view area,
+  // requiring another call to CalculateTransformationCoeffs...
+  // So punt for now and just reserve space for extra digit unconditionally.
+  FSize := ACanvas.TextHeight('0') + maxWidth + CAPTION_DIST;
+
+  AMargins[Alignment] += FSize + FTitleSize;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);

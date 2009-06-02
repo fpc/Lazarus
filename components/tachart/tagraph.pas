@@ -120,7 +120,7 @@ type
 
   { TChart }
 
-  TChart = class(TCustomChart)
+  TChart = class(TCustomChart, ICoordTransformer)
   private // Property fields
     FAllowZoom: Boolean;
     FAxisColor: TColor;
@@ -183,7 +183,7 @@ type
     procedure DoDrawReticule(
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
-    procedure DrawAxis(ACanvas: TCanvas; ARect: TRect);
+    procedure DrawAxis(ACanvas: TCanvas);
     procedure DrawLegend(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
@@ -445,7 +445,7 @@ begin
   UpdateExtent;
   DrawTitleFoot(ACanvas);
   DrawLegend(ACanvas);
-  DrawAxis(ACanvas, ARect);
+  DrawAxis(ACanvas);
   DisplaySeries(ACanvas);
   DrawReticule(ACanvas);
 
@@ -570,109 +570,12 @@ begin
   end;
 end;
 
-procedure TChart.DrawAxis(ACanvas: TCanvas; ARect: TRect);
+procedure TChart.DrawAxis(ACanvas: TCanvas);
 var
-  leftOffset: Integer = 0;
-  bottomOffset: Integer = 0;
-
-  function MarkToText(AMark: Double): String;
-  begin
-    if Abs(AMark) <= 1e-16 then AMark := 0;
-    Result := Trim(FloatToStr(AMark));
-  end;
-
-  procedure DrawAxisTitles;
-  var
-    c: TPoint;
-    sz: TSize;
-    s: String;
-
-    function PrepareAxis(AAxis: TChartAxis): Boolean;
-    const
-      DEGREES_TO_ORIENT = 10;
-    begin
-      if (AAxis = nil) or not AAxis.Visible then exit(false);
-      s := AAxis.Title.Caption;
-      if s = '' then exit(false);
-      sz := ACanvas.TextExtent(s);
-      ACanvas.Font.Orientation := AAxis.Title.Angle * DEGREES_TO_ORIENT;
-      Result := true;
-    end;
-
-  begin
-    // FIXME: Angle assumed to be around 0 for bottom and 90 for left axis.
-    c := CenterPoint(FClipRect);
-    if PrepareAxis(LeftAxis) then begin
-      ACanvas.TextOut(FClipRect.Left, c.Y + sz.cx div 2, s);
-      leftOffset := sz.cy + 4;
-    end;
-    if PrepareAxis(BottomAxis) then begin
-      ACanvas.TextOut(c.X - sz.cx div 2, FClipRect.Bottom - sz.cy, s);
-      bottomOffset := sz.cy + 4;
-    end;
-    ACanvas.Font.Orientation := 0;
-  end;
-
-  procedure DrawXMark(AMark: Double);
-  var
-    x, w: Integer;
-    markText: String;
-  begin
-    x := XGraphToImage(AMark);
-
-    if BottomAxis.Grid.Visible then begin
-      ACanvas.Pen.Assign(BottomAxis.Grid);
-      ACanvas.Brush.Style := bsClear;
-      DrawLineVert(ACanvas, x);
-    end;
-
-    ACanvas.Pen.Color := AxisColor;
-    ACanvas.Pen.Style := psSolid;
-    ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(x, FClipRect.Bottom - 4, x, FClipRect.Bottom + 4);
-
-    ACanvas.Brush.Assign(FGraphBrush);
-    ACanvas.Brush.Color := Color;
-    markText := MarkToText(AMark);
-    w := ACanvas.TextWidth(markText);
-    ACanvas.TextOut(
-      EnsureRange(x - w div 2, 1, ARect.Right - w),
-      FClipRect.Bottom + 5, markText);
-  end;
-
-  procedure DrawYMark(AMark: Double);
-  var
-    x, y, w, h: Integer;
-    markText: String;
-  begin
-    y := YGraphToImage(AMark);
-
-    if LeftAxis.Grid.Visible then begin
-      ACanvas.Pen.Assign(LeftAxis.Grid);
-      ACanvas.Brush.Style := bsClear;
-      DrawLineHoriz(ACanvas, y);
-    end;
-
-    ACanvas.Pen.Color := AxisColor;
-    ACanvas.Pen.Style := psSolid;
-    ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(FClipRect.Left - 4, y, FClipRect.Left + 4, y);
-
-    ACanvas.Brush.Assign(FGraphBrush);
-    ACanvas.Brush.Color := Color;
-    markText := MarkToText(AMark);
-    w := ACanvas.TextWidth(markText);
-    h := ACanvas.TextHeight(markText) div 2;
-    x := FClipRect.Left - 5 - w;
-    ACanvas.TextOut(x, y - h, markText);
-  end;
-
-var
-  leftAxisWidth, maxWidth: Integer;
-  leftAxisScale, bottomAxisScale: TAxisScale;
-  step, mark: Double;
-const
-  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
+  axisMargin: TChartAxisMargins = (0, 0, 0, 0);
+  i: Integer;
+  r: TRect;
+  a: TChartAxisAlignment;
 begin
   if not FAxisVisible then begin
     FClipRect.Left += Depth;
@@ -680,49 +583,12 @@ begin
     exit;
   end;
 
-  DrawAxisTitles;
-
-  // Check AxisScale for both axes
-  leftAxisScale := INV_TO_SCALE[(LeftAxis <> nil) and LeftAxis.Inverted];
-  bottomAxisScale := INV_TO_SCALE[(BottomAxis <> nil) and BottomAxis.Inverted];
-
-  leftAxisWidth := 0;
-  if (LeftAxis <> nil) and LeftAxis.Visible then begin
-    // Find max mark width
-    maxWidth := 0;
-    if YGraphMin <> YGraphMax then begin
-      CalculateIntervals(YGraphMin, YGraphMax, leftAxisScale, mark, step);
-      case leftAxisScale of
-        asIncreasing:
-          while mark <= YGraphMax + step * 10e-10 do begin
-            if mark >= YGraphMin then
-              maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-            mark += step;
-          end;
-        asDecreasing:
-          while mark >= YGraphMin - step * 10e-10 do begin
-            if mark <= YGraphMax then
-              maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-            mark -= step;
-          end;
-      end;
-    end;
-
-    leftAxisWidth := maxWidth + 5;
-    // CalculateTransformationCoeffs changes axis interval, so it is possibile
-    // that a new mark longer then existing ones is introduced.
-    // That will change marks width and reduce view area,
-    // requiring another call to CalculateTransformationCoeffs...
-    // So punt for now and just reserve space for extra digit unconditionally.
-    leftAxisWidth += ACanvas.TextWidth('0');
-    leftOffset += leftAxisWidth;
-  end;
-
-  if (BottomAxis <> nil) and BottomAxis.Visible then
-    bottomOffset += ACanvas.TextHeight('0') + 5;
-
-  FClipRect.Left += Max(leftOffset, Depth);
-  FClipRect.Bottom -= Max(bottomOffset, Depth);
+  for i := 0 to AxisList.Count - 1 do
+    AxisList[i].Measure(ACanvas, FCurrentExtent, axisMargin);
+  axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
+  axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
+  for a := Low(a) to High(a) do
+    SideByAlignment(FClipRect, a, -axisMargin[a]);
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
 
@@ -737,44 +603,11 @@ begin
       Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
 
-  // X graduations
-  if (BottomAxis <> nil) and BottomAxis.Visible and (XGraphMin <> XGraphMax) then begin
-    CalculateIntervals(XGraphMin, XGraphMax, bottomAxisScale, mark, step);
-    case bottomAxisScale of
-      asIncreasing:
-        while mark <= XGraphMax + step * 10e-10 do begin
-          if mark >= XGraphMin then
-            DrawXMark(mark);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= XGraphMin - step * 10e-10 do begin
-          if mark <= XGraphMax then
-            DrawXMark(mark);
-          mark -= step;
-        end;
-    end;
+  r := FClipRect;
+  for i := 0 to AxisList.Count - 1 do begin
+    AxisList[i].Draw(ACanvas, FCurrentExtent, Self, r);
+    AxisList[i].DrawTitle(ACanvas, CenterPoint(FClipRect), r);
   end;
-
-  // Y graduations
-  if (LeftAxis <> nil) and LeftAxis.Visible and (YGraphMin <> YGraphMax) then begin
-    CalculateIntervals(YGraphMin, YGraphMax, leftAxisScale, mark, step);
-    case leftAxisScale of
-      asIncreasing:
-        while mark <= YGraphMax + step * 10e-10 do begin
-          if mark >= YGraphMin then
-            DrawYMark(mark);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= YGraphMin - step * 10e-10 do begin
-          if mark <= YGraphMax then
-            DrawYMark(mark);
-          mark -= step;
-        end;
-    end;
-  end;
-
   // Z axis
   if Depth > 0 then
     with FClipRect do
