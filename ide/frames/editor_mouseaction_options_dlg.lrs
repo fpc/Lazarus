@@ -70,11 +70,11 @@ LazarusResources.Add('TEditorMouseOptionsChangeDialog','FORMDATA',[
   +'l'#7#8'OkButton'#24'AnchorSideBottom.Control'#7#8'OkButton'#21'AnchorSideBo'
   +'ttom.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#25#3'Top'#2'r'#5'Width'#2
   +'d'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#18'BorderSpacing.Left'#2#6
-  +#19'BorderSpacing.Right'#2#6#10'BevelOuter'#7#9'bvLowered'#10'BevelWidth'#2
-  +#23#5'Color'#7#11'clBtnShadow'#11'ParentColor'#8#8'TabOrder'#2#10#11'OnMouse'
-  +'Down'#7#21'CapturePanelMouseDown'#0#0#9'TCheckBox'#10'CaretCheck'#22'Anchor'
-  +'SideLeft.Control'#7#9'ActionBox'#21'AnchorSideTop.Control'#7#9'ActionBox'#18
-  +'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2'L'#6'Height'#2#19#3'Top'#2'#'#5
+  +#19'BorderSpacing.Right'#2#6#10'BevelOuter'#7#9'bvLowered'#10'BevelWidth'#2#2
+  +#5'Color'#7#11'clBtnShadow'#11'ParentColor'#8#8'TabOrder'#2#10#11'OnMouseDow'
+  +'n'#7#21'CapturePanelMouseDown'#0#0#9'TCheckBox'#10'CaretCheck'#22'AnchorSid'
+  +'eLeft.Control'#7#9'ActionBox'#21'AnchorSideTop.Control'#7#9'ActionBox'#18'A'
+  +'nchorSideTop.Side'#7#9'asrBottom'#4'Left'#2'L'#6'Height'#2#19#3'Top'#2'#'#5
   +'Width'#2'Q'#17'BorderSpacing.Top'#2#6#7'Caption'#6#10'CaretCheck'#8'TabOrde'
   +'r'#2#11#0#0#0#0
 ]);

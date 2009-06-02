@@ -213,7 +213,7 @@ object EditorMouseOptionsChangeDialog: TEditorMouseOptionsChangeDialog
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BevelOuter = bvLowered
-      BevelWidth = 23
+      BevelWidth = 2
       Color = clBtnShadow
       ParentColor = False
       TabOrder = 10
