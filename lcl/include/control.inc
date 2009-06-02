@@ -462,10 +462,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CalculateDockSizes;
 begin
-{ TODO -cdocking : also: if dragged (neither floating nor hosted) }
   if Floating then
   begin
-    // the control is floating. Save Width and Height for undocking
+    // if control is floating then save it size for further undocking
     UndockHeight := Height;
     UndockWidth := Width;
   end
@@ -474,16 +473,17 @@ begin
   begin
     // the control is docked into a HostSite. That means some of it bounds
     // were maximized to fit into the HostSite.
-    if (DockOrientation=doHorizontal)
-    or (HostDockSite.Align in [alLeft,alRight]) then
+    if (DockOrientation = doHorizontal) or
+       (HostDockSite.Align in [alLeft,alRight]) then
       // the control is aligned left/right, that means its width is not
       // maximized. Save Width for docking.
-      LRDockWidth:=Width
-    else if (DockOrientation=doVertical)
-    or (HostDockSite.Align in [alTop,alBottom]) then
+      LRDockWidth := Width
+    else
+    if (DockOrientation = doVertical) or
+       (HostDockSite.Align in [alTop,alBottom]) then
       // the control is aligned top/bottom, that means its height is not
       // maximized. Save Height for docking.
-      TBDockHeight:=Height;
+      TBDockHeight := Height;
   end;
 end;
 
