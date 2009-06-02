@@ -122,7 +122,7 @@ end;
 
 procedure TEditorMouseOptionsChangeDialog.ReadFromAction(MAct: TSynEditMouseAction);
 begin
-  ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject(Pointer(MAct.Command)));
+  ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Command))));
   ButtonBox.ItemIndex := BtnToIndex[MAct.Button];
   ClickBox.ItemIndex  := ClickToIndex[MAct.ClickCount];
   DirCheck.Checked    := MAct.ClickDir = cdUp;

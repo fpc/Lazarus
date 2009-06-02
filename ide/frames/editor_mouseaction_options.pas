@@ -208,11 +208,6 @@ begin
 end;
 
 procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-var
-  i: Integer;
-  CName: String;
-  mb: TMouseButton;
-  cc: TSynMAClickCount;
 begin
   ContextTree.Items.Clear;
   FMainNode := ContextTree.Items.Add(nil, dlgMouseOptNodeMain);
