@@ -88,6 +88,11 @@ type
     zpCloseButton     // header close button
   );
 
+  TEasyHeaderStyle = (
+    hsMinimal,  //Delphi style
+    hsForm      //form style
+  );
+
   TEasyDockHeader = class
   public
     HeaderSize: integer;
@@ -97,8 +102,9 @@ type
     MousePart: TEasyZonePart;
     PartRect: TRect;
   public
+    Style: TEasyHeaderStyle;
     constructor Create;
-    class function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
+    function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
     function  FindPart(AZone: TEasyZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
     procedure Draw(AZone: TEasyZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
   end;
@@ -204,6 +210,7 @@ type
     destructor Destroy; override;
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
     procedure PaintSite(DC: HDC); override;
+    procedure SetStyle(NewStyle: TEasyHeaderStyle);
   end;
 
 const
@@ -952,6 +959,14 @@ begin
   //FReplacingControl := Control;
 end;
 
+procedure TEasyTree.SetStyle(NewStyle: TEasyHeaderStyle);
+begin
+  if NewStyle = FHeader.Style then
+    exit;
+  FHeader.Style := NewStyle;
+  ResetBounds(True);
+end;
+
 procedure TEasyTree.UpdateTree;
 begin
   //nothing to do?
@@ -1112,8 +1127,11 @@ end;
 
 function TEasyZone.GetPartRect(APart: TEasyZonePart): TRect;
 begin
+(* Can zones have individual headers?
+  For notebooks a caption text is not required!
+*)
   if ChildControl <> nil then
-    Result := TEasyDockHeader.GetRectOfPart(GetBounds, ChildControl.DockOrientation,
+    Result := FTree.FHeader.GetRectOfPart(GetBounds, ChildControl.DockOrientation,
       APart, HasSizer)
   else
     Result := Rect(0,0,0,0);

@@ -38,6 +38,7 @@ type
 
   TEasyDockMain = class(TForm)
     buManDock: TButton;
+    swCaptions: TCheckBox;
     pnlDocker: TPanel;
     edDock: TEdit;
     lbDock: TLabel;
@@ -61,6 +62,7 @@ type
     procedure DockerDockOver(Sender: TObject; Source: TDragDockObject; X,
       Y: Integer; State: TDragState; var Accept: Boolean);
     procedure buDumpClick(Sender: TObject);
+    procedure swCaptionsChange(Sender: TObject);
   private
     Docker: TWinControl;
     ShapeCount: integer;
@@ -136,6 +138,22 @@ begin
   end;
 end;
 
+procedure TEasyDockMain.swCaptionsChange(Sender: TObject);
+{$IFDEF easy}
+var
+  fStyle: TEasyHeaderStyle;
+begin
+  if swCaptions.Checked then
+    fStyle := hsForm
+  else
+    fStyle := hsMinimal;
+  TEasyTree(Docker.DockManager).SetStyle(fStyle);
+end;
+{$ELSE}
+begin
+end;
+{$ENDIF}
+
 procedure TEasyDockMain.FormCreate(Sender: TObject);
 begin
 {$IFDEF docker}
@@ -147,8 +165,10 @@ begin
 {$ENDIF}
 {$IFDEF easy}
   Docker.DockManager := TEasyTree.Create(Docker);
+  swCaptions.Visible := True;
 {$ELSE}
   //use default dockmanager
+  swCaptions.Visible := False;
 {$ENDIF}
   Docker.DockSite := True;
   Docker.UseDockManager := True;

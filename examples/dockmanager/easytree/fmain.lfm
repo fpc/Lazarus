@@ -2,32 +2,34 @@ object EasyDockMain: TEasyDockMain
   Left = 280
   Height = 285
   Top = 123
-  Width = 461
+  Width = 510
   ActiveControl = buDump
   Caption = 'EasyDockMain'
   ClientHeight = 285
-  ClientWidth = 461
+  ClientWidth = 510
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
+  ShowHint = True
   LCLVersion = '0.9.27'
   object sb: TStatusBar
     Left = 0
     Height = 20
     Top = 265
-    Width = 461
+    Width = 510
     Panels = <>
   end
   object ToolBar1: TToolBar
     Left = 0
     Height = 29
     Top = 0
-    Width = 461
+    Width = 510
     Caption = 'ToolBar1'
     TabOrder = 1
     object Shape1: TShape
       Left = 1
       Height = 22
+      Hint = 'Click to create a floating window'
       Top = 2
       Width = 21
       Brush.Color = clRed
@@ -36,6 +38,7 @@ object EasyDockMain: TEasyDockMain
     object Shape2: TShape
       Left = 22
       Height = 22
+      Hint = 'Click to create a floating window'
       Top = 2
       Width = 24
       Brush.Color = clLime
@@ -44,6 +47,7 @@ object EasyDockMain: TEasyDockMain
     object Shape4: TShape
       Left = 46
       Height = 22
+      Hint = 'Click to create a floating window'
       Top = 2
       Width = 24
       Brush.Color = clYellow
@@ -52,13 +56,14 @@ object EasyDockMain: TEasyDockMain
     object Shape3: TShape
       Left = 70
       Height = 22
+      Hint = 'Click to create a floating window'
       Top = 2
       Width = 24
       Brush.Color = clBlue
       OnMouseUp = Shape1MouseUp
     end
     object lbDock: TLabel
-      Left = 152
+      Left = 213
       Height = 22
       Top = 2
       Width = 97
@@ -70,7 +75,7 @@ object EasyDockMain: TEasyDockMain
       ParentColor = False
     end
     object buDump: TButton
-      Left = 94
+      Left = 155
       Height = 22
       Top = 2
       Width = 58
@@ -79,16 +84,16 @@ object EasyDockMain: TEasyDockMain
       TabOrder = 0
     end
     object edDock: TEdit
-      Left = 249
+      Left = 310
       Height = 23
       Top = 2
-      Width = 80
+      Width = 56
       DragKind = dkDock
       TabOrder = 1
       Text = 'Drag Me!'
     end
     object buManDock: TButton
-      Left = 329
+      Left = 366
       Height = 22
       Top = 2
       Width = 75
@@ -96,12 +101,22 @@ object EasyDockMain: TEasyDockMain
       OnClick = buManDockClick
       TabOrder = 2
     end
+    object swCaptions: TCheckBox
+      Left = 94
+      Height = 17
+      Hint = 'Show zone names?'
+      Top = 2
+      Width = 61
+      Caption = 'Captions'
+      OnChange = swCaptionsChange
+      TabOrder = 3
+    end
   end
   object pnlDocker: TPanel
     Left = 0
     Height = 236
     Top = 29
-    Width = 461
+    Width = 510
     Align = alClient
     Caption = 'Dock here!'
     TabOrder = 2

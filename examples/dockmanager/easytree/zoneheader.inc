@@ -51,6 +51,12 @@ const //zone decoration sizes
   dDist = 1; //button distance
   dButton = 14; //include some space for themes
   dHeader = dButton + 2*dBorder; // 22 - dSizer; //splitter outside header!
+//minimal (Delphi) header
+  GrabberSize = 12;
+  dDDist = 1;
+  dDBorder = 1;
+  dDHeader = GrabberSize + dSizer; //?
+  dDButton = GrabberSize - 2*dDBorder; //10?
 
 (* Zone part map.
   In portrait mode (header on top), the zone rectangle is adjusted according
@@ -83,16 +89,31 @@ HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
 {$ELSE}
 (* Sizer in header, just before caption
 *)
-HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
-  (),    //zpNowhere - not in any zone
-  (dTop:dHeader+dSizer; dBottom:0),    //zpClient - on client control
-  (dTop:dSizer; dBottom:-dHeader),    //zpAll - total header rect
-  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
-  (dTop:0; dBottom:-dSizer),    //zpSizer - splitter/sizer
+HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
+//hsMinimal
+  (
+    {zpNowhere} (),
+    {zpClient}  (dTop:dDHeader; dBottom:0),
+    {zpAll}     (dTop:dSizer; dBottom:-dDHeader),
+    {zpCaption} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:dDBorder+dDButton),
+    {zpSizer}   (dTop:0; dBottom:-dSizer),
   {$IFDEF restore}
-  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
+    {zpRestoreButton} (),
   {$ENDIF}
-  (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
+    {zpCloseButton} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:-dDButton; dRight:dDBorder)
+  ),
+//hsForm
+  (
+    (),    //zpNowhere - not in any zone
+    (dTop:dHeader+dSizer; dBottom:0),    //zpClient - on client control
+    (dTop:dSizer; dBottom:-dHeader),    //zpAll - total header rect
+    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
+    (dTop:0; dBottom:-dSizer),    //zpSizer - splitter/sizer
+    {$IFDEF restore}
+    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
+    {$ENDIF}
+    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
+  )
 );
 {$ENDIF}
 
@@ -124,7 +145,7 @@ begin
   //dump;
 end;
 
-class function TEasyDockHeader.GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation;
+function TEasyDockHeader.GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation;
   APart: TEasyZonePart; HasSplitter: boolean): TRect;
 begin
 (* ARect is (must be) TLBR zone rectangle, on input.
@@ -135,7 +156,7 @@ begin
   end;
 
   Result := ARect;
-  with HeaderPartMap[APart] do begin
+  with HeaderPartMap[Style, APart] do begin
     if AOrientation = doVertical then begin //portrait
       if dTop > 0 then
         inc(Result.Top, dTop);
@@ -277,6 +298,20 @@ var
     ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
   end;
 
+  procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);
+  begin
+    with ACanvas do
+    begin
+      Pen.Color := clBtnHighlight;
+      MoveTo(Right, Top);
+      LineTo(Left, Top);
+      LineTo(Left, Bottom);
+      Pen.Color := clBtnShadow;
+      LineTo(Right, Bottom);
+      LineTo(Right, Top);
+    end;
+  end;
+
 var
   BtnRect: TRect;
   ARect, DrawRect: TRect;
@@ -318,31 +353,57 @@ begin
   ACanvas.Brush.Color := clBtnFace;
 
 // draw caption
-  //ACanvas.Font.Color := clFont; //clCaptionText;
-  DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
-
-  OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
-
-//for some reason the caption is not offset properly?
-  if AOrientation = doVertical then begin
-    inc(DrawRect.Left, 2);
-    DrawText(ACanvas.Handle, PChar(ACaption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
-  end else begin
-    OldFont := 0;
-    if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
-    begin
-      ALogFont.lfEscapement := 900;
-      RotatedFont := CreateFontIndirect(ALogFont);
-      if RotatedFont <> 0 then
-        OldFont := SelectObject(ACanvas.Handle, RotatedFont);
+  case Style of
+  hsMinimal:
+    with DrawRect do begin
+      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
+      if AOrientation = doVertical then begin
+        //DrawCloseButton(Right-FGrabberSize+1, Top+1);
+        //DrawGrabberLine(Left+2, Top+3, Right-GrabberSize-2, Top+5);
+        //DrawGrabberLine(Left+2, Top+6, Right-GrabberSize-2, Top+8);
+        inc(Top, 1);
+        DrawGrabberLine(Left, Top, Right, Top+2);
+        inc(Top, 3);
+        DrawGrabberLine(Left, Top, Right, Top+2);
+      end else begin
+        //DrawCloseButton(Left+1, Top+1);
+        //DrawGrabberLine(Left+3, Top+GrabberSize+1, Left+5, Bottom-2);
+        //DrawGrabberLine(Left+6, Top+GrabberSize+1, Left+8, Bottom-2);
+        inc(Left, 1);
+        DrawGrabberLine(Left, Top, Left+2, Bottom);
+        inc(Left, 3);
+        DrawGrabberLine(Left, Top, Left+2, Bottom);
+      end;
     end;
-    // from msdn: DrawText doesnot support font with orientation and escapement <> 0
-    //TextOut(ACanvas.Handle, DrawRect.Left, DrawRect.Bottom, PChar(ACaption), Length(ACaption));
-    TextOut(ACanvas.Handle, DrawRect.Left-2, DrawRect.Bottom-2, PChar(ACaption), Length(ACaption));
-    if OldFont <> 0 then
-      DeleteObject(SelectObject(ACanvas.Handle, OldFont));
+  hsForm:
+    begin
+      //ACanvas.Font.Color := clFont; //clCaptionText;
+      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
+
+      OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
+
+    //for some reason the caption is not offset properly?
+      if AOrientation = doVertical then begin
+        inc(DrawRect.Left, dBorder); //looks better
+        DrawText(ACanvas.Handle, PChar(ACaption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
+      end else begin
+        OldFont := 0;
+        if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
+        begin
+          ALogFont.lfEscapement := 900;
+          RotatedFont := CreateFontIndirect(ALogFont);
+          if RotatedFont <> 0 then
+            OldFont := SelectObject(ACanvas.Handle, RotatedFont);
+        end;
+        // from msdn: DrawText doesnot support font with orientation and escapement <> 0
+        //TextOut(ACanvas.Handle, DrawRect.Left, DrawRect.Bottom, PChar(ACaption), Length(ACaption));
+        TextOut(ACanvas.Handle, DrawRect.Left-2, DrawRect.Bottom-2, PChar(ACaption), Length(ACaption));
+        if OldFont <> 0 then
+          DeleteObject(SelectObject(ACanvas.Handle, OldFont));
+      end;
+      SetBkMode(ACanvas.Handle, OldMode);
+    end;
   end;
-  SetBkMode(ACanvas.Handle, OldMode);
 
 // buttons - which colors to use?
   ACanvas.Brush.Color := clBtnFace;
