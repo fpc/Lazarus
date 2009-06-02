@@ -368,12 +368,10 @@ begin
   FAxisList := TChartAxisList.Create(Self);
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calLeft;
-    Title.Angle := 90;
+    Title.Font.Orientation := 900;
   end;
-  with TChartAxis.Create(FAxisList) do begin
+  with TChartAxis.Create(FAxisList) do
     Alignment := calBottom;
-    Title.Angle := 0;
-  end;
 
   FFrame :=  TChartPen.Create;
   FFrame.OnChange := @StyleChanged;
@@ -1318,6 +1316,7 @@ end;
 procedure SkipObsoleteChartProperties;
 const
   MIRRORX_NOTE = 'Obsolete, use BottomAxis.Invert instead';
+  ANGLE_NOTE = 'Obsolete, use Font.Orientation instead';
   NOTE = 'Obsolete, use Extent instead';
   NAMES: array [1..4] of String = (
     'XGraph', 'YGraph', 'AutoUpdateX', 'AutoUpdateY');
@@ -1325,6 +1324,7 @@ var
   i: Integer;
 begin
   RegisterPropertyToSkip(TChart, 'MirrorX', MIRRORX_NOTE, '');
+  RegisterPropertyToSkip(TChartAxisTitle, 'Angle', ANGLE_NOTE, '');
   for i := 1 to High(NAMES) do begin
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Min', NOTE, '');
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Max', NOTE, '');

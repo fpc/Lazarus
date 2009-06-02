@@ -128,11 +128,9 @@ type
 
   TChartAxisTitle = class(TChartElement)
   private
-    FAngle: Integer;
     FCaption: String;
     FFont: TFont;
 
-    procedure SetAngle(AValue: Integer);
     procedure SetCaption(AValue: String);
     procedure SetFont(AValue: TFont);
   public
@@ -141,7 +139,6 @@ type
 
     procedure Assign(Source: TPersistent); override;
   published
-    property Angle: Integer read FAngle write SetAngle default 0;
     property Caption: String read FCaption write SetCaption;
     property Font: TFont read FFont write SetFont;
     property Visible default false;
@@ -372,6 +369,7 @@ const
   TICK_LENGTH = 4;
   CAPTION_DIST = 4;
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
+  FONT_SLOPE_VERTICAL = 45 * 10;
 
 function MarkToText(AMark: Double): String;
 begin
@@ -579,7 +577,6 @@ begin
   if Source is TChartAxisTitle then
     with TChartAxisTitle(Source) do begin
       FCaption := Caption;
-      FAngle := Angle;
       FFont.Assign(Font);
     end;
   inherited Assign(Source);
@@ -595,12 +592,6 @@ destructor TChartAxisTitle.Destroy;
 begin
   FFont.Free;
   inherited;
-end;
-
-procedure TChartAxisTitle.SetAngle(AValue: Integer);
-begin
-  FAngle := AValue;
-  StyleChanged(Self);
 end;
 
 procedure TChartAxisTitle.SetCaption(AValue: String);
@@ -773,17 +764,14 @@ end;
 
 procedure TChartAxis.DrawTitle(
   ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
-const
-  DEGREES_TO_ORIENT = 10;
 var
   p: TPoint;
   sz: TSize;
 begin
   if not Visible or (FTitleSize = 0) then exit;
   // FIXME: Angle assumed to be either ~0 or ~90 degrees
-  ACanvas.Font.Orientation := Title.Angle * DEGREES_TO_ORIENT;
   sz := ACanvas.TextExtent(Title.Caption);
-  if Title.Angle >= 45 then begin
+  if Title.Font.Orientation >= FONT_SLOPE_VERTICAL then begin
     Exchange(sz.cx, sz.cy);
     sz.cy := -sz.cy;
   end;
@@ -832,7 +820,7 @@ begin
 
   if Title.Visible and (Title.Caption <> '') then begin
     sz := ACanvas.TextExtent(Title.Caption);
-    if (Title.Angle < 45) = IsVertical then
+    if (Title.Font.Orientation < FONT_SLOPE_VERTICAL) = IsVertical then
       d := sz.cx
     else
       d := sz.cy;
