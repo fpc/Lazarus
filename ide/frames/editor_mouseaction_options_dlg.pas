@@ -73,7 +73,7 @@ begin
   for i:= 0 to emcMax do begin
     CName := MouseCommandName(i);
     if CName <> '' then
-      ActionBox.Items.AddObject(CName, TObject(i));
+      ActionBox.Items.AddObject(CName, TObject(ptrint(i)));
   end;
   ButtonBox.Clear;
   for mb := low(TMouseButton) to high(TMouseButton) do
