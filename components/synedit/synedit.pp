@@ -73,7 +73,7 @@ uses
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}
-  SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
+  SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
@@ -179,10 +179,8 @@ type
 
   TSynStateFlag = (sfCaretChanged, sfScrollbarChanged, sfLinesChanging,
     sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfGutterClick,
-    {$IFDEF SYN_LAZARUS}
     sfTripleClicked, sfQuadClicked, sfPainting,
-    {$ENDIF}
-    sfWaitForDragging {$IFDEF SYN_LAZARUS}, sfIsDragging{$ENDIF}
+    sfWaitForDragging, sfIsDragging, sfMouseSelecting
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -191,7 +189,8 @@ type
     eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
     eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
-    eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    eoDragDropEditing,         // DEPRECATED, now controlled vie MouseActions
+                               // Allows you to select a block of text and drag it within the document to another location
     eoDropFiles,               //TODO Allows the editor accept file drops
     eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
     eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
@@ -200,7 +199,8 @@ type
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     eoNoCaret,                 // Makes it so the caret is never visible
     eoNoSelection,             // Disables selecting text
-    eoRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoRightMouseMovesCursor,   // Deprecated
+                               // When clicking with the right mouse for a popup menu, move the cursor to that location
     eoScrollByOneLess,         // Forces scrolling to be one less
     eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
     eoScrollPastEof,           // Allows the cursor to go past the end of file marker
@@ -218,7 +218,8 @@ type
     eoDoubleClickSelectsLine,  // Select line on double click
     eoHideRightMargin,         // Hides the right margin line
     eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
-    eoShowCtrlMouseLinks,      // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    eoShowCtrlMouseLinks,      // DEPRECATED, now controlled vie MouseActions
+                               // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
     {$ENDIF}
@@ -253,8 +254,6 @@ const
   {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
     ];
-
-  SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
   {$ENDIF}
 
 type
@@ -391,6 +390,7 @@ type
     fInsertCaret: TSynEditCaretType;
     fCaretOffset: TPoint;
     fKeyStrokes: TSynEditKeyStrokes;
+    FMouseActions, FMouseSelActions: TSynEditMouseActions;
     fModified: Boolean;
     fMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
@@ -436,6 +436,8 @@ type
     function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
+    procedure SetMouseActions(const AValue: TSynEditMouseActions);
+    procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -510,7 +512,6 @@ type
       Data: TStream);
     {$ENDIF}
     function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer;
-    procedure ScrollTimerHandler(Sender: TObject);
     procedure SelectedColorsChanged(Sender: TObject);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
@@ -575,15 +576,29 @@ type
     procedure UnlockUndo;
     procedure UpdateCaret;
     procedure UpdateCtrlMouse;
+    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
     procedure UpdateScrollBars;
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
+      Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
+    procedure ScrollTimerHandler(Sender: TObject);
+    function GetPopupMenu: TPopupMenu; override;
     procedure DblClick; override;
-    {$IFDEF SYN_LAZARUS}
     procedure TripleClick; override;
     procedure QuadClick; override;
+
+    procedure HandleMouseAction(Button: TMouseButton; Shift: TShiftState;
+                                X, Y: Integer; ACCount:TSynMAClickCount;
+                                ADir: TSynMAClickDir);
+
+    {$IFDEF SYN_LAZARUS}
     procedure Resize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
@@ -628,12 +643,6 @@ type
     procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
       var ColFrom, ColTo: Integer);
 {$ENDIF}
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
-    function GetPopupMenu: TPopupMenu; override;
     procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
       var Command: TSynEditorCommand;
       var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
@@ -901,6 +910,10 @@ type
       default true;
     property Keystrokes: TSynEditKeyStrokes
       read FKeystrokes write SetKeystrokes;
+    property MouseActions: TSynEditMouseActions
+      read FMouseActions write SetMouseActions;
+    property MouseSelActions: TSynEditMouseActions // Mouseactions, if mouse is over selection => fallback to normal
+      read FMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property Options: TSynEditorOptions read fOptions write SetOptions
       default SYNEDIT_DEFAULT_OPTIONS;
@@ -1048,6 +1061,8 @@ type
     property InsertCaret;
     property InsertMode;
     property Keystrokes;
+    property MouseActions;
+    property MouseSelActions;
     property Lines;
     property MaxLeftChar;
     property MaxUndo;
@@ -1670,10 +1685,13 @@ begin
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   fKeystrokes := TSynEditKeyStrokes.Create(Self);
-  {$IFDEF SYN_LAZARUS}
-  if assigned(Owner) and not (csLoading in Owner.ComponentState) then
-  {$ENDIF}
-  SetDefaultKeystrokes;
+  FMouseActions := TSynEditMouseActions.Create(Self);
+  FMouseSelActions := TSynEditMouseSelActions.Create(Self);
+  if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
+    SetDefaultKeystrokes;
+    FMouseActions.ResetDefaults;
+    FMouseSelActions.ResetDefaults;
+  end;
   fMarkList := TSynEditMarkList.Create(self);
   fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
   fRightEdgeColor := clSilver;
@@ -1811,6 +1829,8 @@ begin
   fBookMarkOpt.Free;
   fBookMarkOpt := nil;
   fKeyStrokes.Free;
+  FMouseActions.Free;
+  FMouseSelActions.Free;
   fSelectedColor.Free;
   fUndoList.Free;
   fRedoList.Free;
@@ -1834,6 +1854,8 @@ begin
   FreeAndNil(fMarkList);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
+  FreeAndNil(FMouseActions);
+  FreeAndNil(FMouseSelActions);
   FreeAndNil(fUndoList);
   FreeAndNil(fRedoList);
   FreeAndNil(fGutter);
@@ -2217,7 +2239,7 @@ begin
   {$ENDIF}
   inherited;
   {$IFDEF SYN_LAZARUS}
-  if fLastControlIsPressed<>(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]) then
+  if fLastControlIsPressed <> IsCtrlMouseShiftState(GetKeyShiftState) then
     UpdateCtrlMouse;
   {$ENDIF}
   Data := nil;
@@ -2255,7 +2277,7 @@ begin
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
-  if fLastControlIsPressed<>(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]) then
+  if fLastControlIsPressed<>IsCtrlMouseShiftState(GetKeyShiftState) then
     UpdateCtrlMouse;
 end;
 
@@ -2338,20 +2360,187 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.DblClick;
+var
+  ptMouse: TPoint;
+begin
+  GetCursorPos(ptMouse);
+  ptMouse := ScreenToClient(ptMouse);
+
+  inherited;
+  if ptMouse.X >= fGutterWidth + 2 then begin
+    IncPaintLock;
+    try
+      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccDouble, cdDown);
+    finally
+      DecPaintLock;
+    end;
+    Include(fStateFlags, sfDblClicked);
+  end;
+end;
+
+procedure TCustomSynEdit.TripleClick;
+var
+  ptMouse: TPoint;
+begin
+  GetCursorPos(ptMouse);
+  ptMouse := ScreenToClient(ptMouse);
+
+  inherited;
+  if ptMouse.X >= fGutterWidth + 2 then begin
+    IncPaintLock;
+    try
+      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccTriple, cdDown);
+    finally
+      DecPaintLock;
+    end;
+    Include(fStateFlags, sfTripleClicked);
+  end;
+end;
+
+procedure TCustomSynEdit.QuadClick;
+var
+  ptMouse: TPoint;
+begin
+  GetCursorPos(ptMouse);
+  ptMouse := ScreenToClient(ptMouse);
+
+  inherited;
+  if ptMouse.X >= fGutterWidth + 2 then begin
+    IncPaintLock;
+    try
+      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccQuad, cdDown);
+    finally
+      DecPaintLock;
+    end;
+    Include(fStateFlags, sfQuadClicked);
+    MouseCapture := FALSE;
+  end;
+end;
+
+procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
+  ADir: TSynMAClickDir);
+
+  function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+    ACaret: TPoint): Boolean;
+  var
+    LogCaretXY: TPoint;
+    PrimarySelText: String;
+    ACommand: TSynEditorMouseCommand;
+  begin
+    if AnAction = nil then exit(False);
+    ACommand := AnAction.Command;
+    if (ACommand = emcNone) and not AnAction.MoveCaret then exit(False);
+    Result := True;
+
+    LogCaretXY:=PhysicalToLogicalPos(ACaret);
+    MouseCapture := False;
+
+    case ACommand of
+      emcNone: ; // do nothing, but result := true
+      emcStartSelections, emcStartColumnSelections:
+        begin
+          CaretXY := ACaret;
+          FBlockSelection.StartLineBytePos := LogCaretXY;
+          if ACommand = emcStartColumnSelections then
+            FBlockSelection.ActiveSelectionMode := smColumn
+          else
+            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+          MouseCapture := True;
+          Include(fStateFlags, sfMouseSelecting);
+        end;
+      emcContinueSelections, emcContinueColumnSelections:
+        begin
+          CaretXY := ACaret;
+          FBlockSelection.EndLineBytePos := LogCaretXY;
+          if ACommand = emcContinueColumnSelections then
+            FBlockSelection.ActiveSelectionMode := smColumn
+          else
+            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+          MouseCapture := True;
+          Include(fStateFlags, sfMouseSelecting);
+        end;
+      emcSelectWord:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetWordBlock(LogCaretXY);
+          MouseCapture := FALSE;
+        end;
+      emcSelectLine:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetLineBlock(LogCaretXY);
+          MouseCapture := FALSE;
+        end;
+      emcSelectPara:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetParagraphBlock(LogCaretXY);
+          MouseCapture := FALSE;
+        end;
+      emcStartDragMove:
+        begin
+          if SelAvail and (SelectionMode = smNormal) then begin
+            Include(fStateFlags, sfWaitForDragging);
+            MouseCapture := True;
+          end
+          else
+            Result := False; // Currently only drags smNormal
+        end;
+      emcPasteSelection:
+        begin
+          CaretXY := ACaret;
+          PrimarySelText := PrimarySelection.AsText;
+          if ((PrimarySelText<>'') or SelAvail) then begin
+            FBlockSelection.StartLineBytePos := LogCaretXY;
+            FBlockSelection.EndLineBytePos := LogCaretXY;
+            SelText:=PrimarySelText;
+          end
+          else
+            Result :=False;
+        end;
+      emcMouseLink:
+        begin
+          if assigned(FOnClickLink) then
+            FOnClickLink(Self, Button, Shift, X,Y)
+          else
+            Result := False;
+        end;
+      else
+        Result := False; // ACommand was not handled
+    end;
+
+    if AnAction.MoveCaret then
+      CaretXY := ACaret;
+  end;
+
+
+begin
+  FInternalCaret.AssignFrom(FCaret);
+  FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+  // mouse event occured in selected block ?
+  if not( SelAvail and (X >= fGutterWidth + 2) and
+          IsPointInSelection(FInternalCaret.LineBytePos) and
+          DoHandleMouseAction
+               (FMouseSelActions.FindCommand(Button, Shift, ACCount, ADir),
+                FInternalCaret.LineCharPos)
+        )
+  then
+    DoHandleMouseAction(FMouseActions.FindCommand(Button, Shift, ACCount, ADir),
+                        FInternalCaret.LineCharPos);
+end;
+
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var
-  bWasSel: boolean;
-  bStartDrag: boolean;
-  PrimarySelText: string;
-  LogCaretXY: TPoint;
 begin
-//DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     inherited MouseDown(Button, Shift, X, Y);
     exit;
   end;
+
   if (X < fGutterWidth) then begin
     Include(fStateFlags, sfGutterClick);
     IncPaintLock;
@@ -2369,68 +2558,24 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
-  if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
-    exit;
-  bWasSel := false;
-  bStartDrag := FALSE;
-  if Button = mbLeft then begin
-    if ssDouble in Shift then Exit;
-    if SelAvail then begin
-      //remember selection state, as it will be cleared later
-      bWasSel := true;
-    end;
+  Exclude(fStateFlags, sfWaitForDragging);
+  Exclude(fStateFlags, sfMouseSelecting);
+
+  if ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags <> []) or
+     (Shift * [ssDouble, ssTriple, ssQuad] <> [])
+  then begin
+    LCLIntf.SetFocus(Handle);
+    Exit;
   end;
-  if Button=mbMiddle then begin
-    if ssDouble in Shift then Exit;
-    PrimarySelText:=PrimarySelection.AsText;
-  end;
-  inherited MouseDown(Button, Shift, X, Y);
 
   IncPaintLock;
   try
-    ComputeCaret(X, Y);
-    LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-    fLastCaretX := CaretX;                                                       //mh 2000-10-19
-    if Button = mbLeft then begin
-      //DebugLn('TCustomSynEdit.MouseDown ',DbgSName(Self),' START CAPTURE');
-      MouseCapture := True;
-      //if mousedown occured in selected block then begin drag operation
-      Exclude(fStateFlags, sfWaitForDragging);
-      if bWasSel and (eoDragDropEditing in fOptions) and (X >= fGutterWidth + 2)
-        and (SelectionMode = smNormal)
-        and IsPointInSelection(LogCaretXY)
-      then
-        bStartDrag := TRUE;
-      //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag),' MouseCapture=',dbgs(MouseCapture));
-    end;
-    if (Button = mbLeft) and bStartDrag then
-      Include(fStateFlags, sfWaitForDragging)
-    else begin
-      if ((Button=mbLeft)
-          or ((eoRightMouseMovesCursor in Options) and (Button=mbRight)))
-      and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
-      then begin
-        if ssShift in Shift then
-          SetBlockEnd(LogCaretXY)
-        else
-          SetBlockBegin(LogCaretXY);
-        if (eoAltSetsColumnMode in Options) and (ssAlt in Shift) then
-          FBlockSelection.ActiveSelectionMode := smColumn
-      end;
-      if (Button=mbMiddle)
-      and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
-      and ((PrimarySelText<>'') or SelAvail)
-      then begin
-        FBlockSelection.StartLineBytePos := LogCaretXY;
-        FBlockSelection.EndLineBytePos := LogCaretXY;
-        //debugln('TCustomSynEdit.MouseDown Old SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
-        SelText:=PrimarySelText;
-        //debugln('TCustomSynEdit.MouseDown New SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
-      end;
-    end;
+    HandleMouseAction(Button, Shift, X, Y, ccSingle, cdDown);
   finally
     DecPaintLock;
   end;
+
+  inherited MouseDown(Button, Shift, X, Y);
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
   //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
@@ -2446,12 +2591,10 @@ begin
     exit;
   end;
 
-  if (X >= fGutterWidth)
-    and (X < ClientWidth - ScrollBarWidth)
-    and (Y >= 0)
-    and (Y < ClientHeight - ScrollBarWidth)
+  if (X >= fGutterWidth) and (X < ClientWidth - ScrollBarWidth)
+    and (Y >= 0) and (Y < ClientHeight - ScrollBarWidth)
   then begin
-    if (Cursor <> crHandPoint) or (Shift <> [SYNEDIT_LINK_MODIFIER]) then
+    if (Cursor <> crHandPoint) or not IsCtrlMouseShiftState(Shift) then
       Cursor := crIBeam;
   end
   else
@@ -2460,8 +2603,7 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
-  if MouseCapture
-  and (sfWaitForDragging in fStateFlags) then begin
+  if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
@@ -2470,19 +2612,17 @@ begin
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag(true);
     end;
-  end else if (ssLeft in Shift)
-  and MouseCapture
+  end
+  else
+  if (fStateFlags * [sfMouseSelecting, sfIsDragging] <> []) and MouseCapture
   then begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
-    if (X >= fGutterWidth)
-      and (X < ClientWidth-ScrollBarWidth)
-      and (Y >= 0)
-      and (Y < ClientHeight-ScrollBarWidth)
+    if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth)
+      and (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
     then
       ComputeCaret(X, Y);
-    if (not(sfIsDragging in fStateFlags))
-    then
-    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+    if (not(sfIsDragging in fStateFlags)) then
+      SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     // should we begin scrolling?
     Dec(X, fGutterWidth);
     // calculate chars past right
@@ -2510,8 +2650,9 @@ begin
       fScrollDeltaY := Min(Z div fTextHeight, 0);
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
-  end else if MouseCapture
-  and (not(sfIsDragging in fStateFlags))
+  end
+  else
+  if MouseCapture and (not(sfIsDragging in fStateFlags))
   then begin
     MouseCapture:=false;
     fScrollTimer.Enabled := False;
@@ -2521,20 +2662,13 @@ end;
 procedure TCustomSynEdit.ScrollTimerHandler(Sender: TObject);
 var
   C: TPoint;
-  {$IFDEF SYN_LAZARUS}
   CurMousePos: TPoint;
   Z: integer;
-  {$ENDIF}
   X, Y: Integer;
 begin
-  {$IFNDEF SYN_LAZARUS}
-  GetCursorPos(C);
-  C := PixelsToRowColumn(ScreenToClient(C));
-  {$ENDIF}
   // changes to line / column in one go
   IncPaintLock;
   try
-    {$IFDEF SYN_LAZARUS}
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
     C := PixelsToLogicalPos(CurMousePos);
@@ -2566,22 +2700,16 @@ begin
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
     // now scroll
-    {$ENDIF}
     if fScrollDeltaX <> 0 then begin
       LeftChar := LeftChar + fScrollDeltaX;
       X := LeftChar;
       if fScrollDeltaX > 0 then  // scrolling right?
         Inc(X, CharsInWindow);
       CaretXY := Point(X, C.Y);
-      {$IFDEF SYN_LAZARUS}
-      if (not(sfIsDragging in fStateFlags))
-      then
-      {$ENDIF}
-      SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                  {$ELSE}CaretXY{$ENDIF});
+      if (not(sfIsDragging in fStateFlags)) then
+        SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     end;
     if fScrollDeltaY <> 0 then begin
-      {$IFDEF SYN_LAZARUS}
       if GetKeyState(VK_SHIFT) < 0 then
         TopView := TopView + fScrollDeltaY * LinesInWindow
       else
@@ -2589,22 +2717,9 @@ begin
       if fScrollDeltaY > 0
       then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
       else Y := TopLine;  // scrolling up
-      {$ELSE}
-      if GetKeyState(VK_SHIFT) < 0 then
-        TopLine := TopLine + fScrollDeltaY * LinesInWindow
-      else
-        TopLine := TopLine + fScrollDeltaY;
-      Y := TopLine;
-      if fScrollDeltaY > 0 then  // scrolling down?
-        Inc(Y, LinesInWindow - 1);
-      {$ENDIF}
       CaretXY := Point(C.X, Y);
-      {$IFDEF SYN_LAZARUS}
-      if (not(sfIsDragging in fStateFlags))
-      then
-      {$ENDIF}
-      SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                  {$ELSE}CaretXY{$ENDIF});
+      if (not(sfIsDragging in fStateFlags)) then
+        SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     end;
   finally
     DecPaintLock;
@@ -2619,6 +2734,7 @@ begin
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
+  Exclude(fStateFlags, sfMouseSelecting);
   inherited MouseUp(Button, Shift, X, Y);
   fScrollTimer.Enabled := False;
   MouseCapture := False;
@@ -2629,35 +2745,27 @@ begin
     exit;
   end;
 
-  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
-  begin
-    exit;
-  end;
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
-  if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
-  begin
-    fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked];
-    exit;
-  end;
-  if fStateFlags * [sfDblClicked, sfTripleClicked,sfQuadClicked,
-      sfWaitForDragging] = [sfWaitForDragging] then
+  fStateFlags:=fStateFlags - [sfDblClicked,sfTripleClicked,sfQuadClicked];
+  if sfWaitForDragging in fStateFlags then
   begin
     ComputeCaret(X, Y);
     SetBlockBegin(PhysicalToLogicalPos(CaretXY));
     SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     Exclude(fStateFlags, sfWaitForDragging);
   end;
-  if (Button=mbLeft) and (fStateFlags * [sfWaitForDragging] = []) then
-  begin
-    AquirePrimarySelection;
-  end;
-  fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked];
 
-  if (eoShowCtrlMouseLinks in Options) and not(wasDragging) and (Button=mbLeft)
-     and (Shift*[SYNEDIT_LINK_MODIFIER,ssAlt,ssShift]=[SYNEDIT_LINK_MODIFIER])
-  and assigned(FOnClickLink)
-  then begin
-    FOnClickLink(Self, Button, Shift, X,Y);;
+  if SelAvail then
+    AquirePrimarySelection;
+  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
+    exit;
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  if wasDragging then exit;
+
+  IncPaintLock;
+  try
+    HandleMouseAction(Button, Shift, X, Y, ccSingle, cdUp);
+  finally
+    DecPaintLock;
   end;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
@@ -3436,8 +3544,7 @@ var
   begin
     fLastCtrlMouseLinkY:=-1;
     fMarkupCtrlMouse.CtrlMouseLine:=-1;
-    if (not (eoShowCtrlMouseLinks in Options))
-    or (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
+    if (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
     or (not fLastControlIsPressed) then
       exit;
     GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),
@@ -4715,66 +4822,6 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.DblClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    if not (eoNoSelection in fOptions) then begin
-      {$IFDEF SYN_LAZARUS}
-      if (eoDoubleClickSelectsLine in fOptions) then
-        SetLineBlock(PixelsToLogicalPos(ptMouse))
-      else
-        SetWordBlock(PixelsToLogicalPos(ptMouse));
-      {$ELSE}
-      SetWordBlock(CaretXY);
-      {$ENDIF}
-    end;
-    inherited;
-    Include(fStateFlags, sfDblClicked);
-    MouseCapture := FALSE;
-  end else
-    inherited;
-end;
-
-{$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.TripleClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    if not (eoNoSelection in fOptions) then begin
-      SetLineBlock(PixelsToLogicalPos(ptMouse))
-    end;
-    inherited;
-    Include(fStateFlags, sfTripleClicked);
-    MouseCapture := FALSE;
-  end else
-    inherited;
-end;
-
-procedure TCustomSynEdit.QuadClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    if not (eoNoSelection in fOptions) then begin
-      SetParagraphBlock(PixelsToLogicalPos(ptMouse))
-    end;
-    inherited;
-    Include(fStateFlags, sfQuadClicked);
-    MouseCapture := FALSE;
-  end else
-    inherited;
-end;
-{$ENDIF}
-
 function TCustomSynEdit.GetCanUndo: Boolean;
 begin
   result := fUndoList.CanUndo;
@@ -4969,6 +5016,22 @@ begin
   Invalidate;
 end;
 
+procedure TCustomSynEdit.SetMouseActions(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseActions.Clear
+  else
+    FMouseActions.Assign(AValue);
+end;
+
+procedure TCustomSynEdit.SetMouseSelActions(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseSelActions.Clear
+  else
+    FMouseSelActions.Assign(AValue);
+end;
+
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
 begin
   with TSynEditStringList(fLines) do
@@ -4998,7 +5061,6 @@ begin
   InvalidateGutter;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UpdateCtrlMouse;
 
   procedure doNotShowLink;
@@ -5012,9 +5074,8 @@ procedure TCustomSynEdit.UpdateCtrlMouse;
 var
   NewY, NewX1, NewX2: Integer;
 begin
-  fLastControlIsPressed:=(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]);
-  if (eoShowCtrlMouseLinks in Options) and fLastControlIsPressed
-  and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
+  fLastControlIsPressed:=IsCtrlMouseShiftState(GetKeyShiftState);
+  if fLastControlIsPressed and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
     // show link
     NewY:=fLastMouseCaret.Y;
     GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),NewX1,NewX2);
@@ -5032,7 +5093,20 @@ begin
   end else
     doNotShowLink;
 end;
-{$ENDIF}
+
+function TCustomSynEdit.IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+var
+  act: TSynEditMouseAction;
+  i: Integer;
+begin
+  Result := False;
+  // todo: check FMouseSelActions if over selection?
+  for i := 0 to FMouseActions.Count - 1 do begin
+    act := FMouseActions.Items[i];
+    if (act.Command = emcMouseLink) and act.IsMatchingShiftState(AShift) then
+      exit(True);
+  end;
+end;
 
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
 begin
@@ -7170,42 +7244,63 @@ end;
 
 procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
 var
-  bSetDrag: boolean;
-  {$IFDEF SYN_LAZARUS}
   ChangedOptions: TSynEditorOptions;
-  {$ENDIF}
+  i: Integer;
 begin
   if (Value <> fOptions) then begin
-    {$IFDEF SYN_LAZARUS}
     ChangedOptions:=(fOptions-Value)+(Value-fOptions);
-    {$ENDIF}
-    bSetDrag := (eoDropFiles in fOptions) <> (eoDropFiles in Value);
     fOptions := Value;
     FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
     FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     // (un)register HWND as drop target
-    if bSetDrag and not (csDesigning in ComponentState) and HandleAllocated then
-      {$IFDEF SYN_LAZARUS}
-      // ToDo DragAcceptFiles
-      ;
-      {$ELSE}
-      DragAcceptFiles(Handle, (eoDropFiles in fOptions));
-      {$ENDIF}
-    {$IFDEF SYN_LAZARUS}
+    if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
+      ; // ToDo DragAcceptFiles
     if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
       SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
       UpdateCaret;
     end;
-    if (eoShowCtrlMouseLinks in ChangedOptions) and HandleAllocated then
-      UpdateCtrlMouse;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
-    {$ENDIF}
     if (eoNoSelection in ChangedOptions) then
       FBlockSelection.Enabled := eoNoSelection in fOptions;
     fUndoList.GroupUndo := eoGroupUndo in fOptions;
+
+    // Deal with deprecated values
+    if (eoShowCtrlMouseLinks in ChangedOptions) then begin
+      if (eoShowCtrlMouseLinks in fOptions) then begin
+        try
+          FMouseActions.AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+        except
+        end;
+      end else begin
+        for i := FMouseActions.Count-1 downto 0 do
+          if FMouseActions[i].Command = emcMouseLink then
+            FMouseActions.Delete(i);
+      end;
+      UpdateCtrlMouse;
+    end;
+    // eoDragDropEditing
+    if (eoDragDropEditing in ChangedOptions) then begin
+      if (eoDragDropEditing in fOptions) then begin
+        try
+          FMouseSelActions.AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
+        except
+        end;
+      end else begin
+        for i := FMouseActions.Count-1 downto 0 do
+          if FMouseActions[i].Command = emcStartDragMove then
+            FMouseActions.Delete(i);
+      end;
+    end;
+    // eoRightMouseMovesCursor
+    if (eoRightMouseMovesCursor in ChangedOptions) then begin
+      for i := FMouseActions.Count-1 downto 0 do
+        if FMouseActions[i].Button = mbRight then
+          FMouseActions[i].MoveCaret := (eoDragDropEditing in fOptions);
+    end;
+
   end;
 end;
 
@@ -7223,28 +7318,10 @@ end;
 procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
 begin
   if (Value <> (Flag in fOptions)) then begin
-    if Value then Include(fOptions, Flag) else Exclude(fOptions, Flag);
-    FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
-    FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
-    if not (eoScrollPastEol in Options) then
-      LeftChar := LeftChar;
-    if not (eoScrollPastEof in Options) then
-      TopLine := TopLine;
-    if (Flag = eoDropFiles) then begin
-      if not (csDesigning in ComponentState) and HandleAllocated then
-        {$IFDEF SYN_LAZARUS}
-        // ToDo DragAcceptFiles
-        ;
-        {$ELSE}
-        DragAcceptFiles(Handle, Value);
-        {$ENDIF}
-    end;
-    {$IFDEF SYN_LAZARUS}
-    if (Flag = eoPersistentCaret) and HandleAllocated then
-      SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
-    {$ENDIF}
-    EnsureCursorPosVisible;
-    fUndoList.GroupUndo := eoGroupUndo in fOptions;
+    if Value then
+      Options := Options + [Flag]
+    else
+      Options := Options - [Flag];
   end;
 end;
 

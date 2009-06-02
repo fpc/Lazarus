@@ -2287,10 +2287,6 @@ Begin
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
   SourceNotebook.UpdateActiveEditColors(FEditor);
-  if EditorOpts.CtrlMouseLinks then
-    FEditor.Options:=FEditor.Options+[eoShowCtrlMouseLinks]
-  else
-    FEditor.Options:=FEditor.Options-[eoShowCtrlMouseLinks];
 end;
 
 Procedure TSourceEditor.ccAddMessage(Texts: String);

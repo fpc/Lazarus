@@ -1,0 +1,119 @@
+inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
+  Height = 415
+  Width = 610
+  Anchors = [akTop]
+  ClientHeight = 415
+  ClientWidth = 610
+  Visible = False
+  DesignLeft = 3
+  DesignTop = 116
+  object p2: TPanel[0]
+    Left = 0
+    Height = 378
+    Top = 0
+    Width = 610
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 378
+    ClientWidth = 610
+    TabOrder = 0
+    object ActionGrid: TStringGrid
+      AnchorSideBottom.Control = p3
+      Left = 133
+      Height = 378
+      Top = 0
+      Width = 477
+      Align = alClient
+      AutoEdit = False
+      ColCount = 8
+      ExtendedSelect = False
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
+      RowCount = 1
+      TabOrder = 0
+      OnHeaderSized = ActionGridHeaderSized
+      OnResize = ActionGridResize
+    end
+    object ContextTree: TTreeView
+      Left = 0
+      Height = 378
+      Top = 0
+      Width = 130
+      Align = alLeft
+      AutoExpand = True
+      Constraints.MinWidth = 25
+      DefaultItemHeight = 17
+      ReadOnly = True
+      TabOrder = 1
+      OnChange = ContextTreeChange
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+    object Splitter1: TSplitter
+      Left = 130
+      Height = 378
+      Top = 0
+      Width = 3
+      MinSize = 25
+    end
+  end
+  object p3: TPanel[1]
+    AnchorSideRight.Control = p2
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = p2
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 37
+    Top = 378
+    Width = 610
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 37
+    ClientWidth = 610
+    TabOrder = 1
+    object DelButton: TButton
+      AnchorSideLeft.Control = p3
+      AnchorSideTop.Control = p3
+      Left = 0
+      Height = 25
+      Top = 6
+      Width = 79
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'DelButton'
+      OnClick = DelButtonClick
+      TabOrder = 2
+    end
+    object AddNewButton: TButton
+      AnchorSideTop.Control = UpdateButton
+      AnchorSideRight.Control = p3
+      AnchorSideRight.Side = asrBottom
+      Left = 496
+      Height = 25
+      Top = 6
+      Width = 108
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = 'AddNewButton'
+      OnClick = AddNewButtonClick
+      TabOrder = 0
+    end
+    object UpdateButton: TButton
+      AnchorSideTop.Control = p3
+      AnchorSideRight.Control = AddNewButton
+      Left = 384
+      Height = 25
+      Top = 6
+      Width = 100
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 12
+      BorderSpacing.Bottom = 6
+      Caption = 'UpdateButton'
+      OnClick = UpdateButtonClick
+      TabOrder = 1
+    end
+  end
+end

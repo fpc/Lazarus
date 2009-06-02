@@ -132,11 +132,12 @@ const
       EdtOptionsGeneralMisc = 101;
     EdtOptionsDisplay     = 200;
     EdtOptionsKeys        = 300;
-    EdtOptionsColors      = 400;
-    EdtOptionsCodetools   = 500;
-    EdtOptionsCodeFolding = 600;
-      EdtOptionsCodeFoldingMouse = 601;
-    EdtOptionsDrawDivider = 700;
+    EdtOptionsMouse       = 400;
+    EdtOptionsColors      = 500;
+    EdtOptionsCodetools   = 600;
+    EdtOptionsCodeFolding = 700;
+      EdtOptionsCodeFoldingMouse = 701;
+    EdtOptionsDrawDivider = 800;
 
   GroupCodetools    = 300;
     CdtOptionsGeneral         = 100;

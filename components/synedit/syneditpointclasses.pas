@@ -159,6 +159,7 @@ type
     Procedure DoUnlock; override;
   public
     constructor Create;
+    procedure AssignFrom(Src: TSynEditCaret);
     procedure IncForcePastEOL;
     procedure DecForcePastEOL;
     property OldLinePos: Integer read FOldLinePos;
@@ -235,6 +236,18 @@ begin
   fCharPos:= 1;
   FAllowPastEOL := True;
   FForcePastEOL := 0;
+end;
+
+procedure TSynEditCaret.AssignFrom(Src: TSynEditCaret);
+begin
+  FOldCharPos := FCharPos;
+  FOldLinePos := FLinePos;
+
+  FLines := Src.FLines;
+  FMaxLeftChar := Src.FMaxLeftChar;
+  FAllowPastEOL := Src.FAllowPastEOL;
+  FLinePos := Src.FLinePos;
+  FCharPos := Src.FCharPos;
 end;
 
 procedure TSynEditCaret.IncForcePastEOL;

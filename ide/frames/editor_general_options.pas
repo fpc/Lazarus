@@ -54,12 +54,9 @@ type
     PersistentCursorCheckBox: TCheckBox;
     AlwaysVisibleCursorCheckBox: TCheckBox;
     CursorSkipsSelectionCheckBox: TCheckBox;
-    RightMouseMovesCursorCheckBox: TCheckBox;
     HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
     DoubleClickLineCheckBox: TCheckBox;
     CursorGroupLabel: TLabel;
-    MouseLinksCheckBox: TCheckBox;
-    DragDropEdCheckBox: TCheckBox;
     DropFilesCheckBox: TCheckBox;
     MouseGroupLabel: TLabel;
     TabIndentBlocksCheckBox: TCheckBox;
@@ -85,7 +82,6 @@ type
       Shift: TShiftState);
     procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
     procedure DoubleClickLineCheckBoxChange(Sender: TObject);
-    procedure DragDropEdCheckBoxChange(Sender: TObject);
     procedure DropFilesCheckBoxChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
@@ -93,9 +89,7 @@ type
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
     procedure HomeKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure KeepCursorXCheckBoxChange(Sender: TObject);
-    procedure MouseLinksCheckBoxChange(Sender: TObject);
     procedure PersistentCursorCheckBoxChange(Sender: TObject);
-    procedure RightMouseMovesCursorCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
@@ -160,8 +154,6 @@ begin
   // mouse, drag&drop
   MouseGroupLabel.Caption := dlgMouseGroupOptions;
   DoubleClickLineCheckBox.Caption := dlgDoubleClickLine;
-  MouseLinksCheckBox.Caption := dlgMouseLinks;
-  DragDropEdCheckBox.Caption := dlgDragDropEd;
   DropFilesCheckBox.Caption := dlgDropFiles;
 
   // caret + key navigation
@@ -170,7 +162,6 @@ begin
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
-  RightMouseMovesCursorCheckBox.Caption := dlgRightMouseMovesCursor;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
 end;
@@ -204,8 +195,6 @@ begin
 
     // mouse
     DoubleClickLineCheckBox.Checked := eoDoubleClickSelectsLine in SynEditOptions;
-    MouseLinksCheckBox.Checked := CtrlMouseLinks;
-    DragDropEdCheckBox.Checked := eoDragDropEditing in SynEditOptions;
     DropFilesCheckBox.Checked := eoDropFiles in SynEditOptions;
 
     // cursor
@@ -213,7 +202,6 @@ begin
     PersistentCursorCheckBox.Checked := eoPersistentCaret in SynEditOptions;
     AlwaysVisibleCursorCheckBox.Checked := eoAlwaysVisibleCaret in SynEditOptions2;
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
-    RightMouseMovesCursorCheckBox.Checked := eoRightMouseMovesCursor in SynEditOptions;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
 
@@ -285,8 +273,6 @@ begin
 
     // mouse
     UpdateOptionFromBool(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
-    CtrlMouseLinks := MouseLinksCheckBox.Checked;
-    UpdateOptionFromBool(DragDropEdCheckBox.Checked, eoDragDropEditing);
     UpdateOptionFromBool(DropFilesCheckBox.Checked, eoDropFiles);
 
     // cursor
@@ -294,7 +280,6 @@ begin
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
     UpdateOptionFromBool(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
-    UpdateOptionFromBool(RightMouseMovesCursorCheckBox.Checked, eoRightMouseMovesCursor);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
   end;
@@ -371,11 +356,6 @@ begin
   SetPreviewOption(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
 end;
 
-procedure TEditorGeneralOptionsFrame.DragDropEdCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(DragDropEdCheckBox.Checked, eoDragDropEditing);
-end;
-
 procedure TEditorGeneralOptionsFrame.DropFilesCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(DropFilesCheckBox.Checked, eoDropFiles);
@@ -432,21 +412,10 @@ begin
   SetPreviewOption(KeepCursorXCheckBox.Checked, eoKeepCaretX);
 end;
 
-procedure TEditorGeneralOptionsFrame.MouseLinksCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(HalfPageScrollCheckBox.Checked, eoShowCtrlMouseLinks);
-end;
-
 procedure TEditorGeneralOptionsFrame.PersistentCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(PersistentCursorCheckBox.Checked, eoPersistentCaret);
-end;
-
-procedure TEditorGeneralOptionsFrame.RightMouseMovesCursorCheckBoxChange(
-  Sender: TObject);
-begin
-  SetPreviewOption(RightMouseMovesCursorCheckBox.Checked, eoRightMouseMovesCursor);
 end;
 
 procedure TEditorGeneralOptionsFrame.ScrollByOneLessCheckBoxChange(
