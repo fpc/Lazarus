@@ -2,8 +2,11 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="0"/>
@@ -34,30 +37,31 @@
       <Unit0>
         <Filename Value="xpm_to_png.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="70" Y="125"/>
+        <TopLine Value="104"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="xpm_to_png.lpr"/>
-        <Caret Line="1" Column="1" TopLine="94"/>
+        <Caret Line="180" Column="1" TopLine="145"/>
       </Position1>
       <Position2>
         <Filename Value="xpm_to_png.lpr"/>
-        <Caret Line="180" Column="1" TopLine="145"/>
+        <Caret Line="23" Column="48" TopLine="1"/>
       </Position2>
+      <Position3>
+        <Filename Value="xpm_to_png.lpr"/>
+        <Caret Line="107" Column="48" TopLine="104"/>
+      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <Win32>

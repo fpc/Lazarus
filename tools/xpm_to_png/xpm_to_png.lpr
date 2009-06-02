@@ -104,11 +104,12 @@ begin
   SrcImg.Free;
 end;
 
-procedure TransparentCopy(Dest, Source: TBitmap; Width, Height: Integer);
+procedure TransparentCopy(Dest, Source: TCustomBitmap; Width, Height: Integer);
 var
   SrcImage, RawImg: TRawImage;
   Img, DeviceImg: TLazIntfImage;
   ImgHandle, MskHandle: HBitmap;
+  R: TRect;
 begin
   RawImg.Init;
   FillDescription(RawImg.Description, Width, Height);
@@ -120,7 +121,8 @@ begin
   else
     MskHandle := 0;
 
-  Widgetset.RawImage_FromBitmap(SrcImage, Source.Handle, MskHandle, Rect(0, 0, Source.Width, Source.Height));
+  R := Rect(0, 0, Source.Width, Source.Height);
+  Widgetset.RawImage_FromBitmap(SrcImage, Source.Handle, MskHandle, @R);
   InternalSetImage(RawImg, SrcImage);
 
   // force output png with colorformat = 4
