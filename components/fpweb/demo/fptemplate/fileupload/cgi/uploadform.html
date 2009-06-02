@@ -1,0 +1,67 @@
+<html>
+<head>
+<script type="text/javascript" language="JavaScript1.2">
+
+function chkFields(){
+
+  var Error = false;
+
+  if ( document.DataForm.uploaderperson.value == '')
+    { alert('Please enter an uploader person.'); }
+  else if ( (document.DataForm.file1.value == '') && (document.DataForm.file2.value == '') )
+    { alert('Please select a file to upload.'); }
+  else
+    Error = true;
+
+  return Error;
+}
+
+</script>
+</head>
+<body>
+File upload screen<br>
+<small>Last refresh: {+DATETIME [-FORMAT=MM/DD/YYYY hh:mm:ss.zzz-]+}</small><br><br>
+
+{+MESSAGES [-TOOBIG=<font color="red">You have tried to upload a file that exceeds the size limit.</font>-]
+           [-NOTFOUND=<font color="red">File not found for delete.</font>-]
++}
+
+<br><br>Maximum allowed file size to be stored: {+MAX_SIZE+}MB<br>
+
+ <form action="/cgi-bin/fileupload.exe/listfiles" method="post" enctype="multipart/form-data" name="DataForm" onsubmit="return chkFields();">
+         
+  <table>
+   <tr>
+    <td>Uploader:</td>
+    <td><input type="text" name="uploaderperson" value=""></td>
+   </tr>
+   <tr>
+    <td>File1:</td>
+    <td><input name="file1" type="file" size="60"></td>
+   </tr>
+   <tr>
+    <td>File2:</td>
+    <td><input name="file2" type="file" size="60"></td>
+   </tr>
+   <tr>
+    <td colspan=2 align="center"><input type="submit" value="Upload"></td>
+   </tr>
+  </table>
+
+ </form><br><br>
+
+Uploaded File List (.../{+UPLOAD_DIR+}):
+ <table border=1>
+  <tr><th>File Name</th><th>Uploader</th></tr>
+{+FILELIST
+ [-ONE_ROW=
+  <tr><td><pre>~FILENAME</pre></td><td>~UPLOADER</td><td><a href="/cgi-bin/fileupload.exe/listfiles?delete=~DFILENAME">Delete</a></td></tr>
+ -]
+ [-NOTHINGTOLIST=
+  <tr><td colspan=3>No files to list</td></tr>
+ -]
++}
+ </table>
+
+</body>
+</html>

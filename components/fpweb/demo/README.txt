@@ -8,6 +8,10 @@ This is a very simple demo, it just echoes the request back to the
 webbrowser. The standard webutil unit contains a 'dumprequest'
 routine which can be used to dump the request.
 
+hello world demo:
+============
+The simplest "Hello World" example using fcl-web (fpweb) as cgi and Apache module. For more information see README.txt in helloword directory. 
+
 session demo:
 =============
 
@@ -55,3 +59,8 @@ Sample URL:
 http://localhost/~michael/imagedemo.cgi?action=file&filename=menu_run
 
 This will send the 'menu_run.png' file from the configured directory.
+
+fptemplate demos:
+==================
+These examples are demonstrating some uses of templates (with FPTemplate) when 
+generating HTML pages by CGI programs or Apache modules. For more information see the README.txt in the fptemplate directory.

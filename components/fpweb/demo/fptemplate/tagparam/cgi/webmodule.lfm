@@ -1,0 +1,14 @@
+object FPWebModule1: TFPWebModule1
+  OldCreateOrder = False
+  Actions = <  
+    item
+      Name = 'func1call'
+      Default = True
+      OnRequest = func1callRequest
+    end>
+  CreateSession = False
+  Height = 300
+  HorizontalOffset = 290
+  VerticalOffset = 149
+  Width = 400
+end

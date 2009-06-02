@@ -1,0 +1,38 @@
+<html>
+<body>
+DateTime in format "MM/DD hh:mm:ss": <b>{+DATETIME [-FORMAT=MM/DD hh:mm:ss-]+}</b>
+
+<br>
+
+List of records:
+<table class="beautify1">
+ <tr class="beautify2">
+  <td class="beautify3">
+
+  {+REPORTRESULT 
+   [-HEADER=
+    <table bordercolorlight="#6699CC" bordercolordark="#E1E1E1" class="Label">
+     <tr class="Label" align=center bgcolor="#6699CC">
+      <th><font color="white">~Column1</font></th>
+      <th><font color="white">~Column2</font></th>
+     </tr>
+   -]
+   [- ONEROW =
+     <tr bgcolor="#F2F2F2" class="Label3" align="center">
+      <td>~Column1Value</td><td>~Column2value</td>
+     </tr>
+   -]
+.
+.snip, and so on more parameters if needed
+.
+   [- NOTFOUND=
+    <tr class="Error"><td>There are no entries found.</td></tr> 
+   -]
+   [-FOOTER=    </table>-]
+  +}
+
+  </td>
+ </tr>
+</table>
+</body>
+</html>

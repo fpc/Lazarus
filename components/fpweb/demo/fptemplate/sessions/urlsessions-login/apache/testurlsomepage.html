@@ -1,0 +1,14 @@
+<html>
+<body>
+Somepage screen
+<br><br>Entered this screen at <b>{+DATETIME [-FORMAT=MM/DD/YYYY hh:mm:ss.zzz-]+}</b><br><br>
+
+<b>{+LOGINNAME+}</b>, you can log out <a href="/myapache/logout?{+SESSION-VARIABLE+}">here</a><br><br>
+
+Your session will expire in <b>{+MINUTESLEFT+}</b> minutes unless it is refreshed by<br> 
+clicking <a href="/myapache/someaction?{+SESSION-VARIABLE+}">here</a> before then<br><br>
+
+Your session ID is: <b>{+SESSIONID+}</b><br>
+
+</body>
+</html>

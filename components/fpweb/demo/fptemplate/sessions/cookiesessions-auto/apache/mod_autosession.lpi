@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="WebLaz"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="mod_autosession.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_autosession"/>
+        <CursorPos X="3" Y="37"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="29"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="webmodule.pas"/>
+        <ComponentName Value="FPWebModule1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="webmodule"/>
+        <CursorPos X="37" Y="7"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\..\..\..\..\..\..\fpc_svn\packages\fcl-web\src\fpweb.pp"/>
+        <UnitName Value="fpWeb"/>
+        <CursorPos X="1" Y="152"/>
+        <TopLine Value="116"/>
+        <UsageCount Value="13"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="13" HistoryIndex="12">
+      <Position1>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="110" Column="22" TopLine="98"/>
+      </Position1>
+      <Position2>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="48" Column="34" TopLine="30"/>
+      </Position2>
+      <Position3>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="14" Column="27" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="14" Column="27" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="48" Column="25" TopLine="46"/>
+      </Position5>
+      <Position6>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position6>
+      <Position7>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="25" Column="30" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="13" Column="38" TopLine="3"/>
+      </Position8>
+      <Position9>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="25" Column="30" TopLine="3"/>
+      </Position9>
+      <Position10>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="48" Column="40" TopLine="3"/>
+      </Position10>
+      <Position11>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="69" Column="1" TopLine="43"/>
+      </Position11>
+      <Position12>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="47" Column="1" TopLine="30"/>
+      </Position12>
+      <Position13>
+        <Filename Value="webmodule.pas"/>
+        <Caret Line="17" Column="50" TopLine="17"/>
+      </Position13>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Options>
+        <ExecutableType Value="Library"/>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

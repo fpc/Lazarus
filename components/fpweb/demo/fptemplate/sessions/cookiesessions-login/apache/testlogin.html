@@ -1,0 +1,22 @@
+<html>
+<body>
+
+ {+MESSAGE
+   [-NORMAL  =Welcome to the cookiesession test login screen-]
+   [-MISSING =<font color="red"><small>Please enter both a login name and a password.</small></font>-]
+   [-INVLOGIN=<font color="red"><small>Invalid login name or password. Please try again.</small></font>-]
+   [-SESSIONEXPIRED=<font color="orange"><small>Your session has expired. Please log in again</small></font>-]
+ +}
+ <br>
+ <form action="/myapache/login" method="Post">
+
+  Login Name:<input type="text" name="LoginName" value="{+LOGINNAME+}"> 
+
+  Password:<input type="password" name="Password"> 
+ 
+  <input type="submit" class="button" value="Login">
+
+ </form>
+
+</body>
+</html>

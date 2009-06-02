@@ -1,0 +1,25 @@
+<html>
+<body>
+You can test automatic session handling by opening multiple browsers 
+(not multiple tabs or multiple windows of the same browser! Ex: Firefox and 
+Internet Explorer), or by using two separate computers.<br>
+By submitting data from the different browsers you can see the session information.<br>
+Note: Cookies must be enabled for this website for it to work.
+
+<br><br>Last submit: <b>{+DATETIME [-FORMAT=MM/DD/YYYY hh:mm:ss.zzz-]+}</b><br><br>
+
+<form action="/cgi-bin/autosession.exe/gotonextpage" method="Post">
+ <input type="submit" class="button" value="Submit">
+</form>
+
+{+EXPIREDMESSAGE [-MESSAGE=Your session has expired.-]+}<br>
+{+NEWSESSIONMESSAGE [-MESSAGE=A new session started.-]+}<br>
+
+<br>Your session ID is: <b>{+SESSIONID+}</b><br>
+
+Expires in <b>{+TIMEOUTMINUTES+}</b> minutes unless it is updated.<br>
+
+The file "<b>{+SESSIONFILE+}</b>" stores this session information on the web server.<br>
+
+</body>
+</html>
