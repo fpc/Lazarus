@@ -70,7 +70,7 @@ begin
   CapturePanel.Caption := dlgMouseOptCapture;
   CaretCheck.Caption := dlgMouseOptCaretMove;
   ActionBox.Clear;
-  for i:= 1 to emcMax do begin
+  for i:= 0 to emcMax do begin
     CName := MouseCommandName(i);
     if CName <> '' then
       ActionBox.Items.AddObject(CName, TObject(i));
