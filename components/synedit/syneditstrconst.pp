@@ -285,6 +285,7 @@ const
   SYNS_emcStartDragMove            = 'Drag Selection';
   SYNS_emcPasteSelection           = 'Quick Paste Selection';
   SYNS_emcMouseLink                = 'Source Link';
+  SYNS_emcContextMenu              = 'Popup Menu';
 
 implementation
 

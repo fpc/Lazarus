@@ -54,7 +54,8 @@ const
   emcPasteSelection           = 10;
   emcMouseLink                = 11;
 
-  emcMax = 11;
+  emcContextMenu              = 12;
+  emcMax = 12;
 
 type
 
@@ -155,9 +156,10 @@ begin
     emcSelectWord: Result := SYNS_emcSelectWord;
     emcSelectLine: Result := SYNS_emcSelectLine;
     emcSelectPara: Result := SYNS_emcSelectPara;
-    emcStartDragMove: Result := SYNS_emcStartDragMove;
+    emcStartDragMove:  Result := SYNS_emcStartDragMove;
     emcPasteSelection: Result := SYNS_emcPasteSelection;
-    emcMouseLink: Result := SYNS_emcMouseLink;
+    emcMouseLink:   Result := SYNS_emcMouseLink;
+    emcContextMenu: Result := SYNS_emcContextMenu;
 
     else Result := ''
   end;
@@ -391,7 +393,7 @@ begin
   AddCommand(emcContinueSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt]);
   AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt]);
   AddCommand(emcContinueColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt]);
-  AddCommand(emcNone, True, mbRight, ccSingle, cdDown, [], []);
+  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
 
   AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
   AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);

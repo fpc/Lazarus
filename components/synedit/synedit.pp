@@ -589,6 +589,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure ScrollTimerHandler(Sender: TObject);
+    procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
     function GetPopupMenu: TPopupMenu; override;
     procedure DblClick; override;
     procedure TripleClick; override;
@@ -2428,6 +2429,7 @@ procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
     LogCaretXY: TPoint;
     PrimarySelText: String;
     ACommand: TSynEditorMouseCommand;
+    Handled: Boolean;
   begin
     if AnAction = nil then exit(False);
     ACommand := AnAction.Command;
@@ -2506,6 +2508,13 @@ procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
             FOnClickLink(Self, Button, Shift, X,Y)
           else
             Result := False;
+        end;
+      emcContextMenu:
+        begin
+          Handled := False;
+          inherited DoContextPopup(Point(X, Y), Handled);
+          if not Handled then
+            PopupMenu.PopUp;
         end;
       else
         Result := False; // ACommand was not handled
@@ -2724,6 +2733,11 @@ begin
   finally
     DecPaintLock;
   end;
+end;
+
+procedure TCustomSynEdit.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
+begin
+  Handled := True;
 end;
 
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
