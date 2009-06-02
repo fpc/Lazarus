@@ -21,10 +21,11 @@ procedure TCustomFrame.AddActionList(ActionList: TCustomActionList);
 var
   ParentForm: TCustomForm;
 begin
-  ParentForm:=GetParentForm(Self);
-  if ParentForm<>nil then begin
-    if ParentForm.FActionLists=nil then
-      ParentForm.FActionLists:=TList.Create;
+  ParentForm := GetParentForm(Self);
+  if ParentForm <> nil then
+  begin
+    if ParentForm.FActionLists = nil then
+      ParentForm.FActionLists := TList.Create;
     ParentForm.FActionLists.Add(ActionList);
   end;
 end;
@@ -81,10 +82,11 @@ begin
 
   inherited GetChildren(Proc, Root);
   if Root = Self then
-    for I := 0 to ComponentCount - 1 do begin
+    for I := 0 to ComponentCount - 1 do
+    begin
       OwnedComponent := Components[I];
-      if OwnedComponent.HasParent = False
-        then Proc(OwnedComponent);
+      if not OwnedComponent.HasParent then
+        Proc(OwnedComponent);
     end;
 end;
 
@@ -94,12 +96,12 @@ begin
   inherited Notification(AComponent, Operation);
 
   case Operation of
-  opInsert:
-    if AComponent is TCustomActionList then
-      AddActionList(TCustomActionList(AComponent));
-  opRemove:
-    if AComponent is TCustomActionList then
-      RemoveActionList(TCustomActionList(AComponent));
+    opInsert:
+      if AComponent is TCustomActionList then
+        AddActionList(TCustomActionList(AComponent));
+    opRemove:
+      if AComponent is TCustomActionList then
+        RemoveActionList(TCustomActionList(AComponent));
   end;
 end;
 
@@ -110,12 +112,13 @@ procedure TCustomFrame.SetParent(AParent: TWinControl);
     i: Integer;
     AComponent: TComponent;
   begin
-    for i:=0 to ComponentCount-1 do begin
-      AComponent:=Components[i];
+    for i := 0 to ComponentCount - 1 do
+    begin
+      AComponent := Components[i];
       if AComponent is TCustomActionList then
         case Operation of
-        opInsert: AddActionList(TCustomActionList(AComponent));
-        opRemove: RemoveActionList(TCustomActionList(AComponent));
+          opInsert: AddActionList(TCustomActionList(AComponent));
+          opRemove: RemoveActionList(TCustomActionList(AComponent));
         end;
     end;
   end;
@@ -125,7 +128,8 @@ begin
   if (Parent=nil) and HandleAllocated then
     DestroyHandle;
   inherited SetParent(AParent);
-  if Parent<>nil then UpdateActionLists(opInsert);
+  if Parent <> nil then
+    UpdateActionLists(opInsert);
 end;
 
 class function TCustomFrame.GetControlClassDefaultSize: TPoint;
@@ -151,27 +155,26 @@ end;
 constructor TCustomFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle:=[csAcceptsControls,csCaptureMouse,csClickEvents,csSetCaption,
-                 csDoubleClicks, csParentBackground];
-  if (ClassType<>TFrame) and ([csDesignInstance,csDesigning]*ComponentState=[])
-  then begin
-    if not InitInheritedComponent(Self,TFrame) then
+  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption,
+                   csDoubleClicks, csParentBackground];
+  if (ClassType<>TFrame) and ([csDesignInstance, csDesigning]*ComponentState=[]) then
+  begin
+    if not InitInheritedComponent(Self, TFrame) then
       raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);
-  end else begin
-    SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
-  end;
+  end else
+    SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
 end;
 
 { TFrame }
 
 function TFrame.LCLVersionIsStored: boolean;
 begin
-  Result:=Parent=nil;
+  Result := Parent = nil;
 end;
 
 constructor TFrame.Create(TheOwner: TComponent);
 begin
-  FLCLVersion:=lcl_version;
+  FLCLVersion := lcl_version;
   inherited Create(TheOwner);
 end;
 

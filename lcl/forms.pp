@@ -249,7 +249,7 @@ type
   end;
 
 
-  { TCustomFrame - not implemented yet }
+  { TCustomFrame }
 
   TCustomFrame = class(TScrollingWinControl)
   private
@@ -274,7 +274,7 @@ type
   TCustomFrameClass = class of TCustomFrame;
 
 
-  { TFrame - not implemented yet }
+  { TFrame }
 
   TFrame = class(TCustomFrame)
   private
