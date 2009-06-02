@@ -34,12 +34,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Left = 6
       Height = 21
       Top = 6
-      Width = 472
+      Width = 469
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       OnChange = DirectoryComboboxCHANGE
       TabOrder = 0
       Text = 'DirectoryCombobox'
@@ -50,10 +48,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DirectoryCombobox
       AnchorSideBottom.Side = asrBottom
-      Left = 484
+      Left = 481
       Height = 21
       Top = 6
-      Width = 35
+      Width = 38
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 5
@@ -101,6 +99,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Gutter.Width = 0
       Keystrokes = <      
@@ -462,24 +461,24 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     Left = 308
     Height = 275
     Top = 65
-    Width = 4
+    Width = 5
   end
   object TemplatesGroupBox: TGroupBox
-    Left = 318
+    Left = 319
     Height = 269
     Top = 65
-    Width = 216
+    Width = 215
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
     ClientHeight = 251
-    ClientWidth = 212
+    ClientWidth = 211
     TabOrder = 3
     object ParsedTemplatesTreeView: TTreeView
       Left = 6
       Height = 122
       Top = 6
-      Width = 200
+      Width = 199
       Align = alTop
       BorderSpacing.Around = 6
       DefaultItemHeight = 15
@@ -491,7 +490,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Left = 0
       Height = 5
       Top = 134
-      Width = 212
+      Width = 211
       Align = alTop
       ResizeAnchor = akTop
     end
@@ -499,7 +498,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Left = 6
       Height = 100
       Top = 145
-      Width = 200
+      Width = 199
       Align = alClient
       BorderSpacing.Around = 6
       Lines.Strings = (

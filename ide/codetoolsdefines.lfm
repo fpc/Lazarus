@@ -6,7 +6,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   ActiveControl = DefineTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 475
+  ClientHeight = 480
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
@@ -22,7 +22,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 532
     Align = alTop
     BorderSpacing.Around = 6
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     ReadOnly = True
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
@@ -30,36 +30,36 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 325
-    Top = 144
+    Height = 328
+    Top = 146
     Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 306
+    ClientHeight = 310
     ClientWidth = 528
     TabOrder = 1
     object NameLabel: TLabel
       Left = 10
-      Height = 18
+      Height = 14
       Top = 26
-      Width = 74
+      Width = 53
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
       ParentColor = False
     end
     object DescriptionLabel: TLabel
       Left = 10
-      Height = 18
+      Height = 14
       Top = 53
-      Width = 107
+      Width = 79
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
       ParentColor = False
     end
     object TypeLabel: TLabel
       Left = 6
-      Height = 18
+      Height = 14
       Top = 6
       Width = 516
       Align = alTop
@@ -69,16 +69,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableLabel: TLabel
       Left = 10
-      Height = 18
+      Height = 14
       Top = 78
-      Width = 86
+      Width = 64
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
       ParentColor = False
     end
     object ValueNoteBook: TNotebook
       Left = 6
-      Height = 194
+      Height = 198
       Top = 106
       Width = 516
       Align = alBottom
@@ -89,15 +89,14 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       TabOrder = 0
       object ValueAsTextPage: TPage
         Caption = 'ValueAsTextPage'
-        ClientWidth = 514
-        ClientHeight = 167
+        ClientWidth = 508
+        ClientHeight = 172
         object ValueAsTextSynEdit: TSynEdit
           Left = 0
-          Height = 167
+          Height = 172
           Top = 0
-          Width = 514
+          Width = 508
           Align = alClient
-          CFDividerDrawLevel = 0
           Font.Height = -16
           Font.Name = 'courier'
           Font.Pitch = fpFixed
@@ -106,8 +105,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
-          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
+          Gutter.Width = 0
           Keystrokes = <          
             item
               Command = 3
@@ -436,9 +435,10 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           BracketHighlightStyle = sbhsBoth
           object TSynGutterPartList
             object TSynGutterMarks
-              Width = 22
+              Width = 23
             end
             object TSynGutterLineNumber
+              Width = 25
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
               DigitCount = 2
@@ -447,7 +447,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               LeadingZeros = False
             end
             object TSynGutterChanges
-              Width = 6
+              Width = 4
               ModifiedColor = 59900
               SavedColor = clGreen
             end
@@ -463,18 +463,17 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
       object ValueAsPathsPage: TPage
         Caption = 'ValueAsPathsPage'
-        ClientWidth = 514
-        ClientHeight = 173
+        ClientWidth = 508
+        ClientHeight = 168
         object ValueAsFilePathsSynEdit: TSynEdit
           AnchorSideRight.Control = DeleteFilePathBitBtn
           Left = 0
-          Height = 173
+          Height = 168
           Top = 0
-          Width = 426
+          Width = 420
           Align = alLeft
           BorderSpacing.Right = 6
           Anchors = [akTop, akLeft, akRight, akBottom]
-          CFDividerDrawLevel = 0
           Font.Height = -16
           Font.Name = 'courier'
           Font.Pitch = fpFixed
@@ -483,7 +482,9 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
+          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
+          Gutter.Width = 0
           Keystrokes = <          
             item
               Command = 3
@@ -812,9 +813,10 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           BracketHighlightStyle = sbhsBoth
           object TSynGutterPartList
             object TSynGutterMarks
-              Width = 22
+              Width = 23
             end
             object TSynGutterLineNumber
+              Width = 25
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
               DigitCount = 2
@@ -823,7 +825,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               LeadingZeros = False
             end
             object TSynGutterChanges
-              Width = 6
+              Width = 4
               ModifiedColor = 59900
               SavedColor = clGreen
             end
@@ -837,7 +839,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           end
         end
         object MoveFilePathUpBitBtn: TBitBtn
-          Left = 432
+          Left = 426
           Height = 30
           Top = 2
           Width = 75
@@ -848,7 +850,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 1
         end
         object MoveFilePathDownBitBtn: TBitBtn
-          Left = 432
+          Left = 426
           Height = 30
           Top = 34
           Width = 75
@@ -859,7 +861,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 2
         end
         object DeleteFilePathBitBtn: TBitBtn
-          Left = 432
+          Left = 426
           Height = 30
           Top = 66
           Width = 75
@@ -870,7 +872,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 3
         end
         object InsertFilePathBitBtn: TBitBtn
-          Left = 432
+          Left = 426
           Height = 30
           Top = 98
           Width = 75
@@ -884,7 +886,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object NameEdit: TEdit
       Left = 128
-      Height = 20
+      Height = 23
       Top = 23
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -894,7 +896,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object DescriptionEdit: TEdit
       Left = 128
-      Height = 21
+      Height = 23
       Top = 50
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -904,7 +906,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableEdit: TEdit
       Left = 128
-      Height = 21
+      Height = 23
       Top = 76
       Width = 394
       Anchors = [akTop, akLeft, akRight]
@@ -915,7 +917,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   object MainSplitter: TSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 3
+    Height = 5
     Top = 135
     Width = 544
     Align = alTop
