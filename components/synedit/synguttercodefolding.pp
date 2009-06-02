@@ -51,7 +51,6 @@ type
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
-    function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DoOnGutterClick(X, Y: integer); override;
@@ -148,6 +147,7 @@ procedure TSynGutterCodeFolding.MouseDown(Button: TMouseButton; Shift: TShiftSta
   Y: Integer);
 var
   line: Integer;
+
   function isClick(conf : TSynGutterFoldClickConf): Boolean;
   begin
     if FClickDone then exit(False);
@@ -185,15 +185,26 @@ begin
   end;
 end;
 
-function TSynGutterCodeFolding.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
 var
-  c, i: Integer;
+  inf: TFoldViewNodeInfo;
+begin
+   inf := FMenuInf[(Sender as TMenuItem).tag];
+   if inf.Folded then
+     FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False)
+   else
+     FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
+end;
+
+procedure TSynGutterCodeFolding.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+var
+  c, i, line: Integer;
   inf: TFoldViewNodeInfo;
   m: TMenuItem;
   s, s2: String;
-  line: LongInt;
 begin
-  Result := inherited HasCustomPopupMenu(PopMenu);
+  inherited MouseUp(Button, Shift, X, Y);
   line := FClickLine;
   if line > SynEdit.Lines.Count then exit;
 
@@ -224,29 +235,9 @@ begin
       m.Tag := i;
       m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
       FPopUp.Items.Add(m);
-      PopMenu := FPopUp;
     end;
-    Result := True;
+    FPopUp.PopUp;
   end;
-
-end;
-
-
-procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
-var
-  inf: TFoldViewNodeInfo;
-begin
-   inf := FMenuInf[(Sender as TMenuItem).tag];
-   if inf.Folded then
-     FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False)
-   else
-     FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
-end;
-
-procedure TSynGutterCodeFolding.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
