@@ -176,6 +176,8 @@ type
     procedure SetVisible(const AValue: Boolean);
 
     procedure StyleChanged(ASender: TObject);
+  protected
+    function GetDisplayName: string; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -790,6 +792,19 @@ begin
   ACanvas.TextOut(p.X, p.Y, Title.Caption);
   ACanvas.Font.Orientation := 0;
   SideByAlignment(ARect, Alignment, FTitleSize);
+end;
+
+function TChartAxis.GetDisplayName: string;
+const
+  SIDE_NAME: array [TChartAxisAlignment] of String =
+    ('Left', 'Top', 'Right', 'Bottom');
+  VISIBLE_NAME: array [Boolean] of String = (' Hidden', '');
+  INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
+begin
+  Result :=
+    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted];
+  if Title.Caption <> '' then
+    Result += ' (' + Title.Caption + ')';
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
