@@ -676,7 +676,6 @@ type
     FUseCodeFolding: Boolean;
     FExpandedClickConf,
     FCollapsedClickConf: TSynGutterFoldClickConfList;
-
   public
     constructor Create;
     destructor Destroy; override;
@@ -694,6 +693,7 @@ type
     procedure SetSynEditSettings(ASynEdit: TSynEdit); // write synedit settings to file
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure AddSpecialHilightAttribsToHighlighter(Syn: TSrcIDEHighlighter);
+    procedure ApplyFontSettingsTo(ASynEdit: TSynEdit);
 
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
     function ReadColorScheme(const LanguageName: String): String;
@@ -2917,6 +2917,16 @@ begin
   aMarkup.StyleMask := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].StylesMask;
 end;
 
+procedure TEditorOptions.ApplyFontSettingsTo(ASynEdit: TSynEdit);
+begin
+  ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
+  ASynEdit.Font.Name := fEditorFont;
+  if fDisableAntialiasing then
+    ASynEdit.Font.Quality := fqNonAntialiased
+  else
+    ASynEdit.Font.Quality := fqDefault;
+end;
+
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
 var
@@ -2961,12 +2971,8 @@ begin
   else
     ASynEdit.RightEdge := 0;
   ASynEdit.RightEdgeColor := fRightMarginColor;
-  ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
-  ASynEdit.Font.Name := fEditorFont;
-  if fDisableAntialiasing then
-    ASynEdit.Font.Quality := fqNonAntialiased
-  else
-    ASynEdit.Font.Quality := fqDefault;
+
+  ApplyFontSettingsTo(ASynEdit);
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
 
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;

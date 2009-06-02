@@ -8,7 +8,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  LResources, FileUtil, ButtonPanel, LazarusIDEStrConsts;
+  LResources, FileUtil, ButtonPanel, LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -157,10 +157,11 @@ begin
   DeleteButton.LoadGlyphFromLazarusResource('laz_delete');
 
   PathEdit.Font.BeginUpdate;
-  PathEdit.Font.Name:=SynDefaultFontName;
-  PathEdit.Font.Height:=SynDefaultFontHeight;
-  PathEdit.Font.Pitch:=SynDefaultFontPitch;
+  PathEdit.Font.Pitch := SynDefaultFontPitch;
+  EditorOpts.ApplyFontSettingsTo(PathEdit);
   PathEdit.Font.EndUpdate;
+  PathEdit.ExtraCharSpacing := EditorOpts.ExtraCharSpacing;
+  PathEdit.ExtraLineSpacing := EditorOpts.ExtraLineSpacing;
 end;
 
 procedure TPathEditorDialog.FormResize(Sender: TObject);
