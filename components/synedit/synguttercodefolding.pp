@@ -204,7 +204,7 @@ var
   m: TMenuItem;
   s, s2: String;
 begin
-  inherited MouseUp(Button, Shift, X, Y);
+//  inherited MouseUp(Button, Shift, X, Y);
   line := FClickLine;
   if line > SynEdit.Lines.Count then exit;
 
