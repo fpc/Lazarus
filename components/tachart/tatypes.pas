@@ -156,12 +156,17 @@ type
   TChartAxisAlignment = (calLeft, calTop, calRight, calBottom);
   TChartAxisMargins = array [TChartAxisAlignment] of Integer;
 
+  TChartAxisPen = class(TChartPen)
+  published
+    property Style default psDot;
+  end;
+
   { TChartAxis }
 
   TChartAxis = class(TCollectionItem)
   private
     FAlignment: TChartAxisAlignment;
-    FGrid: TChartPen;
+    FGrid: TChartAxisPen;
     FInverted: Boolean;
     FTitle: TChartAxisTitle;
     FVisible: Boolean;
@@ -170,7 +175,7 @@ type
     FTitleSize: Integer;
 
     procedure SetAlignment(AValue: TChartAxisAlignment);
-    procedure SetGrid(AValue: TChartPen);
+    procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetVisible(const AValue: Boolean);
@@ -195,7 +200,7 @@ type
       var AMargins: TChartAxisMargins);
   published
     property Alignment: TChartAxisAlignment read FAlignment write SetAlignment;
-    property Grid: TChartPen read FGrid write SetGrid;
+    property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -627,8 +632,9 @@ constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  FGrid := TChartPen.Create;
+  FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
+  FGrid.Style := psDot;
   FVisible := true;
 end;
 
@@ -870,7 +876,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetGrid(AValue: TChartPen);
+procedure TChartAxis.SetGrid(AValue: TChartAxisPen);
 begin
   FGrid.Assign(AValue);
   StyleChanged(Self);

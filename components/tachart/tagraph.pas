@@ -369,12 +369,10 @@ begin
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calLeft;
     Title.Angle := 90;
-    Grid.Style := psDot;
   end;
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calBottom;
     Title.Angle := 0;
-    Grid.Style := psDot;
   end;
 
   FFrame :=  TChartPen.Create;
