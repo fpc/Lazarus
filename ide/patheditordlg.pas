@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  LResources, FileUtil, LazarusIDEStrConsts;
+  LResources, FileUtil, ButtonPanel, LazarusIDEStrConsts;
 
 type
 
@@ -38,11 +38,10 @@ type
   TPathEditorDialog = class(TForm)
     AddTemplateButton: TBitBtn;
     BrowseButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     DeleteButton: TBitBtn;
     MoveDownButton: TBitBtn;
     MoveUpButton: TBitBtn;
-    OKBitBtn: TBitBtn;
-    CancelBitBtn: TBitBtn;
     TemplatesListBox: TListBox;
     TemplateGroupBox: TGroupBox;
     PathGroupBox: TGroupBox;

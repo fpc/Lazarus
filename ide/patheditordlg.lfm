@@ -39,8 +39,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Control = PathGroupBox
       AnchorSideRight.Control = PathGroupBox
       AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = MoveUpButton
       Left = 6
-      Height = 129
+      Height = 135
       Top = 6
       Width = 472
       BorderSpacing.Around = 6
@@ -485,7 +486,7 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = OKBitBtn
+    AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 156
     Top = 206
@@ -501,8 +502,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Control = TemplateGroupBox
       AnchorSideRight.Control = TemplateGroupBox
       AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = AddTemplateButton
       Left = 6
-      Height = 91
+      Height = 97
       Top = 6
       Width = 472
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -529,42 +531,14 @@ object PathEditorDialog: TPathEditorDialog
       TabOrder = 1
     end
   end
-  object OKBitBtn: TBitBtn
-    AnchorSideRight.Control = CancelBitBtn
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 362
+  object ButtonPanel1: TButtonPanel
+    Left = 6
     Height = 26
     Top = 368
-    Width = 55
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&ОК'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
+    Width = 488
     TabOrder = 2
-  end
-  object CancelBitBtn: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 423
-    Height = 26
-    Top = 368
-    Width = 71
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Отмена'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object BrowseDialog: TSelectDirectoryDialog
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
