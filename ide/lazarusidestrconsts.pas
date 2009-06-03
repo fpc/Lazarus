@@ -1323,7 +1323,7 @@ resourcestring
   dlgMouseFoldColUnFoldAll  = 'Unfold All (Some Colapsed)';
 
   dlgMouseFoldGroup1        = 'Setting 1';
-  dlgMouseFoldGroup2        = 'setting 2';
+  dlgMouseFoldGroup2        = 'Setting 2';
   dlgMouseFoldEnabled       = 'Enabled';
   dlgMouseFoldButton        = 'Button';
   dlgMouseFoldButtonLeft    = 'Left';
