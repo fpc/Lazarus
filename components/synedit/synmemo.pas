@@ -145,6 +145,8 @@ type
     property InsertCaret;
     property InsertMode;
     property Keystrokes;
+    property MouseActions;
+    property MouseSelActions;
     property Lines;
     property MaxLeftChar;
     property MaxUndo;

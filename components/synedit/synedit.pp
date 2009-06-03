@@ -2528,7 +2528,7 @@ procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
         begin
           Handled := False;
           inherited DoContextPopup(Point(X, Y), Handled);
-          if not Handled then
+          if (PopupMenu <> nil) and not Handled then
             PopupMenu.PopUp;
         end;
       else
