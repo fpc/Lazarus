@@ -658,6 +658,7 @@ begin
   // find nice insert position
   InsertBehind:=false;
   InsertNode:=UsesNode.FirstChild;
+
   UsesInsertPolicy:=Options.UsesInsertPolicy;
   if AsLast then
     UsesInsertPolicy:=uipLast;
@@ -672,6 +673,10 @@ begin
 
   uipInFrontOfRelated,uipBehindRelated:
     begin
+      if UsesInsertPolicy=uipBehindRelated then begin
+        InsertNode:=UsesNode.LastChild;
+        InsertBehind:=true;
+      end;
       NewCode:=FindUnitSource(NewUnitName,'',false);
       if NewCode<>nil then begin
         NewFilename:=NewCode.Filename;
