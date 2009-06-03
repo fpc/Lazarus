@@ -39,23 +39,20 @@ LCL TODO:
   occur (perform LB_DOWN and LB_UP).
   Otherwise dragging starts, and the control has to be reset into "no button down"
   state.
-
-done? (unclear whether this is really fixed in the trunk)
-=====
-  LCL does not notify the docking manager of a resized dock site.
-  Should call ResetBounds().
 *)
 
 {$H+}
 
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
-{$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
+  //looks useless: how to restore a hidden zone?
 {.$DEFINE singleTab} //allow to create notebooks with 1 tab (in the topzone)?
   //doesn't look nice, with both a header AND a button list
-{$DEFINE bookform} //using notebook within form? Seems to work ONLY if defined
+
+//depending on widgetset or patched LCL
+{.$DEFINE NoDrop} //applied DoDiPatch1?
 
 interface
 
