@@ -28,12 +28,15 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="EasyDocking"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="5">
       <Unit0>
         <Filename Value="easydocking.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -56,29 +59,17 @@
         <UnitName Value="fMain"/>
       </Unit2>
       <Unit3>
-        <Filename Value="easydocksite.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EasyDockSite"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="fTree.pas"/>
+        <Filename Value="ftree.pas"/>
         <ComponentName Value="DumpBox"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fTree"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="BUGS.txt"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="fdockbook.pas"/>
-        <ComponentName Value="EasyDockBook"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fDockBook"/>
-      </Unit6>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

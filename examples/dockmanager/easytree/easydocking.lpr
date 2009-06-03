@@ -9,8 +9,7 @@ uses
   Forms,
   fMain in 'fmain.pas' {EasyDockMain},
   fDockable in 'fdockable.pas' {Dockable},
-  EasyDockSite in 'easydocksite.pas',
-  fTree in 'ftree.pas', fdockbook;
+  fTree in 'ftree.pas';
 
 {.$R *.res}
 

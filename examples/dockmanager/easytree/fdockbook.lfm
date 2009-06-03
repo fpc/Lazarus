@@ -37,7 +37,6 @@ object EasyDockBook: TEasyDockBook
     Top = 28
     Width = 400
     Align = alClient
-    Caption = 'pnlDock'
     DockSite = True
     TabOrder = 1
     OnDockDrop = pnlDockDockDrop

@@ -50,7 +50,7 @@ done? (unclear whether this is really fixed in the trunk)
 
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
-{.$DEFINE NoDrop} //patched dragobject?
+{$DEFINE NoDrop} //patched dragobject?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
 {.$DEFINE singleTab} //allow to create notebooks with 1 tab (in the topzone)?
@@ -352,7 +352,7 @@ function TEasyTree.ZoneFromPoint(SitePos: TPoint): TEasyZone;
 var
   zone: TEasyZone;
 begin
-(* Return zone in site client coordinates.
+(* Return zone from site client coordinates.
 *)
   zone := FTopZone;
   while zone <> nil do begin
@@ -616,6 +616,9 @@ Signal results:
 
   Unfortunately there exists no way to signal invalid docking attempts :-(
 *)
+{ TODO -cdocking : why is this method not called for a docksite with 1 client?
+  If exactly the client is moved over it?
+}
 //debug only
   DockObj := ADockObject;
 

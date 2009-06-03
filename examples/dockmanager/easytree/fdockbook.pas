@@ -6,9 +6,6 @@ unit fDockBook;
   The currently visible tab remains down.
   A control can be undocked by dragging the associated tab.
     This makes the tabs act as grab regions, for undocking forms.
-
-ToDo:
-  Currently the buttons have a uniform (too small) size.
 *)
 
 {$mode objfpc}{$H+}
@@ -84,22 +81,13 @@ procedure TEasyDockBook.pnlDockDockDrop(Sender: TObject; Source: TDragDockObject
 var
   btn: TTabButton;
 begin
-{ TODO : make buttons big enough for the text }
-//Tabs.BeginUpdate; - doesn't help
   btn := TTabButton.Create(Tabs);
   btn.Control := Source.Control;
   btn.Control.Align := alClient;
   btn.Caption := GetDockCaption(btn.Control);
-  //btn.Caption := ' ' + GetDockCaption(btn.Control) + ' ';
-  //btn.AutoSize := True; - doesn't help
   btn.OnClick := @ToolButton1Click;
   btn.Down := True;
   btn.Click;
-//Tabs.EndUpdate;
-{ this also doesn't help
-  Tabs.ShowCaptions := False;
-  Tabs.ShowCaptions := True;
-}
 end;
 
 procedure TEasyDockBook.pnlDockUnDock(Sender: TObject; Client: TControl;
@@ -161,17 +149,13 @@ constructor TTabButton.Create(TheOwner: TComponent);
 var
   i, last: integer;
 begin
-{ TODO : create as last button }
   inherited Create(TheOwner);
 //these properties must be set before Parent
-  //AllowAllUp := False;
   Style := tbsCheck;
-  //self.Width := 100;
   AutoSize := True;
   Parent := TWinControl(TheOwner);
 //these properties must be set after Parent
   Grouped := True;
-  //AdjustSize; //doesn't help
 end;
 
 procedure TTabButton.MouseMove(Shift: TShiftState; X, Y: Integer);

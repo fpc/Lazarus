@@ -52,11 +52,11 @@ const //zone decoration sizes
   dButton = 14; //include some space for themes
   dHeader = dButton + 2*dBorder; // 22 - dSizer; //splitter outside header!
 //minimal (Delphi) header
-  GrabberSize = 12;
+  GrabberSize = 10; // 12;
   dDDist = 1;
   dDBorder = 1;
   dDHeader = GrabberSize + dSizer; //?
-  dDButton = GrabberSize - 2*dDBorder; //10?
+  dDButton = GrabberSize - dBorder; // 2*dDBorder; //10?
 
 (* Zone part map.
   In portrait mode (header on top), the zone rectangle is adjusted according
@@ -95,7 +95,7 @@ HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
     {zpNowhere} (),
     {zpClient}  (dTop:dDHeader; dBottom:0),
     {zpAll}     (dTop:dSizer; dBottom:-dDHeader),
-    {zpCaption} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:dDBorder+dDButton),
+    {zpCaption} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:2*dDBorder+dDButton),
     {zpSizer}   (dTop:0; dBottom:-dSizer),
   {$IFDEF restore}
     {zpRestoreButton} (),
@@ -358,17 +358,11 @@ begin
     with DrawRect do begin
       DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
       if AOrientation = doVertical then begin
-        //DrawCloseButton(Right-FGrabberSize+1, Top+1);
-        //DrawGrabberLine(Left+2, Top+3, Right-GrabberSize-2, Top+5);
-        //DrawGrabberLine(Left+2, Top+6, Right-GrabberSize-2, Top+8);
         inc(Top, 1);
         DrawGrabberLine(Left, Top, Right, Top+2);
         inc(Top, 3);
         DrawGrabberLine(Left, Top, Right, Top+2);
       end else begin
-        //DrawCloseButton(Left+1, Top+1);
-        //DrawGrabberLine(Left+3, Top+GrabberSize+1, Left+5, Bottom-2);
-        //DrawGrabberLine(Left+6, Top+GrabberSize+1, Left+8, Bottom-2);
         inc(Left, 1);
         DrawGrabberLine(Left, Top, Left+2, Bottom);
         inc(Left, 3);
