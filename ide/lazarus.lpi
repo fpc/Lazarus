@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="41">
+    <Units Count="43">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -326,6 +326,22 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="help_general_options"/>
       </Unit40>
+      <Unit41>
+        <Filename Value="frames/editor_codefolding_mouse_options.pas"/>
+        <ComponentName Value="MouseGroupBox1"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="editor_codefolding_mouse_options"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="frames/editor_mouseaction_options.pas"/>
+        <ComponentName Value="EditorMouseOptionsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="editor_mouseaction_options"/>
+      </Unit42>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
