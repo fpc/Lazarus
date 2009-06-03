@@ -5,8 +5,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   ClientHeight = 415
   ClientWidth = 610
   Visible = False
-  DesignLeft = 421
-  DesignTop = 193
+  DesignLeft = 276
+  DesignTop = 195
   object p2: TPanel[0]
     Left = 0
     Height = 378
@@ -30,9 +30,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
       RowCount = 1
+      ScrollBars = ssAutoVertical
       TabOrder = 0
       OnDblClick = UpdateButtonClick
       OnHeaderSized = ActionGridHeaderSized
+      OnMouseDown = ActionGridMouseDown
+      OnMouseMove = ActionGridMouseMove
+      OnMouseUp = ActionGridMouseUp
       OnResize = ActionGridResize
     end
     object ContextTree: TTreeView

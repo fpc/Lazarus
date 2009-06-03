@@ -38,8 +38,6 @@ type
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormCreate(Sender: TObject);
-  private
-    { private declarations }
   public
     { public declarations }
     Procedure ResetInputs;

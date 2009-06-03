@@ -1182,6 +1182,11 @@ resourcestring
   dlgMouseOptBtn2   = 'Double';
   dlgMouseOptBtn3   = 'Triple';
   dlgMouseOptBtn4   = 'Quad';
+  dlgMouseOptMoveMouseTrue   = 'Y';
+  dlgMouseOptMoveMouseFalse  = '';
+  dlgMouseOptModKeyFalse   = 'n';
+  dlgMouseOptModKeyTrue    = 'Y';
+  dlgMouseOptModKeyIgnore  = '-';
   dlgMouseOptCheckUpDown   = 'Act on Mouse up';
   dlgMouseOptModShift = 'Shift';
   dlgMouseOptModAlt   = 'Alt';

@@ -27,7 +27,7 @@ interface
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, editor_mouseaction_options_dlg;
+  SynEditMouseCmds, editor_mouseaction_options_dlg, math;
 
 type
 
@@ -42,6 +42,11 @@ type
     ActionGrid: TStringGrid;
     ContextTree: TTreeView;
     p3: TPanel;
+    procedure ActionGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer);
+    procedure ActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure ActionGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure ContextTreeChange(Sender: TObject; Node: TTreeNode);
     procedure AddNewButtonClick(Sender: TObject);
     procedure UpdateButtonClick(Sender: TObject);
@@ -54,7 +59,9 @@ type
     FMainActions, FSelActions: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
     ChangeDlg: TEditorMouseOptionsChangeDialog;
-  protected
+    FColWidths: Array of Integer;
+    FLastWidth: Integer;
+    FIsHeaderSizing: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,19 +74,21 @@ type
 
 implementation
 
+const
+  MinGridColSize = 25;
 { TEditorMouseOptionsFrame }
 
 procedure TEditorMouseOptionsFrame.ContextTreeChange(Sender: TObject; Node: TTreeNode);
 const
-  Boolname: Array [Boolean] of String = ('', 'Y');
+  MMoveName: Array [Boolean] of String = (dlgMouseOptMoveMouseFalse, dlgMouseOptMoveMouseTrue);
 var
   act: TSynEditMouseAction;
   i: Integer;
   function ShiftName(ss: TShiftStateEnum): String;
   begin
-    if not(ss in act.ShiftMask) then exit('-');
-    if ss in act.Shift then exit('Y');
-    exit('n');
+    if not(ss in act.ShiftMask) then exit(dlgMouseOptModKeyIgnore);
+    if ss in act.Shift then exit(dlgMouseOptModKeyTrue);
+    exit(dlgMouseOptModKeyFalse);
   end;
 
 begin
@@ -96,7 +105,7 @@ begin
     ActionGrid.Cells[4, i] := ShiftName(ssShift);
     ActionGrid.Cells[5, i] := ShiftName(ssAlt);
     ActionGrid.Cells[6, i] := ShiftName(ssCtrl);
-    ActionGrid.Cells[7, i] := Boolname[act.MoveCaret];
+    ActionGrid.Cells[7, i] := MMoveName[act.MoveCaret];
   end;
   ActionGrid.Row := 1;
 end;
@@ -170,19 +179,52 @@ end;
 
 procedure TEditorMouseOptionsFrame.ActionGridResize(Sender: TObject);
 var
-  i, j, k: Integer;
+  i, Oldwidth, NewWidth: Integer;
 begin
-  j := 0;
-  for i := 0 to ActionGrid.ColCount-1 do j := j + ActionGrid.ColWidths[i];
-  k := ActionGrid.ClientWidth - ActionGrid.ColCount * 10;
+  if ActionGrid.Width = FLastWidth then Exit;
+  FLastWidth := ActionGrid.Width;
+  if Length(FColWidths) < ActionGrid.ColCount then exit;
+  Oldwidth := 0;
+  for i := 0 to ActionGrid.ColCount-1 do Oldwidth := Oldwidth + FColWidths[i];
+  NewWidth := ActionGrid.ClientWidth - 1;
   for i := 0 to ActionGrid.ColCount-1 do
-    ActionGrid.ColWidths[i] := 10 + ActionGrid.ColWidths[i] * k div j;
+    NewWidth := NewWidth - (MinGridColSize -
+              Min(MinGridColSize, FColWidths[i] * NewWidth div Oldwidth));
+  for i := 0 to ActionGrid.ColCount-1 do
+    ActionGrid.ColWidths[i] := Max(MinGridColSize, FColWidths[i] * NewWidth div Oldwidth);
 end;
 
-procedure TEditorMouseOptionsFrame.ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean;
-  Index: Integer);
+procedure TEditorMouseOptionsFrame.ActionGridHeaderSized(Sender: TObject;
+  IsColumn: Boolean; Index: Integer);
+var
+  i: Integer;
 begin
+  SetLength(FColWidths, ActionGrid.ColCount);
+  for i := 0 to ActionGrid.ColCount - 1 do
+    FColWidths[i] := Min(Max(MinGridColSize, ActionGrid.ColWidths[i]),
+                             ActionGrid.ClientWidth);
+  FLastWidth := -2;
   ActionGridResize(nil);
+end;
+
+procedure TEditorMouseOptionsFrame.ActionGridMouseMove(Sender: TObject;
+  Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if not FIsHeaderSizing then exit;
+  ActionGridHeaderSized(nil, true, 0);
+end;
+
+procedure TEditorMouseOptionsFrame.ActionGridMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FIsHeaderSizing := False;
+end;
+
+procedure TEditorMouseOptionsFrame.ActionGridMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FIsHeaderSizing := y <= ActionGrid.RowHeights[0];
 end;
 
 constructor TEditorMouseOptionsFrame.Create(AOwner: TComponent);
@@ -191,6 +233,7 @@ begin
   FMainActions := TSynEditMouseActions.Create(nil);
   FSelActions := TSynEditMouseActions.Create(nil);
   ChangeDlg := TEditorMouseOptionsChangeDialog.Create(self);
+  ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
 end;
 
 destructor TEditorMouseOptionsFrame.Destroy;
@@ -213,6 +256,8 @@ begin
   FMainNode.Data := FMainActions;
   FSelNode := ContextTree.Items.AddChild(FMainNode, dlgMouseOptNodeSelect);
   FSelNode.Data := FSelActions;
+  ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
+  Splitter1.MinSize := ActionGrid.ColCount * MinGridColSize;
   ActionGrid.Cells[0,0] := dlgMouseOptHeadDesc;
   ActionGrid.Cells[1,0] := dlgMouseOptHeadBtn;
   ActionGrid.Cells[2,0] := dlgMouseOptHeadCount;
@@ -222,7 +267,7 @@ begin
   ActionGrid.Cells[6,0] := dlgMouseOptHeadCtrl;
   ActionGrid.Cells[7,0] := dlgMouseOptHeadCaret;
   ActionGrid.ColWidths[0] := 100;
-  ActionGridResize(nil);
+  ActionGridHeaderSized(nil, true, 0);
 
   DelButton.Caption := dlgMouseOptBtnDel;
   UpdateButton.Caption := dlgMouseOptBtnUdp;
