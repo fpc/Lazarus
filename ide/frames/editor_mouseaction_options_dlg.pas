@@ -133,7 +133,7 @@ end;
 
 procedure TEditorMouseOptionsChangeDialog.WriteToAction(MAct: TSynEditMouseAction);
 begin
-  MAct.Command := Integer(ActionBox.items.Objects[ActionBox.ItemIndex]);
+  MAct.Command := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
   MAct.Button := IndexToBtn[ButtonBox.ItemIndex];
   MAct.ClickCount := IndexToClick[ClickBox.ItemIndex];
   MAct.MoveCaret := CaretCheck.Checked;
