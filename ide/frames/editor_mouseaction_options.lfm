@@ -54,7 +54,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Height = 378
       Top = 0
       Width = 5
-      MinSize = 25
+      MinSize = 100
     end
   end
   object p3: TPanel[1]

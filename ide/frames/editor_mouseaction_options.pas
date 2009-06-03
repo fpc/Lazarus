@@ -27,8 +27,7 @@ interface
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, editor_mouseaction_options_dlg;
-//  SynGutterCodeFolding;
+  SynEditMouseCmds, editor_mouseaction_options_dlg, math;
 
 type
 
@@ -177,7 +176,7 @@ begin
   for i := 0 to ActionGrid.ColCount-1 do j := j + ActionGrid.ColWidths[i];
   k := ActionGrid.ClientWidth;
   for i := 0 to ActionGrid.ColCount-1 do
-    ActionGrid.ColWidths[i] := ActionGrid.ColWidths[i] * k div j;
+    ActionGrid.ColWidths[i] := Max(ActionGrid.ColWidths[i] * k div j, 10);
 end;
 
 procedure TEditorMouseOptionsFrame.ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean;
