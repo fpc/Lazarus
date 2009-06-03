@@ -307,7 +307,7 @@ end;
 
 procedure TSynGutterPartBase.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if TSynEdit(SynEdit).PopupMenu <> nil then
+  if (Button = mbRight) and (TSynEdit(SynEdit).PopupMenu <> nil) then
     TSynEdit(SynEdit).PopupMenu.PopUp;
 end;
 
