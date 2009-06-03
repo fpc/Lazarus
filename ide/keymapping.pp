@@ -267,6 +267,7 @@ begin
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecToggleComment: SetResult(VK_OEM_2, [ssCtrl], VK_UNKNOWN, []);
   ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -633,6 +634,7 @@ begin
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecToggleComment: SetResult(VK_OEM_2, [ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
@@ -1150,6 +1152,7 @@ begin
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecToggleComment: SetResult(VK_OEM_2, [ssCtrl],VK_UNKNOWN,[]);
   ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -1657,6 +1660,7 @@ begin
     ecSelectionEnclose        : Result:= lisMenuEncloseSelection;
     ecSelectionComment        : Result:= lismenucommentselection;
     ecSelectionUncomment      : Result:= lismenuuncommentselection;
+    ecToggleComment           : Result:= lismenutogglecomment;
     ecSelectionConditional    : Result:= lisMenuConditionalSelection;
     ecSelectionSort           : Result:= lismenusortselection;
     ecSelectionBreakLines     : Result:= lisMenuBeakLinesInSelection;
@@ -2015,6 +2019,8 @@ begin
     );
   AddDefault(C, 'Uncomment selection', lisMenuUncommentSelection,
     ecSelectionUncomment);
+  AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment
+    );
   AddDefault(C, 'Sort selection', lisSortSelSortSelection, ecSelectionSort);
   AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection,
     ecSelectionBreakLines);

@@ -823,6 +823,7 @@ var
 
 begin
   FLines.BeginUpdate;
+  FCaret.Lock;
   try
     // BB is lower than BE
     BB := FirstLineBytePos;
@@ -832,10 +833,12 @@ begin
       EndLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
+      FCaret.LineBytePos := StartLineBytePos;
       InsertText;
       StartLineBytePos := FCaret.LineBytePos; // reset selection
     end;
   finally
+    FCaret.Unlock;
     FLines.EndUpdate; // May reset Block Begin
   end;
 end;

@@ -434,8 +434,10 @@ type
     {$ENDIF}
 
     procedure AquirePrimarySelection;
+    function GetDefSelectionMode: TSynSelectionMode;
     function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
+    procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
@@ -564,7 +566,7 @@ type
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
-    procedure SetLineBlock(Value: TPoint);
+    procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
     {$ENDIF}
     procedure SizeOrFontChanged(bFont: boolean);
@@ -813,7 +815,7 @@ type
     {$IFDEF SYN_LAZARUS}
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
     procedure SelectToBrace;
-    procedure SelectLine;
+    procedure SelectLine(WithLeadSpaces: Boolean = True);
     procedure SelectParagraph;
     procedure SetUseIncrementalColor(const AValue : Boolean);
     {$ENDIF}
@@ -945,6 +947,8 @@ type
     property SelectedColor: TSynSelectedColor
       read FSelectedColor write FSelectedColor;
     {$ENDIF}
+    property DefaultSelectionMode: TSynSelectionMode
+      read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode
       read GetSelectionMode write SetSelectionMode default smNormal;
     // See Highlighter for new methods
@@ -1342,9 +1346,19 @@ begin
   end;
 end;
 
+function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
+begin
+  Result := FBlockSelection.SelectionMode;
+end;
+
 function TCustomSynEdit.GetDividerDrawLevel: Integer;
 begin
   Result := fHighlighter.DrawDividerLevel;
+end;
+
+procedure TCustomSynEdit.SetDefSelectionMode(const AValue: TSynSelectionMode);
+begin
+  FBlockSelection.SelectionMode := AValue; // Includes active
 end;
 
 procedure TCustomSynEdit.SurrenderPrimarySelection;
@@ -2627,12 +2641,14 @@ begin
   if (fStateFlags * [sfMouseSelecting, sfIsDragging] <> []) and MouseCapture
   then begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
+    FInternalCaret.AssignFrom(FCaret);
+    FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+    if (not(sfIsDragging in fStateFlags)) then
+      SetBlockEnd(FInternalCaret.LineBytePos);
     if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth)
       and (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
     then
-      ComputeCaret(X, Y);
-    if (not(sfIsDragging in fStateFlags)) then
-      SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+      FCaret.LineBytePos := FInternalCaret.LineBytePos;
     // should we begin scrolling?
     Dec(X, fGutterWidth);
     // calculate chars past right
@@ -3815,9 +3831,9 @@ begin
   FindMatchingBracket(CaretXY,true,true,true,false);
 end;
 
-procedure TCustomSynEdit.SelectLine;
+procedure TCustomSynEdit.SelectLine(WithLeadSpaces: Boolean = True);
 begin
-  SetLineBlock(CaretXY);
+  SetLineBlock(CaretXY, WithLeadSpaces);
 end;
 
 procedure TCustomSynEdit.SelectParagraph;
@@ -3909,6 +3925,9 @@ procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 begin
   fCaret.LineCharPos:= Value;
   fLastCaretX:=CaretX;
+  if (CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) <> 0)
+     and not(SelAvail or FBlockSelection.SelCanContinue(FCaret)) then
+    FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
 end;
 
 procedure TCustomSynEdit.CaretChanged(Sender: TObject);
@@ -4794,7 +4813,7 @@ end;
 {$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.SetLineBlock(Value: TPoint);
+procedure TCustomSynEdit.SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
 var
   ALine: string;
   x, x2: Integer;
@@ -4804,13 +4823,15 @@ begin
   if (FBlockSelection.StartLinePos >= 1)
   and (FBlockSelection.StartLinePos <= FTheLinesView.Count) then begin
     ALine:=FTheLinesView[FBlockSelection.StartLinePos - 1];
-    x := FBlockSelection.StartBytePos;
-    while (x<length(ALine)) and (ALine[x] in [' ',#9]) do
-      inc(x);
-    FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, FTheLinesView.Count));
     x2:=length(ALine)+1;
-    while (x2 > x) and (ALine[X2-1] in [' ',#9]) do
-      dec(x2);
+    if not WithLeadSpaces then begin
+      x := FBlockSelection.StartBytePos;
+      while (x<length(ALine)) and (ALine[x] in [' ',#9]) do
+        inc(x);
+      FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, FTheLinesView.Count));
+      while (x2 > x) and (ALine[X2-1] in [' ',#9]) do
+        dec(x2);
+    end;
     FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, FTheLinesView.Count));
   end;
   FBlockSelection.ActiveSelectionMode := smNormal;
@@ -6281,7 +6302,7 @@ begin
       ecColumnSelect,
       ecLineSelect:
         begin
-          SelectionMode := SEL_MODE[Command];
+          DefaultSelectionMode := SEL_MODE[Command];
         end;
 {$IFDEF SYN_MBCSSUPPORT}
       ecImeStr:
@@ -6618,7 +6639,7 @@ end;
 
 procedure TCustomSynEdit.SetSelectionMode(const Value: TSynSelectionMode);
 begin
-  fBlockSelection.SelectionMode := Value; // Set both: SelectionMode and ActiveSelectionMode
+  fBlockSelection.ActiveSelectionMode := Value;
 end;
 
 {begin}                                                                         //sbs 2000-11-19

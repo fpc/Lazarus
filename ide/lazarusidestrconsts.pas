@@ -190,6 +190,7 @@ resourcestring
   lisMenuEncloseSelection = 'Enclose selection ...';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
+  lisMenuToggleComment = 'Toggle comment';
   lisKMInsertIFDEF = 'Insert $IFDEF';
   lisMenuConditionalSelection = 'Insert $IFDEF...';
   lisMenuSortSelection = 'Sort selection ...';

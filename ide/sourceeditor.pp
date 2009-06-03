@@ -265,6 +265,8 @@ type
     procedure TabsToSpacesInSelection;
     procedure CommentSelection;
     procedure UncommentSelection;
+    procedure ToggleCommentSelection;
+    procedure UpdateCommentSelection(CommentOn, Toggle: Boolean);
     procedure ConditionalSelection;
     procedure SortSelection;
     procedure BreakLinesInSelection;
@@ -1672,6 +1674,9 @@ Begin
   ecSelectionUnComment:
     UncommentSelection;
 
+  ecToggleComment:
+    ToggleCommentSelection;
+
   ecSelectionConditional:
     ConditionalSelection;
 
@@ -1867,39 +1872,160 @@ begin
 end;
 
 procedure TSourceEditor.CommentSelection;
-var 
-  OldBlockBegin, OldBlockEnd: TPoint;
 begin
-  if ReadOnly then exit;
-  if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  // ToDo: replace step by step to keep bookmarks and breakpoints
-  FEditor.SelText:=CommentLines(EditorComponent.SelText);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  UpdateCommentSelection(True, False);
 end;
 
 procedure TSourceEditor.UncommentSelection;
-var 
-  OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  UpdateCommentSelection(False, False);
+end;
+
+procedure TSourceEditor.ToggleCommentSelection;
+begin
+  UpdateCommentSelection(False, True);
+end;
+
+procedure TSourceEditor.UpdateCommentSelection(CommentOn, Toggle: Boolean);
+var
+  OldCaretPos, OldBlockStart, OldBlockEnd: TPoint;
+  WasSelAvail: Boolean;
+  WasSelMode: TSynSelectionMode;
+  BlockBeginLine: Integer;
+  BlockEndLine: Integer;
+  CommonIndent: Integer;
+
+  function FirstNonBlankPos(const Text: String; Start: Integer = 1): Integer;
+  var
+    i: Integer;
+  begin
+    for i := Start to Length(Text) do
+      if (Text[i] <> #32) and (Text[i] <> #9) then
+        exit(i);
+    Result := -1;
+  end;
+
+  function MinCommonIndent: Integer;
+  var
+    i, j: Integer;
+  begin
+    If CommonIndent = 0 then begin
+      CommonIndent := Max(FirstNonBlankPos(FEditor.Lines[BlockBeginLine - 1]), 1);
+      for i := BlockBeginLine + 1 to BlockEndLine do begin
+        j := FirstNonBlankPos(FEditor.Lines[i - 1]);
+        if (j < CommonIndent) and (j > 0) then
+          CommonIndent := j;
+      end;
+    end;
+    Result := CommonIndent;
+  end;
+
+  function InsertPos(ALine: Integer): Integer;
+  begin
+    if not WasSelAvail then
+      Result := MinCommonIndent
+    else case WasSelMode of
+      smColumn: // CommonIndent is not used otherwise
+        begin
+          if CommonIndent = 0 then
+            CommonIndent := Min(FEditor.LogicalToPhysicalPos(OldBlockStart).X,
+                                FEditor.LogicalToPhysicalPos(OldBlockEnd).X);
+          Result := FEditor.PhysicalToLogicalPos(Point(CommonIndent, ALine)).X;
+        end;
+      smNormal:
+        begin
+          if OldBlockStart.Y = OldBlockEnd.Y then
+            Result := OldBlockStart.X
+          else
+            Result := MinCommonIndent;
+        end;
+       else
+         Result := 1;
+    end;
+  end;
+
+  function DeletePos(ALine: Integer): Integer;
+  var
+    line: String;
+  begin
+    line := FEditor.Lines[ALine - 1];
+    Result := FirstNonBlankPos(line, InsertPos(ALine));
+    if (WasSelMode = smColumn) and((Result < 1) or (Result > length(line) - 1))
+    then
+      Result := length(line) - 1;
+    Result := Max(1, Result);
+    if (Length(line) < Result +1) or
+       (line[Result] <> '/') or (line[Result+1] <> '/') then
+      Result := -1;
+  end;
+
+var
+  i: Integer;
+  NonBlankStart, LineStart: Integer;
 begin
   if ReadOnly then exit;
-  if not EditorComponent.SelAvail then exit;
-  OldBlockBegin:=FEditor.BlockBegin;
-  OldBlockEnd:=FEditor.BlockEnd;
-  FEditor.BeginUpdate;
-  FEditor.BeginUndoBlock;
-  // ToDo: replace step by step to keep bookmarks and breakpoints
-  FEditor.SelText:=UncommentLines(EditorComponent.SelText);
-  FEditor.BlockBegin:=OldBlockBegin;
-  FEditor.BlockEnd:=OldBlockEnd;
-  FEditor.EndUndoBlock;
-  FEditor.EndUpdate;
+  OldCaretPos   := FEditor.CaretXY;
+  OldBlockStart := FEditor.BlockBegin;
+  OldBlockEnd   := FEditor.BlockEnd;
+  WasSelAvail := FEditor.SelAvail;
+  WasSelMode  := FEditor.SelectionMode;
+  CommonIndent := 0;
+
+  BlockBeginLine := OldBlockStart.Y;
+  BlockEndLine := OldBlockEnd.Y;
+  if (OldBlockEnd.X = 1) and (BlockEndLine > BlockBeginLine) and (FEditor.SelectionMode <> smLine) then
+    Dec(BlockEndLine);
+
+  if Toggle then begin
+    CommentOn := False;
+    for i := BlockBeginLine to BlockEndLine do
+      if DeletePos(i) < 0 then begin
+        CommentOn := True;
+        break;
+      end;
+  end;
+
+  BeginUpdate;
+  BeginUndoBlock;
+  FEditor.SelectionMode := smNormal;
+
+  if CommentOn then begin
+    for i := BlockEndLine downto BlockBeginLine do
+    begin
+      FEditor.BlockBegin := Point(InsertPos(i), i);
+      FEditor.SelText := '//';
+    end;
+    if OldCaretPos.X > InsertPos(OldCaretPos.Y) then
+      OldCaretPos.x := OldCaretPos.X + 2;
+    if OldBlockStart.X > InsertPos(OldBlockStart.Y) then
+      OldBlockStart.X := OldBlockStart.X + 2;
+    if OldBlockEnd.X > InsertPos(OldBlockEnd.Y) then
+      OldBlockEnd.X := OldBlockEnd.X + 2;
+  end
+  else begin
+    for i := BlockEndLine downto BlockBeginLine do
+    begin
+      NonBlankStart := DeletePos(i);
+      if NonBlankStart < 1 then continue;
+      FEditor.BlockBegin := Point(NonBlankStart, i);
+      FEditor.BlockEnd := Point(NonBlankStart + 2, i);
+      FEditor.SelText := '';
+      if (OldCaretPos.Y = i) and (OldCaretPos.X > NonBlankStart) then
+        OldCaretPos.x := Max(OldCaretPos.X - 2, NonBlankStart);
+      if (OldBlockStart.Y = i) and (OldBlockStart.X > NonBlankStart) then
+        OldBlockStart.X := Max(OldBlockStart.X - 2, NonBlankStart);
+      if (OldBlockEnd.Y = i) and (OldBlockEnd.X > NonBlankStart) then
+        OldBlockEnd.X := Max(OldBlockEnd.X - 2, NonBlankStart);
+    end;
+  end;
+
+  EndUndoBlock;
+  EndUpdate;
+
+  FEditor.BlockBegin := OldBlockStart;
+  FEditor.BlockEnd := OldBlockEnd;
+  FEditor.CaretXY := OldCaretPos;
+  FEditor.SelectionMode := WasSelMode;
 end;
 
 procedure TSourceEditor.ConditionalSelection;

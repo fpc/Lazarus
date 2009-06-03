@@ -413,6 +413,7 @@ begin
     CreateMenuItem(ParentMI,itmEditEncloseBlock,'itmEditEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
+    CreateMenuItem(ParentMI,itmEditToggleComment,'itmEditToggleComment',lisMenuToggleComment, 'menu_comment');
     CreateMenuItem(ParentMI,itmEditConditionalBlock,'itmEditConditionalBlock',lisMenuConditionalSelection);
     CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
 
@@ -827,6 +828,7 @@ begin
     itmEditTabsToSpacesBlock.Command:=GetCommand(ecSelectionTabs2Spaces);
     itmEditCommentBlock.Command:=GetCommand(ecSelectionComment);
     itmEditUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
+    itmEditToggleComment.Command:=GetCommand(ecToggleComment);
     itmEditConditionalBlock.Command:=GetCommand(ecSelectionConditional);
     itmEditSortBlock.Command:=GetCommand(ecSelectionSort);
     itmEditSelectionBreakLines.Command:=GetCommand(ecSelectionBreakLines);

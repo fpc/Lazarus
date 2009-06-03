@@ -201,6 +201,7 @@ type
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditCommentBlockClicked(Sender: TObject);
     procedure mnuEditUncommentBlockClicked(Sender: TObject);
+    procedure mnuEditToggleCommentClicked(Sender: TObject);
     procedure mnuEditConditionalBlockClicked(Sender: TObject);
     procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
@@ -2224,6 +2225,7 @@ begin
     itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
     itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
     itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
+    itmEditToggleComment.OnClick:=@mnuEditToggleCommentClicked;
     itmEditConditionalBlock.OnClick:=@mnuEditConditionalBlockClicked;
     itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
@@ -14860,6 +14862,11 @@ end;
 procedure TMainIDE.mnuEditUncommentBlockClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectionUncomment);
+end;
+
+procedure TMainIDE.mnuEditToggleCommentClicked(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecToggleComment);
 end;
 
 procedure TMainIDE.mnuEditConditionalBlockClicked(Sender: TObject);

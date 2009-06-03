@@ -110,6 +110,7 @@ type
         itmEditEncloseBlock: TIDEMenuCommand;
         itmEditCommentBlock: TIDEMenuCommand;
         itmEditUncommentBlock: TIDEMenuCommand;
+        itmEditToggleComment: TIDEMenuCommand;
         itmEditConditionalBlock: TIDEMenuCommand;
         itmEditSortBlock: TIDEMenuCommand;
       //itmEditBlockCharConversion: TIDEMenuSection;
