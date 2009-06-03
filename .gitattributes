@@ -159,6 +159,7 @@ components/codetools/examples/scanexamples/unusedunits1.pas svneol=native#text/p
 components/codetools/examples/scanexamples/wrongforwarddefinitions.pas svneol=native#text/plain
 components/codetools/examples/setincludepath.lpi svneol=native#text/plain
 components/codetools/examples/setincludepath.pas svneol=native#text/plain
+components/codetools/examples/testscompleteblock/beginwithoutindent1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/casecolon1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/caseelseend1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/caseend1.inc svneol=native#text/plain

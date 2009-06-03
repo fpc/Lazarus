@@ -5372,7 +5372,13 @@ var
       // check block starts/ends
       case CurPos.Flag of
       cafEnd:
-        begin
+        if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos]='.') then begin
+          // unexpected end of source
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['ReadStatements unexpected end. ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
+          {$ENDIF}
+          break;
+        end else begin
           case TopBlockType(Stack) of
           btCaseOf,btCaseElse:
             begin
@@ -5496,6 +5502,15 @@ var
                 break;
               end;
             end;
+          end else if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
+          or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR')
+          or UpAtomIs('VAR') or UpAtomIs('TYPE') or UpAtomIs('CONST')
+          then begin
+            // unexpected keyword => block not closed
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements unexpected keyword ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
+            {$ENDIF}
+            break;
           end;
         end;
       end;
@@ -5526,6 +5541,14 @@ var
 
     //DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
 
+    if Stack.Top<0 then begin
+      // all blocks closed
+      {$IFDEF ShowCompleteBlock}
+      if NeedCompletion then
+        DebugLn(['ReadStatements all blocks closed: no completion needed']);
+      {$ENDIF}
+      NeedCompletion:=false;
+    end;
     if (not NeedCompletion) and (Stack.Top>=0)
     and (not BehindCursorBlock) and (CursorBlockLvl=Stack.Top) then begin
       {$IFDEF ShowCompleteBlock}
