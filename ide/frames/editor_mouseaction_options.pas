@@ -27,7 +27,7 @@ interface
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, editor_mouseaction_options_dlg, math;
+  SynEditMouseCmds, MouseActionDialog, math;
 
 type
 
@@ -49,6 +49,7 @@ type
       Y: Integer);
     procedure ContextTreeChange(Sender: TObject; Node: TTreeNode);
     procedure AddNewButtonClick(Sender: TObject);
+    procedure Splitter1CanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure UpdateButtonClick(Sender: TObject);
     procedure DelButtonClick(Sender: TObject);
     procedure ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean; Index: Integer);
@@ -58,7 +59,7 @@ type
     FCurNode: TTreeNode;
     FMainActions, FSelActions: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
-    ChangeDlg: TEditorMouseOptionsChangeDialog;
+    ChangeDlg: TMouseaActionDialog;
     FColWidths: Array of Integer;
     FLastWidth: Integer;
     FIsHeaderSizing: Boolean;
@@ -134,6 +135,12 @@ begin
     ContextTreeChange(nil, FCurNode);
     ActionGrid.Row := FCurActions.Count;
   end;
+end;
+
+procedure TEditorMouseOptionsFrame.Splitter1CanResize(Sender: TObject; var NewSize: Integer;
+  var Accept: Boolean);
+begin
+
 end;
 
 procedure TEditorMouseOptionsFrame.UpdateButtonClick(Sender: TObject);
@@ -232,7 +239,7 @@ begin
   inherited Create(AOwner);
   FMainActions := TSynEditMouseActions.Create(nil);
   FSelActions := TSynEditMouseActions.Create(nil);
-  ChangeDlg := TEditorMouseOptionsChangeDialog.Create(self);
+  ChangeDlg := TMouseaActionDialog.Create(self);
   ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
 end;
 

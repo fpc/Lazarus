@@ -2,7 +2,7 @@
 
 LazarusResources.Add('TEditorMouseOptionsChangeDialog','FORMDATA',[
   'TPF0'#31'TEditorMouseOptionsChangeDialog'#30'EditorMouseOptionsChangeDialog'
-  +#4'Left'#3#135#2#6'Height'#3#185#0#3'Top'#3#207#1#5'Width'#3'j'#1#8'AutoSize'
+  +#4'Left'#3#27#1#6'Height'#3#185#0#3'Top'#3#237#0#5'Width'#3'j'#1#8'AutoSize'
   +#9#11'BorderIcons'#11#12'biSystemMenu'#0#11'BorderStyle'#7#8'bsDialog'#7'Cap'
   +'tion'#6#30'EditorMouseOptionsChangeDialog'#12'ClientHeight'#3#185#0#11'Clie'
   +'ntWidth'#3'j'#1#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScreenCente'

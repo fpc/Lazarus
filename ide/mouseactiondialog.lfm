@@ -1,7 +1,7 @@
 object EditorMouseOptionsChangeDialog: TEditorMouseOptionsChangeDialog
-  Left = 647
+  Left = 283
   Height = 185
-  Top = 463
+  Top = 237
   Width = 362
   AutoSize = True
   BorderIcons = [biSystemMenu]

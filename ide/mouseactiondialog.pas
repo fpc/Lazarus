@@ -1,4 +1,4 @@
-unit editor_mouseaction_options_dlg;
+unit MouseActionDialog;
 
 {$mode objfpc}{$H+}
 
@@ -20,7 +20,7 @@ type
 
   { TEditorMouseOptionsChangeDialog }
 
-  TEditorMouseOptionsChangeDialog = class(TForm)
+  TMouseaActionDialog = class(TForm)
     ActionBox: TComboBox;
     ActionLabel: TLabel;
     AltCheck: TCheckBox;
@@ -53,9 +53,9 @@ const
   IndexToBtn: array [0..2] of TMouseButton = (mbLeft, mbRight, mbMiddle);
   IndexToClick: array [0..3] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad);
 
-{ TEditorMouseOptionsChangeDialog }
+{ TMouseaActionDialog }
 
-procedure TEditorMouseOptionsChangeDialog.FormCreate(Sender: TObject);
+procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
   i: Integer;
   CName: String;
@@ -81,9 +81,12 @@ begin
   ShiftCheck.Caption := dlgMouseOptModShift;
   AltCheck.Caption   := dlgMouseOptModAlt;
   CtrlCheck.Caption  := dlgMouseOptModCtrl;
+  ActionLabel.Caption := dlgMouseOptDescAction;
+  BtnLabel.Caption := dlgMouseOptDescButton;
+  BtnDefault.Caption :=  dlgMouseOptBtnModDef
 end;
 
-procedure TEditorMouseOptionsChangeDialog.ResetInputs;
+procedure TMouseaActionDialog.ResetInputs;
 begin
   ActionBox.ItemIndex := 0;
   ButtonBox.ItemIndex := 0;
@@ -94,14 +97,14 @@ begin
   CtrlCheck.State := cbGrayed;
 end;
 
-procedure TEditorMouseOptionsChangeDialog.BtnDefaultClick(Sender: TObject);
+procedure TMouseaActionDialog.BtnDefaultClick(Sender: TObject);
 begin
   ShiftCheck.State := cbGrayed;
   AltCheck.State := cbGrayed;
   CtrlCheck.State := cbGrayed;
 end;
 
-procedure TEditorMouseOptionsChangeDialog.CapturePanelMouseDown(Sender: TObject;
+procedure TMouseaActionDialog.CapturePanelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ButtonBox.ItemIndex := BtnToIndex[Button];
@@ -114,7 +117,7 @@ begin
   CtrlCheck.Checked  := ssCtrl in Shift ;
 end;
 
-procedure TEditorMouseOptionsChangeDialog.ReadFromAction(MAct: TSynEditMouseAction);
+procedure TMouseaActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
 begin
   ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Command))));
   ButtonBox.ItemIndex := BtnToIndex[MAct.Button];
@@ -129,7 +132,7 @@ begin
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
 end;
 
-procedure TEditorMouseOptionsChangeDialog.WriteToAction(MAct: TSynEditMouseAction);
+procedure TMouseaActionDialog.WriteToAction(MAct: TSynEditMouseAction);
 begin
   MAct.Command := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
   MAct.Button := IndexToBtn[ButtonBox.ItemIndex];
@@ -149,7 +152,7 @@ begin
 end;
 
 initialization
-  {$I editor_mouseaction_options_dlg.lrs}
+  {$I mouseactiondialog.lrs}
 
 end.
 

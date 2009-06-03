@@ -1202,6 +1202,8 @@ resourcestring
   dlgMouseOptCaretMove = 'Move Caret (extra)';
   dlgMouseOptErrorDup = 'Duplicate Entry';
   dlgMouseOptErrorDupText = 'This entry conflicts with an existing entry';
+  dlgMouseOptDescAction = 'Action';
+  dlgMouseOptDescButton = 'Click';
   dlgUseDividerDraw = 'Divider drawing';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';

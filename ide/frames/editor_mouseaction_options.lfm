@@ -5,8 +5,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   ClientHeight = 415
   ClientWidth = 610
   Visible = False
-  DesignLeft = 276
-  DesignTop = 195
+  DesignLeft = 246
+  DesignTop = 209
   object p2: TPanel[0]
     Left = 0
     Height = 378
@@ -46,7 +46,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Width = 130
       Align = alLeft
       AutoExpand = True
-      Constraints.MinWidth = 25
+      Constraints.MinWidth = 80
       DefaultItemHeight = 17
       ReadOnly = True
       TabOrder = 1
@@ -58,7 +58,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Height = 378
       Top = 0
       Width = 5
-      MinSize = 100
+      MinSize = 1
+      OnCanResize = Splitter1CanResize
     end
   end
   object p3: TPanel[1]
