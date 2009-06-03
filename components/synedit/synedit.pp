@@ -1701,13 +1701,13 @@ begin
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   fKeystrokes := TSynEditKeyStrokes.Create(Self);
-  FMouseActions := TSynEditMouseActions.Create(Self);
-  FMouseSelActions := TSynEditMouseSelActions.Create(Self);
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
-    FMouseActions.ResetDefaults;
-    FMouseSelActions.ResetDefaults;
   end;
+  FMouseActions := TSynEditMouseActions.Create(Self);
+  FMouseSelActions := TSynEditMouseSelActions.Create(Self);
+  FMouseActions.ResetDefaults;
+  FMouseSelActions.ResetDefaults;
   fMarkList := TSynEditMarkList.Create(self);
   fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
   fRightEdgeColor := clSilver;
