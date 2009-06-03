@@ -60,8 +60,6 @@ type
 
   TGtkWSCustomFrame = class(TWSCustomFrame)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSFrame }
@@ -515,62 +513,6 @@ begin
   Result := TLCLIntfHandle(PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
-end;
-
-{ TGtkWSCustomFrame }
-
-class function TGtkWSCustomFrame.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-var
-  Scrolled: PGtkScrolledWindow;
-  Layout: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  Adjustment: PGtkAdjustment;
-begin
-  // create a gtk_scrolled_window for the scrollbars
-  Scrolled := PGtkScrolledWindow(gtk_scrolled_window_new(nil, nil));
-
-  GTK_WIDGET_UNSET_FLAGS(Scrolled^.hscrollbar, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS(Scrolled^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(Scrolled, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-  gtk_object_set_data(PGtkObject(Scrolled), odnScrollArea, Scrolled);
-
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Scrolled, dbgsName(AWinControl));
-  {$ENDIF}
-
-  WidgetInfo := CreateWidgetInfo(Scrolled, AWinControl, AParams);
-
-  Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
-  if Adjustment <> nil then
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.vscrollbar);
-
-  Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
-  if Adjustment <> nil then
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
-
-  // create a gtk_layout for the client area, so childs can be added at
-  // free x,y positions and the scrollbars automatically scrolls the childs
-  Layout := gtk_layout_new(nil, nil);
-  gtk_container_add(PGTKContainer(Scrolled), Layout);
-  gtk_widget_show(Layout);
-  SetFixedWidget(Scrolled, Layout);
-  SetMainWidget(Scrolled, Layout);
-
-  Result := TLCLIntfHandle(PtrUInt(Scrolled));
-  Set_RC_Name(AWinControl, PGtkWidget(Scrolled));
-  TGtkWSScrollingWinControl.SetCallBacks(PGtkWidget(Scrolled), WidgetInfo);
-end;
-
-class procedure TGtkWSCustomFrame.SetColor(const AWinControl: TWinControl);
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'SetColor')
-  then Exit;
-
-  GtkWidgetSet.SetWidgetColor(PGtkBin(AWinControl.Handle)^.child,
-                              clNone, AWinControl.Color,
-                              [GTK_STATE_NORMAL, GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT, GTK_STATE_SELECTED]);
 end;
 
 end.

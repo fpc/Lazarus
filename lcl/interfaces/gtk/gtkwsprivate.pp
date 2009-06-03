@@ -304,24 +304,30 @@ begin
   // Only do the scrollbars, leave the core to the default (we might have a viewport)
   TGtkPrivateWidget.SetZPosition(AWinControl, APosition);
 
-  if GtkWidgetIsA(Widget,gtk_frame_get_type) then begin
-    ScrollWidget := PGtkScrolledWindow(PGtkFrame(Widget)^.Bin.Child);
-    if ScrollWidget<>nil then begin
-      case APosition of
-        wszpBack:  begin
-          // gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
-          if ScrollWidget^.hscrollbar <> nil
-          then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
-          if ScrollWidget^.vscrollbar <> nil
-          then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
-        end;
-        wszpFront: begin
-          // gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
-          if ScrollWidget^.hscrollbar <> nil
-          then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
-          if ScrollWidget^.vscrollbar <> nil
-          then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
-        end;
+  if GtkWidgetIsA(Widget, gtk_frame_get_type) then
+    ScrollWidget := PGtkScrolledWindow(PGtkFrame(Widget)^.Bin.Child)
+  else
+  if GtkWidgetIsA(Widget, gtk_scrolled_window_get_type) then
+    ScrollWidget := PGtkScrolledWindow(Widget)
+  else
+    ScrollWidget := nil;
+
+  if ScrollWidget <> nil then
+  begin
+    case APosition of
+      wszpBack:  begin
+        // gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
+        if ScrollWidget^.hscrollbar <> nil
+        then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
+        if ScrollWidget^.vscrollbar <> nil
+        then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+      end;
+      wszpFront: begin
+        // gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
+        if ScrollWidget^.hscrollbar <> nil
+        then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
+        if ScrollWidget^.vscrollbar <> nil
+        then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
       end;
     end;
   end;

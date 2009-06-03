@@ -540,8 +540,7 @@ end;
 // Forms
 function RegisterScrollingWinControl: Boolean; alias : 'WSRegisterScrollingWinControl';
 begin
-  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl, TGtkPrivateScrollingWinControl); { GTK1 }
-//  RegisterWSComponent(TScrollingWinControl, TGtk2WSScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TGtk2WSScrollingWinControl, TGtkPrivateScrollingWinControl);
   Result := True;
 end;
 
