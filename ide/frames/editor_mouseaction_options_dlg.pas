@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, SynEditMouseCmds, LazarusIDEStrConsts;
+  StdCtrls, ButtonPanel, SynEditMouseCmds, LazarusIDEStrConsts;
 
 const
   ButtonName: Array [TMouseButton] of String =
@@ -23,19 +23,17 @@ type
   TEditorMouseOptionsChangeDialog = class(TForm)
     ActionBox: TComboBox;
     ActionLabel: TLabel;
-    CancelButton: TButton;
     AltCheck: TCheckBox;
     BtnDefault: TButton;
     BtnLabel: TLabel;
     ButtonBox: TComboBox;
+    ButtonPanel1: TButtonPanel;
     CaretCheck: TCheckBox;
     ClickBox: TComboBox;
     CtrlCheck: TCheckBox;
     DirCheck: TCheckBox;
-    p3: TPanel;
     CapturePanel: TPanel;
     ShiftCheck: TCheckBox;
-    OkButton: TButton;
     procedure BtnDefaultClick(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
@@ -85,8 +83,6 @@ begin
   ShiftCheck.Caption := dlgMouseOptModShift;
   AltCheck.Caption   := dlgMouseOptModAlt;
   CtrlCheck.Caption  := dlgMouseOptModCtrl;
-  OkButton.Caption     := dlgMouseOptBtnOk;
-  CancelButton.Caption := dlgMouseOptBtnCancel;
 end;
 
 procedure TEditorMouseOptionsChangeDialog.ResetInputs;
