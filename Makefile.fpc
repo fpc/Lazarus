@@ -77,7 +77,8 @@ starter:
 #-----------------------------------------------------------------------------
 lazbuild: lazbuilder
 lazbuilder:
-	$(MAKE) -C ide lazbuilder
+	$(MAKE) -C lcl/interfaces/nogui 
+	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
 tools: lcl
