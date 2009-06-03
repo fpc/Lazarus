@@ -2336,6 +2336,16 @@ begin
           fMouseMap.Delete(i);
     XMLConfig.DeleteValue('EditorOptions/General/Editor/DragDropEditing');
 
+    if XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickSelectsLine', False) then
+      for i := fMouseMap.Count-1 downto 0 do
+        if (fMouseMap[i].Button = mbLeft) and
+           (fMouseMap[i].ClickCount = ccDouble) and
+           (fMouseMap[i].IsMatchingShiftState([])) and
+           ( (fMouseMap[i].Command = emcSelectWord) or
+             (fMouseMap[i].Command = emcSelectLine) )
+        then fMouseMap[i].Command := emcSelectLine;
+    XMLConfig.DeleteValue('EditorOptions/General/Editor/DoubleClickSelectsLine');
+
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -2619,10 +2629,6 @@ begin
       Result := 'AutoIndent';
     eoBracketHighlight:
       Result := 'BracketHighlight';
-    eoDoubleClickSelectsLine:
-      Result := 'DoubleClickSelectsLine';
-    eoDragDropEditing:
-      Result := 'DragDropEditing';
     eoDropFiles:
       Result := 'DropFiles';
     eoEnhanceHomeKey:

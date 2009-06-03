@@ -55,7 +55,6 @@ type
     AlwaysVisibleCursorCheckBox: TCheckBox;
     CursorSkipsSelectionCheckBox: TCheckBox;
     HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
-    DoubleClickLineCheckBox: TCheckBox;
     CursorGroupLabel: TLabel;
     DropFilesCheckBox: TCheckBox;
     MouseGroupLabel: TLabel;
@@ -81,7 +80,6 @@ type
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
-    procedure DoubleClickLineCheckBoxChange(Sender: TObject);
     procedure DropFilesCheckBoxChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
@@ -153,7 +151,6 @@ begin
 
   // mouse, drag&drop
   MouseGroupLabel.Caption := dlgMouseGroupOptions;
-  DoubleClickLineCheckBox.Caption := dlgDoubleClickLine;
   DropFilesCheckBox.Caption := dlgDropFiles;
 
   // caret + key navigation
@@ -194,7 +191,6 @@ begin
     TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
 
     // mouse
-    DoubleClickLineCheckBox.Checked := eoDoubleClickSelectsLine in SynEditOptions;
     DropFilesCheckBox.Checked := eoDropFiles in SynEditOptions;
 
     // cursor
@@ -272,7 +268,6 @@ begin
     BlockIndentType := TSynBeautifierIndentType(BlockIndentTypeComboBox.ItemIndex);
 
     // mouse
-    UpdateOptionFromBool(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
     UpdateOptionFromBool(DropFilesCheckBox.Checked, eoDropFiles);
 
     // cursor
@@ -348,12 +343,6 @@ procedure TEditorGeneralOptionsFrame.CursorSkipsSelectionCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
-end;
-
-procedure TEditorGeneralOptionsFrame.DoubleClickLineCheckBoxChange(
-  Sender: TObject);
-begin
-  SetPreviewOption(DoubleClickLineCheckBox.Checked, eoDoubleClickSelectsLine);
 end;
 
 procedure TEditorGeneralOptionsFrame.DropFilesCheckBoxChange(Sender: TObject);

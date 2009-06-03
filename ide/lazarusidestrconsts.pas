@@ -1157,7 +1157,6 @@ resourcestring
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
   dlgUndoAfterSave = 'Undo after save';
-  dlgDoubleClickLine = 'Double click line';
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';

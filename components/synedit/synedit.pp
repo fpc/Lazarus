@@ -215,7 +215,8 @@ type
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
     {$IFDEF SYN_LAZARUS}
     eoBracketHighlight,        // Highlight matching bracket
-    eoDoubleClickSelectsLine,  // Select line on double click
+    eoDoubleClickSelectsLine,  // DEPRECATED
+                               // Select line on double click
     eoHideRightMargin,         // Hides the right margin line
     eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
     eoShowCtrlMouseLinks,      // DEPRECATED, now controlled vie MouseActions
@@ -7313,6 +7314,20 @@ begin
       for i := FMouseActions.Count-1 downto 0 do
         if FMouseActions[i].Button = mbRight then
           FMouseActions[i].MoveCaret := (eoDragDropEditing in fOptions);
+    end;
+    // eoDoubleClickSelectsLine
+    if (eoDoubleClickSelectsLine in ChangedOptions) then begin
+      for i := FMouseActions.Count-1 downto 0 do
+        if (FMouseActions[i].Button = mbLeft) and
+           (FMouseActions[i].ClickCount = ccDouble) and
+           (FMouseActions[i].IsMatchingShiftState([])) and
+           ( (FMouseActions[i].Command = emcSelectWord) or
+             (FMouseActions[i].Command = emcSelectLine) )
+        then begin
+          if (eoDoubleClickSelectsLine in fOptions)
+          then FMouseActions[i].Command := emcSelectLine
+          else FMouseActions[i].Command := emcSelectWord;
+        end
     end;
 
   end;
