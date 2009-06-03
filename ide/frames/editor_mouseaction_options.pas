@@ -240,7 +240,6 @@ begin
   FMainActions := TSynEditMouseActions.Create(nil);
   FSelActions := TSynEditMouseActions.Create(nil);
   ChangeDlg := TMouseaActionDialog.Create(self);
-  ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
 end;
 
 destructor TEditorMouseOptionsFrame.Destroy;

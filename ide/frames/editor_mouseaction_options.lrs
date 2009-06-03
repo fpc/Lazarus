@@ -17,7 +17,7 @@ LazarusResources.Add('TEditorMouseOptionsFrame','FORMDATA',[
   +'useDown'#11'OnMouseMove'#7#19'ActionGridMouseMove'#9'OnMouseUp'#7#17'Action'
   +'GridMouseUp'#8'OnResize'#7#16'ActionGridResize'#0#0#9'TTreeView'#11'Context'
   +'Tree'#4'Left'#2#0#6'Height'#3'z'#1#3'Top'#2#0#5'Width'#3#130#0#5'Align'#7#6
-  +'alLeft'#10'AutoExpand'#9#20'Constraints.MinWidth'#2'P'#17'DefaultItemHeight'
+  +'alLeft'#10'AutoExpand'#9#20'Constraints.MinWidth'#2'2'#17'DefaultItemHeight'
   +#2#17#8'ReadOnly'#9#8'TabOrder'#2#1#8'OnChange'#7#17'ContextTreeChange'#7'Op'
   +'tions'#11#13'tvoAutoExpand'#17'tvoAutoItemHeight'#16'tvoHideSelection'#21't'
   +'voKeepCollapsedNodes'#11'tvoReadOnly'#14'tvoShowButtons'#12'tvoShowLines'#11

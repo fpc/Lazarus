@@ -46,7 +46,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Width = 130
       Align = alLeft
       AutoExpand = True
-      Constraints.MinWidth = 80
+      Constraints.MinWidth = 50
       DefaultItemHeight = 17
       ReadOnly = True
       TabOrder = 1
