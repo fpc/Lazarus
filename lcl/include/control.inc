@@ -586,7 +586,7 @@ end;
 
 function TControl.GetUndockHeight: Integer;
 begin
-  if FUndockHeight>0 then
+  if FUndockHeight > 0 then
     Result := FUndockHeight
   else
     Result := Height;
@@ -594,7 +594,7 @@ end;
 
 function TControl.GetUndockWidth: Integer;
 begin
-  if FUndockWidth>0 then
+  if FUndockWidth > 0 then
     Result := FUndockWidth
   else
     Result := Width;
@@ -2801,6 +2801,9 @@ begin
   // autosize this control
   if cfAutoSizeNeeded in FControlFlags then
     AdjustSize;
+  // store designed width and height for undocking
+  FUndockHeight := Height;
+  FUndockWidth := Width;
   if Action <> nil then ActionChange(Action, True);
   
   CheckOnChangeBounds;
