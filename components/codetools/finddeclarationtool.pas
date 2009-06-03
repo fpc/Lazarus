@@ -349,6 +349,7 @@ type
 
     if Desc = xtConstSet, SubDesc contains the type of the set
     if Context.Node<>nil, it contains the corresponding codetree node
+    if Desc = xtPointer then SubDesc contains the type e.g. xtChar
   }
   TExpressionType = record
     Desc: TExpressionTypeDesc;
@@ -645,7 +646,10 @@ type
       out ExprType: TExpressionType): string;
     function IsTermEdgedBracket(TermPos: TAtomPosition;
       out EdgedBracketsStartPos: integer): boolean;
+    function IsTermNamedPointer(TermPos: TAtomPosition;
+      out ExprType: TExpressionType): boolean;
     function FindSetOfEnumerationType(EnumNode: TCodeTreeNode): TCodeTreeNode;
+    function FindPointerOfIdentifier(TypeNode: TCodeTreeNode): TCodeTreeNode;
     function FindExprTypeAsString(const ExprType: TExpressionType;
       TermCleanPos: integer; Params: TFindDeclarationParams): string;
   protected
@@ -8701,11 +8705,16 @@ begin
       end;
     end;
   end;
-  ExprType:=CleanExpressionType;
-  Params.ContextNode:=CursorNode;
-  Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                 fdfTopLvlResolving,fdfFunctionResult];
-  ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+
+  if IsTermNamedPointer(TermPos,ExprType) then begin
+    // pointer type
+  end else begin
+    ExprType:=CleanExpressionType;
+    Params.ContextNode:=CursorNode;
+    Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                   fdfTopLvlResolving,fdfFunctionResult];
+    ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+  end;
   Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
 end;
 
@@ -8765,9 +8774,60 @@ begin
   Result:=EdgedBracketsStartPos>0;
 end;
 
+function TFindDeclarationTool.IsTermNamedPointer(TermPos: TAtomPosition; out
+  ExprType: TExpressionType): boolean;
+var
+  SubExprType: TExpressionType;
+  Node: TCodeTreeNode;
+  PointerTool: TFindDeclarationTool;
+  Params: TFindDeclarationParams;
+  PointerNode: TCodeTreeNode;
+begin
+  Result:=false;
+  MoveCursorToCleanPos(TermPos.StartPos);
+  ReadNextAtom;
+  if not AtomIsChar('@') then exit;
+  // a pointer
+  ExprType:=CleanExpressionType;
+  ExprType.Desc:=xtPointer;
+  Result:=true;
+  // try to find a name
+  ReadNextAtom;
+  if CurPos.StartPos>SrcLen then exit;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.ContextNode:=FindDeepestNodeAtPos(CurPos.StartPos,true);
+    SubExprType:=FindExpressionResultType(Params,CurPos.StartPos,-1);
+  finally
+    Params.Free;
+  end;
+  //debugln(['TFindDeclarationTool.IsTermNamedPointer SubExprType=',ExprTypeToString(SubExprType)]);
+  if SubExprType.Desc in xtAllPredefinedTypes then begin
+    ExprType.SubDesc:=SubExprType.Desc;
+    exit(true);
+  end else if (SubExprType.Desc=xtContext) then begin
+    Node:=SubExprType.Context.Node;
+    if (not (Node.Desc in AllIdentifierDefinitions))
+    and (Node.Parent<>nil) and (Node.Parent.Desc in AllIdentifierDefinitions) then
+      Node:=Node.Parent;
+    if (Node.Desc in AllIdentifierDefinitions) then begin
+      PointerTool:=SubExprType.Context.Tool;
+      PointerNode:=PointerTool.FindPointerOfIdentifier(Node);
+      if PointerNode<>nil then begin
+        ExprType:=CleanExpressionType;
+        ExprType.Desc:=xtContext;
+        ExprType.SubDesc:=xtNone;
+        ExprType.Context.Tool:=PointerTool;
+        ExprType.Context.Node:=PointerNode;
+        exit(true);
+      end;
+    end;
+  end;
+end;
+
 function TFindDeclarationTool.FindSetOfEnumerationType(EnumNode: TCodeTreeNode
   ): TCodeTreeNode;
-// find search in the same type section for a 'set of ' node
+// search in the same type section for a 'set of ' node
 var
   p: PChar;
 
@@ -8798,6 +8858,36 @@ begin
   end;
 end;
 
+function TFindDeclarationTool.FindPointerOfIdentifier(
+  TypeNode: TCodeTreeNode): TCodeTreeNode;
+// search in the same type section for a '^identifier' node
+var
+  p: PChar;
+
+ function IsPointerOf(Node: TCodeTreeNode): boolean;
+ begin
+   Result:=false;
+   if (Node.Desc<>ctnTypeDefinition)
+   or (Node.FirstChild=nil)
+   or (Node.FirstChild.Desc<>ctnPointerType) then exit;
+   MoveCursorToNodeStart(Node.FirstChild);
+   ReadNextAtom; // read ^
+   if not AtomIsChar('^') then exit;
+   ReadNextAtom; // read identifier
+   if not AtomIsIdentifier(false) then exit;
+   Result:=CompareSrcIdentifiers(CurPos.StartPos,p);
+ end;
+
+begin
+  if TypeNode.Desc<>ctnTypeDefinition then exit(nil);
+  p:=@Src[TypeNode.StartPos];
+  Result:=TypeNode.Parent.FirstChild;
+  while Result<>nil do begin
+    if IsPointerOf(Result) then exit;
+    Result:=Result.NextBrother;
+  end;
+end;
+
 function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
   Params: TFindDeclarationParams): string;
@@ -8815,7 +8905,7 @@ var
   ANode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
-  DebugLn('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
+  DebugLn('TFindDeclarationTool.FindExprTypeAsString ExprTypeToString=',
     ExprTypeToString(ExprType));
   {$ENDIF}
   case ExprType.Desc of
@@ -8875,7 +8965,7 @@ begin
         end;
 
         if Result='' then begin
-          DebugLn('TFindDeclarationTool.FindTermTypeAsString ContextNode=',
+          DebugLn('TFindDeclarationTool.FindExprTypeAsString ContextNode=',
             FindContext.Node.DescAsString);
           RaiseTermNotSimple;
         end;
@@ -8892,8 +8982,43 @@ begin
     xtInt64,
     xtCardinal,
     xtQWord,
-    xtPChar,
-    xtPointer,
+    xtPChar:
+      Result:=ExpressionTypeDescNames[ExprType.Desc];
+
+    xtPointer:
+      begin
+        case ExprType.SubDesc of
+        xtChar,
+        xtWideChar,
+        xtReal,
+        xtSingle,
+        xtDouble,
+        xtExtended,
+        xtCurrency,
+        xtComp,
+        xtInt64,
+        xtCardinal,
+        xtQWord,
+        xtBoolean,
+        xtByteBool,
+        xtLongBool,
+        xtString,
+        xtAnsiString,
+        xtShortString,
+        xtWideString,
+        xtUnicodeString,
+        xtLongint,
+        xtLongWord,
+        xtWord,
+        xtSmallInt,
+        xtShortInt,
+        xtByte:
+          Result:='P'+ExpressionTypeDescNames[ExprType.SubDesc];
+        else
+          Result:=ExpressionTypeDescNames[xtPointer];
+        end;
+      end;
+
     xtFile,
     xtText,
     xtLongint,
@@ -8930,7 +9055,7 @@ begin
     xtNil:
       RaiseTermNotSimple;
   else
-    DebugLn('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
+    DebugLn('TCodeCompletionCodeTool.FindExprTypeAsString ExprTypeToString=',
       ExprTypeToString(ExprType));
     RaiseTermNotSimple;
   end;

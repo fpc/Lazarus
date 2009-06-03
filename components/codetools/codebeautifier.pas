@@ -133,6 +133,10 @@ type
     IndentValid: boolean;
   end;
 
+  TFABIndentationPolicies = record
+
+  end;
+
   { TFABPolicies }
 
   TFABPolicies = class

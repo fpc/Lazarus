@@ -4747,11 +4747,11 @@ begin
   if (TheClassName='') or (length(TheClassName)>255) then
     RaiseException(Format(ctsInvalidClassName, ['"', TheClassName, '"']));
   {$IFDEF VerboseDanglingComponentEvents}
-  DebugLn(['TStandardCodeTool.GatherPublishedClassElements AAA1']);
+  DebugLn(['TStandardCodeTool.GatherPublishedClassElements BEFORE buildtree']);
   {$ENDIF}
   BuildTree(true);
   {$IFDEF VerboseDanglingComponentEvents}
-  DebugLn(['TStandardCodeTool.GatherPublishedClassElements AAA2']);
+  DebugLn(['TStandardCodeTool.GatherPublishedClassElements after buildtree']);
   {$ENDIF}
   ClassNode:=FindClassNodeInInterface(TheClassName,true,false,
     ExceptionOnClassNotFound);
@@ -5274,6 +5274,7 @@ var
     if not SourceChangeCache.Replace(FrontGap,AfterGap,
       FromPos,ToPos,NewCode) then exit;
     if not SourceChangeCache.Apply then exit;
+    Result:=true;
   end;
 
   function CompleteStatements(var Stack: TBlockStack): Boolean;
@@ -5394,7 +5395,7 @@ var
           btTry:
             begin
               // missing finally/except
-              DebugLn(['ReadStatements AAA1 CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
+              DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
               DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
               if InCursorBlock then begin
                 {$IFDEF ShowCompleteBlock}
@@ -5644,14 +5645,14 @@ var
     if CleanCursorPos<StartNode.StartPos then exit;
     LastIndent:=GetLineIndent(Src,StartNode.StartPos);
     MoveCursorToNodeStart(StartNode);
-    ReadNextAtom;
+    ReadNextAtom; // record
     if CleanCursorPos<CurPos.EndPos then exit(true);
     ReadNextAtom;
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
       Indent:=GetLineIndent(Src,CurPos.StartPos);
       InsertPos:=CleanCursorPos;
-      if Indent<LastIndent then begin
+      if Indent<=LastIndent then begin
         if not Replace('end;',InsertPos,InsertPos,LastIndent,
           gtNewLine,gtEmptyLine,
           [bcfIndentExistingLineBreaks])
