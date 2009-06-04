@@ -793,6 +793,7 @@ resourcestring
   lisHintViewForms = 'View Forms';
   lisHintRun = 'Run';
   lisHintPause = 'Pause';
+  lisHintStop = 'Stop';
   lisHintStepInto = 'Step Into';
   lisHintStepOver = 'Step Over';
   

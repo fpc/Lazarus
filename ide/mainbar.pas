@@ -52,20 +52,26 @@ type
   
     // the speedbuttons panel for frequently used IDE functions
     pnlSpeedButtons      : TPanel;
-    ViewUnitsSpeedBtn    : TSpeedButton;
-    ViewFormsSpeedBtn    : TSpeedButton;
-    NewUnitSpeedBtn      : TSpeedButton;
-    OpenFileSpeedBtn     : TSpeedButton;
-    OpenFileArrowSpeedBtn: TSpeedButton;
-    OpenFilePopUpMenu    : TPopupMenu;
-    SaveSpeedBtn         : TSpeedButton;
-    SaveAllSpeedBtn      : TSpeedButton;
-    ToggleFormSpeedBtn   : TSpeedButton;
-    NewFormSpeedBtn      : TSpeedButton;
-    RunSpeedButton       : TSpeedButton;
-    PauseSpeedButton     : TSpeedButton;
-    StepIntoSpeedButton  : TSpeedButton;
-    StepOverSpeedButton  : TSpeedButton;
+    tbStandard           : TToolBar;
+      NewUnitSpeedBtn      : TToolButton;
+      tbDivider1           : TToolButton;
+      OpenFileSpeedBtn     : TToolButton;
+      OpenFilePopUpMenu    : TPopupMenu;
+      SaveSpeedBtn         : TToolButton;
+      SaveAllSpeedBtn      : TToolButton;
+      tbDivider2           : TToolButton;
+      ToggleFormSpeedBtn   : TToolButton;
+      NewFormSpeedBtn      : TToolButton;
+    tbViewDebug            : TToolBar;
+      ViewUnitsSpeedBtn    : TToolButton;
+      ViewFormsSpeedBtn    : TToolButton;
+      tbDivider3           : TToolButton;
+      RunSpeedButton       : TToolButton;
+      PauseSpeedButton     : TToolButton;
+      StopSpeedButton      : TToolButton;
+      StepIntoSpeedButton  : TToolButton;
+      StepOverSpeedButton  : TToolButton;
+
     NewUnitFormPopupMenu : TPopupMenu;
       NewUFSetDefaultMenuItem: TMenuItem;
 
@@ -442,7 +448,6 @@ begin
   // create the popupmenu for the MainIDEBar.OpenFileArrowSpeedBtn
   OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-  OpenFilePopupMenu.AutoPopup := False;
 
   NewUnitFormPopupMenu:=TPopupMenu.Create(TheOwner);
   NewUnitFormPopupMenu.Name:='NewUnitFormPopupMenu';

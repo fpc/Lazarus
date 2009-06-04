@@ -73,7 +73,7 @@ uses
   // fpc packages
   Math, Classes, SysUtils, Process, AsyncProcess, TypInfo,
   // lcl
-  LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
+  LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
   // codetools
@@ -330,7 +330,7 @@ type
     // help menu
     // see helpmanager.pas
 
-    procedure OpenFileDownArrowClicked(Sender: TObject);
+    procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
   public
     // Global IDE events
@@ -1621,75 +1621,81 @@ type
 
 procedure TMainIDE.SetupSpeedButtons;
 
-  function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
-    var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
-    const AOnClick: TNotifyEvent; const AHint: String): TSpeedButton;
+  function CreateButton(AToolBar: TToolBar; const AName, APixName: String;     
+    const AOnClick: TNotifyEvent; const AHint: String): TToolButton;
   begin
-    Result := TSpeedButton.Create(OwningComponent);
+    Result := TToolButton.Create(OwningComponent);
     with Result do
     begin
       Name := AName;
-      Parent := MainIDEBar.pnlSpeedButtons;
+      Parent := AToolBar;
       Enabled := True;
-      Top := ATop;
-      Left := ALeft;
       OnClick := AOnClick;
-      LoadGlyphFromLazarusResource(APixName);
-      NumGlyphs := ANumGlyphs;
-      Flat := True;
-      //Transparent:=true;
-      if mfTop in AMoveFlags then Inc(ATop, Height);
-      if mfLeft in AMoveFlags then Inc(ALeft, Width);
+      ImageIndex := IDEImages.LoadImage(16, APixName);
       Hint := AHint;
     end;
   end;
 
-var
-  ButtonTop, ButtonLeft, n: Integer;
-begin
-  MainIDEBar.pnlSpeedButtons := TPanel.Create(OwningComponent);
-  with MainIDEBar.pnlSpeedButtons do begin
-    Name := 'pnlSpeedButtons';
-    Parent:= MainIDEBar;
-    Align := alLeft;
-    Caption:= '';
-    BevelWidth:=1;
-    BevelOuter:=bvRaised;
-    Visible:=EnvironmentOptions.IDESpeedButtonsVisible;
+  function CreateDivider(AToolBar: TToolBar): TToolButton;
+  begin
+    Result := TToolButton.Create(OwningComponent);
+    with Result do
+    begin
+      Style := tbsDivider;
+      Width := 3;
+      Parent := AToolBar;
+    end;
   end;
 
+  function CreateToolBar(AName: String): TToolBar;
+  begin
+    Result := TToolBar.Create(OwningComponent);
+    Result.Name := AName;
+    Result.Parent := MainIDEBar.pnlSpeedButtons;
+    Result.Images := IDEImages.Images_16;
+  end;
 
-  ButtonTop := 2;
-  ButtonLeft := 2;
-  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'item_unit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
+begin
+  MainIDEBar.pnlSpeedButtons := TPanel.Create(OwningComponent);
+  with MainIDEBar.pnlSpeedButtons do 
+  begin
+    Name := 'pnlSpeedButtons';
+    Parent := MainIDEBar;
+    Align := alLeft;
+    Caption := '';
+    BevelOuter := bvNone;
+    Visible := EnvironmentOptions.IDESpeedButtonsVisible;
+  end;
 
-  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'laz_open'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
+  MainIDEBar.tbStandard := CreateToolBar('tbStandard');
+  MainIDEBar.tbViewDebug := CreateToolBar('tbViewDebug');
 
-  // store left
-  n := ButtonLeft;
-  MainIDEBar.OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked, '');
-  MainIDEBar.OpenFileArrowSpeedBtn.Width := 12;
-  ButtonLeft := n+12+1;
+  MainIDEBar.NewUnitSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'NewUnitSpeedBtn'    , 'item_unit'                 , @mnuNewUnitClicked, lisMenuNewUnit);
+  MainIDEBar.tbDivider1          := CreateDivider(MainIDEBar.tbStandard);
+  MainIDEBar.OpenFileSpeedBtn    := CreateButton(MainIDEBar.tbStandard , 'OpenFileSpeedBtn'   , 'laz_open'                  , @mnuOpenClicked, lisHintOpen);
+  MainIDEBar.SaveSpeedBtn        := CreateButton(MainIDEBar.tbStandard , 'SaveSpeedBtn'       , 'laz_save'                  , @mnuSaveClicked, lisHintSave);
+  MainIDEBar.SaveAllSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'SaveAllSpeedBtn'    , 'menu_save_all'             , @mnuSaveAllClicked, lisHintSaveAll);
+  MainIDEBar.tbDivider2          := CreateDivider(MainIDEBar.tbStandard);
+  MainIDEBar.NewFormSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'NewFormSpeedBtn'    , 'item_form'                 , @mnuNewFormClicked, lisMenuNewForm);
+  MainIDEBar.ToggleFormSpeedBtn  := CreateButton(MainIDEBar.tbStandard , 'ToggleFormSpeedBtn' , 'menu_view_toggle_form_unit', @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
-  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'laz_save'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
-  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_save_all', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
-  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'item_form'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
-  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'menu_view_toggle_form_unit' , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
-
-  // new row
-  ButtonLeft := 2;
-  MainIDEBar.ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'menu_view_units' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
-  MainIDEBar.ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'menu_view_forms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
-  inc(ButtonLeft,13);
-  MainIDEBar.RunSpeedButton        := CreateButton('RunSpeedButton'       , 'menu_run'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
-  MainIDEBar.PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'menu_pause'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
-  MainIDEBar.PauseSpeedButton.Enabled:=false;
-  MainIDEBar.StepIntoSpeedButton   := CreateButton('StepIntoSpeedButton'  , 'menu_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
-  MainIDEBar.StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'menu_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
-
-  MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
+  MainIDEBar.ViewUnitsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewUnitsSpeedBtn'  , 'menu_view_units'           , @mnuViewUnitsClicked, lisHintViewUnits);
+  MainIDEBar.ViewFormsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewFormsSpeedBtn'  , 'menu_view_forms'           , @mnuViewFormsClicked, lisHintViewForms);
+  MainIDEBar.tbDivider3          := CreateDivider(MainIDEBar.tbViewDebug);
+  MainIDEBar.RunSpeedButton      := CreateButton(MainIDEBar.tbViewDebug, 'RunSpeedButton'     , 'menu_run'                  , @mnuRunProjectClicked, lisHintRun);
+  MainIDEBar.PauseSpeedButton    := CreateButton(MainIDEBar.tbViewDebug, 'PauseSpeedButton'   , 'menu_pause'                , @mnuPauseProjectClicked, lisHintPause);
+  MainIDEBar.StopSpeedButton     := CreateButton(MainIDEBar.tbViewDebug, 'StopSpeedButton'    , 'menu_stop'                 , @mnuStopProjectClicked, lisHintStop);
+  MainIDEBar.StepIntoSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepIntoSpeedButton', 'menu_stepinto'             , @mnuStepIntoProjectClicked, lisHintStepInto);
+  MainIDEBar.StepOverSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepOverpeedButton' , 'menu_stepover'             , @mnuStepOverProjectClicked, lisHintStepOver);
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
+
+  MainIDEBar.OpenFileSpeedBtn.Style := tbsDropDown;
+  MainIDEBar.OpenFileSpeedBtn.DropDownMenu := MainIDEBar.OpenFilePopUpMenu;
+  MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
+
+  MainIDEBar.PauseSpeedButton.Enabled := False;
+  MainIDEBar.StopSpeedButton.Enabled := False;  
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -2326,11 +2332,12 @@ begin
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
-    itmRunMenuPause.Enabled := false;
+    itmRunMenuPause.Enabled := False;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
     itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
     itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
+    itmRunMenuStop.Enabled := False;
     itmRunMenuStop.OnClick := @mnuStopProjectClicked;
     itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
     itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
@@ -3019,33 +3026,35 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.OpenFileDownArrowClicked(Sender: TObject);
+procedure TMainIDE.OpenFilePopupMenuPopup(Sender: TObject);
 var
   CurIndex: integer;
-  PopupPos: TPoint;
   OpenMenuItem: TPopupMenu;
 
   procedure AddFile(const Filename: string);
   var
     AMenuItem: TMenuItem;
   begin
-    if MainIDEBar.OpenFilePopupMenu.Items.Count>CurIndex then
-      AMenuItem:=MainIDEBar.OpenFilePopupMenu.Items[CurIndex]
-    else begin
-      AMenuItem:=TMenuItem.Create(OwningComponent);
-      AMenuItem.Name:=MainIDEBar.OpenFilePopupMenu.Name+'Recent'+IntToStr(CurIndex);
-      AMenuItem.OnClick:=@mnuOpenFilePopupClick;
+    if MainIDEBar.OpenFilePopupMenu.Items.Count > CurIndex then
+      AMenuItem := MainIDEBar.OpenFilePopupMenu.Items[CurIndex]
+    else 
+    begin
+      AMenuItem := TMenuItem.Create(OwningComponent);
+      AMenuItem.Name := MainIDEBar.OpenFilePopupMenu.Name + 'Recent' + IntToStr(CurIndex);
+      AMenuItem.OnClick := @mnuOpenFilePopupClick;
       MainIDEBar.OpenFilePopupMenu.Items.Add(AMenuItem);
     end;
-    AMenuItem.Caption:=Filename;
+    AMenuItem.Caption := Filename;
     inc(CurIndex);
   end;
 
   procedure AddFiles(List: TStringList; MaxCount: integer);
-  var i: integer;
+  var 
+    i: integer;
   begin
-    i:=0;
-    while (i<List.Count) and (i<MaxCount) do begin
+    i := 0;
+    while (i < List.Count) and (i < MaxCount) do 
+    begin
       AddFile(List[i]);
       inc(i);
     end;
@@ -3053,23 +3062,17 @@ var
 
 begin
   // fill the PopupMenu:
-  CurIndex:=0;
+  CurIndex := 0;
   // first add 8 recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles,8);
+  AddFiles(EnvironmentOptions.RecentProjectFiles, 8);
   // add a separator
   AddFile('-');
   // add 12 recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles,12);
-  OpenMenuItem:=MainIDEBar.OpenFilePopupMenu;
+  AddFiles(EnvironmentOptions.RecentOpenFiles, 12);
+  OpenMenuItem := MainIDEBar.OpenFilePopupMenu;
   // remove unused menuitems
-  while OpenMenuItem.Items.Count>CurIndex do
-    OpenMenuItem.Items[OpenMenuItem.Items.Count-1].Free;
-  // calculate screen position to show menu
-  PopupPos := MainIDEBar.OpenFileSpeedBtn.ClientToScreen(
-                                  Point(0, MainIDEBar.OpenFileSpeedBtn.Height));
-  // display the PopupMenu
-  if OpenMenuItem.Items.Count > 0 then
-    OpenMenuItem.Popup(PopupPos.X, PopupPos.Y);
+  while OpenMenuItem.Items.Count > CurIndex do
+    OpenMenuItem.Items[OpenMenuItem.Items.Count - 1].Free;
 end;
 
 procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);

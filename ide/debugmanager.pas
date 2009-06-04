@@ -1928,7 +1928,8 @@ begin
 
     itmRunMenuRunToCursor.Enabled := DebuggerInvalid
                                      or (dcRunTo in FDebugger.Commands);
-    itmRunMenuStop.Enabled := (FDebugger<>nil); // always allow to stop
+    itmRunMenuStop.Enabled := not DebuggerInvalid;
+    StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
 
     itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
