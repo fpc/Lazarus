@@ -1607,6 +1607,7 @@ type
     property RowCount: Integer read FRowCount;
   published
     property Align default alTop;
+    property Anchors;
     property AutoSize;
     property BorderSpacing;
     property BorderWidth;
