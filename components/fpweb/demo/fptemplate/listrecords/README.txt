@@ -1,5 +1,7 @@
 List records using template tags, example
 ================================
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
+
 
 Demonstrates how to list multiple records using templates and template tags.
 

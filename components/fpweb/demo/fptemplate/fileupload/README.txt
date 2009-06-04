@@ -1,5 +1,6 @@
 File upload from html form, example
 ==========================
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
 
 Demonstrates how to handle the file upload (multipart) html forms with using 
 templates.

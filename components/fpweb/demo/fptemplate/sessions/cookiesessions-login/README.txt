@@ -1,5 +1,7 @@
 Sessions stored in cookies with Login, example
 ======================================
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
+
 Note: Cookies must be enabled for the website in the visitor's browser for it 
 to work.
 

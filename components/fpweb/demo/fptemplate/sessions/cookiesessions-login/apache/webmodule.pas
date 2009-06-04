@@ -284,7 +284,7 @@ begin
 
   {Message for tags not handled}
   begin
-    ReplaceText := '[Template tag "' + TagString + '" is not implemented yet.]';
+    ReplaceText := '[Template tag {+' + TagString + '+} is not implemented yet.]';
   end;
 end;
 
@@ -300,7 +300,7 @@ begin
 
   {Message for tags not handled}
   begin
-    ReplaceText := '[Template tag "' + TagString + '" is not implemented yet.]';
+    ReplaceText := '[Template tag {+' + TagString + '+} is not implemented yet.]';
   end;
 end;
 
@@ -343,7 +343,7 @@ begin
 
   {Message for tags not handled}
   begin
-    ReplaceText := '[Template tag "' + TagString + '" is not implemented yet.]';
+    ReplaceText := '[Template tag {+' + TagString + '+} is not implemented yet.]';
   end;
 end;
 
@@ -371,7 +371,7 @@ begin
 
   {Message for tags not handled}
   begin
-    ReplaceText := '[Template tag "' + TagString + '" is not implemented yet.]';
+    ReplaceText := '[Template tag {+' + TagString + '+} is not implemented yet.]';
   end;
 end;
 

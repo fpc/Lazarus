@@ -111,7 +111,7 @@ begin//HTML template tag handling for an html template file
   end else begin
 
 //Not found value for tag -> TagString
-    ReplaceText := 'Template tag {' + TagString + '} is not implemented yet.';
+    ReplaceText := 'Template tag {+' + TagString + '+} is not implemented yet.';
   end;
 end;
 

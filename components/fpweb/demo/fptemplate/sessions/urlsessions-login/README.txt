@@ -1,5 +1,7 @@
 Sessions stored in the URLs with Login, example
 ======================================
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
+
 
 Every visitor needs to log in to get a session ID that is always passed in the 
 URLs of the response pages as a query parameter and stored on the web server 

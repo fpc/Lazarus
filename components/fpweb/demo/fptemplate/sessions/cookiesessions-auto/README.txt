@@ -1,5 +1,7 @@
 Sessions stored in cookies, Autosession example
 ==========================
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
+
 
 Every visitor automatically gets a session ID (no login required) passed in a 
 cookie to the web visitor's browser and stored on the web server until it 

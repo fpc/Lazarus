@@ -1,5 +1,6 @@
 These examples are demonstrating some uses of templates (with FPTemplate) when 
 generating HTML pages by CGI programs or Apache modules.
+(Requires FPC versions past 4/30/2009 /revisions 13062 and later/)
 
 The main idea is to leave the web page designing and look&feel to the web page 
 designers. Separating the web page design from the back end CGI/Apache 
