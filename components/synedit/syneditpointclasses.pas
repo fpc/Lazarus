@@ -830,7 +830,7 @@ begin
     BE := LastLineBytePos;
     if SelAvail then begin
       DeleteSelection;
-      EndLineBytePos := BB; // deletes selection // calls selection changed
+      StartLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
       FCaret.LineBytePos := StartLineBytePos;
