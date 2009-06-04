@@ -50,7 +50,7 @@ begin
 
     Header.bfType := $4d42;
     Header.bfSize := SizeOf(Header) + ASize;
-    Header.bfOffBits := SizeOf(Header);
+    Header.bfOffBits := 0; //data imediately follows
     {$IFDEF ENDIAN_BIG}
     swap(Header.bfType);
     swap(Header.bfSize);
@@ -63,7 +63,7 @@ begin
       TempStream.Write(Header, SizeOf(Header));
       TempStream.CopyFrom(AStream, ASize);
       TempStream.Position := 0;
-      inherited LoadFromStream(TempStream, ASize);
+      inherited LoadFromStream(TempStream, Header.bfSize);
     finally
       TempStream.Free;
     end;
