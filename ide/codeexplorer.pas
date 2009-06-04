@@ -717,6 +717,7 @@ begin
           ShowNode:=Category in CodeExplorerOptions.Categories;
           if ShowNode then begin
             if fCategoryNodes[Category]=nil then begin
+              // create treenode for new category
               NodeData:=TViewNodeData.Create(CodeNode.Parent);
               NodeText:=CodeExplorerLocalizedString(Category);
               NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode.Parent);
@@ -1568,6 +1569,58 @@ procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
     end;
   end;
 
+  procedure DeleteDuplicates(ACodeTool: TCodeTool);
+
+    function IsForward(Data: TViewNodeData): boolean;
+    begin
+      if Data.Desc=ctnProcedure then
+      begin
+        if (Data.CTNode.Parent<>nil) and (Data.CTNode.Parent.Desc=ctnInterface)
+        then
+          exit(true);
+        if ACodeTool.NodeIsForwardProc(Data.CTNode) then
+          exit(true);
+      end;
+      Result:=false;
+    end;
+
+  var
+    TVNode: TTreeNode;
+    NextTVNode: TTreeNode;
+    Data: TViewNodeData;
+    NextData: TViewNodeData;
+    DeleteNode: Boolean;
+    DeleteNextNode: Boolean;
+  begin
+    TVNode:=CodeTreeview.Items.GetFirstNode;
+    while TVNode<>nil do begin
+      NextTVNode:=TVNode.GetNext;
+      DeleteNode:=false;
+      DeleteNextNode:=false;
+      if (NextTVNode<>nil)
+      and (CompareTextIgnoringSpace(TVNode.Text,NextTVNode.Text,false)=0) then
+      begin
+        Data:=TViewNodeData(TVNode.Data);
+        NextData:=TViewNodeData(NextTVNode.Data);
+        if IsForward(Data) then
+          DeleteNode:=true;
+        if IsForward(NextData) then
+          DeleteNextNode:=true;
+      end;
+      if DeleteNextNode then begin
+        TViewNodeData(NextTVNode.Data).Free;
+        NextTVNode.Data:=nil;
+        NextTVNode.Delete;
+        NextTVNode:=TVNode;
+      end else if DeleteNode then begin
+        TViewNodeData(TVNode.Data).Free;
+        TVNode.Data:=nil;
+        TVNode.Delete;
+      end;
+      TVNode:=NextTVNode;
+    end;
+  end;
+
 var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
@@ -1650,6 +1703,7 @@ begin
     fSortCodeTool:=ACodeTool;
     CodeTreeview.CustomSort(@CompareCodeNodes);
 
+    DeleteDuplicates(ACodeTool);
     AutoExpandNodes;
 
     BuildCodeSortedForStartPos;
