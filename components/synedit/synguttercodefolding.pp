@@ -57,10 +57,10 @@ type
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
     procedure DoOnGutterClick(X, Y: integer); override;
-    function MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
-                                 AnInfo: TSynEditMouseActionInfo): Boolean; override;
+                                 var AnInfo: TSynEditMouseActionInfo): Boolean; override;
   published
     property MarkupInfo;
     property MouseActionsExpanded: TSynEditMouseActions
@@ -150,7 +150,7 @@ begin
   // Do Nothing
 end;
 
-function TSynGutterCodeFolding.MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+function TSynGutterCodeFolding.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := False;
@@ -165,7 +165,7 @@ begin
 end;
 
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
-  AnInfo: TSynEditMouseActionInfo): Boolean;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   c, i, line: Integer;
   inf: TFoldViewNodeInfo;

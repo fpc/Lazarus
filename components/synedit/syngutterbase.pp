@@ -118,10 +118,10 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    function MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
-                                 AnInfo: TSynEditMouseActionInfo): Boolean; virtual;
+                                 var AnInfo: TSynEditMouseActionInfo): Boolean; virtual;
     procedure DoOnGutterClick(X, Y: integer);  virtual;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -337,14 +337,14 @@ procedure TSynGutterPartBase.MouseUp(Button: TMouseButton; Shift: TShiftState; X
 begin
 end;
 
-function TSynGutterPartBase.MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+function TSynGutterPartBase.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := False;
 end;
 
 function TSynGutterPartBase.DoHandleMouseAction(AnAction: TSynEditMouseAction;
-  AnInfo: TSynEditMouseActionInfo): Boolean;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
 begin
   Result := False;
 end;
