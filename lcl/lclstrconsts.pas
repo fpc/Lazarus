@@ -280,6 +280,7 @@ resourceString
   ifsAlt           = 'Alt';
   rsWholeWordsOnly = 'Whole words only';
   rsCaseSensitive = 'Case sensitive';
+  rsEntireScope   = 'Search entire file';
   rsText = 'Text';
   rsDirection = 'Direction';
   rsForward = 'Forward';

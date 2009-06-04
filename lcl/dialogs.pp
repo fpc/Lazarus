@@ -365,7 +365,8 @@ type
   
   TFindOption = (frDown, frFindNext, frHideMatchCase, frHideWholeWord,
                  frHideUpDown, frMatchCase, frDisableMatchCase, frDisableUpDown,
-                 frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp);
+                 frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp,
+                 frEntireScope);
   TFindOptions = set of TFindOption;
 
   TFindDialog = class(TCommonDialog)

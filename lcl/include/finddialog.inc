@@ -22,6 +22,7 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
+    EntireScopeCheckBox: TCheckBox;
     FindButton: TButton;
     CancelButton: TButton;
     HelpButton: TButton;
@@ -173,6 +174,7 @@ begin
     HelpButton.Caption:=ifsVK_HELP;
     WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
     CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
+    EntireScopeCheckBox.Caption:=rsEntireScope;
     FindLabel.Caption:=rsText;
     DirectionRadioGroup.Caption:=rsDirection;
     DirectionRadioGroup.Items[0]:=rsForward;
@@ -197,6 +199,7 @@ begin
 
   Dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
   Dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
+  Dlg.EntireScopeCheckBox.Checked:=frEntireScope in Options;
   Dlg.DirectionRadioGroup.ItemIndex:=ord(not(frDown in Options));
 
   Dlg.WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
@@ -226,6 +229,10 @@ begin
     FOptions:=FOptions + [frMatchCase]
   else
     FOptions:=FOptions - [frMatchCase];
+  if Dlg.EntireScopeCheckBox.Checked then
+    FOptions:=FOptions + [frEntireScope]
+  else
+    FOptions:=FOptions - [frEntireScope];
   FFindText := Dlg.EditFind.Text;
 end;
 

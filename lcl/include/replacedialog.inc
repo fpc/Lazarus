@@ -26,6 +26,7 @@ type
 { TReplaceDialogForm }
 
   TReplaceDialogForm = class(TForm)
+    EntireScopeCheckBox: TCheckBox;
     FindMoreButton: TButton;
     ReplaceButton: TButton;
     ReplaceAllButton: TButton;
@@ -72,6 +73,7 @@ begin
     HelpButton.Caption:=ifsVK_HELP;
     WholeWordsOnlyCheckBox.Caption:=rsWholeWordsOnly;
     CaseSensitiveCheckBox.Caption:=rsCaseSensitive;
+    EntireScopeCheckBox.Caption:=rsEntireScope;
     TextLabel.Caption:=rsText;
     ReplaceLabel.Caption:=rsReplace;
     DirectionRadioGroup.Caption:=rsDirection;
@@ -100,6 +102,7 @@ begin
   dlg.EditReplace.Text:=FReplaceText;
 
   dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
+  Dlg.EntireScopeCheckBox.Checked:=frEntireScope in Options;
   dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
   Dlg.DirectionRadioGroup.ItemIndex:=ord(not(frDown in Options));
 
@@ -130,6 +133,10 @@ begin
     FOptions:=FOptions + [frMatchCase]
   else
     FOptions:=FOptions - [frMatchCase];
+  if Dlg.EntireScopeCheckBox.Checked then
+    FOptions:=FOptions + [frEntireScope]
+  else
+    FOptions:=FOptions - [frEntireScope];
   FFindText := Dlg.EditFind.Text;
   FReplaceText := Dlg.EditReplace.Text;
 end;

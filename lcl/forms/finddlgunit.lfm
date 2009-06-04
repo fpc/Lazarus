@@ -1,21 +1,21 @@
 object FindDialogForm: TFindDialogForm
-  Left = 432
-  Height = 103
-  Top = 419
+  Left = 499
+  Height = 131
+  Top = 403
   Width = 444
-  ActiveControl = EditFind
+  ActiveControl = FindButton
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Find'
-  ClientHeight = 103
+  ClientHeight = 131
   ClientWidth = 444
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object FindLabel: TLabel
     Left = 6
-    Height = 14
-    Top = 19
-    Width = 57
+    Height = 18
+    Top = 15
+    Width = 70
     Caption = 'Text to find'
     FocusControl = EditFind
     ParentColor = False
@@ -53,17 +53,17 @@ object FindDialogForm: TFindDialogForm
   end
   object WholeWordsOnlyCheckBox: TCheckBox
     Left = 6
-    Height = 17
+    Height = 22
     Top = 51
-    Width = 102
+    Width = 133
     Caption = 'Whole words only'
     TabOrder = 3
   end
   object CaseSensitiveCheckBox: TCheckBox
     Left = 6
-    Height = 17
+    Height = 22
     Top = 78
-    Width = 86
+    Width = 116
     Caption = 'Case sensitive'
     TabOrder = 4
   end
@@ -82,7 +82,7 @@ object FindDialogForm: TFindDialogForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 27
+    ClientHeight = 26
     ClientWidth = 193
     Columns = 2
     Items.Strings = (
@@ -94,10 +94,18 @@ object FindDialogForm: TFindDialogForm
   object HelpButton: TButton
     Left = 349
     Height = 25
-    Top = 72
+    Top = 100
     Width = 91
     Anchors = [akRight, akBottom]
     Caption = 'Help'
     TabOrder = 6
+  end
+  object EntireScopeCheckBox: TCheckBox
+    Left = 6
+    Height = 22
+    Top = 103
+    Width = 132
+    Caption = 'Search entire file'
+    TabOrder = 7
   end
 end

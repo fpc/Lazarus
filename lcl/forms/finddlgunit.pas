@@ -41,6 +41,7 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
+    EntireScopeCheckBox: TCheckBox;
     FindButton: TButton;
     CancelButton: TButton;
     HelpButton: TButton;

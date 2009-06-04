@@ -1961,7 +1961,7 @@ var
 
 var
   i: Integer;
-  NonBlankStart, LineStart: Integer;
+  NonBlankStart: Integer;
 begin
   if ReadOnly then exit;
   OldCaretPos   := FEditor.CaretXY;
