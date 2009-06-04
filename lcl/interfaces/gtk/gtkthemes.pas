@@ -56,6 +56,7 @@ type
     GapSide    : TGtkPositionType;//
     GapX       : gint;
     GapWidth   : gint;
+    MaxWidth   : gint;            // max area width
 {$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
     ExpanderSize: Integer;
@@ -199,7 +200,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   ClientWidget: PGtkWidget;
 begin
-  FillByte(Result,SizeOf(Result),0);
+  FillByte(Result, SizeOf(Result), 0);
   Result.Style := nil;
   if not GTKWidgetSet.IsValidDC(DC) then Exit;
   
@@ -223,6 +224,7 @@ begin
   Result.GapSide := GTK_POS_LEFT;
   Result.GapWidth := 0;
   Result.GapX := 0;
+  Result.MaxWidth := 0;
 
   case Details.Element of
     teButton:
@@ -296,6 +298,7 @@ begin
                 Result.ArrowType := GTK_ARROW_DOWN;
                 Result.Fill := True;
                 Result.Painter := gptArrow;
+                Result.MaxWidth := 10;
               end
               else
               begin
@@ -485,6 +488,14 @@ begin
               dec(Area.height);
         end;
         {$endif}
+        if (MaxWidth <> 0) then
+        begin
+          if Area.width > MaxWidth then
+          begin
+            inc(Area.x, (Area.width - MaxWidth) div 2);
+            Area.width := MaxWidth;
+          end;
+        end;
         case Painter of
           gptDefault: inherited DrawElement(DC, Details, R, ClipRect);
           gptBox:
