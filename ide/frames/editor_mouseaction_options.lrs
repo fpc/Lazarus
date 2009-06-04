@@ -8,7 +8,7 @@ LazarusResources.Add('TEditorMouseOptionsFrame','FORMDATA',[
   +'b'#2#5'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#3'z'
   +#1#11'ClientWidth'#3'b'#2#8'TabOrder'#2#0#0#11'TStringGrid'#10'ActionGrid'#24
   +'AnchorSideBottom.Control'#7#2'p3'#4'Left'#3#135#0#6'Height'#3'z'#1#3'Top'#2
-  +#0#5'Width'#3#219#1#5'Align'#7#8'alClient'#8'AutoEdit'#8#8'ColCount'#2#8#14
+  +#0#5'Width'#3#219#1#5'Align'#7#8'alClient'#8'AutoEdit'#8#8'ColCount'#2#9#14
   +'ExtendedSelect'#8#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15'goF'
   +'ixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goColSizin'
   +'g'#11'goRowSelect'#14'goSmoothScroll'#0#8'RowCount'#2#1#10'ScrollBars'#7#14

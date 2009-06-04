@@ -18,7 +18,7 @@ const
 
 type
 
-  { TEditorMouseOptionsChangeDialog }
+  { TMouseaActionDialog }
 
   TMouseaActionDialog = class(TForm)
     ActionBox: TComboBox;
@@ -30,10 +30,13 @@ type
     ButtonPanel1: TButtonPanel;
     CaretCheck: TCheckBox;
     ClickBox: TComboBox;
+    OptBox: TComboBox;
     CtrlCheck: TCheckBox;
     DirCheck: TCheckBox;
     CapturePanel: TPanel;
+    OptLabel: TLabel;
     ShiftCheck: TCheckBox;
+    procedure ActionBoxChange(Sender: TObject);
     procedure BtnDefaultClick(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
@@ -53,7 +56,7 @@ const
   IndexToBtn: array [0..2] of TMouseButton = (mbLeft, mbRight, mbMiddle);
   IndexToClick: array [0..3] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad);
 
-{ TMouseaActionDialog }
+{ MouseaActionDialog }
 
 procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
@@ -104,6 +107,21 @@ begin
   CtrlCheck.State := cbGrayed;
 end;
 
+procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
+begin
+  OptBox.Items.CommaText := MouseCommandConfigName
+    (TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex]))));
+  if OptBox.Items.Count > 0 then begin
+    OptLabel.Caption := OptBox.Items[0];
+    OptBox.Items.Delete(0);
+    OptBox.Enabled := True;
+    OptBox.ItemIndex := 0;
+  end else begin
+    OptLabel.Caption := '';
+    OptBox.Enabled := False
+  end;
+end;
+
 procedure TMouseaActionDialog.CapturePanelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -130,6 +148,17 @@ begin
   if not(ssAlt in MAct.ShiftMask) then AltCheck.State := cbGrayed;
   CtrlCheck.Checked := (ssCtrl in MAct.ShiftMask) and (ssCtrl in MAct.Shift);
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
+
+  OptBox.Items.CommaText := MouseCommandConfigName(MAct.Command);
+  if OptBox.Items.Count > 0 then begin
+    OptLabel.Caption := OptBox.Items[0];
+    OptBox.Items.Delete(0);
+    OptBox.Enabled := True;
+    OptBox.ItemIndex := MAct.Option;
+  end else begin
+    OptLabel.Caption := '';
+    OptBox.Enabled := False
+  end;
 end;
 
 procedure TMouseaActionDialog.WriteToAction(MAct: TSynEditMouseAction);
@@ -149,6 +178,9 @@ begin
   if ShiftCheck.Checked then MAct.Shift := MAct.Shift + [ssShift];
   if AltCheck.Checked then MAct.Shift := MAct.Shift + [ssAlt];
   if CtrlCheck.Checked then MAct.Shift := MAct.Shift + [ssCtrl];
+
+  if OptBox.Enabled then
+    MAct.Option := OptBox.ItemIndex;
 end;
 
 initialization

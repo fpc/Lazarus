@@ -85,6 +85,7 @@ const
 var
   act: TSynEditMouseAction;
   i: Integer;
+  optlist: TStringList;
   function ShiftName(ss: TShiftStateEnum): String;
   begin
     if not(ss in act.ShiftMask) then exit(dlgMouseOptModKeyIgnore);
@@ -97,6 +98,7 @@ begin
   FCurNode := Node;
   FCurActions := TSynEditMouseActions(Node.Data);
   ActionGrid.RowCount := FCurActions.Count + 1;
+  optlist := TStringlist.Create;
   for i := 1 to FCurActions.Count do begin
     act := FCurActions[i-1];
     ActionGrid.Cells[0, i] := act.DisplayName;
@@ -107,7 +109,12 @@ begin
     ActionGrid.Cells[5, i] := ShiftName(ssAlt);
     ActionGrid.Cells[6, i] := ShiftName(ssCtrl);
     ActionGrid.Cells[7, i] := MMoveName[act.MoveCaret];
+    ActionGrid.Cells[8, i] := '';
+    optlist.CommaText := MouseCommandConfigName(act.Command);
+    if act.Option < optlist.Count-1 then
+      ActionGrid.Cells[8, i] := optlist[act.Option+1] +' ('+optlist[0]+')';
   end;
+  optlist.Free;
   ActionGrid.Row := 1;
 end;
 
@@ -272,6 +279,7 @@ begin
   ActionGrid.Cells[5,0] := dlgMouseOptHeadAlt;
   ActionGrid.Cells[6,0] := dlgMouseOptHeadCtrl;
   ActionGrid.Cells[7,0] := dlgMouseOptHeadCaret;
+  ActionGrid.Cells[8,0] := dlgMouseOptHeadOpt;
   ActionGrid.ColWidths[0] := 100;
   ActionGridHeaderSized(nil, true, 0);
 

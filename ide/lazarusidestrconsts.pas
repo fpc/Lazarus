@@ -1173,6 +1173,7 @@ resourcestring
   dlgMouseOptHeadAlt = 'Alt';
   dlgMouseOptHeadCtrl = 'Ctrl';
   dlgMouseOptHeadCaret = 'Caret';
+  dlgMouseOptHeadOpt = 'Option';
   dlgMouseOptBtnLeft   = 'Left';
   dlgMouseOptBtnMiddle = 'Middle';
   dlgMouseOptBtnRight  = 'Right';

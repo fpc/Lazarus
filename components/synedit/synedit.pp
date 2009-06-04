@@ -2487,7 +2487,7 @@ procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
       emcSelectLine:
         begin
           if not (eoNoSelection in fOptions) then
-            SetLineBlock(LogCaretXY);
+            SetLineBlock(LogCaretXY, AnAction.Option = emcoSelectLineFull);
           MouseCapture := FALSE;
         end;
       emcSelectPara:
@@ -5139,7 +5139,9 @@ begin
   // todo: check FMouseSelActions if over selection?
   for i := 0 to FMouseActions.Count - 1 do begin
     act := FMouseActions.Items[i];
-    if (act.Command = emcMouseLink) and act.IsMatchingShiftState(AShift) then
+    if (act.Command = emcMouseLink) and (act.Option = emcoMouseLinkShow) and
+       act.IsMatchingShiftState(AShift)
+    then
       exit(True);
   end;
 end;

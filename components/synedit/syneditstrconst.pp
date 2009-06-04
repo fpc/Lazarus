@@ -279,12 +279,14 @@ const
   SYNS_emcContinueSelections       = 'Continue Selection';
   SYNS_emcStartColumnSelections    = 'Start Column Selection';
   SYNS_emcContinueColumnSelections = 'Continue Column Selection';
-  SYNS_emcSelectWord = 'Select Word';
-  SYNS_emcSelectLine = 'Select Line';
+  SYNS_emcSelectWord     = 'Select Word';
+  SYNS_emcSelectLine     = 'Select Line';
+  SYNS_emcSelectLine_opt = '"Include spaces",no,yes';
   SYNS_emcSelectPara = 'Select Paragraph';
   SYNS_emcStartDragMove            = 'Drag Selection';
   SYNS_emcPasteSelection           = 'Quick Paste Selection';
   SYNS_emcMouseLink                = 'Source Link';
+  SYNS_emcMouseLink_opt            = 'Underline,yes, no';
   SYNS_emcContextMenu              = 'Popup Menu';
 
 implementation

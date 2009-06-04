@@ -57,9 +57,16 @@ const
   emcContextMenu              = 12;
   emcMax = 12;
 
+  // Options
+  emcoSelectLineSmart         =  0;
+  emcoSelectLineFull          =  1;
+  emcoMouseLinkShow           =  0;
+  emcoMouseLinkHide           =  1;
+
 type
 
   TSynEditorMouseCommand = type word;
+  TSynEditorMouseCommandOpt = type word;
   TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad);
   TSynMAClickDir = (cdUp, cdDown);
   ESynMouseCmdError = class(Exception);
@@ -69,6 +76,7 @@ type
   TSynEditMouseAction = class(TCollectionItem)
   private
     FClickDir: TSynMAClickDir;
+    FOption: TSynEditorMouseCommandOpt;
     FShift, FShiftMask: TShiftState;
     FButton: TMouseButton;
     FClickCount: TSynMAClickCount;
@@ -79,6 +87,7 @@ type
     procedure SetClickDir(const AValue: TSynMAClickDir);
     procedure SetCommand(const AValue: TSynEditorMouseCommand);
     procedure SetMoveCaret(const AValue: Boolean);
+    procedure SetOption(const AValue: TSynEditorMouseCommandOpt);
     procedure SetShift(const AValue: TShiftState);
     procedure SetShiftMask(const AValue: TShiftState);
   protected
@@ -97,6 +106,7 @@ type
     property ClickDir: TSynMAClickDir read FClickDir write SetClickDir;
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret;
+    property Option: TSynEditorMouseCommandOpt read FOption write SetOption;
   end;
 
   { TSynEditMouseActions }
@@ -139,6 +149,7 @@ type
   end;
 
   function MouseCommandName(emc: TSynEditorMouseCommand): String;
+  function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
 
 const
   SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
@@ -161,6 +172,15 @@ begin
     emcMouseLink:   Result := SYNS_emcMouseLink;
     emcContextMenu: Result := SYNS_emcContextMenu;
 
+    else Result := ''
+  end;
+end;
+
+function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
+begin
+  case emc of
+    emcSelectLine: Result := SYNS_emcSelectLine_opt;
+    emcMouseLink:   Result := SYNS_emcMouseLink_opt;
     else Result := ''
   end;
 end;
@@ -207,6 +227,14 @@ begin
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 end;
 
+procedure TSynEditMouseAction.SetOption(const AValue: TSynEditorMouseCommandOpt);
+begin
+  if FOption = AValue then exit;
+  FOption := AValue;
+  if Collection <> nil then
+    TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
 procedure TSynEditMouseAction.SetShift(const AValue: TShiftState);
 begin
   if FShift = AValue then exit;
@@ -239,6 +267,7 @@ begin
     FShift      := TSynEditMouseAction(Source).Shift;
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
     FMoveCaret  := TSynEditMouseAction(Source).MoveCaret;
+    FOption     := TSynEditMouseAction(Source).Option;
   end else
     inherited Assign(Source);
   if Collection <> nil then
@@ -262,8 +291,9 @@ begin
         and (Other.ClickCount = self.ClickCount)
         and (Other.ClickDir   = self.ClickDir)
         and (Other.Shift * self.ShiftMask = self.Shift * Other.ShiftMask)
-        and ((Other.Command   <> self.Command) or
-             (Other.MoveCaret <> self.MoveCaret)) // Only conflicts, if Command differs
+        and ((Other.Command   <> self.Command) or  // Only conflicts, if Command differs
+             (Other.MoveCaret <> self.MoveCaret) or
+             (Other.Option    <> self.Option) )
         and not(Other.IsFallback xor self.IsFallback);
 end;
 
@@ -276,6 +306,7 @@ begin
         and (Other.Shift      = self.Shift)
         and (Other.ShiftMask  = self.ShiftMask)
         and ((Other.Command   = self.Command) or IgnoreCmd)
+        and ((Other.Option    = self.Option) or IgnoreCmd)
         and ((Other.MoveCaret = self.MoveCaret) or IgnoreCmd);
 end;
 
