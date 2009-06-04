@@ -446,6 +446,8 @@ var
   StyleParams: TGtkStyleParams;
   i: integer;
 begin
+  if IsRectEmpty(R) then
+    Exit;
   for i := 0 to GetParamsCount(Details) - 1 do
   begin
     StyleParams := GetGtkStyleParams(DC, Details, i);
