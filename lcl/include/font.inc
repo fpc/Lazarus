@@ -635,6 +635,7 @@ begin
             // use height which users could have changed directly
             Height := TFont(Source).Height;
           Name := TFont(Source).Name;
+          Orientation := TFont(Source).Orientation;
           Pitch := TFont(Source).Pitch;
           Style := TFont(Source).Style;
           Quality := TFont(Source).Quality;
