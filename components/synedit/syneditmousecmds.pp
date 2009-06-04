@@ -35,7 +35,7 @@ unit SynEditMouseCmds;
 interface
 
 uses
-  Classes, Controls, SysUtils, SynEditStrConst;
+  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses;
 
 const
   // EditorMouseCommands
@@ -55,7 +55,14 @@ const
   emcMouseLink                = 11;
 
   emcContextMenu              = 12;
-  emcMax = 12;
+
+  emcOnMainGutterClick        = 13;    // OnGutterClick
+
+  emcCodeFoldCollaps          = 14;
+  emcCodeFoldExpand           = 15;
+  emcCodeFoldContextMenu      = 16;
+
+  emcMax = 16;
 
   // Options
   emcoSelectLineSmart         =  0;
@@ -63,13 +70,28 @@ const
   emcoMouseLinkShow           =  0;
   emcoMouseLinkHide           =  1;
 
+  emcoCodeFoldCollapsOne      = 0;
+  emcoCodeFoldCollapsAll      = 1;
+  emcoCodeFoldExpandOne       = 0;
+  emcoCodeFoldExpandAll       = 1;
+
 type
 
   TSynEditorMouseCommand = type word;
   TSynEditorMouseCommandOpt = type word;
-  TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad);
+  TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
   TSynMAClickDir = (cdUp, cdDown);
   ESynMouseCmdError = class(Exception);
+
+  TSynEditMouseActionInfo = record
+    NewCaret: TSynEditCaret;
+    Button: TMouseButton;
+    Shift: TShiftState;
+    MouseX, MouseY: Integer;
+    CCount: TSynMAClickCount;
+    Dir: TSynMAClickDir;
+    CaretDone: Boolean; // Return Value
+  end;
 
   { TSynEditMouseAction }
 
@@ -95,6 +117,8 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     function IsMatchingShiftState(AShift: TShiftState): Boolean;
+    function IsMatchingClick(ABtn: TMouseButton; ACCount: TSynMAClickCount;
+                             ACDir: TSynMAClickDir): Boolean;
     function IsFallback: Boolean;
     function Conflicts(Other: TSynEditMouseAction): Boolean;
     function Equals(Other: TSynEditMouseAction; IgnoreCmd: Boolean = False): Boolean;
@@ -108,6 +132,9 @@ type
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret;
     property Option: TSynEditorMouseCommandOpt read FOption write SetOption;
   end;
+
+  TSynEditMouseActionHandler = function(AnAction: TSynEditMouseAction;
+    AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
   { TSynEditMouseActions }
 
@@ -124,9 +151,7 @@ type
     function Add: TSynEditMouseAction;
     procedure Assign(Source: TPersistent); override;
     procedure AssertNoConflict(MAction: TSynEditMouseAction);
-    function FindCommand(AButton: TMouseButton; AShift: TShiftState;
-                         AClickCount: TSynMAClickCount; ADir: TSynMAClickDir
-                        ): TSynEditMouseAction;
+    function FindCommand(AnInfo: TSynEditMouseActionInfo): TSynEditMouseAction;
     procedure ResetDefaults; virtual;
     procedure IncAssertLock;
     procedure DecAssertLock;
@@ -135,7 +160,8 @@ type
     procedure AddCommand(const ACmd: TSynEditorMouseCommand;
              const AMoveCaret: Boolean;
              const AButton: TMouseButton; const AClickCount: TSynMAClickCount;
-             const ADir: TSynMAClickDir; const AShift, AShiftMask: TShiftState);
+             const ADir: TSynMAClickDir; const AShift, AShiftMask: TShiftState;
+             const AOpt: TSynEditorMouseCommandOpt = 0);
   public
     property Items[Index: Integer]: TSynEditMouseAction read GetItem
       write SetItem; default;
@@ -172,6 +198,12 @@ begin
     emcMouseLink:   Result := SYNS_emcMouseLink;
     emcContextMenu: Result := SYNS_emcContextMenu;
 
+    emcOnMainGutterClick: Result := SYNS_emcBreakPointToggle;
+
+    emcCodeFoldCollaps:     Result := SYNS_emcCodeFoldCollaps;
+    emcCodeFoldExpand:      Result := SYNS_emcCodeFoldExpand;
+    emcCodeFoldContextMenu: Result := SYNS_emcCodeFoldContextMenu;
+
     else Result := ''
   end;
 end;
@@ -181,6 +213,8 @@ begin
   case emc of
     emcSelectLine: Result := SYNS_emcSelectLine_opt;
     emcMouseLink:   Result := SYNS_emcMouseLink_opt;
+    emcCodeFoldCollaps: Result := SYNS_emcCodeFoldCollaps_opt;
+    emcCodeFoldExpand:  Result := SYNS_emcCodeFoldExpand_opt;
     else Result := ''
   end;
 end;
@@ -279,6 +313,14 @@ begin
   Result := AShift * FShiftMask = FShift;
 end;
 
+function TSynEditMouseAction.IsMatchingClick(ABtn: TMouseButton; ACCount: TSynMAClickCount;
+  ACDir: TSynMAClickDir): Boolean;
+begin
+  Result := (Button     = ABtn)
+        and ((ClickCount = ACCount) or (ClickCount = ccAny))
+        and (ClickDir   = ACDir)
+end;
+
 function TSynEditMouseAction.IsFallback: Boolean;
 begin
   Result := FShiftMask = [];
@@ -288,7 +330,8 @@ function TSynEditMouseAction.Conflicts(Other: TSynEditMouseAction): Boolean;
 begin
   If (Other = nil) or (Other = self) then exit(False);
   Result := (Other.Button     = self.Button)
-        and (Other.ClickCount = self.ClickCount)
+        and ((Other.ClickCount = self.ClickCount)
+             or (self.ClickCount = ccAny) or (Other.ClickCount = ccAny))
         and (Other.ClickDir   = self.ClickDir)
         and (Other.Shift * self.ShiftMask = self.Shift * Other.ShiftMask)
         and ((Other.Command   <> self.Command) or  // Only conflicts, if Command differs
@@ -364,8 +407,7 @@ begin
   end;
 end;
 
-function TSynEditMouseActions.FindCommand(AButton: TMouseButton; AShift: TShiftState;
-  AClickCount: TSynMAClickCount; ADir: TSynMAClickDir): TSynEditMouseAction;
+function TSynEditMouseActions.FindCommand(AnInfo: TSynEditMouseActionInfo): TSynEditMouseAction;
 var
   i: Integer;
   act, fback: TSynEditMouseAction;
@@ -373,8 +415,8 @@ begin
   fback := nil;
   for i := 0 to Count-1 do begin
     act := Items[i];
-    if (act.Button = AButton) and (act.ClickCount = AClickCount) and
-       (act.ClickDir = ADir)and (act.IsMatchingShiftState(AShift))
+    if act.IsMatchingClick(AnInfo.Button, AnInfo.CCount, AnInfo.Dir) and
+       act.IsMatchingShiftState(AnInfo.Shift)
     then begin
       if act.IsFallback then
         fback := act
@@ -390,7 +432,7 @@ end;
 procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
   const AMoveCaret: Boolean; const AButton: TMouseButton;
   const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
-  const AShift, AShiftMask: TShiftState);
+  const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0);
 var
   new: TSynEditMouseAction;
 begin
@@ -405,6 +447,7 @@ begin
       ClickDir := ADir;
       Shift := AShift;
       ShiftMask := AShiftMask;
+      Option := AOpt;
     end;
   finally
     dec(FAssertLock);

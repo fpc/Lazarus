@@ -49,9 +49,10 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Constraints.MinWidth = 50
       DefaultItemHeight = 17
       ReadOnly = True
+      ShowRoot = False
       TabOrder = 1
       OnChange = ContextTreeChange
-      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips]
     end
     object Splitter1: TSplitter
       Left = 130

@@ -12,7 +12,7 @@ const
   ButtonName: Array [TMouseButton] of String =
     (dlgMouseOptBtnLeft, dlgMouseOptBtnRight, dlgMouseOptBtnMiddle);
   ClickName: Array [TSynMAClickCount] of String =
-    (dlgMouseOptBtn1, dlgMouseOptBtn2, dlgMouseOptBtn3, dlgMouseOptBtn4);
+    (dlgMouseOptBtn1, dlgMouseOptBtn2, dlgMouseOptBtn3, dlgMouseOptBtn4, dlgMouseOptBtnAny);
   ButtonDirName: Array [TSynMAClickDir] of String =
     (dlgMouseOptBtnUp, dlgMouseOptBtnDown);
 
@@ -52,9 +52,9 @@ implementation
 
 const
   BtnToIndex: array [mbLeft..mbMiddle] of Integer = (0, 1, 2);
-  ClickToIndex: array [ccSingle..ccQuad] of Integer = (0, 1, 2, 4);
+  ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
   IndexToBtn: array [0..2] of TMouseButton = (mbLeft, mbRight, mbMiddle);
-  IndexToClick: array [0..3] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad);
+  IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
 
 { MouseaActionDialog }
 

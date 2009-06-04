@@ -5,30 +5,35 @@ unit SynGutterCodeFolding;
 interface
 
 uses
-  sysutils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
-  SynEditFoldedView;
+  SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
+  SynEditFoldedView, SynEditMouseCmds, LCLProc;
 
 type
 
-  TSynGutterFoldClickConf = record
-    Enabled: Boolean;
-    Button: TMouseButton;
-    Shift: TShiftState;
-    ShiftMask: TShiftState;
-    Enabled2: Boolean;
-    Button2: TMouseButton;
-    Shift2: TShiftState;
-    ShiftMask2: TShiftState;
+  { TSynEditMouseActionsGutterFold }
+
+  TSynEditMouseActionsGutterFold = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
   end;
 
-  TSynGutterFoldClickType = (
-    sgctFoldOne,
-    sgctFoldAll,
-    sgctUnFoldOne,
-    sgctUnFoldAll
-    );
+  // Line with [-] => ALL nodes expanded
 
-  TSynGutterFoldClickConfList = Array [TSynGutterFoldClickType] of TSynGutterFoldClickConf;
+  { TSynEditMouseActionsGutterFoldExpanded }
+
+  TSynEditMouseActionsGutterFoldExpanded = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  // Line with [+] => at LEAST ONE node collapsed
+
+  { TSynEditMouseActionsGutterFoldCollapsed }
+
+  TSynEditMouseActionsGutterFoldCollapsed = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
+  end;
 
   { TSynGutterCodeFolding }
 
@@ -37,10 +42,12 @@ type
     FClickDone: Boolean;
     FClickLine: Integer;
     FFoldView: TSynEditFoldedView;
-    FExpandedClickConf,
-    FCollapsedClickConf: TSynGutterFoldClickConfList;
+    FMouseActionsCollapsed: TSynEditMouseActions;
+    FMouseActionsExpanded: TSynEditMouseActions;
     FPopUp: TPopupMenu;
     FMenuInf: Array of TFoldViewNodeInfo;
+    procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
+    procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
   protected
     procedure DoChange(Sender: TObject); override;
     procedure PopClicked(Sender: TObject);
@@ -51,14 +58,17 @@ type
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DoOnGutterClick(X, Y: integer); override;
-    property ExpandedClickConf: TSynGutterFoldClickConfList read FExpandedClickConf;
-    property CollapsedClickConf: TSynGutterFoldClickConfList read FCollapsedClickConf;
-
+    function MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+               HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
+    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+                                 AnInfo: TSynEditMouseActionInfo): Boolean; override;
   published
     property MarkupInfo;
+    property MouseActionsExpanded: TSynEditMouseActions
+      read FMouseActionsExpanded write SetMouseActionsExpanded;
+    property MouseActionsCollapsed: TSynEditMouseActions
+      read FMouseActionsCollapsed write SetMouseActionsCollapsed;
   end;
 
 implementation
@@ -66,6 +76,22 @@ uses
   SynEdit;
 
 { TSynGutterCodeFolding }
+
+procedure TSynGutterCodeFolding.SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseActionsCollapsed.Clear
+  else
+    FMouseActionsCollapsed.Assign(AValue);
+end;
+
+procedure TSynGutterCodeFolding.SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseActionsExpanded.Clear
+  else
+    FMouseActionsExpanded.Assign(AValue);
+end;
 
 procedure TSynGutterCodeFolding.DoChange(Sender: TObject);
 begin
@@ -75,11 +101,15 @@ begin
 end;
 
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
-var
-  i: TSynGutterFoldClickType;
 begin
   inherited Create(AOwner);
   FFoldView := Gutter.FoldView;
+  FMouseActions := TSynEditMouseActionsGutterFold.Create(self);
+  FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
+  FMouseActionsCollapsed := TSynEditMouseActionsGutterFoldCollapsed.Create(self);
+  FMouseActions.ResetDefaults;
+  FMouseActionsCollapsed.ResetDefaults;
+  FMouseActionsExpanded.ResetDefaults;
 
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clDkGray;
@@ -87,50 +117,13 @@ begin
 
   FWidth := 10;
   FPopUp := TPopupMenu.Create(nil);
-
-  for i := low(TSynGutterFoldClickType) to high(TSynGutterFoldClickType) do begin
-    FExpandedClickConf[i].Enabled := False;
-    FCollapsedClickConf[i].Enabled := False;
-    FExpandedClickConf[i].Enabled2 := False;
-    FCollapsedClickConf[i].Enabled2 := False;
-  end;
-  with FExpandedClickConf[sgctFoldOne] do begin
-    Enabled := True;
-    Button := mbLeft;
-    Shift := [];
-    ShiftMask := [];
-    Enabled2 := True;
-    Button2 := mbMiddle;
-    Shift2 := [];
-    ShiftMask2 := [];
-  end;
-  with FCollapsedClickConf[sgctUnFoldAll] do begin
-    Enabled := True;
-    Button := mbLeft;
-    Shift := [];
-    ShiftMask := [ssShift, ssCtrl];
-  end;
-
-  with FCollapsedClickConf[sgctUnFoldOne] do begin
-    Enabled := True;
-    Button := mbLeft;
-    Shift := [ssCtrl];
-    ShiftMask := [ssShift, ssCtrl];
-  end;
-  with FCollapsedClickConf[sgctFoldOne] do begin
-    Enabled := True;
-    Button := mbMiddle;
-    Shift := [];
-    ShiftMask := [];
-    Enabled2 := True;
-    Button2 := mbLeft;
-    Shift2 := [ssShift];
-    ShiftMask2 := [ssShift, ssCtrl];
-  end;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;
 begin
+  FreeAndNil(FMouseActions);
+  FreeAndNil(FMouseActionsCollapsed);
+  FreeAndNil(FMouseActionsExpanded);
   FreeAndNil(FPopUp);
   inherited Destroy;
 end;
@@ -141,48 +134,6 @@ begin
     Result := Width
   else
     Result := 0;
-end;
-
-procedure TSynGutterCodeFolding.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-var
-  line: Integer;
-
-  function isClick(conf : TSynGutterFoldClickConf): Boolean;
-  begin
-    if FClickDone then exit(False);
-    Result := ( conf.Enabled and (Button = conf.Button) and
-                (Shift * conf.ShiftMask = conf.Shift) ) or
-              ( conf.Enabled2 and (Button = conf.Button2) and
-                (Shift * conf.ShiftMask2 = conf.Shift2) );
-    FClickDone := Result;
-  end;
-begin
-  line := TSynEdit(SynEdit).PixelsToRowColumn(Point(X, Y)).Y;
-  FClickDone := False;;
-  FClickLine := line;
-  if line > SynEdit.Lines.Count then exit;
-
-  case FFoldView.FoldType[FFoldView.TextIndexToScreenLine(Line-1)] of
-    cfCollapsed :
-      begin
-        if isClick(FCollapsedClickConf[sgctUnFoldOne]) then
-          FFoldView.UnFoldAtTextIndex(line-1, 0, 1, True);
-        if isClick(FCollapsedClickConf[sgctUnFoldAll]) then
-          FFoldView.UnFoldAtTextIndex(line-1);
-        if isClick(FCollapsedClickConf[sgctFoldOne]) then
-          FFoldView.FoldAtTextIndex(Line-1, -1, 1, True);
-        if isClick(FCollapsedClickConf[sgctFoldAll]) then
-          FFoldView.FoldAtTextIndex(Line-1, -1, 0);
-      end;
-    cfExpanded  :
-      begin
-        if isClick(FExpandedClickConf[sgctFoldOne]) then
-          FFoldView.FoldAtTextIndex(Line-1, -1, 1, True);
-        if isClick(FExpandedClickConf[sgctFoldAll]) then
-          FFoldView.FoldAtTextIndex(Line-1, -1, 0);
-      end;
-  end;
 end;
 
 procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
@@ -196,53 +147,94 @@ begin
      FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
 end;
 
-procedure TSynGutterCodeFolding.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
+begin
+  // Do Nothing
+end;
+
+function TSynGutterCodeFolding.MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := False;
+  case FFoldView.FoldType[FFoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1)] of
+    cfCollapsed :
+      Result := HandleActionProc(MouseActionsCollapsed.FindCommand(AnInfo), AnInfo);
+    cfExpanded  :
+      Result := HandleActionProc(MouseActionsExpanded.FindCommand(AnInfo), AnInfo);
+  end;
+  if not Result then
+    Result := HandleActionProc(MouseActions.FindCommand(AnInfo), AnInfo);
+end;
+
+function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+  AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   c, i, line: Integer;
   inf: TFoldViewNodeInfo;
   m: TMenuItem;
   s, s2: String;
+  ACommand: Word;
 begin
-//  inherited MouseUp(Button, Shift, X, Y);
-  line := FClickLine;
-  if line > SynEdit.Lines.Count then exit;
+  Result := False;
+  if AnAction = nil then exit;
+  ACommand := AnAction.Command;
+  if (ACommand = emcNone) then exit;
+  line := AnInfo.NewCaret.LinePos;
 
-  if not FClickDone then begin
-    FPopUp.Items.Clear;
-    c := FFoldView.OpenFoldCount(line-1);
-    SetLength(FMenuInf,c);
-    for i := c-1 downto 0 do begin
-      inf := FFoldView.OpenFoldInfo(line-1, i);
-      FMenuInf[i] := inf;
-      if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
-      then begin
-        m := TMenuItem.Create(FPopUp);
-        m.Caption := cLineCaption;
-        m.Tag := -1;
-        FPopUp.Items.Add(m);
+  Result := True;
+  case ACommand of
+    emcCodeFoldCollaps:
+      begin
+        case AnAction.Option of
+          emcoCodeFoldCollapsOne:
+            FFoldView.FoldAtTextIndex(Line-1, -1, 1, True);
+          emcoCodeFoldCollapsAll:
+            FFoldView.FoldAtTextIndex(Line-1, -1, 0);
+        end;
       end;
-      s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
-      if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
-      s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
-      s2 := '';
-      if inf.OpenCount > 1 then
-        s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
-      m := TMenuItem.Create(FPopUp);
-      m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-      m.ShowAlwaysCheckable := true;
-      m.Checked := inf.Folded;
-      m.Tag := i;
-      m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
-      FPopUp.Items.Add(m);
-    end;
-    FPopUp.PopUp;
+    emcCodeFoldExpand:
+      begin
+        case AnAction.Option of
+          emcoCodeFoldExpandOne:
+            FFoldView.UnFoldAtTextIndex(line-1, 0, 1, True);
+          emcoCodeFoldExpandAll:
+            FFoldView.UnFoldAtTextIndex(line-1);
+        end;
+      end;
+    emcCodeFoldContextMenu:
+      begin
+        FPopUp.Items.Clear;
+        c := FFoldView.OpenFoldCount(line-1);
+        SetLength(FMenuInf,c);
+        for i := c-1 downto 0 do begin
+          inf := FFoldView.OpenFoldInfo(line-1, i);
+          FMenuInf[i] := inf;
+          if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
+          then begin
+            m := TMenuItem.Create(FPopUp);
+            m.Caption := cLineCaption;
+            m.Tag := -1;
+            FPopUp.Items.Add(m);
+          end;
+          s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
+          if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
+          s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
+          s2 := '';
+          if inf.OpenCount > 1 then
+            s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
+          m := TMenuItem.Create(FPopUp);
+          m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+          m.ShowAlwaysCheckable := true;
+          m.Checked := inf.Folded;
+          m.Tag := i;
+          m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
+          FPopUp.Items.Add(m);
+        end;
+        FPopUp.PopUp;
+      end;
+    else
+      Result := False;
   end;
-end;
-
-procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
-begin
-  // Do Nothing
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
@@ -360,6 +352,33 @@ begin
     end;
   end;
 
+end;
+
+{ TSynEditMouseActionsGutterFold }
+
+procedure TSynEditMouseActionsGutterFold.ResetDefaults;
+begin
+  Clear;
+  AddCommand(emcCodeFoldContextMenu, False, mbRight, ccSingle, cdUp, [], []);
+  AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
+  AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+end;
+
+{ TSynEditMouseActionsGutterFoldExpanded }
+
+procedure TSynEditMouseActionsGutterFoldExpanded.ResetDefaults;
+begin
+  Clear;
+  AddCommand(emcCodeFoldCollaps, False, mbLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
+end;
+
+{ TSynEditMouseActionsGutterFoldCollapsed }
+
+procedure TSynEditMouseActionsGutterFoldCollapsed.ResetDefaults;
+begin
+  Clear;
+  AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
+  AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
 end;
 
 end.

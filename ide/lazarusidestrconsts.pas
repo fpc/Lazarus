@@ -1166,6 +1166,10 @@ resourcestring
   dlgMouseOptions = 'Mouse';
   dlgMouseOptNodeMain = 'General';
   dlgMouseOptNodeSelect = 'Selection';
+  dlgMouseOptNodeGutter = 'Gutter';
+  dlgMouseOptNodeGutterFold = 'Fold Tree';
+  dlgMouseOptNodeGutterFoldCol = 'Fold Collapsed [+]';
+  dlgMouseOptNodeGutterFoldExp = 'Fold Expanded [-]';
   dlgMouseOptHeadDesc = 'Action';
   dlgMouseOptHeadBtn = 'Button';
   dlgMouseOptHeadCount = 'Click';
@@ -1184,6 +1188,7 @@ resourcestring
   dlgMouseOptBtn2   = 'Double';
   dlgMouseOptBtn3   = 'Triple';
   dlgMouseOptBtn4   = 'Quad';
+  dlgMouseOptBtnAny = 'Any';
   dlgMouseOptMoveMouseTrue   = 'Y';
   dlgMouseOptMoveMouseFalse  = '';
   dlgMouseOptModKeyFalse   = 'n';

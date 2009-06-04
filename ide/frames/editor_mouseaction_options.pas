@@ -56,8 +56,12 @@ type
     procedure ActionGridResize(Sender: TObject);
   private
     FMainNode, FSelNode: TTreeNode;
+    FGutterNode: TTreeNode;
+    FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
     FCurNode: TTreeNode;
     FMainActions, FSelActions: TSynEditMouseActions;
+    FGutterActions: TSynEditMouseActions;
+    FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
     ChangeDlg: TMouseaActionDialog;
     FColWidths: Array of Integer;
@@ -246,6 +250,10 @@ begin
   inherited Create(AOwner);
   FMainActions := TSynEditMouseActions.Create(nil);
   FSelActions := TSynEditMouseActions.Create(nil);
+  FGutterActions := TSynEditMouseActions.Create(nil);
+  FGutterActionsFold := TSynEditMouseActions.Create(nil);
+  FGutterActionsFoldExp := TSynEditMouseActions.Create(nil);
+  FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
   ChangeDlg := TMouseaActionDialog.Create(self);
 end;
 
@@ -253,6 +261,10 @@ destructor TEditorMouseOptionsFrame.Destroy;
 begin
   FMainActions.Free;
   FSelActions.Free;
+  FGutterActions.Free;
+  FGutterActionsFold.Free;
+  FGutterActionsFoldExp.Free;
+  FGutterActionsFoldCol.Free;
   ChangeDlg.Free;
   inherited Destroy;
 end;
@@ -267,8 +279,20 @@ begin
   ContextTree.Items.Clear;
   FMainNode := ContextTree.Items.Add(nil, dlgMouseOptNodeMain);
   FMainNode.Data := FMainActions;
+  // Selection
   FSelNode := ContextTree.Items.AddChild(FMainNode, dlgMouseOptNodeSelect);
   FSelNode.Data := FSelActions;
+  // Gutter
+  FGutterNode := ContextTree.Items.AddChild(nil, dlgMouseOptNodeGutter);
+  FGutterNode.Data := FGutterActions;
+  // Gutter Fold
+  FGutterFoldNode := ContextTree.Items.AddChild(FGutterNode, dlgMouseOptNodeGutterFold);
+  FGutterFoldNode.Data := FGutterActionsFold;
+  FGutterFoldColNode := ContextTree.Items.AddChild(FGutterFoldNode, dlgMouseOptNodeGutterFoldCol);
+  FGutterFoldColNode.Data := FGutterActionsFoldCol;
+  FGutterFoldExpNode := ContextTree.Items.AddChild(FGutterFoldNode, dlgMouseOptNodeGutterFoldExp);
+  FGutterFoldExpNode.Data := FGutterActionsFoldExp;
+
   ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
   Splitter1.MinSize := ActionGrid.ColCount * MinGridColSize;
   ActionGrid.Cells[0,0] := dlgMouseOptHeadDesc;
@@ -293,8 +317,12 @@ procedure TEditorMouseOptionsFrame.ReadSettings(
 begin
   with AOptions as TEditorOptions do
   begin
-    TSynEditMouseActions(FMainNode.Data).Assign(MouseMap);
-    TSynEditMouseActions(FSelNode.Data).Assign(MouseSelMap);
+    FMainActions.Assign(MouseMap);
+    FSelActions.Assign(MouseSelMap);
+    FGutterActions.Assign(MouseGutterActions);
+    FGutterActionsFold.Assign(MouseGutterActionsFold);
+    FGutterActionsFoldExp.Assign(MouseGutterActionsFoldExp);
+    FGutterActionsFoldCol.Assign(MouseGutterActionsFoldCol);
   end;
   ContextTree.Selected := FMainNode;
 end;
@@ -304,8 +332,12 @@ procedure TEditorMouseOptionsFrame.WriteSettings(
 begin
   with AOptions as TEditorOptions do
   begin
-    MouseMap.Assign(TSynEditMouseActions(FMainNode.Data));
-    MouseSelMap.Assign(TSynEditMouseActions(FSelNode.Data));
+    MouseMap.Assign(FMainActions);
+    MouseSelMap.Assign(FSelActions);
+    MouseGutterActions.Assign(FGutterActions);
+    MouseGutterActionsFold.Assign(FGutterActionsFold);
+    MouseGutterActionsFoldExp.Assign(FGutterActionsFoldExp);
+    MouseGutterActionsFoldCol.Assign(FGutterActionsFoldCol);
   end;
 end;
 

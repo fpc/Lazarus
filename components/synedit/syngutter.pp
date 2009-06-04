@@ -5,10 +5,10 @@ unit SynGutter;
 interface
 
 uses
-  Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
+  SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
   SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
-  SynGutterMarks, SynGutterChanges;
+  SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
 
 type
 
@@ -52,6 +52,10 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer);
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    function MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+                                 AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure DoOnGutterClick(X, Y: integer);
     property  OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -76,6 +80,7 @@ type
     property Visible: boolean read FVisible write SetVisible default TRUE;
     property Width: integer read FWidth write SetWidth default 30;
     property Parts;
+    property MouseActions;
   end;
 
   { TSynGutterSeparator }
@@ -85,6 +90,13 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     function RealGutterWidth(CharWidth: integer): integer;  override;
+  end;
+
+  { TSynEditMouseActionsGutter }
+
+  TSynEditMouseActionsGutter = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
   end;
 
 
@@ -100,6 +112,8 @@ begin
   FEdit := TSynEdit(AOwner);
   inherited Create(AOwner, AFoldedLinesView, ATextDrawer);
 
+  FMouseActions := TSynEditMouseActionsGutter.Create(self);
+  FMouseActions.ResetDefaults;
   Visible := True;
   Width := 30;
   LeftOffset := 0;
@@ -117,6 +131,7 @@ end;
 
 destructor TSynGutter.Destroy;
 begin
+  FreeAndNil(FMouseActions);
   FOnChange := nil;
   inherited Destroy;
 end;
@@ -229,30 +244,7 @@ end;
 
 procedure TSynGutter.DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
-var
-  i     : integer;
-  offs  : integer;
-  allmrk: TSynEditMarks;
 begin
-  line := TSynEdit(FEdit).PixelsToRowColumn(Point(X, Y)).Y;
-  if line <= FEdit.Lines.Count then begin
-    mark := nil;
-    TSynEdit(FEdit).Marks.GetMarksForLine(line, allmrk);
-    offs := 0;
-    for i := 1 to maxMarks do begin
-      if assigned(allmrk[i]) then begin
-        Inc(offs, TSynEdit(FEdit).BookMarkOptions.XOffset);
-        if X < offs then begin
-          mark := allmrk[i];
-          break;
-        end;
-      end;
-    end;
-  end;
-  if Assigned(FOnGutterClick) then begin
-    // for compatibility invoke this only on the markable area
-    FOnGutterClick(Self, X, Y, line, mark);
-  end;
 end;
 
 procedure TSynGutter.DoOnGutterClick(X, Y: integer);
@@ -327,6 +319,44 @@ begin
   Parts[FMouseDownPart].MouseUp(Button, Shift, X, Y);
 end;
 
+function TSynGutter.MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+var
+  MouseDownPart: LongInt;
+begin
+  MouseDownPart := PixelToPartIndex(AnInfo.MouseX);
+  Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
+  if not Result then
+    Result := HandleActionProc(MouseActions.FindCommand(AnInfo), AnInfo);
+end;
+
+function TSynGutter.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+  AnInfo: TSynEditMouseActionInfo): Boolean;
+var
+  i: Integer;
+  ACommand: Word;
+begin
+  Result := False;
+  for i := 0 to Parts.Count - 1 do begin
+    Result := Parts[i].DoHandleMouseAction(AnAction, AnInfo);
+    if Result then exit;;
+  end;
+
+  if AnAction = nil then exit;
+  ACommand := AnAction.Command;
+  if (ACommand = emcNone) then exit;
+
+  case ACommand of
+    emcOnMainGutterClick:
+      begin
+        if Assigned(FOnGutterClick) then begin
+          FOnGutterClick(Self, AnInfo.MouseX, AnInfo.MouseY, AnInfo.NewCaret.LinePos, nil);
+          Result := True;
+        end;
+      end;
+  end;
+end;
+
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
 begin
   Result := TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, Index]);
@@ -383,6 +413,15 @@ begin
     Result := Width
   else
     Result := 0;
+end;
+
+{ TSynEditMouseActionsGutter }
+
+procedure TSynEditMouseActionsGutter.ResetDefaults;
+begin
+  Clear;
+  AddCommand(emcOnMainGutterClick, False, mbLeft, ccSingle, cdDown, [], []);
+  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
 end;
 
 end.

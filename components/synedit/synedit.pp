@@ -598,9 +598,11 @@ type
     procedure TripleClick; override;
     procedure QuadClick; override;
 
-    procedure HandleMouseAction(Button: TMouseButton; Shift: TShiftState;
+    procedure FindAndHandleMouseAction(AButton: TMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
                                 ADir: TSynMAClickDir);
+    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+                                 AnInfo: TSynEditMouseActionInfo): Boolean;
 
     {$IFDEF SYN_LAZARUS}
     procedure Resize; override;
@@ -2384,15 +2386,13 @@ begin
   ptMouse := ScreenToClient(ptMouse);
 
   inherited;
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    IncPaintLock;
-    try
-      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccDouble, cdDown);
-    finally
-      DecPaintLock;
-    end;
-    Include(fStateFlags, sfDblClicked);
+  IncPaintLock;
+  try
+    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccDouble, cdDown);
+  finally
+    DecPaintLock;
   end;
+  Include(fStateFlags, sfDblClicked);
 end;
 
 procedure TCustomSynEdit.TripleClick;
@@ -2403,15 +2403,13 @@ begin
   ptMouse := ScreenToClient(ptMouse);
 
   inherited;
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    IncPaintLock;
-    try
-      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccTriple, cdDown);
-    finally
-      DecPaintLock;
-    end;
-    Include(fStateFlags, sfTripleClicked);
+  IncPaintLock;
+  try
+    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccTriple, cdDown);
+  finally
+    DecPaintLock;
   end;
+  Include(fStateFlags, sfTripleClicked);
 end;
 
 procedure TCustomSynEdit.QuadClick;
@@ -2422,137 +2420,164 @@ begin
   ptMouse := ScreenToClient(ptMouse);
 
   inherited;
-  if ptMouse.X >= fGutterWidth + 2 then begin
-    IncPaintLock;
-    try
-      HandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccQuad, cdDown);
-    finally
-      DecPaintLock;
-    end;
-    Include(fStateFlags, sfQuadClicked);
-    MouseCapture := FALSE;
+  IncPaintLock;
+  try
+    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccQuad, cdDown);
+  finally
+    DecPaintLock;
   end;
+  Include(fStateFlags, sfQuadClicked);
+  MouseCapture := FALSE;
 end;
 
-procedure TCustomSynEdit.HandleMouseAction(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
-  ADir: TSynMAClickDir);
+function TCustomSynEdit.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+  AnInfo: TSynEditMouseActionInfo): Boolean;
+var
+  CaretDone: Boolean;
 
-  function DoHandleMouseAction(AnAction: TSynEditMouseAction;
-    ACaret: TPoint): Boolean;
-  var
-    LogCaretXY: TPoint;
-    PrimarySelText: String;
-    ACommand: TSynEditorMouseCommand;
-    Handled: Boolean;
+  procedure MoveCaret;
   begin
-    if AnAction = nil then exit(False);
-    ACommand := AnAction.Command;
-    if (ACommand = emcNone) and not AnAction.MoveCaret then exit(False);
-    Result := True;
-
-    LogCaretXY:=PhysicalToLogicalPos(ACaret);
-    MouseCapture := False;
-
-    case ACommand of
-      emcNone: ; // do nothing, but result := true
-      emcStartSelections, emcStartColumnSelections:
-        begin
-          CaretXY := ACaret;
-          FBlockSelection.StartLineBytePos := LogCaretXY;
-          if ACommand = emcStartColumnSelections then
-            FBlockSelection.ActiveSelectionMode := smColumn
-          else
-            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
-          MouseCapture := True;
-          Include(fStateFlags, sfMouseSelecting);
-        end;
-      emcContinueSelections, emcContinueColumnSelections:
-        begin
-          CaretXY := ACaret;
-          FBlockSelection.EndLineBytePos := LogCaretXY;
-          if ACommand = emcContinueColumnSelections then
-            FBlockSelection.ActiveSelectionMode := smColumn
-          else
-            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
-          MouseCapture := True;
-          Include(fStateFlags, sfMouseSelecting);
-        end;
-      emcSelectWord:
-        begin
-          if not (eoNoSelection in fOptions) then
-            SetWordBlock(LogCaretXY);
-          MouseCapture := FALSE;
-        end;
-      emcSelectLine:
-        begin
-          if not (eoNoSelection in fOptions) then
-            SetLineBlock(LogCaretXY, AnAction.Option = emcoSelectLineFull);
-          MouseCapture := FALSE;
-        end;
-      emcSelectPara:
-        begin
-          if not (eoNoSelection in fOptions) then
-            SetParagraphBlock(LogCaretXY);
-          MouseCapture := FALSE;
-        end;
-      emcStartDragMove:
-        begin
-          if SelAvail and (SelectionMode = smNormal) then begin
-            Include(fStateFlags, sfWaitForDragging);
-            MouseCapture := True;
-          end
-          else
-            Result := False; // Currently only drags smNormal
-        end;
-      emcPasteSelection:
-        begin
-          CaretXY := ACaret;
-          PrimarySelText := PrimarySelection.AsText;
-          if ((PrimarySelText<>'') or SelAvail) then begin
-            FBlockSelection.StartLineBytePos := LogCaretXY;
-            FBlockSelection.EndLineBytePos := LogCaretXY;
-            SelText:=PrimarySelText;
-          end
-          else
-            Result :=False;
-        end;
-      emcMouseLink:
-        begin
-          if assigned(FOnClickLink) then
-            FOnClickLink(Self, Button, Shift, X,Y)
-          else
-            Result := False;
-        end;
-      emcContextMenu:
-        begin
-          Handled := False;
-          inherited DoContextPopup(Point(X, Y), Handled);
-          if (PopupMenu <> nil) and not Handled then
-            PopupMenu.PopUp;
-        end;
-      else
-        Result := False; // ACommand was not handled
-    end;
-
-    if AnAction.MoveCaret then
-      CaretXY := ACaret;
+   CaretXY := AnInfo.NewCaret.LineCharPos;
+   CaretDone := True;
   end;
 
+var
+  PrimarySelText: String;
+  ACommand: TSynEditorMouseCommand;
+  Handled: Boolean;
+begin
+  if AnAction = nil then exit(False);
 
+  ACommand := AnAction.Command;
+  if (ACommand = emcNone) and not AnAction.MoveCaret then exit(False);
+
+  AnInfo.CaretDone := False;
+  Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
+  if Result then begin
+    if (not AnInfo.CaretDone) and AnAction.MoveCaret then
+      MoveCaret;
+    exit;
+  end;
+
+  Result := True;
+  CaretDone := False;
+  MouseCapture := False;
+
+  case ACommand of
+    emcNone: ; // do nothing, but result := true
+    emcStartSelections, emcStartColumnSelections:
+      begin
+        MoveCaret;
+        FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
+        if ACommand = emcStartColumnSelections then
+          FBlockSelection.ActiveSelectionMode := smColumn
+        else
+          FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+        MouseCapture := True;
+        Include(fStateFlags, sfMouseSelecting);
+      end;
+    emcContinueSelections, emcContinueColumnSelections:
+      begin
+        MoveCaret;
+        FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
+        if ACommand = emcContinueColumnSelections then
+          FBlockSelection.ActiveSelectionMode := smColumn
+        else
+          FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+        MouseCapture := True;
+        Include(fStateFlags, sfMouseSelecting);
+      end;
+    emcSelectWord:
+      begin
+        if not (eoNoSelection in fOptions) then
+          SetWordBlock(AnInfo.NewCaret.LineBytePos);
+        MouseCapture := FALSE;
+      end;
+    emcSelectLine:
+      begin
+        if not (eoNoSelection in fOptions) then
+          SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
+        MouseCapture := FALSE;
+      end;
+    emcSelectPara:
+      begin
+        if not (eoNoSelection in fOptions) then
+          SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
+        MouseCapture := FALSE;
+      end;
+    emcStartDragMove:
+      begin
+        if SelAvail and (SelectionMode = smNormal) then begin
+          Include(fStateFlags, sfWaitForDragging);
+          MouseCapture := True;
+        end
+        else
+          Result := False; // Currently only drags smNormal
+      end;
+    emcPasteSelection:
+      begin
+        MoveCaret;
+        PrimarySelText := PrimarySelection.AsText;
+        if ((PrimarySelText<>'') or SelAvail) then begin
+          FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
+          FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
+          SelText:=PrimarySelText;
+        end
+        else
+          Result :=False;
+      end;
+    emcMouseLink:
+      begin
+        if assigned(FOnClickLink) then
+          FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseY, AnInfo.MouseY)
+        else
+          Result := False;
+      end;
+    emcContextMenu:
+      begin
+        Handled := False;
+        inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
+        if (PopupMenu <> nil) and not Handled then
+          PopupMenu.PopUp;
+      end;
+    else
+      Result := False; // ACommand was not handled => Fallback to parent Context
+  end;
+
+  if Result and (not CaretDone) and AnAction.MoveCaret then
+    MoveCaret;
+end;
+
+procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TMouseButton;
+  AShift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
+  ADir: TSynMAClickDir);
+var
+  Info: TSynEditMouseActionInfo;
 begin
   FInternalCaret.AssignFrom(FCaret);
   FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+  with Info do begin
+    NewCaret := FInternalCaret;
+    Button := AButton;
+    Shift := AShift;
+    MouseX := X;
+    MouseY := Y;
+    CCount := ACCount;
+    Dir := ADir;
+  end;
+  // mouse event occured in Gutter ?
+  if  (X <= fGutterWidth) then begin
+    FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
+    exit;
+    // No fallback to text actions
+  end;
   // mouse event occured in selected block ?
-  if not( SelAvail and (X >= fGutterWidth + 2) and
-          IsPointInSelection(FInternalCaret.LineBytePos) and
-          DoHandleMouseAction
-               (FMouseSelActions.FindCommand(Button, Shift, ACCount, ADir),
-                FInternalCaret.LineCharPos)
-        )
+  if SelAvail and (X >= fGutterWidth + 2) and
+     IsPointInSelection(FInternalCaret.LineBytePos)
   then
-    DoHandleMouseAction(FMouseActions.FindCommand(Button, Shift, ACCount, ADir),
-                        FInternalCaret.LineCharPos);
+    if DoHandleMouseAction(FMouseSelActions.FindCommand(Info), Info) then
+      exit;
+  DoHandleMouseAction(FMouseActions.FindCommand(Info), Info);
 end;
 
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -2565,25 +2590,12 @@ begin
     exit;
   end;
 
-  if (X < fGutterWidth) then begin
-    Include(fStateFlags, sfGutterClick);
-    IncPaintLock;
-    try
-      FGutter.MouseDown(Button, Shift, X, Y);
-    finally
-      DecPaintLock;
-    end;
-    inherited MouseDown(Button, Shift, X, Y);
-    LCLIntf.SetFocus(Handle);
-    exit;
-  end;
-  Exclude(fStateFlags, sfGutterClick);
-
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
   Exclude(fStateFlags, sfWaitForDragging);
   Exclude(fStateFlags, sfMouseSelecting);
+  Exclude(fStateFlags, sfGutterClick);
 
   if ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags <> []) or
      (Shift * [ssDouble, ssTriple, ssQuad] <> [])
@@ -2594,7 +2606,11 @@ begin
 
   IncPaintLock;
   try
-    HandleMouseAction(Button, Shift, X, Y, ccSingle, cdDown);
+    if (X < fGutterWidth) then begin
+      Include(fStateFlags, sfGutterClick);
+      FGutter.MouseDown(Button, Shift, X, Y);
+    end;
+    FindAndHandleMouseAction(Button, Shift, X, Y, ccSingle, cdDown);
   finally
     DecPaintLock;
   end;
@@ -2612,7 +2628,6 @@ begin
   inherited MouseMove(Shift, x, y);
   if (sfGutterClick in fStateFlags) then begin
     FGutter.MouseMove(Shift, X, Y);
-    exit;
   end;
 
   if (X >= fGutterWidth) and (X < ClientWidth - ScrollBarWidth)
@@ -2770,12 +2785,6 @@ begin
   fScrollTimer.Enabled := False;
   MouseCapture := False;
 
-  if (sfGutterClick in fStateFlags) then begin
-    FGutter.MouseUp(Button, Shift, X, Y);
-    Exclude(fStateFlags, sfGutterClick);
-    exit;
-  end;
-
   fStateFlags:=fStateFlags - [sfDblClicked,sfTripleClicked,sfQuadClicked];
   if sfWaitForDragging in fStateFlags then
   begin
@@ -2794,7 +2803,11 @@ begin
 
   IncPaintLock;
   try
-    HandleMouseAction(Button, Shift, X, Y, ccSingle, cdUp);
+    if (sfGutterClick in fStateFlags) then begin
+      FGutter.MouseUp(Button, Shift, X, Y);
+      Exclude(fStateFlags, sfGutterClick);
+    end;
+    FindAndHandleMouseAction(Button, Shift, X, Y, ccSingle, cdUp);
   finally
     DecPaintLock;
   end;

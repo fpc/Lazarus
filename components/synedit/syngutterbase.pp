@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, Menus, SynEditMarks,
-  SynEditMiscClasses, SynEditFoldedView, SynTextDrawer;
+  SynEditMiscClasses, SynEditFoldedView, SynTextDrawer, SynEditMouseCmds;
 
 type
 
@@ -27,7 +27,9 @@ type
     FColor: TColor;
     procedure SetColor(const Value: TColor);
     procedure SetGutterParts(const AValue: TSynGutterPartList);
+    procedure SetMouseActions(const AValue: TSynEditMouseActions);
   protected
+    FMouseActions: TSynEditMouseActions;
     procedure DoChange(Sender: TObject); virtual;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark); virtual;
@@ -46,6 +48,8 @@ type
     property FoldView: TSynEditFoldedView read FFoldView;
     property TextDrawer: TheTextDrawer read FTextDrawer;
     property Color: TColor read FColor write SetColor default clBtnFace;
+    property MouseActions: TSynEditMouseActions
+      read FMouseActions write SetMouseActions;
   end;
 
   { TSynGutterPartList }
@@ -88,9 +92,11 @@ type
     FOnGutterClick: TGutterClickEvent;
     function GetGutterParts: TSynGutterPartList;
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
+    procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetRealWidth(const AValue: Integer);
   protected
     FWidth : integer;
+    FMouseActions: TSynEditMouseActions;
     procedure SetAutoSize(const AValue : boolean); virtual;
     procedure SetVisible(const AValue : boolean); virtual;
     procedure SetWidth(const AValue : integer); virtual;
@@ -112,6 +118,10 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    function MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+                 HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
+    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+                                 AnInfo: TSynEditMouseActionInfo): Boolean; virtual;
     procedure DoOnGutterClick(X, Y: integer);  virtual;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -122,6 +132,8 @@ type
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property Width: integer read FWidth write SetWidth default 10;
     property Visible: boolean read FVisible write SetVisible default True;
+    property MouseActions: TSynEditMouseActions
+      read FMouseActions write SetMouseActions;
   end;
 
 
@@ -170,6 +182,14 @@ begin
   FGutterPartList.Assign(AValue);
 end;
 
+procedure TSynGutterBase.SetMouseActions(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseActions.Clear
+  else
+    FMouseActions.Assign(AValue);
+end;
+
 function TSynGutterBase.PartCount: integer;
 begin
   if FGutterPartList <> nil then
@@ -216,6 +236,14 @@ end;
 procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynSelectedColor);
 begin
   FMarkupInfo.Assign(AValue);
+end;
+
+procedure TSynGutterPartBase.SetMouseActions(const AValue: TSynEditMouseActions);
+begin
+  if AValue = nil then
+    FMouseActions.Clear
+  else
+    FMouseActions.Assign(AValue);
 end;
 
 procedure TSynGutterPartBase.SetRealWidth(const AValue: Integer);
@@ -307,8 +335,18 @@ end;
 
 procedure TSynGutterPartBase.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbRight) and (TSynEdit(SynEdit).PopupMenu <> nil) then
-    TSynEdit(SynEdit).PopupMenu.PopUp;
+end;
+
+function TSynGutterPartBase.MaybeHandleMouseAction(AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := False;
+end;
+
+function TSynGutterPartBase.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+  AnInfo: TSynEditMouseActionInfo): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);

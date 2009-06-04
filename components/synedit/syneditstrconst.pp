@@ -288,6 +288,12 @@ const
   SYNS_emcMouseLink                = 'Source Link';
   SYNS_emcMouseLink_opt            = 'Underline,yes, no';
   SYNS_emcContextMenu              = 'Popup Menu';
+  SYNS_emcBreakPointToggle         = 'Toggle Breakpoint';
+  SYNS_emcCodeFoldCollaps          = 'Fold Code';
+  SYNS_emcCodeFoldCollaps_opt      = 'Nodes,One,All';
+  SYNS_emcCodeFoldExpand           = 'Unfold Code';
+  SYNS_emcCodeFoldExpand_opt       = 'Nodes,One,All';
+  SYNS_emcCodeFoldContextMenu      = 'Fold Menu';
 
 implementation
 
