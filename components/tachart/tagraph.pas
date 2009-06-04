@@ -245,7 +245,6 @@ type
 
   published
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
-    property AxisColor: TColor read FAxisColor write SetAxisColor default clBlack;
     property AxisList: TChartAxisList read FAxisList write SetAxisList;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
@@ -350,7 +349,6 @@ begin
 
   Color := clBtnFace;
   FBackColor := clBtnFace;
-  AxisColor := clBlack;
 
   FCurrentExtent := EmptyDoubleRect;
 
@@ -1316,6 +1314,7 @@ end;
 procedure SkipObsoleteChartProperties;
 const
   MIRRORX_NOTE = 'Obsolete, use BottomAxis.Invert instead';
+  AXIS_COLOR_NOTE = 'Obsolete, use Axis.TickColor instead';
   ANGLE_NOTE = 'Obsolete, use Font.Orientation instead';
   NOTE = 'Obsolete, use Extent instead';
   NAMES: array [1..4] of String = (
@@ -1324,6 +1323,7 @@ var
   i: Integer;
 begin
   RegisterPropertyToSkip(TChart, 'MirrorX', MIRRORX_NOTE, '');
+  RegisterPropertyToSkip(TChart, 'AxisColor', AXIS_COLOR_NOTE, '');
   RegisterPropertyToSkip(TChartAxisTitle, 'Angle', ANGLE_NOTE, '');
   for i := 1 to High(NAMES) do begin
     RegisterPropertyToSkip(TChart, NAMES[i] + 'Min', NOTE, '');
