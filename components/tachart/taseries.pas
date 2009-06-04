@@ -59,9 +59,9 @@ type
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     procedure SetActive(AValue: Boolean); override;
-    procedure SetDepth(AValue: TChartZPosition); override;
+    procedure SetDepth(AValue: TChartDistance); override;
     procedure SetShowInLegend(AValue: Boolean); override;
-    procedure SetZPosition(AValue: TChartZPosition); override;
+    procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
@@ -317,10 +317,10 @@ type
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetSeriesColor: TColor; override;
     procedure SetActive(AValue: Boolean); override;
-    procedure SetDepth(AValue: TChartZPosition); override;
+    procedure SetDepth(AValue: TChartDistance); override;
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure SetShowInLegend(AValue: Boolean); override;
-    procedure SetZPosition(AValue: TChartZPosition); override;
+    procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
     procedure UpdateParentChart;
@@ -538,7 +538,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.SetDepth(AValue: TChartZPosition);
+procedure TChartSeries.SetDepth(AValue: TChartDistance);
 begin
   if FDepth = AValue then exit;
   FDepth := AValue;
@@ -568,7 +568,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.SetZPosition(AValue: TChartZPosition);
+procedure TChartSeries.SetZPosition(AValue: TChartDistance);
 begin
   if FZPosition = AValue then exit;
   FZPosition := AValue;
@@ -1541,7 +1541,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.SetDepth(AValue: TChartZPosition);
+procedure TFuncSeries.SetDepth(AValue: TChartDistance);
 begin
   if FDepth = AValue then exit;
   FDepth := AValue;
@@ -1590,7 +1590,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.SetZPosition(AValue: TChartZPosition);
+procedure TFuncSeries.SetZPosition(AValue: TChartDistance);
 begin
   if FZPosition = AValue then exit;
   FZPosition := AValue;

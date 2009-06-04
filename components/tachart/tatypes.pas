@@ -35,6 +35,10 @@ const
   MARKS_MARGIN_X = 4;
   MARKS_MARGIN_Y = 2;
   DEF_MARGIN = 4;
+  DEF_MARKS_DISTANCE = 20;
+  DEF_POINTER_SIZE = 4;
+  DEF_TICK_LENGTH = 4;
+  DEF_TITLE_DISTANCE = 4;
 
 type
   TCustomChart = class(TCustomControl);
@@ -126,12 +130,16 @@ type
     property Visible default false;
   end;
 
+  { TChartAxisTitle }
+
   TChartAxisTitle = class(TChartElement)
   private
     FCaption: String;
+    FDistance: TChartDistance;
     FFont: TFont;
 
     procedure SetCaption(AValue: String);
+    procedure SetDistance(AValue: TChartDistance);
     procedure SetFont(AValue: TFont);
   public
     constructor Create(AOwner: TCustomChart);
@@ -140,6 +148,8 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property Caption: String read FCaption write SetCaption;
+    property Distance: TChartDistance
+      read FDistance write SetDistance default DEF_TITLE_DISTANCE;
     property Font: TFont read FFont write SetFont;
     property Visible default false;
   end;
@@ -204,7 +214,8 @@ type
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
-    property TickLength: Integer read FTickLength write SetTickLength default 4;
+    property TickLength: Integer
+      read FTickLength write SetTickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
@@ -268,7 +279,8 @@ type
     function IsMarkLabelsVisible: Boolean;
   published
     // Distance between series point and label.
-    property Distance: Integer read FDistance write SetDistance default 20;
+    property Distance: Integer
+      read FDistance write SetDistance default DEF_MARKS_DISTANCE;
     property Format: String read FFormat write SetFormat;
     property Frame: TChartPen read FFrame write SetFrame;
     property LabelBrush: TChartLabelBrush read FLabelBrush write SetLabelBrush;
@@ -302,10 +314,10 @@ type
     procedure Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
   published
     property Brush: TBrush read FBrush write SetBrush;
-    property HorizSize: Integer read FHorizSize write SetHorizSize default 4;
+    property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
     property Pen: TChartPen read FPen write SetPen;
     property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
-    property VertSize: Integer read FVertSize write SetVertSize default 4;
+    property VertSize: Integer read FVertSize write SetVertSize default DEF_POINTER_SIZE;
     property Visible default true;
   end;
 
@@ -337,8 +349,6 @@ type
     property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds default false;
   end;
 
-  TChartMargin = 0..MaxInt;
-
   { TChartMargins }
 
   TChartMargins = class (TChartElement)
@@ -349,17 +359,17 @@ type
         1: (FCoords: array [1..4] of Integer;);
       end;
     function GetValue(AIndex: Integer): integer;
-    procedure SetValue(AIndex: integer; AValue: TChartMargin);
+    procedure SetValue(AIndex: integer; AValue: TChartDistance);
   public
     constructor Create(AOwner: TCustomChart);
   public
     procedure Assign(Source: TPersistent); override;
     property Data: TRect read FData.FRect;
   published
-    property Left: TChartMargin index 1 read GetValue write SetValue default DEF_MARGIN;
-    property Top: TChartMargin index 2 read GetValue write SetValue default DEF_MARGIN;
-    property Right: TChartMargin index 3 read GetValue write SetValue default DEF_MARGIN;
-    property Bottom: TChartMargin index 4 read GetValue write SetValue default DEF_MARGIN;
+    property Left: TChartDistance index 1 read GetValue write SetValue default DEF_MARGIN;
+    property Top: TChartDistance index 2 read GetValue write SetValue default DEF_MARGIN;
+    property Right: TChartDistance index 3 read GetValue write SetValue default DEF_MARGIN;
+    property Bottom: TChartDistance index 4 read GetValue write SetValue default DEF_MARGIN;
   end;
 
 function SideByAlignment(
@@ -371,7 +381,6 @@ uses
   Math, Types;
 
 const
-  CAPTION_DIST = 4;
   FONT_SLOPE_VERTICAL = 45 * 10;
 
 function MarkToText(AMark: Double): String;
@@ -588,6 +597,7 @@ end;
 constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDistance := DEF_TITLE_DISTANCE;
   InitHelper(FFont, TFont);
 end;
 
@@ -600,6 +610,13 @@ end;
 procedure TChartAxisTitle.SetCaption(AValue: String);
 begin
   FCaption := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxisTitle.SetDistance(AValue: TChartDistance);
+begin
+  if FDistance = AValue then exit;
+  FDistance := AValue;
   StyleChanged(Self);
 end;
 
@@ -629,7 +646,7 @@ begin
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
   FTickColor := clBlack;
-  FTickLength := 4;
+  FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FVisible := true;
 end;
@@ -754,8 +771,8 @@ begin
     case Alignment of
       calLeft: p.X := ARect.Left - FTitleSize;
       calTop: p.Y := ARect.Top - FTitleSize;
-      calRight: p.X := ARect.Right + CAPTION_DIST;
-      calBottom: p.Y := ARect.Bottom + CAPTION_DIST;
+      calRight: p.X := ARect.Right + Title.Distance;
+      calBottom: p.Y := ARect.Bottom + Title.Distance;
     end;
     ACanvas.TextOut(p.X, p.Y, Title.Caption);
   finally
@@ -828,7 +845,7 @@ procedure TChartAxis.Measure(
       d := sz.cx
     else
       d := sz.cy;
-    FTitleSize := d + CAPTION_DIST;
+    FTitleSize := d + Title.Distance;
   end;
 
 begin
@@ -915,7 +932,7 @@ end;
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FDistance := 20;
+  FDistance := DEF_MARKS_DISTANCE;
   InitHelper(FFrame, TChartPen);
   InitHelper(FLabelBrush, TChartLabelBrush);
   FLabelBrush.Color := clYellow;
@@ -1025,9 +1042,9 @@ begin
   InitHelper(FBrush, TBrush);
   InitHelper(FPen, TChartPen);
 
-  FHorizSize := 4;
+  FHorizSize := DEF_POINTER_SIZE;
   FStyle := psRectangle;
-  FVertSize  := 4;
+  FVertSize  := DEF_POINTER_SIZE;
   FVisible := true;
 end;
 
@@ -1192,7 +1209,7 @@ begin
   Result := FData.FCoords[AIndex];
 end;
 
-procedure TChartMargins.SetValue(AIndex: integer; AValue: TChartMargin);
+procedure TChartMargins.SetValue(AIndex: integer; AValue: TChartDistance);
 begin
   if FData.FCoords[AIndex] = AValue then exit;
   FData.FCoords[AIndex] := AValue;

@@ -44,18 +44,16 @@ type
     ASender: TChart; ASeriesIndex, AIndex: Integer;
     const AImg: TPoint; const AData: TDoublePoint) of object;
 
-  TChartZPosition = 0..MaxInt;
-
   { TBasicChartSeries }
 
   TBasicChartSeries = class(TComponent)
   protected
     FActive: Boolean;
     FChart: TChart;
-    FDepth: TChartZPosition;
+    FDepth: TChartDistance;
     FShowInLegend: Boolean;
     FTitle: String;
-    FZPosition: TChartZPosition;
+    FZPosition: TChartDistance;
 
     procedure AfterAdd; virtual;
     procedure AfterDraw; virtual;
@@ -69,10 +67,10 @@ type
       virtual;
     function GetSeriesColor: TColor; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
-    procedure SetDepth(AValue: TChartZPosition); virtual; abstract;
+    procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
-    procedure SetZPosition(AValue: TChartZPosition); virtual; abstract;
+    procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
@@ -91,14 +89,14 @@ type
     function IsEmpty: Boolean; virtual; abstract;
 
     property Active: Boolean read FActive write SetActive;
-    property Depth: TChartZPosition read FDepth write SetDepth default 0;
+    property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
-    property ZPosition: TChartZPosition read FZPosition write SetZPosition default 0;
+    property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   end;
 
   TSeriesClass = class of TBasicChartSeries;
@@ -126,7 +124,7 @@ type
     FAxisColor: TColor;
     FAxisVisible: Boolean;
     FBackColor: TColor;
-    FDepth: TChartZPosition;
+    FDepth: TChartDistance;
     FExpandPercentage: Integer;
     FExtent: TChartExtent;
     FFoot: TChartTitle;
@@ -166,7 +164,7 @@ type
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBackColor(const AValue: TColor);
-    procedure SetDepth(AValue: TChartZPosition);
+    procedure SetDepth(AValue: TChartDistance);
     procedure SetExpandPercentage(AValue: Integer);
     procedure SetExtent(const AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
@@ -249,7 +247,7 @@ type
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
     property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis stored false;
-    property Depth: TChartZPosition read FDepth write SetDepth default 0;
+    property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
     property Extent: TChartExtent read FExtent write SetExtent;
@@ -1082,7 +1080,7 @@ begin
     Series.FList.Move(i, Order);
 end;
 
-procedure TChart.SetDepth(AValue: TChartZPosition);
+procedure TChart.SetDepth(AValue: TChartDistance);
 begin
   if FDepth = AValue then exit;
   FDepth := AValue;

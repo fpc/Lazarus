@@ -56,6 +56,8 @@ type
     );
   end;
 
+  TChartDistance = 0..MaxInt;
+
   TPointDistFunc = function (const A, B: TPoint): Integer;
 
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
