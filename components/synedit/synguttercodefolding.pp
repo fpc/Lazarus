@@ -188,6 +188,25 @@ begin
             FFoldView.FoldAtTextIndex(Line-1, -1, 1, True);
           emcoCodeFoldCollapsAll:
             FFoldView.FoldAtTextIndex(Line-1, -1, 0);
+          emcoCodeFoldCollapsAtCaret:
+            begin
+              i := FFoldView.LogicalPosToNodeIndex(Line-1, AnInfo.NewCaret.BytePos, False);
+              if i >= 0 then
+                FFoldView.FoldAtTextIndex(Line-1, i, 1, False)
+              else
+                Result := False;
+            end;
+          emcoCodeFoldCollapsPreCaret:
+            begin
+              i := FFoldView.LogicalPosToNodeIndex(Line-1, AnInfo.NewCaret.BytePos, True);
+              if i >= 0 then
+                FFoldView.FoldAtTextIndex(Line-1, i, 1, False)
+              else begin
+                i := FFoldView.ExpandedLineForBlockAtLine(Line);
+                if i > 0 then
+                  FFoldView.FoldAtTextIndex(i-1, -1, 1, True);
+              end;
+            end;
         end;
       end;
     emcCodeFoldExpand:
