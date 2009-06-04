@@ -126,6 +126,8 @@ procedure Exchange(var A, B: TDoublePoint); overload;
 // True if float ranges [A, B] and [C, D] have at least one common point.
 function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
 
+function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
+
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
@@ -266,6 +268,39 @@ begin
   Result := (A <= D) and (C <= B);
 end;
 
+function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
+const
+  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
+  K = 1e-10;
+var
+  start, step, m: Double;
+  markCount: Integer;
+begin
+  CalculateIntervals(AMin, AMax, INV_TO_SCALE[AInverted], start, step);
+  AMin -= step * K;
+  AMax += step * K;
+  m := start;
+  markCount := 0;
+  while true do begin
+    if InRange(m, AMin, AMax) then
+      Inc(markCount)
+    else if markCount > 0 then
+      break;
+    m += step;
+  end;
+  SetLength(Result, markCount);
+  m := start;
+  markCount := 0;
+  while true do begin
+    if InRange(m, AMin, AMax) then begin
+      Result[markCount] := m;
+      Inc(markCount);
+    end
+    else if markCount > 0 then
+      break;
+    m += step;
+  end;
+end;
 
 function PointDist(const A, B: TPoint): Integer;
 begin

@@ -372,7 +372,6 @@ uses
 
 const
   CAPTION_DIST = 4;
-  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
   FONT_SLOPE_VERTICAL = 45 * 10;
 
 function MarkToText(AMark: Double): String;
@@ -710,62 +709,27 @@ procedure TChartAxis.Draw(
     ACanvas.TextOut(AX + dx, y - sz.cy div 2, markText)
   end;
 
-  procedure DrawVertical;
+  procedure DoDraw(AMin, AMax: Double);
   var
-    mark, step: Double;
-    x: Integer;
+    i, coord: Integer;
+    marks: TDoubleDynArray;
   begin
-    if AExtent.a.Y = AExtent.b.Y then exit;
-    CalculateIntervals(
-      AExtent.a.Y, AExtent.b.Y, INV_TO_SCALE[Inverted], mark, step);
-    x := SideByAlignment(ARect, Alignment, FSize);
-    case INV_TO_SCALE[Inverted] of
-      asIncreasing:
-        while mark <= AExtent.b.Y + step * 10e-10 do begin
-          if mark >= AExtent.a.Y then
-            DrawYMark(x, mark);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= AExtent.a.Y - step * 10e-10 do begin
-          if mark <= AExtent.b.Y then
-            DrawYMark(x, mark);
-          mark -= step;
-        end;
-    end;
-  end;
-
-  procedure DrawHorizontal;
-  var
-    mark, step: Double;
-    y: Integer;
-  begin
-    if AExtent.a.X = AExtent.b.X then exit;
-    CalculateIntervals(
-      AExtent.a.X, AExtent.b.X, INV_TO_SCALE[Inverted], mark, step);
-    y := SideByAlignment(ARect, Alignment, FSize);
-    case INV_TO_SCALE[Inverted] of
-      asIncreasing:
-        while mark <= AExtent.b.X + step * 10e-10 do begin
-          if mark >= AExtent.a.X then
-            DrawXMark(y, mark);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= AExtent.a.X - step * 10e-10 do begin
-          if mark <= AExtent.b.X then
-            DrawXMark(y, mark);
-          mark -= step;
-        end;
-    end;
+    if AMin = AMax then exit;
+    marks := GetIntervals(AMin, AMax, Inverted);
+    coord := SideByAlignment(ARect, Alignment, FSize);
+    for i := 0 to High(marks) do
+      if IsVertical then
+        DrawYMark(coord, marks[i])
+      else
+        DrawXMark(coord, marks[i]);
   end;
 
 begin
   if not Visible then exit;
   if IsVertical then
-    DrawVertical
+    DoDraw(AExtent.a.Y, AExtent.b.Y)
   else
-    DrawHorizontal;
+    DoDraw(AExtent.a.X, AExtent.b.X);
 end;
 
 procedure TChartAxis.DrawTitle(
@@ -824,27 +788,14 @@ procedure TChartAxis.Measure(
 
   procedure CalcVertSize;
   var
-    mark, step: Double;
-    maxWidth: Integer;
+    i, maxWidth: Integer;
+    marks: TDoubleDynArray;
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
     maxWidth := 0;
-    CalculateIntervals(
-      AExtent.a.Y, AExtent.b.Y, INV_TO_SCALE[Inverted], mark, step);
-    case INV_TO_SCALE[Inverted] of
-      asIncreasing:
-        while mark <= AExtent.b.Y + step * 10e-10 do begin
-          if mark >= AExtent.a.Y then
-            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-          mark += step;
-        end;
-      asDecreasing:
-        while mark >= AExtent.a.Y - step * 10e-10 do begin
-          if mark <= AExtent.b.Y then
-            maxWidth := Max(ACanvas.TextWidth(MarkToText(mark)), maxWidth);
-          mark -= step;
-        end;
-    end;
+    marks := GetIntervals(AExtent.a.Y, AExtent.b.Y, Inverted);
+    for i := 0 to High(marks) do
+      maxWidth := Max(ACanvas.TextWidth(MarkToText(marks[i])), maxWidth);
     // CalculateTransformationCoeffs changes axis interval, so it is possibile
     // that a new mark longer then existing ones is introduced.
     // That will change marks width and reduce view area,
