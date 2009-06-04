@@ -42,9 +42,8 @@ const
 
   emcNone                     =  0;
   emcStartSelections          =  1;    // Start BlockSelection (Default Left Mouse Btn)
-  emcContinueSelections       =  2;    // Continue BlockSelection (Default Shift - Left Mouse Btn)
   emcStartColumnSelections    =  3;    // Column BlockSelection (Default Alt - Left Mouse Btn)
-  emcContinueColumnSelections =  4;    // column BlockSelection (Default Alt-Shift - Left Mouse Btn)
+  emcStartLineSelections      =  4;    // Line BlockSelection (Default Alt - Left Mouse Btn)
 
   emcSelectWord               =  6;
   emcSelectLine               =  7;
@@ -65,6 +64,9 @@ const
   emcMax = 16;
 
   // Options
+  emcoSelectionStart          = 0;
+  emcoSelectionContinue       = 1;
+
   emcoSelectLineSmart         =  0;
   emcoSelectLineFull          =  1;
   emcoMouseLinkShow           =  0;
@@ -194,9 +196,8 @@ begin
   case emc of
     emcNone:    Result := SYNS_emcNone;
     emcStartSelections:    Result := SYNS_emcStartSelection;
-    emcContinueSelections: Result := SYNS_emcContinueSelections;
     emcStartColumnSelections:    Result := SYNS_emcStartColumnSelections;
-    emcContinueColumnSelections: Result := SYNS_emcContinueColumnSelections;
+    emcStartLineSelections: Result := SYNS_emcStartLineSelections;
     emcSelectWord: Result := SYNS_emcSelectWord;
     emcSelectLine: Result := SYNS_emcSelectLine;
     emcSelectPara: Result := SYNS_emcSelectPara;
@@ -218,6 +219,9 @@ end;
 function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
 begin
   case emc of
+    emcStartSelections,
+    emcStartColumnSelections,
+    emcStartLineSelections: Result := SYNS_emcSelection_opt;
     emcSelectLine: Result := SYNS_emcSelectLine_opt;
     emcMouseLink:   Result := SYNS_emcMouseLink_opt;
     emcCodeFoldCollaps: Result := SYNS_emcCodeFoldCollaps_opt;
@@ -505,10 +509,10 @@ end;
 procedure TSynEditMouseTextActions.ResetDefaults;
 begin
   Clear;
-  AddCommand(emcStartSelections, True,    mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt]);
-  AddCommand(emcContinueSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt]);
-  AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt]);
-  AddCommand(emcContinueColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt]);
+  AddCommand(emcStartSelections, True,    mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
+  AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
+  AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+  AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
   AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
 
   AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);

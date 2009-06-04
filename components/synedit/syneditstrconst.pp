@@ -275,10 +275,10 @@ const
 
 
   SYNS_emcNone                     = 'No Action';
-  SYNS_emcStartSelection           = 'Start Selection';
-  SYNS_emcContinueSelections       = 'Continue Selection';
-  SYNS_emcStartColumnSelections    = 'Start Column Selection';
-  SYNS_emcContinueColumnSelections = 'Continue Column Selection';
+  SYNS_emcStartSelection           = 'Selection';
+  SYNS_emcStartColumnSelections    = 'Column Selection';
+  SYNS_emcStartLineSelections      = 'Line Selection';
+  SYNS_emcSelection_opt            = 'Mode,Begin,Continue';
   SYNS_emcSelectWord     = 'Select Word';
   SYNS_emcSelectLine     = 'Select Line';
   SYNS_emcSelectLine_opt = '"Include spaces",no,yes';

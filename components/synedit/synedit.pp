@@ -2465,25 +2465,26 @@ begin
 
   case ACommand of
     emcNone: ; // do nothing, but result := true
-    emcStartSelections, emcStartColumnSelections:
+    emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
       begin
-        MoveCaret;
-        FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
-        if ACommand = emcStartColumnSelections then
-          FBlockSelection.ActiveSelectionMode := smColumn
-        else
-          FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
-        MouseCapture := True;
-        Include(fStateFlags, sfMouseSelecting);
-      end;
-    emcContinueSelections, emcContinueColumnSelections:
-      begin
-        MoveCaret;
-        FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
-        if ACommand = emcContinueColumnSelections then
-          FBlockSelection.ActiveSelectionMode := smColumn
-        else
-          FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+        if AnAction.Option = emcoSelectionContinue then
+          FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos
+        else begin
+          MoveCaret;
+          FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
+        end;
+        case ACommand of
+          emcStartColumnSelections:
+            FBlockSelection.ActiveSelectionMode := smColumn;
+          emcStartLineSelections:
+            begin
+              if ACommand = emcStartLineSelections then
+                SetLineBlock(AnInfo.NewCaret.LineBytePos, True);
+              FBlockSelection.ActiveSelectionMode := smLine;
+            end;
+          else
+            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+        end;
         MouseCapture := True;
         Include(fStateFlags, sfMouseSelecting);
       end;
