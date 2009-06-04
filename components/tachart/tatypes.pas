@@ -162,18 +162,22 @@ type
 
   TChartAxis = class(TCollectionItem)
   private
+    FSize: Integer;
+    FTitleSize: Integer;
+  private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
     FInverted: Boolean;
+    FTickColor: TColor;
+    FTickLength: Integer;
     FTitle: TChartAxisTitle;
     FVisible: Boolean;
-  private
-    FSize: Integer;
-    FTitleSize: Integer;
 
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
+    procedure SetTickColor(AValue: TColor);
+    procedure SetTickLength(AValue: Integer);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetVisible(const AValue: Boolean);
 
@@ -183,7 +187,6 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-
   public
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
@@ -200,6 +203,8 @@ type
     property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
+    property TickColor: TColor read FTickColor write SetTickColor default clBlack;
+    property TickLength: Integer read FTickLength write SetTickLength default 4;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
@@ -366,7 +371,6 @@ uses
   Math, Types;
 
 const
-  TICK_LENGTH = 4;
   CAPTION_DIST = 4;
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
   FONT_SLOPE_VERTICAL = 45 * 10;
@@ -622,10 +626,12 @@ end;
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
-  FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
+  FTickColor := clBlack;
+  FTickLength := 4;
+  FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FVisible := true;
 end;
 
@@ -656,19 +662,19 @@ procedure TChartAxis.Draw(
         x, ATransf.YGraphToImage(AExtent.b.Y));
     end;
 
-    ACanvas.Pen.Color := clBlack; //AxisColor;
+    ACanvas.Pen.Color := TickColor;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(x, AY - TICK_LENGTH, x, AY + TICK_LENGTH);
+    ACanvas.Line(x, AY - TickLength, x, AY + TickLength);
 
     //ACanvas.Brush.Assign(FGraphBrush);
     //ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
     sz := ACanvas.TextExtent(markText);
     if Alignment = calTop then
-      dy := -TICK_LENGTH - 1 - sz.cy
+      dy := -TickLength - 1 - sz.cy
     else
-      dy := TICK_LENGTH + 1;
+      dy := TickLength + 1;
     ACanvas.TextOut(x - sz.cx div 2, AY + dy, markText);
   end;
 
@@ -688,19 +694,19 @@ procedure TChartAxis.Draw(
         ATransf.XGraphToImage(AExtent.b.X), y);
     end;
 
-    ACanvas.Pen.Color := clBlack; //AxisColor;
+    ACanvas.Pen.Color := TickColor;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(AX - TICK_LENGTH, y, AX + TICK_LENGTH, y);
+    ACanvas.Line(AX - TickLength, y, AX + TickLength, y);
 
     //ACanvas.Brush.Assign(FGraphBrush);
     //ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
     sz := ACanvas.TextExtent(markText);
     if Alignment = calLeft then
-      dx := -TICK_LENGTH - 1 - sz.cx
+      dx := -TickLength - 1 - sz.cx
     else
-      dx := TICK_LENGTH + 1;
+      dx := TickLength + 1;
     ACanvas.TextOut(AX + dx, y - sz.cy div 2, markText)
   end;
 
@@ -767,24 +773,30 @@ procedure TChartAxis.DrawTitle(
 var
   p: TPoint;
   sz: TSize;
+  pbf: TPenBrushFontRecall;
 begin
   if not Visible or (FTitleSize = 0) then exit;
   // FIXME: Angle assumed to be either ~0 or ~90 degrees
-  sz := ACanvas.TextExtent(Title.Caption);
-  if Title.Font.Orientation >= FONT_SLOPE_VERTICAL then begin
-    Exchange(sz.cx, sz.cy);
-    sz.cy := -sz.cy;
+  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
+  try
+    ACanvas.Font := Title.Font;
+    sz := ACanvas.TextExtent(Title.Caption);
+    if Title.Font.Orientation >= FONT_SLOPE_VERTICAL then begin
+      Exchange(sz.cx, sz.cy);
+      sz.cy := -sz.cy;
+    end;
+    p.X := ACenter.X - sz.cx div 2;
+    p.Y := ACenter.Y - sz.cy div 2;
+    case Alignment of
+      calLeft: p.X := ARect.Left - FTitleSize;
+      calTop: p.Y := ARect.Top - FTitleSize;
+      calRight: p.X := ARect.Right + CAPTION_DIST;
+      calBottom: p.Y := ARect.Bottom + CAPTION_DIST;
+    end;
+    ACanvas.TextOut(p.X, p.Y, Title.Caption);
+  finally
+    pbf.Free;
   end;
-  p.X := ACenter.X - sz.cx div 2;
-  p.Y := ACenter.Y - sz.cy div 2;
-  case Alignment of
-    calLeft: p.X := ARect.Left - FTitleSize;
-    calTop: p.Y := ARect.Top - FTitleSize;
-    calRight: p.X := ARect.Right + CAPTION_DIST;
-    calBottom: p.Y := ARect.Bottom + CAPTION_DIST;
-  end;
-  ACanvas.TextOut(p.X, p.Y, Title.Caption);
-  ACanvas.Font.Orientation := 0;
   SideByAlignment(ARect, Alignment, FTitleSize);
 end;
 
@@ -809,25 +821,13 @@ end;
 procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   var AMargins: TChartAxisMargins);
-var
-  sz: TSize;
-  mark, step: Double;
-  d, maxWidth: Integer;
-begin
-  FSize := 0;
-  FTitleSize := 0;
-  if not Visible then exit;
 
-  if Title.Visible and (Title.Caption <> '') then begin
-    sz := ACanvas.TextExtent(Title.Caption);
-    if (Title.Font.Orientation < FONT_SLOPE_VERTICAL) = IsVertical then
-      d := sz.cx
-    else
-      d := sz.cy;
-    FTitleSize := d + CAPTION_DIST;
-  end;
-
-  if IsVertical and (AExtent.a.Y <> AExtent.b.Y) then begin
+  procedure CalcVertSize;
+  var
+    mark, step: Double;
+    maxWidth: Integer;
+  begin
+    if AExtent.a.Y = AExtent.b.Y then exit;
     maxWidth := 0;
     CalculateIntervals(
       AExtent.a.Y, AExtent.b.Y, INV_TO_SCALE[Inverted], mark, step);
@@ -845,15 +845,50 @@ begin
           mark -= step;
         end;
     end;
+    // CalculateTransformationCoeffs changes axis interval, so it is possibile
+    // that a new mark longer then existing ones is introduced.
+    // That will change marks width and reduce view area,
+    // requiring another call to CalculateTransformationCoeffs...
+    // So punt for now and just reserve space for extra digit unconditionally.
+    FSize := maxWidth + ACanvas.TextWidth('0') + TickLength;
   end;
 
-  // CalculateTransformationCoeffs changes axis interval, so it is possibile
-  // that a new mark longer then existing ones is introduced.
-  // That will change marks width and reduce view area,
-  // requiring another call to CalculateTransformationCoeffs...
-  // So punt for now and just reserve space for extra digit unconditionally.
-  FSize := ACanvas.TextHeight('0') + maxWidth + CAPTION_DIST;
+  procedure CalcHorSize;
+  begin
+    if AExtent.a.X = AExtent.b.X then exit;
+    FSize := ACanvas.TextHeight('0') + TickLength;
+  end;
 
+  procedure CalcTitleSize;
+  var
+    d: Integer;
+    sz: TSize;
+    pbf: TPenBrushFontRecall;
+  begin
+    if not Title.Visible or (Title.Caption = '') then exit;
+    pbf := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
+    try
+      ACanvas.Font := Title.Font;
+      sz := ACanvas.TextExtent(Title.Caption);
+    finally
+      pbf.Free;
+    end;
+    if (Title.Font.Orientation < FONT_SLOPE_VERTICAL) = IsVertical then
+      d := sz.cx
+    else
+      d := sz.cy;
+    FTitleSize := d + CAPTION_DIST;
+  end;
+
+begin
+  FSize := 0;
+  FTitleSize := 0;
+  if not Visible then exit;
+  if IsVertical then
+    CalcVertSize
+  else
+    CalcHorSize;
+  CalcTitleSize;
   AMargins[Alignment] += FSize + FTitleSize;
 end;
 
@@ -873,6 +908,20 @@ end;
 procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   FInverted := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetTickColor(AValue: TColor);
+begin
+  if FTickColor = AValue then exit;
+  FTickColor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetTickLength(AValue: Integer);
+begin
+  if FTickLength = AValue then exit;
+  FTickLength := AValue;
   StyleChanged(Self);
 end;
 
