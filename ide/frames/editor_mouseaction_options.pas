@@ -304,7 +304,8 @@ begin
   ActionGrid.Cells[6,0] := dlgMouseOptHeadCtrl;
   ActionGrid.Cells[7,0] := dlgMouseOptHeadCaret;
   ActionGrid.Cells[8,0] := dlgMouseOptHeadOpt;
-  ActionGrid.ColWidths[0] := 100;
+  ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
+  ActionGrid.ColWidths[8] := ActionGrid.ColWidths[8] * 3;
   ActionGridHeaderSized(nil, true, 0);
 
   DelButton.Caption := dlgMouseOptBtnDel;
