@@ -6,9 +6,13 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, SynTextDrawer, SynEditFoldedView;
+  SynEditMiscProcs, SynTextDrawer, SynEditFoldedView, SynEditMouseCmds;
 
 type
+
+  TSynEditMouseActionsLineNum = class(TSynEditMouseActions)
+  public  // empty by default
+  end;
 
   { TSynGutterLineNumber }
 
@@ -59,6 +63,8 @@ begin
   inherited Create(AOwner);
   FFoldView := Gutter.FoldView;
   FTextDrawer := Gutter.TextDrawer;
+  FMouseActions := TSynEditMouseActionsLineNum.Create(self);
+  FMouseActions.ResetDefaults;
 
   FDigitCount := 2;
   FAutoSizeDigitCount := FDigitCount;
@@ -70,6 +76,7 @@ end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
+  FreeAndNil(FMouseActions);
   inherited Destroy;
 end;
 

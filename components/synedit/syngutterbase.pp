@@ -341,6 +341,8 @@ function TSynGutterPartBase.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActi
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := False;
+  if assigned(FMouseActions) then
+    Result := HandleActionProc(MouseActions.FindCommand(AnInfo), AnInfo);
 end;
 
 function TSynGutterPartBase.DoHandleMouseAction(AnAction: TSynEditMouseAction;

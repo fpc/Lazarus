@@ -1706,7 +1706,7 @@ begin
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
   end;
-  FMouseActions := TSynEditMouseActions.Create(Self);
+  FMouseActions := TSynEditMouseTextActions.Create(Self);
   FMouseSelActions := TSynEditMouseSelActions.Create(Self);
   FMouseActions.ResetDefaults;
   FMouseSelActions.ResetDefaults;

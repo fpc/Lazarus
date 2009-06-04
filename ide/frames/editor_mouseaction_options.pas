@@ -58,11 +58,15 @@ type
     FMainNode, FSelNode: TTreeNode;
     FGutterNode: TTreeNode;
     FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
+    FGutterLinesNode: TTreeNode;
     FCurNode: TTreeNode;
+
     FMainActions, FSelActions: TSynEditMouseActions;
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
+    FGutterActionsLines: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
+
     ChangeDlg: TMouseaActionDialog;
     FColWidths: Array of Integer;
     FLastWidth: Integer;
@@ -254,6 +258,7 @@ begin
   FGutterActionsFold := TSynEditMouseActions.Create(nil);
   FGutterActionsFoldExp := TSynEditMouseActions.Create(nil);
   FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
+  FGutterActionsLines := TSynEditMouseActions.Create(nil);
   ChangeDlg := TMouseaActionDialog.Create(self);
 end;
 
@@ -265,6 +270,7 @@ begin
   FGutterActionsFold.Free;
   FGutterActionsFoldExp.Free;
   FGutterActionsFoldCol.Free;
+  FGutterActionsLines.Free;
   ChangeDlg.Free;
   inherited Destroy;
 end;
@@ -292,6 +298,9 @@ begin
   FGutterFoldColNode.Data := FGutterActionsFoldCol;
   FGutterFoldExpNode := ContextTree.Items.AddChild(FGutterFoldNode, dlgMouseOptNodeGutterFoldExp);
   FGutterFoldExpNode.Data := FGutterActionsFoldExp;
+  // LineNum
+  FGutterLinesNode := ContextTree.Items.AddChild(FGutterNode, dlgMouseOptNodeGutterLines);
+  FGutterLinesNode.Data := FGutterActionsLines;
 
   ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
   Splitter1.MinSize := ActionGrid.ColCount * MinGridColSize;
@@ -324,6 +333,7 @@ begin
     FGutterActionsFold.Assign(MouseGutterActionsFold);
     FGutterActionsFoldExp.Assign(MouseGutterActionsFoldExp);
     FGutterActionsFoldCol.Assign(MouseGutterActionsFoldCol);
+    FGutterActionsLines.Assign(MouseGutterActionsLines);
   end;
   ContextTree.Selected := FMainNode;
 end;
@@ -339,6 +349,7 @@ begin
     MouseGutterActionsFold.Assign(FGutterActionsFold);
     MouseGutterActionsFoldExp.Assign(FGutterActionsFoldExp);
     MouseGutterActionsFoldCol.Assign(FGutterActionsFoldCol);
+    MouseGutterActionsLines.Assign(FGutterActionsLines);
   end;
 end;
 

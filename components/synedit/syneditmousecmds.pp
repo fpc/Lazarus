@@ -167,6 +167,13 @@ type
       write SetItem; default;
   end;
 
+  { TSynEditMouseTextActions }
+
+  TSynEditMouseTextActions = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
+  end;
+
   { TSynEditSelMouseActions }
 
   TSynEditMouseSelActions = class(TSynEditMouseActions)
@@ -463,19 +470,6 @@ end;
 procedure TSynEditMouseActions.ResetDefaults;
 begin
   Clear;
-  AddCommand(emcStartSelections, True,    mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt]);
-  AddCommand(emcContinueSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt]);
-  AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt]);
-  AddCommand(emcContinueColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt]);
-  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
-
-  AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
-  AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);
-  AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
-
-  AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
-
-  AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
 end;
 
 procedure TSynEditMouseActions.IncAssertLock;
@@ -504,6 +498,26 @@ procedure TSynEditMouseSelActions.ResetDefaults;
 begin
   Clear;
   AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
+end;
+
+{ TSynEditMouseTextActions }
+
+procedure TSynEditMouseTextActions.ResetDefaults;
+begin
+  Clear;
+  AddCommand(emcStartSelections, True,    mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt]);
+  AddCommand(emcContinueSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt]);
+  AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt]);
+  AddCommand(emcContinueColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt]);
+  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
+
+  AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
+  AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);
+  AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
+
+  AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
+
+  AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
 end;
 
 end.

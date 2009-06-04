@@ -420,7 +420,7 @@ end;
 procedure TSynEditMouseActionsGutter.ResetDefaults;
 begin
   Clear;
-  AddCommand(emcOnMainGutterClick, False, mbLeft, ccSingle, cdDown, [], []);
+  AddCommand(emcOnMainGutterClick, False, mbLeft, ccAny, cdDown, [], []);
   AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
 end;
 

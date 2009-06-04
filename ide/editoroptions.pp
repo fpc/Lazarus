@@ -649,6 +649,7 @@ type
     FMouseGutterActionsFold: TSynEditMouseActions;
     FMouseGutterActionsFoldCol: TSynEditMouseActions;
     FMouseGutterActionsFoldExp: TSynEditMouseActions;
+    FMouseGutterActionsLines: TSynEditMouseActions;
 
     // Color options
     fHighlighterList: TEditOptLangList;
@@ -795,6 +796,7 @@ type
     property MouseGutterActionsFold: TSynEditMouseActions read FMouseGutterActionsFold;
     property MouseGutterActionsFoldExp: TSynEditMouseActions read FMouseGutterActionsFoldExp;
     property MouseGutterActionsFoldCol: TSynEditMouseActions read FMouseGutterActionsFoldCol;
+    property MouseGutterActionsLines: TSynEditMouseActions read FMouseGutterActionsLines;
 
     // Color options
     property HighlighterList: TEditOptLangList
@@ -1943,7 +1945,7 @@ begin
   fKeyMap := TKeyCommandRelationList.Create;
 
   // Mouse Mappings
-  fMouseMap := TSynEditMouseActions.Create(nil);
+  fMouseMap := TSynEditMouseTextActions.Create(nil);
   fMouseMap.ResetDefaults;
   fMouseSelMap := TSynEditMouseSelActions.Create(nil);
   fMouseSelMap.ResetDefaults;
@@ -1955,7 +1957,8 @@ begin
   FMouseGutterActionsFoldCol.ResetDefaults;
   FMouseGutterActionsFoldExp := TSynEditMouseActionsGutterFoldExpanded.Create(nil);
   FMouseGutterActionsFoldExp.ResetDefaults;
-
+  FMouseGutterActionsLines := TSynEditMouseActionsLineNum.Create(nil);
+  FMouseGutterActionsLines.ResetDefaults;
   // Color options
   fHighlighterList := TEditOptLangList.Create;
 
@@ -1997,6 +2000,7 @@ begin
   FMouseGutterActionsFold.Free;
   FMouseGutterActionsFoldCol.Free;
   FMouseGutterActionsFoldExp.Free;
+  FMouseGutterActionsLines.Free;
   fKeyMap.Free;
   XMLConfig.Free;
   inherited Destroy;
@@ -2244,6 +2248,7 @@ begin
     LoadMouseAct('EditorOptions/Mouse/GutterFold/', MouseGutterActionsFold);
     LoadMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
     LoadMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
+    LoadMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
 
     // update depricated values
     if not XMLConfig.GetValue('EditorOptions/General/Editor/DragDropEditing', True) then
@@ -2459,6 +2464,7 @@ begin
     SaveMouseAct('EditorOptions/Mouse/GutterFold/', MouseGutterActionsFold);
     SaveMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
     SaveMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
+    SaveMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -3263,6 +3269,9 @@ begin
     ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(MouseGutterActionsFold);
     ASynEdit.Gutter.CodeFoldPart.MouseActionsCollapsed.Assign(MouseGutterActionsFoldCol);
     ASynEdit.Gutter.CodeFoldPart.MouseActionsExpanded.Assign(MouseGutterActionsFoldExp);
+  end;
+  if ASynEdit.Gutter.LineNumberPart <> nil then begin
+    ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(MouseGutterActionsLines);
   end;
 end;
 

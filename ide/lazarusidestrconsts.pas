@@ -1170,6 +1170,7 @@ resourcestring
   dlgMouseOptNodeGutterFold = 'Fold Tree';
   dlgMouseOptNodeGutterFoldCol = 'Fold Collapsed [+]';
   dlgMouseOptNodeGutterFoldExp = 'Fold Expanded [-]';
+  dlgMouseOptNodeGutterLines = 'Line Numbers';
   dlgMouseOptHeadDesc = 'Action';
   dlgMouseOptHeadBtn = 'Button';
   dlgMouseOptHeadCount = 'Click';
