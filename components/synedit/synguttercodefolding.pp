@@ -39,8 +39,6 @@ type
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
-    FClickDone: Boolean;
-    FClickLine: Integer;
     FFoldView: TSynEditFoldedView;
     FMouseActionsCollapsed: TSynEditMouseActions;
     FMouseActionsExpanded: TSynEditMouseActions;
