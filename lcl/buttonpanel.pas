@@ -501,6 +501,22 @@ end;
 
 procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
   ANewWidth, ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo);
+
+  function GetPrev: TControl;
+  var
+    Index: Integer;
+  begin
+    Index := AlignInfo.ControlIndex;
+    while Index > 0 do
+    begin
+       dec(Index);
+       Result := TControl(AlignInfo.AlignList[Index]);
+       if Result.Visible then
+         Exit;
+    end;
+    Result := nil;
+  end;
+
 var
   Prev: TControl;
 begin
@@ -549,13 +565,12 @@ begin
     then begin
       ANewTop := AlignRect.Bottom - ANewHeight;
     end
-    else if AlignInfo.ControlIndex = 0
-    then begin
-      ANewTop := AlignRect.Top;
-    end
     else begin
-      Prev := TControl(AlignInfo.AlignList[AlignInfo.ControlIndex - 1]);
-      ANewTop := Prev.Top + Prev.Height + FSpacing;
+      Prev := GetPrev;
+      if Prev = nil then
+        ANewTop := AlignRect.Top
+      else
+        ANewTop := Prev.Top + Prev.Height + FSpacing;
     end;
     if Align = alLeft
     then ANewLeft := AlignRect.Left
@@ -566,13 +581,12 @@ begin
     then begin
       ANewLeft := 0
     end
-    else if AlignInfo.ControlIndex = 0
-    then begin
-      ANewLeft := AlignRect.Right - ANewWidth;
-    end
     else begin
-      Prev := TControl(AlignInfo.AlignList[AlignInfo.ControlIndex - 1]);
-      ANewLeft := Prev.Left - ANewWidth - FSpacing;
+      Prev := GetPrev;
+      if Prev = nil then
+        ANewLeft := AlignRect.Right - ANewWidth
+      else
+        ANewLeft := Prev.Left - ANewWidth - FSpacing;
     end;
     if Align = alTop
     then ANewTop := AlignRect.Top
