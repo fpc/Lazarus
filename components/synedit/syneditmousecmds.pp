@@ -74,6 +74,8 @@ const
 
   emcoCodeFoldCollapsOne      = 0;
   emcoCodeFoldCollapsAll      = 1;
+  emcoCodeFoldCollapsAtCaret  = 2;
+  emcoCodeFoldCollapsPreCaret = 3;
   emcoCodeFoldExpandOne       = 0;
   emcoCodeFoldExpandAll       = 1;
 

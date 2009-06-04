@@ -109,6 +109,7 @@ end;
 
 procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
 begin
+  OptBox.Items.Clear;
   OptBox.Items.CommaText := MouseCommandConfigName
     (TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex]))));
   if OptBox.Items.Count > 0 then begin
@@ -149,6 +150,7 @@ begin
   CtrlCheck.Checked := (ssCtrl in MAct.ShiftMask) and (ssCtrl in MAct.Shift);
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
 
+  OptBox.Items.Clear;
   OptBox.Items.CommaText := MouseCommandConfigName(MAct.Command);
   if OptBox.Items.Count > 0 then begin
     OptLabel.Caption := OptBox.Items[0];

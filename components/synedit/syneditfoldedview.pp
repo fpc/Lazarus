@@ -284,7 +284,9 @@ type
                          ColCount : Integer = 0; Skip: Boolean = False);
     procedure UnFoldAtTextIndexCollapsed(AStartIndex: Integer);   (* UnFolds only if Index is in the fold, ignores cfcollapsed line, if unfolded / 1-based *)
 
-    function IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;    (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
+    function IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
+    function LogicalPosToNodeIndex(AStartIndex: Integer; LogX: Integer;         (* Returns the index of the node, at the logical char pos *)
+                                   Previous: Boolean = False): Integer;
 
 
     procedure UnfoldAll;
@@ -1827,6 +1829,39 @@ begin
   then exit(0);
   hl := TSynCustomFoldHighlighter(FHighLighter);
   Result := hl.FoldLineLength(ALine, AFoldIndex);
+end;
+
+function TSynEditFoldedView.LogicalPosToNodeIndex(AStartIndex: Integer; LogX: Integer;
+  Previous: Boolean): Integer;
+var
+  hl: TSynCustomFoldHighlighter;
+  c, i: Integer;
+  nd: TSynFoldNodeInfo;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+  // AStartIndex is 0-based
+  // FoldTree is 1-based AND first line remains visble
+  c := hl.FoldNodeInfoCount[AStartIndex];
+  if c = 0 then
+    exit(-1);
+  i := 0;
+  while i < c do begin
+    nd := hl.FoldNodeInfo[aStartIndex, i];
+    if sfaOpen in nd.FoldAction then begin
+      if (nd.LogXStart >= LogX) then begin
+        dec(i);
+        if not Previous then
+          i := -1;
+        break;
+      end;
+      if (nd.LogXEnd >= LogX) then
+        break;
+    end;
+    inc(i);
+  end;
+  Result := i;
 end;
 
 procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer;
