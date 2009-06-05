@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="57">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="58">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -127,7 +127,17 @@
     <Node27 Name="EditorDividerDrawOptionsFrame" Path="Divider_Drawing" HasHelp="True" IsRoot="True"/>
     <Node28 Name="CodeObserverOptionsFrame" Path="CodeObserver" HasHelp="True" IsRoot="True"/>
     <Node29 Name="EditorMouseOptionsFrame" Path="_Editor_Options_Mouse" HasHelp="True" IsRoot="True"/>
-</Node55>
+  </Node55>
   <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
   <Node57 Name="TUnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
+  <Node58 Name="TMouseaActionDialog" Path="Editor_Options_Mouse" HasHelp="True" IsRoot="True" ChildCount="8">
+    <Node1 Name="ActionBox" Path="#ActionHelp" HasHelp="True"/>
+    <Node2 Name="CaretCheck" Path="#ActionHelp" HasHelp="True"/>
+    <Node3 Name="BtnDefault" Path="#ModKeys" HasHelp="True"/>
+    <Node4 Name="ShiftCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node5 Name="AltCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node6 Name="CtrlCheck" Path="#ModKeys" HasHelp="True"/>
+    <Node7 Name="ClickBox" Path="#ClickType" HasHelp="True"/>
+    <Node8 Name="DirCheck" Path="#ClickDir" HasHelp="True"/>
+  </Node58>
 </CONFIG>
