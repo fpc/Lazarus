@@ -4603,8 +4603,10 @@ begin
   AWidget := gtk_object_get_data(PGTKObject(AWidget), odnScrollArea);
   if GTK_IS_SCROLLED_WINDOW(AWidget) then
   begin
-    dec(Result.x, Round(gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(AWidget))^.value));
-    dec(Result.y, Round(gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(AWidget))^.value));
+    with gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(AWidget))^ do
+      dec(Result.x, Trunc(value - lower));
+    with gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(AWidget))^ do
+      dec(Result.y, Trunc(value - lower));
   end;
 end;
 
