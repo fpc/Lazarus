@@ -1581,8 +1581,13 @@ begin
     // if handling can be skiped but gtk needs on mouse down
     if (Event^.button = 3) and
        ((TWinControl(Data).PopupMenu <> nil) or
-        (TWinControlAccess(Data).OnContextPopup <> nil)) then
+        (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
+      {$IFDEF GTK1}
+      if (TControl(Data) is TCustomNoteBook) then
+        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+      {$ENDIF}
       Result := True;
+    end;
   end else begin
     if (event^.Button=1) and
        ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl)) then
