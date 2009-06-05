@@ -42,6 +42,9 @@ type
     ActionGrid: TStringGrid;
     ContextTree: TTreeView;
     p3: TPanel;
+    procedure ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol, BRow: Integer;
+      var Result: integer);
+    procedure ActionGridHeaderClick(Sender: TObject; IsColumn: Boolean; Index: Integer);
     procedure ActionGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure ActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -49,7 +52,6 @@ type
       Y: Integer);
     procedure ContextTreeChange(Sender: TObject; Node: TTreeNode);
     procedure AddNewButtonClick(Sender: TObject);
-    procedure Splitter1CanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure UpdateButtonClick(Sender: TObject);
     procedure DelButtonClick(Sender: TObject);
     procedure ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean; Index: Integer);
@@ -67,10 +69,13 @@ type
     FGutterActionsLines: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
 
+    FSort1, FSort2, FSort3: Integer;
     ChangeDlg: TMouseaActionDialog;
     FColWidths: Array of Integer;
     FLastWidth: Integer;
     FIsHeaderSizing: Boolean;
+    procedure SortGrid;
+    procedure SelectRow(AAct: TSynEditMouseAction);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,6 +114,7 @@ begin
   optlist := TStringlist.Create;
   for i := 1 to FCurActions.Count do begin
     act := FCurActions[i-1];
+    ActionGrid.Objects[0, i] := act;
     ActionGrid.Cells[0, i] := act.DisplayName;
     ActionGrid.Cells[1, i] := ButtonName[act.Button];
     ActionGrid.Cells[2, i] := ClickName[act.ClickCount];
@@ -124,7 +130,63 @@ begin
   end;
   optlist.Free;
   ActionGrid.Row := 1;
+  SortGrid;
 end;
+
+procedure TEditorMouseOptionsFrame.ActionGridHeaderClick(Sender: TObject; IsColumn: Boolean;
+  Index: Integer);
+begin
+  If Index <> FSort1 then begin
+    if FSort2 <> index then
+      Fsort3 := FSort2;
+    Fsort2 := FSort1;
+    Fsort1 := Index;
+  end;
+  SortGrid;
+end;
+
+procedure TEditorMouseOptionsFrame.ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol,
+  BRow: Integer; var Result: integer);
+  function CompareCol(i : Integer) : Integer;
+  begin
+    case i of
+      2: // ClickCount
+        Result := ord(TSynEditMouseAction(ActionGrid.Objects[0, ARow]).ClickCount)
+                - ord(TSynEditMouseAction(ActionGrid.Objects[0, BRow]).ClickCount);
+      3: // ClickDir (down first)
+        Result := ord(TSynEditMouseAction(ActionGrid.Objects[0, BRow]).ClickDir)
+                - ord(TSynEditMouseAction(ActionGrid.Objects[0, ARow]).ClickDir);
+      else
+        Result := AnsiCompareText(ActionGrid.Cells[i, ARow], ActionGrid.Cells[i, BRow]);
+    end;
+  end;
+begin
+  Result := CompareCol(FSort1);
+  if Result = 0 then
+    Result := CompareCol(FSort2);
+  if Result = 0 then
+    Result := CompareCol(FSort3);
+  if Result = 0 then
+    Result := TSynEditMouseAction(ActionGrid.Objects[0, ARow]).ID
+            - TSynEditMouseAction(ActionGrid.Objects[0, BRow]).ID;
+end;
+
+procedure TEditorMouseOptionsFrame.SortGrid;
+begin
+  ActionGrid.SortColRow(True, 0);
+end;
+
+procedure TEditorMouseOptionsFrame.SelectRow(AAct: TSynEditMouseAction);
+var
+  i: Integer;
+begin
+  For i := 1 to ActionGrid.RowCount -1 do
+    if ActionGrid.Objects[0, i] = AAct then begin
+      ActionGrid.Row := i;
+      break;
+    end;
+end;
+
 
 procedure TEditorMouseOptionsFrame.AddNewButtonClick(Sender: TObject);
 var
@@ -148,26 +210,18 @@ begin
       MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
     end;
     ContextTreeChange(nil, FCurNode);
-    ActionGrid.Row := FCurActions.Count;
+    SelectRow(MAct);
   end;
-end;
-
-procedure TEditorMouseOptionsFrame.Splitter1CanResize(Sender: TObject; var NewSize: Integer;
-  var Accept: Boolean);
-begin
-
 end;
 
 procedure TEditorMouseOptionsFrame.UpdateButtonClick(Sender: TObject);
 var
   MAct, MOld: TSynEditMouseAction;
-  r: LongInt;
 begin
   if FCurActions = nil then exit;
   if (ActionGrid.Row-1 >= FCurActions.Count) or (ActionGrid.Row < 1) then exit;
-  r := ActionGrid.Row;
 
-  MAct := FCurActions[r-1];
+  MAct := TSynEditMouseAction(ActionGrid.Objects[0, ActionGrid.Row]);
   ChangeDlg.ReadFromAction(MAct);
   if ChangeDlg.ShowModal = mrOK then begin
     try
@@ -186,7 +240,7 @@ begin
     end;
     MOld.Free;
     ContextTreeChange(nil, FCurNode);
-    ActionGrid.Row := r;
+    SelectRow(MAct);
   end;
 end;
 
@@ -194,7 +248,8 @@ procedure TEditorMouseOptionsFrame.DelButtonClick(Sender: TObject);
 begin
   if FCurActions = nil then exit;
   if (ActionGrid.Row-1 >= FCurActions.Count) or (ActionGrid.Row < 1) then exit;
-  FCurActions.Delete(ActionGrid.row-1);
+  FCurActions.Delete(FCurActions.IndexOf(TSynEditMouseAction
+                                      (ActionGrid.Objects[0, ActionGrid.row])));
   ActionGrid.Row := 1;
   ContextTreeChange(nil, FCurNode);
 end;
@@ -316,6 +371,10 @@ begin
   ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
   ActionGrid.ColWidths[8] := ActionGrid.ColWidths[8] * 3;
   ActionGridHeaderSized(nil, true, 0);
+
+  FSort1 := 1; // Button
+  FSort2 := 2; // CCount
+  FSort3 := 3; // Cdir
 
   DelButton.Caption := dlgMouseOptBtnDel;
   UpdateButton.Caption := dlgMouseOptBtnUdp;

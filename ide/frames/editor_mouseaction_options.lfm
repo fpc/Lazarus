@@ -32,7 +32,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       RowCount = 1
       ScrollBars = ssAutoVertical
       TabOrder = 0
+      OnCompareCells = ActionGridCompareCells
       OnDblClick = UpdateButtonClick
+      OnHeaderClick = ActionGridHeaderClick
       OnHeaderSized = ActionGridHeaderSized
       OnMouseDown = ActionGridMouseDown
       OnMouseMove = ActionGridMouseMove
@@ -60,7 +62,6 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Top = 0
       Width = 5
       MinSize = 1
-      OnCanResize = Splitter1CanResize
     end
   end
   object p3: TPanel[1]
