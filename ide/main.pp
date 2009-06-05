@@ -4460,6 +4460,7 @@ var
   FileWithoutPath: String;
   PkgDefaultDirectory: String;
   OldUnitName: String;
+  IsPascal: Boolean;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   //debugln('TMainIDE.DoShowSaveFileAsDialog ',AnUnitInfo.Filename);
@@ -4474,7 +4475,11 @@ begin
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false);
+  IsPascal:=FilenameIsPascalSource(AnUnitInfo.Filename);
+  if IsPascal then
+    OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false)
+  else
+    OldUnitName:='';
   //debugln('TMainIDE.DoShowSaveFileAsDialog sourceunitname=',OldUnitName);
   SaveAsFilename:=OldUnitName;
   if SaveAsFilename='' then
