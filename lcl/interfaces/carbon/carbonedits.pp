@@ -173,6 +173,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
+    function GetCreationOptions: TXNFrameOptions; virtual;
   public
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
@@ -1387,15 +1388,10 @@ end;
 procedure TCarbonMemo.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  Options: OptionBits;
   R: HIRect;
 begin
-  Options := kTXNMonostyledTextMask // disable more font styles
-    or kTXNDontDrawSelectionWhenInactiveMask // hide selection, when inactive
-    or kOutputTextInUnicodeEncodingMask;
-
   R := ParamsToHIRect(AParams);
-  if OSError(HITextViewCreate(@R, 0, Options, Control),
+  if OSError(HITextViewCreate(@R, 0, GetCreationOptions, Control),
     Self, SCreateWidget, 'HITextViewCreate') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -1487,6 +1483,13 @@ begin
     if P.y <> LineTop then Break;
     Inc(AEnd);
   end;
+end;
+
+function TCarbonMemo.GetCreationOptions: TXNFrameOptions;
+begin
+  Result := kTXNMonostyledTextMask // disable more font styles
+    or kTXNDontDrawSelectionWhenInactiveMask // hide selection, when inactive
+    or kOutputTextInUnicodeEncodingMask
 end;
 
 {------------------------------------------------------------------------------
