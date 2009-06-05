@@ -1386,23 +1386,26 @@ begin
             '$':
               // hex number
               dec(CurPos.StartPos);
-            'E':
-              if CompareSrcIdentifiers(CurPos.StartPos,'END') then
-                CurPos.Flag:=cafEnd
-              else
-                CurPos.Flag:=cafWord;
-            'B':
-              if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
-                CurPos.Flag:=cafBegin
-              else
-                CurPos.Flag:=cafWord;
-            'R':
-              if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
-                CurPos.Flag:=cafRecord
-              else
-                CurPos.Flag:=cafWord;
             else
-              CurPos.Flag:=cafWord;
+              case UpChars[Src[CurPos.StartPos]] of
+              'E':
+                if CompareSrcIdentifiers(CurPos.StartPos,'END') then
+                  CurPos.Flag:=cafEnd
+                else
+                  CurPos.Flag:=cafWord;
+              'B':
+                if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
+                  CurPos.Flag:=cafBegin
+                else
+                  CurPos.Flag:=cafWord;
+              'R':
+                if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
+                  CurPos.Flag:=cafRecord
+                else
+                  CurPos.Flag:=cafWord;
+              else
+                CurPos.Flag:=cafWord;
+              end;
             end;
             break;
           end;
