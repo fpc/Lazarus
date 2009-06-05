@@ -1164,7 +1164,7 @@ resourcestring
   dlgUseCodeFolding = 'Code folding';
   dlgCodeFoldingMouse = 'Mouse';
   dlgMouseOptions = 'Mouse';
-  dlgMouseOptNodeMain = 'General';
+  dlgMouseOptNodeMain = 'Text';
   dlgMouseOptNodeSelect = 'Selection';
   dlgMouseOptNodeGutter = 'Gutter';
   dlgMouseOptNodeGutterFold = 'Fold Tree';
