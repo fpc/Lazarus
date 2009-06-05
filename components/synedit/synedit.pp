@@ -2530,7 +2530,7 @@ begin
     emcMouseLink:
       begin
         if assigned(FOnClickLink) then
-          FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseY, AnInfo.MouseY)
+          FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
         else
           Result := False;
       end;
