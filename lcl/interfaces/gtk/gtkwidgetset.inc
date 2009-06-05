@@ -1022,69 +1022,93 @@ procedure TGtkWidgetSet.SetWidgetColor(const AWidget: PGtkWidget;
   const FGColor, BGColor: TColor; const Mask: TGtkStateEnum);
 var
   i: integer;
-  xfg,xbg: TGDKColor;
+  xfg, xbg: TGdkColor;
   ChangeFGColor: Boolean;
   ChangeBGColor: Boolean;
 {$IFDEF Gtk1}
-  WindowStyle: PGtkStyle;
+  WindowStyle, RCStyle: PGtkStyle;
 begin
-  ChangeFGColor := (FGColor and SYS_COLOR_BASE = 0) and (FGColor<>clNone);
-  ChangeBGColor := (BGColor and SYS_COLOR_BASE = 0) and (BGColor<>clNone);
-  if (not ChangeFGColor) and (not ChangeBGColor) then exit;
+  ChangeFGColor := (FGColor <> clNone);
+  ChangeBGColor := (BGColor <> clNone);
+  if (not ChangeFGColor) and (not ChangeBGColor) then Exit;
 
   // the GTKAPIWidget is self drawn, so no use to change the widget style.
-  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then exit;
+  if GtkWidgetIsA(AWidget, GTKAPIWidget_GetType) then Exit;
 
   {$IFDEF DisableWidgetColor}
   exit;
   {$ENDIF}
   
-  if (GTK_WIDGET_REALIZED(AWidget)) then begin
-    WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
-  end else begin
-    WindowStyle := gtk_style_copy(gtk_rc_get_style (AWidget));
-  end;
-  if (Windowstyle = nil)  then begin
+  if (GTK_WIDGET_REALIZED(AWidget)) then
+    WindowStyle := gtk_style_copy(gtk_widget_get_style(AWidget))
+  else
+    WindowStyle := gtk_style_copy(gtk_rc_get_style(AWidget));
+
+  if (Windowstyle = nil) then
     Windowstyle := gtk_style_new;
-  end;
 
   //DebugLn('TGtkWidgetSet.SetWidgetColor ',GetWidgetDebugReport(AWidget),' ',hexstr(FGColor,8),'  ',hexstr(BGColor,8));
   //RaiseGDBException('');
-  if ChangeFGColor then begin
-    xfg:=AllocGDKColor(colorToRGB(FGColor));
-    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
-      if i in mask then begin
-        if GTK_STYLE_TEXT in mask then begin
-          windowStyle^.text[i]:=xfg;
-        end else begin
-          windowStyle^.fg[i]:=xfg;
-        end;
+  if ChangeFGColor then
+  begin
+    xfg := AllocGDKColor(colorToRGB(FGColor));
+    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
+    begin
+      if i in mask then
+      begin
+        if GTK_STYLE_TEXT in mask then
+          windowStyle^.text[i] := xfg
+        else
+          windowStyle^.fg[i] := xfg;
       end;
     end;
   end;
-  if ChangeBGColor then begin
-    xbg:=AllocGDKColor(colorToRGB(BGColor));
-    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
-      if i in mask then begin
-        if GTK_STYLE_BASE in mask then begin
-          windowStyle^.base[i]:=xbg;
-        end else begin
-          windowStyle^.bg[i]:=xbg;
+
+  if ChangeBGColor then
+  begin
+    if BGColor = clBackground then
+    begin
+      RCStyle := gtk_rc_get_style(AWidget);
+      if RCStyle <> nil then
+        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
+        begin
+          if i in mask then
+          begin
+            if GTK_STYLE_BASE in mask then
+              windowStyle^.base[i] := RCStyle^.base[i]
+            else
+              windowStyle^.bg[i] := RCStyle^.bg[i];
+          end;
+        end;
+    end
+    else
+    begin
+      xbg := AllocGDKColor(colorToRGB(BGColor));
+      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
+      begin
+        if i in mask then
+        begin
+          if GTK_STYLE_BASE in mask then
+            windowStyle^.base[i] := xbg
+          else
+            windowStyle^.bg[i] := xbg;
         end;
       end;
     end;
   end;
 
-  gtk_widget_set_style(aWidget,windowStyle);
+  gtk_widget_set_style(aWidget, windowStyle);
 end;
 {$ELSE}
+  NewColor: PGdkColor;
 begin
-  ChangeFGColor := (FGColor<>clNone) and (BGColor<>clBtnFace);
-  ChangeBGColor := (BGColor<>clNone) and (BGColor<>clBtnFace);
-  if (not ChangeFGColor) and (not ChangeBGColor) then exit;
+  ChangeFGColor := (FGColor <> clNone);
+  ChangeBGColor := (BGColor <> clNone);
+
+  if (not ChangeFGColor) and (not ChangeBGColor) then Exit;
 
   // the GTKAPIWidget is self drawn, so no use to change the widget style.
-  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then exit;
+  if GtkWidgetIsA(AWidget, GTKAPIWidget_GetType) then Exit;
 
   {$IFDEF DisableWidgetColor}
   exit;
@@ -1100,23 +1124,30 @@ begin
       if i in mask then
       begin
         if GTK_STYLE_TEXT in mask then
-          gtk_widget_modify_text(AWidget, i ,@xfg)
+          gtk_widget_modify_text(AWidget, i, @xfg)
         else
-          gtk_widget_modify_fg(AWidget, i ,@xfg);
+          gtk_widget_modify_fg(AWidget, i, @xfg);
       end;
     end;
   end;
+
   if ChangeBGColor then
   begin
-    xbg := AllocGDKColor(ColorToRGB(BGColor));
+    if BGColor = clBackground then
+      NewColor := nil
+    else
+    begin
+      xbg := AllocGDKColor(ColorToRGB(BGColor));
+      NewColor := @xbg;
+    end;
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
       if i in mask then
       begin
         if GTK_STYLE_BASE in mask then
-          gtk_widget_modify_base(AWidget, i ,@xbg)
+          gtk_widget_modify_base(AWidget, i, NewColor)
         else
-          gtk_widget_modify_bg(AWidget, i ,@xbg);
+          gtk_widget_modify_bg(AWidget, i, NewColor);
       end;
     end;
   end;

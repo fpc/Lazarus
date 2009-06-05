@@ -4534,7 +4534,7 @@ var
   ClientWidget: PGtkWidget;
   ClientWindow: PGdkWindow;
 begin
-  ClientWidget:=GetFixedWidget(TheWidget);
+  ClientWidget := GetFixedWidget(TheWidget);
   if ClientWidget <> TheWidget then
   begin
     ClientWindow := GetControlWindow(ClientWidget);
