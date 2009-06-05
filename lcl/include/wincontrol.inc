@@ -4425,9 +4425,6 @@ begin
       Inc(I);
     end;
   end;
-  // draw specials for the wincontrols:
-  if FWinControls <> nil then
-    for I := 0 to FWinControls.Count - 1 do ;
   //DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',DbgS(DC,8));
 end;
 
