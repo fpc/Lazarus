@@ -13,6 +13,7 @@ implementation
 
 {$IFDEF procedurebegin} {$I procedurebegin1.inc} {$ENDIF}
 {$IFDEF procedurebeginend} {$I procedurebeginend1.inc} {$ENDIF}
+{$IFDEF procedurebeginifbegin} {$I procedurebeginifbegin1.inc} {$ENDIF}
 
 {$IFDEF whilebegin} {$I whilebegin1.inc} {$ENDIF}
 
