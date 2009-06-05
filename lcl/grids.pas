@@ -8221,8 +8221,14 @@ end;
 
 procedure TCustomDrawGrid.SortColRow(IsColumn: Boolean; index: Integer);
 begin
-  if IsColumn then Sort(IsColumn, index, FFixedRows, RowCount-1)
-  else             Sort(IsColumn, index, FFixedCols, ColCount-1);
+  if IsColumn then begin
+    if (FFixedRows < RowCount) and (RowCount > 0) then
+      Sort(IsColumn, index, FFixedRows, RowCount-1)
+  end
+  else begin
+    if (FFixedCols < ColCount) and (ColCount > 0) then
+      Sort(IsColumn, index, FFixedCols, ColCount-1);
+  end
 end;
 
 procedure TCustomDrawGrid.SortColRow(IsColumn: Boolean; Index, FromIndex,
