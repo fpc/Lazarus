@@ -924,6 +924,8 @@ begin
   MModifiers[ssLeft].Mask     := GDK_BUTTON1_MASK;
   MModifiers[ssMiddle].Mask   := GDK_BUTTON2_MASK;
   MModifiers[ssRight].Mask    := GDK_BUTTON3_MASK;
+  MModifiers[ssExtra1].Mask   := GDK_BUTTON4_MASK;
+  MModifiers[ssExtra2].Mask   := GDK_BUTTON5_MASK;
 
   FillChar(MKeyCodeInfo, SizeOf(MKeyCodeInfo), $FF);
   FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
