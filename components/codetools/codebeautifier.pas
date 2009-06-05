@@ -386,7 +386,8 @@ var
         BlockStartPos:=Stack.Stack[Stack.Top-1].StartPos
       else
         BlockStartPos:=Block^.StartPos;
-      Block^.InnerIdent:=
+      if not PositionsInSameLine(Src,BlockStartPos,Block^.InnerStartPos) then
+        Block^.InnerIdent:=
             GetLineIndentWithTabs(Src,Block^.InnerStartPos,DefaultTabWidth)
                   -GetLineIndentWithTabs(Src,BlockStartPos,DefaultTabWidth);
     end;
@@ -402,10 +403,12 @@ var
       if (Block^.InnerStartPos=AtomStart)
       and (Policies<>nil) then begin
         if Block^.InnerIdent<0 then UpdateBlockInnerIndent;
-        Policies.AddIndent(Block^.Typ,Typ,Block^.InnerIdent);
-        {$IFDEF ShowCodeBeautifierParser}
-        DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],' to ',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
-        {$ENDIF}
+        if Block^.InnerIdent>=0 then begin
+          Policies.AddIndent(Block^.Typ,Typ,Block^.InnerIdent);
+          {$IFDEF ShowCodeBeautifierParser}
+          DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],' to ',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
+          {$ENDIF}
+        end;
       end;
     end;
     Stack.BeginBlock(Typ,AtomStart);
@@ -772,10 +775,12 @@ begin
 
     if FirstAtomOnNewLine then begin
       UpdateBlockInnerIndent;
-      Policies.AddIndent(Block^.Typ,bbtNone,Block^.InnerIdent);
-      {$IFDEF ShowCodeBeautifierParser}
-      DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent]);
-      {$ENDIF}
+      if Block^.InnerIdent>=0 then begin
+        Policies.AddIndent(Block^.Typ,bbtNone,Block^.InnerIdent);
+        {$IFDEF ShowCodeBeautifierParser}
+        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent]);
+        {$ENDIF}
+      end;
     end;
   until false;
 end;
