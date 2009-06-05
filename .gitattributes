@@ -167,6 +167,7 @@ components/codetools/examples/testscompleteblock/ifbegin1.inc svneol=native#text
 components/codetools/examples/testscompleteblock/procedurebegin1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/procedurebeginend1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/record1.inc svneol=native#text/plain
+components/codetools/examples/testscompleteblock/repeatifelse1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/unit1.pas svneol=native#text/plain
 components/codetools/examples/testscompleteblock/whilebegin1.inc svneol=native#text/plain
 components/codetools/expreval.pas svneol=native#text/pascal

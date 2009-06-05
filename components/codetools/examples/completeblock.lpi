@@ -9,7 +9,7 @@
         <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="completeblock"/>
@@ -30,35 +30,12 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="1">
       <Unit0>
         <Filename Value="completeblock.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CompleteBlock"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="scanexamples/brokenfilenames.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BrokenFilenames"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/brokenincfiles.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="scanexamples/empty.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="scanexamples/indentation.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Indentation"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="completeblocktests/unit1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="unit1"/>
-      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

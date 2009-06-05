@@ -43,7 +43,7 @@ interface
 
 { $DEFINE DisableIgnoreErrorAfter}
 { $DEFINE VerboseGetStringConstBounds}
-{ $DEFINE ShowCompleteBlock}
+{$DEFINE ShowCompleteBlock}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -5397,6 +5397,8 @@ var
           btCaseColon,btRepeat:
             begin
               // missing semicolon or until
+              DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
+              DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
               if InCursorBlock then begin
                 {$IFDEF ShowCompleteBlock}
                 DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
@@ -5449,8 +5451,9 @@ var
         if TopBlockType(Stack)=btCaseOf then
           BeginBlock(Stack,btCaseColon,CurPos.StartPos);
       cafSemicolon:
-        if TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] then
+        while TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] do begin
           if not EndBlockIsOk then exit;
+        end;
       cafBegin:
         BeginBlock(Stack,btBegin,CurPos.StartPos);
       cafWord:
@@ -5472,6 +5475,9 @@ var
               if not EndBlockIsOk then exit;
             end else begin
               // until without repeat
+              DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock,' Block=',ord(TopBlockType(Stack))]);
+              DebugLn(['ReadStatements unexpected until at ',CleanPosToStr(CurPos.StartPos)]);
+              exit;
             end;
           end else if UpAtomIs('ASM') then begin
             BeginBlock(Stack,btAsm,CurPos.StartPos);

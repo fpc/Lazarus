@@ -22,6 +22,8 @@ implementation
 
 {$IFDEF casecolon} {$I casecolon1.inc} {$ENDIF}
 
+{$IFDEF repeatifelse} {$I repeatifelse1.inc} {$ENDIF}
+
 {$IFDEF ifbegin} {$I ifbegin1.inc} {$ENDIF}
 {$IFDEF beginwithoutindent} {$I beginwithoutindent1.inc} {$ENDIF}
 
