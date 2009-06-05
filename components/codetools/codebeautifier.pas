@@ -133,27 +133,30 @@ type
     IndentValid: boolean;
   end;
 
-  TFABIndentationPolicies = record
-
+  TFABFoundIndentationPolicy = record
+    Indent: integer;
+    Types: TFABBlockTypes;
   end;
 
   { TFABPolicies }
 
   TFABPolicies = class
   public
-    Indentations: array[TFABBlockType] of TFABIndentationPolicy;
+    Indentations: array of TFABFoundIndentationPolicy;
     Code: TCodeBuffer;
     CodeChangeStep: integer;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure AddIndent(Typ: TFABBlockType; Indent: integer);
+    function GetSmallestIndent(Typ: TFABBlockType): integer;// -1 if none found
   end;
 
 type
   TBlock = record
     Typ: TFABBlockType;
     StartPos: integer;
-    InnerIdent: integer;
+    InnerIdent: integer; // valid if >=0
   end;
   PBlock = ^TBlock;
 
@@ -458,24 +461,21 @@ begin
     if (Stack.Top>=0) then begin
       Block:=@Stack.Stack[Stack.Top];
       if (Policies<>nil)
-      and (not Policies.Indentations[Block^.Typ].IndentValid) then begin
+      and (Block^.InnerIdent<0)
+      and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
         // set block InnerIdent
-        if (Block^.InnerIdent<0)
-        and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
-          Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
-          if Block^.Typ in [bbtIfThen,bbtIfElse] then
-            Indent:=Block^.InnerIdent
-               -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
-                                      DefaultTabWidth)
-          else
-            Indent:=Block^.InnerIdent
-               -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
-          Policies.Indentations[Block^.Typ].Indent:=Indent;
-          Policies.Indentations[Block^.Typ].IndentValid:=true;
-          {$IFDEF ShowCodeBeautifierParser}
-          DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Policies.Indentations[Block^.Typ].Indent]);
-          {$ENDIF}
-        end;
+        Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
+        if Block^.Typ in [bbtIfThen,bbtIfElse] then
+          Indent:=Block^.InnerIdent
+             -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
+                                    DefaultTabWidth)
+        else
+          Indent:=Block^.InnerIdent
+             -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
+        Policies.AddIndent(Block^.Typ,Indent);
+        {$IFDEF ShowCodeBeautifierParser}
+        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Indent]);
+        {$ENDIF}
       end;
     end;
 
@@ -791,7 +791,7 @@ begin
         end;
       end;
       // search policy
-      if Policies.Indentations[Typ].IndentValid then begin
+      if Policies.GetSmallestIndent(Typ)>=0 then begin
         Result:=Policies;
         exit;
       end;
@@ -834,20 +834,22 @@ var
   Block: TBlock;
 
   function CheckPolicies(Policies: TFABPolicies; var Found: boolean): boolean;
+  // returns true to stop searching
+  var
+    BlockIndent: LongInt;
   begin
-    if (Policies<>nil)
-    and (Policies.Indentations[Block.Typ].IndentValid) then begin
-      // policy found
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: InnerIndent=',Policies.Indentations[Block.Typ].Indent]);
-      Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
-                     +Policies.Indentations[Block.Typ].Indent;
-      Indent.IndentValid:=true;
-      Result:=true;
-      Found:=true;
-    end else begin
-      Result:=false;
-      Found:=false;
-    end;
+    Result:=false;
+    Found:=false;
+    if (Policies=nil) then exit;
+    BlockIndent:=Policies.GetSmallestIndent(Block.Typ);
+    if (BlockIndent<0) then exit;
+    // policy found
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: BlockIndent=',BlockIndent]);
+    Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
+                   +BlockIndent;
+    Indent.IndentValid:=true;
+    Result:=true;
+    Found:=true;
   end;
 
 var
@@ -903,11 +905,43 @@ begin
 end;
 
 procedure TFABPolicies.Clear;
-var
-  i: TFABBlockType;
 begin
-  for i:=low(Indentations) to High(Indentations) do
-    FillByte(Indentations[i],SizeOf(TFABIndentationPolicy),0);
+  SetLength(Indentations,0)
+end;
+
+procedure TFABPolicies.AddIndent(Typ: TFABBlockType; Indent: integer);
+var
+  i: Integer;
+  OldLength: Integer;
+begin
+  OldLength:=length(Indentations);
+  i:=OldLength-1;
+  while (i>=0) and (Indentations[i].Indent<>Indent) do dec(i);
+  if i<0 then begin
+    i:=OldLength-1;
+    while (i>=0) and (Indentations[i].Indent>Indent) do dec(i);
+    inc(i);
+    SetLength(Indentations,OldLength+1);
+    if i<OldLength then begin
+      System.Move(Indentations[i],Indentations[i+1],
+        SizeOf(TFABFoundIndentationPolicy)*(OldLength-i));
+    end;
+    Indentations[i].Indent:=Indent;
+  end;
+  Include(Indentations[i].Types,Typ);
+end;
+
+function TFABPolicies.GetSmallestIndent(Typ: TFABBlockType): integer;
+var
+  l: Integer;
+begin
+  l:=length(Indentations);
+  Result:=0;
+  while (Result<l) do begin
+    if Typ in Indentations[Result].Types then exit;
+    inc(Result);
+  end;
+  Result:=-1;
 end;
 
 end.
