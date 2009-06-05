@@ -13,7 +13,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -38,7 +38,7 @@ uses
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Classes, SysUtils, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
-  GraphType, GtkExtra;
+  GraphType, GtkExtra, GtkGlobals;
   
 {$ifdef TraceGdiCalls}
 const
@@ -437,30 +437,6 @@ type
   TWinWidgetInfo = TWidgetInfo;
   //--
   
-  
-// clipboard
-type
-  TClipboardEventData = record
-    TimeID: guint32;
-    Waiting: boolean;
-    Stopping: boolean;
-    Data: TGtkSelectionData;
-  end;
-  PClipboardEventData = ^TClipboardEventData;
-  
-  TGtkClipboardFormat = (
-    gfCLASS, gfCOMPOUND_TEXT, gfDELETE, gfFILE_NAME, gfHOST_NAME, gfLENGTH,
-    gfMULTIPLE, gfNAME, gfOWNER_OS, gfPROCESS, gfSTRING, gfTARGETS, gfTEXT,
-    gfTIMESTAMP, gfUSER, gfUTF8_STRING);
-    
-  TGtkClipboardFormats = set of TGtkClipboardFormat;
-
-const
-  GtkClipboardFormatName: array[TGtkClipboardFormat] of string = (
-      'CLASS', 'COMPOUND_TEXT', 'DELETE', 'FILE_NAME', 'HOST_NAME', 'LENGTH',
-      'MULTIPLE', 'NAME', 'OWNER_OS', 'PROCESS', 'STRING', 'TARGETS', 'TEXT',
-      'TIMESTAMP', 'USER', 'UTF8_STRING'
-    );
   
 const
   GdkTrue = {$IFDEF Gtk2}true{$ELSE}1{$ENDIF};
