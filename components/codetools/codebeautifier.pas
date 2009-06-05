@@ -362,6 +362,7 @@ procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
 var
   p: Integer;
   AtomStart: integer;
+  FirstAtomOnNewLine: Boolean;
 
   {$IFDEF ShowCodeBeautifierParser}
   function PosToStr(p: integer): string;
@@ -374,15 +375,37 @@ var
   end;
   {$ENDIF}
 
+  procedure UpdateBlockInnerIndent;
+  var
+    Block: PBlock;
+    BlockStartPos: LongInt;
+  begin
+    Block:=@Stack.Stack[Stack.Top];
+    if Block^.InnerIdent<0 then begin
+      if Block^.Typ in [bbtIfThen,bbtIfElse] then
+        BlockStartPos:=Stack.Stack[Stack.Top-1].StartPos
+      else
+        BlockStartPos:=Block^.StartPos;
+      Block^.InnerIdent:=
+            GetLineIndentWithTabs(Src,Block^.InnerStartPos,DefaultTabWidth)
+                  -GetLineIndentWithTabs(Src,BlockStartPos,DefaultTabWidth);
+    end;
+  end;
+
   procedure BeginBlock(Typ: TFABBlockType);
   var
-    ParentBlock: PBlock;
+    Block: PBlock;
   begin
+    FirstAtomOnNewLine:=false;
     if (Stack.Top>=0) then begin
-      ParentBlock:=@Stack.Stack[Stack.Top];
-      if (ParentBlock^.InnerStartPos=AtomStart)
+      Block:=@Stack.Stack[Stack.Top];
+      if (Block^.InnerStartPos=AtomStart)
       and (Policies<>nil) then begin
-        Policies.AddIndent(ParentBlock^.Typ,Typ,ParentBlock^.InnerIdent);
+        if Block^.InnerIdent<0 then UpdateBlockInnerIndent;
+        Policies.AddIndent(Block^.Typ,Typ,Block^.InnerIdent);
+        {$IFDEF ShowCodeBeautifierParser}
+        DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],' to ',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
+        {$ENDIF}
       end;
     end;
     Stack.BeginBlock(Typ,AtomStart);
@@ -396,6 +419,7 @@ var
     {$IFDEF ShowCodeBeautifierParser}
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
+    FirstAtomOnNewLine:=false;
     Stack.EndBlock;
   end;
 
@@ -460,7 +484,6 @@ var
 var
   r: PChar;
   Block: PBlock;
-  Indent: Integer;
 begin
   p:=StartPos;
   repeat
@@ -468,25 +491,15 @@ begin
     DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>=EndPos then break;
 
+    // check if first block inner found
+    FirstAtomOnNewLine:=false;
     if (Stack.Top>=0) then begin
       Block:=@Stack.Stack[Stack.Top];
       if (Policies<>nil)
       and (Block^.InnerIdent<0)
       and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
-        // set block InnerIdent
+        FirstAtomOnNewLine:=true;
         Block^.InnerStartPos:=AtomStart;
-        Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
-        if Block^.Typ in [bbtIfThen,bbtIfElse] then
-          Indent:=Block^.InnerIdent
-             -GetLineIndentWithTabs(Src,Stack.Stack[Stack.Top-1].StartPos,
-                                    DefaultTabWidth)
-        else
-          Indent:=Block^.InnerIdent
-             -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
-        Policies.AddIndent(Block^.Typ,bbtNone,Indent);
-        {$IFDEF ShowCodeBeautifierParser}
-        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Indent]);
-        {$ENDIF}
       end;
     end;
 
@@ -755,6 +768,14 @@ begin
           end;
         end;
       end;
+    end;
+
+    if FirstAtomOnNewLine then begin
+      UpdateBlockInnerIndent;
+      Policies.AddIndent(Block^.Typ,bbtNone,Block^.InnerIdent);
+      {$IFDEF ShowCodeBeautifierParser}
+      DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent]);
+      {$ENDIF}
     end;
   until false;
 end;
