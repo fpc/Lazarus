@@ -145,12 +145,9 @@ cd $ROOTDIR/usr/local/bin
 ln -s /Developer/lazarus/lazbuild lazbuild
 cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
 
-# create /Applications/Lazarus.app for startlazarus
+# create /Applications/Lazarus.app alias
 mkdir -p $ROOTDIR/Applications
-cp -R $LAZBUILDDIR/lazarus.app $ROOTDIR/Applications/Lazarus.app
-cd $ROOTDIR/Applications/Lazarus.app/Contents/MacOS/
-rm -f lazarus startlazarus
-ln -s /Developer/lazarus/startlazarus lazarus
+ln -s /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
 
 # fix permissions
 # everyone can read, group can write
