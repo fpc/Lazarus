@@ -1236,23 +1236,25 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+function TWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
 var
   ClipRGN, RectRgn: hRGN;
   Intersection: hRGN;
   CombineResult: Integer;
 begin
-  Result:=false;
-  if (ARect.Left>=ARect.Right) or (ARect.Top>=ARect.Bottom)
-    or not DCClipRegionValid(DC)
-  then exit;
-  ClipRGN:=CreateEmptyRegion;
-  if GetClipRGN(DC,ClipRGN)>0 then begin
-    RectRgn:=CreateRectRGN(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom);
-    Intersection:=CreateEmptyRegion;
-    CombineResult:=CombineRGN(Intersection,RectRGN,ClipRGN,RGN_AND);
-    if CombineResult in [SimpleRegion,ComplexRegion] then
-      Result:=true;
+  Result := False;
+  if (ARect.Left >= ARect.Right) or
+     (ARect.Top >= ARect.Bottom) or
+     not DCClipRegionValid(DC) then Exit;
+
+  ClipRGN := CreateEmptyRegion;
+  if GetClipRGN(DC, ClipRGN) > 0 then
+  begin
+    RectRgn := CreateRectRGN(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+    Intersection := CreateEmptyRegion;
+    CombineResult := CombineRGN(Intersection, RectRGN, ClipRGN, RGN_AND);
+    if CombineResult in [SimpleRegion, ComplexRegion] then
+      Result := True;
     DeleteObject(Intersection);
     DeleteObject(RectRgn);
   end;

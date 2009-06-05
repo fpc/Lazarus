@@ -7572,7 +7572,7 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+function TGtkWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
 begin
   Result := inherited RectVisible(dc,ARect);
 end;
