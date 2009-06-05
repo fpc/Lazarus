@@ -7197,6 +7197,7 @@ var ActiveSrcEdit:TSourceEditor;
   WasVirtual: Boolean;
   Confirm: Boolean;
   SaveProjectFlags: TSaveFlags;
+  WasPascalSource: Boolean;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -7218,6 +7219,7 @@ begin
     exit;
   end;
   WasVirtual:=ActiveUnitInfo.IsVirtual;
+  WasPascalSource:=FilenameIsPascalSource(ActiveUnitInfo.Filename);
 
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
@@ -7260,10 +7262,6 @@ begin
     exit;
   end;
 
-  // update source notebook page names
-  if (not (sfProjectSaving in Flags)) then
-    UpdateSourceNames;
-
   // if file is readonly then a simple Save is skipped
   if (ActiveUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
   begin
@@ -7280,14 +7278,21 @@ begin
   end;
 
   // load old resource file
-  Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
-                             not (sfSaveAs in Flags),true,CanAbort);
-  if Result in [mrIgnore,mrOk] then
-    Result:=mrCancel
-  else
-    exit;
+  LFMCode:=nil;
+  ResourceCode:=nil;
+  if WasPascalSource then
+  begin
+    Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
+                               not (sfSaveAs in Flags),true,CanAbort);
+    if Result in [mrIgnore,mrOk] then
+      Result:=mrCancel
+    else
+      exit;
+  end;
 
-  OldUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
+  OldUnitName:='';
+  if WasPascalSource then
+    OldUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
   OldFilename:=ActiveUnitInfo.Filename;
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
@@ -7364,10 +7369,14 @@ begin
   SourceNoteBook.UpdateStatusBar;
 
   // fix all references
-  NewUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
+  NewUnitName:='';
+  if FilenameIsPascalSource(ActiveUnitInfo.Filename) then
+    NewUnitName:=ActiveUnitInfo.ParseUnitNameFromSource(true);
   NewFilename:=ActiveUnitInfo.Filename;
-  if (OldUnitName<>NewUnitName)
-  or (CompareFilenames(OldFilename,NewFilename)<>0) then begin
+  if (NewUnitName<>'')
+  and  ((OldUnitName<>NewUnitName)
+        or (CompareFilenames(OldFilename,NewFilename)<>0))
+  then begin
     if EnvironmentOptions.UnitRenameReferencesAction=urraNever then
       Result:=mrOK
     else begin
