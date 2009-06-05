@@ -379,6 +379,7 @@ begin
   AddCommand(emcCodeFoldContextMenu, False, mbRight, ccSingle, cdUp, [], []);
   AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
   AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+  AddCommand(emcNone, False, mbLeft, ccAny, cdDown, [], []);
 end;
 
 { TSynEditMouseActionsGutterFoldExpanded }

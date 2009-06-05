@@ -2447,11 +2447,9 @@ var
   Handled: Boolean;
 begin
   if AnAction = nil then exit(False);
-
   ACommand := AnAction.Command;
-  if (ACommand = emcNone) and not AnAction.MoveCaret then exit(False);
-
   AnInfo.CaretDone := False;
+
   Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
   if Result then begin
     if (not AnInfo.CaretDone) and AnAction.MoveCaret then
