@@ -128,6 +128,7 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                           PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn('gtkMouseWheelCB ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   // this is a mouse wheel event

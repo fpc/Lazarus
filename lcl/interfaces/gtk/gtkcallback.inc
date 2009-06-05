@@ -1132,7 +1132,9 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
+  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+  {$endif}
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
   with Msg do
@@ -1429,7 +1431,9 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
                                             PGtkWidget(AWinControl.Handle));
+  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+  {$endif}
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4, 5] then
@@ -1687,7 +1691,9 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
+  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+  {$endif}
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of
