@@ -136,6 +136,7 @@ type
   TFABFoundIndentationPolicy = record
     Indent: integer;
     Types: array[TFABBlockType] of TFABBlockTypes;
+    AllTypes: TFABBlockTypes;
   end;
 
   { TFABPolicies }
@@ -943,7 +944,7 @@ end;
 
 procedure TFABPolicies.Clear;
 begin
-  SetLength(Indentations,0)
+  SetLength(Indentations,0);
 end;
 
 procedure TFABPolicies.AddIndent(Typ, SubType: TFABBlockType; Indent: integer);
@@ -967,17 +968,20 @@ begin
     Indentations[i].Indent:=Indent;
   end;
   Include(Indentations[i].Types[Typ],SubType);
+  Include(Indentations[i].AllTypes,SubType);
+  //for i:=0 to length(Indentations)-1 do DebugLn(['TFABPolicies.AddIndent i=',i,' indent=',Indentations[i].Indent]);
 end;
 
 function TFABPolicies.GetSmallestIndent(Typ: TFABBlockType): integer;
 var
   l: Integer;
+  i: Integer;
 begin
   l:=length(Indentations);
-  Result:=0;
-  while (Result<l) do begin
-    if Typ in Indentations[Result].Types[bbtNone] then exit;
-    inc(Result);
+  i:=0;
+  while (i<l) do begin
+    if Typ in Indentations[i].AllTypes then exit(Indentations[i].Indent);
+    inc(i);
   end;
   Result:=-1;
 end;
