@@ -5373,10 +5373,17 @@ var
       case CurPos.Flag of
       cafEnd:
         if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos]='.') then begin
-          // unexpected end of source
-          {$IFDEF ShowCompleteBlock}
-          DebugLn(['ReadStatements unexpected end. ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
-          {$ENDIF}
+          if (Stack.Top=0) and (TopBlockType(Stack)=btBegin)
+          and (StartNode.Desc=ctnBeginBlock)
+          and ((StartNode.Parent=nil) or (StartNode.Parent.Desc in AllSourceTypes))
+          then begin
+            if not EndBlockIsOk then exit; // close main begin
+          end else begin
+            // unexpected end of source
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements unexpected end. ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
+            {$ENDIF}
+          end;
           break;
         end else begin
           case TopBlockType(Stack) of
@@ -5537,7 +5544,7 @@ var
       end;
 
       LastPos:=CurPos.StartPos;
-    until false;
+    until Stack.Top<0;
 
     //DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
 
