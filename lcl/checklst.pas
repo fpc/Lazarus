@@ -28,8 +28,8 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, LMessages,
-  LResources, Controls, StdCtrls;
+  Classes, SysUtils, Math, LCLProc, LCLType, GraphType, Graphics, LMessages,
+  LResources, Controls, StdCtrls, LCLIntf;
   
 
 type
@@ -190,7 +190,7 @@ end;
 procedure TCustomCheckListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
 begin
   if (Style = lbStandard) then
-    TheHeight := CalculateStandardItemHeight
+    TheHeight := Max(CalculateStandardItemHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2)
   else
     inherited MeasureItem(Index, TheHeight);
 end;
