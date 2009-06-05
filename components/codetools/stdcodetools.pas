@@ -5316,6 +5316,7 @@ var
     NeedCompletion:=false;
     repeat
       ReadNextAtom;
+      if CurPos.StartPos>=StartNode.EndPos then break;
 
       //DebugLn(['ReadStatements Atom=',GetAtom,' TopTyp=',ord(TopBlockType(Stack)),' Top=',Stack.Top]);
       if (Stack.Top>=0) and (Stack.Stack[Stack.Top].InnerIndent<0)
@@ -5713,8 +5714,8 @@ begin
     //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
 
     if StartNode.Desc in AllPascalStatements then begin
-      if (StartNode.Parent<>nil)
-      and (StartNode.Parent.Desc in AllPascalStatements) then
+      while (StartNode.Parent<>nil)
+      and (StartNode.Parent.Desc in AllPascalStatements) do
         StartNode:=StartNode.Parent;
       if not CompleteStatements(Stack) then exit;
     end;

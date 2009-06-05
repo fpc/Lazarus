@@ -381,8 +381,9 @@ var
     if (Stack.Top>=0) then begin
       ParentBlock:=@Stack.Stack[Stack.Top];
       if (ParentBlock^.InnerStartPos=AtomStart)
-      and (Policies<>nil) then
+      and (Policies<>nil) then begin
         Policies.AddIndent(ParentBlock^.Typ,Typ,ParentBlock^.InnerIdent);
+      end;
     end;
     Stack.BeginBlock(Typ,AtomStart);
     {$IFDEF ShowCodeBeautifierParser}
