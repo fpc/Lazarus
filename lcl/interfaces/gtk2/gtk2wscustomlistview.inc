@@ -1306,6 +1306,20 @@ begin
   then Exit;
 end;
 
+class procedure TGtk2WSCustomListView.SetColor(const AWinControl: TWinControl);
+var
+  AWidget: PGTKWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  AWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
+  Gtk2WidgetSet.SetWidgetColor(AWidget,
+    AWinControl.Font.Color,
+    AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STYLE_BASE]);
+end;
+
 class procedure TGtk2WSCustomListView.SetDefaultItemHeight(
   const ALV: TCustomListView; const AValue: Integer);
 begin

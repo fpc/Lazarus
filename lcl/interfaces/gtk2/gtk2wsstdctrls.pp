@@ -163,6 +163,7 @@ type
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AnIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
                                      AMultiSelect: boolean); override;
@@ -451,6 +452,20 @@ class procedure TGtk2WSCustomListBox.SetBorder(
 begin
   gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(ACustomListBox.Handle),
     BorderStyleShadowMap[ACustomListBox.BorderStyle]);
+end;
+
+class procedure TGtk2WSCustomListBox.SetColor(const AWinControl: TWinControl);
+var
+  AWidget: PGTKWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  AWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
+  Gtk2WidgetSet.SetWidgetColor(AWidget,
+    AWinControl.Font.Color,
+    AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STYLE_BASE]);
 end;
 
 class procedure TGtk2WSCustomListBox.SetItemIndex(
@@ -1519,6 +1534,8 @@ var
   WidgetInfo: PWidgetInfo;
   Child: PGtkWidget; // can be GtkCellRenderer or GtkEntry
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
 
   Child := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
@@ -1957,6 +1974,8 @@ class procedure TGtk2WSButton.SetColor(const AWinControl: TWinControl);
 var
   BtnWidget: PGTKWidget;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
   BtnWidget := PGTKWidget(GetButtonWidget(PGtkEventBox(AWinControl.Handle)));
   Gtk2WidgetSet.SetWidgetColor(BtnWidget, clNone, AWinControl.Color,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);

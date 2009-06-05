@@ -166,11 +166,16 @@ end;
 
 class procedure TGtk2WSCustomMemo.SetColor(const AWinControl: TWinControl);
 var
-  AWidget : PGTKWidget;
+  AWidget: PGTKWidget;
 begin
-  AWidget:=PGtkWidget(AWinControl.Handle);
-  AWidget:=GetWidgetInfo(AWidget, True)^.CoreWidget;
-  Gtk2WidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  AWidget := GetWidgetInfo(AWidget, True)^.CoreWidget;
+  Gtk2WidgetSet.SetWidgetColor(AWidget,
+    AWinControl.Font.Color,
+    AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STATE_ACTIVE, GTK_STATE_PRELIGHT, GTK_STYLE_BASE]);
 end;
 
 class procedure TGtk2WSCustomMemo.SetFont(const AWinControl: TWinControl;

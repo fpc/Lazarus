@@ -143,6 +143,7 @@ type
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
