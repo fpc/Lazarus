@@ -234,7 +234,7 @@ var
     Enabled, Selected: Boolean;
     lgBrush: LOGBRUSH;
     Brush: HBRUSH;
-    Rect: Windows.Rect;
+    ARect, TextRect: Windows.Rect;
     Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
@@ -243,8 +243,12 @@ var
     WideBuffer: widestring;
 {$endif}
   begin
-    Selected := (Data^.itemState and ODS_SELECTED)>0;
+    Selected := (Data^.itemState and ODS_SELECTED) > 0;
     Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
+
+    ARect := Data^.rcItem;
+    TextRect := ARect;
+    TextRect.Left := TextRect.Left + TextRect.Bottom - TextRect.Top + 4;
 
     // fill the background
     if Selected then
@@ -253,21 +257,17 @@ var
       lgBrush.lbColor := ColorToRGB(CheckListBox.Color);
     lgBrush.lbStyle := BS_SOLID;
     Brush := CreateBrushIndirect(lgBrush);
-    Rect := Data^.rcItem;
-    Windows.FillRect(Data^._HDC, Rect, Brush);
+    Windows.FillRect(Data^._HDC, TextRect, Brush);
     DeleteObject(Brush);
 
     // draw checkbox
-    InflateRect(Rect, -1, -1);
-    Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
+    ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
 
-    // draw all through ThemeServices. ThemeServices can decide itself hot to perform actual draw
     Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
-    ThemeServices.DrawElement(Data^._HDC, Details, Rect);
+    ThemeServices.DrawElement(Data^._HDC, Details, ARect);
 
     // draw text
-    Rect := Windows.Rect(Data^.rcItem);
-    Rect.Left := Rect.Left + Rect.Bottom - Rect.Top + 5;
+    TextRect.Left := TextRect.Left + 2;
     OldBackColor := Windows.SetBkColor(Data^._HDC, lgBrush.lbColor);
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
@@ -281,18 +281,23 @@ var
     begin
       WideBuffer := UTF8ToUTF16(CheckListBox.Items[Data^.ItemID]);
       Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
-       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end
     else
     begin
       AnsiBuffer := Utf8ToAnsi(CheckListBox.Items[Data^.ItemID]);
       Windows.DrawText(Data^._HDC, PChar(AnsiBuffer), -1,
-       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end;
 {$else}
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
-      Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+      TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 {$endif}
+    if Enabled and ((Data^.itemState and ODS_FOCUS) > 0) and CheckListBox.Focused then
+    begin
+      TextRect.Left := TextRect.Left - 2;
+      DrawFocusRect(Data^._HDC, TextRect);
+    end;
     // restore old colors
     Windows.SetTextColor(Data^._HDC, OldColor);
     Windows.SetBkColor(Data^._HDC, OldBackColor);
