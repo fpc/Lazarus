@@ -916,6 +916,7 @@ var
   TextSize: TSize;
   TextPos: TPoint;
   IconPos: TPoint;
+  DefSize: TPoint;
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
@@ -975,6 +976,9 @@ begin
     begin
       inc(PreferredWidth, 4);
       inc(PreferredHeight, 4);
+      DefSize := GetControlClassDefaultSize;
+      PreferredWidth := Max(PreferredWidth, DefSize.x);
+      PreferredHeight := Max(PreferredHeight, DefSize.y);
     end;
     if Style = tbsDropDown then
     begin
