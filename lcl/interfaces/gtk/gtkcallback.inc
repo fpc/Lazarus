@@ -1150,6 +1150,8 @@ begin
     if ssLeft in ShiftState then Keys := Keys or MK_LBUTTON;
     if ssRight in ShiftState then Keys := Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
+    if ssExtra1 in ShiftState then Keys := Keys or MK_XBUTTON1;
+    if ssExtra2 in ShiftState then Keys := Keys or MK_XBUTTON2;
 
     Result := 0;
   end;
@@ -1480,6 +1482,8 @@ begin
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
+    if ssExtra1 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON1;
+    if ssExtra2 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON2;
 
     MessI.Result:=0;
     // send the message directly to the LCL
@@ -1717,6 +1721,8 @@ begin
   if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
   if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
+  if ssExtra1 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON1;
+  if ssExtra2 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON2;
 
   if MessI.Msg <> LM_NULL then
   begin
