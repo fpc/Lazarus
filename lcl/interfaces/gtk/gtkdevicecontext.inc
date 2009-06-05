@@ -51,7 +51,9 @@ end;
 function TGtkDeviceContext.GetOffset: TPoint;
 var
   Fixed: Pointer;
+{$ifdef gtk1}
   Adjustment: PGtkAdjustment;
+{$endif}
 begin
   if Self = nil
   then begin
@@ -80,9 +82,8 @@ begin
   
   {$ifdef gtk1}
   Fixed := GetFixedWidget(FWidget);
-  {$endif}
   if not GtkWidgetIsA(Fixed, GTK_LAYOUT_GET_TYPE) then Exit;
-  
+
   Adjustment := gtk_layout_get_hadjustment(Fixed);
   if Adjustment <> nil
   then Dec(Result.X, Trunc(Adjustment^.Value - Adjustment^.Lower));
@@ -90,6 +91,7 @@ begin
   Adjustment := gtk_layout_get_vadjustment(Fixed);
   if Adjustment <> nil
   then Dec(Result.Y, Trunc(Adjustment^.Value-Adjustment^.Lower));
+  {$endif}
 end;
 
 function TGtkDeviceContext.GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
