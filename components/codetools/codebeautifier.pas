@@ -135,7 +135,7 @@ type
 
   TFABFoundIndentationPolicy = record
     Indent: integer;
-    Types: TFABBlockTypes;
+    Types: array[TFABBlockType] of TFABBlockTypes;
   end;
 
   { TFABPolicies }
@@ -148,7 +148,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AddIndent(Typ: TFABBlockType; Indent: integer);
+    procedure AddIndent(Typ, SubType: TFABBlockType; Indent: integer);
     function GetSmallestIndent(Typ: TFABBlockType): integer;// -1 if none found
   end;
 
@@ -156,6 +156,7 @@ type
   TBlock = record
     Typ: TFABBlockType;
     StartPos: integer;
+    InnerStartPos: integer;
     InnerIdent: integer; // valid if >=0
   end;
   PBlock = ^TBlock;
@@ -374,7 +375,15 @@ var
   {$ENDIF}
 
   procedure BeginBlock(Typ: TFABBlockType);
+  var
+    ParentBlock: PBlock;
   begin
+    if (Stack.Top>=0) then begin
+      ParentBlock:=@Stack.Stack[Stack.Top];
+      if (ParentBlock^.InnerStartPos=AtomStart)
+      and (Policies<>nil) then
+        Policies.AddIndent(ParentBlock^.Typ,Typ,ParentBlock^.InnerIdent);
+    end;
     Stack.BeginBlock(Typ,AtomStart);
     {$IFDEF ShowCodeBeautifierParser}
     DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',FABBlockTypeNames[Typ],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
@@ -464,6 +473,7 @@ begin
       and (Block^.InnerIdent<0)
       and (not PositionsInSameLine(Src,Block^.StartPos,AtomStart)) then begin
         // set block InnerIdent
+        Block^.InnerStartPos:=AtomStart;
         Block^.InnerIdent:=GetLineIndentWithTabs(Src,AtomStart,DefaultTabWidth);
         if Block^.Typ in [bbtIfThen,bbtIfElse] then
           Indent:=Block^.InnerIdent
@@ -472,7 +482,7 @@ begin
         else
           Indent:=Block^.InnerIdent
              -GetLineIndentWithTabs(Src,Block^.StartPos,DefaultTabWidth);
-        Policies.AddIndent(Block^.Typ,Indent);
+        Policies.AddIndent(Block^.Typ,bbtNone,Indent);
         {$IFDEF ShowCodeBeautifierParser}
         DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned: ',FABBlockTypeNames[Block^.Typ],' Indent=',Indent]);
         {$ENDIF}
@@ -909,7 +919,7 @@ begin
   SetLength(Indentations,0)
 end;
 
-procedure TFABPolicies.AddIndent(Typ: TFABBlockType; Indent: integer);
+procedure TFABPolicies.AddIndent(Typ, SubType: TFABBlockType; Indent: integer);
 var
   i: Integer;
   OldLength: Integer;
@@ -926,9 +936,10 @@ begin
       System.Move(Indentations[i],Indentations[i+1],
         SizeOf(TFABFoundIndentationPolicy)*(OldLength-i));
     end;
+    FillByte(Indentations[i],SizeOf(TFABFoundIndentationPolicy),0);
     Indentations[i].Indent:=Indent;
   end;
-  Include(Indentations[i].Types,Typ);
+  Include(Indentations[i].Types[Typ],SubType);
 end;
 
 function TFABPolicies.GetSmallestIndent(Typ: TFABBlockType): integer;
@@ -938,7 +949,7 @@ begin
   l:=length(Indentations);
   Result:=0;
   while (Result<l) do begin
-    if Typ in Indentations[Result].Types then exit;
+    if Typ in Indentations[Result].Types[bbtNone] then exit;
     inc(Result);
   end;
   Result:=-1;
