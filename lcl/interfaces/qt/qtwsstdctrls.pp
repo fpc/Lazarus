@@ -189,7 +189,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCustomCheckBox }
@@ -946,33 +945,6 @@ begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   
   TQtAbstractButton(AButton.Handle).setShortcut(NewShortcut);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSButton.SetColor
-  Params:  AWinControl     - the calling object
-
-  Returns: Nothing
-
-  Sets the color of the widget.
- ------------------------------------------------------------------------------}
-class procedure TQtWSButton.SetColor(const AWinControl: TWinControl);
-var
-  QColor: TQColor;
-  Color: TColor;
-begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetColor') then Exit;
-
-  if AWinControl.Color = CLR_INVALID then exit;
-
-  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color:=ColorToRGB(AWinControl.Color);
-
-  // Fill QColor
-  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
-
-  // Set color of the widget to QColor
-  TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
 end;
 
 { TQtWSCustomCheckBox }

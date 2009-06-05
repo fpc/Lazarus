@@ -609,11 +609,45 @@ type
     property Handle: QStringListH read FHandle;
   end;
 
+  { TQtWidgetPalette }
+
+  TQtWidgetPalette = class(TObject)
+  private
+    procedure initializeSysColors;
+    function ColorChangeNeeded(const AColor: TQColor;
+      const ATextRole: Boolean): Boolean;
+  protected
+    FWidget: QWidgetH;
+    FWidgetRole: QPaletteColorRole;
+    FTextRole: QPaletteColorRole;
+    FDefaultColor: TQColor;
+    FCurrentColor: TQColor;
+    FDefaultTextColor: TQColor;
+    FCurrentTextColor: TQColor;
+    FDisabledColor: TQColor;
+    FDisabledTextColor: TQColor;
+    FHandle: QPaletteH;
+  public
+    constructor Create(AWidgetColorRole: QPaletteColorRole;
+      AWidgetTextColorRole: QPaletteColorRole; AWidget: QWidgetH);
+    destructor Destroy; override;
+    procedure setColor(const AColor: PQColor); overload;
+    procedure setTextColor(const AColor: PQColor);
+    property Handle: QPaletteH read FHandle;
+    property CurrentColor: TQColor read FCurrentColor;
+    property CurrentTextColor: TQColor read FCurrentTextColor;
+    property DefaultColor: TQColor read FDefaultColor;
+    property DefaultTextColor: TQColor read FDefaultTextColor;
+    property DisabledColor: TQColor read FDisabledColor;
+    property DisabledTextColor: TQColor read FDisabledTextColor;
+  end;
+
 const
   LCLQt_Destroy = QEventType(Ord(QEventUser) + $1000);
   
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
+function EqualTQColor(const Color1, Color2: TQColor): Boolean;
 procedure DebugRegion(const msg: string; Rgn: QRegionH);
 
 function CheckGDIObject(const AGDIObject: HGDIOBJ; const AMethodName: String; AParamName: String = ''): Boolean;
@@ -2411,6 +2445,13 @@ begin
   QColor_fromRgb(@AColor, Red(AColorRef),Green(AColorRef),Blue(AColorRef));
 end;
 
+function EqualTQColor(const Color1, Color2: TQColor): Boolean;
+begin
+  Result := (Color1.r = Color2.r) and
+    (Color1.g = Color2.g) and
+    (Color1.b = Color2.b);
+end;
+
 procedure DebugRegion(const msg: string; Rgn: QRegionH);
 var
   R: TRect;
@@ -3553,6 +3594,95 @@ begin
     QCursor_destroy(FHandle);
     
   inherited Destroy;
+end;
+
+{ TQtWidgetPalette }
+
+procedure TQtWidgetPalette.initializeSysColors;
+var
+  Palette: QPaletteH;
+begin
+  FillChar(FCurrentColor, SizeOf(FCurrentColor), 0);
+  FillChar(FCurrentColor, SizeOf(FCurrentTextColor), 0);
+  Palette := QPalette_create();
+  try
+    QApplication_palette(Palette);
+    FDefaultColor := QPalette_color(Palette, QPaletteActive, FWidgetRole)^;
+    FDefaultTextColor := QPalette_color(Palette, QPaletteActive, FTextRole)^;
+    FDisabledColor := QPalette_color(Palette, QPaletteDisabled, FWidgetRole)^;
+    FDisabledTextColor := QPalette_color(Palette, QPaletteDisabled, FTextRole)^;
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+constructor TQtWidgetPalette.Create(AWidgetColorRole: QPaletteColorRole;
+  AWidgetTextColorRole: QPaletteColorRole; AWidget: QWidgetH);
+begin
+  FWidget := AWidget;
+  FWidgetRole := AWidgetColorRole;
+  FTextRole := AWidgetTextColorRole;
+  initializeSysColors;
+  {$IFDEF USE_QT_45}
+  // ugly qt mac bug
+  {$IFDEF DARWIN}
+  if QWidget_backgroundRole(FWidget) <> FWidgetRole then
+  begin
+    QWidget_setBackgroundRole(FWidget, FWidgetRole);
+    QWidget_setForegroundRole(FWidget, FTextRole);
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  FHandle := QPalette_create();
+end;
+
+destructor TQtWidgetPalette.Destroy;
+begin
+  if FHandle <> nil then
+    QPalette_destroy(FHandle);
+  inherited Destroy;
+end;
+
+function TQtWidgetPalette.ColorChangeNeeded(const AColor: TQColor;
+  const ATextRole: Boolean): Boolean;
+begin
+  if ATextRole then
+    Result := not (EqualTQColor(AColor, FDefaultTextColor) and
+      EqualTQColor(FCurrentTextColor, FDefaultTextColor))
+  else
+    Result := not (EqualTQColor(AColor, FDefaultColor) and
+      EqualTQColor(FCurrentColor, FDefaultColor));
+end;
+
+procedure TQtWidgetPalette.setColor(const AColor: PQColor);
+begin
+  if not ColorChangeNeeded(AColor^, False) then
+    exit;
+  QPalette_setColor(FHandle, QPaletteActive, FWidgetRole, AColor);
+  QPalette_setColor(FHandle, QPaletteInActive, FWidgetRole, AColor);
+
+  if EqualTQColor(AColor^, FDefaultColor) then
+    QPalette_setColor(FHandle, QPaletteDisabled, FWidgetRole, @FDisabledColor)
+  else
+    QPalette_setColor(FHandle, QPaletteDisabled, FWidgetRole, AColor);
+
+  QWidget_setPalette(FWidget, FHandle);
+  FCurrentColor := AColor^;
+end;
+
+procedure TQtWidgetPalette.setTextColor(const AColor: PQColor);
+begin
+  if not ColorChangeNeeded(AColor^, True) then
+    exit;
+  QPalette_setColor(FHandle, QPaletteActive, FTextRole, AColor);
+  QPalette_setColor(FHandle, QPaletteInActive, FTextRole, AColor);
+  if EqualTQColor(AColor^, FDefaultTextColor) or
+     EqualTQColor(FCurrentColor, FDefaultColor) then
+    QPalette_setColor(FHandle, QPaletteDisabled, FTextRole, @FDisabledTextColor)
+  else
+    QPalette_setColor(FHandle, QPaletteDisabled, FTextRole, AColor);
+  QWidget_setPalette(FWidget, FHandle);
+  FCurrentTextColor := AColor^;
 end;
 
 end.

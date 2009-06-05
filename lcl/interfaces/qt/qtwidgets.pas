@@ -88,10 +88,15 @@ type
     FHasPaint: Boolean;
     FOwner: TQtWidget;
 
+    FWidgetColorRole: QPaletteColorRole;
+    FTextColorRole: QPaletteColorRole;
+    FPalette: TQtWidgetPalette;
+
     {TQtWidget.scroll() info}
     FScrollX: Integer;
     FScrollY: Integer;
 
+    function GetPalette: TQtWidgetPalette;
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
@@ -128,6 +133,7 @@ type
     function GetContainerWidget: QWidgetH; virtual;
     procedure Release; override;
   public
+    function CanPaintBackground: Boolean;
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
@@ -144,6 +150,7 @@ type
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
+    procedure SlotPaintBg(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotResize(Event: QEventH); cdecl;
     procedure SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
@@ -225,11 +232,14 @@ type
 
     property Context: HDC read GetContext;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
+    property Palette: TQtWidgetPalette read GetPalette;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Widget: QWidgetH read GetWidget write SetWidget;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
+    property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
+    property TextColorRole: QPaletteColorRole read FTextColorRole write FTextColorRole;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -301,7 +311,6 @@ type
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
     procedure setFrameShadow(p1: QFrameShadow);
-    procedure setTextColor(const Value: PQColor); override;
   end;
 
   { TQtAbstractScrollArea }
@@ -345,10 +354,8 @@ type
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure setColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setCursor(const ACursor: QCursorH); override;
-    procedure setTextColor(const Value: PQColor); override;
     procedure setViewport(const AViewPort: QWidgetH);
     procedure setVisible(visible: Boolean); override;
     procedure Update(ARect: PRect = nil); override;
@@ -386,8 +393,6 @@ type
   public
     function getIconSize: TSize;
     function getText: WideString; override;
-    procedure setColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
     procedure setIcon(AIcon: QIconH);
     procedure setIconSize(Size: PSize);
     procedure setShortcut(AShortcut: TShortcut);
@@ -527,7 +532,6 @@ type
     {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
-    procedure setColor(const Value: PQColor); override;
     procedure setText(const W: WideString); override;
   end;
   
@@ -584,8 +588,6 @@ type
     procedure selectAll;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
-    procedure setColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
     procedure setCursorPosition(const AValue: Integer);
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
@@ -622,8 +624,6 @@ type
     function isUndoAvailable: Boolean;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
-    procedure setColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
     procedure setMaxLength(const ALength: Integer);
@@ -729,8 +729,6 @@ type
     FList: TStrings;
     destructor Destroy; override;
     procedure setBorder(const ABorder: Boolean);
-    procedure SetColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
     function currentIndex: Integer;
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
@@ -791,8 +789,6 @@ type
     procedure setReadOnly(const r: Boolean);
     procedure setValue(const v: Double); virtual; abstract;
     procedure setText(const W: WideString); override;
-    procedure SetColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
 
     property LineEdit: QLineEditH read GetLineEdit;
   public
@@ -868,8 +864,6 @@ type
     procedure signalViewportEntered; cdecl; virtual;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    procedure SetColor(const Value: PQColor); override;
-    procedure setTextColor(const Value: PQColor); override;
 
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
   public
@@ -1413,6 +1407,30 @@ procedure TQtWidget.InitializeWidget;
 var
   QtEdit: IQtEdit;
 begin
+  // default color roles
+  if InheritsFrom(TQtAbstractButton) or
+     InheritsFrom(TQtAbstractSlider) then
+  begin
+    FWidgetColorRole := QPaletteButton;
+    FTextColorRole := QPaletteButtonText;
+  end else
+  if InheritsFrom(TQtHintWindow) then
+  begin
+    FWidgetColorRole := QPaletteToolTipBase;
+    FTextColorRole := QPaletteToolTipText;
+  end else
+  if InheritsFrom(TQtAbstractItemView) or
+    Supports(Self, IQtEdit, QtEdit) then
+  begin
+    FWidgetColorRole := QPaletteBase;
+    FTextColorRole := QPaletteText;
+  end else
+  begin
+    FWidgetColorRole := QPaletteWindow;
+    FTextColorRole := QPaletteWindowText;
+  end;
+
+  FPalette := nil;
   // Creates the widget
   Widget := CreateWidget(FParams);
 
@@ -1476,6 +1494,12 @@ begin
   
   if HasCaret then
     DestroyCaret;
+
+  if FPalette <> nil then
+  begin
+    FPalette.Free;
+    FPalette := nil;
+  end;
 
   DestroyWidget;
 end;
@@ -1556,6 +1580,31 @@ procedure TQtWidget.Release;
 begin
   LCLObject := nil;
   inherited Release;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.CanPaintBackground
+  Params:  None
+  Returns: Boolean
+  Makes decision if control background need to be painted.
+  Look at SlotPaintBg().
+ ------------------------------------------------------------------------------}
+function TQtWidget.CanPaintBackground: Boolean;
+begin
+  Result := (not HasPaint or
+    ((ClassType = TQtGroupBox) and
+    (LCLObject.Color <> clBtnFace) and
+    // DO NOT REMOVE ! because QGroupBox default = clBackground not clBtnFace !
+    (LCLObject.Color <> clBackground))) and
+    getEnabled and not
+    getAutoFillBackground;
+
+  if Result and (ClassType <> TQtGroupBox) then
+    Result := ((WidgetColorRole = QPaletteButton) or
+      (ClassType = TQtStaticText)) and
+      (LCLObject.Color <> clBtnFace) and
+      // DO NOT REMOVE ! QCheckBox,QRadioButton,QLabel default = clBackground  !
+      (LCLObject.Color <> clBackground);
 end;
 
 {$IFDEF VerboseQt}
@@ -1776,6 +1825,8 @@ begin
       QEventResize: SlotResize(Event);
       QEventPaint:
         begin
+          if canPaintBackground then
+            slotPaintBg(Sender, Event);
           if FHasPaint then
             SlotPaint(Sender, Event);
         end;
@@ -2531,6 +2582,37 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidget.SlotPaintBg
+  Params:  None
+  Returns: Nothing.
+
+  Paints widget background.
+  Only for classes which have HasPaint=False and AutoFillBackground=False
+  and solid color different to default one (eg. clBtnFace for buttons).
+  Current allowed classes are: All TQtCheckBox,TQtRadioButton,
+  TQtPushButton (X11 only), TQtStaticText and TQtGroupBox.
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotPaintBg(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  Painter: QPainterH;
+  Brush: QBrushH;
+  Color: TQColor;
+  R: TRect;
+begin
+  ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
+  Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+  Brush := QBrush_create(@Color, QtSolidPattern);
+  try
+    QPaintEvent_rect(QPaintEventH(Event), @R);
+    QPainter_fillRect(Painter, @R, Brush);
+    QPainter_end(Painter);
+  finally
+    QBrush_destroy(Brush);
+    QPainter_destroy(Painter);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtWidget.SlotPaint
   Params:  None
   Returns: Nothing
@@ -2739,17 +2821,8 @@ end;
   Changes the color of a widget
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
 begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteWindow, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteWindow, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
+  Palette.setColor(Value);
 end;
 
 function TQtWidget.getContextMenuPolicy: QtContextMenuPolicy;
@@ -2770,17 +2843,8 @@ end;
   Changes the text color of a widget
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SetTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
 begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteWindowText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
+  Palette.setTextColor(Value);
 end;
 
 procedure TQtWidget.SetCursor(const ACursor: QCursorH);
@@ -3665,6 +3729,26 @@ begin
   result := nil;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWidget.GetPalette
+  Params:  Nothing
+  Returns: TQtWidgetPalette
+
+  Assigns default widget palette, also takes care of widget colors changing.
+ ------------------------------------------------------------------------------}
+function TQtWidget.GetPalette: TQtWidgetPalette;
+begin
+  if not Assigned(FPalette) then
+  begin
+    if (ClassType = TQtCustomControl) then
+      FPalette := TQtWidgetPalette.Create(WidgetColorRole, TextColorRole,
+        TQtCustomControl(Self).viewport.Widget)
+    else
+      FPalette := TQtWidgetPalette.Create(WidgetColorRole, TextColorRole, Widget);
+  end;
+  Result := FPalette;
+end;
+
 function TQtWidget.GetContext: HDC;
 begin
   Result := FContext;
@@ -3737,43 +3821,6 @@ begin
 end;
 
 { TQtAbstractButton }
-
-{------------------------------------------------------------------------------
-  Function: TQtAbstractButton.SetColor
-  Params:  QColorH
-  Returns: Nothing
-
-  Changes the color of a widget
- ------------------------------------------------------------------------------}
-procedure TQtAbstractButton.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteButton, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteButton, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-  if not (csDesigning in LCLObject.ComponentState) then
-    setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
-end;
-
-procedure TQtAbstractButton.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteButtonText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteButtonText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
 
 procedure TQtAbstractButton.setIcon(AIcon: QIconH);
 begin
@@ -4055,7 +4102,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
-  
   FHasPaint := True;
   IsMainForm := False;
 
@@ -4402,7 +4448,6 @@ begin
   {$endif}
 
   Result := QLabel_create();
-  QWidget_setAutoFillBackground(Result, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -4475,7 +4520,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtCheckBox.Create');
   {$endif}
-  
+  TextColorRole := QPaletteWindowText;
   Result := QCheckBox_create;
 end;
 
@@ -4560,7 +4605,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRadioButton.Create');
   {$endif}
-
+  TextColorRole := QPaletteWindowText;
   Result := QRadioButton_create();
   // hide widget by default
   QWidget_hide(Result);
@@ -4714,13 +4759,6 @@ begin
   QGroupBox_title(QGroupBoxH(Widget), @Result);
 end;
 
-procedure TQtGroupBox.setColor(const Value: PQColor);
-begin
-  inherited setColor(Value);
-  if not (csDesigning in LCLObject.ComponentState) then
-    setAutoFillBackground(TWinControl(LCLObject).Color <> clBtnFace);
-end;
-
 procedure TQtGroupBox.setText(const W: WideString);
 begin
   QGroupBox_setTitle(QGroupBoxH(Widget), @W);
@@ -4772,25 +4810,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtFrame.setTextColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtFrame.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteWindowText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtArrow.CreateWidget
   Params:  None
   Returns: Nothing
@@ -4812,7 +4831,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSlider.Create');
   {$endif}
-  
+
   FSliderPressed := False;
   FSliderReleased:= False;
 
@@ -5340,41 +5359,6 @@ begin
   inherited DetachEvents;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtLineEdit.SetColor
-  Params:  QColorH
-  Returns: Nothing
-
-  Changes the color of a widget
- ------------------------------------------------------------------------------}
-procedure TQtLineEdit.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtLineEdit.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
 procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
 begin
   QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
@@ -5508,41 +5492,6 @@ end;
 function TQtTextEdit.isUndoAvailable: Boolean;
 begin
   Result := QTextEdit_isUndoRedoEnabled(QTextEditH(Widget)) and FUndoAvailable;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTextEdit.SetColor
-  Params:  QColorH
-  Returns: Nothing
-
-  Changes the color of a widget
- ------------------------------------------------------------------------------}
-procedure TQtTextEdit.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtTextEdit.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
 end;
 
 procedure TQtTextEdit.setEchoMode(const AMode: QLineEditEchoMode);
@@ -6171,34 +6120,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TQtComboBox.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtComboBox.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtComboBox.currentIndex
   Params:  None
@@ -6726,34 +6647,6 @@ procedure TQtAbstractSpinBox.setText(const W: WideString);
 begin
   if (LineEdit <> nil) then
     QLineEdit_setText(LineEdit, @W)
-end;
-
-procedure TQtAbstractSpinBox.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtAbstractSpinBox.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
 end;
 
 procedure TQtAbstractSpinBox.AttachEvents;
@@ -8121,6 +8014,8 @@ end;
 
 procedure TQtMenu.InitializeWidget;
 begin
+  WidgetColorRole := QPaletteWindow;
+  TextColorRole := QPaletteText;
   Widget := CreateWidget(FParams);
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
 end;
@@ -8533,6 +8428,8 @@ end;
 
 constructor TQtDialog.Create(ADialog: TCommonDialog; parent: QWidgetH; f: QtWindowFlags);
 begin
+  WidgetColorRole := QPaletteWindow;
+  TextColorRole := QPaletteWindowText;
   FDialog := ADialog;
   Widget := CreateWidget(parent, f);
 end;
@@ -8758,6 +8655,12 @@ begin
   FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
     QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
 
+  if not (csDesigning in LCLObject.ComponentState) and
+    (LCLObject is TScrollingWinControl) then
+      QWidget_setAutoFillBackground(Result, True)
+  else
+    QWidget_setAutoFillBackground(Result, False);
+
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
 end;
@@ -8854,25 +8757,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtCustomControl.setColor
-  Params:  TQtWidget
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtCustomControl.setColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(viewport.Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteWindow, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteWindow, Value);
-    QWidget_setPalette(viewport.Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtCustomControl.setCornerWidget
   Params:  TQtWidget
   Returns: Nothing
@@ -8895,25 +8779,6 @@ begin
     viewport.setCursor(ACursor)
   else
     inherited setCursor(ACursor);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtCustomControl.setTextColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtCustomControl.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(viewport.Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteWindowText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteWindowText, Value);
-    QWidget_setPalette(viewport.Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
 end;
 
 procedure TQtCustomControl.setViewport(const AViewPort: QWidgetH);
@@ -9306,6 +9171,9 @@ function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
   Result := QWidget_create(nil, QtToolTip);
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
+  FDeleteLater := True;
+  {$ENDIF}
   MenuBar := nil;
 end;
 
@@ -9315,6 +9183,11 @@ function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
   Result := QWidget_create;
+  {$IFNDEF QTOPIA}
+  {$IFDEF LINUX}
+  QWidget_setAutoFillBackground(Result, True);
+  {$ENDIF}
+  {$ENDIF}
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -9513,34 +9386,6 @@ begin
   QAbstractItemView_hook_destroy(FSignalViewportEntered);
   QObject_hook_destroy(FAbstractItemViewportEventHook);
   inherited DetachEvents;
-end;
-
-procedure TQtAbstractItemView.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteBase, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
-procedure TQtAbstractItemView.setTextColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteActive, QPaletteText, Value);
-    QPalette_setColor(Palette, QPaletteInActive, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
 end;
 
 function TQtAbstractItemView.itemViewViewportEventFilter(Sender: QObjectH;
@@ -10118,6 +9963,8 @@ end;
 
 constructor TQtMessageBox.Create(AParent: QWidgetH);
 begin
+  WidgetColorRole := QPaletteWindow;
+  TextColorRole := QPaletteWindowText;
   FOwner := nil;
   FCentralWidget := nil;
   FOwnWidget := True;
