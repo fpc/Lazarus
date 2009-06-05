@@ -1051,22 +1051,40 @@ begin
   //RaiseGDBException('');
   if ChangeFGColor then
   begin
-    xfg := AllocGDKColor(colorToRGB(FGColor));
-    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
+    if (FGColor = clDefault) then
     begin
-      if i in mask then
+      RCStyle := gtk_rc_get_style(AWidget);
+      if RCStyle <> nil then
+        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
+        begin
+          if i in mask then
+          begin
+            if GTK_STYLE_TEXT in mask then
+              windowStyle^.text[i] := RCStyle^.text[i]
+            else
+              windowStyle^.fg[i] := RCStyle^.fg[i];
+          end;
+        end;
+    end
+    else
+    begin
+      xfg := AllocGDKColor(colorToRGB(FGColor));
+      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
       begin
-        if GTK_STYLE_TEXT in mask then
-          windowStyle^.text[i] := xfg
-        else
-          windowStyle^.fg[i] := xfg;
+        if i in mask then
+        begin
+          if GTK_STYLE_TEXT in mask then
+            windowStyle^.text[i] := xfg
+          else
+            windowStyle^.fg[i] := xfg;
+        end;
       end;
     end;
   end;
 
   if ChangeBGColor then
   begin
-    if (BGColor = clBackground) or (BGColor = clBtnFace) then
+    if (BGColor = clDefault) or (BGColor = clBtnFace) then
     begin
       RCStyle := gtk_rc_get_style(AWidget);
       if RCStyle <> nil then
@@ -1118,22 +1136,28 @@ begin
   //RaiseGDBException('');
   if ChangeFGColor then
   begin
-    xfg := AllocGDKColor(ColorToRGB(FGColor));
+    if (FGColor = clDefault) then
+      NewColor := nil
+    else
+    begin
+      xfg := AllocGDKColor(ColorToRGB(FGColor));
+      NewColor := @xfg;
+    end;
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
       if i in mask then
       begin
         if GTK_STYLE_TEXT in mask then
-          gtk_widget_modify_text(AWidget, i, @xfg)
+          gtk_widget_modify_text(AWidget, i, NewColor)
         else
-          gtk_widget_modify_fg(AWidget, i, @xfg);
+          gtk_widget_modify_fg(AWidget, i, NewColor);
       end;
     end;
   end;
 
   if ChangeBGColor then
   begin
-    if (BGColor = clBackground) or (BGColor = clBtnFace) then
+    if (BGColor = clDefault) or (BGColor = clBtnFace) then
       NewColor := nil
     else
     begin
