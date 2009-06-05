@@ -1052,40 +1052,6 @@ begin
   Dest.StyleMask  := Src.StyleMask;
 end;
 
-function MouseButtonToXML(mb: TMouseButton): String;
-begin
-  case mb of
-    mbMiddle: exit('Middle');
-    mbRight: exit('Right');
-    else exit('Left');
-  end;
-end;
-
-function XMLToMouseButton(mb: String): TMouseButton;
-begin
-  if mb = 'Middle' then exit(mbMiddle);
-  if mb = 'Right' then exit(mbRight);
-  exit(mbLeft);
-end;
-
-function ShiftStateToXML(st: TShiftState): String;
-begin
-  Result := '';
-  if ssShift in st then Result := Result + ',Shift';
-  if ssCtrl in st then Result := Result + ',Ctrl';
-  if ssAlt in st then Result := Result + ',Alt';
-  Result := copy(Result,2,999);
-end;
-
-function XMLtoShiftState(st: String): TShiftState;
-begin
-  st:=','+st+',';
-  Result := [];
-  if pos(',Shift,', st) > 0 then Include(Result, ssShift);
-  if pos(',Ctrl,', st) > 0 then Include(Result, ssCtrl);
-  if pos(',Alt,', st) > 0 then Include(Result, ssAlt);
-end;
-
 { TRttiXMLConfig }
 
 procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TPersistent;
