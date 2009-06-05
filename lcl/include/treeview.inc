@@ -2939,6 +2939,10 @@ begin
       Node := Node.GetNext;
     end;
     Items.ClearCache;
+    FStates:= FStates+[tvsTopsNeedsUpdate, tvsTopItemNeedsUpdate,
+                       tvsBottomItemNeedsUpdate,
+                       tvsScrollbarChanged,tvsMaxRightNeedsUpdate];
+    Invalidate;
   end;
 end;
 
