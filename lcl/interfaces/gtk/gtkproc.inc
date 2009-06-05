@@ -1966,6 +1966,15 @@ var
     if not Result then StopKeyEvent;
   end;
 
+  function GetSpecialChar: Char;
+  begin
+    if (AEvent^.keyval > $FF00) and (AEvent^.keyval < $FF20) and
+       (AEvent^.keyval <> GDK_KEY_Tab) then
+      Result := Chr(AEvent^.keyval xor $FF00)
+    else
+      Result := #0;
+  end;
+
   function CanSendChar: Boolean;
   begin
     Result := False;
@@ -1991,7 +2000,7 @@ var
       end;
       Exit;
     end;
-    Result := (AEvent^.Length>0);
+    Result := (AEvent^.Length > 0) or (GetSpecialChar <> #0);
   end;
   
   function KeyAlreadyHandledByGtk: boolean;
@@ -2052,15 +2061,6 @@ var
       end;
       exit;
     end;
-  end;
-
-  function GetSpecialKey: TUTF8Char;
-  begin
-    if (AEvent^.keyval > $FF00) and (AEvent^.keyval < $FF20) and
-       (AEvent^.keyval <> GDK_KEY_Tab) then
-      Result := Chr(AEvent^.keyval xor $FF00)
-    else
-      Result := '';
   end;
 
   procedure CharToKeyVal(C: Char; out KeyVal: guint; out Length: gint);
@@ -2382,7 +2382,7 @@ begin
           im_context_string:='';// clear, to avoid sending again
         end
         else
-          Character := GetSpecialKey;
+          Character := GetSpecialChar;
       {$ENDIF GTK2}
 
       {$IFDEF VerboseKeyboard}
@@ -2429,7 +2429,9 @@ begin
       then begin
         // ASCII key was pressed
         KeyPressesChar := EventString^;
-      end;
+      end
+      else
+        KeyPressesChar := GetSpecialChar;
 
       if KeyPressesChar <> #0
       then begin
@@ -2452,9 +2454,14 @@ begin
           end
           else begin
             // try to change the key
-            EventString^ := chr(Msg.CharCode);
-            EventString[1]:= #0;
-            AEvent^.KeyVal := Msg.CharCode;
+            CharToKeyVal(chr(Msg.CharCode), AEvent^.KeyVal, AEvent^.length);
+            if AEvent^.length = 1 then
+            begin
+              EventString^ := Character[1];
+              EventString[1] := #0;
+            end
+            else
+              EventString^ := #0;
             gdk_event_key_set_string(AEvent, EventString);
           end;
         end;
