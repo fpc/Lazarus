@@ -201,8 +201,10 @@ begin
   // free hooks
   QObject_hook_destroy(FAppEvenFilterHook);
   QApplication_hook_destroy(FAppFocusChangedHook);
-  
+
+  {$IFNDEF USE_QT_45}
   AppProcessMessages; // process pending messages since there can be release messages
+  {$ENDIF}
   QCoreApplication_quit;
 end;
 
