@@ -4,7 +4,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -106,7 +106,7 @@ function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
 {$DEFINE DirectPaintMsg}
 {$ENDIF}
 var
-  MSG: TLMGtkPaint;
+  Msg: TLMGtkPaint;
 begin
   //DebugLn(['DeliverGtkPaintMessage ',DbgSName(TObject(Target)),' Widget=',GetWidgetDebugReport(Widget),' RepaintAll=',RepaintAll,' AfterGtk=',IsAfterGtk,' Area=',dbgs(Area)]);
   {$IFDEF Gtk2}
@@ -125,10 +125,10 @@ begin
   
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit(false);
 
-  MSG.Msg := LM_GTKPAINT;
-  MSG.Data := TLMGtkPaintData.Create;
-  MSG.Data.Widget := Widget;
-  MSG.Data.State := GtkPaint_LCLWidget;
+  Msg.Msg := LM_GTKPAINT;
+  Msg.Data := TLMGtkPaintData.Create;
+  Msg.Data.Widget := Widget;
+  Msg.Data.State := GtkPaint_LCLWidget;
   Msg.Data.Rect := Bounds(Area^.x, Area^.y, Area^.Width, Area^.Height);
   Msg.Data.RepaintAll := RepaintAll;
 
