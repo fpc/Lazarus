@@ -43,7 +43,7 @@ interface
 
 { $DEFINE DisableIgnoreErrorAfter}
 { $DEFINE VerboseGetStringConstBounds}
-{$DEFINE ShowCompleteBlock}
+{ $DEFINE ShowCompleteBlock}
 
 uses
   {$IFDEF MEM_CHECK}
