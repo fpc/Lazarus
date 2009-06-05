@@ -236,9 +236,9 @@ type
                               ; const AComponent: TComponent = nil;
                                 const ASignalWidget: PGTKWidget = nil;
                                 const ASignal: PChar = nil{$ENDIF}); virtual; abstract;
-    procedure SetWidgetColor(const AWidget : PGtkWidget;
-                             const FGColor,BGColor : TColor;
-                             const Mask : tGtkStateEnum);
+    procedure SetWidgetColor(const AWidget: PGtkWidget;
+                             const FGColor, BGColor: TColor;
+                             const Mask: tGtkStateEnum);
     procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont); virtual; abstract;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject; Direct: boolean); virtual;

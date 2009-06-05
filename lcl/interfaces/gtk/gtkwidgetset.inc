@@ -1066,7 +1066,7 @@ begin
 
   if ChangeBGColor then
   begin
-    if BGColor = clBackground then
+    if (BGColor = clBackground) or (BGColor = clBtnFace) then
     begin
       RCStyle := gtk_rc_get_style(AWidget);
       if RCStyle <> nil then
@@ -1133,7 +1133,7 @@ begin
 
   if ChangeBGColor then
   begin
-    if BGColor = clBackground then
+    if (BGColor = clBackground) or (BGColor = clBtnFace) then
       NewColor := nil
     else
     begin

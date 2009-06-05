@@ -1958,7 +1958,7 @@ var
   BtnWidget: PGTKWidget;
 begin
   BtnWidget := PGTKWidget(GetButtonWidget(PGtkEventBox(AWinControl.Handle)));
-  Gtk2WidgetSet.SetWidgetColor(BtnWidget, clNone, AWinControl.color,
+  Gtk2WidgetSet.SetWidgetColor(BtnWidget, clNone, AWinControl.Color,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
