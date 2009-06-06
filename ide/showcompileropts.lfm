@@ -3,6 +3,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Height = 194
   Top = 320
   Width = 390
+  AutoSize = True
   Caption = 'Compiler Options'
   ClientHeight = 194
   ClientWidth = 390
@@ -12,9 +13,6 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Position = poOwnerFormCenter
   LCLVersion = '0.9.27'
   object CmdLineGroupbox: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
     Left = 6
     Height = 148
     Top = 6
@@ -23,18 +21,14 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Command line parameters'
-    ClientHeight = 131
+    ClientHeight = 130
     ClientWidth = 374
     TabOrder = 0
     object CmdLineMemo: TMemo
-      AnchorSideLeft.Control = CmdLineGroupbox
-      AnchorSideTop.Control = CmdLineGroupbox
-      AnchorSideRight.Control = CmdLineGroupbox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = CmdLineGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 119
+      Height = 118
       Top = 6
       Width = 362
       Align = alClient
@@ -47,12 +41,14 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   end
   object RelativePathsCheckBox: TCheckBox
     AnchorSideLeft.Control = CmdLineGroupbox
+    AnchorSideTop.Control = CmdLineGroupbox
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 17
     Top = 161
-    Width = 157
-    Anchors = [akLeft, akBottom]
+    Width = 131
+    Anchors = [akLeft]
+    BorderSpacing.Top = 6
     Caption = 'RelativePathsCheckBox'
     Checked = True
     OnChange = RelativePathsCheckBoxChange
@@ -62,22 +58,22 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   object OkButton: TBitBtn
     AnchorSideTop.Control = CmdLineGroupbox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = CmdLineGroupbox
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 309
     Height = 26
-    Top = 160
+    Top = 162
     Width = 75
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
     AutoSize = True
-    Cancel = True
-    Caption = 'Ok'
+    BorderSpacing.Around = 6
+    Caption = '&Close'
     Constraints.MinHeight = 22
     Constraints.MinWidth = 75
+    Kind = bkClose
     NumGlyphs = 0
-    OnClick = OkButtonCLICK
     TabOrder = 2
   end
 end

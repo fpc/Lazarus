@@ -48,7 +48,6 @@ type
     CmdLineGroupbox: TGROUPBOX;
     CmdLineMemo: TMEMO;
     procedure FormCreate(Sender: TObject);
-    procedure OkButtonCLICK(Sender: TObject);
     procedure RelativePathsCheckBoxChange(Sender: TObject);
   private
     FCompilerOpts: TBaseCompilerOptions;
@@ -76,11 +75,6 @@ begin
 end;
 
 { TShowCompilerOptionsDlg }
-
-procedure TShowCompilerOptionsDlg.OkButtonCLICK(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
 
 procedure TShowCompilerOptionsDlg.RelativePathsCheckBoxChange(Sender: TObject);
 begin

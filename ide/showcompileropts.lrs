@@ -2,32 +2,29 @@
 
 LazarusResources.Add('TShowCompilerOptionsDlg','FORMDATA',[
   'TPF0'#23'TShowCompilerOptionsDlg'#22'ShowCompilerOptionsDlg'#4'Left'#3'U'#1#6
-  +'Height'#3#194#0#3'Top'#3'@'#1#5'Width'#3#134#1#7'Caption'#6#16'Compiler Opt'
-  +'ions'#12'ClientHeight'#3#194#0#11'ClientWidth'#3#134#1#21'Constraints.MinHe'
-  +'ight'#3#194#0#20'Constraints.MinWidth'#3#134#1#8'OnCreate'#7#10'FormCreate'
-  +#8'Position'#7#17'poOwnerFormCenter'#10'LCLVersion'#6#6'0.9.27'#0#9'TGroupBo'
-  +'x'#15'CmdLineGroupbox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideT'
-  +'op.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#4'Left'#2#6#6
-  +'Height'#3#148#0#3'Top'#2#6#5'Width'#3'z'#1#5'Align'#7#5'alTop'#7'Anchors'#11
-  +#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7
-  +'Caption'#6#23'Command line parameters'#12'ClientHeight'#3#131#0#11'ClientWi'
-  +'dth'#3'v'#1#8'TabOrder'#2#0#0#5'TMemo'#11'CmdLineMemo'#22'AnchorSideLeft.Co'
-  +'ntrol'#7#15'CmdLineGroupbox'#21'AnchorSideTop.Control'#7#15'CmdLineGroupbox'
-  +#23'AnchorSideRight.Control'#7#15'CmdLineGroupbox'#20'AnchorSideRight.Side'#7
-  +#9'asrBottom'#24'AnchorSideBottom.Control'#7#15'CmdLineGroupbox'#21'AnchorSi'
-  +'deBottom.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'w'#3'Top'#2#6#5'Width'
-  +#3'j'#1#5'Align'#7#8'alClient'#20'BorderSpacing.Around'#2#6#13'Lines.Strings'
-  +#1#6#11'CmdLineMemo'#0#8'TabOrder'#2#0#0#0#0#9'TCheckBox'#21'RelativePathsCh'
-  +'eckBox'#22'AnchorSideLeft.Control'#7#15'CmdLineGroupbox'#18'AnchorSideTop.S'
-  +'ide'#7#9'asrCenter'#4'Left'#2#6#6'Height'#2#17#3'Top'#3#161#0#5'Width'#3#157
-  +#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#21'RelativePathsCheckB'
-  +'ox'#7'Checked'#9#8'OnChange'#7#27'RelativePathsCheckBoxChange'#5'State'#7#9
-  +'cbChecked'#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'OkButton'#21'AnchorSideTop.Cont'
-  +'rol'#7#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorS'
-  +'ideRight.Control'#7#15'CmdLineGroupbox'#20'AnchorSideRight.Side'#7#9'asrBot'
-  +'tom'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9
-  +'asrBottom'#4'Left'#3'5'#1#6'Height'#2#26#3'Top'#3#160#0#5'Width'#2'K'#7'Anc'
-  +'hors'#11#5'akTop'#7'akRight'#0#8'AutoSize'#9#6'Cancel'#9#7'Caption'#6#2'Ok'
-  +#21'Constraints.MinHeight'#2#22#20'Constraints.MinWidth'#2'K'#9'NumGlyphs'#2
-  +#0#7'OnClick'#7#13'OkButtonCLICK'#8'TabOrder'#2#2#0#0#0
+  +'Height'#3#194#0#3'Top'#3'@'#1#5'Width'#3#134#1#8'AutoSize'#9#7'Caption'#6#16
+  +'Compiler Options'#12'ClientHeight'#3#194#0#11'ClientWidth'#3#134#1#21'Const'
+  +'raints.MinHeight'#3#194#0#20'Constraints.MinWidth'#3#134#1#8'OnCreate'#7#10
+  +'FormCreate'#8'Position'#7#17'poOwnerFormCenter'#10'LCLVersion'#6#6'0.9.27'#0
+  +#9'TGroupBox'#15'CmdLineGroupbox'#4'Left'#2#6#6'Height'#3#148#0#3'Top'#2#6#5
+  +'Width'#3'z'#1#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRigh'
+  +'t'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#23'Command line '
+  +'parameters'#12'ClientHeight'#3#130#0#11'ClientWidth'#3'v'#1#8'TabOrder'#2#0
+  +#0#5'TMemo'#11'CmdLineMemo'#20'AnchorSideRight.Side'#7#9'asrBottom'#21'Ancho'
+  +'rSideBottom.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'v'#3'Top'#2#6#5'Wi'
+  +'dth'#3'j'#1#5'Align'#7#8'alClient'#20'BorderSpacing.Around'#2#6#13'Lines.St'
+  +'rings'#1#6#11'CmdLineMemo'#0#8'TabOrder'#2#0#0#0#0#9'TCheckBox'#21'Relative'
+  +'PathsCheckBox'#22'AnchorSideLeft.Control'#7#15'CmdLineGroupbox'#21'AnchorSi'
+  +'deTop.Control'#7#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrCenter'#4
+  +'Left'#2#6#6'Height'#2#17#3'Top'#3#161#0#5'Width'#3#131#0#7'Anchors'#11#6'ak'
+  +'Left'#0#17'BorderSpacing.Top'#2#6#7'Caption'#6#21'RelativePathsCheckBox'#7
+  +'Checked'#9#8'OnChange'#7#27'RelativePathsCheckBoxChange'#5'State'#7#9'cbChe'
+  +'cked'#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'OkButton'#21'AnchorSideTop.Control'#7
+  +#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRigh'
+  +'t.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSide'
+  +'Bottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'
+  +#3'5'#1#6'Height'#2#26#3'Top'#3#162#0#5'Width'#2'K'#7'Anchors'#11#7'akRight'
+  +#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#6'&Cl'
+  +'ose'#21'Constraints.MinHeight'#2#22#20'Constraints.MinWidth'#2'K'#4'Kind'#7
+  +#7'bkClose'#9'NumGlyphs'#2#0#8'TabOrder'#2#2#0#0#0
 ]);
