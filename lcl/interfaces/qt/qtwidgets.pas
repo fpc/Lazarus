@@ -1408,8 +1408,7 @@ var
   QtEdit: IQtEdit;
 begin
   // default color roles
-  if InheritsFrom(TQtAbstractButton) or
-     InheritsFrom(TQtAbstractSlider) then
+  if InheritsFrom(TQtAbstractButton) then
   begin
     FWidgetColorRole := QPaletteButton;
     FTextColorRole := QPaletteButtonText;
