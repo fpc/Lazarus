@@ -6007,11 +6007,10 @@ begin
             end else begin
               // delete text before the caret
               if (eoAutoIndent in fOptions) and
-                 FBeautifier.CanUnindent(Self, Temp, CaretX) then
+                 FBeautifier.CanUnindent(Self, FTheLinesView , FCaret) then
               begin
                 // unindent
-                FBeautifier.UnIndentLine(Self, Temp, ViewedTextBuffer,
-                                         CaretXY, Helper, Temp2, CX);
+                FBeautifier.UnIndentLine(Self, ViewedTextBuffer, FCaret, CX);
                 CaretX := CX;
                 fLastCaretX := CaretX;
                 StatusChanged([scCaretX]);
@@ -6137,12 +6136,11 @@ begin
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
           if (eoAutoIndent in fOptions) and ((LogCaretXY.X > 1) or (Len = 0)) then
           begin
-            Caret := CaretXY;
-            Caret.Y := Caret.Y + 1;
-            FTheLinesView.EditInsert(1, LogCaretXY.Y + 1,
-                            FBeautifier.IndentLine
-                            (Self, FTheLinesView[CaretY], ViewedTextBuffer,
-                             Caret, Helper, Temp, CX, False));
+            FInternalCaret.AssignFrom(FCaret);
+            FInternalCaret.IncForcePastEOL;
+            FInternalCaret.LinePos := FInternalCaret.LinePos + 1;
+            FBeautifier.IndentLine(Self, ViewedTextBuffer, FInternalCaret, CX);
+            FInternalCaret.DecForcePastEOL;
           end else
             CX := 1;
           if Command = ecLineBreak then begin
@@ -8098,7 +8096,7 @@ begin
     begin
       // this line is blank
       // -> use automatic line indent
-      LineStart := FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], FTheLinesView, CaretXY);
+      LineStart := FBeautifier.GetDesiredIndentForLine(Self, FTheLinesView, FCaret);
     end;
 
     NewPos.X:=LineStart;
@@ -8145,7 +8143,7 @@ begin
     end else begin
       // this line is blank
       // -> use automatic line indent
-      LineEnd := FBeautifier.GetIndentForLine(Self, FTheLinesView[CaretY-1], FTheLinesView, CaretXY);
+      LineEnd := FBeautifier.GetDesiredIndentForLine(Self, FTheLinesView, FCaret);
     end;
 
     NewPos.X:=LineEnd;
