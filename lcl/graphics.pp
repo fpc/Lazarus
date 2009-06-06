@@ -1086,6 +1086,7 @@ type
     procedure Line(const p1,p2: TPoint);
     procedure Line(const Points: TRect);
     procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
+    procedure LineTo(p: TPoint); overload; // already in fpcanvas
     procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;

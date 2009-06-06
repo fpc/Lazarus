@@ -1258,6 +1258,11 @@ begin
   Changed;
 end;
 
+procedure TCanvas.LineTo(p: TPoint);
+begin
+  LineTo(p.x,p.y);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Line
