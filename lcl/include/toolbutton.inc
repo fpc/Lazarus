@@ -574,7 +574,8 @@ begin
   if FImageIndex = Value then exit;
   //debugln('TToolButton.SetImageIndex ',Name,':',ClassName,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
-  if FToolBar <> nil then begin
+  if Visible and (FToolBar <> nil) then
+  begin
     RefreshControl;
     Invalidate;
   end;
