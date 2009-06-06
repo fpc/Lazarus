@@ -308,12 +308,16 @@ begin
 end;
 
 procedure TToolBar.UpdateVisibleBar;
+var
+  i: Integer;
 begin
   if ([csLoading,csDestroying]*ComponentState<>[]) or (not HandleAllocated) then
   begin
     Include(FToolBarFlags,tbfUpdateVisibleBarNeeded);
     exit;
   end;
+  for i:=0 to FButtons.Count-1 do
+    TControl(FButtons[i]).InvalidatePreferredSize;
   ReAlign;
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
@@ -429,9 +433,12 @@ begin
   Result := False;
 end;
 
-function TToolBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
+procedure TToolBar.DoAutoSize;
+var
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
-  Result := WrapButtons(Width, NewWidth, NewHeight, true);
+  WrapButtons(Width, NewWidth, NewHeight, true);
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
@@ -603,7 +610,7 @@ begin
       if not CurControl.Visible then
         Continue;
       CalculatePosition;
-      //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
+      //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height]);
       if ButtonHeight <= 0
       then h := CurControl.Height
       else h := ButtonHeight;
@@ -622,7 +629,11 @@ begin
       or (CurControl.Width<>w) or (CurControl.Height<>h) then begin
         //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
         if not Simulate then
+        begin
+          //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
           CurControl.SetBoundsKeepBase(x,y,w,h);
+          //DebugLn(['TToolBar.WrapButtons moved child: ',DbgSName(CurControl),' ',dbgs(CurControl.BoundsRect)]);
+        end;
       end;
       
       // adjust NewWidth, NewHeight

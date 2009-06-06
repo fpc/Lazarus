@@ -1573,7 +1573,7 @@ type
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
                     PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;

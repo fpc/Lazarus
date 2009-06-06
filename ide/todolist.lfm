@@ -10,16 +10,17 @@ object frmTodo: TfrmTodo
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object StatusBar: TStatusBar
+    Left = 0
     Height = 21
     Top = 279
     Width = 643
     Panels = <>
   end
   object lvTodo: TListView
+    Left = 0
     Height = 231
     Top = 48
     Width = 643
@@ -62,13 +63,14 @@ object frmTodo: TfrmTodo
     OnClick = lvTodoClick
   end
   object ToolBar: TToolBar
+    Left = 0
     Height = 48
+    Top = 0
     Width = 643
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 47
     Caption = 'ToolBar'
-    Flat = True
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
@@ -112,17 +114,14 @@ object frmTodo: TfrmTodo
     top = 11
     object acGoto: TAction
       Caption = 'Goto'
-      DisableIfNoHandler = True
       OnExecute = acGotoExecute
     end
     object acRefresh: TAction
       Caption = 'Refresh'
-      DisableIfNoHandler = True
       OnExecute = acRefreshExecute
     end
     object acExport: TAction
       Caption = 'Export'
-      DisableIfNoHandler = True
       OnExecute = acExportExecute
     end
   end
