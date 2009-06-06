@@ -569,17 +569,24 @@ end;
 
 procedure TCanvas.DoMoveTo(x, y: integer);
 begin
-  MoveTo(X,Y);
+  RequiredState([csHandleValid]);
+  if LCLIntf.MoveToEx(FHandle, X, Y, nil) then
+    SetInternalPenPos(Point(X, Y));
 end;
 
 procedure TCanvas.DoLineTo(x, y: integer);
 begin
-  LineTo(X,Y);
+  Changing;
+  RequiredState([csHandleValid, csPenValid]);
+  if LCLIntf.LineTo(FHandle, X, Y) then
+    SetInternalPenPos(Point(X, Y));
+  Changed;
 end;
 
 procedure TCanvas.DoLine(x1, y1, x2, y2: integer);
 begin
-  Line(x1,y1,x2,y2);
+  MoveTo(x1,y1);
+  LineTo(x1,y1);
 end;
 
 procedure TCanvas.DoCopyRect(x, y: integer; SrcCanvas: TFPCustomCanvas;
@@ -1227,64 +1234,6 @@ function TCanvas.GetUpdatedHandle(ReqState: TCanvasState): HDC;
 begin
   RequiredState(ReqState+[csHandleValid]);
   Result:=FHandle;
-end;
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.MoveTo
-  Params:   X1,Y1
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.MoveTo(X1, Y1: Integer);
-begin
-  RequiredState([csHandleValid]);
-  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then begin
-    SetInternalPenPos(Point(X1, Y1));
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.LineTo
-  Params:   X1,Y1
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.LineTo(X1, Y1 : Integer);
-begin
-  Changing;
-  RequiredState([csHandleValid, csPenValid]);
-  if LCLIntf.LineTo(FHandle, X1, Y1) then
-    SetInternalPenPos(Point(X1, Y1));
-  Changed;
-end;
-
-procedure TCanvas.LineTo(p: TPoint);
-begin
-  LineTo(p.x,p.y);
-end;
-
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.Line
-  Params:   X1,Y1,X2,Y2
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.Line(X1,Y1,X2,Y2 : Integer);
-begin
-  MoveTo(X1, Y1);
-  LineTo(X2, Y2);
-end;
-
-procedure TCanvas.Line(const p1, p2: TPoint);
-begin
-  Line(p1.x,p1.y,p2.x,p2.y);
-end;
-
-procedure TCanvas.Line(const Points: TRect);
-begin
-  with Points do
-    Line(Left,Top,Right,Bottom);
 end;
 
 {------------------------------------------------------------------------------

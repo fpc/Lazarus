@@ -116,6 +116,9 @@ Type
     procedure BeginDoc; override;
     procedure EndDoc;   override;
     procedure NewPage;  override;
+
+    procedure DoMoveTo(X1,Y1: Integer); override;
+    procedure DoLineTo(X1,Y1: Integer); override;
   public
     constructor Create(APrinter : TPrinter); override;
     destructor Destroy; override;
@@ -123,8 +126,6 @@ Type
     procedure SaveToFile(aFileName : string);
     
 
-    procedure MoveTo(X1,Y1: Integer); override;
-    procedure LineTo(X1,Y1: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
@@ -1460,7 +1461,7 @@ begin
 end;
 
 //Move the current position
-procedure TPostScriptPrinterCanvas.MoveTo(X1, Y1: Integer);
+procedure TPostScriptPrinterCanvas.DoMoveTo(X1, Y1: Integer);
 var
   pp:TpsPoint;
 begin
@@ -1468,28 +1469,28 @@ begin
 
   write('stroke');
 
-  WriteComment(Format('MoveTo(%d,%d)',[x1,y1]));
+  WriteComment(Format('DoMoveTo(%d,%d)',[x1,y1]));
 
   SetPosition(X1,Y1);
   pp:=TranslateCoord(X1,Y1);
 
-  write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
+  write(Format('%f %f domoveto',[pp.fx,pp.fy],FFs));
 end;
 
 //Drawe line
-procedure TPostScriptPrinterCanvas.LineTo(X1, Y1: Integer);
+procedure TPostScriptPrinterCanvas.DoLineTo(X1, Y1: Integer);
 var
   pp:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  WriteComment(Format('LineTo(%d,%d)',[x1,y1]));
+  WriteComment(Format('DoLineTo(%d,%d)',[x1,y1]));
   SetPosition(X1,Y1);
   pp:=TranslateCoord(X1,Y1);
   UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
-  write(Format('%f %f lineto',[pp.fx,pp.fy],FFs));
+  write(Format('%f %f Dolineto',[pp.fx,pp.fy],FFs));
   changed;
 end;
 
