@@ -45,7 +45,7 @@ uses
 type
 
   TSynBeautifierGetIndentEvent =
-    procedure(Sender: TObject; LogCaret: TPoint; var Indent, BasedLine: Integer) of object;
+    procedure(Sender: TObject; LogCaret: TPoint; Line: Integer; var Indent, BasedLine: Integer) of object;
 
   { TSynCustomBeautifier }
 
@@ -193,7 +193,7 @@ begin
 
   FoundLine := BackCounter + 1;
   if assigned(FOnDesiredIndentNeeded) then
-    FOnDesiredIndentNeeded(Editor, ACaret.LineBytePos, Result, FoundLine);
+    FOnDesiredIndentNeeded(Editor, ACaret.LineBytePos, ACaret.LinePos, Result, FoundLine);
 
   if Result < 0 then exit;
 
