@@ -358,7 +358,6 @@ begin
   FGutterLinesNode.Data := FGutterActionsLines;
 
   ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
-  Splitter1.MinSize := ActionGrid.ColCount * MinGridColSize;
   ActionGrid.Cells[0,0] := dlgMouseOptHeadDesc;
   ActionGrid.Cells[1,0] := dlgMouseOptHeadBtn;
   ActionGrid.Cells[2,0] := dlgMouseOptHeadCount;
