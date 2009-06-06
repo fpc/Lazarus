@@ -44,14 +44,14 @@ uses
 
 type
 
-  TSynBeautifierDesiredIndentNeededEvent =
-    procedure(Sender: TObject; PhysCaret: TPoint; var Indent, BasedLine: Integer) of object;
+  TSynBeautifierGetIndentEvent =
+    procedure(Sender: TObject; LogCaret: TPoint; var Indent, BasedLine: Integer) of object;
 
   { TSynCustomBeautifier }
 
   TSynCustomBeautifier = class(TComponent)
   private
-    FOnDesiredIndentNeeded: TSynBeautifierDesiredIndentNeededEvent;
+    FOnDesiredIndentNeeded: TSynBeautifierGetIndentEvent;
   public
     function CanUnindent(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                          const ACaret: TSynEditCaret): Boolean; virtual; abstract;
@@ -66,7 +66,7 @@ type
     function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
                               const ACaret: TSynEditCaret;
                               out DesiredIndent: String): Integer; virtual; abstract;
-    property OnDesiredIndentNeeded: TSynBeautifierDesiredIndentNeededEvent
+    property OnDesiredIndentNeeded: TSynBeautifierGetIndentEvent
       read FOnDesiredIndentNeeded write FOnDesiredIndentNeeded;
   end;
 
@@ -192,8 +192,8 @@ begin
     until (BackCounter = 0) or (Temp <> '');
 
   FoundLine := BackCounter + 1;
-  if assigned(OnDesiredIndentNeeded) then
-    OnDesiredIndentNeeded(Editor, ACaret.LineCharPos, Result, FoundLine);
+  if assigned(FOnDesiredIndentNeeded) then
+    FOnDesiredIndentNeeded(Editor, ACaret.LineBytePos, Result, FoundLine);
 
   if Result < 0 then exit;
 
