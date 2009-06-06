@@ -3663,6 +3663,7 @@ lazarus.app/Contents/PkgInfo svneol=native#text/plain
 lazarus.app/Contents/Resources/README.rtf svneol=native#text/rtf
 lazarus.app/Contents/Resources/lazarus.icns -text svneol=unset#image/x-icns
 lazarus.app/Contents/Resources/startlazarus.app/Contents/Info.plist svneol=native#text/plain
+lazarus.app/Contents/Resources/startlazarus.app/Contents/MacOS/startlazarus -text svneol=unset#application/octet-stream
 lazarus.app/Contents/Resources/startlazarus.app/Contents/PkgInfo svneol=native#text/plain
 lcl/LAYOUT.txt svneol=native#text/plain
 lcl/actnlist.pas svneol=native#text/pascal
