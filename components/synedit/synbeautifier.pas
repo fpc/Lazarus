@@ -51,7 +51,7 @@ type
 
   TSynCustomBeautifier = class(TComponent)
   private
-    FOnDesiredIndentNeeded: TSynBeautifierGetIndentEvent;
+    FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
   public
     function CanUnindent(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                          const ACaret: TSynEditCaret): Boolean; virtual; abstract;
@@ -66,8 +66,8 @@ type
     function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
                               const ACaret: TSynEditCaret;
                               out DesiredIndent: String): Integer; virtual; abstract;
-    property OnDesiredIndentNeeded: TSynBeautifierGetIndentEvent
-      read FOnDesiredIndentNeeded write FOnDesiredIndentNeeded;
+    property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
+      read FOnGetDesiredIndent write FOnGetDesiredIndent;
   end;
 
   TSynBeautifierIndentType = (sbitSpace, sbitCopySpaceTab, sbitPositionCaret);
@@ -192,8 +192,8 @@ begin
     until (BackCounter = 0) or (Temp <> '');
 
   FoundLine := BackCounter + 1;
-  if assigned(FOnDesiredIndentNeeded) then
-    FOnDesiredIndentNeeded(Editor, ACaret.LineBytePos, ACaret.LinePos, Result, FoundLine);
+  if assigned(FOnGetDesiredIndent) then
+    FOnGetDesiredIndent(Editor, ACaret.LineBytePos, ACaret.LinePos, Result, FoundLine);
 
   if Result < 0 then exit;
 

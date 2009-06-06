@@ -50,7 +50,7 @@ uses
   // synedit
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
-  SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks,
+  SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks, SynBeautifier,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -117,6 +117,7 @@ type
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
+    FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
     FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
@@ -159,6 +160,8 @@ type
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
+                              var Indent, BasedLine: Integer);
     procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
@@ -383,6 +386,8 @@ type
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
+    property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
+      read FOnGetDesiredIndent write FOnGetDesiredIndent;
     property Owner: TComponent read FAOwner;
     property PageName: string read FPageName write SetPageName;
     property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
@@ -533,6 +538,7 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
+    FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -596,6 +602,8 @@ type
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
+    procedure EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
+                              var Indent, BasedLine: Integer);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -781,6 +789,8 @@ type
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
+    property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
+      read FOnGetDesiredIndent write FOnGetDesiredIndent;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -2527,6 +2537,7 @@ Begin
       OnClickLink := @EditorClickLink;
       OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
+      Beautifier.OnGetDesiredIndent := @EditorGetIndent;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
 
     end;
@@ -2991,6 +3002,13 @@ begin
   //DebugLn('TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' ',IntToStr(Key));
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
+end;
+
+procedure TSourceEditor.EditorGetIndent(Sender: TObject; LogCaret: TPoint;
+  Line: Integer; var Indent, BasedLine: Integer);
+begin
+  if Assigned(OnGetDesiredIndent) then
+    OnGetDesiredIndent(Sender, LogCaret, Line, Indent, BasedLine);
 end;
 
 Function TSourceEditor.GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
@@ -4793,6 +4811,7 @@ begin
   Result.OnClickLink := @EditorClickLink;
   Result.OnMouseLink := @EditorMouseLink;
   Result.OnKeyDown := @EditorKeyDown;
+  Result.OnGetDesiredIndent := @EditorGetIndent;
 
   Result.EditorComponent.EndUpdate;
   {$IFDEF IDE_DEBUG}
@@ -6670,6 +6689,13 @@ procedure TSourceNotebook.EditorMouseLink(
 begin
   if Assigned(OnMouseLink) then
     OnMouseLink(Sender, X, Y, AllowMouseLink);
+end;
+
+procedure TSourceNotebook.EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
+  var Indent, BasedLine: Integer);
+begin
+  if Assigned(OnGetDesiredIndent) then
+    OnGetDesiredIndent(Sender, LogCaret, Line, Indent, BasedLine);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);
