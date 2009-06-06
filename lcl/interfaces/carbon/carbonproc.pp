@@ -73,6 +73,7 @@ function FindCarbonFontID(const FontName: String): ATSUFontID;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
 
 function FontStyleToQDStyle(const AStyle: TFontStyles): MacOSAll.Style;
+function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 
@@ -538,6 +539,19 @@ begin
   if fsItalic    in AStyle then Result := Result or MacOSAll.italic;
   if fsUnderline in AStyle then Result := Result or MacOSAll.underline;
   // fsStrikeOut has no counterpart?
+end;
+
+{------------------------------------------------------------------------------
+  Name:    QDStyleToFontStyle
+  Params:  QDStyle - Quick Draw font style
+  Returns: LCL Font Style
+ ------------------------------------------------------------------------------}
+function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;
+begin
+  Result := [];
+  if QDStyle and MacOSAll.bold > 0 then Include(Result, fsBold);
+  if QDStyle and MacOSAll.italic > 0 then Include(Result, fsItalic);
+  if QDStyle and MacOSAll.underline > 0 then Include(Result, fsUnderline);
 end;
 
 {------------------------------------------------------------------------------
