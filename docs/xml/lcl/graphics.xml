@@ -2257,7 +2257,7 @@ Copies the LogFont settings to itself</descr>
       <!-- property Visibility: public -->
       <element name="TFont.Handle">
         <short>Operataing system <var>Handle</var> for this Font</short>
-        <descr/>
+        <descr>Operataing system <var>Handle</var> for this Font - deprecated</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -12904,7 +12904,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TRasterImage.TransparentMode">
-        <short>In <var>TransparentMode</var> ir is possible to see the underlying objects through the current image</short>
+        <short>In <var>TransparentMode</var> it is possible to see the underlying objects through the current image</short>
         <descr/>
         <seealso/>
       </element>
@@ -14791,6 +14791,30 @@ be carefull with this, modify only within a begin/endupdate</descr>
       <element name="TCanvas.RealizeAntialiasing">
         <short>
           <var>RealizeAntialiasing</var> - implement the Anti-aliasing feature</short>
+      </element>
+      <element name="TFont.GetOrientation">
+        <short>
+          <var>GetOrientation </var>- Returns the orientation for the font</short>
+      </element>
+      <element name="TFont.FontData">
+        <short>
+          <var>FontData</var> - the data describing the font</short>
+      </element>
+      <element name="TFont.Orientation">
+        <short>The <var>Orientation</var> (wheteher horizontal or vertical etc) of the current font</short>
+      </element>
+      <element name="TCanvas.SetClipRect"/>
+      <element name="TCanvas.GetClipping">
+        <short>
+          <var>GetClipping</var> returns True if clipping is being performed</short>
+      </element>
+      <element name="TCanvas.SetClipping">
+        <short>
+          <var>SetClipping</var> specifies (via boolean argument) whether clipping is to be performed</short>
+      </element>
+      <element name="TCanvas.TryLock">
+        <short>
+          <var>TryLock</var> - examines the Lock state, and performs Lock if necessary</short>
       </element>
     </module>
     <!-- Graphics -->
