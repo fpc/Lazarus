@@ -1452,7 +1452,7 @@ type
     property Color;
     property ColCount;
     property Columns;
-    //property Constraints;
+    property Constraints;
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
