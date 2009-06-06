@@ -5179,7 +5179,6 @@ type
 var
   CleanCursorPos: integer;
   StartNode: TCodeTreeNode;
-  NewIndent: TFABIndentationPolicy;
 
   procedure InitStack(out Stack: TBlockStack);
   begin

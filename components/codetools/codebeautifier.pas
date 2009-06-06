@@ -191,6 +191,10 @@ type
     FOnGetNestedComments: TOnGetFABNestedComments;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
+                          Stack: TFABBlockStack; Policies: TFABPolicies;
+                          out LastAtomStart, LastAtomEnd: integer);
+    procedure ParseSource(const Src: string; StartPos, EndPos: integer;
+                          NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies);
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   Typ: TFABBlockType): TFABPolicies;
@@ -360,7 +364,7 @@ end;
 
 procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
   StartPos, EndPos: integer; NestedComments: boolean; Stack: TFABBlockStack;
-  Policies: TFABPolicies);
+  Policies: TFABPolicies; out LastAtomStart, LastAtomEnd: integer);
 var
   p: Integer;
   AtomStart: integer;
@@ -490,12 +494,19 @@ var
   r: PChar;
   Block: PBlock;
 begin
+  LastAtomStart:=0;
+  LastAtomEnd:=0;
   p:=StartPos;
   repeat
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
     DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
-    if p>=EndPos then break;
-
+    if p>=EndPos then begin
+      if (AtomStart<=p) and (p>EndPos) then begin
+        LastAtomStart:=p;
+        LastAtomEnd:=p;
+      end;
+      break;
+    end;
     // check if first block inner found
     FirstAtomOnNewLine:=false;
     if (Stack.Top>=0) then begin
@@ -787,6 +798,16 @@ begin
   until false;
 end;
 
+procedure TFullyAutomaticBeautifier.ParseSource(const Src: string; StartPos,
+  EndPos: integer; NestedComments: boolean; Stack: TFABBlockStack;
+  Policies: TFABPolicies);
+var
+  LastAtomStart, LastAtomEnd: integer;
+begin
+  ParseSource(Src,StartPos,EndPos,NestedComments,Stack,Policies,
+              LastAtomStart,LastAtomEnd);
+end;
+
 function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
   Typ: TFABBlockType): TFABPolicies;
 var
@@ -900,6 +921,7 @@ var
 var
   Stack: TFABBlockStack;
   Policies: TFABPolicies;
+  LastAtomStart, LastAtomEnd: integer;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -911,10 +933,17 @@ begin
   Stack:=TFABBlockStack.Create;
   try
     // parse source in front
-    ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies);
-    if Stack.Top<0 then begin
+    ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
+                LastAtomStart,LastAtomEnd);
+    if (Stack.Top<0) then begin
       // no context
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      GetDefaultIndent(Source,CleanPos,NewNestedComments,Indent);
+      exit;
+    end;
+    if (LastAtomStart>0) and (CleanPos>LastAtomStart) then begin
+      // in comment or atom
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: position in middle of atom, e.g. comment']);
       GetDefaultIndent(Source,CleanPos,NewNestedComments,Indent);
       exit;
     end;
