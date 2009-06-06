@@ -2382,7 +2382,13 @@ begin
           im_context_string:='';// clear, to avoid sending again
         end
         else
-          Character := GetSpecialChar;
+        begin
+          KeyPressesChar := GetSpecialChar;
+          if KeyPressesChar <> #0 then
+            Character := KeyPressesChar
+          else
+            Character := '';
+        end;
       {$ENDIF GTK2}
 
       {$IFDEF VerboseKeyboard}
