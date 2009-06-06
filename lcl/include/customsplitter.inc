@@ -349,7 +349,7 @@ begin
     if Assigned(CurOtherResizeControl)
     then EndSize := GetControlSize(CurResizeControl)
                   + GetControlSize(CurOtherResizeControl)
-                  - fMinSize
+                  - Max(fMinSize, GetControlConstraintsMinSize(CurOtherResizeControl))
     else begin
       VirtualOppositeControl := FindVirtualOppositeControl(Self);
       LastControl := FindLastControl(Self);
