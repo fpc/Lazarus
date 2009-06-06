@@ -2309,7 +2309,7 @@ end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
 begin
-    if Key='' then exit;
+  if Key='' then exit;
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);

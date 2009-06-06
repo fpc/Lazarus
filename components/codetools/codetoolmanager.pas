@@ -40,9 +40,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
+  Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts, TypInfo,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
-  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, FindOverloads,
+  ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
@@ -99,6 +99,7 @@ type
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
     FOnFindDefineProperty: TOnFindDefineProperty;
+    FOnGetIndenterExamples: TOnGetFABExamples;
     FOnGetMethodName: TOnGetMethodname;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
@@ -138,6 +139,8 @@ type
     procedure WriteError;
     procedure OnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
       NestedComments: boolean);
+    procedure OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
+      Step: integer; var CodeBuffers: TFPList);
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
@@ -162,6 +165,7 @@ type
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
+    Indenter: TFullyAutomaticBeautifier;
 
     constructor Create;
     destructor Destroy; override;
@@ -295,6 +299,8 @@ type
     // miscellaneous
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
                                                write FOnGetMethodName;
+    property OnGetIndenterExamples: TOnGetFABExamples
+                       read FOnGetIndenterExamples write FOnGetIndenterExamples;
 
     // data function
     procedure FreeListOfPCodeXYPosition(var List: TFPList);
@@ -798,7 +804,9 @@ begin
   SourceChangeCache:=TSourceChangeCache.Create;
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
-  SourceChangeCache.Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
+  Indenter:=TFullyAutomaticBeautifier.Create;
+  Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
+  Indenter.OnGetExamples:=@OnFABGetExamples;
   GlobalValues:=TExpressionEvaluator.Create;
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
@@ -847,6 +855,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] D');
   {$ENDIF}
+  FreeAndNil(Indenter);
   FreeAndNil(SourceChangeCache);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] E');
@@ -4687,6 +4696,13 @@ begin
   NestedComments:=GetNestedCommentsFlagForFile(Code.Filename);
 end;
 
+procedure TCodeToolManager.OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
+  Step: integer; var CodeBuffers: TFPList);
+begin
+  if Assigned(OnGetIndenterExamples) then
+    OnGetIndenterExamples(Sender,Code,Step,CodeBuffers);
+end;
+
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
   out AChangeStep: integer): TExpressionEvaluator;
 begin
@@ -4745,6 +4761,7 @@ begin
   if FTabWidth=AValue then exit;
   FTabWidth:=AValue;
   SourceChangeCache.BeautifyCodeOptions.TabWidth:=AValue;
+  Indenter.DefaultTabWidth:=AValue;
 end;
 
 procedure TCodeToolManager.SetVisibleEditorLines(NewValue: integer);

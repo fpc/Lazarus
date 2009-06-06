@@ -219,7 +219,6 @@ type
     procedure RaiseException(const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
-    Indenter: TFullyAutomaticBeautifier;
     procedure BeginUpdate;
     function EndUpdate: boolean;
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
@@ -468,7 +467,6 @@ begin
   FBuffersToModify:=TFPList.Create;
   FBuffersToModifyNeedsUpdate:=false;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;
-  Indenter:=TFullyAutomaticBeautifier.Create;
 end;
 
 destructor TSourceChangeCache.Destroy;
@@ -478,7 +476,6 @@ begin
   FBuffersToModify.Free;
   FEntries.FreeAndClear;
   FreeAndNil(FEntries);
-  FreeAndNil(Indenter);
   inherited Destroy;
 end;
 

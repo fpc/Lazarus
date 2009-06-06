@@ -51,8 +51,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, TypInfo, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  AVL_Tree, LFMTrees, SourceChanger,
+  CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeCache, AVL_Tree, LFMTrees, SourceChanger,
   CustomCodeTool, CodeToolsStructs;
 
 type
@@ -5179,6 +5179,7 @@ type
 var
   CleanCursorPos: integer;
   StartNode: TCodeTreeNode;
+  NewIndent: TFABIndentationPolicy;
 
   procedure InitStack(out Stack: TBlockStack);
   begin
@@ -5316,11 +5317,10 @@ var
     NeedCompletion:=false;
     repeat
       ReadNextAtom;
-      if CurPos.StartPos>=StartNode.EndPos then break;
 
       //DebugLn(['ReadStatements Atom=',GetAtom,' TopTyp=',ord(TopBlockType(Stack)),' Top=',Stack.Top]);
       if (Stack.Top>=0) and (Stack.Stack[Stack.Top].InnerIndent<0)
-      and (PositionsInSameLine(Src,Stack.Stack[Stack.Top].StartPos,CurPos.StartPos))
+      and (not PositionsInSameLine(Src,Stack.Stack[Stack.Top].StartPos,CurPos.StartPos))
       then begin
         // the first atom of this block on a new line
         Stack.Stack[Stack.Top].InnerIndent:=GetLineIndent(Src,CurPos.StartPos);
@@ -5553,7 +5553,9 @@ var
       LastPos:=CurPos.StartPos;
     until Stack.Top<0;
 
-    //DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
+    {$IFDEF ShowCompleteBlock}
+    DebugLn(['ReadStatements END Stack.Top=',Stack.Top,' CursorBlockLvl=',CursorBlockLvl,' BehindCursorBlock=',BehindCursorBlock]);
+    {$ENDIF}
 
     if Stack.Top<0 then begin
       // all blocks closed
@@ -5708,6 +5710,7 @@ begin
   BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                 [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
   SourceChangeCache.MainScanner:=Scanner;
   InitStack(Stack);
   try
@@ -5718,19 +5721,20 @@ begin
       and (StartNode.Parent.Desc in AllPascalStatements) do
         StartNode:=StartNode.Parent;
       if not CompleteStatements(Stack) then exit;
-    end;
-    if StartNode.Desc in AllClassSections then begin
+    end
+    else if StartNode.Desc in AllClassSections then begin
       if not CompleteClassSection(Stack) then exit;
-    end;
-    if StartNode.Desc=ctnClassInterface then begin
+    end
+    else if StartNode.Desc=ctnClassInterface then begin
       if not CompleteClassInterface(Stack) then exit;
-    end;
-    if StartNode.Desc=ctnRecordType then begin
+    end
+    else if StartNode.Desc=ctnRecordType then begin
       if not CompleteRecord(Stack) then exit;
     end;
   finally
     FreeStack(Stack);
   end;
+
   Result:=true;
 end;
 

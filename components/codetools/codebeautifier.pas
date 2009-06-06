@@ -123,7 +123,7 @@ const
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 Step: integer; // starting at 0
-                                out CodeBuffers: TFPList // stopping when CodeBuffers=nil
+                                var CodeBuffers: TFPList // stopping when CodeBuffers=nil
                                 ) of object;
   TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
                                       out NestedComments: boolean) of object;
@@ -203,11 +203,12 @@ type
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean;
                        out Indent: TFABIndentationPolicy): boolean;
+    procedure GetDefaultIndent(const Source: string; CleanPos: integer;
+                               NewNestedComments: boolean;
+                               out Indent: TFABIndentationPolicy);
     { ToDo:
       - indent on paste  (position + new source)
       - indent auto generated code (several snippets)
-      - learn from sources
-      - learn from nearest lines in source
        }
     property OnGetExamples: TOnGetFABExamples read FOnGetExamples
                                               write FOnGetExamples;
@@ -802,37 +803,43 @@ begin
   Step:=0;
   repeat
     // get examples for current step
-    OnGetExamples(Self,StartCode,Step,CodeBuffers);
-    if CodeBuffers=nil then exit;
-    // search policy in every example
-    for i:=0 to CodeBuffers.Count-1 do begin
-      Code:=TCodeBuffer(CodeBuffers[i]);
-      if Code=nil then continue;
-      // search Policies for code
-      AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
-      if AVLNode=nil then begin
-        Policies:=TFABPolicies.Create;
-        Policies.Code:=Code;
-        FCodePolicies.Add(Policies);
-      end else
-        Policies:=TFABPolicies(AVLNode.Data);
-      if Policies.CodeChangeStep<>Code.ChangeStep then begin
-        // parse code
-        Policies.Clear;
-        Policies.CodeChangeStep:=Code.ChangeStep;
-        Stack:=TFABBlockStack.Create;
-        try
-          ParseSource(Code.Source,1,length(Code.Source)+1,
-             GetNestedCommentsForCode(Code),Stack,Policies);
-        finally
-          Stack.Free;
+    CodeBuffers:=nil;
+    try
+      OnGetExamples(Self,StartCode,Step,CodeBuffers);
+      if CodeBuffers=nil then exit;
+      // search policy in every example
+      for i:=0 to CodeBuffers.Count-1 do begin
+        Code:=TCodeBuffer(CodeBuffers[i]);
+        if Code=nil then continue;
+        DebugLn(['TFullyAutomaticBeautifier.FindPolicyInExamples ',Code.Filename]);
+        // search Policies for code
+        AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
+        if AVLNode=nil then begin
+          Policies:=TFABPolicies.Create;
+          Policies.Code:=Code;
+          FCodePolicies.Add(Policies);
+        end else
+          Policies:=TFABPolicies(AVLNode.Data);
+        if Policies.CodeChangeStep<>Code.ChangeStep then begin
+          // parse code
+          Policies.Clear;
+          Policies.CodeChangeStep:=Code.ChangeStep;
+          Stack:=TFABBlockStack.Create;
+          try
+            ParseSource(Code.Source,1,length(Code.Source)+1,
+               GetNestedCommentsForCode(Code),Stack,Policies);
+          finally
+            Stack.Free;
+          end;
+        end;
+        // search policy
+        if Policies.GetSmallestIndent(Typ)>=0 then begin
+          Result:=Policies;
+          exit;
         end;
       end;
-      // search policy
-      if Policies.GetSmallestIndent(Typ)>=0 then begin
-        Result:=Policies;
-        exit;
-      end;
+    finally
+      CodeBuffers.Free;
     end;
     // next step
     inc(Step);
@@ -882,7 +889,7 @@ var
     BlockIndent:=Policies.GetSmallestIndent(Block.Typ);
     if (BlockIndent<0) then exit;
     // policy found
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: BlockIndent=',BlockIndent]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Block.Typ],' BlockIndent=',BlockIndent]);
     Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
                    +BlockIndent;
     Indent.IndentValid:=true;
@@ -907,6 +914,7 @@ begin
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies);
     if Stack.Top<0 then begin
       // no context
+
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
       exit;
     end;
@@ -925,9 +933,32 @@ begin
     Policies.Free;
   end;
 
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent AAA1']);
   // parse examples
   Policies:=FindPolicyInExamples(nil,Block.Typ);
   if CheckPolicies(Policies,Result) then exit;
+end;
+
+procedure TFullyAutomaticBeautifier.GetDefaultIndent(const Source: string;
+  CleanPos: integer; NewNestedComments: boolean; out
+  Indent: TFABIndentationPolicy);
+// return indent of last non empty line
+begin
+  Indent.Indent:=0;
+  Indent.IndentValid:=false;
+  // go to start of line
+  while (CleanPos>1) and (not (Source[CleanPos-1] in [#10,#13])) do
+    dec(CleanPos);
+  if CleanPos=1 then begin
+    // only empty lines in front
+    exit;
+  end;
+  // skip line end
+  dec(CleanPos);
+  if (CleanPos>1) and (Source[CleanPos-1] in [#10,#13])
+  and (Source[CleanPos]<>Source[CleanPos-1]) then
+    dec(CleanPos);
+
 end;
 
 { TFABPolicies }
@@ -952,6 +983,7 @@ var
   i: Integer;
   OldLength: Integer;
 begin
+  DebugLn(['TFABPolicies.AddIndent Typ=',FABBlockTypeNames[Typ],' SubType=',FABBlockTypeNames[SubType]]);
   OldLength:=length(Indentations);
   i:=OldLength-1;
   while (i>=0) and (Indentations[i].Indent<>Indent) do dec(i);
@@ -968,7 +1000,7 @@ begin
     Indentations[i].Indent:=Indent;
   end;
   Include(Indentations[i].Types[Typ],SubType);
-  Include(Indentations[i].AllTypes,SubType);
+  Include(Indentations[i].AllTypes,Typ);
   //for i:=0 to length(Indentations)-1 do DebugLn(['TFABPolicies.AddIndent i=',i,' indent=',Indentations[i].Indent]);
 end;
 

@@ -56,7 +56,7 @@ begin
         Defines.Add(ParamStrUTF8(p));
     end else begin
       Filename:=ExpandFileNameUTF8('testscompleteblock/procedurebegin1.inc');
-      X:=3;
+      X:=1;
       Y:=4;
       Defines.Add('procedurebegin');
     end;
