@@ -43,9 +43,15 @@ uses
   Classes, SysUtils, SynEditMiscClasses, SynEditTextBase, SynEditPointClasses;
 
 type
+
+  TSynBeautifierDesiredIndentNeededEvent =
+    procedure(Sender: TObject; PhysCaret: TPoint; var Indent, BasedLine: Integer) of object;
+
   { TSynCustomBeautifier }
 
   TSynCustomBeautifier = class(TComponent)
+  private
+    FOnDesiredIndentNeeded: TSynBeautifierDesiredIndentNeededEvent;
   public
     function CanUnindent(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                          const ACaret: TSynEditCaret): Boolean; virtual; abstract;
@@ -60,6 +66,8 @@ type
     function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
                               const ACaret: TSynEditCaret;
                               out DesiredIndent: String): Integer; virtual; abstract;
+    property OnDesiredIndentNeeded: TSynBeautifierDesiredIndentNeededEvent
+      read FOnDesiredIndentNeeded write FOnDesiredIndentNeeded;
   end;
 
   TSynBeautifierIndentType = (sbitSpace, sbitCopySpaceTab, sbitPositionCaret);
@@ -170,8 +178,9 @@ function TSynBeautifier.GetDesiredIndentForLine(Editor: TSynEditBase;
   const Lines: TSynEditStrings; const ACaret: TSynEditCaret; out
   DesiredIndent: String): Integer;
 var
-  BackCounter: Integer;
+  BackCounter, PhysLen: Integer;
   Temp: string;
+  FoundLine: LongInt;
 begin
   Result := 0;
   BackCounter := ACaret.LinePos - 1;
@@ -182,10 +191,27 @@ begin
       Result := GetCurrentIndent(Editor, Temp, True) + 1;
     until (BackCounter = 0) or (Temp <> '');
 
+  FoundLine := BackCounter + 1;
+  if assigned(OnDesiredIndentNeeded) then
+    OnDesiredIndentNeeded(Editor, ACaret.LineCharPos, Result, FoundLine);
+
+  if Result < 0 then exit;
+
+  if FoundLine > 0 then
+    Temp := Lines[FoundLine-1]
+  else
+    FoundLine := BackCounter + 1;
+  Temp := copy(Temp, 1, GetCurrentIndent(Editor, Temp, False));
+
   case FIndentType of
     sbitCopySpaceTab:
-      DesiredIndent := copy(Temp, 1,
-          TSynEdit(Editor).PhysicalToLogicalCol(Temp, BackCounter, Result) - 1);
+      begin
+        DesiredIndent := copy(Temp, 1,
+          TSynEdit(Editor).PhysicalToLogicalCol(Temp, FoundLine - 1, Result) - 1);
+        PhysLen := TSynEdit(Editor).LogicalToPhysicalCol(Temp, ACaret.LinePos - 1, Length(Temp) + 1);
+        if PhysLen < Result then
+          DesiredIndent := DesiredIndent + StringOfChar(' ', Result - PhysLen);
+      end;
     else
       DesiredIndent := StringOfChar(' ', Result - 1);
   end;
