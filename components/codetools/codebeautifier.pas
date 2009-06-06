@@ -914,8 +914,8 @@ begin
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies);
     if Stack.Top<0 then begin
       // no context
-
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      GetDefaultIndent(Source,CleanPos,NewNestedComments,Indent);
       exit;
     end;
 
@@ -949,16 +949,30 @@ begin
   // go to start of line
   while (CleanPos>1) and (not (Source[CleanPos-1] in [#10,#13])) do
     dec(CleanPos);
-  if CleanPos=1 then begin
-    // only empty lines in front
-    exit;
-  end;
-  // skip line end
-  dec(CleanPos);
-  if (CleanPos>1) and (Source[CleanPos-1] in [#10,#13])
-  and (Source[CleanPos]<>Source[CleanPos-1]) then
+  while CleanPos>1 do begin
+    // skip line end
     dec(CleanPos);
-
+    if (CleanPos>1) and (Source[CleanPos-1] in [#10,#13])
+    and (Source[CleanPos]<>Source[CleanPos-1]) then
+      dec(CleanPos);
+    // read line
+    while (CleanPos>1) do begin
+      case Source[CleanPos-1] of
+      ' ',#9: dec(CleanPos);
+      #10,#13:
+        begin
+          // empty line
+          break;
+        end;
+      else
+        Indent.Indent:=GetLineIndentWithTabs(Source,CleanPos,DefaultTabWidth);
+        Indent.IndentValid:=true;
+        exit;
+      end;
+      dec(CleanPos);
+    end;
+  end;
+  // only empty lines in front
 end;
 
 { TFABPolicies }
