@@ -31,6 +31,86 @@ begin
   AStream.Position:=OldPosition;
 end;
 
+type
+
+  { THeaderStream }
+
+  THeaderStream = class(TStream)
+  private
+    FSource: TStream;
+    FSourceStart: Int64;
+    FHeadPos: Integer;
+    FHeadPtr: PByte;
+    FHeadSize: Integer;
+  protected
+  public
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    constructor Create(ASource: TStream; AHeader: Pointer; ASize: Integer);
+  end;
+
+{ THeaderStream }
+
+constructor THeaderStream.Create(ASource: TStream; AHeader: Pointer; ASize: Integer);
+begin
+  inherited Create;
+  FSource := ASource;
+  FSourceStart := ASource.Position;
+  FHeadPtr := AHeader;
+  FHeadSize := ASize;
+end;
+
+function THeaderStream.Read(var Buffer; Count: Longint): Longint;
+var
+  len: Integer;
+  buf: PByte;
+begin
+  if Count <= 0 then Exit(0);
+
+  if FHeadPos < FHeadSize
+  then begin
+    len := Min(FHeadSize - FHeadPos, Count);
+    Move(FHeadPtr[FHeadPos], Buffer, len);
+    Dec(Count, len);
+    Inc(FHeadPos, len);
+    if Count = 0 then Exit(len);
+    buf := @Buffer;
+    Inc(buf, len);
+  end
+  else begin
+    len := 0;
+    buf := @Buffer;
+  end;
+  Result := FSource.Read(buf^, Count) + len;
+end;
+
+function THeaderStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+  case Origin of
+    soBeginning: begin
+      Result := Offset;
+    end;
+    soCurrent: begin
+      Result := FHeadPos + Offset;
+      if FHeadPos = FHeadSize
+      then Inc(Result, FSource.Position);
+    end;
+    soEnd: begin
+      Result := FHeadSize + FSource.Size - FSourceStart + Offset;
+    end;
+  end;
+
+  if Result < FHeadSize
+  then begin
+    FHeadPos := Result;
+    FSource.Seek(FSourceStart, soBeginning);
+  end
+  else begin
+    FHeadPos := FHeadSize;
+    FSource.Seek(FSourceStart + Result - FHeadSize, soBeginning);
+  end;
+end;
+
 
 { TBitmap }
 
@@ -41,7 +121,7 @@ end;
 
 procedure TBitmap.LoadFromStream(AStream: TStream; ASize: Cardinal);
 var
-  TempStream: TMemoryStream;
+  S: THeaderStream;
   Header: TBitmapFileHeader;
 begin
   if AStream is TResourceStream then
@@ -50,22 +130,18 @@ begin
 
     Header.bfType := $4d42;
     Header.bfSize := SizeOf(Header) + ASize;
-    Header.bfOffBits := 0; //data imediately follows
+    //Header.bfOffBits := 0; //data imediately follows
     {$IFDEF ENDIAN_BIG}
     swap(Header.bfType);
     swap(Header.bfSize);
-    swap(Header.bfOffBits);
+    //swap(Header.bfOffBits);
     {$ENDIF}
 
-    TempStream := TMemoryStream.Create;
+    S := THeaderStream.Create(AStream, @Header, SizeOf(Header));
     try
-      TempStream.SetSize(Header.bfSize);
-      TempStream.Write(Header, SizeOf(Header));
-      TempStream.CopyFrom(AStream, ASize);
-      TempStream.Position := 0;
-      inherited LoadFromStream(TempStream, Header.bfSize);
+      inherited LoadFromStream(S, Header.bfSize);
     finally
-      TempStream.Free;
+      S.Free;
     end;
   end
   else
