@@ -5768,7 +5768,6 @@ var
   CX: Integer;
   Len: Integer;
   Temp: string;
-  Temp2: string;
   Helper: string;
   bCaretAdjust: Boolean;
   moveBkm: boolean;
@@ -6126,7 +6125,6 @@ begin
             SetSelTextExternal('');
           end;
           Temp := LineText;
-          Temp2 := Temp; //LineText;
 // This is sloppy, but the Right Thing would be to track the column of markers
 // too, so they could be moved depending on whether they are after the caret...
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
