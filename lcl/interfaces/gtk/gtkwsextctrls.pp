@@ -75,6 +75,7 @@ type
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
   end;
 
   { TGtkWSPage }
@@ -345,7 +346,10 @@ begin
   DebugGtkWidgets.MarkCreated(Pointer(AWidget), dbgsName(AWinControl));
   {$ENDIF}
   gtk_notebook_set_scrollable(AWidget, True);
-  gtk_notebook_popup_enable(AWidget);
+
+  if not (nboHidePageListPopup in TCustomNotebook(AWinControl).Options) then
+    gtk_notebook_popup_enable(AWidget);
+
   if TCustomNotebook(AWinControl).PageCount=0 then
     // a gtk notebook needs a page -> add dummy page
     GTKWidgetSet.AddDummyNoteBookPage(AWidget);
@@ -612,6 +616,14 @@ class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
   AShowTabs: boolean);
 begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
+end;
+
+class procedure TGtkWSCustomNotebook.UpdateProperties(const ANotebook: TCustomNotebook);
+begin
+  if (nboHidePageListPopup in ANoteBook.Options) then
+    gtk_notebook_popup_disable(PGtkNotebook(ANoteBook.Handle))
+  else
+    gtk_notebook_popup_enable(PGtkNotebook(ANoteBook.Handle));
 end;
 
 class procedure TGtkWSCustomPanel.SetCallbacks(const AGtkWidget: PGtkWidget;

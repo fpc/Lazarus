@@ -132,7 +132,7 @@ type
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
-  TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
+  TNoteBookOption = (nboShowCloseButtons, nboMultiLine, nboHidePageListPopup);
   TNoteBookOptions = set of TNoteBookOption;
   TNoteBookCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup);
   TNoteBookCapabilities = set of TNoteBookCapability;

@@ -420,8 +420,8 @@ begin
   FOptions:=AValue;
   if nboShowCloseButtons in ChangedOptions then
     UpdateTabProperties;
-  if nboMultiLine in ChangedOptions then
-    TWSCustomNotebookClass(WidgetSetClass).GetCapabilities;
+  if HandleAllocated then
+    TWSCustomNotebookClass(WidgetSetClass).UpdateProperties(Self);
 end;
 
 {------------------------------------------------------------------------------
