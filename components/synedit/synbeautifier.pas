@@ -45,7 +45,8 @@ uses
 type
 
   TSynBeautifierGetIndentEvent =
-    procedure(Sender: TObject; LogCaret: TPoint; Line: Integer; var Indent, BasedLine: Integer) of object;
+    procedure(Sender: TObject; LogCaret: TPoint; Line: Integer;
+              var Indent, BasedLine: Integer; var ReplaceIndent: Boolean) of object;
 
   { TSynCustomBeautifier }
 
@@ -61,11 +62,13 @@ type
     function IndentLine(const Editor: TSynEditBase;
                         const Lines: TSynEditStrings; const ACaret: TSynEditCaret;
                         out CaretNewX: Integer): Boolean; virtual; abstract;                                      // Todo DelChar are not supprted for undo
-    function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
-                              const ACaret: TSynEditCaret): Integer; virtual; abstract;
-    function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
-                              const ACaret: TSynEditCaret;
-                              out DesiredIndent: String): Integer; virtual; abstract;
+    function GetDesiredIndentForLine
+             (Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret): Integer; virtual; abstract;
+    function GetDesiredIndentForLine
+             (Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret; out ReplaceIndent: Boolean;
+              out DesiredIndent: String): Integer; virtual; abstract;
     property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
       read FOnGetDesiredIndent write FOnGetDesiredIndent;
   end;
@@ -82,16 +85,19 @@ type
                         Physical: boolean): Integer;
     function CanUnindent(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                          const ACaret: TSynEditCaret): Boolean; override;
-    function UnIndentLine(const Editor: TSynEditBase; const Lines: TSynEditStrings;
-                          const ACaret: TSynEditCaret; out CaretNewX: Integer
-                         ): Boolean; override;            // Todo InsChar are not supprted for undo
-    function IndentLine(const Editor: TSynEditBase; const Lines: TSynEditStrings;
-                        const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean; override; // Todo DelChar are not supprted for undo
-    function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
-                                     const ACaret: TSynEditCaret): Integer; override;
-    function GetDesiredIndentForLine(Editor: TSynEditBase; const Lines: TSynEditStrings;
-                                     const ACaret: TSynEditCaret;
-                                     out DesiredIndent: String): Integer; override;
+    function UnIndentLine
+             (const Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean; override;
+    function IndentLine
+             (const Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean; override;
+    function GetDesiredIndentForLine
+             (Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret): Integer; override;
+    function GetDesiredIndentForLine
+             (Editor: TSynEditBase; const Lines: TSynEditStrings;
+              const ACaret: TSynEditCaret; out ReplaceIndent: Boolean;
+              out DesiredIndent: String): Integer; override;
   published
     property IndentType: TSynBeautifierIndentType read FIndentType write FIndentType;
   end;
@@ -161,10 +167,15 @@ function TSynBeautifier.IndentLine(const Editor: TSynEditBase;
 var
   IndentPos: Integer;
   InsChars: String;
+  ReplaceIndent: Boolean;
 begin
-  IndentPos := GetDesiredIndentForLine(Editor, Lines, ACaret, InsChars);
+  IndentPos := GetDesiredIndentForLine(Editor, Lines, ACaret, ReplaceIndent, InsChars);
   if IndentPos < 0 then
     exit(False);
+
+  if ReplaceIndent then
+    Lines.EditDelete(1, ACaret.LinePos,
+                     GetCurrentIndent(Editor, ACaret.LineText, False));
 
   if (FIndentType = sbitPositionCaret) and (ACaret.LineText = '') then
     InsChars := '';
@@ -175,8 +186,8 @@ begin
 end;
 
 function TSynBeautifier.GetDesiredIndentForLine(Editor: TSynEditBase;
-  const Lines: TSynEditStrings; const ACaret: TSynEditCaret; out
-  DesiredIndent: String): Integer;
+  const Lines: TSynEditStrings; const ACaret: TSynEditCaret;
+  out ReplaceIndent: Boolean; out DesiredIndent: String): Integer;
 var
   BackCounter, PhysLen: Integer;
   Temp: string;
@@ -192,8 +203,10 @@ begin
     until (BackCounter = 0) or (Temp <> '');
 
   FoundLine := BackCounter + 1;
+  ReplaceIndent := False;
   if assigned(FOnGetDesiredIndent) then
-    FOnGetDesiredIndent(Editor, ACaret.LineBytePos, ACaret.LinePos, Result, FoundLine);
+    FOnGetDesiredIndent(Editor, ACaret.LineBytePos, ACaret.LinePos, Result,
+                        FoundLine, ReplaceIndent);
 
   if Result < 0 then exit;
 
@@ -221,8 +234,9 @@ function TSynBeautifier.GetDesiredIndentForLine(Editor: TSynEditBase;
   const Lines: TSynEditStrings; const ACaret: TSynEditCaret): Integer;
 var
   Dummy: String;
+  Replace: Boolean;
 begin
-  Result := GetDesiredIndentForLine(Editor, Lines, ACaret, Dummy);
+  Result := GetDesiredIndentForLine(Editor, Lines, ACaret, Replace, Dummy);
 end;
 
 end.
