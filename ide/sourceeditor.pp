@@ -3346,6 +3346,7 @@ begin
     OnClickLink := nil;
     OnMouseLink := nil;
     OnKeyDown := nil;
+    Beautifier.OnGetDesiredIndent := nil;
   end;
   if FEditPlugin<>nil then begin
     FEditPlugin.OnLinesInserted := nil;
