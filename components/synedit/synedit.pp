@@ -414,6 +414,7 @@ type
     fPlugins: TList;
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
+    FInMouseClickEvent: Boolean;
     // event handlers
     fOnChange: TNotifyEvent;
     fOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
@@ -593,7 +594,6 @@ type
       override;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
-    function GetPopupMenu: TPopupMenu; override;
     procedure DblClick; override;
     procedure TripleClick; override;
     procedure QuadClick; override;
@@ -2252,6 +2252,7 @@ var
   IsStartOfCombo: boolean;
   {$ENDIF}
 begin
+  FInMouseClickEvent := False;
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
@@ -2583,6 +2584,7 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  FInMouseClickEvent := True;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     inherited MouseDown(Button, Shift, X, Y);
@@ -2768,7 +2770,7 @@ end;
 
 procedure TCustomSynEdit.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
 begin
-  Handled := True;
+  Handled := FInMouseClickEvent;
 end;
 
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -2777,6 +2779,7 @@ var
   wasDragging : Boolean;
 begin
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
   Exclude(fStateFlags, sfMouseSelecting);
@@ -2811,14 +2814,6 @@ begin
     DecPaintLock;
   end;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-end;
-
-function TCustomSynEdit.GetPopupMenu: TPopupMenu;
-begin
-  Result := nil;
-  if (sfGutterClick in fStateFlags) and FGutter.HasCustomPopupMenu(Result) then
-    exit;
-  Result := inherited GetPopupMenu;
 end;
 
 procedure TCustomSynEdit.Paint;
