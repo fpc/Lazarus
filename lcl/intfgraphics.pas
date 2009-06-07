@@ -5212,9 +5212,22 @@ begin
     GetMaskShiftSize(FDibInfo.PixelMasks.A, FDibInfo.MaskShift.A, FDibInfo.MaskSize.A);
   end
   else begin
-    FDibInfo.PixelMasks.A := 0;
-    FDibInfo.MaskShift.A := 0;
-    FDibInfo.MaskSize.A := 0;
+    // officially no alpha support, but that breaks older LCL compatebility
+    // so add it
+    if Info.BitCount = 32
+    then begin
+      {$ifdef ENDIAN_BIG}
+      FDibInfo.PixelMasks.A := $000000FF;
+      {$else}
+      FDibInfo.PixelMasks.A := $FF000000;
+      {$endif}
+      GetMaskShiftSize(FDibInfo.PixelMasks.A, FDibInfo.MaskShift.A, FDibInfo.MaskSize.A);
+    end
+    else begin
+      FDibInfo.PixelMasks.A := 0;
+      FDibInfo.MaskShift.A := 0;
+      FDibInfo.MaskSize.A := 0;
+    end;
   end;
 
   if Info.Encoding = lrdeBitfield
@@ -5223,6 +5236,14 @@ begin
     then begin
       // not read yet
       TheStream.Read(FDibInfo.PixelMasks, 3 * SizeOf(FDibInfo.PixelMasks.R));
+      // check if added mask is valid
+      if (Info.PixelMasks.R or Info.PixelMasks.G or Info.PixelMasks.B) and Info.PixelMasks.A <> 0
+      then begin
+        // Alpha mask overlaps others
+        FDibInfo.PixelMasks.A := 0;
+        FDibInfo.MaskShift.A := 0;
+        FDibInfo.MaskSize.A := 0;
+      end;
     end;
     GetMaskShiftSize(FDibInfo.PixelMasks.R, FDibInfo.MaskShift.R, FDibInfo.MaskSize.R);
     GetMaskShiftSize(FDibInfo.PixelMasks.G, FDibInfo.MaskShift.G, FDibInfo.MaskSize.G);
