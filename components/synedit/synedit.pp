@@ -342,11 +342,6 @@ type
     fInserting: Boolean;
     {$IFDEF SYN_LAZARUS}
     fLastMouseCaret: TPoint;  // physical (screen)
-    fLastControlIsPressed: boolean;
-    fLastCtrlMouseLinkY: integer;
-{TODO: MFR move to markup}
-    fLastCtrlMouseLinkX1: integer; // logical (byte)
-    fLastCtrlMouseLinkX2: integer; // logical (byte)
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     FBeautifier: TSynCustomBeautifier;
@@ -579,8 +574,6 @@ type
     procedure UndoRedoAdded(Sender: TObject);
     procedure UnlockUndo;
     procedure UpdateCaret;
-    procedure UpdateCtrlMouse;
-    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
     procedure UpdateScrollBars;
   protected
     procedure CreateHandle; override;
@@ -1674,8 +1667,6 @@ begin
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
   fLastMouseCaret := Point(-1,-1);
-  fLastCtrlMouseLinkY := -1;
-  fLastControlIsPressed := false;
   fBlockIndent := 2;
 {$ELSE}
   Color := clWindow;
@@ -2258,8 +2249,8 @@ begin
   {$ENDIF}
   inherited;
   {$IFDEF SYN_LAZARUS}
-  if fLastControlIsPressed <> IsCtrlMouseShiftState(GetKeyShiftState) then
-    UpdateCtrlMouse;
+  if assigned(fMarkupCtrlMouse) then
+    fMarkupCtrlMouse.UpdateCtrlState;
   {$ENDIF}
   Data := nil;
   C := #0;
@@ -2296,8 +2287,8 @@ begin
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift]);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
-  if fLastControlIsPressed<>IsCtrlMouseShiftState(GetKeyShiftState) then
-    UpdateCtrlMouse;
+  if assigned(fMarkupCtrlMouse) then
+    fMarkupCtrlMouse.UpdateCtrlState;
 end;
 
 {$ENDIF}
@@ -2634,7 +2625,9 @@ begin
   if (X >= fGutterWidth) and (X < ClientWidth - ScrollBarWidth)
     and (Y >= 0) and (Y < ClientHeight - ScrollBarWidth)
   then begin
-    if (Cursor <> crHandPoint) or not IsCtrlMouseShiftState(Shift) then
+    if (Cursor <> crHandPoint) or
+       not(assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsCtrlMouseShiftState(GetKeyShiftState))
+    then
       Cursor := crIBeam;
   end
   else
@@ -3578,28 +3571,6 @@ var
     CurLine:=-1;
   end;
 
-  procedure CalculateCtrlMouseLink;
-  begin
-    fLastCtrlMouseLinkY:=-1;
-    fMarkupCtrlMouse.CtrlMouseLine:=-1;
-    if (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
-    or (not fLastControlIsPressed) then
-      exit;
-    GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),
-                          fLastCtrlMouseLinkX1,fLastCtrlMouseLinkX2);
-    if
-      not IsLinkable(
-        fLastMouseCaret.Y, fLastCtrlMouseLinkX1, fLastCtrlMouseLinkX2)
-    then
-      exit;
-    fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
-    with fMarkupCtrlMouse do begin
-      CtrlMouseLine := fLastCtrlMouseLinkY;
-      CtrlMouseX1 := fLastCtrlMouseLinkX1;
-      CtrlMouseX2 := fLastCtrlMouseLinkX2;
-    end;
-  end;
-
 { end local procedures }
 
 var
@@ -3645,7 +3616,6 @@ begin
   DrawLeft := AClip.Left;
 
   if (LastLine >= FirstLine) then begin
-    CalculateCtrlMouseLink;
     // Paint the visible text lines. To make this easier, compute first the
     // necessary information about the selected area: is there any visible
     // selected area, and what are its lines / columns?
@@ -5104,55 +5074,6 @@ begin
   InvalidateGutter;
 end;
 
-procedure TCustomSynEdit.UpdateCtrlMouse;
-
-  procedure doNotShowLink;
-  begin
-    if fLastCtrlMouseLinkY>0 then begin
-      Invalidate;
-      Cursor := crIBeam;
-    end;
-  end;
-
-var
-  NewY, NewX1, NewX2: Integer;
-begin
-  fLastControlIsPressed:=IsCtrlMouseShiftState(GetKeyShiftState);
-  if fLastControlIsPressed and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
-    // show link
-    NewY:=fLastMouseCaret.Y;
-    GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),NewX1,NewX2);
-    if IsLinkable(NewY, NewX1, NewX2) then begin
-      // there is a word to underline as link
-      if (NewY<>fLastCtrlMouseLinkY)
-      or (NewX1<>fLastCtrlMouseLinkX1)
-      or (NewX2<>fLastCtrlMouseLinkX2)
-      then begin
-        Invalidate;
-        Cursor := crHandPoint;
-      end;
-    end else
-      doNotShowLink // there is no link
-  end else
-    doNotShowLink;
-end;
-
-function TCustomSynEdit.IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
-var
-  act: TSynEditMouseAction;
-  i: Integer;
-begin
-  Result := False;
-  // todo: check FMouseSelActions if over selection?
-  for i := 0 to FMouseActions.Count - 1 do begin
-    act := FMouseActions.Items[i];
-    if (act.Command = emcMouseLink) and (act.Option = emcoMouseLinkShow) and
-       act.IsMatchingShiftState(AShift)
-    then
-      exit(True);
-  end;
-end;
-
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then begin
@@ -5672,7 +5593,8 @@ procedure TCustomSynEdit.SetLastMouseCaret(const AValue: TPoint);
 begin
   if (FLastMouseCaret.X=AValue.X) and (FLastMouseCaret.Y=AValue.Y) then exit;
   FLastMouseCaret:=AValue;
-  UpdateCtrlMouse;
+  if assigned(fMarkupCtrlMouse) then
+    fMarkupCtrlMouse.LastMouseCaret := AValue;
 end;
 {$ENDIF}
 
@@ -7324,7 +7246,8 @@ begin
           if FMouseActions[i].Command = emcMouseLink then
             FMouseActions.Delete(i);
       end;
-      UpdateCtrlMouse;
+      if assigned(fMarkupCtrlMouse) then
+        fMarkupCtrlMouse.UpdateCtrlMouse;
     end;
     // eoDragDropEditing
     if (eoDragDropEditing in ChangedOptions) then begin

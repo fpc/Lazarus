@@ -26,7 +26,8 @@ unit SynEditMarkupCtrlMouseLink;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls, LCLProc;
+  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
+  SynEditMouseCmds, Controls, LCLProc;
 
 type
 
@@ -38,6 +39,16 @@ type
     FCtrlMouseX1: Integer;
     FCtrlMouseX2: Integer;
     FCurX1, FCurX2: Integer;
+
+    FLastControlIsPressed: boolean;
+    FLastMouseCaret: TPoint;
+    procedure SetLastMouseCaret(const AValue: TPoint);
+
+  public
+    procedure UpdateCtrlState;
+    procedure UpdateCtrlMouse;
+    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+    property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
   public
     constructor Create(ASynEdit: TCustomControl);
 
@@ -56,9 +67,76 @@ uses SynEdit;
 
 { TSynEditMarkupCtrlMouseLink }
 
+procedure TSynEditMarkupCtrlMouseLink.SetLastMouseCaret(const AValue: TPoint);
+begin
+  if (FLastMouseCaret.X = AValue.X) and (FLastMouseCaret.Y = AValue.Y) then exit;
+  FLastMouseCaret := AValue;
+  UpdateCtrlMouse;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlState;
+begin
+  if FLastControlIsPressed <> IsCtrlMouseShiftState(GetKeyShiftState) then
+    UpdateCtrlMouse;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
+
+  procedure doNotShowLink;
+  begin
+    if CtrlMouseLine > 0 then
+      TSynEdit(SynEdit).Invalidate;
+    TSynEdit(SynEdit).Cursor := crIBeam;
+    CtrlMouseLine:=-1;
+  end;
+
+var
+  NewY, NewX1, NewX2: Integer;
+begin
+  FLastControlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState);
+  if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
+    // show link
+    NewY := LastMouseCaret.Y;
+    TSynEdit(SynEdit).GetWordBoundsAtRowCol(TSynEdit(SynEdit).PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
+    if TSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2) then begin
+      // there is a word to underline as link
+      if (NewY <> CtrlMouseLine)
+      or (NewX1 <> CtrlMouseX1)
+      or (NewX2 <> CtrlMouseX2)
+      then begin
+        CtrlMouseLine := fLastMouseCaret.Y;
+        CtrlMouseX1 := NewX1;
+        CtrlMouseX2 := NewX2;
+        TSynEdit(SynEdit).Invalidate;
+        TSynEdit(SynEdit).Cursor := crHandPoint;
+      end;
+    end
+    else
+      doNotShowLink // there is no link
+  end else
+    doNotShowLink;
+end;
+
+function TSynEditMarkupCtrlMouseLink.IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+var
+  act: TSynEditMouseAction;
+  i: Integer;
+begin
+  Result := False;
+  // todo: check FMouseSelActions if over selection?
+  for i := 0 to TSynEdit(SynEdit).MouseActions.Count - 1 do begin
+    act := TSynEdit(SynEdit).MouseActions.Items[i];
+    if (act.Command = emcMouseLink) and (act.Option = emcoMouseLinkShow) and
+       act.IsMatchingShiftState(AShift)
+    then
+      exit(True);
+  end;
+end;
+
 constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit: TCustomControl);
 begin
   inherited Create(ASynEdit);
+  FLastControlIsPressed := false;
   FCtrlMouseLine:=-1;
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
