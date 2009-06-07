@@ -2087,6 +2087,7 @@ var
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
+  TheKey: Integer;
   AChar: Char;
   AKeyEvent: QKeyEventH;
 begin
@@ -2116,6 +2117,22 @@ begin
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
+
+  {$note this is workaround for Qt bug which reports
+   wrong keys with Shift+Ctrl pressed. Fixes #13450.
+   LAST REVISION: Qt-4.5.2 git snapshot 20090607. zeljko}
+  if (Modifiers = QtShiftModifier or QtControlModifier) then
+  begin
+    TheKey := QKeyEvent_key(QKeyEventH(Event));
+    if (length(Text) = 1) and (TheKey in [33..41,61]) then
+    begin
+      if TheKey = 61 then
+        TheKey := 32;
+      ACharCode := QtKeyToLCLKey( TheKey + 16, Text);
+      KeyMsg.CharCode := ACharCode;
+      Text := '';
+    end;
+  end;
 
   // Translates a Qt4 Key to a LCL VK_* key
   if KeyMsg.CharCode = 0 then
