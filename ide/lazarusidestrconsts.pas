@@ -1132,7 +1132,6 @@ resourcestring
   lisLazarusForm = 'Lazarus form';
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
-  dlgAltSetClMode = 'Alt-Key sets column mode';
 
   dlgUndoGroupOptions = 'Undo / Redo:';
   dlgScrollGroupOptions = 'Scrolling:';

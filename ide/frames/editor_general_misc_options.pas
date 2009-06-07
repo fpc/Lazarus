@@ -64,8 +64,6 @@ begin
   EditorOptionsGroupBox.Caption := lismenueditoroptions;
   with EditorOptionsGroupBox do
   begin
-    // selections
-    Items.Add(dlgAltSetClMode);
     // visual effects
     Items.Add(dlgShowGutterHints);
     Items.Add(lisShowSpecialCharacters);
@@ -90,7 +88,6 @@ begin
   begin
     with EditorOptionsGroupBox do
     begin
-      Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in SynEditOptions;
       Checked[Items.IndexOf(lisShowSpecialCharacters)] := eoShowSpecialChars in SynEditOptions;
       Checked[Items.IndexOf(dlgTrimTrailingSpaces)] := eoTrimTrailingSpaces in SynEditOptions;
       Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := ShowTabCloseButtons;
@@ -123,7 +120,6 @@ procedure TEditorGeneralMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpt
 begin
   with AOptions as TEditorOptions do
   begin
-    UpdateOption(dlgAltSetClMode, eoAltSetsColumnMode);
     UpdateOption(lisShowSpecialCharacters, eoShowSpecialChars);
     UpdateOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
     ShowTabCloseButtons := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCloseButtonsNotebook);
@@ -163,7 +159,6 @@ procedure TEditorGeneralMiscOptionsFrame.EditorOptionsGroupBoxItemClick(
   end;
 
 begin
-  SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
   SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
 end;

@@ -185,7 +185,8 @@ type
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (
-    eoAltSetsColumnMode,       // Holding down the Alt Key will put the selection mode into columnar format
+    eoAltSetsColumnMode,       // DEPRECATED, now controlled vie MouseActions
+                               // Holding down the Alt Key will put the selection mode into columnar format
     eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
     eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
@@ -199,7 +200,7 @@ type
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     eoNoCaret,                 // Makes it so the caret is never visible
     eoNoSelection,             // Disables selecting text
-    eoRightMouseMovesCursor,   // Deprecated
+    eoRightMouseMovesCursor,   // Deprecated, now controlled vie MouseActions
                                // When clicking with the right mouse for a popup menu, move the cursor to that location
     eoScrollByOneLess,         // Forces scrolling to be one less
     eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
@@ -239,7 +240,6 @@ type
 const
   SYNEDIT_DEFAULT_OPTIONS = [
     eoAutoIndent,
-    eoDragDropEditing,
     eoScrollPastEol,
     eoShowScrollHint,
     eoSmartTabs,
@@ -7315,7 +7315,11 @@ begin
       FBlockSelection.Enabled := eoNoSelection in fOptions;
     fUndoList.GroupUndo := eoGroupUndo in fOptions;
 
-    // Deal with deprecated values
+    (* Deal with deprecated values
+       Those are all controlled by mouse-actions.
+       As long as the default mouse actions are set, the below will act as normal
+    *)
+    // eoShowCtrlMouseLinks
     if (eoShowCtrlMouseLinks in ChangedOptions) then begin
       if (eoShowCtrlMouseLinks in fOptions) then begin
         try
@@ -7361,6 +7365,20 @@ begin
           then FMouseActions[i].Command := emcSelectLine
           else FMouseActions[i].Command := emcSelectWord;
         end
+    end;
+    // eoAltSetsColumnMode
+    if (eoAltSetsColumnMode in ChangedOptions) then begin
+      if (eoAltSetsColumnMode in fOptions) then begin
+        try
+          FMouseActions.AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+          FMouseActions.AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
+        except
+        end;
+      end else begin
+        for i := FMouseActions.Count-1 downto 0 do
+          if FMouseActions[i].Command = emcStartColumnSelections then
+            FMouseActions.Delete(i);
+      end;
     end;
 
   end;
