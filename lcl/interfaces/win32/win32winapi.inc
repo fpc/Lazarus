@@ -2313,10 +2313,10 @@ var
     end;
 
 begin
-  WP.length := SizeOf(WP);
-  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
-  if (WP.showCmd=SW_MAXIMIZE) then begin
-    // if the form is maximized, you can't use the normal size
+  // if it is a top level window then you can't use the normal size:
+  // maximized or aero snap windows will have problems
+  if GetParent(Handle) = 0 then
+  begin
     Result := Boolean(Windows.GetWindowRect(Handle,@R));
     with R Do
     begin
@@ -2325,14 +2325,17 @@ begin
     end;
   end
   else
+  begin
+    WP.length := SizeOf(WP);
+    Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
     with WP.rcNormalPosition do
     begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
-  WindowInfo := GetWindowInfo(Handle);
+  end;
 
-  //debugln('TWin32WidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
+  WindowInfo := GetWindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
   Style := GetWindowLong(Handle, GWL_STYLE);
