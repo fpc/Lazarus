@@ -1959,6 +1959,46 @@ end;
 {$ENDIF}
 
 procedure TSynPasSyn.BraceOpenProc;
+  function ScanRegion: Boolean;
+  var
+    Txt: String;
+    Idx, NestBrace, i, l: Integer;
+    InString: Boolean;
+  begin
+    Result := False;
+    Txt := copy(fLine, Run, length(fLine));
+    Idx := LineIndex;
+    InString := False;
+    NestBrace := 0;
+    while true do begin
+      i := 1;
+      l := length(Txt);
+      while i <= l do begin
+        case Txt[i] of
+          '{' : inc(NestBrace);
+          '}' : if NestBrace = 0
+                then exit
+                else dec(NestBrace);
+          '''' : if (i+1 <= l) and (Txt[i+1] = '''')
+                 then inc(i)
+                 else InString := not InString;
+          '-', '/' : If (not InString) and (i+4 <= l) and
+                        ((i=1) or (Txt[i-1] in [' ', #9, #10, #13])) and
+                        (AnsiStrComp(PChar(copy(Txt, i+1, 4)), PChar('fold')) = 0)
+                        and ((i+4 = l) or (Txt[i+5] in [' ', #9, #10, #13, '}']))
+                     then
+                       exit(True);
+        end;
+        inc(i);
+      end;
+      inc(Idx);
+      if Idx < CurrentLines.Count then
+        Txt := CurrentLines[Idx]
+      else
+        break;
+    end;
+  end;
+
 begin
   if (Run < fLineLen-1) and (fLine[Run+1] = '$') then begin
     // compiler directive
@@ -1974,8 +2014,15 @@ begin
       EndCustomCodeFoldBlock(cfbtIfDef);
       StartCustomCodeFoldBlock(cfbtIfDef);
     end
-    else if KeyComp('region') then
-      StartCustomCodeFoldBlock(cfbtRegion)
+    else if KeyComp('region') then begin
+      StartCustomCodeFoldBlock(cfbtRegion);
+      if FCatchNodeInfo then begin
+        // Scan ahead
+        if ScanRegion and (FNodeInfoCount > 0) then
+          FNodeInfoList[FNodeInfoCount-1].FoldAction :=
+            FNodeInfoList[FNodeInfoCount-1].FoldAction + [sfaDefaultCollapsed];
+      end;
+    end
     else if KeyComp('endregion') then
       EndCustomCodeFoldBlock(cfbtRegion);
     DirectiveProc;

@@ -288,6 +288,7 @@ type
     function LogicalPosToNodeIndex(AStartIndex: Integer; LogX: Integer;         (* Returns the index of the node, at the logical char pos *)
                                    Previous: Boolean = False): Integer;
 
+    procedure CollapseDefaultFolds;
 
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
@@ -1862,6 +1863,37 @@ begin
     inc(i);
   end;
   Result := i;
+end;
+
+procedure TSynEditFoldedView.CollapseDefaultFolds;
+var
+  i, j, c: Integer;
+  hl: TSynCustomFoldHighlighter;
+  nd: TSynFoldNodeInfo;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+
+  i := 0;
+  while i < fLines.Count do begin
+     // Todo: Highlighter should return a list of typpes that can return default folded
+     // Currently PascalHl Type 2 = Region
+    c := hl.FoldOpenCount(i, 2);
+    if c > 0 then begin
+      c := hl.FoldNodeInfoCount[i];
+      j := 0;
+      while j < c do begin
+        nd := hl.FoldNodeInfo[i, j];
+        if (sfaDefaultCollapsed in nd.FoldAction) and
+           (not IsFoldedAtTextIndex(i, j))
+        then
+          fFoldTree.InsertNewFold(i+2, j, LengthForFoldAtTextIndex(i, j));
+      inc(j);
+      end;
+    end;
+    inc(i);
+  end;
 end;
 
 procedure TSynEditFoldedView.FoldAtTextIndex(AStartIndex : Integer;

@@ -6958,6 +6958,7 @@ begin
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+  NewSrcEdit.EditorComponent.AfterLoadFromFile;
   NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
   NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
   NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;

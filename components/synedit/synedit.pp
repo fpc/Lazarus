@@ -719,6 +719,7 @@ type
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
+    procedure AfterLoadFromFile;
     procedure BeginUndoBlock(aList: TSynEditUndoList = nil);
     procedure BeginUpdate;
     function CaretXPix: Integer;
@@ -6614,6 +6615,12 @@ begin
   Key.Shift := SS1;
   Key.Key2 := Key2;
   Key.Shift2 := SS2;
+end;
+
+procedure TCustomSynEdit.AfterLoadFromFile;
+begin
+  if assigned(FFoldedLinesView) then
+    FFoldedLinesView.CollapseDefaultFolds;
 end;
 
 { Called by FMarkList if change }

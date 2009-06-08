@@ -102,7 +102,8 @@ type
                     sfaClose,   // At this node a fold ends
                     sfaMarkup,  // This node can be highlighted, by the matching Word-Pair Markup
                     sfaFold,    // Part of a foldable block
-                    sfaInvalid  // Wrong Index
+                    sfaInvalid, // Wrong Index
+                    sfaDefaultCollapsed
                    );
   TSynFoldActions = set of TSynFoldAction;
 
