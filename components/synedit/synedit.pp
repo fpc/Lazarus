@@ -108,7 +108,7 @@ const
   {$DEFINE SynDefaultFont}
   {$ENDIF}
   {$IFNDEF SynDefaultFont}
-  SynDefaultFontName = 'courier';
+  SynDefaultFontName = 'Courier New';
   SynDefaultFontHeight = 12;
   {$ENDIF}
   SynDefaultFontPitch = fpFixed;
