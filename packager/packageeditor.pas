@@ -1273,7 +1273,7 @@ procedure TPackageEditorForm.SetupComponents;
   begin
     Result := TToolButton.Create(Self);
     Result.Style := tbsDivider;
-    Result.Width := 3;
+    Result.AutoSize := True;
     Result.Parent := ToolBar;
   end;
 

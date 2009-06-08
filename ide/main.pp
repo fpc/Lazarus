@@ -1641,7 +1641,7 @@ procedure TMainIDE.SetupSpeedButtons;
     with Result do
     begin
       Style := tbsDivider;
-      Width := 3;
+      AutoSize := True;
       Parent := AToolBar;
     end;
   end;
