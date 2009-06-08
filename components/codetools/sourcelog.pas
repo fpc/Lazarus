@@ -627,7 +627,7 @@ procedure TSourceLog.AbsoluteToLineCol(Position: integer;
 var l,r,m:integer;
 begin
   BuildLineRanges;
-  if (FLineCount=0) or (Position<1) or (Position>=fSrcLen) then begin
+  if (FLineCount=0) or (Position<1) or (Position>fSrcLen+1) then begin
     Line:=-1;
     Column:=-1;
     exit;
