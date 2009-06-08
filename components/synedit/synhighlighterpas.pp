@@ -322,6 +322,7 @@ type
     function Func86: TtkTokenKind;
     function Func87: TtkTokenKind;
     function Func88: TtkTokenKind;
+    function Func89: TtkTokenKind;
     function Func91: TtkTokenKind;
     function Func92: TtkTokenKind;
     function Func94: TtkTokenKind;
@@ -657,6 +658,7 @@ begin
   fIdentFuncTable[86] := @Func86;
   fIdentFuncTable[87] := @Func87;
   fIdentFuncTable[88] := @Func88;
+  fIdentFuncTable[89] := @Func89;
   fIdentFuncTable[91] := @Func91;
   fIdentFuncTable[92] := @Func92;
   fIdentFuncTable[94] := @Func94;
@@ -1359,6 +1361,91 @@ begin
     Result := tkKey;
   end
   else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func89: TtkTokenKind;
+  function ScanForClassSection: Boolean;
+  var
+    Txt: String;
+    NestBrace1, NestBrace2: Integer;
+    i, l, Idx: Integer;
+  begin
+    Result := False;
+    Txt := copy(fLine, Run + 7, length(fLine));
+    Idx := LineIndex;
+    NestBrace1 := 0;
+    NestBrace2 := 0;
+    while true do begin
+      i := 1;
+      l := length(Txt);
+      while i <= l do begin
+        case Txt[i] of
+          '{' : if (NestBrace2 = 0) and (NestedComments or (NestBrace1 = 0)) then
+                  inc(NestBrace1);
+          '}' : if (NestBrace2 = 0) then
+                  if NestBrace1 > 0
+                  then dec(NestBrace1)
+                  else exit;
+          '(' : if (NestBrace1 = 0) then
+                  if (i+1 > l) or (Txt[i+1] <> '*')
+                    then exit
+                    else
+                    if NestedComments or (NestBrace2 = 0) then begin
+                      inc(NestBrace2);
+                      inc(i);
+                    end;
+          '*' : if (NestBrace1 = 0) then
+                  if  (i+1 <= l) and (Txt[i+1] = ')') and (NestBrace2 > 0)
+                    then begin
+                      dec(NestBrace2);
+                      inc(i);
+                    end
+                    else
+                    if NestBrace2 = 0 then
+                      exit;
+          '/' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
+                  if  (i+1 <= l) and (Txt[i+1] = '/')
+                    then i := l
+                    else exit;
+                end;
+          #1..#32: {do nothing};
+          'p', 'P' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
+                       if ( (i+6 <= l) and
+                            ((i+6 = l) or (Txt[i+7] in [#1..#32])) and
+                            (AnsiStrComp(PChar(copy(Txt, i+1, 6)), PChar('rivate')) = 0) )
+                       or ( (i+8 <= l) and
+                            ((i+8 = l) or (Txt[i+9] in [#1..#32])) and
+                            (AnsiStrComp(PChar(copy(Txt, i+1, 8)), PChar('rotected')) = 0) )
+                        then
+                          exit(True)
+                        else
+                          exit;
+                     end;
+          else
+             If (NestBrace1 = 0) and (NestBrace2 = 0) then
+              exit;
+        end;
+        inc(i);
+      end;
+      inc(Idx);
+      if Idx < CurrentLines.Count then
+        Txt := CurrentLines[Idx]
+      else
+        break;
+    end;
+  end;
+
+begin
+  Result := tkIdentifier;
+  // Structural Scan / Quick
+  if FIsInNextToEOL and not FCatchNodeInfo then
+    exit;
+  // Scanning for display / Look ahead
+  if KeyComp('strict') then begin
+    if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
+      if ScanForClassSection then
+        Result := tkKey;
+  end;
 end;
 
 function TSynPasSyn.Func91: TtkTokenKind;

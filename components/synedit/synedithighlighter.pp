@@ -214,6 +214,7 @@ type
     FAttributeChangeNeedScan: Boolean;
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
+    FIsInNextToEOL: Boolean;
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
@@ -1128,7 +1129,9 @@ end;
 
 procedure TSynCustomHighlighter.NextToEol;
 begin
+  FIsInNextToEOL := True;
   while not GetEol do Next;
+  FIsInNextToEOL := False;
 end;
 
 procedure TSynCustomHighlighter.ContinueNextLine;
@@ -1155,6 +1158,7 @@ end;
 
 procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin
+  FIsInNextToEOL := False;
 end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
