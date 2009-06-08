@@ -3683,14 +3683,20 @@ function TRegExpr.GetLinePairedSeparator : RegExprString;
 function TRegExpr.Substitute (const ATemplate : RegExprString) : RegExprString;
 // perform substitutions after a regexp match
 // completely rewritten in 0.929
- var
+type
+  TSubstMode = (smodeNormal, smodeOneUpper, smodeOneLower, smodeAllUpper,
+                smodeAllLower);
+var
   TemplateLen : integer;
   TemplateBeg, TemplateEnd : PRegExprChar;
-  p, p0, ResultPtr : PRegExprChar;
+  p, p0, p1, ResultPtr : PRegExprChar;
   ResultLen : integer;
   n : integer;
   Ch : REChar;
- function ParseVarName (var APtr : PRegExprChar) : integer;
+  Mode: TSubstMode;
+  LineEnd: String = LineEnding;
+
+  function ParseVarName (var APtr : PRegExprChar) : integer;
   // extract name of variable (digits, may be enclosed with
   // curly braces) from APtr^, uses TemplateEnd !!!
   const
@@ -3725,7 +3731,8 @@ function TRegExpr.Substitute (const ATemplate : RegExprString) : RegExprString;
     then Result := -1; // no valid digits found or no right curly brace
    APtr := p;
   end;
- begin
+
+begin
   // Check programm and input string
   if not IsProgrammOk
    then EXIT;
@@ -3751,15 +3758,23 @@ function TRegExpr.Substitute (const ATemplate : RegExprString) : RegExprString;
      then n := ParseVarName (p)
      else n := -1;
     if n >= 0 then begin
-       if (n < NSUBEXP) and Assigned (startp [n]) and Assigned (endp [n])
+      if (n < NSUBEXP) and Assigned (startp [n]) and Assigned (endp [n])
         then inc (ResultLen, endp [n] - startp [n]);
+    end
+    else begin
+      if (Ch = EscChar) and (p < TemplateEnd) then begin // quoted or special char followed
+        Ch := p^;
+        inc (p);
+        case Ch of
+          'n' : inc(ResultLen, Length(LineEnding));
+          'u', 'l', 'U', 'L': {nothing};
+          else inc(ResultLen);
+        end;
       end
-     else begin
-       if (Ch = EscChar) and (p < TemplateEnd)
-        then inc (p); // quoted or special char followed
-       inc (ResultLen);
-      end;
-   end;
+      else
+        inc(ResultLen);
+    end;
+  end;
   // Get memory. We do it once and it significant speed up work !
   if ResultLen = 0 then begin
     Result := '';
@@ -3769,31 +3784,85 @@ function TRegExpr.Substitute (const ATemplate : RegExprString) : RegExprString;
   // Fill Result
   ResultPtr := pointer (Result);
   p := TemplateBeg;
+  Mode := smodeNormal;
   while p < TemplateEnd do begin
     Ch := p^;
+    p0 := p;
     inc (p);
+    p1 := p;
     if Ch = '$'
      then n := ParseVarName (p)
      else n := -1;
-    if n >= 0 then begin
-       p0 := startp [n];
-       if (n < NSUBEXP) and Assigned (p0) and Assigned (endp [n]) then
-        while p0 < endp [n] do begin
-          ResultPtr^ := p0^;
-          inc (ResultPtr);
-          inc (p0);
-         end;
-      end
-     else begin
-       if (Ch = EscChar) and (p < TemplateEnd) then begin // quoted or special char followed
-         Ch := p^;
-         inc (p);
+    if (n >= 0) then begin
+      p0 := startp[n];
+      p1 := endp[n];
+      if (n >= NSUBEXP) or not Assigned (p0) or not Assigned (endp [n]) then
+        p1 := p0; // empty
+    end
+    else begin
+      if (Ch = EscChar) and (p < TemplateEnd) then begin // quoted or special char followed
+        Ch := p^;
+        inc (p);
+        case Ch of
+          'n' : begin
+              p0 := @LineEnd;
+              p1 := p0 + Length(LineEnding);
+            end;
+          'l' : begin
+              Mode := smodeOneLower;
+              p1 := p0;
+            end;
+          'L' : begin
+              Mode := smodeAllLower;
+              p1 := p0;
+            end;
+          'u' : begin
+              Mode := smodeOneUpper;
+              p1 := p0;
+            end;
+          'U' : begin
+              Mode := smodeAllUpper;
+              p1 := p0;
+            end;
+          else
+            begin
+              inc(p0);
+              inc(p1);
+            end;
         end;
-       ResultPtr^ := Ch;
-       inc (ResultPtr);
+      end
+    end;
+    if p0 < p1 then begin
+      while p0 < p1 do begin
+        case Mode of
+          smodeOneLower, smodeAllLower:
+            begin
+              Ch := p0^;
+              if Ch < #128 then
+                Ch := AnsiLowerCase(Ch)[1];
+              ResultPtr^ := Ch;
+              if Mode = smodeOneLower then
+                Mode := smodeNormal;
+            end;
+          smodeOneUpper, smodeAllUpper:
+            begin
+              Ch := p0^;
+              if Ch < #128 then
+                Ch := AnsiUpperCase(Ch)[1];
+              ResultPtr^ := Ch;
+              if Mode = smodeOneUpper then
+                Mode := smodeNormal;
+            end;
+          else
+            ResultPtr^ := p0^;
+        end;
+        inc (ResultPtr);
+        inc (p0);
       end;
-   end;
- end; { of function TRegExpr.Substitute
+      Mode := smodeNormal;
+    end;
+  end;
+end; { of function TRegExpr.Substitute
 --------------------------------------------------------------}
 
 procedure TRegExpr.Split (AInputStr : RegExprString; APieces : TStrings);
