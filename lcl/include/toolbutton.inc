@@ -119,15 +119,11 @@ begin
   begin
     DropDownMenuDropped := False;
     //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
-    if (Style = tbsButton) then
-      Down := False;
-    if (Style = tbsDropDown) then
+    if (Style in [tbsButton, tbsDropDown]) then
     begin
       if (FToolBar <> nil) and FMouseInControl and
-          (X > ClientWidth - FToolBar.FDropDownWidth) then
-      begin
+         ((Style = tbsButton) or (X > ClientWidth - FToolBar.FDropDownWidth)) then
         DropDownMenuDropped := CheckMenuDropdown;
-      end;
       Down := False;
     end;
 
