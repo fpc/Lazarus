@@ -9,11 +9,12 @@ object AddToProjectDialog: TAddToProjectDialog
   ClientHeight = 300
   ClientWidth = 500
   OnClose = AddToProjectDialogClose
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Notebook: TNotebook
+    Left = 0
     Height = 300
+    Top = 0
     Width = 500
     Align = alClient
     PageIndex = 0
@@ -33,48 +34,26 @@ object AddToProjectDialog: TAddToProjectDialog
         ParentColor = False
       end
       object AddFileListBox: TListBox
+        AnchorSideBottom.Control = FileButtonPanel
         Left = 6
-        Height = 206
+        Height = 210
         Top = 26
         Width = 480
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
+        ItemHeight = 0
         MultiSelect = True
         TabOrder = 0
       end
-      object AddFileButton: TBitBtn
-        AnchorSideRight.Control = CancelAddFileButton
-        AnchorSideBottom.Control = AddEditorFilePage
-        AnchorSideBottom.Side = asrBottom
-        Left = 262
-        Height = 23
-        Top = 245
-        Width = 93
-        Anchors = [akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'AddFileButton'
-        NumGlyphs = 0
-        OnClick = AddFileButtonClick
+      object FileButtonPanel: TButtonPanel
+        Left = 6
+        Height = 26
+        Top = 242
+        Width = 480
         TabOrder = 1
-      end
-      object CancelAddFileButton: TBitBtn
-        AnchorSideRight.Control = AddEditorFilePage
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = AddEditorFilePage
-        AnchorSideBottom.Side = asrBottom
-        Left = 361
-        Height = 23
-        Top = 245
-        Width = 125
-        Anchors = [akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'CancelAddFileButton'
-        ModalResult = 2
-        NumGlyphs = 0
-        TabOrder = 2
+        ShowButtons = [pbOK, pbCancel]
+        ShowBevel = False
       end
     end
     object NewDependPage: TPage
@@ -135,38 +114,14 @@ object AddToProjectDialog: TAddToProjectDialog
         TabOrder = 2
         Text = 'DependMaxVersionEdit'
       end
-      object NewDependButton: TBitBtn
-        AnchorSideRight.Control = CancelDependButton
-        AnchorSideBottom.Control = NewDependPage
-        AnchorSideBottom.Side = asrBottom
-        Left = 237
-        Height = 23
-        Top = 245
-        Width = 116
-        Anchors = [akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'NewDependButton'
-        NumGlyphs = 0
-        OnClick = NewDependButtonClick
+      object DependButtonPanel: TButtonPanel
+        Left = 6
+        Height = 26
+        Top = 242
+        Width = 480
         TabOrder = 3
-      end
-      object CancelDependButton: TBitBtn
-        AnchorSideRight.Control = NewDependPage
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = NewDependPage
-        AnchorSideBottom.Side = asrBottom
-        Left = 359
-        Height = 23
-        Top = 245
-        Width = 127
-        Anchors = [akRight, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'CancelDependButton'
-        ModalResult = 2
-        NumGlyphs = 0
-        TabOrder = 4
+        ShowButtons = [pbOK, pbCancel]
+        ShowBevel = False
       end
     end
     object AddFilesPage: TPage

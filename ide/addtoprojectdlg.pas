@@ -35,10 +35,9 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, LResources, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, AVL_Tree,
-  IDEWindowIntf,
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem, InputHistory;
+  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, ButtonPanel,
+  AVL_Tree, IDEWindowIntf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
+  EnvironmentOpts, Project, PackageDefs, PackageSystem, InputHistory;
   
 type
   TAddToProjectType = (
@@ -57,6 +56,8 @@ type
   { TAddToProjectDialog }
 
   TAddToProjectDialog = class(TForm)
+    FileButtonPanel: TButtonPanel;
+    DependButtonPanel: TButtonPanel;
     // notebook
     NoteBook: TNoteBook;
     AddEditorFilePage: TPage;
@@ -65,8 +66,6 @@ type
     // add file page
     AddFileLabel: TLabel;
     AddFileListBox: TListBox;
-    AddFileButton: TBitBtn;
-    CancelAddFileButton: TBitBtn;
     // new required package
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
@@ -74,8 +73,6 @@ type
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
     DependMaxVersionEdit: TEdit;
-    NewDependButton: TBitBtn;
-    CancelDependButton: TBitBtn;
     // add files page
     FilesListView: TListView;
     FilesBrowseButton: TButton;
@@ -386,10 +383,11 @@ procedure TAddToProjectDialog.SetupComponents;
 begin
   NoteBook.PageIndex:=0;
 
-  AddFileButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelAddFileButton.LoadGlyphFromLazarusResource('btn_cancel');
-  CancelDependButton.LoadGlyphFromLazarusResource('btn_cancel');
-  NewDependButton.LoadGlyphFromLazarusResource('btn_ok');
+  FileButtonPanel.OKButton.ModalResult := mrNone;
+  FileButtonPanel.OKButton.OnClick := @AddFileButtonClick;
+
+  DependButtonPanel.OKButton.ModalResult := mrNone;
+  DependButtonPanel.OKButton.OnClick := @NewDependButtonClick;
 
   SetupAddEditorFilePage(0);
   SetupAddRequirementPage(1);
@@ -408,8 +406,6 @@ begin
 
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
   DependMaxVersionEdit.Text:='';
-
-  NewDependButton.Caption:=lisLazBuildOk;
 end;
 
 procedure TAddToProjectDialog.SetupAddFilesPage(index: integer);
@@ -444,9 +440,6 @@ begin
   Notebook.Page[index].Caption := lisProjAddEditorFile;
 
   AddFileLabel.Caption:=lisProjAddAddFileToProject;
-
-  AddFileButton.Caption:=lisLazBuildOk;
-  CancelAddFileButton.Caption:=dlgCancel;
 end;
 
 function TAddToProjectDialog.CheckAddingFile(NewFiles: TStringList;
