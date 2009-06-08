@@ -40,10 +40,14 @@ type
     function GetControlTab(AControl: TControl): TTabButton;
   end;
 
-var
-  EasyDockBook: TEasyDockBook;
+//procedure Register;
 
 implementation
+
+procedure Register;
+begin
+  //RegisterComponents('Common Controls', [TEasyDockBook]);
+end;
 
 { TEasyDockBook }
 

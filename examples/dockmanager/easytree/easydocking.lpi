@@ -30,7 +30,7 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="EasyDocking"/>
+        <PackageName Value="EasyDockMgr"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>

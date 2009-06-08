@@ -5,7 +5,7 @@ program EasyDocking;
 {.$APPTYPE CONSOLE}
 
 uses
-  Interfaces,
+  EasyDockMgr, Interfaces,
   Forms,
   fMain in 'fmain.pas' {EasyDockMain},
   fDockable in 'fdockable.pas' {Dockable},
