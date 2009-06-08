@@ -364,6 +364,7 @@ end;
 procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup);
 begin
   fMarkUpList.Add(aMarkUp);
+  aMarkUp.Lines := Lines;;
 end;
 
 function TSynEditMarkupManager.Count: Integer;

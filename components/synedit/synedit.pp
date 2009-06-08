@@ -2627,7 +2627,7 @@ begin
     and (Y >= 0) and (Y < ClientHeight - ScrollBarWidth)
   then begin
     if (Cursor <> crHandPoint) or
-       not(assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsCtrlMouseShiftState(GetKeyShiftState))
+       not(assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink)
     then
       Cursor := crIBeam;
   end

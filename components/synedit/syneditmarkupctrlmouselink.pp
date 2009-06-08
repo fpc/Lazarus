@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
-  SynEditMouseCmds, Controls, LCLProc;
+  SynEditMouseCmds, SynEditTextBase, Controls, LCLProc;
 
 type
 
@@ -38,19 +38,24 @@ type
     FCtrlMouseLine: Integer;
     FCtrlMouseX1: Integer;
     FCtrlMouseX2: Integer;
+    FCtrlLinkable: Boolean;
     FCurX1, FCurX2: Integer;
 
     FLastControlIsPressed: boolean;
     FLastMouseCaret: TPoint;
+    function GetIsMouseOverLink: Boolean;
     procedure SetLastMouseCaret(const AValue: TPoint);
-
+    Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+  protected
+    procedure SetLines(const AValue : TSynEditStrings); override;
   public
     procedure UpdateCtrlState;
     procedure UpdateCtrlMouse;
-    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
   public
     constructor Create(ASynEdit: TCustomControl);
+    destructor Destroy; override;
 
     Procedure EndMarkup; override;
     Procedure PrepareMarkupForRow(aRow: Integer); override;
@@ -60,6 +65,7 @@ type
     property CtrlMouseLine : Integer read FCtrlMouseLine write FCtrlMouseLine;
     property CtrlMouseX1 : Integer read FCtrlMouseX1 write FCtrlMouseX1;
     property CtrlMouseX2 : Integer read FCtrlMouseX2 write FCtrlMouseX2;
+    property IsMouseOverLink: Boolean read GetIsMouseOverLink;
   end;
 
 implementation
@@ -71,6 +77,19 @@ procedure TSynEditMarkupCtrlMouseLink.SetLastMouseCaret(const AValue: TPoint);
 begin
   if (FLastMouseCaret.X = AValue.X) and (FLastMouseCaret.Y = AValue.Y) then exit;
   FLastMouseCaret := AValue;
+  UpdateCtrlMouse;
+end;
+
+function TSynEditMarkupCtrlMouseLink.GetIsMouseOverLink: Boolean;
+begin
+  Result := FCtrlLinkable and (FCtrlMouseLine >= 0);
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
+begin
+  If LastMouseCaret.Y < 0 then exit;
+  LastMouseCaret := Point(-1, -1);
   UpdateCtrlMouse;
 end;
 
@@ -88,6 +107,7 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
       TSynEdit(SynEdit).Invalidate;
     TSynEdit(SynEdit).Cursor := crIBeam;
     CtrlMouseLine:=-1;
+    FCtrlLinkable := False;
   end;
 
 var
@@ -98,21 +118,18 @@ begin
     // show link
     NewY := LastMouseCaret.Y;
     TSynEdit(SynEdit).GetWordBoundsAtRowCol(TSynEdit(SynEdit).PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
-    if TSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2) then begin
-      // there is a word to underline as link
-      if (NewY <> CtrlMouseLine)
-      or (NewX1 <> CtrlMouseX1)
-      or (NewX2 <> CtrlMouseX2)
-      then begin
-        CtrlMouseLine := fLastMouseCaret.Y;
-        CtrlMouseX1 := NewX1;
-        CtrlMouseX2 := NewX2;
-        TSynEdit(SynEdit).Invalidate;
-        TSynEdit(SynEdit).Cursor := crHandPoint;
-      end;
-    end
-    else
-      doNotShowLink // there is no link
+    if (NewY = CtrlMouseLine) and
+       (NewX1 = CtrlMouseX1) and
+       (NewX2 = CtrlMouseX2)
+    then
+      exit;
+    FCtrlLinkable := TSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2);
+    CtrlMouseLine := fLastMouseCaret.Y;
+    CtrlMouseX1 := NewX1;
+    CtrlMouseX2 := NewX2;
+    TSynEdit(SynEdit).Invalidate;
+    if FCtrlLinkable then
+      TSynEdit(SynEdit).Cursor := crHandPoint;
   end else
     doNotShowLink;
 end;
@@ -138,10 +155,29 @@ begin
   inherited Create(ASynEdit);
   FLastControlIsPressed := false;
   FCtrlMouseLine:=-1;
+  FCtrlLinkable := False;
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
   MarkupInfo.Foreground := clBlue; {TODO:  invert blue to bg .... see below}
   MarkupInfo.Background := clNone;
+end;
+
+destructor TSynEditMarkupCtrlMouseLink.Destroy;
+begin
+  if Lines <> nil then begin;
+    Lines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+    Lines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  end;
+  inherited Destroy;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.SetLines(const AValue: TSynEditStrings);
+begin
+  inherited SetLines(AValue);
+  if Lines <> nil then begin;
+    Lines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+    Lines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  end;
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.EndMarkup;
@@ -149,7 +185,7 @@ var
   LineLeft, LineTop, LineRight: integer;
   temp : TPoint;
 begin
-  if FCtrlMouseLine < 1 then exit;
+  if (FCtrlMouseLine < 1) or (not FCtrlLinkable) then exit;
   LineTop := (RowToScreenRow(FCtrlMouseLine)+1)*TSynEdit(SynEdit).LineHeight-1;
   Temp := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine));
   LineLeft := TSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
@@ -165,7 +201,7 @@ end;
 procedure TSynEditMarkupCtrlMouseLink.PrepareMarkupForRow(aRow: Integer);
 begin
   inherited PrepareMarkupForRow(aRow);
-  if aRow = FCtrlMouseLine then begin
+  if (aRow = FCtrlMouseLine) and FCtrlLinkable then begin
     FCurX1 := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine)).x;
     FCurX2 := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine)).x;
   end;
@@ -174,7 +210,8 @@ end;
 function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
 begin
   Result := nil;
-  if (aRow <> FCtrlMouseLine) or ((aCol < FCurX1) or (aCol >= FCurX2))
+  if (not FCtrlLinkable) or (aRow <> FCtrlMouseLine) or
+     ((aCol < FCurX1) or (aCol >= FCurX2))
   then exit;
   Result := MarkupInfo;
   MarkupInfo.StartX := FCurX1;
