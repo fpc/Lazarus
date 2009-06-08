@@ -294,6 +294,7 @@ const
   SYNS_emcCodeFoldExpand           = 'Unfold Code';
   SYNS_emcCodeFoldExpand_opt       = 'Nodes,One,All';
   SYNS_emcCodeFoldContextMenu      = 'Fold Menu';
+  SYNS_emcSynEditCommand           = 'IDE Command';
 
 implementation
 

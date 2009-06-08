@@ -61,7 +61,9 @@ const
   emcCodeFoldExpand           = 15;
   emcCodeFoldContextMenu      = 16;
 
-  emcMax = 16;
+  emcSynEditCommand           = 17;    // Key-Commands
+
+  emcMax = 17;
 
   // Options
   emcoSelectionStart          = 0;
@@ -214,6 +216,8 @@ begin
     emcCodeFoldCollaps:     Result := SYNS_emcCodeFoldCollaps;
     emcCodeFoldExpand:      Result := SYNS_emcCodeFoldExpand;
     emcCodeFoldContextMenu: Result := SYNS_emcCodeFoldContextMenu;
+
+    emcSynEditCommand:      Result := SYNS_emcSynEditCommand;
 
     else Result := ''
   end;

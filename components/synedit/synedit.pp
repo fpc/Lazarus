@@ -2532,6 +2532,12 @@ begin
         if (PopupMenu <> nil) and not Handled then
           PopupMenu.PopUp;
       end;
+    emcSynEditCommand:
+      begin
+        if AnAction.MoveCaret then
+          MoveCaret;
+        CommandProcessor(AnAction.Option, #0, nil);
+      end;
     else
       Result := False; // ACommand was not handled => Fallback to parent Context
   end;

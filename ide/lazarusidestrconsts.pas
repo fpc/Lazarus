@@ -1211,6 +1211,7 @@ resourcestring
   dlgMouseOptErrorDupText = 'This entry conflicts with an existing entry';
   dlgMouseOptDescAction = 'Action';
   dlgMouseOptDescButton = 'Click';
+  dlgMouseOptionsynCommand = 'IDE-Command';
   dlgUseDividerDraw = 'Divider drawing';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';

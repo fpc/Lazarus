@@ -27,7 +27,7 @@ interface
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, MouseActionDialog, math;
+  SynEditMouseCmds, MouseActionDialog, math, KeyMapping;
 
 type
 
@@ -57,6 +57,8 @@ type
     procedure ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean; Index: Integer);
     procedure ActionGridResize(Sender: TObject);
   private
+    FKeyMap: TKeyCommandRelationList;
+
     FMainNode, FSelNode: TTreeNode;
     FGutterNode: TTreeNode;
     FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
@@ -97,7 +99,7 @@ const
   MMoveName: Array [Boolean] of String = (dlgMouseOptMoveMouseFalse, dlgMouseOptMoveMouseTrue);
 var
   act: TSynEditMouseAction;
-  i: Integer;
+  i, j: Integer;
   optlist: TStringList;
   function ShiftName(ss: TShiftStateEnum): String;
   begin
@@ -124,9 +126,16 @@ begin
     ActionGrid.Cells[6, i] := ShiftName(ssCtrl);
     ActionGrid.Cells[7, i] := MMoveName[act.MoveCaret];
     ActionGrid.Cells[8, i] := '';
-    optlist.CommaText := MouseCommandConfigName(act.Command);
-    if act.Option < optlist.Count-1 then
-      ActionGrid.Cells[8, i] := optlist[act.Option+1] +' ('+optlist[0]+')';
+    if act.Command =  emcSynEditCommand then begin
+      j := KeyMapIndexOfCommand(FKeyMap, Act.Option);
+      if (j >= 0) and (j < FKeyMap.RelationCount) then
+        ActionGrid.Cells[8, i] := FKeyMap.Relations[j].GetLocalizedName;
+    end
+    else begin
+      optlist.CommaText := MouseCommandConfigName(act.Command);
+      if act.Option < optlist.Count-1 then
+        ActionGrid.Cells[8, i] := optlist[act.Option+1] +' ('+optlist[0]+')';
+    end;
   end;
   optlist.Free;
   ActionGrid.Row := 1;
@@ -194,6 +203,7 @@ var
 begin
   if FCurActions = nil then exit;
 
+  ChangeDlg.KeyMap := FKeyMap;
   ChangeDlg.ResetInputs;
   if ChangeDlg.ShowModal = mrOK then begin
     try
@@ -222,6 +232,7 @@ begin
   if (ActionGrid.Row-1 >= FCurActions.Count) or (ActionGrid.Row < 1) then exit;
 
   MAct := TSynEditMouseAction(ActionGrid.Objects[0, ActionGrid.Row]);
+  ChangeDlg.KeyMap := FKeyMap;
   ChangeDlg.ReadFromAction(MAct);
   if ChangeDlg.ShowModal = mrOK then begin
     try
@@ -392,6 +403,8 @@ begin
     FGutterActionsFoldExp.Assign(MouseGutterActionsFoldExp);
     FGutterActionsFoldCol.Assign(MouseGutterActionsFoldCol);
     FGutterActionsLines.Assign(MouseGutterActionsLines);
+
+    FKeyMap := KeyMap;
   end;
   ContextTree.Selected := FMainNode;
 end;

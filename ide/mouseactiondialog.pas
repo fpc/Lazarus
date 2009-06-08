@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ButtonPanel, SynEditMouseCmds, LazarusIDEStrConsts;
+  StdCtrls, ButtonPanel, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 const
   ButtonName: Array [TMouseButton] of String =
@@ -41,12 +41,17 @@ type
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormCreate(Sender: TObject);
+  private
+    FKeyMap: TKeyCommandRelationList;
   public
     { public declarations }
     Procedure ResetInputs;
     Procedure ReadFromAction(MAct: TSynEditMouseAction);
     Procedure WriteToAction(MAct: TSynEditMouseAction);
+    property KeyMap: TKeyCommandRelationList read FKeyMap write FKeyMap;
   end;
+
+  function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word) : Integer;
 
 implementation
 
@@ -55,6 +60,16 @@ const
   ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
   IndexToBtn: array [0..2] of TMouseButton = (mbLeft, mbRight, mbMiddle);
   IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
+
+function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word): Integer;
+var
+  i: Integer;
+begin
+  for i := 0 to AKeyMap.RelationCount - 1 do
+    if AKeyMap.Relations[i].Command = ACmd then
+      exit(i);
+  Result := -1;
+end;
 
 { MouseaActionDialog }
 
@@ -108,18 +123,36 @@ begin
 end;
 
 procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
+var
+  ACmd: TSynEditorMouseCommand;
+  i: Integer;
 begin
   OptBox.Items.Clear;
-  OptBox.Items.CommaText := MouseCommandConfigName
-    (TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex]))));
-  if OptBox.Items.Count > 0 then begin
-    OptLabel.Caption := OptBox.Items[0];
-    OptBox.Items.Delete(0);
+  ACmd := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
+  if ACmd =  emcSynEditCommand then begin
     OptBox.Enabled := True;
+    OptBox.Clear;
+    for i := 0 to KeyMap.RelationCount - 1 do
+      if (KeyMap.Relations[i].Category.Scope = IDECmdScopeSrcEdit) or
+         (KeyMap.Relations[i].Category.Scope = IDECmdScopeSrcEditOnly)
+      then
+        OptBox.Items.AddObject(KeyMap.Relations[i].GetLocalizedName,
+                               TObject(Pointer(PtrUInt(KeyMap.Relations[i].Command))));
+    OptLabel.Caption := dlgMouseOptionsynCommand;
     OptBox.ItemIndex := 0;
-  end else begin
-    OptLabel.Caption := '';
-    OptBox.Enabled := False
+  end
+  else
+  begin
+    OptBox.Items.CommaText := MouseCommandConfigName(ACmd);
+    if OptBox.Items.Count > 0 then begin
+      OptLabel.Caption := OptBox.Items[0];
+      OptBox.Items.Delete(0);
+      OptBox.Enabled := True;
+      OptBox.ItemIndex := 0;
+    end else begin
+      OptLabel.Caption := '';
+      OptBox.Enabled := False
+    end;
   end;
 end;
 
@@ -150,16 +183,12 @@ begin
   CtrlCheck.Checked := (ssCtrl in MAct.ShiftMask) and (ssCtrl in MAct.Shift);
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
 
-  OptBox.Items.Clear;
-  OptBox.Items.CommaText := MouseCommandConfigName(MAct.Command);
-  if OptBox.Items.Count > 0 then begin
-    OptLabel.Caption := OptBox.Items[0];
-    OptBox.Items.Delete(0);
-    OptBox.Enabled := True;
-    OptBox.ItemIndex := MAct.Option;
-  end else begin
-    OptLabel.Caption := '';
-    OptBox.Enabled := False
+  ActionBoxChange(nil);
+  if OptBox.Enabled then begin
+    if MAct.Command =  emcSynEditCommand then
+      OptBox.ItemIndex := OptBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Option))))
+    else
+      OptBox.ItemIndex := MAct.Option;
   end;
 end;
 
@@ -181,8 +210,13 @@ begin
   if AltCheck.Checked then MAct.Shift := MAct.Shift + [ssAlt];
   if CtrlCheck.Checked then MAct.Shift := MAct.Shift + [ssCtrl];
 
-  if OptBox.Enabled then
-    MAct.Option := OptBox.ItemIndex;
+  if OptBox.Enabled then begin
+    if MAct.Command =  emcSynEditCommand then begin
+      MAct.Option := TSynEditorMouseCommandOpt(PtrUInt(Pointer(OptBox.Items.Objects[OptBox.ItemIndex])));
+    end
+    else
+      MAct.Option := OptBox.ItemIndex;
+  end;
 end;
 
 initialization
