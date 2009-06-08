@@ -1411,6 +1411,7 @@ type
     FWrap: Boolean;
     procedure GetGroupBounds(var StartIndex, EndIndex: integer);
     function GetIndex: Integer;
+    function GetTextSize: TSize;
     function IsCheckedStored: Boolean;
     function IsImageIndexStored: Boolean;
     function IsWidthStored: Boolean;

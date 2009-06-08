@@ -264,7 +264,7 @@ begin
     if (Style in [tbsButton, tbsDropDown, tbsCheck]) and
        (FToolBar.ShowCaptions) and
        (Caption <> '') then
-      TextSize := Canvas.TextExtent(Caption);
+      TextSize := GetTextSize;
 
     // calculate icon size
     IconSize := Point(0,0);
@@ -704,6 +704,15 @@ begin
     Result := -1;
 end;
 
+function TToolButton.GetTextSize: TSize;
+var
+  S: String;
+begin
+  S := Caption;
+  DeleteAmpersands(S);
+  Result := Canvas.TextExtent(S)
+end;
+
 procedure TToolButton.GetPreferredSize(
   var PreferredWidth, PreferredHeight: integer; Raw: boolean;
   WithThemeSpace: boolean);
@@ -933,7 +942,7 @@ begin
       if (Caption<>'') then
       begin
         if FToolBar.HandleAllocated then
-          TextSize:=Canvas.TextExtent(Caption);
+          TextSize := GetTextSize;
       end;
       // add space around text
       inc(TextSize.cx,4);
