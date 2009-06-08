@@ -55,7 +55,6 @@ Name: associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions-{#FPCTargetOS}.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
-Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet=="qt"
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
