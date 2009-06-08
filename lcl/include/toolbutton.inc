@@ -169,20 +169,21 @@ procedure TToolButton.Paint;
   begin
     // theme services have no strict rule to draw divider in the center,
     // so we should calculate rectangle here
+    // on windows 7 divider can't be less than 4 pixels
     if FToolBar.IsVertical then
     begin
-      if (ARect.Bottom - ARect.Top) > 3 then
+      if (ARect.Bottom - ARect.Top) > 4 then
       begin
-        ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 1;
-        ARect.Bottom := ARect.Top + 3;
+        ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 2;
+        ARect.Bottom := ARect.Top + 4;
       end;
     end
     else
     begin
-      if (ARect.Right - ARect.Left) > 3 then
+      if (ARect.Right - ARect.Left) > 4 then
       begin
-        ARect.Left := (ARect.Left + ARect.Right) div 2 - 1;
-        ARect.Right := ARect.Left + 3;
+        ARect.Left := (ARect.Left + ARect.Right) div 2 - 2;
+        ARect.Right := ARect.Left + 4;
       end;
     end;
     ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
@@ -199,12 +200,12 @@ procedure TToolButton.Paint;
     begin
       if FToolBar.IsVertical then
       begin
-        if (ARect.Bottom - ARect.Top) > 6 then
+        if (ARect.Bottom - ARect.Top) > 8 then
         begin
-          ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 3;
-          ARect.Bottom := ARect.Top + 3;
+          ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 4;
+          ARect.Bottom := ARect.Top + 4;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 0, 3);
+          OffsetRect(ARect, 0, 4);
           DrawDivider(Details, ARect);
         end
         else
@@ -212,12 +213,12 @@ procedure TToolButton.Paint;
       end
       else
       begin
-        if (ARect.Right - ARect.Left) > 3 then
+        if (ARect.Right - ARect.Left) > 8 then
         begin
-          ARect.Left := (ARect.Left + ARect.Right) div 2 - 3;
-          ARect.Right := ARect.Left + 3;
+          ARect.Left := (ARect.Left + ARect.Right) div 2 - 4;
+          ARect.Right := ARect.Left + 4;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 3, 0);
+          OffsetRect(ARect, 4, 0);
           DrawDivider(Details, ARect);
         end
         else
@@ -947,12 +948,15 @@ begin
 
     // calculate icon size
     IconSize:=Point(0,0);
-    GetCurrentIcon(ImgList,ImgIndex);
-    if (ImgList<>nil) then begin
-      IconSize:=Point(ImgList.Width,ImgList.Height);
-      if IconSize.y<=0 then IconSize.X:=0;
+    if (Style in [tbsButton,tbsDropDown,tbsCheck]) then
+    begin
+      GetCurrentIcon(ImgList,ImgIndex);
+      if (ImgList <> nil) then
+      begin
+        IconSize := Point(ImgList.Width, ImgList.Height);
+        if IconSize.y <= 0 then IconSize.X := 0;
+      end;
     end;
-
     // calculate text and icon position
     TextPos:=Point(0,0);
     IconPos:=Point(0,0);
@@ -985,11 +989,15 @@ begin
       DefSize := GetControlClassDefaultSize;
       PreferredWidth := Max(PreferredWidth, DefSize.x);
       PreferredHeight := Max(PreferredHeight, DefSize.y);
-    end;
-    if Style = tbsDropDown then
-    begin
-      inc(PreferredWidth, FToolBar.FDropDownWidth);
-    end;
+      if Style = tbsDropDown then
+        inc(PreferredWidth, FToolBar.FDropDownWidth);
+    end
+    else
+    if Style = tbsDivider then
+      PreferredWidth := 4
+    else
+    if Style = tbsSeparator then
+      PreferredWidth := 8;
   end;
   //DebugLn(['TToolButton.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,',',PreferredHeight,' Caption=',Caption]);
 end;
