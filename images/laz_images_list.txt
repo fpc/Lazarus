@@ -183,6 +183,7 @@ debugger/debugger_watches.png
 packages/pkg_add.png
 packages/pkg_graph.png
 packages/pkg_inherited.png
+packages/pkg_install.png
 packages/pkg_installed.png
 packages/pkg_open.png
 packages/pkg_properties.png

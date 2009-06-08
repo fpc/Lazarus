@@ -3545,6 +3545,7 @@ images/packages/pkg_files.png -text svneol=unset#image/png
 images/packages/pkg_graph.png -text svneol=unset#image/png
 images/packages/pkg_include.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
+images/packages/pkg_install.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
 images/packages/pkg_issues.png -text svneol=unset#image/png
 images/packages/pkg_lfm.png -text svneol=unset#image/png

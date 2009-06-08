@@ -102,16 +102,18 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
+    // toolbar
+    ToolBar: TToolBar;
     // buttons
-    SaveBitBtn: TBitBtn;
-    CompileBitBtn: TBitBtn;
-    AddBitBtn: TBitBtn;
-    RemoveBitBtn: TBitBtn;
-    InstallBitBtn: TBitBtn;
-    OptionsBitBtn: TBitBtn;
-    CompilerOptionsBitBtn: TBitBtn;
-    MoreBitBtn: TBitBtn;
-    HelpBitBtn: TBitBtn;
+    SaveBitBtn: TToolButton;
+    CompileBitBtn: TToolButton;
+    AddBitBtn: TToolButton;
+    RemoveBitBtn: TToolButton;
+    InstallBitBtn: TToolButton;
+    OptionsBitBtn: TToolButton;
+    CompilerOptionsBitBtn: TToolButton;
+    MoreBitBtn: TToolButton;
+    HelpBitBtn: TToolButton;
     // items
     FilesTreeView: TTreeView;
     // properties
@@ -151,7 +153,6 @@ type
     procedure InstallBitBtnClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
-    procedure MoreBitBtnClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveFileDownMenuItemClick(Sender: TObject);
@@ -162,7 +163,6 @@ type
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure PackageEditorFormResize(Sender: TObject);
     procedure PublishClick(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
@@ -366,45 +366,6 @@ begin
 end;
 
 { TPackageEditorForm }
-
-procedure TPackageEditorForm.PackageEditorFormResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
-  y1: Integer;
-  y2: Integer;
-begin
-  x:=0;
-  y:=0;
-  w:=ClientWidth div 5;
-  h:=SaveBitBtn.Height;
-  y1:=y;
-  y2:=y1+h;
-  // first column of buttons
-  SaveBitBtn.SetBounds(x,y1,w,h);
-  CompileBitBtn.SetBounds(x,y2,w,h);
-  inc(x,w);
-
-  // second column of buttons
-  AddBitBtn.SetBounds(x,y1,w,h);
-  RemoveBitBtn.SetBounds(x,y2,w,h);
-  inc(x,w);
-
-  // third and forth column of buttons
-  OptionsBitBtn.SetBounds(x,y1,w,h);
-  CompilerOptionsBitBtn.SetBounds(x,y2,2*w,h);
-  inc(x,w);
-  InstallBitBtn.SetBounds(x,y1,w,h);
-  inc(x,w);
-
-  // fifth column of buttons
-  HelpBitBtn.SetBounds(x,y1,ClientWidth-x - 1,h);
-  MoreBitBtn.SetBounds(x,y2,ClientWidth-x - 1,h);
-
-  FilePropsGroupBox.Height:=120;
-end;
 
 procedure TPackageEditorForm.PublishClick(Sender: TObject);
 begin
@@ -635,14 +596,6 @@ end;
 procedure TPackageEditorForm.MinVersionEditChange(Sender: TObject);
 begin
   UpdateApplyDependencyButton;
-end;
-
-procedure TPackageEditorForm.MoreBitBtnClick(Sender: TObject);
-var
-  p: TPoint;
-begin
-  p:=MoreBitBtn.ClientToScreen(Point(0,MoreBitBtn.Height));
-  FilesPopupMenu.Popup(p.x,p.y);
 end;
 
 procedure TPackageEditorForm.MoveDependencyUpClick(Sender: TObject);
@@ -1301,6 +1254,29 @@ begin
 end;
 
 procedure TPackageEditorForm.SetupComponents;
+
+  function CreateToolButton(AName, ACaption, AHint, AImageName: String; AOnClick: TNotifyEvent): TToolButton;
+  begin
+    Result := TToolButton.Create(Self);
+    Result.Name := AName;
+    Result.Caption := ACaption;
+    Result.Hint := AHint;
+    if AImageName <> '' then
+      Result.ImageIndex := IDEImages.LoadImage(16, AImageName);
+    Result.ShowHint := True;
+    Result.OnClick := AOnClick;
+    Result.AutoSize := True;
+    Result.Parent := ToolBar;
+  end;
+
+  function CreateDivider: TToolButton;
+  begin
+    Result := TToolButton.Create(Self);
+    Result.Style := tbsDivider;
+    Result.Width := 3;
+    Result.Parent := ToolBar;
+  end;
+
 begin
   ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
   ImageIndexRemovedFiles := IDEImages.LoadImage(16, 'pkg_removedfiles');
@@ -1316,102 +1292,37 @@ begin
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
   
-  SaveBitBtn:=TBitBtn.Create(Self);
-  with SaveBitBtn do begin
-    Name:='SaveBitBtn';
-    Parent:=Self;
-    Caption:=lisMenuSave;
-    OnClick:=@SaveBitBtnClick;
-    Hint:=lisPckEditSavePackage;
-    ShowHint:=true;
+  ToolBar := TToolBar.Create(Self);
+  ToolBar.Name := 'ToolBar';
+  ToolBar.Images := IDEImages.Images_16;
+  ToolBar.ShowCaptions := True;
+  ToolBar.ButtonHeight := 46;
+  ToolBar.Height := 48;
+  ToolBar.AutoSize := True;
+  ToolBar.Parent := Self;
+
+  SaveBitBtn := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
+  CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
+  InstallBitBtn := CreateToolButton('InstallBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', @InstallBitBtnClick);
+  CreateDivider;
+  AddBitBtn := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  RemoveBitBtn := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
+  CreateDivider;
+  OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
+  CompilerOptionsBitBtn := CreateToolButton('CompilerOptionsBitBtn', lisPckEditCompOpts, lisPckEditEditOptionsToCompilePackage, 'menu_compiler_options', @CompilerOptionsBitBtnClick);
+  CreateDivider;
+  HelpBitBtn := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
+  MoreBitBtn := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
+
+  FilesPopupMenu := TPopupMenu.Create(Self);
+  with FilesPopupMenu do
+  begin
+    Name := 'FilesPopupMenu';
+    OnPopup := @FilesPopupMenuPopup;
   end;
 
-  CompileBitBtn:=TBitBtn.Create(Self);
-  with CompileBitBtn do begin
-    Name:='CompileBitBtn';
-    Parent:=Self;
-    Caption:=lisPckEditCompile;
-    OnClick:=@CompileBitBtnClick;
-    Hint:=lisPckEditCompilePackage;
-    ShowHint:=true;
-  end;
-  
-  AddBitBtn:=TBitBtn.Create(Self);
-  with AddBitBtn do begin
-    Name:='AddBitBtn';
-    Parent:=Self;
-    Caption:=lisCodeTemplAdd;
-    OnClick:=@AddBitBtnClick;
-    Hint:=lisPckEditAddAnItem;
-    ShowHint:=true;
-  end;
-
-  RemoveBitBtn:=TBitBtn.Create(Self);
-  with RemoveBitBtn do begin
-    Name:='RemoveBitBtn';
-    Parent:=Self;
-    Caption:=lisExtToolRemove;
-    OnClick:=@RemoveBitBtnClick;
-    Hint:=lisPckEditRemoveSelectedItem;
-    ShowHint:=true;
-  end;
-
-  InstallBitBtn:=TBitBtn.Create(Self);
-  with InstallBitBtn do begin
-    Name:='InstallBitBtn';
-    Parent:=Self;
-    Caption:=lisPckEditInstall;
-    OnClick:=@InstallBitBtnClick;
-    Hint:=lisPckEditInstallPackageInTheIDE;
-    ShowHint:=true;
-  end;
-
-  OptionsBitBtn:=TBitBtn.Create(Self);
-  with OptionsBitBtn do begin
-    Name:='OptionsBitBtn';
-    Parent:=Self;
-    Caption:=dlgFROpts;
-    OnClick:=@OptionsBitBtnClick;
-    Hint:=lisPckEditEditGeneralOptions;
-    ShowHint:=true;
-  end;
-
-  CompilerOptionsBitBtn:=TBitBtn.Create(Self);
-  with CompilerOptionsBitBtn do begin
-    Name:='CompilerOptionsBitBtn';
-    Parent:=Self;
-    Caption:=lisPckEditCompOpts;
-    OnClick:=@CompilerOptionsBitBtnClick;
-    Hint:=lisPckEditEditOptionsToCompilePackage;
-    ShowHint:=true;
-  end;
-
-  HelpBitBtn:=TBitBtn.Create(Self);
-  with HelpBitBtn do begin
-    Name:='HelpBitBtn';
-    Kind := bkHelp;
-    Parent:=Self;
-    OnClick:=@HelpBitBtnClick;
-    Hint:=lisPkgEdThereAreMoreFunctionsInThePopupmenu;
-    ShowHint:=true;
-  end;
-
-  MoreBitBtn:=TBitBtn.Create(Self);
-  with MoreBitBtn do begin
-    Name:='MoreBitBtn';
-    Parent:=Self;
-    Caption:=lisPckEditMore;
-    Enabled:=true;
-    OnClick:=@MoreBitBtnClick;
-    Hint:=lisPkgEdThereAreMoreFunctionsInThePopupmenu;
-    ShowHint:=true;
-  end;
-
-  FilesPopupMenu:=TPopupMenu.Create(Self);
-  with FilesPopupMenu do begin
-    Name:='FilesPopupMenu';
-    OnPopup:=@FilesPopupMenuPopup;
-  end;
+  //MoreBitBtn.Style := tbsDropDown;
+  MoreBitBtn.DropdownMenu := FilesPopupMenu;
 
   FilesTreeView:=TTreeView.Create(Self);
   with FilesTreeView do begin
@@ -1533,7 +1444,7 @@ begin
   FilePropsGroupBox.AnchorToNeighbour(akBottom,0,StatusBar);
   FilePropsGroupBox.Height:=120;
   
-  FilesTreeView.AnchorToNeighbour(akTop,0,CompileBitBtn);
+  FilesTreeView.AnchorToNeighbour(akTop,0,ToolBar);
   FilesTreeView.AnchorParallel(akLeft,0,Self);
   FilesTreeView.AnchorParallel(akRight,0,Self);
   FilesTreeView.AnchorToNeighbour(akBottom,0,FilePropsGroupBox);
@@ -2079,7 +1990,6 @@ begin
   inherited Create(TheOwner);
   FPlugins:=TStringList.Create;
   SetupComponents;
-  OnResize:=@PackageEditorFormResize;
   OnCloseQuery:=@PackageEditorFormCloseQuery;
   OnClose:=@PackageEditorFormClose;
 end;
