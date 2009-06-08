@@ -166,7 +166,7 @@ resourcestring
   SYNS_PreviewScrollInfoFmt     =  'Page: %d';
 
   // strings for property editors etc
-  SYNS_EDuplicateShortcut       =  'Shortcut already exists';
+  SYNS_EDuplicateShortcut       =  'Mouse-Shortcut already exists';
   SYNS_ShortcutNone             =  '<none>';
   SYNS_DuplicateShortcutMsg     =  'The keystroke "%s" is already assigned ' +
                                    'to another editor command. (%s)';

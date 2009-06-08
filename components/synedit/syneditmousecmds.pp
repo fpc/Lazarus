@@ -35,7 +35,7 @@ unit SynEditMouseCmds;
 interface
 
 uses
-  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses;
+  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs;
 
 const
   // EditorMouseCommands
@@ -150,6 +150,7 @@ type
     procedure SetItem(Index: Integer; const AValue: TSynEditMouseAction);
   protected
     function GetOwner: TPersistent; override;
+    procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
     function Add: TSynEditMouseAction;
@@ -383,6 +384,37 @@ begin
   Result := FOwner;
 end;
 
+procedure TSynEditMouseActions.Update(Item: TCollectionItem);
+var
+  i: Integer;
+  Err : ESynMouseCmdError;
+begin
+  inherited Update(Item);
+  i := Count - 1;
+  Err := nil;
+  while i > 0 do begin
+    try
+      AssertNoConflict(Items[i]);
+    except
+      on E : ESynMouseCmdError do begin
+        Delete(i);
+        if assigned(Owner) and (csDesigning in TComponent(Owner).ComponentState)
+        then
+          MessageDlg(SYNS_EDuplicateShortCut, E.Message + LineEnding + Items[i].DisplayName,
+                     mtWarning, [mbOK], '')
+        else
+          Err := E;
+        //if not(assigned(Owner) and (csLoading in TComponent(Owner).ComponentState))
+        //then
+        //  raise E;
+      end;
+    end;
+    dec(i);
+  end;
+  if assigned(Err) then
+    raise Err;
+end;
+
 constructor TSynEditMouseActions.Create(AOwner: TPersistent);
 begin
   inherited Create(TSynEditMouseAction);
@@ -413,7 +445,7 @@ procedure TSynEditMouseActions.AssertNoConflict(MAction: TSynEditMouseAction);
 var
   i: Integer;
 begin
-  if FAssertLock > 0 then exit;
+  if (FAssertLock > 0) or (UpdateCount > 0) then exit;
   for i := 0 to Count-1 do begin
     if Items[i].Conflicts(MAction) then
       raise ESynMouseCmdError.Create(SYNS_EDuplicateShortCut);
