@@ -258,6 +258,7 @@ begin
     $0085: Result := 'WM_NCPAINT';
     $0086: Result := 'WM_NCACTIVATE';
     $0087: Result := 'WM_GETDLGCODE';
+    $0088: Result := 'WM_SYNCPAINT';
     $00A0: Result := 'WM_NCMOUSEMOVE';
     $00A1: Result := 'WM_NCLBUTTONDOWN';
     $00A2: Result := 'WM_NCLBUTTONUP';
