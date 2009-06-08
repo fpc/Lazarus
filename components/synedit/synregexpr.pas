@@ -3805,7 +3805,7 @@ begin
         inc (p);
         case Ch of
           'n' : begin
-              p0 := @LineEnd;
+              p0 := @LineEnd[1];
               p1 := p0 + Length(LineEnding);
             end;
           'l' : begin
