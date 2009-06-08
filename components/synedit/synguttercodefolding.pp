@@ -156,12 +156,12 @@ begin
   Result := False;
   case FFoldView.FoldType[FFoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1)] of
     cfCollapsed :
-      Result := HandleActionProc(MouseActionsCollapsed.FindCommand(AnInfo), AnInfo);
+      Result := HandleActionProc(MouseActionsCollapsed, AnInfo);
     cfExpanded  :
-      Result := HandleActionProc(MouseActionsExpanded.FindCommand(AnInfo), AnInfo);
+      Result := HandleActionProc(MouseActionsExpanded, AnInfo);
   end;
   if not Result then
-    Result := HandleActionProc(MouseActions.FindCommand(AnInfo), AnInfo);
+    Result := HandleActionProc(MouseActions, AnInfo);
 end;
 
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;

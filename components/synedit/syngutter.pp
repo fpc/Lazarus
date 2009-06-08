@@ -327,7 +327,7 @@ begin
   MouseDownPart := PixelToPartIndex(AnInfo.MouseX);
   Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
   if not Result then
-    Result := HandleActionProc(MouseActions.FindCommand(AnInfo), AnInfo);
+    Result := HandleActionProc(MouseActions, AnInfo);
 end;
 
 function TSynGutter.DoHandleMouseAction(AnAction: TSynEditMouseAction;

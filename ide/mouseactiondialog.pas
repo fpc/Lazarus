@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ButtonPanel, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
+  StdCtrls, ButtonPanel, Spin, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 const
   ButtonName: Array [TMouseButton] of String =
@@ -30,12 +30,14 @@ type
     ButtonPanel1: TButtonPanel;
     CaretCheck: TCheckBox;
     ClickBox: TComboBox;
+    PriorLabel: TLabel;
     OptBox: TComboBox;
     CtrlCheck: TCheckBox;
     DirCheck: TCheckBox;
     CapturePanel: TPanel;
     OptLabel: TLabel;
     ShiftCheck: TCheckBox;
+    PriorSpin: TSpinEdit;
     procedure ActionBoxChange(Sender: TObject);
     procedure BtnDefaultClick(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
@@ -101,7 +103,8 @@ begin
   CtrlCheck.Caption  := dlgMouseOptModCtrl;
   ActionLabel.Caption := dlgMouseOptDescAction;
   BtnLabel.Caption := dlgMouseOptDescButton;
-  BtnDefault.Caption :=  dlgMouseOptBtnModDef
+  BtnDefault.Caption :=  dlgMouseOptBtnModDef;
+  PriorLabel.Caption := dlgMouseOptPriorLabel;
 end;
 
 procedure TMouseaActionDialog.ResetInputs;
@@ -182,6 +185,7 @@ begin
   if not(ssAlt in MAct.ShiftMask) then AltCheck.State := cbGrayed;
   CtrlCheck.Checked := (ssCtrl in MAct.ShiftMask) and (ssCtrl in MAct.Shift);
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
+  PriorSpin.Value := MAct.Priority;
 
   ActionBoxChange(nil);
   if OptBox.Enabled then begin
@@ -209,6 +213,7 @@ begin
   if ShiftCheck.Checked then MAct.Shift := MAct.Shift + [ssShift];
   if AltCheck.Checked then MAct.Shift := MAct.Shift + [ssAlt];
   if CtrlCheck.Checked then MAct.Shift := MAct.Shift + [ssCtrl];
+  MAct.Priority := PriorSpin.Value;
 
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then begin

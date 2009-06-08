@@ -594,7 +594,7 @@ type
     procedure FindAndHandleMouseAction(AButton: TMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
                                 ADir: TSynMAClickDir);
-    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+    function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
     {$IFDEF SYN_LAZARUS}
@@ -2423,7 +2423,7 @@ begin
   MouseCapture := FALSE;
 end;
 
-function TCustomSynEdit.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
   AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   CaretDone: Boolean;
@@ -2438,112 +2438,121 @@ var
   PrimarySelText: String;
   ACommand: TSynEditorMouseCommand;
   Handled: Boolean;
+  AnAction: TSynEditMouseAction;
 begin
-  if AnAction = nil then exit(False);
-  ACommand := AnAction.Command;
-  AnInfo.CaretDone := False;
+  AnAction := nil;
+  Result := False;
+  while not Result do begin
+    AnAction := AnActionList.FindCommand(AnInfo, AnAction);
 
-  Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
-  if Result then begin
-    if (not AnInfo.CaretDone) and AnAction.MoveCaret then
-      MoveCaret;
-    exit;
-  end;
+    if AnAction = nil then exit(False);
+    ACommand := AnAction.Command;
+    AnInfo.CaretDone := False;
 
-  Result := True;
-  CaretDone := False;
-  MouseCapture := False;
-
-  case ACommand of
-    emcNone: ; // do nothing, but result := true
-    emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
-      begin
-        if AnAction.Option = emcoSelectionContinue then
-          FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos
-        else begin
-          MoveCaret;
-          FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
-        end;
-        case ACommand of
-          emcStartColumnSelections:
-            FBlockSelection.ActiveSelectionMode := smColumn;
-          emcStartLineSelections:
-            begin
-              if ACommand = emcStartLineSelections then
-                SetLineBlock(AnInfo.NewCaret.LineBytePos, True);
-              FBlockSelection.ActiveSelectionMode := smLine;
-            end;
-          else
-            FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
-        end;
-        MouseCapture := True;
-        Include(fStateFlags, sfMouseSelecting);
-      end;
-    emcSelectWord:
-      begin
-        if not (eoNoSelection in fOptions) then
-          SetWordBlock(AnInfo.NewCaret.LineBytePos);
-        MouseCapture := FALSE;
-      end;
-    emcSelectLine:
-      begin
-        if not (eoNoSelection in fOptions) then
-          SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
-        MouseCapture := FALSE;
-      end;
-    emcSelectPara:
-      begin
-        if not (eoNoSelection in fOptions) then
-          SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
-        MouseCapture := FALSE;
-      end;
-    emcStartDragMove:
-      begin
-        if SelAvail and (SelectionMode = smNormal) then begin
-          Include(fStateFlags, sfWaitForDragging);
-          MouseCapture := True;
-        end
-        else
-          Result := False; // Currently only drags smNormal
-      end;
-    emcPasteSelection:
-      begin
+    Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
+    if Result then begin
+      if (not AnInfo.CaretDone) and AnAction.MoveCaret then
         MoveCaret;
-        PrimarySelText := PrimarySelection.AsText;
-        if ((PrimarySelText<>'') or SelAvail) then begin
-          FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
-          FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
-          SelText:=PrimarySelText;
-        end
-        else
-          Result :=False;
-      end;
-    emcMouseLink:
-      begin
-        if assigned(FOnClickLink) then
-          FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
-        else
-          Result := False;
-      end;
-    emcContextMenu:
-      begin
-        Handled := False;
-        inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
-        if (PopupMenu <> nil) and not Handled then
-          PopupMenu.PopUp;
-      end;
-    emcSynEditCommand:
-      begin
-        if AnAction.MoveCaret then
-          MoveCaret;
-        CommandProcessor(AnAction.Option, #0, nil);
-      end;
-    else
-      Result := False; // ACommand was not handled => Fallback to parent Context
-  end;
+      exit;
+    end;
 
-  if Result and (not CaretDone) and AnAction.MoveCaret then
-    MoveCaret;
+    Result := True;
+    CaretDone := False;
+    MouseCapture := False;
+
+    case ACommand of
+      emcNone: ; // do nothing, but result := true
+      emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
+        begin
+          if AnAction.Option = emcoSelectionContinue then
+            FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos
+          else begin
+            MoveCaret;
+            FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
+          end;
+          case ACommand of
+            emcStartColumnSelections:
+              FBlockSelection.ActiveSelectionMode := smColumn;
+            emcStartLineSelections:
+              begin
+                if ACommand = emcStartLineSelections then
+                  SetLineBlock(AnInfo.NewCaret.LineBytePos, True);
+                FBlockSelection.ActiveSelectionMode := smLine;
+              end;
+            else
+              FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+          end;
+          MouseCapture := True;
+          Include(fStateFlags, sfMouseSelecting);
+        end;
+      emcSelectWord:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetWordBlock(AnInfo.NewCaret.LineBytePos);
+          MouseCapture := FALSE;
+        end;
+      emcSelectLine:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
+          MouseCapture := FALSE;
+        end;
+      emcSelectPara:
+        begin
+          if not (eoNoSelection in fOptions) then
+            SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
+          MouseCapture := FALSE;
+        end;
+      emcStartDragMove:
+        begin
+          if SelAvail and (SelectionMode = smNormal) then begin
+            Include(fStateFlags, sfWaitForDragging);
+            MouseCapture := True;
+          end
+          else
+            Result := False; // Currently only drags smNormal
+        end;
+      emcPasteSelection:
+        begin
+          MoveCaret;
+          PrimarySelText := PrimarySelection.AsText;
+          if ((PrimarySelText<>'') or SelAvail) then begin
+            FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
+            FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
+            SelText:=PrimarySelText;
+          end
+          else
+            Result :=False;
+        end;
+      emcMouseLink:
+        begin
+          if assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink and
+             assigned(FOnClickLink)
+          then
+            FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
+          else
+            Result := False;
+        end;
+      emcContextMenu:
+        begin
+          Handled := False;
+          inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
+          if (PopupMenu <> nil) and not Handled then
+            PopupMenu.PopUp;
+        end;
+      emcSynEditCommand:
+        begin
+          if AnAction.MoveCaret then
+            MoveCaret;
+          CommandProcessor(AnAction.Option, #0, nil);
+        end;
+      else
+        Result := False; // ACommand was not handled => Fallback to parent Context
+    end;
+
+    if Result and (not CaretDone) and AnAction.MoveCaret then
+      MoveCaret;
+  end;
 end;
 
 procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TMouseButton;
@@ -2573,9 +2582,9 @@ begin
   if SelAvail and (X >= fGutterWidth + 2) and
      IsPointInSelection(FInternalCaret.LineBytePos)
   then
-    if DoHandleMouseAction(FMouseSelActions.FindCommand(Info), Info) then
+    if DoHandleMouseAction(FMouseSelActions, Info) then
       exit;
-  DoHandleMouseAction(FMouseActions.FindCommand(Info), Info);
+  DoHandleMouseAction(FMouseActions, Info);
 end;
 
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;

@@ -1178,6 +1178,7 @@ resourcestring
   dlgMouseOptHeadAlt = 'Alt';
   dlgMouseOptHeadCtrl = 'Ctrl';
   dlgMouseOptHeadCaret = 'Caret';
+  dlgMouseOptHeadPriority = 'Priority';
   dlgMouseOptHeadOpt = 'Option';
   dlgMouseOptBtnLeft   = 'Left';
   dlgMouseOptBtnMiddle = 'Middle';
@@ -1204,6 +1205,7 @@ resourcestring
   dlgMouseOptBtnOk  = 'Ok';
   dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';
+  dlgMouseOptPriorLabel = 'Priority';
   dlgMouseOptDlgTitle = 'Edit Mouse';
   dlgMouseOptCapture = 'Capture';
   dlgMouseOptCaretMove = 'Move Caret (extra)';

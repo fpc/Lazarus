@@ -105,6 +105,7 @@ type
   private
     FClickDir: TSynMAClickDir;
     FOption: TSynEditorMouseCommandOpt;
+    FPriority: TSynEditorMouseCommandOpt;
     FShift, FShiftMask: TShiftState;
     FButton: TMouseButton;
     FClickCount: TSynMAClickCount;
@@ -116,6 +117,7 @@ type
     procedure SetCommand(const AValue: TSynEditorMouseCommand);
     procedure SetMoveCaret(const AValue: Boolean);
     procedure SetOption(const AValue: TSynEditorMouseCommandOpt);
+    procedure SetPriority(const AValue: TSynEditorMouseCommandOpt);
     procedure SetShift(const AValue: TShiftState);
     procedure SetShiftMask(const AValue: TShiftState);
   protected
@@ -137,10 +139,8 @@ type
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret;
     property Option: TSynEditorMouseCommandOpt read FOption write SetOption;
+    property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority;
   end;
-
-  TSynEditMouseActionHandler = function(AnAction: TSynEditMouseAction;
-    AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
   { TSynEditMouseActions }
 
@@ -158,7 +158,8 @@ type
     function Add: TSynEditMouseAction;
     procedure Assign(Source: TPersistent); override;
     procedure AssertNoConflict(MAction: TSynEditMouseAction);
-    function FindCommand(AnInfo: TSynEditMouseActionInfo): TSynEditMouseAction;
+    function FindCommand(AnInfo: TSynEditMouseActionInfo;
+                         APrevious: TSynEditMouseAction = nil): TSynEditMouseAction;
     procedure ResetDefaults; virtual;
     procedure IncAssertLock;
     procedure DecAssertLock;
@@ -187,6 +188,9 @@ type
   public
     procedure ResetDefaults; override;
   end;
+
+  TSynEditMouseActionHandler = function(AnActionList: TSynEditMouseActions;
+    AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
   function MouseCommandName(emc: TSynEditorMouseCommand): String;
   function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
@@ -287,6 +291,14 @@ begin
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 end;
 
+procedure TSynEditMouseAction.SetPriority(const AValue: TSynEditorMouseCommandOpt);
+begin
+  if FPriority = AValue then exit;
+  FPriority := AValue;
+  if Collection <> nil then
+    TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
 procedure TSynEditMouseAction.SetShift(const AValue: TShiftState);
 begin
   if FShift = AValue then exit;
@@ -320,6 +332,7 @@ begin
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
     FMoveCaret  := TSynEditMouseAction(Source).MoveCaret;
     FOption     := TSynEditMouseAction(Source).Option;
+    FPriority   := TSynEditMouseAction(Source).Priority;
   end else
     inherited Assign(Source);
   if Collection <> nil then
@@ -355,7 +368,8 @@ begin
         and ((Other.Command   <> self.Command) or  // Only conflicts, if Command differs
              (Other.MoveCaret <> self.MoveCaret) or
              (Other.Option    <> self.Option) )
-        and not(Other.IsFallback xor self.IsFallback);
+        and not(Other.IsFallback xor self.IsFallback)
+        and (Other.Priority   = self.Priority);
 end;
 
 function TSynEditMouseAction.Equals(Other: TSynEditMouseAction;
@@ -366,6 +380,7 @@ begin
         and (Other.ClickDir   = self.ClickDir)
         and (Other.Shift      = self.Shift)
         and (Other.ShiftMask  = self.ShiftMask)
+        and (Other.Priority   = self.Priority)
         and ((Other.Command   = self.Command) or IgnoreCmd)
         and ((Other.Option    = self.Option) or IgnoreCmd)
         and ((Other.MoveCaret = self.MoveCaret) or IgnoreCmd);
@@ -456,26 +471,45 @@ begin
   end;
 end;
 
-function TSynEditMouseActions.FindCommand(AnInfo: TSynEditMouseActionInfo): TSynEditMouseAction;
+function TSynEditMouseActions.FindCommand(AnInfo: TSynEditMouseActionInfo;
+  APrevious: TSynEditMouseAction = nil): TSynEditMouseAction;
 var
-  i: Integer;
-  act, fback: TSynEditMouseAction;
+  i, MinPriority: Integer;
+  act, found, fback: TSynEditMouseAction;
 begin
+  MinPriority := 0;
+  if assigned(APrevious) then
+    MinPriority := APrevious.Priority + 1;
   fback := nil;
+  found := nil;
   for i := 0 to Count-1 do begin
     act := Items[i];
+    if act.Priority < MinPriority then
+      continue;
+
     if act.IsMatchingClick(AnInfo.Button, AnInfo.CCount, AnInfo.Dir) and
        act.IsMatchingShiftState(AnInfo.Shift)
     then begin
-      if act.IsFallback then
-        fback := act
-      else
-        exit(act);
+      if act.IsFallback then begin
+        if (fback = nil) or (act.Priority < fback.Priority) then
+          fback := act;
+      end
+      else begin
+        if (found = nil) or (act.Priority < found.Priority) then
+          found := act;
+      end;
     end;
   end;
-  if fback <> nil then
-    exit(fback);
-  Result := nil;
+  if found <> nil then begin
+    if (fback <> nil) and (fback.Priority < found.Priority) then
+      Result := fback
+    else
+      Result := found;
+  end
+  else if fback <> nil then
+    Result := fback
+  else
+    Result := nil;
 end;
 
 procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;

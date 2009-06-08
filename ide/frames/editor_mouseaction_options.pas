@@ -71,7 +71,7 @@ type
     FGutterActionsLines: TSynEditMouseActions;
     FCurActions: TSynEditMouseActions;
 
-    FSort1, FSort2, FSort3: Integer;
+    FSort1, FSort2, FSort3, FSort4: Integer;
     ChangeDlg: TMouseaActionDialog;
     FColWidths: Array of Integer;
     FLastWidth: Integer;
@@ -124,17 +124,18 @@ begin
     ActionGrid.Cells[4, i] := ShiftName(ssShift);
     ActionGrid.Cells[5, i] := ShiftName(ssAlt);
     ActionGrid.Cells[6, i] := ShiftName(ssCtrl);
-    ActionGrid.Cells[7, i] := MMoveName[act.MoveCaret];
-    ActionGrid.Cells[8, i] := '';
+    ActionGrid.Cells[7, i] := IntToStr(act.Priority);
+    ActionGrid.Cells[8, i] := MMoveName[act.MoveCaret];
+    ActionGrid.Cells[9, i] := '';
     if act.Command =  emcSynEditCommand then begin
       j := KeyMapIndexOfCommand(FKeyMap, Act.Option);
       if (j >= 0) and (j < FKeyMap.RelationCount) then
-        ActionGrid.Cells[8, i] := FKeyMap.Relations[j].GetLocalizedName;
+        ActionGrid.Cells[9, i] := FKeyMap.Relations[j].GetLocalizedName;
     end
     else begin
       optlist.CommaText := MouseCommandConfigName(act.Command);
       if act.Option < optlist.Count-1 then
-        ActionGrid.Cells[8, i] := optlist[act.Option+1] +' ('+optlist[0]+')';
+        ActionGrid.Cells[9, i] := optlist[act.Option+1] +' ('+optlist[0]+')';
     end;
   end;
   optlist.Free;
@@ -146,6 +147,8 @@ procedure TEditorMouseOptionsFrame.ActionGridHeaderClick(Sender: TObject; IsColu
   Index: Integer);
 begin
   If Index <> FSort1 then begin
+    if FSort3 <> index then
+      Fsort4 := FSort3;
     if FSort2 <> index then
       Fsort3 := FSort2;
     Fsort2 := FSort1;
@@ -175,6 +178,10 @@ begin
     Result := CompareCol(FSort2);
   if Result = 0 then
     Result := CompareCol(FSort3);
+  if Result = 0 then
+    Result := CompareCol(FSort4);
+  if Result = 0 then
+    Result := CompareCol(7); // Priority
   if Result = 0 then
     Result := TSynEditMouseAction(ActionGrid.Objects[0, ARow]).ID
             - TSynEditMouseAction(ActionGrid.Objects[0, BRow]).ID;
@@ -377,14 +384,16 @@ begin
   ActionGrid.Cells[5,0] := dlgMouseOptHeadAlt;
   ActionGrid.Cells[6,0] := dlgMouseOptHeadCtrl;
   ActionGrid.Cells[7,0] := dlgMouseOptHeadCaret;
-  ActionGrid.Cells[8,0] := dlgMouseOptHeadOpt;
+  ActionGrid.Cells[8,0] := dlgMouseOptHeadPriority;
+  ActionGrid.Cells[9,0] := dlgMouseOptHeadOpt;
   ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
-  ActionGrid.ColWidths[8] := ActionGrid.ColWidths[8] * 3;
+  ActionGrid.ColWidths[9] := ActionGrid.ColWidths[8] * 3;
   ActionGridHeaderSized(nil, true, 0);
 
   FSort1 := 1; // Button
   FSort2 := 2; // CCount
   FSort3 := 3; // Cdir
+  FSort4 := 8; // Priority
 
   DelButton.Caption := dlgMouseOptBtnDel;
   UpdateButton.Caption := dlgMouseOptBtnUdp;
