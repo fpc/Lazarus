@@ -77,7 +77,7 @@
 									<key>Path</key>
 									<string>Root/Applications/Lazarus.app</string>
 									<key>Path Type</key>
-									<integer>1</integer>
+									<integer>2</integer>
 									<key>Privileges</key>
 									<integer>493</integer>
 									<key>Type</key>
