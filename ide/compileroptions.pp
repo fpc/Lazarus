@@ -2430,7 +2430,7 @@ begin
   end;
 
   if (StopAfterErrCount>1) then
-    tempsw := tempsw + ' -Se'+IntToStr(StopAfterErrCount);
+    switches := switches + ' -Se'+IntToStr(StopAfterErrCount);
 
 
   { Write an FPC logo }
