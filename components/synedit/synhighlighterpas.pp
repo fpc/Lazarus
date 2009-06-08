@@ -2103,12 +2103,11 @@ begin
     end
     else if KeyComp('region') then begin
       StartCustomCodeFoldBlock(cfbtRegion);
-      if FCatchNodeInfo then begin
+      if FCatchNodeInfo then
         // Scan ahead
         if ScanRegion and (FNodeInfoCount > 0) then
           FNodeInfoList[FNodeInfoCount-1].FoldAction :=
             FNodeInfoList[FNodeInfoCount-1].FoldAction + [sfaDefaultCollapsed];
-      end;
     end
     else if KeyComp('endregion') then
       EndCustomCodeFoldBlock(cfbtRegion);
@@ -2121,8 +2120,14 @@ begin
       inc(Run);
       fToIdent := Run;
       KeyHash;
-      if KeyComp('region') then
-        StartCustomCodeFoldBlock(cfbtRegion)
+      if KeyComp('region') then begin
+        StartCustomCodeFoldBlock(cfbtRegion);
+        if FCatchNodeInfo then
+          // Scan ahead
+          if ScanRegion and (FNodeInfoCount > 0) then
+            FNodeInfoList[FNodeInfoCount-1].FoldAction :=
+              FNodeInfoList[FNodeInfoCount-1].FoldAction + [sfaDefaultCollapsed];
+      end
       else if KeyComp('endregion') then
         EndCustomCodeFoldBlock(cfbtRegion);
     end;
