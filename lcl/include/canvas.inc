@@ -586,7 +586,7 @@ end;
 procedure TCanvas.DoLine(x1, y1, x2, y2: integer);
 begin
   MoveTo(x1,y1);
-  LineTo(x1,y1);
+  LineTo(x2,y2);
 end;
 
 procedure TCanvas.DoCopyRect(x, y: integer; SrcCanvas: TFPCustomCanvas;
