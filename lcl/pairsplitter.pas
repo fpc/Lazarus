@@ -269,6 +269,7 @@ begin
 
   if Cursor = DefaultCursors[FSplitterType] then
     Cursor := DefaultCursors[AValue];
+
   FSplitterType := AValue;
   
   // TODO: Remove RecreateWnd
@@ -336,11 +337,9 @@ end;
 
 procedure TCustomPairSplitter.SetCursor(Value: TCursor);
 begin
+  FLoadCursor := Value;
   if not HandleAllocated then
-  begin
-    FLoadCursor := Value;
     Exit;
-  end;
   // if widgetset class dont want to set cursor (has no internal splitter) then
   // use default lcl handler
   if not TWSCustomPairSplitterClass(WidgetSetClass).SetSplitterCursor(Self, Value) then
