@@ -1465,9 +1465,9 @@ type
     destructor Destroy; override;
   end;
 
-function KeysToShiftState(Keys: Word): TShiftState;
+function KeysToShiftState(Keys: PtrUInt): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
-function ShiftStateToKeys(ShiftState: TShiftState): Word;
+function ShiftStateToKeys(ShiftState: TShiftState): PtrUInt;
 
 function WindowStateToStr(const State: TWindowState): string;
 function StrToWindowState(const Name: string): TWindowState;
@@ -1613,7 +1613,7 @@ begin
 end;}
 
 //------------------------------------------------------------------------------
-function KeysToShiftState(Keys:Word): TShiftState;
+function KeysToShiftState(Keys: PtrUInt): TShiftState;
 begin
   Result := [];
   if Keys and MK_Shift <> 0 then Include(Result, ssShift);
@@ -1631,7 +1631,7 @@ begin
   Result := MsgKeyDataToShiftState(KeyData);
 end;
 
-function ShiftStateToKeys(ShiftState: TShiftState): Word;
+function ShiftStateToKeys(ShiftState: TShiftState): PtrUInt;
 begin
   Result := 0;
   if ssShift  in ShiftState then Result := Result or MK_SHIFT;
