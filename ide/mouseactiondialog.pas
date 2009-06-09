@@ -121,6 +121,9 @@ begin
   ShiftCheck.State := cbGrayed;
   AltCheck.State := cbGrayed;
   CtrlCheck.State := cbGrayed;
+
+  ActionBoxChange(nil);
+  OptBox.ItemIndex := 0;
 end;
 
 procedure TMouseaActionDialog.BtnDefaultClick(Sender: TObject);
