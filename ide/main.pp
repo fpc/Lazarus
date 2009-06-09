@@ -4191,6 +4191,9 @@ begin
       // reload lazarus packages
       if LazarusSrcDirChanged then
         PkgBoss.LazarusSrcDirChanged;
+
+      if CodeExplorerView<>nil then
+        CodeExplorerView.Refresh(true);
     end;
   finally
     IDEOptionsDialog.Free;

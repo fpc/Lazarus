@@ -131,6 +131,7 @@ type
   TCodeExplorerOptions = class(TAbstractIDEOptions)
   private
     FCategories: TCodeExplorerCategories;
+    FChangeStep: integer;
     FObserveCharConst: boolean;
     FCOIgnoreConstInFuncs: TStringToStringTree;
     FLongParamListCount: integer;
@@ -142,6 +143,15 @@ type
     FObserverIgnoreConstants: TAvgLvlTree;// tree of AnsiString
     FOptionsFilename: string;
     FRefresh: TCodeExplorerRefresh;
+    procedure SetCategories(const AValue: TCodeExplorerCategories);
+    procedure SetFollowCursor(const AValue: boolean);
+    procedure SetLongParamListCount(const AValue: integer);
+    procedure SetLongProcLineCount(const AValue: integer);
+    procedure SetMode(const AValue: TCodeExplorerMode);
+    procedure SetNestedProcCount(const AValue: integer);
+    procedure SetObserveCharConst(const AValue: boolean);
+    procedure SetObserverCategories(const AValue: TCEObserverCategories);
+    procedure SetRefresh(const AValue: TCodeExplorerRefresh);
   public
     constructor Create;
     destructor Destroy; override;
@@ -151,6 +161,7 @@ type
     procedure Save;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure IncreaseChangeStep;
   public
     // observer: ignore constants
     function CreateListOfCOIgnoreConstants: TStrings;
@@ -172,20 +183,21 @@ type
     procedure Clear_COIgnoreConstInFuncs;
     procedure LoadDefaults_COIgnoreConstInFuncs;
   public
-    property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh default cerSwitchEditorPage;
-    property Mode: TCodeExplorerMode read FMode write FMode default cemCategory;
+    property Refresh: TCodeExplorerRefresh read FRefresh write SetRefresh default cerSwitchEditorPage;
+    property Mode: TCodeExplorerMode read FMode write SetMode default cemCategory;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
-    property FollowCursor: boolean read FFollowCursor write FFollowCursor default true;
-    property Categories: TCodeExplorerCategories read FCategories write FCategories default DefaultCodeExplorerCategories;
+    property FollowCursor: boolean read FFollowCursor write SetFollowCursor default true;
+    property Categories: TCodeExplorerCategories read FCategories write SetCategories default DefaultCodeExplorerCategories;
+    property ChangeStep: integer read FChangeStep write FChangeStep;
   public
     // Observer
-    property ObserveCharConst: boolean read FObserveCharConst write FObserveCharConst default DefaultCOureCharConst;
-    property ObserverCategories: TCEObserverCategories read FObserverCategories write FObserverCategories default DefaultCodeObserverCategories;
+    property ObserveCharConst: boolean read FObserveCharConst write SetObserveCharConst default DefaultCOureCharConst;
+    property ObserverCategories: TCEObserverCategories read FObserverCategories write SetObserverCategories default DefaultCodeObserverCategories;
     property ObserverIgnoreConstants: TAvgLvlTree read FObserverIgnoreConstants;
     property COIgnoreConstInFuncs: TStringToStringTree read FCOIgnoreConstInFuncs;
-    property LongParamListCount: integer read FLongParamListCount write FLongParamListCount default DefaultCOLongParamListCount;
-    property LongProcLineCount: integer read FLongProcLineCount write FLongProcLineCount default DefaultCOLongProcLineCount;
-    property NestedProcCount: integer read FNestedProcCount write FNestedProcCount default DefaultCONestedProcCount;
+    property LongParamListCount: integer read FLongParamListCount write SetLongParamListCount default DefaultCOLongParamListCount;
+    property LongProcLineCount: integer read FLongProcLineCount write SetLongProcLineCount default DefaultCOLongProcLineCount;
+    property NestedProcCount: integer read FNestedProcCount write SetNestedProcCount default DefaultCONestedProcCount;
   end;
 
 const
@@ -304,6 +316,71 @@ end;
 
 { TCodeExplorerOptions }
 
+procedure TCodeExplorerOptions.SetRefresh(const AValue: TCodeExplorerRefresh);
+begin
+  if FRefresh=AValue then exit;
+  FRefresh:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetMode(const AValue: TCodeExplorerMode);
+begin
+  if FMode=AValue then exit;
+  FMode:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetNestedProcCount(const AValue: integer);
+begin
+  if FNestedProcCount=AValue then exit;
+  FNestedProcCount:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetObserveCharConst(const AValue: boolean);
+begin
+  if FObserveCharConst=AValue then exit;
+  FObserveCharConst:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetObserverCategories(
+  const AValue: TCEObserverCategories);
+begin
+  if FObserverCategories=AValue then exit;
+  FObserverCategories:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetFollowCursor(const AValue: boolean);
+begin
+  if FFollowCursor=AValue then exit;
+  FFollowCursor:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetLongParamListCount(const AValue: integer);
+begin
+  if FLongParamListCount=AValue then exit;
+  FLongParamListCount:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetLongProcLineCount(const AValue: integer);
+begin
+  if FLongProcLineCount=AValue then exit;
+  FLongProcLineCount:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetCategories(
+  const AValue: TCodeExplorerCategories);
+begin
+  if FCategories=AValue then exit;
+  FCategories:=AValue;
+  IncreaseChangeStep;
+end;
+
 constructor TCodeExplorerOptions.Create;
 begin
   FOptionsFilename:=
@@ -325,6 +402,7 @@ end;
 
 procedure TCodeExplorerOptions.Clear;
 begin
+  IncreaseChangeStep;
   FMode:=cemCategory;
   FRefresh:=cerDefault;
   FFollowCursor:=true;
@@ -344,6 +422,7 @@ var
   List: TStrings;
 begin
   if Source is TCodeExplorerOptions then begin
+    IncreaseChangeStep;
     Src:=TCodeExplorerOptions(Source);
     FRefresh:=Src.Refresh;
     FMode:=Src.Mode;
@@ -421,6 +500,7 @@ var
   CurPath: String;
   List: TStringList;
 begin
+  IncreaseChangeStep;
   Clear;
   FRefresh:=CodeExplorerRefreshNameToEnum(
                                    XMLConfig.GetValue(Path+'Refresh/Value',''));
@@ -555,6 +635,14 @@ begin
 
 end;
 
+procedure TCodeExplorerOptions.IncreaseChangeStep;
+begin
+  if FChangeStep=high(integer) then
+    FChangeStep:=low(integer)
+  else
+    inc(FChangeStep);
+end;
+
 function TCodeExplorerOptions.CreateListOfCOIgnoreConstants: TStrings;
 var
   AVLNode: TAvgLvlTreeNode;
@@ -575,6 +663,8 @@ var
   AVLNode: TAvgLvlTreeNode;
   s: String;
 begin
+  if FObserverIgnoreConstants.Count=0 then exit;
+  IncreaseChangeStep;
   s:='';
   AVLNode:=FObserverIgnoreConstants.FindLowest;
   while AVLNode<>nil do begin
@@ -592,6 +682,7 @@ procedure TCodeExplorerOptions.SetListOf_COIgnoreConstants(List: TStrings;
 var
   i: Integer;
 begin
+  IncreaseChangeStep;
   if not Add then
     Clear_COIgnoreConstants;
   for i:=0 to List.Count-1 do
@@ -602,6 +693,8 @@ procedure TCodeExplorerOptions.LoadDefaults_COIgnoreConstants;
 var
   i: Integer;
 begin
+  if COIgnoreConstants_AreDefault(true) then exit;
+  IncreaseChangeStep;
   Clear_COIgnoreConstants;
   for i:=low(DefaultCOIgnoreConstants) to high(DefaultCOIgnoreConstants) do
     Add_COIgnoreConstant(DefaultCOIgnoreConstants[i]);
@@ -627,6 +720,7 @@ procedure TCodeExplorerOptions.SetListOf_COIgnoreConstInFuncs(List: TStrings;
 var
   i: Integer;
 begin
+  IncreaseChangeStep;
   if not Add then
     Clear_COIgnoreConstInFuncs;
   for i:=0 to List.Count-1 do
@@ -669,11 +763,14 @@ procedure TCodeExplorerOptions.Add_COIgnoreConstInFuncs(const Func: string);
 begin
   if Func='' then exit;
   if COIgnoreConstInFunc(Func) then exit;
+  IncreaseChangeStep;
   FCOIgnoreConstInFuncs.Values[Func]:='';
 end;
 
 procedure TCodeExplorerOptions.Clear_COIgnoreConstInFuncs;
 begin
+  if FCOIgnoreConstInFuncs.Count=0 then exit;
+  IncreaseChangeStep;
   FCOIgnoreConstInFuncs.Clear;
 end;
 
@@ -681,6 +778,8 @@ procedure TCodeExplorerOptions.LoadDefaults_COIgnoreConstInFuncs;
 var
   i: Integer;
 begin
+  if COIgnoreConstInFuncs_AreDefault(true) then exit;
+  IncreaseChangeStep;
   Clear_COIgnoreConstInFuncs;
   for i:=low(DefaultCOIgnoreConstInFuncs) to high(DefaultCOIgnoreConstInFuncs) do
     Add_COIgnoreConstInFuncs(DefaultCOIgnoreConstInFuncs[i]);
@@ -697,6 +796,7 @@ var
 begin
   if Atom='' then exit;
   if COIgnoreConstant(PChar(Atom)) then exit;
+  IncreaseChangeStep;
   s:=Atom;
   FObserverIgnoreConstants.Add(Pointer(s));
   Pointer(s):=nil;

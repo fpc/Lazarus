@@ -167,6 +167,7 @@ type
     FFlags: TCodeExplorerViewFlags;
     FLastCodeFilter: string;
     FLastCodeChangeStep: integer;
+    fLastCodeOptionsChangeStep: integer;
     FLastDirectivesFilter: string;
     FLastDirectivesChangeStep: integer;
     FMode: TCodeExplorerMode;
@@ -501,7 +502,6 @@ begin
   if Assigned(FOnShowOptions) then
   begin
     OnShowOptions(Self);
-    FLastCodeValid := False;
     Refresh(True);
   end;
 end;
@@ -1655,14 +1655,16 @@ begin
       and (ACodeTool.MainFilename=FCodeFilename)
       and (ACodeTool.Scanner<>nil)
       and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep)
-      and (Mode=FLastMode) then begin
-        // still the same source
+      and (Mode=FLastMode)
+      and (FLastCodeChangeStep=CodeExplorerOptions.ChangeStep) then begin
+        // still the same source and options
         exit;
       end;
     end;
 
     FLastCodeValid:=true;
     FLastMode:=Mode;
+    fLastCodeOptionsChangeStep:=CodeExplorerOptions.ChangeStep;
     // remember the codetools ChangeStep
     if ACodeTool<>nil then begin
       FCodeFilename:=ACodeTool.MainFilename;
