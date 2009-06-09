@@ -1777,7 +1777,7 @@ begin
         Result := Size(13, 13)
       else
       if Details.Part = BP_PUSHBUTTON then
-        Result := Size(75, 25);
+        Result := Size(75, 23);
     teRebar:
       if Details.Part = RP_GRIPPER then
         Result.cy := 30
