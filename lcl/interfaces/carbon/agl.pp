@@ -1,3 +1,17 @@
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit agl;
 
 {$ifdef fpc}
@@ -63,7 +77,7 @@ type
  }
 
 const
-   AGL_NONE = 0;     
+   AGL_NONE = 0;
 { choose from all available renderers           }
    AGL_ALL_RENDERERS = 1;     
 { depth of the index buffer                     }
