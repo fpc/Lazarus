@@ -1301,19 +1301,19 @@ begin
   ecGotoEditor9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
-  EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel3: SetResult(VK_3,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel4: SetResult(VK_4,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel5: SetResult(VK_5,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel6: SetResult(VK_6,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel7: SetResult(VK_7,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel8: SetResult(VK_8,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel9: SetResult(VK_9,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
-  EcToggleMarkupWord: SetResult(VK_M,[ssAlt],VK_UNKNOWN,[]);
+  EcFoldLevel1: SetResult(VK_1,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel2: SetResult(VK_2,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel3: SetResult(VK_3,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel4: SetResult(VK_4,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel5: SetResult(VK_5,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel6: SetResult(VK_6,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel7: SetResult(VK_7,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel8: SetResult(VK_8,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel9: SetResult(VK_9,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel0: SetResult(VK_0,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  EcToggleMarkupWord: SetResult(VK_M,[ssMeta],VK_UNKNOWN,[]);
 
   // file menu
   ecNew: SetResult(VK_N,[ssMeta],VK_UNKNOWN,[]);
