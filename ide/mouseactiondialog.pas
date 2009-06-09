@@ -221,7 +221,9 @@ begin
     end
     else
       MAct.Option := OptBox.ItemIndex;
-  end;
+  end
+  else
+    MAct.Option := 0;
 end;
 
 initialization

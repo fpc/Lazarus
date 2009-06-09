@@ -383,8 +383,8 @@ begin
   ActionGrid.Cells[4,0] := dlgMouseOptHeadShift;
   ActionGrid.Cells[5,0] := dlgMouseOptHeadAlt;
   ActionGrid.Cells[6,0] := dlgMouseOptHeadCtrl;
-  ActionGrid.Cells[7,0] := dlgMouseOptHeadCaret;
-  ActionGrid.Cells[8,0] := dlgMouseOptHeadPriority;
+  ActionGrid.Cells[7,0] := dlgMouseOptHeadPriority;
+  ActionGrid.Cells[8,0] := dlgMouseOptHeadCaret;
   ActionGrid.Cells[9,0] := dlgMouseOptHeadOpt;
   ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
   ActionGrid.ColWidths[9] := ActionGrid.ColWidths[8] * 3;
