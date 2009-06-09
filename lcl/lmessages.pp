@@ -90,11 +90,13 @@ const
   LM_RBUTTONQUADCLK   = LM_MOUSEFIRST2 + 5;
   LM_MOUSEENTER       = LM_MOUSEFIRST2 + 6;
   LM_MOUSELEAVE       = LM_MOUSEFIRST2 + 7;
-  LM_MOUSELAST2       = LM_MOUSELEAVE;
+  LM_XBUTTONTRIPLECLK = LM_MOUSEFIRST2 + 8;
+  LM_XBUTTONQUADCLK   = LM_MOUSEFIRST2 + 9;
+  LM_MOUSELAST2       = LM_XBUTTONQUADCLK;
   // for triple and quad clicks see below
 
-  LM_GRABFOCUS      = LM_LCL + 79;
-  LM_DRAWLISTITEM   = LM_LCL + 80;
+  LM_GRABFOCUS      = LM_LCL + 80;
+  LM_DRAWLISTITEM   = LM_LCL + 81;
   LM_CONTEXTMENU    = LM_LCL + 82;
 
   // these IDs are reserved for internal messages in the interfaces
@@ -214,7 +216,10 @@ const
   LM_MBUTTONUP         = $0208;
   LM_MBUTTONDBLCLK     = $0209;
   LM_MOUSEWHEEL        = $020A;
-  LM_MOUSELAST         = $020A;
+  LM_XBUTTONDOWN       = $020B;
+  LM_XBUTTONUP         = $020C;
+  LM_XBUTTONDBLCLK     = $020D;
+  LM_MOUSELAST         = $020D;
 
   LM_PARENTNOTIFY      = $0210;
   LM_CAPTURECHANGED    = $0215;
@@ -678,18 +683,23 @@ type
   TLMLButtonDown = TLMMouse;
   TLMRButtonDown = TLMMouse;
   TLMMButtonDown = TLMMouse;
+  TLMXButtonDown = TLMMouse;
   TLMLButtonDblClk = TLMMouse;
   TLMRButtonDblClk = TLMMouse;
   TLMMButtonDblClk = TLMMouse;
+  TLMXButtonDblClk = TLMMouse;
   TLMLButtonTripleClk = TLMMouse;
   TLMRButtonTripleClk = TLMMouse;
   TLMMButtonTripleClk = TLMMouse;
+  TLMXButtonTripleClk = TLMMouse;
   TLMLButtonQuadClk = TLMMouse;
   TLMRButtonQuadClk = TLMMouse;
   TLMMButtonQuadClk = TLMMouse;
+  TLMXButtonQuadClk = TLMMouse;
   TLMLButtonUp = TLMMouse;
   TLMRButtonUp = TLMMouse;
   TLMMButtonUp = TLMMouse;
+  TLMXButtonUp = TLMMouse;
 
   TLMSetFocus = record
     Msg: Cardinal;

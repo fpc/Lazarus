@@ -320,20 +320,13 @@ function LCLSendMouseMoveMsg(const Target: TControl; XPos, YPos: SmallInt;
   ShiftState: TShiftState = []): PtrInt;
 var
   Mess: TLMMouseMove;
-  Keys: PtrInt;
 begin
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_MouseMove;
   Mess.XPos := XPos;
   Mess.YPos := YPos;
 
-  Keys := 0;
-  if ssShift  in ShiftState then Keys := Keys or MK_SHIFT;
-  if ssCtrl   in ShiftState then Keys := Keys or MK_CONTROL;
-  if ssLeft   in ShiftState then Keys := Keys or MK_LBUTTON;
-  if ssRight  in ShiftState then Keys := Keys or MK_RBUTTON;
-  if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
-  Mess.Keys := Keys;
+  Mess.Keys := ShiftStateToKeys(ShiftState);
 
   Result := DeliverMessage(Target, Mess);
 end;
@@ -357,25 +350,20 @@ function LCLSendMouseDownMsg(const Target: TControl; XPos, YPos: SmallInt;
   Button: TMouseButton; ShiftState: TShiftState = []): PtrInt;
 var
   Mess: TLMMouse;
-  Keys: PtrInt;
 begin
   FillChar(Mess, SizeOf(Mess), 0);
   case Button of
     mbLeft   : Mess.Msg := LM_LBUTTONDOWN;
     mbMiddle : Mess.Msg := LM_MBUTTONDOWN;
     mbRight  : Mess.Msg := LM_RBUTTONDOWN;
+    mbExtra1 : Mess.Msg := LM_XBUTTONDOWN;
+    mbExtra2 : Mess.Msg := LM_XBUTTONDOWN;
   end;
 
   Mess.XPos := XPos;
   Mess.YPos := YPos;
 
-  Keys := 0;
-  if ssShift  in ShiftState then Keys := Keys or MK_SHIFT;
-  if ssCtrl   in ShiftState then Keys := Keys or MK_CONTROL;
-  if ssLeft   in ShiftState then Keys := Keys or MK_LBUTTON;
-  if ssRight  in ShiftState then Keys := Keys or MK_RBUTTON;
-  if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
-  Mess.Keys := Keys;
+  Mess.Keys := ShiftStateToKeys(ShiftState);
 
   Result := DeliverMessage(Target, Mess);
 end;
@@ -398,25 +386,20 @@ function LCLSendMouseUpMsg(const Target: TControl; XPos, YPos: SmallInt;
   Button: TMouseButton; ShiftState: TShiftState): PtrInt;
 var
   Mess: TLMMouse;
-  Keys: PtrInt;
 begin
   FillChar(Mess, SizeOf(Mess), 0);
   case Button of
     mbLeft   : Mess.Msg := LM_LBUTTONUP;
     mbMiddle : Mess.Msg := LM_MBUTTONUP;
     mbRight  : Mess.Msg := LM_RBUTTONUP;
+    mbExtra1 : Mess.Msg := LM_XBUTTONUP;
+    mbExtra2 : Mess.Msg := LM_XBUTTONUP;
   end;
 
   Mess.XPos := XPos;
   Mess.YPos := YPos;
 
-  Keys := 0;
-  if ssShift  in ShiftState then Keys := Keys or MK_SHIFT;
-  if ssCtrl   in ShiftState then Keys := Keys or MK_CONTROL;
-  if ssLeft   in ShiftState then Keys := Keys or MK_LBUTTON;
-  if ssRight  in ShiftState then Keys := Keys or MK_RBUTTON;
-  if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
-  Mess.Keys := Keys;
+  Mess.Keys := ShiftStateToKeys(ShiftState);
 
   Result := DeliverMessage(Target, Mess);
 end;
@@ -1080,41 +1063,40 @@ function LCLSendMouseMultiClickMsg(const Target: TControl; XPos, YPos: SmallInt;
   Button: TMouseButton; ClickCount: Byte = 2; ShiftState: TShiftState = []): PtrInt;
 var
   Mess: TLMMouse;
-  Keys: PtrInt;
 begin
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_UNKNOWN;
   case ClickCount of
     2:
     case Button of
-     mbLeft   : Mess.Msg := LM_LBUTTONDBLCLK;
-     mbMiddle : Mess.Msg := LM_MBUTTONDBLCLK;
-     mbRight  : Mess.Msg := LM_RBUTTONDBLCLK;
+      mbLeft   : Mess.Msg := LM_LBUTTONDBLCLK;
+      mbMiddle : Mess.Msg := LM_MBUTTONDBLCLK;
+      mbRight  : Mess.Msg := LM_RBUTTONDBLCLK;
+      mbExtra1 : Mess.Msg := LM_XBUTTONDBLCLK;
+      mbExtra2 : Mess.Msg := LM_XBUTTONDBLCLK;
     end;
     3:
     case Button of
-     mbLeft   : Mess.Msg := LM_LBUTTONTRIPLECLK;
-     mbMiddle : Mess.Msg := LM_MBUTTONTRIPLECLK;
-     mbRight  : Mess.Msg := LM_RBUTTONTRIPLECLK;
+      mbLeft   : Mess.Msg := LM_LBUTTONTRIPLECLK;
+      mbMiddle : Mess.Msg := LM_MBUTTONTRIPLECLK;
+      mbRight  : Mess.Msg := LM_RBUTTONTRIPLECLK;
+      mbExtra1 : Mess.Msg := LM_XBUTTONTRIPLECLK;
+      mbExtra2 : Mess.Msg := LM_XBUTTONTRIPLECLK;
     end;
     4:
     case Button of
-     mbLeft   : Mess.Msg := LM_LBUTTONQUADCLK;
-     mbMiddle : Mess.Msg := LM_MBUTTONQUADCLK;
-     mbRight  : Mess.Msg := LM_RBUTTONQUADCLK;
+      mbLeft   : Mess.Msg := LM_LBUTTONQUADCLK;
+      mbMiddle : Mess.Msg := LM_MBUTTONQUADCLK;
+      mbRight  : Mess.Msg := LM_RBUTTONQUADCLK;
+      mbExtra1 : Mess.Msg := LM_XBUTTONQUADCLK;
+      mbExtra2 : Mess.Msg := LM_XBUTTONQUADCLK;
     end;
   end;
     
   Mess.XPos := XPos;
   Mess.YPos := YPos;
 
-  Keys := 0;
-  if ssShift  in ShiftState then Keys := Keys or MK_SHIFT;
-  if ssCtrl   in ShiftState then Keys := Keys or MK_CONTROL;
-  if ssLeft   in ShiftState then Keys := Keys or MK_LBUTTON;
-  if ssRight  in ShiftState then Keys := Keys or MK_RBUTTON;
-  if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
-  Mess.Keys := Keys;
+  Mess.Keys := ShiftStateToKeys(ShiftState);
 
   Result := DeliverMessage(Target, Mess);
 end;

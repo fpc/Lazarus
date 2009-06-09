@@ -1839,6 +1839,42 @@ begin
         Keys := WParam;
       end;
     end;
+    WM_XBUTTONDBLCLK:
+    begin
+      NotifyUserInput := True;
+      PLMsg:=@LMMouse;
+      with LMMouse Do
+      begin
+        Msg := LM_XBUTTONDBLCLK;
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
+        Keys := WParam;
+      end;
+    end;
+    WM_XBUTTONDOWN:
+    begin
+      NotifyUserInput := True;
+      PLMsg:=@LMMouse;
+      with LMMouse Do
+      begin
+        Msg := LM_XBUTTONDOWN;
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
+        Keys := WParam;
+      end;
+    end;
+    WM_XBUTTONUP:
+    begin
+      NotifyUserInput := True;
+      PLMsg:=@LMMouse;
+      with LMMouse Do
+      begin
+        Msg := LM_XBUTTONUP;
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
+        Keys := WParam;
+      end;
+    end;
     WM_MOUSEHOVER:
     begin
       NotifyUserInput := True;

@@ -1144,14 +1144,7 @@ begin
     XPos := MappedXY.X;
     YPos := MappedXY.Y;
 
-    Keys := 0;
-    if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
-    if ssCtrl in ShiftState then Keys := Keys or MK_CONTROL;
-    if ssLeft in ShiftState then Keys := Keys or MK_LBUTTON;
-    if ssRight in ShiftState then Keys := Keys or MK_RBUTTON;
-    if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
-    if ssExtra1 in ShiftState then Keys := Keys or MK_XBUTTON1;
-    if ssExtra2 in ShiftState then Keys := Keys or MK_XBUTTON2;
+    Keys := ShiftStateToKeys(ShiftState);
 
     Result := 0;
   end;
@@ -1477,13 +1470,7 @@ begin
     MessI.XPos := MappedXY.X;
     MessI.YPos := MappedXY.Y;
 
-    if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
-    if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
-    if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
-    if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
-    if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-    if ssExtra1 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON1;
-    if ssExtra2 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON2;
+    MessI.Keys := ShiftStateToKeys(ShiftState);
 
     MessI.Result:=0;
     // send the message directly to the LCL
@@ -1715,14 +1702,7 @@ begin
   MessI.YPos := MappedXY.Y;
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
-  MessI.Keys := 0;
-  if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
-  if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
-  if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
-  if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
-  if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-  if ssExtra1 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON1;
-  if ssExtra2 in ShiftState then MessI.Keys := MessI.Keys or MK_XBUTTON2;
+  MessI.Keys := ShiftStateToKeys(ShiftState);
 
   if MessI.Msg <> LM_NULL then
   begin

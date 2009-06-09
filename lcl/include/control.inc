@@ -1808,6 +1808,29 @@ begin
   DoMouseDown(Message, mbMiddle, []);
 end;
 
+procedure TControl.WMXButtonDown(var Message: TLMXButtonDown);
+var
+  Btn: TMouseButton;
+begin
+  if (Message.Keys and MK_XBUTTON1) <> 0 then
+    Btn := mbExtra1
+  else
+  if (Message.Keys and MK_XBUTTON2) <> 0 then
+    Btn := mbExtra2
+  else
+    Exit;
+  DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMXButtonDown ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
+
+  DoMouseDown(Message, Btn, []);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.WMLButtonDblClk
   Params: Message
@@ -1872,6 +1895,28 @@ begin
   DoMouseDown(Message, mbMiddle ,[ssDouble]);
 end;
 
+procedure TControl.WMXButtonDBLCLK(var Message: TLMXButtonDblClk);
+var
+  Btn: TMouseButton;
+begin
+  if (Message.Keys and MK_XBUTTON1) <> 0 then
+    Btn := mbExtra1
+  else
+  if (Message.Keys and MK_XBUTTON2) <> 0 then
+    Btn := mbExtra2
+  else
+    Exit;
+  DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMXButtonDblClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
+  DoMouseDown(Message, Btn, [ssDouble]);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.WMLButtonTripleClk
   Params: Message
@@ -1934,6 +1979,28 @@ begin
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
 end;
 
+procedure TControl.WMXButtonTripleCLK(var Message: TLMXButtonTripleClk);
+var
+  Btn: TMouseButton;
+begin
+  if (Message.Keys and MK_XBUTTON1) <> 0 then
+    Btn := mbExtra1
+  else
+  if (Message.Keys and MK_XBUTTON2) <> 0 then
+    Btn := mbExtra2
+  else
+    Exit;
+  DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMXButtonTripleClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
+  DoMouseDown(Message, Btn, [ssTriple]);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.WMLButtonQuadClk
   Params: Message
@@ -1994,6 +2061,28 @@ begin
     MouseCapture := True;
   end;
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
+end;
+
+procedure TControl.WMXButtonQuadCLK(var Message: TLMXButtonQuadClk);
+var
+  Btn: TMouseButton;
+begin
+  if (Message.Keys and MK_XBUTTON1) <> 0 then
+    Btn := mbExtra1
+  else
+  if (Message.Keys and MK_XBUTTON2) <> 0 then
+    Btn := mbExtra2
+  else
+    Exit;
+  DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonQuadClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
+  DoMouseDown(Message, Btn, [ssQuad]);
 end;
 
 {------------------------------------------------------------------------------
@@ -2073,6 +2162,29 @@ begin
   end;
   
   DoMouseUp(Message, mbMiddle);
+end;
+
+procedure TControl.WMXButtonUp(var Message: TLMXButtonUp);
+var
+  Btn: TMouseButton;
+begin
+  if (Message.Keys and MK_XBUTTON1) <> 0 then
+    Btn := mbExtra1
+  else
+  if (Message.Keys and MK_XBUTTON2) <> 0 then
+    Btn := mbExtra2
+  else
+    Exit;
+  DoBeforeMouseMessage;
+  if (csCaptureMouse in ControlStyle) and (Btn in CaptureMouseButtons) then
+  begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn('TControl.WMMButtonUp ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := False;
+  end;
+
+  DoMouseUp(Message, Btn);
 end;
 
 {------------------------------------------------------------------------------

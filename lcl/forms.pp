@@ -1467,6 +1467,7 @@ type
 
 function KeysToShiftState(Keys: Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
+function ShiftStateToKeys(ShiftState: TShiftState): Word;
 
 function WindowStateToStr(const State: TWindowState): string;
 function StrToWindowState(const Name: string): TWindowState;
@@ -1615,17 +1616,31 @@ end;}
 function KeysToShiftState(Keys:Word): TShiftState;
 begin
   Result := [];
-  if Keys and MK_Shift <> 0 then Include(Result,ssShift);
-  if Keys and MK_Control <> 0 then Include(Result,ssCtrl);
-  if Keys and MK_LButton <> 0 then Include(Result,ssLeft);
-  if Keys and MK_RButton <> 0 then Include(Result,ssRight);
-  if Keys and MK_MButton <> 0 then Include(Result,ssMiddle);
-  if GetKeyState(VK_MENU) < 0 then Include(Result,ssAlt);
+  if Keys and MK_Shift <> 0 then Include(Result, ssShift);
+  if Keys and MK_Control <> 0 then Include(Result, ssCtrl);
+  if Keys and MK_LButton <> 0 then Include(Result, ssLeft);
+  if Keys and MK_RButton <> 0 then Include(Result, ssRight);
+  if Keys and MK_MButton <> 0 then Include(Result, ssMiddle);
+  if Keys and MK_XBUTTON1 <> 0 then Include(Result, ssExtra1);
+  if Keys and MK_XBUTTON2 <> 0 then Include(Result, ssExtra2);
+  if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
 end;
 
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 begin
   Result := MsgKeyDataToShiftState(KeyData);
+end;
+
+function ShiftStateToKeys(ShiftState: TShiftState): Word;
+begin
+  Result := 0;
+  if ssShift  in ShiftState then Result := Result or MK_SHIFT;
+  if ssCtrl   in ShiftState then Result := Result or MK_CONTROL;
+  if ssLeft   in ShiftState then Result := Result or MK_LBUTTON;
+  if ssRight  in ShiftState then Result := Result or MK_RBUTTON;
+  if ssMiddle in ShiftState then Result := Result or MK_MBUTTON;
+  if ssExtra1 in ShiftState then Result := Result or MK_XBUTTON1;
+  if ssExtra2 in ShiftState then Result := Result or MK_XBUTTON2;
 end;
 
 function WindowStateToStr(const State: TWindowState): string;

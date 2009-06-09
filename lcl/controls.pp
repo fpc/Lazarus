@@ -132,7 +132,7 @@ type
 
   TBevelCut = TGraphicsBevelCut;
 
-  TMouseButton = (mbLeft, mbRight, mbMiddle);
+  TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
 
 const
   fsAllStayOnTop = [fsStayOnTop, fsSplash];
@@ -1031,22 +1031,28 @@ type
     // protected messages
     procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;
     procedure WMContextMenu(var Message: TLMMouse); message LM_CONTEXTMENU;
+
     procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMMButtonDown(var Message: TLMMButtonDown); message LM_MBUTTONDOWN;
+    procedure WMXButtonDown(var Message: TLMXButtonDown); message LM_XBUTTONDOWN;
     procedure WMLButtonDBLCLK(var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
     procedure WMRButtonDBLCLK(var Message: TLMRButtonDblClk); message LM_RBUTTONDBLCLK;
     procedure WMMButtonDBLCLK(var Message: TLMMButtonDblClk); message LM_MBUTTONDBLCLK;
+    procedure WMXButtonDBLCLK(var Message: TLMXButtonDblClk); message LM_XBUTTONDBLCLK;
     procedure WMLButtonTripleCLK(var Message: TLMLButtonTripleClk); message LM_LBUTTONTRIPLECLK;
     procedure WMRButtonTripleCLK(var Message: TLMRButtonTripleClk); message LM_RBUTTONTRIPLECLK;
     procedure WMMButtonTripleCLK(var Message: TLMMButtonTripleClk); message LM_MBUTTONTRIPLECLK;
+    procedure WMXButtonTripleCLK(var Message: TLMXButtonTripleClk); message LM_XBUTTONTRIPLECLK;
     procedure WMLButtonQuadCLK(var Message: TLMLButtonQuadClk); message LM_LBUTTONQUADCLK;
     procedure WMRButtonQuadCLK(var Message: TLMRButtonQuadClk); message LM_RBUTTONQUADCLK;
     procedure WMMButtonQuadCLK(var Message: TLMMButtonQuadClk); message LM_MBUTTONQUADCLK;
+    procedure WMXButtonQuadCLK(var Message: TLMXButtonQuadClk); message LM_XBUTTONQUADCLK;
     procedure WMMouseMove(var Message: TLMMouseMove); message LM_MOUSEMOVE;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
+    procedure WMXButtonUp(var Message: TLMXButtonUp); message LM_XBUTTONUP;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
