@@ -52,6 +52,9 @@ type
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails;
       const S: String; R: TRect; Flags, Flags2: Cardinal); override;
 
+    procedure DrawTextEx(DC: HDC; Details: TThemedElementDetails;
+      const S: String; R: TRect; Flags: Cardinal; Options: PDTTOpts);
+
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); override;
@@ -430,6 +433,28 @@ begin
     DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2)
   else
     inherited;
+end;
+
+procedure TWin32ThemeServices.DrawTextEx(DC: HDC;
+  Details: TThemedElementDetails; const S: String; R: TRect; Flags: Cardinal;
+  Options: PDTTOpts);
+{$IFDEF WindowsUnicodeSupport}
+var
+  w: widestring;
+{$ENDIF}
+begin
+  if ThemesEnabled and (DrawThemeTextEx <> nil) then
+    with Details do
+{$IFDEF WindowsUnicodeSupport}
+    begin
+      w := UTF8ToUTF16(S);
+      DrawThemeTextEx(Theme[Element], DC, Part, State, PWideChar(w), Length(w), Flags, @R, Options);
+    end
+{$ELSE}
+      DrawThemeTextEx(Theme[Element], DC, Part, State, PWideChar(WideString(S)), Length(S), Flags, @R, Options)
+{$ENDIF}
+  else
+    DrawText(DC, Details, S, R, Flags, 0);
 end;
 
 end.

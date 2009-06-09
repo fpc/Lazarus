@@ -1777,7 +1777,6 @@ begin
      else
        WindowsVersion := wvLater;
      end;
-
    end;
  else
    WindowsVersion := wvLater;
