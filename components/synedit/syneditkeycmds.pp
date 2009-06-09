@@ -126,6 +126,8 @@ const
   ecColSelRight      = ecRight + ecColumnSelection;
   ecColSelUp         = ecUp + ecColumnSelection;
   ecColSelDown       = ecDown + ecColumnSelection;
+  ecColSelWordLeft   = ecWordLeft + ecColumnSelection;
+  ecColSelWordRight  = ecWordRight + ecColumnSelection;
   ecColSelLineStart  = ecLineStart + ecColumnSelection;
   ecColSelLineEnd    = ecLineEnd + ecColumnSelection;
   ecColSelPageUp     = ecPageUp + ecColumnSelection;

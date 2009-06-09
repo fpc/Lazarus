@@ -1566,6 +1566,8 @@ begin
     ecColSelDown              : Result:= srkmecColSelDown;
     ecColSelLeft              : Result:= srkmecColSelLeft;
     ecColSelRight             : Result:= srkmecColSelRight;
+    ecColSelWordLeft          : Result:= srkmecColSelWordLeft;
+    ecColSelWordRight         : Result:= srkmecColSelWordRight;
     ecColSelPageDown          : Result:= srkmecColSelPageDown;
     ecColSelPageBottom        : Result:= srkmecColSelPageBottom;
     ecColSelPageUp            : Result:= srkmecColSelPageUp;
@@ -2049,6 +2051,8 @@ begin
   AddDefault(C, 'Column Select Down', srkmecColSelDown, ecColSelDown);
   AddDefault(C, 'Column Select Left', srkmecColSelLeft, ecColSelLeft);
   AddDefault(C, 'Column Select Right', srkmecColSelRight, ecColSelRight);
+  AddDefault(C, 'Column Select word left', srkmecColSelWordLeft, ecColSelWordLeft);
+  AddDefault(C, 'Column Select word right', srkmecColSelWordRight, ecColSelWordRight);
   AddDefault(C, 'Column Select Page Down', srkmecColSelPageDown, ecColSelPageDown);
   AddDefault(C, 'Column Select Page Bottom', srkmecColSelPageBottom, ecColSelPageBottom);
   AddDefault(C, 'Column Select Page Up', srkmecColSelPageUp, ecColSelPageUp);

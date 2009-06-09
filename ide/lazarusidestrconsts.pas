@@ -1994,6 +1994,8 @@ resourcestring
   srkmecColSelDown            = 'Column Select Down';
   srkmecColSelLeft            = 'Column Select Left';
   srkmecColSelRight           = 'Column Select Right';
+  srkmecColSelWordLeft        = 'Column Select Word Left';
+  srkmecColSelWordRight       = 'Column Select Word Right';
   srkmecColSelPageDown        = 'Column Select Page Down';
   srkmecColSelPageBottom      = 'Column Select Page Bottom';
   srkmecColSelPageUp          = 'Column Select Page Up';

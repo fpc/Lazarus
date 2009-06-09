@@ -5845,7 +5845,7 @@ begin
           Update;
         end;
 // word selection
-      ecWordLeft, ecSelWordLeft:
+      ecWordLeft, ecSelWordLeft, ecColSelWordLeft:
         begin
           Caret := CaretXY;
           CaretNew := PrevWordPos;
@@ -5858,13 +5858,13 @@ begin
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (Caret, CaretNew, Command = ecSelWordLeft);
+            (Caret, CaretNew, Command in [ecSelWordLeft, ecColSelWordLeft]);
           fLastCaretX := CaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
           {$ENDIF}
         end;
-      ecWordRight, ecSelWordRight:
+      ecWordRight, ecSelWordRight, ecColSelWordRight:
         begin
           Caret := CaretXY;
           CaretNew := NextWordPos;
@@ -5875,7 +5875,7 @@ begin
           {$ELSE}
           MoveCaretAndSelection
           {$ENDIF}
-            (Caret, CaretNew, Command = ecSelWordRight);
+            (Caret, CaretNew, Command in [ecSelWordRight, ecColSelWordRight]);
           fLastCaretX := CaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
