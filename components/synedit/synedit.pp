@@ -587,9 +587,6 @@ type
       override;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
-    procedure DblClick; override;
-    procedure TripleClick; override;
-    procedure QuadClick; override;
 
     procedure FindAndHandleMouseAction(AButton: TMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
@@ -2371,58 +2368,6 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.DblClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-
-  inherited;
-  IncPaintLock;
-  try
-    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccDouble, cdDown);
-  finally
-    DecPaintLock;
-  end;
-  Include(fStateFlags, sfDblClicked);
-end;
-
-procedure TCustomSynEdit.TripleClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-
-  inherited;
-  IncPaintLock;
-  try
-    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccTriple, cdDown);
-  finally
-    DecPaintLock;
-  end;
-  Include(fStateFlags, sfTripleClicked);
-end;
-
-procedure TCustomSynEdit.QuadClick;
-var
-  ptMouse: TPoint;
-begin
-  GetCursorPos(ptMouse);
-  ptMouse := ScreenToClient(ptMouse);
-
-  inherited;
-  IncPaintLock;
-  try
-    FindAndHandleMouseAction(mbLeft, GetKeyShiftState, ptMouse.X, ptMouse.Y, ccQuad, cdDown);
-  finally
-    DecPaintLock;
-  end;
-  Include(fStateFlags, sfQuadClicked);
-  MouseCapture := FALSE;
-end;
-
 function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
   AnInfo: TSynEditMouseActionInfo): Boolean;
 var
@@ -2589,6 +2534,8 @@ end;
 
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  CType: TSynMAClickCount;
 begin
   //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
@@ -2601,16 +2548,26 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
-  Exclude(fStateFlags, sfWaitForDragging);
-  Exclude(fStateFlags, sfMouseSelecting);
-  Exclude(fStateFlags, sfGutterClick);
 
-  if ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags <> []) or
-     (Shift * [ssDouble, ssTriple, ssQuad] <> [])
-  then begin
-    LCLIntf.SetFocus(Handle);
-    Exit;
-  end;
+  fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
+                                sfGutterClick, sfMouseSelecting,
+                                sfWaitForDragging
+                               ];
+
+  if ssQuad in Shift then begin
+    CType := ccQuad;
+    Include(fStateFlags, sfQuadClicked);
+  end
+  else if ssTriple in Shift then begin
+    CType := ccTriple;
+    Include(fStateFlags, sfTripleClicked);
+  end
+  else if ssDouble in Shift then begin
+    CType := ccDouble;
+    Include(fStateFlags, sfDblClicked);
+  end
+  else
+    CType := ccSingle;
 
   IncPaintLock;
   try
@@ -2618,7 +2575,7 @@ begin
       Include(fStateFlags, sfGutterClick);
       FGutter.MouseDown(Button, Shift, X, Y);
     end;
-    FindAndHandleMouseAction(Button, Shift, X, Y, ccSingle, cdDown);
+    FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdDown);
   finally
     DecPaintLock;
   end;
@@ -2786,17 +2743,33 @@ procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   wasDragging : Boolean;
+  CType: TSynMAClickCount;
 begin
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
   Exclude(fStateFlags, sfMouseSelecting);
-  inherited MouseUp(Button, Shift, X, Y);
   fScrollTimer.Enabled := False;
+  inherited MouseUp(Button, Shift, X, Y);
   MouseCapture := False;
 
+  if sfQuadClicked in fStateFlags then begin
+    CType := ccQuad;
+    Include(fStateFlags, sfQuadClicked);
+  end
+  else if sfTripleClicked in fStateFlags then begin
+    CType := ccTriple;
+    Include(fStateFlags, sfTripleClicked);
+  end
+  else if sfDblClicked in fStateFlags then begin
+    CType := ccDouble;
+    Include(fStateFlags, sfDblClicked);
+  end
+  else
+    CType := ccSingle;
   fStateFlags:=fStateFlags - [sfDblClicked,sfTripleClicked,sfQuadClicked];
+
   if sfWaitForDragging in fStateFlags then
   begin
     ComputeCaret(X, Y);
@@ -2810,6 +2783,7 @@ begin
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
     exit;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+
   if wasDragging then exit;
 
   IncPaintLock;
@@ -2818,7 +2792,7 @@ begin
       FGutter.MouseUp(Button, Shift, X, Y);
       Exclude(fStateFlags, sfGutterClick);
     end;
-    FindAndHandleMouseAction(Button, Shift, X, Y, ccSingle, cdUp);
+    FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdUp);
   finally
     DecPaintLock;
   end;
