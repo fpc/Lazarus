@@ -436,7 +436,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..112] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..128] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -472,6 +472,22 @@ const
     (Value: ecSelEditorTop; Name: 'ecSelEditorTop'),
     (Value: ecSelEditorBottom; Name: 'ecSelEditorBottom'),
     (Value: ecSelGotoXY; Name: 'ecSelGotoXY'),
+    (Value: ecColSelLeft; Name: 'ecColSelLeft'),
+    (Value: ecColSelRight; Name: 'ecColSelRight'),
+    (Value: ecColSelUp; Name: 'ecColSelUp'),
+    (Value: ecColSelDown; Name: 'ecColSelDown'),
+    (Value: ecColSelWordLeft; Name: 'ecColSelWordLeft'),
+    (Value: ecColSelWordRight; Name: 'ecColSelWordRight'),
+    (Value: ecColSelLineStart; Name: 'ecColSelLineStart'),
+    (Value: ecColSelLineEnd; Name: 'ecColSelLineEnd'),
+    (Value: ecColSelPageUp; Name: 'ecColSelPageUp'),
+    (Value: ecColSelPageDown; Name: 'ecColSelPageDown'),
+    (Value: ecColSelPageLeft; Name: 'ecColSelPageLeft'),
+    (Value: ecColSelPageRight; Name: 'ecColSelPageRight'),
+    (Value: ecColSelPageTop; Name: 'ecColSelPageTop'),
+    (Value: ecColSelPageBottom; Name: 'ecColSelPageBottom'),
+    (Value: ecColSelEditorTop; Name: 'ecColSelEditorTop'),
+    (Value: ecColSelEditorBottom; Name: 'ecColSelEditorBottom'),
     (Value: ecSelectAll; Name: 'ecSelectAll'),
     (Value: ecDeleteLastChar; Name: 'ecDeleteLastChar'),
     (Value: ecDeleteChar; Name: 'ecDeleteChar'),
