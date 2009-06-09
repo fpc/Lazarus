@@ -59,6 +59,8 @@ type
     ImageList1: TImageList;
     MainMenu1: TMainMenu;
     FileMenuOpenURLItem: TMenuItem;
+    HelpMenuItem: TMenuItem;
+    AboutItem: TMenuItem;
     PageControl: TPageControl;
     Panel1: TPanel;
     ForwardBttn: TSpeedButton;
@@ -67,6 +69,7 @@ type
     OpenDialog1: TOpenDialog;
     ViewMenuContents: TMenuItem;
     ViewMenuItem: TMenuItem;
+    procedure AboutItemClick(Sender: TObject);
     procedure BackToolBtnClick(Sender: TObject);
     procedure FileMenuCloseItemClick(Sender: TObject);
     procedure FileMenuExitItemClick(Sender: TObject);
@@ -78,6 +81,7 @@ type
     procedure HomeToolBtnClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure PageControlEnter(Sender: TObject);
+    procedure ViewMenuContentsClick(Sender: TObject);
 
   private
     { private declarations }
@@ -114,37 +118,54 @@ begin
   if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
 end;
 
+procedure THelpForm.AboutItemClick(Sender: TObject);
+begin
+  Application.MessageBox('LHelp (CHM file viewer)'#13 +
+    'Ver. 2009.06.08'#13 +
+    'Copyright (C) Andrew Haines',
+    'About', 0);
+end;
+
 
 procedure THelpForm.FileMenuCloseItemClick(Sender: TObject);
 begin
-  //DoCloseChm;// checks if it is open first
-  if Assigned(ActivePage) then ActivePage.Free;
+  if Assigned(ActivePage) then
+  begin
+    ViewMenuContentsClick(Self);
+    ActivePage.Free;
+    RefreshState;
+  end;
 end;
 
 procedure THelpForm.FileMenuExitItemClick(Sender: TObject);
 begin
-  //DoCloseChm;
   Close;
 end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
-  if OpenDialog1.Execute then OpenURL('file://'+OpenDialog1.FileName);
+  if OpenDialog1.Execute then
+  begin
+    OpenURL('file://'+OpenDialog1.FileName);
+    RefreshState;
+  end;
 end;
 
 procedure THelpForm.FileMenuOpenURLItemClick(Sender: TObject);
 var
   fRes: String;
 begin
-  if InputQuery('Enter a URL', 'Please Enter a URL', fRes) then OpenURL(fRes);
+  if InputQuery('Enter a URL', 'Please Enter a URL', fRes) then
+  begin
+    OpenURL(fRes);
+    RefreshState;
+  end;
 end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  //DoCloseChm;
   FileMenuCloseItemClick(Sender);
-  Stopserver;
-  
+  StopServer;
 end;
 
 procedure THelpForm.FormCreate(Sender: TObject);
@@ -154,6 +175,7 @@ begin
   if fServerName <> '' then begin
     StartServer(fServerName);
   end;
+  RefreshState;
 end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
@@ -174,6 +196,22 @@ end;
 procedure THelpForm.PageControlEnter(Sender: TObject);
 begin
   RefreshState;
+end;
+
+procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
+var
+  AWidth: Integer;
+begin
+  //TabsControl property in TChmContentProvider
+  if Assigned(ActivePage) then
+    with TChmContentProvider(ActivePage.ContentProvider) do
+    begin
+      TabsControl.Visible := not TabsControl.Visible;
+      Splitter.Visible := TabsControl.Visible;
+      Splitter.Left := TabsControl.Left + 4; //for splitter to move righter
+      ViewMenuContents.Checked := TabsControl.Visible;
+      AWidth := TabsControl.Width + Splitter.Width;
+    end;
 end;
 
 
@@ -327,7 +365,6 @@ begin
  
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
    PageControl.ActivePage := fNewPage;
- RefreshState;
 end;
 
 procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
@@ -342,24 +379,19 @@ begin
 end;
 
 procedure THelpForm.RefreshState;
+var
+  en: Boolean;
 begin
-  if ActivePage = nil then begin
-    BackBttn.Enabled := False;
-    ForwardBttn.Enabled := False;
-    HomeBttn.Enabled := False;
-    FileMenuCloseItem.Enabled := False;
-    exit;
-  end;
-  // else
-  FileMenuCloseItem.Enabled := True;
-  
-  HomeBttn.Enabled := True;
-  BackBttn.Enabled := True;// ActivePage.ContentProvider.CanGoBack;
-  ForwardBttn.Enabled := True; //ActivePage.ContentProvider.CanGoForward;
-  //WriteLn('BackBttn.Enabled    = ',BackBttn.Enabled);
-  //WriteLn('ForwardBttn.Enabled = ',ForwardBttn.Enabled);
-  //HomeBttn.Enabled := False;
-  FileMenuCloseItem.Enabled := True;
+  en := Assigned(ActivePage);
+  BackBttn.Enabled := en;
+  ForwardBttn.Enabled := en;
+  HomeBttn.Enabled := en;
+  FileMenuCloseItem.Enabled := en;
+  ViewMenuContents.Enabled := en;
+  if en then
+    Caption := 'LHelp - ' + ExtractFileName(OpenDialog1.FileName)
+  else
+    Caption := 'LHelp';
 end;
 
 procedure THelpForm.ShowError(AError: String);

@@ -84,6 +84,8 @@ type
     procedure GoHome; override;
     procedure GoBack; override;
     procedure GoForward; override;
+    property TabsControl: TPageControl read fTabsControl;
+    property Splitter: TSplitter read fSplitter;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
 
     constructor Create(AParent: TWinControl; AImageList: TImageList); override;

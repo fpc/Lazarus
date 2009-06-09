@@ -4,20 +4,9 @@ object HelpForm: THelpForm
   Top = 239
   Width = 758
   ActiveControl = Panel1
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
   Caption = 'LHelp'
   ClientHeight = 510
   ClientWidth = 758
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
-  FormStyle = fsNormal
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
     0000200000000100200000000000000400006400000064000000000000000000
@@ -60,51 +49,25 @@ object HelpForm: THelpForm
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
-  ParentBiDiMode = True
-  ParentFont = False
   Position = poScreenCenter
   ShowInTaskBar = stAlways
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object Panel1: TPanel
     Left = 0
     Height = 32
     Top = 0
     Width = 758
     Align = alTop
-    Alignment = taCenter
-    AutoSize = False
-    BevelInner = bvNone
-    BevelOuter = bvRaised
-    BevelWidth = 1
-    BorderWidth = 0
-    BorderStyle = bsNone
     ClientHeight = 32
     ClientWidth = 758
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    FullRepaint = True
-    ParentColor = True
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 0
-    TabStop = False
-    Visible = True
     object ForwardBttn: TSpeedButton
       Left = 65
       Height = 30
       Top = 1
       Width = 32
       Align = alLeft
-      AllowAllUp = False
       Color = clBtnFace
-      Down = False
-      Enabled = True
-      Flat = False
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000002
@@ -141,17 +104,8 @@ object HelpForm: THelpForm
         8B000000000000000000B07522006780280037221A005E392A00683B2C009129
         1B000000000038AB3E000000000068BC74000000000000000000
       }
-      GroupIndex = 0
-      Layout = blGlyphLeft
-      Margin = -1
       NumGlyphs = 0
-      Spacing = 4
-      Transparent = True
-      Visible = True
       OnClick = ForwardToolBtnClick
-      ShowCaption = True
-      ParentFont = True
-      ParentShowHint = True
     end
     object BackBttn: TSpeedButton
       Left = 33
@@ -159,11 +113,7 @@ object HelpForm: THelpForm
       Top = 1
       Width = 32
       Align = alLeft
-      AllowAllUp = False
       Color = clBtnFace
-      Down = False
-      Enabled = True
-      Flat = False
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -200,17 +150,8 @@ object HelpForm: THelpForm
         8B00000000000000000053575500535755005659580000000000000000000000
         0000000000000000000000000000000000000000000000000000
       }
-      GroupIndex = 0
-      Layout = blGlyphLeft
-      Margin = -1
       NumGlyphs = 0
-      Spacing = 4
-      Transparent = True
-      Visible = True
       OnClick = BackToolBtnClick
-      ShowCaption = True
-      ParentFont = True
-      ParentShowHint = True
     end
     object HomeBttn: TSpeedButton
       Left = 1
@@ -218,11 +159,7 @@ object HelpForm: THelpForm
       Top = 1
       Width = 32
       Align = alLeft
-      AllowAllUp = False
       Color = clBtnFace
-      Down = False
-      Enabled = True
-      Flat = False
       Glyph.Data = {
         36090000424D3609000000000000360000002800000018000000180000000100
         2000000000000009000064000000640000000000000000000000E4E7EA00E4E7
@@ -299,17 +236,8 @@ object HelpForm: THelpForm
         EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7
         EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00
       }
-      GroupIndex = 0
-      Layout = blGlyphLeft
-      Margin = -1
       NumGlyphs = 0
-      Spacing = 4
-      Transparent = True
-      Visible = True
       OnClick = HomeToolBtnClick
-      ShowCaption = True
-      ParentFont = True
-      ParentShowHint = True
     end
   end
   object PageControl: TPageControl
@@ -317,18 +245,9 @@ object HelpForm: THelpForm
     Height = 478
     Top = 32
     Width = 758
-    TabStop = True
     Align = alClient
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 1
     TabPosition = tpBottom
-    Visible = True
     OnChange = PageControlChange
     OnEnter = PageControlEnter
     OnPageChanged = PageControlChange
@@ -337,47 +256,43 @@ object HelpForm: THelpForm
     top = 124
     object FileMenuItem: TMenuItem
       Caption = '&File'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       object FileMenuOpenItem: TMenuItem
-        Caption = '&Open'
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Caption = '&Open...'
+        ShortCut = 16463
         OnClick = FileMenuOpenItemClick
       end
       object FileMenuOpenURLItem: TMenuItem
-        Caption = 'OpenURL'
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Caption = 'Open &URL...'
         OnClick = FileMenuOpenURLItemClick
       end
       object FileMenuCloseItem: TMenuItem
         Caption = '&Close'
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        ShortCut = 16471
         OnClick = FileMenuCloseItemClick
       end
       object FileSeperater: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object FileMenuExitItem: TMenuItem
         Caption = 'E&xit'
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = FileMenuExitItemClick
       end
     end
     object ViewMenuItem: TMenuItem
       Caption = '&View'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       object ViewMenuContents: TMenuItem
-        Caption = 'Contents Panel'
+        Caption = 'Show contents'
         Checked = True
-        RightJustify = False
+        ShortCut = 115
         ShowAlwaysCheckable = True
+        OnClick = ViewMenuContentsClick
+      end
+    end
+    object HelpMenuItem: TMenuItem
+      Caption = '&Help'
+      object AboutItem: TMenuItem
+        Caption = '&About...'
+        OnClick = AboutItemClick
       end
     end
   end
@@ -387,15 +302,6 @@ object HelpForm: THelpForm
     top = 156
   end
   object ImageList1: TImageList
-    AllocBy = 4
-    BlendColor = clNone
-    BkColor = clNone
-    DrawingStyle = dsNormal
-    Height = 16
-    ImageType = itImage
-    Masked = False
-    ShareImages = False
-    Width = 16
     left = 8
     top = 80
     Bitmap = {
