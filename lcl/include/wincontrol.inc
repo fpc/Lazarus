@@ -89,10 +89,10 @@ type
     procedure InitSums;
     procedure SumLine(Orientation: TAutoSizeBoxOrientation;
                       DoInit: boolean);
-    procedure ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
     procedure ResizeChilds(ChildSizing: TControlChildSizing;
                            Orientation: TAutoSizeBoxOrientation;
                            TargetSize: integer);
+    procedure ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
 
     // for tables
     procedure AllocateTable(ColCount, RowCount: Integer);
@@ -101,6 +101,7 @@ type
     procedure SumTable;
     procedure ResizeTable(ChildSizing: TControlChildSizing;
                           TargetWidth, TargetHeight: integer);
+    procedure AlignToRight(TargetWidth: integer);
     procedure ComputeTableControlBounds(ChildSizing: TControlChildSizing);
     function SetTableControlBounds(ChildSizing: TControlChildSizing
                                    ): boolean;// true if changed
@@ -1375,6 +1376,7 @@ var
   ChildBox: TAutoSizeBox;
   RowCount: LongInt;
   ColCount: Integer;
+  LineMax: LongInt;
 begin
   // allocate table
   case ChildSizing.Layout of
@@ -1399,16 +1401,22 @@ begin
     case ChildSizing.Layout of
     cclLeftToRightThenTopToBottom:
       begin
-        Row:=i div ChildCount[asboHorizontal];
-        Col:=i mod ChildCount[asboHorizontal];
+        LineMax:=ChildCount[asboHorizontal];
+        Row:=i div LineMax;
+        Col:=i mod LineMax;
+        if (ChildSizing.Control.BiDiMode<>bdLeftToRight) then
+          Col:=LineMax-Col-1;
         ChildBox:=Childs[asboHorizontal][Col].Childs[asboVertical][Row];
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
       end;
     cclTopToBottomThenLeftToRight:
       begin
-        Col:=i div ChildCount[asboVertical];
-        Row:=i mod ChildCount[asboVertical];
+        LineMax:=ChildCount[asboVertical];
+        Col:=i div LineMax;
+        Row:=i mod LineMax;
+        if (ChildSizing.Control.BiDiMode<>bdLeftToRight) then
+          Col:=LineMax-Col-1;
         ChildBox:=Childs[asboVertical][Row].Childs[asboHorizontal][Col];
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
@@ -1966,7 +1974,6 @@ begin
       if i>1000 then RaiseGDBException('TAutoSizeBox.ResizeChilds consistency error');
     end;
   end;
-  ComputeLeftTops(Orientation);
 end;
 
 procedure TAutoSizeBox.ResizeTable(ChildSizing: TControlChildSizing;
@@ -1974,7 +1981,44 @@ procedure TAutoSizeBox.ResizeTable(ChildSizing: TControlChildSizing;
 begin
   // resize rows and columns
   ResizeChilds(ChildSizing,asboHorizontal,TargetWidth);
+  ComputeLeftTops(asboHorizontal);
   ResizeChilds(ChildSizing,asboVertical,TargetHeight);
+  ComputeLeftTops(asboVertical);
+end;
+
+procedure TAutoSizeBox.AlignToRight(TargetWidth: integer);
+
+  function GetChildTotalSize(Orientation: TAutoSizeBoxOrientation): integer;
+  // computes the total preferred size of all childs of this Orientation
+  var
+    i: Integer;
+    Child: TAutoSizeBox;
+  begin
+    Result:=0;
+    for i:=0 to ChildCount[Orientation]-1 do begin
+      Child:=Childs[Orientation][i];
+      if i=0 then
+        inc(Result,Child.BorderLeftTop[Orientation]);
+      if Child.PreferredSize[Orientation]<1 then
+        Child.PreferredSize[Orientation]:=1;
+      inc(Result,Child.PreferredSize[Orientation]);
+      inc(Result,Child.BorderRightBottom[Orientation]);
+    end;
+  end;
+
+var
+  Orientation: TAutoSizeBoxOrientation;
+  i: Integer;
+  Child: TAutoSizeBox;
+  dx: Integer;
+begin
+  Orientation:=asboHorizontal;
+  dx:=TargetWidth-GetChildTotalSize(Orientation);
+
+  for i:=ChildCount[Orientation]-1 downto 0 do begin
+    Child:=Childs[Orientation][i];
+    inc(Child.LeftTop[Orientation],dx);
+  end;
 end;
 
 procedure TAutoSizeBox.ComputeTableControlBounds(ChildSizing: TControlChildSizing
@@ -1990,8 +2034,10 @@ var
   CellBounds: TRect;
   NewWidth: LongInt;
   NewHeight: LongInt;
+  BidiMode: TBiDiMode;
 begin
   //WriteDebugReport;
+  BidiMode:=ChildSizing.Control.BiDiMode;
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
@@ -2012,8 +2058,11 @@ begin
         //DebugLn('TAutoSizeBox.SetTableControlBounds ',DbgSName(CurControl),' ',dbgs(ord(CurControl.BorderSpacing.CellAlignHorizontal)));
         case CurControl.BorderSpacing.CellAlignHorizontal of
         ccaFill:        NewWidth:=CellBounds.Right-CellBounds.Left;
-        ccaLeftTop:     ;
-        ccaRightBottom: NewBounds.Left:=CellBounds.Right-NewWidth;
+        ccaLeftTop,ccaRightBottom:
+                   if (CurControl.BorderSpacing.CellAlignHorizontal=ccaLeftTop)
+                     <>(BidiMode=bdLeftToRight)
+                   then
+                     NewBounds.Left:=CellBounds.Right-NewWidth;
         ccaCenter:      NewBounds.Left:=NewBounds.Left
                              +(CellBounds.Right-CellBounds.Left-NewWidth) div 2;
         end;
@@ -2091,6 +2140,9 @@ begin
   //WriteDebugReport('after SumTable');
   ResizeTable(ChildSizing,TargetWidth,TargetHeight);
   //WriteDebugReport('after ResizeTable');
+  if ChildSizing.Control.BiDiMode<>bdLeftToRight then
+    AlignToRight(TargetWidth);
+  //WriteDebugReport('after AlignToRight');
   ComputeTableControlBounds(ChildSizing);
   //WriteDebugReport('after ComputeTableControlBounds');
   Result:=Apply and SetTableControlBounds(ChildSizing);
@@ -6084,7 +6136,8 @@ begin
   inherited;
   NotifyControls(CM_PARENTBIDIMODECHANGED);
   if HandleAllocated and (Message.wParam = 0) then
-    TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self, UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
+    TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self,
+       UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
 end;
 
 procedure TWinControl.CMBorderChanged(var Message: TLMessage);

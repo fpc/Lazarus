@@ -1465,7 +1465,7 @@ type
 
   TControlChildrenLayout = (
       cclNone,
-      cclLeftToRightThenTopToBottom,
+      cclLeftToRightThenTopToBottom, // if BiDiMode <> bdLeftToRight then it becomes RightToLeft
       cclTopToBottomThenLeftToRight
     );
 
