@@ -444,9 +444,9 @@ var
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
-    Glyph := BitBtn.Glyph;
-    if not Glyph.Empty then
+    if BitBtn.CanShowGlyph then
     begin
+      Glyph := BitBtn.Glyph;
       Windows.GetObject(Glyph.Handle, sizeof(BitmapInfo), @BitmapInfo);
       srcWidth := BitmapInfo.bmWidth;
       if BitBtn.NumGlyphs > 1 then
@@ -468,7 +468,8 @@ begin
     end;
     Inc(PreferredWidth, 20);
     Inc(PreferredHeight, 4);
-    if WithThemeSpace then begin
+    if WithThemeSpace then
+    begin
       Inc(PreferredWidth, 6);
       Inc(PreferredHeight, 6);
     end;
