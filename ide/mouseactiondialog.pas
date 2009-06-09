@@ -63,9 +63,9 @@ type
 implementation
 
 const
-  BtnToIndex: array [mbLeft..mbMiddle] of Integer = (0, 1, 2);
+  BtnToIndex: array [mbLeft..mbExtra2] of Integer = (0, 1, 2, 3, 4);
   ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
-  IndexToBtn: array [0..2] of TMouseButton = (mbLeft, mbRight, mbMiddle);
+  IndexToBtn: array [0..4] of TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
   IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
 
 function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word): Integer;
