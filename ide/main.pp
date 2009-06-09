@@ -11248,8 +11248,6 @@ begin
         Include(OpenFlags,ofVirtualFile);
     end;
 
-    debugln(['TMainIDE.DoJumpToCompilerMessage SearchedFilename=',SearchedFilename]);
-
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
@@ -11476,14 +11474,13 @@ var
   ProjectDir: string;
   AnUnitInfo: TUnitInfo;
   AnUnitName: String;
+  UnitInFilename: String;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
     exit;
   end;
   Result:='';
-
-  debugln(['TMainIDE.FindUnitFile AAA1 ',AFilename]);
 
   // search in virtual (unsaved) files
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename,
@@ -11496,8 +11493,9 @@ begin
   AnUnitName:=ExtractFileNameOnly(AFilename);
   // use the CodeTools way to find the pascal source
   ProjectDir:=Project1.ProjectDirectory;
-  debugln(['TMainIDE.FindUnitFile ',AnUnitName,' ',projectdir]);
-  Result:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(ProjectDir,AnUnitName,true);
+  UnitInFilename:='';
+  Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                                     ProjectDir,AnUnitName,UnitInFilename,true);
   if Result<>'' then exit;
 end;
 
