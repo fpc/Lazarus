@@ -89,6 +89,7 @@ var
 begin
   Caption := dlgMouseOptDlgTitle;
   CapturePanel.Caption := dlgMouseOptCapture;
+  CapturePanel.ControlStyle := ControlStyle + [csTripleClicks, csQuadClicks];
   CaretCheck.Caption := dlgMouseOptCaretMove;
   ActionBox.Clear;
   for i:= 0 to emcMax do begin
