@@ -30,7 +30,11 @@ begin
 end;
 
 procedure TFPImageBitmap.FinalizeWriter(AWriter: TFPCustomImageWriter);
+var
+  LazWriter: ILazImageWriter;
 begin
+  if Supports(AWriter, ILazImageWriter, LazWriter)
+  then LazWriter.Finalize;
 end;
 
 function TFPImageBitmap.GetMimeType: string;
@@ -54,8 +58,12 @@ begin
 end;
 
 procedure TFPImageBitmap.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
+var
+  LazWriter: ILazImageWriter;
 begin
   AWriter.OnProgress := @Progress;
+  if Supports(AWriter, ILazImageWriter, LazWriter)
+  then LazWriter.Initialize(AImage);
 end;
 
 class function TFPImageBitmap.IsFileExtensionSupported(

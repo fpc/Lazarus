@@ -37,7 +37,7 @@ end;
 
 class function TPortableNetworkGraphic.GetWriterClass: TFPCustomImageWriterClass;
 begin
-  Result := TFPWriterPNG;
+  Result := TLazWriterPNG;
 end;
 
 procedure TPortableNetworkGraphic.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
@@ -45,12 +45,8 @@ var
   W: TFPWriterPNG absolute AWriter;
 begin
   inherited InitializeWriter(AImage, AWriter);
-  W.UseAlpha := AImage.DataDescription.AlphaPrec <> 0;
-  W.GrayScale := AImage.DataDescription.Format = ricfGray;
-  W.Indexed := PaletteAllocated or (PixelFormat in [pf1bit, pf4bit, pf8bit]);
-  W.WordSized := (AImage.DataDescription.RedPrec > 8)
-              or (AImage.DataDescription.GreenPrec > 8)
-              or (AImage.DataDescription.BluePrec > 8);
+  if AWriter is TFPWriterPNG
+  then W.Indexed := W.Indexed or PaletteAllocated;
 end;
 
 // included by graphics.pp

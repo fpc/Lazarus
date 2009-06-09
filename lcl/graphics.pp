@@ -39,8 +39,8 @@ uses
   SysUtils, Math, Types, Classes, FPCAdds,
   FileUtil,
   FPImage, FPCanvas,
-  FPWritePNG, PNGComn,  // png support
-  FPWriteBMP,   // bmp support
+  FPWriteBMP,              // bmp support
+  FPWritePNG, PNGComn,     // png support
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
   FPReadJpeg, FPWriteJpeg, // jpg support
   IntfGraphics,
@@ -1421,7 +1421,6 @@ type
   private
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
-    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
     class function GetReaderClass: TFPCustomImageReaderClass; override;
     class function GetWriterClass: TFPCustomImageWriterClass; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;

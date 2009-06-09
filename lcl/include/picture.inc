@@ -537,38 +537,42 @@ end;
 procedure TPicture.SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
 var
   GraphicClass: TGraphicClass;
-  IntfImage: TLazIntfImage;
-  ImageWriterClass: TFPCustomImageWriterClass;
-  ImageWriter: TFPCustomImageWriter;
+  IntfImg: TLazIntfImage;
+  ImgWriter: TFPCustomImageWriter;
+  fpBmp: TFPImageBitmap;
 begin
   if Graphic = nil then Exit;
   if FileExt <> '' then
     GraphicClass := FindGraphicClassWithFileExt(FileExt);
 
-  if (FileExt = '') or (Graphic is GraphicClass) then
-    Graphic.SaveToStream(Stream)
-  else
-  begin
-    // save in different format
-    if (Graphic is TFPImageBitmap) and GraphicClass.InheritsFrom(TFPImageBitmap) then
-    begin
-      ImageWriterClass := TFPImageBitmapClass(GraphicClass).GetWriterClass;
-
-      IntfImage := (Graphic as TFPImageBitmap).CreateIntfImage;
-      try
-        ImageWriter := ImageWriterClass.Create;
-        try
-          IntfImage.SaveToStream(Stream, ImageWriter);
-        finally
-          ImageWriter.Free;
-        end;
-      finally
-        IntfImage.Free;
-      end;
-    end
-    else
-      raise Exception.CreateFmt('TODO: Conversion for vector or icon images of format "%s" to "%s"!', [Graphic.GetFileExtensions, FileExt]);
+  if (FileExt = '')
+  or (Graphic is GraphicClass)
+  then begin
+    Graphic.SaveToStream(Stream);
+    Exit;
   end;
+
+  // save in different format
+  if (Graphic is TFPImageBitmap) and GraphicClass.InheritsFrom(TFPImageBitmap)
+  then begin
+    fpBmp := TFPImageBitmap(Graphic);
+    ImgWriter := nil;
+    IntfImg := TLazIntfImage.Create(0,0,[]);
+    try
+      ImgWriter := TFPImageBitmapClass(GraphicClass).GetWriterClass.Create;
+      IntfImg.SetRawImage(fpBmp.GetRawImagePtr^, False);
+      fpBmp.InitializeWriter(IntfImg, ImgWriter);
+      IntfImg.SaveToStream(Stream, ImgWriter);
+      fpBmp.FinalizeWriter(ImgWriter);
+    finally
+      IntfImg.Free;
+      ImgWriter.Free;
+    end;
+    Exit;
+  end;
+
+  // no conversion available yet
+  raise Exception.CreateFmt('TODO: Conversion for vector or icon images of format "%s" to "%s"!', [Graphic.GetFileExtensions, FileExt]);
 end;
 
 procedure TPicture.LoadFromStreamWithFileExt(Stream: TStream;

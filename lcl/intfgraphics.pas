@@ -31,8 +31,9 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, FPReadBMP, BMPComn, FPCAdds, AvgLvlTree, LCLType,
-  LCLProc, GraphType, LCLIntf, FPReadPNG, IcnsTypes;
+  Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
+  AvgLvlTree, LCLType,
+  LCLProc, GraphType, LCLIntf, FPReadPNG, FPWritePNG, IcnsTypes;
 
 type
   { TLazIntfImage }
@@ -373,6 +374,18 @@ type
     property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
 
+  { ILazImageWriter }
+  { Extention to TFPCustomImageWriter to initialize the writer based
+    on the intfimage data. To be able to write different formats, the writer
+    should initialize itself
+  }
+  ILazImageWriter = interface
+    ['{DFE8D2A0-E318-45CE-87DE-9C6F1F1928E5}']
+    procedure Initialize(AImage: TLazIntfImage);
+    procedure Finalize;
+  end;
+
+
   { TLazReaderXPM }
   { This is a FPImage reader for xpm images. }
 
@@ -422,10 +435,9 @@ type
   end;
   
   
-  { TLazReaderBMP }
-  { This is an imroved FPImage reader for bmp images. }
-  //TODO: improved or not, derive from TFPReaderBMP the get RLE support
-  
+  { TLazReaderDIB }
+  { This is an imroved FPImage reader for dib images. }
+
   TLazReaderMaskMode = (
     lrmmNone,  // no mask is generated
     lrmmAuto,  // a mask is generated based on the first pixel read (*)
@@ -524,6 +536,20 @@ type
     procedure InternalReadHead; override;
   end;
 
+  { TLazWriterBMP }
+
+  TLazWriterBMP = class(TFPWriterBMP, ILazImageWriter)
+  private
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+  public
+    procedure Initialize(AImage: TLazIntfImage);
+    procedure Finalize;
+  end;
+
+
   { TLazReaderIconDIB }
   { This is a FPImage reader for a single DIB from an icon file }
   TLazReaderIconDIB = class (TLazReaderDIB)
@@ -551,6 +577,19 @@ type
     procedure InternalRead(Str:TStream; Img:TFPCustomImage); override;
   public
     property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
+  end;
+
+  { TLazWriterPNG }
+
+  TLazWriterPNG = class(TFPWriterPNG, ILazImageWriter)
+  private
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+  public
+    procedure Initialize(AImage: TLazIntfImage);
+    procedure Finalize;
   end;
 
   { TLazReaderIcnsPart }
@@ -4620,6 +4659,36 @@ begin
   then TheStream.Position := FDataOffset;
 end;
 
+{ TLazWriterBMP }
+
+procedure TLazWriterBMP.Finalize;
+begin
+end;
+
+procedure TLazWriterBMP.Initialize(AImage: TLazIntfImage);
+begin
+  // set BPP
+  // we can also look at PixelFormat, but it can be inexact
+  BitsPerPixel := AImage.DataDescription.Depth;
+end;
+
+function TLazWriterBMP.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+function TLazWriterBMP._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazWriterBMP._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
 { TLazReaderDIB }
 
 procedure TLazReaderDIB.InitLineBuf;
@@ -5578,6 +5647,39 @@ begin
 end;
 
 function TLazReaderPNG._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+{ TLazWriterPNG }
+
+procedure TLazWriterPNG.Finalize;
+begin
+end;
+
+procedure TLazWriterPNG.Initialize(AImage: TLazIntfImage);
+begin
+  UseAlpha := AImage.DataDescription.AlphaPrec <> 0;
+  GrayScale := AImage.DataDescription.Format = ricfGray;
+  Indexed := AImage.DataDescription.Depth <= 8;
+  WordSized := (AImage.DataDescription.RedPrec > 8)
+            or (AImage.DataDescription.GreenPrec > 8)
+            or (AImage.DataDescription.BluePrec > 8);
+end;
+
+function TLazWriterPNG.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+function TLazWriterPNG._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazWriterPNG._Release: LongInt; stdcall;
 begin
   Result := -1;
 end;

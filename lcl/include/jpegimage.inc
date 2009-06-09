@@ -60,14 +60,13 @@ procedure TJPEGImage.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomI
 begin
   inherited;
   TFPReaderJPEG(AReader).Performance := Performance;
-  TFPReaderJPEG(AReader).OnProgress := @Progress;
 end;
 
 procedure TJPEGImage.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
 begin
   inherited;
+  if not(AWriter is TFPWriterJPEG) then Exit;
   TFPWriterJPEG(AWriter).ProgressiveEncoding := ProgressiveEncoding;
   TFPWriterJPEG(AWriter).CompressionQuality := CompressionQuality;
-  TFPWriterJPEG(AWriter).OnProgress := @Progress;
 end;
 

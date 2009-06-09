@@ -160,7 +160,7 @@ end;
     
 class function TBitmap.GetWriterClass: TFPCustomImageWriterClass;
 begin
-  Result := TFPWriterBMP;
+  Result := TLazWriterBMP;
 end;
 
 procedure TBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
@@ -168,6 +168,8 @@ var
   LazReader: TLazReaderBMP absolute AReader;
 begin
   inherited;
+
+  if not (AReader is TLazReaderBMP) then Exit;
   
   // TransparentMode
   //   tmAuto: use left bottom pixel
@@ -194,14 +196,5 @@ begin
       LazReader.MaskColor := TColorToFPColor(TransparentColor);
     end;
   end;
-end;
-
-procedure TBitmap.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
-begin
-  inherited;
-
-  // set BPP
-  // we can also look at PixelFormat, but it can be inexact
-  TFPWriterBMP(AWriter).BitsPerPixel := AImage.DataDescription.Depth;
 end;
 
