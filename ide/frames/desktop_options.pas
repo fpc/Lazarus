@@ -240,6 +240,7 @@ procedure TDesktopOptionsFrame.SaveDesktopSettingsToFileButtonClick(Sender: TObj
 var
   AnEnvironmentOptions: TEnvironmentOptions;
   SaveDialog: TSaveDialog;
+  AFilename: String;
 begin
   //debugln('TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick A');
   SaveDialog := TSaveDialog.Create(nil);
@@ -251,9 +252,12 @@ begin
            +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
       if SaveDialog.Execute then
       begin
+        AFilename:=SaveDialog.Filename;
+        if ExtractFileExt(AFilename)='' then
+          AFilename:=AFilename+'.lds';
         AnEnvironmentOptions := TEnvironmentOptions.Create;
         try
-          AnEnvironmentOptions.Filename := SaveDialog.Filename;
+          AnEnvironmentOptions.Filename := AFilename;
           DoSaveSettings(AnEnvironmentOptions);
           AnEnvironmentOptions.Save(true);
         finally
