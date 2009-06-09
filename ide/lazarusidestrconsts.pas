@@ -1183,6 +1183,8 @@ resourcestring
   dlgMouseOptBtnLeft   = 'Left';
   dlgMouseOptBtnMiddle = 'Middle';
   dlgMouseOptBtnRight  = 'Right';
+  dlgMouseOptBtnExtra1 = 'Extra 1';
+  dlgMouseOptBtnExtra2 = 'Extra 2';
   dlgMouseOptBtnDown = 'Down';
   dlgMouseOptBtnUp   = 'Up';
   dlgMouseOptBtn1   = 'Single';

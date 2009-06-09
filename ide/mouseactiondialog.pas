@@ -9,8 +9,13 @@ uses
   StdCtrls, ButtonPanel, Spin, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 const
-  ButtonName: Array [TMouseButton] of String =
-    (dlgMouseOptBtnLeft, dlgMouseOptBtnRight, dlgMouseOptBtnMiddle);
+  ButtonName: Array [TMouseButton] of String = (
+{ mbLeft   } dlgMouseOptBtnLeft,
+{ mbRight  } dlgMouseOptBtnRight,
+{ mbMiddle } dlgMouseOptBtnMiddle,
+{ mbExtra1 } dlgMouseOptBtnExtra1,
+{ mbExtra2 } dlgMouseOptBtnExtra2
+  );
   ClickName: Array [TSynMAClickCount] of String =
     (dlgMouseOptBtn1, dlgMouseOptBtn2, dlgMouseOptBtn3, dlgMouseOptBtn4, dlgMouseOptBtnAny);
   ButtonDirName: Array [TSynMAClickDir] of String =
