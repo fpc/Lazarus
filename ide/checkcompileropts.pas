@@ -963,9 +963,9 @@ begin
       UnitName:=ExtractFileNameOnly(PPUFilename);
       // search .pas/.pp/.p file
       if SearchPascalUnitInPath(UnitName,'',SrcPath,';',ctsfcAllCase)<>'' then
-        PPUFiles.Delete(i);
+        PPUFiles.Delete(i)
       // check for main source
-      if (Options.Owner is TLazProject) then begin
+      else if (Options.Owner is TLazProject) then begin
         CurProject:=TLazProject(Options.Owner);
         if (CurProject.MainFileID>=0) then begin
           ProjFile:=CurProject.MainFile;
