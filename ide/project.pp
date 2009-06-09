@@ -638,6 +638,7 @@ type
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
     procedure EmbeddedObjectModified(Sender: TObject);
+    procedure FixEditorIndex;
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -903,6 +904,9 @@ function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 function dbgs(Flag: TUnitInfoFlag): string; overload;
 function dbgs(Flags: TUnitInfoFlags): string; overload;
 
+function CompareUnitInfoWithEditorIndex(Unit1, Unit2: TUnitInfo): integer;
+
+
 implementation
 
 const
@@ -956,6 +960,11 @@ begin
       Result:=Result+dbgs(f);
     end;
   Result:='['+Result+']';
+end;
+
+function CompareUnitInfoWithEditorIndex(Unit1, Unit2: TUnitInfo): integer;
+begin
+  Result:=Unit1.EditorIndex-Unit2.EditorIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -2557,6 +2566,7 @@ begin
     end;
 
   finally
+    FixEditorIndex;
     EndUpdate;
   end;
 
@@ -3308,6 +3318,37 @@ procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
   if Resources.Modified then
     Modified := True;
+end;
+
+procedure TProject.FixEditorIndex;
+var
+  List: TFPList;
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+  NewActiveEditorIndexAtStart: LongInt;
+begin
+  List:=TFPList.Create;
+  try
+    AnUnitInfo:=FirstUnitWithEditorIndex;
+    while AnUnitInfo<>nil do
+    begin
+      List.Add(AnUnitInfo);
+      AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+    end;
+    List.Sort(TListSortCompare(@CompareUnitInfoWithEditorIndex));
+    NewActiveEditorIndexAtStart:=-1;
+    for i:=0 to List.Count-1 do
+    begin
+      AnUnitInfo:=TUnitInfo(List[i]);
+      if (NewActiveEditorIndexAtStart<0)
+      and (ActiveEditorIndexAtStart=AnUnitInfo.EditorIndex) then
+        NewActiveEditorIndexAtStart:=i;
+      AnUnitInfo.EditorIndex:=i;
+    end;
+    ActiveEditorIndexAtStart:=NewActiveEditorIndexAtStart;
+  finally
+    List.Free;
+  end;
 end;
 
 function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;
