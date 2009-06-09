@@ -20,7 +20,7 @@ interface
 
 uses
   Types, SysUtils, Classes, Controls, ExtCtrls, Buttons, Forms, GraphType,
-  Graphics, LCLStrConsts, Themes;
+  Graphics, LMessages, LCLStrConsts, Themes;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -87,6 +87,7 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
+    procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -330,6 +331,11 @@ begin
   UpdateBevel;
   UpdateSizes;
   Realign;
+end;
+
+procedure TCustomButtonPanel.CMAppShowBtnGlyphChanged(var Message: TLMessage);
+begin
+  NotifyControls(Message.msg);
 end;
 
 procedure TCustomButtonPanel.SetButtonOrder(Value: TButtonOrder);

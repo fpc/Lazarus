@@ -1375,7 +1375,6 @@ type
     FOnQueryEndSession : TQueryEndSessionEvent;
     FOnMinimize : TNotifyEvent;
     FOnRestore : TNotifyEvent;
-    procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
   protected
     procedure SetCaptureExceptions(const AValue : boolean);
     procedure SetHelpFile(const AValue : string);
@@ -1386,6 +1385,7 @@ type
     procedure SetHintShortCuts(const AValue : Boolean);
     procedure SetHintShortPause(const AValue : Integer);
     procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
+    procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
     procedure SetShowHint(const AValue : Boolean);
     procedure SetShowMainForm(const AValue: Boolean);
     procedure SetTitle(const AValue : String);
