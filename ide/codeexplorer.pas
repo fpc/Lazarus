@@ -1698,8 +1698,6 @@ begin
     end;
 
     // restore old expanded state
-    OldExpanded.Apply(CodeTreeView);
-    OldExpanded.Free;
     fSortCodeTool:=ACodeTool;
     CodeTreeview.CustomSort(@CompareCodeNodes);
 
@@ -1710,6 +1708,9 @@ begin
     ClearCTNodes(CodeTreeview);
 
     ApplyCodeFilter;
+
+    OldExpanded.Apply(CodeTreeView);
+    OldExpanded.Free;
     CodeTreeview.EndUpdate;
 
   finally
