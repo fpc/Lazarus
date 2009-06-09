@@ -148,22 +148,12 @@ var
   {$ENDIF}
 
   procedure DrawBitmap(AState: TButtonState; UseThemes: Boolean);
-  const
-    ButtonsDetail: array[TButtonState] of TThemedButton = (
-     { bsUp        } tbPushButtonNormal,
-     { bsDisabled  } tbPushButtonDisabled,
-     { bsDown      } tbPushButtonPressed,
-     { bsExclusive } tbPushButtonNormal,
-     { bsHot       } tbPushButtonHot
-    );
-
   var
     TextFlags: integer; // flags for caption (enabled or disabled)
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     AIndex: Integer;
     AEffect: TGraphicsDrawEffect;
-    Details: TThemedElementDetails;
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
@@ -225,28 +215,19 @@ var
       end;
     end;
     SetBkMode(hdcNewBitmap, TRANSPARENT);
-    if not UseThemes then
+    {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
     begin
-      {$IFDEF WindowsUnicodeSupport}
-      if UnicodeEnabledOS then
-      begin
-        ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
-        DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
-      end
-      else begin
-        ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
-        DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
-      end;
-      {$ELSE}
-      DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
-      {$ENDIF}
+      ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
+      DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
     end
-    else
-    begin
-      Details := ThemeServices.GetElementDetails(ButtonsDetail[AState]);
-      ThemeServices.DrawText(hdcNewBitmap, Details, ButtonCaption,
-        Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy), 0, 0);
+    else begin
+      ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
+      DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
     end;
+    {$ELSE}
+    DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
+    {$ENDIF}
     SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
 
