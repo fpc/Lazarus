@@ -128,11 +128,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = p3
       AnchorSideRight.Side = asrBottom
-      Left = 510
+      Left = 533
       Height = 25
       Top = 37
-      Width = 100
+      Width = 77
       Anchors = [akTop, akRight]
+      AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'BtnExport'
@@ -142,11 +143,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     object BtnImport: TButton
       AnchorSideTop.Control = BtnExport
       AnchorSideRight.Control = BtnExport
-      Left = 429
+      Left = 447
       Height = 25
       Top = 37
-      Width = 75
+      Width = 80
       Anchors = [akTop, akRight]
+      AutoSize = True
       BorderSpacing.Right = 6
       Caption = 'BtnImport'
       OnClick = BtnImportClick
