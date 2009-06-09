@@ -1,26 +1,26 @@
 inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
-  Height = 415
+  Height = 420
   Width = 610
   Anchors = [akTop]
-  ClientHeight = 415
+  ClientHeight = 420
   ClientWidth = 610
   Visible = False
   DesignLeft = 246
   DesignTop = 209
   object p2: TPanel[0]
     Left = 0
-    Height = 378
+    Height = 352
     Top = 0
     Width = 610
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 378
+    ClientHeight = 352
     ClientWidth = 610
     TabOrder = 0
     object ActionGrid: TStringGrid
       AnchorSideBottom.Control = p3
       Left = 135
-      Height = 378
+      Height = 352
       Top = 0
       Width = 475
       Align = alClient
@@ -44,7 +44,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     end
     object ContextTree: TTreeView
       Left = 0
-      Height = 378
+      Height = 352
       Top = 0
       Width = 130
       Align = alLeft
@@ -59,7 +59,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 130
-      Height = 378
+      Height = 352
       Top = 0
       Width = 5
       AutoSnap = False
@@ -71,13 +71,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Control = p2
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 37
-    Top = 378
+    Height = 68
+    Top = 352
     Width = 610
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 37
+    ClientHeight = 68
     ClientWidth = 610
     TabOrder = 1
     object DelButton: TButton
@@ -123,5 +123,47 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       OnClick = UpdateButtonClick
       TabOrder = 1
     end
+    object BtnExport: TButton
+      AnchorSideTop.Control = UpdateButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = p3
+      AnchorSideRight.Side = asrBottom
+      Left = 510
+      Height = 25
+      Top = 37
+      Width = 100
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'BtnExport'
+      OnClick = BtnExportClick
+      TabOrder = 3
+    end
+    object BtnImport: TButton
+      AnchorSideTop.Control = BtnExport
+      AnchorSideRight.Control = BtnExport
+      Left = 429
+      Height = 25
+      Top = 37
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'BtnImport'
+      OnClick = BtnImportClick
+      TabOrder = 4
+    end
+  end
+  object SaveDialog1: TSaveDialog[2]
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|any|*.*'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 176
+    top = 368
+  end
+  object OpenDialog1: TOpenDialog[3]
+    DefaultExt = '.xml'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 264
+    top = 368
   end
 end

@@ -1204,6 +1204,8 @@ resourcestring
   dlgMouseOptBtnDel  = 'Delete';
   dlgMouseOptBtnUdp  = 'Change';
   dlgMouseOptBtnAdd  = 'Add';
+  dlgMouseOptBtnImport = 'Import';
+  dlgMouseOptBtnExport = 'Export';
   dlgMouseOptBtnOk  = 'Ok';
   dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';

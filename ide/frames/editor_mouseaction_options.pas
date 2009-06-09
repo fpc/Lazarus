@@ -26,7 +26,7 @@ interface
 
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
-  StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
+  StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs, ButtonPanel,
   SynEditMouseCmds, MouseActionDialog, math, KeyMapping;
 
 type
@@ -34,7 +34,11 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BtnExport: TButton;
+    BtnImport: TButton;
     DelButton: TButton;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
     Splitter1: TSplitter;
     UpdateButton: TButton;
     AddNewButton: TButton;
@@ -50,6 +54,8 @@ type
     procedure ActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure ActionGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
       Y: Integer);
+    procedure BtnExportClick(Sender: TObject);
+    procedure BtnImportClick(Sender: TObject);
     procedure ContextTreeChange(Sender: TObject; Node: TTreeNode);
     procedure AddNewButtonClick(Sender: TObject);
     procedure UpdateButtonClick(Sender: TObject);
@@ -316,6 +322,81 @@ begin
   FIsHeaderSizing := False;
 end;
 
+procedure TEditorMouseOptionsFrame.BtnExportClick(Sender: TObject);
+var
+  xml: TRttiXMLConfig;
+
+  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    i: Integer;
+  begin
+    for i := 0 to MActions.Count - 1 do
+      xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
+    xml.SetValue(Path + 'Count', MActions.Count);
+  end;
+
+begin
+  if SaveDialog1.Execute then begin
+    xml := TRttiXMLConfig.CreateClean(SaveDialog1.FileName);
+    SaveMouseAct('Mouse/Main/', FMainActions);
+    SaveMouseAct('Mouse/MainSel/', FSelActions);
+    SaveMouseAct('Mouse/Gutter/', FGutterActions);
+    SaveMouseAct('Mouse/GutterFold/', FGutterActionsFold);
+    SaveMouseAct('Mouse/GutterFoldExp/', FGutterActionsFoldExp);
+    SaveMouseAct('Mouse/GutterFoldCol/', FGutterActionsFoldCol);
+    SaveMouseAct('Mouse/GutterLineNum/', FGutterActionsLines);
+    xml.Flush;
+    xml.Free;
+  end;
+end;
+
+procedure TEditorMouseOptionsFrame.BtnImportClick(Sender: TObject);
+var
+  xml: TRttiXMLConfig;
+
+  Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    i, c: Integer;
+    MAct: TSynEditMouseAction;
+  begin
+    MActions.Clear;
+    c := xml.GetValue(Path + 'Count', 0);
+    for i := 0 to c - 1 do begin
+      try
+        MActions.IncAssertLock;
+        try
+          MAct := MActions.Add;
+          xml.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
+        finally
+          MActions.DecAssertLock;
+        end;
+        MActions.AssertNoConflict(MAct);
+      except
+        MActions.Delete(MActions.Count-1);
+        MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText + LineEnding
+                   + Path + 'M' + IntToStr(i) + LineEnding + MAct.DisplayName,
+                   mtError, [mbOk], 0);
+      end;
+    end;
+  end;
+
+begin
+  if OpenDialog1.Execute then begin
+    xml := TRttiXMLConfig.Create(OpenDialog1.FileName);
+    LoadMouseAct('Mouse/Main/', FMainActions);
+    LoadMouseAct('Mouse/MainSel/', FSelActions);
+    LoadMouseAct('Mouse/Gutter/', FGutterActions);
+    LoadMouseAct('Mouse/GutterFold/', FGutterActionsFold);
+    LoadMouseAct('Mouse/GutterFoldExp/', FGutterActionsFoldExp);
+    LoadMouseAct('Mouse/GutterFoldCol/', FGutterActionsFoldCol);
+    LoadMouseAct('Mouse/GutterLineNum/', FGutterActionsLines);
+    xml.Free;
+
+    ContextTree.Selected := FMainNode;
+    ContextTreeChange(nil, FMainNode);
+  end;
+end;
+
 procedure TEditorMouseOptionsFrame.ActionGridMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -398,6 +479,10 @@ begin
   DelButton.Caption := dlgMouseOptBtnDel;
   UpdateButton.Caption := dlgMouseOptBtnUdp;
   AddNewButton.Caption := dlgMouseOptBtnAdd;
+  BtnImport.Caption := dlgMouseOptBtnImport;
+  BtnExport.Caption := dlgMouseOptBtnExport;
+  OpenDialog1.Title := dlgMouseOptBtnImport;
+  SaveDialog1.Title := dlgMouseOptBtnExport;
 end;
 
 procedure TEditorMouseOptionsFrame.ReadSettings(
