@@ -223,7 +223,7 @@ begin
     try
       FCurActions.AssertNoConflict(MAct);
     except
-      FCurActions.Delete(FCurActions.Count);
+      FCurActions.Delete(FCurActions.Count - 1);
       MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
     end;
     ContextTreeChange(nil, FCurNode);
