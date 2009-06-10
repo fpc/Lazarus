@@ -1664,6 +1664,10 @@ begin
   // Setup the Button Bar
   btnShowOptions.Caption := dlgCOShowOptions;
   btnCheck.Caption := lisCompTest;
+  btnOK.Caption := lisOk;
+  btnCancel.Caption := dlgCancel;
+  btnCheck.Caption := dlgCCOTest;
+  HelpButton.Caption := lisMenuHelp;
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.Caption := '...';
   btnLoadSave.LoadGlyphFromStock(idButtonSave);
