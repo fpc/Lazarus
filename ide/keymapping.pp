@@ -1301,6 +1301,7 @@ begin
   ecGotoEditor9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
+  (*
   EcFoldLevel1: SetResult(VK_1,[ssMeta,ssShift],VK_UNKNOWN,[]);
   EcFoldLevel2: SetResult(VK_2,[ssMeta,ssShift],VK_UNKNOWN,[]);
   EcFoldLevel3: SetResult(VK_3,[ssMeta,ssShift],VK_UNKNOWN,[]);
@@ -1314,6 +1315,7 @@ begin
   EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssMeta,ssShift],VK_UNKNOWN,[]);
   EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssMeta,ssShift],VK_UNKNOWN,[]);
   EcToggleMarkupWord: SetResult(VK_M,[ssMeta],VK_UNKNOWN,[]);
+  *)
 
   // file menu
   ecNew: SetResult(VK_N,[ssMeta],VK_UNKNOWN,[]);
