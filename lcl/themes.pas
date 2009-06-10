@@ -852,32 +852,32 @@ begin
     case Detail of
       tmMenuItemNormal..tmMenuItemDemoted:
         begin
-          Part := MP_MENUITEM;
+          Part := MENU_MENUITEM_TMSCHEMA;
           Base := Ord(tmMenuItemNormal);
         end;
       tmMenuDropDown:
         begin
-          Part := MP_MENUDROPDOWN;
+          Part := MENU_MENUDROPDOWN_TMSCHEMA;
           Base := Ord(tmMenuDropDown);
         end;
       tmMenuBarItem:
         begin
-          Part := MP_MENUBARITEM;
+          Part := MENU_MENUBARITEM_TMSCHEMA;
           Base := Ord(tmMenuBarItem);
         end;
       tmMenuBarDropDown:
         begin
-          Part := MP_MENUBARDROPDOWN;
+          Part := MENU_MENUBARDROPDOWN_TMSCHEMA;
           Base := Ord(tmMenuBarDropDown);
         end;
       tmChevron:
         begin
-          Part := MP_CHEVRON;
+          Part := MENU_CHEVRON_TMSCHEMA;
           Base := Ord(tmChevron);
         end;
       tmSeparator:
         begin
-          Part := MP_SEPARATOR;
+          Part := MENU_SEPARATOR_TMSCHEMA;
           Base := Ord(tmSeparator);
         end;
     else

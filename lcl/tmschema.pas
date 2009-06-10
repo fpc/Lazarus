@@ -1,2525 +1,2827 @@
-{******************************************************************************}
-{                                                                              }
-{ Visual Styles (Themes) API interface Unit for Object Pascal                  }
-{                                                                              }
-{ Portions created by Microsoft are Copyright (C) 1995-2001 Microsoft          }
-{ Corporation. All Rights Reserved.                                            }
-{                                                                              }
-{ The original file is: tmschema.h, released June 2001. The original Pascal    }
-{ code is: TmSchema.pas, released July 2001. The initial developer of the      }
-{ Pascal code is Marcel van Brakel (brakelm att chello dott nl).               }
-{                                                                              }
-{ Portions created by Marcel van Brakel are Copyright (C) 1999-2001            }
-{ Marcel van Brakel. All Rights Reserved.                                      }
-{                                                                              }
-{ Obtained through: Joint Endeavour of Delphi Innovators (Project JEDI)        }
-{                                                                              }
-{ You may retrieve the latest version of this file at the Project JEDI         }
-{ APILIB home page, located at http://jedi-apilib.sourceforge.net              }
-{                                                                              }
-{ The contents of this file are used with permission, subject to the Mozilla   }
-{ Public License Version 1.1 (the "License"); you may not use this file except }
-{ in compliance with the License. You may obtain a copy of the License at      }
-{ http://www.mozilla.org/MPL/MPL-1.1.html                                      }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ Alternatively, the contents of this file may be used under the terms of the  }
-{ GNU Lesser General Public License (the  "LGPL License"), in which case the   }
-{ provisions of the LGPL License are applicable instead of those above.        }
-{ If you wish to allow use of your version of this file only under the terms   }
-{ of the LGPL License and not to allow others to use your version of this file }
-{ under the MPL, indicate your decision by deleting  the provisions above and  }
-{ replace  them with the notice and other provisions required by the LGPL      }
-{ License.  If you do not delete the provisions above, a recipient may use     }
-{ your version of this file under either the MPL or the LGPL License.          }
-{                                                                              }
-{ For more information about the LGPL: http://www.gnu.org/copyleft/lesser.html }
-{                                                                              }
-{******************************************************************************}
-
-// $Id: JwaTmSchema.pas,v 1.5 2005/09/03 14:27:48 marquardt Exp $
-
 unit TmSchema;
-
-{$WEAKPACKAGEUNIT}
-
-{$HPPEMIT ''}
-{$HPPEMIT '#include "tmschema.h"'}
-{$HPPEMIT ''}
-
 interface
+// from vssstyle.h
+{-------------------------------------------------------------------------// }
+{  VisualStyle Style Guide symbols                                           }
+{-------------------------------------------------------------------------// }
 
-//-----------------------------------------------------------------
-//   TmSchema.h - Theme Manager schema (properties, parts, etc)
-//-----------------------------------------------------------------
+// property symbol definitions
 
 const
-  THEMEMGR_VERSION = 1;     // increment if order of props changes or
-                            // any props are deleted (will prevent loading
-                            // of controlsets that use older version
-  {$EXTERNALSYM THEMEMGR_VERSION}
+  TMTVS_RESERVEDLOW  = 100000;
+  TMTVS_RESERVEDHIGH = 19999;
 
-//-----------------------------------------------------------------
-//   TM_ENUM (must also be declared in PROPERTIES section)
-//
-//    these cannot be renumbered (part of uxtheme API)
-//-----------------------------------------------------------------
+// AEROWIZARDSTYLE class parts and states
+
+  VSCLASS_AEROWIZARDSTYLE = 'AEROWIZARDSTYLE';
+  VSCLASS_AEROWIZARD      = 'AEROWIZARD';
 
 type
-  BGTYPE = DWORD;
-  {$EXTERNALSYM BGTYPE}
+  AEROWIZARDPARTS = longint;
 
 const
-  BT_IMAGEFILE   = 0;
-  {$EXTERNALSYM BT_IMAGEFILE}
-  BT_BORDERFILL  = 1;
-  {$EXTERNALSYM BT_BORDERFILL}
-  BT_NONE        = 2;
-  {$EXTERNALSYM BT_NONE}
+  AW_TITLEBAR    = 1;
+  AW_HEADERAREA  = 2;
+  AW_CONTENTAREA = 3;
+  AW_COMMANDAREA = 4;
+  AW_BUTTON      = 5;
 
 type
-  IMAGELAYOUT = DWORD;
-  {$EXTERNALSYM IMAGELAYOUT}
-
-const
-  IL_VERTICAL    = 0;
-  {$EXTERNALSYM IL_VERTICAL}
-  IL_HORIZONTAL  = 1;
-  {$EXTERNALSYM IL_HORIZONTAL}
+  AEROWIZARDSTYLEPARTS = AEROWIZARDPARTS;
 
 type
-  BORDERTYPE = DWORD;
-  {$EXTERNALSYM BORDERTYPE}
+  TITLEBARSTATES = longint;
 
 const
-  BT_RECT       = 0;
-  {$EXTERNALSYM BT_RECT}
-  BT_ROUNDRECT  = 1;
-  {$EXTERNALSYM BT_ROUNDRECT}
-  BT_ELLIPSE    = 2;
-  {$EXTERNALSYM BT_ELLIPSE}
+  AW_S_TITLEBAR_ACTIVE   = 1;
+  AW_S_TITLEBAR_INACTIVE = 2;
+
 
 type
-  FILLTYPE = DWORD;
-  {$EXTERNALSYM FILLTYPE}
+  HEADERAREASTATES = longint;
 
 const
-  FT_SOLID           = 0;
-  {$EXTERNALSYM FT_SOLID}
-  FT_VERTGRADIENT    = 1;
-  {$EXTERNALSYM FT_VERTGRADIENT}
-  FT_HORZGRADIENT    = 2;
-  {$EXTERNALSYM FT_HORZGRADIENT}
-  FT_RADIALGRADIENT  = 3;
-  {$EXTERNALSYM FT_RADIALGRADIENT}
-  FT_TILEIMAGE       = 4;
-  {$EXTERNALSYM FT_TILEIMAGE}
+  AW_S_HEADERAREA_NOMARGIN = 1;
+
 
 type
-  SIZINGTYPE = DWORD;
-  {$EXTERNALSYM SIZINGTYPE}
+  CONTENTAREASTATES = longint;
 
 const
-  ST_TRUESIZE  = 0;
-  {$EXTERNALSYM ST_TRUESIZE}
-  ST_STRETCH   = 1;
-  {$EXTERNALSYM ST_STRETCH}
-  ST_TILE      = 2;
-  {$EXTERNALSYM ST_TILE}
+  AW_S_CONTENTAREA_NOMARGIN = 1;
+
+
+// BUTTONSTYLE class parts and states
+
+  VSCLASS_BUTTONSTYLE = 'BUTTONSTYLE';
+  VSCLASS_BUTTON      = 'BUTTON';
 
 type
-  HALIGN = DWORD;
-  {$EXTERNALSYM HALIGN}
+  BUTTONPARTS = longint;
 
 const
-  HA_LEFT    = 0;
-  {$EXTERNALSYM HA_LEFT}
-  HA_CENTER  = 1;
-  {$EXTERNALSYM HA_CENTER}
-  HA_RIGHT   = 2;
-  {$EXTERNALSYM HA_RIGHT}
+  BP_PUSHBUTTON  = 1;
+  BP_RADIOBUTTON = 2;
+  BP_CHECKBOX    = 3;
+  BP_GROUPBOX    = 4;
+  BP_USERBUTTON  = 5;
+  BP_COMMANDLINK = 6;
+  BP_COMMANDLINKGLYPH = 7;
 
 type
-  CONTENTALIGNMENT = DWORD;
-  {$EXTERNALSYM CONTENTALIGNMENT}
-
-const
-  CA_LEFT    = 0;
-  {$EXTERNALSYM CA_LEFT}
-  CA_CENTER  = 1;
-  {$EXTERNALSYM CA_CENTER}
-  CA_RIGHT   = 2;
-  {$EXTERNALSYM CA_RIGHT}
+  BUTTONSTYLEPARTS = BUTTONPARTS;
 
 type
-  VALIGN = DWORD;
-  {$EXTERNALSYM VALIGN}
+  PUSHBUTTONSTATES = longint;
 
 const
-  VA_TOP     = 0;
-  {$EXTERNALSYM VA_TOP}
-  VA_CENTER  = 1;
-  {$EXTERNALSYM VA_CENTER}
-  VA_BOTTOM  = 2;
-  {$EXTERNALSYM VA_BOTTOM}
+  PBS_NORMAL   = 1;
+  PBS_HOT      = 2;
+  PBS_PRESSED  = 3;
+  PBS_DISABLED = 4;
+  PBS_DEFAULTED = 5;
+  PBS_DEFAULTED_ANIMATING = 6;
+
 
 type
-  OFFSETTYPE = DWORD;
-  {$EXTERNALSYM OFFSETTYPE}
+  RADIOBUTTONSTATES = longint;
 
 const
-  OT_TOPLEFT            = 0;
-  {$EXTERNALSYM OT_TOPLEFT}
-  OT_TOPRIGHT           = 1;
-  {$EXTERNALSYM OT_TOPRIGHT}
-  OT_TOPMIDDLE          = 2;
-  {$EXTERNALSYM OT_TOPMIDDLE}
-  OT_BOTTOMLEFT         = 3;
-  {$EXTERNALSYM OT_BOTTOMLEFT}
-  OT_BOTTOMRIGHT        = 4;
-  {$EXTERNALSYM OT_BOTTOMRIGHT}
-  OT_BOTTOMMIDDLE       = 5;
-  {$EXTERNALSYM OT_BOTTOMMIDDLE}
-  OT_MIDDLELEFT         = 6;
-  {$EXTERNALSYM OT_MIDDLELEFT}
-  OT_MIDDLERIGHT        = 7;
-  {$EXTERNALSYM OT_MIDDLERIGHT}
-  OT_LEFTOFCAPTION      = 8;
-  {$EXTERNALSYM OT_LEFTOFCAPTION}
-  OT_RIGHTOFCAPTION     = 9;
-  {$EXTERNALSYM OT_RIGHTOFCAPTION}
-  OT_LEFTOFLASTBUTTON   = 10;
-  {$EXTERNALSYM OT_LEFTOFLASTBUTTON}
-  OT_RIGHTOFLASTBUTTON  = 11;
-  {$EXTERNALSYM OT_RIGHTOFLASTBUTTON}
-  OT_ABOVELASTBUTTON    = 12;
-  {$EXTERNALSYM OT_ABOVELASTBUTTON}
-  OT_BELOWLASTBUTTON    = 13;
-  {$EXTERNALSYM OT_BELOWLASTBUTTON}
+  RBS_UNCHECKEDNORMAL = 1;
+  RBS_UNCHECKEDHOT    = 2;
+  RBS_UNCHECKEDPRESSED = 3;
+  RBS_UNCHECKEDDISABLED = 4;
+  RBS_CHECKEDNORMAL   = 5;
+  RBS_CHECKEDHOT      = 6;
+  RBS_CHECKEDPRESSED  = 7;
+  RBS_CHECKEDDISABLED = 8;
+
 
 type
-  ICONEFFECT = DWORD;
-  {$EXTERNALSYM ICONEFFECT}
+  CHECKBOXSTATES = longint;
 
 const
-  ICE_NONE    = 0;
-  {$EXTERNALSYM ICE_NONE}
-  ICE_GLOW    = 1;
-  {$EXTERNALSYM ICE_GLOW}
-  ICE_SHADOW  = 2;
-  {$EXTERNALSYM ICE_SHADOW}
-  ICE_PULSE   = 3;
-  {$EXTERNALSYM ICE_PULSE}
-  ICE_ALPHA   = 4;
-  {$EXTERNALSYM ICE_ALPHA}
+  CBS_UNCHECKEDNORMAL = 1;
+  CBS_UNCHECKEDHOT  = 2;
+  CBS_UNCHECKEDPRESSED = 3;
+  CBS_UNCHECKEDDISABLED = 4;
+  CBS_CHECKEDNORMAL = 5;
+  CBS_CHECKEDHOT    = 6;
+  CBS_CHECKEDPRESSED = 7;
+  CBS_CHECKEDDISABLED = 8;
+  CBS_MIXEDNORMAL   = 9;
+  CBS_MIXEDHOT      = 10;
+  CBS_MIXEDPRESSED  = 11;
+  CBS_MIXEDDISABLED = 12;
+  CBS_IMPLICITNORMAL = 13;
+  CBS_IMPLICITHOT   = 14;
+  CBS_IMPLICITPRESSED = 15;
+  CBS_IMPLICITDISABLED = 16;
+  CBS_EXCLUDEDNORMAL = 17;
+  CBS_EXCLUDEDHOT   = 18;
+  CBS_EXCLUDEDPRESSED = 19;
+  CBS_EXCLUDEDDISABLED = 20;
+
 
 type
-  TEXTSHADOWTYPE = DWORD;
-  {$EXTERNALSYM TEXTSHADOWTYPE}
+  GROUPBOXSTATES = longint;
 
 const
-  TST_NONE        = 0;
-  {$EXTERNALSYM TST_NONE}
-  TST_SINGLE      = 1;
-  {$EXTERNALSYM TST_SINGLE}
-  TST_CONTINUOUS  = 2;
-  {$EXTERNALSYM TST_CONTINUOUS}
+  GBS_NORMAL   = 1;
+  GBS_DISABLED = 2;
+
 
 type
-  GLYPHTYPE = DWORD;
-  {$EXTERNALSYM GLYPHTYPE}
+  COMMANDLINKSTATES = longint;
 
 const
-  GT_NONE        = 0;
-  {$EXTERNALSYM GT_NONE}
-  GT_IMAGEGLYPH  = 1;
-  {$EXTERNALSYM GT_IMAGEGLYPH}
-  GT_FONTGLYPH   = 2;
-  {$EXTERNALSYM GT_FONTGLYPH}
+  CMDLS_NORMAL   = 1;
+  CMDLS_HOT      = 2;
+  CMDLS_PRESSED  = 3;
+  CMDLS_DISABLED = 4;
+  CMDLS_DEFAULTED = 5;
+  CMDLS_DEFAULTED_ANIMATING = 6;
+
 
 type
-  IMAGESELECTTYPE = DWORD;
-  {$EXTERNALSYM IMAGESELECTTYPE}
+  COMMANDLINKGLYPHSTATES = longint;
 
 const
-  IST_NONE  = 0;
-  {$EXTERNALSYM IST_NONE}
-  IST_SIZE  = 1;
-  {$EXTERNALSYM IST_SIZE}
-  IST_DPI   = 2;
-  {$EXTERNALSYM IST_DPI}
+  CMDLGS_NORMAL   = 1;
+  CMDLGS_HOT      = 2;
+  CMDLGS_PRESSED  = 3;
+  CMDLGS_DISABLED = 4;
+  CMDLGS_DEFAULTED = 5;
+
+
+// COMBOBOXSTYLE class parts and states
+
+  VSCLASS_COMBOBOXSTYLE = 'COMBOBOXSTYLE';
+  VSCLASS_COMBOBOX      = 'COMBOBOX';
 
 type
-  TRUESIZESCALINGTYPE = DWORD;
-  {$EXTERNALSYM TRUESIZESCALINGTYPE}
+  COMBOBOXPARTS = longint;
 
 const
-  TSST_NONE  = 0;
-  {$EXTERNALSYM TSST_NONE}
-  TSST_SIZE  = 1;
-  {$EXTERNALSYM TSST_SIZE}
-  TSST_DPI   = 2;
-  {$EXTERNALSYM TSST_DPI}
+  CP_DROPDOWNBUTTON = 1;
+  CP_BACKGROUND = 2;
+  CP_TRANSPARENTBACKGROUND = 3;
+  CP_BORDER    = 4;
+  CP_READONLY  = 5;
+  CP_DROPDOWNBUTTONRIGHT = 6;
+  CP_DROPDOWNBUTTONLEFT = 7;
+  CP_CUEBANNER = 8;
 
 type
-  GLYPHFONTSIZINGTYPE = DWORD;
-  {$EXTERNALSYM GLYPHFONTSIZINGTYPE}
+  COMBOBOXSTYLEPARTS = COMBOBOXPARTS;
+
+type
+  COMBOBOXSTYLESTATES = longint;
 
 const
-  GFST_NONE  = 0;
-  {$EXTERNALSYM GFST_NONE}
-  GFST_SIZE  = 1;
-  {$EXTERNALSYM GFST_SIZE}
-  GFST_DPI   = 2;
-  {$EXTERNALSYM GFST_DPI}
+  CBXS_NORMAL   = 1;
+  CBXS_HOT      = 2;
+  CBXS_PRESSED  = 3;
+  CBXS_DISABLED = 4;
 
-//-----------------------------------------------------------------
-//    PROPERTIES - used by uxtheme rendering and controls
-//
-//    these cannot be renumbered (part of uxtheme API)
-//-----------------------------------------------------------------
+
+type
+  DROPDOWNBUTTONRIGHTSTATES = longint;
 
 const
+  CBXSR_NORMAL   = 1;
+  CBXSR_HOT      = 2;
+  CBXSR_PRESSED  = 3;
+  CBXSR_DISABLED = 4;
 
-  //---- primitive types ----
 
-  TMT_STRING = 201;
-  {$EXTERNALSYM TMT_STRING}
-  TMT_INT = 202;
-  {$EXTERNALSYM TMT_INT}
-  TMT_BOOL = 203;
-  {$EXTERNALSYM TMT_BOOL}
-  TMT_COLOR = 204;
-  {$EXTERNALSYM TMT_COLOR}
-  TMT_MARGINS = 205;
-  {$EXTERNALSYM TMT_MARGINS}
+type
+  DROPDOWNBUTTONLEFTSTATES = longint;
+
+const
+  CBXSL_NORMAL   = 1;
+  CBXSL_HOT      = 2;
+  CBXSL_PRESSED  = 3;
+  CBXSL_DISABLED = 4;
+
+
+type
+  TRANSPARENTBACKGROUNDSTATES = longint;
+
+const
+  CBTBS_NORMAL   = 1;
+  CBTBS_HOT      = 2;
+  CBTBS_DISABLED = 3;
+  CBTBS_FOCUSED  = 4;
+
+
+type
+  BORDERSTATES = longint;
+
+const
+  CBB_NORMAL   = 1;
+  CBB_HOT      = 2;
+  CBB_FOCUSED  = 3;
+  CBB_DISABLED = 4;
+
+
+type
+  READONLYSTATES = longint;
+
+const
+  CBRO_NORMAL   = 1;
+  CBRO_HOT      = 2;
+  CBRO_PRESSED  = 3;
+  CBRO_DISABLED = 4;
+
+
+type
+  CUEBANNERSTATES = longint;
+
+const
+  CBCB_NORMAL   = 1;
+  CBCB_HOT      = 2;
+  CBCB_PRESSED  = 3;
+  CBCB_DISABLED = 4;
+
+
+//  COMMUNICATIONSSTYLE class parts and states
+
+  VSCLASS_COMMUNICATIONSSTYLE = 'COMMUNICATIONSSTYLE';
+  VSCLASS_COMMUNICATIONS      = 'COMMUNICATIONS';
+
+type
+  COMMUNICATIONSPARTS = longint;
+
+const
+  CSST_TAB = 1;
+
+type
+  COMMUNICATIONSSTYLEPARTS = COMMUNICATIONSPARTS;
+
+type
+  TABSTATES = longint;
+
+const
+  CSTB_NORMAL   = 1;
+  CSTB_HOT      = 2;
+  CSTB_SELECTED = 3;
+
+
+// CONTROLPANELSTYLE class parts and states
+
+  VSCLASS_CONTROLPANELSTYLE = 'CONTROLPANELSTYLE';
+  VSCLASS_CONTROLPANEL      = 'CONTROLPANEL';
+
+type
+  CONTROLPANELPARTS = longint;
+
+const
+  CPANEL_NAVIGATIONPANE = 1;
+  CPANEL_CONTENTPANE = 2;
+  CPANEL_NAVIGATIONPANELABEL = 3;
+  CPANEL_CONTENTPANELABEL = 4;
+  CPANEL_TITLE      = 5;
+  CPANEL_BODYTEXT   = 6;
+  CPANEL_HELPLINK   = 7;
+  CPANEL_TASKLINK   = 8;
+  CPANEL_GROUPTEXT  = 9;
+  CPANEL_CONTENTLINK = 10;
+  CPANEL_SECTIONTITLELINK = 11;
+  CPANEL_LARGECOMMANDAREA = 12;
+  CPANEL_SMALLCOMMANDAREA = 13;
+  CPANEL_BUTTON     = 14;
+  CPANEL_MESSAGETEXT = 15;
+  CPANEL_NAVIGATIONPANELINE = 16;
+  CPANEL_CONTENTPANELINE = 17;
+  CPANEL_BANNERAREA = 18;
+  CPANEL_BODYTITLE  = 19;
+
+type
+  CONTROLPANELSTYLEPARTS = CONTROLPANELPARTS;
+
+type
+  HELPLINKSTATES = longint;
+
+const
+  CPHL_NORMAL   = 1;
+  CPHL_HOT      = 2;
+  CPHL_PRESSED  = 3;
+  CPHL_DISABLED = 4;
+
+
+type
+  TASKLINKSTATES = longint;
+
+const
+  CPTL_NORMAL   = 1;
+  CPTL_HOT      = 2;
+  CPTL_PRESSED  = 3;
+  CPTL_DISABLED = 4;
+  CPTL_PAGE     = 5;
+
+
+type
+  CONTENTLINKSTATES = longint;
+
+const
+  CPCL_NORMAL   = 1;
+  CPCL_HOT      = 2;
+  CPCL_PRESSED  = 3;
+  CPCL_DISABLED = 4;
+
+
+type
+  SECTIONTITLELINKSTATES = longint;
+
+const
+  CPSTL_NORMAL = 1;
+  CPSTL_HOT    = 2;
+
+
+// DATEPICKERSTYLE class parts and states
+
+  VSCLASS_DATEPICKERSTYLE = 'DATEPICKERSTYLE';
+  VSCLASS_DATEPICKER      = 'DATEPICKER';
+
+type
+  DATEPICKERPARTS = longint;
+
+const
+  DP_DATETEXT   = 1;
+  DP_DATEBORDER = 2;
+  DP_SHOWCALENDARBUTTONRIGHT = 3;
+
+type
+  DATEPICKERSTYLEPARTS = DATEPICKERPARTS;
+
+type
+  DATETEXTSTATES = longint;
+
+const
+  DPDT_NORMAL   = 1;
+  DPDT_DISABLED = 2;
+  DPDT_SELECTED = 3;
+
+
+type
+  DATEBORDERSTATES = longint;
+
+const
+  DPDB_NORMAL   = 1;
+  DPDB_HOT      = 2;
+  DPDB_FOCUSED  = 3;
+  DPDB_DISABLED = 4;
+
+
+type
+  SHOWCALENDARBUTTONRIGHTSTATES = longint;
+
+const
+  DPSCBR_NORMAL   = 1;
+  DPSCBR_HOT      = 2;
+  DPSCBR_PRESSED  = 3;
+  DPSCBR_DISABLED = 4;
+
+
+// DRAGDROPSTYLE class parts and states
+
+  VSCLASS_DRAGDROPSTYLE = 'DRAGDROPSTYLE';
+  VSCLASS_DRAGDROP      = 'DRAGDROP';
+
+type
+  DRAGDROPPARTS = longint;
+
+const
+  DD_COPY    = 1;
+  DD_MOVE    = 2;
+  DD_UPDATEMETADATA = 3;
+  DD_CREATELINK = 4;
+  DD_WARNING = 5;
+  DD_NONE    = 6;
+  DD_IMAGEBG = 7;
+  DD_TEXTBG  = 8;
+
+type
+  DRAGDROPSTYLEPARTS = DRAGDROPPARTS;
+
+type
+  COPYSTATES = longint;
+
+const
+  DDCOPY_HIGHLIGHT   = 1;
+  DDCOPY_NOHIGHLIGHT = 2;
+
+
+type
+  MOVESTATES = longint;
+
+const
+  DDMOVE_HIGHLIGHT   = 1;
+  DDMOVE_NOHIGHLIGHT = 2;
+
+
+type
+  UPDATEMETADATASTATES = longint;
+
+const
+  DDUPDATEMETADATA_HIGHLIGHT   = 1;
+  DDUPDATEMETADATA_NOHIGHLIGHT = 2;
+
+
+type
+  CREATELINKSTATES = longint;
+
+const
+  DDCREATELINK_HIGHLIGHT   = 1;
+  DDCREATELINK_NOHIGHLIGHT = 2;
+
+
+type
+  WARNINGSTATES = longint;
+
+const
+  DDWARNING_HIGHLIGHT   = 1;
+  DDWARNING_NOHIGHLIGHT = 2;
+
+
+type
+  NONESTATES = longint;
+
+const
+  DDNONE_HIGHLIGHT   = 1;
+  DDNONE_NOHIGHLIGHT = 2;
+
+
+// EDITSTYLE class parts and states
+
+  VSCLASS_EDITSTYLE = 'EDITSTYLE';
+  VSCLASS_EDIT      = 'EDIT';
+
+type
+  EDITPARTS = longint;
+
+const
+  EP_EDITTEXT   = 1;
+  EP_CARET      = 2;
+  EP_BACKGROUND = 3;
+  EP_PASSWORD   = 4;
+  EP_BACKGROUNDWITHBORDER = 5;
+  EP_EDITBORDER_NOSCROLL = 6;
+  EP_EDITBORDER_HSCROLL = 7;
+  EP_EDITBORDER_VSCROLL = 8;
+  EP_EDITBORDER_HVSCROLL = 9;
+
+type
+  EDITSTYLEPARTS = EDITPARTS;
+
+type
+  EDITTEXTSTATES = longint;
+
+const
+  ETS_NORMAL   = 1;
+  ETS_HOT      = 2;
+  ETS_SELECTED = 3;
+  ETS_DISABLED = 4;
+  ETS_FOCUSED  = 5;
+  ETS_READONLY = 6;
+  ETS_ASSIST   = 7;
+  ETS_CUEBANNER = 8;
+
+
+type
+  BACKGROUNDSTATES = longint;
+
+const
+  EBS_NORMAL   = 1;
+  EBS_HOT      = 2;
+  EBS_DISABLED = 3;
+  EBS_FOCUSED  = 4;
+  EBS_READONLY = 5;
+  EBS_ASSIST   = 6;
+
+
+type
+  BACKGROUNDWITHBORDERSTATES = longint;
+
+const
+  EBWBS_NORMAL   = 1;
+  EBWBS_HOT      = 2;
+  EBWBS_DISABLED = 3;
+  EBWBS_FOCUSED  = 4;
+
+
+type
+  EDITBORDER_NOSCROLLSTATES = longint;
+
+const
+  EPSN_NORMAL   = 1;
+  EPSN_HOT      = 2;
+  EPSN_FOCUSED  = 3;
+  EPSN_DISABLED = 4;
+
+
+type
+  EDITBORDER_HSCROLLSTATES = longint;
+
+const
+  EPSH_NORMAL   = 1;
+  EPSH_HOT      = 2;
+  EPSH_FOCUSED  = 3;
+  EPSH_DISABLED = 4;
+
+
+type
+  EDITBORDER_VSCROLLSTATES = longint;
+
+const
+  EPSV_NORMAL   = 1;
+  EPSV_HOT      = 2;
+  EPSV_FOCUSED  = 3;
+  EPSV_DISABLED = 4;
+
+
+type
+  EDITBORDER_HVSCROLLSTATES = longint;
+
+const
+  EPSHV_NORMAL   = 1;
+  EPSHV_HOT      = 2;
+  EPSHV_FOCUSED  = 3;
+  EPSHV_DISABLED = 4;
+
+
+// EXPLORERBARSTYLE class parts and states
+
+  VSCLASS_EXPLORERBARSTYLE = 'EXPLORERBARSTYLE';
+  VSCLASS_EXPLORERBAR      = 'EXPLORERBAR';
+
+type
+  EXPLORERBARPARTS = longint;
+
+const
+  EBP_HEADERBACKGROUND = 1;
+  EBP_HEADERCLOSE = 2;
+  EBP_HEADERPIN = 3;
+  EBP_IEBARMENU = 4;
+  EBP_NORMALGROUPBACKGROUND = 5;
+  EBP_NORMALGROUPCOLLAPSE = 6;
+  EBP_NORMALGROUPEXPAND = 7;
+  EBP_NORMALGROUPHEAD = 8;
+  EBP_SPECIALGROUPBACKGROUND = 9;
+  EBP_SPECIALGROUPCOLLAPSE = 10;
+  EBP_SPECIALGROUPEXPAND = 11;
+  EBP_SPECIALGROUPHEAD = 12;
+
+type
+  EXPLORERBARSTYLEPARTS = EXPLORERBARPARTS;
+
+type
+  HEADERCLOSESTATES = longint;
+
+const
+  EBHC_NORMAL  = 1;
+  EBHC_HOT     = 2;
+  EBHC_PRESSED = 3;
+
+
+type
+  HEADERPINSTATES = longint;
+
+const
+  EBHP_NORMAL  = 1;
+  EBHP_HOT     = 2;
+  EBHP_PRESSED = 3;
+  EBHP_SELECTEDNORMAL = 4;
+  EBHP_SELECTEDHOT = 5;
+  EBHP_SELECTEDPRESSED = 6;
+
+
+type
+  IEBARMENUSTATES = longint;
+
+const
+  EBM_NORMAL  = 1;
+  EBM_HOT     = 2;
+  EBM_PRESSED = 3;
+
+
+type
+  NORMALGROUPCOLLAPSESTATES = longint;
+
+const
+  EBNGC_NORMAL  = 1;
+  EBNGC_HOT     = 2;
+  EBNGC_PRESSED = 3;
+
+
+type
+  NORMALGROUPEXPANDSTATES = longint;
+
+const
+  EBNGE_NORMAL  = 1;
+  EBNGE_HOT     = 2;
+  EBNGE_PRESSED = 3;
+
+
+type
+  SPECIALGROUPCOLLAPSESTATES = longint;
+
+const
+  EBSGC_NORMAL  = 1;
+  EBSGC_HOT     = 2;
+  EBSGC_PRESSED = 3;
+
+
+type
+  SPECIALGROUPEXPANDSTATES = longint;
+
+const
+  EBSGE_NORMAL  = 1;
+  EBSGE_HOT     = 2;
+  EBSGE_PRESSED = 3;
+
+
+// FLYOUTSTYLE class parts and states
+
+  VSCLASS_FLYOUTSTYLE = 'FLYOUTSTYLE';
+  VSCLASS_FLYOUT      = 'FLYOUT';
+
+type
+  FLYOUTPARTS = longint;
+
+const
+  FLYOUT_HEADER   = 1;
+  FLYOUT_BODY     = 2;
+  FLYOUT_LABEL    = 3;
+  FLYOUT_LINK     = 4;
+  FLYOUT_DIVIDER  = 5;
+  FLYOUT_WINDOW   = 6;
+  FLYOUT_LINKAREA = 7;
+  FLYOUT_LINKHEADER = 8;
+
+type
+  FLYOUTSTYLEPARTS = FLYOUTPARTS;
+
+type
+  LABELSTATES = longint;
+
+const
+  FLS_NORMAL     = 1;
+  FLS_SELECTED   = 2;
+  FLS_EMPHASIZED = 3;
+  FLS_DISABLED   = 4;
+
+
+type
+  LINKSTATES = longint;
+
+const
+  FLYOUTLINK_NORMAL = 1;
+  FLYOUTLINK_HOVER  = 2;
+
+
+type
+  BODYSTATES = longint;
+
+const
+  FBS_NORMAL     = 1;
+  FBS_EMPHASIZED = 2;
+
+
+type
+  LINKHEADERSTATES = longint;
+
+const
+  FLH_NORMAL = 1;
+  FLH_HOVER  = 2;
+
+
+// HEADERSTYLE class parts and states
+
+  VSCLASS_HEADERSTYLE = 'HEADERSTYLE';
+  VSCLASS_HEADER      = 'HEADER';
+
+type
+  HEADERPARTS = longint;
+
+const
+  HP_HEADERITEM      = 1;
+  HP_HEADERITEMLEFT  = 2;
+  HP_HEADERITEMRIGHT = 3;
+  HP_HEADERSORTARROW = 4;
+  HP_HEADERDROPDOWN  = 5;
+  HP_HEADERDROPDOWNFILTER = 6;
+  HP_HEADEROVERFLOW  = 7;
+
+type
+  HEADERSTYLEPARTS = HEADERPARTS;
+
+type
+  HEADERSTYLESTATES = longint;
+
+const
+  HBG_DETAILS = 1;
+  HBG_ICON    = 2;
+
+
+type
+  HEADERITEMSTATES = longint;
+
+const
+  HIS_NORMAL  = 1;
+  HIS_HOT     = 2;
+  HIS_PRESSED = 3;
+  HIS_SORTEDNORMAL = 4;
+  HIS_SORTEDHOT = 5;
+  HIS_SORTEDPRESSED = 6;
+  HIS_ICONNORMAL = 7;
+  HIS_ICONHOT = 8;
+  HIS_ICONPRESSED = 9;
+  HIS_ICONSORTEDNORMAL = 10;
+  HIS_ICONSORTEDHOT = 11;
+  HIS_ICONSORTEDPRESSED = 12;
+
+
+type
+  HEADERITEMLEFTSTATES = longint;
+
+const
+  HILS_NORMAL  = 1;
+  HILS_HOT     = 2;
+  HILS_PRESSED = 3;
+
+
+type
+  HEADERITEMRIGHTSTATES = longint;
+
+const
+  HIRS_NORMAL  = 1;
+  HIRS_HOT     = 2;
+  HIRS_PRESSED = 3;
+
+
+type
+  HEADERSORTARROWSTATES = longint;
+
+const
+  HSAS_SORTEDUP   = 1;
+  HSAS_SORTEDDOWN = 2;
+
+
+type
+  HEADERDROPDOWNSTATES = longint;
+
+const
+  HDDS_NORMAL  = 1;
+  HDDS_SOFTHOT = 2;
+  HDDS_HOT     = 3;
+
+
+type
+  HEADERDROPDOWNFILTERSTATES = longint;
+
+const
+  HDDFS_NORMAL  = 1;
+  HDDFS_SOFTHOT = 2;
+  HDDFS_HOT     = 3;
+
+
+type
+  HEADEROVERFLOWSTATES = longint;
+
+const
+  HOFS_NORMAL = 1;
+  HOFS_HOT    = 2;
+
+
+// LISTBOXSTYLE class parts and states
+
+  VSCLASS_LISTBOXSTYLE = 'LISTBOXSTYLE';
+  VSCLASS_LISTBOX      = 'LISTBOX';
+
+type
+  LISTBOXPARTS = longint;
+
+const
+  LBCP_BORDER_HSCROLL = 1;
+  LBCP_BORDER_HVSCROLL = 2;
+  LBCP_BORDER_NOSCROLL = 3;
+  LBCP_BORDER_VSCROLL = 4;
+  LBCP_ITEM = 5;
+
+type
+  LISTBOXSTYLEPARTS = LISTBOXPARTS;
+
+type
+  BORDER_HSCROLLSTATES = longint;
+
+const
+  LBPSH_NORMAL   = 1;
+  LBPSH_FOCUSED  = 2;
+  LBPSH_HOT      = 3;
+  LBPSH_DISABLED = 4;
+
+
+type
+  BORDER_HVSCROLLSTATES = longint;
+
+const
+  LBPSHV_NORMAL   = 1;
+  LBPSHV_FOCUSED  = 2;
+  LBPSHV_HOT      = 3;
+  LBPSHV_DISABLED = 4;
+
+
+type
+  BORDER_NOSCROLLSTATES = longint;
+
+const
+  LBPSN_NORMAL   = 1;
+  LBPSN_FOCUSED  = 2;
+  LBPSN_HOT      = 3;
+  LBPSN_DISABLED = 4;
+
+
+type
+  BORDER_VSCROLLSTATES = longint;
+
+const
+  LBPSV_NORMAL   = 1;
+  LBPSV_FOCUSED  = 2;
+  LBPSV_HOT      = 3;
+  LBPSV_DISABLED = 4;
+
+
+type
+  ITEMSTATES = longint;
+
+const
+  LBPSI_HOT      = 1;
+  LBPSI_HOTSELECTED = 2;
+  LBPSI_SELECTED = 3;
+  LBPSI_SELECTEDNOTFOCUS = 4;
+
+
+// LISTVIEWSTYLE class parts and states
+
+  VSCLASS_LISTVIEWSTYLE = 'LISTVIEWSTYLE';
+  VSCLASS_LISTVIEW      = 'LISTVIEW';
+
+type
+  LISTVIEWPARTS = longint;
+
+const
+  LVP_LISTITEM     = 1;
+  LVP_LISTGROUP    = 2;
+  LVP_LISTDETAIL   = 3;
+  LVP_LISTSORTEDDETAIL = 4;
+  LVP_EMPTYTEXT    = 5;
+  LVP_GROUPHEADER  = 6;
+  LVP_GROUPHEADERLINE = 7;
+  LVP_EXPANDBUTTON = 8;
+  LVP_COLLAPSEBUTTON = 9;
+  LVP_COLUMNDETAIL = 10;
+
+type
+  LISTVIEWSTYLEPARTS = LISTVIEWPARTS;
+
+type
+  LISTITEMSTATES = longint;
+
+const
+  LISS_NORMAL   = 1;
+  LISS_HOT      = 2;
+  LISS_SELECTED = 3;
+  LISS_DISABLED = 4;
+  LISS_SELECTEDNOTFOCUS = 5;
+  LISS_HOTSELECTED = 6;
+
+
+type
+  GROUPHEADERSTATES = longint;
+
+const
+  LVGH_OPEN     = 1;
+  LVGH_OPENHOT  = 2;
+  LVGH_OPENSELECTED = 3;
+  LVGH_OPENSELECTEDHOT = 4;
+  LVGH_OPENSELECTEDNOTFOCUSED = 5;
+  LVGH_OPENSELECTEDNOTFOCUSEDHOT = 6;
+  LVGH_OPENMIXEDSELECTION = 7;
+  LVGH_OPENMIXEDSELECTIONHOT = 8;
+  LVGH_CLOSE    = 9;
+  LVGH_CLOSEHOT = 10;
+  LVGH_CLOSESELECTED = 11;
+  LVGH_CLOSESELECTEDHOT = 12;
+  LVGH_CLOSESELECTEDNOTFOCUSED = 13;
+  LVGH_CLOSESELECTEDNOTFOCUSEDHOT = 14;
+  LVGH_CLOSEMIXEDSELECTION = 15;
+  LVGH_CLOSEMIXEDSELECTIONHOT = 16;
+
+
+type
+  GROUPHEADERLINESTATES = longint;
+
+const
+  LVGHL_OPEN     = 1;
+  LVGHL_OPENHOT  = 2;
+  LVGHL_OPENSELECTED = 3;
+  LVGHL_OPENSELECTEDHOT = 4;
+  LVGHL_OPENSELECTEDNOTFOCUSED = 5;
+  LVGHL_OPENSELECTEDNOTFOCUSEDHOT = 6;
+  LVGHL_OPENMIXEDSELECTION = 7;
+  LVGHL_OPENMIXEDSELECTIONHOT = 8;
+  LVGHL_CLOSE    = 9;
+  LVGHL_CLOSEHOT = 10;
+  LVGHL_CLOSESELECTED = 11;
+  LVGHL_CLOSESELECTEDHOT = 12;
+  LVGHL_CLOSESELECTEDNOTFOCUSED = 13;
+  LVGHL_CLOSESELECTEDNOTFOCUSEDHOT = 14;
+  LVGHL_CLOSEMIXEDSELECTION = 15;
+  LVGHL_CLOSEMIXEDSELECTIONHOT = 16;
+
+
+type
+  EXPANDBUTTONSTATES = longint;
+
+const
+  LVEB_NORMAL = 1;
+  LVEB_HOVER  = 2;
+  LVEB_PUSHED = 3;
+
+
+type
+  COLLAPSEBUTTONSTATES = longint;
+
+const
+  LVCB_NORMAL = 1;
+  LVCB_HOVER  = 2;
+  LVCB_PUSHED = 3;
+
+
+// MENUSTYLE class parts and states
+
+  VSCLASS_MENUSTYLE = 'MENUSTYLE';
+  VSCLASS_MENU      = 'MENU';
+
+type
+  MENUPARTS = longint;
+
+const
+  MENU_MENUITEM_TMSCHEMA = 1;
+  MENU_MENUDROPDOWN_TMSCHEMA = 2;
+  MENU_MENUBARITEM_TMSCHEMA = 3;
+  MENU_MENUBARDROPDOWN_TMSCHEMA = 4;
+  MENU_CHEVRON_TMSCHEMA = 5;
+  MENU_SEPARATOR_TMSCHEMA = 6;
+  MENU_BARBACKGROUND = 7;
+  MENU_BARITEM      = 8;
+  MENU_POPUPBACKGROUND = 9;
+  MENU_POPUPBORDERS = 10;
+  MENU_POPUPCHECK   = 11;
+  MENU_POPUPCHECKBACKGROUND = 12;
+  MENU_POPUPGUTTER  = 13;
+  MENU_POPUPITEM    = 14;
+  MENU_POPUPSEPARATOR = 15;
+  MENU_POPUPSUBMENU = 16;
+  MENU_SYSTEMCLOSE  = 17;
+  MENU_SYSTEMMAXIMIZE = 18;
+  MENU_SYSTEMMINIMIZE = 19;
+  MENU_SYSTEMRESTORE = 20;
+
+type
+  MENUSTYLEPARTS = MENUPARTS;
+
+type
+  BARBACKGROUNDSTATES = longint;
+
+const
+  MB_ACTIVE   = 1;
+  MB_INACTIVE = 2;
+
+
+type
+  BARITEMSTATES = longint;
+
+const
+  MBI_NORMAL   = 1;
+  MBI_HOT      = 2;
+  MBI_PUSHED   = 3;
+  MBI_DISABLED = 4;
+  MBI_DISABLEDHOT = 5;
+  MBI_DISABLEDPUSHED = 6;
+
+
+type
+  POPUPCHECKSTATES = longint;
+
+const
+  MC_CHECKMARKNORMAL   = 1;
+  MC_CHECKMARKDISABLED = 2;
+  MC_BULLETNORMAL      = 3;
+  MC_BULLETDISABLED    = 4;
+
+
+type
+  POPUPCHECKBACKGROUNDSTATES = longint;
+
+const
+  MCB_DISABLED = 1;
+  MCB_NORMAL   = 2;
+  MCB_BITMAP   = 3;
+
+
+type
+  POPUPITEMSTATES = longint;
+
+const
+  MPI_NORMAL   = 1;
+  MPI_HOT      = 2;
+  MPI_DISABLED = 3;
+  MPI_DISABLEDHOT = 4;
+
+
+type
+  POPUPSUBMENUSTATES = longint;
+
+const
+  MSM_NORMAL   = 1;
+  MSM_DISABLED = 2;
+
+
+type
+  SYSTEMCLOSESTATES = longint;
+
+const
+  MSYSC_NORMAL   = 1;
+  MSYSC_DISABLED = 2;
+
+
+type
+  SYSTEMMAXIMIZESTATES = longint;
+
+const
+  MSYSMX_NORMAL   = 1;
+  MSYSMX_DISABLED = 2;
+
+
+type
+  SYSTEMMINIMIZESTATES = longint;
+
+const
+  MSYSMN_NORMAL   = 1;
+  MSYSMN_DISABLED = 2;
+
+
+type
+  SYSTEMRESTORESTATES = longint;
+
+const
+  MSYSR_NORMAL   = 1;
+  MSYSR_DISABLED = 2;
+
+
+// NAVIGATION class parts and states
+
+  VSCLASS_NAVIGATION = 'NAVIGATION';
+
+type
+  NAVIGATIONPARTS = longint;
+
+const
+  NAV_BACKBUTTON    = 1;
+  NAV_FORWARDBUTTON = 2;
+  NAV_MENUBUTTON    = 3;
+
+
+type
+  NAV_BACKBUTTONSTATES = longint;
+
+const
+  NAV_BB_NORMAL   = 1;
+  NAV_BB_HOT      = 2;
+  NAV_BB_PRESSED  = 3;
+  NAV_BB_DISABLED = 4;
+
+
+type
+  NAV_FORWARDBUTTONSTATES = longint;
+
+const
+  NAV_FB_NORMAL   = 1;
+  NAV_FB_HOT      = 2;
+  NAV_FB_PRESSED  = 3;
+  NAV_FB_DISABLED = 4;
+
+
+type
+  NAV_MENUBUTTONSTATES = longint;
+
+const
+  NAV_MB_NORMAL   = 1;
+  NAV_MB_HOT      = 2;
+  NAV_MB_PRESSED  = 3;
+  NAV_MB_DISABLED = 4;
+
+
+// PROGRESSSTYLE class parts and states
+
+  VSCLASS_PROGRESSSTYLE = 'PROGRESSSTYLE';
+  VSCLASS_PROGRESS      = 'PROGRESS';
+
+type
+  PROGRESSPARTS = longint;
+
+const
+  PP_BAR      = 1;
+  PP_BARVERT  = 2;
+  PP_CHUNK    = 3;
+  PP_CHUNKVERT = 4;
+  PP_FILL     = 5;
+  PP_FILLVERT = 6;
+  PP_PULSEOVERLAY = 7;
+  PP_MOVEOVERLAY = 8;
+  PP_PULSEOVERLAYVERT = 9;
+  PP_MOVEOVERLAYVERT = 10;
+  PP_TRANSPARENTBAR = 11;
+  PP_TRANSPARENTBARVERT = 12;
+
+type
+  PROGRESSSTYLEPARTS = PROGRESSPARTS;
+
+type
+  TRANSPARENTBARSTATES = longint;
+
+const
+  PBBS_NORMAL  = 1;
+  PBBS_PARTIAL = 2;
+
+
+type
+  TRANSPARENTBARVERTSTATES = longint;
+
+const
+  PBBVS_NORMAL  = 1;
+  PBBVS_PARTIAL = 2;
+
+
+type
+  FILLSTATES = longint;
+
+const
+  PBFS_NORMAL  = 1;
+  PBFS_ERROR   = 2;
+  PBFS_PAUSED  = 3;
+  PBFS_PARTIAL = 4;
+
+
+type
+  FILLVERTSTATES = longint;
+
+const
+  PBFVS_NORMAL  = 1;
+  PBFVS_ERROR   = 2;
+  PBFVS_PAUSED  = 3;
+  PBFVS_PARTIAL = 4;
+
+
+// REBARSTYLE class parts and states
+
+  VSCLASS_REBARSTYLE = 'REBARSTYLE';
+  VSCLASS_REBAR      = 'REBAR';
+
+type
+  REBARPARTS = longint;
+
+const
+  RP_GRIPPER  = 1;
+  RP_GRIPPERVERT = 2;
+  RP_BAND     = 3;
+  RP_CHEVRON  = 4;
+  RP_CHEVRONVERT = 5;
+  RP_BACKGROUND = 6;
+  RP_SPLITTER = 7;
+  RP_SPLITTERVERT = 8;
+
+type
+  REBARSTYLEPARTS = REBARPARTS;
+
+type
+  CHEVRONSTATES = longint;
+
+const
+  CHEVS_NORMAL  = 1;
+  CHEVS_HOT     = 2;
+  CHEVS_PRESSED = 3;
+
+
+type
+  CHEVRONVERTSTATES = longint;
+
+const
+  CHEVSV_NORMAL  = 1;
+  CHEVSV_HOT     = 2;
+  CHEVSV_PRESSED = 3;
+
+
+type
+  SPLITTERSTATES = longint;
+
+const
+  SPLITS_NORMAL  = 1;
+  SPLITS_HOT     = 2;
+  SPLITS_PRESSED = 3;
+
+
+type
+  SPLITTERVERTSTATES = longint;
+
+const
+  SPLITSV_NORMAL  = 1;
+  SPLITSV_HOT     = 2;
+  SPLITSV_PRESSED = 3;
+
+
+// SCROLLBARSTYLE class parts and states
+
+  VSCLASS_SCROLLBARSTYLE = 'SCROLLBARSTYLE';
+  VSCLASS_SCROLLBAR      = 'SCROLLBAR';
+
+type
+  SCROLLBARPARTS = longint;
+
+const
+  SBP_ARROWBTN     = 1;
+  SBP_THUMBBTNHORZ = 2;
+  SBP_THUMBBTNVERT = 3;
+  SBP_LOWERTRACKHORZ = 4;
+  SBP_UPPERTRACKHORZ = 5;
+  SBP_LOWERTRACKVERT = 6;
+  SBP_UPPERTRACKVERT = 7;
+  SBP_GRIPPERHORZ  = 8;
+  SBP_GRIPPERVERT  = 9;
+  SBP_SIZEBOX      = 10;
+
+type
+  SCROLLBARSTYLEPARTS = SCROLLBARPARTS;
+
+type
+  ARROWBTNSTATES = longint;
+
+const
+  ABS_UPNORMAL   = 1;
+  ABS_UPHOT      = 2;
+  ABS_UPPRESSED  = 3;
+  ABS_UPDISABLED = 4;
+  ABS_DOWNNORMAL = 5;
+  ABS_DOWNHOT    = 6;
+  ABS_DOWNPRESSED = 7;
+  ABS_DOWNDISABLED = 8;
+  ABS_LEFTNORMAL = 9;
+  ABS_LEFTHOT    = 10;
+  ABS_LEFTPRESSED = 11;
+  ABS_LEFTDISABLED = 12;
+  ABS_RIGHTNORMAL = 13;
+  ABS_RIGHTHOT   = 14;
+  ABS_RIGHTPRESSED = 15;
+  ABS_RIGHTDISABLED = 16;
+  ABS_UPHOVER    = 17;
+  ABS_DOWNHOVER  = 18;
+  ABS_LEFTHOVER  = 19;
+  ABS_RIGHTHOVER = 20;
+
+
+type
+  SCROLLBARSTYLESTATES = longint;
+
+const
+  SCRBS_NORMAL   = 1;
+  SCRBS_HOT      = 2;
+  SCRBS_PRESSED  = 3;
+  SCRBS_DISABLED = 4;
+  SCRBS_HOVER    = 5;
+
+
+type
+  SIZEBOXSTATES = longint;
+
+const
+  SZB_RIGHTALIGN    = 1;
+  SZB_LEFTALIGN     = 2;
+  SZB_TOPRIGHTALIGN = 3;
+  SZB_TOPLEFTALIGN  = 4;
+  SZB_HALFBOTTOMRIGHTALIGN = 5;
+  SZB_HALFBOTTOMLEFTALIGN = 6;
+  SZB_HALFTOPRIGHTALIGN = 7;
+  SZB_HALFTOPLEFTALIGN = 8;
+
+
+// SPINSTYLE class parts and states
+
+  VSCLASS_SPINSTYLE = 'SPINSTYLE';
+  VSCLASS_SPIN      = 'SPIN';
+
+type
+  SPINPARTS = longint;
+
+const
+  SPNP_UP     = 1;
+  SPNP_DOWN   = 2;
+  SPNP_UPHORZ = 3;
+  SPNP_DOWNHORZ = 4;
+
+type
+  SPINSTYLEPARTS = SPINPARTS;
+
+type
+  UPSTATES = longint;
+
+const
+  UPS_NORMAL   = 1;
+  UPS_HOT      = 2;
+  UPS_PRESSED  = 3;
+  UPS_DISABLED = 4;
+
+
+type
+  DOWNSTATES = longint;
+
+const
+  DNS_NORMAL   = 1;
+  DNS_HOT      = 2;
+  DNS_PRESSED  = 3;
+  DNS_DISABLED = 4;
+
+
+type
+  UPHORZSTATES = longint;
+
+const
+  UPHZS_NORMAL   = 1;
+  UPHZS_HOT      = 2;
+  UPHZS_PRESSED  = 3;
+  UPHZS_DISABLED = 4;
+
+
+type
+  DOWNHORZSTATES = longint;
+
+const
+  DNHZS_NORMAL   = 1;
+  DNHZS_HOT      = 2;
+  DNHZS_PRESSED  = 3;
+  DNHZS_DISABLED = 4;
+
+
+// STATUSSTYLE class parts and states
+
+  VSCLASS_STATUSSTYLE = 'STATUSSTYLE';
+  VSCLASS_STATUS      = 'STATUS';
+
+type
+  STATUSPARTS = longint;
+
+const
+  SP_PANE    = 1;
+  SP_GRIPPERPANE = 2;
+  SP_GRIPPER = 3;
+
+type
+  STATUSSTYLEPARTS = STATUSPARTS;
+
+// TABSTYLE class parts and states
+const
+  VSCLASS_TABSTYLE = 'TABSTYLE';
+  VSCLASS_TAB      = 'TAB';
+
+type
+  TABPARTS = longint;
+
+const
+  TABP_TABITEM = 1;
+  TABP_TABITEMLEFTEDGE = 2;
+  TABP_TABITEMRIGHTEDGE = 3;
+  TABP_TABITEMBOTHEDGE = 4;
+  TABP_TOPTABITEM = 5;
+  TABP_TOPTABITEMLEFTEDGE = 6;
+  TABP_TOPTABITEMRIGHTEDGE = 7;
+  TABP_TOPTABITEMBOTHEDGE = 8;
+  TABP_PANE = 9;
+  TABP_BODY = 10;
+  TABP_AEROWIZARDBODY = 11;
+
+type
+  TABSTYLEPARTS = TABPARTS;
+
+type
+  TABITEMSTATES = longint;
+
+const
+  TIS_NORMAL   = 1;
+  TIS_HOT      = 2;
+  TIS_SELECTED = 3;
+  TIS_DISABLED = 4;
+  TIS_FOCUSED  = 5;
+
+
+type
+  TABITEMLEFTEDGESTATES = longint;
+
+const
+  TILES_NORMAL   = 1;
+  TILES_HOT      = 2;
+  TILES_SELECTED = 3;
+  TILES_DISABLED = 4;
+  TILES_FOCUSED  = 5;
+
+
+type
+  TABITEMRIGHTEDGESTATES = longint;
+
+const
+  TIRES_NORMAL   = 1;
+  TIRES_HOT      = 2;
+  TIRES_SELECTED = 3;
+  TIRES_DISABLED = 4;
+  TIRES_FOCUSED  = 5;
+
+
+type
+  TABITEMBOTHEDGESTATES = longint;
+
+const
+  TIBES_NORMAL   = 1;
+  TIBES_HOT      = 2;
+  TIBES_SELECTED = 3;
+  TIBES_DISABLED = 4;
+  TIBES_FOCUSED  = 5;
+
+
+type
+  TOPTABITEMSTATES = longint;
+
+const
+  TTIS_NORMAL   = 1;
+  TTIS_HOT      = 2;
+  TTIS_SELECTED = 3;
+  TTIS_DISABLED = 4;
+  TTIS_FOCUSED  = 5;
+
+
+type
+  TOPTABITEMLEFTEDGESTATES = longint;
+
+const
+  TTILES_NORMAL   = 1;
+  TTILES_HOT      = 2;
+  TTILES_SELECTED = 3;
+  TTILES_DISABLED = 4;
+  TTILES_FOCUSED  = 5;
+
+
+type
+  TOPTABITEMRIGHTEDGESTATES = longint;
+
+const
+  TTIRES_NORMAL   = 1;
+  TTIRES_HOT      = 2;
+  TTIRES_SELECTED = 3;
+  TTIRES_DISABLED = 4;
+  TTIRES_FOCUSED  = 5;
+
+
+type
+  TOPTABITEMBOTHEDGESTATES = longint;
+
+const
+  TTIBES_NORMAL   = 1;
+  TTIBES_HOT      = 2;
+  TTIBES_SELECTED = 3;
+  TTIBES_DISABLED = 4;
+  TTIBES_FOCUSED  = 5;
+
+
+// TASKDIALOGSTYLE class parts and states
+
+  VSCLASS_TASKDIALOGSTYLE = 'TASKDIALOGSTYLE';
+  VSCLASS_TASKDIALOG      = 'TASKDIALOG';
+
+type
+  TASKDIALOGPARTS = longint;
+
+const
+  TDLG_PRIMARYPANEL  = 1;
+  TDLG_MAININSTRUCTIONPANE = 2;
+  TDLG_MAINICON      = 3;
+  TDLG_CONTENTPANE   = 4;
+  TDLG_CONTENTICON   = 5;
+  TDLG_EXPANDEDCONTENT = 6;
+  TDLG_COMMANDLINKPANE = 7;
+  TDLG_SECONDARYPANEL = 8;
+  TDLG_CONTROLPANE   = 9;
+  TDLG_BUTTONSECTION = 10;
+  TDLG_BUTTONWRAPPER = 11;
+  TDLG_EXPANDOTEXT   = 12;
+  TDLG_EXPANDOBUTTON = 13;
+  TDLG_VERIFICATIONTEXT = 14;
+  TDLG_FOOTNOTEPANE  = 15;
+  TDLG_FOOTNOTEAREA  = 16;
+  TDLG_FOOTNOTESEPARATOR = 17;
+  TDLG_EXPANDEDFOOTERAREA = 18;
+  TDLG_PROGRESSBAR   = 19;
+  TDLG_IMAGEALIGNMENT = 20;
+  TDLG_RADIOBUTTONPANE = 21;
+
+type
+  TASKDIALOGSTYLEPARTS = TASKDIALOGPARTS;
+
+type
+  CONTENTPANESTATES = longint;
+
+const
+  TDLGCPS_STANDALONE = 1;
+
+
+type
+  EXPANDOBUTTONSTATES = longint;
+
+const
+  TDLGEBS_NORMAL  = 1;
+  TDLGEBS_HOVER   = 2;
+  TDLGEBS_PRESSED = 3;
+  TDLGEBS_EXPANDEDNORMAL = 4;
+  TDLGEBS_EXPANDEDHOVER = 5;
+  TDLGEBS_EXPANDEDPRESSED = 6;
+
+
+// TEXTSTYLE class parts and states
+
+  VSCLASS_TEXTSTYLE = 'TEXTSTYLE';
+
+type
+  TEXTSTYLEPARTS = longint;
+
+const
+  TEXT_MAININSTRUCTION = 1;
+  TEXT_INSTRUCTION = 2;
+  TEXT_BODYTITLE = 3;
+  TEXT_BODYTEXT = 4;
+  TEXT_SECONDARYTEXT = 5;
+  TEXT_HYPERLINKTEXT = 6;
+  TEXT_EXPANDED = 7;
+  TEXT_LABEL = 8;
+  TEXT_CONTROLLABEL = 9;
+
+
+type
+  HYPERLINKTEXTSTATES = longint;
+
+const
+  TS_HYPERLINK_NORMAL   = 1;
+  TS_HYPERLINK_HOT      = 2;
+  TS_HYPERLINK_PRESSED  = 3;
+  TS_HYPERLINK_DISABLED = 4;
+
+
+type
+  CONTROLLABELSTATES = longint;
+
+const
+  TS_CONTROLLABEL_NORMAL   = 1;
+  TS_CONTROLLABEL_DISABLED = 2;
+
+
+// TOOLBARSTYLE class parts and states
+
+  VSCLASS_TOOLBARSTYLE = 'TOOLBARSTYLE';
+  VSCLASS_TOOLBAR      = 'TOOLBAR';
+
+type
+  TOOLBARPARTS = longint;
+
+const
+  TP_BUTTON      = 1;
+  TP_DROPDOWNBUTTON = 2;
+  TP_SPLITBUTTON = 3;
+  TP_SPLITBUTTONDROPDOWN = 4;
+  TP_SEPARATOR   = 5;
+  TP_SEPARATORVERT = 6;
+  TP_DROPDOWNBUTTONGLYPH = 7;
+
+type
+  TOOLBARSTYLEPARTS = TOOLBARPARTS;
+
+type
+  TOOLBARSTYLESTATES = longint;
+
+const
+  TS_NORMAL   = 1;
+  TS_HOT      = 2;
+  TS_PRESSED  = 3;
+  TS_DISABLED = 4;
+  TS_CHECKED  = 5;
+  TS_HOTCHECKED = 6;
+  TS_NEARHOT  = 7;
+  TS_OTHERSIDEHOT = 8;
+
+
+// TOOLTIPSTYLE class parts and states
+
+  VSCLASS_TOOLTIPSTYLE = 'TOOLTIPSTYLE';
+  VSCLASS_TOOLTIP      = 'TOOLTIP';
+
+type
+  TOOLTIPPARTS = longint;
+
+const
+  TTP_STANDARD = 1;
+  TTP_STANDARDTITLE = 2;
+  TTP_BALLOON = 3;
+  TTP_BALLOONTITLE = 4;
+  TTP_CLOSE  = 5;
+  TTP_BALLOONSTEM = 6;
+  TTP_WRENCH = 7;
+
+type
+  TOOLTIPSTYLEPARTS = TOOLTIPPARTS;
+
+type
+  CLOSESTATES = longint;
+
+const
+  TTCS_NORMAL  = 1;
+  TTCS_HOT     = 2;
+  TTCS_PRESSED = 3;
+
+
+type
+  STANDARDSTATES = longint;
+
+const
+  TTSS_NORMAL = 1;
+  TTSS_LINK   = 2;
+
+
+type
+  BALLOONSTATES = longint;
+
+const
+  TTBS_NORMAL = 1;
+  TTBS_LINK   = 2;
+
+
+type
+  BALLOONSTEMSTATES = longint;
+
+const
+  TTBSS_POINTINGUPLEFTWALL    = 1;
+  TTBSS_POINTINGUPCENTERED    = 2;
+  TTBSS_POINTINGUPRIGHTWALL   = 3;
+  TTBSS_POINTINGDOWNRIGHTWALL = 4;
+  TTBSS_POINTINGDOWNCENTERED  = 5;
+  TTBSS_POINTINGDOWNLEFTWALL  = 6;
+
+
+type
+  WRENCHSTATES = longint;
+
+const
+  TTWS_NORMAL  = 1;
+  TTWS_HOT     = 2;
+  TTWS_PRESSED = 3;
+
+
+// TRACKBARSTYLE class parts and states
+
+  VSCLASS_TRACKBARSTYLE = 'TRACKBARSTYLE';
+  VSCLASS_TRACKBAR      = 'TRACKBAR';
+
+type
+  TRACKBARPARTS = longint;
+
+const
+  TKP_TRACK    = 1;
+  TKP_TRACKVERT = 2;
+  TKP_THUMB    = 3;
+  TKP_THUMBBOTTOM = 4;
+  TKP_THUMBTOP = 5;
+  TKP_THUMBVERT = 6;
+  TKP_THUMBLEFT = 7;
+  TKP_THUMBRIGHT = 8;
+  TKP_TICS     = 9;
+  TKP_TICSVERT = 10;
+
+type
+  TRACKBARSTYLEPARTS = TRACKBARPARTS;
+
+type
+  TRACKBARSTYLESTATES = longint;
+
+const
+  TKS_NORMAL = 1;
+
+
+type
+  TRACKSTATES = longint;
+
+const
+  TRS_NORMAL = 1;
+
+
+type
+  TRACKVERTSTATES = longint;
+
+const
+  TRVS_NORMAL = 1;
+
+
+type
+  THUMBSTATES = longint;
+
+const
+  TUS_NORMAL   = 1;
+  TUS_HOT      = 2;
+  TUS_PRESSED  = 3;
+  TUS_FOCUSED  = 4;
+  TUS_DISABLED = 5;
+
+
+type
+  THUMBBOTTOMSTATES = longint;
+
+const
+  TUBS_NORMAL   = 1;
+  TUBS_HOT      = 2;
+  TUBS_PRESSED  = 3;
+  TUBS_FOCUSED  = 4;
+  TUBS_DISABLED = 5;
+
+
+type
+  THUMBTOPSTATES = longint;
+
+const
+  TUTS_NORMAL   = 1;
+  TUTS_HOT      = 2;
+  TUTS_PRESSED  = 3;
+  TUTS_FOCUSED  = 4;
+  TUTS_DISABLED = 5;
+
+
+type
+  THUMBVERTSTATES = longint;
+
+const
+  TUVS_NORMAL   = 1;
+  TUVS_HOT      = 2;
+  TUVS_PRESSED  = 3;
+  TUVS_FOCUSED  = 4;
+  TUVS_DISABLED = 5;
+
+
+type
+  THUMBLEFTSTATES = longint;
+
+const
+  TUVLS_NORMAL   = 1;
+  TUVLS_HOT      = 2;
+  TUVLS_PRESSED  = 3;
+  TUVLS_FOCUSED  = 4;
+  TUVLS_DISABLED = 5;
+
+
+type
+  THUMBRIGHTSTATES = longint;
+
+const
+  TUVRS_NORMAL   = 1;
+  TUVRS_HOT      = 2;
+  TUVRS_PRESSED  = 3;
+  TUVRS_FOCUSED  = 4;
+  TUVRS_DISABLED = 5;
+
+
+type
+  TICSSTATES = longint;
+
+const
+  TSS_NORMAL = 1;
+
+
+type
+  TICSVERTSTATES = longint;
+
+const
+  TSVS_NORMAL = 1;
+
+
+// TREEVIEWSTYLE class parts and states
+
+  VSCLASS_TREEVIEWSTYLE = 'TREEVIEWSTYLE';
+  VSCLASS_TREEVIEW      = 'TREEVIEW';
+
+type
+  TREEVIEWPARTS = longint;
+
+const
+  TVP_TREEITEM = 1;
+  TVP_GLYPH    = 2;
+  TVP_BRANCH   = 3;
+  TVP_HOTGLYPH = 4;
+
+type
+  TREEVIEWSTYLEPARTS = TREEVIEWPARTS;
+
+type
+  TREEITEMSTATES = longint;
+
+const
+  TREIS_NORMAL   = 1;
+  TREIS_HOT      = 2;
+  TREIS_SELECTED = 3;
+  TREIS_DISABLED = 4;
+  TREIS_SELECTEDNOTFOCUS = 5;
+  TREIS_HOTSELECTED = 6;
+
+
+type
+  GLYPHSTATES = longint;
+
+const
+  GLPS_CLOSED = 1;
+  GLPS_OPENED = 2;
+
+
+type
+  HOTGLYPHSTATES = longint;
+
+const
+  HGLPS_CLOSED = 1;
+  HGLPS_OPENED = 2;
+
+
+// WINDOWSTYLE class parts and states
+
+  VSCLASS_WINDOWSTYLE = 'WINDOWSTYLE';
+  VSCLASS_WINDOW      = 'WINDOW';
+
+type
+  WINDOWPARTS = longint;
+
+const
+  WP_CAPTION = 1;
+  WP_SMALLCAPTION = 2;
+  WP_MINCAPTION = 3;
+  WP_SMALLMINCAPTION = 4;
+  WP_MAXCAPTION = 5;
+  WP_SMALLMAXCAPTION = 6;
+  WP_FRAMELEFT = 7;
+  WP_FRAMERIGHT = 8;
+  WP_FRAMEBOTTOM = 9;
+  WP_SMALLFRAMELEFT = 10;
+  WP_SMALLFRAMERIGHT = 11;
+  WP_SMALLFRAMEBOTTOM = 12;
+  WP_SYSBUTTON = 13;
+  WP_MDISYSBUTTON = 14;
+  WP_MINBUTTON = 15;
+  WP_MDIMINBUTTON = 16;
+  WP_MAXBUTTON = 17;
+  WP_CLOSEBUTTON = 18;
+  WP_SMALLCLOSEBUTTON = 19;
+  WP_MDICLOSEBUTTON = 20;
+  WP_RESTOREBUTTON = 21;
+  WP_MDIRESTOREBUTTON = 22;
+  WP_HELPBUTTON = 23;
+  WP_MDIHELPBUTTON = 24;
+  WP_HORZSCROLL = 25;
+  WP_HORZTHUMB = 26;
+  WP_VERTSCROLL = 27;
+  WP_VERTTHUMB = 28;
+  WP_DIALOG = 29;
+  WP_CAPTIONSIZINGTEMPLATE = 30;
+  WP_SMALLCAPTIONSIZINGTEMPLATE = 31;
+  WP_FRAMELEFTSIZINGTEMPLATE = 32;
+  WP_SMALLFRAMELEFTSIZINGTEMPLATE = 33;
+  WP_FRAMERIGHTSIZINGTEMPLATE = 34;
+  WP_SMALLFRAMERIGHTSIZINGTEMPLATE = 35;
+  WP_FRAMEBOTTOMSIZINGTEMPLATE = 36;
+  WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE = 37;
+  WP_FRAME  = 38;
+
+type
+  WINDOWSTYLEPARTS = WINDOWPARTS;
+
+type
+  FRAMESTATES = longint;
+
+const
+  FS_ACTIVE   = 1;
+  FS_INACTIVE = 2;
+
+
+type
+  CAPTIONSTATES = longint;
+
+const
+  CS_ACTIVE   = 1;
+  CS_INACTIVE = 2;
+  CS_DISABLED = 3;
+
+
+type
+  MAXCAPTIONSTATES = longint;
+
+const
+  MXCS_ACTIVE   = 1;
+  MXCS_INACTIVE = 2;
+  MXCS_DISABLED = 3;
+
+
+type
+  MINCAPTIONSTATES = longint;
+
+const
+  MNCS_ACTIVE   = 1;
+  MNCS_INACTIVE = 2;
+  MNCS_DISABLED = 3;
+
+
+type
+  HORZSCROLLSTATES = longint;
+
+const
+  HSS_NORMAL   = 1;
+  HSS_HOT      = 2;
+  HSS_PUSHED   = 3;
+  HSS_DISABLED = 4;
+
+
+type
+  HORZTHUMBSTATES = longint;
+
+const
+  HTS_NORMAL   = 1;
+  HTS_HOT      = 2;
+  HTS_PUSHED   = 3;
+  HTS_DISABLED = 4;
+
+
+type
+  VERTSCROLLSTATES = longint;
+
+const
+  VSS_NORMAL   = 1;
+  VSS_HOT      = 2;
+  VSS_PUSHED   = 3;
+  VSS_DISABLED = 4;
+
+
+type
+  VERTTHUMBSTATES = longint;
+
+const
+  VTS_NORMAL   = 1;
+  VTS_HOT      = 2;
+  VTS_PUSHED   = 3;
+  VTS_DISABLED = 4;
+
+
+type
+  SYSBUTTONSTATES = longint;
+
+const
+  SBS_NORMAL   = 1;
+  SBS_HOT      = 2;
+  SBS_PUSHED   = 3;
+  SBS_DISABLED = 4;
+
+
+type
+  MINBUTTONSTATES = longint;
+
+const
+  MINBS_NORMAL   = 1;
+  MINBS_HOT      = 2;
+  MINBS_PUSHED   = 3;
+  MINBS_DISABLED = 4;
+
+
+type
+  MAXBUTTONSTATES = longint;
+
+const
+  MAXBS_NORMAL   = 1;
+  MAXBS_HOT      = 2;
+  MAXBS_PUSHED   = 3;
+  MAXBS_DISABLED = 4;
+
+
+type
+  RESTOREBUTTONSTATES = longint;
+
+const
+  RBS_NORMAL   = 1;
+  RBS_HOT      = 2;
+  RBS_PUSHED   = 3;
+  RBS_DISABLED = 4;
+
+
+type
+  HELPBUTTONSTATES = longint;
+
+const
+  HBS_NORMAL   = 1;
+  HBS_HOT      = 2;
+  HBS_PUSHED   = 3;
+  HBS_DISABLED = 4;
+
+
+type
+  CLOSEBUTTONSTATES = longint;
+
+const
+  CBS_NORMAL   = 1;
+  CBS_HOT      = 2;
+  CBS_PUSHED   = 3;
+  CBS_DISABLED = 4;
+
+// from vssym32.h
+
+{-------------------------------------------------------------------------// }
+{  VisualStyle Core Win32/ComCtl32 symbols                                   }
+{-------------------------------------------------------------------------// }
+
+// enumerated property values
+
+
+type
+  BGTYPE = longint;
+
+const
+  BT_IMAGEFILE = 0;
+  BT_BORDERFILL = 1;
+  BT_NONE = 2;
+
+// enumerated property values
+
+
+type
+  IMAGELAYOUT = longint;
+
+const
+  IL_VERTICAL   = 0;
+  IL_HORIZONTAL = 1;
+
+//  enumerated property values
+
+
+type
+  BORDERTYPE = longint;
+
+const
+  BT_RECT      = 0;
+  BT_ROUNDRECT = 1;
+  BT_ELLIPSE   = 2;
+
+// enumerated property values
+
+
+type
+  FILLTYPE = longint;
+
+const
+  FT_SOLID     = 0;
+  FT_VERTGRADIENT = 1;
+  FT_HORZGRADIENT = 2;
+  FT_RADIALGRADIENT = 3;
+  FT_TILEIMAGE = 4;
+
+
+// enumerated property values
+
+
+type
+  SIZINGTYPE = longint;
+
+const
+  ST_TRUESIZE = 0;
+  ST_STRETCH  = 1;
+  ST_TILE     = 2;
+
+
+// enumerated property values
+
+
+type
+  HALIGN = longint;
+
+const
+  HA_LEFT   = 0;
+  HA_CENTER = 1;
+  HA_RIGHT  = 2;
+
+
+// enumerated property values
+
+
+type
+  CONTENTALIGNMENT = longint;
+
+const
+  CA_LEFT   = 0;
+  CA_CENTER = 1;
+  CA_RIGHT  = 2;
+
+
+// enumerated property values
+
+
+type
+  VALIGN = longint;
+
+const
+  VA_TOP    = 0;
+  VA_CENTER = 1;
+  VA_BOTTOM = 2;
+
+
+// enumerated property values
+
+
+type
+  OFFSETTYPE = longint;
+
+const
+  OT_TOPLEFT      = 0;
+  OT_TOPRIGHT     = 1;
+  OT_TOPMIDDLE    = 2;
+  OT_BOTTOMLEFT   = 3;
+  OT_BOTTOMRIGHT  = 4;
+  OT_BOTTOMMIDDLE = 5;
+  OT_MIDDLELEFT   = 6;
+  OT_MIDDLERIGHT  = 7;
+  OT_LEFTOFCAPTION = 8;
+  OT_RIGHTOFCAPTION = 9;
+  OT_LEFTOFLASTBUTTON = 10;
+  OT_RIGHTOFLASTBUTTON = 11;
+  OT_ABOVELASTBUTTON = 12;
+  OT_BELOWLASTBUTTON = 13;
+
+
+// enumerated property values
+
+
+type
+  ICONEFFECT = longint;
+
+const
+  ICE_NONE   = 0;
+  ICE_GLOW   = 1;
+  ICE_SHADOW = 2;
+  ICE_PULSE  = 3;
+  ICE_ALPHA  = 4;
+
+
+// enumerated property values
+
+
+type
+  TEXTSHADOWTYPE = longint;
+
+const
+  TST_NONE   = 0;
+  TST_SINGLE = 1;
+  TST_CONTINUOUS = 2;
+
+
+// enumerated property values
+
+
+type
+  GLYPHTYPE = longint;
+
+const
+  GT_NONE      = 0;
+  GT_IMAGEGLYPH = 1;
+  GT_FONTGLYPH = 2;
+
+
+// enumerated property values
+
+
+type
+  IMAGESELECTTYPE = longint;
+
+const
+  IST_NONE = 0;
+  IST_SIZE = 1;
+  IST_DPI  = 2;
+
+
+// enumerated property values
+
+
+type
+  TRUESIZESCALINGTYPE = longint;
+
+const
+  TSST_NONE = 0;
+  TSST_SIZE = 1;
+  TSST_DPI  = 2;
+
+
+// enumerated property values
+
+
+type
+  GLYPHFONTSIZINGTYPE = longint;
+
+const
+  GFST_NONE = 0;
+  GFST_SIZE = 1;
+  GFST_DPI  = 2;
+
+
+// property symbol definitions
+
+  TMT_RESERVEDLOW = 0;
+  TMT_RESERVEDHIGH = 7999;
+  TMT_DIBDATA  = 2;
+  TMT_GLYPHDIBDATA = 8;
+  TMT_ENUM     = 200;
+  TMT_STRING   = 201;
+  TMT_INT      = 202;
+  TMT_BOOL     = 203;
+  TMT_COLOR    = 204;
+  TMT_MARGINS  = 205;
   TMT_FILENAME = 206;
-  {$EXTERNALSYM TMT_FILENAME}
-  TMT_SIZE = 207;
-  {$EXTERNALSYM TMT_SIZE}
+  TMT_SIZE     = 207;
   TMT_POSITION = 208;
-  {$EXTERNALSYM TMT_POSITION}
-  TMT_RECT = 209;
-  {$EXTERNALSYM TMT_RECT}
-  TMT_FONT = 210;
-  {$EXTERNALSYM TMT_FONT}
-  TMT_INTLIST = 211;
-  {$EXTERNALSYM TMT_INTLIST}
-
-  //---- special misc. properties ----
-
+  TMT_RECT     = 209;
+  TMT_FONT     = 210;
+  TMT_INTLIST  = 211;
+  TMT_HBITMAP  = 212;
+  TMT_DISKSTREAM = 213;
+  TMT_STREAM   = 214;
+  TMT_BITMAPREF = 215;
   TMT_COLORSCHEMES = 401;
-  {$EXTERNALSYM TMT_COLORSCHEMES}
-  TMT_SIZES = 402;
-  {$EXTERNALSYM TMT_SIZES}
-  TMT_CHARSET = 403;
-  {$EXTERNALSYM TMT_CHARSET}
-
-  //---- [documentation] properties ----
-
+  TMT_SIZES    = 402;
+  TMT_CHARSET  = 403;
+  TMT_NAME     = 600;
   TMT_DISPLAYNAME = 601;
-  {$EXTERNALSYM TMT_DISPLAYNAME}
-  TMT_TOOLTIP = 602;
-  {$EXTERNALSYM TMT_TOOLTIP}
-  TMT_COMPANY = 603;
-  {$EXTERNALSYM TMT_COMPANY}
-  TMT_AUTHOR = 604;
-  {$EXTERNALSYM TMT_AUTHOR}
+  TMT_TOOLTIP  = 602;
+  TMT_COMPANY  = 603;
+  TMT_AUTHOR   = 604;
   TMT_COPYRIGHT = 605;
-  {$EXTERNALSYM TMT_COPYRIGHT}
-  TMT_URL = 606;
-  {$EXTERNALSYM TMT_URL}
-  TMT_VERSION = 607;
-  {$EXTERNALSYM TMT_VERSION}
+  TMT_URL      = 606;
+  TMT_VERSION  = 607;
   TMT_DESCRIPTION = 608;
-  {$EXTERNALSYM TMT_DESCRIPTION}
-
   TMT_FIRST_RCSTRING_NAME = TMT_DISPLAYNAME;
-  {$EXTERNALSYM TMT_FIRST_RCSTRING_NAME}
-  TMT_LAST_RCSTRING_NAME  = TMT_DESCRIPTION;
-  {$EXTERNALSYM TMT_LAST_RCSTRING_NAME}
-
-  //---- theme metrics: fonts ----
-
+  TMT_LAST_RCSTRING_NAME = TMT_DESCRIPTION;
   TMT_CAPTIONFONT = 801;
-  {$EXTERNALSYM TMT_CAPTIONFONT}
   TMT_SMALLCAPTIONFONT = 802;
-  {$EXTERNALSYM TMT_SMALLCAPTIONFONT}
   TMT_MENUFONT = 803;
-  {$EXTERNALSYM TMT_MENUFONT}
   TMT_STATUSFONT = 804;
-  {$EXTERNALSYM TMT_STATUSFONT}
   TMT_MSGBOXFONT = 805;
-  {$EXTERNALSYM TMT_MSGBOXFONT}
   TMT_ICONTITLEFONT = 806;
-  {$EXTERNALSYM TMT_ICONTITLEFONT}
-
+  TMT_HEADING1FONT = 807;
+  TMT_HEADING2FONT = 808;
+  TMT_BODYFONT = 809;
   TMT_FIRSTFONT = TMT_CAPTIONFONT;
-  {$EXTERNALSYM TMT_FIRSTFONT}
-  TMT_LASTFONT  = TMT_ICONTITLEFONT;
-  {$EXTERNALSYM TMT_LASTFONT}
-
-  //---- theme metrics: bools ----
-
+  TMT_LASTFONT = TMT_BODYFONT;
   TMT_FLATMENUS = 1001;
-  {$EXTERNALSYM TMT_FLATMENUS}
-
   TMT_FIRSTBOOL = TMT_FLATMENUS;
-  {$EXTERNALSYM TMT_FIRSTBOOL}
-  TMT_LASTBOOL  = TMT_FLATMENUS;
-  {$EXTERNALSYM TMT_LASTBOOL}
-
-  //---- theme metrics: sizes ----
-
+  TMT_LASTBOOL = TMT_FLATMENUS;
   TMT_SIZINGBORDERWIDTH = 1201;
-  {$EXTERNALSYM TMT_SIZINGBORDERWIDTH}
   TMT_SCROLLBARWIDTH = 1202;
-  {$EXTERNALSYM TMT_SCROLLBARWIDTH}
   TMT_SCROLLBARHEIGHT = 1203;
-  {$EXTERNALSYM TMT_SCROLLBARHEIGHT}
   TMT_CAPTIONBARWIDTH = 1204;
-  {$EXTERNALSYM TMT_CAPTIONBARWIDTH}
   TMT_CAPTIONBARHEIGHT = 1205;
-  {$EXTERNALSYM TMT_CAPTIONBARHEIGHT}
   TMT_SMCAPTIONBARWIDTH = 1206;
-  {$EXTERNALSYM TMT_SMCAPTIONBARWIDTH}
   TMT_SMCAPTIONBARHEIGHT = 1207;
-  {$EXTERNALSYM TMT_SMCAPTIONBARHEIGHT}
   TMT_MENUBARWIDTH = 1208;
-  {$EXTERNALSYM TMT_MENUBARWIDTH}
   TMT_MENUBARHEIGHT = 1209;
-  {$EXTERNALSYM TMT_MENUBARHEIGHT}
-
-  TMT_FIRSTSIZE  = TMT_SIZINGBORDERWIDTH;
-  {$EXTERNALSYM TMT_FIRSTSIZE}
-  TMT_LASTSIZE  = TMT_MENUBARHEIGHT;
-  {$EXTERNALSYM TMT_LASTSIZE}
-
-  //---- theme metrics: ints ----
-
+  TMT_PADDEDBORDERWIDTH = 1210;
+  TMT_FIRSTSIZE = TMT_SIZINGBORDERWIDTH;
+  TMT_LASTSIZE = TMT_PADDEDBORDERWIDTH;
   TMT_MINCOLORDEPTH = 1301;
-  {$EXTERNALSYM TMT_MINCOLORDEPTH}
-
   TMT_FIRSTINT = TMT_MINCOLORDEPTH;
-  {$EXTERNALSYM TMT_FIRSTINT}
   TMT_LASTINT  = TMT_MINCOLORDEPTH;
-  {$EXTERNALSYM TMT_LASTINT}
-
-  //---- theme metrics: strings ----
-
-  TMT_CSSNAME = 1401;
-  {$EXTERNALSYM TMT_CSSNAME}
-  TMT_XMLNAME = 1402;
-  {$EXTERNALSYM TMT_XMLNAME}
-
-  TMT_FIRSTSTRING  = TMT_CSSNAME;
-  {$EXTERNALSYM TMT_FIRSTSTRING}
-  TMT_LASTSTRING   = TMT_XMLNAME;
-  {$EXTERNALSYM TMT_LASTSTRING}
-
-  //---- theme metrics: colors ----
-
+  TMT_CSSNAME  = 1401;
+  TMT_XMLNAME  = 1402;
+  TMT_LASTUPDATED = 1403;
+  TMT_ALIAS    = 1404;
+  TMT_FIRSTSTRING = TMT_CSSNAME;
+  TMT_LASTSTRING = TMT_ALIAS;
   TMT_SCROLLBAR = 1601;
-  {$EXTERNALSYM TMT_SCROLLBAR}
   TMT_BACKGROUND = 1602;
-  {$EXTERNALSYM TMT_BACKGROUND}
   TMT_ACTIVECAPTION = 1603;
-  {$EXTERNALSYM TMT_ACTIVECAPTION}
   TMT_INACTIVECAPTION = 1604;
-  {$EXTERNALSYM TMT_INACTIVECAPTION}
-  TMT_MENU = 1605;
-  {$EXTERNALSYM TMT_MENU}
-  TMT_WINDOW = 1606;
-  {$EXTERNALSYM TMT_WINDOW}
+  TMT_MENU     = 1605;
+  TMT_WINDOW   = 1606;
   TMT_WINDOWFRAME = 1607;
-  {$EXTERNALSYM TMT_WINDOWFRAME}
   TMT_MENUTEXT = 1608;
-  {$EXTERNALSYM TMT_MENUTEXT}
   TMT_WINDOWTEXT = 1609;
-  {$EXTERNALSYM TMT_WINDOWTEXT}
   TMT_CAPTIONTEXT = 1610;
-  {$EXTERNALSYM TMT_CAPTIONTEXT}
   TMT_ACTIVEBORDER = 1611;
-  {$EXTERNALSYM TMT_ACTIVEBORDER}
   TMT_INACTIVEBORDER = 1612;
-  {$EXTERNALSYM TMT_INACTIVEBORDER}
   TMT_APPWORKSPACE = 1613;
-  {$EXTERNALSYM TMT_APPWORKSPACE}
   TMT_HIGHLIGHT = 1614;
-  {$EXTERNALSYM TMT_HIGHLIGHT}
   TMT_HIGHLIGHTTEXT = 1615;
-  {$EXTERNALSYM TMT_HIGHLIGHTTEXT}
-  TMT_BTNFACE = 1616;
-  {$EXTERNALSYM TMT_BTNFACE}
+  TMT_BTNFACE  = 1616;
   TMT_BTNSHADOW = 1617;
-  {$EXTERNALSYM TMT_BTNSHADOW}
   TMT_GRAYTEXT = 1618;
-  {$EXTERNALSYM TMT_GRAYTEXT}
-  TMT_BTNTEXT = 1619;
-  {$EXTERNALSYM TMT_BTNTEXT}
+  TMT_BTNTEXT  = 1619;
   TMT_INACTIVECAPTIONTEXT = 1620;
-  {$EXTERNALSYM TMT_INACTIVECAPTIONTEXT}
   TMT_BTNHIGHLIGHT = 1621;
-  {$EXTERNALSYM TMT_BTNHIGHLIGHT}
   TMT_DKSHADOW3D = 1622;
-  {$EXTERNALSYM TMT_DKSHADOW3D}
-  TMT_LIGHT3D = 1623;
-  {$EXTERNALSYM TMT_LIGHT3D}
+  TMT_LIGHT3D  = 1623;
   TMT_INFOTEXT = 1624;
-  {$EXTERNALSYM TMT_INFOTEXT}
-  TMT_INFOBK = 1625;
-  {$EXTERNALSYM TMT_INFOBK}
+  TMT_INFOBK   = 1625;
   TMT_BUTTONALTERNATEFACE = 1626;
-  {$EXTERNALSYM TMT_BUTTONALTERNATEFACE}
   TMT_HOTTRACKING = 1627;
-  {$EXTERNALSYM TMT_HOTTRACKING}
   TMT_GRADIENTACTIVECAPTION = 1628;
-  {$EXTERNALSYM TMT_GRADIENTACTIVECAPTION}
   TMT_GRADIENTINACTIVECAPTION = 1629;
-  {$EXTERNALSYM TMT_GRADIENTINACTIVECAPTION}
   TMT_MENUHILIGHT = 1630;
-  {$EXTERNALSYM TMT_MENUHILIGHT}
-  TMT_MENUBAR = 1631;
-  {$EXTERNALSYM TMT_MENUBAR}
-
+  TMT_MENUBAR  = 1631;
   TMT_FIRSTCOLOR = TMT_SCROLLBAR;
-  {$EXTERNALSYM TMT_FIRSTCOLOR}
-  TMT_LASTCOLOR  = TMT_MENUBAR;
-  {$EXTERNALSYM TMT_LASTCOLOR}
-
-  //---- hue substitutions ----
-
+  TMT_LASTCOLOR = TMT_MENUBAR;
   TMT_FROMHUE1 = 1801;
-  {$EXTERNALSYM TMT_FROMHUE1}
   TMT_FROMHUE2 = 1802;
-  {$EXTERNALSYM TMT_FROMHUE2}
   TMT_FROMHUE3 = 1803;
-  {$EXTERNALSYM TMT_FROMHUE3}
   TMT_FROMHUE4 = 1804;
-  {$EXTERNALSYM TMT_FROMHUE4}
   TMT_FROMHUE5 = 1805;
-  {$EXTERNALSYM TMT_FROMHUE5}
-  TMT_TOHUE1 = 1806;
-  {$EXTERNALSYM TMT_TOHUE1}
-  TMT_TOHUE2 = 1807;
-  {$EXTERNALSYM TMT_TOHUE2}
-  TMT_TOHUE3 = 1808;
-  {$EXTERNALSYM TMT_TOHUE3}
-  TMT_TOHUE4 = 1809;
-  {$EXTERNALSYM TMT_TOHUE4}
-  TMT_TOHUE5 = 1810;
-  {$EXTERNALSYM TMT_TOHUE5}
-
-  //---- color substitutions ----
-
+  TMT_TOHUE1   = 1806;
+  TMT_TOHUE2   = 1807;
+  TMT_TOHUE3   = 1808;
+  TMT_TOHUE4   = 1809;
+  TMT_TOHUE5   = 1810;
   TMT_FROMCOLOR1 = 2001;
-  {$EXTERNALSYM TMT_FROMCOLOR1}
   TMT_FROMCOLOR2 = 2002;
-  {$EXTERNALSYM TMT_FROMCOLOR2}
   TMT_FROMCOLOR3 = 2003;
-  {$EXTERNALSYM TMT_FROMCOLOR3}
   TMT_FROMCOLOR4 = 2004;
-  {$EXTERNALSYM TMT_FROMCOLOR4}
   TMT_FROMCOLOR5 = 2005;
-  {$EXTERNALSYM TMT_FROMCOLOR5}
   TMT_TOCOLOR1 = 2006;
-  {$EXTERNALSYM TMT_TOCOLOR1}
   TMT_TOCOLOR2 = 2007;
-  {$EXTERNALSYM TMT_TOCOLOR2}
   TMT_TOCOLOR3 = 2008;
-  {$EXTERNALSYM TMT_TOCOLOR3}
   TMT_TOCOLOR4 = 2009;
-  {$EXTERNALSYM TMT_TOCOLOR4}
   TMT_TOCOLOR5 = 2010;
-  {$EXTERNALSYM TMT_TOCOLOR5}
-
-  //---- rendering BOOL properties ----
-
   TMT_TRANSPARENT = 2201;
-  {$EXTERNALSYM TMT_TRANSPARENT}
   TMT_AUTOSIZE = 2202;
-  {$EXTERNALSYM TMT_AUTOSIZE}
   TMT_BORDERONLY = 2203;
-  {$EXTERNALSYM TMT_BORDERONLY}
   TMT_COMPOSITED = 2204;
-  {$EXTERNALSYM TMT_COMPOSITED}
-  TMT_BGFILL = 2205;
-  {$EXTERNALSYM TMT_BGFILL}
+  TMT_BGFILL   = 2205;
   TMT_GLYPHTRANSPARENT = 2206;
-  {$EXTERNALSYM TMT_GLYPHTRANSPARENT}
   TMT_GLYPHONLY = 2207;
-  {$EXTERNALSYM TMT_GLYPHONLY}
   TMT_ALWAYSSHOWSIZINGBAR = 2208;
-  {$EXTERNALSYM TMT_ALWAYSSHOWSIZINGBAR}
   TMT_MIRRORIMAGE = 2209;
-  {$EXTERNALSYM TMT_MIRRORIMAGE}
   TMT_UNIFORMSIZING = 2210;
-  {$EXTERNALSYM TMT_UNIFORMSIZING}
   TMT_INTEGRALSIZING = 2211;
-  {$EXTERNALSYM TMT_INTEGRALSIZING}
   TMT_SOURCEGROW = 2212;
-  {$EXTERNALSYM TMT_SOURCEGROW}
   TMT_SOURCESHRINK = 2213;
-  {$EXTERNALSYM TMT_SOURCESHRINK}
-
-  //---- rendering INT properties ----
-
+  TMT_DRAWBORDERS = 2214;
+  TMT_NOETCHEDEFFECT = 2215;
+  TMT_TEXTAPPLYOVERLAY = 2216;
+  TMT_TEXTGLOW = 2217;
+  TMT_TEXTITALIC = 2218;
+  TMT_COMPOSITEDOPAQUE = 2219;
+  TMT_LOCALIZEDMIRRORIMAGE = 2220;
   TMT_IMAGECOUNT = 2401;
-  {$EXTERNALSYM TMT_IMAGECOUNT}
   TMT_ALPHALEVEL = 2402;
-  {$EXTERNALSYM TMT_ALPHALEVEL}
   TMT_BORDERSIZE = 2403;
-  {$EXTERNALSYM TMT_BORDERSIZE}
   TMT_ROUNDCORNERWIDTH = 2404;
-  {$EXTERNALSYM TMT_ROUNDCORNERWIDTH}
   TMT_ROUNDCORNERHEIGHT = 2405;
-  {$EXTERNALSYM TMT_ROUNDCORNERHEIGHT}
   TMT_GRADIENTRATIO1 = 2406;
-  {$EXTERNALSYM TMT_GRADIENTRATIO1}
   TMT_GRADIENTRATIO2 = 2407;
-  {$EXTERNALSYM TMT_GRADIENTRATIO2}
   TMT_GRADIENTRATIO3 = 2408;
-  {$EXTERNALSYM TMT_GRADIENTRATIO3}
   TMT_GRADIENTRATIO4 = 2409;
-  {$EXTERNALSYM TMT_GRADIENTRATIO4}
   TMT_GRADIENTRATIO5 = 2410;
-  {$EXTERNALSYM TMT_GRADIENTRATIO5}
   TMT_PROGRESSCHUNKSIZE = 2411;
-  {$EXTERNALSYM TMT_PROGRESSCHUNKSIZE}
   TMT_PROGRESSSPACESIZE = 2412;
-  {$EXTERNALSYM TMT_PROGRESSSPACESIZE}
   TMT_SATURATION = 2413;
-  {$EXTERNALSYM TMT_SATURATION}
   TMT_TEXTBORDERSIZE = 2414;
-  {$EXTERNALSYM TMT_TEXTBORDERSIZE}
   TMT_ALPHATHRESHOLD = 2415;
-  {$EXTERNALSYM TMT_ALPHATHRESHOLD}
-  TMT_WIDTH = 2416;
-  {$EXTERNALSYM TMT_WIDTH}
-  TMT_HEIGHT = 2417;
-  {$EXTERNALSYM TMT_HEIGHT}
+  TMT_WIDTH    = 2416;
+  TMT_HEIGHT   = 2417;
   TMT_GLYPHINDEX = 2418;
-  {$EXTERNALSYM TMT_GLYPHINDEX}
   TMT_TRUESIZESTRETCHMARK = 2419;
-  {$EXTERNALSYM TMT_TRUESIZESTRETCHMARK}
-  TMT_MINDPI1 = 2420;
-  {$EXTERNALSYM TMT_MINDPI1}
-  TMT_MINDPI2 = 2421;
-  {$EXTERNALSYM TMT_MINDPI2}
-  TMT_MINDPI3 = 2422;
-  {$EXTERNALSYM TMT_MINDPI3}
-  TMT_MINDPI4 = 2423;
-  {$EXTERNALSYM TMT_MINDPI4}
-  TMT_MINDPI5 = 2424;
-  {$EXTERNALSYM TMT_MINDPI5}
-
-  //---- rendering FONT properties ----
-
+  TMT_MINDPI1  = 2420;
+  TMT_MINDPI2  = 2421;
+  TMT_MINDPI3  = 2422;
+  TMT_MINDPI4  = 2423;
+  TMT_MINDPI5  = 2424;
+  TMT_TEXTGLOWSIZE = 2425;
+  TMT_FRAMESPERSECOND = 2426;
+  TMT_PIXELSPERFRAME = 2427;
+  TMT_ANIMATIONDELAY = 2428;
+  TMT_GLOWINTENSITY = 2429;
+  TMT_OPACITY  = 2430;
+  TMT_COLORIZATIONCOLOR = 2431;
+  TMT_COLORIZATIONOPACITY = 2432;
   TMT_GLYPHFONT = 2601;
-  {$EXTERNALSYM TMT_GLYPHFONT}
-
-  //---- rendering INTLIST properties ----
-  // start with 2801
-                                              // (from smallest to largest)
-  //---- rendering FILENAME properties ----
-
   TMT_IMAGEFILE = 3001;
-  {$EXTERNALSYM TMT_IMAGEFILE}
   TMT_IMAGEFILE1 = 3002;
-  {$EXTERNALSYM TMT_IMAGEFILE1}
   TMT_IMAGEFILE2 = 3003;
-  {$EXTERNALSYM TMT_IMAGEFILE2}
   TMT_IMAGEFILE3 = 3004;
-  {$EXTERNALSYM TMT_IMAGEFILE3}
   TMT_IMAGEFILE4 = 3005;
-  {$EXTERNALSYM TMT_IMAGEFILE4}
   TMT_IMAGEFILE5 = 3006;
-  {$EXTERNALSYM TMT_IMAGEFILE5}
-  TMT_STOCKIMAGEFILE = 3007;
-  {$EXTERNALSYM TMT_STOCKIMAGEFILE}
   TMT_GLYPHIMAGEFILE = 3008;
-  {$EXTERNALSYM TMT_GLYPHIMAGEFILE}
-
-  //---- rendering STRING properties ----
-
-  TMT_TEXT = 3201;
-  {$EXTERNALSYM TMT_TEXT}
-
-  //---- rendering POSITION (x and y values) properties ----
-
-  TMT_OFFSET = 3401;
-  {$EXTERNALSYM TMT_OFFSET}
+  TMT_TEXT     = 3201;
+  TMT_CLASSICVALUE = 3202;
+  TMT_OFFSET   = 3401;
   TMT_TEXTSHADOWOFFSET = 3402;
-  {$EXTERNALSYM TMT_TEXTSHADOWOFFSET}
-  TMT_MINSIZE = 3403;
-  {$EXTERNALSYM TMT_MINSIZE}
+  TMT_MINSIZE  = 3403;
   TMT_MINSIZE1 = 3404;
-  {$EXTERNALSYM TMT_MINSIZE1}
   TMT_MINSIZE2 = 3405;
-  {$EXTERNALSYM TMT_MINSIZE2}
   TMT_MINSIZE3 = 3406;
-  {$EXTERNALSYM TMT_MINSIZE3}
   TMT_MINSIZE4 = 3407;
-  {$EXTERNALSYM TMT_MINSIZE4}
   TMT_MINSIZE5 = 3408;
-  {$EXTERNALSYM TMT_MINSIZE5}
   TMT_NORMALSIZE = 3409;
-  {$EXTERNALSYM TMT_NORMALSIZE}
-
-  //---- rendering MARGIN properties ----
-
   TMT_SIZINGMARGINS = 3601;
-  {$EXTERNALSYM TMT_SIZINGMARGINS}
   TMT_CONTENTMARGINS = 3602;
-  {$EXTERNALSYM TMT_CONTENTMARGINS}
   TMT_CAPTIONMARGINS = 3603;
-  {$EXTERNALSYM TMT_CAPTIONMARGINS}
-
-  //---- rendering COLOR properties ----
-
   TMT_BORDERCOLOR = 3801;
-  {$EXTERNALSYM TMT_BORDERCOLOR}
   TMT_FILLCOLOR = 3802;
-  {$EXTERNALSYM TMT_FILLCOLOR}
   TMT_TEXTCOLOR = 3803;
-  {$EXTERNALSYM TMT_TEXTCOLOR}
   TMT_EDGELIGHTCOLOR = 3804;
-  {$EXTERNALSYM TMT_EDGELIGHTCOLOR}
   TMT_EDGEHIGHLIGHTCOLOR = 3805;
-  {$EXTERNALSYM TMT_EDGEHIGHLIGHTCOLOR}
   TMT_EDGESHADOWCOLOR = 3806;
-  {$EXTERNALSYM TMT_EDGESHADOWCOLOR}
   TMT_EDGEDKSHADOWCOLOR = 3807;
-  {$EXTERNALSYM TMT_EDGEDKSHADOWCOLOR}
   TMT_EDGEFILLCOLOR = 3808;
-  {$EXTERNALSYM TMT_EDGEFILLCOLOR}
   TMT_TRANSPARENTCOLOR = 3809;
-  {$EXTERNALSYM TMT_TRANSPARENTCOLOR}
   TMT_GRADIENTCOLOR1 = 3810;
-  {$EXTERNALSYM TMT_GRADIENTCOLOR1}
   TMT_GRADIENTCOLOR2 = 3811;
-  {$EXTERNALSYM TMT_GRADIENTCOLOR2}
   TMT_GRADIENTCOLOR3 = 3812;
-  {$EXTERNALSYM TMT_GRADIENTCOLOR3}
   TMT_GRADIENTCOLOR4 = 3813;
-  {$EXTERNALSYM TMT_GRADIENTCOLOR4}
   TMT_GRADIENTCOLOR5 = 3814;
-  {$EXTERNALSYM TMT_GRADIENTCOLOR5}
   TMT_SHADOWCOLOR = 3815;
-  {$EXTERNALSYM TMT_SHADOWCOLOR}
   TMT_GLOWCOLOR = 3816;
-  {$EXTERNALSYM TMT_GLOWCOLOR}
   TMT_TEXTBORDERCOLOR = 3817;
-  {$EXTERNALSYM TMT_TEXTBORDERCOLOR}
   TMT_TEXTSHADOWCOLOR = 3818;
-  {$EXTERNALSYM TMT_TEXTSHADOWCOLOR}
   TMT_GLYPHTEXTCOLOR = 3819;
-  {$EXTERNALSYM TMT_GLYPHTEXTCOLOR}
   TMT_GLYPHTRANSPARENTCOLOR = 3820;
-  {$EXTERNALSYM TMT_GLYPHTRANSPARENTCOLOR}
   TMT_FILLCOLORHINT = 3821;
-  {$EXTERNALSYM TMT_FILLCOLORHINT}
   TMT_BORDERCOLORHINT = 3822;
-  {$EXTERNALSYM TMT_BORDERCOLORHINT}
   TMT_ACCENTCOLORHINT = 3823;
-  {$EXTERNALSYM TMT_ACCENTCOLORHINT}
-
-  //---- rendering enum properties (must be declared in TM_ENUM section above) ----
-
-  TMT_BGTYPE = 4001;
-  {$EXTERNALSYM TMT_BGTYPE}
+  TMT_TEXTCOLORHINT = 3824;
+  TMT_HEADING1TEXTCOLOR = 3825;
+  TMT_HEADING2TEXTCOLOR = 3826;
+  TMT_BODYTEXTCOLOR = 3827;
+  TMT_BGTYPE   = 4001;
   TMT_BORDERTYPE = 4002;
-  {$EXTERNALSYM TMT_BORDERTYPE}
   TMT_FILLTYPE = 4003;
-  {$EXTERNALSYM TMT_FILLTYPE}
   TMT_SIZINGTYPE = 4004;
-  {$EXTERNALSYM TMT_SIZINGTYPE}
-  TMT_HALIGN = 4005;
-  {$EXTERNALSYM TMT_HALIGN}
+  TMT_HALIGN   = 4005;
   TMT_CONTENTALIGNMENT = 4006;
-  {$EXTERNALSYM TMT_CONTENTALIGNMENT}
-  TMT_VALIGN = 4007;
-  {$EXTERNALSYM TMT_VALIGN}
+  TMT_VALIGN   = 4007;
   TMT_OFFSETTYPE = 4008;
-  {$EXTERNALSYM TMT_OFFSETTYPE}
   TMT_ICONEFFECT = 4009;
-  {$EXTERNALSYM TMT_ICONEFFECT}
   TMT_TEXTSHADOWTYPE = 4010;
-  {$EXTERNALSYM TMT_TEXTSHADOWTYPE}
   TMT_IMAGELAYOUT = 4011;
-  {$EXTERNALSYM TMT_IMAGELAYOUT}
   TMT_GLYPHTYPE = 4012;
-  {$EXTERNALSYM TMT_GLYPHTYPE}
   TMT_IMAGESELECTTYPE = 4013;
-  {$EXTERNALSYM TMT_IMAGESELECTTYPE}
   TMT_GLYPHFONTSIZINGTYPE = 4014;
-  {$EXTERNALSYM TMT_GLYPHFONTSIZINGTYPE}
   TMT_TRUESIZESCALINGTYPE = 4015;
-  {$EXTERNALSYM TMT_TRUESIZESCALINGTYPE}
-
-  //---- custom properties (used only by controls/shell) ----
-
   TMT_USERPICTURE = 5001;
-  {$EXTERNALSYM TMT_USERPICTURE}
   TMT_DEFAULTPANESIZE = 5002;
-  {$EXTERNALSYM TMT_DEFAULTPANESIZE}
   TMT_BLENDCOLOR = 5003;
-  {$EXTERNALSYM TMT_BLENDCOLOR}
+  TMT_CUSTOMSPLITRECT = 5004;
+  TMT_ANIMATIONBUTTONRECT = 5005;
+  TMT_ANIMATIONDURATION = 5006;
+  TMT_TRANSITIONDURATIONS = 6000;
+  TMT_SCALEDBACKGROUND = 7001;
+  TMT_ATLASIMAGE = 8000;
+  TMT_ATLASINPUTIMAGE = 8001;
+  TMT_ATLASRECT = 8002;
 
-//---------------------------------------------------------------------------------------
-//   "Window" (i.e., non-client) Parts & States
-//
-//    these cannot be renumbered (part of uxtheme API)
-//---------------------------------------------------------------------------------------
+// LINK class parts and states
 
-type
-  WINDOWPARTS = DWORD;
-  {$EXTERNALSYM WINDOWPARTS}
-
-const
-  WINDOWPartFiller0                  = 0;
-  {$EXTERNALSYM WINDOWPartFiller0}
-  WP_CAPTION                         = 1;
-  {$EXTERNALSYM WP_CAPTION}
-  WP_SMALLCAPTION                    = 2;
-  {$EXTERNALSYM WP_SMALLCAPTION}
-  WP_MINCAPTION                      = 3;
-  {$EXTERNALSYM WP_MINCAPTION}
-  WP_SMALLMINCAPTION                 = 4;
-  {$EXTERNALSYM WP_SMALLMINCAPTION}
-  WP_MAXCAPTION                      = 5;
-  {$EXTERNALSYM WP_MAXCAPTION}
-  WP_SMALLMAXCAPTION                 = 6;
-  {$EXTERNALSYM WP_SMALLMAXCAPTION}
-  WP_FRAMELEFT                       = 7;
-  {$EXTERNALSYM WP_FRAMELEFT}
-  WP_FRAMERIGHT                      = 8;
-  {$EXTERNALSYM WP_FRAMERIGHT}
-  WP_FRAMEBOTTOM                     = 9;
-  {$EXTERNALSYM WP_FRAMEBOTTOM}
-  WP_SMALLFRAMELEFT                  = 10;
-  {$EXTERNALSYM WP_SMALLFRAMELEFT}
-  WP_SMALLFRAMERIGHT                 = 11;
-  {$EXTERNALSYM WP_SMALLFRAMERIGHT}
-  WP_SMALLFRAMEBOTTOM                = 12;
-  {$EXTERNALSYM WP_SMALLFRAMEBOTTOM}
-  WP_SYSBUTTON                       = 13;
-  {$EXTERNALSYM WP_SYSBUTTON}
-  WP_MDISYSBUTTON                    = 14;
-  {$EXTERNALSYM WP_MDISYSBUTTON}
-  WP_MINBUTTON                       = 15;
-  {$EXTERNALSYM WP_MINBUTTON}
-  WP_MDIMINBUTTON                    = 16;
-  {$EXTERNALSYM WP_MDIMINBUTTON}
-  WP_MAXBUTTON                       = 17;
-  {$EXTERNALSYM WP_MAXBUTTON}
-  WP_CLOSEBUTTON                     = 18;
-  {$EXTERNALSYM WP_CLOSEBUTTON}
-  WP_SMALLCLOSEBUTTON                = 19;
-  {$EXTERNALSYM WP_SMALLCLOSEBUTTON}
-  WP_MDICLOSEBUTTON                  = 20;
-  {$EXTERNALSYM WP_MDICLOSEBUTTON}
-  WP_RESTOREBUTTON                   = 21;
-  {$EXTERNALSYM WP_RESTOREBUTTON}
-  WP_MDIRESTOREBUTTON                = 22;
-  {$EXTERNALSYM WP_MDIRESTOREBUTTON}
-  WP_HELPBUTTON                      = 23;
-  {$EXTERNALSYM WP_HELPBUTTON}
-  WP_MDIHELPBUTTON                   = 24;
-  {$EXTERNALSYM WP_MDIHELPBUTTON}
-  WP_HORZSCROLL                      = 25;
-  {$EXTERNALSYM WP_HORZSCROLL}
-  WP_HORZTHUMB                       = 26;
-  {$EXTERNALSYM WP_HORZTHUMB}
-  WP_VERTSCROLL                      = 27;
-  {$EXTERNALSYM WP_VERTSCROLL}
-  WP_VERTTHUMB                       = 28;
-  {$EXTERNALSYM WP_VERTTHUMB}
-  WP_DIALOG                          = 29;
-  {$EXTERNALSYM WP_DIALOG}
-  WP_CAPTIONSIZINGTEMPLATE           = 30;
-  {$EXTERNALSYM WP_CAPTIONSIZINGTEMPLATE}
-  WP_SMALLCAPTIONSIZINGTEMPLATE      = 31;
-  {$EXTERNALSYM WP_SMALLCAPTIONSIZINGTEMPLATE}
-  WP_FRAMELEFTSIZINGTEMPLATE         = 32;
-  {$EXTERNALSYM WP_FRAMELEFTSIZINGTEMPLATE}
-  WP_SMALLFRAMELEFTSIZINGTEMPLATE    = 33;
-  {$EXTERNALSYM WP_SMALLFRAMELEFTSIZINGTEMPLATE}
-  WP_FRAMERIGHTSIZINGTEMPLATE        = 34;
-  {$EXTERNALSYM WP_FRAMERIGHTSIZINGTEMPLATE}
-  WP_SMALLFRAMERIGHTSIZINGTEMPLATE   = 35;
-  {$EXTERNALSYM WP_SMALLFRAMERIGHTSIZINGTEMPLATE}
-  WP_FRAMEBOTTOMSIZINGTEMPLATE       = 36;
-  {$EXTERNALSYM WP_FRAMEBOTTOMSIZINGTEMPLATE}
-  WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE  = 37;
-  {$EXTERNALSYM WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE}
-
-type
-  FRAMESTATES = DWORD;
-  {$EXTERNALSYM FRAMESTATES}
-
-const
-  FRAMEStateFiller0  = 0;
-  {$EXTERNALSYM FRAMEStateFiller0}
-  FS_ACTIVE          = 1;
-  {$EXTERNALSYM FS_ACTIVE}
-  FS_INACTIVE        = 2;
-  {$EXTERNALSYM FS_INACTIVE}
-
-type
-  CAPTIONSTATES = DWORD;
-  {$EXTERNALSYM CAPTIONSTATES}
-
-const
-  CAPTIONStateFiller0  = 0;
-  {$EXTERNALSYM CAPTIONStateFiller0}
-  CS_ACTIVE            = 1;
-  {$EXTERNALSYM CS_ACTIVE}
-  CS_INACTIVE          = 2;
-  {$EXTERNALSYM CS_INACTIVE}
-  CS_DISABLED          = 3;
-  {$EXTERNALSYM CS_DISABLED}
-
-type
-  MAXCAPTIONSTATES = DWORD;
-  {$EXTERNALSYM MAXCAPTIONSTATES}
-
-const
-  MAXCAPTIONStateFiller0  = 0;
-  {$EXTERNALSYM MAXCAPTIONStateFiller0}
-  MXCS_ACTIVE             = 1;
-  {$EXTERNALSYM MXCS_ACTIVE}
-  MXCS_INACTIVE           = 2;
-  {$EXTERNALSYM MXCS_INACTIVE}
-  MXCS_DISABLED           = 3;
-  {$EXTERNALSYM MXCS_DISABLED}
-
-type
-  MINCAPTIONSTATES = DWORD;
-  {$EXTERNALSYM MINCAPTIONSTATES}
-
-const
-  MINCAPTIONStateFiller0  = 0;
-  {$EXTERNALSYM MINCAPTIONStateFiller0}
-  MNCS_ACTIVE             = 1;
-  {$EXTERNALSYM MNCS_ACTIVE}
-  MNCS_INACTIVE           = 2;
-  {$EXTERNALSYM MNCS_INACTIVE}
-  MNCS_DISABLED           = 3;
-  {$EXTERNALSYM MNCS_DISABLED}
-
-type
-  HORZSCROLLSTATES = DWORD;
-  {$EXTERNALSYM HORZSCROLLSTATES}
-
-const
-  HORZSCROLLStateFiller0  = 0;
-  {$EXTERNALSYM HORZSCROLLStateFiller0}
-  HSS_NORMAL              = 1;
-  {$EXTERNALSYM HSS_NORMAL}
-  HSS_HOT                 = 2;
-  {$EXTERNALSYM HSS_HOT}
-  HSS_PUSHED              = 3;
-  {$EXTERNALSYM HSS_PUSHED}
-  HSS_DISABLED            = 4;
-  {$EXTERNALSYM HSS_DISABLED}
-
-type
-  HORZTHUMBSTATES = DWORD;
-  {$EXTERNALSYM HORZTHUMBSTATES}
-
-const
-  HORZTHUMBStateFiller0  = 0;
-  {$EXTERNALSYM HORZTHUMBStateFiller0}
-  HTS_NORMAL             = 1;
-  {$EXTERNALSYM HTS_NORMAL}
-  HTS_HOT                = 2;
-  {$EXTERNALSYM HTS_HOT}
-  HTS_PUSHED             = 3;
-  {$EXTERNALSYM HTS_PUSHED}
-  HTS_DISABLED           = 4;
-  {$EXTERNALSYM HTS_DISABLED}
-
-type
-  VERTSCROLLSTATES = DWORD;
-  {$EXTERNALSYM VERTSCROLLSTATES}
-
-const
-  VERTSCROLLStateFiller0  = 0;
-  {$EXTERNALSYM VERTSCROLLStateFiller0}
-  VSS_NORMAL              = 1;
-  {$EXTERNALSYM VSS_NORMAL}
-  VSS_HOT                 = 2;
-  {$EXTERNALSYM VSS_HOT}
-  VSS_PUSHED              = 3;
-  {$EXTERNALSYM VSS_PUSHED}
-  VSS_DISABLED            = 4;
-  {$EXTERNALSYM VSS_DISABLED}
-
-type
-  VERTTHUMBSTATES = DWORD;
-  {$EXTERNALSYM VERTTHUMBSTATES}
-
-const
-  VERTTHUMBStateFiller0  = 0;
-  {$EXTERNALSYM VERTTHUMBStateFiller0}
-  VTS_NORMAL             = 1;
-  {$EXTERNALSYM VTS_NORMAL}
-  VTS_HOT                = 2;
-  {$EXTERNALSYM VTS_HOT}
-  VTS_PUSHED             = 3;
-  {$EXTERNALSYM VTS_PUSHED}
-  VTS_DISABLED           = 4;
-  {$EXTERNALSYM VTS_DISABLED}
-
-type
-  SYSBUTTONSTATES = DWORD;
-  {$EXTERNALSYM SYSBUTTONSTATES}
-
-const
-  SYSBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM SYSBUTTONStateFiller0}
-  SBS_NORMAL             = 1;
-  {$EXTERNALSYM SBS_NORMAL}
-  SBS_HOT                = 2;
-  {$EXTERNALSYM SBS_HOT}
-  SBS_PUSHED             = 3;
-  {$EXTERNALSYM SBS_PUSHED}
-  SBS_DISABLED           = 4;
-  {$EXTERNALSYM SBS_DISABLED}
-
-type
-  MINBUTTONSTATES = DWORD;
-  {$EXTERNALSYM MINBUTTONSTATES}
-
-const
-  MINBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM MINBUTTONStateFiller0}
-  MINBS_NORMAL           = 1;
-  {$EXTERNALSYM MINBS_NORMAL}
-  MINBS_HOT              = 2;
-  {$EXTERNALSYM MINBS_HOT}
-  MINBS_PUSHED           = 3;
-  {$EXTERNALSYM MINBS_PUSHED}
-  MINBS_DISABLED         = 4;
-  {$EXTERNALSYM MINBS_DISABLED}
-
-type
-  MAXBUTTONSTATES = DWORD;
-  {$EXTERNALSYM MAXBUTTONSTATES}
-
-const
-  MAXBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM MAXBUTTONStateFiller0}
-  MAXBS_NORMAL           = 1;
-  {$EXTERNALSYM MAXBS_NORMAL}
-  MAXBS_HOT              = 2;
-  {$EXTERNALSYM MAXBS_HOT}
-  MAXBS_PUSHED           = 3;
-  {$EXTERNALSYM MAXBS_PUSHED}
-  MAXBS_DISABLED         = 4;
-  {$EXTERNALSYM MAXBS_DISABLED}
-
-type
-  RESTOREBUTTONSTATES = DWORD;
-  {$EXTERNALSYM RESTOREBUTTONSTATES}
-
-const
-  RESTOREBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM RESTOREBUTTONStateFiller0}
-  RBS_NORMAL                 = 1;
-  {$EXTERNALSYM RBS_NORMAL}
-  RBS_HOT                    = 2;
-  {$EXTERNALSYM RBS_HOT}
-  RBS_PUSHED                 = 3;
-  {$EXTERNALSYM RBS_PUSHED}
-  RBS_DISABLED               = 4;
-  {$EXTERNALSYM RBS_DISABLED}
-
-type
-  HELPBUTTONSTATES = DWORD;
-  {$EXTERNALSYM HELPBUTTONSTATES}
-
-const
-  HELPBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM HELPBUTTONStateFiller0}
-  HBS_NORMAL              = 1;
-  {$EXTERNALSYM HBS_NORMAL}
-  HBS_HOT                 = 2;
-  {$EXTERNALSYM HBS_HOT}
-  HBS_PUSHED              = 3;
-  {$EXTERNALSYM HBS_PUSHED}
-  HBS_DISABLED            = 4;
-  {$EXTERNALSYM HBS_DISABLED}
-
-type
-  CLOSEBUTTONSTATES = DWORD;
-  {$EXTERNALSYM CLOSEBUTTONSTATES}
-
-const
-  CLOSEBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM CLOSEBUTTONStateFiller0}
-  CBS_NORMAL               = 1;
-  {$EXTERNALSYM CBS_NORMAL}
-  CBS_HOT                  = 2;
-  {$EXTERNALSYM CBS_HOT}
-  CBS_PUSHED               = 3;
-  {$EXTERNALSYM CBS_PUSHED}
-  CBS_DISABLED             = 4;
-  {$EXTERNALSYM CBS_DISABLED}
-
-//---------------------------------------------------------------------------------------
-//   "Button" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  BUTTONPARTS = DWORD;
-  {$EXTERNALSYM BUTTONPARTS}
-
-const
-  BUTTONPartFiller0  = 0;
-  {$EXTERNALSYM BUTTONPartFiller0}
-  BP_PUSHBUTTON      = 1;
-  {$EXTERNALSYM BP_PUSHBUTTON}
-  BP_RADIOBUTTON     = 2;
-  {$EXTERNALSYM BP_RADIOBUTTON}
-  BP_CHECKBOX        = 3;
-  {$EXTERNALSYM BP_CHECKBOX}
-  BP_GROUPBOX        = 4;
-  {$EXTERNALSYM BP_GROUPBOX}
-  BP_USERBUTTON      = 5;
-  {$EXTERNALSYM BP_USERBUTTON}
-
-type
-  PUSHBUTTONSTATES = DWORD;
-  {$EXTERNALSYM PUSHBUTTONSTATES}
-
-const
-  PUSHBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM PUSHBUTTONStateFiller0}
-  PBS_NORMAL              = 1;
-  {$EXTERNALSYM PBS_NORMAL}
-  PBS_HOT                 = 2;
-  {$EXTERNALSYM PBS_HOT}
-  PBS_PRESSED             = 3;
-  {$EXTERNALSYM PBS_PRESSED}
-  PBS_DISABLED            = 4;
-  {$EXTERNALSYM PBS_DISABLED}
-  PBS_DEFAULTED           = 5;
-  {$EXTERNALSYM PBS_DEFAULTED}
-
-type
-  RADIOBUTTONSTATES = DWORD;
-  {$EXTERNALSYM RADIOBUTTONSTATES}
-
-const
-  RADIOBUTTONStateFiller0  = 0;
-  {$EXTERNALSYM RADIOBUTTONStateFiller0}
-  RBS_UNCHECKEDNORMAL      = 1;
-  {$EXTERNALSYM RBS_UNCHECKEDNORMAL}
-  RBS_UNCHECKEDHOT         = 2;
-  {$EXTERNALSYM RBS_UNCHECKEDHOT}
-  RBS_UNCHECKEDPRESSED     = 3;
-  {$EXTERNALSYM RBS_UNCHECKEDPRESSED}
-  RBS_UNCHECKEDDISABLED    = 4;
-  {$EXTERNALSYM RBS_UNCHECKEDDISABLED}
-  RBS_CHECKEDNORMAL        = 5;
-  {$EXTERNALSYM RBS_CHECKEDNORMAL}
-  RBS_CHECKEDHOT           = 6;
-  {$EXTERNALSYM RBS_CHECKEDHOT}
-  RBS_CHECKEDPRESSED       = 7;
-  {$EXTERNALSYM RBS_CHECKEDPRESSED}
-  RBS_CHECKEDDISABLED      = 8;
-  {$EXTERNALSYM RBS_CHECKEDDISABLED}
-
-type
-  CHECKBOXSTATES = DWORD;
-  {$EXTERNALSYM CHECKBOXSTATES}
-
-const
-  CHECKBOXStateFiller0   = 0;
-  {$EXTERNALSYM CHECKBOXStateFiller0}
-  CBS_UNCHECKEDNORMAL    = 1;
-  {$EXTERNALSYM CBS_UNCHECKEDNORMAL}
-  CBS_UNCHECKEDHOT       = 2;
-  {$EXTERNALSYM CBS_UNCHECKEDHOT}
-  CBS_UNCHECKEDPRESSED   = 3;
-  {$EXTERNALSYM CBS_UNCHECKEDPRESSED}
-  CBS_UNCHECKEDDISABLED  = 4;
-  {$EXTERNALSYM CBS_UNCHECKEDDISABLED}
-  CBS_CHECKEDNORMAL      = 5;
-  {$EXTERNALSYM CBS_CHECKEDNORMAL}
-  CBS_CHECKEDHOT         = 6;
-  {$EXTERNALSYM CBS_CHECKEDHOT}
-  CBS_CHECKEDPRESSED     = 7;
-  {$EXTERNALSYM CBS_CHECKEDPRESSED}
-  CBS_CHECKEDDISABLED    = 8;
-  {$EXTERNALSYM CBS_CHECKEDDISABLED}
-  CBS_MIXEDNORMAL        = 9;
-  {$EXTERNALSYM CBS_MIXEDNORMAL}
-  CBS_MIXEDHOT           = 10;
-  {$EXTERNALSYM CBS_MIXEDHOT}
-  CBS_MIXEDPRESSED       = 11;
-  {$EXTERNALSYM CBS_MIXEDPRESSED}
-  CBS_MIXEDDISABLED      = 12;
-  {$EXTERNALSYM CBS_MIXEDDISABLED}
-
-type
-  GROUPBOXSTATES = DWORD;
-  {$EXTERNALSYM GROUPBOXSTATES}
-
-const
-  GROUPBOXStateFiller0  = 0;
-  {$EXTERNALSYM GROUPBOXStateFiller0}
-  GBS_NORMAL            = 1;
-  {$EXTERNALSYM GBS_NORMAL}
-  GBS_DISABLED          = 2;
-  {$EXTERNALSYM GBS_DISABLED}
-
-//---------------------------------------------------------------------------------------
-//   "Rebar" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  REBARPARTS = DWORD;
-  {$EXTERNALSYM REBARPARTS}
-
-const
-  REBARPartFiller0  = 0;
-  {$EXTERNALSYM REBARPartFiller0}
-  RP_GRIPPER        = 1;
-  {$EXTERNALSYM RP_GRIPPER}
-  RP_GRIPPERVERT    = 2;
-  {$EXTERNALSYM RP_GRIPPERVERT}
-  RP_BAND           = 3;
-  {$EXTERNALSYM RP_BAND}
-  RP_CHEVRON        = 4;
-  {$EXTERNALSYM RP_CHEVRON}
-  RP_CHEVRONVERT    = 5;
-  {$EXTERNALSYM RP_CHEVRONVERT}
-
-type
-  CHEVRONSTATES = DWORD;
-  {$EXTERNALSYM CHEVRONSTATES}
-
-const
-  CHEVRONStateFiller0  = 0;
-  {$EXTERNALSYM CHEVRONStateFiller0}
-  CHEVS_NORMAL         = 1;
-  {$EXTERNALSYM CHEVS_NORMAL}
-  CHEVS_HOT            = 2;
-  {$EXTERNALSYM CHEVS_HOT}
-  CHEVS_PRESSED        = 3;
-  {$EXTERNALSYM CHEVS_PRESSED}
-
-//---------------------------------------------------------------------------------------
-//   "Toolbar" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  TOOLBARPARTS = DWORD;
-  {$EXTERNALSYM TOOLBARPARTS}
-
-const
-  TOOLBARPartFiller0      = 0;
-  {$EXTERNALSYM TOOLBARPartFiller0}
-  TP_BUTTON               = 1;
-  {$EXTERNALSYM TP_BUTTON}
-  TP_DROPDOWNBUTTON       = 2;
-  {$EXTERNALSYM TP_DROPDOWNBUTTON}
-  TP_SPLITBUTTON          = 3;
-  {$EXTERNALSYM TP_SPLITBUTTON}
-  TP_SPLITBUTTONDROPDOWN  = 4;
-  {$EXTERNALSYM TP_SPLITBUTTONDROPDOWN}
-  TP_SEPARATOR            = 5;
-  {$EXTERNALSYM TP_SEPARATOR}
-  TP_SEPARATORVERT        = 6;
-  {$EXTERNALSYM TP_SEPARATORVERT}
-
-type
-  TOOLBARSTATES = DWORD;
-  {$EXTERNALSYM TOOLBARSTATES}
-
-const
-  TOOLBARStateFiller0  = 0;
-  {$EXTERNALSYM TOOLBARStateFiller0}
-  TS_NORMAL            = 1;
-  {$EXTERNALSYM TS_NORMAL}
-  TS_HOT               = 2;
-  {$EXTERNALSYM TS_HOT}
-  TS_PRESSED           = 3;
-  {$EXTERNALSYM TS_PRESSED}
-  TS_DISABLED          = 4;
-  {$EXTERNALSYM TS_DISABLED}
-  TS_CHECKED           = 5;
-  {$EXTERNALSYM TS_CHECKED}
-  TS_HOTCHECKED        = 6;
-  {$EXTERNALSYM TS_HOTCHECKED}
-
-//---------------------------------------------------------------------------------------
-//   "Status" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  STATUSPARTS = DWORD;
-  {$EXTERNALSYM STATUSPARTS}
-
-const
-  STATUSPartFiller0  = 0;
-  {$EXTERNALSYM STATUSPartFiller0}
-  SP_PANE            = 1;
-  {$EXTERNALSYM SP_PANE}
-  SP_GRIPPERPANE     = 2;
-  {$EXTERNALSYM SP_GRIPPERPANE}
-  SP_GRIPPER         = 3;
-  {$EXTERNALSYM SP_GRIPPER}
-
-//---------------------------------------------------------------------------------------
-//   "Menu" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  MENUPARTS = DWORD;
-  {$EXTERNALSYM MENUPARTS}
-
-const
-  MENUPartFiller0     = 0;
-  {$EXTERNALSYM MENUPartFiller0}
-  MP_MENUITEM         = 1;
-  {$EXTERNALSYM MP_MENUITEM}
-  MP_MENUDROPDOWN     = 2;
-  {$EXTERNALSYM MP_MENUDROPDOWN}
-  MP_MENUBARITEM      = 3;
-  {$EXTERNALSYM MP_MENUBARITEM}
-  MP_MENUBARDROPDOWN  = 4;
-  {$EXTERNALSYM MP_MENUBARDROPDOWN}
-  MP_CHEVRON          = 5;
-  {$EXTERNALSYM MP_CHEVRON}
-  MP_SEPARATOR        = 6;
-  {$EXTERNALSYM MP_SEPARATOR}
-
-type
-  MENUSTATES = DWORD;
-  {$EXTERNALSYM MENUSTATES}
-
-const
-  MENUStateFiller0  = 0;
-  {$EXTERNALSYM MENUStateFiller0}
-  MS_NORMAL         = 1;
-  {$EXTERNALSYM MS_NORMAL}
-  MS_SELECTED       = 2;
-  {$EXTERNALSYM MS_SELECTED}
-  MS_DEMOTED        = 3;
-  {$EXTERNALSYM MS_DEMOTED}
-
-//---------------------------------------------------------------------------------------
-//   "ListView" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  LISTVIEWPARTS = DWORD;
-  {$EXTERNALSYM LISTVIEWPARTS}
-
-const
-  LISTVIEWPartFiller0   = 0;
-  {$EXTERNALSYM LISTVIEWPartFiller0}
-  LVP_LISTITEM          = 1;
-  {$EXTERNALSYM LVP_LISTITEM}
-  LVP_LISTGROUP         = 2;
-  {$EXTERNALSYM LVP_LISTGROUP}
-  LVP_LISTDETAIL        = 3;
-  {$EXTERNALSYM LVP_LISTDETAIL}
-  LVP_LISTSORTEDDETAIL  = 4;
-  {$EXTERNALSYM LVP_LISTSORTEDDETAIL}
-  LVP_EMPTYTEXT         = 5;
-  {$EXTERNALSYM LVP_EMPTYTEXT}
-
-type
-  LISTITEMSTATES = DWORD;
-  {$EXTERNALSYM LISTITEMSTATES}
-
-const
-  LISTITEMStateFiller0  = 0;
-  {$EXTERNALSYM LISTITEMStateFiller0}
-  LIS_NORMAL            = 1;
-  {$EXTERNALSYM LIS_NORMAL}
-  LIS_HOT               = 2;
-  {$EXTERNALSYM LIS_HOT}
-  LIS_SELECTED          = 3;
-  {$EXTERNALSYM LIS_SELECTED}
-  LIS_DISABLED          = 4;
-  {$EXTERNALSYM LIS_DISABLED}
-  LIS_SELECTEDNOTFOCUS  = 5;
-  {$EXTERNALSYM LIS_SELECTEDNOTFOCUS}
-
-//---------------------------------------------------------------------------------------
-//   "Header" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  HEADERPARTS = DWORD;
-  {$EXTERNALSYM HEADERPARTS}
-
-const
-  HEADERPartFiller0   = 0;
-  {$EXTERNALSYM HEADERPartFiller0}
-  HP_HEADERITEM       = 1;
-  {$EXTERNALSYM HP_HEADERITEM}
-  HP_HEADERITEMLEFT   = 2;
-  {$EXTERNALSYM HP_HEADERITEMLEFT}
-  HP_HEADERITEMRIGHT  = 3;
-  {$EXTERNALSYM HP_HEADERITEMRIGHT}
-  HP_HEADERSORTARROW  = 4;
-  {$EXTERNALSYM HP_HEADERSORTARROW}
+  VSCLASS_LINK = 'LINK';
 
 type
-  HEADERITEMSTATES = DWORD;
-  {$EXTERNALSYM HEADERITEMSTATES}
+  LINKPARTS = longint;
 
 const
-  HEADERITEMStateFiller0  = 0;
-  {$EXTERNALSYM HEADERITEMStateFiller0}
-  HIS_NORMAL              = 1;
-  {$EXTERNALSYM HIS_NORMAL}
-  HIS_HOT                 = 2;
-  {$EXTERNALSYM HIS_HOT}
-  HIS_PRESSED             = 3;
-  {$EXTERNALSYM HIS_PRESSED}
+  LP_HYPERLINK = 1;
 
-type
-  HEADERITEMLEFTSTATES = DWORD;
-  {$EXTERNALSYM HEADERITEMLEFTSTATES}
-
-const
-  HEADERITEMLEFTStateFiller0  = 0;
-  {$EXTERNALSYM HEADERITEMLEFTStateFiller0}
-  HILS_NORMAL                 = 1;
-  {$EXTERNALSYM HILS_NORMAL}
-  HILS_HOT                    = 2;
-  {$EXTERNALSYM HILS_HOT}
-  HILS_PRESSED                = 3;
-  {$EXTERNALSYM HILS_PRESSED}
 
 type
-  HEADERITEMRIGHTSTATES = DWORD;
-  {$EXTERNALSYM HEADERITEMRIGHTSTATES}
+  HYPERLINKSTATES = longint;
 
 const
-  HEADERITEMRIGHTStateFiller0  = 0;
-  {$EXTERNALSYM HEADERITEMRIGHTStateFiller0}
-  HIRS_NORMAL                  = 1;
-  {$EXTERNALSYM HIRS_NORMAL}
-  HIRS_HOT                     = 2;
-  {$EXTERNALSYM HIRS_HOT}
-  HIRS_PRESSED                 = 3;
-  {$EXTERNALSYM HIRS_PRESSED}
-
-type
-  HEADERSORTARROWSTATES = DWORD;
-  {$EXTERNALSYM HEADERSORTARROWSTATES}
+  HLS_NORMALTEXT = 1;
+  HLS_LINKTEXT   = 2;
 
-const
-  HEADERSORTARROWStateFiller0  = 0;
-  {$EXTERNALSYM HEADERSORTARROWStateFiller0}
-  HSAS_SORTEDUP                = 1;
-  {$EXTERNALSYM HSAS_SORTEDUP}
-  HSAS_SORTEDDOWN              = 2;
-  {$EXTERNALSYM HSAS_SORTEDDOWN}
-
-//---------------------------------------------------------------------------------------
-//   "Progress" Parts & States
-//---------------------------------------------------------------------------------------
 
-type
-  PROGRESSPARTS = DWORD;
-  {$EXTERNALSYM PROGRESSPARTS}
+// EMPTYMARKUP class parts and states
 
-const
-  PROGRESSPartFiller0  = 0;
-  {$EXTERNALSYM PROGRESSPartFiller0}
-  PP_BAR               = 1;
-  {$EXTERNALSYM PP_BAR}
-  PP_BARVERT           = 2;
-  {$EXTERNALSYM PP_BARVERT}
-  PP_CHUNK             = 3;
-  {$EXTERNALSYM PP_CHUNK}
-  PP_CHUNKVERT         = 4;
-  {$EXTERNALSYM PP_CHUNKVERT}
-
-//---------------------------------------------------------------------------------------
-//   "Tab" Parts & States
-//---------------------------------------------------------------------------------------
+  VSCLASS_EMPTYMARKUP = 'EMPTYMARKUP';
 
 type
-  TABPARTS = DWORD;
-  {$EXTERNALSYM TABPARTS}
+  EMPTYMARKUPPARTS = longint;
 
 const
-  TABPartFiller0            = 0;
-  {$EXTERNALSYM TABPartFiller0}
-  TABP_TABITEM              = 1;
-  {$EXTERNALSYM TABP_TABITEM}
-  TABP_TABITEMLEFTEDGE      = 2;
-  {$EXTERNALSYM TABP_TABITEMLEFTEDGE}
-  TABP_TABITEMRIGHTEDGE     = 3;
-  {$EXTERNALSYM TABP_TABITEMRIGHTEDGE}
-  TABP_TABITEMBOTHEDGE      = 4;
-  {$EXTERNALSYM TABP_TABITEMBOTHEDGE}
-  TABP_TOPTABITEM           = 5;
-  {$EXTERNALSYM TABP_TOPTABITEM}
-  TABP_TOPTABITEMLEFTEDGE   = 6;
-  {$EXTERNALSYM TABP_TOPTABITEMLEFTEDGE}
-  TABP_TOPTABITEMRIGHTEDGE  = 7;
-  {$EXTERNALSYM TABP_TOPTABITEMRIGHTEDGE}
-  TABP_TOPTABITEMBOTHEDGE   = 8;
-  {$EXTERNALSYM TABP_TOPTABITEMBOTHEDGE}
-  TABP_PANE                 = 9;
-  {$EXTERNALSYM TABP_PANE}
-  TABP_BODY                 = 10;
-  {$EXTERNALSYM TABP_BODY}
-
-type
-  TABITEMSTATES = DWORD;
-  {$EXTERNALSYM TABITEMSTATES}
+  EMP_MARKUPTEXT = 1;
 
-const
-  TABITEMStateFiller0  = 0;
-  {$EXTERNALSYM TABITEMStateFiller0}
-  TIS_NORMAL           = 1;
-  {$EXTERNALSYM TIS_NORMAL}
-  TIS_HOT              = 2;
-  {$EXTERNALSYM TIS_HOT}
-  TIS_SELECTED         = 3;
-  {$EXTERNALSYM TIS_SELECTED}
-  TIS_DISABLED         = 4;
-  {$EXTERNALSYM TIS_DISABLED}
-  TIS_FOCUSED          = 5;
-  {$EXTERNALSYM TIS_FOCUSED}
 
 type
-  TABITEMLEFTEDGESTATES = DWORD;
-  {$EXTERNALSYM TABITEMLEFTEDGESTATES}
+  MARKUPTEXTSTATES = longint;
 
 const
-  TABITEMLEFTEDGEStateFiller0  = 0;
-  {$EXTERNALSYM TABITEMLEFTEDGEStateFiller0}
-  TILES_NORMAL                 = 1;
-  {$EXTERNALSYM TILES_NORMAL}
-  TILES_HOT                    = 2;
-  {$EXTERNALSYM TILES_HOT}
-  TILES_SELECTED               = 3;
-  {$EXTERNALSYM TILES_SELECTED}
-  TILES_DISABLED               = 4;
-  {$EXTERNALSYM TILES_DISABLED}
-  TILES_FOCUSED                = 5;
-  {$EXTERNALSYM TILES_FOCUSED}
+  EMT_NORMALTEXT = 1;
+  EMT_LINKTEXT   = 2;
 
-type
-  TABITEMRIGHTEDGESTATES = DWORD;
-  {$EXTERNALSYM TABITEMRIGHTEDGESTATES}
-
-const
-  TABITEMRIGHTEDGEStateFiller0  = 0;
-  {$EXTERNALSYM TABITEMRIGHTEDGEStateFiller0}
-  TIRES_NORMAL                  = 1;
-  {$EXTERNALSYM TIRES_NORMAL}
-  TIRES_HOT                     = 2;
-  {$EXTERNALSYM TIRES_HOT}
-  TIRES_SELECTED                = 3;
-  {$EXTERNALSYM TIRES_SELECTED}
-  TIRES_DISABLED                = 4;
-  {$EXTERNALSYM TIRES_DISABLED}
-  TIRES_FOCUSED                 = 5;
-  {$EXTERNALSYM TIRES_FOCUSED}
 
-type
-  TABITEMBOTHEDGESSTATES = DWORD;
-  {$EXTERNALSYM TABITEMBOTHEDGESSTATES}
+// STATIC class parts and states
 
-const
-  TABITEMBOTHEDGESStateFiller0  = 0;
-  {$EXTERNALSYM TABITEMBOTHEDGESStateFiller0}
-  TIBES_NORMAL                  = 1;
-  {$EXTERNALSYM TIBES_NORMAL}
-  TIBES_HOT                     = 2;
-  {$EXTERNALSYM TIBES_HOT}
-  TIBES_SELECTED                = 3;
-  {$EXTERNALSYM TIBES_SELECTED}
-  TIBES_DISABLED                = 4;
-  {$EXTERNALSYM TIBES_DISABLED}
-  TIBES_FOCUSED                 = 5;
-  {$EXTERNALSYM TIBES_FOCUSED}
+  VSCLASS_STATIC = 'STATIC';
 
 type
-  TOPTABITEMSTATES = DWORD;
-  {$EXTERNALSYM TOPTABITEMSTATES}
+  STATICPARTS = longint;
 
 const
-  TOPTABITEMStateFiller0  = 0;
-  {$EXTERNALSYM TOPTABITEMStateFiller0}
-  TTIS_NORMAL             = 1;
-  {$EXTERNALSYM TTIS_NORMAL}
-  TTIS_HOT                = 2;
-  {$EXTERNALSYM TTIS_HOT}
-  TTIS_SELECTED           = 3;
-  {$EXTERNALSYM TTIS_SELECTED}
-  TTIS_DISABLED           = 4;
-  {$EXTERNALSYM TTIS_DISABLED}
-  TTIS_FOCUSED            = 5;
-  {$EXTERNALSYM TTIS_FOCUSED}
-
-type
-  TOPTABITEMLEFTEDGESTATES = DWORD;
-  {$EXTERNALSYM TOPTABITEMLEFTEDGESTATES}
+  STAT_TEXT = 1;
 
-const
-  TOPTABITEMLEFTEDGEStateFiller0  = 0;
-  {$EXTERNALSYM TOPTABITEMLEFTEDGEStateFiller0}
-  TTILES_NORMAL                   = 1;
-  {$EXTERNALSYM TTILES_NORMAL}
-  TTILES_HOT                      = 2;
-  {$EXTERNALSYM TTILES_HOT}
-  TTILES_SELECTED                 = 3;
-  {$EXTERNALSYM TTILES_SELECTED}
-  TTILES_DISABLED                 = 4;
-  {$EXTERNALSYM TTILES_DISABLED}
-  TTILES_FOCUSED                  = 5;
-  {$EXTERNALSYM TTILES_FOCUSED}
 
-type
-  TOPTABITEMRIGHTEDGESTATES = DWORD;
-  {$EXTERNALSYM TOPTABITEMRIGHTEDGESTATES}
+// PAGE class parts and states
 
-const
-  TOPTABITEMRIGHTEDGEStateFiller0  = 0;
-  {$EXTERNALSYM TOPTABITEMRIGHTEDGEStateFiller0}
-  TTIRES_NORMAL                    = 1;
-  {$EXTERNALSYM TTIRES_NORMAL}
-  TTIRES_HOT                       = 2;
-  {$EXTERNALSYM TTIRES_HOT}
-  TTIRES_SELECTED                  = 3;
-  {$EXTERNALSYM TTIRES_SELECTED}
-  TTIRES_DISABLED                  = 4;
-  {$EXTERNALSYM TTIRES_DISABLED}
-  TTIRES_FOCUSED                   = 5;
-  {$EXTERNALSYM TTIRES_FOCUSED}
+  VSCLASS_PAGE = 'PAGE';
 
 type
-  TOPTABITEMBOTHEDGESSTATES = DWORD;
-  {$EXTERNALSYM TOPTABITEMBOTHEDGESSTATES}
+  PAGEPARTS = longint;
 
 const
-  TOPTABITEMBOTHEDGESStateFiller0  = 0;
-  {$EXTERNALSYM TOPTABITEMBOTHEDGESStateFiller0}
-  TTIBES_NORMAL                    = 1;
-  {$EXTERNALSYM TTIBES_NORMAL}
-  TTIBES_HOT                       = 2;
-  {$EXTERNALSYM TTIBES_HOT}
-  TTIBES_SELECTED                  = 3;
-  {$EXTERNALSYM TTIBES_SELECTED}
-  TTIBES_DISABLED                  = 4;
-  {$EXTERNALSYM TTIBES_DISABLED}
-  TTIBES_FOCUSED                   = 5;
-  {$EXTERNALSYM TTIBES_FOCUSED}
-
-//---------------------------------------------------------------------------------------
-//   "Trackbar" Parts & States
-//---------------------------------------------------------------------------------------
+  PGRP_UP     = 1;
+  PGRP_DOWN   = 2;
+  PGRP_UPHORZ = 3;
+  PGRP_DOWNHORZ = 4;
 
-type
-  TRACKBARPARTS = DWORD;
-  {$EXTERNALSYM TRACKBARPARTS}
-
-const
-  TRACKBARPartFiller0  = 0;
-  {$EXTERNALSYM TRACKBARPartFiller0}
-  TKP_TRACK            = 1;
-  {$EXTERNALSYM TKP_TRACK}
-  TKP_TRACKVERT        = 2;
-  {$EXTERNALSYM TKP_TRACKVERT}
-  TKP_THUMB            = 3;
-  {$EXTERNALSYM TKP_THUMB}
-  TKP_THUMBBOTTOM      = 4;
-  {$EXTERNALSYM TKP_THUMBBOTTOM}
-  TKP_THUMBTOP         = 5;
-  {$EXTERNALSYM TKP_THUMBTOP}
-  TKP_THUMBVERT        = 6;
-  {$EXTERNALSYM TKP_THUMBVERT}
-  TKP_THUMBLEFT        = 7;
-  {$EXTERNALSYM TKP_THUMBLEFT}
-  TKP_THUMBRIGHT       = 8;
-  {$EXTERNALSYM TKP_THUMBRIGHT}
-  TKP_TICS             = 9;
-  {$EXTERNALSYM TKP_TICS}
-  TKP_TICSVERT         = 10;
-  {$EXTERNALSYM TKP_TICSVERT}
 
-type
-  TRACKBARSTATES = DWORD;
-  {$EXTERNALSYM TRACKBARSTATES}
+// MONTHCAL class parts and states
 
-const
-  TRACKBARStateFiller0  = 0;
-  {$EXTERNALSYM TRACKBARStateFiller0}
-  TKS_NORMAL            = 1;
-  {$EXTERNALSYM TKS_NORMAL}
+  VSCLASS_MONTHCAL = 'MONTHCAL';
 
 type
-  TRACKSTATES = DWORD;
-  {$EXTERNALSYM TRACKSTATES}
+  MONTHCALPARTS = longint;
 
 const
-  TRACKStateFiller0  = 0;
-  {$EXTERNALSYM TRACKStateFiller0}
-  TRS_NORMAL         = 1;
-  {$EXTERNALSYM TRS_NORMAL}
-
-type
-  TRACKVERTSTATES = DWORD;
-  {$EXTERNALSYM TRACKVERTSTATES}
+  MC_BACKGROUND = 1;
+  MC_BORDERS    = 2;
+  MC_GRIDBACKGROUND = 3;
+  MC_COLHEADERSPLITTER = 4;
+  MC_GRIDCELLBACKGROUND = 5;
+  MC_GRIDCELL   = 6;
+  MC_GRIDCELLUPPER = 7;
+  MC_TRAILINGGRIDCELL = 8;
+  MC_TRAILINGGRIDCELLUPPER = 9;
+  MC_NAVNEXT    = 10;
+  MC_NAVPREV    = 11;
 
-const
-  TRACKVERTStateFiller0  = 0;
-  {$EXTERNALSYM TRACKVERTStateFiller0}
-  TRVS_NORMAL            = 1;
-  {$EXTERNALSYM TRVS_NORMAL}
 
 type
-  THUMBSTATES = DWORD;
-  {$EXTERNALSYM THUMBSTATES}
+  GRIDCELLBACKGROUNDSTATES = longint;
 
 const
-  THUMBStateFiller0  = 0;
-  {$EXTERNALSYM THUMBStateFiller0}
-  TUS_NORMAL         = 1;
-  {$EXTERNALSYM TUS_NORMAL}
-  TUS_HOT            = 2;
-  {$EXTERNALSYM TUS_HOT}
-  TUS_PRESSED        = 3;
-  {$EXTERNALSYM TUS_PRESSED}
-  TUS_FOCUSED        = 4;
-  {$EXTERNALSYM TUS_FOCUSED}
-  TUS_DISABLED       = 5;
-  {$EXTERNALSYM TUS_DISABLED}
-
-type
-  THUMBBOTTOMSTATES = DWORD;
-  {$EXTERNALSYM THUMBBOTTOMSTATES}
+  MCGCB_SELECTED = 1;
+  MCGCB_HOT      = 2;
+  MCGCB_SELECTEDHOT = 3;
+  MCGCB_SELECTEDNOTFOCUSED = 4;
+  MCGCB_TODAY    = 5;
 
-const
-  THUMBBOTTOMStateFiller0  = 0;
-  {$EXTERNALSYM THUMBBOTTOMStateFiller0}
-  TUBS_NORMAL              = 1;
-  {$EXTERNALSYM TUBS_NORMAL}
-  TUBS_HOT                 = 2;
-  {$EXTERNALSYM TUBS_HOT}
-  TUBS_PRESSED             = 3;
-  {$EXTERNALSYM TUBS_PRESSED}
-  TUBS_FOCUSED             = 4;
-  {$EXTERNALSYM TUBS_FOCUSED}
-  TUBS_DISABLED            = 5;
-  {$EXTERNALSYM TUBS_DISABLED}
 
 type
-  THUMBTOPSTATES = DWORD;
-  {$EXTERNALSYM THUMBTOPSTATES}
+  GRIDCELLSTATES = longint;
 
 const
-  THUMBTOPStateFiller0  = 0;
-  {$EXTERNALSYM THUMBTOPStateFiller0}
-  TUTS_NORMAL           = 1;
-  {$EXTERNALSYM TUTS_NORMAL}
-  TUTS_HOT              = 2;
-  {$EXTERNALSYM TUTS_HOT}
-  TUTS_PRESSED          = 3;
-  {$EXTERNALSYM TUTS_PRESSED}
-  TUTS_FOCUSED          = 4;
-  {$EXTERNALSYM TUTS_FOCUSED}
-  TUTS_DISABLED         = 5;
-  {$EXTERNALSYM TUTS_DISABLED}
+  MCGC_HOT      = 1;
+  MCGC_HASSTATE = 2;
+  MCGC_HASSTATEHOT = 3;
+  MCGC_TODAY    = 4;
 
-type
-  THUMBVERTSTATES = DWORD;
-  {$EXTERNALSYM THUMBVERTSTATES}
-
-const
-  THUMBVERTStateFiller0  = 0;
-  {$EXTERNALSYM THUMBVERTStateFiller0}
-  TUVS_NORMAL            = 1;
-  {$EXTERNALSYM TUVS_NORMAL}
-  TUVS_HOT               = 2;
-  {$EXTERNALSYM TUVS_HOT}
-  TUVS_PRESSED           = 3;
-  {$EXTERNALSYM TUVS_PRESSED}
-  TUVS_FOCUSED           = 4;
-  {$EXTERNALSYM TUVS_FOCUSED}
-  TUVS_DISABLED          = 5;
-  {$EXTERNALSYM TUVS_DISABLED}
 
 type
-  THUMBLEFTSTATES = DWORD;
-  {$EXTERNALSYM THUMBLEFTSTATES}
+  GRIDCELLUPPERSTATES = longint;
 
 const
-  THUMBLEFTStateFiller0  = 0;
-  {$EXTERNALSYM THUMBLEFTStateFiller0}
-  TUVLS_NORMAL           = 1;
-  {$EXTERNALSYM TUVLS_NORMAL}
-  TUVLS_HOT              = 2;
-  {$EXTERNALSYM TUVLS_HOT}
-  TUVLS_PRESSED          = 3;
-  {$EXTERNALSYM TUVLS_PRESSED}
-  TUVLS_FOCUSED          = 4;
-  {$EXTERNALSYM TUVLS_FOCUSED}
-  TUVLS_DISABLED         = 5;
-  {$EXTERNALSYM TUVLS_DISABLED}
+  MCGCU_HOT      = 1;
+  MCGCU_HASSTATE = 2;
+  MCGCU_HASSTATEHOT = 3;
 
-type
-  THUMBRIGHTSTATES = DWORD;
-  {$EXTERNALSYM THUMBRIGHTSTATES}
-
-const
-  THUMBRIGHTStateFiller0  = 0;
-  {$EXTERNALSYM THUMBRIGHTStateFiller0}
-  TUVRS_NORMAL            = 1;
-  {$EXTERNALSYM TUVRS_NORMAL}
-  TUVRS_HOT               = 2;
-  {$EXTERNALSYM TUVRS_HOT}
-  TUVRS_PRESSED           = 3;
-  {$EXTERNALSYM TUVRS_PRESSED}
-  TUVRS_FOCUSED           = 4;
-  {$EXTERNALSYM TUVRS_FOCUSED}
-  TUVRS_DISABLED          = 5;
-  {$EXTERNALSYM TUVRS_DISABLED}
 
 type
-  TICSSTATES = DWORD;
-  {$EXTERNALSYM TICSSTATES}
+  TRAILINGGRIDCELLSTATES = longint;
 
 const
-  TICSStateFiller0  = 0;
-  {$EXTERNALSYM TICSStateFiller0}
-  TSS_NORMAL        = 1;
-  {$EXTERNALSYM TSS_NORMAL}
-
-type
-  TICSVERTSTATES = DWORD;
-  {$EXTERNALSYM TICSVERTSTATES}
+  MCTGC_HOT      = 1;
+  MCTGC_HASSTATE = 2;
+  MCTGC_HASSTATEHOT = 3;
+  MCTGC_TODAY    = 4;
 
-const
-  TICSVERTStateFiller0  = 0;
-  {$EXTERNALSYM TICSVERTStateFiller0}
-  TSVS_NORMAL           = 1;
-  {$EXTERNALSYM TSVS_NORMAL}
-
-//---------------------------------------------------------------------------------------
-//   "Tooltips" Parts & States
-//---------------------------------------------------------------------------------------
 
 type
-  TOOLTIPPARTS = DWORD;
-  {$EXTERNALSYM TOOLTIPPARTS}
+  TRAILINGGRIDCELLUPPERSTATES = longint;
 
 const
-  TOOLTIPPartFiller0  = 0;
-  {$EXTERNALSYM TOOLTIPPartFiller0}
-  TTP_STANDARD        = 1;
-  {$EXTERNALSYM TTP_STANDARD}
-  TTP_STANDARDTITLE   = 2;
-  {$EXTERNALSYM TTP_STANDARDTITLE}
-  TTP_BALLOON         = 3;
-  {$EXTERNALSYM TTP_BALLOON}
-  TTP_BALLOONTITLE    = 4;
-  {$EXTERNALSYM TTP_BALLOONTITLE}
-  TTP_CLOSE           = 5;
-  {$EXTERNALSYM TTP_CLOSE}
-
-type
-  CLOSESTATES = DWORD;
-  {$EXTERNALSYM CLOSESTATES}
+  MCTGCU_HOT      = 1;
+  MCTGCU_HASSTATE = 2;
+  MCTGCU_HASSTATEHOT = 3;
 
-const
-  CLOSEStateFiller0  = 0;
-  {$EXTERNALSYM CLOSEStateFiller0}
-  TTCS_NORMAL        = 1;
-  {$EXTERNALSYM TTCS_NORMAL}
-  TTCS_HOT           = 2;
-  {$EXTERNALSYM TTCS_HOT}
-  TTCS_PRESSED       = 3;
-  {$EXTERNALSYM TTCS_PRESSED}
 
 type
-  STANDARDSTATES = DWORD;
-  {$EXTERNALSYM STANDARDSTATES}
+  NAVNEXTSTATES = longint;
 
 const
-  STANDARDStateFiller0  = 0;
-  {$EXTERNALSYM STANDARDStateFiller0}
-  TTSS_NORMAL           = 1;
-  {$EXTERNALSYM TTSS_NORMAL}
-  TTSS_LINK             = 2;
-  {$EXTERNALSYM TTSS_LINK}
-
-type
-  BALLOONSTATES = DWORD;
-  {$EXTERNALSYM BALLOONSTATES}
+  MCNN_NORMAL   = 1;
+  MCNN_HOT      = 2;
+  MCNN_PRESSED  = 3;
+  MCNN_DISABLED = 4;
 
-const
-  BALLOONStateFiller0  = 0;
-  {$EXTERNALSYM BALLOONStateFiller0}
-  TTBS_NORMAL          = 1;
-  {$EXTERNALSYM TTBS_NORMAL}
-  TTBS_LINK            = 2;
-  {$EXTERNALSYM TTBS_LINK}
-
-//---------------------------------------------------------------------------------------
-//   "TreeView" Parts & States
-//---------------------------------------------------------------------------------------
 
 type
-  TREEVIEWPARTS = DWORD;
-  {$EXTERNALSYM TREEVIEWPARTS}
+  NAVPREVSTATES = longint;
 
 const
-  TREEVIEWPartFiller0  = 0;
-  {$EXTERNALSYM TREEVIEWPartFiller0}
-  TVP_TREEITEM         = 1;
-  {$EXTERNALSYM TVP_TREEITEM}
-  TVP_GLYPH            = 2;
-  {$EXTERNALSYM TVP_GLYPH}
-  TVP_BRANCH           = 3;
-  {$EXTERNALSYM TVP_BRANCH}
-
-type
-  TREEITEMSTATES = DWORD;
-  {$EXTERNALSYM TREEITEMSTATES}
+  MCNP_NORMAL   = 1;
+  MCNP_HOT      = 2;
+  MCNP_PRESSED  = 3;
+  MCNP_DISABLED = 4;
 
-const
-  TREEITEMStateFiller0    = 0;
-  {$EXTERNALSYM TREEITEMStateFiller0}
-  TREIS_NORMAL            = 1;
-  {$EXTERNALSYM TREIS_NORMAL}
-  TREIS_HOT               = 2;
-  {$EXTERNALSYM TREIS_HOT}
-  TREIS_SELECTED          = 3;
-  {$EXTERNALSYM TREIS_SELECTED}
-  TREIS_DISABLED          = 4;
-  {$EXTERNALSYM TREIS_DISABLED}
-  TREIS_SELECTEDNOTFOCUS  = 5;
-  {$EXTERNALSYM TREIS_SELECTEDNOTFOCUS}
 
-type
-  GLYPHSTATES = DWORD;
-  {$EXTERNALSYM GLYPHSTATES}
+// CLOCK class parts and states
 
-const
-  GLYPHStateFiller0  = 0;
-  {$EXTERNALSYM GLYPHStateFiller0}
-  GLPS_CLOSED        = 1;
-  {$EXTERNALSYM GLPS_CLOSED}
-  GLPS_OPENED        = 2;
-  {$EXTERNALSYM GLPS_OPENED}
-
-//---------------------------------------------------------------------------------------
-//   "Spin" Parts & States
-//---------------------------------------------------------------------------------------
+  VSCLASS_CLOCK = 'CLOCK';
 
 type
-  SPINPARTS = DWORD;
-  {$EXTERNALSYM SPINPARTS}
+  CLOCKPARTS = longint;
 
 const
-  SPINPartFiller0  = 0;
-  {$EXTERNALSYM SPINPartFiller0}
-  SPNP_UP          = 1;
-  {$EXTERNALSYM SPNP_UP}
-  SPNP_DOWN        = 2;
-  {$EXTERNALSYM SPNP_DOWN}
-  SPNP_UPHORZ      = 3;
-  {$EXTERNALSYM SPNP_UPHORZ}
-  SPNP_DOWNHORZ    = 4;
-  {$EXTERNALSYM SPNP_DOWNHORZ}
+  CLP_TIME = 1;
 
-type
-  UPSTATES = DWORD;
-  {$EXTERNALSYM UPSTATES}
-
-const
-  UPStateFiller0  = 0;
-  {$EXTERNALSYM UPStateFiller0}
-  UPS_NORMAL      = 1;
-  {$EXTERNALSYM UPS_NORMAL}
-  UPS_HOT         = 2;
-  {$EXTERNALSYM UPS_HOT}
-  UPS_PRESSED     = 3;
-  {$EXTERNALSYM UPS_PRESSED}
-  UPS_DISABLED    = 4;
-  {$EXTERNALSYM UPS_DISABLED}
 
 type
-  DOWNSTATES = DWORD;
-  {$EXTERNALSYM DOWNSTATES}
+  CLOCKSTATES = longint;
 
 const
-  DOWNStateFiller0  = 0;
-  {$EXTERNALSYM DOWNStateFiller0}
-  DNS_NORMAL        = 1;
-  {$EXTERNALSYM DNS_NORMAL}
-  DNS_HOT           = 2;
-  {$EXTERNALSYM DNS_HOT}
-  DNS_PRESSED       = 3;
-  {$EXTERNALSYM DNS_PRESSED}
-  DNS_DISABLED      = 4;
-  {$EXTERNALSYM DNS_DISABLED}
+  CLS_NORMAL  = 1;
+  CLS_HOT     = 2;
+  CLS_PRESSED = 3;
 
-type
-  UPHORZSTATES = DWORD;
-  {$EXTERNALSYM UPHORZSTATES}
-
-const
-  UPHORZStateFiller0  = 0;
-  {$EXTERNALSYM UPHORZStateFiller0}
-  UPHZS_NORMAL        = 1;
-  {$EXTERNALSYM UPHZS_NORMAL}
-  UPHZS_HOT           = 2;
-  {$EXTERNALSYM UPHZS_HOT}
-  UPHZS_PRESSED       = 3;
-  {$EXTERNALSYM UPHZS_PRESSED}
-  UPHZS_DISABLED      = 4;
-  {$EXTERNALSYM UPHZS_DISABLED}
 
-type
-  DOWNHORZSTATES = DWORD;
-  {$EXTERNALSYM DOWNHORZSTATES}
+// TRAYNOTIFY class parts and states
 
-const
-  DOWNHORZStateFiller0  = 0;
-  {$EXTERNALSYM DOWNHORZStateFiller0}
-  DNHZS_NORMAL          = 1;
-  {$EXTERNALSYM DNHZS_NORMAL}
-  DNHZS_HOT             = 2;
-  {$EXTERNALSYM DNHZS_HOT}
-  DNHZS_PRESSED         = 3;
-  {$EXTERNALSYM DNHZS_PRESSED}
-  DNHZS_DISABLED        = 4;
-  {$EXTERNALSYM DNHZS_DISABLED}
-
-//---------------------------------------------------------------------------------------
-//   "Page" Parts & States
-//---------------------------------------------------------------------------------------
+  VSCLASS_TRAYNOTIFY = 'TRAYNOTIFY';
 
 type
-  PAGEPARTS = DWORD;
-  {$EXTERNALSYM PAGEPARTS}
+  TRAYNOTIFYPARTS = longint;
 
 const
-  PAGEPartFiller0  = 0;
-  {$EXTERNALSYM PAGEPartFiller0}
-  PGRP_UP          = 1;
-  {$EXTERNALSYM PGRP_UP}
-  PGRP_DOWN        = 2;
-  {$EXTERNALSYM PGRP_DOWN}
-  PGRP_UPHORZ      = 3;
-  {$EXTERNALSYM PGRP_UPHORZ}
-  PGRP_DOWNHORZ    = 4;
-  {$EXTERNALSYM PGRP_DOWNHORZ}
-
-//--- Pager uses same states as Spin ---
-
-//---------------------------------------------------------------------------------------
-//   "Scrollbar" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  SCROLLBARPARTS = DWORD;
-  {$EXTERNALSYM SCROLLBARPARTS}
+  TNP_BACKGROUND     = 1;
+  TNP_ANIMBACKGROUND = 2;
 
-const
-  SCROLLBARPartFiller0  = 0;
-  {$EXTERNALSYM SCROLLBARPartFiller0}
-  SBP_ARROWBTN          = 1;
-  {$EXTERNALSYM SBP_ARROWBTN}
-  SBP_THUMBBTNHORZ      = 2;
-  {$EXTERNALSYM SBP_THUMBBTNHORZ}
-  SBP_THUMBBTNVERT      = 3;
-  {$EXTERNALSYM SBP_THUMBBTNVERT}
-  SBP_LOWERTRACKHORZ    = 4;
-  {$EXTERNALSYM SBP_LOWERTRACKHORZ}
-  SBP_UPPERTRACKHORZ    = 5;
-  {$EXTERNALSYM SBP_UPPERTRACKHORZ}
-  SBP_LOWERTRACKVERT    = 6;
-  {$EXTERNALSYM SBP_LOWERTRACKVERT}
-  SBP_UPPERTRACKVERT    = 7;
-  {$EXTERNALSYM SBP_UPPERTRACKVERT}
-  SBP_GRIPPERHORZ       = 8;
-  {$EXTERNALSYM SBP_GRIPPERHORZ}
-  SBP_GRIPPERVERT       = 9;
-  {$EXTERNALSYM SBP_GRIPPERVERT}
-  SBP_SIZEBOX           = 10;
-  {$EXTERNALSYM SBP_SIZEBOX}
 
-type
-  ARROWBTNSTATES = DWORD;
-  {$EXTERNALSYM ARROWBTNSTATES}
+// TASKBAR class parts and states
 
-const
-  ARROWBTNStateFiller0  = 0;
-  {$EXTERNALSYM ARROWBTNStateFiller0}
-  ABS_UPNORMAL          = 1;
-  {$EXTERNALSYM ABS_UPNORMAL}
-  ABS_UPHOT             = 2;
-  {$EXTERNALSYM ABS_UPHOT}
-  ABS_UPPRESSED         = 3;
-  {$EXTERNALSYM ABS_UPPRESSED}
-  ABS_UPDISABLED        = 4;
-  {$EXTERNALSYM ABS_UPDISABLED}
-  ABS_DOWNNORMAL        = 5;
-  {$EXTERNALSYM ABS_DOWNNORMAL}
-  ABS_DOWNHOT           = 6;
-  {$EXTERNALSYM ABS_DOWNHOT}
-  ABS_DOWNPRESSED       = 7;
-  {$EXTERNALSYM ABS_DOWNPRESSED}
-  ABS_DOWNDISABLED      = 8;
-  {$EXTERNALSYM ABS_DOWNDISABLED}
-  ABS_LEFTNORMAL        = 9;
-  {$EXTERNALSYM ABS_LEFTNORMAL}
-  ABS_LEFTHOT           = 10;
-  {$EXTERNALSYM ABS_LEFTHOT}
-  ABS_LEFTPRESSED       = 11;
-  {$EXTERNALSYM ABS_LEFTPRESSED}
-  ABS_LEFTDISABLED      = 12;
-  {$EXTERNALSYM ABS_LEFTDISABLED}
-  ABS_RIGHTNORMAL       = 13;
-  {$EXTERNALSYM ABS_RIGHTNORMAL}
-  ABS_RIGHTHOT          = 14;
-  {$EXTERNALSYM ABS_RIGHTHOT}
-  ABS_RIGHTPRESSED      = 15;
-  {$EXTERNALSYM ABS_RIGHTPRESSED}
-  ABS_RIGHTDISABLED     = 16;
-  {$EXTERNALSYM ABS_RIGHTDISABLED}
+  VSCLASS_TASKBAR = 'TASKBAR';
 
 type
-  SCROLLBARSTATES = DWORD;
-  {$EXTERNALSYM SCROLLBARSTATES}
+  TASKBARPARTS = longint;
 
 const
-  SCROLLBARStateFiller0  = 0;
-  {$EXTERNALSYM SCROLLBARStateFiller0}
-  SCRBS_NORMAL           = 1;
-  {$EXTERNALSYM SCRBS_NORMAL}
-  SCRBS_HOT              = 2;
-  {$EXTERNALSYM SCRBS_HOT}
-  SCRBS_PRESSED          = 3;
-  {$EXTERNALSYM SCRBS_PRESSED}
-  SCRBS_DISABLED         = 4;
-  {$EXTERNALSYM SCRBS_DISABLED}
-
-type
-  SIZEBOXSTATES = DWORD;
-  {$EXTERNALSYM SIZEBOXSTATES}
+  TBP_BACKGROUNDBOTTOM = 1;
+  TBP_BACKGROUNDRIGHT  = 2;
+  TBP_BACKGROUNDTOP    = 3;
+  TBP_BACKGROUNDLEFT   = 4;
+  TBP_SIZINGBARBOTTOM  = 5;
+  TBP_SIZINGBARRIGHT   = 6;
+  TBP_SIZINGBARTOP     = 7;
+  TBP_SIZINGBARLEFT    = 8;
 
-const
-  SIZEBOXStateFiller0  = 0;
-  {$EXTERNALSYM SIZEBOXStateFiller0}
-  SZB_RIGHTALIGN       = 1;
-  {$EXTERNALSYM SZB_RIGHTALIGN}
-  SZB_LEFTALIGN        = 2;
-  {$EXTERNALSYM SZB_LEFTALIGN}
-
-//---------------------------------------------------------------------------------------
-//   "Edit" Parts & States
-//---------------------------------------------------------------------------------------
 
-type
-  EDITPARTS = DWORD;
-  {$EXTERNALSYM EDITPARTS}
+// TASKBAND class parts and states
 
-const
-  EDITPartFiller0  = 0;
-  {$EXTERNALSYM EDITPartFiller0}
-  EP_EDITTEXT      = 1;
-  {$EXTERNALSYM EP_EDITTEXT}
-  EP_CARET         = 2;
-  {$EXTERNALSYM EP_CARET}
+  VSCLASS_TASKBAND = 'TASKBAND';
 
 type
-  EDITTEXTSTATES = DWORD;
-  {$EXTERNALSYM EDITTEXTSTATES}
+  TASKBANDPARTS = longint;
 
 const
-  EDITTEXTStateFiller0  = 0;
-  {$EXTERNALSYM EDITTEXTStateFiller0}
-  ETS_NORMAL            = 1;
-  {$EXTERNALSYM ETS_NORMAL}
-  ETS_HOT               = 2;
-  {$EXTERNALSYM ETS_HOT}
-  ETS_SELECTED          = 3;
-  {$EXTERNALSYM ETS_SELECTED}
-  ETS_DISABLED          = 4;
-  {$EXTERNALSYM ETS_DISABLED}
-  ETS_FOCUSED           = 5;
-  {$EXTERNALSYM ETS_FOCUSED}
-  ETS_READONLY          = 6;
-  {$EXTERNALSYM ETS_READONLY}
-  ETS_ASSIST            = 7;
-  {$EXTERNALSYM ETS_ASSIST}
-
-//---------------------------------------------------------------------------------------
-//   "ComboBox" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  COMBOBOXPARTS = DWORD;
-  {$EXTERNALSYM COMBOBOXPARTS}
+  TDP_GROUPCOUNT  = 1;
+  TDP_FLASHBUTTON = 2;
+  TDP_FLASHBUTTONGROUPMENU = 3;
 
-const
-  COMBOBOXPartFiller0  = 0;
-  {$EXTERNALSYM COMBOBOXPartFiller0}
-  CP_DROPDOWNBUTTON    = 1;
-  {$EXTERNALSYM CP_DROPDOWNBUTTON}
 
-type
-  COMBOBOXSTATES = DWORD;
-  {$EXTERNALSYM COMBOBOXSTATES}
+// STARTPANEL class parts and states
 
-const
-  COMBOBOXStateFiller0  = 0;
-  {$EXTERNALSYM COMBOBOXStateFiller0}
-  CBXS_NORMAL           = 1;
-  {$EXTERNALSYM CBXS_NORMAL}
-  CBXS_HOT              = 2;
-  {$EXTERNALSYM CBXS_HOT}
-  CBXS_PRESSED          = 3;
-  {$EXTERNALSYM CBXS_PRESSED}
-  CBXS_DISABLED         = 4;
-  {$EXTERNALSYM CBXS_DISABLED}
-
-//---------------------------------------------------------------------------------------
-//   "Taskbar Clock" Parts & States
-//---------------------------------------------------------------------------------------
+  VSCLASS_STARTPANEL = 'STARTPANEL';
 
 type
-  CLOCKPARTS = DWORD;
-  {$EXTERNALSYM CLOCKPARTS}
+  STARTPANELPARTS = longint;
 
 const
-  CLOCKPartFiller0  = 0;
-  {$EXTERNALSYM CLOCKPartFiller0}
-  CLP_TIME          = 1;
-  {$EXTERNALSYM CLP_TIME}
-
-type
-  CLOCKSTATES = DWORD;
-  {$EXTERNALSYM CLOCKSTATES}
+  SPP_USERPANE    = 1;
+  SPP_MOREPROGRAMS = 2;
+  SPP_MOREPROGRAMSARROW = 3;
+  SPP_PROGLIST    = 4;
+  SPP_PROGLISTSEPARATOR = 5;
+  SPP_PLACESLIST  = 6;
+  SPP_PLACESLISTSEPARATOR = 7;
+  SPP_LOGOFF      = 8;
+  SPP_LOGOFFBUTTONS = 9;
+  SPP_USERPICTURE = 10;
+  SPP_PREVIEW     = 11;
+  SPP_MOREPROGRAMSTAB = 12;
+  SPP_NSCHOST     = 13;
+  SPP_SOFTWAREEXPLORER = 14;
+  SPP_OPENBOX     = 15;
+  SPP_SEARCHVIEW  = 16;
+  SPP_MOREPROGRAMSARROWBACK = 17;
+  SPP_TOPMATCH    = 18;
+  SPP_LOGOFFSPLITBUTTONDROPDOWN = 19;
 
-const
-  CLOCKStateFiller0  = 0;
-  {$EXTERNALSYM CLOCKStateFiller0}
-  CLS_NORMAL         = 1;
-  {$EXTERNALSYM CLS_NORMAL}
-
-//---------------------------------------------------------------------------------------
-//   "Tray Notify" Parts & States
-//---------------------------------------------------------------------------------------
 
 type
-  TRAYNOTIFYPARTS = DWORD;
-  {$EXTERNALSYM TRAYNOTIFYPARTS}
+  MOREPROGRAMSTABSTATES = longint;
 
 const
-  TRAYNOTIFYPartFiller0  = 0;
-  {$EXTERNALSYM TRAYNOTIFYPartFiller0}
-  TNP_BACKGROUND         = 1;
-  {$EXTERNALSYM TNP_BACKGROUND}
-  TNP_ANIMBACKGROUND     = 2;
-  {$EXTERNALSYM TNP_ANIMBACKGROUND}
-
-//---------------------------------------------------------------------------------------
-//   "TaskBar" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  TASKBARPARTS = DWORD;
-  {$EXTERNALSYM TASKBARPARTS}
+  SPMPT_NORMAL   = 1;
+  SPMPT_HOT      = 2;
+  SPMPT_SELECTED = 3;
+  SPMPT_DISABLED = 4;
+  SPMPT_FOCUSED  = 5;
 
-const
-  TASKBARPartFiller0    = 0;
-  {$EXTERNALSYM TASKBARPartFiller0}
-  TBP_BACKGROUNDBOTTOM  = 1;
-  {$EXTERNALSYM TBP_BACKGROUNDBOTTOM}
-  TBP_BACKGROUNDRIGHT   = 2;
-  {$EXTERNALSYM TBP_BACKGROUNDRIGHT}
-  TBP_BACKGROUNDTOP     = 3;
-  {$EXTERNALSYM TBP_BACKGROUNDTOP}
-  TBP_BACKGROUNDLEFT    = 4;
-  {$EXTERNALSYM TBP_BACKGROUNDLEFT}
-  TBP_SIZINGBARBOTTOM   = 5;
-  {$EXTERNALSYM TBP_SIZINGBARBOTTOM}
-  TBP_SIZINGBARRIGHT    = 6;
-  {$EXTERNALSYM TBP_SIZINGBARRIGHT}
-  TBP_SIZINGBARTOP      = 7;
-  {$EXTERNALSYM TBP_SIZINGBARTOP}
-  TBP_SIZINGBARLEFT     = 8;
-  {$EXTERNALSYM TBP_SIZINGBARLEFT}
-
-//---------------------------------------------------------------------------------------
-//   "TaskBand" Parts & States
-//---------------------------------------------------------------------------------------
 
 type
-  TASKBANDPARTS = DWORD;
-  {$EXTERNALSYM TASKBANDPARTS}
+  SOFTWAREEXPLORERSTATES = longint;
 
 const
-  TASKBANDPartFiller0       = 0;
-  {$EXTERNALSYM TASKBANDPartFiller0}
-  TDP_GROUPCOUNT            = 1;
-  {$EXTERNALSYM TDP_GROUPCOUNT}
-  TDP_FLASHBUTTON           = 2;
-  {$EXTERNALSYM TDP_FLASHBUTTON}
-  TDP_FLASHBUTTONGROUPMENU  = 3;
-  {$EXTERNALSYM TDP_FLASHBUTTONGROUPMENU}
-
-//---------------------------------------------------------------------------------------
-//   "StartPanel" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  STARTPANELPARTS = DWORD;
-  {$EXTERNALSYM STARTPANELPARTS}
+  SPSE_NORMAL   = 1;
+  SPSE_HOT      = 2;
+  SPSE_SELECTED = 3;
+  SPSE_DISABLED = 4;
+  SPSE_FOCUSED  = 5;
 
-const
-  STARTPANELPartFiller0    = 0;
-  {$EXTERNALSYM STARTPANELPartFiller0}
-  SPP_USERPANE             = 1;
-  {$EXTERNALSYM SPP_USERPANE}
-  SPP_MOREPROGRAMS         = 2;
-  {$EXTERNALSYM SPP_MOREPROGRAMS}
-  SPP_MOREPROGRAMSARROW    = 3;
-  {$EXTERNALSYM SPP_MOREPROGRAMSARROW}
-  SPP_PROGLIST             = 4;
-  {$EXTERNALSYM SPP_PROGLIST}
-  SPP_PROGLISTSEPARATOR    = 5;
-  {$EXTERNALSYM SPP_PROGLISTSEPARATOR}
-  SPP_PLACESLIST           = 6;
-  {$EXTERNALSYM SPP_PLACESLIST}
-  SPP_PLACESLISTSEPARATOR  = 7;
-  {$EXTERNALSYM SPP_PLACESLISTSEPARATOR}
-  SPP_LOGOFF               = 8;
-  {$EXTERNALSYM SPP_LOGOFF}
-  SPP_LOGOFFBUTTONS        = 9;
-  {$EXTERNALSYM SPP_LOGOFFBUTTONS}
-  SPP_USERPICTURE          = 10;
-  {$EXTERNALSYM SPP_USERPICTURE}
-  SPP_PREVIEW              = 11;
-  {$EXTERNALSYM SPP_PREVIEW}
 
 type
-  MOREPROGRAMSARROWSTATES = DWORD;
-  {$EXTERNALSYM MOREPROGRAMSARROWSTATES}
+  OPENBOXSTATES = longint;
 
 const
-  MOREPROGRAMSARROWStateFiller0  = 0;
-  {$EXTERNALSYM MOREPROGRAMSARROWStateFiller0}
-  SPS_NORMAL                     = 1;
-  {$EXTERNALSYM SPS_NORMAL}
-  SPS_HOT                        = 2;
-  {$EXTERNALSYM SPS_HOT}
-  SPS_PRESSED                    = 3;
-  {$EXTERNALSYM SPS_PRESSED}
-
-type
-  LOGOFFBUTTONSSTATES = DWORD;
-  {$EXTERNALSYM LOGOFFBUTTONSSTATES}
+  SPOB_NORMAL   = 1;
+  SPOB_HOT      = 2;
+  SPOB_SELECTED = 3;
+  SPOB_DISABLED = 4;
+  SPOB_FOCUSED  = 5;
 
-const
-  LOGOFFBUTTONSStateFiller0  = 0;
-  {$EXTERNALSYM LOGOFFBUTTONSStateFiller0}
-  SPLS_NORMAL                = 1;
-  {$EXTERNALSYM SPLS_NORMAL}
-  SPLS_HOT                   = 2;
-  {$EXTERNALSYM SPLS_HOT}
-  SPLS_PRESSED               = 3;
-  {$EXTERNALSYM SPLS_PRESSED}
-
-//---------------------------------------------------------------------------------------
-//   "ExplorerBar" Parts & States
-//---------------------------------------------------------------------------------------
 
 type
-  EXPLORERBARPARTS = DWORD;
-  {$EXTERNALSYM EXPLORERBARPARTS}
+  MOREPROGRAMSARROWSTATES = longint;
 
 const
-  EXPLORERBARPartFiller0      = 0;
-  {$EXTERNALSYM EXPLORERBARPartFiller0}
-  EBP_HEADERBACKGROUND        = 1;
-  {$EXTERNALSYM EBP_HEADERBACKGROUND}
-  EBP_HEADERCLOSE             = 2;
-  {$EXTERNALSYM EBP_HEADERCLOSE}
-  EBP_HEADERPIN               = 3;
-  {$EXTERNALSYM EBP_HEADERPIN}
-  EBP_IEBARMENU               = 4;
-  {$EXTERNALSYM EBP_IEBARMENU}
-  EBP_NORMALGROUPBACKGROUND   = 5;
-  {$EXTERNALSYM EBP_NORMALGROUPBACKGROUND}
-  EBP_NORMALGROUPCOLLAPSE     = 6;
-  {$EXTERNALSYM EBP_NORMALGROUPCOLLAPSE}
-  EBP_NORMALGROUPEXPAND       = 7;
-  {$EXTERNALSYM EBP_NORMALGROUPEXPAND}
-  EBP_NORMALGROUPHEAD         = 8;
-  {$EXTERNALSYM EBP_NORMALGROUPHEAD}
-  EBP_SPECIALGROUPBACKGROUND  = 9;
-  {$EXTERNALSYM EBP_SPECIALGROUPBACKGROUND}
-  EBP_SPECIALGROUPCOLLAPSE    = 10;
-  {$EXTERNALSYM EBP_SPECIALGROUPCOLLAPSE}
-  EBP_SPECIALGROUPEXPAND      = 11;
-  {$EXTERNALSYM EBP_SPECIALGROUPEXPAND}
-  EBP_SPECIALGROUPHEAD        = 12;
-  {$EXTERNALSYM EBP_SPECIALGROUPHEAD}
+  SPS_NORMAL  = 1;
+  SPS_HOT     = 2;
+  SPS_PRESSED = 3;
 
-type
-  HEADERCLOSESTATES = DWORD;
-  {$EXTERNALSYM HEADERCLOSESTATES}
-
-const
-  HEADERCLOSEStateFiller0  = 0;
-  {$EXTERNALSYM HEADERCLOSEStateFiller0}
-  EBHC_NORMAL              = 1;
-  {$EXTERNALSYM EBHC_NORMAL}
-  EBHC_HOT                 = 2;
-  {$EXTERNALSYM EBHC_HOT}
-  EBHC_PRESSED             = 3;
-  {$EXTERNALSYM EBHC_PRESSED}
 
 type
-  HEADERPINSTATES = DWORD;
-  {$EXTERNALSYM HEADERPINSTATES}
+  MOREPROGRAMSARROWBACKSTATES = longint;
 
 const
-  HEADERPINStateFiller0  = 0;
-  {$EXTERNALSYM HEADERPINStateFiller0}
-  EBHP_NORMAL            = 1;
-  {$EXTERNALSYM EBHP_NORMAL}
-  EBHP_HOT               = 2;
-  {$EXTERNALSYM EBHP_HOT}
-  EBHP_PRESSED           = 3;
-  {$EXTERNALSYM EBHP_PRESSED}
-  EBHP_SELECTEDNORMAL    = 4;
-  {$EXTERNALSYM EBHP_SELECTEDNORMAL}
-  EBHP_SELECTEDHOT       = 5;
-  {$EXTERNALSYM EBHP_SELECTEDHOT}
-  EBHP_SELECTEDPRESSED   = 6;
-  {$EXTERNALSYM EBHP_SELECTEDPRESSED}
+  SPSB_NORMAL  = 1;
+  SPSB_HOT     = 2;
+  SPSB_PRESSED = 3;
 
-type
-  IEBARMENUSTATES = DWORD;
-  {$EXTERNALSYM IEBARMENUSTATES}
-
-const
-  IEBARMENUStateFiller0  = 0;
-  {$EXTERNALSYM IEBARMENUStateFiller0}
-  EBM_NORMAL             = 1;
-  {$EXTERNALSYM EBM_NORMAL}
-  EBM_HOT                = 2;
-  {$EXTERNALSYM EBM_HOT}
-  EBM_PRESSED            = 3;
-  {$EXTERNALSYM EBM_PRESSED}
 
 type
-  NORMALGROUPCOLLAPSESTATES = DWORD;
-  {$EXTERNALSYM NORMALGROUPCOLLAPSESTATES}
+  LOGOFFBUTTONSSTATES = longint;
 
 const
-  NORMALGROUPCOLLAPSEStateFiller0  = 0;
-  {$EXTERNALSYM NORMALGROUPCOLLAPSEStateFiller0}
-  EBNGC_NORMAL                     = 1;
-  {$EXTERNALSYM EBNGC_NORMAL}
-  EBNGC_HOT                        = 2;
-  {$EXTERNALSYM EBNGC_HOT}
-  EBNGC_PRESSED                    = 3;
-  {$EXTERNALSYM EBNGC_PRESSED}
-
-type
-  NORMALGROUPEXPANDSTATES = DWORD;
-  {$EXTERNALSYM NORMALGROUPEXPANDSTATES}
+  SPLS_NORMAL  = 1;
+  SPLS_HOT     = 2;
+  SPLS_PRESSED = 3;
 
-const
-  NORMALGROUPEXPANDStateFiller0  = 0;
-  {$EXTERNALSYM NORMALGROUPEXPANDStateFiller0}
-  EBNGE_NORMAL                   = 1;
-  {$EXTERNALSYM EBNGE_NORMAL}
-  EBNGE_HOT                      = 2;
-  {$EXTERNALSYM EBNGE_HOT}
-  EBNGE_PRESSED                  = 3;
-  {$EXTERNALSYM EBNGE_PRESSED}
 
-type
-  SPECIALGROUPCOLLAPSESTATES = DWORD;
-  {$EXTERNALSYM SPECIALGROUPCOLLAPSESTATES}
+// MENUBAND class parts and states
 
-const
-  SPECIALGROUPCOLLAPSEStateFiller0  = 0;
-  {$EXTERNALSYM SPECIALGROUPCOLLAPSEStateFiller0}
-  EBSGC_NORMAL                      = 1;
-  {$EXTERNALSYM EBSGC_NORMAL}
-  EBSGC_HOT                         = 2;
-  {$EXTERNALSYM EBSGC_HOT}
-  EBSGC_PRESSED                     = 3;
-  {$EXTERNALSYM EBSGC_PRESSED}
+  VSCLASS_MENUBAND = 'MENUBAND';
 
 type
-  SPECIALGROUPEXPANDSTATES = DWORD;
-  {$EXTERNALSYM SPECIALGROUPEXPANDSTATES}
+  MENUBANDPARTS = longint;
 
 const
-  SPECIALGROUPEXPANDStateFiller0  = 0;
-  {$EXTERNALSYM SPECIALGROUPEXPANDStateFiller0}
-  EBSGE_NORMAL                    = 1;
-  {$EXTERNALSYM EBSGE_NORMAL}
-  EBSGE_HOT                       = 2;
-  {$EXTERNALSYM EBSGE_HOT}
-  EBSGE_PRESSED                   = 3;
-  {$EXTERNALSYM EBSGE_PRESSED}
-
-//---------------------------------------------------------------------------------------
-//   "TaskBand" Parts & States
-//---------------------------------------------------------------------------------------
-
-type
-  MENUBANDPARTS = DWORD;
-  {$EXTERNALSYM MENUBANDPARTS}
+  MDP_NEWAPPBUTTON = 1;
+  MDP_SEPERATOR    = 2;
 
-const
-  MENUBANDPartFiller0  = 0;
-  {$EXTERNALSYM MENUBANDPartFiller0}
-  MDP_NEWAPPBUTTON     = 1;
-  {$EXTERNALSYM MDP_NEWAPPBUTTON}
-  MDP_SEPERATOR        = 2;
-  {$EXTERNALSYM MDP_SEPERATOR}
 
 type
-  MENUBANDSTATES = DWORD;
-  {$EXTERNALSYM MENUBANDSTATES}
+  MENUBANDSTATES = longint;
 
 const
-  MENUBANDStateFiller0  = 0;
-  {$EXTERNALSYM MENUBANDStateFiller0}
-  MDS_NORMAL            = 1;
-  {$EXTERNALSYM MDS_NORMAL}
-  MDS_HOT               = 2;
-  {$EXTERNALSYM MDS_HOT}
-  MDS_PRESSED           = 3;
-  {$EXTERNALSYM MDS_PRESSED}
-  MDS_DISABLED          = 4;
-  {$EXTERNALSYM MDS_DISABLED}
-  MDS_CHECKED           = 5;
-  {$EXTERNALSYM MDS_CHECKED}
-  MDS_HOTCHECKED        = 6;
-  {$EXTERNALSYM MDS_HOTCHECKED}
+  MDS_NORMAL   = 1;
+  MDS_HOT      = 2;
+  MDS_PRESSED  = 3;
+  MDS_DISABLED = 4;
+  MDS_CHECKED  = 5;
+  MDS_HOTCHECKED = 6;
 
 implementation
 
