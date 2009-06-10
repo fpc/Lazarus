@@ -32,10 +32,6 @@ msgstr ""
 msgid "Alphabetically"
 msgstr ""
 
-#: lazarusidestrconsts.dlgaltsetclmode
-msgid "Alt-Key sets column mode"
-msgstr ""
-
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr ""
@@ -339,6 +335,7 @@ msgid "Code Creation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
+msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
 msgstr ""
 
@@ -470,7 +467,7 @@ msgid "Show Errors"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcoshowoptions
-msgid "Show Options"
+msgid "&Show Options"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosmaller
@@ -557,16 +554,24 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopbuttonglyphs
-msgid "Glyphs for Buttons"
+#: lazarusidestrconsts.dlgdesktopbuttons
+msgid "Buttons - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdesktopglyphsfor
+msgid "Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmenus
+msgid "Menus - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmisc
@@ -652,17 +657,9 @@ msgstr ""
 msgid "\" does not exist."
 msgstr ""
 
-#: lazarusidestrconsts.dlgdoubleclickline
-msgid "Double click line"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdownword
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdragdroped
-msgid "Drag Drop editing"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdropfiles
@@ -685,10 +682,6 @@ msgstr ""
 msgid "Sub directory"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedcodeparams
-msgid "Code parameters"
-msgstr ""
-
 #: lazarusidestrconsts.dlgedcodetempl
 msgid "Code templates"
 msgstr ""
@@ -696,6 +689,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgedcolor
 msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgedcompleteblocks
+msgid "Complete blocks"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext
@@ -707,6 +704,7 @@ msgid "Delay"
 msgstr ""
 
 #: lazarusidestrconsts.dlgeddelete
+msgctxt "lazarusidestrconsts.dlgeddelete"
 msgid "Delete"
 msgstr ""
 
@@ -1064,6 +1062,11 @@ msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr ""
 
+#: lazarusidestrconsts.dlggrouphelp
+msgctxt "lazarusidestrconsts.dlggrouphelp"
+msgid "Help"
+msgstr ""
+
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr ""
@@ -1073,6 +1076,7 @@ msgid "Show Guide Lines"
 msgstr ""
 
 #: lazarusidestrconsts.dlggutter
+msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr ""
 
@@ -1351,6 +1355,7 @@ msgid "Mix methods and properties"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldbutton
+msgctxt "lazarusidestrconsts.dlgmousefoldbutton"
 msgid "Button"
 msgstr ""
 
@@ -1360,6 +1365,7 @@ msgid "Left"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
+msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
 msgstr ""
 
@@ -1402,7 +1408,7 @@ msgid "Setting 1"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
-msgid "setting 2"
+msgid "Setting 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
@@ -1424,8 +1430,253 @@ msgstr ""
 msgid "Mouse:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouselinks
-msgid "Mouse links"
+#: lazarusidestrconsts.dlgmouseoptbtn1
+msgid "Single"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn2
+msgid "Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn3
+msgid "Triple"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn4
+msgid "Quad"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnadd
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
+msgid "Add"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnany
+msgid "Any"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtncancel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
+msgid "Cancel"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtndel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
+msgid "Delete"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtndown
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
+msgid "Down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnexport
+msgid "Export"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgid "Extra 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgid "Extra 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnimport
+msgid "Import"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnleft
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
+msgid "Left"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnmiddle
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
+msgid "Middle"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnmoddef
+msgid "Make Fallback"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnok
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
+msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnright
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
+msgid "Right"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnudp
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
+msgid "Change"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnup
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
+msgid "Up"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcapture
+msgid "Capture"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcaretmove
+msgid "Move Caret (extra)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcheckupdown
+msgid "Act on Mouse up"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdescaction
+msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
+msgid "Action"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdescbutton
+msgctxt "lazarusidestrconsts.dlgmouseoptdescbutton"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdlgtitle
+msgid "Edit Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrordup
+msgid "Duplicate Entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrorduptext
+msgid "This entry conflicts with an existing entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadalt
+msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
+msgid "Alt"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadbtn
+msgctxt "lazarusidestrconsts.dlgmouseoptheadbtn"
+msgid "Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcaret
+msgid "Caret"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcount
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptheadctrl"
+msgid "Ctrl"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheaddesc
+msgctxt "lazarusidestrconsts.dlgmouseoptheaddesc"
+msgid "Action"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheaddir
+msgid "Up/Down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadopt
+msgid "Option"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadpriority
+msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
+msgid "Priority"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadshift
+msgctxt "lazarusidestrconsts.dlgmouseoptheadshift"
+msgid "Shift"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptions
+msgctxt "lazarusidestrconsts.dlgmouseoptions"
+msgid "Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptionsyncommand
+msgid "IDE-Command"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodalt
+msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
+msgid "Alt"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptmodctrl"
+msgid "Ctrl"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyfalse
+msgid "n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyignore
+msgid "-"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeytrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodshift
+msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
+msgid "Shift"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmovemousetrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutter
+msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
+msgid "Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfold
+msgid "Fold Tree"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
+msgid "Collapsed [+]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
+msgid "Expanded [-]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlines
+msgid "Line Numbers"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodemain
+msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
+msgid "Text"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodeselect
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
+msgid "Selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptpriorlabel
+msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
+msgid "Priority"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmsgs
@@ -1658,10 +1909,6 @@ msgstr ""
 msgid "Right margin"
 msgstr ""
 
-#: lazarusidestrconsts.dlgrightmousemovescursor
-msgid "Right mouse moves cursor"
-msgstr ""
-
 #: lazarusidestrconsts.dlgroworkingdirectory
 msgid "Working directory"
 msgstr ""
@@ -1679,6 +1926,7 @@ msgid "Creation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
+msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Selection"
 msgstr ""
 
@@ -1876,6 +2124,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgskipforwarddeclarations
+msgid "Skip forward declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
@@ -2191,11 +2443,6 @@ msgstr ""
 #: lazarusidestrconsts.fdmselectall
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
-msgstr ""
-
-#: lazarusidestrconsts.fdmshowoptions
-msgctxt "lazarusidestrconsts.fdmshowoptions"
-msgid "Options"
 msgstr ""
 
 #: lazarusidestrconsts.fdmsizeword
@@ -2888,6 +3135,14 @@ msgstr ""
 #: lazarusidestrconsts.lisbtncontinue
 msgctxt "lazarusidestrconsts.lisbtncontinue"
 msgid "Continue"
+msgstr ""
+
+#: lazarusidestrconsts.lisbtnfind
+msgid "&Find"
+msgstr ""
+
+#: lazarusidestrconsts.lisbtnreplace
+msgid "&Replace"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
@@ -3678,6 +3933,7 @@ msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
+msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add"
 msgstr ""
 
@@ -3694,6 +3950,7 @@ msgid "Auto complete on ..."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetemplchange
+msgctxt "lazarusidestrconsts.liscodetemplchange"
 msgid "Change"
 msgstr ""
 
@@ -4264,7 +4521,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
-msgid "Test"
+msgid "&Test"
 msgstr ""
 
 #: lazarusidestrconsts.liscondition
@@ -4394,6 +4651,30 @@ msgstr ""
 
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotadditomainsource
+msgid "Could not add %s{$I %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddrtomainsource
+msgid "Could not add %s{$R %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddtomainsource
+msgid "Could not add %s%s%s to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremovefrommainsource
+msgid "Could not remove %s%s%s from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoveifrommainsource
+msgid "Could not remove %s{$I %s%s} from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoverfrommainsource
+msgid "Could not remove %s{$R %s%s} from main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscovarious
@@ -5150,6 +5431,10 @@ msgstr ""
 msgid "Double click on messages jumps (otherwise: single click)"
 msgstr ""
 
+#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr ""
@@ -5801,6 +6086,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
+msgstr ""
+
+#: lazarusidestrconsts.lishintstop
+msgctxt "lazarusidestrconsts.lishintstop"
+msgid "Stop"
 msgstr ""
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
@@ -6750,6 +7040,7 @@ msgid "%s beta"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
+msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
 msgstr ""
 
@@ -7840,6 +8131,7 @@ msgid "Step over"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustop
+msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr ""
 
@@ -7950,6 +8242,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenutemplateundo
 msgctxt "lazarusidestrconsts.lismenutemplateundo"
 msgid "Undo"
+msgstr ""
+
+#: lazarusidestrconsts.lismenutogglecomment
+msgid "Toggle comment"
 msgstr ""
 
 #: lazarusidestrconsts.lismenutools
@@ -8438,11 +8734,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisok
 msgid "&Ok"
-msgstr ""
-
-#: lazarusidestrconsts.lisokbtn
-msgctxt "lazarusidestrconsts.lisokbtn"
-msgid "OK"
 msgstr ""
 
 #: lazarusidestrconsts.lisold
@@ -9163,6 +9454,7 @@ msgid "LRS - Lazarus resource"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypetext
+msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr ""
 
@@ -11192,6 +11484,7 @@ msgid "Owner"
 msgstr ""
 
 #: lazarusidestrconsts.listodolpriority
+msgctxt "lazarusidestrconsts.listodolpriority"
 msgid "Priority"
 msgstr ""
 
@@ -12323,6 +12616,14 @@ msgstr ""
 msgid "Column Select Up"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeccolselwordleft
+msgid "Column Select Word Left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolselwordright
+msgid "Column Select Word Right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr ""
@@ -12393,7 +12694,7 @@ msgid "Move cursor to absolute beginning"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
-msgid "General environment options"
+msgid "IDE options"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecevaluate
@@ -13027,6 +13328,10 @@ msgstr ""
 msgid "Bookmark"
 msgstr ""
 
+#: lazarusidestrconsts.uemcloseotherpages
+msgid "Close All &Other Pages"
+msgstr ""
+
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr ""
@@ -13042,7 +13347,7 @@ msgid "Copy"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopyfilename
-msgid "Copy filename"
+msgid "Copy Filename"
 msgstr ""
 
 #: lazarusidestrconsts.uemcut

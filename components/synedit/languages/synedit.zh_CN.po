@@ -17,7 +17,9 @@ msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "快捷键 \"%s\" 已经和其他的编辑器命令相关联. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-msgid "Shortcut already exists"
+#, fuzzy
+#| msgid "Shortcut already exists"
+msgid "Mouse-Shortcut already exists"
 msgstr "快捷方式已存在"
 
 #: syneditstrconst.syns_exporterformathtml

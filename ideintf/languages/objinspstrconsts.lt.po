@@ -579,6 +579,7 @@ msgid "Color Select"
 msgstr "Išrinkti spalvą"
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Atsisakyti"
 
@@ -1265,8 +1266,9 @@ msgid "Backspace"
 msgstr "Backspace"
 
 #: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Atsisakyti"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1290,12 +1292,14 @@ msgid "Convert"
 msgstr "Convert"
 
 #: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Pašalinti"
 
 #: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "Žemyn"
 
 #: objinspstrconsts.srvk_end
 msgid "End"

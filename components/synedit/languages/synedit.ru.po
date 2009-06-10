@@ -14,7 +14,9 @@ msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-msgid "Shortcut already exists"
+#, fuzzy
+#| msgid "Shortcut already exists"
+msgid "Mouse-Shortcut already exists"
 msgstr "Комбинация уже существует"
 
 #: syneditstrconst.syns_exporterformathtml

@@ -37,10 +37,6 @@ msgstr "Все файлы"
 msgid "Alphabetically"
 msgstr "По алфавиту"
 
-#: lazarusidestrconsts.dlgaltsetclmode
-msgid "Alt-Key sets column mode"
-msgstr "Кнопка Alt задаёт режим выделения"
-
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "Всегда видимый курсор"
@@ -344,6 +340,7 @@ msgid "Code Creation"
 msgstr "Создание кода"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
+msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
 msgstr "Мышь"
 
@@ -475,7 +472,9 @@ msgid "Show Errors"
 msgstr "Показывать ошибки"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-msgid "Show Options"
+#, fuzzy
+#| msgid "Show Options"
+msgid "&Show Options"
 msgstr "Показать параметры"
 
 #: lazarusidestrconsts.dlgcosmaller
@@ -562,17 +561,25 @@ msgstr "Совместимость с Delphi"
 msgid "Desktop"
 msgstr "Рабочий стол"
 
-#: lazarusidestrconsts.dlgdesktopbuttonglyphs
-msgid "Glyphs for Buttons"
-msgstr "Значки на кнопках"
+#: lazarusidestrconsts.dlgdesktopbuttons
+msgid "Buttons - "
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Файлы рабочего стола"
 
+#: lazarusidestrconsts.dlgdesktopglyphsfor
+msgid "Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Подсказки"
+
+#: lazarusidestrconsts.dlgdesktopmenus
+msgid "Menus - "
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmisc
 msgid "Misc Options"
@@ -657,18 +664,10 @@ msgstr "Var/Type (локальная)"
 msgid "\" does not exist."
 msgstr "\" не существует."
 
-#: lazarusidestrconsts.dlgdoubleclickline
-msgid "Double click line"
-msgstr "Выделять строку двойным щелчком"
-
 #: lazarusidestrconsts.dlgdownword
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "Вниз"
-
-#: lazarusidestrconsts.dlgdragdroped
-msgid "Drag Drop editing"
-msgstr "Редактирование Drag and Drop"
 
 #: lazarusidestrconsts.dlgdropfiles
 msgid "Drop files"
@@ -690,10 +689,6 @@ msgstr "Жирный"
 msgid "Sub directory"
 msgstr "Подкаталог"
 
-#: lazarusidestrconsts.dlgedcodeparams
-msgid "Code parameters"
-msgstr "Параметры кода"
-
 #: lazarusidestrconsts.dlgedcodetempl
 msgid "Code templates"
 msgstr "Шаблоны кода"
@@ -702,6 +697,10 @@ msgstr "Шаблоны кода"
 msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "Цвет"
+
+#: lazarusidestrconsts.dlgedcompleteblocks
+msgid "Complete blocks"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
@@ -712,6 +711,7 @@ msgid "Delay"
 msgstr "Задержка"
 
 #: lazarusidestrconsts.dlgeddelete
+msgctxt "lazarusidestrconsts.dlgeddelete"
 msgid "Delete"
 msgstr "Удалить"
 
@@ -1069,6 +1069,11 @@ msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "Окружение"
 
+#: lazarusidestrconsts.dlggrouphelp
+msgctxt "lazarusidestrconsts.dlggrouphelp"
+msgid "Help"
+msgstr "Справка"
+
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "Групповая отмена"
@@ -1078,6 +1083,7 @@ msgid "Show Guide Lines"
 msgstr "Показывать линии позиционирования"
 
 #: lazarusidestrconsts.dlggutter
+msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "Поле (лев)"
 
@@ -1356,6 +1362,7 @@ msgid "Mix methods and properties"
 msgstr "Смешивать методы и свойства"
 
 #: lazarusidestrconsts.dlgmousefoldbutton
+msgctxt "lazarusidestrconsts.dlgmousefoldbutton"
 msgid "Button"
 msgstr "Кнопка"
 
@@ -1365,6 +1372,7 @@ msgid "Left"
 msgstr "Левая"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
+msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
 msgstr "Средняя"
 
@@ -1407,7 +1415,9 @@ msgid "Setting 1"
 msgstr "Параметр 1"
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
-msgid "setting 2"
+#, fuzzy
+#| msgid "setting 2"
+msgid "Setting 2"
 msgstr "Параметр 2"
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
@@ -1429,9 +1439,254 @@ msgstr "Shift"
 msgid "Mouse:"
 msgstr "Параметры мыши:"
 
-#: lazarusidestrconsts.dlgmouselinks
-msgid "Mouse links"
-msgstr "Ссылки под курсором мыши"
+#: lazarusidestrconsts.dlgmouseoptbtn1
+msgid "Single"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn2
+msgid "Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn3
+msgid "Triple"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn4
+msgid "Quad"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnadd
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
+msgid "Add"
+msgstr "Добавить"
+
+#: lazarusidestrconsts.dlgmouseoptbtnany
+msgid "Any"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtncancel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
+msgid "Cancel"
+msgstr "Отмена"
+
+#: lazarusidestrconsts.dlgmouseoptbtndel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazarusidestrconsts.dlgmouseoptbtndown
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
+msgid "Down"
+msgstr "Вниз"
+
+#: lazarusidestrconsts.dlgmouseoptbtnexport
+msgid "Export"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgid "Extra 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgid "Extra 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnimport
+msgid "Import"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnleft
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
+msgid "Left"
+msgstr "Левая"
+
+#: lazarusidestrconsts.dlgmouseoptbtnmiddle
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
+msgid "Middle"
+msgstr "Средняя"
+
+#: lazarusidestrconsts.dlgmouseoptbtnmoddef
+msgid "Make Fallback"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnok
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
+msgid "Ok"
+msgstr "ОК"
+
+#: lazarusidestrconsts.dlgmouseoptbtnright
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
+msgid "Right"
+msgstr "Правая"
+
+#: lazarusidestrconsts.dlgmouseoptbtnudp
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
+msgid "Change"
+msgstr "Изменить"
+
+#: lazarusidestrconsts.dlgmouseoptbtnup
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
+msgid "Up"
+msgstr "Вверх"
+
+#: lazarusidestrconsts.dlgmouseoptcapture
+msgid "Capture"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcaretmove
+msgid "Move Caret (extra)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcheckupdown
+msgid "Act on Mouse up"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdescaction
+msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
+msgid "Action"
+msgstr "Действие"
+
+#: lazarusidestrconsts.dlgmouseoptdescbutton
+msgctxt "lazarusidestrconsts.dlgmouseoptdescbutton"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdlgtitle
+msgid "Edit Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrordup
+msgid "Duplicate Entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrorduptext
+msgid "This entry conflicts with an existing entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadalt
+msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
+msgid "Alt"
+msgstr "Alt"
+
+#: lazarusidestrconsts.dlgmouseoptheadbtn
+msgctxt "lazarusidestrconsts.dlgmouseoptheadbtn"
+msgid "Button"
+msgstr "Кнопка"
+
+#: lazarusidestrconsts.dlgmouseoptheadcaret
+msgid "Caret"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcount
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptheadctrl"
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: lazarusidestrconsts.dlgmouseoptheaddesc
+msgctxt "lazarusidestrconsts.dlgmouseoptheaddesc"
+msgid "Action"
+msgstr "Действие"
+
+#: lazarusidestrconsts.dlgmouseoptheaddir
+msgid "Up/Down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadopt
+msgid "Option"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadpriority
+msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
+msgid "Priority"
+msgstr "Приоритет"
+
+#: lazarusidestrconsts.dlgmouseoptheadshift
+msgctxt "lazarusidestrconsts.dlgmouseoptheadshift"
+msgid "Shift"
+msgstr "Shift"
+
+#: lazarusidestrconsts.dlgmouseoptions
+msgctxt "lazarusidestrconsts.dlgmouseoptions"
+msgid "Mouse"
+msgstr "Мышь"
+
+#: lazarusidestrconsts.dlgmouseoptionsyncommand
+msgid "IDE-Command"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodalt
+msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
+msgid "Alt"
+msgstr "Alt"
+
+#: lazarusidestrconsts.dlgmouseoptmodctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptmodctrl"
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyfalse
+msgid "n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyignore
+msgid "-"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeytrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodshift
+msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
+msgid "Shift"
+msgstr "Shift"
+
+#: lazarusidestrconsts.dlgmouseoptmovemousetrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutter
+msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
+msgid "Gutter"
+msgstr "Поле (лев)"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfold
+msgid "Fold Tree"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
+msgid "Collapsed [+]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
+msgid "Expanded [-]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlines
+msgid "Line Numbers"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodemain
+msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
+msgid "Text"
+msgstr "Текст"
+
+#: lazarusidestrconsts.dlgmouseoptnodeselect
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
+msgid "Selection"
+msgstr "Выделение"
+
+#: lazarusidestrconsts.dlgmouseoptpriorlabel
+msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
+msgid "Priority"
+msgstr "Приоритет"
 
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
@@ -1663,10 +1918,6 @@ msgstr "Выбор правым щелчком"
 msgid "Right margin"
 msgstr "Правая граница"
 
-#: lazarusidestrconsts.dlgrightmousemovescursor
-msgid "Right mouse moves cursor"
-msgstr "Правая кнопка перемещает курсор"
-
 #: lazarusidestrconsts.dlgroworkingdirectory
 msgid "Working directory"
 msgstr "Рабочий каталог"
@@ -1684,6 +1935,7 @@ msgid "Creation"
 msgstr "Создание"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
+msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Selection"
 msgstr "Выделение"
 
@@ -1882,6 +2134,10 @@ msgstr "Показывать используемые файлы"
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Показывать предупреждения"
+
+#: lazarusidestrconsts.dlgskipforwarddeclarations
+msgid "Skip forward declarations"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2197,12 +2453,6 @@ msgstr "Масштаб"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "Выделить все"
-
-#: lazarusidestrconsts.fdmshowoptions
-#| msgid "Show Options for form editing"
-msgctxt "lazarusidestrconsts.fdmshowoptions"
-msgid "Options"
-msgstr "Параметры"
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -2895,6 +3145,14 @@ msgstr "Останов"
 msgctxt "lazarusidestrconsts.lisbtncontinue"
 msgid "Continue"
 msgstr "Продолжить"
+
+#: lazarusidestrconsts.lisbtnfind
+msgid "&Find"
+msgstr ""
+
+#: lazarusidestrconsts.lisbtnreplace
+msgid "&Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -3682,6 +3940,7 @@ msgid "Ignore next unnamed constants"
 msgstr "Игнорировать неименованные константы:"
 
 #: lazarusidestrconsts.liscodetempladd
+msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add"
 msgstr "Добавить"
 
@@ -3698,6 +3957,7 @@ msgid "Auto complete on ..."
 msgstr "Автозавершение при обнаружении..."
 
 #: lazarusidestrconsts.liscodetemplchange
+msgctxt "lazarusidestrconsts.liscodetemplchange"
 msgid "Change"
 msgstr "Изменить"
 
@@ -4267,8 +4527,10 @@ msgid "Open unit"
 msgstr "Открыть модуль"
 
 #: lazarusidestrconsts.liscomptest
+#, fuzzy
+#| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
-msgid "Test"
+msgid "&Test"
 msgstr "Тест"
 
 #: lazarusidestrconsts.liscondition
@@ -4399,6 +4661,30 @@ msgstr "Пропуск вызова компилятора"
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
 msgstr "Частные параметры целевой ОС"
+
+#: lazarusidestrconsts.liscouldnotadditomainsource
+msgid "Could not add %s{$I %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddrtomainsource
+msgid "Could not add %s{$R %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddtomainsource
+msgid "Could not add %s%s%s to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremovefrommainsource
+msgid "Could not remove %s%s%s from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoveifrommainsource
+msgid "Could not remove %s{$I %s%s} from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoverfrommainsource
+msgid "Could not remove %s{$R %s%s} from main source!"
+msgstr ""
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5811,6 +6097,11 @@ msgstr "Шаг со входом"
 msgid "Step Over"
 msgstr "Шаг в обход"
 
+#: lazarusidestrconsts.lishintstop
+msgctxt "lazarusidestrconsts.lishintstop"
+msgid "Stop"
+msgstr "Останов"
+
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Подсказка: функция Создать строку ресурсов требует строковой константы.%sВыберите выражение и попробуйте снова."
@@ -6758,6 +7049,7 @@ msgid "%s beta"
 msgstr "%s бета"
 
 #: lazarusidestrconsts.lislazbuildaboaction
+msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
 msgstr "Действие"
 
@@ -7854,6 +8146,7 @@ msgid "Step over"
 msgstr "Шаг в обход"
 
 #: lazarusidestrconsts.lismenustop
+msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "Останов"
 
@@ -7965,6 +8258,10 @@ msgstr "Учебник"
 msgctxt "lazarusidestrconsts.lismenutemplateundo"
 msgid "Undo"
 msgstr "Отменить"
+
+#: lazarusidestrconsts.lismenutogglecomment
+msgid "Toggle comment"
+msgstr ""
 
 #: lazarusidestrconsts.lismenutools
 msgid "&Tools"
@@ -8459,12 +8756,6 @@ msgstr "%sЭтот пакет был создан автоматически"
 #: lazarusidestrconsts.lisok
 msgid "&Ok"
 msgstr "&ОК"
-
-#: lazarusidestrconsts.lisokbtn
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lisokbtn"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisold
 msgid "old"
@@ -9184,6 +9475,7 @@ msgid "LRS - Lazarus resource"
 msgstr "LRS - ресурс Lazarus"
 
 #: lazarusidestrconsts.lispkgfiletypetext
+msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "Текст"
 
@@ -11213,6 +11505,7 @@ msgid "Owner"
 msgstr "Владелец"
 
 #: lazarusidestrconsts.listodolpriority
+msgctxt "lazarusidestrconsts.listodolpriority"
 msgid "Priority"
 msgstr "Приоритет"
 
@@ -12345,6 +12638,14 @@ msgstr "Выделить справа"
 msgid "Column Select Up"
 msgstr "Выделить сверху"
 
+#: lazarusidestrconsts.srkmeccolselwordleft
+msgid "Column Select Word Left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolselwordright
+msgid "Column Select Word Right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Режим выбора колонки"
@@ -12415,7 +12716,9 @@ msgid "Move cursor to absolute beginning"
 msgstr "Переместить курсор в самое начало"
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
-msgid "General environment options"
+#, fuzzy
+#| msgid "General environment options"
+msgid "IDE options"
 msgstr "Общие параметры окружения"
 
 #: lazarusidestrconsts.srkmecevaluate
@@ -13049,6 +13352,10 @@ msgstr "Добавить &наблюдение у курсора"
 msgid "Bookmark"
 msgstr "Закладка"
 
+#: lazarusidestrconsts.uemcloseotherpages
+msgid "Close All &Other Pages"
+msgstr ""
+
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr "&Закрыть страницу"
@@ -13064,7 +13371,9 @@ msgid "Copy"
 msgstr "Копировать"
 
 #: lazarusidestrconsts.uemcopyfilename
-msgid "Copy filename"
+#, fuzzy
+#| msgid "Copy filename"
+msgid "Copy Filename"
 msgstr "Копировать имя файла"
 
 #: lazarusidestrconsts.uemcut

@@ -36,10 +36,6 @@ msgstr "すべてのファイル"
 msgid "Alphabetically"
 msgstr "アルファベット順に"
 
-#: lazarusidestrconsts.dlgaltsetclmode
-msgid "Alt-Key sets column mode"
-msgstr "Alt-キーで列モードに"
-
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "常にカーソルを表示"
@@ -343,6 +339,7 @@ msgid "Code Creation"
 msgstr "コード作成"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
+msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
 msgstr ""
 
@@ -474,7 +471,9 @@ msgid "Show Errors"
 msgstr "表示"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-msgid "Show Options"
+#, fuzzy
+#| msgid "Show Options"
+msgid "&Show Options"
 msgstr "オプションを表示"
 
 #: lazarusidestrconsts.dlgcosmaller
@@ -561,16 +560,24 @@ msgstr "Delphi互換"
 msgid "Desktop"
 msgstr "デスクトップ"
 
-#: lazarusidestrconsts.dlgdesktopbuttonglyphs
-msgid "Glyphs for Buttons"
+#: lazarusidestrconsts.dlgdesktopbuttons
+msgid "Buttons - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "デスクトップパッケージ"
 
+#: lazarusidestrconsts.dlgdesktopglyphsfor
+msgid "Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmenus
+msgid "Menus - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmisc
@@ -656,18 +663,10 @@ msgstr ""
 msgid "\" does not exist."
 msgstr "\"がありません."
 
-#: lazarusidestrconsts.dlgdoubleclickline
-msgid "Double click line"
-msgstr "行をダブルクリック"
-
 #: lazarusidestrconsts.dlgdownword
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "下へ"
-
-#: lazarusidestrconsts.dlgdragdroped
-msgid "Drag Drop editing"
-msgstr "編集をドラッグ＆ドロップ"
 
 #: lazarusidestrconsts.dlgdropfiles
 msgid "Drop files"
@@ -689,10 +688,6 @@ msgstr "ボルド"
 msgid "Sub directory"
 msgstr "サブディレクトリ"
 
-#: lazarusidestrconsts.dlgedcodeparams
-msgid "Code parameters"
-msgstr "コード引数"
-
 #: lazarusidestrconsts.dlgedcodetempl
 msgid "Code templates"
 msgstr "コードテンプレート"
@@ -704,6 +699,10 @@ msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "色"
 
+#: lazarusidestrconsts.dlgedcompleteblocks
+msgid "Complete blocks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
 msgstr "ユーザー定義拡張子"
@@ -713,6 +712,7 @@ msgid "Delay"
 msgstr "遅延"
 
 #: lazarusidestrconsts.dlgeddelete
+msgctxt "lazarusidestrconsts.dlgeddelete"
 msgid "Delete"
 msgstr "削除"
 
@@ -1070,6 +1070,11 @@ msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "環境"
 
+#: lazarusidestrconsts.dlggrouphelp
+msgctxt "lazarusidestrconsts.dlggrouphelp"
+msgid "Help"
+msgstr "ヘルプ"
+
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "グループをやり直し"
@@ -1079,6 +1084,7 @@ msgid "Show Guide Lines"
 msgstr "ガイドラインを表示"
 
 #: lazarusidestrconsts.dlggutter
+msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr ""
 
@@ -1357,6 +1363,7 @@ msgid "Mix methods and properties"
 msgstr "メソッドとプロパティを混合"
 
 #: lazarusidestrconsts.dlgmousefoldbutton
+msgctxt "lazarusidestrconsts.dlgmousefoldbutton"
 msgid "Button"
 msgstr ""
 
@@ -1366,6 +1373,7 @@ msgid "Left"
 msgstr "左"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
+msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
 msgstr ""
 
@@ -1408,7 +1416,7 @@ msgid "Setting 1"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
-msgid "setting 2"
+msgid "Setting 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
@@ -1430,9 +1438,254 @@ msgstr ""
 msgid "Mouse:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouselinks
-msgid "Mouse links"
-msgstr "マウスリンク"
+#: lazarusidestrconsts.dlgmouseoptbtn1
+msgid "Single"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn2
+msgid "Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn3
+msgid "Triple"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn4
+msgid "Quad"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnadd
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
+msgid "Add"
+msgstr "追加"
+
+#: lazarusidestrconsts.dlgmouseoptbtnany
+msgid "Any"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtncancel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
+msgid "Cancel"
+msgstr "取消"
+
+#: lazarusidestrconsts.dlgmouseoptbtndel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
+msgid "Delete"
+msgstr "削除"
+
+#: lazarusidestrconsts.dlgmouseoptbtndown
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
+msgid "Down"
+msgstr "下へ"
+
+#: lazarusidestrconsts.dlgmouseoptbtnexport
+msgid "Export"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgid "Extra 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgid "Extra 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnimport
+msgid "Import"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnleft
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.dlgmouseoptbtnmiddle
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
+msgid "Middle"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnmoddef
+msgid "Make Fallback"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnok
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
+msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnright
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
+msgid "Right"
+msgstr "右"
+
+#: lazarusidestrconsts.dlgmouseoptbtnudp
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
+msgid "Change"
+msgstr "変更"
+
+#: lazarusidestrconsts.dlgmouseoptbtnup
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
+msgid "Up"
+msgstr "上へ"
+
+#: lazarusidestrconsts.dlgmouseoptcapture
+msgid "Capture"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcaretmove
+msgid "Move Caret (extra)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcheckupdown
+msgid "Act on Mouse up"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdescaction
+msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
+msgid "Action"
+msgstr "アクション"
+
+#: lazarusidestrconsts.dlgmouseoptdescbutton
+msgctxt "lazarusidestrconsts.dlgmouseoptdescbutton"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdlgtitle
+msgid "Edit Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrordup
+msgid "Duplicate Entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrorduptext
+msgid "This entry conflicts with an existing entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadalt
+msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
+msgid "Alt"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadbtn
+msgctxt "lazarusidestrconsts.dlgmouseoptheadbtn"
+msgid "Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcaret
+msgid "Caret"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcount
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptheadctrl"
+msgid "Ctrl"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheaddesc
+msgctxt "lazarusidestrconsts.dlgmouseoptheaddesc"
+msgid "Action"
+msgstr "アクション"
+
+#: lazarusidestrconsts.dlgmouseoptheaddir
+msgid "Up/Down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadopt
+msgid "Option"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadpriority
+msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
+msgid "Priority"
+msgstr "優先"
+
+#: lazarusidestrconsts.dlgmouseoptheadshift
+msgctxt "lazarusidestrconsts.dlgmouseoptheadshift"
+msgid "Shift"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptions
+msgctxt "lazarusidestrconsts.dlgmouseoptions"
+msgid "Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptionsyncommand
+msgid "IDE-Command"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodalt
+msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
+msgid "Alt"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptmodctrl"
+msgid "Ctrl"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyfalse
+msgid "n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyignore
+msgid "-"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeytrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodshift
+msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
+msgid "Shift"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmovemousetrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutter
+msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
+msgid "Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfold
+msgid "Fold Tree"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
+msgid "Collapsed [+]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
+msgid "Expanded [-]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlines
+msgid "Line Numbers"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodemain
+msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
+msgid "Text"
+msgstr "テキスト"
+
+#: lazarusidestrconsts.dlgmouseoptnodeselect
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
+msgid "Selection"
+msgstr "選択"
+
+#: lazarusidestrconsts.dlgmouseoptpriorlabel
+msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
+msgid "Priority"
+msgstr "優先"
 
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
@@ -1664,10 +1917,6 @@ msgstr "右クリックで選択"
 msgid "Right margin"
 msgstr "右マージン"
 
-#: lazarusidestrconsts.dlgrightmousemovescursor
-msgid "Right mouse moves cursor"
-msgstr "右"
-
 #: lazarusidestrconsts.dlgroworkingdirectory
 msgid "Working directory"
 msgstr "作業ディレクトリ"
@@ -1685,6 +1934,7 @@ msgid "Creation"
 msgstr "作成"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
+msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Selection"
 msgstr "選択"
 
@@ -1885,6 +2135,10 @@ msgstr "用いられたファイルを表示"
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
 msgstr "警告を表示"
+
+#: lazarusidestrconsts.dlgskipforwarddeclarations
+msgid "Skip forward declarations"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2202,13 +2456,6 @@ msgstr "スケール"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "すべて選択"
-
-#: lazarusidestrconsts.fdmshowoptions
-#, fuzzy
-#| msgid "Show Options for form editing"
-msgctxt "lazarusidestrconsts.fdmshowoptions"
-msgid "Options"
-msgstr "フォーム編集のオプションを表示"
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -2901,6 +3148,14 @@ msgstr "ブレーク"
 msgctxt "lazarusidestrconsts.lisbtncontinue"
 msgid "Continue"
 msgstr "継続"
+
+#: lazarusidestrconsts.lisbtnfind
+msgid "&Find"
+msgstr ""
+
+#: lazarusidestrconsts.lisbtnreplace
+msgid "&Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -3690,6 +3945,7 @@ msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
+msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add"
 msgstr "追加"
 
@@ -3706,6 +3962,7 @@ msgid "Auto complete on ..."
 msgstr "次に自動補完..."
 
 #: lazarusidestrconsts.liscodetemplchange
+msgctxt "lazarusidestrconsts.liscodetemplchange"
 msgid "Change"
 msgstr "変更"
 
@@ -4275,8 +4532,10 @@ msgid "Open unit"
 msgstr "ユニットを開く"
 
 #: lazarusidestrconsts.liscomptest
+#, fuzzy
+#| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
-msgid "Test"
+msgid "&Test"
 msgstr "テスト"
 
 #: lazarusidestrconsts.liscondition
@@ -4407,6 +4666,30 @@ msgstr "コンパイラ呼び出しをスキップ"
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
 msgstr "対象OS固有オプション"
+
+#: lazarusidestrconsts.liscouldnotadditomainsource
+msgid "Could not add %s{$I %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddrtomainsource
+msgid "Could not add %s{$R %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddtomainsource
+msgid "Could not add %s%s%s to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremovefrommainsource
+msgid "Could not remove %s%s%s from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoveifrommainsource
+msgid "Could not remove %s{$I %s%s} from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoverfrommainsource
+msgid "Could not remove %s{$R %s%s} from main source!"
+msgstr ""
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5162,6 +5445,10 @@ msgstr "翻訳言語を入力してください"
 msgid "Double click on messages jumps (otherwise: single click)"
 msgstr "メッセージのダブルクリックでジャンプ(そうでないときはシングルクリック)"
 
+#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "ディレクトリが見つかりません"
@@ -5814,6 +6101,11 @@ msgstr "トレース実行"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "ステップ実行"
+
+#: lazarusidestrconsts.lishintstop
+msgctxt "lazarusidestrconsts.lishintstop"
+msgid "Stop"
+msgstr "停止"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -6762,6 +7054,7 @@ msgid "%s beta"
 msgstr "%s ベータ版"
 
 #: lazarusidestrconsts.lislazbuildaboaction
+msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
 msgstr "アクション"
 
@@ -7864,6 +8157,7 @@ msgid "Step over"
 msgstr "ステップ実行"
 
 #: lazarusidestrconsts.lismenustop
+msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "停止"
 
@@ -7974,6 +8268,10 @@ msgstr "チュートリアル"
 #: lazarusidestrconsts.lismenutemplateundo
 msgctxt "lazarusidestrconsts.lismenutemplateundo"
 msgid "Undo"
+msgstr ""
+
+#: lazarusidestrconsts.lismenutogglecomment
+msgid "Toggle comment"
 msgstr ""
 
 #: lazarusidestrconsts.lismenutools
@@ -8474,11 +8772,6 @@ msgstr "%sこのパッケージは自動的に作成されました"
 
 #: lazarusidestrconsts.lisok
 msgid "&Ok"
-msgstr ""
-
-#: lazarusidestrconsts.lisokbtn
-msgctxt "lazarusidestrconsts.lisokbtn"
-msgid "OK"
 msgstr ""
 
 #: lazarusidestrconsts.lisold
@@ -9199,6 +9492,7 @@ msgid "LRS - Lazarus resource"
 msgstr "LRS - Lazarusリソース"
 
 #: lazarusidestrconsts.lispkgfiletypetext
+msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "テキスト"
 
@@ -11228,6 +11522,7 @@ msgid "Owner"
 msgstr "オーナー"
 
 #: lazarusidestrconsts.listodolpriority
+msgctxt "lazarusidestrconsts.listodolpriority"
 msgid "Priority"
 msgstr "優先"
 
@@ -12359,6 +12654,14 @@ msgstr ""
 msgid "Column Select Up"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeccolselwordleft
+msgid "Column Select Word Left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolselwordright
+msgid "Column Select Word Right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "列選択モード"
@@ -12429,7 +12732,7 @@ msgid "Move cursor to absolute beginning"
 msgstr "カーソルを先頭に移動"
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
-msgid "General environment options"
+msgid "IDE options"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecevaluate
@@ -13063,6 +13366,10 @@ msgstr "カーソル位置の変数を監視に追加(&W)"
 msgid "Bookmark"
 msgstr "ブックマーク"
 
+#: lazarusidestrconsts.uemcloseotherpages
+msgid "Close All &Other Pages"
+msgstr ""
+
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr "ページを閉じる"
@@ -13078,7 +13385,9 @@ msgid "Copy"
 msgstr "コピー"
 
 #: lazarusidestrconsts.uemcopyfilename
-msgid "Copy filename"
+#, fuzzy
+#| msgid "Copy filename"
+msgid "Copy Filename"
 msgstr "ファイル名をコピー"
 
 #: lazarusidestrconsts.uemcut

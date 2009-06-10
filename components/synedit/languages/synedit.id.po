@@ -17,7 +17,9 @@ msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "tekanan tombol \"%s\" sudah ditugaskan ke perintah editor lain. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-msgid "Shortcut already exists"
+#, fuzzy
+#| msgid "Shortcut already exists"
+msgid "Mouse-Shortcut already exists"
 msgstr "Jalan pintas sudah ada"
 
 #: syneditstrconst.syns_exporterformathtml

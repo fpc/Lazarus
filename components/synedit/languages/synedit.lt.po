@@ -15,7 +15,9 @@ msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klavišo paspaudimas „%s“ jau yra priskirtas kitai rengyklės komandai. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-msgid "Shortcut already exists"
+#, fuzzy
+#| msgid "Shortcut already exists"
+msgid "Mouse-Shortcut already exists"
 msgstr "Toks šaukinys jau yra"
 
 #: syneditstrconst.syns_exporterformathtml

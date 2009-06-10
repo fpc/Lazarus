@@ -581,6 +581,7 @@ msgid "Color Select"
 msgstr "Výber farby"
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Zrušiť"
 
@@ -1267,8 +1268,9 @@ msgid "Backspace"
 msgstr "Backspace"
 
 #: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Zrušiť"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1292,12 +1294,14 @@ msgid "Convert"
 msgstr "Konvertovať"
 
 #: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Zmazať"
 
 #: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "Nižšie"
 
 #: objinspstrconsts.srvk_end
 msgid "End"

@@ -580,6 +580,7 @@ msgid "Color Select"
 msgstr ""
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -1266,8 +1267,9 @@ msgid "Backspace"
 msgstr ""
 
 #: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1291,12 +1293,14 @@ msgid "Convert"
 msgstr ""
 
 #: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
 #: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "W dół"
 
 #: objinspstrconsts.srvk_end
 msgid "End"

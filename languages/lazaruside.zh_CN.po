@@ -40,10 +40,6 @@ msgstr "所有文件"
 msgid "Alphabetically"
 msgstr "按字母顺序排列"
 
-#: lazarusidestrconsts.dlgaltsetclmode
-msgid "Alt-Key sets column mode"
-msgstr "Alt-Key 设置为列编辑模式"
-
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "光标总是可视"
@@ -347,6 +343,7 @@ msgid "Code Creation"
 msgstr "创建代码"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
+msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
 msgstr "鼠标"
 
@@ -478,7 +475,9 @@ msgid "Show Errors"
 msgstr "显示错误"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-msgid "Show Options"
+#, fuzzy
+#| msgid "Show Options"
+msgid "&Show Options"
 msgstr "显示选项"
 
 #: lazarusidestrconsts.dlgcosmaller
@@ -565,16 +564,24 @@ msgstr "Delphi 兼容"
 msgid "Desktop"
 msgstr "桌面"
 
-#: lazarusidestrconsts.dlgdesktopbuttonglyphs
-msgid "Glyphs for Buttons"
+#: lazarusidestrconsts.dlgdesktopbuttons
+msgid "Buttons - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
 msgstr "桌面配置文件"
 
+#: lazarusidestrconsts.dlgdesktopglyphsfor
+msgid "Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopmenus
+msgid "Menus - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmisc
@@ -660,18 +667,10 @@ msgstr ""
 msgid "\" does not exist."
 msgstr "\" 不存在."
 
-#: lazarusidestrconsts.dlgdoubleclickline
-msgid "Double click line"
-msgstr "双击行"
-
 #: lazarusidestrconsts.dlgdownword
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "下移"
-
-#: lazarusidestrconsts.dlgdragdroped
-msgid "Drag Drop editing"
-msgstr "拖放文件编辑"
 
 #: lazarusidestrconsts.dlgdropfiles
 msgid "Drop files"
@@ -693,10 +692,6 @@ msgstr "粗体"
 msgid "Sub directory"
 msgstr "子目录"
 
-#: lazarusidestrconsts.dlgedcodeparams
-msgid "Code parameters"
-msgstr "代码参数"
-
 #: lazarusidestrconsts.dlgedcodetempl
 msgid "Code templates"
 msgstr "代码模板"
@@ -708,6 +703,10 @@ msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "颜色"
 
+#: lazarusidestrconsts.dlgedcompleteblocks
+msgid "Complete blocks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
 msgstr "用户定义后缀"
@@ -717,6 +716,7 @@ msgid "Delay"
 msgstr "延迟"
 
 #: lazarusidestrconsts.dlgeddelete
+msgctxt "lazarusidestrconsts.dlgeddelete"
 msgid "Delete"
 msgstr "删除"
 
@@ -1074,6 +1074,11 @@ msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
 msgstr "环境"
 
+#: lazarusidestrconsts.dlggrouphelp
+msgctxt "lazarusidestrconsts.dlggrouphelp"
+msgid "Help"
+msgstr "帮助"
+
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "批量撤销"
@@ -1083,6 +1088,7 @@ msgid "Show Guide Lines"
 msgstr "显示指示线"
 
 #: lazarusidestrconsts.dlggutter
+msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "边缝"
 
@@ -1361,6 +1367,7 @@ msgid "Mix methods and properties"
 msgstr "混合方法和属性"
 
 #: lazarusidestrconsts.dlgmousefoldbutton
+msgctxt "lazarusidestrconsts.dlgmousefoldbutton"
 msgid "Button"
 msgstr "按钮"
 
@@ -1370,6 +1377,7 @@ msgid "Left"
 msgstr "左"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
+msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
 msgstr "中"
 
@@ -1412,7 +1420,9 @@ msgid "Setting 1"
 msgstr "设置1"
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
-msgid "setting 2"
+#, fuzzy
+#| msgid "setting 2"
+msgid "Setting 2"
 msgstr "设置2"
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
@@ -1434,9 +1444,254 @@ msgstr "Shift"
 msgid "Mouse:"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouselinks
-msgid "Mouse links"
-msgstr "鼠标链接"
+#: lazarusidestrconsts.dlgmouseoptbtn1
+msgid "Single"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn2
+msgid "Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn3
+msgid "Triple"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtn4
+msgid "Quad"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnadd
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
+msgid "Add"
+msgstr "添加"
+
+#: lazarusidestrconsts.dlgmouseoptbtnany
+msgid "Any"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtncancel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
+msgid "Cancel"
+msgstr "取消"
+
+#: lazarusidestrconsts.dlgmouseoptbtndel
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndel"
+msgid "Delete"
+msgstr "删除"
+
+#: lazarusidestrconsts.dlgmouseoptbtndown
+msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
+msgid "Down"
+msgstr "下移"
+
+#: lazarusidestrconsts.dlgmouseoptbtnexport
+msgid "Export"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgid "Extra 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgid "Extra 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnimport
+msgid "Import"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnleft
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.dlgmouseoptbtnmiddle
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
+msgid "Middle"
+msgstr "中"
+
+#: lazarusidestrconsts.dlgmouseoptbtnmoddef
+msgid "Make Fallback"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnok
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
+msgid "Ok"
+msgstr "确定"
+
+#: lazarusidestrconsts.dlgmouseoptbtnright
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
+msgid "Right"
+msgstr "右"
+
+#: lazarusidestrconsts.dlgmouseoptbtnudp
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
+msgid "Change"
+msgstr "更改"
+
+#: lazarusidestrconsts.dlgmouseoptbtnup
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
+msgid "Up"
+msgstr "上移"
+
+#: lazarusidestrconsts.dlgmouseoptcapture
+msgid "Capture"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcaretmove
+msgid "Move Caret (extra)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptcheckupdown
+msgid "Act on Mouse up"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdescaction
+msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
+msgid "Action"
+msgstr "动作"
+
+#: lazarusidestrconsts.dlgmouseoptdescbutton
+msgctxt "lazarusidestrconsts.dlgmouseoptdescbutton"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptdlgtitle
+msgid "Edit Mouse"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrordup
+msgid "Duplicate Entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseopterrorduptext
+msgid "This entry conflicts with an existing entry"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadalt
+msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
+msgid "Alt"
+msgstr "Alt"
+
+#: lazarusidestrconsts.dlgmouseoptheadbtn
+msgctxt "lazarusidestrconsts.dlgmouseoptheadbtn"
+msgid "Button"
+msgstr "按钮"
+
+#: lazarusidestrconsts.dlgmouseoptheadcaret
+msgid "Caret"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadcount
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
+msgid "Click"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptheadctrl"
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: lazarusidestrconsts.dlgmouseoptheaddesc
+msgctxt "lazarusidestrconsts.dlgmouseoptheaddesc"
+msgid "Action"
+msgstr "动作"
+
+#: lazarusidestrconsts.dlgmouseoptheaddir
+msgid "Up/Down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadopt
+msgid "Option"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadpriority
+msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
+msgid "Priority"
+msgstr "优先级"
+
+#: lazarusidestrconsts.dlgmouseoptheadshift
+msgctxt "lazarusidestrconsts.dlgmouseoptheadshift"
+msgid "Shift"
+msgstr "Shift"
+
+#: lazarusidestrconsts.dlgmouseoptions
+msgctxt "lazarusidestrconsts.dlgmouseoptions"
+msgid "Mouse"
+msgstr "鼠标"
+
+#: lazarusidestrconsts.dlgmouseoptionsyncommand
+msgid "IDE-Command"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodalt
+msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
+msgid "Alt"
+msgstr "Alt"
+
+#: lazarusidestrconsts.dlgmouseoptmodctrl
+msgctxt "lazarusidestrconsts.dlgmouseoptmodctrl"
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyfalse
+msgid "n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeyignore
+msgid "-"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodkeytrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptmodshift
+msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
+msgid "Shift"
+msgstr "Shift"
+
+#: lazarusidestrconsts.dlgmouseoptmovemousetrue
+msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
+msgid "Y"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutter
+msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
+msgid "Gutter"
+msgstr "边缝"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfold
+msgid "Fold Tree"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
+msgid "Collapsed [+]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
+msgid "Expanded [-]"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterlines
+msgid "Line Numbers"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptnodemain
+msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
+msgid "Text"
+msgstr "文本"
+
+#: lazarusidestrconsts.dlgmouseoptnodeselect
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
+msgid "Selection"
+msgstr "所选的"
+
+#: lazarusidestrconsts.dlgmouseoptpriorlabel
+msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
+msgid "Priority"
+msgstr "优先级"
 
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
@@ -1668,10 +1923,6 @@ msgstr "右键点击选择"
 msgid "Right margin"
 msgstr "右边界"
 
-#: lazarusidestrconsts.dlgrightmousemovescursor
-msgid "Right mouse moves cursor"
-msgstr ""
-
 #: lazarusidestrconsts.dlgroworkingdirectory
 msgid "Working directory"
 msgstr "工作目录"
@@ -1689,6 +1940,7 @@ msgid "Creation"
 msgstr "创建"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
+msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Selection"
 msgstr "所选的"
 
@@ -1889,6 +2141,10 @@ msgstr "显示 used 文件"
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
 msgstr "显示警告"
+
+#: lazarusidestrconsts.dlgskipforwarddeclarations
+msgid "Skip forward declarations"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2206,13 +2462,6 @@ msgstr "缩放"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "全选"
-
-#: lazarusidestrconsts.fdmshowoptions
-#, fuzzy
-#| msgid "Show Options for form editing"
-msgctxt "lazarusidestrconsts.fdmshowoptions"
-msgid "Options"
-msgstr "显示窗体编辑选项"
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -2905,6 +3154,14 @@ msgstr "中断"
 msgctxt "lazarusidestrconsts.lisbtncontinue"
 msgid "Continue"
 msgstr "继续"
+
+#: lazarusidestrconsts.lisbtnfind
+msgid "&Find"
+msgstr ""
+
+#: lazarusidestrconsts.lisbtnreplace
+msgid "&Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -3694,6 +3951,7 @@ msgid "Ignore next unnamed constants"
 msgstr "忽略下一个未命名常量"
 
 #: lazarusidestrconsts.liscodetempladd
+msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add"
 msgstr "添加"
 
@@ -3710,6 +3968,7 @@ msgid "Auto complete on ..."
 msgstr "自动完成 ..."
 
 #: lazarusidestrconsts.liscodetemplchange
+msgctxt "lazarusidestrconsts.liscodetemplchange"
 msgid "Change"
 msgstr "更改"
 
@@ -4279,8 +4538,10 @@ msgid "Open unit"
 msgstr "打开单元"
 
 #: lazarusidestrconsts.liscomptest
+#, fuzzy
+#| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
-msgid "Test"
+msgid "&Test"
 msgstr "测试"
 
 #: lazarusidestrconsts.liscondition
@@ -4411,6 +4672,30 @@ msgstr "跳过调用编译器"
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
 msgstr "目标操作系统特殊选项"
+
+#: lazarusidestrconsts.liscouldnotadditomainsource
+msgid "Could not add %s{$I %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddrtomainsource
+msgid "Could not add %s{$R %s%s} to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotaddtomainsource
+msgid "Could not add %s%s%s to main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremovefrommainsource
+msgid "Could not remove %s%s%s from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoveifrommainsource
+msgid "Could not remove %s{$I %s%s} from main source!"
+msgstr ""
+
+#: lazarusidestrconsts.liscouldnotremoverfrommainsource
+msgid "Could not remove %s{$R %s%s} from main source!"
+msgstr ""
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5166,6 +5451,10 @@ msgstr "输入翻译的语言"
 msgid "Double click on messages jumps (otherwise: single click)"
 msgstr "双击消息跳转 (否则单击)"
 
+#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "目录未找到"
@@ -5818,6 +6107,11 @@ msgstr "步进"
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
 msgstr "下一步"
+
+#: lazarusidestrconsts.lishintstop
+msgctxt "lazarusidestrconsts.lishintstop"
+msgid "Stop"
+msgstr "停止"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
@@ -6766,6 +7060,7 @@ msgid "%s beta"
 msgstr "%s 测试版"
 
 #: lazarusidestrconsts.lislazbuildaboaction
+msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
 msgstr "动作"
 
@@ -7868,6 +8163,7 @@ msgid "Step over"
 msgstr "下一步"
 
 #: lazarusidestrconsts.lismenustop
+msgctxt "lazarusidestrconsts.lismenustop"
 msgid "Stop"
 msgstr "停止"
 
@@ -7979,6 +8275,10 @@ msgstr "指南"
 msgctxt "lazarusidestrconsts.lismenutemplateundo"
 msgid "Undo"
 msgstr "撤销"
+
+#: lazarusidestrconsts.lismenutogglecomment
+msgid "Toggle comment"
+msgstr ""
 
 #: lazarusidestrconsts.lismenutools
 msgid "&Tools"
@@ -8475,13 +8775,6 @@ msgstr "%s包已经自动创建 "
 #: lazarusidestrconsts.lisok
 msgid "&Ok"
 msgstr "确定(&O)"
-
-#: lazarusidestrconsts.lisokbtn
-#, fuzzy
-#| msgid "Ok"
-msgctxt "lazarusidestrconsts.lisokbtn"
-msgid "OK"
-msgstr "确定"
 
 #: lazarusidestrconsts.lisold
 msgid "old"
@@ -9201,6 +9494,7 @@ msgid "LRS - Lazarus resource"
 msgstr "LRS - Lazarus 资源文件"
 
 #: lazarusidestrconsts.lispkgfiletypetext
+msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "文本"
 
@@ -11230,6 +11524,7 @@ msgid "Owner"
 msgstr ""
 
 #: lazarusidestrconsts.listodolpriority
+msgctxt "lazarusidestrconsts.listodolpriority"
 msgid "Priority"
 msgstr "优先级"
 
@@ -12361,6 +12656,14 @@ msgstr ""
 msgid "Column Select Up"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeccolselwordleft
+msgid "Column Select Word Left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolselwordright
+msgid "Column Select Word Right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "列选择模式"
@@ -12431,7 +12734,9 @@ msgid "Move cursor to absolute beginning"
 msgstr "移动光标到绝对的开始"
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
-msgid "General environment options"
+#, fuzzy
+#| msgid "General environment options"
+msgid "IDE options"
 msgstr "常规环境选项"
 
 #: lazarusidestrconsts.srkmecevaluate
@@ -13065,6 +13370,10 @@ msgstr "在光标处添加观察点(&W)"
 msgid "Bookmark"
 msgstr "书签"
 
+#: lazarusidestrconsts.uemcloseotherpages
+msgid "Close All &Other Pages"
+msgstr ""
+
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
 msgstr "关闭页面(&C)"
@@ -13080,7 +13389,9 @@ msgid "Copy"
 msgstr "复制"
 
 #: lazarusidestrconsts.uemcopyfilename
-msgid "Copy filename"
+#, fuzzy
+#| msgid "Copy filename"
+msgid "Copy Filename"
 msgstr "复制文件名"
 
 #: lazarusidestrconsts.uemcut

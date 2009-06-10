@@ -579,6 +579,7 @@ msgid "Color Select"
 msgstr "Farbauswahl"
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -1252,21 +1253,24 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Strg"
 
-#: objinspstrconsts.srselect
-msgid "Select"
-msgstr "Auswahl"
-
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
 msgstr "Übernehmen"
 
 #: objinspstrconsts.srvk_apps
-msgid "application key"
+#, fuzzy
+#| msgid "application key"
+msgid "Application Key"
 msgstr "Anwendungstaste"
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
 msgstr "Rückschritt"
+
+#: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1288,6 +1292,16 @@ msgstr "Steuerung"
 #: objinspstrconsts.srvk_convert
 msgid "Convert"
 msgstr "Umwandlung"
+
+#: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
+msgid "Delete"
+msgstr "Löschen"
+
+#: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
+msgid "Down"
+msgstr "Nach unten"
 
 #: objinspstrconsts.srvk_end
 msgid "End"
@@ -1324,7 +1338,9 @@ msgid "Insert"
 msgstr "Einfügen"
 
 #: objinspstrconsts.srvk_irregular
-msgid "Irregular "
+#, fuzzy
+#| msgid "Irregular "
+msgid "Irregular"
 msgstr "Unregelmäßig"
 
 #: objinspstrconsts.srvk_junja
@@ -1345,7 +1361,9 @@ msgid "Left"
 msgstr "Links"
 
 #: objinspstrconsts.srvk_lwin
-msgid "left windows key"
+#, fuzzy
+#| msgid "left windows key"
+msgid "Left Windows Key"
 msgstr "Linke Windows-Taste"
 
 #: objinspstrconsts.srvk_mbutton
@@ -1412,12 +1430,19 @@ msgid "Right"
 msgstr "Rechts"
 
 #: objinspstrconsts.srvk_rwin
-msgid "right windows key"
+#, fuzzy
+#| msgid "right windows key"
+msgid "Right Windows Key"
 msgstr "Rechte Windows-Taste"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
 msgstr "Rollen"
+
+#: objinspstrconsts.srvk_select
+msgctxt "objinspstrconsts.srvk_select"
+msgid "Select"
+msgstr "Auswahl"
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"

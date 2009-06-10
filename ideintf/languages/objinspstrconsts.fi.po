@@ -572,6 +572,7 @@ msgid "Color Select"
 msgstr ""
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
+msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
 msgstr "Peru"
 
@@ -1258,8 +1259,9 @@ msgid "Backspace"
 msgstr ""
 
 #: objinspstrconsts.srvk_cancel
+msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Peru"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1283,12 +1285,14 @@ msgid "Convert"
 msgstr ""
 
 #: objinspstrconsts.srvk_delete
+msgctxt "objinspstrconsts.srvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: objinspstrconsts.srvk_down
+msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "Alas"
 
 #: objinspstrconsts.srvk_end
 msgid "End"

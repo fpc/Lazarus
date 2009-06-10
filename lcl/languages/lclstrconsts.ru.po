@@ -386,6 +386,10 @@ msgstr "Формат значков дублируется."
 msgid "Edit"
 msgstr "Редактировать"
 
+#: lclstrconsts.rsentirescope
+msgid "Search entire file"
+msgstr ""
+
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
 msgid "Error"
