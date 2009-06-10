@@ -1470,7 +1470,7 @@ begin
     MessI.XPos := MappedXY.X;
     MessI.YPos := MappedXY.Y;
 
-    MessI.Keys := ShiftStateToKeys(ShiftState);
+    MessI.Keys := MessI.Keys or ShiftStateToKeys(ShiftState);
 
     MessI.Result:=0;
     // send the message directly to the LCL
