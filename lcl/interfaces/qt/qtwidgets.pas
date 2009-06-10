@@ -1413,11 +1413,13 @@ begin
     FWidgetColorRole := QPaletteButton;
     FTextColorRole := QPaletteButtonText;
   end else
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}  
   if InheritsFrom(TQtHintWindow) then
   begin
     FWidgetColorRole := QPaletteToolTipBase;
     FTextColorRole := QPaletteToolTipText;
   end else
+ {$ENDIF}
   if InheritsFrom(TQtAbstractItemView) or
     Supports(Self, IQtEdit, QtEdit) then
   begin
