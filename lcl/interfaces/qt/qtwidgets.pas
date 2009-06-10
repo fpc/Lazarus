@@ -204,6 +204,7 @@ type
     function getContextMenuPolicy: QtContextMenuPolicy; virtual;
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); virtual;
     procedure setCursor(const ACursor: QCursorH); virtual;
+    procedure setDefaultColorRoles; virtual;
     procedure setEnabled(p1: Boolean);
     procedure setFocus;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); virtual;
@@ -401,6 +402,7 @@ type
     function isChecked: Boolean;
     function isDown: Boolean;
     procedure setChecked(p1: Boolean);
+    procedure setDefaultColorRoles; override;
     procedure setDown(p1: Boolean);
     procedure SignalPressed; cdecl;
     procedure SignalReleased; cdecl;
@@ -468,6 +470,8 @@ type
   TQtHintWindow = class(TQtMainWindow)
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
+  public
+    procedure SetDefaultColorRoles; override;
   end;
 
   { TQtStaticText }
@@ -589,6 +593,7 @@ type
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
     procedure setCursorPosition(const AValue: Integer);
+    procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
     procedure setMaxLength(const ALength: Integer);
@@ -624,6 +629,7 @@ type
     function isUndoAvailable: Boolean;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
+    procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
     procedure setMaxLength(const ALength: Integer);
@@ -737,6 +743,7 @@ type
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
+    procedure setDefaultColorRoles; override;
     procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(const AValue: Boolean);
     procedure setItemText(AIndex: Integer; AText: String);
@@ -782,6 +789,7 @@ type
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
     procedure setBorder(const ABorder: Boolean);
+    procedure setDefaultColorRoles; override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setMinimum(const v: Double); virtual; abstract;
     procedure setMaximum(const v: Double); virtual; abstract;
@@ -866,6 +874,7 @@ type
     procedure DetachEvents; override;
 
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
+    procedure setDefaultColorRoles; override;
   public
     procedure clearSelection;
     function getModel: QAbstractItemModelH;
@@ -1408,29 +1417,7 @@ var
   QtEdit: IQtEdit;
 begin
   // default color roles
-  if InheritsFrom(TQtAbstractButton) then
-  begin
-    FWidgetColorRole := QPaletteButton;
-    FTextColorRole := QPaletteButtonText;
-  end else
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}  
-  if InheritsFrom(TQtHintWindow) then
-  begin
-    FWidgetColorRole := QPaletteToolTipBase;
-    FTextColorRole := QPaletteToolTipText;
-  end else
- {$ENDIF}
-  if InheritsFrom(TQtAbstractItemView) or
-    Supports(Self, IQtEdit, QtEdit) then
-  begin
-    FWidgetColorRole := QPaletteBase;
-    FTextColorRole := QPaletteText;
-  end else
-  begin
-    FWidgetColorRole := QPaletteWindow;
-    FTextColorRole := QPaletteWindowText;
-  end;
-
+  SetDefaultColorRoles;
   FPalette := nil;
   // Creates the widget
   Widget := CreateWidget(FParams);
@@ -2877,6 +2864,12 @@ begin
     QWidget_setCursor(Widget, FDefaultCursor);
 end;
 
+procedure TQtWidget.setDefaultColorRoles;
+begin
+  FWidgetColorRole := QPaletteWindow;
+  FTextColorRole := QPaletteWindowText;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.Update
   Params:  None
@@ -3922,6 +3915,12 @@ end;
 procedure TQtAbstractButton.setChecked(p1: Boolean);
 begin
   QAbstractButton_setChecked(QAbstractButtonH(Widget), p1);
+end;
+
+procedure TQtAbstractButton.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteButton;
+  TextColorRole := QPaletteButtonText;
 end;
 
 procedure TQtAbstractButton.setDown(p1: Boolean);
@@ -5382,6 +5381,12 @@ begin
   QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
 end;
 
+procedure TQtLineEdit.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteBase;
+  TextColorRole := QPaletteText;
+end;
+
 procedure TQtLineEdit.setEchoMode(const AMode: QLineEditEchoMode);
 begin
   QLineEdit_setEchoMode(QLineEditH(Widget), AMode);
@@ -5593,6 +5598,12 @@ begin
     QFrame_setFrameShape(QFrameH(Widget), QFrameStyledPanel)
   else
     QFrame_setFrameShape(QFrameH(Widget), QFrameNoFrame);
+end;
+
+procedure TQtTextEdit.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteBase;
+  TextColorRole := QPaletteText;
 end;
 
 procedure TQtTextEdit.AttachEvents;
@@ -6197,6 +6208,12 @@ begin
   EndUpdate;
 end;
 
+procedure TQtComboBox.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteBase;
+  TextColorRole := QPaletteText;
+end;
+
 procedure TQtComboBox.setMaxVisibleItems(ACount: Integer);
 begin
   QComboBox_setMaxVisibleItems(QComboboxH(Widget), ACount);
@@ -6598,6 +6615,12 @@ end;
 procedure TQtAbstractSpinBox.setBorder(const ABorder: Boolean);
 begin
   QAbstractSpinBox_setFrame(QAbstractSpinBoxH(Widget), ABorder);
+end;
+
+procedure TQtAbstractSpinBox.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteBase;
+  TextColorRole := QPaletteText;
 end;
 
 procedure TQtAbstractSpinBox.setEchoMode(const AMode: QLineEditEchoMode);
@@ -9195,6 +9218,16 @@ begin
   MenuBar := nil;
 end;
 
+procedure TQtHintWindow.SetDefaultColorRoles;
+begin
+ {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
+  WidgetColorRole := QPaletteToolTipBase;
+  TextColorRole := QPaletteToolTipText;
+ {$ELSE}
+ inherited SetDefaultColorRoles;
+ {$ENDIF}
+end;
+
 { TQtPage }
 
 function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -9420,6 +9453,12 @@ begin
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
     end;
   end;
+end;
+
+procedure TQtAbstractItemView.setDefaultColorRoles;
+begin
+  WidgetColorRole := QPaletteBase;
+  TextColorRole := QPaletteText;
 end;
 
 procedure TQtAbstractItemView.clearSelection;
