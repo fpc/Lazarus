@@ -14,7 +14,7 @@
     </CompilerOptions>
     <Description Value="File browsing window for the Lazarus IDE"/>
     <License Value="Modified LGPL"/>
-    <Version Minor="1"/>
+    <Version Minor="2"/>
     <Files Count="5">
       <Item1>
         <Filename Value="frmfilebrowser.lfm"/>

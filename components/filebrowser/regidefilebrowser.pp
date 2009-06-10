@@ -17,6 +17,7 @@ type
     FCustomDir: string;
     FWindow: TFileBrowserForm;
     FNeedSave: Boolean;
+    procedure DoLoadLayout(Sender: TObject);
     procedure DoSelectDir(Sender: TObject);
     procedure DoSaveLayout(Sender: TObject);
     procedure ReadConfig; virtual;
@@ -96,6 +97,7 @@ begin
   FWindow.OnConfigure := @DoConfig;
   FWindow.OnSelectDir := @DoSelectDir;
   FWindow.OnSaveLayout := @DoSaveLayout;
+  FWindow.OnLoadLayout := @DoLoadLayout;
   IDEDialogLayoutList.ApplyLayout(FWindow);
   D       := FCustomDir;
   if (FStartDir = sdProjectDir) and Assigned(LazarusIDE.ActiveProject) then
@@ -112,6 +114,20 @@ begin
   LazarusIDE.DoOpenEditorFile(AFileName, 0, Flags);
 end;
 
+procedure TFileBrowserController.DoLoadLayout(Sender: TObject);
+begin
+  with GetIDEConfigStorage(SConfigFile, True) do
+  begin
+    try
+      FWindow.Top := GetValue('Position/Top', FWindow.Top);
+      FWindow.Left := GetValue('Position/Left', FWindow.Left);
+      FWindow.TV.Height := GetValue(KeySplitterPos, FWindow.TV.Height);
+    finally
+      Free;
+    end;
+  end;
+end;
+
 procedure TFileBrowserController.DoSelectDir(Sender: TObject);
 begin
   if FStartDir = sdLastOpened then
@@ -126,7 +142,9 @@ begin
   IDEDialogLayoutList.SaveLayout(FWindow);
   with GetIDEConfigStorage(SConfigFile, True) do
     try
-      SetValue(KeySplitterPos, FWindow.Splitter1.Top);
+      SetValue(KeySplitterPos, FWindow.TV.Height);
+      SetValue('Position/Top', FWindow.Top);
+      SetValue('Position/Left', FWindow.Left);
       FNeedSave := False;
     finally
       Free;

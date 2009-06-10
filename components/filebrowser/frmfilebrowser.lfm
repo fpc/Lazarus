@@ -1,12 +1,13 @@
 object FileBrowserForm: TFileBrowserForm
-  Left = 305
+  Left = 282
   Height = 434
-  Top = 466
+  Top = 402
   Width = 385
   ActiveControl = Panel1
   Caption = 'File Browser'
   ClientHeight = 434
   ClientWidth = 385
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -19,10 +20,9 @@ object FileBrowserForm: TFileBrowserForm
     Align = alClient
     Directory = '/home/graemeg'
     FileType = [ftArchive, ftNormal]
-    ItemHeight = 0
+    ItemHeight = 23
     OnDblClick = FileListBoxDblClick
     TabOrder = 0
-    TopIndex = -1
   end
   object TV: TTreeView
     Left = 0
@@ -32,6 +32,7 @@ object FileBrowserForm: TFileBrowserForm
     Align = alTop
     DefaultItemHeight = 19
     ReadOnly = True
+    ScrollBars = ssAutoBoth
     TabOrder = 1
     OnExpanded = TVExpanded
     OnSelectionChanged = TVSelectionChanged
@@ -58,7 +59,7 @@ object FileBrowserForm: TFileBrowserForm
     end
     object btnConfigure: TButton
       Left = 8
-      Height = 25
+      Height = 28
       Top = 7
       Width = 90
       Caption = 'Configure'
