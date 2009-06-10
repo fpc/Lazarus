@@ -9,19 +9,18 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   DesignTop = 209
   object p2: TPanel[0]
     Left = 0
-    Height = 352
+    Height = 420
     Top = 0
     Width = 610
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 352
+    ClientHeight = 420
     ClientWidth = 610
     TabOrder = 0
     object ActionGrid: TStringGrid
-      AnchorSideBottom.Control = p3
       Left = 135
-      Height = 352
-      Top = 0
+      Height = 372
+      Top = 48
       Width = 475
       Align = alClient
       AutoEdit = False
@@ -44,13 +43,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     end
     object ContextTree: TTreeView
       Left = 0
-      Height = 352
-      Top = 0
+      Height = 372
+      Top = 48
       Width = 130
       Align = alLeft
       AutoExpand = True
       Constraints.MinWidth = 50
-      DefaultItemHeight = 17
+      DefaultItemHeight = 15
       ReadOnly = True
       ShowRoot = False
       TabOrder = 1
@@ -59,113 +58,72 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 130
-      Height = 352
-      Top = 0
+      Height = 372
+      Top = 48
       Width = 5
       AutoSnap = False
     end
-  end
-  object p3: TPanel[1]
-    AnchorSideRight.Control = p2
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = p2
-    AnchorSideBottom.Side = asrBottom
-    Left = 0
-    Height = 68
-    Top = 352
-    Width = 610
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 68
-    ClientWidth = 610
-    TabOrder = 1
-    object DelButton: TButton
-      AnchorSideLeft.Control = p3
-      AnchorSideTop.Control = p3
+    object ToolBar1: TToolBar
       Left = 0
-      Height = 25
-      Top = 6
-      Width = 79
+      Height = 48
+      Top = 0
+      Width = 610
       AutoSize = True
-      BorderSpacing.Top = 6
-      Caption = 'DelButton'
-      OnClick = DelButtonClick
-      TabOrder = 2
-    end
-    object AddNewButton: TButton
-      AnchorSideTop.Control = UpdateButton
-      AnchorSideRight.Control = p3
-      AnchorSideRight.Side = asrBottom
-      Left = 502
-      Height = 25
-      Top = 6
-      Width = 108
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      Caption = 'AddNewButton'
-      OnClick = AddNewButtonClick
-      TabOrder = 0
-    end
-    object UpdateButton: TButton
-      AnchorSideTop.Control = p3
-      AnchorSideRight.Control = AddNewButton
-      Left = 396
-      Height = 25
-      Top = 6
-      Width = 100
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      Caption = 'UpdateButton'
-      OnClick = UpdateButtonClick
-      TabOrder = 1
-    end
-    object BtnExport: TButton
-      AnchorSideTop.Control = UpdateButton
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = p3
-      AnchorSideRight.Side = asrBottom
-      Left = 533
-      Height = 25
-      Top = 37
-      Width = 77
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      BorderSpacing.Top = 6
-      BorderSpacing.Bottom = 6
-      Caption = 'BtnExport'
-      OnClick = BtnExportClick
+      ButtonHeight = 46
+      Caption = 'ToolBar1'
+      EdgeBorders = []
+      ShowCaptions = True
       TabOrder = 3
-    end
-    object BtnImport: TButton
-      AnchorSideTop.Control = BtnExport
-      AnchorSideRight.Control = BtnExport
-      Left = 447
-      Height = 25
-      Top = 37
-      Width = 80
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      Caption = 'BtnImport'
-      OnClick = BtnImportClick
-      TabOrder = 4
+      object BtnImport: TToolButton
+        Left = 1
+        Top = 2
+        Caption = 'BtnImport'
+        OnClick = BtnImportClick
+      end
+      object BtnExport: TToolButton
+        Left = 57
+        Top = 2
+        Caption = 'BtnExport'
+        OnClick = BtnExportClick
+      end
+      object ToolButton3: TToolButton
+        Left = 113
+        Top = 2
+        Width = 3
+        Caption = 'ToolButton3'
+        Style = tbsDivider
+      end
+      object UpdateButton: TToolButton
+        Left = 116
+        Top = 2
+        Caption = 'UpdateButton'
+        OnClick = UpdateButtonClick
+      end
+      object AddNewButton: TToolButton
+        Left = 191
+        Top = 2
+        Caption = 'AddNewButton'
+        OnClick = AddNewButtonClick
+      end
+      object DelButton: TToolButton
+        Left = 271
+        Top = 2
+        Caption = 'DelButton'
+        OnClick = DelButtonClick
+      end
     end
   end
-  object SaveDialog1: TSaveDialog[2]
+  object SaveDialog1: TSaveDialog[1]
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|any|*.*'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 176
-    top = 368
+    left = 184
+    top = 304
   end
-  object OpenDialog1: TOpenDialog[3]
+  object OpenDialog1: TOpenDialog[2]
     DefaultExt = '.xml'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 264
-    top = 368
+    left = 224
+    top = 304
   end
 end

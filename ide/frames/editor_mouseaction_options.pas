@@ -27,25 +27,26 @@ interface
 uses
   LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs, ButtonPanel,
-  SynEditMouseCmds, MouseActionDialog, math, KeyMapping;
+  SynEditMouseCmds, MouseActionDialog, math, KeyMapping, IDEImagesIntf;
 
 type
 
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
-    BtnExport: TButton;
-    BtnImport: TButton;
-    DelButton: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     Splitter1: TSplitter;
-    UpdateButton: TButton;
-    AddNewButton: TButton;
+    ToolBar1: TToolBar;
+    BtnImport: TToolButton;
+    BtnExport: TToolButton;
+    ToolButton3: TToolButton;
+    UpdateButton: TToolButton;
+    AddNewButton: TToolButton;
+    DelButton: TToolButton;
     p2: TPanel;
     ActionGrid: TStringGrid;
     ContextTree: TTreeView;
-    p3: TPanel;
     procedure ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol, BRow: Integer;
       var Result: integer);
     procedure ActionGridHeaderClick(Sender: TObject; IsColumn: Boolean; Index: Integer);
@@ -476,11 +477,19 @@ begin
   FSort3 := 3; // Cdir
   FSort4 := 8; // Priority
 
-  DelButton.Caption := dlgMouseOptBtnDel;
-  UpdateButton.Caption := dlgMouseOptBtnUdp;
-  AddNewButton.Caption := dlgMouseOptBtnAdd;
   BtnImport.Caption := dlgMouseOptBtnImport;
   BtnExport.Caption := dlgMouseOptBtnExport;
+  UpdateButton.Caption := dlgMouseOptBtnUdp;
+  AddNewButton.Caption := dlgMouseOptBtnAdd;
+  DelButton.Caption := dlgMouseOptBtnDel;
+
+  ToolBar1.Images := IDEImages.Images_16;
+  BtnImport.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
+  BtnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  UpdateButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+  AddNewButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  DelButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+
   OpenDialog1.Title := dlgMouseOptBtnImport;
   SaveDialog1.Title := dlgMouseOptBtnExport;
 end;
