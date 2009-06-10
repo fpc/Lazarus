@@ -1474,7 +1474,7 @@ begin
   SetPosition(X1,Y1);
   pp:=TranslateCoord(X1,Y1);
 
-  write(Format('%f %f domoveto',[pp.fx,pp.fy],FFs));
+  write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
 end;
 
 //Drawe line
@@ -1490,7 +1490,7 @@ begin
   UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
-  write(Format('%f %f Dolineto',[pp.fx,pp.fy],FFs));
+  write(Format('%f %f lineto',[pp.fx,pp.fy],FFs));
   changed;
 end;
 
