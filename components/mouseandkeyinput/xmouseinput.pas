@@ -52,7 +52,7 @@ begin
 end;
 
 const
-  MouseButtonToXButton: array [TMouseButton] of Integer = (1, 3, 2);
+  MouseButtonToXButton: array [TMouseButton] of Integer = (1, 3, 2, 4, 5);
 
 { TXMouseInput }
 
