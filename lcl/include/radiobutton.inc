@@ -72,11 +72,28 @@ begin
 end;
 
 procedure TRadioButton.ApplyChanges;
+begin
+  inherited ApplyChanges;
+  DoApplyChanges;
+end;
+
+procedure TRadioButton.SetChecked(Value: Boolean);
+begin
+  inherited SetChecked(Value);
+  TabStop := Value;
+end;
+
+procedure TRadioButton.DoChange(var Msg);
+begin
+  inherited DoChange(Msg);
+  DoApplyChanges;
+end;
+
+procedure TRadioButton.DoApplyChanges;
 var
   i: Integer;
   Sibling: TControl;
 begin
-  inherited ApplyChanges;
   if not (csLoading in ComponentState) and (Parent <> nil) and (FState = cbChecked) then
   begin
     for i := 0 to Parent.ControlCount - 1 do
@@ -86,12 +103,6 @@ begin
         TRadioButton(Sibling).Checked := False;
     end;
   end;
-end;
-
-procedure TRadioButton.SetChecked(Value: Boolean);
-begin
-  inherited SetChecked(Value);
-  TabStop := Value;
 end;
 
 class procedure TRadioButton.WSRegisterClass;
@@ -111,7 +122,7 @@ begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then
   begin
     SetFocus;
-    Result := true;
+    Result := True;
   end else
     Result := inherited;
 end;

@@ -47,9 +47,9 @@ end;
 
 procedure TButtonControl.DoOnChange;
 begin
-  if Checked=fLastCheckedOnChange then exit;
-  fLastCheckedOnChange:=Checked;
-  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if Checked = FLastCheckedOnChange then Exit;
+  FLastCheckedOnChange := Checked;
+  if [csLoading, csDestroying, csDesigning] * ComponentState <> [] then Exit;
   EditingDone;
   if Assigned(OnChange) then OnChange(Self);
 end;

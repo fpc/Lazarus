@@ -1027,7 +1027,7 @@ type
     function IsCheckedStored: boolean;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
-    fLastCheckedOnChange: boolean;
+    FLastCheckedOnChange: boolean;
     class procedure WSRegisterClass; override;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
@@ -1303,6 +1303,8 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; override;
     procedure SetChecked(Value: Boolean); override;
+    procedure DoChange(var Msg); message LM_CHANGED;
+    procedure DoApplyChanges;
   public
     constructor Create(TheOwner: TComponent); override;
   published

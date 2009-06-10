@@ -48,8 +48,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomCheckBox.GetState: TCheckBoxState;
 begin
-  fState := RetrieveState;
-  Result := fState;
+  FState := RetrieveState;
+  Result := FState;
 end;
 
 procedure TCustomCheckBox.DoChange(var Msg);
@@ -57,9 +57,9 @@ var
   NewState: TCheckBoxState;
 begin
   //debugln('TCustomCheckBox.DoChange START ',dbgsname(Self),' ',dbgs(ord(FState)));
-  NewState:=RetrieveState;
-  if FState=NewState then exit;
-  FState:=NewState;
+  NewState := RetrieveState;
+  if FState = NewState then exit;
+  FState := NewState;
   //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
   inherited Click; // emulate delphi OnClick behaviour
 end;
@@ -77,7 +77,7 @@ end;
 
 function TCustomCheckBox.RetrieveState: TCheckBoxState;
 begin
-  Result:=FState;
+  Result := FState;
   // get the actual state of the component
   // don't read from interface during loading
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -128,7 +128,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomCheckBox.GetChecked : Boolean;
 begin
-  GetChecked := (GetState = cbChecked);
+  Result := (GetState = cbChecked);
 end;
 
 {------------------------------------------------------------------------------
