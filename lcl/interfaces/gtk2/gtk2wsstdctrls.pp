@@ -1046,6 +1046,9 @@ begin
   end;
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
 
+  if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
+    FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
+
   gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag, nil);
   gtk_event_box_set_above_child(PGtkEventBox(Box), false);
   // don't remove Combo from Box, just destroy it and during destroy it will
@@ -1688,6 +1691,8 @@ begin
   ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
 
+  if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
+    FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
   //DebugLn(['TGtk2WSCustomComboBox.DestroyHandle ',dbgsName(AWinControl),' ClassParent=',ClassParent.ClassName]);
 
   // inherited DestroyHandle doesn't work, because that is determined at
