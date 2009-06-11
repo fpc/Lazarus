@@ -81,6 +81,7 @@ type
           AWidth, AHeight: Integer); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -336,6 +337,12 @@ end;
 
 class procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
           const AFormBorderStyle: TFormBorderStyle);
+begin
+  RecreateWnd(AForm);
+end;
+
+class procedure TWin32WSCustomForm.SetFormStyle(const AForm: TCustomform;
+  const AFormStyle: TFormStyle);
 begin
   RecreateWnd(AForm);
 end;
