@@ -1607,8 +1607,14 @@ begin
 end;
 
 function TSynEditFoldedView.TextIndexToViewPos(aTextIndex : Integer) : Integer;
+var
+  n: TSynTextFoldAVLNode;
 begin
-  result := aTextIndex + 1 - fFoldTree.FindFoldForLine(aTextIndex+1).FoldedBefore;
+  n := fFoldTree.FindFoldForLine(aTextIndex + 1);
+  if n.IsInFold then
+    Result := n.StartLine - 1 - n.FoldedBefore
+  else
+    Result := aTextIndex + 1 - n.FoldedBefore;
 end;
 
 function TSynEditFoldedView.TextIndexToScreenLine(aTextIndex : Integer) : Integer;
