@@ -85,7 +85,11 @@ uses
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer,
   SynEditLines,
-  LResources;
+  LResources, Clipbrd
+{$IFDEF SYN_COMPILER_4_UP}
+  , StdActns
+{$ENDIF}
+  ;
 
 const
   DIGIT = ['0'..'9'];
@@ -124,13 +128,6 @@ const
    // maximum scroll range
   MAX_SCROLL = 32767;
 
-  SYNEDIT_CLIPBOARD_FORMAT = 'SynEdit Control Block Type';
-
-{$IFNDEF SYN_LAZARUS}
-var
-  SynEditClipboardFormat: UINT;
-{$ENDIF}
-
 {$IFDEF SYN_MBCSSUPPORT}
 {$IFNDEF SYN_COMPILER_4_UP}
 {Windows.pas in D4}
@@ -154,8 +151,6 @@ const
 type
   TSynEditMarkupClass = SynEditMarkup.TSynEditMarkupClass;
   TSynReplaceAction = (raCancel, raSkip, raReplace, raReplaceAll);
-
-  ESynEditError = class(Exception);
 
   TSynDropFilesEvent = procedure(Sender: TObject; X, Y: integer; AFiles: TStrings)
     of object;
@@ -232,7 +227,8 @@ type
   TSynEditorOption2 = (
     eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
     eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
-    eoEnhanceEndKey            // end key jumps to visual/hard line end whichever is nearer
+    eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
+    eoFoldedCopyPaste          // Remember folds in copy/paste operations
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
   {$ENDIF}
@@ -254,6 +250,7 @@ const
 
   {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
+    eoFoldedCopyPaste
     ];
   {$ENDIF}
 
@@ -604,6 +601,7 @@ type
     function GetViewedTextBuffer: TSynEditStrings; override;
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;
+    procedure ScanFromAfterLock;
     procedure DecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
@@ -699,6 +697,7 @@ type
     property TextView : TSynEditFoldedView read FFoldedLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     {$ENDIF}
+    function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
   public
     procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
@@ -732,7 +731,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure CutToClipboard;
     destructor Destroy; override;
-    procedure DoCopyToClipboard(const SText: string);
+    procedure DoCopyToClipboard(const SText: string; FoldInfo: String = '');
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure EndUndoBlock(aList: TSynEditUndoList = nil);
     procedure EndUpdate;
@@ -1105,24 +1104,11 @@ type
     property OnStatusChange;
   end;
 
-{$IFDEF SYN_LAZARUS}
-function SynEditClipboardFormat: TClipboardFormat;
-{$ENDIF}
 procedure Register;
 
 implementation
 
 // { $R SynEdit.res}
-
-uses
-{$IFDEF SYN_COMPILER_4_UP}
-  StdActns,
-{$ENDIF}
-{$IFNDEF SYN_LAZARUS}
-// ToDo ShellAPI
-  ShellAPI, SynEditStrConst,
-{$ENDIF}
-  Clipbrd;
 
 type
 
@@ -1173,6 +1159,9 @@ type
     constructor Create(APosY, EPosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
+
+var
+  SynDefaultBeautifier: TSynCustomBeautifier;
 
 { TSynEditUndoCaret }
 
@@ -1268,24 +1257,6 @@ begin
   Result := False;
 end;
 
-
-
-{$IFDEF SYN_LAZARUS}
-var
-  SynDefaultBeautifier: TSynCustomBeautifier;
-
-const
-  fSynEditClipboardFormat: TClipboardFormat = 0;
-
-function SynEditClipboardFormat: TClipboardFormat;
-begin
-  if fSynEditClipboardFormat=0 then
-    fSynEditClipboardFormat := ClipboardRegisterFormat(SYNEDIT_CLIPBOARD_FORMAT);
-  Result:=fSynEditClipboardFormat;
-end;
-
-{$ENDIF}
-
 function Roundoff(X: Extended): Longint;
 begin
   if (x >= 0) then begin
@@ -1327,13 +1298,14 @@ end;
 
 procedure TCustomSynEdit.AquirePrimarySelection;
 var
-  FormatList: TClipboardFormat;
+  FormatList: Array [0..1] of TClipboardFormat;
 begin
   if (not SelAvail)
   or (PrimarySelection.OnRequest=@PrimarySelectionRequest) then exit;
-  FormatList:=CF_TEXT;
+  FormatList[0] := CF_TEXT;
+  FormatList[1] := TSynClipboardStream.ClipboardFormatId;
   try
-    PrimarySelection.SetSupportedFormats(1,@FormatList);
+    PrimarySelection.SetSupportedFormats(2, @FormatList[0]);
     PrimarySelection.OnRequest:=@PrimarySelectionRequest;
   except
   end;
@@ -1438,111 +1410,49 @@ begin
   CaretXY := PixelsToRowColumn(Point(X,Y));
 end;
 
-procedure TCustomSynEdit.DoCopyToClipboard(const SText: string);
+procedure TCustomSynEdit.DoCopyToClipboard(const SText: string; FoldInfo: String = '');
 var
-{$IFDEF SYN_LAZARUS}
-  Buf: Pointer;
-  BufSize: integer;
-{$ELSE}
-  Mem: HGLOBAL;
-  Failed: boolean;
-{$ENDIF}
-  P: PChar;
-  SLen: integer;
+  ClipHelper: TSynClipboardStream;
 begin
   if SText = '' then exit;
-  SLen := Length(SText);
-  {$IFDEF SYN_LAZARUS}
   Clipboard.Clear;
-  Clipboard.AsText:=SText;
-  if not Clipboard.HasFormat(CF_TEXT) then
-    raise ESynEditError.Create('Clipboard copy operation failed: HasFormat');
-  // Copy it in our custom format so we know what kind of block it is.
-  // That effects how it is pasted in.
-  BufSize:=SLen+SizeOf(TSynSelectionMode)+1;
-  GetMem(Buf,BufSize);
-  if Buf = nil then
-    raise ESynEditError.Create('Clipboard copy operation failed: GetMem');
+  ClipHelper := TSynClipboardStream.Create;
   try
-    P:=PChar(Buf);
-    // Our format:  TSynSelectionMode value followed by text.
-    PSynSelectionMode(P)^ := SelectionMode;
-    inc(P, SizeOf(TSynSelectionMode));
-    if SLen>0 then begin
-      Move(SText[1], P^, SLen);
-      inc(P,SLen);
-    end;
-    P[0]:=#0;
-    if not Clipboard.AddFormat(SynEditClipboardFormat,Buf^,BufSize) then
+    ClipHelper.Text := SText;
+    ClipHelper.SelectionMode := SelectionMode;
+    // Fold
+    if length(FoldInfo) > 0 then
+      ClipHelper.AddTag(synClipTagFold, @FoldInfo[1], length(FoldInfo));
+    if not ClipHelper.WriteToClipboard(Clipboard) then
       raise ESynEditError.Create('Clipboard copy operation failed: AddFormat');
   finally
-    FreeMem(Buf);
+    ClipHelper.Free;
   end;
-  {$ELSE}
-  Failed := true; // assume the worst.
-  // Open and Close are the only TClipboard methods we use because TClipboard
-  // is very hard (impossible) to work with if you want to put more than one
-  // format on it at a time.
-  Clipboard.Open;
-  try
-    // Clear anything already on the clipboard.
-    EmptyClipboard;
-    // Put it on the clipboard as normal text format so it can be pasted into
-    // things like notepad or Delphi.
-    Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen + 1);
-    if Mem <> 0 then begin
-      P := GlobalLock(Mem);
-      try
-        if P <> nil then begin
-          Move(PChar(SText)^, P^, SLen + 1);
-          // Put it on the clipboard in text format
-          Failed := SetClipboardData(CF_TEXT, Mem) = 0;
-        end;
-      finally
-        GlobalUnlock(Mem);
-      end;
-    end;
-    // Don't free Mem!  It belongs to the clipboard now, and it will free it
-    // when it is done with it.
-    if not Failed then begin
-      // Copy it in our custom format so we know what kind of block it is.
-      // That effects how it is pasted in.
-      Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen +
-        SizeOf(TSynSelectionMode) + 1);
-      P := GlobalLock(Mem);
-      try
-        if P <> nil then begin
-          // Our format:  TSynSelectionMode value followed by text.
-          PSynSelectionMode(P)^ := SelectionMode;
-          inc(P, SizeOf(TSynSelectionMode));
-          Move(PChar(SText)^, P^, SLen + 1);
-          Failed := SetClipboardData(SynEditClipboardFormat, Mem) = 0;
-        end;
-      finally
-        GlobalUnlock(Mem);
-      end;
-      // Don't free Mem!  It belongs to the clipboard now, and it will free it
-      // when it is done with it.
-    end;
-  finally
-    Clipboard.Close;
-    if Failed then
-      raise ESynEditError.Create('Clipboard copy operation failed');
-  end;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.CopyToClipboard;
+var
+  FInfo: String;
 begin
   if SelAvail then begin
-    DoCopyToClipboard(SelText);
+    if eoFoldedCopyPaste in fOptions2 then
+      FInfo := FFoldedLinesView.GetFoldDescription(
+        FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
+        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X);
+    DoCopyToClipboard(SelText, FInfo);
   end;
 end;
 
 procedure TCustomSynEdit.CutToClipboard;
+var
+  FInfo: String;
 begin
   if SelAvail then begin
-    DoCopyToClipboard(SelText);
+    if eoFoldedCopyPaste in fOptions2 then
+      FInfo := FFoldedLinesView.GetFoldDescription(
+        FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
+        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X);
+    DoCopyToClipboard(SelText, FInfo);
     SetSelTextExternal('');
   end;
 end;
@@ -1764,12 +1674,10 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.DecPaintLock;
+procedure TCustomSynEdit.ScanFromAfterLock;
 var
   LastLineChanged: LongInt;
 begin
-  if (fPaintLock=1) and HandleAllocated then begin
-    {$IFDEF SYN_LAZARUS}
     if fHighlighterNeedsUpdateStartLine>0 then begin
       //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine));
       if fHighlighterNeedsUpdateStartLine<=FTheLinesView.Count then begin
@@ -1789,7 +1697,12 @@ begin
       fHighlighterNeedsUpdateStartLine:=0;
       fHighlighterNeedsUpdateEndLine:=0;
     end;
-    {$ENDIF}
+end;
+
+procedure TCustomSynEdit.DecPaintLock;
+begin
+  if (fPaintLock=1) and HandleAllocated then begin
+    ScanFromAfterLock;
   end;
   FCaret.Unlock; // Maybe after FFoldedLinesView;
   FTrimmedLinesView.UnLock; // Must be unlocked after caret
@@ -2380,10 +2293,10 @@ var
   end;
 
 var
-  PrimarySelText: String;
   ACommand: TSynEditorMouseCommand;
   Handled: Boolean;
   AnAction: TSynEditMouseAction;
+  ClipHelper: TSynClipboardStream;
 begin
   AnAction := nil;
   Result := False;
@@ -2459,15 +2372,19 @@ begin
         end;
       emcPasteSelection:
         begin
-          MoveCaret;
-          PrimarySelText := PrimarySelection.AsText;
-          if ((PrimarySelText<>'') or SelAvail) then begin
-            FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
-            FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos;
-            SelText:=PrimarySelText;
-          end
-          else
-            Result :=False;
+          ClipHelper := TSynClipboardStream.Create;
+          try
+            ClipHelper.ReadFromClipboard(PrimarySelection);
+            if ClipHelper.TextP <> nil then begin
+              MoveCaret;
+              FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
+              Result := PasteFromClipboardEx(ClipHelper);
+            end
+            else
+              Result := False;
+          finally
+            ClipHelper.Free;
+          end;
         end;
       emcMouseLink:
         begin
@@ -3706,63 +3623,45 @@ end;
 
 procedure TCustomSynEdit.PasteFromClipboard;
 var
-{$IFDEF SYN_LAZARUS}
-  MemStream: TMemoryStream;
-  Buf: Pointer;
-  BufSize: integer;
-{$ELSE}
-  Mem: HGLOBAL;
-{$ENDIF}
-  PasteMode: TSynSelectionMode;
-  P: PChar;
+  ClipHelper: TSynClipboardStream;
 begin
-  BeginUndoBlock;                                                               //mh 2000-11-20
+  ClipHelper := TSynClipboardStream.Create;
   try
-    // Check for our special format first.
-    if Clipboard.HasFormat(SynEditClipboardFormat) then begin
-      {$IFDEF SYN_LAZARUS}
-      MemStream:=TMemoryStream.Create;
-      Buf:=nil;
-      try
-        Clipboard.GetFormat(SynEditClipboardFormat,MemStream);
-        BufSize:=integer(MemStream.Size);
-        if BufSize>=SizeOf(TSynSelectionMode)+1 then begin
-          GetMem(Buf,BufSize+1);
-          MemStream.Position:=0;
-          MemStream.Read(Buf^,BufSize);
-          P:=PChar(Buf);
-          P[BufSize]:=#0;
-      {$ELSE}
-      Clipboard.Open;
-      try
-        Mem := Clipboard.GetAsHandle(SynEditClipboardFormat);
-        P := GlobalLock(Mem);
-        if P <> nil then begin
-      {$ENDIF}
-          // Our format: SelectionMode value followed by text.
-          // See CopyToClipboard
-          PasteMode := PSynSelectionMode(P)^;
-          inc(P, SizeOf(TSynSelectionMode));
-          SetSelTextPrimitive(PasteMode, P, true);
-        end else
-          raise ESynEditError.Create('Clipboard paste operation failed.');
-      finally
-        {$IFDEF SYN_LAZARUS}
-        MemStream.Free;
-        if Buf<>nil then FreeMem(Buf);
-        {$ELSE}
-        Clipboard.Close;
-        {$ENDIF}
+    ClipHelper.ReadFromClipboard(Clipboard);
+    PasteFromClipboardEx(ClipHelper);
+  finally
+    ClipHelper.Free;
+  end;
+end;
+
+function TCustomSynEdit.PasteFromClipboardEx(ClipHelper: TSynClipboardStream) : Boolean;
+var
+  PTxt: PChar;
+  InsStart: TPoint;
+begin
+  Result := False;
+  BeginUndoBlock;
+  try
+    if ClipHelper.TextP = nil then
+      exit;
+
+    Result := True;
+    InsStart := FBlockSelection.StartLineBytePos;
+    SetSelTextPrimitive(ClipHelper.SelectionMode, ClipHelper.TextP, true);
+
+    if eoFoldedCopyPaste in fOptions2 then begin
+      PTxt := ClipHelper.GetTagPointer(synClipTagFold);
+      if PTxt <> nil then begin
+        ScanFromAfterLock;
+        FFoldedLinesView.ApplyFoldDescription(InsStart.Y -1, InsStart.X,
+            FBlockSelection.StartLinePos-1, FBlockSelection.StartBytePos,
+            PTxt, ClipHelper.GetTagLen(synClipTagFold));
       end;
-    // If our special format isn't there, check for regular text format.
-    end else if Clipboard.HasFormat(CF_TEXT) then begin
-      // Normal text is much easier...
-      SelText := Clipboard.AsText;
     end;
   finally
-    EndUndoBlock;                                                               //mh 2000-11-20
+    EndUndoBlock;
+    EnsureCursorPosVisible;
   end;
-  EnsureCursorPosVisible;
 end;
 
 procedure TCustomSynEdit.SelectAll;
@@ -4838,7 +4737,7 @@ end;
 function TCustomSynEdit.GetCanPaste:Boolean;
 begin
   Result := Clipboard.HasFormat(CF_TEXT)
-    or Clipboard.HasFormat(SynEditClipboardFormat)
+    or Clipboard.HasFormat(TSynClipboardStream.ClipboardFormatId)
 end;
 
 procedure TCustomSynEdit.InsertBlock(BB: TPoint; ChangeStr: PChar);
@@ -5198,6 +5097,8 @@ var
   BB, BE: TPoint;
   DragDropText: string;
   Adjust: integer;
+  FoldInfo: String;
+  BlockSel: TSynEditSelection;
 begin
   if not ReadOnly  and (Source is TCustomSynEdit)
     and TCustomSynEdit(Source).SelAvail
@@ -5226,6 +5127,11 @@ begin
         BeginUndoBlock;                                                         //mh 2000-11-20
         try
           DragDropText := TCustomSynEdit(Source).SelText;
+          BlockSel := TCustomSynEdit(Source).FBlockSelection;
+          if eoFoldedCopyPaste in fOptions2 then
+            FoldInfo :=  TCustomSynEdit(Source).FFoldedLinesView.GetFoldDescription(
+                  BlockSel.FirstLineBytePos.Y - 1, BlockSel.FirstLineBytePos.X,
+                  BlockSel.LastLineBytePos.Y - 1,  BlockSel.LastLineBytePos.X);
           // delete the selected text if necessary
           if DropMove then begin
             if Source <> Self then
@@ -5250,10 +5156,13 @@ begin
           try
             CaretXY := NewCaret;
             BlockBegin := NewCaret;
-            if Source = Self then
-              SetSelTextPrimitive(smNormal, PChar(DragDropText), true)
-            else
-              SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
+            SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
+            if FoldInfo <> '' then begin
+              ScanFromAfterLock;
+              FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
+                    FBlockSelection.StartLinePos-1, FBlockSelection.StartBytePos,
+                    PChar(FoldInfo), length(FoldInfo));
+            end;
           finally
             FCaret.DecForcePastEOL;
           end;
@@ -8876,12 +8785,36 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.PrimarySelectionRequest(
   const RequestedFormatID: TClipboardFormat;  Data: TStream);
-var s: string;
+var
+  s: string;
+  ClipHelper: TSynClipboardStream;
 begin
-  if (not SelAvail) or (RequestedFormatID<>CF_TEXT) then exit;
+  if (not SelAvail) then exit;
   s:=SelText;
-  if s<>'' then
+  if s = ''  then
+    exit;
+  if RequestedFormatID = CF_TEXT then begin
     Data.Write(s[1],length(s));
+  end
+  else
+  if RequestedFormatID = TSynClipboardStream.ClipboardFormatId then begin
+    ClipHelper := TSynClipboardStream.Create;
+    try
+      ClipHelper.SelectionMode := SelectionMode;
+      // InternalText, so we don't need a 2nd call for CF_TEXT
+      ClipHelper.InternalText := s;
+      // Fold
+      if eoFoldedCopyPaste in fOptions2 then
+        s := FFoldedLinesView.GetFoldDescription(
+          FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
+          FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X);
+      if length(s) > 0 then
+        ClipHelper.AddTag(synClipTagFold, @s[1], length(s));
+      Data.Write(ClipHelper.Memory^, ClipHelper.Size);
+    finally
+      ClipHelper.Free;
+    end;
+  end;
 end;
 {$ENDIF}
 
@@ -8942,9 +8875,6 @@ begin
 end;
 
 initialization
-  {$IFNDEF SYN_LAZARUS}
-  SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
-  {$ENDIF}
   SynDefaultBeautifier := TSynBeautifier.Create(Application);
   Register;
 

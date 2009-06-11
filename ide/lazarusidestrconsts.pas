@@ -1237,6 +1237,7 @@ resourcestring
   dlgTrimSpaceTypeEditLine = 'Line Edited';
   dlgTrimSpaceTypeCaretMove = 'Caret or Edit';
   dlgTrimSpaceTypePosOnly = 'Position Only';
+  dlgCopyPasteKeepFolds = 'Copy/Paste with fold info';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

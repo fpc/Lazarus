@@ -74,6 +74,7 @@ begin
     // copying
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
+    Items.Add(dlgCopyPasteKeepFolds);
   end;
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -94,6 +95,7 @@ begin
       Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
       Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
       Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
+      Checked[Items.IndexOf(dlgCopyPasteKeepFolds)] := eoFoldedCopyPaste in SynEditOptions2;
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex :=  ord(TrimSpaceType);
   end;
@@ -127,6 +129,12 @@ begin
     ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
+    if EditorOptionsGroupBox.Checked[EditorOptionsGroupBox.Items.IndexOf
+                                     (dlgCopyPasteKeepFolds)]
+    then
+      SynEditOptions2 := SynEditOptions2 + [eoFoldedCopyPaste]
+    else
+      SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
   end;
 end;
 

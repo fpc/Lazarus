@@ -289,6 +289,14 @@ type
                                    Previous: Boolean = False): Integer;
 
     procedure CollapseDefaultFolds;
+    // Load/Save folds to string
+    // AStartIndex, AEndIndex: (0 based) First/last line (EndIndex = -1 = open end)
+    // AStartCol, AEndCol: (1 based) Logical text pos in Line. (AEndCol = -1 = full line)
+    function  GetFoldDescription(AStartIndex, AStartCol, AEndIndex,
+                                 AEndCol: Integer) :String;
+    procedure ApplyFoldDescription(AStartIndex, AStartCol, AEndIndex,
+                                   AEndCol: Integer; FoldDesc: PChar;
+                                   FoldDescLen: Integer);
 
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
@@ -314,6 +322,12 @@ type
 
   
 implementation
+
+type
+  TFoldExportEntry = Record
+    Line, LogX, LogX2, ELine, ELogX, ELogX2, FType: Integer;
+  end;
+
 
 { TSynTextFoldAVLNodeData }
 
@@ -1850,12 +1864,12 @@ begin
   hl := TSynCustomFoldHighlighter(FHighLighter);
   // AStartIndex is 0-based
   // FoldTree is 1-based AND first line remains visble
-  c := hl.FoldNodeInfoCount[AStartIndex];
+  c := hl.FoldNodeInfoCount[AStartIndex, []];
   if c = 0 then
     exit(-1);
   i := 0;
   while i < c do begin
-    nd := hl.FoldNodeInfo[aStartIndex, i];
+    nd := hl.FoldNodeInfo[aStartIndex, i, []];
     if sfaOpen in nd.FoldAction then begin
       if (nd.LogXStart >= LogX) then begin
         dec(i);
@@ -1887,10 +1901,10 @@ begin
      // Currently PascalHl Type 2 = Region
     c := hl.FoldOpenCount(i, 2);
     if c > 0 then begin
-      c := hl.FoldNodeInfoCount[i];
+      c := hl.FoldNodeInfoCount[i, []];
       j := 0;
       while j < c do begin
-        nd := hl.FoldNodeInfo[i, j];
+        nd := hl.FoldNodeInfo[i, j, []];
         if (sfaDefaultCollapsed in nd.FoldAction) and
            (not IsFoldedAtTextIndex(i, j))
         then
@@ -1899,6 +1913,149 @@ begin
       end;
     end;
     inc(i);
+  end;
+end;
+
+function TSynEditFoldedView.GetFoldDescription(AStartIndex, AStartCol, AEndIndex,
+  AEndCol: Integer): String;
+var
+  node: TSynTextFoldAVLNode;
+  hl: TSynCustomFoldHighlighter;
+  ndinfo, ndinfo2: TSynFoldNodeInfo;
+  EndIndex: Integer;
+  c, i, x: Integer;
+  entry: TFoldExportEntry;
+begin
+  Result := '';
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+
+  node := fFoldTree.FindFoldForLine(AStartIndex + 1, True);
+  if not node.IsInFold then
+    exit;
+
+  // Node.startline is first hidden line
+  while (node.StartLine = AStartIndex + 2) and (AStartCol > 1) do begin
+    ndinfo := hl.FoldNodeInfo[aStartIndex, node.FoldIndex, [sfaOpen]];
+    if (sfaInvalid in ndinfo.FoldAction) or (ndinfo.LogXStart >= AStartIndex)
+    then break;
+    node := node.Next;
+    if not node.IsInFold then
+      exit;
+  end;
+
+  while node.IsInFold and
+       ((AEndIndex < 0) or (node.StartLine-2 <= AEndIndex)) do
+  begin
+    if (node.StartLine > AStartIndex + 2) then
+      AStartCol := 0;
+
+    EndIndex := node.StartLine-2 + node.LineCount;
+    if (AEndIndex >= 0) and (EndIndex > AEndIndex) then begin
+      node := node.Next;
+      continue;
+    end;
+
+    ndinfo := hl.FoldNodeInfo[node.StartLine-2, node.FoldIndex, [sfaOpen]];
+    c := hl.FoldNodeInfoCount[EndIndex, [sfaClose]];
+    i := 0;
+    while i < c do begin
+      ndinfo2 := hl.FoldNodeInfo[EndIndex, i, [sfaClose]];
+      if ndinfo2.FoldLvlStart = ndinfo.FoldLvlEnd then break;
+      inc(i);
+    end;
+    if (i = c) or (sfaInvalid in ndinfo2.FoldAction) or
+       ((AEndIndex = EndIndex) and (AEndCol > 0) and (ndinfo2.LogXEnd > AEndCol))
+    then begin
+      node := node.Next;
+      continue;
+    end;
+
+    // Add the fold
+    x := ndinfo.LogXStart;
+    if AStartCol > 0 then
+      x := x - AStartCol + 1;
+
+    with entry do begin
+      LogX := x;
+      LogX2 := ndinfo.LogXEnd - ndinfo.LogXStart + x;
+      Line := node.StartLine - 2 - AStartIndex;
+      ELogX := ndinfo2.LogXStart;
+      ELogX2 := ndinfo2.LogXEnd;
+      ELine := node.StartLine - 2 - AStartIndex + node.LineCount;
+      FType := PtrUInt(ndinfo.FoldType);
+    end;
+    i := length(Result);
+    SetLength(Result, i + SizeOf(TFoldExportEntry));
+    System.Move(entry, Result[i+1], sizeof(TFoldExportEntry));
+
+    node := node.Next;
+  end;
+end;
+
+procedure TSynEditFoldedView.ApplyFoldDescription(AStartIndex, AStartCol, AEndIndex,
+  AEndCol: Integer; FoldDesc: PChar; FoldDescLen: Integer);
+var
+  c, i, j: Integer;
+  Line, Line2: Integer;
+  entry: TFoldExportEntry;
+  hl: TSynCustomFoldHighlighter;
+  ndinfo, ndinfo2: TSynFoldNodeInfo;
+  FoldDescEnd: PChar;
+begin
+  if not(assigned(FHighLighter) and (FHighLighter is TSynCustomFoldHighlighter))
+  then exit;
+  hl := TSynCustomFoldHighlighter(FHighLighter);
+
+  FoldDescEnd := FoldDesc + FoldDescLen;
+  if AStartCol > 0 then
+    dec(AStartCol);
+  while true do begin
+    if FoldDesc + sizeof(TFoldExportEntry) > FoldDescEnd then
+      exit;
+    System.Move(FoldDesc^, entry, sizeof(TFoldExportEntry));
+    inc(FoldDesc, sizeof(TFoldExportEntry));
+
+    if entry.Line > 0 then
+      AStartCol := 0;
+
+    Line := AStartIndex + entry.Line;
+    if Line >= FLines.Count then
+      continue;
+    c := hl.FoldNodeInfoCount[Line, [sfaOpen]];
+    j := 0;
+    while j < c do begin
+      ndinfo := hl.FoldNodeInfo[Line, j, [sfaOpen]];
+      if ndinfo.LogXStart >= entry.LogX + AStartCol then
+        break;
+      inc(j);
+    end;
+    if (sfaInvalid in ndinfo.FoldAction) or
+       (ndinfo.LogXStart <> entry.LogX + AStartCol) or
+       (ndinfo.LogXEnd <> entry.LogX2 + AStartCol)  or
+       //(ndinfo.FoldType <> entry.FType) or
+       (entry.ELine - entry.Line <> LengthForFoldAtTextIndex(Line, j))
+    then
+      continue;
+
+    Line2 := AStartIndex + entry.ELine;
+    if Line2 >= FLines.Count then
+      continue;
+    c := hl.FoldNodeInfoCount[Line2, [sfaClose]];
+    i := 0;
+    while i < c do begin
+      ndinfo2 := hl.FoldNodeInfo[Line2, i, [sfaClose]];
+      if ndinfo2.FoldLvlStart = ndinfo.FoldLvlEnd then break;
+      inc(i);
+    end;
+    if (sfaInvalid in ndinfo2.FoldAction) or
+       (ndinfo2.LogXStart <> entry.ELogX) or
+       (ndinfo2.LogXEnd <> entry.ELogX2)
+    then
+      continue;
+
+    FoldAtTextIndex(Line, j);
   end;
 end;
 
@@ -2281,8 +2438,8 @@ begin
        (hl.FoldCloseCount(aStartIndex) > 0) then begin
       o := hl.FoldOpenCount(AStartIndex);
       n := o;
-      for i := hl.FoldNodeInfoCount[aStartIndex] - 1 downto 0 do begin
-        nd := hl.FoldNodeInfo[aStartIndex, i];
+      for i := hl.FoldNodeInfoCount[aStartIndex, []] - 1 downto 0 do begin
+        nd := hl.FoldNodeInfo[aStartIndex, i, []];
         if not(sfaFold in nd.FoldAction) then
           continue;
         t := nd.FoldGroup;

@@ -40,6 +40,8 @@ unit SynEditTypes;
 {$I synedit.inc}
 
 interface
+uses
+  SysUtils;
 
 const
   TSynSpecialChars = [#128..#255]; // MG: special chars. Meaning depends on system encoding/codepage.
@@ -49,6 +51,8 @@ const
             ')', '{', '}', '@', '^', '-', '=', '+', '*', '/', '\', '|','<','>'];
 
 type
+  ESynEditError = class(Exception);
+
   TSynIdentChars = set of char;
 
   {$IFDEF SYN_LAZARUS}

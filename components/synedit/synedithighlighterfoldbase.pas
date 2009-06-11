@@ -127,8 +127,8 @@ type
     function GetFoldConfigCount: Integer; virtual;
     procedure SetFoldConfig(Index: Integer; const AValue: Boolean); virtual;
 
-    function GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo; virtual;
-    function GetFoldNodeInfoCount(Line: Integer): Integer; virtual;
+    function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; virtual;
+    function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
     function TopCodeFoldBlockType(DownIndex: Integer = 0): Pointer;
@@ -161,8 +161,8 @@ type
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
 
     // All fold-nodes
-    property FoldNodeInfo[Line, Index: Integer]: TSynFoldNodeInfo read GetFoldNodeInfo;
-    property FoldNodeInfoCount[Line: Integer]: Integer read GetFoldNodeInfoCount;
+    property FoldNodeInfo[Line, Index: Integer; Filter: TSynFoldActions]: TSynFoldNodeInfo read GetFoldNodeInfo;
+    property FoldNodeInfoCount[Line: Integer; Filter: TSynFoldActions]: Integer read GetFoldNodeInfoCount;
 
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -337,7 +337,8 @@ begin
   result := 0;
 end;
 
-function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer): Integer;
+function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer;
+  Filter: TSynFoldActions): Integer;
 begin
   Result := 0;
 end;
@@ -356,7 +357,8 @@ procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: 
 begin
 end;
 
-function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer): TSynFoldNodeInfo;
+function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer;
+  Filter: TSynFoldActions): TSynFoldNodeInfo;
 begin
   Result.FoldAction := [sfaInvalid];
 end;

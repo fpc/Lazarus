@@ -2052,6 +2052,8 @@ begin
           SynEditOptName := 'AlwaysVisibleCaret';
         eoEnhanceEndKey:
           SynEditOptName := 'EnhanceEndKey';
+        eoFoldedCopyPaste:
+          SynEditOptName := 'FoldedCopyPaste';
         else
           SynEditOptName := '';
       end;
@@ -2302,6 +2304,8 @@ begin
           SynEditOptName := 'AlwaysVisibleCaret';
         eoEnhanceEndKey:
           SynEditOptName := 'EnhanceEndKey';
+        eoFoldedCopyPaste:
+          SynEditOptName := 'FoldedCopyPaste';
         else
           SynEditOptName := '';
       end;

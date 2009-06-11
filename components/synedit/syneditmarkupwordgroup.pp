@@ -117,7 +117,7 @@ var
   begin
     repeat
       inc(NIndex);
-      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      Result := HL.FoldNodeInfo[YIndex, NIndex, []];
     until (sfaInvalid in Result.FoldAction) or
           (Result.FoldLvlEnd <= StartNode.FoldLvlStart);
     if not (sfaInvalid in Result.FoldAction) then
@@ -133,7 +133,7 @@ var
     NIndex := -1;
     repeat
       inc(NIndex);
-      Result:= HL.FoldNodeInfo[YIndex, NIndex];
+      Result:= HL.FoldNodeInfo[YIndex, NIndex, []];
     until (sfaInvalid in Result.FoldAction) or
           (Result.FoldLvlEnd <= StartNode.FoldLvlStart);
     if (Result.LogXEnd = 0) then
@@ -145,7 +145,7 @@ var
   begin
     repeat
       dec(NIndex);
-      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      Result := HL.FoldNodeInfo[YIndex, NIndex, []];
     until (sfaInvalid in Result.FoldAction) or
           (Result.FoldLvlStart <= EndNode.FoldLvlEnd);
     if not(sfaInvalid in Result.FoldAction) then
@@ -156,10 +156,10 @@ var
       dec(YIndex);
     if YIndex < 0 then
       exit;
-    NIndex := HL.FoldNodeInfoCount[YIndex];
+    NIndex := HL.FoldNodeInfoCount[YIndex, []];
     repeat
       dec(NIndex);
-      Result:= HL.FoldNodeInfo[YIndex, NIndex];
+      Result:= HL.FoldNodeInfo[YIndex, NIndex, []];
     until (sfaInvalid in Result.FoldAction) or
           (Result.FoldLvlStart <= EndNode.FoldLvlEnd);
   end;
@@ -172,7 +172,7 @@ var
     i := NIndex;
     repeat
       dec(NIndex);
-      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      Result := HL.FoldNodeInfo[YIndex, NIndex, []];
       if (sfaMarkup in Result.FoldAction) and
          (Result.LogXStart = OrigNode.LogXStart) and (Result.LogXEnd > 0)
       then
@@ -181,7 +181,7 @@ var
     NIndex := i;
     repeat
       inc(NIndex);
-      Result := HL.FoldNodeInfo[YIndex, NIndex];
+      Result := HL.FoldNodeInfo[YIndex, NIndex, []];
       if (sfaMarkup in Result.FoldAction) and
          (Result.LogXStart = OrigNode.LogXStart) and (Result.LogXEnd > 0)
       then
@@ -212,14 +212,14 @@ begin
   HL.CurrentLines := Lines;
   i := 0;
   repeat
-    Node1 := HL.FoldNodeInfo[y, i];
+    Node1 := HL.FoldNodeInfo[y, i, []];
     inc(i);
   until (sfaInvalid in Node1.FoldAction) or
         ((Node1.LogXEnd >= LogCaretXY.X - 1) and (Node1.LogXEnd > 0));
   while not(Node1.FoldAction * [sfaInvalid, sfaMarkup] <> [])
         and (Node1.LogXStart <= LogCaretXY.X - 1) do
   begin
-    Node1 := HL.FoldNodeInfo[y, i];
+    Node1 := HL.FoldNodeInfo[y, i, []];
     inc(i);
   end;
   if (Node1.LogXStart > LogCaretXY.X - 1) or not(sfaMarkup in Node1.FoldAction) then
