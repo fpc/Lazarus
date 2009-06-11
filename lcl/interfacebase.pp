@@ -101,6 +101,8 @@ type
     procedure AppSetIcon(const Small, Big: HICON); virtual;
     procedure AppSetTitle(const ATitle: string); virtual;
     procedure AppSetVisible(const AVisible: Boolean); virtual;
+    function AppRemoveStayOnTopFlags: Boolean; virtual;
+    function AppRestoreStayOnTopFlags: Boolean; virtual;
     
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;

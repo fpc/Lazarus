@@ -501,6 +501,18 @@ begin
     ShowWindow(FAppHandle, SW_HIDE);
 end;
 
+function TWin32WidgetSet.AppRemoveStayOnTopFlags: Boolean;
+begin
+  RemoveStayOnTopFlags(AppHandle);
+  Result := True;
+end;
+
+function TWin32WidgetSet.AppRestoreStayOnTopFlags: Boolean;
+begin
+  RestoreStayOnTopFlags(AppHandle);
+  Result := True;
+end;
+
 function TWin32WidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpWin32;

@@ -1141,6 +1141,7 @@ type
     FLastMouseControl: TControl;
     FLastMouseControlValid: Boolean;
     FBidiMode: TBiDiMode;
+    FRestoreStayOnTop: TList;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
@@ -1216,7 +1217,8 @@ type
                          const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
     procedure ShowHelpForObject(Sender: TObject);
-    procedure HideAllFormsWithStayOnTop;
+    procedure RemoveStayOnTop;
+    procedure RestoreStayOnTop;
     function IsWaiting: boolean;
     procedure CancelHint;
     procedure HideHint;

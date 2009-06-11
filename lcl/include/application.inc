@@ -112,6 +112,7 @@ begin
   FShowHint := true;
   FShowMainForm := true;
   FFormList := nil;
+  FRestoreStayOnTop := nil;
   FOnIdle := nil;
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;
@@ -170,6 +171,7 @@ begin
   FreeThenNil(FIcon);
   FreeIconHandles;
   FreeThenNil(FFormList);
+  FreeThenNil(FRestoreStayOnTop);
 
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
     FreeThenNil(FApplicationHandlers[HandlerType]);
@@ -1079,14 +1081,14 @@ begin
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   if not Skip then
-    HideAllFormsWithStayOnTop;
+    RemoveStayOnTop;
   // handle the exception
   if ExceptObject is Exception then
   begin
     if not Skip then
     begin
-      i:=FApplicationHandlers[ahtException].Count;
-      if Assigned(OnException) or (i>0) then
+      i := FApplicationHandlers[ahtException].Count;
+      if Assigned(OnException) or (i > 0) then
       begin
         if Assigned(OnException) then
           OnException(Sender, Exception(ExceptObject));
@@ -1096,9 +1098,12 @@ begin
       else
         ShowException(Exception(ExceptObject));
     end;
-  end else
+  end
+  else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
-  Exclude(FFlags,AppHandlingException);
+  if not Skip then
+    RestoreStayOnTop;
+  Exclude(FFlags, AppHandlingException);
 end;
 
 {------------------------------------------------------------------------------
@@ -1156,21 +1161,45 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TApplication.HideAllFormsWithStayOnTop;
+  procedure TApplication.RemoveStayOnTop;
 ------------------------------------------------------------------------------}
-procedure TApplication.HideAllFormsWithStayOnTop;
+procedure TApplication.RemoveStayOnTop;
 var
   i: Integer;
   AForm: TCustomForm;
 begin
-  if (Screen=nil) then exit;
-  for i:=0 to Screen.CustomFormCount-1 do begin
-    AForm:=Screen.CustomForms[i];
-    if AForm.FormStyle in fsAllStayOnTop then begin
-      //DebugLn('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
-      AForm.Hide;
+  if WidgetSet.AppRemoveStayOnTopFlags then
+    Exit;
+  if Screen = nil then
+    Exit;
+  for i := 0 to Screen.CustomFormCount - 1 do
+  begin
+    AForm := Screen.CustomForms[i];
+    if (AForm.Parent <> nil) or not AForm.Visible then
+      Continue;
+    if (AForm.FormStyle in fsAllStayOnTop) then
+    begin
+      AForm.FormStyle := fsNormal;
+      if FRestoreStayOnTop = nil then
+        FRestoreStayOnTop := TList.Create;
+      if FRestoreStayOnTop.IndexOf(AForm) = -1 then
+        FRestoreStayOnTop.Add(AForm);
     end;
   end;
+end;
+
+procedure TApplication.RestoreStayOnTop;
+var
+  i: integer;
+begin
+  if WidgetSet.AppRestoreStayOnTopFlags then
+    Exit;
+  if FRestoreStayOnTop <> nil then
+    for i := FRestoreStayOnTop.Count - 1 downto 0 do
+    begin
+      TCustomForm(FRestoreStayOnTop[i]).FormStyle := fsStayOnTop;
+      FRestoreStayOnTop.Delete(i);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1919,15 +1948,17 @@ begin
     end;
   end;
 
-  if (Instance is TForm) then begin
-    AForm:=TForm(Instance);
+  if (Instance is TForm) then
+  begin
+    AForm := TForm(Instance);
     UpdateMainForm(AForm);
     if FMainForm = AForm then
       AForm.HandleNeeded;
     if not Assigned(FFormList) then
       FFormList := TList.Create;
     FFormList.Add(AForm);
-    if AForm.FormStyle=fsSplash then begin
+    if AForm.FormStyle = fsSplash then
+    begin
       // show the splash form and handle the paint message
       AForm.Show;
       AForm.Paint;
@@ -1935,7 +1966,8 @@ begin
     end;
   end;
   {$IFDEF AfterConstructionDataModuleNotWorking}
-  if (Instance is TDataModule) then begin
+  if (Instance is TDataModule) then
+  begin
     TDataModule(instance).AfterConstruction;
   end;
   {$ENDIF}

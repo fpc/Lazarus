@@ -61,6 +61,16 @@ procedure TWidgetSet.AppSetVisible(const AVisible: Boolean);
 begin
 end;
 
+function TWidgetSet.AppRemoveStayOnTopFlags: Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.AppRestoreStayOnTopFlags: Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
