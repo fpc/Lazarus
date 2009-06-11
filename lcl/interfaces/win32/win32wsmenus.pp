@@ -319,7 +319,7 @@ begin
     dec(Result.cx, SpaceBetweenIcons);
 
   if (aMenuItem.ShortCut <> scNone) then
-    Inc(Result.cx, spaceBetweenIcons);
+    Inc(Result.cx, SpaceBetweenIcons);
 
   minimumHeight := GetSystemMetrics(SM_CYMENU);
   if not aMenuItem.IsInMenuBar then
@@ -375,13 +375,13 @@ begin
     Result := GetSysColor(COLOR_GRAYTEXT);
 end;
 
-procedure DrawSeparator(const aHDC: HDC; const aRect: Windows.RECT);
+procedure DrawSeparator(const AHDC: HDC; const ARect: Windows.RECT);
 var
   separatorRect: Windows.RECT;
 begin
-  separatorRect.left := aRect.left;
-  separatorRect.right := aRect.right;
-  separatorRect.top := aRect.top + (aRect.bottom - aRect.top) div 2 - 1;
+  separatorRect.left := ARect.left;
+  separatorRect.right := ARect.right;
+  separatorRect.top := (ARect.top + ARect.bottom ) div 2 - 1;
   separatorRect.bottom := separatorRect.top + 2;
   DrawEdge(aHDC, separatorRect, BDR_SUNKENOUTER, BF_RECT);
 end;
