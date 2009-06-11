@@ -34,10 +34,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CommCtrl, Windows, Classes, Buttons, Graphics, GraphType, Controls,
+  Windows, CommCtrl, Classes, Buttons, Graphics, GraphType, Controls,
+  LCLType, LCLProc, Themes,
 ////////////////////////////////////////////////////
-  WSProc, WSControls, WSButtons, WSLCLClasses,
-  Win32WSControls, Win32WSImgList, LCLType, LCLProc, Themes;
+  WSProc, WSButtons, Win32WSControls, Win32WSImgList,
+  Win32UxTheme, Win32Themes;
 
 type
 
@@ -72,7 +73,7 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; const ButtonCaption: string);
 implementation
 
 uses
-  Win32Int, InterfaceBase, Win32Proc;
+  Win32Int, Win32Proc;
 
 type
   TBitBtnAceess = class(TCustomBitBtn)
@@ -117,6 +118,21 @@ type
     uAlign: UINT;
   end;
 
+function Create32BitHBitmap(ADC: HDC; AWidth, AHeight: Integer; out BitsPtr: Pointer): HBitmap;
+var
+  Info: Windows.TBitmapInfo;
+begin
+  FillChar(Info, SizeOf(Info), 0);
+  Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
+  Info.bmiHeader.biWidth := AWidth;
+  Info.bmiHeader.biHeight := -AHeight; // top down
+  Info.bmiHeader.biPlanes := 1;
+  Info.bmiHeader.biBitCount := 32;
+  Info.bmiHeader.biCompression := BI_RGB;
+  BitsPtr := nil;
+  Result := Windows.CreateDIBSection(ADC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+end;
+
 {------------------------------------------------------------------------------
   Method: DrawBitBtnImage
   Params:  BitBtn: The TCustomBitBtn to update the image of
@@ -147,13 +163,26 @@ var
   ButtonCaptionW: widestring;
   {$ENDIF}
 
-  procedure DrawBitmap(AState: TButtonState; UseThemes: Boolean);
+  procedure DrawBitmap(AState: TButtonState; UseThemes, AlphaDraw: Boolean);
+  const
+    StateToDetail: array[TButtonState] of TThemedButton =
+    (
+     { bsUp        } tbPushButtonNormal,
+     { bsDisabled  } tbPushButtonDisabled,
+     { bsDown      } tbPushButtonPressed,
+     { bsExclusive } tbPushButtonPressed,
+     { bsHot       } tbPushButtonHot
+    );
   var
     TextFlags: integer; // flags for caption (enabled or disabled)
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     AIndex: Integer;
     AEffect: TGraphicsDrawEffect;
+    TmpDC: HDC;
+    PaintBuffer: HPAINTBUFFER;
+    Options: TDTTOpts;
+    Details: TThemedElementDetails;
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
@@ -166,21 +195,34 @@ var
     if not UseThemes and (AState = bsDisabled) then
       TextFlags := TextFlags or DSS_DISABLED;
 
-    // fill with background color
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
+    if UseThemes and AlphaDraw then
+      PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, nil, TmpDC)
+    else
+    begin
+      TmpDC := hdcNewBitmap;
+      PaintBuffer := 0;
+    end;
+    OldFontHandle := SelectObject(TmpDC, BitBtn.Font.Reference.Handle);
 
-    // dont use BitBtn.Brush.Reference.Handle - since button is painted with BtnFace color and
-    // only glyph will have that bg - this will look very ugly
+    // clear background:
+    // for alpha bitmap clear it with $00000000 else make it solid color for
+    // further masking
+    if PaintBuffer <> 0 then
+      BufferedPaintClear(PaintBuffer, nil)
+    else
+    begin
+      Windows.FillRect(TmpDC, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
+      SetTextColor(TmpDC, ColorToRGB(BitBtn.Font.Color));
+    end;
 
-    Windows.FillRect(hdcNewBitmap, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
-    SetTextColor(hdcNewBitmap, ColorToRGB(BitBtn.Font.Color));
     if AState <> bsDisabled then
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
         TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
         TWin32WSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
-          hdcNewBitmap, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
@@ -190,47 +232,73 @@ var
     begin
       // when not themed, windows wants a white background picture for disabled button image
       if not UseThemes then
-        FillRect(hdcNewBitmap, BitmapRect, GetStockObject(WHITE_BRUSH));
+        FillRect(TmpDC, BitmapRect, GetStockObject(WHITE_BRUSH));
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
         TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
-        if UseThemes then
+        if UseThemes and not AlphaDraw then
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
           // themed winapi draws bitmap-as, with transparency defined by bitbtn.brush color
-          SetBkColor(hdcNewBitmap, GetSysColor(COLOR_BTNFACE));
-          SetTextColor(hdcNewBitmap, GetSysColor(COLOR_BTNSHADOW));
+          SetBkColor(TmpDC, GetSysColor(COLOR_BTNFACE));
+          SetTextColor(TmpDC, GetSysColor(COLOR_BTNSHADOW));
         end
         else
-        if AEffect = gdeDisabled then
+        if (AEffect = gdeDisabled) and not AlphaDraw then
           AEffect := gde1Bit;
 
         TWin32WSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
-          hdcNewBitmap, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
       end;
     end;
-    SetBkMode(hdcNewBitmap, TRANSPARENT);
-    {$IFDEF WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
+    if PaintBuffer = 0 then
     begin
-      ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
-      DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
+      SetBkMode(TmpDC, TRANSPARENT);
+      {$IFDEF WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+      begin
+        ButtonCaptionW := UTF8ToUTF16(ButtonCaption);
+        DrawStateW(TmpDC, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
+      end
+      else begin
+        ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
+        DrawState(TmpDC, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
+      end;
+      {$ELSE}
+      DrawState(TmpDC, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
+      {$ENDIF}
     end
-    else begin
-      ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
-      DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
+    else
+    begin
+      Details := ThemeServices.GetElementDetails(StateToDetail[AState]);
+      FillChar(Options, SizeOf(Options), 0);
+      Options.dwSize := SizeOf(Options);
+      Options.dwFlags := DTT_COMPOSITED;
+      if AState <> bsDisabled then
+      begin
+        // change color to requested or it will be black
+        Options.crText := ThemeServices.ColorToRGB(BitBtn.Font.Color, @Details);
+        Options.crShadow := Options.crText;
+        Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
+      end;
+      TWin32ThemeServices(ThemeServices).DrawTextEx(TmpDC, Details, ButtonCaption,
+        Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy),
+        DT_SINGLELINE, @Options);
     end;
-    {$ELSE}
-    DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
-    {$ENDIF}
-    SelectObject(hdcNewBitmap, OldBitmapHandle);
-  end;
 
+    SelectObject(TmpDC, OldFontHandle);
+    if PaintBuffer <> 0 then
+      EndBufferedPaint(PaintBuffer, True);
+    NewBitmap := SelectObject(hdcNewBitmap, OldBitmapHandle);
+  end;
+var
+  RGBA: PRGBAQuad;
+  AlphaDraw: Boolean;
 begin
   // gather info about bitbtn
   BitBtnHandle := BitBtn.Handle;
@@ -248,7 +316,6 @@ begin
   BitBtnLayout := BitBtn.Layout;
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
-  OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Reference.Handle);
   MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
@@ -323,8 +390,14 @@ begin
   BitmapRect.top := 0;
   BitmapRect.right := newWidth;
   BitmapRect.bottom := newHeight;
+
+  AlphaDraw := ThemeServices.ThemesEnabled and (BeginBufferedPaint <> nil);
+
   if (newWidth = 0) or (newHeight = 0) then
     NewBitmap := 0
+  else
+  if AlphaDraw then
+    NewBitmap := Create32BitHBitmap(BitBtnDC, newWidth, newHeight, RGBA)
   else
     NewBitmap := CreateCompatibleBitmap(BitBtnDC, newWidth, newHeight);
 
@@ -338,7 +411,10 @@ begin
     if NewBitmap <> 0 then
     begin
       if ThemeServices.ThemesEnabled then
-        ButtonImageList.himl := ImageList_Create(newWidth, newHeight, ILC_COLORDDB or ILC_MASK, 5, 0)
+        if AlphaDraw then
+          ButtonImageList.himl := ImageList_Create(newWidth, newHeight, ILC_COLOR32, 5, 0)
+        else
+          ButtonImageList.himl := ImageList_Create(newWidth, newHeight, ILC_COLORDDB or ILC_MASK, 5, 0)
       else
         ButtonImageList.himl := ImageList_Create(newWidth, newHeight, ILC_COLORDDB or ILC_MASK, 1, 0);
       ButtonImageList.margin.left := 5;
@@ -352,13 +428,16 @@ begin
       begin
         for I := 1 to 6 do
         begin
-          DrawBitmap(XPBitBtn_ImageIndexToState[I], True);
-          ImageList_AddMasked(ButtonImageList.himl, NewBitmap, GetSysColor(COLOR_BTNFACE));
+          DrawBitmap(XPBitBtn_ImageIndexToState[I], True, AlphaDraw);
+          if AlphaDraw then
+            ImageList_Add(ButtonImageList.himl, NewBitmap, 0)
+          else
+            ImageList_AddMasked(ButtonImageList.himl, NewBitmap, GetSysColor(COLOR_BTNFACE));
         end;
       end
       else
       begin
-        DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], True);
+        DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], True, False);
         ImageList_AddMasked(ButtonImageList.himl, NewBitmap, GetSysColor(COLOR_BTNFACE));
       end;
     end
@@ -373,12 +452,11 @@ begin
   begin
     OldBitmap := HBITMAP(Windows.SendMessage(BitBtnHandle, BM_GETIMAGE, IMAGE_BITMAP, 0));
     if NewBitmap <> 0 then
-      DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], False);
+      DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)], False, False);
     Windows.SendMessage(BitBtnHandle, BM_SETIMAGE, IMAGE_BITMAP, LPARAM(NewBitmap));
     if OldBitmap <> 0 then
       DeleteObject(OldBitmap);
   end;
-  SelectObject(hdcNewBitmap, OldFontHandle);
   DeleteDC(hdcNewBitmap);
   ReleaseDC(BitBtnHandle, BitBtnDC);
   BitBtn.Invalidate;
