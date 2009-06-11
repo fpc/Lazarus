@@ -2076,8 +2076,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 
   procedure OutLn(const s: String);
   begin
-    OutStr(s + #13#10); // windows line ends fo Delphi comaptibility
-                        // and to compare .lfm files
+    OutStr(s + LineEnding);
   end;
 
   procedure OutString(const s: String);
