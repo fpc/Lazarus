@@ -311,7 +311,14 @@ begin
   if IsValid and FVisible and FVisibleState then
   begin
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
+    {$IFDEF USE_QT_45}
+    TQtDeviceContext(FWidget.Context).save;
+    TQtDeviceContext(FWidget.Context).setCompositionMode(QPainterRasterOp_NotSourceXorDestination);
     TQtDeviceContext(FWidget.Context).drawPixmap(PQtPoint(@FPos), FPixmap, PRect(@R));
+    TQtDeviceContext(FWidget.Context).restore;
+    {$ELSE}
+    TQtDeviceContext(FWidget.Context).drawPixmap(PQtPoint(@FPos), FPixmap, PRect(@R));
+    {$ENDIF}
   end;
 end;
 
