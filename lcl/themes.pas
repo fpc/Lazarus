@@ -165,7 +165,21 @@ type
     tmMenuBarItem,
     tmMenuBarDropDown,
     tmChevron,
-    tmSeparator
+    tmSeparator,
+    tmBarBackgroundActive, tmBarBackgroundInactive,
+    tmBarItemNormal, tmBarItemHot, tmBarItemPushed, tmBarItemDisabled, tmBarItemDisabledHot, tmBarItemDisabledPushed,
+    tmPopupBackground,
+    tmPopupBorders,
+    tmPopupCheckMarkNormal, tmPopupCheckMarkDisabled, tmPopupBulletNormal, tmPopupBulletDisabled,
+    tmPopupCheckBackgroundDisabled, tmPopupCheckBackgroundNormal, tmPopupCheckBackgroundBitmap,
+    tmPopupGutter,
+    tmPopupItemNormal, tmPopupItemHot, tmPopupItemDisabled, tmPopupItemDisabledHot,
+    tmPopupSeparator,
+    tmPopupSubmenuNormal, tmPopupSubmenuDisabled,
+    tmSystemCloseNormal, tmSystemCloseDisabled,
+    tmSystemMaximizeNormal, tmSystemMaximizeDisabled,
+    tmSystemMinimizeNormal, tmSystemMinimizeDisabled,
+    tmSystemRestoreNormal, tmSystemRestoreDisabled
   );
 
   // 'Page' theme data
@@ -879,6 +893,76 @@ begin
         begin
           Part := MENU_SEPARATOR_TMSCHEMA;
           Base := Ord(tmSeparator);
+        end;
+      tmBarBackgroundActive..tmBarBackgroundInactive:
+        begin
+          Part := MENU_BARBACKGROUND;
+          Base := Ord(tmBarBackgroundActive);
+        end;
+      tmBarItemNormal..tmBarItemDisabledPushed:
+        begin
+          Part := MENU_BARITEM;
+          Base := Ord(tmBarItemNormal);
+        end;
+      tmPopupBackground:
+        begin
+          Part := MENU_POPUPBACKGROUND;
+          Base := Ord(tmPopupBackground);
+        end;
+      tmPopupBorders:
+        begin
+          Part := MENU_POPUPBORDERS;
+          Base := Ord(tmPopupBorders);
+        end;
+      tmPopupCheckMarkNormal..tmPopupBulletDisabled:
+        begin
+          Part := MENU_POPUPCHECK;
+          Base := Ord(tmPopupCheckMarkNormal);
+        end;
+      tmPopupCheckBackgroundDisabled..tmPopupCheckBackgroundBitmap:
+        begin
+          Part := MENU_POPUPCHECKBACKGROUND;
+          Base := Ord(tmPopupCheckBackgroundDisabled);
+        end;
+      tmPopupGutter:
+        begin
+          Part := MENU_POPUPGUTTER;
+          Base := Ord(tmPopupGutter);
+        end;
+      tmPopupItemNormal..tmPopupItemDisabledHot:
+        begin
+          Part := MENU_POPUPITEM;
+          Base := Ord(tmPopupItemNormal);
+        end;
+      tmPopupSeparator:
+        begin
+          Part := MENU_POPUPSEPARATOR;
+          Base := Ord(tmPopupSeparator);
+        end;
+      tmPopupSubmenuNormal..tmPopupSubmenuDisabled:
+        begin
+          Part := MENU_POPUPSUBMENU;
+          Base := Ord(tmPopupSubmenuNormal);
+        end;
+      tmSystemCloseNormal..tmSystemCloseDisabled:
+        begin
+          Part := MENU_SYSTEMCLOSE;
+          Base := Ord(tmSystemCloseNormal);
+        end;
+      tmSystemMaximizeNormal..tmSystemMaximizeDisabled:
+        begin
+          Part := MENU_SYSTEMMAXIMIZE;
+          Base := Ord(tmSystemMaximizeNormal);
+        end;
+      tmSystemMinimizeNormal..tmSystemMinimizeDisabled:
+        begin
+          Part := MENU_SYSTEMMINIMIZE;
+          Base := Ord(tmSystemMinimizeNormal);
+        end;
+      tmSystemRestoreNormal..tmSystemRestoreDisabled:
+        begin
+          Part := MENU_SYSTEMRESTORE;
+          Base := Ord(tmSystemRestoreNormal);
         end;
     else
       Part := 0;
