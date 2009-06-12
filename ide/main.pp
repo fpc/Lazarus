@@ -847,12 +847,12 @@ type
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
-    function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-                           var ActiveUnitInfo: TUnitInfo;
+    function BeginCodeTool(out ActiveSrcEdit: TSourceEditor;
+                           out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
     function BeginCodeTool(ADesigner: TDesigner;
-                           var ActiveSrcEdit: TSourceEditor;
-                           var ActiveUnitInfo: TUnitInfo;
+                           out ActiveSrcEdit: TSourceEditor;
+                           out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
@@ -12363,19 +12363,17 @@ begin
   end;
 end;
 
-function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-  var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
+function TMainIDE.BeginCodeTool(out ActiveSrcEdit: TSourceEditor;
+  out ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
 begin
   Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
 end;
 
 function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
-  var ActiveSrcEdit: TSourceEditor; var ActiveUnitInfo: TUnitInfo;
+  out ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
-  ActiveSrcEdit:=nil;
-  ActiveUnitInfo:=nil;
 
   // check global stati
   if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
@@ -12393,8 +12391,6 @@ begin
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-  else if (ActiveSrcEdit<>nil) and (ActiveUnitInfo=nil) then
-    ActiveUnitInfo:=Project1.UnitWithEditorIndex(ActiveSrcEdit.PageIndex)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (not (ctfSourceEditorNotNeeded in Flags))
