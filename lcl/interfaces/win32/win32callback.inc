@@ -1540,7 +1540,8 @@ begin
         begin
           DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
              PDrawItemStruct(LParam)^.rcItem,
-             PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
+             PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0,
+             PDrawItemStruct(LParam)^.itemState and ODS_NOACCEL <> 0);
         end
       end;
 

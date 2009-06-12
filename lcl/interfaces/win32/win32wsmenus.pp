@@ -38,7 +38,7 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, Themes;
+  InterfaceBase, LCLProc, Themes, Win32UxTheme, TmSchema, Win32Themes;
 
 type
 
@@ -79,10 +79,11 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
-  function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;  
-  procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+  function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
+  procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ASelected, ANoAccel: boolean);
   function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-
+  procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
+    const ImageRect: TRect; const ASelected: Boolean);
 
 implementation
 
@@ -104,12 +105,44 @@ const
     MF_ENABLED
   );
 
+  PopupItemStates: array[{ Enabled } Boolean, { Selected } Boolean] of TThemedMenu =
+  (
+    (tmPopupItemDisabled, tmPopupItemDisabledHot),
+    (tmPopupItemNormal, tmPopupItemHot)
+  );
+
+  PopupCheckBgStates: array[{ Enabled } Boolean] of TThemedMenu =
+  (
+    tmPopupCheckBackgroundDisabled,
+    tmPopupCheckBackgroundNormal
+  );
+
+  PopupCheckStates: array[{ Enabled } Boolean, { RadioItem } Boolean] of TThemedMenu =
+  (
+    (tmPopupCheckMarkDisabled, tmPopupBulletDisabled),
+    (tmPopupCheckMarkNormal,  tmPopupBulletNormal)
+  );
+
 var
   menuiteminfosize : DWORD = 0;
 
 type
   TCaptionFlags = (cfBold, cfUnderline);
   TCaptionFlagsSet = set of TCaptionFlags;
+
+  // metrics for vista drawing
+  TVistaMenuMetrics = record
+    ItemMargins: TMargins;
+    CheckSize: TSize;
+    CheckMargins: TMargins;
+    CheckBgMargins: TMargins;
+    GutterSize: TSize;
+    SubMenuSize: TSize;
+    TextSize: TSize;
+    TextMargins: TMargins;
+    ShortCustSize: TSize;
+    SeparatorSize: TSize;
+  end;
 
 (* Returns index of the character in the menu item caption that is displayed
    as underlined and is therefore the hot key of the menu item.
@@ -164,34 +197,36 @@ begin
   else Result := MakeLResult(0, 0);
 end;
 
-function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
+function GetMenuItemFont(const AFlags: TCaptionFlagsSet): HFONT;
 var 
   lf: LOGFONT;
   ncm: NONCLIENTMETRICS;
 begin
-  ncm.cbSize:= sizeof(ncm);
+  ncm.cbSize := sizeof(ncm);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), @ncm, 0) then
-    lf:= ncm.lfMenuFont
+    lf := ncm.lfMenuFont
   else
-    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), @lf);
-  if cfUnderline in aFlags then lf.lfUnderline := 1
-  else lf.lfUnderline := 0;
-  if cfBold in aFlags then
+    GetObject(GetStockObject(DEFAULT_GUI_FONT), SizeOf(LOGFONT), @lf);
+  if cfUnderline in AFlags then
+    lf.lfUnderline := 1
+  else
+    lf.lfUnderline := 0;
+  if cfBold in AFlags then
   begin
-    if lf.lfWeight<=400 then
-      lf.lfWeight:= lf.lfWeight + 300
+    if lf.lfWeight <= 400 then
+      lf.lfWeight := lf.lfWeight + 300
     else
-      lf.lfWeight:= lf.lfWeight + 100;
+      lf.lfWeight := lf.lfWeight + 100;
   end;
   Result := CreateFontIndirect(@lf);
 end;
 
 (* Get the menu item caption including shortcut *)
-function CompleteMenuItemCaption(const aMenuItem: TMenuItem): string;
+function CompleteMenuItemCaption(const AMenuItem: TMenuItem): string;
 begin
-  Result := aMenuItem.Caption;
-  if aMenuItem.shortCut <> scNone then
-    Result := Result  + ShortCutToText(aMenuItem.shortCut);
+  Result := AMenuItem.Caption;
+  if AMenuItem.ShortCut <> scNone then
+    Result := Result + '  ' + ShortCutToText(AMenuItem.ShortCut);
 end;
 
 (* Get the maximum length of the given string in pixels *)
@@ -206,7 +241,7 @@ var
 {$endif WindowsUnicodeSupport}
 begin
   FillChar(tmpRect, SizeOf(tmpRect), 0);
-  newFont := getMenuItemFont(aDecoration);
+  newFont := GetMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
@@ -300,35 +335,262 @@ begin
   Result := (aMenuItemHeight - anElementHeight) div 2;
 end;
 
-function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;
+function IsVistaMenu: Boolean; inline;
+begin
+  Result := ThemeServices.ThemesAvailable and (WindowsVersion >= wvVista) and
+     (TWin32ThemeServices(ThemeServices).Theme[teMenu] <> 0);
+end;
+
+function GetVistaMenuMetrics(const AMenuItem: TMenuItem; DC: HDC): TVistaMenuMetrics;
+var
+  Theme: HTHEME;
+  TextRect: TRect;
+  W: WideString;
+  AFont, OldFont: HFONT;
+begin
+  Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
+  GetThemeMargins(Theme, 0, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
+  GetThemePartSize(Theme, 0, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
+  GetThemeMargins(Theme, 0, MENU_POPUPCHECK, 0, TMT_CONTENTMARGINS, nil, Result.CheckMargins);
+  GetThemeMargins(Theme, 0, MENU_POPUPCHECKBACKGROUND, 0, TMT_CONTENTMARGINS, nil, Result.CheckBgMargins);
+  GetThemePartSize(Theme, 0, MENU_POPUPGUTTER, 0, nil, TS_TRUE, Result.GutterSize);
+  GetThemePartSize(Theme, 0, MENU_POPUPSUBMENU, 0, nil, TS_TRUE, Result.SubMenuSize);
+
+  if AMenuItem.IsLine then
+  begin
+    GetThemePartSize(Theme, 0, MENU_POPUPSEPARATOR, 0, nil, TS_TRUE, Result.SeparatorSize);
+    FillChar(Result.TextMargins, SizeOf(Result.TextMargins), 0);
+    FillChar(Result.TextSize, SizeOf(Result.TextSize), 0);
+  end
+  else
+  begin
+    Result.TextMargins := Result.ItemMargins;
+    GetThemeInt(Theme, MENU_POPUPITEM, 0, TMT_BORDERSIZE, Result.TextMargins.cxRightWidth);
+    GetThemeInt(Theme, MENU_POPUPBACKGROUND, 0, TMT_BORDERSIZE, Result.TextMargins.cxLeftWidth);
+
+    if AMenuItem.Default then
+    begin
+      AFont := GetMenuItemFont([cfBold]);
+      OldFont := SelectObject(DC, AFont);
+    end
+    else
+      OldFont := 0;
+
+    W := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem));
+    GetThemeTextExtent(Theme, DC, MENU_POPUPITEM, 0, PWideChar(W), Length(W),
+      DT_SINGLELINE or DT_LEFT or DT_EXPANDTABS, nil, TextRect);
+    Result.TextSize.cx := TextRect.Right - TextRect.Left;
+    Result.TextSize.cy := TextRect.Bottom - TextRect.Top;
+
+    if AMenuItem.ShortCut <> scNone then
+    begin;
+      W := UTF8ToUTF16(ShortCutToText(AMenuItem.ShortCut));
+      GetThemeTextExtent(Theme, DC, MENU_POPUPITEM, 0, PWideChar(W), Length(W),
+        DT_SINGLELINE or DT_LEFT, nil, TextRect);
+      Result.ShortCustSize.cx := TextRect.Right - TextRect.Left;
+      Result.ShortCustSize.cy := TextRect.Bottom - TextRect.Top;
+    end;
+    if OldFont <> 0 then
+      DeleteObject(SelectObject(DC, OldFont));
+  end;
+end;
+
+function VistaPopupMenuItemSize(AMenuItem: TMenuItem; ADC: HDC): TSize;
+var
+  Metrics: TVistaMenuMetrics;
+begin
+  Metrics := GetVistaMenuMetrics(AMenuItem, ADC);
+  // count check
+  Result.cx := Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
+  if AMenuItem.IsLine then
+  begin
+    Result.cx := Result.cx + Metrics.SeparatorSize.cx + Metrics.ItemMargins.cxLeftWidth + Metrics.ItemMargins.cxRightWidth;
+    Result.cy := Metrics.SeparatorSize.cy + Metrics.ItemMargins.cyTopHeight + Metrics.ItemMargins.cyBottomHeight;
+  end
+  else
+  begin
+    Result.cy := Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
+    if AMenuItem.HasIcon then
+    begin
+      Result.cy := Max(Result.cy, AMenuItem.GetIconSize.y);
+      Result.cx := Max(Result.cx, AMenuItem.GetIconSize.x);
+    end;
+  end;
+  // count gutter
+  Result.cx := Result.cx + (Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth) +
+               Metrics.GutterSize.cx;
+  // count text
+  Result.cx := Result.cx + Metrics.TextSize.cx;
+  Result.cx := Result.cx + Metrics.TextMargins.cxLeftWidth + Metrics.TextMargins.cxRightWidth;
+end;
+
+procedure DrawVistaPopupMenu(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: boolean);
+var
+  Details, Tmp: TThemedElementDetails;
+  Metrics: TVistaMenuMetrics;
+  CheckRect, GutterRect, TextRect, SeparatorRect, ImageRect: TRect;
+  IconSize: TPoint;
+  TextFlags: DWord;
+  AFont, OldFont: HFONT;
+  IsRightToLeft: Boolean;
+begin
+  Metrics := GetVistaMenuMetrics(AMenuItem, AHDC);
+  // draw backgound
+  Details := ThemeServices.GetElementDetails(PopupItemStates[AMenuItem.Enabled, ASelected]);
+  if ThemeServices.HasTransparentParts(Details) then
+  begin
+    Tmp := ThemeServices.GetElementDetails(tmPopupBackground);
+    ThemeServices.DrawElement(AHDC, Tmp, ARect, nil);
+  end;
+  IsRightToLeft := AMenuItem.GetIsRightToLeft;
+  // calc check/image rect
+  CheckRect := ARect;
+  if IsRightToLeft then
+    CheckRect.left := CheckRect.Right - Metrics.CheckSize.cx - Metrics.CheckMargins.cxRightWidth - Metrics.CheckMargins.cxLeftWidth
+  else
+    CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
+  CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
+  // draw gutter
+  GutterRect := CheckRect;
+  if IsRightToLeft then
+  begin
+    GutterRect.Right := GutterRect.Left - Metrics.CheckBgMargins.cxRightWidth + Metrics.CheckMargins.cxRightWidth;
+    GutterRect.Left := GutterRect.Right - Metrics.GutterSize.cx;
+  end
+  else
+  begin
+    GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
+    GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
+  end;
+  Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
+  ThemeServices.DrawElement(AHDC, Tmp, GutterRect, nil);
+  // draw menu item
+  ThemeServices.DrawElement(AHDC, Details, ARect, nil);
+
+  if AMenuItem.IsLine then
+  begin
+    // draw separator
+    if IsRightToLeft then
+    begin
+      SeparatorRect.Left := GutterRect.Left - Metrics.ItemMargins.cxLeftWidth;
+      SeparatorRect.Right := ARect.Left - Metrics.ItemMargins.cxRightWidth;
+    end
+    else
+    begin
+      SeparatorRect.Left := GutterRect.Right + Metrics.ItemMargins.cxLeftWidth;
+      SeparatorRect.Right := ARect.Right - Metrics.ItemMargins.cxRightWidth;
+    end;
+    SeparatorRect.Top := ARect.Top + Metrics.ItemMargins.cyTopHeight;
+    SeparatorRect.Bottom := ARect.Bottom - Metrics.ItemMargins.cyBottomHeight;
+    Tmp := ThemeServices.GetElementDetails(tmPopupSeparator);
+    ThemeServices.DrawElement(AHDC, Tmp, SeparatorRect, nil);
+  end
+  else
+  begin
+    // draw check/image
+    if AMenuItem.HasIcon then
+    begin
+      ImageRect := CheckRect;
+      IconSize := AMenuItem.GetIconSize;
+      ImageRect.Left := (ImageRect.Left + ImageRect.Right - IconSize.x) div 2;
+      ImageRect.Top := (ImageRect.Top + ImageRect.Bottom - IconSize.y) div 2;
+      ImageRect.Right := IconSize.x;
+      ImageRect.Bottom := IconSize.y;
+      DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+    end
+    else
+    if AMenuItem.Checked then
+    begin
+      Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
+      ThemeServices.DrawElement(AHDC, Tmp, CheckRect, nil);
+      Tmp := ThemeServices.GetElementDetails(PopupCheckStates[AMenuItem.Enabled, AMenuItem.RadioItem]);
+      ThemeServices.DrawElement(AHDC, Tmp, CheckRect, nil);
+    end;
+    // draw text
+    TextRect := GutterRect;
+    if IsRightToLeft then
+    begin
+      TextRect.Right := TextRect.Left - Metrics.TextMargins.cxLeftWidth;
+      TextRect.Left := ARect.Left + Metrics.TextMargins.cxRightWidth;
+    end
+    else
+    begin
+      TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
+      TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
+    end;
+    TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
+    TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+    TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
+    // todo: distinct UseRightToLeftAlignment and UseRightToLeftReading
+    if IsRightToLeft then
+      TextFlags := TextFlags or DT_RIGHT or DT_RTLREADING
+    else
+      TextFlags := TextFlags or DT_LEFT;
+    if ANoAccel then
+      TextFlags := TextFlags or DT_HIDEPREFIX;
+    if AMenuItem.Default then
+    begin
+      AFont := GetMenuItemFont([cfBold]);
+      OldFont := SelectObject(AHDC, AFont);
+    end
+    else
+      OldFont := 0;
+    ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+    if AMenuItem.ShortCut <> scNone then
+    begin
+      if IsRightToLeft then
+      begin
+        TextRect.Right := TextRect.Left + Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_RIGHT or DT_LEFT;
+      end
+      else
+      begin
+        TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
+      end;
+      ThemeServices.DrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
+    end;
+    if OldFont <> 0 then
+      DeleteObject(SelectObject(AHDC, OldFont));
+  end;
+end;
+
+function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
 var
   decoration: TCaptionFlagsSet;
   minimumHeight: Integer;
 begin
-  if aMenuItem.Default then
+  // TODO: vista menubar
+  if IsVistaMenu and not AMenuItem.IsInMenuBar then
+  begin
+    Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
+    Exit;
+  end;
+
+  if AMenuItem.Default then
     decoration := [cfBold]
   else
     decoration := [];
     
-  Result := StringSize(CompleteMenuItemCaption(aMenuItem), aHDC, decoration);
-  inc(Result.cx, LeftCaptionPosition(aMenuItem));
+  Result := StringSize(CompleteMenuItemCaption(AMenuItem), AHDC, decoration);
+  inc(Result.cx, LeftCaptionPosition(AMenuItem));
 
-  if not aMenuItem.IsInMenuBar then
+  if not AMenuItem.IsInMenuBar then
     inc(Result.cx, SpaceBetweenIcons)
   else
     dec(Result.cx, SpaceBetweenIcons);
 
-  if (aMenuItem.ShortCut <> scNone) then
+  if (AMenuItem.ShortCut <> scNone) then
     Inc(Result.cx, SpaceBetweenIcons);
 
   minimumHeight := GetSystemMetrics(SM_CYMENU);
-  if not aMenuItem.IsInMenuBar then
+  if not AMenuItem.IsInMenuBar then
     Dec(minimumHeight, 2);
-  if aMenuItem.IsLine then
+  if AMenuItem.IsLine then
     Result.cy := 10 // it is a separator
   else
   begin
-    if aMenuItem.hasIcon then
+    if AMenuItem.hasIcon then
       Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
     Inc(Result.cy, 2);
     if Result.cy < minimumHeight then
@@ -449,12 +711,12 @@ begin
   else
     decoration := [];
     
-  newFont := getMenuItemFont(decoration);
+  newFont := GetMenuItemFont(decoration);
   oldFont := SelectObject(aHDC, newFont);
   IsRightToLeft := aMenuItem.GetIsRightToLeft;
 
   etoFlags := ETO_OPAQUE;
-  dtFlags := 0;
+  dtFlags := DT_EXPANDTABS;
   if IsRightToLeft then
   begin
     etoFlags := etoFlags or ETO_RTLREADING;
@@ -527,73 +789,89 @@ begin
   DeleteObject(newFont);
 end;
 
-procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC;
-  const aRect: Windows.RECT; const aSelected, aChecked: boolean);
+procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
+  const ImageRect: TRect; const ASelected: Boolean);
 var
-  x: Integer;
   AEffect: TGraphicsDrawEffect;
   AImageList: TCustomImageList;
   FreeImageList: Boolean;
   AImageIndex: Integer;
-  ImageRect: TRect;
 begin
-  AImageList := aMenuItem.GetImageList;
+  AImageList := AMenuItem.GetImageList;
   if AImageList = nil then
   begin
     AImageList := TImageList.Create(nil);
-    AImageList.Width := aMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
-    AImageList.Height := aMenuItem.Bitmap.Height;
-    AImageIndex := AImageList.Add(aMenuItem.Bitmap, nil);
+    AImageList.Width := AMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
+    AImageList.Height := AMenuItem.Bitmap.Height;
+    AImageIndex := AImageList.Add(AMenuItem.Bitmap, nil);
     FreeImageList := True;
   end
   else
   begin
     FreeImageList := False;
-    AImageIndex := aMenuItem.ImageIndex;
+    AImageIndex := AMenuItem.ImageIndex;
   end;
 
-  if not aMenuItem.Enabled then
+  if not AMenuItem.Enabled then
     AEffect := gdeDisabled
   else
-  if aSelected then
+  if ASelected then
     AEffect := gdeHighlighted
   else
     AEffect := gdeNormal;
 
-  if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - AImageList.Width - spaceBetweenIcons
-  else
-    x := aRect.Left + spaceBetweenIcons;
-
-  ImageRect := Rect(x, aRect.top + TopPosition(aRect.bottom - aRect.top, AImageList.Height),
-                    AImageList.Width, AImageList.Height);
-      
-  if aChecked then // draw rectangle around
-  begin
-    FrameRect(aHDC,
-      Rect(ImageRect.Left - 1, ImageRect.Top - 1, ImageRect.Left + ImageRect.Right + 1, ImageRect.Top + ImageRect.Bottom + 1),
-      GetSysColorBrush(COLOR_HIGHLIGHT));
-  end;
-  
   if AImageIndex < AImageList.Count then
-    TWin32WSCustomImageList.DrawToDC(AImageList, AImageIndex, aHDC,
+    TWin32WSCustomImageList.DrawToDC(AImageList, AImageIndex, AHDC,
       ImageRect, AImageList.BkColor, AImageList.BlendColor,
       AEffect, AImageList.DrawingStyle, AImageList.ImageType);
   if FreeImageList then
     AImageList.Free;
 end;
 
-procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawClassicMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
+  const ARect: TRect; const ASelected, AChecked: boolean);
+var
+  x: Integer;
+  ImageRect: TRect;
+  IconSize: TPoint;
 begin
+  IconSize := AMenuItem.GetIconSize;
+  if AMenuItem.GetIsRightToLeft then
+    x := ARect.Right - IconSize.x - spaceBetweenIcons
+  else
+    x := ARect.Left + spaceBetweenIcons;
+
+  ImageRect := Rect(x, ARect.top + TopPosition(ARect.Bottom - ARect.Top, IconSize.y),
+                    IconSize.x, IconSize.y);
+      
+  if AChecked then // draw rectangle around
+  begin
+    FrameRect(aHDC,
+      Rect(ImageRect.Left - 1, ImageRect.Top - 1, ImageRect.Left + ImageRect.Right + 1, ImageRect.Top + ImageRect.Bottom + 1),
+      GetSysColorBrush(COLOR_HIGHLIGHT));
+  end;
+
+  DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+end;
+
+procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ASelected, ANoAccel: boolean);
+begin
+  // TODO: vista menubar
+  if IsVistaMenu and not AMenuItem.IsInMenuBar then
+  begin
+    DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
+    Exit;
+  end;
+
   if aMenuItem.IsLine then
-    DrawSeparator(aHDC, aRect)
+    DrawSeparator(AHDC, ARect)
   else
   begin
-    DrawMenuItemText(aMenuItem, aHDC, aRect, aSelected);
-    if aMenuItem.hasIcon then
-      DrawMenuItemIcon(aMenuItem, aHDC, aRect, aSelected, aMenuItem.Checked) else
-    if aMenuItem.Checked then
-      DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
+    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected);
+    if aMenuItem.HasIcon then
+      DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked) else
+    if AMenuItem.Checked then
+      DrawMenuItemCheckMark(AMenuItem, AHDC, ARect, ASelected);
   end;
 end;
 

@@ -23,7 +23,6 @@ type
     FThemeData: TThemeData;            // Holds a list of theme data handles.
   protected
     function GetTheme(Element: TThemedElement): HTHEME;
-    property Theme[Element: TThemedElement]: HTHEME read GetTheme;
     function InitThemes: Boolean; override;
     procedure UnloadThemeData; override;
     function UseThemes: Boolean; override;
@@ -58,6 +57,7 @@ type
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); override;
+    property Theme[Element: TThemedElement]: HTHEME read GetTheme;
   end;
 
 implementation
