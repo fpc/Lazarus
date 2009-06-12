@@ -209,7 +209,6 @@ type
     eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
-    {$IFDEF SYN_LAZARUS}
     eoBracketHighlight,        // Highlight matching bracket
     eoDoubleClickSelectsLine,  // DEPRECATED
                                // Select line on double click
@@ -219,11 +218,9 @@ type
                                // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
-    {$ENDIF}
     );
   TSynEditorOptions = set of TSynEditorOption;
 
-  {$IFDEF SYN_LAZARUS}
   TSynEditorOption2 = (
     eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
     eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
@@ -231,22 +228,31 @@ type
     eoFoldedCopyPaste          // Remember folds in copy/paste operations
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
-  {$ENDIF}
 
 const
   SYNEDIT_DEFAULT_OPTIONS = [
     eoAutoIndent,
     eoScrollPastEol,
-    eoShowScrollHint,
     eoSmartTabs,
     eoTabsToSpaces,
     eoTrimTrailingSpaces,
-    eoSmartTabDelete,
     eoGroupUndo,
-    {$IFDEF SYN_LAZARUS}
     eoBracketHighlight
-    {$ENDIF}
     ];
+
+  // Those will be prevented from being set => so evtl they may be removed
+  SYNEDIT_UNIMPLEMENTED_OPTIONS = [
+    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
+    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
+    eoDropFiles,               //TODO Allows the editor accept file drops
+    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
+    eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
+    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
+    ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
+    eoSpacesToTabs             // Converts space characters to tabs and spaces
+  ];
 
   {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
@@ -7115,6 +7121,7 @@ var
   ChangedOptions: TSynEditorOptions;
   i: Integer;
 begin
+  Value := Value - SYNEDIT_UNIMPLEMENTED_OPTIONS;
   if (Value <> fOptions) then begin
     ChangedOptions:=(fOptions-Value)+(Value-fOptions);
     fOptions := Value;
