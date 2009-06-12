@@ -1232,9 +1232,15 @@ end;
 
 function TSynPasSyn.Func69: TtkTokenKind;
 begin
-  if KeyComp('Default') then Result := tkKey else
-    if KeyComp('Dynamic') then Result := tkKey else
-      if KeyComp('Message') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Default') then begin
+    if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
+      Result := tkKey
+    else
+      Result := tkIdentifier;
+  end else
+ if KeyComp('Dynamic') then Result := tkKey
+ else
+ if KeyComp('Message') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func71: TtkTokenKind;
