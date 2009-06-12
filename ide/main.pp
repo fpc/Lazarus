@@ -12374,6 +12374,8 @@ function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
+  ActiveSrcEdit:=nil;
+  ActiveUnitInfo:=nil;
 
   // check global stati
   if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
