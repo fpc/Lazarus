@@ -12393,7 +12393,7 @@ begin
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-  else if ActiveSrcEdit<>nil then
+  else if (ActiveSrcEdit<>nil) and (ActiveUnitInfo=nil) then
     ActiveUnitInfo:=Project1.UnitWithEditorIndex(ActiveSrcEdit.PageIndex)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
