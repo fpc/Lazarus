@@ -1305,7 +1305,6 @@ begin
       
       if I >= AIndex then // reposition panel
       begin
-        Panel.Hide;
         Panel.Left := X;
         
         if (I = AIndex) or (AIndex = -1) then // update panel attrs
