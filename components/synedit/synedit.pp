@@ -172,9 +172,12 @@ type
 
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
 
-  TSynStateFlag = (sfCaretChanged, sfScrollbarChanged, sfLinesChanging,
-    sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfGutterClick,
-    sfTripleClicked, sfQuadClicked, sfPainting,
+  TSynStateFlag = (sfCaretVisible, sfCaretChanged,
+    sfEnsureCursorPos, sfEnsureCursorPosAtResize,
+    sfIgnoreNextChar, sfPainting, sfLinesChanging,
+    sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
+    // Mouse-states
+    sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfMouseSelecting
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
@@ -1718,6 +1721,9 @@ begin
     ScrollAfterTopLineChanged;
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
+    // must be past UpdateScrollbars; but before UpdateCaret
+    if sfEnsureCursorPos in fStateFlags then
+      EnsureCursorPosVisible;
     if sfCaretChanged in fStateFlags then
       UpdateCaret;
     if fStatusChanges <> [] then
@@ -3864,18 +3870,13 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   inherited CreateHandle;
-  ShowScrollBar(Handle, SB_HORZ, fScrollBars in [ssBoth, ssHorizontal] );
-  ShowScrollBar(Handle, SB_Vert, fScrollBars in [ssBoth, ssVertical] );
+  UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);
 begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
-    if HandleAllocated then begin
-      ShowScrollBar(Handle, SB_HORZ, fScrollBars in [ssBoth, ssHorizontal] );
-      ShowScrollBar(Handle, SB_Vert, fScrollBars in [ssBoth, ssVertical] );
-    end;
     UpdateScrollBars;
     Invalidate;
   end;
@@ -4093,55 +4094,58 @@ end;
 procedure TCustomSynEdit.UpdateScrollBars;
 var
   ScrollInfo: TScrollInfo;
-  nMaxScroll: integer;
 begin
   if not HandleAllocated or (PaintLock <> 0) then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
     Exclude(fStateFlags, sfScrollbarChanged);
-    if fScrollBars <> ssNone then begin
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
-      ScrollInfo.nMin := 1;
-      ScrollInfo.nTrackPos := 0;
-      if fScrollBars in [ssBoth, ssHorizontal] then begin
-        if eoScrollPastEol in Options then
-          ScrollInfo.nMax := fMaxLeftChar
-        else
-          ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine;
-        ScrollInfo.nPage := CharsInWindow;
-        ScrollInfo.nPos := LeftChar;
-        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-        //DebugLn('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
-        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-        //' nPos=',ScrollInfo.nPos,
-        //' ClientW=',ClientWidth
-        //);
-      end;
-      if fScrollBars in [ssBoth, ssVertical] then begin
-        nMaxScroll := {$IFDEF SYN_LAZARUS}FFoldedLinesView.Count+1{$ELSE}Lines.Count{$ENDIF};
-        if (eoScrollPastEof in Options) then
-          Inc(nMaxScroll, LinesInWindow - 1);
-{$IFNDEF SYN_LAZARUS}
-        if nMaxScroll <= MAX_SCROLL then begin
-{$ENDIF}
-          ScrollInfo.nMax := Max(1, nMaxScroll);
-          ScrollInfo.nPage := LinesInWindow;
-          {$IFDEF SYN_LAZARUS}
-          ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
-          {$ELSE}
-          ScrollInfo.nPos := TopLine;
-          {$ENDIF}
-{$IFNDEF SYN_LAZARUS}
-        end else begin
-          ScrollInfo.nMin := 0;
-          ScrollInfo.nMax := MAX_SCROLL;
-          ScrollInfo.nPage := MulDiv(MAX_SCROLL, LinesInWindow, nMaxScroll);
-          ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
-        end;
-{$ENDIF}
-        SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-      end;
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
+    ScrollInfo.nMin := 1;
+    ScrollInfo.nTrackPos := 0;
+
+    // Horizontal
+    if eoScrollPastEol in Options
+      then ScrollInfo.nMax := fMaxLeftChar + 1
+      else ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
+    if ((fScrollBars in [ssBoth, ssHorizontal]) or
+        ((fScrollBars in [ssAutoBoth, ssAutoHorizontal]) and (ScrollInfo.nMax - 1 > CharsInWindow))
+       ) xor (sfHorizScrollbarVisible in fStateFlags)
+    then begin
+      if (sfHorizScrollbarVisible in fStateFlags)
+        then exclude(fStateFlags, sfHorizScrollbarVisible)
+        else include(fStateFlags, sfHorizScrollbarVisible);
+      if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
+        include(fStateFlags, sfEnsureCursorPosAtResize);
+      ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
+    end;
+    if sfHorizScrollbarVisible in fStateFlags then begin
+      ScrollInfo.nPage := CharsInWindow;
+      ScrollInfo.nPos := LeftChar;
+      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
+      //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
+      //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
+    end;
+
+    // Vertical
+    ScrollInfo.nMax := FFoldedLinesView.Count+1;
+    if (eoScrollPastEof in Options) then
+      Inc(ScrollInfo.nMax, LinesInWindow - 1);
+    if ((fScrollBars in [ssBoth, ssVertical]) or
+        ((fScrollBars in [ssAutoBoth, ssAutoVertical]) and (ScrollInfo.nMax - 1 > LinesInWindow))
+       ) xor (sfVertScrollbarVisible in fStateFlags)
+    then begin
+      if (sfVertScrollbarVisible in fStateFlags)
+        then exclude(fStateFlags, sfVertScrollbarVisible)
+        else include(fStateFlags, sfVertScrollbarVisible);
+      if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
+        include(fStateFlags, sfEnsureCursorPosAtResize);
+      ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
+    end;
+    if sfVertScrollbarVisible in fStateFlags then begin
+      ScrollInfo.nPage := LinesInWindow;
+      ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
+      SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
     end;
   end;
 end;
@@ -4260,6 +4264,9 @@ procedure TCustomSynEdit.WMSize(var Msg: TWMSize);
 begin
   inherited;
   SizeOrFontChanged(FALSE);
+  if sfEnsureCursorPosAtResize in fStateFlags then
+    EnsureCursorPosVisible;
+  Exclude(fStateFlags, sfEnsureCursorPosAtResize);
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
 end;
@@ -5412,6 +5419,11 @@ var
   PhysBlockEndXY: TPoint;
   {$ENDIF}
 begin
+  if fPaintLock > 0 then begin
+    include(fStateFlags, sfEnsureCursorPos);
+    exit;
+  end;
+  exclude(fStateFlags, sfEnsureCursorPos);
   IncPaintLock;
   try
     // Make sure X is visible
@@ -7129,6 +7141,8 @@ begin
     FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
+    if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then
+      UpdateScrollBars;
     // (un)register HWND as drop target
     if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
       ; // ToDo DragAcceptFiles
