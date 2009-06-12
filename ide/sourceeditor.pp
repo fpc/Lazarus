@@ -105,6 +105,12 @@ type
   TSourceEditor is the class that controls access for the Editor.
  ---- TSource Editor ---}
 
+  TSourceEditor = class;
+
+  TOnGetIndentEvent = procedure(Sender: TObject; SrcEditor: TSourceEditor;
+              LogCaret: TPoint; Line: Integer;
+              var Indent, BasedLine: Integer; var ReplaceIndent: Boolean) of object;
+
   { TSourceEditor }
 
   TSourceEditor = class(TSourceEditorInterface)
@@ -117,7 +123,7 @@ type
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
-    FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
+    FOnGetDesiredIndent: TOnGetIndentEvent;
     FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
@@ -386,7 +392,7 @@ type
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
-    property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
+    property OnGetDesiredIndent: TOnGetIndentEvent
       read FOnGetDesiredIndent write FOnGetDesiredIndent;
     property Owner: TComponent read FAOwner;
     property PageName: string read FPageName write SetPageName;
@@ -538,7 +544,7 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
-    FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
+    FOnGetDesiredIndent: TOnGetIndentEvent;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -602,7 +608,8 @@ type
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
-    procedure EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
+    procedure EditorGetIndent(Sender: TObject; SrcEditor: TSourceEditor;
+                              LogCaret: TPoint; Line: Integer;
                               var Indent, BasedLine: Integer; var ReplaceIndent: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -789,7 +796,7 @@ type
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
-    property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
+    property OnGetDesiredIndent: TOnGetIndentEvent
       read FOnGetDesiredIndent write FOnGetDesiredIndent;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
@@ -3008,7 +3015,7 @@ procedure TSourceEditor.EditorGetIndent(Sender: TObject; LogCaret: TPoint;
   Line: Integer; var Indent, BasedLine: Integer; var ReplaceIndent: Boolean);
 begin
   if Assigned(OnGetDesiredIndent) then
-    OnGetDesiredIndent(Sender, LogCaret, Line, Indent, BasedLine, ReplaceIndent);
+    OnGetDesiredIndent(Sender, Self, LogCaret, Line, Indent, BasedLine, ReplaceIndent);
 end;
 
 Function TSourceEditor.GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
@@ -6692,11 +6699,12 @@ begin
     OnMouseLink(Sender, X, Y, AllowMouseLink);
 end;
 
-procedure TSourceNotebook.EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
-  var Indent, BasedLine: Integer; var ReplaceIndent: Boolean);
+procedure TSourceNotebook.EditorGetIndent(Sender: TObject;
+  SrcEditor: TSourceEditor; LogCaret: TPoint; Line: Integer; var Indent,
+  BasedLine: Integer; var ReplaceIndent: Boolean);
 begin
   if Assigned(OnGetDesiredIndent) then
-    OnGetDesiredIndent(Sender, LogCaret, Line, Indent, BasedLine, ReplaceIndent);
+    OnGetDesiredIndent(Sender, SrcEditor, LogCaret, Line, Indent, BasedLine, ReplaceIndent);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);

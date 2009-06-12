@@ -362,6 +362,9 @@ type
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
+    procedure OnSrcNoteBookGetDesiredIndent(Sender: TObject; SrcEditor: TSourceEditor;
+      LogCaret: TPoint; Line: Integer; var Indent, BasedLine: Integer;
+      var ReplaceIndent: Boolean);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
@@ -785,8 +788,8 @@ type
                               DirectiveList: TStrings): TModalResult;
 
     // useful information methods
-    procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
-                             var ActiveUnitInfo: TUnitInfo); override;
+    procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
+                             out ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPageIndex(PageIndex: integer;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
@@ -917,7 +920,7 @@ type
                                const MacroName: string; var s: string;
                                const Data: PtrInt; var Handled, Abort: boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
-      NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
+      NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags); override;
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
@@ -1820,6 +1823,7 @@ begin
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
   SourceNotebook.OnMouseLink := @OnSrcNoteBookMouseLink;
+  SourceNotebook.OnGetDesiredIndent := @OnSrcNoteBookGetDesiredIndent;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
@@ -10609,8 +10613,8 @@ end;
 
 //-----------------------------------------------------------------------------
 
-procedure TMainIDE.GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
-  var ActiveUnitInfo:TUnitInfo);
+procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
+  out ActiveUnitInfo:TUnitInfo);
 begin
   if SourceNoteBook.NoteBook=nil then begin
     ActiveSourceEditor:=nil;
@@ -11173,7 +11177,7 @@ begin
 end;
 
 procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
-  NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags);
+  NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags);
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -13983,6 +13987,13 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
+end;
+
+procedure TMainIDE.OnSrcNoteBookGetDesiredIndent(Sender: TObject;
+  SrcEditor: TSourceEditor; LogCaret: TPoint; Line: Integer; var Indent,
+  BasedLine: Integer; var ReplaceIndent: Boolean);
+begin
+  // ToDo
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,

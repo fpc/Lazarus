@@ -134,17 +134,17 @@ type
     procedure HideIDE; virtual; abstract;
     procedure UnhideIDE; virtual; abstract;
 
-    procedure GetCurrentUnitInfo(var ActiveSourceEditor: TSourceEditorInterface;
-                              var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+    procedure GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
+                              out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
-                              var ActiveSourceEditor: TSourceEditorInterface;
-                              var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+                              out ActiveSourceEditor: TSourceEditorInterface;
+                              out ActiveUnitInfo: TUnitInfo); virtual; abstract;
 
     procedure DoCommand(EditorCommand: integer); virtual; abstract;
 
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
                         NeededFlags: TIDEFileStateFlags;
-                        var ResultFlags: TIDEFileStateFlags); virtual; abstract;
+                        out ResultFlags: TIDEFileStateFlags); virtual; abstract;
 
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;

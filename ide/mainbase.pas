@@ -135,13 +135,13 @@ type
     function GetMainBar: TComponent; override;
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
-                              var ActiveSourceEditor: TSourceEditorInterface;
-                              var ActiveUnitInfo: TUnitInfo); override;
+                              out ActiveSourceEditor: TSourceEditorInterface;
+                              out ActiveUnitInfo: TUnitInfo); override;
 
-    procedure GetCurrentUnitInfo(var ActiveSourceEditor: TSourceEditorInterface;
-                              var ActiveUnitInfo: TUnitInfo); override;
-    procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
-                             var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+    procedure GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
+                              out ActiveUnitInfo: TUnitInfo); override;
+    procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
+                             out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithPageIndex(PageIndex: integer;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetDesignerUnit(ADesigner: TDesigner;
@@ -258,7 +258,7 @@ begin
 end;
 
 procedure TMainIDEBase.GetUnitInfoForDesigner(ADesigner: TIDesigner;
-  var ActiveSourceEditor: TSourceEditorInterface; var ActiveUnitInfo: TUnitInfo
+  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo
   );
 var
   SrcEdit: TSourceEditor;
@@ -272,7 +272,7 @@ begin
 end;
 
 procedure TMainIDEBase.GetCurrentUnitInfo(
-  var ActiveSourceEditor: TSourceEditorInterface; var ActiveUnitInfo: TUnitInfo
+  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo
   );
 var
   ASrcEdit: TSourceEditor;
