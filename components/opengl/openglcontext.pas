@@ -25,12 +25,16 @@ unit OpenGLContext;
 {$mode objfpc}{$H+}
 
 {$IFDEF LCLGTK}
-  {$DEFINE UseGtkGLX}
-  {$DEFINE OpenGLTargetDefined}
+  {$IFDEF Linux}
+    {$DEFINE UseGtkGLX}
+    {$DEFINE OpenGLTargetDefined}
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLGTK2}
-  {$DEFINE UseGtk2GLX}
-  {$DEFINE OpenGLTargetDefined}
+  {$IFDEF Linux}
+    {$DEFINE UseGtk2GLX}
+    {$DEFINE OpenGLTargetDefined}
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLCarbon}
   {$DEFINE UseCarbonAGL}
@@ -41,7 +45,7 @@ unit OpenGLContext;
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFNDEF OpenGLTargetDefined}
-  {$ERROR this target is not yet supported}
+  {$ERROR this LCL widgetset/OS is not yet supported}
 {$ENDIF}
 
 interface
