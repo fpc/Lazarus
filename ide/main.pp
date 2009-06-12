@@ -77,8 +77,8 @@ uses
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
   // codetools
-  FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
-  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree,
+  Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds,
   // IDE interface
@@ -362,8 +362,8 @@ type
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
-    procedure OnSrcNoteBookGetDesiredIndent(Sender: TObject; SrcEditor: TSourceEditor;
-      LogCaret: TPoint; Line: Integer; var Indent, BasedLine: Integer;
+    procedure OnSrcNoteBookGetIndent(Sender: TObject; SrcEditor: TSourceEditor;
+      LogCaret: TPoint; var Indent, BasedLine: Integer;
       var ReplaceIndent: Boolean);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
@@ -1823,7 +1823,7 @@ begin
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
   SourceNotebook.OnMouseLink := @OnSrcNoteBookMouseLink;
-  SourceNotebook.OnGetDesiredIndent := @OnSrcNoteBookGetDesiredIndent;
+  SourceNotebook.OnGetIndent := @OnSrcNoteBookGetIndent;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
@@ -12390,6 +12390,8 @@ begin
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+  else if ActiveSrcEdit<>nil then
+    ActiveUnitInfo:=Project1.UnitWithEditorIndex(ActiveSrcEdit.PageIndex)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (not (ctfSourceEditorNotNeeded in Flags))
@@ -13989,11 +13991,27 @@ begin
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
-procedure TMainIDE.OnSrcNoteBookGetDesiredIndent(Sender: TObject;
-  SrcEditor: TSourceEditor; LogCaret: TPoint; Line: Integer; var Indent,
+procedure TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
+  SrcEditor: TSourceEditor; LogCaret: TPoint; var Indent,
   BasedLine: Integer; var ReplaceIndent: Boolean);
+var
+  CodeBuf: TCodeBuffer;
+  p: integer;
+  NestedComments: Boolean;
+  NewIndent: TFABIndentationPolicy;
 begin
-  // ToDo
+  {$IFNDEF EnableIndent}
+  exit;
+  {$ENDIF}
+  CodeBuf:=SrcEditor.CodeBuffer;
+  CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent AAA1 ',dbgs(LogCaret),' p=',p,' ',CodeBuf.Filename,' ',CodeBuf.SourceLength]);
+  if p<1 then exit;
+  NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
+  if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,NewIndent)
+  then exit;
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent AAA2 ',NewIndent.IndentValid,' ',NewIndent.Indent]);
+  if not NewIndent.IndentValid then exit;
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,

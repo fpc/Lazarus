@@ -44,7 +44,7 @@ unit CodeBeautifier;
 interface
 
 { $DEFINE ShowCodeBeautifier}
-{$DEFINE ShowCodeBeautifierParser}
+{ $DEFINE ShowCodeBeautifierParser}
 
 uses
   Classes, SysUtils, AVL_Tree, FileProcs, KeywordFuncLists, CodeCache,
