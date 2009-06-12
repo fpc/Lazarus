@@ -47,7 +47,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Height = 17
     Top = 161
     Width = 131
-    Anchors = [akLeft]
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 6
     Caption = 'RelativePathsCheckBox'
     Checked = True

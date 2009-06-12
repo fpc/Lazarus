@@ -17,14 +17,14 @@ LazarusResources.Add('TShowCompilerOptionsDlg','FORMDATA',[
   +'PathsCheckBox'#22'AnchorSideLeft.Control'#7#15'CmdLineGroupbox'#21'AnchorSi'
   +'deTop.Control'#7#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrCenter'#4
   +'Left'#2#6#6'Height'#2#17#3'Top'#3#161#0#5'Width'#3#131#0#7'Anchors'#11#6'ak'
-  +'Left'#0#17'BorderSpacing.Top'#2#6#7'Caption'#6#21'RelativePathsCheckBox'#7
-  +'Checked'#9#8'OnChange'#7#27'RelativePathsCheckBoxChange'#5'State'#7#9'cbChe'
-  +'cked'#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'OkButton'#21'AnchorSideTop.Control'#7
-  +#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRigh'
-  +'t.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSide'
-  +'Bottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'
-  +#3'5'#1#6'Height'#2#26#3'Top'#3#162#0#5'Width'#2'K'#7'Anchors'#11#7'akRight'
-  +#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#6'&Cl'
-  +'ose'#21'Constraints.MinHeight'#2#22#20'Constraints.MinWidth'#2'K'#4'Kind'#7
-  +#7'bkClose'#9'NumGlyphs'#2#0#8'TabOrder'#2#2#0#0#0
+  +'Left'#8'akBottom'#0#17'BorderSpacing.Top'#2#6#7'Caption'#6#21'RelativePaths'
+  +'CheckBox'#7'Checked'#9#8'OnChange'#7#27'RelativePathsCheckBoxChange'#5'Stat'
+  +'e'#7#9'cbChecked'#8'TabOrder'#2#1#0#0#7'TBitBtn'#8'OkButton'#21'AnchorSideT'
+  +'op.Control'#7#15'CmdLineGroupbox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23
+  +'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'
+  +#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBo'
+  +'ttom'#4'Left'#3'5'#1#6'Height'#2#26#3'Top'#3#162#0#5'Width'#2'K'#7'Anchors'
+  +#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Ca'
+  +'ption'#6#6'&Close'#21'Constraints.MinHeight'#2#22#20'Constraints.MinWidth'#2
+  +'K'#4'Kind'#7#7'bkClose'#9'NumGlyphs'#2#0#8'TabOrder'#2#2#0#0#0
 ]);
