@@ -327,6 +327,10 @@ begin
   end
   else
   begin
+    if ABounds.Right = 0 then
+      ABounds.Right := AList.Width;
+    if ABounds.Bottom = 0 then
+      ABounds.Bottom := AList.Height;
     // use RawImage_PerformEffect to perform drawing effect
     AList.GetRawImage(AIndex, RawImg);
     RawImg.PerformEffect(ADrawEffect, True);
