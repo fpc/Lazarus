@@ -33,7 +33,7 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonDef, CarbonPrivate,
+  CarbonDef, CarbonPrivate, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonGDIObjects,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, ExtCtrls;
   
@@ -72,6 +72,7 @@ type
     FScrollingLeftTimer: TTimer;
     FScrollingRightTimer: TTimer;
     FLockChangeEvent: integer;
+    FShowTabBar: Boolean;
     function GetPrevArrowBounds(const R: TRect): TRect;
     function GetNextArrowBounds(const R: TRect): TRect;
     procedure ScrollingLeftTimer(Sender: TObject);
@@ -115,8 +116,6 @@ type
 
 
 implementation
-
-uses CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonGDIObjects;
 
 { TCarbonTab }
 
@@ -349,6 +348,7 @@ var
   Err: OSStatus;
   Ver: SInt32;
 begin
+  FShowTabBar:=True;
   case (LCLObject as TCustomNotebook).TabPosition of
   tpTop: Direction := kControlTabDirectionNorth;
   tpBottom: Direction := kControlTabDirectionSouth;
@@ -504,7 +504,7 @@ const
   SName = 'UpdateTabs';
 begin
   try
-    if FTabs.Count = 0 then
+    if not FShowTabBar or (FTabs.Count = 0) then
     begin
       FFirstIndex := 0;
       FLastIndex := 0;
@@ -630,9 +630,12 @@ begin
 
   finally
     // update arrows visible
-    OSError(HIViewSetVisible(FPrevArrow, FFirstIndex > 0), Self, SName, SViewVisible);
-    OSError(HIViewSetVisible(FNextArrow, FLastIndex < FTabs.Count - 1), Self, SName, SViewVisible);
-    
+    if FShowTabBar then
+    begin
+      OSError(HIViewSetVisible(FPrevArrow, FFirstIndex > 0), Self, SName, SViewVisible);
+      OSError(HIViewSetVisible(FNextArrow, FLastIndex < FTabs.Count - 1), Self, SName, SViewVisible);
+    end;
+
     if UpdateIndex then UpdateTabIndex;
   end;
 end;
@@ -954,8 +957,10 @@ begin
     if (ATabIndex < 0) or (ATabIndex >= FTabs.Count) then
     begin
       // this PageIndex does not exist. This should only happen if AIndex<0
-      if AIndex>=0 then
-        debugln(['TCarbonTabsControl.SetPageIndex unknown pageindex: ',AIndex]);
+      {if AIndex>=0 then
+      begin
+        Debugln(['TCarbonTabsControl.SetPageIndex unknown pageindex: ',AIndex]);
+      end;}
       ATabIndex := -1;
       SetControl32BitValue(ControlRef(Widget), 0);
       ShowTab;
@@ -967,6 +972,7 @@ begin
     begin
       FFirstIndex := ATabIndex;
       UpdateTabs;
+      ShowTab;
     end
     else
       UpdateTabIndex;
@@ -987,6 +993,7 @@ var
   Notebook: TCustomNotebook;
   Page: TCustomPage;
 begin
+  FShowTabBar := AShow;
   if AShow then // add all tabs
   begin
     Notebook := LCLObject as TCustomNotebook;
@@ -1005,10 +1012,11 @@ begin
         end;
       end;
     end;
-  end
-  else FTabs.Clear; // remove all tabs
+  end;
+  //else FTabs.Clear; // remove all tabs
   
   UpdateTabs;
+  ShowTab;
 end;
 
 {------------------------------------------------------------------------------
