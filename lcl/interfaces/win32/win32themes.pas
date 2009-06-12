@@ -261,7 +261,7 @@ end;
 function TWin32ThemeServices.InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): LongInt;
 begin
   if ThemesEnabled then
-    Result := GetThemeSysColor(Theme[Details.Element], Color and not $80000000)
+    Result := LongInt(GetThemeSysColor(Theme[Details.Element], Integer(Color and not $80000000)))
   else
     Result := inherited;
 end;
