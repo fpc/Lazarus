@@ -120,6 +120,7 @@ var
   IsKeyWordProcedureSpecifier,
   IsKeyWordProcedureTypeSpecifier,
   IsKeyWordProcedureBracketSpecifier,
+  IsKeyWordCallingConvention,
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
   AllKeyWords,
@@ -829,7 +830,19 @@ begin
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  
+
+  IsKeyWordCallingConvention:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordCallingConvention);
+  with IsKeyWordCallingConvention do begin
+    Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
   with IsKeyWordProcedureBracketSpecifier do begin

@@ -460,8 +460,9 @@ begin
       if CurPos.Flag=cafSemicolon then begin
         ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
       end else begin
-        if UpAtomIs('INLINE') or UpAtomIs('CDECL')
-        or UpAtomIs('PASCAL') then begin
+        if IsKeyWordCallingConvention.DoItCaseInsensitive(Src,
+           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+        then begin
           ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
                           Attr);
           if not (phpWithProcModifiers in Attr) then

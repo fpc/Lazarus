@@ -14001,7 +14001,7 @@ var
   NestedComments: Boolean;
   NewIndent: TFABIndentationPolicy;
 begin
-  {$IFNDEF EnableIndent}
+  {$IFNDEF EnableIndenter}
   exit;
   {$ENDIF}
   CodeBuf:=SrcEditor.CodeBuffer;
