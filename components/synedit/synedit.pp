@@ -6525,8 +6525,12 @@ end;
 
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
-  if assigned(FFoldedLinesView) then
+  if assigned(FFoldedLinesView) then begin
+    // TODO: Maybe defer until after paintlock?
+    ScanFromAfterLock;
+    FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;
+  end;
 end;
 
 { Called by FMarkList if change }
