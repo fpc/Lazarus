@@ -113,7 +113,7 @@ const
   {$ENDIF}
   {$IFNDEF SynDefaultFont}
   SynDefaultFontName = 'Courier New';
-  SynDefaultFontHeight = 12;
+  SynDefaultFontHeight = -13;
   {$ENDIF}
   SynDefaultFontPitch = fpFixed;
   SynDefaultFontQuality = fqNonAntialiased;
