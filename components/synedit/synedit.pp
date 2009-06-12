@@ -390,7 +390,8 @@ type
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
-    fCaretOffset: TPoint;
+    FCaretOffset: TPoint;
+    FCaretWidth: Integer; // Width of caret in chars (for Overwrite caret)
     fKeyStrokes: TSynEditKeyStrokes;
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
     fModified: Boolean;
@@ -3833,7 +3834,7 @@ begin
     MaxVal := fMaxLeftChar
   else
     MaxVal := FTheLinesView.LengthOfLongestLine;
-  Value := Min(Value, MaxVal - fCharsInWindow + 1);
+  Value := Min(Value, MaxVal - fCharsInWindow + 1 + FCaretWidth);
 {end}                                                                           //mh 2000-10-19
   Value := Max(Value, 1);
   if Value <> fLeftChar then begin
@@ -4066,20 +4067,20 @@ begin
     Exclude(fStateFlags, sfCaretChanged);
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
-    CX := CaretXPix;
-    CY := CaretYPix;
-    if (CX >= fGutterWidth)
-      and (CX < ClientWidth-ScrollBarWidth)
-      and (CY >= 0)
-      and (CY < ClientHeight-ScrollBarWidth)
+    CX := CaretXPix + FCaretOffset.X;
+    CY := CaretYPix + FCaretOffset.Y;
+    if (CX >= fGutterWidth) and
+       (CX < ClientWidth - ScrollBarWidth) and
+       (CY >= 0) and
+       (CY < ClientHeight - ScrollBarWidth)
     then begin
-      SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
+      SetCaretPosEx(Handle ,CX, CY);
       //DebugLn(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
       //DebugLn(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
-      SetCaretPosEx(Handle ,CX + FCaretOffset.X, CY + FCaretOffset.Y);
+      SetCaretPosEx(Handle ,CX, CY);
     end;
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
@@ -4108,6 +4109,7 @@ begin
     if eoScrollPastEol in Options
       then ScrollInfo.nMax := fMaxLeftChar + 1
       else ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
+    inc(ScrollInfo.nMax, FCaretWidth);
     if ((fScrollBars in [ssBoth, ssHorizontal]) or
         ((fScrollBars in [ssAutoBoth, ssAutoHorizontal]) and (ScrollInfo.nMax - 1 > CharsInWindow))
        ) xor (sfHorizScrollbarVisible in fStateFlags)
@@ -5340,7 +5342,7 @@ end;
 procedure TCustomSynEdit.InitializeCaret;
 var
   ct: TSynEditCaretType;
-  cw, ch: integer;
+  cw, ch, OldWidth: integer;
 begin
   // CreateCaret automatically destroys the previous one, so we don't have to
   // worry about cleaning up the old one here with DestroyCaret.
@@ -5355,24 +5357,29 @@ begin
   then ct := FInsertCaret
   else ct := FOverwriteCaret;
 
+  OldWidth := FCaretWidth;
+  FCaretWidth := 0;
   case ct of
     ctHorizontalLine:
       begin
         cw := fCharWidth;
         ch := 2;
         FCaretOffset := Point(0, fTextHeight - 1);
+        FCaretWidth := 1;
       end;
     ctHalfBlock:
       begin
         cw := fCharWidth;
         ch := (fTextHeight - 2) div 2;
         FCaretOffset := Point(0, ch + 1);
+        FCaretWidth := 1;
       end;
     ctBlock:
       begin
         cw := fCharWidth;
         ch := fTextHeight - 2;
         FCaretOffset := Point(0, 1);
+        FCaretWidth := 1;
       end;
     else begin // ctVerticalLine
       cw := 2;
@@ -5381,6 +5388,8 @@ begin
     end;
   end;
   CreateCaret(Handle, 0, cw, ch);
+  if FCaretWidth <> OldWidth then
+    UpdateScrollBars;
   UpdateCaret;
 end;
 
@@ -5412,12 +5421,10 @@ end;
 procedure TCustomSynEdit.EnsureCursorPosVisible;
 var
   PhysCaretXY: TPoint;
-  {$IFDEF SYN_LAZARUS}
   MinX: Integer;
   MaxX: Integer;
   PhysBlockBeginXY: TPoint;
   PhysBlockEndXY: TPoint;
-  {$ENDIF}
 begin
   if fPaintLock > 0 then begin
     include(fStateFlags, sfEnsureCursorPos);
@@ -5429,7 +5436,6 @@ begin
     // Make sure X is visible
     //DebugLn('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
     PhysCaretXY:=CaretXY;
-    {$IFDEF SYN_LAZARUS}
     // try to make the current selection visible as well
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
@@ -5453,36 +5459,20 @@ begin
     end;
     {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
       ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
-      ' CharsInWindow='+dbgs(CharsInWindow),
-      ' MinX='+dbgs(MinX),
-      ' MaxX='+dbgs(MaxX),
-      ' LeftChar='+dbgs(LeftChar),
-      '');}
+      ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
+      ' LeftChar='+dbgs(LeftChar), '');}
     if MinX < LeftChar then
       LeftChar := MinX
-    else if LeftChar < MaxX - (CharsInWindow - 1) then
-      LeftChar := MaxX - (CharsInWindow - 1)
+    else if LeftChar < MaxX - (CharsInWindow - 1 - FCaretWidth) then
+      LeftChar := MaxX - (CharsInWindow - 1 - FCaretWidth)
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
     //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
-    {$ELSE}
-    if PhysCaretXY.X < LeftChar then
-      LeftChar := PhysCaretXY.X
-    else if PhysCaretXY.X > CharsInWindow + LeftChar then
-      LeftChar := PhysCaretXY.X - CharsInWindow + 1
-    else
-      LeftChar := LeftChar;                                                     //mh 2000-10-19
-    {$ENDIF}
     // Make sure Y is visible
     if CaretY < TopLine then
       TopLine := CaretY
-      {$IFDEF SYN_LAZARUS}
     else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
       TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
-      {$ELSE}
-    else if CaretY > TopLine + Max(1, LinesInWindow) - 1 then                   //mh 2000-10-19
-      TopLine := CaretY - (LinesInWindow - 1)
-      {$ENDIF}
     else
       TopLine := TopLine;                                                       //mh 2000-10-19
   finally
