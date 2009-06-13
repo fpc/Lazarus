@@ -36,18 +36,16 @@ unit DesignerMenu;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
-  Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf,  ComCtrls, Arrow, 
-  Laz_XMLCfg, LazarusIDEStrConsts,
-  PropEdits, IDEProcs;
+  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Menus, Graphics,
+  GraphType, Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, ComCtrls,
+  Arrow, ButtonPanel, Laz_XMLCfg, LazarusIDEStrConsts, PropEdits, IDEProcs;
 
 type
 
   { TTemplateMenuForm }
 
   TTemplateMenuForm = class(TForm)
-    OKBitBtn: TBitBtn;
-    CancelBitBtn: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     Edit_template_description: TEdit;
     Label_template_view: TLabel;
     Label_template_description: TLabel;
@@ -2064,6 +2062,8 @@ begin
          TemplateView('menu_1/subitem_', 0);
      end;
   end;
+  ButtonPanel1.OKButton.OnClick := @OKBitBtnClick;
+  ButtonPanel1.CancelButton.OnClick := @CancelBitBtnClick;
 end;
 
 procedure TTemplateMenuForm.FormResize(Sender: TObject);
@@ -2073,12 +2073,12 @@ end;
 
 procedure TTemplateMenuForm.CancelBitBtnClick(Sender: TObject);
 begin
-  SelectedMenuTemplate:=0;
-  ModalResult:=mrCancel;
+  SelectedMenuTemplate := 0;
 end;
 
 procedure TTemplateMenuForm.OKBitBtnClick(Sender: TObject);
-var i: Integer;
+var
+  i: Integer;
 begin
   for i:=0 to TemplatesListBox.Items.Count-1 do
     if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
@@ -2091,7 +2091,6 @@ begin
       // content of "Description" is generated from LazarusIDEStrConsts
       Description:=lisMenuEditorNewTemplateDescription;
   end;
-  ModalResult:=mrOK;
 end;
 
 procedure TTemplateMenuForm.TemplatesListBoxClick(Sender: TObject);

@@ -1,18 +1,17 @@
 object TemplateMenuForm: TTemplateMenuForm
   Left = 537
-  Height = 240
+  Height = 244
   Top = 199
   Width = 520
   Caption = 'TemplateMenuForm'
-  ClientHeight = 240
+  ClientHeight = 244
   ClientWidth = 520
   Constraints.MinHeight = 100
   Constraints.MinWidth = 350
   OnCreate = FormCreate
   OnResize = FormResize
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label_template_description: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -36,6 +35,15 @@ object TemplateMenuForm: TTemplateMenuForm
     Caption = 'Label_template_view'
     ParentColor = False
   end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 212
+    Width = 508
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
   object TemplatesListBox: TListBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label_template_description
@@ -43,12 +51,13 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideBottom.Control = ListBoxView
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 179
+    Height = 180
     Top = 26
     Width = 244
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    ItemHeight = 0
     OnClick = TemplatesListBoxClick
     TabOrder = 0
   end
@@ -59,14 +68,15 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = CancelBitBtn
+    AnchorSideBottom.Control = ButtonPanel1
     Left = 262
-    Height = 179
+    Height = 180
     Top = 26
     Width = 252
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
+    ItemHeight = 0
     TabOrder = 1
   end
   object Edit_template_description: TEdit
@@ -77,52 +87,12 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 211
+    Top = 212
     Width = 244
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     TabOrder = 2
     Text = 'Edit_template_description'
     Visible = False
-  end
-  object OKBitBtn: TBitBtn
-    AnchorSideRight.Control = CancelBitBtn
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 420
-    Height = 23
-    Top = 211
-    Width = 36
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Caption = '&ОК'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OKBitBtnClick
-    TabOrder = 3
-  end
-  object CancelBitBtn: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 462
-    Height = 23
-    Top = 211
-    Width = 52
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Отмена'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    OnClick = CancelBitBtnClick
-    TabOrder = 4
   end
 end
