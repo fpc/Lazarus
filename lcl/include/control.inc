@@ -743,7 +743,7 @@ begin
   if FParentShowHint then
   begin
     ShowHint := FParent.ShowHint;
-    FParentShowHint := true;
+    FParentShowHint := True;
   end;
 end;
 
@@ -3321,10 +3321,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetParentShowHint(Value : Boolean);
 Begin
-  if FParentShowHint <> Value
-  then begin
+  if FParentShowHint <> Value then
+  begin
     FParentShowHint := Value;
-    //Sendmessage to stop/start hints for parent
+    if Assigned(FParent) and not (csReading in ComponentState) then
+      Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
   end;
 end;
 
@@ -3991,7 +3992,8 @@ begin
   FAlign := alNone;
   FCaptureMouseButtons := [mbLeft];
   FColor := clWindow;
-  FVisible := true;
+  FVisible := True;
+  FParentBidiMode := True;
   FParentColor := True;
   FParentFont := True;
   FParentShowHint := True;
@@ -4004,7 +4006,6 @@ begin
   FHelpType := htContext;
   FDragCursor := crDrag;
   FFloatingDockSiteClass := TCustomDockForm;
-  FParentBidiMode := True;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
 end;
 
