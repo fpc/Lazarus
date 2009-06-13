@@ -724,7 +724,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMParentColorChanged(var Message: TLMessage);
 begin
-  if csLoading in ComponentState then exit;
+  if csLoading in ComponentState then Exit;
   
   if FParentColor then
   begin
@@ -740,6 +740,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMParentShowHintChanged(var Message: TLMessage);
 begin
+  if csLoading in ComponentState then Exit;
+
   if FParentShowHint then
   begin
     ShowHint := FParent.ShowHint;
@@ -2888,20 +2890,30 @@ begin
     SetBoundsKeepBase(Left,Top,NewWidth,NewHeight);
   end;
     
-  if Assigned(Parent) then begin
-    if ParentColor then begin
+  if Assigned(Parent) then
+  begin
+    if ParentColor then
+    begin
       Color := Parent.Color;
-      ParentColor := true;
+      ParentColor := True;
     end;
 
-    if ParentFont then begin
+    if ParentFont then
+    begin
       Font := Parent.Font;
-      ParentFont := true;
+      ParentFont := True;
     end;
 
-    if ParentBidiMode then begin
+    if ParentBidiMode then
+    begin
       BiDiMode := Parent.BiDiMode;
-      ParentBidiMode := true;
+      ParentBidiMode := True;
+    end;
+
+    if ParentShowHint then
+    begin
+      ShowHint := Parent.ShowHint;
+      ParentShowHint := True;
     end;
   end;
 
