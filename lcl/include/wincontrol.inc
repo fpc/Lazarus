@@ -5771,7 +5771,7 @@ begin
   AControl.ValidateContainer(Self);
   Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
   Insert(AControl,Index);
-  if not (csReadingState in AControl.ControlState) then
+  if not (csReading in AControl.ComponentState) then
   begin
     AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
     AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
