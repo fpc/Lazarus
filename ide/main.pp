@@ -14009,17 +14009,15 @@ begin
   SaveSourceEditorChangesToCodeCache(EditorIndex);
   CodeBuf:=SrcEditor.CodeBuffer;
   CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent AAA1 ',dbgs(LogCaret),' p=',p,' ',CodeBuf.Filename,' ',CodeBuf.SourceLength]);
   if p<1 then exit;
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,NewIndent)
   then exit;
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent AAA2 ',NewIndent.IndentValid,' ',NewIndent.Indent,' Indent=',Indent,' BasedLine=',BasedLine,' ReplaceIndent=',ReplaceIndent]);
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent+1;
   ReplaceIndent:=true;
   BasedLine:=-1;
-  DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent,' ReplaceIndent=',ReplaceIndent,' BasedLine=',BasedLine]);
+  //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent,' ReplaceIndent=',ReplaceIndent,' BasedLine=',BasedLine]);
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,
