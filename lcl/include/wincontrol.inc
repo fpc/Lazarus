@@ -1408,7 +1408,7 @@ begin
         LineMax:=ChildCount[asboHorizontal];
         Row:=i div LineMax;
         Col:=i mod LineMax;
-        if (BiDiMode<>bdLeftToRight) then
+        if (BiDiMode=bdRightToLeft) then
           Col:=LineMax-Col-1;
         ChildBox:=Childs[asboHorizontal][Col].Childs[asboVertical][Row];
         ChildBox.SetControl(ChildControl);
@@ -1419,7 +1419,7 @@ begin
         LineMax:=ChildCount[asboVertical];
         Col:=i div LineMax;
         Row:=i mod LineMax;
-        if (BiDiMode<>bdLeftToRight) then
+        if (BiDiMode=bdRightToLeft) then
           Col:=LineMax-Col-1;
         ChildBox:=Childs[asboVertical][Row].Childs[asboHorizontal][Col];
         ChildBox.SetControl(ChildControl);
@@ -2143,7 +2143,7 @@ begin
   //WriteDebugReport('after SumTable');
   ResizeTable(ChildSizing,TargetWidth,TargetHeight);
   //WriteDebugReport('after ResizeTable');
-  if BiDiMode<>bdLeftToRight then
+  if BiDiMode=bdRightToLeft then
     AlignToRight(TargetWidth);
   //WriteDebugReport('after AlignToRight');
   ComputeTableControlBounds(ChildSizing,BiDiMode);
