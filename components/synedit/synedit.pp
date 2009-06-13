@@ -1688,12 +1688,12 @@ procedure TCustomSynEdit.ScanFromAfterLock;
 var
   LastLineChanged: LongInt;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFromAfterLock; fPaintLock:=', fPaintLock, '  fHighlighterNeedsUpdateStartLine=', fHighlighterNeedsUpdateStartLine,' fHighlighterNeedsUpdateEndLine=',fHighlighterNeedsUpdateEndLine]);{$ENDIF}
     if fHighlighterNeedsUpdateStartLine>0 then begin
       //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine));
       if fHighlighterNeedsUpdateStartLine<=FTheLinesView.Count then begin
         if fHighlighterNeedsUpdateEndLine>FTheLinesView.Count then
           fHighlighterNeedsUpdateEndLine:=FTheLinesView.Count;
-        LastLineChanged:=fHighlighterNeedsUpdateEndLine;
         // rescan all lines in range
         // Note: The highlighter range of the line can be invalid as well,
         //       so start scan one line earlier
@@ -4379,6 +4379,7 @@ end;
 function TCustomSynEdit.ScanFrom(var Index: integer; AtLeastTilIndex: integer): integer;
 // Index and AtLeastTilIndex are 0 based
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFrom Index=', Index, '  AtLeats=', AtLeastTilIndex]);{$ENDIF}
   if Index < 0 then Index := 0;
   if not assigned(fHighlighter) or (Index > FTheLinesView.Count - 1) then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
@@ -4395,11 +4396,13 @@ begin
   Topline := TopLine;
   if Index > 0 then dec(Index);
   Dec(Result);
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFrom Result=', Result]);{$ENDIF}
 end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)
     or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
@@ -4426,6 +4429,7 @@ procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
 var
   EndIndex: Integer;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)
     or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
@@ -4460,6 +4464,7 @@ procedure TCustomSynEdit.FoldChanged(Index : integer);
 var
   i: Integer;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- FoldChanged; Index=', Index, ' topline=', TopLine, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
   TopLine := TopLine;
   i := FFoldedLinesView.CollapsedLineForFoldAtLine(CaretY);
   if i > 0 then begin

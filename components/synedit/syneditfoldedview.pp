@@ -328,7 +328,6 @@ type
     Line, LogX, LogX2, ELine, ELogX, ELogX2, FType: Integer;
   end;
 
-
 { TSynTextFoldAVLNodeData }
 
 function TSynTextFoldAVLNodeData.TreeDepth : integer;
@@ -874,6 +873,7 @@ function TSynTextFoldAVLTree.InsertNewFold(ALine, AColumn, ACount : Integer) : T
 var
   r : TSynTextFoldAVLNodeData;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- InsertNewFold ALine:=', ALine, '  AColumn=', AColumn]);{$ENDIF}
   r := NewNode;
   r.LineOffset := ALine;
   r.FoldIndex := AColumn;
@@ -891,6 +891,7 @@ var
   OldFold : TSynTextFoldAVLNode;
   lcount: Integer;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForLine ALine:=', ALine, '  IgnoreFirst=', IgnoreFirst,'  OnlyCol=',OnlyCol]);{$ENDIF}
   Result := ALine;
   OldFold := FindFoldForLine(ALine, true);
   if (not OldFold.IsInFold) // behind last node
@@ -923,6 +924,7 @@ var
   OnlyNested: Boolean;
   Nested: TSynTextFoldAVLNode;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForNodeAtLine: ALine:=', ALine, ' ANode.StartLine=', ANode.StartLine]);{$ENDIF}
   OnlyNested := ALine >= ANode.StartLine + ANode.FullCount;
   // The cfCollapsed line is one line before the fold
   Result := ANode.StartLine-1;  // Return the cfcollapsed that was unfolded
@@ -1764,6 +1766,7 @@ begin
   // ftopline is not a folded line
   // so node.FoldedBefore(next node after ftopl) does apply
   tpos  := fTopLine + node.FoldedBefore;
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- CalculateMaps fTopLine:=', fTopLine, '  tpos=',tpos]);{$ENDIF}
   cnt := fLines.Count;
   for i := 0 to fLinesInWindow do begin
     if tpos > cnt then begin
@@ -2236,12 +2239,16 @@ var
     Procedure DoRemoveNode(var theNode: TSynTextFoldAVLNode);
     var
       tmpnode: TSynTextFoldAVLNode;
+      l: Integer;
     begin
       Result := True;
       tmpnode := theNode.Prev;
+      l := theNode.StartLine;
       doFoldTree.RemoveFoldForNodeAtLine(theNode, -1); // Don't touch any nested node
       if tmpnode.IsInFold then theNode := tmpnode.Next
       else theNode := doFoldTree.FindFirstFold;
+      if Assigned(fOnFoldChanged) then
+        fOnFoldChanged(l);
     end;
   var
     FldLine, FldIndex, FldLen, FldCol: Integer;
@@ -2318,6 +2325,7 @@ var
 var
   node, tmpnode: TSynTextFoldAVLNode;
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
   Result := false;
   if fLockCount > 0 then begin
     fNeedCaretCheck := true; // We may be here as a result of lines deleted/inserted
@@ -2353,6 +2361,7 @@ begin
 
   Result := DoFixFolding(AStart, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
+  {$IFDEF SYNFOLDDEBUG}debugln(['<<FOLD-- FixFolding: DONE=', Result]);{$ENDIF}
 end;
 
 procedure TSynEditFoldedView.DoCaretChanged(Sender : TObject);
@@ -2364,12 +2373,14 @@ begin
     exit;
   end;
   i := TSynEditCaret(Sender).LinePos-1;
+  {$IFDEF SYNFOLDDEBUG}if FoldedAtTextIndex[i] then debugln(['FOLD-- DoCaretChanged  about to unfold at Index=', i]);{$ENDIF}
   if FoldedAtTextIndex[i] then
     UnFoldAtTextIndexCollapsed(i);
 end;
 
 procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
 begin
+  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged AIndex=', AIndex, '  Acount=',ACount]);{$ENDIF}
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
   {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
   if (fLockCount > 0) and (AIndex < max(fNeedFixFrom, fNeedFixMinEnd)) then begin
