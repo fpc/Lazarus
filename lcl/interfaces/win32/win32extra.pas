@@ -43,12 +43,24 @@ const
   // missed messages
   WM_NCMOUSELEAVE = $2A2; // declared in fpc 2.3.1
 
+type
+  tagMENUBARINFO = record
+    cbSize: DWORD;
+    rcBar: TRect;
+    hMenu: HMENU;
+    hwndMenu: HWND;
+    Flags: DWORD;
+  end;
+  MENUBARINFO = tagMENUBARINFO;
+  PMENUBARINFO = ^tagMENUBARINFO;
+
 // AlphaBlend is only defined for win98&2k and up
 // load dynamic and use ownfunction if not defined
 var
   AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
   GradientFill: function(DC: HDC; p2: PTriVertex; p3: ULONG; p4: Pointer; p5, p6: ULONG): BOOL; stdcall;
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
+  GetMenuBarInfo: function(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
   EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
   GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
   MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
@@ -503,6 +515,11 @@ begin
   end;
 end;
 
+function _GetMenuBarInfo(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
+begin
+  Result := False;
+end;
+
 function _EnumDisplayMonitors(hdcOptionalForPainting: HDC;
   lprcEnumMonitorsThatIntersect: PRect;
   lpfnEnumProc: MonitorEnumProc;
@@ -645,6 +662,7 @@ var
   p: Pointer;
 begin
   GetComboBoxInfo := nil;
+  GetMenuBarInfo := nil;
 
   AlphaBlend := @_AlphaBlend;
 
@@ -681,6 +699,11 @@ begin
       Pointer(GetComboboxInfo) := p
     else
       Pointer(GetComboboxInfo) := @_GetComboboxInfo;
+    p := GetProcAddress(user32handle, 'GetMenuBarInfo');
+    if p <> nil then
+      Pointer(GetMenuBarInfo) := p
+    else
+      Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
     p := GetProcAddress(user32handle, 'EnumDisplayMonitors');
     if p <> nil then
       Pointer(EnumDisplayMonitors) := p
@@ -730,6 +753,7 @@ procedure Finalize;
 begin
   AlphaBlend := @_AlphaBlend;
   GetComboboxInfo := nil;
+  GetMenuBarInfo := nil;
 
   if msimg32handle <> 0
   then FreeLibrary(msimg32handle);

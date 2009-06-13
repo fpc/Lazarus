@@ -38,7 +38,7 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, Themes, Win32UxTheme, TmSchema, Win32Themes;
+  InterfaceBase, LCLProc, Themes, Win32UxTheme, TmSchema, Win32Themes, Win32Extra;
 
 type
 
@@ -80,7 +80,7 @@ type
   end;
 
   function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
-  procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ASelected, ANoAccel: boolean);
+  procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemState: UINT);
   function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
   procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
     const ImageRect: TRect; const ASelected: Boolean);
@@ -131,7 +131,7 @@ type
   TCaptionFlagsSet = set of TCaptionFlags;
 
   // metrics for vista drawing
-  TVistaMenuMetrics = record
+  TVistaPopupMenuMetrics = record
     ItemMargins: TMargins;
     CheckSize: TSize;
     CheckMargins: TMargins;
@@ -142,6 +142,11 @@ type
     TextMargins: TMargins;
     ShortCustSize: TSize;
     SeparatorSize: TSize;
+  end;
+
+  TVistaBarMenuMetrics = record
+    ItemMargins: TMargins;
+    TextSize: TSize;
   end;
 
 (* Returns index of the character in the menu item caption that is displayed
@@ -222,11 +227,11 @@ begin
 end;
 
 (* Get the menu item caption including shortcut *)
-function CompleteMenuItemCaption(const AMenuItem: TMenuItem): string;
+function CompleteMenuItemCaption(const AMenuItem: TMenuItem; Spacing: String): string;
 begin
   Result := AMenuItem.Caption;
   if AMenuItem.ShortCut <> scNone then
-    Result := Result + '  ' + ShortCutToText(AMenuItem.ShortCut);
+    Result := Result + Spacing + ShortCutToText(AMenuItem.ShortCut);
 end;
 
 (* Get the maximum length of the given string in pixels *)
@@ -341,7 +346,7 @@ begin
      (TWin32ThemeServices(ThemeServices).Theme[teMenu] <> 0);
 end;
 
-function GetVistaMenuMetrics(const AMenuItem: TMenuItem; DC: HDC): TVistaMenuMetrics;
+function GetVistaPopupMenuMetrics(const AMenuItem: TMenuItem; DC: HDC): TVistaPopupMenuMetrics;
 var
   Theme: HTHEME;
   TextRect: TRect;
@@ -369,14 +374,12 @@ begin
     GetThemeInt(Theme, MENU_POPUPBACKGROUND, 0, TMT_BORDERSIZE, Result.TextMargins.cxLeftWidth);
 
     if AMenuItem.Default then
-    begin
-      AFont := GetMenuItemFont([cfBold]);
-      OldFont := SelectObject(DC, AFont);
-    end
+      AFont := GetMenuItemFont([cfBold])
     else
-      OldFont := 0;
+      AFont := GetMenuItemFont([]);
+    OldFont := SelectObject(DC, AFont);
 
-    W := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem));
+    W := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem, #9));
     GetThemeTextExtent(Theme, DC, MENU_POPUPITEM, 0, PWideChar(W), Length(W),
       DT_SINGLELINE or DT_LEFT or DT_EXPANDTABS, nil, TextRect);
     Result.TextSize.cx := TextRect.Right - TextRect.Left;
@@ -395,11 +398,54 @@ begin
   end;
 end;
 
+function GetVistaBarMenuMetrics(const AMenuItem: TMenuItem; DC: HDC): TVistaBarMenuMetrics;
+var
+  Theme: HTHEME;
+  TextRect: TRect;
+  W: WideString;
+  AFont, OldFont: HFONT;
+begin
+  Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
+  GetThemeMargins(Theme, 0, MENU_BARITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
+
+  if AMenuItem.Default then
+    AFont := GetMenuItemFont([cfBold])
+  else
+    AFont := GetMenuItemFont([]);
+
+  OldFont := SelectObject(DC, AFont);
+
+  W := UTF8ToUTF16(AMenuItem.Caption);
+  GetThemeTextExtent(Theme, DC, MENU_BARITEM, 0, PWideChar(W), Length(W),
+    DT_SINGLELINE or DT_LEFT or DT_EXPANDTABS, nil, TextRect);
+  Result.TextSize.cx := TextRect.Right - TextRect.Left;
+  Result.TextSize.cy := TextRect.Bottom - TextRect.Top;
+  if OldFont <> 0 then
+    DeleteObject(SelectObject(DC, OldFont));
+end;
+
+function VistaBarMenuItemSize(AMenuItem: TMenuItem; ADC: HDC): TSize;
+var
+  Metrics: TVistaBarMenuMetrics;
+  IconSize: TPoint;
+begin
+  Metrics := GetVistaBarMenuMetrics(AMenuItem, ADC);
+  // item margins. Seems windows adds that margins itself to our return values
+  Result.cx := 0; //Metrics.ItemMargins.cxLeftWidth + Metrics.ItemMargins.cxRightWidth;
+  Result.cy := 0; //Metrics.ItemMargins.cyTopHeight + Metrics.ItemMargins.cyBottomHeight;
+  // + text size / icon size
+  IconSize := AMenuItem.GetIconSize;
+  Result.cx := Result.cx + Metrics.TextSize.cx + IconSize.x;
+  if IconSize.x > 0 then
+    inc(Result.cx, Metrics.ItemMargins.cxLeftWidth);
+  Result.cy := Result.cy + Max(Metrics.TextSize.cy, IconSize.y);
+end;
+
 function VistaPopupMenuItemSize(AMenuItem: TMenuItem; ADC: HDC): TSize;
 var
-  Metrics: TVistaMenuMetrics;
+  Metrics: TVistaPopupMenuMetrics;
 begin
-  Metrics := GetVistaMenuMetrics(AMenuItem, ADC);
+  Metrics := GetVistaPopupMenuMetrics(AMenuItem, ADC);
   // count check
   Result.cx := Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
   if AMenuItem.IsLine then
@@ -424,17 +470,163 @@ begin
   Result.cx := Result.cx + Metrics.TextMargins.cxLeftWidth + Metrics.TextMargins.cxRightWidth;
 end;
 
+procedure DrawVistaMenuBar(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: Boolean; const ItemState: UINT);
+const
+  BarState: array[Boolean] of TThemedMenu =
+  (
+    tmBarBackgroundInactive,
+    tmBarBackgroundActive
+  );
+  OBJID_MENU = LONG($FFFFFFFD);
+
+  function IsLast: Boolean;
+  var
+    Index, i: Integer;
+  begin
+    Index := AMenuItem.Parent.IndexOf(AMenuItem);
+    for i := Index + 1 to AMenuItem.Parent.Count - 1 do
+      if AMenuItem.Parent.Items[i].Visible then
+        Exit(False);
+    Result := True;
+  end;
+
+var
+  MenuState: TThemedMenu;
+  Metrics: TVistaBarMenuMetrics;
+  Details, Tmp: TThemedElementDetails;
+  BGRect, BGClip, WndRect, TextRect, ImageRect: TRect;
+  IconSize: TPoint;
+  TextFlags: DWord;
+  AFont, OldFont: HFONT;
+  IsRightToLeft: Boolean;
+  Info: tagMENUBARINFO;
+begin
+  if (ItemState and ODS_SELECTED) <> 0 then
+    MenuState := tmBarItemPushed
+  else
+  if (ItemState and ODS_HOTLIGHT) <> 0 then
+    MenuState := tmBarItemHot
+  else
+    MenuState := tmBarItemNormal;
+
+  if (ItemState and (ODS_DISABLED or ODS_INACTIVE)) <> 0 then
+    inc(MenuState, 3);
+
+  IsRightToLeft := AMenuItem.GetIsRightToLeft;
+  Metrics := GetVistaBarMenuMetrics(AMenuItem, AHDC);
+
+  // draw backgound
+  // This is a hackish way to draw. Seems windows itself draws this in WM_PAINT or another paint handler?
+  BGRect := ARect;
+  BGClip := ARect;
+  FillChar(Info, SizeOf(Info), 0);
+  Info.cbSize := SizeOf(Info);
+  if IsLast then
+  begin
+    GetMenuBarInfo(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, OBJID_MENU, 0, @Info);
+    GetWindowRect(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, @WndRect);
+    if IsRightToLeft then
+    begin
+      BGRect.Left := (Info.rcBar.Left - WndRect.Left);
+      inc(BGRect.Right, 2);
+      BGClip.Left := BGRect.Left;
+    end
+    else
+    begin
+      BGRect.Right := (Info.rcBar.Right - WndRect.Left);
+      dec(BGRect.Left, 2);
+      BGClip.Right := BGRect.Right;
+    end;
+  end
+  else
+  begin
+    BGRect := ARect;
+    if AMenuItem.MenuVisibleIndex > 0 then
+    begin
+      if IsRightToLeft then
+        inc(BGRect.Right, 2)
+      else
+        dec(BGRect.Left, 2);
+    end
+    else
+    begin
+      GetMenuBarInfo(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, OBJID_MENU, 0, @Info);
+      GetWindowRect(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, @WndRect);
+      if IsRightToLeft then
+      begin
+        BGRect.Right := (Info.rcBar.Right - WndRect.Left);
+        BGClip.Right := BGRect.Right;
+      end
+      else
+      begin
+        BGRect.Left := (Info.rcBar.Left - WndRect.Left);
+        BGClip.Left := BGRect.Left;
+      end;
+    end;
+    if IsRightToLeft then
+      dec(BGRect.Left, 2)
+    else
+      inc(BGRect.Right, 2);
+  end;
+  Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
+  ThemeServices.DrawElement(AHDC, Tmp, BGRect, @BGClip);
+
+  Details := ThemeServices.GetElementDetails(MenuState);
+  // draw menu item
+  ThemeServices.DrawElement(AHDC, Details, ARect, nil);
+
+  TextRect := ARect;
+  inc(TextRect.Left, Metrics.ItemMargins.cxLeftWidth);
+  dec(TextRect.Right, Metrics.ItemMargins.cxRightWidth);
+  inc(TextRect.Top, Metrics.ItemMargins.cyTopHeight);
+  dec(TextRect.Bottom, Metrics.ItemMargins.cyBottomHeight);
+  // draw check/image
+  if AMenuItem.HasIcon then
+  begin
+    IconSize := AMenuItem.GetIconSize;
+    if IsRightToLeft then
+      ImageRect.Left := TextRect.Right - IconSize.x
+    else
+      ImageRect.Left := TextRect.Left;
+    ImageRect.Top := (TextRect.Top + TextRect.Bottom - IconSize.y) div 2;
+    ImageRect.Right := 0;
+    ImageRect.Bottom := 0;
+    DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+    if IsRightToLeft then
+      dec(TextRect.Right, IconSize.x + Metrics.ItemMargins.cxLeftWidth)
+    else
+      inc(TextRect.Left, IconSize.x + Metrics.ItemMargins.cxLeftWidth);
+  end;
+
+  // draw text
+  TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
+  TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+  TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
+  if IsRightToLeft then
+    TextFlags := TextFlags or DT_RTLREADING;
+  if ANoAccel then
+    TextFlags := TextFlags or DT_HIDEPREFIX;
+  if AMenuItem.Default then
+    AFont := GetMenuItemFont([cfBold])
+  else
+    AFont := GetMenuItemFont([]);
+  OldFont := SelectObject(AHDC, AFont);
+  ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+  if OldFont <> 0 then
+    DeleteObject(SelectObject(AHDC, OldFont));
+end;
+
 procedure DrawVistaPopupMenu(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: boolean);
 var
   Details, Tmp: TThemedElementDetails;
-  Metrics: TVistaMenuMetrics;
+  Metrics: TVistaPopupMenuMetrics;
   CheckRect, GutterRect, TextRect, SeparatorRect, ImageRect: TRect;
   IconSize: TPoint;
   TextFlags: DWord;
   AFont, OldFont: HFONT;
   IsRightToLeft: Boolean;
 begin
-  Metrics := GetVistaMenuMetrics(AMenuItem, AHDC);
+  Metrics := GetVistaPopupMenuMetrics(AMenuItem, AHDC);
   // draw backgound
   Details := ThemeServices.GetElementDetails(PopupItemStates[AMenuItem.Enabled, ASelected]);
   if ThemeServices.HasTransparentParts(Details) then
@@ -529,12 +721,10 @@ begin
     if ANoAccel then
       TextFlags := TextFlags or DT_HIDEPREFIX;
     if AMenuItem.Default then
-    begin
-      AFont := GetMenuItemFont([cfBold]);
-      OldFont := SelectObject(AHDC, AFont);
-    end
+      AFont := GetMenuItemFont([cfBold])
     else
-      OldFont := 0;
+      AFont := GetMenuItemFont([]);
+    OldFont := SelectObject(AHDC, AFont);
     ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
@@ -561,9 +751,12 @@ var
   minimumHeight: Integer;
 begin
   // TODO: vista menubar
-  if IsVistaMenu and not AMenuItem.IsInMenuBar then
+  if IsVistaMenu then
   begin
-    Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
+    if AMenuItem.IsInMenuBar then
+      Result := VistaBarMenuItemSize(AMenuItem, AHDC)
+    else
+      Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
     Exit;
   end;
 
@@ -572,7 +765,7 @@ begin
   else
     decoration := [];
     
-  Result := StringSize(CompleteMenuItemCaption(AMenuItem), AHDC, decoration);
+  Result := StringSize(CompleteMenuItemCaption(AMenuItem, '  '), AHDC, decoration);
   inc(Result.cx, LeftCaptionPosition(AMenuItem));
 
   if not AMenuItem.IsInMenuBar then
@@ -854,12 +1047,18 @@ begin
   DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
 end;
 
-procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ASelected, ANoAccel: boolean);
+procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemState: UINT);
+var
+  ASelected, ANoAccel: Boolean;
 begin
-  // TODO: vista menubar
-  if IsVistaMenu and not AMenuItem.IsInMenuBar then
+  ASelected := (ItemState and ODS_SELECTED) <> 0;
+  ANoAccel := (ItemState and ODS_NOACCEL) <> 0;
+  if IsVistaMenu then
   begin
-    DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
+    if AMenuItem.IsInMenuBar then
+      DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState)
+    else
+      DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
     Exit;
   end;
 
@@ -869,7 +1068,8 @@ begin
   begin
     DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected);
     if aMenuItem.HasIcon then
-      DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked) else
+      DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked)
+    else
     if AMenuItem.Checked then
       DrawMenuItemCheckMark(AMenuItem, AHDC, ARect, ASelected);
   end;
