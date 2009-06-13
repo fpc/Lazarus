@@ -876,7 +876,7 @@ begin
   DeleteDC(hdcMem);
 end;
 
-procedure DrawMenuItemText(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemText(const AMenuItem: TMenuItem; const AHDC: HDC; ARect: TRect; const ASelected, ANoAccel: boolean);
 var
   crText: COLORREF;
   crBkgnd: COLORREF;
@@ -888,78 +888,80 @@ var
   WorkRect: Windows.RECT;
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
-  dtFlags: Word;
+  dtFlags: DWord;
 {$ifdef WindowsUnicodeSupport}
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
 {$endif WindowsUnicodeSupport}
 begin
-  crText := TextColorMenu(aSelected, aMenuItem.Enabled);
-  crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
-  SetTextColor(aHDC, crText);
-  SetBkColor(aHDC, crBkgnd);
+  crText := TextColorMenu(ASelected, AMenuItem.Enabled);
+  crBkgnd := BackgroundColorMenu(ASelected, AMenuItem.IsInMenuBar);
+  SetTextColor(AHDC, crText);
+  SetBkColor(AHDC, crBkgnd);
 
-  if aMenuItem.Default then
+  if AMenuItem.Default then
     decoration := [cfBold]
   else
     decoration := [];
     
   newFont := GetMenuItemFont(decoration);
-  oldFont := SelectObject(aHDC, newFont);
-  IsRightToLeft := aMenuItem.GetIsRightToLeft;
+  oldFont := SelectObject(AHDC, newFont);
+  IsRightToLeft := AMenuItem.GetIsRightToLeft;
 
   etoFlags := ETO_OPAQUE;
   dtFlags := DT_EXPANDTABS;
+  if ANoAccel then
+    dtFlags := dtFlags or DT_HIDEPREFIX;
   if IsRightToLeft then
   begin
     etoFlags := etoFlags or ETO_RTLREADING;
     dtFlags := dtFlags or DT_RIGHT or DT_RTLREADING;
   end;
   
-  ExtTextOut(aHDC, 0, 0, etoFlags, @aRect, PChar(''), 0, nil);
-  TmpHeight := aRect.bottom - aRect.top;
+  ExtTextOut(AHDC, 0, 0, etoFlags, @ARect, PChar(''), 0, nil);
+  TmpHeight := ARect.bottom - ARect.top;
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    WideBuffer := UTF8ToUTF16(aMenuItem.Caption);
-    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @WorkRect, DT_CALCRECT);
+    WideBuffer := UTF8ToUTF16(AMenuItem.Caption);
+    DrawTextW(AHDC, PWideChar(WideBuffer), length(WideBuffer), @WorkRect, DT_CALCRECT);
   end
   else
   begin
-    AnsiBuffer := Utf8ToAnsi(aMenuItem.Caption);
-    DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @WorkRect, DT_CALCRECT);
+    AnsiBuffer := Utf8ToAnsi(AMenuItem.Caption);
+    DrawText(AHDC, PChar(AnsiBuffer), length(AnsiBuffer), @WorkRect, DT_CALCRECT);
   end;
 {$else}
-  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @WorkRect, DT_CALCRECT);
+  DrawText(AHDC, PChar(AMenuItem.Caption), length(AMenuItem.Caption), @WorkRect, DT_CALCRECT);
 {$endif}
 
   if IsRightToLeft then
-    Dec(aRect.Right, leftCaptionPosition(aMenuItem))
+    Dec(ARect.Right, leftCaptionPosition(AMenuItem))
   else
-    Inc(aRect.Left, leftCaptionPosition(aMenuItem));
-  Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
+    Inc(ARect.Left, leftCaptionPosition(AMenuItem));
+  Inc(ARect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
-    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags)
+    DrawTextW(AHDC, PWideChar(WideBuffer), Length(WideBuffer), @ARect, dtFlags)
   else
-    DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @aRect, dtFlags);
+    DrawText(AHDC, PChar(AnsiBuffer), Length(AnsiBuffer), @ARect, dtFlags);
 {$else}
-  DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, dtFlags);
+  DrawText(AHDC, PChar(AMenuItem.Caption), Length(AMenuItem.Caption), @ARect, dtFlags);
 {$endif}
 
-  if aMenuItem.ShortCut <> scNone then
+  if AMenuItem.ShortCut <> scNone then
   begin
-    shortCutText := ShortCutToText(aMenuItem.ShortCut);
+    shortCutText := ShortCutToText(AMenuItem.ShortCut);
     if IsRightToLeft then
     begin
-      Inc(aRect.Left, GetSystemMetrics(SM_CXMENUCHECK));
+      Inc(ARect.Left, GetSystemMetrics(SM_CXMENUCHECK));
       dtFlags := DT_LEFT;
     end
     else
     begin
-      Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));
+      Dec(ARect.Right, GetSystemMetrics(SM_CXMENUCHECK));
       dtFlags := DT_RIGHT;
     end;
 
@@ -967,18 +969,18 @@ begin
       if UnicodeEnabledOS then
       begin
         WideBuffer := UTF8ToUTF16(shortCutText);
-        DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags);
+        DrawTextW(AHDC, PWideChar(WideBuffer), Length(WideBuffer), @ARect, dtFlags);
       end
       else
       begin
         AnsiBuffer := Utf8ToAnsi(shortCutText);
-        DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @aRect, dtFlags);
+        DrawText(AHDC, PChar(AnsiBuffer), Length(AnsiBuffer), @ARect, dtFlags);
       end;
     {$else}
-      DrawText(aHDC, pChar(shortCutText), Length(shortCutText), @aRect, dtFlags);
+      DrawText(AHDC, PChar(shortCutText), Length(shortCutText), @ARect, dtFlags);
     {$endif}
   end;
-  SelectObject(aHDC, oldFont);
+  SelectObject(AHDC, oldFont);
   DeleteObject(newFont);
 end;
 
@@ -1066,7 +1068,7 @@ begin
     DrawSeparator(AHDC, ARect)
   else
   begin
-    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected);
+    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
     if aMenuItem.HasIcon then
       DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked)
     else
