@@ -4140,7 +4140,6 @@ begin
   else if not (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
 
-
   if (RealTreeRange in [trTillCursor,trTillCursorSection]) then begin
     // find out, if interface is enough
     if (Tree<>nil) and (Tree.Root<>nil) then begin
