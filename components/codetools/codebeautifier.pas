@@ -499,7 +499,7 @@ begin
   p:=StartPos;
   repeat
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
-    DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
+    //DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>=EndPos then begin
       if (AtomStart<=p) and (p>EndPos) then begin
         LastAtomStart:=p;
@@ -1026,7 +1026,7 @@ var
   i: Integer;
   OldLength: Integer;
 begin
-  DebugLn(['TFABPolicies.AddIndent Typ=',FABBlockTypeNames[Typ],' SubType=',FABBlockTypeNames[SubType]]);
+  //DebugLn(['TFABPolicies.AddIndent Typ=',FABBlockTypeNames[Typ],' SubType=',FABBlockTypeNames[SubType]]);
   OldLength:=length(Indentations);
   i:=OldLength-1;
   while (i>=0) and (Indentations[i].Indent<>Indent) do dec(i);
