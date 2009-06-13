@@ -6563,9 +6563,22 @@ var
       VK_SUBTRACT   :AddStr('-');
       VK_DECIMAL    :AddStr('.');
       VK_DIVIDE     :AddStr('/');
-      VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
+      VK_F1..VK_F24 :AddStr('F'+IntToStr(Key-VK_F1+1));
       VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
       VK_SCROLL     :AddStr(srVK_SCROLL);
+      VK_OEM_1      :AddStr(lisOEM1);
+      VK_OEM_PLUS   :AddStr(lisOEMPlus);
+      VK_OEM_COMMA  :AddStr(lisOEMComma);
+      VK_OEM_MINUS  :AddStr(lisOEMMinus);
+      VK_OEM_PERIOD :AddStr(lisOEMPeriod);
+      VK_OEM_2      :AddStr(lisOEM2);
+      VK_OEM_3      :AddStr(lisOEM3);
+      VK_OEM_4      :AddStr(lisOEM4);
+      VK_OEM_5      :AddStr(lisOEM5);
+      VK_OEM_6      :AddStr(lisOEM6);
+      VK_OEM_7      :AddStr(lisOEM7);
+      VK_OEM_8      :AddStr(lisOEM8);
+
 //    VK_EQUAL      :AddStr('=');
 //    VK_COMMA      :AddStr(',');
 //    VK_POINT      :AddStr('.');
