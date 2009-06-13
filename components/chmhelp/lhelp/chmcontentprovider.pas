@@ -180,7 +180,7 @@ begin
   else
   begin
     TCHMHack(fChms).OpenNewFile(AFile);
-    WriteLn('Loading new chm: ', AFile);
+    //WriteLn('Loading new chm: ', AFile);
   end;
 
   if fChms = nil then Exit;

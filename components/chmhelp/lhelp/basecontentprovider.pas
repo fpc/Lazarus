@@ -38,6 +38,10 @@ type
   // example: RegisterContentProvider('chm://', TChmContentProvider);
   
   function GetContentProvider(const Protocol: String): TBaseContentProviderClass;
+
+  // Result must be freed by caller
+  function GetContentProviderList: TStringList;
+
 implementation
 
 var
@@ -60,6 +64,12 @@ begin
   if fIndex = -1 then Exit;
   
   Result := TBaseContentProviderClass(ContentProviders.Objects[fIndex]);
+end;
+
+function GetContentProviderList: TStringList;
+begin
+  Result := TStringList.Create;
+  Result.AddStrings(ContentProviders);
 end;
 
 

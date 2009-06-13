@@ -154,8 +154,25 @@ end;
 procedure THelpForm.FileMenuOpenURLItemClick(Sender: TObject);
 var
   fRes: String;
+  URLSAllowed: String;
+  Protocall: TStrings;
+  i: Integer;
 begin
-  if InputQuery('Enter a URL', 'Please Enter a URL', fRes) then
+  Protocall := GetContentProviderList;
+
+  for i := 0 to Protocall.Count-1 do
+  begin
+    if i < 1 then
+      URLSAllowed := URLSAllowed + Protocall[i]
+    else
+      URLSAllowed := URLSAllowed + ', ' +Protocall[i]
+  end;
+  Protocall.Free;
+
+  URLSAllowed := Trim(URLSALLowed);
+
+
+  if InputQuery('Please Enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
   begin
     OpenURL(fRes);
     RefreshState;
