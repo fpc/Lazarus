@@ -627,88 +627,39 @@ end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
-  i1, i2: TPoint;
-  g1, g2: TDoublePoint;
-
-  function PrepareLine: Boolean;
-  begin
-    Result := false;
-    if not FShowLines then exit;
-
-    with ParentChart do
-      if // line is totally outside the viewport
-        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
-        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
-        (g1.Y < YGraphMin) and (g2.Y < YGraphMin) or
-        (g1.Y > YGraphMax) and (g2.Y > YGraphMax)
-      then
-        exit;
-
-    Result := true;
-    // line is totally inside the viewport
-    with ParentChart do
-      if IsPointInViewPort(g1) and IsPointInViewPort(g2) then
-        exit;
-
-    if g1.Y > g2.Y then
-      Exchange(g1, g2);
-
-    if g1.Y = g2.Y then begin
-      if g1.X > g2.X then
-        Exchange(g1, g2);
-      if g1.X < ParentChart.XGraphMin then i1.X := ParentChart.ClipRect.Left;
-      if g2.X > ParentChart.XGraphMax then i2.X := ParentChart.ClipRect.Right;
-    end
-    else if g1.X = g2.X then begin
-      if g1.Y < ParentChart.YGraphMin then i1.Y := ParentChart.ClipRect.Bottom;
-      if g2.Y > ParentChart.YGraphMax then i2.Y := ParentChart.ClipRect.Top;
-    end
-    else if ParentChart.LineInViewPort(g1, g2) then begin
-      i1 := ParentChart.GraphToImage(g1);
-      i2 := ParentChart.GraphToImage(g2);
-    end
-    else
-      Result := false;
-  end;
-
-  procedure DrawPoint(AIndex: Integer);
-  begin
-    if FShowPoints and PtInRect(ParentChart.ClipRect, i1) then begin
-      FPointer.Draw(ACanvas, i1, SeriesColor);
-      if Assigned(FOnDrawPointer) then
-        FOnDrawPointer(Self, ACanvas, AIndex, i1);
-    end;
-  end;
-
-var
   i: Integer;
+  ai, bi: TPoint;
+  a, b: TDoublePoint;
 begin
-  if Count = 0 then exit;
-  for i := 0 to Count - 2 do begin
-    GetCoords(i, g1, i1);
-    GetCoords(i + 1, g2, i2);
-
-    if PrepareLine then begin
+  if FShowLines then
+    for i := 0 to Count - 2 do begin
+      a := DoublePoint(Source[i]^);
+      b := DoublePoint(Source[i + 1]^);
+      if not LineIntersectsRect(a, b, ParentChart.CurrentExtent) then continue;
+      ai := ParentChart.GraphToImage(a);
+      bi := ParentChart.GraphToImage(b);
       ACanvas.Pen.Assign(LinePen);
-      if Depth = 0 then begin
-        ACanvas.Pen.Color := GetColor(i);
-        ACanvas.Line(i1, i2);
-      end
+      if Depth = 0 then
+        ACanvas.Line(ai, bi)
       else begin
         ACanvas.Brush.Style := bsSolid;
+        ACanvas.Brush.Color := ACanvas.Pen.Color;
         ACanvas.Pen.Color := clBlack;
-        ACanvas.Brush.Color := GetColor(i);
-        DrawLineDepth(ACanvas, i1, i2, Depth);
+        DrawLineDepth(ACanvas, ai, bi, Depth);
       end;
     end;
-    DrawPoint(i);
-  end;
-
-  // Draw last point
-  GetCoords(Count - 1, g1, i1);
-  DrawPoint(i);
 
   DrawLabels(ACanvas, true);
+
+  if FShowPoints then
+    for i := 0 to Count - 1 do begin
+      a := DoublePoint(Source[i]^);
+      if not ParentChart.IsPointInViewPort(a) then continue;
+      ai := ParentChart.GraphToImage(a);
+      FPointer.Draw(ACanvas, ai, GetColor(i));
+      if Assigned(FOnDrawPointer) then
+        FOnDrawPointer(Self, ACanvas, i, ai);
+    end;
 end;
 
 

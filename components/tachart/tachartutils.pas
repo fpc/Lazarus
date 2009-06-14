@@ -95,6 +95,8 @@ type
     procedure Recall;
   end;
 
+  TCaseOfTwo = (cotNone, cotFirst, cotSecond, cotBoth);
+
 const
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
@@ -112,6 +114,8 @@ const
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
   EmptyExtent: TDoubleRect =
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
+  CASE_OF_TWO: array [Boolean, Boolean] of TCaseOfTwo =
+    ((cotNone, cotSecond), (cotFirst, cotBoth));
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -130,9 +134,14 @@ function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
+function LineIntersectsRect(
+  var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
+
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
+
+function RoundChecked(A: Double): Integer; inline;
 
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
@@ -304,6 +313,49 @@ begin
   end;
 end;
 
+function LineIntersectsRect(
+  var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
+var
+  dx, dy: Double;
+
+  procedure AdjustX(var AP: TDoublePoint; ANewX: Double); inline;
+  begin
+    AP.Y += dy / dx * (ANewX - AA.X);
+    AP.X := ANewX;
+  end;
+
+  procedure AdjustY(var AP: TDoublePoint; ANewY: Double); inline;
+  begin
+    AP.X += dx / dy * (ANewY - AA.Y);
+    AP.Y := ANewY;
+  end;
+
+begin
+  dx := AB.X - AA.X;
+  dy := AB.Y - AA.Y;
+  case CASE_OF_TWO[AA.X < ARect.a.X, AB.X < ARect.a.X] of
+    cotFirst: AdjustX(AA, ARect.a.X);
+    cotSecond: AdjustX(AB, ARect.a.X);
+    cotBoth: exit(false);
+  end;
+  case CASE_OF_TWO[AA.X > ARect.b.X, AB.X > ARect.b.X] of
+    cotFirst: AdjustX(AA, ARect.b.X);
+    cotSecond: AdjustX(AB, ARect.b.X);
+    cotBoth: exit(false);
+  end;
+  case CASE_OF_TWO[AA.Y < ARect.a.Y, AB.Y < ARect.a.Y] of
+    cotFirst: AdjustY(AA, ARect.a.Y);
+    cotSecond: AdjustY(AB, ARect.a.Y);
+    cotBoth: exit(false);
+  end;
+  case CASE_OF_TWO[AA.Y > ARect.b.Y, AB.Y > ARect.b.Y] of
+    cotFirst: AdjustY(AA, ARect.b.Y);
+    cotSecond: AdjustY(AB, ARect.b.Y);
+    cotBoth: exit(false);
+  end;
+  Result := true;
+end;
+
 function PointDist(const A, B: TPoint): Integer;
 begin
   Result := Sqr(A.X - B.X) + Sqr(A.Y - B.Y);
@@ -320,6 +372,12 @@ begin
 end;
 
 {$HINTS OFF}
+
+function RoundChecked(A: Double): Integer;
+begin
+  Result := Round(EnsureRange(A, -MaxInt, MaxInt));
+end;
+
 procedure Unused(const A1);
 begin
 end;

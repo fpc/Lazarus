@@ -235,6 +235,7 @@ type
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
+    property CurrentExtent: TDoubleRect read FCurrentExtent;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;
@@ -736,12 +737,12 @@ end;
 
 function TChart.XGraphToImage(AX: Double): Integer;
 begin
-  Result := Round(FScale.X * AX + FOffset.X);
+  Result := RoundChecked(FScale.X * AX + FOffset.X);
 end;
 
 function TChart.YGraphToImage(AY: Double): Integer;
 begin
-  Result := Round(FScale.Y * AY + FOffset.Y);
+  Result := RoundChecked(FScale.Y * AY + FOffset.Y);
 end;
 
 function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
