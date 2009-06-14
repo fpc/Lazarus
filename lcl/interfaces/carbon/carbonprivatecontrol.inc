@@ -959,6 +959,7 @@ const
   SName = 'Update';
 begin
   Result := True;
+  if IsDrawEvent>0 then Exit;
   if Widget <> HIViewRef(Frames[0]) then
     if OSError(HIViewRender(Widget), Self, SName, SViewRender) then Result := False;
   if Widget <> Content then
