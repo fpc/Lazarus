@@ -2236,6 +2236,7 @@ var
 
   function DoFixFolding(doStart: Integer; doMinEnd, AtColumn: Integer;
     doFoldTree: TSynTextFoldAVLTree; node: TSynTextFoldAVLNode) : Boolean;
+
     Procedure DoRemoveNode(var theNode: TSynTextFoldAVLNode);
     var
       tmpnode: TSynTextFoldAVLNode;
@@ -2250,6 +2251,7 @@ var
       if Assigned(fOnFoldChanged) then
         fOnFoldChanged(l);
     end;
+
   var
     FldLine, FldIndex, FldLen, FldCol: Integer;
     MaxCol, CurLen: Integer;
@@ -2257,16 +2259,14 @@ var
     SubTree: TSynTextFoldAVLTree;
   begin
     Result := False;
-    FldLine := node.StartLine - 1;
-//    FldLen := -1;
- //   LastCol := -1;
+    FldLine := doStart;
     while node.IsInFold do begin
       PrevFldLine := FldLine;
-//      PrevFldLen := FldLen;
       FldLine := node.StartLine - 1; // the 1-based cfCollapsed (last visible) Line
       FldIndex := FldLine - 1;
       FldLen := node.FullCount;
       if (FldLen < 0) then begin
+        {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Remove node with len<0 FldLine=', FldLine]);{$ENDIF}
         DoRemoveNode(node);
         continue;
       end;
@@ -2295,6 +2295,7 @@ var
         CurLen := -1;
 
       if CurLen <> FldLen then begin
+        {$IFDEF SYNFOLDDEBUG}debugln(['>>FOLD-- FixFolding: Remove node with len<>len FldLine=', FldLine, ' curlen=',CurLen, ' FldLen=',FldLen]);{$ENDIF}
         DoRemoveNode(node);
         continue;
       end;
@@ -2359,7 +2360,7 @@ begin
     else break; // first node
   end;
 
-  Result := DoFixFolding(AStart, AMinEnd, 0, aFoldTree, node);
+  Result := DoFixFolding(-1, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
   {$IFDEF SYNFOLDDEBUG}debugln(['<<FOLD-- FixFolding: DONE=', Result]);{$ENDIF}
 end;
