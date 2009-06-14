@@ -277,6 +277,17 @@ begin
     $00CC: Result := 'EM_SETPASSWORDCHAR';
     $00CF: Result := 'EM_SETREADONLY';
     // edit control messages end
+    // button control messages start
+    $00F0: Result := 'BM_GETCHECK';
+    $00F1: Result := 'BM_SETCHECK';
+    $00F2: Result := 'BM_GETSTATE';
+    $00F3: Result := 'BM_SETSTATE';
+    $00F4: Result := 'BM_SETSTYLE';
+    $00F5: Result := 'BM_CLICK';
+    $00F6: Result := 'BM_GETIMAGE';
+    $00F7: Result := 'BM_SETIMAGE';
+    $00F8: Result := 'BM_SETDONTCLICK';
+    // button control messages end
     $0100: Result := 'WM_KEYFIRST or WM_KEYDOWN';
     $0101: Result := 'WM_KEYUP';
     $0102: Result := 'WM_CHAR';

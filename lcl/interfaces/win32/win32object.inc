@@ -625,7 +625,7 @@ begin
   begin
     with WindowClassW do
     begin
-      Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
+      Style := CS_DBLCLKS;
       LPFnWndProc := @WindowProc;
       CbClsExtra := 0;
       CbWndExtra := 0;
