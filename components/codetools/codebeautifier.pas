@@ -199,6 +199,7 @@ type
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   Typ: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
+    procedure WriteDebugReport(Msg: string; Stack: TFABBlockStack);
   public
     DefaultTabWidth: integer;
     constructor Create;
@@ -315,6 +316,7 @@ begin
   Block^.Typ:=Typ;
   Block^.StartPos:=StartPos;
   Block^.InnerIdent:=-1;
+  Block^.InnerStartPos:=-1;
   TopType:=Typ;
 end;
 
@@ -497,16 +499,18 @@ begin
   LastAtomStart:=0;
   LastAtomEnd:=0;
   p:=StartPos;
+  if EndPos>length(Src) then EndPos:=length(Src)+1;
   repeat
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
     //DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
-    if p>=EndPos then begin
-      if (AtomStart<=p) and (p>EndPos) then begin
-        LastAtomStart:=p;
+    if p>EndPos then begin
+      if (AtomStart<EndPos) then begin
+        LastAtomStart:=AtomStart;
         LastAtomEnd:=p;
       end;
       break;
-    end;
+    end else if AtomStart=EndPos then
+      break;
     // check if first block inner found
     FirstAtomOnNewLine:=false;
     if (Stack.Top>=0) then begin
@@ -530,7 +534,7 @@ begin
           BeginBlock(bbtMainBegin);
         bbtProcedure,bbtFunction:
           BeginBlock(bbtProcedureBegin);
-        bbtMainBegin:
+        bbtMainBegin,bbtProcedureBegin:
           BeginBlock(bbtCommentaryBegin);
         bbtCaseElse,bbtCaseColon:
           BeginBlock(bbtCaseBegin);
@@ -875,6 +879,21 @@ begin
     OnGetNestedComments(Self,Code,Result);
 end;
 
+procedure TFullyAutomaticBeautifier.WriteDebugReport(Msg: string;
+  Stack: TFABBlockStack);
+var
+  i: Integer;
+  Block: PBlock;
+begin
+  DebugLn(['TFullyAutomaticBeautifier.WriteDebugReport ',Msg]);
+  if Stack<>nil then begin
+    for i:=0 to Stack.Top do begin
+      Block:=@Stack.Stack[i];
+      DebugLn([GetIndentStr(i*2),' : Typ=',FABBlockTypeNames[Block^.Typ],' StartPos=',Block^.StartPos,' InnerIdent=',Block^.InnerIdent,' InnerStartPos=',Block^.InnerStartPos]);
+    end;
+  end;
+end;
+
 constructor TFullyAutomaticBeautifier.Create;
 begin
   FCodePolicies:=TAVLTree.Create(@CompareFABPoliciesWithCode);
@@ -933,8 +952,10 @@ begin
   Stack:=TFABBlockStack.Create;
   try
     // parse source in front
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent "',copy(Source,1,CleanPos-1),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
+    WriteDebugReport('After parsing code in front:',Stack);
     if (Stack.Top<0) then begin
       // no context
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
@@ -962,7 +983,6 @@ begin
     Policies.Free;
   end;
 
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent AAA1']);
   // parse examples
   Policies:=FindPolicyInExamples(nil,Block.Typ);
   if CheckPolicies(Policies,Result) then exit;
