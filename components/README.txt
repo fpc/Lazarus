@@ -30,6 +30,9 @@ dbexport
 editortoolbar
   A customizable tolbar for the source editor.
 
+educationlaz
+  Extends/configures the IDE for education, training, courses
+
 filebrowser
   A file browser window for the IDE.
 

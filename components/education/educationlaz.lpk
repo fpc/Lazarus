@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="EducationLaz"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDE package for training, courses and education."/>
+    <License Value="LGPL-2 or any later"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="1">
+      <Item1>
+        <Filename Value="eduoptionsdlg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduOptionsDlg"/>
+      </Item1>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
