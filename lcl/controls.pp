@@ -490,6 +490,7 @@ type
     procedure EndUpdate; virtual; abstract;
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); virtual; abstract;
+    function GetDockEdge(ADockObject: TDragDockObject): boolean; virtual;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
@@ -3567,6 +3568,16 @@ end;
 function TDockManager.AutoFreeByControl: Boolean;
 begin
   Result := True;
+end;
+
+function TDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
+begin
+(* Determine the DropAlign.
+  ADockObject contains valid DragTarget, DragPos, DragTargetPos relative dock site,
+  and DropOnControl.
+  Return True if ADockObject.DropAlign has been determined.
+*)
+  Result := False; //not implemented
 end;
 
 initialization

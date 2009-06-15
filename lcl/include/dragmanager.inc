@@ -301,15 +301,13 @@ end;
 
 procedure TDockPerformer.DragMove(APosition: TPoint);
 
-  function GetDropControl: TControl;
+  function GetDropControl(ADragTarget: TWinControl): TControl;
   //Select a control where the dragged control will be docked
   var
-    ADragTarget: TWinControl;
     AControl: TControl;
     i: integer;
   begin
     Result := nil;
-    ADragTarget := TWinControl(FDockObject.DragTarget);
     if ADragTarget <> nil then
     begin
       if ADragTarget.UseDockManager then
@@ -402,7 +400,7 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
   end;
 
 var
-  ATarget: TControl;
+  ATarget: TWinControl;
   DragCursor: TCursor;
 begin
   if FDockObject = nil then
@@ -416,25 +414,31 @@ begin
 
   if ATarget <> FDockObject.DragTarget then
   begin
-    SendCmDragMsg(FDockObject, dmDragLeave);
-    FDockObject.DragTarget := TWinControl(ATarget);
-    FDockObject.DragPos := APosition;
-    SendCmDragMsg(FDockObject, dmDragEnter);
-  end
-  else
-    FDockObject.DragPos := APosition;
+    SendCmDragMsg(FDockObject, dmDragLeave); //using the old values in FDockObject
+  end;
+  FDockObject.DragPos := APosition;
 
-
-  if FDockObject.DragTarget <> nil then
+  if ATarget <> nil then
   with FDockObject do
   begin //determine precise target now, before dmDragMove
-    DragTargetPos := DragTarget.ScreenToClient(APosition);
-    DropOnControl := GetDropControl;
-    if DropOnControl = nil then
-      DropAlign := FDockObject.DragTarget.GetDockEdge(DragTargetPos)
-    else
-      DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
+    DragTargetPos := ATarget.ScreenToClient(APosition);
+    DropOnControl := GetDropControl(ATarget);
+    if not ATarget.UseDockManager or
+       not ATarget.DockManager.GetDockEdge(FDockObject) then
+    begin
+      if DropOnControl = nil then
+        DropAlign := ATarget.GetDockEdge(DragTargetPos)
+      else
+        DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
+    end;
   end;
+
+  if ATarget <> FDockObject.DragTarget then
+  begin
+    FDockObject.DragTarget := ATarget;
+    SendCmDragMsg(FDockObject, dmDragEnter);
+  end;
+
   DragCursor := FDockObject.GetDragCursor(SendCmDragMsg(FDockObject, dmDragMove),APosition.X, APosition.Y);
   if FDragImageList <> nil then
   begin
