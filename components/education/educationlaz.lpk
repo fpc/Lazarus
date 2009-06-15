@@ -15,15 +15,18 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="eduoptionsdlg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduOptionsDlg"/>
       </Item1>
+      <Item2>
+        <Filename Value="README.txt"/>
+        <Type Value="Text"/>
+      </Item2>
     </Files>
     <i18n>
-      <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
