@@ -11091,7 +11091,8 @@ procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
   begin
     if ObjectInspector1=nil then exit;
     ObjectInspector1.ShowOnTop;
-    FDisplayState:= Succ(FDisplayState);
+    if FDisplayState <> high(TDisplayState) then
+      FDisplayState:= Succ(FDisplayState);
   end;
 
 begin
