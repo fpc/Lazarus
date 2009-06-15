@@ -162,6 +162,16 @@ type
   end;
   PBlock = ^TBlock;
 
+const
+  CleanBlock: TBlock = (
+    Typ: bbtNone;
+    StartPos: -1;
+    InnerStartPos: -1;
+    InnerIdent: -1
+  );
+
+type
+
   { TFABBlockStack }
 
   TFABBlockStack = class
@@ -197,7 +207,7 @@ type
                           NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies);
     function FindPolicyInExamples(StartCode: TCodeBuffer;
-                                  Typ: TFABBlockType): TFABPolicies;
+                                  ParentTyp, Typ: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
     procedure WriteDebugReport(Msg: string; Stack: TFABBlockStack);
   public
@@ -208,9 +218,11 @@ type
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean;
                        out Indent: TFABIndentationPolicy): boolean;
-    procedure GetDefaultIndent(const Source: string; CleanPos: integer;
+    procedure GetDefaultSrcIndent(const Source: string; CleanPos: integer;
                                NewNestedComments: boolean;
                                out Indent: TFABIndentationPolicy);
+    procedure GetDefaultIndentPolicy(Typ, SubTyp: TFABBlockType;
+                                  out Indent: TFABIndentationPolicy);
     { ToDo:
       - indent on paste  (position + new source)
       - indent auto generated code (several snippets)
@@ -813,7 +825,7 @@ begin
 end;
 
 function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
-  Typ: TFABBlockType): TFABPolicies;
+  ParentTyp, Typ: TFABBlockType): TFABPolicies;
 var
   CodeBuffers: TFPList;
   i: Integer;
@@ -941,6 +953,7 @@ var
   Stack: TFABBlockStack;
   Policies: TFABPolicies;
   LastAtomStart, LastAtomEnd: integer;
+  ParentBlock: TBlock;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -948,6 +961,8 @@ begin
   CleanPos:=FindStartOfAtom(Source,CleanPos);
   if CleanPos<1 then exit;
 
+  Block:=CleanBlock;
+  ParentBlock:=CleanBlock;
   Policies:=TFABPolicies.Create;
   Stack:=TFABBlockStack.Create;
   try
@@ -959,23 +974,26 @@ begin
     if (Stack.Top<0) then begin
       // no context
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
-      GetDefaultIndent(Source,CleanPos,NewNestedComments,Indent);
+      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit;
     end;
     if (LastAtomStart>0) and (CleanPos>LastAtomStart) then begin
       // in comment or atom
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: position in middle of atom, e.g. comment']);
-      GetDefaultIndent(Source,CleanPos,NewNestedComments,Indent);
+      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit;
     end;
 
     Block:=Stack.Stack[Stack.Top];
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
 
+    if Stack.Top>0 then
+      ParentBlock:=Stack.Stack[Stack.Top-1];
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     if CheckPolicies(Policies,Result) then exit;
 
     // parse source behind
     ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
     if CheckPolicies(Policies,Result) then exit;
 
   finally
@@ -984,11 +1002,14 @@ begin
   end;
 
   // parse examples
-  Policies:=FindPolicyInExamples(nil,Block.Typ);
+  Policies:=FindPolicyInExamples(nil,ParentBlock.Typ,Block.Typ);
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
   if CheckPolicies(Policies,Result) then exit;
+
+  //GetDefaultIndentPolicy(ParentBlock.Typ,Block.Typ);
 end;
 
-procedure TFullyAutomaticBeautifier.GetDefaultIndent(const Source: string;
+procedure TFullyAutomaticBeautifier.GetDefaultSrcIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean; out
   Indent: TFABIndentationPolicy);
 // return indent of last non empty line
@@ -1022,6 +1043,62 @@ begin
     end;
   end;
   // only empty lines in front
+end;
+
+procedure TFullyAutomaticBeautifier.GetDefaultIndentPolicy(Typ,
+  SubTyp: TFABBlockType; out Indent: TFABIndentationPolicy);
+begin
+  Indent.IndentValid:=false;
+  Indent.Indent:=0;
+  case Typ of
+  bbtInterface,
+  bbtImplementation,
+  bbtInitialization,
+  bbtFinalization,
+  bbtClass,
+  bbtClassInterface,
+  bbtProcedure,
+  bbtFunction,
+  bbtCase,
+  bbtCaseOf,
+  bbtIf:
+    begin
+      Indent.Indent:=0;
+      Indent.IndentValid:=true;
+    end;
+  bbtUsesSection,
+  bbtTypeSection,
+  bbtConstSection,
+  bbtVarSection,
+  bbtResourceStringSection,
+  bbtLabelSection,
+  bbtRecord,
+  bbtClassSection,
+  bbtMainBegin,
+  bbtCommentaryBegin,
+  bbtRepeat,
+  bbtProcedureBegin,
+  bbtCaseColon,
+  bbtCaseBegin,
+  bbtCaseElse,
+  bbtTry,
+  bbtFinally,
+  bbtExcept,
+  bbtIfBegin:
+    begin
+      Indent.Indent:=2;
+      Indent.IndentValid:=true;
+    end;
+  bbtIfThen,
+  bbtIfElse:
+    if SubTyp=bbtIfBegin then begin
+      Indent.Indent:=0;
+      Indent.IndentValid:=true;
+    end else begin
+      Indent.Indent:=2;
+      Indent.IndentValid:=true;
+    end;
+  end;
 end;
 
 { TFABPolicies }
