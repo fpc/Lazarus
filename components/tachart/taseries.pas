@@ -111,8 +111,7 @@ type
     FBarPen: TPen;
     FBarWidthPercent: Integer;
 
-    procedure ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
-    procedure SetAdjustBarWidth(AValue: Boolean);
+    function CalcBarWidth(AX: Double; AIndex: Integer): Double;
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
@@ -127,8 +126,6 @@ type
     procedure Draw(ACanvas: TCanvas); override;
     function Extent: TDoubleRect; override;
   published
-    property AdjustBarWidth: Boolean
-      read FAdjustBarWidth write SetAdjustBarWidth default false;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
@@ -662,7 +659,6 @@ begin
     end;
 end;
 
-
 procedure TLineSeries.AfterAdd;
 begin
   inherited AfterAdd;
@@ -941,6 +937,19 @@ end;
 
 { TBarSeries }
 
+function TBarSeries.CalcBarWidth(AX: Double; AIndex: Integer): Double;
+begin
+  case CASE_OF_TWO[AIndex > 0, AIndex < Count - 1] of
+    cotNone: Result := 1.0;
+    cotFirst: Result := Abs(AX - Source[AIndex - 1]^.X);
+    cotSecond: Result := Abs(AX - Source[AIndex + 1]^.X);
+    cotBoth: Result := Min(
+      Abs(AX - Source[AIndex - 1]^.X),
+      Abs(AX - Source[AIndex + 1]^.X));
+  end;
+  Result *= FBarWidthPercent * 0.01 / 2;
+end;
+
 constructor TBarSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -988,57 +997,13 @@ begin
 end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
-var
-  barTop: TDoublePoint;
-  i, barWidth, totalbarWidth, totalBarSeries, myPos: Integer;
-  r: TRect;
 
-  function PrepareBar: Boolean;
+  procedure DrawBar(const AR: TRect);
   var
-    barBottomY: Double;
+    sz: TSize;
   begin
-    barTop := DoublePoint(Source[i]^);
-    barBottomY := 0;
-    if barTop.Y < barBottomY then
-      Exchange(barTop.Y, barBottomY);
-
-    with ParentChart do begin
-      // Check if bar is in view port.
-      Result :=
-        InRange(barTop.X, XGraphMin, XGraphMax) and
-        FloatRangesOverlap(barBottomY, barTop.Y, YGraphMin, YGraphMax);
-      if not Result then exit;
-
-      // Only draw to the limits.
-      if barTop.Y > YGraphMax then barTop.Y := YGraphMax;
-      if barBottomY < YGraphMin then barBottomY := YGraphMin;
-
-      r.TopLeft := GraphToImage(barTop);
-      r.Bottom := YGraphToImage(barBottomY);
-    end;
-
-    // Adjust for multiple bar series.
-    r.Left += myPos * barWidth - totalbarWidth div 2;
-    r.Right := r.Left + barWidth;
-  end;
-
-begin
-  if IsEmpty then exit;
-
-  totalbarWidth :=
-    Round(FBarWidthPercent * 0.01 * ParentChart.ChartWidth / Count);
-  ExamineAllBarSeries(totalBarSeries, myPos);
-  barWidth := totalbarWidth div totalBarSeries;
-
-  ACanvas.Brush.Assign(BarBrush);
-  for i := 0 to Count - 1 do begin
-    if not PrepareBar then continue;
-    // Draw a line instead of an empty rectangle.
-    if r.Bottom = r.Top then Inc(r.Bottom);
-    if r.Left = r.Right then Inc(r.Right);
-
-    ACanvas.Brush.Color := ColorOrDefault(Source[i]^.Color);
-    if (barWidth > 2) and (r.Bottom - r.Top > 2) then
+    sz := Size(AR);
+    if (sz.cx > 2) and (sz.cy > 2) then
       ACanvas.Pen.Assign(BarPen)
     else begin
       // Bars are too small to distinguish border from interior.
@@ -1046,21 +1011,56 @@ begin
       ACanvas.Pen.Style := psSolid;
     end;
 
-    ACanvas.Rectangle(r);
-    if Depth > 0 then begin
-      DrawLineDepth(ACanvas, r.Left, r.Top, r.Right - 1, r.Top, Depth);
-      DrawLineDepth(
-        ACanvas, r.Right - 1, r.Top, r.Right - 1, r.Bottom - 1, Depth);
+    ACanvas.Rectangle(AR);
+
+    if Depth = 0 then exit;
+    DrawLineDepth(ACanvas, AR.Left, AR.Top, AR.Right - 1, AR.Top, Depth);
+    DrawLineDepth(
+      ACanvas, AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, Depth);
+  end;
+
+var
+  i: Integer;
+  ext2, graphBar: TDoubleRect;
+  imageBar: TRect;
+  w: Double;
+  p: TDoublePoint;
+begin
+  if IsEmpty then exit;
+
+  ext2 := ParentChart.CurrentExtent;
+  ExpandRange(ext2.a.X, ext2.b.X, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  ACanvas.Brush.Assign(BarBrush);
+  for i := 0 to Count - 1 do begin
+    p := DoublePoint(Source[i]^);
+    w := CalcBarWidth(p.X, i);
+    graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
+    if not RectIntersectsRect(graphBar, ext2) then continue;
+
+    with imageBar do begin
+      TopLeft := ParentChart.GraphToImage(graphBar.a);
+      BottomRight := ParentChart.GraphToImage(graphBar.b);
+      if Left > Right then
+        Exchange(Left, Right);
+      if Top > Bottom then
+        Exchange(Top, Bottom);
+
+      // Draw a line instead of an empty rectangle.
+      if Bottom = Top then Dec(Top);
+      if Left = Right then Inc(Right);
     end;
+    ACanvas.Brush.Color := ColorOrDefault(Source[i]^.Color);
+    DrawBar(imageBar);
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to Count - 1 do
-    if PrepareBar then
-      DrawLabel(
-        ACanvas, i,
-        Point((r.Left + r.Right) div 2, IfThen(barTop.Y = 0, r.Bottom, r.Top)),
-        barTop.Y = 0);
+  for i := 0 to Count - 1 do begin
+    p := DoublePoint(Source[i]^);
+    if ParentChart.IsPointInViewPort(p) then
+      DrawLabel(ACanvas, i, ParentChart.GraphToImage(p), p.Y < 0);
+  end;
 end;
 
 procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
@@ -1071,46 +1071,21 @@ begin
   ACanvas.Rectangle(ARect);
 end;
 
-procedure TBarSeries.ExamineAllBarSeries(out ATotalNumber, AMyPos: Integer);
-var
-  i: Integer;
-begin
-  if not AdjustBarWidth then begin
-    ATotalNumber := 1;
-    AMyPos := 0;
-    exit;
-  end;
-  ATotalNumber := 0;
-  AMyPos := -1;
-  for i := 0 to ParentChart.SeriesCount - 1 do begin
-    if ParentChart.Series[i] = Self then
-      AMyPos := ATotalNumber;
-    if ParentChart.Series[i] is TBarSeries then
-      Inc(ATotalNumber);
-  end;
-  Assert(AMyPos >= 0);
-end;
-
 function TBarSeries.Extent: TDoubleRect;
 begin
   Result := inherited Extent;
-  Result.a.Y := Min(Result.a.Y, 0);
-  Result.b.Y := Max(Result.b.Y, 0);
-  // The 0.6 is a hack to allow the bars to have some space apart
-  Result.a.X -= 0.6;
-  Result.b.X += 0.6;
+  if IsEmpty then exit;
+  UpdateMinMax(0, Result.a.Y, Result.b.Y);
+  // Show first and last bars fully.
+  with Source[0]^ do
+    Result.a.X := Min(Result.a.X, X - CalcBarWidth(X, 0));
+  with Source[Count - 1]^ do
+    Result.b.X := Max(Result.b.X, X + CalcBarWidth(X, Count - 1));
 end;
 
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
-end;
-
-procedure TBarSeries.SetAdjustBarWidth(AValue: Boolean);
-begin
-  if FAdjustBarWidth = AValue then exit;
-  FAdjustBarWidth := AValue;
-  UpdateParentChart;
 end;
 
 { TPieSeries }

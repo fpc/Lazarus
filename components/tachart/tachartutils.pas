@@ -129,8 +129,7 @@ procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
 procedure Exchange(var A, B: TDoublePoint); overload;
 
-// True if float ranges [A, B] and [C, D] have at least one common point.
-function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
@@ -140,6 +139,9 @@ function LineIntersectsRect(
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
+
+function RectIntersectsRect(
+  var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
 function RoundChecked(A: Double): Integer; inline;
 
@@ -274,9 +276,13 @@ begin
   B := t;
 end;
 
-function FloatRangesOverlap(A, B, C, D: Double): Boolean; inline;
+procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
+var
+  d: Double;
 begin
-  Result := (A <= D) and (C <= B);
+  d := AHi - ALo;
+  ALo -= d * ACoeff;
+  AHi += d * ACoeff;
 end;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
@@ -320,13 +326,13 @@ var
 
   procedure AdjustX(var AP: TDoublePoint; ANewX: Double); inline;
   begin
-    AP.Y += dy / dx * (ANewX - AA.X);
+    AP.Y += dy / dx * (ANewX - AP.X);
     AP.X := ANewX;
   end;
 
   procedure AdjustY(var AP: TDoublePoint; ANewY: Double); inline;
   begin
-    AP.X += dx / dy * (ANewY - AA.Y);
+    AP.X += dx / dy * (ANewY - AP.Y);
     AP.Y := ANewY;
   end;
 
@@ -372,6 +378,25 @@ begin
 end;
 
 {$HINTS OFF}
+
+function RectIntersectsRect(
+  var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
+
+  function RangesIntersect(L1, R1, L2, R2: Double; out L, R: Double): Boolean;
+  begin
+    if L1 > R1 then Exchange(L1, R1);
+    if L2 > R2 then Exchange(L2, R2);
+    L := Max(L1, L2);
+    R := Min(R1, R2);
+    Result := L <= R;
+  end;
+
+begin
+  with ARect do
+    Result :=
+      RangesIntersect(a.X, b.X, AFixed.a.X, AFixed.b.X, a.X, b.X) and
+      RangesIntersect(a.Y, b.Y, AFixed.a.Y, AFixed.b.Y, a.Y, b.Y);
+end;
 
 function RoundChecked(A: Double): Integer;
 begin
