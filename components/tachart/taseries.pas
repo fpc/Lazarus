@@ -106,7 +106,6 @@ type
 
   TBarSeries = class(TBasicPointSeries)
   private
-    FAdjustBarWidth: Boolean;
     FBarBrush: TBrush;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
@@ -947,7 +946,7 @@ begin
       Abs(AX - Source[AIndex - 1]^.X),
       Abs(AX - Source[AIndex + 1]^.X));
   end;
-  Result *= FBarWidthPercent * 0.01 / 2;
+  Result *= FBarWidthPercent * PERCENT / 2;
 end;
 
 constructor TBarSeries.Create(AOwner: TComponent);

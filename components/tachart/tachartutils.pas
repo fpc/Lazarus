@@ -38,6 +38,7 @@ const
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
   clTAColor = clScrollBar;
   CHART_COMPONENT_IDE_PAGE = 'Chart';
+  PERCENT = 0.01;
 
 type
   EChartError = class(Exception);

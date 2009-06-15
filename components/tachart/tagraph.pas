@@ -1160,15 +1160,12 @@ procedure TChart.UpdateExtent;
   procedure SetBounds(
     var ALo, AHi: Double; AMin, AMax: Double; AUseMin, AUseMax: Boolean);
   const
-    PERCENT = 0.01;
     DEFAULT_WIDTH = 2.0;
-  var
-    ext: Double;
   begin
     if AUseMin then ALo := AMin;
     if AUseMax then AHi := AMax;
-    case Ord(ALo = Infinity) * 2 + Ord(AHi = NegInfinity) of
-      0: begin // Both high and low boundary defined
+    case CASE_OF_TWO[ALo = Infinity, AHi = NegInfinity] of
+      cotNone: begin // Both high and low boundary defined
         if ALo = AHi then begin
           ALo -= DEFAULT_WIDTH / 2;
           AHi += DEFAULT_WIDTH / 2;
@@ -1176,14 +1173,12 @@ procedure TChart.UpdateExtent;
         else begin
           if ALo > AHi then Exchange(ALo, AHi);
           // Expand view slightly to avoid data points on the chart edge.
-          ext := ExpandPercentage * PERCENT * Max(AHi - ALo, 1);
-          ALo -= ext;
-          AHi += ext;
+          ExpandRange(ALo, AHi, ExpandPercentage * PERCENT);
         end;
       end;
-      1: AHi := ALo + DEFAULT_WIDTH;
-      2: ALo := AHi - DEFAULT_WIDTH;
-      3: begin // No boundaries defined, take some arbitrary values
+      cotFirst: ALo := AHi - DEFAULT_WIDTH;
+      cotSecond: AHi := ALo + DEFAULT_WIDTH;
+      cotBoth: begin // No boundaries defined, take some arbitrary values
         ALo := -DEFAULT_WIDTH / 2;
         AHi := DEFAULT_WIDTH / 2;
       end;
