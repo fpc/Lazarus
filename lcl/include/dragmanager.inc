@@ -419,19 +419,19 @@ begin
   FDockObject.DragPos := APosition;
 
   if ATarget <> nil then
-  with FDockObject do
-  begin //determine precise target now, before dmDragMove
-    DragTargetPos := ATarget.ScreenToClient(APosition);
-    DropOnControl := GetDropControl(ATarget);
-    if not ATarget.UseDockManager or
-       not ATarget.DockManager.GetDockEdge(FDockObject) then
-    begin
-      if DropOnControl = nil then
-        DropAlign := ATarget.GetDockEdge(DragTargetPos)
-      else
-        DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
+    with FDockObject do
+    begin //determine precise target now, before dmDragMove
+      DragTargetPos := ATarget.ScreenToClient(APosition);
+      DropOnControl := GetDropControl(ATarget);
+      if not ATarget.UseDockManager or
+         not ATarget.DockManager.GetDockEdge(FDockObject) then
+      begin
+        if DropOnControl = nil then
+          DropAlign := ATarget.GetDockEdge(DragTargetPos)
+        else
+          DropAlign := DropOnControl.GetDockEdge(DropOnControl.ScreenToClient(APosition));
+      end;
     end;
-  end;
 
   if ATarget <> FDockObject.DragTarget then
   begin
