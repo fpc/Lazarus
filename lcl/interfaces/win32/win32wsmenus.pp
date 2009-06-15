@@ -656,8 +656,6 @@ begin
   end;
   Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
   ThemeServices.DrawElement(AHDC, Tmp, GutterRect, nil);
-  // draw menu item
-  ThemeServices.DrawElement(AHDC, Details, ARect, nil);
 
   if AMenuItem.IsLine then
   begin
@@ -679,6 +677,8 @@ begin
   end
   else
   begin
+    // draw menu item
+    ThemeServices.DrawElement(AHDC, Details, ARect, nil);
     // draw check/image
     if AMenuItem.HasIcon then
     begin
