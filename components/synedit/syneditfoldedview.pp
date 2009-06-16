@@ -894,6 +894,8 @@ begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForLine ALine:=', ALine, '  IgnoreFirst=', IgnoreFirst,'  OnlyCol=',OnlyCol]);{$ENDIF}
   Result := ALine;
   OldFold := FindFoldForLine(ALine, true);
+  if OldFold.StartLine-2 < Result then
+    Result := OldFold.StartLine-2;
   if (not OldFold.IsInFold) // behind last node
   or (IgnoreFirst and (OldFold.StartLine > ALine))
   or ((not IgnoreFirst) and (OldFold.StartLine > ALine+1))
