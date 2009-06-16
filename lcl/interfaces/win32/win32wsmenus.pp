@@ -123,6 +123,12 @@ const
     (tmPopupCheckMarkNormal,  tmPopupBulletNormal)
   );
 
+  PopupSubmenuStates: array[{ Enabled } Boolean] of TThemedMenu =
+  (
+    tmPopupSubmenuDisabled,
+    tmPopupSubmenuNormal
+  );
+
 var
   menuiteminfosize : DWORD = 0;
 
@@ -138,6 +144,7 @@ type
     CheckBgMargins: TMargins;
     GutterSize: TSize;
     SubMenuSize: TSize;
+    SubMenuMargins: TMargins;
     TextSize: TSize;
     TextMargins: TMargins;
     ShortCustSize: TSize;
@@ -360,6 +367,7 @@ begin
   GetThemeMargins(Theme, 0, MENU_POPUPCHECKBACKGROUND, 0, TMT_CONTENTMARGINS, nil, Result.CheckBgMargins);
   GetThemePartSize(Theme, 0, MENU_POPUPGUTTER, 0, nil, TS_TRUE, Result.GutterSize);
   GetThemePartSize(Theme, 0, MENU_POPUPSUBMENU, 0, nil, TS_TRUE, Result.SubMenuSize);
+  GetThemeMargins(Theme, 0, MENU_POPUPSUBMENU, 0, TMT_CONTENTMARGINS, nil, Result.SubMenuMargins);
 
   if AMenuItem.IsLine then
   begin
@@ -620,7 +628,7 @@ procedure DrawVistaPopupMenu(const AMenuItem: TMenuItem; const AHDC: HDC; const 
 var
   Details, Tmp: TThemedElementDetails;
   Metrics: TVistaPopupMenuMetrics;
-  CheckRect, GutterRect, TextRect, SeparatorRect, ImageRect: TRect;
+  CheckRect, GutterRect, TextRect, SeparatorRect, ImageRect, SubMenuRect: TRect;
   IconSize: TPoint;
   TextFlags: DWord;
   AFont, OldFont: HFONT;
@@ -637,39 +645,20 @@ begin
   IsRightToLeft := AMenuItem.GetIsRightToLeft;
   // calc check/image rect
   CheckRect := ARect;
-  if IsRightToLeft then
-    CheckRect.left := CheckRect.Right - Metrics.CheckSize.cx - Metrics.CheckMargins.cxRightWidth - Metrics.CheckMargins.cxLeftWidth
-  else
-    CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
+  CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;
   CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
   // draw gutter
   GutterRect := CheckRect;
-  if IsRightToLeft then
-  begin
-    GutterRect.Right := GutterRect.Left - Metrics.CheckBgMargins.cxRightWidth + Metrics.CheckMargins.cxRightWidth;
-    GutterRect.Left := GutterRect.Right - Metrics.GutterSize.cx;
-  end
-  else
-  begin
-    GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
-    GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
-  end;
+  GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
+  GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
   Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
   ThemeServices.DrawElement(AHDC, Tmp, GutterRect, nil);
 
   if AMenuItem.IsLine then
   begin
     // draw separator
-    if IsRightToLeft then
-    begin
-      SeparatorRect.Left := GutterRect.Left - Metrics.ItemMargins.cxLeftWidth;
-      SeparatorRect.Right := ARect.Left - Metrics.ItemMargins.cxRightWidth;
-    end
-    else
-    begin
-      SeparatorRect.Left := GutterRect.Right + Metrics.ItemMargins.cxLeftWidth;
-      SeparatorRect.Right := ARect.Right - Metrics.ItemMargins.cxRightWidth;
-    end;
+    SeparatorRect.Left := GutterRect.Right + Metrics.ItemMargins.cxLeftWidth;
+    SeparatorRect.Right := ARect.Right - Metrics.ItemMargins.cxRightWidth;
     SeparatorRect.Top := ARect.Top + Metrics.ItemMargins.cyTopHeight;
     SeparatorRect.Bottom := ARect.Bottom - Metrics.ItemMargins.cyBottomHeight;
     Tmp := ThemeServices.GetElementDetails(tmPopupSeparator);
@@ -679,6 +668,18 @@ begin
   begin
     // draw menu item
     ThemeServices.DrawElement(AHDC, Details, ARect, nil);
+    // draw submenu
+    if AMenuItem.Count > 0 then
+    begin
+      SubMenuRect := ARect;
+      SubMenuRect.Right := SubMenuRect.Right - Metrics.SubMenuMargins.cxRightWidth + Metrics.SubMenuMargins.cxLeftWidth;
+      SubMenuRect.Left := SubMenuRect.Right - Metrics.SubMenuSize.cx;
+      SubMenuRect.Top := SubMenuRect.Top + Metrics.ItemMargins.cyTopHeight;
+      SubMenuRect.Bottom := SubMenuRect.Bottom - Metrics.ItemMargins.cyBottomHeight;
+      Tmp := ThemeServices.GetElementDetails(PopupSubmenuStates[AMenuItem.Enabled]);
+      Tmp.State := Tmp.State + 2;
+      ThemeServices.DrawElement(AHDC, Tmp, SubMenuRect, nil);
+    end;
     // draw check/image
     if AMenuItem.HasIcon then
     begin
@@ -700,24 +701,15 @@ begin
     end;
     // draw text
     TextRect := GutterRect;
-    if IsRightToLeft then
-    begin
-      TextRect.Right := TextRect.Left - Metrics.TextMargins.cxLeftWidth;
-      TextRect.Left := ARect.Left + Metrics.TextMargins.cxRightWidth;
-    end
-    else
-    begin
-      TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
-      TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
-    end;
+    TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
+    TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
     TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
     TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
     TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
     // todo: distinct UseRightToLeftAlignment and UseRightToLeftReading
+    TextFlags := TextFlags or DT_LEFT;
     if IsRightToLeft then
-      TextFlags := TextFlags or DT_RIGHT or DT_RTLREADING
-    else
-      TextFlags := TextFlags or DT_LEFT;
+      TextFlags := TextFlags or DT_RTLREADING;
     if ANoAccel then
       TextFlags := TextFlags or DT_HIDEPREFIX;
     if AMenuItem.Default then
@@ -728,18 +720,13 @@ begin
     ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
-      if IsRightToLeft then
-      begin
-        TextRect.Right := TextRect.Left + Metrics.ShortCustSize.cx;
-        TextFlags := TextFlags xor DT_RIGHT or DT_LEFT;
-      end
-      else
-      begin
-        TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
-        TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
-      end;
+      TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
+      TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
       ThemeServices.DrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
     end;
+    // exlude menu item rectangle to prevent drawing by windows after us
+    if AMenuItem.Count > 0 then
+      ExcludeClipRect(AHDC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
     if OldFont <> 0 then
       DeleteObject(SelectObject(AHDC, OldFont));
   end;
@@ -1156,20 +1143,21 @@ begin
 
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
-  if AMenuItem.Parent.Parent<>nil then
+  if AMenuItem.Parent.Parent <> nil then
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
-    with MenuInfo do begin
+    with MenuInfo do
+    begin
       cbSize := menuiteminfosize;
-      fMask:=MIIM_SUBMENU;
+      fMask := MIIM_SUBMENU;
     end;
     GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                    false, @MenuInfo);
-    if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
+                    False, @MenuInfo);
+    if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
     begin
-      MenuInfo.hSubmenu:=ParentMenuHandle;
+      MenuInfo.hSubmenu := ParentMenuHandle;
       SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                      false, @MenuInfo);
+                      False, @MenuInfo);
     end;
   end;
 
@@ -1191,12 +1179,10 @@ begin
       hSubMenu := AMenuItem.Handle;
     end else
       hSubMenu := 0;
-    if not AMenuItem.IsLine then
+    fType := MFT_OWNERDRAW;
+    if AMenuItem.IsLine then
     begin
-      fType := MFT_OWNERDRAW;
-    end else
-    begin
-      fType := MFT_OWNERDRAW or MFT_SEPARATOR;
+      fType := fType or MFT_SEPARATOR;
       fState := fState or MFS_DISABLED;
     end;
     dwTypeData := PChar(AMenuItem);
@@ -1206,7 +1192,8 @@ begin
     begin
       fType := fType or MFT_RIGHTORDER;
       //Reverse the RIGHTJUSTIFY to be left
-      if not AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
+      if not AMenuItem.RightJustify then
+        fType := fType or MFT_RIGHTJUSTIFY;
     end
     else
     if AMenuItem.RightJustify then
@@ -1305,12 +1292,16 @@ var
   MenuHandle: HMENU;
   AppHandle: HWND;
 const
-  lAlign: array[Boolean] of Word = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
+  lAlign: array[Boolean] of DWord = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
+  lLayout: array[Boolean] of DWord = (0, TPM_LAYOUTRTL);
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWindowInfo(AppHandle)^.PopupMenu := APopupMenu;
-  TrackPopupMenuEx(MenuHandle, lAlign[APopupMenu.IsRightToLeft] or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
+  TrackPopupMenuEx(MenuHandle,
+    lAlign[APopupMenu.IsRightToLeft] or
+    TPM_LEFTBUTTON or TPM_RIGHTBUTTON or
+    lLayout[IsVistaMenu and APopupMenu.IsRightToLeft],
     X, Y, AppHandle, nil);
 end;
 
