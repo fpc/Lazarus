@@ -2674,22 +2674,11 @@ end;
 function TSynPasSyn.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
   UseCloseNodes: boolean): integer;
 var
-  i, j: LongInt;
   act: TSynFoldActions;
 begin
-  j := GetFoldNodeInfoCount(ALineIndex, []);
-  i := 0;
-  while (i < j) and (FoldIndex > 0) do begin
-    act := GetFoldNodeInfo(ALineIndex, i, []).FoldAction;
-    if (UseCloseNodes and (sfaClose in act)) or
-       ((not UseCloseNodes) and (sfaOpen in act)) then
-      dec(FoldIndex);
-    inc(i);
-  end;
-  if i = j then
-    exit(-1);
-  // 0 is used for "all"
-  case TPascalCodeFoldBlockType(PtrUInt(GetFoldNodeInfo(ALineIndex, i, []).FoldType)) of
+  act := [sfaOpen];
+  if UseCloseNodes then act := [sfaClose];
+  case TPascalCodeFoldBlockType(PtrUInt(GetFoldNodeInfo(ALineIndex, FoldIndex, act).FoldType)) of
     cfbtRegion:
       Result := 2;
     cfbtIfDef:
@@ -2832,30 +2821,50 @@ end;
 
 procedure TSynPasSyn.InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
   ABlockType: TPascalCodeFoldBlockType);
+var
+  OneLine: Boolean;
+  i: Integer;
 begin
+  Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
-  Node.FoldLvlStart := CurrentCodeFoldBlockLevel;
-  Node.FoldLvlEnd := CurrentCodeFoldBlockLevel + EndOffs;
   Node.FoldType := Pointer(PtrInt(ABlockType));
   case ABlockType of
     cfbtRegion:
       begin
         node.FoldGroup := 2;
         Node.FoldLvlStart := FSynPasRangeInfo.EndLevelRegion;
+        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelRegion);
       end;
     cfbtIfDef:
       begin
         node.FoldGroup := 3;
         Node.FoldLvlStart := FSynPasRangeInfo.EndLevelIfDef;
+        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelIfDef);
       end;
     else
       begin
         node.FoldGroup := 1;
         Node.FoldLvlStart := CurrentCodeFoldBlockLevel;
+        OneLine := (EndOffs < 0) and (Node.FoldLvlStart > MinimumCodeFoldBlockLevel);
       end;
   end;
   Node.FoldLvlEnd := Node.FoldLvlStart + EndOffs;
+  if OneLine then begin // find opening node
+    i := FNodeInfoCount - 1;
+    while (i >= 0) and
+    ( (FNodeInfoList[i].FoldType <> node.FoldType) or
+      (FNodeInfoList[i].FoldGroup <> node.FoldGroup) or
+      (not (sfaOpen in FNodeInfoList[i].FoldAction)) or
+      (FNodeInfoList[i].FoldLvlEnd <> Node.FoldLvlStart)
+    ) do
+      dec(i);
+    if i >= 0 then begin
+      FNodeInfoList[i].FoldAction := FNodeInfoList[i].FoldAction
+                                   - [sfaOpen, sfaFold] + [sfaOneLineOpen];
+      Include(Node.FoldAction, sfaOneLineClose);
+    end;
+  end;
   if ABlockType in PascalWordTrippletRanges then
     Node.FoldAction := [sfaMarkup]
   else
@@ -2886,8 +2895,9 @@ begin
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType);
-    FNodeInfoList[FNodeInfoCount].FoldAction :=
-      FNodeInfoList[FNodeInfoCount].FoldAction + [sfaClose, sfaFold];
+    if not(sfaOneLineClose in FNodeInfoList[FNodeInfoCount].FoldAction) then
+      FNodeInfoList[FNodeInfoCount].FoldAction :=
+        FNodeInfoList[FNodeInfoCount].FoldAction + [sfaClose, sfaFold];
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -2942,8 +2952,10 @@ begin
     if NoMarkup then
       exclude(FNodeInfoList[FNodeInfoCount].FoldAction, sfaMarkup);
     if DecreaseLevel then
-      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
-    include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
+      if not(sfaOneLineClose in FNodeInfoList[FNodeInfoCount].FoldAction) then begin
+        include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
+        include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
+      end;
     inc(FNodeInfoCount);
   end;
   EndCodeFoldBlock(DecreaseLevel);
@@ -3233,7 +3245,7 @@ end;
 function TSynPasSyn.GetFoldNodeInfo(Line, Index: Integer;
   Filter: TSynFoldActions): TSynFoldNodeInfo;
 var
-  i: LongInt;
+  i, j: LongInt;
 begin
   if FNodeInfoLine <> Line then begin
     FCatchNodeInfo := True;
@@ -3256,12 +3268,16 @@ begin
   if Filter = [] then
     Result := FNodeInfoList[Index]
   else
+  begin
+    j := Index;
     for i := 0 to FNodeInfoCount - 1 do
       if FNodeInfoList[i].FoldAction * Filter = Filter then begin
         Result := FNodeInfoList[i];
-        if Index = 0 then break;
-        dec(Index);
+        if j = 0 then break;
+        dec(j);
       end;
+  end;
+  Result.NodeIndex := Index; // only set copy on result
 end;
 
 function TSynPasSyn.GetFoldNodeInfoCount(Line: Integer;

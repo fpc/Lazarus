@@ -103,11 +103,15 @@ type
                     sfaMarkup,  // This node can be highlighted, by the matching Word-Pair Markup
                     sfaFold,    // Part of a foldable block
                     sfaInvalid, // Wrong Index
-                    sfaDefaultCollapsed
+                    sfaDefaultCollapsed,
+                    sfaOneLineOpen, // Open, but closes on same line; does *not* have sfaOpen
+                    sfaOneLineClose // Open, but closes on same line; does *not* have sfaOpen
                    );
   TSynFoldActions = set of TSynFoldAction;
 
   TSynFoldNodeInfo = record
+    LineIndex: Integer;
+    NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter
     LogXStart, LogXEnd: Integer; // -1 previous line
     FoldLvlStart, FoldLvlEnd: Integer;
     FoldAction: TSynFoldActions;
@@ -360,6 +364,8 @@ end;
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer;
   Filter: TSynFoldActions): TSynFoldNodeInfo;
 begin
+  Result.LineIndex := Line;
+  Result.NodeIndex := Index;
   Result.FoldAction := [sfaInvalid];
 end;
 
