@@ -288,6 +288,7 @@ type
     property AutoScroll;
     property AutoSize;
     property BorderSpacing;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color nodefault;
