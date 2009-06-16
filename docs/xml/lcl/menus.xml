@@ -2463,6 +2463,10 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <descr>Currently has only one member - <var>mihtDestroy</var>
         </descr>
       </element>
+      <element name="TMenuItem.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TMainMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPopupMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Menus -->
   </package>

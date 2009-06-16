@@ -1130,6 +1130,7 @@
         <short>
           <var>StretchDraw</var> - draw the image to fill the canvas</short>
       </element>
+      <element name="TCustomImageList.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- ImgList -->
   </package>

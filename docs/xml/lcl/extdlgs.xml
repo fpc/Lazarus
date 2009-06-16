@@ -1294,6 +1294,13 @@
         <short>
           <var>CalendarDblClick</var> - method for handling doubleclick on the calendar</short>
       </element>
+      <element name="TPreviewFileControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TOpenPictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalculatorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalculatorForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalendarDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- ExtDlgs -->
   </package>

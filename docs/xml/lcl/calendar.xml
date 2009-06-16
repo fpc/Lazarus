@@ -569,6 +569,8 @@
         <short>
           <var>LMChanged</var> - LCL Message method to deal with changes in the control</short>
       </element>
+      <element name="TCustomCalendar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalendar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Calendar -->
   </package>

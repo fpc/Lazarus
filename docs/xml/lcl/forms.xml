@@ -9685,6 +9685,11 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>
           <var>DoArrowKey</var> - method for processing an arrow key</short>
       </element>
+      <element name="TScrollingWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TScrollBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomFrame.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="THintWindow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Forms -->
   </package>

@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="AvgLvlTree">
-      <short/>
+      <short>An Average Level Tree structure, which is kept balanced so that finding a node is very rapid</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -51,51 +51,57 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TAvgLvlTreeNode">
-        <short/>
+        <short>
+          <var>TAvgLvlTreeNode</var> - a node, the basic structural element of a <var>TAvgLvlTree</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTreeNode.Parent">
-        <short/>
+        <short>
+          <var>Parent</var> - the previous level in the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTreeNode.Left">
-        <short/>
+        <short>The <var>Left</var> descendant branch node in the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTreeNode.Right">
-        <short/>
+        <short>The <var>Right</var> descendant branch node in the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTreeNode.Balance">
-        <short/>
+        <short>
+          <var>Balance</var> - should be 0 for perfect balance, -1 or +1 for one extra node on either side, more than (+ or -) 1 means tree is unbalanced and needs to be fixed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTreeNode.Data">
-        <short/>
+        <short>A pointer to the actual <var>Data</var> associated with the node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTreeNode.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> - remove all the branches leaving an empty tree</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TAvgLvlTreeNode.TreeDepth">
-        <short/>
+        <short>
+          <var>TreeDepth</var> - the number of levels in the tree structure, by the longest way down</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -106,14 +112,18 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PAvgLvlTreeNode">
-        <short/>
+        <short>
+          <var>PAvgLvlTreeNode</var> - pointer to a <var>TAvgLvlTreeNode</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TAvgLvlTree">
-        <short/>
-        <descr/>
+        <short>
+          <var>TAvgLvlTree</var> - an Average Level binary Tree</short>
+        <descr>
+          <var>TAvgLvlTree</var> is an Average Level binary Tree. This binary tree is always balanced, so that inserting, deleting and finding a node is performed in O(log(#Nodes))</descr>
         <errors/>
         <seealso/>
       </element>
@@ -211,7 +221,8 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TAvgLvlTree.Root">
-        <short/>
+        <short>
+          <var>Root</var> - the starting node of the tree structure</short>
         <descr/>
         <seealso/>
       </element>
@@ -498,7 +509,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTree.RemovePointer">
-        <short/>
+        <short>RemovePointer - if the Data with the same pointer exists one pointer is removed.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -531,7 +542,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TAvgLvlTree.OnCompare">
-        <short>Provide an OnCompare procedure to define your own sorting. The tree will be rebuilt without loosig data..</short>
+        <short>
+          <var>OnCompare</var> - user-supplied event handler to define your own sorting. The tree will be rebuilt without losing data.</short>
         <descr/>
         <seealso/>
       </element>
@@ -543,7 +555,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTree.Clear">
-        <short>Delete all nodes without freeing the data.</short>
+        <short>Delete all nodes without freeing the data. Calls <var>Clear</var> then performs inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -568,13 +581,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TAvgLvlTree.Count">
-        <short/>
+        <short>
+          <var>Count</var> - number of nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TAvgLvlTree.ConsistencyCheck">
-        <short/>
+        <short>
+          <var>ConsistencyCheck</var> - checks that the root node exists and that the tree is correctly balanced with valid nodes on each level</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -585,7 +600,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTree.WriteReportToStream">
-        <short/>
+        <short>
+          <var>WriteReportToStream</var> - sends a status report to the current data stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -600,7 +616,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TAvgLvlTree.ReportAsString">
-        <short/>
+        <short>
+          <var>ReportAsString</var> returns the status report sent to the stream, as a string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -611,7 +628,9 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TAvgLvlTree.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for <var>TAvgLvlTree</var>, allowing the comparison method to be passed as an argument. Performs Inherited Create and copies the specified comparison method to a local variable
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -633,27 +652,33 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TAvgLvlTree.Create">
-        <short/>
+        <short>Version of the <var>Create</var> constructor without specified arguments</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TAvgLvlTree.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor for <var>TAvgLvlTree</var>: </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy"/>
+        </seealso>
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PAvgLvlTree">
-        <short/>
+        <short>
+          <var>PAvgLvlTree</var> - a pointer to a <var>TAvgLvlTree</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TAvgLvlTreeNodeMemManager">
-        <short/>
+        <short>
+          <var>TAvgLvlTreeNodeMemManager</var> - memory manager for TAvgLvlTree nodes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -719,7 +744,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.DisposeNode">
-        <short/>
+        <short>
+          <var>DisposeNode</var> - method for disposal of a node when it is no longer needed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -730,7 +756,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.NewNode">
-        <short/>
+        <short>
+          <var>NewNode</var> - returns a new node fo the structure</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -741,45 +768,225 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.MinimumFreeNode">
-        <short/>
+        <short>
+          <var>MinimumFreeNode</var> the value of the smallest (or next) free node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.MaximumFreeNodeRatio">
-        <short/>
+        <short>
+          <var>MaximumFreeNodeRatio</var> - the maximum allowable ratio of free nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.Count">
-        <short/>
+        <short>
+          <var>Count</var> - the running total of nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> - remove all the nodes and leave an empty structure</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for <var>TAvgLvlTreeNodeMemManager</var>: calls inherited <var>Create</var> then initialises the counters</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.Destroy">
-        <short/>
+        <short>
+          <var>Destroy</var> - destructor for memory manager: calls <var>Clear</var> then performs inherited <var>Destroy</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
       </element>
       <element name="TAvgLvlTree.FindNearestKey">
         <short>Same as FindKey, but if the exact Key can not be found a Node left or right of it is returned.</short>
+      </element>
+      <element name="TPointerToPointerItem">
+        <short>
+          <var>TPointerToPointerItem</var> - an item in a PointerToPointer Tree (associative array)</short>
+      </element>
+      <element name="TPointerToPointerItem.Key">
+        <short>The <var>Key</var> defining the pointer item</short>
+      </element>
+      <element name="TPointerToPointerItem.Value">
+        <short>The <var>Value</var> of the pointer item</short>
+      </element>
+      <element name="PPointerToPointerItem">
+        <short>
+          <var>PPointerToPointerItem</var> - a pointer to a <var>TPointerToPointerItem</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree">
+        <short>
+          <var>TPointerToPointerTree</var> - an associative array of PointerToPointer Items, or a tree of trees</short>
+        <descr>
+          <var>TPointerToPointerTree</var> - an associative array of PointerToPointer Items, or a tree of trees. This class uses pointers to identify pointers within the array, unlike the <var>TStringToStringTree</var>, which uses strings to identify strings.</descr>
+      </element>
+      <element name="TPointerToPointerTree.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TPointerToPointerTree</var>. Calls the <var>TAvgLvlTree.Create</var> method</short>
+        <seealso>
+          <link id="#lcl.AvgLvlTree.TAvgLvlTree.Create">TAvgLvlTree.Create</link>
+        </seealso>
+      </element>
+      <element name="TPointerToPointerTree.Destroy">
+        <seealso>
+          <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
+        </seealso>
+        <short>
+          <var>Destroy</var> - destructor for <var>TPointerToPointerTree</var>: <var>Clear</var> the tree, <var>Free</var> the items then call inherited <var>Destroy</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree.Clear">
+        <short>
+          <var>Clear</var> - removes each node from the tree, leaving an empty tree</short>
+      </element>
+      <element name="TPointerToPointerTree.Remove">
+        <short>
+          <var>Remove</var> the node specified by <var>Key</var> from the tree</short>
+      </element>
+      <element name="TPointerToPointerTree.Contains">
+        <short>Returns True if the tree <var>Contains</var> the node specified by <var>Key</var>
+        </short>
+      </element>
+      <element name="TPointerToPointerTree.GetFirst">
+        <short>
+          <var>GetFirst</var> - finds the first node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetLast">
+        <short>
+          <var>GetLast</var> - finds the last node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetNext">
+        <short>
+          <var>GetNext</var> - finds the next node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.GetPrev">
+        <short>
+          <var>GetPrev</var> - finds the previous node matching the supplied arguments; returns True if successful</short>
+      </element>
+      <element name="TPointerToPointerTree.Count">
+        <short>
+          <var>Count</var> - the number of items</short>
+      </element>
+      <element name="TPointerToPointerTree.Values">
+        <short>
+          <var>Values</var> - a pointer into the array of values associated with the nodes</short>
+      </element>
+      <element name="TPointerToPointerTree.Tree">
+        <short>The <var>Tree</var> that forms the basis of the associative array</short>
+      </element>
+      <element name="TStringToStringTree">
+        <descr>
+          <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.</descr>
+        <short>
+          <var>TStringToStringTree</var> - an associative array of StringToString Items, or a tree of trees</short>
+      </element>
+      <element name="TStringToStringItem">
+        <short>
+          <var>TStringToStringItem</var> - an item in a StringToString Tree (associative array)</short>
+      </element>
+      <element name="TStringToStringItem.Name">
+        <short>The <var>Name</var> that identifies the string within the associative array</short>
+      </element>
+      <element name="TStringToStringItem.Value">
+        <short>The <var>Value</var> of the string held within the associative array</short>
+      </element>
+      <element name="PStringToStringItem">
+        <short>
+          <var>PStringToStringItem</var> -  pointer to a TStringToStringItem</short>
+      </element>
+      <element name="TStringToStringTree.Create">
+        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify whether or not the string operations are to be Case Sensitive</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
+      <element name="TStringToStringTree.Create.CaseSensitive">
+        <short>
+          <var>CaseSensitive</var> - if True, string operations (comparisons etc) must be case sensitive</short>
+      </element>
+      <element name="TStringToStringTree.Create">
+        <short>The instance of the <var>Create</var> constructor that allows the programmer to specify how items in the list are to be compared</short>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
+      <element name="TStringToStringTree.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TStringToStringTree</var>: calls <var>Clear</var>, frees items then calls inherited <var>Destroy</var>
+        </short>
+      </element>
+      <element name="TStringToStringTree.Clear">
+        <short>
+          <var>Clear</var> - removes all items leaving an empty tree</short>
+      </element>
+      <element name="TStringToStringTree.Contains">
+        <short>Returns True if the tree <var>Contains</var> the specified string</short>
+      </element>
+      <element name="TStringToStringTree.Add">
+        <short>
+          <var>Add</var> an item to the tree (specified by its name, value or delimiter)</short>
+      </element>
+      <element name="TStringToStringTree.AddNameValues">
+        <short>
+          <var>AddNameValues</var> add the specified named values to the tree</short>
+      </element>
+      <element name="TStringToStringTree.AddValues">
+        <short>
+          <var>AddValues</var> - adds the specified values to the tree</short>
+      </element>
+      <element name="TStringToStringTree.GetFirst">
+        <short>
+          <var>GetFirst</var> - finds the matching first item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetLast">
+        <short>
+          <var>GetLast</var> - finds the last matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetNext">
+        <short>
+          <var>GetNext</var> - finds the next matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.GetPrev">
+        <short>
+          <var>GetPrev</var> - finds the previous matching item; returns True if successful</short>
+      </element>
+      <element name="TStringToStringTree.Count">
+        <short>
+          <var>Count</var> - the number of items</short>
+      </element>
+      <element name="TStringToStringTree.Values">
+        <short>The <var>Values</var> of the strings corresponding to the supplied name</short>
+      </element>
+      <element name="TStringToStringTree.Tree">
+        <short>The <var>Tree</var> that forms the basis of the associative array</short>
+      </element>
+      <element name="TStringToStringTree.CompareItems">
+        <short>
+          <var>CompareItems</var> - the items for comparison</short>
+      </element>
+      <element name="TStringToStringTree.CompareNameWithItem">
+        <short>
+          <var>CompareNameWithItem</var> - the name for comparison with the item</short>
       </element>
     </module>
     <!-- AvgLvlTree -->

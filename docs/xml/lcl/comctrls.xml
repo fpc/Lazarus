@@ -17427,6 +17427,16 @@ the comparision is case sensitive.
       <element name="TListView.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TListView.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TCustomTreeView.DoMouseWheel" link="#LCL.Controls.TControl.DoMouseWheel"/>
+      <element name="TStatusBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TTabSheet.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPageControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomListView.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomProgressBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomUpDown.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TToolButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TToolBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomTrackBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomTreeView.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- ComCtrls -->
   </package>

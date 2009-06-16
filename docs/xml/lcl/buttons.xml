@@ -1818,6 +1818,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>
           <var>LoadGlyphFromLazarusResource</var> - generic method to load a button glyph with specified name from a Lazarus Resource file (.lrs)</short>
       </element>
+      <element name="TCustomBitBtn.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomSpeedButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
   </package>
 </fpdoc-descriptions>

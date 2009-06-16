@@ -7,8 +7,7 @@
   ====================================================================
 -->
     <module name="RubberBand">
-	    <short>
-Describes <var>TRubberBand</var>, for drawing a ring resembling a rubber band around a selection</short>
+      <short>Describes <var>TRubberBand</var>, for drawing a ring resembling a rubber band around a selection</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -94,6 +93,7 @@ Describes <var>TRubberBand</var>, for drawing a ring resembling a rubber band ar
         <short>
           <var>TRubberBand</var> for drawing a ring resembling a rubber band around a selection</short>
       </element>
+      <element name="TCustomRubberBand.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- RubberBand -->
   </package>

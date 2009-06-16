@@ -91,7 +91,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TPairSplitterSide.GetSplitter.Result"><short/></element>
+      <element name="TPairSplitterSide.GetSplitter.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.SetParent">
         <short/>
@@ -100,7 +102,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPairSplitterSide.SetParent.AParent"><short/></element>
+      <element name="TPairSplitterSide.SetParent.AParent">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.WMPaint">
         <short/>
@@ -109,7 +113,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPairSplitterSide.WMPaint.PaintMessage"><short/></element>
+      <element name="TPairSplitterSide.WMPaint.PaintMessage">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.Paint">
         <short/>
@@ -137,7 +143,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPairSplitterSide.Create.TheOwner"><short/></element>
+      <element name="TPairSplitterSide.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TPairSplitterSide.Destroy">
         <short/>
@@ -254,9 +262,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPairSplitterType.pstHorizontal"><short/></element>
+      <element name="TPairSplitterType.pstHorizontal">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPairSplitterType.pstVertical"><short/></element>
+      <element name="TPairSplitterType.pstVertical">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomPairSplitter">
         <short/>
@@ -296,7 +308,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.GetPosition.Result"><short/></element>
+      <element name="TCustomPairSplitter.GetPosition.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TCustomPairSplitter.GetSides">
         <short/>
@@ -305,9 +319,13 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.GetSides.Result"><short/></element>
+      <element name="TCustomPairSplitter.GetSides.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.GetSides.Index"><short/></element>
+      <element name="TCustomPairSplitter.GetSides.Index">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPairSplitter.SetPosition">
         <short/>
@@ -316,7 +334,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.SetPosition.AValue"><short/></element>
+      <element name="TCustomPairSplitter.SetPosition.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPairSplitter.SetSplitterType">
         <short/>
@@ -325,7 +345,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.SetSplitterType.AValue"><short/></element>
+      <element name="TCustomPairSplitter.SetSplitterType.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPairSplitter.AddSide">
         <short/>
@@ -334,7 +356,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.AddSide.ASide"><short/></element>
+      <element name="TCustomPairSplitter.AddSide.ASide">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPairSplitter.RemoveSide">
         <short/>
@@ -343,7 +367,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.RemoveSide.ASide"><short/></element>
+      <element name="TCustomPairSplitter.RemoveSide.ASide">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomPairSplitter.Create">
         <short/>
@@ -352,7 +378,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.Create.TheOwner"><short/></element>
+      <element name="TCustomPairSplitter.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomPairSplitter.Destroy">
         <short/>
@@ -396,7 +424,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.IsSupportedByInterface.Result"><short/></element>
+      <element name="TCustomPairSplitter.IsSupportedByInterface.Result">
+        <short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TCustomPairSplitter.ChildClassAllowed">
         <short/>
@@ -405,9 +435,13 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.ChildClassAllowed.Result"><short/></element>
+      <element name="TCustomPairSplitter.ChildClassAllowed.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.ChildClassAllowed.ChildClass"><short/></element>
+      <element name="TCustomPairSplitter.ChildClassAllowed.ChildClass">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomPairSplitter.Sides">
         <short/>
@@ -415,7 +449,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.Sides.Index"><short/></element>
+      <element name="TCustomPairSplitter.Sides.Index">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomPairSplitter.SplitterType">
         <short/>
@@ -532,6 +568,8 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TPairSplitterSide.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomPairSplitter.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- PairSplitter -->
   </package>

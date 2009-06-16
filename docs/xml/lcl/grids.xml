@@ -13003,6 +13003,8 @@ Segunda linea de texto</descr>
         <short>
           <var>GetDefaultValueUnchecked</var> - returns the default value for an unchecked column</short>
       </element>
+      <element name="TCustomGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TStringGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Grids -->
   </package>

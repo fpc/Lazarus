@@ -438,6 +438,7 @@
       <element name="TCheckListBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TCheckListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TCheckListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TCustomCheckListBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- CheckLst -->
   </package>
