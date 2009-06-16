@@ -7,7 +7,7 @@ unit EducationLaz;
 interface
 
 uses
-  EduOptionsDlg, LazarusPackageIntf;
+  EduOptionsDlg, EduOptions, LazarusPackageIntf;
 
 implementation
 

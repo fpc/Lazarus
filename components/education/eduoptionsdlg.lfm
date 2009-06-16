@@ -1,7 +1,7 @@
 object EduOptionsDialog: TEduOptionsDialog
-  Left = 298
+  Left = 305
   Height = 382
-  Top = 170
+  Top = 160
   Width = 554
   Caption = 'EduOptionsDialog'
   ClientHeight = 382

@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="8"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
@@ -15,7 +15,7 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="2">
+    <Files Count="4">
       <Item1>
         <Filename Value="eduoptionsdlg.pas"/>
         <HasRegisterProc Value="True"/>
@@ -25,6 +25,14 @@
         <Filename Value="README.txt"/>
         <Type Value="Text"/>
       </Item2>
+      <Item3>
+        <Filename Value="eduoptions.pas"/>
+        <UnitName Value="EduOptions"/>
+      </Item3>
+      <Item4>
+        <Filename Value="edupkgsystem.pas"/>
+        <UnitName Value="EduPkgSystem"/>
+      </Item4>
     </Files>
     <i18n>
       <OutDir Value="languages"/>
