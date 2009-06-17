@@ -478,6 +478,25 @@ begin
   Result.cx := Result.cx + Metrics.TextMargins.cxLeftWidth + Metrics.TextMargins.cxRightWidth;
 end;
 
+procedure ThemeDrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); inline;
+begin
+  with Details do
+    DrawThemeBackground(TWin32ThemeServices(ThemeServices).Theme[Element], DC, Part, State, R, ClipRect);
+end;
+
+procedure ThemeDrawText(DC: HDC; Details: TThemedElementDetails;
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
+var
+  w: widestring;
+begin
+  with Details do
+  begin
+    w := UTF8ToUTF16(S);
+    DrawThemeText(TWin32ThemeServices(ThemeServices).Theme[Element], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
+  end;
+end;
+
+
 procedure DrawVistaMenuBar(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: Boolean; const ItemState: UINT);
 const
   BarState: array[Boolean] of TThemedMenu =
@@ -497,7 +516,6 @@ const
         Exit(False);
     Result := True;
   end;
-
 var
   MenuState: TThemedMenu;
   Metrics: TVistaBarMenuMetrics;
@@ -577,11 +595,11 @@ begin
       inc(BGRect.Right, 2);
   end;
   Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
-  ThemeServices.DrawElement(AHDC, Tmp, BGRect, @BGClip);
+  ThemeDrawElement(AHDC, Tmp, BGRect, @BGClip);
 
   Details := ThemeServices.GetElementDetails(MenuState);
   // draw menu item
-  ThemeServices.DrawElement(AHDC, Details, ARect, nil);
+  ThemeDrawElement(AHDC, Details, ARect, nil);
 
   TextRect := ARect;
   inc(TextRect.Left, Metrics.ItemMargins.cxLeftWidth);
@@ -619,7 +637,7 @@ begin
   else
     AFont := GetMenuItemFont([]);
   OldFont := SelectObject(AHDC, AFont);
-  ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+  ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
   if OldFont <> 0 then
     DeleteObject(SelectObject(AHDC, OldFont));
 end;
@@ -640,7 +658,7 @@ begin
   if ThemeServices.HasTransparentParts(Details) then
   begin
     Tmp := ThemeServices.GetElementDetails(tmPopupBackground);
-    ThemeServices.DrawElement(AHDC, Tmp, ARect, nil);
+    ThemeDrawElement(AHDC, Tmp, ARect, nil);
   end;
   IsRightToLeft := AMenuItem.GetIsRightToLeft;
   // calc check/image rect
@@ -652,7 +670,7 @@ begin
   GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
   GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
   Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
-  ThemeServices.DrawElement(AHDC, Tmp, GutterRect, nil);
+  ThemeDrawElement(AHDC, Tmp, GutterRect, nil);
 
   if AMenuItem.IsLine then
   begin
@@ -662,12 +680,12 @@ begin
     SeparatorRect.Top := ARect.Top + Metrics.ItemMargins.cyTopHeight;
     SeparatorRect.Bottom := ARect.Bottom - Metrics.ItemMargins.cyBottomHeight;
     Tmp := ThemeServices.GetElementDetails(tmPopupSeparator);
-    ThemeServices.DrawElement(AHDC, Tmp, SeparatorRect, nil);
+    ThemeDrawElement(AHDC, Tmp, SeparatorRect, nil);
   end
   else
   begin
     // draw menu item
-    ThemeServices.DrawElement(AHDC, Details, ARect, nil);
+    ThemeDrawElement(AHDC, Details, ARect, nil);
     // draw submenu
     if AMenuItem.Count > 0 then
     begin
@@ -678,7 +696,7 @@ begin
       SubMenuRect.Bottom := SubMenuRect.Bottom - Metrics.ItemMargins.cyBottomHeight;
       Tmp := ThemeServices.GetElementDetails(PopupSubmenuStates[AMenuItem.Enabled]);
       Tmp.State := Tmp.State + 2;
-      ThemeServices.DrawElement(AHDC, Tmp, SubMenuRect, nil);
+      ThemeDrawElement(AHDC, Tmp, SubMenuRect, nil);
     end;
     // draw check/image
     if AMenuItem.HasIcon then
@@ -695,9 +713,9 @@ begin
     if AMenuItem.Checked then
     begin
       Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
-      ThemeServices.DrawElement(AHDC, Tmp, CheckRect, nil);
+      ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
       Tmp := ThemeServices.GetElementDetails(PopupCheckStates[AMenuItem.Enabled, AMenuItem.RadioItem]);
-      ThemeServices.DrawElement(AHDC, Tmp, CheckRect, nil);
+      ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
     end;
     // draw text
     TextRect := GutterRect;
@@ -717,12 +735,12 @@ begin
     else
       AFont := GetMenuItemFont([]);
     OldFont := SelectObject(AHDC, AFont);
-    ThemeServices.DrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+    ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
       TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
       TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
-      ThemeServices.DrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
+      ThemeDrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
     end;
     // exlude menu item rectangle to prevent drawing by windows after us
     if AMenuItem.Count > 0 then
