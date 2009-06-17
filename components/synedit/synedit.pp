@@ -438,10 +438,12 @@ type
 
     procedure AquirePrimarySelection;
     function GetDefSelectionMode: TSynSelectionMode;
+    function GetFoldState: String;
     function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
+    procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SurrenderPrimarySelection;
@@ -838,6 +840,7 @@ type
   public
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
+    property FoldState: String read GetFoldState write SetFoldState;
     property CanPaste: Boolean read GetCanPaste;
     property CanRedo: boolean read GetCanRedo;
     property CanUndo: boolean read GetCanUndo;
@@ -1324,6 +1327,11 @@ end;
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
 begin
   Result := FBlockSelection.SelectionMode;
+end;
+
+function TCustomSynEdit.GetFoldState: String;
+begin
+  Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
 function TCustomSynEdit.GetDividerDrawLevel: Integer;
@@ -3426,11 +3434,11 @@ var
       FTextDrawer.FrameEndX := -1;
       LastFSX := -1;
       LastFEX := -1;
-      CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
+      //CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
+      CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
 
-      fMarkupManager.PrepareMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
+      fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
       // Get the line.
-      sLine := FFoldedLinesView[CurLine];
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, fTextHeight);
@@ -3449,6 +3457,7 @@ var
       ForceEto := False;
 
       if not Assigned(fHighlighter) then begin
+        sLine := FFoldedLinesView[CurLine];
         DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
       end else begin
         // draw splitter line
@@ -3486,7 +3495,7 @@ var
       // of the invalid area with the correct colors.
       PaintHighlightToken(TRUE);
 
-      fMarkupManager.FinishMarkupForRow(FFoldedLinesView.TextIndex[CurLine]+1);
+      fMarkupManager.FinishMarkupForRow(CurTextIndex+1);
     end;
     CurLine:=-1;
   end;
@@ -4936,6 +4945,14 @@ begin
   if assigned(fHighlighter) then
     fHighlighter.DrawDividerLevel := AValue;
   Invalidate;
+end;
+
+procedure TCustomSynEdit.SetFoldState(const AValue: String);
+begin
+  FFoldedLinesView.Lock;
+  FFoldedLinesView.ApplyFoldDescription(0, 0, -1, -1, PChar(AValue), length(AValue), True);
+  TopLine := TopLine; // Todo: reset topline on foldedview
+  FFoldedLinesView.UnLock;
 end;
 
 procedure TCustomSynEdit.SetMouseActions(const AValue: TSynEditMouseActions);

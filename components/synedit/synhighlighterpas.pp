@@ -396,7 +396,7 @@ type
     procedure UnknownProc;
     procedure SetD4syntax(const Value: boolean);
     procedure InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
-                       ABlockType: TPascalCodeFoldBlockType);
+                       ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions);
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
     procedure InitFoldConfig;
@@ -2676,8 +2676,8 @@ function TSynPasSyn.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
 var
   act: TSynFoldActions;
 begin
-  act := [sfaOpen];
-  if UseCloseNodes then act := [sfaClose];
+  act := [sfaOpen, sfaFold];
+  if UseCloseNodes then act := [sfaClose, sfaFold];
   case TPascalCodeFoldBlockType(PtrUInt(GetFoldNodeInfo(ALineIndex, FoldIndex, act).FoldType)) of
     cfbtRegion:
       Result := 2;
@@ -2820,7 +2820,7 @@ end;
 
 
 procedure TSynPasSyn.InitNode(var Node: TSynFoldNodeInfo; EndOffs: Integer;
-  ABlockType: TPascalCodeFoldBlockType);
+  ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions);
 var
   OneLine: Boolean;
   i: Integer;
@@ -2829,6 +2829,7 @@ begin
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
   Node.FoldType := Pointer(PtrInt(ABlockType));
+  Node.FoldAction := aActions;
   case ABlockType of
     cfbtRegion:
       begin
@@ -2862,13 +2863,11 @@ begin
     if i >= 0 then begin
       FNodeInfoList[i].FoldAction := FNodeInfoList[i].FoldAction
                                    - [sfaOpen, sfaFold] + [sfaOneLineOpen];
-      Include(Node.FoldAction, sfaOneLineClose);
+      Node.FoldAction := Node.FoldAction + [sfaOneLineClose] - [sfaClose, sfaFold];
     end;
   end;
   if ABlockType in PascalWordTrippletRanges then
-    Node.FoldAction := [sfaMarkup]
-  else
-    Node.FoldAction := [];
+    Include(Node.FoldAction, sfaMarkup);
 end;
 
 procedure TSynPasSyn.StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
@@ -2876,9 +2875,7 @@ begin
   if not FFoldConfig[ABlockType] then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
-    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType);
-    FNodeInfoList[FNodeInfoCount].FoldAction :=
-      FNodeInfoList[FNodeInfoCount].FoldAction + [sfaOpen, sfaFold];
+    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, [sfaOpen, sfaFold]);
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -2894,10 +2891,7 @@ begin
   if not FFoldConfig[ABlockType] then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
-    InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType);
-    if not(sfaOneLineClose in FNodeInfoList[FNodeInfoCount].FoldAction) then
-      FNodeInfoList[FNodeInfoCount].FoldAction :=
-        FNodeInfoList[FNodeInfoCount].FoldAction + [sfaClose, sfaFold];
+    InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType, [sfaClose, sfaFold]);
     inc(FNodeInfoCount);
   end;
   case ABlockType of
@@ -2924,15 +2918,16 @@ function TSynPasSyn.StartPascalCodeFoldBlock(
 var
   p: PtrInt;
   FoldBlock: Boolean;
+  act: TSynFoldActions;
 begin
   FoldBlock := FFoldConfig[ABlockType];
   p := 0;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
-    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType);
+    act := [sfaOpen];
     if FoldBlock then
-      include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
-    include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaOpen);
+      include(act, sfaFold);
+    InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, act);
     inc(FNodeInfoCount);
   end;
   if not FoldBlock then
@@ -2944,18 +2939,17 @@ end;
 procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean = False);
 var
   DecreaseLevel: Boolean;
+  act: TSynFoldActions;
 begin
   DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
-    InitNode(FNodeInfoList[FNodeInfoCount], -1, TopPascalCodeFoldBlockType);
+    act := [sfaClose];
+    if DecreaseLevel then
+      include(act, sfaFold);
+    InitNode(FNodeInfoList[FNodeInfoCount], -1, TopPascalCodeFoldBlockType, act);
     if NoMarkup then
       exclude(FNodeInfoList[FNodeInfoCount].FoldAction, sfaMarkup);
-    if DecreaseLevel then
-      if not(sfaOneLineClose in FNodeInfoList[FNodeInfoCount].FoldAction) then begin
-        include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaFold);
-        include(FNodeInfoList[FNodeInfoCount].FoldAction, sfaClose);
-      end;
     inc(FNodeInfoCount);
   end;
   EndCodeFoldBlock(DecreaseLevel);
