@@ -92,8 +92,8 @@ type
     procedure Print(Stream: TStream); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
     
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
   published
     property CheckSum : Boolean read GetCheckSum write SetCheckSum;
     property BarType : TBarcodeType read GetBarType write SetBarType;
@@ -455,7 +455,7 @@ begin
   // no specific items in popup menu
 end;
 
-procedure TfrBarCodeView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrBarCodeView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
@@ -465,7 +465,7 @@ begin
   RestoreProperty('Zoom',XML.GetValue(Path+'BarCode/Zoom','1'));
 end;
 
-procedure TfrBarCodeView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrBarCodeView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   

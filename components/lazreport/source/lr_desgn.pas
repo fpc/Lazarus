@@ -525,7 +525,7 @@ type
     procedure WndProc(var Message: TLMessage); override;
     procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
       ButtonTag: Integer); override;
-    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
+    procedure RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
       OnClickEvnt: TNotifyEvent); override;
     procedure BeforeChange; override;
     procedure AfterChange; override;
@@ -2662,7 +2662,7 @@ begin
   end;
 end;
 
-procedure TfrDesignerForm.RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
+procedure TfrDesignerForm.RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
   OnClickEvnt: TNotifyEvent);
 var
   m: TMenuItem;

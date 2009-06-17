@@ -78,8 +78,8 @@ type
     procedure Assign(From: TfrView); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
 
     procedure CalcGaps; override;
     procedure ShowFrame; override;
@@ -472,7 +472,7 @@ begin
   Stream.Write(fCadre, SizeOf(fCadre));
 end;
 
-procedure TfrRoundRectView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrRoundRectView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
@@ -484,7 +484,7 @@ begin
   RestoreProperty('RoundRectCurve',XML.GetValue(Path+'Data/RoundRectCurve/Value',''));
 end;
 
-procedure TfrRoundRectView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrRoundRectView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   

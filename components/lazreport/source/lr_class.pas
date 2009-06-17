@@ -160,8 +160,8 @@ type
   protected
     BaseName  : String;
     
-    function GetSaveProperty(Prop : String; aObj : TPersistent=nil) : string;
-    procedure RestoreProperty(Prop,aValue : String; aObj : TPersistent=nil);
+    function GetSaveProperty(const Prop : String; aObj : TPersistent=nil) : string;
+    procedure RestoreProperty(const Prop,aValue : String; aObj : TPersistent=nil);
   public
     x, y, dx, dy: Integer;
 
@@ -175,8 +175,8 @@ type
     
     procedure CreateUniqueName;
 
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); virtual;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); virtual;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); virtual;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); virtual;
 
     property Memo   : TfrMemoStrings read fMemo write SetMemo;
     property Script : TfrScriptStrings read fScript write SetScript;
@@ -263,8 +263,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
 
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
 
     procedure Resized; virtual;
     procedure DefinePopupMenu(Popup: TPopupMenu); virtual;
@@ -367,9 +367,9 @@ type
     procedure Print(Stream: TStream); override;
     procedure ExportData; override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
 
     procedure MonitorFontChanges;
@@ -414,9 +414,9 @@ type
     procedure Assign(From: TfrView); override;
     
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     
 
     procedure Draw(aCanvas: TCanvas); override;
@@ -444,9 +444,9 @@ type
     procedure Assign(From: TfrView); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
   end;
 
@@ -470,9 +470,9 @@ type
     procedure Assign(From: TfrView); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
     class function GetFilter: string;
   published
@@ -536,7 +536,7 @@ type
     DisableInit: Boolean;
     CalculatedHeight: Integer;
 
-    procedure InitDataSet(Desc: String);
+    procedure InitDataSet(const Desc: String);
     procedure DoError;
     function CalcHeight: Integer;
     procedure StretchObjects(MaxHeight: Integer);
@@ -596,9 +596,9 @@ type
     function AddValue: Integer;
     function FindVariable(const s: String): TfrValue;
     procedure ReadBinaryData(Stream: TStream);
-    procedure ReadBinaryDataFromXML(XML: TLrXMLConfig; Path: String);
+    procedure ReadBinaryDataFromXML(XML: TLrXMLConfig; const Path: String);
     procedure WriteBinaryData(Stream: TStream);
-    procedure WriteBinaryDataToXML(XML: TLrXMLConfig; Path: String);
+    procedure WriteBinaryDataToXML(XML: TLrXMLConfig; const Path: String);
     procedure Clear;
 
     property Items: TStringList read FItems write FItems;
@@ -662,8 +662,8 @@ type
     constructor Create(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
     constructor CreatePage; virtual;
     
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; const Path: String); override;
 
     function TopMargin: Integer;
     function BottomMargin: Integer;
@@ -672,10 +672,10 @@ type
     procedure Clear;
     procedure Delete(Index: Integer);
     function FindObjectByID(ID: Integer): Integer;
-    function FindObject(aName: String): TfrObject;
-    function FindRTObject(aName: String): TfrObject;
+    function FindObject(const aName: String): TfrObject;
+    function FindRTObject(const aName: String): TfrObject;
     procedure ChangePaper(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
-    procedure ShowBandByName(s: String);
+    procedure ShowBandByName(const s: String);
     procedure ShowBandByType(bt: TfrBandType);
     procedure NewPage;
     procedure NewColumn(Band: TfrBand);
@@ -703,8 +703,8 @@ type
 
   TfrPageReport = Class(TfrPage)
   public
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; const Path: String); override;
     
     constructor CreatePage; override;
   published
@@ -732,8 +732,8 @@ type
   public
     constructor Create; override;
 
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; const Path: String); override;
   published
     property Caption : string read fCaption write fCaption;
   end;
@@ -752,12 +752,12 @@ type
     destructor Destroy; override;
 
     procedure Clear;
-    procedure Add(aClassName : string='TfrPageReport');
+    procedure Add(const aClassName : string='TfrPageReport');
     procedure Delete(Index: Integer);
     procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(Stream: TStream);
-    procedure SavetoXML(XML: TLrXMLConfig; Path: String);
+    procedure SavetoXML(XML: TLrXMLConfig; const Path: String);
 
     property Pages[Index: Integer]: TfrPage read GetPages; default;
     property Count: Integer read GetCount;
@@ -783,9 +783,9 @@ type
     procedure Insert(Index: Integer; APage: TfrPage);
     procedure Delete(Index: Integer);
     procedure LoadFromStream(AStream: TStream);
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(AStream: TStream);
-    procedure SaveToXML(XML: TLrXMLConfig; Path: String);
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String);
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
@@ -854,10 +854,10 @@ type
     procedure PrintBeforeModal(Sender: TObject);
     function DoPrepareReport: Boolean;
     procedure DoBuildReport; virtual;
-    procedure DoPrintReport(PageNumbers: String; Copies: Integer);
+    procedure DoPrintReport(const PageNumbers: String; Copies: Integer);
     procedure SetComments(const AValue: TStringList);
     procedure SetDataset(const AValue: TfrDataset);
-    procedure SetPrinterTo(PrnName: String);
+    procedure SetPrinterTo(const PrnName: String);
     procedure SetReportAutor(const AValue: string);
     procedure SetReportCreateDate(const AValue: TDateTime);
     procedure SetReportLastChange(const AValue: TDateTime);
@@ -887,7 +887,7 @@ type
     procedure GetVariableValue(const s: String; var aValue: Variant);
     procedure GetVarList(CatNo: Integer; List: TStrings);
     procedure GetCategoryList(List: TStrings);
-    function FindObject(aName: String): TfrObject;
+    function FindObject(const aName: String): TfrObject;
     // internal events used through report building
     procedure InternalOnEnterRect(Memo: TStringList; View: TfrView);
     procedure InternalOnExportData(View: TfrView);
@@ -899,29 +899,29 @@ type
     procedure FillQueryParams;
     // load/save methods
     procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(Stream: TStream);
-    procedure LoadFromFile(FName: String);
-    procedure LoadFromXMLFile(Fname: String);
+    procedure LoadFromFile(const FName: String);
+    procedure LoadFromXMLFile(const Fname: String);
     procedure SaveToFile(FName: String);
-    procedure SavetoXML(XML: TLrXMLConfig; Path: String);
-    procedure SaveToXMLFile(FName: String);
+    procedure SavetoXML(XML: TLrXMLConfig; const Path: String);
+    procedure SaveToXMLFile(const FName: String);
 
     procedure LoadFromDB(Table: TDataSet; DocN: Integer);
     procedure SaveToDB(Table: TDataSet; DocN: Integer);
 
-    procedure LoadTemplate(fname: String; comm: TStrings;
+    procedure LoadTemplate(const fname: String; comm: TStrings;
       Bmp: TBitmap; Load: Boolean);
-    procedure SaveTemplate(fname: String; comm: TStrings; Bmp: TBitmap);
-    procedure LoadPreparedReport(FName: String);
-    procedure SavePreparedReport(FName: String);
+    procedure SaveTemplate(const fname: String; comm: TStrings; Bmp: TBitmap);
+    procedure LoadPreparedReport(const FName: String);
+    procedure SavePreparedReport(const FName: String);
     // report manipulation methods
     procedure DesignReport;
     function PrepareReport: Boolean;
-    procedure ExportTo(Filter: TClass; aFileName: String);
+    procedure ExportTo(Filter: TClass; const aFileName: String);
     procedure ShowReport;
     procedure ShowPreparedReport;
-    procedure PrintPreparedReport(PageNumbers: String; Copies: Integer);
+    procedure PrintPreparedReport(const PageNumbers: String; Copies: Integer);
     function ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
     procedure EditPreparedReport(PageIndex: Integer);
     //
@@ -986,7 +986,7 @@ type
     Modified: Boolean;
     procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
       ButtonTag: Integer); virtual; abstract;
-    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
+    procedure RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
       NotifyOnClick: TNotifyEvent); virtual; abstract;
     procedure BeforeChange; virtual; abstract;
     procedure AfterChange; virtual; abstract;
@@ -1000,9 +1000,9 @@ type
   public
     procedure Clear; virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
-    procedure LoadFromXML(XML:TLrXMLConfig; Path: String); virtual; abstract;
+    procedure LoadFromXML(XML:TLrXMLConfig; const Path: String); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
-    procedure SaveToXML(XML:TLrXMLConfig; Path: String); virtual; abstract;
+    procedure SaveToXML(XML:TLrXMLConfig; const Path: String); virtual; abstract;
     procedure BeforePreparing; virtual; abstract;
     procedure AfterPreparing; virtual; abstract;
     procedure PrepareDataSet(ds: TfrTDataSet); virtual; abstract;
@@ -1048,7 +1048,7 @@ type
       var val: Variant): Boolean;
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);
       virtual; abstract;
-    procedure AddFunctionDesc(funName, funGroup, funDescription:string);
+    procedure AddFunctionDesc(const funName, funGroup, funDescription:string);
   end;
 
   TfrCompressor = class(TObject)
@@ -1065,7 +1065,7 @@ procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
 procedure frRegisterExportFilter(ClassRef: TClass;
   const FilterDesc, FilterExt: String);
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
-procedure frRegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
+procedure frRegisterTool(const MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 
@@ -1317,7 +1317,7 @@ begin
   Inc(frFunctionsCount);
 end;
 
-procedure frRegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
+procedure frRegisterTool(const MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 begin
   frTools[frToolsCount].Caption := MenuCaption;
   frTools[frToolsCount].ButtonBmp := ButtonBmp;
@@ -1751,7 +1751,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   S:string;
 begin
@@ -1835,7 +1835,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML,Path);
   XML.SetValue(Path+'Typ/Value', frTypeObjectToStr(Typ));
@@ -3089,7 +3089,7 @@ begin
     Flags := Flags or flWordWrap;
 end;
 
-procedure TfrMemoView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrMemoView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
 
@@ -3147,7 +3147,7 @@ begin
   end;
 end;
 
-procedure TfrMemoView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrMemoView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Font/Name/Value', Font.name);
@@ -3439,7 +3439,7 @@ begin
   end;
 end;
 
-procedure TfrBandView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrBandView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   RestoreProperty('BandType',XML.GetValue(Path+'BandType/Value','')); // todo chk
@@ -3459,7 +3459,7 @@ begin
   end;
 end;
 
-procedure TfrBandView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrBandView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'BandType/Value', GetSaveProperty('BandType')); //Ord(FBandType)); // todo: use symbolic values
@@ -3818,7 +3818,7 @@ begin
   Stream.Read(SubPage, 4);
 end;
 
-procedure TfrSubReportView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrSubReportView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   SubPage := XML.GetValue(Path+'SubPage/Value', 0); // todo chk
@@ -3830,7 +3830,7 @@ begin
   Stream.Write(SubPage, 4);
 end;
 
-procedure TfrSubReportView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrSubReportView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'SubPage/Value', SubPage);
@@ -4027,7 +4027,7 @@ begin
   Stream.Seek(n, soFromBeginning);
 end;
 
-procedure TfrPictureView.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPictureView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
   m: TMemoryStream;
@@ -4069,7 +4069,7 @@ begin
   Stream.Seek(0, soFromEnd);
 end;
 
-procedure TfrPictureView.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPictureView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
   n, o: Integer;
@@ -4322,7 +4322,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrBand.InitDataSet(Desc: String);
+procedure TfrBand.InitDataSet(const Desc: String);
 begin
   if Typ = btGroupHeader then
     GroupCondition := Desc
@@ -5286,7 +5286,7 @@ begin
   end;
 end;
 
-function TfrPage.FindObject(aName: String): TfrObject;
+function TfrPage.FindObject(const aName: String): TfrObject;
 var
   i: Integer;
 begin
@@ -5306,7 +5306,7 @@ begin
   end;
 end;
 
-function TfrPage.FindRTObject(aName: String): TfrObject;
+function TfrPage.FindRTObject(const aName: String): TfrObject;
 var
   i: Integer;
 begin
@@ -5749,7 +5749,7 @@ begin
   PageType:=ptReport;
 end;
 
-procedure TfrPage.ShowBandByName(s: String);
+procedure TfrPage.ShowBandByName(const s: String);
 var
   bt: TfrBandType;
   b: TfrBand;
@@ -6369,7 +6369,7 @@ begin
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
-procedure TfrPage.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPage.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   b:byte;
 begin
@@ -6407,7 +6407,7 @@ begin
   end;
 end;
 
-procedure TfrPage.SavetoXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPage.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   Inherited SavetoXML(XML,Path);
   XML.SetValue(Path+'Width/Value', Width);
@@ -6449,7 +6449,7 @@ begin
   FPages.Clear;
 end;
 
-procedure TfrPages.Add(aClassName : string='TfrPageReport');
+procedure TfrPages.Add(const aClassName : string='TfrPageReport');
 Var Pg : TFrPage;
     Rf : TFrPageClass;
 begin
@@ -6549,7 +6549,7 @@ begin
   end;
 end;
 
-procedure TfrPages.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPages.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
   t: TfrView;
@@ -6648,7 +6648,7 @@ begin
   end;
 end;
 
-procedure TfrPages.SavetoXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPages.SavetoXML(XML: TLrXMLConfig; const Path: String);
 var
   b: Byte;
   i, j: Integer;
@@ -6998,7 +6998,7 @@ begin
   until i >= c;
 end;
 
-procedure TfrEMFPages.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrEMFPages.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   // todo
 end;
@@ -7046,7 +7046,7 @@ begin
   until i >= Count;
 end;
 
-procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   // Todo
 end;
@@ -7095,7 +7095,7 @@ begin
   end;
 end;
 
-procedure TfrValues.WriteBinaryDataToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrValues.WriteBinaryDataToXML(XML: TLrXMLConfig; const Path: String);
 var
   i: integer;
   aSubPath: String;
@@ -7147,7 +7147,7 @@ begin
   end;
 end;
 
-procedure TfrValues.ReadBinaryDataFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrValues.ReadBinaryDataFromXML(XML: TLrXMLConfig; const Path: String);
 var
   i,j,n: Integer;
   aSubPath: String;
@@ -7669,7 +7669,7 @@ begin
     MessageDlg(sFRFError,mtError,[mbOk],0);
 end;
 
-procedure TfrReport.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrReport.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   ATitle: string;
 begin
@@ -7716,7 +7716,7 @@ begin
   Pages.SaveToStream(Stream);
 end;
 
-procedure TfrReport.LoadFromFile(FName: String);
+procedure TfrReport.LoadFromFile(const FName: String);
 var
   Stream: TFileStream;
   Ext   : String;
@@ -7733,7 +7733,7 @@ begin
   end;
 end;
 
-procedure TfrReport.LoadFromXMLFile(Fname: String);
+procedure TfrReport.LoadFromXMLFile(const Fname: String);
 var
   XML: TLrXMLConfig;
 begin
@@ -7773,7 +7773,7 @@ begin
   end;
 end;
 
-procedure TfrReport.SavetoXML(XML: TLrXMLConfig; Path: String);
+procedure TfrReport.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   CurReport := Self;
   frVersion := frCurrentVersion;
@@ -7795,7 +7795,7 @@ begin
   Pages.SaveToXML(XML, Path+'Pages/');
 end;
 
-procedure TfrReport.SaveToXMLFile(FName: String);
+procedure TfrReport.SaveToXMLFile(const FName: String);
 var
   XML: TLrXMLConfig;
 begin
@@ -7863,7 +7863,7 @@ begin
   Table.Post;
 end;
 
-procedure TfrReport.LoadPreparedReport(FName: String);
+procedure TfrReport.LoadPreparedReport(const FName: String);
 var
   Stream: TFileStream;
 begin
@@ -7873,7 +7873,7 @@ begin
   CanRebuild := False;
 end;
 
-procedure TfrReport.SavePreparedReport(FName: String);
+procedure TfrReport.SavePreparedReport(const FName: String);
 var
   Stream: TFileStream;
 begin
@@ -7882,7 +7882,7 @@ begin
   Stream.Free;
 end;
 
-procedure TfrReport.LoadTemplate(FName: String; comm: TStrings;
+procedure TfrReport.LoadTemplate(const FName: String; comm: TStrings;
   Bmp: TBitmap; Load: Boolean);
 var
   Stream: TFileStream;
@@ -7917,7 +7917,7 @@ begin
   Stream.Free;
 end;
 
-procedure TfrReport.SaveTemplate(FName: String; Comm: TStrings; Bmp: TBitmap);
+procedure TfrReport.SaveTemplate(const FName: String; Comm: TStrings; Bmp: TBitmap);
 var
   Stream: TFileStream;
   b: Byte;
@@ -8154,7 +8154,7 @@ begin
   frProgressForm.ModalResult := mrOk;
 end;
 
-procedure TfrReport.ExportTo(Filter: TClass; aFileName: String);
+procedure TfrReport.ExportTo(Filter: TClass; const aFileName: String);
 var
   s: String;
 begin
@@ -8356,7 +8356,7 @@ begin
   frProgressForm.ModalResult := mrOk;
 end;
 
-procedure TfrReport.PrintPreparedReport(PageNumbers: String; Copies: Integer);
+procedure TfrReport.PrintPreparedReport(const PageNumbers: String; Copies: Integer);
 var
   s: String;
 begin
@@ -8388,7 +8388,7 @@ begin
   Terminated := False;
 end;
 
-procedure TfrReport.DoPrintReport(PageNumbers: String; Copies: Integer);
+procedure TfrReport.DoPrintReport(const PageNumbers: String; Copies: Integer);
 var
   i, j: Integer;
   f: Boolean;
@@ -8555,7 +8555,7 @@ end;
 
 // printer manipulation methods
 
-procedure TfrReport.SetPrinterTo(PrnName: String);
+procedure TfrReport.SetPrinterTo(const PrnName: String);
 begin
   {$ifdef dbgPrinter}
   DebugLn('TfrReport.SetPrinterTo PrnName=%s PrintToDefault=%d PrnExist?=%d PrnIndex=%d PrinterIndex=%d Name=%s',
@@ -8777,7 +8777,7 @@ begin
     end;
 end;
 
-function TfrReport.FindObject(aName: String): TfrObject;
+function TfrReport.FindObject(const aName: String): TfrObject;
 var
   i, j: Integer;
 begin
@@ -8949,7 +8949,7 @@ begin
   end;
 end;
 
-procedure TfrFunctionLibrary.AddFunctionDesc(funName, funGroup,
+procedure TfrFunctionLibrary.AddFunctionDesc(const funName, funGroup,
   funDescription: string);
 var
   i: Integer;
@@ -9604,7 +9604,7 @@ begin
 end;
 
 //Code from FormStorage
-function TfrObject.GetSaveProperty(Prop: String; aObj : TPersistent=nil): string;
+function TfrObject.GetSaveProperty(const Prop: String; aObj : TPersistent=nil): string;
 Var PropInfo  : PPropInfo;
     Obj       : TObject;
     OldSep    : char;
@@ -9651,7 +9651,7 @@ begin
 end;
 
 //Code from formStorage
-procedure TfrObject.RestoreProperty(Prop, aValue: String;  aObj : TPersistent=nil);
+procedure TfrObject.RestoreProperty(const Prop, aValue: String;  aObj : TPersistent=nil);
 Var PropInfo  : PPropInfo;
     Obj       : TObject;
 begin
@@ -9746,7 +9746,7 @@ begin
   else fName := BaseName + '1';
 end;
 
-procedure TfrObject.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrObject.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   //ClassName not read here.
   Name:=XML.GetValue(Path+'Name/Value','');
@@ -9755,7 +9755,7 @@ begin
   Visible:=XML.GetValue(Path+'Visible/Value', true);
 end;
 
-procedure TfrObject.SaveToXML(XML: TLrXMLConfig; Path: String);
+procedure TfrObject.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   XML.SetValue(Path+'Name/Value', GetSaveProperty('Name'));
   XML.SetValue(Path+'ClassName/Value', self.Classname);
@@ -9780,7 +9780,7 @@ end;
 
 { TfrPageReport }
 
-procedure TfrPageReport.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPageReport.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   Rc   : TRect;
 begin
@@ -9803,7 +9803,7 @@ begin
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
-procedure TfrPageReport.SavetoXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPageReport.SavetoXML(XML: TLrXMLConfig; const Path: String);
 var
   Rc   : TRect;
 begin
@@ -9854,14 +9854,14 @@ begin
   PageType:=ptDialog;
 end;
 
-procedure TfrPageDialog.LoadFromXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPageDialog.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
   XML.GetValue(Path+'Caption/Value', '');
 end;
 
-procedure TfrPageDialog.SavetoXML(XML: TLrXMLConfig; Path: String);
+procedure TfrPageDialog.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SavetoXML(XML, Path);
   
