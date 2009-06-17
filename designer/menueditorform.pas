@@ -54,32 +54,32 @@ type
     procedure FormPaint(Sender: TObject);
     procedure List_menusClick(Sender: TObject);
   private
-    fDesignerMainMenu: TDesignerMainMenu;
-    fMenu: TMenu;
-    fDesigner: TComponentEditorDesigner;
+    FDesignerMainMenu: TDesignerMainMenu;
+    FMenu: TMenu;
+    FDesigner: TComponentEditorDesigner;
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure CreateDesignerMenu;
     procedure UpdateListOfMenus;
   public
     procedure SetMenu(NewMenu: TMenu);
-    property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu
-                                                 write fDesignerMainMenu;
+    property DesignerMainMenu: TDesignerMainMenu read FDesignerMainMenu
+                                                 write FDesignerMainMenu;
   end;
 
 { TMenuComponentEditor
   The default component editor for TMenu. }
   TMainMenuComponentEditor = class(TComponentEditor)
   private
-    fMenu: TMainMenu;
-    fDesigner: TComponentEditorDesigner;
+    FMenu: TMainMenu;
+    FDesigner: TComponentEditorDesigner;
   protected
   public
     constructor Create(AComponent: TComponent;
                        ADesigner: TComponentEditorDesigner); override;
     destructor Destroy; override;
     procedure Edit; override;
-    property Menu: TMainMenu read fMenu write fMenu;
+    property Menu: TMainMenu read FMenu write FMenu;
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -108,9 +108,8 @@ implementation
 procedure ShowMenuEditor(AMenu: TMenu);
 begin
   if AMenu=nil then RaiseGDBException('ShowMenuEditor AMenu=nil');
-  if MainMenuEditorForm=nil then begin
+  if MainMenuEditorForm=nil then
     MainMenuEditorForm:=TMainMenuEditorForm.Create(Application);
-  end;
   MainMenuEditorForm.SetMenu(AMenu);
   MainMenuEditorForm.ShowOnTop;
 end;
@@ -129,7 +128,7 @@ end;
 
 procedure TMainMenuEditorForm.FormDestroy(Sender: TObject);
 begin
-  if GlobalDesignHook<>nil then
+  if GlobalDesignHook <> nil then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;
 
@@ -139,22 +138,20 @@ end;
 
 procedure TMainMenuEditorForm.List_menusClick(Sender: TObject);
 var
-  i,j: Integer;
-  NewMenu: TMenu;
+  i, j: Integer;
   CurComponent: TComponent;
 begin
-  for i:=0 to List_menus.Items.Count - 1 do
+  for i := 0 to List_menus.Items.Count - 1 do
   begin
-    if (List_menus.Selected[i] = true) then
+    if List_menus.Selected[i] then
     begin
-      for j:=0 to fDesigner.Form.ComponentCount -1 do
+      for j := 0 to FDesigner.Form.ComponentCount - 1 do
       begin
-        CurComponent:=fDesigner.Form.Components[j];
-        if (List_menus.Items[i] = CurComponent.Name) and (CurComponent is TMenu)
-        then begin
-          NewMenu:=TMenu(CurComponent);
-          SetMenu(NewMenu);
-          exit;
+        CurComponent:=FDesigner.Form.Components[j];
+        if (List_menus.Items[i] = CurComponent.Name) and (CurComponent is TMenu) then 
+        begin
+          SetMenu(TMenu(CurComponent));
+          Exit;
         end;
       end;
     end;
@@ -166,11 +163,12 @@ var
   i: Integer;
   AComponent: TComponent;
 begin
-  if APersistent is TComponent then begin
-    AComponent:=TComponent(APersistent);
-    if FindRootDesigner(AComponent)<>fDesigner then exit;
-    i:=List_menus.Items.IndexOf(AComponent.Name);
-    if i>=0 then List_menus.Items.Delete(i);
+  if APersistent is TComponent then 
+  begin
+    AComponent := TComponent(APersistent);
+    if FindRootDesigner(AComponent) <> FDesigner then Exit;
+    i := List_menus.Items.IndexOf(AComponent.Name);
+    if i >= 0 then List_menus.Items.Delete(i);
   end;
 end;
 
@@ -184,13 +182,13 @@ end;
 
 procedure TMainMenuEditorForm.CreateDesignerMenu;
 begin
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
+  DesignerMainMenu := TDesignerMainMenu.CreateWithMenu(Self, FMenu);
   with DesignerMainMenu do
   begin
-    Parent:=Self;
-    ParentCanvas:=Canvas;
+    Parent := Self;
+    ParentCanvas := Canvas;
     LoadMainMenu;
-    SetCoordinates(10,10,0,DesignerMainMenu.Root);
+    SetCoordinates(10, 10, 0, DesignerMainMenu.Root);
   end;
   DesignerMainMenu.Panel := Panel;
 end;
@@ -202,23 +200,27 @@ var
 begin
   List_menus.Items.BeginUpdate;
   List_menus.Items.Clear;
-  for i:=0 to fDesigner.Form.ComponentCount - 1 do
+  if FDesigner <> nil then
   begin
-    CurComponent:=fDesigner.Form.Components[i];
-    debugln('TMainMenuEditorForm.UpdateListOfMenus A ',dbgsName(CurComponent));
-    if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
+    for i := 0 to FDesigner.Form.ComponentCount - 1 do
     begin
-      List_menus.Items.Add(CurComponent.Name);
+      CurComponent:=FDesigner.Form.Components[i];
+      //debugln('TMainMenuEditorForm.UpdateListOfMenus A ',dbgsName(CurComponent));
+      if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
+      begin
+        List_menus.Items.Add(CurComponent.Name);
+      end;
     end;
   end;
   List_menus.Items.EndUpdate;
 
-  if fMenu<>nil then begin
-    for i:=0 to List_menus.Items.Count - 1 do
+  if FMenu <> nil then 
+  begin
+    for i := 0 to List_menus.Items.Count - 1 do
       begin
-        if (fMenu.Name = List_menus.Items[i]) then
+        if (FMenu.Name = List_menus.Items[i]) then
         begin
-          List_menus.Selected[i]:=true;
+          List_menus.Selected[i] := True;
         end;
       end;
   end;
@@ -226,25 +228,28 @@ end;
 
 procedure TMainMenuEditorForm.SetMenu(NewMenu: TMenu);
 begin
-  if NewMenu <> fMenu then
+  if NewMenu <> FMenu then
   begin
     DesignerMainMenu.Free;
     DesignerMainMenu := nil;
-    fMenu := NewMenu;
-    fDesigner := FindRootDesigner(fMenu) as TComponentEditorDesigner;
+    FMenu := NewMenu;
+    FDesigner := FindRootDesigner(FMenu) as TComponentEditorDesigner;
     UpdateListOfMenus;
-    CreateDesignerMenu;
-    DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
+    if FMenu <> nil then
+    begin
+      CreateDesignerMenu;
+      DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
+    end;
   end;
 end;
 
 { TMainMenuComponentEditor}
 
 constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
-  aDesigner: TComponentEditorDesigner);
+  ADesigner: TComponentEditorDesigner);
 begin
-  inherited Create(AComponent,ADesigner);
-  fDesigner:=aDesigner;
+  inherited Create(AComponent, ADesigner);
+  FDesigner := ADesigner;
 end;
 
 destructor TMainMenuComponentEditor.Destroy;
