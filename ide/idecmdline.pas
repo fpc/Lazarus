@@ -43,7 +43,8 @@ interface
 uses 
   Classes, SysUtils; 
 
-procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer);
+procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer;
+            out ShowSplashScreen: boolean);
 function GetCommandLineParameters(aCmdLineParams : TStrings;
             isStartLazarus : Boolean = False) : String;
 
@@ -65,7 +66,8 @@ function GetLazarusDirectory : String;
 implementation 
 uses FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
 
-procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer);
+procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
+  ShowSplashScreen: boolean);
 const
   LazarusPidOpt   = '--lazarus-pid=';
   LazarusDebugOpt = '--debug';
@@ -89,6 +91,11 @@ begin
         IDEPid := 0;
       end;
     end
+    else if ParamIsOption(i, NoSplashScreenOptLong) or
+            ParamIsOption(i, NoSplashScreenOptShort)    then
+       begin
+         ShowSplashScreen := false;
+       end
     else
       begin
         // Do not add file to the parameter list
@@ -210,10 +217,10 @@ begin
    begin
      Filename := ParamStrUTF8(i);
      if (Filename = '') or (Filename[1] = '-') then
-       break;
+       continue;
      if Result = nil then
        Result := TStringList.Create;
-     Result.Insert(0,Filename);
+     Result.Add(Filename);
     end;
 end;
 

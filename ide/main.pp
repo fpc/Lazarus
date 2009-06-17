@@ -9797,6 +9797,7 @@ const
     ExeName         : string;
     Params          : TStrings;
     Dummy           : Integer;
+    Unused          : boolean;
     CmdLine: string;
   begin
     StartLazProcess := TProcessUTF8.Create(nil);
@@ -9805,7 +9806,7 @@ const
       StartLazProcess.CurrentDirectory := GetLazarusDirectory;
       //DebugLn('Parsing commandLine: ');
       Params := TStringList.Create;
-      ParseCommandLine(Params, Dummy);
+      ParseCommandLine(Params, Dummy, Unused);
       //DebugLn('Done parsing CommandLine');
       {$ifndef darwin}
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +

@@ -81,7 +81,7 @@ uses
 {$IFDEF unix}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, Process, AsyncProcess, UTF8Process,
+  Classes, SysUtils, Process, UTF8Process,
   LCLProc, FileUtil, Forms, Controls, Dialogs,
   LazConf, Splash;
   
@@ -110,6 +110,7 @@ type
     FLazarusPath: string;
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
+    FCmdLineFiles: string;
     FShowSplashOption: boolean;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
@@ -214,13 +215,25 @@ begin
 end;
 
 procedure TLazarusManager.Initialize;
+var
+  CmdLineFiles: TStrings;
+  i: integer;
 begin
   FShowSplashOption:=true;
   SplashForm := nil;
   FCmdLineParams := TStringList.Create;
-  ParseCommandLine(FCmdLineParams, FLazarusPID);
+  ParseCommandLine(FCmdLineParams, FLazarusPID, FShowSplashOption);
   if FShowSplashOption then
     ShowSplash;
+  CmdLineFiles := ExtractCmdLineFilenames;
+  if CmdLineFiles<>nil then
+  begin
+    for i := 0 to CmdLineFiles.Count-1 do
+      if pos(' ',CmdLineFiles[i])>0 then
+        CmdLineFiles[i] := '"' + CmdLineFiles[i] + '"';
+    CmdLineFiles.Delimiter:=' ';
+    FCmdLineFiles:=CmdLineFiles.DelimitedText;
+  end;
 end;
 
 procedure TLazarusManager.Run;
@@ -251,8 +264,9 @@ begin
   CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
 
   repeat
-    ShowSplash;
     Restart := false;
+    if FShowSplashOption then
+      ShowSplash;
     { There are four places where the newest lazarus exe can be:
       1. in the same directory as the startlazarus exe
       1.1 as lazarus.new(.exe) (if the executable was write locked (windows))
@@ -315,7 +329,7 @@ begin
           break;
         end;
       end;
-      {$IFDEF LCLCarbon}
+      {$IFDEF darwin}
       if FileExists(FLazarusPath+'.app') then begin
         // start the bundle instead
         FLazarusPath:=FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
@@ -323,14 +337,11 @@ begin
       {$ENDIF}
 
       DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
-      if not Assigned(FCmdLineParams) then
-        begin
-          FCmdLineParams := TStringList.Create;
-          ParseCommandLine(FCmdLineParams, FLazarusPID);
-        end;
       FLazarusProcess :=
         TLazarusProcess.Create(FLazarusPath,
-             GetCommandLineParameters(FCmdLineParams, True));
+             GetCommandLineParameters(FCmdLineParams, True)+' '+FCmdLineFiles);
+      // clear the command line files, so that they are passed only once.
+      FCmdLineFiles:='';
       FLazarusProcess.OnStart := @LazarusProcessStart;
       FLazarusProcess.Execute;
       FLazarusProcess.WaitOnExit;
