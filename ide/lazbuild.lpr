@@ -325,6 +325,11 @@ begin
     Include(Flags,pcfCompileDependenciesClean);
   if SkipDependencies then
     Include(Flags,pcfDoNotCompileDependencies);
+
+  APackage.CompilerOptions.TargetOS:=OSOverride;
+  APackage.CompilerOptions.TargetCPU:=CPUOverride;
+  APackage.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+
   CompilePackage(APackage,Flags);
   
   Result:=true;
