@@ -207,7 +207,6 @@ type
     function GetNewColor: TColor;
     function GetRectangle: TRect;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
-    function LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
 
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
@@ -770,72 +769,6 @@ function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
 begin
   Result :=
     InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
-end;
-
-function TChart.LineInViewPort(var AG1, AG2: TDoublePoint): Boolean;
-var
-  dx, dy, dxy, u1, u2, u3, u4: Double;
-
-  procedure CalcDeltas;
-  begin
-    dy := AG1.Y - AG2.Y;
-    dx := AG1.X - AG2.X;
-    dxy := AG1.X * AG2.Y - AG1.Y * AG2.X;
-  end;
-
-begin
-  CalcDeltas;
-  u1 := XGraphMin * dy - YGraphMin * dx + dxy;
-  u2 := XGraphMin * dy - YGraphMax * dx + dxy;
-  u3 := XGraphMax * dy - YGraphMax * dx + dxy;
-  u4 := XGraphMax * dy - YGraphMin * dx + dxy;
-
-  Result := false;
-  if u1 * u2 < 0 then begin
-    Result := true;
-    if AG1.X < XGraphMin then begin
-      AG1.Y := (XGraphMin * dy + dxy) / dx;
-      AG1.X := XGraphMin;
-      CalcDeltas;
-    end;
-    if AG2.X < XGraphMin then begin
-      AG2.Y := (XGraphMin * dy + dxy) / dx;
-      AG2.X := XGraphMin;
-      CalcDeltas;
-    end;
-  end;
-
-  if u2 * u3 < 0 then begin
-    Result := true;
-    if AG2.Y > YGraphMax then begin
-       AG2.X := (YGraphMax * dx - dxy) / dy;
-       AG2.Y := YGraphMax;
-       CalcDeltas;
-    end;
-  end;
-
-  if u3 * u4 < 0 then begin
-    Result := true;
-    if AG1.X > XGraphMax then begin
-       AG1.Y := (XGraphMax * dy + dxy) / dx;
-       AG1.X := XGraphMax;
-       CalcDeltas;
-    end;
-    if AG2.X > XGraphMax then begin
-       AG2.Y := (XGraphMax * dy + dxy) / dx;
-       AG2.X := XGraphMax;
-       CalcDeltas;
-    end;
-  end;
-
-  if u4 * u1 < 0 then begin
-    Result := true;
-    if AG1.Y < YGraphMin then begin
-       AG1.X := (YGraphMin * dx - dxy) / dy;
-       AG1.Y := YGraphMin;
-       CalcDeltas;
-    end;
-  end;
 end;
 
 procedure TChart.SaveToBitmapFile(const AFileName: String);
