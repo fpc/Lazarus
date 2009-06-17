@@ -28,7 +28,7 @@ unit TATypes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, FPCanvas,
+  Classes, SysUtils, Graphics, Controls, FPCanvas, Types,
   TAChartUtils;
 
 const
@@ -174,10 +174,13 @@ type
   private
     FSize: Integer;
     FTitleSize: Integer;
+    function GetMarks(AMin, AMax: Double): TDoubleDynArray;
   private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
     FInverted: Boolean;
+    FOffset: Double;
+    FScale: Double;
     FTickColor: TColor;
     FTickLength: Integer;
     FTitle: TChartAxisTitle;
@@ -186,6 +189,8 @@ type
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
+    procedure SetOffset(AValue: Double);
+    procedure SetScale(AValue: Double);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetTitle(AValue: TChartAxisTitle);
@@ -213,6 +218,8 @@ type
     property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
+    property Offset: Double read FOffset write SetOffset;
+    property Scale: Double read FScale write SetScale;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
@@ -378,7 +385,7 @@ function SideByAlignment(
 implementation
 
 uses
-  Math, Types;
+  Math;
 
 const
   FONT_SLOPE_VERTICAL = 45 * 10;
@@ -645,6 +652,7 @@ begin
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
+  FScale := 1.0;
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -668,7 +676,7 @@ procedure TChartAxis.Draw(
     sz: TSize;
     markText: String;
   begin
-    x := ATransf.XGraphToImage(AMark);
+    x := ATransf.XGraphToImage((AMark - Offset) / Scale);
 
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
@@ -700,7 +708,7 @@ procedure TChartAxis.Draw(
     markText: String;
     sz: TSize;
   begin
-    y := ATransf.YGraphToImage(AMark);
+    y := ATransf.YGraphToImage((AMark - Offset) / Scale);
 
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
@@ -732,7 +740,7 @@ procedure TChartAxis.Draw(
     marks: TDoubleDynArray;
   begin
     if AMin = AMax then exit;
-    marks := GetIntervals(AMin, AMax, Inverted);
+    marks := GetMarks(AMin, AMax);
     coord := SideByAlignment(ARect, Alignment, FSize);
     for i := 0 to High(marks) do
       if IsVertical then
@@ -794,6 +802,15 @@ begin
     Result += ' (' + Title.Caption + ')';
 end;
 
+function TChartAxis.GetMarks(AMin, AMax: Double): TDoubleDynArray;
+begin
+  AMin := AMin * Scale + Offset;
+  AMax := AMax * Scale + Offset;
+  if AMin > AMax then
+    Exchange(AMin, AMax);
+  Result := GetIntervals(AMin, AMax, Inverted);
+end;
+
 function TChartAxis.IsVertical: Boolean; inline;
 begin
   Result := Alignment in [calLeft, calRight];
@@ -810,7 +827,7 @@ procedure TChartAxis.Measure(
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
     maxWidth := 0;
-    marks := GetIntervals(AExtent.a.Y, AExtent.b.Y, Inverted);
+    marks := GetMarks(AExtent.a.Y, AExtent.b.Y);
     for i := 0 to High(marks) do
       maxWidth := Max(ACanvas.TextWidth(MarkToText(marks[i])), maxWidth);
     // CalculateTransformationCoeffs changes axis interval, so it is possibile
@@ -876,6 +893,22 @@ end;
 procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   FInverted := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetOffset(AValue: Double);
+begin
+  if FOffset = AValue then exit;
+  FOffset := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetScale(AValue: Double);
+begin
+  if FScale = AValue then exit;
+  FScale := AValue;
+  if FScale = 0.0 then
+    FScale := 1.0;
   StyleChanged(Self);
 end;
 
