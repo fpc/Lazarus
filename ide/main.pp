@@ -6595,6 +6595,7 @@ begin
   if ASrcEdit=nil then exit;
   AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
   AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
+  AnUnitInfo.FoldState := ASrcEdit.EditorComponent.FoldState;
   // bookmarks
   AnUnitInfo.Bookmarks.Clear;
   for BookmarkID:=0 to 9 do begin
@@ -6912,6 +6913,7 @@ var NewSrcEdit: TSourceEditor;
   NewLeftChar: LongInt;
   NewErrorLine: LongInt;
   NewExecutionLine: LongInt;
+  FoldState: String;
 begin
   AFilename:=AnUnitInfo.Filename;
 
@@ -6935,6 +6937,7 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewCaretXY:=AnUnitInfo.CursorPos;
     NewTopLine:=AnUnitInfo.TopLine;
+    FoldState := AnUnitInfo.FoldState;
     NewLeftChar:=1;
     NewErrorLine:=-1;
     NewExecutionLine:=-1;
@@ -6943,6 +6946,7 @@ begin
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
     NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
     NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
+    FoldState := NewSrcEdit.EditorComponent.FoldState;
     NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
     NewErrorLine:=NewSrcEdit.ErrorLine;
     NewExecutionLine:=NewSrcEdit.ExecutionLine;
@@ -6965,7 +6969,12 @@ begin
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-  NewSrcEdit.EditorComponent.AfterLoadFromFile;
+    NewSrcEdit.EditorComponent.AfterLoadFromFile;
+  try
+    NewSrcEdit.EditorComponent.FoldState := FoldState;
+  except
+    MessageDlg(lisError, lisFailedToLoadFoldStat, mtError, [mbOK], 0);
+  end;
   NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
   NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
   NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;

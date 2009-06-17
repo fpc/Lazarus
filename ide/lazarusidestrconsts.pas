@@ -4267,6 +4267,7 @@ resourcestring
   lisCouldNotRemoveIFromMainSource = 'Could not remove %s{$I %s%s} from main '
     +'source!';
   lisCouldNotAddIToMainSource = 'Could not add %s{$I %s%s} to main source!';
+  lisFailedToLoadFoldStat = 'Failed to load fold state';
 
 implementation
 

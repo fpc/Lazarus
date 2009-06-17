@@ -167,6 +167,7 @@ type
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
+    FFoldState: String;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
@@ -352,6 +353,7 @@ type
     property Project: TProject read FProject write SetProject;
     property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
+    property FoldState: String read FFoldState write FFoldState;
     property SyntaxHighlighter: TLazSyntaxHighlighter
                                read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
@@ -1219,6 +1221,7 @@ begin
                              FBuildFileIfActive,false);
     XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
                              FRunFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'FoldState/Value',FoldState, '');
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
@@ -1269,6 +1272,7 @@ begin
   FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
                                          false);
   FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
+  FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
     UpdateUsageCount(uuIsLoaded,1);
