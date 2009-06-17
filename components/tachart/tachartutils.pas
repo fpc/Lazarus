@@ -137,6 +137,8 @@ function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
+procedure NormalizeRect(var ARect: TRect);
+
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
@@ -367,6 +369,16 @@ begin
     cotBoth: exit(false);
   end;
   Result := true;
+end;
+
+procedure NormalizeRect(var ARect: TRect);
+begin
+  with ARect do begin
+    if Left > Right then
+      Exchange(Left, Right);
+    if Top > Bottom then
+      Exchange(Top, Bottom);
+  end;
 end;
 
 function PointDist(const A, B: TPoint): Integer;

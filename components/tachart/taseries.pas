@@ -194,8 +194,6 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
-  { TLineSerie }
-
   { TLineSeries }
 
   TLineSeries = class(TBasicLineSeries)
@@ -1041,10 +1039,7 @@ begin
     with imageBar do begin
       TopLeft := ParentChart.GraphToImage(graphBar.a);
       BottomRight := ParentChart.GraphToImage(graphBar.b);
-      if Left > Right then
-        Exchange(Left, Right);
-      if Top > Bottom then
-        Exchange(Top, Bottom);
+      NormalizeRect(imageBar);
 
       // Draw a line instead of an empty rectangle.
       if Bottom = Top then Dec(Top);
@@ -1262,90 +1257,70 @@ end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
-  i, xi2a, ymin: Integer;
-  i1, i2: TPoint;
-  g1, g2: TDoublePoint;
+  pts: array [0..4] of TPoint;
+  numPts: Integer;
 
-  procedure DrawPart;
+  procedure PushPoint(const A: TPoint);
   begin
-    ACanvas.Polygon([Point(i1.X, ymin), i1, i2, Point(i2.X, ymin)]);
+    pts[numPts] := A;
+    Inc(numPts);
   end;
 
+var
+  i, ax, bx, ymin: Integer;
+  a, b: TDoublePoint;
+  ext, ext2: TDoubleRect;
+  imageRect: TRect;
 begin
   if Count = 0 then exit;
 
-  ACanvas.Pen.Mode := pmCopy;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Width := 1;
   ACanvas.Brush.Assign(AreaBrush);
+  ACanvas.Pen.Assign(AreaLinesPen);
+
+  ext := ParentChart.CurrentExtent;
+  ext2 := ext;
+  ExpandRange(ext2.a.X, ext2.b.X, 0.1);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
   ymin := ParentChart.ClipRect.Bottom - 1;
 
   for i := 0 to Count - 2 do begin
-    GetCoords(i, g1, i1);
-    GetCoords(i + 1, g2, i2);
-
-    ACanvas.Pen.Color:= clBlack;
-    ACanvas.Brush.Color:= ColorOrDefault(Source[i]^.Color);
-
-    // top line is totally inside the viewport
-    if
-      ParentChart.IsPointInViewPort(g1) and ParentChart.IsPointInViewPort(g2)
-    then begin
-      if FStairs then begin
-        if FInvertedStairs then
-          ACanvas.Polygon([Point(i1.X, ymin), i1, i2, Point(i2.X, ymin)])
-        else
-          ACanvas.Polygon([
-            Point(i1.X, ymin), i1, Point(i2.X, i1.Y), Point(i2.X, ymin)])
-      end else
-        DrawPart;
-      continue;
+    a := DoublePoint(Source[i]^);
+    b := DoublePoint(Source[i + 1]^);
+    if a.X > b.X then begin
+      Exchange(a.X, b.X);
+      Exchange(a.Y, b.Y);
     end;
-
-    with ParentChart do
-      if // top line is totally outside the viewport
-        (g1.X < XGraphMin) and (g2.X < XGraphMin) or
-        (g1.X > XGraphMax) and (g2.X > XGraphMax) or
-        (g1.Y < YGraphMin) and (g2.Y < YGraphMin)
-      then
-        continue;
-
-    if g1.Y > g2.Y then begin
-      Exchange(g1, g2);
-      Exchange(i1.X, i2.X); Exchange(i1.Y, i2.Y);
+    if (a.X > ext.b.X) or (b.X < ext.a.X) then continue;
+    if Stairs then begin
+      if InvertedStairs then
+        a.Y := b.Y
+      else
+        b.Y := a.Y;
     end;
+    ax := ParentChart.XGraphToImage(Max(a.X, ext2.a.X));
+    bx := ParentChart.XGraphToImage(Min(b.X, ext2.b.X));
 
-    with ParentChart do
-      if g1.Y = g2.Y then begin
-        if g1.X > g2.X then
-          Exchange(g1, g2);
-        if g1.X < XGraphMin then i1.X := ClipRect.Left;
-        if g2.X > XGraphMax then i2.X := ClipRect.Right;
-      end
-      else if g1.X = g2.X then begin
-        if g1.Y < YGraphMin then i1.Y := ymin;
-        if g2.Y > YGraphMax then i2.Y := ClipRect.Top;
-      end
-      else if LineInViewPort(g1, g2) then begin
-        xi2a := i2.X;
-        i1 := GraphToImage(g1);
-        i2 := GraphToImage(g2);
-        {if i2.Y <= ymin then} begin
-          ACanvas.Polygon([
-            Point(i1.X, ymin), i1, i2, Point(xi2a, ymin), Point(xi2a, ymin)]);
-          continue;
-        end;
-      end
-      else if g2.Y >= YGraphMax then begin
-        i1.Y := ymin;
-        i2.Y := ymin;
-        i1.X := EnsureRange(i1.X, ClipRect.Left, ClipRect.Right);
-        i2.X := EnsureRange(i2.X, ClipRect.Left, ClipRect.Right);
+    if LineIntersectsRect(a, b, ext2) then begin
+      numPts := 0;
+      PushPoint(Point(ax, ymin));
+      if a.Y = ext2.b.Y then
+        PushPoint(Point(ax, ParentChart.YGraphToImage(a.Y)));
+      PushPoint(ParentChart.GraphToImage(a));
+      PushPoint(ParentChart.GraphToImage(b));
+      if b.Y = ext2.b.Y then
+        PushPoint(Point(bx, ParentChart.YGraphToImage(b.Y)));
+      PushPoint(Point(bx, ymin));
+      ACanvas.Polygon(pts, false, 0, numPts);
+    end
+    else begin
+      if a.Y > ext.b.Y then begin
+        imageRect := Rect(ax, ParentChart.ClipRect.Top - 1, bx, ymin);
+        NormalizeRect(imageRect);
+        ACanvas.Rectangle(imageRect);
       end;
-    DrawPart;
+    end;
   end;
-
   DrawLabels(ACanvas, false);
 end;
 
