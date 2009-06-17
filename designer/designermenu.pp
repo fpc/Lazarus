@@ -40,6 +40,10 @@ uses
   GraphType, Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, ComCtrls,
   Arrow, ButtonPanel, Laz_XMLCfg, LazarusIDEStrConsts, PropEdits, IDEProcs;
 
+const
+  // Length of a field for storing index positions of DesignerMenuItem, we use it to find the right MenuItem
+  INDEX_SEQUENCE_LENGTH = 100;
+
 type
 
   { TTemplateMenuForm }
@@ -99,19 +103,24 @@ type
     fSelectedDesignerMenuItem: string;
     fMenu:TMenu;
     fDefaultComponentEditor: TDefaultComponentEditor;
-    fDesignerPopupMenu: TPopupMenu;
+    FDesignerPopupMenu: TPopupMenu;
     TemplateMenuForm: TTemplateMenuForm;
+    temp_panel: TPanel;
+    temp_level: Integer;
+    temp_newitemcounter: Integer;
+    index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
     function GetDesigner: TComponentEditorDesigner;
+    procedure SetRoot(const AValue: PDesignerMenuItem);
   protected
     procedure PersistentDeleting(APersistent: TPersistent);
     function SearchItemByPanel(DesignerMenuItem: PDesignerMenuItem; APanel: TPanel): PDesignerMenuItem;
   public
     // Constructor and destructor
-    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
+    constructor CreateWithMenu(AOwner: TComponent; AMenu: TMenu);
     destructor Destroy; override;
     
     // Properties for  accesing private variables
-    property Root: PDesignerMenuItem read FRoot write FRoot;
+    property Root: PDesignerMenuItem read FRoot write SetRoot;
     property Panel: TPanel read FPanel write FPanel;
     property DesignerMenuItemIdent: Integer read FDesignerMenuItemIdent write FDesignerMenuItemIdent;
     property SelectedDesignerMenuItem: string read FSelectedDesignerMenuItem write FSelectedDesignerMenuItem;
@@ -187,18 +196,11 @@ const
   POSITION_TOP=10;
   NUMBER_OF_DEFAULT_TEMPLATES = 3;
 
-  // Length of a field for storing index positions of DesignerMenuItem, we use it to find the right MenuItem
-  INDEX_SEQUENCE_LENGTH=100;
   // Name of the file where menu templates are stored
   MenuTemplatesFile='menutemplates.xml';
 
 var 
-  temp_level: Integer;
-  temp_newitemcounter, TemplateMenuFormCreateAction: Integer;
-  temp_panel: TPanel;
-  
-  index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
-  
+  TemplateMenuFormCreateAction: Integer;
   XMLConfig: TXMLConfig = nil;
 
 function TDesignerMainMenu.GetDesigner: TComponentEditorDesigner;
@@ -208,82 +210,89 @@ begin
   Result:=FindRootDesigner(fMenu) as TComponentEditorDesigner;
 end;
 
+procedure TDesignerMainMenu.SetRoot(const AValue: PDesignerMenuItem);
+begin
+  if FRoot <> nil then
+    Dispose(FRoot);
+  FRoot := AValue;
+end;
+
 //
-constructor TDesignerMainMenu.CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
+constructor TDesignerMainMenu.CreateWithMenu(AOwner: TComponent; aMenu: TMenu);
 var
   PopupMenuItem: TMenuItem;
 begin
-  inherited Create(aOwner);
+  inherited Create(AOwner);
   
-  XMLConfig:=TXMLConfig.Create(SetDirSeparators(GetPrimaryConfigPath + '/' + MenuTemplatesFile));
+  XMLConfig := TXMLConfig.Create(SetDirSeparators(GetPrimaryConfigPath + '/' + MenuTemplatesFile));
   
   // creates PopupMenu for and its items the menu editor
-  fDesignerPopupMenu:=TPopupMenu.Create(aOwner);
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertNewItemAfter;
-  PopupMenuItem.OnClick:=@AddNewItemAfterClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  FDesignerPopupMenu := TPopupMenu.Create(Self);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorInsertNewItemAfter;
+  PopupMenuItem.OnClick := @AddNewItemAfterClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertNewItemBefore;
-  PopupMenuItem.OnClick:=@AddNewItemBeforeClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorInsertNewItemBefore;
+  PopupMenuItem.OnClick := @AddNewItemBeforeClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorDeleteItem;
-  PopupMenuItem.OnClick:=@DeleteItemClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorDeleteItem;
+  PopupMenuItem.OnClick := @DeleteItemClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
   
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:='-';
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := '-';
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorCreateSubMenu;
-  PopupMenuItem.OnClick:=@AddSubMenuClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorCreateSubMenu;
+  PopupMenuItem.OnClick := @AddSubMenuClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:='-';
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := '-';
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
   
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorHandleOnClickEvent;
-  PopupMenuItem.OnClick:=@HandleOnCLickEventClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem:=TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorHandleOnClickEvent;
+  PopupMenuItem.OnClick := @HandleOnCLickEventClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:='-';
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem:=TMenuItem.Create(Self);
+  PopupMenuItem.Caption := '-';
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorMoveUp;
-  PopupMenuItem.OnClick:=@MoveUpClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorMoveUp;
+  PopupMenuItem.OnClick := @MoveUpClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
   
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorMoveDown;
-  PopupMenuItem.OnClick:=@MoveDownClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem:=TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorMoveDown;
+  PopupMenuItem.OnClick := @MoveDownClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
   
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:='-';
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := '-';
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertFromTemplate;
-  PopupMenuItem.OnClick:=@InsertFromTemplateClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorInsertFromTemplate;
+  PopupMenuItem.OnClick := @InsertFromTemplateClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorSaveAsTemplate;
-  PopupMenuItem.OnClick:=@SaveAsTemplateClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorSaveAsTemplate;
+  PopupMenuItem.OnClick := @SaveAsTemplateClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorDeleteFromTemplate;
-  PopupMenuItem.OnClick:=@DeleteFromTemplateClick;
-  fDesignerPopupMenu.Items.Add(PopupMenuItem);
+  PopupMenuItem := TMenuItem.Create(Self);
+  PopupMenuItem.Caption := lisMenuEditorDeleteFromTemplate;
+  PopupMenuItem.OnClick := @DeleteFromTemplateClick;
+  FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   //Handler for renaming a caption in the OI for some menuitem to rename also a
   // designermenuitem
@@ -291,23 +300,23 @@ begin
   //GlobalDesignHook.AddHandlerPersistentAdded(@OnComponentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
 
-  new(Root);
-  fillchar(root^, sizeof(root^), #0);
-  fMenu:=aMenu;
+  New(FRoot);
+  FillChar(FRoot^, SizeOf(FRoot^), #0);
+  fMenu := AMenu;
 
-
-  temp_level:=1;
-  temp_newitemcounter:=1;
+  temp_level := 1;
+  temp_newitemcounter := 1;
   
-  temp_panel:=TPanel.Create(self);
-  temp_panel.Visible:=false;
+  temp_panel := TPanel.Create(Self);
+  temp_panel.Visible := False;
 end;
 
 destructor TDesignerMainMenu.Destroy;
 begin
   if GlobalDesignHook<>nil then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  Dispose(Root);
+  Root := nil;
+  FreeAndNil(XMLConfig);
   inherited Destroy;
 end;
 
@@ -340,7 +349,7 @@ begin
   MenuItem^.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
   Menuitem^.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
   Menuitem^.SelfPanel.OnDblClick:=@MenuItemDblClick;
-  MenuItem^.SelfPanel.PopupMenu := fDesignerPopupMenu;
+  MenuItem^.SelfPanel.PopupMenu := FDesignerPopupMenu;
 
   MenuItem^.CaptionLabel:=TLabel.Create(self);
   MenuItem^.CaptionLabel.Name:='CaptionLabel_' + MenuItem^.ID;
@@ -386,30 +395,30 @@ begin
     GetDesigner.Modified;
   end;
 
-  prevtemp:=nil;
-  for i:= 0 to fMenu.Items.Count-1 do
+  prevtemp := nil;
+  for i := 0 to fMenu.Items.Count - 1 do
   begin
     new(temp);
-    temp^.Caption:=fMenu.Items[i].Caption;
-    temp^.Level:=temp_level;
-    temp^.NextItem:=nil;
-    temp^.SubMenu:=nil;
-    temp^.ParentMenu:=nil;
-    temp^.Index:=i;
-    if (i=0) then
+    temp^.Caption := fMenu.Items[i].Caption;
+    temp^.Level := temp_level;
+    temp^.NextItem := nil;
+    temp^.SubMenu := nil;
+    temp^.ParentMenu := nil;
+    temp^.Index := i;
+    if (i = 0) then
     begin
-      temp^.PrevItem:=nil;
-      Root:=temp;
+      temp^.PrevItem := nil;
+      Root := temp;
     end else
     begin
-      temp^.PrevItem:=prevtemp;
-      prevtemp^.NextItem:=temp;
+      temp^.PrevItem := prevtemp;
+      prevtemp^.NextItem := temp;
     end;
     Init(temp);
-    prevtemp:=temp;
-    Link(fMenu.Items[i],temp);
+    prevtemp := temp;
+    Link(fMenu.Items[i], temp);
   end;
-  Root^.Selected:=true;
+  Root^.Selected := True;
 end;
 
 procedure TDesignerMainMenu.Link(MenuItem: TMenuItem; ParentM: PDesignerMenuItem);
@@ -2196,8 +2205,5 @@ end;
 
 initialization
   {$I designermenu.lrs}
-
-finalization
-  XMLConfig.Free;
 
 end.
