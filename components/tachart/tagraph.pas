@@ -1017,10 +1017,15 @@ begin
 
   with FSelectionRect do begin
     FIsZoomed := (Left < Right) and (Top < Bottom);
-    if FIsZoomed then begin
-      FCurrentExtent.a := ImageToGraph(Point(Left, Bottom));
-      FCurrentExtent.b := ImageToGraph(Point(Right, Top));
-    end;
+    if FIsZoomed then
+      with FCurrentExtent do begin
+        a := ImageToGraph(TopLeft);
+        b := ImageToGraph(BottomRight);
+        if a.X > b.X then
+          Exchange(a.X, b.X);
+        if a.Y > b.Y then
+          Exchange(a.Y, b.Y);
+      end;
   end;
 
   Invalidate;

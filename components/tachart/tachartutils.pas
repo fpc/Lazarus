@@ -291,12 +291,14 @@ const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
   K = 1e-10;
 var
-  start, step, m: Double;
+  start, step, m, m1: Double;
   markCount: Integer;
 begin
   CalculateIntervals(AMin, AMax, INV_TO_SCALE[AInverted], start, step);
   AMin -= step * K;
   AMax += step * K;
+  if AInverted then
+    step := - step;
   m := start;
   markCount := 0;
   while true do begin
@@ -304,7 +306,9 @@ begin
       Inc(markCount)
     else if markCount > 0 then
       break;
-    m += step;
+    m1 := m + step;
+    if m1 = m then break;
+    m := m1;
   end;
   SetLength(Result, markCount);
   m := start;
@@ -316,7 +320,9 @@ begin
     end
     else if markCount > 0 then
       break;
-    m += step;
+    m1 := m + step;
+    if m1 = m then break;
+    m := m1;
   end;
 end;
 
