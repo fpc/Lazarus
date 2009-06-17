@@ -5220,7 +5220,7 @@ var
     while ANodeExt<>nil do begin
       if ((Result=nil)
       or (Result.StartPos>ANodeExt.Node.StartPos))
-        and (NodeExtHasVisibilty(ANodeExt,pcsPrivate))
+        and (NodeExtHasVisibilty(ANodeExt,Visibility))
       then
         Result:=ANodeExt.Node;
       ANodeExt:=ANodeExt.Next;
@@ -5237,6 +5237,17 @@ var
       Result:=Result.Next;
     end;
   end;
+
+  function GetFirstVisibilitySectionNode: TCodeTreeNode;
+  begin
+    if FCodeCompleteClassNode.Desc=ctnClassInterface then
+      Result:=FCodeCompleteClassNode
+    else begin
+      Result:=FCodeCompleteClassNode.FirstChild;
+      while not (Result.Desc in AllClassBaseSections) do
+        Result:=Result.NextBrother;
+    end;
+  end;
   
   procedure AddClassSection(Visibility: TPascalClassSection);
   var
@@ -5244,6 +5255,7 @@ var
     SectionNode: TCodeTreeNode;
     SectionKeyWord: String;
     ANode: TCodeTreeNode;
+    FirstVisibilitySection: TCodeTreeNode;
   begin
     if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
       // a class interface has no sections
@@ -5252,6 +5264,7 @@ var
   
     NewClassSectionInsertPos[Visibility]:=-1;
     NewClassSectionIndent[Visibility]:=0;
+    // check if section is needed
     if GetFirstNodeExtWithVisibility(Visibility)=nil then exit;
     // search topmost position node for this Visibility
     TopMostPositionNode:=GetTopMostPositionNode(Visibility);
@@ -5273,12 +5286,15 @@ var
       the first published section. But if a variable is already
       needed in the first published section, then the new section
       must be inserted in front of all }
+    FirstVisibilitySection:=GetFirstVisibilitySectionNode;
     if (TopMostPositionNode<>nil)
-    and (FCodeCompleteClassNode.FirstChild.EndPos>TopMostPositionNode.StartPos)
+    and (FirstVisibilitySection<>nil)
+    and ((TopMostPositionNode.HasAsParent(FirstVisibilitySection)
+          or (TopMostPositionNode=FirstVisibilitySection)))
     then begin
       // topmost node is in the first section
       // -> insert the new section as the first section
-      ANode:=FCodeCompleteClassNode.FirstChild;
+      ANode:=FirstVisibilitySection;
       NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
       if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
       then
@@ -5309,7 +5325,7 @@ var
       end;
       if ANode=nil then begin
         // default: insert new section behind first published section
-        ANode:=FCodeCompleteClassNode.FirstChild;
+        ANode:=FirstVisibilitySection;
       end;
       NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
       NewClassSectionInsertPos[Visibility]:=ANode.EndPos;
