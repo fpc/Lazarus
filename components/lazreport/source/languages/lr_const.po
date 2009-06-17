@@ -501,6 +501,10 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
+#: lr_const.sduplicatedobjectname
+msgid "An object named \"%s\" already exists"
+msgstr ""
+
 #: lr_const.seditorformbig
 msgid "&Big font"
 msgstr ""

@@ -249,6 +249,7 @@ resourcestring
   sSpecVal = 'Other';
   sFRFError='Unsupported FRF format';
   sClassObjectNotFound='Class Object "%s" not found';
+  sDuplicatedObjectName = 'An object named "%s" already exists';
   
   SDoc = 'Report:';
   SBand = 'Band:';

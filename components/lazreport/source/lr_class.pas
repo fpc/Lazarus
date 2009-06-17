@@ -1455,9 +1455,9 @@ end;
 
 procedure TfrView.Assign(From: TfrView);
 begin
-  Inherited Assign(From);
+  inherited Assign(From);
   
-  Name := From.Name;
+  fName := From.Name;
   Typ := From.Typ;
   Selected := From.Selected;
 
@@ -9575,26 +9575,19 @@ end;
 
 procedure TfrObject.SetName(const AValue: string);
 var i   : Integer;
-    Flg : Boolean;
 begin
   if fName=AValue then exit;
-  Flg:=False;
-  
-  {if Assigned(Objects) then
+
+  if (frDesigner<>nil) and (CurReport<>nil) then
   begin
-    for i:=0 to Objects.Count-1 do
+    if CurReport.FindObject(AValue)<>nil then
     begin
-      if (TfrView(Objects[i]).Name=aValue) then
-      begin
-        Flg:=True;
-        MessageDlg('This name it''s already exists.',mtError,[mbOk],0);
-        Break;
-      end;
+      MessageDlg(format(sDuplicatedObjectName,[AValue]),mtError,[mbOk],0);
+      exit;
     end;
   end;
-  }
-  if not Flg then
-    fName:=AValue;
+
+  fName:=AValue;
 end;
 
 procedure TfrObject.SetScript(const AValue: TfrScriptStrings);
