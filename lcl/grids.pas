@@ -8452,6 +8452,7 @@ var
   Ts: TSize;
   TmpCanvas: TCanvas;
   DC: HDC;
+  C: TGridColumn;
 begin
   if (aCol<0) or (aCol>ColCount-1) then
     Exit;
@@ -8464,10 +8465,17 @@ begin
   end else
     TmpCanvas := Canvas;
 
+  C := ColumnFromGridColumn(aCol);
+
   try
     W:=0;
     for i := 0 to RowCount-1 do begin
-      Ts := TmpCanvas.TextExtent(Cells[aCol, i]);
+
+      if (i=0) and (FixedRows>0) and (C<>nil) then
+        Ts := TmpCanvas.TextExtent(C.Title.Caption)
+      else
+        Ts := TmpCanvas.TextExtent(Cells[aCol, i]);
+
       if Ts.Cx>W then
         W := Ts.Cx;
     end;
