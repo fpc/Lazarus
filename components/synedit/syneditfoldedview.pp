@@ -1939,7 +1939,7 @@ var
   lcount: Integer;
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- RemoveFoldForLine ALine:=', ALine, '  IgnoreFirst=', IgnoreFirst,'  OnlyCol=',OnlyCol]);{$ENDIF}
-  Result := ALine;
+  Result := ALine - 1; // Return index
   OldFold := FindFoldForLine(ALine, true);
   if OldFold.StartLine-2 < Result then
     Result := OldFold.StartLine-2;
@@ -3303,7 +3303,7 @@ begin
 
   r := -1;
   if ColCount = 0 then begin
-    r := fFoldTree.RemoveFoldForLine(AStartIndex+1, False) - 1;
+    r := fFoldTree.RemoveFoldForLine(AStartIndex+1, False);
   end
   else begin
     down := ColIndex < 0;
