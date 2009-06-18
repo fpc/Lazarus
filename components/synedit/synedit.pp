@@ -4390,6 +4390,7 @@ function TCustomSynEdit.ScanFrom(var Index: integer; AtLeastTilIndex: integer): 
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFrom Index=', Index, '  AtLeats=', AtLeastTilIndex]);{$ENDIF}
   if Index < 0 then Index := 0;
+  Result := Max(Index, AtLeastTilIndex);
   if not assigned(fHighlighter) or (Index > FTheLinesView.Count - 1) then begin
     FFoldedLinesView.FixFoldingAtTextIndex(Index);
     fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
