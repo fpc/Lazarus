@@ -1323,7 +1323,7 @@ var
 
     function LastClickInTime: boolean;
     begin
-      Result:=((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
+      Result := ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
     end;
 
     function TestIfMultiClick: boolean;
@@ -1336,10 +1336,10 @@ var
   var
     IsMultiClick: boolean;
   begin
-    Result:=false;
+    Result := False;
 
     if (LastMouse.Down) and
-      (not (gdk_event_get_type(Event) in [gdk_2button_press,gdk_3button_press]))
+      (not (gdk_event_get_type(Event) in [gdk_2button_press, gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
       DebugLn(' NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
@@ -1349,52 +1349,50 @@ var
     end;
 
     MessI.Keys := MessI.Keys or BtnKey;
-
-    IsMultiClick:=TestIfMultiClick;
+    IsMultiClick := TestIfMultiClick;
 
     case gdk_event_get_type(Event) of
-
-    gdk_2button_press:
-      // the gtk itself has detected a double click
-      if (LastMouse.ClickCount>=2)
-      and IsMultiClick
-      then begin
-        // the double click was already detected and sent to the LCL
-        // -> skip this message
-        exit;
-      end else begin
-        LastMouse.ClickCount:=2;
-      end;
-
-    gdk_3button_press:
-      // the gtk itself has detected a triple click
-      if (LastMouse.ClickCount>=3)
-      and IsMultiClick
-      then begin
-        // the triple click was already detected and sent to the LCL
-        // -> skip this message
-        exit;
-      end else begin
-        LastMouse.ClickCount:=3;
-      end;
-
-    else
-      begin
-        inc(LastMouse.ClickCount);
-
-        if (LastMouse.ClickCount<=4)
+      gdk_2button_press:
+        // the gtk itself has detected a double click
+        if (LastMouse.ClickCount>=2)
         and IsMultiClick
         then begin
-          // multi click
-          {$IFDEF VerboseMouseBugfix}
-          DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.TheTime),'<= ',
-            dbgs((1/86400)*(DblClickTime/1000)));
-          {$ENDIF}
+          // the double click was already detected and sent to the LCL
+          // -> skip this message
+          exit;
         end else begin
-          // normal click
-          LastMouse.ClickCount:=1;
+          LastMouse.ClickCount:=2;
         end;
-      end;
+
+      gdk_3button_press:
+        // the gtk itself has detected a triple click
+        if (LastMouse.ClickCount>=3)
+        and IsMultiClick
+        then begin
+          // the triple click was already detected and sent to the LCL
+          // -> skip this message
+          exit;
+        end else begin
+          LastMouse.ClickCount:=3;
+        end;
+
+      else
+        begin
+          inc(LastMouse.ClickCount);
+
+          if (LastMouse.ClickCount<=4)
+          and IsMultiClick
+          then begin
+            // multi click
+            {$IFDEF VerboseMouseBugfix}
+            DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.TheTime),'<= ',
+              dbgs((1/86400)*(DblClickTime/1000)));
+            {$ENDIF}
+          end else begin
+            // normal click
+            LastMouse.ClickCount:=1;
+          end;
+        end;
     end;
     {$IFDEF VerboseMouseBugfix}
     DebugLn('  ClickCount=',dbgs(LastMouse.ClickCount));
@@ -1404,7 +1402,7 @@ var
     LastMouse.Window := Event^.Window;
     LastMouse.WindowPoint := EventXY;
     LastMouse.Down := True;
-    LastMouse.Component:=AWinControl;
+    LastMouse.Component := AWinControl;
 
     //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
     case LastMouse.ClickCount of
@@ -1416,7 +1414,7 @@ var
         MessI.Msg := LM_NULL;
     end;
 
-    Result:=true;
+    Result := True;
   end;
 
 begin
