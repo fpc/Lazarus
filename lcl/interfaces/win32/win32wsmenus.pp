@@ -1057,9 +1057,16 @@ end;
 procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemState: UINT);
 var
   ASelected, ANoAccel: Boolean;
+  B: Bool;
 begin
   ASelected := (ItemState and ODS_SELECTED) <> 0;
   ANoAccel := (ItemState and ODS_NOACCEL) <> 0;
+  if ANoAccel and (WindowsVersion >= wv2000) then
+    if SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, @B, 0) then
+      ANoAccel := not B
+    else
+  else
+    ANoAccel := False;
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
