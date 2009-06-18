@@ -1611,7 +1611,7 @@ end;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  Result := CallBackDefaultReturn;
+  Result := True;
   MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
@@ -1785,8 +1785,8 @@ end;
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  Result := CallBackDefaultReturn;
-  MousePositionValid:=false;
+  Result := True;
+  MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',
