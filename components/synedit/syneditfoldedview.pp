@@ -3024,6 +3024,8 @@ begin
         Node := NodeIterator.Next;
       end;
     dec(AStartCol);
+    if not node.IsInFold then
+      exit;
 
     if AsText then
     begin           (* *** Encode as Text for XML *** *)
