@@ -80,7 +80,7 @@ uses
   CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
-  SynEditKeyCmds,
+  SynEditKeyCmds, SynBeautifier,
   // IDE interface
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
@@ -362,9 +362,9 @@ type
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
-    procedure OnSrcNoteBookGetIndent(Sender: TObject; SrcEditor: TSourceEditor;
-      LogCaret: TPoint; var Indent, BasedLine: Integer;
-      var ReplaceIndent: Boolean);
+    function OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier; SrcEditor: TSourceEditor;
+      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+      Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
@@ -14003,19 +14003,25 @@ begin
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
-procedure TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
-  SrcEditor: TSourceEditor; LogCaret: TPoint; var Indent,
-  BasedLine: Integer; var ReplaceIndent: Boolean);
+function TMainIDE.OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier; SrcEditor: TSourceEditor;
+      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+      Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 var
   CodeBuf: TCodeBuffer;
   p: integer;
   NestedComments: Boolean;
   NewIndent: TFABIndentationPolicy;
   EditorIndex: LongInt;
+  Dummy, Indent: Integer;
+  s: String;
 begin
+  Result := False;
   {$IFNDEF EnableIndenter}
   exit;
   {$ENDIF}
+  if (Reason <> ecLineBreak) and (Reason <> ecInsertLine) then
+    exit;
+  Result := True;
   EditorIndex:=SrcEditor.PageIndex;
   SaveSourceEditorChangesToCodeCache(EditorIndex);
   CodeBuf:=SrcEditor.CodeBuffer;
@@ -14026,8 +14032,9 @@ begin
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent+1;
-  ReplaceIndent:=true;
-  BasedLine:=-1;
+  Dummy := -1;
+  s := '';
+  SetIndentProc(FirstLinePos, Indent, Dummy, s, Dummy, False);
   //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent,' ReplaceIndent=',ReplaceIndent,' BasedLine=',BasedLine]);
 end;
 

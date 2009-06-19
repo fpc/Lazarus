@@ -351,6 +351,7 @@ type
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     FBeautifier: TSynCustomBeautifier;
+    FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
     fExtraCharSpacing: integer;
     {$ENDIF}
     FFoldedLinesView:  TSynEditFoldedView;
@@ -4413,6 +4414,15 @@ procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
+    FBeautifyStartLineIdx := AIndex;
+  if (AIndex + ACount - 1 >= FBeautifyEndLineIdx) then
+    FBeautifyEndLineIdx := AIndex + ACount - 1
+  else begin
+    FBeautifyEndLineIdx := FBeautifyEndLineIdx + ACount;
+    if (AIndex + ACount - 1 < FBeautifyStartLineIdx) then
+      FBeautifyStartLineIdx := FBeautifyStartLineIdx + ACount;
+  end;
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)
     or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
@@ -4440,6 +4450,10 @@ var
   EndIndex: Integer;
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
+    FBeautifyStartLineIdx := AIndex;
+  if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
+    FBeautifyEndLineIdx := AIndex + ACount - 1;
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)
     or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
@@ -5576,19 +5590,27 @@ end;
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
   Data: pointer);
+var
+  InitialCmd: TSynEditorCommand;
 begin
   {$IFDEF VerboseKeys}
   DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
     ,' AChar=',AChar,' Data=',DbgS(Data)]);
   {$ENDIF}
   // first the program event handler gets a chance to process the command
+  InitialCmd := Command;
   DoOnProcessCommand(Command, AChar, Data);
   if Command <> ecNone then begin
     try
       BeginUndoBlock;
+      FBeautifyStartLineIdx := -1;
+      FBeautifyEndLineIdx := -1;
+      if assigned(FBeautifier) then
+        FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
       // notify hooked command handlers before the command is executed inside of
       // the class
-      NotifyHookedCommandHandlers(FALSE, Command, AChar, Data);
+      if Command <> ecNone then
+        NotifyHookedCommandHandlers(FALSE, Command, AChar, Data);
       // internal command handler
       if (Command <> ecNone) and (Command < ecUserFirst) then
         ExecuteCommand(Command, AChar, Data);
@@ -5598,6 +5620,10 @@ begin
         NotifyHookedCommandHandlers(TRUE, Command, AChar, Data);
       if Command <> ecNone then
         DoOnCommandProcessed(Command, AChar, Data);
+
+      if assigned(FBeautifier) then
+        FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
+                                 FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
     finally
       EndUndoBlock;
     end;
@@ -5851,27 +5877,17 @@ begin
                 FTheLinesView.EditLineJoin(CaretY);
               end;
             end else begin
-              // delete text before the caret
-              if (eoAutoIndent in fOptions) and
-                 FBeautifier.CanUnindent(Self, FTheLinesView , FCaret) then
-              begin
-                // unindent
-                FBeautifier.UnIndentLine(Self, ViewedTextBuffer, FCaret, CX);
-                CaretX := CX;
-                fLastCaretX := CaretX;
-                StatusChanged([scCaretX]);
-              end else begin
                 // delete char
-                {$IFDEF USE_UTF8BIDI_LCL}
-                CaretX := CaretX - 1;
-                FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
-                {$ELSE USE_UTF8BIDI_LCL}
-                LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX - 1);
-                LogCounter:=GetCharLen(Temp,LogCaretXY.X);
-                CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
-                FTheLinesView.EditDelete(FCaret.BytePos, LogCaretXY.Y, LogCounter);
-                {$ENDIF USE_UTF8BIDI_LCL}
-              end;
+              {$IFDEF USE_UTF8BIDI_LCL}
+              CaretX := CaretX - 1;
+              FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
+              {$ELSE USE_UTF8BIDI_LCL}
+              LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX - 1);
+              LogCounter:=GetCharLen(Temp,LogCaretXY.X);
+              CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
+              FTheLinesView.EditDelete(FCaret.BytePos, LogCaretXY.Y, LogCounter);
+              {$ENDIF USE_UTF8BIDI_LCL}
+              //end;
             end;
 
           end;
@@ -5979,18 +5995,9 @@ begin
           if LogCaretXY.X > Len + 1 then
             LogCaretXY.X := Len + 1;
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
-          if (eoAutoIndent in fOptions) and ((LogCaretXY.X > 1) or (Len = 0)) then
-          begin
-            FInternalCaret.AssignFrom(FCaret);
-            FInternalCaret.IncForcePastEOL;
-            FInternalCaret.LinePos := FInternalCaret.LinePos + 1;
-            FBeautifier.IndentLine(Self, ViewedTextBuffer, FInternalCaret, CX);
-            FInternalCaret.DecForcePastEOL;
-          end else
-            CX := 1;
           if Command = ecLineBreak then begin
             FCaret.IncForcePastEOL;
-            CaretXY := Point(CX, CaretY + 1);
+            CaretXY := Point(1, CaretY + 1);
             FCaret.DecForcePastEOL;
           end;
           EnsureCursorPosVisible;                                               //JGF 2000-09-23

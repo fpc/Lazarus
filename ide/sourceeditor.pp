@@ -417,10 +417,10 @@ type
                                      ) of object;
   TOnShowCodeContext = procedure(JumpToError: boolean;
                                  out Abort: boolean) of object;
-  TOnGetIndentEvent = procedure(Sender: TObject; SrcEditor: TSourceEditor;
-              LogCaret: TPoint;
-              var Indent, BasedLine: Integer; var ReplaceIndent: Boolean) of object;
-
+  TOnGetIndentEvent = function(Sender: TSynCustomBeautifier; Editor: TSourceEditor;
+      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+      Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc
+     ): boolean of object;
 
   TSourceNotebookState = (
     snIncrementalFind,
@@ -603,8 +603,10 @@ type
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
-    procedure EditorGetIndent(Sender: TObject; LogCaret: TPoint; Line: Integer;
-              var Indent, BasedLine: Integer; var ReplaceIndent: Boolean);
+    function EditorGetIndent(Sender: TSynCustomBeautifier; Editor: TObject;
+                              LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+                              Reason: TSynEditorCommand;
+                              SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -6684,11 +6686,13 @@ begin
     OnMouseLink(Sender, X, Y, AllowMouseLink);
 end;
 
-procedure TSourceNotebook.EditorGetIndent(Sender: TObject; LogCaret: TPoint;
-  Line: Integer; var Indent, BasedLine: Integer; var ReplaceIndent: Boolean);
+function TSourceNotebook.EditorGetIndent(Sender: TSynCustomBeautifier; Editor: TObject;
+  LogCaret: TPoint; var FirstLinePos, LinesCount: Integer; Reason: TSynEditorCommand;
+  SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 begin
   if Assigned(OnGetIndent) then
-    OnGetIndent(Sender, GetActiveSE, LogCaret, Indent, BasedLine, ReplaceIndent);
+    Result := OnGetIndent(Sender, GetActiveSE, LogCaret, FirstLinePos, LinesCount,
+                          Reason, SetIndentProc);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);
