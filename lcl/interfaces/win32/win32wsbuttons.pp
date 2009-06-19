@@ -165,6 +165,7 @@ var
 
   procedure DrawBitmap(AState: TButtonState; UseThemes, AlphaDraw: Boolean);
   const
+    DSS_HIDEPREFIX = $0200;
     StateToDetail: array[TButtonState] of TThemedButton =
     (
      { bsUp        } tbPushButtonNormal,
@@ -174,7 +175,7 @@ var
      { bsHot       } tbPushButtonHot
     );
   var
-    TextFlags: integer; // flags for caption (enabled or disabled)
+    TextFlags: DWord; // flags for caption (enabled or disabled)
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     AIndex: Integer;
@@ -183,17 +184,15 @@ var
     PaintBuffer: HPAINTBUFFER;
     Options: TDTTOpts;
     Details: TThemedElementDetails;
+    ShowAccel: Boolean;
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
-  { TODO: if we want to handle properly Windows settings about focus rect and
-    keyboard accelerator drawing we need to query control state using this method
-    if SendMessage(BitBtnHandle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEACCEL <> 0 then
-  }
-    TextFlags := DST_PREFIXTEXT;
 
-    if not UseThemes and (AState = bsDisabled) then
-      TextFlags := TextFlags or DSS_DISABLED;
+    if WindowsVersion >= wv2000 then
+      ShowAccel := (SendMessage(BitBtnHandle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEACCEL) = 0
+    else
+      ShowAccel := True;
 
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     if UseThemes and AlphaDraw then
@@ -258,6 +257,14 @@ var
     end;
     if PaintBuffer = 0 then
     begin
+      TextFlags := DST_PREFIXTEXT;
+
+      if not UseThemes and (AState = bsDisabled) then
+        TextFlags := TextFlags or DSS_DISABLED;
+
+      if not ShowAccel then
+        TextFlags := TextFlags or DSS_HIDEPREFIX;
+
       SetBkMode(TmpDC, TRANSPARENT);
       {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
@@ -279,6 +286,9 @@ var
       FillChar(Options, SizeOf(Options), 0);
       Options.dwSize := SizeOf(Options);
       Options.dwFlags := DTT_COMPOSITED;
+      TextFlags := DT_SINGLELINE;
+      if not ShowAccel then
+        TextFlags := TextFlags or DT_HIDEPREFIX;
       if AState <> bsDisabled then
       begin
         // change color to requested or it will be black
@@ -288,7 +298,7 @@ var
       end;
       TWin32ThemeServices(ThemeServices).DrawTextEx(TmpDC, Details, ButtonCaption,
         Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy),
-        DT_SINGLELINE, @Options);
+        TextFlags, @Options);
     end;
 
     SelectObject(TmpDC, OldFontHandle);
@@ -481,6 +491,11 @@ begin
     WM_GETFONT:
       begin
         Result := LResult(Control.Font.Reference.Handle);
+      end;
+    WM_UPDATEUISTATE:
+      begin
+        Result := WindowProc(Window, Msg, WParam, LParam);
+        DrawBitBtnImage(TBitBtn(Control), TBitBtn(Control).Caption);
       end;
     else
       Result := WindowProc(Window, Msg, WParam, LParam);

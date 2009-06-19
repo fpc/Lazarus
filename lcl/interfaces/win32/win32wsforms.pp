@@ -75,7 +75,7 @@ type
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons); override;
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
           AWidth, AHeight: Integer); override;
@@ -320,6 +320,12 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
 
   Result := Params.Window;
+  // Beginning with Windows 2000 the UI in an application may hide focus
+  // rectangles and accelerator key indication. According to msdn we need to
+  // initialize all root windows with this message
+  if WindowsVersion >= wv2000 then
+    Windows.SendMessage(Result, WM_CHANGEUISTATE,
+      MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0)
 end;
 
 class procedure TWin32WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;

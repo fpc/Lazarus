@@ -1052,18 +1052,26 @@ var
   var
     DrawInfo: PNMCustomDraw absolute NMHdr;
     ARect: TRect;
+    ShowFocus: Boolean;
   begin
     case DrawInfo^.dwDrawStage of
       CDDS_PREPAINT:
       begin
-        lmNotify.result := CDRF_DODEFAULT;
+        lmNotify.Result := CDRF_DODEFAULT;
         WinProcess := False;
         if ABitBtn.Focused then
         begin
-          ARect := DrawInfo^.rc;
-          InflateRect(ARect, -3, -3);
-          if not IsRectEmpty(ARect) then
-            DrawFocusRect(DrawInfo^.hdc, ARect);
+          if WindowsVersion >= wv2000 then
+            ShowFocus := (SendMessage(ABitBtn.Handle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEFOCUS) = 0
+          else
+            ShowFocus := True;
+          if ShowFocus then
+          begin
+            ARect := DrawInfo^.rc;
+            InflateRect(ARect, -3, -3);
+            if not IsRectEmpty(ARect) then
+              DrawFocusRect(DrawInfo^.hdc, ARect);
+          end;
         end;
       end;
     end;
@@ -1154,6 +1162,27 @@ var
 
       if UTF8Char='' then
         Result:= true;
+    end;
+  end;
+
+  procedure UpdateUIState(CharCode: Word);
+  // This piece of code is taken from ThemeMgr.pas of Mike Lischke
+  // Beginning with Windows 2000 the UI in an application may hide focus rectangles and accelerator key indication.
+  // We have to take care to show them if the user starts navigating using the keyboard.
+  var
+    ParentForm: TCustomForm;
+  begin
+    case CharCode of
+      VK_LEFT..VK_DOWN, VK_TAB:
+        begin
+          ParentForm := GetParentForm(lWinControl);
+          SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+        end;
+      VK_MENU:
+        begin
+          ParentForm := GetParentForm(lWinControl);
+          SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEACCEL), 0);
+        end;
     end;
   end;
   
@@ -1686,7 +1715,8 @@ begin
     WM_KEYDOWN:
     begin
       NotifyUserInput := True;
-      PLMsg:=@LMKey;
+      PLMsg := @LMKey;
+      UpdateUIState(Word(WParam));
       with LMKey Do
       begin
         Msg := CN_KEYDOWN;
@@ -2228,7 +2258,8 @@ begin
     WM_SYSKEYDOWN:
     begin
       NotifyUserInput := True;
-      PLMsg:=@LMKey;
+      UpdateUIState(Word(WParam));
+      PLMsg := @LMKey;
       with LMKey Do
       begin
         Msg := CN_SYSKEYDOWN;

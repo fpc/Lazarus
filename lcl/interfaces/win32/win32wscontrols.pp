@@ -252,14 +252,6 @@ begin
       else
         lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);
-      // on themed applications windows for some reason hides focus rectangle if
-      // hide underlined letters for keyboard navigation setting is on
-      // read for example here: http://www.icetips.com/showarticle.php?articleid=450
-      // also windows hide accelerator chars and on Alt key press must show them
-      // but it does not happen if I press Alt in most of controls
-      if ThemeServices.ThemesEnabled then
-        Windows.SendMessage(Window, WM_CHANGEUISTATE,
-          MakeWParam(UIS_CLEAR, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0)
     end;
   end;
 end;
