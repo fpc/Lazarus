@@ -23,6 +23,7 @@ inherited EvaluateDlg: TEvaluateDlg
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     Caption = '&Expression:'
+    FocusControl = cmbExpression
     ParentColor = False
   end
   object Label2: TLabel[1]
@@ -36,6 +37,7 @@ inherited EvaluateDlg: TEvaluateDlg
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = '&Result:'
+    FocusControl = txtResult
     ParentColor = False
   end
   object lblNewValue: TLabel[2]
@@ -49,6 +51,7 @@ inherited EvaluateDlg: TEvaluateDlg
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 3
     Caption = '&New value:'
+    FocusControl = cmbNewValue
     ParentColor = False
   end
   object ToolBar1: TToolBar[3]
@@ -66,7 +69,7 @@ inherited EvaluateDlg: TEvaluateDlg
     TabOrder = 0
     TabStop = True
     object tbInspect: TToolButton
-      Left = 159
+      Left = 152
       Top = 2
       Caption = '&Inspect'
       Enabled = False
@@ -74,7 +77,7 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbInspectClick
     end
     object tbWatch: TToolButton
-      Left = 109
+      Left = 102
       Top = 2
       AllowAllUp = True
       Caption = '&Watch'
@@ -83,7 +86,7 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbWatchClick
     end
     object tbModify: TToolButton
-      Left = 59
+      Left = 52
       Top = 2
       Caption = '&Modify'
       Enabled = False
@@ -109,12 +112,10 @@ inherited EvaluateDlg: TEvaluateDlg
     Top = 64
     Width = 388
     Anchors = [akTop, akLeft, akRight]
-    AutoComplete = False
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     BorderSpacing.Right = 6
     ItemHeight = 13
-    ItemWidth = 0
     OnChange = cmbExpressionChange
     OnKeyDown = cmbExpressionKeyDown
     TabOrder = 2
@@ -149,12 +150,10 @@ inherited EvaluateDlg: TEvaluateDlg
     Top = 263
     Width = 388
     Anchors = [akLeft, akRight, akBottom]
-    AutoComplete = False
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     ItemHeight = 13
-    ItemWidth = 0
     TabOrder = 3
   end
 end
