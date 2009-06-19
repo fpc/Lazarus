@@ -51,13 +51,13 @@ type
   TSynBeautifierSetIndentProc =
     procedure(
      LinePos: Integer;
-     var Indent: Integer;                       // Indent in spaces (Logical = Physical)
-     var RelativeToLinePos: Integer;            // Intend specifies +/- offset from intend on RTLine
-                                                // 0: for absolute intend
-     var IndentChars: String;                   // use the following string to indent; maybe empty, single char, or string
-     var IndentCharsFromLinePos: Integer;       // Line for tab/space mix; set to -1 if unknown
-     KeepOldIndent: Boolean                     // True: Keep existing indent, and add (or subtract) new indent
-                                                // False: old indent is stripped/replaced
+     Indent: Integer;                       // Indent in spaces (Logical = Physical)
+     RelativeToLinePos: Integer = 0;        // Intend specifies +/- offset from intend on RTLine
+                                            // 0: for absolute intend
+     IndentChars: String = '';              // use the following string to indent; maybe empty, single char, or string
+     IndentCharsFromLinePos: Integer = -1;  // Line for tab/space mix; set to -1 if unknown
+     KeepOldIndent: Boolean = False         // True: Keep existing indent, and add (or subtract) new indent
+                                            // False: old indent is stripped/replaced
     ) of object;
 
   // Event triggered if Lines may needs Indend
@@ -124,10 +124,10 @@ type
     function AdjustCharMix(Indent: Integer; CharMix, OldCharMix: String): String;
     function GetCharMix(const LinePos, Indent: Integer; const OldIndent: string;
                         var IndentCharsFromLinePos: Integer = 0): String;
-    procedure ApplyIndent(LinePos: Integer; var Indent: Integer;
-                          var RelativeToLinePos: Integer; var IndentChars: String;
-                          var IndentCharsFromLinePos: Integer;
-                          KeepOldIndent: Boolean);
+    procedure ApplyIndent(LinePos: Integer; Indent: Integer;
+                          RelativeToLinePos: Integer = 0; IndentChars: String = '';
+                          IndentCharsFromLinePos: Integer = -1;
+                          KeepOldIndent: Boolean = False);
     function UnIndentLine(const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean;
   public
     function GetCurrentIndent(Editor: TSynEditBase; const Line: string;
@@ -371,8 +371,8 @@ begin
 end;
 
 procedure TSynBeautifier.ApplyIndent(LinePos: Integer;
-  var Indent: Integer; var RelativeToLinePos: Integer; var IndentChars: String = '';
-  var IndentCharsFromLinePos: Integer = -1; KeepOldIndent: Boolean = False);
+  Indent: Integer; RelativeToLinePos: Integer; IndentChars: String = '';
+  IndentCharsFromLinePos: Integer = -1; KeepOldIndent: Boolean = False);
 var
   Temp: String;
   OldLen: Integer;
@@ -387,15 +387,6 @@ begin
     Temp := copy(Temp, 1, GetCurrentIndent(FCurrentEditor, Temp, False));
   end;
   OldLen := length(Temp);
-
-  if (RelativeToLinePos = LinePos) and (Indent = 0) then begin
-    // nothing to do, calculate our own suggestions and return them
-    // Indent is absolute, even so RelativeToLinePos is set
-    Indent := GetIntend(LinePos, RelativeToLinePos);
-    IndentCharsFromLinePos := RelativeToLinePos;;
-    IndentChars := GetCharMix(LinePos, Indent, Temp, IndentCharsFromLinePos);
-    exit;
-  end;
 
   if (RelativeToLinePos > 0) and (RelativeToLinePos <= FCurrentEditor.Lines.Count) then
     Indent := Indent + GetCurrentIndent(FCurrentEditor, FCurrentLines[RelativeToLinePos], True);
@@ -412,9 +403,6 @@ begin
   //if not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos] = '')) then
   if IndentChars <> '' then
     FCurrentLines.EditInsert(1, LinePos, IndentChars);
-
-  RelativeToLinePos := 0;
-  Indent := GetCurrentIndent(FCurrentEditor, FCurrentLines[LinePos], True);
 end;
 
 function TSynBeautifier.GetCurrentIndent(Editor: TSynEditBase; const Line: string; Physical: boolean): Integer;
