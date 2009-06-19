@@ -967,7 +967,7 @@ begin
   Stack:=TFABBlockStack.Create;
   try
     // parse source in front
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent "',copy(Source,1,CleanPos-1),'"']);
+    //DebugLn(['TFullyAutomaticBeautifier.GetIndent "',copy(Source,1,CleanPos-1),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
     WriteDebugReport('After parsing code in front:',Stack);

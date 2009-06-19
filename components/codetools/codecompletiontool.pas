@@ -5431,7 +5431,7 @@ begin
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
                   phpWithProcModifiers,phpDoNotAddSemicolon]);
-      if ProcCode[length(ProcCode)]<>';' then begin
+      if (ProcCode<>'') and (ProcCode[length(ProcCode)]<>';') then begin
         // add missing semicolon at end of procedure head
         UndoReadNextAtom;
         if not ASourceChangeCache.Replace(gtNone,gtNone,
