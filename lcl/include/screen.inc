@@ -96,6 +96,8 @@ var
 begin
   for HandlerType := Low(FScreenHandlers) to High(FScreenHandlers) do
     FreeThenNil(FScreenHandlers[HandlerType]);
+  AddDataModule := Nil;
+  RemoveDataModule := Nil;
   FreeThenNil(FHintFont);
   FreeThenNil(FIconFont);
   FreeThenNil(FMenuFont);
