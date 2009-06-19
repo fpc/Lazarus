@@ -1176,12 +1176,14 @@ var
       VK_LEFT..VK_DOWN, VK_TAB:
         begin
           ParentForm := GetParentForm(lWinControl);
-          SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+          if ParentForm <> nil then
+            SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
         end;
       VK_MENU:
         begin
           ParentForm := GetParentForm(lWinControl);
-          SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEACCEL), 0);
+          if ParentForm <> nil then
+            SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEACCEL), 0);
         end;
     end;
   end;
