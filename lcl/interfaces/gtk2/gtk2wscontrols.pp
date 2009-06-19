@@ -162,7 +162,9 @@ begin
   
   AValue :=  power(Range^.adjustment^.page_size, 2 / 3);
   
-  if AEvent^.direction = GDK_SCROLL_UP then
+  if (AEvent^.direction = GDK_SCROLL_UP) or
+     (AEvent^.direction = GDK_SCROLL_LEFT)
+  then
     AValue := -AValue;
     
   AValue := gtk_range_get_value(Range) + AValue;
