@@ -1055,14 +1055,14 @@ var
     ShowFocus: Boolean;
   begin
     case DrawInfo^.dwDrawStage of
-      CDDS_PREPAINT:
+      CDDS_PREPAINT, CDDS_POSTPAINT:
       begin
-        lmNotify.Result := CDRF_DODEFAULT;
+        lmNotify.Result := CDRF_DODEFAULT or CDRF_NOTIFYPOSTPAINT;
         WinProcess := False;
         if ABitBtn.Focused then
         begin
           if WindowsVersion >= wv2000 then
-            ShowFocus := (SendMessage(ABitBtn.Handle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEFOCUS) = 0
+            ShowFocus := (Windows.SendMessage(ABitBtn.Handle, WM_QUERYUISTATE, 0, 0) and UISF_HIDEFOCUS) = 0
           else
             ShowFocus := True;
           if ShowFocus then
@@ -1070,7 +1070,7 @@ var
             ARect := DrawInfo^.rc;
             InflateRect(ARect, -3, -3);
             if not IsRectEmpty(ARect) then
-              DrawFocusRect(DrawInfo^.hdc, ARect);
+              Windows.DrawFocusRect(DrawInfo^.hdc, ARect);
           end;
         end;
       end;
