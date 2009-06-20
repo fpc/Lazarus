@@ -5301,11 +5301,11 @@ var
   I: integer;
 begin
   // broadcast to children
-  Result := false;
+  Result := False;
   for I := 0 to ControlCount - 1 do
   begin
     Result := Controls[I].DialogChar(Message);
-    if Result then exit;
+    if Result then Exit;
   end;
 end;
 
@@ -5419,10 +5419,7 @@ begin
   begin
     Result := ParentForm.DialogChar(Message);
     if Result then 
-    begin
       Message.CharCode := VK_UNKNOWN;
-      exit;
-    end;
   end;
 end;
 

@@ -277,16 +277,16 @@ end;
 
 function TCustomLabel.DialogChar(var Message: TLMKey): boolean;
 begin
-  Result := false;
+  Result := False;
   if not FShowAccelChar then exit;
   if FFocusControl = nil then exit;
 
   if IsAccel(Message.CharCode, GetLabelText) and FFocusControl.CanFocus then
   begin
-    Result := true;
+    Result := True;
     FFocusControl.SetFocus;
   end else
-    Result:=inherited DialogChar(Message);
+    Result := inherited DialogChar(Message);
 end;
 
 procedure TCustomLabel.Loaded;
