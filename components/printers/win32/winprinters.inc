@@ -77,7 +77,7 @@ end;
 
 procedure TWinPrinter.PrinterSelected;
 begin
-  if PrinterIndex>=0 then
+  if (PrinterIndex>=0) and not RawMode then
     SetDC;
 end;
 
