@@ -116,7 +116,7 @@ type
     property  HideSingleMatch: Boolean read FHideSingleMatch write FHideSingleMatch;
     property MatchCount: Integer read GetMatchCount;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
 
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
@@ -152,11 +152,10 @@ type
     procedure SetSelection(const AValue: TSynEditSelection);
     procedure SetTrim(const AValue: Boolean);
     procedure SetWaitTime(const AValue: Integer);
-    function LogicalCaret: TPoint;
   protected
     procedure SetSearchString(const AValue : String); override;
     procedure SelectionChanged(Sender: TObject);
-    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure RestartTimer;
@@ -164,7 +163,7 @@ type
     function  GetCurrentText: String;
     function  GetCurrentOption: TSynSearchOptions;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
     procedure CheckState; // Todo need a global lock, including the markup
     procedure ToggleCurrentWord;
@@ -310,7 +309,7 @@ end;
 
 { TSynEditMarkupHighlightAll }
 
-constructor TSynEditMarkupHighlightAll.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupHighlightAll.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
   fSearch := TSynEditSearch.Create;
@@ -417,7 +416,7 @@ begin
   Pos := 0;
 
   FindInitialize(false);
-  ptEnd.Y:= min(TCustomSynEdit(SynEdit).ScreenRowToRow(LinesInWindow)+100, Lines.Count);
+  ptEnd.Y:= min(ScreenRowToRow(LinesInWindow)+100, Lines.Count);
   ptEnd.X:= Length(Lines[ptEnd.y - 1]);
 
   While (true) do begin
@@ -544,12 +543,6 @@ begin
   RestartTimer;
 end;
 
-function TSynEditMarkupHighlightAllCaret.LogicalCaret: TPoint;
-begin
-  Result := TCustomSynEdit(SynEdit).PhysicalToLogicalPos
-                                    (TCustomSynEdit(SynEdit).CaretXY);
-end;
-
 procedure TSynEditMarkupHighlightAllCaret.SetSearchString(const AValue: String);
 begin
   inherited SetSearchString(AValue);
@@ -607,7 +600,7 @@ procedure TSynEditMarkupHighlightAllCaret.CheckState;
 var
   t: String;
 begin
-  if not FStateChanged then
+  if (not FStateChanged) or (Caret = nil) then
     exit;
   FStateChanged := False;
   t := GetCurrentText;
@@ -617,9 +610,9 @@ begin
   end;
   if (SearchString <> '') and
      ( ((CompareCarets(FLowBound, FOldLowBound) = 0) and
-       (CompareCarets(LogicalCaret, FUpBound) >= 0) and (MatchCount > 1) )
+       (CompareCarets(Caret.LineBytePos, FUpBound) >= 0) and (MatchCount > 1) )
       OR ((CompareCarets(FUpBound, FOldUpBound) = 0) and
-       (CompareCarets(LogicalCaret, FLowBound) <= 0) and (MatchCount > 1) )
+       (CompareCarets(Caret.LineBytePos, FLowBound) <= 0) and (MatchCount > 1) )
      ) then begin
     ScrollTimerHandler(self);
     exit;
@@ -635,7 +628,7 @@ begin
   inherited;
 end;
 
-procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(OldCaret: TPoint);
+procedure TSynEditMarkupHighlightAllCaret.DoCaretChanged(Sender: TObject);
 begin
   FStateChanged := True; // Something changed, paint will be called
   inherited;
@@ -683,24 +676,26 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
     Result := copy(Result, 1, i);
   end;
 begin
+  if Caret = nil then
+    exit('');
   if FToggledWord <> '' then
     exit(FToggledWord);
-  If TCustomSynEdit(SynEdit).SelAvail then begin
+  If TSynEdit(SynEdit).SelAvail then begin
     if FTrim then
-      Result := TrimS(TCustomSynEdit(SynEdit).SelText)
+      Result := TrimS(TSynEdit(SynEdit).SelText)
     else
-      Result := TCustomSynEdit(SynEdit).SelText;
+      Result := TSynEdit(SynEdit).SelText;
     if TrimS(Result) = '' then Result := '';
-    FLowBound := TCustomSynEdit(SynEdit).BlockBegin;
-    FUpBound := TCustomSynEdit(SynEdit).BlockEnd;
+    FLowBound := TSynEdit(SynEdit).BlockBegin;
+    FUpBound := TSynEdit(SynEdit).BlockEnd;
   end else begin
-    Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol(LogicalCaret);
+    Result :=  TSynEdit(SynEdit).GetWordAtRowCol(Caret.LineBytePos);
     if FIgnoreKeywords and assigned(FHighlighter)
        and FHighlighter.IsKeyword(Result) then
       Result := '';
-    FLowBound.Y := LogicalCaret.Y;
-    FUpBound.Y := LogicalCaret.Y;
-    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(LogicalCaret, FLowBound.X, FUpBound.X);
+    FLowBound.Y := Caret.LinePos;
+    FUpBound.Y := Caret.LinePos;
+    TSynEdit(SynEdit).GetWordBoundsAtRowCol(Caret.LineBytePos, FLowBound.X, FUpBound.X);
   end;
 end;
 
@@ -708,7 +703,7 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
 begin
   if FToggledWord <> '' then
     exit(FToggledOption);
-  If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
+  If TSynEdit(SynEdit).SelAvail or not(FFullWord) then
     Result := []
   else
     if (FFullWordMaxLen >0) and (UTF8Length(GetCurrentText) > FFullWordMaxLen) then
@@ -717,7 +712,7 @@ begin
       Result := [ssoWholeWord];
 end;
 
-constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TCustomControl);
+constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FStateChanged := False;

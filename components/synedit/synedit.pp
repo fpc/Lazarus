@@ -1578,6 +1578,7 @@ begin
   fMarkupManager.AddMarkUp(fMarkupWordGroup);
   fMarkupManager.AddMarkUp(fMarkupSelection);
   fMarkupManager.Lines := FTheLinesView;
+  fMarkupManager.Caret := FCaret;
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
   Color := clWhite;
@@ -3819,7 +3820,6 @@ begin
     InvalidateGutterLines(FCaret.LinePos, FCaret.LinePos);
   end;
   EnsureCursorPosVisible;
-  FMarkupManager.Caret := FCaret.LineCharPos;
   if fPaintLock = 0 then
     fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
 end;
@@ -3903,7 +3903,6 @@ Begin
     // Force caret reset
     CaretXY := CaretXY;
     EnsureCursorPosVisible;
-    fMarkupManager.Caret := CaretXY;
   finally
     if not AddToUndoList then begin
       fUndoList.Unlock;

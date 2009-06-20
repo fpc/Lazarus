@@ -43,7 +43,7 @@ type
     procedure SetUseIncrementalColor(const AValue : Boolean);
     procedure MarkupChangedIntern(AMarkup: TObject);
   public
-    constructor Create(ASynEdit : TCustomControl; ASelection: TSynEditSelection);
+    constructor Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
     destructor Destroy; override;
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
@@ -76,7 +76,7 @@ begin
   else MarkupInfo.Assign(FMarkupInfoSelection);
 end;
 
-constructor TSynEditMarkupSelection.Create(ASynEdit : TCustomControl; ASelection: TSynEditSelection);
+constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
 begin
   inherited Create(ASynEdit);
   FSelection := ASelection;

@@ -26,7 +26,7 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTextBase,
+  Classes, SysUtils, Graphics, SynEditTextBase, SynEditPointClasses,
   SynEditMiscClasses, SynEditMiscProcs, Controls, SynEditHighlighter;
 
 type
@@ -40,12 +40,12 @@ type
 
   TSynEditMarkup = class(TObject)
   private
-    fMarkupInfo : TSynSelectedColor;
-    fLines : TSynEditStrings;
-    fCaret : TPoint;
-    fTopLine, FLinesInWindow : Integer;
-    fSynEdit : TCustomControl;
-    fInvalidateLinesMethod : TInvalidateLines;
+    FMarkupInfo : TSynSelectedColor;
+    FLines : TSynEditStrings;
+    FCaret : TSynEditCaret;
+    FTopLine, FLinesInWindow : Integer;
+    FSynEdit : TSynEditBase;
+    FInvalidateLinesMethod : TInvalidateLines;
     FEnabled: Boolean;
     FTempEnable: Integer;
 
@@ -66,9 +66,9 @@ type
     procedure SetLines(const AValue : TSynEditStrings); virtual;
     procedure SetTopLine(const AValue : Integer); virtual;
     procedure SetLinesInWindow(const AValue : Integer); virtual;
-    procedure SetCaret(const AValue : TPoint); virtual;
+    procedure SetCaret(const AValue : TSynEditCaret); virtual;
 
-    procedure DoCaretChanged(OldCaret : TPoint); virtual;
+    procedure DoCaretChanged(Sender: TObject); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
     procedure DoTextChanged(StartLine, EndLine : Integer); virtual;
@@ -80,9 +80,9 @@ type
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function Highlighter: TSynCustomHighlighter;
 
-    property SynEdit : TCustomControl read fSynEdit;
+    property SynEdit : TSynEditBase read fSynEdit;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
     Procedure PrepareMarkupForRow(aRow : Integer); virtual;
     Procedure FinishMarkupForRow(aRow : Integer); virtual;
@@ -102,7 +102,7 @@ type
     property Style : TFontStyles read GetStyle;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Lines : TSynEditStrings read fLines write SetLines;
-    property Caret : TPoint read fCaret write SetCaret;
+    property Caret : TSynEditCaret read fCaret write SetCaret;
     property TopLine : Integer read fTopLine write SetTopLine;
     property LinesInWindow : Integer read fLinesInWindow write SetLinesInWindow;
     property InvalidateLinesMethod : TInvalidateLines write SetInvalidateLinesMethod;
@@ -121,9 +121,9 @@ type
     procedure SetLines(const AValue : TSynEditStrings); override;
     procedure SetTopLine(const AValue : Integer); override;
     procedure SetLinesInWindow(const AValue : Integer); override;
-    procedure SetCaret(const AValue : TPoint); override;
+    procedure SetCaret(const AValue : TSynEditCaret); override;
   public
-    constructor Create(ASynEdit : TCustomControl);
+    constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
     
     Procedure AddMarkUp(aMarkUp : TSynEditMarkup);
@@ -223,14 +223,17 @@ begin
   fInvalidateLinesMethod := AValue;
 end;
 
-procedure TSynEditMarkup.SetCaret(const AValue : TPoint);
+procedure TSynEditMarkup.SetCaret(const AValue : TSynEditCaret);
 var
-  OldValue : TPoint;
+  r: Boolean;
 begin
-  if (fCaret.x = AValue.X) and (fCaret.Y = AValue.Y) then exit;
-  OldValue := fCaret;
-  fCaret := AValue;
-  DoCaretChanged(OldValue);
+  // inly register caret change callback, if handler is overriden
+  r := TMethod(@Self.DoCaretChanged).Code <> Pointer(@TSynEditMarkup.DoCaretChanged);
+  if r and (FCaret <> nil) then
+    FCaret.RemoveChangeHandler(@DoCaretChanged);
+  FCaret := AValue;
+  if r and (FCaret <> nil) then
+    FCaret.AddChangeHandler(@DoCaretChanged);
 end;
 
 procedure TSynEditMarkup.SetTopLine(const AValue : Integer);
@@ -253,7 +256,7 @@ begin
   DoLinesInWindoChanged(OldValue);
 end;
 
-procedure TSynEditMarkup.DoCaretChanged(OldCaret : TPoint);
+procedure TSynEditMarkup.DoCaretChanged(Sender: TObject);
 begin
 end;
 
@@ -291,7 +294,7 @@ end;
 
 function TSynEditMarkup.LogicalToPhysicalPos(const p : TPoint) : TPoint;
 begin
-  Result := TSynEdit(SynEdit).LogicalToPhysicalPos(p);
+  Result := FLines.LogicalToPhysicalPos(p);
 end;
 
 function TSynEditMarkup.Highlighter : TSynCustomHighlighter;
@@ -299,7 +302,7 @@ begin
   Result := TSynEdit(SynEdit).Highlighter;
 end;
 
-constructor TSynEditMarkup.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkup.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create();
   fSynEdit := ASynEdit;
@@ -345,7 +348,7 @@ end;
 
 { TSynEditMarkupManager }
 
-constructor TSynEditMarkupManager.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupManager.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
   fMarkUpList := TList.Create;
@@ -364,7 +367,11 @@ end;
 procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup);
 begin
   fMarkUpList.Add(aMarkUp);
-  aMarkUp.Lines := Lines;;
+  aMarkUp.Lines := Lines;
+  aMarkUp.Caret := Caret;
+  aMarkUp.TopLine := TopLine;
+  aMarkUp.LinesInWindow := LinesInWindow;
+  aMarkUp.InvalidateLinesMethod := FInvalidateLinesMethod;
 end;
 
 function TSynEditMarkupManager.Count: Integer;
@@ -509,7 +516,7 @@ begin
     TSynEditMarkup(fMarkUpList[i]).SetLinesInWindow(AValue);
 end;
 
-procedure TSynEditMarkupManager.SetCaret(const AValue : TPoint);
+procedure TSynEditMarkupManager.SetCaret(const AValue : TSynEditCaret);
 var
   i : integer;
 begin

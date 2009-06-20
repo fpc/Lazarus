@@ -49,14 +49,14 @@ type
   protected
     procedure FindMatchingWords(PhysCaret: TPoint;
       out Word1, Word2, Word3: TWordPoint);
-    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure InvalidateCurrentHighlight;
   public
-    constructor Create(ASynEdit: TCustomControl);
+    constructor Create(ASynEdit: TSynEditBase);
 
     function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
@@ -66,8 +66,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 Function CompareWordPoints(P1, P2: TWordPoint): Integer;
 begin
@@ -89,7 +87,7 @@ end;
 
   { TSynEditMarkupWordGroup }
 
-constructor TSynEditMarkupWordGroup.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupWordGroup.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FHighlightPos1.Y := -1;
@@ -206,7 +204,7 @@ begin
   if not (FHighlighter is TSynCustomFoldHighlighter) then
     exit;
   hl := TSynCustomFoldHighlighter(FHighlighter);
-  LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+  LogCaretXY := Lines.PhysicalToLogicalPos(PhysCaret);
   y := LogCaretXY.Y - 1;
   LCnt := Lines.Count;
   HL.CurrentLines := Lines;
@@ -273,24 +271,25 @@ begin
   end;
 
   if Word1.Y > 0 then begin
-    Word1.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
-    Word1.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
+    Word1.X  := Lines.LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
+    Word1.X2 := Lines.LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
   end;
   if Word2.Y > 0 then begin
-    Word2.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
-    Word2.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
+    Word2.X  := Lines.LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
+    Word2.X2 := Lines.LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
   end;
   if Word3.Y > 0 then begin
-    Word3.X  := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
-    Word3.X2 := TSynEdit(SynEdit).LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
+    Word3.X  := Lines.LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
+    Word3.X2 := Lines.LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
   end;
 end;
 
-procedure TSynEditMarkupWordGroup.DoCaretChanged(OldCaret: TPoint);
+procedure TSynEditMarkupWordGroup.DoCaretChanged(Sender: TObject);
 var
   C: TPoint;
 begin
-  C := TSynEdit(SynEdit).CaretXY;
+  if Caret = nil then exit;
+  C := Caret.LineCharPos;
   if ( (C.Y = FHighlightPos1.Y) and (C.X >= FHighlightPos1.X) and (C.X <= FHighlightPos1.X2) ) or
      ( (C.Y = FHighlightPos2.Y) and (C.X >= FHighlightPos2.X) and (C.X <= FHighlightPos2.X2) ) or
      ( (C.Y = FHighlightPos3.Y) and (C.X >= FHighlightPos3.X) and (C.X <= FHighlightPos3.X2) ) then
@@ -320,7 +319,8 @@ procedure TSynEditMarkupWordGroup.InvalidateCurrentHighlight;
 var
   NewPos, NewAntiPos, NewMiddlePos : TWordPoint;
 begin
-  FindMatchingWords(TSynEdit(SynEdit).CaretXY, NewPos, NewAntiPos, NewMiddlePos);
+  if Caret = nil then exit;
+  FindMatchingWords(Caret.LineCharPos, NewPos, NewAntiPos, NewMiddlePos);
 
   // invalidate old highlighting, if changed
   if (FHighlightPos1.Y > 0)

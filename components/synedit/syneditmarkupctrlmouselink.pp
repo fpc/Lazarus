@@ -54,7 +54,7 @@ type
     procedure UpdateCtrlMouse;
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
   public
-    constructor Create(ASynEdit: TCustomControl);
+    constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
 
     Procedure EndMarkup; override;
@@ -117,7 +117,7 @@ begin
   if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
     // show link
     NewY := LastMouseCaret.Y;
-    TSynEdit(SynEdit).GetWordBoundsAtRowCol(TSynEdit(SynEdit).PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
+    TSynEdit(SynEdit).GetWordBoundsAtRowCol(Lines.PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
     if (NewY = CtrlMouseLine) and
        (NewX1 = CtrlMouseX1) and
        (NewX2 = CtrlMouseX2)
@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit: TCustomControl);
+constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FLastControlIsPressed := false;

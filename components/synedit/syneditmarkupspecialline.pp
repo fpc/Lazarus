@@ -47,13 +47,13 @@ type
   protected
     procedure DoMarkupLineHighlightInfoChange(Sender: TObject);
     function HasLineHighlight: Boolean;
-    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
-    constructor Create(ASynEdit: TCustomControl);
+    constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
 
     procedure PrepareMarkupForRow(ARow: Integer); override;
@@ -71,8 +71,6 @@ type
   end;
 
 implementation
-uses
-  SynEdit;
 
 { TSynEditMarkupBracket }
 
@@ -92,7 +90,7 @@ begin
     (FMarkupLineHighlightInfo.Foreground <> clNone);
 end;
 
-procedure TSynEditMarkupSpecialLine.DoCaretChanged(OldCaret: TPoint);
+procedure TSynEditMarkupSpecialLine.DoCaretChanged(Sender: TObject);
 begin
   InvalidateLineHighlight;
 end;
@@ -117,7 +115,7 @@ begin
   InvalidateLineHighlight;
 end;
 
-constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TCustomControl);
+constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
 
@@ -192,10 +190,10 @@ procedure TSynEditMarkupSpecialLine.InvalidateLineHighlight;
 var
   NewLine: Integer;
 begin
-  if not HasLineHighlight then
+  if (not HasLineHighlight) or (Caret = nil) then
     Exit;
 
-  NewLine := TSynEdit(SynEdit).CaretY;
+  NewLine := Caret.LinePos;
 
   // invalidate old line highlighting, if changed
   if (FHighlightedLine > 0) and (NewLine <> FHighlightedLine) then

@@ -46,13 +46,13 @@ type
   protected
     procedure FindMatchingBracketPair(PhysCaret: TPoint;
       var StartBracket, EndBracket: TPoint);
-    procedure DoCaretChanged(OldCaret : TPoint); override;
+    procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
-    constructor Create(ASynEdit: TCustomControl);
+    constructor Create(ASynEdit: TSynEditBase);
 
     function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
@@ -67,7 +67,7 @@ uses
 
 { TSynEditMarkupBracket }
 
-constructor TSynEditMarkupBracket.Create(ASynEdit : TCustomControl);
+constructor TSynEditMarkupBracket.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FBracketHighlightPos.Y := -1;
@@ -110,7 +110,7 @@ begin
   begin
     // need to dec PhysCaret, in case we are in the middle of a tab
     dec(PhysCaret.x);
-    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    LogCaretXY := Lines.PhysicalToLogicalPos(PhysCaret);
     x := LogCaretXY.x;
     if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
     begin
@@ -124,7 +124,7 @@ begin
 
   if (HighlightStyle in [sbhsRightOfCursor, sbhsBoth]) then
   begin
-    LogCaretXY := TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+    LogCaretXY := Lines.PhysicalToLogicalPos(PhysCaret);
     x := LogCaretXY.x;
     if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
     begin
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupBracket.DoCaretChanged(OldCaret: TPoint);
+procedure TSynEditMarkupBracket.DoCaretChanged(Sender: TObject);
 begin
   InvalidateBracketHighlight;
 end;
@@ -163,10 +163,11 @@ procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
   NewPos, NewAntiPos, SwapPos : TPoint;
 begin
+  if Caret = nil then exit;
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
   if eoBracketHighlight in TSynEdit(SynEdit).Options 
-  then FindMatchingBracketPair(TSynEdit(SynEdit).CaretXY, NewPos, NewAntiPos);
+  then FindMatchingBracketPair(Caret.LineCharPos, NewPos, NewAntiPos);
 
   // Always keep ordered
   if (NewAntiPos.Y > 0)
