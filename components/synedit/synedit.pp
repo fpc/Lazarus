@@ -337,7 +337,6 @@ type
     fCaretX: Integer;      // position in Expanded Line = physical position (screen) when LeftChar=1
     fCaretY: Integer;
     {$ENDIF}
-    fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCharsInWindow: Integer;
     fCharWidth: Integer;
     fFontDummy: TFont;
@@ -468,7 +467,6 @@ type
     function GetFoldedCodeColor: TSynSelectedColor;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
-    {$IFDEF SYN_LAZARUS}
     function GetCaretX : Integer;
     function GetCaretY : Integer;
     function GetCaretUndo: TSynEditUndoItem;
@@ -486,7 +484,6 @@ type
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
-    {$ENDIF}
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
     {$IFDEF SYN_LAZARUS}
@@ -532,8 +529,8 @@ type
     {$ENDIF}
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
                                    Mode: TSynSelectionMode = smCurrent);
-    procedure SetCaretX(Value: Integer);
-    procedure SetCaretY(Value: Integer);
+    procedure SetCaretX(const Value: Integer);
+    procedure SetCaretY(const Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
     procedure SetGutter(const Value: TSynGutter);
     procedure SetHideSelection(const Value: boolean);
@@ -845,13 +842,8 @@ type
     property CanPaste: Boolean read GetCanPaste;
     property CanRedo: boolean read GetCanRedo;
     property CanUndo: boolean read GetCanUndo;
-    {$IFDEF SYN_LAZARUS}
     property CaretX: Integer read GetCaretX write SetCaretX;
     property CaretY: Integer read GetCaretY write SetCaretY;
-    {$ELSE}
-    property CaretX: Integer read fCaretX write SetCaretX;
-    property CaretY: Integer read fCaretY write SetCaretY;
-    {$ENDIF}
     property CaretXY: TPoint read GetCaretXY write SetCaretXY;
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
@@ -1646,7 +1638,6 @@ begin
   fCaretX := 1;
   fCaretY := 1;
   {$ENDIF}
-  fLastCaretX := 1;                                                             //mh 2000-10-19
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
@@ -3780,18 +3771,17 @@ begin
   Result := fMarkupManager.Markup[Index];
 end;
 
-procedure TCustomSynEdit.SetCaretX(Value: Integer);
+procedure TCustomSynEdit.SetCaretX(const Value: Integer);
 begin
   SetCaretXY(Point(Value, CaretY));
-  fLastCaretX := CaretX;                                                        //mh 2000-10-19
 end;
 
-procedure TCustomSynEdit.SetCaretY(Value: Integer);
+procedure TCustomSynEdit.SetCaretY(const Value: Integer);
 begin
-  if not (eoKeepCaretX in Options) then begin                                        //mh 2000-11-08
-    fLastCaretX := CaretX;
-  end;
-  SetCaretXY(Point(fLastCaretX{CaretX}, Value));                                //mh 2000-10-19
+  FCaret.LinePos := Value;
+  if (CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) <> 0)
+     and not(SelAvail or FBlockSelection.SelCanContinue(FCaret)) then
+    FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
 end;
 
 function TCustomSynEdit.GetCaretXY: TPoint;
@@ -3813,7 +3803,6 @@ procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 begin
   fCaret.LineCharPos:= Value;
-  fLastCaretX:=CaretX;
   if (CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) <> 0)
      and not(SelAvail or FBlockSelection.SelCanContinue(FCaret)) then
     FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
@@ -3913,7 +3902,6 @@ Begin
     FBlockSelection.SetSelTextPrimitive(PasteMode, Value);
     // Force caret reset
     CaretXY := CaretXY;
-    fLastCaretX := CaretX;
     EnsureCursorPosVisible;
     fMarkupManager.Caret := CaretXY;
   finally
@@ -3933,7 +3921,6 @@ begin
     FBlockSelection.SelText := Value;
     // Force caret reset
     CaretXY := CaretXY;
-    fLastCaretX := CaretX;
     EnsureCursorPosVisible;
   finally
     EndUndoBlock;
@@ -5592,6 +5579,7 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   Data: pointer);
 var
   InitialCmd: TSynEditorCommand;
+  CaretBefore: TPoint;
 begin
   {$IFDEF VerboseKeys}
   DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
@@ -5605,8 +5593,11 @@ begin
       BeginUndoBlock;
       FBeautifyStartLineIdx := -1;
       FBeautifyEndLineIdx := -1;
-      if assigned(FBeautifier) then
+      CaretBefore := FCaret.LineCharPos;
+      if assigned(FBeautifier) then begin
+        FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
         FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
+      end;
       // notify hooked command handlers before the command is executed inside of
       // the class
       if Command <> ecNone then
@@ -5621,9 +5612,13 @@ begin
       if Command <> ecNone then
         DoOnCommandProcessed(Command, AChar, Data);
 
-      if assigned(FBeautifier) then
+      if assigned(FBeautifier) then begin
+        FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
         FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
                                  FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
+      end;
+      if not FCaret.IsAtLineChar(CaretBefore) then
+        EnsureCursorPosVisible;
     finally
       EndUndoBlock;
     end;
@@ -5701,11 +5696,6 @@ begin
         end;
       ecLineStart, ecSelLineStart, ecColSelLineStart:
         DoHomeKey(Command in [ecSelLineStart, ecColSelLineStart]);
-        {begin
-          MoveCaretAndSelectionPhysical(CaretXY,Point(1, CaretY),
-                                        Command = ecSelLineStart);
-          fLastCaretX := CaretX;
-        end;}
       ecLineEnd, ecSelLineEnd, ecColSelLineEnd:
         DoEndKey(Command in [ecSelLineEnd, ecColSelLineEnd]);
 // vertical caret movement or selection
@@ -5801,13 +5791,8 @@ begin
 // goto special line / column position
       ecGotoXY, ecSelGotoXY:
         if Assigned(Data) then begin
-          {$IFDEF SYN_LAZARUS}
           MoveCaretAndSelectionPhysical
-          {$ELSE}
-          MoveCaretAndSelection
-          {$ENDIF}
             (CaretXY, PPoint(Data)^, Command = ecSelGotoXY);
-          fLastCaretX := CaretX;                                               //mh 2000-10-19
           Update;
         end;
 // word selection
@@ -5815,37 +5800,23 @@ begin
         begin
           Caret := CaretXY;
           CaretNew := PrevWordPos;
-          {$IFDEF SYN_LAZARUS}
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
             CaretNew := LogicalToPhysicalPos(Point(1 + Length(FTheLinesView[CY-1]), CY));
           end;
           MoveCaretAndSelectionPhysical
-          {$ELSE}
-          MoveCaretAndSelection
-          {$ENDIF}
             (Caret, CaretNew, Command in [ecSelWordLeft, ecColSelWordLeft]);
-          fLastCaretX := CaretX;                                               //mh 2000-10-19
-          {$IFDEF SYN_LAZARUS}
           Update;
-          {$ENDIF}
         end;
       ecWordRight, ecSelWordRight, ecColSelWordRight:
         begin
           Caret := CaretXY;
           CaretNew := NextWordPos;
-          {$IFDEF SYN_LAZARUS}
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
           MoveCaretAndSelectionPhysical
-          {$ELSE}
-          MoveCaretAndSelection
-          {$ENDIF}
             (Caret, CaretNew, Command in [ecSelWordRight, ecColSelWordRight]);
-          fLastCaretX := CaretX;                                               //mh 2000-10-19
-          {$IFDEF SYN_LAZARUS}
           Update;
-          {$ENDIF}
         end;
       ecSelectAll:
         begin
@@ -5999,9 +5970,10 @@ begin
             FCaret.IncForcePastEOL;
             CaretXY := Point(1, CaretY + 1);
             FCaret.DecForcePastEOL;
-          end;
+          end
+          else
+            CaretXY := CaretXY;
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
-          fLastCaretX := CaretX;                                               //mh 2000-10-19
         end;
       ecTab:
         if not ReadOnly then
@@ -6075,7 +6047,6 @@ begin
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
           CaretXY := Point(1, CaretY + 1);
           EnsureCursorPosVisible;
-          fLastCaretX := CaretX;
         end;
       ecUndo:
         begin
@@ -7163,6 +7134,7 @@ begin
     fOptions := Value;
     FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
     FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
+    FCaret.KeepCaretX := (eoKeepCaretX in fOptions);
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then
@@ -7398,30 +7370,22 @@ begin
 {$ENDIF}
   // set caret and block begin / end
   MoveCaretAndSelection(ptO, ptDst, SelectionCommand);
-  fLastCaretX := fCaretX;                                                       //mh 2000-10-19
 end;
 {$ENDIF}
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
-{$IFDEF SYN_LAZARUS}
 // moves Caret vertical DY unfolded lines
 var
   NewCaret: TPoint;
   OldCaret: TPoint;
-  SaveLastCaretX: LongInt;
   SelContinue: Boolean;
 begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
   NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, DY);
-  if (OldCaret.Y<>NewCaret.Y) and (fLastCaretX>0) and (eoKeepCaretX in Options)
-  then
-    NewCaret.X:=fLastCaretX;
   IncPaintLock;
-  SaveLastCaretX:=fLastCaretX;
   SelContinue := FBlockSelection.SelCanContinue(FCaret);
-  CaretXY:=NewCaret;
-  fLastCaretX:=SaveLastCaretX;
+  FCaret.LinePos := NewCaret.Y;
   // set caret and block begin / end
   if SelectionCommand then begin
     if not SelContinue then begin
@@ -7431,69 +7395,12 @@ begin
         OldCaret.X := Length(FTheLinesView[OldCaret.Y-1]) + 1;
       SetBlockBegin(OldCaret);
     end;
-    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+    SetBlockEnd(FCaret.LineBytePos);
     AquirePrimarySelection;
   end else
-    SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+    SetBlockBegin(FCaret.LineBytePos);
   DecPaintLock;
 end;
-{$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
-var
-  ptO, ptDst: TPoint;
-{$IFDEF SYN_MBCSSUPPORT}
-  NewStepAside: Boolean;
-  s: string;
-{$ENDIF}
-  SaveLastCaretX: Integer;
-begin
-  ptO := CaretXY;                                                               // sblbg 2001-12-17
-  ptDst := ptO;
-  with ptDst do begin
-    Inc(Y, DY);
-    if DY >= 0 then begin
-      if (Y > Lines.Count) or (ptO.Y > Y) then
-        Y := Lines.Count;
-    end else
-      if (Y < 1) or (ptO.Y < Y) then
-        Y := 1;
-  end;
-  if (ptO.Y <> ptDst.Y) then begin
-    if eoKeepCaretX in Options then                                             //mh 2000-10-19
-      ptDst.X := fLastCaretX;                                                   //mh 2000-10-19
-  end;
-
-  ptDst := PhysicalToLogicalPos(ptDst);                                         // sblbg 2001-12-17
-  ptO := PhysicalToLogicalPos(ptO);                                             // sblbg 2001-12-17
-
-{$IFDEF SYN_MBCSSUPPORT}
-  if (ptO.Y <> ptDst.Y) then begin
-    if fMBCSStepAside and not (eoKeepCaretX in Options) then
-      Inc(ptDst.X);
-    NewStepAside := False;
-    s := Lines[ptDst.Y - 1];
-    if (ptDst.X <= Length(s)) then
-      if (ByteType(s, ptDst.X) = mbTrailByte) then begin
-        NewStepAside := True;
-        Dec(ptDst.X);
-      end;
-  end
-  else
-    NewStepAside := fMBCSStepAside;
-{$ENDIF}
-  SaveLastCaretX := fLastCaretX;
-
-  // set caret and block begin / end
-  MoveCaretAndSelection(ptO, ptDst, SelectionCommand);
-
-  // Set fMBCSStepAside and restore fLastCaretX after moving caret, since
-  // UpdateLastCaretX, called by SetCaretXYEx, changes them. This is the one
-  // case where we don't want that.
-{$IFDEF SYN_MBCSSUPPORT}
-  fMBCSStepAside := NewStepAside;
-{$ENDIF}
-  fLastCaretX := SaveLastCaretX;                                                //jr 2002-04-26
-end;
-{$ENDIF not SYN_LAZARUS}
 
 procedure TCustomSynEdit.MoveCaretAndSelection(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;

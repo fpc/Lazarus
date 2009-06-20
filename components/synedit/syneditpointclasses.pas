@@ -136,15 +136,19 @@ type
   private
     FAllowPastEOL: Boolean;
     FForcePastEOL: Integer;
-    FLinePos: Integer; // 1 based
-    FCharPos: Integer; // 1 based
+    FKeepCaretX: Boolean;
+    FLinePos: Integer;     // 1 based
+    FCharPos: Integer;     // 1 based
+    FLastCharPos: Integer; // used by KeepCaretX
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
     FAdjustToNextChar: Boolean;
     procedure AdjustToChar;
-    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer);
+    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+                                     KeepLastCharPos: Boolean = False);
     procedure setCharPos(const AValue: Integer);
     procedure SetAllowPastEOL(const AValue: Boolean);
+    procedure SetKeepCaretX(const AValue: Boolean);
     procedure setLinePos(const AValue: Integer);
     function  GetLineCharPos: TPoint;
     procedure SetLineCharPos(AValue: TPoint);
@@ -162,6 +166,8 @@ type
     procedure AssignFrom(Src: TSynEditCaret);
     procedure IncForcePastEOL;
     procedure DecForcePastEOL;
+    function IsAtLineChar(aPoint: TPoint): Boolean;
+    function IsAtPos(aCaret: TSynEditCaret): Boolean;
     property OldLinePos: Integer read FOldLinePos;
     property OldCharPos: Integer read FOldCharPos;
     property LinePos: Integer read fLinePos write setLinePos;
@@ -172,6 +178,7 @@ type
     property LineText: string read GetLineText write SetLineText;
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
+    property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
   end;
 
 implementation
@@ -246,8 +253,10 @@ begin
   FLines := Src.FLines;
   FMaxLeftChar := Src.FMaxLeftChar;
   FAllowPastEOL := Src.FAllowPastEOL;
+  FKeepCaretX := Src.FKeepCaretX;
   FLinePos := Src.FLinePos;
   FCharPos := Src.FCharPos;
+  FLastCharPos := Src.FLastCharPos;
 end;
 
 procedure TSynEditCaret.IncForcePastEOL;
@@ -260,10 +269,20 @@ begin
   dec(FForcePastEOL);
 end;
 
+function TSynEditCaret.IsAtLineChar(aPoint: TPoint): Boolean;
+begin
+  Result := (FLinePos = aPoint.y) and (FCharPos = aPoint.x);
+end;
+
+function TSynEditCaret.IsAtPos(aCaret: TSynEditCaret): Boolean;
+begin
+  Result := IsAtLineChar(aCaret.LineCharPos);
+end;
+
 procedure TSynEditCaret.setLinePos(const AValue : Integer);
 begin
   if fLinePos = AValue then exit;
-  InternalSetLineCharPos(AValue, FCharPos);
+  InternalSetLineCharPos(AValue, FLastCharPos, True);
 end;
 
 procedure TSynEditCaret.AdjustToChar;
@@ -309,6 +328,14 @@ begin
     InternalSetLineCharPos(FLinePos, FCharPos);
 end;
 
+procedure TSynEditCaret.SetKeepCaretX(const AValue: Boolean);
+begin
+  if FKeepCaretX = AValue then exit;
+  FKeepCaretX := AValue;
+  if FKeepCaretX then
+    FLastCharPos := FCharPos;
+end;
+
 function TSynEditCaret.GetLineCharPos : TPoint;
 begin
   Result := Point(fCharPos, fLinePos);
@@ -320,7 +347,8 @@ begin
   InternalSetLineCharPos(AValue.y, AValue.X);
 end;
 
-procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer);
+procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+  KeepLastCharPos: Boolean = False);
 var
   nMaxX: Integer;
   Line: string;
@@ -348,6 +376,8 @@ begin
 
     fCharPos:= NewCharPos;
     fLinePos:= NewLine;
+    if (not KeepLastCharPos) or (not FKeepCaretX) then
+      FLastCharPos := FCharPos;
     AdjustToChar;
   finally
     Unlock;

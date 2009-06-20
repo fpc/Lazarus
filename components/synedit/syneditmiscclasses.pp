@@ -54,6 +54,9 @@ type
 
   // Empty - For type checking on function-arguments
   // in places where TCustomSynEdit can not be used due to circular unit refs
+
+  { TSynEditBase }
+
   TSynEditBase = class(TCustomControl)
   protected
     function GetLines: TStrings; virtual; abstract;

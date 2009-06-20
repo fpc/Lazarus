@@ -76,6 +76,7 @@ type
 
   TSynCustomBeautifier = class(TComponent)
   private
+    FAutoIndent: Boolean;
     FOnGetDesiredIndent: TSynBeautifierGetIndentEvent;
     FCurrentEditor: TSynEditBase; // For callback / applyIndent
     FCurrentLines: TSynEditStrings;
@@ -102,6 +103,7 @@ type
               out DesiredIndent: String): Integer; virtual; abstract;
     property OnGetDesiredIndent: TSynBeautifierGetIndentEvent
       read FOnGetDesiredIndent write FOnGetDesiredIndent;
+    property AutoIndent: Boolean read FAutoIndent write FAutoIndent;
   end;
 
   TSynCustomBeautifierClass = class of TSynCustomBeautifier;
@@ -144,7 +146,6 @@ type
   end;
 
 implementation
-uses SynEdit;
 
 { TSynCustomBeautifier }
 
@@ -154,6 +155,7 @@ begin
     FCurrentEditor := TSynCustomBeautifier(Src).FCurrentEditor;
     FCurrentLines := TSynCustomBeautifier(Src).FCurrentLines;
     FOnGetDesiredIndent := TSynCustomBeautifier(Src).FOnGetDesiredIndent;
+    FAutoIndent := TSynCustomBeautifier(Src).FAutoIndent;
   end
   else
     inherited;
@@ -216,12 +218,12 @@ var
   x: Integer;
 begin
   if (Command = ecDeleteLastChar) and
-     (eoAutoIndent in TSynEdit(FCurrentEditor).Options) and
+     (FAutoIndent) and
      (ACaret.CharPos > 1) and
      (GetCurrentIndent(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
   then begin
     UnIndentLine(ACaret, x);
-    TSynEdit(FCurrentEditor).CaretX := x;
+    ACaret.CharPos := x;
     Command := ecNone;
   end;
 end;
@@ -240,7 +242,7 @@ begin
   then
     exit;
 
-  if (Command = ecLineBreak) or (Command = ecInsertLine) then begin
+  if ((Command = ecLineBreak) or (Command = ecInsertLine)) and FAutoIndent then begin
     if (Command = ecLineBreak) then
       y := ACaret.LinePos
     else
@@ -254,7 +256,7 @@ begin
 
     if (Command = ecLineBreak) then begin
       ACaret.IncForcePastEOL;
-      TSynEdit(FCurrentEditor).CaretX := Indent + 1; // need the editor for FLastCaretX, todo
+      ACaret.CharPos := Indent + 1;
       ACaret.DecForcePastEOL;
     end;
   end;
@@ -283,7 +285,7 @@ begin
   if SpaceCount2 = SpaceCount1 then
     SpaceCount2 := 0;
   // remove visible spaces
-  LogSpacePos := TSynEdit(FCurrentEditor).PhysicalToLogicalCol(Line, ACaret.LinePos-1, SpaceCount2 + 1);
+  LogSpacePos := FCurrentLines.PhysicalToLogicalCol(Line, ACaret.LinePos-1, SpaceCount2 + 1);
   LogCaret := ACaret.LineBytePos;
   CaretNewX :=  SpaceCount2 + 1;
   FCurrentLines.EditDelete(LogSpacePos, ACaret.LinePos, LogCaret.X - LogSpacePos);
@@ -417,7 +419,7 @@ begin
       Inc(Result);
     end;
     if Physical and (Result>0) then
-      Result := TSynEdit(Editor).LogicalToPhysicalCol(Line, -1, Result+1)-1; // TODO, Need the real index of the line
+      Result := FCurrentLines.LogicalToPhysicalCol(Line, -1, Result+1)-1; // TODO, Need the real index of the line
   end else
     Result := 0;
 end;
@@ -431,6 +433,7 @@ var
   FoundLine: LongInt;
 begin
   Result := 0;
+  FCurrentLines := Lines; // for GetCurrentIndent
   BackCounter := ACaret.LinePos - 1;
   if BackCounter > 0 then
     repeat
@@ -457,8 +460,8 @@ begin
     sbitCopySpaceTab:
       begin
         DesiredIndent := copy(Temp, 1,
-          TSynEdit(Editor).PhysicalToLogicalCol(Temp, FoundLine - 1, Result) - 1);
-        PhysLen := TSynEdit(Editor).LogicalToPhysicalCol(Temp, ACaret.LinePos - 1, Length(Temp) + 1);
+                   Lines.PhysicalToLogicalCol(Temp, FoundLine - 1, Result) - 1);
+        PhysLen := Lines.LogicalToPhysicalCol(Temp, ACaret.LinePos - 1, Length(Temp) + 1);
         if PhysLen < Result then
           DesiredIndent := DesiredIndent + StringOfChar(' ', Result - PhysLen);
       end;
