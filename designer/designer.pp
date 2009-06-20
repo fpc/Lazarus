@@ -2898,22 +2898,26 @@ var
     Item: TIDEMenuItem;
   begin
     Candidates:=TFPList.Create;
-    if ControlSelIsNotEmpty
-    and (not LookupRootIsSelected)
-    and (LookupRoot is TWinControl) then begin
-      for i:=0 to LookupRoot.ComponentCount-1 do begin
+    if ControlSelIsNotEmpty and 
+       (not OnlyNonVisualsAreSelected) and
+       (not LookupRootIsSelected) and 
+       (LookupRoot is TWinControl) then 
+    begin
+      for i := 0 to LookupRoot.ComponentCount - 1 do 
+      begin
         if not (LookupRoot.Components[i] is TWinControl) then continue;
 
         Candidate:=TWinControl(LookupRoot.Components[i]);
         if not (csAcceptsControls in Candidate.ControlStyle) then continue;
         j:=ControlSelection.Count-1;
-        while j>=0 do begin
+        while j>=0 do 
+        begin
           CurSelected:=ControlSelection[j];
-          if CurSelected.IsTControl then begin
+          if CurSelected.IsTControl then 
+          begin
             if CurSelected.Persistent=Candidate then break;
-            if CurSelected.IsTWinControl
-            and TWinControl(CurSelected.Persistent).IsParentOf(Candidate)
-            then
+            if CurSelected.IsTWinControl and 
+               TWinControl(CurSelected.Persistent).IsParentOf(Candidate) then
               break;
           end;
           dec(j);
@@ -2926,7 +2930,8 @@ var
     
     DesignerMenuChangeParent.Visible:=Candidates.Count>0;
     DesignerMenuChangeParent.Clear;
-    for i:=0 to Candidates.Count-1 do begin
+    for i:=0 to Candidates.Count-1 do 
+    begin
       Item:=TIDEMenuCommand.Create(DesignerMenuChangeParent.Name+'_'+IntToStr(i));
       DesignerMenuChangeParent.AddLast(Item);
       Item.Caption:=TWinControl(Candidates[i]).Name;
@@ -2948,30 +2953,29 @@ begin
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
-  DesignerMenuAlign.Enabled := CompsAreSelected;
-  DesignerMenuMirrorHorizontal.Enabled := MultiCompsAreSelected;
-  DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected;
+  DesignerMenuAlign.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
+  DesignerMenuMirrorHorizontal.Enabled := MultiCompsAreSelected and not OnlyNonVisualsAreSelected;
+  DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
 
-  DesignerMenuTabOrder.Enabled:= (FLookupRoot is TWinControl)
-              and (TWinControl(FLookupRoot).ControlCount>0);
-  DesignerMenuSectionZOrder.Enabled := CompsAreSelected;
-    DesignerMenuOrderMoveToFront.Enabled := OneControlSelected;
-    DesignerMenuOrderMoveToBack.Enabled := OneControlSelected;
-    DesignerMenuOrderForwardOne.Enabled := OneControlSelected;
-    DesignerMenuOrderBackOne.Enabled := OneControlSelected;
+  DesignerMenuTabOrder.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
+  DesignerMenuSectionZOrder.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
+    DesignerMenuOrderMoveToFront.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
+    DesignerMenuOrderMoveToBack.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
+    DesignerMenuOrderForwardOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
+    DesignerMenuOrderBackOne.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
 
-  DesignerMenuCut.Enabled:= CompsAreSelected;
-  DesignerMenuCopy.Enabled:= CompsAreSelected;
-  DesignerMenuPaste.Enabled:= CanPaste;
-  DesignerMenuDeleteSelection.Enabled:= CompsAreSelected;
+  DesignerMenuCut.Enabled := CompsAreSelected;
+  DesignerMenuCopy.Enabled := CompsAreSelected;
+  DesignerMenuPaste.Enabled := CanPaste;
+  DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
   
-  DesignerMenuChangeClass.Enabled:= CompsAreSelected and (ControlSelection.Count=1);
+  DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
   UpdateChangeParentMenu;
 
-  DesignerMenuSnapToGridOption.Checked:=EnvironmentOptions.SnapToGrid;
-  DesignerMenuSnapToGuideLinesOption.Checked:=EnvironmentOptions.SnapToGuideLines;
+  DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
+  DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentOptions.SnapToGuideLines;
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);

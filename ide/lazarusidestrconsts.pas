@@ -1937,9 +1937,9 @@ resourcestring
   fdmSelectAll='Select All';
   lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';
-  lisViewSourceLfm = 'View Source (.lfm)';
-  fdmSaveFormAsXML = 'Save form as xml';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
+  lisViewSourceLfm = 'View Source (.lfm)';
+  fdmSaveFormAsXML = 'Save form as XML';
 
   //-----------------------
   // keyMapping
