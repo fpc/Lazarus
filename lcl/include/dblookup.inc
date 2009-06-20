@@ -249,7 +249,7 @@ var
   TmpActive: Boolean;
 begin
   Result := '';
-  if not ((Assigned(FControlLink) and FControlLink.Active)) then
+  if not ((Assigned(FControlLink) and assigned(FListField) and FControlLink.Active)) then
     Exit;
   Key := FControlLink.DataSet.FieldValues[FDataFieldNames];
   if FHasLookupField then
