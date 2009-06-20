@@ -84,8 +84,7 @@ const
 
 procedure TProjectXPManifest.SetFileNames(const MainFilename: string);
 begin
-  FManifestFileName := ExtractFilePath(MainFilename) +
-    ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.manifest';
+  FManifestFileName := ChangeFileExt(MainFilename, '.manifest');
 end;
 
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);

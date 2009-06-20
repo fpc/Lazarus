@@ -6619,8 +6619,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoShowSaveProjectAsDialog(UseMainSourceFile: boolean
-  ): TModalResult;
+function TMainIDE.DoShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
 var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
@@ -6635,15 +6634,15 @@ var
 begin
   OldProjectDir:=Project1.ProjectDirectory;
 
-  if Project1.MainUnitInfo=nil then
-    UseMainSourceFile:=false;
+  if Project1.MainUnitInfo = nil then
+    UseMainSourceFile := False;
 
   SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     AFilename:='';
     // build a nice project info filename suggestion
-    if (Project1.MainUnitID>=0) then
+    if UseMainSourceFile and (Project1.MainUnitID>=0) then
       AFilename:=Project1.MainUnitInfo.UnitName;
     if AFilename='' then
       AFilename:=ExtractFileName(Project1.ProjectInfoFile);
@@ -6653,7 +6652,7 @@ begin
       AFilename:=Trim(Project1.Title);
     if AFilename='' then
       AFilename:='project1';
-    Ext:=lowercase(ExtractFileExt(AFilename));
+    Ext:=LowerCase(ExtractFileExt(AFilename));
     if UseMainSourceFile then begin
       if (Ext='') or (not FilenameIsPascalSource(AFilename)) then
         AFilename:=ChangeFileExt(AFilename,'.pas');
@@ -6710,14 +6709,14 @@ begin
       if Project1.MainUnitID >= 0 then
       begin
         // check mainunit filename
-        Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
-        if Ext='' then Ext:='.pas';
+        Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
+        if Ext = '' then Ext := '.pas';
         if UseMainSourceFile then
-          NewProgramFilename:=AFilename
+          NewProgramFilename := ExtractFileName(AFilename)
         else
-          NewProgramFilename:=NewProgramName+Ext;
-        NewProgramFilename:=ExtractFilePath(NewLPIFilename)+NewProgramFilename;
-        if (CompareFilenames(NewLPIFilename,NewProgramFilename)=0) then
+          NewProgramFilename := ExtractFileNameWithoutExt(NewProgramName) + Ext;
+        NewProgramFilename := ExtractFilePath(NewLPIFilename) + NewProgramFilename;
+        if (CompareFilenames(NewLPIFilename, NewProgramFilename) = 0) then
         begin
           ACaption:=lisChooseADifferentName;
           AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
@@ -6749,7 +6748,7 @@ begin
     SaveDialog.Free;
   end;
 
-  DebugLn(['TMainIDE.DoShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFilename]);
+  //DebugLn(['TMainIDE.DoShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFilename]);
 
   // check if info file or source file already exists
   if FileExistsUTF8(NewLPIFilename) then
@@ -6847,7 +6846,7 @@ begin
   IncreaseCompilerParseStamp;
 
   Result:=mrOk;
-  DebugLn(['TMainIDE.DoShowSaveProjectAsDialog END OK']);
+  //DebugLn(['TMainIDE.DoShowSaveProjectAsDialog END OK']);
 end;
 
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
