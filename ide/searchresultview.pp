@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
+  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, InputHistory,
   IDEProcs, FindInFilesDlg, Project, MainIntf;
 
@@ -844,6 +844,7 @@ begin
       CurPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
           +':'+IntToStr(MatchPos.FileStartPos.X);
       MatchPos:=MatchPos.NextInThisLine;
+      SetBkMode(Canvas.Handle, TRANSPARENT);
       while assigned(MatchPos) do begin
         CurPart:=CurPart+','+IntToStr(MatchPos.FileStartPos.X);
         MatchPos:=MatchPos.NextInThisLine;
