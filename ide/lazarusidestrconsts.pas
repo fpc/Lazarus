@@ -1927,7 +1927,7 @@ resourcestring
   fdmScaleWord='Scale';
   fdmSizeWord='Size';
   fdmTabOrder='Tab Order...';
-  fdmZOrder='Z Order';
+  fdmZOrder='Z-order';
   fdmOrder='Order';
   fdmOrderMoveTofront='Move to Front';
   fdmOrderMoveToback='Move to Back';
