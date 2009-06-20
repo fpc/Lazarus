@@ -403,7 +403,7 @@ begin
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
                                        'Tab order',fdmTabOrder);
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
-                                                  'ZOrder section','');
+                                                  'ZOrder section', fdmZOrder);
       DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
                                    'Move to z order front',fdmOrderMoveTofront, nil, nil, nil, 'Order_move_front');
       DesignerMenuOrderMoveToBack:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,

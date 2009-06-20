@@ -1922,16 +1922,17 @@ resourcestring
     +'ancestor and delete it there.';
   lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
   fdmAlignWord='Align';
-  fdmMirrorHorizontal='Mirror horizontal';
-  fdmMirrorVertical='Mirror vertical';
+  fdmMirrorHorizontal='Mirror Horizontal';
+  fdmMirrorVertical='Mirror Vertical';
   fdmScaleWord='Scale';
   fdmSizeWord='Size';
-  fdmTabOrder='Tab order...';
+  fdmTabOrder='Tab Order...';
+  fdmZOrder='Z Order';
   fdmOrder='Order';
-  fdmOrderMoveTofront='Move to front';
-  fdmOrderMoveToback='Move to back';
-  fdmOrderForwardOne='Forward one';
-  fdmOrderBackOne='Back one';
+  fdmOrderMoveTofront='Move to Front';
+  fdmOrderMoveToback='Move to Back';
+  fdmOrderForwardOne='Forward One';
+  fdmOrderBackOne='Back One';
   fdmDeleteSelection='Delete Selection';
   fdmSelectAll='Select All';
   lisChangeClass = 'Change Class';
@@ -3944,7 +3945,7 @@ resourcestring
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
   lisUIClearIncludedByReference = 'Clear include cache';
-  lisChangeParent = 'Change parent ...';
+  lisChangeParent = 'Change Parent...';
   lisLazarusIDE = 'Lazarus IDE';
   lisDirectives = 'Directives';
 
