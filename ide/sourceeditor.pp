@@ -85,6 +85,7 @@ type
 
   TSynEditPlugin1 = class(TSynEditPlugin)
   private
+    FEnabled: Boolean;
     FOnLinesInserted : TOnLinesInsertedDeleted;
     FOnLinesDeleted : TOnLinesInsertedDeleted;
   protected
@@ -95,6 +96,7 @@ type
       read FOnLinesinserted write FOnLinesInserted;
     property OnLinesDeleted : TOnLinesInsertedDeleted
       read FOnLinesDeleted write FOnLinesDeleted;
+    property Enabled: Boolean read FEnabled write FEnabled;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2572,10 +2574,14 @@ begin
       debugln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
       debugln('');
       {$ENDIF}
+      if assigned(FEditPlugin) then
+        FEditPlugin.Enabled := False;
       FEditor.BeginUpdate;
       FCodeBuffer.AssignTo(FEditor.Lines,true);
       FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
       FEditor.EndUpdate;
+      if assigned(FEditPlugin) then
+        FEditPlugin.Enabled := True;
     end;
     if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
     if (DebugBoss.State in [dsPause, dsRun]) and
@@ -7020,6 +7026,7 @@ end;
 constructor TSynEditPlugin1.Create(AOwner: TComponent);
 Begin
   inherited Create(AOwner);
+  FEnabled := True;
   ViewedTextBuffer.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
 
@@ -7031,6 +7038,7 @@ end;
 
 procedure TSynEditPlugin1.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
+  if not FEnabled then exit;
   if ACount < 0 then begin
     if Assigned(OnLinesDeleted) then
       OnLinesDeleted(self, AIndex+1, -ACount);
