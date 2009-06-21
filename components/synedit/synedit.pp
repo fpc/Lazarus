@@ -3774,15 +3774,12 @@ end;
 
 procedure TCustomSynEdit.SetCaretX(const Value: Integer);
 begin
-  SetCaretXY(Point(Value, CaretY));
+  FCaret.CharPos := Value;
 end;
 
 procedure TCustomSynEdit.SetCaretY(const Value: Integer);
 begin
   FCaret.LinePos := Value;
-  if (CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) <> 0)
-     and not(SelAvail or FBlockSelection.SelCanContinue(FCaret)) then
-    FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
 end;
 
 function TCustomSynEdit.GetCaretXY: TPoint;
@@ -3804,9 +3801,6 @@ procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 begin
   fCaret.LineCharPos:= Value;
-  if (CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) <> 0)
-     and not(SelAvail or FBlockSelection.SelCanContinue(FCaret)) then
-    FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
 end;
 
 procedure TCustomSynEdit.CaretChanged(Sender: TObject);

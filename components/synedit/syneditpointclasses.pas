@@ -87,6 +87,7 @@ type
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
+    procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
     procedure SetActiveSelectionMode(const Value: TSynSelectionMode);
     procedure SetSelectionMode      (const AValue: TSynSelectionMode);
@@ -96,6 +97,7 @@ type
     procedure SetEndLineBytePos(Value: TPoint);
     function  GetSelText: string;
     procedure SetSelText(const Value: string);
+    procedure DoCaretChanged(Sender: TObject);
   public
     constructor Create(ALines: TSynEditStrings);
     //destructor Destroy; override;
@@ -124,7 +126,7 @@ type
     property  FirstLineBytePos: TPoint read GetFirstLineBytePos;
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
-    property  Caret: TSynEditCaret read FCaret write FCaret;
+    property  Caret: TSynEditCaret read FCaret write SetCaret;
     property  UndoList: TSynEditUndoList read fUndoList write fUndoList;
     // TODO: Move dependend functions to Lines
     property TabWidth: integer read FTabWidth write FTabWidth;
@@ -631,6 +633,14 @@ begin
   SetSelTextPrimitive(smNormal, PChar(Value));
 end;
 
+procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
+begin
+  if (not FCaret.IsAtLineChar(StartLineBytePos))
+     and not(SelAvail or SelCanContinue(FCaret))
+  then
+    StartLineBytePos := FCaret.LineBytePos;
+end;
+
 procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
   Value : PChar);
 var
@@ -1018,6 +1028,16 @@ begin
     Result := StartLineBytePos
   else
     Result := EndLineBytePos;
+end;
+
+procedure TSynEditSelection.SetCaret(const AValue: TSynEditCaret);
+begin
+  if FCaret = AValue then exit;
+  if FCaret <> nil then
+    Caret.RemoveChangeHandler(@DoCaretChanged);
+  FCaret := AValue;
+  if FCaret <> nil then
+    Caret.AddChangeHandler(@DoCaretChanged);
 end;
 
 function TSynEditSelection.SelAvail : Boolean;
