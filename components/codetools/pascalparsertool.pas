@@ -1950,6 +1950,8 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
     SaveRaiseExceptionFmt(ctsSemicolonAfterPropSpecMissing,[s,GetAtom]);
   end;
 
+var
+  p: PChar;
 begin
   if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
     RaiseIdentExpectedButAtomFound;
@@ -1965,21 +1967,48 @@ begin
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
-  while (CurPos.StartPos<=SrcLen) and (CurPos.Flag<>cafSemicolon) do
+  while (CurPos.StartPos<=SrcLen) do begin
+    case CurPos.Flag of
+    cafSemicolon: break;
+    cafEnd:       break;
+    cafWord:
+      begin
+        p:=@Src[CurPos.StartPos];
+        case UpChars[p^] of
+        'C': if UpAtomIs('CLASS') then break;
+        'F': if UpAtomIs('FUNCTION') then break;
+        'P':
+          case UpChars[p[1]] of
+          'R':
+            case UpChars[p[2]] of
+            'I': if UpAtomIs('PRIVATE') then break;
+            'O': if UpAtomIs('PROTECTED') or UpAtomIs('PROCEDURE') then break;
+            end;
+          'U': if UpAtomIs('PUBLIC') or UpAtomIs('PUBLISHED') then break;
+          end;
+        'T': if UpAtomIs('TYPE') then break;
+        'V': if UpAtomIs('VAR') then break;
+        end;
+      end;
+    end;
     ReadNextAtom;
-  ReadNextAtom;
-  if UpAtomIs('DEFAULT') then begin
+  end;
+  if CurPos.Flag=cafSemicolon then begin
     ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseSemicolonAfterPropSpecMissing('default');
-  end else if UpAtomIs('NODEFAULT') then begin
-    ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseSemicolonAfterPropSpecMissing('nodefault');
-  end else if UpAtomIs('DEPRECATED') then begin
-    ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
-      RaiseSemicolonAfterPropSpecMissing('deprecated');
+    if UpAtomIs('DEFAULT') then begin
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseSemicolonAfterPropSpecMissing('default');
+    end else if UpAtomIs('NODEFAULT') then begin
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseSemicolonAfterPropSpecMissing('nodefault');
+    end else if UpAtomIs('DEPRECATED') then begin
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseSemicolonAfterPropSpecMissing('deprecated');
+    end else
+      UndoReadNextAtom;
   end else
     UndoReadNextAtom;
   // close property
