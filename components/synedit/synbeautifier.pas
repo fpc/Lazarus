@@ -250,9 +250,9 @@ begin
 
     Indent := GetIntend(y, b);
     s := GetCharMix(y, Indent, '', b);
-    if (FIndentType = sbitPositionCaret) and (ACaret.LineText = '') then
+    if (FIndentType = sbitPositionCaret) and (FCurrentLines[y] = '') then
       s := '';
-    FCurrentLines.EditInsert(1, ACaret.LinePos, s);
+    FCurrentLines.EditInsert(1, y, s);
 
     if (Command = ecLineBreak) then begin
       ACaret.IncForcePastEOL;
