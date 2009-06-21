@@ -5254,13 +5254,22 @@ var
         end;
       end;
     end;
-    // use existing semicolon
+    // replace trailing spaces
     while (ToPos<=SrcLen) and (Src[ToPos] in [' ',#9]) do inc(ToPos);
+    // use existing semicolon
     if (NewCode[length(NewCode)]=';')
     and (ToPos<=SrcLen) and (Src[ToPos]=';') then begin
       AfterGap:=gtNone;
       inc(ToPos);
     end;
+    // use existing "else"
+    if (NewCode[length(NewCode)]=';') then begin
+      MoveCursorToCleanPos(ToPos);
+      ReadNextAtom;
+      if UpAtomIs('ELSE') then
+        NewCode:=copy(NewCode,1,length(NewCode)-1);
+    end;
+
     // adjust indent of first line
     if FrontGap in [gtNone,gtSpace] then begin
       BeautifyFlags:=BeautifyFlags+[bcfDoNotIndentFirstLine];
@@ -5502,6 +5511,17 @@ var
               begin
                 if not EndBlockIsOk then exit;
                 BeginBlock(Stack,btCaseElse,CurPos.StartPos);
+              end;
+            btBegin:
+              begin
+                // missing end
+                if InCursorBlock then begin
+                  {$IFDEF ShowCompleteBlock}
+                  DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing end. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
+                  {$ENDIF}
+                  NeedCompletion:=true;
+                end;
+                break;
               end;
             btCaseColon,btRepeat:
               begin

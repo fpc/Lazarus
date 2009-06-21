@@ -26,6 +26,7 @@ implementation
 {$IFDEF repeatifelse} {$I repeatifelse1.inc} {$ENDIF}
 
 {$IFDEF ifbegin} {$I ifbegin1.inc} {$ENDIF}
+{$IFDEF ifbeginelse} {$I ifbeginelse1.inc} {$ENDIF}
 {$IFDEF beginwithoutindent} {$I beginwithoutindent1.inc} {$ENDIF}
 
 end.
