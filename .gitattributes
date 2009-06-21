@@ -166,6 +166,7 @@ components/codetools/examples/testscompleteblock/casecolon1.inc svneol=native#te
 components/codetools/examples/testscompleteblock/caseelseend1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/caseend1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/ifbegin1.inc svneol=native#text/plain
+components/codetools/examples/testscompleteblock/ifbeginelse1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/procedurebegin1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/procedurebeginend1.inc svneol=native#text/plain
 components/codetools/examples/testscompleteblock/procedurebeginifbegin1.inc svneol=native#text/plain
