@@ -5,7 +5,7 @@ unit SynEditMarks;
 interface
 
 uses
-  Classes, SysUtils, SynEditMiscClasses;
+  Classes, SysUtils, math, SynEditMiscClasses, SynEditTextBase;
 
 const
 // Max number of book/gutter marks returned from GetEditMarksForLine - that
@@ -55,12 +55,15 @@ type
   TSynEditMarkList = class(TList)
   protected
     FEdit: TSynEditBase;
+    FLines: TSynEditStrings;
     fOnChange: TNotifyEvent;
     procedure DoChange;
     function Get(Index: Integer): TSynEditMark;
     procedure Put(Index: Integer; Item: TSynEditMark);
+    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+                            aLineBrkCnt: Integer; aText: String);
   public
-    constructor Create(AOwner: TSynEditBase);
+    constructor Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
     destructor Destroy; override;
     function Add(Item: TSynEditMark): Integer;
     procedure ClearLine(line: integer);
@@ -240,16 +243,19 @@ begin
     if not Items[i].IsBookmark and (Items[i].Line = Line) then Delete(i);
 end;
 
-constructor TSynEditMarkList.Create(AOwner: TSynEditBase);
+constructor TSynEditMarkList.Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
 begin
   inherited Create;
   FEdit := AOwner;
+  FLines := ALines;
+  FLines.AddEditHandler(@DoLinesEdited);
 end;
 
 destructor TSynEditMarkList.Destroy;
 var
   i: integer;
 begin
+  FLines.RemoveEditHandler(@DoLinesEdited);
   for i := 0 to Pred(Count) do
     Get(i).Free;
   inherited Destroy;
@@ -328,6 +334,52 @@ procedure TSynEditMarkList.Put(Index: Integer; Item: TSynEditMark);
 begin
   inherited Put(Index, Item);
   DoChange;
+end;
+
+procedure TSynEditMarkList.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+  aLineBrkCnt: Integer; aText: String);
+var
+  i, Col: Integer;
+begin
+  if Count = 0 then exit;
+  Col := FLines.LogicalToPhysicalPos(Point(aBytePos, aLinePos)).x;
+  if aLineBrkCnt > 0 then
+  begin
+    for i := 0 to Count - 1 do
+      if (Items[i].Line > aLinePos) then
+        Items[i].Line := Items[i].Line + aLineBrkCnt
+      else
+      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then begin
+        Items[i].Line := Items[i].Line + aLineBrkCnt;
+        Items[i].Column := Items[i].Column - Col + 1;
+      end;
+  end
+  else
+  if aLineBrkCnt < 0 then
+  begin
+    for i := 0 to Count - 1 do
+      if (Items[i].Line > aLinePos - aLineBrkCnt) then
+        Items[i].Line := Items[i].Line + aLineBrkCnt
+      else
+      if (Items[i].Line > aLinePos) then begin
+        Items[i].Line := aLinePos;
+        Items[i].Column := Items[i].Column + Col - 1;
+      end;
+  end
+  else
+  if aCount > 0 then
+  begin
+    for i := 0 to Count - 1 do
+      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then
+        Items[i].Column := Items[i].Column + aCount;
+  end
+  else
+  if aCount < 0 then
+  begin
+    for i := 0 to Count - 1 do
+      if (Items[i].Line = aLinePos) and (Items[i].Column > col) then
+        Items[i].Column := Max(Col, Items[i].Column + aCount);
+  end;
 end;
 
 function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;

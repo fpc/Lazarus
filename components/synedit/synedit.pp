@@ -452,8 +452,6 @@ type
     procedure DoBlockUnindent;
     procedure DoHomeKey(Selection: boolean);
     procedure DoEndKey(Selection: boolean);
-    procedure DoLinesDeleted(FirstLine, Count: integer);
-    procedure DoLinesInserted(FirstLine, Count: integer);
     procedure DoTabKey;
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
     function GetBlockBegin: TPoint;
@@ -1618,7 +1616,7 @@ begin
   FMouseSelActions := TSynEditMouseSelActions.Create(Self);
   FMouseActions.ResetDefaults;
   FMouseSelActions.ResetDefaults;
-  fMarkList := TSynEditMarkList.Create(self);
+  fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
   fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
   fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
@@ -4413,10 +4411,6 @@ begin
   end
   else
     ScanFrom(AIndex, Max(AIndex, AIndex + ACount));
-  if ACount > 0 then
-    DoLinesInserted(AIndex + 1, ACount)
-  else
-    DoLinesDeleted(AIndex, -ACount);
   InvalidateLines(AIndex + 1, -1);
   InvalidateGutterLines(AIndex + 1, -1);
 end;
@@ -5945,8 +5939,6 @@ begin
             SetSelTextExternal('');
           end;
           Temp := LineText;
-// This is sloppy, but the Right Thing would be to track the column of markers
-// too, so they could be moved depending on whether they are after the caret...
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           Len := Length(Temp);
           if LogCaretXY.X > Len + 1 then
@@ -8672,30 +8664,6 @@ end;
 function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;
 begin
   Result := fTextOffset + Pred(Col) * fCharWidth;
-end;
-
-procedure TCustomSynEdit.DoLinesDeleted(FirstLine, Count: integer);
-var
-  i: integer;
-begin
-  // gutter marks
-  for i := 0 to Marks.Count - 1 do begin
-    if Marks[i].Line >= FirstLine + Count then
-      Marks[i].Line := Marks[i].Line - Count
-    else if Marks[i].Line > FirstLine then
-      Marks[i].Line := FirstLine;
-  end;
-end;
-
-procedure TCustomSynEdit.DoLinesInserted(FirstLine, Count: integer);
-var
-  i: integer;
-begin
-  // gutter marks
-  for i := 0 to Marks.Count - 1 do begin
-    if Marks[i].Line >= FirstLine then
-      Marks[i].Line := Marks[i].Line + Count;
-  end;
 end;
 
 {$IFDEF SYN_LAZARUS}
