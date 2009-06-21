@@ -1169,19 +1169,31 @@ var
   // This piece of code is taken from ThemeMgr.pas of Mike Lischke
   // Beginning with Windows 2000 the UI in an application may hide focus rectangles and accelerator key indication.
   // We have to take care to show them if the user starts navigating using the keyboard.
+
+    function FindParentForm: TCustomForm; inline;
+    begin
+      if lWinControl <> nil then
+        Result := GetParentForm(lWinControl)
+      else
+      if Application <> nil then
+        Result := Application.MainForm
+      else
+        Result := nil;
+    end;
+
   var
     ParentForm: TCustomForm;
   begin
     case CharCode of
       VK_LEFT..VK_DOWN, VK_TAB:
         begin
-          ParentForm := GetParentForm(lWinControl);
+          ParentForm := FindParentForm;
           if ParentForm <> nil then
             SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
         end;
       VK_MENU:
         begin
-          ParentForm := GetParentForm(lWinControl);
+          ParentForm := FindParentForm;
           if ParentForm <> nil then
             SendMessage(ParentForm.Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEACCEL), 0);
         end;

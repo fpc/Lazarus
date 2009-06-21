@@ -1658,7 +1658,7 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-function GetParentForm(Control:TControl): TCustomForm;
+function GetParentForm(Control: TControl): TCustomForm;
 begin
   while Control.Parent <> nil do
     Control := Control.Parent;
