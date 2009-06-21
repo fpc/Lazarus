@@ -2232,6 +2232,11 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         vaDate: Result:='vaDate';
         vaWString: Result:='vaWString';
         vaInt64: Result:='vaInt64';
+        vaUTF8String: Result:='vaUTF8String';
+        {$IFNDEF VER2_2}
+        vaUString: Result:='vaUString';
+        vaQWord : Result:='vaQWord';
+        {$ENDIF}
         else Result:='Unknown ValueType='+dbgs(Ord(ValueType));
         end;
       end;
@@ -2383,7 +2388,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             ACurrency:=ReadLRSCurrency(Input);
             OutLn(FloatToStr(ACurrency));
           end;
-        vaWString: begin
+        vaWString{$IFNDEF VER2_2},vaUString{$ENDIF}: begin
             AWideString:=ReadLRSWideString(Input);
             OutWideString(AWideString);
             OutLn('');
@@ -4058,7 +4063,7 @@ begin
       SkipBytes(10);
     vaString, vaIdent:
       ReadStr;
-    vaBinary, vaLString, vaWString:
+    vaBinary, vaLString, vaWString{$IFNDEF VER2_2}, vaUString{$ENDIF}:
       begin
         Count:=ReadIntegerContent;
         SkipBytes(Count);
