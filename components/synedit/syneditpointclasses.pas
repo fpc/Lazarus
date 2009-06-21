@@ -870,6 +870,8 @@ begin
     BE := LastLineBytePos;
     if SelAvail then begin
       DeleteSelection;
+      if FActiveSelectionMode = smLine then
+        BB.X := 1;
       StartLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
