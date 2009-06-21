@@ -81,13 +81,13 @@ type
     FCurrentEditor: TSynEditBase; // For callback / applyIndent
     FCurrentLines: TSynEditStrings;
   protected
-    procedure Assign(Src: TPersistent); override;
     procedure DoBeforeCommand(const ACaret: TSynEditCaret;
                               var Command: TSynEditorCommand); virtual; abstract;
     procedure DoAfterCommand(const ACaret: TSynEditCaret;
                              var Command: TSynEditorCommand;
                              StartLinePos, EndLinePos: Integer); virtual; abstract;
   public
+    procedure Assign(Src: TPersistent); override;
     procedure BeforeCommand(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                             const ACaret: TSynEditCaret; var Command: TSynEditorCommand;
                             InitialCmd: TSynEditorCommand);
@@ -115,7 +115,6 @@ type
   private
     FIndentType: TSynBeautifierIndentType;
   protected
-    procedure Assign(Src: TPersistent); override;
     // requiring FCurrentEditor, FCurrentLines
     procedure DoBeforeCommand(const ACaret: TSynEditCaret;
                               var Command: TSynEditorCommand); override;
@@ -132,6 +131,7 @@ type
                           KeepOldIndent: Boolean = False);
     function UnIndentLine(const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean;
   public
+    procedure Assign(Src: TPersistent); override;
     function GetCurrentIndent(Editor: TSynEditBase; const Line: string;
                         Physical: boolean): Integer;
     function GetDesiredIndentForLine
