@@ -33,7 +33,11 @@ type
 
   TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
                                         Index, Count: Integer) of object;
-  TSynEditNotifyReason = (senrLineCount, senrLineChange);
+  TSynEditNotifyReason = (senrLineCount, senrLineChange, senrEditAction);
+
+  TStringListLineEditEvent = procedure(Sender: TSynEditStrings;
+                                       LinePos, BytePos, Count, LineBrkCnt: Integer;
+                                       Text: String) of object;
 
   TPhysicalCharWidths = Array of Shortint;
 
@@ -86,7 +90,11 @@ type
     function GetUndoList: TSynEditUndoList; virtual; abstract;
     procedure SetIsUndoing(const AValue: Boolean); virtual; abstract;
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer); virtual; abstract;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0;
+                aTxt: String = ''); virtual; abstract;
+    procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
+                                     ReEnable: Boolean); virtual; abstract;
   public
     constructor Create;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
@@ -100,6 +108,8 @@ type
                 AHandler: TStringListLineCountEvent); virtual; abstract;
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); virtual; abstract;
+    procedure AddEditHandler(AHandler: TStringListLineEditEvent); virtual; abstract;
+    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); virtual; abstract;
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
@@ -149,7 +159,11 @@ type
     function GetLengthOfLongestLine: integer; override;
 
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0;
+                aTxt: String = ''); override;
+    procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
+                                     IncIgnore: Boolean); override;
     function GetRedoList: TSynEditUndoList; override;
     function GetUndoList: TSynEditUndoList; override;
     procedure SetIsUndoing(const AValue: Boolean); override;
@@ -183,6 +197,8 @@ type
                 AHandler: TStringListLineCountEvent); override;
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); override;
+    procedure AddEditHandler(AHandler: TStringListLineEditEvent); override;
+    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
   public
@@ -531,6 +547,16 @@ begin
   fSynStrings.RemoveChangeHandler(AReason, AHandler);
 end;
 
+procedure TSynEditStringsLinked.AddEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  fSynStrings.AddEditHandler(AHandler);
+end;
+
+procedure TSynEditStringsLinked.RemoveEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  fSynStrings.RemoveEditHandler(AHandler);
+end;
+
 // Count
 function TSynEditStringsLinked.GetCount: integer;
 begin
@@ -622,9 +648,16 @@ begin
 end;
 
 procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
-  ASender: TSynEditStrings; aIndex, aCount: Integer);
+  ASender: TSynEditStrings; aIndex, aCount: Integer;
+  aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = '');
 begin
-  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount);
+  fSynStrings.SendNotification(AReason, ASender, aIndex, aCount, aBytePos, aLen, aTxt);
+end;
+
+procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;
+  IncIgnore: Boolean);
+begin
+  fSynStrings.IgnoreSendNotification(AReason, IncIgnore);
 end;
 
 { TSynEditUndoList }

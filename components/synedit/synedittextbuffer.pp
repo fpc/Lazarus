@@ -74,6 +74,14 @@ type
     Procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
   end;
 
+  { TLineEditNotificationList }
+
+  TLineEditNotificationList = Class(TMethodList)
+  public
+    Procedure CallRangeNotifyEvents(Sender: TSynEditStrings;
+                                    aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
+  end;
+
   { TSynEditStringMemory }
 
   TSynEditStringMemory = class(TSynEditStorageMem)
@@ -114,6 +122,8 @@ type
     FAttributeList: Array of TSynEditStringAttribute;
     FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
     FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
+    FLineEditNotificationList: TLineEditNotificationList;
+    FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
     fOnChange: TNotifyEvent;
@@ -139,7 +149,10 @@ type
     function GetUndoList: TSynEditUndoList; override;
     procedure SetIsUndoing(const AValue: Boolean); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer); override;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
+    procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
+                                     IncIgnore: Boolean); override;
 
     function GetRange: TSynEditStorageMem; override;
     procedure PutRange(ARange: TSynEditStorageMem); override;
@@ -183,7 +196,9 @@ type
                 AHandler: TStringListLineCountEvent); override;
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
                 AHandler: TStringListLineCountEvent); override;
-    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+    procedure AddEditHandler(AHandler: TStringListLineEditEvent); override;
+    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); override;
+   function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -386,10 +401,15 @@ begin
 end;
 
 constructor TSynEditStringList.Create;
+var
+  r: TSynEditNotifyReason;
 begin
   fList := TSynEditStringMemory.Create;
   FLineRangeNotificationList := TLineRangeNotificationList.Create;
   FLineChangeNotificationList := TLineRangeNotificationList.Create;
+  FLineEditNotificationList := TLineEditNotificationList.Create;
+  for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FIgnoreSendNotification[r] := 0;
   inherited Create;
   SetAttributeSize(0);
   RegisterAttribute(TSynEditFlagsClass, SizeOf(TSynEditStringFlag));
@@ -409,6 +429,7 @@ begin
   SetCapacity(0);
   FreeAndNil(FLineRangeNotificationList);
   FreeAndNil(FLineChangeNotificationList);
+  FreeAndNil(FLineEditNotificationList);
   FreeAndNil(fList);
 end;
 
@@ -712,7 +733,7 @@ begin
     BeginUpdate;
     fIndexOfLongestLine := -1;
     FList[Index] := S;
-    FLineChangeNotificationList.CallRangeNotifyEvents(self, Index, 1);
+    SendNotification(senrLineChange, self, Index, 1);
     EndUpdate;
   end;
 end;
@@ -854,6 +875,16 @@ begin
   end;
 end;
 
+procedure TSynEditStringList.AddEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  FLineEditNotificationList.Add(TMethod(AHandler));
+end;
+
+procedure TSynEditStringList.RemoveEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  FLineEditNotificationList.Remove(TMethod(AHandler));
+end;
+
 {$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
@@ -882,6 +913,7 @@ begin
   Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s));
   UndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
   MarkModified(LogY, LogY);
+  SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
 end;
 
 function TSynEditStringList.EditDelete(LogX, LogY, ByteLen: Integer): String;
@@ -893,6 +925,7 @@ begin
   Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
   UndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
   MarkModified(LogY, LogY);
+  SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
 end;
 
 procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
@@ -904,6 +937,7 @@ begin
   Insert(LogY, copy(s, LogX, length(s)));
   UndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
   MarkModified(LogY, LogY + 1);
+  SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
 end;
 
 procedure TSynEditStringList.EditLineJoin(LogY: Integer; FillText: String = '');
@@ -915,9 +949,11 @@ begin
     EditInsert(1 + Length(t), LogY, FillText);
   UndoList.AddChange(TSynEditUndoTxtLineJoin.Create(1 + Length(Strings[LogY-1]),
                                                     LogY));
-  Strings[LogY - 1] := t + FillText + Strings[LogY] ;
+  t := t + FillText;
+  Strings[LogY - 1] := t + Strings[LogY] ;
   Delete(LogY);
   MarkModified(LogY, LogY);
+  SendNotification(senrEditAction, self, LogY, -1, 1+length(t), 0, '');
 end;
 
 procedure TSynEditStringList.EditLinesInsert(LogY, ACount: Integer;
@@ -925,6 +961,7 @@ procedure TSynEditStringList.EditLinesInsert(LogY, ACount: Integer;
 begin
   InsertLines(LogY - 1, ACount);
   UndoList.AddChange(TSynEditUndoTxtLinesIns.Create(LogY, ACount));
+  SendNotification(senrEditAction, self, LogY, ACount, 1, 0, '');
   if AText <> '' then
     EditInsert(1, LogY, AText);
   MarkModified(LogY, LogY + ACount - 1);
@@ -938,6 +975,7 @@ begin
     EditDelete(1, i, length(Strings[i-1]));
   DeleteLines(LogY - 1, ACount);
   UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
 
 procedure TSynEditStringList.EditUndo(Item: TSynEditUndoItem);
@@ -954,6 +992,7 @@ procedure TSynEditStringList.UndoEditLinesDelete(LogY, ACount: Integer);
 begin
   UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
   DeleteLines(LogY - 1, ACount);
+  SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
 
 procedure TSynEditStringList.EditRedo(Item: TSynEditUndoItem);
@@ -961,14 +1000,30 @@ begin
   Item.PerformUndo(self);
 end;
 
-procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason; ASender: TSynEditStrings; aIndex, aCount: Integer);
+procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TSynEditStrings; aIndex, aCount: Integer;
+  aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = '');
 begin
+  if FIgnoreSendNotification[AReason] > 0 then exit;
   case AReason of
     senrLineChange:
       FLineChangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
     senrLineCount:
       FLineRangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
+    senrEditAction:
+        FLineEditNotificationList.CallRangeNotifyEvents(ASender, aIndex, // aindex is mis-named (linepos) for edit action
+                                                  aBytePos, aLen, aCount, aTxt);
   end;
+end;
+
+procedure TSynEditStringList.IgnoreSendNotification(AReason: TSynEditNotifyReason;
+  IncIgnore: Boolean);
+begin
+  if IncIgnore then
+    inc(FIgnoreSendNotification[AReason])
+  else
+  if FIgnoreSendNotification[AReason] > 0 then
+    dec(FIgnoreSendNotification[AReason])
 end;
 
 { TSynEditStringMemory }
@@ -1098,6 +1153,19 @@ begin
   i:=Count;
   while NextDownIndex(i) do
     TStringListLineCountEvent(Items[i])(Sender, aIndex, aCount);
+end;
+
+{ TLineEditNotificationList }
+
+procedure TLineEditNotificationList.CallRangeNotifyEvents(Sender: TSynEditStrings;
+  aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TStringListLineEditEvent(Items[i])(Sender, aLinePos, aBytePos, aCount,
+                             aLineBrkCnt, aText);
 end;
 
 end.
