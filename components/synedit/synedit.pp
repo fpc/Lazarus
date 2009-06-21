@@ -277,19 +277,18 @@ type
   TSynLineState = (slsNone, slsSaved, slsUnsaved);
 
 
-  TSynEditPlugin = class(TObject)
+  { TSynEditPlugin }
+
+  TSynEditPlugin = class(TSynEditFriend)
   private
-    fOwner: TCustomSynEdit;
+    procedure SetSynedit(const AValue: TCustomSynEdit);
+    function GetSynEdit: TCustomSynEdit;
   protected
-    procedure AfterPaint(ACanvas: TCanvas; AClip: TRect;
-      FirstLine, LastLine: integer); virtual; abstract;
-    procedure LinesInserted(FirstLine, Count: integer); virtual; abstract;
-    procedure LinesDeleted(FirstLine, Count: integer); virtual; abstract;
-  protected
-    property Editor: TCustomSynEdit read fOwner;                                //mh 2000-11-10
+    function OwnedByEditor: Boolean; virtual; // if true, this will be destroyed by synedit
   public
-    constructor Create(AOwner: TCustomSynEdit);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Editor: TCustomSynEdit read GetSynEdit write SetSynedit;
   end;
 
   TSynMouseLinkEvent = procedure (
@@ -511,8 +510,6 @@ type
     {$ENDIF}
     procedure MoveCaretHorz(DX: integer; SelectionCommand: boolean);
     procedure MoveCaretVert(DY: integer; SelectionCommand: boolean);
-    procedure PluginsAfterPaint(ACanvas: TCanvas; AClip: TRect;
-      FirstLine, LastLine: integer);
     {$IFDEF SYN_LAZARUS}
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
@@ -1753,7 +1750,8 @@ begin
   end;
   if fPlugins <> nil then begin
     for i := fPlugins.Count - 1 downto 0 do
-      TSynEditPlugin(fPlugins[i]).Free;
+      if TSynEditPlugin(fPlugins[i]).OwnedByEditor then
+        TSynEditPlugin(fPlugins[i]).Free;
     fPlugins.Free;
   end;
   {$IFNDEF SYN_LAZARUS}
@@ -2784,7 +2782,6 @@ begin
       rcDraw.Left := Max(rcDraw.Left, fGutterWidth);
       PaintTextLines(rcDraw, nL1, nL2, nC1, nC2);
     end;
-    PluginsAfterPaint(Canvas, rcDraw, nL1, nL2);
     // If there is a custom paint handler call it.
     DoOnPaint;
   finally
@@ -5572,7 +5569,6 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   Data: pointer);
 var
   InitialCmd: TSynEditorCommand;
-  CaretBefore: TPoint;
 begin
   {$IFDEF VerboseKeys}
   DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
@@ -5586,7 +5582,6 @@ begin
       BeginUndoBlock;
       FBeautifyStartLineIdx := -1;
       FBeautifyEndLineIdx := -1;
-      CaretBefore := FCaret.LineCharPos;
       if assigned(FBeautifier) then begin
         FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
         FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
@@ -5610,8 +5605,6 @@ begin
         FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
                                  FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
       end;
-      if not FCaret.IsAtLineChar(CaretBefore) then
-        EnsureCursorPosVisible;
     finally
       EndUndoBlock;
     end;
@@ -8692,11 +8685,6 @@ begin
     else if Marks[i].Line > FirstLine then
       Marks[i].Line := FirstLine;
   end;
-  // plugins
-  if fPlugins <> nil then begin
-    for i := 0 to fPlugins.Count - 1 do
-      TSynEditPlugin(fPlugins[i]).LinesDeleted(FirstLine, Count);
-  end;
 end;
 
 procedure TCustomSynEdit.DoLinesInserted(FirstLine, Count: integer);
@@ -8708,23 +8696,6 @@ begin
     if Marks[i].Line >= FirstLine then
       Marks[i].Line := Marks[i].Line + Count;
   end;
-  // plugins
-  if fPlugins <> nil then begin
-    for i := 0 to fPlugins.Count - 1 do
-      TSynEditPlugin(fPlugins[i]).LinesInserted(FirstLine, Count);
-  end;
-end;
-
-procedure TCustomSynEdit.PluginsAfterPaint(ACanvas: TCanvas; AClip: TRect;
-  FirstLine, LastLine: integer);
-var
-  i: integer;
-begin
-  if fPlugins <> nil then
-    for i := 0 to fPlugins.Count - 1 do begin
-      TSynEditPlugin(fPlugins[i]).AfterPaint(ACanvas, AClip, FirstLine,
-        LastLine);
-    end;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -8775,22 +8746,43 @@ end;
 
 { TSynEditPlugin }
 
-constructor TSynEditPlugin.Create(AOwner: TCustomSynEdit);
+constructor TSynEditPlugin.Create(AOwner: TComponent);
 begin
-  inherited Create;
-  if AOwner <> nil then begin
-    fOwner := AOwner;
-    if fOwner.fPlugins = nil then
-      fOwner.fPlugins := TList.Create;
-    fOwner.fPlugins.Add(Self);
-  end;
+  if AOwner is TCustomSynEdit then begin
+    inherited Create(nil);
+    Editor := TCustomSynEdit(AOwner);
+  end
+  else
+    inherited Create(AOwner);
 end;
 
 destructor TSynEditPlugin.Destroy;
 begin
-  if fOwner <> nil then
-    fOwner.fPlugins.Remove(Self);
+  Editor := nil;
   inherited Destroy;
+end;
+
+procedure TSynEditPlugin.SetSynedit(const AValue: TCustomSynEdit);
+begin
+  if AValue = FriendEdit then exit;
+  if (FriendEdit <> nil) and (Editor.fPlugins <> nil) then
+    Editor.fPlugins.Remove(FriendEdit);
+  FriendEdit := AValue;
+  if FriendEdit <> nil then begin
+    if Editor.fPlugins = nil then
+      Editor.fPlugins := TList.Create;
+    Editor.fPlugins.Add(Self);
+  end;
+end;
+
+function TSynEditPlugin.GetSynEdit: TCustomSynEdit;
+begin
+  Result := FriendEdit as TSynEdit;
+end;
+
+function TSynEditPlugin.OwnedByEditor: Boolean;
+begin
+  Result := False;
 end;
 
 procedure Register;

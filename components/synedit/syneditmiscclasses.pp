@@ -63,11 +63,26 @@ type
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
+
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // No uncommited (trailing/trimmable) spaces
   public
     property Lines: TStrings read GetLines write SetLines;
   end;
+
+  { TSynEditPluginBase }
+
+  { TSynEditFriend }
+
+  TSynEditFriend = class(TComponent)
+  private
+    FFriendEdit: TSynEditBase;
+    function GetViewedTextBuffer: TSynEditStrings;
+  protected
+    property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
+    property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+  end;
+
 
   TSynObjectListItem = class;
 
@@ -317,6 +332,13 @@ const
 
 
 implementation
+
+{ TSynEditFriend }
+
+function TSynEditFriend.GetViewedTextBuffer: TSynEditStrings;
+begin
+  Result := FFriendEdit.ViewedTextBuffer;
+end;
 
 { TSynSelectedColor }
 

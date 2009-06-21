@@ -51,6 +51,7 @@ uses
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
   SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks, SynBeautifier,
+  SynEditTextBase,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -80,22 +81,23 @@ type
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
 
+  { TSynEditPlugin1 }
+
   TSynEditPlugin1 = class(TSynEditPlugin)
   private
     FOnLinesInserted : TOnLinesInsertedDeleted;
     FOnLinesDeleted : TOnLinesInsertedDeleted;
   protected
-    procedure AfterPaint(ACanvas: TCanvas; AClip: TRect;
-      FirstLine, LastLine: integer); override;
-    procedure LinesInserted(FirstLine, Count: integer); override;
-    procedure LinesDeleted(FirstLine, Count: integer); override;
+    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    function OwnedByEditor: Boolean; override;
   public
     property OnLinesInserted : TOnLinesInsertedDeleted
       read FOnLinesinserted write FOnLinesInserted;
     property OnLinesDeleted : TOnLinesInsertedDeleted
       read FOnLinesDeleted write FOnLinesDeleted;
 
-    constructor Create(AOwner: TCustomSynEdit);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 
@@ -7015,27 +7017,32 @@ end;
 
 { TSynEditPlugin1 }
 
-constructor TSynEditPlugin1.Create(AOwner: TCustomSynEdit);
+constructor TSynEditPlugin1.Create(AOwner: TComponent);
 Begin
   inherited Create(AOwner);
+  ViewedTextBuffer.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
 end;
 
-procedure TSynEditPlugin1.AfterPaint(ACanvas: TCanvas; AClip: TRect; FirstLine,
-  LastLine: integer);
+destructor TSynEditPlugin1.Destroy;
 begin
-  //don't do anything
+  ViewedTextBuffer.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  inherited Destroy;
 end;
 
-procedure TSynEditPlugin1.LinesDeleted(FirstLine, Count: integer);
+procedure TSynEditPlugin1.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
-  if Assigned(OnLinesDeleted) then
-    OnLinesDeleted(self,Firstline,Count);
+  if ACount < 0 then begin
+    if Assigned(OnLinesDeleted) then
+      OnLinesDeleted(self, AIndex+1, -ACount);
+  end else begin
+    if Assigned(OnLinesInserted) then
+      OnLinesInserted(self, AIndex+1, ACount);
+  end;
 end;
 
-procedure TSynEditPlugin1.LinesInserted(FirstLine, Count: integer);
+function TSynEditPlugin1.OwnedByEditor: Boolean;
 begin
-  if Assigned(OnLinesInserted) then
-    OnLinesInserted(self,Firstline,Count);
+  Result := True;
 end;
 
 //-----------------------------------------------------------------------------
