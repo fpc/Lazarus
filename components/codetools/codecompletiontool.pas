@@ -4592,8 +4592,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   
   procedure ReadOptionalSpecifiers;
   begin
-    while (CurPos.StartPos<PropNode.EndPos)
-    and (not (CurPos.Flag in [cafSemicolon,cafEnd])) do begin
+    while (CurPos.StartPos<PropNode.EndPos) do begin
+      if (CurPos.Flag in [cafSemicolon,cafEnd]) then break;
       if UpAtomIs('STORED') then begin
         ReadSimpleSpec(ppStoredWord,ppStored);
       end else if UpAtomIs('DEFAULT') then begin
@@ -4626,8 +4626,6 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       end else
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
-    if (CurPos.StartPos>PropNode.EndPos) then
-      RaiseException('Reparsing error (Complete Property)');
   end;
   
   procedure CompleteReadSpecifier;
@@ -4960,6 +4958,15 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     end;
   end;
 
+  procedure CompleteSemicolon;
+  begin
+    if (PropNode.EndPos<=SrcLen) and (Src[PropNode.EndPos-1]<>';') then begin
+      InsertPos:=PropNode.EndPos;
+      if CompleteProperties then
+        ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,';');
+    end;
+  end;
+
 begin
   Result:=false;
   InitCompleteProperty;
@@ -4995,6 +5002,7 @@ begin
   CompleteReadSpecifier;
   CompleteWriteSpecifier;
   CompleteStoredSpecifier;
+  CompleteSemicolon;
   
   Result:=true;
 end;

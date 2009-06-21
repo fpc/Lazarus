@@ -201,6 +201,7 @@ type
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
+    function WordIsPropertyEnd: boolean;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -1950,8 +1951,6 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
     SaveRaiseExceptionFmt(ctsSemicolonAfterPropSpecMissing,[s,GetAtom]);
   end;
 
-var
-  p: PChar;
 begin
   if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
     RaiseIdentExpectedButAtomFound;
@@ -1971,25 +1970,7 @@ begin
     case CurPos.Flag of
     cafSemicolon: break;
     cafEnd:       break;
-    cafWord:
-      begin
-        p:=@Src[CurPos.StartPos];
-        case UpChars[p^] of
-        'C': if UpAtomIs('CLASS') then break;
-        'F': if UpAtomIs('FUNCTION') then break;
-        'P':
-          case UpChars[p[1]] of
-          'R':
-            case UpChars[p[2]] of
-            'I': if UpAtomIs('PRIVATE') then break;
-            'O': if UpAtomIs('PROTECTED') or UpAtomIs('PROCEDURE') then break;
-            end;
-          'U': if UpAtomIs('PUBLIC') or UpAtomIs('PUBLISHED') then break;
-          end;
-        'T': if UpAtomIs('TYPE') then break;
-        'V': if UpAtomIs('VAR') then break;
-        end;
-      end;
+    cafWord:  if WordIsPropertyEnd then break;
     end;
     ReadNextAtom;
   end;
@@ -4324,6 +4305,29 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
+end;
+
+function TPascalParserTool.WordIsPropertyEnd: boolean;
+var
+  p: PChar;
+begin
+  p:=@Src[CurPos.StartPos];
+  case UpChars[p^] of
+  'C': if UpAtomIs('CLASS') then exit(true);
+  'F': if UpAtomIs('FUNCTION') then exit(true);
+  'P':
+    case UpChars[p[1]] of
+    'R':
+      case UpChars[p[2]] of
+      'I': if UpAtomIs('PRIVATE') then exit(true);
+      'O': if UpAtomIs('PROTECTED') or UpAtomIs('PROCEDURE') then exit(true);
+      end;
+    'U': if UpAtomIs('PUBLIC') or UpAtomIs('PUBLISHED') then exit(true);
+    end;
+  'T': if UpAtomIs('TYPE') then exit(true);
+  'V': if UpAtomIs('VAR') then exit(true);
+  end;
+  Result:=false;
 end;
 
 procedure TPascalParserTool.ValidateToolDependencies;
