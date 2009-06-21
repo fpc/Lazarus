@@ -274,7 +274,7 @@ type
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge: boolean);
+                                Merge, IgnoreIsPartOfProject: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession: boolean;
                               UsePathDelim: TPathDelimSwitch);
@@ -1189,13 +1189,15 @@ begin
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
+  if SaveData then
+    XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+
   // context data (project/session)
   if (IsPartOfProject and SaveData)
   or ((not IsPartOfProject) and SaveSession)
   then begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
-    XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
@@ -1231,7 +1233,7 @@ end;
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  Merge: boolean);
+  Merge, IgnoreIsPartOfProject: boolean);
 var AFilename: string;
 begin
   // project data
@@ -1248,7 +1250,8 @@ begin
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
-    IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
+    if not IgnoreIsPartOfProject then
+      IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
@@ -2381,7 +2384,7 @@ var
         MergeUnitInfo:=false;
       end;
 
-      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo);
+      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo,Merge);
       if i=NewMainUnitID then begin
         MainUnitID:=IndexOf(NewUnitInfo);
         NewMainUnitID:=-1;
