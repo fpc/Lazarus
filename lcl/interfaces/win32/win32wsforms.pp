@@ -424,11 +424,19 @@ class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 var
   Style: DWord;
+  Visible, Active: Boolean;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
     Exit;
   if (Application <> nil) and (AForm = Application.MainForm) then
     Exit;
+
+  // to apply this changes we need either to hide window or recreate it. Hide is
+  // less difficult
+  Visible := IsWindowVisible(AForm.Handle);
+  Active := GetForegroundWindow = AForm.Handle;
+  if Visible then
+    ShowWindow(AForm.Handle, SW_HIDE);
 
   Style := GetWindowLong(AForm.Handle, GWL_EXSTYLE);
   if AValue = stAlways then
@@ -436,6 +444,13 @@ begin
   else
     Style := Style and not WS_EX_APPWINDOW;
   SetWindowLong(AForm.Handle, GWL_EXSTYLE, Style);
+
+  // now we need to restore window visibility with saving focus
+  if Visible then
+    if Active then
+      ShowWindow(AForm.Handle, SW_SHOW)
+    else
+      ShowWindow(AForm.Handle, SW_SHOWNA);
 end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
