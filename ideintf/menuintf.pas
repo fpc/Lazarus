@@ -1172,9 +1172,11 @@ end;
 constructor TIDEMenuSection.Create(const TheName: string);
 begin
   inherited Create(TheName);
-  FSize:=0;
-  FChildsAsSubMenu:=true;
-  FItems:=TFPList.Create;
+  FSize := 0;
+  FChildsAsSubMenu := True;
+  FNeedTopSeparator := False;
+  FNeedBottomSeparator := False;
+  FItems := TFPList.Create;
 end;
 
 destructor TIDEMenuSection.Destroy;
@@ -1484,6 +1486,10 @@ begin
     {$IFDEF VerboseMenuIntf}
     debugln('TIDEMenuSection.SetChildsAsSubMenu Name="',Name,'"');
     {$ENDIF}
+    if AValue then
+      Section.UpdateSize(1)
+    else
+      Section.UpdateSize(-1);
     Section.UpdateMenuStructure;
   end;
 end;
