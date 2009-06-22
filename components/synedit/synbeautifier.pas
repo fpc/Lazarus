@@ -248,11 +248,18 @@ begin
     else
       y := ACaret.LinePos + 1;
 
-    Indent := GetIntend(y, b);
-    s := GetCharMix(y, Indent, '', b);
-    if (FIndentType = sbitPositionCaret) and (FCurrentLines[y] = '') then
-      s := '';
-    FCurrentLines.EditInsert(1, y, s);
+    if (Command = ecLineBreak) and
+       (FCurrentLines[y-2] = '') and (FCurrentLines[y-1] <> '')
+    then
+      Indent := 0
+    else
+      Indent := GetIntend(y, b);
+    if Indent > 0 then begin
+      s := GetCharMix(y, Indent, '', b);
+      if (FIndentType = sbitPositionCaret) and (FCurrentLines[y-1] = '') then
+        s := '';
+      FCurrentLines.EditInsert(1, y, s);
+    end;
 
     if (Command = ecLineBreak) then begin
       ACaret.IncForcePastEOL;
