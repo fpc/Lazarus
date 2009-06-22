@@ -64,7 +64,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LConvEncoding
   {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF};
 
 type
@@ -109,7 +109,7 @@ type
     constructor Create(const AFilename: String; Full:boolean=false);
     constructor Create(AStream: TStream; Full:boolean=false);
     destructor Destroy; override;
-    procedure ReadPOText(const s: string);
+    procedure ReadPOText(const Txt: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
                         Context, Flags, PreviousID: string);
     function Translate(const Identifier, OriginalValue: String): String;
@@ -517,7 +517,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TPOFile.ReadPOText(const s: string);
+procedure TPOFile.ReadPOText(const Txt: string);
 { Read a .po file. Structure:
 
 Example
@@ -556,6 +556,9 @@ var
   Flags: string;
   TextEnd: PChar;
   i, CollectedIndex: Integer;
+  OldLineStartPos: PtrUInt;
+  NewSrc: String;
+  s: String;
   
   procedure ResetVars;
   begin
@@ -630,7 +633,8 @@ var
   end;
 
 begin
-  if s='' then exit;
+  if Txt='' then exit;
+  s:=Txt;
   l:=length(s);
   p:=PChar(s);
   LineStart:=p;
@@ -663,8 +667,25 @@ begin
       end else if CompareMem(LineStart, sFlags, 3) then begin
         Flags := copy(LineStart, 4, LineLen-3);
       end else if (LineStart^='"') then begin
-        if CompareMem(LineStart,sCharSetIdentifier,35) then
-          FCharSet:=copy(LineStart, 35,LineLen-37);
+        if (MsgID='') and CompareMem(LineStart,sCharSetIdentifier,35) then
+        begin
+          FCharSet:=copy(LineStart,36,LineLen-38);
+          if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
+            // convert encoding to UTF-8
+            OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
+            NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
+                                    FCharSet,EncodingUTF8);
+            // replace text and update all pointers
+            s:=copy(s,1,OldLineStartPos-1)+NewSrc;
+            l:=length(s);
+            p:=PChar(s);
+            TextEnd:=p+l;
+            LineStart:=p+(OldLineStartPos-1);
+            LineEnd:=LineStart;
+            while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
+            LineLen:=LineEnd-LineStart;
+          end;
+        end;
         Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
       end else if CompareMem(LineStart, sPrevStr, 4) then begin
         Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
