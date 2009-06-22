@@ -242,7 +242,6 @@ begin
       Items.Assign(CompilerFileHistory);
       AddFilenameToList(Items,FindDefaultCompilerPath);
       AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
-      GetDefaultCompilerFilenames(Items);
       Items.EndUpdate;
     end;
 
