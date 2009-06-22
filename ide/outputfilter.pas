@@ -683,8 +683,17 @@ var i, j, FilenameEndPos: integer;
   
   { For example:
     linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
+
     Mac OS X linker example:
     ld: framework not found Cocoas
+
+    Multiline Mac OS X linker example:
+    Undefined symbols:
+      "_exterfunc", referenced from:
+          _PASCALMAIN in testld.o
+      "_exterfunc2", referenced from:
+          _PASCALMAIN in testld.o
+    ld: symbol(s) not found
   }
   function CheckForLinkingErrors(p: integer): boolean;
   var
@@ -703,9 +712,7 @@ var i, j, FilenameEndPos: integer;
       if CompStr('ld: ',s,p) then begin
         inc(p, 4);
         DarwinSymbs := CompStr('symbol(s) not found',s,p);
-        Result := DarwinSymbs or
-                  CompStr('framework not found',s,p) or
-                  CompStr('library not found',s,p);
+        Result  :=  DarwinSymbs  or   (Pos('not  found',  s)  >  0);
         if DarwinSymbs then begin
           if DarwinLinkerLine <> '' then DoAddFilteredLine(DarwinLinkerLine);
           DarwinLinkerMultiline:=false;
