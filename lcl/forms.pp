@@ -462,6 +462,7 @@ type
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
     procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
     procedure CMIconChanged(var Message: TLMessage); message CM_ICONCHANGED;
+    procedure CMRelease(var Message: TLMessage); message CM_RELEASE;
     procedure AddHandler(HandlerType: TFormHandlerType;
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;

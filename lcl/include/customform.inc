@@ -638,6 +638,11 @@ begin
   IconChanged(Self);
 end;
 
+procedure TCustomForm.CMRelease(var Message: TLMessage);
+begin
+  Free;
+end;
+
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
   const Handler: TMethod; AsLast: Boolean);
 begin
