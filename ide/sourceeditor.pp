@@ -962,13 +962,13 @@ begin
                                                'Move Page ...', lisMovePage);
     AParent:=SrcEditSubMenuMovePage;
       SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
-                                                        uemMoveEditorLeft);
+                                                        uemMovePageLeft);
       SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
-                                                        uemMoveEditorRight);
+                                                        uemMovePageRight);
       SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
-                                                        uemMoveEditorLeftmost);
+                                                        uemMovePageLeftmost);
       SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
-                                                        uemMoveEditorRightmost);
+                                                        uemMovePageRightmost);
 
     // register the sub menu Open File
     SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionPages,

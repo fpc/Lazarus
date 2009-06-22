@@ -1859,10 +1859,10 @@ resourcestring
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
   uemViewCallStack = 'View Call Stack';
-  uemMoveEditorLeft='Move Editor Left';
-  uemMoveEditorRight='Move Editor Right';
-  uemMoveEditorLeftmost='Move Editor Leftmost';
-  uemMoveEditorRightmost='Move Editor Rightmost';
+  uemMovePageLeft='Move page left';
+  uemMovePageRight='Move page right';
+  uemMovePageLeftmost='Move page leftmost';
+  uemMovePageRightmost='Move page rightmost';
   uemRefactor = 'Refactoring';
   uemCompleteCode = 'Complete Code';
   uemEncloseSelection = 'Enclose Selection';
