@@ -5944,14 +5944,10 @@ begin
           if LogCaretXY.X > Len + 1 then
             LogCaretXY.X := Len + 1;
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
-          if Command = ecLineBreak then begin
-            FCaret.IncForcePastEOL;
-            CaretXY := Point(1, CaretY + 1);
-            FCaret.DecForcePastEOL;
-          end
+          if Command = ecLineBreak then
+            CaretXY := Point(1, CaretY + 1)
           else
             CaretXY := CaretXY;
-          EnsureCursorPosVisible;                                               //JGF 2000-09-23
         end;
       ecTab:
         if not ReadOnly then
