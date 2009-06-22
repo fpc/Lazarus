@@ -4037,7 +4037,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl FindChildControl
+  TWinControl SelectNext
   
   Find next control (Tab control or Child control).
   Like VCL the CurControl parameter is ignored.
@@ -4066,11 +4066,12 @@ begin
   Result := nil;
   if FWinControls <> nil then
     for I := 0 to FWinControls.Count - 1 do
-      if CompareText(TWinControl(FWinControls[I]).Name, ControlName) = 0 then
-      begin
-        Result := TControl(FWinControls[I]);
-        Exit;
-      end;
+      if CompareText(TControl(FWinControls[I]).Name, ControlName) = 0 then
+        Exit(TControl(FWinControls[I]));
+  if FControls <> nil then
+    for I := 0 to FControls.Count - 1 do
+      if CompareText(TControl(FControls[I]).Name, ControlName) = 0 then
+        Exit(TControl(FControls[I]));
 end;
 
 procedure TWinControl.FlipChildren(AllLevels: Boolean);
