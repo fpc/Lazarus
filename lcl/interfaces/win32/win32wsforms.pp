@@ -313,7 +313,7 @@ begin
     if ((Application = nil) or (Application.MainForm <> lForm))  and
        ( not (csDesigning in lForm.ComponentState) and
         (lForm.ShowInTaskBar = stAlways)) then
-      Parent := 0;
+      FlagsEx := FlagsEx or WS_EX_APPWINDOW;
   end;
   SetStdBiDiModeParams(AWinControl, Params);
   // create window
@@ -422,13 +422,20 @@ end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
+var
+  Style: DWord;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
     Exit;
   if (Application <> nil) and (AForm = Application.MainForm) then
     Exit;
 
-  RecreateWnd(AForm);
+  Style := GetWindowLong(AForm.Handle, GWL_EXSTYLE);
+  if AValue = stAlways then
+    Style := Style or WS_EX_APPWINDOW
+  else
+    Style := Style and not WS_EX_APPWINDOW;
+  SetWindowLong(AForm.Handle, GWL_EXSTYLE, Style);
 end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
