@@ -712,7 +712,7 @@ var i, j, FilenameEndPos: integer;
       if CompStr('ld: ',s,p) then begin
         inc(p, 4);
         DarwinSymbs := CompStr('symbol(s) not found',s,p);
-        Result  :=  DarwinSymbs  or   (Pos('not found',  s)  >  0);
+        Result := DarwinSymbs or (Pos('not found', s) > 0);
         if DarwinSymbs then begin
           if DarwinLinkerLine <> '' then DoAddFilteredLine(DarwinLinkerLine);
           DarwinLinkerMultiline:=false;
