@@ -35,7 +35,7 @@ unit GraphMath;
 interface
 
 Uses
-  Classes, SysUtils, Math, LCLProc;
+  Types, Classes, SysUtils, Math, LCLProc;
 
 Type
   TFloatPoint = Record
@@ -62,8 +62,6 @@ procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : PPoint; var Count : Longint);
 
 function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
-
-function CenterPoint(Rect : TRect) : TPoint;
 
 procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
   EX, EY : Integer; var Angle1, Angle2 : Extended);
@@ -596,38 +594,6 @@ end;
 function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
 begin
   Result := (Bezier[0] + 3*Bezier[1] + 3*Bezier[2] + Bezier[3]) / 8;
-end;
-
-{------------------------------------------------------------------------------
-  Method:   CenterPoint
-  Params:   Rect
-  Returns:  TPoint
-
-  Use CenterPoint to get the Center-Point of any rectangle. It is primarily
-  for use with, and in, other routines such as Quadrant, and RadialPoint.
-
-------------------------------------------------------------------------------}
-function CenterPoint(Rect : TRect) : TPoint;
-var
-  Tmp :  Longint;
-begin
-  With Rect do begin
-
-    If Right < Left then begin
-      Tmp   := Right;
-      Right := Left;
-      Left  := Tmp;
-    end;
-
-    If Bottom < Top then begin
-      Tmp    := Bottom;
-      Bottom := Top;
-      Top    := Tmp;
-    end;
-
-    Result.X := Left + (Right - Left) div 2;
-    Result.Y := Top + (Bottom - Top) div 2;
-  end;
 end;
 
 {------------------------------------------------------------------------------
