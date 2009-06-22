@@ -143,7 +143,7 @@ implementation
 uses Registry;
 
 var
-  FloatingToolBars: TList;
+  FloatingToolBars: TFpList;
 
 
 procedure AddToToolbarList(t: TfrToolBar);
@@ -1072,7 +1072,7 @@ initialization
   {$I lr_dock.lrs}
 
 
-  FloatingToolBars := TList.Create;
+  FloatingToolBars := TFpList.Create;
   RegRootKey := 'Software\FastReport';
 
 finalization

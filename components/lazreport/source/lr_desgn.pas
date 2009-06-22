@@ -431,7 +431,7 @@ type
     PageView: TfrDesignerPage;
     EditorForm: TfrEditorForm;
     ColorSelector: TColorSelector;
-    MenuItems: TList;
+    MenuItems: TFpList;
     ItemWidths: TStringList;
     FCurPage: Integer;
     FGridSize: Integer;
@@ -498,7 +498,7 @@ type
     procedure ClearRedoBuffer;
     procedure Undo(Buffer: PfrUndoBuffer);
     procedure ReleaseAction(ActionRec: TfrUndoRec);
-    procedure AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TList);
+    procedure AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TFpList);
     procedure AddUndoAction(a: TfrUndoAction);
     procedure DoDrawText(aCanvas: TCanvas; aCaption: string;
       Rect: TRect; Selected, aEnabled: Boolean; Flags: Longint);
@@ -568,7 +568,7 @@ type
 function GetUnusedBand: TfrBandType; forward;
 procedure SendBandsToDown; forward;
 procedure ClearClipBoard; forward;
-function Objects: TList; forward;
+function Objects: TFpList; forward;
 procedure GetRegion; forward;
 function TopSelected: Integer; forward;
 
@@ -597,7 +597,7 @@ var
   ClipRgn            : HRGN;
 
 // globals
-  ClipBd             : TList;       // clipboard
+  ClipBd             : TFpList;       // clipboard
   GridBitmap         : TBitmap;     // for drawing grid in design time
   ColorLocked        : Boolean;     // true to avoid unwished color change
 
@@ -931,7 +931,7 @@ var
   i,iy      : Integer;
   t         : TfrView;
   R, R1     : HRGN;
-  Objects   : TList;
+  Objects   : TFpList;
 
   procedure DrawBackground;
   var
@@ -2287,7 +2287,7 @@ begin
 
   EditorForm := TfrEditorForm.Create(nil);
 
-  MenuItems := TList.Create;
+  MenuItems := TFpList.Create;
   ItemWidths := TStringlist.Create;
   if FirstInstance then
   begin
@@ -3171,7 +3171,7 @@ end;
 procedure TfrDesignerForm.InsertDbFields;
 var
   i, x, y, dx, dy, pdx, adx: Integer;
-  HeaderL, DataL: TList;
+  HeaderL, DataL: TFpList;
   t, t1: TfrView;
   b: TfrBandView;
   f: TfrTField;
@@ -3237,8 +3237,8 @@ begin
     if (DataSet=nil) or (FieldsL.Items.Count = 0) or (FieldsL.SelCount = 0) then
       exit;
       
-    HeaderL := TList.Create;
-    DataL := TList.Create;
+    HeaderL := TFpList.Create;
+    DataL := TFpList.Create;
     try
       x := Page.LeftMargin; y := Page.TopMargin;
       Unselect;
@@ -3872,7 +3872,7 @@ begin
     Selection.Add(TPersistent(Obj));
     PropHook.LookupRoot:=TPersistent(Obj);
   end else
-  if Obj is TList then
+  if Obj is TFpList then
     with frDesigner.page do
       for i:=0 to Objects.Count-1 do
         if TfrView(Objects[i]).Selected then
@@ -4158,7 +4158,7 @@ var
   p, p1: PfrUndoObj;
   r: PfrUndoRec1;
   BufferLength: Integer;
-  List: TList;
+  List: TFpList;
   a: TfrUndoAction;
 begin
   if Buffer = @FUndoBuffer then
@@ -4167,7 +4167,7 @@ begin
     BufferLength := FRedoBufferLength;
 
   if (Buffer^[BufferLength - 1].Page <> CurPage) then Exit;
-  List := TList.Create;
+  List := TFpList.Create;
   a := Buffer^[BufferLength - 1].Action;
   p := Buffer^[BufferLength - 1].Objects;
   while p <> nil do
@@ -4230,7 +4230,7 @@ begin
   RedoB.Enabled := N48.Enabled;
 end;
 
-procedure TfrDesignerForm.AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TList);
+procedure TfrDesignerForm.AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TFpList);
 var
   i: Integer;
   p, p1: PfrUndoObj;
@@ -4305,12 +4305,12 @@ procedure TfrDesignerForm.AddUndoAction(a: TfrUndoAction);
 var
   i: Integer;
   t: TfrView;
-  List: TList;
+  List: TFpList;
   p: PfrUndoRec1;
 begin
   ClearRedoBuffer;
 
-  List := TList.Create;
+  List := TFpList.Create;
   for i := 0 to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
@@ -5771,7 +5771,7 @@ end;
 
 {----------------------------------------------------------------------------}
 // miscellaneous
-function Objects: TList;
+function Objects: TFpList;
 begin
   Result := frDesigner.Page.Objects;
 end;
@@ -6328,8 +6328,8 @@ begin
   if (Obj=nil) or (Obj is TPersistent) then
     fPropertyGrid.TIObject := TPersistent(Obj)
   else
-  if Obj is TList then
-    with Obj as TList do
+  if Obj is TFpList then
+    with TFpList(Obj) do
     begin
       NewSel:=TPersistentSelectionList.Create;
       try
@@ -6362,7 +6362,7 @@ initialization
   frDesigner:=nil;
   ProcedureInitDesigner:=@InitGlobalDesigner;
   
-  ClipBd := TList.Create;
+  ClipBd := TFpList.Create;
   GridBitmap := TBitmap.Create;
   with GridBitmap do
   begin

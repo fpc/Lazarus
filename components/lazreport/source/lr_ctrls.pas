@@ -167,7 +167,7 @@ type
 
   TGlyphCache = class
   private
-    GlyphLists: TList;
+    GlyphLists: TFpList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -299,7 +299,7 @@ end;
 constructor TGlyphCache.Create;
 begin
   inherited Create;
-  GlyphLists := TList.Create;
+  GlyphLists := TFpList.Create;
 end;
 
 destructor TGlyphCache.Destroy;

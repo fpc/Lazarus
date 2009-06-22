@@ -33,7 +33,7 @@ type
 
   TfrVariables = class(TObject)
   private
-    FList: TList;
+    FList: TFpList;
     procedure SetVariable(aName: String; AValue: Variant);
     function GetVariable(aName: String): Variant;
     procedure SetValue(Index: Integer; AValue: Variant);
@@ -85,7 +85,7 @@ var
 constructor TfrVariables.Create;
 begin
   inherited Create;
-  FList := TList.Create;
+  FList := TFpList.Create;
 end;
 
 destructor TfrVariables.Destroy;

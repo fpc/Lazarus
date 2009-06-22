@@ -562,7 +562,7 @@ type
 
     Typ: TfrBandType;
     PrintIfSubsetEmpty, NewPageAfter, Stretched, PageBreak: Boolean;
-    Objects: TList;
+    Objects: TFpList;
     DataSet: TfrDataSet;
     IsVirtualDS: Boolean;
     VCDataSet: TfrDataSet;
@@ -622,7 +622,7 @@ type
     CurColumn         : Integer;
     LastStaticColumnY : Integer;
     XAdjust           : Integer;
-    List              : TList;
+    List              : TFpList;
     Mode              : TfrPageMode;
     PlayFrom          : Integer;
     LastBand          : TfrBand;
@@ -651,8 +651,8 @@ type
   public
     pgSize    : Integer;
     PrnInfo   : TfrPrnInfo;
-    Objects   : TList;
-    RTObjects : TList;
+    Objects   : TFpList;
+    RTObjects : TFpList;
     CurY      : Integer;
     CurBottomY: Integer;
     
@@ -742,7 +742,7 @@ type
 
   TfrPages = class(TObject)
   private
-    FPages: TList;
+    FPages: TFpList;
     Parent: TfrReport;
 
     function GetCount: Integer;
@@ -767,7 +767,7 @@ type
 
   TfrEMFPages = class(TObject)
   private
-    FPages: TList;
+    FPages: TFpList;
     Parent: TfrReport;
     function GetCount: Integer;
     function GetPages(Index: Integer): PfrPageInfo;
@@ -975,7 +975,7 @@ type
   private
     procedure DoBuildReport; override;
   public
-    Reports: TList;
+    Reports: TFpList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -1018,7 +1018,7 @@ type
   TfrExportFilter = class(TObject)
   protected
     Stream: TStream;
-    Lines: TList;
+    Lines: TFpList;
     procedure ClearLines;
   public
     constructor Create(AStream: TStream); virtual;
@@ -1190,7 +1190,7 @@ var
   SubValue: String;            // used in GetValue event handler
   ObjID: Integer = 0;
   BoolStr: Array[0..3] of String;
-  HookList: TList;
+  HookList: TFpList;
   FRInitialized: Boolean = False;
 
   // variables used through report building
@@ -4297,7 +4297,7 @@ begin
   inherited Create;
   Typ := ATyp;
   Parent := AParent;
-  Objects := TList.Create;
+  Objects := TFpList.Create;
   Values := TStringList.Create;
   Next := nil;
   Positions[psLocal] := 1;
@@ -5743,9 +5743,9 @@ begin
   fMargins:=TfrRect.Create;
   BaseName:='Page';
   
-  List := TList.Create;
-  Objects := TList.Create;
-  RTObjects := TList.Create;
+  List := TFpList.Create;
+  Objects := TFpList.Create;
+  RTObjects := TFpList.Create;
   PageType:=ptReport;
 end;
 
@@ -6420,7 +6420,7 @@ constructor TfrPages.Create(AParent: TfrReport);
 begin
   inherited Create;
   Parent := AParent;
-  FPages := TList.Create;
+  FPages := TFpList.Create;
 end;
 
 destructor TfrPages.Destroy;
@@ -6684,7 +6684,7 @@ constructor TfrEMFPages.Create(AParent: TfrReport);
 begin
   inherited Create;
   Parent := AParent;
-  FPages := TList.Create;
+  FPages := TFpList.Create;
 end;
 
 destructor TfrEMFPages.Destroy;
@@ -8795,7 +8795,7 @@ end;
 constructor TfrCompositeReport.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Reports := TList.Create;
+  Reports := TFpList.Create;
 end;
 
 destructor TfrCompositeReport.Destroy;
@@ -8853,7 +8853,7 @@ constructor TfrExportFilter.Create(AStream: TStream);
 begin
   inherited Create;
   Stream := AStream;
-  Lines := TList.Create;
+  Lines := TFpList.Create;
 end;
 
 destructor TfrExportFilter.Destroy;
@@ -9544,7 +9544,7 @@ begin
   frInterpretator := TInterpretator.Create;
   frVariables := TfrVariables.Create;
   frCompressor := TfrCompressor.Create;
-  HookList := TList.Create;
+  HookList := TFpList.Create;
 end;
 
 procedure DoExit;
