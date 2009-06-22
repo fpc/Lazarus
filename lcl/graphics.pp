@@ -1118,6 +1118,9 @@ type
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
+  {$ifndef OverrideClipping}
+    property Clipping : boolean read GetClipping write SetClipping;
+  {$endif}
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
