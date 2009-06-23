@@ -7318,11 +7318,6 @@ begin
   FreeMem(PointArray);
 end;
 
-function DummyFuncToWakeUpGtkLoop(Data: gPointer): gboolean; cdecl;
-begin
-  Result:=CallBackDefaultReturn;
-end;
-
 {------------------------------------------------------------------------------
   Function: PostMessage
   Params: Handle:
@@ -7439,7 +7434,8 @@ begin
 
     FMessageQueue.AddMessage(AMessage);
 
-    if GetThreadID<>MainThreadID then begin
+    if GetThreadID <> MainThreadID then
+    begin
       // awake gtk loop
       // when the main thread is currently processing messages it will process
       // fMessageQueue.
@@ -7449,9 +7445,10 @@ begin
       // ToDo: Find out what we loose when enabling multithreading
       //       or find another way to wake up the gtk loop
       {$IFDEF EnabledGtkThreading}
-      g_idle_add_full(G_PRIORITY_DEFAULT,TGSourceFunc(@DummyFuncToWakeUpGtkLoop),nil,nil);
+        gdk_flush();
+        g_main_context_wakeup(nil);
       {$ELSE}
-      DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
+        DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
       {$ENDIF}
     end;
   finally

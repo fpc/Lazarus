@@ -182,12 +182,13 @@ begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
 
   {$IFDEF EnabledGtkThreading}
-  if {$IFDEF Win32}true{$ELSE}GetThreadManager(TM) and Assigned(TM.InitManager){$ENDIF}
-  then begin
+  if {$IFDEF Win32}true{$ELSE}GetThreadManager(TM) and Assigned(TM.InitManager){$ENDIF} and
+     g_thread_supported then
+  begin
     g_thread_init(nil);
     gdk_threads_init;
     gdk_threads_enter;
-    fMultiThreadingEnabled:=true;
+    fMultiThreadingEnabled := True;
   end;
   {$ENDIF}
 
@@ -552,9 +553,10 @@ begin
   WakeMainThread := nil;
 
   {$IFDEF EnabledGtkThreading}
-  if MultiThreadingEnabled then begin
+  if MultiThreadingEnabled then
+  begin
     gdk_threads_leave;
-    fMultiThreadingEnabled:=false;
+    fMultiThreadingEnabled := False;
   end;
   {$ENDIF}
 
