@@ -624,26 +624,30 @@ var
 begin
   CodeTemplatesMenuRoot := RegisterIDEMenuRoot(CodeTemplatesMenuRootName);
   Path := CodeTemplatesMenuRoot.Name;
-  CodeTemplateCutIDEMenuCommand := RegisterIDEMenuCommand(Path,'Cut','Cut');
-  CodeTemplateCopyIDEMenuCommand := RegisterIDEMenuCommand(Path,'Copy','Copy');
-  CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path,'Paste','Paste');
+  CodeTemplateCutIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Cut',
+    lisMenuCut);
+  CodeTemplateCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy',
+    lisMenuCopy);
+  CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Paste',
+    lisMenuPaste);
   CodeTemplateInsertMacroIDEMenuCommand := RegisterIDEMenuCommand(Path,
-                                                  'InsertMacro','Insert Macro');
+                                                  'InsertMacro',
+                                                    lisCTInsertMacro);
 end;
 
 procedure CreateStandardCodeMacros;
 begin
   IDECodeMacros:=TLazCodeMacros.Create;
-  RegisterCodeMacro('Upper','uppercase string',
-                    'Uppercase string given as parameter',
+  RegisterCodeMacro('Upper', lisUppercaseString,
+                    lisUppercaseStringGivenAsParameter,
                     @CodeMacroUpper,nil);
-  RegisterCodeMacro('Lower','lowercase string',
-                    'Lowercase string given as parameter',
+  RegisterCodeMacro('Lower', lisLowercaseString,
+                    lisLowercaseStringGivenAsParameter,
                     @CodeMacroLower,nil);
-  RegisterCodeMacro('Paste','paste clipboard',
-                    'Paste text from clipboard',
+  RegisterCodeMacro('Paste', lisPasteClipboard,
+                    lisPasteTextFromClipboard,
                     @CodeMacroPaste,nil);
-  RegisterCodeMacro('ProcedureHead','insert procedure head',
+  RegisterCodeMacro('ProcedureHead', lisInsertProcedureHead,
      'Insert header of current procedure'#13
     +#13
     +'Optional Parameters (comma separated):'#13
@@ -670,29 +674,28 @@ begin
     +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
     +'WithoutSemicolon,   // skip semicolon at end'#13,
     @CodeMacroProcedureHead,nil);
-  RegisterCodeMacro('ProcedureName','insert procedure name',
-                    'Insert name of current procedure',
+  RegisterCodeMacro('ProcedureName', lisInsertProcedureName,
+                    lisInsertNameOfCurrentProcedure,
                     @CodeMacroProcedureName,nil);
-  RegisterCodeMacro('Date','insert date',
-                    'Insert date. Optional: format string',
+  RegisterCodeMacro('Date', lisInsertDate,
+                    lisInsertDateOptionalFormatString,
                     @CodeMacroDate,nil);
-  RegisterCodeMacro('Time','insert time',
-                    'Insert time. Optional: format string',
+  RegisterCodeMacro('Time', lisInsertTime,
+                    lisInsertTimeOptionalFormatString,
                     @CodeMacroTime,nil);
-  RegisterCodeMacro('DateTime','insert date and time',
-                    'Insert date and time. Optional: format string',
+  RegisterCodeMacro('DateTime', lisInsertDateAndTime,
+                    lisInsertDateAndTimeOptionalFormatString,
                     @CodeMacroDateTime,nil);
-  RegisterCodeMacro('AddMissingEnd','insert end if needed',
-                     'check if the next token in source'
-                    +' is an end and if not returns lineend + end; + lineend',
+  RegisterCodeMacro('AddMissingEnd', lisInsertEndIfNeeded,
+                     lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL,
                     @CodeMacroAddMissingEnd,nil);
-  RegisterCodeMacro('OfAll','list of all case values',
-                    'returns list of all values of case variable in front of variable',
+  RegisterCodeMacro('OfAll', lisListOfAllCaseValues,
+                    lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria,
                     @CodeMacroOfAll,nil);
-  RegisterCodeMacro('WordAtCursor','get word at current cursor position',
-                    'get word at current cursor position',
+  RegisterCodeMacro('WordAtCursor', lisGetWordAtCurrentCursorPosition,
+                    lisGetWordAtCurrentCursorPosition,
                     @CodeMacroWordAtCursor,nil);
-  RegisterCodeMacro('PrevWord','Preceding word',
+  RegisterCodeMacro('PrevWord', lisPrecedingWord,
                     'Returns parameter-indexed word from the current line preceding cursor position.'+LineEnding+LineEnding+
                     'Words in a line are numbered 1,2,3,... from left to right, but the last word'+LineEnding+
                     'which is always a macro command to be expanded has number 0, thus $PrevWord(0)'+LineEnding+

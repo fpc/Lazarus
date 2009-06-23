@@ -4269,6 +4269,30 @@ resourcestring
     +'source!';
   lisCouldNotAddIToMainSource = 'Could not add %s{$I %s%s} to main source!';
   lisFailedToLoadFoldStat = 'Failed to load fold state';
+  lisUppercaseString = 'uppercase string';
+  lisUppercaseStringGivenAsParameter = 'Uppercase string given as parameter';
+  lisLowercaseString = 'lowercase string';
+  lisLowercaseStringGivenAsParameter = 'Lowercase string given as parameter';
+  lisPasteClipboard = 'paste clipboard';
+  lisPasteTextFromClipboard = 'Paste text from clipboard';
+  lisInsertProcedureHead = 'insert procedure head';
+  lisInsertProcedureName = 'insert procedure name';
+  lisInsertNameOfCurrentProcedure = 'Insert name of current procedure';
+  lisInsertDate = 'insert date';
+  lisInsertDateOptionalFormatString = 'Insert date. Optional: format string';
+  lisInsertTime = 'insert time';
+  lisInsertTimeOptionalFormatString = 'Insert time. Optional: format string';
+  lisInsertDateAndTime = 'insert date and time';
+  lisInsertDateAndTimeOptionalFormatString = 'Insert date and time. Optional: '
+    +'format string';
+  lisInsertEndIfNeeded = 'insert end if needed';
+  lisCheckIfTheNextTokenInSourceIsAnEndAndIfNotReturnsL = 'check if the next '
+    +'token in source is an end and if not returns lineend + end; + lineend';
+  lisListOfAllCaseValues = 'list of all case values';
+  lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'returns list of '
+    +'all values of case variable in front of variable';
+  lisGetWordAtCurrentCursorPosition = 'get word at current cursor position';
+  lisPrecedingWord = 'Preceding word';
 
 implementation
 

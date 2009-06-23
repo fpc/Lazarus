@@ -6805,6 +6805,7 @@ var
     edClass: TPropertyEditorClass;
     ed: TPropertyEditor;
     obj: TPersistent;
+    PropCnt: LongInt;
   begin
     ti := A.GetPropInfo^.PropType;
     //DebugLn('IsInteresting: ', ti^.Name);
@@ -6833,21 +6834,25 @@ var
     // so we must avoid infinite recursion.
     if visited.IndexOf(ti) >= 0 then exit;
     visited.Add(ti);
-    for i := 0 to GetPropList(ti, propList) - 1 do begin
-      if not (propList^[i]^.PropType^.Kind in AFilter + [tkClass]) then continue;
-      edClass := GetEditorClass(propList^[i], obj);
-      if edClass = nil then continue;
-      ed := edClass.Create(AEditor.FPropertyHook, 1);
-      try
-        ed.SetPropEntry(0, obj, propList^[i]);
-        ed.Initialize;
-        Rec(ed);
-      finally
-        ed.Free;
+    PropCnt:=GetPropList(ti, propList);
+    try
+      for i := 0 to PropCnt - 1 do begin
+        if not (propList^[i]^.PropType^.Kind in AFilter + [tkClass]) then continue;
+        edClass := GetEditorClass(propList^[i], obj);
+        if edClass = nil then continue;
+        ed := edClass.Create(AEditor.FPropertyHook, 1);
+        try
+          ed.SetPropEntry(0, obj, propList^[i]);
+          ed.Initialize;
+          Rec(ed);
+        finally
+          ed.Free;
+        end;
+        if Result then break;
       end;
-      if Result then break;
+    finally
+      FreeMem(propList);
     end;
-    FreeMem(propList);
     visited.Delete(visited.Count - 1);
   end;
 
