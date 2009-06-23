@@ -275,7 +275,7 @@ var
   SpaceCount1, SpaceCount2: Integer;
   BackCounter, LogSpacePos: Integer;
   LogCaret: TPoint;
-  Line: String;
+  Line, Temp: String;
 begin
   Line := ACaret.LineText;
   SpaceCount1 := GetCurrentIndent(FCurrentEditor, Line, true);
@@ -283,8 +283,9 @@ begin
   if (SpaceCount1 > 0) then begin
     BackCounter := ACaret.LinePos - 2;
     while BackCounter >= 0 do begin
-      SpaceCount2 := GetCurrentIndent(FCurrentEditor, FCurrentLines[BackCounter], true);
-      if SpaceCount2 < SpaceCount1 then
+      Temp := FCurrentLines[BackCounter];
+      SpaceCount2 := GetCurrentIndent(FCurrentEditor, Temp, true);
+      if (SpaceCount2 < SpaceCount1) and (temp <> '') then
         break;
       Dec(BackCounter);
     end;
