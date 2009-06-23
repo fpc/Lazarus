@@ -109,7 +109,7 @@ uses
 constructor TSynGutter.Create(AOwner: TSynEditBase;
   AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer);
 begin
-  FEdit := TSynEdit(AOwner);
+  FEdit := AOwner;
   inherited Create(AOwner, AFoldedLinesView, ATextDrawer);
 
   FMouseActions := TSynEditMouseActionsGutter.Create(self);
