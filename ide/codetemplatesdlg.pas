@@ -188,6 +188,9 @@ function CodeMacroPrevWord(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
+function CodeMacroWordAtCursor(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -604,6 +607,16 @@ begin
   re.Free;
 end;
 
+function CodeMacroWordAtCursor(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+var
+  SynEditor: TSynEdit;
+begin
+  SynEditor:=SrcEdit.EditorControl as TSynEdit;
+  Value:=SynEditor.GetWordAtRowCol(SynEditor.LogicalCaretXY);
+  Result:=true;
+end;
 
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
@@ -676,6 +689,9 @@ begin
   RegisterCodeMacro('OfAll','list of all case values',
                     'returns list of all values of case variable in front of variable',
                     @CodeMacroOfAll,nil);
+  RegisterCodeMacro('WordAtCursor','get word at current cursor position',
+                    'get word at current cursor position',
+                    @CodeMacroWordAtCursor,nil);
   RegisterCodeMacro('PrevWord','Preceding word',
                     'Returns parameter-indexed word from the current line preceding cursor position.'+LineEnding+LineEnding+
                     'Words in a line are numbered 1,2,3,... from left to right, but the last word'+LineEnding+
@@ -687,7 +703,8 @@ begin
                     'In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an '+
                     'importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used'+
                     'to detect words for this macro: [\w\-+*\(\)\[\].^@]+',
-                    @CodeMacroPrevWord,nil);end;
+                    @CodeMacroPrevWord,nil);
+end;
 
 { TCodeTemplateEditForm }
 
