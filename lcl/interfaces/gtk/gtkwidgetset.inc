@@ -170,8 +170,10 @@ end;
  ------------------------------------------------------------------------------}
 constructor TGtkWidgetSet.Create;
 {$IFDEF EnabledGtkThreading}
+{$IFNDEF Win32}
 var
   TM: TThreadManager;
+{$ENDIF}
 {$ENDIF}
 begin
   if ClassType = TGtkWidgetSet
@@ -182,14 +184,17 @@ begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
 
   {$IFDEF EnabledGtkThreading}
-  if {$IFDEF Win32}true{$ELSE}GetThreadManager(TM) and Assigned(TM.InitManager){$ENDIF} and
-     g_thread_supported then
-  begin
-    g_thread_init(nil);
-    gdk_threads_init;
-    gdk_threads_enter;
-    fMultiThreadingEnabled := True;
-  end;
+    {$IFNDEF Win32}
+      if GetThreadManager(TM) and Assigned(TM.InitManager) and g_thread_supported then
+      begin
+        g_thread_init(nil);
+        gdk_threads_init;
+        gdk_threads_enter;
+        fMultiThreadingEnabled := True;
+      end;
+    {$ELSE}
+      g_thread_init(nil);
+    {$ENDIF}
   {$ENDIF}
 
   // DCs, GDIObjects
@@ -553,11 +558,13 @@ begin
   WakeMainThread := nil;
 
   {$IFDEF EnabledGtkThreading}
-  if MultiThreadingEnabled then
-  begin
-    gdk_threads_leave;
-    fMultiThreadingEnabled := False;
-  end;
+    if MultiThreadingEnabled then
+    begin
+      {$IFNDEF Win32}
+        gdk_threads_leave;
+      {$ENDIF}
+      fMultiThreadingEnabled := False;
+    end;
   {$ENDIF}
 
   inherited Destroy;
