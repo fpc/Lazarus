@@ -392,6 +392,8 @@ var
   DefaultPen: TCarbonPen;
 
   DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
+
+  NilClipRect : TCarbonRegion;
   
 implementation
 
@@ -2406,6 +2408,9 @@ initialization
   ScreenContext := TCarbonScreenContext.Create;
   ScreenContext.CGContext := DefaultContext.CGContext; // workaround
 
+  // range: -MaxInt div 2 ... MaxInt div 2 - 1, doesn't work!
+  NilClipRect := TCarbonRegion.Create(-MaxInt div 4,-MaxInt div 4,MaxInt div 4,MaxInt div 4);
+
 finalization
   DefaultContext.Free;
   ScreenContext.Free;
@@ -2422,5 +2427,7 @@ finalization
   StockSystemFont.Free;
   
   DefaultBitmap.Free;
+
+  NilClipRect.Free;
 
 end.

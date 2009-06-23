@@ -2828,9 +2828,12 @@ end;
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 begin
   Result := 0;
-  if (DC = 0) or (RGN = 0) then Exit;
+  if (DC = 0) then Exit;
 
-  TCarbonRegion(RGN).Apply( TCarbonContext(DC) );
+  if RGN <> 0 then
+    TCarbonRegion(RGN).Apply( TCarbonContext(DC) )
+  else
+    NilClipRect.Apply(TCarbonContext(DC));
   Result := 0;
 end;
 
