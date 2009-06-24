@@ -659,7 +659,7 @@ begin
       if (temp.IndexOf('Sync') >= 0) or (temp.IndexOf('S') >= 0) then begin
         i := p.EditCellList.Count - 1;
         while i >= 0 do begin
-          if TLazSynPluginSyncEditCell(p.EditCellList[i]).CellValue = Value then
+          if TLazSynPluginSyncronizedEditCell(p.EditCellList[i]).CellValue = Value then
             break;
           dec(i);
         end;
@@ -667,14 +667,14 @@ begin
 
       dec(i);
       if (i >= 0) and (i < p.EditCellList.Count)  then begin
-        Value := TLazSynPluginSyncEditCell(p.EditCellList[i]).CellValue;
-        g := TLazSynPluginSyncEditCell(p.EditCellList[i]).Group;
+        Value := TLazSynPluginSyncronizedEditCell(p.EditCellList[i]).CellValue;
+        g := TLazSynPluginSyncronizedEditCell(p.EditCellList[i]).Group;
       end;
     end;
   finally
     temp.Free;
   end;
-  with TLazSynPluginSyncEditCell(p.EditCellList.AddNew) do begin
+  with TLazSynPluginSyncronizedEditCell(p.EditCellList.AddNew) do begin
     LogStart := Point(p.DestPosX, p.DestPosY);
     LogEnd := Point(p.DestPosX + length(Value), p.DestPosY);
     if g < 0 then

@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncEditBase, SynEdit,
+  SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
   MacroIntf, LazIDEIntf, SrcEditorIntf;
 
 type
@@ -43,17 +43,17 @@ type
     { public declarations }
   end;
 
-  TLazSynPluginSyncEditCell = class(TSynPluginSyncEditCell)
+  TLazSynPluginSyncronizedEditCell = class(TSynPluginSyncronizedEditCell)
   public
     CellValue: String;
   end;
 
-  { TLazSynPluginSyncEditList }
+  { TLazSynPluginSyncronizedEditList }
 
-  TLazSynPluginSyncEditList = class(TSynPluginSyncEditList)
+  TLazSynPluginSyncronizedEditList = class(TSynPluginSyncronizedEditList)
   private
   public
-    function AddNew: TSynPluginSyncEditCell; override;
+    function AddNew: TSynPluginSyncronizedEditCell; override;
   end;
 
   { TLazTemplateParser }
@@ -61,7 +61,7 @@ type
   TLazTemplateParser = class(TIDETemplateParser)
   private
     FCaret: TPoint;
-    FEditCellList: TSynPluginSyncEditList;
+    FEditCellList: TSynPluginSyncronizedEditList;
     FEnableMacros: Boolean;
     FIndent: String;
     FSrcTemplate: String;
@@ -94,7 +94,7 @@ type
     property Indent: String read FIndent write FIndent;
     property DestCaret: TPoint read FCaret;
 
-    property EditCellList: TSynPluginSyncEditList read FEditCellList;
+    property EditCellList: TSynPluginSyncronizedEditList read FEditCellList;
   end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
@@ -112,7 +112,7 @@ const
 constructor TLazTemplateParser.Create(TheTemplate: String);
 begin
   inherited Create;
-  FEditCellList := TLazSynPluginSyncEditList.Create;
+  FEditCellList := TLazSynPluginSyncronizedEditList.Create;
   FSrcTemplate := TheTemplate;
   FDestTemplate := '';
   FSrcPosition := 1;
@@ -463,11 +463,11 @@ begin
   Result:=true;
 end;
 
-{ TLazSynPluginSyncEditList }
+{ TLazSynPluginSyncronizedEditList }
 
-function TLazSynPluginSyncEditList.AddNew: TSynPluginSyncEditCell;
+function TLazSynPluginSyncronizedEditList.AddNew: TSynPluginSyncronizedEditCell;
 begin
-  Result := TLazSynPluginSyncEditCell.Create;
+  Result := TLazSynPluginSyncronizedEditCell.Create;
   Add(Result);
 end;
 

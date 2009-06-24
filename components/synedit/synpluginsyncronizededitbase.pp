@@ -19,7 +19,7 @@ If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
 -------------------------------------------------------------------------------}
-unit SynPluginSyncEditBase;
+unit SynPluginSyncronizedEditBase;
 
 {$mode objfpc}{$H+}
 
@@ -31,68 +31,68 @@ uses
 
 type
 
-  { TSynPluginSyncEditCell }
+  { TSynPluginSyncronizedEditCell }
 
-  TSynPluginSyncEditCell = class
+  TSynPluginSyncronizedEditCell = class
   private
     FLogStart, FLogEnd: TPoint;
     FGroup: Integer;
   public
-    procedure Assign(Src: TSynPluginSyncEditCell); reintroduce;
+    procedure Assign(Src: TSynPluginSyncronizedEditCell); reintroduce;
 
     property LogStart: TPoint read FLogStart write FLogStart;
     property LogEnd: TPoint read FLogEnd write FLogEnd;
     property Group: Integer read FGroup write FGroup;
   end;
 
-  TSynPluginSyncEditCellChangedEvent = procedure(aIndex: Integer;
-                            aOldVal, aNewVal: TSynPluginSyncEditCell) of object;
+  TSynPluginSyncronizedEditCellChangedEvent = procedure(aIndex: Integer;
+                            aOldVal, aNewVal: TSynPluginSyncronizedEditCell) of object;
 
-  { TSynPluginSyncEditList }
+  { TSynPluginSyncronizedEditList }
 
-  TSynPluginSyncEditList = class
+  TSynPluginSyncronizedEditList = class
   private
-    FCells: Array of TSynPluginSyncEditCell;
-    FOnCellChange: TSynPluginSyncEditCellChangedEvent;
-    function GetCell(aIndex: Integer): TSynPluginSyncEditCell;
-    function GetGroupCell(aGroup, aIndex: Integer): TSynPluginSyncEditCell;
-    procedure SetCell(aIndex: Integer; const AValue: TSynPluginSyncEditCell);
+    FCells: Array of TSynPluginSyncronizedEditCell;
+    FOnCellChange: TSynPluginSyncronizedEditCellChangedEvent;
+    function GetCell(aIndex: Integer): TSynPluginSyncronizedEditCell;
+    function GetGroupCell(aGroup, aIndex: Integer): TSynPluginSyncronizedEditCell;
+    procedure SetCell(aIndex: Integer; const AValue: TSynPluginSyncronizedEditCell);
   protected
-    property OnCellChange: TSynPluginSyncEditCellChangedEvent // For Markup
+    property OnCellChange: TSynPluginSyncronizedEditCellChangedEvent // For Markup
              read FOnCellChange write FOnCellChange;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function Add(aCell: TSynPluginSyncEditCell): Integer;
-    function AddNew: TSynPluginSyncEditCell; virtual;
+    function Add(aCell: TSynPluginSyncronizedEditCell): Integer;
+    function AddNew: TSynPluginSyncronizedEditCell; virtual;
     procedure Delete(aIndex: Integer);
-    function IndexOf(aCell: TSynPluginSyncEditCell): Integer;
+    function IndexOf(aCell: TSynPluginSyncronizedEditCell): Integer;
     function IndexOf(aX, aY: Integer; IncludeLast: Boolean = False): Integer;
     function Count: Integer;
     function GroupCount(aGroup: Integer): Integer;
-    property Cell[aIndex: Integer]: TSynPluginSyncEditCell
+    property Cell[aIndex: Integer]: TSynPluginSyncronizedEditCell
       read GetCell write SetCell; default;
-    property GroupCell[aGroup, aIndex: Integer]: TSynPluginSyncEditCell
+    property GroupCell[aGroup, aIndex: Integer]: TSynPluginSyncronizedEditCell
       read GetGroupCell;
   end;
 
-  { TSynPluginSyncEditMarkup }
+  { TSynPluginSyncronizedEditMarkup }
 
-  TSynPluginSyncEditMarkup = class(TSynEditMarkup)
+  TSynPluginSyncronizedEditMarkup = class(TSynEditMarkup)
   private
-    FCells: TSynPluginSyncEditList;
+    FCells: TSynPluginSyncronizedEditList;
     FCurrentCell: Integer;
     fMarkupInfoCurrent: TSynSelectedColor;
     fMarkupInfoSync: TSynSelectedColor;
-    procedure SetCells(const AValue: TSynPluginSyncEditList);
-    procedure CellChanged(aIndex: Integer; aOldVal, aNewVal: TSynPluginSyncEditCell);
+    procedure SetCells(const AValue: TSynPluginSyncronizedEditList);
+    procedure CellChanged(aIndex: Integer; aOldVal, aNewVal: TSynPluginSyncronizedEditCell);
     procedure SetCurrentCell(const AValue: Integer);
   protected
     function OwnedByMgr: Boolean; override;
     procedure DoEnabledChanged(Sender: TObject); override;
     property CurrentCell: Integer read FCurrentCell write SetCurrentCell;
-    property Cells: TSynPluginSyncEditList read FCells write SetCells;
+    property Cells: TSynPluginSyncronizedEditList read FCells write SetCells;
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
@@ -102,15 +102,15 @@ type
     property MarkupInfoSync: TSynSelectedColor read fMarkupInfoSync;
   end;
 
-  { TSynPluginSyncEditBase }
+  { TSynPluginSyncronizedEditBase }
 
-  TSynPluginSyncEditBase = class(TSynEditPlugin)
+  TSynPluginSyncronizedEditBase = class(TSynEditPlugin)
   private
     FActive: Boolean;
-    FCells: TSynPluginSyncEditList;
+    FCells: TSynPluginSyncronizedEditList;
     FCurrentCell: Integer;
     FEnabled: Boolean;
-    FMarkup: TSynPluginSyncEditMarkup;
+    FMarkup: TSynPluginSyncronizedEditMarkup;
     FEditing: Boolean;
     function GetActive: Boolean;
     procedure SetActive(const AValue: Boolean);
@@ -125,8 +125,8 @@ type
     procedure DoOnActivate; virtual;
     procedure DoOnDeactivate; virtual;
     property CurrentCell: Integer read FCurrentCell write SetCurrentCell;
-    property Cells: TSynPluginSyncEditList read FCells;
-    property Markup: TSynPluginSyncEditMarkup read FMarkup;
+    property Cells: TSynPluginSyncronizedEditList read FCells;
+    property Markup: TSynPluginSyncronizedEditMarkup read FMarkup;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,28 +137,28 @@ type
 
 implementation
 
-function CellsAreEqual(c1, c2: TSynPluginSyncEditCell): boolean;
+function CellsAreEqual(c1, c2: TSynPluginSyncronizedEditCell): boolean;
 begin
   Result := (CompareCarets(c1.LogStart, c2.LogStart) = 0) and
             (CompareCarets(c1.LogEnd, c2.LogEnd) = 0) and
             (c1.Group = c2.Group);
 end;
 
-{ TSynPluginSyncEditList }
+{ TSynPluginSyncronizedEditList }
 
-constructor TSynPluginSyncEditList.Create;
+constructor TSynPluginSyncronizedEditList.Create;
 begin
   inherited;
   Clear;
 end;
 
-destructor TSynPluginSyncEditList.Destroy;
+destructor TSynPluginSyncronizedEditList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TSynPluginSyncEditList.Clear;
+procedure TSynPluginSyncronizedEditList.Clear;
 var
   i: Integer;
 begin
@@ -170,13 +170,13 @@ begin
   SetLength(FCells, 0);
 end;
 
-function TSynPluginSyncEditList.GetCell(aIndex: Integer): TSynPluginSyncEditCell;
+function TSynPluginSyncronizedEditList.GetCell(aIndex: Integer): TSynPluginSyncronizedEditCell;
 begin
   Result := FCells[aIndex];
 end;
 
-function TSynPluginSyncEditList.GetGroupCell(aGroup,
-  aIndex: Integer): TSynPluginSyncEditCell;
+function TSynPluginSyncronizedEditList.GetGroupCell(aGroup,
+  aIndex: Integer): TSynPluginSyncronizedEditCell;
 var
   i: Integer;
 begin
@@ -191,10 +191,10 @@ begin
   Result := nil;
 end;
 
-procedure TSynPluginSyncEditList.SetCell(aIndex: Integer;
-  const AValue: TSynPluginSyncEditCell);
+procedure TSynPluginSyncronizedEditList.SetCell(aIndex: Integer;
+  const AValue: TSynPluginSyncronizedEditCell);
 var
-  OldVal: TSynPluginSyncEditCell;
+  OldVal: TSynPluginSyncronizedEditCell;
 begin
   OldVal := FCells[aIndex];
   if CellsAreEqual(OldVal, AValue) then exit;
@@ -203,7 +203,7 @@ begin
     FOnCellChange(aIndex, OldVal, AValue);
 end;
 
-function TSynPluginSyncEditList.Add(aCell: TSynPluginSyncEditCell): Integer;
+function TSynPluginSyncronizedEditList.Add(aCell: TSynPluginSyncronizedEditCell): Integer;
 var
   i: Integer;
 begin
@@ -215,26 +215,26 @@ begin
     FOnCellChange(i, nil, FCells[i]);
 end;
 
-function TSynPluginSyncEditList.AddNew: TSynPluginSyncEditCell;
+function TSynPluginSyncronizedEditList.AddNew: TSynPluginSyncronizedEditCell;
 begin
-  Result := TSynPluginSyncEditCell.Create;
+  Result := TSynPluginSyncronizedEditCell.Create;
   Add(Result);
 end;
 
-procedure TSynPluginSyncEditList.Delete(aIndex: Integer);
+procedure TSynPluginSyncronizedEditList.Delete(aIndex: Integer);
 var
   i: Integer;
 begin
   FCells[aIndex].Free;
   i := length(FCells) - 1;
   if aIndex < i then
-    System.Move(FCells[aIndex+1], FCells[aIndex], (i-aIndex) * SizeOf(TSynPluginSyncEditCell));
+    System.Move(FCells[aIndex+1], FCells[aIndex], (i-aIndex) * SizeOf(TSynPluginSyncronizedEditCell));
   SetLength(FCells, i);
   if assigned(FOnCellChange) then
     FOnCellChange(aIndex, FCells[i], nil);
 end;
 
-function TSynPluginSyncEditList.IndexOf(aCell: TSynPluginSyncEditCell): Integer;
+function TSynPluginSyncronizedEditList.IndexOf(aCell: TSynPluginSyncronizedEditCell): Integer;
 var
   i: Integer;
 begin
@@ -244,7 +244,7 @@ begin
   Result := -1;
 end;
 
-function TSynPluginSyncEditList.IndexOf(aX, aY: Integer; IncludeLast: Boolean): Integer;
+function TSynPluginSyncronizedEditList.IndexOf(aX, aY: Integer; IncludeLast: Boolean): Integer;
 var
   a, i: Integer;
 begin
@@ -263,12 +263,12 @@ begin
   Result := -1;
 end;
 
-function TSynPluginSyncEditList.Count: Integer;
+function TSynPluginSyncronizedEditList.Count: Integer;
 begin
   Result := length(FCells);
 end;
 
-function TSynPluginSyncEditList.GroupCount(aGroup: Integer): Integer;
+function TSynPluginSyncronizedEditList.GroupCount(aGroup: Integer): Integer;
 var
   i: Integer;
 begin
@@ -279,9 +279,9 @@ Result := 0;
       inc(Result);
 end;
 
-{ TSynPluginSyncEditMarkup }
+{ TSynPluginSyncronizedEditMarkup }
 
-procedure TSynPluginSyncEditMarkup.SetCells(const AValue: TSynPluginSyncEditList);
+procedure TSynPluginSyncronizedEditMarkup.SetCells(const AValue: TSynPluginSyncronizedEditList);
 begin
   if FCells = AValue then exit;
   if FCells <> nil then
@@ -291,8 +291,8 @@ begin
     FCells.OnCellChange := @CellChanged;
 end;
 
-procedure TSynPluginSyncEditMarkup.CellChanged(aIndex: Integer; aOldVal,
-  aNewVal: TSynPluginSyncEditCell);
+procedure TSynPluginSyncronizedEditMarkup.CellChanged(aIndex: Integer; aOldVal,
+  aNewVal: TSynPluginSyncronizedEditCell);
 begin
   if aOldVal <> nil then
     InvalidateSynLines(aOldVal.LogStart.Y, aOldVal.LogEnd.Y);
@@ -300,7 +300,7 @@ begin
     InvalidateSynLines(aNewVal.LogStart.Y, aNewVal.LogEnd.Y);
 end;
 
-procedure TSynPluginSyncEditMarkup.SetCurrentCell(const AValue: Integer);
+procedure TSynPluginSyncronizedEditMarkup.SetCurrentCell(const AValue: Integer);
 var
   i, j: Integer;
 begin
@@ -320,12 +320,12 @@ begin
   end;
 end;
 
-function TSynPluginSyncEditMarkup.OwnedByMgr: Boolean;
+function TSynPluginSyncronizedEditMarkup.OwnedByMgr: Boolean;
 begin
   Result := False;
 end;
 
-procedure TSynPluginSyncEditMarkup.DoEnabledChanged(Sender: TObject);
+procedure TSynPluginSyncronizedEditMarkup.DoEnabledChanged(Sender: TObject);
 var
   i: Integer;
 begin
@@ -333,7 +333,7 @@ begin
     CellChanged(i, Cells[i], Cells[i]);
 end;
 
-constructor TSynPluginSyncEditMarkup.Create(ASynEdit: TSynEditBase);
+constructor TSynPluginSyncronizedEditMarkup.Create(ASynEdit: TSynEditBase);
 begin
   FCells := nil;
   inherited;
@@ -355,7 +355,7 @@ begin
   MarkupInfoSync.Foreground := clNone;
 end;
 
-destructor TSynPluginSyncEditMarkup.Destroy;
+destructor TSynPluginSyncronizedEditMarkup.Destroy;
 begin
   Cells := nil;
   FreeAndNil(fMarkupInfoCurrent);
@@ -363,7 +363,7 @@ begin
   inherited Destroy;
 end;
 
-function TSynPluginSyncEditMarkup.GetMarkupAttributeAtRowCol(const aRow,
+function TSynPluginSyncronizedEditMarkup.GetMarkupAttributeAtRowCol(const aRow,
   aCol: Integer): TSynSelectedColor;
 var
   i: Integer;
@@ -395,7 +395,7 @@ begin
   end;
 end;
 
-function TSynPluginSyncEditMarkup.GetNextMarkupColAfterRowCol(const aRow,
+function TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow,
   aCol: Integer): Integer;
 var
   i: Integer;
@@ -413,11 +413,11 @@ begin
   end
 end;
 
-{ TSynPluginSyncEditBase }
+{ TSynPluginSyncronizedEditBase }
 
-constructor TSynPluginSyncEditBase.Create(AOwner: TComponent);
+constructor TSynPluginSyncronizedEditBase.Create(AOwner: TComponent);
 begin
-  FCells := TSynPluginSyncEditList.Create;
+  FCells := TSynPluginSyncronizedEditList.Create;
   CurrentCell := -1;
   inherited Create(AOwner);
   FEnabled := True;
@@ -425,7 +425,7 @@ begin
   FEditing := False;
 end;
 
-destructor TSynPluginSyncEditBase.Destroy;
+destructor TSynPluginSyncronizedEditBase.Destroy;
 begin
   Editor := nil;
   FreeAndNil(FMarkup);
@@ -433,14 +433,14 @@ begin
   inherited;
 end;
 
-procedure TSynPluginSyncEditBase.Clear;
+procedure TSynPluginSyncronizedEditBase.Clear;
 begin
   FCells.Clear;
   CurrentCell := -1;
   Active := False;
 end;
 
-procedure TSynPluginSyncEditBase.SetEditor(const AValue: TCustomSynEdit);
+procedure TSynPluginSyncronizedEditBase.SetEditor(const AValue: TCustomSynEdit);
 begin
   if AValue = Editor then exit;
   Active := False;
@@ -453,7 +453,7 @@ begin
   end;
   inherited SetEditor(AValue);
   if AValue <> nil then begin
-    FMarkup := TSynPluginSyncEditMarkup.Create(Editor);
+    FMarkup := TSynPluginSyncronizedEditMarkup.Create(Editor);
     FMarkup.Cells := FCells;
     FMarkup.CurrentCell := FCurrentCell;
     FMarkup.Enabled := Active;
@@ -462,7 +462,7 @@ begin
   end;
 end;
 
-procedure TSynPluginSyncEditBase.SetCurrentCell(const AValue: Integer);
+procedure TSynPluginSyncronizedEditBase.SetCurrentCell(const AValue: Integer);
 begin
   if FCurrentCell = AValue then exit;
   FCurrentCell := AValue;
@@ -470,7 +470,7 @@ begin
     FMarkup.CurrentCell := FCurrentCell;
 end;
 
-procedure TSynPluginSyncEditBase.SetEnabled(const AValue: Boolean);
+procedure TSynPluginSyncronizedEditBase.SetEnabled(const AValue: Boolean);
 var
   IsActive: Boolean;
 begin
@@ -485,12 +485,12 @@ begin
   end;
 end;
 
-function TSynPluginSyncEditBase.GetActive: Boolean;
+function TSynPluginSyncronizedEditBase.GetActive: Boolean;
 begin
   Result := FActive and FEnabled and (Editor <> nil);
 end;
 
-procedure TSynPluginSyncEditBase.SetActive(const AValue: Boolean);
+procedure TSynPluginSyncronizedEditBase.SetActive(const AValue: Boolean);
 var
   IsActive: Boolean;
 begin
@@ -505,7 +505,7 @@ begin
   end;
 end;
 
-procedure TSynPluginSyncEditBase.DoLinesEdited(Sender: TSynEditStrings;
+procedure TSynPluginSyncronizedEditBase.DoLinesEdited(Sender: TSynEditStrings;
   aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
 var
   Pos, Pos2: TPoint;
@@ -538,7 +538,7 @@ var
 
 var
   i, a: Integer;
-  CurCell: TSynPluginSyncEditCell;
+  CurCell: TSynPluginSyncronizedEditCell;
   Y2, X2: Integer;
 begin
   if (not Active) or (FCells.Count = 0) then exit;
@@ -607,29 +607,29 @@ begin
     DoAfterEdit(Pos2.x, Pos2.y);
 end;
 
-procedure TSynPluginSyncEditBase.DoBeforeEdit(aX, aY: Integer);
+procedure TSynPluginSyncronizedEditBase.DoBeforeEdit(aX, aY: Integer);
 begin
   (* Do Nothing *);
 end;
 
-procedure TSynPluginSyncEditBase.DoAfterEdit(aX, aY: Integer);
+procedure TSynPluginSyncronizedEditBase.DoAfterEdit(aX, aY: Integer);
 begin
   (* Do Nothing *);
 end;
 
-procedure TSynPluginSyncEditBase.DoOnActivate;
+procedure TSynPluginSyncronizedEditBase.DoOnActivate;
 begin
   (* Do Nothing *);
 end;
 
-procedure TSynPluginSyncEditBase.DoOnDeactivate;
+procedure TSynPluginSyncronizedEditBase.DoOnDeactivate;
 begin
   (* Do Nothing *);
 end;
 
-{ TSynPluginSyncEditCell }
+{ TSynPluginSyncronizedEditCell }
 
-procedure TSynPluginSyncEditCell.Assign(Src: TSynPluginSyncEditCell);
+procedure TSynPluginSyncronizedEditCell.Assign(Src: TSynPluginSyncronizedEditCell);
 begin
   if Src = nil then exit;
   FLogStart := Src.FLogStart;

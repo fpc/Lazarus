@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, math, Graphics, LCLType, SynEditMiscClasses,
-  SynPluginSyncEditBase, SynEditKeyCmds, SynEdit, SynEditMiscProcs,
+  SynPluginSyncronizedEditBase, SynEditKeyCmds, SynEdit, SynEditMiscProcs,
   SynEditTextTrimmer, SynEditTextBase, LCLProc;
 
 type
@@ -47,7 +47,7 @@ type
   end;
   { TSynPluginTemplateEdit }
 
-  TSynPluginTemplateEdit = class(TSynPluginSyncEditBase)
+  TSynPluginTemplateEdit = class(TSynPluginSyncronizedEditBase)
   private
     FCellParserEnabled: Boolean;
     FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
@@ -89,7 +89,7 @@ type
 
     procedure SetTemplate(aTmpl: String; aCaretPos: TPoint); // Replaces current selection
     // Coords relativ to the template. base (1, 1)
-    procedure AddEditCells(aCellList: TSynPluginSyncEditList);
+    procedure AddEditCells(aCellList: TSynPluginSyncronizedEditList);
 
     property CellParserEnabled: Boolean read FCellParserEnabled write FCellParserEnabled;
     property Keystrokes: TSynEditKeyStrokes
@@ -464,7 +464,7 @@ end;
 
 procedure TSynPluginTemplateEdit.SetFinalCaret;
 var
-  c: TSynPluginSyncEditCell;
+  c: TSynPluginSyncronizedEditCell;
 begin
   c := Cells.GroupCell[-2, 0];
   Editor.BlockBegin := c.LogStart;
@@ -574,16 +574,16 @@ begin
     Editor.MoveCaretIgnoreEOL(aCaretPos);
 end;
 
-procedure TSynPluginTemplateEdit.AddEditCells(aCellList: TSynPluginSyncEditList);
+procedure TSynPluginTemplateEdit.AddEditCells(aCellList: TSynPluginSyncronizedEditList);
 var
   i, XOffs, YOffs: Integer;
-  CurCell: TSynPluginSyncEditCell;
-  CaretPos: TSynPluginSyncEditCell;
+  CurCell: TSynPluginSyncronizedEditCell;
+  CaretPos: TSynPluginSyncronizedEditCell;
   p: TPoint;
 begin
   CaretPos := nil;
   if Cells.GroupCell[-2, 0] <> nil then begin
-    CaretPos := TSynPluginSyncEditCell.Create;
+    CaretPos := TSynPluginSyncronizedEditCell.Create;
     CaretPos.Assign(Cells.GroupCell[-2, 0]);
   end;
   Cells.Clear;
