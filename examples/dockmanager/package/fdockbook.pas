@@ -28,6 +28,7 @@ type
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
     Tabs: TToolBar;
+    procedure FormCreate(Sender: TObject);
     procedure pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
     procedure pnlDockUnDock(Sender: TObject; Client: TControl;
@@ -50,6 +51,12 @@ begin
 end;
 
 { TEasyDockBook }
+
+procedure TEasyDockBook.FormCreate(Sender: TObject);
+begin
+  DragMode := dmAutomatic;
+  DragKind := dkDock;
+end;
 
 function TEasyDockBook.GetControlTab(AControl: TControl): TTabButton;
 var

@@ -43,6 +43,7 @@ LCL TODO:
 
 {$H+}
 
+{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
@@ -143,6 +144,7 @@ type
     procedure AddSibling(NewZone: TEasyZone; where: TAlign);
     procedure ReplaceChild(OldChild, NewChild: TEasyZone);
     procedure ScaleTo(ptOld, ptNew, ptOuter: TPoint);
+    procedure PositionControl;
   public //properties
     property ChildControl: TControl read FChildControl write SetControl;
     property FirstChild: TEasyZone read FFirstChild;
@@ -205,7 +207,10 @@ type
   {$ENDIF}
     constructor Create(ADockSite: TWinControl);
     destructor Destroy; override;
+  {$IFDEF old}
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
+  {$ELSE}
+  {$ENDIF}
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
   end;
@@ -213,6 +218,18 @@ type
 const
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
+  );
+  PartNames: array[TEasyZonePart] of string =
+  (
+    'zpNowhere',        // not in any zone
+    'zpClient',         // on client control
+    'zpAll',            // total header rect
+    'zpCaption',        // header caption
+    'zpSizer',          // splitter/sizer
+  {$IFDEF restore}
+    'zpRestoreButton',  // header restore button
+  {$ENDIF}
+    'zpCloseButton'     // header close button
   );
 
 var //debug only
@@ -272,6 +289,9 @@ begin
     inc(i);
   end;
 end;
+
+//implement various headers
+{$I zoneheader.inc}
 
 { TEasyTree }
 
@@ -355,6 +375,11 @@ begin
   while zone <> nil do begin
     if (SitePos.X > zone.Right) or (SitePos.Y > zone.Bottom) then
       zone := zone.NextSibling
+  {$IFDEF newSplitter}
+    else if zone.HasSizer and PtInRect(zone.GetPartRect(zpSizer), SitePos) then
+      break
+  {$ELSE}
+  {$ENDIF}
     else if zone.FirstChild <> nil then
       zone := zone.FirstChild
     else begin
@@ -369,11 +394,14 @@ begin
   Result := FHeader.HeaderSize;
 end;
 
+{$IFDEF old}
 procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
 //get the client area within the given zone rectangle
   ARect := FHeader.GetRectOfPart(ARect, Control.DockOrientation, zpClient, true);
 end;
+{$ELSE}
+{$ENDIF}
 
 function TEasyTree.FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
 begin
@@ -539,7 +567,6 @@ begin
       NewParent.BR := r.BottomRight;
       OldParent.ReplaceChild(DropZone, NewParent); //unlink DropZone
     //orthogonal orientation
-      //DropZone.SetBounds(r);
       NewParent.InsertAfter(nil, DropZone);
     end;
   //set control orientation
@@ -550,7 +577,11 @@ begin
       OldZone.Free;
     end;
   end;
+{$IFDEF newSplitter}
+  ResetBounds(True); //splitters may have to be inserted
+{$ELSE}
   FDockSite.Invalidate;
+{$ENDIF}
 end;
 
 procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
@@ -718,12 +749,18 @@ var
     MousePos := SmallPointToPoint(MouseMsg.Pos);
     Zone := ZoneFromPoint(MousePos);
   //exact zone part
+  {$IFDEF newSplitter}
+    if (Zone = nil) then begin
+  {$ELSE}
     if (Zone = nil) or (Zone.ChildControl = nil) then begin
+  {$ENDIF}
       Result := zpNowhere;
       Control := nil;
     end else begin
       Control := Zone.ChildControl;
       Result := FHeader.FindPart(zone, MousePos, fButtonDown);
+      //assert(Result in [zpNowhere..zpCloseButton], 'bad part');
+      //DebugLn('IN ', PartNames[Result]);
     end;
     Part := Result;
   end;
@@ -919,6 +956,13 @@ const
     s := Format('%s%s (%d,%d)-(%d,%d)%s', [ind, OrientString[zone.orientation],
       r.Top, r.Left, r.Bottom, r.Right, eol]);
     Stream.Write(s[1], length(s));
+  //splitter
+    if zone.HasSizer then begin
+      r := zone.GetPartRect(zpSizer);
+      s := Format('%sSplitter (%d,%d)-(%d,%d)%s', [ind,
+        r.Top, r.Left, r.Bottom, r.Right, eol]);
+      Stream.Write(s[1], length(s));
+    end;
   //control
     ctl := zone.ChildControl;
     if ctl <> nil then begin
@@ -1056,11 +1100,16 @@ begin
       if Zone.NextSibling = nil then
         //Zone.BR := p.BR; //resize last zone
         Zone.BR := affected.BR; //resize last zone
+    {$IFDEF old}
       if Zone.ChildControl <> nil then begin
         r := Zone.GetBounds;
         AdjustDockRect(Zone.ChildControl, r);
         Zone.ChildControl.BoundsRect := r;
       end;
+    {$ELSE}
+      //r := zone.GetPartRect(zpClient);
+      zone.PositionControl;
+    {$ENDIF}
       zone := Zone.NextSibling;
     end;
   end;
@@ -1129,9 +1178,16 @@ function TEasyZone.GetPartRect(APart: TEasyZonePart): TRect;
 begin
 (* Can zones have individual headers?
   For notebooks a caption text is not required!
+
+  NewSplitter: non-leaf zones also can have an splitter!
+  The higher level splitters have to be excluded from the zone rect.
+    (done in GetBounds)
 *)
-  if ChildControl <> nil then
+  if (ChildControl <> nil) then
     Result := FTree.FHeader.GetRectOfPart(GetBounds, ChildControl.DockOrientation,
+      APart, HasSizer)
+  else if (APart = zpSizer) and HasSizer then
+    Result := FTree.FHeader.GetRectOfPart(GetBounds, Parent.Orientation,
       APart, HasSizer)
   else
     Result := Rect(0,0,0,0);
@@ -1178,6 +1234,17 @@ begin
     LinkAfter.FNextSibling := NewZone;
   end;
   //NewZone.Orientation := LinkAfter.Orientation;
+end;
+
+procedure TEasyZone.PositionControl;
+var
+  r: TRect;
+begin
+//obsolete, part of SetBounds!
+  if FChildControl = nil then
+    exit;
+  r := GetPartRect(zpClient);
+  FChildControl.BoundsRect := r;
 end;
 
 procedure TEasyZone.AddSibling(NewZone: TEasyZone; where: TAlign);
@@ -1290,9 +1357,13 @@ begin
   end;
 
   if ChildControl <> nil then begin
+  {$IFDEF old}
     r := GetBounds;
     FTree.AdjustDockRect(ChildControl, r);
     ChildControl.BoundsRect := r;
+  {$ELSE}
+    PositionControl;
+  {$ENDIF}
   end else begin
     ch := FirstChild;
     while ch <> nil do begin
@@ -1324,6 +1395,32 @@ var
   zone, prev: TEasyZone;
 begin
 // In a parent zone of vertical orientation the zone.PrevSibling.Bottom is zone.Top
+(* NewSplitter: exclude higher level splitters.
+*)
+{$IFDEF NewSplitter}
+  zone := self;
+  if zone.Parent <> nil then begin
+    if (fTop = (zone.Parent.Orientation = doVertical)) then begin
+      prev := zone.PrevSibling;
+      while prev <> nil do begin
+        if prev.Visible then begin
+          if fTop then
+            Result := prev.Bottom
+          else
+            Result := prev.Right;
+          exit;
+        end;
+        prev := prev.PrevSibling;
+      end;
+    end;
+  //no sibling, get from parent zone
+    Result := Parent.GetTopOrLeft(fTop);
+    if Parent.HasSizer and (fTop <> (Parent.Orientation = doVertical)) then
+      inc(Result, dSizer); //exclude immediate parent's splitter (opposite orientation?)
+  end else begin
+    Result := 0;
+  end;
+{$ELSE} //include all splitters
   zone := self;
   while zone.Parent <> nil do begin
     if (fTop = (zone.Parent.Orientation = doVertical)) then begin
@@ -1343,6 +1440,7 @@ begin
   end;
 //reached top zone
   Result := 0;
+{$ENDIF}
 end;
 
 function TEasyZone.GetLeft: Integer;
@@ -1393,9 +1491,6 @@ begin
     end;
   end; //else empty root zone?
 end;
-
-//implement various headers
-{$I zoneheader.inc}
 
 initialization
 {$I easy_dock_images.lrs}

@@ -1,3 +1,5 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TEasyDockMain','FORMDATA',[
   'TPF0'#13'TEasyDockMain'#12'EasyDockMain'#4'Left'#3#24#1#6'Height'#3#29#1#3'T'
   +'op'#2'{'#5'Width'#3#254#1#13'ActiveControl'#7#6'buDump'#7'Caption'#6#12'Eas'

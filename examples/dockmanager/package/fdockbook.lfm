@@ -8,6 +8,7 @@ object EasyDockBook: TEasyDockBook
   ClientWidth = 400
   DragKind = dkDock
   DragMode = dmAutomatic
+  OnCreate = FormCreate
   LCLVersion = '0.9.27'
   Visible = True
   object Tabs: TToolBar

@@ -16,7 +16,7 @@ unit fMain;
 //some defines, to demonstrate LCL flaws
 {$DEFINE Docker}    //using control (undef: entire form) as dock site
 {$DEFINE easy}      //using EasyDockSite (undef: default LDockTree)
-{.$DEFINE dragForm}  //create a form from the draggable images (or drag images)
+{$DEFINE dragForm}  //create a form from the draggable images (or drag images)
   //dragging forms is not supported on all platforms!
 
 

@@ -54,9 +54,15 @@ const //zone decoration sizes
 //minimal (Delphi) header
   GrabberSize = 10; // 12;
   dDDist = 1;
+{$IFDEF newSplitter}
+  dDBorder = 1;
+  dDHeader = GrabberSize; //?
+  dDButton = GrabberSize - 2*dDBorder; //10?
+{$ELSE}
   dDBorder = 1;
   dDHeader = GrabberSize + dSizer; //?
-  dDButton = GrabberSize - dBorder; // 2*dDBorder; //10?
+  dDButton = GrabberSize - dDBorder; // 2*dDBorder; //10?
+{$ENDIF}
 
 (* Zone part map.
   In portrait mode (header on top), the zone rectangle is adjusted according
@@ -72,19 +78,34 @@ const //zone decoration sizes
 *)
 {$IFDEF newSplitter}
 (*
-  The map reflects new splitter placement (past client area),
-  and no restore button.
+  The splitter is excluded first, if present.
+  [zpSizer] entry is unused.
 *)
-HeaderPartMap: array[TEasyZonePart] of TZonePartMap = (
-  (),    //zpNowhere
-  (dTop:dHeader; dBottom:0),    //zpClient
-  (dTop:0; dBottom:-dHeader),    //zpAll
-  (dTop:dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
-  (dTop:-dSizer),    //zpSizer
+HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
+//hsMinimal
+  (
+    {zpNowhere} (),
+    {zpClient}  (dTop:dDHeader; dBottom:0),
+    {zpAll}     (dTop:0; dBottom:-dDHeader),
+    {zpCaption} (dTop:dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:2*dDBorder+dDButton),
+    {zpSizer}   (dTop:0; dBottom:-dSizer),
   {$IFDEF restore}
-  (...),    //zpRestoreButton
+    {zpRestoreButton} (),
   {$ENDIF}
-  (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton
+    {zpCloseButton} (dTop:dDBorder; dBottom:-dDButton; dLeft:-dDButton; dRight:dDBorder)
+  ),
+//hsForm
+  (
+    (),    //zpNowhere - not in any zone
+    (dTop:dHeader; dBottom:0),    //zpClient - on client control
+    (dTop:0; dBottom:-dHeader),    //zpAll - total header rect
+    (dTop:dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
+    (dTop:0; dBottom:-dSizer),    //zpSizer - splitter/sizer
+    {$IFDEF restore}
+    (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
+    {$ENDIF}
+    (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
+  )
 );
 {$ELSE}
 (* Sizer in header, just before caption
@@ -142,13 +163,15 @@ constructor TEasyDockHeader.Create;
 begin
   HeaderSize := dHeader; //some meaningful value?
 //debug
-  //dump;
+  //dump; - not shown in console
 end;
 
 function TEasyDockHeader.GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation;
   APart: TEasyZonePart; HasSplitter: boolean): TRect;
 begin
 (* ARect is (must be) TLBR zone rectangle, on input.
+  HasSplitter determines whether to exclude the splitter from ARect,
+  and also the splitter area itself.
 *)
   if (APart = zpNowhere) or ((APart = zpSizer) and not HasSplitter) then begin
     Result := Rect(0,0,0,0);
@@ -158,6 +181,16 @@ begin
   Result := ARect;
   with HeaderPartMap[Style, APart] do begin
     if AOrientation = doVertical then begin //portrait
+    {$IFDEF newSplitter}
+    //handle client w/o splitter
+      if (APart = zpSizer) then begin
+        Result.Bottom := Result.Top + dSizer;
+        exit;
+      end;
+      if HasSplitter then
+        inc(Result.Top, dSizer); //exclude splitter(?)
+    {$ELSE}
+    {$ENDIF}
       if dTop > 0 then
         inc(Result.Top, dTop);
       if dBottom > 0 then
@@ -174,13 +207,17 @@ begin
         Result.Right := Result.Left + dRight;
       if dLeft < 0 then
         Result.Left := Result.Right + dLeft;
+    end else begin //landscape
     {$IFDEF newSplitter}
     //handle client w/o splitter
-      if (APart = zpClient) and HasSplitter then
-        dec(Result.Bottom, dSizer);
+      if (APart = zpSizer) then begin
+        Result.Right := Result.Left + dSizer;
+        exit;
+      end;
+      if HasSplitter then
+        inc(Result.Left, dSizer);
     {$ELSE}
     {$ENDIF}
-    end else begin //landscape
       if dTop > 0 then
         inc(Result.Left, dTop);
       if dBottom > 0 then
@@ -198,12 +235,6 @@ begin
         Result.Top := Result.Bottom + dRight;
       if dLeft < 0 then
         Result.Bottom := Result.Top - dLeft;
-    {$IFDEF newSplitter}
-    //handle client w/o splitter
-      if (APart = zpClient) and HasSplitter then
-        dec(Result.Right, dSizer);
-    {$ELSE}
-    {$ENDIF}
     end;
   end;
 end;
@@ -214,11 +245,12 @@ var
   Control: TControl;
   Part: TEasyZonePart;
   aHandle : HWND;
+  aOrient: TDockOrientation;
 
   function MouseInPart(APart: TEasyZonePart): boolean;
   begin
   //on hit: retain Part and SubRect
-    SubRect := GetRectOfPart(r, Control.DockOrientation, APart, AZone.HasSizer);
+    SubRect := GetRectOfPart(r, aOrient, APart, AZone.HasSizer);
     Result := PtInRect(SubRect, MousePos);
     if Result then
       Part := APart;
@@ -228,12 +260,20 @@ begin
 (* Called from mouse message handler (only!).
   Remember draw state of current zone.
 *)
+//exclude higher level splitters?
   r := AZone.GetBounds;
-  if (AZone.FChildControl = nil) or not PtInRect(r, MousePos) then
+  if not PtInRect(r, MousePos) or (AZone.Parent = nil) then
   //possibly empty root zone
-    Result := zpNowhere
-  else begin
+    Part := zpNowhere
+  else if (AZone.FChildControl = nil) then begin
+  //newSplitter: also zones without controls can have an splitter
+    Control := nil;
+    aOrient := AZone.Parent.Orientation;
+    if not AZone.HasSizer or not MouseInPart(zpSizer) then
+      Part := zpNowhere; //client?
+  end else begin
     Control := AZone.FChildControl;
+    aOrient := Control.DockOrientation;
     if MouseInPart(zpSizer) or MouseInPart(zpCloseButton)
     {$IFDEF restore}
       or MouseInPart(zpRestoreButton)
@@ -244,6 +284,8 @@ begin
     else
       Part := zpCaption; //include borders
   end;
+{ TODO -cdocking : sometimes Part is invalid? }
+//DebugLn('IN ', PartNames[Part]);
 
   aHandle:=AZone.GetHandle;
 //check old state changed - buttons also change state on mouse enter/exit
@@ -358,12 +400,12 @@ begin
     with DrawRect do begin
       DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
       if AOrientation = doVertical then begin
-        inc(Top, 1);
+        inc(Top, dDBorder);
         DrawGrabberLine(Left, Top, Right, Top+2);
         inc(Top, 3);
         DrawGrabberLine(Left, Top, Right, Top+2);
       end else begin
-        inc(Left, 1);
+        inc(Left, dDBorder);
         DrawGrabberLine(Left, Top, Left+2, Bottom);
         inc(Left, 3);
         DrawGrabberLine(Left, Top, Left+2, Bottom);
