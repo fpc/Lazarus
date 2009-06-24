@@ -32,7 +32,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  SynEditAutoComplete, SynEdit, MacroIntf, LazIDEIntf, SrcEditorIntf;
+  SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncEditBase, SynEdit,
+  MacroIntf, LazIDEIntf, SrcEditorIntf;
 
 type
   TCodeMacroPromptDlg = class(TForm)
@@ -40,16 +41,327 @@ type
     { private declarations }
   public
     { public declarations }
-  end; 
+  end;
+
+  TLazSynPluginSyncEditCell = class(TSynPluginSyncEditCell)
+  public
+    CellValue: String;
+  end;
+
+  { TLazSynPluginSyncEditList }
+
+  TLazSynPluginSyncEditList = class(TSynPluginSyncEditList)
+  private
+  public
+    function AddNew: TSynPluginSyncEditCell; override;
+  end;
+
+  { TLazTemplateParser }
+
+  TLazTemplateParser = class(TIDETemplateParser)
+  private
+    FCaret: TPoint;
+    FEditCellList: TSynPluginSyncEditList;
+    FEnableMacros: Boolean;
+    FIndent: String;
+    FSrcTemplate: String;
+    FDestTemplate: String;
+    FSrcPosition: Integer;
+    FDestPosition: Integer;
+    FDestPosX: Integer;
+    FDestPosY: Integer;
+    FLevel: Integer;
+    FSrcEdit: TSourceEditorInterface;
+  protected
+    // nested macros, get the X pos of the outer macro
+    function GetSrcPosition: Integer; override;
+    function GetDestPosition: Integer; override;
+    function GetDestPosX: Integer; override;
+    function GetDestPosY: Integer; override;
+    function GetSrcTemplate: String; override;
+    function GetDestTemplate: String; override;
+
+    function SubstituteMacro(const MacroName, MacroParameter: string;
+                             var MacroValue: string): boolean;
+    function SubstituteMacros(var Template: String): boolean;
+  public
+    constructor Create(TheTemplate: String);
+    destructor Destroy; override;
+
+    function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface): boolean;
+
+    property EnableMacros: Boolean read FEnableMacros write FEnableMacros;
+    property Indent: String read FIndent write FIndent;
+    property DestCaret: TPoint read FCaret;
+
+    property EditCellList: TSynPluginSyncEditList read FEditCellList;
+  end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
   EndOfTokenChr: string; Attributes: TStrings;
   IndentToTokenStart: boolean): boolean;
-function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface;
-  var Pattern: string): boolean;
 
 implementation
+
+const
+  MaxLevel = 10; // prevent cycling
+
+{ TLazTemplateParser }
+
+constructor TLazTemplateParser.Create(TheTemplate: String);
+begin
+  inherited Create;
+  FEditCellList := TLazSynPluginSyncEditList.Create;
+  FSrcTemplate := TheTemplate;
+  FDestTemplate := '';
+  FSrcPosition := 1;
+  FDestPosition := 1;
+  FDestPosX := 1;
+  FDestPosY := 1;
+  FLevel := 0;
+  FCaret.y := -1;
+end;
+
+destructor TLazTemplateParser.Destroy;
+begin
+  FEditCellList.Free;
+  inherited Destroy;
+end;
+
+function TLazTemplateParser.GetSrcPosition: Integer;
+begin
+  Result := FSrcPosition;
+end;
+
+function TLazTemplateParser.GetDestPosition: Integer;
+begin
+  Result := FDestPosition;
+end;
+
+function TLazTemplateParser.GetDestPosX: Integer;
+begin
+  Result := FDestPosX;
+end;
+
+function TLazTemplateParser.GetDestPosY: Integer;
+begin
+  Result := FDestPosY;
+end;
+
+function TLazTemplateParser.GetSrcTemplate: String;
+begin
+  Result := FSrcTemplate;
+end;
+
+function TLazTemplateParser.GetDestTemplate: String;
+begin
+  Result := FDestTemplate;
+end;
+
+function TLazTemplateParser.SubstituteMacro(const MacroName, MacroParameter: string;
+  var MacroValue: string): boolean;
+var
+  Macro: TIDECodeMacro;
+  NewValue: String;
+  ErrMsg: string;
+begin
+  Result := false;
+  Macro := IDECodeMacros.FindByName(MacroName);
+  //debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
+  if Macro <> nil then begin
+    // substitute macros in Parameter
+    MacroValue := MacroParameter;
+    if (FLevel < MaxLevel) and (not SubstituteMacros(MacroValue)) then
+      exit;
+
+    if Macro.Interactive then begin
+      // collect interactive macro
+      debugln('SubstitutMacros TODO interactive macros');
+    end else begin
+      // normal macro -> substitute
+      NewValue:='';
+      try
+        if not Macro.GetValue(MacroValue, nil, FSrcEdit, NewValue, ErrMsg, self)
+        then
+          exit;
+      except
+        exit;
+      end;
+      MacroValue:=NewValue;
+    end;
+  end else begin
+    // macro unknown
+    MacroValue:='UnknownMacro('+MacroName+')';
+  end;
+  if ErrMsg='' then ;
+  Result:=true;
+end;
+
+function TLazTemplateParser.SubstituteMacros(var Template: String): boolean;
+
+  procedure AppentToDest(S: String);
+  var
+    i, i2: Integer;
+  begin
+    i := 1;
+    i2 := 1;
+    while i <= length(S) do begin
+      case s[i] of
+        #10, #13:
+          begin
+            inc(i);
+            if (i <= length(S)) and (s[i] in [#10,#13]) and (s[i] <> s[i-1]) then
+              inc(i);
+            if (FDestTemplate <> '') and (i > i2) and
+               (FDestTemplate[length(FDestTemplate)] in [#10, #13])
+            then
+              FDestTemplate := FDestTemplate + FIndent;
+            FDestTemplate := FDestTemplate + copy(s, i2, i - i2);
+            i2 := i;
+            FDestPosX := 1 + length(FIndent);
+            inc(FDestPosY);
+          end;
+        else
+          begin
+            if (s[i] = '|') and (FCaret.y < 0) then begin
+              System.Delete(s, i, 1);
+              FCaret.y := FDestPosY;
+              FCaret.x := FDestPosX;
+            end
+            else begin
+              inc(i);
+              inc(FDestPosX);
+            end;
+        end;
+      end;
+    end;
+    if (FDestTemplate <> '') and (i > i2) and
+       (FDestTemplate[length(FDestTemplate)] in [#10, #13])
+    then
+      FDestTemplate := FDestTemplate + FIndent;
+    FDestTemplate := FDestTemplate + copy(s, i2, i - i2);
+    FDestPosition := length(FDestTemplate);
+  end;
+
+var
+  p: LongInt;
+  len: Integer;
+  SrcCopiedPos: LongInt;
+  MacroStartPos: LongInt;
+  MacroParamStartPos: LongInt;
+  MacroParamEndPos: LongInt;
+  MacroEndPos: LongInt;
+  MacroName: String;
+  MacroParameter: String;
+  MacroValue: string;
+  Lvl: Integer;
+  SaveSrcPos: LongInt;
+begin
+  // replace as many macros as possible
+  inc(FLevel);
+  p:=1;
+  SrcCopiedPos := 1;
+  len:=length(Template);
+  while p <= len do begin
+    case Template[p] of
+      '$':
+        begin
+          inc(p);
+          // could be a macro start
+          MacroStartPos := p - 1;
+          MacroEndPos   := -1;
+
+          if (p <= len) and (Template[p]='$') then begin
+            System.Delete(Template, p, 1);
+            inc(FSrcPosition);
+          end
+          else begin
+            // find the macro end
+            while (p <= len) and (Template[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
+              inc(p);
+            if FEnableMacros and (p <= len) and (p-MacroStartPos > 1) and
+               (Template[p] = '(') then
+            begin
+              inc(p);
+              MacroParamStartPos:=p;
+              Lvl:=1;
+              while (p<=len) and (Lvl>0) do begin
+                case Template[p] of
+                '(': inc(Lvl);
+                ')': dec(Lvl);
+                end;
+                inc(p);
+              end;
+              if Lvl=0 then begin
+                // macro parameter end found
+                MacroParamEndPos:=p-1;
+                MacroEndPos:=p;
+              end;
+            end;
+          end;
+
+          if MacroEndPos < 0 then begin
+            // not a macro
+            p := MacroStartPos + 1;
+            inc(FSrcPosition);
+          end
+          else begin
+            // Got a Macro
+            if FLevel = 1 then begin
+              AppentToDest(copy(Template, SrcCopiedPos, MacroStartPos - SrcCopiedPos));
+            end;
+            FSrcPosition := FSrcPosition + MacroEndPos - MacroStartPos;
+            // read macro name
+            MacroName:=copy(Template,MacroStartPos+1,
+                                          MacroParamStartPos-MacroStartPos-2);
+            MacroParameter:=copy(Template,MacroParamStartPos,
+                                         MacroParamEndPos-MacroParamStartPos);
+
+            SaveSrcPos := FSrcPosition;
+            if not SubstituteMacro(MacroName,MacroParameter,MacroValue) then
+              exit(false);
+            FSrcPosition := SaveSrcPos;
+            //debugln('SubstituteMacros MacroName="',MacroName,'" MacroParameter="',MacroParameter,'" MacroValue="',MacroValue,'"');
+
+            Template := copy(Template, 1, MacroStartPos-1)
+                      + MacroValue
+                      + copy(Template, MacroEndPos, len);
+            len:=length(Template);
+            p:=MacroStartPos+length(MacroValue);
+            SrcCopiedPos := p;
+            // scan the result for new lines
+            if FLevel = 1 then
+              AppentToDest(MacroValue);
+          end;
+          // else it is a normal $ character
+        end;
+      else
+        begin
+          inc(p);
+          inc(FSrcPosition);
+        end;
+    end;
+  end;
+
+  if FLevel = 1 then begin
+    AppentToDest(copy(Template, SrcCopiedPos, p - SrcCopiedPos));
+  end;
+  dec(FLevel);
+  Result:=true;
+end;
+
+function TLazTemplateParser.SubstituteCodeMacros(SrcEdit: TSourceEditorInterface): boolean;
+begin
+  FDestTemplate := '';
+  FDestPosition := 1;
+  FDestPosX := 1;
+  FDestPosY := 1;
+  FLevel := 0;
+  FSrcEdit := SrcEdit;
+  Result := SubstituteMacros(FSrcTemplate);
+end;
+
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
@@ -60,44 +372,23 @@ var
   p: TPoint;
   TokenStartX: LongInt;
   s: string;
-  NewCaretPos: Boolean;
-  Temp: TStringList;
   IndentLen: Integer;
   i: Integer;
   j: LongInt;
   Pattern: String;
   LineText: String;
+  Parser: TLazTemplateParser;
 begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
   AEditor:=SrcEdit.EditorControl as TCustomSynEdit;
-  
   Pattern:=TemplateValue;
-  if Attributes.IndexOfName(CodeTemplateEnableMacros)>=0 then begin
-    // macros enabled
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
-    if not SubstituteCodeMacros(SrcEdit,Pattern) then exit;
-  end;
 
+  Parser := TLazTemplateParser.Create(Pattern);
   AEditor.BeginUpdate;
   try
-    // get old caret position in text
     p := AEditor.LogicalCaretXY;
-
-    // select token in editor
     TokenStartX:=p.x;
-    s:=AEditor.Lines[p.y-1];
-    if TokenStartX>length(s) then
-      TokenStartX:=length(s)+1;
-    j:=length(TemplateName);
-    while (j>0)
-    and (AnsiCompareText(copy(TemplateName,1,j),copy(s,TokenStartX-j,j))<>0) do
-      dec(j);
-    dec(TokenStartX,j);
-    AEditor.BlockBegin := Point(TokenStartX, p.y);
-    AEditor.BlockEnd := p;
-    
-    // indent the completion string if necessary, determine the caret pos
     if IndentToTokenStart then begin
       IndentLen := TokenStartX - 1;
     end else begin
@@ -112,58 +403,33 @@ begin
       IndentLen:=AEditor.LogicalToPhysicalCol(s, p.y - 1, IndentLen);// consider tabs
       dec(IndentLen);
     end;
-    p := AEditor.BlockBegin;
-    NewCaretPos := False;
-    Temp := TStringList.Create;
-    try
-      Temp.Text := Pattern;
-      
-      // add empty line at end if wanted
-      s:=Pattern;
-      if (s<>'') and (s[length(s)] in [#10,#13]) then
-        Temp.Add('');
 
-      // indent lines
-      if (IndentLen > 0) and (Temp.Count > 1) then
-      begin
-        s := StringOfChar(' ', IndentLen);
-        for i := 1 to Temp.Count - 1 do
-          Temp[i] := s + Temp[i];
-      end;
-      // find first '|' and use it as caret position
-      for i := 0 to Temp.Count - 1 do
-      begin
-        s := Temp[i];
-        j := Pos('|', s);
-        while j > 0 do
-        begin
-          Delete(s, j, 1);
-          Temp[i] := s;
-          if (not NewCaretPos) then
-          begin
-            Inc(p.y, i);
-            if i = 0 then
-              Inc(p.x, j - 1)
-            else
-              p.x := j;
-            NewCaretPos := TRUE;
-          end;
-          j := Pos('|', s);
-          //break;
-        end;
-      end;
-      s := Temp.Text;
-      // strip the trailing #13#10 that was appended by the stringlist
-      i := Length(s);
-      if (i>=1) and (s[i] in [#10,#13]) then begin
-        dec(i);
-        if (i>=1) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
-          dec(i);
-        SetLength(s, i);
-      end;
-    finally
-      Temp.Free;
+    Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
+    Parser.Indent := StringOfChar(' ', IndentLen);
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+    if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
+
+    s:=AEditor.Lines[p.y-1];
+    if TokenStartX>length(s) then
+      TokenStartX:=length(s)+1;
+    j:=length(TemplateName);
+    while (j>0)
+    and (AnsiCompareText(copy(TemplateName,1,j),copy(s,TokenStartX-j,j))<>0) do
+      dec(j);
+    dec(TokenStartX,j);
+    AEditor.BlockBegin := Point(TokenStartX, p.y);
+    AEditor.BlockEnd := p;
+
+    // New Caret
+    p := Parser.DestCaret ;
+    if p.y < 0 then
+      p := AEditor.CaretXY
+    else begin
+      if p.y = 1 then
+        p.x := p.x + TokenStartX - 1;
+      p.y := p.y + AEditor.BlockBegin.y - 1; // Todo: logicalToPhysical
     end;
+
     // delete double end separator (e.g. avoid creating two semicolons 'begin end;;')
     if (s<>'') and (System.Pos(s[length(s)],EndOfTokenChr)>0)
     and (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
@@ -174,142 +440,35 @@ begin
       if copy(LineText,AEditor.BlockEnd.X,1)=s[length(s)] then
         System.Delete(s,length(s),1);
     end;
-    // replace the selected text and position the caret
-    AEditor.SelText := s;
-    // position the caret
-    if NewCaretPos then 
+
+    i := AEditor.PluginCount - 1;
+    while i >= 0 do begin
+      if AEditor.Plugin[i] is TSynPluginTemplateEdit then begin
+        TSynPluginTemplateEdit(AEditor.Plugin[i]).CellParserEnabled := False;
+        TSynPluginTemplateEdit(AEditor.Plugin[i]).SetTemplate(Parser.DestTemplate, p);
+        TSynPluginTemplateEdit(AEditor.Plugin[i]).AddEditCells(Parser.EditCellList);
+        break;
+      end;
+      dec(i);
+    end;
+    if i < 0 then begin
+      // replace the selected text and position the caret
+      AEditor.SelText := Parser.DestTemplate;
       AEditor.MoveCaretIgnoreEOL(p);
-    AEditor.EnsureCursorPosVisible;
+    end;
   finally
     AEditor.EndUpdate;
+    Parser.Free;
   end;
   Result:=true;
 end;
 
-function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface;
-  var Pattern: string): boolean;
-  
-const
-  MaxLevel = 10; // prevent cycling
+{ TLazSynPluginSyncEditList }
 
-  function SubstituteMacros(var Pattern: string; Level: integer): boolean; forward;
-
-  function SubstituteMacro(const MacroName, MacroParameter: string;
-    var MacroValue: string; Level: Integer): boolean;
-  var
-    Macro: TIDECodeMacro;
-    NewValue: String;
-    ErrMsg: string;
-  begin
-    Result:=false;
-    Macro:=IDECodeMacros.FindByName(MacroName);
-    //debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
-    if Macro<>nil then begin
-      // macro found
-      
-      // substitute macros in Parameter
-      MacroValue:=MacroParameter;
-      if (Level<MaxLevel) and (not SubstituteMacros(MacroValue,Level+1)) then
-        exit;
-
-      if Macro.Interactive then begin
-        // collect interactive macro
-        debugln('SubstituteCodeMacros TODO interactive macros');
-      end else begin
-        // normal macro -> substitute
-        NewValue:='';
-        try
-          if not Macro.GetValue(MacroValue,nil,SrcEdit,NewValue,ErrMsg) then
-            exit;
-        except
-          exit;
-        end;
-        MacroValue:=NewValue;
-      end;
-    end else begin
-      // macro unknown
-      MacroValue:='UnknownMacro('+MacroName+')';
-    end;
-    if ErrMsg='' then ;
-    Result:=true;
-  end;
-  
-  function SubstituteMacros(var Pattern: string; Level: integer): boolean;
-  var
-    p: Integer;
-    len: Integer;
-    MacroStartPos: LongInt;
-    MacroParamStartPos: LongInt;
-    MacroParamEndPos: LongInt;
-    MacroEndPos: LongInt;
-    MacroName: String;
-    MacroParameter: String;
-    MacroValue: string;
-  begin
-    // replace as many macros as possible
-    p:=1;
-    len:=length(Pattern);
-    while p<len do begin
-      if Pattern[p]<>'$' then begin
-        inc(p);
-      end else begin
-        // could be a macro start
-        MacroStartPos:=p;
-        inc(p);
-        if Pattern[p+1]='$' then begin
-          // $$ is a simple $ character
-          System.Delete(Pattern,p,1);
-          len:=length(Pattern);
-        end else if Pattern[p+1] in ['a'..'z','A'..'Z'] then begin
-          // read macro name
-          while (p<len) and (Pattern[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
-            inc(p);
-          if (p>len) or (p-MacroStartPos=1) or (Pattern[p]<>'(') then begin
-            // missing name or missing round bracket open
-            debugln('SubstituteMacros missing name or missing round bracket open');
-          end else begin
-            // round bracket open found
-            inc(p);
-            MacroParamStartPos:=p;
-            Level:=1;
-            while (p<=len) and (Level>0) do begin
-              case Pattern[p] of
-              '(': inc(Level);
-              ')': dec(Level);
-              end;
-              inc(p);
-            end;
-            if Level=0 then begin
-              // macro parameter end found
-              MacroParamEndPos:=p-1;
-              MacroEndPos:=p;
-              MacroName:=copy(Pattern,MacroStartPos+1,
-                                            MacroParamStartPos-MacroStartPos-2);
-              MacroParameter:=copy(Pattern,MacroParamStartPos,
-                                           MacroParamEndPos-MacroParamStartPos);
-              if not SubstituteMacro(MacroName,MacroParameter,MacroValue,Level)
-              then
-                exit(false);
-              //debugln('SubstituteMacros MacroName="',MacroName,'" MacroParameter="',MacroParameter,'" MacroValue="',MacroValue,'"');
-              Pattern:=copy(Pattern,1,MacroStartPos-1)+MacroValue
-                      +copy(Pattern,MacroEndPos,len);
-              len:=length(Pattern);
-              p:=MacroStartPos+length(MacroValue);
-            end else begin
-              // macro parameter end not found
-              debugln('SubstituteMacros macro parameter end not found');
-            end;
-          end;
-        end else begin
-          // a normal $ character
-        end;
-      end;
-    end;
-    Result:=true;
-  end;
-  
+function TLazSynPluginSyncEditList.AddNew: TSynPluginSyncEditCell;
 begin
-  Result:=SubstituteMacros(Pattern,0);
+  Result := TLazSynPluginSyncEditCell.Create;
+  Add(Result);
 end;
 
 initialization

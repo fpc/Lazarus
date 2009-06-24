@@ -294,6 +294,7 @@ const
   ecLazarusLast             = ecFirstLazarus + 2000;
 
 
+
 type
   TIDECommand = class;
   TIDECommandCategory = class;
@@ -492,6 +493,8 @@ var
 var
   IDECmdScopeSrcEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnly: TIDECommandScope;
+  IDECmdScopeSrcEditOnlyTmplEdit: TIDECommandScope;
+  IDECmdScopeSrcEditOnlyTmplEditOff: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
   IDECmdScopeObjectInspectorOnly: TIDECommandScope;
 
@@ -578,6 +581,8 @@ begin
   IDECommandScopes:=TIDECommandScopes.Create;
   IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
   IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
+  IDECmdScopeSrcEditOnlyTmplEdit:=RegisterIDECommandScope('SourceEditorOnlyTemplateEdit');
+  IDECmdScopeSrcEditOnlyTmplEditOff:=RegisterIDECommandScope('SourceEditorOnlyTemplateEditOff');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
   IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
 end;

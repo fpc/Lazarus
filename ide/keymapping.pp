@@ -35,7 +35,7 @@ uses
   LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList, ExtCtrls,
-  SynEditKeyCmds, Laz_XMLCfg,
+  SynEditKeyCmds, SynPluginTemplateEdit, Laz_XMLCfg,
   PropEdits, IDECommands, LazarusIDEStrConsts;
 
 type
@@ -406,7 +406,20 @@ begin
   ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveUnusedUnits: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindOverloads: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-
+{
+  // edit templates
+  ecIDESynTemplateEdit + ecSynPTmplEdNextCell           = srkmecSynPTmplEdNextCell;
+  ecIDESynTemplateEdit + ecSynPTmplEdNextCellSel        = srkmecSynPTmplEdNextCellSel;
+  ecIDESynTemplateEdit + ecSynPTmplEdNextCellRotate     = srkmecSynPTmplEdNextCellRotate;
+  ecIDESynTemplateEdit + ecSynPTmplEdNextCellSelRotate  = srkmecSynPTmplEdNextCellSelRotate;
+  ecIDESynTemplateEdit + ecSynPTmplEdPrevCell           = srkmecSynPTmplEdPrevCell;
+  ecIDESynTemplateEdit + ecSynPTmplEdPrevCellSel        = srkmecSynPTmplEdPrevCellSel;
+  ecIDESynTemplateEdit + ecSynPTmplEdCellHome           = srkmecSynPTmplEdCellHome;
+  ecIDESynTemplateEdit + ecSynPTmplEdCellEnd            = srkmecSynPTmplEdCellEnd;
+  ecIDESynTemplateEdit + ecSynPTmplEdCellSelect         = srkmecSynPTmplEdCellSelect;
+  ecIDESynTemplateEdit + ecSynPTmplEdFinish             = srkmecSynPTmplEdFinish;
+  ecIDESynTemplateEdit + ecSynPTmplEdEscape             = srkmecSynPTmplEdEscape;
+}
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
@@ -556,7 +569,37 @@ begin
   ecDesignerBackOne     : SetResult(VK_NEXT,[ssCtrl],VK_UNKNOWN,[]);
 
   else
-    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+    begin
+      SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+    end;
   end;
 end;
 
@@ -899,7 +942,38 @@ begin
   ecDesignerBackOne     : SetResult(VK_NEXT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   else
-    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+    begin
+      SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      end;
+    end;
   end;
 (*//F1                      Topic Search
 //Ctrl+F1                Topic Search
@@ -1432,7 +1506,38 @@ begin
   ecDesignerBackOne     : SetResult(VK_NEXT,[ssMeta],VK_UNKNOWN,[]);
 
   else
-    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+    begin
+      SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      case TSynPluginTemplateEdit.ConvertCommandToBase(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginTemplateEdit.ConvertCommandToBaseOff(Command) of
+        // Edit template
+        ecSynPTmplEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellRotate:      SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdNextCellSelRotate:   SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPTmplEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellHome:            SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellEnd:             SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdCellSelect:          SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+        ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+    end;
   end;
 end;
 
@@ -1842,7 +1947,37 @@ begin
     ecDesignerBackOne         : Result:= lisDsgOrderBackOne;
 
     else
-      Result:= srkmecunknown;
+      begin
+        Result:= srkmecunknown;
+        case TSynPluginTemplateEdit.ConvertCommandToBase(cmd) of
+          // Edit template
+          ecSynPTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
+          ecSynPTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
+          ecSynPTmplEdNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
+          ecSynPTmplEdNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
+          ecSynPTmplEdPrevCell:           Result := srkmecSynPTmplEdPrevCell;
+          ecSynPTmplEdPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
+          ecSynPTmplEdCellHome:           Result := srkmecSynPTmplEdCellHome;
+          ecSynPTmplEdCellEnd:            Result := srkmecSynPTmplEdCellEnd;
+          ecSynPTmplEdCellSelect:         Result := srkmecSynPTmplEdCellSelect;
+          ecSynPTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
+          ecSynPTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
+        end;
+        case TSynPluginTemplateEdit.ConvertCommandToBaseOff(cmd) of
+          // Edit template
+          ecSynPTmplEdNextCell:           Result := srkmecSynPTmplEdNextCell;
+          ecSynPTmplEdNextCellSel:        Result := srkmecSynPTmplEdNextCellSel;
+          ecSynPTmplEdNextCellRotate:     Result := srkmecSynPTmplEdNextCellRotate;
+          ecSynPTmplEdNextCellSelRotate:  Result := srkmecSynPTmplEdNextCellSelRotate;
+          ecSynPTmplEdPrevCell:           Result := srkmecSynPTmplEdPrevCell;
+          ecSynPTmplEdPrevCellSel:        Result := srkmecSynPTmplEdPrevCellSel;
+          ecSynPTmplEdCellHome:           Result := srkmecSynPTmplEdCellHome;
+          ecSynPTmplEdCellEnd:            Result := srkmecSynPTmplEdCellEnd;
+          ecSynPTmplEdCellSelect:         Result := srkmecSynPTmplEdCellSelect;
+          ecSynPTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
+          ecSynPTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
+        end;
+      end;
   end;
 end;
 
@@ -1971,6 +2106,7 @@ end;
 procedure TKeyCommandRelationList.CreateDefaultMapping;
 var
   C: TIDECommandCategory;
+  o: LongInt;
 begin
   Clear;
 
@@ -2228,6 +2364,36 @@ begin
     ecRemoveUnusedUnits);
   AddDefault(C, 'Find overloads', srkmecFindOverloads,
     ecFindOverloads);
+
+  // Template editing
+  C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];
+  o := TSynPluginTemplateEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
+  AddDefault(C, 'Edit Template Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
+  AddDefault(C, 'Edit Template Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
+  AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
+  AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
+  AddDefault(C, 'Edit Template Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
+  AddDefault(C, 'Edit Template Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
+  AddDefault(C, 'Edit Template Goto first pos in cell', srkmecSynPTmplEdCellHome, ecSynPTmplEdCellHome + o);
+  AddDefault(C, 'Edit Template Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecSynPTmplEdCellEnd + o);
+  AddDefault(C, 'Edit Template Select cell', srkmecSynPTmplEdCellSelect, ecSynPTmplEdCellSelect + o);
+  AddDefault(C, 'Edit Template Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
+  AddDefault(C, 'Edit Template Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
+
+  // Template editing not in cell
+  C:=Categories[AddCategory('Edit Template Off', srkmCatTemplateEditOff, IDECmdScopeSrcEditOnlyTmplEditOff)];
+  o := TSynPluginTemplateEdit.ConvertBaseToCommandOff(ecPluginFirst) - ecPluginFirst;
+  AddDefault(C, 'Edit Template (off) Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
+  AddDefault(C, 'Edit Template (off) Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
+  AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
+  AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
+  AddDefault(C, 'Edit Template (off) Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
+  AddDefault(C, 'Edit Template (off) Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
+  AddDefault(C, 'Edit Template (off) Goto first pos in cell', srkmecSynPTmplEdCellHome, ecSynPTmplEdCellHome + o);
+  AddDefault(C, 'Edit Template (off) Goto last pos in cell', srkmecSynPTmplEdCellEnd, ecSynPTmplEdCellEnd + o);
+  AddDefault(C, 'Edit Template (off) Select cell', srkmecSynPTmplEdCellSelect, ecSynPTmplEdCellSelect + o);
+  AddDefault(C, 'Edit Template (off) Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
+  AddDefault(C, 'Edit Template (off) Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,
@@ -2711,81 +2877,86 @@ var
   Key: TSynEditKeyStroke;
   CurRelation: TKeyCommandRelation;
 begin
-  for a:=0 to FRelations.Count-1 do begin
-    CurRelation:=Relations[a];
-    if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
-    or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
-        and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
-    then
-      MaxKeyCnt:=0
-    else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
-      MaxKeyCnt:=1
-    else
-      MaxKeyCnt:=2;
-    KeyCnt:=1;
-    b:=ASynEditKeyStrokes.Count-1;
-    // replace keys
-    while b>=0 do begin
-      Key:=ASynEditKeyStrokes[b];
-      if Key.Command=CurRelation.Command then begin
-        if KeyCnt>MaxKeyCnt then begin
-          // All keys with this command are already defined
-          // -> delete this one
-          Key.Free;
-        end else if KeyCnt=1 then begin
-          // Define key1 for this command
+  try
+    ASynEditKeyStrokes.UsePluginOffset := True;
+    for a:=0 to FRelations.Count-1 do begin
+      CurRelation:=Relations[a];
+      if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
+      or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
+          and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
+      then
+        MaxKeyCnt:=0
+      else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
+        MaxKeyCnt:=1
+      else
+        MaxKeyCnt:=2;
+      KeyCnt:=1;
+      b:=ASynEditKeyStrokes.Count-1;
+      // replace keys
+      while b>=0 do begin
+        Key:=ASynEditKeyStrokes[b];
+        if Key.Command=CurRelation.Command then begin
+          if KeyCnt>MaxKeyCnt then begin
+            // All keys with this command are already defined
+            // -> delete this one
+            Key.Free;
+          end else if KeyCnt=1 then begin
+            // Define key1 for this command
+            Key.Key:=CurRelation.ShortcutA.Key1;
+            Key.Shift:=CurRelation.ShortcutA.Shift1;
+            Key.Key2:=CurRelation.ShortcutA.Key2;
+            Key.Shift2:=CurRelation.ShortcutA.Shift2;
+          end else if KeyCnt=2 then begin
+            // Define key2 for this command
+            Key.Key:=CurRelation.ShortcutB.Key1;
+            Key.Shift:=CurRelation.ShortcutB.Shift1;
+            Key.Key2:=CurRelation.ShortcutB.Key2;
+            Key.Shift2:=CurRelation.ShortcutB.Shift2;
+          end;
+          inc(KeyCnt);
+        end
+        else
+        if MaxKeyCnt > 0 then begin
+          // Key with a different ecCommand => Remove if it has a conflicting keystroke(s)
+          if ( (CurRelation.ShortcutA.Key1 <> VK_UNKNOWN) and
+               (Key.Key = CurRelation.ShortcutA.Key1)     and
+               (Key.Shift = CurRelation.ShortcutA.Shift1) and
+               ( (CurRelation.ShortcutA.Key2 = VK_UNKNOWN) or
+                 ( (Key.Key2 = CurRelation.ShortcutA.Key2) and
+                   (Key.Shift2 = CurRelation.ShortcutA.Shift2) )
+               ) )
+          OR ( (CurRelation.ShortcutB.Key1 <> VK_UNKNOWN) and
+               (Key.Key = CurRelation.ShortcutB.Key1)     and
+               (Key.Shift = CurRelation.ShortcutB.Shift1) and
+               ( (CurRelation.ShortcutB.Key2 = VK_UNKNOWN) or
+                 ( (Key.Key2 = CurRelation.ShortcutB.Key2) and
+                   (Key.Shift2 = CurRelation.ShortcutB.Shift2) )
+               ) )
+          then
+            Key.Free;
+        end;
+        dec(b);
+      end;
+      // add missing keys
+      while KeyCnt<=MaxKeyCnt do begin
+        Key:=ASynEditKeyStrokes.Add;
+        Key.Command:=CurRelation.Command;
+        if KeyCnt=1 then begin
           Key.Key:=CurRelation.ShortcutA.Key1;
           Key.Shift:=CurRelation.ShortcutA.Shift1;
           Key.Key2:=CurRelation.ShortcutA.Key2;
           Key.Shift2:=CurRelation.ShortcutA.Shift2;
-        end else if KeyCnt=2 then begin
-          // Define key2 for this command
+        end else begin
           Key.Key:=CurRelation.ShortcutB.Key1;
           Key.Shift:=CurRelation.ShortcutB.Shift1;
           Key.Key2:=CurRelation.ShortcutB.Key2;
           Key.Shift2:=CurRelation.ShortcutB.Shift2;
         end;
         inc(KeyCnt);
-      end
-      else
-      if MaxKeyCnt > 0 then begin
-        // Key with a different ecCommand => Remove if it has a conflicting keystroke(s)
-        if ( (CurRelation.ShortcutA.Key1 <> VK_UNKNOWN) and
-             (Key.Key = CurRelation.ShortcutA.Key1)     and
-             (Key.Shift = CurRelation.ShortcutA.Shift1) and
-             ( (CurRelation.ShortcutA.Key2 = VK_UNKNOWN) or
-               ( (Key.Key2 = CurRelation.ShortcutA.Key2) and
-                 (Key.Shift2 = CurRelation.ShortcutA.Shift2) )
-             ) )
-        OR ( (CurRelation.ShortcutB.Key1 <> VK_UNKNOWN) and
-             (Key.Key = CurRelation.ShortcutB.Key1)     and
-             (Key.Shift = CurRelation.ShortcutB.Shift1) and
-             ( (CurRelation.ShortcutB.Key2 = VK_UNKNOWN) or
-               ( (Key.Key2 = CurRelation.ShortcutB.Key2) and
-                 (Key.Shift2 = CurRelation.ShortcutB.Shift2) )
-             ) )
-        then
-          Key.Free;
       end;
-      dec(b);
     end;
-    // add missing keys
-    while KeyCnt<=MaxKeyCnt do begin
-      Key:=ASynEditKeyStrokes.Add;
-      Key.Command:=CurRelation.Command;
-      if KeyCnt=1 then begin
-        Key.Key:=CurRelation.ShortcutA.Key1;
-        Key.Shift:=CurRelation.ShortcutA.Shift1;
-        Key.Key2:=CurRelation.ShortcutA.Key2;
-        Key.Shift2:=CurRelation.ShortcutA.Shift2;
-      end else begin
-        Key.Key:=CurRelation.ShortcutB.Key1;
-        Key.Shift:=CurRelation.ShortcutB.Shift1;
-        Key.Key2:=CurRelation.ShortcutB.Key2;
-        Key.Shift2:=CurRelation.ShortcutB.Shift2;
-      end;
-      inc(KeyCnt);
-    end;
+  finally
+    ASynEditKeyStrokes.UsePluginOffset := False;
   end;
 end;
 

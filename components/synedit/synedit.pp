@@ -160,6 +160,11 @@ type
     var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
     Data: pointer; HandlerData: pointer) of object;
 
+  THookedKeyTranslationEvent = procedure(Sender: TObject;
+    Code: word; SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean;
+    var Handled: boolean; var Command: TSynEditorCommand;
+    FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes) of object;
+
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
   TProcessCommandEvent = procedure(Sender: TObject;
@@ -280,15 +285,24 @@ type
   { TSynEditPlugin }
 
   TSynEditPlugin = class(TSynEditFriend)
-  private
-    procedure SetSynedit(const AValue: TCustomSynEdit);
-    function GetSynEdit: TCustomSynEdit;
   protected
+    procedure SetEditor(const AValue: TCustomSynEdit); virtual;
+    function GetEditor: TCustomSynEdit;
     function OwnedByEditor: Boolean; virtual; // if true, this will be destroyed by synedit
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Editor: TCustomSynEdit read GetSynEdit write SetSynedit;
+    property Editor: TCustomSynEdit read GetEditor write SetEditor;
+  end;
+
+  { TSynHookedKeyTranslationList }
+
+  TSynHookedKeyTranslationList = Class(TMethodList)
+  public
+    procedure CallHookedKeyTranslationHandlers(Sender: TObject;
+      Code: word; SState: TShiftState; var Data: pointer;
+      var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; var ComboKeyStrokes: TSynEditKeyStrokes);
   end;
 
   TSynMouseLinkEvent = procedure (
@@ -377,7 +391,6 @@ type
     {$ENDIF}
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
-    FIsUndoing: Boolean;
     fBookMarks: array[0..9] of TSynEditMark;
     fMouseDownX: integer;
     fMouseDownY: integer;
@@ -391,7 +404,7 @@ type
     fInsertCaret: TSynEditCaretType;
     FCaretOffset: TPoint;
     FCaretWidth: Integer; // Width of caret in chars (for Overwrite caret)
-    fKeyStrokes: TSynEditKeyStrokes;
+    FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
     fModified: Boolean;
     fMarkList: TSynEditMarkList;
@@ -408,10 +421,9 @@ type
     fOptions2: TSynEditorOptions2;
     {$ENDIF}
     fStatusChanges: TSynStatusChanges;
-    fLastKey: word;
-    fLastShiftState: TShiftState;
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
+    FHookedKeyTranslationList: TSynHookedKeyTranslationList;
     fPlugins: TList;
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
@@ -438,6 +450,7 @@ type
     procedure AquirePrimarySelection;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
@@ -606,6 +619,8 @@ type
     function GetViewedTextBuffer: TSynEditStrings; override;
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;
+    function GetMarkupMgr: TObject; override;
+    function GetCaretObj: TSynEditCaret; override;
     procedure ScanFromAfterLock;
     procedure DecPaintLock;
     procedure DestroyWnd; override;
@@ -662,10 +677,6 @@ type
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
     procedure ShowCaret;
-    // If the translations requires Data, memory will be allocated for it via a
-    // GetMem call.  The client must call FreeMem on Data if it is not NIL.
-    function TranslateKeyCode(Code: word; Shift: TShiftState; var Data: pointer
-      {$IFDEF SYN_LAZARUS};out IsStartOfCombo: boolean{$ENDIF}): TSynEditorCommand;
     procedure UndoItem(Item: TSynEditUndoItem);
     property  UndoList: TSynEditUndoList read GetUndoList;
   protected
@@ -800,6 +811,9 @@ type
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
+    procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
+    procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+    procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     function RowColumnToPixels(
                       {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
@@ -825,7 +839,6 @@ type
     function HasDebugMark(ALine: Integer): Boolean;
     procedure SetDebugMarks(AFirst, ALast: Integer);
     procedure ClearDebugMarks;
-    procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
 {$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
 {$ENDIF}
@@ -879,9 +892,10 @@ type
     property OnKeyPress;
     property OnProcessCommand: TProcessCommandEvent
       read FOnProcessCommand write FOnProcessCommand;
+    function PluginCount: Integer;
+    property Plugin[Index: Integer]: TSynEditPlugin read GetPlugin;
     function MarkupCount: Integer;
-    property Markup[Index: integer]: TSynEditMarkup
-      read GetMarkup;
+    property Markup[Index: integer]: TSynEditMarkup read GetMarkup;
     property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
       read GetMarkupByClass;
     property TrimSpaceType: TSynEditStringTrimmingType
@@ -1322,6 +1336,11 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
+function TCustomSynEdit.GetPlugin(Index: Integer): TSynEditPlugin;
+begin
+  Result := TSynEditPlugin(fPlugins[Index]);
+end;
+
 function TCustomSynEdit.GetDividerDrawLevel: Integer;
 begin
   Result := fHighlighter.DrawDividerLevel;
@@ -1513,6 +1532,7 @@ begin
   fRedoList := TSynEditUndoList.Create;
   fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
   FIsUndoing := False;
+  FIsRedoing := False;
 
   TSynEditStringList(FLines).UndoList := fUndoList;
   TSynEditStringList(FLines).RedoList := fRedoList;
@@ -1553,6 +1573,8 @@ begin
   Height := 150;
   Width := 200;
   Cursor := crIBeam;
+  fPlugins := TList.Create;
+  FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
 {$IFDEF SYN_LAZARUS}
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
@@ -1608,7 +1630,8 @@ begin
   {$ENDIF}
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
-  fKeystrokes := TSynEditKeyStrokes.Create(Self);
+  FKeystrokes := TSynEditKeyStrokes.Create(Self);
+  FLastKeyStrokes := nil;
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
   end;
@@ -1734,24 +1757,26 @@ var
   i: integer;
 begin
   SurrenderPrimarySelection;
+  Highlighter := nil;
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   Beautifier:=nil;
   {$ENDIF}
-  RemoveHooksFromHighlighter;
-  FHighlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
     for i := 0 to fHookedCommandHandlers.Count - 1 do
       THookedCommandHandlerEntry(fHookedCommandHandlers[i]).Free;
-    fHookedCommandHandlers.Free;
+    FreeAndNil(fHookedCommandHandlers);
   end;
   if fPlugins <> nil then begin
     for i := fPlugins.Count - 1 downto 0 do
       if TSynEditPlugin(fPlugins[i]).OwnedByEditor then
-        TSynEditPlugin(fPlugins[i]).Free;
-    fPlugins.Free;
+        TSynEditPlugin(fPlugins[i]).Free
+      else
+        TSynEditPlugin(fPlugins[i]).Editor := nil;
+    FreeAndNil(fPlugins);
   end;
+  FreeAndNil(FHookedKeyTranslationList);
   {$IFNDEF SYN_LAZARUS}
   fScrollTimer.Free;
   fTSearch.Free;
@@ -2160,37 +2185,46 @@ var
   Data: pointer;
   C: char;
   Cmd: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}
-  IsStartOfCombo: boolean;
-  {$ENDIF}
+  IsStartOfCombo, Handled: boolean;
 begin
   FInMouseClickEvent := False;
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
   inherited;
-  {$IFDEF SYN_LAZARUS}
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState;
-  {$ENDIF}
   Data := nil;
   C := #0;
   try
-    Cmd := TranslateKeyCode(Key, Shift, Data {$IFDEF SYN_LAZARUS},IsStartOfCombo{$ENDIF});
+    IsStartOfCombo := False;
+    Handled := False;
+    // If the translations requires Data, memory will be allocated for it via a
+    // GetMem call.  The client must call FreeMem on Data if it is not NIL.
+    if FLastKeyStrokes = FKeyStrokes then begin
+      Cmd := KeyStrokes.FindKeycodeEx(Key, Shift, Data, IsStartOfCombo, True);
+      Handled := Cmd <> ecNone;
+    end;
+    // Hooked
+    if not Handled then
+      FHookedKeyTranslationList.CallHookedKeyTranslationHandlers(self,
+        Key, Shift, Data, IsStartOfCombo, Handled, Cmd, FLastKeyStrokes);
+    if not Handled then begin
+      Cmd := KeyStrokes.FindKeycodeEx(Key, Shift, Data, IsStartOfCombo);
+      if IsStartOfCombo then
+        FLastKeyStrokes := FKeyStrokes;
+    end;
+
     if Cmd <> ecNone then begin
-      {$IFDEF SYN_LAZARUS}
       LastMouseCaret:=Point(-1,-1);
-      {$ENDIF}
       //DebugLn(['[TCustomSynEdit.KeyDown] key translated ',cmd]);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);
-    {$IFDEF SYN_LAZARUS}
     end else if IsStartOfCombo then begin
       // this key could be the start of a two-key-combo shortcut
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
-    {$ENDIF}
     end else
       Exclude(fStateFlags, sfIgnoreNextChar);
   finally
@@ -3626,6 +3660,11 @@ begin
   inherited Invalidate;
 end;
 
+function TCustomSynEdit.PluginCount: Integer;
+begin
+  Result := fPlugins.Count;
+end;
+
 function TCustomSynEdit.MarkupCount: Integer;
 begin
   Result := FMarkupManager.Count;
@@ -3840,6 +3879,16 @@ begin
     FStrings.Assign(Value);
 end;
 
+function TCustomSynEdit.GetMarkupMgr: TObject;
+begin
+  Result := fMarkupManager;
+end;
+
+function TCustomSynEdit.GetCaretObj: TSynEditCaret;
+begin
+  Result := FCaret;
+end;
+
 procedure TCustomSynEdit.SetLineText(Value: string);
 begin
   FCaret.LineText := Value;
@@ -4020,16 +4069,10 @@ begin
 end;
 
 procedure TCustomSynEdit.MoveCaretIgnoreEOL(const NewCaret: TPoint);
-var
-  NewX: LongInt;
 begin
-  CaretXY:=NewCaret;
-  NewX:=Max(1,Min(fMaxLeftChar,NewCaret.X));
-  if CaretX<>NewX then begin
-    IncPaintLock;
-    CaretX:=NewX;
-    DecPaintLock;
-  end;
+  FCaret.IncForcePastEOL;
+  FCaret.LineCharPos := NewCaret;
+  FCaret.DecForcePastEOL;
 end;
 
 procedure TCustomSynEdit.MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
@@ -4770,6 +4813,7 @@ begin
   Group := fRedoList.PopItem;
   if Group <> nil then begin;
     IncPaintLock;
+    FIsRedoing := True;
     Item := Group.Pop;
     if Item <> nil then begin
       BeginUndoBlock;
@@ -4784,6 +4828,7 @@ begin
         EndUndoBlock;
       end;
     end;
+    FIsRedoing := False;
     Group.Free;
     if fRedoList.IsTopMarkedAsUnmodified then
       fUndoList.MarkTopAsUnmodified;
@@ -5518,46 +5563,6 @@ begin
   FKeystrokes.ResetDefaults;
 end;
 
-// If the translations requires Data, memory will be allocated for it via a
-// GetMem call.  The client must call FreeMem on Data if it is not NIL.
-
-function TCustomSynEdit.TranslateKeyCode(Code: word; Shift: TShiftState;
-  var Data: pointer
-  {$IFDEF SYN_LAZARUS};out IsStartOfCombo: boolean{$ENDIF}
-  ): TSynEditorCommand;
-var
-  i: integer;
-{$IFNDEF SYN_COMPILER_3_UP}
-const
-  VK_ACCEPT = $30;
-{$ENDIF}
-begin
-  i := KeyStrokes.FindKeycode2(fLastKey, fLastShiftState, Code, Shift);
-  if i >= 0 then begin
-    Result := KeyStrokes[i].Command
-  end else begin
-    i := Keystrokes.FindKeycode(Code, Shift);
-    if i >= 0 then begin
-      Result := Keystrokes[i].Command
-    end else
-      Result := ecNone;
-  end;
-  if (Result = ecNone) and (Code >= VK_ACCEPT) and (Code <= VK_SCROLL) then
-  begin
-    fLastKey := Code;
-    fLastShiftState := Shift;
-    {$IFDEF SYN_LAZARUS}
-    IsStartOfCombo:=KeyStrokes.FindKeycode2Start(Code,Shift)>=0;
-    {$ENDIF}
-  end else begin
-    fLastKey := 0;
-    fLastShiftState := [];
-    {$IFDEF SYN_LAZARUS}
-    IsStartOfCombo:=false;
-    {$ENDIF}
-  end;
-end;
-
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
   Data: pointer);
@@ -5932,7 +5937,6 @@ begin
       ecInsertLine,
       ecLineBreak:
         if not ReadOnly then begin
-          // current line is empty (len = 0)
           if FTheLinesView.Count = 0 then
             FTheLinesView.Add('');
           if SelAvail then begin
@@ -8511,6 +8515,16 @@ begin
 {$ENDIF}
 end;
 
+procedure TCustomSynEdit.RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+begin
+  FHookedKeyTranslationList.Add(TMEthod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+begin
+  FHookedKeyTranslationList.Remove(TMEthod(AHandlerProc));
+end;
+
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
   var Command: TSynEditorCommand;
   var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
@@ -8726,27 +8740,24 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditPlugin.SetSynedit(const AValue: TCustomSynEdit);
+procedure TSynEditPlugin.SetEditor(const AValue: TCustomSynEdit);
 begin
   if AValue = FriendEdit then exit;
   if (FriendEdit <> nil) and (Editor.fPlugins <> nil) then
     Editor.fPlugins.Remove(FriendEdit);
   FriendEdit := AValue;
-  if FriendEdit <> nil then begin
-    if Editor.fPlugins = nil then
-      Editor.fPlugins := TList.Create;
+  if FriendEdit <> nil then
     Editor.fPlugins.Add(Self);
-  end;
 end;
 
-function TSynEditPlugin.GetSynEdit: TCustomSynEdit;
+function TSynEditPlugin.GetEditor: TCustomSynEdit;
 begin
   Result := FriendEdit as TSynEdit;
 end;
 
 function TSynEditPlugin.OwnedByEditor: Boolean;
 begin
-  Result := False;
+  Result := Owner = nil;
 end;
 
 procedure Register;
@@ -8773,6 +8784,27 @@ begin
   RegisterPropertyToSkip(TSynGutter, 'GutterParts', '', '');
   RegisterPropertyToSkip(TSynGutter, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynEdit, 'CFDividerDrawLevel', '', '');
+end;
+
+{ TSynHookedKeyTranslationList }
+
+procedure TSynHookedKeyTranslationList.CallHookedKeyTranslationHandlers(Sender: TObject;
+  Code: word; SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand;
+  var ComboKeyStrokes: TSynEditKeyStrokes);
+var
+  i: Integer;
+begin
+  // Finish Combo ?
+  for i := 0 to Count - 1 do
+    THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
+      IsStartOfCombo, Handled, Command, True, ComboKeyStrokes);
+  if Handled then
+    exit;
+  // New Stroke ?
+  for i := 0 to Count - 1 do
+    THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
+      IsStartOfCombo, Handled, Command, False, ComboKeyStrokes);
 end;
 
 initialization

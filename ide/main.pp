@@ -1908,6 +1908,9 @@ begin
   IDECmdScopeSrcEdit.AddWindowClass(nil);
   IDECmdScopeSrcEditOnly.AddWindowClass(TSourceEditorWindowInterface);
 
+  IDECmdScopeSrcEditOnlyTmplEdit.AddWindowClass(TLazSynPluginTemplateEditForm);
+  IDECmdScopeSrcEditOnlyTmplEditOff.AddWindowClass(TLazSynPluginTemplateEditFormOff);
+
   EditorOpts.KeyMap.CreateDefaultMapping;
 end;
 

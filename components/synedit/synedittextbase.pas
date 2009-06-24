@@ -201,6 +201,7 @@ type
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+    property NextLines: TSynEditStrings read fSynStrings;
   public
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;

@@ -48,7 +48,7 @@ uses
   Windows,
   {$ENDIF}
   Classes, Graphics, Controls, SysUtils, Clipbrd,
-  SynEditMiscProcs, SynEditTypes, SynEditTextBase;
+  SynEditMiscProcs, SynEditTypes, SynEditTextBase, SynEditPointClasses;
 
 type
 
@@ -59,28 +59,38 @@ type
 
   TSynEditBase = class(TCustomControl)
   protected
+    FIsUndoing, FIsRedoing: Boolean;
+    function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
+    function GetCaretObj: TSynEditCaret; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
 
+    property MarkupMgr: TObject read GetMarkupMgr;
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // No uncommited (trailing/trimmable) spaces
   public
     property Lines: TStrings read GetLines write SetLines;
   end;
 
-  { TSynEditPluginBase }
-
   { TSynEditFriend }
 
   TSynEditFriend = class(TComponent)
   private
     FFriendEdit: TSynEditBase;
+    function GetCaretObj: TSynEditCaret;
+    function GetIsRedoing: Boolean;
+    function GetIsUndoing: Boolean;
+    function GetMarkupMgr: TObject;
     function GetViewedTextBuffer: TSynEditStrings;
   protected
     property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property CaretObj: TSynEditCaret read GetCaretObj;
+    property MarkupMgr: TObject read GetMarkupMgr;
+    property IsUndoing: Boolean read GetIsUndoing;
+    property IsRedoing: Boolean read GetIsRedoing;
   end;
 
 
@@ -338,6 +348,26 @@ implementation
 function TSynEditFriend.GetViewedTextBuffer: TSynEditStrings;
 begin
   Result := FFriendEdit.ViewedTextBuffer;
+end;
+
+function TSynEditFriend.GetMarkupMgr: TObject;
+begin
+  Result := FFriendEdit.MarkupMgr;
+end;
+
+function TSynEditFriend.GetIsRedoing: Boolean;
+begin
+  Result := FFriendEdit.FIsRedoing;
+end;
+
+function TSynEditFriend.GetCaretObj: TSynEditCaret;
+begin
+  Result := FFriendEdit.GetCaretObj;
+end;
+
+function TSynEditFriend.GetIsUndoing: Boolean;
+begin
+  Result := FFriendEdit.FIsUndoing;
 end;
 
 { TSynSelectedColor }

@@ -51,7 +51,7 @@ uses
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
   SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks, SynBeautifier,
-  SynEditTextBase,
+  SynEditTextBase, SynPluginTemplateEdit,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -2545,12 +2545,12 @@ Begin
       OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
-
     end;
     if FCodeTemplates<>nil then
       FCodeTemplates.AddEditor(FEditor);
     if aCompletion<>nil then
       aCompletion.AddEditor(FEditor);
+    TSynPluginTemplateEdit.Create(FEditor);
     RefreshEditorSettings;
     FEditor.EndUpdate;
   end else begin

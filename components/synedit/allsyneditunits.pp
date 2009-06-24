@@ -19,6 +19,7 @@ uses
   SynEdit, SynEditHighlighter, SynCompletion, SynEditAutoComplete, 
   SynEditLazDsgn, SynRegExpr, SynEditRegexSearch, SynEditExport, 
   SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
+  SynPluginSyncEditBase, SynPluginTemplateEdit,
   SynHighlighterAny,
   SynhighlighterCPP, 
   SynHighlighterCss, 

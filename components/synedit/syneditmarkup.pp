@@ -60,14 +60,16 @@ type
     procedure SetFrameColor(const AValue : TColor);
     procedure SetStyle(const AValue : TFontStyles);
 
-    procedure MarkupChanged(AMarkup: TObject);
   protected
+    procedure MarkupChanged(AMarkup: TObject);
+
     procedure SetInvalidateLinesMethod(const AValue : TInvalidateLines); virtual;
     procedure SetLines(const AValue : TSynEditStrings); virtual;
     procedure SetTopLine(const AValue : Integer); virtual;
     procedure SetLinesInWindow(const AValue : Integer); virtual;
     procedure SetCaret(const AValue : TSynEditCaret); virtual;
 
+    procedure DoEnabledChanged(Sender: TObject); virtual;
     procedure DoCaretChanged(Sender: TObject); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
@@ -79,6 +81,7 @@ type
     function RowToScreenRow(aRow : Integer) : Integer;
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function Highlighter: TSynCustomHighlighter;
+    function OwnedByMgr: Boolean; virtual; // overwrite, do prevent destruction by mgr
 
     property SynEdit : TSynEditBase read fSynEdit;
   public
@@ -127,6 +130,7 @@ type
     destructor Destroy; override;
     
     Procedure AddMarkUp(aMarkUp : TSynEditMarkup);
+    Procedure RemoveMarkUp(aMarkUp : TSynEditMarkup);
     function Count: Integer;
     property Markup[Index: integer]: TSynEditMarkup
       read GetMarkup;
@@ -186,6 +190,7 @@ procedure TSynEditMarkup.SetEnabled(const AValue: Boolean);
 begin
   if AValue = FEnabled then exit;
   FEnabled := AValue;
+  DoEnabledChanged(self);
 end;
 
 procedure TSynEditMarkup.SetFGColor(const AValue : TColor);
@@ -234,6 +239,10 @@ begin
   FCaret := AValue;
   if r and (FCaret <> nil) then
     FCaret.AddChangeHandler(@DoCaretChanged);
+end;
+
+procedure TSynEditMarkup.DoEnabledChanged(Sender: TObject);
+begin
 end;
 
 procedure TSynEditMarkup.SetTopLine(const AValue : Integer);
@@ -302,6 +311,11 @@ begin
   Result := TSynEdit(SynEdit).Highlighter;
 end;
 
+function TSynEditMarkup.OwnedByMgr: Boolean;
+begin
+  Result := True;
+end;
+
 constructor TSynEditMarkup.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create();
@@ -359,7 +373,8 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).destroy;
+    if TSynEditMarkup(fMarkUpList[i]).OwnedByMgr then
+      TSynEditMarkup(fMarkUpList[i]).destroy;
   FreeAndNil(fMarkUpList);
   inherited Destroy;
 end;
@@ -372,6 +387,15 @@ begin
   aMarkUp.TopLine := TopLine;
   aMarkUp.LinesInWindow := LinesInWindow;
   aMarkUp.InvalidateLinesMethod := FInvalidateLinesMethod;
+end;
+
+procedure TSynEditMarkupManager.RemoveMarkUp(aMarkUp: TSynEditMarkup);
+var
+  i: LongInt;
+begin
+  i := fMarkUpList.IndexOf(aMarkUp);
+  if i >= 0 then
+    fMarkUpList.Delete(i);
 end;
 
 function TSynEditMarkupManager.Count: Integer;

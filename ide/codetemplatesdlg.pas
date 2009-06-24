@@ -42,7 +42,7 @@ uses
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
-  IDEContextHelpEdit, ButtonPanel, SynRegExpr;
+  IDEContextHelpEdit, ButtonPanel, SynRegExpr, CodeMacroPrompt;
 
 type
   TAutoCompleteOption = (
@@ -122,7 +122,7 @@ type
     SynAutoComplete: TSynEditAutoComplete;
     TemplateIndex: integer;
   end;
-  
+
   { TLazCodeMacros }
 
   TLazCodeMacros = class(TIDECodeMacros)
@@ -618,6 +618,74 @@ begin
   Result:=true;
 end;
 
+function CodeMacroEditParam(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string; TemplateParser: TIDETemplateParser): boolean;
+var
+  p: TLazTemplateParser;
+  temp: TStringList;
+  i, g: Integer;
+  s: String;
+begin
+  p := TLazTemplateParser(TemplateParser);
+  Value := Parameter;
+  g := -1;
+  temp := TStringList.Create;
+  try
+    s := Parameter;
+    while length(s) > 0 do begin
+      if s[1] = '"' then begin
+        System.Delete(s, 1, 1);
+        i := pos('"', s);
+      end
+      else
+        i := pos(',', s);
+      if i < 1 then
+        i := length(s) + 1;
+      temp.add(copy(s, 1, i - 1));
+      System.Delete(s, 1, i);
+    end;
+    //temp.CommaText := Parameter;
+    if temp.Count > 0 then begin
+      Value := temp[0];
+      temp.Delete(0);
+
+      i := temp.IndexOfName('Sync');
+      if i < 0 then
+        i := temp.IndexOfName('S');
+      if i >= 0 then
+        i := StrToIntDef(temp.ValueFromIndex[i], -1)
+      else
+      if (temp.IndexOf('Sync') >= 0) or (temp.IndexOf('S') >= 0) then begin
+        i := p.EditCellList.Count - 1;
+        while i >= 0 do begin
+          if TLazSynPluginSyncEditCell(p.EditCellList[i]).CellValue = Value then
+            break;
+          dec(i);
+        end;
+      end;
+
+      dec(i);
+      if (i >= 0) and (i < p.EditCellList.Count)  then begin
+        Value := TLazSynPluginSyncEditCell(p.EditCellList[i]).CellValue;
+        g := TLazSynPluginSyncEditCell(p.EditCellList[i]).Group;
+      end;
+    end;
+  finally
+    temp.Free;
+  end;
+  with TLazSynPluginSyncEditCell(p.EditCellList.AddNew) do begin
+    LogStart := Point(p.DestPosX, p.DestPosY);
+    LogEnd := Point(p.DestPosX + length(Value), p.DestPosY);
+    if g < 0 then
+      Group := p.EditCellList.Count
+    else
+      Group := g;
+    CellValue := Value;
+  end;
+  Result := True;
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -707,6 +775,9 @@ begin
                     'importaint operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used'+
                     'to detect words for this macro: [\w\-+*\(\)\[\].^@]+',
                     @CodeMacroPrevWord,nil);
+  RegisterCodeMacroEx('Param', lisTemplateEditParamCell,
+                    lisTemplateEditParamCellHelp,
+                    @CodeMacroEditParam,nil);
 end;
 
 { TCodeTemplateEditForm }

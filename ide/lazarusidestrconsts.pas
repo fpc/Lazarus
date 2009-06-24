@@ -2186,6 +2186,19 @@ resourcestring
   srkmecRemoveUnusedUnits         = 'Remove unused units';
   srkmecFindOverloads             = 'Find overloads';
 
+  //Plugin template Edit
+  srkmecSynPTmplEdNextCell           = 'Next Cell';
+  srkmecSynPTmplEdNextCellSel        = 'Next Cell (all selected)';
+  srkmecSynPTmplEdNextCellRotate     = 'Next Cell (rotate)';
+  srkmecSynPTmplEdNextCellSelRotate  = 'Next Cell (rotate / all selected)';
+  srkmecSynPTmplEdPrevCell           = 'Previous Cell';
+  srkmecSynPTmplEdPrevCellSel        = 'Previous Cell (all selected)';
+  srkmecSynPTmplEdCellHome           = 'Goto first pos in cell';
+  srkmecSynPTmplEdCellEnd            = 'Goto last pos in cell';
+  srkmecSynPTmplEdCellSelect         = 'Select cell';
+  srkmecSynPTmplEdFinish             = 'Finish';
+  srkmecSynPTmplEdEscape             = 'Escape';
+
   // run menu
   srkmecBuild                     = 'build program/project';
   srkmecBuildAll                  = 'build all files of program/project';
@@ -2244,6 +2257,8 @@ resourcestring
   srkmCatFold           = 'Text folding commands';
   lisKMSetFreeBookmark = 'Set free Bookmark';
   srkmCatCodeTools      = 'CodeTools commands';
+  srkmCatTemplateEdit   = 'Template Editing';
+  srkmCatTemplateEditOff= 'Template Editing (not in Cell)';
   srkmCatSrcNoteBook    = 'Source Notebook commands';
   srkmCatFileMenu       = 'File menu commands';
   lisKMGoToSourceEditor10 = 'Go to source editor 10';
@@ -4292,6 +4307,10 @@ resourcestring
   lisReturnsListOfAllValuesOfCaseVariableInFrontOfVaria = 'returns list of '
     +'all values of case variable in front of variable';
   lisGetWordAtCurrentCursorPosition = 'get word at current cursor position';
+  lisTemplateEditParamCell = 'Editable Cell';
+  lisTemplateEditParamCellHelp = 'Inserts an editable Cell, with a default value'
+    + LineEnding + '"",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell'
+    + LineEnding + '"default",Sync, to Sync with a previous cell of equal default';
   lisPrecedingWord = 'Preceding word';
 
 implementation

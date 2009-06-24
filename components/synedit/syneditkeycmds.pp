@@ -248,10 +248,21 @@ const
 
   ecUserFirst       = 1001; // Start of user-defined commands
 
+  ecPluginFirst = 20000;
+
+// Plugins don't know of other plugins, so they need to map the codes
+// In order to save Keymaps, Plugins all start at ecPluginFirst (overlapping)
+// If ask by SynEdit they add an offset
+
+// Return the next offset
+function AllocatePluginKeyRange(Count: Integer): integer;
+
 type
   ESynKeyError = class(Exception);
 
   TSynEditorCommand = type word;
+
+  { TSynEditKeyStroke }
 
   TSynEditKeyStroke = class(TCollectionItem)
   private
@@ -260,9 +271,10 @@ type
     FKey2: word;
     FShift2: TShiftState;
     FCommand: TSynEditorCommand;
+    function GetCommand: TSynEditorCommand;
     function GetShortCut: TShortCut;
     function GetShortCut2: TShortCut;
-    procedure SetCommand(const Value: TSynEditorCommand);
+    procedure SetCommand(Value: TSynEditorCommand);
     procedure SetKey(const Value: word);
     procedure SetKey2(const Value: word);
     procedure SetShift(const Value: TShiftState);
@@ -285,7 +297,7 @@ type
     property Shift: TShiftState read FShift write SetShift;
     property Shift2: TShiftState read FShift2 write SetShift2;
   published
-    property Command: TSynEditorCommand read FCommand write SetCommand;
+    property Command: TSynEditorCommand read GetCommand write SetCommand;
     property ShortCut: TShortCut read GetShortCut write SetShortCut
       default 0;                                                                //mh 2000-11-07
     property ShortCut2: TShortCut read GetShortCut2 write SetShortCut2
@@ -297,29 +309,41 @@ type
   TSynEditKeyStrokes = class(TCollection)
   private
     FOwner: TPersistent;
+    fLastKey: word;
+    fLastShiftState: TShiftState;
+    FPluginOffset: Integer;
+    FUsePluginOffset: Boolean;
     function GetItem(Index: Integer): TSynEditKeyStroke;
     procedure SetItem(Index: Integer; Value: TSynEditKeyStroke);
   protected
 {$IFDEF SYN_COMPILER_3_UP}
     function GetOwner: TPersistent; override;
 {$ENDIF}
+    function FindKeycode2(Code1: word; SS1: TShiftState;
+      Code2: word; SS2: TShiftState): integer;
+    function FindKeycode2Start(Code: word; SS: TShiftState): integer;
   public
     constructor Create(AOwner: TPersistent);
     function Add: TSynEditKeyStroke;
     procedure Assign(Source: TPersistent); override;
     function FindCommand(Cmd: TSynEditorCommand): integer;
     function FindKeycode(Code: word; SS: TShiftState): integer;
-    function FindKeycode2(Code1: word; SS1: TShiftState;
-      Code2: word; SS2: TShiftState): integer;
-    function FindKeycode2Start(Code: word; SS: TShiftState): integer;
+    function FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer;
+                           out IsStartOfCombo: boolean;
+                           FinishComboOnly: Boolean = False): TSynEditorCommand;
+    procedure ResetKeyCombo;
     function FindShortcut(SC: TShortcut): integer;
     function FindShortcut2(SC, SC2: TShortcut): integer;
     procedure LoadFromStream(AStream: TStream);                                 //ac 2000-07-05
-    procedure ResetDefaults;
+    procedure ResetDefaults; virtual;
     procedure SaveToStream(AStream: TStream);                                   //ac 2000-07-05
   public
     property Items[Index: Integer]: TSynEditKeyStroke read GetItem
       write SetItem; default;
+    property PluginOffset: Integer read FPluginOffset write FPluginOffset;
+    // only switch on while needed.
+    // So streaming will always see the constant, unmodified values
+    property UsePluginOffset: Boolean read FUsePluginOffset write FUsePluginOffset;
   end;
 
 // These are mainly for the TSynEditorCommand property editor, but could be
@@ -616,6 +640,14 @@ begin
 {$ENDIF}
 end;
 
+function AllocatePluginKeyRange(Count: Integer): integer;
+const
+  CurOffset : integer = 0;
+begin
+  Result := CurOffset;
+  inc(CurOffset, Count);
+end;
+
 function EditorCommandToDescrString(Cmd: TSynEditorCommand): string;
 begin
   // Doesn't do anything yet.
@@ -660,8 +692,21 @@ begin
   Result := Menus.ShortCut(Key, Shift);
 end;
 
-procedure TSynEditKeyStroke.SetCommand(const Value: TSynEditorCommand);
+function TSynEditKeyStroke.GetCommand: TSynEditorCommand;
 begin
+  Result:= FCommand;
+  if TSynEditKeyStrokes(Collection).UsePluginOffset and (Result >= ecPluginFirst) then
+    Inc(Result, TSynEditKeyStrokes(Collection).PluginOffset);
+end;
+
+procedure TSynEditKeyStroke.SetCommand(Value: TSynEditorCommand);
+begin
+  if TSynEditKeyStrokes(Collection).UsePluginOffset and (Value >= ecPluginFirst) then
+  begin
+    Dec(Value, TSynEditKeyStrokes(Collection).PluginOffset);
+    if (Value < ecPluginFirst) then
+      Value := ecNone;
+  end;
   if Value <> FCommand then
     FCommand := Value;
 end;
@@ -792,6 +837,10 @@ constructor TSynEditKeyStrokes.Create(AOwner: TPersistent);
 begin
   inherited Create(TSynEditKeyStroke);
   FOwner := AOwner;
+  fLastKey := 0;
+  fLastShiftState := [];
+  FPluginOffset := 0;
+  FUsePluginOffset := False;
 end;
 
 function TSynEditKeyStrokes.FindCommand(Cmd: TSynEditorCommand): integer;
@@ -818,6 +867,42 @@ begin
       Result := x;
       break;
     end;
+end;
+
+function TSynEditKeyStrokes.FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer; out
+  IsStartOfCombo: boolean; FinishComboOnly: Boolean = False): TSynEditorCommand;
+var
+  i: integer;
+{$IFNDEF SYN_COMPILER_3_UP}
+const
+  VK_ACCEPT = $30;
+{$ENDIF}
+begin
+  i := FindKeycode2(fLastKey, fLastShiftState, Code, SS);
+  if (i < 0) and not FinishComboOnly then
+    i := FindKeycode(Code, SS);
+  if i >= 0 then
+    Result := Items[i].Command
+  else
+    Result := ecNone;
+
+  if (Result = ecNone) and (Code >= VK_ACCEPT) and (Code <= VK_SCROLL) and
+     (FindKeycode2Start(Code, SS) >= 0) and not FinishComboOnly then
+  begin
+    fLastKey := Code;
+    fLastShiftState := SS;
+    IsStartOfCombo := True;
+  end else begin
+    fLastKey := 0;
+    fLastShiftState := [];
+    IsStartOfCombo := False;
+  end;
+end;
+
+procedure TSynEditKeyStrokes.ResetKeyCombo;
+begin
+  fLastKey := 0;
+  fLastShiftState := [];
 end;
 
 function TSynEditKeyStrokes.FindKeycode2(Code1: word; SS1: TShiftState;
@@ -878,7 +963,7 @@ end;
 
 function TSynEditKeyStrokes.GetItem(Index: Integer): TSynEditKeyStroke;
 begin
- Result := TSynEditKeyStroke(inherited GetItem(Index));
+  Result := TSynEditKeyStroke(inherited GetItem(Index));
 end;
 
 {$IFDEF SYN_COMPILER_3_UP}
@@ -1028,7 +1113,7 @@ end;
 
 procedure TSynEditKeyStrokes.SetItem(Index: Integer; Value: TSynEditKeyStroke);
 begin
- inherited SetItem(Index, Value);
+  inherited SetItem(Index, Value);
 end;
 
 {begin}                                                                         //ac 2000-07-05

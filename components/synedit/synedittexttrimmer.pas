@@ -708,8 +708,9 @@ end;
 procedure TSynEditStringTrimmingList.EditInsert(LogX, LogY: Integer; AText: String);
 var
   t: String;
-  Len, LenNS: Integer;
+  Len, LenNS, SaveLogX: Integer;
   IsSpaces: Boolean;
+  SaveText: String;
 begin
   if (not fEnabled) then begin
     fSynStrings.EditInsert(LogX, LogY, AText);
@@ -717,6 +718,8 @@ begin
   end;
 
   IgnoreSendNotification(senrEditAction, True);
+  SaveText := AText;
+  SaveLogX := LogX;
   t := Strings[LogY - 1];  // include trailing
   if LogX - 1 > Length(t) then begin
     AText := StringOfChar(' ', LogX - 1 - Length(t)) + AText;
@@ -761,20 +764,21 @@ begin
   // update spaces
   UpdateLineText(LogY);
   IgnoreSendNotification(senrEditAction, False);
-  SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
+  SendNotification(senrEditAction, self, LogY, 0, SaveLogX, length(SaveText), SaveText);
 end;
 
-Function TSynEditStringTrimmingList.EditDelete(LogX, LogY, ByteLen
-  : Integer): String;
+Function TSynEditStringTrimmingList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
   t: String;
   Len: Integer;
+  SaveByteLen: LongInt;
 begin
   if (not fEnabled) then begin
     fSynStrings.EditDelete(LogX, LogY, ByteLen);
     exit;
   end;
 
+  SaveByteLen := ByteLen;
   Result := '';
   t := fSynStrings[LogY - 1];
   Len := length(t);
@@ -801,7 +805,7 @@ begin
   EditMoveToTrim(LogY, length(t) - LastNoneSpacePos(t));
 
   IgnoreSendNotification(senrEditAction, False);
-  SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
+  SendNotification(senrEditAction, self, LogY, 0, LogX, -SaveByteLen, '');
 end;
 
 procedure TSynEditStringTrimmingList.EditLineBreak(LogX, LogY: Integer);

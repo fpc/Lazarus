@@ -37,7 +37,7 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  Controls, Graphics, LCLProc, FileUtil, LResources,
+  Controls, Graphics, LCLProc, FileUtil, LResources, Forms,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditKeyCmds,
   SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
@@ -46,7 +46,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer,
-  SynEditMouseCmds,
+  SynEditMouseCmds, SynPluginTemplateEdit,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -69,6 +69,11 @@ type
     phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
     phaString, phaSymbol
   );
+
+  TLazSynPluginTemplateEditForm = class(TForm)
+  end;
+  TLazSynPluginTemplateEditFormOff = class(TForm)
+  end;
 
 const
   PascalHilightAttributeNames: array[TPascalHilightAttribute] of String = (
@@ -93,7 +98,8 @@ type
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
     ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
-    ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode, ahaWordGroup);
+    ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode, ahaWordGroup,
+    ahaTemplateEditCur, ahaTemplateEditSync, ahaTemplateEditOther);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
@@ -118,7 +124,10 @@ const
     'Code folding tree',
     'Highlight current word',
     'Folded code',
-    'Word-Brackets'
+    'Word-Brackets',
+    'TemplateEdit Current',
+    'TemplateEdit Sync',
+    'TemplateEdit Cells'
   );
 
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -196,7 +205,10 @@ const
       { ahaCodeFoldingTree    } (BG: clWhite;     FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: $E6E6E6;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clWhite;     FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -235,7 +247,10 @@ const
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: $303030;     FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -274,7 +289,10 @@ const
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -313,7 +331,10 @@ const
       { ahaCodeFoldingTree    } (BG: clDefault;   FG: clSilver;   FC: clNone; Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;  FC: clSilver; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clDefault;   FG: clSilver;   FC: clSilver; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -352,7 +373,10 @@ const
       { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clDefault;   FG: $CC9999;     FC: $CC9999; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
@@ -3115,6 +3139,9 @@ procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEd
       SetMarkupColor(aSynEd.Highlighter, AddHilightAttr,
                      ASynEd.Gutter.Parts.ByClass[aClass, 0].MarkupInfo);
   end;
+
+var
+  i: integer;
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
@@ -3128,6 +3155,18 @@ begin
   SetGutterColorByClass(ahaLineNumber, TSynGutterLineNumber);
   SetGutterColorByClass(ahaModifiedLine, TSynGutterChanges);
   SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
+
+  i := aSynEd.PluginCount - 1;
+  while (i >= 0) and not(aSynEd.Plugin[i] is TSynPluginTemplateEdit) do
+    dec(i);
+  if i >= 0 then begin
+    SetMarkupColor(aSynEd.Highlighter, ahaTemplateEditOther,
+                   TSynPluginTemplateEdit(aSynEd.Plugin[i]).MarkupInfo);
+    SetMarkupColor(aSynEd.Highlighter, ahaTemplateEditCur,
+                   TSynPluginTemplateEdit(aSynEd.Plugin[i]).MarkupInfoCurrent);
+    SetMarkupColor(aSynEd.Highlighter, ahaTemplateEditSync,
+                   TSynPluginTemplateEdit(aSynEd.Plugin[i]).MarkupInfoSync);
+  end
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
@@ -3176,6 +3215,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit settings from config file
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  i: Integer;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -3232,6 +3272,15 @@ begin
   end;
 
   KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
+  i := ASynEdit.PluginCount - 1;
+  while (i >= 0) and not(ASynEdit.Plugin[i] is TSynPluginTemplateEdit) do
+    dec(i);
+  if i >= 0 then begin
+    KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).Keystrokes, TLazSynPluginTemplateEditForm);
+    KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).KeystrokesOffCell, TLazSynPluginTemplateEditFormOff);
+  end;
+
+
   ASynEdit.MouseActions.Assign(MouseMap);
   ASynEdit.MouseSelActions.Assign(MouseSelMap);
   ASynEdit.Gutter.MouseActions.Assign(MouseGutterActions);

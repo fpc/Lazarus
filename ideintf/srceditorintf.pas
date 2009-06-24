@@ -177,6 +177,24 @@ type
     property Value: string read FValue write FValue;
   end;
 
+  { TIDETemplateParser }
+
+  TIDETemplateParser = class
+  protected
+    function GetSrcPosition: Integer; virtual; abstract;
+    function GetDestPosition: Integer; virtual; abstract;
+    function GetDestPosX: Integer; virtual; abstract;
+    function GetDestPosY: Integer; virtual; abstract;
+    function GetSrcTemplate: String; virtual; abstract;
+    function GetDestTemplate: String; virtual; abstract;
+  public
+    property SrcTemplate: String read GetSrcTemplate;
+    property DestTemplate: String read GetDestTemplate;
+    property SrcPosition: Integer read GetSrcPosition;
+    property DestPosition: Integer read GetDestPosition;
+    property DestPosX: Integer read GetDestPosX;
+    property DestPosY: Integer read GetDestPosY;
+  end;
 
   TIDECodeMacroGetValueProc = function(const Parameter: string;
                       InteractiveValue: TPersistent;
@@ -186,6 +204,17 @@ type
                       InteractiveValue: TPersistent;
                       SrcEdit: TSourceEditorInterface;
                       var Value, ErrorMsg: string): boolean of object;
+
+  TIDECodeMacroGetValueExProc = function(const Parameter: string;
+                      InteractiveValue: TPersistent;
+                      SrcEdit: TSourceEditorInterface;
+                      var Value, ErrorMsg: string;
+                      TemplateParser: TIDETemplateParser): boolean;
+  TIDECodeMacroGetValueExMethod = function(const Parameter: string;
+                      InteractiveValue: TPersistent;
+                      SrcEdit: TSourceEditorInterface;
+                      var Value, ErrorMsg: string;
+                      TemplateParser: TIDETemplateParser): boolean of object;
 
   { TIDECodeMacro }
 
@@ -197,6 +226,8 @@ type
     FName: string;
     FOnGetValueMethod: TIDECodeMacroGetValueMethod;
     FOnGetValueProc: TIDECodeMacroGetValueProc;
+    FOnGetValueExMethod: TIDECodeMacroGetValueExMethod;
+    FOnGetValueExProc: TIDECodeMacroGetValueExProc;
     FShortDescription: string;
   protected
     procedure Init; virtual;
@@ -209,9 +240,13 @@ type
                                                        write FOnGetValueProc;
     property OnGetValueMethod: TIDECodeMacroGetValueMethod read FOnGetValueMethod
                                                        write FOnGetValueMethod;
+    property OnGetValueExProc: TIDECodeMacroGetValueExProc read FOnGetValueExProc
+                                                       write FOnGetValueExProc;
+    property OnGetValueExMethod: TIDECodeMacroGetValueExMethod read FOnGetValueExMethod
+                                                       write FOnGetValueExMethod;
     function GetValue(const Parameter: string; InteractiveValue: TPersistent;
-                      SrcEdit: TSourceEditorInterface;
-                      out Value, ErrorMsg: string): boolean; virtual;
+                      SrcEdit: TSourceEditorInterface; out Value, ErrorMsg: string;
+                      TemplateParser: TIDETemplateParser = nil): boolean; virtual;
     property Interactive: boolean read FInteractive write FInteractive;
     property InteractiveValueClass: TPersistentClass read FInteractiveValueClass
                                                    write FInteractiveValueClass;
@@ -239,6 +274,10 @@ function RegisterCodeMacro(const Name: string;
   OnGetValueProc: TIDECodeMacroGetValueProc;
   OnGetValueMethod: TIDECodeMacroGetValueMethod): TIDECodeMacro;
 
+function RegisterCodeMacroEx(const Name: string;
+  const ShortDescription, LongDescription: string;
+  OnGetValueProc: TIDECodeMacroGetValueExProc;
+  OnGetValueMethod: TIDECodeMacroGetValueExMethod): TIDECodeMacro;
 
 { SearchInFile to search in a file.
   This can be interactively or without user interaction.
@@ -288,6 +327,21 @@ begin
   IDECodeMacros.Add(Result);
 end;
 
+function RegisterCodeMacroEx(const Name: string; const ShortDescription,
+  LongDescription: string; OnGetValueProc: TIDECodeMacroGetValueExProc;
+  OnGetValueMethod: TIDECodeMacroGetValueExMethod): TIDECodeMacro;
+var
+  NewName: String;
+begin
+  NewName:=IDECodeMacros.CreateUniqueName(Name);
+  Result:=TIDECodeMacro.Create(NewName);
+  Result.ShortDescription:=ConvertLineEndings(ShortDescription);
+  Result.LongDescription:=ConvertLineEndings(LongDescription);
+  Result.OnGetValueExProc:=OnGetValueProc;
+  Result.OnGetValueExMethod:=OnGetValueMethod;
+  IDECodeMacros.Add(Result);
+end;
+
 { TSourceEditorInterface }
 
 procedure TSourceEditorInterface.SelectText(LineNum, CharStart, LineNum2,
@@ -324,7 +378,7 @@ end;
 
 function TIDECodeMacro.GetValue(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface;
-  out Value, ErrorMsg: string): boolean;
+  out Value, ErrorMsg: string; TemplateParser: TIDETemplateParser = nil): boolean;
 begin
   Value:=Parameter;
   ErrorMsg:='';
@@ -332,6 +386,12 @@ begin
     Result:=OnGetValueProc(Parameter,InteractiveValue,SrcEdit,Value,ErrorMsg)
   else if Assigned(OnGetValueMethod) then
     Result:=OnGetValueMethod(Parameter,InteractiveValue,SrcEdit,Value,ErrorMsg)
+  else if Assigned(OnGetValueExProc) then
+    Result:=OnGetValueExProc(Parameter,InteractiveValue,SrcEdit,Value,ErrorMsg,
+                             TemplateParser)
+  else if Assigned(OnGetValueExMethod) then
+    Result:=OnGetValueExMethod(Parameter,InteractiveValue,SrcEdit,Value,ErrorMsg,
+                               TemplateParser)
   else
     Result:=true;
 end;
