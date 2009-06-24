@@ -579,6 +579,7 @@ var
   i, XOffs, YOffs: Integer;
   CurCell: TSynPluginSyncEditCell;
   CaretPos: TSynPluginSyncEditCell;
+  p: TPoint;
 begin
   CaretPos := nil;
   if Cells.GroupCell[-2, 0] <> nil then begin
@@ -593,12 +594,16 @@ begin
     CurCell := aCellList[i];
     with Cells.AddNew do begin;
       Assign(CurCell);
-      if LogStart.y = 1 then
-        LogStart.x := LogStart.x + XOffs;
-      LogStart.y := LogStart.y + YOffs;
-      if LogEnd.y = 1 then
-        LogEnd.x := LogEnd.x + XOffs;
-      LogEnd.y := LogEnd.y + YOffs;
+      p := LogStart;
+      if p.y = 1 then
+        p.x := p.x + XOffs;
+      p.y := p.y + YOffs;
+      LogStart := p;
+      p := LogEnd;
+      if p.y = 1 then
+        p.x := p.x + XOffs;
+      p.y := p.y + YOffs;
+      LogEnd := p;
     end;
   end;
 
