@@ -1520,7 +1520,6 @@ var
   DesignForm: TCustomForm;
   NewUnitName: String;
   s: String;
-  NewDesignInfo: LongRec;
 begin
   Result:=nil;
   Temp:=nil;
@@ -1660,9 +1659,7 @@ begin
         end else begin
           // no parent and not a form
           AControl.SetBounds(0,0,CompWidth,CompHeight);
-          NewDesignInfo.Lo:=CompLeft;
-          NewDesignInfo.Hi:=CompTop;
-          LongRec(AControl.DesignInfo):=NewDesignInfo;
+          AControl.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end

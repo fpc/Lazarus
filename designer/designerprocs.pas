@@ -112,6 +112,8 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
+function DesignInfoFrom(const Left, Top: Word): LongInt;
+
 
 implementation
 
@@ -319,6 +321,12 @@ begin
     then
       Result:=false;
   end;
+end;
+
+function DesignInfoFrom(const Left, Top: Word): LongInt;
+begin
+  LongRec(Result).Hi := Top;
+  LongRec(Result).Lo := Left;
 end;
 
 { TDesignerDeviceContext }

@@ -834,10 +834,9 @@ var
         or (P.Y+NonVisualCompWidth>Form.ClientHeight) then
           break;
       until false;
-      LongRec(AComponent.DesignInfo).Lo:=
-        word(Max(0,Min(P.x,Form.ClientWidth-NonVisualCompWidth)));
-      LongRec(AComponent.DesignInfo).Hi:=
-        word(Max(0,Min(P.y,Form.ClientHeight-NonVisualCompWidth)));
+      AComponent.DesignInfo := DesignInfoFrom(
+        Word(Max(0, Min(P.x, Form.ClientWidth - NonVisualCompWidth))),
+        Word(Max(0, Min(P.y, Form.ClientHeight - NonVisualCompWidth))));
     end;
   end;
 
@@ -2702,12 +2701,9 @@ begin
 end;
 
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
-var
-  p: TPoint;
 begin
-  p:=NonVisualComponentLeftTop(AComponent);
-  LongRec(AComponent.DesignInfo).Lo:=p.x;
-  LongRec(AComponent.DesignInfo).Hi:=p.y;
+  with NonVisualComponentLeftTop(AComponent) do
+    AComponent.DesignInfo := DesignInfoFrom(x, y);
 end;
 
 procedure TDesigner.MoveNonVisualComponentsIntoForm;

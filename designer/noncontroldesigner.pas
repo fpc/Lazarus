@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, CustomNonFormDesigner;
+  IDEProcs, DesignerProcs, CustomNonFormDesigner;
   
 type
 
@@ -141,8 +141,7 @@ begin
     end;
   end else if LookupRoot<>nil then begin
     //debugln('TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
-    LongRec(LookupRoot.DesignInfo).Lo:=Left;
-    LongRec(LookupRoot.DesignInfo).Hi:=Top;
+    LookupRoot.DesignInfo := DesignInfoFrom(Left, Top)
   end;
   inherited DoSaveBounds;
 end;

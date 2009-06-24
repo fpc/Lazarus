@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, CustomNonFormDesigner;
+  IDEProcs, DesignerProcs, CustomNonFormDesigner;
   
 type
 
@@ -142,8 +142,7 @@ procedure TFrameDesignerForm.DoSaveBounds;
 begin
   if LookupRoot is TControl then begin
     // store designer position
-    LongRec(LookupRoot.DesignInfo).Lo:=Left;
-    LongRec(LookupRoot.DesignInfo).Hi:=Top;
+    LookupRoot.DesignInfo := DesignInfoFrom(Left, Top);
     // always fill the whole designer form
     TControl(LookupRoot).SetBounds(0, 0, Width, Height);
     //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
