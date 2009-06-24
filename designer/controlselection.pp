@@ -734,7 +734,8 @@ begin
       if DesignerForm <> nil then
         M := Max(0, Min(M, DesignerForm.ClientWidth - NonVisualCompWidth));
       
-      TComponent(FPersistent).DesignInfo := DesignInfoFrom(Word(Min(M, Max(0, ALeft))), LongRec(TComponent(FPersistent).DesignInfo).Hi);
+      with LongRec(TComponent(FPersistent).DesignInfo) do
+        Lo := Word(Min(M, Max(0, ALeft)));
     end;
      
   FCachedLeft:=ALeft;
@@ -769,7 +770,8 @@ begin
       if DesignerForm <> nil then
         M := Max(0, Min(M, DesignerForm.ClientHeight - NonVisualCompWidth));
         
-      TComponent(FPersistent).DesignInfo := DesignInfoFrom(LongRec(TComponent(FPersistent).DesignInfo).Lo, Word(Min(M, Max(0, ATop))));
+      with LongRec(TComponent(FPersistent).DesignInfo) do
+        Hi := Word(Min(M, Max(0, ATop)));
     end;
     
   FCachedTop:=ATop;
