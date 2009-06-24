@@ -1,34 +1,55 @@
 [arrayd | array declaration (var)]
-array[0..|] of ;
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+array[$param(0)..$param(1)] of |;
 [arrayc | array declaration (const)]
-array[0..|] of = ();
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+array[$param(0)..$param(1)] of = (|);
 [cases | case statement]
-case | of
-  : ;
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+case $param(var) of
+  : |;
   : ;
 end;
 [casee | case statement (with else)]
-case | of
-  : ;
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+case $param(var) of
+  : |;
   : ;
 else ;
 end;
 [classf | class declaration (all parts)]
-T| = class(T)
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+T$param(Class) = class(T$param(Base))
 private
-
+  |
 public
   constructor Create;
   destructor Destroy; override;
 end;
 [classd | class declaration (no parts)]
-T| = class(T)
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+T$param(Class) = class(T$param(Base))
+  |
 end;
 [classc | class declaration (with Create/Destroy overrides)]
-T| = class(T)
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+T$param(Class) = class(T$param(Base))
 private
-
+  |
 protected
 
 public
@@ -38,38 +59,62 @@ published
 
 end;
 [fors | for (no begin/end)]
-for | :=  to  do
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+for $param(i) := $param(0) to $param(Count - 1) do |;
 [forb | for statement]
-for | :=  to  do
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+for $param(i) := $param(0) to $param(Count-1) do
 begin
-
+  |
 end;
 [function | function declaration]
-function |(): ;
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+function $param(Name)($param( )): $param(Type);
 begin
-
+  |
 end;
 [ifs | if (no begin/end)]
-if | then
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+if $param(Condition) then |
 [ifb | if statement]
-if | then begin
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+if $param(Condition) then begin
+  |
 end;
 [ife | if then (no begin/end) else (no begin/end)]
-if | then
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+if $param(Condition) then
+  |
 else
 [ifeb | if then else]
-if | then begin
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+if $param(Condition) then begin
+  |
 end
 else begin
 
 end;
 [procedure | procedure declaration]
-procedure |();
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+procedure $param(Name)($param( ));
 begin
-
+  |
 end;
 [ofall | case of all enums]
 $(AttributesStart)
@@ -90,21 +135,33 @@ finally
 
 end;
 [trycf | try finally (with Create/Free)]
-|variable := typename.Create; 
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+$param(variable) := $param(typename).Create;
 try
 
 finally
-  variable.Free;
+  $param(variable,sync=1).Free;
 end;
 [whileb | while statement]
-while | do begin
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+while $param(Condition) do begin
+  |
 end;
 [whiles | while (no begin)]
-while | do
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+while $param(Condition) do |
 [withb | with statement]
-with | do begin
-
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+with $param(Condition) do begin
+  |
 end;
 [b | begin end]
 begin
@@ -121,14 +178,17 @@ end else begin
 
 end;
 [withc | with for components]
-with | do begin
-  Name:='';
-  Parent:=;
-  Left:=;
-  Top:=;
-  Width:=;
-  Height:=;
-  Caption:='';
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+with $param(Component) do begin
+  Name:='$param(Name)';
+  Parent:=$param(Parent);
+  Left:=$param(0);
+  Top:=$param(0);
+  Width:=$param(1);
+  Height:=$param(1);
+  Caption:='$param(Caption)';
 end;
 [d | debugln]
 $(AttributesStart)
