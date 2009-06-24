@@ -1535,9 +1535,9 @@ type
     property OnContextPopup;
   end;
 
-
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
-
+function  GetWorkingCanvas(const Canvas: TCanvas): TCanvas;
+procedure FreeWorkingCanvas(canvas: TCanvas);
 
 procedure Register;
 
@@ -1694,6 +1694,28 @@ begin
     DrawHorzLine(Right-1, Bottom-1, Left);
     DrawVertLine(Left, Bottom-1, Top);
   end;
+end;
+
+function GetWorkingCanvas(const Canvas: TCanvas): TCanvas;
+var
+  DC: HDC;
+begin
+
+  if (Canvas=nil) or (not Canvas.HandleAllocated) then begin
+    DC := GetDC(0);
+    Result := TCanvas.Create;
+    Result.Handle := DC;
+  end else
+    Result := Canvas;
+
+end;
+
+procedure FreeWorkingCanvas(canvas: TCanvas);
+begin
+
+  ReleaseDC(0, Canvas.Handle);
+  Canvas.Free;
+
 end;
 
 function Between(const AValue,AMin,AMax: Integer): boolean;
@@ -6846,22 +6868,12 @@ end;
 function TCustomGrid.GetDefaultRowHeight: integer;
 var
   TmpCanvas: TCanvas;
-  DC: HDC;
 begin
-  if (Canvas<>nil) and Canvas.HandleAllocated then
-    Result := Canvas.TextHeight('Fj')+7
-  else begin
-    DC := GetDC(0);
-    TmpCanvas := TCanvas.Create;
-    try
-      tmpCanvas.Handle:=DC;
-      TmpCanvas.Font.Assign(Font);
-      Result := TmpCanvas.TextHeight('Fj')+7
-    finally
-      TmpCanvas.Free;
-      ReleaseDC(0, DC);
-    end;
-  end;
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  tmpCanvas.Font := Font;
+  result := tmpCanvas.TextHeight('Fj')+7;
+  if tmpCanvas<>Canvas then
+    FreeWorkingCanvas(tmpCanvas);
 end;
 
 function TCustomGrid.GetScrollBarPosition(Which: integer): Integer;
@@ -8457,13 +8469,8 @@ begin
   if (aCol<0) or (aCol>ColCount-1) then
     Exit;
 
-  if not Canvas.HandleAllocated then begin
-    DC := GetDC(0);
-    TmpCanvas := TCanvas.Create;
-    TmpCanvas.Handle := DC;
-    TmpCanvas.Font.Assign(Font);
-  end else
-    TmpCanvas := Canvas;
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  tmpCanvas.Font := Font;
 
   C := ColumnFromGridColumn(aCol);
 
@@ -8480,10 +8487,8 @@ begin
         W := Ts.Cx;
     end;
   finally
-    if not Canvas.HandleAllocated then begin
-      TmpCanvas.Free;
-      ReleaseDC(0, DC);
-    end;
+    if tmpCanvas<>Canvas then
+      FreeWorkingCanvas(Canvas);
   end;
 
   if W=0 then
