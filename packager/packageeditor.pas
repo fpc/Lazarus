@@ -180,6 +180,7 @@ type
     procedure ViewPkgTodosClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
+    FSelectedPart: TObject;
     FilesNode: TTreeNode;
     RequiredPackagesNode: TTreeNode;
     RemovedFilesNode: TTreeNode;
@@ -954,7 +955,8 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
     // add unit file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      FSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,
+                                          FileType,PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     UpdateAll;
   end;
@@ -962,7 +964,8 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
   begin
     with AddParams do
-      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      FSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+                                          PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     UpdateAll;
   end;
@@ -972,7 +975,8 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
     // add file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      FSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+                                          PkgFileFlags,cpNormal);
     // add dependency
     if AddParams.Dependency<>nil then begin
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
@@ -986,13 +990,15 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   begin
     // add dependency
     PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+    FSelectedPart := AddParams.Dependency;
   end;
   
   procedure AddFile(AddParams: TAddToPkgResult);
   begin
     // add file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      FSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+                                          PkgFileFlags,cpNormal);
     UpdateAll;
   end;
   
@@ -1030,8 +1036,8 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
               Include(NewPkgFileFlags,pffHasRegisterProc);
           end;
         end;
-        LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,NewPkgFileFlags,
-                           cpNormal);
+        FSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
+                                            NewPkgFileFlags, cpNormal);
         UpdateAll;
       end;
     end;
@@ -1530,6 +1536,7 @@ begin
       CurNode:=FilesTreeView.Items.AddChild(FilesNode,'');
     CurFile:=LazPackage.Files[i];
     CurNode.Text:=CurFile.GetShortFilename(true);
+    CurNode.Selected:=FSelectedPart=CurFile;
     SetImageIndex(CurNode,CurFile);
     CurNode:=CurNode.GetNextSibling;
   end;
@@ -1598,6 +1605,7 @@ begin
       CurNode.ImageIndex:=ImageIndexRequired
     else
       CurNode.ImageIndex:=ImageIndexConflict;
+    CurNode.Selected:=CurDependency=FSelectedPart;
     CurNode.SelectedIndex:=CurNode.ImageIndex;
     CurNode:=CurNode.GetNextSibling;
     CurDependency:=CurDependency.NextRequiresDependency;
