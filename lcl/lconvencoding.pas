@@ -39,7 +39,7 @@ function GuessEncoding(const s: string): string;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 
-function GetSystemEncoding: string;
+function GetDefaultTextEncoding: string;
 function NormalizeEncoding(const Encoding: string): string;
 
 type
@@ -97,7 +97,7 @@ uses Windows;
 {$ENDIF}
 
 var EncodingValid: boolean = false;
-    SystemEncoding: string = EncodingAnsi;
+    DefaultTextEncoding: string = EncodingAnsi;
 
 {$IFDEF Windows}
 function GetWindowsEncoding: string;
@@ -116,23 +116,13 @@ begin
     Result:='cp'+IntToStr(GetACP);
   end;
 end;
-{$ENDIF}
-
-function GetSystemEncoding: string;
-{$IFNDEF Windows}
+{$ELSE}
+{$IFNDEF Darwin}
+function GetUnixEncoding:string;
 var
   Lang: string;
   i: integer;
-{$ENDIF}
 begin
-  if EncodingValid then begin
-    Result:=SystemEncoding;
-    exit;
-  end;
-
-  {$IFDEF Windows}
-  Result:=GetWindowsEncoding;
-  {$ELSE}
   Result:=EncodingAnsi;
 
   lang := GetEnv('LC_ALL');
@@ -147,11 +137,30 @@ begin
   i:=pos('.',Lang);
   if (i>0) and (i<=length(Lang)) then
     Result:=copy(Lang,i+1,length(Lang)-i);
+end;
+{$ENDIF}
+{$ENDIF}
+
+function GetDefaultTextEncoding: string;
+begin
+  if EncodingValid then begin
+    Result:=DefaultTextEncoding;
+    exit;
+  end;
+
+  {$IFDEF Windows}
+  Result:=GetWindowsEncoding;
+  {$ELSE}
+  {$IFDEF Darwin}
+  Result:=EncodingUTF8;
+  {$ELSE}
+  Result:=GetUnixEncoding;
+  {$ENDIF}
   {$ENDIF}
 
   Result:=NormalizeEncoding(Result);
 
-  SystemEncoding:=Result;
+  DefaultTextEncoding:=Result;
   EncodingValid:=true;
 end;
 
@@ -4702,7 +4711,7 @@ begin
   end;
   
   // use system encoding
-  Result:=GetSystemEncoding;
+  Result:=GetDefaultTextEncoding;
 
   if NormalizeEncoding(Result)=EncodingUTF8 then begin
     // the system encoding is UTF-8, but it is not UTF-8
@@ -4722,7 +4731,7 @@ var
 begin
   AFrom:=NormalizeEncoding(FromEncoding);
   ATo:=NormalizeEncoding(ToEncoding);
-  SysEnc:=NormalizeEncoding(GetSystemEncoding);
+  SysEnc:=NormalizeEncoding(GetDefaultTextEncoding);
   if AFrom=EncodingAnsi then AFrom:=SysEnc;
   if ATo=EncodingAnsi then ATo:=SysEnc;
   if AFrom=ATo then begin

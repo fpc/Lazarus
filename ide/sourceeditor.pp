@@ -4275,7 +4275,7 @@ begin
     if SrcEdit.CodeBuffer<>nil then begin
       OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
       if OldEncoding='' then
-        OldEncoding:=GetSystemEncoding;
+        OldEncoding:=GetDefaultTextEncoding;
       if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
         DebugLn(['TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
         if SrcEdit.ReadOnly then begin
@@ -4701,7 +4701,7 @@ begin
       Encoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
   end;
   if Encoding='' then
-    Encoding:=GetSystemEncoding;
+    Encoding:=GetDefaultTextEncoding;
   //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
   List:=TStringList.Create;
   GetSupportedEncodings(List);
@@ -4710,10 +4710,10 @@ begin
     CurEncoding:=List[i];
     CurCaption:=CurEncoding;
     if SysUtils.CompareText(CurEncoding,EncodingAnsi)=0 then begin
-      SysEncoding:=GetSystemEncoding;
+      SysEncoding:=GetDefaultTextEncoding;
       if (SysEncoding<>'') and (SysUtils.CompareText(SysEncoding,EncodingAnsi)<>0)
       then
-        CurCaption:=CurCaption+' ('+GetSystemEncoding+')';
+        CurCaption:=CurCaption+' ('+GetDefaultTextEncoding+')';
     end;
     if CurEncoding='UTF-8BOM' then begin
       CurCaption:=lisUtf8WithBOM;
