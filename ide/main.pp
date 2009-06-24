@@ -473,6 +473,10 @@ type
     function ProjInspectorRemoveFile(Sender: TObject;
                                      AnUnitInfo: TUnitInfo): TModalresult;
 
+    // Checks if the UnitDirectory is part of the Unit Search Paths,
+    // if not, then ask the user if he wants to include the Unit Search Paths.
+    procedure CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
     procedure OnCompilerOptionsImExport(Sender: TObject);
@@ -9098,8 +9102,6 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
-  CurUnitPath: String;
-  CurDirectory: String;
 begin
   Result:=mrCancel;
   if BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[])
@@ -9142,22 +9144,7 @@ begin
                 Project1.MainUnitInfo.Modified:=true;
             end;
           end;
-          if not ActiveUnitInfo.IsVirtual then begin
-            CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-            CurDirectory:=ActiveUnitInfo.GetDirectory;
-            if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
-            begin
-              if MessageDlg(lisAddToUnitSearchPath,
-                Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
-                  #13, CurDirectory]),
-                mtConfirmation,[mbYes,mbNo],0)=mrYes
-              then begin
-                Project1.CompilerOptions.OtherUnitFiles:=
-                      MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
-                                       CurDirectory);
-              end;
-            end;
-          end;
+          CheckUnitDirIsInSearchPath(ActiveUnitInfo);
         end;
       end;
     end else begin
@@ -14201,6 +14188,29 @@ begin
   end;
 end;
 
+procedure TMainIDE.CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+var
+  CurDirectory: String;
+  CurUnitPath: String;
+begin
+  if not UnitInfo.IsVirtual then begin
+    CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+    CurDirectory:=UnitInfo.GetDirectory;
+    if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
+    begin
+      if MessageDlg(lisAddToUnitSearchPath,
+        Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
+          #13, CurDirectory]),
+        mtConfirmation,[mbYes,mbNo],0)=mrYes
+      then begin
+        Project1.CompilerOptions.OtherUnitFiles:=
+              MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                               CurDirectory);
+      end;
+    end;
+  end;
+end;
+
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
   AnUnitInfo: TUnitInfo): TModalresult;
 var
@@ -14212,6 +14222,7 @@ begin
   Result:=mrOk;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
+  CheckUnitDirIsInSearchPath(AnUnitInfo);
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
