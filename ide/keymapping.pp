@@ -2370,7 +2370,7 @@ begin
   o := TSynPluginTemplateEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
   AddDefault(C, 'Edit Template Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
   AddDefault(C, 'Edit Template Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
-  AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
+  AddDefault(C, 'Edit Template Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
   AddDefault(C, 'Edit Template Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
   AddDefault(C, 'Edit Template Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
   AddDefault(C, 'Edit Template Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
@@ -2385,7 +2385,7 @@ begin
   o := TSynPluginTemplateEdit.ConvertBaseToCommandOff(ecPluginFirst) - ecPluginFirst;
   AddDefault(C, 'Edit Template (off) Next Cell', srkmecSynPTmplEdNextCell, ecSynPTmplEdNextCell + o);
   AddDefault(C, 'Edit Template (off) Next Cell (all selected)', srkmecSynPTmplEdNextCellSel, ecSynPTmplEdNextCellSel + o);
-  AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
+  AddDefault(C, 'Edit Template (off) Next Cell (rotate)', srkmecSynPTmplEdNextCellRotate, ecSynPTmplEdNextCellRotate + o);
   AddDefault(C, 'Edit Template (off) Next Cell (rotate / all selected)', srkmecSynPTmplEdNextCellSelRotate, ecSynPTmplEdNextCellSelRotate + o);
   AddDefault(C, 'Edit Template (off) Previous Cell', srkmecSynPTmplEdPrevCell, ecSynPTmplEdPrevCell + o);
   AddDefault(C, 'Edit Template (off) Previous Cell (all selected)', srkmecSynPTmplEdPrevCellSel, ecSynPTmplEdPrevCellSel + o);
