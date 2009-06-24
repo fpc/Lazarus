@@ -20,7 +20,6 @@ object Dockable: TDockable
     Top = 0
     Width = 244
     Align = alClient
-    OnChangeBounds = Shape1ChangeBounds
   end
   object Label1: TLabel
     Left = 10

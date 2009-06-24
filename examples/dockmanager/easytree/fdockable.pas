@@ -18,7 +18,6 @@ type
     Shape1: TShape;
     procedure Button1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure Shape1ChangeBounds(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,13 +43,7 @@ begin
   ]);
 end;
 
-procedure TDockable.Shape1ChangeBounds(Sender: TObject);
-begin
-
-end;
-
 initialization
-  {$i fDockable.lrs}
   {$i fDockable.lrs}
 
 end.

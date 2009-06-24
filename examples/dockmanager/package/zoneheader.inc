@@ -54,15 +54,9 @@ const //zone decoration sizes
 //minimal (Delphi) header
   GrabberSize = 10; // 12;
   dDDist = 1;
-{$IFDEF newSplitter}
   dDBorder = 1;
   dDHeader = GrabberSize; //?
   dDButton = GrabberSize - 2*dDBorder; //10?
-{$ELSE}
-  dDBorder = 1;
-  dDHeader = GrabberSize + dSizer; //?
-  dDButton = GrabberSize - dDBorder; // 2*dDBorder; //10?
-{$ENDIF}
 
 (* Zone part map.
   In portrait mode (header on top), the zone rectangle is adjusted according
@@ -76,7 +70,6 @@ const //zone decoration sizes
   zpAll excludes the splitter and client area.
   zpCaption excludes borders and buttons from zpAll.
 *)
-{$IFDEF newSplitter}
 (*
   The splitter is excluded first, if present.
   [zpSizer] entry is unused.
@@ -107,36 +100,6 @@ HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
     (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
   )
 );
-{$ELSE}
-(* Sizer in header, just before caption
-*)
-HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
-//hsMinimal
-  (
-    {zpNowhere} (),
-    {zpClient}  (dTop:dDHeader; dBottom:0),
-    {zpAll}     (dTop:dSizer; dBottom:-dDHeader),
-    {zpCaption} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:2*dDBorder+dDButton),
-    {zpSizer}   (dTop:0; dBottom:-dSizer),
-  {$IFDEF restore}
-    {zpRestoreButton} (),
-  {$ENDIF}
-    {zpCloseButton} (dTop:dSizer+dDBorder; dBottom:-dDButton; dLeft:-dDButton; dRight:dDBorder)
-  ),
-//hsForm
-  (
-    (),    //zpNowhere - not in any zone
-    (dTop:dHeader+dSizer; dBottom:0),    //zpClient - on client control
-    (dTop:dSizer; dBottom:-dHeader),    //zpAll - total header rect
-    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:dBorder; dRight:dBorder+dButton),    //zpCaption
-    (dTop:0; dBottom:-dSizer),    //zpSizer - splitter/sizer
-    {$IFDEF restore}
-    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
-    {$ENDIF}
-    (dTop:dSizer+dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
-  )
-);
-{$ENDIF}
 
 constructor TEasyDockHeader.Create;
 
@@ -181,7 +144,6 @@ begin
   Result := ARect;
   with HeaderPartMap[Style, APart] do begin
     if AOrientation = doVertical then begin //portrait
-    {$IFDEF newSplitter}
     //handle client w/o splitter
       if (APart = zpSizer) then begin
         Result.Bottom := Result.Top + dSizer;
@@ -189,8 +151,6 @@ begin
       end;
       if HasSplitter then
         inc(Result.Top, dSizer); //exclude splitter(?)
-    {$ELSE}
-    {$ENDIF}
       if dTop > 0 then
         inc(Result.Top, dTop);
       if dBottom > 0 then
@@ -208,7 +168,6 @@ begin
       if dLeft < 0 then
         Result.Left := Result.Right + dLeft;
     end else begin //landscape
-    {$IFDEF newSplitter}
     //handle client w/o splitter
       if (APart = zpSizer) then begin
         Result.Right := Result.Left + dSizer;
@@ -216,8 +175,6 @@ begin
       end;
       if HasSplitter then
         inc(Result.Left, dSizer);
-    {$ELSE}
-    {$ENDIF}
       if dTop > 0 then
         inc(Result.Left, dTop);
       if dBottom > 0 then

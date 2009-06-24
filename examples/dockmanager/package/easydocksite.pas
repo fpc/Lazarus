@@ -375,11 +375,8 @@ begin
   while zone <> nil do begin
     if (SitePos.X > zone.Right) or (SitePos.Y > zone.Bottom) then
       zone := zone.NextSibling
-  {$IFDEF newSplitter}
     else if zone.HasSizer and PtInRect(zone.GetPartRect(zpSizer), SitePos) then
       break
-  {$ELSE}
-  {$ENDIF}
     else if zone.FirstChild <> nil then
       zone := zone.FirstChild
     else begin
@@ -577,11 +574,7 @@ begin
       OldZone.Free;
     end;
   end;
-{$IFDEF newSplitter}
   ResetBounds(True); //splitters may have to be inserted
-{$ELSE}
-  FDockSite.Invalidate;
-{$ENDIF}
 end;
 
 procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
@@ -741,26 +734,19 @@ var
   Control: TControl;
   MouseMsg: TLMMouse absolute Message;
   Zone: TEasyZone;
+  MousePos: TPoint;
 
   function FindZone(fButtonDown: boolean): TEasyZonePart;
-  var
-    MousePos: TPoint;
   begin
     MousePos := SmallPointToPoint(MouseMsg.Pos);
     Zone := ZoneFromPoint(MousePos);
   //exact zone part
-  {$IFDEF newSplitter}
     if (Zone = nil) then begin
-  {$ELSE}
-    if (Zone = nil) or (Zone.ChildControl = nil) then begin
-  {$ENDIF}
       Result := zpNowhere;
       Control := nil;
     end else begin
       Control := Zone.ChildControl;
       Result := FHeader.FindPart(zone, MousePos, fButtonDown);
-      //assert(Result in [zpNowhere..zpCloseButton], 'bad part');
-      //DebugLn('IN ', PartNames[Result]);
     end;
     Part := Result;
   end;
@@ -806,8 +792,13 @@ begin
       case FindZone(False) of
       zpCaption: // mouse down on not buttons => start drag
         begin //problem here - app hangs!
+        (* perhaps the mousedown
+        *)
           DebugLn('start dragging from header: %s', [FDockSite.GetDockCaption(Control)]);
-          Control.BeginDrag(False);
+          //MousePos := Control.ClientToScreen(Point(1,1));
+          //Mouse.CursorPos := MousePos; //todo: inside control?
+          Control.BeginDrag(False); //doesn't work!?
+          //Control.BeginDrag(True); //floats only - due to mouse outside control?
         end;
       end;
     LM_MOUSEMOVE:
@@ -1397,7 +1388,6 @@ begin
 // In a parent zone of vertical orientation the zone.PrevSibling.Bottom is zone.Top
 (* NewSplitter: exclude higher level splitters.
 *)
-{$IFDEF NewSplitter}
   zone := self;
   if zone.Parent <> nil then begin
     if (fTop = (zone.Parent.Orientation = doVertical)) then begin
@@ -1420,27 +1410,6 @@ begin
   end else begin
     Result := 0;
   end;
-{$ELSE} //include all splitters
-  zone := self;
-  while zone.Parent <> nil do begin
-    if (fTop = (zone.Parent.Orientation = doVertical)) then begin
-      prev := zone.PrevSibling;
-      while prev <> nil do begin
-        if prev.Visible then begin
-          if fTop then
-            Result := prev.Bottom
-          else
-            Result := prev.Right;
-          exit;
-        end;
-        prev := prev.PrevSibling;
-      end;
-    end;
-    zone := zone.Parent;
-  end;
-//reached top zone
-  Result := 0;
-{$ENDIF}
 end;
 
 function TEasyZone.GetLeft: Integer;
