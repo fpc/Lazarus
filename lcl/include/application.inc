@@ -578,8 +578,7 @@ end;
 procedure TApplication.StopHintTimer;
 begin
   if FHintTimer <> nil then
-    FHintTimer.Enabled := false;
-  FHintTimerType := ahttNone;
+    FHintTimer.Enabled := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -652,28 +651,40 @@ end;
 procedure TApplication.DoOnMouseMove;
 var
   Info: THintInfoAtMouse;
+  HintControlChanged: Boolean;
 begin
   Info := GetHintInfoAtMouse;
 
   {$ifdef DebugHintWindow}
     DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
   {$endif}
-  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahttShowHint])) then
+  HintControlChanged := FHintControl <> Info.Control;
+  if Info.ControlHasHint then
   begin
-    if Info.ControlHasHint then
+    if HintControlChanged then
     begin
+      CancelHint;
       FHintControl := Info.Control;
-      case FHintTimerType of
-        ahttNone, ahttShowHint:
-          StartHintTimer(HintPause, ahttShowHint);
-        ahttHideHint:
-          ShowHintWindow(Info);
-        else
-          HideHint;
-      end;
-    end else
-      HideHint;
-  end;
+      FHintRect := FHintControl.BoundsRect;
+    end;
+    case FHintTimerType of
+      ahttNone, ahttHideHint:
+        //react only if the hint control changed or if the mouse leave the previously set hint rect
+        if HintControlChanged or (not PtInRect(FHintRect, FHintControl.ScreenToClient(Info.MousePos))) then
+        begin
+          //if a hint is visible immediately query the app to show a new hint...
+          if FHintTimerType = ahttHideHint then
+            ShowHintWindow(Info);
+          //...if there's no hint window visible at this point than schedule a new query
+          if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
+            StartHintTimer(HintPause, ahttShowHint);
+        end;
+      ahttShowHint:
+        StartHintTimer(HintPause, ahttShowHint);
+    end;
+  end
+  else
+    CancelHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -784,9 +795,11 @@ begin
 
     //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
+    FHintRect := HintInfo.CursorRect;
     // start hide timer
     StartHintTimer(HintHidePause,ahttHideHint);
-  end else
+  end
+  else
     HideHint;
 
   {$ifdef DebugHintWindow}
@@ -807,14 +820,15 @@ begin
   {$endif}
   StopHintTimer;
   FHintTimerType := TimerType;
-  if Interval>0 then
+  if Interval > 0 then
   begin
     if FHintTimer = nil then
       FHintTimer := TCustomTimer.Create(Self);
     FHintTimer.Interval := Interval;
     FHintTimer.OnTimer := @OnHintTimer;
-    FHintTimer.Enabled := true;
-  end else
+    FHintTimer.Enabled := True;
+  end
+  else
     OnHintTimer(Self);
 end;
 
@@ -824,14 +838,12 @@ end;
 procedure TApplication.OnHintTimer(Sender: TObject);
 var
   Info: THintInfoAtMouse;
-  OldHintTimerType: TAppHintTimerType;
 begin
   {$ifdef DebugHintWindow}
     DebugLn('TApplication.OnHintTimer Type=', IntToStr(ord(FHintTimerType)));
   {$endif}
-  OldHintTimerType := FHintTimerType;
   StopHintTimer;
-  case OldHintTimerType of
+  case FHintTimerType of
     ahttShowHint:
       begin
         Info := GetHintInfoAtMouse;
@@ -840,8 +852,13 @@ begin
         else
           HideHint;
       end;
+    ahttHideHint:
+      begin
+        HideHint;
+        FHintTimerType := ahttNone;
+      end
     else
-      CancelHint;
+      HideHint;
   end;
 end;
 
@@ -1215,10 +1232,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.CancelHint;
 begin
-  if FHintTimer<>nil then FHintTimer.Enabled:=false;
+  StopHintTimer;
   HideHint;
-  if FHintControl <> nil then
-    FHintControl := nil;
+  FHintControl := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1227,7 +1243,7 @@ end;
 procedure TApplication.HideHint;
 begin
   if FHintWindow <> nil then
-    FHintWindow.Visible := false;
+    FHintWindow.Visible := False;
 end;
 
 {------------------------------------------------------------------------------

@@ -1098,6 +1098,7 @@ type
     FHintHidePause: Integer;
     FHintHidePausePerChar: Integer;
     FHintPause: Integer;
+    FHintRect: TRect;
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FHintTimer: TCustomTimer;
