@@ -1610,7 +1610,7 @@ begin
       temp_designermenuitem^.ParentMenu:=nil;
       temp_designermenuitem^.PrevItem:=DesignerMenuItem;
       if (DesignerMenuItem^.ParentMenu = nil) and (DesignerMenuItem^.PrevItem = nil) then
-        Root:=DesignerMenuItem;
+        FRoot:=DesignerMenuItem;
       DesignerMenuItem^.NextItem:=temp_designermenuitem;
       if (DesignerMenuItem^.ParentMenu <> nil) then
         DesignerMenuItem^.ParentMenu^.SubMenu:=DesignerMenuItem;
@@ -1649,7 +1649,7 @@ begin
       temp_designermenuitem^.ParentMenu:=DesignerMenuItem^.ParentMenu;
       DesignerMenuItem^.ParentMenu:=nil;
       if (temp_designermenuitem^.ParentMenu = nil) and (temp_designermenuitem^.PrevItem = nil) then
-        Root:=temp_designermenuitem;
+        FRoot:=temp_designermenuitem;
       if (temp_designermenuitem^.ParentMenu <> nil) then
         temp_designermenuitem^.ParentMenu^.SubMenu:=temp_designermenuitem;
       if (DesignerMenuItem^.NextItem <> nil) then
@@ -1721,7 +1721,7 @@ begin
     if (temp_parentmenudesignermenuitem = nil) and (temp_previousdesignermenuitem = nil) then
     begin
       temp_nextdesignermenuitem^.ParentMenu:=nil;
-      Root:=temp_nextdesignermenuitem;
+      FRoot:=temp_nextdesignermenuitem;
     end;
     if (temp_parentmenudesignermenuitem <> nil) then
     begin
