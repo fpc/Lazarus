@@ -2872,6 +2872,7 @@ resourcestring
   lisProjAddFiles = 'Add files';
   lisProjAddEditorFile = 'Add editor files';
   lisProjAddAddFileToProject = 'Add file to project:';
+  lisProjAddAddFilesToProject = 'Add files to project';
   lisProjAddPackageName = 'Package Name:';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';

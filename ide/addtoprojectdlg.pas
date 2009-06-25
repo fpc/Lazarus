@@ -425,7 +425,7 @@ begin
   FilesBrowseButton.Caption:=lisPathEditBrowse;
   FilesShortenButton.Caption:=lisA2PSwitchPaths;
   FilesDeleteButton.Caption:=dlgEdDelete;
-  FilesAddButton.Caption:=lisA2PAddFilesToPackage;
+  FilesAddButton.Caption:=lisProjAddAddFilesToProject;
   UpdateFilesButtons;
 end;
 
