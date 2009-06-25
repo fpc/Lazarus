@@ -53,7 +53,8 @@ type
 
   TCarbonContext = class
   public
-    CGContext: CGContextRef;
+    CGContext : CGContextRef;
+    isClipped : Boolean;
     constructor Create;
     procedure Reset; virtual; abstract;
   end;

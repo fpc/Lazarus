@@ -2826,18 +2826,27 @@ begin
 end;
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
+var
+  ctx : TCarbonContext;
 begin
   Result := 0;
   if (DC = 0) then Exit;
 
-  if RGN <> 0 then begin
-    if Assigned(TCarbonContext(DC).CGContext) then
-      CGContextSaveGState(TCarbonContext(DC).CGContext);
-    TCarbonRegion(RGN).Apply( TCarbonContext(DC) );
-  end else begin
-    if Assigned(TCarbonContext(DC).CGContext) then
-      CGContextRestoreGState(TCarbonContext(DC).CGContext);
+  ctx := TCarbonContext(DC);
+
+  if ctx.isClipped and Assigned(TCarbonContext(DC).CGContext) then
+  begin
+    ctx.isClipped := false;
+    CGContextRestoreGState(ctx.CGContext);
   end;
+
+  if RGN <> 0 then
+  begin
+    if Assigned(ctx.CGContext) then CGContextSaveGState(ctx.CGContext);
+    TCarbonRegion(RGN).Apply( ctx );
+    ctx.isClipped := true;
+  end;
+
   Result := 0;
 end;
 
