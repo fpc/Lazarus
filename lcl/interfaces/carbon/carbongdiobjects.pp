@@ -392,14 +392,12 @@ var
   DefaultPen: TCarbonPen;
 
   DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
-
-  NilClipRect : TCarbonRegion;
   
 implementation
 
 uses
   CarbonInt, CarbonProc, CarbonCanvas, CarbonDbgConsts;
-  
+
 const
   BITMAPINFOMAP: array[TCarbonBitmapType] of CGBitmapInfo = (
     {cbtMask} kCGImageAlphaNone,
@@ -410,7 +408,8 @@ const
     {cbtBGRA} kCGImageAlphaFirst or kCGBitmapByteOrder32Little
   );
 
-  
+
+
 {------------------------------------------------------------------------------
   Name:    CheckGDIObject
   Params:  GDIObject   - Handle to a GDI Object (TCarbonFont, ...)
@@ -740,10 +739,10 @@ procedure TCarbonRegion.Apply(ADC: TCarbonContext);
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
-  
+
   if OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
     Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
-    
+
   CGContextClip(ADC.CGContext);
 end;
 
@@ -2382,7 +2381,6 @@ end;
 var
   LogBrush: TLogBrush;
 
-
 initialization
 
   InitCursor;
@@ -2408,9 +2406,6 @@ initialization
   ScreenContext := TCarbonScreenContext.Create;
   ScreenContext.CGContext := DefaultContext.CGContext; // workaround
 
-  // range: -MaxInt div 2 ... MaxInt div 2 - 1, doesn't work!
-  NilClipRect := TCarbonRegion.Create(-MaxInt div 4,-MaxInt div 4,MaxInt div 4,MaxInt div 4);
-
 finalization
   DefaultContext.Free;
   ScreenContext.Free;
@@ -2427,7 +2422,5 @@ finalization
   StockSystemFont.Free;
   
   DefaultBitmap.Free;
-
-  NilClipRect.Free;
 
 end.

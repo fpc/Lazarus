@@ -2830,10 +2830,14 @@ begin
   Result := 0;
   if (DC = 0) then Exit;
 
-  if RGN <> 0 then
-    TCarbonRegion(RGN).Apply( TCarbonContext(DC) )
-  else
-    NilClipRect.Apply(TCarbonContext(DC));
+  if RGN <> 0 then begin
+    if Assigned(TCarbonContext(DC).CGContext) then
+      CGContextSaveGState(TCarbonContext(DC).CGContext);
+    TCarbonRegion(RGN).Apply( TCarbonContext(DC) );
+  end else begin
+    if Assigned(TCarbonContext(DC).CGContext) then
+      CGContextRestoreGState(TCarbonContext(DC).CGContext);
+  end;
   Result := 0;
 end;
 
