@@ -8487,7 +8487,7 @@ begin
     end;
   finally
     if tmpCanvas<>Canvas then
-      FreeWorkingCanvas(Canvas);
+      FreeWorkingCanvas(tmpCanvas);
   end;
 
   if W=0 then
