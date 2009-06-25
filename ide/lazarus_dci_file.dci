@@ -2,12 +2,12 @@
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-array[$param(0)..$param(1)] of |;
+array[$param(0)..$param(1)] of $param(Type);|
 [arrayc | array declaration (const)]
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-array[$param(0)..$param(1)] of = (|);
+array[$param(0)..$param(1)] of $param(Type) = (|);
 [cases | case statement]
 $(AttributesStart)
 EnableMakros=true
@@ -140,7 +140,7 @@ EnableMakros=true
 $(AttributesEnd)
 $param(variable) := $param(typename).Create;
 try
-
+  |
 finally
   $param(variable,sync=1).Free;
 end;
