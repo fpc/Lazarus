@@ -8463,7 +8463,6 @@ var
   i,W: Integer;
   Ts: TSize;
   TmpCanvas: TCanvas;
-  DC: HDC;
   C: TGridColumn;
 begin
   if (aCol<0) or (aCol>ColCount-1) then
