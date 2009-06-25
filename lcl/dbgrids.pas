@@ -3274,20 +3274,15 @@ begin
     tmpCanvas := GetWorkingCanvas(aGrid.Canvas);
     tmpCanvas.Font := aGrid.Font;
 
-    if tmpCanvas=aGrid.Canvas then begin
-      if FField<>nil then
-        result := CalcColumnFieldWidth(
-          tmpCanvas,
-          dgTitles in aGrid.Options,
-          Title.Caption,
-          Title.Font,
-          FField)
-      else
-        result := AGrid.DefaultColWidth
-    end else begin
-      aGrid.InvalidateSizes;
-      result := DEFCOLWIDTH;
-    end;
+    if FField<>nil then
+      result := CalcColumnFieldWidth(
+        tmpCanvas,
+        dgTitles in aGrid.Options,
+        Title.Caption,
+        Title.Font,
+        FField)
+    else
+      result := AGrid.DefaultColWidth;
 
     if tmpCanvas<>AGrid.Canvas then
       FreeWorkingCanvas(tmpCanvas);
