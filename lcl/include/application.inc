@@ -663,7 +663,8 @@ begin
   begin
     if HintControlChanged then
     begin
-      CancelHint;
+      StopHintTimer;
+      HideHint;
       FHintControl := Info.Control;
       FHintRect := FHintControl.BoundsRect;
     end;
@@ -1235,6 +1236,7 @@ begin
   StopHintTimer;
   HideHint;
   FHintControl := nil;
+  FHintTimerType := ahttNone;
 end;
 
 {------------------------------------------------------------------------------
