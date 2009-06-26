@@ -102,7 +102,7 @@ HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
 );
 
 constructor TEasyDockHeader.Create;
-
+{
   procedure dump;
   var
     r, r2: TRect;
@@ -122,15 +122,15 @@ constructor TEasyDockHeader.Create;
     r2 := GetRectOfPart(r, orn, zpSizer, hc);
     DebugLn('%s (%d,%d)-(%d,%d)', ['sizer  ', r2.Top, r2.Left, r2.Bottom, r2.Right]);
   end;
-
+}
 begin
-  HeaderSize := dHeader; //some meaningful value?
+  //HeaderSize := dHeader; //some meaningful value?
 //debug
   //dump; - not shown in console
 end;
 
 function TEasyDockHeader.GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation;
-  APart: TEasyZonePart; HasSplitter: boolean): TRect;
+  APart: TEasyZonePart; HasSplitter: boolean; AStyle: TEasyHeaderStyle): TRect;
 begin
 (* ARect is (must be) TLBR zone rectangle, on input.
   HasSplitter determines whether to exclude the splitter from ARect,
@@ -142,7 +142,7 @@ begin
   end;
 
   Result := ARect;
-  with HeaderPartMap[Style, APart] do begin
+  with HeaderPartMap[AStyle, APart] do begin
     if AOrientation = doVertical then begin //portrait
     //handle client w/o splitter
       if (APart = zpSizer) then begin
@@ -207,7 +207,7 @@ var
   function MouseInPart(APart: TEasyZonePart): boolean;
   begin
   //on hit: retain Part and SubRect
-    SubRect := GetRectOfPart(r, aOrient, APart, AZone.HasSizer);
+    SubRect := GetRectOfPart(r, aOrient, APart, AZone.HasSizer, AZone.Style);
     Result := PtInRect(SubRect, MousePos);
     if Result then
       Part := APart;
@@ -320,26 +320,30 @@ var
   ALogFont: TLogFont;
   AOrientation: TDockOrientation;
   AControl: TControl;
+  AStyle: TEasyHeaderStyle;
+  HasSizer: boolean;
 begin
 (* Some colors inavailable on some widgetsets!
 *)
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 //debug
   AControl := AZone.FChildControl;
+  AStyle := AZone.Style;
+  HasSizer := AZone.HasSizer;
   AOrientation := AControl.DockOrientation;
 
   ARect := AZone.GetBounds;
   ACanvas.Brush.Color := clBtnFace;
 
 //draw splitter?
-  if AZone.HasSizer then begin
+  if HasSizer then begin
   // border?
-    BtnRect := GetRectOfPart(ARect, AOrientation, zpSizer, AZone.HasSizer);
+    BtnRect := GetRectOfPart(ARect, AOrientation, zpSizer, HasSizer, AStyle);
     ACanvas.FillRect(BtnRect);
   end;
 
 //erase - which color(s)?
-  DrawRect := GetRectOfPart(ARect, AOrientation, zpAll, AZone.HasSizer);
+  DrawRect := GetRectOfPart(ARect, AOrientation, zpAll, HasSizer, AStyle);
   //ACanvas.Brush.Color := clBack; // clActiveCaption;
   ACanvas.FillRect(DrawRect);
 
@@ -352,10 +356,10 @@ begin
   ACanvas.Brush.Color := clBtnFace;
 
 // draw caption
-  case Style of
+  case AStyle of
   hsMinimal:
     with DrawRect do begin
-      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
+      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, HasSizer, AStyle);
       if AOrientation = doVertical then begin
         inc(Top, dDBorder);
         DrawGrabberLine(Left, Top, Right, Top+2);
@@ -371,7 +375,7 @@ begin
   hsForm:
     begin
       //ACanvas.Font.Color := clFont; //clCaptionText;
-      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, AZone.HasSizer);
+      DrawRect := GetRectOfPart(ARect, AOrientation, zpCaption, HasSizer, AStyle);
 
       OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
 
@@ -403,12 +407,12 @@ begin
   //ACanvas.Pen.Color := clButtonText;
 
 // draw close button
-  BtnRect := GetRectOfPart(ARect, AOrientation, zpCloseButton, AZone.HasSizer);
+  BtnRect := GetRectOfPart(ARect, AOrientation, zpCloseButton, HasSizer, AStyle);
   DrawButton(BtnRect, DockBtnImages[dhiClose]);
 
 {$IFDEF restore}
 // draw restore button
-  BtnRect := GetRectOfPart(ARect, AOrientation, zpRestoreButton, AZone.HasSizer);
+  BtnRect := GetRectOfPart(ARect, AOrientation, zpRestoreButton, HasSizer, AStyle);
   DrawButton(BtnRect, DockBtnImages[dhiRestore]);
 {$ENDIF}
 end;

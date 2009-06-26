@@ -43,7 +43,7 @@ LCL TODO:
 
 {$H+}
 
-{$DEFINE newSplitter} //exclude splitter from remaining zone
+//{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
@@ -93,16 +93,16 @@ type
 
   TEasyDockHeader = class
   public
-    HeaderSize: integer;
+    //HeaderSize: integer;
   //state last drawn
     MouseZone: TEasyZone;
     MouseDown: boolean;
     MousePart: TEasyZonePart;
     PartRect: TRect;
   public
-    Style: TEasyHeaderStyle;
+    //Style: TEasyHeaderStyle;
     constructor Create;
-    function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean): TRect; virtual;
+    function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean; AStyle: TEasyHeaderStyle): TRect; virtual;
     function  FindPart(AZone: TEasyZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
     procedure Draw(AZone: TEasyZone; ACanvas: TCanvas; ACaption: string; const MousePos: TPoint);
   end;
@@ -129,10 +129,14 @@ type
     procedure SetBounds(TLBR: TRect);
 
     function  GetHandle: HWND;
+  {$IFDEF old}
     function  GetHeaderSize: integer;
+  {$ELSE}
+  {$ENDIF}
     function  GetVisible: boolean;
     function  GetVisibleControl: TControl;
     function  GetPartRect(APart: TEasyZonePart): TRect;
+    function  GetStyle: TEasyHeaderStyle;
   public
     constructor Create(ATree: TEasyTree);
     destructor Destroy; override;
@@ -152,6 +156,7 @@ type
     property PrevSibling: TEasyZone read FPrevSibling;
     property Parent: TEasyZone read FParent write SetParent;
     property Orientation: TDockOrientation read FOrientation write SetOrientation;
+    property Style: TEasyHeaderStyle read GetStyle;
     property Visible: boolean read GetVisible;
 
     property Bottom: integer read BR.Y;
@@ -190,12 +195,16 @@ type
   protected //added
     procedure PositionDockRect(ADockObject: TDragDockObject); override;
     property  DockSite: TWinControl read FDockSite;
+  {$IFDEF old}
     function  DockHeaderSize: integer; virtual;
+  {$ELSE}
+  {$ENDIF}
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
   //Lazarus extension
   private
     FHeader: TEasyDockHeader;
+    FStyle: TEasyHeaderStyle;
     FSplitter: TEasySplitter;
     FSizeZone: TEasyZone; //zone to be resized, also PrevSibling
     procedure SplitterMoved(Sender: TObject); //hide and reposition zone
@@ -386,10 +395,13 @@ begin
   Result := zone;
 end;
 
+{$IFDEF old}
 function TEasyTree.DockHeaderSize: integer;
 begin
   Result := FHeader.HeaderSize;
 end;
+{$ELSE}
+{$ENDIF}
 
 {$IFDEF old}
 procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
@@ -792,7 +804,7 @@ begin
       case FindZone(False) of
       zpCaption: // mouse down on not buttons => start drag
         begin //problem here - app hangs!
-        (* perhaps the mousedown
+        (* perhaps the mousedown state flag gets into the way?
         *)
           DebugLn('start dragging from header: %s', [FDockSite.GetDockCaption(Control)]);
           //MousePos := Control.ClientToScreen(Point(1,1));
@@ -996,9 +1008,9 @@ end;
 
 procedure TEasyTree.SetStyle(NewStyle: TEasyHeaderStyle);
 begin
-  if NewStyle = FHeader.Style then
+  if NewStyle = FStyle then
     exit;
-  FHeader.Style := NewStyle;
+  FStyle := NewStyle;
   ResetBounds(True);
 end;
 
@@ -1135,10 +1147,13 @@ begin
   Result := FTree.FDockSite;
 end;
 
+{$IFDEF old}
 function TEasyZone.GetHeaderSize: integer;
 begin
   Result := FTree.DockHeaderSize;
 end;
+{$ELSE}
+{$ENDIF}
 
 function TEasyZone.GetVisible: boolean;
 begin
@@ -1176,12 +1191,20 @@ begin
 *)
   if (ChildControl <> nil) then
     Result := FTree.FHeader.GetRectOfPart(GetBounds, ChildControl.DockOrientation,
-      APart, HasSizer)
+      APart, HasSizer, Style)
   else if (APart = zpSizer) and HasSizer then
     Result := FTree.FHeader.GetRectOfPart(GetBounds, Parent.Orientation,
-      APart, HasSizer)
+      APart, HasSizer, Style)
   else
     Result := Rect(0,0,0,0);
+end;
+
+function TEasyZone.GetStyle: TEasyHeaderStyle;
+begin
+  if ChildControl is TEasyBook then
+    Result := hsMinimal //or none at all?
+  else
+    Result := FTree.FStyle;
 end;
 
 function TEasyZone.HasSizer: boolean;
@@ -1445,7 +1468,7 @@ begin
   BR := TLBR.BottomRight;
   if ChildControl <> nil then begin //is control zone
     //FTree.AdjustDockRect(ChildControl, TLBR);
-    TLBR := FTree.FHeader.GetRectOfPart(TLBR, ChildControl.DockOrientation, zpClient, HasSizer);
+    TLBR := FTree.FHeader.GetRectOfPart(TLBR, ChildControl.DockOrientation, zpClient, HasSizer, Style);
     ChildControl.BoundsRect := TLBR;
   end else if FirstChild <> nil then begin
     z := FirstChild;

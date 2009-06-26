@@ -1,23 +1,24 @@
 object Form1: TForm1
   Left = 310
-  Height = 139
+  Height = 161
   Top = 151
-  Width = 400
+  Width = 385
   ActiveControl = swInitSize
   Caption = 'Form1'
-  ClientHeight = 139
-  ClientWidth = 400
+  ClientHeight = 161
+  ClientWidth = 385
   LCLVersion = '0.9.27'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
     Top = 0
-    Width = 400
+    Width = 385
     AutoSize = True
     BorderWidth = 2
     Caption = 'ToolBar1'
     EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
     Flat = False
+    List = True
     ShowCaptions = True
     TabOrder = 0
     object ToolButton1: TToolButton
@@ -41,19 +42,26 @@ object Form1: TForm1
   end
   object swInitSize: TCheckBox
     Left = 112
-    Height = 22
+    Height = 17
     Top = 88
-    Width = 118
+    Width = 90
     Caption = 'init button size'
     TabOrder = 2
   end
   object swView1: TCheckBox
     Left = 112
-    Height = 22
+    Height = 17
     Top = 112
-    Width = 139
+    Width = 108
     Caption = 'First button visible'
     OnClick = swView1Click
     TabOrder = 3
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 141
+    Width = 385
+    Panels = <>
   end
 end

@@ -6,6 +6,7 @@ unit fDockBook;
   The currently visible tab remains down.
   A control can be undocked by dragging the associated tab.
     This makes the tabs act as grab regions, for undocking forms.
+  The entire notebook can be docked from the empty part of the toolbar.
 *)
 
 {$mode objfpc}{$H+}
@@ -25,9 +26,13 @@ type
     Control: TControl;
   end;
 
+  TTabs = class(TToolBar)
+  protected
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+  end;
+
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
-    Tabs: TToolBar;
     procedure FormCreate(Sender: TObject);
     procedure pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
@@ -35,6 +40,7 @@ type
       NewTarget: TWinControl; var Allow: Boolean);
     procedure ToolButton1Click(Sender: TObject);
   private
+    Tabs: TTabs;
     CurTab: TTabButton;
   protected
     function GetDefaultDockCaption: string; override;
@@ -54,6 +60,18 @@ end;
 
 procedure TEasyDockBook.FormCreate(Sender: TObject);
 begin
+  Tabs := TTabs.Create(self);
+  Tabs.Align := alTop;
+  Tabs.AutoSize := True;
+  Tabs.Flat := False;
+  Tabs.Height := 28; //?
+  Tabs.List := True;
+  Tabs.ParentColor := False;
+  Tabs.ParentFont := False; //which one?
+  Tabs.Font.Style := [fsBold];
+  Tabs.ShowCaptions := True;
+  Tabs.Wrapable := True;
+  Tabs.Parent := self;
   DragMode := dmAutomatic;
   DragKind := dkDock;
 end;
@@ -177,6 +195,15 @@ begin
       Control.BeginDrag(False); //delayed docking
     end;
   end;
+end;
+
+{ TTabs }
+
+procedure TTabs.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if ssLeft in Shift then
+    Parent.BeginDrag(False); //delayed docking
 end;
 
 initialization

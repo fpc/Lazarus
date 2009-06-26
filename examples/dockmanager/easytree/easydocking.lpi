@@ -44,25 +44,25 @@
       </Unit0>
       <Unit1>
         <Filename Value="fdockable.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="Dockable"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fDockable"/>
       </Unit1>
       <Unit2>
         <Filename Value="fmain.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="EasyDockMain"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMain"/>
       </Unit2>
       <Unit3>
         <Filename Value="ftree.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="DumpBox"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fTree"/>
       </Unit3>
