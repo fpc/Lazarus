@@ -331,8 +331,8 @@ begin
       begin
       FN:=FTemplate.FileNames[I];
       E:=ExtractFileExt(FN);
-      If (CompareText(E,'.lpr')<>0)
-         and (CompareText(E,'.lfm')<>0) then
+      If (CompareText(E,'.lpr')<>0) and (CompareText(E,'.lps')<>0)
+         and (CompareText(E,'.lfm')<>0) and (CompareText(E,'.lrs')<>0) then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
         LazarusIDE.DoOpenEditorFile(FN,-1,[ofAddToProject]);
