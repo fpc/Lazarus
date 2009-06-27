@@ -155,6 +155,8 @@ begin
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
+  HelpButton.Caption:=lisMenuHelp;
+  CancelButton.Caption:=dlgCancel;
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TFPList.Create;
