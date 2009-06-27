@@ -3,405 +3,184 @@ object MainForm: TMainForm
   Height = 374
   Top = 141
   Width = 487
-  HelpContext = 0
   ActiveControl = PCDD
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
-  Caption = 'Lazarus Data Dictionary'
-  ChildSizing.LeftRightSpacing = 0
-  ChildSizing.TopBottomSpacing = 0
-  ChildSizing.HorizontalSpacing = 0
-  ChildSizing.VerticalSpacing = 0
-  ChildSizing.ControlsPerLine = 0
-  ClientHeight = 348
+  Caption = 'Lazarus Database Desktop'
+  ClientHeight = 352
   ClientWidth = 487
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
-  Font.Height = 0
-  Font.Style = []
-  FormStyle = fsNormal
   Menu = MainMenu1
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  ParentBiDiMode = True
-  ParentFont = False
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
-  ShowInTaskBar = stDefault
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object TBMain: TToolBar
     Left = 0
     Height = 26
     Top = 0
     Width = 487
-    HelpContext = 0
-    AutoSize = False
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BorderWidth = 0
     ButtonHeight = 24
     ButtonWidth = 24
     Caption = 'TBMain'
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
-    Ctl3D = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    EdgeInner = esRaised
-    EdgeOuter = esLowered
-    Enabled = True
-    Flat = True
     Images = ILMain
-    ParentColor = True
-    ParentFont = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    TabStop = False
-    Visible = True
     object TBSave: TToolButton
       Left = 49
-      Hint = 'Save Data Dictionary'
       Top = 2
       Action = ASave
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object TBOPen: TToolButton
       Left = 25
-      Hint = 'Open a new Data Dictionary'
       Top = 2
       Action = AOpen
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object TBNew: TToolButton
       Left = 1
-      Hint = 'Create a new Data Dictionary'
       Top = 2
       Action = ANew
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton1: TToolButton
       Left = 73
       Top = 2
       Width = 15
-      HelpContext = 0
       Caption = 'ToolButton1'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsSeparator
-      Visible = True
     end
     object TBNewTable: TToolButton
       Left = 88
-      Hint = 'Create a new table'
       Top = 2
       Action = ANewTable
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object TBNewField: TToolButton
       Left = 112
-      Hint = 'Create a new field in the current table'
       Top = 2
       Action = ANewField
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton2: TToolButton
       Left = 232
       Top = 2
       Width = 16
-      HelpContext = 0
       Caption = 'ToolButton2'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsSeparator
-      Visible = True
     end
     object TBDeleteTable: TToolButton
       Left = 248
       Hint = 'Delete the selected object'
       Top = 2
       Action = ADeleteObject
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton3: TToolButton
       Left = 272
       Top = 2
       Width = 15
-      HelpContext = 0
       Caption = 'ToolButton3'
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      ParentShowHint = True
       Style = tbsSeparator
-      Visible = True
     end
     object TBGenerateSQL: TToolButton
       Left = 287
-      Hint = 'Generate SQL statements for the current table'
       Top = 2
       Action = AGenerateSQL
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object TBAddIndex: TToolButton
       Left = 160
-      Hint = 'Add new index to current table'
       Top = 2
       Action = ANewIndex
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton5: TToolButton
       Left = 311
-      Hint = 'Create code from definition or data'
       Top = 2
       Action = ACreateCode
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object TBAddSequence: TToolButton
       Left = 184
-      Hint = 'Add a sequence'
       Top = 2
       Action = AAddSequence
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton4: TToolButton
       Left = 208
-      Hint = 'Add a domain to the data dictionary'
       Top = 2
       Action = AAddDomain
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
     object ToolButton6: TToolButton
       Left = 136
-      Hint = 'Add a foreign key to the table'
       Top = 2
       Action = AAddForeignKey
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      ParentShowHint = True
     end
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 302
+    Height = 306
     Top = 26
     Width = 487
-    HelpContext = 0
-    TabStop = True
     ActivePage = TSRecent
     Align = alClient
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    ParentFont = True
-    ParentShowHint = True
     TabIndex = 0
     TabOrder = 1
-    TabPosition = tpTop
-    Visible = True
     object TSRecent: TTabSheet
-      HelpContext = 0
       Caption = 'Dictionaries'
-      ChildSizing.LeftRightSpacing = 0
-      ChildSizing.TopBottomSpacing = 0
-      ChildSizing.HorizontalSpacing = 0
-      ChildSizing.VerticalSpacing = 0
-      ChildSizing.ControlsPerLine = 0
-      ClientHeight = 272
+      ClientHeight = 278
       ClientWidth = 483
-      Enabled = True
-      ParentFont = True
-      ParentShowHint = True
       object LVDicts: TListView
         Left = 0
-        Height = 272
+        Height = 278
         Top = 0
         Width = 483
-        HelpContext = 0
         Align = alClient
-        BorderSpacing.Left = 0
-        BorderSpacing.Top = 0
-        BorderSpacing.Right = 0
-        BorderSpacing.Bottom = 0
-        BorderSpacing.Around = 0
-        BorderSpacing.CellAlignHorizontal = ccaFill
-        BorderSpacing.CellAlignVertical = ccaFill
-        BorderWidth = 0
-        Checkboxes = False
         Columns = <        
           item
-            AutoSize = False
             Caption = 'Name'
             Width = 10
           end        
           item
-            AutoSize = False
             Caption = 'FileName'
             Width = 10
           end        
           item
-            AutoSize = False
             Caption = 'Last used on'
             Width = 487
           end>
-        ColumnClick = True
-        DragCursor = crDrag
-        DragMode = dmManual
-        Enabled = True
-        HideSelection = True
-        MultiSelect = False
-        ParentShowHint = True
         ReadOnly = True
         RowSelect = True
-        ScrollBars = ssBoth
-        ShowColumnHeaders = True
-        SortColumn = 0
-        SortType = stNone
-        TabStop = True
         TabOrder = 0
-        ToolTips = True
-        Visible = True
         ViewStyle = vsReport
         OnDblClick = LVDictsDblClick
         OnKeyUp = LVDictsKeyUp
       end
     end
     object TSConnections: TTabSheet
-      HelpContext = 0
       Caption = 'Connections'
-      ChildSizing.LeftRightSpacing = 0
-      ChildSizing.TopBottomSpacing = 0
-      ChildSizing.HorizontalSpacing = 0
-      ChildSizing.VerticalSpacing = 0
-      ChildSizing.ControlsPerLine = 0
-      ClientHeight = 302
-      ClientWidth = 487
-      Enabled = True
-      ParentFont = True
-      ParentShowHint = True
+      ClientHeight = 274
+      ClientWidth = 483
       object LVConnections: TListView
         Left = 0
-        Height = 302
+        Height = 274
         Top = 0
-        Width = 487
-        HelpContext = 0
+        Width = 483
         Align = alClient
-        BorderSpacing.Left = 0
-        BorderSpacing.Top = 0
-        BorderSpacing.Right = 0
-        BorderSpacing.Bottom = 0
-        BorderSpacing.Around = 0
-        BorderSpacing.CellAlignHorizontal = ccaFill
-        BorderSpacing.CellAlignVertical = ccaFill
-        BorderWidth = 0
-        Checkboxes = False
         Columns = <        
           item
-            AutoSize = False
             Caption = 'Name'
             Width = 120
           end        
           item
-            AutoSize = False
             Caption = 'Driver'
             Width = 120
           end        
           item
-            AutoSize = False
             Caption = 'Last used'
           end        
           item
-            AutoSize = False
             Caption = 'Description'
             Width = 217
           end>
-        ColumnClick = True
-        DragCursor = crDrag
-        DragMode = dmManual
-        Enabled = True
-        HideSelection = True
-        MultiSelect = False
-        ParentShowHint = True
         ReadOnly = True
         RowSelect = True
-        ScrollBars = ssBoth
-        ShowColumnHeaders = True
-        SortColumn = 0
         SortType = stText
-        TabStop = True
         TabOrder = 0
-        ToolTips = True
-        Visible = True
         ViewStyle = vsReport
         OnDblClick = LVConnectionsDblClick
         OnKeyUp = LVConnectionsKeyUp
@@ -411,112 +190,31 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 328
+    Top = 332
     Width = 487
-    HelpContext = 0
     Align = alBottom
-    Alignment = taCenter
-    AutoSize = False
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BevelInner = bvNone
     BevelOuter = bvNone
-    BevelWidth = 1
-    BorderWidth = 0
-    BorderStyle = bsNone
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
     ClientHeight = 20
     ClientWidth = 487
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    FullRepaint = True
-    ParentColor = True
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 2
-    TabStop = False
     Visible = False
     object PBSTatus: TProgressBar
       Left = 0
       Height = 20
       Top = 0
       Width = 128
-      HelpContext = 0
       Align = alLeft
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      BorderWidth = 0
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      Max = 100
-      Min = 0
-      Orientation = pbHorizontal
-      ParentShowHint = True
-      Position = 0
-      Smooth = False
-      Step = 10
       TabOrder = 1
-      TabStop = False
-      Visible = True
-      BarShowText = False
     end
     object PStatusText: TPanel
       Left = 128
       Height = 20
       Top = 0
       Width = 359
-      HelpContext = 0
       Align = alClient
       Alignment = taLeftJustify
-      AutoSize = False
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 0
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      BevelInner = bvNone
       BevelOuter = bvLowered
-      BevelWidth = 1
-      BorderWidth = 0
-      BorderStyle = bsNone
-      ChildSizing.LeftRightSpacing = 0
-      ChildSizing.TopBottomSpacing = 0
-      ChildSizing.HorizontalSpacing = 0
-      ChildSizing.VerticalSpacing = 0
-      ChildSizing.ControlsPerLine = 0
-      DockSite = False
-      DragCursor = crDrag
-      DragKind = dkDrag
-      DragMode = dmManual
-      Enabled = True
-      FullRepaint = True
-      ParentColor = True
-      ParentFont = True
-      ParentShowHint = True
       TabOrder = 0
-      TabStop = False
-      Visible = True
     end
   end
   object MainMenu1: TMainMenu
@@ -525,8 +223,6 @@ object MainForm: TMainForm
     top = 79
     object MFIle: TMenuItem
       Caption = '&File'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       object MenuItem1: TMenuItem
         Action = ANew
         Bitmap.Data = {
@@ -565,8 +261,6 @@ object MainForm: TMainForm
           00FF000000FF000000FF000000FF000000FF000000FF000000FF000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ANewExecute
       end
       object MIOpen: TMenuItem
@@ -607,8 +301,6 @@ object MainForm: TMainForm
           000000000000000000000000000000000000000000FF000000FF000000FF0000
           00FF000000000000000000000000000000000000000000000000
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = AOpenExecute
       end
       object MISave: TMenuItem
@@ -649,37 +341,25 @@ object MainForm: TMainForm
           01FF010101FF010101FF010101FF010101FF010101FF010101FF010101FF0101
           01FF010101FF010101FF010101FF010101FF010101FF010101FF
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ASaveExecute
       end
       object MISaveAs: TMenuItem
         Action = ASaveAs
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = SaveAsExecute
       end
       object MICloseSep: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIClose: TMenuItem
         Action = AClose
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ACloseExecute
       end
       object MICloseAll: TMenuItem
         Action = ACloseAll
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ACloseAllExecute
       end
       object MISep: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIExit: TMenuItem
         Action = AExit
@@ -719,45 +399,29 @@ object MainForm: TMainForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF006D9CD4FF6A9AD2FF6697CFFF
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = AExitExecute
       end
     end
     object MenuItem2: TMenuItem
       Caption = '&Edit'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       object MICut: TMenuItem
         Action = ACut
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MenuItem3: TMenuItem
         Action = ACopy
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIPaste: TMenuItem
         Action = APaste
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
     end
     object MIDataDict: TMenuItem
       Caption = '&Dictionary'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = MIDataDictClick
       object MIImport: TMenuItem
         Caption = '&Import'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIDDSep: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MINewTable: TMenuItem
         Action = ANewTable
@@ -797,8 +461,6 @@ object MainForm: TMainForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ANewTableExecute
       end
       object MINewField: TMenuItem
@@ -839,38 +501,170 @@ object MainForm: TMainForm
           FF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FB
           FF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ANewFieldExecute
       end
       object MenuItem4: TMenuItem
         Action = ANewIndex
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000000000
+          000000000000000000FF000000FF000000FF000000FF000000FF000000000000
+          0000000000FFE3ECE4FF77A37DFF77A37DFF77A37DFF000000FF000000000000
+          000000000000000000FF000000FF000000FF0000000000000000000000000000
+          000000000000000000FFAFC9B3FF77A37DFF77A37DFF000000FF000000000000
+          00000000000000000000000000FF000000FF000000FF00000000000000000000
+          0000000000FF77A37DFF77A37DFFAFC9B3FF77A37DFF000000FF000000000000
+          0000000000000000000000000000000000FF000000FF000000FF000000000000
+          00FF77A37DFF77A37DFF77A37DFF000000FFE3ECE4FF000000FF000000000000
+          000000000000000000FF000000FF000000FF000000FF000000FF000000FFCFDE
+          D1FF77A37DFF77A37DFF000000FF00000000000000FF000000FF000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00FFCFDED1FF000000FF000000000000000000000000000000FF000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000FF0000000000000000000000000000000000000000000000000000
+          000000000000000000FF00000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00FF000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000000000000006C4E31FF6C4E
+          31FF000000006C4E31FF6C4E31FF0000000000000000000000FF000000000000
+          00000000000000000000000000000000000000000000000000006C4E31FF6C4E
+          31FF000000006C4E31FF6C4E31FF000000000000000000000000000000000000
+          00000000000000000000000000000000000000000000000000006C4E31FF6C4E
+          31FF6C4E31FF6C4E31FF6C4E31FF000000000000000000000000000000000000
+          00000000000000000000000000000000000000000000000000006C4E31FF6C4E
+          31FF000000006C4E31FF6C4E31FF000000000000000000000000000000000000
+          00000000000000000000000000000000000000000000000000006C4E31006C4E
+          31FF6C4E31FF6C4E31FF6C4E3100000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
         OnClick = ANewIndexExecute
       end
       object MenuItem7: TMenuItem
         Action = AAddForeignKey
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000000000000000000000000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF0000000000000000000000000000
+          0000000000000000000000000000000000FFC2C2C2FFBCBCBCFFBCBCBCFFBBBB
+          BBFFBBBBBBFFBBBBBBFFBBBBBBFFA0A0A0FF000000FF00000000000000000000
+          0000000000000000000000000000000000FFFDFDFDFFE8E8E8FFE8E8E8FFE8E8
+          E8FFE8E8E8FFE8E8E8FFE8E8E8FFC0C0C0FF000000FF00000000000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF8E8E
+          8EFFEAEAEAFFEAEAEAFFEAEAEAFFC1C1C1FF000000FF00000000000000FFE0E0
+          E0FFD1D1D1FFD1D1D1FFD1D1D1FFD1D1D1FF000000FFBBBBBBFFA0A0A0FF2828
+          28FFEEEEEEFFEEEEEEFFEBEBEBFFC3C3C3FF000000FF00000000000000FFFFFF
+          FFFF000000FFEFEFEFFF000000FFD1D1D1FF000000FFE8E8E8FFC0C0C0FF0000
+          00FFEEEEEEFFEEEEEEFFECECECFFC4C4C4FF000000FF00000000000000FFFFFF
+          FFFFEFEFEFFF000000FF000000FFD1D1D1FF000000FFEAEAEAFFC1C1C1FF0000
+          00FFEFEFEFFFEEEEEEFFEEEEEEFFC5C5C5FF000000FF00000000000000FFFFFF
+          FFFF000000FF000000FF000000FFD1D1D1FF000000FFEBEBEBFFC3C3C3FF0000
+          00FFE2E2E2FF858585FF494B4BFF161616FF000000FF00000000000000FFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFE0E0E0FF000000FFECECECFFC4C4C4FF0000
+          00FFADADADFF767676FF5D5D5DFF404040FF000000FF00000000000000FF0000
+          00FF000000FF000000FF000000FF000000FFB1B1B1FFEEEEEEFFC5C5C5FF0000
+          00FFC3C3C3FFFBFBFBFFA8A8A8FF000000FF0000000000000000000000FFFEFE
+          FEFFF1F1F1FFF1F1F1FFF0F0F0FFE2E2E2FF858585FF494B4BFF161616FF0000
+          00FFE0E0E0FFC1C1C1FF000000FF000000000000000000000000000000FFFEFE
+          FEFFF1F1F1FFF1F1F1FFF1F1F1FFADADADFF767676FF5D5D5DFF404040FF0000
+          00FF000000FF000000FF00000000000000000000000000000000000000FFFEFE
+          FEFFF1F1F1FFF1F1F1FFF1F1F1FFC3C3C3FFFBFBFBFFA8A8A8FF000000FF0000
+          0000000000000000000000000000000000000000000000000000000000FFFEFE
+          FEFFFEFEFEFFFEFEFEFFFDFDFDFFE0E0E0FFC1C1C1FF000000FF000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00FF000000FF000000FF000000FF000000FF000000FF00000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
         OnClick = AAddForeignKeyExecute
       end
       object MenuItem5: TMenuItem
         Action = AAddDomain
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFD4D4D4FF9F9F
+          9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F
+          9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFFD4D4D4FF9F9F9FFFF2F2
+          F2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFF000000FFB1B1B1FF000000FFFFFFFFFF9F9F9FFF9F9F9FFFEFEF
+          EFFF000000FFFCFCFCFFFCFCFCFF000000FFFCFCFCFF000000FF000000FF0000
+          00FF9E9E9EFFFCFCFCFF000000FFFCFCFCFFFCFCFCFF9F9F9FFF9F9F9FFFEBEB
+          EBFF000000FF000000FF000000FF000000FFF8F8F8FF000000FFF8F8F8FFC2C2
+          C2FF000000FFF8F8F8FF000000FFF8F8F8FFF8F8F8FF9F9F9FFF9F9F9FFFE9E9
+          E9FF000000FFF6F6F6FFF6F6F6FF000000FFF6F6F6FF000000FF000000FF0000
+          00FF919191FFF6F6F6FF000000FFF6F6F6FFF6F6F6FF9F9F9FFF9F9F9FFFE6E6
+          E6FF000000FFF3F3F3FFF3F3F3FF000000FFF3F3F3FF000000FFF3F3F3FFCACA
+          CAFF000000FFF3F3F3FF000000FFF3F3F3FFF3F3F3FF9F9F9FFF9F9F9FFFE2E2
+          E2FF5D5D5DFF000000FF000000FF5D5D5DFFEFEFEFFF000000FF000000FF0000
+          00FF959595FFEFEFEFFF000000FFEFEFEFFFEFEFEFFF9F9F9FFF9F9F9FFFD4D4
+          D4FFE0E0E0FFE0E0E0FFE0E0E0FFE0E0E0FFE0E0E0FFE0E0E0FFE0E0E0FFE0E0
+          E0FFE0E0E0FF000000FFBBBBBBFF000000FFE0E0E0FF9F9F9FFFD4D4D4FF9F9F
+          9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F
+          9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFFD4D4D4FFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
+          FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFF
+        }
         OnClick = AAddDomainExecute
       end
       object MenuItem6: TMenuItem
         Action = AAddSequence
-        RightJustify = False
-        ShowAlwaysCheckable = False
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000FF0000
+          00FF000000FF000000FF000000FF00000000000000FF00000000000000FF0000
+          0000000000FF000000FF000000FF000000FF0000000000000000000000000000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000FF0000000000000000000000000000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          000000000000000000FF000000FF000000FF000000FF00000000000000000000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          0000000000FF000000FF00000000000000FF000000FF00000000000000000000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          0000000000FF000000FF00000000000000FF000000FF00000000000000000000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          0000000000FF000000FF00000000000000FF000000FF00000000000000FF0000
+          00FF000000FF0000000000000000000000000000000000000000000000000000
+          000000000000000000FF000000FF000000FF0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
         OnClick = AAddSequenceExecute
       end
       object MIDDSep2: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIDeleteTable: TMenuItem
         Action = ADeleteObject
@@ -910,14 +704,10 @@ object MainForm: TMainForm
           00000000000006060600060606000E0E0EFF424242FF4A4A4AFF3E3E3EFF2C2C
           2CFF000000FF0606060006060600000000000000000000000000
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ADeleteObjectExecute
       end
       object MIDDSep3: TMenuItem
         Caption = '-'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
       object MIGenerateSQL: TMenuItem
         Action = AGenerateSQL
@@ -957,8 +747,6 @@ object MainForm: TMainForm
           FFFFC0C0C0FFC0C0C0FFC0C0C0FFC0C0C0FFC0DCC0FFC0DCC0FFC0DCC0FFC0DC
           C0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = AGenerateSQLExecute
       end
       object MIDeleteField: TMenuItem
@@ -999,396 +787,187 @@ object MainForm: TMainForm
           00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
           00FF000000FF000000FF000000FF000000FF0000000000000000
         }
-        RightJustify = False
-        ShowAlwaysCheckable = False
         OnClick = ACreateCodeExecute
       end
     end
     object MIConnection: TMenuItem
       Caption = 'Connections'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       object MINewConnection: TMenuItem
         Caption = 'New'
-        RightJustify = False
-        ShowAlwaysCheckable = False
       end
     end
   end
   object ALMain: TActionList
     Images = ILMain
-    State = asNormal
     left = 88
     top = 128
     object ASave: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = '&Save'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Save Data Dictionary'
       ImageIndex = 2
       OnExecute = ASaveExecute
       OnUpdate = HaveDDEditor
       ShortCut = 16467
-      Visible = True
     end
     object ANew: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = '&New'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Create a new Data Dictionary'
       ImageIndex = 1
       OnExecute = ANewExecute
       ShortCut = 16462
-      Visible = True
     end
     object AExit: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = 'E&xit'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Quit this program'
       ImageIndex = 10
       OnExecute = AExitExecute
       ShortCut = 16465
-      Visible = True
     end
     object AOpen: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = '&Open...'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Open a new Data Dictionary'
       ImageIndex = 0
       OnExecute = AOpenExecute
       ShortCut = 16463
-      Visible = True
     end
     object AClose: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = '&Close'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Close current Data Dictionary'
-      ImageIndex = -1
       OnExecute = ACloseExecute
       OnUpdate = HaveTab
       ShortCut = 16471
-      Visible = True
     end
     object ACut: TEditCut
       Category = 'Edit'
-      AutoCheck = False
       Caption = 'Cu&t'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Cut'
-      ImageIndex = -1
       ShortCut = 16472
-      Visible = True
     end
     object ACopy: TEditCopy
       Category = 'Edit'
-      AutoCheck = False
       Caption = '&Copy'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Copy'
-      ImageIndex = -1
       ShortCut = 16451
-      Visible = True
     end
     object APaste: TEditPaste
       Category = 'Edit'
-      AutoCheck = False
       Caption = '&Paste'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Paste'
-      ImageIndex = -1
       ShortCut = 16470
-      Visible = True
     end
     object ACloseAll: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = 'Close &All'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Close all Data Dictionaries'
-      ImageIndex = -1
       OnExecute = ACloseAllExecute
       OnUpdate = HaveTabs
       ShortCut = 49239
-      Visible = True
     end
     object ANewTable: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New &table'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Create a new table'
       ImageIndex = 4
       OnExecute = ANewTableExecute
       OnUpdate = HaveDataDict
       ShortCut = 16468
-      Visible = True
     end
     object ANewField: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New &field'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Create a new field in the current table'
       ImageIndex = 5
       OnExecute = ANewFieldExecute
       OnUpdate = ANewFieldUpdate
       ShortCut = 16454
-      Visible = True
     end
     object ADeleteObject: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'Delete &Object'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Delete the currently selected object'
       ImageIndex = 3
       OnExecute = ADeleteObjectExecute
       OnUpdate = ADeleteObjectUpdate
-      ShortCut = 0
-      Visible = True
     end
     object AGenerateSQL: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = '&Generate SQL'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Generate SQL statements for the current table'
       ImageIndex = 7
       OnExecute = AGenerateSQLExecute
       OnUpdate = HaveTables
       ShortCut = 16455
-      Visible = True
     end
     object ASaveAs: TAction
       Category = 'File'
-      AutoCheck = False
       Caption = 'Save &as'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Save datadictionary as'
-      ImageIndex = -1
       OnExecute = SaveAsExecute
       OnUpdate = HaveDDEditor
-      ShortCut = 0
-      Visible = True
     end
     object ANewConnection: TAction
       Category = 'Connections'
-      AutoCheck = False
       Caption = '&New connection'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
-      ImageIndex = -1
       OnExecute = ANewConnectionExecute
       ShortCut = 49230
-      Visible = True
     end
     object ADeleteConnection: TAction
       Category = 'Connections'
-      AutoCheck = False
       Caption = '&Delete connection'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
-      ImageIndex = -1
       OnUpdate = HaveConnection
       ShortCut = 49220
-      Visible = True
     end
     object ACopyConnection: TAction
       Category = 'Connections'
-      AutoCheck = False
       Caption = '&Copy connection'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
-      ImageIndex = -1
-      ShortCut = 0
-      Visible = True
     end
     object ANewIndex: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New index'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Add new index to current table'
       ImageIndex = 8
       OnExecute = ANewIndexExecute
       OnUpdate = ANewIndexUpdate
-      ShortCut = 0
-      Visible = True
     end
     object ACreateCode: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'Create &code'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Create code from definition or data'
       ImageIndex = 9
       OnExecute = ACreateCodeExecute
       OnUpdate = ACreateCodeUpdate
-      ShortCut = 0
-      Visible = True
     end
     object AAddSequence: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New sequence'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Add a sequence'
       ImageIndex = 11
       OnExecute = AAddSequenceExecute
       OnUpdate = AAddSequenceUpdate
-      ShortCut = 0
-      Visible = True
     end
     object AAddForeignKey: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New Foreign Key'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Add a foreign key to the table'
       ImageIndex = 12
       OnExecute = AAddForeignKeyExecute
       OnUpdate = AAddForeignKeyUpdate
-      ShortCut = 0
-      Visible = True
     end
     object AAddDomain: TAction
       Category = 'Dictionary'
-      AutoCheck = False
       Caption = 'New domain'
-      Checked = False
-      DisableIfNoHandler = True
-      Enabled = True
-      GroupIndex = 0
-      HelpContext = 0
-      HelpType = htContext
       Hint = 'Add a domain to the data dictionary'
       ImageIndex = 13
       OnExecute = AAddDomainExecute
       OnUpdate = AAddDomainUpdate
-      ShortCut = 0
-      Visible = True
     end
   end
   object ILMain: TImageList
-    AllocBy = 4
-    BlendColor = clNone
-    BkColor = clNone
-    DrawingStyle = dsNormal
-    Height = 16
-    ImageType = itImage
-    Masked = False
-    ShareImages = False
-    Width = 16
     left = 47
     top = 123
     Bitmap = {
@@ -1876,8 +1455,6 @@ object MainForm: TMainForm
     }
   end
   object ODDD: TOpenDialog
-    Width = 0
-    Height = 0
     Title = 'Open data dictionary'
     DefaultExt = '.fpd'
     Filter = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*'
@@ -1890,13 +1467,10 @@ object MainForm: TMainForm
     StoredValues = <>
     IniFileName = 'lazdde'
     IniSection = 'main'
-    Active = True
     left = 43
     top = 192
   end
   object SDDD: TSaveDialog
-    Width = 0
-    Height = 0
     DefaultExt = '.fpd'
     Filter = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*'
     FilterIndex = 0
