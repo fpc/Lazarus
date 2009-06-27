@@ -29,6 +29,8 @@ type
   TTabs = class(TToolBar)
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+  public
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   TEasyDockBook = class(TForm)
@@ -61,17 +63,6 @@ end;
 procedure TEasyDockBook.FormCreate(Sender: TObject);
 begin
   Tabs := TTabs.Create(self);
-  Tabs.Align := alTop;
-  Tabs.AutoSize := True;
-  Tabs.Flat := False;
-  Tabs.Height := 28; //?
-  Tabs.List := True;
-  Tabs.ParentColor := False;
-  Tabs.ParentFont := False; //which one?
-  Tabs.Font.Style := [fsBold];
-  Tabs.ShowCaptions := True;
-  Tabs.Wrapable := True;
-  Tabs.Parent := self;
   DragMode := dmAutomatic;
   DragKind := dkDock;
 end;
@@ -198,6 +189,22 @@ begin
 end;
 
 { TTabs }
+
+constructor TTabs.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Align := alTop;
+  AutoSize := True;
+  Flat := False;
+  Height := 28; //?
+  List := True;
+  ParentColor := False;
+  ParentFont := False; //which one?
+  Font.Style := [fsBold];
+  ShowCaptions := True;
+  Wrapable := True;
+  Parent := TWinControl(TheOwner);
+end;
 
 procedure TTabs.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
