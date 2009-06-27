@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpdatadict, Controls, ComCtrls, StdCtrls,
-  ExtCtrls, Graphics, ImgList, RTTIGrids, LResources;
+  ExtCtrls, Graphics, ImgList, RTTIGrids, LResources, menus, dialogs;
 
 Type
   TEditObjectType = (eotUnknown,eotDictionary,
@@ -60,11 +60,23 @@ Type
     FAllowDoubleClick : TEditObjectType;
     FDDNode,
     FTablesNode : TTreeNode;
+    FMenu : TPopupMenu;
+    FMINewTable,
+    FMINewField,
+    FMINewIndex,
+    FMINewSequence,
+    FMINewForeignKey,
+    FMINewDomain,
+    FMIDeleteObject: TMenuItem;
 {$ifndef onlyoldobjects}
     FSequencesNode,
     FDomainsNode : TTreeNode;
 {$endif}
+    Function AddNewItemPopup(ObjectType: TEditObjectType; AImageIndex : Integer) : TMenuItem;
+    procedure CreateGUI;
     procedure DoDoubleClick(Sender: TObject);
+    procedure DoNewObject(Sender: TObject);
+    procedure DoDeleteObject(Sender: TObject);
     function CurrentObjectWithType(AType: TEditObjectType): TObject;
     function GetCurrentObject: TPersistent;
     Function NewNode (TV : TTreeView;ParentNode : TTreeNode; ACaption : String; AImageIndex : Integer) : TTreeNode;
@@ -87,6 +99,7 @@ Type
     function GetCurrentForeignKey : TDDForeignKeyDef;
     function GetCurrentDomain : TDDDomainDef;
 {$endif}
+    procedure DoPopup(Sender: TObject);
     Procedure DeleteGlobalObject(AObject : TObject);
     Procedure DeleteTableObject(AObject : TObject);
     procedure SelectGlobalObjectList(AObjectType: TEditObjectType);
@@ -156,12 +169,12 @@ Const
   iiForeignKey   = 12;
   iiDomains      = 13;
   iiDomain       = 14;
-
   IIMaxObject    = IIDomain; // Should be last
+  iiDelete       = iiMaxObject+1;
 
 implementation
 
-uses DB, MemDS, Dialogs, fpcodegenerator;
+uses DB, MemDS, fpcodegenerator, TypInfo;
 
 ResourceString
   SNodeDataDictionary = 'Datadictionary';
@@ -172,6 +185,37 @@ ResourceString
   SNodeForeignkeys    = 'Foreign keys';
   SNewDictionary      = 'New dictionary';
   SNodeIndexes         = 'Indexes';
+  STable = 'Table';
+  SField = 'Field';
+  SIndex = 'Index';
+  SSequence = 'Sequence';
+  SForeignKey = 'Foreign key';
+  SDomain = 'Domain';
+  SNew = 'New %s';
+  SErrUnknownType = 'Unknown object type: %d';
+  SNewObject = 'Create new %s';
+  SNameFor = 'Enter a name for the new %s';
+  SDeleteObject = 'Delete this %s';
+  SObject = 'Object';
+
+Function ObjectTypeName(ObjectType : TEditObjectType) : String;
+
+Var
+  S : String;
+
+begin
+  Case ObjectType of
+    eotTable      : S:=STable;
+    eotField      : S:=SField;
+    eotIndex      : S:=SIndex;
+    eotSequence   : S:=SSequence;
+    eotForeignKey : S:=SForeignKey;
+    eotDomain     : S:=SDomain
+  else
+    Raise EDataDict.CreateFmt(SErrUnknownType,[Ord(ObjectType)]);
+  end;
+  Result:=S;
+end;
 
 Function CreateDatasetFromTabledef(TD : TDDTableDef;AOwner : TComponent = Nil) : TDataset;
 
@@ -285,24 +329,68 @@ begin
 end;
 {$endif onlyoldobjects}
 
+procedure TDataDictEditor.DoPopup(Sender: TObject);
+
+Var
+  B : Boolean;
+  EOT : TEditObjectType;
+
+begin
+  // Check availablility of items;
+  B:=CurrentTable<>Nil;
+  FMINewField.Enabled:=B;
+  FMINewIndex.Enabled:=B;
+  FMINewForeignKey.Enabled:=B;
+  EOT:=ObjectType;
+  B:=EOT in SingleObjectTypes;
+  FMIDeleteObject.Enabled:=B;
+  If B then
+    FMIDeleteObject.Caption:=Format(SDeleteObject,[ObjectTypeName(EOT)])
+  else
+    FMIDeleteObject.Caption:=Format(SDeleteObject,[SObject]);
+end;
+
+
+Function TDataDictEditor.AddNewItemPopup(ObjectType : TEditObjectType; AImageIndex : Integer) : TMenuItem;
+
+Var
+  S: String;
+
+begin
+  Result:=TMenuItem.Create(Self);
+  Result.Name:='NewItem'+GetEnumName(TypeInfo(TEditObjectType),Ord(ObjectType));
+  Result.Tag:=Ord(ObjectType);
+  S:=ObjectTypeName(ObjectType);
+  Result.Caption:=Format(SNew,[S]);
+  Result.OnClick:=@DoNewObject;
+  Result.ImageIndex:=AImageIndex;
+  FMenu.Items.Add(Result);
+end;
+
 constructor TDataDictEditor.Create(AOwner: TComponent);
 
+
+begin
+  inherited Create(AOwner);
+  FDD:=TFPDataDictionary.Create;
+  CreateGUI;
+end;
+
+Procedure TDataDictEditor.CreateGUI;
+
 Const
-  ImageNames : Array[0..IIMaxObject] of string =
+  ImageNames : Array[0..IIMaxObject+1] of string =
         ('dddatadict','ddtables','ddtable','ddfields','ddfield',
          'ddtables','ddtabledata','ddindexes','ddindex',
          'ddsequences','ddsequence',
          'ddforeignkeys','ddforeignkey',
-         'dddomains','dddomain');
+         'dddomains','dddomain','dddeleteobject');
 
 
 Var
   P : TPortableNetworkGraphic;
   I : Integer;
-
 begin
-  inherited Create(AOwner);
-  FDD:=TFPDataDictionary.Create;
   FEdit:=TPanel.Create(Self);
   FEdit.Parent:=Self;
   FEdit.Name:='FEdit';
@@ -318,8 +406,23 @@ begin
   FTV.Align:=alClient;
   FTV.OnSelectionChanged:=@DoSelectNode;
   FTV.ShowLines:=True;
+  FMenu:=TPopupMenu.Create(Self);
+  FMenu.Name:='FMenu';
+  FMenu.OnPopup:=@DoPopup;
+  FMINewTable:=AddNewItemPopup(eotTable,iiTable);
+  FMINewField:=AddNewItemPopup(eotField,iiField);
+  FMINewIndex:=AddNewItemPopup(eotIndex,iiIndex);
+  FMINewSequence:=AddNewItemPopup(eotSequence,iiSequence);
+  FMINewForeignKey:=AddNewItemPopup(eotForeignKey,iiForeignKey);
+  FMINewDomain:=AddNewItemPopup(eotDomain,iiDomain);
+  FMIDeleteObject:=TMenuItem.Create(Self);
+  FMIDeleteObject.Caption:=Format(SDeleteObject,[SObject]);
+  FMIDeleteObject.OnClick:=@DoDeleteObject;
+  FMIDeleteObject.ImageIndex:=IIDelete;
+  FMenu.Items.Add(FMIDeleteObject);
+  FTV.PopupMenu:=FMenu;
   FIMgList:=TImageList.Create(Self);
-  For I:=0 to 14 do
+  For I:=0 to IIMaxObject+1 do
     begin
     P:=TPortableNetworkGraphic.Create;
     try
@@ -330,6 +433,7 @@ begin
     end;
     end;
   FTV.Images:=FImgList;
+  FMenu.Images:=FImgList;
   ShowDictionary;
 end;
 
@@ -595,7 +699,31 @@ begin
     FTV.Selected:=FindNodeWithData(FTV,N.Data);
 end;
 
+procedure TDataDictEditor.DoNewObject(Sender: TObject);
 
+Var
+  EOT : TEditObjectType;
+  S,N : String;
+
+begin
+  EOT:=TEditObjectType((Sender as TMenuItem).Tag);
+  S:=ObjectTypeName(EOT);
+  if InputQuery(Format(SNewObject,[S]),Format(SNameFor,[S]),N) then
+    begin
+    case EOT of
+      eotField : NewField(N,CurrentTable);
+      eotIndex : NewIndex(N,CurrentTable);
+      eotForeignKey : NewIndex(N,CurrentTable);
+    else
+      NewGlobalObject(N,EOT);
+    end;
+    end;
+end;
+
+procedure TDataDictEditor.DoDeleteObject(Sender: TObject);
+begin
+  DeleteCurrentObject;
+end;
 
 function TDataDictEditor.SelectNextNode(ANode: TTreeNode; ADefault : TTreeNode): TTreeNode;
 

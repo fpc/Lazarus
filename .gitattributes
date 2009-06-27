@@ -4739,6 +4739,7 @@ tools/lazdatadesktop/bitmaps/btnup.bmp -text
 tools/lazdatadesktop/bitmaps/btnup.xpm -text
 tools/lazdatadesktop/bitmaps/ddconnection.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddatadict.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/dddeleteobject.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddomain.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/dddomains.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/ddfield.png -text svneol=unset#image/png
