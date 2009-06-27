@@ -100,7 +100,6 @@ type
     Text2Combobox: TComboBox;
     Text2OnlySelectionCheckBox: TCheckBox;
 
-
     // options
     OptionsGroupBox: TCheckGroup;
 
@@ -262,6 +261,7 @@ begin
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
+  HelpButton.Caption:=lisMenuHelp;
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
   if OpenInEditorButton.Glyph.Empty then
