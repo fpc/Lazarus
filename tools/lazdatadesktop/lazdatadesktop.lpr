@@ -11,7 +11,7 @@ uses
   { add your units here }, frmmain, dicteditor, DBFLaz,
   frmimportdd, RunTimeTypeInfoControls, frmgeneratesql, SQLDBLaz,
   frmSQLConnect, ddfiles, conneditor, datapanel, querypanel, lazdbexport,
-  lazdatadict;
+  lazdatadict, frmselectconnectiontype;
 
 begin
   Application.Title:='Lazarus Data Desktop';

@@ -1,0 +1,29 @@
+object SelectConnectionTypeForm: TSelectConnectionTypeForm
+  Left = 413
+  Height = 241
+  Top = 207
+  Width = 335
+  Caption = 'Select a connection type'
+  ClientHeight = 241
+  ClientWidth = 335
+  OnCreate = FormCreate
+  LCLVersion = '0.9.27'
+  object LBConnections: TListBox
+    Left = 0
+    Height = 191
+    Top = 0
+    Width = 335
+    Align = alClient
+    ItemHeight = 0
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object BPConnections: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 197
+    Width = 323
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

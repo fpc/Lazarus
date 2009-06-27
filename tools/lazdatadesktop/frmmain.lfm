@@ -143,21 +143,22 @@ object MainForm: TMainForm
             Caption = 'Last used on'
             Width = 487
           end>
+        PopupMenu = PMDataDict
         ReadOnly = True
         RowSelect = True
         TabOrder = 0
         ViewStyle = vsReport
-        OnDblClick = LVDictsDblClick
+        OnDblClick = OpenRecentDatadict
         OnKeyUp = LVDictsKeyUp
       end
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 274
+      ClientHeight = 278
       ClientWidth = 483
       object LVConnections: TListView
         Left = 0
-        Height = 274
+        Height = 278
         Top = 0
         Width = 483
         Align = alClient
@@ -177,12 +178,13 @@ object MainForm: TMainForm
             Caption = 'Description'
             Width = 217
           end>
+        PopupMenu = PMRecentConnections
         ReadOnly = True
         RowSelect = True
         SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
-        OnDblClick = LVConnectionsDblClick
+        OnDblClick = OpenRecentConnection
         OnKeyUp = LVConnectionsKeyUp
       end
     end
@@ -795,6 +797,14 @@ object MainForm: TMainForm
       object MINewConnection: TMenuItem
         Caption = 'New'
       end
+      object MIOpenRecentConnection: TMenuItem
+        Action = AOpenConnection
+        OnClick = OpenRecentConnection
+      end
+      object MIDeleteRecentConnection: TMenuItem
+        Action = ADeleteConnection
+        OnClick = ADeleteConnectionExecute
+      end
     end
   end
   object ALMain: TActionList
@@ -919,7 +929,8 @@ object MainForm: TMainForm
     object ADeleteConnection: TAction
       Category = 'Connections'
       Caption = '&Delete connection'
-      OnUpdate = HaveConnection
+      OnExecute = ADeleteConnectionExecute
+      OnUpdate = HaveRecentConnection
       ShortCut = 49220
     end
     object ACopyConnection: TAction
@@ -965,6 +976,26 @@ object MainForm: TMainForm
       ImageIndex = 13
       OnExecute = AAddDomainExecute
       OnUpdate = AAddDomainUpdate
+    end
+    object AOpenConnection: TAction
+      Category = 'Connections'
+      Caption = '&Open connection'
+      Hint = 'Open selected recent connection'
+      OnExecute = OpenRecentConnection
+      OnUpdate = HaveRecentConnection
+    end
+    object AOpenRecentDatadict: TAction
+      Category = 'File'
+      Caption = 'Open'
+      Hint = 'Open selected recent datadictionary'
+      OnExecute = OpenRecentDatadict
+      OnUpdate = HaveRecentDataDict
+    end
+    object ADeleteRecentDataDict: TAction
+      Category = 'File'
+      Caption = '&Delete'
+      OnExecute = ADeleteRecentDataDictExecute
+      OnUpdate = HaveRecentDataDict
     end
   end
   object ILMain: TImageList
@@ -1476,5 +1507,35 @@ object MainForm: TMainForm
     FilterIndex = 0
     left = 184
     top = 112
+  end
+  object PMRecentConnections: TPopupMenu
+    Images = ILMain
+    left = 121
+    top = 163
+    object PMIOpenConnection: TMenuItem
+      Action = AOpenConnection
+      OnClick = OpenRecentConnection
+    end
+    object PMINewConnection: TMenuItem
+      Action = ANewConnection
+      OnClick = ANewConnectionExecute
+    end
+    object PMIDeleteConnection: TMenuItem
+      Action = ADeleteConnection
+      OnClick = ADeleteConnectionExecute
+    end
+  end
+  object PMDataDict: TPopupMenu
+    Images = ILMain
+    left = 158
+    top = 161
+    object PMIOpenDataDict: TMenuItem
+      Action = AOpenRecentDatadict
+      OnClick = OpenRecentDatadict
+    end
+    object PMINewDataDict: TMenuItem
+      Action = ANew
+      OnClick = ANewExecute
+    end
   end
 end

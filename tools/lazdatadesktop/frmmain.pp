@@ -56,6 +56,9 @@ type
     AAddSequence: TAction;
     AAddForeignKey: TAction;
     AAddDomain: TAction;
+    ADeleteRecentDataDict: TAction;
+    AOpenRecentDatadict: TAction;
+    AOpenConnection: TAction;
     ANewIndex: TAction;
     ADeleteConnection: TAction;
     ANewConnection: TAction;
@@ -81,6 +84,13 @@ type
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
+    PMINewConnection: TMenuItem;
+    PMINewDataDict: TMenuItem;
+    PMIOpenDataDict: TMenuItem;
+    MIDeleteRecentConnection: TMenuItem;
+    MIOpenRecentConnection: TMenuItem;
+    PMIDeleteConnection: TMenuItem;
+    PMIOpenConnection: TMenuItem;
     MINewConnection: TMenuItem;
     MIConnection: TMenuItem;
     MISaveAs: TMenuItem;
@@ -99,6 +109,8 @@ type
     MICut: TMenuItem;
     MIImport: TMenuItem;
     MIDataDict: TMenuItem;
+    PMRecentConnections: TPopupMenu;
+    PMDataDict: TPopupMenu;
     PStatus: TPanel;
     PStatusText: TPanel;
     PBSTatus: TProgressBar;
@@ -142,8 +154,10 @@ type
     procedure ACloseExecute(Sender: TObject);
     procedure ACreateCodeExecute(Sender: TObject);
     procedure ACreateCodeUpdate(Sender: TObject);
+    procedure ADeleteConnectionExecute(Sender: TObject);
     procedure ADeleteObjectExecute(Sender: TObject);
     procedure ADeleteObjectUpdate(Sender: TObject);
+    procedure ADeleteRecentDataDictExecute(Sender: TObject);
     procedure AExitExecute(Sender: TObject);
     procedure AGenerateSQLExecute(Sender: TObject);
     procedure ANewConnectionExecute(Sender: TObject);
@@ -163,13 +177,15 @@ type
     procedure FormShow(Sender: TObject);
     procedure HaveConnection(Sender: TObject);
     procedure HaveDDEditor(Sender: TObject);
+    procedure HaveRecentConnection(Sender: TObject);
+    procedure HaveRecentDataDict(Sender: TObject);
     procedure HaveTabs(Sender: TObject);
     procedure HaveTab(Sender: TObject);
     procedure HaveTables(Sender: TObject);
-    procedure LVConnectionsDblClick(Sender: TObject);
+    procedure OpenRecentConnection(Sender: TObject);
     procedure LVConnectionsKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure LVDictsDblClick(Sender: TObject);
+    procedure OpenRecentDatadict(Sender: TObject);
     procedure LVDictsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MIDataDictClick(Sender: TObject);
     procedure PCDDChange(Sender: TObject);
@@ -181,6 +197,9 @@ type
     procedure CheckParams;
     function CloseCurrentConnection: TModalResult;
     function CloseCurrentTab(AddCancelClose: Boolean = False): TModalResult;
+    procedure DeleteRecentConnection;
+    procedure DeleteRecentDataDict;
+    procedure DoShowNewConnectionTypes(ParentMenu: TMenuItem);
     function GetConnectionName(out AName: String): Boolean;
     function GetCurrentConnection: TConnectionEditor;
     function GetCurrentEditor: TDataDictEditor;
@@ -236,6 +255,7 @@ var
 implementation
 
 uses
+  frmselectconnectiontype,
   // Data dictionary support for
   fpdddbf,     // DBF
   {$ifndef win64}
@@ -581,6 +601,12 @@ end;
 
 procedure TMainForm.ShowNewConnectionTypes;
 
+begin
+  DoShowNewConnectionTypes(MINewConnection);
+  DoShowNewConnectionTypes(PMINewConnection);
+end;
+
+procedure TMainForm.DoShowNewConnectionTypes(ParentMenu : TMenuItem);
 Var
   MI : TNewConnectionMenuItem;
   L : TStringList;
@@ -589,7 +615,7 @@ Var
   cap : TFPDDEngineCapabilities;
 
 begin
-  MINewConnection.Clear;
+  ParentMenu.Clear;
   L:=TStringList.Create;
   Try
     L.Sorted:=True;
@@ -601,7 +627,7 @@ begin
       MI.Caption:=dt;
       MI.FEngineName:=L[i];
       MI.OnClick:=@NewConnectionClick;
-      MINewConnection.Add(MI);
+      ParentMenu.Add(MI);
       // make sure it gets loaded
       PSMain.StoredValue[L[i]]:='';
       end;
@@ -751,6 +777,27 @@ begin
   (Sender as TAction).Enabled:=B;
 end;
 
+procedure TMainForm.ADeleteConnectionExecute(Sender: TObject);
+begin
+  DeleteRecentConnection;
+end;
+
+procedure TMainForm.DeleteRecentConnection;
+
+Var
+  R : TRecentConnection;
+
+begin
+  If (LVConnections.Selected<>Nil)
+     and (LVConnections.Selected.Data<>Nil) then
+    begin
+    R:=TRecentConnection(LVConnections.Selected.Data);
+    If (R<>Nil) then
+      FRecentConnections.Delete(R.Index);
+    ShowRecentConnections;
+    end;
+end;
+
 procedure TMainForm.ADeleteObjectExecute(Sender: TObject);
 begin
   DeleteCurrentObject;
@@ -760,6 +807,11 @@ procedure TMainForm.ADeleteObjectUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(CurrentEditor) and
                                Assigned(CurrentEditor.CurrentObject);
+end;
+
+procedure TMainForm.ADeleteRecentDataDictExecute(Sender: TObject);
+begin
+  DeleteRecentDataDict;
 end;
 
 procedure TMainForm.ACloseAllExecute(Sender: TObject);
@@ -870,6 +922,18 @@ begin
   (Sender as TAction).Enabled:=(CurrentEditor<>Nil);
 end;
 
+procedure TMainForm.HaveRecentConnection(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=(LVConnections.Selected<>Nil)
+                                and (LVConnections.Selected.Data<>Nil);
+end;
+
+procedure TMainForm.HaveRecentDataDict(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=(LVDicts.Selected<>Nil)
+                                and (LVDicts.Selected.Data<>Nil);
+end;
+
 procedure TMainForm.HaveTabs(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=(CurrentEditor<>Nil) or (CurrentConnection<>Nil);
@@ -886,7 +950,7 @@ begin
                                and (CurrentEditor.DataDictionary.Tables.Count>0);
 end;
 
-procedure TMainForm.LVConnectionsDblClick(Sender: TObject);
+procedure TMainForm.OpenRecentConnection(Sender: TObject);
 begin
   If (LVConnections.Selected<>Nil)
      and (LVConnections.Selected.Data<>Nil) then
@@ -897,10 +961,7 @@ procedure TMainForm.LVConnectionsKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if key=VK_DELETE then
-    begin
-      FRecentConnections.Delete(FRecentConnections.FindByName(LVConnections.ItemFocused.Caption).Index);
-      ShowRecentConnections;
-    end;
+    DeleteRecentConnection;
 end;
 
 procedure TMainForm.SaveAsExecute(Sender: TObject);
@@ -1252,7 +1313,7 @@ end;
   Recent dictionaries tab/handling
   ---------------------------------------------------------------------}
 
-procedure TMainForm.LVDictsDblClick(Sender: TObject);
+procedure TMainForm.OpenRecentDatadict(Sender: TObject);
 
 begin
   If (LVDicts.Selected<>Nil)
@@ -1264,10 +1325,20 @@ procedure TMainForm.LVDictsKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if key=VK_DELETE then
-    begin
-      FRecentDicts.Delete(FRecentDicts.FindByName(LVDicts.ItemFocused.Caption).Index);
-      ShowRecentDictionaries;
-    end;
+    DeleteRecentDataDict;
+end;
+
+procedure TMainForm.DeleteRecentDataDict;
+
+Var
+  D: TRecentDatadict;
+begin
+  If (LVDicts.Selected<>Nil)  and (LVDicts.Selected.Data<>Nil) then
+   begin
+   D:=TRecentDatadict(LVDicts.Selected.Data);
+   FRecentDicts.Delete(D.Index);
+   ShowRecentDictionaries;
+   end;
 end;
 
 procedure TMainForm.MIDataDictClick(Sender: TObject);
@@ -1404,6 +1475,7 @@ Var
   RC : TRecentConnection;
 
 begin
+
   DDE:=CreateDictionaryEngine(EngineName,Self);
   CS:=DDE.GetConnectString;
   If (CS='') then
@@ -1443,8 +1515,14 @@ end;
 Function TMainForm.SelectEngineType(out EngineName : String) : Boolean;
 
 begin
-  EngineName:='SQLDB';
-  Result := True;
+  With TSelectConnectionTypeForm.Create(Self) do
+    try
+      Result:=(ShowModal=mrOK);
+      If Result then
+        EngineName:=SelectedConnection;
+    finally
+      Free;
+    end;
 end;
 
 

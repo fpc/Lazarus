@@ -48,7 +48,7 @@
         <PackageName Value="lazdbexport"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -56,8 +56,8 @@
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
-        <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmmain"/>
       </Unit1>
@@ -68,21 +68,21 @@
       </Unit2>
       <Unit3>
         <Filename Value="frmimportdd.pp"/>
-        <ComponentName Value="ImportDDform"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ImportDDform"/>
         <UnitName Value="frmimportdd"/>
       </Unit3>
       <Unit4>
         <Filename Value="frmgeneratesql.pp"/>
-        <ComponentName Value="GenerateSQLForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="GenerateSQLForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmgeneratesql"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmsqlconnect.pp"/>
-        <ComponentName Value="SQLConnectionForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SQLConnectionForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmSQLConnect"/>
       </Unit5>
@@ -110,6 +110,13 @@
         <Filename Value="README.txt"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="frmselectconnectiontype.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SelectConnectionTypeForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmselectconnectiontype"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
