@@ -172,7 +172,10 @@ begin
   ForwardRadioButton.Caption := lisFRForwardSearch;
   BackwardRadioButton.Caption := lisFRBackwardSearch;
 
+  HelpButton.Caption:=lisMenuHelp;
   ReplaceAllButton.Caption:=dlgReplaceAll;
+  OKButton.Caption:=lisOk;
+  CancelButton.Caption:=dlgCancel;
 
   fReplaceAllClickedLast:=false;
 end;
