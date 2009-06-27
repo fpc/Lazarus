@@ -34,10 +34,12 @@ type
 
   TSQLConnectionForm = class(TForm)
     BPButtons: TButtonPanel;
+    ECharset: TEdit;
     EHostName: TEdit;
     EDatabaseName: TEdit;
     EUserName: TEdit;
     EPassword: TEdit;
+    LCharset: TLabel;
     LEUserName: TLabel;
     LEPassword: TLabel;
     LEHostName: TLabel;
@@ -55,6 +57,7 @@ type
     Property DatabaseName : String Index 1 Read GetString Write SetString;
     Property UserName : String Index 2 Read GetString Write SetString;
     Property Password : String Index 3 Read GetString Write SetString;
+    Property Charset : String Index 4 Read GetString Write SetString;
   end; 
 
 var
@@ -86,6 +89,7 @@ begin
           DatabaseName:=L.Values[KeyDatabaseName];
           UserName:=L.Values[KeyUserName];
           Password:=XorDecode(KeyEncode,L.Values[KeyPassword]);
+          Charset:=L.Values[KeyCharset];
           end;
         if (ShowModal=mrOK) then
           begin
@@ -95,6 +99,7 @@ begin
           L.Values[KeyDatabaseName]:=DatabaseName;
           L.Values[KeyUserName]:=UserName;
           L.Values[KeyPassword]:=XorEncode(KeyEncode,Password);
+          L.Values[KeyCharset]:=Charset;
           Result:=L.CommaText;
           end;
       finally
@@ -117,6 +122,7 @@ begin
     1 : Result:=EDatabaseName.Text;
     2 : Result:=EUserName.Text;
     3 : Result:=EPassword.Text;
+    4 : Result:=ECharSet.Text;
   end;
 end;
 
@@ -132,6 +138,7 @@ begin
     1 : EDatabaseName.Text:=AValue;
     2 : EUserName.Text:=AValue;
     3 : EPassword.Text:=AValue;
+    4 : ECharset.Text:=Avalue;
   end;
 end;
 
