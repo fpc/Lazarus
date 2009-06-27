@@ -852,6 +852,7 @@ begin
   CompileButton.Caption := lisMenuBuild;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
+  HelpButton.Caption := lisMenuHelp;
   TargetOSLabel.Caption := lisLazBuildTargetOS;
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
