@@ -112,8 +112,8 @@ type
 
   EDOMError = class(Exception)
   public
-    constructor Create(ACode: Integer; const ASituation: String);
     Code: Integer;
+    constructor Create(ACode: Integer; const ASituation: String);
   end;
 
   EDOMIndexSize = class(EDOMError)

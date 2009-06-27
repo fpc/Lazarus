@@ -183,8 +183,8 @@ type
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
-    class procedure WSRegisterClass; override;
     PageClass: TCustomPageClass;
+    class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
     procedure Change; virtual;

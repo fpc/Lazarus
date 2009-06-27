@@ -576,6 +576,10 @@ type
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
+    // hintwindow stuff
+    FHintWindow: THintWindow;
+    FHintTimer: TTimer;
+
 
     function CreateNotebook: Boolean;
     function NewSE(Pagenum: Integer): TSourceEditor;
@@ -619,8 +623,6 @@ type
           Shift: TShiftState; X,Y: Integer);
 
     // hintwindow stuff
-    FHintWindow: THintWindow;
-    FHintTimer: TTimer;
     procedure HintTimer(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure ShowSynEditHint(const MousePos: TPoint);

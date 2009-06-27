@@ -118,9 +118,9 @@ type
     procedure CodeTemplateEditFormResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   public
-    constructor Create(TheOwner: TComponent); override;
     SynAutoComplete: TSynEditAutoComplete;
     TemplateIndex: integer;
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   { TLazCodeMacros }

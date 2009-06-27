@@ -105,9 +105,9 @@ type
 
   TUCDComponentProperty = class
   public
-    constructor Create(const SrcPath, DestPath: string);
     UsedByPropPath: string;
     RequiresPropPath: string;
+    constructor Create(const SrcPath, DestPath: string);
   end;
 
   { TUnitComponentDependency }
