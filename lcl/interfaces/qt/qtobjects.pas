@@ -435,9 +435,9 @@ type
   TQtButtonGroup = class(TObject)
   private
   public
+    Handle: QButtonGroupH;
     constructor Create(AParent: QObjectH); virtual;
     destructor Destroy; override;
-    Handle: QButtonGroupH;
   public
     procedure AddButton(AButton: QAbstractButtonH); overload;
     procedure AddButton(AButton: QAbstractButtonH; Id: Integer); overload;
