@@ -121,6 +121,7 @@ type
     FExtraOptions: string;
     FRestartAfterBuild: boolean;
     FConfirmBuild: boolean;
+    FQuickBuildOption:integer;
     FTargetCPU: string;
     FTargetDirectory: string;
     fTargetOS: string;
@@ -134,6 +135,7 @@ type
     function GetItems(Index: integer): TBuildLazarusItem;
     procedure SetRestartAfterBuild(const AValue: boolean);
     procedure SetConfirmBuild(const AValue: boolean);
+    procedure SetQuickBuildOption(const AValue: integer);
     procedure SetTargetCPU(const AValue: string);
     procedure SetTargetDirectory(const AValue: string);
     procedure SetTargetOS(const AValue: string);
@@ -177,6 +179,7 @@ type
     property RestartAfterBuild: boolean read FRestartAfterBuild
                                         write SetRestartAfterBuild;
     property ConfirmBuild: boolean read FConfirmBuild write SetConfirmBuild;
+    property QuickBuildOption:integer read FQuickBuildOption write SetQuickBuildOption;
     property Globals: TGlobalCompilerOptions read FGlobals;
   end;
 
@@ -1075,6 +1078,7 @@ begin
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
+  QuickBuildOptionsRadioGroup.ItemIndex:=Options.QuickBuildOption;
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   TargetCPUComboBox.Text:=Options.TargetCPU;
@@ -1101,6 +1105,7 @@ begin
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.ConfirmBuild:=ConfirmBuildCheckBox.Checked;
+  Options.QuickBuildOption:=QuickBuildOptionsRadioGroup.itemindex;
   Options.TargetOS:=TargetOSEdit.Text;
   Options.TargetCPU:=TargetCPUComboBox.Text;
   Options.TargetDirectory:=TargetDirectoryComboBox.Text;
@@ -1318,6 +1323,12 @@ begin
   FConfirmBuild:=AValue;
 end;
 
+procedure TBuildLazarusOptions.SetQuickBuildOption(const AValue: integer);
+begin
+  if FQuickBuildOption=AValue then exit;
+  FQuickBuildOption:=AValue;
+end;
+
 procedure TBuildLazarusOptions.SetTargetCPU(const AValue: string);
 begin
   if FTargetCPU=AValue then exit;
@@ -1476,6 +1487,7 @@ begin
                                      DefaultTargetDirectory)));
   FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
   FConfirmBuild:=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+  FQuickBuildOption:=XMLConfig.GetValue(Path+'QuickBuild/Value',0);
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
 
   // auto install packages
@@ -1514,6 +1526,7 @@ begin
                            true);
   XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,
                            true);
+  XMLConfig.SetDeleteValue(Path+'QuickBuild/Value',FQuickBuildOption,0);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
                            true);
 
@@ -1542,6 +1555,7 @@ begin
   WithStaticPackages:=Source.WithStaticPackages;
   RestartAfterBuild:=Source.RestartAfterBuild;
   ConfirmBuild:=Source.ConfirmBuild;
+  QuickBuildOption:=Source.QuickBuildOption;
   fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
   for i:=0 to Source.Count-1 do begin
     SrcItem:=Source.Items[i];
