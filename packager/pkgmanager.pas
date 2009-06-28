@@ -913,7 +913,7 @@ end;
 function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoOpenPackage(APackage,[],false);
+  Result:=DoOpenPackage(APackage,[pofAddToRecent],false);
 end;
 
 function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
