@@ -3083,7 +3083,7 @@ type
     STATE_NAME: array[TShiftStateEnum] of String = ('ssShift', 'ssAlt', 'ssCtrl',
       'ssLeft', 'ssRight', 'ssMiddle', 'ssDouble',
       'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr', 'ssCaps', 'ssNum',
-      'ssScroll', 'ssTriple', 'ssQuad');
+      'ssScroll', 'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2');
   {$endif}
   var
     ShiftState: TShiftStateEnum;
