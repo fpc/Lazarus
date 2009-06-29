@@ -2116,7 +2116,7 @@ begin
   end;
 
   {$ifdef VerboseQt}
-  WriteLn(' Font metrics height: ', AFont.Metrics.height, ' Angle: ',
+  WriteLn(' Font metrics height: ', Font.Metrics.height, ' Angle: ',
     Round(0.1 * Font.Angle));
   {$endif}
 end;
