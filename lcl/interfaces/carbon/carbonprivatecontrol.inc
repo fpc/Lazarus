@@ -1070,6 +1070,7 @@ function TCarbonControl.GetPreferredSize: TPoint;
 var
   R: MacOSAll.Rect;
   S: SmallInt;
+  b: HIRect;
 begin
   Result.X := 0;
   Result.Y := 0;
@@ -1078,7 +1079,7 @@ begin
   
   if OSError(GetBestControlRect(ControlRef(Widget), R, S), Self,
     'GetPreferredSize', 'GetBestControlRect') then Exit;
-  
+
   Result.X := R.right - R.left;
   Result.Y := R.bottom - R.top;
 end;

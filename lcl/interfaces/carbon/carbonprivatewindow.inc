@@ -1242,6 +1242,16 @@ begin
   //Widget := nil;
 end;
 
+function TCarbonWindow.GetPreferredSize: TPoint;
+const
+  MinWinSize = 20;
+begin
+  //todo: find a proper way to determine prefered window size
+  //      by default Carbon returns a height too large
+  Result.x:=MinWinSize;
+  Result.y:=MinWinSize;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWindow.AddToWidget
   Params:  AParent - Parent widget

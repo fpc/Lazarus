@@ -173,6 +173,8 @@ type
 
     procedure DestroyWidget; override;
   public
+    function GetPreferredSize: TPoint; override;
+
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetMousePos: TPoint; override;
     function GetTopParentWindow: WindowRef; override;
