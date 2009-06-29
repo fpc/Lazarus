@@ -2478,6 +2478,14 @@ var
       KeyStateList.Remove(Pointer(PtrInt(AVKeyCode)));
     end;
   end;
+  {$ifdef UseOwnShiftState}
+  procedure UpdateShiftState(AShift: TShiftStateEnum; AInclude: Boolean);
+  begin
+    if AInclude
+    then Include(MShiftState, AShift)
+    else Exclude(MShiftState, AShift);
+  end;
+  {$endif}
 
 const
   STATE_MAP: array[0..3] of TShiftStateEnum = (
@@ -2501,6 +2509,7 @@ var
 
   n: Integer;
   ShiftState: TShiftState;
+
 begin
   Result := 0;
 
@@ -2513,6 +2522,29 @@ begin
     // not interested
     Exit;
   end;
+
+  {$ifdef UseOwnShiftState}
+  case Event^.KeyVal of
+    GDK_Key_Shift_L,
+    GDK_Key_Shift_R: UpdateShiftState(ssShift, Pressed);
+    GDK_KEY_Control_L,
+    GDK_KEY_Control_R: UpdateShiftState(ssCtrl, Pressed);
+    GDK_KEY_Meta_L,
+    GDK_KEY_Meta_R: UpdateShiftState(ssMeta, Pressed);
+    GDK_KEY_Alt_L,
+    GDK_KEY_Alt_R: UpdateShiftState(ssAlt, Pressed);
+    GDK_KEY_Super_L,
+    GDK_KEY_Super_R: UpdateShiftState(ssSuper, Pressed);
+    GDK_KEY_Hyper_L,
+    GDK_KEY_Hyper_R: UpdateShiftState(ssHyper, Pressed);
+    GDK_KEY_ISO_Level3_Shift: UpdateShiftState(ssAltGr, Pressed);
+    // Num, scroll, caps lock can be toggled, use modmap in this case
+    // GDK_KEY_Num_Lock: UpdateShiftState(ssNum, Pressed);
+    // GDK_KEY_Scroll_Lock: UpdateShiftState(ssScroll, Pressed);
+    // GDK_KEY_Caps_Lock,
+    // GDK_KEY_Shift_Lock: UpdateShiftState(ssCaps, Pressed);
+  end;
+  {$endif}
   
   {$ifdef gtk1}
     KeyCode := XKeysymToKeycode(gdk_display, Event^.keyval);

@@ -2304,7 +2304,7 @@ begin
     end
     else begin
       // VKey is with ALT so SHIFT Alt is syskey
-      SysKey := ShiftState * [ssShift, ssAlt] = [ssShift, ssAlt]
+      SysKey := ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]
     end;
     if SysKey
     then Flags := Flags or KF_ALTDOWN;
@@ -3091,12 +3091,16 @@ type
     if AModMap[AKeyCode] = 0 then Exit;
 
     case AKeySym of
+      GDK_KEY_Caps_Lock,
+      GDK_KEY_Shift_Lock: ShiftState := ssCaps;
+      GDK_KEY_Num_Lock: ShiftState := ssNum;
+      GDK_KEY_Scroll_Lock: ShiftState := ssScroll;
+      {$ifndef UseOwnShiftState}
+      // UseOwnShiftState will track these, so we don't have to put them in the modmap
       GDK_Key_Shift_L,
       GDK_Key_Shift_R: ShiftState := ssShift;
       GDK_KEY_Control_L,
       GDK_KEY_Control_R: ShiftState := ssCtrl;
-      GDK_KEY_Caps_Lock,
-      GDK_KEY_Shift_Lock: ShiftState := ssCaps;
       GDK_KEY_Meta_L,
       GDK_KEY_Meta_R: ShiftState := ssMeta;
       GDK_KEY_Alt_L,
@@ -3105,9 +3109,9 @@ type
       GDK_KEY_Super_R: ShiftState := ssSuper;
       GDK_KEY_Hyper_L,
       GDK_KEY_Hyper_R: ShiftState := ssHyper;
-      GDK_KEY_Mode_switch: ShiftState := ssAltGr;
-      GDK_KEY_Num_Lock: ShiftState := ssNum;
-      GDK_KEY_Scroll_Lock: ShiftState := ssScroll;
+      GDK_KEY_ISO_Level3_Shift{,
+      GDK_KEY_Mode_switch}: ShiftState := ssAltGr;
+      {$endif}
     else
       Exit;
     end;
@@ -3402,7 +3406,11 @@ function GTKEventStateToShiftState(KeyState: Word): TShiftState;
 var
   State: TShiftStateEnum;
 begin
+  {$ifdef UseOwnShiftState}
+  Result := MShiftState;
+  {$else}
   Result := [];
+  {$endif}
   for State := Low(State) to High(State) do
   begin
     if MModifiers[State].Mask = 0 then Continue;

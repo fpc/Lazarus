@@ -35,6 +35,12 @@
 
 {$define RawimageConsistencyChecks}
 
+(*
+ GTK or GNOME has problems reporting ssAlt and ssAltGr when different
+ keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
+ ourself
+*)
+{$define UseOwnShiftState}
 
 (*
  keep track of keystates instead of using OS

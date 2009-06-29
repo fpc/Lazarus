@@ -824,6 +824,10 @@ type
 var
   MModifiers: array[TShiftStateEnum] of TModifier;
   
+{$ifdef UseOwnShiftState}
+var
+  MShiftState: TShiftState = [];
+{$endif}
 
 type
   // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
@@ -913,14 +917,16 @@ begin
   // fill initial modifier list
   FillByte(MModifiers, SizeOf(MModifiers), 0);
   // keyboard
-  MModifiers[ssShift].Mask    := GDK_SHIFT_MASK;
   MModifiers[ssCaps].Mask     := GDK_LOCK_MASK;
+  MModifiers[ssNum].Mask      := GDK_MOD3_MASK; //todo: check this I've 2 here,but 3 was the original code
+  MModifiers[ssScroll].Mask   := GDK_MOD5_MASK; //todo: check this I've ssAltGr here, but ssScroll was the original code
+  {$ifndef UseOwnShiftState}
+  MModifiers[ssShift].Mask    := GDK_SHIFT_MASK;
   MModifiers[ssCtrl].Mask     := GDK_CONTROL_MASK;
   MModifiers[ssAlt].Mask      := GDK_MOD1_MASK;
-  MModifiers[ssNum].Mask      := GDK_MOD3_MASK; //todo: check this I've 2 here,but 3 was the original code
   MModifiers[ssSuper].Mask    := GDK_MOD4_MASK;
-  MModifiers[ssScroll].Mask   := GDK_MOD5_MASK; //todo: check this I've ssAltGr here, but ssScroll was the original code
   MModifiers[ssAltGr].Mask    := GDK_RELEASE_MASK;
+  {$endif}
   // mouse
   MModifiers[ssLeft].Mask     := GDK_BUTTON1_MASK;
   MModifiers[ssMiddle].Mask   := GDK_BUTTON2_MASK;
