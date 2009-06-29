@@ -1642,7 +1642,8 @@ var
       }
       Can:=true;
     end
-    else if (Node.Desc=ctnProcedure) and (not NodeIsMethodBody(Node))
+    else if (((Node.Desc=ctnProcedure) and (not NodeIsMethodBody(Node)))
+    or ((Node.Desc=ctnProcedureHead) and (not NodeIsMethodBody(Node.Parent))))
     and (not (CurrentIdentifierList.StartAtomBehind.Flag
               in [cafEdgedBracketOpen,cafRoundBracketOpen]))
     then begin
