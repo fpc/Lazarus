@@ -132,9 +132,9 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TNBPages.Insert A ',FNoteBook.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
-  NewOwner:=FNotebook.Owner;
-  if NewOwner=nil then
-    NewOwner:=FNotebook;
+  NewOwner := FNotebook.Owner;
+  if NewOwner = nil then
+    NewOwner := FNotebook;
   NewPage := FNotebook.PageClass.Create(NewOwner);
   with NewPage do
     Caption := S;
@@ -478,7 +478,8 @@ begin
 
     UpdateDesignerFlags(Index);
 
-    if HandleAllocated and (not (csLoading in ComponentState)) then begin
+    if HandleAllocated and (not (csLoading in ComponentState)) then
+    begin
       AddRemovePageHandle(APage);
       if PageIndex = Index then
         DoSendPageIndex;

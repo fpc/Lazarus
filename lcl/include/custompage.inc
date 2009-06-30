@@ -243,17 +243,18 @@ var
   List: TList;
   i: Integer;
 begin
-  if (Parent<>nil) and (Parent is TCustomNotebook) then begin
-    Result:=0;
-    List:=TCustomNotebook(Parent).PageList;
-    i:=0;
+  if (Parent <> nil) and (Parent is TCustomNotebook) then
+  begin
+    Result := 0;
+    List := TCustomNotebook(Parent).PageList;
+    i := 0;
     repeat
-      if i=List.Count then exit(-1);
-      if (TObject(List[i])=Self) then exit;
+      if i = List.Count then exit(-1);
+      if (TObject(List[i]) = Self) then exit;
       if TCustomPage(List[i]).TabVisible or (csDesigning in ComponentState)
       then inc(Result);
       inc(i);
-    until false;
+    until False;
   end else
     Result := -1;
 end;
