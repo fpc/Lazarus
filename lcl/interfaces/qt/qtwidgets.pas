@@ -9255,32 +9255,24 @@ begin
 end;
 
 function TQtPage.getIndex: Integer;
-{var
-  AParent: QTabWidgetH;}
+var
+  AParent: QTabWidgetH;
 begin
-  if LCLObject.Parent is TCustomNotebook then
-    Result := TCustomNotebook(LCLObject.Parent).IndexOf(TCustomPage(LCLObject))
-  else
-    Result := -1;
-{
   AParent := getTabWidget;
   if AParent <> nil then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
     Result := -1;
-}
 end;
 
 function TQtPage.getTabWidget: QTabWidgetH;
 var
-  AParent: TQtWidget;
+  AParent: QWidgetH;
 begin
-  //AParent := QWidget_parentWidget(Widget);
-  if LCLObject.Parent is TCustomNotebook then
-  begin
-    AParent := TQtWidget(LCLObject.Parent.Handle);
-    Result := QTabWidgetH(AParent.Widget);
-  end
+  // it is placed to the stack widget and stack widget into tab widget
+  AParent := QWidget_parentWidget(Widget);
+  if AParent <> nil then
+    Result := QTabWidgetH(QWidget_parentWidget(AParent))
   else
     Result := nil;
 end;
