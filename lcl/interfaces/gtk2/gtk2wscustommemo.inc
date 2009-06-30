@@ -326,6 +326,7 @@ end;
 
 class function TGtk2WSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
+  MemoStrings: TGtk2MemoStrings;
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
   StartIter, EndIter: TGtkTextIter;
@@ -334,11 +335,18 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
     Exit;
 
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
-  TextBuffer := gtk_text_view_get_buffer(TextView);
-  if not gtk_text_buffer_get_selection_bounds(TextBuffer, @StartIter, @EndIter) then Exit;
+  MemoStrings := TCustomMemo(ACustomEdit).Lines as TGtk2MemoStrings;
+  Result := MemoStrings.QueueSelLength;
 
-  Result := Abs(gtk_text_iter_get_offset(@EndIter) - gtk_text_iter_get_offset(@StartIter));
+  if Result = -1 then
+  begin
+    Result := 0;
+    TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+    TextBuffer := gtk_text_view_get_buffer(TextView);
+    if not gtk_text_buffer_get_selection_bounds(TextBuffer, @StartIter, @EndIter) then Exit;
+
+    Result := Abs(gtk_text_iter_get_offset(@EndIter) - gtk_text_iter_get_offset(@StartIter));
+  end;
 end;
 
 class function TGtk2WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;

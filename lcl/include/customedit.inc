@@ -161,7 +161,7 @@ function TCustomEdit.GetSelLength : integer;
 begin
   if HandleAllocated then
     FSelLength := TWSCustomEditClass(WidgetSetClass).GetSelLength(Self);
-  Result:= FSelLength;
+  Result := FSelLength;
 end;
 
 {------------------------------------------------------------------------------
