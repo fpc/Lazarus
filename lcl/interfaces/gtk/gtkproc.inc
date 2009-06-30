@@ -2297,6 +2297,10 @@ begin
     if (KCInfo.Flags and KCINFO_FLAG_EXT) <> 0
     then Flags := KF_EXTENDED;
 
+    {$ifdef UseOwnShiftState}
+      SysKey := (ssAlt in ShiftState)
+             or (ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]);
+    {$else}
     if (KCInfo.Flags and KCINFO_FLAG_ALTGR) = 0
     then begin
       // VKey is without ALT so Alt is syskey
@@ -2306,6 +2310,7 @@ begin
       // VKey is with ALT so SHIFT Alt is syskey
       SysKey := ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]
     end;
+    {$endif}
     if SysKey
     then Flags := Flags or KF_ALTDOWN;
 
