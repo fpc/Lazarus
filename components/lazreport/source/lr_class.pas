@@ -9391,6 +9391,9 @@ begin
   {$ENDIF}
 
   //Retreive property informations
+  if t is TfrBandView then
+    t := TfrBandView(t).Parent;
+
   PropInfo:=GetPropInfo(t,Prop);
   if Assigned(PropInfo) then
   begin
