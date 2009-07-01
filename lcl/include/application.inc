@@ -798,7 +798,7 @@ begin
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
-    StartHintTimer(HintHidePause,ahttHideHint);
+    StartHintTimer(HintInfo.HideTimeout,ahttHideHint);
   end
   else
     HideHint;
