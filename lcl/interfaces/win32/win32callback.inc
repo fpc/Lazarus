@@ -1351,7 +1351,7 @@ begin
 
     WM_MENUCHAR:
     begin
-      PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), LParam);
+      PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), HMENU(LParam));
       WinProcess := false;
     end;
 
