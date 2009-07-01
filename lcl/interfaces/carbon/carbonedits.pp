@@ -55,10 +55,10 @@ type
   public
     function GetPreferredSize: TPoint; override;
 
-    function GetSelStart(var ASelStart: Integer): Boolean;
-    function GetSelLength(var ASelLength: Integer): Boolean;
-    function SetSelStart(ASelStart: Integer): Boolean;
-    function SetSelLength(ASelLength: Integer): Boolean;
+    function GetSelStart(var ASelStart: Integer): Boolean; virtual;
+    function GetSelLength(var ASelLength: Integer): Boolean; virtual;
+    function SetSelStart(ASelStart: Integer): Boolean; virtual;
+    function SetSelLength(ASelLength: Integer): Boolean; virtual;
 
     function GetText(var S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
@@ -174,6 +174,8 @@ type
     procedure DestroyWidget; override;
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
     function GetCreationOptions: TXNFrameOptions; virtual;
+    function GetTXNSelection(var iStart, iEnd: Integer): Boolean;
+    function SetTXNSelection(iStart, iEnd: Integer): Boolean;
   public
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
@@ -182,6 +184,11 @@ type
     
     function SetTXNControl(Tag: TXNControlTag; const Data: TXNControlData): Boolean;
   public
+    function GetSelStart(var ASelStart: Integer): Boolean; override;
+    function GetSelLength(var ASelLength: Integer): Boolean; override;
+    function SetSelStart(ASelStart: Integer): Boolean; override;
+    function SetSelLength(ASelLength: Integer): Boolean; override;
+
     procedure SetAlignment(AAlignment: TAlignment);
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
@@ -1534,6 +1541,69 @@ begin
       Self, 'SetTXNControl', SSetTXNControls) then Exit;
   
   Result := True;
+end;
+
+function TCarbonMemo.GetTXNSelection(var iStart, iEnd: Integer): Boolean;
+var
+  ist, ien : TXNOffset;
+begin
+  TXNGetSelection(HITextViewGetTXNObject(ControlRef(Widget)), ist, ien);
+  iStart := Integer(ist);
+  iEnd  := Integer(ien);
+  Result := true;
+end;
+
+function TCarbonMemo.SetTXNSelection(iStart, iEnd: Integer): Boolean;
+begin
+  Result := not OSError( TXNSetSelection( HITextViewGetTXNObject(Widget), iStart, iEnd),
+      Self, 'SetSelSTart', 'SetTXNSelection', '');
+  if Result then Invalidate(nil);
+end;
+
+function TCarbonMemo.GetSelStart(var ASelStart: Integer): Boolean;
+var
+  iEnd    : Integer;
+begin
+  Result := GetTXNSelection(ASelStart, iEnd);
+end;
+
+function TCarbonMemo.GetSelLength(var ASelLength: Integer): Boolean;
+var
+  iStart : integer;
+begin
+  Result := GetTXNSelection(iStart, ASelLength);
+  dec(ASelLength, iStart);
+end;
+
+function TCarbonMemo.SetSelStart(ASelStart: Integer): Boolean;
+var
+  iStart : integer;
+  iEnd   : integer;
+begin
+  Result := GetTXNSelection(iStart, iEnd);
+  if not Result then
+  begin
+    iStart := 0;
+    iEnd := iStart;
+    Result := true;
+  end;
+  Result := SetTXNSelection(ASelStart, ASelStart+iEnd-iStart);
+end;
+
+function TCarbonMemo.SetSelLength(ASelLength: Integer): Boolean;
+var
+  iStart : integer;
+  iEnd   : integer;
+begin
+  Result := GetTXNSelection(iStart, iEnd);
+  if not Result then
+  begin
+    iStart := 0;
+    Result := true;
+  end;
+  if ASelLength < 0 then iEnd := kTXNEndOffset
+  else iEnd := iStart + ASelLength;
+  Result := SetTXNSelection(iStart, iEnd);
 end;
 
 {------------------------------------------------------------------------------
