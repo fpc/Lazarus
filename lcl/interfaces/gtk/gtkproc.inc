@@ -2297,20 +2297,23 @@ begin
     if (KCInfo.Flags and KCINFO_FLAG_EXT) <> 0
     then Flags := KF_EXTENDED;
 
-    {$ifdef UseOwnShiftState}
-      SysKey := (ssAlt in ShiftState)
-             or (ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]);
-    {$else}
-    if (KCInfo.Flags and KCINFO_FLAG_ALTGR) = 0
+
+    // ssAlt + a key pressed is always a syskey
+    // ssAltGr + a key is only a syskey when the key pressed has no levelshift or when ssHift is pressed to0
+    SysKey := (ssAlt in ShiftState);
+    if not SysKey
     then begin
-      // VKey is without ALT so Alt is syskey
-      SysKey := ssAlt in ShiftState;
-    end
-    else begin
-      // VKey is with ALT so SHIFT Alt is syskey
-      SysKey := ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]
+      // Check ssAltGr
+      if (KCInfo.Flags and KCINFO_FLAG_ALTGR) = 0
+      then begin
+        // VKey has no levelshift char so AltGr is syskey
+        SysKey := ssAltGr in ShiftState;
+      end
+      else begin
+        // VKey has levelshift char so AltGr + Shift is syskey
+        SysKey := ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]
+      end;
     end;
-    {$endif}
     if SysKey
     then Flags := Flags or KF_ALTDOWN;
 
