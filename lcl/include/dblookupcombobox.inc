@@ -33,8 +33,7 @@ end;
 procedure TDBLookupComboBox.Loaded;
 begin
   inherited Loaded;
-  if FDataLink.Active then
-    ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
@@ -83,11 +82,13 @@ end;
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
+  UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.SetListField(const Value: string);
 begin
   FLookup.ListField:= Value;
+  UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.SetListFieldIndex(const Value: Integer);
@@ -98,11 +99,18 @@ end;
 procedure TDBLookupComboBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
+  UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.SetLookupCache(const Value: boolean);
 begin
   FLookup.LookupCache := Value;
+end;
+
+procedure TDBLookupComboBox.UpdateLookup;
+begin
+  if FDataLink.Active then
+    ActiveChange(Self);
 end;
 
 procedure TDBLookupComboBox.FinalizeWnd;

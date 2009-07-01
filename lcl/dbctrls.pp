@@ -726,6 +726,7 @@ Type
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
+    procedure UpdateLookup;
   protected
     procedure FinalizeWnd; override;
     procedure InitializeWnd; override;

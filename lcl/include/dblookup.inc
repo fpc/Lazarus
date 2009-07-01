@@ -205,11 +205,13 @@ begin
     FKeyFieldNames := AControlDataLink.Field.LookupKeyFields;
   end
   else
-  begin
-    FListLink.DataSource.DataSet:= FListSource.DataSet;
+  if FListSource<>nil then begin
+    FListLink.DataSource.DataSet := FListSource.DataSet;
     FDataFieldNames := AControlDataLink.Field.FieldName;
-  end;
-  if (FKeyFieldNames <> '') then
+  end else
+    FListLink.Datasource.DataSet := nil;
+
+  if (FKeyFieldNames <> '') and (FListLink.Dataset<>nil) then
   begin
     ListFields := TList.Create;
     TmpActive := FListLink.DataSet.Active;
