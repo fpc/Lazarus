@@ -8,7 +8,7 @@
       <TargetFileExt Value=".exe"/>
       <Title Value="easyeditor"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -38,12 +38,14 @@
     </RequiredPackages>
     <Units Count="24">
       <Unit0>
-        <Filename Value="EasyEditor.lpr"/>
+        <Filename Value="easyeditor.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="easyeditor"/>
         <CursorPos X="6" Y="14"/>
         <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="54"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="editmain.pas"/>
@@ -65,7 +67,7 @@
         <UnitName Value="fDockBook"/>
         <CursorPos X="1" Y="286"/>
         <TopLine Value="238"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -116,7 +118,7 @@
         <UnitName Value="SynEdit"/>
         <CursorPos X="1" Y="738"/>
         <TopLine Value="716"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -128,7 +130,7 @@
         <UnitName Value="fEditWnd"/>
         <CursorPos X="18" Y="43"/>
         <TopLine Value="7"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -137,7 +139,7 @@
         <UnitName Value="Controls"/>
         <CursorPos X="15" Y="468"/>
         <TopLine Value="444"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -145,7 +147,7 @@
         <Filename Value="..\..\..\lcl\include\control.inc"/>
         <CursorPos X="20" Y="66"/>
         <TopLine Value="54"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit12>
@@ -166,7 +168,7 @@
         <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
         <CursorPos X="3" Y="567"/>
         <TopLine Value="564"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -174,7 +176,7 @@
         <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
         <CursorPos X="1" Y="7203"/>
         <TopLine Value="7155"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit16>
@@ -203,7 +205,7 @@
         <UnitName Value="LCLProc"/>
         <CursorPos X="11" Y="193"/>
         <TopLine Value="169"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -211,7 +213,7 @@
         <Filename Value="..\..\..\lcl\include\customform.inc"/>
         <CursorPos X="1" Y="339"/>
         <TopLine Value="315"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit21>
