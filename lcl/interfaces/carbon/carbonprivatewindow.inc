@@ -1113,36 +1113,45 @@ begin
   end
   else
   begin
+    Attributes := 0;
     case (LCLObject as TCustomForm).FormStyle of
     fsStayOnTop, fsSplash:
-      begin
-        NewWindowClass := kFloatingWindowClass;
-        Attributes := 0;
-      end;
+      NewWindowClass := kFloatingWindowClass;
     else
       NewWindowClass := kDocumentWindowClass;
       Attributes := kWindowInWindowMenuAttribute;
     end;
     case (LCLObject as TCustomForm).BorderStyle of
     bsDialog:
-      begin
-        NewWindowClass := kMovableModalWindowClass;
-        Attributes := 0;
-      end;
+      NewWindowClass := kMovableModalWindowClass;
+    bsToolWindow, bsSizeToolWin:
+      NewWindowClass := kFloatingWindowClass;
     end;
     Attributes := Attributes or
       GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
         (LCLObject as TCustomForm).BorderIcons);
-
+    case NewWindowClass of
+      kMovableModalWindowClass:
+        Attributes := Attributes and (not kWindowInWindowMenuAttribute);
+      kFloatingWindowClass:
+        Attributes := Attributes and (not (kWindowInWindowMenuAttribute or kWindowCollapseBoxAttribute));
+    end;
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
 
   if OSError(
     CreateNewWindow(NewWindowClass,
+      Attributes or kWindowCompositingAttribute {or kWindowStandardHandlerAttribute}
+      or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
+    Self, SCreateWidget, 'CreateNewWindow') then
+  begin
+    DebugLn('Unable to create a window with selected class '+IntToStr(NewWindowClass)+ ', and attributes,'+IntToStr(Attributes)+', fallback to kDocumentWindowClass');
+    if OSError(CreateNewWindow(kDocumentWindowClass,
       Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
       or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
+  end;
 
   fWindowRef := AWindow;
 
