@@ -7,6 +7,10 @@ multiple editor windows. It does not demonstrate any editing capabilities.
 1. Open files from the menu.
 2. Drag file tabs to dock edit pages somewhere else.
 
+Please note that you can dock notebooks into notebooks, so that you can e.g.
+have all unit files in a top level notebook, and included files in next level
+notebooks.
+
 This is the first working version of dockable SynEdit components.
 
 ToDo:
@@ -21,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, fDockBook, fEditForm, SynEdit;
+  Menus, fEditForm, fEditBook;
 
 type
   TEasyEdit = TEditPage;
@@ -38,11 +42,13 @@ type
     procedure mnOpenClick(Sender: TObject);
   private
     //MyEdit: TEasyPages;
+{
     Editors: TList;
     CurForm: TEasyDockBook;
     CurEdit: TEasyEdit;
+}
   public
-    function OpenFile(const AName: string): TObject;
+    function OpenFile(const AName: string): TEditPage;
   end; 
 
 var
@@ -73,28 +79,13 @@ begin
   end;
 end;
 
-function TMainForm.OpenFile(const AName: string): TObject;
+function TMainForm.OpenFile(const AName: string): TEditPage;
 begin
-  if Editors = nil then
-    Editors := TList.Create;
-  if Editors.Count = 0 then begin
-    CurForm := TEasyDockBook.Create(self);
-    Editors.Add(CurForm);
-  end;
-  if CurForm = nil then
-    pointer(CurForm) := Editors.Items[0];
-//todo: load the file
-  CurEdit := TEasyEdit.Create(self);
-  //CurEdit.FloatingDockSiteClass := TEasyDockBook; //provisions there???
-  //if false then ManualFloat();
-  //CurEdit.Lines.LoadFromFile(AName);
-  CurEdit.LoadFile(AName);
-  //CurEdit.ManualDock(nil);
-  //CurEdit.ManualDock(CurForm, CurForm.pnlDock);
-  CurEdit.ManualDock(CurForm);
+  Result := TEasyEdit.Create(self);
+  Result.LoadFile(AName); //prepare docked name
+  Result.ManualDock(MRUEdit);
 //make it visible
-  CurForm.Show;
-  Result := CurEdit; //or what?
+  //Result.Show;
 end;
 
 initialization
