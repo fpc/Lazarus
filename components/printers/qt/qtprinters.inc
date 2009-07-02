@@ -18,7 +18,7 @@
  }
 Uses InterfaceBase, LCLIntf;
 
-{$IFNDEF USE_QT_44}
+{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
 {$IFDEF WINDOWS}
 const
   LibWinSpool = 'winspool.drv';
@@ -164,7 +164,7 @@ begin
   QtDefaultPrinter.endDoc;
 end;
 
-{$IFDEF USE_QT_44}
+{$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
 procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
 var
   i: Integer;
@@ -303,7 +303,7 @@ begin
   end;
 end;
 {$ENDIF}
-{$ENDIF} // use_qt_44
+{$ENDIF}
 
 procedure TQtPrinters.EnumQPapers(Lst: TStrings);
 const

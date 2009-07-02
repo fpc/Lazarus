@@ -1,6 +1,6 @@
 {%MainUnit ../osprinters.pas}
 uses
-  {$IFNDEF USE_QT_44}
+  {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
   {$IFDEF WINDOWS}Windows,{$ENDIF}
   {$IFDEF UNIX}CUPSDyn,{$ENDIF}
   {$ENDIF}
