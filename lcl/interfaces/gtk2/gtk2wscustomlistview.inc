@@ -158,8 +158,8 @@ begin
   msg.Msg := CN_NOTIFY;
   if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
   begin
-    debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
-    exit;
+    //debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
+    Exit;
   end;
   for i := 0 to Widgets^.ItemCache.Count -1 do
   begin
