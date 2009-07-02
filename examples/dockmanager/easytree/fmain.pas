@@ -38,6 +38,7 @@ type
 
   TEasyDockMain = class(TForm)
     buManDock: TButton;
+    buDockEdit: TButton;
     swCaptions: TCheckBox;
     pnlDocker: TPanel;
     edDock: TEdit;
@@ -49,6 +50,9 @@ type
     Shape3: TShape;
     Shape4: TShape;
     buDump: TButton;
+    procedure buDockEditClick(Sender: TObject);
+    procedure buDockEditMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure buManDockClick(Sender: TObject);
     procedure DockerUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
@@ -246,6 +250,19 @@ begin
   if Source.DropOnControl = Source.Control then
     Accept := False;
 }
+end;
+
+procedure TEasyDockMain.buDockEditClick(Sender: TObject);
+begin
+(* A Click event seems not to work - because the mouse button is already up?
+*)
+  edDock.BeginDrag(True);
+end;
+
+procedure TEasyDockMain.buDockEditMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  edDock.BeginDrag(True);
 end;
 
 procedure TEasyDockMain.buDumpClick(Sender: TObject);

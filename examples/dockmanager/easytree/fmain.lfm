@@ -84,7 +84,7 @@ object EasyDockMain: TEasyDockMain
       TabOrder = 0
     end
     object edDock: TEdit
-      Left = 310
+      Left = 327
       Height = 23
       Top = 2
       Width = 56
@@ -93,7 +93,7 @@ object EasyDockMain: TEasyDockMain
       Text = 'Drag Me!'
     end
     object buManDock: TButton
-      Left = 366
+      Left = 383
       Height = 22
       Top = 2
       Width = 75
@@ -110,6 +110,15 @@ object EasyDockMain: TEasyDockMain
       Caption = 'Captions'
       OnChange = swCaptionsChange
       TabOrder = 3
+    end
+    object buDockEdit: TButton
+      Left = 310
+      Height = 22
+      Top = 2
+      Width = 17
+      Caption = '->'
+      OnMouseDown = buDockEditMouseDown
+      TabOrder = 4
     end
   end
   object pnlDocker: TPanel

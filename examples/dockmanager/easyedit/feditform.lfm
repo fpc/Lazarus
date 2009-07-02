@@ -1,0 +1,712 @@
+object EditPage: TEditPage
+  Left = 629
+  Height = 300
+  Top = 317
+  Width = 400
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'EditPage'
+  ClientHeight = 300
+  ClientWidth = 400
+  LCLVersion = '0.9.27'
+  object SynEdit1: TSynEdit
+    Left = 0
+    Height = 280
+    Top = 0
+    Width = 400
+    Align = alClient
+    Font.Height = -13
+    Font.Name = 'Courier New'
+    Font.Pitch = fpFixed
+    Font.Quality = fqNonAntialiased
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 0
+    Gutter.Width = 57
+    Gutter.MouseActions = <    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccAny
+        ClickDir = cdDown
+        Command = 13
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbRight
+        ClickCount = ccSingle
+        ClickDir = cdUp
+        Command = 12
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end>
+    Keystrokes = <    
+      item
+        Command = 3
+        ShortCut = 38
+      end    
+      item
+        Command = 103
+        ShortCut = 8230
+      end    
+      item
+        Command = 211
+        ShortCut = 16422
+      end    
+      item
+        Command = 4
+        ShortCut = 40
+      end    
+      item
+        Command = 104
+        ShortCut = 8232
+      end    
+      item
+        Command = 212
+        ShortCut = 16424
+      end    
+      item
+        Command = 1
+        ShortCut = 37
+      end    
+      item
+        Command = 101
+        ShortCut = 8229
+      end    
+      item
+        Command = 5
+        ShortCut = 16421
+      end    
+      item
+        Command = 105
+        ShortCut = 24613
+      end    
+      item
+        Command = 2
+        ShortCut = 39
+      end    
+      item
+        Command = 102
+        ShortCut = 8231
+      end    
+      item
+        Command = 6
+        ShortCut = 16423
+      end    
+      item
+        Command = 106
+        ShortCut = 24615
+      end    
+      item
+        Command = 10
+        ShortCut = 34
+      end    
+      item
+        Command = 110
+        ShortCut = 8226
+      end    
+      item
+        Command = 14
+        ShortCut = 16418
+      end    
+      item
+        Command = 114
+        ShortCut = 24610
+      end    
+      item
+        Command = 9
+        ShortCut = 33
+      end    
+      item
+        Command = 109
+        ShortCut = 8225
+      end    
+      item
+        Command = 13
+        ShortCut = 16417
+      end    
+      item
+        Command = 113
+        ShortCut = 24609
+      end    
+      item
+        Command = 7
+        ShortCut = 36
+      end    
+      item
+        Command = 107
+        ShortCut = 8228
+      end    
+      item
+        Command = 15
+        ShortCut = 16420
+      end    
+      item
+        Command = 115
+        ShortCut = 24612
+      end    
+      item
+        Command = 8
+        ShortCut = 35
+      end    
+      item
+        Command = 108
+        ShortCut = 8227
+      end    
+      item
+        Command = 16
+        ShortCut = 16419
+      end    
+      item
+        Command = 116
+        ShortCut = 24611
+      end    
+      item
+        Command = 223
+        ShortCut = 45
+      end    
+      item
+        Command = 201
+        ShortCut = 16429
+      end    
+      item
+        Command = 604
+        ShortCut = 8237
+      end    
+      item
+        Command = 502
+        ShortCut = 46
+      end    
+      item
+        Command = 603
+        ShortCut = 8238
+      end    
+      item
+        Command = 501
+        ShortCut = 8
+      end    
+      item
+        Command = 501
+        ShortCut = 8200
+      end    
+      item
+        Command = 504
+        ShortCut = 16392
+      end    
+      item
+        Command = 601
+        ShortCut = 32776
+      end    
+      item
+        Command = 602
+        ShortCut = 40968
+      end    
+      item
+        Command = 509
+        ShortCut = 13
+      end    
+      item
+        Command = 199
+        ShortCut = 16449
+      end    
+      item
+        Command = 201
+        ShortCut = 16451
+      end    
+      item
+        Command = 610
+        ShortCut = 24649
+      end    
+      item
+        Command = 509
+        ShortCut = 16461
+      end    
+      item
+        Command = 510
+        ShortCut = 16462
+      end    
+      item
+        Command = 503
+        ShortCut = 16468
+      end    
+      item
+        Command = 611
+        ShortCut = 24661
+      end    
+      item
+        Command = 604
+        ShortCut = 16470
+      end    
+      item
+        Command = 603
+        ShortCut = 16472
+      end    
+      item
+        Command = 507
+        ShortCut = 16473
+      end    
+      item
+        Command = 506
+        ShortCut = 24665
+      end    
+      item
+        Command = 601
+        ShortCut = 16474
+      end    
+      item
+        Command = 602
+        ShortCut = 24666
+      end    
+      item
+        Command = 301
+        ShortCut = 16432
+      end    
+      item
+        Command = 302
+        ShortCut = 16433
+      end    
+      item
+        Command = 303
+        ShortCut = 16434
+      end    
+      item
+        Command = 304
+        ShortCut = 16435
+      end    
+      item
+        Command = 305
+        ShortCut = 16436
+      end    
+      item
+        Command = 306
+        ShortCut = 16437
+      end    
+      item
+        Command = 307
+        ShortCut = 16438
+      end    
+      item
+        Command = 308
+        ShortCut = 16439
+      end    
+      item
+        Command = 309
+        ShortCut = 16440
+      end    
+      item
+        Command = 310
+        ShortCut = 16441
+      end    
+      item
+        Command = 351
+        ShortCut = 24624
+      end    
+      item
+        Command = 352
+        ShortCut = 24625
+      end    
+      item
+        Command = 353
+        ShortCut = 24626
+      end    
+      item
+        Command = 354
+        ShortCut = 24627
+      end    
+      item
+        Command = 355
+        ShortCut = 24628
+      end    
+      item
+        Command = 356
+        ShortCut = 24629
+      end    
+      item
+        Command = 357
+        ShortCut = 24630
+      end    
+      item
+        Command = 358
+        ShortCut = 24631
+      end    
+      item
+        Command = 359
+        ShortCut = 24632
+      end    
+      item
+        Command = 360
+        ShortCut = 24633
+      end    
+      item
+        Command = 371
+        ShortCut = 41009
+      end    
+      item
+        Command = 372
+        ShortCut = 41010
+      end    
+      item
+        Command = 373
+        ShortCut = 41011
+      end    
+      item
+        Command = 374
+        ShortCut = 41012
+      end    
+      item
+        Command = 375
+        ShortCut = 41013
+      end    
+      item
+        Command = 376
+        ShortCut = 41014
+      end    
+      item
+        Command = 377
+        ShortCut = 41015
+      end    
+      item
+        Command = 378
+        ShortCut = 41016
+      end    
+      item
+        Command = 379
+        ShortCut = 41017
+      end    
+      item
+        Command = 380
+        ShortCut = 41008
+      end    
+      item
+        Command = 381
+        ShortCut = 41005
+      end    
+      item
+        Command = 382
+        ShortCut = 41003
+      end    
+      item
+        Command = 383
+        ShortCut = 32845
+      end    
+      item
+        Command = 231
+        ShortCut = 24654
+      end    
+      item
+        Command = 232
+        ShortCut = 24643
+      end    
+      item
+        Command = 233
+        ShortCut = 24652
+      end    
+      item
+        Command = 612
+        ShortCut = 9
+      end    
+      item
+        Command = 613
+        ShortCut = 8201
+      end    
+      item
+        Command = 250
+        ShortCut = 24642
+      end    
+      item
+        Command = 153
+        ShortCut = 40998
+      end    
+      item
+        Command = 154
+        ShortCut = 41000
+      end    
+      item
+        Command = 151
+        ShortCut = 40997
+      end    
+      item
+        Command = 152
+        ShortCut = 40999
+      end    
+      item
+        Command = 160
+        ShortCut = 40994
+      end    
+      item
+        Command = 164
+        ShortCut = 57378
+      end    
+      item
+        Command = 159
+        ShortCut = 40993
+      end    
+      item
+        Command = 163
+        ShortCut = 57377
+      end    
+      item
+        Command = 157
+        ShortCut = 40996
+      end    
+      item
+        Command = 158
+        ShortCut = 40995
+      end    
+      item
+        Command = 165
+        ShortCut = 57380
+      end    
+      item
+        Command = 166
+        ShortCut = 57379
+      end>
+    MouseActions = <    
+      item
+        Shift = []
+        ShiftMask = [ssShift, ssAlt]
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 1
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = [ssShift]
+        ShiftMask = [ssShift, ssAlt]
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 1
+        MoveCaret = True
+        Option = 1
+        Priority = 0
+      end    
+      item
+        Shift = [ssAlt]
+        ShiftMask = [ssShift, ssAlt]
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 3
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = [ssShift, ssAlt]
+        ShiftMask = [ssShift, ssAlt]
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 3
+        MoveCaret = True
+        Option = 1
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbRight
+        ClickCount = ccSingle
+        ClickDir = cdUp
+        Command = 12
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccDouble
+        ClickDir = cdDown
+        Command = 6
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccTriple
+        ClickDir = cdDown
+        Command = 7
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccQuad
+        ClickDir = cdDown
+        Command = 8
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbMiddle
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 10
+        MoveCaret = True
+        Option = 0
+        Priority = 0
+      end    
+      item
+        Shift = [ssCtrl]
+        ShiftMask = [ssShift, ssAlt, ssCtrl]
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdUp
+        Command = 11
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end>
+    MouseSelActions = <    
+      item
+        Shift = []
+        ShiftMask = []
+        Button = mbLeft
+        ClickCount = ccSingle
+        ClickDir = cdDown
+        Command = 9
+        MoveCaret = False
+        Option = 0
+        Priority = 0
+      end>
+    Lines.Strings = (
+      'SynEdit1'
+    )
+    BracketHighlightStyle = sbhsBoth
+    object TSynGutterPartList
+      object TSynGutterMarks
+        Width = 23
+      end
+      object TSynGutterLineNumber
+        Width = 17
+        MouseActions = <>
+        MarkupInfo.Background = clBtnFace
+        MarkupInfo.Foreground = clNone
+        DigitCount = 2
+        ShowOnlyLineNumbersMultiplesOf = 1
+        ZeroStart = False
+        LeadingZeros = False
+      end
+      object TSynGutterChanges
+        Width = 4
+        ModifiedColor = 59900
+        SavedColor = clGreen
+      end
+      object TSynGutterSeparator
+        Width = 2
+      end
+      object TSynGutterCodeFolding
+        MouseActions = <        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbRight
+            ClickCount = ccSingle
+            ClickDir = cdUp
+            Command = 16
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end        
+          item
+            Shift = []
+            ShiftMask = [ssShift]
+            Button = mbMiddle
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 14
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end        
+          item
+            Shift = [ssShift]
+            ShiftMask = [ssShift]
+            Button = mbMiddle
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 14
+            MoveCaret = False
+            Option = 1
+            Priority = 0
+          end        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 0
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end>
+        MarkupInfo.Background = clNone
+        MarkupInfo.Foreground = clGray
+        MouseActionsExpanded = <        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 14
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end>
+        MouseActionsCollapsed = <        
+          item
+            Shift = [ssCtrl]
+            ShiftMask = [ssCtrl]
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 15
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end        
+          item
+            Shift = []
+            ShiftMask = [ssCtrl]
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 15
+            MoveCaret = False
+            Option = 1
+            Priority = 0
+          end>
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 280
+    Width = 400
+    Panels = <>
+  end
+end

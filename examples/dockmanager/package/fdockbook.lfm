@@ -6,9 +6,13 @@ object EasyDockBook: TEasyDockBook
   Caption = 'EasyDockBook'
   ClientHeight = 300
   ClientWidth = 400
+  DockSite = True
   DragKind = dkDock
-  DragMode = dmAutomatic
   OnCreate = FormCreate
+  OnDockDrop = FormDockDrop
+  OnDockOver = FormDockOver
+  OnGetSiteInfo = FormGetSiteInfo
+  OnUnDock = FormUnDock
   LCLVersion = '0.9.27'
   Visible = True
   object pnlDock: TPanel
@@ -17,9 +21,7 @@ object EasyDockBook: TEasyDockBook
     Top = 0
     Width = 400
     Align = alClient
-    DockSite = True
     TabOrder = 0
-    OnDockDrop = pnlDockDockDrop
-    OnUnDock = pnlDockUnDock
+    UseDockManager = False
   end
 end

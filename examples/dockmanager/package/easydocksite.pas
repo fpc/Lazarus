@@ -271,7 +271,8 @@ end;
 
 procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
 begin
-  AItem.ManualDock(ABook.pnlDock);
+  //AItem.ManualDock(ABook.pnlDock);
+  AItem.ManualDock(ABook);
 end;
 
 //from CustomFormEditor.pp

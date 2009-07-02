@@ -2,11 +2,27 @@ unit fDockBook;
 (* Notebook for docking multiple controls into a tabbed control.
   By DoDi <DrDiettrich1@aol.com> 2009.
 
-  A tab is created for every docked control.
-  The currently visible tab remains down.
+Example of a dock site without an docking manager.
+Unmanaged docking requires:
+- OnGetSiteInfo handler, at least indicating acceptance
+- OnDockOver handler, indicating acceptance, optionally placing the DockRect
+- OnDockDrop handler, when the control is not docked as an immediate client
+  of the dock site (here: into dedicated panel).
+
+In this (notebook) implementation:
+  The form is a dock site that manages docked clients itself.
+  Controls are docked into a dedicated panel, i.e. the panel becomes their Parent.
+  A tab is created for every docked control, in a dedicated toolbar.
+  The tab, associated with the currently visible page, is in down state.
   A control can be undocked by dragging the associated tab.
-    This makes the tabs act as grab regions, for undocking forms.
+    This makes the tabs act as grab regions for undocking e.g. forms or other
+    controls, which otherwise deny undocking from their client area.
   The entire notebook can be docked from the empty part of the toolbar.
+    Again for use with widgetsets and controls that do not drag properly.
+
+TWinControls are not really draggable, unless they have parts that do not
+normally react on mouse buttons (borders...). E.g. a SynEdit has to be wrapped
+into a form, before it can be dragged and docked by dragging the form.
 *)
 
 {$mode objfpc}{$H+}
@@ -21,6 +37,7 @@ type
   TTabButton = class(TToolButton)
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+
   public
     constructor Create(TheOwner: TComponent); override;
     Control: TControl;
@@ -36,9 +53,13 @@ type
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
     procedure FormCreate(Sender: TObject);
-    procedure pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
+    procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
-    procedure pnlDockUnDock(Sender: TObject; Client: TControl;
+    procedure FormDockOver(Sender: TObject; Source: TDragDockObject;
+      X, Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure FormGetSiteInfo(Sender: TObject; DockClient: TControl;
+      var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
+    procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
     procedure ToolButton1Click(Sender: TObject);
   private
@@ -53,6 +74,9 @@ type
 
 implementation
 
+uses
+  LCLProc; //debug only
+
 procedure Register;
 begin
   //RegisterComponents('Common Controls', [TEasyDockBook]);
@@ -63,54 +87,49 @@ end;
 procedure TEasyDockBook.FormCreate(Sender: TObject);
 begin
   Tabs := TTabs.Create(self);
-  DragMode := dmAutomatic;
-  DragKind := dkDock;
+  Visible := True;
 end;
 
-function TEasyDockBook.GetControlTab(AControl: TControl): TTabButton;
-var
-  i: integer;
-  btn: TToolButton absolute Result;
-begin
-  for i := 0 to Tabs.ButtonCount - 1 do begin
-    btn := Tabs.Buttons[i];
-    if Result.Control = AControl then
-      exit;
-  end;
-//not found - raise exception?
-  Result := nil;
-end;
-
-function TEasyDockBook.GetDefaultDockCaption: string;
-var
-  i: integer;
-  pg: TToolButton;
-begin
-  Result := '';
-  for i := 0 to Tabs.ButtonCount - 1 do begin
-    pg := Tabs.Buttons[i];
-    if Result = '' then
-      Result := pg.Caption
-    else
-      Result := Result + ', ' + pg.Caption;
-  end;
-end;
-
-procedure TEasyDockBook.pnlDockDockDrop(Sender: TObject; Source: TDragDockObject;
+procedure TEasyDockBook.FormDockDrop(Sender: TObject; Source: TDragDockObject;
   X, Y: Integer);
 var
   btn: TTabButton;
 begin
+  //Source.DragTarget := pnlDock; ?
+  Source.Control.Parent := pnlDock; //overwrite DoAddDockClient behaviour
+
   btn := TTabButton.Create(Tabs);
   btn.Control := Source.Control;
   btn.Control.Align := alClient;
   btn.Caption := GetDockCaption(btn.Control);
   btn.OnClick := @ToolButton1Click;
   btn.Down := True;
+  btn.Visible := True;
   btn.Click;
 end;
 
-procedure TEasyDockBook.pnlDockUnDock(Sender: TObject; Client: TControl;
+procedure TEasyDockBook.FormDockOver(Sender: TObject; Source: TDragDockObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+//unmanaged dock site requires an OnDockOver handler.
+  Accept := True; //this is the default, can be omitted
+//make DockRect reflect the docking area
+  with Source do begin
+    DockRect := pnlDock.ClientRect;
+    DockRect.TopLeft := pnlDock.ClientToScreen(DockRect.TopLeft);
+    inc(DockRect.Bottom, DockRect.Top);
+    inc(DockRect.Right, DockRect.Left);
+  end;
+end;
+
+procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
+  var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
+begin
+//override TCustomForm behaviour!
+  CanDock := True;
+end;
+
+procedure TEasyDockBook.FormUnDock(Sender: TObject; Client: TControl;
   NewTarget: TWinControl; var Allow: Boolean);
 var
   i: integer;
@@ -151,6 +170,35 @@ begin
   end;
 end;
 
+function TEasyDockBook.GetControlTab(AControl: TControl): TTabButton;
+var
+  i: integer;
+  btn: TToolButton absolute Result;
+begin
+  for i := 0 to Tabs.ButtonCount - 1 do begin
+    btn := Tabs.Buttons[i];
+    if Result.Control = AControl then
+      exit;
+  end;
+//not found - raise exception?
+  Result := nil;
+end;
+
+function TEasyDockBook.GetDefaultDockCaption: string;
+var
+  i: integer;
+  pg: TToolButton;
+begin
+  Result := '';
+  for i := 0 to Tabs.ButtonCount - 1 do begin
+    pg := Tabs.Buttons[i];
+    if Result = '' then
+      Result := pg.Caption
+    else
+      Result := Result + ', ' + pg.Caption;
+  end;
+end;
+
 procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var
   btn: TTabButton absolute Sender;
@@ -166,24 +214,37 @@ end;
 { TTabButton }
 
 constructor TTabButton.Create(TheOwner: TComponent);
-var
-  i, last: integer;
 begin
   inherited Create(TheOwner);
 //these properties must be set before Parent
-  Style := tbsCheck;
-  AutoSize := True;
-  Parent := TWinControl(TheOwner);
+  Style := tbsCheck; //allow button to stay down
+  AutoSize := True; //depending on the Caption text width
+  Parent := TWinControl(TheOwner); //seems to be required
 //these properties must be set after Parent
   Grouped := True;
 end;
 
 procedure TTabButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+//var AControl: TControl;
 begin
+(* Implement dragging of the associated page.
+*)
   inherited MouseMove(Shift, X, Y);
-  if ssLeft in Shift then begin
+  if (ssLeft in Shift) and not DragManager.IsDragging then begin
     if Control <> nil then begin
-      Control.BeginDrag(False); //delayed docking
+{ Problems with TWinControls - must be wrapped into forms :-(
+      //DebugLn('---undock "', Control.GetDefaultDockCaption, '"');
+      DebugLn('---undock "', Control.ClassName, '"');
+      if False and (Control is TWinControl) then begin
+        AControl := Control; //will change when undocked?
+        AControl.ManualDock(nil);
+        if AControl.HostDockSite <> nil then
+          AControl.HostDockSite.BeginDrag(True);
+      end else
+}
+//both immediate and delayed drag start seem to work
+        Control.BeginDrag(False); //delayed docking
+        //Control.BeginDrag(True); //immediate drag
     end;
   end;
 end;
@@ -195,6 +256,7 @@ begin
   inherited Create(TheOwner);
   Align := alTop;
   AutoSize := True;
+  Color := clBtnFace;
   Flat := False;
   Height := 28; //?
   List := True;
@@ -203,14 +265,18 @@ begin
   Font.Style := [fsBold];
   ShowCaptions := True;
   Wrapable := True;
+  Visible := True;
   Parent := TWinControl(TheOwner);
 end;
 
 procedure TTabs.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+(* Implement dragging of the entire notebook.
+  Parent is assumed to be the notebook form.
+*)
   inherited MouseMove(Shift, X, Y);
   if ssLeft in Shift then
-    Parent.BeginDrag(False); //delayed docking
+    Parent.BeginDrag(False); //delayed docking of the container form
 end;
 
 initialization
