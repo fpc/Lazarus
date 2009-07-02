@@ -1123,10 +1123,17 @@ begin
       NewWindowClass := kDocumentWindowClass;
       Attributes := kWindowInWindowMenuAttribute;
     end;
-
+    case (LCLObject as TCustomForm).BorderStyle of
+    bsDialog:
+      begin
+        NewWindowClass := kMovableModalWindowClass;
+        Attributes := 0;
+      end;
+    end;
     Attributes := Attributes or
       GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
         (LCLObject as TCustomForm).BorderIcons);
+
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
