@@ -38,9 +38,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 1
       Width = 406
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 0
       Text = 'DestDirComboBox'
     end
@@ -64,9 +62,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 58
       Width = 444
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 2
       Text = 'CommandAfterCombobox'
     end
@@ -89,7 +85,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 6
       Width = 456
       Align = alTop
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Ignore binaries'
       TabOrder = 0
@@ -113,7 +108,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 6
       Width = 456
       Align = alTop
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Save editor info of closed files'
       TabOrder = 0
@@ -124,7 +118,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 29
       Width = 456
       Align = alTop
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = 'Save editor info of non project files'
       TabOrder = 1
@@ -146,8 +139,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Left = 6
       Height = 17
       Top = 1
-      Width = 100
-      AllowGrayed = True
+      Width = 101
       Caption = 'Use Include Filter'
       TabOrder = 0
     end
@@ -155,8 +147,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Left = 199
       Height = 17
       Top = 1
-      Width = 84
-      AllowGrayed = True
+      Width = 85
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
@@ -168,9 +159,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 33
       Width = 444
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 2
       Text = 'IncludeFilterCombobox'
     end
@@ -192,7 +181,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Height = 17
       Top = 1
       Width = 103
-      AllowGrayed = True
       Caption = 'Use Exclude Filter'
       TabOrder = 0
     end
@@ -200,8 +188,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Left = 199
       Height = 17
       Top = 1
-      Width = 84
-      AllowGrayed = True
+      Width = 85
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
@@ -213,9 +200,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 33
       Width = 446
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 2
       Text = 'ExcludeFilterCombobox'
     end
