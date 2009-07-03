@@ -9,9 +9,9 @@ multiple editor windows. It does not demonstrate any editing capabilities.
 
 This is the first working version of dockable SynEdit components.
 
-ToDo:
-- maintain a list of open editor windows
-- open files in the (last) active editor window
+Done:
++ maintain a list of open editor windows (active window first)
++ open files in the (last) active editor window
 
 *)
 

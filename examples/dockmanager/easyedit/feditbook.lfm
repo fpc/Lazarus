@@ -1,9 +1,7 @@
-object EditBook: TEditBook
+inherited EditBook: TEditBook
   Left = 310
-  Height = 300
   Top = 159
-  Width = 400
   Caption = 'EditBook'
   OnActivate = FormActivate
-  LCLVersion = '0.9.27'
+  OnClose = FormClose
 end

@@ -7,7 +7,7 @@ Unmanaged docking requires:
 - OnGetSiteInfo handler, at least indicating acceptance
 - OnDockOver handler, indicating acceptance, optionally placing the DockRect
 - OnDockDrop handler, when the control is not docked as an immediate client
-  of the dock site (here: into dedicated panel).
+  of the dock site (here: dedicated panel becomes the Parent).
 
 In this (notebook) implementation:
   The form is a dock site that manages docked clients itself.
@@ -23,6 +23,9 @@ In this (notebook) implementation:
 TWinControls are not really draggable, unless they have parts that do not
 normally react on mouse buttons (borders...). E.g. a SynEdit has to be wrapped
 into a form, before it can be dragged and docked by dragging the form.
+
+Apply ToolButtonAutoSizeAlign.patch to improve the appearance and behaviour
+of the toolbar buttons.
 *)
 
 {$mode objfpc}{$H+}

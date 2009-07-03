@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, EditMain, EasyDockMgr, fEditForm;
+  Forms, EditMain, EasyDockMgr, fEditForm, fEditBook;
 
 {$IFDEF WINDOWS}{$R easyeditor.rc}{$ENDIF}
 
