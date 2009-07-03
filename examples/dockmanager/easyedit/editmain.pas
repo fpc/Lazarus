@@ -16,14 +16,24 @@ ToDo:
 *)
 
 {$mode objfpc}{$H+}
+{$DEFINE EditBook}
 
 interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+{$IFDEF EditBook}
+  fEditBook,
+{$ELSE}
+{$ENDIF}
   Menus, fDockBook, fEditForm, SynEdit;
 
 type
+{$IFDEF EditBook}
+  TEditForm = TEditBook;
+{$ELSE}
+  TEditForm = TEasyDockBook;
+{$ENDIF}
   TEasyEdit = TEditPage;
 
   TMainForm = class(TForm)
@@ -39,7 +49,7 @@ type
   private
     //MyEdit: TEasyPages;
     Editors: TList;
-    CurForm: TEasyDockBook;
+    CurForm: TEditForm;
     CurEdit: TEasyEdit;
   public
     function OpenFile(const AName: string): TObject;
@@ -75,6 +85,11 @@ end;
 
 function TMainForm.OpenFile(const AName: string): TObject;
 begin
+{$IFDEF EditBook}
+  if MRUEdit = nil then
+    MRUEdit := TEditForm.Create(self);
+  CurForm := MRUEdit;
+{$ELSE}
   if Editors = nil then
     Editors := TList.Create;
   if Editors.Count = 0 then begin
@@ -83,6 +98,7 @@ begin
   end;
   if CurForm = nil then
     pointer(CurForm) := Editors.Items[0];
+{$ENDIF}
 //todo: load the file
   CurEdit := TEasyEdit.Create(self);
   //CurEdit.FloatingDockSiteClass := TEasyDockBook; //provisions there???

@@ -8,7 +8,7 @@
       <TargetFileExt Value=".exe"/>
       <Title Value="easyeditor"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -36,14 +36,14 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="23">
+    <Units Count="24">
       <Unit0>
         <Filename Value="easyeditor.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="easyeditor"/>
         <CursorPos X="47" Y="17"/>
         <TopLine Value="1"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="54"/>
       </Unit0>
       <Unit1>
         <Filename Value="editmain.pas"/>
@@ -51,10 +51,10 @@
         <ComponentName Value="MainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EditMain"/>
-        <CursorPos X="1" Y="33"/>
-        <TopLine Value="1"/>
+        <CursorPos X="38" Y="90"/>
+        <TopLine Value="70"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -65,7 +65,7 @@
         <UnitName Value="fDockBook"/>
         <CursorPos X="1" Y="286"/>
         <TopLine Value="238"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -195,9 +195,11 @@
       </Unit20>
       <Unit21>
         <Filename Value="..\..\..\lcl\include\customform.inc"/>
-        <CursorPos X="22" Y="318"/>
-        <TopLine Value="315"/>
+        <CursorPos X="1" Y="1690"/>
+        <TopLine Value="1666"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="feditform.pas"/>
@@ -205,14 +207,26 @@
         <ComponentName Value="EditPage"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditForm"/>
-        <CursorPos X="42" Y="40"/>
+        <CursorPos X="37" Y="41"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="22"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit22>
+      <Unit23>
+        <Filename Value="feditbook.pas"/>
+        <ComponentName Value="EditBook"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fEditBook"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit23>
     </Units>
-    <JumpHistory Count="25" HistoryIndex="24">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="..\package\fdockbook.pas"/>
         <Caret Line="58" Column="1" TopLine="24"/>
@@ -313,6 +327,22 @@
         <Filename Value="..\package\fdockbook.pas"/>
         <Caret Line="244" Column="9" TopLine="236"/>
       </Position25>
+      <Position26>
+        <Filename Value="feditform.pas"/>
+        <Caret Line="30" Column="6" TopLine="10"/>
+      </Position26>
+      <Position27>
+        <Filename Value="editmain.pas"/>
+        <Caret Line="89" Column="21" TopLine="64"/>
+      </Position27>
+      <Position28>
+        <Filename Value="feditform.pas"/>
+        <Caret Line="41" Column="37" TopLine="1"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\..\lcl\include\customform.inc"/>
+        <Caret Line="1690" Column="1" TopLine="1666"/>
+      </Position29>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
