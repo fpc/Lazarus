@@ -27,7 +27,8 @@ type
 implementation
 
 uses
-  fEditBook;
+  //EditMain;
+  fDockBook;
 
 { TEditPage }
 
@@ -36,7 +37,7 @@ begin
   inherited Create(AOwner);
   DragKind := dkDock;
   DragMode := dmAutomatic;
-  FloatingDockSiteClass := TEditBook;
+  FloatingDockSiteClass := TEasyDockBook;
 end;
 
 function TEditPage.GetDefaultDockCaption: string;
