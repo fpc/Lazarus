@@ -9293,7 +9293,7 @@ var
 begin
   inherited setText(W);
   AParent := getTabWidget;
-  if AParent <> nil then
+  if (AParent <> nil) and QWidget_isVisible(AParent) then
     QTabWidget_setTabText(AParent, getIndex, @W);
 end;
 
