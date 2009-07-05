@@ -1,0 +1,98 @@
+object DockingSite: TDockingSite
+  Left = 384
+  Height = 163
+  Top = 157
+  Width = 255
+  Caption = 'Dock Site'
+  ClientHeight = 163
+  ClientWidth = 255
+  LCLVersion = '0.9.27'
+  Visible = True
+  object pnlLeft: TPanel
+    Left = 0
+    Height = 139
+    Top = 0
+    Width = 0
+    Align = alLeft
+    Caption = 'pnlLeft'
+    Color = clWhite
+    DockSite = True
+    ParentColor = False
+    TabOrder = 0
+    UseDockManager = False
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
+  end
+  object splitLeft: TSplitter
+    Left = 0
+    Height = 139
+    Top = 0
+    Width = 4
+  end
+  object buNewForm: TButton
+    Left = 96
+    Height = 20
+    Top = 16
+    Width = 62
+    Caption = 'New Form'
+    OnClick = buNewFormClick
+    TabOrder = 2
+  end
+  object pnlRight: TPanel
+    Left = 255
+    Height = 139
+    Top = 0
+    Width = 0
+    Align = alRight
+    Caption = 'pnlRight'
+    Color = clAqua
+    DockSite = True
+    ParentColor = False
+    TabOrder = 3
+    UseDockManager = False
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 0
+    Top = 143
+    Width = 255
+    Align = alBottom
+    Caption = 'pnlBottom'
+    DockSite = True
+    TabOrder = 4
+    UseDockManager = False
+    OnDockDrop = pnlLeftDockDrop
+    OnDockOver = pnlLeftDockOver
+    OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
+  end
+  object splitBottom: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 4
+    Top = 139
+    Width = 255
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object splitRight: TSplitter
+    Left = 251
+    Height = 139
+    Top = 0
+    Width = 4
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 143
+    Width = 255
+    Panels = <>
+  end
+end

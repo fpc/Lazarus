@@ -1,0 +1,12 @@
+object DockingClient: TDockingClient
+  Left = 425
+  Height = 159
+  Top = 369
+  Width = 232
+  Caption = 'Dock Client'
+  Color = clLime
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  LCLVersion = '0.9.27'
+  Visible = True
+end
