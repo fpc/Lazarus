@@ -74,9 +74,6 @@ procedure InternalFillRect(dc: HDC; const rcPaint: TRect);
 // search for the first char of set AChars in Line, starting at index Start
 function StrScanForCharInSet(const Line: string; Start: integer;
   AChars: TSynIdentChars): integer;
-// the same, but searching backwards
-function StrRScanForCharInSet(const Line: string; Start: integer;
-  AChars: TSynIdentChars): integer;
 
 function GetEOL(Line: PChar): PChar;
 
@@ -220,27 +217,6 @@ begin
       Inc(p);
       Inc(Start);
     until p^ = #0;
-  end;
-  Result := 0;
-end;
-
-function StrRScanForCharInSet(const Line: string; Start: integer;
-  AChars: TSynIdentChars): integer;
-var
-  p: PChar;
-begin
-  if (Start > 0) and (Start <= Length(Line)) then
-  begin
-    p := PChar(@Line[Start]);
-    repeat
-      if p^ in AChars then
-      begin
-        Result := Start;
-        exit;
-      end;
-      Dec(p);
-      Dec(Start);
-    until Start < 1;
   end;
   Result := 0;
 end;

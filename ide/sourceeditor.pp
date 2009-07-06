@@ -2457,10 +2457,7 @@ begin
   if (p.x>length(Line)+1) or (Line='') then exit;
   CatName:=AutoCompleteOptionNames[Category];
   WordToken:=FEditor.GetWordAtRowCol(p);
-  if Assigned(FEditor.Highlighter) then
-    IdChars := FEditor.Highlighter.IdentChars
-  else
-    IdChars := ['a'..'z', 'A'..'Z'];
+  IdChars := FEditor.IdentChars;
   for i:=0 to FCodeTemplates.Completions.Count-1 do begin
     AToken:=FCodeTemplates.Completions[i];
     if AToken='' then continue;

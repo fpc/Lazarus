@@ -765,16 +765,16 @@ type
       var TokenType, Start: Integer;
       var Attri: TSynHighlighterAttributes): boolean;                           //L505
 
-    {$IFDEF SYN_LAZARUS}
-    function IsLinkable(Y, X1, X2: Integer): Boolean;
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
-    {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
-    procedure GotoBookMark(BookMark: Integer);
+    function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
+    function NextWordPos(WordEndForDelete : Boolean = false): TPoint; virtual;
+    function PrevWordPos: TPoint; virtual;
     function IdentChars: TSynIdentChars;
-    {$IFDEF SYN_LAZARUS}
     function IsIdentChar(const c: TUTF8Char): boolean;
-    {$ENDIF}
+
+    function IsLinkable(Y, X1, X2: Integer): Boolean;
+    procedure GotoBookMark(BookMark: Integer);
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
@@ -793,15 +793,12 @@ type
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
     procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
-    function NextTokenPos: TPoint; virtual;
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$ENDIF}
-    function NextWordPos{$IFDEF SYN_LAZARUS}(WordEndForDelete : Boolean = false){$ENDIF}: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
-    function PrevWordPos: TPoint; virtual;
     function PixelsToRowColumn(Pixels: TPoint): TPoint;
     {$IFDEF SYN_LAZARUS}
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
@@ -1544,6 +1541,7 @@ begin
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
 
+  FWordBreaker := TSynWordBreaker.Create;
 {$IFDEF SYN_COMPILER_4_UP}
 {$IFNDEF SYN_LAZARUS}
 // ToDo DoubleBuffered
@@ -1777,30 +1775,6 @@ begin
     FreeAndNil(fPlugins);
   end;
   FreeAndNil(FHookedKeyTranslationList);
-  {$IFNDEF SYN_LAZARUS}
-  fScrollTimer.Free;
-  fTSearch.Free;
-  fMarkList.Free;
-  fBookMarkOpt.Free;
-  fBookMarkOpt := nil;
-  fKeyStrokes.Free;
-  FMouseActions.Free;
-  FMouseSelActions.Free;
-  fSelectedColor.Free;
-  fUndoList.Free;
-  fRedoList.Free;
-  fGutter.Free;
-  fTextDrawer.Free;
-  fFontDummy.Free;
-  fBlockSelection.Free;
-  FStrings.Free;
-  FTabbedLinesView.Free;
-  FTrimmedLinesView.Free;
-  FDoubleWidthChrLinesView.Free;
-  Lines.Free;
-  fCaret.Free;
-  fInternalCaret.Free;
-  {$ELSE}
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
   FreeAndNil(fScrollTimer);
@@ -1816,6 +1790,7 @@ begin
   FreeAndNil(fGutter);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
+  FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView);
   FreeAndNil(fBlockSelection);
   FreeAndNil(FStrings);
@@ -1825,7 +1800,6 @@ begin
   FreeAndNil(fLines);
   FreeAndNil(fCaret);
   FreeAndNil(fInternalCaret);
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -4530,211 +4504,32 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF SYN_MBCSSUPPORT}
-type
-  TStringType = (stNone, stHalfNumAlpha, stHalfSymbol, stHalfKatakana,
-    stWideNumAlpha, stWideSymbol, stWideKatakana, stHiragana, stIdeograph,
-    stControl, stKashida);
-
-{  }
-
-function IsStringType(Value: Word): TStringType;
-begin
-  Result := stNone;
-
-  if (Value = C3_SYMBOL) then begin
-    (***  Controls  ***)
-    Result := stControl;
-  end else
-    if ((Value and C3_HALFWIDTH) <> 0) then begin
-    (*** singlebyte ***)
-      if (Value = C3_HALFWIDTH) or
-        (Value = (C3_ALPHA or C3_HALFWIDTH)) then begin { Number & Alphabet }
-        Result := stHalfNumAlpha;
-      end else
-        if ((Value and C3_SYMBOL) <> 0) or
-          ((Value and C3_LEXICAL) <> 0) then begin { Symbol }
-          Result := stHalfSymbol;
-        end else
-          if ((Value and C3_KATAKANA) <> 0) then begin { Japanese-KATAKANA }
-            Result := stHalfKatakana;
-          end;
-    end else begin
-    (*** doublebyte ***)
-      if (Value = C3_FULLWIDTH) or
-        (Value = (C3_ALPHA or C3_FULLWIDTH)) then begin { Number & Alphabet }
-        Result := stWideNumAlpha;
-      end
-      else if ((Value and C3_SYMBOL) <> 0) or
-          ((Value and C3_LEXICAL) <> 0) then begin { Symbol }
-        Result := stWideSymbol;
-      end
-      else if ((Value and C3_KATAKANA) <> 0) then begin { Japanese-KATAKANA }
-        Result := stWideKatakana;
-      end
-      else if ((Value and C3_HIRAGANA) <> 0) then begin { Japanese-HIRAGANA }
-        Result := stHiragana;
-      end
-      else if ((Value and C3_IDEOGRAPH) <> 0) then begin { Ideograph }
-        Result := stIdeograph;
-      end;
-    end;
-end;
-
-{  }
-
 procedure TCustomSynEdit.SetWordBlock(Value: TPoint);
 var
-  i: Integer;
-  Runner: TPoint;
   TempString: string;
-  IdChars: TSynIdentChars;
-
-  procedure MultiBlockScan;
-  var
-    i: Integer;
-    wideX: Integer;
-    cType: PWordArray;
-    cLeng: Integer;
-    stc: TStringType;
-  begin
-    wideX := ByteToCharIndex(TempString, Value.X - 1);
-
-    cLeng := ByteToCharLen(TempString, Length(TempString));
-    GetMem(cType, SizeOf(Word) * cLeng);
-    try
-      if not GetStringTypeEx(LOCALE_SYSTEM_DEFAULT, CT_CTYPE3,
-        PChar(TempString), Length(TempString), cType^)
-      then
-        exit;
-      stc := IsStringType(cType^[wideX]);
-      if (stc = stControl) then
-        exit;
-      { search BlockEnd }
-      for i := wideX + 1 to cLeng - 1 do
-        if (IsStringType(cType^[i]) <> stc) then begin
-          Runner.Y := (i + 1);
-          Break;
-        end;
-      Runner.Y := (i + 1);
-      if Runner.Y > cLeng then Runner.Y := cLeng;
-      { search BlockBegin }
-      for i := wideX - 1 downto 0 do
-        if (IsStringType(cType^[i]) <> stc) then begin
-          Runner.X := (i + 2);
-          Break;
-        end;
-      Runner.X := CharToByteIndex(TempString, Runner.X);
-      Runner.Y := CharToByteIndex(TempString, Runner.Y);
-    finally
-      FreeMem(cType);
-    end;
-  end;
-
-begin
-  Value.x := MinMax(Value.x, 1, fMaxLeftChar);
-  Value.y := MinMax(Value.y, 1, Lines.Count);
-  TempString := (Lines[Value.Y - 1] + #$0);
-  if (Value.X >= Length(TempString)) then begin
-    CaretXY := Point(Length(TempString), Value.Y);
-    exit;
-  end;
-  if (fHighlighter <> nil) and
-    (ByteType(TempString, Value.X) <> mbLeadByte) then begin
-    Runner := Point(0, Length(TempString));
-    IdChars := fHighlighter.IdentChars;
-    { search BlockEnd }
-    for i := Value.X to Length(TempString) - 1 do begin
-      if not (TempString[i] in IdChars) then begin
-        Runner.Y := i;
-        Break;
-      end;
-    end;
-    { search BlockBegin }
-    for i := Value.X - 1 downto 1 do begin
-      if not (TempString[i] in IdChars) then begin
-        Runner.X := (i + 1);
-        Break;
-      end;
-    end;
-  end else
-    MultiBlockScan;
-  SetCaretAndSelection(Point(Runner.Y, Value.Y), Point(Runner.X, Value.Y),
-    Point(Runner.Y, Value.Y));
-end;
-
-{$ELSE}
-
-procedure TCustomSynEdit.SetWordBlock(Value: TPoint);
-var
-  Runner: TPoint;
-  TempString: string;
-  IdChars: TSynIdentChars;
+  x: Integer;
 begin
   { Value is the position of the Carat in bytes }
-  Value.x := MinMax(Value.x, 1, fMaxLeftChar);
   Value.y := MinMax(Value.y, 1, FTheLinesView.Count);
   TempString := FTheLinesView[Value.Y - 1];
   if TempString = '' then exit;
-  // Click on right side of text
-  if Length(TempString) < Value.X then Value.X := Length(TempString);
+  x := MinMax(Value.x, 1, fMaxLeftChar);
+  if Length(TempString) < x then
+    x := Length(TempString);
 
-  Runner := Value;
-  if Assigned(fHighlighter) then
-    {$IFDEF SYN_LAZARUS}
-    IdChars := [#1..#255] - (fHighlighter.WordBreakChars + TSynWhiteChars)
-    {$ELSE}
-    IdChars := fHighlighter.IdentChars
-    {$ENDIF}
-  else
-    {$IFDEF SYN_LAZARUS}
-    IDchars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
-    {$ELSE}
-    IDchars := [#33..#255];
-    {$ENDIF}
-  if not (TempString[Runner.X] in IdChars) then begin
-    // no word under cursor and next char right is not start of a word
-    if (Runner.X > 1) and (not (TempString[Runner.X] in IdChars)) then begin
-      // find end of word on the left side
-      while Runner.X > 1 do begin
-        if (TempString[Runner.X] in IdChars) then break;
-        Dec(Runner.X);
-      end;
-    end;
-    // no word on the left side, so look to the right side
-    if not (TempString[Runner.X] in IdChars) then begin
-      Runner := Value;
-      while (Runner.X < fMaxLeftChar)
-      {$IFDEF FPC} and (Runner.X < length(TempString)){$ENDIF} do begin
-        if (TempString[Runner.X] in IdChars) then break;
-        Inc(Runner.X);
-      end;
-      if Runner.X > fMaxLeftChar then
-        exit;
-    end;
-    Value := Runner;
-  end;
-  while Runner.X > 0 do begin
-    if not (TempString[Runner.X] in IdChars) then break;
-    Dec(Runner.X);
-  end;
-  Inc(Runner.X);
-  if Runner.X < 1 then Runner.X := 1;
-  FBlockSelection.StartLineBytePos := Runner;
-  Runner := Value;
-  while (Runner.X < fMaxLeftChar)
-  {$IFDEF FPC} and (Runner.X <= length(TempString)){$ENDIF} do begin
-    if not (TempString[Runner.X] in IdChars) then break;
-    Inc(Runner.X);
-  end;
-  if Runner.X > fMaxLeftChar then Runner.X := fMaxLeftChar;
-  FBlockSelection.EndLineBytePos := Runner;
+  Value.X := WordBreaker.PrevWordStart(TempString, x, True);
+  if Value.X < 0 then
+    Value.X := WordBreaker.NextWordStart(TempString, x);
+  if Value.X < 0 then
+    exit;
+
+  FBlockSelection.StartLineBytePos := Value;
+  Value.X := WordBreaker.NextWordEnd(TempString, Value.X);
+  if Value.X > fMaxLeftChar then Value.X := fMaxLeftChar;
+  FBlockSelection.EndLineBytePos := Value;
   FBlockSelection.ActiveSelectionMode := smNormal;
-// set caret to the end of selected block
-  CaretXY := FTheLinesView.LogicalToPhysicalPos(Runner);
+  FCaret.LineBytePos := Value;
 end;
-
-{$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
@@ -5067,32 +4862,12 @@ begin
   end;
 end;
 
-function TCustomSynEdit.IdentChars: TSynIdentChars;
-begin
-  if Highlighter <> nil then
-    Result := Highlighter.IdentChars
-  else
-    {$IFDEF SYN_LAZARUS}
-    Result := ['a'..'z','A'..'Z','0'..'9'];
-    {$ELSE}
-    Result := [#33..#255];
-    {$ENDIF}
-end;
-
-{$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.IsIdentChar(const c: TUTF8Char): boolean;
-begin
-  Result:=(length(c)=1) and (c[1] in IdentChars);
-end;
-
 function TCustomSynEdit.IsLinkable(Y, X1, X2: Integer): Boolean;
 begin
   Result := X1 <> X2;
   if Result and Assigned(FOnMouseLink) then
     FOnMouseLink(Self, X1, Y, Result);
 end;
-
-{$ENDIF}
 
 procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
 var
@@ -5344,13 +5119,14 @@ begin
     fMarkupHighCaret.Highlighter := Value;
     fMarkupWordGroup.Highlighter := Value;
     FFoldedLinesView.Highlighter := Value;
-    {$IFDEF SYN_LAZARUS}
+    FWordBreaker.Reset;
     if fHighlighter<>nil then begin
-      fTSearch.IdentChars:=fHighlighter.IdentChars;
+      fTSearch.IdentChars := fHighlighter.IdentChars;
+      FWordBreaker.IdentChars     := fHighlighter.IdentChars;
+      FWordBreaker.WordBreakChars := fHighlighter.WordBreakChars;
     end else begin
       fTSearch.ResetIdentChars;
     end;
-    {$ENDIF}
     RecalcCharExtent;
     FTheLinesView.BeginUpdate;
     try
@@ -6219,230 +5995,6 @@ procedure TCustomSynEdit.ClearSelection;
 begin
   if SelAvail then
     SelText := '';
-end;
-
-{$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.NextTokenPos: TPoint;
-var
-  CX, CY, LineLen: integer;
-  Line: string;
-  CurIdentChars, WhiteChars: TSynIdentChars;
-  nTokenPos, nTokenLen: integer;
-  sToken: PChar;
-  LogCaret: TPoint;
-
-  procedure FindFirstNonWhiteSpaceCharInNextLine;
-  begin
-    if CY < FTheLinesView.Count then begin
-      Line := FTheLinesView[CY];
-      LineLen := Length(Line);
-      Inc(CY);
-      CX:=1;
-      while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
-      if CX>LineLen then CX:=1;
-    end;
-  end;
-
-begin
-  LogCaret:=PhysicalToLogicalPos(CaretXY);
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    LineLen := Length(Line);
-    WhiteChars := [#9,' '];
-    if CX > LineLen then begin
-      FindFirstNonWhiteSpaceCharInNextLine;
-    end else begin
-      if fHighlighter<>nil then begin
-        fHighlighter.CurrentLines := FTheLinesView;
-        fHighlighter.StartAtLineIndex(CY - 1);
-        while not fHighlighter.GetEol do begin
-          nTokenPos := fHighlighter.GetTokenPos; // zero-based
-          fHighlighter.GetTokenEx(sToken,nTokenLen);
-          if (CX>nTokenPos) and (CX<=nTokenPos+nTokenLen) then begin
-            CX:=nTokenPos+nTokenLen+1;
-            break;
-          end;
-          // Let the highlighter scan the next token.
-          fHighlighter.Next;
-        end;
-        if fHighlighter.GetEol then
-          FindFirstNonWhiteSpaceCharInNextLine;
-      end else begin
-        // no highlighter
-        CurIdentChars:=IdentChars;
-        // find first "whitespace" if next char is not a "whitespace"
-        if (Line[CX] in CurIdentChars) then begin
-          // in a word -> move to end of word
-          while (CX<=LineLen) and (Line[CX] in CurIdentChars) do inc(CX);
-        end;
-        if (Line[CX] in WhiteChars) then begin
-          // skip white space
-          while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
-        end;
-        // delete at least one char
-        if (CX=CaretX) then inc(CX);
-      end;
-    end;
-  end;
-  Result := LogicalToPhysicalPos(Point(CX, CY));
-end;
-{$ENDIF}
-
-function TCustomSynEdit.NextWordPos{$IFDEF SYN_LAZARUS}(WordEndForDelete : Boolean = false){$ENDIF}: TPoint;
-var
-  CX, CY, LineLen: integer;
-  Line: string;
-  CurIdentChars, WhiteChars: TSynIdentChars;
-  {$IFDEF SYN_LAZARUS}
-  LogCaret: TPoint;
-  WordBrkChars: TSynIdentChars;
-  bow : Boolean;
-  {$ENDIF}
-begin
-  {$IFDEF SYN_LAZARUS}
-  LogCaret:=PhysicalToLogicalPos(CaretXY);
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  {$ELSE}
-  CX := CaretX;
-  CY := CaretY;
-  {$ENDIF}
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-
-    {$IFDEF SYN_LAZARUS}
-    if Assigned(Highlighter) then
-      WordBrkChars := Highlighter.WordBreakChars
-    else
-      WordBrkChars := TSynWordBreakChars;
-    CurIdentChars := [#1..#255] - (WordBrkChars + TSynWhiteChars);
-    WhiteChars := TSynWhiteChars + ([#1..#255] - CurIdentChars);
-    {$ELSE}
-    CurIdentChars:=IdentChars;
-    WhiteChars := [#1..#255] - CurIdentChars;
-    {$ENDIF}
-    LineLen := Length(Line);
-
-    if CX >{$IFNDEF SYN_LAZARUS}={$ENDIF} LineLen then begin
-      // find first IdentChar in the next line
-      if CY < FTheLinesView.Count then begin
-        Line := FTheLinesView[CY];
-        Inc(CY);
-        {$IFDEF SYN_LAZARUS}
-        if WordEndForDelete then
-          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
-        else
-        {$ENDIF}
-        CX := Max(1, StrScanForCharInSet(Line, 1, CurIdentChars));
-      end;
-    end else begin
-      {$IFDEF SYN_LAZARUS}
-      if WordEndForDelete then begin
-        if Line[CX] in TSynWhiteChars then
-          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars)
-        else begin
-          bow := (CX = 1) OR (Line[CX-1] in WhiteChars); // Cursor at BeginOfWord
-          if Line[CX] in WordBrkChars then
-            CX := StrScanForCharInSet(Line, CX, [#1..#255] - WordBrkChars)
-          else
-            CX := StrScanForCharInSet(Line, CX, [#1..#255] - CurIdentChars);
-          // Remove WitheSpaces, if Cursor was at BeginOfWord or in WordBrkchars
-          if bow and(cx > 0) then
-            CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
-        end;
-      end else begin
-      {$ENDIF}
-      // find first "whitespace" if next char is an IdentChar
-      if Line[CX] in CurIdentChars then
-        CX := StrScanForCharInSet(Line, CX, WhiteChars);
-      // if "whitespace" found find the first IdentChar behind
-      if CX > 0 then
-        CX := StrScanForCharInSet(Line, CX, CurIdentChars);
-      {$IFDEF SYN_LAZARUS}
-      end;
-      {$ENDIF}
-      // if one of those failed just position at the end of the line
-      if CX = 0 then
-        CX := LineLen + 1;
-    end;
-  end;
-  {$IFDEF SYN_LAZARUS}
-  Result := LogicalToPhysicalPos(Point(CX, CY));
-  {$ELSE}
-  Result := Point(CX, CY);
-  {$ENDIF}
-end;
-
-function TCustomSynEdit.PrevWordPos: TPoint;
-var
-  CX, CY: integer;
-  Line: string;
-  CurIdentChars, WhiteChars: TSynIdentChars;
-  {$IFDEF SYN_LAZARUS}
-  LogCaret: TPoint;
-  {$ENDIF}
-begin
-  {$IFDEF SYN_LAZARUS}
-  LogCaret:=LogicalCaretXY;
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  {$ELSE}
-  CX := CaretX;
-  CY := CaretY;
-  {$ENDIF}
-  //DebugLn(['TCustomSynEdit.PrevWordPos ',dbgs(LogCaret)]);
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    CX := Min(CX, Length(Line) + 1);
-
-    {$IFDEF SYN_LAZARUS}
-    if Assigned(Highlighter) then
-      CurIdentChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
-    else
-      CurIdentChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
-    WhiteChars := TSynWhiteChars + ([#1..#255] - CurIdentChars);
-    {$ELSE}
-    CurIdentChars:=IdentChars;
-    WhiteChars := [#1..#255] - CurIdentChars;
-    {$ENDIF}
-    //DebugLn(['TCustomSynEdit.PrevWordPos Line="',dbgstr(Line),'" CX=',CX]);
-    if CX <= 1 then begin
-      // find last IdentChar in the previous line
-      if CY > 1 then begin
-        Dec(CY);
-        Line := FTheLinesView[CY - 1];
-        CX := Length(Line) + 1;
-      end;
-    end else begin
-      // if previous char is a "whitespace" search for the last IdentChar
-      if Line[CX - 1] in WhiteChars then
-        CX := StrRScanForCharInSet(Line, CX - 1, CurIdentChars);
-      //DebugLn(['TCustomSynEdit.PrevWordPos AAA1 CX=',CX]);
-      if CX > 0 then
-        // search for the first IdentChar of this "word"
-        CX := StrRScanForCharInSet(Line, CX - 1, WhiteChars) + 1
-      else
-        // just position at the end of the previous line
-        if CY > 1 then begin
-          Dec(CY);
-          Line := FTheLinesView[CY - 1];
-          CX := Length(Line) + 1;
-        end;
-      //DebugLn(['TCustomSynEdit.PrevWordPos AAA2 CX=',CX]);
-    end;
-  end;
-  //DebugLn(['TCustomSynEdit.PrevWordPos AAA3 ',CX,',',CY]);
-  {$IFDEF SYN_LAZARUS}
-  Result := LogicalToPhysicalPos(Point(CX, CY));
-  {$ELSE}
-  Result := Point(CX, CY);
-  {$ENDIF}
-  //DebugLn(['TCustomSynEdit.PrevWordPos END ',dbgs(Result)]);
 end;
 
 function TCustomSynEdit.GetSelectionMode : TSynSelectionMode;
@@ -8418,37 +7970,176 @@ begin
   TokenType := -1;
   Result := FALSE;
 end;
-                                                                                 //L505 end
-{$IFDEF SYN_LAZARUS}
+
+function TCustomSynEdit.IdentChars: TSynIdentChars;
+begin
+  Result := FWordBreaker.IdentChars;  // Maybe WordChars?
+end;
+
+function TCustomSynEdit.IsIdentChar(const c: TUTF8Char): boolean;
+begin
+  Result:=(length(c)=1) and (c[1] in IdentChars);
+end;
+
 procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; var StartX,
-  EndX: integer);
-// all params are logical (byte) positions
+  EndX: integer); // all params are logical (byte) positions
 var
   Line: string;
-  IdChars: TSynIdentChars;
-  Len: integer;
 begin
-  //debugln('TCustomSynEdit.GetWordBoundsAtRowCol A ',dbgs(XY));
   StartX:=XY.X;
   EndX:=XY.X;
-  if (XY.Y >= 1) and (XY.Y <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[XY.Y - 1];
-    Len := Length(Line);
-    if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-      if Assigned(Highlighter) then
-        IdChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
-      else
-        IdChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
-      EndX := XY.X;
-      while (EndX <= Len) and (Line[EndX] in IdChars) do
-        Inc(EndX);
-      StartX := XY.X;
-      while (StartX > 1) and (Line[StartX - 1] in IdChars) do
-        Dec(StartX);
-    end;
+  Line := FTheLinesView[XY.Y - 1];
+  if WordBreaker.IsInWord(Line, XY.X) then begin
+    StartX := WordBreaker.PrevWordStart(Line, XY.X, True);
+    EndX := WordBreaker.NextWordEnd(Line, XY.X, True);
   end;
 end;
-{$ENDIF}
+
+function TCustomSynEdit.GetWordAtRowCol(XY: TPoint): string;
+var
+  StartX, EndX: integer;
+  Line: string;
+begin
+  GetWordBoundsAtRowCol(XY, StartX, EndX);
+  Line := FTheLinesView[XY.Y - 1];
+  Result := Copy(Line, StartX, EndX - StartX);
+end;
+
+function TCustomSynEdit.NextTokenPos: TPoint;
+var
+  CX, CY, LineLen: integer;
+  Line: string;
+  CurIdentChars, WhiteChars: TSynIdentChars;
+  nTokenPos, nTokenLen: integer;
+  sToken: PChar;
+  LogCaret: TPoint;
+
+  procedure FindFirstNonWhiteSpaceCharInNextLine;
+  begin
+    if CY < FTheLinesView.Count then begin
+      Line := FTheLinesView[CY];
+      LineLen := Length(Line);
+      Inc(CY);
+      CX:=1;
+      while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+      if CX>LineLen then CX:=1;
+    end;
+  end;
+
+begin
+  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    LineLen := Length(Line);
+    WhiteChars := FWordBreaker.WhiteChars;
+    if CX > LineLen then begin
+      FindFirstNonWhiteSpaceCharInNextLine;
+    end else begin
+      if fHighlighter<>nil then begin
+        fHighlighter.CurrentLines := FTheLinesView;
+        fHighlighter.StartAtLineIndex(CY - 1);
+        while not fHighlighter.GetEol do begin
+          nTokenPos := fHighlighter.GetTokenPos; // zero-based
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          if (CX>nTokenPos) and (CX<=nTokenPos+nTokenLen) then begin
+            CX:=nTokenPos+nTokenLen+1;
+            break;
+          end;
+          // Let the highlighter scan the next token.
+          fHighlighter.Next;
+        end;
+        if fHighlighter.GetEol then
+          FindFirstNonWhiteSpaceCharInNextLine;
+      end else begin
+        // no highlighter
+        CurIdentChars:=IdentChars;
+        // find first "whitespace" if next char is not a "whitespace"
+        if (Line[CX] in CurIdentChars) then begin
+          // in a word -> move to end of word
+          while (CX<=LineLen) and (Line[CX] in CurIdentChars) do inc(CX);
+        end;
+        if (Line[CX] in WhiteChars) then begin
+          // skip white space
+          while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+        end;
+        // delete at least one char
+        if (CX=CaretX) then inc(CX);
+      end;
+    end;
+  end;
+  Result := LogicalToPhysicalPos(Point(CX, CY));
+end;
+
+function TCustomSynEdit.NextWordPos(WordEndForDelete : Boolean = false): TPoint;
+var
+  CX, CY, LineLen: integer;
+  Line: string;
+  LogCaret: TPoint;
+  DelSpaces : Boolean;
+begin
+  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    LineLen := Length(Line);
+
+    if CX >= LineLen then begin
+      // find first IdentChar in the next line
+      if CY < FTheLinesView.Count then begin
+        Line := FTheLinesView[CY];
+        Inc(CY);
+        if WordEndForDelete then
+          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
+        else
+          CX := Max(1, WordBreaker.NextWordStart(Line, 1, True));
+      end;
+    end else begin
+      if WordEndForDelete then begin
+        DelSpaces := WordBreaker.IsAtWordStart(Line, CX) or not WordBreaker.IsInWord(Line, CX);
+        CX := WordBreaker.NextBoundary(Line, CX);
+        if DelSpaces and(cx > 0) then
+          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
+      end
+      else
+        CX := WordBreaker.NextWordStart(Line, CX);
+      // if one of those failed just position at the end of the line
+      if CX <= 0 then
+        CX := LineLen + 1;
+    end;
+  end;
+  Result := LogicalToPhysicalPos(Point(CX, CY));
+end;
+
+function TCustomSynEdit.PrevWordPos: TPoint;
+var
+  CX, CY: integer;
+  Line: string;
+  LogCaret: TPoint;
+begin
+  LogCaret:=LogicalCaretXY;
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    CX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+    if CX <= 0 then
+      if CY > 1 then begin
+        // just position at the end of the previous line
+        Dec(CY);
+        Line := FTheLinesView[CY - 1];
+        CX := Length(Line) + 1;
+      end
+      else
+        CX := 1;
+  end;
+  Result := LogicalToPhysicalPos(Point(CX, CY));
+end;
 
 function TCustomSynEdit.FindHookedCmdEvent(AHandlerProc: THookedCommandEvent):
   integer;
@@ -8605,39 +8296,6 @@ begin
     fRedoList.Clear;
   if Assigned(fOnChange) then
     fOnChange(Self);
-end;
-
-function TCustomSynEdit.GetWordAtRowCol(XY: TPoint): string;
-var
-  Line: string;
-  IdChars: TSynIdentChars;
-  Len, Stop: integer;
-begin
-  Result := '';
-  if (XY.Y >= 1) and (XY.Y <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[XY.Y - 1];
-    Len := Length(Line);
-    if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-      {$IFDEF SYN_LAZARUS}
-      if Assigned(Highlighter) then
-        IdChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
-      else
-        IdChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
-      {$ELSE}
-      if Assigned(Highlighter) then
-        IdChars := Highlighter.IdentChars
-      else
-        IdChars := ['a'..'z', 'A'..'Z'];
-      {$ENDIF}
-      Stop := XY.X;
-      while (Stop <= Len) and (Line[Stop] in IdChars) do
-        Inc(Stop);
-      while (XY.X > 1) and (Line[XY.X - 1] in IdChars) do
-        Dec(XY.X);
-      if Stop > XY.X then
-        Result := Copy(Line, XY.X, Stop - XY.X);
-    end;
-  end;
 end;
 
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;

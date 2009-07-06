@@ -52,13 +52,48 @@ uses
 
 type
 
-  // Empty - For type checking on function-arguments
-  // in places where TCustomSynEdit can not be used due to circular unit refs
+  { TSynWordBreaker }
+
+  TSynWordBreaker = class
+  private
+    FIdentChars: TSynIdentChars;
+    FWhiteChars: TSynIdentChars;
+    FWordBreakChars: TSynIdentChars;
+    FWordChars: TSynIdentChars;
+    procedure SetIdentChars(const AValue: TSynIdentChars);
+    procedure SetWhiteChars(const AValue: TSynIdentChars);
+    procedure SetWordBreakChars(const AValue: TSynIdentChars);
+  public
+    constructor Create;
+    procedure Reset;
+
+    // aX is the position between the chars (as in CaretX)
+    function IsInWord     (aLine: String; aX: Integer
+                           ): Boolean;
+    function IsAtWordStart(aLine: String; aX: Integer): Boolean;
+    function IsAtWordEnd  (aLine: String; aX: Integer): Boolean;
+    function NextWordStart(aLine: String; aX: Integer;
+                           aIncludeCurrent: Boolean = False): Integer;
+    function NextWordEnd  (aLine: String; aX: Integer;
+                           aIncludeCurrent: Boolean = False): Integer;
+    function PrevWordStart(aLine: String; aX: Integer;
+                           aIncludeCurrent: Boolean = False): Integer;
+    function PrevWordEnd  (aLine: String; aX: Integer;
+                           aIncludeCurrent: Boolean = False): Integer;
+
+    function NextBoundary (aLine: String; aX: Integer): Integer;
+
+    property IdentChars: TSynIdentChars read FIdentChars write SetIdentChars;
+    property WordChars: TSynIdentChars read FWordChars;
+    property WordBreakChars: TSynIdentChars read FWordBreakChars write SetWordBreakChars;
+    property WhiteChars: TSynIdentChars read FWhiteChars write SetWhiteChars;
+  end;
 
   { TSynEditBase }
 
   TSynEditBase = class(TCustomControl)
   protected
+    FWordBreaker: TSynWordBreaker;
     FIsUndoing, FIsRedoing: Boolean;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
@@ -70,6 +105,7 @@ type
     property MarkupMgr: TObject read GetMarkupMgr;
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // No uncommited (trailing/trimmable) spaces
+    property WordBreaker: TSynWordBreaker read FWordBreaker;
   public
     property Lines: TStrings read GetLines write SetLines;
   end;
@@ -84,6 +120,7 @@ type
     function GetIsUndoing: Boolean;
     function GetMarkupMgr: TObject;
     function GetViewedTextBuffer: TSynEditStrings;
+    function GetWordBreaker: TSynWordBreaker;
   protected
     property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
@@ -91,6 +128,7 @@ type
     property MarkupMgr: TObject read GetMarkupMgr;
     property IsUndoing: Boolean read GetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing;
+    property WordBreaker: TSynWordBreaker read GetWordBreaker;
   end;
 
 
@@ -348,6 +386,11 @@ implementation
 function TSynEditFriend.GetViewedTextBuffer: TSynEditStrings;
 begin
   Result := FFriendEdit.ViewedTextBuffer;
+end;
+
+function TSynEditFriend.GetWordBreaker: TSynWordBreaker;
+begin
+  Result := FFriendEdit.WordBreaker;
 end;
 
 function TSynEditFriend.GetMarkupMgr: TObject;
@@ -1027,6 +1070,155 @@ begin
   Integer(mpos^) := Len;
   inc(mpos, SizeOf(Integer));
   System.Move(Location^, mpos^, Len);
+end;
+
+{ TSynWordBreaker }
+
+procedure TSynWordBreaker.SetIdentChars(const AValue: TSynIdentChars);
+begin
+  if FIdentChars = AValue then exit;
+  FIdentChars := AValue;
+end;
+
+procedure TSynWordBreaker.SetWhiteChars(const AValue: TSynIdentChars);
+begin
+  if FWhiteChars = AValue then exit;
+  FWhiteChars := AValue;
+  FWordChars := [#1..#255] - (FWordBreakChars + FWhiteChars);
+end;
+
+procedure TSynWordBreaker.SetWordBreakChars(const AValue: TSynIdentChars);
+begin
+  if FWordBreakChars = AValue then exit;
+  FWordBreakChars := AValue;
+  FWordChars := [#1..#255] - (FWordBreakChars + FWhiteChars);
+end;
+
+constructor TSynWordBreaker.Create;
+begin
+  inherited;
+  Reset;
+end;
+
+procedure TSynWordBreaker.Reset;
+begin
+  FWhiteChars     := TSynWhiteChars;
+  FWordBreakChars := TSynWordBreakChars;
+  FIdentChars     := TSynValidStringChars - TSynSpecialChars;
+  FWordChars      := [#1..#255] - (FWordBreakChars + FWhiteChars);
+end;
+
+function TSynWordBreaker.IsInWord(aLine: String; aX: Integer): Boolean;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(False);
+  Result := ((ax <= len) and (aLine[aX] in FWordChars)) or
+            ((aX > 1) and (aLine[aX - 1] in FWordChars));
+end;
+
+function TSynWordBreaker.IsAtWordStart(aLine: String; aX: Integer): Boolean;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (aX > len) then exit(False);
+  Result := (aLine[aX] in FWordChars) and
+            ((aX = 1) or not (aLine[aX - 1] in FWordChars));
+end;
+
+function TSynWordBreaker.IsAtWordEnd(aLine: String; aX: Integer): Boolean;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(False);
+  Result := ((ax = len + 1) or not(aLine[aX] in FWordChars)) and
+            (aLine[aX - 1] in FWordChars);
+end;
+
+function TSynWordBreaker.NextWordStart(aLine: String; aX: Integer;
+  aIncludeCurrent: Boolean): Integer;
+var
+  len: Integer;
+begin
+  if aX < 1 then exit(-1);
+  len := Length(aLine);
+  if not aIncludeCurrent then
+    inc(aX);
+  if (aX > 1) and (aLine[aX - 1] in FWordChars) then
+    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax);
+  while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(ax);
+  if aX > len then
+    exit(-1);
+  Result := aX;
+end;
+
+function TSynWordBreaker.NextWordEnd(aLine: String; aX: Integer;
+  aIncludeCurrent: Boolean): Integer;
+var
+  len: Integer;
+begin
+  if aX < 1 then exit(-1);
+  len := Length(aLine);
+  if not aIncludeCurrent then
+    inc(aX);
+  if (aX = 1) or not(aLine[aX - 1] in FWordChars) then
+    while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(ax);
+  while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax);
+  Result := aX;
+end;
+
+function TSynWordBreaker.PrevWordStart(aLine: String; aX: Integer;
+  aIncludeCurrent: Boolean): Integer;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(-1);
+  if ax > len then aX := len;
+  if not aIncludeCurrent then
+    dec(aX);
+  while (aX >= 1) and not(aLine[aX] in FWordChars) do Dec(ax);
+  if aX = 0 then
+    exit(-1);
+  while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(ax);
+  Result := aX  + 1;
+end;
+
+function TSynWordBreaker.PrevWordEnd(aLine: String; aX: Integer;
+  aIncludeCurrent: Boolean): Integer;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(-1);
+  if ax > len then aX := len;
+  if not aIncludeCurrent then
+    dec(aX);
+  while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(ax);
+  while (aX >= 1) and not(aLine[aX] in FWordChars) do Dec(ax);
+  if aX = 0 then
+    exit(-1);
+  Result := aX + 1;
+end;
+
+function TSynWordBreaker.NextBoundary(aLine: String; aX: Integer): Integer;
+var
+  len: Integer;
+begin
+  len := Length(aLine);
+  if (aX < 1) or (ax > len) then exit(-1);
+
+  if (aLine[aX] in FWordChars) then
+    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax)
+  else
+  if (aLine[aX] in FWordBreakChars) then
+    while (aX <= len) and (aLine[aX] in FWordBreakChars) do Inc(ax)
+  else
+    while (aX <= len) and (aLine[aX] in FWhiteChars) do Inc(ax);
+  Result := aX;
 end;
 
 end.
