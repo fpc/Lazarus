@@ -1,0 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TEduEnvFrame','FORMDATA',[
+  'TPF0'#241#12'TEduEnvFrame'#11'EduEnvFrame'#6'Height'#3#12#1#5'Width'#3'g'#1
+  +#12'ClientHeight'#3#12#1#11'ClientWidth'#3'X'#1#8'TabOrder'#2#0#10'DesignLef'
+  +'t'#3'f'#1#9'DesignTop'#3#198#0#0#242#2#0#9'TCheckBox'#14'EnableCheckBox'#22
+  +'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4'L'
+  +'eft'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#2'|'#20'BorderSpacing.Around'#2
+  +#6#7'Caption'#6#14'EnableCheckBox'#8'TabOrder'#2#0#0#0#0
+]);
