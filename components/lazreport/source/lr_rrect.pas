@@ -30,7 +30,7 @@ uses
   Graphics, Controls, Forms, Dialogs,Buttons,
   StdCtrls, Menus,ClipBrd,
 
-  LCLType,LR_Class, XMLCfg, ExtCtrls,LCLIntf,LCLProc;
+  LCLType,LR_Class, ExtCtrls,LCLIntf,LCLProc;
 
 type
   {These are the six different gradient styles available.}

@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls,
+  Forms, Dialogs, Buttons, ExtCtrls,
 
   LR_Const;
 

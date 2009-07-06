@@ -16,9 +16,7 @@ interface
 
 uses
   Classes, SysUtils, LResources,
-  Graphics,GraphType, Controls, Forms, Dialogs,
-  StdCtrls,LR_E_TXT,
-
+  Graphics,GraphType, Controls, Forms, Dialogs, LR_E_TXT,
   LCLType,LCLIntf,LR_Class;
 
 type

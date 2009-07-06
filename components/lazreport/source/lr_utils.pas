@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls,
-  LR_DBRel, Forms, StdCtrls, ClipBrd, Menus,Types,db,
+  LR_DBRel, Forms, StdCtrls, ClipBrd, Menus,db,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
@@ -55,7 +55,7 @@ function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of s
 
 implementation
 
-uses LR_Class, LR_DSet;
+uses LR_Class;
 
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
 begin

@@ -19,7 +19,7 @@ uses
   Graphics,GraphType, Controls, Forms, Dialogs,Buttons,
   StdCtrls,
 
-  LCLType,LR_Class, XMLCfg, ExtCtrls;
+  LCLType,LR_Class, ExtCtrls;
 
 
 type

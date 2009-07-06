@@ -40,7 +40,7 @@ uses
   Graphics, Controls, Forms, Dialogs,Buttons,
   StdCtrls, Menus, Barcode,
   
-  LCLType,LR_Class, XMLCfg,ExtCtrls;
+  LCLType,LR_Class, ExtCtrls;
 
 
 {.$DEFINE BC_1_25} //For Barcode version 1.25 actually in debug

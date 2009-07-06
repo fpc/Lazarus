@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, FileUtil,
-  Forms, StdCtrls, ComCtrls, Dialogs, Menus,
+  Forms, ComCtrls, Dialogs, Menus,
   Variants, DB,Graphics,Printers,osPrinters,XMLConf,
   
   LCLType,LCLIntf,TypInfo,LCLProc,
@@ -856,15 +856,7 @@ type
     procedure DoBuildReport; virtual;
     procedure DoPrintReport(const PageNumbers: String; Copies: Integer);
     procedure SetComments(const AValue: TStringList);
-    procedure SetDataset(const AValue: TfrDataset);
     procedure SetPrinterTo(const PrnName: String);
-    procedure SetReportAutor(const AValue: string);
-    procedure SetReportCreateDate(const AValue: TDateTime);
-    procedure SetReportLastChange(const AValue: TDateTime);
-    procedure SetReportVersionBuild(const AValue: string);
-    procedure SetReportVersionMajor(const AValue: string);
-    procedure SetReportVersionMinor(const AValue: string);
-    procedure SetReportVersionRelease(const AValue: string);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
   protected
@@ -928,13 +920,13 @@ type
     property Subject : string read FSubject write FSubject;
     property KeyWords : string read FKeyWords write FKeyWords;
     property Comments : TStringList read FComments write SetComments;
-    property ReportAutor : string read FReportAutor write SetReportAutor;
-    property ReportVersionMajor : string read FReportVersionMajor write SetReportVersionMajor;
-    property ReportVersionMinor : string read FReportVersionMinor write SetReportVersionMinor;
-    property ReportVersionRelease : string read FReportVersionRelease write SetReportVersionRelease;
-    property ReportVersionBuild : string read FReportVersionBuild write SetReportVersionBuild;
-    property ReportCreateDate : TDateTime read FReportCreateDate write SetReportCreateDate;
-    property ReportLastChange : TDateTime read FReportLastChange write SetReportLastChange;
+    property ReportAutor : string read FReportAutor write FReportAutor;
+    property ReportVersionMajor : string read FReportVersionMajor write FReportVersionMajor;
+    property ReportVersionMinor : string read FReportVersionMinor write FReportVersionMinor;
+    property ReportVersionRelease : string read FReportVersionRelease write FReportVersionRelease;
+    property ReportVersionBuild : string read FReportVersionBuild write FReportVersionBuild;
+    property ReportCreateDate : TDateTime read FReportCreateDate write FReportCreateDate;
+    property ReportLastChange : TDateTime read FReportLastChange write FReportLastChange;
     //
     property Pages: TfrPages read FPages;
     property EMFPages: TfrEMFPages read FEMFPages write FEMFPages;
@@ -942,7 +934,7 @@ type
     property Values: TfrValues read FVal write FVal;
     
   published
-    property Dataset: TfrDataset read FDataset write SetDataset;
+    property Dataset: TfrDataset read FDataset write FDataset;
     property GrayedButtons: Boolean read FGrayedButtons write FGrayedButtons default False;
     property InitialZoom: TfrPreviewZoom read FInitialZoom write FInitialZoom;
     property ModalPreview: Boolean read FModalPreview write FModalPreview default True;
@@ -8548,11 +8540,6 @@ begin
   FComments.Assign(AValue);
 end;
 
-procedure TfrReport.SetDataset(const AValue: TfrDataset);
-begin
-  FDataSet := AValue;
-end;
-
 // printer manipulation methods
 
 procedure TfrReport.SetPrinterTo(const PrnName: String);
@@ -8571,48 +8558,6 @@ begin
       Prn.PrinterIndex := 0 // either the system default or
                             // own virtual default printer
   end;
-end;
-
-procedure TfrReport.SetReportAutor(const AValue: string);
-begin
-  if FReportAutor=AValue then exit;
-  FReportAutor:=AValue;
-end;
-
-procedure TfrReport.SetReportCreateDate(const AValue: TDateTime);
-begin
-  if FReportCreateDate=AValue then exit;
-  FReportCreateDate:=AValue;
-end;
-
-procedure TfrReport.SetReportLastChange(const AValue: TDateTime);
-begin
-  if FReportLastChange=AValue then exit;
-  FReportLastChange:=AValue;
-end;
-
-procedure TfrReport.SetReportVersionBuild(const AValue: string);
-begin
-  if FReportVersionBuild=AValue then exit;
-  FReportVersionBuild:=AValue;
-end;
-
-procedure TfrReport.SetReportVersionMajor(const AValue: string);
-begin
-  if FReportVersionMajor=AValue then exit;
-  FReportVersionMajor:=AValue;
-end;
-
-procedure TfrReport.SetReportVersionMinor(const AValue: string);
-begin
-  if FReportVersionMinor=AValue then exit;
-  FReportVersionMinor:=AValue;
-end;
-
-procedure TfrReport.SetReportVersionRelease(const AValue: string);
-begin
-  if FReportVersionRelease=AValue then exit;
-  FReportVersionRelease:=AValue;
 end;
 
 function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;

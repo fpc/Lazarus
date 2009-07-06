@@ -17,9 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Graphics,GraphType, Controls, Forms, Dialogs,
-  StdCtrls,Menus,
-
-  LCLType,LCLIntf,LR_Class, XMLCfg;
+  Menus, LCLType, LCLIntf, LR_Class;
 
 
 

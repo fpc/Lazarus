@@ -18,7 +18,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,Printers,LCLType,LCLProc,
+  Printers,LCLType,LCLProc,
 
   LR_Class, LR_Const;
 
