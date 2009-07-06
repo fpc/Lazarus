@@ -11,7 +11,6 @@ object EduPkgSystemFrame: TEduPkgSystemFrame
   ChildSizing.ControlsPerLine = 1
   ClientHeight = 300
   ClientWidth = 400
-  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 297
   DesignTop = 171

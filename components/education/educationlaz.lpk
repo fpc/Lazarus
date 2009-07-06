@@ -17,9 +17,9 @@
     <Version Major="1" Release="1"/>
     <Files Count="4">
       <Item1>
-        <Filename Value="eduoptionsdlg.pas"/>
+        <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="EduOptionsDlg"/>
+        <UnitName Value="eduenvoptsframe"/>
       </Item1>
       <Item2>
         <Filename Value="README.txt"/>
@@ -31,6 +31,7 @@
       </Item3>
       <Item4>
         <Filename Value="edupkgsystem.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="EduPkgSystem"/>
       </Item4>
     </Files>

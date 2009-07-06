@@ -7,13 +7,14 @@ unit EducationLaz;
 interface
 
 uses
-  EduOptionsDlg, EduOptions, LazarusPackageIntf;
+  EduEnvOptsFrame, EduOptions, EduPkgSystem, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('EduOptionsDlg', @EduOptionsDlg.Register); 
+  RegisterUnit('EduEnvOptsFrame', @EduEnvOptsFrame.Register); 
+  RegisterUnit('EduPkgSystem', @EduPkgSystem.Register); 
 end; 
 
 initialization
