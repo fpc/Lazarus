@@ -249,13 +249,16 @@ type
   TCarbonGroupBox = class(TCarbonControl)
   private
     FUserPane: ControlRef;
+    FBoxColor: TColor;
   protected
+    procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
+    procedure SetColor(const AColor: TColor); override;
   end;
   
   { TCarbonStatusBar }
@@ -1077,6 +1080,66 @@ end;
 
 { TCarbonGroupBox }
 
+
+function CarbonGroupBox_Draw(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  ABox    : TCarbonGroupBox;
+  Context : CGContextRef;
+  c : TColor;
+  b : TRect;
+const
+  rgbkoef = 1 / 255;
+begin
+  {$IFDEF VerbosePaint}
+    Debugln('CarbonGroupBox_Draw ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  ABox := (AWidget as TCarbonGroupBox);
+
+  try
+    Context := nil;
+    if ABox.FBoxColor <> clBtnFace then
+    begin
+      if OSError(
+        GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+          SizeOf(CGContextRef), nil, @Context),
+        'CarbonGroupBox_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+      if Assigned(Context) then
+      begin
+        c := ColorToRGB(ABox.FBoxColor);
+        ABox.GetBounds(b);
+        CGContextSaveGState(Context);
+        CGContextSetRGBFillColor(Context, (c and $FF) * rgbkoef, ((c shr 8) and $FF)*rgbkoef,
+          ((c shr 16) and $FF)*rgbkoef, 1);
+        with b do CGContextFillRect(Context, RectToCGRect(Bounds(0,0, Right-Left, Bottom-Top)));
+        CGContextRestoreGState(Context);
+      end;
+    end;
+
+    // let carbon draw/update
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  finally
+  end;
+  {$IFDEF VerbosePaint}
+    Debugln('CarbonGroupBox_Draw end ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+end;
+
+
+procedure TCarbonGroupBox.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  inherited;
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonGroupBox_Draw),
+    1, @TmpSpec, Pointer(Self), nil);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonGroupBox.CreateWidget
   Params:  AParams - Creation parameters
@@ -1160,6 +1223,18 @@ begin
   Result := False;
   if not inherited SetBounds(ARect) then Exit;
   Result := UpdateContentBounds;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonGroupBox.SetColor
+  Params:  AColor - color of group box
+
+  Sets groupbox's color
+ ------------------------------------------------------------------------------}
+procedure TCarbonGroupBox.SetColor(const AColor: TColor);
+begin
+  FBoxColor:=AColor;
+  inherited SetColor(AColor);
 end;
 
 { TCarbonStatusBar }
