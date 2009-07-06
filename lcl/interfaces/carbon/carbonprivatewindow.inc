@@ -1142,7 +1142,7 @@ begin
 
   if OSError(
     CreateNewWindow(NewWindowClass,
-      Attributes or kWindowCompositingAttribute {or kWindowStandardHandlerAttribute}
+      Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
       or kWindowLiveResizeAttribute, GetCarbonRect(0, 0, 0, 0), AWindow),
     Self, SCreateWidget, 'CreateNewWindow') then
   begin
