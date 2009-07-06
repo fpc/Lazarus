@@ -359,6 +359,8 @@ type
     procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
+    function  ColumnFromGridColumn(Column: Integer): TGridColumn; override;
+    function  ColumnIndexFromGridColumn(Column: Integer): Integer; override;
     function  CreateColumns: TGridColumns; override;
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -374,6 +376,7 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCheckboxBitmaps(aCol: Integer; aRect: TRect; F: TField);
     procedure DrawFixedText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+    procedure DrawColumnText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure EditorDoGetValue; override;
@@ -381,6 +384,7 @@ type
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
     function  FieldIndexFromGridColumn(Column: Integer): Integer;
+    function  FirstGridColumn: Integer; override;
     function  GetBufferCount: integer;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
@@ -411,6 +415,7 @@ type
     procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
+    procedure SetFixedCols(const AValue: Integer); override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
     procedure UpdateActive; virtual;
     procedure UpdateAutoSizeColumns;
@@ -490,6 +495,7 @@ type
     property DragMode;
     property Enabled;
     property FixedColor;
+    property FixedCols;
     property FixedHotColor;
     property Flat;
     property Font;
@@ -714,9 +720,8 @@ end;
 
 procedure TCustomDBGrid.EmptyGrid;
 begin
-  ColCount := 2;
+  ColCount := FixedCols + 1;
   RowCount := 2;
-  FixedCols := 1;
   FixedRows := 1;
   ColWidths[0]:=12;
 end;
@@ -869,7 +874,7 @@ var
 begin
   if Avalue<>SelectedField then begin
     i := GetGridColumnFromField( AValue );
-    if i>FixedCols then
+    if i>FirstGridColumn then
       Col := i;
   end;
 end;
@@ -988,7 +993,7 @@ end;
 
 procedure TCustomDBGrid.SetSelectedIndex(const AValue: Integer);
 begin
-  Col := FixedCols + AValue;
+  Col := FirstGridColumn + AValue;
 end;
 
 procedure TCustomDBGrid.SetThumbTracking(const AValue: boolean);
@@ -1224,6 +1229,35 @@ begin
     Result := nil;
 end;
 
+function TCustomDBGrid.FirstGridColumn: Integer;
+begin
+  if (dgIndicator in Options) then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function TCustomDBGrid.ColumnIndexFromGridColumn(Column: Integer): Integer;
+begin
+  if (Column < FixedCols) then
+    Result := Column-FirstGridColumn
+  else
+    Result := Columns.RealIndex(Column - FirstGridColumn);
+end;
+
+function TCustomDBGrid.ColumnFromGridColumn(Column: Integer): TGridColumn;
+var ColIndex: Integer;
+begin
+  if (Column < FixedCols) then
+    ColIndex := Column-FirstGridColumn
+  else
+    ColIndex := Columns.RealIndex(Column - FirstGridColumn);
+  if (ColIndex >= 0) then
+    Result := Columns[ColIndex]
+  else
+    Result := nil;
+end;
+
 // obtain the field either from a Db column or directly from dataset fields
 function TCustomDBGrid.GetFieldFromGridColumn(Column: Integer): TField;
 var
@@ -1245,7 +1279,7 @@ var
   i: Integer;
 begin
   result := -1;
-  for i:=FixedCols to ColCount-1 do begin
+  for i:=FirstGridColumn to ColCount-1 do begin
     if GetFieldFromGridColumn(i) = F then begin
       result := i;
       break;
@@ -1256,22 +1290,38 @@ end;
 // obtain the visible field index corresponding to the grid column index
 function TCustomDBGrid.FieldIndexFromGridColumn(Column: Integer): Integer;
 var
-  i: Integer;
+  i, iCol: Integer;
 begin
-  column := column - FixedCols;
-  i := 0;
-  result := -1;
-  if FDataLink.Active then
-  while (i<FDataLink.DataSet.FieldCount)and(Column>=0) do begin
-    if FDataLink.Fields[i].Visible then begin
-        Dec(Column);
-        if Column<0 then begin
-          result := i;
-          break;
-        end;
-    end;
-    inc(i);
-  end;
+ column := column - FirstGridColumn;
+ i := 0;
+ iCol := 0;
+ result := -1;
+ if FDataLink.Active then  begin
+   if (Column < FixedCols) then begin
+     //Fixed visible columns
+     for iCol:=0 to FDataLink.DataSet.FieldCount-1 do begin
+       if FDataLink.Fields[iCol].Visible then begin
+         Inc(i);
+         if (i = Column) then begin
+           Result := i;
+           Break;
+         end;
+       end;
+     end;
+   end else begin
+     //Normal columns
+     while (i < FDataLink.DataSet.FieldCount) and (Column >= 0) do begin
+       if FDataLink.Fields[i].Visible then begin
+         Dec(Column);
+         if (Column < 0) then begin
+           result := i;
+           break;
+         end;
+       end;
+       inc(i);
+     end;
+   end;
+ end;
 end;
 
 function TCustomDBGrid.GetBufferCount: integer;
@@ -1291,7 +1341,7 @@ begin
     if NeedAutoSizeColumns then
       UpdateAutoSizeColumns
     else
-    for i:=FixedCols to ColCount-1 do
+    for i:=FirstGridColumn to ColCount-1 do
       ColWidths[i] := GetColumnWidth(i);
   end;
 end;
@@ -1587,7 +1637,7 @@ begin
     else if FDatalink.Active and (FDataLink.DataSet<>nil) then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
-        TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
+        TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FirstGridColumn );
       end;
     end;
     if Assigned(OnColumnMoved) then
@@ -2160,6 +2210,13 @@ begin
   FTempText := Value;
 end;
 
+procedure TCustomDBGrid.SetFixedCols(const AValue: Integer);
+begin
+  if (FixedCols=AValue) or (AValue<FirstGridColumn) then
+    exit;
+  inherited SetFixedCols(AValue);
+end;
+
 function TCustomDBGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
@@ -2202,7 +2259,7 @@ end;
 
 procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer);
 begin
-  if (aCol>=FixedCols)and(aRow>=FixedRows) then
+  if (aCol>=FirstGridColumn)and(aRow>=FixedRows) then
   begin
     if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then begin
       // react only if overriden editor is hidden
@@ -2547,6 +2604,27 @@ begin
     DrawColumnText(aCol, aRow, aRect, aState);
 end;
 
+procedure TCustomDBGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
+ aState: TGridDrawState);
+var F: TField;
+begin
+ if ((gdFixed in aState) and (aCol >= FirstGridColumn)) then
+ begin
+  if (aRow = 0) then
+   begin
+    DrawColumnTitleImage(aRect, aCol);
+    DrawCellText(aCol, aRow, aRect, aState, GetColumnTitle(aCol));
+   end else
+   begin
+    if ((gdFixed in aState) and (aCol < FixedCols)) then
+     begin
+      F := GetFieldFromGridColumn(aCol);
+      DrawCellText(aCol, aRow, aRect, aState, F.DisplayText);
+     end;//End if (gdFixed in aState)
+   end;//End if (aRow = 0)
+ end;//End if ((gdFixed in aState) and (aCol >= FirstGridColumn))
+end;
+
 function TCustomDBGrid.EditorCanAcceptKey(const ch: TUTF8Char): boolean;
 var
   aField: TField;
@@ -2670,7 +2748,6 @@ begin
 
       RowCount := RecCount;
       FixedRows := FRCount;
-      FixedCols := FCCount;
 
       UpdateGridColumnSizes;
 
@@ -2757,7 +2834,7 @@ begin
 
   DataCol := GridColumnFromColumnIndex(DataCol);
 
-  if DataCol>=FixedCols then
+  if DataCol>=FirstGridColumn then
     case ColumnEditorStyle(DataCol, F) of
 
       cbsCheckBoxColumn:

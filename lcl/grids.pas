@@ -746,7 +746,6 @@ type
     procedure SetDefRowHeight(AValue: Integer);
     procedure SetDefaultDrawing(const AValue: Boolean);
     procedure SetEditor(AValue: TWinControl);
-    procedure SetFixedCols(const AValue: Integer);
     procedure SetFixedRows(const AValue: Integer);
     procedure SetFocusColor(const AValue: TColor);
     procedure SetGridLineColor(const AValue: TColor);
@@ -794,8 +793,8 @@ type
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
     function  ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
                              var StartPos, EndPos: Integer): Boolean;
-    function  ColumnIndexFromGridColumn(Column: Integer): Integer;
-    function  ColumnFromGridColumn(Column: Integer): TGridColumn;
+    function  ColumnIndexFromGridColumn(Column: Integer): Integer; dynamic;
+    function  ColumnFromGridColumn(Column: Integer): TGridColumn; dynamic;
     procedure ColumnsChanged(aColumn: TGridColumn);
     procedure ColWidthsChanged; dynamic;
     function  CreateColumns: TGridColumns; virtual;
@@ -848,6 +847,7 @@ type
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorShowInCell(const aCol,aRow:Integer); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
+    function  FirstGridColumn: integer; virtual;
     function  FixedGrid: boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
@@ -924,6 +924,7 @@ type
     procedure SetEditText(ACol, ARow: Longint; const Value: string); dynamic;
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
+    procedure SetFixedCols(const AValue: Integer); virtual;
     procedure SetSelectedColor(const AValue: TColor); virtual;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); dynamic;
     procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
@@ -2985,7 +2986,7 @@ begin
         end;
       end;
       Canvas.Brush.Color := AColor;
-      SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
+      SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
     CurrentTextStyle := DefaultTextStyle;
     CurrentTextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
@@ -4719,8 +4720,8 @@ begin
 
   if AColumn=nil then begin
     if Columns.Enabled then begin
-      if FixedCols + Columns.VisibleCount <> ColCount then
-        InternalSetColCount( FixedCols + Columns.VisibleCount )
+      if FirstGridColumn + Columns.VisibleCount <> ColCount then
+        InternalSetColCount( FirstGridColumn + Columns.VisibleCount )
       else
         VisualChange;
     end else
@@ -6243,6 +6244,11 @@ end;
 procedure TCustomGrid.EditorWidthChanged(aCol, aWidth: Integer);
 begin
   EditorPos;
+end;
+
+function TCustomGrid.FirstGridColumn: integer;
+begin
+  result := FixedCols;
 end;
 
 function TCustomGrid.FixedGrid: boolean;
