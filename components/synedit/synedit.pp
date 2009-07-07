@@ -3831,10 +3831,9 @@ procedure TCustomSynEdit.SetLeftChar(Value: Integer);
 var
   MaxVal: integer;
 begin
-  if eoScrollPastEol in Options then
-    MaxVal := fMaxLeftChar
-  else
-    MaxVal := FTheLinesView.LengthOfLongestLine;
+  MaxVal := FTheLinesView.LengthOfLongestLine;
+  if (eoScrollPastEol in Options) and (MaxVal < fMaxLeftChar) then
+    MaxVal := fMaxLeftChar;
   Value := Min(Value, MaxVal - fCharsInWindow + 1 + FCaretWidth);
 {end}                                                                           //mh 2000-10-19
   Value := Max(Value, 1);
@@ -4108,9 +4107,9 @@ begin
     ScrollInfo.nTrackPos := 0;
 
     // Horizontal
-    if eoScrollPastEol in Options
-      then ScrollInfo.nMax := fMaxLeftChar + 1
-      else ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
+    ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
+    if (eoScrollPastEol in Options) and (ScrollInfo.nMax < fMaxLeftChar + 1) then
+      ScrollInfo.nMax := fMaxLeftChar + 1;
     inc(ScrollInfo.nMax, FCaretWidth);
     if ((fScrollBars in [ssBoth, ssHorizontal]) or
         ((fScrollBars in [ssAutoBoth, ssAutoHorizontal]) and (ScrollInfo.nMax - 1 > CharsInWindow))
@@ -4217,7 +4216,7 @@ begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the line
     SB_TOP: LeftChar := 1;
-    SB_BOTTOM: LeftChar := MaxLeftChar;
+    SB_BOTTOM: LeftChar := Max(FTheLinesView.LengthOfLongestLine, MaxLeftChar);
       // Scrolls one char left / right
     SB_LINEDOWN: LeftChar := LeftChar + 1;
     SB_LINEUP: LeftChar := LeftChar - 1;
@@ -4513,9 +4512,7 @@ begin
   Value.y := MinMax(Value.y, 1, FTheLinesView.Count);
   TempString := FTheLinesView[Value.Y - 1];
   if TempString = '' then exit;
-  x := MinMax(Value.x, 1, fMaxLeftChar);
-  if Length(TempString) < x then
-    x := Length(TempString);
+  x := MinMax(Value.x, 1, Length(TempString)+1);
 
   Value.X := WordBreaker.PrevWordStart(TempString, x, True);
   if Value.X < 0 then
@@ -4525,7 +4522,6 @@ begin
 
   FBlockSelection.StartLineBytePos := Value;
   Value.X := WordBreaker.NextWordEnd(TempString, Value.X);
-  if Value.X > fMaxLeftChar then Value.X := fMaxLeftChar;
   FBlockSelection.EndLineBytePos := Value;
   FBlockSelection.ActiveSelectionMode := smNormal;
   FCaret.LineBytePos := Value;

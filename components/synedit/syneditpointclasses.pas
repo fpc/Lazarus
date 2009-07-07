@@ -366,10 +366,10 @@ begin
       if (not FAllowPastEOL) and (FForcePastEOL = 0) then
         nMaxX := 1;
     end else begin
-      if (not FAllowPastEOL) and (FForcePastEOL = 0) then begin
-        Line := Lines[NewLine - 1];
-        nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
-      end;
+      Line := Lines[NewLine - 1];
+      nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
+      if (not FAllowPastEOL) and (FForcePastEOL = 0) and (nMaxX < FMaxLeftChar^) then
+        nMaxX := FMaxLeftChar^;
     end;
     if NewCharPos > nMaxX then
       NewCharPos := nMaxX;
@@ -901,11 +901,15 @@ end;
 procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 // logical position (byte)
 var
-  nInval1, nInval2: integer;
+  nInval1, nInval2, nMaxX: integer;
   SelChanged: boolean;
+  Line: string;
 begin
-  Value.x := MinMax(Value.x, 1, FMaxLeftChar^);
   Value.y := MinMax(Value.y, 1, fLines.Count);
+  Line := Lines[Value.y - 1];
+  nMaxX := Max(Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1),
+               FMaxLeftChar^);
+  Value.x := MinMax(Value.x, 1, nMaxX);
   if (ActiveSelectionMode = smNormal) then
     if (Value.y >= 1) and (Value.y <= FLines.Count) then
       Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
@@ -942,14 +946,18 @@ end;
 
 procedure TSynEditSelection.SetEndLineBytePos(Value : TPoint);
 var
-  nLine: integer;
+  nLine, nMaxX: integer;
+  Line: String;
   {$IFDEF SYN_MBCSSUPPORT}
   s: string;
   {$ENDIF}
 begin
   if FEnabled then begin
-    Value.x := MinMax(Value.x, 1, FMaxLeftChar^);
     Value.y := MinMax(Value.y, 1, fLines.Count);
+    Line := Lines[Value.y - 1];
+    nMaxX := Max(Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1),
+                 FMaxLeftChar^);
+    Value.x := MinMax(Value.x, 1, nMaxX);
     if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then
         Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
