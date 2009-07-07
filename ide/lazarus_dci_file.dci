@@ -88,7 +88,8 @@ if $param(Condition) then |
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-if $param(Condition) then begin
+if $param(Condition) then
+begin
   |
 end;
 [ife | if then (no begin/end) else (no begin/end)]
@@ -102,10 +103,11 @@ else
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-if $param(Condition) then begin
+if $param(Condition) then
+begin
   |
-end
-else begin
+end else
+begin
 
 end;
 [procedure | procedure declaration]
@@ -148,7 +150,8 @@ end;
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-while $param(Condition) do begin
+while $param(Condition) do
+begin
   |
 end;
 [whiles | while (no begin)]
@@ -160,7 +163,8 @@ while $param(Condition) do |
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-with $param(Condition) do begin
+with $param(Condition) do
+begin
   |
 end;
 [b | begin end]
@@ -174,14 +178,16 @@ HexStr(Cardinal(|),8)
 [be | begin end else begin end]
 begin
   |
-end else begin
+end else
+begin
 
 end;
 [withc | with for components]
 $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
-with $param(Component) do begin
+with $param(Component) do
+begin
   Name:='$param(Name)';
   Parent:=$param(Parent);
   Left:=$param(0);
