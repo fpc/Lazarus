@@ -11,10 +11,10 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object Label1: TLabel
-    Left = 16
-    Height = 16
-    Top = 8
-    Width = 304
+    Left = 12
+    Height = 14
+    Top = 4
+    Width = 230
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end
@@ -22,7 +22,7 @@ object Form1: TForm1
     Left = 8
     Height = 27
     Top = 51
-    Width = 320
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Execute TPrinterSetupDialog'
     OnClick = Button2Click
@@ -32,7 +32,7 @@ object Form1: TForm1
     Left = 8
     Height = 27
     Top = 78
-    Width = 320
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Execute TPrintDialog'
     OnClick = Button1Click
@@ -59,10 +59,9 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Value'
-        Width = 198
+        Width = 196
       end>
     DefaultColWidth = 120
-    DefaultRowHeight = 20
     FixedCols = 0
     FixedRows = 0
     Options = [goVertLine, goRangeSelect, goSmoothScroll]
@@ -70,21 +69,25 @@ object Form1: TForm1
     TabOrder = 7
     TitleStyle = tsNative
     OnSelectCell = SGridSelectCell
+    ColWidths = (
+      120
+      196
+    )
   end
   object Button3: TButton
     Left = 8
     Height = 27
     Top = 105
-    Width = 320
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Get default printer info'
     OnClick = Button3Click
     TabOrder = 2
   end
   object Button4: TButton
-    Left = 240
+    Left = 200
     Height = 27
-    Top = 157
+    Top = 155
     Width = 88
     BorderSpacing.InnerBorder = 4
     Caption = 'Print test'
@@ -95,7 +98,7 @@ object Form1: TForm1
     Left = 8
     Height = 25
     Top = 132
-    Width = 224
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Update printer state info'
     OnClick = Button5Click
@@ -105,7 +108,7 @@ object Form1: TForm1
     Left = 8
     Height = 25
     Top = 157
-    Width = 224
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Show printer properties'
     OnClick = Button6Click
@@ -115,19 +118,40 @@ object Form1: TForm1
     Left = 8
     Height = 27
     Top = 24
-    Width = 320
+    Width = 176
     BorderSpacing.InnerBorder = 4
     Caption = 'Execute TPageSetupDialog'
     OnClick = Button7Click
     TabOrder = 6
   end
   object chkTestImgs: TCheckBox
-    Left = 240
-    Height = 22
-    Top = 135
-    Width = 82
+    Left = 200
+    Height = 17
+    Top = 133
+    Width = 65
     Caption = 'Test Imgs'
     TabOrder = 8
+  end
+  object chkOutputFile: TCheckBox
+    Left = 195
+    Height = 17
+    Top = 27
+    Width = 71
+    Caption = 'Output File'
+    TabOrder = 9
+  end
+  object txtOutputFile: TFileNameEdit
+    Left = 195
+    Height = 23
+    Top = 48
+    Width = 109
+    DialogKind = dkSave
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    TabOrder = 10
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'

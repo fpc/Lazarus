@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Types, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PrintersDlgs, StdCtrls, Grids, Menus;
+  PrintersDlgs, StdCtrls, Grids, Menus, EditBtn;
 
 type
 
@@ -39,7 +39,9 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
+    chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
+    txtOutputFile: TFileNameEdit;
     Label1: TLABEL;
     PAGED: TPageSetupDialog;
     PD: TPrintDialog;
@@ -161,6 +163,10 @@ var
 begin
   try
     Printer.Title := 'Printer test for printers4lazarus package';
+    if chkOutputFile.Checked then
+      Printer.FileName := txtOutputFile.FileName
+    else
+      Printer.FileName := '';
     Printer.BeginDoc;
 
     // some often used consts

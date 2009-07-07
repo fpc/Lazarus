@@ -846,7 +846,10 @@ begin
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
     {$IFNDEF DoNotPrint}
-    PrintFile(FOutputFileName);
+    if Filename<>'' then
+      CopyFile(FOutputFileName, FileName)
+    else
+      PrintFile(FOutputFileName);
     {$ENDIF}
     DeleteFileUTF8(FOutputFilename);
   end;

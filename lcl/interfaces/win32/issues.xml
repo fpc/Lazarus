@@ -23,5 +23,9 @@ MSDN Docs: http://msdn2.microsoft.com/en-us/library/bb760816(VS.85).aspx</descr>
 			<short>Tray icon hint string length is limited</short>
 			<descr>TTrayIcon.Hint may have a maximum length of 127 WideChars (will usually be more then 127 Bytes in a UTF-8 string, but may be less too, depending on the string). It's a Windows limitation, which can't be worked around.</descr>
 		</issue>
+		<issue name="TPrinter.FileName">
+			<short>The format of generated file is system dependant</short>
+			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format</descr>
+		</issue>
 	</widgetset>
 </package>

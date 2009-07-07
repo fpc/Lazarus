@@ -160,6 +160,7 @@ type
   TPrinter = class(TObject)
   private
     fCanvas      : TCanvas;      //Active canvas object
+    FFileName    : string;       //Filename for output file
     fFonts       : TStrings;     //Accepted font by printer
     fPageNumber  : Integer;      //Current page number
     fPrinters    : TStrings;     //Printers names list
@@ -239,6 +240,7 @@ type
      property PrinterState : TPrinterState read DoGetPrinterState;
      property Copies : Integer read GetCopies write SetCopies;
      property Printers: TStrings read GetPrinters;
+     property FileName: string read FFileName write FFileName;
      property Fonts: TStrings read GetFonts;
      property Canvas: TCanvas read GetCanvas;
      property PageHeight: Integer read GetPageHeight;
