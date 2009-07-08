@@ -6663,8 +6663,10 @@ begin
     FCaret.KeepCaretX := (eoKeepCaretX in fOptions);
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
-    if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then
+    if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
       UpdateScrollBars;
+      TopLine := TopLine;
+    end;
     // (un)register HWND as drop target
     if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
       ; // ToDo DragAcceptFiles
