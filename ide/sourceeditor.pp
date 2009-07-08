@@ -2720,6 +2720,7 @@ begin
     P := ClientToScreen(p);
   end;
   aCompletion.Editor:=FEditor;
+  aCompletion.TheForm.Font := FEditor.Font;
   aCompletion.Execute(TextS2,P.X,P.Y);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletion END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);

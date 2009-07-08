@@ -142,10 +142,10 @@ type
     {$ENDIF}
     procedure StringListChange(Sender: TObject);
     {$IFDEF SYN_LAZARUS}
-    procedure SetFontHeight(NewFontHeight: integer);
     procedure DoOnResize; override;
     procedure SetBackgroundColor(const AValue: TColor);
     {$ENDIF}
+    procedure FontChanged(Sender: TObject); override;
   private
     Bitmap: TBitmap; // used for drawing
     fCurrentEditor: TComponent;
@@ -177,7 +177,7 @@ type
     property ffAnsi: boolean read fansi write fansi;
     property CurrentEditor: TComponent read fCurrentEditor write fCurrentEditor;
     {$IFDEF SYN_LAZARUS}
-    property FontHeight:integer read FFontHeight write SetFontHeight;
+    property FontHeight:integer read FFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;// e.g. Tab
@@ -234,7 +234,6 @@ type
     function GetOnUTF8KeyPress: TUTF8KeyPressEvent;
     procedure SetOnUTF8KeyPress(const AValue: TUTF8KeyPressEvent);
     function GetFontHeight:integer;
-    procedure SetFontHeight(NewFontHeight :integer);
     function GetOnSearchPosition:TSynBaseCompletionSearchPosition;
     procedure SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
     function GetOnKeyCompletePrefix: TNotifyEvent;
@@ -273,7 +272,7 @@ type
     property NbLinesInWindow: Integer read GetNbLinesInWindow
                                       write SetNbLinesInWindow;
     {$IFDEF SYN_LAZARUS}
-    property FontHeight: integer read GetFontHeight write SetFontHeight;
+    property FontHeight: integer read GetFontHeight;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
                              read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
@@ -389,25 +388,6 @@ uses
 { TSynBaseCompletionForm }
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
-
-  function GetDefaultFontHeight: integer;
-  {$IFDEF SYN_LAZARUS}
-  var
-    TextMetric: TTextMetric;
-    DC: HDC;
-  begin
-    DC:=GetDC(0);
-    FillChar(TextMetric,SizeOf(TextMetric),0);
-    GetTextMetrics(DC,TextMetric);
-    Result := TextMetric.tmHeight+2;
-    ReleaseDC(0,DC);
-  end;
-  {$ELSE}
-  begin
-    Result := Canvas.TextHeight('Cyrille de Brebisson')+2;
-  end;
-  {$ENDIF}
-
 begin
   {$IFDEF SYN_LAZARUS}
   inherited Create(AOwner);
@@ -442,14 +422,14 @@ begin
   FHint := TSynBaseCompletionHint.Create(Self);
   {$ENDIF}
   Visible := false;
-  FFontHeight := GetDefaultFontHeight;
   {$IFNDEF SYN_LAZARUS}
   Color := clWindow;
   {$ENDIF}
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
   bitmap := TBitmap.Create;
-  NbLinesInWindow := 6;
+  FNbLinesInWindow := 6;
+  FontChanged(Font);
   {$IFNDEF SYN_LAZARUS}
   ShowHint := True;
   {$ELSE}
@@ -850,14 +830,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynBaseCompletionForm.SetFontHeight(NewFontHeight:integer);
-begin
-  if NewFontHeight<>FFontHeight then begin
-    FFontHeight:=NewFontHeight;
-    SetNblinesInWindow(FNbLinesInWindow);
-  end;
-end;
-
 procedure TSynBaseCompletionForm.DoOnResize;
 var
   OldHeight: Integer;
@@ -883,6 +855,17 @@ begin
     Color := AValue;
     FHint.Color := AValue;
   end;
+end;
+
+procedure TSynBaseCompletionForm.FontChanged(Sender: TObject);
+var
+  TextMetric: TTextMetric;
+begin
+  inherited;
+  FillChar(TextMetric,SizeOf(TextMetric),0);
+  GetTextMetrics(Canvas.Handle, TextMetric);
+  FFontHeight := TextMetric.tmHeight+2;
+  SetNblinesInWindow(FNbLinesInWindow);
 end;
 
 {$ENDIF}
@@ -970,11 +953,6 @@ end;
 function TSynBaseCompletion.GetFontHeight:integer;
 begin
   Result:=Form.FontHeight;
-end;
-
-procedure TSynBaseCompletion.SetFontHeight(NewFontHeight :integer);
-begin
-  Form.FontHeight:=NewFontHeight;
 end;
 
 function TSynBaseCompletion.GetOnSearchPosition:TSynBaseCompletionSearchPosition;
