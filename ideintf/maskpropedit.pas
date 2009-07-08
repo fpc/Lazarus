@@ -55,9 +55,13 @@ type
     procedure SampleMasksListBoxClick(Sender: TObject);
     procedure MaskEditorFormCreate(Sender: TObject);
   private
+    function ConstructEditmask: String;
     function GetEditMask: string;
     procedure LoadDEMFile(AFileName: string);
+    procedure ReConstructEditmask;
     procedure SetEditMask(AValue: string);
+    function SplitMask(AMask: String; out MaskText: String; out
+      SaveLiterals: Boolean; out BlankChar: Char): Boolean;
     procedure UpdateTestEditor;
   public
     property EditMask: string read GetEditMask write SetEditMask;
@@ -171,17 +175,9 @@ begin
 end;
 
 procedure TMaskEditorForm.SaveLiteralCheckBoxClick(Sender: TObject);
-var
-  I: integer;
-  S1: string;
+
 begin
-  S1 := InputMaskEdit.Text;
-  I := Pos(';', S1);
-  if (I > 0) and (I < Length(S1)) then
-  begin
-    S1[i+1] := IntToStr(Ord(SaveLiteralCheckBox.Checked))[1];
-    InputMaskEdit.Text := S1;
-  end;
+  ReconstructEditMask;
 end;
 
 procedure TMaskEditorForm.InputMaskEditChange(Sender: TObject);
@@ -195,12 +191,63 @@ var
   S1:string;
 begin
   S1:=InputMaskEdit.Text;
-  I:=NPos(';', S1, 2);
-  if (I>0) and (I<Length(S1)) and (CharactersForBlanksEdit.Text<>'') then
-  begin
-    S1[i+1]:=CharactersForBlanksEdit.Text[1];
-    InputMaskEdit.Text:=S1;
-  end;
+  if (CharactersForBlanksEdit.Text<>'') then
+    begin
+    I:=NPos(';', S1, 2);
+    if (I>0) and (I<Length(S1)) then
+      begin
+      S1[i+1]:=CharactersForBlanksEdit.Text[1];
+      InputMaskEdit.Text:=S1;
+      end
+    else
+      ReConstructEditMask
+    end;
+end;
+
+Function TMaskEditorForm.SplitMask(AMask :  String; Out MaskText : String; Out SaveLiterals : Boolean; Out BlankChar : Char) : Boolean;
+
+Var
+  P : Integer;
+
+begin
+  Result:=False;
+  P:=Pos(';',AMask);
+  If (P=0) then
+    P:=Length(AMask)+1;
+  MaskText:=Copy(AMask,1,P-1);
+  Delete(AMask,1,P);
+  P:=Pos(';',AMask);
+  Result:=(P>0);
+  If Not Result then
+    P:=Length(AMask)+1;
+  SaveLiterals:=StrToIntDef(Copy(AMask,1,P-1),0)=1;
+  Delete(AMask,1,P);
+  If Length(AMask)>0 then
+    BlankChar:=AMask[1]
+  else
+    BlankChar:='_';
+end;
+
+Function TMaskEditorForm.ConstructEditmask : String;
+
+Var
+  S : String;
+  B : Char;
+  P : Integer;
+  L : Boolean;
+
+begin
+  SplitMask(InputMaskEdit.Text,S,L,B);
+  If (CharactersForBlanksEdit.Text<>'') then
+    B:=CharactersForBlanksEdit.Text[1];
+  Result:=Format('%s;%d;%s',[S,ord(SaveLiteralCheckBox.checked),B]);
+end;
+
+procedure TMaskEditorForm.ReConstructEditmask;
+
+begin
+  InputMaskEdit.Text:=ConstructEditMask;
+  UpdateTestEditor;
 end;
 
 procedure TMaskEditorForm.SampleMasksListBoxClick(Sender: TObject);
@@ -238,7 +285,7 @@ end;
 
 function TMaskEditorForm.GetEditMask: string;
 begin
-  Result:=InputMaskEdit.Text;
+  Result:=ConstructEditMask;
 end;
 
 procedure TMaskEditorForm.LoadDEMFile(AFileName: string);
@@ -248,13 +295,17 @@ begin
 end;
 
 procedure TMaskEditorForm.SetEditMask(AValue: string);
+
+Var
+  M : String;
+  B : Char;
+  S : Boolean;
+
 begin
+  SplitMask(AValue,M,S,B);
   InputMaskEdit.Text := AValue;
-  Delete(AValue, 1, Pos(';', AValue));
-  if AValue <> '' then
-    SaveLiteralCheckBox.Checked := AValue[1] = '1';
-  Delete(AValue, 1, Pos(';', AValue));
-  CharactersForBlanksEdit.Text := AValue;
+  SaveLiteralCheckBox.Checked := S;
+  CharactersForBlanksEdit.Text := B;
   UpdateTestEditor;
 end;
 
