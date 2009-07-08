@@ -368,7 +368,7 @@ begin
     end else begin
       Line := Lines[NewLine - 1];
       nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
-      if (not FAllowPastEOL) and (FForcePastEOL = 0) and (nMaxX < FMaxLeftChar^) then
+      if ((FAllowPastEOL) or (FForcePastEOL > 0)) and (nMaxX < FMaxLeftChar^) then
         nMaxX := FMaxLeftChar^;
     end;
     if NewCharPos > nMaxX then
