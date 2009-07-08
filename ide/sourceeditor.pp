@@ -1038,7 +1038,7 @@ begin
                                                   'Debug section');
     // register the Debug submenu
     SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionDebug,
-                                            'Debug',uemDebugWord);
+                                            'Debug', uemDebugWord, nil, nil, 'debugger');
     AParent:=SrcEditSubMenuDebug;
       // register the Debug submenu items
       SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand(AParent,'Toggle Breakpoint',
