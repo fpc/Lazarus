@@ -228,7 +228,7 @@ end;
 
 { TWin32WSCustomForm }
 
-function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+function CalcBorderIconsFlags(const AForm: TCustomForm): DWORD;
 var
   BorderIcons: TBorderIcons;
 begin
@@ -245,7 +245,20 @@ begin
   end;
 end;
 
-procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dword);
+function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  BorderIcons := AForm.BorderIcons;
+  if GetDesigningBorderStyle(AForm) in [bsSingle, bsSizeable, bsDialog] then
+  begin
+    if biHelp in BorderIcons then
+      Result := Result or WS_EX_CONTEXTHELP;
+  end;
+end;
+
+procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: DWORD);
 var
   BorderStyle: TFormBorderStyle;
 begin
@@ -258,6 +271,7 @@ begin
       not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
+  FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
 procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
@@ -336,9 +350,18 @@ end;
 
 class procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons);
+var
+  ExStyle, NewStyle: DWORD;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
+  ExStyle := GetWindowLong(AForm.Handle, GWL_EXSTYLE);
+  NewStyle := (ExStyle and not WS_EX_CONTEXTHELP) or CalcBorderIconsFlagsEx(AForm);
+  if ExStyle <> NewStyle then
+  begin
+    SetWindowLong(AForm.Handle, GWL_EXSTYLE, NewStyle);
+    Windows.RedrawWindow(AForm.Handle, nil, 0, RDW_FRAME or RDW_ERASE or RDW_INVALIDATE or RDW_NOCHILDREN);
+  end;
 end;
 
 class procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
