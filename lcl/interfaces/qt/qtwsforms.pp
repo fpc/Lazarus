@@ -72,7 +72,7 @@ type
   TQtWSCustomForm = class(TWSCustomForm)
   private
     class function GetQtBorderStyle(const AFormBorderStyle: TFormBorderStyle): QtWindowFlags;
-    class function GetQtBorderIcons(const ABorderIcons: TBorderIcons): QtWindowFlags;
+    class function GetQtBorderIcons(const AFormBorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): QtWindowFlags;
     class function GetQtFormStyle(const AFormStyle: TFormStyle): QtWindowFlags;
     class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
       ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
@@ -310,7 +310,7 @@ begin
     bsSizeable:
       Result := QtWindow;
     bsDialog:
-      Result := QtDialog;
+      Result := QtDialog or QtMSWindowsFixedSizeDialogHint;
     bsToolWindow:
       Result := QtTool or QtMSWindowsFixedSizeDialogHint;
     bsSizeToolWin:
@@ -328,10 +328,16 @@ end;
 
   Same comment as SetQtWindowBorderStyle above
  ------------------------------------------------------------------------------}
-class function TQtWSCustomForm.GetQtBorderIcons(const ABorderIcons: TBorderIcons): QtWindowFlags;
+class function TQtWSCustomForm.GetQtBorderIcons(const AFormBorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): QtWindowFlags;
 begin
   Result := 0;
-  
+
+  case AFormBorderStyle of
+    bsNone: Exit;
+    bsDialog: ABorderIcons := ABorderIcons - [biMaximize, biMinimize];
+    bsToolWindow, bsSizeToolWin: ABorderIcons := ABorderIcons - [biMaximize, biMinimize, biHelp];
+  end;
+
   if (biSystemMenu in ABorderIcons) then
     Result := Result or QtWindowSystemMenuHint;
 
@@ -345,8 +351,7 @@ begin
     Result := Result or QtWindowContextHelpButtonHint;
 end;
 
-class function TQtWSCustomForm.GetQtFormStyle(const AFormStyle: TFormStyle
-  ): QtWindowFlags;
+class function TQtWSCustomForm.GetQtFormStyle(const AFormStyle: TFormStyle): QtWindowFlags;
 begin
   if AFormStyle = fsStayOnTop then
     Result := QtWindowStaysOnTopHint
@@ -361,10 +366,9 @@ var
   AVisible: Boolean;
 begin
   AVisible := AWidget.getVisible;
-  Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle);
+  Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle) or GetQtBorderIcons(ABorderStyle, ABorderIcons);
   if (Flags and QtFramelessWindowHint) = 0 then
-    Flags := Flags or GetQtBorderIcons(ABorderIcons) or
-      QtWindowTitleHint or QtCustomizeWindowHint
+    Flags := Flags or QtWindowTitleHint or QtCustomizeWindowHint
       {$IFDEF USE_QT_45}
       or QtWindowCloseButtonHint
       {$ENDIF}
