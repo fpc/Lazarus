@@ -314,7 +314,7 @@ var
     else Result := nil;
   end;
 
-  function GetMenuItemObject: TObject;
+  function GetMenuItemObject(ByPosition: Boolean): TObject;
   var
     MenuInfo: MENUITEMINFO;
     PopupMenu: TPopupMenu;
@@ -335,7 +335,7 @@ var
     MenuInfo.cbSize := MMenuItemInfoSize;
     MenuInfo.fMask := MIIM_DATA;
 
-    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), false, @MenuInfo)
+    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), ByPosition, @MenuInfo)
     then Result := TObject(MenuInfo.dwItemData)
     else Result := nil;
   end;
@@ -1385,7 +1385,7 @@ begin
     
     WM_MENUSELECT:
     begin
-      TargetObject := GetMenuItemObject;
+      TargetObject := GetMenuItemObject((HIWORD(WParam) and MF_POPUP) <> 0);
       if TargetObject is TMenuItem then
         TMenuItem(TargetObject).IntfDoSelect
       else
@@ -1397,7 +1397,7 @@ begin
       if LParam=0 then
       begin
         {menuitem or shortcut}
-        TargetObject := GetMenuItemObject;
+        TargetObject := GetMenuItemObject(False);
         if TargetObject is TMenuItem then
         begin
           if (HIWORD(WParam) = 0) or (HIWORD(WParam) = 1) then
