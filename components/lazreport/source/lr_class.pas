@@ -7733,7 +7733,7 @@ begin
   XML := TLrXMLConfig.Create(FName);
   {$ELSE}
   XML := TLrXMLConfig.Create(nil);
-  XML.Filename := FName;
+  XML.Filename := UTF8ToSys(FName);
   {$ENDIF}
   try
     LoadFromXML(XML, 'LazReport/');
@@ -7796,7 +7796,7 @@ begin
   {$ELSE}
   XML := TLrXMLConfig.Create(nil);
   XML.StartEmpty := True;
-  XML.Filename := FName;
+  XML.Filename := UTF8ToSys(FName);
   {$ENDIF}
   try
     SaveToXML(XML, 'LazReport/');
