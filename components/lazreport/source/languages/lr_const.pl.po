@@ -1563,7 +1563,7 @@ msgstr ""
 #: lr_const.spaper256
 msgctxt "lr_const.spaper256"
 msgid "Custom"
-msgstr ""
+msgstr "Użytkownika"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
@@ -2287,12 +2287,12 @@ msgstr ""
 #: lr_const.svar3
 msgctxt "lr_const.svar3"
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: lr_const.svar4
 msgctxt "lr_const.svar4"
 msgid "Time"
-msgstr ""
+msgstr "Godzina"
 
 #: lr_const.svar5
 msgid "Line#"

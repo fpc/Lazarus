@@ -52,6 +52,10 @@ type
 
   published
     property FillColor;
+    property FrameColor;
+    property FrameStyle;
+    property FrameWidth;
+
     property ShapeType : TfrShapeType Read fShapeType write fShapeType;
   end;
 
