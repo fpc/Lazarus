@@ -1,10 +1,9 @@
-inherited frRoundRectForm: TfrRoundRectForm
+object frRoundRectForm: TfrRoundRectForm
   Left = 262
   Height = 284
   Top = 162
   Width = 562
-  HorzScrollBar.Page = 561
-  VertScrollBar.Page = 283
+  ActiveControl = panGrad
   BorderStyle = bsDialog
   Caption = 'Editeur de propri t s'
   ClientHeight = 284
@@ -17,11 +16,12 @@ inherited frRoundRectForm: TfrRoundRectForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object lblSample: TLabel
     Left = 360
-    Height = 14
+    Height = 15
     Top = 8
-    Width = 35
+    Width = 36
     Caption = 'Sample'
     ParentColor = False
   end
@@ -61,6 +61,7 @@ inherited frRoundRectForm: TfrRoundRectForm
       'M1'
     )
     OnKeyDown = M1KeyDown
+    ParentFont = False
     TabOrder = 0
     WordWrap = False
   end
@@ -103,9 +104,9 @@ inherited frRoundRectForm: TfrRoundRectForm
   end
   object cbGradian: TCheckBox
     Left = 360
-    Height = 19
+    Height = 21
     Top = 136
-    Width = 66
+    Width = 64
     Caption = 'Gradian '
     OnChange = cbGradianChange
     OnClick = cbGradianClick
@@ -124,15 +125,15 @@ inherited frRoundRectForm: TfrRoundRectForm
     TabOrder = 6
     object lblSWidth: TLabel
       Left = 9
-      Height = 14
+      Height = 15
       Top = 41
-      Width = 93
+      Width = 94
       Caption = 'Largeur de l''ombre '
       ParentColor = False
     end
     object lblSColor: TLabel
       Left = 8
-      Height = 14
+      Height = 15
       Top = 67
       Width = 41
       Caption = 'Couleur '
@@ -147,9 +148,9 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object cmShadow: TCheckBox
       Left = 8
-      Height = 19
+      Height = 21
       Top = 15
-      Width = 54
+      Width = 52
       Caption = 'Curve'
       Checked = True
       OnClick = cmShadowClick
@@ -158,8 +159,8 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object sCurve: TEdit
       Left = 136
-      Height = 21
-      Top = 37
+      Height = 22
+      Top = 12
       Width = 49
       OnChange = ShWidthChange
       TabOrder = 1
@@ -167,8 +168,8 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object ShWidth: TEdit
       Left = 136
-      Height = 21
-      Top = 12
+      Height = 22
+      Top = 37
       Width = 49
       OnChange = ShWidthChange
       TabOrder = 2
@@ -176,9 +177,9 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object cbCadre: TCheckBox
       Left = 8
-      Height = 19
+      Height = 21
       Top = 90
-      Width = 96
+      Width = 94
       Caption = 'Zone encadr e'
       Checked = True
       OnClick = cbCadreClick
@@ -199,9 +200,9 @@ inherited frRoundRectForm: TfrRoundRectForm
     TabOrder = 7
     object Label1: TLabel
       Left = 8
-      Height = 13
+      Height = 15
       Top = 77
-      Width = 97
+      Width = 46
       Caption = 'End color'
       ParentColor = False
     end
@@ -214,9 +215,9 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object Label2: TLabel
       Left = 8
-      Height = 13
+      Height = 15
       Top = 49
-      Width = 121
+      Width = 51
       Caption = 'Start color'
       ParentColor = False
     end
@@ -230,19 +231,18 @@ inherited frRoundRectForm: TfrRoundRectForm
     end
     object Label3: TLabel
       Left = 8
-      Height = 13
+      Height = 15
       Top = 16
-      Width = 48
+      Width = 25
       Caption = 'Style'
       ParentColor = False
     end
     object cbStyle: TComboBox
       Left = 64
-      Height = 21
+      Height = 27
       Top = 12
       Width = 121
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      ItemHeight = 13
+      ItemHeight = 0
       Items.Strings = (
         'Vertical'
         'Horizontal'
@@ -251,7 +251,6 @@ inherited frRoundRectForm: TfrRoundRectForm
         'Horiz. Centr '
         'Vert. Centr '
       )
-      MaxLength = 0
       OnChange = ShWidthChange
       Style = csDropDownList
       TabOrder = 0
@@ -259,6 +258,28 @@ inherited frRoundRectForm: TfrRoundRectForm
   end
   object colorDlg: TColorDialog
     Color = clBtnFace
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
     left = 184
     top = 192
   end

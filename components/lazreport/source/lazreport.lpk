@@ -27,7 +27,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="5"/>
-    <Files Count="55">
+    <Files Count="58">
       <Item1>
         <Filename Value="lr_class.pas"/>
         <UnitName Value="LR_Class"/>
@@ -249,6 +249,18 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="sysutilsadds.pas"/>
         <UnitName Value="SysUtilsAdds"/>
       </Item55>
+      <Item56>
+        <Filename Value="lr_rrect.lfm"/>
+        <Type Value="LFM"/>
+      </Item56>
+      <Item57>
+        <Filename Value="lr_rrect.lrs"/>
+        <Type Value="LRS"/>
+      </Item57>
+      <Item58>
+        <Filename Value="lr_rrect.pas"/>
+        <UnitName Value="LR_RRect"/>
+      </Item58>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
