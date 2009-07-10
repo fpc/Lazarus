@@ -90,7 +90,6 @@
 
 
 {$IFDEF Gtk2}
-// see http://bugs.freepascal.org/view.php?id=12145
-{off $DEFINE EnabledGtkThreading}
+{$DEFINE EnabledGtkThreading} // see http://bugs.freepascal.org/view.php?id=12145. Turn it off is something happen.
 {$define GTK_2_8}
 {$ENDIF}
