@@ -564,7 +564,7 @@ end;
  ------------------------------------------------------------------------------}
 function TApplication.ValidateHelpSystem: Boolean;
 begin
-  Result:=HelpManager<>nil;
+  Result := HelpManager <> nil;
 end;
 
 {------------------------------------------------------------------------------

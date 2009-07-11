@@ -1154,6 +1154,17 @@ type
   TDIBSection = tagDIBSECTION;
   DIBSECTION = tagDIBSECTION;
 
+  tagHELPINFO = record
+    cbSize: DWORD;
+    iContextType: Integer;
+    iCtrlId: Integer;
+    hItemHandle: THandle;
+    dwContextId: DWORD;
+    MousePos: TPOINT;
+  end;
+  THelpInfo = tagHelpInfo;
+  PHelpInfo = ^THelpInfo;
+
 const
   RASTER_FONTTYPE = 1;
   DEVICE_FONTTYPE = 2;
@@ -1161,6 +1172,9 @@ const
 
   GCP_DBCS = 1;
 
+// context type
+  HELPINFO_WINDOW   = $0001;
+  HELPINFO_MENUITEM = $0002;
 
 //==============================================
 // Background Modes
