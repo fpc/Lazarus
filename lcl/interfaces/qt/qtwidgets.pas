@@ -154,6 +154,7 @@ type
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotResize(Event: QEventH); cdecl;
     procedure SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
+    procedure SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
     procedure Activate;
@@ -1718,6 +1719,20 @@ begin
     QEventNonClientAreaMouseButtonPress: result:='QEventNonClientAreaMouseButtonPress';
     QEventNonClientAreaMouseButtonRelease: result:='QEventNonClientAreaMouseButtonRelease';
     QEventNonClientAreaMouseButtonDblClick: result:='QEventNonClientAreaMouseButtonDblClick';
+    QEventMacSizeChange: result := 'QEventMacSizeChange';
+    QEventContentsRectChange: result := 'QEventContentsRectChange';
+    QEventMacGLWindowChange: result := 'QEventMacGLWindowChange';
+    QEventFutureCallOut: result := 'QEventFutureCallOut';
+    QEventGraphicsSceneResize: result := 'QEventGraphicsSceneResize';
+    QEventGraphicsSceneMove: result := 'QEventGraphicsSceneMove';
+    QEventCursorChange: result := 'QEventCursorChange';
+    QEventToolTipChange: result := 'QEventToolTipChange';
+    QEventNetworkReplyUpdated: result := 'QEventNetworkReplyUpdated';
+    QEventGrabMouse: result := 'QEventGrabMouse';
+    QEventUngrabMouse: result := 'QEventUngrabMouse';
+    QEventGrabKeyboard: result := 'QEventGrabKeyboard';
+    QEventUngrabKeyboard: result := 'QEventUngrabKeyboard';
+    QEventCocoaRequestModal: result := 'QEventCocoaRequestModal';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
   else
@@ -1814,7 +1829,7 @@ begin
       QEventPaint:
         begin
           if canPaintBackground then
-            slotPaintBg(Sender, Event);
+            SlotPaintBg(Sender, Event);
           if FHasPaint then
             SlotPaint(Sender, Event);
         end;
@@ -1822,6 +1837,13 @@ begin
       QEventNonClientAreaMouseButtonPress:
         begin
           SlotNCMouse(Sender, Event);
+        end;
+      QEventQueryWhatsThis: Result := True;
+      QEventWhatsThis:
+        begin
+          SlotWhatsThis(Sender, Event);
+          // TODO: we need to stop event by Result := True; but then we also need
+          // to ask qt to leave Whats This mode. Currently we have no means to do so
         end;
       QEventLCLMessage:
         begin
@@ -2771,6 +2793,20 @@ begin
   Msg.YPos := SmallInt(MousePos.Y);
 
   DeliverMessage(Msg);
+end;
+
+procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  Data: THelpInfo;
+begin
+  Data.cbSize := SizeOf(Data);
+  Data.iContextType := HELPINFO_WINDOW;
+  Data.iCtrlId := 0;
+  Data.hItemHandle := THandle(Sender);
+  Data.dwContextId := 0;
+  with QHelpEvent_globalPos(QHelpEventH(Event))^ do
+    Data.MousePos := Point(X, Y);
+  Application.HelpCommand(0, PtrInt(@Data));
 end;
 
 procedure TQtWidget.SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
