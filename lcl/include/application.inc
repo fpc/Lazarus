@@ -632,15 +632,15 @@ begin
   if Assigned(ActiveForm) and Assigned(ActiveForm.FOnHelp) then
     Result := ActiveForm.FOnHelp(Command, Data, CallHelp)
   else
-  if Assigned(FOnHelp) then
   begin
-    Result := FOnHelp(Command, Data, CallHelp);
+    if Assigned(FOnHelp) then
+      Result := FOnHelp(Command, Data, CallHelp)
+    else
+      Result := False;
     i := FApplicationHandlers[ahtHelp].Count;
-    while (not Result) and (FApplicationHandlers[ahtHelp].NextDownIndex(i)) do
+    while not Result and FApplicationHandlers[ahtHelp].NextDownIndex(i) do
       Result := THelpEvent(FApplicationHandlers[ahtHelp][i])(Command, Data, CallHelp);
-  end
-  else
-    Result := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
