@@ -2317,22 +2317,21 @@ begin
   // maximized or aero snap windows will have problems
   if GetParent(Handle) = 0 then
   begin
-    Result := Boolean(Windows.GetWindowRect(Handle,@R));
+    Result := Boolean(Windows.GetClientRect(Handle, @R));
     with R Do
     begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
-  end
-  else
+    Exit;
+  end;
+
+  WP.length := SizeOf(WP);
+  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
+  with WP.rcNormalPosition do
   begin
-    WP.length := SizeOf(WP);
-    Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
-    with WP.rcNormalPosition do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;
+    Width := Right - Left;
+    Height := Bottom - Top;
   end;
 
   WindowInfo := GetWindowInfo(Handle);
