@@ -67,6 +67,7 @@ type
     function AppHandle: THandle; override;
 
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
+    procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String); override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;

@@ -156,6 +156,23 @@ begin
     Result := False;
 end;
 
+function gtk2ShowHelpCB(widget: PGtkWidget; arg1: TGtkWidgetHelpType; data: gpointer): gboolean; cdecl;
+var
+  Info: THelpInfo;
+begin
+  if arg1 = GTK_WIDGET_HELP_WHATS_THIS then
+  begin
+    Info.cbSize := SizeOf(Info);
+    Info.iContextType := HELPINFO_WINDOW;
+    Info.iCtrlId := 0;
+    Info.hItemHandle := THandle(widget);
+    Info.dwContextId := 0;
+    gdk_display_get_pointer(gdk_display_get_default(), nil, @Info.MousePos.X, @Info.MousePos.Y, nil);
+    Application.HelpCommand(0, PtrInt(@Info));
+  end;
+  Result := True;
+end;
+
 procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
                          WinControl: TWinControl); cdecl;
 var
@@ -306,19 +323,19 @@ procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(ALCLObject));
+    ConnectSignal(AnObject, ASignal, ACallBackProc, ALCLObject);
   end;
 
   procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(ALCLObject));
+    ConnectSignalAfter(AnObject, ASignal, ACallBackProc, ALCLObject);
   end;
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,ALCLObject,
+    ConnectSignal(AnObject, ASignal, ACallBackProc, ALCLObject,
                   ReqSignalMask);
   end;
 
@@ -326,7 +343,7 @@ procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
     const ASignal: PChar; const ACallBackProc: Pointer;
     const ReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,ALCLObject,
+    ConnectSignalAfter(AnObject, ASignal, ACallBackProc, ALCLObject,
                        ReqSignalMask);
   end;
 
@@ -416,6 +433,14 @@ begin
   else
     inherited SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);
   end;
+end;
+
+procedure TGtk2WidgetSet.SetCommonCallbacks(const AGTKObject: PGTKObject;
+  const ALCLObject: TObject);
+begin
+  inherited SetCommonCallbacks(AGTKObject, ALCLObject);
+  // set gtk2 only callbacks
+  ConnectSignal(AGTKObject, 'show-help', @gtk2ShowHelpCB, ALCLObject);
 end;
 
 procedure TGtk2WidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
