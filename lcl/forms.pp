@@ -378,7 +378,7 @@ type
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
   TDropFilesEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
-  THelpEvent = function(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean of object;
+  THelpEvent = function(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean of object;
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
 
   TCustomForm = class(TScrollingWinControl)
@@ -1152,7 +1152,6 @@ type
     function GetTitle: string;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
     procedure SetBidiMode ( const AValue : TBiDiMode ) ;
     procedure SetFlags(const AValue: TApplicationFlags);
@@ -1185,6 +1184,7 @@ type
     procedure NotifyDeactivateHandler;
     procedure NotifyCustomForms(Msg: Word);
     function IsHintMsg(var Msg: TMsg): Boolean;
+    function DoOnHelp(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean; virtual;
     procedure DoOnMouseMove; virtual;
     procedure ShowHintWindow(const Info: THintInfoAtMouse);
     procedure OnHintTimer(Sender: TObject);
@@ -1213,6 +1213,7 @@ type
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
+    function HelpCommand(Command: Word; Data: PtrInt): Boolean;
     function HelpContext(Sender: TObject; const Position: TPoint;
                          Context: THelpContext): Boolean;
     function HelpContext(Context: THelpContext): Boolean;

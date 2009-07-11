@@ -414,42 +414,20 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
- ------------------------------------------------------------------------------}
-function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
+function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
 var
   CallHelp: Boolean;
-  ActiveForm: TCustomForm;
-  i: LongInt;
 begin
-  Result := False;
   CallHelp := True;
-  ActiveForm := Screen.ActiveCustomForm;
 
-  { let existing hooks get called, if any. }
-  if Assigned(ActiveForm) and Assigned(ActiveForm.FOnHelp) then
-    Result := ActiveForm.FOnHelp(Command, Data, CallHelp)
-  else if Assigned(FOnHelp) then begin
-    Result := FOnHelp(Command, Data, CallHelp);
-    i:=FApplicationHandlers[ahtHelp].Count;
-    while (not Result) and (FApplicationHandlers[ahtHelp].NextDownIndex(i)) do
-      Result:=THelpEvent(FApplicationHandlers[ahtHelp][i])(Command, Data, CallHelp);
-  end;
+  Result := DoOnHelp(Command, Data, CallHelp);
 
-  if CallHelp then begin
-    if Assigned(ActiveForm) and ActiveForm.HandleAllocated
-    and (ActiveForm.FHelpFile <> '') then
-    begin
+  if Result then
+    Exit;
 
-    end
-    else
-    if HelpFile <> '' then
-    begin
-
-    end else begin
-
-    end;
+  if CallHelp then
+  begin
+    // TODO: call help
   end;
 end;
 
@@ -642,6 +620,25 @@ end;
 function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
 begin
   Result := False;
+end;
+
+function TApplication.DoOnHelp(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean;
+var
+  ActiveForm: TCustomForm;
+  i: LongInt;
+begin
+  ActiveForm := Screen.ActiveCustomForm;
+
+  if Assigned(ActiveForm) and Assigned(ActiveForm.FOnHelp) then
+    Result := ActiveForm.FOnHelp(Command, Data, CallHelp)
+  else
+  if Assigned(FOnHelp) then
+  begin
+    Result := FOnHelp(Command, Data, CallHelp);
+    i := FApplicationHandlers[ahtHelp].Count;
+    while (not Result) and (FApplicationHandlers[ahtHelp].NextDownIndex(i)) do
+      Result := THelpEvent(FApplicationHandlers[ahtHelp][i])(Command, Data, CallHelp);
+  end;
 end;
 
 {------------------------------------------------------------------------------
