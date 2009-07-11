@@ -638,7 +638,9 @@ begin
     i := FApplicationHandlers[ahtHelp].Count;
     while (not Result) and (FApplicationHandlers[ahtHelp].NextDownIndex(i)) do
       Result := THelpEvent(FApplicationHandlers[ahtHelp][i])(Command, Data, CallHelp);
-  end;
+  end
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
