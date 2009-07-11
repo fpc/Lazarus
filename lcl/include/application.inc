@@ -414,7 +414,7 @@ begin
   end;
 end;
 
-function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
+function TApplication.HelpCommand(Command: Word; Data: PtrInt): Boolean;
 var
   CallHelp: Boolean;
 begin
