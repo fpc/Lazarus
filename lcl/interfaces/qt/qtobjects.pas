@@ -33,7 +33,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd;
+  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd, ExtCtrls;
 
 type
   // forward declarations
@@ -417,8 +417,11 @@ type
   { TQtSystemTrayIcon }
 
   TQtSystemTrayIcon = class(TObject)
+  private
+    FHook: QSystemTrayIcon_hookH;
   public
     Handle: QSystemTrayIconH;
+    FTrayIcon: TCustomTrayIcon;
   public
     constructor Create(vIcon: QIconH); virtual;
     destructor Destroy; override;
@@ -426,6 +429,7 @@ type
     procedure setContextMenu(menu: QMenuH);
     procedure setIcon(icon: QIconH);
     procedure setToolTip(tip: WideString);
+    procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
     procedure show;
     procedure hide;
   end;
@@ -661,7 +665,7 @@ function QtScreenContext: TQtDeviceContext;
 implementation
 
 uses
-  qtproc;
+  Controls, qtproc;
   
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
@@ -2777,18 +2781,24 @@ end;
 { TQtSystemTrayIcon }
 
 constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
+var
+  Method: TMethod;
 begin
   inherited Create;
 
   if vIcon <> nil then
-    handle := QSystemTrayIcon_create(vicon, nil)
+    Handle := QSystemTrayIcon_create(vicon, nil)
   else
-    handle := QSystemTrayIcon_create();
+    Handle := QSystemTrayIcon_create();
+  FHook := QSystemTrayIcon_hook_create(Handle);
+  QSystemTrayIcon_activated_Event(Method) := @signalActivated;
+  QSystemTrayIcon_hook_hook_activated(FHook, Method);
 end;
 
 destructor TQtSystemTrayIcon.Destroy;
 begin
-  QSystemTrayIcon_destroy(handle);
+  QSystemTrayIcon_hook_destroy(FHook);
+  QSystemTrayIcon_destroy(Handle);
   
   inherited Destroy;
 end;
@@ -2806,6 +2816,56 @@ end;
 procedure TQtSystemTrayIcon.setToolTip(tip: WideString);
 begin
   QSystemTrayIcon_setToolTip(handle, @tip)
+end;
+
+procedure TQtSystemTrayIcon.signalActivated(
+  AReason: QSystemTrayIconActivationReason); cdecl;
+var
+  MousePos: TQtPoint;
+begin
+  if not Assigned(FTrayIcon) then
+    exit;
+
+  QCursor_pos(@MousePos);
+
+  case AReason of
+    QSystemTrayIconTrigger:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+
+        if Assigned(FTrayIcon.OnClick) then
+          FTrayIcon.OnClick(FTrayIcon);
+
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconDoubleClick:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+
+        if Assigned(FTrayIcon.OnDblClick) then
+          FTrayIcon.OnDblClick(FTrayIcon);
+
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconMiddleClick:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbMiddle, [], MousePos.x, MousePos.y);
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbMiddle, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconContext:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
+      end;
+  end;
 end;
 
 procedure TQtSystemTrayIcon.show;

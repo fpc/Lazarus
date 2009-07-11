@@ -492,6 +492,7 @@ begin
     IconH := TQtIcon(ATrayIcon.Icon.Handle).Handle;
     
   SystemTrayIcon := TQtSystemTrayIcon.Create(IconH);
+  SystemTrayIcon.FTrayIcon := ATrayIcon;
 
   ATrayIcon.Handle := PtrInt(SystemTrayIcon);
 
