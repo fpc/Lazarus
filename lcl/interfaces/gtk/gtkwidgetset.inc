@@ -3711,6 +3711,29 @@ begin
   SetCallbackEx(AMsg,AGTKObject,ALCLObject,false);
 end;
 
+procedure TGTKWidgetSet.SetCommonCallbacks(const AGTKObject: PGTKObject;
+  const ALCLObject: TObject);
+begin
+  SetCallback(LM_SHOWWINDOW, AGTKObject, ALCLObject);
+  SetCallback(LM_DESTROY, AGTKObject, ALCLObject);
+  SetCallback(LM_FOCUS, AGTKObject, ALCLObject);
+  SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, ALCLObject);
+  SetCallback(LM_PAINT, AGTKObject, ALCLObject);
+  SetCallback(LM_KEYDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_KEYUP, AGTKObject, ALCLObject);
+  SetCallback(LM_CHAR, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEMOVE, AGTKObject, ALCLObject);
+  SetCallback(LM_LBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_LBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_RBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_RBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_MBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_MBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEWHEEL, AGTKObject, ALCLObject);
+  SetCallback(LM_DROPFILES, AGTKObject, ALCLObject);
+  SetCallback(LM_CONTEXTMENU, AGtkObject, ALCLObject);
+end;
+
 
 {------------------------------------------------------------------------------
   Function: TGtkWidgetSet.RemoveCallBacks

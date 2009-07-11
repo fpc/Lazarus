@@ -246,6 +246,7 @@ type
                           const ALCLObject: TObject);
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject);
+    procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     // show, hide and invalidate

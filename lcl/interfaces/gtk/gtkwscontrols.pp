@@ -341,24 +341,7 @@ end;
 class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;
   const AComponent: TComponent);
 begin
-  GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_FOCUS, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEMOVE, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_DROPFILES, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_CONTEXTMENU, AGtkObject, AComponent);
+  GtkWidgetSet.SetCommonCallbacks(AGtkObject, AComponent);
 end;
 
 {$IFDEF GTK1}
