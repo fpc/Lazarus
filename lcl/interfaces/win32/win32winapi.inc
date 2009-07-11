@@ -2317,21 +2317,22 @@ begin
   // maximized or aero snap windows will have problems
   if GetParent(Handle) = 0 then
   begin
-    Result := Boolean(Windows.GetClientRect(Handle, @R));
-    with R Do
+    Result := Boolean(Windows.GetWindowRect(Handle, @R));
+    with R do
     begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
-    Exit;
-  end;
-
-  WP.length := SizeOf(WP);
-  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
-  with WP.rcNormalPosition do
+  end
+  else
   begin
-    Width := Right - Left;
-    Height := Bottom - Top;
+    WP.length := SizeOf(WP);
+    Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
+    with WP.rcNormalPosition do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
   end;
 
   WindowInfo := GetWindowInfo(Handle);
@@ -2357,6 +2358,8 @@ begin
       Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+  if GetParent(Handle) = 0 then
+    WriteLn(Height);
 
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     AdjustForBuddySize;
