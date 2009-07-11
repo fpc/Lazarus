@@ -123,159 +123,135 @@ end;
 
 procedure TApplicationProperties.SetOnException(const AValue : TExceptionEvent);
 begin
-  if (TMethod(FOnException).Data=TMethod(AValue).Data)
-  and (TMethod(FOnException).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnException) then
+  if (TMethod(FOnException).Data = TMethod(AValue).Data) and
+     (TMethod(FOnException).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnException) then
     Application.RemoveOnExceptionHandler(FOnException);
   FOnException := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnException) then
+  if not (csDesigning in ComponentState) and Assigned(FOnException) then
     Application.AddOnExceptionHandler(FOnException);
 end;
 
 procedure TApplicationProperties.SetOnIdle(const AValue : TIdleEvent);
 begin
-  if (TMethod(FOnIdle).Data=TMethod(AValue).Data)
-  and (TMethod(FOnIdle).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnIdle) then
+  if (TMethod(FOnIdle).Data = TMethod(AValue).Data) and
+     (TMethod(FOnIdle).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnIdle) then
     Application.RemoveOnIdleHandler(FOnIdle);
   FOnIdle := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnIdle) then
+  if not (csDesigning in ComponentState) and Assigned(FOnIdle) then
     Application.AddOnIdleHandler(FOnIdle);
 end;
 
 procedure TApplicationProperties.SetOnIdleEnd(const AValue : TNotifyEvent);
 begin
-  if (TMethod(FOnIdleEnd).Data=TMethod(AValue).Data)
-  and (TMethod(FOnIdleEnd).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnIdleEnd) then
+  if (TMethod(FOnIdleEnd).Data = TMethod(AValue).Data) and
+     (TMethod(FOnIdleEnd).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnIdleEnd) then
     Application.RemoveOnIdleEndHandler(FOnIdleEnd);
   FOnIdleEnd := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnIdleEnd) then
+  if not (csDesigning in ComponentState) and Assigned(FOnIdleEnd) then
     Application.AddOnIdleEndHandler(FOnIdleEnd);
 end;
 
 
 procedure TApplicationProperties.SetOnEndSession(const AValue : TNotifyEvent);
 begin
-  if (TMethod(FOnEndSession).Data=TMethod(AValue).Data)
-  and (TMethod(FOnEndSession).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnEndSession) then
+  if (TMethod(FOnEndSession).Data = TMethod(AValue).Data) and
+     (TMethod(FOnEndSession).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnEndSession) then
     Application.RemoveOnEndSessionHandler(FOnEndSession);
   FOnEndSession := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnEndSession) then
+  if not (csDesigning in ComponentState) and Assigned(FOnEndSession) then
     Application.AddOnEndSessionHandler(FOnEndSession);
 end;
 
 
 procedure TApplicationProperties.SetOnQueryEndSession(const AValue : TQueryEndSessionEvent);
 begin
-  if (TMethod(FOnQueryEndSession).Data=TMethod(AValue).Data)
-  and (TMethod(FOnQueryEndSession).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnQueryEndSession) then
+  if (TMethod(FOnQueryEndSession).Data = TMethod(AValue).Data) and
+     (TMethod(FOnQueryEndSession).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnQueryEndSession) then
     Application.RemoveOnQueryEndSessionHandler(FOnQueryEndSession);
   FOnQueryEndSession := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnQueryEndSession) then
+  if not (csDesigning in ComponentState) and Assigned(FOnQueryEndSession) then
     Application.AddOnQueryEndSessionHandler(FOnQueryEndSession);
 end;
 
 procedure TApplicationProperties.SetOnMinimize(const AValue: TNotifyEvent);
 begin
-  if (TMethod(FOnMinimize).Data=TMethod(AValue).Data)
-  and (TMethod(FOnMinimize).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnMinimize) then
+  if (TMethod(FOnMinimize).Data = TMethod(AValue).Data) and
+     (TMethod(FOnMinimize).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnMinimize) then
     Application.RemoveOnMinimizeHandler(FOnMinimize);
   FOnMinimize := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnMinimize) then
+  if not (csDesigning in ComponentState) and Assigned(FOnMinimize) then
     Application.AddOnMinimizeHandler(FOnMinimize);
 end;
 
 procedure TApplicationProperties.SetOnRestore(const AValue: TNotifyEvent);
 begin
-  if (TMethod(FOnRestore).Data=TMethod(AValue).Data)
-  and (TMethod(FOnRestore).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnRestore) then
+  if (TMethod(FOnRestore).Data = TMethod(AValue).Data) and
+     (TMethod(FOnRestore).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnRestore) then
     Application.RemoveOnRestoreHandler(FOnRestore);
   FOnRestore := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnRestore) then
+  if not (csDesigning in ComponentState) and Assigned(FOnRestore) then
     Application.AddOnRestoreHandler(FOnRestore);
 end;
 
 procedure TApplicationProperties.SetOnDropFiles(const AValue: TDropFilesEvent);
 begin
-  if (TMethod(FOnDropFiles).Data=TMethod(AValue).Data)
-  and (TMethod(FOnDropFiles).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnDropFiles) then
+  if (TMethod(FOnDropFiles).Data = TMethod(AValue).Data) and
+     (TMethod(FOnDropFiles).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnDropFiles) then
     Application.RemoveOnDropFilesHandler(FOnDropFiles);
   FOnDropFiles := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnDropFiles) then
+  if not (csDesigning in ComponentState) and Assigned(FOnDropFiles) then
     Application.AddOnDropFilesHandler(FOnDropFiles);
 end;
 
 procedure TApplicationProperties.SetOnHelp(const AValue : THelpEvent);
 begin
-  if (TMethod(FOnHelp).Data=TMethod(AValue).Data)
-  and (TMethod(FOnHelp).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnHelp) then
+  if (TMethod(FOnHelp).Data = TMethod(AValue).Data) and
+     (TMethod(FOnHelp).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnHelp) then
     Application.RemoveOnHelpHandler(FOnHelp);
   FOnHelp := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnHelp) then
+  if not (csDesigning in ComponentState) and Assigned(FOnHelp) then
     Application.AddOnHelpHandler(FOnHelp);
 end;
 
 procedure TApplicationProperties.SetOnHint(const AValue : TNotifyEvent);
 begin
-  if (TMethod(FOnHint).Data=TMethod(AValue).Data)
-  and (TMethod(FOnHint).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnHint) then
+  if (TMethod(FOnHint).Data = TMethod(AValue).Data) and
+     (TMethod(FOnHint).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnHint) then
     Application.RemoveOnHintHandler(FOnHint);
   FOnHint := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnHint) then
+  if not (csDesigning in ComponentState) and Assigned(FOnHint) then
     Application.AddOnHintHandler(FOnHint);
 end;
 
 procedure TApplicationProperties.SetOnShowHint(const AValue : TShowHintEvent);
 begin
-  if (TMethod(FOnShowHint).Data=TMethod(AValue).Data)
-  and (TMethod(FOnShowHint).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnShowHint) then
+  if (TMethod(FOnShowHint).Data = TMethod(AValue).Data) and
+     (TMethod(FOnShowHint).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnShowHint) then
     Application.RemoveOnShowHintHandler(FOnShowHint);
   FOnShowHint := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnShowHint) then
+  if not (csDesigning in ComponentState) and Assigned(FOnShowHint) then
     Application.AddOnShowHintHandler(FOnShowHint);
 end;
 
 procedure TApplicationProperties.SetOnUserInput(const AValue : TOnUserInputEvent);
 begin
-  if (TMethod(FOnUserInput).Data=TMethod(AValue).Data)
-  and (TMethod(FOnUserInput).Code=TMethod(AValue).Code) then exit;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnUserInput) then
+  if (TMethod(FOnUserInput).Data = TMethod(AValue).Data) and
+     (TMethod(FOnUserInput).Code = TMethod(AValue).Code) then exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnUserInput) then
     Application.RemoveOnUserInputHandler(FOnUserInput);
   FOnUserInput := AValue;
-  if not (csDesigning in ComponentState)
-  and Assigned(FOnUserInput) then
+  if not (csDesigning in ComponentState) and Assigned(FOnUserInput) then
     Application.AddOnUserInputHandler(FOnUserInput);
 end;
 
