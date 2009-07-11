@@ -1724,6 +1724,9 @@ begin
     end;
     WM_GETMINMAXINFO:
       SetMinMaxInfo(PMINMAXINFO(LParam)^);
+    WM_HELP:
+      if Window = Win32WidgetSet.AppHandle then
+        Application.HelpCommand(0, LParam);
     WM_HSCROLL:
       HandleScrollMessage(LM_HSCROLL);
     WM_KEYDOWN:
