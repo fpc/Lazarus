@@ -2299,24 +2299,49 @@ function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
 var
   WP: WINDOWPLACEMENT;
   R: TRect;
-  Style, ExStyle: PtrInt;
   WindowInfo: PWin32WindowInfo;
+  Info: tagWINDOWINFO;
 
-    procedure AdjustForBuddySize;
-    var
-      BuddyHandle: HWND;
-      BuddyWP: WINDOWPLACEMENT;
-    begin
-      BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
-      if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
-        then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
-    end;
+  procedure AdjustForBuddySize;
+  var
+    BuddyHandle: HWND;
+    BuddyWP: WINDOWPLACEMENT;
+  begin
+    BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
+    if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
+      then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
+  end;
+
+  procedure ExcludeCaption; inline;
+  begin
+    if (Info.dwStyle and WS_CAPTION) <> 0 then
+      if (Info.dwExStyle and WS_EX_TOOLWINDOW) <> 0 then
+        Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+      else
+        Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+  end;
 
 begin
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
   if GetParent(Handle) = 0 then
   begin
+    FillChar(Info, SizeOf(Info), 0);
+    Info.cbSize := SizeOf(Info);
+    Result := GetWindowInfo(Handle, @Info);
+    if Result then
+    begin
+      with Info.rcWindow do
+      begin
+        Width := Right - Left;
+        Height := Bottom - Top;
+      end;
+      Width := Width - 2 * Info.cxWindowBorders;
+      Height := Height - 2 * Info.cyWindowBorders;
+      ExcludeCaption;
+      //WriteLn('W = ', Width, ' H = ', Height);
+      Exit;
+    end;
     Result := Boolean(Windows.GetWindowRect(Handle, @R));
     with R do
     begin
@@ -2338,26 +2363,23 @@ begin
   WindowInfo := GetWin32WindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
-  Style := GetWindowLong(Handle, GWL_STYLE);
-  ExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
-  if (Style and WS_THICKFRAME) <> 0 then
+  Info.dwStyle := GetWindowLong(Handle, GWL_STYLE);
+  Info.dwExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
+  if (Info.dwStyle and WS_THICKFRAME) <> 0 then
   begin
     // thick, sizing border
     // add twice, top+bottom border
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
     Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
   end else
-  if (Style and WS_BORDER) <> 0 then
+  if (Info.dwStyle and WS_BORDER) <> 0 then
   begin
     // thin, non-sizing border
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
     Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
   end;
-  if (Style and WS_CAPTION) <> 0 then
-    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
-      Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
-    else
-      Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+
+  ExcludeCaption;
 
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     AdjustForBuddySize;
