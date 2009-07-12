@@ -5304,7 +5304,7 @@ begin
   writeln('TQtTrackBar.SlotValueChanged()');
  {$endif}
 
-  if not SliderPressed and (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
+  if not SliderPressed and not InUpdate then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
