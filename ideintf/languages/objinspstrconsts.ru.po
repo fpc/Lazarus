@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-05-19 03:25+0300\n"
+"PO-Revision-Date: 2009-07-12 18:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -180,6 +180,54 @@ msgstr "IfNDef"
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
 msgstr "Установить значение"
+
+#: objinspstrconsts.lisoem1
+msgid "OEM 1"
+msgstr "OEM 1"
+
+#: objinspstrconsts.lisoem2
+msgid "OEM 2"
+msgstr "OEM 2"
+
+#: objinspstrconsts.lisoem3
+msgid "OEM 3"
+msgstr "OEM 3"
+
+#: objinspstrconsts.lisoem4
+msgid "OEM 4"
+msgstr "OEM 4"
+
+#: objinspstrconsts.lisoem5
+msgid "OEM 5"
+msgstr "OEM 5"
+
+#: objinspstrconsts.lisoem6
+msgid "OEM 6"
+msgstr "OEM 6"
+
+#: objinspstrconsts.lisoem7
+msgid "OEM 7"
+msgstr "OEM 7"
+
+#: objinspstrconsts.lisoem8
+msgid "OEM 8"
+msgstr "OEM 8"
+
+#: objinspstrconsts.lisoemcomma
+msgid "OEM comma"
+msgstr "OEM запятая"
+
+#: objinspstrconsts.lisoemminus
+msgid "OEM minus"
+msgstr "OEM минус"
+
+#: objinspstrconsts.lisoemperiod
+msgid "OEM period"
+msgstr "OEM точка"
+
+#: objinspstrconsts.lisoemplus
+msgid "OEM plus"
+msgstr "OEM плюс"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"

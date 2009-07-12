@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-06-09 01:36+0300\n"
+"PO-Revision-Date: 2009-07-12 18:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -19,7 +19,7 @@ msgstr "Добавлять оператор присваивания :="
 
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
-msgstr "Дополнительные пути к исходным кодам для всех проектов (.pp;.pas)"
+msgstr "Дополнительные пути к исходным кодам для всех проектов (.pp; .pas)"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
@@ -458,6 +458,10 @@ msgstr "Переполнения"
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
 msgstr "Обработка"
+
+#: lazarusidestrconsts.dlgcopypastekeepfolds
+msgid "Copy/Paste with fold info"
+msgstr "Копировать/вставлять со свёрнутостью"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -1477,6 +1481,22 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtndown"
 msgid "Down"
 msgstr "Вниз"
 
+#: lazarusidestrconsts.dlgmouseoptbtnexport
+msgid "Export"
+msgstr "Экспорт"
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgid "Extra 1"
+msgstr "Дополнительная 1"
+
+#: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgid "Extra 2"
+msgstr "Дополнительная 1"
+
+#: lazarusidestrconsts.dlgmouseoptbtnimport
+msgid "Import"
+msgstr "Импорт"
+
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
 msgid "Left"
@@ -1582,6 +1602,11 @@ msgstr "Фаза щелчка"
 msgid "Option"
 msgstr "Параметр"
 
+#: lazarusidestrconsts.dlgmouseoptheadpriority
+msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
+msgid "Priority"
+msgstr "Приоритет"
+
 #: lazarusidestrconsts.dlgmouseoptheadshift
 msgctxt "lazarusidestrconsts.dlgmouseoptheadshift"
 msgid "Shift"
@@ -1591,6 +1616,10 @@ msgstr "Shift"
 msgctxt "lazarusidestrconsts.dlgmouseoptions"
 msgid "Mouse"
 msgstr "Мышь"
+
+#: lazarusidestrconsts.dlgmouseoptionsyncommand
+msgid "IDE-Command"
+msgstr "Команда IDE"
 
 #: lazarusidestrconsts.dlgmouseoptmodalt
 msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
@@ -1632,7 +1661,7 @@ msgstr "Поле (лев)"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
-msgstr "Дерево свёрток"
+msgstr "Дерево сворачиваний"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
 msgid "Collapsed [+]"
@@ -1655,6 +1684,11 @@ msgstr "Текст"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Выделение"
+
+#: lazarusidestrconsts.dlgmouseoptpriorlabel
+msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
+msgid "Priority"
+msgstr "Приоритет"
 
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
@@ -2382,11 +2416,13 @@ msgid "Delete Selection"
 msgstr "Удалить выбранное"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-msgid "Mirror horizontal"
+#| msgid "Mirror horizontal"
+msgid "Mirror Horizontal"
 msgstr "Отразить по горизонтали"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-msgid "Mirror vertical"
+#| msgid "Mirror vertical"
+msgid "Mirror Vertical"
 msgstr "Отразить по вертикали"
 
 #: lazarusidestrconsts.fdmorder
@@ -2394,23 +2430,28 @@ msgid "Order"
 msgstr "Порядок"
 
 #: lazarusidestrconsts.fdmorderbackone
-msgid "Back one"
+#| msgid "Back one"
+msgid "Back One"
 msgstr "На один назад"
 
 #: lazarusidestrconsts.fdmorderforwardone
-msgid "Forward one"
+#| msgid "Forward one"
+msgid "Forward One"
 msgstr "На один вперёд"
 
 #: lazarusidestrconsts.fdmordermovetoback
-msgid "Move to back"
-msgstr "Переместить назад"
+#| msgid "Move to back"
+msgid "Move to Back"
+msgstr "Поместить сзади"
 
 #: lazarusidestrconsts.fdmordermovetofront
-msgid "Move to front"
-msgstr "Переместить вперёд"
+#| msgid "Move to front"
+msgid "Move to Front"
+msgstr "Поместить впереди"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-msgid "Save form as xml"
+#| msgid "Save form as xml"
+msgid "Save form as XML"
 msgstr "Сохранить форму в виде XML"
 
 #: lazarusidestrconsts.fdmscaleword
@@ -2435,8 +2476,13 @@ msgid "Option: Snap to guide lines"
 msgstr "Параметр: Выровнять по линиям позиционирования"
 
 #: lazarusidestrconsts.fdmtaborder
-msgid "Tab order..."
+#| msgid "Tab order..."
+msgid "Tab Order..."
 msgstr "Порядок перехода..."
+
+#: lazarusidestrconsts.fdmzorder
+msgid "Z-order"
+msgstr "Z-порядок"
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
@@ -3526,8 +3572,9 @@ msgid "Change file"
 msgstr "Изменить файл"
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change parent ..."
-msgstr "Сменить родителя ..."
+#| msgid "Change parent ..."
+msgid "Change Parent..."
+msgstr "Сменить родителя"
 
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
@@ -3540,6 +3587,10 @@ msgstr "Таблица символов"
 #: lazarusidestrconsts.lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
 msgstr "Проверять изменения на диске при загрузке"
+
+#: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
+msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+msgstr "Проверить, что следующий элемент исходного кода - слово 'end', и, если нет, возвратить '<символы конца строки> + end; + <символы конца строки>'."
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5692,6 +5743,10 @@ msgstr "\"%s\" - действие завершено"
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Невозможно запустить средство %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtoloadfoldstat
+msgid "Failed to load fold state"
+msgstr "Не удалось загрузить состояние сворачиваний кода."
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Уменьшить прорисовку дизайнеров"
@@ -5991,6 +6046,10 @@ msgstr "Искать где"
 #: lazarusidestrconsts.lisfunction
 msgid "Function"
 msgstr "Функция"
+
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition
+msgid "get word at current cursor position"
+msgstr "Возвратить слово в текущей позиции курсора."
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -6297,6 +6356,46 @@ msgstr "Унаследованный элемент"
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "Для создания очищенной копии проекта/пакета все файлы в следующем каталоге будут удалены, и всё их содержимое будет утеряно.%s%sУдалить все файлы в %s%s%s?"
 
+#: lazarusidestrconsts.lisinsertdate
+msgid "insert date"
+msgstr "Вставить дату"
+
+#: lazarusidestrconsts.lisinsertdateandtime
+msgid "insert date and time"
+msgstr "Вставить дату и время"
+
+#: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
+msgid "Insert date and time. Optional: format string"
+msgstr "Вставить дату и время. Возможно форматирование строки."
+
+#: lazarusidestrconsts.lisinsertdateoptionalformatstring
+msgid "Insert date. Optional: format string"
+msgstr "Вставить дату. Возможно форматирование строки."
+
+#: lazarusidestrconsts.lisinsertendifneeded
+msgid "insert end if needed"
+msgstr "Вставить при необходимости слово 'end'"
+
+#: lazarusidestrconsts.lisinsertnameofcurrentprocedure
+msgid "Insert name of current procedure"
+msgstr "Вставить имя текущей процедуры."
+
+#: lazarusidestrconsts.lisinsertprocedurehead
+msgid "insert procedure head"
+msgstr "Вставить заголовок процедуры"
+
+#: lazarusidestrconsts.lisinsertprocedurename
+msgid "insert procedure name"
+msgstr "Вставить имя процедуры"
+
+#: lazarusidestrconsts.lisinserttime
+msgid "insert time"
+msgstr "Вставить время"
+
+#: lazarusidestrconsts.lisinserttimeoptionalformatstring
+msgid "Insert time. Optional: format string"
+msgstr "Вставить время. Возможно форматирование строки."
+
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
 msgstr "Данные"
@@ -6576,43 +6675,43 @@ msgstr "Найти далее"
 
 #: lazarusidestrconsts.liskmgotomarker0
 msgid "Go to marker 0"
-msgstr "Перейти к маркеру 0"
+msgstr "Перейти к закладке 0"
 
 #: lazarusidestrconsts.liskmgotomarker1
 msgid "Go to marker 1"
-msgstr "Перейти к маркеру 1"
+msgstr "Перейти к закладке 1"
 
 #: lazarusidestrconsts.liskmgotomarker2
 msgid "Go to marker 2"
-msgstr "Перейти к маркеру 2"
+msgstr "Перейти к закладке 2"
 
 #: lazarusidestrconsts.liskmgotomarker3
 msgid "Go to marker 3"
-msgstr "Перейти к маркеру 3"
+msgstr "Перейти к закладке 3"
 
 #: lazarusidestrconsts.liskmgotomarker4
 msgid "Go to marker 4"
-msgstr "Перейти к маркеру 4"
+msgstr "Перейти к закладке 4"
 
 #: lazarusidestrconsts.liskmgotomarker5
 msgid "Go to marker 5"
-msgstr "Перейти к маркеру 5"
+msgstr "Перейти к закладке 5"
 
 #: lazarusidestrconsts.liskmgotomarker6
 msgid "Go to marker 6"
-msgstr "Перейти к маркеру 6"
+msgstr "Перейти к закладке 6"
 
 #: lazarusidestrconsts.liskmgotomarker7
 msgid "Go to marker 7"
-msgstr "Перейти к маркеру 7"
+msgstr "Перейти к закладке 7"
 
 #: lazarusidestrconsts.liskmgotomarker8
 msgid "Go to marker 8"
-msgstr "Перейти к маркеру 8"
+msgstr "Перейти к закладке 8"
 
 #: lazarusidestrconsts.liskmgotomarker9
 msgid "Go to marker 9"
-msgstr "Перейти к маркеру 9"
+msgstr "Перейти к закладке 9"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -6785,43 +6884,43 @@ msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.liskmsetmarker0
 msgid "Set marker 0"
-msgstr "Добавить маркер 0"
+msgstr "Добавить закладку 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
 msgid "Set marker 1"
-msgstr "Добавить маркер 1"
+msgstr "Добавить закладку 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
 msgid "Set marker 2"
-msgstr "Добавить маркер 2"
+msgstr "Добавить закладку 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
 msgid "Set marker 3"
-msgstr "Добавить маркер 3"
+msgstr "Добавить закладку 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
 msgid "Set marker 4"
-msgstr "Добавить маркер 4"
+msgstr "Добавить закладку 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
 msgid "Set marker 5"
-msgstr "Добавить маркер 5"
+msgstr "Добавить закладку 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
 msgid "Set marker 6"
-msgstr "Добавить маркер 6"
+msgstr "Добавить закладку 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
 msgid "Set marker 7"
-msgstr "Добавить маркер 7"
+msgstr "Добавить закладку 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
 msgid "Set marker 8"
-msgstr "Добавить маркер 8"
+msgstr "Добавить закладку 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
 msgid "Set marker 9"
-msgstr "Добавить маркер 9"
+msgstr "Добавить закладку 9"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop program"
@@ -6833,43 +6932,43 @@ msgstr "Переключиться между модулем и формой"
 
 #: lazarusidestrconsts.liskmtogglemarker0
 msgid "Toggle marker 0"
-msgstr "Переключить маркер 0"
+msgstr "Переключить закладку 0"
 
 #: lazarusidestrconsts.liskmtogglemarker1
 msgid "Toggle marker 1"
-msgstr "Переключить маркер 1"
+msgstr "Переключить закладку 1"
 
 #: lazarusidestrconsts.liskmtogglemarker2
 msgid "Toggle marker 2"
-msgstr "Переключить маркер 2"
+msgstr "Переключить закладку 2"
 
 #: lazarusidestrconsts.liskmtogglemarker3
 msgid "Toggle marker 3"
-msgstr "Переключить маркер 3"
+msgstr "Переключить закладку 3"
 
 #: lazarusidestrconsts.liskmtogglemarker4
 msgid "Toggle marker 4"
-msgstr "Переключить маркер 4"
+msgstr "Переключить закладку 4"
 
 #: lazarusidestrconsts.liskmtogglemarker5
 msgid "Toggle marker 5"
-msgstr "Переключить маркер 5"
+msgstr "Переключить закладку 5"
 
 #: lazarusidestrconsts.liskmtogglemarker6
 msgid "Toggle marker 6"
-msgstr "Переключить маркер 6"
+msgstr "Переключить закладку 6"
 
 #: lazarusidestrconsts.liskmtogglemarker7
 msgid "Toggle marker 7"
-msgstr "Переключить маркер 7"
+msgstr "Переключить закладку 7"
 
 #: lazarusidestrconsts.liskmtogglemarker8
 msgid "Toggle marker 8"
-msgstr "Переключить маркер 8"
+msgstr "Переключить закладку 8"
 
 #: lazarusidestrconsts.liskmtogglemarker9
 msgid "Toggle marker 9"
-msgstr "Переключить маркер 9"
+msgstr "Переключить закладку 9"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -7283,6 +7382,10 @@ msgstr "параметры компоновщика"
 msgid "Link target"
 msgstr "Объект ссылки"
 
+#: lazarusidestrconsts.lislistofallcasevalues
+msgid "list of all case values"
+msgstr "Список всех значений оператора case"
+
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "Загрузка %s не удалась."
@@ -7304,6 +7407,14 @@ msgstr "Значение"
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
 msgstr "Логотип"
+
+#: lazarusidestrconsts.lislowercasestring
+msgid "lowercase string"
+msgstr "Преобразовать регистр строки в нижний"
+
+#: lazarusidestrconsts.lislowercasestringgivenasparameter
+msgid "Lowercase string given as parameter"
+msgstr "Преобразовать регистр строки, переданной в качестве параметра, в нижний."
 
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
@@ -8884,6 +8995,14 @@ msgstr "Модуль Паскаля"
 msgid "Pass Count"
 msgstr "Число проходов"
 
+#: lazarusidestrconsts.lispasteclipboard
+msgid "paste clipboard"
+msgstr "Вставить из буфера обмена"
+
+#: lazarusidestrconsts.lispastetextfromclipboard
+msgid "Paste text from clipboard"
+msgstr "Вставить текст из буфера обмена."
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Путь"
@@ -10102,6 +10221,10 @@ msgstr "Сохранять в файле .lps в каталоге проекта
 msgid "Save session information in"
 msgstr "Сохранять информацию о сеансе работы в"
 
+#: lazarusidestrconsts.lisprecedingword
+msgid "Preceding word"
+msgstr "Предыдущее слово"
+
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "первичный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию - "
@@ -10155,6 +10278,10 @@ msgstr "Обнаружена программа"
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Исходный код программы должен иметь расширение Паскаля, например, .pas, .pp или .lpr"
+
+#: lazarusidestrconsts.lisprojaddaddfilestoproject
+msgid "Add files to project"
+msgstr "Добавить файлы в проект"
 
 #: lazarusidestrconsts.lisprojaddaddfiletoproject
 msgid "Add file to project:"
@@ -10558,6 +10685,10 @@ msgstr "Result :="
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
 msgstr "Результат функции:"
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+msgid "returns list of all values of case variable in front of variable"
+msgstr "Возвратить список всех значений оператора case перед переменной."
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -11080,6 +11211,20 @@ msgstr "Внутренняя ошибка компилятора! (%d)"
 msgid "Insert ToDo"
 msgstr "Элемент списка ToDo"
 
+#: lazarusidestrconsts.listemplateeditparamcell
+msgid "Editable Cell"
+msgstr "Редактируемое поле"
+
+#: lazarusidestrconsts.listemplateeditparamcellhelp
+msgid ""
+"Inserts an editable Cell, with a default value\n"
+"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+"\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgstr ""
+"Вставить редактируемое поле со значением по умолчанию:\n"
+"\"\",Sync=n (,S=n) для синхронизации с предыдущим полем (n может принимать значения от 1 до наибольшего номера предыдущего поля);\n"
+"\"default\",Sync, для синхронизации с предыдущим полем с таким же значением 'default'.\n"
+
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Каталог проб"
@@ -11449,7 +11594,7 @@ msgstr "Список ToDo"
 
 #: lazarusidestrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr "Переход к выделенной строке исходного кода"
+msgstr "Перейти к выделенной строке исходного кода"
 
 #: lazarusidestrconsts.listodolistoptions
 msgid "ToDo options..."
@@ -11472,6 +11617,7 @@ msgid "Owner"
 msgstr "Владелец"
 
 #: lazarusidestrconsts.listodolpriority
+msgctxt "lazarusidestrconsts.listodolpriority"
 msgid "Priority"
 msgstr "Приоритет"
 
@@ -11980,6 +12126,14 @@ msgstr "Обновить предпросмотр"
 msgid "Update references?"
 msgstr "Обновить ссылки?"
 
+#: lazarusidestrconsts.lisuppercasestring
+msgid "uppercase string"
+msgstr "Преобразовать регистр строки в верхний"
+
+#: lazarusidestrconsts.lisuppercasestringgivenasparameter
+msgid "Uppercase string given as parameter"
+msgstr "Преобразовать регистр строки, переданной в качестве параметра, в верхний."
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Сообщение со справкой (параметр -h)"
@@ -12445,7 +12599,7 @@ msgstr "Команды сворачивания текста"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
-msgstr "Команды маркера текста"
+msgstr "Команды управления закладками исходного кода"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
@@ -12469,7 +12623,15 @@ msgstr "Команды выделения текста"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
 msgid "Source Notebook commands"
-msgstr "Команды закладок исходного кода"
+msgstr "Команды управления редакторами исходного кода"
+
+#: lazarusidestrconsts.srkmcattemplateedit
+msgid "Template Editing"
+msgstr "Команды редактирования шаблонов"
+
+#: lazarusidestrconsts.srkmcattemplateeditoff
+msgid "Template Editing (not in Cell)"
+msgstr "Команды редактирования шаблонов (не в полях)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
@@ -12603,6 +12765,14 @@ msgstr "Выделить справа"
 #: lazarusidestrconsts.srkmeccolselup
 msgid "Column Select Up"
 msgstr "Выделить сверху"
+
+#: lazarusidestrconsts.srkmeccolselwordleft
+msgid "Column Select Word Left"
+msgstr "Добавить в выделение слово слева"
+
+#: lazarusidestrconsts.srkmeccolselwordright
+msgid "Column Select Word Right"
+msgstr "Добавить в выделение слово справа"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
@@ -12756,23 +12926,23 @@ msgstr "Свернуть до уровня %d"
 
 #: lazarusidestrconsts.srkmecgotoeditor
 msgid "Go to editor %d"
-msgstr "Переход к редактору %d"
+msgstr "Перейти к редактору %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
-msgstr "Переход по директиве include текущего включаемого файла"
+msgstr "Перейти по директиве include текущего включаемого файла"
 
 #: lazarusidestrconsts.srkmecgotolinenumber
 msgid "Go to line number"
-msgstr "Переход к строке номер"
+msgstr "Перейти к строке номер"
 
 #: lazarusidestrconsts.srkmecgotomarker
 msgid "Go to Marker %d"
-msgstr "Переход к маркеру %d"
+msgstr "Перейти к закладке %d"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
-msgstr "Переход по координате"
+msgstr "Перейти по координате"
 
 #: lazarusidestrconsts.srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -12884,7 +13054,7 @@ msgstr "Создать строку ресурсов"
 
 #: lazarusidestrconsts.srkmecmatchbracket
 msgid "Go to matching bracket"
-msgstr "Переход к парной скобке"
+msgstr "Перейти к парной скобке"
 
 #: lazarusidestrconsts.srkmecmoveeditorleft
 msgid "Move editor left"
@@ -13106,7 +13276,7 @@ msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.srkmecsetmarker
 msgid "Set Marker %d"
-msgstr "Установить маркер %d"
+msgstr "Установить закладку %d"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
@@ -13123,6 +13293,50 @@ msgstr "Показывать контекст кода"
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
 msgstr "остановить программу"
+
+#: lazarusidestrconsts.srkmecsynptmpledcellend
+msgid "Goto last pos in cell"
+msgstr "Перейти к концу поля"
+
+#: lazarusidestrconsts.srkmecsynptmpledcellhome
+msgid "Goto first pos in cell"
+msgstr "Перейти к началу поля"
+
+#: lazarusidestrconsts.srkmecsynptmpledcellselect
+msgid "Select cell"
+msgstr "Выбрать поле"
+
+#: lazarusidestrconsts.srkmecsynptmpledescape
+msgid "Escape"
+msgstr "Отменить"
+
+#: lazarusidestrconsts.srkmecsynptmpledfinish
+msgid "Finish"
+msgstr "Завершить"
+
+#: lazarusidestrconsts.srkmecsynptmplednextcell
+msgid "Next Cell"
+msgstr "Следующее поле"
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellrotate
+msgid "Next Cell (rotate)"
+msgstr "Следующее поле (по кругу)"
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellsel
+msgid "Next Cell (all selected)"
+msgstr "Следующее поле (все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
+msgid "Next Cell (rotate / all selected)"
+msgstr "Следующее поле (по кругу / все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcell
+msgid "Previous Cell"
+msgstr "Предыдущее поле"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcellsel
+msgid "Previous Cell (all selected)"
+msgstr "Предыдущее поле (все выбранные)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
@@ -13175,7 +13389,7 @@ msgstr "Просмотр локальных переменных"
 
 #: lazarusidestrconsts.srkmectogglemarker
 msgid "Toggle Marker %d"
-msgstr "Переключить маркер %d"
+msgstr "Переключить закладку %d"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
@@ -13383,20 +13597,20 @@ msgstr "Элемент списка ToDo"
 msgid "Invert Assignment"
 msgstr "Инвертировать присвоение"
 
-#: lazarusidestrconsts.uemmoveeditorleft
-msgid "Move Editor Left"
-msgstr "Передвинуть страницу влево"
+#: lazarusidestrconsts.uemmovepageleft
+msgid "Move page left"
+msgstr "Переместить страницу влево"
 
-#: lazarusidestrconsts.uemmoveeditorleftmost
-msgid "Move Editor Leftmost"
+#: lazarusidestrconsts.uemmovepageleftmost
+msgid "Move page leftmost"
 msgstr "Поместить страницу слева"
 
-#: lazarusidestrconsts.uemmoveeditorright
-msgid "Move Editor Right"
-msgstr "Передвинуть страницу вправо"
+#: lazarusidestrconsts.uemmovepageright
+msgid "Move page right"
+msgstr "Переместить страницу вправо"
 
-#: lazarusidestrconsts.uemmoveeditorrightmost
-msgid "Move Editor Rightmost"
+#: lazarusidestrconsts.uemmovepagerightmost
+msgid "Move page rightmost"
 msgstr "Поместить страницу справа"
 
 #: lazarusidestrconsts.uemnextbookmark

@@ -2316,6 +2316,7 @@ var
   AnAction: TSynEditMouseAction;
   ClipHelper: TSynClipboardStream;
 begin
+WriteLn('DoHandleMouseAction');
   AnAction := nil;
   Result := False;
   while not Result do begin
@@ -2441,6 +2442,7 @@ procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TMouseButton;
 var
   Info: TSynEditMouseActionInfo;
 begin
+WriteLn('FindAndHandleMouseAction');
   FInternalCaret.AssignFrom(FCaret);
   FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
   with Info do begin
@@ -2680,7 +2682,7 @@ var
   wasDragging : Boolean;
   CType: TSynMAClickCount;
 begin
-//DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+writeLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);

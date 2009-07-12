@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-06-03 20:00+0300\n"
+"PO-Revision-Date: 2009-07-12 18:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -14,7 +14,6 @@ msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-#, fuzzy
 #| msgid "Shortcut already exists"
 msgid "Mouse-Shortcut already exists"
 msgstr "Комбинация уже существует"
