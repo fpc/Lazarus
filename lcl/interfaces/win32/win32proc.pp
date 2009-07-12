@@ -34,8 +34,8 @@ uses
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
-  PWindowInfo = ^TWindowInfo;
-  TWindowInfo = record
+  PWin32WindowInfo = ^TWin32WindowInfo;
+  TWin32WindowInfo = record
     AccelGroup: HACCEL;
     Accel: HACCEL;
     Overlay: HWND;            // overlay, transparent window on top, used by designer
@@ -96,9 +96,9 @@ function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 
-function AllocWindowInfo(Window: HWND): PWindowInfo;
+function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
-function GetWindowInfo(Window: HWND): PWindowInfo;
+function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 
 procedure RemoveStayOnTopFlags(Window: HWND);
 procedure RestoreStayOnTopFlags(Window: HWND);
@@ -149,7 +149,7 @@ type
   );
 
 var
-  DefaultWindowInfo: TWindowInfo;
+  DefaultWindowInfo: TWin32WindowInfo;
   WindowInfoAtom: ATOM;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
   UnicodeEnabledOS: Boolean = False;
@@ -741,10 +741,10 @@ end;
 // ----------------------------------------------------------------------
 procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
   Assert(False, 'Trace:TODO: Code SetAccelGroup');
-  WindowInfo := GetWindowInfo(Control);
+  WindowInfo := GetWin32WindowInfo(Control);
   if WindowInfo <> @DefaultWindowInfo then
   begin
     WindowInfo^.AccelGroup := AnAccelGroup;
@@ -756,7 +756,7 @@ end;
 function GetAccelGroup(Const Control: HWND): HACCEL;
 begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
-  Result := GetWindowInfo(Control)^.AccelGroup;
+  Result := GetWin32WindowInfo(Control)^.AccelGroup;
 end;
 
 procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
@@ -792,9 +792,9 @@ var AccelCount: integer; {number of accelerators in table}
   end;
 
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
-  WindowInfo := GetWindowInfo(Window);
+  WindowInfo := GetWin32WindowInfo(Window);
   OldAccel := WindowInfo^.Accel;
   NullAccel := nil;
   AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
@@ -825,7 +825,7 @@ end;
 function GetAccelKey(Const Control: HWND): LPACCEL;
 begin
   Assert(False, 'Trace:TODO: Code GetAccelKey');
-  //Result := GetWindowInfo(Control)^.AccelKey;
+  //Result := GeWin32tWindowInfo(Control)^.AccelKey;
   Result := nil;
 end;
 
@@ -909,7 +909,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin
-  OwnerObject := GetWindowInfo(Handle)^.WinControl;
+  OwnerObject := GetWin32WindowInfo(Handle)^.WinControl;
   Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
@@ -1017,9 +1017,9 @@ begin
     Result := AForm.BorderStyle;
 end;
 
-function AllocWindowInfo(Window: HWND): PWindowInfo;
+function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
@@ -1030,9 +1030,9 @@ end;
 
 function DisposeWindowInfo(Window: HWND): boolean;
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
-  WindowInfo := PWindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
+  WindowInfo := PWin32WindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
   Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom)))<>0;
   if Result then
   begin
@@ -1041,9 +1041,9 @@ begin
   end;
 end;
 
-function GetWindowInfo(Window: HWND): PWindowInfo;
+function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 begin
-  Result := PWindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
+  Result := PWin32WindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;
@@ -1066,7 +1066,7 @@ end;
 procedure RemoveStayOnTopFlags(Window: HWND);
 var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
   // WriteLn('RemoveStayOnTopFlags 1');
   if InRemoveStayOnTopFlags = 0 then
@@ -1074,7 +1074,7 @@ begin
     New(StayOnTopWindowsInfo);
     StayOnTopWindowsInfo^.AppWindow := Window;
     StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
-    WindowInfo := GetWindowInfo(Window);
+    WindowInfo := GetWin32WindowInfo(Window);
     WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
     EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
       @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
@@ -1086,13 +1086,13 @@ end;
 
 procedure RestoreStayOnTopFlags(Window: HWND);
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
   I: integer;
 begin
   // WriteLn('RestoreStayOnTopFlags 1');
   if InRemoveStayOnTopFlags = 1 then
   begin
-    WindowInfo := GetWindowInfo(Window);
+    WindowInfo := GetWin32WindowInfo(Window);
     if WindowInfo^.StayOnTopList <> nil then
     begin
       for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do

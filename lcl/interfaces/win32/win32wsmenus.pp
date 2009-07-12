@@ -1322,7 +1322,7 @@ const
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
-  GetWindowInfo(AppHandle)^.PopupMenu := APopupMenu;
+  GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlign[APopupMenu.IsRightToLeft] or
     TPM_LEFTBUTTON or TPM_RIGHTBUTTON or

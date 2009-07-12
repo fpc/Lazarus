@@ -64,7 +64,7 @@ var
 begin
   Handle := ACustomListBox.Handle;
   Result := TWin32CheckListBoxStrings.Create(Handle, ACustomListBox);
-  GetWindowInfo(Handle)^.List := Result;
+  GetWin32WindowInfo(Handle)^.List := Result;
 end;
 
 class function TWin32WSCustomCheckListBox.GetItemEnabled(

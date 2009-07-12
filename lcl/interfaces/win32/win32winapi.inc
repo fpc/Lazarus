@@ -1800,9 +1800,9 @@ function TWin32WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 var
   OverlayWindow: HWND;
   ARect: Windows.RECT;
-  WindowInfo, OverlayWindowInfo: PWindowInfo;
+  WindowInfo, OverlayWindowInfo: PWin32WindowInfo;
 begin
-  WindowInfo := GetWindowInfo(WindowHandle);
+  WindowInfo := GetWin32WindowInfo(WindowHandle);
   OverlayWindow := WindowInfo^.Overlay;
   if OverlayWindow = HWND(nil) then
   begin
@@ -2264,10 +2264,10 @@ var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
   Result:=false;
-  WindowInfo := GetWindowInfo(Handle);
+  WindowInfo := GetWin32WindowInfo(Handle);
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
   if not Windows.GetWindowRect(Handle,@R) then exit;
@@ -2300,7 +2300,7 @@ var
   WP: WINDOWPLACEMENT;
   R: TRect;
   Style, ExStyle: PtrInt;
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 
     procedure AdjustForBuddySize;
     var
@@ -2335,7 +2335,7 @@ begin
     end;
   end;
 
-  WindowInfo := GetWindowInfo(Handle);
+  WindowInfo := GetWin32WindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
   Style := GetWindowLong(Handle, GWL_STYLE);
@@ -2825,7 +2825,7 @@ var
   OverlayWindow: HWND;
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  OverlayWindow := GetWindowInfo(Window)^.Overlay;
+  OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
   if OverlayWindow <> HWND(nil) then
     Result := Windows.ReleaseDC(OverlayWindow, DC);
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));

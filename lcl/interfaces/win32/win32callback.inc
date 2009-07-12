@@ -91,7 +91,7 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
       Exit;
     Info.cbSize := SizeOf(Info);
     Win32Extra.GetComboBoxInfo(Window, @Info);
-    Result := (Info.hwndItem <> 0) and GetWindowInfo(Info.hwndItem)^.isComboEdit;
+    Result := (Info.hwndItem <> 0) and GetWin32WindowInfo(Info.hwndItem)^.isComboEdit;
   end;
 var
   PrevWndProc: Windows.WNDPROC;
@@ -105,7 +105,7 @@ begin
   if depthLen > 0 then
     MessageStackDepth[depthLen] := '#';
 {$endif}
-  PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
+  PrevWndProc := GetWin32WindowInfo(Window)^.DefWndProc;
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
     if UnicodeEnabledOS
@@ -198,7 +198,7 @@ begin
   Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);
 end;
 
-function GetNeedParentPaint(AWindowInfo: PWindowInfo; AWinControl: TWinControl): boolean;
+function GetNeedParentPaint(AWindowInfo: PWin32WindowInfo; AWinControl: TWinControl): boolean;
 begin
   Result := AWindowInfo^.needParentPaint
     and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
@@ -232,14 +232,14 @@ var
   P: TPoint;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   lWinControl, ChildWinControl: TWinControl;
-  ChildWindowInfo: PWindowInfo;
+  ChildWindowInfo: PWin32WindowInfo;
   TargetObject: TObject;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
   TargetWindow: HWND;
   eraseBkgndCommand: TEraseBkgndCommand;
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
   Flags: dword;
   WindowDC: HDC;
 
@@ -265,7 +265,7 @@ var
     PageIndex, Flags: Integer;
     PageHandle: HWND;
   begin
-    Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
+    Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
     PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
     PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
@@ -376,7 +376,7 @@ var
     // do not use default deliver message
     if lWinControl = nil then
     begin
-      lWinControl := GetWindowInfo(Window)^.PWinControl;
+      lWinControl := GetWin32WindowInfo(Window)^.PWinControl;
       if lWinControl = nil then exit;
     end;
 
@@ -396,7 +396,7 @@ var
       while (ParentPaintWindow <> 0) and not lNotebookFound do
       begin
         // notebook is parent of window that has istabpage
-        if GetWindowInfo(ParentPaintWindow)^.isTabPage then
+        if GetWin32WindowInfo(ParentPaintWindow)^.isTabPage then
           lNotebookFound := true;
         ParentPaintWindow := Windows.GetParent(ParentPaintWindow);
       end;
@@ -698,7 +698,7 @@ var
   begin
     ScrollbarHandle := HWND(LParam);
     if ScrollbarHandle<>0 then
-      lWinControl := GetWindowInfo(ScrollbarHandle)^.WinControl;
+      lWinControl := GetWin32WindowInfo(ScrollbarHandle)^.WinControl;
     if lWinControl is TCustomTrackBar then
     begin
       LMessage.Msg := LM_CHANGED;
@@ -910,9 +910,9 @@ var
 
   procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
   var
-    lWindowInfo: PWindowInfo;
+    lWindowInfo: PWin32WindowInfo;
   begin
-    lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
+    lWindowInfo := GetWin32WindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;
 
     lWindowInfo^.spinValue := ASpinEdit.StrToValue(ASpinEdit.Text);
@@ -1210,7 +1210,7 @@ begin
   NotifyUserInput := False;
 
   Assert(False, 'Trace:WindowProc - Getting Object with Callback Procedure');
-  WindowInfo := GetWindowInfo(Window);
+  WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
     // combobox child edit weirdness
@@ -1409,10 +1409,10 @@ begin
         end;
       end
       else begin
-        lWinControl := GetWindowInfo(HWND(LParam))^.WinControl;
+        lWinControl := GetWin32WindowInfo(HWND(LParam))^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
-          lWinControl := GetWindowInfo(HWND(LParam))^.AWinControl;
+          lWinControl := GetWin32WindowInfo(HWND(LParam))^.AWinControl;
 
         if lWinControl is TCustomCheckbox then begin
           case HIWORD(WParam) of
@@ -1503,7 +1503,7 @@ begin
       // others need to erased with their window color
       // scrollbar also has buttons
       WindowDC := HDC(WParam);
-      ChildWindowInfo := GetWindowInfo(HWND(LParam));
+      ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then
         ChildWinControl := ChildWindowInfo^.AWinControl;
@@ -1588,7 +1588,7 @@ begin
       end;
 
       // TODO: this could crash for a MenuItem.
-      WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
+      WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
         lWinControl := WindowInfo^.WinControl;
       {$IFDEF MSG_DEBUG}
@@ -1975,7 +1975,7 @@ begin
 
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
-        if GetWindowInfo(TargetWindow)^.isComboEdit then
+        if GetWin32WindowInfo(TargetWindow)^.isComboEdit then
           TargetWindow := Windows.GetParent(TargetWindow);
 
         // check InMouseWheelRedirection to prevent recursion
@@ -2058,7 +2058,7 @@ begin
     end;
     WM_NOTIFY:
     begin
-      WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+      WindowInfo := GetWin32WindowInfo(PNMHdr(LParam)^.hwndFrom);
 {$ifdef MSG_DEBUG}
       DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
 {$endif}
@@ -2489,7 +2489,7 @@ begin
              (WParam = Size_Restored) then
             lWinControl.DoAdjustClientRectChange(False);
         end;
-        OverlayWindow := GetWindowInfo(Window)^.Overlay;
+        OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       end;
@@ -2609,7 +2609,7 @@ begin
             if LMNotify.Result = 0 then
               ShowHideTabPage(HWndFrom, False);
           TCN_SELCHANGE:
-            NotebookFocusNewControl(GetWindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
+            NotebookFocusNewControl(GetWin32WindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
         end;
     end;
 
@@ -2777,7 +2777,7 @@ begin
       
       // Check if overlayed control want to handle mouse messages
       Parent := Windows.GetParent(Window);
-      Owner := GetWindowInfo(Parent)^.WinControl;
+      Owner := GetWin32WindowInfo(Parent)^.WinControl;
       P.x := GET_X_LPARAM(lParam);
       P.y := GET_Y_LPARAM(lParam);
       Windows.ScreenToClient(Parent, P);

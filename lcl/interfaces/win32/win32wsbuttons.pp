@@ -475,10 +475,10 @@ end;
 function BitBtnWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
-  Info: PWindowInfo;
+  Info: PWin32WindowInfo;
   Control: TWinControl;
 begin
-  Info := GetWindowInfo(Window);
+  Info := GetWin32WindowInfo(Window);
   if (Info = nil) or (Info^.WinControl = nil) then
   begin
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);

@@ -459,7 +459,7 @@ begin
       // allocate windowinfo record ourselves, we do not call WindowInitBuddy
       BuddyWindowInfo := AllocWindowInfo(Buddy);
       BuddyWindowInfo^.PWinControl := AWinControl;
-      if GetWindowInfo(Parent)^.needParentPaint then
+      if GetWin32WindowInfo(Parent)^.needParentPaint then
         BuddyWindowInfo^.needParentPaint := true;
       Parent := Buddy;
     end;
@@ -494,7 +494,7 @@ var
 begin
   WinHandle := AWinControl.Handle;
   // check if we have a ``container'', if so, move that
-  BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
+  BuddyHandle := GetWin32WindowInfo(WinHandle)^.ParentPanel;
   if BuddyHandle <> 0 then
   begin
     MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
@@ -620,11 +620,11 @@ end;
 
 class function TWin32WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
   winHandle: HWND;
 begin
   winHandle := ACustomListBox.Handle;
-  WindowInfo := GetWindowInfo(winHandle);
+  WindowInfo := GetWin32WindowInfo(winHandle);
   // if we're handling a WM_DRAWITEM, then LB_GETSEL is not reliable, check stored info
   if (WindowInfo^.DrawItemIndex <> -1) and (WindowInfo^.DrawItemIndex = AIndex) then
     Result := WindowInfo^.DrawItemSelected
@@ -638,7 +638,7 @@ var
 begin
   Handle := ACustomListBox.Handle;
   Result := TWin32ListStringList.Create(Handle, ACustomListBox);
-  GetWindowInfo(Handle)^.List := Result;
+  GetWin32WindowInfo(Handle)^.List := Result;
 end;
 
 class function TWin32WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
@@ -740,7 +740,7 @@ class function TWin32WSCustomComboBox.GetStringList(
 begin
   Result := nil;
   if ACustomComboBox.Style <> csSimple then
-    Result := TWin32ComboBoxStringList(GetWindowInfo(ACustomComboBox.Handle)^.List);
+    Result := TWin32ComboBoxStringList(GetWin32WindowInfo(ACustomComboBox.Handle)^.List);
 end;
 
 class function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
@@ -851,7 +851,7 @@ end;
 
 class function TWin32WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
 begin
-  Result := GetWindowInfo(ACustomComboBox.Handle)^.MaxLength;
+  Result := GetWin32WindowInfo(ACustomComboBox.Handle)^.MaxLength;
 end;
 
 class function TWin32WSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
@@ -912,7 +912,7 @@ var
 begin
   winhandle := ACustomComboBox.Handle;
   SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
-  GetWindowInfo(winhandle)^.MaxLength := NewLength;
+  GetWin32WindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
 class procedure TWin32WSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
@@ -964,7 +964,7 @@ var
 begin
   winhandle := ACustomComboBox.Handle;
   Result := TWin32ComboBoxStringList.Create(winhandle, ACustomComboBox);
-  GetWindowInfo(winhandle)^.List := Result;
+  GetWin32WindowInfo(winhandle)^.List := Result;
 end;
 
 class procedure TWin32WSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
@@ -1080,7 +1080,7 @@ end;
 
 class function TWin32WSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
 begin
-  Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
+  Result := GetWin32WindowInfo(ACustomEdit.Handle)^.MaxLength;
 end;
 
 class procedure TWin32WSCustomEdit.GetPreferredSize(
@@ -1137,7 +1137,7 @@ var
 begin
   winhandle := ACustomEdit.Handle;
   SendMessage(winhandle, EM_LIMITTEXT, NewLength, 0);
-  GetWindowInfo(winhandle)^.MaxLength := NewLength;
+  GetWin32WindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
 class procedure TWin32WSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);

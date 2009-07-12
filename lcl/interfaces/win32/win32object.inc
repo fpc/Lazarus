@@ -369,7 +369,7 @@ begin
     begin
       while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
-        AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
+        AccelTable := GetWin32WindowInfo(AMessage.HWnd)^.Accel;
         if (AccelTable = HACCEL(nil))
           or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
         begin
@@ -726,7 +726,7 @@ var
   Flags: dword;
 begin
   Handle := ObjectToHWND(Sender);
-  ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
+  ParentPanel := GetWin32WindowInfo(Handle)^.ParentPanel;
   if ParentPanel <> 0 then
     Handle := ParentPanel;
   if TControl(Sender).HandleObjectShouldBeVisible then

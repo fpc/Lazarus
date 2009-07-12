@@ -330,11 +330,11 @@ end;
 function StatusBarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
-  Info: PWindowInfo;
+  Info: PWin32WindowInfo;
   Control: TWinControl;
   Details: TThemedElementDetails;
 begin
-  Info := GetWindowInfo(Window);
+  Info := GetWin32WindowInfo(Window);
   if (Info = nil) or (Info^.WinControl = nil) then
   begin
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -703,7 +703,7 @@ end;
 function TrackBarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
   Control: TWinControl;
   FocusBorderWidth,
   FocusBorderHeight, Offset: Integer;
@@ -721,7 +721,7 @@ begin
         NMHdr := PNMHDR(LParam);
         if NMHdr^.code = NM_CUSTOMDRAW then
         begin
-          WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+          WindowInfo := GetWin32WindowInfo(PNMHdr(LParam)^.hwndFrom);
           Control := WindowInfo^.WinControl;
           case PNMCustomDraw(LParam)^.dwDrawStage of
             CDDS_PREPAINT:

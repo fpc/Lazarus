@@ -111,7 +111,7 @@ type
   TCreateWindowExParams = record
     Buddy, Parent, Window: HWND;
     Left, Top, Height, Width: integer;
-    WindowInfo, BuddyWindowInfo: PWindowInfo;
+    WindowInfo, BuddyWindowInfo: PWin32WindowInfo;
     MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
@@ -240,7 +240,7 @@ begin
     begin
       // some controls (combobox) immediately send a message upon setting font
       WindowInfo := AllocWindowInfo(Window);
-      if GetWindowInfo(Parent)^.needParentPaint then
+      if GetWin32WindowInfo(Parent)^.needParentPaint then
         WindowInfo^.needParentPaint := true;
       WindowInfo^.WinControl := AWinControl;
       AWinControl.Handle := Window;
@@ -333,7 +333,7 @@ begin
   Assert(False, 'Trace:AddControl - Parent Window Handle is $' + IntToHex(LongInt(ParentHandle), 8));
   Assert(False, 'Trace:AddControl - Child Window Handle is $' + IntToHex(LongInt(ChildHandle), 8));
   // handle groupbox exception
-  ParentPanelHandle := GetWindowInfo(ChildHandle)^.ParentPanel;
+  ParentPanelHandle := GetWin32WindowInfo(ChildHandle)^.ParentPanel;
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
   SetParent(ChildHandle, ParentHandle);
@@ -508,7 +508,7 @@ var
   AccelTable: HACCEL;
 begin
   Handle := AWinControl.Handle;
-  AccelTable := GetWindowInfo(Handle)^.Accel;
+  AccelTable := GetWin32WindowInfo(Handle)^.Accel;
   if AccelTable <> 0 then
     DestroyAcceleratorTable(AccelTable);
   DestroyWindow(Handle);

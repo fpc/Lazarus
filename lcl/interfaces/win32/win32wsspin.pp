@@ -104,12 +104,12 @@ end;
 function SpinBuddyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
-  AWindowInfo: PWindowInfo;
+  AWindowInfo: PWin32WindowInfo;
 begin
   Result := WindowProc(Window, Msg, WParam, LParam);
   if Msg = WM_KILLFOCUS then
   begin
-    AWindowInfo := GetWindowInfo(Window);
+    AWindowInfo := GetWin32WindowInfo(Window);
     if AWindowInfo^.AWinControl is TCustomFloatSpinEdit then
       UpdateFloatSpinEditControl(AWindowInfo^.AWinControl.Handle,
         TCustomFloatSpinEdit(AWindowInfo^.AWinControl));
@@ -119,9 +119,9 @@ end;
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
   const AFloatSpinEdit: TCustomFloatSpinEdit);
 var
-  lWindowInfo: PWindowInfo;
+  lWindowInfo: PWin32WindowInfo;
 begin
-  lWindowInfo := GetWindowInfo(Handle);
+  lWindowInfo := GetWin32WindowInfo(Handle);
   if lWindowInfo <> @DefaultWindowInfo then
   begin
     lWindowInfo^.spinValue := AFloatSpinEdit.Value;
@@ -242,7 +242,7 @@ end;
 class function TWin32WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
-  Result := GetWindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
+  Result := GetWin32WindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.SetReadOnly

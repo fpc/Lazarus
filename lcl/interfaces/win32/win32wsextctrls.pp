@@ -322,9 +322,9 @@ end;
 
 class procedure TWin32WSCustomPage.ThemeChange(Wnd: HWnd);
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: PWin32WindowInfo;
 begin
-  WindowInfo := GetWindowInfo(Wnd);
+  WindowInfo := GetWin32WindowInfo(Wnd);
   if WindowInfo <> nil then
   begin
     with WindowInfo^ do
