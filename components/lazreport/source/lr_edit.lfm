@@ -131,7 +131,6 @@ inherited frEditorForm: TfrEditorForm
       Width = 505
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
-      CFDividerDrawLevel = 0
       Font.Height = -14
       Font.Name = 'courier'
       Font.Pitch = fpFixed
@@ -140,9 +139,31 @@ inherited frEditorForm: TfrEditorForm
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = 2
-      BookMarkOptions.OnChange = nil
       Gutter.Color = 13605511
-      Gutter.Width = 57
+      Gutter.Width = 59
+      Gutter.MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = 13
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
       Highlighter = SynPasSyn1
       Keystrokes = <      
         item
@@ -465,6 +486,129 @@ inherited frEditorForm: TfrEditorForm
           Command = 250
           ShortCut = 24642
         end>
+      MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 1
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssShift]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 1
+          MoveCaret = True
+          Option = 1
+          Priority = 0
+        end      
+        item
+          Shift = [ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 3
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssShift, ssAlt]
+          ShiftMask = [ssShift, ssAlt]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 3
+          MoveCaret = True
+          Option = 1
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccDouble
+          ClickDir = cdDown
+          Command = 6
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccTriple
+          ClickDir = cdDown
+          Command = 7
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccQuad
+          ClickDir = cdDown
+          Command = 8
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbMiddle
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 10
+          MoveCaret = True
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = [ssCtrl]
+          ShiftMask = [ssShift, ssAlt, ssCtrl]
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 11
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
+      MouseSelActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccSingle
+          ClickDir = cdDown
+          Command = 9
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
       Lines.Strings = (
         'Begin'
         '  a:=''ttttt";'
@@ -481,6 +625,7 @@ inherited frEditorForm: TfrEditorForm
         end
         object TSynGutterLineNumber
           Width = 19
+          MouseActions = <>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clNone
           DigitCount = 2
@@ -497,8 +642,88 @@ inherited frEditorForm: TfrEditorForm
           Width = 2
         end
         object TSynGutterCodeFolding
+          MouseActions = <          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbRight
+              ClickCount = ccSingle
+              ClickDir = cdUp
+              Command = 16
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = [ssShift]
+              ShiftMask = [ssShift]
+              Button = mbMiddle
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 1
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 0
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
+          MouseActionsExpanded = <          
+            item
+              Shift = []
+              ShiftMask = []
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 14
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end>
+          MouseActionsCollapsed = <          
+            item
+              Shift = [ssCtrl]
+              ShiftMask = [ssCtrl]
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 15
+              MoveCaret = False
+              Option = 0
+              Priority = 0
+            end          
+            item
+              Shift = []
+              ShiftMask = [ssCtrl]
+              Button = mbLeft
+              ClickCount = ccAny
+              ClickDir = cdDown
+              Command = 15
+              MoveCaret = False
+              Option = 1
+              Priority = 0
+            end>
         end
       end
     end
@@ -558,9 +783,9 @@ inherited frEditorForm: TfrEditorForm
         TabOrder = 0
         object CB1: TCheckBox
           Left = 4
-          Height = 19
+          Height = 17
           Top = 2
-          Width = 47
+          Width = 45
           HelpContext = 80
           AllowGrayed = True
           Caption = '&Script'
@@ -569,9 +794,9 @@ inherited frEditorForm: TfrEditorForm
         end
         object CB2: TCheckBox
           Left = 92
-          Height = 19
+          Height = 17
           Top = 2
-          Width = 56
+          Width = 54
           HelpContext = 90
           AllowGrayed = True
           Caption = '&Big font'
@@ -580,9 +805,9 @@ inherited frEditorForm: TfrEditorForm
         end
         object CB3: TCheckBox
           Left = 224
-          Height = 19
+          Height = 17
           Top = 2
-          Width = 72
+          Width = 70
           HelpContext = 100
           AllowGrayed = True
           Caption = '&Word wrap'
@@ -608,18 +833,9 @@ inherited frEditorForm: TfrEditorForm
     DefaultFilter = '(TSynHighlighterAttributes)'
     Enabled = False
     AsmAttri.Foreground = 5812813
-    AsmAttri.FrameColor = clNone
     CommentAttri.Foreground = 13461314
-    CommentAttri.FrameColor = clNone
-    IdentifierAttri.FrameColor = clNone
-    KeyAttri.FrameColor = clNone
     NumberAttri.Foreground = clRed
-    NumberAttri.FrameColor = clNone
-    SpaceAttri.FrameColor = clNone
     StringAttri.Foreground = 15226932
-    StringAttri.FrameColor = clNone
-    SymbolAttri.FrameColor = clNone
-    DirectiveAttri.FrameColor = clNone
     CompilerMode = pcmDelphi
     NestedComments = False
     left = 228

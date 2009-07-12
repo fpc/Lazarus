@@ -251,6 +251,7 @@ begin
   Button3.Caption := sEditorFormVar;
   Button4.Caption := sEditorFormField;
   Button5.Caption := sEditorFormFormat;
+  Button6.Caption := sEditorFormFunction;
   Button1.Caption := sOk;
   Button2.Caption := sCancel;
 end;

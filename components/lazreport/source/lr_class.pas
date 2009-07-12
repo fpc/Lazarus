@@ -1235,6 +1235,59 @@ begin
 end;
 {$ENDIF}
 
+procedure UpdateObjectStringResources;
+begin
+  frCharset := StrToInt(sCharset);
+
+  frBandNames[btReportTitle] := sBand1;
+  frBandNames[btReportSummary] := sBand2;
+  frBandNames[btPageHeader] := sBand3;
+  frBandNames[btPageFooter] := sBand4;
+  frBandNames[btMasterHeader] := sBand5;
+  frBandNames[btMasterData] := sBand6;
+  frBandNames[btMasterFooter] := sBand7;
+  frBandNames[btDetailHeader] := sBand8;
+  frBandNames[btDetailData] := sBand9;
+  frBandNames[btDetailFooter] := sBand10;
+  frBandNames[btSubDetailHeader] := sBand11;
+  frBandNames[btSubDetailData] := sBand12;
+  frBandNames[btSubDetailFooter] := sBand13;
+  frBandNames[btOverlay] := sBand14;
+  frBandNames[btColumnHeader] := sBand15;
+  frBandNames[btColumnFooter] := sBand16;
+  frBandNames[btGroupHeader] := sBand17;
+  frBandNames[btGroupFooter] := sBand18;
+  frBandNames[btCrossHeader] := sBand19;
+  frBandNames[btCrossData] := sBand20;
+  frBandNames[btCrossFooter] := sBand21;
+  frBandNames[btNone] := sBand22;
+
+  frSpecArr[0] := sVar1;
+  frSpecArr[1] := sVar2;
+  frSpecArr[2] := sVar3;
+  frSpecArr[3] := sVar4;
+  frSpecArr[4] := sVar5;
+  frSpecArr[5] := sVar6;
+  frSpecArr[6] := sVar7;
+  frSpecArr[7] := sVar8;
+  frSpecArr[8] := sVar9;
+
+  BoolStr[0] :=SFormat51;
+  BoolStr[1] :=SFormat52;
+  BoolStr[2] :=SFormat53;
+  BoolStr[3] :=SFormat54;
+
+  frDateFormats[0] :=sDateFormat1;
+  frDateFormats[1] :=sDateFormat2;
+  frDateFormats[2] :=sDateFormat3;
+  frDateFormats[3] :=sDateFormat4;
+
+  frTimeFormats[0] :=sTimeFormat1;
+  frTimeFormats[1] :=sTimeFormat2;
+  frTimeFormats[2] :=sTimeFormat3;
+  frTimeFormats[3] :=sTimeFormat4;
+end;
+
 {----------------------------------------------------------------------------}
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
 var
@@ -7229,6 +7282,7 @@ begin
   FInitialZoom := pzDefault;
   FileName := sUntitled;
   FComments:=TStringList.Create;
+  UpdateObjectStringResources;
 end;
 
 destructor TfrReport.Destroy;
@@ -9435,58 +9489,6 @@ begin
   SMemo := TStringList.Create;
 
   frRegisterFunctionLibrary(TfrStdFunctionLibrary);
-  
-  
-  frCharset := StrToInt(sCharset);
-
-  frBandNames[btReportTitle] := sBand1;
-  frBandNames[btReportSummary] := sBand2;
-  frBandNames[btPageHeader] := sBand3;
-  frBandNames[btPageFooter] := sBand4;
-  frBandNames[btMasterHeader] := sBand5;
-  frBandNames[btMasterData] := sBand6;
-  frBandNames[btMasterFooter] := sBand7;
-  frBandNames[btDetailHeader] := sBand8;
-  frBandNames[btDetailData] := sBand9;
-  frBandNames[btDetailFooter] := sBand10;
-  frBandNames[btSubDetailHeader] := sBand11;
-  frBandNames[btSubDetailData] := sBand12;
-  frBandNames[btSubDetailFooter] := sBand13;
-  frBandNames[btOverlay] := sBand14;
-  frBandNames[btColumnHeader] := sBand15;
-  frBandNames[btColumnFooter] := sBand16;
-  frBandNames[btGroupHeader] := sBand17;
-  frBandNames[btGroupFooter] := sBand18;
-  frBandNames[btCrossHeader] := sBand19;
-  frBandNames[btCrossData] := sBand20;
-  frBandNames[btCrossFooter] := sBand21;
-  frBandNames[btNone] := sBand22;
-
-  frSpecArr[0] := sVar1;
-  frSpecArr[1] := sVar2;
-  frSpecArr[2] := sVar3;
-  frSpecArr[3] := sVar4;
-  frSpecArr[4] := sVar5;
-  frSpecArr[5] := sVar6;
-  frSpecArr[6] := sVar7;
-  frSpecArr[7] := sVar8;
-  frSpecArr[8] := sVar9;
-
-  BoolStr[0] :=SFormat51;
-  BoolStr[1] :=SFormat52;
-  BoolStr[2] :=SFormat53;
-  BoolStr[3] :=SFormat54;
-
-
-  frDateFormats[0] :=sDateFormat1;
-  frDateFormats[1] :=sDateFormat2;
-  frDateFormats[2] :=sDateFormat3;
-  frDateFormats[3] :=sDateFormat4;
-
-  frTimeFormats[0] :=sTimeFormat1;
-  frTimeFormats[1] :=sTimeFormat2;
-  frTimeFormats[2] :=sTimeFormat3;
-  frTimeFormats[3] :=sTimeFormat4;
 
   frParser := TfrParser.Create;
   frInterpretator := TInterpretator.Create;

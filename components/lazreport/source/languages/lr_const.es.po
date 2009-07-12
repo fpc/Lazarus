@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-18 09:15+0100\n"
-"Last-Translator: javivf <javivf@gmail.com>\n"
+"PO-Revision-Date: 2009-07-12 00:11-0600\n"
+"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -526,6 +526,10 @@ msgstr "Campo de& DB"
 msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formato"
+
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr "Función"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"

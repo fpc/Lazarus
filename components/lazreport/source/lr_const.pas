@@ -70,6 +70,7 @@ resourcestring
   sEditorFormVar = '&Variable';
   sEditorFormField = '&DB field';
   sEditorFormFormat = '&Format';
+  sEditorFormFunction = 'Function';
 
 //--- DesOptionsForm resources ------------------------------------------------
   sDesOptionsFormOpt = 'Options';
