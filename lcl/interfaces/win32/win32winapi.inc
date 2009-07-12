@@ -2358,8 +2358,6 @@ begin
       Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
-  if GetParent(Handle) = 0 then
-    WriteLn(Height);
 
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     AdjustForBuddySize;
