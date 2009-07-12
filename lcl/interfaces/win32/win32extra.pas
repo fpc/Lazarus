@@ -54,6 +54,22 @@ type
   MENUBARINFO = tagMENUBARINFO;
   PMENUBARINFO = ^tagMENUBARINFO;
 
+  // Window information snapshot
+  tagWINDOWINFO = record
+    cbSize: DWORD;
+    rcWindow: TRect;
+    rcClient: TRect;
+    dwStyle: DWORD;
+    dwExStyle: DWORD;
+    dwWindowStatus: DWORD;
+    cxWindowBorders: UINT;
+    cyWindowBorders: UINT;
+    atomWindowType: ATOM;
+    wCreatorVersion: WORD;
+  end;
+  WINDOWINFO = tagWINDOWINFO;
+  PWINDOWINFO = ^tagWINDOWINFO;
+
 // AlphaBlend is only defined for win98&2k and up
 // load dynamic and use ownfunction if not defined
 var
@@ -61,6 +77,7 @@ var
   GradientFill: function(DC: HDC; p2: PTriVertex; p3: ULONG; p4: Pointer; p5, p6: ULONG): BOOL; stdcall;
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
   GetMenuBarInfo: function(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
+  GetWindowInfo: function(hwnd: HWND; pwi: PWINDOWINFO): BOOL; stdcall;
   EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
   GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
   MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
@@ -520,6 +537,11 @@ begin
   Result := False;
 end;
 
+function _GetWindowInfo(hwnd: HWND; pwi: PWINDOWINFO): BOOL; stdcall;
+begin
+  Result := False;
+end;
+
 function _EnumDisplayMonitors(hdcOptionalForPainting: HDC;
   lprcEnumMonitorsThatIntersect: PRect;
   lpfnEnumProc: MonitorEnumProc;
@@ -663,6 +685,7 @@ var
 begin
   GetComboBoxInfo := nil;
   GetMenuBarInfo := nil;
+  GetWindowInfo := nil;
 
   AlphaBlend := @_AlphaBlend;
 
@@ -704,6 +727,11 @@ begin
       Pointer(GetMenuBarInfo) := p
     else
       Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
+    p := GetProcAddress(user32handle, 'GetWindowInfo');
+    if p <> nil then
+      Pointer(GetWindowInfo) := p
+    else
+      Pointer(GetWindowInfo) := @_GetWindowInfo;
     p := GetProcAddress(user32handle, 'EnumDisplayMonitors');
     if p <> nil then
       Pointer(EnumDisplayMonitors) := p
