@@ -2363,8 +2363,8 @@ begin
   WindowInfo := GetWin32WindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
-  Info.dwStyle := GetWindowLong(Handle, GWL_STYLE);
-  Info.dwExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
+  Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
+  Info.dwExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE));
   if (Info.dwStyle and WS_THICKFRAME) <> 0 then
   begin
     // thick, sizing border
