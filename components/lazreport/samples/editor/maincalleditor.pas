@@ -26,9 +26,10 @@ unit maincalleditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, LR_PGrid,
-  Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
+  LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
+  LR_BarC, LR_RRect, LR_Shape, LR_ChBox;
 
 type
 
@@ -59,8 +60,12 @@ type
     Datasource1: TDatasource;
     Dbf1: TDbf;
     dbGrid1: TdbGrid;
+    frBarCodeObject1: TfrBarCodeObject;
+    frCheckBoxObject1: TfrCheckBoxObject;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
+    frRoundRectObject1: TfrRoundRectObject;
+    frShapeObject1: TfrShapeObject;
     frUserDataset1: TfrUserDataset;
     lblExpr: TLabel;
     lblIndex: TLabel;
@@ -348,7 +353,7 @@ begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('MainCallEditor','languages/calleditorwithpkg.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('Lr_const','../../languages/lr_const.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
 end;
 
 initialization
