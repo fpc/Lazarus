@@ -325,7 +325,7 @@ end;
 
 { TGtkWSMenu }
 
-class function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+class function TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -377,11 +377,10 @@ begin
   //else DebugLn('No valid popupDelayedClose event');
 end;
 
-function gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
 begin
   Include(PWidgetInfo(Data)^.Flags, wwiValidQueuedEvent);
   g_idle_add(@gtkWSPopupDelayedClose, data);
-  Result := CallBackDefaultReturn;
 end;
 
 class procedure TGtkWSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
