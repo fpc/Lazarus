@@ -425,7 +425,12 @@ begin
                             TGtkMenuPositionFunc(AProc),
                             @APoint,
                             0,
-                            0);
+                            {$ifdef gtk1}
+                              gdk_event_get_time(gtk_get_current_event)
+                            {$else}
+                              gtk_get_current_event_time()
+                            {$endif}
+                            );
   {Displays a menu and makes it available for selection. Applications
   can use this function to display context-sensitive menus, and will
   typically supply NULL for the parent_menu_shell, parent_menu_item,
