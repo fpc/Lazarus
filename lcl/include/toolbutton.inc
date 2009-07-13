@@ -854,11 +854,11 @@ begin
   if AParent is TToolBar then
   begin
     if Style in [tbsButton,tbsDropDown,tbsCheck] then
-      NewWidth:=TToolBar(AParent).ButtonWidth
+      NewWidth := TToolBar(AParent).ButtonWidth
     else
-      NewWidth:=Width;
-    NewHeight:=TToolBar(AParent).ButtonHeight;
-    SetBoundsKeepBase(Left,Top,NewWidth,NewHeight,true);
+      NewWidth := Width;
+    NewHeight := TToolBar(AParent).ButtonHeight;
+    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight, True);
   end;
   
   // inherited
@@ -867,7 +867,7 @@ begin
   // add to new button list
   if Parent is TToolBar then
   begin
-    FToolBar:=TToolBar(Parent);
+    FToolBar := TToolBar(Parent);
     i := Index;
     if i < 0 then
       FToolBar.AddButton(Self);

@@ -121,11 +121,11 @@ var
   NewWidth, NewHeight: integer;
 begin
   if tbfPlacingControls in FToolBarFlags then exit;
-  Include(FToolBarFlags,tbfPlacingControls);
+  Include(FToolBarFlags, tbfPlacingControls);
   try
-    WrapButtons(Width,NewWidth,NewHeight,false);
+    WrapButtons(Width, NewWidth, NewHeight, False);
   finally
-    Exclude(FToolBarFlags,tbfPlacingControls);
+    Exclude(FToolBarFlags, tbfPlacingControls);
   end;
 end;
 
@@ -314,9 +314,9 @@ begin
   if ([csLoading,csDestroying]*ComponentState<>[]) or (not HandleAllocated) then
   begin
     Include(FToolBarFlags,tbfUpdateVisibleBarNeeded);
-    exit;
+    Exit;
   end;
-  for i:=0 to FButtons.Count-1 do
+  for i := 0 to FButtons.Count - 1 do
     TControl(FButtons[i]).InvalidatePreferredSize;
   ReAlign;
   Invalidate;
@@ -438,7 +438,7 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  WrapButtons(Width, NewWidth, NewHeight, true);
+  WrapButtons(Width, NewWidth, NewHeight, True);
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
@@ -474,9 +474,9 @@ begin
     and (Parent.AutoSize=false)
     then begin
       // the width is fixed
-      WrapButtons(Width,NewWidth,NewHeight,true);
-      PreferredWidth:=NewWidth;
-      PreferredHeight:=NewHeight;
+      WrapButtons(Width, NewWidth, NewHeight, True);
+      PreferredWidth := NewWidth;
+      PreferredHeight := NewHeight;
       //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
     end;
   end;
@@ -514,50 +514,52 @@ var
     PreferredBtnWidth: Integer;
     PreferredBtnHeight: Integer;
   begin
-    if (CurControl is TToolButton)
-    and (TToolButton(CurControl).Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (not CurControl.AutoSize)
-    then begin
-      PreferredBtnWidth:=0;
-      PreferredBtnHeight:=0;
-      CurControl.GetPreferredSize(PreferredBtnWidth,PreferredBtnHeight);
-      NewControlWidth:=PreferredBtnWidth;
-      if NewControlWidth<ButtonWidth then
-        NewControlWidth:=ButtonWidth;
+    if (CurControl is TToolButton) and
+       (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) and
+       (not CurControl.AutoSize) then
+    begin
+      PreferredBtnWidth := 0;
+      PreferredBtnHeight := 0;
+      CurControl.GetPreferredSize(PreferredBtnWidth, PreferredBtnHeight);
+      NewControlWidth := PreferredBtnWidth;
+      if NewControlWidth < ButtonWidth then
+        NewControlWidth := ButtonWidth;
     end
     else
-      NewControlWidth:=CurControl.Width;
-    NewBounds:=Bounds(x,y,NewControlWidth,ButtonHeight);
+      NewControlWidth := CurControl.Width;
+    NewBounds := Bounds(x, y, NewControlWidth, ButtonHeight);
     
     repeat
       // move control to the right, until it does not overlap
-      for j:=0 to AlignedControls.Count-1 do begin
-        AlignedControl:=TControl(AlignedControls[j]);
-        CurBounds:=Bounds(AlignedControl.Left,AlignedControl.Top,
-                          AlignedControl.Width,AlignedControl.Height);
-        if (CurBounds.Right>NewBounds.Left)
-        and (CurBounds.Left<NewBounds.Right)
-        and (CurBounds.Bottom>NewBounds.Top)
-        and (CurBounds.Top<NewBounds.Bottom) then begin
+      for j := 0 to AlignedControls.Count - 1 do
+      begin
+        AlignedControl := TControl(AlignedControls[j]);
+        CurBounds := Bounds(AlignedControl.Left, AlignedControl.Top,
+                            AlignedControl.Width, AlignedControl.Height);
+        if (CurBounds.Right > NewBounds.Left) and
+           (CurBounds.Left < NewBounds.Right) and
+           (CurBounds.Bottom > NewBounds.Top) and
+           (CurBounds.Top < NewBounds.Bottom) then
+        begin
           //DebugLn('CalculatePosition Move ',NewBounds.Left,'->',CurBounds.Right);
-          NewBounds.Left:=CurBounds.Right;
-          NewBounds.Right:=NewBounds.Left+NewControlWidth;
+          NewBounds.Left := CurBounds.Right;
+          NewBounds.Right := NewBounds.Left + NewControlWidth;
         end;
       end;
-      if (not Wrapable) or (NewBounds.Right<=ARect.Right)
-      or (NewBounds.Left=StartX) then begin
+      if (not Wrapable) or (NewBounds.Right <= ARect.Right) or (NewBounds.Left = StartX) then
+      begin
         // control fits into the row
-        x:=NewBounds.Left;
-        y:=NewBounds.Top;
-        exit;
+        x := NewBounds.Left;
+        y := NewBounds.Top;
+        Exit;
       end;
       // try next row
-      NewBounds.Left:=StartX;
-      NewBounds.Right:=NewBounds.Left+NewControlWidth;
-      inc(NewBounds.Top,ButtonHeight);
-      inc(NewBounds.Bottom,ButtonHeight);
+      NewBounds.Left := StartX;
+      NewBounds.Right := NewBounds.Left + NewControlWidth;
+      inc(NewBounds.Top, ButtonHeight);
+      inc(NewBounds.Bottom, ButtonHeight);
       //DebugLn('CalculatePosition Next Row ',NewBounds.Left,',',NewBounds.Top);
-    until false;
+    until False;
   end;
 
 var
@@ -567,19 +569,20 @@ var
   i: Integer;
 begin
   //DebugLn('WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable);
-  Result:=true;
-  NewWidth:=0;
-  NewHeight:=0;
-  AlignedControls:=TFPList.Create;
-  OrderedControls:=TFPList.Create;
+  Result := True;
+  NewWidth := 0;
+  NewHeight := 0;
+  AlignedControls := TFPList.Create;
+  OrderedControls := TFPList.Create;
   if not Simulate then
-    FRowCount:=0;
+    FRowCount := 0;
   DisableAlign;
   BeginUpdate;
   try
-    for i:=0 to ControlCount-1 do begin
-      CurControl:=Controls[i];
-      if CurControl.Align=alNone then
+    for i:=0 to ControlCount-1 do
+    begin
+      CurControl := Controls[i];
+      if CurControl.Align = alNone then
         OrderedControls.Add(CurControl)
       else
         AlignedControls.Add(CurControl)
@@ -590,20 +593,20 @@ begin
     OrderedControls.Sort(TListSortCompare(@CompareToolBarControl));
 
     // position OrderedControls
-    CurClientRect:=ClientRect;
-    inc(CurClientRect.Right,UseWidth-Width);
-    ARect:=CurClientRect;
+    CurClientRect := ClientRect;
+    inc(CurClientRect.Right, UseWidth - Width);
+    ARect := CurClientRect;
     AdjustClientRect(ARect);
-    AdjustClientFrame.Left:=ARect.Left-CurClientRect.Left;
-    AdjustClientFrame.Top:=ARect.Top-CurClientRect.Top;
-    AdjustClientFrame.Right:=CurClientRect.Right-ARect.Right;
-    AdjustClientFrame.Bottom:=CurClientRect.Bottom-ARect.Bottom;
+    AdjustClientFrame.Left := ARect.Left - CurClientRect.Left;
+    AdjustClientFrame.Top := ARect.Top - CurClientRect.Top;
+    AdjustClientFrame.Right := CurClientRect.Right - ARect.Right;
+    AdjustClientFrame.Bottom := CurClientRect.Bottom - ARect.Bottom;
     //DebugLn(['TToolBar.WrapButtons ',DbgSName(Self),' ARect=',dbgs(ARect)]);
     // important: top, left button must start in the AdjustClientRect top, left
     // otherwise Toolbar.AutoSize=true will create an endless loop
-    StartX:=ARect.Left;
-    x:=StartX;
-    y:=ARect.Top;
+    StartX := ARect.Left;
+    x := StartX;
+    y := ARect.Top;
     for i := 0 to OrderedControls.Count - 1 do
     begin
       CurControl := TControl(OrderedControls[i]);
@@ -611,22 +614,24 @@ begin
         Continue;
       CalculatePosition;
       //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height]);
-      if ButtonHeight <= 0
-      then h := CurControl.Height
-      else h := ButtonHeight;
-      if CurControl.AutoSize
-      then begin
+      if ButtonHeight <= 0 then
+        h := CurControl.Height
+      else
+        h := ButtonHeight;
+      if CurControl.AutoSize then
+      begin
         // TODO: center vertically
-        w:=CurControl.Width;
-        h:=CurControl.Height;
+        w := CurControl.Width;
+        h := CurControl.Height;
       end
-      else begin
-        w:=NewControlWidth;
-      end;
-      w:=CurControl.Constraints.MinMaxWidth(w);
-      h:=CurControl.Constraints.MinMaxWidth(h);
-      if (CurControl.Left<>x) or (CurControl.Top<>y)
-      or (CurControl.Width<>w) or (CurControl.Height<>h) then begin
+      else
+        w := NewControlWidth;
+
+      w := CurControl.Constraints.MinMaxWidth(w);
+      h := CurControl.Constraints.MinMaxWidth(h);
+      if (CurControl.Left <> x) or (CurControl.Top <> y) or
+         (CurControl.Width <> w) or (CurControl.Height <> h) then
+      begin
         //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
         if not Simulate then
         begin
@@ -637,21 +642,22 @@ begin
       end;
       
       // adjust NewWidth, NewHeight
-      NewWidth:=Max(NewWidth,x+w+AdjustClientFrame.Right);
-      NewHeight:=Max(NewHeight,y+h+AdjustClientFrame.Bottom);
+      NewWidth := Max(NewWidth, x + w + AdjustClientFrame.Right);
+      NewHeight := Max(NewHeight, y + h + AdjustClientFrame.Bottom);
 
       // step to next position
       inc(x,w);
-      if (not Wrapable) and (CurControl is TToolButton)
-      and (TToolButton(CurControl).Wrap) then begin
+      if (not Wrapable) and (CurControl is TToolButton) and
+         (TToolButton(CurControl).Wrap) then
+      begin
         // user forced wrap -> start new line
-        x:=StartX;
-        inc(y,ButtonHeight);
+        x := StartX;
+        inc(y, ButtonHeight);
         if not Simulate then
           inc(FRowCount);
       end;
     end;
-    FRealizedButtonHeight:=FButtonHeight;
+    FRealizedButtonHeight := FButtonHeight;
   finally
     AlignedControls.Free;
     OrderedControls.Free;
@@ -663,13 +669,13 @@ end;
 procedure TToolBar.AdjustClientRect(var ARect: TRect);
 begin
   inherited AdjustClientRect(ARect);
-  inc(ARect.Left,Indent);
+  inc(ARect.Left, Indent);
 end;
 
 class function TToolBar.GetControlClassDefaultSize: TPoint;
 begin
-  Result.X:=150;
-  Result.Y:=26;
+  Result.X := 150;
+  Result.Y := 26;
 end;
 
 function TToolBar.FindButtonFromAccel(Accel: Word): TToolButton;
@@ -680,8 +686,7 @@ begin
     if TControl(FButtons[i]) is TToolButton then
     begin
       Result := Buttons[i];
-      if Result.Visible and Result.Enabled
-      and IsAccel(Accel, Result.Caption) then
+      if Result.Visible and Result.Enabled and IsAccel(Accel, Result.Caption) then
         Exit;
     end;
   Result := nil;
