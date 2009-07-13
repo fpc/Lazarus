@@ -4368,7 +4368,7 @@ var
   MarkCount: integer;
   i: Integer;
   CurMark: TSourceMark;
-  EditorPopupPoint: TPoint;
+  EditorPopupPoint, EditorCaret: TPoint;
   SelAvail: Boolean;
   SelAvailAndWritable: Boolean;
   CurFilename: String;
@@ -4455,13 +4455,17 @@ begin
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
-    end else begin
+    end else
+    begin
+      EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
       // user clicked on gutter
-      SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
-                                        Marks,MarkCount);
-      if Marks<>nil then begin
-        for i:=0 to MarkCount-1 do begin
-          CurMark:=Marks[i];
+      SourceEditorMarks.GetMarksForLine(EditorComp, EditorCaret.y,
+                                        Marks, MarkCount);
+      if Marks <> nil then
+      begin
+        for i := 0 to MarkCount - 1 do
+        begin
+          CurMark := Marks[i];
           CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
         end;
         FreeMem(Marks);
