@@ -7528,7 +7528,11 @@ begin
       fmtText:
         begin
           if VarIsType(v, varDate) and (trunc(Extended(v))=0) then
-            Result := TimeToStr(v)
+          begin
+            Result := TimeToStr(v);
+            if Result='' then
+              Result := FormatDateTime('hh:nn:ss', v);
+          end
           else
             Result := v;
         end;
