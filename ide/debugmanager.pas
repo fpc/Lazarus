@@ -1041,23 +1041,22 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkGetHint(SenderMark: TSourceMark;
   var Hint: string);
 begin
-  Hint:=GetBreakPointStateDescription(Self)+LineEnding
-      +'Hitcount: '+IntToStr(Hitcount)+LineEnding
-      +'Action: '+GetBreakPointActionsDescription(Self)+LineEnding
-      +'Condition: '+Expression;
+  Hint := GetBreakPointStateDescription(Self) + LineEnding +
+      Format('%s: %d' + LineEnding + '%s %s' + LineEnding + '%s: %s',
+        [lisHitCount, Hitcount,
+        lisAction, GetBreakPointActionsDescription(Self),
+        lisCondition, Expression]);
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkCreatePopupMenu(
   SenderMark: TSourceMark; const AddMenuItem: TAddMenuItemProc);
 begin
   if Enabled then
-    AddMenuItem('Disable Breakpoint',true,@OnToggleEnableMenuItemClick)
+    AddMenuItem(lisDisableBreakPoint, True, @OnToggleEnableMenuItemClick)
   else
-    AddMenuItem('Enable Breakpoint',true,@OnToggleEnableMenuItemClick);
-  AddMenuItem('Delete Breakpoint',true,@OnDeleteMenuItemClick);
-  AddMenuItem('View Breakpoint Properties',true,@OnViewPropertiesMenuItemClick);
-  // add separator
-  AddMenuItem('-',true,nil);
+    AddMenuItem(lisEnableBreakPoint, True, @OnToggleEnableMenuItemClick);
+  AddMenuItem(lisDeleteBreakPoint, True, @OnDeleteMenuItemClick);
+  AddMenuItem(lisViewBreakPointProperties, True, @OnViewPropertiesMenuItemClick);
 end;
 
 procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);

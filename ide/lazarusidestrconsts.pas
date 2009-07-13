@@ -2920,7 +2920,6 @@ resourcestring
   lisTheLaunchingApplicationBundleDoesNotExists = 'The Application Bundle %s'
     +'%sneeded for execution does not exist or is not executable.%sDo you want to create one?'
     +'%s%sSee Project -> Project Options -> Application for settings.';
-
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
     +'s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger '
@@ -2933,7 +2932,12 @@ resourcestring
     +'directory %s%s%s does not exist.%sPlease check the working directory in '
     +'Menu > Run > Run parameters.';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
-  
+  lisHitCount = 'Hitcount';
+  lisDisableBreakPoint = 'Disable Breakpoint';
+  lisEnableBreakPoint = 'Enable Breakpoint';
+  lisDeleteBreakPoint = 'Delete Breakpoint';
+  lisViewBreakPointProperties = 'View Breakpoint Properties';
+
   // disk diff dialog
   lisDiskDiffErrorReadingFile = 'Error reading file: %s';
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
