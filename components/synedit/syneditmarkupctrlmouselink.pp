@@ -105,7 +105,8 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
   begin
     if CtrlMouseLine > 0 then
       TSynEdit(SynEdit).Invalidate;
-    TSynEdit(SynEdit).Cursor := crIBeam;
+    with TSynEdit(SynEdit) do
+      UpdateCursor(ScreenToClient(Mouse.CursorPos));
     CtrlMouseLine:=-1;
     FCtrlLinkable := False;
   end;

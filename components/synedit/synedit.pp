@@ -832,6 +832,7 @@ type
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     procedure SetSelWord;
     procedure Undo;
+    procedure UpdateCursor(P: TPoint);
     function GetLineState(ALine: Integer): TSynLineState;
     function HasDebugMark(ALine: Integer): Boolean;
     procedure SetDebugMarks(AFirst, ALast: Integer);
@@ -2530,17 +2531,7 @@ begin
     FGutter.MouseMove(Shift, X, Y);
   end;
 
-  if (X >= fGutterWidth) and (X < ClientWidth - ScrollBarWidth)
-    and (Y >= 0) and (Y < ClientHeight - ScrollBarWidth)
-  then begin
-    if (Cursor <> crHandPoint) or
-       not(assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink)
-    then
-      Cursor := crIBeam;
-  end
-  else
-    Cursor := crDefault;
-
+  UpdateCursor(Point(X, Y));
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
@@ -4683,6 +4674,19 @@ begin
     FCaret.DecForcePastEOL;
     Item.Free;
   end;
+end;
+
+procedure TCustomSynEdit.UpdateCursor(P: TPoint);
+begin
+  if (P.X >= FGutterWidth) and (P.X < ClientWidth - ScrollBarWidth) and 
+     (P.Y >= 0) and (P.Y < ClientHeight - ScrollBarWidth) then 
+  begin
+    if (Cursor <> crHandPoint) or
+       not (Assigned(FMarkupCtrlMouse) and FMarkupCtrlMouse.IsMouseOverLink) then
+      Cursor := crIBeam;
+  end
+  else
+    Cursor := crDefault;
 end;
 
 procedure TCustomSynEdit.Undo;
