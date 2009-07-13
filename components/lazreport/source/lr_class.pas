@@ -1040,6 +1040,7 @@ type
       var val: Variant): Boolean;
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);
       virtual; abstract;
+    procedure UpdateDescriptions; virtual;
     procedure AddFunctionDesc(const funName, funGroup, funDescription:string);
   end;
 
@@ -1152,9 +1153,13 @@ uses
   {$IFDEF JPEG}, JPEG {$ENDIF};
 
 type
+
+  { TfrStdFunctionLibrary }
+
   TfrStdFunctionLibrary = class(TfrFunctionLibrary)
   public
     constructor Create; override;
+    procedure UpdateDescriptions; override;
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant); override;
   end;
 
@@ -1235,6 +1240,14 @@ begin
 end;
 {$ENDIF}
 
+procedure UpdateLibraryDescriptions;
+var
+  i: integer;
+begin
+  for i:=0 to frFunctionsCount-1 do
+    frFunctions[i].FunctionLibrary.UpdateDescriptions;
+end;
+
 procedure UpdateObjectStringResources;
 begin
   frCharset := StrToInt(sCharset);
@@ -1286,6 +1299,8 @@ begin
   frTimeFormats[1] :=sTimeFormat2;
   frTimeFormats[2] :=sTimeFormat3;
   frTimeFormats[3] :=sTimeFormat4;
+
+  UpdateLibraryDescriptions;
 end;
 
 {----------------------------------------------------------------------------}
@@ -8948,6 +8963,10 @@ begin
   end;
 end;
 
+procedure TfrFunctionLibrary.UpdateDescriptions;
+begin
+end;
+
 procedure TfrFunctionLibrary.AddFunctionDesc(const funName, funGroup,
   funDescription: string);
 var
@@ -8994,7 +9013,10 @@ begin
     Add('UPPERCASE');         {21}
     Add('YEAROF');            {22}
   end;
-  
+end;
+
+procedure TfrStdFunctionLibrary.UpdateDescriptions;
+begin
   AddFunctionDesc('AVG', SAggregateCategory, SDescriptionAVG);
   AddFunctionDesc('COUNT', SAggregateCategory, SDescriptionCOUNT);
   AddFunctionDesc('MAX', SAggregateCategory, SDescriptionMAX);
