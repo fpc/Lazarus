@@ -435,10 +435,26 @@ end;
 
 procedure TToolBar.DoAutoSize;
 var
+  ModifyWidth, ModifyHeight : Boolean;
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  WrapButtons(Width, NewWidth, NewHeight, True);
+  if AutoSizing then Exit;    // we shouldn't come here in the first place
+
+  BeginAutoSizing;
+  try
+    WrapButtons(Width, NewWidth, NewHeight, True);
+    ModifyWidth := [akLeft, akRight] * (Anchors+AnchorAlign[Align]) <> [akLeft, akRight];
+    ModifyHeight := [akTop, akBottom] * (Anchors+AnchorAlign[Align]) <> [akTop, akBottom];
+
+    if not ModifyWidth then NewWidth := Width;
+    if not ModifyHeight then NewHeight := Height;
+
+    if (NewWidth <> Width) or (NewHeight <> Height) then
+      SetBounds(Left, Top, NewWidth, NewHeight);
+  finally
+    EndAutoSizing;
+  end;
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
