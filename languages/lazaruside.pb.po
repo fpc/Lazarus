@@ -15,7 +15,7 @@ msgstr "Caminho de Busca de fonte adicionarl para todos os projetos (.pp;.pas)"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
-msgstr "Adicionar ponto e v�-rgula"
+msgstr "Adicionar ponto e v?-rgula"
 
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr "Ação para arquivos amb�guo:"
+msgstr "Ação para arquivos amb?guo:"
 
 #: lazarusidestrconsts.dlgambigwarn
 msgid "Warn on compile"
@@ -88,7 +88,7 @@ msgstr "Auto-Salvar"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
-msgstr "Formulários dispon�veis:"
+msgstr "Formulários dispon?veis:"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -1746,7 +1746,7 @@ msgstr "Otimizações:"
 
 #: lazarusidestrconsts.dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Outros arquivos de unidade (-Fu) (ponto e v�-rgula é o delimitador)"
+msgstr "Outros arquivos de unidade (-Fu) (ponto e v?-rgula é o delimitador)"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -1812,7 +1812,7 @@ msgstr "Miscelanea"
 
 #: lazarusidestrconsts.dlgpooutputsettings
 msgid "Output Settings"
-msgstr "Configurações de sa�da"
+msgstr "Configurações de sa?da"
 
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
@@ -2041,7 +2041,7 @@ msgstr "Ajustar propriedade de variável"
 
 #: lazarusidestrconsts.dlgshowcaps
 msgid "Show component captions"
-msgstr "Mostrar t�-tulos de componente"
+msgstr "Mostrar t?-tulos de componente"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -2427,7 +2427,7 @@ msgstr "Um atrás"
 
 #: lazarusidestrconsts.fdmorderforwardone
 msgid "Forward one"
-msgstr "Um � frente"
+msgstr "Um ? frente"
 
 #: lazarusidestrconsts.fdmordermovetoback
 msgid "Move to back"
@@ -2496,15 +2496,15 @@ msgstr "Adicionar unidade"
 
 #: lazarusidestrconsts.lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
-msgstr "Tipo Ancestral amb�guo"
+msgstr "Tipo Ancestral amb?guo"
 
 #: lazarusidestrconsts.lisa2pambiguousclassname
 msgid "Ambiguous Class Name"
-msgstr "Nome da Classe amb�guo"
+msgstr "Nome da Classe amb?guo"
 
 #: lazarusidestrconsts.lisa2pambiguousunitname
 msgid "Ambiguous Unit Name"
-msgstr "Nome da Unidade Amb�guo"
+msgstr "Nome da Unidade Amb?guo"
 
 #: lazarusidestrconsts.lisa2pancestortype
 msgid "Ancestor Type"
@@ -2897,7 +2897,7 @@ msgstr "Nome da Unidade:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
-msgstr "Um arquivo %s%s%s já existe.%sSubstitu�--lo?"
+msgstr "Um arquivo %s%s%s já existe.%sSubstitu?--lo?"
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
@@ -2937,19 +2937,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
-msgstr "Arquivo amb�guo encontrado"
+msgstr "Arquivo amb?guo encontrado"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
 msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
-msgstr "Arquivo ambiguo encontrado: %s%s%s%sEste arquivo pode estar se equivocando com %s%s%s%s%sEliminar o arquivo amb�guo?"
+msgstr "Arquivo ambiguo encontrado: %s%s%s%sEste arquivo pode estar se equivocando com %s%s%s%s%sEliminar o arquivo amb?guo?"
 
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
-msgstr "Arquivos amb�guos encontrados"
+msgstr "Arquivos amb?guos encontrados"
 
 #: lazarusidestrconsts.lisambiguousunitfound
 msgid "Ambiguous Unit found"
-msgstr "Uma Unidade amb�gua foi encontrada"
+msgstr "Uma Unidade amb?gua foi encontrada"
 
 #: lazarusidestrconsts.lisambiguousunitfound2
 msgid "Ambiguous unit found"
@@ -3041,7 +3041,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
-msgstr "Pacotes Dispon�veis"
+msgstr "Pacotes Dispon?veis"
 
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
@@ -3739,7 +3739,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
-msgstr "Arquivo amb�guo adicional de configuração do compilador"
+msgstr "Arquivo amb?guo adicional de configuração do compilador"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
@@ -4366,7 +4366,7 @@ msgstr "Dois Pontos"
 
 #: lazarusidestrconsts.liscodetoolsoptscomma
 msgid "Comma"
-msgstr "V�rgula"
+msgstr "V?rgula"
 
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
@@ -4401,7 +4401,7 @@ msgstr "Ponto"
 
 #: lazarusidestrconsts.liscodetoolsoptssemicolon
 msgid "Semicolon"
-msgstr "Ponto-e-V�-rgula"
+msgstr "Ponto-e-V?-rgula"
 
 #: lazarusidestrconsts.liscodetoolsoptsspace
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
@@ -5306,7 +5306,7 @@ msgstr "Alt"
 
 #: lazarusidestrconsts.lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
-msgstr "Uma ferramenta para ser válida necessita de um t�-tulo e nome de arquivo."
+msgstr "Uma ferramenta para ser válida necessita de um t?-tulo e nome de arquivo."
 
 #: lazarusidestrconsts.lisedtexttoolctrl
 msgctxt "lazarusidestrconsts.lisedtexttoolctrl"
@@ -6025,7 +6025,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes sao software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste codigo e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes sao software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste codigo e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen?o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -6194,7 +6194,7 @@ msgstr "Carregar de arquivo"
 
 #: lazarusidestrconsts.lisiecoopenorloadcompileroptions
 msgid "Open or Load Compiler Options"
-msgstr "Abrir e carregar op��es de compilador"
+msgstr "Abrir e carregar op??es de compilador"
 
 #: lazarusidestrconsts.lisiecoopenrecent
 msgid "Open recent"
@@ -7207,7 +7207,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislclunitpathmissing
 msgid "LCL unit path missing"
-msgstr "O caminho de unidade LCL est� faltando"
+msgstr "O caminho de unidade LCL est? faltando"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
@@ -7288,7 +7288,7 @@ msgstr "Arquivo LFM não encontrado"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen�o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca e software livre; voce pode redistribui-la e/ou modifica-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versao 2 da Licenca, ou (a sua escolha) qualquer versao posterior. %sEste programa e distribuido na esperanca de que seja util, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE ou ADEQUACAO A UMA FINALIDADE PARTICULAR. Veja a licenca GNU General Public License para maiores detalhes.%sVoce deve ter recebido uma copia da licenca GNU Library General Public License juntamente com esta biblioteca; sen?o, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
@@ -8609,7 +8609,7 @@ msgstr "Não foi encontrada uma Seção de 'ResourceString'"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, v�-rgula e ponto-e-v�-rgula separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
+msgstr "Normalmente o filtro é uma expressão regular. Em Sintaxe Simples um . é um caractere normal, um * significa qualquer coisa, um ? significa qualquer caractere, v?-rgula e ponto-e-v?-rgula separam alternativas. Por exemplo: Simples Sintaxe *.pas;*.pp corresponde a ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts.lisnostringconstantfound
 msgid "No string constant found"
@@ -8845,7 +8845,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
-msgstr "Abrir arquivo como c�digo normal"
+msgstr "Abrir arquivo como c?digo normal"
 
 #: lazarusidestrconsts.lisopenthepackage
 msgid "Open the package %s?"
@@ -9043,7 +9043,7 @@ msgstr "Versão Máxima inválida"
 
 #: lazarusidestrconsts.lispckeditinvalidminimumversion
 msgid "Invalid minimum version"
-msgstr "Versão M�nima inválida"
+msgstr "Versão M?nima inválida"
 
 #: lazarusidestrconsts.lispckeditmaximumversion
 msgid "Maximum Version:"
@@ -9051,7 +9051,7 @@ msgstr "Versão Máxima:"
 
 #: lazarusidestrconsts.lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr "Versão M�nima:"
+msgstr "Versão M?nima:"
 
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
@@ -9175,7 +9175,7 @@ msgstr "A Versão Máxima %s%s%s não é uma versão de pacote válida.%s(bom ex
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
 msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "A Versão M�nima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
+msgstr "A Versão M?nima %s%s%s não é uma versão de pacote válida.%s(bom exemplo 1.2..3.4)"
 
 #: lazarusidestrconsts.lispckedituninstall
 msgid "Uninstall"
@@ -9512,7 +9512,7 @@ msgstr "Adicionar unidade a clausula uses do pacote. Desative isto somente para 
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
-msgstr "Arquivo amb�guo encontrado"
+msgstr "Arquivo amb?guo encontrado"
 
 #: lazarusidestrconsts.lispkgmangarequiredpackageswasnotfound
 msgid "A required packages was not found. See package graph."
@@ -10237,7 +10237,7 @@ msgstr "Versão Máxima (opcional):"
 
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Versão M�nima (opcional):"
+msgstr "Versão M?nima (opcional):"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
@@ -10263,12 +10263,12 @@ msgstr "A Versão Máxima %s%s%s e' invalida.%sPor favor use o formato maior.men
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "A Versão Máxima e' menor que a Versão M�nima."
+msgstr "A Versão Máxima e' menor que a Versão M?nima."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
-msgstr "A Versão M�nima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
+msgstr "A Versão M?nima %s%s%s e' invalida.%sPor favor use o formato maior.menor.lancamento.build%sPor exemplo: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
 msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
@@ -11998,7 +11998,7 @@ msgstr "Unidade não encontrada"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
-msgstr "Diretório de sa�da de unidade"
+msgstr "Diretório de sa?da de unidade"
 
 #: lazarusidestrconsts.lisunitpath
 msgid "unit path"
