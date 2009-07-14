@@ -241,7 +241,10 @@ begin
   if RawMode then begin
 
     Doc1.DocName    := pchar(Title);
-    Doc1.OutputFile := pchar(Filename);
+    if Filename<>'' then
+      Doc1.OutputFile := PChar(Filename)
+    else
+      Doc1.OutputFile := nil;
     Doc1.DataType   := 'RAW';
     
     if StartDocPrinter(FPrinterHandle, 1, PByte(@Doc1))=0 then begin
@@ -263,7 +266,8 @@ begin
     FillChar(Inf,SizeOf(Inf),0);
     Inf.cbSize:=SizeOf(Inf);
     Inf.lpszDocName:=PChar(Title);
-    Inf.lpszOutput:=PChar(Filename);
+    if FileName<>'' then
+      Inf.lpszOutput:=PChar(Filename);
 
     StartDoc(fDC,@Inf);
     StartPage(fDC);
