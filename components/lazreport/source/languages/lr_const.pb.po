@@ -70,23 +70,20 @@ msgid "Group footer"
 msgstr "Rodapé Grupo"
 
 #: lr_const.sband19
-#, fuzzy
 msgid "Cross header"
-msgstr "Cabeçalho Cruzado"
+msgstr "Cabeçalho Ref.Cruz."
 
 #: lr_const.sband2
 msgid "Report summary"
 msgstr "Sumário Relatório"
 
 #: lr_const.sband20
-#, fuzzy
 msgid "Cross data"
-msgstr "Dados Cruzado"
+msgstr "Dados Ref.Cruz."
 
 #: lr_const.sband21
-#, fuzzy
 msgid "Cross footer"
-msgstr "Rodapé Cruzado"
+msgstr "Rodapé Ref.Cruz."
 
 #: lr_const.sband22
 msgid "None"
@@ -193,9 +190,8 @@ msgid "Bitmap file"
 msgstr "Arquivo Bitmap"
 
 #: lr_const.sbreaked
-#, fuzzy
 msgid "Breaked"
-msgstr "Quebrado"
+msgstr "Quebra"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -422,7 +418,7 @@ msgstr "Opções"
 #: lr_const.sdesoptionsformother
 msgctxt "lr_const.sdesoptionsformother"
 msgid "Other"
-msgstr "Outro"
+msgstr "Outros"
 
 #: lr_const.sdesoptionsformpix
 msgid "&Pixels"
@@ -483,12 +479,12 @@ msgstr "Opções relatório"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr "Outro"
+msgstr "Outros"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
 msgid "Printer"
-msgstr "Impressora"
+msgstr "Impressora(s)"
 
 #: lr_const.sdocoptformselect
 msgid "&Select when report loaded"
@@ -531,14 +527,10 @@ msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formato"
 
-#: lr_const.seditorformfunction
-msgid "Function"
-msgstr ""
-
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&Texto"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
@@ -617,9 +609,8 @@ msgid "Find text"
 msgstr "Procurar texto"
 
 #: lr_const.sfindtextcase
-#, fuzzy
 msgid "&Case sensitive"
-msgstr "Sensível à &Caixa"
+msgstr "&Diferir maiúsc./minúsc."
 
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
@@ -696,7 +687,7 @@ msgstr ""
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 #: lr_const.sformat31
 msgid "11.15.98"
@@ -717,7 +708,7 @@ msgstr "15 novembro 1998"
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 #: lr_const.sformat41
 msgid "02:43:35"
@@ -738,7 +729,7 @@ msgstr ""
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -759,7 +750,7 @@ msgstr "Falso;Verdadeiro"
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 #: lr_const.sformfile
 msgid "FastReport form"
@@ -779,34 +770,28 @@ msgid "Alignment"
 msgstr "Alinhamento"
 
 #: lr_const.sfrdesignerformalignbottoms
-#, fuzzy
 msgid "Align bottoms"
-msgstr "Alinhar ao rodapé"
+msgstr "Alinhar abaixo"
 
 #: lr_const.sfrdesignerformalignetop
-#, fuzzy
 msgid "Align tops"
-msgstr "Alinhar ao cabeçalho"
+msgstr "Alinhar acima"
 
 #: lr_const.sfrdesignerformalignhorzcenter
-#, fuzzy
 msgid "Align horizontal centers"
-msgstr "Alinhamento horizontal ao centro"
+msgstr "Alinhar centro horizontal"
 
 #: lr_const.sfrdesignerformalignleftedge
-#, fuzzy
 msgid "Align left edges"
-msgstr "Alinhar à margem esquerda"
+msgstr "Alinhar borda esquerda"
 
 #: lr_const.sfrdesignerformalignrightedge
-#, fuzzy
 msgid "Align right edges"
-msgstr "Alinhar à margem direita"
+msgstr "Alinhar borda direita"
 
 #: lr_const.sfrdesignerformalignvertcenter
-#, fuzzy
 msgid "Align vertical centers"
-msgstr "Alinhar verticalmente ao centro"
+msgstr "Alinhar centro vertical"
 
 #: lr_const.sfrdesignerformallframe
 msgid "All frame lines"
@@ -846,12 +831,10 @@ msgid "Center align"
 msgstr "Centralizar"
 
 #: lr_const.sfrdesignerformcenterhwind
-#, fuzzy
 msgid "Center horizontally in window"
 msgstr "Centralizar horizontalmente na janela"
 
 #: lr_const.sfrdesignerformcentervertwing
-#, fuzzy
 msgid "Center vertically in window"
 msgstr "Centralizar verticalmente na janela"
 
@@ -970,7 +953,7 @@ msgstr "Colar"
 #: lr_const.sfrdesignerformpgoption
 msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
-msgstr "Opções página"
+msgstr "Opções Página"
 
 #: lr_const.sfrdesignerformpreview
 msgid "Preview report"
@@ -990,12 +973,10 @@ msgid "Remove page"
 msgstr "Remover página"
 
 #: lr_const.sfrdesignerformrightalign
-#, fuzzy
 msgid "Right align"
 msgstr "Alinhar à direita"
 
 #: lr_const.sfrdesignerformrightframe
-#, fuzzy
 msgid "Right frame line"
 msgstr "Borda direita"
 
@@ -1034,12 +1015,10 @@ msgid "Tools"
 msgstr "Ferramentas"
 
 #: lr_const.sfrdesignerformtopalign
-#, fuzzy
 msgid "Top align"
 msgstr "Alinhar acima"
 
 #: lr_const.sfrdesignerformtopframe
-#, fuzzy
 msgid "Top frame line"
 msgstr "Borda superior"
 
@@ -1052,12 +1031,10 @@ msgid "Undo last action"
 msgstr "Desfazer última ação"
 
 #: lr_const.sfrdesignerformvertcenter
-#, fuzzy
 msgid "Vertical center"
 msgstr "Centralizar"
 
 #: lr_const.sfrdesignerformwidthalign
-#, fuzzy
 msgid "Width align"
 msgstr "Justificar"
 
@@ -1248,11 +1225,11 @@ msgstr "&Carregar..."
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&Texto"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
-msgstr "&Esticar"
+msgstr "&Estender"
 
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
@@ -1331,7 +1308,6 @@ msgid "Insert Chart object"
 msgstr "Inserir objeto Gráfico"
 
 #: lr_const.sinscheckbox
-#, fuzzy
 msgid "Insert CheckBox object"
 msgstr "Inserir objeto CheckBox"
 
@@ -1360,7 +1336,6 @@ msgid "&Horizontal"
 msgstr ""
 
 #: lr_const.sinsertfieldsformplace
-#, fuzzy
 msgid "Placement"
 msgstr "Colocação"
 
@@ -1377,7 +1352,6 @@ msgid "Insert Shape object"
 msgstr "Inserir objeto Shape"
 
 #: lr_const.skeepaspectratio
-#, fuzzy
 msgid "Keep aspect ratio"
 msgstr "Manter razão aspecto"
 
@@ -1387,7 +1361,7 @@ msgstr "Formulário LazReport"
 
 #: lr_const.smathcategory
 msgid "Math"
-msgstr "Matemática"
+msgstr "Aritmética"
 
 #: lr_const.smm
 msgid "MM"
@@ -1420,12 +1394,12 @@ msgstr "Na última página"
 
 #: lr_const.sother
 msgid "Other..."
-msgstr "Outro..."
+msgstr "Outros..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
 msgid "Other"
-msgstr "Outro"
+msgstr "Outros"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
@@ -1586,7 +1560,7 @@ msgstr "Folha D, 22 x 34\""
 #: lr_const.spaper256
 msgctxt "lr_const.spaper256"
 msgid "Custom"
-msgstr "Customizado"
+msgstr "Personalizado"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
@@ -1923,7 +1897,7 @@ msgstr "Por Linha&s"
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
-msgstr "Opções página"
+msgstr "Opções Página"
 
 #: lr_const.spgoptformcolgap
 msgid "&Column gap, mm"
@@ -1946,9 +1920,8 @@ msgid "&Landscape"
 msgstr "&Paisagem"
 
 #: lr_const.spgoptformlayoutorder
-#, fuzzy
 msgid "Layout Order"
-msgstr "Ordem layout"
+msgstr "Ordem da página"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2076,7 +2049,6 @@ msgid "Scale"
 msgstr "Escala"
 
 #: lr_const.spreviewformwhole
-#, fuzzy
 msgid "&Whole page"
 msgstr "Página &inteira"
 
@@ -2116,7 +2088,7 @@ msgstr "Imprimir"
 #: lr_const.sprintformprinter
 msgctxt "lr_const.sprintformprinter"
 msgid "Printer"
-msgstr "Impressora"
+msgstr "Impressora(s)"
 
 #: lr_const.sprintformprop
 msgid "Properties"
@@ -2167,7 +2139,6 @@ msgid "End Color"
 msgstr "Cor de fim"
 
 #: lr_const.sroundrectformframed
-#, fuzzy
 msgid "Framed zone"
 msgstr "Zona emoldurada"
 
@@ -2180,7 +2151,6 @@ msgid "Click here to define the shadow color or gradian colors"
 msgstr "Clique aqui para definir a cor do sombreamento ou as cores gradientes"
 
 #: lr_const.sroundrectformsample
-#, fuzzy
 msgid "Sample :"
 msgstr "Amostra :"
 
@@ -2218,7 +2188,6 @@ msgid "Rounded rectangle"
 msgstr "Retângulo arredondado"
 
 #: lr_const.sshape3
-#, fuzzy
 msgid "Ellipse"
 msgstr "Elípse"
 
@@ -2239,18 +2208,17 @@ msgid "Shape"
 msgstr ""
 
 #: lr_const.sshapeformkind
-#, fuzzy
 msgid "Shape kind"
 msgstr "Forma Shape"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
 msgid "Other"
-msgstr "Outro"
+msgstr "Outros"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr "Esticado"
+msgstr "Estendido"
 
 #: lr_const.sstringcategory
 msgid "String"
@@ -2328,7 +2296,6 @@ msgid "Line#"
 msgstr "Linha#"
 
 #: lr_const.svar6
-#, fuzzy
 msgid "Line through#"
 msgstr "Linha através#"
 
@@ -2392,7 +2359,7 @@ msgstr "Quebra palavras"
 
 #: lr_const.swordwrap
 msgid "Word wrap"
-msgstr "Quebra aut. texto"
+msgstr "Quebra aut.texto"
 
 #: lr_const.syes
 msgid "Yes"
