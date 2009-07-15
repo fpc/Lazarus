@@ -54,7 +54,8 @@ begin
 end;
 
 procedure TPopupMenu.PopUp();
-var MousePos: TPoint;
+var
+  MousePos: TPoint;
 begin
   GetCursorPos(MousePos);
   PopUp(MousePos.x,MousePos.y);
@@ -62,7 +63,7 @@ end;
 
 procedure TPopupMenu.PopUp(X,Y : Integer);
 begin
-  if ActivePopupMenu<>nil then ActivePopupMenu.Close;
+  if ActivePopupMenu <> nil then ActivePopupMenu.Close;
   FPopupPoint := Point(X, Y);
   ReleaseCapture;
   DoPopup(Self);

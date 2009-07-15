@@ -54,8 +54,8 @@ begin
     if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
 
     if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
-        not (ActionLink.IsAutoCheckLinked) and AutoCheck)
-    then begin
+        not (ActionLink.IsAutoCheckLinked) and AutoCheck) then
+    begin
       // Break a little Delphi compatibility
       // It makes no sense to uncheck a checked RadioItem (besides, GTK can't handle it)
       if (not RadioItem) or (not Checked) then
@@ -65,12 +65,13 @@ begin
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
       OnClick. }
-    if Assigned(FOnClick)
-    and (Action <> nil) and (FOnClick <> Action.OnExecute) then
+    if Assigned(FOnClick) and (Action <> nil) and (FOnClick <> Action.OnExecute) then
       FOnClick(Self)
-    else if not (csDesigning in ComponentState) and (ActionLink <> nil) then
+    else
+    if not (csDesigning in ComponentState) and (ActionLink <> nil) then
       FActionLink.Execute(Self)
-    else if Assigned(FOnClick) then
+    else
+    if Assigned(FOnClick) then
       FOnClick(Self);
   end;
 end;
@@ -118,28 +119,31 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenuItem.CreateHandle;
-var i: Integer;
+var
+  i: Integer;
 begin
   //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
   if not FVisible then RaiseGDBException('');
   Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
-  if FItems<>nil then begin
-    for i := 0 to Count - 1 do begin
+  if FItems <> nil then
+  begin
+    for i := 0 to Count - 1 do
+    begin
       if Items[i].Visible then
         Items[i].HandleNeeded;
     end;
   end;
+
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
     //DebugLn('TMenuItem.CreateHandle Attaching ... ',Name,':',ClassName);
     if Parent.HandleAllocated then
       TWSMenuItemClass(WidgetSetClass).AttachMenu(Self);
-  end;
-  if (Parent<>nil) then
-  begin
-    if HandleAllocated then begin
+
+    if HandleAllocated then
+    begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;
   end;
@@ -648,19 +652,22 @@ end;
   Free the Handle
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DestroyHandle;
-var i: integer;
+var
+  i: integer;
 begin
   if not HandleAllocated then exit;
   //DebugLn('TMenuItem.DestroyHandle ',dbgsName(Self),' ',dbgs(Self));
-  if assigned (FItems) then begin
-    i := FItems.Count-1;
-    while i>=0 do begin
+  if Assigned(FItems) then
+  begin
+    i := FItems.Count - 1;
+    while i >= 0 do
+    begin
       TMenuItem(FItems[i]).DestroyHandle;
       dec(i);
     end;
   end;
   TWSMenuItemClass(WidgetSetClass).DestroyHandle(Self);
-  FHandle:=0;
+  FHandle := 0;
 end;
 
 procedure TMenuItem.Loaded;

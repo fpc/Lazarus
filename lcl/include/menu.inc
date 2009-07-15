@@ -136,7 +136,8 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenu.CreateHandle;
-var i: integer;
+var
+  i: integer;
 begin
   FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
   // initiate creation of subitems
