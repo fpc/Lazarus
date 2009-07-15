@@ -39,6 +39,7 @@ type
     FCtrlMouseX1: Integer;
     FCtrlMouseX2: Integer;
     FCtrlLinkable: Boolean;
+    FCursor: TCursor;
     FCurX1, FCurX2: Integer;
 
     FLastControlIsPressed: boolean;
@@ -66,6 +67,7 @@ type
     property CtrlMouseX1 : Integer read FCtrlMouseX1 write FCtrlMouseX1;
     property CtrlMouseX2 : Integer read FCtrlMouseX2 write FCtrlMouseX2;
     property IsMouseOverLink: Boolean read GetIsMouseOverLink;
+    property Cursor: TCursor read FCursor;
   end;
 
 implementation
@@ -105,8 +107,7 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
   begin
     if CtrlMouseLine > 0 then
       TSynEdit(SynEdit).Invalidate;
-    with TSynEdit(SynEdit) do
-      UpdateCursor(ScreenToClient(Mouse.CursorPos));
+    FCursor := crDefault;
     CtrlMouseLine:=-1;
     FCtrlLinkable := False;
   end;
@@ -130,7 +131,9 @@ begin
     CtrlMouseX2 := NewX2;
     TSynEdit(SynEdit).Invalidate;
     if FCtrlLinkable then
-      TSynEdit(SynEdit).Cursor := crHandPoint;
+      FCursor := crHandPoint
+    else
+      doNotShowLink;
   end else
     doNotShowLink;
 end;

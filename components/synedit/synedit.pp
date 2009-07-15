@@ -359,7 +359,8 @@ type
 {$ENDIF}
     fInserting: Boolean;
     {$IFDEF SYN_LAZARUS}
-    fLastMouseCaret: TPoint;  // physical (screen)
+    fLastMouseCaret: TPoint;  // Char; physical (screen)
+    FLastMousePoint: TPoint;  // Pixel
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     FBeautifier: TSynCustomBeautifier;
@@ -679,6 +680,7 @@ type
     procedure ShowCaret;
     procedure UndoItem(Item: TSynEditUndoItem);
     property  UndoList: TSynEditUndoList read GetUndoList;
+    procedure UpdateCursor;
   protected
     fGutterWidth: Integer;
     {$IFDEF EnableDoubleBuf}
@@ -832,7 +834,6 @@ type
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     procedure SetSelWord;
     procedure Undo;
-    procedure UpdateCursor(P: TPoint);
     function GetLineState(ALine: Integer): TSynLineState;
     function HasDebugMark(ALine: Integer): Boolean;
     procedure SetDebugMarks(AFirst, ALast: Integer);
@@ -1603,6 +1604,7 @@ begin
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
   fLastMouseCaret := Point(-1,-1);
+  FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
 {$ELSE}
   Color := clWindow;
@@ -2169,6 +2171,7 @@ begin
   inherited;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState;
+  UpdateCursor;
   Data := nil;
   C := #0;
   try
@@ -2219,6 +2222,7 @@ begin
   inherited KeyUp(Key, Shift);
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState;
+  UpdateCursor;
 end;
 
 {$ENDIF}
@@ -2531,8 +2535,9 @@ begin
     FGutter.MouseMove(Shift, X, Y);
   end;
 
-  UpdateCursor(Point(X, Y));
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  FLastMousePoint := Point(X,Y);
+  LastMouseCaret := PixelsToRowColumn(Point(X,Y));
+  UpdateCursor;
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
@@ -4676,13 +4681,14 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.UpdateCursor(P: TPoint);
+procedure TCustomSynEdit.UpdateCursor;
 begin
-  if (P.X >= FGutterWidth) and (P.X < ClientWidth - ScrollBarWidth) and 
-     (P.Y >= 0) and (P.Y < ClientHeight - ScrollBarWidth) then 
+  if (FLastMousePoint.X >= FGutterWidth) and (FLastMousePoint.X < ClientWidth - ScrollBarWidth) and
+     (FLastMousePoint.Y >= 0) and (FLastMousePoint.Y < ClientHeight - ScrollBarWidth) then
   begin
-    if (Cursor <> crHandPoint) or
-       not (Assigned(FMarkupCtrlMouse) and FMarkupCtrlMouse.IsMouseOverLink) then
+    if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
+      Cursor := FMarkupCtrlMouse.Cursor
+    else
       Cursor := crIBeam;
   end
   else
@@ -5331,6 +5337,7 @@ begin
   FLastMouseCaret:=AValue;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.LastMouseCaret := AValue;
+  UpdateCursor;
 end;
 {$ENDIF}
 
@@ -6702,6 +6709,7 @@ begin
       end;
       if assigned(fMarkupCtrlMouse) then
         fMarkupCtrlMouse.UpdateCtrlMouse;
+      UpdateCursor;
     end;
     // eoDragDropEditing
     if (eoDragDropEditing in ChangedOptions) then begin
