@@ -26,9 +26,8 @@
  ------------------------------------------------------------------------------}
 procedure TMainMenu.ItemChanged;
 begin
-  {MenuChanged(nil, nil, False);
-  if FWindowHandle <> 0 then
-    SendMessage(FWindowHandle, CM_MENUCHANGED, 0, 0);}
+  MenuChanged(nil, nil, False);
+  // perform CM_MENUCHANGED in owner
 end;
 
 class procedure TMainMenu.WSRegisterClass;
