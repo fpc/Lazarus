@@ -1085,25 +1085,29 @@ var
   ProcNode: TCodeTreeNode;
 begin
   if Context.Node.Desc in AllPascalStatements then begin
-    AddCompilerProcedure('SetLength','array of type; NewLength: integer');
-    AddCompilerFunction('Copy','const s: string; FromPosition, Count: integer', 'string');
+    AddCompilerProcedure('SetLength','array of type; NewLength: Integer');
+    AddCompilerFunction('Copy','const s: String; FromPosition, Count: Integer', 'String');
     AddCompilerProcedure('Write','Args : Arguments');
     AddCompilerProcedure('WriteLn','Args : Arguments');
     AddCompilerProcedure('Read','');
     AddCompilerProcedure('ReadLn','');
-    AddCompilerFunction('Length','array of type','ordinal');
-    AddCompilerFunction('High','Argument','ordinal');
-    AddCompilerFunction('Low','Argument','ordinal');
+    AddCompilerFunction('Length','array of type','Ordinal');
+    AddCompilerFunction('High','Argument','Ordinal');
+    AddCompilerFunction('Low','Argument','Ordinal');
     AddCompilerFunction('SizeOf','identifier','ordinal');
     AddCompilerProcedure('Include','set of enum; enum');
     AddCompilerProcedure('Exclude','set of enum; enum');
-    AddCompilerProcedure('Assigned','pointer');
-    AddCompilerProcedure('Dispose','pointer');
-    AddCompilerProcedure('New','pointer');
-    AddCompilerProcedure('Assert','boolean; const message: string');
-    AddCompilerProcedure('exit','');
-    AddCompilerProcedure('continue','');
-    AddCompilerProcedure('break','');
+    AddCompilerProcedure('Assigned','Pointer');
+    AddCompilerProcedure('Dispose','Pointer');
+    AddCompilerProcedure('New','Pointer');
+    AddCompilerProcedure('Assert','Boolean; const Message: String');
+    AddCompilerProcedure('Exit','');
+    AddCompilerProcedure('Continue','');
+    AddCompilerProcedure('Break','');
+    AddCompilerProcedure('Inc','var X: Ordinal; N: Integer = 1');
+    AddCompilerProcedure('Dec','var X: Ordinal; N: Integer = 1');
+    AddCompilerFunction('Succ','X: Ordinal', 'Ordinal');
+    AddCompilerFunction('Pred','X: Ordinal', 'Ordinal');
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
