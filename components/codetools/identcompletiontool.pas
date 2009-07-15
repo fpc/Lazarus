@@ -1090,29 +1090,41 @@ var
   ProcNode: TCodeTreeNode;
 begin
   if Context.Node.Desc in AllPascalStatements then begin
-    AddCompilerProcedure('SetLength','array of type; NewLength: Integer');
+
+    AddCompilerProcedure('Assert','Condition: Boolean; const Message: String');
+    AddCompilerFunction('Assigned','P: Pointer','Boolean');
+    AddCompilerFunction('Addr','identifier','Pointer');
+    AddCompilerProcedure('Break','');
+    AddCompilerFunction('Concat','Args: String', 'String');
+    AddCompilerProcedure('Continue','');
     AddCompilerFunction('Copy','const s: String; FromPosition, Count: Integer', 'String');
-    AddCompilerProcedure('Write','Args : Arguments');
-    AddCompilerProcedure('WriteLn','Args : Arguments');
+    AddCompilerProcedure('Dec','var X: Ordinal; N: Integer = 1');
+    AddCompilerProcedure('Dispose','Pointer');
+    AddCompilerProcedure('Exclude','var S: set; X: Ordinal');
+    AddCompilerProcedure('Exit','');
+    AddCompilerProcedure('Finalize','identifier');
+    AddCompilerFunction('get_frame','','Pointer');
+    AddCompilerFunction('High','Argument','Ordinal');
+    AddCompilerProcedure('Inc','var X: Ordinal; N: Integer = 1');
+    AddCompilerProcedure('Include','var S: set; X: Ordinal');
+    AddCompilerProcedure('Initialize','identifier');
+    AddCompilerFunction('Length','A: array','Ordinal');
+    AddCompilerFunction('Low','Argument','Ordinal');
+    AddCompilerProcedure('New','Pointer');
+    AddCompilerFunction('Ord','X: Ordinal', 'Ordinal');
+    AddCompilerFunction('Pred','X: Ordinal', 'Ordinal');
     AddCompilerProcedure('Read','');
     AddCompilerProcedure('ReadLn','');
-    AddCompilerFunction('Length','array of type','Ordinal');
-    AddCompilerFunction('High','Argument','Ordinal');
-    AddCompilerFunction('Low','Argument','Ordinal');
-    AddCompilerFunction('SizeOf','identifier','ordinal');
-    AddCompilerProcedure('Include','set of enum; enum');
-    AddCompilerProcedure('Exclude','set of enum; enum');
-    AddCompilerProcedure('Assigned','Pointer');
-    AddCompilerProcedure('Dispose','Pointer');
-    AddCompilerProcedure('New','Pointer');
-    AddCompilerProcedure('Assert','Boolean; const Message: String');
-    AddCompilerProcedure('Exit','');
-    AddCompilerProcedure('Continue','');
-    AddCompilerProcedure('Break','');
-    AddCompilerProcedure('Inc','var X: Ordinal; N: Integer = 1');
-    AddCompilerProcedure('Dec','var X: Ordinal; N: Integer = 1');
+    AddCompilerProcedure('SetLength','var A: array; NewLength: Integer');
+    AddCompilerFunction('SizeOf','identifier','Integer');
+    AddCompilerFunction('Slice','var A: array; Count: Integer','array');
+    AddCompilerProcedure('Str','const X[:Width[:Decimals]]; var S: String');
     AddCompilerFunction('Succ','X: Ordinal', 'Ordinal');
-    AddCompilerFunction('Pred','X: Ordinal', 'Ordinal');
+    AddCompilerFunction('TypeInfo','identifier', 'Pointer');
+    AddCompilerFunction('TypeOf','identifier', 'Pointer');
+    AddCompilerProcedure('Val','S: String; var V; var Code: Integer');
+    AddCompilerProcedure('Write','Args : Arguments');
+    AddCompilerProcedure('WriteLn','Args : Arguments');
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
