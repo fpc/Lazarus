@@ -296,16 +296,8 @@ begin
 end;
 
 procedure TMenu.UpdateItems;
-{
-  function UpdateItem(MenuItem: TMenuItem): Boolean;
-  begin
-    Result := False;
-    IterateMenus(@UpdateItem, MenuItem.FMerged, MenuItem);
-    MenuItem.SubItemChanged(MenuItem, MenuItem, True);
-  end;
-}
 begin
-  //IterateMenus(@UpdateItem, Items.FMerged, Items);
+  // TODO: implement
 end;
 
 {------------------------------------------------------------------------------

@@ -155,7 +155,7 @@ begin
   if (Index < 0) or (FItems = nil) or (Index >= GetCount) then
     raise EMenuError.Create(SMenuIndexError);
   Cur := TMenuItem(FItems[Index]);
-  if Cur=nil then
+  if Cur = nil then
     raise EMenuError.Create(SMenuItemIsNil);
   Cur.DestroyHandle;
   FItems.Delete(Index);
@@ -178,14 +178,16 @@ var
 begin
   //debugln('TMenuItem.Destroy A ',dbgsName(Self));
   FMenuItemHandlers[mihtDestroy].CallNotifyEvents(Self);
-  if FBitmap<>nil then
+  if FBitmap <> nil then
     FreeAndNil(FBitmap);
   DestroyHandle;
-  if assigned (FItems) then begin
+  if Assigned(FItems) then
+  begin
     i := FItems.Count-1;
-    while i>=0 do begin
+    while i >= 0 do
+    begin
       TMenuItem(FItems[i]).Free;
-      dec(i);
+      Dec(i);
     end;
   end;
   FreeAndNil(FItems);
@@ -193,7 +195,7 @@ begin
   FreeAndNil(FImageChangeLink);
   for HandlerType:= low(TMenuItemHandlerType) to high(TMenuItemHandlerType) do
     FreeAndNil(FMenuItemHandlers[HandlerType]);
-  if FParent<>nil then
+  if FParent <> nil then
     FParent.FItems.Remove(Self);
   if FCommand <> 0 then CommandPool[FCommand] := False;
   //debugln('TMenuItem.Destroy B ',dbgsName(Self));
@@ -301,7 +303,7 @@ begin
 
   for i := 0 to FItems.Count - 1 do
     if TComponent (FItems[i]).Owner = Root then
-      Proc(TComponent (FItems [i]));
+      Proc(TComponent(FItems[i]));
 end;
 
 function TMenuItem.GetAction: TBasicAction;
@@ -314,10 +316,12 @@ end;
 
 procedure TMenuItem.SetAction(NewAction: TBasicAction);
 begin
-  if NewAction = nil then begin
+  if NewAction = nil then
+  begin
     FActionLink.Free;
     FActionLink := nil;
-  end else begin
+  end else
+  begin
     if FActionLink = nil then
       FActionLink := GetActionLinkClass.Create(Self);
     FActionLink.Action := NewAction;
@@ -339,8 +343,9 @@ procedure TMenuItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
   NewAction: TCustomAction;
 begin
-  if Sender is TCustomAction then begin
-    NewAction:=TCustomAction(Sender);
+  if Sender is TCustomAction then
+  begin
+    NewAction := TCustomAction(Sender);
     if (not CheckDefaults) or (AutoCheck = False) then
       AutoCheck := NewAction.AutoCheck;
     if (not CheckDefaults) or (Caption = '') then
@@ -394,11 +399,11 @@ begin
   begin
     FBitmap := TBitmap.Create;
 
-    if ImageIndex >= 0
-    then begin
+    if ImageIndex >= 0 then
+    begin
       iml := GetImageList;
-      if (iml <> nil) and (ImageIndex < iml.Count)
-      then iml.GetBitmap(ImageIndex, FBitmap);
+      if (iml <> nil) and (ImageIndex < iml.Count) then
+        iml.GetBitmap(ImageIndex, FBitmap);
     end;
     
     FBitmap.OnChange := @BitmapChange;
@@ -461,8 +466,8 @@ function TMenuItem.IsBitmapStored: boolean;
 begin
   Result :=
     FBitmapIsValid and
-    (FBitmap<>nil) and (not FBitmap.Empty) and
-    (FBitmap.Width>0) and (FBitmap.Height>0);
+    (FBitmap <> nil) and (not FBitmap.Empty) and
+    (FBitmap.Width > 0) and (FBitmap.Height > 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -544,9 +549,9 @@ procedure TMenuItem.SetAutoCheck(const AValue: boolean);
 var
   OldIsCheckItem: boolean;
 begin
-  if FAutoCheck=AValue then exit;
-  OldIsCheckItem:=IsCheckItem;
-  FAutoCheck:=AValue;
+  if FAutoCheck = AValue then exit;
+  OldIsCheckItem := IsCheckItem;
+  FAutoCheck := AValue;
   if (OldIsCheckItem<>IsCheckItem) and (HandleAllocated) then
     RecreateHandle;
 end;
@@ -661,7 +666,7 @@ procedure TMenuItem.DestroyHandle;
 var
   i: integer;
 begin
-  if not HandleAllocated then exit;
+  if not HandleAllocated then Exit;
   //DebugLn('TMenuItem.DestroyHandle ',dbgsName(Self),' ',dbgs(Self));
   if Assigned(FItems) then
   begin
@@ -682,8 +687,7 @@ begin
   if Action <> nil then ActionChange(Action, True);
 end;
 
-procedure TMenuItem.Notification(AComponent: TComponent; Operation: TOperation
-  );
+procedure TMenuItem.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -703,7 +707,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.RecreateHandle;
 begin
-  if not HandleAllocated then exit;
+  if not HandleAllocated then Exit;
   DestroyHandle;
   HandleNeeded;
 end;
@@ -716,7 +720,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.HasParent : Boolean;
 begin
-  Result := assigned (FParent);
+  Result := Assigned(FParent);
 end;
 
 procedure TMenuItem.InitiateAction;
@@ -772,9 +776,10 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.IndexOf(Item: TMenuItem): Integer;
 begin
-  if FItems = nil
-  then Result := -1
-  else Result := FItems.IndexOf(Item);
+  if FItems = nil then
+    Result := -1
+  else
+    Result := FItems.IndexOf(Item);
 end;
 
 {------------------------------------------------------------------------------
@@ -784,9 +789,9 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.IndexOfCaption(const ACaption: string): Integer;
 begin
-  for Result:=0 to Count-1 do
-    if Items[Result].Caption=ACaption then exit;
-  Result:=-1;
+  for Result := 0 to Count - 1 do
+    if Items[Result].Caption = ACaption then Exit;
+  Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -807,19 +812,23 @@ var
 begin
   if (FItems = nil) or (Item=nil) or (not Item.Visible) then
     Result := -1
-  else begin
-    Result:=0;
-    i:=0;
-    while (i<FItems.Count) do begin
-      CurMenuItem:=TMenuItem(FItems[i]);
-      if CurMenuItem.Visible then begin
-        if CurMenuItem=Item then exit;
-        inc(Result);
+  else
+  begin
+    Result := 0;
+    i := 0;
+    while (i<FItems.Count) do
+    begin
+      CurMenuItem := TMenuItem(FItems[i]);
+      if CurMenuItem.Visible then
+      begin
+        if CurMenuItem=Item then Exit;
+        Inc(Result);
       end;
-      inc(i);
+      Inc(i);
     end;
-    Result:=-1;
-    if Item.Visible then RaiseVisibleInconsistency;
+    Result := -1;
+    if Item.Visible then
+      RaiseVisibleInconsistency;
   end;
 end;
 
@@ -860,7 +869,8 @@ var
   I: Integer;
 begin
   I := IndexOf(Item);
-  if I<0 then raise EMenuError.Create(SMenuNotFound);
+  if I < 0 then
+    raise EMenuError.Create(SMenuNotFound);
   Delete(I);
 end;
 
@@ -869,8 +879,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.IsInMenuBar: boolean;
 begin
-  Result:=(FParent<>nil) and (FParent.FMenu<>nil)
-          and (FParent.FMenu is TMainMenu);
+  Result := (FParent <> nil) and (FParent.FMenu <> nil) and (FParent.FMenu is TMainMenu);
 end;
 
 {------------------------------------------------------------------------------
@@ -888,7 +897,7 @@ end;
 
 function TMenuItem.HasBitmap: boolean;
 begin
-  Result:=FBitmap<>nil;
+  Result := FBitmap <> nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -905,7 +914,7 @@ begin
     if AImageList <> nil then
     begin
       if (FImageIndex < 0) or (FImageIndex >= AImageList.Count) then
-        exit;
+        Exit;
       Result.x := AImageList.Width;
       Result.y := AImageList.Height;
     end
@@ -922,26 +931,26 @@ var
   HandlerType: TMenuItemHandlerType;
 begin
   inherited RemoveAllHandlersOfObject(AnObject);
-  for HandlerType:=Low(TMenuItemHandlerType) to High(TMenuItemHandlerType) do
+  for HandlerType := Low(TMenuItemHandlerType) to High(TMenuItemHandlerType) do
     FMenuItemHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
 procedure TMenuItem.AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
   AsLast: boolean);
 begin
-  AddHandler(mihtDestroy,TMethod(OnDestroyEvent),AsLast);
+  AddHandler(mihtDestroy, TMethod(OnDestroyEvent),AsLast);
 end;
 
 procedure TMenuItem.RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
 begin
-  RemoveHandler(mihtDestroy,TMethod(OnDestroyEvent));
+  RemoveHandler(mihtDestroy, TMethod(OnDestroyEvent));
 end;
 
 procedure TMenuItem.AddHandler(HandlerType: TMenuItemHandlerType;
   const AMethod: TMethod; AsLast: boolean);
 begin
-  if FMenuItemHandlers[HandlerType]=nil then
-    FMenuItemHandlers[HandlerType]:=TMethodList.Create;
+  if FMenuItemHandlers[HandlerType] = nil then
+    FMenuItemHandlers[HandlerType] := TMethodList.Create;
   FMenuItemHandlers[HandlerType].Add(AMethod);
 end;
 
@@ -987,7 +996,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.IsCheckItem: boolean;
 begin
-  Result:=Checked or RadioItem or AutoCheck or ShowAlwaysCheckable;
+  Result := Checked or RadioItem or AutoCheck or ShowAlwaysCheckable;
 end;
 
 
@@ -1010,7 +1019,7 @@ procedure TMenuItem.SetCaption(const AValue: TTranslateString);
 begin
   if FCaption = AValue then exit;
   FCaption := AValue;
-  if HandleAllocated and ((Parent<>nil) or (FMenu=nil)) then
+  if HandleAllocated and ((Parent <> nil) or (FMenu = nil)) then
     TWSMenuItemClass(WidgetSetClass).SetCaption(Self, AValue);
   OwnerFormDesignerModified(Self);
 end;
@@ -1029,10 +1038,8 @@ begin
     FChecked := AValue;
     if AValue and FRadioItem then
       TurnSiblingsOff;
-    if (FParent <> nil)
-    and not (csReading in ComponentState)
-    and HandleAllocated
-    then TWSMenuItemClass(WidgetSetClass).SetCheck(Self, AValue);
+    if (FParent <> nil) and not (csReading in ComponentState) and HandleAllocated then
+      TWSMenuItemClass(WidgetSetClass).SetCheck(Self, AValue);
     OwnerFormDesignerModified(Self);
   end;
 end;
@@ -1059,10 +1066,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetEnabled(AValue: Boolean);
 begin
-  if FEnabled <> AValue then begin
+  if FEnabled <> AValue then
+  begin
     FEnabled := AValue;
-    if HandleAllocated and (Parent <> nil)
-    then TWSMenuItemClass(WidgetSetClass).SetEnable(Self, AValue);
+    if HandleAllocated and (Parent <> nil) then
+      TWSMenuItemClass(WidgetSetClass).SetEnable(Self, AValue);
     MenuChanged(False);
   end;
 end;
@@ -1112,7 +1120,8 @@ begin
       AValue := 0;
     if AValue >= ParentCount then
       AValue := ParentCount - 1;
-    if AValue <> MenuIndex then begin
+    if AValue <> MenuIndex then
+    begin
       OldParent := FParent;
       OldParent.Remove(Self);
       OldParent.Insert(AValue, Self);
@@ -1136,16 +1145,16 @@ begin
     FRadioItem := AValue;
     if FChecked and FRadioItem then
       TurnSiblingsOff;
-    if (GroupIndex<>0) and (FParent<>nil) then begin
-      for I := 0 to FParent.Count - 1 do begin
+    if (GroupIndex<>0) and (FParent<>nil) then
+    begin
+      for I := 0 to FParent.Count - 1 do
+      begin
         Item := FParent[I];
-        if (Item <> Self)
-        and (Item.GroupIndex = GroupIndex) then
-          Item.FRadioItem:=FRadioItem;
+        if (Item <> Self) and (Item.GroupIndex = GroupIndex) then
+          Item.FRadioItem := FRadioItem;
       end;
     end;
-    if (FParent <> nil) and not (csReading in ComponentState)
-    and (HandleAllocated) then
+    if (FParent <> nil) and not (csReading in ComponentState) and (HandleAllocated) then
       TWSMenuItemClass(WidgetSetClass).SetRadioItem(Self, AValue);
   end;
 end;
@@ -1157,8 +1166,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetRightJustify(const AValue: boolean);
 begin
-  if FRightJustify=AValue then exit;
-  FRightJustify:=AValue;
+  if FRightJustify = AValue then Exit;
+  FRightJustify := AValue;
   if HandleAllocated then
     TWSMenuItemClass(WidgetSetClass).SetRightJustify(Self, AValue);
 end;
@@ -1209,12 +1218,12 @@ var
   AImageList: TCustomImageList;
 begin
   if (FImageIndex = Value) then
-    exit;
+    Exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
   AImageList := GetImageList;
   FImageIndex := Value;
   if AImageList = nil then
-    exit;
+    Exit;
     
   FBitmapIsValid := False;
   if (FImageIndex < 0) or (AImageList = nil) or (FImageIndex >= AImageList.Count) then
@@ -1284,7 +1293,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetShortCut(const AValue : TShortCut);
 Begin
-  if FShortCut <> AValue then begin
+  if FShortCut <> AValue then
+  begin
     ShortCutChanged(FShortCut, AValue);
     FShortCut := AValue;
   end;
@@ -1299,18 +1309,21 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetVisible(AValue: Boolean);
 begin
-  if FVisible=AValue then exit;
+  if FVisible = AValue then Exit;
   //debugln('TMenuItem.SetVisible ',dbgsname(Self),' NewValue=',dbgs(AValue),' HandleAllocated=',dbgs(HandleAllocated));
-  if ([csDestroying]*ComponentState<>[]) then exit;
-  if AValue then begin
+  if ([csDestroying] * ComponentState <> []) then Exit;
+  if AValue then
+  begin
     FVisible := AValue;
     if (not (csLoading in ComponentState)) and Parent.HandleAllocated then
       HandleNeeded;
     if HandleAllocated then
-      TWSMenuItemClass(WidgetSetClass).SetVisible(Self,true);
-  end else begin
-    if HandleAllocated then begin
-      TWSMenuItemClass(WidgetSetClass).SetVisible(Self,false);
+      TWSMenuItemClass(WidgetSetClass).SetVisible(Self, True);
+  end else
+  begin
+    if HandleAllocated then
+    begin
+      TWSMenuItemClass(WidgetSetClass).SetVisible(Self, False);
       DestroyHandle;
     end;
     FVisible := AValue;
@@ -1394,7 +1407,7 @@ procedure TMenuItem.SubItemChanged(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
   if Rebuild and HandleAllocated then
-    ; // RebuildHandle;
+    ; //RebuildHandle;
   if Parent <> nil then
     Parent.SubItemChanged(Self, Source, False)
   else if Owner is TMainMenu then
@@ -1418,19 +1431,18 @@ var
   I: Integer;
   Item: TMenuItem;
 begin
-  if (FParent <> nil) and (GroupIndex<>0) then
+  if (FParent <> nil) and (GroupIndex <> 0) then
     for I := 0 to FParent.Count - 1 do
     begin
       Item := FParent[I];
-      if (Item <> Self)
-      and Item.FRadioItem and (Item.GroupIndex = GroupIndex)
-      then Item.FChecked := false;
+      if (Item <> Self) and Item.FRadioItem and (Item.GroupIndex = GroupIndex) then
+        Item.FChecked := False;
     end;
 end;
 
 procedure TMenuItem.DoActionChange(Sender: TObject);
 begin
-  if Sender=Action then ActionChange(Sender,False);
+  if Sender = Action then ActionChange(Sender, False);
 end;
 
 class procedure TMenuItem.WSRegisterClass;
@@ -1441,7 +1453,8 @@ end;
 
 procedure TMenuItem.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TCustomAction then begin
+  if Dest is TCustomAction then
+  begin
     with TCustomAction(Dest) do
     begin
       Caption := Self.Caption;
