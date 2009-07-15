@@ -430,7 +430,12 @@ begin
   MenuWidget := PGtkWidget(APopupMenu.Handle);
   // MenuWidget can be either GtkMenu or GtkMenuItem submenu
   if GTK_IS_MENU_ITEM(MenuWidget) then
+  {$ifdef gtk1}
+    MenuWidget := gtk_object_get_data(PGtkObject(MenuWidget),
+                                    'ContainerMenu');
+  {$else}
     MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
+  {$endif}
   gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
                  @APoint, 0,
                  {$ifdef gtk1}
