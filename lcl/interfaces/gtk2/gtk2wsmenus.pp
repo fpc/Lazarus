@@ -175,28 +175,34 @@ begin
     if ParentMenuWidget=nil then
       RaiseGDBException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
 
-    if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
+    if GTK_IS_MENU_BAR(ParentMenuWidget) then
+    begin
       // mainmenu (= a menu bar)
-      ContainerMenu:=ParentMenuWidget;
-      gtk_menu_bar_insert(ParentMenuWidget,MenuItem, AMenuItem.MenuVisibleIndex);
+      ContainerMenu := ParentMenuWidget;
+      gtk_menu_bar_insert(ParentMenuWidget, MenuItem, AMenuItem.MenuVisibleIndex);
     end
-    else begin
-      // menu item
+    else
+    begin
+      // if it is a menu
+      if GTK_IS_MENU(ParentMenuWidget) then
+        ContainerMenu := ParentMenuWidget
+      else // menu item
+        ContainerMenu := PGtkWidget(gtk_object_get_data(PGtkObject(ParentMenuWidget),
+                                    'ContainerMenu')); // find the menu container
 
-      // find the menu container
-      ContainerMenu := PGtkWidget(gtk_object_get_data(
-                                                   PGtkObject(ParentMenuWidget),
-                                                   'ContainerMenu'));
-      if ContainerMenu = nil then begin
-        if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then begin
-          ContainerMenu:=PGtkWidget(GetParentMenu.Handle);
+      if ContainerMenu = nil then
+      begin
+        if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then
+        begin
+          ContainerMenu := PGtkWidget(GetParentMenu.Handle);
           gtk_object_set_data(PGtkObject(ContainerMenu), 'ContainerMenu',
                               ContainerMenu);
-        end else begin
+        end else
+        begin
           ContainerMenu := gtk_menu_new;
           gtk_object_set_data(PGtkObject(ParentMenuWidget), 'ContainerMenu',
                               ContainerMenu);
-          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
+          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget), ContainerMenu);
         end;
       end;
       gtk_menu_insert(ContainerMenu, MenuItem, AMenuItem.MenuVisibleIndex);
@@ -205,7 +211,7 @@ begin
     SetContainerMenuToggleSize;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)),GroupIndex);
+      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
