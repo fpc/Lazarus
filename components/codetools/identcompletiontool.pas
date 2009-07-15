@@ -86,7 +86,8 @@ type
     iliIsConstructorValid,
     iliIsDestructor,
     iliIsDestructorValid,
-    iliKeyword
+    iliKeyword,
+    iliResultTypeValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -106,6 +107,7 @@ type
     FNext: TIdentifierListItem;
     FParamList: string;
     FNode: TCodeTreeNode;
+    FResultType: string;
     FToolNodesDeletedStep: integer;// only valid if iliNodeValid
     FNodeStartPos: integer;
     FNodeDesc: TCodeTreeNodeDesc;
@@ -114,6 +116,7 @@ type
     function GetParamList: string;
     procedure SetNode(const AValue: TCodeTreeNode);
     procedure SetParamList(const AValue: string);
+    procedure SetResultType(const AValue: string);
   public
     Compatibility: TIdentifierCompatibility;
     HistoryIndex: integer;
@@ -151,6 +154,7 @@ type
     function CalcMemSize: PtrUInt;
   public
     property ParamList: string read GetParamList write SetParamList;
+    property ResultType: string read FResultType write SetResultType;
     property Node: TCodeTreeNode read GetNode write SetNode;
   end;
   
@@ -1076,7 +1080,8 @@ const
         nil,
         ctnProcedure);
     NewItem.ParamList:=AParameterList;
-    NewItem.Flags:=NewItem.Flags+[iliParamListValid,iliIsFunction,iliIsFunctionValid];
+    NewItem.ResultType:=AResultType;
+    NewItem.Flags:=NewItem.Flags+[iliParamListValid,iliIsFunction,iliIsFunctionValid,iliResultTypeValid];
     CurrentIdentifierList.Add(NewItem);
   end;
 
@@ -2221,6 +2226,12 @@ begin
   Include(Flags,iliParamListValid);
 end;
 
+procedure TIdentifierListItem.SetResultType(const AValue: string);
+begin
+  FResultType := AValue;
+  Include(Flags, iliResultTypeValid);
+end;
+
 function TIdentifierListItem.AsString: string;
 var
   ANode: TCodeTreeNode;
@@ -2435,6 +2446,7 @@ end;
 procedure TIdentifierListItem.Clear;
 begin
   FParamList:='';
+  FResultType:='';
   Compatibility:=icompUnknown;
   HistoryIndex:=0;
   Identifier:='';

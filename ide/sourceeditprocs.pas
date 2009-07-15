@@ -391,6 +391,8 @@ begin
           s:=IdentItem.ParamList;
           if s<>'' then
             s:='('+s+')';
+          if IdentItem.IsFunction then
+            s := s + ':' + IdentItem.ResultType;
           s:=s+';'
         end;
       end;
