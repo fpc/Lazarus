@@ -119,21 +119,12 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenuItem.CreateHandle;
-var
-  i: Integer;
 begin
   //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
   if not FVisible then RaiseGDBException('');
   Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
-  if FItems <> nil then
-  begin
-    for i := 0 to Count - 1 do
-    begin
-      if Items[i].Visible then
-        Items[i].HandleNeeded;
-    end;
-  end;
+  CheckChildrenHandles;
 
   if Parent <> nil then
   begin
@@ -264,6 +255,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg);
 begin
+  CheckChildrenHandles;
   if not (csDesigning in ComponentState) then
   begin
     InitiateActions;
@@ -272,6 +264,20 @@ begin
   else
   if Assigned(DesignerMenuItemClick) then
     DesignerMenuItemClick(Self);
+end;
+
+procedure TMenuItem.CheckChildrenHandles;
+var
+  i: Integer;
+begin
+  if FItems <> nil then
+  begin
+    for i := 0 to Count - 1 do
+    begin
+      if Items[i].Visible then
+        Items[i].HandleNeeded;
+    end;
+  end;
 end;
 
 procedure TMenuItem.IntfDoSelect;

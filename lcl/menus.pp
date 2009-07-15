@@ -176,6 +176,7 @@ type
     function GetActionLinkClass: TMenuActionLinkClass; dynamic;
     function GetHandle: HMenu;
     procedure DoClicked(var msg); message LM_ACTIVATE;
+    procedure CheckChildrenHandles;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
     procedure Loaded; override;
