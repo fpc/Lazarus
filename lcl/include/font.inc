@@ -165,6 +165,7 @@ begin
         else
           Pitch := fpDefault;
         end;
+        Orientation := lfOrientation;
         Handle := Font;
       end;
   end;
@@ -1214,6 +1215,7 @@ begin
   Result.CharSet := CharSet;
   Result.Quality := Quality;
   Result.Name := LeftStr(Name, SizeOf(Result.Name) - 1);
+  Result.Orientation := Orientation;
 end;
 
 function TFont.GetIsMonoSpace: boolean;
@@ -1267,6 +1269,7 @@ begin
       inherited SetFlags(7, fsUnderline in FStyle);
     if (fsStrikeOut in OldStyle)<>(fsStrikeOut in FStyle) then
       inherited SetFlags(8, fsStrikeOut in FStyle);
+    FOrientation := FontData.Orientation;
     Changed;
   end;
 end;

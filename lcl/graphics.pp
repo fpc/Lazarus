@@ -69,6 +69,7 @@ type
     CharSet: TFontCharSet;
     Quality: TFontQuality;
     Name: TFontDataName;
+    Orientation: Integer;
   end;
 
 const
@@ -83,7 +84,8 @@ const
     Style: [];
     Charset: DEFAULT_CHARSET;
     Quality: fqDefault;
-    Name: 'default'
+    Name: 'default';
+    Orientation: 0;
     );
 
 type
