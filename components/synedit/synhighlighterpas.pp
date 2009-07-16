@@ -1314,6 +1314,12 @@ begin
     if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
   end else
     if KeyComp('Interface') then begin
+      if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+      then begin
+        fRange := fRange + [rsAtClass];
+        StartPascalCodeFoldBlock(cfbtClass);
+      end
+      else
       if not(rsAfterEqual in fRange) and
          (fRange * [rsInterface, rsImplementation] = []) then
       begin
