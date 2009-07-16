@@ -277,7 +277,9 @@ begin
           //force creation
           gtk_widget_realize(ClientWidget);
           AWindow := GetControlWindow(ClientWidget);
-          if AWindow = nil then RaiseUnableToRealize;
+          // Don't raise an exception. Not all operations needs drawable. For example font metrics:
+          // http://bugs.freepascal.org/view.php?id=14035
+          //if AWindow = nil then RaiseUnableToRealize;
         end;
       end
       else begin
