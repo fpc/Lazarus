@@ -6399,10 +6399,10 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnProperty, ctnGlobalProperty:
+    ctnClass, ctnClassInterface, ctnProperty, ctnGlobalProperty:
       begin
-        if ExprType.Context.Node.Desc=ctnClass then begin
-          // search default property of the class
+        if ExprType.Context.Node.Desc in [ctnClass,ctnClassInterface] then begin
+          // search default property of the class / interface
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                         +fdfGlobals*Params.Flags;
