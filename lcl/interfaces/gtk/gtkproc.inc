@@ -2273,6 +2273,7 @@ begin
   Flags := 0;
   SysKey := False;
   ShiftState := GTKEventStateToShiftState(AEvent^.state);
+  //DebugLn(['HandleGTKKeyUpDown AEvent^.state=',hexstr(AEvent^.state,4),' ',dbgs(ShiftState)]);
   {$ifdef gtk1}
     KeyCode := XKeysymToKeycode(gdk_display, AEvent^.keyval);
   {$else}

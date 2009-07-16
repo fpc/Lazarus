@@ -40,7 +40,9 @@
  keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
  ourself
 *)
+{$IFNDEF EnableGtkShiftState}
 {$define UseOwnShiftState}
+{$ENDIF}
 
 (*
  keep track of keystates instead of using OS
