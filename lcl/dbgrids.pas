@@ -1527,7 +1527,7 @@ begin
 
       if C<>nil then begin
         tmpCanvas.Font := C.Title.Font;
-        ColWidth := tmpCanvas.TextWidth(C.Title.Caption);
+        ColWidth := tmpCanvas.TextWidth(trim(C.Title.Caption));
         tmpCanvas.Font := C.Font;
       end else begin
         ColWidth := 0;
@@ -1540,7 +1540,7 @@ begin
           FDatalink.ActiveRecord := ARow - FixedRows;
 
           if Field.dataType<>ftBlob then
-            s := Field.DisplayText
+            s := trim(Field.DisplayText)
           else
             s := '(blob)';
           w := tmpCanvas.TextWidth(s);
