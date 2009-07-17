@@ -6839,8 +6839,8 @@ begin
   if not HandleAllocated then
     RaiseGDBException('TWinControl.FinalizeWnd Handle already destroyed');
   // make sure our text is saved
-  if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
-  then FCaption := S;
+  if TWSWinControlClass(WidgetSetClass).GetText(Self, S) then
+    FCaption := S;
   // if color has changed make sure it will be restored
   if FColor<>clWindow then
     Include(FWinControlFlags,wcfColorChanged);
@@ -6999,10 +6999,17 @@ end;
   Destroys the interface object.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd;
+var
+  i: integer;
 begin
   if HandleAllocated then
   begin
     FinalizeWnd;
+
+    if FControls <> nil then
+      for i := 0 to FControls.Count - 1 do
+        TControl(FControls[i]).DoOnParentHandleDestruction;
+
     TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
     Handle := 0;
     // We don't know why we here. Maybe because handle is not needed at moment

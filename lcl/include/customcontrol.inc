@@ -63,7 +63,7 @@ end;
 
 procedure TCustomControl.DestroyWnd;
 begin
-  if FCanvas<>nil then
+  if FCanvas <> nil then
     TControlCanvas(FCanvas).FreeHandle;
   inherited DestroyWnd;
 end;

@@ -979,6 +979,7 @@ type
     function GetCursor: TCursor; virtual;
     procedure SetCursor(Value: TCursor); virtual;
     procedure SetVisible(Value: Boolean); virtual;
+    procedure DoOnParentHandleDestruction; virtual;
   protected
     // sizing/aligning
     procedure DoAutoSize; virtual;
@@ -1905,6 +1906,8 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;
+    procedure DoOnParentHandleDestruction; override;
+
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
     constructor Create(AOwner: TComponent); override;

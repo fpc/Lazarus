@@ -3499,6 +3499,11 @@ begin
     ControlState := ControlState + [csVisibleSetInLoading];
 end;
 
+procedure TControl.DoOnParentHandleDestruction;
+begin
+  // nothing, implement in descendats
+end;
+
 {------------------------------------------------------------------------------
        TControl.SetZOrder
 

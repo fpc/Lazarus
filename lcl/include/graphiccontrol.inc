@@ -104,5 +104,12 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
+procedure TGraphicControl.DoOnParentHandleDestruction;
+begin
+  inherited;
+  if Canvas.HandleAllocated then
+    TControlCanvas(Canvas).FreeHandle;
+end;
+
 // included by controls.pp
 
