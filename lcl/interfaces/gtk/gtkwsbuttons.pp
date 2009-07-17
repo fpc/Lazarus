@@ -232,11 +232,24 @@ begin
 
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
   BitBtnInfo := WidgetInfo^.UserData;                       
-  if BitBtnInfo^.LabelWidget = nil then Exit;  
 
-  //debugln('TGtkWSBitBtn.SetText ',DbgStr(AText));
-  GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
-     {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
+  if AText = '' then
+  begin
+    gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget);
+    BitBtnInfo^.LabelWidget := nil;
+  end
+  else
+  begin
+    if BitBtnInfo^.LabelWidget = nil then
+    begin
+      BitBtnInfo^.LabelWidget := gtk_label_new(nil);
+      gtk_widget_show(BitBtnInfo^.LabelWidget);
+    end;
+
+    GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
+       {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
+  end;
+
   UpdateLayout(BitBtnInfo, TBitBtn(AWincontrol).Layout, TBitBtn(AWincontrol).Margin);
 end;
 
@@ -340,81 +353,86 @@ end;
 class procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);
 begin
-  if (AInfo^.ImageWidget = nil)
-  and (AMargin < 0) 
-  then exit; // nothing to do
+  if (AInfo^.ImageWidget = nil) and (AMargin < 0) then Exit; // nothing to do
   
   // add references and remove it from the table
-  gtk_object_ref(AInfo^.LabelWidget);
-  gtk_container_remove(AInfo^.TableWidget, AInfo^.LabelWidget);
-  if AInfo^.ImageWidget <> nil
-  then begin
-    gtk_object_ref(AInfo^.ImageWidget);                          
-    if PGtkWidget(AInfo^.ImageWidget)^.Parent <> nil
-    then gtk_container_remove(AInfo^.TableWidget, AInfo^.ImageWidget);
+  if AInfo^.LabelWidget <> nil then
+  begin
+    gtk_object_ref(AInfo^.LabelWidget);
+    if PGtkWidget(AInfo^.LabelWidget)^.Parent <> nil then
+      gtk_container_remove(AInfo^.TableWidget, AInfo^.LabelWidget);
   end;
-  if AInfo^.SpaceWidget <> nil
-  then begin
+  if AInfo^.ImageWidget <> nil then
+  begin
+    gtk_object_ref(AInfo^.ImageWidget);                          
+    if PGtkWidget(AInfo^.ImageWidget)^.Parent <> nil then
+      gtk_container_remove(AInfo^.TableWidget, AInfo^.ImageWidget);
+  end;
+  if AInfo^.SpaceWidget <> nil then
+  begin
     gtk_object_ref(AInfo^.SpaceWidget);
-    if PGtkWidget(AInfo^.SpaceWidget)^.Parent <> nil
-    then gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
+    if PGtkWidget(AInfo^.SpaceWidget)^.Parent <> nil then
+      gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
   end;
 
-  if  ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.{$ifdef gtk1}thelabel{$else}text{$endif} = ''))
-  and (AInfo^.ImageWidget <> nil)
-  then begin
+  if ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.{$ifdef gtk1}thelabel{$else}text{$endif} = '')) and
+     (AInfo^.ImageWidget <> nil) then
+  begin
     gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                     1, 3, 1, 3, GTK_EXPAND, GTK_EXPAND, 0, 0);
-    gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
-                     0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+                     0, 3, 0, 3, GTK_EXPAND or GTK_FILL, GTK_EXPAND or GTK_FILL, 0, 0);
   end
   else
   case ALayout of 
-    blGlyphLeft: begin
-      if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+    blGlyphLeft:
+    begin
+      if AInfo^.ImageWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                         1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
                        2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
-    blGlyphRight: begin
+    blGlyphRight:
+    begin
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
                        1, 2, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.SpaceWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                            3, 4, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+      if AInfo^.ImageWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                         2, 3, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+      if AInfo^.SpaceWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
+                         3, 4, 1, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
-    blGlyphTop: begin
-      if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+    blGlyphTop:
+    begin
+      if AInfo^.ImageWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                         1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
                        1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end; 
-    blGlyphBottom: begin
+    blGlyphBottom:
+    begin
       gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
                        1, 3, 1, 2, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
-                            1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
-      if AInfo^.SpaceWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
-                            1, 3, 3, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+      if AInfo^.ImageWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                        1, 3, 2, 3, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
+      if AInfo^.SpaceWidget <> nil then
+        gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
+                         1, 3, 3, 4, GTK_SHRINK or GTK_FILL, GTK_SHRINK or GTK_FILL, 0, 0);
     end;
   end;
   
   // remove temp reference
-  if AInfo^.SpaceWidget <> nil
-  then gtk_object_unref(AInfo^.SpaceWidget);
-  if AInfo^.ImageWidget <> nil
-  then gtk_object_unref(AInfo^.ImageWidget);
-  gtk_object_unref(AInfo^.LabelWidget);
+  if AInfo^.SpaceWidget <> nil then
+    gtk_object_unref(AInfo^.SpaceWidget);
+  if AInfo^.ImageWidget <> nil then
+    gtk_object_unref(AInfo^.ImageWidget);
+  if AInfo^.LabelWidget <> nil then
+    gtk_object_unref(AInfo^.LabelWidget);
   
-  if AMargin >= 0 
-  then UpdateMargin(AInfo, ALayout, AMargin)
+  if AMargin >= 0 then
+    UpdateMargin(AInfo, ALayout, AMargin)
 end;
 
 class procedure TGtkWSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;

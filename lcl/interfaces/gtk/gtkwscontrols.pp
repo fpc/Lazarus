@@ -500,10 +500,10 @@ begin
     Exit;
 
   //DebugLn('TGtkWSWinControl.SetColor ',DbgSName(AWinControl));
-  GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
+  GtkWidgetSet.SetWidgetColor(PGtkWidget(AWinControl.Handle),
                               AWinControl.Font.Color, AWinControl.Color,
-                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+                              [GTK_STATE_NORMAL, GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT, GTK_STATE_SELECTED]);
 //    GtkWidgetSet.setWidgetFont(pGtkWidget(AWinControl.handle),aWinControl.font);
   UpdateWidgetStyleOfControl(AWinControl);
 end;
