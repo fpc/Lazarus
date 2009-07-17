@@ -1,137 +1,93 @@
 object Form1: TForm1
   Left = 310
-  Height = 97
+  Height = 118
   Top = 163
-  Width = 400
-  HelpContext = 0
+  Width = 486
   ActiveControl = Button1
-  Align = alNone
-  AllowDropFiles = False
-  AutoScroll = True
-  AutoSize = False
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
-  BorderStyle = bsSizeable
   Caption = 'Form1'
-  ClientHeight = 97
-  ClientWidth = 400
-  DockSite = False
-  DragKind = dkDrag
-  DragMode = dmManual
-  Enabled = True
-  Font.Height = 0
-  Font.Style = []
-  FormStyle = fsNormal
+  ClientHeight = 118
+  ClientWidth = 486
   OnCreate = FormCreate
-  ParentBiDiMode = True
-  ParentFont = False
-  Position = poDesigned
-  ShowInTaskBar = stDefault
-  UseDockManager = False
   LCLVersion = '0.9.27'
-  WindowState = wsNormal
   object Label1: TLabel
-    Left = 256
-    Height = 13
-    Top = 23
-    Width = 101
-    HelpContext = 0
-    Align = alNone
-    Alignment = taLeftJustify
-    AutoSize = True
+    Left = 108
+    Height = 16
+    Top = 8
+    Width = 106
     Caption = 'Select Paper Size'
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
-    Layout = tlTop
-    ParentBidiMode = True
     ParentColor = False
-    ParentFont = True
-    ParentShowHint = True
-    ShowAccelChar = True
-    Transparent = True
-    Visible = True
-    WordWrap = False
-    OptimalFill = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 16
+    Top = 8
+    Width = 73
+    Caption = 'Resolution X'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 16
+    Top = 64
+    Width = 75
+    Caption = 'Resolution Y'
+    ParentColor = False
   end
   object Button1: TButton
-    Left = 24
+    Left = 264
     Height = 25
-    Top = 23
+    Top = 8
     Width = 212
-    HelpContext = 0
-    Align = alNone
-    AutoSize = False
     BorderSpacing.InnerBorder = 4
-    Cancel = False
     Caption = 'Generate a PostScript file'
-    Default = False
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
-    ParentBidiMode = True
-    ModalResult = 0
     OnClick = Button1Click
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 0
-    TabStop = True
-    Visible = True
   end
   object Button2: TButton
-    Left = 24
+    Left = 264
     Height = 25
-    Top = 56
+    Top = 40
     Width = 212
-    HelpContext = 0
-    Align = alNone
-    AutoSize = False
     BorderSpacing.InnerBorder = 4
-    Cancel = False
     Caption = 'Show this file (kghostview)'
-    Default = False
-    DragCursor = crDrag
-    DragMode = dmManual
-    Enabled = True
-    ParentBidiMode = True
-    ModalResult = 0
     OnClick = Button2Click
-    ParentFont = True
-    ParentShowHint = True
     TabOrder = 1
-    TabStop = True
-    Visible = True
   end
   object ListBox1: TListBox
-    Left = 252
-    Height = 38
-    Top = 43
+    Left = 104
+    Height = 79
+    Top = 28
     Width = 124
-    HelpContext = 0
-    Align = alNone
-    BorderStyle = bsSingle
-    ClickOnSelChange = True
-    Columns = 0
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    ExtendedSelect = True
-    Enabled = True
-    IntegralHeight = False
     Items.Strings = (
       'A4'
       'Letter'
     )
-    ItemHeight = 16
-    MultiSelect = False
-    ParentBidiMode = True
-    ParentColor = False
-    ParentShowHint = True
-    ParentFont = True
-    Sorted = False
-    Style = lbStandard
+    ItemHeight = 21
     TabOrder = 2
-    TabStop = True
-    TopIndex = 0
-    Visible = True
+  end
+  object txtResX: TEdit
+    Left = 8
+    Height = 23
+    Top = 28
+    Width = 80
+    TabOrder = 3
+    Text = '72'
+  end
+  object txtResY: TEdit
+    Left = 8
+    Height = 23
+    Top = 84
+    Width = 80
+    TabOrder = 4
+    Text = '72'
+  end
+  object Button3: TButton
+    Left = 328
+    Height = 25
+    Top = 84
+    Width = 75
+    Caption = 'Button3'
+    OnClick = Button3Click
+    TabOrder = 5
   end
 end

@@ -1,40 +1,25 @@
-{ This is an automatically generated lazarus resource file }
+{ Este es un archivo de recurso de Lazarus generado automáticamente }
 
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'6'#1#6'Height'#2'a'#3'Top'#3#163#0#5'Widt'
-  +'h'#3#144#1#11'HelpContext'#2#0#13'ActiveControl'#7#7'Button1'#5'Align'#7#6
-  +'alNone'#14'AllowDropFiles'#8#10'AutoScroll'#9#8'AutoSize'#8#11'BorderIcons'
-  +#11#12'biSystemMenu'#10'biMinimize'#10'biMaximize'#0#11'BorderStyle'#7#10'bs'
-  +'Sizeable'#7'Caption'#6#5'Form1'#12'ClientHeight'#2'a'#11'ClientWidth'#3#144
-  +#1#8'DockSite'#8#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'
-  +#9#11'Font.Height'#2#0#10'Font.Style'#11#0#9'FormStyle'#7#8'fsNormal'#8'OnCr'
-  +'eate'#7#10'FormCreate'#14'ParentBiDiMode'#9#10'ParentFont'#8#8'Position'#7
-  +#10'poDesigned'#13'ShowInTaskBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCL'
-  +'Version'#6#6'0.9.27'#11'WindowState'#7#8'wsNormal'#0#6'TLabel'#6'Label1'#4
-  +'Left'#3#0#1#6'Height'#2#13#3'Top'#2#23#5'Width'#2'e'#11'HelpContext'#2#0#5
-  +'Align'#7#6'alNone'#9'Alignment'#7#13'taLeftJustify'#8'AutoSize'#9#7'Caption'
-  +#6#17'Select Paper Size'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'
-  +#7'Enabled'#9#6'Layout'#7#5'tlTop'#14'ParentBidiMode'#9#11'ParentColor'#8#10
-  +'ParentFont'#9#14'ParentShowHint'#9#13'ShowAccelChar'#9#11'Transparent'#9#7
-  +'Visible'#9#8'WordWrap'#8#11'OptimalFill'#8#0#0#7'TButton'#7'Button1'#4'Left'
-  +#2#24#6'Height'#2#25#3'Top'#2#23#5'Width'#3#212#0#11'HelpContext'#2#0#5'Alig'
-  +'n'#7#6'alNone'#8'AutoSize'#8#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'#8#7
-  +'Caption'#6#26'Generate a PostScript file'#7'Default'#8#10'DragCursor'#7#6'c'
-  +'rDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#14'ParentBidiMode'#9#11'Modal'
-  +'Result'#2#0#7'OnClick'#7#12'Button1Click'#10'ParentFont'#9#14'ParentShowHin'
-  +'t'#9#8'TabOrder'#2#0#7'TabStop'#9#7'Visible'#9#0#0#7'TButton'#7'Button2'#4
-  +'Left'#2#24#6'Height'#2#25#3'Top'#2'8'#5'Width'#3#212#0#11'HelpContext'#2#0#5
-  +'Align'#7#6'alNone'#8'AutoSize'#8#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'
-  +#8#7'Caption'#6#27'Show this file (kghostview)'#7'Default'#8#10'DragCursor'#7
-  +#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#14'ParentBidiMode'#9#11'Mo'
-  +'dalResult'#2#0#7'OnClick'#7#12'Button2Click'#10'ParentFont'#9#14'ParentShow'
-  +'Hint'#9#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9#0#0#8'TListBox'#8'ListBox'
-  +'1'#4'Left'#3#252#0#6'Height'#2'&'#3'Top'#2'+'#5'Width'#2'|'#11'HelpContext'
-  +#2#0#5'Align'#7#6'alNone'#11'BorderStyle'#7#8'bsSingle'#16'ClickOnSelChange'
-  +#9#7'Columns'#2#0#10'DragCursor'#7#6'crDrag'#8'DragKind'#7#6'dkDrag'#8'DragM'
-  +'ode'#7#8'dmManual'#14'ExtendedSelect'#9#7'Enabled'#9#14'IntegralHeight'#8#13
-  +'Items.Strings'#1#6#2'A4'#6#6'Letter'#0#10'ItemHeight'#2#16#11'MultiSelect'#8
-  +#14'ParentBidiMode'#9#11'ParentColor'#8#14'ParentShowHint'#9#10'ParentFont'#9
-  +#6'Sorted'#8#5'Style'#7#10'lbStandard'#8'TabOrder'#2#2#7'TabStop'#9#8'TopInd'
-  +'ex'#2#0#7'Visible'#9#0#0#0
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'6'#1#6'Height'#2'v'#3'Top'#3#163#0#5'Widt'
+  +'h'#3#230#1#13'ActiveControl'#7#7'Button1'#7'Caption'#6#5'Form1'#12'ClientHe'
+  +'ight'#2'v'#11'ClientWidth'#3#230#1#8'OnCreate'#7#10'FormCreate'#10'LCLVersi'
+  +'on'#6#6'0.9.27'#0#6'TLabel'#6'Label1'#4'Left'#2'l'#6'Height'#2#16#3'Top'#2#8
+  +#5'Width'#2'j'#7'Caption'#6#17'Select Paper Size'#11'ParentColor'#8#0#0#6'TL'
+  +'abel'#6'Label2'#4'Left'#2#8#6'Height'#2#16#3'Top'#2#8#5'Width'#2'I'#7'Capti'
+  +'on'#6#12'Resolution X'#11'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2#8
+  +#6'Height'#2#16#3'Top'#2'@'#5'Width'#2'K'#7'Caption'#6#12'Resolution Y'#11'P'
+  +'arentColor'#8#0#0#7'TButton'#7'Button1'#4'Left'#3#8#1#6'Height'#2#25#3'Top'
+  +#2#8#5'Width'#3#212#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#26'Gene'
+  +'rate a PostScript file'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#0#0#7
+  +'TButton'#7'Button2'#4'Left'#3#8#1#6'Height'#2#25#3'Top'#2'('#5'Width'#3#212
+  +#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#27'Show this file (kghostv'
+  +'iew)'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#1#0#0#8'TListBox'#8'ListB'
+  +'ox1'#4'Left'#2'h'#6'Height'#2'O'#3'Top'#2#28#5'Width'#2'|'#13'Items.Strings'
+  +#1#6#2'A4'#6#6'Letter'#0#10'ItemHeight'#2#21#8'TabOrder'#2#2#0#0#5'TEdit'#7
+  +'txtResX'#4'Left'#2#8#6'Height'#2#23#3'Top'#2#28#5'Width'#2'P'#8'TabOrder'#2
+  +#3#4'Text'#6#2'72'#0#0#5'TEdit'#7'txtResY'#4'Left'#2#8#6'Height'#2#23#3'Top'
+  +#2'T'#5'Width'#2'P'#8'TabOrder'#2#4#4'Text'#6#2'72'#0#0#7'TButton'#7'Button3'
+  +#4'Left'#3'H'#1#6'Height'#2#25#3'Top'#2'T'#5'Width'#2'K'#7'Caption'#6#7'Butt'
+  +'on3'#7'OnClick'#7#12'Button3Click'#8'TabOrder'#2#5#0#0#0
 ]);

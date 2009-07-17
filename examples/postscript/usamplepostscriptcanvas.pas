@@ -21,10 +21,16 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
+    txtResX: TEdit;
+    txtResY: TEdit;
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     ListBox1: TListBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -49,25 +55,49 @@ var
     x,y,tmp : Integer;
     PsCanvas: TPostscriptCanvas;
 
+    function Sx(AX: Integer): Integer;
+    begin
+      // all values were based on 72 dpi
+      result := round(PsCanvas.XDPI/72*Ax);
+    end;
+
+    function Sy(AY: Integer): Integer;
+    begin
+      // all values were based on 72 dpi
+      result := round(PsCanvas.YDPI/72*Ay);
+    end;
+
+    function PointS(Ax,Ay:Integer): TPoint;
+    begin
+      Result.X:= Sx(Ax);
+      Result.Y:= Sy(Ay);
+    end;
+
+    function Pt2Pix(Pt: Integer): Integer;
+    begin
+      result := round(PSCanvas.YDPI/72*Pt);
+    end;
+
     procedure LineSample(txt:string);
     begin
-      tmp := PsCanvas.Font.Size div 2;
-      PsCanvas.Line(x+170,y+tmp,x+170+100,y+tmp);
+      tmp := Pt2Pix(PsCanvas.Font.Size) div 2;
+      //WriteLn('LineSample: Y=',Y,' FontSize=', PsCanvas.Font.Size,' Pix=',tmp*2,' Spc= ',tmp,' Sy=',Sy(Tmp));
+      PsCanvas.Line(x+Sx(170),y+tmp,x+Sx(170+100),y+tmp);
       PsCanvas.TextOut(x,y,txt);
       inc(y,tmp*3);
     end;
 
     procedure BrushSample(txt:string);
     begin
-      PsCanvas.Rectangle(x,y,x+50,y+40);
-      PsCanvas.TextOut(x+55,y+40-PsCanvas.Font.Size,txt);
-      inc(y,50);
+      PsCanvas.Rectangle(x,y,x+Sx(50),y+Sy(40));
+      PsCanvas.TextOut(x+Sx(55),y+SY(40)-Pt2Pix(PsCanvas.Font.Size),txt);
+      inc(y,Sy(50));
     end;
 
     procedure FontSample(txt:string);
     begin
       PsCanvas.TextOut(x,y,txt);
-      inc(y,PsCanvas.Font.Size+4);
+      inc(y,Pt2Pix(PsCanvas.Font.Size)+Sy(4));
     end;
 
     procedure LineSamples(AX,AY:Integer);
@@ -128,78 +158,78 @@ var
 begin
   if Sender=nil then ;
   PsCanvas := TPostscriptCanvas.Create;
-  PsCanvas.XDPI:=72;
-  PsCanvas.YDPI:=72;
+  psCanvas.XDPI := StrToIntDef(txtResX.Text,300);
+  psCanvas.YDPI := StrToIntDef(txtResY.Text,300);
   With PsCanvas do
   try
     if ListBox1.ItemIndex=1 then begin
-      PageHeight:=792;
-      PageWidth:=612;
+      PaperHeight:=Sx(792);
+      PaperWidth:=Sy(612);
     end else begin
-      PageHeight:=842;
-      PageWidth:=595;
+      PaperHeight:=Sy(842);
+      PaperWidth:=Sx(595);
     end;
-    TopMargin:=40;
-    LeftMargin:=20;
+    TopMargin:=Sy(40);
+    LeftMargin:=Sx(20);
 
     BeginDoc;
 
     // title
     Font.Size:=24;
     Font.Style:=[fsBold,fsItalic,fsUnderline];
-    TextOut(100,-10,'PostScript Canvas Lazarus sample');
+    TextOut(Sx(100),Sy(10),'PostScript Canvas Lazarus sample');
 
     Font.Size:=12;
     Brush.Color:=clRed;
     Pen.Width:=1;
-    RoundRect(10,60,60,110,8,8);
+    RoundRect(Sx(10),Sy(60),Sx(60),Sy(110),Sx(8),Sy(8));
     Brush.Color:=clMaroon;
-    Rectangle(70,60,170,110);
+    Rectangle(Sx(70),Sy(60),Sx(170),Sy(110));
 
-    FontSamples(200, 60);
+    FontSamples(Sx(200), Sy(60));
 
     // green ellipse
     Pen.Style:=psSolid;
     Brush.Color:=clGreen;
-    Ellipse(10,260,60,310);
+    Ellipse(Sx(10),Sy(260),Sx(60),Sy(310));
 
     // pie
     Brush.Color:=clTeal;
     Brush.Style:=bsSolid;
-    RadialPie(10,360,90,440,0,60*16);
+    RadialPie(Sx(10),Sy(360),Sx(90),Sy(440),0,60*16);
 
     // polygon: triangle
     Pen.Style:=psSolid;
     Brush.Color:=clGray;
-    Pt[0]:=Point(10,140);
-    Pt[1]:=Point(10,240);
-    Pt[2]:=Point(140,140);
+    Pt[0]:=PointS(10,140);
+    Pt[1]:=PointS(10,240);
+    Pt[2]:=PointS(140,140);
     Polygon(@Pt,3,True);
 
     // polyline: angle
     Pen.Style:=psDot;
-    Pt1[0]:=Point(10,400);
-    Pt1[1]:=Point(50,390);
-    Pt1[2]:=Point(120,410);
-    Pt1[3]:=Point(180,425);
+    Pt1[0]:=PointS(10,400);
+    Pt1[1]:=PointS(50,390);
+    Pt1[2]:=PointS(120,410);
+    Pt1[3]:=PointS(180,425);
     Polyline(@Pt1,4);
 
     // bezier
     Brush.Color:=clAqua;
     Pen.Style:=psSolid;
-    Pt1[0]:=Point(10,430);
+    Pt1[0]:=PointS(10,430);
     PolyBezier(@Pt1,4,true,True);
 
     // line samples
 
-    LineSamples(200,165);
+    LineSamples(Sx(200),Sy(165));
 
-    BrushSamples(240,280);
+    BrushSamples(Sx(240),Sy(280));
 
     Bmp:=TBitMap.Create;
     try
       Bmp.LoadFromFile(ExpandFileNameUTF8('../../images/LazarusForm.bmp'));
-      DRaw(10,450,BMP);
+      DRaw(Sx(10),SY(450),BMP);
     finally
       Bmp.Free;
     end;
@@ -207,7 +237,7 @@ begin
     xpm:=TPixMap.Create;
     try
       xpm.LoadFromFile(ExpandFileNameUTF8('../../images/vase_trans.xpm'));
-      StretchDraw(bounds(10, 590, round(xpm.Width*0.60),round(xpm.height*0.60)),xpm);
+      StretchDraw(bounds(Sx(10), Sy(590), Sx(round(xpm.Width*0.60)),Sy(round(xpm.height*0.60))),xpm);
     finally
       xpm.Free;
     end;
@@ -215,7 +245,7 @@ begin
     png := TPortableNetworkGraphic.Create;
     try
       png.LoadFromFile('../../images/splash_logo.png');
-      StretchDraw(bounds(190, 590, round(png.Width*0.60),round(png.height*0.60)),png);
+      StretchDraw(bounds(Sx(190), Sy(590), Sx(round(png.Width*0.60)),Sy(round(png.height*0.60))),png);
     finally
       png.Free;
     end;
@@ -225,9 +255,9 @@ begin
     Pen.Color:=clBlack;
     Brush.Color:=clTeal;
     Brush.Style:=bsSolid;
-    Chord(10,360,90,440,0,60*16);
+    Chord(Sx(10),Sy(360),Sx(90),Sy(440),0,60*16);
 
-    BrushSamples(100,100);
+    BrushSamples(Sx(100),Sy(100));
 
     EndDoc;
     SaveToFile('test1.ps');
@@ -248,9 +278,37 @@ begin
       ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
     {$ENDIF}
     {$IFDEF UNIX}
-      Shell(format('kghostview %s',[ExpandFileNameUTF8('./test1.ps')]));
+      Shell(format('gv %s',[ExpandFileNameUTF8('./test1.ps')]));
     {$ENDIF}
   end;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+    png : TPortableNetworkGraphic;
+    x,y,tmp : Integer;
+    PsCanvas: TPostscriptCanvas;
+begin
+  psCanvas := TPostscriptCanvas.Create;
+  psCanvas.XDPI := 72;
+  psCanvas.YDPI := 72;
+  psCanvas.PaperHeight:=842;
+  psCanvas.PaperWidth:=595;
+  psCanvas.TopMargin:=40;
+  psCanvas.LeftMargin:=20;
+  psCanvas.BeginDoc;
+
+  png := TPortableNetworkGraphic.Create;
+  try
+    png.LoadFromFile('small.png');
+    psCanvas.StretchDraw(Bounds(50,500,50,50),png);
+  finally
+    png.Free;
+  end;
+
+  psCanvas.EndDoc;
+  psCanvas.SaveToFile('small.ps');
+  psCanvas.Free;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
