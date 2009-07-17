@@ -926,6 +926,32 @@ const
     lshJScript
     );
 
+type
+
+  { TSynEditMouseActionKeyCmdHelper }
+
+  TSynEditMouseActionKeyCmdHelper = class(TSynEditMouseAction)
+  private
+    function GetOptionKeyCmd: TSynEditorCommand;
+    procedure SetOptionKeyCmd(const AValue: TSynEditorCommand);
+  published
+    property Option: TSynEditorCommand read GetOptionKeyCmd write SetOptionKeyCmd;
+  end;
+
+{ TSynEditMouseActionKeyCmdHelper }
+
+function TSynEditMouseActionKeyCmdHelper.GetOptionKeyCmd: TSynEditorCommand;
+begin
+  Result := inherited Option;
+end;
+
+procedure TSynEditMouseActionKeyCmdHelper.SetOptionKeyCmd(
+  const AValue: TSynEditorCommand);
+begin
+  inherited Option := AValue;
+end;
+
+
 procedure RepairEditorFontHeight(var FontHeight: integer);
 begin
   if ((FontHeight>=0) and (FontHeight<=5))
@@ -2011,14 +2037,14 @@ var
   Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
   var
     c, i, j: Integer;
-    MAct: TSynEditMouseAction;
+    MAct: TSynEditMouseActionKeyCmdHelper;
     //ErrShown: Boolean;
   begin
     MActions.ResetDefaults;
     //ErrShown := False;
 
     // Deleted Defaults
-    MAct := TSynEditMouseAction.Create(nil);
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     c := XMLConfig.GetValue(Path + 'CountDel', 0);
     for i := 0 to c - 1 do begin
       XMLConfig.ReadObject(Path + 'Del' + IntToStr(i) + '/', MAct);
@@ -2276,16 +2302,22 @@ var
   Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
   var
     i, j, k, OldCnt: Integer;
+    MAct: TSynEditMouseActionKeyCmdHelper;
     MADef: TSynEditMouseActions;
   begin
     MaDef := TSynEditMouseSelActionsClass(MActions.ClassType).Create(nil);
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     MADef.ResetDefaults;
     OldCnt := XMLConfig.GetValue(Path + 'Count', 0);
     j := 0;
     for i := 0 to MActions.Count - 1 do begin
       k := MADef.IndexOf(MActions[i], True);
       if (k < 0) or not(MActions[i].Equals(MADef[k])) then begin
-        XMLConfig.WriteObject(Path + 'M' + IntToStr(j) + '/', MActions[i]);
+        if MActions[i].Command = emcSynEditCommand then begin
+          MAct.Assign(MActions[i]);
+          XMLConfig.WriteObject(Path + 'M' + IntToStr(j) + '/', MAct);
+        end else
+          XMLConfig.WriteObject(Path + 'M' + IntToStr(j) + '/', MActions[i]);
         Inc(j);
       end;
       if k >= 0 then
@@ -2297,12 +2329,18 @@ var
 
     // Deleted Defaults
     OldCnt := XMLConfig.GetValue(Path + 'CountDel', 0);
-    for i := 0 to MADef.Count - 1 do
-      XMLConfig.WriteObject(Path + 'Del' + IntToStr(i) + '/', MADef[i]);
+    for i := 0 to MADef.Count - 1 do begin
+      if MADef[i].Command = emcSynEditCommand then begin
+        MAct.Assign(MADef[i]);
+        XMLConfig.WriteObject(Path + 'Del' + IntToStr(i) + '/', MAct);
+      end else
+        XMLConfig.WriteObject(Path + 'Del' + IntToStr(i) + '/', MADef[i]);
+    end;
     XMLConfig.SetValue(Path + 'CountDel', MADef.Count);
     for i := MADef.Count to OldCnt do
       XMLConfig.DeletePath(Path + 'Del' + IntToStr(i));
 
+    MAct.Free;
     MADef.Free;
   end;
 

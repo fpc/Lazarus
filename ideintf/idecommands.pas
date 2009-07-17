@@ -534,6 +534,8 @@ procedure CreateStandardIDECommandScopes;
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
 
+function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
+function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 
 implementation
 
@@ -1063,6 +1065,255 @@ begin
     else
       debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' ',TClass(FIDEWindowClasses[i]).ClassName);
   end;
+end;
+
+const
+  IDECommandStrs: array[0..201] of TIdentMapEntry = (
+    // search
+    (Value: ecFind;                     Name: 'ecFind'),
+    (Value: ecFindAgain;                Name: 'ecFindAgain'),
+    (Value: ecFindNext;                 Name: 'ecFindNext'),
+    (Value: ecFindPrevious;             Name: 'ecFindPrevious'),
+    (Value: ecReplace;                  Name: 'ecReplace'),
+    (Value: ecIncrementalFind;          Name: 'ecIncrementalFind'),
+    (Value: ecFindProcedureDefinition;  Name: 'ecFindProcedureDefinition'),
+    (Value: ecFindProcedureMethod;      Name: 'ecFindProcedureMethod'),
+    (Value: ecGotoLineNumber;           Name: 'ecGotoLineNumber'),
+    (Value: ecFindNextWordOccurrence;   Name: 'ecFindNextWordOccurrence'),
+    (Value: ecFindPrevWordOccurrence;   Name: 'ecFindPrevWordOccurrence'),
+    (Value: ecFindInFiles;              Name: 'ecFindInFiles'),
+    (Value: ecJumpBack;                 Name: 'ecJumpBack'),
+    (Value: ecJumpForward;              Name: 'ecJumpForward'),
+    (Value: ecAddJumpPoint;             Name: 'ecAddJumpPoint'),
+    (Value: ecViewJumpHistory;          Name: 'ecViewJumpHistory'),
+    (Value: ecJumpToNextError;          Name: 'ecJumpToNextError'),
+    (Value: ecJumpToPrevError;          Name: 'ecJumpToPrevError'),
+    (Value: ecProcedureList;            Name: 'ecProcedureList'),
+
+    // search code
+    (Value: ecFindDeclaration;          Name: 'ecFindDeclaration'),
+    (Value: ecFindBlockOtherEnd;        Name: 'ecFindBlockOtherEnd'),
+    (Value: ecFindBlockStart;           Name: 'ecFindBlockStart'),
+    (Value: ecOpenFileAtCursor;         Name: 'ecOpenFileAtCursor'),
+    (Value: ecGotoIncludeDirective;     Name: 'ecGotoIncludeDirective'),
+
+    // edit selection
+    (Value: ecSelectionUpperCase;       Name: 'ecSelectionUpperCase'),
+    (Value: ecSelectionLowerCase;       Name: 'ecSelectionLowerCase'),
+    (Value: ecSelectionTabs2Spaces;     Name: 'ecSelectionTabs2Spaces'),
+    (Value: ecSelectionEnclose;         Name: 'ecSelectionEnclose'),
+    (Value: ecSelectionComment;         Name: 'ecSelectionComment'),
+    (Value: ecSelectionUncomment;       Name: 'ecSelectionUncomment'),
+    (Value: ecSelectionSort;            Name: 'ecSelectionSort'),
+    (Value: ecSelectionBreakLines;      Name: 'ecSelectionBreakLines'),
+    (Value: ecSelectToBrace;            Name: 'ecSelectToBrace'),
+    (Value: ecSelectCodeBlock;          Name: 'ecSelectCodeBlock'),
+    (Value: ecSelectWord;               Name: 'ecSelectWord'),
+    (Value: ecSelectLine;               Name: 'ecSelectLine'),
+    (Value: ecSelectParagraph;          Name: 'ecSelectParagraph'),
+    (Value: ecSelectionConditional;     Name: 'ecSelectionConditional'),
+    (Value: ecToggleComment;            Name: 'ecToggleComment'),
+
+    // insert text
+    (Value: ecInsertCharacter;          Name: 'ecInsertCharacter'),
+    (Value: ecInsertGPLNotice;          Name: 'ecInsertGPLNotice'),
+    (Value: ecInsertLGPLNotice;         Name: 'ecInsertLGPLNotice'),
+    (Value: ecInsertUserName;           Name: 'ecInsertUserName'),
+    (Value: ecInsertDateTime;           Name: 'ecInsertDateTime'),
+    (Value: ecInsertChangeLogEntry;     Name: 'ecInsertChangeLogEntry'),
+    (Value: ecInsertCVSAuthor;          Name: 'ecInsertCVSAuthor'),
+    (Value: ecInsertCVSDate;            Name: 'ecInsertCVSDate'),
+    (Value: ecInsertCVSHeader;          Name: 'ecInsertCVSHeader'),
+    (Value: ecInsertCVSID;              Name: 'ecInsertCVSID'),
+    (Value: ecInsertCVSLog;             Name: 'ecInsertCVSLog'),
+    (Value: ecInsertCVSName;            Name: 'ecInsertCVSName'),
+    (Value: ecInsertCVSRevision;        Name: 'ecInsertCVSRevision'),
+    (Value: ecInsertCVSSource;          Name: 'ecInsertCVSSource'),
+    (Value: ecInsertModifiedLGPLNotice; Name: 'ecInsertModifiedLGPLNotice'),
+    (Value: ecInsertTodo;               Name: 'ecInsertTodo'),
+    (Value: ecInsertGUID;               Name: 'ecInsertGUID'),
+
+    // source tools
+    (Value: ecWordCompletion;           Name: 'ecWordCompletion'),
+    (Value: ecCompleteCode;             Name: 'ecCompleteCode'),
+    (Value: ecIdentCompletion;          Name: 'ecIdentCompletion'),
+    (Value: ecSyntaxCheck;              Name: 'ecSyntaxCheck'),
+    (Value: ecGuessUnclosedBlock;       Name: 'ecGuessUnclosedBlock'),
+    (Value: ecGuessMisplacedIFDEF;      Name: 'ecGuessMisplacedIFDEF'),
+    (Value: ecConvertDFM2LFM;           Name: 'ecConvertDFM2LFM'),
+    (Value: ecCheckLFM;                 Name: 'ecCheckLFM'),
+    (Value: ecConvertDelphiUnit;        Name: 'ecConvertDelphiUnit'),
+    (Value: ecConvertDelphiProject;     Name: 'ecConvertDelphiProject'),
+    (Value: ecConvertDelphiPackage;     Name: 'ecConvertDelphiPackage'),
+    (Value: ecConvertEncoding;          Name: 'ecConvertEncoding'),
+    (Value: ecMakeResourceString;       Name: 'ecMakeResourceString'),
+    (Value: ecDiff;                     Name: 'ecDiff'),
+    (Value: ecExtractProc;              Name: 'ecExtractProc'),
+    (Value: ecFindIdentifierRefs;       Name: 'ecFindIdentifierRefs'),
+    (Value: ecRenameIdentifier;         Name: 'ecRenameIdentifier'),
+    (Value: ecInvertAssignment;         Name: 'ecInvertAssignment'),
+    (Value: ecShowCodeContext;          Name: 'ecShowCodeContext'),
+    (Value: ecShowAbstractMethods;      Name: 'ecShowAbstractMethods'),
+    (Value: ecRemoveEmptyMethods;       Name: 'ecRemoveEmptyMethods'),
+    (Value: ecRemoveUnusedUnits;        Name: 'ecRemoveUnusedUnits'),
+    (Value: ecFindOverloads;            Name: 'ecFindOverloads'),
+
+    // file menu
+    (Value: ecNew;                      Name: 'ecNew'),
+    (Value: ecNewUnit;                  Name: 'ecNewUnit'),
+    (Value: ecNewForm;                  Name: 'ecNewForm'),
+    (Value: ecOpen;                     Name: 'ecOpen'),
+    (Value: ecRevert;                   Name: 'ecRevert'),
+    (Value: ecSave;                     Name: 'ecSave'),
+    (Value: ecSaveAs;                   Name: 'ecSaveAs'),
+    (Value: ecSaveAll;                  Name: 'ecSaveAll'),
+    (Value: ecClose;                    Name: 'ecClose'),
+    (Value: ecCloseAll;                 Name: 'ecCloseAll'),
+    (Value: ecCleanDirectory;           Name: 'ecCleanDirectory'),
+    (Value: ecRestart;                  Name: 'ecRestart'),
+    (Value: ecQuit;                     Name: 'ecQuit'),
+
+    // IDE navigation
+    (Value: ecToggleFormUnit;           Name: 'ecToggleFormUnit'),
+    (Value: ecToggleObjectInsp;         Name: 'ecToggleObjectInsp'),
+    (Value: ecToggleSourceEditor;       Name: 'ecToggleSourceEditor'),
+    (Value: ecToggleCodeExpl;           Name: 'ecToggleCodeExpl'),
+    (Value: ecToggleFPDocEditor;        Name: 'ecToggleFPDocEditor'),
+    (Value: ecToggleMessages;           Name: 'ecToggleMessages'),
+    (Value: ecToggleWatches;            Name: 'ecToggleWatches'),
+    (Value: ecToggleBreakPoints;        Name: 'ecToggleBreakPoints'),
+    (Value: ecToggleDebuggerOut;        Name: 'ecToggleDebuggerOut'),
+    (Value: ecViewUnits;                Name: 'ecViewUnits'),
+    (Value: ecViewForms;                Name: 'ecViewForms'),
+    (Value: ecViewUnitDependencies;     Name: 'ecViewUnitDependencies'),
+    (Value: ecViewUnitInfo;             Name: 'ecViewUnitInfo'),
+    (Value: ecToggleLocals;             Name: 'ecToggleLocals'),
+    (Value: ecToggleCallStack;          Name: 'ecToggleCallStack'),
+    (Value: ecToggleSearchResults;      Name: 'ecToggleSearchResults'),
+    (Value: ecViewAnchorEditor;         Name: 'ecViewAnchorEditor'),
+    (Value: ecToggleCodeBrowser;        Name: 'ecToggleCodeBrowser'),
+    (Value: ecToggleCompPalette;        Name: 'ecToggleCompPalette'),
+    (Value: ecToggleIDESpeedBtns;       Name: 'ecToggleIDESpeedBtns'),
+    (Value: ecViewComponents;           Name: 'ecViewComponents'),
+    (Value: ecToggleRestrictionBrowser;  Name: 'ecToggleRestrictionBrowser'),
+    (Value: ecViewTodoList;             Name: 'ecViewTodoList'),
+    (Value: ecToggleRegisters;          Name: 'ecToggleRegisters'),
+    (Value: ecToggleAssembler;          Name: 'ecToggleAssembler'),
+
+
+    // sourcenotebook commands
+    (Value: ecNextEditor;               Name: 'ecNextEditor'),
+    (Value: ecPrevEditor;               Name: 'ecPrevEditor'),
+    (Value: ecMoveEditorLeft;           Name: 'ecMoveEditorLeft'),
+    (Value: ecMoveEditorRight;          Name: 'ecMoveEditorRight'),
+    (Value: ecToggleBreakPoint;         Name: 'ecToggleBreakPoint'),
+    (Value: ecRemoveBreakPoint;         Name: 'ecRemoveBreakPoint'),
+    (Value: ecMoveEditorLeftmost;       Name: 'ecMoveEditorLeftmost'),
+    (Value: ecMoveEditorRightmost;      Name: 'ecMoveEditorRightmost'),
+
+    (Value: ecGotoEditor1;              Name: 'ecGotoEditor1'),
+    (Value: ecGotoEditor2;              Name: 'ecGotoEditor2'),
+    (Value: ecGotoEditor3;              Name: 'ecGotoEditor3'),
+    (Value: ecGotoEditor4;              Name: 'ecGotoEditor4'),
+    (Value: ecGotoEditor5;              Name: 'ecGotoEditor5'),
+    (Value: ecGotoEditor6;              Name: 'ecGotoEditor6'),
+    (Value: ecGotoEditor7;              Name: 'ecGotoEditor7'),
+    (Value: ecGotoEditor8;              Name: 'ecGotoEditor8'),
+    (Value: ecGotoEditor9;              Name: 'ecGotoEditor9'),
+    (Value: ecGotoEditor0;              Name: 'ecGotoEditor0'),
+
+    // marker
+    (Value: ecSetFreeBookmark;          Name: 'ecSetFreeBookmark'),
+    (Value: ecPrevBookmark;             Name: 'ecPrevBookmark'),
+    (Value: ecNextBookmark;             Name: 'ecNextBookmark'),
+
+    // compile menu
+    (Value: ecBuild;                    Name: 'ecBuild'),
+    (Value: ecBuildAll;                 Name: 'ecBuildAll'),
+    (Value: ecQuickCompile;             Name: 'ecQuickCompile'),
+    (Value: ecAbortBuild;               Name: 'ecAbortBuild'),
+    (Value: ecRun;                      Name: 'ecRun'),
+    (Value: ecPause;                    Name: 'ecPause'),
+    (Value: ecStepInto;                 Name: 'ecStepInto'),
+    (Value: ecStepOver;                 Name: 'ecStepOver'),
+    (Value: ecRunToCursor;              Name: 'ecRunToCursor'),
+    (Value: ecStopProgram;              Name: 'ecStopProgram'),
+    (Value: ecResetDebugger;            Name: 'ecResetDebugger'),
+    (Value: ecBuildLazarus;             Name: 'ecBuildLazarus'),
+    (Value: ecBuildFile;                Name: 'ecBuildFile'),
+    (Value: ecRunFile;                  Name: 'ecRunFile'),
+    (Value: ecConfigBuildFile;          Name: 'ecConfigBuildFile'),
+    (Value: ecInspect;                  Name: 'ecInspect'),
+    (Value: ecEvaluate;                 Name: 'ecEvaluate'),
+    (Value: ecAddWatch;                 Name: 'ecAddWatch'),
+
+    // project menu
+    (Value: ecNewProject;               Name: 'ecNewProject'),
+    (Value: ecNewProjectFromFile;       Name: 'ecNewProjectFromFile'),
+    (Value: ecOpenProject;              Name: 'ecOpenProject'),
+    (Value: ecCloseProject;             Name: 'ecCloseProject'),
+    (Value: ecSaveProject;              Name: 'ecSaveProject'),
+    (Value: ecSaveProjectAs;            Name: 'ecSaveProjectAs'),
+    (Value: ecPublishProject;           Name: 'ecPublishProject'),
+    (Value: ecProjectInspector;         Name: 'ecProjectInspector'),
+    (Value: ecAddCurUnitToProj;         Name: 'ecAddCurUnitToProj'),
+    (Value: ecRemoveFromProj;           Name: 'ecRemoveFromProj'),
+    (Value: ecViewProjectSource;        Name: 'ecViewProjectSource'),
+    (Value: ecProjectOptions;           Name: 'ecProjectOptions'),
+
+    // components menu
+    (Value: ecOpenPackage;              Name: 'ecOpenPackage'),
+    (Value: ecOpenPackageFile;          Name: 'ecOpenPackageFile'),
+    (Value: ecOpenPackageOfCurUnit;     Name: 'ecOpenPackageOfCurUnit'),
+    (Value: ecAddCurUnitToPkg;          Name: 'ecAddCurUnitToPkg'),
+    (Value: ecPackageGraph;             Name: 'ecPackageGraph'),
+    (Value: ecEditInstallPkgs;          Name: 'ecEditInstallPkgs'),
+    (Value: ecConfigCustomComps;        Name: 'ecConfigCustomComps'),
+    (Value: ecNewPackage;               Name: 'ecNewPackage'),
+
+    // custom tools menu
+    (Value: ecExtToolFirst;             Name: 'ecExtToolFirst'),
+    (Value: ecExtToolLast;              Name: 'ecExtToolLast'),
+
+    // option commmands
+    (Value: ecRunParameters;            Name: 'ecRunParameters'),
+    (Value: ecCompilerOptions;          Name: 'ecCompilerOptions'),
+    (Value: ecExtToolSettings;          Name: 'ecExtToolSettings'),
+    (Value: ecConfigBuildLazarus;       Name: 'ecConfigBuildLazarus'),
+    (Value: ecEnvironmentOptions;       Name: 'ecEnvironmentOptions'),
+    (Value: ecReserved1;                Name: 'ecReserved1'), // reserved
+    (Value: ecEditCodeTemplates;        Name: 'ecEditCodeTemplates'),
+    (Value: ecReserved2;                Name: 'ecReserved2'), // reserved
+    (Value: ecCodeToolsDefinesEd;       Name: 'ecCodeToolsDefinesEd'),
+    (Value: ecRescanFPCSrcDir;          Name: 'ecRescanFPCSrcDir'),
+
+    // help menu
+    (Value: ecAboutLazarus;             Name: 'ecAboutLazarus'),
+    (Value: ecOnlineHelp;               Name: 'ecOnlineHelp'),
+    (Value: ecReserved3;                Name: 'ecReserved3'), // reserved
+    (Value: ecContextHelp;              Name: 'ecContextHelp'),
+    (Value: ecEditContextHelp;          Name: 'ecEditContextHelp'),
+    (Value: ecReportingBug;             Name: 'ecReportingBug'),
+
+    // designer
+    (Value: ecDesignerCopy;             Name: 'ecDesignerCopy'),
+    (Value: ecDesignerCut;              Name: 'ecDesignerCut'),
+    (Value: ecDesignerPaste;            Name: 'ecDesignerPaste'),
+    (Value: ecDesignerSelectParent;     Name: 'ecDesignerSelectParent'),
+    (Value: ecDesignerMoveToFront;      Name: 'ecDesignerMoveToFront'),
+    (Value: ecDesignerMoveToBack;       Name: 'ecDesignerMoveToBack'),
+    (Value: ecDesignerForwardOne;       Name: 'ecDesignerForwardOne'),
+    (Value: ecDesignerBackOne;          Name: 'ecDesignerBackOne')
+  );
+
+function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, IDECommandStrs);
+end;
+
+function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := IntToIdent(Cmd, Ident, IDECommandStrs);
 end;
 
 end.

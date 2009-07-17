@@ -331,7 +331,7 @@ begin
     FShift      := TSynEditMouseAction(Source).Shift;
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
     FMoveCaret  := TSynEditMouseAction(Source).MoveCaret;
-    FOption     := TSynEditMouseAction(Source).Option;
+    FOption     := TSynEditMouseAction(Source).FOption;
     FPriority   := TSynEditMouseAction(Source).Priority;
   end else
     inherited Assign(Source);

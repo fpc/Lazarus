@@ -354,6 +354,8 @@ procedure GetEditorCommandValues(Proc: TGetStrProc);
 function IdentToEditorCommand(const Ident: string; var Cmd: longint): boolean;
 function EditorCommandToIdent(Cmd: longint; var Ident: string): boolean;
 
+procedure RegisterKeyCmdIdentProcs(IdentToIntFn: TIdentToInt; IntToIdentFn: TIntToIdent);
+
 implementation
 
 // FOR LAZARUS
@@ -592,6 +594,10 @@ const
     (Value: EcToggleMarkupWord; Name: 'EcToggleMarkupWord')
   );
 
+var
+  ExtraIdentToIntFn: Array of TIdentToInt = nil;
+  ExtraIntToIdentFn: Array of TIntToIdent = nil;
+
 procedure GetEditorCommandValues(Proc: TGetStrProc);
 var
   i: integer;
@@ -601,44 +607,42 @@ begin
 end;
 
 function IdentToEditorCommand(const Ident: string; var Cmd: longint): boolean;
-{$IFDEF SYN_COMPILER_2}
 var
-  I: Integer;
-{$ENDIF}
+  i: Integer;
 begin
-{$IFDEF SYN_COMPILER_2}
-  Result := FALSE;
-  for I := Low(EditorCommandStrs) to High(EditorCommandStrs) do
-    if CompareText(EditorCommandStrs[I].Name, Ident) = 0 then
-    begin
-      Result := TRUE;
-      Cmd := EditorCommandStrs[I].Value;
-      break;
-    end;
-{$ELSE}
-    Result := IdentToInt(Ident, Cmd, EditorCommandStrs);
-{$ENDIF}
+  Result := IdentToInt(Ident, Cmd, EditorCommandStrs);
+  i := 0;
+  while (i < length(ExtraIdentToIntFn)) and (not Result) do begin
+    Result := ExtraIdentToIntFn[i](Ident, Cmd);
+    inc(i);
+  end;
 end;
 
 function EditorCommandToIdent(Cmd: longint; var Ident: string): boolean;
-{$IFDEF SYN_COMPILER_2}
 var
-  I: Integer;
-{$ENDIF}
+  i: Integer;
 begin
-{$IFDEF SYN_COMPILER_2}
-  Result := FALSE;
-  for I := Low(EditorCommandStrs) to High(EditorCommandStrs) do
-    if EditorCommandStrs[I].Value = Cmd then
-    begin
-      Result := TRUE;
-      Ident := EditorCommandStrs[I].Name;
-      break;
-    end;
-{$ELSE}
   Result := IntToIdent(Cmd, Ident, EditorCommandStrs);
-{$ENDIF}
+  i := 0;
+  while (i < length(ExtraIntToIdentFn)) and (not Result) do begin
+    Result := ExtraIntToIdentFn[i](Cmd, Ident);
+    inc(i);
+  end;
 end;
+
+procedure RegisterKeyCmdIdentProcs(IdentToIntFn: TIdentToInt;
+  IntToIdentFn: TIntToIdent);
+var
+  i: Integer;
+begin
+  i := length(ExtraIdentToIntFn);
+  SetLength(ExtraIdentToIntFn, i + 1);
+  ExtraIdentToIntFn[i] := IdentToIntFn;
+  i := length(ExtraIntToIdentFn);
+  SetLength(ExtraIntToIdentFn, i + 1);
+  ExtraIntToIdentFn[i] := IntToIdentFn;
+end;
+
 
 function AllocatePluginKeyRange(Count: Integer): integer;
 const
@@ -1129,10 +1133,13 @@ end;
 {end}                                                                           //ac 2000-07-05
 
 initialization
-{$IFNDEF FPC}
-// FOR LAZARUS ToDo
-  RegisterIntegerConsts(TypeInfo(TSynEditorCommand), IdentToEditorCommand,
-     EditorCommandToIdent);
-{$ENDIF}
+  RegisterIntegerConsts(TypeInfo(TSynEditorCommand),
+                        {$IFDEF FPC}@{$ENDIF}IdentToEditorCommand,
+                        {$IFDEF FPC}@{$ENDIF}EditorCommandToIdent);
+
+finalization
+  ExtraIdentToIntFn := nil;
+  ExtraIntToIdentFn := nil;
+
 end.
 

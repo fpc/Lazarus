@@ -3242,5 +3242,9 @@ begin
   FScope:=TheScope;
 end;
 
+initialization
+  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToIDECommand,
+                           {$IFDEF FPC}@{$ENDIF}IDECommandToIdent);
+
 end.
 
