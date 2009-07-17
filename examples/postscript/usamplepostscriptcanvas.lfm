@@ -82,11 +82,11 @@ object Form1: TForm1
     Text = '72'
   end
   object Button3: TButton
-    Left = 328
+    Left = 264
     Height = 25
-    Top = 84
-    Width = 75
-    Caption = 'Button3'
+    Top = 80
+    Width = 211
+    Caption = 'Test Transparent Image'
     OnClick = Button3Click
     TabOrder = 5
   end

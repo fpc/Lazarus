@@ -259,6 +259,11 @@ begin
 
     BrushSamples(Sx(100),Sy(100));
 
+    PSCanvas.Brush.Style:=bsSolid;
+    PSCanvas.Brush.Color:=clWhite;
+    PSCanvas.Rectangle(Rect(100,500,200,520));
+    PSCanvas.TextRect(Rect(100,500,200,520),100,500, 'Testing clip rect on TextRect');
+
     EndDoc;
     SaveToFile('test1.ps');
   finally
