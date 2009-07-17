@@ -95,19 +95,18 @@ var
   LogCaretXY: TPoint;
   CodeContexts: TCodeContextInfo;
 begin
-  Result:=false;
-  LogCaretXY:=SourceEditorWindow.ActiveEditor.CursorTextXY;
-  CodeContexts:=nil;
+  Result := False;
+  LogCaretXY := SourceEditorWindow.ActiveEditor.CursorTextXY;
+  CodeContexts := nil;
   try
-    if (not CodeToolBoss.FindCodeContext(Code,LogCaretXY.X,LogCaretXY.Y,
-      CodeContexts))
-    or (CodeContexts=nil) or (CodeContexts.Count=0) then
-      exit;
-    if CodeContextFrm=nil then
-      CodeContextFrm:=TCodeContextFrm.Create(nil);
+    if not CodeToolBoss.FindCodeContext(Code, LogCaretXY.X, LogCaretXY.Y, CodeContexts) or
+      (CodeContexts = nil) or (CodeContexts.Count = 0) then
+      Exit;
+    if CodeContextFrm = nil then
+      CodeContextFrm := TCodeContextFrm.Create(nil);
     CodeContextFrm.SetCodeContexts(CodeContexts);
-    CodeContextFrm.Visible:=true;
-    Result:=true;
+    CodeContextFrm.Visible := True;
+    Result := True;
   finally
     CodeContexts.Free;
   end;
