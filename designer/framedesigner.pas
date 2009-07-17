@@ -40,8 +40,10 @@ type
   TFrameDesignerForm = class(TCustomNonFormDesignerForm)
   protected
     FChangingBounds: Boolean;
+    FResizing: Boolean;
     procedure SetLookupRoot(const AValue: TComponent); override;
     procedure OnControlChangeBounds(Sender: TObject);
+    procedure OnControlResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -74,13 +76,15 @@ procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
 var
   AControl: TControl;
 begin
-  if AValue=LookupRoot then exit;
+  if AValue = LookupRoot then Exit;
   if LookupRoot is TControl then
     TControl(LookupRoot).RemoveAllHandlersOfObject(Self);
-  if (AValue is TControl) then begin
-    AControl:=TControl(AValue);
+  if (AValue is TControl) then
+  begin
+    AControl := TControl(AValue);
     AControl.Parent := Self;
-    AControl.AddHandlerOnChangeBounds(@OnControlChangeBounds,true);
+    AControl.AddHandlerOnChangeBounds(@OnControlChangeBounds, True);
+    AControl.AddHandlerOnResize(@OnControlResize, True);
   end;
   inherited SetLookupRoot(AValue);
 end;
@@ -90,17 +94,33 @@ var
   AControl: TControl;
   a: TAnchorKind;
 begin
-  if FChangingBounds then exit;
-  AControl:=TControl(LookupRoot);
-  FChangingBounds:=true;
+  if FChangingBounds then Exit;
+  AControl := TControl(LookupRoot);
+  FChangingBounds := True;
   try
     // reset anchors
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      AControl.AnchorSide[a].Control:=nil;
+    for a := Low(TAnchorKind) to High(TAnchorKind) do
+      AControl.AnchorSide[a].Control := nil;
     // reset bounds
     AControl.SetBounds(0, 0, Width, Height);
   finally
-    FChangingBounds:=false;
+    FChangingBounds := False;
+  end;
+end;
+
+procedure TFrameDesignerForm.OnControlResize(Sender: TObject);
+var
+  AControl: TControl;
+  a: TAnchorKind;
+begin
+  if FResizing then Exit;
+  AControl := TControl(LookupRoot);
+  FResizing := True;
+  try
+    // update form bounds
+    SetBounds(Left, Top, AControl.Width, AControl.Height);
+  finally
+    FResizing := False;
   end;
 end;
 
@@ -140,13 +160,15 @@ end;
 
 procedure TFrameDesignerForm.DoSaveBounds;
 begin
-  if LookupRoot is TControl then begin
+  if LookupRoot is TControl then
+  begin
     // store designer position
     LookupRoot.DesignInfo := DesignInfoFrom(Left, Top);
     // always fill the whole designer form
     TControl(LookupRoot).SetBounds(0, 0, Width, Height);
     //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
-  end else
+  end
+  else
   if LookupRoot <> nil then
     DebugLn(['Unsupported component type in TFrameDesignerForm.DoSaveBounds: ', LookupRoot.ClassName]);
   inherited;  
