@@ -1131,7 +1131,8 @@ begin
     AddCompilerProcedure('Write','Args:Arguments');
     AddCompilerProcedure('WriteLn','Args:Arguments');
 
-    if Context.Tool.NodeIsInAMethod(Context.Node)
+    if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
+    and Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
       // method body -> add 'Self'
       NewItem:=TIdentifierListItem.Create(
@@ -1146,7 +1147,8 @@ begin
       CurrentIdentifierList.Add(NewItem);
     end;
     ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
-    if Context.Tool.NodeIsFunction(ProcNode)
+    if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
+    and Context.Tool.NodeIsFunction(ProcNode)
     and (not CurrentIdentifierList.HasIdentifier('Result','')) then begin
       // function body -> add 'Result'
       NewItem:=TIdentifierListItem.Create(
