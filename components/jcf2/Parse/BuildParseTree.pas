@@ -2306,7 +2306,8 @@ procedure TBuildParseTree.RecogniseOperatorSymbol;
 const
   OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
     ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
-    ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
+    ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign, ttXor,
+    ttAnd, ttOr];
 begin
   Recognise(OperatorTokens);
 end;
