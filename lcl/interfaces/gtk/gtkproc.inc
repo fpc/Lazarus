@@ -2273,7 +2273,6 @@ begin
   Flags := 0;
   SysKey := False;
   ShiftState := GTKEventStateToShiftState(AEvent^.state);
-  //DebugLn(['HandleGTKKeyUpDown AEvent^.state=',hexstr(AEvent^.state,4),' ',dbgs(ShiftState)]);
   {$ifdef gtk1}
     KeyCode := XKeysymToKeycode(gdk_display, AEvent^.keyval);
   {$else}
@@ -3104,12 +3103,12 @@ type
       GDK_KEY_Shift_Lock: ShiftState := ssCaps;
       GDK_KEY_Num_Lock: ShiftState := ssNum;
       GDK_KEY_Scroll_Lock: ShiftState := ssScroll;
-      {$ifndef UseOwnShiftState}
-      // UseOwnShiftState will track these, so we don't have to put them in the modmap
       GDK_Key_Shift_L,
       GDK_Key_Shift_R: ShiftState := ssShift;
       GDK_KEY_Control_L,
       GDK_KEY_Control_R: ShiftState := ssCtrl;
+      {$ifndef UseOwnShiftState}
+      // UseOwnShiftState will track these, so we don't have to put them in the modmap
       GDK_KEY_Meta_L,
       GDK_KEY_Meta_R: ShiftState := ssMeta;
       GDK_KEY_Alt_L,
@@ -3133,6 +3132,32 @@ type
     {$endif}
 
   end;
+
+  {$ifdef UseOwnShiftState}
+  procedure UpdateKeyStateMap(var AIndex: integer; AKeyCode: Byte; AKeySym: Cardinal);
+  var
+    Enum: TShiftStateEnum;
+  begin
+    case AKeySym of
+      GDK_KEY_Alt_L, GDK_KEY_Alt_R:     Enum := ssAlt;
+      GDK_KEY_Meta_L, GDK_KEY_Meta_R:   Enum := ssMeta;
+      GDK_KEY_Super_L, GDK_KEY_Super_R: Enum := ssSuper;
+      GDK_KEY_Hyper_L, GDK_KEY_Hyper_R: Enum := ssHyper;
+      GDK_KEY_ISO_Level3_Shift:         Enum := ssAltGr;
+    else
+      Exit;
+    end;
+
+    if High(MKeyStateMap) < AIndex
+    then SetLength(MKeyStateMap, AIndex + 8);
+
+    MKeyStateMap[AIndex].Index := AKeyCode shr 3;
+    MKeyStateMap[AIndex].Mask := 1 shl (AKeyCode and 7);
+    MKeyStateMap[AIndex].Enum := Enum;
+    Inc(AIndex)
+  end;
+  {$endif UseOwnShiftState}
+
 {$endif HasX}
 
 const
@@ -3159,6 +3184,9 @@ var
   XDisplay: Pointer;
   ModMap: TModMap;
 {$endif}
+{$ifdef UseOwnShiftState}
+  KeyStateMapIndex: Integer;
+{$endif}
 
   KeyCode: Byte;
   m: Integer;
@@ -3171,6 +3199,7 @@ begin
   XDisplay := gdk_display;
   if XDisplay = nil then Exit;
 
+  FillByte(MKeyStateMap, SizeOF(MKeyStateMap), 0);
   SetupModifiers(XDisplay, ModMap);
 {$endif}
 
@@ -3217,6 +3246,9 @@ begin
   HiKey := 255;
 {$endif}
 
+{$ifdef UseOwnShiftState}
+  KeyStateMapIndex := 0;
+{$endif}
   FreeVK := VK_FIRST_OEM;
   for KeyCode := LoKey to HiKey do
   begin
@@ -3266,6 +3298,9 @@ begin
     begin
       if KeySyms[m] = 0 then Continue;
       UpdateModifierMap(ModMap, KeyCode, KeySyms[m]);
+      {$ifdef UseOwnShiftState}
+      UpdateKeyStateMap(KeyStateMapIndex, KeyCode, KeySyms[m]);
+      {$endif}
       Break;
     end;
   {$endif}
@@ -3360,6 +3395,9 @@ begin
       Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
     end;
   end;
+{$ifdef UseOwnShiftState}
+  SetLength(MKeyStateMap, KeyStateMapIndex);
+{$endif}
 
 {$ifdef gtk1}
   XFree(KeySymStart);
@@ -3412,11 +3450,42 @@ end;
   GTKEventStateToShiftState converts a GTK event state to a LCL/Delphi TShiftState
  ------------------------------------------------------------------------------}
 function GTKEventStateToShiftState(KeyState: Word): TShiftState;
+  {$ifdef HasX}
+  function GetState: TShiftState;
+  var
+    Keys: chararr32;
+    n: Integer;
+  begin
+    Result := [];
+    XQueryKeyMap(gdk_display, Keys);
+    for n := Low(MKeyStateMap) to High(MKeyStateMap) do
+    begin
+      if Ord(Keys[MKeyStateMap[n].Index]) and MKeyStateMap[n].Mask = 0 then Continue;
+      Include(Result, MKeyStateMap[n].Enum);
+      Break;
+    end;
+  end;
+  {$else}
+  {$ifdef windows}
+  function GetState: TShiftState;
+  begin
+    Result := [];
+    if GetKeyState(VK_ALT) < 0 then Include(Result, ssAlt);
+    if GetKeyState(VK_WIN) < 0 then Include(Result, ssMeta);
+  end;
+  {$else}
+  function GetState: TShiftState;
+  begin
+    Result := [];
+  end;
+  {$endif}
+  {$endif}
+
 var
   State: TShiftStateEnum;
 begin
   {$ifdef UseOwnShiftState}
-  Result := MShiftState;
+  Result := GetState;
   {$else}
   Result := [];
   {$endif}

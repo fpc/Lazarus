@@ -40,9 +40,7 @@
  keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
  ourself
 *)
-{$IFNDEF EnableGtkShiftState}
 {$define UseOwnShiftState}
-{$ENDIF}
 
 (*
  keep track of keystates instead of using OS
@@ -92,6 +90,8 @@
 
 
 {$IFDEF Gtk2}
-{$DEFINE EnabledGtkThreading} // see http://bugs.freepascal.org/view.php?id=12145. Turn it off is something happen.
+// see http://bugs.freepascal.org/view.php?id=12145. 
+// Turn it off if something happens.
+{$DEFINE EnabledGtkThreading}
 {$define GTK_2_8}
 {$ENDIF}

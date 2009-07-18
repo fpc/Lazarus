@@ -813,7 +813,7 @@ var
   MVKeyInfo: array[Byte] of TVKeyInfo;
 
   // Modifier keys can be set by a modmap and don't have to be the same on all systems
-  // Some defaults are set here in case we didn't find them
+  // Some defaults are set here incase we didn't find them
 type
   TModifier = record
     Mask: TGdkModifierType;    // if UseValue is set, the modifier is set when the masked state matches the value
@@ -823,10 +823,18 @@ type
 
 var
   MModifiers: array[TShiftStateEnum] of TModifier;
-  
+
 {$ifdef UseOwnShiftState}
+{$ifdef HasX}
+  // KeyStateMap is a quick index to scan the results of a XQueryKeymap
+  // Shift is set when the mask for the Keymapkeys_return[index] is set
 var
-  MShiftState: TShiftState = [];
+  MKeyStateMap: array of record
+    Index: Byte;
+    Mask: Byte;
+    Enum: TShiftStateEnum;
+  end;
+{$endif}
 {$endif}
 
 type
