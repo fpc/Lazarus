@@ -163,7 +163,9 @@ type
   
   TIdentifierListContextFlag = (
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
-    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A|:=', does not check if A can be assigned
+    ilcfStartIsLValue,     // atom is start of statement. e.g. 'A|:=' or 'A|;', does not check if A can be assigned
+    ilcfStartOfOperand,    // atom is start of an operand. e.g. 'A|.B'
+    ilcfStartIsSubIdent,   // atom in front is point
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
     ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
     ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'sysutil| classes'
@@ -1050,6 +1052,7 @@ const
   begin
     //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartIsLValue in CurrentIdentifierList.ContextFlags]);
     if not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags) then exit;
+    if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
 
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
@@ -1070,6 +1073,8 @@ const
   var
     NewItem: TIdentifierListItem;
   begin
+    if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
@@ -1762,6 +1767,18 @@ begin
       // context in front of
       StartPosOfVariable:=FindStartOfVariable(IdentStartPos);
       if StartPosOfVariable>0 then begin
+        if StartPosOfVariable=IdentStartPos then begin
+          // cursor is at start of an operand
+          CurrentIdentifierList.ContextFlags:=
+            CurrentIdentifierList.ContextFlags+[ilcfStartOfOperand];
+        end else begin
+          MoveCursorToCleanPos(IdentStartPos);
+          ReadPriorAtom;
+          if CurPos.Flag=cafPoint then
+            // cursor is behind a point
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfStartIsSubIdent];
+        end;
         MoveCursorToCleanPos(StartPosOfVariable);
         ReadPriorAtom;
         CurrentIdentifierList.StartAtomInFront:=CurPos;
@@ -1769,13 +1786,17 @@ begin
         begin
           // check if LValue
           if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
-          or UpAtomIs('TRY') or UpAtomIs('FOR') or UpAtomIs('DO')
+          or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+          or UpAtomIs('FOR') or UpAtomIs('DO')
+          or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
           then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
           end;
           // check if expression
-          if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE') then begin
+          if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE')
+          or UpAtomIs('UNTIL')
+          then begin
             // todo: check at start of expression, not only in front of variable
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
