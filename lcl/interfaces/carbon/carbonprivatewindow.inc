@@ -1124,8 +1124,6 @@ begin
     case (LCLObject as TCustomForm).BorderStyle of
     bsDialog:
       NewWindowClass := kMovableModalWindowClass;
-    bsToolWindow, bsSizeToolWin:
-      NewWindowClass := kFloatingWindowClass;
     end;
     Attributes := Attributes or
       GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
