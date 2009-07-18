@@ -188,6 +188,7 @@ type
     function getTextStatic: Boolean; virtual;
     function getHeight: Integer;
     function getWidth: Integer;
+    function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
     procedure lowerWidget; virtual;
@@ -2743,7 +2744,7 @@ begin
 
   Msg.Msg := LM_SIZE;
 
-  case QWidget_windowState(Widget) of
+  case getWindowState of
     QtWindowMinimized: Msg.SizeType := SIZEICONIC;
     QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
     QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
@@ -3079,6 +3080,11 @@ end;
 function TQtWidget.getWidth: Integer;
 begin
   Result := QWidget_width(Widget);
+end;
+
+function TQtWidget.getWindowState: QtWindowStates;
+begin
+  Result := QWidget_windowState(Widget);
 end;
 
 function TQtWidget.getClientBounds: TRect;
@@ -4360,14 +4366,14 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SIZE;
+  Msg.SizeType := SIZENORMAL;
 
-  case QWidget_windowState(Widget) of
-    QtWindowMinimized: Msg.SizeType := SIZEICONIC;
-    QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
-    QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+  if getWindowState and QtWindowMinimized <> 0 then
+    Msg.SizeType := SIZEICONIC
   else
-    Msg.SizeType := SIZENORMAL;
-  end;
+  if (getWindowState and QtWindowFullScreen <> 0) or
+     (getWindowState and QtWindowMaximized <> 0) then
+    Msg.SizeType := SIZEFULLSCREEN;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 

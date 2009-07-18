@@ -4807,7 +4807,7 @@ begin
 
   Result := False;
 
-  Widget := TQTWidget(hWnd);
+  Widget := TQtWidget(hWnd);
 
   if Widget <> nil then
   begin
@@ -4817,7 +4817,7 @@ begin
       SW_MINIMIZE: Widget.setWindowState(QtWindowMinimized);
       SW_SHOWMINIMIZED: Widget.ShowMinimized;
       SW_SHOWMAXIMIZED: Widget.ShowMaximized;
-      SW_HIDE: TQTWidget(hWnd).setVisible(False);
+      SW_HIDE: Widget.setVisible(False);
     end;
     Result := True;
   end;
