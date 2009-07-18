@@ -2322,6 +2322,20 @@ var
   end;
 
 begin
+
+  WP.length := SizeOf(WP);
+  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
+
+  if not Result then
+    Exit;
+
+  if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
+  begin
+    Width := 0;
+    Height := 0;
+    Exit;
+  end;
+
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
   if GetParent(Handle) = 0 then
@@ -2350,15 +2364,11 @@ begin
     end;
   end
   else
-  begin
-    WP.length := SizeOf(WP);
-    Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
     with WP.rcNormalPosition do
     begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
-  end;
 
   WindowInfo := GetWin32WindowInfo(Handle);
 
