@@ -2530,17 +2530,17 @@ end;
 function TQtWidgetSet.GetParent(Handle : HWND): HWND;
 var
   QtWidget: TQtWidget;
-  w: QWidgetH;
 begin
 	{$ifdef VerboseQtWinAPI}
   writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
   {$endif}
+  Result := 0;
+  if Handle = 0 then
+    exit;
 
   QtWidget := TQtWidget(Handle);
 
-  w := QWidget_parentWidget(QtWidget.Widget);
-
-  Result := HWND(QtObjectFromWidgetH(w));
+  Result := HWND(QtObjectFromWidgetH(QtWidget.getParent));
 
 	{$ifdef VerboseQtWinAPI}
   writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
