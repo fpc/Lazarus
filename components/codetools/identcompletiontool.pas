@@ -269,22 +269,30 @@ type
   //----------------------------------------------------------------------------
   { TCodeContextInfo }
 
+  TCodeContextInfoItem = class
+  public
+    Expr: TExpressionType;
+    // compiler predefined proc
+    ProcName: string;
+    Params: TStringList;
+    ResultType: string;
+  end;
+
   TCodeContextInfo = class
   private
     FEndPos: integer;
-    FItems: PExpressionType;
-    FCount: integer;
+    FItems: TFPList; // list of TCodeContextInfoItem
     FParameterIndex: integer;
     FProcName: string;
     FProcNameAtom: TAtomPosition;
     FStartPos: integer;
     FTool: TFindDeclarationTool;
-    function GetItems(Index: integer): TExpressionType;
+    function GetItems(Index: integer): TCodeContextInfoItem;
   public
     constructor Create;
     destructor Destroy; override;
     function Count: integer;
-    property Items[Index: integer]: TExpressionType read GetItems; default;
+    property Items[Index: integer]: TCodeContextInfoItem read GetItems; default;
     function Add(const Context: TExpressionType): integer;
     procedure Clear;
     property Tool: TFindDeclarationTool read FTool write FTool;
@@ -2711,45 +2719,50 @@ end;
 
 { TCodeContextInfo }
 
-function TCodeContextInfo.GetItems(Index: integer): TExpressionType;
+function TCodeContextInfo.GetItems(Index: integer): TCodeContextInfoItem;
 begin
-  Result:=FItems[Index];
+  Result:=TCodeContextInfoItem(FItems[Index]);
 end;
 
 constructor TCodeContextInfo.Create;
 begin
-
+  FItems:=TFPList.Create;
 end;
 
 destructor TCodeContextInfo.Destroy;
 begin
   Clear;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
 function TCodeContextInfo.Count: integer;
 begin
-  Result:=FCount;
+  Result:=FItems.Count;
 end;
 
 function TCodeContextInfo.Add(const Context: TExpressionType): integer;
+var
+  Item: TCodeContextInfoItem;
 begin
-  inc(FCount);
-  Result:=Count;
-  ReAllocMem(FItems,SizeOf(TExpressionType)*FCount);
-  FItems[FCount-1]:=Context;
+  Item:=TCodeContextInfoItem.Create;
+  Item.Expr:=Context;
+  Result:=FItems.Add(Item);
 end;
 
 procedure TCodeContextInfo.Clear;
+var
+  i: Integer;
 begin
-  FCount:=0;
-  ReAllocMem(FItems,0);
+  for i:=0 to FItems.Count-1 do
+    TObject(FItems[i]).Free;
+  FItems.Clear;
 end;
 
 function TCodeContextInfo.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +PtrUInt(FCount)*SizeOf(TExpressionType)
+    +PtrUInt(TCodeContextInfoItem)*SizeOf(FItems.Count)
     +MemSizeString(FProcName);
 end;
 

@@ -326,11 +326,13 @@ var
   CodeTool: TFindDeclarationTool;
   s: String;
   p: Integer;
+  CurContext: TCodeContextInfoItem;
 begin
   FHints.Clear;
   if (CodeContexts=nil) or (CodeContexts.Count=0) then exit;
   for i:=0 to CodeContexts.Count-1 do begin
-    CurExprType:=CodeContexts[i];
+    CurContext:=CodeContexts[i];
+    CurExprType:=CurContext.Expr;
     s:=ExpressionTypeDescNames[CurExprType.Desc];
     if CurExprType.Context.Node<>nil then begin
       CodeNode:=CurExprType.Context.Node;
