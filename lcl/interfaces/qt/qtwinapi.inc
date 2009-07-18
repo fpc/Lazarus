@@ -1700,7 +1700,7 @@ begin
   QtDC.save;
   OldRgn := TQtRegion.Create(True);
   try
-    hasClipping := QPainter_hasClipping(QtDC.Widget);
+    hasClipping := QtDC.getClipping;
     if hasClipping then
       QPainter_clipRegion(QtDC.Widget, OldRgn.Widget);
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
@@ -1967,7 +1967,7 @@ begin
     if (vClipRect<>nil) and not vClipRectDirty and false then
       lpRect^ := vClipRect^
     else
-    if QPainter_HasClipping(Widget) then
+    if getClipping then
     begin
       ARegion := QRegion_Create;
       try
@@ -2015,7 +2015,7 @@ begin
     exit;
   if rgn=0 then
     exit;
-  if not QPainter_HasClipping(TQtDeviceContext(DC).Widget) then
+  if not TQtDeviceContext(DC).getClipping then
     Result := 0
   else begin
     QPainter_ClipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
@@ -4174,7 +4174,7 @@ begin
       end;
       {$ENDIF}
     end;
-    if QPainter_hasClipping(Painter) then
+    if TQtDeviceContext(DC).getClipping then
     begin
       ARegion := QRegion_Create;
       try
