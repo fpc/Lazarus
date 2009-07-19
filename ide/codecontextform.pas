@@ -365,6 +365,11 @@ begin
             continue; // ignore normal variables
         end;
       end;
+    end else if CurContext.Params<>nil then begin
+      // compiler function
+      s:=CurContext.ProcName+'('+CurContext.Params.DelimitedText+')';
+      if CurContext.ResultType<>'' then
+        s:=s+':'+CurContext.ResultType;
     end;
     // insert spaces
     for p:=length(s)-1 downto 1 do begin

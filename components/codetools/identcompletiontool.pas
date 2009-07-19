@@ -269,6 +269,8 @@ type
   //----------------------------------------------------------------------------
   { TCodeContextInfo }
 
+  { TCodeContextInfoItem }
+
   TCodeContextInfoItem = class
   public
     Expr: TExpressionType;
@@ -276,6 +278,7 @@ type
     ProcName: string;
     Params: TStringList;
     ResultType: string;
+    destructor Destroy; override;
   end;
 
   TCodeContextInfo = class
@@ -294,6 +297,7 @@ type
     function Count: integer;
     property Items[Index: integer]: TCodeContextInfoItem read GetItems; default;
     function Add(const Context: TExpressionType): integer;
+    function AddCompilerProc: integer;
     procedure Clear;
     property Tool: TFindDeclarationTool read FTool write FTool;
     property ParameterIndex: integer read FParameterIndex write FParameterIndex;// 1 based
@@ -1889,6 +1893,69 @@ var
   CursorNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
 
+  procedure AddPredefinedProcs(CurrentContexts: TCodeContextInfo;
+    ProcNameAtom: TAtomPosition);
+
+    procedure AddCompilerProc(const AProcName: string;
+      const Params: string; const ResultType: string = '');
+    var
+      i: LongInt;
+      Item: TCodeContextInfoItem;
+    begin
+      if CompareIdentifiers(PChar(AProcName),@Src[ProcNameAtom.StartPos])<>0
+      then exit;
+      i:=CurrentContexts.AddCompilerProc;
+      Item:=CurrentContexts[i];
+      Item.ProcName:=AProcName;
+      Item.ResultType:=ResultType;
+      Item.Params:=TStringList.Create;
+      Item.Params.Delimiter:=';';
+      Item.Params.StrictDelimiter:=true;
+      Item.Params.DelimitedText:=Params;
+    end;
+
+  begin
+    MoveCursorToAtomPos(ProcNameAtom);
+    ReadPriorAtom;
+    if (CurPos.Flag in [cafEnd,cafSemicolon,cafBegin,cafColon,
+      cafRoundBracketOpen,cafEdgedBracketOpen])
+    or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+    or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
+      AddCompilerProc('Assert','Condition:Boolean;const Message:String');
+      AddCompilerProc('Assigned','P:Pointer','Boolean');
+      AddCompilerProc('Addr','identifier','Pointer');
+      AddCompilerProc('Concat','Args:String', 'String');
+      AddCompilerProc('Copy','const S:String;FromPosition,Count:Integer', 'String');
+      AddCompilerProc('Dec','var X:Ordinal;N:Integer=1');
+      AddCompilerProc('Dispose','Pointer');
+      AddCompilerProc('Exclude','var S:set;X:Ordinal');
+      AddCompilerProc('Exit','');
+      AddCompilerProc('Finalize','identifier');
+      AddCompilerProc('get_frame','','Pointer');
+      AddCompilerProc('High','Argument','Ordinal');
+      AddCompilerProc('Inc','var X:Ordinal;N:Integer=1');
+      AddCompilerProc('Include','var S:set;X:Ordinal');
+      AddCompilerProc('Initialize','identifier');
+      AddCompilerProc('Length','A:array','Ordinal');
+      AddCompilerProc('Low','Argument','Ordinal');
+      AddCompilerProc('New','Pointer');
+      AddCompilerProc('Ord','X:Ordinal', 'Ordinal');
+      AddCompilerProc('Pred','X:Ordinal', 'Ordinal');
+      AddCompilerProc('Read','');
+      AddCompilerProc('ReadLn','');
+      AddCompilerProc('SetLength','var A:array;NewLength:Integer');
+      AddCompilerProc('SizeOf','identifier','Integer');
+      AddCompilerProc('Slice','var A:array;Count:Integer','array');
+      AddCompilerProc('Str','const X[:Width[:Decimals]];var S:String');
+      AddCompilerProc('Succ','X: Ordinal', 'Ordinal');
+      AddCompilerProc('TypeInfo','identifier', 'Pointer');
+      AddCompilerProc('TypeOf','identifier', 'Pointer');
+      AddCompilerProc('Val','S:String;var V;var Code:Integer');
+      AddCompilerProc('Write','Args:Arguments');
+      AddCompilerProc('WriteLn','Args:Arguments');
+    end;
+  end;
+
   function CheckContextIsParameter(var Ok: boolean): boolean;
   // returns true, on error or context is parameter
   var
@@ -1923,6 +1990,9 @@ var
     CurrentContexts.ParameterIndex:=ParameterIndex+1;
     CurrentContexts.ProcNameAtom:=ProcNameAtom;
     CurrentContexts.ProcName:=GetAtom(ProcNameAtom);
+
+    AddPredefinedProcs(CurrentContexts,ProcNameAtom);
+
     MoveCursorToAtomPos(ProcNameAtom);
     ReadNextAtom; // read opening bracket
     CurrentContexts.StartPos:=CurPos.EndPos;
@@ -2750,6 +2820,14 @@ begin
   Result:=FItems.Add(Item);
 end;
 
+function TCodeContextInfo.AddCompilerProc: integer;
+var
+  Item: TCodeContextInfoItem;
+begin
+  Item:=TCodeContextInfoItem.Create;
+  Result:=FItems.Add(Item);
+end;
+
 procedure TCodeContextInfo.Clear;
 var
   i: Integer;
@@ -2781,6 +2859,14 @@ begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(Identifier)
     +MemSizeString(ParamList);
+end;
+
+{ TCodeContextInfoItem }
+
+destructor TCodeContextInfoItem.Destroy;
+begin
+  FreeAndNil(Params);
+  inherited Destroy;
 end;
 
 initialization
