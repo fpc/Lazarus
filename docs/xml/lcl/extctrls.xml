@@ -1946,23 +1946,17 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TIdleTimer.AutoEnabled">
-        <short>
-          <var>AutoEnabled</var> - if True, Timer is automatically enabled</short>
+      <element name="TIdleTimer.AutoEnabled" link="#LCL.ExtCtrls.TCustomIdleTimer.AutoEnabled">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TIdleTimer.AutoEndEvent">
-        <short>
-          <var>AutoEndEvent</var> - the event that causes the automatic end of the timer</short>
+      <element name="TIdleTimer.AutoEndEvent" link="#LCL.ExtCtrls.TCustomIdleTimer.AutoEndEvent">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TIdleTimer.AutoStartEvent">
-        <short>
-          <var>AutoStartEvent</var> - the event that triggers autostart (either idle time-out or user input)</short>
+      <element name="TIdleTimer.AutoStartEvent" link="#LCL.ExtCtrls.TCustomIdleTimer.AutoStartEvent">
         <descr/>
         <seealso/>
       </element>
@@ -7374,6 +7368,68 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomLabeledEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomPanel.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomTrayIcon.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TTimer.Enabled" link="#LCL.CustomTimer.TCustomTimer.Enabled"/>
+      <element name="TTimer.Interval" link="#LCL.CustomTimer.TCustomTimer.Interval"/>
+      <element name="TTimer.OnTimer" link="#LCL.CustomTimer.TCustomTimer.OnTimer"/>
+      <element name="TTimer.OnStartTimer" link="#LCL.CustomTimer.TCustomTimer.OnStartTimer"/>
+      <element name="TTimer.OnStopTimer" link="#LCL.CustomTimer.TCustomTimer.OnStopTimer"/>
+      <element name="TCustomIdleTimer">
+        <short>
+          <var>TCustomIdleTimer</var> - base class for <var>TIdleTimer</var>
+        </short>
+      </element>
+      <element name="TCustomIdleTimer.SetAutoEnabled">
+        <short>
+          <var>SetAutoEnabled</var> puts the supplied boolean value into the AutoEnabled property and updates handlers</short>
+      </element>
+      <element name="TCustomIdleTimer.DoOnIdle">
+        <short>
+          <var>DoOnIdle</var> - action to be taken if the timer is idle</short>
+      </element>
+      <element name="TCustomIdleTimer.DoOnIdleEnd">
+        <short>
+          <var>DoOnIdleEnd</var> -action to be taken at the end of an idle period</short>
+      </element>
+      <element name="TCustomIdleTimer.DoOnUserInput">
+        <short>
+          <var>DoOnUserInput</var> - action to be taken when user input is detected</short>
+      </element>
+      <element name="TCustomIdleTimer.Loaded">
+        <seealso>
+          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
+        </seealso>
+        <short>
+          <var>Loaded</var> - calls inherited method and updates Handlers</short>
+      </element>
+      <element name="TCustomIdleTimer.Create">
+        <short>
+          <var>Create</var> - constructor for TCustomIdleTimer: calls inherited Create and initialises some local event variables</short>
+      </element>
+      <element name="TCustomIdleTimer.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomIdleTimer</var>: calls inherited <var>Destroy</var> after setting the <var>AutoEnabled</var> property False</short>
+      </element>
+      <element name="TCustomIdleTimer.AutoEnabled">
+        <short>
+          <var>AutoEnabled</var> - if True, Timer is automatically enabled</short>
+      </element>
+      <element name="TCustomIdleTimer.AutoStartEvent">
+        <short>
+          <var>AutoStartEvent</var> - the event that triggers autostart (either idle time-out or user input)</short>
+      </element>
+      <element name="TCustomIdleTimer.AutoEndEvent">
+        <short>
+          <var>AutoEndEvent</var> - the event that causes the automatic end of the timer</short>
+      </element>
+      <element name="TCustomIdleTimer.FireOnIdle">
+        <short>
+          <var>FireOnIdle</var> - boolean property determining whether the timer should fire when idle</short>
+      </element>
+      <element name="TIdleTimer.Enabled" link="#LCL.CustomTimer.TCustomTimer.Enabled"/>
+      <element name="TIdleTimer.Interval" link="#LCL.CustomTimer.TCustomTimer.Interval"/>
+      <element name="TIdleTimer.OnTimer" link="#LCL.CustomTimer.TCustomTimer.OnTimer"/>
+      <element name="TIdleTimer.OnStartTimer" link="#LCL.CustomTimer.TCustomTimer.OnStartTimer"/>
+      <element name="TIdleTimer.OnStopTimer" link="#LCL.CustomTimer.TCustomTimer.OnStopTimer"/>
     </module>
     <!-- ExtCtrls -->
   </package>
