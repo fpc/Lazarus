@@ -853,6 +853,7 @@ begin
   FItemIndex := -1;
   
   FItemsCheck := TList.Create;
+  FNewSelected := True;
   
   inherited;
 end;
@@ -915,8 +916,13 @@ end;
 
 procedure TCarbonDataBrowser.SelectionChanged(AIndex: Integer; ASelect: Boolean);
 begin
-  if ASelect and (AIndex <> FItemIndex) and SetItemIndexQuiet(AIndex) then
-    FocusedChanged(AIndex);
+  if ASelect then
+  begin
+    if (AIndex <> FItemIndex) and SetItemIndexQuiet(AIndex) then
+      FocusedChanged(AIndex);
+  end
+  else
+    FocusedChanged(FItemIndex);
 end;
 
 procedure TCarbonDataBrowser.CheckNeedsScrollBars;
@@ -1259,6 +1265,8 @@ begin
   OSError(
     SetDataBrowserSelectionFlags(Widget, Flags),
     Self, 'SetSelectionMode', 'SetDataBrowserSelectionFlags');
+
+  FNewSelected := True;
 end;
 
 procedure TCarbonDataBrowser.SetTopItem(AIndex: Integer);
