@@ -441,7 +441,10 @@ begin
     if (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
     then begin
       LineText:=AEditor.Lines[AEditor.BlockEnd.Y-1];
-      i := pos(LineText[AEditor.BlockEnd.X], EndOfTokenChr);
+      if AEditor.BlockEnd.X <= length(LineText) then
+        i := pos(LineText[AEditor.BlockEnd.X], EndOfTokenChr)
+      else
+        i := -1;
       if i > 0 then
         Parser.TrimEOTChar(EndOfTokenChr[i]);
     end;
