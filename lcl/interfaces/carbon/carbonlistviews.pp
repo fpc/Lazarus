@@ -853,7 +853,6 @@ begin
   FItemIndex := -1;
   
   FItemsCheck := TList.Create;
-  FNewSelected := True;
   
   inherited;
 end;
@@ -1265,8 +1264,6 @@ begin
   OSError(
     SetDataBrowserSelectionFlags(Widget, Flags),
     Self, 'SetSelectionMode', 'SetDataBrowserSelectionFlags');
-
-  FNewSelected := True;
 end;
 
 procedure TCarbonDataBrowser.SetTopItem(AIndex: Integer);
