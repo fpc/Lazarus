@@ -2443,7 +2443,7 @@ function TSourceEditor.AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
   Category: TAutoCompleteOption): boolean;
 var
   AToken: String;
-  i: Integer;
+  i, x1, x2: Integer;
   p: TPoint;
   Line: String;
   CatName: String;
@@ -2456,7 +2456,11 @@ begin
   p:=GetCursorTextXY;
   if (p.x>length(Line)+1) or (Line='') then exit;
   CatName:=AutoCompleteOptionNames[Category];
-  WordToken:=FEditor.GetWordAtRowCol(p);
+
+  FEditor.GetWordBoundsAtRowCol(p, x1, x2);
+  // A new word-break char is going to be inserted, so end the word here
+  x2 := Min(x2, p.x);
+  WordToken := copy(Line, x1, x2-x1);
   IdChars := FEditor.IdentChars;
   for i:=0 to FCodeTemplates.Completions.Count-1 do begin
     AToken:=FCodeTemplates.Completions[i];
