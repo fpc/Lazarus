@@ -125,7 +125,7 @@ begin
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
 
   {$ifndef wince}// remove ifdef when gettext is fixed
-  GetLanguageIDs(LangDefault, LangFallback);
+  LCLGetLanguageIDs(LangDefault, LangFallback);
   if LangDefault <> '' then
     FBidiMode := BidiModeMap[IsRTLLang(LangDefault)]
   else

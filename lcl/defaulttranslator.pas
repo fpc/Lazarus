@@ -36,7 +36,7 @@ localization found.
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil
+  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil, LCLProc
   {$IFDEF WINDOWS},Windows{$ENDIF};
 
 type
@@ -53,104 +53,111 @@ implementation
 uses Menus;
 
 function FindLocaleFileName:string;
-var LANG,lng:string;
+var
+  Lang, T:string;
   i: Integer;
   {$IFDEF WINDOWS}
    Buffer:array[1..4]of char;
   {$ENDIF}
+
+  function GetLocaleFileName(const LangID: String): String;
+  var
+    LangShortID: String;
+  begin
+    if LangID<>'' then
+    begin
+      //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
+      Result:=ExtractFilePath(ParamStrUTF8(0))+LangID+
+        DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+LangID+
+        DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
+        +LangID+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
+        +LangID+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      {$IFDEF UNIX}
+      //In unix-like systems we can try to search for global locale
+      Result:='/usr/share/locale/'+LangID+'/LC_MESSAGES/'
+       +ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+      {$ENDIF}
+      //Let us search for reducted files
+      LangShortID:=copy(LangID,1,2);
+      //At first, check all was checked
+      Result:=ExtractFilePath(ParamStrUTF8(0))+LangShortID+
+        DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+LangShortID+
+        DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
+        +LangShortID+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
+        +LangID+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+
+      //Full language in file name - this will be default for the project
+      //We need more carefull handling, as it MAY result in incorrect filename
+      try
+        Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangID)+'.mo';
+        if FileExistsUTF8(Result) then exit;
+       //Common location (like in Lazarus)
+        Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangID)+'.mo';
+        if FileExistsUTF8(Result) then exit;
+
+        Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangID)+'.mo';
+        if FileExistsUTF8(Result) then exit;
+      except
+        Result:='';//Or do something else (useless)
+      end;
+      {$IFDEF UNIX}
+      Result:='/usr/share/locale/'+LangShortID+'/LC_MESSAGES/'
+       +ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
+      if FileExistsUTF8(Result) then exit;
+      {$ENDIF}
+      Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangShortID)+'.mo';
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangShortID)+'.mo';
+      if FileExistsUTF8(Result) then exit;
+
+      Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LangShortID)+'.mo';
+      if FileExistsUTF8(Result) then exit;
+    end;
+
+    Result := '';
+  end;
+
 begin
+ Result := '';
  //Win32 user may decide to override locale with LANG variable.
- LANG:=GetEnvironmentVariableUTF8('LANG');
- if LANG='' then begin
+ Lang:=GetEnvironmentVariableUTF8('LANG');
+ if Lang='' then begin
    for i:=1 to Paramcount-1 do
     if (ParamStrUTF8(i)='--LANG') or
      (ParamStrUTF8(i)='-l') or
-     (ParamStrUTF8(i)='--lang') then LANG:=ParamStrUTF8(i+1);
+     (ParamStrUTF8(i)='--lang') then Lang:=ParamStrUTF8(i+1);
  end;
- {$IFDEF WINDOWS}
- //Modified code from lazconf.inc
- if LANG='' then
- begin
-  if GetLocaleInfo(GetUserDefaultLCID, LOCALE_SABBREVLANGNAME, @Buffer, 4)<>0 then
-    Lng := lowercase(copy(Buffer,1,2));
-  if GetLocaleInfo(GetUserDefaultLCID, LOCALE_SABBREVCTRYNAME, @Buffer, 4)<>0 then
-    LANG := Lng+'_'+copy(Buffer,1,2);
- end;
- {$ENDIF}
+ if Lang='' then
+   LCLGetLanguageIDs(Lang, T);
 
- if LANG<>'' then begin
-  //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
-  Result:=ExtractFilePath(ParamStrUTF8(0))+LANG+
-    DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
+ Result := GetLocaleFileName(Lang);
+ if Result <> '' then Exit;
 
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+LANG+
-    DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
-    +LANG+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
-    +LANG+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
-    ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  {$IFDEF UNIX}
-  //In unix-like systems we can try to search for global locale
-  Result:='/usr/share/locale/'+LANG+'/LC_MESSAGES/'
-   +ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-  {$ENDIF}
-  //Let us search for reducted files
-  lng:=copy(LANG,1,2);
-  //At first, check all was checked
-  Result:=ExtractFilePath(ParamStrUTF8(0))+lng+
-    DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+lng+
-    DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
-    +lng+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator
-    +LANG+DirectorySeparator+'LC_MESSAGES'+DirectorySeparator+
-    ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-
-  //Full language in file name - this will be default for the project
-  //We need more carefull handling, as it MAY result in incorrect filename
-  try
-    Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
-    if FileExistsUTF8(Result) then exit;
-   //Common location (like in Lazarus)
-    Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
-    if FileExistsUTF8(Result) then exit;
-
-    Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+LANG)+'.mo';
-    if FileExistsUTF8(Result) then exit;
-  except
-    Result:='';//Or do something else (useless)
-  end;
-  {$IFDEF UNIX}
-  Result:='/usr/share/locale/'+lng+'/LC_MESSAGES/'
-   +ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.mo');
-  if FileExistsUTF8(Result) then exit;
-  {$ENDIF}
-  Result:=ExtractFilePath(ParamStrUTF8(0))+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'locale'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
-  if FileExistsUTF8(Result) then exit;
-
-  Result:=ExtractFilePath(ParamStrUTF8(0))+'languages'+DirectorySeparator+ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'.'+lng)+'.mo';
-  if FileExistsUTF8(Result) then exit;
- end;
  Result:=ChangeFileExt(ParamStrUTF8(0),'.mo');
  if FileExistsUTF8(Result) then exit;
 
@@ -199,6 +206,7 @@ initialization
 //We are to search for all
   try
     lcfn:=FindLocaleFileName;
+    DebugLn(lcfn);
   except
     lcfn:='';
   end;

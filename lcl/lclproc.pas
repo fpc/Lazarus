@@ -30,6 +30,7 @@ unit LCLProc;
 interface
 
 uses
+  {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
   LCLStrConsts, LCLType, WSReferences
   {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
@@ -345,6 +346,8 @@ function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
 function UTF8ToUTF16(const S: UTF8String): UTF16String;
 function UTF16ToUTF8(const S: UTF16String): UTF8String;
 
+// locale
+procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -352,6 +355,8 @@ function CreateNextIdentifier(const Identifier: string): string;
 
 
 implementation
+
+uses gettext;
 
 
 var
@@ -3376,7 +3381,7 @@ var
   begin
     CopyLength := Source - SourceCopied;
     if CopyLength=0 then exit;
-    move(SourceCopied^ , Dest^, CopyLength);
+    System.move(SourceCopied^ , Dest^, CopyLength);
     SourceCopied:=Source;
     inc(Dest, CopyLength);
   end;
@@ -3711,7 +3716,7 @@ begin
     begin
       lr := Length(Result);
       SetLength(Result, lr + l);
-      Move(cur^, Result[lr + 1], l);
+      System.Move(cur^, Result[lr + 1], l);
     end;
     inc(cur, l)
   end;
@@ -3798,9 +3803,9 @@ begin
 
   if u < $10000 then
     // Note: codepoints $D800 - $DFFF are reserved
-    Result:=widechar(u)
+    Result:=system.widechar(u)
   else
-    Result:=widechar($D800+((u - $10000) shr 10))+widechar($DC00+((u - $10000) and $3ff));
+    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
 end;
 
 {------------------------------------------------------------------------------
@@ -3846,7 +3851,7 @@ var
   begin
     if toUnfinishedCharToSymbol in Options then
     begin
-      Dest[DestI] := WideChar('?');
+      Dest[DestI] := System.WideChar('?');
       Inc(DestI);
       Result := False;
     end
@@ -3865,7 +3870,7 @@ var
     begin
       if toInvalidCharToSymbol in Options then
       begin
-        Dest[DestI] := WideChar('?');
+        Dest[DestI] := System.WideChar('?');
         Inc(DestI);
       end;
 
@@ -3913,7 +3918,7 @@ begin
 
     if B1 < 128 then // single byte UTF-8 char
     begin
-      Dest[DestI] := WideChar(B1);
+      Dest[DestI] := System.WideChar(B1);
       Inc(DestI);
     end
     else
@@ -3929,7 +3934,7 @@ begin
       begin
         if (B2 and %11000000) = %10000000 then
         begin
-          Dest[DestI] := WideChar(((B1 and %00011111) shl 6) or (B2 and %00111111));
+          Dest[DestI] := System.WideChar(((B1 and %00011111) shl 6) or (B2 and %00111111));
           Inc(DestI);
         end
         else // invalid character, assume single byte UTF-8 char
@@ -3951,7 +3956,7 @@ begin
             W := ((B1 and %00011111) shl 12) or ((B2 and %00111111) shl 6) or (B3 and %00111111);
             if (W < $D800) or (W > $DFFF) then // to single wide char UTF-16 char
             begin
-              Dest[DestI] := WideChar(W);
+              Dest[DestI] := System.WideChar(W);
               Inc(DestI);
             end
             else // invalid UTF-16 character, assume double byte UTF-8 char
@@ -3975,10 +3980,10 @@ begin
             C := ((B1 and %00011111) shl 18) or ((B2 and %00111111) shl 12)
               or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
             // to double wide char UTF-16 char
-            Dest[DestI] := WideChar($D800 or ((C - $10000) shr 10));
+            Dest[DestI] := System.WideChar($D800 or ((C - $10000) shr 10));
             Inc(DestI);
             if DestI >= DestWideCharCount then Break;
-            Dest[DestI] := WideChar($DC00 or ((C - $10000) and %0000001111111111));
+            Dest[DestI] := System.WideChar($DC00 or ((C - $10000) and %0000001111111111));
             Inc(DestI);
           end
           else // invalid character, assume triple byte UTF-8 char
@@ -4214,6 +4219,47 @@ begin
     SetLength(R, L - 1);
     Result := R;
   end;
+end;
+
+procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
+
+  {$IFDEF DARWIN}
+  function GetLanguage: String;
+  var
+    Ref: CFStringRef;
+    LangArray: CFMutableArrayRef;
+    StrSize: CFIndex;
+    StrRange: CFRange;
+  begin
+    Result := 'en';
+    LangArray := CFBundleCopyLocalizationsForPreferences(CFBundleCopyBundleLocalizations(CFBundleGetMainBundle), nil);
+    try
+      if CFArrayGetCount(LangArray) > 0 then
+      begin
+        Ref := CFArrayGetValueAtIndex(LangArray, 0);
+        StrRange.location := 0;
+        StrRange.length := CFStringGetLength(Ref);
+
+        CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
+          Ord('?'), False, nil, 0, StrSize);
+        SetLength(Result, StrSize);
+
+        if StrSize > 0 then
+          CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
+            Ord('?'), False, @Result[1], StrSize, StrSize);
+      end;
+    finally
+      CFRelease(LangArray);
+    end;
+  end;
+  {$ENDIF}
+begin
+{$IFDEF DARWIN}
+  Lang := GetLanguage;
+  FallbackLang := Copy(Lang, 1, 2);
+{$ELSE}
+  GetLanguageIDs(Lang, FallbackLang);
+{$ENDIF}
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;

@@ -341,7 +341,7 @@ end;
 
 initialization
   LazarusTranslations:=nil;
-  GetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
+  LCLGetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
 
 finalization
   LazarusTranslations.Free;

@@ -36,7 +36,7 @@
 
     uses
       ...
-      Translations, gettext;
+      Translations, LCLProc;
 
     procedure TranslateLCL;
     var
@@ -45,7 +45,7 @@
       PODirectory:='/path/to/lazarus/lcl/languages/';
       Lang:='';
       FallbackLang:='';
-      GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+      LCLGetLanguageIDs(Lang,FallbackLang); // in unit LCLProc
       Translations.TranslateUnitResourceStrings('LCLStrConsts',
                                 PODirectory+'lclstrconsts.%s.po',Lang,FallbackLang);
     end;
@@ -56,6 +56,11 @@
       Application.CreateForm(TForm1, Form1);
       Application.Run;
     end.
+
+    Note for Mac OS X:
+      The supported language IDs should be added into the application
+      bundle property list to CFBundleLocalizations key, see
+      lazarus.app/Contents/Info.plist for example.
 }
 unit Translations;
 
