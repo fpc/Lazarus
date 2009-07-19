@@ -378,7 +378,7 @@ begin
   OSError(
     CreateDisclosureTriangleControl(GetTopParentWindow,
       GetCarbonRect(GetPrevArrowBounds(R)),
-      kControlDisclosureTrianglePointLeft, nil, 0, False, False, FPrevArrow),
+      kControlDisclosureTrianglePointRight, nil, 0, False, False, FPrevArrow),
     Self, SCreateWidget, 'CreatePopupArrowControl');
   OSError(HIViewSetVisible(FPrevArrow, False), Self, SCreateWidget, SViewVisible);
   OSError(HIViewAddSubview(Widget, FPrevArrow), Self, SCreateWidget,

@@ -314,12 +314,15 @@ begin
   end;
 
   // interactive design
-  if (Widget is TCarbonDesignWindow) and (GetCarbonMouseButton(AEvent) = 1) and
-    (EventKind = kEventMouseDown) then
+  if (EventKind = kEventMouseDown)
+  and ((csDesigning in Widget.LCLObject.ComponentState) or (Widget is TCarbonDesignWindow))
+  and (GetCarbonMouseButton(AEvent) = 1) then
   begin
     P := GetMousePoint;
     DesignControl := Widget.LCLObject.ControlAtPos(P,
       [capfAllowDisabled, capfAllowWinControls, capfRecursive]);
+    if DesignControl = nil then
+      DesignControl := Widget.LCLObject;
       
     if DesignControl is TWinControl then
     begin
@@ -1680,7 +1683,8 @@ procedure TCarbonWindow.CloseModal;
 begin
   if not Assigned(fWindowRef) then Exit; // not possible to show modal if not Window mode
 
-  CarbonWidgetSet.SetMainMenuEnabled(True);
+  if CarbonWidgetSet.MainMenu <> (LCLObject as TCustomForm).Menu then
+    CarbonWidgetSet.SetMainMenuEnabled(True);
 
   OSError(
     SetWindowModality(fWindowRef, kWindowModalityNone, nil),
