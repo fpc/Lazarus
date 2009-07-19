@@ -89,6 +89,7 @@ type
     destructor Destroy; override;
 
     function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface): boolean;
+    procedure TrimEOTChar(eot: Char);
 
     property EnableMacros: Boolean read FEnableMacros write FEnableMacros;
     property Indent: String read FIndent write FIndent;
@@ -362,6 +363,12 @@ begin
   Result := SubstituteMacros(FSrcTemplate);
 end;
 
+procedure TLazTemplateParser.TrimEOTChar(eot: Char);
+begin
+  if (FDestTemplate <> '') and (FDestTemplate[length(FDestTemplate)] = eot) then
+    System.Delete(FDestTemplate, length(FDestTemplate), 1);
+end;
+
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
@@ -431,14 +438,12 @@ begin
     end;
 
     // delete double end separator (e.g. avoid creating two semicolons 'begin end;;')
-    if (s<>'') and (System.Pos(s[length(s)],EndOfTokenChr)>0)
-    and (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
+    if (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
     then begin
-      // template ends with an EndOfTokenChr
-      // check if at the end of selection is the same character
       LineText:=AEditor.Lines[AEditor.BlockEnd.Y-1];
-      if copy(LineText,AEditor.BlockEnd.X,1)=s[length(s)] then
-        System.Delete(s,length(s),1);
+      i := pos(LineText[AEditor.BlockEnd.X], EndOfTokenChr);
+      if i > 0 then
+        Parser.TrimEOTChar(EndOfTokenChr[i]);
     end;
 
     i := AEditor.PluginCount - 1;
