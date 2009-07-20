@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-12 18:18+0300\n"
+"PO-Revision-Date: 2009-07-14 03:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1491,7 +1491,7 @@ msgstr "Дополнительная 1"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra2
 msgid "Extra 2"
-msgstr "Дополнительная 1"
+msgstr "Дополнительная 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
 msgid "Import"
@@ -1519,7 +1519,7 @@ msgstr "ОК"
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
 msgid "Right"
-msgstr "Стрелка вправо"
+msgstr "Правая"
 
 #: lazarusidestrconsts.dlgmouseoptbtnudp
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnudp"
@@ -4786,7 +4786,7 @@ msgstr "Вставить макрос"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
-msgstr "выберите макрос"
+msgstr "Выберите макрос"
 
 #: lazarusidestrconsts.lisctselectcodemacro
 msgid "Select Code Macro"
@@ -5019,6 +5019,10 @@ msgstr "Удалить все эти файлы?"
 msgid "Delete ambiguous file?"
 msgstr "Удалить файл с подобным именем?"
 
+#: lazarusidestrconsts.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr "Удалить точку останова"
+
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
@@ -5130,6 +5134,10 @@ msgstr "Директивы"
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Отключить все в том же файле исходного кода"
+
+#: lazarusidestrconsts.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr "Отключить точку останова"
 
 #: lazarusidestrconsts.lisdisabled
 msgid "Disabled"
@@ -5417,6 +5425,10 @@ msgstr "&Включить все"
 #: lazarusidestrconsts.lisenableallinsamesource
 msgid "Enable All in same source"
 msgstr "Включить все в том же файле исходного кода"
+
+#: lazarusidestrconsts.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr "Включить точку останова"
 
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
@@ -6147,6 +6159,10 @@ msgstr "Показать формы"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Показать модули"
+
+#: lazarusidestrconsts.lishitcount
+msgid "Hitcount"
+msgstr "Число срабатываний"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -12185,6 +12201,10 @@ msgstr "Вертикально"
 #: lazarusidestrconsts.lisvertoclipboard
 msgid "Copy version information to clipboard"
 msgstr "Копировать информацию о версии в буфер обмена"
+
+#: lazarusidestrconsts.lisviewbreakpointproperties
+msgid "View Breakpoint Properties"
+msgstr "Показать параметры точки останова"
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
