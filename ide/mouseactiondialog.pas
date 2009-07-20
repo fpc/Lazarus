@@ -8,18 +8,10 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, ButtonPanel, Spin, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
-const
-  ButtonName: Array [TMouseButton] of String = (
-{ mbLeft   } dlgMouseOptBtnLeft,
-{ mbRight  } dlgMouseOptBtnRight,
-{ mbMiddle } dlgMouseOptBtnMiddle,
-{ mbExtra1 } dlgMouseOptBtnExtra1,
-{ mbExtra2 } dlgMouseOptBtnExtra2
-  );
-  ClickName: Array [TSynMAClickCount] of String =
-    (dlgMouseOptBtn1, dlgMouseOptBtn2, dlgMouseOptBtn3, dlgMouseOptBtn4, dlgMouseOptBtnAny);
-  ButtonDirName: Array [TSynMAClickDir] of String =
-    (dlgMouseOptBtnUp, dlgMouseOptBtnDown);
+var
+  ButtonName: Array [TMouseButton] of String;
+  ClickName: Array [TSynMAClickCount] of String;
+  ButtonDirName: Array [TSynMAClickDir] of String;
 
 type
 
@@ -87,6 +79,21 @@ var
   mb: TMouseButton;
   cc: TSynMAClickCount;
 begin
+  ButtonName[mbLeft]:=dlgMouseOptBtnLeft;
+  ButtonName[mbRight]:=dlgMouseOptBtnRight;
+  ButtonName[mbMiddle]:=dlgMouseOptBtnMiddle;
+  ButtonName[mbExtra1]:=dlgMouseOptBtnExtra1;
+  ButtonName[mbExtra2]:=dlgMouseOptBtnExtra2;
+
+  ClickName[ccSingle]:=dlgMouseOptBtn1;
+  ClickName[ccDouble]:=dlgMouseOptBtn2;
+  ClickName[ccTriple]:=dlgMouseOptBtn3;
+  ClickName[ccQuad]:=dlgMouseOptBtn4;
+  ClickName[ccAny]:=dlgMouseOptBtnAny;
+
+  ButtonDirName[cdUp]:=dlgMouseOptBtnUp;
+  ButtonDirName[cdDown]:=dlgMouseOptBtnDown;
+
   Caption := dlgMouseOptDlgTitle;
   CapturePanel.Caption := dlgMouseOptCapture;
   CapturePanel.ControlStyle := ControlStyle + [csTripleClicks, csQuadClicks];
