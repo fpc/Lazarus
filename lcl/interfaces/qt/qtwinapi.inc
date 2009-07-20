@@ -534,8 +534,15 @@ var
   QtFont: TQtFont;
   FamilyName: string;
 const
-  QStyleStategy: Array [DEFAULT_QUALITY..ANTIALIASED_QUALITY] of QFontStyleStrategy =
-    (QFontPreferDefault, QFontPreferMatch, QFontPreferQuality, QFontNoAntialias, QFontPreferAntialias);
+  QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
+ { DEFAULT_QUALITY           } QFontPreferDefault,
+ { DRAFT_QUALITY             } QFontPreferMatch,
+ { PROOF_QUALITY             } QFontPreferQuality,
+ { NONANTIALIASED_QUALITY    } QFontNoAntialias,
+ { ANTIALIASED_QUALITY       } QFontPreferAntialias,
+ { CLEARTYPE_QUALITY         } QFontPreferAntialias,
+ { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
+  );
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI CreateFontIndirectEx] FontName: ' + LongFontName);
@@ -579,7 +586,7 @@ begin
       QtFont.setFamily(FamilyName);
     end;
 
-    if (LogFont.lfQuality >= DEFAULT_QUALITY) and (LogFont.lfQuality <= ANTIALIASED_QUALITY) then
+    if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
   finally
     Result := HFONT(QtFont);

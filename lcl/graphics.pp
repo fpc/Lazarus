@@ -59,7 +59,8 @@ type
   TFontStyles = set of TFontStyle;
   TFontStylesbase = set of TFontStyle;
   TFontCharSet = 0..255;
-  TFontQuality = (fqDefault, fqDraft, fqProof, fqNonAntialiased, fqAntialiased);
+  TFontQuality = (fqDefault, fqDraft, fqProof, fqNonAntialiased, fqAntialiased,
+    fqCleartype, fqCleartypeNatural);
 
   TFontData = record
     Handle: HFont;
