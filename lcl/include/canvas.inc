@@ -1665,13 +1665,6 @@ end;
   Returns:  nothing
  ------------------------------------------------------------------------------}
 procedure TCanvas.Unlock;
-
-  procedure RaiseTooManyUnlock;
-  begin
-    raise Exception.Create(
-                         'TCanvas.Unlock '+DbgSName(Self)+': too many unlocks');
-  end;
-
 begin
   UnlockCanvas;
 end;
