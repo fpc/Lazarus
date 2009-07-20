@@ -56,9 +56,6 @@ function FindLocaleFileName:string;
 var
   Lang, T:string;
   i: Integer;
-  {$IFDEF WINDOWS}
-   Buffer:array[1..4]of char;
-  {$ENDIF}
 
   function GetLocaleFileName(const LangID: String): String;
   var
