@@ -1107,7 +1107,7 @@ var
   ProcNode: TCodeTreeNode;
 begin
   if Context.Node.Desc in AllPascalStatements then begin
-
+    // see fpc/compiler/psystem.pp
     AddCompilerProcedure('Assert','Condition:Boolean;const Message:String');
     AddCompilerFunction('Assigned','P:Pointer','Boolean');
     AddCompilerFunction('Addr','Identifier','Pointer');
@@ -1931,6 +1931,7 @@ var
       cafRoundBracketOpen,cafEdgedBracketOpen])
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
     or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
+      // see fpc/compiler/psystem.pp
       AddCompilerProc('Assert','Condition:Boolean;const Message:String');
       AddCompilerProc('Assigned','P:Pointer','Boolean');
       AddCompilerProc('Addr','Identifier','Pointer');
