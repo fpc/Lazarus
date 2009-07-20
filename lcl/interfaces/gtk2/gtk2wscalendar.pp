@@ -158,7 +158,8 @@ begin
   CalendarWidget:=GetCalendar(CalendarCtrl);
   gtk_calendar_thaw(CalendarWidget);
 
-  inherited DestroyHandle(AWinControl);
+  TGtk2WSWinControl.DestroyHandle(AWinControl);
+  //inherited DestroyHandle(AWinControl);
 end;
 
 class function TGtk2WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
