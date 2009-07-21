@@ -793,8 +793,8 @@ type
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
     function  ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
                              var StartPos, EndPos: Integer): Boolean;
-    function  ColumnIndexFromGridColumn(Column: Integer): Integer; dynamic;
-    function  ColumnFromGridColumn(Column: Integer): TGridColumn; dynamic;
+    function  ColumnIndexFromGridColumn(Column: Integer): Integer;
+    function  ColumnFromGridColumn(Column: Integer): TGridColumn;
     procedure ColumnsChanged(aColumn: TGridColumn);
     procedure ColWidthsChanged; dynamic;
     function  CreateColumns: TGridColumns; virtual;
@@ -2289,6 +2289,7 @@ begin
     if C<>nil then begin
       OldWidth := C.Width;
       C.Width := AValue;
+      SetRawColWidths(ACol, AValue);
       if OldWidth<>C.Width then
         EditorWidthChanged(aCol, C.Width);
     end;
@@ -3163,7 +3164,7 @@ end;
 procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  if (gdFixed in aState) and (aRow=0) and (aCol>=FixedCols) then begin
+  if (gdFixed in aState) and (aRow=0) and (aCol>=FirstGridColumn) then begin
     DrawColumnTitleImage(aRect, aCol);
     DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
   end;
@@ -4697,14 +4698,17 @@ end;
 
 function TCustomGrid.ColumnIndexFromGridColumn(Column: Integer): Integer;
 begin
-  Result := Columns.RealIndex( Column - FixedCols );
+  if Columns.Enabled and (Column>=FirstGridColumn) then
+    result := Columns.RealIndex(Column - FirstGridColumn)
+  else
+    result := -1;
 end;
 
 function TCustomGrid.ColumnFromGridColumn(Column: Integer): TGridColumn;
 var
   ColIndex: Integer;
 begin
-  ColIndex := Columns.RealIndex( Column - FixedCols );
+  ColIndex := ColumnIndexFromGridColumn(Column);
   if ColIndex>=0 then
     result := Columns[ColIndex]
   else
@@ -6193,7 +6197,7 @@ begin
   Result:=(goEditing in options);
   if Result and (ACol>=0) and (ACol<FColumns.Count) then begin
     C:=ColumnFromGridColumn(ACol);
-    Result:=not C.ReadOnly;
+    Result:=(C<>nil) and (not C.ReadOnly);
   end;
 end;
 

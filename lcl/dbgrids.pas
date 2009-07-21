@@ -359,8 +359,6 @@ type
     procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
-    function  ColumnFromGridColumn(Column: Integer): TGridColumn; override;
-    function  ColumnIndexFromGridColumn(Column: Integer): Integer; override;
     function  CreateColumns: TGridColumns; override;
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -383,7 +381,7 @@ type
     function  EditorCanAcceptKey(const ch: TUTF8Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
-    function  FieldIndexFromGridColumn(Column: Integer): Integer;
+    function  FieldIndexFromGridColumn(AGridCol: Integer): Integer;
     function  FirstGridColumn: Integer; override;
     function  GetBufferCount: integer;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
@@ -719,11 +717,17 @@ begin
 end;
 
 procedure TCustomDBGrid.EmptyGrid;
+var
+  OldFixedCols: Integer;
 begin
-  ColCount := FixedCols + 1;
+  OldFixedCols := FixedCols;
+  Clear;
+  ColCount := OldFixedCols + 1;
   RowCount := 2;
+  FixedCols := OldFixedCols;
   FixedRows := 1;
-  ColWidths[0]:=12;
+  if dgIndicator in Options then
+    ColWidths[0]:=12;
 end;
 
 procedure TCustomDBGrid.InvalidateSizes;
@@ -918,10 +922,12 @@ end;
 procedure TCustomDBGrid.SetOptions(const AValue: TDBGridOptions);
 var
   OldOptions: TGridOptions;
+  ChangedOptions: TDbGridOptions;
   MultiSel: boolean;
 begin
   if FOptions<>AValue then begin
     MultiSel := dgMultiSelect in FOptions;
+    ChangedOptions := (FOptions-AValue) + (AValue-FOptions);
     FOptions:=AValue;
     OldOptions := inherited Options;
 
@@ -979,6 +985,14 @@ begin
       Include(OldOptions, goHeaderPushedLook)
     else
       Exclude(OldOptions, goHeaderPushedLook);
+
+    if (dgIndicator in ChangedOptions) then begin
+      if (dgIndicator in FOptions) then
+        FixedCols := FixedCols + 1
+      else
+        FixedCols := FixedCols - 1;
+    end;
+
 
     inherited Options := OldOptions;
 
@@ -1237,27 +1251,6 @@ begin
     Result := 0;
 end;
 
-function TCustomDBGrid.ColumnIndexFromGridColumn(Column: Integer): Integer;
-begin
-  if (Column < FixedCols) then
-    Result := Column-FirstGridColumn
-  else
-    Result := Columns.RealIndex(Column - FirstGridColumn);
-end;
-
-function TCustomDBGrid.ColumnFromGridColumn(Column: Integer): TGridColumn;
-var ColIndex: Integer;
-begin
-  if (Column < FixedCols) then
-    ColIndex := Column-FirstGridColumn
-  else
-    ColIndex := Columns.RealIndex(Column - FirstGridColumn);
-  if (ColIndex >= 0) then
-    Result := Columns[ColIndex]
-  else
-    Result := nil;
-end;
-
 // obtain the field either from a Db column or directly from dataset fields
 function TCustomDBGrid.GetFieldFromGridColumn(Column: Integer): TField;
 var
@@ -1288,40 +1281,33 @@ begin
 end;
 
 // obtain the visible field index corresponding to the grid column index
-function TCustomDBGrid.FieldIndexFromGridColumn(Column: Integer): Integer;
+function TCustomDBGrid.FieldIndexFromGridColumn(AGridCol: Integer): Integer;
 var
-  i, iCol: Integer;
+  i: Integer;
+  Column: TColumn;
 begin
- column := column - FirstGridColumn;
- i := 0;
- iCol := 0;
- result := -1;
- if FDataLink.Active then  begin
-   if (Column < FixedCols) then begin
-     //Fixed visible columns
-     for iCol:=0 to FDataLink.DataSet.FieldCount-1 do begin
-       if FDataLink.Fields[iCol].Visible then begin
-         Inc(i);
-         if (i = Column) then begin
-           Result := i;
-           Break;
-         end;
-       end;
-     end;
-   end else begin
-     //Normal columns
-     while (i < FDataLink.DataSet.FieldCount) and (Column >= 0) do begin
-       if FDataLink.Fields[i].Visible then begin
-         Dec(Column);
-         if (Column < 0) then begin
-           result := i;
-           break;
-         end;
-       end;
-       inc(i);
-     end;
-   end;
- end;
+  result := -1;
+  if not FDatalink.Active then
+    exit;
+
+  if Columns.Enabled then begin
+    Column := TColumn(ColumnFromGridColumn(AGridCol));
+    if (Column<>nil) and (Column.Field<>nil) and Column.Field.Visible then
+      Result := FDatalink.Dataset.Fields.IndexOf(Column.Field)
+  end else begin
+    AGridCol := AGridCol - FirstGridColumn;
+    i := 0;
+    while (AGridCol>=0) and (i<FDatalink.DataSet.FieldCount) do begin
+      if FDatalink.Fields[i].Visible then begin
+        Dec(AGridCol);
+        if AGridCol<0 then begin
+          Result := i;
+          break;
+        end;
+      end;
+      inc(i);
+    end;
+  end;
 end;
 
 function TCustomDBGrid.GetBufferCount: integer;
@@ -2592,13 +2578,13 @@ procedure TCustomDBGrid.DrawFixedText(aCol, aRow: Integer; aRect: TRect;
   end;
 
 begin
-  if (ACol=0) and FDrawingActiveRecord then begin
+  if (ACol=0) and (dgIndicator in Options) and FDrawingActiveRecord then begin
     DrawIndicator(Canvas, aRect, GetDataSetState, FDrawingMultiSelRecord);
     {$ifdef dbgGridPaint}
     dbgOut('>');
     {$endif}
   end else
-  if (ACol=0) and FDrawingMultiSelRecord then
+  if (ACol=0) and (dgIndicator in Options) and FDrawingMultiSelRecord then
     DrawIndicator(Canvas, aRect, dsCurValue{dummy}, True)
   else
     DrawColumnText(aCol, aRow, aRect, aState);
@@ -2619,7 +2605,8 @@ begin
     if ((gdFixed in aState) and (aCol < FixedCols)) then
      begin
       F := GetFieldFromGridColumn(aCol);
-      DrawCellText(aCol, aRow, aRect, aState, F.DisplayText);
+      if F<>nil then
+        DrawCellText(aCol, aRow, aRect, aState, F.DisplayText)
      end;//End if (gdFixed in aState)
    end;//End if (aRow = 0)
  end;//End if ((gdFixed in aState) and (aCol >= FirstGridColumn))
