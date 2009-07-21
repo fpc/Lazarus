@@ -35,7 +35,7 @@ uses
   LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList, ExtCtrls,
-  SynEditKeyCmds, SynPluginTemplateEdit, Laz_XMLCfg,
+  SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, Laz_XMLCfg,
   PropEdits, IDECommands, LazarusIDEStrConsts;
 
 type
@@ -406,20 +406,7 @@ begin
   ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveUnusedUnits: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindOverloads: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-{
-  // edit templates
-  ecIDESynTemplateEdit + ecSynPTmplEdNextCell           = srkmecSynPTmplEdNextCell;
-  ecIDESynTemplateEdit + ecSynPTmplEdNextCellSel        = srkmecSynPTmplEdNextCellSel;
-  ecIDESynTemplateEdit + ecSynPTmplEdNextCellRotate     = srkmecSynPTmplEdNextCellRotate;
-  ecIDESynTemplateEdit + ecSynPTmplEdNextCellSelRotate  = srkmecSynPTmplEdNextCellSelRotate;
-  ecIDESynTemplateEdit + ecSynPTmplEdPrevCell           = srkmecSynPTmplEdPrevCell;
-  ecIDESynTemplateEdit + ecSynPTmplEdPrevCellSel        = srkmecSynPTmplEdPrevCellSel;
-  ecIDESynTemplateEdit + ecSynPTmplEdCellHome           = srkmecSynPTmplEdCellHome;
-  ecIDESynTemplateEdit + ecSynPTmplEdCellEnd            = srkmecSynPTmplEdCellEnd;
-  ecIDESynTemplateEdit + ecSynPTmplEdCellSelect         = srkmecSynPTmplEdCellSelect;
-  ecIDESynTemplateEdit + ecSynPTmplEdFinish             = srkmecSynPTmplEdFinish;
-  ecIDESynTemplateEdit + ecSynPTmplEdEscape             = srkmecSynPTmplEdEscape;
-}
+
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
@@ -598,6 +585,32 @@ begin
         ecSynPTmplEdCellSelect:          SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
         ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
         ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
+        // SyncroEdit, during selection
+        ecSynPSyncroEdStart:               SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[]);
       end;
     end;
   end;
@@ -972,6 +985,32 @@ begin
         ecSynPTmplEdCellSelect:          SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
         ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
         ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
+        // SyncroEdit, during selection
+        ecSynPSyncroEdStart:               SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
       end;
     end;
   end;
@@ -1537,6 +1576,32 @@ begin
         ecSynPTmplEdFinish:              SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
         ecSynPTmplEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
       end;
+      case TSynPluginSyncroEdit.ConvertCommandToBase(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_END,  [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_A,    [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command) of
+        // SyncroEdit
+        ecSynPSyncroEdNextCell:            SetResult(VK_RIGHT,[ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdNextCellSel:         SetResult(VK_TAB,  [],      VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCell:            SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+        ecSynPSyncroEdPrevCellSel:         SetResult(VK_TAB,  [ssShift],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellHome:            SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellEnd:             SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdCellSelect:          SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+        ecSynPSyncroEdEscape:              SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+      end;
+      case TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command) of
+        // SyncroEdit, during selection
+        ecSynPSyncroEdStart:               SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[]);
+      end;
     end;
   end;
 end;
@@ -1977,6 +2042,34 @@ begin
           ecSynPTmplEdFinish:             Result := srkmecSynPTmplEdFinish;
           ecSynPTmplEdEscape:             Result := srkmecSynPTmplEdEscape;
         end;
+
+        case TSynPluginSyncroEdit.ConvertCommandToBase(cmd) of
+          // SyncroEdit
+          ecSynPSyncroEdNextCell:            Result := srkmecSynPSyncroEdNextCell;
+          ecSynPSyncroEdNextCellSel:         Result := srkmecSynPSyncroEdNextCellSel;
+          ecSynPSyncroEdPrevCell:            Result := srkmecSynPSyncroEdPrevCell;
+          ecSynPSyncroEdPrevCellSel:         Result := srkmecSynPSyncroEdPrevCellSel;
+          ecSynPSyncroEdCellHome:            Result := srkmecSynPSyncroEdCellHome;
+          ecSynPSyncroEdCellEnd:             Result := srkmecSynPSyncroEdCellEnd;
+          ecSynPSyncroEdCellSelect:          Result := srkmecSynPSyncroEdCellSelect;
+          ecSynPSyncroEdEscape:              Result := srkmecSynPSyncroEdEscape;
+        end;
+        case TSynPluginSyncroEdit.ConvertCommandToBaseOff(cmd) of
+          // SyncroEdit
+          ecSynPSyncroEdNextCell:            Result := srkmecSynPSyncroEdNextCell;
+          ecSynPSyncroEdNextCellSel:         Result := srkmecSynPSyncroEdNextCellSel;
+          ecSynPSyncroEdPrevCell:            Result := srkmecSynPSyncroEdPrevCell;
+          ecSynPSyncroEdPrevCellSel:         Result := srkmecSynPSyncroEdPrevCellSel;
+          ecSynPSyncroEdCellHome:            Result := srkmecSynPSyncroEdCellHome;
+          ecSynPSyncroEdCellEnd:             Result := srkmecSynPSyncroEdCellEnd;
+          ecSynPSyncroEdCellSelect:          Result := srkmecSynPSyncroEdCellSelect;
+          ecSynPSyncroEdEscape:              Result := srkmecSynPSyncroEdEscape;
+        end;
+        case TSynPluginSyncroEdit.ConvertCommandToBaseSel(cmd) of
+          // SyncroEdit, during selection
+          ecSynPSyncroEdStart:               Result := srkmecSynPSyncroEdStart;
+        end;
+
       end;
   end;
 end;
@@ -2394,6 +2487,36 @@ begin
   AddDefault(C, 'Edit Template (off) Select cell', srkmecSynPTmplEdCellSelect, ecSynPTmplEdCellSelect + o);
   AddDefault(C, 'Edit Template (off) Finish', srkmecSynPTmplEdFinish, ecSynPTmplEdFinish + o);
   AddDefault(C, 'Edit Template (off) Escape', srkmecSynPTmplEdEscape, ecSynPTmplEdEscape + o);
+
+
+  // Syncro editing
+  C:=Categories[AddCategory('Syncro Edit', srkmCatSyncroEdit, IDECmdScopeSrcEditOnlySyncroEdit)];
+  o := TSynPluginSyncroEdit.ConvertBaseToCommand(ecPluginFirst) - ecPluginFirst;
+  AddDefault(C, 'Edit Syncro Next Cell', srkmecSynPSyncroEdNextCell, ecSynPSyncroEdNextCell + o);
+  AddDefault(C, 'Edit Syncro Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecSynPSyncroEdNextCellSel + o);
+  AddDefault(C, 'Edit Syncro Previous Cell', srkmecSynPSyncroEdPrevCell, ecSynPSyncroEdPrevCell + o);
+  AddDefault(C, 'Edit Syncro Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecSynPSyncroEdPrevCellSel + o);
+  AddDefault(C, 'Edit Syncro Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecSynPSyncroEdCellHome + o);
+  AddDefault(C, 'Edit Syncro Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecSynPSyncroEdCellEnd + o);
+  AddDefault(C, 'Edit Syncro Select cell', srkmecSynPSyncroEdCellSelect, ecSynPSyncroEdCellSelect + o);
+  AddDefault(C, 'Edit Syncro Escape', srkmecSynPSyncroEdEscape, ecSynPSyncroEdEscape + o);
+
+  // Syncro editing not in cell
+  C:=Categories[AddCategory('Syncro Edit Off', srkmCatSyncroEditOff, IDECmdScopeSrcEditOnlySyncroEditOff)];
+  o := TSynPluginSyncroEdit.ConvertBaseToCommandOff(ecPluginFirst) - ecPluginFirst;
+  AddDefault(C, 'Edit Syncro (off) Next Cell', srkmecSynPSyncroEdNextCell, ecSynPSyncroEdNextCell + o);
+  AddDefault(C, 'Edit Syncro (off) Next Cell (all selected)', srkmecSynPSyncroEdNextCellSel, ecSynPSyncroEdNextCellSel + o);
+  AddDefault(C, 'Edit Syncro (off) Previous Cell', srkmecSynPSyncroEdPrevCell, ecSynPSyncroEdPrevCell + o);
+  AddDefault(C, 'Edit Syncro (off) Previous Cell (all selected)', srkmecSynPSyncroEdPrevCellSel, ecSynPSyncroEdPrevCellSel + o);
+  AddDefault(C, 'Edit Syncro (off) Goto first pos in cell', srkmecSynPSyncroEdCellHome, ecSynPSyncroEdCellHome + o);
+  AddDefault(C, 'Edit Syncro (off) Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecSynPSyncroEdCellEnd + o);
+  AddDefault(C, 'Edit Syncro (off) Select cell', srkmecSynPSyncroEdCellSelect, ecSynPSyncroEdCellSelect + o);
+  AddDefault(C, 'Edit Syncro (off) Escape', srkmecSynPSyncroEdEscape, ecSynPSyncroEdEscape + o);
+
+  // Syncro editing still selecting
+  C:=Categories[AddCategory('Syncro Edit Sel', srkmCatSyncroEditSel, IDECmdScopeSrcEditOnlySyncroEditSel)];
+  o := TSynPluginSyncroEdit.ConvertBaseToCommandSel(ecPluginFirst) - ecPluginFirst;
+  AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecSynPSyncroEdStart + o);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,

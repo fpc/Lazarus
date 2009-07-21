@@ -51,7 +51,7 @@ uses
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
   SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks, SynBeautifier,
-  SynEditTextBase, SynPluginTemplateEdit,
+  SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -2512,6 +2512,8 @@ Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
   i: integer;
+  sync: TSynPluginSyncroEdit;
+  bmp: TCustomBitmap;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceEditor.CreateEditor  A ');
@@ -2554,6 +2556,10 @@ Begin
     if aCompletion<>nil then
       aCompletion.AddEditor(FEditor);
     TSynPluginTemplateEdit.Create(FEditor);
+    sync := TSynPluginSyncroEdit.Create(FEditor);
+    bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
+    sync.GutterGlyph.Assign(bmp);
+    bmp.Free;
     RefreshEditorSettings;
     FEditor.EndUpdate;
   end else begin

@@ -2199,6 +2199,17 @@ resourcestring
   srkmecSynPTmplEdFinish             = 'Finish';
   srkmecSynPTmplEdEscape             = 'Escape';
 
+  // Plugin Syncro Edit
+  srkmecSynPSyncroEdNextCell    = 'Next Cell';
+  srkmecSynPSyncroEdNextCellSel = 'Next Cell (all selected)';
+  srkmecSynPSyncroEdPrevCell    = 'Previous Cell';
+  srkmecSynPSyncroEdPrevCellSel = 'Previous Cell (all selected)';
+  srkmecSynPSyncroEdCellHome    = 'Goto first pos in cell';
+  srkmecSynPSyncroEdCellEnd     = 'Goto last pos in cell';
+  srkmecSynPSyncroEdCellSelect  = 'Select Cell';
+  srkmecSynPSyncroEdEscape      = 'Escape';
+  srkmecSynPSyncroEdStart       = 'Start Syncro edit';
+
   // run menu
   srkmecBuild                     = 'build program/project';
   srkmecBuildAll                  = 'build all files of program/project';
@@ -2259,6 +2270,10 @@ resourcestring
   srkmCatCodeTools      = 'CodeTools commands';
   srkmCatTemplateEdit   = 'Template Editing';
   srkmCatTemplateEditOff= 'Template Editing (not in Cell)';
+  srkmCatSyncroEdit     = 'Syncron Editing';
+  srkmCatSyncroEditOff  = 'Syncron Editing (not in Cell)';
+  srkmCatSyncroEditSel  = 'Syncron Editing (while selecting)';
+
   srkmCatSrcNoteBook    = 'Source Notebook commands';
   srkmCatFileMenu       = 'File menu commands';
   lisKMGoToSourceEditor10 = 'Go to source editor 10';

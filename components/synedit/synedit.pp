@@ -333,7 +333,6 @@ type
   private
     fFirstLine: integer;
     fBlockIndent: integer;
-    FBlockSelection: TSynEditSelection;
     {$IFDEF SYN_LAZARUS}
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
@@ -407,6 +406,8 @@ type
     FCaretWidth: Integer; // Width of caret in chars (for Overwrite caret)
     FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
+    FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
+    FMouseActionExecHandlerList: TSynEditMouseActionExecList;
     fModified: Boolean;
     fMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
@@ -811,6 +812,12 @@ type
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
+
+    procedure RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
+    procedure UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
+    procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
+    procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
+
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     function RowColumnToPixels(
@@ -1640,6 +1647,9 @@ begin
   FMouseSelActions := TSynEditMouseSelActions.Create(Self);
   FMouseActions.ResetDefaults;
   FMouseSelActions.ResetDefaults;
+  FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
+  FMouseActionExecHandlerList := TSynEditMouseActionExecList.Create;
+
   fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
   fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
   fRightEdgeColor := clSilver;
@@ -1786,6 +1796,8 @@ begin
   FreeAndNil(fMarkList);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
+  FreeAndNil(FMouseActionSearchHandlerList);
+  FreeAndNil(FMouseActionExecHandlerList);
   FreeAndNil(FMouseActions);
   FreeAndNil(FMouseSelActions);
   FreeAndNil(fUndoList);
@@ -2330,7 +2342,12 @@ begin
     ACommand := AnAction.Command;
     AnInfo.CaretDone := False;
 
-    Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
+    // Plugins/External
+    Result := FMouseActionExecHandlerList.CallExecHandlers(AnAction, AnInfo);
+    // Gutter
+    if not Result then
+      Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
+
     if Result then begin
       if (not AnInfo.CaretDone) and AnAction.MoveCaret then
         MoveCaret;
@@ -2457,6 +2474,11 @@ begin
     CCount := ACCount;
     Dir := ADir;
   end;
+  // Check plugins/external handlers
+  if FMouseActionSearchHandlerList.CallSearchHandlers(Info,
+                                       {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction)
+  then
+    exit;
   // mouse event occured in Gutter ?
   if  (X <= fGutterWidth) then begin
     FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
@@ -8214,6 +8236,26 @@ begin
     raise Exception.CreateFmt('Event handler (%p, %p) is not registered',
       [TMethod(AHandlerProc).Data, TMethod(AHandlerProc).Code]);
 {$ENDIF}
+end;
+
+procedure TCustomSynEdit.RegisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
+begin
+  FMouseActionSearchHandlerList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc);
+begin
+  FMouseActionSearchHandlerList.Remove(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
+begin
+  FMouseActionExecHandlerList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc);
+begin
+  FMouseActionExecHandlerList.Remove(TMethod(AHandlerProc));
 end;
 
 procedure TCustomSynEdit.RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);

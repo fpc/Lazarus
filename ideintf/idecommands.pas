@@ -495,6 +495,9 @@ var
   IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeSrcEditOnlyTmplEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnlyTmplEditOff: TIDECommandScope;
+  IDECmdScopeSrcEditOnlySyncroEditSel: TIDECommandScope;
+  IDECmdScopeSrcEditOnlySyncroEdit: TIDECommandScope;
+  IDECmdScopeSrcEditOnlySyncroEditOff: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
   IDECmdScopeObjectInspectorOnly: TIDECommandScope;
 
@@ -585,6 +588,9 @@ begin
   IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
   IDECmdScopeSrcEditOnlyTmplEdit:=RegisterIDECommandScope('SourceEditorOnlyTemplateEdit');
   IDECmdScopeSrcEditOnlyTmplEditOff:=RegisterIDECommandScope('SourceEditorOnlyTemplateEditOff');
+  IDECmdScopeSrcEditOnlySyncroEditSel:=RegisterIDECommandScope('SourceEditorOnlySyncroEditSel');
+  IDECmdScopeSrcEditOnlySyncroEdit:=RegisterIDECommandScope('SourceEditorOnlySyncroEdit');
+  IDECmdScopeSrcEditOnlySyncroEditOff:=RegisterIDECommandScope('SourceEditorOnlySyncroEdit');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
   IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
 end;

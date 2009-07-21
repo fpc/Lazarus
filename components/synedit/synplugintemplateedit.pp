@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, math, Graphics, LCLType, SynEditMiscClasses,
   SynPluginSyncronizedEditBase, SynEditKeyCmds, SynEdit, SynEditMiscProcs,
-  SynEditTextTrimmer, SynEditTextBase, LCLProc;
+  SynEditTextBase, LCLProc;
 
 type
 
@@ -45,26 +45,18 @@ type
   public
     procedure ResetDefaults; override;
   end;
+
   { TSynPluginTemplateEdit }
 
-  TSynPluginTemplateEdit = class(TSynPluginSyncronizedEditBase)
+  TSynPluginTemplateEdit = class(TSynPluginCustomSyncroEdit)
   private
     FCellParserEnabled: Boolean;
     FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
     FStartPoint: TPoint;
-    FLastCell: Integer;
-    function GetMarkupInfo: TSynSelectedColor;
-    function GetMarkupInfoCurrent: TSynSelectedColor;
-    function GetMarkupInfoSync: TSynSelectedColor;
     procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
   protected
     procedure SetEditor(const AValue: TCustomSynEdit); override;
-    procedure DoBeforeEdit(aX, aY: Integer); override;
-    procedure DoOnActivate; override;
-    procedure DoOnDeactivate; override;
-    procedure UpdateCurrentCell;
-    procedure DoCaretChanged(Sender: TObject); virtual;
     procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
       var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
       var Command: TSynEditorCommand; FinishComboOnly: Boolean;
@@ -73,11 +65,7 @@ type
               var Handled: boolean; var Command: TSynEditorCommand;
               var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
 
-    procedure SelectCurrentCell(Reverse: Boolean = False);
-    procedure PreviousCell(SetSelect: Boolean = True);
-    procedure NextCell(SetSelect: Boolean = True; CycleToFirst: Boolean = False);
-    procedure CellCaretHome;
-    procedure CellCaretEnd;
+    procedure NextCellOrFinal(SetSelect: Boolean = True);
     procedure SetFinalCaret;
   public
     constructor Create(AOwner: TComponent); override;
@@ -96,9 +84,6 @@ type
       read FKeystrokes write SetKeystrokes;
     property KeystrokesOffCell: TSynEditKeyStrokes
       read FKeystrokesOffCell write SetKeystrokesOffCell;
-    property MarkupInfo: TSynSelectedColor read GetMarkupInfo;
-    property MarkupInfoCurrent: TSynSelectedColor read GetMarkupInfoCurrent;
-    property MarkupInfoSync: TSynSelectedColor read GetMarkupInfoSync;
   end;
 
 const
@@ -114,7 +99,7 @@ const
   ecSynPTmplEdFinish             = ecPluginFirst +  9;
   ecSynPTmplEdEscape             = ecPluginFirst + 10;
 
-  ecSynPTmplEdLast               = ecPluginFirst + 10;
+  ecSynPTmplEdCount               = 10;
 
 implementation
 
@@ -146,47 +131,38 @@ class function TSynPluginTemplateEdit.ConvertCommandToBase
   (Command: TSynEditorCommand): TSynEditorCommand;
 begin
   if (Command >= ecPluginFirst + KeyOffset) and
-     (Command <= ecPluginFirst + KeyOffset + ecSynPTmplEdLast)
-  then
-    Result := Command - KeyOffset
-  else
-    Result := ecNone;
+     (Command <= ecPluginFirst + KeyOffset + ecSynPTmplEdCount)
+  then Result := Command - KeyOffset
+  else Result := ecNone;
 end;
 
 class function TSynPluginTemplateEdit.ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
 begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdLast)
-  then
-    Result := Command + KeyOffset
-  else
-    Result := ecNone;
+  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdCount)
+  then Result := Command + KeyOffset
+  else Result := ecNone;
 end;
 
 class function TSynPluginTemplateEdit.ConvertCommandToBaseOff
   (Command: TSynEditorCommand): TSynEditorCommand;
 begin
   if (Command >= ecPluginFirst + KeyOffsetOff) and
-     (Command <= ecPluginFirst + KeyOffsetOff + ecSynPTmplEdLast)
-  then
-    Result := Command - KeyOffsetOff
-  else
-    Result := ecNone;
+     (Command <= ecPluginFirst + KeyOffsetOff + ecSynPTmplEdCount)
+  then Result := Command - KeyOffsetOff
+  else Result := ecNone;
 end;
 
 class function TSynPluginTemplateEdit.ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
 begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdLast)
-  then
-    Result := Command + KeyOffsetOff
-  else
-    Result := ecNone;
+  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdCount)
+  then Result := Command + KeyOffsetOff
+  else Result := ecNone;
 end;
 
 procedure TSynPluginTemplateEdit.SetEditor(const AValue: TCustomSynEdit);
 begin
   if Editor = AValue then exit;
   if Editor <> nil then begin
-    CaretObj.RemoveChangeHandler(@DoCaretChanged);
     Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
     Editor.UnregisterCommandHandler(@ProcessSynCommand);
   end;
@@ -194,7 +170,6 @@ begin
   if Editor <> nil then begin
     Editor.RegisterCommandHandler(@ProcessSynCommand, nil);
     Editor.RegisterKeyTranslationHandler(@TranslateKey);
-    CaretObj.AddChangeHandler(@DoCaretChanged);
   end;
 end;
 
@@ -212,74 +187,6 @@ begin
     FKeyStrokesOffCell.Clear
   else
     FKeyStrokesOffCell.Assign(AValue);
-end;
-
-function TSynPluginTemplateEdit.GetMarkupInfo: TSynSelectedColor;
-begin
-  Result := Markup.MarkupInfo;
-end;
-
-function TSynPluginTemplateEdit.GetMarkupInfoCurrent: TSynSelectedColor;
-begin
-  Result := Markup.MarkupInfoCurrent;
-end;
-
-function TSynPluginTemplateEdit.GetMarkupInfoSync: TSynSelectedColor;
-begin
-  Result := Markup.MarkupInfoSync;
-end;
-
-procedure TSynPluginTemplateEdit.DoBeforeEdit(aX, aY: Integer);
-begin
-  UpdateCurrentCell;
-  if CurrentCell < 0 then begin
-    Clear;
-    Active := False;
-  end;
-end;
-
-procedure TSynPluginTemplateEdit.DoOnActivate;
-var
-  b: TSynEditStrings;
-begin
-  b := ViewedTextBuffer;
-  while b <> nil do begin
-    if b is TSynEditStringTrimmingList then TSynEditStringTrimmingList(b).Lock;
-    if b is TSynEditStringsLinked then
-      b := TSynEditStringsLinked(b).NextLines
-    else
-      b := nil;;
-  end;
-end;
-
-procedure TSynPluginTemplateEdit.DoOnDeactivate;
-var
-  b: TSynEditStrings;
-begin
-  b := ViewedTextBuffer;
-  while b <> nil do begin
-    if b is TSynEditStringTrimmingList then TSynEditStringTrimmingList(b).UnLock;
-    if b is TSynEditStringsLinked then
-      b := TSynEditStringsLinked(b).NextLines
-    else
-      b := nil;;
-  end;
-end;
-
-procedure TSynPluginTemplateEdit.UpdateCurrentCell;
-var
-  i: Integer;
-begin
-  i := Cells.IndexOf(CaretObj.BytePos, CaretObj.LinePos, True);
-  if (i <> CurrentCell) and (CurrentCell >= 0) then
-    FLastCell := CurrentCell;
-  CurrentCell := i;
-end;
-
-procedure TSynPluginTemplateEdit.DoCaretChanged(Sender: TObject);
-begin
-  if not Active then exit;
-  UpdateCurrentCell;
 end;
 
 procedure TSynPluginTemplateEdit.TranslateKey(Sender: TObject; Code: word;
@@ -333,10 +240,10 @@ begin
 
   Handled := True;
   case Cmd of
-    ecSynPTmplEdNextCell:          NextCell(False);
-    ecSynPTmplEdNextCellSel:       NextCell(True);
-    ecSynPTmplEdNextCellRotate:    NextCell(False, True);
-    ecSynPTmplEdNextCellSelRotate: NextCell(True, True);
+    ecSynPTmplEdNextCell:          NextCellOrFinal(False);
+    ecSynPTmplEdNextCellSel:       NextCellOrFinal(True);
+    ecSynPTmplEdNextCellRotate:    NextCell(False);
+    ecSynPTmplEdNextCellSelRotate: NextCell(True);
     ecSynPTmplEdPrevCell:          PreviousCell(False);
     ecSynPTmplEdPrevCellSel:       PreviousCell(True);
     ecSynPTmplEdCellHome:          CellCaretHome;
@@ -353,61 +260,10 @@ begin
   end;
 end;
 
-procedure TSynPluginTemplateEdit.SelectCurrentCell(Reverse: Boolean = False);
-begin
-  if (CurrentCell < 0) and (FLastCell >= 0) then
-    CurrentCell := FLastCell;
-  if (CurrentCell < 0) then
-    exit;
-  if Reverse then begin
-    CaretObj.LineBytePos := Cells[CurrentCell].LogStart;
-    Editor.BlockBegin := Cells[CurrentCell].LogEnd;
-    Editor.BlockEnd := Cells[CurrentCell].LogStart;
-  end else begin
-    CaretObj.LineBytePos := Cells[CurrentCell].LogEnd;
-    Editor.BlockBegin := Cells[CurrentCell].LogStart;
-    Editor.BlockEnd := Cells[CurrentCell].LogEnd;
-  end;
-end;
-
-procedure TSynPluginTemplateEdit.PreviousCell(SetSelect: Boolean = True);
-var
-  i, j: Integer;
-  Pos: TPoint;
-begin
-  Pos := CaretObj.LineBytePos;
-  i := Cells.IndexOf(Pos.x, Pos.y, True);
-  if i < 0 then begin
-    i := 0;
-    while (i < Cells.Count) and
-      ((Cells[i].Group < 0) or (CompareCarets(Cells[i].LogEnd, Pos) >= 0))
-    do
-      inc(i);
-  end;
-
-  j := 0;
-  Repeat
-    dec(i);
-    inc(j);
-    if i < 0 then
-      i := Cells.Count - 1;
-  until (j > Cells.Count) or (Cells[i].Group >= 0);
-  CurrentCell := i;
-
-  if CurrentCell < 0 then
-    exit;
-  CaretObj.LineBytePos := Cells[CurrentCell].LogEnd;
-  if SetSelect then
-    SelectCurrentCell
-  else
-    Editor.BlockBegin := Cells[CurrentCell].LogEnd;
-end;
-
-procedure TSynPluginTemplateEdit.NextCell(SetSelect: Boolean = True;
-  CycleToFirst: Boolean = False);
+procedure TSynPluginTemplateEdit.NextCellOrFinal(SetSelect: Boolean);
 var
   Pos: TPoint;
-  i, j: Integer;
+  i: Integer;
 begin
   Pos := CaretObj.LineBytePos;
   i := Cells.IndexOf(Pos.x, Pos.y, True);
@@ -419,19 +275,13 @@ begin
       dec(i);
   end;
 
-  j := 0;
   Repeat
     inc(i);
-    inc(j);
     if i >= Cells.Count then begin
-      if CycleToFirst then
-        i := 0
-      else begin
-        SetFinalCaret;
-        exit;
-      end;
+      SetFinalCaret;
+      exit;
     end;
-  until (j > Cells.Count) or (Cells[i].Group >= 0);
+  until (Cells[i].Group >= 0);
   CurrentCell := i;
   if CurrentCell < 0 then
     exit;
@@ -440,26 +290,6 @@ begin
     SelectCurrentCell(True)
   else
     Editor.BlockBegin := Cells[CurrentCell].LogStart;
-end;
-
-procedure TSynPluginTemplateEdit.CellCaretHome;
-begin
-  if (CurrentCell < 0) and (FLastCell >= 0) then
-    CurrentCell := FLastCell;
-  if (CurrentCell < 0) then
-    exit;
-  CaretObj.LineBytePos := Cells[CurrentCell].LogStart;
-  Editor.BlockBegin := Cells[CurrentCell].LogStart;
-end;
-
-procedure TSynPluginTemplateEdit.CellCaretEnd;
-begin
-  if (CurrentCell < 0) and (FLastCell >= 0) then
-    CurrentCell := FLastCell;
-  if (CurrentCell < 0) then
-    exit;
-  CaretObj.LineBytePos := Cells[CurrentCell].LogEnd;
-  Editor.BlockBegin := Cells[CurrentCell].LogEnd;
 end;
 
 procedure TSynPluginTemplateEdit.SetFinalCaret;
@@ -675,8 +505,8 @@ begin
 end;
 
 initialization
-  KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdLast + 1);
-  KeyOffsetOff := AllocatePluginKeyRange(ecSynPTmplEdLast + 1);
+  KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdCount + 1);
+  KeyOffsetOff := AllocatePluginKeyRange(ecSynPTmplEdCount + 1);
 
 end.
 

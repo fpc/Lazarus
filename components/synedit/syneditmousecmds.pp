@@ -35,7 +35,8 @@ unit SynEditMouseCmds;
 interface
 
 uses
-  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs;
+  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs,
+  LCLProc;
 
 const
   // EditorMouseCommands
@@ -65,6 +66,8 @@ const
 
   emcMax = 17;
 
+  emcPluginFirst = 20000;
+
   // Options
   emcoSelectionStart          = 0;
   emcoSelectionContinue       = 1;
@@ -80,6 +83,13 @@ const
   emcoCodeFoldCollapsPreCaret = 3;
   emcoCodeFoldExpandOne       = 0;
   emcoCodeFoldExpandAll       = 1;
+
+// Plugins don't know of other plugins, so they need to map the codes
+// Plugins all start at ecPluginFirst (overlapping)
+// If ask by SynEdit they add an offset
+
+// Return the next offset
+function AllocatePluginMouseRange(Count: Integer): integer;
 
 type
 
@@ -192,6 +202,32 @@ type
   TSynEditMouseActionHandler = function(AnActionList: TSynEditMouseActions;
     AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
+  // Called by SynEdit
+  // Should Call "HandleActionProc" for each ActionList it want's to check
+  TSynEditMouseActionSearchProc = function(var AnInfo: TSynEditMouseActionInfo;
+    HandleActionProc: TSynEditMouseActionHandler): Boolean of object;
+
+  // Called by "HandleActionProc", if an Action was found in the list
+  TSynEditMouseActionExecProc = function(AnAction: TSynEditMouseAction;
+    var AnInfo: TSynEditMouseActionInfo): Boolean of object;
+
+  { TSynEditMouseActionSearchList }
+
+  TSynEditMouseActionSearchList = Class(TMethodList)
+  public
+    function CallSearchHandlers(var AnInfo: TSynEditMouseActionInfo;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+  end;
+
+  { TSynEditMouseActionExecList }
+
+  TSynEditMouseActionExecList = Class(TMethodList)
+  public
+    function CallExecHandlers(AnAction: TSynEditMouseAction;
+                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
+  end;
+
+
   function MouseCommandName(emc: TSynEditorMouseCommand): String;
   function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
 
@@ -199,6 +235,14 @@ const
   SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
 
 implementation
+
+function AllocatePluginMouseRange(Count: Integer): integer;
+const
+  CurOffset : integer = 0;
+begin
+  Result := CurOffset;
+  inc(CurOffset, Count);
+end;
 
 function MouseCommandName(emc: TSynEditorMouseCommand): String;
 begin
@@ -594,6 +638,32 @@ begin
   AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
 
   AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+end;
+
+{ TSynEditMouseActionSearchList }
+
+function TSynEditMouseActionSearchList.CallSearchHandlers(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+var
+  i: LongInt;
+begin
+  i:=Count;
+  Result := False;
+  while NextDownIndex(i) and (not Result) do
+    Result := TSynEditMouseActionSearchProc(Items[i])(AnInfo, HandleActionProc);
+end;
+
+{ TSynEditMouseActionExecList }
+
+function TSynEditMouseActionExecList.CallExecHandlers(AnAction: TSynEditMouseAction;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
+var
+  i: LongInt;
+begin
+  i:=Count;
+  Result := False;
+  while NextDownIndex(i) and (not Result) do
+    Result := TSynEditMouseActionExecProc(Items[i])(AnAction, AnInfo);
 end;
 
 end.

@@ -1,0 +1,1456 @@
+{-------------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+Alternatively, the contents of this file may be used under the terms of the
+GNU General Public License Version 2 or later (the "GPL"), in which case
+the provisions of the GPL are applicable instead of those above.
+If you wish to allow use of your version of this file only under the terms
+of the GPL and not to allow others to use your version of this file
+under the MPL, indicate your decision by deleting the provisions above and
+replace them with the notice and other provisions required by the GPL.
+If you do not delete the provisions above, a recipient may use your version
+of this file under either the MPL or the GPL.
+
+-------------------------------------------------------------------------------}
+unit SynPluginSyncroEdit;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, Controls, SysUtils, math, LCLProc, Forms, Graphics, SynEditMiscClasses,
+  LCLType, SynEdit, SynPluginSyncronizedEditBase, SynEditTextBase, SynEditMiscProcs,
+  SynEditMouseCmds, SynEditKeyCmds;
+
+type
+
+  TSynPluginSyncroEditLowerLineCacheEntry = record
+    LineIndex: Integer;
+    LineText: String;
+  end;
+
+  { TSynPluginSyncroEditLowerLineCache }
+
+  TSynPluginSyncroEditLowerLineCache = class
+  private
+    FLines: TSynEditStrings;
+    FLower: Array of TSynPluginSyncroEditLowerLineCacheEntry;
+    function GetLowLine(aIndex: Integer): String;
+    procedure SetLines(const AValue: TSynEditStrings);
+  protected
+    Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+  public
+    destructor Destroy; override;
+    procedure Clear;
+    property Lines: TSynEditStrings read FLines write SetLines;
+    property LowLines[aIndex: Integer]: String read GetLowLine; default;
+  end;
+
+  TSynPluginSyncroEditWordsHashEntry = record
+    Count, Hash: Integer;
+    LineIdx, BytePos, Len: Integer;
+    Next: Integer;
+    GrpId: Integer;
+  end;
+  PSynPluginSyncroEditWordsHashEntry = ^TSynPluginSyncroEditWordsHashEntry;
+
+  { TSynPluginSyncroEditWordsList }
+
+  TSynPluginSyncroEditWordsList = class
+  private
+    FCount: Integer;
+    FFirstUnused, FFirstGap: Integer;
+    function GetItem(aIndex: Integer): TSynPluginSyncroEditWordsHashEntry;
+    procedure SetItem(aIndex: Integer; const AValue: TSynPluginSyncroEditWordsHashEntry);
+  protected
+    FList: Array of TSynPluginSyncroEditWordsHashEntry;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+
+    function InsertEntry(aEntry: TSynPluginSyncroEditWordsHashEntry) : Integer;
+    procedure DeleteEntry(aIndex: Integer);
+    property Item[aIndex: Integer]: TSynPluginSyncroEditWordsHashEntry
+      read GetItem write SetItem; default;
+    property Count: Integer read FCount;
+  end;
+
+  { TSynPluginSyncroEditWordsHash }
+
+  TSynPluginSyncroEditWordsHash = class
+  private
+    FLowerLines: TSynPluginSyncroEditLowerLineCache;
+    FTableSize: Integer;
+    FTable: Array of TSynPluginSyncroEditWordsHashEntry;
+    FEntryCount: Integer;
+    FWordCount, FMultiWordCount: Integer;
+    FNextList: TSynPluginSyncroEditWordsList;
+
+    function CalcHash(aWord: PChar;aLen: Integer): Integer;
+    function CompareEntry(aEntry1, aEntry2: TSynPluginSyncroEditWordsHashEntry;
+                          aWord1, aWord2: PChar): Boolean;
+    function GetEntry(aModHash, aIndex: Integer): TSynPluginSyncroEditWordsHashEntry;
+
+    procedure InsertEntry(aEntry: TSynPluginSyncroEditWordsHashEntry; aWord: PChar);
+    procedure DeleteEntry(aEntry: TSynPluginSyncroEditWordsHashEntry; aWord: PChar);
+
+    procedure Resize(ANewSize: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+
+    // Excpects PChat to an already lowercase word
+    procedure AddWord(aLineIdx, aBytePos, aLen: Integer; aWord: PChar);
+    procedure RemoveWord(aLen: Integer; aWord: PChar);
+    function  GetWord(aWord: PChar; aLen: Integer): TSynPluginSyncroEditWordsHashEntry;
+    function  GetWordP(aWord: PChar; aLen: Integer): PSynPluginSyncroEditWordsHashEntry;
+    function  GetWordModHash(aWord: PChar; aLen: Integer): Integer;
+
+    property LowerLines: TSynPluginSyncroEditLowerLineCache
+      read FLowerLines write FLowerLines;
+    property HashEntry[aModHash, aIndex: Integer]: TSynPluginSyncroEditWordsHashEntry
+      read GetEntry;
+    property HashSize: Integer read FTableSize;
+    property EntryCount: Integer read FEntryCount;
+    property WordCount: Integer read FWordCount;
+    property MultiWordCount: Integer read FMultiWordCount;
+  end;
+
+  { TSynPluginSyncroEditMarkup }
+
+  TSynPluginSyncroEditMarkup = class(TSynPluginSyncronizedEditMarkup)
+  private
+    FGlyphAtLine: Integer;
+    FGutterGlyph: TBitmap;
+    function GetGutterGlyphRect: TRect;
+    procedure SetGlyphAtLine(const AValue: Integer);
+    procedure SetGutterGlyph(const AValue: TBitmap);
+    procedure DoInvalidate;
+  protected
+    procedure DoCaretChanged(Sender: TObject); override;
+    procedure DoTopLineChanged(OldTopLine : Integer); override;
+    procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
+    procedure DoEnabledChanged(Sender: TObject); override;
+  public
+    constructor Create(ASynEdit: TSynEditBase);
+    destructor Destroy; override;
+    procedure EndMarkup; override;
+
+    property GlyphAtLine: Integer read FGlyphAtLine write SetGlyphAtLine;       // -1 for caret
+    property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
+    property GutterGlyphRect: TRect read GetGutterGlyphRect;
+  end;
+
+  { TSynPluginSyncroEditMouseActions }
+
+  TSynPluginSyncroEditMouseActions = class(TSynEditMouseActions)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  { TSynEditSyncroEditKeyStrokesSelecting }
+
+  TSynEditSyncroEditKeyStrokesSelecting = class(TSynEditKeyStrokes)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  { TSynEditSyncroEditKeyStrokes }
+
+  TSynEditSyncroEditKeyStrokes = class(TSynEditKeyStrokes)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  { TSynEditSyncroEditKeyStrokesOffCell }
+
+  TSynEditSyncroEditKeyStrokesOffCell = class(TSynEditKeyStrokes)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  TSynPluginSyncroEditModes = (spseIncative, spseSelecting, spseEditing);
+  { TSynPluginSyncroEdit }
+
+  TSynPluginSyncroEdit = class(TSynPluginCustomSyncroEdit)
+  private
+    FGutterGlyph: TBitmap;
+    FLowerLines: TSynPluginSyncroEditLowerLineCache;
+    FWordIndex: TSynPluginSyncroEditWordsHash;
+    FWordScanCount: Integer;
+    FCallQueued: Boolean;
+    FEditModeQueued: Boolean;
+    FLastSelStart, FLastSelEnd: TPoint;
+    FParsedStart, FParsedStop: TPoint;
+    FMouseActions: TSynPluginSyncroEditMouseActions;
+    FMode: TSynPluginSyncroEditModes;
+
+    FKeystrokesSelecting: TSynEditKeyStrokes;
+    FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
+    procedure SetKeystrokesSelecting(const AValue: TSynEditKeyStrokes);
+    procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
+    procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
+    function  GetMarkup: TSynPluginSyncroEditMarkup;
+    function  Scan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
+    procedure SetGutterGlyph(const AValue: TBitmap);
+    function  UnScan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
+    procedure StartSyncroMode;
+    procedure StopSyncroMode;
+  protected
+    procedure DoImageChanged(Sender: TObject);
+    function  CreateMarkup: TSynPluginSyncronizedEditMarkup; override;
+    procedure DoSelectionChanged(Sender: TObject);
+    procedure DoScanSelection(Data: PtrInt);
+    procedure DoOnDeactivate; override;
+
+    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+    function DoHandleMouseAction(AnAction: TSynEditMouseAction;
+                                 var AnInfo: TSynEditMouseActionInfo): Boolean;
+
+    procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoClear; override;
+
+    procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+      var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+      var ComboKeyStrokes: TSynEditKeyStrokes);
+    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+              var Handled: boolean; var Command: TSynEditorCommand;
+              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+
+    property Markup: TSynPluginSyncroEditMarkup read GetMarkup;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
+    class function ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
+    class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
+    class function ConvertCommandToBaseOff(Command: TSynEditorCommand): TSynEditorCommand;
+    class function ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
+    class function ConvertCommandToBaseSel(Command: TSynEditorCommand): TSynEditorCommand;
+    class function ConvertBaseToCommandSel(Command: TSynEditorCommand): TSynEditorCommand;
+
+    property KeystrokesSelecting: TSynEditKeyStrokes
+      read FKeystrokesSelecting write SetKeystrokesSelecting;
+    property Keystrokes: TSynEditKeyStrokes
+      read FKeystrokes write SetKeystrokes;
+    property KeystrokesOffCell: TSynEditKeyStrokes
+      read FKeystrokesOffCell write SetKeystrokesOffCell;
+  end;
+
+const
+  emcSynPSyncroEdGutterGlyph         = emcPluginFirst +  0;
+
+  emcSynPSyncroEdCount               = 1;
+
+  ecSynPSyncroEdNextCell           = ecPluginFirst +  0;
+  ecSynPSyncroEdNextCellSel        = ecPluginFirst +  1;
+  ecSynPSyncroEdPrevCell           = ecPluginFirst +  2;
+  ecSynPSyncroEdPrevCellSel        = ecPluginFirst +  3;
+  ecSynPSyncroEdCellHome           = ecPluginFirst +  4;
+  ecSynPSyncroEdCellEnd            = ecPluginFirst +  5;
+  ecSynPSyncroEdCellSelect         = ecPluginFirst +  6;
+  ecSynPSyncroEdEscape             = ecPluginFirst +  7;
+
+  ecSynPSyncroEdCount              = 8;
+
+  ecSynPSyncroEdStart              = ecPluginFirst +  0;
+  ecSynPSyncroEdSelModeCount       = 1;
+
+
+implementation
+
+var
+  MouseOffset, KeyOffsetSel, KeyOffset, KeyOffsetOff: integer;
+
+const
+  MAX_CACHE = 50; // Amount of lower-cased lines cached
+  MAX_SYNC_ED_WORDS = 50;// 250;
+  MAX_WORDS_PER_SCAN = 50000;
+
+Operator = (P1, P2 : TPoint) : Boolean;
+begin
+  Result := (P1.Y = P2.Y) and (P1.X = P2.X);
+end;
+
+Operator < (P1, P2 : TPoint) : Boolean;
+begin
+  Result := (P1.Y < P2.Y) or ( (P1.Y = P2.Y) and (P1.X < P2.X) );
+end;
+
+Operator <= (P1, P2 : TPoint) : Boolean;
+begin
+  Result := (P1.Y < P2.Y) or ( (P1.Y = P2.Y) and (P1.X <= P2.X) );
+end;
+
+Operator > (P1, P2 : TPoint) : Boolean;
+begin
+  Result := (P1.Y > P2.Y) or ( (P1.Y = P2.Y) and (P1.X > P2.X) );
+end;
+
+Operator >= (P1, P2 : TPoint) : Boolean;
+begin
+  Result := (P1.Y > P2.Y) or ( (P1.Y = P2.Y) and (P1.X >= P2.X) );
+end;
+
+{ TSynPluginSyncroEditLowerLineCache }
+
+function TSynPluginSyncroEditLowerLineCache.GetLowLine(aIndex: Integer): String;
+var
+  i, l: Integer;
+begin
+  l := length(FLower);
+  for i := 0 to l-1 do
+    if FLower[i].LineIndex = aIndex then
+      exit(FLower[i].LineText);
+  if l < MAX_CACHE then begin
+    inc(l);
+    SetLength(FLower, l);
+  end;
+  for i := l-1 downto 1 do begin
+    FLower[i].LineIndex := FLower[i-1].LineIndex;
+    FLower[i].LineText  := FLower[i-1].LineText;
+  end;
+  FLower[0].LineIndex := aIndex;
+  FLower[0].LineText  := UTF8LowerCase(FLines[aIndex]);
+  Result := FLower[0].LineText;
+end;
+
+procedure TSynPluginSyncroEditLowerLineCache.SetLines(const AValue: TSynEditStrings);
+begin
+  Clear;
+  if FLines <> nil then begin
+    fLines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    fLines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+  end;
+  FLines := AValue;
+  if FLines <> nil then begin
+    fLines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+  end;
+end;
+
+procedure TSynPluginSyncroEditLowerLineCache.LineTextChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
+begin
+  Clear;
+end;
+
+destructor TSynPluginSyncroEditLowerLineCache.Destroy;
+begin
+  Lines := nil;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TSynPluginSyncroEditLowerLineCache.Clear;
+begin
+  FLower := nil;
+end;
+
+{ TSynPluginSyncroEditWordsList }
+
+function TSynPluginSyncroEditWordsList.GetItem(aIndex: Integer): TSynPluginSyncroEditWordsHashEntry;
+begin
+  Result := FList[aIndex];
+end;
+
+procedure TSynPluginSyncroEditWordsList.SetItem(aIndex: Integer;
+  const AValue: TSynPluginSyncroEditWordsHashEntry);
+begin
+  FList[aIndex] := AValue;
+end;
+
+constructor TSynPluginSyncroEditWordsList.Create;
+begin
+  inherited;
+  clear;
+end;
+
+destructor TSynPluginSyncroEditWordsList.Destroy;
+begin
+  inherited Destroy;
+  clear;
+end;
+
+procedure TSynPluginSyncroEditWordsList.Clear;
+begin
+  FList := nil;
+  FFirstGap := -1;
+  FFirstUnused := 0;
+  FCount := 0;
+end;
+
+function TSynPluginSyncroEditWordsList.InsertEntry(aEntry: TSynPluginSyncroEditWordsHashEntry): Integer;
+begin
+  inc(FCount);
+  if FFirstGap >= 0 then begin
+    Result := FFirstGap;
+    FFirstGap := FList[Result].Next;
+  end else begin
+    if FFirstUnused >= length(FList) then
+      SetLength(FList, Max(1024, length(FList)) * 4);
+    Result := FFirstUnused;
+    inc(FFirstUnused);
+  end;
+  FList[Result] := aEntry;
+end;
+
+procedure TSynPluginSyncroEditWordsList.DeleteEntry(aIndex: Integer);
+begin
+  dec(FCount);
+  FList[aIndex].Next := FFirstGap;
+  FFirstGap := aIndex;
+end;
+
+{ TSynPluginSyncroEditWordsHash }
+
+function TSynPluginSyncroEditWordsHash.CalcHash(aWord: PChar; aLen: Integer): Integer;
+var
+  v, n, p, a, b, c, c1, i: Integer;
+begin
+  a := 0;
+  b := 0;
+  c := 0;
+  c1 := 0;
+  n := 1;
+  p := 0;
+  i := aLen;
+  while i > 0 do begin
+    v  := ord(aWord^);
+    a := a     + v * (1 + (n mod 8));
+    if a > 550 then a := a mod 550;
+    b := b * 3 + v * n - p;
+    if b > 550 then b := b mod 550;
+    c1 := c1   + v * (1 + (a mod 11));
+    c := c + c1;
+    if c > 550 then c := c mod 550;
+    dec(i);
+    inc(aWord);
+    inc(n);
+    p := v;
+  end;
+
+  Result := (((aLen mod 11) * 550 + b) * 550 + c) * 550 + a;
+end;
+
+function TSynPluginSyncroEditWordsHash.CompareEntry(aEntry1,
+  aEntry2: TSynPluginSyncroEditWordsHashEntry; aWord1, aWord2: PChar): Boolean;
+var
+  Line1, Line2: String;
+begin
+  Result := (aEntry1.Len = aEntry2.Len) and (aEntry1.Hash = aEntry2.Hash);
+  if not Result then exit;
+
+  if aWord1 = nil then begin
+    Line1 := FLowerLines[aEntry1.LineIdx];
+    aWord1 := @Line1[aEntry1.BytePos];
+  end;
+  if aWord2 = nil then begin
+    Line2 := FLowerLines[aEntry2.LineIdx];
+    aWord2 := @Line2[aEntry2.BytePos];
+  end;
+
+  Result := CompareMem(aWord1, aWord2, aEntry1.Len);
+end;
+
+function TSynPluginSyncroEditWordsHash.GetEntry(aModHash,
+  aIndex: Integer): TSynPluginSyncroEditWordsHashEntry;
+begin
+  Result:= FTable[aModHash];
+  while aIndex > 0 do begin
+    if Result.Next < 0 then begin
+      Result.Count := 0;
+      Result.Hash := -1;
+      exit;
+    end;
+    Result := FNextList[Result.Next];
+    dec(aIndex);
+  end;
+end;
+
+procedure TSynPluginSyncroEditWordsHash.InsertEntry
+  (aEntry: TSynPluginSyncroEditWordsHashEntry;  aWord: PChar);
+var
+  j: LongInt;
+  ModHash: Integer;
+begin
+  aEntry.GrpId := 0;
+  if (FEntryCount >= FTableSize * 2 div 3) or (FNextList.Count > FTableSize div 8) then
+    Resize(Max(FTableSize, 1024) * 4);
+
+  ModHash := aEntry.Hash mod FTableSize;
+
+  if (FTable[ModHash].Count > 0) then begin
+    if CompareEntry(aEntry, FTable[ModHash], aWord, nil) then begin
+      if FTable[ModHash].Count = 1 then
+        inc(FMultiWordCount);
+      FTable[ModHash].Count := FTable[ModHash].Count + aEntry.Count;
+      exit;
+    end;
+
+    j := FTable[ModHash].Next;
+    while j >= 0 do begin
+      if CompareEntry(aEntry, FNextList[j], aWord, nil) then begin
+        if FNextList[j].Count = 1 then
+          inc(FMultiWordCount);
+        FNextList.FList[j].Count := FNextList.FList[j].Count + aEntry.Count;
+        exit;
+      end;
+      j := FNextList[j].Next;
+    end;
+
+    j := FNextList.InsertEntry(aEntry);
+    FNextList.FList[j].Next := FTable[ModHash].Next;
+    FTable[ModHash].Next := j;
+    inc(FWordCount);
+
+    exit;
+  end;
+
+  inc(FEntryCount);
+  inc(FWordCount);
+    //if (FEntryCount<20) or (FEntryCount mod 8192=0) then debugln(['entry add ', FEntryCount]);
+  FTable[ModHash] := aEntry;
+  FTable[ModHash].Next:= -1;
+end;
+
+procedure TSynPluginSyncroEditWordsHash.DeleteEntry(aEntry: TSynPluginSyncroEditWordsHashEntry;
+  aWord: PChar);
+var
+  j, i: Integer;
+  ModHash: Integer;
+begin
+  ModHash := aEntry.Hash mod FTableSize;
+
+  if (FTable[ModHash].Count > 0) then begin
+    if CompareEntry(aEntry, FTable[ModHash], aWord, nil) then begin
+      FTable[ModHash].Count := FTable[ModHash].Count - 1;
+      if FTable[ModHash].Count = 0 then begin
+        j := FTable[ModHash].Next;
+        if j >= 0 then begin
+          FTable[ModHash] := FNextList[j];
+          FNextList.DeleteEntry(j);
+        end
+        else
+          dec(FEntryCount);
+        dec(FWordCount);
+      end
+      else if FTable[ModHash].Count = 1 then
+        dec(FMultiWordCount);
+      exit;
+    end;
+
+    j := FTable[ModHash].Next;
+    while j >= 0 do begin
+      if CompareEntry(aEntry, FNextList[j], aWord, nil) then begin
+        FNextList.FList[j].Count := FNextList.FList[j].Count - 1;
+        if FNextList[j].Count = 0 then begin
+          i := FNextList[j].Next;
+          if i >= 0 then begin
+            FNextList[j] := FNextList[i];
+            FNextList.DeleteEntry(i);
+          end;
+          dec(FWordCount);
+        end
+        else if FNextList[j].Count = 1 then
+          dec(FMultiWordCount);
+        exit;
+      end;
+      j := FNextList[j].Next;
+    end;
+
+  end;
+  // ?? there was no entry ??
+end;
+
+procedure TSynPluginSyncroEditWordsHash.Resize(ANewSize: Integer);
+var
+  OldTable: Array of TSynPluginSyncroEditWordsHashEntry;
+  OldSize, i, j, k: Integer;
+begin
+  FEntryCount := 0;
+  FWordCount := 0;
+  FMultiWordCount := 0;
+  if FTableSize = 0 then begin
+    SetLength(FTable, ANewSize);
+    FTableSize := ANewSize;
+    exit;
+  end;
+
+  //debugln(['TSynPluginSyncroEditWordsHash.Resize ', ANewSize]);
+  OldSize := FTableSize;
+  SetLength(OldTable, FTableSize);
+  System.Move(FTable[0], OldTable[0], FTableSize * SizeOf(TSynPluginSyncroEditWordsHashEntry));
+  FillChar(FTable[0], FTableSize * SizeOf(TSynPluginSyncroEditWordsHashEntry), 0);
+  SetLength(FTable, ANewSize);
+  FTableSize := ANewSize;
+
+  for i := 0 to OldSize - 1 do begin
+    if OldTable[i].Count > 0 then begin
+      InsertEntry(OldTable[i], nil);
+      j := OldTable[i].Next;
+      while j >= 0 do begin
+        InsertEntry(FNextList[j], nil);
+        k := j;
+        j := FNextList[j].Next;
+        FNextList.DeleteEntry(k);
+      end;
+    end;
+  end;
+end;
+
+constructor TSynPluginSyncroEditWordsHash.Create;
+begin
+  inherited;
+  FNextList := TSynPluginSyncroEditWordsList.Create;
+  Clear;
+end;
+
+destructor TSynPluginSyncroEditWordsHash.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FNextList);
+end;
+
+procedure TSynPluginSyncroEditWordsHash.Clear;
+begin
+  FTable := nil;
+  FTableSize := 0;
+  FEntryCount := 0;
+  FWordCount := 0;
+  FMultiWordCount := 0;
+  FNextList.Clear;
+end;
+
+procedure TSynPluginSyncroEditWordsHash.AddWord(aLineIdx, aBytePos, aLen: Integer;
+  aWord: PChar);
+var
+  NewEntry: TSynPluginSyncroEditWordsHashEntry;
+begin
+  NewEntry.Hash := CalcHash(aWord, aLen);
+  NewEntry.LineIdx := aLineIdx;
+  NewEntry.BytePos := aBytePos;
+  NewEntry.Len := aLen;
+  NewEntry.Count := 1;
+  InsertEntry(NewEntry, aWord);
+end;
+
+procedure TSynPluginSyncroEditWordsHash.RemoveWord(aLen: Integer; aWord: PChar);
+var
+  OldEntry: TSynPluginSyncroEditWordsHashEntry;
+begin
+  OldEntry.Count := 1;
+  OldEntry.Hash := CalcHash(aWord, aLen);
+  oldEntry.Len := aLen;
+  DeleteEntry(OldEntry, aWord);
+end;
+
+function TSynPluginSyncroEditWordsHash.GetWord(aWord: PChar;
+  aLen: Integer): TSynPluginSyncroEditWordsHashEntry;
+var
+  SearchEntry: TSynPluginSyncroEditWordsHashEntry;
+begin
+  Result.Hash := -1;
+  Result.Count:= 0;
+  if FTableSize < 1 then exit;
+
+  SearchEntry.Hash := CalcHash(aWord, aLen);
+  SearchEntry.Len := aLen;
+  Result := FTable[SearchEntry.Hash mod FTableSize];
+  while Result.Count > 0 do begin
+    if CompareEntry(Result, SearchEntry, nil, aWord) then exit;
+    if Result.Next < 0 then break;
+    Result := FNextList[Result.Next];
+  end;
+  Result.Hash := -1;
+  Result.Count:= 0;
+end;
+
+function TSynPluginSyncroEditWordsHash.GetWordP(aWord: PChar;
+  aLen: Integer): PSynPluginSyncroEditWordsHashEntry;
+var
+  SearchEntry: TSynPluginSyncroEditWordsHashEntry;
+begin
+  Result := nil;
+  if FTableSize < 1 then exit;
+
+  SearchEntry.Hash := CalcHash(aWord, aLen);
+  SearchEntry.Len := aLen;
+  Result := @FTable[SearchEntry.Hash mod FTableSize];
+  while Result^.Count > 0 do begin
+    if CompareEntry(Result^, SearchEntry, nil, aWord) then exit;
+    if Result^.Next < 0 then break;
+    Result := @FNextList.FList[Result^.Next];
+  end;
+  Result := nil;
+end;
+
+function TSynPluginSyncroEditWordsHash.GetWordModHash(aWord: PChar; aLen: Integer): Integer;
+begin
+  if FTableSize < 1 then exit(-1);
+  Result := CalcHash(aWord, aLen) mod FTableSize;
+end;
+
+{ TSynPluginSyncroEditMarkup }
+
+procedure TSynPluginSyncroEditMarkup.DoInvalidate;
+begin
+  // TODO: GutterPaint does not trigger Markup modules
+  TSynEdit(SynEdit).Invalidate;
+  //if TSynEdit(SynEdit).GutterWidth < FGutterGlyph.Width then
+  //  TSynEdit(SynEdit).Invalidate
+  //else
+  //  TSynEdit(SynEdit).InvalidateGutter;
+end;
+
+procedure TSynPluginSyncroEditMarkup.DoCaretChanged(Sender: TObject);
+begin
+  inherited DoCaretChanged(Sender);
+  DoInvalidate;
+end;
+
+procedure TSynPluginSyncroEditMarkup.DoTopLineChanged(OldTopLine: Integer);
+begin
+  inherited DoTopLineChanged(OldTopLine);
+  DoInvalidate;
+end;
+
+procedure TSynPluginSyncroEditMarkup.DoLinesInWindoChanged(OldLinesInWindow: Integer);
+begin
+  inherited DoLinesInWindoChanged(OldLinesInWindow);
+  DoInvalidate;
+end;
+
+procedure TSynPluginSyncroEditMarkup.DoEnabledChanged(Sender: TObject);
+begin
+  inherited DoEnabledChanged(Sender);
+  DoInvalidate;
+end;
+
+procedure TSynPluginSyncroEditMarkup.EndMarkup;
+var
+  src, dst: TRect;
+begin
+  inherited EndMarkup;
+  if (FGutterGlyph.Height > 0) then begin
+    src :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
+    dst := GutterGlyphRect;
+    TSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
+  end;
+end;
+
+procedure TSynPluginSyncroEditMarkup.SetGutterGlyph(const AValue: TBitmap);
+begin
+  if FGutterGlyph = AValue then exit;
+  if FGutterGlyph = nil then
+    FGutterGlyph := TBitMap.Create;
+  FGutterGlyph.Assign(AValue);
+  DoInvalidate;
+end;
+
+function TSynPluginSyncroEditMarkup.GetGutterGlyphRect: TRect;
+var
+  y: Integer;
+begin
+  Result :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
+  y := GlyphAtLine;
+  if y = -1 then
+    y := TSynEdit(SynEdit).CaretY;
+  Result.Top := Max( Min( RowToScreenRow(y)
+                          * TSynEdit(SynEdit).LineHeight,
+                          TSynEdit(SynEdit).ClientHeight - FGutterGlyph.Height),
+                          0);
+  Result.Bottom := Result.Bottom + Result.Top;
+end;
+
+procedure TSynPluginSyncroEditMarkup.SetGlyphAtLine(const AValue: Integer);
+begin
+  if FGlyphAtLine = AValue then exit;
+  FGlyphAtLine := AValue;
+  DoInvalidate;
+end;
+
+constructor TSynPluginSyncroEditMarkup.Create(ASynEdit: TSynEditBase);
+begin
+  FGutterGlyph := TBitMap.Create;
+  inherited;
+end;
+
+destructor TSynPluginSyncroEditMarkup.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FGutterGlyph);
+end;
+
+{ TSynPluginSyncroEdit }
+
+function TSynPluginSyncroEdit.Scan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
+var
+  x2: Integer;
+  Line: String;
+begin
+  Result := AFrom;
+  if BackWard then begin
+    Line := FLowerLines[AFrom.y - 1];
+    while (AFrom >= aTo) do begin
+      AFrom.x :=  WordBreaker.PrevWordEnd(Line, AFrom.x, True);
+      if AFrom.x < 0 then begin
+        dec(AFrom.y);
+        Line := FLowerLines[AFrom.y-1];
+        AFrom.x := length(Line) + 1;
+        continue;
+      end;
+      x2 :=  WordBreaker.PrevWordStart(Line, AFrom.x, True);
+      if (AFrom.y > ATo.y) or (x2 >= ATo.x) then begin
+        FWordIndex.AddWord(AFrom.y - 1, x2, AFrom.x - x2, @Line[x2]);
+        Result := AFrom;
+        Result.x := x2;
+        inc(FWordScanCount);
+        if FWordScanCount > MAX_WORDS_PER_SCAN then break;
+      end;
+      AFrom.x := x2;
+    end;
+  end
+  else begin
+    Line := FLowerLines[AFrom.y - 1];
+    while (AFrom <= aTo) do begin
+      AFrom.x :=  WordBreaker.NextWordStart(Line, AFrom.x, True);
+      if AFrom.x < 0 then begin
+        inc(AFrom.y);
+        AFrom.x := 1;
+        Line := FLowerLines[AFrom.y-1];
+        continue;
+      end;
+      x2 :=  WordBreaker.NextWordEnd(Line, AFrom.x, True);
+      if (AFrom.y < ATo.y) or (x2 <= ATo.x) then begin
+        FWordIndex.AddWord(AFrom.y - 1, AFrom.x, x2-AFrom.x, @Line[AFrom.x]);
+        Result := AFrom;
+        Result.x := x2;
+        inc(FWordScanCount);
+        if FWordScanCount > MAX_WORDS_PER_SCAN then break;
+      end;
+      AFrom.x := x2;
+    end;
+  end;
+end;
+
+procedure TSynPluginSyncroEdit.SetKeystrokesSelecting(const AValue: TSynEditKeyStrokes);
+begin
+  if AValue = nil then
+    FKeystrokesSelecting.Clear
+  else
+    FKeystrokesSelecting.Assign(AValue);
+end;
+
+procedure TSynPluginSyncroEdit.SetKeystrokes(const AValue: TSynEditKeyStrokes);
+begin
+  if AValue = nil then
+    FKeystrokes.Clear
+  else
+    FKeystrokes.Assign(AValue);
+end;
+
+procedure TSynPluginSyncroEdit.SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
+begin
+  if AValue = nil then
+    FKeyStrokesOffCell.Clear
+  else
+    FKeyStrokesOffCell.Assign(AValue);
+end;
+
+function TSynPluginSyncroEdit.GetMarkup: TSynPluginSyncroEditMarkup;
+begin
+  Result := TSynPluginSyncroEditMarkup(FMarkup);
+end;
+
+procedure TSynPluginSyncroEdit.SetGutterGlyph(const AValue: TBitmap);
+begin
+  if FGutterGlyph = AValue then exit;
+  if FGutterGlyph = nil then begin
+    FGutterGlyph := TBitMap.Create;
+    FGutterGlyph.OnChange := @DoImageChanged;
+  end;
+  FGutterGlyph.Assign(AValue);
+end;
+
+function TSynPluginSyncroEdit.UnScan(AFrom, aTo: TPoint; BackWard: Boolean): TPoint;
+var
+  x2: Integer;
+  Line: String;
+begin
+  Result := AFrom;
+  if BackWard then begin
+    Line := FLowerLines[AFrom.y - 1];
+    while (AFrom > aTo) do begin
+      AFrom.x :=  WordBreaker.PrevWordEnd(Line, AFrom.x, True);
+      if AFrom.x < 0 then begin
+        dec(AFrom.y);
+        Line := FLowerLines[AFrom.y-1];
+        AFrom.x := length(Line) + 1;
+        continue;
+      end;
+      x2 :=  WordBreaker.PrevWordStart(Line, AFrom.x, True);
+      FWordIndex.RemoveWord(AFrom.x - x2, @Line[x2]);
+      AFrom.x := x2;
+      Result := AFrom;
+      inc(FWordScanCount);
+      if FWordScanCount > MAX_WORDS_PER_SCAN then break;
+    end;
+  end
+  else begin
+    Line := FLowerLines[AFrom.y - 1];
+    while (AFrom < aTo) do begin
+      AFrom.x :=  WordBreaker.NextWordStart(Line, AFrom.x, True);
+      if AFrom.x < 0 then begin
+        inc(AFrom.y);
+        AFrom.x := 1;
+        Line := FLowerLines[AFrom.y-1];
+        continue;
+      end;
+      x2 :=  WordBreaker.NextWordEnd(Line, AFrom.x, True);
+      FWordIndex.RemoveWord(x2-AFrom.x, @Line[AFrom.x]);
+      AFrom.x := x2;
+      Result := AFrom;
+      inc(FWordScanCount);
+      if FWordScanCount > MAX_WORDS_PER_SCAN then break;
+    end;
+  end;
+end;
+
+procedure TSynPluginSyncroEdit.StartSyncroMode;
+var
+  Pos, EndPos: TPoint;
+  Line: String;
+  x2, g: Integer;
+  entry: PSynPluginSyncroEditWordsHashEntry;
+begin
+  if FCallQueued then begin
+    FEditModeQueued := True;
+    exit;
+  end;
+  FEditModeQueued := False;
+
+  FMode :=  spseEditing;
+  AreaMarkupEnabled := True;
+
+  Pos := SelectionObj.FirstLineBytePos;
+  EndPos := SelectionObj.LastLineBytePos;
+
+  with Cells.AddNew do begin
+    LogStart := Pos;
+    LogEnd := EndPos;
+    Group := -1;
+  end;
+  MarkupArea.CellGroupForArea := -1;
+  Markup.GlyphAtLine := Pos.y;
+
+  g := 1;
+  Line := FLowerLines[Pos.y-1];
+  while (Pos <= EndPos) do begin
+    Pos.x :=  WordBreaker.NextWordStart(Line, Pos.x, True);
+    if Pos.x < 0 then begin
+      inc(Pos.y);
+      Pos.x := 1;
+      Line := FLowerLines[Pos.y-1];
+      continue;
+    end;
+    x2 :=  WordBreaker.NextWordEnd(Line, Pos.x, True);
+    if (Pos.y < EndPos.y) or (x2 <= EndPos.x) then begin
+      entry := FWordIndex.GetWordP(@Line[Pos.x], x2-Pos.x);
+      if (entry <> nil) and (entry^.Count > 1) then begin;
+        if (entry^.GrpId = 0) and (g <= MAX_SYNC_ED_WORDS) then begin
+          entry^.GrpId := g;
+          inc(g);
+        end;
+        if (entry^.GrpId > 0) then
+          with Cells.AddNew do begin
+            LogStart := Pos;
+            LogEnd := Point(x2, Pos.y);
+            Group := entry^.GrpId;
+          end;
+      end;
+
+    end;
+    Pos.x := x2;
+  end;
+  FWordIndex.Clear;
+
+  CurrentCell := 1;
+  SelectCurrentCell;
+  if g = 1 then StopSyncroMode;
+end;
+
+procedure TSynPluginSyncroEdit.StopSyncroMode;
+begin
+  Active := False;
+end;
+
+procedure TSynPluginSyncroEdit.DoImageChanged(Sender: TObject);
+begin
+  Markup.GutterGlyph := FGutterGlyph;
+end;
+
+function TSynPluginSyncroEdit.CreateMarkup: TSynPluginSyncronizedEditMarkup;
+begin
+  Result := TSynPluginSyncroEditMarkup.Create(Editor);
+  if FGutterGlyph <> nil then
+    TSynPluginSyncroEditMarkup(Result).GutterGlyph := FGutterGlyph;
+end;
+
+procedure TSynPluginSyncroEdit.DoSelectionChanged(Sender: TObject);
+begin
+  if FMode = spseEditing then exit;
+  If not SelectionObj.SelAvail then begin
+    FLastSelStart := Point(-1,-1);
+    FLastSelEnd := Point(-1,-1);
+    FWordIndex.Clear;
+    if Active then Editor.Invalidate;
+    Active := False;
+    FMode := spseIncative;
+    exit;
+  end;
+
+  if FMode = spseIncative then begin
+    Cells.Clear;
+    AreaMarkupEnabled := False;
+  end;
+  FMode := spseSelecting;
+  Markup.GlyphAtLine := -1;
+  if not FCallQueued then
+    Application.QueueAsyncCall(@DoScanSelection, 0);
+  FCallQueued := True;
+end;
+
+procedure TSynPluginSyncroEdit.DoScanSelection(Data: PtrInt);
+var
+  NewPos, NewEnd: TPoint;
+
+  function InitParsedPoints: Boolean;
+  // Find the first begin of a word, inside the block (if any)
+  var
+    x, y: Integer;
+  begin
+    if FParsedStart.y >= 0 then exit(True);
+    y := NewPos.y;
+    x := NewPos.x;
+    while y <= NewEnd.y do begin
+      x :=  WordBreaker.NextWordStart(FLowerLines[y-1], x, True);
+      if (x > 0) and ((y < NewEnd.Y) or (x <= NewEnd.x)) then begin
+        FParsedStart.y := y;
+        FParsedStart.x := x;
+        FParsedStop := FParsedStart;
+        break;
+      end;
+      inc(y);
+      x := 1;
+    end;
+    Result := FParsedStart.Y >= 0;
+  end;
+
+var
+  i, j: Integer;
+begin
+  Repeat
+    FCallQueued := False;
+    FWordScanCount := 0;
+
+    NewPos := SelectionObj.FirstLineBytePos;
+    NewEnd := SelectionObj.LastLineBytePos;
+    i := FLastSelEnd.y - FLastSelStart.y;
+    j := NewEnd.y - NewPos.y;
+    if (j < 1) or (j < i div 2) or
+       (NewEnd <= FLastSelStart) or (NewPos >= FLastSelEnd )
+    then begin
+      // Scan from scratch
+      FLastSelStart := Point(-1,-1);
+      FLastSelEnd := Point(-1,-1);
+      FWordIndex.Clear;
+    end;
+
+    if FLastSelStart.Y < 0 then begin
+      FLastSelStart := NewPos;
+      FLastSelEnd := FLastSelStart;
+      FParsedStart := Point(-1,-1);
+      FParsedStop := Point(-1,-1);
+    end;
+
+    if (NewPos = NewEnd) or (not InitParsedPoints) then begin
+      if Active then Editor.Invalidate;
+      Active := False;
+      exit;
+    end;
+
+    if (NewPos < FLastSelStart) then
+      FParsedStart := Scan(FParsedStart, NewPos, True)  // NewPos is the smaller point;
+    else
+    if (NewPos > FParsedStart) then
+      FParsedStart := UnScan(FParsedStart, NewPos, False);
+
+    if FWordScanCount > MAX_WORDS_PER_SCAN then begin
+      FLastSelStart := FParsedStart;
+    end
+    else begin
+      FLastSelStart := NewPos;
+
+      if (NewEnd > FLastSelEnd) then
+        FParsedStop := Scan(FParsedStop, NewEnd, False)  // NewPos is the greater point;
+      else
+      if (NewEnd < FParsedStop) then
+        FParsedStop := UnScan(FParsedStop, NewEnd, True);
+
+      FLastSelEnd := NewEnd;
+      if FWordScanCount > MAX_WORDS_PER_SCAN then
+        FLastSelEnd := FParsedStop;
+    end;
+
+    Active := FWordIndex.MultiWordCount > 0;
+    //debugln(['COUNTS: ', FWordIndex.WordCount,' mult=',FWordIndex.MultiWordCount, ' hash=',FWordIndex.EntryCount]);
+
+    if FWordScanCount > MAX_WORDS_PER_SCAN then begin
+      FCallQueued := True;
+      Application.ProcessMessages;
+    end;
+  until not FCallQueued;
+  if FEditModeQueued then
+    StartSyncroMode;
+end;
+
+procedure TSynPluginSyncroEdit.DoOnDeactivate;
+begin
+  FMode := spseIncative;
+  AreaMarkupEnabled := False;
+  Cells.Clear;
+  inherited DoOnDeactivate;
+end;
+
+function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+var
+  r: TRect;
+begin
+  Result := Active;
+  if not Result then exit;
+
+  r := Markup.GutterGlyphRect;
+  Result := (AnInfo.MouseX >= r.Left) and (AnInfo.MouseX < r.Right) and
+            (AnInfo.MouseY >= r.Top) and (AnInfo.MouseY < r.Bottom);
+
+  if Result then
+    Result := HandleActionProc(FMouseActions, AnInfo);
+end;
+
+function TSynPluginSyncroEdit.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+  var AnInfo: TSynEditMouseActionInfo): Boolean;
+begin
+  Result := False;
+
+  if AnAction.Command = MouseOffset + emcSynPSyncroEdGutterGlyph then begin
+    if FMode = spseSelecting then
+      StartSyncroMode
+    else
+      StopSyncroMode;
+    Result := true;
+  end;
+end;
+
+procedure TSynPluginSyncroEdit.SetEditor(const AValue: TCustomSynEdit);
+begin
+  if Editor = AValue then exit;
+  if Editor <> nil then begin
+    SelectionObj.RemoveChangeHandler(@DoSelectionChanged);
+    Editor.UnregisterCommandHandler(@ProcessSynCommand);
+    Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
+    Editor.UnregisterMouseActionSearchHandler(@MaybeHandleMouseAction);
+    Editor.UnregisterMouseActionExecHandler(@DoHandleMouseAction);
+    FLowerLines.Lines := nil;
+  end;
+  inherited SetEditor(AValue);
+  if Editor <> nil then begin
+    FLowerLines.Lines := ViewedTextBuffer;
+    Editor.RegisterMouseActionSearchHandler(@MaybeHandleMouseAction);
+    Editor.RegisterMouseActionExecHandler(@DoHandleMouseAction);
+    Editor.RegisterCommandHandler(@ProcessSynCommand, nil);
+    Editor.RegisterKeyTranslationHandler(@TranslateKey);
+    SelectionObj.AddChangeHandler(@DoSelectionChanged);
+  end;
+end;
+
+procedure TSynPluginSyncroEdit.DoClear;
+begin
+  FWordIndex.Clear;
+  inherited DoClear;
+end;
+
+procedure TSynPluginSyncroEdit.TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+  var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+  var ComboKeyStrokes: TSynEditKeyStrokes);
+var
+  keys: TSynEditKeyStrokes;
+begin
+  if (not Active) or Handled then
+    exit;
+
+  keys := nil;
+  if FMode = spseSelecting then
+    keys := FKeystrokesSelecting;
+
+  if FMode = spseEditing then begin
+    if CurrentCell < 0 then begin
+      keys := FKeyStrokesOffCell;
+      FKeyStrokes.ResetKeyCombo;
+    end
+    else begin
+      keys := FKeyStrokes;
+      FKeyStrokesOffCell.ResetKeyCombo;
+    end;
+  end;
+  if keys = nil then exit;
+
+  if (FinishComboOnly and (ComboKeyStrokes <> keys)) then begin
+    keys.ResetKeyCombo;
+    exit;
+  end;
+
+  IsStartOfCombo := False;
+  try
+    keys.UsePluginOffset := True;
+    Command := keys.FindKeycodeEx(Code, SState, Data, IsStartOfCombo,
+                                        FinishComboOnly);
+  finally
+    keys.UsePluginOffset := False;
+  end;
+  Handled := (Command <> ecNone) or IsStartOfCombo;
+  if Handled then begin
+    ComboKeyStrokes := keys;
+  end;
+end;
+
+procedure TSynPluginSyncroEdit.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+var
+  Cmd: TSynEditorCommand;
+begin
+  if Handled or AfterProcessing or not Active then exit;
+
+  if FMode = spseSelecting then begin
+    Cmd := ConvertCommandToBaseSel(Command);
+    Handled := True;
+    case Cmd of
+      ecSynPSyncroEdStart: StartSyncroMode;
+      else
+        Handled := False;
+    end;
+  end;
+
+  if FMode = spseEditing then begin
+    Cmd := ConvertCommandToBase(Command);
+    if Cmd = ecNone then
+      Cmd := ConvertCommandToBaseOff(Command);
+
+    Handled := True;
+    case Cmd of
+      ecSynPSyncroEdNextCell:          NextCell(False);
+      ecSynPSyncroEdNextCellSel:       NextCell(True);
+      ecSynPSyncroEdPrevCell:          PreviousCell(False);
+      ecSynPSyncroEdPrevCellSel:       PreviousCell(True);
+      ecSynPSyncroEdCellHome:          CellCaretHome;
+      ecSynPSyncroEdCellEnd:           CellCaretEnd;
+      ecSynPSyncroEdCellSelect:        SelectCurrentCell;
+      ecSynPSyncroEdEscape:
+        begin
+          Clear;
+          Active := False;
+        end;
+      else
+        Handled := False;
+    end;
+  end;
+end;
+
+constructor TSynPluginSyncroEdit.Create(AOwner: TComponent);
+begin
+  FMode := spseIncative;
+  FEditModeQueued := False;
+
+  FMouseActions := TSynPluginSyncroEditMouseActions.Create(self);
+  FMouseActions.ResetDefaults;
+
+  FKeystrokes := TSynEditSyncroEditKeyStrokes.Create(Self);
+  FKeystrokes.ResetDefaults;
+  FKeystrokes.PluginOffset := KeyOffset;
+
+  FKeyStrokesOffCell := TSynEditSyncroEditKeyStrokesOffCell.Create(self);
+  FKeyStrokesOffCell.ResetDefaults;
+  FKeyStrokesOffCell.PluginOffset := KeyOffsetOff;
+
+  FKeystrokesSelecting := TSynEditSyncroEditKeyStrokesSelecting.Create(Self);
+  FKeystrokesSelecting.ResetDefaults;
+  FKeystrokesSelecting.PluginOffset := KeyOffsetSel;
+
+  FGutterGlyph := TBitMap.Create;
+  FGutterGlyph.OnChange := @DoImageChanged;
+
+  FLowerLines := TSynPluginSyncroEditLowerLineCache.Create;
+  FWordIndex := TSynPluginSyncroEditWordsHash.Create;
+  FWordIndex.LowerLines := FLowerLines;
+  inherited Create(AOwner);
+  MarkupInfoArea.Background := clMoneyGreen;
+  MarkupInfo.FrameColor := TColor($98b498)
+end;
+
+destructor TSynPluginSyncroEdit.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FWordIndex);
+  FreeAndNil(FLowerLines);
+  FreeAndNil(FGutterGlyph);
+  FreeAndNil(FMouseActions);
+  FreeAndNil(FKeystrokes);
+  FreeAndNil(FKeyStrokesOffCell);
+  FreeAndNil(FKeystrokesSelecting);
+end;
+
+class function TSynPluginSyncroEdit.ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst + KeyOffset) and
+     (Command <= ecPluginFirst + KeyOffset + ecSynPSyncroEdCount)
+  then Result := Command - KeyOffset
+  else Result := ecNone;
+end;
+
+class function TSynPluginSyncroEdit.ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdCount)
+  then Result := Command + KeyOffset
+  else Result := ecNone;
+end;
+
+class function TSynPluginSyncroEdit.ConvertCommandToBaseOff(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst + KeyOffsetOff) and
+     (Command <= ecPluginFirst + KeyOffsetOff + ecSynPSyncroEdCount)
+  then Result := Command - KeyOffsetOff
+  else Result := ecNone;
+end;
+
+class function TSynPluginSyncroEdit.ConvertBaseToCommandOff(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdCount)
+  then Result := Command + KeyOffsetOff
+  else Result := ecNone;
+end;
+
+class function TSynPluginSyncroEdit.ConvertCommandToBaseSel(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst + KeyOffsetSel) and
+     (Command <= ecPluginFirst + KeyOffsetSel + ecSynPSyncroEdSelModeCount)
+  then Result := Command - KeyOffsetSel
+  else Result := ecNone;
+end;
+
+class function TSynPluginSyncroEdit.ConvertBaseToCommandSel(Command: TSynEditorCommand): TSynEditorCommand;
+begin
+  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPSyncroEdSelModeCount)
+  then Result := Command + KeyOffsetSel
+  else Result := ecNone;
+end;
+
+{ TSynPluginSyncroEditMouseActions }
+
+procedure TSynPluginSyncroEditMouseActions.ResetDefaults;
+begin
+  Clear;
+  AddCommand(MouseOffset + emcSynPSyncroEdGutterGlyph, False, mbLeft, ccAny, cdDown, [], []);
+end;
+
+{ TSynEditSyncroEditKeyStrokesSelecting }
+
+procedure TSynEditSyncroEditKeyStrokesSelecting.ResetDefaults;
+  procedure AddKey(const ACmd: TSynEditorCommand; const AKey: word;
+     const AShift: TShiftState);
+  begin
+    with Add do
+    begin
+      Key := AKey;
+      Shift := AShift;
+      Command := ACmd;
+    end;
+  end;
+begin
+  Clear;
+  AddKey(ecSynPSyncroEdStart,            VK_J, [ssCtrl]);
+end;
+
+{ TSynEditSyncroEditKeyStrokes }
+
+procedure TSynEditSyncroEditKeyStrokes.ResetDefaults;
+  procedure AddKey(const ACmd: TSynEditorCommand; const AKey: word;
+     const AShift: TShiftState);
+  begin
+    with Add do
+    begin
+      Key := AKey;
+      Shift := AShift;
+      Command := ACmd;
+    end;
+  end;
+begin
+  Clear;
+  AddKey(ecSynPSyncroEdNextCell,          VK_RIGHT,  [ssCtrl]);
+  AddKey(ecSynPSyncroEdNextCellSel,       VK_TAB,    []);
+  AddKey(ecSynPSyncroEdPrevCell,          VK_LEFT,   [ssCtrl]);
+  AddKey(ecSynPSyncroEdPrevCellSel,       VK_TAB,    [ssShift]);
+
+  AddKey(ecSynPSyncroEdCellHome,          VK_HOME,   []);
+  AddKey(ecSynPSyncroEdCellEnd,           VK_END,    []);
+  AddKey(ecSynPSyncroEdCellSelect,        VK_A,      [ssCtrl]);
+  AddKey(ecSynPSyncroEdEscape,            VK_ESCAPE, []);
+end;
+
+{ TSynEditSyncroEditKeyStrokesOffCell }
+
+procedure TSynEditSyncroEditKeyStrokesOffCell.ResetDefaults;
+  procedure AddKey(const ACmd: TSynEditorCommand; const AKey: word;
+     const AShift: TShiftState);
+  begin
+    with Add do
+    begin
+      Key := AKey;
+      Shift := AShift;
+      Command := ACmd;
+    end;
+  end;
+begin
+  Clear;
+  AddKey(ecSynPSyncroEdNextCell,          VK_RIGHT,  [ssCtrl]);
+  AddKey(ecSynPSyncroEdNextCellSel,       VK_TAB,    []);
+  AddKey(ecSynPSyncroEdPrevCell,          VK_LEFT,   [ssCtrl]);
+  AddKey(ecSynPSyncroEdPrevCellSel,       VK_TAB,    [ssShift]);
+
+  AddKey(ecSynPSyncroEdEscape,            VK_ESCAPE, []);
+end;
+
+initialization
+  MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount);
+  KeyOffsetSel := AllocatePluginKeyRange(ecSynPSyncroEdSelModeCount);
+  KeyOffset    := AllocatePluginKeyRange(ecSynPSyncroEdCount);
+  KeyOffsetOff := AllocatePluginKeyRange(ecSynPSyncroEdCount);
+
+end.
+

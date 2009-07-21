@@ -13,3 +13,4 @@ sourceeditor/InactiveBreakPoint.png
 sourceeditor/InvalidBreakPoint.png
 sourceeditor/MultiBreakPoint.png
 sourceeditor/UnknownBreakPoint.png
+sourceeditor/tsynsyncroedit.png

@@ -80,6 +80,7 @@ type
     function ScreenRowToRow(aRow : Integer) : Integer;
     function RowToScreenRow(aRow : Integer) : Integer;
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
+    function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function Highlighter: TSynCustomHighlighter;
     function OwnedByMgr: Boolean; virtual; // overwrite, do prevent destruction by mgr
 
@@ -129,7 +130,7 @@ type
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
     
-    Procedure AddMarkUp(aMarkUp : TSynEditMarkup);
+    Procedure AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
     Procedure RemoveMarkUp(aMarkUp : TSynEditMarkup);
     function Count: Integer;
     property Markup[Index: integer]: TSynEditMarkup
@@ -306,6 +307,11 @@ begin
   Result := FLines.LogicalToPhysicalPos(p);
 end;
 
+function TSynEditMarkup.PhysicalToLogicalPos(const p: TPoint): TPoint;
+begin
+  Result := FLines.PhysicalToLogicalPos(p);
+end;
+
 function TSynEditMarkup.Highlighter : TSynCustomHighlighter;
 begin
   Result := TSynEdit(SynEdit).Highlighter;
@@ -379,9 +385,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup);
+procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
 begin
-  fMarkUpList.Add(aMarkUp);
+  if AsFirst then
+    fMarkUpList.Insert(0, aMarkUp)
+  else
+    fMarkUpList.Add(aMarkUp);
   aMarkUp.Lines := Lines;
   aMarkUp.Caret := Caret;
   aMarkUp.TopLine := TopLine;

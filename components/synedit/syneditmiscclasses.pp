@@ -94,6 +94,7 @@ type
   TSynEditBase = class(TCustomControl)
   protected
     FWordBreaker: TSynWordBreaker;
+    FBlockSelection: TSynEditSelection;
     FIsUndoing, FIsRedoing: Boolean;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
@@ -119,12 +120,14 @@ type
     function GetIsRedoing: Boolean;
     function GetIsUndoing: Boolean;
     function GetMarkupMgr: TObject;
+    function GetSelectionObj: TSynEditSelection;
     function GetViewedTextBuffer: TSynEditStrings;
     function GetWordBreaker: TSynWordBreaker;
   protected
     property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property CaretObj: TSynEditCaret read GetCaretObj;
+    property SelectionObj: TSynEditSelection read GetSelectionObj;
     property MarkupMgr: TObject read GetMarkupMgr;
     property IsUndoing: Boolean read GetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing;
@@ -396,6 +399,11 @@ end;
 function TSynEditFriend.GetMarkupMgr: TObject;
 begin
   Result := FFriendEdit.MarkupMgr;
+end;
+
+function TSynEditFriend.GetSelectionObj: TSynEditSelection;
+begin
+  Result := FFriendEdit.FBlockSelection;
 end;
 
 function TSynEditFriend.GetIsRedoing: Boolean;
@@ -1143,8 +1151,8 @@ function TSynWordBreaker.NextWordStart(aLine: String; aX: Integer;
 var
   len: Integer;
 begin
-  if aX < 1 then exit(-1);
   len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(-1);
   if not aIncludeCurrent then
     inc(aX);
   if (aX > 1) and (aLine[aX - 1] in FWordChars) then
@@ -1160,8 +1168,8 @@ function TSynWordBreaker.NextWordEnd(aLine: String; aX: Integer;
 var
   len: Integer;
 begin
-  if aX < 1 then exit(-1);
   len := Length(aLine);
+  if (aX < 1) or (aX > len + 1) then exit(-1);
   if not aIncludeCurrent then
     inc(aX);
   if (aX = 1) or not(aLine[aX - 1] in FWordChars) then
