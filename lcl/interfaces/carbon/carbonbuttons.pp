@@ -33,7 +33,9 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonDef, CarbonPrivate,
+  CarbonDef, CarbonPrivate, CarbonInt, CarbonProc,
+  CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonCanvas, CarbonGDIObjects,
+
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
@@ -102,6 +104,7 @@ type
   TCarbonBitBtn = class(TCarbonCustomButton)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    function isGlyphVisible: Boolean;
   public
     procedure SetGlyph(const AGlyph: TBitmap); virtual;
     procedure SetLayout(ALayout: TButtonLayout); virtual;
@@ -110,9 +113,6 @@ type
 
 implementation
 
-uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonStrings, CarbonCanvas, CarbonGDIObjects;
-  
 { TCarbonCustomCheckBox }
 
 {------------------------------------------------------------------------------
@@ -437,6 +437,13 @@ begin
     Self, SCreateWidget, SSetData, 'kControlBevelButtonKindTag');
 end;
 
+function TCarbonBitBtn.isGlyphVisible: Boolean;
+begin
+  Result := Assigned(LCLObject) and
+            TCustomBitBtn(LCLObject).CanShowGlyph and
+            (TCustomBitBtn(LCLObject).GlyphShowMode in [gsmAlways]);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonBitBtn.SetGlyph
   Params:  AGlyph  - New glyph bitmap
@@ -449,10 +456,9 @@ var
   BitBtn: TCustomBitBtn;
   R: TRect;
 begin
-  ContentInfo.contentType := kControlContentCGImageRef;
   ContentInfo.imageRef := nil;
   
-  if (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) then
+  if (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) and isGlyphVisible then
   begin
     if TObject(AGlyph.Handle) is TCarbonBitmap then
     begin
@@ -469,7 +475,9 @@ begin
           TCarbonBitmap(AGlyph.Handle).CreateMaskedImage(TCarbonBitmap(AGlyph.MaskHandle), R);
       end;
     end;
-  end;
+    ContentInfo.contentType := kControlContentCGImageRef;
+  end else
+    ContentInfo.contentType := kControlContentTextOnly;
 
   try
     OSError(SetBevelButtonContentInfo(ControlRef(Widget), @ContentInfo),
@@ -483,17 +491,19 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonBitBtn.SetLayout
-  Params:  ALayout  - Bitmap and caption layout
+  Params:  ALayout  - Bitmap and caption la yout
 
   Sets the bitmap and caption layout
  ------------------------------------------------------------------------------}
 procedure TCarbonBitBtn.SetLayout(ALayout: TButtonLayout);
 var
   Placement: ControlButtonTextPlacement;
+  TextAlign: ControlButtonTextAlignment;
 begin
   with (LCLObject as TCustomBitBtn) do
-  if (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) then
+  if (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) and isGlyphVisible  then
   begin
+    TextAlign := kControlBevelButtonAlignLeft;
     case ALayout of
       blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
       blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
@@ -502,10 +512,15 @@ begin
     end;
   end
   else // if Glyph is empty, then align center
+  begin
+    TextAlign := kControlBevelButtonAlignTextCenter;
     Placement := kControlBevelButtonPlaceNormally;
+  end;
 
   OSError(SetBevelButtonTextPlacement(ControlRef(Widget), Placement),
     Self, 'SetLayout', 'SetBevelButtonTextPlacement');
+  OSError(SetBevelButtonTextAlignment(ControlRef(Widget), TextAlign, 0),
+    Self, 'SetLayout', 'SetBevelButtonTextAlignment');
 
   Invalidate;
 end;
