@@ -7017,8 +7017,7 @@ begin
   then begin
     // number operator (or string concatenating or set cut)
     // + - *
-    
-    
+
     if (Src[BinaryOperator.StartPos]='+')
     and (LeftOperand.Desc in xtAllStringCompatibleTypes)
     then begin
@@ -7032,6 +7031,12 @@ begin
         RaiseExceptionFmt(ctsIncompatibleTypesGotExpected,
                           ['char',ExpressionTypeDescNames[RightOperand.Desc]]);
       end;
+    end else if (Src[BinaryOperator.StartPos]='+')
+    and (LeftOperand.Desc=xtContext)
+    and (LeftOperand.Context.Node<>nil)
+    and (LeftOperand.Context.Node.Desc=ctnSetType)
+    then begin
+      Result:=LeftOperand;
     end else begin
       if (LeftOperand.Desc in xtAllRealTypes)
       or (RightOperand.Desc in xtAllRealTypes) then
@@ -8715,6 +8720,7 @@ begin
                    fdfTopLvlResolving,fdfFunctionResult];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
   end;
+
   Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
 end;
 
