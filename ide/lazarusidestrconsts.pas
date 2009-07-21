@@ -4073,6 +4073,15 @@ resourcestring
   lisWatch = '&Watch';
   lisInspect = '&Inspect';
 
+  // Breakpoint Properties Dialog
+  lisBreakPointProperties = 'Breakpoint Properties';
+  lisLine = 'Line:';
+  lisAutoContinueAfter = 'Auto continue after:';
+  lisMS = '(ms)';
+  lisActions = 'Actions:';
+  lisEvalExpression = 'Eval expression';
+  lisLogMessage = 'Log message';
+
   // Designer Size Components Dialog
   lisShrinkToSmal = 'Shrink to smallest';
   lisGrowToLarges = 'Grow to Largest';

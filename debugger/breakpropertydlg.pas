@@ -145,6 +145,22 @@ end;
 constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);
 begin
   inherited Create(AOwner);
+
+  Caption := lisBreakPointProperties;
+  lblFileName.Caption := lisPEFilename;
+  lblLine.Caption := lisLine;
+  lblCondition.Caption := lisCondition + ':';
+  lblHitCount.Caption := lisHitCount + ':';
+  lblAutoContinue.Caption := lisAutoContinueAfter;
+  lblMS.Caption := lisMS;
+  lblGroup.Caption := lisGroup + ':';
+  gbActions.Caption := lisActions;
+  chkActionBreak.Caption := lisBreak;
+  chkEnableGroups.Caption := lisEnableGroup;
+  chkDisableGroups.Caption := lisDisableGroup;
+  chkEvalExpression.Caption := lisEvalExpression;
+  chkLogMessage.Caption := lisLogMessage;
+
   FBreakpoint := ABreakPoint;
   FBreakpointsNotification := TIDEBreakPointsNotification.Create;
   FBreakpointsNotification.AddReference;

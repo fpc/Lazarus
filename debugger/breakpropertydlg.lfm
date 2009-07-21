@@ -1,6 +1,6 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
   Left = 586
-  Height = 384
+  Height = 383
   Top = 151
   Width = 414
   HorzScrollBar.Page = 386
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 384
+  ClientHeight = 383
   ClientWidth = 414
   Position = poScreenCenter
   object lblFileName: TLabel[0]
@@ -20,7 +20,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 11
+    Top = 10
     Width = 47
     BorderSpacing.Around = 6
     Caption = 'Filename:'
@@ -32,7 +32,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 40
+    Top = 39
     Width = 24
     BorderSpacing.Around = 6
     Caption = 'Line:'
@@ -44,7 +44,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 69
+    Top = 68
     Width = 50
     BorderSpacing.Around = 6
     Caption = 'Condition:'
@@ -56,7 +56,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 98
+    Top = 97
     Width = 45
     BorderSpacing.Around = 6
     Caption = 'Hitcount:'
@@ -68,7 +68,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 155
+    Top = 154
     Width = 34
     BorderSpacing.Around = 6
     Caption = 'Group:'
@@ -80,7 +80,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 14
-    Top = 127
+    Top = 126
     Width = 95
     BorderSpacing.Around = 6
     Caption = 'Auto continue after'
@@ -93,7 +93,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 179
     Height = 14
-    Top = 127
+    Top = 126
     Width = 22
     BorderSpacing.Left = 6
     Caption = '(ms)'
@@ -107,7 +107,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 113
     Height = 23
-    Top = 123
+    Top = 122
     Width = 60
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
@@ -123,7 +123,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 113
     Height = 23
-    Top = 94
+    Top = 93
     Width = 295
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -140,7 +140,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 113
     Height = 23
-    Top = 65
+    Top = 64
     Width = 295
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -156,7 +156,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 113
     Height = 23
-    Top = 36
+    Top = 35
     Width = 60
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
@@ -172,7 +172,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 113
-    Height = 24
+    Height = 23
     Top = 6
     Width = 295
     Anchors = [akTop, akLeft, akRight]
@@ -192,15 +192,12 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 113
     Height = 21
-    Top = 152
+    Top = 151
     Width = 295
     Anchors = [akTop, akLeft, akRight]
-    AutoComplete = False
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
-    Ctl3D = False
     ItemHeight = 13
-    ItemWidth = 0
     TabOrder = 5
     Text = 'cmbGroup'
   end
@@ -212,7 +209,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 163
-    Top = 179
+    Top = 178
     Width = 402
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -220,7 +217,6 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Caption = 'Actions'
     ClientHeight = 145
     ClientWidth = 398
-    Ctl3D = False
     TabOrder = 6
     object chkActionBreak: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -228,7 +224,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Left = 6
       Height = 17
       Top = 6
-      Width = 46
+      Width = 45
       BorderSpacing.Around = 6
       Caption = 'Break'
       TabOrder = 0
@@ -240,7 +236,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Left = 6
       Height = 17
       Top = 32
-      Width = 83
+      Width = 82
       BorderSpacing.Around = 6
       Caption = 'Enable goups'
       TabOrder = 1
@@ -263,16 +259,15 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       AnchorSideTop.Control = chkActionBreak
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 132
+      Left = 131
       Height = 23
       Top = 29
-      Width = 237
+      Width = 238
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 80
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ButtonWidth = 23
-      Ctl3D = False
       Enabled = False
       NumGlyphs = 1
       TabOrder = 5
@@ -283,16 +278,15 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       AnchorSideTop.Control = edtEnableGroups
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 132
+      Left = 131
       Height = 23
       Top = 58
-      Width = 237
+      Width = 238
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 80
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ButtonWidth = 23
-      Ctl3D = False
       Enabled = False
       NumGlyphs = 1
       TabOrder = 6
@@ -304,7 +298,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Left = 6
       Height = 17
       Top = 90
-      Width = 92
+      Width = 93
       BorderSpacing.Around = 6
       Caption = 'Eval expression'
       Enabled = False
@@ -317,7 +311,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Left = 6
       Height = 17
       Top = 119
-      Width = 81
+      Width = 80
       BorderSpacing.Around = 6
       Caption = 'Log message'
       Enabled = False
@@ -330,10 +324,10 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbActions
       AnchorSideRight.Side = asrBottom
-      Left = 132
+      Left = 131
       Height = 23
       Top = 87
-      Width = 260
+      Width = 261
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 80
       BorderSpacing.Top = 6
@@ -349,10 +343,10 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbActions
       AnchorSideRight.Side = asrBottom
-      Left = 132
+      Left = 131
       Height = 23
       Top = 116
-      Width = 260
+      Width = 261
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 80
       BorderSpacing.Top = 6
@@ -370,7 +364,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 348
+    Top = 347
     Width = 402
     Align = alNone
     Anchors = [akTop, akLeft, akRight]
