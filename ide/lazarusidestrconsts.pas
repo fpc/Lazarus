@@ -4067,6 +4067,12 @@ resourcestring
   lisOff = '? (Off)';
   lisOn = '? (On)';
 
+  // Evaluate/Modify Dialog
+  lisEvaluate = 'E&valuate';
+  lisModify = '&Modify';
+  lisWatch = '&Watch';
+  lisInspect = '&Inspect';
+
   // Designer Size Components Dialog
   lisShrinkToSmal = 'Shrink to smallest';
   lisGrowToLarges = 'Grow to Largest';

@@ -90,6 +90,11 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, 400, 290);
   cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
 
+  tbEvaluate.Caption := lisEvaluate;
+  tbModify.Caption := lisModify;
+  tbWatch.Caption := lisWatch;
+  tbInspect.Caption := lisInspect;
+
   ToolBar1.Images := IDEImages.Images_16;
   tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
   tbWatch.ImageIndex := IDEImages.LoadImage(16, 'debugger_watches');
