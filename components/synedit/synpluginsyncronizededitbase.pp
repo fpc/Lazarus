@@ -839,9 +839,10 @@ begin
           X2 := X2 + FCells[i].LogStart.X;
         if aLineBrkCnt = -1 then begin
           ViewedTextBuffer.EditLineJoin(Y2);
-          if (CaretPos.y = Y2 + 1) then begin
+          if (CaretPos.y > Y2) then begin
             dec(CaretPos.y);
-            inc(CaretPos.x, X2 - 1);
+            if (CaretPos.y = Y2) then
+              inc(CaretPos.x, X2 - 1);
           end;
         end
         else if aLineBrkCnt < -1 then begin
@@ -851,6 +852,8 @@ begin
         end
         else if aLineBrkCnt = 1 then begin
           ViewedTextBuffer.EditLineBreak(X2, Y2);
+          if (CaretPos.y > Y2) then
+            inc(CaretPos.y);
           if (CaretPos.y = Y2) and (CaretPos.x > X2) then begin
             inc(CaretPos.y);
             dec(CaretPos.x, X2 - 1);
