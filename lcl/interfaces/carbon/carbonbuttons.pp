@@ -35,11 +35,9 @@ uses
  // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonInt, CarbonProc,
   CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonCanvas, CarbonGDIObjects,
-
  // LCL
-  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
-  
+  LCLMessageGlue, LCLType, Graphics, Controls, StdCtrls, Buttons;
+
 type
 
   { TCarbonCustomCheckBox }
@@ -104,7 +102,6 @@ type
   TCarbonBitBtn = class(TCarbonCustomButton)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
-    function isGlyphVisible: Boolean;
   public
     procedure SetGlyph(const AGlyph: TBitmap); virtual;
     procedure SetLayout(ALayout: TButtonLayout); virtual;
@@ -437,13 +434,6 @@ begin
     Self, SCreateWidget, SSetData, 'kControlBevelButtonKindTag');
 end;
 
-function TCarbonBitBtn.isGlyphVisible: Boolean;
-begin
-  Result := Assigned(LCLObject) and
-            TCustomBitBtn(LCLObject).CanShowGlyph and
-            (TCustomBitBtn(LCLObject).GlyphShowMode in [gsmAlways]);
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCarbonBitBtn.SetGlyph
   Params:  AGlyph  - New glyph bitmap
@@ -458,7 +448,7 @@ var
 begin
   ContentInfo.imageRef := nil;
   
-  if (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) and isGlyphVisible then
+  if TCustomBitBtn(LCLObject).CanShowGlyph and (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) then
   begin
     if TObject(AGlyph.Handle) is TCarbonBitmap then
     begin
@@ -491,7 +481,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonBitBtn.SetLayout
-  Params:  ALayout  - Bitmap and caption la yout
+  Params:  ALayout  - Bitmap and caption layout
 
   Sets the bitmap and caption layout
  ------------------------------------------------------------------------------}
@@ -501,7 +491,7 @@ var
   TextAlign: ControlButtonTextAlignment;
 begin
   with (LCLObject as TCustomBitBtn) do
-  if (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) and isGlyphVisible  then
+  if (TCustomBitBtn(LCLObject).CanShowGlyph) and (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) then
   begin
     TextAlign := kControlBevelButtonAlignLeft;
     case ALayout of
