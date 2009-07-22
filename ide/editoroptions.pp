@@ -395,14 +395,14 @@ const
       { ahaCodeFoldingTree    } (BG: $F4F4F4;     FG: $CC9999;     FC: clNone;  Styles: []; StylesMask: []),
       { ahaHighlightWord      } (BG: clDefault;   FG: clDefault;   FC: $CCCCD6; Styles: []; StylesMask: []),
       { ahaFoldedCode         } (BG: clDefault;   FG: $CC9999;     FC: $CC9999; Styles: []; StylesMask: []),
-      { ahaWordGroup          } (BG: clNone;      FG: clNone;     FC: clRed;    Styles: []; StylesMask: []),
-      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;     FC: clAqua;    Styles: []; StylesMask: []),
-      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;     FC: clFuchsia; Styles: []; StylesMask: []),
-      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;     FC: clMaroon;  Styles: []; StylesMask: []),
-      { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;     FC: clFuchsia;     Styles: []; StylesMask: []),
-      { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
-      { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaWordGroup          } (BG: clNone;      FG: clNone;      FC: clRed;   Styles: []; StylesMask: []),
+      { ahaTemplateEditCur    } (BG: clNone;      FG: clNone;      FC: clAqua;    Styles: []; StylesMask: []),
+      { ahaTemplateEditSync   } (BG: clNone;      FG: clNone;      FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaTemplateEditOther  } (BG: clNone;      FG: clNone;      FC: clMaroon;  Styles: []; StylesMask: []),
+      { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;      FC: clFuchsia; Styles: []; StylesMask: []),
+      { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;      FC: clRed;     Styles: []; StylesMask: []),
+      { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;      FC: clBlue;    Styles: []; StylesMask: []),
+      { ahaSyncroEditArea     } (BG: $E6FFFA;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
