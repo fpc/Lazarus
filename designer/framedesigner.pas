@@ -111,7 +111,6 @@ end;
 procedure TFrameDesignerForm.OnControlResize(Sender: TObject);
 var
   AControl: TControl;
-  a: TAnchorKind;
 begin
   if FResizing then Exit;
   AControl := TControl(LookupRoot);
