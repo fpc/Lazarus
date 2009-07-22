@@ -819,62 +819,68 @@ begin
   then begin
     ViewedTextBuffer.BeginUpdate;
     try
-    FEditing := True;
-    CaretPos := CaretObj.LineBytePos;
-    CurCell := FCells[FCurrentCell];
-    a := CurCell.Group;
-    Pos.Y := Pos.Y - CurCell.LogStart.y;
-    if Pos.y = 0 then
-      Pos.X := Pos.X - CurCell.LogStart.x;
-    for i := 0 to FCells.Count - 1 do
-      if (i <> FCurrentCell) and (FCells[i].Group = a) and
-         ( (FCells[i].LogStart.Y + Pos.Y < FCells[i].LogEnd.Y) or
-           ((FCells[i].LogStart.Y + Pos.Y = FCells[i].LogEnd.Y) and
-            (FCells[i].LogStart.X + Pos.X <= FCells[i].LogEnd.X))
-         )
-      then begin
-        Y2 := FCells[i].LogStart.Y + Pos.Y;
-        X2 := Pos.X;
-        if Pos.Y = 0 then
-          X2 := X2 + FCells[i].LogStart.X;
-        if aLineBrkCnt = -1 then begin
-          ViewedTextBuffer.EditLineJoin(Y2);
-          if (CaretPos.y > Y2) then begin
-            dec(CaretPos.y);
-            if (CaretPos.y = Y2) then
-              inc(CaretPos.x, X2 - 1);
+      FEditing := True;
+      CaretPos := CaretObj.LineBytePos;
+      CurCell := FCells[FCurrentCell];
+      a := CurCell.Group;
+      Pos.Y := Pos.Y - CurCell.LogStart.y;
+      if Pos.y = 0
+      then Pos.X := Pos.X - CurCell.LogStart.x
+      else dec(Pos.x);
+      for i := 0 to FCells.Count - 1 do begin
+        if FCells[i].LogStart.Y = FCells[i].LogEnd.Y
+        then x2 := FCells[i].LogStart.X + Pos.X
+        else x2 := 1 + Pos.X;
+        if (i <> FCurrentCell) and (FCells[i].Group = a) and
+           ( (FCells[i].LogStart.Y + Pos.Y < FCells[i].LogEnd.Y) or
+             ( (FCells[i].LogStart.Y + Pos.Y = FCells[i].LogEnd.Y) and
+               (x2 <= FCells[i].LogEnd.X) )
+           )
+        then begin
+          Y2 := FCells[i].LogStart.Y + Pos.Y;
+          X2 := Pos.X;
+          if Pos.Y = 0
+          then X2 := X2 + FCells[i].LogStart.X
+          else inc(X2);
+          if aLineBrkCnt = -1 then begin
+            ViewedTextBuffer.EditLineJoin(Y2);
+            if (CaretPos.y > Y2) then begin
+              dec(CaretPos.y);
+              if (CaretPos.y = Y2) then
+                inc(CaretPos.x, X2 - 1);
+            end;
+          end
+          else if aLineBrkCnt < -1 then begin
+            ViewedTextBuffer.EditLinesDelete(Y2, -aLineBrkCnt);
+            if (CaretPos.y > Y2) then
+              inc(CaretPos.y, aLineBrkCnt);
+          end
+          else if aLineBrkCnt = 1 then begin
+            ViewedTextBuffer.EditLineBreak(X2, Y2);
+            if (CaretPos.y > Y2) then
+              inc(CaretPos.y);
+            if (CaretPos.y = Y2) and (CaretPos.x > X2) then begin
+              inc(CaretPos.y);
+              dec(CaretPos.x, X2 - 1);
+            end;
+          end
+          else if aLineBrkCnt > 1 then begin
+            ViewedTextBuffer.EditLinesInsert(Y2, aLineBrkCnt);
+            if (CaretPos.y > Y2) then
+              inc(CaretPos.y, aLineBrkCnt);
+          end
+          else if aCount < 0 then begin
+            ViewedTextBuffer.EditDelete(X2, Y2, -aCount);
+            if (CaretPos.y = Y2) and (CaretPos.X > X2) then
+              inc(CaretPos.X, aCount);
+          end
+          else if aCount > 0 then begin
+            ViewedTextBuffer.EditInsert(X2, Y2, aText);
+            if (CaretPos.y = Y2) and (CaretPos.X > X2) then
+              inc(CaretPos.X, aCount);
           end;
-        end
-        else if aLineBrkCnt < -1 then begin
-          ViewedTextBuffer.EditLinesDelete(Y2, -aLineBrkCnt);
-          if (CaretPos.y > Y2) then
-            inc(CaretPos.y, aLineBrkCnt);
-        end
-        else if aLineBrkCnt = 1 then begin
-          ViewedTextBuffer.EditLineBreak(X2, Y2);
-          if (CaretPos.y > Y2) then
-            inc(CaretPos.y);
-          if (CaretPos.y = Y2) and (CaretPos.x > X2) then begin
-            inc(CaretPos.y);
-            dec(CaretPos.x, X2 - 1);
-          end;
-        end
-        else if aLineBrkCnt > 1 then begin
-          ViewedTextBuffer.EditLinesInsert(Y2, aLineBrkCnt);
-          if (CaretPos.y > Y2) then
-            inc(CaretPos.y, aLineBrkCnt);
-        end
-        else if aCount < 0 then begin
-          ViewedTextBuffer.EditDelete(X2, Y2, -aCount);
-          if (CaretPos.y = Y2) and (CaretPos.X > X2) then
-            inc(CaretPos.X, aCount);
-        end
-        else if aCount > 0 then begin
-          ViewedTextBuffer.EditInsert(X2, Y2, aText);
-          if (CaretPos.y = Y2) and (CaretPos.X > X2) then
-            inc(CaretPos.X, aCount);
         end;
-      end;
+      end
     finally
       ViewedTextBuffer.EndUpdate;
     end;
