@@ -30,12 +30,6 @@ begin
   FDataLink.OnActiveChange:= @ActiveChange;
 end;
 
-procedure TDBLookupComboBox.Loaded;
-begin
-  inherited Loaded;
-  UpdateLookup;
-end;
-
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
 begin
   FLookup.UpdateData(Text);
@@ -43,15 +37,21 @@ end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
 begin
-  if FDataLink.Active then
-    FLookup.Initialize(FDataLink, Items)
-  else FLookup.Initialize(nil, nil);
-  inherited;
+  if (csLoading in ComponentState) then
+    Exit;
+  FLookup.Initialize(FDataLink, Items);
+  UpdateText;
 end;
 
 procedure TDBLookupComboBox.UpdateText;
 begin
   Text:= FLookup.ListFieldValue;
+end;
+
+procedure TDBLookupComboBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  ActiveChange(Self);
 end;
 
 function TDBLookupComboBox.GetKeyField: string;
@@ -82,46 +82,31 @@ end;
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
-  UpdateLookup;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupComboBox.SetListField(const Value: string);
 begin
   FLookup.ListField:= Value;
-  UpdateLookup;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupComboBox.SetListFieldIndex(const Value: Integer);
 begin
   FLookup.ListFieldIndex:= Value;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupComboBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
-  UpdateLookup;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupComboBox.SetLookupCache(const Value: boolean);
 begin
   FLookup.LookupCache := Value;
+  ActiveChange(Self);
 end;
 
-procedure TDBLookupComboBox.UpdateLookup;
-begin
-  if FDataLink.Active then
-    ActiveChange(Self);
-end;
-
-procedure TDBLookupComboBox.FinalizeWnd;
-begin
-  inherited FinalizeWnd;
-  FLookup.FControlItems := Items;
-end;
-
-procedure TDBLookupComboBox.InitializeWnd;
-begin
-  inherited InitializeWnd;
-  FLookup.FControlItems := Items;
-end;
 

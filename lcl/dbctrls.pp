@@ -136,12 +136,14 @@ Type
     FKeyFieldNames: string;
     FListFieldName: string;
     FListFieldIndex: Integer;
+    FListLinkTmpSetActive: Boolean;
     FLookUpFieldIsCached: Boolean;
     FDataFields: TList;  // Data Fields to lookup/edit
     FKeyFields: TList;   // Keyfields in lookup dataset
     FListField: TField;  // Result field in lookup dataset
     FLookupCache: boolean;
     FLookupList: TLookupList;
+    procedure ActiveChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
     function GetKeyFieldName: string;
@@ -151,6 +153,9 @@ Type
     procedure SetKeyFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -345,11 +350,6 @@ Type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
-    // we need to overrride the write method for db aware.
-    // the Read isn't an issue since the list will be updated
-    // on data change anyway
-    property Items write SetItems;
-
     //same as dbedit need to match the datalink status
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   end;
@@ -370,7 +370,10 @@ Type
     property DragMode;
     property ExtendedSelect;
     property ItemHeight;
-    property Items;
+    // we need to overrride the write method for db aware.
+    // the Read isn't an issue since the list will be updated
+    // on data change anyway
+    property Items write SetItems;
     property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -419,9 +422,7 @@ Type
     procedure SetLookupCache(const Value: boolean);
   protected
     procedure DataChange(Sender: TObject); override;
-    procedure FinalizeWnd; override;
     procedure InitializeWnd; override;
-    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -726,11 +727,8 @@ Type
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
-    procedure UpdateLookup;
   protected
-    procedure FinalizeWnd; override;
     procedure InitializeWnd; override;
-    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure UpdateText; override;
   public

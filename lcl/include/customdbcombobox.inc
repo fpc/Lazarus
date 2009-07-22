@@ -43,12 +43,15 @@ begin
   //need to override this to make sure the datalink gets notified
   //its been modified, then when post etc, it will call
   //updatedata to update the field data with current value
-  if FDatalink.Edit then
-  begin
-    FDataLink.Modified;
+  if FDatalink.Active then
+    if FDatalink.Edit then
+    begin
+      FDataLink.Modified;
+      inherited Change;
+    end else
+      UpdateText
+  else
     inherited Change;
-  end else
-    UpdateText;
 end;
 
 

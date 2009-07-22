@@ -70,8 +70,10 @@ begin
   FListLink:= TFieldDataLink.Create;
   FListLink.DataSource := TDataSource.Create(Self);
   FListLink.Control := Self;
+  FListLink.OnActiveChange := @ActiveChange;
   FListLink.OnEditingChange:=@EditingChange;
   FHasLookUpField:= False;
+  FListLinkTmpSetActive := False;
   FLookupCache := False;
 end;
 
@@ -82,6 +84,14 @@ begin
   FListLink.Free;
   FLookupList.Free;
   inherited Destroy;
+end;
+
+procedure TDBLookup.ActiveChange(Sender: TObject);
+begin
+  if (csDestroying in ComponentState) then
+    Exit;
+  if FListLink.Active and not FListLinkTmpSetActive then
+    Initialize(FControlLink, FControlItems);
 end;
 
 procedure TDBLookup.EditingChange(Sender: TObject);
@@ -114,7 +124,13 @@ end;
 
 procedure TDBLookup.SetListSource(Value: TDataSource);
 begin
+  if FListSource = Value then
+    Exit;
+  if Assigned(FListSource) then
+    FListSource.RemoveFreeNotification(Self);
   FListSource:= Value;
+  if Assigned(FListSource) then
+    FListSource.FreeNotification(Self);
 end;
 
 procedure TDBLookup.SetLookupCache(const Value: boolean);
@@ -124,14 +140,34 @@ begin
     FLookupList := TLookupList.Create;
 end;
 
+procedure TDBLookup.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) then
+    if (AComponent = FListSource) then
+      FListSource:= nil;
+end;
+
 procedure TDBLookup.LinkGetBookMark;
 begin
-  FLinkBookMark := FListLink.DataSet.GetBookmark;
-  FListLink.DataSet.DisableControls;
+  FListLinkTmpSetActive := not FListLink.DataSet.Active;
+  if FListLinkTmpSetActive then
+    FListLink.DataSet.Active := True
+  else
+  begin
+    FLinkBookMark := FListLink.DataSet.GetBookmark;
+    FListLink.DataSet.DisableControls;
+  end;
 end;
 
 procedure TDBLookup.LinkGotoBookMark;
 begin
+  if FListLinkTmpSetActive then
+  begin
+    FListLink.DataSet.Active := False;
+    FListLinkTmpSetActive := False;
+  end
+  else
   try
     FListLink.DataSet.GotoBookmark(FLinkBookMark);
     FListLink.DataSet.FreeBookmark(FLinkBookMark);
@@ -141,19 +177,13 @@ begin
 end;
 
 procedure TDBLookup.FetchLookupData;
-var
-  TmpActive: Boolean;
 begin
   if not Assigned(FControlItems) then
     Exit;
   FControlItems.Clear;
   if not (Assigned(FListLink.DataSet) and Assigned(FListField)) then
     Exit;
-  TmpActive := FListLink.DataSet.Active;
-  if TmpActive then
-    LinkGetBookMark
-  else
-    FListLink.DataSet.Active := True;
+  LinkGetBookMark;
   try
     if FLookupCache then
       FLookupList.Clear;
@@ -167,79 +197,93 @@ begin
       FListLink.DataSet.Next;
     end;
   finally
-    if TmpActive then
-      LinkGotoBookMark
-    else
-      FListLink.DataSet.Active := False;
+    LinkGotoBookMark;
   end;
 end;
 
 procedure TDBLookup.Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
 var
   ListFields: TList;
-  TmpActive: Boolean;
   S: string;
 begin
   FDataFields.Clear;
   FKeyFields.Clear;
   FListField := nil;
-  if not (Assigned(AControlDataLink) and Assigned(AControlItems)) then
-    Exit; // Closing or our DataLink is Active but not the Control's DataLink
-  FControlLink:= AControlDataLink;
-  FControlItems:= AControlItems;
-  if not Assigned(AControlDataLink.Field) then
-  // should be but (sometimes) not (bug?)
+  FHasLookUpField := False;
+  FLookUpFieldIsCached := False;
+  FControlItems := AControlItems;
+  FControlLink := AControlDataLink;
+  if Assigned(FControlLink) and Assigned(FControlLink.DataSet)
+    and FControlLink.DataSet.Active then
   begin
-    S:= AControlDataLink.FieldName;
-    AControlDataLink.FieldName:= '';
-    AControlDataLink.FieldName:= S;
-  end;
-  if not Assigned(AControlDataLink.Field) then
-    Exit;
-  FHasLookUpField := (AControlDataLink.Field.FieldKind = fkLookup);
-  FLookUpFieldIsCached := (FHasLookupField and AControlDataLink.Field.LookupCache);
-  if FHasLookUpField then
-  begin
-    FListLink.DataSource.DataSet:= AControlDataLink.Field.LookupDataSet;
-    FDataFieldNames := AControlDataLink.Field.KeyFields;
-    FKeyFieldNames := AControlDataLink.Field.LookupKeyFields;
-  end
-  else
-  if FListSource<>nil then begin
-    FListLink.DataSource.DataSet := FListSource.DataSet;
-    FDataFieldNames := AControlDataLink.Field.FieldName;
-  end else
-    FListLink.Datasource.DataSet := nil;
-
-  if (FKeyFieldNames <> '') and (FListLink.Dataset<>nil) then
-  begin
-    ListFields := TList.Create;
-    TmpActive := FListLink.DataSet.Active;
-    try
-      AControlDataLink.DataSet.GetFieldList(FDataFields, FDataFieldNames);
-      FListLink.DataSet.Active := True;
-      FListLink.DataSet.GetFieldList(ListFields, FListFieldName);
-      FListLink.DataSet.GetFieldList(FKeyFields, FKeyFieldNames);
+    if not Assigned(FControlLink.Field) then
+    // should be but (sometimes) not (bug?)
+    begin
+      S:= FControlLink.FieldName;
+      FControlLink.FieldName:= '';
+      FControlLink.FieldName:= S;
+    end;
+    if Assigned(FControlLink.Field) then
+    begin
+      FHasLookUpField := (FControlLink.Field.FieldKind = fkLookup);
+      FLookUpFieldIsCached := (FHasLookupField and FControlLink.Field.LookupCache);
       if FHasLookUpField then
       begin
-        FListField := FListLink.DataSet.FindField(AControlDataLink.Field.LookupResultField);
-        if (Assigned(FListField) and (ListFields.IndexOf(FListField) < 0)) then
-          ListFields.Insert(0, FListField);
-        if (ListFields.Count > 0) then
-          FListField := TField(ListFields[0]);
+        if (FListLink.DataSource.DataSet <> FControlLink.Field.LookupDataSet) then
+          FListLink.DataSource.DataSet:= FControlLink.Field.LookupDataSet;
+        FDataFieldNames := FControlLink.Field.KeyFields;
+        FKeyFieldNames := FControlLink.Field.LookupKeyFields;
       end else
+        FDataFieldNames := FControlLink.Field.FieldName;
+      FControlLink.DataSet.GetFieldList(FDataFields, FDataFieldNames);
+    end;
+  end;
+  if not FHasLookUpField then
+    if Assigned(FListSource) then
+    begin
+      if (FListLink.DataSource.DataSet <> FListSource.DataSet) then
+        FListLink.DataSource.DataSet := FListSource.DataSet;
+    end
+    else
+      FListLink.Datasource.DataSet := nil;
+
+  if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) then
+  begin
+    ListFields := TList.Create;
+    FListLinkTmpSetActive := not FListLink.DataSet.Active;
+    try
+      if FListLinkTmpSetActive then
+        FListLink.DataSet.Open;
+      if FListLink.DataSet.Active then
       begin
-        if ((FKeyFields.Count > 0) and (ListFields.Count = 0)) then
-          ListFields.Add(FKeyFields[0]);
-        if ((FListFieldIndex >= 0) and (FListFieldIndex < ListFields.Count)) then
-          FListField := TField(ListFields[FListFieldIndex]) else
-          FListField := TField(ListFields[0]);
+        FListLink.DataSet.GetFieldList(ListFields, FListFieldName);
+        FListLink.DataSet.GetFieldList(FKeyFields, FKeyFieldNames);
+        if FHasLookUpField then
+        begin
+          FListField := FListLink.DataSet.FindField(AControlDataLink.Field.LookupResultField);
+          if (Assigned(FListField) and (ListFields.IndexOf(FListField) < 0)) then
+            ListFields.Insert(0, FListField);
+          if (ListFields.Count > 0) then
+            FListField := TField(ListFields[0]);
+        end else
+        begin
+          if ((FKeyFields.Count > 0) and (ListFields.Count = 0)) then
+            ListFields.Add(FKeyFields[0]);
+          if ((FListFieldIndex > -1) and (FListFieldIndex < ListFields.Count)) then
+            FListField := TField(ListFields[FListFieldIndex])
+          else
+            FListField := TField(ListFields[0]);
+        end;
+        if Assigned(FListField) then
+          FListLink.FieldName:= FListField.FieldName;
       end;
-      if Assigned(FListField) then
-        FListLink.FieldName:= FListField.FieldName;
     finally
       ListFields.Free;
-      FListLink.DataSet.Active := TmpActive;
+      if FListLinkTmpSetActive then
+      begin
+        FListLink.DataSet.Active := False;
+        FListLinkTmpSetActive := False;
+      end;
     end;
     FetchLookupData;
   end;
@@ -248,10 +292,10 @@ end;
 function TDBLookup.ListFieldValue: string;
 var
   Key: Variant;
-  TmpActive: Boolean;
 begin
   Result := '';
-  if not ((Assigned(FControlLink) and assigned(FListField) and FControlLink.Active)) then
+  if not (Assigned(FControlLink) and (FDataFieldNames<>'') and
+          Assigned(FListField) and FControlLink.Active) then
     Exit;
   Key := FControlLink.DataSet.FieldValues[FDataFieldNames];
   if FHasLookupField then
@@ -267,21 +311,14 @@ begin
     Result := FLookupList.ValueOfKey(Key);
     Exit;
   end;
-  TmpActive := FListLink.DataSet.Active;
-  if TmpActive then
-    LinkGetBookMark
-  else
-    FListLink.DataSet.Active := True;
+  LinkGetBookMark;
   try
     if FListLink.DataSet.Locate(FKeyFieldNames,
       FControlLink.DataSet.FieldValues[FDataFieldNames], []) then
       Result := FListField.AsString
     else Result:= '';
   finally
-    if TmpActive then
-      LinkGotoBookMark
-    else
-      FListLink.DataSet.Active := False;
+    LinkGotoBookMark;
   end;
 end;
 
@@ -292,7 +329,6 @@ end;
 {$ELSE}
 var
   I: Integer;
-  TmpActive: Boolean;
   Key: Variant;
 begin
   if AListFieldValue = FControlLink.Field.AsString then
@@ -312,11 +348,7 @@ begin
   end;
   if not (Assigned(FListLink.DataSet) and Assigned(FListField)) then
     Exit;
-  TmpActive := FListLink.DataSet.Active;
-  if TmpActive then
-    LinkGetBookMark
-  else
-    FListLink.DataSet.Active := True;
+  LinkGetBookMark;
   try
     if FListLink.DataSet.Locate(FListField.FieldName, VarArrayOf([AListFieldValue]), []) then
     begin
@@ -327,10 +359,7 @@ begin
         FControlLink.Field.AsString := AListFieldValue;
     end;
   finally
-    if TmpActive then
-      LinkGotoBookMark
-    else
-      FListLink.DataSet.Active := False;
+    LinkGotoBookMark;
   end;
 end;
 {$ENDIF}

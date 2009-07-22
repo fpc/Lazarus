@@ -29,14 +29,6 @@ begin
   FDataLink.OnActiveChange:= @ActiveChange;
 end;
 
-
-procedure TDBLookupListBox.Loaded;
-begin
-  inherited Loaded;
-  if FDataLink.Active then
-    ActiveChange(Self);
-end;
-
 procedure TDBLookupListBox.UpdateData(Sender: TObject);
 begin
   if (ItemIndex < 0) then
@@ -46,12 +38,10 @@ end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
-  if FDataLink.Active then
-  begin
-    FLookup.Initialize(FDataLink, Items);
-    DataChange(Self);
-  end
-  else FLookup.Initialize(nil,nil);
+  if (csLoading in ComponentState) then
+    Exit;
+  FLookup.Initialize(FDataLink, Items);
+  DataChange(Self);
 end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
@@ -59,16 +49,10 @@ begin
   ItemIndex:= Items.IndexOf(FLookup.ListFieldValue);
 end;
 
-procedure TDBLookupListBox.FinalizeWnd;
-begin
-  inherited FinalizeWnd;
-  FLookup.FControlItems := Items;
-end;
-
 procedure TDBLookupListBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  FLookup.FControlItems := Items;
+  ActiveChange(Self);
 end;
 
 function TDBLookupListBox.GetKeyField: string;
@@ -99,25 +83,30 @@ end;
 procedure TDBLookupListBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupListBox.SetListField(const Value: string);
 begin
   FLookup.ListField:= Value;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupListBox.SetListFieldIndex(const Value: Integer);
 begin
   FLookup.ListFieldIndex:= Value;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupListBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
+  ActiveChange(Self);
 end;
 
 procedure TDBLookupListBox.SetLookupCache(const Value: boolean);
 begin
   FLookup.LookupCache := Value;
+  ActiveChange(Self);
 end;
 
