@@ -791,6 +791,7 @@ var
   CurCell: TSynPluginSyncronizedEditCell;
   Y2, X2: Integer;
   chg: Boolean;
+  edit: Boolean;
   CaretPos: TPoint;
 begin
   if (not Active) or (FCells.Count = 0) then exit;
@@ -799,6 +800,9 @@ begin
   if (not (FEditing or IsUndoing or IsRedoing)) then
     DoBeforeEdit(Pos.x, Pos.y);
 
+  // Todo: need do add undo info (start/stop flag),
+  // so we know which group (if any) this applies to
+  edit := FEditing or  IsUndoing or IsRedoing;
   for i := 0 to FCells.Count - 1 do begin
     CurCell := Cells[i];
     chg := False;
@@ -806,7 +810,7 @@ begin
     if (a > 0) then
       CurCell.LogStart := AdjustPoint(CurCell.LogStart, chg);
     a := CompareCarets(Pos, CurCell.LogEnd);
-    if (a > 0) or ((a = 0) and ((i = FCurrentCell) or FEditing)) then
+    if (a > 0) or ((a = 0) and ((i = FCurrentCell) or edit)) then
       CurCell.LogEnd := AdjustPoint(CurCell.LogEnd, chg);
     if chg then
       Cells[i] := CurCell;
