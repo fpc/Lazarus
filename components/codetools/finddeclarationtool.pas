@@ -7031,7 +7031,7 @@ begin
         RaiseExceptionFmt(ctsIncompatibleTypesGotExpected,
                           ['char',ExpressionTypeDescNames[RightOperand.Desc]]);
       end;
-    end else if (Src[BinaryOperator.StartPos]='+')
+    end else if (Src[BinaryOperator.StartPos] in ['+','-','*'])
     and (LeftOperand.Desc=xtContext)
     and (LeftOperand.Context.Node<>nil)
     and (LeftOperand.Context.Node.Desc=ctnSetType)
