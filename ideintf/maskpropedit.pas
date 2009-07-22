@@ -233,7 +233,6 @@ Function TMaskEditorForm.ConstructEditmask : String;
 Var
   S : String;
   B : Char;
-  P : Integer;
   L : Boolean;
 
 begin
