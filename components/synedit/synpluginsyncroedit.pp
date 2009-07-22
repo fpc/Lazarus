@@ -28,7 +28,7 @@ interface
 uses
   Classes, Controls, SysUtils, math, LCLProc, Forms, Graphics, SynEditMiscClasses,
   LCLType, SynEdit, SynPluginSyncronizedEditBase, SynEditTextBase, SynEditMiscProcs,
-  SynEditMouseCmds, SynEditKeyCmds;
+  SynEditMouseCmds, SynEditKeyCmds, SynEditTypes;
 
 type
 
@@ -1014,7 +1014,7 @@ end;
 procedure TSynPluginSyncroEdit.DoSelectionChanged(Sender: TObject);
 begin
   if FMode = spseEditing then exit;
-  If not SelectionObj.SelAvail then begin
+  If (not SelectionObj.SelAvail) or (SelectionObj.ActiveSelectionMode = smColumn) then begin
     FLastSelStart := Point(-1,-1);
     FLastSelEnd := Point(-1,-1);
     FWordIndex.Clear;
@@ -1064,7 +1064,7 @@ var
 var
   i, j: Integer;
 begin
-  Repeat
+  while (FCallQueued) and (FMode = spseSelecting) do begin
     FCallQueued := False;
     FWordScanCount := 0;
 
@@ -1124,9 +1124,11 @@ begin
       FCallQueued := True;
       Application.ProcessMessages;
     end;
-  until not FCallQueued;
-  if FEditModeQueued then
+  end;
+  FCallQueued := False;
+  if FEditModeQueued and (FMode = spseSelecting) then
     StartSyncroMode;
+  FEditModeQueued := False;
 end;
 
 procedure TSynPluginSyncroEdit.DoOnDeactivate;
