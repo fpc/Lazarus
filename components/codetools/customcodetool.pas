@@ -2392,13 +2392,12 @@ begin
   if ACleanPos>=1 then begin
     if ACleanPos<=SrcLen then begin
       // search line start
-      ALineStart:=ACleanPos-1;
-      while (ALineStart>=1) and (not (Src[ALineStart] in [#10,#13])) do
+      ALineStart:=ACleanPos;
+      while (ALineStart>1) and (not (Src[ALineStart-1] in [#10,#13])) do
         dec(ALineStart);
-      inc(ALineStart);
       // search line end
       ALineEnd:=ACleanPos;
-      while (ALineEnd>=1) and (not (Src[ALineEnd] in [#10,#13])) do
+      while (ALineEnd<=SrcLen) and (not (Src[ALineEnd] in [#10,#13])) do
         inc(ALineEnd);
       // search first atom in line
       MoveCursorToCleanPos(ALineStart);
