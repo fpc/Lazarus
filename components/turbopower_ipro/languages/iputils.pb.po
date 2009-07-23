@@ -9,11 +9,11 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
-#: idetemplateproject.snewfromtemplate
-msgid "New project from template"
-msgstr "Novo projeto do modelo"
+#: iputils.slongversion
+msgid "Version %.2f"
+msgstr "Versão %.2f"
 
-#: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
-msgstr "Opções de modelos de projeto"
+#: iputils.sshortversion
+msgid "v%.2f"
+msgstr "v%.2f"
 

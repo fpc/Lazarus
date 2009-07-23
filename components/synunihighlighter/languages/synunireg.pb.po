@@ -9,11 +9,7 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
-#: idetemplateproject.snewfromtemplate
-msgid "New project from template"
-msgstr "Novo projeto do modelo"
-
-#: idetemplateproject.sprojecttemplatesettings
-msgid "Project templates options"
-msgstr "Opções de modelos de projeto"
+#: synunireg.sedituni
+msgid "Edit..."
+msgstr "Editar..."
 

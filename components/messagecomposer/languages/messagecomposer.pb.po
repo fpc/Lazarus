@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: messagecomposer.rsok
+msgid "Ok"
+msgstr "Ok"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Testar"
+
+#: messagecomposer.skindofmessage
+msgid "KIND OF MESSAGE"
+msgstr "NATUREZA DA MENSAGEM"
+
+#: messagecomposer.smaskinput
+msgid "Mask Input"
+msgstr "Entrar máscara"
+
+#: messagecomposer.smessagecomposercaption
+msgid "Message Composer ..."
+msgstr "Compositor Mensagens ..."
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "A mensagem à ser mostrada"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not Implemented Yet"
+msgstr "Não Implementado Ainda"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Texto solicitando digitação do usuário"
+
+#: messagecomposer.ssourcewrapper
+#, fuzzy
+msgid "SOURCE WRAPPER"
+msgstr "INVÓLUCRO FONTE"
+

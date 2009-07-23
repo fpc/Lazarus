@@ -1,3 +1,73 @@
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2009-07-18 16:57-0300\n"
+"Project-Id-Version: mainunit\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"X-Generator: KBabel 1.11.4\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"POT-Creation-Date: \n"
+
+#
+msgid "Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.4"
+msgstr "LazConverter arquivos de código de página PAS, LFM, LRS e INC v0.0.4"
+
+#
+msgid "Path to your project:"
+msgstr "Caminho para seu projeto:"
+
+#
+msgid "Path"
+msgstr "Caminho"
+
+#
+msgid "Convert From:"
+msgstr "Converter de:"
+
+#
+msgid "Convert To:"
+msgstr "Converter para:"
+
+#
+msgid "Include subdirectories"
+msgstr "Subdiretórios inclusões"
+
+#
+msgid "Search"
+msgstr "Localizar"
+
+#
+msgid "Convert"
+msgstr "Converter"
+
+#
+msgid "Directory:"
+msgstr "Diretório:"
+
+#
+msgid "Ready..."
+msgstr "Pronto..."
+
+#
+msgid "Remove from conversion"
+msgstr "Remover da conversão"
+
+#
+msgid "View"
+msgstr "Mostrar"
+
+#
+msgid "View File"
+msgstr "Mostrar arquivo"
+
+#
+msgid "-"
+msgstr "-"
+
+#
+msgid "Remove From Conversion"
+msgstr "Remover da conversão"
 

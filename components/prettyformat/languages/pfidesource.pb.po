@@ -3,16 +3,21 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
 
 #: pfidesource.sdescrformatting
 msgid "Formatting commands"
-msgstr "Comandos de FormataÃ§Ã£o"
+msgstr "Comandos formatação"
 
 #: pfidesource.sdescrpffile
 msgid "Pretty-Format File"
-msgstr "Arquivo Pretty-Format"
+msgstr "Arquivo Formatação Elegante"
 
 #: pfidesource.sdescrpfselection
 msgid "Pretty-Format Selection"
-msgstr "SeleÃ§Ã£o Pretty-Format"
+msgstr "Seleção Formatação Elegante"
 
