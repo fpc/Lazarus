@@ -1,82 +1,85 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     LConv
   ====================================================================
 -->
-
-<module name="LConvEnconding">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CPConvert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CPConvert.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CPConvert.s">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CPConvert.from">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CPConvert.toC">
-<short></short>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GetDefaultCodepage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GetDefaultCodepage.Result">
-<short></short>
-</element>
-</module> <!-- LConv -->
-</package>
+    <module name="LConvEnconding">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CPConvert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CPConvert.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CPConvert.s">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CPConvert.from">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CPConvert.toC">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetDefaultCodepage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetDefaultCodepage.Result">
+        <short/>
+      </element>
+      <element name="GuessEncoding">
+        <short>Guess character encoding of a string.</short>
+        <descr>The returned encoding can be used with other functions of this unit. GuessEncoding uses some heuristics to find out a good encoding. For example it checks for magic numbers like utf BOM. Next it checks if it could be UTF-8. Finally it returns the system encoding.
+This function can be used to find the encoding of text files.</descr>
+      </element>
+      <element name="ConvertEncoding">
+        <short>Converts the character encoding of a string</short>
+        <descr>ConvertEncoding uses for the basic encodings the built in functions.
+For other encodings it uses the functions of the operating system. For example iconv under Linux.</descr>
+      </element>
+      <element name="GetDefaultTextEncoding">
+        <short>Returns the common text encoding of the current operating system.</short>
+        <descr>At the moment it gives:
+Under Windows it returns the windows codepage.
+Under Darwin (Mac OS X) it returns UTF-8.
+Under all other Unix (e.g. Linux, BSD, Solaris) it uses the environment variables LC_LANG, LC_MESSAGE, and LANG. This is nowadays typically UTF-8.</descr>
+      </element>
+      <element name="NormalizeEncoding">
+        <short>Trims, shorten and lower case the given encoding</short>
+      </element>
+      <element name="GetSupportedEncodings">
+        <short>Fills the list with all basic encodings</short>
+        <descr>It does not add all encodings that are supported by the operating system. For example iconv under Linux supports hundreds of encodings.</descr>
+      </element>
+    </module>
+    <!-- LConv -->
+  </package>
 </fpdoc-descriptions>
