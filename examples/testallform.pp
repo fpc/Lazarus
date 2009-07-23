@@ -143,6 +143,7 @@ type
       procedure EventOnDblClick(Sender : TObject);
       procedure EventOnKeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
       procedure EventOnKeyUp(Sender : TObject; var Key : Word; Shift : TShiftState);
+    private
 //+++++++++++++ TApplication ++++++++++++++++++++++++++
       lblExeName : TLabel;
       rdbOk,rdbOkCancel,rdbAbortRetryIgnore,rdbYesNoCancel,rdbYesNo,rdbRetryCancel : TRadioButton;
@@ -150,10 +151,12 @@ type
       FBoxStyle  : Integer;
       procedure BoxStyle(Sender : TObject);
       procedure ShowBox(Sender : TObject);
-//+++++++++++++ TBevel ++++++++++++++++++++++++++++++++ 
+    private
+//+++++++++++++ TBevel ++++++++++++++++++++++++++++++++
       chbBevelStyle,
       chbBevelShape : TRadiogroup;
       procedure BevelSettings(Sender : TObject);
+    private
 //+++++++++++++ TButton +++++++++++++++++++++++++++++++
       LCount      : Integer;
       btnCLRLotto : TBitBtn;
@@ -161,12 +164,14 @@ type
       procedure LottoClear(Sender : TObject);
       procedure Button1Click(Sender : TObject);
       procedure ButtonTag(Sender : Integer);
+    private
 //+++++++++++++ TBitBtn +++++++++++++++++++++++++++++++
       cbbKind, cbbAlign : TComboBox;
       btnGlyph : TBitBtn; 
       procedure KindComboChange(Sender : TObject); 
       procedure AlignComboChange(Sender : TObject);
       procedure LoadGlyph(Sender : TObject);
+    private
 //+++++++++++++ TCanvas +++++++++++++++++++++++++++++++
       FPaint : Boolean;
       Start1, Start2 : Integer;
@@ -178,17 +183,20 @@ type
       procedure DrawRect(X1,Y1,X2,Y2 : Integer);
       procedure ClearCanvas(Sender : TObject);
       procedure GradCanvas(Sender : TObject);
+    private
 //+++++++++++++ TCheckBox +++++++++++++++++++++++++++++
       lblPick, lblCount : TLabel;
       RandCH, CHCount : Integer;
       btnAgain : TBitBtn;
       procedure CheckClick(Sender : TObject);
       procedure AgainClick(Sender : Tobject);
+    private
 //+++++++++++++ TColorDialog ++++++++++++++++++++++++++
       btnColorSelect : TBitBtn;
       lblColorInt : TLabel;
       procedure ColorSelect(Sender : TObject);
       procedure SelectedColor(Sender : TObject);
+    private
 //+++++++++++++ TComboBox +++++++++++++++++++++++++++++
       btnCbbAdd : TButton; 
       btnCbbRemove, btnMoveTo : TBitBtn;
@@ -198,26 +206,31 @@ type
       procedure AddToCbb(Sender : TObject);
       procedure RemoveCbb(Sender : TObject);
       procedure MoveToCbb(Sender : TObject);
+    private
 //+++++++++++++ TForm +++++++++++++++++++++++++++++++++
       lblWidth, lblHeight, lblCWidth, lblCHeight : TLabel;
       cbbBorder, cbbPosition : TComboBox;
       btnKeyDown : TBitBtn;
       procedure FormBorder(Sender : TObject);
       procedure FormPosition(Sender : TObject);
+    private
 //+++++++++++++ TFontDialog +++++++++++++++++++++++++++
       lblWhatFont: TLabel;
     //blFontSize: TLabel;
     //lblFontStyle : TLabel;
       btnShowFont : TBitBtn;
       procedure SelectFont(Sender : TObject);
+    private
 //+++++++++++++ TIniFile ++++++++++++++++++++++++++++++
       edtString, edtFloat, edtInteger, edtDate, edtTime : TEdit;
       lblString, lblFloat, lblInteger, lblDate, lblTime : TLabel;
       btnUpdate : TBitBtn;
       procedure IniUpdate(Sender : TObject);
+    private
 //+++++++++++++ TLabel ++++++++++++++++++++++++++++++++
       cbbAlignment : TComboBox;
       procedure SelectAlignment(Sender : TObject);
+    private
 //+++++++++++++ TListBox ++++++++++++++++++++++++++++++
       btnRight, btnLeft, btnAdd, btnCopyToMem, btnSaveFile : TBitBtn;
       memAddTo : TMemo;
@@ -226,14 +239,16 @@ type
       procedure ListBoxMove(Sender : TObject);
       procedure CopyToMem(Sender : TObject);
       procedure SaveFile(Sender : TObject);
+    private
 //+++++++++++++ TMemo +++++++++++++++++++++++++++++++++
+      btnNew, btnSave, btnOpen : TBitBtn;
       procedure NewMemo(Sender : TObject);
       procedure SaveMemoAs(Sender : TObject);
       procedure OpenMemo(Sender : TObject);
-      btnNew, btnSave, btnOpen : TBitBtn;
 //+++++++++++++ TOpenDialog +++++++++++++++++++++++++++
 
-//+++++++++++++ TPaintBox +++++++++++++++++++++++++++++ 
+    private
+//+++++++++++++ TPaintBox +++++++++++++++++++++++++++++
       pntCount : integer;
 //+++++++++++++ TPanel ++++++++++++++++++++++++++++++++ 
       Panel2         : TPanel;
@@ -245,6 +260,7 @@ type
       procedure PanelOutBevelClick(Sender: TObject);
       procedure PanelAlignClick(Sender: TObject);
       procedure PanelNormClick(Sender:TObject);
+    private
 //+++++++++++++ TProgressBar ++++++++++++++++++++++++++
       chbProgText, chbProgDirect, chbProgOrient, chbProgEnable, chbSmooth : TCheckBox;
       ProgTime : TTimer;
@@ -252,6 +268,7 @@ type
       procedure UpdateProgressBar(Sender : TObject);
 //+++++++++++++ TRadioGroup +++++++++++++++++++++++++++
       procedure RadioGroupClick(Sender : TObject);
+    private
 //+++++++++++++ TScreen +++++++++++++++++++++++++++++++
       lblScreenWidth, lblScreenHeight, lblPixels, lblFormCount : TLabel;
 //+++++++++++++ TSpeedButton ++++++++++++++++++++++++++
@@ -265,6 +282,7 @@ type
       FTrack : Boolean;
       procedure Timer1OnTimer(Sender : TObject);
       procedure TimeTrack(Sender : TObject);
+    private
 //+++++++++++++ TToggleBox ++++++++++++++++++++++++++++
       lblChecked, lblState : TLabel;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -283,6 +301,7 @@ type
       procedure ApplicationIdle(Sender : TObject; var Done : Boolean);
       procedure VirOnEnter(Sender: TObject); 
       procedure VirOnLeave(Sender: TObject); 
+   protected
 //+++++++++++++ About +++++++++++++++++++++++++++++++++
       lblAbout, lblAuthor : TMemo;
       gbAbout : TGroupBox;
@@ -290,9 +309,9 @@ type
       procedure CloseAbout(Sender : TObject);
       procedure Notification(AComponent: TComponent; Operation : TOperation);override;
    public
-      procedure EventWatch;
       lbEvents: TListBox;
       FLeft : Integer;
+      procedure EventWatch;
       Constructor Create(AOwner: TComponent); override;
       Destructor Destroy; override;
    end;
