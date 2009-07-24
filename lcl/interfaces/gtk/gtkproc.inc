@@ -3470,8 +3470,8 @@ function GTKEventStateToShiftState(KeyState: Word): TShiftState;
   function GetState: TShiftState;
   begin
     Result := [];
-    if GetKeyState(VK_ALT) < 0 then Include(Result, ssAlt);
-    if GetKeyState(VK_WIN) < 0 then Include(Result, ssMeta);
+    if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
+    if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
   end;
   {$else}
   function GetState: TShiftState;

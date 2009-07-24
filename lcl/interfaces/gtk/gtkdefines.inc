@@ -36,13 +36,6 @@
 {$define RawimageConsistencyChecks}
 
 (*
- GTK or GNOME has problems reporting ssAlt and ssAltGr when different
- keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
- ourself
-*)
-{$define UseOwnShiftState}
-
-(*
  keep track of keystates instead of using OS
  This is the old mode and might be removed
 *)
@@ -88,6 +81,14 @@
   {$define GTK_2_10}
 {$endif}
 
+{$ifdef HasX}
+  (*
+   GTK or GNOME has problems reporting ssAlt and ssAltGr when different
+   keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
+   ourself
+  *)
+  {$define UseOwnShiftState}
+{$endif}
 
 {$IFDEF Gtk2}
 // see http://bugs.freepascal.org/view.php?id=12145. 
