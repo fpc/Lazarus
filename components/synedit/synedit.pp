@@ -1543,7 +1543,7 @@ begin
   TSynEditStringList(FLines).UndoList := fUndoList;
   TSynEditStringList(FLines).RedoList := fRedoList;
 
-  FBlockSelection := TSynEditSelection.Create(FTheLinesView);
+  FBlockSelection := TSynEditSelection.Create(FTheLinesView, True);
   FBlockSelection.Caret := FCaret;
   FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -2300,11 +2300,6 @@ begin
   Exclude(fStateFlags, sfLinesChanging);
   if HandleAllocated then begin
     UpdateScrollBars;
-    if not FTrimmedLinesView.IsTrimming then
-      SetBlockBegin(PhysicalToLogicalPos(CaretXY))
-    else
-      if not(eoScrollPastEol in Options) then
-        FBlockSelection.AdjustAfterTrimming;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLn(['TCustomSynEdit.LinesChanged ',dbgs(fInvalidateRect)]);
     {$ENDIF}

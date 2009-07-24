@@ -74,6 +74,8 @@ type
     fUndoList: TSynEditUndoList;
     FInvalidateLinesMethod: TInvalidateLines;
     FEnabled: Boolean;
+    FHookedLines: Boolean;
+    FIsSettingText: Boolean;
     FActiveSelectionMode: TSynSelectionMode;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
@@ -95,9 +97,13 @@ type
     function  GetSelText: string;
     procedure SetSelText(const Value: string);
     procedure DoCaretChanged(Sender: TObject);
+  protected
+    Procedure LineChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+                            aLineBrkCnt: Integer; aText: String);
   public
-    constructor Create(ALines: TSynEditStrings);
-    //destructor Destroy; override;
+    constructor Create(ALines: TSynEditStrings; aActOnLineChanges: Boolean);
+    destructor Destroy; override;
     procedure AdjustAfterTrimming; // TODO: Move into TrimView
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar);
     function  SelAvail: Boolean;
@@ -432,7 +438,7 @@ end;
 
 { TSynEditSelection }
 
-constructor TSynEditSelection.Create(ALines : TSynEditStrings);
+constructor TSynEditSelection.Create(ALines : TSynEditStrings; aActOnLineChanges: Boolean);
 begin
   Inherited Create(ALines);
   FActiveSelectionMode := smNormal;
@@ -441,6 +447,21 @@ begin
   FEndLinePos := 1;
   FEndBytePos := 1;
   FEnabled := True;
+  FHookedLines := aActOnLineChanges;
+  FIsSettingText := False;
+  if FHookedLines then begin
+    FLines.AddEditHandler(@DoLinesEdited);
+    FLines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineChanged);
+  end;
+end;
+
+destructor TSynEditSelection.Destroy;
+begin
+  if FHookedLines then begin
+    FLines.RemoveEditHandler(@DoLinesEdited);
+    FLines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineChanged);
+  end;
+  inherited Destroy;
 end;
 
 procedure TSynEditSelection.AdjustAfterTrimming;
@@ -636,6 +657,19 @@ begin
   if (not FCaret.IsAtLineChar(StartLineBytePos))
      and not(SelAvail or SelCanContinue(FCaret))
   then
+    StartLineBytePos := FCaret.LineBytePos;
+end;
+
+procedure TSynEditSelection.LineChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+begin
+  if (FCaret <> nil) and (not FCaret.AllowPastEOL) and (not FIsSettingText) then
+    AdjustAfterTrimming;
+end;
+
+procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+  aLineBrkCnt: Integer; aText: String);
+begin
+  if (FCaret <> nil) and not FIsSettingText then
     StartLineBytePos := FCaret.LineBytePos;
 end;
 
@@ -860,6 +894,7 @@ var
   end;
 
 begin
+  FIsSettingText := True;
   FLines.BeginUpdate;
   FCaret.Lock;
   try
@@ -880,6 +915,7 @@ begin
   finally
     FCaret.Unlock;
     FLines.EndUpdate; // May reset Block Begin
+    FIsSettingText := False;
   end;
 end;
 
@@ -905,7 +941,7 @@ var
 begin
   Value.y := MinMax(Value.y, 1, fLines.Count);
   Line := Lines[Value.y - 1];
-  if FCaret.AllowPastEOL then
+  if (FCaret <> nil) and FCaret.AllowPastEOL then
     Value.x := Max(Value.x, 1)
   else
     Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
@@ -954,7 +990,7 @@ begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
     Line := Lines[Value.y - 1];
-    if FCaret.AllowPastEOL then
+    if (FCaret <> nil) and FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
     else
       Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
