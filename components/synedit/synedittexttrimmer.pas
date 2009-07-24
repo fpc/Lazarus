@@ -53,12 +53,13 @@ type
     FLineEdited: Boolean;
     procedure DoCaretChanged(Sender : TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure DoLinesChanged(Index, N: integer);
     procedure SetEnabled(const AValue : Boolean);
     procedure SetTrimType(const AValue: TSynEditStringTrimmingType);
     function  TrimLine(const S : String; Index: Integer; RealUndo: Boolean = False) : String;
     procedure StoreSpacesForLine(const Index: Integer; const SpaceStr, LineStr: String);
     function  Spaces(Index: Integer) : String;
-    procedure DoLinesChanged(Index, N: integer);
     procedure TrimAfterLock;
     procedure EditInsertTrim(LogX, LogY: Integer; AText: String);
     function  EditDeleteTrim(LogX, LogY, ByteLen: Integer): String;
@@ -325,13 +326,13 @@ begin
   FLineEdited := False;
   FTrimType := settLeaveLine;
   Inherited Create(ASynStringSource);
-  fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
 begin
-  fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(fLockList);
@@ -394,6 +395,34 @@ begin
   FLineEdited := true;
   if fLockCount = 0 then
     DoCaretChanged(fCaret);
+end;
+
+procedure TSynEditStringTrimmingList.LineCountChanged(Sender: TSynEditStrings;
+  AIndex, ACount: Integer);
+begin
+  DoLinesChanged(AIndex, ACount);
+  LinesChanged(Sender, AIndex, ACount);
+end;
+
+procedure TSynEditStringTrimmingList.DoLinesChanged(Index, N : integer);
+var
+  i, j: Integer;
+begin
+  if (not fEnabled) then exit;
+  if  fLockCount > 0 then begin
+    for i := fLockList.Count-1 downto 0 do begin
+      j := Integer(Pointer(fLockList.Objects[i]));
+      if (j >= Index) and (j < Index - N) then
+        fLockList.Delete(i)
+      else if j >= Index then
+        fLockList.Objects[i] := TObject(Pointer(j + N));
+    end;
+  end else begin
+    if (fLineIndex >= Index) and (fLineIndex < Index - N) then
+      fLineIndex:=-1
+    else if fLineIndex > Index then
+      inc(fLineIndex, N);
+  end;
 end;
 
 procedure TSynEditStringTrimmingList.SetEnabled(const AValue : Boolean);
@@ -483,27 +512,6 @@ begin
     fLineText:='';
   end;
   Result:= fSpaces;
-end;
-
-procedure TSynEditStringTrimmingList.DoLinesChanged(Index, N : integer);
-var
-  i, j: Integer;
-begin
-  if (not fEnabled) then exit;
-  if  fLockCount > 0 then begin
-    for i := fLockList.Count-1 downto 0 do begin
-      j := Integer(Pointer(fLockList.Objects[i]));
-      if (j >= Index) and (j < Index - N) then
-        fLockList.Delete(i)
-      else if j >= Index then
-        fLockList.Objects[i] := TObject(Pointer(j + N));
-    end;
-  end else begin
-    if (fLineIndex >= Index) and (fLineIndex < Index - N) then
-      fLineIndex:=-1
-    else if fLineIndex > Index then
-      inc(fLineIndex, N);
-  end;
 end;
 
 procedure TSynEditStringTrimmingList.Lock;
@@ -602,7 +610,6 @@ var
 begin
   FLineEdited := True;
   c := fSynStrings.Count;
-  DoLinesChanged(c, 1);
   Result := fSynStrings.Add(TrimLine(S, c));
 end;
 
@@ -611,7 +618,6 @@ var
   i, c : Integer;
 begin
   c := fSynStrings.Count;
-  DoLinesChanged(c, AStrings.Count);
   for i := 0 to AStrings.Count-1 do
     AStrings[i] := TrimLine(AStrings[i], c + i);
   fSynStrings.AddStrings(AStrings);
@@ -628,7 +634,6 @@ begin
   FLineEdited := True;
   TrimLine('', Index, True);
   fSynStrings.Delete(Index);
-  DoLinesChanged(Index, -1);
 end;
 
 procedure TSynEditStringTrimmingList.DeleteLines(Index, NumLines : integer);
@@ -639,20 +644,17 @@ begin
   for i := 0 to NumLines-1 do
     TrimLine('', Index+i, True);
   fSynStrings.DeleteLines(Index, NumLines);
-  DoLinesChanged(Index, -NumLines);
 end;
 
 procedure TSynEditStringTrimmingList.Insert(Index : integer; const S : string);
 begin
   FLineEdited := True;
-  DoLinesChanged(Index, 1);
   fSynStrings.Insert(Index, TrimLine(S, Index));
 end;
 
 procedure TSynEditStringTrimmingList.InsertLines(Index, NumLines : integer);
 begin
   FLineEdited := True;
-  DoLinesChanged(Index, NumLines);
   fSynStrings.InsertLines(Index, NumLines);
 end;
 
@@ -661,7 +663,6 @@ var
   i : Integer;
 begin
   FLineEdited := True;
-  DoLinesChanged(Index, NewStrings.Count);
   for i := 0 to NewStrings.Count-1 do
     NewStrings[i] := TrimLine(NewStrings[i], Index+i, True);
   fSynStrings.InsertStrings(Index, NewStrings);
@@ -864,7 +865,6 @@ begin
     s := EditDeleteTrim(1, LogY, length(s));
     fSynStrings.EditLineBreak(LogX, LogY);
   end;
-  DoLinesChanged(LogY, 1);
   UpdateLineText(LogY + 1);
   EditInsertTrim(1, LogY + 1, s);
   // Trim any existing (commited/real) spaces
@@ -891,7 +891,6 @@ begin
   s := EditDeleteTrim(1, LogY + 1, length(Spaces(LogY))); // next line
   //Todo: if FillText isSpacesOnly AND NextLineIsSpacesOnly => add direct to trailing
   fSynStrings.EditLineJoin(LogY, FillText);
-  DoLinesChanged(LogY - 1, -1);
   UpdateLineText(LogY);
   EditInsertTrim(1, LogY, s);
 
