@@ -49,9 +49,9 @@ type
     Label_menus: TLabel;
     MenuScrollBox: TScrollBox;
     Panel: TPanel;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
     procedure List_menusClick(Sender: TObject);
   private
     FDesignerMainMenu: TDesignerMainMenu;
@@ -126,14 +126,16 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
 end;
 
+procedure TMainMenuEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  SetMenu(nil);
+end;
+
 procedure TMainMenuEditorForm.FormDestroy(Sender: TObject);
 begin
   if GlobalDesignHook <> nil then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-end;
-
-procedure TMainMenuEditorForm.FormPaint(Sender: TObject);
-begin
 end;
 
 procedure TMainMenuEditorForm.List_menusClick(Sender: TObject);

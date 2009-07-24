@@ -3,16 +3,14 @@ object MainMenuEditorForm: TMainMenuEditorForm
   Height = 220
   Top = 155
   Width = 600
-  HorzScrollBar.Page = 599
-  VertScrollBar.Page = 219
   Caption = 'MainMenuEditorForm'
   ClientHeight = 220
   ClientWidth = 600
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnPaint = FormPaint
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label_menus: TLabel
     AnchorSideLeft.Control = List_menus
     AnchorSideRight.Side = asrBottom
@@ -31,17 +29,22 @@ object MainMenuEditorForm: TMainMenuEditorForm
     AnchorSideRight.Control = List_menus
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Left = 0
     Height = 220
+    Top = 0
     Width = 408
-    AutoScroll = True
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
+    ClientHeight = 216
+    ClientWidth = 404
     TabOrder = 0
     object Panel: TPanel
       AnchorSideLeft.Control = MenuScrollBox
       AnchorSideTop.Control = MenuScrollBox
       AnchorSideBottom.Side = asrBottom
+      Left = 0
       Height = 212
+      Top = 0
       Width = 200
       BevelOuter = bvNone
       TabOrder = 0
@@ -58,6 +61,7 @@ object MainMenuEditorForm: TMainMenuEditorForm
     Width = 180
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Around = 6
+    ItemHeight = 0
     OnClick = List_menusClick
     TabOrder = 1
   end
