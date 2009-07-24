@@ -115,6 +115,8 @@ type
   TSynEditUndoTrimMoveTo = class(TSynEditUndoItem)
   private
     FPosY, FLen: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosY, ALen: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -125,6 +127,8 @@ type
   TSynEditUndoTrimMoveFrom = class(TSynEditUndoItem)
   private
     FPosY, FLen: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosY, ALen: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -135,6 +139,8 @@ type
   TSynEditUndoTrimInsert = class(TSynEditUndoItem)
   private
     FPosX, FPosY, FLen: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosX, APosY, ALen: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -146,6 +152,8 @@ type
   private
     FPosX, FPosY: Integer;
     FText: String;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosX, APosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -157,12 +165,19 @@ type
   private
     FPosY: Integer;
     FText: String;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
 { TSynEditUndoTrimMoveTo }
+
+function TSynEditUndoTrimMoveTo.DebugString: String;
+begin
+  Result := 'FPosY='+IntToStr(FPosY)+' FLen='+IntToStr(FLen);
+end;
 
 constructor TSynEditUndoTrimMoveTo.Create(APosY, ALen: Integer);
 begin
@@ -183,6 +198,11 @@ end;
 
 { TSynEditUndoTrimMoveFrom }
 
+function TSynEditUndoTrimMoveFrom.DebugString: String;
+begin
+  Result := 'FPosY='+IntToStr(FPosY)+' FLen='+IntToStr(FLen);
+end;
+
 constructor TSynEditUndoTrimMoveFrom.Create(APosY, ALen: Integer);
 begin
   FPosY := APosY;
@@ -201,6 +221,11 @@ begin
 end;
 
 { TSynEditUndoTrimInsert }
+
+function TSynEditUndoTrimInsert.DebugString: String;
+begin
+  Result := 'FPosY='+IntToStr(FPosY)+' FPosX='+IntToStr(FPosX)+' FLen='+IntToStr(FLen);
+end;
 
 constructor TSynEditUndoTrimInsert.Create(APosX, APosY, ALen: Integer);
 begin
@@ -224,6 +249,11 @@ end;
 
 { TSynEditUndoTrimDelete }
 
+function TSynEditUndoTrimDelete.DebugString: String;
+begin
+  Result := 'FPosY='+IntToStr(FPosY)+' FPosX='+IntToStr(FPosX)+' FText="'+FText+'"';
+end;
+
 constructor TSynEditUndoTrimDelete.Create(APosX, APosY: Integer; AText: String);
 begin
   FPosX := APosX;
@@ -245,6 +275,11 @@ begin
 end;
 
 { TSynEditUndoTrimForget }
+
+function TSynEditUndoTrimForget.DebugString: String;
+begin
+  Result := 'FPosY='+IntToStr(FPosY)+' FText="'+FText+'"';
+end;
 
 constructor TSynEditUndoTrimForget.Create(APosY: Integer; AText: String);
 begin

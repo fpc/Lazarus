@@ -221,6 +221,7 @@ type
     // IsEqual is only needed/implemented for Carets
     function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; virtual;
     function IsEqual(AnItem: TSynEditUndoItem): Boolean;
+    function DebugString: String; virtual;
   public
     function IsCaretInfo: Boolean; virtual;
     function PerformUndo(Caller: TObject): Boolean; virtual; abstract;
@@ -882,6 +883,11 @@ function TSynEditUndoItem.IsEqual(AnItem: TSynEditUndoItem): Boolean;
 begin
   Result := (ClassType = AnItem.ClassType);
   if Result then Result := Result and IsEqualContent(AnItem);
+end;
+
+function TSynEditUndoItem.DebugString: String;
+begin
+  Result := '';
 end;
 
 function TSynEditUndoItem.IsCaretInfo: Boolean;
