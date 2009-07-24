@@ -2552,6 +2552,11 @@ procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Z: integer;
 begin
+  {$IF defined(LCLGTK) or defined(LCLGTK2)}
+  // This is to temporarily address issue http://bugs.freepascal.org/view.php?id=12460
+  if (sfMouseSelecting in fStateFlags) and not MouseCapture then
+    MouseCapture := True;
+  {$ENDIF}
   inherited MouseMove(Shift, x, y);
   if (sfGutterClick in fStateFlags) then begin
     FGutter.MouseMove(Shift, X, Y);
@@ -4254,6 +4259,11 @@ begin
   inherited;
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
+  {$ENDIF}
+  {$IF defined(LCLGTK) or defined(LCLGTK2)}
+  // This is to temporarily address issue http://bugs.freepascal.org/view.php?id=12460
+  if (sfMouseSelecting in fStateFlags) and not MouseCapture then
+    Exclude(fStateFlags, sfMouseSelecting);
   {$ENDIF}
   LastMouseCaret:=Point(-1,-1);
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
