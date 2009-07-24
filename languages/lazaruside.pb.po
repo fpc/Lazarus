@@ -3049,7 +3049,7 @@ msgstr "Continuar Automaticamente"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
-msgstr "quebra linha"
+msgstr "interrompe linha"
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
@@ -3158,7 +3158,7 @@ msgstr "Justificar espaço inferior"
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
-msgstr "Quebra"
+msgstr "Interromper"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -3167,7 +3167,7 @@ msgstr "Navegador para Compilador (%s)"
 #: lazarusidestrconsts.lisbtnbreak
 msgctxt "lazarusidestrconsts.lisbtnbreak"
 msgid "Break"
-msgstr "Quebra"
+msgstr "Interromper"
 
 #: lazarusidestrconsts.lisbtncontinue
 msgctxt "lazarusidestrconsts.lisbtncontinue"
@@ -7522,7 +7522,7 @@ msgstr "Adicionar observador ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in selection"
-msgstr "Quebrar Linhas na seleção"
+msgstr "Interromper Linhas na seleção"
 
 #: lazarusidestrconsts.lismenubuild
 msgctxt "lazarusidestrconsts.lismenubuild"
@@ -12927,7 +12927,7 @@ msgstr "Inserir nota LGPL"
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
-msgstr "Quebrar linha, manter o cursor"
+msgstr "Interromper linha, manter o cursor"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
@@ -12951,7 +12951,7 @@ msgstr "Inverter atribuição"
 
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
-msgstr "Quebrar linha e mover o cursor"
+msgstr "Interromper linha e mover o cursor"
 
 #: lazarusidestrconsts.srkmeclineend
 msgid "Move cursor to line end"

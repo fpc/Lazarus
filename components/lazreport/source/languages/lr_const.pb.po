@@ -191,7 +191,7 @@ msgstr "Arquivo Bitmap"
 
 #: lr_const.sbreaked
 msgid "Breaked"
-msgstr "Quebra"
+msgstr "Interrompido"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -527,6 +527,10 @@ msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formato"
 
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr ""
+
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
@@ -547,7 +551,7 @@ msgstr "&Variável"
 
 #: lr_const.seditorformword
 msgid "&Word wrap"
-msgstr "&Quebra aut. texto"
+msgstr "&Quebra palavra"
 
 #: lr_const.serror
 msgid "Error"
@@ -2355,11 +2359,11 @@ msgstr "Dataset virtual"
 
 #: lr_const.swordbreak
 msgid "Word break"
-msgstr "Quebra palavras"
+msgstr "Interrompe palavra"
 
 #: lr_const.swordwrap
 msgid "Word wrap"
-msgstr "Quebra aut.texto"
+msgstr "Quebra palavra"
 
 #: lr_const.syes
 msgid "Yes"
