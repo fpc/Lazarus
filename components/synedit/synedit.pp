@@ -1544,7 +1544,6 @@ begin
   TSynEditStringList(FLines).RedoList := fRedoList;
 
   FBlockSelection := TSynEditSelection.Create(FTheLinesView);
-  FBlockSelection.MaxLeftChar := @FMaxLeftChar;
   FBlockSelection.Caret := FCaret;
   FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
@@ -1807,7 +1806,7 @@ begin
   FreeAndNil(fFontDummy);
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView);
-  FreeAndNil(fBlockSelection);
+  FreeAndNil(FBlockSelection);
   FreeAndNil(FStrings);
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView);
@@ -6376,7 +6375,6 @@ begin
   if (Value <> fTabWidth) then begin
     fTabWidth := Value;
     FTabbedLinesView.TabWidth := Value;
-    FBlockSelection.TabWidth := Value;
     Invalidate; // to redraw text containing tab chars
   end;
 end;

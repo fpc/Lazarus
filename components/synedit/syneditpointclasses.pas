@@ -52,7 +52,6 @@ type
     FLines: TSynEditStrings;
     FOnChangeList: TMethodList;
     FLockCount: Integer;
-    FMaxLeftChar: PInteger;
     procedure DoLock; virtual;
     Procedure DoUnlock; virtual;
   public
@@ -64,7 +63,6 @@ type
     procedure Lock;
     Procedure Unlock;
     property  Lines: TSynEditStrings read FLines write FLines;
-    property  MaxLeftChar: PInteger write FMaxLeftChar;
   end;
 
   TSynEditCaret = class;
@@ -76,7 +74,6 @@ type
     fUndoList: TSynEditUndoList;
     FInvalidateLinesMethod: TInvalidateLines;
     FEnabled: Boolean;
-    FTabWidth: Integer;
     FActiveSelectionMode: TSynSelectionMode;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
@@ -128,8 +125,6 @@ type
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
     property  UndoList: TSynEditUndoList read fUndoList write fUndoList;
-    // TODO: Move dependend functions to Lines
-    property TabWidth: integer read FTabWidth write FTabWidth;
   end;
 
   { TSynEditCaret }
@@ -145,6 +140,8 @@ type
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
     FAdjustToNextChar: Boolean;
+    FMaxLeftChar: PInteger;
+
     procedure AdjustToChar;
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
                                      KeepLastCharPos: Boolean = False);
@@ -181,6 +178,7 @@ type
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
+    property MaxLeftChar: PInteger write FMaxLeftChar;
   end;
 
 implementation
@@ -901,15 +899,16 @@ end;
 procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 // logical position (byte)
 var
-  nInval1, nInval2, nMaxX: integer;
+  nInval1, nInval2: integer;
   SelChanged: boolean;
   Line: string;
 begin
   Value.y := MinMax(Value.y, 1, fLines.Count);
   Line := Lines[Value.y - 1];
-  nMaxX := Max(Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1),
-               FMaxLeftChar^);
-  Value.x := MinMax(Value.x, 1, nMaxX);
+  if FCaret.AllowPastEOL then
+    Value.x := Max(Value.x, 1)
+  else
+    Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
   if (ActiveSelectionMode = smNormal) then
     if (Value.y >= 1) and (Value.y <= FLines.Count) then
       Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
@@ -946,7 +945,7 @@ end;
 
 procedure TSynEditSelection.SetEndLineBytePos(Value : TPoint);
 var
-  nLine, nMaxX: integer;
+  nLine: integer;
   Line: String;
   {$IFDEF SYN_MBCSSUPPORT}
   s: string;
@@ -955,9 +954,10 @@ begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
     Line := Lines[Value.y - 1];
-    nMaxX := Max(Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1),
-                 FMaxLeftChar^);
-    Value.x := MinMax(Value.x, 1, nMaxX);
+    if FCaret.AllowPastEOL then
+      Value.x := Max(Value.x, 1)
+    else
+      Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
     if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then
         Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
