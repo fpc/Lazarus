@@ -675,19 +675,27 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
     while (i > 0) and (Result[i] in [#1..#32]) do dec(i);
     Result := copy(Result, 1, i);
   end;
+var
+  LowBnd, UpBnd: TPoint;
+  i: integer;
 begin
   if Caret = nil then
     exit('');
   if FToggledWord <> '' then
     exit(FToggledWord);
   If TSynEdit(SynEdit).SelAvail then begin
+    LowBnd := TSynEdit(SynEdit).BlockBegin;
+    UpBnd := TSynEdit(SynEdit).BlockEnd;
+    i := UpBnd.y - LowBnd.y + 1;
+    if (i > LowBnd.y) and (i > Lines.Count - UpBnd.y) then
+      exit('');
     if FTrim then
       Result := TrimS(TSynEdit(SynEdit).SelText)
     else
       Result := TSynEdit(SynEdit).SelText;
     if TrimS(Result) = '' then Result := '';
-    FLowBound := TSynEdit(SynEdit).BlockBegin;
-    FUpBound := TSynEdit(SynEdit).BlockEnd;
+    FLowBound := LowBnd;
+    FUpBound := UpBnd;
   end else begin
     Result :=  TSynEdit(SynEdit).GetWordAtRowCol(Caret.LineBytePos);
     if FIgnoreKeywords and assigned(FHighlighter)
