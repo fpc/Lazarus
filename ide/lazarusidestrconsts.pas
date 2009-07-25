@@ -909,6 +909,8 @@ resourcestring
   dlgNaming = 'Naming';
   lisFPDocEditor = 'FPDoc Editor';
   dlgCancel = 'Cancel';
+  lisAutoCompletionOn = 'Auto completion: on';
+  lisAutoCompletionOff = 'Auto completion: off';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
   lisKMLazarusDefault = 'Lazarus (default)';

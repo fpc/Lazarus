@@ -106,6 +106,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure UpdateHints;
   public
     property Options: TSynSearchOptions read GetOptions write SetOptions;
     property EnableAutoComplete: boolean read GetEnableAutoComplete
@@ -138,6 +139,7 @@ begin
   TextToFindLabel.Caption:=dlgTextToFing;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
+  UpdateHints;
 
   OptionsGroupBox.Caption:=dlgFROpts;
 
@@ -192,6 +194,14 @@ begin
   inherited Destroy;
   if LazFindReplaceDialog=Self then
     LazFindReplaceDialog:=nil;
+end;
+
+procedure TLazFindReplaceDialog.UpdateHints;
+begin
+  if EnableAutoComplete then
+    EnableAutoCompleteSpeedButton.Hint:=lisAutoCompletionOn
+  else
+    EnableAutoCompleteSpeedButton.Hint:=lisAutoCompletionOff;
 end;
 
 procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
@@ -265,6 +275,7 @@ procedure TLazFindReplaceDialog.EnableAutoCompleteSpeedButtonClick(
 begin
   TextToFindComboBox.AutoComplete:=EnableAutoCompleteSpeedButton.Down;
   ReplaceTextComboBox.AutoComplete:=EnableAutoCompleteSpeedButton.Down;
+  UpdateHints;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
@@ -347,6 +358,7 @@ begin
   EnableAutoCompleteSpeedButton.Down:=AValue;
   TextToFindComboBox.AutoComplete:=AValue;
   ReplaceTextComboBox.AutoComplete:=AValue;
+  UpdateHints;
 end;
 
 procedure TLazFindReplaceDialog.SetOnKey(const AValue: TOnFindDlgKey);
