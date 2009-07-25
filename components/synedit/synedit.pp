@@ -6832,7 +6832,6 @@ begin
 end;
 
 procedure TCustomSynEdit.MoveCaretHorz(DX: integer; SelectionCommand: boolean);
-{$IFDEF SYN_LAZARUS}
 var
   NewCaret: TPoint;
   s: String;
@@ -6878,52 +6877,6 @@ begin
   FCaret.DecForcePastEOL;
   DecPaintLock;
 end;
-{$ELSE}
-var
-  ptO, ptDst: TPoint;
-  s: string;
-  nLineLen: integer;
-  bChangeY: boolean;
-begin
-  ptO := CaretXY;
-  ptDst := ptO;
-  s := LineText;
-  nLineLen := Length(s);
-  // only moving or selecting one char can change the line
-  bChangeY := not (eoScrollPastEol in fOptions);
-  if bChangeY and (DX = -1) and (ptO.X = 1) and (ptO.Y > 1) then begin
-    // end of previous line
-    Dec(ptDst.Y);
-    ptDst.X := Length(Lines[ptDst.Y - 1]) + 1;
-  end else
-    if bChangeY and (DX = 1) and (ptO.X > nLineLen) and (ptO.Y < Lines.Count)
-    then begin
-      // start of next line
-      Inc(ptDst.Y);
-      ptDst.X := 1;
-    end else begin
-      ptDst.X := Max(1, ptDst.X + DX);
-      // don't go past last char when ScrollPastEol option not set
-      if (DX > 0) and bChangeY then ptDst.X := Min(ptDst.X, nLineLen + 1);
-{$IFDEF SYN_MBCSSUPPORT}
-      // prevent from getting inside of a doublebyte char
-      if (ptDst.X > 1) and (ptDst.X <= nLineLen) then begin
-        DX := ptDst.X - ptO.X;
-        if (DX < 0) then begin
-          if ByteType(s, ptDst.X) = mbTrailByte then Dec(ptDst.X);
-        end else if (DX > 0) then begin
-          if ByteType(s, ptDst.X) = mbTrailByte then Inc(ptDst.X);
-        end;
-      end;
-    end;
-    fMBCSStepAside := False;
-{$ELSE}
-    end;
-{$ENDIF}
-  // set caret and block begin / end
-  MoveCaretAndSelection(ptO, ptDst, SelectionCommand);
-end;
-{$ENDIF}
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
 // moves Caret vertical DY unfolded lines
@@ -7206,7 +7159,7 @@ procedure TCustomSynEdit.DoBlockUnindent;
 var
   BB, BE: TPoint;
   FullStrToDelete: PChar;
-  Line, StrToDelete: PChar;
+  Line: PChar;
   Len, y, StrToDeleteLen, e : integer;
   SomethingDeleted : Boolean;
 
