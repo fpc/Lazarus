@@ -5443,7 +5443,6 @@ var
   WP: TPoint;
   Caret: TPoint;
   CaretNew: TPoint;
-  OldSelMode: TSynSelectionMode;
 {$IFDEF SYN_MBCSSUPPORT}
   StartOfBlock: TPoint;
   i: integer;
