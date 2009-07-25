@@ -28,7 +28,7 @@ interface
 uses
   Classes, Controls, SysUtils, math, LCLProc, Forms, Graphics, SynEditMiscClasses,
   LCLType, SynEdit, SynPluginSyncronizedEditBase, SynEditTextBase, SynEditMiscProcs,
-  SynEditMouseCmds, SynEditKeyCmds, SynEditTypes;
+  SynEditMouseCmds, SynEditKeyCmds, SynEditTypes, LCLIntf;
 
 type
 
@@ -131,7 +131,9 @@ type
   TSynPluginSyncroEditMarkup = class(TSynPluginSyncronizedEditMarkup)
   private
     FGlyphAtLine: Integer;
+    FGlyphLastLine: Integer;
     FGutterGlyph: TBitmap;
+    function GetGutterGlyphRect(aLine: Integer): TRect;
     function GetGutterGlyphRect: TRect;
     procedure SetGlyphAtLine(const AValue: Integer);
     procedure SetGutterGlyph(const AValue: TBitmap);
@@ -708,14 +710,18 @@ end;
 { TSynPluginSyncroEditMarkup }
 
 procedure TSynPluginSyncroEditMarkup.DoInvalidate;
+var
+  rcInval: TRect;
 begin
   if not Enabled then exit;
-  // TODO: GutterPaint does not trigger Markup modules
-  TSynEdit(SynEdit).Invalidate;
-  //if TSynEdit(SynEdit).GutterWidth < FGutterGlyph.Width then
-  //  TSynEdit(SynEdit).Invalidate
-  //else
-  //  TSynEdit(SynEdit).InvalidateGutter;
+  if FGlyphLastLine >= 0 then begin
+    rcInval := GetGutterGlyphRect(FGlyphLastLine);
+    InvalidateRect(SynEdit.Handle, @rcInval, False);
+  end;
+  rcInval := GetGutterGlyphRect;
+  // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
+  rcInval.Right := TSynEdit(SynEdit).GutterWidth + 2;
+  InvalidateRect(SynEdit.Handle, @rcInval, False);
 end;
 
 procedure TSynPluginSyncroEditMarkup.DoCaretChanged(Sender: TObject);
@@ -737,9 +743,19 @@ begin
 end;
 
 procedure TSynPluginSyncroEditMarkup.DoEnabledChanged(Sender: TObject);
+var
+  rcInval: TRect;
 begin
   inherited DoEnabledChanged(Sender);
-  DoInvalidate;
+  if not Enabled then begin
+    if FGlyphLastLine <> -2 then begin
+      rcInval := GetGutterGlyphRect(FGlyphLastLine);
+      InvalidateRect(SynEdit.Handle, @rcInval, False);
+    end;
+    FGlyphLastLine := -2;
+  end
+  else
+    DoInvalidate;
 end;
 
 procedure TSynPluginSyncroEditMarkup.EndMarkup;
@@ -750,6 +766,7 @@ begin
   if (FGutterGlyph.Height > 0) then begin
     src :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
     dst := GutterGlyphRect;
+    FGlyphLastLine := FGlyphAtLine;
     TSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
   end;
 end;
@@ -763,19 +780,21 @@ begin
   DoInvalidate;
 end;
 
-function TSynPluginSyncroEditMarkup.GetGutterGlyphRect: TRect;
-var
-  y: Integer;
+function TSynPluginSyncroEditMarkup.GetGutterGlyphRect(aLine: Integer): TRect;
 begin
   Result :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
-  y := GlyphAtLine;
-  if y = -1 then
-    y := TSynEdit(SynEdit).CaretY;
-  Result.Top := Max( Min( RowToScreenRow(y)
+  if aLine = -1 then
+    aLine := TSynEdit(SynEdit).CaretY;
+  Result.Top := Max( Min( RowToScreenRow(aLine)
                           * TSynEdit(SynEdit).LineHeight,
                           TSynEdit(SynEdit).ClientHeight - FGutterGlyph.Height),
                           0);
   Result.Bottom := Result.Bottom + Result.Top;
+end;
+
+function TSynPluginSyncroEditMarkup.GetGutterGlyphRect: TRect;
+begin
+  Result := GetGutterGlyphRect(GlyphAtLine);
 end;
 
 procedure TSynPluginSyncroEditMarkup.SetGlyphAtLine(const AValue: Integer);
@@ -788,6 +807,7 @@ end;
 constructor TSynPluginSyncroEditMarkup.Create(ASynEdit: TSynEditBase);
 begin
   FGutterGlyph := TBitMap.Create;
+  FGlyphLastLine := -2;
   inherited;
 end;
 
