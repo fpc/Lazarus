@@ -511,7 +511,6 @@ type
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
     procedure GutterChanged(Sender: TObject);
-    procedure InsertBlock(BB: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
     procedure LockUndo;
     procedure MoveCaretAndSelection(
@@ -4618,13 +4617,6 @@ begin
     or Clipboard.HasFormat(TSynClipboardStream.ClipboardFormatId)
 end;
 
-procedure TCustomSynEdit.InsertBlock(BB: TPoint; ChangeStr: PChar);
-// used by BlockIndent and Redo
-begin
-  SetCaretAndSelection(LogicalToPhysicalPos(BB), BB, BB);
-  SetSelTextPrimitive(smColumn, ChangeStr);
-end;
-
 procedure TCustomSynEdit.Redo;
 var
   Item: TSynEditUndoItem;
@@ -4784,8 +4776,8 @@ begin
       fRedoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
           TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
       // reinsert the string
-      InsertBlock(Point(1, TSynEditUndoUnIndent(Item).FPosY1),
-                  PChar(TSynEditUndoUnIndent(Item).FText));
+      FInternalBlockSelection.StartLineBytePos := Point(1, TSynEditUndoUnIndent(Item).FPosY1);
+      FInternalBlockSelection.SetSelTextPrimitive(smColumn, PChar(TSynEditUndoUnIndent(Item).FText));
     end
     else
       if not Item.PerformUndo(self) then
@@ -7159,85 +7151,54 @@ var
   BB,BE            : TPoint;
   Run,
   StrToInsert      : PChar;
-  e,x,
-  i,InsertStrLen   : integer;
+  e, i, InsertStrLen   : integer;
   Spaces           : String;
-  OrgSelectionMode : TSynSelectionMode;
-  {$IFDEF SYN_LAZARUS}
-  BlockBackward : Boolean;
-  {$ELSE}
-  OrgCaretPos: TPoint;
-  {$ENDIF}
 begin
   if not SelAvail then exit;
-  OrgSelectionMode := FBlockSelection.ActiveSelectionMode;
-  {$IFDEF SYN_LAZARUS}
-  BlockBackward:= FBlockSelection.IsBackwardSel;
-  {$ELSE}
-  OrgCaretPos := CaretXY;
-  {$ENDIF}
-  x := 1;
+  IncPaintLock;
+  FBlockSelection.IncPersistentLock;
   StrToInsert := nil;
   try
-    // keep current selection detail
+    // build text to insert
     BB := BlockBegin;
     BE := BlockEnd;
-
-    // build text to insert
-    if (BE.X = 1) then begin
-      e := BE.y - 1;
-      x := 1;
-    end else begin
+    if (BE.X = 1) then
+      e := BE.y - 1
+    else
       e := BE.y;
-      x := BE.x + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF};
-    end;
-    InsertStrLen := ({$IFDEF SYN_LAZARUS}
-                     (fBlockIndent+length(LineEnding))* (e - BB.y)+fBlockIndent+1
-                     {$ELSE}
-                     (fTabWidth+2)* (e - BB.y) + TabWidth +1
-                     {$ENDIF}
-                     );
+    InsertStrLen := ((fBlockIndent+length(LineEnding))* (e - BB.y)+fBlockIndent+1);
     //               chars per line * lines-1    + last line + null char
     StrToInsert := StrAlloc(InsertStrLen);
     try
       Run := StrToInsert;
-      Spaces := StringOfChar(#32,
-                       {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF});
+      Spaces := StringOfChar(#32, fBlockIndent);
       for i := BB.Y to e-1 do
       begin
-        StrPCopy(Run, Spaces+{$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF});
-        Inc(Run,{$IFDEF SYN_LAZARUS}fBlockIndent+length(LineEnding)
-                {$ELSE}fTabWidth+2{$ENDIF});
+        StrPCopy(Run, Spaces + LineEnding);
+        Inc(Run,fBlockIndent+length(LineEnding));
       end;
       StrPCopy(Run, Spaces);
 
-      InsertBlock(Point(1,BB.y), StrToInsert);
+      FInternalBlockSelection.StartLineBytePos := Point(1, BB.y);
+      fUndoList.Lock;
+      fRedoList.Lock;
+      try
+        FInternalBlockSelection.SetSelTextPrimitive(smColumn, StrToInsert);
+      finally
+        fUndoList.Unlock;
+        fRedoList.Unlock;
+      end;
 
       fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, fBlockIndent));
       TSynEditStringList(FLines).MarkModified(BB.Y, e);
-      {$IFDEF SYN_LAZARUS}
-      if BlockBackward then
-        SwapPoint(BB, BE);
-      {$ENDIF}
     finally
       StrDispose(StrToInsert);
     end;
   finally
-    {$IFDEF SYN_LAZARUS}
-    if BlockBackward then Begin
-      inc(BE.x, fBlockIndent);
-      BB.x := x;
-    end else begin
-      inc(BB.x, fBlockIndent);
-      BE.x := x;
-    end;
     FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
-    SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
-    {$ELSE}
-    SetCaretAndSelection(OrgCaretPos,
-      Point(BB.x + fTabWidth, BB.y), Point(x, BE.y));
-    {$ENDIF}
-    FBlockSelection.ActiveSelectionMode := OrgSelectionMode;
+    FCaret.LineBytePos := FBlockSelection.EndLineBytePos;
+    FBlockSelection.DecPersistentLock;
+    DecPaintLock;
   end;
 end;
 
@@ -7245,21 +7206,9 @@ procedure TCustomSynEdit.DoBlockUnindent;
 var
   BB, BE: TPoint;
   FullStrToDelete: PChar;
-  Line, Run,
-  StrToDelete: PChar;
-  Len,
-  x, StrToDeleteLen,
-  FirstIndent,
-  LastIndent,
-  e : integer;
-  TempString: AnsiString;
-  OrgSelectionMode : TSynSelectionMode;
-  SomethingToDelete : Boolean;
-  {$IFDEF SYN_LAZARUS}
-  BlockBackward : Boolean;
-  {$ELSE}
-  OrgCaretPos: TPoint;
-  {$ENDIF}
+  Line, StrToDelete: PChar;
+  Len, y, StrToDeleteLen, e : integer;
+  SomethingDeleted : Boolean;
 
   function GetDelLen : integer;
   var
@@ -7268,138 +7217,58 @@ var
     Result := 0;
     Run := Line;
     while (Run[0] = ' ')
-    and (Result < {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}) do
+    and (Result < fBlockIndent) do
     begin
       Inc(Result);
       Inc(Run);
-      SomethingToDelete := True;
+      SomethingDeleted := True;
     end;
   end;
 
 begin
-  OrgSelectionMode := FBlockSelection.ActiveSelectionMode;
-  Len := 0;
-  LastIndent := 0;
-  if SelAvail then
-  begin
-    // store current selection detail
-    BB := BlockBegin;
-    BE := BlockEnd;
-    {$IFDEF SYN_LAZARUS}
-    BlockBackward:=  FBlockSelection.IsBackwardSel;
-    {$ELSE}
-    OrgCaretPos := CaretXY;
-    {$ENDIF}
+  if not SelAvail then exit;
 
-    // convert selection to complete lines
-    if BE.X = 1 then
-      e := BE.y - 1
-    else
-      e := BE.y;
+  BB := BlockBegin;
+  BE := BlockEnd;
+  // convert selection to complete lines
+  if BE.X = 1 then
+    e := BE.y - 1
+  else
+    e := BE.y;
 
-    // build string to delete
-    StrToDeleteLen :=
-      {$IFDEF SYN_LAZARUS}
-       (fBlockIndent+length(LineEnding)) * (e - BB.y + 1)
-      + 1;
-      {$ELSE}
-       (fTabWidth+2) * (e - BB.y)
-      + fTabWidth
-      + 1;
-      {$ENDIF}
-    //                 chars per line * lines-1    + last line + null char
-    FullStrToDelete := StrAlloc(StrToDeleteLen);
-    try
-      FullStrToDelete[0] := #0;
-      SomethingToDelete := False;
-      for x := BB.Y to e{$IFNDEF SYN_LAZARUS}-1{$ENDIF} do
-      begin
-        Line := PChar(FTheLinesView[x-1]);
-        TempString:=StringOfChar(' ', GetDelLen);
-        StrCat(FullStrToDelete,PChar(TempString));
-        StrCat(FullStrToDelete,
-                    PChar({$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF}));
-      end;
-      {$IFNDEF SYN_LAZARUS}
-      Line := PChar(FTheLinesView[e-1]);
-      TempString:=StringOfChar(' ', GetDelLen);
-      StrCat(FullStrToDelete,PChar(TempString));
-      {$ENDIF}
-
-      FirstIndent := -1;
-      // Delete string
-      if SomethingToDelete then
-      begin
-        StrToDelete := FullStrToDelete;
-        CaretY := BB.Y;
-        repeat
-          Run := GetEOL(StrToDelete);
-          {$IFNDEF SYN_LAZARUS}
-          if Run <> StrToDelete then
-          begin
-          {$ENDIF}
-            Len := Run - StrToDelete;
-            if FirstIndent = -1 then
-              FirstIndent := Len;
-            if Len > 0 then begin
-              TempString := FTheLinesView[CaretY - 1];
-              Delete(TempString, 1, Len);
-              FTheLinesView[CaretY - 1] := TempString;
-            end;
-          {$IFNDEF SYN_LAZARUS}
-          end;
-          {$ENDIF}
-          {$IFDEF SYN_LAZARUS}
-          if Run^ in [#10,#13] then  begin
-            if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
-              Inc(Run,2)
-            else
-              Inc(Run);
-            CaretY := CaretY + 1;
-          end;
-          {$ELSE}
-          if Run^ = #13 then
-          begin
-            Inc(Run);
-            if Run^ = #10 then
-              Inc(Run);
-            Inc(fCaretY);
-          end;
-          {$ENDIF}
-          StrToDelete := Run;
-        until Run^ = #0;
-        LastIndent := Len;
-        fUndoList.AddChange(TSynEditUndoUnIndent.Create(BB.Y, e, FullStrToDelete));
-        TSynEditStringList(FLines).MarkModified(BB.Y, e);
-        {$IFDEF SYN_LAZARUS}
-        if BlockBackward then Begin
-          SwapPoint(BB, BE);
-          SwapInt(FirstIndent, LastIndent);
-        end;
-        {$ENDIF}
-      end;
-      {$IFDEF SYN_LAZARUS}
-      if FirstIndent = -1 then begin
-        // Nothing changed; ensure correct restore
-        if BlockBackward then
-          SwapPoint(BB, BE);
-      end else begin
-        dec(BB.x, FirstIndent);
-        dec(BE.x, LastIndent);
-      end;
-      FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
-      SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
-      {$ELSE}
-      if FirstIndent = -1 then
-        FirstIndent := 0;
-      SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
-        Point(BE.x - LastIndent, BE.y));
-      {$ENDIF}
-      // restore selection
-      FBlockSelection.ActiveSelectionMode := OrgSelectionMode;
-    finally
-      StrDispose(FullStrToDelete);
+  IncPaintLock;
+  FBlockSelection.IncPersistentLock;
+  // build string to delete
+  StrToDeleteLen := (fBlockIndent+length(LineEnding)) * (e - BB.y + 1) + 1;
+  //                 chars per line * lines-1    + last line + null char
+  FullStrToDelete := StrAlloc(StrToDeleteLen);
+  try
+    FullStrToDelete[0] := #0;
+    SomethingDeleted := False;
+    fUndoList.Lock;
+    fRedoList.Lock;
+    for y := BB.Y to e do
+    begin
+      Line := PChar(FTheLinesView[y - 1]);
+      Len := GetDelLen;
+      StrCat(FullStrToDelete, PChar(copy(Line, 1, Len)));
+      StrCat(FullStrToDelete, PChar(LineEnding));
+      if Len > 0 then
+        FTheLinesView.EditDelete(1, y, Len);
     end;
+
+    fUndoList.Unlock;
+    fRedoList.Unlock;
+
+    if SomethingDeleted then
+      fUndoList.AddChange(TSynEditUndoUnIndent.Create(BB.Y, e, FullStrToDelete));
+
+    FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
+  finally
+    StrDispose(FullStrToDelete);
+    FCaret.LineBytePos := FBlockSelection.EndLineBytePos;
+    FBlockSelection.DecPersistentLock;
+    DecPaintLock;
   end;
 end;
 
