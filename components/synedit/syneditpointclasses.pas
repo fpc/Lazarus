@@ -914,8 +914,8 @@ begin
         BB.X := 1;
       StartLineBytePos := BB; // deletes selection // calls selection changed
     end;
+    FInternalCaret.LineBytePos := StartLineBytePos;
     if (Value <> nil) and (Value[0] <> #0) then begin
-      FInternalCaret.LineBytePos := StartLineBytePos;
       InsertText;
       StartLineBytePos := FInternalCaret.LineBytePos; // reset selection
     end;
