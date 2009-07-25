@@ -402,7 +402,7 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;      FC: clFuchsia; Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;      FC: clRed;     Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;      FC: clBlue;    Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: $E6FFFA;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: $FAFFE6;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: [])
     );
     Single: (
       { shaGutter      } clBtnFace,
