@@ -28,6 +28,27 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     FocusControl = TextToFindComboBox
     ParentColor = False
   end
+  object EnableAutoCompleteSpeedButton: TSpeedButton
+    AnchorSideLeft.Control = TextToFindComboBox
+    AnchorSideTop.Control = TextToFindComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = TextToFindComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 389
+    Height = 29
+    Top = 12
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    AllowAllUp = True
+    BorderSpacing.Right = 6
+    Color = clBtnFace
+    GroupIndex = 1
+    NumGlyphs = 0
+    OnClick = EnableAutoCompleteSpeedButtonClick
+    ShowHint = True
+    ParentShowHint = False
+  end
   object ReplaceWithCheckbox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ReplaceTextComboBox
@@ -44,17 +65,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
   object TextToFindComboBox: TComboBox
     AnchorSideLeft.Control = TextToFindLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 116
+    AnchorSideRight.Control = EnableAutoCompleteSpeedButton
+    Left = 110
     Height = 29
     Top = 12
-    Width = 298
+    Width = 279
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
     BorderSpacing.Left = 6
-    BorderSpacing.Around = 6
     ItemHeight = 0
     OnKeyDown = TextToFindComboboxKeyDown
     TabOrder = 0

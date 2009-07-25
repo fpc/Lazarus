@@ -180,6 +180,7 @@ type
     // Find- and replace-history
     FFindHistory: TStringList;
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
+    FFindAutoComplete: boolean;
     FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
@@ -247,6 +248,8 @@ type
                                                  write FFindInFilesMaskHistory;
     property FindInFilesSearchOptions: TLazFindInFileSearchOptions
                read FFindInFilesSearchOptions write FFindInFilesSearchOptions;
+    property FindAutoComplete: boolean read FFindAutoComplete
+                                       write FFindAutoComplete;
 
     // Unit dependencies
     property UnitDependenciesHistory: TStringList read FUnitDependenciesHistory;
@@ -323,6 +326,7 @@ begin
 
   // Find- and replace-history
   FMaxFindHistory:=20;
+  FFindAutoComplete:=true;
   FFindHistory:=TStringList.Create;
   FReplaceHistory:=TStringList.Create;
   FFindInFilesPathHistory:=TStringList.Create;
@@ -391,6 +395,7 @@ var
 begin
   // Find- and replace-history
   FMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
+  FFindAutoComplete:=XMLConfig.GetValue(Path+'Find/AutoComplete/Value',FFindAutoComplete);
   LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   LoadRecentList(XMLConfig,FFindInFilesPathHistory,Path+
@@ -448,6 +453,7 @@ var
 begin
   // Find- and replace-history
   XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
+  XMLConfig.SetDeleteValue(Path+'Find/AutoComplete/Value',FFindAutoComplete,true);
   SaveRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   SaveRecentList(XMLConfig,FFindInFilesPathHistory,Path+

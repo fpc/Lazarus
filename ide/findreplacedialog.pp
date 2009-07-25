@@ -71,9 +71,11 @@ type
     ReplaceWithCheckbox: TCheckBox;
     ScopeGroupBox: TGroupBox;
     SelectedRadioButton: TRadioButton;
+    EnableAutoCompleteSpeedButton: TSpeedButton;
     TextToFindComboBox: TComboBox;
     TextToFindLabel: TLabel;
     WholeWordsOnlyCheckBox: TCheckBox;
+    procedure EnableAutoCompleteSpeedButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HelpButtonClick(Sender: TObject);
@@ -90,7 +92,9 @@ type
     RegExpr: TRegExpr;
     function CheckInput: boolean;
     function GetComponentText(c: TFindDlgComponent): string;
+    function GetEnableAutoComplete: boolean;
     procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
+    procedure SetEnableAutoComplete(const AValue: boolean);
     procedure SetOnKey(const AValue: TOnFindDlgKey);
     procedure SetOptions(NewOptions: TSynSearchOptions);
     function GetOptions: TSynSearchOptions;
@@ -104,6 +108,8 @@ type
     destructor Destroy; override;
   public
     property Options: TSynSearchOptions read GetOptions write SetOptions;
+    property EnableAutoComplete: boolean read GetEnableAutoComplete
+                                         write SetEnableAutoComplete;
     property FindText:AnsiString read GetFindText write SetFindText;
     property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
     property OnKey: TOnFindDlgKey read FOnKey write SetOnKey;
@@ -254,6 +260,13 @@ begin
   EnableAlign;
 end;
 
+procedure TLazFindReplaceDialog.EnableAutoCompleteSpeedButtonClick(
+  Sender: TObject);
+begin
+  TextToFindComboBox.AutoComplete:=EnableAutoCompleteSpeedButton.Down;
+  ReplaceTextComboBox.AutoComplete:=EnableAutoCompleteSpeedButton.Down;
+end;
+
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
 begin
   if not CheckInput then exit;
@@ -314,6 +327,11 @@ begin
   end;
 end;
 
+function TLazFindReplaceDialog.GetEnableAutoComplete: boolean;
+begin
+  Result:=EnableAutoCompleteSpeedButton.Down;
+end;
+
 procedure TLazFindReplaceDialog.SetComponentText(c: TFindDlgComponent;
   const AValue: string);
 begin
@@ -322,6 +340,13 @@ begin
   else
     Replacetext:=AValue;
   end;
+end;
+
+procedure TLazFindReplaceDialog.SetEnableAutoComplete(const AValue: boolean);
+begin
+  EnableAutoCompleteSpeedButton.Down:=AValue;
+  TextToFindComboBox.AutoComplete:=AValue;
+  ReplaceTextComboBox.AutoComplete:=AValue;
 end;
 
 procedure TLazFindReplaceDialog.SetOnKey(const AValue: TOnFindDlgKey);

@@ -1212,6 +1212,7 @@ end;
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 var ALeft,ATop:integer;
     bSelectedTextOption: Boolean;
+    DlgResult: TModalResult;
 begin
   if SourceNotebook<>nil then
     SourceNotebook.InitFindDialog;
@@ -1242,10 +1243,11 @@ begin
       //debugln('TSourceEditor.StartFindAndReplace B not FindTextAtCursor');
       LazFindReplaceDialog.FindText:='';
     end;
-    // if there is no FindText, use the most recently used FindText
-    if (LazFindReplaceDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
-      LazFindReplaceDialog.FindText:=InputHistories.FindHistory[0]
   end;
+  LazFindReplaceDialog.EnableAutoComplete:=InputHistories.FindAutoComplete;
+  // if there is no FindText, use the most recently used FindText
+  if (LazFindReplaceDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
+    LazFindReplaceDialog.FindText:=InputHistories.FindHistory[0];
 
   GetDialogPosition(LazFindReplaceDialog.Width,LazFindReplaceDialog.Height,ALeft,ATop);
   LazFindReplaceDialog.Left:=ALeft;
@@ -1258,9 +1260,10 @@ begin
     and (EditorComponent.BlockBegin.Y<>EditorComponent.BlockEnd.Y) then
       LazFindReplaceDialog.Options := LazFindReplaceDialog.Options + [ssoSelectedOnly];
 
-    if (LazFindReplaceDialog.ShowModal = mrCancel) then begin
+    DlgResult:=LazFindReplaceDialog.ShowModal;
+    InputHistories.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
+    if DlgResult = mrCancel then
       exit;
-    end;
     //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
     Replace:=ssoReplace in LazFindReplaceDialog.Options;
