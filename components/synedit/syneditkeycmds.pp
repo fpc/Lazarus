@@ -97,6 +97,9 @@ const
                             // command, but with selection enabled. This is not
                             // a command itself.
 
+  ecSelectionStart  = 100;  // The lowest  Selection Command
+  ecSelectionEnd    = 199;  // The highest Selection Command
+
   // Same as commands above, except they affect selection, too
   ecSelLeft         = ecLeft + ecSelection;
   ecSelRight        = ecRight + ecSelection;
