@@ -4232,7 +4232,6 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
     StrRange: CFRange;
   begin
     Result := 'en';
-    if CFBundleGetMainBundle = nil then Exit;
     LangArray := CFBundleCopyLocalizationsForPreferences(CFBundleCopyBundleLocalizations(CFBundleGetMainBundle), nil);
     try
       if CFArrayGetCount(LangArray) > 0 then
@@ -4256,8 +4255,13 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
   {$ENDIF}
 begin
 {$IFDEF DARWIN}
-  Lang := GetLanguage;
-  FallbackLang := Copy(Lang, 1, 2);
+  if CFBundleGetMainBundle = nil then
+    GetLanguageIDs(Lang, FallbackLang)
+  else
+  begin
+    Lang := GetLanguage;
+    FallbackLang := Copy(Lang, 1, 2);
+  end;
 {$ELSE}
   GetLanguageIDs(Lang, FallbackLang);
 {$ENDIF}
