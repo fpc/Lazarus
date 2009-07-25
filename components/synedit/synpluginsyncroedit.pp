@@ -135,6 +135,7 @@ type
     FGutterGlyph: TBitmap;
     function GetGutterGlyphRect(aLine: Integer): TRect;
     function GetGutterGlyphRect: TRect;
+    function GetGutterGlyphPaintLine: Integer;
     procedure SetGlyphAtLine(const AValue: Integer);
     procedure SetGutterGlyph(const AValue: TBitmap);
     procedure DoInvalidate;
@@ -720,7 +721,7 @@ begin
   end;
   rcInval := GetGutterGlyphRect;
   // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
-  rcInval.Right := TSynEdit(SynEdit).GutterWidth + 2;
+  rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).GutterWidth + 2);
   InvalidateRect(SynEdit.Handle, @rcInval, False);
 end;
 
@@ -731,8 +732,15 @@ begin
 end;
 
 procedure TSynPluginSyncroEditMarkup.DoTopLineChanged(OldTopLine: Integer);
+var
+  rcInval: TRect;
 begin
   inherited DoTopLineChanged(OldTopLine);
+  // Glyph may have drawn up to one Line above
+  if FGlyphLastLine > 1 then begin
+    rcInval := GetGutterGlyphRect(FGlyphLastLine - 1);
+    InvalidateRect(SynEdit.Handle, @rcInval, False);
+  end;
   DoInvalidate;
 end;
 
@@ -766,9 +774,7 @@ begin
   if (FGutterGlyph.Height > 0) then begin
     src :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
     dst := GutterGlyphRect;
-    FGlyphLastLine := FGlyphAtLine;
-    if FGlyphLastLine < 0 then
-      FGlyphLastLine := TSynEdit(SynEdit).CaretY;
+    FGlyphLastLine := GetGutterGlyphPaintLine;
     TSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
   end;
 end;
@@ -797,6 +803,20 @@ end;
 function TSynPluginSyncroEditMarkup.GetGutterGlyphRect: TRect;
 begin
   Result := GetGutterGlyphRect(GlyphAtLine);
+end;
+
+function TSynPluginSyncroEditMarkup.GetGutterGlyphPaintLine: Integer;
+var
+  i: Integer;
+begin
+  Result := FGlyphAtLine;
+  if Result < 0 then
+    Result := TSynEdit(SynEdit).CaretY;
+  if Result < TopLine then
+    Result := TopLine;
+  i := ScreenRowToRow(LinesInWindow);
+  if Result > i then
+    Result := i;
 end;
 
 procedure TSynPluginSyncroEditMarkup.SetGlyphAtLine(const AValue: Integer);
