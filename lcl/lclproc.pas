@@ -4232,6 +4232,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
     StrRange: CFRange;
   begin
     Result := 'en';
+    if CFBundleGetMainBundle = nil then Exit;
     LangArray := CFBundleCopyLocalizationsForPreferences(CFBundleCopyBundleLocalizations(CFBundleGetMainBundle), nil);
     try
       if CFArrayGetCount(LangArray) > 0 then
