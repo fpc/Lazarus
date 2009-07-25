@@ -71,6 +71,7 @@ type
 
   TSynEditSelection = class(TSynEditPointBase)
     FCaret: TSynEditCaret;
+    FInternalCaret: TSynEditCaret;
     fUndoList: TSynEditUndoList;
     FInvalidateLinesMethod: TInvalidateLines;
     FEnabled: Boolean;
@@ -97,6 +98,7 @@ type
     function  GetSelText: string;
     procedure SetSelText(const Value: string);
     procedure DoCaretChanged(Sender: TObject);
+    procedure AdjustAfterTrimming; // TODO: Move into TrimView?
   protected
     Procedure LineChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
@@ -104,7 +106,6 @@ type
   public
     constructor Create(ALines: TSynEditStrings; aActOnLineChanges: Boolean);
     destructor Destroy; override;
-    procedure AdjustAfterTrimming; // TODO: Move into TrimView
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar);
     function  SelAvail: Boolean;
     function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
@@ -245,6 +246,7 @@ end;
 constructor TSynEditCaret.Create;
 begin
   inherited Create;
+  FMaxLeftChar := nil;
   fLinePos:= 1;
   fCharPos:= 1;
   FAllowPastEOL := True;
@@ -361,7 +363,10 @@ var
 begin
   Lock;
   try
-    nMaxX := FMaxLeftChar^;
+    if FMaxLeftChar <> nil then
+      nMaxX := FMaxLeftChar^
+    else
+      nMaxX := MaxInt;
     if NewLine > FLines.Count then
       NewLine := FLines.Count;
     if NewLine < 1 then begin
@@ -369,12 +374,11 @@ begin
       NewLine := 1;
       if (not FAllowPastEOL) and (FForcePastEOL = 0) then
         nMaxX := 1;
-    end else begin
-      Line := Lines[NewLine - 1];
-      nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
-      if ((FAllowPastEOL) or (FForcePastEOL > 0)) and (nMaxX < FMaxLeftChar^) then
-        nMaxX := FMaxLeftChar^;
-    end;
+    end else
+      if (not FAllowPastEOL) and (FForcePastEOL = 0) then begin
+        Line := Lines[NewLine - 1];
+        nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
+      end;
     if NewCharPos > nMaxX then
       NewCharPos := nMaxX;
     if NewCharPos < 1 then
@@ -441,6 +445,9 @@ end;
 constructor TSynEditSelection.Create(ALines : TSynEditStrings; aActOnLineChanges: Boolean);
 begin
   Inherited Create(ALines);
+  FInternalCaret := TSynEditCaret.Create;
+  FInternalCaret.Lines := FLines;
+
   FActiveSelectionMode := smNormal;
   FStartLinePos := 1;
   FStartBytePos := 1;
@@ -457,6 +464,7 @@ end;
 
 destructor TSynEditSelection.Destroy;
 begin
+  FreeAndNil(FInternalCaret);
   if FHookedLines then begin
     FLines.RemoveEditHandler(@DoLinesEdited);
     FLines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineChanged);
@@ -699,14 +707,14 @@ var
             end;
             FLines.EditDelete(BB.X, BB.Y, BE.X - BB.X);
           end;
-          FCaret.LineBytePos := BB;
+          FInternalCaret.LineBytePos := BB;
         end;
       smColumn:
         begin
-          FCaret.LineBytePos := BB;
-          l := FCaret.CharPos;
-          FCaret.LineBytePos := BE;
-          r := FCaret.CharPos;
+          FInternalCaret.LineBytePos := BB;
+          l := FInternalCaret.CharPos;
+          FInternalCaret.LineBytePos := BE;
+          r := FInternalCaret.CharPos;
           // swap l, r if needed
           if l > r then
           {$IFDEF SYN_COMPILER_3_UP}
@@ -719,15 +727,15 @@ var
           end;
           {$ENDIF}
           for y := BB.Y to BE.Y do begin
-            FCaret.LineCharPos := Point(l, y);
-            xb := FCaret.BytePos;
-            FCaret.LineCharPos := Point(r, y);
-            xe := Min(FCaret.BytePos, 1 + length(FCaret.LineText));
+            FInternalCaret.LineCharPos := Point(l, y);
+            xb := FInternalCaret.BytePos;
+            FInternalCaret.LineCharPos := Point(r, y);
+            xe := Min(FInternalCaret.BytePos, 1 + length(FInternalCaret.LineText));
             if xe > xb then
               FLines.EditDelete(xb, y, xe - xb);
           end;
           // FLines never get deleted completely, so keep caret at end.
-          FCaret.LineCharPos := Point(l, FEndLinePos);
+          FInternalCaret.LineCharPos := Point(l, FEndLinePos);
           // Column deletion never removes a line entirely, so no mark
           // updating is needed here.
         end;
@@ -740,7 +748,7 @@ var
           end;
           if BE.Y >= BB.Y then
             FLines.EditLinesDelete(BB.Y, BE.Y - BB.Y + 1);
-          FCaret.LineCharPos := Point(1, BB.Y);
+          FInternalCaret.LineCharPos := Point(1, BB.Y);
         end;
     end;
   end;
@@ -768,13 +776,13 @@ var
       LogCaretXY: TPoint;
     begin
       Result := 0;
-      LogCaretXY := FCaret.LineBytePos;
+      LogCaretXY := FInternalCaret.LineBytePos;
 
       Start := PChar(Value);
       P := GetEOL(Start);
       if P^ = #0 then begin
         FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Value);
-        FCaret.BytePos := FCaret.BytePos + Length(Value);
+        FInternalCaret.BytePos := FInternalCaret.BytePos + Length(Value);
       end else begin
         SetString(Str, Value, P - Start);
         FLines.EditInsert(LogCaretXY.X, LogCaretXY.Y, Str);
@@ -797,8 +805,8 @@ var
           else
             Str := '';
         end;
-        FCaret.LinePos := LogCaretXY.Y;
-        FCaret.BytePos := 1 + Length(Str);
+        FInternalCaret.LinePos := LogCaretXY.Y;
+        FInternalCaret.BytePos := 1 + Length(Str);
       end;
     end;
 
@@ -810,29 +818,29 @@ var
     begin
       // Insert string at current position
       Result := 0;
-      FCaret.IncForcePastEOL;
+      FInternalCaret.IncForcePastEOL;
       Start := PChar(Value);
       repeat
         P := GetEOL(Start);
         if P <> Start then begin
           SetLength(Str, P - Start);
           Move(Start^, Str[1], P - Start);
-          FLines.EditInsert(FCaret.BytePos, FCaret.LinePos, Str);
+          FLines.EditInsert(FInternalCaret.BytePos, FInternalCaret.LinePos, Str);
         end;
         if p^ in [#10,#13] then begin
           if (p[1] in [#10,#13]) and (p[1]<>p^) then
             inc(p,2)
           else
             Inc(P);
-          if FCaret.LinePos = FLines.Count then
-            FLines.EditLinesInsert(FCaret.LinePos + 1, 1);
+          if FInternalCaret.LinePos = FLines.Count then
+            FLines.EditLinesInsert(FInternalCaret.LinePos + 1, 1);
             // No need to inc result => adding at EOF
-          FCaret.LinePos := FCaret.LinePos + 1;
+          FInternalCaret.LinePos := FInternalCaret.LinePos + 1;
         end;
         Start := P;
       until P^ = #0;
-      FCaret.BytePos:= FCaret.BytePos + Length(Str);
-      FCaret.DecForcePastEOL;
+      FInternalCaret.BytePos:= FInternalCaret.BytePos + Length(Str);
+      FInternalCaret.DecForcePastEOL;
     end;
 
     function InsertLine: Integer;
@@ -842,7 +850,7 @@ var
       Str: string;
     begin
       Result := 0;
-      FCaret.CharPos := 1;
+      FInternalCaret.CharPos := 1;
       // Insert string before current line
       Start := PChar(Value);
       repeat
@@ -853,11 +861,11 @@ var
         end else
           Str := '';
         if (P^ = #0) then begin  // Not a full line?
-          FLines.EditInsert(1, FCaret.LinePos, Str);
-          FCaret.BytePos := 1 + Length(Str);
+          FLines.EditInsert(1, FInternalCaret.LinePos, Str);
+          FInternalCaret.BytePos := 1 + Length(Str);
         end else begin
-          FLines.EditLinesInsert(FCaret.LinePos, 1, Str);
-          FCaret.LinePos := FCaret.LinePos + 1;
+          FLines.EditLinesInsert(FInternalCaret.LinePos, 1, Str);
+          FInternalCaret.LinePos := FInternalCaret.LinePos + 1;
           Inc(Result);
           if P^ = #13 then
             Inc(P);
@@ -896,7 +904,6 @@ var
 begin
   FIsSettingText := True;
   FLines.BeginUpdate;
-  FCaret.Lock;
   try
     // BB is lower than BE
     BB := FirstLineBytePos;
@@ -908,13 +915,14 @@ begin
       StartLineBytePos := BB; // deletes selection // calls selection changed
     end;
     if (Value <> nil) and (Value[0] <> #0) then begin
-      FCaret.LineBytePos := StartLineBytePos;
+      FInternalCaret.LineBytePos := StartLineBytePos;
       InsertText;
-      StartLineBytePos := FCaret.LineBytePos; // reset selection
+      StartLineBytePos := FInternalCaret.LineBytePos; // reset selection
     end;
+    if FCaret <> nil then
+      FCaret.LineCharPos := FInternalCaret.LineCharPos;
   finally
-    FCaret.Unlock;
-    FLines.EndUpdate; // May reset Block Begin
+    FLines.EndUpdate;
     FIsSettingText := False;
   end;
 end;
@@ -937,14 +945,12 @@ procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 var
   nInval1, nInval2: integer;
   SelChanged: boolean;
-  Line: string;
 begin
   Value.y := MinMax(Value.y, 1, fLines.Count);
-  Line := Lines[Value.y - 1];
   if (FCaret <> nil) and FCaret.AllowPastEOL then
     Value.x := Max(Value.x, 1)
   else
-    Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
+    Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
   if (ActiveSelectionMode = smNormal) then
     if (Value.y >= 1) and (Value.y <= FLines.Count) then
       Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
@@ -982,18 +988,16 @@ end;
 procedure TSynEditSelection.SetEndLineBytePos(Value : TPoint);
 var
   nLine: integer;
-  Line: String;
   {$IFDEF SYN_MBCSSUPPORT}
   s: string;
   {$ENDIF}
 begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
-    Line := Lines[Value.y - 1];
     if (FCaret <> nil) and FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
     else
-      Value.x := MinMax(Value.x, 1, Lines.LogicalToPhysicalCol(Line, Value.y - 1, length(Line)+1));
+      Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
     if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then
         Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)

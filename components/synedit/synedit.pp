@@ -336,6 +336,7 @@ type
     {$IFDEF SYN_LAZARUS}
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
+    FInternalBlockSelection: TSynEditSelection;
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
@@ -1549,6 +1550,11 @@ begin
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
 
+  FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
+  FInternalBlockSelection.UndoList := fUndoList;
+  FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  // No need for caret, on interanl block
+
   FWordBreaker := TSynWordBreaker.Create;
 {$IFDEF SYN_COMPILER_4_UP}
 {$IFNDEF SYN_LAZARUS}
@@ -1806,6 +1812,7 @@ begin
   FreeAndNil(fFontDummy);
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView);
+  FreeAndNil(FInternalBlockSelection);
   FreeAndNil(FBlockSelection);
   FreeAndNil(FStrings);
   FreeAndNil(FTabbedLinesView);
@@ -5693,17 +5700,12 @@ begin
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := FBlockSelection.ActiveSelectionMode;
-            try
-              SetBlockBegin(PhysicalToLogicalPos(WP));
-              SetBlockEnd(PhysicalToLogicalPos(CaretXY));
-              FBlockSelection.ActiveSelectionMode := smNormal;
-              SetSelTextPrimitive(smNormal, nil, true);
-              if Helper <> '' then
-                FTabbedLinesView.EditInsert(CaretX, CaretY, Helper);
-            finally
-              FBlockSelection.ActiveSelectionMode := OldSelMode;
-            end;
+            FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
+            FInternalBlockSelection.EndLineBytePos := PhysicalToLogicalPos(CaretXY);
+            FInternalBlockSelection.ActiveSelectionMode := smNormal;
+            FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
+            if Helper <> '' then
+              FTabbedLinesView.EditInsert(CaretX, CaretY, Helper);
             CaretXY := Caret;
           end;
         end;
@@ -5714,19 +5716,13 @@ begin
           else
             WP := Point(1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            OldSelMode := FBlockSelection.ActiveSelectionMode;
-            try
-              SetBlockBegin(PhysicalToLogicalPos(WP));
-              SetBlockEnd(PhysicalToLogicalPos(CaretXY));
-              FBlockSelection.ActiveSelectionMode := smNormal;
-              SetSelTextPrimitive(smNormal, nil, true)
-            finally
-              FBlockSelection.ActiveSelectionMode := OldSelMode;
-            end;
+            FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
+            FInternalBlockSelection.EndLineBytePos := PhysicalToLogicalPos(CaretXY);
+            FInternalBlockSelection.ActiveSelectionMode := smNormal;
+            FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
             CaretXY := WP;
           end;
         end;
-{end}                                                                           //mh 2000-10-30
       ecDeleteLine:
         if not ReadOnly and not ((FTheLinesView.Count = 1) and (Length(FTheLinesView[0]) = 0))
         then begin
