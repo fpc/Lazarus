@@ -714,7 +714,7 @@ var
   rcInval: TRect;
 begin
   if not Enabled then exit;
-  if FGlyphLastLine >= 0 then begin
+  if FGlyphLastLine <> -2 then begin
     rcInval := GetGutterGlyphRect(FGlyphLastLine);
     InvalidateRect(SynEdit.Handle, @rcInval, False);
   end;
@@ -767,6 +767,8 @@ begin
     src :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
     dst := GutterGlyphRect;
     FGlyphLastLine := FGlyphAtLine;
+    if FGlyphLastLine < 0 then
+      FGlyphLastLine := TSynEdit(SynEdit).CaretY;
     TSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
   end;
 end;
