@@ -704,7 +704,8 @@ begin
   StoreSpacesForLine(LogY - 1,
                      copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s)),
                      fSynStrings.Strings[LogY - 1]);
-  UndoList.AddChange(TSynEditUndoTrimDelete.Create(LogX, LogY, Result));
+  if Result <> '' then
+    UndoList.AddChange(TSynEditUndoTrimDelete.Create(LogX, LogY, Result));
 end;
 
 procedure TSynEditStringTrimmingList.EditMoveToTrim(LogY, Len: Integer);
@@ -820,7 +821,7 @@ begin
   Len := length(t);
 
   IgnoreSendNotification(senrEditAction, True);
-  // Delete uncommited spaces
+  // Delete uncommited spaces (could laso be ByteLen too big, due to past EOL)
   if LogX + ByteLen > Len + 1 then begin
     if LogX > Len + 1 then
       ByteLen := ByteLen - (LogX - (Len + 1));
