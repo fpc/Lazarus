@@ -709,6 +709,7 @@ end;
 
 procedure TSynPluginSyncroEditMarkup.DoInvalidate;
 begin
+  if not Enabled then exit;
   // TODO: GutterPaint does not trigger Markup modules
   TSynEdit(SynEdit).Invalidate;
   //if TSynEdit(SynEdit).GutterWidth < FGutterGlyph.Width then
@@ -1017,9 +1018,11 @@ begin
   If (not SelectionObj.SelAvail) or (SelectionObj.ActiveSelectionMode = smColumn) then begin
     FLastSelStart := Point(-1,-1);
     FLastSelEnd := Point(-1,-1);
-    FWordIndex.Clear;
-    if Active then Editor.Invalidate;
-    Active := False;
+    if Active then begin
+      FWordIndex.Clear;
+      Editor.Invalidate;
+      Active := False;
+    end;
     FMode := spseIncative;
     exit;
   end;
