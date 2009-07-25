@@ -39,8 +39,10 @@ interface
 
 uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit,
-  LazarusIdeStrConsts, IDEWindowIntf, IDEContextHelpEdit;
+  ExtCtrls, LResources, Dialogs, Graphics,
+  SynEditTypes, SynRegExpr, SynEdit,
+  IDEImagesIntf, IDEWindowIntf,
+  LazarusIdeStrConsts, IDEContextHelpEdit;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -128,6 +130,8 @@ implementation
 { TLazFindReplaceDialog }
 
 constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
+var
+  PNG: TPortableNetworkGraphic;
 begin
   inherited Create(TheOwner);
 
@@ -140,6 +144,12 @@ begin
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
   UpdateHints;
+
+  // load icon
+  PNG:=TPortableNetworkGraphic.Create;
+  PNG.LoadFromLazarusResource('menu_stepinto');
+  EnableAutoCompleteSpeedButton.Glyph.Assign(PNG);
+  PNG.Free;
 
   OptionsGroupBox.Caption:=dlgFROpts;
 
