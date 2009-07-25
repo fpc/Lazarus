@@ -130,8 +130,6 @@ implementation
 { TLazFindReplaceDialog }
 
 constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
-var
-  PNG: TPortableNetworkGraphic;
 begin
   inherited Create(TheOwner);
 
@@ -143,13 +141,7 @@ begin
   TextToFindLabel.Caption:=dlgTextToFing;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
-  UpdateHints;
-
-  // load icon
-  PNG:=TPortableNetworkGraphic.Create;
-  PNG.LoadFromLazarusResource('menu_stepinto');
-  EnableAutoCompleteSpeedButton.Glyph.Assign(PNG);
-  PNG.Free;
+  EnableAutoCompleteSpeedButton.LoadGlyphFromLazarusResource('menu_stepinto');
 
   OptionsGroupBox.Caption:=dlgFROpts;
 
@@ -196,6 +188,8 @@ begin
   CancelButton.Caption:=dlgCancel;
 
   fReplaceAllClickedLast:=false;
+
+  UpdateHints;
 end;
 
 destructor TLazFindReplaceDialog.Destroy;
