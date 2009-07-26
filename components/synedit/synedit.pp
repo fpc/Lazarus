@@ -560,9 +560,6 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     function  GetSelectionMode : TSynSelectionMode;
     procedure SetSelectionMode(const Value: TSynSelectionMode);
-    {$IFNDEF SYN_LAZARUS}
-    procedure SetSelText(const Value: string);
-    {$ENDIF}
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
@@ -2379,20 +2376,23 @@ begin
         end;
       emcSelectWord:
         begin
-          if not (eoNoSelection in fOptions) then
-            SetWordBlock(AnInfo.NewCaret.LineBytePos);
+          if AnAction.MoveCaret then
+            MoveCaret;
+          SetWordBlock(AnInfo.NewCaret.LineBytePos);
           MouseCapture := FALSE;
         end;
       emcSelectLine:
         begin
-          if not (eoNoSelection in fOptions) then
-            SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
+          if AnAction.MoveCaret then
+            MoveCaret;
+          SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
           MouseCapture := FALSE;
         end;
       emcSelectPara:
         begin
-          if not (eoNoSelection in fOptions) then
-            SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
+          if AnAction.MoveCaret then
+            MoveCaret;
+          SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
           MouseCapture := FALSE;
         end;
       emcStartDragMove:
@@ -3684,23 +3684,26 @@ begin
   try
     if ClipHelper.TextP = nil then
       exit;
+    if SelAvail then
+      FBlockSelection.SelText := '';
 
     Result := True;
-    InsStart := FBlockSelection.StartLineBytePos;
-    SetSelTextPrimitive(ClipHelper.SelectionMode, ClipHelper.TextP, true);
+    InsStart := FCaret.LineBytePos;
+    FInternalBlockSelection.StartLineBytePos := InsStart;
+    FInternalBlockSelection.SetSelTextPrimitive(ClipHelper.SelectionMode, ClipHelper.TextP);
+    FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
 
     if eoFoldedCopyPaste in fOptions2 then begin
       PTxt := ClipHelper.GetTagPointer(synClipTagFold);
       if PTxt <> nil then begin
         ScanFromAfterLock;
         FFoldedLinesView.ApplyFoldDescription(InsStart.Y -1, InsStart.X,
-            FBlockSelection.StartLinePos-1, FBlockSelection.StartBytePos,
+            FInternalBlockSelection.StartLinePos-1, FInternalBlockSelection.StartBytePos,
             PTxt, ClipHelper.GetTagLen(synClipTagFold));
       end;
     end;
   finally
     EndUndoBlock;
-    EnsureCursorPosVisible;
   end;
 end;
 
@@ -3909,14 +3912,6 @@ begin
     Invalidate;
   end;
 end;
-
-{$IFNDEF SYN_LAZARUS}
-procedure TCustomSynEdit.SetSelText(const Value: string);
-begin
-  // No undo entry added
-  SetSelTextPrimitive(smNormal, PChar(Value));
-end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetSelTextPrimitive(PasteMode: TSynSelectionMode;
   Value: PChar; AddToUndoList: Boolean = false);
