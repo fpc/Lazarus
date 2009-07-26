@@ -2566,6 +2566,7 @@ begin
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
+      Exclude(fStateFlags, sfMouseSelecting);
       Include(fStateFlags, sfIsDragging);
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag(true);
@@ -2577,12 +2578,19 @@ begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
-    if (not(sfIsDragging in fStateFlags)) then
-      SetBlockEnd(FInternalCaret.LineBytePos);
-    if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth)
-      and (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
-    then
+
+    if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth) and
+      (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
+    then begin
+      if sfIsDragging in fStateFlags then
+        FBlockSelection.IncPersistentLock;
+      FBlockSelection.AutoExtend := sfMouseSelecting in fStateFlags;
       FCaret.LineBytePos := FInternalCaret.LineBytePos;
+      FBlockSelection.AutoExtend := False;
+      if sfIsDragging in fStateFlags then
+        FBlockSelection.DecPersistentLock;
+    end;
+
     // should we begin scrolling?
     Dec(X, fGutterWidth);
     // calculate chars past right
@@ -4946,10 +4954,12 @@ begin
       DragCursor := crMultiDrag
     else
       DragCursor := crDrag;
+    FBlockSelection.IncPersistentLock;
     if State = dsDragLeave then //restore prev caret position
       ComputeCaret(FMouseDownX, FMouseDownY)
     else //position caret under the mouse cursor
       ComputeCaret(X, Y);
+    FBlockSelection.DecPersistentLock;
   end;
 end;
 
