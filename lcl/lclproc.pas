@@ -4224,15 +4224,21 @@ end;
 procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 
   {$IFDEF DARWIN}
-  function GetLanguage: String;
+  function GetLanguage: boolean;
   var
     Ref: CFStringRef;
     LangArray: CFMutableArrayRef;
     StrSize: CFIndex;
     StrRange: CFRange;
+    Locals: CFArrayRef;
+    Bundle: CFBundleRef;
   begin
-    Result := 'en';
-    LangArray := CFBundleCopyLocalizationsForPreferences(CFBundleCopyBundleLocalizations(CFBundleGetMainBundle), nil);
+    Result := false;
+    Bundle:=CFBundleGetMainBundle;
+    if Bundle=nil then exit;
+    Locals:=CFBundleCopyBundleLocalizations(Bundle);
+    if Locals=nil then exit;
+    LangArray := CFBundleCopyLocalizationsForPreferences(Locals, nil);
     try
       if CFArrayGetCount(LangArray) > 0 then
       begin
@@ -4242,11 +4248,15 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 
         CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
           Ord('?'), False, nil, 0, StrSize);
-        SetLength(Result, StrSize);
+        SetLength(Lang, StrSize);
 
         if StrSize > 0 then
+        begin
           CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
-            Ord('?'), False, @Result[1], StrSize, StrSize);
+            Ord('?'), False, @Lang[1], StrSize, StrSize);
+          Result:=true;
+          FallbackLang := Copy(Lang, 1, 2);
+        end;
       end;
     finally
       CFRelease(LangArray);
@@ -4255,13 +4265,8 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
   {$ENDIF}
 begin
 {$IFDEF DARWIN}
-  if CFBundleGetMainBundle = nil then
-    GetLanguageIDs(Lang, FallbackLang)
-  else
-  begin
-    Lang := GetLanguage;
-    FallbackLang := Copy(Lang, 1, 2);
-  end;
+  if not GetLanguage then
+    GetLanguageIDs(Lang, FallbackLang);
 {$ELSE}
   GetLanguageIDs(Lang, FallbackLang);
 {$ENDIF}
