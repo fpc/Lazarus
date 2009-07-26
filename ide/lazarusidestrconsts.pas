@@ -1140,6 +1140,7 @@ resourcestring
   dlgIndentsTabsGroupOptions = 'Indent and Tabs:';
   dlgMouseGroupOptions = 'Mouse:';
   dlgCursorGroupOptions = 'Cursor:';
+  dlgBlockGroupOptions = 'Selection:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
   dlgDropFiles = 'Drop files';
@@ -1147,6 +1148,7 @@ resourcestring
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCursorX = 'Keep cursor X position';
   dlgPersistentCursor = 'Persistent cursor';
+  dlgPersistentBlock = 'Persistent Block';
   dlgCursorSkipsSelection = 'Cursor skips selection';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
@@ -2036,6 +2038,18 @@ resourcestring
   srkmecToggleMode            = 'Toggle Mode';
   srkmecBlockIndent           = 'Indent block';
   srkmecBlockUnindent         = 'Unindent block';
+
+  srkmecBlockSetBegin   = 'Set block begin';
+  srkmecBlockSetEnd     = 'Set block end';
+  srkmecBlockToggleHide = 'Toggle block';
+  srkmecBlockHide       = 'Hide Block';
+  srkmecBlockShow       = 'Show Block';
+  srkmecBlockMove       = 'Move Block';
+  srkmecBlockCopy       = 'Copy Block';
+  srkmecBlockDelete     = 'Delete Block';
+  srkmecBlockGotoBegin  = 'Goto Block begin';
+  srkmecBlockGotoEnd    = 'Goto Block end';
+
   srkmecShiftTab              = 'Shift Tab';
   lisTab = 'Tab';
   srkmecMatchBracket          = 'Go to matching bracket';
@@ -4276,7 +4290,7 @@ resourcestring
     +'mode %s%s%s. The build mode must be a pascal identifier.';
   lisThereIsAlreadyABuildModeWithTheName = 'There is already a build mode '
     +'with the name %s%s%s.';  
-  lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';  
+  lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';
   lisSetValue = 'Set value';
   lisCreateFunction = 'Create function';
   lisResult2 = 'Result:';

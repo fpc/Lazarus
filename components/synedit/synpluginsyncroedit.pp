@@ -182,7 +182,7 @@ type
     procedure ResetDefaults; override;
   end;
 
-  TSynPluginSyncroEditModes = (spseIncative, spseSelecting, spseEditing);
+  TSynPluginSyncroEditModes = (spseIncative, spseSelecting, spseEditing, spseInvalid);
   { TSynPluginSyncroEdit }
 
   TSynPluginSyncroEdit = class(TSynPluginCustomSyncroEdit)
@@ -215,6 +215,7 @@ type
     procedure DoSelectionChanged(Sender: TObject);
     procedure DoScanSelection(Data: PtrInt);
     procedure DoOnDeactivate; override;
+    procedure DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean); override;
 
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
@@ -313,11 +314,16 @@ end;
 function TSynPluginSyncroEditLowerLineCache.GetLowLine(aIndex: Integer): String;
 var
   i, l: Integer;
+
 begin
   l := length(FLower);
   for i := 0 to l-1 do
     if FLower[i].LineIndex = aIndex then
       exit(FLower[i].LineText);
+
+  Result := UTF8LowerCase(FLines[aIndex]);
+  if Result = '' then
+    exit;
   if l < MAX_CACHE then begin
     inc(l);
     SetLength(FLower, l);
@@ -327,8 +333,7 @@ begin
     FLower[i].LineText  := FLower[i-1].LineText;
   end;
   FLower[0].LineIndex := aIndex;
-  FLower[0].LineText  := UTF8LowerCase(FLines[aIndex]);
-  Result := FLower[0].LineText;
+  FLower[0].LineText  := Result;
 end;
 
 procedure TSynPluginSyncroEditLowerLineCache.SetLines(const AValue: TSynEditStrings);
@@ -1064,14 +1069,19 @@ begin
       FWordIndex.Clear;
       Editor.Invalidate;
       Active := False;
+      MarkupEnabled := False;
     end;
     FMode := spseIncative;
     exit;
   end;
 
+  if FMode = spseInvalid then exit;
+
   if FMode = spseIncative then begin
     Cells.Clear;
     AreaMarkupEnabled := False;
+    MarkupEnabled := False;
+    Active := True;
   end;
   FMode := spseSelecting;
   Markup.GlyphAtLine := -1;
@@ -1134,8 +1144,8 @@ begin
     end;
 
     if (NewPos = NewEnd) or (not InitParsedPoints) then begin
-      if Active then Editor.Invalidate;
-      Active := False;
+      if MarkupEnabled then Editor.Invalidate;
+      MarkupEnabled := False;
       exit;
     end;
 
@@ -1162,7 +1172,7 @@ begin
         FLastSelEnd := FParsedStop;
     end;
 
-    Active := FWordIndex.MultiWordCount > 0;
+    MarkupEnabled := FWordIndex.MultiWordCount > 0;
     //debugln(['COUNTS: ', FWordIndex.WordCount,' mult=',FWordIndex.MultiWordCount, ' hash=',FWordIndex.EntryCount]);
 
     if FWordScanCount > MAX_WORDS_PER_SCAN then begin
@@ -1182,6 +1192,19 @@ begin
   AreaMarkupEnabled := False;
   Cells.Clear;
   inherited DoOnDeactivate;
+end;
+
+procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
+begin
+  if (FMode = spseSelecting) then begin
+    inherited DoBeforeEdit(aX, aY, aUndoRedo);
+    FWordIndex.Clear;
+    Editor.Invalidate;
+    Active := False;
+    FMode := spseInvalid;
+  end
+  else
+    inherited DoBeforeEdit(aX, aY, aUndoRedo);
 end;
 
 function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;

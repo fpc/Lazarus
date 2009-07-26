@@ -163,6 +163,18 @@ const
   ecColumnSelect    = 232;  // Column selection mode
   ecLineSelect      = 233;  // Line selection mode
 
+  // Persistent Block
+  ecBlockSetBegin   = 235;
+  ecBlockSetEnd     = 236;
+  ecBlockToggleHide = 237;
+  ecBlockHide       = 238;
+  ecBlockShow       = 239;
+  ecBlockMove       = 240;
+  ecBlockCopy       = 241;
+  ecBlockDelete     = 242;
+  ecBlockGotoBegin  = 243;
+  ecBlockGotoEnd    = 244;
+
   ecMatchBracket    = 250;  // Go to matching bracket
 
   ecGotoMarker0     = 301;  // Goto marker
@@ -465,7 +477,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..128] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..138] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -550,6 +562,16 @@ const
     (Value: ecNormalSelect; Name: 'ecNormalSelect'),
     (Value: ecColumnSelect; Name: 'ecColumnSelect'),
     (Value: ecLineSelect; Name: 'ecLineSelect'),
+    (Value: ecBlockSetBegin;   Name: 'ecBlockSetBegin'),
+    (Value: ecBlockSetEnd;     Name: 'ecBlockSetEnd'),
+    (Value: ecBlockToggleHide; Name: 'ecBlockToggleHide'),
+    (Value: ecBlockHide;       Name: 'ecBlockHide'),
+    (Value: ecBlockShow;       Name: 'ecBlockShow'),
+    (Value: ecBlockMove;       Name: 'ecBlockMove'),
+    (Value: ecBlockCopy;       Name: 'ecBlockCopy'),
+    (Value: ecBlockDelete;     Name: 'ecBlockDelete'),
+    (Value: ecBlockGotoBegin;  Name: 'ecBlockGotoBegin'),
+    (Value: ecBlockGotoEnd;    Name: 'ecBlockGotoEnd'),
     (Value: ecAutoCompletion; Name: 'ecAutoCompletion'),
     (Value: ecUserFirst; Name: 'ecUserFirst'),
     (Value: ecGotoMarker0; Name: 'ecGotoMarker0'),

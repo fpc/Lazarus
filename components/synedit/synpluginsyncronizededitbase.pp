@@ -142,6 +142,7 @@ type
     FCells: TSynPluginSyncronizedEditList;
     FCurrentCell: Integer;
     FAreaMarkupEnabled: Boolean;
+    FMarkupEnabled: Boolean;
     FEnabled: Boolean;
     FEditing: Boolean;
 
@@ -155,6 +156,7 @@ type
     procedure SetCurrentCell(const AValue: Integer);
     procedure SetAreaMarkupEnabled(const AValue: Boolean);
     procedure SetEnabled(const AValue: Boolean);
+    procedure SetMarkupEnabled(const AValue: Boolean);
   protected
     FMarkup: TSynPluginSyncronizedEditMarkup;
     FMarkupArea: TSynPluginSyncronizedEditMarkupArea;
@@ -163,8 +165,8 @@ type
     procedure SetEditor(const AValue: TCustomSynEdit); override;
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
-    procedure DoBeforeEdit(aX, aY: Integer); virtual;
-    procedure DoAfterEdit(aX, aY: Integer); virtual;
+    procedure DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean); virtual;
+    procedure DoAfterEdit(aX, aY: Integer; aUndoRedo: Boolean); virtual;
     procedure DoClear; virtual;
     procedure DoOnActivate; virtual;
     procedure DoOnDeactivate; virtual;
@@ -173,6 +175,7 @@ type
     property Markup: TSynPluginSyncronizedEditMarkup read FMarkup;
     property MarkupArea: TSynPluginSyncronizedEditMarkupArea read FMarkupArea;
     property AreaMarkupEnabled: Boolean read FAreaMarkupEnabled write SetAreaMarkupEnabled;
+    property MarkupEnabled: Boolean read FMarkupEnabled write SetMarkupEnabled;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,7 +203,7 @@ type
     procedure SetEditor(const AValue: TCustomSynEdit); override;
     procedure DoOnActivate; override;
     procedure DoOnDeactivate; override;
-    procedure DoBeforeEdit(aX, aY: Integer); override;
+    procedure DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean); override;
     procedure UpdateCurrentCell;
     procedure DoCaretChanged(Sender: TObject);
     property LastCell: Integer read FLastCell;
@@ -623,6 +626,7 @@ begin
   FCells := TSynPluginSyncronizedEditList.Create;
   CurrentCell := -1;
   AreaMarkupEnabled := False;
+  MarkupEnabled := True;
   inherited Create(AOwner);
   FEnabled := True;
   Active := False;
@@ -704,7 +708,7 @@ begin
   IsActive := Active;
   FEnabled := AValue;
   if FMarkup <> nil then
-    FMarkup.Enabled := Active;
+    FMarkup.Enabled := Active and FMarkupEnabled;
   if FMarkupArea <> nil then
     FMarkupArea.Enabled := Active and FAreaMarkupEnabled;
   if IsActive <> Active then begin
@@ -712,6 +716,14 @@ begin
     then DoOnActivate
     else DoOnDeactivate;
   end;
+end;
+
+procedure TSynPluginSyncronizedEditBase.SetMarkupEnabled(const AValue: Boolean);
+begin
+  if FMarkupEnabled = AValue then exit;
+  FMarkupEnabled := AValue;
+  if FMarkup <> nil then
+    FMarkup.Enabled := Active and FMarkupEnabled;
 end;
 
 procedure TSynPluginSyncronizedEditBase.MarkupChanged(AMarkup: TObject);
@@ -742,7 +754,7 @@ begin
   IsActive := Active;
   FActive := AValue;
   if FMarkup <> nil then
-    FMarkup.Enabled := Active;
+    FMarkup.Enabled := Active and FMarkupEnabled;
   if FMarkupArea <> nil then
     FMarkupArea.Enabled := Active and FAreaMarkupEnabled;
   if IsActive <> Active then begin
@@ -794,11 +806,11 @@ var
   edit: Boolean;
   CaretPos: TPoint;
 begin
-  if (not Active) or (FCells.Count = 0) then exit;
+  if not Active then exit;
   Pos := Point(aBytePos, aLinePos);
   Pos2 := Pos;
-  if (not (FEditing or IsUndoing or IsRedoing)) then
-    DoBeforeEdit(Pos.x, Pos.y);
+  if not FEditing then
+    DoBeforeEdit(Pos.x, Pos.y, IsUndoing or IsRedoing);
 
   // Todo: need do add undo info (start/stop flag),
   // so we know which group (if any) this applies to
@@ -895,16 +907,16 @@ begin
     Pos2.y := Pos.y + CurCell.LogStart.y;
   end;
 
-  if (not (FEditing or IsUndoing or IsRedoing)) then
-    DoAfterEdit(Pos2.x, Pos2.y);
+  if not FEditing then
+    DoAfterEdit(Pos2.x, Pos2.y, IsUndoing or IsRedoing);
 end;
 
-procedure TSynPluginSyncronizedEditBase.DoBeforeEdit(aX, aY: Integer);
+procedure TSynPluginSyncronizedEditBase.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
 begin
   (* Do Nothing *);
 end;
 
-procedure TSynPluginSyncronizedEditBase.DoAfterEdit(aX, aY: Integer);
+procedure TSynPluginSyncronizedEditBase.DoAfterEdit(aX, aY: Integer; aUndoRedo: Boolean);
 begin
   (* Do Nothing *);
 end;
@@ -976,9 +988,10 @@ begin
   end;
 end;
 
-procedure TSynPluginCustomSyncroEdit.DoBeforeEdit(aX, aY: Integer);
+procedure TSynPluginCustomSyncroEdit.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
 begin
-  if not Active then exit;
+  inherited;
+  if aUndoRedo or not Active then exit;
   UpdateCurrentCell;
   if CurrentCell < 0 then begin
     Clear;

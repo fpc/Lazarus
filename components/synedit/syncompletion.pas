@@ -63,10 +63,9 @@ type
       Selected: boolean; Index: integer): TPoint of object;
   {$ENDIF}
   TCodeCompletionEvent = procedure(var Value: string;
-                                   {$IFDEF SYN_LAZARUS}
                                    SourceValue: string;
+                                   var SourceStart, SourceEnd: TPoint;
                                    KeyChar: TUTF8Char;
-                                   {$ENDIF}
                                    Shift: TShiftState) of object;
   TValidateEvent = procedure(Sender: TObject;
                              {$IFDEF SYN_LAZARUS}
@@ -1297,18 +1296,13 @@ begin
   end;
 end;
 
-procedure TSynCompletion.Validate(Sender: TObject;
-  {$IFDEF SYN_LAZARUS}KeyChar: TUTF8Char;{$ENDIF}
+procedure TSynCompletion.Validate(Sender: TObject; KeyChar: TUTF8Char;
   Shift: TShiftState);
 var
   F: TSynBaseCompletionForm;
   Value, CurLine: string;
-  {$IFDEF SYN_LAZARUS}
-  NewCaretXY, NewBlockBegin: TPoint;
+  NewBlockBegin, NewBlockEnd: TPoint;
   LogCaret: TPoint;
-  {$Else}
-  Pos: TPoint;
-  {$ENDIF}
 begin
   //debugln('TSynCompletion.Validate ',dbgsName(Sender),' ',dbgs(Shift),' Position=',dbgs(Position));
   F := Sender as TSynBaseCompletionForm;
@@ -1316,49 +1310,38 @@ begin
   if F.CurrentEditor is TCustomSynEdit then
     with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
-      {$IFDEF SYN_LAZARUS}
       LogCaret:=PhysicalToLogicalPos(CaretXY);
       NewBlockBegin:=LogCaret;
       CurLine:=Lines[NewBlockBegin.Y - 1];
       while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
       and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
         dec(NewBlockBegin.X);
-      BlockBegin:=NewBlockBegin;
+      //BlockBegin:=NewBlockBegin;
       if ssShift in Shift then begin
         // replace only prefix
-        BlockEnd := LogCaret;
+        NewBlockEnd := LogCaret;
       end else begin
         // replace the whole word
-        NewCaretXY:=LogCaret;
-        CurLine:=Lines[NewCaretXY.Y - 1];
-        while (NewCaretXY.X<=length(CurLine))
-        and (CurLine[NewCaretXY.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
-          inc(NewCaretXY.X);
-        BlockEnd := NewCaretXY;
+        NewBlockEnd := LogCaret;
+        CurLine:=Lines[NewBlockEnd.Y - 1];
+        while (NewBlockEnd.X<=length(CurLine))
+        and (CurLine[NewBlockEnd.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          inc(NewBlockEnd.X);
       end;
-      {$ELSE}
-      BlockBegin := Point(CaretX - length(CurrentString), CaretY);
-      BlockEnd := Point(CaretX, CaretY);
-      {$ENDIF}
       //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
       if Position>=0 then begin
         if Assigned(FOnCodeCompletion) then
         begin
           Value := ItemList[Position];
-          FOnCodeCompletion(Value,{$IFDEF SYN_LAZARUS}SelText, KeyChar{$ENDIF}, Shift);
-          SelText := Value;
+          FOnCodeCompletion(Value, TextBetweenPoints[NewBlockBegin, NewBlockEnd],
+                            NewBlockBegin, NewBlockEnd, KeyChar, Shift);
+          //SelText := Value;
+          if (CompareCarets(NewBlockBegin, NewBlockEnd) <> 0) or (Value <> '') then
+            TextBetweenPoints[NewBlockBegin, NewBlockEnd] := Value;
         end else
-          SelText := ItemList[Position];
+          TextBetweenPoints[NewBlockBegin, NewBlockEnd] := ItemList[Position];
+          //SelText := ItemList[Position];
       end;       
-      {$IFNDEF SYN_LAZARUS}
-      with Editor do begin
-        Pos := CaretXY;
-        Perform(LM_MBUTTONDOWN, 0, 0);
-        Application.ProcessMessages;
-        CaretXY := Pos;
-      end;
-      SetFocus;
-      {$ENDIF}
       EndUndoBlock;
     end;
 end;

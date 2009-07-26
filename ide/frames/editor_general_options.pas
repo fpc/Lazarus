@@ -44,11 +44,14 @@ type
     Bevel4: TBevel;
     Bevel5: TBevel;
     Bevel1a: TBevel;
+    Bevel6: TBevel;
+    Bevel6a: TBevel;
     BlockIndentComboBox: TComboBox;
     BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
     BlockIndentTypeLabel: TLabel;
+    BlockGroupLabel: TLabel;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
@@ -58,6 +61,7 @@ type
     CursorGroupLabel: TLabel;
     DropFilesCheckBox: TCheckBox;
     MouseGroupLabel: TLabel;
+    PersistentBlockCheckBox: TCheckBox;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
     TabsToSpacesCheckBox: TCheckBox;
@@ -87,6 +91,7 @@ type
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
     procedure HomeKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure KeepCursorXCheckBoxChange(Sender: TObject);
+    procedure PersistentBlockCheckBoxChange(Sender: TObject);
     procedure PersistentCursorCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
@@ -161,6 +166,10 @@ begin
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
+
+  // Block
+  BlockGroupLabel.Caption := dlgBlockGroupOptions;
+  PersistentBlockCheckBox.Caption := dlgPersistentBlock;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -200,6 +209,9 @@ begin
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
+
+    // block
+    PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -277,6 +289,9 @@ begin
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
+
+    // block
+    UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);
   end;
 end;
 
@@ -399,6 +414,11 @@ end;
 procedure TEditorGeneralOptionsFrame.KeepCursorXCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(KeepCursorXCheckBox.Checked, eoKeepCaretX);
+end;
+
+procedure TEditorGeneralOptionsFrame.PersistentBlockCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(PersistentBlockCheckBox.Checked, eoPersistentBlock);
 end;
 
 procedure TEditorGeneralOptionsFrame.PersistentCursorCheckBoxChange(

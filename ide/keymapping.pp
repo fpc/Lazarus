@@ -272,6 +272,17 @@ begin
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
+  ecBlockSetBegin   : SetResult2(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockSetEnd     : SetResult2(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockToggleHide : SetResult2(VK_K,[ssCtrl],VK_H,[],  VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockHide       : SetResult2(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockShow       : SetResult2(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockMove       : SetResult2(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
+  ecBlockCopy       : SetResult2(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
+  ecBlockDelete     : SetResult2(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
+  ecBlockGotoBegin  : SetResult2(VK_Q,[ssCtrl],VK_B,[],  VK_Q,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockGotoEnd    : SetResult2(VK_Q,[ssCtrl],VK_K,[],  VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+
   // column mode selection
   ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[]);
   ecColSelDown: SetResult(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[]);
@@ -694,6 +705,17 @@ begin
   ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  ecBlockSetBegin   : SetResult(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockSetEnd     : SetResult(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockToggleHide : SetResult(VK_K,[ssCtrl],VK_H,[],  VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockHide       : SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockShow       : SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockMove       : SetResult(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
+  ecBlockCopy       : SetResult(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
+  ecBlockDelete     : SetResult(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
+  ecBlockGotoBegin  : SetResult(VK_Q,[ssCtrl],VK_B,[],  VK_Q,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockGotoEnd    : SetResult(VK_Q,[ssCtrl],VK_K,[],  VK_Q,[ssCtrl],VK_K,[ssCtrl]);
 
   // column mode selection
   ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
@@ -1270,6 +1292,17 @@ begin
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
+  ecBlockSetBegin   : SetResult2(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockSetEnd     : SetResult2(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockToggleHide : SetResult2(VK_K,[ssCtrl],VK_H,[],  VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockHide       : SetResult2(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockShow       : SetResult2(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockMove       : SetResult2(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
+  ecBlockCopy       : SetResult2(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
+  ecBlockDelete     : SetResult2(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
+  ecBlockGotoBegin  : SetResult2(VK_Q,[ssCtrl],VK_B,[],  VK_Q,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockGotoEnd    : SetResult2(VK_Q,[ssCtrl],VK_K,[],  VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+
 // column mode selection
   ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[]);
   ecColSelDown: SetResult(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[]);
@@ -1794,6 +1827,17 @@ begin
     ecToggleMarker0 ..
     ecToggleMarker9           : Result:= Format(srkmecToggleMarker,[cmd-ecToggleMarker0]);
 
+    ecBlockSetBegin   : Result := srkmecBlockSetBegin;
+    ecBlockSetEnd     : Result := srkmecBlockSetEnd;
+    ecBlockToggleHide : Result := srkmecBlockToggleHide;
+    ecBlockHide       : Result := srkmecBlockHide;
+    ecBlockShow       : Result := srkmecBlockShow;
+    ecBlockMove       : Result := srkmecBlockMove;
+    ecBlockCopy       : Result := srkmecBlockCopy;
+    ecBlockDelete     : Result := srkmecBlockDelete;
+    ecBlockGotoBegin  : Result := srkmecBlockGotoBegin;
+    ecBlockGotoEnd    : Result := srkmecBlockGotoEnd;
+
     // sourcenotebook
     ecNextEditor              : Result:= srkmecNextEditor;
     ecPrevEditor              : Result:= srkmecPrevEditor;
@@ -2274,6 +2318,17 @@ begin
   AddDefault(C, 'Select line', lisMenuSelectLine, ecSelectLine);
   AddDefault(C, 'Select paragraph', lisMenuSelectParagraph, ecSelectParagraph);
   AddDefault(C, 'Toggle Current-Word highlight', srkmecToggleMarkupWord, EcToggleMarkupWord);
+
+  AddDefault(C, 'Set Block begin', srkmecBlockSetBegin, ecBlockSetBegin);
+  AddDefault(C, 'Set Block End', srkmecBlockSetEnd, ecBlockSetEnd);
+  AddDefault(C, 'Toggle Block', srkmecBlockToggleHide, ecBlockToggleHide);
+  AddDefault(C, 'Hide Block', srkmecBlockHide, ecBlockHide);
+  AddDefault(C, 'Show Block', srkmecBlockShow, ecBlockShow);
+  AddDefault(C, 'Move Block', srkmecBlockMove, ecBlockMove);
+  AddDefault(C, 'Copy Block', srkmecBlockCopy, ecBlockCopy);
+  AddDefault(C, 'Delete Block', srkmecBlockDelete, ecBlockDelete);
+  AddDefault(C, 'Goto Block Begin', srkmecBlockGotoBegin, ecBlockGotoBegin);
+  AddDefault(C, 'Goto Block End', srkmecBlockGotoEnd, ecBlockGotoEnd);
 
   // column mode selection
   C:=Categories[AddCategory('Column Selection',srkmCatColSelection,

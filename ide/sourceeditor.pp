@@ -587,8 +587,9 @@ type
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
-    procedure ccComplete(var Value: string; SourceValue: string; KeyChar: TUTF8Char;
-                         Shift: TShiftState);
+    procedure ccComplete(var Value: string; SourceValue: string;
+                         var SourceStart, SourceEnd: TPoint;
+                         KeyChar: TUTF8Char; Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
                  X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
@@ -1158,10 +1159,6 @@ Begin
   NewTopLine := P.Y - (FEditor.LinesInWindow div 2);
   if NewTopLine < 1 then NewTopLine:=1;
   FEditor.CaretXY := P;
-  with FEditor do begin
-    BlockBegin:=CaretXY;
-    BlockEnd:=CaretXY;
-  end;
   FEditor.TopLine := NewTopLine;
   Result:=FEditor.CaretY;
 end;
@@ -1816,7 +1813,7 @@ end;
 
 function TSourceEditor.SelectionAvailable: boolean;
 begin
-  Result:=CompareCaret(EditorComponent.BlockBegin,EditorComponent.BlockEnd)<>0;
+  Result := EditorComponent.SelAvail;
 end;
 
 function TSourceEditor.GetText(OnlySelection: boolean): string;
@@ -2182,7 +2179,7 @@ begin
   Txt:=CommentText(LCLProc.BreakString(
            Format(Notice,[#13#13,#13#13,#13#13,#13#13,#13#13]),
            FEditor.RightEdge-2,0),CommentType);
-  FEditor.SelText:=Txt;
+  FEditor.InsertTextAtCaret(Txt);
 end;
 
 procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
@@ -2203,7 +2200,7 @@ end;
 procedure TSourceEditor.InsertUsername;
 begin
   if ReadOnly then Exit;
-  FEditor.SelText:=GetCurrentUserName;
+  FEditor.InsertTextAtCaret(GetCurrentUserName);
 end;
 
 procedure TSourceEditor.InsertTodo;
@@ -2215,7 +2212,7 @@ begin
   aTodoItem := ExecuteTodoDialog;
   try
     if Assigned(aTodoItem) then
-      FEditor.SelText := aTodoItem.AsComment;
+      FEditor.InsertTextAtCaret(aTodoItem.AsComment);
   finally
     aTodoItem.Free;
   end;
@@ -2224,7 +2221,7 @@ end;
 procedure TSourceEditor.InsertDateTime;
 begin
   if ReadOnly then Exit;
-  FEditor.SelText:=DateTimeToStr(now);
+  FEditor.InsertTextAtCaret(DateTimeToStr(now));
 end;
 
 procedure TSourceEditor.InsertChangeLogEntry;
@@ -2232,13 +2229,13 @@ var s: string;
 begin
   if ReadOnly then Exit;
   s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentMailAddress;
-  FEditor.SelText:=s;
+  FEditor.InsertTextAtCaret(s);
 end;
 
 procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
 begin
   if ReadOnly then Exit;
-  FEditor.SelText:='$'+AKeyWord+'$'+LineEnding;
+  FEditor.InsertTextAtCaret('$'+AKeyWord+'$'+LineEnding);
 end;
 
 function TSourceEditor.GetSelEnd: Integer;
@@ -2606,45 +2603,18 @@ end;
 procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
   SrcLogEntry: TSourceLogEntry);
 
-  procedure InsertTxt(const StartPos: TPoint; const Txt: string);
-  begin
-    FEditor.LogicalCaretXY:=StartPos;
-    FEditor.BlockBegin:=StartPos;
-    FEditor.BlockEnd:=StartPos;
-    FEditor.SelText:=Txt;
-  end;
-
-  procedure DeleteTxt(const StartPos, EndPos: TPoint);
-  begin
-    FEditor.LogicalCaretXY:=StartPos;
-    FEditor.BlockBegin:=StartPos;
-    FEditor.BlockEnd:=EndPos;
-    FEditor.SelText:='';
-  end;
-
   procedure MoveTxt(const StartPos, EndPos, MoveToPos: TPoint;
     DirectionForward: boolean);
   var Txt: string;
   begin
-    FEditor.LogicalCaretXY:=StartPos;
-    FEditor.BlockBegin:=StartPos;
-    FEditor.BlockEnd:=EndPos;
-    Txt:=FEditor.SelText;
     if DirectionForward then begin
-      FEditor.LogicalCaretXY:=MoveToPos;
-      FEditor.BlockBegin:=MoveToPos;
-      FEditor.BlockEnd:=MoveToPos;
-      FEditor.SelText:=Txt;
-      FEditor.LogicalCaretXY:=StartPos;
-      FEditor.BlockBegin:=StartPos;
-      FEditor.BlockEnd:=EndPos;
-      FEditor.SelText:='';
+      FEditor.TextBetweenPoints[MoveToPos, MoveToPos] :=
+        FEditor.TextBetweenPoints[StartPos, EndPos];
+      FEditor.TextBetweenPoints[StartPos, EndPos] := '';
     end else begin
-      FEditor.SelText:='';
-      FEditor.LogicalCaretXY:=MoveToPos;
-      FEditor.BlockBegin:=MoveToPos;
-      FEditor.BlockEnd:=MoveToPos;
-      FEditor.SelText:=Txt;
+      Txt := FEditor.TextBetweenPoints[StartPos, EndPos];
+      FEditor.TextBetweenPoints[StartPos, EndPos] := '';
+      FEditor.TextBetweenPoints[MoveToPos, MoveToPos] := Txt;;
     end;
   end;
 
@@ -2665,7 +2635,7 @@ begin
         begin
           Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
           if StartPos.Y>=1 then
-            InsertTxt(StartPos,SrcLogEntry.Txt);
+            FEditor.TextBetweenPoints[StartPos, StartPos] := SrcLogEntry.Txt;
         end;
       sleoDelete:
         begin
@@ -2673,7 +2643,7 @@ begin
           Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
             EndPos.Y,EndPos.X);
           if (StartPos.Y>=1) and (EndPos.Y>=1) then
-            DeleteTxt(StartPos,EndPos);
+            FEditor.TextBetweenPoints[StartPos, EndPos] := '';
         end;
       sleoMove:
         begin
@@ -2837,11 +2807,9 @@ procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
   const NewText: string);
 begin
   if ReadOnly then Exit;
-  FEditor.BeginUndoBlock;
-  FEditor.BlockBegin:=Point(1,StartLine);
-  FEditor.BlockEnd:=Point(length(FEditor.Lines[Endline-1])+1,EndLine);
-  FEditor.SelText:=NewText;
-  FEditor.EndUndoBlock;
+  FEditor.TextBetweenPoints[Point(1,StartLine),
+                            Point(length(FEditor.Lines[Endline-1])+1,EndLine)] :=
+    NewText;
 end;
 
 procedure TSourceEditor.EncloseSelection;
@@ -3841,9 +3809,7 @@ begin
 
   if NewPrefix<>OldPrefix then begin
     AddPrefix:=copy(NewPrefix,length(OldPrefix)+1,length(NewPrefix));
-    CurCompletionControl.Editor.SelText:=AddPrefix;
-    CurCompletionControl.Editor.LogicalCaretXY:=
-      CurCompletionControl.Editor.BlockBegin;
+    CurCompletionControl.Editor.InsertTextAtCaret(AddPrefix);
     if CurrentCompletionType=ctWordCompletion then begin
       SL:=TStringList.Create;
       try
@@ -3989,8 +3955,8 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.ccComplete(var Value: string; SourceValue: string; KeyChar: TUTF8Char;
-  Shift: TShiftState);
+procedure TSourceNotebook.ccComplete(var Value: string; SourceValue: string;
+  var SourceStart, SourceEnd: TPoint; KeyChar: TUTF8Char; Shift: TShiftState);
 // completion selected -> deactivate completion form
 // Called when user has selected a completion item
 
@@ -4053,15 +4019,16 @@ Begin
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
         Editor:=SrcEdit.EditorComponent;
-        Editor.SelText:=NewValue;
+        Editor.TextBetweenPoints[SourceStart, SourceEnd] := NewValue;
         if CursorToLeft>0 then
         begin
-          NewCaretXY:=Editor.LogicalToPhysicalPos(Editor.BlockEnd);
+          NewCaretXY:=Editor.CaretXY;
           dec(NewCaretXY.X,CursorToLeft);
           Editor.CaretXY:=NewCaretXY;
         end;
         ccSelection := '';
         Value:='';
+        SourceEnd := SourceStart;
       end;
 
     ctTemplateCompletion:
@@ -4082,6 +4049,7 @@ Begin
         if Value<>'' then
           FCodeTemplateModul.ExecuteCompletion(Value,
                                                GetActiveSE.EditorComponent);
+        SourceEnd := SourceStart;
         Value:='';
       end;
 
@@ -5489,8 +5457,6 @@ begin
       with SrcEdit.EditorComponent do begin
         TopLine:=NewTopLine;
         LogicalCaretXY:=NewCaretXY;
-        BlockBegin:=NewCaretXY;
-        BlockEnd:=NewCaretXY;
       end;
     end;
   end;
@@ -6278,7 +6244,7 @@ begin
   if FActiveEdit <> nil then
   begin
     if FActiveEdit.ReadOnly then Exit;
-    FActiveEdit.EditorComponent.SelText := C;
+    FActiveEdit.EditorComponent.InsertTextAtCaret(C);
   end;
 end;
 

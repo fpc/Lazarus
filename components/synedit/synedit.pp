@@ -233,7 +233,8 @@ type
     eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
     eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
     eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
-    eoFoldedCopyPaste          // Remember folds in copy/paste operations
+    eoFoldedCopyPaste,         // Remember folds in copy/paste operations
+    eoPersistentBlock          // Keep block if caret moves away or text is edited
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -454,6 +455,7 @@ type
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
     function GetPlugin(Index: Integer): TSynEditPlugin;
+    function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
     function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
@@ -461,6 +463,7 @@ type
     procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
+    procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -839,6 +842,7 @@ type
 {$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
   public
+    procedure InsertTextAtCaret(aText: String);
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property FoldState: String read GetFoldState write SetFoldState;
@@ -875,6 +879,9 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property SelAvail: Boolean read GetSelAvail;
     property SelText: string read GetSelText write SetSelTextExternal;
+    // Logical Points
+    property TextBetweenPoints[aStartPoint, aEndPoint: TPoint]: String
+      read GetTextBetweenPoints write SetTextBetweenPoints;
     property TopLine: Integer read fTopLine write SetTopLine;
     {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read FUseUTF8;
@@ -1334,6 +1341,14 @@ end;
 function TCustomSynEdit.GetPlugin(Index: Integer): TSynEditPlugin;
 begin
   Result := TSynEditPlugin(fPlugins[Index]);
+end;
+
+function TCustomSynEdit.GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
+begin
+  FInternalBlockSelection.SelectionMode := smNormal;
+  FInternalBlockSelection.StartLineBytePos := aStartPoint;
+  FInternalBlockSelection.EndLineBytePos := aEndPoint;
+  Result := FInternalBlockSelection.SelText;
 end;
 
 function TCustomSynEdit.GetDividerDrawLevel: Integer;
@@ -2353,12 +2368,8 @@ begin
       emcNone: ; // do nothing, but result := true
       emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
         begin
-          if AnAction.Option = emcoSelectionContinue then
-            FBlockSelection.EndLineBytePos := AnInfo.NewCaret.LineBytePos
-          else begin
-            MoveCaret;
-            FBlockSelection.StartLineBytePos := AnInfo.NewCaret.LineBytePos;
-          end;
+          FBlockSelection.AutoExtend := AnAction.Option = emcoSelectionContinue;
+          MoveCaret;
           case ACommand of
             emcStartColumnSelections:
               FBlockSelection.ActiveSelectionMode := smColumn;
@@ -2411,7 +2422,6 @@ begin
             ClipHelper.ReadFromClipboard(PrimarySelection);
             if ClipHelper.TextP <> nil then begin
               MoveCaret;
-              FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
               Result := PasteFromClipboardEx(ClipHelper);
             end
             else
@@ -3692,10 +3702,10 @@ begin
   try
     if ClipHelper.TextP = nil then
       exit;
-    if SelAvail then
-      FBlockSelection.SelText := '';
 
     Result := True;
+    if SelAvail and not FBlockSelection.Persistent then
+      FBlockSelection.SelText := '';
     InsStart := FCaret.LineBytePos;
     FInternalBlockSelection.StartLineBytePos := InsStart;
     FInternalBlockSelection.SetSelTextPrimitive(ClipHelper.SelectionMode, ClipHelper.TextP);
@@ -3724,13 +3734,7 @@ begin
     Inc(LastPt.x, Length(FTheLinesView[LastPt.y - 1]))
   else
     LastPt.y  := 1;
-  SetCaretAndSelection(
-    {$IFDEF SYN_LAZARUS}
-    LogicalToPhysicalPos(LastPt),
-    {$ELSE}
-    LastPt,
-    {$ENDIF}
-    Point(1, 1), LastPt);
+  SetCaretAndSelection(LogicalToPhysicalPos(LastPt), Point(1, 1), LastPt);
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -3949,9 +3953,6 @@ begin
   BeginUndoBlock;
   try
     FBlockSelection.SelText := Value;
-    // Force caret reset
-    CaretXY := CaretXY;
-    EnsureCursorPosVisible;
   finally
     EndUndoBlock;
   end;
@@ -4825,6 +4826,21 @@ begin
     FMouseSelActions.Assign(AValue);
 end;
 
+procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
+  const AValue: String);
+begin
+  BeginUndoBlock;
+  try
+    FInternalBlockSelection.SelectionMode := smNormal;
+    FInternalBlockSelection.StartLineBytePos := aStartPoint;
+    FInternalBlockSelection.EndLineBytePos := aEndPoint;
+    FInternalBlockSelection.SelText := AValue;
+    FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
+  finally
+    EndUndoBlock;
+  end;
+end;
+
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
 begin
   with TSynEditStringList(fLines) do
@@ -4937,6 +4953,11 @@ begin
     Msg.Msg := 0
   else
     inherited;
+end;
+
+procedure TCustomSynEdit.InsertTextAtCaret(aText: String);
+begin
+  TextBetweenPoints[FCaret.LineBytePos, FCaret.LineBytePos] := aText;
 end;
 
 procedure TCustomSynEdit.DragOver(Source: TObject; X, Y: Integer;
@@ -5570,7 +5591,7 @@ begin
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
-          if SelAvail then
+          if SelAvail and not FBlockSelection.Persistent then
             SetSelTextExternal('')
           else begin
             Temp := LineText;
@@ -5610,7 +5631,7 @@ begin
         end;
       ecDeleteChar:
         if not ReadOnly then begin
-          if SelAvail then
+          if SelAvail and not FBlockSelection.Persistent then
             SetSelTextExternal('')
           else begin
             Temp := LineText;
@@ -5670,8 +5691,6 @@ begin
       ecDeleteLine:
         if not ReadOnly and not ((FTheLinesView.Count = 1) and (Length(FTheLinesView[0]) = 0))
         then begin
-          if SelAvail then
-            SetBlockBegin(PhysicalToLogicalPos(CaretXY));
           if FTheLinesView.Count = 1 then
             FTheLinesView.EditDelete(1, 1, length(FTheLinesView[0]))
           else begin
@@ -5688,7 +5707,7 @@ begin
         if not ReadOnly then begin
           if FTheLinesView.Count = 0 then
             FTheLinesView.Add('');
-          if SelAvail then begin
+          if SelAvail and not FBlockSelection.Persistent then begin
             SetSelTextExternal('');
           end;
           Temp := LineText;
@@ -5720,7 +5739,7 @@ begin
         FindMatchingBracket;
       ecChar:
         if not ReadOnly and (AChar >= #32) and (AChar <> #127) then begin
-          if SelAvail then begin
+          if SelAvail and not FBlockSelection.Persistent then begin
             SetSelTextExternal(AChar);
           end else begin
             try
@@ -5768,7 +5787,7 @@ begin
           // Insert a linebreak, but do not apply any other functionality (such as indent)
           if FTheLinesView.Count = 0 then
             FTheLinesView.Add('');
-          if SelAvail then
+          if SelAvail and not FBlockSelection.Persistent then
             SetSelTextExternal('');
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
@@ -5856,6 +5875,61 @@ begin
         begin
           InsertMode := not InsertMode;
         end;
+      ecBlockSetBegin:
+        begin
+          FBlockSelection.Hide :=
+            CompareCarets(FCaret.LineBytePos, FBlockSelection.EndLineBytePos) <= 0;
+          FBlockSelection.StartLineBytePosAdjusted := FCaret.LineBytePos;
+        end;
+      ecBlockSetEnd:
+        begin
+          FBlockSelection.Hide :=
+            CompareCarets(FCaret.LineBytePos, FBlockSelection.StartLineBytePos) >= 0;
+          FBlockSelection.EndLineBytePos := FCaret.LineBytePos;
+        end;
+      ecBlockToggleHide:
+        begin
+          FBlockSelection.Hide := not FBlockSelection.Hide;
+        end;
+      ecBlockHide:
+        begin
+          FBlockSelection.Hide := True;
+        end;
+      ecBlockShow:
+        begin
+          FBlockSelection.Hide := False;
+        end;
+      ecBlockMove:
+        begin
+          if SelAvail then begin
+            FInternalBlockSelection.AssignFrom(FBlockSelection);
+            FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
+            InsertTextAtCaret(FBlockSelection.SelText);
+            FBlockSelection.EndLineBytePos := FCaret.LineBytePos;
+            FInternalBlockSelection.SelText := '';
+          end;
+        end;
+      ecBlockCopy:
+        begin
+          if SelAvail then
+            InsertTextAtCaret(FBlockSelection.SelText);
+        end;
+      ecBlockDelete:
+        begin
+          if SelAvail then
+            FBlockSelection.SelText := '';
+        end;
+      ecBlockGotoBegin:
+        begin
+          if SelAvail then
+            FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
+        end;
+      ecBlockGotoEnd:
+        begin
+          if SelAvail then
+            FCaret.LineBytePos := FBlockSelection.LastLineBytePos;
+        end;
+
       ecBlockIndent:
         if not ReadOnly then DoBlockIndent;
       ecBlockUnindent:
@@ -6729,11 +6803,16 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
+var
+  ChangedOptions: TSynEditorOptions2;
 begin
   if (Value <> fOptions2) then begin
+    ChangedOptions:=(fOptions2 - Value) + (Value - fOptions2);
     fOptions2 := Value;
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
+    if eoPersistentBlock in ChangedOptions then
+      FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
   end;
 end;
 {$ENDIF}

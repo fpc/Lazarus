@@ -2130,6 +2130,8 @@ begin
           SynEditOptName := 'EnhanceEndKey';
         eoFoldedCopyPaste:
           SynEditOptName := 'FoldedCopyPaste';
+        eoPersistentBlock:
+          SynEditOptName := 'PersistentBlock';
         else
           SynEditOptName := '';
       end;
@@ -2394,6 +2396,8 @@ begin
           SynEditOptName := 'EnhanceEndKey';
         eoFoldedCopyPaste:
           SynEditOptName := 'FoldedCopyPaste';
+        eoPersistentBlock:
+          SynEditOptName := 'PersistentBlock';
         else
           SynEditOptName := '';
       end;
