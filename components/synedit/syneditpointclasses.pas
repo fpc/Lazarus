@@ -1043,7 +1043,7 @@ var
   SelChanged: boolean;
 begin
   Value.y := MinMax(Value.y, 1, fLines.Count);
-  if (FCaret <> nil) and FCaret.AllowPastEOL then
+  if (FCaret = nil) or FCaret.AllowPastEOL then
     Value.x := Max(Value.x, 1)
   else
     Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
@@ -1079,7 +1079,7 @@ procedure TSynEditSelection.AdjustStartLineBytePos(Value: TPoint);
 begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
-    if (FCaret <> nil) and FCaret.AllowPastEOL then
+    if (FCaret = nil) or FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
     else
       Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
@@ -1117,7 +1117,7 @@ var
 begin
   if FEnabled then begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
-    if (FCaret <> nil) and FCaret.AllowPastEOL then
+    if (FCaret = nil) or FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
     else
       Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
