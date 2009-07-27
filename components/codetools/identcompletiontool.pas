@@ -891,7 +891,7 @@ var
         exit(true);
       end;
     end;
-    //DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
+    DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
 
     Result:=false;
   end;
@@ -948,23 +948,35 @@ begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
     //  ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
-    //  ,' '+dbgs(fdfIgnoreUsedUnits in Params.Flags));
+    //  ,' fdfIgnoreUsedUnits='+dbgs(fdfIgnoreUsedUnits in Params.Flags));
   end else begin
     // identifier is in another unit
     if (FoundContext.Node.Parent<>nil) then begin
-      if (FoundContext.Node.Parent.Desc=ctnClassPrivate) then begin
-        // skip private definitions in other units
-        exit;
-      end;
-      if (FoundContext.Node.Parent.Desc=ctnClassProtected) then begin
-        // protected defnitions are only accessible from descendants
-        if ProtectedNodeIsInAllowedClass then begin
-          //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected in ANCESTOR '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
-        end else if (FoundContext.Node.Desc=ctnProperty) then begin
-          //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Protected made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
-        end else begin
-          //debugln('TIdentCompletionTool.CollectAllIdentifiers FORBIDDEN Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+      case FoundContext.Node.Parent.Desc of
+      ctnClassPrivate:
+        begin
+          // skip private definitions in other units
+          if (FoundContext.Node.Desc=ctnProperty) then begin
+            // private property: maybe the visibility was raised => continue
+            //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Private made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+          end;
           exit;
+        end;
+      ctnClassProtected:
+        begin
+          // protected definitions are only accessible from descendants
+          // or if visibility was raised (e.g. property)
+          if ProtectedNodeIsInAllowedClass then begin
+            // protected node in an ancestor => allowed
+            //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected in ANCESTOR '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+          end else if (FoundContext.Node.Desc=ctnProperty) then begin
+            // protected property: maybe the visibility was raised => continue
+            //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Protected made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+          end else begin
+            // otherwise: treat as private
+            //debugln('TIdentCompletionTool.CollectAllIdentifiers FORBIDDEN Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+            exit;
+          end;
         end;
       end;
     end;
@@ -1008,10 +1020,16 @@ begin
         if FoundContext.Node.Parent.Desc in [ctnClassPublic,ctnClassPublished]
         then
           SavePublicPublishedProperty;
+        // do not show properties without types (e.g. property Color;)
+        // only show the real definition, which will follow in the ancestor
         exit;
       end;
       if (FoundContext.Node.Parent.Desc in [ctnClassPrivate,ctnClassProtected])
+      and (FoundContext.Tool<>Self)
       and (not PropertyIsOverridenPublicPublish) then begin
+        // a private/protected property in another unit, that was not
+        // made public/publish later
+        // => skip
         exit;
       end;
     end;
