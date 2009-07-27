@@ -11279,8 +11279,6 @@ begin
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
         with SrcEdit.EditorComponent do begin
-          BlockBegin:=LogCaretXY;
-          BlockEnd:=LogCaretXY;
           LeftChar:=Max(LogCaretXY.X-CharsInWindow,1);
         end;
         SrcEdit.ErrorLine:=LogCaretXY.Y;
@@ -11386,8 +11384,6 @@ begin
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
         with SrcEdit.EditorComponent do begin
-          BlockBegin:=LogCaretXY;
-          BlockEnd:=LogCaretXY;
           LeftChar:= Math.Max(LogCaretXY.X-CharsInWindow,1);
         end;
         SrcEdit.ErrorLine:=LogCaretXY.Y;
@@ -12479,8 +12475,6 @@ begin
   with NewSrcEdit.EditorComponent do 
   begin
     MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
-    BlockBegin:=LogicalCaretXY;
-    BlockEnd:=BlockBegin;
     TopLine:=NewTopLine;
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
@@ -12631,8 +12625,6 @@ begin
       SourceNoteBook.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;
-        BlockBegin:=ErrorCaret;
-        BlockEnd:=ErrorCaret;
         if ErrorTopLine>0 then
           TopLine:=ErrorTopLine;
       end;
