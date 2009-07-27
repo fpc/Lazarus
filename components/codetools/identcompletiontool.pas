@@ -891,6 +891,7 @@ var
         exit(true);
       end;
     end;
+    //DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
 
     Result:=false;
   end;
@@ -916,6 +917,7 @@ var
                          TAVLTree.Create(TListSortCompare(@CompareIdentifiers))
     end else if FoundPublicProperties.Find(Ident)<>nil then begin
       // identifier is already public
+      exit;
     end;
     FoundPublicProperties.Add(Ident);
     //debugln('SavePublicPublishedProperty Identifier=',GetIdentifier(Ident),' Find=',dbgs(FoundPublicProperties.Find(Ident)<>nil));
