@@ -1214,7 +1214,7 @@ type
   begin
     Result:=false;
     // find start of variable
-    VarStartPos:=FindStartOfVariable(CurPos.StartPos);
+    VarStartPos:=FindStartOfTerm(CurPos.StartPos);
     if (IgnoreIdentifiers<>nil) then begin
       if not CleanPosToCaret(VarStartPos,NewCodePos) then exit;
       if IgnoreIdentifiers.Find(@NewCodePos)<>nil then exit(true);

@@ -1516,7 +1516,7 @@ procedure TIdentCompletionTool.FindCollectionContext(
     ReadPriorAtom;
     if (CurPos.Flag=cafPoint)
     or (UpAtomIs('INHERITED')) then begin
-      Result:=FindStartOfVariable(IdentStartPos);
+      Result:=FindStartOfTerm(IdentStartPos);
       if Result<ContextNode.StartPos then
         Result:=ContextNode.StartPos;
     end else
@@ -1809,7 +1809,7 @@ begin
       end;
 
       // context in front of
-      StartPosOfVariable:=FindStartOfVariable(IdentStartPos);
+      StartPosOfVariable:=FindStartOfTerm(IdentStartPos);
       if StartPosOfVariable>0 then begin
         if StartPosOfVariable=IdentStartPos then begin
           // cursor is at start of an operand

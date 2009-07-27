@@ -625,7 +625,7 @@ type
     function GetCurrentAtomType: TVariableAtomType;
     function FindEndOfVariable(StartPos: integer;
       ExceptionIfNoVariableStart, WithAsOperator: boolean): integer;
-    function FindStartOfVariable(EndPos: integer): integer;
+    function FindStartOfTerm(EndPos: integer): integer;
     function FindExpressionTypeOfVariable(StartPos, EndPos: integer;
       Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
     function FindEndOfExpression(StartPos: integer): integer;
@@ -5853,7 +5853,7 @@ begin
   Result:=CurPos.EndPos;
 end;
 
-function TFindDeclarationTool.FindStartOfVariable(EndPos: integer): integer;
+function TFindDeclarationTool.FindStartOfTerm(EndPos: integer): integer;
 { a variable can be combinations of
   1. A.B
   2. A().B
@@ -5976,7 +5976,7 @@ var
   begin
     Result:=false;
     if StartPos<1 then
-      StartPos:=FindStartOfVariable(EndPos)
+      StartPos:=FindStartOfTerm(EndPos)
     else if EndPos<1 then
       EndPos:=FindEndOfVariable(StartPos,true,WithAsOperator);
     if (StartPos<1) then

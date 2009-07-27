@@ -1495,7 +1495,7 @@ const
     // find start of proc expression (e.g. Button1.Constrains.DoSomething)
     IsFunction:=false;
     FuncType:='';
-    ProcExprStartPos:=FindStartOfVariable(ProcNameAtom.EndPos);
+    ProcExprStartPos:=FindStartOfTerm(ProcNameAtom.EndPos);
     if ProcExprStartPos<0 then exit;
     MoveCursorToCleanPos(ProcExprStartPos);
     ReadPriorAtom;
