@@ -2010,10 +2010,7 @@ begin
 
   if CommentOn then begin
     for i := BlockEndLine downto BlockBeginLine do
-    begin
-      FEditor.BlockBegin := Point(InsertPos(i), i);
-      FEditor.SelText := '//';
-    end;
+      FEditor.TextBetweenPoints[Point(InsertPos(i), i), Point(InsertPos(i), i)] := '//';
     if OldCaretPos.X > InsertPos(OldCaretPos.Y) then
       OldCaretPos.x := OldCaretPos.X + 2;
     if OldBlockStart.X > InsertPos(OldBlockStart.Y) then
@@ -2026,9 +2023,7 @@ begin
     begin
       NonBlankStart := DeletePos(i);
       if NonBlankStart < 1 then continue;
-      FEditor.BlockBegin := Point(NonBlankStart, i);
-      FEditor.BlockEnd := Point(NonBlankStart + 2, i);
-      FEditor.SelText := '';
+      FEditor.TextBetweenPoints[Point(NonBlankStart, i), Point(NonBlankStart + 2, i)] := '';
       if (OldCaretPos.Y = i) and (OldCaretPos.X > NonBlankStart) then
         OldCaretPos.x := Max(OldCaretPos.X - 2, NonBlankStart);
       if (OldBlockStart.Y = i) and (OldBlockStart.X > NonBlankStart) then
