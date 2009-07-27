@@ -2367,6 +2367,7 @@ begin
       emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
         begin
           FBlockSelection.AutoExtend := AnAction.Option = emcoSelectionContinue;
+          FCaret.ChangeOnTouch;
           MoveCaret;
           case ACommand of
             emcStartColumnSelections:
@@ -4544,11 +4545,13 @@ begin
   if Value.X < 0 then
     exit;
 
+  IncPaintLock;
   FBlockSelection.StartLineBytePos := Value;
   Value.X := WordBreaker.NextWordEnd(TempString, Value.X);
   FBlockSelection.EndLineBytePos := Value;
   FBlockSelection.ActiveSelectionMode := smNormal;
   FCaret.LineBytePos := Value;
+  DecPaintLock;
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -4557,6 +4560,7 @@ var
   ALine: string;
   x, x2: Integer;
 begin
+  IncPaintLock;
   FBlockSelection.StartLineBytePos := Point(1,MinMax(Value.y, 1, FTheLinesView.Count));
   FBlockSelection.EndLineBytePos := Point(1,MinMax(Value.y+1, 1, FTheLinesView.Count));
   if (FBlockSelection.StartLinePos >= 1)
@@ -4576,11 +4580,13 @@ begin
   FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY := FTheLinesView.LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  DecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetParagraphBlock(Value: TPoint);
 var ParagraphStartLine, ParagraphEndLine: integer;
 begin
+  IncPaintLock;
   ParagraphStartLine:=MinMax(Value.y, 1, FTheLinesView.Count);
   ParagraphEndLine:=MinMax(Value.y+1, 1, FTheLinesView.Count);
   while (ParagraphStartLine>1)
@@ -4594,6 +4600,7 @@ begin
   FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY:=FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  DecPaintLock;
 end;
 {$ENDIF}
 
@@ -5476,6 +5483,8 @@ begin
     if Command in [ecSelectionStart..ecSelectionEnd] then
       AquirePrimarySelection;
 
+    FCaret.ChangeOnTouch;
+
     case Command of
 // horizontal caret movement or selection
       ecLeft, ecSelLeft, ecColSelLeft:
@@ -6235,18 +6244,12 @@ end;
 
 procedure TCustomSynEdit.SetSelWord;
 begin
-  {$IFDEF SYN_LAZARUS}
   SetWordBlock(PhysicalToLogicalPos(CaretXY));
-  {$ELSE}
-  SetWordBlock(CaretXY);
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
-  {$IFDEF SYN_LAZARUS}
   if fExtraLineSpacing=Value then exit;
-  {$ENDIF}
   fExtraLineSpacing := Value;
   FontChanged(self);
 end;

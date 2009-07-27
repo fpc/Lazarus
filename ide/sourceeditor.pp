@@ -2036,9 +2036,9 @@ begin
   EndUndoBlock;
   EndUpdate;
 
+  FEditor.CaretXY := OldCaretPos;
   FEditor.BlockBegin := OldBlockStart;
   FEditor.BlockEnd := OldBlockEnd;
-  FEditor.CaretXY := OldCaretPos;
   FEditor.SelectionMode := WasSelMode;
 end;
 
