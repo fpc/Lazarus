@@ -88,6 +88,7 @@ type
     FEndBytePos: Integer; // 1 based
     FPersistent: Boolean;
     FPersistentLock: Integer;
+    FIgnoreNextCaretMove: Boolean;
     (* On any modification, remember the position of the caret.
        If it gets moved from there to either end of the block, this should be ignored
        This happens, if Block and caret are adjusted directly
@@ -124,6 +125,7 @@ type
     function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
     procedure SortSelectionPoints;
+    procedure IgnoreNextCaretMove;
     procedure IncPersistentLock;
     procedure DecPersistentLock;
     procedure Clear;
@@ -734,7 +736,14 @@ begin
 end;
 
 procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
+var
+  Ignore: Boolean;
 begin
+  Ignore := FIgnoreNextCaretMove;
+  FIgnoreNextCaretMove := False;
+  if Ignore then
+    exit;
+
   if (FCaret.IsAtLineByte(StartLineBytePos) or
       FCaret.IsAtLineByte(EndLineBytePos)) and
      FCaret.WasAtLineChar(FLastCarePos)
@@ -757,13 +766,7 @@ begin
     exit;
   end;
 
-
   if FPersistent or (FPersistentLock > 0) then
-    exit;
-
-  if FCaret.IsAtLineByte(StartLineBytePos) or
-     FCaret.IsAtLineByte(EndLineBytePos)
-  then
     exit;
 
   StartLineBytePos := FCaret.LineBytePos;
@@ -1313,6 +1316,11 @@ begin
     SwapInt(FStartLinePos, FEndLinePos);
     SwapInt(FStartBytePos, FEndBytePos);
   end;
+end;
+
+procedure TSynEditSelection.IgnoreNextCaretMove;
+begin
+  FIgnoreNextCaretMove := True;
 end;
 
 procedure TSynEditSelection.IncPersistentLock;

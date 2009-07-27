@@ -3979,7 +3979,7 @@ end;
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
 var
   Delta: Integer;
-  OldTopView: LongInt;
+  OldTopView: Integer;
 begin
   if fPaintLock > 0 then begin
     // defer scrolling, to minimize any possible flicker
@@ -5481,16 +5481,20 @@ begin
       ecLeft, ecSelLeft, ecColSelLeft:
         begin
           if (eoCaretSkipsSelection in Options2) and (Command=ecLeft)
-          and SelAvail and FCaret.IsAtLineByte(FBlockSelection.LastLineBytePos) then
-            FCaret.LineBytePos := FBlockSelection.FirstLineBytePos
+          and SelAvail and FCaret.IsAtLineByte(FBlockSelection.LastLineBytePos) then begin
+            FBlockSelection.IgnoreNextCaretMove;
+            FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
+          end
           else
             MoveCaretHorz(-1);
         end;
       ecRight, ecSelRight, ecColSelRight:
         begin
           if (eoCaretSkipsSelection in Options2) and (Command=ecRight)
-          and SelAvail and FCaret.IsAtLineByte(FBlockSelection.FirstLineBytePos) then
-            FCaret.LineBytePos := FBlockSelection.LastLineBytePos
+          and SelAvail and FCaret.IsAtLineByte(FBlockSelection.FirstLineBytePos) then begin
+            FBlockSelection.IgnoreNextCaretMove;
+            FCaret.LineBytePos := FBlockSelection.LastLineBytePos;
+          end
           else
             MoveCaretHorz(1);
         end;
