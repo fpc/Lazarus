@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ideprinting.sdescrpfselection
@@ -15,11 +15,11 @@ msgstr "Drucken ..."
 
 #: ideprinting.sprintfile
 msgid "Complete file"
-msgstr "Datei abschlieﬂen"
+msgstr "Datei abschlie√üen"
 
 #: ideprinting.sprintselection
 msgid "Selected text"
-msgstr "Ausgew‰hlter Text"
+msgstr "Ausgew√§hlter Text"
 
 #: ideprinting.sprintsources
 msgid "Print sources"

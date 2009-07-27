@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2006-10-25 18:36+0100\n"
-"Last-Translator: J.Salvador PÈrez <salvaperez@escomposlinux.org>\n"
+"Last-Translator: J.Salvador P√©rez <salvaperez@escomposlinux.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
@@ -24,11 +24,11 @@ msgstr ""
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Elimina l'acciÛ"
+msgstr "Elimina l'acci√≥"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr "Di‡leg"
+msgstr "Di√†leg"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
 msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
@@ -56,11 +56,11 @@ msgstr ""
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
-msgstr "Nova acciÛ"
+msgstr "Nova acci√≥"
 
 #: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Nova acciÛ normalitzada"
+msgstr "Nova acci√≥ normalitzada"
 
 #: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -183,27 +183,27 @@ msgstr ""
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
-msgstr "Afegeix p‡gina"
+msgstr "Afegeix p√†gina"
 
 #: objinspstrconsts.nbcesdeletepage
 msgid "Delete page"
-msgstr "Eliminar p‡gina"
+msgstr "Eliminar p√†gina"
 
 #: objinspstrconsts.nbcesinsertpage
 msgid "Insert page"
-msgstr "Inserir p‡gina"
+msgstr "Inserir p√†gina"
 
 #: objinspstrconsts.nbcesmovepageleft
 msgid "Move page left"
-msgstr "Mou a la p‡gina esquerra"
+msgstr "Mou a la p√†gina esquerra"
 
 #: objinspstrconsts.nbcesmovepageright
 msgid "Move page right"
-msgstr "Mou a la p‡gina dreta"
+msgstr "Mou a la p√†gina dreta"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show page ..."
-msgstr "Mostra p‡gina ..."
+msgstr "Mostra p√†gina ..."
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -231,15 +231,15 @@ msgstr "Dalt"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr "0 lÌnies, 0 car‡cters"
+msgstr "0 l√≠nies, 0 car√†cters"
 
 #: objinspstrconsts.ois1linedchars
 msgid "1 line, %d chars"
-msgstr "1 lÌnia, %d car‡cters"
+msgstr "1 l√≠nia, %d car√†cters"
 
 #: objinspstrconsts.oisaction
 msgid "Action"
-msgstr "AcciÛ"
+msgstr "Acci√≥"
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "Action List Editor"
@@ -263,7 +263,7 @@ msgstr "Conjunt"
 
 #: objinspstrconsts.oisboolean
 msgid "Boolean"
-msgstr "Boole‡"
+msgstr "Boole√†"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -285,7 +285,7 @@ msgstr "&Elimina"
 
 #: objinspstrconsts.oischar
 msgid "Char"
-msgstr "Car‡cter"
+msgstr "Car√†cter"
 
 #: objinspstrconsts.oischaractersforblanks
 msgid "Characters for Blanks"
@@ -305,7 +305,7 @@ msgstr ""
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr "El nom del component %s%s%s no es un identificador v‡lid"
+msgstr "El nom del component %s%s%s no es un identificador v√†lid"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -317,7 +317,7 @@ msgstr "Components"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Confirma l'eliminaciÛ"
+msgstr "Confirma l'eliminaci√≥"
 
 #: objinspstrconsts.oiscopycomponents
 msgid "Copy components"
@@ -350,7 +350,7 @@ msgstr "Voleu eliminar l'element %s%s%s?"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr "%d lÌnies, %d car‡cters"
+msgstr "%d l√≠nies, %d car√†cters"
 
 #: objinspstrconsts.oiseditactionlist
 msgid "Edit action list..."
@@ -358,19 +358,19 @@ msgstr "Edita la llista d'accions..."
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
-msgstr "EnumeraciÛ"
+msgstr "Enumeraci√≥"
 
 #: objinspstrconsts.oiserror
 msgid "Error"
-msgstr "S'ha produÔt un error"
+msgstr "S'ha produ√Øt un error"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
-msgstr "S'ha produÔt un error mentre es carregava l'imatge"
+msgstr "S'ha produ√Øt un error mentre es carregava l'imatge"
 
 #: objinspstrconsts.oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
-msgstr "S'ha produÔt un error mentre es carregava l'imatge %s%s%s:%s%s"
+msgstr "S'ha produ√Øt un error mentre es carregava l'imatge %s%s%s:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -382,7 +382,7 @@ msgstr "Favorits"
 
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
-msgstr "Ves a la declaraciÛ"
+msgstr "Ves a la declaraci√≥"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
@@ -398,7 +398,7 @@ msgstr ""
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
-msgstr "M‡scara d'entrada:"
+msgstr "M√†scara d'entrada:"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -414,7 +414,7 @@ msgstr "Interface"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr "Valor inv‡lid per la propietat"
+msgstr "Valor inv√†lid per la propietat"
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -426,7 +426,7 @@ msgstr "Ca&rrega"
 
 #: objinspstrconsts.oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr "Carrega el di‡leg de l'imatge"
+msgstr "Carrega el di√†leg de l'imatge"
 
 #: objinspstrconsts.oisloadpicture
 msgid "Load picture"
@@ -438,7 +438,7 @@ msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"
-msgstr "MËtode"
+msgstr "M√®tode"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -554,11 +554,11 @@ msgstr "Classifica"
 
 #: objinspstrconsts.oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "Classes d'acciÛ normalitzades"
+msgstr "Classes d'acci√≥ normalitzades"
 
 #: objinspstrconsts.oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr "Classes d'acciÛ disponibles:"
+msgstr "Classes d'acci√≥ disponibles:"
 
 #: objinspstrconsts.oisstring
 msgid "String"
@@ -566,7 +566,7 @@ msgstr "Cadena"
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Di‡leg editor de les cadenes"
+msgstr "Di√†leg editor de les cadenes"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color..."
@@ -579,12 +579,12 @@ msgstr "Selecciona el color"
 #: objinspstrconsts.oistdactdatasetcancel1hint
 msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
 msgid "Cancel"
-msgstr "Cancel∑la"
+msgstr "Cancel¬∑la"
 
 #: objinspstrconsts.oistdactdatasetcancelheadline
 msgctxt "objinspstrconsts.oistdactdatasetcancelheadline"
 msgid "&Cancel"
-msgstr "&Cancel∑la"
+msgstr "&Cancel¬∑la"
 
 #: objinspstrconsts.oistdactdatasetdeleteheadline
 msgctxt "objinspstrconsts.oistdactdatasetdeleteheadline"
@@ -624,20 +624,20 @@ msgstr "Insereix"
 
 #: objinspstrconsts.oistdactdatasetlastheadline
 msgid "&Last"
-msgstr "&⁄ltim"
+msgstr "&√öltim"
 
 #: objinspstrconsts.oistdactdatasetlasthint
 msgid "Last"
-msgstr "⁄ltim"
+msgstr "√öltim"
 
 #: objinspstrconsts.oistdactdatasetnextheadline
 msgid "&Next"
-msgstr "Seg¸e&nt"
+msgstr "Seg√ºe&nt"
 
 #: objinspstrconsts.oistdactdatasetnexthint
 msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
-msgstr "Seg¸ent"
+msgstr "Seg√ºent"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
@@ -728,7 +728,7 @@ msgstr "Selecciona-ho tot"
 
 #: objinspstrconsts.oistdacteditundoheadline
 msgid "&Undo"
-msgstr "De&sfÈs"
+msgstr "De&sf√©s"
 
 #: objinspstrconsts.oistdacteditundoshortcut
 msgid "Ctrl+Z"
@@ -786,7 +786,7 @@ msgstr "Selecciona la font"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr "&Õndex"
+msgstr "&√çndex"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
@@ -871,7 +871,7 @@ msgstr ""
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
-msgstr "DesfÈs"
+msgstr "Desf√©s"
 
 #: objinspstrconsts.oisunknown
 msgctxt "objinspstrconsts.oisunknown"
@@ -928,7 +928,7 @@ msgstr "Editor de Columnes"
 
 #: objinspstrconsts.rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr "Valor numËric inv‡lid"
+msgstr "Valor num√®ric inv√†lid"
 
 #: objinspstrconsts.rscdleft
 msgctxt "objinspstrconsts.rscdleft"
@@ -1005,7 +1005,7 @@ msgstr "Imatges"
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr "Imatge Sel∑leccionada"
+msgstr "Imatge Sel¬∑leccionada"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1199,7 +1199,7 @@ msgstr "Index de l'Imatge:"
 
 #: objinspstrconsts.sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr "Index sel∑leccionat:"
+msgstr "Index sel¬∑leccionat:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
@@ -1266,7 +1266,7 @@ msgstr ""
 #: objinspstrconsts.srvk_cancel
 msgctxt "objinspstrconsts.srvk_cancel"
 msgid "Cancel"
-msgstr "Cancel∑la"
+msgstr "Cancel¬∑la"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
@@ -1377,7 +1377,7 @@ msgstr ""
 #: objinspstrconsts.srvk_next
 msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr "Seg¸ent"
+msgstr "Seg√ºent"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"
