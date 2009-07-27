@@ -5921,13 +5921,11 @@ begin
         end;
       ecBlockGotoBegin:
         begin
-          if SelAvail then
-            FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
+          FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
         end;
       ecBlockGotoEnd:
         begin
-          if SelAvail then
-            FCaret.LineBytePos := FBlockSelection.LastLineBytePos;
+          FCaret.LineBytePos := FBlockSelection.LastLineBytePos;
         end;
 
       ecBlockIndent:

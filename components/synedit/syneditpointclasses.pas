@@ -1230,6 +1230,7 @@ begin
   FHide := AValue;
   FInvalidateLinesMethod(Min(FStartLinePos, FEndLinePos),
                          Max(FStartLinePos, FEndLinePos) );
+  FOnChangeList.CallNotifyEvents(self);
 end;
 
 procedure TSynEditSelection.SetPersistent(const AValue: Boolean);
