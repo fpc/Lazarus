@@ -8,8 +8,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
   ClientWidth = 700
-  Constraints.MinHeight = 350
-  Constraints.MinWidth = 600
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 700
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.27'
