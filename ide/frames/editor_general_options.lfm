@@ -297,16 +297,16 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     ParentFont = False
   end
   object Bevel6: TBevel[21]
-    AnchorSideLeft.Control = CursorGroupLabel
+    AnchorSideLeft.Control = BlockGroupLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BlockGroupLabel
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 181
+    Left = 176
     Height = 3
     Top = 402
-    Width = 278
+    Width = 283
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
