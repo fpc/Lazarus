@@ -176,6 +176,54 @@ msgstr ""
 msgid "Set value"
 msgstr ""
 
+#: objinspstrconsts.lisoem1
+msgid "OEM 1"
+msgstr ""
+
+#: objinspstrconsts.lisoem2
+msgid "OEM 2"
+msgstr ""
+
+#: objinspstrconsts.lisoem3
+msgid "OEM 3"
+msgstr ""
+
+#: objinspstrconsts.lisoem4
+msgid "OEM 4"
+msgstr ""
+
+#: objinspstrconsts.lisoem5
+msgid "OEM 5"
+msgstr ""
+
+#: objinspstrconsts.lisoem6
+msgid "OEM 6"
+msgstr ""
+
+#: objinspstrconsts.lisoem7
+msgid "OEM 7"
+msgstr ""
+
+#: objinspstrconsts.lisoem8
+msgid "OEM 8"
+msgstr ""
+
+#: objinspstrconsts.lisoemcomma
+msgid "OEM comma"
+msgstr ""
+
+#: objinspstrconsts.lisoemminus
+msgid "OEM minus"
+msgstr ""
+
+#: objinspstrconsts.lisoemperiod
+msgid "OEM period"
+msgstr ""
+
+#: objinspstrconsts.lisoemplus
+msgid "OEM plus"
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
 msgstr "Lisää Page-välilehti"

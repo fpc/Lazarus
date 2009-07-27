@@ -114,6 +114,10 @@ msgstr "То же имя (в подкаталоге)"
 msgid "Behind methods"
 msgstr "После методов"
 
+#: lazarusidestrconsts.dlgblockgroupoptions
+msgid "Selection:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
 msgstr "Отступ блока"
@@ -1770,6 +1774,10 @@ msgstr "Стандартное расширение Паскаля"
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Передавать параметры компоновщику (отделять пробелами)"
 
+#: lazarusidestrconsts.dlgpersistentblock
+msgid "Persistent Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "Постоянный курсор"
@@ -2820,6 +2828,10 @@ msgstr "Благодарности"
 msgid "Action:"
 msgstr "Действие:"
 
+#: lazarusidestrconsts.lisactions
+msgid "Actions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
@@ -3029,9 +3041,21 @@ msgstr "Файл простой программы на Паскале.%sМож�
 msgid "Ask before replacing each found text"
 msgstr "Спросить перед заменой каждого фрагмента"
 
+#: lazarusidestrconsts.lisautocompletionoff
+msgid "Auto completion: off"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocompletionon
+msgid "Auto completion: on"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
 msgstr "Продолжать автоматически"
+
+#: lazarusidestrconsts.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -3145,6 +3169,10 @@ msgstr "Равномерно по нижним краям"
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Останов"
+
+#: lazarusidestrconsts.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -5624,6 +5652,14 @@ msgstr "Ошибка записи списка пакетов в файл%s%s%s%
 msgid "Edit custom scanners (%s)"
 msgstr "Настройка пользовательских сканеров (%s)"
 
+#: lazarusidestrconsts.lisevalexpression
+msgid "Eval expression"
+msgstr ""
+
+#: lazarusidestrconsts.lisevaluate
+msgid "E&valuate"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Каждый n-ный номер строки:"
@@ -6411,6 +6447,10 @@ msgstr "Вставить время"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string"
 msgstr "Вставить время. Возможно форматирование строки."
+
+#: lazarusidestrconsts.lisinspect
+msgid "&Inspect"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -7382,6 +7422,10 @@ msgstr "Библиотека%sБиблиотека FreePascal (.dll в Windows, 
 msgid "library path"
 msgstr "путь к библиотекам"
 
+#: lazarusidestrconsts.lisline
+msgid "Line:"
+msgstr ""
+
 #: lazarusidestrconsts.lislinelength
 msgid "Line/Length"
 msgstr "Строка/Длина"
@@ -7419,6 +7463,10 @@ msgstr "Имя"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Значение"
+
+#: lazarusidestrconsts.lislogmessage
+msgid "Log message"
+msgstr ""
 
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
@@ -8527,6 +8575,10 @@ msgstr "Отсутствующие пакеты"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
+#: lazarusidestrconsts.lismodify
+msgid "&Modify"
+msgstr ""
+
 #: lazarusidestrconsts.lismore
 msgid "More"
 msgstr "Больше"
@@ -8534,6 +8586,10 @@ msgstr "Больше"
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Переместить страницу"
+
+#: lazarusidestrconsts.lisms
+msgid "(ms)"
+msgstr ""
 
 #: lazarusidestrconsts.lismvdocking
 msgid "Docking"
@@ -12226,6 +12282,10 @@ msgstr "Сброс результатов"
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Предупреждение: найден двусмысленный файл %s%s%s. Исходный код: %s%s%s"
 
+#: lazarusidestrconsts.liswatch
+msgid "&Watch"
+msgstr ""
+
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Наблюдение за свойствами"
@@ -12645,6 +12705,18 @@ msgstr "Команды выделения текста"
 msgid "Source Notebook commands"
 msgstr "Команды управления редакторами исходного кода"
 
+#: lazarusidestrconsts.srkmcatsyncroedit
+msgid "Syncron Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditoff
+msgid "Syncron Editing (not in Cell)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditsel
+msgid "Syncron Editing (while selecting)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcattemplateedit
 msgid "Template Editing"
 msgstr "Команды редактирования шаблонов"
@@ -12698,9 +12770,49 @@ msgstr "добавить наблюдение"
 msgid "Code template completion"
 msgstr "Завершение шаблонов кода"
 
+#: lazarusidestrconsts.srkmecblockcopy
+msgid "Copy Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockdelete
+msgid "Delete Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotobegin
+msgid "Goto Block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotoend
+msgid "Goto Block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockhide
+msgid "Hide Block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
 msgstr "Отделить блок"
+
+#: lazarusidestrconsts.srkmecblockmove
+msgid "Move Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetbegin
+msgid "Set block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetend
+msgid "Set block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockshow
+msgid "Show Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocktogglehide
+msgid "Toggle block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
@@ -13314,11 +13426,56 @@ msgstr "Показывать контекст кода"
 msgid "stop program"
 msgstr "остановить программу"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedcellend
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
+msgid "Goto last pos in cell"
+msgstr "Перейти к концу поля"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellhome
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
+msgid "Goto first pos in cell"
+msgstr "Перейти к началу поля"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellselect
+msgid "Select Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedescape
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
+msgid "Escape"
+msgstr "Отменить"
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
+msgid "Next Cell"
+msgstr "Следующее поле"
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr "Следующее поле (все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
+msgid "Previous Cell"
+msgstr "Предыдущее поле"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr "Предыдущее поле (все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstart
+msgid "Start Syncro edit"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynptmpledcellend
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
 msgid "Goto last pos in cell"
 msgstr "Перейти к концу поля"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellhome
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
 msgid "Goto first pos in cell"
 msgstr "Перейти к началу поля"
 
@@ -13327,6 +13484,7 @@ msgid "Select cell"
 msgstr "Выбрать поле"
 
 #: lazarusidestrconsts.srkmecsynptmpledescape
+msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
 msgid "Escape"
 msgstr "Отменить"
 
@@ -13335,6 +13493,7 @@ msgid "Finish"
 msgstr "Завершить"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
 msgid "Next Cell"
 msgstr "Следующее поле"
 
@@ -13343,6 +13502,7 @@ msgid "Next Cell (rotate)"
 msgstr "Следующее поле (по кругу)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "Следующее поле (все выбранные)"
 
@@ -13351,10 +13511,12 @@ msgid "Next Cell (rotate / all selected)"
 msgstr "Следующее поле (по кругу / все выбранные)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
 msgstr "Предыдущее поле"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Предыдущее поле (все выбранные)"
 

@@ -113,6 +113,10 @@ msgstr "同じ名前(サブディレクトリ)"
 msgid "Behind methods"
 msgstr "メソッドの後方へ"
 
+#: lazarusidestrconsts.dlgblockgroupoptions
+msgid "Selection:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
 msgstr "ブロックインデント"
@@ -457,6 +461,10 @@ msgstr "オーバーフロー"
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
 msgstr "構文解析"
+
+#: lazarusidestrconsts.dlgcopypastekeepfolds
+msgid "Copy/Paste with fold info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -1767,6 +1775,10 @@ msgstr "デフォルトPascal拡張子"
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "リンカにオプションを渡して下さい（区切り記号はスペース）"
 
+#: lazarusidestrconsts.dlgpersistentblock
+msgid "Persistent Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "固着カーソル"
@@ -2417,11 +2429,15 @@ msgid "Delete Selection"
 msgstr "選択対象を削除"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-msgid "Mirror horizontal"
+#, fuzzy
+#| msgid "Mirror horizontal"
+msgid "Mirror Horizontal"
 msgstr "左右反転"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-msgid "Mirror vertical"
+#, fuzzy
+#| msgid "Mirror vertical"
+msgid "Mirror Vertical"
 msgstr "上下反転"
 
 #: lazarusidestrconsts.fdmorder
@@ -2429,23 +2445,33 @@ msgid "Order"
 msgstr "オーダー"
 
 #: lazarusidestrconsts.fdmorderbackone
-msgid "Back one"
+#, fuzzy
+#| msgid "Back one"
+msgid "Back One"
 msgstr "一つ戻る"
 
 #: lazarusidestrconsts.fdmorderforwardone
-msgid "Forward one"
+#, fuzzy
+#| msgid "Forward one"
+msgid "Forward One"
 msgstr "前方に一つ進む"
 
 #: lazarusidestrconsts.fdmordermovetoback
-msgid "Move to back"
+#, fuzzy
+#| msgid "Move to back"
+msgid "Move to Back"
 msgstr "後ろに移動"
 
 #: lazarusidestrconsts.fdmordermovetofront
-msgid "Move to front"
+#, fuzzy
+#| msgid "Move to front"
+msgid "Move to Front"
 msgstr "前に移動"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-msgid "Save form as xml"
+#, fuzzy
+#| msgid "Save form as xml"
+msgid "Save form as XML"
 msgstr "フォームをxmlとして保存"
 
 #: lazarusidestrconsts.fdmscaleword
@@ -2470,8 +2496,14 @@ msgid "Option: Snap to guide lines"
 msgstr "オプション：ガイドラインに留まる"
 
 #: lazarusidestrconsts.fdmtaborder
-msgid "Tab order..."
+#, fuzzy
+#| msgid "Tab order..."
+msgid "Tab Order..."
 msgstr "タブオーダー..."
+
+#: lazarusidestrconsts.fdmzorder
+msgid "Z-order"
+msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
@@ -2809,6 +2841,10 @@ msgstr "謝辞"
 msgid "Action:"
 msgstr ""
 
+#: lazarusidestrconsts.lisactions
+msgid "Actions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "テキストと置換のためのアクティブな正規表現語法(perlと類似)"
@@ -3018,8 +3054,20 @@ msgstr "簡単なPascalプログラムファイルです。%s これは迅速荒
 msgid "Ask before replacing each found text"
 msgstr "見つかったテキスト毎に置換前に尋ねる"
 
+#: lazarusidestrconsts.lisautocompletionoff
+msgid "Auto completion: off"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocompletionon
+msgid "Auto completion: on"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocontinueafter
+msgid "Auto continue after:"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -3134,6 +3182,10 @@ msgstr "下部間隔を均等に"
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "ブレーク"
+
+#: lazarusidestrconsts.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -3560,7 +3612,9 @@ msgid "Change file"
 msgstr "ファイルを変更"
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change parent ..."
+#, fuzzy
+#| msgid "Change parent ..."
+msgid "Change Parent..."
 msgstr "基本クラスを変更 ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -3574,6 +3628,10 @@ msgstr "キャラクターマップ"
 #: lazarusidestrconsts.lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
 msgstr "読み込み時にディスクの変更をチェック"
+
+#: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
+msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5006,6 +5064,10 @@ msgstr "これらすべてのファイルを削除しますか？"
 msgid "Delete ambiguous file?"
 msgstr "曖昧なファイルを削除しますか？"
 
+#: lazarusidestrconsts.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "%d行の%s\"%s\"にあるブレークポイントを削除しますか？"
@@ -5116,6 +5178,10 @@ msgstr "指令"
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisablebreakpoint
+msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
@@ -5405,6 +5471,10 @@ msgstr "すべて有効に(&E)"
 msgid "Enable All in same source"
 msgstr "同じソース内ですべてを有効に"
 
+#: lazarusidestrconsts.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
@@ -5599,6 +5669,14 @@ msgstr "パッケージリストをファイル %s%s%s%s に書き込み中に�
 msgid "Edit custom scanners (%s)"
 msgstr "カスタムスキャナを編集(%s)"
 
+#: lazarusidestrconsts.lisevalexpression
+msgid "Eval expression"
+msgstr ""
+
+#: lazarusidestrconsts.lisevaluate
+msgid "E&valuate"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "すべてのn番目の行番号"
@@ -5729,6 +5807,10 @@ msgstr "\"%s\" 完了"
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "次のツールを実行できません。 %s%s%s:%s%s"
+
+#: lazarusidestrconsts.lisfailedtoloadfoldstat
+msgid "Failed to load fold state"
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -6030,6 +6112,10 @@ msgstr "検索場所"
 msgid "Function"
 msgstr "関数"
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition
+msgid "get word at current cursor position"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "著作権(C)<年><作者名>%sこのソースはフリーソフトです。あなたは、Free Software Foundation  が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることによっても入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
@@ -6126,6 +6212,10 @@ msgstr "フォームを表示"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "ユニットを表示"
+
+#: lazarusidestrconsts.lishitcount
+msgid "Hitcount"
+msgstr ""
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -6334,6 +6424,50 @@ msgstr "継承された項目"
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "プロジェクトもしくはパッケージのクリーンコピーを作成するためには、次のディレクトリ内の全てのファイルが削除され、その中身が失われます。%s%s %s%s%s内のすべてのファイルを削除しますか？"
+
+#: lazarusidestrconsts.lisinsertdate
+msgid "insert date"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtime
+msgid "insert date and time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
+msgid "Insert date and time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateoptionalformatstring
+msgid "Insert date. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertendifneeded
+msgid "insert end if needed"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertnameofcurrentprocedure
+msgid "Insert name of current procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurehead
+msgid "insert procedure head"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurename
+msgid "insert procedure name"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttime
+msgid "insert time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttimeoptionalformatstring
+msgid "Insert time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspect
+msgid "&Inspect"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -7305,6 +7439,10 @@ msgstr "ライブラリ%sFreePascalライブラリ（Windowsでは.dll、Linux�
 msgid "library path"
 msgstr "ライブラリパス"
 
+#: lazarusidestrconsts.lisline
+msgid "Line:"
+msgstr ""
+
 #: lazarusidestrconsts.lislinelength
 msgid "Line/Length"
 msgstr "行/長さ"
@@ -7320,6 +7458,10 @@ msgstr "リンカオプション"
 #: lazarusidestrconsts.lislinktarget
 msgid "Link target"
 msgstr "リンクターゲット"
+
+#: lazarusidestrconsts.lislistofallcasevalues
+msgid "list of all case values"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -7339,9 +7481,21 @@ msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "値"
 
+#: lazarusidestrconsts.lislogmessage
+msgid "Log message"
+msgstr ""
+
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
 msgstr "ロゴ"
+
+#: lazarusidestrconsts.lislowercasestring
+msgid "lowercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lislowercasestringgivenasparameter
+msgid "Lowercase string given as parameter"
+msgstr ""
 
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
@@ -8226,7 +8380,7 @@ msgstr "次を検索"
 #: lazarusidestrconsts.lismenutemplatehelp
 msgctxt "lazarusidestrconsts.lismenutemplatehelp"
 msgid "Help"
-msgstr ""
+msgstr "ヘルプ"
 
 #: lazarusidestrconsts.lismenutemplatenew
 msgid "New"
@@ -8450,6 +8604,10 @@ msgstr "見つからないパッケージ"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
+#: lazarusidestrconsts.lismodify
+msgid "&Modify"
+msgstr ""
+
 #: lazarusidestrconsts.lismore
 msgid "More"
 msgstr "その他"
@@ -8457,6 +8615,10 @@ msgstr "その他"
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "ページ移動 ..."
+
+#: lazarusidestrconsts.lisms
+msgid "(ms)"
+msgstr ""
 
 #: lazarusidestrconsts.lismvdocking
 msgid "Docking"
@@ -8933,6 +9095,14 @@ msgstr "Pascalユニット"
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "通過カウント"
+
+#: lazarusidestrconsts.lispasteclipboard
+msgid "paste clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lispastetextfromclipboard
+msgid "Paste text from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -10152,6 +10322,10 @@ msgstr "プロジェクトディレクトリの.lpsファイルに保存"
 msgid "Save session information in"
 msgstr "セッション情報を次に保存"
 
+#: lazarusidestrconsts.lisprecedingword
+msgid "Preceding word"
+msgstr ""
+
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "Lazarusがその設定ファイルを保存する主設定ディレクトリ。デフォルト："
@@ -10205,6 +10379,10 @@ msgstr "プログラムが削除されました。"
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "プログラムソースは .pas, .ppあるいは.lprのようなpascal拡張子をもたなければなりません"
+
+#: lazarusidestrconsts.lisprojaddaddfilestoproject
+msgid "Add files to project"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddaddfiletoproject
 msgid "Add file to project:"
@@ -10607,6 +10785,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
+msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+msgid "returns list of all values of case variable in front of variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisrevertfailed
@@ -11129,6 +11311,17 @@ msgstr "内部コンパイラエラーです！ (%d)"
 #: lazarusidestrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "ToDoを挿入"
+
+#: lazarusidestrconsts.listemplateeditparamcell
+msgid "Editable Cell"
+msgstr ""
+
+#: lazarusidestrconsts.listemplateeditparamcellhelp
+msgid ""
+"Inserts an editable Cell, with a default value\n"
+"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+"\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -12031,6 +12224,14 @@ msgstr ""
 msgid "Update references?"
 msgstr ""
 
+#: lazarusidestrconsts.lisuppercasestring
+msgid "uppercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lisuppercasestringgivenasparameter
+msgid "Uppercase string given as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr ""
@@ -12083,6 +12284,10 @@ msgstr "垂直方向"
 msgid "Copy version information to clipboard"
 msgstr "バージョン情報をクリップボードにコピー"
 
+#: lazarusidestrconsts.lisviewbreakpointproperties
+msgid "View Breakpoint Properties"
+msgstr ""
+
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "プロジェクトユニットを表示"
@@ -12102,6 +12307,10 @@ msgstr "結果リストをリセット"
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告：紛らわしいファイルが見つかりました。ソースファイルは%s%s%sです。"
+
+#: lazarusidestrconsts.liswatch
+msgid "&Watch"
+msgstr ""
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -12521,6 +12730,26 @@ msgstr "テキスト選択コマンド"
 msgid "Source Notebook commands"
 msgstr "ソースノートブックコマンド"
 
+#: lazarusidestrconsts.srkmcatsyncroedit
+msgid "Syncron Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditoff
+msgid "Syncron Editing (not in Cell)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditsel
+msgid "Syncron Editing (while selecting)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateedit
+msgid "Template Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateeditoff
+msgid "Template Editing (not in Cell)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
 msgstr "ツールメニューコマンド"
@@ -12566,9 +12795,49 @@ msgstr "監視を追加"
 msgid "Code template completion"
 msgstr "コードテンプレートの補完"
 
+#: lazarusidestrconsts.srkmecblockcopy
+msgid "Copy Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockdelete
+msgid "Delete Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotobegin
+msgid "Goto Block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotoend
+msgid "Goto Block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockhide
+msgid "Hide Block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
 msgstr "インデントブロック"
+
+#: lazarusidestrconsts.srkmecblockmove
+msgid "Move Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetbegin
+msgid "Set block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetend
+msgid "Set block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockshow
+msgid "Show Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocktogglehide
+msgid "Toggle block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
@@ -13181,6 +13450,100 @@ msgstr "コードの内容を表示"
 msgid "stop program"
 msgstr "プログラムを停止"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedcellend
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellhome
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellselect
+msgid "Select Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedescape
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstart
+msgid "Start Syncro edit"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellend
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellhome
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellselect
+msgid "Select cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledescape
+msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledfinish
+msgid "Finish"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellrotate
+msgid "Next Cell (rotate)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
+msgid "Next Cell (rotate / all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "構文チェック"
@@ -13441,21 +13804,21 @@ msgstr "Todoを挿入"
 msgid "Invert Assignment"
 msgstr "代入を反転"
 
-#: lazarusidestrconsts.uemmoveeditorleft
-msgid "Move Editor Left"
-msgstr "エディタを左に移動"
+#: lazarusidestrconsts.uemmovepageleft
+msgid "Move page left"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorleftmost
-msgid "Move Editor Leftmost"
-msgstr "エディタを左端に移動"
+#: lazarusidestrconsts.uemmovepageleftmost
+msgid "Move page leftmost"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorright
-msgid "Move Editor Right"
-msgstr "エディタを右に移動"
+#: lazarusidestrconsts.uemmovepageright
+msgid "Move page right"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorrightmost
-msgid "Move Editor Rightmost"
-msgstr "エディタを右端に移動"
+#: lazarusidestrconsts.uemmovepagerightmost
+msgid "Move page rightmost"
+msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

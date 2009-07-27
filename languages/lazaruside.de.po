@@ -117,6 +117,10 @@ msgstr "Gleicher Name (im Unterverzeichnis)"
 msgid "Behind methods"
 msgstr "Nach Methoden"
 
+#: lazarusidestrconsts.dlgblockgroupoptions
+msgid "Selection:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
 msgstr "Blockeinrückung"
@@ -461,6 +465,10 @@ msgstr "Überlauf"
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
 msgstr "Parsen"
+
+#: lazarusidestrconsts.dlgcopypastekeepfolds
+msgid "Copy/Paste with fold info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -1773,6 +1781,10 @@ msgstr "Voreingestellte Pascal-Dateiendung"
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Linker zusätzliche Einstellungen übergeben (Leerzeichen trennt)"
 
+#: lazarusidestrconsts.dlgpersistentblock
+msgid "Persistent Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "Persistenter Cursor"
@@ -2424,11 +2436,15 @@ msgid "Delete Selection"
 msgstr "Auswahl löschen"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-msgid "Mirror horizontal"
+#, fuzzy
+#| msgid "Mirror horizontal"
+msgid "Mirror Horizontal"
 msgstr "Waagrecht spiegeln"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-msgid "Mirror vertical"
+#, fuzzy
+#| msgid "Mirror vertical"
+msgid "Mirror Vertical"
 msgstr "Senkrecht spiegeln"
 
 #: lazarusidestrconsts.fdmorder
@@ -2436,23 +2452,33 @@ msgid "Order"
 msgstr "Reihenfolge"
 
 #: lazarusidestrconsts.fdmorderbackone
-msgid "Back one"
+#, fuzzy
+#| msgid "Back one"
+msgid "Back One"
 msgstr "Eine Stufe zurück"
 
 #: lazarusidestrconsts.fdmorderforwardone
-msgid "Forward one"
+#, fuzzy
+#| msgid "Forward one"
+msgid "Forward One"
 msgstr "Einen weiter"
 
 #: lazarusidestrconsts.fdmordermovetoback
-msgid "Move to back"
+#, fuzzy
+#| msgid "Move to back"
+msgid "Move to Back"
 msgstr "Nach hinten bewegen"
 
 #: lazarusidestrconsts.fdmordermovetofront
-msgid "Move to front"
+#, fuzzy
+#| msgid "Move to front"
+msgid "Move to Front"
 msgstr "Nach vorn bewegen"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-msgid "Save form as xml"
+#, fuzzy
+#| msgid "Save form as xml"
+msgid "Save form as XML"
 msgstr "Form im XML-Format speichern"
 
 #: lazarusidestrconsts.fdmscaleword
@@ -2477,8 +2503,14 @@ msgid "Option: Snap to guide lines"
 msgstr "Einstellung: An Hilfslinien ausrichten"
 
 #: lazarusidestrconsts.fdmtaborder
-msgid "Tab order..."
+#, fuzzy
+#| msgid "Tab order..."
+msgid "Tab Order..."
 msgstr "Tabulatorreihenfolge"
+
+#: lazarusidestrconsts.fdmzorder
+msgid "Z-order"
+msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
@@ -2816,6 +2848,10 @@ msgstr "Danksagung"
 msgid "Action:"
 msgstr ""
 
+#: lazarusidestrconsts.lisactions
+msgid "Actions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Aktiviere die Syntax regulärer Ausdrücke für Text und Ersetzen (sehr ähnlich zu Perl)"
@@ -3025,9 +3061,21 @@ msgstr "Eine einfache Pascal-Programmdatei.%sSie dient dem schnellen Testen.%sBe
 msgid "Ask before replacing each found text"
 msgstr "Vor dem  Ersetzen immer nachfragen"
 
+#: lazarusidestrconsts.lisautocompletionoff
+msgid "Auto completion: off"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocompletionon
+msgid "Auto completion: on"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
 msgstr "Automatisches Fortsetzen"
+
+#: lazarusidestrconsts.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -3141,6 +3189,10 @@ msgstr "Gleichmäßig am unteren Rand aufteilen"
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Halt"
+
+#: lazarusidestrconsts.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -3567,7 +3619,9 @@ msgid "Change file"
 msgstr "Datei ändern"
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change parent ..."
+#, fuzzy
+#| msgid "Change parent ..."
+msgid "Change Parent..."
 msgstr "Elternobjekt ändern ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -3581,6 +3635,10 @@ msgstr "Zeichentabelle"
 #: lazarusidestrconsts.lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
 msgstr "Änderungen auf dem Datenträger beim Laden prüfen"
+
+#: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
+msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5013,6 +5071,10 @@ msgstr "Alle diese Dateien löschen?"
 msgid "Delete ambiguous file?"
 msgstr "Mehrdeutige Datei löschen?"
 
+#: lazarusidestrconsts.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Breakpoint bei %s\"%s\", Zeile %d löschen?"
@@ -5124,6 +5186,10 @@ msgstr "Anweisungen"
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Alle Breakpoints der gleichen Datei abschalten"
+
+#: lazarusidestrconsts.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
 msgid "Disabled"
@@ -5412,6 +5478,10 @@ msgstr "Alle &zulassen"
 msgid "Enable All in same source"
 msgstr "Alle in der gleichen Quelle zulassen"
 
+#: lazarusidestrconsts.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
@@ -5606,6 +5676,14 @@ msgstr "Fehler beim Schreiben der Package-Liste in die Datei%s%s%s%s"
 msgid "Edit custom scanners (%s)"
 msgstr "Benutzerdefinierte Scanner (%s)"
 
+#: lazarusidestrconsts.lisevalexpression
+msgid "Eval expression"
+msgstr ""
+
+#: lazarusidestrconsts.lisevaluate
+msgid "E&valuate"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Jede n-te Zeile:"
@@ -5736,6 +5814,10 @@ msgstr "\"%s\" beendet"
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Das Hilfsprogramm %s%s%s kann nicht ausgeführt werden:%s%s"
+
+#: lazarusidestrconsts.lisfailedtoloadfoldstat
+msgid "Failed to load fold state"
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -6037,6 +6119,10 @@ msgstr "Wo suchen"
 msgid "Function"
 msgstr "Funktion"
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition
+msgid "get word at current cursor position"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<Beschreibung>%sCopyright (C) <Jahr> <Names des Autors> <Kontakt>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -6133,6 +6219,10 @@ msgstr "Formulare anzeigen"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Units anzeigen"
+
+#: lazarusidestrconsts.lishitcount
+msgid "Hitcount"
+msgstr ""
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -6341,6 +6431,50 @@ msgstr "Abgeleiteter Punkt"
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgstr "Um eine saubere Kopie des Projekts oder Packages zu erhalten, werden alle Dateien im folgenden Verzeichnis gelöscht, der gesamte Inhalt geht verloren.%s%sAlle Dateien in %s%s% löschen?"
+
+#: lazarusidestrconsts.lisinsertdate
+msgid "insert date"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtime
+msgid "insert date and time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
+msgid "Insert date and time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateoptionalformatstring
+msgid "Insert date. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertendifneeded
+msgid "insert end if needed"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertnameofcurrentprocedure
+msgid "Insert name of current procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurehead
+msgid "insert procedure head"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurename
+msgid "insert procedure name"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttime
+msgid "insert time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttimeoptionalformatstring
+msgid "Insert time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspect
+msgid "&Inspect"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -7312,6 +7446,10 @@ msgstr "Bibliothek%sEine Free-Pascal-Bibliothek (.dll unter Windows, .so in Linu
 msgid "library path"
 msgstr "Bibliothekspfad"
 
+#: lazarusidestrconsts.lisline
+msgid "Line:"
+msgstr ""
+
 #: lazarusidestrconsts.lislinelength
 msgid "Line/Length"
 msgstr "Zeile/Länge"
@@ -7327,6 +7465,10 @@ msgstr "Linker-Einstellungen"
 #: lazarusidestrconsts.lislinktarget
 msgid "Link target"
 msgstr "Link-Ziel"
+
+#: lazarusidestrconsts.lislistofallcasevalues
+msgid "list of all case values"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -7346,9 +7488,21 @@ msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Wert"
 
+#: lazarusidestrconsts.lislogmessage
+msgid "Log message"
+msgstr ""
+
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
 msgstr "Logo"
+
+#: lazarusidestrconsts.lislowercasestring
+msgid "lowercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lislowercasestringgivenasparameter
+msgid "Lowercase string given as parameter"
+msgstr ""
 
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
@@ -8445,6 +8599,10 @@ msgstr "Fehlende Packages"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<Beschreibung>%sCopyright (C) <Jahr> <Name des Autors> <Kontakt>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
+#: lazarusidestrconsts.lismodify
+msgid "&Modify"
+msgstr ""
+
 #: lazarusidestrconsts.lismore
 msgid "More"
 msgstr "Weiter"
@@ -8452,6 +8610,10 @@ msgstr "Weiter"
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
 msgstr "Seite verschieben ..."
+
+#: lazarusidestrconsts.lisms
+msgid "(ms)"
+msgstr ""
 
 #: lazarusidestrconsts.lismvdocking
 msgid "Docking"
@@ -8928,6 +9090,14 @@ msgstr "Pascal-Unit"
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Laufzähler"
+
+#: lazarusidestrconsts.lispasteclipboard
+msgid "paste clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lispastetextfromclipboard
+msgid "Paste text from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -10147,6 +10317,10 @@ msgstr "lps-Datei im Projektverzeichnis speichern"
 msgid "Save session information in"
 msgstr "Sitzungsinformationen speichern in"
 
+#: lazarusidestrconsts.lisprecedingword
+msgid "Preceding word"
+msgstr ""
+
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist"
@@ -10200,6 +10374,10 @@ msgstr "Programm ermittelt"
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Der Programmquelltext muß eine Pascal-Endung wie .pas, .pp oder .lpr besitzen"
+
+#: lazarusidestrconsts.lisprojaddaddfilestoproject
+msgid "Add files to project"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddaddfiletoproject
 msgid "Add file to project:"
@@ -10602,6 +10780,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
+msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+msgid "returns list of all values of case variable in front of variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisrevertfailed
@@ -11124,6 +11306,17 @@ msgstr "Interner Compilerfehler! (%d)"
 #: lazarusidestrconsts.listddinserttodo
 msgid "Insert ToDo"
 msgstr "ToDo einfügen"
+
+#: lazarusidestrconsts.listemplateeditparamcell
+msgid "Editable Cell"
+msgstr ""
+
+#: lazarusidestrconsts.listemplateeditparamcellhelp
+msgid ""
+"Inserts an editable Cell, with a default value\n"
+"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+"\"default\",Sync, to Sync with a previous cell of equal default\n"
+msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -12026,6 +12219,14 @@ msgstr "Vorschau aktualisieren"
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
 
+#: lazarusidestrconsts.lisuppercasestring
+msgid "uppercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lisuppercasestringgivenasparameter
+msgid "Uppercase string given as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Ausgabe für den Aufruf (Parameter -h)"
@@ -12078,6 +12279,10 @@ msgstr "Senkrecht"
 msgid "Copy version information to clipboard"
 msgstr "Versionsinformationen in die Zwischenablage kopieren"
 
+#: lazarusidestrconsts.lisviewbreakpointproperties
+msgid "View Breakpoint Properties"
+msgstr ""
+
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Projektunits anzeigen"
@@ -12097,6 +12302,10 @@ msgstr "Ergebnisliste zurücksetzen"
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
+
+#: lazarusidestrconsts.liswatch
+msgid "&Watch"
+msgstr ""
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -12518,6 +12727,26 @@ msgstr "Textauswahlbefehle"
 msgid "Source Notebook commands"
 msgstr "Editorbefehle"
 
+#: lazarusidestrconsts.srkmcatsyncroedit
+msgid "Syncron Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditoff
+msgid "Syncron Editing (not in Cell)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditsel
+msgid "Syncron Editing (while selecting)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateedit
+msgid "Template Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateeditoff
+msgid "Template Editing (not in Cell)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
 msgstr "Werkzeugmenübefehle"
@@ -12563,9 +12792,49 @@ msgstr "Neuer überwachter Ausdruck"
 msgid "Code template completion"
 msgstr "Quelltextvervollständigung per Vorlage"
 
+#: lazarusidestrconsts.srkmecblockcopy
+msgid "Copy Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockdelete
+msgid "Delete Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotobegin
+msgid "Goto Block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotoend
+msgid "Goto Block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockhide
+msgid "Hide Block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
 msgstr "Block einrücken"
+
+#: lazarusidestrconsts.srkmecblockmove
+msgid "Move Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetbegin
+msgid "Set block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetend
+msgid "Set block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockshow
+msgid "Show Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocktogglehide
+msgid "Toggle block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
@@ -13180,6 +13449,100 @@ msgstr "Code-Context anzeigen"
 msgid "stop program"
 msgstr "Programm anhalten"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedcellend
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellhome
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellselect
+msgid "Select Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedescape
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstart
+msgid "Start Syncro edit"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellend
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellhome
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellselect
+msgid "Select cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledescape
+msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledfinish
+msgid "Finish"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellrotate
+msgid "Next Cell (rotate)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
+msgid "Next Cell (rotate / all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Syntaxüberprüfung"
@@ -13440,21 +13803,21 @@ msgstr "Todo einfügen"
 msgid "Invert Assignment"
 msgstr "Umgekehrte Zuweisung"
 
-#: lazarusidestrconsts.uemmoveeditorleft
-msgid "Move Editor Left"
-msgstr "Editor nach links bewegen"
+#: lazarusidestrconsts.uemmovepageleft
+msgid "Move page left"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorleftmost
-msgid "Move Editor Leftmost"
-msgstr "Editor ganz nach links verschieben"
+#: lazarusidestrconsts.uemmovepageleftmost
+msgid "Move page leftmost"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorright
-msgid "Move Editor Right"
-msgstr "Editor nach rechts bewegen"
+#: lazarusidestrconsts.uemmovepageright
+msgid "Move page right"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorrightmost
-msgid "Move Editor Rightmost"
-msgstr "Editor ganz nach rechts verschieben"
+#: lazarusidestrconsts.uemmovepagerightmost
+msgid "Move page rightmost"
+msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

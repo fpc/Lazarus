@@ -109,6 +109,10 @@ msgstr "Та ж сама назва (в підтеці)"
 msgid "Behind methods"
 msgstr "Після методів"
 
+#: lazarusidestrconsts.dlgblockgroupoptions
+msgid "Selection:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
 msgstr "Зсунути блок вправо"
@@ -453,6 +457,10 @@ msgstr "Переповн."
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
 msgstr "Обробка"
+
+#: lazarusidestrconsts.dlgcopypastekeepfolds
+msgid "Copy/Paste with fold info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -1763,6 +1771,10 @@ msgstr "Стандартне розширення паскаля"
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "Передати параметри компонувальнику (відділяти пробілами)"
 
+#: lazarusidestrconsts.dlgpersistentblock
+msgid "Persistent Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr ""
@@ -2413,11 +2425,15 @@ msgid "Delete Selection"
 msgstr "Стерти виділення"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-msgid "Mirror horizontal"
+#, fuzzy
+#| msgid "Mirror horizontal"
+msgid "Mirror Horizontal"
 msgstr "Горизонтальне дзеркало"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-msgid "Mirror vertical"
+#, fuzzy
+#| msgid "Mirror vertical"
+msgid "Mirror Vertical"
 msgstr "Вертикальне дзеркало"
 
 #: lazarusidestrconsts.fdmorder
@@ -2425,23 +2441,33 @@ msgid "Order"
 msgstr "Порядок"
 
 #: lazarusidestrconsts.fdmorderbackone
-msgid "Back one"
+#, fuzzy
+#| msgid "Back one"
+msgid "Back One"
 msgstr "Назад на один"
 
 #: lazarusidestrconsts.fdmorderforwardone
-msgid "Forward one"
+#, fuzzy
+#| msgid "Forward one"
+msgid "Forward One"
 msgstr "Вперед на одну"
 
 #: lazarusidestrconsts.fdmordermovetoback
-msgid "Move to back"
+#, fuzzy
+#| msgid "Move to back"
+msgid "Move to Back"
 msgstr "До попереднього"
 
 #: lazarusidestrconsts.fdmordermovetofront
-msgid "Move to front"
+#, fuzzy
+#| msgid "Move to front"
+msgid "Move to Front"
 msgstr "Пересунути наперед"
 
 #: lazarusidestrconsts.fdmsaveformasxml
-msgid "Save form as xml"
+#, fuzzy
+#| msgid "Save form as xml"
+msgid "Save form as XML"
 msgstr "Зберегти файл як xml"
 
 #: lazarusidestrconsts.fdmscaleword
@@ -2466,8 +2492,14 @@ msgid "Option: Snap to guide lines"
 msgstr "Параметр:Прикріпити до лінійок"
 
 #: lazarusidestrconsts.fdmtaborder
-msgid "Tab order..."
+#, fuzzy
+#| msgid "Tab order..."
+msgid "Tab Order..."
 msgstr "Чергування ..."
+
+#: lazarusidestrconsts.fdmzorder
+msgid "Z-order"
+msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
@@ -2805,6 +2837,10 @@ msgstr ""
 msgid "Action:"
 msgstr ""
 
+#: lazarusidestrconsts.lisactions
+msgid "Actions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активувати синтаксис регулярних виразів для тексту і заміни (майже як в perl)"
@@ -3014,8 +3050,20 @@ msgstr "Простий програманий файл на Паскалі.%sМ�
 msgid "Ask before replacing each found text"
 msgstr "Запитати перед заміною кожного фрагменту"
 
+#: lazarusidestrconsts.lisautocompletionoff
+msgid "Auto completion: off"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocompletionon
+msgid "Auto completion: on"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
+msgstr ""
+
+#: lazarusidestrconsts.lisautocontinueafter
+msgid "Auto continue after:"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -3129,6 +3177,10 @@ msgstr "Вниз з еквівалентим відступом"
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
+msgstr ""
+
+#: lazarusidestrconsts.lisbreakpointproperties
+msgid "Breakpoint Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lisbrowseforcompiler
@@ -3556,7 +3608,9 @@ msgid "Change file"
 msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change parent ..."
+#, fuzzy
+#| msgid "Change parent ..."
+msgid "Change Parent..."
 msgstr "Змінити предка ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -3570,6 +3624,10 @@ msgstr "Таблиця символів"
 #: lazarusidestrconsts.lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
 msgstr "Перевірити зміни на диску із завантаженням"
+
+#: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
+msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -4396,7 +4454,7 @@ msgstr "Номер"
 #: lazarusidestrconsts.liscodetoolsoptsok
 msgctxt "lazarusidestrconsts.liscodetoolsoptsok"
 msgid "Ok"
-msgstr ""
+msgstr "Гаразд"
 
 #: lazarusidestrconsts.liscodetoolsoptspoint
 msgid "Point"
@@ -5002,6 +5060,10 @@ msgstr "Видалити всі ці файли?"
 msgid "Delete ambiguous file?"
 msgstr "Видалити файл з неоднозначною назвою?"
 
+#: lazarusidestrconsts.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
@@ -5112,6 +5174,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisablebreakpoint
+msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
@@ -5401,6 +5467,10 @@ msgstr ""
 msgid "Enable All in same source"
 msgstr ""
 
+#: lazarusidestrconsts.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
@@ -5595,6 +5665,14 @@ msgstr "Помилка запису списку пакунків в файл%s%
 msgid "Edit custom scanners (%s)"
 msgstr ""
 
+#: lazarusidestrconsts.lisevalexpression
+msgid "Eval expression"
+msgstr ""
+
+#: lazarusidestrconsts.lisevaluate
+msgid "E&valuate"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr ""
@@ -5725,6 +5803,10 @@ msgstr ""
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Не можу запустити інструмент %s%s%s:%s%s"
+
+#: lazarusidestrconsts.lisfailedtoloadfoldstat
+msgid "Failed to load fold state"
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -6026,6 +6108,10 @@ msgstr "Шукати де"
 msgid "Function"
 msgstr ""
 
+#: lazarusidestrconsts.lisgetwordatcurrentcursorposition
+msgid "get word at current cursor position"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -6122,6 +6208,10 @@ msgstr "Показувати форми"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Показувати модулі"
+
+#: lazarusidestrconsts.lishitcount
+msgid "Hitcount"
+msgstr ""
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -6329,6 +6419,50 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdate
+msgid "insert date"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtime
+msgid "insert date and time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
+msgid "Insert date and time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertdateoptionalformatstring
+msgid "Insert date. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertendifneeded
+msgid "insert end if needed"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertnameofcurrentprocedure
+msgid "Insert name of current procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurehead
+msgid "insert procedure head"
+msgstr ""
+
+#: lazarusidestrconsts.lisinsertprocedurename
+msgid "insert procedure name"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttime
+msgid "insert time"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserttimeoptionalformatstring
+msgid "Insert time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinspect
+msgid "&Inspect"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectdata
@@ -7137,7 +7271,7 @@ msgstr "Відсутнє"
 #: lazarusidestrconsts.lislazbuildok
 msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "Ok"
-msgstr ""
+msgstr "Гаразд"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
@@ -7301,6 +7435,10 @@ msgstr ""
 msgid "library path"
 msgstr "шлях до бібліотек"
 
+#: lazarusidestrconsts.lisline
+msgid "Line:"
+msgstr ""
+
 #: lazarusidestrconsts.lislinelength
 msgid "Line/Length"
 msgstr ""
@@ -7315,6 +7453,10 @@ msgstr "параметри компонувальника"
 
 #: lazarusidestrconsts.lislinktarget
 msgid "Link target"
+msgstr ""
+
+#: lazarusidestrconsts.lislistofallcasevalues
+msgid "list of all case values"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -7335,8 +7477,20 @@ msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Значення"
 
+#: lazarusidestrconsts.lislogmessage
+msgid "Log message"
+msgstr ""
+
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
+msgstr ""
+
+#: lazarusidestrconsts.lislowercasestring
+msgid "lowercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lislowercasestringgivenasparameter
+msgid "Lowercase string given as parameter"
 msgstr ""
 
 #: lazarusidestrconsts.lismacpascal
@@ -8222,7 +8376,7 @@ msgstr "Шукати далі"
 #: lazarusidestrconsts.lismenutemplatehelp
 msgctxt "lazarusidestrconsts.lismenutemplatehelp"
 msgid "Help"
-msgstr ""
+msgstr "Довідка"
 
 #: lazarusidestrconsts.lismenutemplatenew
 msgid "New"
@@ -8446,12 +8600,20 @@ msgstr "Пропущені пакунки"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
+#: lazarusidestrconsts.lismodify
+msgid "&Modify"
+msgstr ""
+
 #: lazarusidestrconsts.lismore
 msgid "More"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisms
+msgid "(ms)"
 msgstr ""
 
 #: lazarusidestrconsts.lismvdocking
@@ -8928,6 +9090,14 @@ msgstr "Паскаль-модуль"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
+msgstr ""
+
+#: lazarusidestrconsts.lispasteclipboard
+msgid "paste clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lispastetextfromclipboard
+msgid "Paste text from clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lispath
@@ -10148,6 +10318,10 @@ msgstr "Зберегти в файлі .lpi в теці проекту"
 msgid "Save session information in"
 msgstr "Зберегти інформацію про сесію в"
 
+#: lazarusidestrconsts.lisprecedingword
+msgid "Preceding word"
+msgstr ""
+
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "тека головних налаштувань, де Lazarus зберігає свої файли налаштувань. За замовчуванням"
@@ -10201,6 +10375,10 @@ msgstr "Виявлена програма"
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Текст програми повинен мати розширення паскаля, напр. .pas, .pp або .lpr"
+
+#: lazarusidestrconsts.lisprojaddaddfilestoproject
+msgid "Add files to project"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddaddfiletoproject
 msgid "Add file to project:"
@@ -10603,6 +10781,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
+msgstr ""
+
+#: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+msgid "returns list of all values of case variable in front of variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisrevertfailed
@@ -11124,6 +11306,17 @@ msgstr "Внутрішня помилка компілятора! (%d)"
 
 #: lazarusidestrconsts.listddinserttodo
 msgid "Insert ToDo"
+msgstr ""
+
+#: lazarusidestrconsts.listemplateeditparamcell
+msgid "Editable Cell"
+msgstr ""
+
+#: lazarusidestrconsts.listemplateeditparamcellhelp
+msgid ""
+"Inserts an editable Cell, with a default value\n"
+"\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
+"\"default\",Sync, to Sync with a previous cell of equal default\n"
 msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
@@ -12027,6 +12220,14 @@ msgstr ""
 msgid "Update references?"
 msgstr ""
 
+#: lazarusidestrconsts.lisuppercasestring
+msgid "uppercase string"
+msgstr ""
+
+#: lazarusidestrconsts.lisuppercasestringgivenasparameter
+msgid "Uppercase string given as parameter"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr ""
@@ -12079,6 +12280,10 @@ msgstr "Вертикально"
 msgid "Copy version information to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lisviewbreakpointproperties
+msgid "View Breakpoint Properties"
+msgstr ""
+
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Показувати модулі проекту"
@@ -12098,6 +12303,10 @@ msgstr ""
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Попередження: знайдений двозначний файл %s%s%s. Код: %s%s%s"
+
+#: lazarusidestrconsts.liswatch
+msgid "&Watch"
+msgstr ""
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -12517,6 +12726,26 @@ msgstr "Команди виділення тексту"
 msgid "Source Notebook commands"
 msgstr "Команди блокноту зауважень до тексту програми"
 
+#: lazarusidestrconsts.srkmcatsyncroedit
+msgid "Syncron Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditoff
+msgid "Syncron Editing (not in Cell)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcatsyncroeditsel
+msgid "Syncron Editing (while selecting)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateedit
+msgid "Template Editing"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcattemplateeditoff
+msgid "Template Editing (not in Cell)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
 msgstr "Команди меню Інструменти"
@@ -12562,9 +12791,49 @@ msgstr "додати спостереження"
 msgid "Code template completion"
 msgstr "Завершення шаблонів коду"
 
+#: lazarusidestrconsts.srkmecblockcopy
+msgid "Copy Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockdelete
+msgid "Delete Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotobegin
+msgid "Goto Block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockgotoend
+msgid "Goto Block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockhide
+msgid "Hide Block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
 msgstr "Зсунути блок вправо"
+
+#: lazarusidestrconsts.srkmecblockmove
+msgid "Move Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetbegin
+msgid "Set block begin"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocksetend
+msgid "Set block end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockshow
+msgid "Show Block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblocktogglehide
+msgid "Toggle block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
@@ -13177,6 +13446,100 @@ msgstr "Контекст коду"
 msgid "stop program"
 msgstr "зупинити програму"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedcellend
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellhome
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedcellselect
+msgid "Select Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedescape
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstart
+msgid "Start Syncro edit"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellend
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
+msgid "Goto last pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellhome
+msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
+msgid "Goto first pos in cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledcellselect
+msgid "Select cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledescape
+msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledfinish
+msgid "Finish"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
+msgid "Next Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellrotate
+msgid "Next Cell (rotate)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
+msgid "Next Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
+msgid "Next Cell (rotate / all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
+msgid "Previous Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
+msgid "Previous Cell (all selected)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Перевірка синтаксису"
@@ -13437,20 +13800,20 @@ msgstr ""
 msgid "Invert Assignment"
 msgstr "Інвертувати присвоєння"
 
-#: lazarusidestrconsts.uemmoveeditorleft
-msgid "Move Editor Left"
-msgstr "Пересунути в редакторі вліво"
-
-#: lazarusidestrconsts.uemmoveeditorleftmost
-msgid "Move Editor Leftmost"
+#: lazarusidestrconsts.uemmovepageleft
+msgid "Move page left"
 msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorright
-msgid "Move Editor Right"
-msgstr "Пересунути в редакторі вправо"
+#: lazarusidestrconsts.uemmovepageleftmost
+msgid "Move page leftmost"
+msgstr ""
 
-#: lazarusidestrconsts.uemmoveeditorrightmost
-msgid "Move Editor Rightmost"
+#: lazarusidestrconsts.uemmovepageright
+msgid "Move page right"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovepagerightmost
+msgid "Move page rightmost"
 msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
