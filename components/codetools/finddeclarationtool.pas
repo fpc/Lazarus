@@ -623,7 +623,7 @@ type
   protected
     // expressions, operands, variables
     function GetCurrentAtomType: TVariableAtomType;
-    function FindEndOfVariable(StartPos: integer;
+    function FindEndOfTerm(StartPos: integer;
       ExceptionIfNoVariableStart, WithAsOperator: boolean): integer;
     function FindStartOfTerm(EndPos: integer): integer;
     function FindExpressionTypeOfVariable(StartPos, EndPos: integer;
@@ -5776,7 +5776,7 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindEndOfVariable(
+function TFindDeclarationTool.FindEndOfTerm(
   StartPos: integer; ExceptionIfNoVariableStart, WithAsOperator: boolean
   ): integer;
 { a variable can have the form:
@@ -5978,7 +5978,7 @@ var
     if StartPos<1 then
       StartPos:=FindStartOfTerm(EndPos)
     else if EndPos<1 then
-      EndPos:=FindEndOfVariable(StartPos,true,WithAsOperator);
+      EndPos:=FindEndOfTerm(StartPos,true,WithAsOperator);
     if (StartPos<1) then
       RaiseInternalError;
     if StartPos>SrcLen then exit;
@@ -6804,7 +6804,7 @@ begin
   or UpAtomIs('INHERITED') then begin
     // read variable
     SubStartPos:=CurPos.StartPos;
-    EndPos:=FindEndOfVariable(SubStartPos,false,true);
+    EndPos:=FindEndOfTerm(SubStartPos,false,true);
     OldFlags:=Params.Flags;
     Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
     Result:=FindExpressionTypeOfVariable(SubStartPos,EndPos,Params,true);
