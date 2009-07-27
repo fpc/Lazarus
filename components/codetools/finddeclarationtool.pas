@@ -4602,6 +4602,7 @@ begin
   // ToDo: ppu, ppw, dcu
 
   // search the ancestor name
+  BuildSubTreeForClass(ClassNode);
   if (ClassNode.FirstChild<>nil)
   and (ClassNode.FirstChild.Desc=ctnClassInheritance)
   and (ClassNode.FirstChild.FirstChild<>nil) then begin
