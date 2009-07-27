@@ -1212,7 +1212,9 @@ function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseAc
 var
   r: TRect;
 begin
-  Result := Active;
+  Result := Active and
+            ( ((FMode = spseSelecting) and (MarkupEnabled = True)) or
+              (FMode = spseEditing) );
   if not Result then exit;
 
   r := Markup.GutterGlyphRect;
