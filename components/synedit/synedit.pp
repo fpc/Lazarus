@@ -386,7 +386,7 @@ type
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
-    FOldTopView, FTopDelta: Integer; // TopView before IncPaintLock
+    FNewTopLine: Integer;
     fHighlighter: TSynCustomHighlighter;
     {$IFNDEF SYN_LAZARUS}
     fSelectedColor: TSynSelectedColor;
@@ -567,7 +567,6 @@ type
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
     procedure SetTopLine(Value: Integer);
-    procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
@@ -1669,7 +1668,7 @@ begin
   fTabWidth := 8;
   fLeftChar := 1;
   fTopLine := 1;
-  FTopDelta := 0;
+  FNewTopLine := -1;
   {$IFDEF SYN_LAZARUS}
   FFoldedLinesView.TopLine := 1;
   {$ELSE}
@@ -1757,7 +1756,8 @@ begin
   FFoldedLinesView.UnLock; // after ScanFrom, but before UpdateCaret
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
-    ScrollAfterTopLineChanged;
+    if FNewTopLine > 0 then
+      TopLine := FNewTopLine;
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
     // must be past UpdateScrollbars; but before UpdateCaret
@@ -2077,10 +2077,8 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
-  if fPaintLock = 0 then begin
-    FOldTopView := TopView;
-    FTopDelta := 0;
-  end;
+  if fPaintLock = 0 then
+    FNewTopLine := -1;
   inc(fPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
@@ -2113,12 +2111,12 @@ begin
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
         LastLine := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
-        LastLine := LastLine + FTopDelta;
+        LastLine := LastLine;
       end
       else
         LastLine := LinesInWindow + 1;
       FirstLine := RowToScreenRow(Max(FirstLine, TopLine));
-      FirstLine := Max(0, FirstLine + FTopDelta);
+      FirstLine := Max(0, FirstLine);
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         rcInval := Rect(0, fTextHeight * FirstLine,
@@ -2158,12 +2156,12 @@ begin
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
         l := RowToScreenRow(Min(LastLine, ScreenRowToRow(LinesInWindow)))+1;
-        l := l + FTopDelta;
+        l := l;
       end
       else
         l := LinesInWindow + 1;
       f := RowToScreenRow(Max(FirstLine, TopLine));
-      f := Max(0, f + FTopDelta);
+      f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
         rcInval := Rect(fGutterWidth, fTextHeight * f,
@@ -3979,7 +3977,15 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
+var
+  Delta: Integer;
+  OldTopView: LongInt;
 begin
+  if fPaintLock > 0 then begin
+    // defer scrolling, to minimize any possible flicker
+    FNewTopLine := Value;
+    exit;
+  end;
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   if (eoScrollPastEof in Options) then
@@ -3991,34 +3997,26 @@ begin
     Value := FindNextUnfoldedLine(Value, False);
   FFoldedLinesView.TopTextIndex := fTopLine - 1;
   if Value <> fTopLine then begin
-    if fPaintLock = 0 then
-      FOldTopView := TopView;
+    OldTopView := TopView;
     fTopLine := Value;
     FFoldedLinesView.TopTextIndex := Value-1;
-    FTopDelta := TopView - FOldTopView;
     UpdateScrollBars;
-    ScrollAfterTopLineChanged;
+    if (sfPainting in fStateFlags) then debugln('SetTopline inside paint');
+    Delta := OldTopView - TopView;
+    if Delta <> 0 then begin
+      // TODO: SW_SMOOTHSCROLL --> can't get it work
+      if (Abs(Delta) >= fLinesInWindow) or
+      not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
+      then
+        Invalidate    // scrollwindow failed, invalidate all
+      else
+        if eoAlwaysVisibleCaret in fOptions2 then
+          MoveCaretToVisibleArea;      // Invalidate caret line, if necessary
+    end;
+
     StatusChanged([scTopLine]);
   end;
   fMarkupManager.TopLine:= fTopLine;
-end;
-
-procedure TCustomSynEdit.ScrollAfterTopLineChanged;
-var
-  Delta: Integer;
-begin
-  if (sfPainting in fStateFlags) or (fPaintLock <> 0) then exit;
-  Delta := FOldTopView - TopView;
-  if Delta = 0 then exit;
-  // TODO: SW_SMOOTHSCROLL --> can't get it work
-  if (Abs(Delta) >= fLinesInWindow) or
-  not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
-  then
-    Invalidate    // scrollwindow failed, invalidate all
-  else
-    if eoAlwaysVisibleCaret in fOptions2 then
-      MoveCaretToVisibleArea;      // Invalidate caret line, if necessary
-  FTopDelta := 0;
 end;
 
 procedure TCustomSynEdit.ShowCaret;
