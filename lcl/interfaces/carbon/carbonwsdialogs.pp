@@ -287,6 +287,7 @@ begin
   end;
   
   CreationOptions.popupExtension := StringsToCFArray(Filters);
+  CreationOptions.optionFlags := CreationOptions.optionFlags or kNavSupportPackages;
   try
     if FileDialog is TSaveDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
