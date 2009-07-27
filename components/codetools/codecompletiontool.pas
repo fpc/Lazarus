@@ -1495,7 +1495,7 @@ const
     // find start of proc expression (e.g. Button1.Constrains.DoSomething)
     IsFunction:=false;
     FuncType:='';
-    ProcExprStartPos:=FindStartOfTerm(ProcNameAtom.EndPos);
+    ProcExprStartPos:=FindStartOfTerm(ProcNameAtom.EndPos,false);
     if ProcExprStartPos<0 then exit;
     MoveCursorToCleanPos(ProcExprStartPos);
     ReadPriorAtom;
@@ -1647,7 +1647,7 @@ begin
     // find context (e.g. Button1.|)
     Params.Clear;
     Params.ContextNode:=CursorNode;
-    ExprType:=FindExpressionTypeOfVariable(-1,ProcNameAtom.StartPos,Params,false);
+    ExprType:=FindExpressionTypeOfTerm(-1,ProcNameAtom.StartPos,Params,false);
     DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ExprTypeToString(ExprType)]);
     
     if ExprType.Desc=xtNone then begin

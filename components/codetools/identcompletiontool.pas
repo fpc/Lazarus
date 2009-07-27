@@ -1516,7 +1516,7 @@ procedure TIdentCompletionTool.FindCollectionContext(
     ReadPriorAtom;
     if (CurPos.Flag=cafPoint)
     or (UpAtomIs('INHERITED')) then begin
-      Result:=FindStartOfTerm(IdentStartPos);
+      Result:=FindStartOfTerm(IdentStartPos,NodeTermInType(ContextNode));
       if Result<ContextNode.StartPos then
         Result:=ContextNode.StartPos;
     end else
@@ -1568,8 +1568,8 @@ begin
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     if IgnoreCurContext then
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
-    ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
-                                           Params,false);
+    ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
+                                       Params,false);
     //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
     if (ExprType.Desc=xtContext) then begin
       GatherContext:=ExprType.Context;
@@ -1809,7 +1809,7 @@ begin
       end;
 
       // context in front of
-      StartPosOfVariable:=FindStartOfTerm(IdentStartPos);
+      StartPosOfVariable:=FindStartOfTerm(IdentStartPos,NodeTermInType(CursorNode));
       if StartPosOfVariable>0 then begin
         if StartPosOfVariable=IdentStartPos then begin
           // cursor is at start of an operand
@@ -2230,7 +2230,7 @@ begin
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=CursorNode;
     Params.Flags:=fdfGlobals+fdfDefaultForExpressions;
-    ExprType:=FindExpressionTypeOfVariable(CaseAtom.EndPos,EndPos,Params,true);
+    ExprType:=FindExpressionTypeOfTerm(CaseAtom.EndPos,EndPos,Params,true);
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
 
     if ExprType.Desc=xtContext then begin
