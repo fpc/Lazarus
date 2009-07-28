@@ -32,7 +32,9 @@ The examples will scan the directories and store the result in a file named
 not need to scan.
 
 List of environment variables:
-FPCDIR     = path to FPC source directory
-PP         = path of the Free Pascal compiler. For example /usr/bin/ppc386.
-LAZARUSDIR = path of the lazarus sources
+FPCDIR       = path to FPC source directory
+PP           = path of the Free Pascal compiler. For example /usr/bin/ppc386.
+LAZARUSDIR   = path of the lazarus sources
+FPCTARGET    = FPC target OS like linux, win32, darwin
+FPCTARGETCPU = FPC target cpu like i386, x86_64, arm
 

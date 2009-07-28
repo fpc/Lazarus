@@ -684,10 +684,10 @@ begin
     end;
     if CurPackage<>nil then begin
       // scan all units of package
-      DebugLn(['TfrmTodo.acRefreshExecute AAA1 ',CurPackage.Filename]);
+      DebugLn(['TfrmTodo.acRefreshExecute lpk=',CurPackage.Filename]);
       for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
-        DebugLn(['TfrmTodo.acRefreshExecute AAA2 ',i,' ',CurPkgFile.Filename]);
+        DebugLn(['TfrmTodo.acRefreshExecute PkgFile ',i,' ',CurPkgFile.Filename]);
         if FilenameIsPascalUnit(CurPkgFile.Filename) then
           ScanFile(CurPkgFile.Filename);
       end;
