@@ -4389,6 +4389,9 @@ resourcestring
     + LineEnding + '"default",Sync, to Sync with a previous cell of equal default';
   lisPrecedingWord = 'Preceding word';
   lisForm = 'Form';
+  lisInheritedComponent = 'Inherited Component';
+  lisFrame = 'Frame';
+  lisDataModule = 'Data Module';
 
 implementation
 

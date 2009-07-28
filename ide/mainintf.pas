@@ -433,7 +433,7 @@ end;
 
 function TFileDescPascalUnitWithDataModule.GetLocalizedName: string;
 begin
-  Result:='Data Module';
+  Result:=lisDataModule;
 end;
 
 function TFileDescPascalUnitWithDataModule.GetLocalizedDescription: string;
@@ -453,7 +453,7 @@ end;
 
 function TFileDescText.GetLocalizedName: string;
 begin
-  Result:='Text';
+  Result:=dlgMouseOptNodeMain;
 end;
 
 function TFileDescText.GetLocalizedDescription: string;
@@ -473,7 +473,7 @@ end;
 
 function TFileDescSimplePascalProgram.GetLocalizedName: string;
 begin
-  Result:='Custom Program';
+  Result:=lisCustomProgram;
 end;
 
 function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
@@ -518,7 +518,7 @@ end;
 
 function TFileDescPascalUnitWithFrame.GetLocalizedName: string;
 begin
-  Result:='Frame';
+  Result:=lisFrame;
 end;
 
 function TFileDescPascalUnitWithFrame.GetLocalizedDescription: string;
@@ -554,7 +554,7 @@ end;
 
 function TFileDescInheritedComponent.GetLocalizedName: string;
 begin
-  Result:='Inherited Component';
+  Result:=lisInheritedComponent;
 end;
 
 function TFileDescInheritedComponent.GetLocalizedDescription: string;

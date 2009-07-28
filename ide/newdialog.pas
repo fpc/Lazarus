@@ -299,9 +299,10 @@ begin
   ItemsTreeView.Items.Clear;
   for CategoryID := 0 to NewIDEItems.Count - 1 do
   begin
-    Category      := NewIDEItems[CategoryID];
+    Category := NewIDEItems[CategoryID];
     if not Category.VisibleInNewDialog then continue;
-    NewParentNode := ItemsTreeView.Items.AddObject(nil, Category.Name, Category);
+    NewParentNode := ItemsTreeView.Items.AddObject(nil,
+                                              Category.LocalizedName, Category);
     
     NewParentNode.ImageIndex := ImageIndexFolder;
     NewParentNode.SelectedIndex := ImageIndexFolder;
@@ -311,8 +312,9 @@ begin
       Template := Category[TemplateID];
       //DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
       if Template.VisibleInNewDialog then
-        with ItemsTreeView.Items.AddChildObject(NewParentNode, Template.Name, Template) do
-        begin
+        with ItemsTreeView.Items.AddChildObject(NewParentNode,
+                                               Template.LocalizedName, Template)
+        do begin
           ImageIndex := ImageIndexTemplate;
           SelectedIndex := ImageIndexTemplate;
         end;
