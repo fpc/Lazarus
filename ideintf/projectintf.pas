@@ -888,16 +888,16 @@ end;
 function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
 begin
   case vt of
-  cocvtNone:          Result:='None';
-  cocvtResult:        Result:='Result';
-  cocvtUnitPath:      Result:='Unit search path';
-  cocvtSrcPath:       Result:='Unit source search path';
-  cocvtIncludePath:   Result:='Include search path';
-  cocvtObjectPath:    Result:='Object search path';
-  cocvtLibraryPath:   Result:='Library search path';
-  cocvtDebugPath:     Result:='Debug search path';
-  cocvtLinkerOptions: Result:='Linker options';
-  cocvtCustomOptions: Result:='Custom options';
+  cocvtNone:           Result:=sccsILEdtNone;
+  cocvtResult:         Result:=pirsResult;
+  cocvtUnitPath:       Result:=pirsUnitSearchPath;
+  cocvtSrcPath:        Result:=pirsUnitSourceSearchPath;
+  cocvtIncludePath:    Result:=pirsIncludeSearchPath;
+  cocvtObjectPath:     Result:=pirsObjectSearchPath;
+  cocvtLibraryPath:    Result:=pirsLibrarySearchPath;
+  cocvtDebugPath:      Result:=pirsDebugSearchPath;
+  cocvtLinkerOptions: Result:=pirsLinkerOptions;
+  cocvtCustomOptions: Result:=pirsCustomOptions;
   else                Result:='?';
   end;
 end;
@@ -1311,7 +1311,7 @@ end;
 
 function TFileDescPascalUnit.GetLocalizedName: string;
 begin
-  Result:='Unit';
+  Result:=pirsUnit;
 end;
 
 function TFileDescPascalUnit.GetLocalizedDescription: string;

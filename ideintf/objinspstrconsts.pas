@@ -441,6 +441,16 @@ resourcestring
   srVK_NONE       = 'none';
   srkm_Alt        = 'Alt';
   srkm_Ctrl       = 'Ctrl';
+  pirsUnit = 'Unit';
+  pirsResult = 'Result';
+  pirsUnitSearchPath = 'Unit search path';
+  pirsUnitSourceSearchPath = 'Unit source search path';
+  pirsIncludeSearchPath = 'Include search path';
+  pirsObjectSearchPath = 'Object search path';
+  pirsLibrarySearchPath = 'Library search path';
+  pirsDebugSearchPath = 'Debug search path';
+  pirsLinkerOptions = 'Linker options';
+  pirsCustomOptions = 'Custom options';
 
 implementation
 
