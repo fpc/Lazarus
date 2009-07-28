@@ -1202,7 +1202,7 @@ begin
   Result := Caller is TSynEdit;
   if Result then
     with TSynEdit(Caller) do begin
-      CaretXY := FCaretPos;
+      FCaret.LineCharPos := FCaretPos;
       UndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
     end;
 end;
@@ -1441,7 +1441,7 @@ end;
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
 // set caret to pixel position
 begin
-  CaretXY := PixelsToRowColumn(Point(X,Y));
+  FCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 end;
 
 procedure TCustomSynEdit.DoCopyToClipboard(const SText: string; FoldInfo: String = '');
@@ -2327,7 +2327,7 @@ var
 
   procedure MoveCaret;
   begin
-   CaretXY := AnInfo.NewCaret.LineCharPos;
+   FCaret.LineCharPos := AnInfo.NewCaret.LineCharPos;
    CaretDone := True;
   end;
 
@@ -3839,7 +3839,8 @@ end;
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 begin
-  fCaret.LineCharPos:= Value;
+  FCaret.ChangeOnTouch;
+  FCaret.LineCharPos:= Value;
 end;
 
 procedure TCustomSynEdit.CaretChanged(Sender: TObject);
@@ -3934,9 +3935,6 @@ Begin
   end;
   try
     FBlockSelection.SetSelTextPrimitive(PasteMode, Value);
-    // Force caret reset
-    CaretXY := CaretXY;
-    EnsureCursorPosVisible;
   finally
     if not AddToUndoList then begin
       fUndoList.Unlock;
@@ -4057,7 +4055,7 @@ begin
   if CompareCarets(CaretXY,NewCaretXY)<>0 then
   begin
     //DebugLn(['TCustomSynEdit.MoveCaretToVisibleArea Old=',dbgs(CaretXY),' New=',dbgs(NewCaretXY)]);
-    CaretXY:=NewCaretXY;
+    FCaret.LineCharPos:=NewCaretXY;
   end;
 end;
 
@@ -4886,28 +4884,20 @@ begin
 end;
 
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
-{$IFDEF SYN_LAZARUS}
 var
   NewCaret: TPoint;
   LogCaret: TPoint;
-{$ENDIF}
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark])
     and (fBookMarks[BookMark].Line <= fLines.Count)
   then begin
-    {$IFDEF SYN_LAZARUS}
     NewCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
     LogCaret:=PhysicalToLogicalPos(NewCaret);
     IncPaintLock;
+    FCaret.LineCharPos := NewCaret;
     SetBlockEnd(LogCaret);
     SetBlockBegin(LogCaret);
-    CaretXY:=NewCaret;
-    EnsureCursorPosVisible;
     DecPaintLock;
-    {$ELSE}
-    CaretXY:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);     // djlp 2000-08-29
-    EnsureCursorPosVisible;
-    {$ENDIF}
   end;
 end;
 
@@ -5065,11 +5055,11 @@ begin
           finally
             FCaret.DecForcePastEOL;
           end;
+          FCaret.LineCharPos := NewCaret;
           BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
                         {$ELSE}NewCaret{$ENDIF};
           BlockEnd := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                         {$ELSE}CaretXY{$ENDIF};
-          CaretXY := NewCaret;
         finally
           EndUndoBlock;
         end;
@@ -6187,8 +6177,8 @@ begin
 
   //This seems the same as above, but uses the other fixes inside of SetCaretXY
   //to adjust the cursor pos correctly.
+  FCaret.LineBytePos := Point(value - count, loop + 1);
   BlockBegin := Point(value - count, loop + 1);
-  CaretXY := LogicalToPhysicalPos(BlockBegin);
 end;
 
 function TCustomSynEdit.GetSelEnd: integer;
