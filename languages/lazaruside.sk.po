@@ -1869,6 +1869,10 @@ msgstr "Optimalizácie:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "Ostatné súbory jednotiek (-Fu) (oddelené bodkočiarkou):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Rady pre paletu komponentov"
@@ -4971,6 +4975,10 @@ msgstr "Vlastný program"
 msgid "Custom Program%sA freepascal program."
 msgstr "Vlastný program%sProgram FreePascal."
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Dátum"
@@ -6088,6 +6096,10 @@ msgstr "Plávajúca čiarka"
 msgid "Force renaming"
 msgstr "Vynútiť premenovanie"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Chyba formátu"
@@ -6125,6 +6137,10 @@ msgstr "Editor FPCDoc"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "Nájsť komponent palety"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6521,6 +6537,10 @@ msgstr "Informácie o %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

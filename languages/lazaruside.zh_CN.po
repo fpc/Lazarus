@@ -1869,6 +1869,10 @@ msgstr "优化:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "补充单元文件 (-Fu) (分号格开):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "组件面板提示"
@@ -4971,6 +4975,10 @@ msgstr "自定义程序"
 msgid "Custom Program%sA freepascal program."
 msgstr "自定义 freepascal 程序 %s."
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "日期"
@@ -6088,6 +6096,10 @@ msgstr "浮点"
 msgid "Force renaming"
 msgstr "强制重命名"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "格式错误"
@@ -6125,6 +6137,10 @@ msgstr "FPDoc 编辑器"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "查找组件面板"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6521,6 +6537,10 @@ msgstr "关于 %s 的信息"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

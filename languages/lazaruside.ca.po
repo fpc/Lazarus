@@ -1864,6 +1864,10 @@ msgstr "Optimitzacions:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "Altres fitxers d'unitats (-Fu) (El delimitador és punt i coma):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Suggeriments per a la paleta de components"
@@ -4962,6 +4966,10 @@ msgstr "Programa personalitzat"
 msgid "Custom Program%sA freepascal program."
 msgstr "Programa personalitzat%sUn programa FreePascal."
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Data"
@@ -6079,6 +6087,10 @@ msgstr ""
 msgid "Force renaming"
 msgstr ""
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "S'ha produït un error de format"
@@ -6115,6 +6127,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
+msgstr ""
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
 msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
@@ -6512,6 +6528,10 @@ msgstr "Informació de %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

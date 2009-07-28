@@ -1863,6 +1863,10 @@ msgstr "最適化:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "その他のユニットファイル(区切り記号はセミコロン):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "コンポーネントパレットのヒント"
@@ -4965,6 +4969,10 @@ msgstr "カスタムプログラム"
 msgid "Custom Program%sA freepascal program."
 msgstr "Custom Program%sFreePascalプログラム"
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "日付"
@@ -6082,6 +6090,10 @@ msgstr "浮動小数点"
 msgid "Force renaming"
 msgstr "名称変更を強制"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "フォーマットエラー"
@@ -6119,6 +6131,10 @@ msgstr "FPDocエディタ"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "パレットコンポーネントの検索"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6515,6 +6531,10 @@ msgstr "%s に関する情報"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

@@ -1873,6 +1873,10 @@ msgstr "Optimizacija:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Sufleriai komponenčių paletei"
@@ -4987,6 +4991,10 @@ msgstr "naudotojo programa"
 msgid "Custom Program%sA freepascal program."
 msgstr "Naudotojo programa%sFreePascal programa."
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Data"
@@ -6104,6 +6112,10 @@ msgstr "Slankaus kablelio"
 msgid "Force renaming"
 msgstr "Vistiek pervardyti"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Formato klaida"
@@ -6141,6 +6153,10 @@ msgstr "FPDoc rengyklė"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "Ieškoti komponentės paletėje"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6537,6 +6553,10 @@ msgstr "Informacija apie modulį %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

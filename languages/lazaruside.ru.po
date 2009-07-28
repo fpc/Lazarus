@@ -1862,6 +1862,10 @@ msgstr "Оптимизации"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "Другие модули (-Fu) (разделитель - точка с запятой):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Подсказки палитры компонентов"
@@ -4948,6 +4952,10 @@ msgstr "Программа пользователя"
 msgid "Custom Program%sA freepascal program."
 msgstr "Программа пользователя%sПрограмма на языке FreePascal"
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Дата"
@@ -6065,6 +6073,10 @@ msgstr "С плавающей точкой"
 msgid "Force renaming"
 msgstr "Переименовать принудительно"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Ошибка форматирования"
@@ -6102,6 +6114,10 @@ msgstr "Редактор FPDoc"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "Найти компонент на палитре"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6499,6 +6515,10 @@ msgstr "Информация о %s"
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Перед связанными"
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"

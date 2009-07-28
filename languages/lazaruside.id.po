@@ -1864,6 +1864,10 @@ msgstr "Optimasi:"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "File Unit Lain (-Fu) (Pemisah adalah titik koma):"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Petunjuk untuk palet komponen"
@@ -4966,6 +4970,10 @@ msgstr "Program Kustom"
 msgid "Custom Program%sA freepascal program."
 msgstr "Program Kustom%sProgram freepascal"
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Tanggal"
@@ -6083,6 +6091,10 @@ msgstr ""
 msgid "Force renaming"
 msgstr "Paksa penggantian nama"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Format salah"
@@ -6120,6 +6132,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "Cari komponen palet"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6516,6 +6532,10 @@ msgstr "Informasi tentang %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
+msgstr ""
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem

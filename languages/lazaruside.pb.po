@@ -1875,6 +1875,10 @@ msgstr "Otimizações"
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr "Outros arquivos de unidade (-Fu) (ponto e vírgula como delimitador)"
 
+#: lazarusidestrconsts.dlgoverwriteblock
+msgid "Overwrite Block"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Dicas para a paleta de componentes"
@@ -4997,6 +5001,10 @@ msgstr "Programa personalizado"
 msgid "Custom Program%sA freepascal program."
 msgstr "Programa personalizado%sUm programa Free Pascal"
 
+#: lazarusidestrconsts.lisdatamodule
+msgid "Data Module"
+msgstr ""
+
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Data"
@@ -6114,6 +6122,10 @@ msgstr "Ponto Flutuante"
 msgid "Force renaming"
 msgstr "Forçar renomeação"
 
+#: lazarusidestrconsts.lisform
+msgid "Form"
+msgstr ""
+
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Erro formatação"
@@ -6151,6 +6163,10 @@ msgstr "Editor FPDoc"
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
 msgstr "Localizar componente da paleta"
+
+#: lazarusidestrconsts.lisframe
+msgid "Frame"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6548,6 +6564,10 @@ msgstr "Informação sobre %s"
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
 msgstr "Na frente do relacionado"
+
+#: lazarusidestrconsts.lisinheritedcomponent
+msgid "Inherited Component"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
