@@ -274,13 +274,13 @@ type
     fOnAdded: TNotifyEvent;
     FOnNeedCaretUndo: TSynGetCaretUndoProc;
     fUnModifiedItem: integer;
+    FForceGroupEnd: Boolean;
     procedure EnsureMaxEntries;
     function GetCanUndo: boolean;
     function GetCurrentReason: TSynEditorCommand;
     function GetItemCount: integer;
     procedure SetCurrentReason(const AValue: TSynEditorCommand);
     procedure SetMaxUndoActions(Value: integer);
-    function RealCount: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -294,6 +294,8 @@ type
     procedure Unlock;
     function IsLocked: Boolean;
     procedure MarkTopAsUnmodified;
+    procedure ForceGroupEnd;
+    function RealCount: Integer;
     function IsTopMarkedAsUnmodified: boolean;
     function UnModifiedMarkerExists: boolean;
   public
@@ -673,6 +675,7 @@ begin
   fItems := TList.Create;
   fMaxUndoActions := 1024;
   fUnModifiedItem:=-1;
+  FForceGroupEnd := False;
 end;
 
 destructor TSynEditUndoList.Destroy;
@@ -758,6 +761,7 @@ begin
           and assigned(FOnNeedCaretUndo) then
         FUndoGroup.Add(FOnNeedCaretUndo());
       if (fItems.Count > 0) and FGroupUndo and (not IsTopMarkedAsUnmodified) and
+        (not FForceGroupEnd) and
         FUndoGroup.CanMergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1])) then
       begin
         FUndoGroup.MergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1]));
@@ -770,6 +774,7 @@ begin
       if Assigned(fOnAdded) then
         fOnAdded(Self);
       FIsInsideRedo := False;
+      FForceGroupEnd := False;
     end;
   end;
 end;
@@ -860,6 +865,11 @@ end;
 procedure TSynEditUndoList.MarkTopAsUnmodified;
 begin
   fUnModifiedItem := RealCount;
+end;
+
+procedure TSynEditUndoList.ForceGroupEnd;
+begin
+  FForceGroupEnd := True;
 end;
 
 function TSynEditUndoList.IsTopMarkedAsUnmodified: boolean;
