@@ -105,37 +105,10 @@ type
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
-const
-  AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
-  (
-    '',
-    'Text block',
-    'Execution point',
-    'Enabled breakpoint',
-    'Disabled breakpoint',
-    'Invalid breakpoint',
-    'Unknown breakpoint',
-    'Error line',
-    'Incremental search match',
-    'Highlight all',
-    'Brackets highlight',
-    'Mouse link',
-    'Line number',
-    'Line highlight',
-    'Modified line',
-    'Code folding tree',
-    'Highlight current word',
-    'Folded code',
-    'Word-Brackets',
-    'TemplateEdit Current',
-    'TemplateEdit Sync',
-    'TemplateEdit Cells',
-    'SyncronEdit Current Cells',
-    'SyncronEdit Syncron Cells',
-    'SyncronEdit Other Cells',
-    'SyncronEdit Range'
-  );
+var
+  AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
 
+const
   SingleColorAttributes: array[TSingleColorAttribute] of String =
   (
     dlgGutter,
@@ -2033,6 +2006,56 @@ begin
           fCodeTemplateFileName, '"');
       end;
   end;
+
+  // update translation
+  EditorOptionsFoldInfoPas[ 0].Name := dlgFoldPasProcedure;
+  EditorOptionsFoldInfoPas[ 1].Name := dlgFoldLocalPasVarType;
+  EditorOptionsFoldInfoPas[ 2].Name := dlgFoldPasProcBeginEnd;
+  EditorOptionsFoldInfoPas[ 3].Name := dlgFoldPasBeginEnd;
+  EditorOptionsFoldInfoPas[ 4].Name := dlgFoldPasRepeat;
+  EditorOptionsFoldInfoPas[ 5].Name := dlgFoldPasCase;
+  EditorOptionsFoldInfoPas[ 6].Name := dlgFoldPasTry;
+  EditorOptionsFoldInfoPas[ 7].Name := dlgFoldPasExcept;
+  EditorOptionsFoldInfoPas[ 8].Name := dlgFoldPasAsm;
+  EditorOptionsFoldInfoPas[ 9].Name := dlgFoldPasProgram;
+  EditorOptionsFoldInfoPas[10].Name := dlgFoldPasUnit;
+  EditorOptionsFoldInfoPas[11].Name := dlgFoldPasUnitSection;
+  EditorOptionsFoldInfoPas[12].Name := dlgFoldPasUses;
+  EditorOptionsFoldInfoPas[13].Name := dlgFoldPasVarType;
+  EditorOptionsFoldInfoPas[14].Name := dlgFoldPasClass;
+  EditorOptionsFoldInfoPas[15].Name := dlgFoldPasClassSection;
+  EditorOptionsFoldInfoPas[16].Name := dlgFoldPasRecord;
+  EditorOptionsFoldInfoPas[17].Name := dlgFoldPasNestedComment;
+  EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
+  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
+
+  AdditionalHighlightAttributes[ahaNone]                := '';
+  AdditionalHighlightAttributes[ahaTextBlock]           := dlgAddHiAttrTextBlock;
+  AdditionalHighlightAttributes[ahaExecutionPoint]      := dlgAddHiAttrExecutionPoint;
+  AdditionalHighlightAttributes[ahaEnabledBreakpoint]   := dlgAddHiAttrEnabledBreakpoint;
+  AdditionalHighlightAttributes[ahaDisabledBreakpoint]  := dlgAddHiAttrDisabledBreakpoint;
+  AdditionalHighlightAttributes[ahaInvalidBreakpoint]   := dlgAddHiAttrInvalidBreakpoint;
+  AdditionalHighlightAttributes[ahaUnknownBreakpoint]   := dlgAddHiAttrUnknownBreakpoint;
+  AdditionalHighlightAttributes[ahaErrorLine]           := dlgAddHiAttrErrorLine;
+  AdditionalHighlightAttributes[ahaIncrementalSearch]   := dlgAddHiAttrIncrementalSearch;
+  AdditionalHighlightAttributes[ahaHighlightAll]        := dlgAddHiAttrHighlightAll;
+  AdditionalHighlightAttributes[ahaBracketMatch]        := dlgAddHiAttrBracketMatch;
+  AdditionalHighlightAttributes[ahaMouseLink]           := dlgAddHiAttrMouseLink;
+  AdditionalHighlightAttributes[ahaLineNumber]          := dlgAddHiAttrLineNumber;
+  AdditionalHighlightAttributes[ahaLineHighlight]       := dlgAddHiAttrLineHighlight;
+  AdditionalHighlightAttributes[ahaModifiedLine]        := dlgAddHiAttrModifiedLine;
+  AdditionalHighlightAttributes[ahaCodeFoldingTree]     := dlgAddHiAttrCodeFoldingTree;
+  AdditionalHighlightAttributes[ahaHighlightWord]       := dlgAddHiAttrHighlightWord;
+  AdditionalHighlightAttributes[ahaFoldedCode]          := dlgAddHiAttrFoldedCode;
+  AdditionalHighlightAttributes[ahaWordGroup]           := dlgAddHiAttrWordGroup;
+  AdditionalHighlightAttributes[ahaTemplateEditCur]     := dlgAddHiAttrTemplateEditCur;
+  AdditionalHighlightAttributes[ahaTemplateEditSync]    := dlgAddHiAttrTemplateEditSync;
+  AdditionalHighlightAttributes[ahaTemplateEditOther]   := dlgAddHiAttrTemplateEditOther;
+  AdditionalHighlightAttributes[ahaSyncroEditCur]       := dlgAddHiAttrSyncroEditCur;
+  AdditionalHighlightAttributes[ahaSyncroEditSync]      := dlgAddHiAttrSyncroEditSync;
+  AdditionalHighlightAttributes[ahaSyncroEditOther]     := dlgAddHiAttrSyncroEditOther;
+  AdditionalHighlightAttributes[ahaSyncroEditArea]      := dlgAddHiAttrSyncroEditArea;
+
 end;
 
 destructor TEditorOptions.Destroy;

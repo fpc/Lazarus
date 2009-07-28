@@ -17,6 +17,106 @@ msgstr "Minúscules, primera lletra Maj."
 msgid "Add assignment operator :="
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrbracketmatch
+msgid "Brackets highlight"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtree
+msgid "Code folding tree"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
+msgid "Disabled breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrenabledbreakpoint
+msgid "Enabled breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrerrorline
+msgid "Error line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrexecutionpoint
+msgid "Execution point"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrfoldedcode
+msgid "Folded code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightall
+msgid "Highlight all"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightword
+msgid "Highlight current word"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrincrementalsearch
+msgid "Incremental search match"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
+msgid "Invalid breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrlinehighlight
+msgid "Line highlight"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrlinenumber
+msgid "Line number"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrmodifiedline
+msgid "Modified line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrmouselink
+msgid "Mouse link"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
+msgid "SyncronEdit Range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
+msgid "SyncronEdit Current Cells"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrsyncroeditother
+msgid "SyncronEdit Other Cells"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
+msgid "SyncronEdit Syncron Cells"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
+msgid "TemplateEdit Current"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrtemplateeditother
+msgid "TemplateEdit Cells"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
+msgid "TemplateEdit Sync"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrtextblock
+msgid "Text block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
+msgid "Unknown breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrwordgroup
+msgid "Word-Brackets"
+msgstr ""
+
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Trajectòria del codi font addicional de tots el projectes (.pp;.pas)"
