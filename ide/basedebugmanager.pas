@@ -53,6 +53,13 @@ type
     );
   TDebugManagerStates = set of TDebugManagerState;
 
+  { TDebuggerOptions }
+
+  TDebuggerOptions = class(TAbstractIDEOptions)
+  public
+    class function GetGroupCaption:string; override;
+  end;
+
   TBaseDebugManager = class(TComponent)
   private
     function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
@@ -170,8 +177,15 @@ begin
   Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
 end;
 
+{ TDebuggerOptions }
+
+class function TDebuggerOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupDebugger;
+end;
+
 initialization
-  RegisterIDEOptionsGroup(GroupDebugger, dlgGroupDebugger);
+  RegisterIDEOptionsGroup(GroupDebugger, TDebuggerOptions);
   DebugBoss := nil;
   MDebuggerClasses := TStringList.Create;
   MDebuggerClasses.Sorted := True;

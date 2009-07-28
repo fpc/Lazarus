@@ -727,6 +727,8 @@ type
     FUseCodeFolding: Boolean;
 
   public
+    class function GetGroupCaption:string; override;
+  public
     constructor Create;
     destructor Destroy; override;
     procedure Load;
@@ -2536,6 +2538,11 @@ begin
   end;
 end;
 
+class function TEditorOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupEditor;
+end;
+
 function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption
   ): string;
 begin
@@ -3547,7 +3554,7 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupEditor, dlgGroupEditor);
+  RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);
   // register all built-in color schemes
   ColorSchemeFactory.RegisterScheme(DEFAULT_COLOR_SCHEME.Name, DEFAULT_COLOR_SCHEME);
   ColorSchemeFactory.RegisterScheme(TWILIGHT_COLOR_SCHEME.Name, TWILIGHT_COLOR_SCHEME);

@@ -36,6 +36,8 @@ type
 
   // types
   TAbstractIDEOptions = class(TPersistent)
+  public
+    class function GetGroupCaption:string; virtual; abstract;
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
@@ -85,7 +87,7 @@ type
 
   TIDEOptionsGroupRec = record
     Index: Integer;
-    Caption: String;
+    GroupClass: TAbstractIDEOptionsClass;
     Items: TIDEOptionsEditorList;
   end;
   PIDEOptionsGroupRec = ^TIDEOptionsGroupRec;
@@ -101,7 +103,7 @@ type
     function GetByIndex(AIndex: Integer): PIDEOptionsGroupRec;
   public
     procedure Resort;
-    procedure Add(AGroupIndex: Integer; ACaption: String); reintroduce;
+    procedure Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass); reintroduce;
     property Items[AIndex: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
   end;
 
@@ -110,7 +112,7 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
   end;
 
-procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; ACaption: String);
+procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
 
 function IDEEditorGroups: TIDEOptionsGroupList;
@@ -174,9 +176,9 @@ begin
   Result := FIDEEditorGroups;
 end;
 
-procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; ACaption: String);
+procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass:TAbstractIDEOptionsClass);
 begin
-  IDEEditorGroups.Add(AGroupIndex, ACaption);
+  IDEEditorGroups.Add(AGroupIndex, AGroupClass);
 end;
 
 procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
@@ -186,7 +188,7 @@ begin
   Rec := IDEEditorGroups.GetByIndex(AGroupIndex);
   if Rec = nil then
   begin
-    RegisterIDEOptionsGroup(AGroupIndex, IntToStr(AGroupIndex)); 
+    RegisterIDEOptionsGroup(AGroupIndex, nil);
     Rec := IDEEditorGroups.GetByIndex(AGroupIndex);
   end;
 
@@ -332,7 +334,7 @@ begin
       Items[i]^.Items.Resort;
 end;
 
-procedure TIDEOptionsGroupList.Add(AGroupIndex: Integer; ACaption: String);
+procedure TIDEOptionsGroupList.Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 var
   Rec: PIDEOptionsGroupRec;
 begin
@@ -345,7 +347,7 @@ begin
     inherited Add(Rec);
   end;
 
-  Rec^.Caption := ACaption;
+  Rec^.GroupClass := AGroupClass;
 end;
 
 initialization

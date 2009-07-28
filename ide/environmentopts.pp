@@ -269,6 +269,8 @@ type
     procedure FileUpdated;
     procedure SetTestBuildDirectory(const AValue: string);
   public
+    class function GetGroupCaption:string; override;
+  public
     constructor Create;
     destructor Destroy; override;
     procedure Load(OnlyDesktop:boolean);
@@ -730,6 +732,11 @@ begin
   FreeAndNil(FConfigStore);
   FreeAndNil(FXMLCfg);
   inherited Destroy;
+end;
+
+class function TEnvironmentOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupEnvironment;
 end;
 
 procedure TEnvironmentOptions.SetLazarusDefaultFilename;
@@ -1512,6 +1519,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupEnvironment, dlgGroupEnvironment);
+  RegisterIDEOptionsGroup(GroupEnvironment, TEnvironmentOptions);
 end.
 

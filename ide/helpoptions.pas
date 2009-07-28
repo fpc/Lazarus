@@ -50,6 +50,8 @@ type
     procedure SetFPCDocsHTMLDirectory(const AValue: string);
     procedure SetFilename(const AValue: string);
   public
+    class function GetGroupCaption:string; override;
+  public
     constructor Create;
     procedure Clear;
     procedure Load;
@@ -91,6 +93,11 @@ end;
 constructor THelpOptions.Create;
 begin
   Clear;
+end;
+
+class function THelpOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupHelp;
 end;
 
 procedure THelpOptions.Clear;
@@ -216,6 +223,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupHelp, dlgGroupHelp);
+  RegisterIDEOptionsGroup(GroupHelp, THelpOptions);
 end.
 

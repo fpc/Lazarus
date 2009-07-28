@@ -153,6 +153,8 @@ type
     procedure SetObserverCategories(const AValue: TCEObserverCategories);
     procedure SetRefresh(const AValue: TCodeExplorerRefresh);
   public
+    class function GetGroupCaption:string; override;
+  public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -398,6 +400,11 @@ begin
   FreeAndNil(FObserverIgnoreConstants);
   FreeAndNil(FCOIgnoreConstInFuncs);
   inherited Destroy;
+end;
+
+class function TCodeExplorerOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupCodeExplorer;
 end;
 
 procedure TCodeExplorerOptions.Clear;
@@ -830,6 +837,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupCodeExplorer, dlgGroupCodeExplorer);
+  RegisterIDEOptionsGroup(GroupCodeExplorer, TCodeExplorerOptions);
 end.
 

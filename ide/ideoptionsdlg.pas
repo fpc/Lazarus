@@ -266,6 +266,7 @@ var
   GroupNode, ItemNode, ItemParent: TTreeNode;
   i, j: integer;
   Rec: PIDEOptionsGroupRec;
+  ACaption: string;
 begin
   IDEEditorGroups.Resort;
 
@@ -274,7 +275,11 @@ begin
     Rec := IDEEditorGroups[i];
     if Rec^.Items <> nil then
     begin
-      GroupNode := CategoryTree.Items.AddChild(nil, Rec^.Caption);
+      if Rec^.GroupClass<>nil then
+        ACaption := Rec^.GroupClass.GetGroupCaption
+      else
+        ACaption := format('g<%d>',[i]);
+      GroupNode := CategoryTree.Items.AddChild(nil, ACaption);
       for j := 0 to Rec^.Items.Count - 1 do
       begin
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);

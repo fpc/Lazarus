@@ -91,6 +91,8 @@ type
 
     procedure SetFilename(const AValue: string);
   public
+    class function GetGroupCaption:string; override;
+  public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -274,6 +276,11 @@ destructor TCodeToolsOptions.Destroy;
 begin
   ClearGlobalDefineTemplates;
   inherited Destroy;
+end;
+
+class function TCodeToolsOptions.GetGroupCaption: string;
+begin
+  Result := dlgGroupCodetools;
 end;
 
 procedure TCodeToolsOptions.Load;
@@ -742,6 +749,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupCodetools, dlgGroupCodetools);
+  RegisterIDEOptionsGroup(GroupCodetools, TCodeToolsOptions);
 end.
 
