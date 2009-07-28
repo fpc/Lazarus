@@ -3791,6 +3791,7 @@ var
 begin
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
+  TargetDir:=TrimFilename(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [#13, '"',

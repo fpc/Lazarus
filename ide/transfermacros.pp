@@ -318,7 +318,7 @@ begin
       Handled:=false;
       Abort:=false;
       if MacroName<>'' then begin
-        if MacroName='PkgPath' then DebugLn(['TTransferMacroList.SubstituteStr MacroStr="',MacroStr,'"']);
+        //if MacroName='LCLWidgetSet' then DebugLn(['TTransferMacroList.SubstituteStr MacroStr="',MacroStr,'"']);
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);

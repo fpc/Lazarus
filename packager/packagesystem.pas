@@ -297,7 +297,7 @@ type
     procedure SortAutoInstallDependencies;
     function GetIDEInstallPackageOptions(
                  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
-    function SaveAutoInstallConfig: TModalResult;
+    function SaveAutoInstallConfig: TModalResult;// for the uses section
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
