@@ -2157,6 +2157,8 @@ begin
           SynEditOptName := 'FoldedCopyPaste';
         eoPersistentBlock:
           SynEditOptName := 'PersistentBlock';
+        eoOverwriteBlock:
+          SynEditOptName := 'OverwriteBlock';
         else
           SynEditOptName := '';
       end;
@@ -2423,6 +2425,8 @@ begin
           SynEditOptName := 'FoldedCopyPaste';
         eoPersistentBlock:
           SynEditOptName := 'PersistentBlock';
+        eoOverwriteBlock:
+          SynEditOptName := 'OverwriteBlock';
         else
           SynEditOptName := '';
       end;

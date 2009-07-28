@@ -54,6 +54,7 @@ type
     BlockGroupLabel: TLabel;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
+    OverwriteBlockCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
     AlwaysVisibleCursorCheckBox: TCheckBox;
     CursorSkipsSelectionCheckBox: TCheckBox;
@@ -91,6 +92,7 @@ type
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
     procedure HomeKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure KeepCursorXCheckBoxChange(Sender: TObject);
+    procedure OverwriteBlockCheckBoxChange(Sender: TObject);
     procedure PersistentBlockCheckBoxChange(Sender: TObject);
     procedure PersistentCursorCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
@@ -170,6 +172,7 @@ begin
   // Block
   BlockGroupLabel.Caption := dlgBlockGroupOptions;
   PersistentBlockCheckBox.Caption := dlgPersistentBlock;
+  OverwriteBlockCheckBox.Caption := dlgOverwriteBlock;
 end;
 
 procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -212,6 +215,7 @@ begin
 
     // block
     PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
+    OverwriteBlockCheckBox.Checked := eoOverwriteBlock in SynEditOptions2;
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -292,6 +296,7 @@ begin
 
     // block
     UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);
+    UpdateOptionFromBool(OverwriteBlockCheckBox.Checked, eoOverwriteBlock);
   end;
 end;
 
@@ -414,6 +419,11 @@ end;
 procedure TEditorGeneralOptionsFrame.KeepCursorXCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(KeepCursorXCheckBox.Checked, eoKeepCaretX);
+end;
+
+procedure TEditorGeneralOptionsFrame.OverwriteBlockCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(KeepCursorXCheckBox.Checked, eoOverwriteBlock);
 end;
 
 procedure TEditorGeneralOptionsFrame.PersistentBlockCheckBoxChange(Sender: TObject);

@@ -203,7 +203,7 @@ type
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     eoNoCaret,                 // Makes it so the caret is never visible
     eoNoSelection,             // Disables selecting text
-    eoRightMouseMovesCursor,   // Deprecated, now controlled vie MouseActions
+    eoRightMouseMovesCursor,   // DEPRECATED, now controlled vie MouseActions
                                // When clicking with the right mouse for a popup menu, move the cursor to that location
     eoScrollByOneLess,         // Forces scrolling to be one less
     eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
@@ -234,7 +234,8 @@ type
     eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
     eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
     eoFoldedCopyPaste,         // Remember folds in copy/paste operations
-    eoPersistentBlock          // Keep block if caret moves away or text is edited
+    eoPersistentBlock,         // Keep block if caret moves away or text is edited
+    eoOverwriteBlock           // Non persitent block, gets overwritten on insert/del
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -265,7 +266,8 @@ const
 
   {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
-    eoFoldedCopyPaste
+    eoFoldedCopyPaste,
+    eoOverwriteBlock
     ];
   {$ENDIF}
 
@@ -842,7 +844,7 @@ type
     procedure WndProc(var Msg: TMessage); override;
   public
     procedure InsertTextAtCaret(aText: String);
-    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
+    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property FoldState: String read GetFoldState write SetFoldState;
     property CanPaste: Boolean read GetCanPaste;
@@ -927,7 +929,7 @@ type
     property MouseSelActions: TSynEditMouseActions // Mouseactions, if mouse is over selection => fallback to normal
       read FMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
-    property Options: TSynEditorOptions read fOptions write SetOptions
+    property Options: TSynEditorOptions read fOptions write SetOptions          // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
       default SYNEDIT_DEFAULT_OPTIONS;
     {$IFDEF SYN_LAZARUS}
     property Options2: TSynEditorOptions2 read fOptions2 write SetOptions2
@@ -3703,7 +3705,7 @@ begin
       exit;
 
     Result := True;
-    if SelAvail and not FBlockSelection.Persistent then
+    if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
       FBlockSelection.SelText := '';
     InsStart := FCaret.LineBytePos;
     FInternalBlockSelection.StartLineBytePos := InsStart;
@@ -5592,7 +5594,7 @@ begin
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
-          if SelAvail and not FBlockSelection.Persistent then
+          if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('')
           else begin
             Temp := LineText;
@@ -5632,7 +5634,7 @@ begin
         end;
       ecDeleteChar:
         if not ReadOnly then begin
-          if SelAvail and not FBlockSelection.Persistent then
+          if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('')
           else begin
             Temp := LineText;
@@ -5708,9 +5710,8 @@ begin
         if not ReadOnly then begin
           if FTheLinesView.Count = 0 then
             FTheLinesView.Add('');
-          if SelAvail and not FBlockSelection.Persistent then begin
+          if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
-          end;
           Temp := LineText;
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           Len := Length(Temp);
@@ -5740,7 +5741,7 @@ begin
         FindMatchingBracket;
       ecChar:
         if not ReadOnly and (AChar >= #32) and (AChar <> #127) then begin
-          if SelAvail and not FBlockSelection.Persistent then begin
+          if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then begin
             SetSelTextExternal(AChar);
           end else begin
             try
@@ -5788,7 +5789,7 @@ begin
           // Insert a linebreak, but do not apply any other functionality (such as indent)
           if FTheLinesView.Count = 0 then
             FTheLinesView.Add('');
-          if SelAvail and not FBlockSelection.Persistent then
+          if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);

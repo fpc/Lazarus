@@ -233,5 +233,10 @@ LazarusResources.Add('TEditorGeneralOptionsFrame','FORMDATA',[
   +#7#15'BlockGroupLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'H'
   +'eight'#2#19#3'Top'#3#155#1#5'Width'#3#152#0#18'BorderSpacing.Left'#2#6#7'Ca'
   +'ption'#6#23'PersistentBlockCheckBox'#8'OnChange'#7#29'PersistentBlockCheckB'
-  +'oxChange'#8'TabOrder'#2#21#0#0#0
+  +'oxChange'#8'TabOrder'#2#21#0#0#242#2','#9'TCheckBox'#22'OverwriteBlockCheck'
+  +'Box'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#15'B'
+  +'lockGroupLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3#230#0#6'Hei'
+  +'ght'#2#19#3'Top'#3#155#1#5'Width'#3#152#0#18'BorderSpacing.Left'#3#230#0#7
+  +'Caption'#6#22'OverwriteBlockCheckBox'#8'OnChange'#7#28'OverwriteBlockCheckB'
+  +'oxChange'#8'TabOrder'#2#22#0#0#0
 ]);

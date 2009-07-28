@@ -1149,6 +1149,7 @@ resourcestring
   dlgKeepCursorX = 'Keep cursor X position';
   dlgPersistentCursor = 'Persistent cursor';
   dlgPersistentBlock = 'Persistent Block';
+  dlgOverwriteBlock = 'Overwrite Block';
   dlgCursorSkipsSelection = 'Cursor skips selection';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';

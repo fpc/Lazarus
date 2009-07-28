@@ -628,4 +628,17 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnChange = PersistentBlockCheckBoxChange
     TabOrder = 21
   end
+  object OverwriteBlockCheckBox: TCheckBox[44]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BlockGroupLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 230
+    Height = 19
+    Top = 411
+    Width = 152
+    BorderSpacing.Left = 230
+    Caption = 'OverwriteBlockCheckBox'
+    OnChange = OverwriteBlockCheckBoxChange
+    TabOrder = 22
+  end
 end
