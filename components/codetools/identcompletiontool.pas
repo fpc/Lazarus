@@ -926,6 +926,7 @@ var
 var
   NewItem: TIdentifierListItem;
   Node: TCodeTreeNode;
+  ProtectedForeignClass: Boolean;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -943,7 +944,8 @@ begin
     LastGatheredIdentParent:=CurContextParent;
     inc(LastGatheredIdentLevel);
   end;
-  
+
+  ProtectedForeignClass:=false;
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
@@ -971,6 +973,7 @@ begin
             //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected in ANCESTOR '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
           end else if (FoundContext.Node.Desc=ctnProperty) then begin
             // protected property: maybe the visibility was raised => continue
+            ProtectedForeignClass:=true;
             //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Protected made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
           end else begin
             // otherwise: treat as private
@@ -1024,10 +1027,18 @@ begin
         // only show the real definition, which will follow in the ancestor
         exit;
       end;
-      if (FoundContext.Node.Parent.Desc in [ctnClassPrivate,ctnClassProtected])
+      if (FoundContext.Node.Parent.Desc=ctnClassPrivate)
       and (FoundContext.Tool<>Self)
       and (not PropertyIsOverridenPublicPublish) then begin
-        // a private/protected property in another unit, that was not
+        // a private property in another unit, that was not
+        // made public/publish later
+        // => skip
+        exit;
+      end;
+      if (FoundContext.Node.Parent.Desc=ctnClassProtected)
+      and ProtectedForeignClass
+      and (not PropertyIsOverridenPublicPublish) then begin
+        // a protected property in another unit, that was not
         // made public/publish later
         // => skip
         exit;
