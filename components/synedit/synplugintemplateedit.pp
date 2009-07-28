@@ -399,6 +399,7 @@ begin
     CurrentCell := 0;
     CaretObj.LineBytePos := Cells[0].LogStart;
     SelectCurrentCell;
+    SetUndoStart;
   end
   else
     Editor.MoveCaretIgnoreEOL(aCaretPos);
@@ -446,6 +447,7 @@ begin
     CurrentCell := 0;
     CaretObj.LineBytePos := Cells[0].LogStart;
     SelectCurrentCell;
+    SetUndoStart;
   end;
 end;
 

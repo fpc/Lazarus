@@ -994,6 +994,7 @@ begin
 
   FMode :=  spseEditing;
   AreaMarkupEnabled := True;
+  SetUndoStart;
 
   Pos := SelectionObj.FirstLineBytePos;
   EndPos := SelectionObj.LastLineBytePos;
@@ -1197,9 +1198,7 @@ end;
 procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
 begin
   if (FMode = spseSelecting) then begin
-    inherited DoBeforeEdit(aX, aY, aUndoRedo);
     FWordIndex.Clear;
-    Editor.Invalidate;
     Active := False;
     FMode := spseInvalid;
   end

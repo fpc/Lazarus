@@ -193,13 +193,18 @@ type
        - Locking of TrimTrailingSpace
        - CurrentCell follows Caret / LastCell
        - DeActivate if Edit outside Cell
+       - DeActivate on undo/redo if needed
        - various helpers, to set the caret/block
   *)
 
   TSynPluginCustomSyncroEdit = class(TSynPluginSyncronizedEditBase)
   private
     FLastCell: Integer;
+    FUndoRealCount, FRedoRealCount: Integer;
+    FRedoList: TSynEditUndoList;
+    FUndoList: TSynEditUndoList;
   protected
+    procedure SetUndoStart; // Handle undo/redo stuff
     procedure SetEditor(const AValue: TCustomSynEdit); override;
     procedure DoOnActivate; override;
     procedure DoOnDeactivate; override;
@@ -948,15 +953,26 @@ end;
 
 { TSynPluginCustomSyncroEdit }
 
+procedure TSynPluginCustomSyncroEdit.SetUndoStart;
+begin
+  FUndoList.ForceGroupEnd;
+  FUndoRealCount := FUndoList.RealCount;
+  FRedoRealCount := FRedoList.RealCount;
+end;
+
 procedure TSynPluginCustomSyncroEdit.SetEditor(const AValue: TCustomSynEdit);
 begin
   if Editor = AValue then exit;
   if Editor <> nil then begin
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
+    FRedoList := nil;
+    FUndoList := nil;
   end;
   inherited SetEditor(AValue);
   if Editor <> nil then begin
     CaretObj.AddChangeHandler(@DoCaretChanged);
+    FRedoList := ViewedTextBuffer.RedoList;
+    FUndoList := ViewedTextBuffer.UndoList;
   end;
 end;
 
@@ -978,6 +994,8 @@ procedure TSynPluginCustomSyncroEdit.DoOnDeactivate;
 var
   b: TSynEditStrings;
 begin
+  FUndoRealCount := -1;
+  FRedoRealCount := -1;
   b := ViewedTextBuffer;
   while b <> nil do begin
     if b is TSynEditStringTrimmingList then TSynEditStringTrimmingList(b).UnLock;
@@ -991,7 +1009,14 @@ end;
 procedure TSynPluginCustomSyncroEdit.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
 begin
   inherited;
+  if IsUndoing and (FUndoRealCount >= 0) and (FUndoList.RealCount < FUndoRealCount)
+  then
+    Active := false;
+  if IsRedoing and (FRedoRealCount >= 0) and (FRedoList.RealCount < FUndoRealCount)
+  then
+    Active := false;
   if aUndoRedo or not Active then exit;
+  FRedoRealCount := -1;
   UpdateCurrentCell;
   if CurrentCell < 0 then begin
     Clear;
