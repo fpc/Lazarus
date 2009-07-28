@@ -408,7 +408,7 @@ end;
 
 function TFileDescPascalUnitWithForm.GetLocalizedName: string;
 begin
-  Result:='Form';
+  Result:=lisForm;
 end;
 
 function TFileDescPascalUnitWithForm.GetLocalizedDescription: string;

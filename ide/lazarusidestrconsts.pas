@@ -4388,6 +4388,7 @@ resourcestring
     + LineEnding + '"",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell'
     + LineEnding + '"default",Sync, to Sync with a previous cell of equal default';
   lisPrecedingWord = 'Preceding word';
+  lisForm = 'Form';
 
 implementation
 

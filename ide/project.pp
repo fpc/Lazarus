@@ -5367,7 +5367,7 @@ end;
 
 function TProjectManualProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisCustomProgramAFreepascalProgram, [#13])
+  Result:=Format(lisCustomProgramAFreepascalProgram, [#13]);
 end;
 
 function TProjectManualProgramDescriptor.InitProject(AProject: TLazProject
