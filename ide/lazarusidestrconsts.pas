@@ -4393,6 +4393,12 @@ resourcestring
   lisInheritedComponent = 'Inherited Component';
   lisFrame = 'Frame';
   lisDataModule = 'Data Module';
+  lisNoLFMFile = 'No LFM file';
+  lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor = 'This function needs '
+    +'an open .lfm file in the source editor.';
+  lisNoPascalFile = 'No pascal file';
+  lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find pascal unit (.'
+    +'pas,.pp) for .lfm file%s%s%s%s';
 
 implementation
 

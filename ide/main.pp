@@ -10420,8 +10420,8 @@ begin
   GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
   if (LFMUnitInfo=nil)
   or (CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) then begin
-    MessageDlg('No LFM file',
-      'This function needs an open .lfm file in the source editor.',
+    MessageDlg(lisNoLFMFile,
+      lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor,
       mtError,[mbCancel],0);
     Result:=mrCancel;
     exit;
@@ -10435,9 +10435,9 @@ begin
       UnitFilename:='';
   end;
   if UnitFilename='' then begin
-    MessageDlg('No pascal file',
-      'Unable to find pascal unit (.pas,.pp) for .lfm file'#13
-      +'"'+LFMUnitInfo.Filename+'"',
+    MessageDlg(lisNoPascalFile,
+      Format(lisUnableToFindPascalUnitPasPpForLfmFile, [#13, '"',
+        LFMUnitInfo.Filename, '"']),
       mtError,[mbCancel],0);
     Result:=mrCancel;
     exit;
