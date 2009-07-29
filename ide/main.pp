@@ -2375,6 +2375,7 @@ begin
     itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
     itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
+    itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
