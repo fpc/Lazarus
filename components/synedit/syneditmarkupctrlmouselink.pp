@@ -51,7 +51,7 @@ type
   protected
     procedure SetLines(const AValue : TSynEditStrings); override;
   public
-    procedure UpdateCtrlState;
+    procedure UpdateCtrlState(aShift: TShiftState);
     procedure UpdateCtrlMouse;
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
   public
@@ -95,9 +95,9 @@ begin
   UpdateCtrlMouse;
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlState;
+procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlState(aShift: TShiftState);
 begin
-  if FLastControlIsPressed <> IsCtrlMouseShiftState(GetKeyShiftState) then
+  if FLastControlIsPressed <> IsCtrlMouseShiftState(aShift) then
     UpdateCtrlMouse;
 end;
 

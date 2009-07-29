@@ -1765,7 +1765,8 @@ begin
       UpdateScrollbars;
     // must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
     if sfEnsureCursorPos in fStateFlags then
-      EnsureCursorPosVisible;
+      EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
+                                           // This does Paintlock, should be before final decrease
     // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
     if sfCaretChanged in fStateFlags then
       UpdateCaret;
@@ -1773,7 +1774,8 @@ begin
     //  UpdateScrollbars;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
-    fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
+    fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
+                                 // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
   end;
   if (fPaintLock = 0) then
     FBlockSelection.AutoExtend := False;
@@ -2215,7 +2217,7 @@ begin
   {$ENDIF}
   inherited;
   if assigned(fMarkupCtrlMouse) then
-    fMarkupCtrlMouse.UpdateCtrlState;
+    fMarkupCtrlMouse.UpdateCtrlState(Shift);
   UpdateCursor;
   Data := nil;
   C := #0;
@@ -2266,7 +2268,7 @@ begin
   {$ENDIF}
   inherited KeyUp(Key, Shift);
   if assigned(fMarkupCtrlMouse) then
-    fMarkupCtrlMouse.UpdateCtrlState;
+    fMarkupCtrlMouse.UpdateCtrlState(Shift);
   UpdateCursor;
 end;
 
