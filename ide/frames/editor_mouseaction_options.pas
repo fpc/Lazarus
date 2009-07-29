@@ -95,6 +95,9 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
+var
+  MMoveName: Array [Boolean] of String;
+
 implementation
 
 const
@@ -102,8 +105,6 @@ const
 { TEditorMouseOptionsFrame }
 
 procedure TEditorMouseOptionsFrame.ContextTreeChange(Sender: TObject; Node: TTreeNode);
-const
-  MMoveName: Array [Boolean] of String = (dlgMouseOptMoveMouseFalse, dlgMouseOptMoveMouseTrue);
 var
   act: TSynEditMouseAction;
   i, j: Integer;
@@ -471,6 +472,9 @@ begin
   ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
   ActionGrid.ColWidths[9] := ActionGrid.ColWidths[8] * 3;
   ActionGridHeaderSized(nil, true, 0);
+
+  MMoveName[false] := dlgMouseOptMoveMouseFalse;
+  MMoveName[true] := dlgMouseOptMoveMouseTrue;
 
   FSort1 := 1; // Button
   FSort2 := 2; // CCount

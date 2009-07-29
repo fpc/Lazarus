@@ -273,6 +273,9 @@ const
   SYNS_LangUnreal               =  'Unreal';
   SYNS_LangTeX                  =  'TeX';
 
+{$IFDEF SYN_LAZARUS}
+resourcestring
+{$ENDIF}
 
   SYNS_emcNone                     = 'No Action';
   SYNS_emcStartSelection           = 'Selection';
