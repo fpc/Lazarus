@@ -4399,6 +4399,9 @@ resourcestring
   lisNoPascalFile = 'No pascal file';
   lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find pascal unit (.'
     +'pas,.pp) for .lfm file%s%s%s%s';
+  lisLFMIsOk = 'LFM is ok';
+  lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
+    +'exist. Values were not checked.';
 
 implementation
 

@@ -906,7 +906,7 @@ type
 
     // conversion
     function DoConvertDFMtoLFM: TModalResult;
-    function DoCheckLFMInEditor: TModalResult;
+    function DoCheckLFMInEditor(Quiet: boolean): TModalResult;
     function DoConvertDelphiUnit(const DelphiFilename: string; CanAbort: boolean): TModalResult;
     function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
@@ -3829,7 +3829,7 @@ end;
 
 procedure TMainIDE.mnuToolCheckLFMClicked(Sender: TObject);
 begin
-  DoCheckLFMInEditor;
+  DoCheckLFMInEditor(false);
 end;
 
 procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
@@ -5681,7 +5681,7 @@ begin
             DebugLn(['TMainIDE.DoLoadLFM DoOpenEditorFile failed']);
             exit;
           end;
-          Result:=DoCheckLFMInEditor;
+          Result:=DoCheckLFMInEditor(true);
           if Result=mrOk then Result:=mrCancel;
           exit;
         end;
@@ -10409,7 +10409,7 @@ begin
   DoCheckFilesOnDisk;
 end;
 
-function TMainIDE.DoCheckLFMInEditor: TModalResult;
+function TMainIDE.DoCheckLFMInEditor(Quiet: boolean): TModalResult;
 var
   LFMSrcEdit: TSourceEditor;
   LFMUnitInfo: TUnitInfo;
@@ -10421,9 +10421,12 @@ begin
   GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
   if (LFMUnitInfo=nil)
   or (CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) then begin
-    MessageDlg(lisNoLFMFile,
-      lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor,
-      mtError,[mbCancel],0);
+    if not Quiet then
+    begin
+      MessageDlg(lisNoLFMFile,
+        lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor,
+        mtError,[mbCancel],0);
+    end;
     Result:=mrCancel;
     exit;
   end;
@@ -10462,8 +10465,14 @@ begin
 
   // parse the LFM file and the pascal unit
   if RepairLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
-                     true,true)<>mrOk
+                     true,true)=mrOk
   then begin
+    if not Quiet then begin
+      IDEMessageDialog(lisLFMIsOk,
+        lisClassesAndPropertiesExistValuesWereNotChecked,
+        mtInformation,[mbOk],'');
+    end;
+  end else begin
     DoJumpToCompilerMessage(-1,true);
     Result:=mrAbort;
     exit;
