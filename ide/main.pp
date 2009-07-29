@@ -7358,6 +7358,7 @@ begin
     TestFilename := MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
     if TestFilename <> '' then
     begin
+      DebugLn(['TMainIDE.DoSaveEditorFile TestFilename="',TestFilename,'" Size=',ActiveUnitInfo.Source.SourceLength]);
       Result := ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
       if Result <> mrOk then
         Exit;
