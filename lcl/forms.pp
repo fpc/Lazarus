@@ -167,7 +167,6 @@ type
     procedure DoOnResize; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
-    procedure ScrollBy(DeltaX, DeltaY: Integer);
     function ComputeScrollbars: Boolean; virtual;
     procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
                                OldPosition: Integer); virtual;
@@ -178,6 +177,7 @@ type
     procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure ScrollBy(DeltaX, DeltaY: Integer);
   published
     property HorzScrollBar: TControlScrollBar
               read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
