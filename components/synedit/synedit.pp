@@ -4001,9 +4001,6 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
-var
-  Delta: Integer;
-  //OldTopView: Integer;
 begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
