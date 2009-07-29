@@ -3,6 +3,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   Width = 459
   ClientHeight = 516
   ClientWidth = 459
+  TabOrder = 0
   Visible = False
   DesignLeft = 230
   DesignTop = 230
@@ -12,9 +13,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideBottom.Control = BlockIndentComboBox
     AnchorSideBottom.Side = asrCenter
     Left = 112
-    Height = 16
-    Top = 198
-    Width = 92
+    Height = 14
+    Top = 180
+    Width = 82
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BlockIndentLabel'
@@ -26,9 +27,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideBottom.Control = TabWidthsComboBox
     AnchorSideBottom.Side = asrCenter
     Left = 342
-    Height = 16
-    Top = 198
-    Width = 86
+    Height = 14
+    Top = 180
+    Width = 77
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'TabWidthsLabel'
@@ -41,10 +42,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 175
+    Left = 174
     Height = 3
-    Top = 7
-    Width = 284
+    Top = 6
+    Width = 285
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -53,9 +54,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 70
-    Height = 16
+    Height = 14
     Top = 0
-    Width = 95
+    Width = 94
     BorderSpacing.Left = 10
     Caption = 'UndoGroupLabel'
     Font.Style = [fsBold]
@@ -68,9 +69,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = UndoLimitComboBox
     AnchorSideTop.Side = asrCenter
     Left = 342
-    Height = 16
-    Top = 25
-    Width = 85
+    Height = 14
+    Top = 23
+    Width = 72
     BorderSpacing.Around = 6
     Caption = 'UndoLimitLabel'
     ParentColor = False
@@ -81,8 +82,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = GroupUndoCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 66
+    Height = 14
+    Top = 60
     Width = 96
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
@@ -100,7 +101,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 176
     Height = 3
-    Top = 73
+    Top = 66
     Width = 283
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
@@ -111,9 +112,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = HalfPageScrollCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 132
-    Width = 132
+    Height = 14
+    Top = 120
+    Width = 136
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     Caption = 'IndentsTabsGroupLabel'
@@ -128,10 +129,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 212
+    Left = 216
     Height = 3
-    Top = 139
-    Width = 247
+    Top = 126
+    Width = 243
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -141,8 +142,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = BlockIndentTypeComboBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 250
+    Height = 14
+    Top = 228
     Width = 102
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
@@ -160,7 +161,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 182
     Height = 3
-    Top = 257
+    Top = 234
     Width = 277
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
@@ -171,9 +172,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = DropFilesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 291
-    Width = 101
+    Height = 14
+    Top = 265
+    Width = 102
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     Caption = 'CursorGroupLabel'
@@ -188,10 +189,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 181
+    Left = 182
     Height = 3
-    Top = 298
-    Width = 278
+    Top = 271
+    Width = 277
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -201,9 +202,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideBottom.Control = BlockIndentTypeComboBox
     AnchorSideBottom.Side = asrCenter
     Left = 112
-    Height = 16
-    Top = 224
-    Width = 118
+    Height = 14
+    Top = 204
+    Width = 106
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BlockIndentTypeLabel'
@@ -217,7 +218,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 7
+    Top = 6
     Width = 60
   end
   object Bevel2a: TBevel[15]
@@ -228,7 +229,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 73
+    Top = 66
     Width = 60
     Anchors = [akTop, akLeft, akRight]
   end
@@ -240,7 +241,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 139
+    Top = 126
     Width = 60
     Anchors = [akTop, akLeft, akRight]
   end
@@ -252,7 +253,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 257
+    Top = 234
     Width = 60
     Anchors = [akTop, akLeft, akRight]
   end
@@ -264,7 +265,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 298
+    Top = 271
     Width = 60
     Anchors = [akTop, akLeft, akRight]
   end
@@ -276,7 +277,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 402
+    Top = 365
     Width = 60
     Anchors = [akTop, akLeft, akRight]
   end
@@ -286,9 +287,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = ScrollPastEndLineCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 395
-    Width = 96
+    Height = 14
+    Top = 359
+    Width = 95
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     Caption = 'BlockGroupLabel'
@@ -303,10 +304,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 176
+    Left = 175
     Height = 3
-    Top = 402
-    Width = 283
+    Top = 365
+    Width = 284
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -316,12 +317,12 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = TabWidthsComboBox
     Left = 6
-    Height = 23
-    Top = 195
+    Height = 21
+    Top = 177
     Width = 100
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
-    ItemHeight = 15
+    ItemHeight = 13
     Items.Strings = (
       '1'
       '2'
@@ -339,10 +340,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 236
-    Height = 23
-    Top = 195
+    Height = 21
+    Top = 177
     Width = 100
-    ItemHeight = 15
+    ItemHeight = 13
     Items.Strings = (
       '1'
       '2'
@@ -359,12 +360,12 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = UndoGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 236
-    Height = 23
-    Top = 22
+    Height = 21
+    Top = 20
     Width = 100
     BorderSpacing.Left = 230
     BorderSpacing.Around = 6
-    ItemHeight = 15
+    ItemHeight = 13
     Items.Strings = (
       '32767'
       '4096'
@@ -380,9 +381,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = UndoAfterSaveCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 41
-    Width = 134
+    Height = 17
+    Top = 37
+    Width = 119
     BorderSpacing.Left = 6
     Caption = 'GroupUndoCheckBox'
     OnChange = GroupUndoCheckBoxChange
@@ -393,9 +394,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = UndoGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 22
-    Width = 151
+    Height = 17
+    Top = 20
+    Width = 139
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'UndoAfterSaveCheckBox'
@@ -406,9 +407,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = ScrollGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 88
-    Width = 161
+    Height = 17
+    Top = 80
+    Width = 145
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'ScrollPastEndFileCheckBox'
@@ -420,9 +421,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 370
-    Width = 165
+    Height = 17
+    Top = 336
+    Width = 148
     BorderSpacing.Left = 6
     Caption = 'ScrollPastEndLineCheckBox'
     OnChange = ScrollPastEndLineCheckBoxChange
@@ -433,9 +434,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = ScrollGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 236
-    Height = 19
-    Top = 88
-    Width = 158
+    Height = 17
+    Top = 80
+    Width = 143
     BorderSpacing.Left = 230
     BorderSpacing.Around = 6
     Caption = 'ScrollByOneLessCheckBox'
@@ -447,9 +448,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = ScrollPastEndFileCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 107
-    Width = 149
+    Height = 17
+    Top = 97
+    Width = 133
     BorderSpacing.Left = 6
     Caption = 'HalfPageScrollCheckBox'
     OnChange = HalfPageScrollCheckBoxChange
@@ -460,9 +461,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = IndentsTabsGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 154
-    Width = 132
+    Height = 17
+    Top = 140
+    Width = 120
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoIndentCheckBox'
@@ -474,9 +475,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = AutoIndentCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 173
-    Width = 160
+    Height = 17
+    Top = 157
+    Width = 144
     BorderSpacing.Left = 6
     Caption = 'TabIndentBlocksCheckBox'
     OnChange = TabIndentBlocksCheckBoxChange
@@ -487,9 +488,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = IndentsTabsGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 236
-    Height = 19
-    Top = 154
-    Width = 128
+    Height = 17
+    Top = 140
+    Width = 116
     BorderSpacing.Left = 230
     BorderSpacing.Around = 6
     Caption = 'SmartTabsCheckBox'
@@ -500,9 +501,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideLeft.Control = SmartTabsCheckBox
     AnchorSideTop.Control = TabIndentBlocksCheckBox
     Left = 236
-    Height = 19
-    Top = 173
-    Width = 147
+    Height = 17
+    Top = 157
+    Width = 134
     Caption = 'TabsToSpacesCheckBox'
     OnChange = TabsToSpacesCheckBoxChange
     TabOrder = 12
@@ -512,9 +513,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = MouseGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 266
-    Width = 121
+    Height = 17
+    Top = 242
+    Width = 109
     BorderSpacing.Left = 6
     Caption = 'DropFilesCheckBox'
     OnChange = DropFilesCheckBoxChange
@@ -525,9 +526,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = CursorGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 313
-    Width = 140
+    Height = 17
+    Top = 285
+    Width = 127
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'KeepCursorXCheckBox'
@@ -539,9 +540,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = KeepCursorXCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 332
-    Width = 158
+    Height = 17
+    Top = 302
+    Width = 145
     BorderSpacing.Left = 6
     Caption = 'PersistentCursorCheckBox'
     OnChange = PersistentCursorCheckBoxChange
@@ -552,9 +553,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = PersistentCursorCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 351
-    Width = 178
+    Height = 17
+    Top = 319
+    Width = 160
     BorderSpacing.Left = 6
     Caption = 'AlwaysVisibleCursorCheckBox'
     OnChange = AlwaysVisibleCursorCheckBoxChange
@@ -565,9 +566,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = CursorGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 236
-    Height = 19
-    Top = 313
-    Width = 182
+    Height = 17
+    Top = 285
+    Width = 164
     BorderSpacing.Left = 230
     BorderSpacing.Around = 6
     Caption = 'CursorSkipsSelectionCheckBox'
@@ -578,9 +579,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideLeft.Control = CursorSkipsSelectionCheckBox
     AnchorSideTop.Control = PersistentCursorCheckBox
     Left = 236
-    Height = 19
-    Top = 332
-    Width = 236
+    Height = 17
+    Top = 302
+    Width = 214
     Caption = 'HomeKeyJumpsToNearestStartCheckBox'
     OnChange = HomeKeyJumpsToNearestStartCheckBoxChange
     TabOrder = 18
@@ -589,9 +590,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideLeft.Control = HomeKeyJumpsToNearestStartCheckBox
     AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
     Left = 236
-    Height = 19
-    Top = 351
-    Width = 223
+    Height = 17
+    Top = 319
+    Width = 205
     Caption = 'EndKeyJumpsToNearestStartCheckBox'
     OnChange = EndKeyJumpsToNearestStartCheckBoxChange
     TabOrder = 19
@@ -602,12 +603,12 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = TabWidthsComboBox
     Left = 6
-    Height = 23
-    Top = 221
+    Height = 21
+    Top = 201
     Width = 100
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
-    ItemHeight = 15
+    ItemHeight = 13
     ItemWidth = 200
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
@@ -620,10 +621,11 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = BlockGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 411
-    Width = 152
+    Height = 17
+    Top = 379
+    Width = 137
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'PersistentBlockCheckBox'
     OnChange = PersistentBlockCheckBoxChange
     TabOrder = 21
@@ -632,11 +634,12 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BlockGroupLabel
     AnchorSideTop.Side = asrBottom
-    Left = 230
-    Height = 19
-    Top = 411
-    Width = 152
+    Left = 236
+    Height = 17
+    Top = 379
+    Width = 137
     BorderSpacing.Left = 230
+    BorderSpacing.Around = 6
     Caption = 'OverwriteBlockCheckBox'
     OnChange = OverwriteBlockCheckBoxChange
     TabOrder = 22
