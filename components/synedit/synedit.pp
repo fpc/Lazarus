@@ -388,7 +388,7 @@ type
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
-    FNewTopLine: Integer;
+    FOldTopLine, FOldTopView: Integer;
     fHighlighter: TSynCustomHighlighter;
     {$IFNDEF SYN_LAZARUS}
     fSelectedColor: TSynSelectedColor;
@@ -569,6 +569,7 @@ type
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
     procedure SetTopLine(Value: Integer);
+    procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
@@ -1670,7 +1671,8 @@ begin
   fTabWidth := 8;
   fLeftChar := 1;
   fTopLine := 1;
-  FNewTopLine := -1;
+  FOldTopLine := 1;
+  FOldTopView := 1;
   {$IFDEF SYN_LAZARUS}
   FFoldedLinesView.TopLine := 1;
   {$ELSE}
@@ -1753,20 +1755,22 @@ begin
   if (fPaintLock=1) and HandleAllocated then begin
     ScanFromAfterLock;
   end;
-  FCaret.Unlock; // Maybe after FFoldedLinesView;
+  FCaret.Unlock;            // Maybe after FFoldedLinesView
   FTrimmedLinesView.UnLock; // Must be unlocked after caret
-  FFoldedLinesView.UnLock; // after ScanFrom, but before UpdateCaret
+  FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
-    if FNewTopLine > 0 then
-      TopLine := FNewTopLine;
+    ScrollAfterTopLineChanged;
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
-    // must be past UpdateScrollbars; but before UpdateCaret
+    // must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
     if sfEnsureCursorPos in fStateFlags then
       EnsureCursorPosVisible;
+    // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
     if sfCaretChanged in fStateFlags then
       UpdateCaret;
+    //if sfScrollbarChanged in fStateFlags then
+    //  UpdateScrollbars;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
     fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
@@ -2079,8 +2083,10 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
-  if fPaintLock = 0 then
-    FNewTopLine := -1;
+  if fPaintLock = 0 then begin
+    FOldTopLine := FTopLine;
+    FOldTopView := TopView;
+  end;
   inc(fPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
@@ -2095,6 +2101,7 @@ end;
 procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
+  TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
@@ -2109,6 +2116,11 @@ begin
         InvalidateRect(Handle, @rcInval, FALSE);
       end;
     end else begin
+      // pretend we haven't scrolled
+      TopFoldLine := FFoldedLinesView.TopLine;
+      if FOldTopLine <> FTopLine then
+        FFoldedLinesView.TopTextIndex := FOldTopLine - 1;
+
       { find the visible lines first }
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
@@ -2132,6 +2144,8 @@ begin
           InvalidateRect(Handle, @rcInval, FALSE);
         end;
       end;
+
+      FFoldedLinesView.TopLine := TopFoldLine;
     end;
 end;
 
@@ -2139,6 +2153,7 @@ procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
   f, l: Integer;
+  TopFoldLine: LongInt;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
@@ -2154,6 +2169,11 @@ begin
         InvalidateRect(Handle, @rcInval, FALSE);
       end;
     end else begin
+      // pretend we haven't scrolled
+      TopFoldLine := FFoldedLinesView.TopLine;
+      if FOldTopLine <> FTopLine then
+        FFoldedLinesView.TopTextIndex := FOldTopLine - 1;
+
       { find the visible lines first }
       if LastLine >= 0 then begin
         if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
@@ -2177,6 +2197,8 @@ begin
           InvalidateRect(Handle, @rcInval, FALSE);
         end;
       end;
+
+      FFoldedLinesView.TopLine := TopFoldLine;
     end;
 end;
 
@@ -3980,13 +4002,8 @@ end;
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
 var
   Delta: Integer;
-  OldTopView: Integer;
+  //OldTopView: Integer;
 begin
-  if fPaintLock > 0 then begin
-    // defer scrolling, to minimize any possible flicker
-    FNewTopLine := Value;
-    exit;
-  end;
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   if (eoScrollPastEof in Options) then
@@ -3998,26 +4015,36 @@ begin
     Value := FindNextUnfoldedLine(Value, False);
   FFoldedLinesView.TopTextIndex := fTopLine - 1;
   if Value <> fTopLine then begin
-    OldTopView := TopView;
     fTopLine := Value;
     FFoldedLinesView.TopTextIndex := Value-1;
     UpdateScrollBars;
+    // call MarkupMgr before ScrollAfterTopLineChanged, in case we aren't in a PaintLock
+    fMarkupManager.TopLine:= fTopLine;
     if (sfPainting in fStateFlags) then debugln('SetTopline inside paint');
-    Delta := OldTopView - TopView;
-    if Delta <> 0 then begin
-      // TODO: SW_SMOOTHSCROLL --> can't get it work
-      if (Abs(Delta) >= fLinesInWindow) or
-      not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
-      then
-        Invalidate    // scrollwindow failed, invalidate all
-      else
-        if eoAlwaysVisibleCaret in fOptions2 then
-          MoveCaretToVisibleArea;      // Invalidate caret line, if necessary
-    end;
-
+    ScrollAfterTopLineChanged;
     StatusChanged([scTopLine]);
+  end
+  else
+    fMarkupManager.TopLine:= fTopLine;
+end;
+
+procedure TCustomSynEdit.ScrollAfterTopLineChanged;
+var
+  Delta: Integer;
+begin
+  if (sfPainting in fStateFlags) or (fPaintLock <> 0) then exit;
+  Delta := FOldTopView - TopView;
+  if Delta <> 0 then begin
+    // TODO: SW_SMOOTHSCROLL --> can't get it work
+    if (Abs(Delta) >= fLinesInWindow) or
+    not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
+    then
+      Invalidate;    // scrollwindow failed, invalidate all
   end;
-  fMarkupManager.TopLine:= fTopLine;
+  FOldTopLine := FTopLine;
+  FOldTopView := TopView;
+  if (Delta <> 0) and (eoAlwaysVisibleCaret in fOptions2) then
+    MoveCaretToVisibleArea;
 end;
 
 procedure TCustomSynEdit.ShowCaret;
