@@ -179,7 +179,7 @@ type
 
   TSynStateFlag = (sfCaretVisible, sfCaretChanged,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
-    sfIgnoreNextChar, sfPainting, sfLinesChanging,
+    sfIgnoreNextChar, sfPainting, sfHasScrolled, sfLinesChanging,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
@@ -2808,6 +2808,7 @@ begin
     //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
     {$ENDIF}
   Include(fStateFlags,sfPainting);
+  Exclude(fStateFlags, sfHasScrolled);
   {$ELSE}
   rcClip := Canvas.ClipRect;
   {$ENDIF}
@@ -4036,9 +4037,13 @@ begin
   Delta := FOldTopView - TopView;
   if Delta <> 0 then begin
     // TODO: SW_SMOOTHSCROLL --> can't get it work
-    if (Abs(Delta) >= fLinesInWindow) or
-    not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
+    if (Abs(Delta) >= fLinesInWindow) or (sfHasScrolled in FStateFlags) then
+      Invalidate
+    else
+    if ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
     then
+      include(fStateFlags, sfHasScrolled)
+    else
       Invalidate;    // scrollwindow failed, invalidate all
   end;
   FOldTopLine := FTopLine;
