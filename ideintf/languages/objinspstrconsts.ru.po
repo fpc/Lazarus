@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-12 18:10+0300\n"
+"PO-Revision-Date: 2009-07-30 01:35+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -960,43 +960,43 @@ msgstr "Имя фильтра"
 
 #: objinspstrconsts.pirscustomoptions
 msgid "Custom options"
-msgstr ""
+msgstr "Параметры пользователя"
 
 #: objinspstrconsts.pirsdebugsearchpath
 msgid "Debug search path"
-msgstr ""
+msgstr "Путь поиска информации для отладки"
 
 #: objinspstrconsts.pirsincludesearchpath
 msgid "Include search path"
-msgstr ""
+msgstr "Путь поиска включаемых файлов"
 
 #: objinspstrconsts.pirslibrarysearchpath
 msgid "Library search path"
-msgstr ""
+msgstr "Путь поиска библиотек"
 
 #: objinspstrconsts.pirslinkeroptions
 msgid "Linker options"
-msgstr ""
+msgstr "Параметры компоновщика"
 
 #: objinspstrconsts.pirsobjectsearchpath
 msgid "Object search path"
-msgstr ""
+msgstr "Путь поиска объектных файлов"
 
 #: objinspstrconsts.pirsresult
 msgid "Result"
-msgstr ""
+msgstr "Результат"
 
 #: objinspstrconsts.pirsunit
 msgid "Unit"
-msgstr ""
+msgstr "Модуль"
 
 #: objinspstrconsts.pirsunitsearchpath
 msgid "Unit search path"
-msgstr ""
+msgstr "Путь поиска модулей"
 
 #: objinspstrconsts.pirsunitsourcesearchpath
 msgid "Unit source search path"
-msgstr ""
+msgstr "Путь поиска исходного кода модулей"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-14 03:26+0300\n"
+"PO-Revision-Date: 2009-07-30 01:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -23,15 +23,15 @@ msgstr "Подсветка скобок"
 
 #: lazarusidestrconsts.dlgaddhiattrcodefoldingtree
 msgid "Code folding tree"
-msgstr "Дерево сворачивания кода"
+msgstr "Дерево сворачиваний кода"
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
-msgstr "Выключенная точка останова"
+msgstr "Отключённая точка останова"
 
 #: lazarusidestrconsts.dlgaddhiattrenabledbreakpoint
 msgid "Enabled breakpoint"
-msgstr "Включенная точка останова"
+msgstr "Включённая точка останова"
 
 #: lazarusidestrconsts.dlgaddhiattrerrorline
 msgid "Error line"
@@ -39,7 +39,7 @@ msgstr "Строка с ошибкой"
 
 #: lazarusidestrconsts.dlgaddhiattrexecutionpoint
 msgid "Execution point"
-msgstr "Точка выполнения"
+msgstr "Точка исполнения"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code"
@@ -55,11 +55,11 @@ msgstr "Подсветка текущего слова"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
 msgid "Incremental search match"
-msgstr "Результат инкрементного поиска"
+msgstr "Совпадение при инкрементном поиске"
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
 msgid "Invalid breakpoint"
-msgstr "Недопустимая точка останова"
+msgstr "Неработоспособная точка останова"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
 msgid "Line highlight"
@@ -71,7 +71,7 @@ msgstr "Номер строки"
 
 #: lazarusidestrconsts.dlgaddhiattrmodifiedline
 msgid "Modified line"
-msgstr "Измененная строка"
+msgstr "Изменённая строка"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
@@ -79,31 +79,31 @@ msgstr "Ссылка при наведении мыши"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "SyncronEdit Range"
-msgstr "SyncronEdit - Область редактирования"
+msgstr "Область синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
 msgid "SyncronEdit Current Cells"
-msgstr "SyncronEdit - Текущие поля"
+msgstr "Текущие поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
 msgid "SyncronEdit Other Cells"
-msgstr "SyncronEdit - Остальные поля"
+msgstr "Прочие поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
 msgid "SyncronEdit Syncron Cells"
-msgstr "SyncronEdit - Синхронизируемые поля"
+msgstr "Синхронизируемые поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
 msgid "TemplateEdit Current"
-msgstr ""
+msgstr "Текущее поле редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
 msgid "TemplateEdit Cells"
-msgstr ""
+msgstr "Поля редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
 msgid "TemplateEdit Sync"
-msgstr ""
+msgstr "Синхронизируемые поля редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
 msgid "Text block"
@@ -216,7 +216,7 @@ msgstr "После методов"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
 msgid "Selection:"
-msgstr "Параметры выбора"
+msgstr "Выделение:"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
@@ -1273,7 +1273,7 @@ msgstr "Политика идентификаторов"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
-msgstr "Пропуск"
+msgstr "Пропустить"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -1342,7 +1342,7 @@ msgstr "Язык"
 
 #: lazarusidestrconsts.dlglast
 msgid "Last (i.e. at end of source)"
-msgstr "Последний (т.е. в конце исходного кода)"
+msgstr "Последними (т.е. в конце исходного кода)"
 
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
@@ -1864,7 +1864,7 @@ msgstr "Другие модули (-Fu) (разделитель - точка с 
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
-msgstr "Перезаписывать выделение"
+msgstr "Заменять выделение"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -1880,7 +1880,7 @@ msgstr "Передавать параметры компоновщику (отд
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent Block"
-msgstr "Устойчивое выделение"
+msgstr "Постоянное выделение"
 
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
@@ -3147,11 +3147,11 @@ msgstr "Спросить перед заменой каждого фрагмен
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
-msgstr "Автоматическое завершение выключено"
+msgstr "Автодополнение: выключено"
 
 #: lazarusidestrconsts.lisautocompletionon
 msgid "Auto completion: on"
-msgstr "Автоматическое завершение включено"
+msgstr "Автодополнение: включено"
 
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
@@ -3159,7 +3159,7 @@ msgstr "Продолжать автоматически"
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
-msgstr "Продолжать автоматически после:"
+msgstr "Продолжить после:"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -3276,7 +3276,7 @@ msgstr "Останов"
 
 #: lazarusidestrconsts.lisbreakpointproperties
 msgid "Breakpoint Properties"
-msgstr "Свойства точки останова"
+msgstr "Параметры точки останова"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
@@ -3811,6 +3811,10 @@ msgstr "Завершение классов"
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr "Класс конфликтует с файлом .lfm:%sМодуль %s%sиспользует модуль %s,%sкоторый содержит класс %s,%sно файл .lfm уже содержит другой класс. %sВ модуле может быть только один такой класс. %sПереместите %s в другой модуль."
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
+msgstr "Классы и свойства существуют. Значения не проверялись."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -5604,7 +5608,7 @@ msgstr "Введите язык перевода"
 
 #: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
 msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Двойной щелчок на переходах по сообщениям (иначе - одинарный)"
+msgstr "Переходить по сообщениям по двойному щелчку (иначе - по одинарному)"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -5766,7 +5770,7 @@ msgstr "Вычислить выражение"
 
 #: lazarusidestrconsts.lisevaluate
 msgid "E&valuate"
-msgstr "Вы&числить"
+msgstr "&Вычислить"
 
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
@@ -6522,7 +6526,7 @@ msgstr "Унаследованный компонент"
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
-msgstr "Унаследованный элемент"
+msgstr "Унаследованный объект"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -6570,7 +6574,7 @@ msgstr "Вставить время. Возможно форматировани
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
-msgstr "Прос&мотреть"
+msgstr "&Просмотреть"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -6839,7 +6843,7 @@ msgstr "Заключить выделенное"
 
 #: lazarusidestrconsts.liskmevaluatemodify
 msgid "Evaluate/Modify"
-msgstr "Рассчитать/Изменить"
+msgstr "Вычислить/Изменить"
 
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
@@ -7530,6 +7534,10 @@ msgstr "Файл LFM повреждён"
 msgid "LFM file not found"
 msgstr "Файл LFM не найден"
 
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
+msgstr "Файл LFM верен"
+
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7586,7 +7594,7 @@ msgstr "Значение"
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log message"
-msgstr ""
+msgstr "Сообщение в журнал"
 
 #: lazarusidestrconsts.lislogo
 msgid "Logo"
@@ -8069,7 +8077,7 @@ msgstr "Найти инкрементно"
 
 #: lazarusidestrconsts.lismenuindentselection
 msgid "Indent selection"
-msgstr "Сдвинуть блок вправо"
+msgstr "Сдвинуть выделенное вправо"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -8540,7 +8548,7 @@ msgstr "Отменить"
 
 #: lazarusidestrconsts.lismenuunindentselection
 msgid "Unindent selection"
-msgstr "Сдвинуть блок влево"
+msgstr "Сдвинуть выделенное влево"
 
 #: lazarusidestrconsts.lismenuuppercaseselection
 msgid "Uppercase selection"
@@ -8843,6 +8851,10 @@ msgstr "Не унаследовано параметров компилятор�
 msgid "No IDE window selected"
 msgstr "Окно IDE не выбрано"
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr "Файл LFM отсутствует"
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "без имени"
@@ -8858,6 +8870,10 @@ msgstr "нет"
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "элементов не выбрано"
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
+msgstr "Файл Паскаля отсутствует"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
@@ -11709,6 +11725,10 @@ msgstr "Путь поиска модулей %s%s%s содержит катал�
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог %s%s%s не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr "Эта функция требует наличия открытого файла .lfm в редакторе исходного кода."
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "это справочное сообщение"
@@ -12094,6 +12114,10 @@ msgstr "Невозможно найти %s в потоке LFM"
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Невозможно найти метод. Исправьте ошибки в окне сообщений."
 
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr "Невозможно найти модуль Паскаля (.pas,.pp) для файла .lfm%s%s%s%s"
+
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
 msgstr "Невозможно найти модуль класса компонента %s%s%s."
@@ -12404,7 +12428,7 @@ msgstr "Предупреждение: найден двусмысленный ф
 
 #: lazarusidestrconsts.liswatch
 msgid "&Watch"
-msgstr "На&блюдать"
+msgstr "&Наблюдать"
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -12827,15 +12851,15 @@ msgstr "Команды управления редакторами исходн�
 
 #: lazarusidestrconsts.srkmcatsyncroedit
 msgid "Syncron Editing"
-msgstr "Команды синхронного редактирования"
+msgstr "Синхронное редактирование"
 
 #: lazarusidestrconsts.srkmcatsyncroeditoff
 msgid "Syncron Editing (not in Cell)"
-msgstr "Команды синхронного редактирования (не в полях)"
+msgstr "Синхронное редактирование (не в поле)"
 
 #: lazarusidestrconsts.srkmcatsyncroeditsel
 msgid "Syncron Editing (while selecting)"
-msgstr "Команды синхронного редактирования (при выборе)"
+msgstr "Синхронное редактирование (при выделении)"
 
 #: lazarusidestrconsts.srkmcattemplateedit
 msgid "Template Editing"
@@ -12892,51 +12916,51 @@ msgstr "Завершение шаблонов кода"
 
 #: lazarusidestrconsts.srkmecblockcopy
 msgid "Copy Block"
-msgstr "Копировать блок"
+msgstr "Копировать выделенное"
 
 #: lazarusidestrconsts.srkmecblockdelete
 msgid "Delete Block"
-msgstr "Удалить блок"
+msgstr "Удалить выделенное"
 
 #: lazarusidestrconsts.srkmecblockgotobegin
 msgid "Goto Block begin"
-msgstr "Перейти к началу блока"
+msgstr "Перейти к началу выделения"
 
 #: lazarusidestrconsts.srkmecblockgotoend
 msgid "Goto Block end"
-msgstr "Перейти к концу блока"
+msgstr "Перейти к концу выделения"
 
 #: lazarusidestrconsts.srkmecblockhide
 msgid "Hide Block"
-msgstr "Скрыть блок"
+msgstr "Скрыть выделенное"
 
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
-msgstr "Отделить блок"
+msgstr "Сдвинуть выделенное вправо"
 
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
-msgstr "Переместить блок"
+msgstr "Переместить выделенное"
 
 #: lazarusidestrconsts.srkmecblocksetbegin
 msgid "Set block begin"
-msgstr "Установить начало блока"
+msgstr "Установить начало выделения"
 
 #: lazarusidestrconsts.srkmecblocksetend
 msgid "Set block end"
-msgstr "Установить конец блока"
+msgstr "Установить конец выделения"
 
 #: lazarusidestrconsts.srkmecblockshow
 msgid "Show Block"
-msgstr "Показать блок"
+msgstr "Показать выделенное"
 
 #: lazarusidestrconsts.srkmecblocktogglehide
 msgid "Toggle block"
-msgstr "Переключить видимость блока"
+msgstr "Переключить видимость выделенного"
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
-msgstr "Отменить отделение блока"
+msgstr "Сдвинуть выделенное влево"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
@@ -13028,7 +13052,7 @@ msgstr "Добавить в выделение слово справа"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
-msgstr "Режим выбора колонки"
+msgstr "Режим выбора столбца"
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"
@@ -13350,15 +13374,15 @@ msgstr "Переместить курсор в конец страницы"
 
 #: lazarusidestrconsts.srkmecpagedown
 msgid "Move cursor down one page"
-msgstr "Переместить курсор вниз на 1 страницу"
+msgstr "Переместить курсор вниз на одну страницу"
 
 #: lazarusidestrconsts.srkmecpageleft
 msgid "Move cursor left one page"
-msgstr "Переместить курсор влево на 1 страницу"
+msgstr "Переместить курсор влево на одну страницу"
 
 #: lazarusidestrconsts.srkmecpageright
 msgid "Move cursor right one page"
-msgstr "Переместить курсор вправо на 1 страницу"
+msgstr "Переместить курсор вправо на одну страницу"
 
 #: lazarusidestrconsts.srkmecpagetop
 msgid "Move cursor to top of page"
@@ -13430,19 +13454,19 @@ msgstr "параметры запуска"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
-msgstr "Прокрутить вниз 1 строку"
+msgstr "Прокрутить вниз на одну строку"
 
 #: lazarusidestrconsts.srkmecscrollleft
 msgid "Scroll left one char"
-msgstr "Прокрутить влево 1 символ"
+msgstr "Прокрутить влево на один символ"
 
 #: lazarusidestrconsts.srkmecscrollright
 msgid "Scroll right one char"
-msgstr "Прокрутить влево 1 символ"
+msgstr "Прокрутить вправо на один символ"
 
 #: lazarusidestrconsts.srkmecscrollup
 msgid "Scroll up one line"
-msgstr "Прокрутить вверх 1 строку"
+msgstr "Прокрутить вверх на одну строку"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
