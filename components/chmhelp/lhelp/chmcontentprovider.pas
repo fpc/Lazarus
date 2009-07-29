@@ -220,9 +220,18 @@ procedure TChmContentProvider.DoLoadUri(Uri: String; AChm: TChmReader = nil);
 var
   ChmIndex: Integer;
   NewUrl: String;
+  FilteredURL: String;
+  fPos: Integer;
 begin
   if (fChms = nil) and (AChm = nil) then exit;
-  if fChms.ObjectExists(Uri, AChm) = 0 then begin
+
+  fPos := Pos('#', Uri);
+  if fPos > 0 then
+    FilteredURL := Copy(Uri, 1, fPos -1)
+  else
+    FilteredURL := Uri;
+
+  if fChms.ObjectExists(FilteredURL, AChm) = 0 then begin
     fStatusBar.SimpleText := URI + ' not found!';
     Exit;
   end;
