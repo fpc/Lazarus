@@ -8569,7 +8569,7 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
-  if (not Project1.IsVirtual) or (not (sfDoNotSaveVirtualFiles in Flags)) then
+  if (not Project1.IsVirtual) and (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
     // (this can alter the mainunit: e.g. used unit names)
