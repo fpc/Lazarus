@@ -247,6 +247,8 @@ var
   FileCFStr: CFStringRef;
   ParsedFilter: TParseStringList;
   M: TMaskList;
+  filterext: String;
+  supportPackages: Boolean; //todo: select packages by name
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -275,7 +277,10 @@ begin
     for I := 1 to ParsedFilter.Count div 2 do
     begin
       try
-        M := TMaskList.Create(ParsedFilter[I * 2 - 1]);
+        filterext:=ParsedFilter[I * 2 - 1];
+        if (filterext = '*') or (filterext = '*.*') or (ExtractFileExt(filterext) = '.app') then
+          supportPackages := true;
+        M := TMaskList.Create(filterext);
       except
         FreeAndNil(M);
       end;
@@ -285,9 +290,11 @@ begin
   finally
     ParsedFilter.Free;
   end;
-  
+  supportPackages:=supportPackages or (Filters.Count=0);
+
   CreationOptions.popupExtension := StringsToCFArray(Filters);
-  CreationOptions.optionFlags := CreationOptions.optionFlags or kNavSupportPackages;
+  if supportPackages then
+    CreationOptions.optionFlags := CreationOptions.optionFlags or kNavSupportPackages;
   try
     if FileDialog is TSaveDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
