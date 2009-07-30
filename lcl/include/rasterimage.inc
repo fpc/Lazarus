@@ -571,6 +571,8 @@ begin
   BeginUpdate;
   try
     Clear;
+    if AImage.Description.Format = ricfNone then Exit; // empty image
+
     img := GetRawImagePtr;
     img^.Description := AImage.Description;
     if ADataOwner
