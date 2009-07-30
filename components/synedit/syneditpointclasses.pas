@@ -1348,12 +1348,14 @@ end;
 
 procedure TSynEditSelection.IncPersistentLock;
 begin
-  inc(FPersistentLock)
+  inc(FPersistentLock);
 end;
 
 procedure TSynEditSelection.DecPersistentLock;
 begin
-  dec(FPersistentLock)
+  dec(FPersistentLock);
+  if (FPersistentLock = 0) and (FCaret <> nil) and FCaret.Locked then
+    FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
 end;
 
 procedure TSynEditSelection.Clear;

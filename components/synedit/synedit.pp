@@ -2611,19 +2611,17 @@ begin
   if (fStateFlags * [sfMouseSelecting, sfIsDragging] <> []) and MouseCapture
   then begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
+    if sfIsDragging in fStateFlags then
+      FBlockSelection.IncPersistentLock;
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
     if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth) and
       (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
     then begin
-      if sfIsDragging in fStateFlags then
-        FBlockSelection.IncPersistentLock;
       FBlockSelection.AutoExtend := sfMouseSelecting in fStateFlags;
       FCaret.LineBytePos := FInternalCaret.LineBytePos;
       FBlockSelection.AutoExtend := False;
-      if sfIsDragging in fStateFlags then
-        FBlockSelection.DecPersistentLock;
     end;
 
     // should we begin scrolling?
@@ -2653,6 +2651,8 @@ begin
       fScrollDeltaY := Min(Z div fTextHeight, 0);
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
+    if sfIsDragging in fStateFlags then
+      FBlockSelection.DecPersistentLock;
   end
   else
   if MouseCapture and (not(sfIsDragging in fStateFlags))
@@ -2670,6 +2670,8 @@ var
   X, Y: Integer;
 begin
   // changes to line / column in one go
+  if sfIsDragging in fStateFlags then
+    FBlockSelection.IncPersistentLock;
   IncPaintLock;
   try
     GetCursorPos(CurMousePos);
@@ -2708,7 +2710,7 @@ begin
       X := LeftChar;
       if fScrollDeltaX > 0 then  // scrolling right?
         Inc(X, CharsInWindow);
-      CaretXY := Point(X, C.Y);
+      FCaret.LineCharPos := Point(X, C.Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     end;
@@ -2720,12 +2722,14 @@ begin
       if fScrollDeltaY > 0
       then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
       else Y := TopLine;  // scrolling up
-      CaretXY := Point(C.X, Y);
+      FCaret.LineCharPos := Point(C.X, Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     end;
   finally
     DecPaintLock;
+    if sfIsDragging in fStateFlags then
+      FBlockSelection.DecPersistentLock;
   end;
 end;
 
