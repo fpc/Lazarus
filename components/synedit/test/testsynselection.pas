@@ -4,13 +4,23 @@ unit TestSynSelection;
 
 interface
 
- (* TODO:
+(* TODO: Known Issues in SynEdit
+      - smColumn and utf8/tabs
+      - Select all in Default=smColumn
       - SelectetText for selections Past-EOL, current behaviour is not consistent:
         smNormal: SelText = empty  => should be spaces?
         smColumn: SelText = space(s)
         smLine:   SelText = TheLine (correct)
       - smLine Blocks: Begin/End Points return X values inside the line
-  *)
+      - Go/select to matcing brace, have inconsistent rules which side of the ")" the caret must be
+        They should follow the same as bracket highlight?
+
+   TODO: Missing tests
+      - Select block, move caret away and back, continue selection
+      - Select by Mouse (incl scrolling while selecting)
+      - Drag Block (incl scrolling)
+      - Replace text
+*)
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestBase,
   SynEdit, SynEditTypes,
@@ -29,6 +39,7 @@ type
     procedure TestIsNoBlock(Name: String);
   published
     procedure SelectByKey;
+    procedure SelectByMethod;
   end;
 
 implementation
@@ -385,6 +396,462 @@ begin
   DoKeyPress(VK_LEFT, [ssShift, ssAlt]);
   TestIsBlock('after VK_LEFT (continue)', 3, 1, 2, 2, ['e', ' ']);
 
+end;
+
+procedure TTestSynSelection.SelectByMethod;
+var
+  NoSelection : Boolean;
+  UseBeginUpdate: Boolean;
+
+  procedure DoTestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; ExpText: Array of String);
+  begin
+    if NoSelection
+    then TestIsNoBlock(Name)
+    else begin
+      TestIsBlock(Name, X1, Y1, X2, Y2, ExpText);
+      TestIsCaret(Name, X2, Y2);
+    end;
+  end;
+  procedure DoTestIsBlockBackward(Name: String; X1, Y1, X2, Y2: Integer; ExpText: Array of String);
+  begin
+    if NoSelection
+    then TestIsNoBlock(Name)
+    else begin
+      TestIsBlock(Name, X1, Y1, X2, Y2, ExpText);
+      TestIsCaret(Name, X1, Y1); // caret at start
+    end;
+  end;
+  procedure DoLock;
+  begin
+    if UseBeginUpdate then SynEdit.BeginUpdate;
+  end;
+  procedure DoUnLock;
+  begin
+    if UseBeginUpdate then SynEdit.EndUpdate;
+  end;
+
+  procedure DoSelectByMethod;
+  var
+    i: Integer;
+  Begin
+    (* *** smNormal *** *)
+    PushBaseName('Default:smNormal');
+    SynEdit.DefaultSelectionMode := smNormal;
+
+    // word
+    for i := 7 to 11 do begin // includes 11: select previous word, if no current
+      SetCaret(i, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      DoUnLock;
+      DoTestIsBlock('Select Word x='+IntToStr(i), 7,3, 10,3, ['bar']);
+    end;
+    SetCaret(1, 3);          // Select next word, if neitheer current nor previous
+    DoLock;
+    SynEdit.SelectWord;
+    DoUnLock;
+    DoTestIsBlock('Select Word x=1', 3,3, 6,3, ['Foo']);
+
+    if UseBeginUpdate then begin
+      SetCaret(8, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      SynEdit.LogicalCaretXY := Point(7, 3);
+      DoUnLock;
+      DoTestIsBlockBackward('Select Word, caret to start', 7,3, 10,3, ['bar']);
+    end;
+
+    // Line
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(True);
+    DoUnLock;
+    DoTestIsBlock('Select Line (inc space)', 1,3, 12,3, ['  Foo(bar);']);
+
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(False);
+    DoUnLock;
+    DoTestIsBlock('Select Line (excl space)', 3,3, 12,3, ['Foo(bar);']);
+
+    // paragraph (includes 1 line before)
+    SetCaret(1, 3);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=3', 1,2, 1,7, ['', '  Foo(bar);',
+                                   '  abc;', '  // äüöäabc', #9#9+'test', '']);
+
+    SetCaret(1, 2);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=2', 1,2, 1,7, ['', '  Foo(bar);',
+                                   '  abc;', '  // äüöäabc', #9#9+'test', '']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=2 (begin of file)', 1,1, 1,2, ['begin', '']);
+
+    SetCaret(1, 9);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=9 (end of file)', 1,8, 4,10, ['', 'end;(', '//)']);
+
+    SetCaret(1, 7);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=7 (empty para)', 1,7, 1,8, ['', '']);
+
+    // select all
+    SetCaret(3, 3);
+    DoLock;
+    SynEdit.SelectAll;
+    DoUnLock;
+    DoTestIsBlock('Select All', 1,1, 4,10, ['begin', '', '  Foo(bar);', '  abc;',
+                        '  // äüöäabc', #9#9+'test', '', '', 'end;(', '//)']);
+
+    // select to brace
+    SetCaret(8, 3);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    TestIsNoBlock('SelectToBrace (not at brace)');
+
+    SetCaret(6, 3);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    DoTestIsBlockBackward('SelectToBrace X=6', 6,3, 11,3, ['(bar)']);
+
+    SetCaret(11, 3);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    DoTestIsBlock('SelectToBrace X=11', 6,3, 11,3, ['(bar)']);
+
+    SetCaret(5, 9);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    DoTestIsBlockBackward('SelectToBrace multi line', 5,9, 4,10, ['(', '//)']);
+
+    // BlockBegin/end
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(4, 3);
+    SynEdit.BlockBegin := Point(2,3);
+    SynEdit.BlockEnd   := Point(4,3);
+    DoUnLock;
+    DoTestIsBlock('Select Begin/End', 2,3, 4,3, [' F']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(1, 4);
+    SynEdit.BlockBegin := Point(12,3); // just lineend
+    SynEdit.BlockEnd   := Point( 1,4);
+    DoUnLock;
+    DoTestIsBlock('Select Begin/End CrLf', 12,3, 1,4, ['', '']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(11, 3);
+    SynEdit.BlockBegin := Point(11,3); // include past eol (TODO)
+    SynEdit.BlockEnd   := Point(13,3);
+    DoUnLock;
+    DoTestIsBlockBackward('Select Begin/End Eol', 11,3, 13,3, [';']);
+
+
+    (* *** smColumn *** *)
+    PopPushBaseName('Default:smColumn');
+    SynEdit.DefaultSelectionMode := smColumn;
+
+    // word
+    for i := 7 to 11 do begin // includes 11: select previous word, if no current
+      SetCaret(i, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      DoUnLock;
+      DoTestIsBlock('Select Word x='+IntToStr(i), 7,3, 10,3, ['bar']);
+    end;
+    SetCaret(1, 3);          // Select next word, if neitheer current nor previous
+    DoLock;
+    SynEdit.SelectWord;
+    DoUnLock;
+    DoTestIsBlock('Select Word x=1', 3,3, 6,3, ['Foo']);
+
+    if UseBeginUpdate then begin
+      SetCaret(8, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      SynEdit.LogicalCaretXY := Point(7, 3);
+      DoUnLock;
+      DoTestIsBlockBackward('Select Word, caret to start', 7,3, 10,3, ['bar']);
+    end;
+
+    // Line
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(True);
+    DoUnLock;
+    DoTestIsBlock('Select Line (inc space)', 1,3, 12,3, ['  Foo(bar);']);
+
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(False);
+    DoUnLock;
+    DoTestIsBlock('Select Line (excl space)', 3,3, 12,3, ['Foo(bar);']);
+
+    // paragraph (includes 1 line before)
+    SetCaret(1, 3);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=3', 1,2, 1,7, ['', '  Foo(bar);',
+                                   '  abc;', '  // äüöäabc', #9#9+'test', '']);
+
+    SetCaret(1, 9);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=9 (end of file)', 1,8, 4,10, ['', 'end;(', '//)']);
+
+    SetCaret(1, 7);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=7 (empty para)', 1,7, 1,8, ['', '']);
+
+    // select all
+    SetCaret(3, 3);
+    DoLock;
+    SynEdit.SelectAll;
+    DoUnLock;
+    //DoTestIsBlock('Select All', 1,1, 4,10, ['begin', '', '  Foo(bar);', '  abc;',
+    //                    '  // äüöäabc', #9#9+'test', '', '', 'end;(', '//)']);
+
+    // select to brace
+    SetCaret(6, 3);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    DoTestIsBlockBackward('SelectToBrace X=6', 6,3, 11,3, ['(bar)']);
+
+    SetCaret(5, 9);
+    DoLock;
+    SynEdit.SelectToBrace;
+    DoUnLock;
+    DoTestIsBlockBackward('SelectToBrace multi line', 5,9, 4,10, [';', ' ']);
+
+    // BlockBegin/end
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(4, 3);
+    SynEdit.BlockBegin := Point(2,3);
+    SynEdit.BlockEnd   := Point(4,3);
+    DoUnLock;
+    DoTestIsBlock('Select Begin/End 1 line', 2,3, 4,3, [' F']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(13, 3);
+    SynEdit.BlockBegin := Point(11,3); // include past eol (TODO)
+    SynEdit.BlockEnd   := Point(13,3);
+    DoUnLock;
+    DoTestIsBlock('Select Begin/End 1 line Eol', 11,3, 13,3, ['; ']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(6, 5);
+    SynEdit.BlockBegin := Point(10,3);
+    SynEdit.BlockEnd   := Point(6,5);
+    DoUnLock;
+    // Todo: smColumn and utf8;
+    DoTestIsBlock('Select Begin/End utf8 4 column', 10,3, 6,5, ['(bar', ';   ', 'äüöä']); // 3 utf8
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(10, 3);
+    SynEdit.BlockBegin := Point(10,3);
+    SynEdit.BlockEnd   := Point(9+3,5);
+    DoUnLock;
+    // Todo: smColumn and utf8;
+    DoTestIsBlockBackward('Select Begin/End utf8  1 column', 10,3, 9+3,5, ['r', ' ', 'ä']); // 3 utf8
+
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(5, 9);
+    SynEdit.BlockBegin := Point(1, 5);
+    SynEdit.BlockEnd   := Point(5, 9);
+    DoUnLock;
+    // Todo: smColumn and tabs;
+    DoTestIsBlock('Select Begin/End tabs', 1,5, 5,9, ['  //', #9, '    ', '    ', 'end;']); // 3 utf8
+
+
+
+    (* *** smLine *** *)
+    PopPushBaseName('Default:smLine');
+    SynEdit.DefaultSelectionMode := smLine;
+
+    // word
+    for i := 7 to 11 do begin // includes 11: select previous word, if no current
+      SetCaret(i, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      DoUnLock;
+      DoTestIsBlock('Select Word x='+IntToStr(i), 7,3, 10,3, ['bar']);
+    end;
+    SetCaret(1, 3);          // Select next word, if neitheer current nor previous
+    DoLock;
+    SynEdit.SelectWord;
+    DoUnLock;
+    DoTestIsBlock('Select Word x=1', 3,3, 6,3, ['Foo']);
+
+    if UseBeginUpdate then begin
+      SetCaret(8, 3);
+      DoLock;
+      SynEdit.SelectWord;
+      SynEdit.LogicalCaretXY := Point(7, 3);
+      DoUnLock;
+      DoTestIsBlockBackward('Select Word, caret to start', 7,3, 10,3, ['bar']);
+    end;
+
+    // Line
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(True);
+    DoUnLock;
+    DoTestIsBlock('Select Line (inc space)', 1,3, 12,3, ['  Foo(bar);']);
+
+    SetCaret(4, 3);
+    DoLock;
+    SynEdit.SelectLine(False);
+    DoUnLock;
+    DoTestIsBlock('Select Line (excl space)', 3,3, 12,3, ['Foo(bar);']); // TODO wrong X pos
+
+    // paragraph (includes 1 line before)
+    SetCaret(1, 3);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=3', 1,2, 1,7, ['', '  Foo(bar);',
+                                   '  abc;', '  // äüöäabc', #9#9+'test', '']);
+
+    SetCaret(1, 2);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=2', 1,2, 1,7, ['', '  Foo(bar);',
+                                   '  abc;', '  // äüöäabc', #9#9+'test', '']);
+
+    SetCaret(1, 1);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=2 (begin of file)', 1,1, 1,2, ['begin', '']);
+
+    SetCaret(1, 9);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=9 (end of file)', 1,8, 4,10, ['', 'end;(', '//)']);
+
+    SetCaret(1, 7);
+    DoLock;
+    SynEdit.SelectParagraph;
+    DoUnLock;
+    DoTestIsBlock('Select ParagraphLine Y=7 (empty para)', 1,7, 1,8, ['', '']);
+
+    // select all
+    SetCaret(3, 3);
+    DoLock;
+    SynEdit.SelectAll;
+    DoUnLock;
+    DoTestIsBlock('Select All', 1,1, 4,10, ['begin', '', '  Foo(bar);', '  abc;',
+                        '  // äüöäabc', #9#9+'test', '', '', 'end;(', '//)']);
+
+    // select to brace
+    // TODO
+
+    // BlockBegin/end
+    SetCaret(1, 1);
+    DoLock;
+    SetCaret(4, 3);
+    SynEdit.BlockBegin := Point(2,3);
+    SynEdit.BlockEnd   := Point(4,3);
+    DoUnLock;
+    DoTestIsBlock('Select Begin/End', 2,3, 4,3, ['  Foo(bar);', '']); // TODO wrong X
+
+
+    PopBaseName;
+  End;
+
+begin
+  ReCreateEdit;
+  BaseTestName := 'SelectByMethod';
+
+  (* tests include:
+       eoPersistentBlock
+       eoNoSelection
+       Embed into BeginUpdate for locks
+  *)
+  // CaretPos are Logical, to save params
+
+  SynEdit.TabWidth := 4;
+  SynEdit.Options := SynEdit.Options  + [eoScrollPastEol];
+
+  SetLines(['begin',
+            '',
+            '  Foo(bar);',
+            '  abc;',
+            '  // äüöäabc', // Utf8 2 bytes per char
+            #9#9+'test',    // Tab  1 byte / several display cells
+            '',
+            '',
+            'end;(',
+            '//)'
+           ]);
+
+  NoSelection := False;
+  SynEdit.Options  := SynEdit.Options  - [eoNoSelection];
+  SynEdit.Options2 := SynEdit.Options2 + [eoPersistentBlock];
+
+  PushBaseName('NonePersist');
+  UseBeginUpdate := False;
+  DoSelectByMethod;
+
+  PopPushBaseName('NonePersist Locked');
+  UseBeginUpdate := True;
+  DoSelectByMethod;
+
+  NoSelection := True;
+  SynEdit.Options  := SynEdit.Options  + [eoNoSelection];
+
+  PopPushBaseName('NonePersist eoNoSelection');
+  UseBeginUpdate := False;
+  DoSelectByMethod;
+
+
+  NoSelection := False;
+  SynEdit.Options  := SynEdit.Options  - [eoNoSelection];
+  SynEdit.Options2 := SynEdit.Options2 - [eoPersistentBlock];
+
+  PopPushBaseName('Persisent');
+  UseBeginUpdate := False;
+  DoSelectByMethod;
+
+  PopPushBaseName('Persisent Locked');
+  UseBeginUpdate := True;
+  DoSelectByMethod;
+
+  NoSelection := True;
+  SynEdit.Options  := SynEdit.Options  + [eoNoSelection];
+  PopPushBaseName('Persisent eoNoSelection Locked');
+  DoSelectByMethod;
 end;
 
 
