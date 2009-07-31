@@ -823,17 +823,16 @@ type
       AOptions: TSynSearchOptions; AStart: TPoint): integer;
     {$ENDIF}
     procedure SelectAll;
-    {$IFDEF SYN_LAZARUS}
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
     procedure SelectToBrace;
+    procedure SetSelWord; deprecated;
+    procedure SelectWord;
     procedure SelectLine(WithLeadSpaces: Boolean = True);
     procedure SelectParagraph;
     procedure SetUseIncrementalColor(const AValue : Boolean);
-    {$ENDIF}
     procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
     procedure SetDefaultKeystrokes; virtual;
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
-    procedure SetSelWord;
     procedure Undo;
     function GetLineState(ALine: Integer): TSynLineState;
     function HasDebugMark(ALine: Integer): Boolean;
@@ -3768,19 +3767,25 @@ begin
   SetCaretAndSelection(LogicalToPhysicalPos(LastPt), Point(1, 1), LastPt);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetHighlightSearch(const ASearch : String; AOptions : TSynSearchOptions);
 begin
   fMarkupHighAll.SearchOptions := AOptions;
   fMarkupHighAll.SearchString := ASearch;
 end;
 
-{$ENDIF}
-
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SelectToBrace;
 begin
   FindMatchingBracket(CaretXY,true,true,true,false);
+end;
+
+procedure TCustomSynEdit.SetSelWord;
+begin
+  SelectWord;
+end;
+
+procedure TCustomSynEdit.SelectWord;
+begin
+  SetWordBlock(PhysicalToLogicalPos(CaretXY));
 end;
 
 procedure TCustomSynEdit.SelectLine(WithLeadSpaces: Boolean = True);
@@ -3792,7 +3797,6 @@ procedure TCustomSynEdit.SelectParagraph;
 begin
   SetParagraphBlock(CaretXY);
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
 begin
@@ -4569,7 +4573,7 @@ var
   TempString: string;
   x: Integer;
 begin
-  { Value is the position of the Carat in bytes }
+  { Value is the position of the Caret in bytes }
   Value.y := MinMax(Value.y, 1, FTheLinesView.Count);
   TempString := FTheLinesView[Value.Y - 1];
   if TempString = '' then exit;
@@ -4620,21 +4624,30 @@ begin
 end;
 
 procedure TCustomSynEdit.SetParagraphBlock(Value: TPoint);
-var ParagraphStartLine, ParagraphEndLine: integer;
+var
+  ParagraphStartLine, ParagraphEndLine, ParagraphEndX: integer;
+
 begin
   IncPaintLock;
-  ParagraphStartLine:=MinMax(Value.y, 1, FTheLinesView.Count);
-  ParagraphEndLine:=MinMax(Value.y+1, 1, FTheLinesView.Count);
-  while (ParagraphStartLine>1)
-  and (Trim(FTheLinesView[ParagraphStartLine-1])<>'') do
+  ParagraphStartLine := MinMax(Value.y,   1, FTheLinesView.Count);
+  ParagraphEndLine   := MinMax(Value.y+1, 1, FTheLinesView.Count);
+  ParagraphEndX := 1;
+  while (ParagraphStartLine > 1) and
+        (Trim(FTheLinesView[ParagraphStartLine-1])<>'')
+  do
     dec(ParagraphStartLine);
-  while (ParagraphEndLine<FTheLinesView.Count)
-  and (Trim(FTheLinesView[ParagraphEndLine-1])<>'') do
+  while (ParagraphEndLine <= FTheLinesView.Count) and
+        (Trim(FTheLinesView[ParagraphEndLine-1])<>'')
+  do
     inc(ParagraphEndLine);
-  FBlockSelection.StartLineBytePos := Point(1,ParagraphStartLine);
-  FBlockSelection.EndLineBytePos := Point(1,ParagraphEndLine);
+  if (ParagraphEndLine > FTheLinesView.Count) then begin
+    dec(ParagraphEndLine);
+    ParagraphEndX := length(FTheLinesView[ParagraphEndLine-1]) + 1;
+  end;
+  FBlockSelection.StartLineBytePos := Point(1, ParagraphStartLine);
+  FBlockSelection.EndLineBytePos   := Point(ParagraphEndX, ParagraphEndLine);
   FBlockSelection.ActiveSelectionMode := smNormal;
-  CaretXY:=FBlockSelection.EndLineBytePos;
+  CaretXY := FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   DecPaintLock;
 end;
@@ -6268,11 +6281,6 @@ begin
   BlockEnd := p;
 end;
 {$ENDIF}
-
-procedure TCustomSynEdit.SetSelWord;
-begin
-  SetWordBlock(PhysicalToLogicalPos(CaretXY));
-end;
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
