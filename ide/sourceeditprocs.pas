@@ -598,7 +598,8 @@ begin
   and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
   then begin
     if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
-    or (IdentItem.GetDesc=ctnProcedure)
+    or ((ilcfStartInStatement in IdentList.ContextFlags)
+        and (IdentItem.GetDesc=ctnProcedure))
     then begin
       Result:=Result+';';
       if (CursorToLeft=0) and (IdentItem.GetDesc=ctnProcedure)
