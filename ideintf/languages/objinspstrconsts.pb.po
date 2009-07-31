@@ -183,51 +183,51 @@ msgstr "Ajustar valor"
 
 #: objinspstrconsts.lisoem1
 msgid "OEM 1"
-msgstr ""
+msgstr "OEM 1"
 
 #: objinspstrconsts.lisoem2
 msgid "OEM 2"
-msgstr ""
+msgstr "OEM 2"
 
 #: objinspstrconsts.lisoem3
 msgid "OEM 3"
-msgstr ""
+msgstr "OEM 3"
 
 #: objinspstrconsts.lisoem4
 msgid "OEM 4"
-msgstr ""
+msgstr "OEM 4"
 
 #: objinspstrconsts.lisoem5
 msgid "OEM 5"
-msgstr ""
+msgstr "OEM 5"
 
 #: objinspstrconsts.lisoem6
 msgid "OEM 6"
-msgstr ""
+msgstr "OEM 6"
 
 #: objinspstrconsts.lisoem7
 msgid "OEM 7"
-msgstr ""
+msgstr "OEM 7"
 
 #: objinspstrconsts.lisoem8
 msgid "OEM 8"
-msgstr ""
+msgstr "OEM 8"
 
 #: objinspstrconsts.lisoemcomma
 msgid "OEM comma"
-msgstr ""
+msgstr "OEM vírgula"
 
 #: objinspstrconsts.lisoemminus
 msgid "OEM minus"
-msgstr ""
+msgstr "OEM menos"
 
 #: objinspstrconsts.lisoemperiod
 msgid "OEM period"
-msgstr ""
+msgstr "OEM ponto"
 
 #: objinspstrconsts.lisoemplus
 msgid "OEM plus"
-msgstr ""
+msgstr "OEM mais"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -960,43 +960,43 @@ msgstr "Nome filtro"
 
 #: objinspstrconsts.pirscustomoptions
 msgid "Custom options"
-msgstr ""
+msgstr "Opções personalizadas"
 
 #: objinspstrconsts.pirsdebugsearchpath
 msgid "Debug search path"
-msgstr ""
+msgstr "Caminho busca depurador"
 
 #: objinspstrconsts.pirsincludesearchpath
 msgid "Include search path"
-msgstr ""
+msgstr "Caminho busca Inclusões"
 
 #: objinspstrconsts.pirslibrarysearchpath
 msgid "Library search path"
-msgstr ""
+msgstr "Caminho busca Biblioteca"
 
 #: objinspstrconsts.pirslinkeroptions
 msgid "Linker options"
-msgstr ""
+msgstr "Opções vinculador"
 
 #: objinspstrconsts.pirsobjectsearchpath
 msgid "Object search path"
-msgstr ""
+msgstr "Caminho busca Objeto"
 
 #: objinspstrconsts.pirsresult
 msgid "Result"
-msgstr ""
+msgstr "Resultado"
 
 #: objinspstrconsts.pirsunit
 msgid "Unit"
-msgstr ""
+msgstr "Unidade"
 
 #: objinspstrconsts.pirsunitsearchpath
 msgid "Unit search path"
-msgstr ""
+msgstr "Caminho busca Unidade"
 
 #: objinspstrconsts.pirsunitsourcesearchpath
 msgid "Unit source search path"
-msgstr ""
+msgstr "Caminho busca fonte Unidade"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

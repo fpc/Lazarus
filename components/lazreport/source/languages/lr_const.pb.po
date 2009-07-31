@@ -529,7 +529,7 @@ msgstr "&Formato"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Função"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
