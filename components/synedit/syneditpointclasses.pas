@@ -632,19 +632,14 @@ function TSynEditSelection.GetSelText : string;
   end;
 
 
-const
-  sLineBreak = {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#$0D#$0A{$ENDIF};
 var
   First, Last, TotalLen: Integer;
   ColFrom, ColTo: Integer;
   I: Integer;
-{$IFDEF SYN_MBCSSUPPORT}
-  l, r: Integer;
-  s: string;
-{$ELSE}
-  ColLen: integer;
-{$ENDIF}
   P: PChar;
+  C1, C2: Integer;
+  Col, Len: array of Integer;
+
 begin
   if not SelAvail then
     Result := ''
@@ -681,54 +676,38 @@ begin
             CopyAndForward(FLines[i], 1, MaxInt, P);
             CopyAndForward(sLineBreak, 1, MaxInt, P);
           end;
-          {$IFDEF SYN_LAZARUS}
           CopyPaddedAndForward(FLines[Last], 1, ColTo - 1, P);
-          {$ELSE}
-          CopyAndForward(FLines[Last], 1, ColTo - 1, P);
-          {$ENDIF}
         end;
       smColumn:
         begin
-          if ColFrom > ColTo then
-            SwapInt(ColFrom, ColTo);
-          // step1: calclate total length of result string
-{$IFNDEF SYN_MBCSSUPPORT}
-          ColLen := ColTo - ColFrom;
-          TotalLen := ColLen + (ColLen + Length(sLineBreak)) * (Last - First);
-          // step2: build up result string
+          // Calculate the byte positions for each line
+          SetLength(Col, Last - First + 1);
+          SetLength(Len, Last - First + 1);
+          FInternalCaret.AllowPastEOL := True;
+          FInternalCaret.LineBytePos := FirstLineBytePos;
+          C1 := FInternalCaret.CharPos;
+          FInternalCaret.LineBytePos := LastLineBytePos;
+          C2 := FInternalCaret.CharPos;
+          if C1 > C2 then
+            SwapInt(C1, C2);
+
+          TotalLen := 0;
+          for i := First to Last do begin
+            FInternalCaret.LineCharPos := Point(C1, i + 1);
+            Col[i - First] := FInternalCaret.BytePos;
+            FInternalCaret.LineCharPos := Point(C2, i + 1);
+            Len[i - First] := Max(0, FInternalCaret.BytePos - Col[i - First]);
+            Inc(TotalLen, Len[i - First]);
+          end;
+          Inc(TotalLen, Length(LineEnding) * (Last - First));
+          // build up result string
           SetLength(Result, TotalLen);
           P := PChar(Pointer(Result));
-          for i := First to Last - 1 do begin
-            CopyPaddedAndForward(FLines[i], ColFrom, ColLen, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          CopyPaddedAndForward(FLines[Last], ColFrom, ColLen, P);
-{$ELSE} //SYN_MBCSSUPPORT
           for i := First to Last do begin
-            s := FLines[i];
-            l := ColFrom;
-            r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
-            Inc(TotalLen, r - l);
+            CopyPaddedAndForward(FLines[i], Col[i-First], Len[i-First], P);
+            if i < Last then
+              CopyAndForward(LineEnding, 1, MaxInt, P);
           end;
-          Inc(TotalLen, Length(sLineBreak) * (Last - First));
-          // step2: build up result string
-          SetLength(Result, TotalLen);
-          P := PChar(Result);
-          for i := First to Last - 1 do begin
-            s := FLines[i];
-            l := ColFrom;
-            r := ColTo;
-            MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
-            CopyPaddedAndForward(s, l, r - l, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
-          end;
-          s := FLines[Last];
-          l := ColFrom;
-          r := ColTo;
-          MBCSGetSelRangeInLineWhenColumnActiveSelectionMode(s, l, r);
-          CopyPaddedAndForward(FLines[Last], l, r - l, P);
-{$ENDIF}
         end;
       smLine:
         begin
@@ -736,19 +715,19 @@ begin
           // line break code(s) of the last line will not be added.
           // step1: calclate total length of result string
           for i := First to Last do
-            Inc(TotalLen, Length(FLines[i]) + Length(sLineBreak));
+            Inc(TotalLen, Length(FLines[i]) + Length(LineEnding));
           if Last = FLines.Count - 1 then
-            Dec(TotalLen, Length(sLineBreak));
+            Dec(TotalLen, Length(LineEnding));
           // step2: build up result string
           SetLength(Result, TotalLen);
           P := PChar(Pointer(Result));
           for i := First to Last - 1 do begin
             CopyAndForward(FLines[i], 1, MaxInt, P);
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
+            CopyAndForward(LineEnding, 1, MaxInt, P);
           end;
           CopyAndForward(FLines[Last], 1, MaxInt, P);
           if Last < FLines.Count - 1 then
-            CopyAndForward(sLineBreak, 1, MaxInt, P);
+            CopyAndForward(LineEnding, 1, MaxInt, P);
         end;
     end;
   end;
