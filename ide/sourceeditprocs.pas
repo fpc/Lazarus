@@ -575,7 +575,7 @@ begin
   // add assignment operator :=
   if (CursorToLeft=0)
   and (AddChar='')
-  and (ilcfStartIsLValue in  IdentList.ContextFlags)
+  and (ilcfStartOfStatement in  IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (IdentItem.CanBeAssigned)

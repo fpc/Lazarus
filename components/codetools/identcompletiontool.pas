@@ -163,7 +163,7 @@ type
   
   TIdentifierListContextFlag = (
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
-    ilcfStartIsLValue,     // atom is start of statement. e.g. 'A|:=' or 'A|;', does not check if A can be assigned
+    ilcfStartOfStatement,  // atom is start of statement. e.g. 'A|:=' or 'A|;', does not check if A can be assigned
     ilcfStartOfOperand,    // atom is start of an operand. e.g. 'A|.B'
     ilcfStartIsSubIdent,   // atom in front is point
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
@@ -1093,8 +1093,8 @@ const
   var
     NewItem: TIdentifierListItem;
   begin
-    //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartIsLValue in CurrentIdentifierList.ContextFlags]);
-    if not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags) then exit;
+    //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartOfStatement in CurrentIdentifierList.ContextFlags]);
+    if not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags) then exit;
     if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
 
     NewItem:=TIdentifierListItem.Create(
@@ -1846,7 +1846,7 @@ begin
           or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
           then begin
             CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
+              CurrentIdentifierList.ContextFlags+[ilcfStartOfStatement];
           end;
           // check if expression
           if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE')
@@ -1886,7 +1886,7 @@ begin
         begin
           // check if a semicolon is needed at the end
           if (not (ilcfNoEndSemicolon in CurrentIdentifierList.ContextFlags))
-          and (not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags))
+          and (not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags))
           then begin
             // check if a semicolon is needed at the end
             if (CurPos.Flag in [cafEnd,cafBegin])
