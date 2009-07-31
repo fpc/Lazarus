@@ -658,9 +658,12 @@ begin
     TotalLen := 0;
     case ActiveSelectionMode of
       smNormal:
-        if (First = Last) then
-          Result := Copy(FLines[First], ColFrom, ColTo - ColFrom)
-        else begin
+        if (First = Last) then begin
+          Result := Copy(FLines[First], ColFrom, ColTo - ColFrom);
+          I := (ColTo - ColFrom) - length(Result);
+          if I > 0 then
+            Result := Result + StringOfChar(' ', I);
+        end else begin
           // step1: calculate total length of result string
           TotalLen := Max(0, Length(FLines[First]) - ColFrom + 1);
           for i := First + 1 to Last - 1 do
