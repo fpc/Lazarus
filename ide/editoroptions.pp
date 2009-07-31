@@ -699,6 +699,7 @@ type
     // Code Folding
     FUseCodeFolding: Boolean;
 
+    function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
   public
     class function GetGroupCaption:string; override;
   public
@@ -2565,6 +2566,11 @@ begin
   end;
 end;
 
+function TEditorOptions.GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
+begin
+  result:=GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
+end;
+
 class function TEditorOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupEditor;
@@ -2891,7 +2897,7 @@ begin
     for i := 0 to Syn.AttrCount - 1 do
     begin
       Attri := Syn.Attribute[i];
-      AttriName := StrToValidXMLName(Attri.Name);
+      AttriName := StrToValidXMLName(Attri.StoredName);
       if AttriName = '' then
         continue;
       Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
@@ -2984,7 +2990,7 @@ begin
     begin
       Attri := Syn.Attribute[i];
       OldAttri := OldSyn.Attribute[i];
-      AttriName := StrToValidXMLName(Attri.Name);
+      AttriName := StrToValidXMLName(Attri.StoredName);
       if AttriName = '' then
         continue;
       Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
@@ -3468,6 +3474,7 @@ var
   HasSpecialAttribute: THasSpecialAttribute;
   a: TAdditionalHilightAttribute;
   i: Integer;
+  Attr: TSynHighlighterAttributes;
 begin
   for a := Low(TAdditionalHilightAttribute)
     to High(TAdditionalHilightAttribute) do
@@ -3485,7 +3492,10 @@ begin
   for a := Low(TAdditionalHilightAttribute)
     to High(TAdditionalHilightAttribute) do
     if not HasSpecialAttribute[a] then
-      Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
+    begin
+      Attr := Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
+      Attr.StoredName := GetAdditionalAttributeName(a);
+    end;
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);

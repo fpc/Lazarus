@@ -79,6 +79,7 @@ type
     fForegroundDefault: TColor;                                                 //mh 2000-10-08
     FFrameColor: TColor;
     FFrameColorDefault: TColor;
+    FStoredName: string;
     fName: string;
     fStyle: TFontStyles;
     fStyleDefault: TFontStyles;                                                 //mh 2000-10-08
@@ -122,6 +123,7 @@ type
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
     {$ENDIF}
     property Name: string read fName;
+    property StoredName: string read FStoredName write FStoredName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
     property Background: TColor read fBackground write SetBackground
@@ -248,7 +250,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     {$IFDEF SYN_LAZARUS}
-    procedure AddSpecialAttribute(const AttribName: string);
+    function AddSpecialAttribute(const AttribName: string): TSynHighlighterAttributes;
     {$ENDIF}
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
@@ -494,6 +496,7 @@ begin
   Foreground := clNone;
   FFrameColor := clNone;
   fName := attribName;
+  FStoredName := attribName;
 end;
 
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;
@@ -1036,9 +1039,10 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string);
+function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string):TSynHighlighterAttributes;
 begin
-  AddAttribute(TSynHighlighterAttributes.Create(AttribName));
+  result := TSynHighlighterAttributes.Create(AttribName);
+  AddAttribute(result);
 end;
 {$ENDIF}
 
