@@ -359,7 +359,7 @@ var
   LinkTitle: string;
   LinkSrc: String;
 begin
-  if (ShowFPDocLinkEditorDialog(fSourceFilename,Link,LinkTitle)<>mrOk)
+  if (ShowFPDocLinkEditorDialog(fSourceFilename,DocFile,Link,LinkTitle)<>mrOk)
   or (Link='') then exit;
   LinkSrc:='<link id="'+Link+'"';
   if LinkTitle='' then begin

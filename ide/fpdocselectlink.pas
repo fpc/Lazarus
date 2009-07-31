@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, ButtonPanel, FileUtil,
   PackageIntf, ProjectIntf,
-  LazarusIDEStrConsts, PackageSystem, PackageDefs;
+  CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs, Laz_DOM;
 
 type
 
@@ -64,6 +64,7 @@ type
     procedure AddPackage(Pkg: TLazPackage);
     procedure AddProjectFile(AFile: TLazProjectFile);
     procedure AddPackageFile(AFile: TPkgFile);
+    procedure AddIdentifier(Identifier: string);
     procedure Draw(Canvas: TCanvas; Width, Height: integer);
     property Count: integer read GetCount;
     property Items[Index: integer]: TFPDocLinkCompletionItem read GetItems;
@@ -87,30 +88,35 @@ type
     procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
   private
+    FDocFile: TLazFPDocFile;
     fItems: TFPDocLinkCompletionList;
     FSourceFilename: string;
     fSourceOwner: TObject;
     function GetLink: string;
     function GetLinkTitle: string;
+    procedure SetDocFile(const AValue: TLazFPDocFile);
     procedure SetLink(const AValue: string);
     procedure SetLinkTitle(const AValue: string);
     procedure SetSourceFilename(const AValue: string);
     procedure UpdateCompletionBox;
     procedure AddPackagesToCompletion(Prefix: string);
     procedure AddSiblingUnits(Prefix: string);
+    procedure AddIdentifiers(Prefix: string);
   public
-    procedure SetLink(const ASrcFilename, ATitle, ALink: string);
+    procedure SetLink(const ASrcFilename, ATitle, ALink: string;
+                      ADocFile: TLazFPDocFile);
     property SourceFilename: string read FSourceFilename write SetSourceFilename;
     property LinkTitle: string read GetLinkTitle write SetLinkTitle;
     property Link: string read GetLink write SetLink;
+    property DocFile: TLazFPDocFile read FDocFile write SetDocFile;
   end;
 
-function ShowFPDocLinkEditorDialog(SrcFilename: string;
+function ShowFPDocLinkEditorDialog(SrcFilename: string; DocFile: TLazFPDocFile;
   out Link, LinkTitle: string): TModalResult;
 
 implementation
 
-function ShowFPDocLinkEditorDialog(SrcFilename: string;
+function ShowFPDocLinkEditorDialog(SrcFilename: string; DocFile: TLazFPDocFile;
   out Link, LinkTitle: string): TModalResult;
 var
   FPDocLinkEditorDlg: TFPDocLinkEditorDlg;
@@ -119,7 +125,7 @@ begin
   LinkTitle:='';
   FPDocLinkEditorDlg:=TFPDocLinkEditorDlg.Create(nil);
   try
-    FPDocLinkEditorDlg.SetLink(SrcFilename,LinkTitle,Link);
+    FPDocLinkEditorDlg.SetLink(SrcFilename,LinkTitle,Link,DocFile);
     Result:=FPDocLinkEditorDlg.ShowModal;
     if Result=mrOk then begin
       Link:=FPDocLinkEditorDlg.Link;
@@ -218,6 +224,7 @@ begin
   if (l='') then begin
     AddPackagesToCompletion(l);
     AddSiblingUnits(l);
+    AddIdentifiers(l);
   end else begin
 
   end;
@@ -244,30 +251,60 @@ var
   ProjFile: TLazProjectFile;
   APackage: TLazPackage;
   PkgFile: TPkgFile;
+  Filename: String;
 begin
   if fSourceOwner=nil then exit;
   if fSourceOwner is TLazProject then begin
     AProject:=TLazProject(fSourceOwner);
     for i:=0 to AProject.FileCount-1 do begin
       ProjFile:=AProject.Files[i];
-      if ProjFile.IsPartOfProject
-      and FilenameIsPascalUnit(ProjFile.Filename) then
-        fItems.AddProjectFile(ProjFile);
+      if ProjFile.IsPartOfProject then begin
+        Filename:=ProjFile.Filename;
+        if FilenameIsPascalUnit(Filename) then begin
+          Filename:=ExtractFileNameOnly(Filename);
+          if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
+            fItems.AddProjectFile(ProjFile);
+        end;
+      end;
     end;
   end else if fSourceOwner is TLazPackage then begin
     APackage:=TLazPackage(fSourceOwner);
     for i:=0 to APackage.FileCount-1 do begin
       PkgFile:=APackage.Files[i];
-      if FilenameIsPascalUnit(PkgFile.Filename) then
-        fItems.AddPackageFile(PkgFile);
+      if FilenameIsPascalUnit(PkgFile.Filename) then begin
+        Filename:=PkgFile.Filename;
+        if FilenameIsPascalUnit(Filename) then begin
+          Filename:=ExtractFileNameOnly(Filename);
+          if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
+            fItems.AddPackageFile(PkgFile);
+        end;
+      end;
     end;
   end;
 end;
 
-procedure TFPDocLinkEditorDlg.SetLink(const ASrcFilename, ATitle, ALink: string
-  );
+procedure TFPDocLinkEditorDlg.AddIdentifiers(Prefix: string);
+var
+  DOMNode: TDOMNode;
+  ElementName: String;
+begin
+  if fDocFile=nil then exit;
+  DOMNode:=FDocFile.GetFirstElement;
+  while DOMNode<>nil do begin
+    if (DOMNode is TDomElement) then begin
+      ElementName:=TDomElement(DOMNode).GetAttribute('name');
+      if System.Pos('.',ElementName)<1 then
+        FItems.AddIdentifier(ElementName);
+    end;
+    DOMNode:=DOMNode.NextSibling;
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.SetLink(const ASrcFilename, ATitle, ALink: string;
+  ADocFile: TLazFPDocFile);
 begin
   SourceFilename:=ASrcFilename;
+  DocFile:=ADocFile;
   LinkTitle:=ATitle;
   Link:=ALink;
   UpdateCompletionBox;
@@ -276,6 +313,12 @@ end;
 function TFPDocLinkEditorDlg.GetLinkTitle: string;
 begin
   Result:=TitleEdit.Text;
+end;
+
+procedure TFPDocLinkEditorDlg.SetDocFile(const AValue: TLazFPDocFile);
+begin
+  if FDocFile=AValue then exit;
+  FDocFile:=AValue;
 end;
 
 function TFPDocLinkEditorDlg.GetLink: string;
@@ -353,6 +396,11 @@ procedure TFPDocLinkCompletionList.AddPackageFile(AFile: TPkgFile);
 begin
   FItems.Add(TFPDocLinkCompletionItem.Create(
     ExtractFileNameOnly(AFile.Filename),'package unit'));
+end;
+
+procedure TFPDocLinkCompletionList.AddIdentifier(Identifier: string);
+begin
+  FItems.Add(TFPDocLinkCompletionItem.Create(Identifier,'identifier'));
 end;
 
 procedure TFPDocLinkCompletionList.Draw(Canvas: TCanvas; Width, Height: integer);
