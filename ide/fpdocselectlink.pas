@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel,
+  ExtCtrls, StdCtrls, ButtonPanel, FileUtil,
+  PackageIntf, ProjectIntf,
   LazarusIDEStrConsts, PackageSystem, PackageDefs;
 
 type
@@ -61,6 +62,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure AddPackage(Pkg: TLazPackage);
+    procedure AddProjectFile(AFile: TLazProjectFile);
+    procedure AddPackageFile(AFile: TPkgFile);
     procedure Draw(Canvas: TCanvas; Width, Height: integer);
     property Count: integer read GetCount;
     property Items[Index: integer]: TFPDocLinkCompletionItem read GetItems;
@@ -86,6 +89,7 @@ type
   private
     fItems: TFPDocLinkCompletionList;
     FSourceFilename: string;
+    fSourceOwner: TObject;
     function GetLink: string;
     function GetLinkTitle: string;
     procedure SetLink(const AValue: string);
@@ -93,6 +97,7 @@ type
     procedure SetSourceFilename(const AValue: string);
     procedure UpdateCompletionBox;
     procedure AddPackagesToCompletion(Prefix: string);
+    procedure AddSiblingUnits(Prefix: string);
   public
     procedure SetLink(const ASrcFilename, ATitle, ALink: string);
     property SourceFilename: string read FSourceFilename write SetSourceFilename;
@@ -166,9 +171,28 @@ begin
 end;
 
 procedure TFPDocLinkEditorDlg.SetSourceFilename(const AValue: string);
+var
+  Owners: TFPList;
+  i: Integer;
 begin
   if FSourceFilename=AValue then exit;
   FSourceFilename:=AValue;
+  fSourceOwner:=nil;
+  Owners:=PackageEditingInterface.GetPossibleOwnersOfUnit(FSourceFilename,
+    [piosfIncludeSourceDirectories]);
+  if Owners=nil then exit;
+  try
+    for i:=0 to Owners.Count-1 do begin
+      if TObject(Owners[i]) is TLazProject then begin
+        fSourceOwner:=TLazProject(Owners[i]);
+      end else if TObject(Owners[i]) is TLazPackage then begin
+        if fSourceOwner=nil then
+          fSourceOwner:=TLazPackage(Owners[i]);
+      end;
+    end;
+  finally
+    Owners.Free;
+  end;
 end;
 
 procedure TFPDocLinkEditorDlg.UpdateCompletionBox;
@@ -193,7 +217,7 @@ begin
   DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
   if (l='') then begin
     AddPackagesToCompletion(l);
-    //AddSiblingUnits(l);
+    AddSiblingUnits(l);
   end else begin
 
   end;
@@ -210,6 +234,33 @@ begin
     if Pkg.LazDocPaths='' then continue;
     if (SysUtils.CompareText(Prefix,copy(Pkg.Name,1,length(Prefix)))=0) then
       fItems.AddPackage(Pkg);
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.AddSiblingUnits(Prefix: string);
+var
+  AProject: TLazProject;
+  i: Integer;
+  ProjFile: TLazProjectFile;
+  APackage: TLazPackage;
+  PkgFile: TPkgFile;
+begin
+  if fSourceOwner=nil then exit;
+  if fSourceOwner is TLazProject then begin
+    AProject:=TLazProject(fSourceOwner);
+    for i:=0 to AProject.FileCount-1 do begin
+      ProjFile:=AProject.Files[i];
+      if ProjFile.IsPartOfProject
+      and FilenameIsPascalUnit(ProjFile.Filename) then
+        fItems.AddProjectFile(ProjFile);
+    end;
+  end else if fSourceOwner is TLazPackage then begin
+    APackage:=TLazPackage(fSourceOwner);
+    for i:=0 to APackage.FileCount-1 do begin
+      PkgFile:=APackage.Files[i];
+      if FilenameIsPascalUnit(PkgFile.Filename) then
+        fItems.AddPackageFile(PkgFile);
+    end;
   end;
 end;
 
@@ -289,7 +340,19 @@ end;
 
 procedure TFPDocLinkCompletionList.AddPackage(Pkg: TLazPackage);
 begin
-  FItems.Add(TFPDocLinkCompletionItem.Create('#'+Pkg.Name,'Package '+Pkg.IDAsString));
+  FItems.Add(TFPDocLinkCompletionItem.Create('#'+Pkg.Name,'package '+Pkg.IDAsString));
+end;
+
+procedure TFPDocLinkCompletionList.AddProjectFile(AFile: TLazProjectFile);
+begin
+  FItems.Add(TFPDocLinkCompletionItem.Create(
+    ExtractFileNameOnly(AFile.Filename),'project unit'));
+end;
+
+procedure TFPDocLinkCompletionList.AddPackageFile(AFile: TPkgFile);
+begin
+  FItems.Add(TFPDocLinkCompletionItem.Create(
+    ExtractFileNameOnly(AFile.Filename),'package unit'));
 end;
 
 procedure TFPDocLinkCompletionList.Draw(Canvas: TCanvas; Width, Height: integer);
