@@ -137,6 +137,8 @@ components/synedit/design/*.bak
 components/synedit/design/units
 components/synedit/languages/*.bak
 components/synedit/languages/units
+components/synedit/test/*.bak
+components/synedit/test/units
 components/synedit/units
 components/synunihighlighter/*.bak
 components/synunihighlighter/languages/*.bak
