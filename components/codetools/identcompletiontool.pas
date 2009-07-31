@@ -2497,21 +2497,29 @@ var
 begin
   Result:=(GetDesc=ctnProcedure);
   if not Result then exit;
-  DebugLn(['TIdentifierListItem.IsProcNodeWithParams ',iliParamTypeListValid in Flags,' FParamList="',FParamTypeList,'"']);
-  if (iliParamTypeListValid in Flags) then begin
+  if (iliParamNameListValid in Flags) then begin
     StartPos:=1;
     while (StartPos<=length(FParamTypeList))
     and (FParamTypeList[StartPos] in [' ',#9,'(','[']) do
       inc(StartPos);
     if (StartPos<=length(FParamTypeList))
     and (FParamTypeList[StartPos] in [')',']',';']) then
-      Result:=false
+      exit(false)
     else
-      Result:=true;
-  end else begin
-    ANode:=Node;
-    Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
+      exit(true);
+  end else if (iliParamTypeListValid in Flags) then begin
+    // the type list does not contain names
+    // so a () could be empty or (var buf)
+    StartPos:=1;
+    while (StartPos<=length(FParamTypeList))
+    and (FParamTypeList[StartPos] in [' ',#9,'(','[']) do
+      inc(StartPos);
+    if (StartPos<=length(FParamTypeList))
+    and (not (FParamTypeList[StartPos] in [')',']',';'])) then
+      exit(true);
   end;
+  ANode:=Node;
+  Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
 end;
 
 function TIdentifierListItem.IsPropertyWithParams: boolean;

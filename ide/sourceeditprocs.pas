@@ -486,7 +486,6 @@ begin
 
   Result:=IdentItem.Identifier;
 
-  DebugLn(['GetIdentCompletionValue ',NodeDescriptionAsString(IdentItem.GetDesc)]);
   case IdentItem.GetDesc of
 
     ctnProcedure:
@@ -507,7 +506,6 @@ begin
       ValueType:=icvUnitName;
   end;
 
-  DebugLn(['GetIdentCompletionValue ',ord(ValueType),' ',ord(icvProcWithParams)]);
   case ValueType of
   
     icvProcWithParams:
