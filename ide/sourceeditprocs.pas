@@ -76,7 +76,8 @@ type
     icvProcWithParams,
     icvIndexedProp,
     icvCompleteProcDeclaration,
-    icvUnitName
+    icvUnitName,
+    icvNone
     );
 
 // completion form and functions
@@ -477,9 +478,13 @@ begin
   CanAddComma:=(AddChar<>',');
 
   IdentItem:=IdentList.FilteredItems[Index];
-  if IdentItem=nil then exit;
+  if IdentItem=nil then begin
+    ValueType := icvNone;
+    exit;
+  end;
 
   if not CodeToolBoss.IdentItemCheckHasChilds(IdentItem) then begin
+    ValueType := icvNone;
     MainIDEInterface.DoJumpToCodeToolBossError;
     exit;
   end;

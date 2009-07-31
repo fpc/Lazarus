@@ -4014,7 +4014,7 @@ Begin
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
         Editor:=SrcEdit.EditorComponent;
-        if NewValue <> '' then
+        if ValueType <> icvNone then
           Editor.TextBetweenPoints[SourceStart, SourceEnd] := NewValue;
         if CursorToLeft>0 then
         begin
