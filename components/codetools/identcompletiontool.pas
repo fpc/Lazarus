@@ -79,7 +79,8 @@ type
     iliIsFunctionValid,
     iliIsAbstractMethod,
     iliIsAbstractMethodValid,
-    iliParamListValid,
+    iliParamTypeListValid,
+    iliParamNameListValid,
     iliNodeValid,
     iliNodeHashValid,
     iliIsConstructor,
@@ -105,7 +106,8 @@ type
   TIdentifierListItem = class
   private
     FNext: TIdentifierListItem;
-    FParamList: string;
+    FParamTypeList: string;
+    FParamNameList: string;
     FNode: TCodeTreeNode;
     FResultType: string;
     FToolNodesDeletedStep: integer;// only valid if iliNodeValid
@@ -113,9 +115,11 @@ type
     FNodeDesc: TCodeTreeNodeDesc;
     FNodeHash: string;
     function GetNode: TCodeTreeNode;
-    function GetParamList: string;
+    function GetParamTypeList: string;
+    function GetParamNameList: string;
     procedure SetNode(const AValue: TCodeTreeNode);
-    procedure SetParamList(const AValue: string);
+    procedure SetParamTypeList(const AValue: string);
+    procedure SetParamNameList(const AValue: string);
     procedure SetResultType(const AValue: string);
   public
     Compatibility: TIdentifierCompatibility;
@@ -153,7 +157,8 @@ type
     function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
     function CalcMemSize: PtrUInt;
   public
-    property ParamList: string read GetParamList write SetParamList;
+    property ParamTypeList: string read GetParamTypeList write SetParamTypeList;
+    property ParamNameList: string read GetParamNameList write SetParamNameList;
     property ResultType: string read FResultType write SetResultType;
     property Node: TCodeTreeNode read GetNode write SetNode;
   end;
@@ -483,7 +488,7 @@ begin
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
-  Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamList);
+  Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamTypeList);
 end;
 
 type
@@ -1107,8 +1112,9 @@ const
         nil,
         nil,
         ctnProcedure);
-    NewItem.ParamList:=AParameterList;
-    NewItem.Flags:=NewItem.Flags+[iliParamListValid];
+    NewItem.ParamTypeList:=AParameterList;
+    NewItem.ParamNameList:=AParameterList;
+    NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid];
     CurrentIdentifierList.Add(NewItem);
   end;
   
@@ -1128,9 +1134,11 @@ const
         nil,
         nil,
         ctnProcedure);
-    NewItem.ParamList:=AParameterList;
+    NewItem.ParamTypeList:=AParameterList;
+    NewItem.ParamNameList:=AParameterList;
     NewItem.ResultType:=AResultType;
-    NewItem.Flags:=NewItem.Flags+[iliParamListValid,iliIsFunction,iliIsFunctionValid,iliResultTypeValid];
+    NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid,
+                           iliIsFunction,iliIsFunctionValid,iliResultTypeValid];
     CurrentIdentifierList.Add(NewItem);
   end;
 
@@ -2336,24 +2344,44 @@ end;
 
 { TIdentifierListItem }
 
-function TIdentifierListItem.GetParamList: string;
+function TIdentifierListItem.GetParamTypeList: string;
 var
   ANode: TCodeTreeNode;
 begin
-  if not (iliParamListValid in Flags) then begin
+  if not (iliParamTypeListValid in Flags) then begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
     ANode:=Node;
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-      FParamList:=Tool.ExtractProcHead(ANode,
+      FParamTypeList:=Tool.ExtractProcHead(ANode,
          [phpWithoutClassKeyword,phpWithoutClassName,
           phpWithoutName,phpInUpperCase]);
-      //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
+      //debugln('TIdentifierListItem.GetParamTypeList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
     end else
-      FParamList:='';
-    Include(Flags,iliParamListValid);
+      FParamTypeList:='';
+    Include(Flags,iliParamTypeListValid);
   end;
-  Result:=FParamList;
+  Result:=FParamTypeList;
+end;
+
+function TIdentifierListItem.GetParamNameList: string;
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliParamNameListValid in Flags) then begin
+    // Note: if you implement param lists for other than ctnProcedure, check
+    //       CompareParamList
+    ANode:=Node;
+    if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
+      FParamNameList:=Tool.ExtractProcHead(ANode,
+         [phpWithoutClassKeyword,phpWithoutClassName,
+          phpWithoutName,phpInUpperCase,phpWithParameterNames]);
+      //debugln('TIdentifierListItem.GetParamNameList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
+    end else
+      FParamNameList:='';
+    Include(Flags,iliParamNameListValid);
+  end;
+  Result:=FParamNameList;
 end;
 
 function TIdentifierListItem.GetNode: TCodeTreeNode;
@@ -2396,10 +2424,16 @@ begin
     FToolNodesDeletedStep:=Tool.NodesDeletedChangeStep;
 end;
 
-procedure TIdentifierListItem.SetParamList(const AValue: string);
+procedure TIdentifierListItem.SetParamTypeList(const AValue: string);
 begin
-  FParamList:=AValue;
-  Include(Flags,iliParamListValid);
+  FParamTypeList:=AValue;
+  Include(Flags,iliParamTypeListValid);
+end;
+
+procedure TIdentifierListItem.SetParamNameList(const AValue: string);
+begin
+  FParamNameList:=AValue;
+  Include(Flags,iliParamNameListValid);
 end;
 
 procedure TIdentifierListItem.SetResultType(const AValue: string);
@@ -2463,13 +2497,14 @@ var
 begin
   Result:=(GetDesc=ctnProcedure);
   if not Result then exit;
-  if (iliParamListValid in Flags) then begin
+  DebugLn(['TIdentifierListItem.IsProcNodeWithParams ',iliParamTypeListValid in Flags,' FParamList="',FParamTypeList,'"']);
+  if (iliParamTypeListValid in Flags) then begin
     StartPos:=1;
-    while (StartPos<=length(FParamList))
-    and (FParamList[StartPos] in [' ',#9,'(','[']) do
+    while (StartPos<=length(FParamTypeList))
+    and (FParamTypeList[StartPos] in [' ',#9,'(','[']) do
       inc(StartPos);
-    if (StartPos<=length(FParamList))
-    and (FParamList[StartPos] in [')',']',';']) then
+    if (StartPos<=length(FParamTypeList))
+    and (FParamTypeList[StartPos] in [')',']',';']) then
       Result:=false
     else
       Result:=true;
@@ -2621,7 +2656,7 @@ end;
 
 procedure TIdentifierListItem.Clear;
 begin
-  FParamList:='';
+  FParamTypeList:='';
   FResultType:='';
   Compatibility:=icompUnknown;
   HistoryIndex:=0;
@@ -2713,21 +2748,21 @@ begin
   if CompareItem.Node<>nil then
     DbgOut(' Other=',CompareItem.Tool.MainFilename,' ',dbgs(CompareItem.Node.StartPos));
   debugln('');}
-  Result:=CompareTextIgnoringSpace(ParamList,CompareItem.ParamList,false);
+  Result:=CompareTextIgnoringSpace(ParamTypeList,CompareItem.ParamTypeList,false);
 end;
 
 function TIdentifierListItem.CompareParamList(
   CompareItem: TIdentifierListSearchItem): integer;
 begin
-  if (ParamList='') and (CompareItem.ParamList='') then
+  if (ParamTypeList='') and (CompareItem.ParamList='') then
     exit(0);
-  Result:=CompareTextIgnoringSpace(ParamList,CompareItem.ParamList,false);
+  Result:=CompareTextIgnoringSpace(ParamTypeList,CompareItem.ParamList,false);
 end;
 
 function TIdentifierListItem.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(FParamList)
+    +MemSizeString(FParamTypeList)
     +MemSizeString(FNodeHash)
     +MemSizeString(Identifier);
 end;
@@ -2796,7 +2831,7 @@ begin
     NewHistItem:=TIdentHistListItem.Create;
     NewHistItem.Identifier:=NewItem.Identifier;
     NewHistItem.NodeDesc:=NewItem.GetDesc;
-    NewHistItem.ParamList:=NewItem.ParamList;
+    NewHistItem.ParamList:=NewItem.ParamTypeList;
     AdjustIndex:=0;
   end;
   NewHistItem.HistoryIndex:=0;

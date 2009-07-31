@@ -1889,10 +1889,12 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=false;
+  DebugLn(['TPascalReaderTool.ProcNodeHasParamList AAA1']);
   if ProcNode.Desc=ctnProcedure then
     ProcNode:=ProcNode.FirstChild;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom; // read name
+  DebugLn(['TPascalReaderTool.ProcNodeHasParamList AAA2 ',getatom]);
   ReadNextAtom;
   if AtomIsChar('.') then begin
     ReadNextAtom;

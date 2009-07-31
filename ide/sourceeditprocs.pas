@@ -388,7 +388,7 @@ begin
       ctnProcedure:
         // predefined procedure (e.g. length)
         begin
-          s:=IdentItem.ParamList;
+          s:=IdentItem.ParamNameList;
           if s<>'' then
             s:='('+s+')';
           if IdentItem.IsFunction then
@@ -486,7 +486,7 @@ begin
 
   Result:=IdentItem.Identifier;
 
-  //DebugLn(['GetIdentCompletionValue ',NodeDescriptionAsString(IdentItem.GetDesc)]);
+  DebugLn(['GetIdentCompletionValue ',NodeDescriptionAsString(IdentItem.GetDesc)]);
   case IdentItem.GetDesc of
 
     ctnProcedure:
@@ -507,6 +507,7 @@ begin
       ValueType:=icvUnitName;
   end;
 
+  DebugLn(['GetIdentCompletionValue ',ord(ValueType),' ',ord(icvProcWithParams)]);
   case ValueType of
   
     icvProcWithParams:
