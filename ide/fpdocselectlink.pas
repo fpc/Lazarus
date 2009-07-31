@@ -101,7 +101,9 @@ type
     procedure UpdateCompletionBox;
     procedure AddPackagesToCompletion(Prefix: string);
     procedure AddSiblingUnits(Prefix: string);
+    procedure AddPackageUnits(APackage: TLazPackage; Prefix: string);
     procedure AddIdentifiers(Prefix: string);
+    procedure AddSubIdentifiers(Path: string);
   public
     procedure SetLink(const ASrcFilename, ATitle, ALink: string;
                       ADocFile: TLazFPDocFile);
@@ -221,13 +223,7 @@ begin
   fItems.Clear;
   l:=LinkEdit.Text;
   DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
-  if (l='') then begin
-    AddPackagesToCompletion(l);
-    AddSiblingUnits(l);
-    AddIdentifiers(l);
-  end else begin
-
-  end;
+  AddSubIdentifiers(l);
   CompletionBox.Invalidate;
 end;
 
@@ -250,7 +246,6 @@ var
   i: Integer;
   ProjFile: TLazProjectFile;
   APackage: TLazPackage;
-  PkgFile: TPkgFile;
   Filename: String;
 begin
   if fSourceOwner=nil then exit;
@@ -269,15 +264,25 @@ begin
     end;
   end else if fSourceOwner is TLazPackage then begin
     APackage:=TLazPackage(fSourceOwner);
-    for i:=0 to APackage.FileCount-1 do begin
-      PkgFile:=APackage.Files[i];
-      if FilenameIsPascalUnit(PkgFile.Filename) then begin
-        Filename:=PkgFile.Filename;
-        if FilenameIsPascalUnit(Filename) then begin
-          Filename:=ExtractFileNameOnly(Filename);
-          if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
-            fItems.AddPackageFile(PkgFile);
-        end;
+    AddPackageUnits(APackage,Prefix);
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.AddPackageUnits(APackage: TLazPackage;
+  Prefix: string);
+var
+  i: Integer;
+  PkgFile: TPkgFile;
+  Filename: String;
+begin
+  for i:=0 to APackage.FileCount-1 do begin
+    PkgFile:=APackage.Files[i];
+    if FilenameIsPascalUnit(PkgFile.Filename) then begin
+      Filename:=PkgFile.Filename;
+      if FilenameIsPascalUnit(Filename) then begin
+        Filename:=ExtractFileNameOnly(Filename);
+        if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
+          fItems.AddPackageFile(PkgFile);
       end;
     end;
   end;
@@ -293,10 +298,57 @@ begin
   while DOMNode<>nil do begin
     if (DOMNode is TDomElement) then begin
       ElementName:=TDomElement(DOMNode).GetAttribute('name');
-      if System.Pos('.',ElementName)<1 then
+      if (System.Pos('.',ElementName)<1)
+      and (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
+      then
         FItems.AddIdentifier(ElementName);
     end;
     DOMNode:=DOMNode.NextSibling;
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.AddSubIdentifiers(Path: string);
+var
+  p: LongInt;
+  PrePath: String;
+  Pkg: TLazPackage;
+  PkgFile: TPkgFile;
+begin
+  p:=System.Pos('.',Path);
+  if p<1 then begin
+    // empty  : show all packages, all units of current project/package and all identifiers of unit
+    // #l     : show all packages beginning with the letter l
+    // f      : show all units and all identifiers beginning with the letter f
+    if (Path='') or (Path[1]='#') then
+      AddPackagesToCompletion(copy(Path,2,length(Path)));
+    if (Path='') or (Path[1]<>'#') then begin
+      AddSiblingUnits(Path);
+      AddIdentifiers(Path);
+    end;
+  end else begin
+    // sub identifier
+    // #lcl.f  : show all units of package lcl
+    // forms.f : show all identifiers of unit forms and all sub identifiers of identifier forms
+    PrePath:=copy(Path,1,p-1);
+    Path:=copy(Path,p+1,length(Path));
+    if PrePath='' then exit;
+    if PrePath[1]='#' then begin
+      // package
+      Pkg:=PackageGraph.FindAPackageWithName(PrePath,nil);
+      if Pkg=nil then exit;
+      p:=System.Pos('.',Path);
+      if p<1 then begin
+        AddPackageUnits(Pkg,PrePath);
+      end else begin
+        // unit
+        PrePath:=copy(Path,1,p-1);
+        Path:=copy(Path,p+1,length(Path));
+        if PrePath='' then exit;
+        PkgFile:=Pkg.FindUnit(PrePath);
+        if PkgFile=nil then exit;
+
+      end;
+    end;
   end;
 end;
 
