@@ -1549,7 +1549,7 @@ begin
       if (not FEditor.SelAvail) then begin
         // nothing selected
         if EditorOpts.CopyWordAtCursorOnCopyNone then begin
-          FEditor.SetSelWord;
+          FEditor.SelectWord;
         end;
       end;
     end;
@@ -2129,7 +2129,7 @@ end;
 
 procedure TSourceEditor.SelectWord;
 begin
-  EditorComponent.SetSelWord;
+  EditorComponent.SelectWord;
 end;
 
 procedure TSourceEditor.SelectLine;
