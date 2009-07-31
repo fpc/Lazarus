@@ -3,11 +3,12 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   Height = 282
   Top = 304
   Width = 408
-  ActiveControl = TitleEdit
+  ActiveControl = LinkEdit
   Caption = 'FPDocLinkEditorDlg'
   ClientHeight = 282
   ClientWidth = 408
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '0.9.27'
   object LinkLabel: TLabel
     AnchorSideLeft.Control = Owner
@@ -51,6 +52,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    OnPaint = CompletionBoxPaint
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
