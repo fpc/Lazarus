@@ -3759,12 +3759,15 @@ procedure TCustomSynEdit.SelectAll;
 var
   LastPt: TPoint;
 begin
+  IncPaintLock;
   LastPt := Point(1, FTheLinesView.Count);
   if LastPt.y > 0 then
     Inc(LastPt.x, Length(FTheLinesView[LastPt.y - 1]))
   else
     LastPt.y  := 1;
   SetCaretAndSelection(LogicalToPhysicalPos(LastPt), Point(1, 1), LastPt);
+  FBlockSelection.ActiveSelectionMode := smNormal;
+  DecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetHighlightSearch(const ASearch : String; AOptions : TSynSearchOptions);
