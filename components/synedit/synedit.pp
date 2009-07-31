@@ -1102,6 +1102,7 @@ type
     property MouseLinkColor;
     property LineHighlightColor;
     {$ENDIF}
+    property DefaultSelectionMode;
     property SelectionMode;
     property TabWidth;
     property WantTabs;
@@ -6756,7 +6757,7 @@ begin
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
     if (eoNoSelection in ChangedOptions) then
-      FBlockSelection.Enabled := eoNoSelection in fOptions;
+      FBlockSelection.Enabled := not(eoNoSelection in fOptions);
     fUndoList.GroupUndo := eoGroupUndo in fOptions;
 
     (* Deal with deprecated values

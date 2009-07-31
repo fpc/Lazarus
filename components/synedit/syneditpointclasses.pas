@@ -1110,7 +1110,7 @@ procedure TSynEditSelection.SetEnabled(const Value : Boolean);
 begin
   if FEnabled = Value then exit;
   FEnabled := Value;
-  if not Enabled then SetStartLineBytePos(EndLineBytePos);
+  if not Enabled then SetStartLineBytePos(StartLineBytePos);
 end;
 
 procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
