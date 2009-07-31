@@ -5,12 +5,6 @@ unit TestSynSelection;
 interface
 
 (* TODO: Known Issues in SynEdit
-      - smColumn and utf8/tabs
-      - Select all in Default=smColumn
-      - SelectetText for selections Past-EOL, current behaviour is not consistent:
-        smNormal: SelText = empty  => should be spaces?
-        smColumn: SelText = space(s)
-        smLine:   SelText = TheLine (correct)
       - smLine Blocks: Begin/End Points return X values inside the line
       - Go/select to matcing brace, have inconsistent rules which side of the ")" the caret must be
         They should follow the same as bracket highlight?
@@ -560,10 +554,10 @@ var
     SetCaret(1, 1);
     DoLock;
     SetCaret(11, 3);
-    SynEdit.BlockBegin := Point(11,3); // include past eol (TODO)
+    SynEdit.BlockBegin := Point(11,3);
     SynEdit.BlockEnd   := Point(13,3);
     DoUnLock;
-    DoTestIsBlockBackward('Select Begin/End Eol', 11,3, 13,3, [';']);
+    DoTestIsBlockBackward('Select Begin/End Eol', 11,3, 13,3, ['; ']);
 
 
     (* *** smColumn *** *)
@@ -631,8 +625,8 @@ var
     DoLock;
     SynEdit.SelectAll;
     DoUnLock;
-    //DoTestIsBlock('Select All', 1,1, 4,10, ['begin', '', '  Foo(bar);', '  abc;',
-    //                    '  // äüöäabc', #9#9+'test', '', '', 'end;(', '//)']);
+    DoTestIsBlock('Select All', 1,1, 4,10, ['begin', '', '  Foo(bar);', '  abc;',
+                        '  // äüöäabc', #9#9+'test', '', '', 'end;(', '//)']);
 
     // select to brace
     SetCaret(6, 3);
@@ -659,7 +653,7 @@ var
     SetCaret(1, 1);
     DoLock;
     SetCaret(13, 3);
-    SynEdit.BlockBegin := Point(11,3); // include past eol (TODO)
+    SynEdit.BlockBegin := Point(11,3);
     SynEdit.BlockEnd   := Point(13,3);
     DoUnLock;
     DoTestIsBlock('Select Begin/End 1 line Eol', 11,3, 13,3, ['; ']);
@@ -670,7 +664,6 @@ var
     SynEdit.BlockBegin := Point(10,3);
     SynEdit.BlockEnd   := Point(6,5);
     DoUnLock;
-    // Todo: smColumn and utf8;
     DoTestIsBlock('Select Begin/End utf8 4 column', 10,3, 6,5, ['(bar', ';   ', 'äüöä']); // 3 utf8
 
     SetCaret(1, 1);
@@ -679,7 +672,6 @@ var
     SynEdit.BlockBegin := Point(10,3);
     SynEdit.BlockEnd   := Point(9+3,5);
     DoUnLock;
-    // Todo: smColumn and utf8;
     DoTestIsBlockBackward('Select Begin/End utf8  1 column', 10,3, 9+3,5, ['r', ' ', 'ä']); // 3 utf8
 
     SetCaret(1, 1);
@@ -688,7 +680,6 @@ var
     SynEdit.BlockBegin := Point(1, 5);
     SynEdit.BlockEnd   := Point(5, 9);
     DoUnLock;
-    // Todo: smColumn and tabs;
     DoTestIsBlock('Select Begin/End tabs', 1,5, 5,9, ['  //', #9, '    ', '    ', 'end;']); // 3 utf8
 
 
