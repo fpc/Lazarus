@@ -360,7 +360,7 @@ var
   LinkSrc: String;
 begin
   if (ShowFPDocLinkEditorDialog(Link,LinkTitle)<>mrOk)
-  and (Link<>'') then exit;
+  or (Link='') then exit;
   LinkSrc:='<link id="'+Link+'"';
   if LinkTitle='' then begin
     LinkSrc:=LinkSrc+'/>';

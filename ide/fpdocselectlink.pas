@@ -34,18 +34,48 @@ uses
   StdCtrls, ButtonPanel, LazarusIDEStrConsts;
 
 type
+  TFPDocLinkCompletionItem = class
+  public
+
+  end;
+
+  { TFPDocLinkCompletionList }
+
+  TFPDocLinkCompletionList = class
+  private
+    FItems: TFPList; // list of TFPDocLinkCompletionItem
+    FSelected: integer;
+    FTop: integer;
+    function GetCount: integer;
+    procedure SetCount(const AValue: integer);
+    procedure SetSelected(const AValue: integer);
+    procedure SetTop(const AValue: integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Draw(Canvas: TCanvas);
+    property Count: integer read GetCount;
+    property Top: integer read FTop write SetTop;
+    property Selected: integer read FSelected write SetSelected;
+  end;
 
   { TFPDocLinkEditorDlg }
 
   TFPDocLinkEditorDlg = class(TForm)
     ButtonPanel1: TButtonPanel;
+    CompletionBox: TPaintBox;
     TitleEdit: TEdit;
     TitleLabel: TLabel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure LinkEditChange(Sender: TObject);
+    procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
   private
   public
+
   end;
 
 function ShowFPDocLinkEditorDialog(out Link, LinkTitle: string): TModalResult;
@@ -82,6 +112,66 @@ begin
   
   LinkEdit.Text:='';
   TitleEdit.Text:='';
+end;
+
+procedure TFPDocLinkEditorDlg.LinkEditChange(Sender: TObject);
+begin
+
+end;
+
+procedure TFPDocLinkEditorDlg.LinkEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+end;
+
+{ TFPDocLinkCompletionList }
+
+function TFPDocLinkCompletionList.GetCount: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+procedure TFPDocLinkCompletionList.SetCount(const AValue: integer);
+begin
+
+end;
+
+procedure TFPDocLinkCompletionList.SetSelected(const AValue: integer);
+begin
+  if FSelected=AValue then exit;
+  FSelected:=AValue;
+end;
+
+procedure TFPDocLinkCompletionList.SetTop(const AValue: integer);
+begin
+  if FTop=AValue then exit;
+  FTop:=AValue;
+end;
+
+constructor TFPDocLinkCompletionList.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TFPDocLinkCompletionList.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TFPDocLinkCompletionList.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+procedure TFPDocLinkCompletionList.Draw(Canvas: TCanvas);
+begin
+
 end;
 
 initialization

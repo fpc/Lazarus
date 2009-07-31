@@ -1,23 +1,26 @@
 object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   Left = 362
-  Height = 329
+  Height = 282
   Top = 304
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 328
+  Width = 408
+  ActiveControl = TitleEdit
   Caption = 'FPDocLinkEditorDlg'
-  ClientHeight = 329
-  ClientWidth = 400
+  ClientHeight = 282
+  ClientWidth = 408
   OnCreate = FormCreate
+  LCLVersion = '0.9.27'
   object LinkLabel: TLabel
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TitleEdit
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 20
-    Top = 10
-    Width = 388
+    Height = 18
+    Top = 69
+    Width = 396
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     BorderSpacing.Around = 6
     Caption = 'LinkLabel'
     ParentColor = False
@@ -25,31 +28,37 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   end
   object TitleLabel: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LinkEdit
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 20
-    Top = 71
-    Width = 388
+    Height = 18
+    Top = 6
+    Width = 396
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
     BorderSpacing.Around = 6
     Caption = 'TitleLabel'
     ParentColor = False
     WordWrap = True
   end
+  object CompletionBox: TPaintBox
+    AnchorSideTop.Control = LinkEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 100
+    Top = 126
+    Width = 396
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+  end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 50
-    Top = 279
-    Width = 388
-    Align = alBottom
-    AutoSize = True
+    Height = 44
+    Top = 232
+    Width = 396
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
   object LinkEdit: TEdit
     AnchorSideLeft.Control = Owner
@@ -58,11 +67,13 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 36
-    Width = 388
+    Height = 27
+    Top = 93
+    Width = 396
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
+    OnChange = LinkEditChange
+    OnKeyDown = LinkEditKeyDown
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
@@ -74,9 +85,9 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 97
-    Width = 388
+    Height = 27
+    Top = 30
+    Width = 396
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
