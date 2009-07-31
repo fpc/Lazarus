@@ -170,7 +170,8 @@ type
     ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
     ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'sysutil| classes'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
-    ilcfCanProcDeclaration // context allows to declare a procedure/method
+    ilcfCanProcDeclaration,// context allows to declare a procedure/method
+    ilcfEndOfLine          // atom at end of line
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1862,6 +1863,12 @@ begin
       if IdentEndPos<SrcLen then begin
         MoveCursorToCleanPos(IdentEndPos);
         ReadNextAtom;
+
+        // check end of line
+        if not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos) then
+          CurrentIdentifierList.ContextFlags:=
+            CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
+
         CurrentIdentifierList.StartAtomBehind:=CurPos;
         // check if a semicolon is needed or forbidden at the end
         if (CurrentIdentifierList.StartBracketLvl>0)
@@ -1901,6 +1908,10 @@ begin
             end;
           end;
         end;
+      end else begin
+        // end of source
+        CurrentIdentifierList.ContextFlags:=
+          CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
       end;
 
       // check for procedure/method declaration context
