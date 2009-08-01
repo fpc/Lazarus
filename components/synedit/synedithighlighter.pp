@@ -109,7 +109,7 @@ type
     {$ENDIF}
   public
     procedure Assign(Source: TPersistent); override;
-    constructor Create(attribName: string);
+    constructor Create(attribName: string; aStoredName: String = '');
     procedure InternalSaveDefaultValues;                                        //mh 2000-10-08
     function LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
       oldStyle: boolean): boolean; virtual;
@@ -489,14 +489,17 @@ begin
     fOnChange(Self);
 end;
 
-constructor TSynHighlighterAttributes.Create(attribName: string);
+constructor TSynHighlighterAttributes.Create(attribName: string; aStoredName: String = '');
 begin
   inherited Create;
   Background := clNone;
   Foreground := clNone;
   FFrameColor := clNone;
   fName := attribName;
-  FStoredName := attribName;
+  if aStoredName = '' then
+    FStoredName := attribName
+  else
+    FStoredName := aStoredName;;
 end;
 
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;
@@ -751,7 +754,7 @@ begin
   {$IFNDEF SYN_LAZARUS}
   // ToDo  Registry
   key := Reg.CurrentPath;
-  if Reg.OpenKeyReadOnly(Name) then begin
+  if Reg.OpenKeyReadOnly(StoredName) then begin
     if Reg.ValueExists('Background') then
       Background := Reg.ReadInteger('Background');
     if Reg.ValueExists('Foreground') then
@@ -772,7 +775,7 @@ var
   key: string;
 begin
   key := Reg.CurrentPath;
-  if Reg.OpenKey(Name,true) then begin
+  if Reg.OpenKey(StoredName,true) then begin
     Reg.WriteInteger('Background', Background);
     Reg.WriteInteger('Foreground', Foreground);
     Reg.WriteInteger('Style', IntegerStyle);
@@ -791,18 +794,18 @@ var
 begin
   S := TStringList.Create;
   try
-    Ini.ReadSection(Name, S);
+    Ini.ReadSection(StoredName, S);
     if S.Count > 0 then
     begin
       if S.IndexOf('Background') <> -1 then
-        Background := Ini.ReadInteger(Name, 'Background', clWindow);
+        Background := Ini.ReadInteger(StoredName, 'Background', clWindow);
       if S.IndexOf('Foreground') <> -1 then
-        Foreground := Ini.ReadInteger(Name, 'Foreground', clWindowText);
+        Foreground := Ini.ReadInteger(StoredName, 'Foreground', clWindowText);
       if S.IndexOf('Style') <> -1 then
-        IntegerStyle := Ini.ReadInteger(Name, 'Style', 0);
+        IntegerStyle := Ini.ReadInteger(StoredName, 'Style', 0);
       {$IFDEF SYN_LAZARUS}
       if S.IndexOf('StyleMask') <> -1 then
-        IntegerStyleMask := Ini.ReadInteger(Name, 'StyleMask', 0);
+        IntegerStyleMask := Ini.ReadInteger(StoredName, 'StyleMask', 0);
       {$ENDIF}
       Result := true;
     end else Result := false;
@@ -813,11 +816,11 @@ end;
 
 function TSynHighlighterAttributes.SaveToFile(Ini : TIniFile): boolean;         //DDH 10/16/01
 begin
-  Ini.WriteInteger(Name, 'Background', Background);
-  Ini.WriteInteger(Name, 'Foreground', Foreground);
-  Ini.WriteInteger(Name, 'Style', IntegerStyle);
+  Ini.WriteInteger(StoredName, 'Background', Background);
+  Ini.WriteInteger(StoredName, 'Foreground', Foreground);
+  Ini.WriteInteger(StoredName, 'Style', IntegerStyle);
   {$IFDEF SYN_LAZARUS}
-  Ini.WriteInteger(Name, 'StyleMask', IntegerStyleMask);
+  Ini.WriteInteger(StoredName, 'StyleMask', IntegerStyleMask);
   {$ENDIF}
   Result := true;
 end;
@@ -1035,7 +1038,7 @@ end;
 
 procedure TSynCustomHighlighter.AddAttribute(AAttrib: TSynHighlighterAttributes);
 begin
-  fAttributes.AddObject(AAttrib.Name, AAttrib);
+  fAttributes.AddObject(AAttrib.StoredName, AAttrib);
 end;
 
 {$IFDEF SYN_LAZARUS}

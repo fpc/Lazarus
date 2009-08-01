@@ -1924,43 +1924,43 @@ constructor TSynHTMLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  fASPAttri := TSynHighlighterAttributes.Create(SYNS_AttrASP);
+  fASPAttri := TSynHighlighterAttributes.Create(SYNS_AttrASP, SYNS_XML_AttrASP);
   fASPAttri.Foreground := clBlack;
   fASPAttri.Background := clYellow;
   AddAttribute(fASPAttri);
 
-  fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment);
+  fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   AddAttribute(fCommentAttri);
 
-  fIdentifierAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier);
+  fIdentifierAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   fIdentifierAttri.Style := [fsBold];
   AddAttribute(fIdentifierAttri);
 
-  fKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrReservedWord);
+  fKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Style := [fsBold];
   fKeyAttri.Foreground := $00ff0080;
   AddAttribute(fKeyAttri);
 
-  fSpaceAttri := TSynHighlighterAttributes.Create(SYNS_AttrSpace);
+  fSpaceAttri := TSynHighlighterAttributes.Create(SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
 
-  fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol);
+  fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   fSymbolAttri.Style := [fsBold];
   AddAttribute(fSymbolAttri);
 
-  fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText);
+  fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
   AddAttribute(fTextAttri);
 
-  fUndefKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrUnknownWord);
+  fUndefKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
   fUndefKeyAttri.Style := [fsBold];
   fUndefKeyAttri.Foreground := clRed;
   AddAttribute(fUndefKeyAttri);
 
-  fValueAttri := TSynHighlighterAttributes.Create(SYNS_AttrValue);
+  fValueAttri := TSynHighlighterAttributes.Create(SYNS_AttrValue, SYNS_XML_AttrValue);
   fValueAttri.Foreground := $00ff8000;
   AddAttribute(fValueAttri);
 
-  fAndAttri := TSynHighlighterAttributes.Create(SYNS_AttrEscapeAmpersand);
+  fAndAttri := TSynHighlighterAttributes.Create(SYNS_AttrEscapeAmpersand, SYNS_XML_AttrEscapeAmpersand);
   fAndAttri.Style := [fsBold];
   fAndAttri.Foreground := $0000ff00;
   AddAttribute(fAndAttri);

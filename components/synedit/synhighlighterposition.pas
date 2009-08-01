@@ -158,7 +158,7 @@ begin
   inherited Create(TheOwner);
   fTokens:=TList.Create;
   fCopiedAttributes:=TList.Create;
-  fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText);
+  fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
   AddAttribute(fTextAttri);
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
 

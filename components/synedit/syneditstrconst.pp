@@ -45,24 +45,25 @@ const
   SYNS_ComponentsPage           =  'SynEdit';
   SYNS_HighlightersPage         =  'SynEdit Highlighters';
 
-{$IFDEF SYN_LAZARUS}
-// The highlight attribute names are the only independent identification.
-// So, they can't be translated.
-// ToDo: add translated versions.
-const
-{$ELSE}
-{$IFDEF SYN_COMPILER_3_UP}
-resourcestring
-{$ELSE}
-const
-{$ENDIF}
-{$ENDIF}
-  SYNS_Untitled                 =  'Untitled';
+  (* IMPORTANT
+     The highlight attribute "StoredName" are the only independent
+     identification of Attributes.
+     They must be UNIQUE and UNCHANGED.
 
+     The resoure-strings below are followed by a const section, containing
+     a constant for each of the strings. This is assigned in initialization
+     *before* translation.
+     It relies on the english names below not to be changed.
+     If you change them you must set the constant to a copy of the original value.
+
+     Also if you change a Name in the resourcestring section below, keep it unique
+     So, they can't be translated.
+  *)
+resourcestring
+
+  (* Attribute Names *)
+  SYNS_Untitled                 =  'Untitled';
   // names for highlighter attributes
-  SYNS_AttrAsm                  =  'Asm';
-  SYNS_AttrAsmComment           =  'Asm comment';
-  SYNS_AttrAsmKey               =  'Asm key';
   SYNS_AttrASP                  =  'Asp';
   SYNS_AttrAssembler            =  'Assembler';
   SYNS_AttrAttributeName        =  'Attribute Name';
@@ -149,11 +150,106 @@ const
   SYNS_AttrSquareBracket        =  'Square Bracket';
   SYNS_AttrRoundBracket         =  'Round Bracket';
   SYNS_AttrTeXCommand           =  'TeX Command';
+  (* End of Attribute Names *)
 
-{$IFDEF SYN_LAZARUS}
+const
+  (* IMPORTANT
+     The highlight attribute "StoredName" are the only independent
+     identification of Attributes.
+     They must be UNIQUE and UNCHANGED. Read section above.
+  *)
+
+  (* Stored Attribute Names *)
+  SYNS_XML_Untitled                 :String = SYNS_Untitled;                 // 'Untitled';
+  SYNS_XML_AttrASP                  :String = SYNS_AttrASP;                  // 'Asp';
+  SYNS_XML_AttrAssembler            :String = SYNS_AttrAssembler;            // 'Assembler';
+  SYNS_XML_AttrAttributeName        :String = SYNS_AttrAttributeName;        // 'Attribute Name';
+  SYNS_XML_AttrAttributeValue       :String = SYNS_AttrAttributeValue;       // 'Attribute Value';
+  SYNS_XML_AttrBlock                :String = SYNS_AttrBlock;                // 'Block';
+  SYNS_XML_AttrBrackets             :String = SYNS_AttrBrackets;             // 'Brackets';
+  SYNS_XML_AttrCDATASection         :String = SYNS_AttrCDATASection;         // 'CDATA Section';
+  SYNS_XML_AttrCharacter            :String = SYNS_AttrCharacter;            // 'Character';
+  SYNS_XML_AttrClass                :String = SYNS_AttrClass;                // 'Class';
+  SYNS_XML_AttrComment              :String = SYNS_AttrComment;              // 'Comment';
+  SYNS_XML_AttrCondition            :String = SYNS_AttrCondition;            // 'Condition';
+  SYNS_XML_AttrDataType             :String = SYNS_AttrDataType;             // 'Data type';
+  SYNS_XML_AttrDefaultPackage       :String = SYNS_AttrDefaultPackage;       // 'Default packages';
+  SYNS_XML_AttrDir                  :String = SYNS_AttrDir;                  // 'Direction';
+  SYNS_XML_AttrDirective            :String = SYNS_AttrDirective;            // 'Directive';
+  SYNS_XML_AttrDOCTYPESection       :String = SYNS_AttrDOCTYPESection;       // 'DOCTYPE Section';
+  SYNS_XML_AttrDocumentation        :String = SYNS_AttrDocumentation;        // 'Documentation';
+  SYNS_XML_AttrElementName          :String = SYNS_AttrElementName;          // 'Element Name';
+  SYNS_XML_AttrEmbedSQL             :String = SYNS_AttrEmbedSQL;             // 'Embedded SQL';
+  SYNS_XML_AttrEmbedText            :String = SYNS_AttrEmbedText;            // 'Embedded text';
+  SYNS_XML_AttrEntityReference      :String = SYNS_AttrEntityReference;      // 'Entity Reference';
+  SYNS_XML_AttrEscapeAmpersand      :String = SYNS_AttrEscapeAmpersand;      // 'Escape ampersand';
+  SYNS_XML_AttrEvent                :String = SYNS_AttrEvent;                // 'Event';
+  SYNS_XML_AttrException            :String = SYNS_AttrException;            // 'Exception';
+  SYNS_XML_AttrFloat                :String = SYNS_AttrFloat;                // 'Float';
+  SYNS_XML_AttrForm                 :String = SYNS_AttrForm;                 // 'Form';
+  SYNS_XML_AttrFunction             :String = SYNS_AttrFunction;             // 'Function';
+  SYNS_XML_AttrHexadecimal          :String = SYNS_AttrHexadecimal;          // 'Hexadecimal';
+  SYNS_XML_AttrIcon                 :String = SYNS_AttrIcon;                 // 'Icon reference';
+  SYNS_XML_AttrIdentifier           :String = SYNS_AttrIdentifier;           // 'Identifier';
+  SYNS_XML_AttrIllegalChar          :String = SYNS_AttrIllegalChar;          // 'Illegal char';
+  SYNS_XML_AttrInclude              :String = SYNS_AttrInclude;              // 'Include';
+  SYNS_XML_AttrIndirect             :String = SYNS_AttrIndirect;             // 'Indirect';
+  SYNS_XML_AttrInvalidSymbol        :String = SYNS_AttrInvalidSymbol;        // 'Invalid symbol';
+  SYNS_XML_AttrInternalFunction     :String = SYNS_AttrInternalFunction;     // 'Internal function';
+  SYNS_XML_AttrKey                  :String = SYNS_AttrKey;                  // 'Key';
+  SYNS_XML_AttrLabel                :String = SYNS_AttrLabel;                // 'Label';
+  SYNS_XML_AttrMacro                :String = SYNS_AttrMacro;                // 'Macro';
+  SYNS_XML_AttrMarker               :String = SYNS_AttrMarker;               // 'Marker';
+  SYNS_XML_AttrMessage              :String = SYNS_AttrMessage;              // 'Message';
+  SYNS_XML_AttrMiscellaneous        :String = SYNS_AttrMiscellaneous;        // 'Miscellaneous';
+  SYNS_XML_AttrNamespaceAttrName    :String = SYNS_AttrNamespaceAttrName;    // 'Namespace Attribute Name';
+  SYNS_XML_AttrNamespaceAttrValue   :String = SYNS_AttrNamespaceAttrValue;   // 'Namespace Attribute Value';
+  SYNS_XML_AttrNonReservedKeyword   :String = SYNS_AttrNonReservedKeyword;   // 'Non-reserved keyword';
+  SYNS_XML_AttrNull                 :String = SYNS_AttrNull;                 // 'Null';
+  SYNS_XML_AttrNumber               :String = SYNS_AttrNumber;               // 'Number';
+  SYNS_XML_AttrOctal                :String = SYNS_AttrOctal;                // 'Octal';
+  SYNS_XML_AttrOperator             :String = SYNS_AttrOperator;             // 'Operator';
+  SYNS_XML_AttrPLSQL                :String = SYNS_AttrPLSQL;                // 'Reserved word (PL/SQL)';
+  SYNS_XML_AttrPragma               :String = SYNS_AttrPragma;               // 'Pragma';
+  SYNS_XML_AttrPreprocessor         :String = SYNS_AttrPreprocessor;         // 'Preprocessor';
+  SYNS_XML_AttrProcessingInstr      :String = SYNS_AttrProcessingInstr;      // 'Processing Instruction';
+  SYNS_XML_AttrQualifier            :String = SYNS_AttrQualifier;            // 'Qualifier';
+  SYNS_XML_AttrRegister             :String = SYNS_AttrRegister;             // 'Register';
+  SYNS_XML_AttrReservedWord         :String = SYNS_AttrReservedWord;         // 'Reserved word';
+  SYNS_XML_AttrRpl                  :String = SYNS_AttrRpl;                  // 'Rpl';
+  SYNS_XML_AttrRplKey               :String = SYNS_AttrRplKey;               // 'Rpl key';
+  SYNS_XML_AttrRplComment           :String = SYNS_AttrRplComment;           // 'Rpl comment';
+  SYNS_XML_AttrSASM                 :String = SYNS_AttrSASM;                 // 'SASM';
+  SYNS_XML_AttrSASMComment          :String = SYNS_AttrSASMComment;          // 'SASM Comment';
+  SYNS_XML_AttrSASMKey              :String = SYNS_AttrSASMKey;              // 'SASM Key';
+  SYNS_XML_AttrSecondReservedWord   :String = SYNS_AttrSecondReservedWord;   // 'Second reserved word';
+  SYNS_XML_AttrSection              :String = SYNS_AttrSection;              // 'Section';
+  SYNS_XML_AttrSpace                :String = SYNS_AttrSpace;                // 'Space';
+  SYNS_XML_AttrSpecialVariable      :String = SYNS_AttrSpecialVariable;      // 'Special variable';
+  SYNS_XML_AttrSQLKey               :String = SYNS_AttrSQLKey;               // 'SQL keyword';
+  SYNS_XML_AttrSQLPlus              :String = SYNS_AttrSQLPlus;              // 'SQL*Plus command';
+  SYNS_XML_AttrString               :String = SYNS_AttrString;               // 'String';
+  SYNS_XML_AttrSymbol               :String = SYNS_AttrSymbol;               // 'Symbol';
+  SYNS_XML_AttrSyntaxError          :String = SYNS_AttrSyntaxError;          // 'SyntaxError';
+  SYNS_XML_AttrSystem               :String = SYNS_AttrSystem;               // 'System functions and variables';
+  SYNS_XML_AttrSystemValue          :String = SYNS_AttrSystemValue;          // 'System value';
+  SYNS_XML_AttrTerminator           :String = SYNS_AttrTerminator;           // 'Terminator';
+  SYNS_XML_AttrText                 :String = SYNS_AttrText;                 // 'Text';
+  SYNS_XML_AttrUnknownWord          :String = SYNS_AttrUnknownWord;          // 'Unknown word';
+  SYNS_XML_AttrUser                 :String = SYNS_AttrUser;                 // 'User functions and variables';
+  SYNS_XML_AttrUserFunction         :String = SYNS_AttrUserFunction;         // 'User functions';
+  SYNS_XML_AttrValue                :String = SYNS_AttrValue;                // 'Value';
+  SYNS_XML_AttrVariable             :String = SYNS_AttrVariable;             // 'Variable';
+  SYNS_XML_AttrWhitespace           :String = SYNS_AttrWhitespace;           // 'Whitespace';
+  SYNS_XML_AttrTableName            :String = SYNS_AttrTableName;            // 'Table Name';
+  SYNS_XML_AttrMathMode             :String = SYNS_AttrMathMode;             // 'Math Mode';
+  SYNS_XML_AttrTextMathMode         :String = SYNS_AttrTextMathMode;         // 'Text in Math Mode';
+  SYNS_XML_AttrSquareBracket        :String = SYNS_AttrSquareBracket;        // 'Square Bracket';
+  SYNS_XML_AttrRoundBracket         :String = SYNS_AttrRoundBracket;         // 'Round Bracket';
+  SYNS_XML_AttrTeXCommand           :String = SYNS_AttrTeXCommand;           // 'TeX Command';
+  (* End of Stored Attribute Names *)
+
 resourcestring
-{$ENDIF}
-
   // names of exporter output formats
   SYNS_ExporterFormatHTML       =  'HTML';
   SYNS_ExporterFormatRTF        =  'RTF';
@@ -273,9 +369,7 @@ const
   SYNS_LangUnreal               =  'Unreal';
   SYNS_LangTeX                  =  'TeX';
 
-{$IFDEF SYN_LAZARUS}
 resourcestring
-{$ENDIF}
 
   SYNS_emcNone                     = 'No Action';
   SYNS_emcStartSelection           = 'Selection';

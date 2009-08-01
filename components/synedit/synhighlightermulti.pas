@@ -743,7 +743,7 @@ constructor TgmScheme.Create(TheCollection: TCollection);
 begin
   inherited Create(TheCollection);
   fCaseSensitive := True;
-  fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker);
+  fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker, SYNS_XML_AttrMarker);
   fMarkerAttri.OnChange := {$IFDEF FPC}@{$ENDIF}MarkerAttriChanged;
   MarkerAttri.Background := clYellow;
   MarkerAttri.Style := [fsBold];
