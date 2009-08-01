@@ -76,6 +76,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     BorderSpacing.Around = 6
     OnChange = LinkEditChange
     OnKeyDown = LinkEditKeyDown
+    OnUTF8KeyPress = LinkEditUTF8KeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1

@@ -27,11 +27,12 @@ LazarusResources.Add('TFPDocLinkEditorDlg','FORMDATA',[
   +'om'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asr'
   +'Bottom'#4'Left'#2#6#6'Height'#2#27#3'Top'#2']'#5'Width'#3#140#1#7'Anchors'
   +#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#8'OnChange'
-  +#7#14'LinkEditChange'#9'OnKeyDown'#7#15'LinkEditKeyDown'#14'ParentShowHint'#8
-  +#8'ShowHint'#9#8'TabOrder'#2#1#4'Text'#6#8'LinkEdit'#0#0#5'TEdit'#9'TitleEdi'
-  +'t'#21'AnchorSideTop.Control'#7#10'TitleLabel'#18'AnchorSideTop.Side'#7#9'as'
-  +'rBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9
-  +'asrBottom'#4'Left'#2#6#6'Height'#2#27#3'Top'#2#30#5'Width'#3#140#1#7'Anchor'
-  +'s'#11#5'akTop'#6'akLeft'#7'akRight'#0#17'BorderSpacing.Top'#2#6#19'BorderSp'
-  +'acing.Right'#2#6#8'TabOrder'#2#2#4'Text'#6#9'TitleEdit'#0#0#0
+  +#7#14'LinkEditChange'#9'OnKeyDown'#7#15'LinkEditKeyDown'#14'OnUTF8KeyPress'#7
+  +#20'LinkEditUTF8KeyPress'#14'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#1
+  +#4'Text'#6#8'LinkEdit'#0#0#5'TEdit'#9'TitleEdit'#21'AnchorSideTop.Control'#7
+  +#10'TitleLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Con'
+  +'trol'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Heig'
+  +'ht'#2#27#3'Top'#2#30#5'Width'#3#140#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
+  +'Right'#0#17'BorderSpacing.Top'#2#6#19'BorderSpacing.Right'#2#6#8'TabOrder'#2
+  +#2#4'Text'#6#9'TitleEdit'#0#0#0
 ]);

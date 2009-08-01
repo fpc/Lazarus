@@ -69,8 +69,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure AddPackage(Pkg: TLazPackage);
-    procedure AddProjectFile(AFile: TLazProjectFile);
-    procedure AddPackageFile(AFile: TPkgFile);
+    procedure Add(Identifier, Description: string);
     procedure AddIdentifier(Identifier: string);
     procedure Draw(Canvas: TCanvas; Width, Height: integer);
     property Count: integer read GetCount;
@@ -101,6 +100,7 @@ type
     procedure LinkEditChange(Sender: TObject);
     procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
+    procedure LinkEditUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     FStartFPDocFile: TLazFPDocFile;
     fItems: TFPDocLinkCompletionList;
@@ -223,12 +223,26 @@ begin
         CompletionBox.Invalidate;
       end;
     VK_RETURN:
-      if (FItems.Selected>=0) and (FItems.Selected<fItems.Count) then
+      if (FItems.Selected>=0) and (FItems.Selected<fItems.Count) then begin
         Link:=FItems.Items[fItems.Selected].Text;
+        LinkEdit.SelStart:=length(LinkEdit.Text);
+      end;
     else
       Handled:=false;
     end;
     if Handled then Key:=VK_UNKNOWN;
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.LinkEditUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  if UTF8Key='.' then begin
+    if (FItems.Selected>=0) and (FItems.Selected<fItems.Count) then begin
+      Link:=FItems.Items[fItems.Selected].Text+'.';
+      LinkEdit.SelStart:=length(LinkEdit.Text);
+    end;
+    UTF8Key:='';
   end;
 end;
 
@@ -323,6 +337,7 @@ var
   i: Integer;
   Filename: String;
   ProjFile: TLazProjectFile;
+  Identifier: String;
 begin
   for i:=0 to AProject.FileCount-1 do begin
     ProjFile:=AProject.Files[i];
@@ -331,7 +346,12 @@ begin
       if FilenameIsPascalUnit(Filename) then begin
         Filename:=ExtractFileNameOnly(Filename);
         if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
-          fItems.AddProjectFile(ProjFile);
+        begin
+          Identifier:=ExtractFileNameOnly(ProjFile.Filename);
+          if AProject<>StartModuleOwner then
+            Identifier:='#'+ExtractFileNameOnly(AProject.ProjectInfoFile)+'.'+Identifier;
+          fItems.Add(Identifier,'project unit');
+        end;
       end;
     end;
   end;
@@ -343,6 +363,7 @@ var
   i: Integer;
   PkgFile: TPkgFile;
   Filename: String;
+  Identifier: String;
 begin
   for i:=0 to APackage.FileCount-1 do begin
     PkgFile:=APackage.Files[i];
@@ -351,7 +372,12 @@ begin
       if FilenameIsPascalUnit(Filename) then begin
         Filename:=ExtractFileNameOnly(Filename);
         if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
-          fItems.AddPackageFile(PkgFile);
+        begin
+          Identifier:=ExtractFileNameOnly(Filename);
+          if APackage<>StartModuleOwner then
+            Identifier:='#'+APackage.Name+'.'+Identifier;
+          fItems.Add(Identifier,'package unit');
+        end;
       end;
     end;
   end;
@@ -540,16 +566,9 @@ begin
   FItems.Add(TFPDocLinkCompletionItem.Create('#'+Pkg.Name,'package '+Pkg.IDAsString));
 end;
 
-procedure TFPDocLinkCompletionList.AddProjectFile(AFile: TLazProjectFile);
+procedure TFPDocLinkCompletionList.Add(Identifier, Description: string);
 begin
-  FItems.Add(TFPDocLinkCompletionItem.Create(
-    ExtractFileNameOnly(AFile.Filename),'project unit'));
-end;
-
-procedure TFPDocLinkCompletionList.AddPackageFile(AFile: TPkgFile);
-begin
-  FItems.Add(TFPDocLinkCompletionItem.Create(
-    ExtractFileNameOnly(AFile.Filename),'package unit'));
+  FItems.Add(TFPDocLinkCompletionItem.Create(Identifier,Description));
 end;
 
 procedure TFPDocLinkCompletionList.AddIdentifier(Identifier: string);
