@@ -2922,7 +2922,6 @@ var
   b: Boolean;
   fs: TFontStyles;
   Path: String;
-  AttriIdx: Integer;
 begin
   // initialize with defaults
   if SynColorScheme = '' then
