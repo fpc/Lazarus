@@ -5,7 +5,8 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math;
+  Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
+  SynEditTypes;
 
 type
 
@@ -17,6 +18,7 @@ type
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
     function  TestFullText: String;
+    procedure TestSetSelText(Value: String; PasteMode: TSynSelectionMode = smNormal);
     property ViewedTextBuffer;
   end;
 
@@ -37,6 +39,7 @@ type
   protected
     procedure ReCreateEdit;
     procedure SetLines(Lines: Array of String);
+    (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
     // Locical Caret
     procedure SetCaret(X, Y: Integer);
     procedure SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
@@ -109,6 +112,13 @@ end;
 function TTestSynEdit.TestFullText: String;
 begin
   Result := ViewedTextBuffer.Text;
+end;
+
+procedure TTestSynEdit.TestSetSelText(Value: String; PasteMode: TSynSelectionMode);
+begin
+  BeginUndoBlock;
+  SetSelTextPrimitive(PasteMode, PChar(Value), True);
+  EndUndoBlock;
 end;
 
 { TTestBase }
@@ -291,6 +301,14 @@ end;
 
 procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
 begin
+  if (Y1<0) or (X1 < 0) then begin
+    SetCaret(X2, Y2);  // clears selection
+    exit;
+  end;
+  if (Y2<0) or (X2 < 0) then begin
+    SetCaret(X1, Y1);  // clears selection
+    exit;
+  end;
   if DoLock then
     SynEdit.BeginUpdate;
   SynEdit.LogicalCaretXY := Point(X2, Y2);
@@ -302,6 +320,14 @@ end;
 
 procedure TTestBase.SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
 begin
+  if (Y1<0) or (X1 < 0) then begin
+    SetCaret(X2, Y2);  // clears selection
+    exit;
+  end;
+  if (Y2<0) or (X2 < 0) then begin
+    SetCaret(X1, Y1);  // clears selection
+    exit;
+  end;
   if DoLock then
     SynEdit.BeginUpdate;
   SynEdit.LogicalCaretXY := Point(X1, Y1);
@@ -319,6 +345,14 @@ end;
 
 procedure TTestBase.SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
 begin
+  if (Y1<0) or (X1 < 0) then begin
+    SetCaretPhys(X2, Y2);  // clears selection
+    exit;
+  end;
+  if (Y2<0) or (X2 < 0) then begin
+    SetCaretPhys(X1, Y1);  // clears selection
+    exit;
+  end;
   if DoLock then
     SynEdit.BeginUpdate;
   SynEdit.CaretXY := Point(X2, Y2);
@@ -330,6 +364,14 @@ end;
 
 procedure TTestBase.SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
 begin
+  if (Y1<0) or (X1 < 0) then begin
+    SetCaretPhys(X2, Y2);  // clears selection
+    exit;
+  end;
+  if (Y2<0) or (X2 < 0) then begin
+    SetCaretPhys(X1, Y1);  // clears selection
+    exit;
+  end;
   if DoLock then
     SynEdit.BeginUpdate;
   SynEdit.LogicalCaretXY := Point(X1, Y1);
