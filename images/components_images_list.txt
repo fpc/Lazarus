@@ -2,6 +2,7 @@ components/default.png
 components/tactionlist.png
 components/tapplicationproperties.png
 components/tarrow.png
+components/tasyncprocess.png
 components/tbarchart.png
 components/tbevel.png
 components/tbitbtn.png
@@ -24,12 +25,12 @@ components/tdateedit.png
 components/tdbcalendar.png
 components/tdbcheckbox.png
 components/tdbcombobox.png
-components/tdblookupcombobox.png
 components/tdbedit.png
 components/tdbgrid.png
 components/tdbgroupbox.png
 components/tdbimage.png
 components/tdblistbox.png
+components/tdblookupcombobox.png
 components/tdblookuplistbox.png
 components/tdbmemo.png
 components/tdbnavigator.png
@@ -42,6 +43,7 @@ components/teditbutton.png
 components/teventlog.png
 components/tfilelistbox.png
 components/tfilenameedit.png
+components/tfiltercombobox.png
 components/tfinddialog.png
 components/tfloatspinedit.png
 components/tfontdialog.png
@@ -75,7 +77,6 @@ components/tpicture.png
 components/tpopupmenu.png
 components/tpopupnotifier.png
 components/tprocess.png
-components/tasyncprocess.png
 components/tprocessutf8.png
 components/tprogressbar.png
 components/tradiobutton.png
@@ -87,6 +88,8 @@ components/tscrollbar.png
 components/tscrollbox.png
 components/tselectdirectorydialog.png
 components/tshape.png
+components/tshelllistview.png
+components/tshelltreeview.png
 components/tsimpleipcclient.png
 components/tsimpleipcserver.png
 components/tspeedbutton.png
@@ -106,3 +109,4 @@ components/tupdown.png
 components/txmlconfig.png
 components/txmlpropstorage.png
 components/unregisteredcomponent.png
+
