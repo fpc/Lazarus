@@ -882,8 +882,8 @@ var
             if xe > xb then
               FLines.EditDelete(xb, y, xe - xb);
           end;
-          // FLines never get deleted completely, so keep caret at end.
-          FInternalCaret.LineCharPos := Point(l, FEndLinePos);
+          BB.X := Min(BB.X, BE.X);
+          FInternalCaret.LineBytePos := BB;
           // Column deletion never removes a line entirely, so no mark
           // updating is needed here.
         end;
@@ -896,7 +896,8 @@ var
           end;
           if BE.Y >= BB.Y then
             FLines.EditLinesDelete(BB.Y, BE.Y - BB.Y + 1);
-          FInternalCaret.LineCharPos := Point(1, BB.Y);
+          BB.X := 1;
+          FInternalCaret.LineCharPos := BB;
         end;
     end;
   end;
@@ -1063,7 +1064,7 @@ begin
       StartLineBytePos := BB; // deletes selection // calls selection changed
       // Need to update caret (syncro edit follows on every edit)
       if FCaret <> nil then
-        FCaret.LineCharPos := FInternalCaret.LineCharPos;
+        FCaret.LineCharPos := FInternalCaret.LineCharPos; // must equal BB
     end
     else
     if FCaret <> nil then
