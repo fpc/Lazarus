@@ -1692,10 +1692,10 @@ function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
 
   function FindFPDocFilename(BaseDir, SearchPath, UnitName: string): string;
   begin
-    if FilenameIsAbsolute(BaseDir) then
-      Result:=SearchFileInPath(UnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault)
-    else
-      Result:='';
+    Result:='';
+    if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
+    //DebugLn(['FindFPDocFilename BaseDir=',BaseDir,' SearchPath=',SearchPath,' UnitName=',unitname]);
+    Result:=SearchFileInPath(UnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault);
   end;
 
 var
@@ -1714,6 +1714,7 @@ begin
   CacheWasUsed:=false;
   Result:=chprFailed;
 
+  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode Path="',Path,'"']);
   if Path='' then exit;
   if StartDOMNode=nil then ; // for future use
 
@@ -1723,6 +1724,7 @@ begin
     // switch package
     while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
     PkgName:=copy(Path,2,p-2);
+    //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode PkgName=',PkgName]);
     if PkgName='' then exit;
     Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
     if Pkg=nil then exit;
@@ -1733,6 +1735,7 @@ begin
       exit;
     end;
     StartPos:=p+1;
+    p:=StartPos;
   end else begin
     // relative link (either in the same fpdoc file or of the same module)
     // use same package
@@ -1750,11 +1753,12 @@ begin
   // search in another unit
   while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
   UnitName:=copy(Path,StartPos,p-StartPos);
+  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode UnitName=',UnitName]);
   if UnitName='' then exit;
   FPDocFilename:='';
   if ModuleOwner is TLazProject then begin
     AProject:=TLazProject(ModuleOwner);
-    if AProject.LazDocPaths<>'' then begin
+    if (AProject.LazDocPaths<>'') then begin
       BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
       FPDocFilename:=FindFPDocFilename(BaseDir,AProject.LazDocPaths,UnitName);
     end;
@@ -1765,6 +1769,7 @@ begin
       FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.LazDocPaths,UnitName);
     end;
   end;
+  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode FPDocFilename=',FPDocFilename]);
   if FPDocFilename='' then exit;
 
   // load FPDocFile
@@ -1776,10 +1781,12 @@ begin
     exit;
   end;
   StartPos:=p+1;
-  while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
+  p:=StartPos;
 
   // find element
+  while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
   ElementName:=copy(Path,p+1,length(Path));
+  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode ElementName=',ElementName]);
   DOMNode:=FPDocFile.GetElementWithName(ElementName);
   if DOMNode<>nil then
     Result:=chprSuccess

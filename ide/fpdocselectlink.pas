@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType,
+  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType, AvgLvlTree,
   PackageIntf, ProjectIntf,
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs, Laz_DOM;
 
@@ -57,22 +57,27 @@ type
     FSelected: integer;
     FSelectedBGColor: TColor;
     FSelectedTextColor: TColor;
+    FSorted: Boolean;
     FTextColor: TColor;
     FTop: integer;
     FVisibleItems: integer;
+    FTree: TAvgLvlTree; // tree of TFPDocLinkCompletionItem
     function GetCount: integer;
     function GetItems(Index: integer): TFPDocLinkCompletionItem;
     procedure SetSelected(const AValue: integer);
+    procedure SetSorted(const AValue: Boolean);
     procedure SetTop(const AValue: integer);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Sort;
     procedure AddPackage(Pkg: TLazPackage);
     procedure Add(Identifier, Description: string);
     procedure AddIdentifier(Identifier: string);
     procedure Draw(Canvas: TCanvas; Width, Height: integer);
     property Count: integer read GetCount;
+    property Sorted: Boolean read FSorted write SetSorted;
     property Items[Index: integer]: TFPDocLinkCompletionItem read GetItems;
     property ItemHeight: integer read FItemHeight write FItemHeight;// pixel per item
     property VisibleItems: integer read FVisibleItems write FVisibleItems;// visible lines
@@ -134,6 +139,9 @@ type
 function ShowFPDocLinkEditorDialog(SrcFilename: string;
   StartFPDocFile: TLazFPDocFile; out Link, LinkTitle: string): TModalResult;
 
+function CompareFPDocLinkCompletionItem(Data1, Data2: Pointer): integer;
+function ComparePathWithFPDocLinkCompletionItem(AnsiString1, Data2: Pointer): integer;
+
 implementation
 
 function ShowFPDocLinkEditorDialog(SrcFilename: string;
@@ -154,6 +162,24 @@ begin
   finally
     FPDocLinkEditorDlg.Free;
   end;
+end;
+
+function CompareFPDocLinkCompletionItem(Data1, Data2: Pointer): integer;
+var
+  Item1: TFPDocLinkCompletionItem absolute Data1;
+  Item2: TFPDocLinkCompletionItem absolute Data2;
+begin
+  Result:=SysUtils.CompareText(Item1.Text,Item2.Text);
+end;
+
+function ComparePathWithFPDocLinkCompletionItem(AnsiString1, Data2: Pointer
+  ): integer;
+var
+  s: String;
+  Item: TFPDocLinkCompletionItem absolute Data2;
+begin
+  s:=AnsiString(AnsiString1);
+  Result:=SysUtils.CompareText(s,Item.Text);
 end;
 
 { TFPDocLinkEditorDlg }
@@ -388,7 +414,6 @@ procedure TFPDocLinkEditorDlg.AddIdentifiers(ModuleOwner: TObject;
 var
   DOMNode: TDOMNode;
   ElementName: String;
-  p: Integer;
   ModuleName: String;
 begin
   if FPDocFile=nil then exit;
@@ -399,29 +424,24 @@ begin
       if (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
       then begin
         // same prefix
-        // skip sub identifiers
-        p:=length(Prefix)+1;
-        while (p<=length(ElementName)) and (ElementName[p]<>'.') do inc(p);
-        if p>length(ElementName) then begin
-          if (FPDocFile<>nil) and (FPDocFile<>StartFPDocFile) then begin
-            // different unit
-            ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
-          end;
-          if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
-            // different module
-            if ModuleOwner is TLazProject then begin
-              ModuleName:=lowercase(ExtractFileNameOnly(TLazProject(ModuleOwner).ProjectInfoFile));
-            end else if ModuleOwner is TLazPackage then begin
-              ModuleName:=TLazPackage(ModuleOwner).Name;
-            end;
-            if ModuleName<>'' then
-              ElementName:=ModuleName+'.'+ElementName
-            else
-              ElementName:='';
-          end;
-          if ElementName<>'' then
-            FItems.AddIdentifier(ElementName);
+        if (FPDocFile<>nil) and (FPDocFile<>StartFPDocFile) then begin
+          // different unit
+          ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
         end;
+        if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
+          // different module
+          if ModuleOwner is TLazProject then begin
+            ModuleName:=lowercase(ExtractFileNameOnly(TLazProject(ModuleOwner).ProjectInfoFile));
+          end else if ModuleOwner is TLazPackage then begin
+            ModuleName:=TLazPackage(ModuleOwner).Name;
+          end;
+          if ModuleName<>'' then
+            ElementName:='#'+ModuleName+'.'+ElementName
+          else
+            ElementName:='';
+        end;
+        if ElementName<>'' then
+          FItems.AddIdentifier(ElementName);
       end;
     end;
     DOMNode:=DOMNode.NextSibling;
@@ -533,6 +553,13 @@ begin
   FSelected:=AValue;
 end;
 
+procedure TFPDocLinkCompletionList.SetSorted(const AValue: Boolean);
+begin
+  if FSorted=AValue then exit;
+  FSorted:=AValue;
+  if FSorted then Sort;
+end;
+
 procedure TFPDocLinkCompletionList.SetTop(const AValue: integer);
 begin
   if FTop=AValue then exit;
@@ -542,12 +569,14 @@ end;
 constructor TFPDocLinkCompletionList.Create;
 begin
   FItems:=TFPList.Create;
+  FTree:=TAvgLvlTree.Create(@CompareFPDocLinkCompletionItem);
 end;
 
 destructor TFPDocLinkCompletionList.Destroy;
 begin
   Clear;
   FreeAndNil(FItems);
+  FreeAndNil(FTree);
   inherited Destroy;
 end;
 
@@ -555,25 +584,51 @@ procedure TFPDocLinkCompletionList.Clear;
 var
   i: Integer;
 begin
+  FTree.Clear;
   for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
   FItems.Clear;
   FSelected:=0;
   FTop:=0;
+  FSorted:=true;
+end;
+
+procedure TFPDocLinkCompletionList.Sort;
+var
+  Node: TAvgLvlTreeNode;
+  i: Integer;
+begin
+  if FSorted then exit;
+  Node:=FTree.FindLowest;
+  i:=0;
+  while Node<>nil do begin
+    FItems[i]:=Node.Data;
+    inc(i);
+    Node:=FTree.FindSuccessor(Node);
+  end;
+  FSorted:=true;
 end;
 
 procedure TFPDocLinkCompletionList.AddPackage(Pkg: TLazPackage);
 begin
-  FItems.Add(TFPDocLinkCompletionItem.Create('#'+Pkg.Name,'package '+Pkg.IDAsString));
+  Add('#'+Pkg.Name,'package '+Pkg.IDAsString);
 end;
 
 procedure TFPDocLinkCompletionList.Add(Identifier, Description: string);
+var
+  Item: TFPDocLinkCompletionItem;
 begin
-  FItems.Add(TFPDocLinkCompletionItem.Create(Identifier,Description));
+  if FTree.FindKey(Pointer(Identifier),
+                   @ComparePathWithFPDocLinkCompletionItem)<>nil
+  then exit;
+  Item:=TFPDocLinkCompletionItem.Create(Identifier,Description);
+  FItems.Add(Item);
+  FTree.Add(Item);
+  FSorted:=false;
 end;
 
 procedure TFPDocLinkCompletionList.AddIdentifier(Identifier: string);
 begin
-  FItems.Add(TFPDocLinkCompletionItem.Create(Identifier,'identifier'));
+  Add(Identifier,'identifier');
 end;
 
 procedure TFPDocLinkCompletionList.Draw(Canvas: TCanvas; Width, Height: integer);
@@ -585,6 +640,7 @@ var
   s: String;
 begin
   DebugLn(['TFPDocLinkCompletionList.Draw ',Width,' ',Height,' Count=',Count]);
+  Sorted:=true;
   i:=Top;
   y:=0;
   dy:=ItemHeight;
@@ -602,8 +658,6 @@ begin
     Canvas.FillRect(0,y,Width,y+dy);
     s:=Item.Text;
     Canvas.TextOut(2,y+2,s);
-    s:=Item.Description;
-    Canvas.TextOut(152,y+2,s);
     inc(y,dy);
     inc(i);
   end;

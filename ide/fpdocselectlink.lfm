@@ -46,12 +46,14 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideTop.Control = LinkEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 100
-    Top = 126
+    Height = 106
+    Top = 120
     Width = 396
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     OnPaint = CompletionBoxPaint
   end
   object ButtonPanel1: TButtonPanel
@@ -73,7 +75,9 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     Top = 93
     Width = 396
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     OnChange = LinkEditChange
     OnKeyDown = LinkEditKeyDown
     OnUTF8KeyPress = LinkEditUTF8KeyPress
