@@ -848,7 +848,7 @@ var
             end;
             if BE.Y > BB.Y then begin
               l := length(FLines[BB.Y - 1]);
-              BE.X := BE.X + BB.X - 1;
+              BE.X := BE.X + Max(l, BB.X - 1);
               FLines.EditLineJoin(BB.Y, StringOfChar(' ', Max(0, BB.X - (l+1))));
               BE.Y := BB.Y;
             end;
