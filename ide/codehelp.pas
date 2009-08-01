@@ -242,11 +242,16 @@ type
                                        out CacheWasUsed: boolean;
                                        out AnOwner: TObject;// package or project
                                        CreateIfNotExists: boolean = false): string;
+    function GetFPDocFilenameForPkgFile(PkgFile: TPkgFile;
+                                    ResolveIncludeFiles: Boolean;
+                                    out CacheWasUsed: boolean;
+                                    CreateIfNotExists: boolean = false): string;
     procedure GetFPDocFilenamesForSources(SrcFilenames: TStringToStringTree;
                       ResolveIncludeFiles: boolean;
                       var FPDocFilenames: TStringToStringTree // Names=Filename, Values=ModuleName
                       );
     function FindModuleOwner(const Modulename: string): TObject;
+    function FindModuleOwner(FPDocFile: TLazFPDocFile): TObject;
     function GetModuleOwnerName(TheOwner: TObject): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
                                DefaultOwnerName: string): string;
@@ -255,6 +260,13 @@ type
     function CodeNodeToElementName(Tool: TFindDeclarationTool;
                                    CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
+                          out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
+                          out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
+                          StartDOMNode: TDOMNode;
+                          const Path: string;
+                          Flags: TCodeHelpOpenFileFlags;
+                          out ModuleOwner: TObject;
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
                           out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
@@ -1387,6 +1399,40 @@ begin
   {$endif}
 end;
 
+function TCodeHelpManager.GetFPDocFilenameForPkgFile(PkgFile: TPkgFile;
+  ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
+  CreateIfNotExists: boolean): string;
+var
+  APackage: TLazPackage;
+  BaseDir: String;
+  SrcFilename: String;
+  CodeBuf: TCodeBuffer;
+begin
+  Result:='';
+  CacheWasUsed:=false;
+  APackage:=TLazPackage(PkgFile.LazPackage);
+  if APackage.LazDocPaths='' then exit;
+  BaseDir:=APackage.Directory;
+  if BaseDir='' then exit;
+
+  SrcFilename:=PkgFile.Filename;
+  if ResolveIncludeFiles then begin
+    CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
+    if CodeBuf<>nil then begin
+      CodeBuf:=CodeToolBoss.GetMainCode(CodeBuf);
+      if CodeBuf<>nil then begin
+        SrcFilename:=CodeBuf.Filename;
+      end;
+    end;
+  end;
+
+  if not FilenameIsPascalUnit(SrcFilename) then exit;
+  SrcFilename:=ExtractFileNameOnly(SrcFilename)+'.xml';
+
+  Result:=SearchFileInPath(SrcFilename,BaseDir,APackage.LazDocPaths,';',
+                           ctsfcDefault);
+end;
+
 procedure TCodeHelpManager.GetFPDocFilenamesForSources(
   SrcFilenames: TStringToStringTree; ResolveIncludeFiles: boolean;
   var FPDocFilenames: TStringToStringTree);
@@ -1428,6 +1474,69 @@ begin
     exit;
   end;
   Result:=nil;
+end;
+
+function TCodeHelpManager.FindModuleOwner(FPDocFile: TLazFPDocFile): TObject;
+var
+  AProject: TLazProject;
+  Path: String;
+  p: PChar;
+  PkgName: String;
+
+  function InPackage(Pkg: TLazPackage): boolean;
+  var
+    SearchPath: String;
+  begin
+    Result:=false;
+    if (Pkg=nil) or (Pkg.LazDocPaths='') then exit;
+    // check if the file is in the search path
+    Path:=ExtractFilePath(FPDocFile.Filename);
+    SearchPath:=Pkg.LazDocPaths;
+    p:=FindPathInSearchPath(PChar(Path),length(Path),
+                            PChar(SearchPath),length(SearchPath));
+    if p<>nil then begin
+      FindModuleOwner:=Pkg;
+      Result:=true;
+    end;
+  end;
+
+var
+  Pkg: TLazPackage;
+  SearchPath: String;
+  i: Integer;
+begin
+  Result:=nil;
+  if FPDocFile=nil then exit;
+  AProject:=LazarusIDE.ActiveProject;
+
+  // virtual files belong to the project
+  if not FilenameIsAbsolute(FPDocFile.Filename) then begin
+    Result:=AProject;
+    exit;
+  end;
+
+  // check if in the doc path of the project
+  if (AProject<>nil) and (AProject.LazDocPaths<>'') then begin
+    Path:=ExtractFilePath(FPDocFile.Filename);
+    SearchPath:=AProject.LazDocPaths;
+    p:=FindPathInSearchPath(PChar(Path),length(Path),
+                            PChar(SearchPath),length(SearchPath));
+    if p<>nil then begin
+      Result:=AProject;
+      exit;
+    end;
+  end;
+
+  // check the packagename in the fpdoc file
+  PkgName:=FPDocFile.GetPackageName;
+  if PkgName<>'' then begin
+    Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    if InPackage(Pkg) then exit;
+  end;
+
+  // search in all packages
+  for i:=0 to PackageGraph.Count-1 do
+    if InPackage(PackageGraph.Packages[i]) then exit;
 end;
 
 function TCodeHelpManager.GetModuleOwnerName(TheOwner: TObject): string;
@@ -1574,6 +1683,108 @@ begin
   if DOMNode=nil then exit(chprFailed);
   
   Result:=chprSuccess;
+end;
+
+function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
+  StartDOMNode: TDOMNode; const Path: string; Flags: TCodeHelpOpenFileFlags;
+  out ModuleOwner: TObject; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
+  out CacheWasUsed: boolean): TCodeHelpParseResult;
+
+  function FindFPDocFilename(BaseDir, SearchPath, UnitName: string): string;
+  begin
+    if FilenameIsAbsolute(BaseDir) then
+      Result:=SearchFileInPath(UnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault)
+    else
+      Result:='';
+  end;
+
+var
+  StartPos, p: LongInt;
+  PkgName: String;
+  Pkg: TLazPackage;
+  UnitName: String;
+  AProject: TLazProject;
+  ElementName: String;
+  FPDocFilename: String;
+  BaseDir: String;
+begin
+  ModuleOwner:=nil;
+  FPDocFile:=nil;
+  DOMNode:=nil;
+  CacheWasUsed:=false;
+  Result:=chprFailed;
+
+  if Path='' then exit;
+  if StartDOMNode=nil then ; // for future use
+
+  StartPos:=1;
+  p:=1;
+  if Path[1]='#' then begin
+    // switch package
+    while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
+    PkgName:=copy(Path,2,p-2);
+    if PkgName='' then exit;
+    Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    if Pkg=nil then exit;
+    ModuleOwner:=Pkg;
+    if p>length(Path) then begin
+      // link to the module, no unit
+      Result:=chprSuccess;
+      exit;
+    end;
+    StartPos:=p+1;
+  end else begin
+    // relative link (either in the same fpdoc file or of the same module)
+    // use same package
+    ModuleOwner:=FindModuleOwner(FPDocFile);
+    if ModuleOwner=nil then exit;
+    // try in the same fpdoc file
+    DOMNode:=FPDocFile.GetElementWithName(Path);
+    if DOMNode<>nil then begin
+      // target is in same file
+      FPDocFile:=StartFPDocFile;
+      exit(chprSuccess);
+    end;
+  end;
+
+  // search in another unit
+  while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
+  UnitName:=copy(Path,StartPos,p-StartPos);
+  if UnitName='' then exit;
+  FPDocFilename:='';
+  if ModuleOwner is TLazProject then begin
+    AProject:=TLazProject(ModuleOwner);
+    if AProject.LazDocPaths<>'' then begin
+      BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+      FPDocFilename:=FindFPDocFilename(BaseDir,AProject.LazDocPaths,UnitName);
+    end;
+  end else if ModuleOwner is TLazPackage then begin
+    Pkg:=TLazPackage(ModuleOwner);
+    if Pkg.LazDocPaths<>'' then begin
+      BaseDir:=Pkg.Directory;
+      FPDocFilename:=FindFPDocFilename(BaseDir,Pkg.LazDocPaths,UnitName);
+    end;
+  end;
+  if FPDocFilename='' then exit;
+
+  // load FPDocFile
+  Result:=LoadFPDocFile(FPDocFilename,Flags,FPDocFile,CacheWasUsed);
+  if Result<>chprSuccess then exit;
+  if p>length(Path) then begin
+    // link to a unit, no element
+    Result:=chprSuccess;
+    exit;
+  end;
+  StartPos:=p+1;
+  while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
+
+  // find element
+  ElementName:=copy(Path,p+1,length(Path));
+  DOMNode:=FPDocFile.GetElementWithName(ElementName);
+  if DOMNode<>nil then
+    Result:=chprSuccess
+  else
+    Result:=chprFailed;
 end;
 
 function TCodeHelpManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;

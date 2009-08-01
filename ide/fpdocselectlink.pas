@@ -88,38 +88,42 @@ type
     procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
   private
-    FDocFile: TLazFPDocFile;
+    FStartFPDocFile: TLazFPDocFile;
     fItems: TFPDocLinkCompletionList;
     FSourceFilename: string;
-    fSourceOwner: TObject;
+    FStartModuleOwner: TObject;
     function GetLink: string;
     function GetLinkTitle: string;
-    procedure SetDocFile(const AValue: TLazFPDocFile);
+    procedure SetStartFPDocFile(const AValue: TLazFPDocFile);
     procedure SetLink(const AValue: string);
     procedure SetLinkTitle(const AValue: string);
     procedure SetSourceFilename(const AValue: string);
+    procedure SetStartModuleOwner(const AValue: TObject);
     procedure UpdateCompletionBox;
     procedure AddPackagesToCompletion(Prefix: string);
-    procedure AddSiblingUnits(Prefix: string);
+    procedure AddModuleUnits(ModuleOwner: TObject; Prefix: string);
+    procedure AddProjectUnits(AProject: TLazProject; Prefix: string);
     procedure AddPackageUnits(APackage: TLazPackage; Prefix: string);
-    procedure AddIdentifiers(Prefix: string);
+    procedure AddIdentifiers(ModuleOwner: TObject; FPDocFile: TLazFPDocFile;
+                             Prefix: string);
     procedure AddSubIdentifiers(Path: string);
   public
-    procedure SetLink(const ASrcFilename, ATitle, ALink: string;
+    procedure SetLinkAndContext(const ASrcFilename, ATitle, ALink: string;
                       ADocFile: TLazFPDocFile);
     property SourceFilename: string read FSourceFilename write SetSourceFilename;
     property LinkTitle: string read GetLinkTitle write SetLinkTitle;
     property Link: string read GetLink write SetLink;
-    property DocFile: TLazFPDocFile read FDocFile write SetDocFile;
+    property StartFPDocFile: TLazFPDocFile read FStartFPDocFile write SetStartFPDocFile;
+    property StartModuleOwner: TObject read FStartModuleOwner write SetStartModuleOwner;
   end;
 
-function ShowFPDocLinkEditorDialog(SrcFilename: string; DocFile: TLazFPDocFile;
-  out Link, LinkTitle: string): TModalResult;
+function ShowFPDocLinkEditorDialog(SrcFilename: string;
+  StartFPDocFile: TLazFPDocFile; out Link, LinkTitle: string): TModalResult;
 
 implementation
 
-function ShowFPDocLinkEditorDialog(SrcFilename: string; DocFile: TLazFPDocFile;
-  out Link, LinkTitle: string): TModalResult;
+function ShowFPDocLinkEditorDialog(SrcFilename: string;
+  StartFPDocFile: TLazFPDocFile; out Link, LinkTitle: string): TModalResult;
 var
   FPDocLinkEditorDlg: TFPDocLinkEditorDlg;
 begin
@@ -127,7 +131,7 @@ begin
   LinkTitle:='';
   FPDocLinkEditorDlg:=TFPDocLinkEditorDlg.Create(nil);
   try
-    FPDocLinkEditorDlg.SetLink(SrcFilename,LinkTitle,Link,DocFile);
+    FPDocLinkEditorDlg.SetLinkAndContext(SrcFilename,LinkTitle,Link,StartFPDocFile);
     Result:=FPDocLinkEditorDlg.ShowModal;
     if Result=mrOk then begin
       Link:=FPDocLinkEditorDlg.Link;
@@ -169,7 +173,7 @@ end;
 
 procedure TFPDocLinkEditorDlg.LinkEditChange(Sender: TObject);
 begin
-
+  Link:=LinkEdit.Text;
 end;
 
 procedure TFPDocLinkEditorDlg.LinkEditKeyDown(Sender: TObject; var Key: Word;
@@ -185,22 +189,28 @@ var
 begin
   if FSourceFilename=AValue then exit;
   FSourceFilename:=AValue;
-  fSourceOwner:=nil;
+  FStartModuleOwner:=nil;
   Owners:=PackageEditingInterface.GetPossibleOwnersOfUnit(FSourceFilename,
     [piosfIncludeSourceDirectories]);
   if Owners=nil then exit;
   try
     for i:=0 to Owners.Count-1 do begin
       if TObject(Owners[i]) is TLazProject then begin
-        fSourceOwner:=TLazProject(Owners[i]);
+        FStartModuleOwner:=TLazProject(Owners[i]);
       end else if TObject(Owners[i]) is TLazPackage then begin
-        if fSourceOwner=nil then
-          fSourceOwner:=TLazPackage(Owners[i]);
+        if FStartModuleOwner=nil then
+          FStartModuleOwner:=TLazPackage(Owners[i]);
       end;
     end;
   finally
     Owners.Free;
   end;
+end;
+
+procedure TFPDocLinkEditorDlg.SetStartModuleOwner(const AValue: TObject);
+begin
+  if FStartModuleOwner=AValue then exit;
+  FStartModuleOwner:=AValue;
 end;
 
 procedure TFPDocLinkEditorDlg.UpdateCompletionBox;
@@ -240,31 +250,39 @@ begin
   end;
 end;
 
-procedure TFPDocLinkEditorDlg.AddSiblingUnits(Prefix: string);
+procedure TFPDocLinkEditorDlg.AddModuleUnits(ModuleOwner: TObject;
+  Prefix: string);
 var
   AProject: TLazProject;
-  i: Integer;
-  ProjFile: TLazProjectFile;
   APackage: TLazPackage;
-  Filename: String;
 begin
-  if fSourceOwner=nil then exit;
-  if fSourceOwner is TLazProject then begin
-    AProject:=TLazProject(fSourceOwner);
-    for i:=0 to AProject.FileCount-1 do begin
-      ProjFile:=AProject.Files[i];
-      if ProjFile.IsPartOfProject then begin
-        Filename:=ProjFile.Filename;
-        if FilenameIsPascalUnit(Filename) then begin
-          Filename:=ExtractFileNameOnly(Filename);
-          if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
-            fItems.AddProjectFile(ProjFile);
-        end;
+  if ModuleOwner=nil then exit;
+  if ModuleOwner is TLazProject then begin
+    AProject:=TLazProject(ModuleOwner);
+    AddProjectUnits(AProject,Prefix);
+  end else if ModuleOwner is TLazPackage then begin
+    APackage:=TLazPackage(ModuleOwner);
+    AddPackageUnits(APackage,Prefix);
+  end;
+end;
+
+procedure TFPDocLinkEditorDlg.AddProjectUnits(AProject: TLazProject;
+  Prefix: string);
+var
+  i: Integer;
+  Filename: String;
+  ProjFile: TLazProjectFile;
+begin
+  for i:=0 to AProject.FileCount-1 do begin
+    ProjFile:=AProject.Files[i];
+    if ProjFile.IsPartOfProject then begin
+      Filename:=ProjFile.Filename;
+      if FilenameIsPascalUnit(Filename) then begin
+        Filename:=ExtractFileNameOnly(Filename);
+        if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
+          fItems.AddProjectFile(ProjFile);
       end;
     end;
-  end else if fSourceOwner is TLazPackage then begin
-    APackage:=TLazPackage(fSourceOwner);
-    AddPackageUnits(APackage,Prefix);
   end;
 end;
 
@@ -288,20 +306,30 @@ begin
   end;
 end;
 
-procedure TFPDocLinkEditorDlg.AddIdentifiers(Prefix: string);
+procedure TFPDocLinkEditorDlg.AddIdentifiers(ModuleOwner: TObject;
+  FPDocFile: TLazFPDocFile; Prefix: string);
 var
   DOMNode: TDOMNode;
   ElementName: String;
 begin
-  if fDocFile=nil then exit;
-  DOMNode:=FDocFile.GetFirstElement;
+  if FPDocFile=nil then exit;
+  DOMNode:=FPDocFile.GetFirstElement;
   while DOMNode<>nil do begin
     if (DOMNode is TDomElement) then begin
       ElementName:=TDomElement(DOMNode).GetAttribute('name');
       if (System.Pos('.',ElementName)<1)
       and (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
-      then
+      then begin
+        if (FPDocFile<>nil) and (FPDocFile<>StartFPDocFile) then begin
+          // different unit
+          ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
+        end;
+        if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
+          // different unit
+          //ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
+        end;
         FItems.AddIdentifier(ElementName);
+      end;
     end;
     DOMNode:=DOMNode.NextSibling;
   end;
@@ -310,11 +338,18 @@ end;
 procedure TFPDocLinkEditorDlg.AddSubIdentifiers(Path: string);
 var
   p: LongInt;
-  PrePath: String;
-  Pkg: TLazPackage;
-  PkgFile: TPkgFile;
+  Prefix: String;
+  HelpResult: TCodeHelpParseResult;
+  ModuleOwner: TObject;
+  FPDocFile: TLazFPDocFile;
+  DOMNode: TDOMNode;
+  CacheWasUsed: boolean;
+  DOMElement: TDOMElement;
 begin
-  p:=System.Pos('.',Path);
+  p:=length(Path);
+  while (p>0) and (Path[p]<>'.') do dec(p);
+  Prefix:=copy(Path,p+1,length(Path));
+  Path:=copy(Path,1,p-1);
   if p<1 then begin
     // empty  : show all packages, all units of current project/package and all identifiers of unit
     // #l     : show all packages beginning with the letter l
@@ -322,41 +357,33 @@ begin
     if (Path='') or (Path[1]='#') then
       AddPackagesToCompletion(copy(Path,2,length(Path)));
     if (Path='') or (Path[1]<>'#') then begin
-      AddSiblingUnits(Path);
-      AddIdentifiers(Path);
+      AddModuleUnits(StartModuleOwner,Path);
+      AddIdentifiers(StartModuleOwner,StartFPDocFile,Path);
     end;
   end else begin
     // sub identifier
-    // #lcl.f  : show all units of package lcl
-    // forms.f : show all identifiers of unit forms and all sub identifiers of identifier forms
-    PrePath:=copy(Path,1,p-1);
-    Path:=copy(Path,p+1,length(Path));
-    if PrePath='' then exit;
-    if PrePath[1]='#' then begin
-      // package
-      Pkg:=PackageGraph.FindAPackageWithName(PrePath,nil);
-      if Pkg=nil then exit;
-      p:=System.Pos('.',Path);
-      if p<1 then begin
-        AddPackageUnits(Pkg,PrePath);
-      end else begin
-        // unit
-        PrePath:=copy(Path,1,p-1);
-        Path:=copy(Path,p+1,length(Path));
-        if PrePath='' then exit;
-        PkgFile:=Pkg.FindUnit(PrePath);
-        if PkgFile=nil then exit;
-
-      end;
+    HelpResult:=CodeHelpBoss.GetLinkedFPDocNode(StartFPDocFile,nil,Path,
+      [chofUpdateFromDisk,chofQuiet],ModuleOwner,FPDocFile,DOMNode,CacheWasUsed);
+    if HelpResult<>chprSuccess then exit;
+    if DOMNode is TDomElement then begin
+      DOMElement:=TDomElement(DOMNode);
+      AddIdentifiers(ModuleOwner,FPDocFile,DOMElement.GetAttribute('name')+'.'+Prefix);
+    end else if FPDocFile<>nil then begin
+      AddIdentifiers(ModuleOwner,FPDocFile,Prefix);
+    end else if ModuleOwner<>nil then begin
+      if ModuleOwner is TLazPackage then
+        AddPackageUnits(TLazPackage(ModuleOwner),Prefix)
+      else if ModuleOwner is TLazProject then
+        AddProjectUnits(TLazProject(ModuleOwner),Prefix)
     end;
   end;
 end;
 
-procedure TFPDocLinkEditorDlg.SetLink(const ASrcFilename, ATitle, ALink: string;
-  ADocFile: TLazFPDocFile);
+procedure TFPDocLinkEditorDlg.SetLinkAndContext(const ASrcFilename, ATitle,
+  ALink: string; ADocFile: TLazFPDocFile);
 begin
-  SourceFilename:=ASrcFilename;
-  DocFile:=ADocFile;
+  StartFPDocFile:=ADocFile;
+  fSourceFilename:=ASrcFilename;
   LinkTitle:=ATitle;
   Link:=ALink;
   UpdateCompletionBox;
@@ -367,10 +394,11 @@ begin
   Result:=TitleEdit.Text;
 end;
 
-procedure TFPDocLinkEditorDlg.SetDocFile(const AValue: TLazFPDocFile);
+procedure TFPDocLinkEditorDlg.SetStartFPDocFile(const AValue: TLazFPDocFile);
 begin
-  if FDocFile=AValue then exit;
-  FDocFile:=AValue;
+  if FStartFPDocFile=AValue then exit;
+  FStartFPDocFile:=AValue;
+  FStartModuleOwner:=CodeHelpBoss.FindModuleOwner(FStartFPDocFile);
 end;
 
 function TFPDocLinkEditorDlg.GetLink: string;
@@ -380,7 +408,9 @@ end;
 
 procedure TFPDocLinkEditorDlg.SetLink(const AValue: string);
 begin
+  if Link=AValue then exit;
   LinkEdit.Text:=AValue;
+  UpdateCompletionBox;
 end;
 
 procedure TFPDocLinkEditorDlg.SetLinkTitle(const AValue: string);
