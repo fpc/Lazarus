@@ -108,6 +108,9 @@ begin
         exit;
       end;
       FileList.LoadFromFile(UTF8ToSys(S));
+      for a:=FileList.Count-1 downto 0 do
+        if FileList[a]='' then
+          FileList.Delete(a);
     end
     else for a:=2 to ParamCount do FileList.Add(ParamStrUTF8(a));
     
