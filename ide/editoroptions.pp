@@ -105,6 +105,37 @@ type
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
+const
+  ahaXmlNames: array[TAdditionalHilightAttribute] of String =
+  (
+    '',
+    'Text block',
+    'Execution point',
+    'Enabled breakpoint',
+    'Disabled breakpoint',
+    'Invalid breakpoint',
+    'Unknown breakpoint',
+    'Error line',
+    'Incremental search match',
+    'Highlight all',
+    'Brackets highlight',
+    'Mouse link',
+    'Line number',
+    'Line highlight',
+    'Modified line',
+    'Code folding tree',
+    'Highlight current word',
+    'Folded code',
+    'Word-Brackets',
+    'TemplateEdit Current',
+    'TemplateEdit Sync',
+    'TemplateEdit Cells',
+    'SyncronEdit Current Cells',
+    'SyncronEdit Syncron Cells',
+    'SyncronEdit Other Cells',
+    'SyncronEdit Range'
+  );
+
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
 
@@ -2881,6 +2912,7 @@ var
   b: Boolean;
   fs: TFontStyles;
   Path: String;
+  AttriIdx: Integer;
 begin
   // initialize with defaults
   if SynColorScheme = '' then
@@ -2897,9 +2929,12 @@ begin
     for i := 0 to Syn.AttrCount - 1 do
     begin
       Attri := Syn.Attribute[i];
-      AttriName := StrToValidXMLName(Attri.StoredName);
-      if AttriName = '' then
+      //AttriName := StrToValidXMLName(Attri.StoredName);
+      AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute),
+        StrToValidXMLName(Attri.StoredName));
+      if AttriIdx < 0 then
         continue;
+      AttriName := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
       Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
         Syn.LanguageName) + '/Scheme' + StrToValidXMLName(
         SynColorScheme) + '/' + StrToValidXMLName(AttriName) + '/';
@@ -2973,6 +3008,7 @@ var
   AttriName: String;
   Attri, OldAttri: TSynHighlightElement;
   Path:   String;
+  AttriIdx: Integer;
 begin
   // read the old settings, compare and write only the differences
   if SynColorScheme = '' then
@@ -2990,9 +3026,14 @@ begin
     begin
       Attri := Syn.Attribute[i];
       OldAttri := OldSyn.Attribute[i];
-      AttriName := StrToValidXMLName(Attri.StoredName);
-      if AttriName = '' then
+      //AttriName := StrToValidXMLName(Attri.StoredName);
+      AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute),
+        StrToValidXMLName(Attri.StoredName));
+      if AttriIdx < 0 then
         continue;
+      AttriName := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
+      //if AttriName = '' then
+      //  continue;
       Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
         Syn.LanguageName) + '/Scheme' + StrToValidXMLName(
         SynColorScheme) + '/' + StrToValidXMLName(AttriName) + '/';
