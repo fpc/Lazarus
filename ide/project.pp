@@ -5428,7 +5428,7 @@ end;
 
 function TProjectLibraryDescriptor.GetLocalizedName: string;
 begin
-  Result:='Library';
+  Result:=lisPckOptsLibrary;
 end;
 
 function TProjectLibraryDescriptor.GetLocalizedDescription: string;
