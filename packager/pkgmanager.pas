@@ -4329,7 +4329,7 @@ end;
 
 function TPackageDescriptorStd.GetLocalizedName: string;
 begin
-  Result:='Package';
+  Result:=lisPackage;
 end;
 
 function TPackageDescriptorStd.GetLocalizedDescription: string;
