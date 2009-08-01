@@ -3347,6 +3347,7 @@ images/components/teditbutton.png -text svneol=unset#image/png
 images/components/teventlog.png -text svneol=unset#image/png
 images/components/tfilelistbox.png -text svneol=unset#image/png
 images/components/tfilenameedit.png -text svneol=unset#image/png
+images/components/tfiltercombobox.png -text
 images/components/tfinddialog.png -text svneol=unset#image/png
 images/components/tfloatspinedit.png -text svneol=unset#image/png
 images/components/tfontdialog.png -text svneol=unset#image/png
@@ -3391,6 +3392,7 @@ images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tshape.png -text svneol=unset#image/png
+images/components/tshelllistview.png -text
 images/components/tshelltreeview.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
 images/components/tsimpleipcserver.png -text svneol=unset#image/png
