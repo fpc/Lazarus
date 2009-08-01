@@ -897,7 +897,7 @@ var
         exit(true);
       end;
     end;
-    DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
+    //DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
 
     Result:=false;
   end;
