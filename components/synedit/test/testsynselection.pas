@@ -10,14 +10,15 @@ interface
         They should follow the same as bracket highlight?
 
    TODO: Missing tests
-      - Select block, move caret away and back, continue selection
+      - Select persistent block, move caret away and back, continue selection
       - Select by Mouse (incl scrolling while selecting)
       - Drag Block (incl scrolling)
       - Replace text
+      - persistent block moves on edit
 *)
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestBase,
-  SynEdit, SynEditTypes,
+  SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds,
   LCLType, LCLProc;
 
 type
@@ -26,7 +27,6 @@ type
 
   TTestSynSelection = class(TTestBase)
   protected
-    procedure TestIsCaret(Name: String; X, Y: Integer);
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer);
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: String);
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: Array of String);
@@ -34,17 +34,12 @@ type
   published
     procedure SelectByKey;
     procedure SelectByMethod;
+    procedure ReplaceSelText;
+    //Temporarily here, till we have more units
+    procedure TextDelCmd;
   end;
 
 implementation
-
-procedure TTestSynSelection.TestIsCaret(Name: String; X, Y: Integer);
-begin
-  if (SynEdit.LogicalCaretXY.X <> X) or (SynEdit.LogicalCaretXY.Y <> Y) then
-    TestFail(Name, 'IsCaret',
-             Format('X/Y=(%d, %d)', [X, Y]),
-             Format('X/Y=(%d, %d)', [SynEdit.LogicalCaretXY.X, SynEdit.LogicalCaretXY.Y]));
-end;
 
 procedure TTestSynSelection.TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer);
 begin
@@ -378,7 +373,17 @@ begin
   DoKeyPress(VK_LEFT, [ssShift, ssAlt]);
   TestIsBlock('after VK_LEFT (continue)', 3, 1, 2, 2, ['e', ' ']);
 
-  PushBaseName('BlockSel through zero width (persistent)');
+  DoKeyPress(VK_RIGHT, [ssShift, ssAlt]);
+  TestIsNoBlock('after VK_Right (empty)');
+  DoKeyPress(VK_RIGHT, []);
+  TestIsNoBlock('after VK_Right (move away)');
+  DoKeyPress(VK_LEFT, []);
+  TestIsNoBlock('after VK_LEFT (move back)');
+  DoKeyPress(VK_LEFT, [ssShift, ssAlt]);
+  TestIsBlock('after VK_LEFT (NO continue after away/back)', 2, 2, 3, 2, [' ']);
+
+
+  PopPushBaseName('BlockSel through zero width (persistent)');
   SynEdit.Options2 := SynEdit.Options2 + [eoPersistentBlock];
   SetCaret(3, 1);
   DoKeyPress(VK_RIGHT, [ssShift, ssAlt]);
@@ -390,6 +395,7 @@ begin
   DoKeyPress(VK_LEFT, [ssShift, ssAlt]);
   TestIsBlock('after VK_LEFT (continue)', 3, 1, 2, 2, ['e', ' ']);
 
+  PopBaseName;
 end;
 
 procedure TTestSynSelection.SelectByMethod;
@@ -536,27 +542,15 @@ var
 
     // BlockBegin/end
     SetCaret(1, 1);
-    DoLock;
-    SetCaret(4, 3);
-    SynEdit.BlockBegin := Point(2,3);
-    SynEdit.BlockEnd   := Point(4,3);
-    DoUnLock;
+    SetCaretAndSel(2,3, 4,3, UseBeginUpdate);
     DoTestIsBlock('Select Begin/End', 2,3, 4,3, [' F']);
 
     SetCaret(1, 1);
-    DoLock;
-    SetCaret(1, 4);
-    SynEdit.BlockBegin := Point(12,3); // just lineend
-    SynEdit.BlockEnd   := Point( 1,4);
-    DoUnLock;
+    SetCaretAndSel(12,3, 1,4, UseBeginUpdate);
     DoTestIsBlock('Select Begin/End CrLf', 12,3, 1,4, ['', '']);
 
     SetCaret(1, 1);
-    DoLock;
-    SetCaret(11, 3);
-    SynEdit.BlockBegin := Point(11,3);
-    SynEdit.BlockEnd   := Point(13,3);
-    DoUnLock;
+    SetCaretAndSelBackward(11,3, 13,3, UseBeginUpdate);
     DoTestIsBlockBackward('Select Begin/End Eol', 11,3, 13,3, ['; ']);
 
 
@@ -843,6 +837,329 @@ begin
   SynEdit.Options  := SynEdit.Options  + [eoNoSelection];
   PopPushBaseName('Persisent eoNoSelection Locked');
   DoSelectByMethod;
+end;
+
+procedure TTestSynSelection.ReplaceSelText;
+  function TheText: TStringArray;
+  begin
+    SetLength(Result, 7);
+    Result[0] := 'begin';
+    Result[1] := '';
+    Result[2] := '  Foo(bar);';
+    Result[3] := '  abc;';
+    Result[4] := '  // äüöäabc'; // Utf8 2 bytes per char
+    Result[5] := #9#9+'test';    // Tab  1 byte / several display cells
+    Result[6] := '';
+  end;
+
+  procedure TestReplace(Name: String; X1,Y1, X2,Y2: Integer; Before: Array of String;
+                        Replace: Array of String; ExpCaretX, ExpCaretY: Integer;
+                        ExpLineRepl: Array of Const; SkipUndo: Boolean = False);
+  var
+    SkipUndo2: Boolean;
+  begin
+    PushBaseName(Name);
+    SetLines(TheText);
+    SetCaretAndSel(X1,Y1, X2,Y2);
+    TestIsBlock    ('Sanity, selection at begin of test', X1,Y1, X2,Y2, Before);
+    SynEdit.SelText := LinesToText(Replace);
+    TestIsCaretPhys('After Replace', ExpCaretX, ExpCaretY);
+    TestIsNoBlock  ('After Replace');
+    TestIsFullText ('After Replace', TheText, ExpLineRepl);
+
+    if not SkipUndo then begin
+      SynEdit.Undo;
+      TestIsBlock    ('After Undo', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo');
+      TestIsFullText ('After Redo', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      TestIsBlock    ('After Undo 2', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo 2', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo 2', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo 2');
+      TestIsFullText ('After Redo 2', TheText, ExpLineRepl);
+
+      SynEdit.Undo;
+      SynEdit.SelText := LinesToText(Replace);
+      TestIsCaretPhys('After Undo,Replace', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Undo,Replace');
+      TestIsFullText ('After Undo,Replace', TheText, ExpLineRepl);
+    end;
+
+    // do in 2 steps, explicit set to empty
+    SetLines(TheText);
+    SetCaretAndSel(X1,Y1, X2,Y2);
+    TestIsBlock    ('Sanity, selection at begin of test (2)', X1,Y1, X2,Y2, Before);
+    SynEdit.SelText := '';
+    if SynEdit.TestFullText = LinesToText(TheText) then SkipUndo2 := True;       // Nothing changed, can not restore bloc in undo
+    SynEdit.SelText := LinesToText(Replace);
+    TestIsCaretPhys('After Replace (2 step)', ExpCaretX, ExpCaretY);
+    TestIsNoBlock  ('After Replace (2 step)');
+    TestIsFullText ('After Replace (2 step)', TheText, ExpLineRepl);
+
+    if (not SkipUndo) and (not SkipUndo2) then begin
+      SynEdit.Undo;      // there may only be one undo, then the other is ignored
+      SynEdit.Undo;
+      TestIsBlock    ('After Undo (2 step)', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo (2 step)', TheText);
+
+      SynEdit.Redo;
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo (2 step)', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo (2 step)');
+      TestIsFullText ('After Redo (2 step)', TheText, ExpLineRepl);
+    end;
+
+    // do in 2 steps, explicit set to empty // inside Lock and UndoBlock
+    SetLines(TheText);
+    SetCaretAndSel(X1,Y1, X2,Y2);
+    TestIsBlock    ('Sanity, selection at begin of test (3)', X1,Y1, X2,Y2, Before);
+    SynEdit.BeginUndoBlock;
+    SynEdit.BeginUpdate;
+    SynEdit.SelText := '';
+    SynEdit.SelText := LinesToText(Replace);
+    SynEdit.EndUndoBlock;
+    SynEdit.EndUpdate;
+    TestIsCaretPhys('After Replace (2 step, locked)', ExpCaretX, ExpCaretY);
+    TestIsNoBlock  ('After Replace (2 step, locked)');
+    TestIsFullText ('After Replace (2 step, locked)', TheText, ExpLineRepl);
+
+    if (not SkipUndo) and (not SkipUndo2) then begin
+      SynEdit.Undo;
+      TestIsBlock    ('After Undo (2 step, locked)', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo (2 step, locked)', TheText);
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo (2 step, locked)', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo (2 step, locked)');
+      TestIsFullText ('After Redo (2 step, locked)', TheText, ExpLineRepl);
+    end;
+
+    // Do Action and Undo in the same lock (not undo block)
+    if not SkipUndo then begin
+      SetLines(TheText);
+      SetCaretAndSel(X1,Y1, X2,Y2);
+      TestIsBlock    ('Sanity, selection at begin of test (4)', X1,Y1, X2,Y2, Before);
+      SynEdit.BeginUpdate;
+      SynEdit.SelText := LinesToText(Replace);
+
+      SynEdit.Undo;
+      TestIsBlock    ('After Undo (locked together)', X1,Y1, X2,Y2, Before);
+      TestIsFullText ('After Undo (locked together)', TheText);
+      SynEdit.EndUpdate;
+
+      SynEdit.Redo;
+      TestIsCaretPhys('After Redo (locked together)', ExpCaretX, ExpCaretY);
+      TestIsNoBlock  ('After Redo (locked together)');
+      TestIsFullText ('After Redo (locked)', TheText, ExpLineRepl);
+    end;
+
+    PopBaseName;
+  end;
+
+  procedure DoTests;
+  var
+    t: TStringArray;
+  begin
+  SynEdit.Options2 := SynEdit.Options2 - [eoPersistentBlock];
+  t := TheText;;
+
+  PushBaseName('Default:smNormal');
+    SynEdit.DefaultSelectionMode := smNormal;
+
+    //          Name                          Block      Before          Repl         ExpCaret  ExpText-Repl
+    //                                        Logical                                 Physical
+    TestReplace('One Line Middle = empty',    2,3,  4,3, [' F'],         [''],        2,3,  [3, ' oo(bar);']);
+    TestReplace('One Line Middle = X',        2,3,  4,3, [' F'],         ['X'],       3,3,  [3, ' Xoo(bar);']);
+    TestReplace('One Line Middle = utf8',     2,3,  4,3, [' F'],         ['Ä'],       3,3,  [3, ' Äoo(bar);']);
+    TestReplace('One Line Middle = tab ',     2,3,  4,3, [' F'],         [#9],        5,3,  [3, ' '+#9+'oo(bar);']);
+
+    TestReplace('One Line AtStart = empty',   1,3,  2,3, [' '],          [''],        1,3,  [3, ' Foo(bar);']);
+    TestReplace('One Line AtStart = X',       1,3,  2,3, [' '],          ['X'],       2,3,  [3, 'X Foo(bar);']);
+    TestReplace('One Line AtStart = utf8',    1,3,  2,3, [' '],          ['Ä'],       2,3,  [3, 'Ä Foo(bar);']);
+    TestReplace('One Line AtStart = tab ',    1,3,  2,3, [' '],          [#9],        5,3,  [3, ''+#9+' Foo(bar);']);
+
+    TestReplace('One Line AtEnd = empty',    11,3, 12,3, [';'],          [''],       11,3,  [3, '  Foo(bar)']);
+    TestReplace('One Line AtEnd = X',        11,3, 12,3, [';'],          ['X'],      12,3,  [3, '  Foo(bar)X']);
+    TestReplace('One Line AtEnd = utf8',     11,3, 12,3, [';'],          ['Ä'],      12,3,  [3, '  Foo(bar)Ä']);
+    TestReplace('One Line Past = tab ',      13,3, 15,3, ['  '],         [#9],       17,3,  [3, '  Foo(bar); '+#9+'']);
+
+    TestReplace('One Line End+Past = empty', 11,3, 13,3, ['; '],         [''],       11,3,  [3, '  Foo(bar)']);
+    TestReplace('One Line End+Past = X',     11,3, 13,3, ['; '],         ['X'],      12,3,  [3, '  Foo(bar)X']);
+    TestReplace('One Line End+Past = utf8',  11,3, 13,3, ['; '],         ['Ä'],      12,3,  [3, '  Foo(bar)Ä']);
+    TestReplace('One Line End+Past = tab ',  11,3, 13,3, ['; '],         [#9],       13,3,  [3, '  Foo(bar)'+#9+'']);
+
+    TestReplace('One Line Past = empty',     13,3, 15,3, ['  '],         [''],       13,3,  [3, '  Foo(bar);'], True); // skip undo
+    TestReplace('One Line Past = X',         13,3, 15,3, ['  '],         ['X'],      14,3,  [3, '  Foo(bar); X']);
+    TestReplace('One Line Past = utf8',      13,3, 15,3, ['  '],         ['Ä'],      14,3,  [3, '  Foo(bar); Ä']);
+    TestReplace('One Line AtEnd = tab ',     11,3, 12,3, [';'],          [#9],       13,3,  [3, '  Foo(bar)'+#9+'']);
+
+    TestReplace('One Line utf8 = empty',      6,5,  8,5, ['ä'],          [''],        6,5,  [5, '  // üöäabc']);
+    TestReplace('One Line utf8 = X',          6,5,  8,5, ['ä'],          ['X'],       7,5,  [5, '  // Xüöäabc']);
+    TestReplace('One Line utf8 = utf8',       6,5,  8,5, ['ä'],          ['Ä'],       7,5,  [5, '  // Äüöäabc']);
+    TestReplace('One Line utf8 = tab ',       6,5,  8,5, ['ä'],          [#9],        9,5,  [5, '  // '+#9+'üöäabc']);
+
+    // Caret starts at Logical.X = 8 (which is Phys=7) => End add Phys = 8 (if X inserted)
+    TestReplace('One Line 2 utf8 = empty',    8,5, 12,5, ['üö'],         [''],        7,5,  [5, '  // ääabc']);
+    TestReplace('One Line 2 utf8 = X',        8,5, 12,5, ['üö'],         ['X'],       8,5,  [5, '  // äXäabc']);
+    TestReplace('One Line 2 utf8 = utf8',     8,5, 12,5, ['üö'],         ['Ä'],       8,5,  [5, '  // äÄäabc']);
+    TestReplace('One Line 2 utf8 = tab ',     8,5, 12,5, ['üö'],         [#9],        9,5,  [5, '  // ä'+#9+'äabc']);
+
+    TestReplace('One Line tab = empty',       2,6,  3,6, [#9],           [''],        5,6,  [6, #9+'test']);
+    TestReplace('One Line tab = X',           2,6,  3,6, [#9],           ['X'],       6,6,  [6, #9+'Xtest']);
+    TestReplace('One Line tab = utf8',        2,6,  3,6, [#9],           ['Ä'],       6,6,  [6, #9+'Ätest']);
+    TestReplace('One Line tab = tab ',        2,6,  3,6, [#9],           [#9],        9,6,  [6, #9#9+'test']);
+
+    TestReplace('Full Line = empty',          1,3, 12,3, [t[2] ],        [''],        1,3,  [3, '']);
+    TestReplace('Full Line = X',              1,3, 12,3, [t[2] ],        ['X'],       2,3,  [3, 'X']);
+    TestReplace('Full Line = utf8',           1,3, 12,3, [t[2] ],        ['Ä'],       2,3,  [3, 'Ä']);
+    TestReplace('Full Line = tab',            1,3, 12,3, [t[2] ],        [#9],        5,3,  [3, #9]);
+
+    TestReplace('Full Line + CrLf = empty',   1,3,  1,4, [t[2], ''],     [''],        1,3,  [3]);
+    TestReplace('Full Line + CrLf = X',       1,3,  1,4, [t[2], ''],     ['X'],       2,3,  [3, 3, 'X' + t[3]]);
+    TestReplace('Full Line + CrLf = utf8',    1,3,  1,4, [t[2], ''],     ['Ä'],       2,3,  [3, 3, 'Ä' + t[3]]);
+    TestReplace('Full Line + CrLf = tab',     1,3,  1,4, [t[2], ''],     [#9],        5,3,  [3, 3, #9 + t[3]]);
+
+    TestReplace('Full Line, CrLf, Chr= empty',1,3,  2,4, [t[2], ' '],    [''],        1,3,  [3, 3, ' abc;']);
+    TestReplace('Full Line, CrLf, Chr= X',    1,3,  2,4, [t[2], ' '],    ['X'],       2,3,  [3, 3, 'X abc;']);
+    TestReplace('Full Line, CrLf, Chr= utf8', 1,3,  2,4, [t[2], ' '],    ['Ä'],       2,3,  [3, 3, 'Ä abc;']);
+    TestReplace('Full Line, CrLf, Chr= tab',  1,3,  2,4, [t[2], ' '],    [#9],        5,3,  [3, 3, #9 + ' abc;']);
+
+    TestReplace('Part Line, CrLf = empty',    4,3,  1,4, ['oo(bar);',''], [''],       4,3,  [3, 3, '  F  abc;']);
+    TestReplace('Part Line, CrLf = X',        4,3,  1,4, ['oo(bar);',''], ['X'],      5,3,  [3, 3, '  FX  abc;']);
+    TestReplace('Part Line, CrLf = utf8',     4,3,  1,4, ['oo(bar);',''], ['Ä'],      5,3,  [3, 3, '  FÄ  abc;']);
+    TestReplace('Part Line, CrLf = tab',      4,3,  1,4, ['oo(bar);',''], [#9],       5,3,  [3, 3, '  F'+#9 + '  abc;']);
+
+    TestReplace('Part Line, CrLf, Chr= empty',4,3,  2,4, ['oo(bar);',' '], [''],      4,3,  [3, 3, '  F abc;']);
+    TestReplace('Part Line, CrLf, Chr= X',    4,3,  2,4, ['oo(bar);',' '], ['X'],     5,3,  [3, 3, '  FX abc;']);
+    TestReplace('Part Line, CrLf, Chr= utf8', 4,3,  2,4, ['oo(bar);',' '], ['Ä'],     5,3,  [3, 3, '  FÄ abc;']);
+    TestReplace('Part Line, CrLf, Chr= tab',  4,3,  2,4, ['oo(bar);',' '], [#9],      5,3,  [3, 3, '  F'+#9 + ' abc;']);
+
+    TestReplace('Only CrLf = empty',         12,3,  1,4, ['', ''],       [''],       12,3,  [3, '  Foo(bar);  abc;', 4]);
+    TestReplace('Only CrLf = X',             12,3,  1,4, ['', ''],       ['X'],      13,3,  [3, '  Foo(bar);X  abc;', 4]);
+    TestReplace('Only CrLf = utf8',          12,3,  1,4, ['', ''],       ['Ä'],      13,3,  [3, '  Foo(bar);Ä  abc;', 4]);
+    TestReplace('Only CrLf = tab',           12,3,  1,4, ['', ''],       [#9],       13,3,  [3, '  Foo(bar);'+#9+'  abc;', 4]);
+
+    TestReplace('CrLf past Eol = empty',     14,3,  1,4, ['', ''],       [''],       14,3,  [3, '  Foo(bar);    abc;', 4]);
+    TestReplace('CrLf past Eol = X',         14,3,  1,4, ['', ''],       ['X'],      15,3,  [3, '  Foo(bar);  X  abc;', 4]);
+    TestReplace('CrLf past Eol = utf8',      14,3,  1,4, ['', ''],       ['Ä'],      15,3,  [3, '  Foo(bar);  Ä  abc;', 4]);
+    TestReplace('CrLf past Eol = tab',       14,3,  1,4, ['', ''],       [#9],       17,3,  [3, '  Foo(bar);  '+#9+'  abc;', 4]);
+
+    TestReplace('CrLf past Eol, Chr = empty',14,3,  3,4, ['', '  '],     [''],       14,3,  [3, '  Foo(bar);  abc;', 4]);
+    TestReplace('CrLf past Eol, Chr = X',    14,3,  3,4, ['', '  '],     ['X'],      15,3,  [3, '  Foo(bar);  Xabc;', 4]);
+    TestReplace('CrLf past Eol, Chr = utf8', 14,3,  3,4, ['', '  '],     ['Ä'],      15,3,  [3, '  Foo(bar);  Äabc;', 4]);
+    TestReplace('CrLf past Eol, Chr = tab',  14,3,  3,4, ['', '  '],     [#9],       17,3,  [3, '  Foo(bar);  '+#9+'abc;', 4]);
+
+    TestReplace('2 Lines = X',                1,3,  7,4, [t[2], t[3] ],  ['X'],       2,3,  [3, 3, 'X']);
+    TestReplace('2 Lines CrLf = X',           1,3,  1,5, [t[2], t[3], ''], ['X'],     2,3,  [3, 3, 3, 'X  // äüöäabc']);
+    TestReplace('2 Lines CrLf, Chr = X',      1,3,  2,5, [t[2], t[3], ' '], ['X'],    2,3,  [3, 3, 3, 'X // äüöäabc']);
+    TestReplace('2 (part)Lines CrLf, Chr = X',6,3,  2,5, ['(bar);', t[3], ' '], ['X'],7,3,  [3, 3, 3, '  FooX // äüöäabc']);
+    TestReplace('1 empty Lines = X',          1,2,  1,3, ['', ''],       ['X'],       2,2,  [2, 2, 'X  Foo(bar);']);
+
+
+    PopBaseName;
+  end;
+
+begin
+  ReCreateEdit;
+  BaseTestName := 'ReplaceSelText';
+
+  (* tests include:
+       eoOverwriteBlock = on/off
+       TrimSpace = on/off
+       undo / redo
+       Tests Begin/EndUpdate combinations
+
+       eoPersistentBlock
+  *)
+  // CaretPos are Logical, to save params
+
+  SynEdit.TabWidth := 4;
+  SynEdit.Options  := SynEdit.Options  + [eoScrollPastEol]
+                    - [eoTabIndent, eoTabsToSpaces, eoSpacesToTabs, eoSmartTabs, eoSmartTabDelete];
+
+
+  (* eoOverwriteBlock: Should only affect editing, but not SetSelectionText *)
+
+  PushBaseName('TrimSpace=On OverwriteBlock=On');
+  SynEdit.Options  := SynEdit.Options  + [eoTrimTrailingSpaces];
+  SynEdit.Options2 := SynEdit.Options2 + [eoOverwriteBlock];
+  SynEdit.TrimSpaceType := settLeaveLine;
+  DoTests;
+
+  PushBaseName('TrimSpace=Off OverwriteBlock=On');
+  SynEdit.Options  := SynEdit.Options  - [eoTrimTrailingSpaces];
+  DoTests;
+
+  PushBaseName('TrimSpace=On OverwriteBlock=Off');
+  SynEdit.Options  := SynEdit.Options  + [eoTrimTrailingSpaces];
+  SynEdit.Options2 := SynEdit.Options2 - [eoOverwriteBlock];
+  DoTests;
+
+  PushBaseName('TrimSpace=Off OverwriteBlock=Off');
+  SynEdit.Options  := SynEdit.Options  - [eoTrimTrailingSpaces];
+  DoTests;
+
+
+end;
+
+procedure TTestSynSelection.TextDelCmd;
+  Procedure test1(Name, Txt: String;
+                  x, y: Integer; Cmd: TSynEditorCommand;
+                  ExpText: String; ExpX, ExpY: Integer);
+  var i : integer;
+  begin
+    Name := Name + ' ('
+          + ' Start('+IntToStr(x)+', '+IntToStr(y)+')'
+          + ' Exp('+IntToStr(Expx)+', '+IntToStr(Expy)+') )'
+          + ' Cmd: ' + inttostr(Cmd) + ' )';
+    SynEdit.Text := Txt;
+    //SynEdit.SelectionMode := Mode;
+
+    SynEdit.CaretXY := Point(x, y);
+    SynEdit.CommandProcessor(Cmd, ' ', nil);
+    AssertEquals(Name, ExpText, SynEdit.ViewedTextBuffer.Text);
+    AssertEquals(Name+' ExpX', ExpX, SynEdit.CaretX);
+    AssertEquals(Name+' ExpY', ExpY, SynEdit.CaretY);
+
+    for i := 1 to 2 do begin
+      Name := Name + inttostr(i);
+      SynEdit.Undo;
+      AssertEquals(Name + ' undo Text',    Txt,     SynEdit.ViewedTextBuffer.Text);
+      AssertEquals(Name+' X', X, SynEdit.CaretX);
+      AssertEquals(Name+' Y', Y, SynEdit.CaretY);
+
+      SynEdit.Redo;
+      AssertEquals(Name + ' redo', ExpText, SynEdit.ViewedTextBuffer.Text);
+      AssertEquals(Name+' ExpX', ExpX, SynEdit.CaretX);
+      AssertEquals(Name+' ExpY', ExpY, SynEdit.CaretY);
+    end;
+  end;
+
+const
+    cr: String = LineEnding;
+    t1: String = 'abcdef'  + LineEnding;
+    t2: String = '  mn'    + LineEnding;
+    t3: String = '123 456 7' + LineEnding;
+    t4: String = '789' + LineEnding;
+    t5: String = '1ä2' + LineEnding;
+begin
+  test1('ecDeleteChar',     t1,      2,1, ecDeleteChar, 'acdef' + cr,   2,1);
+  test1('ecDeleteChar EOL', t1 + t2, 7,1, ecDeleteChar, 'abcdef' + t2,  7,1);
+
+  test1('ecDeleteWord',     t3,      5,1, ecDeleteWord, '123 7' + cr,   5,1);
+
+  test1('ecDeleteLastChar',     t1,      3,1, ecDeleteLastChar, 'acdef' + cr,   2,1);
+  test1('ecDeleteLastChar EOL', t1 + t2, 1,2, ecDeleteLastChar, 'abcdef' + t2,  7,1);
+
+  test1('ecDeleteLastWord',     t3,      8,1, ecDeleteLastWord, '123  7' + cr,       5,1);
 end;
 
 

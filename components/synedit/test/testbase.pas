@@ -5,15 +5,19 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType;
+  Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math;
 
 type
+
+  TStringArray = array of string;
 
   { TTestSynEdit }
 
   TTestSynEdit = class(TSynEdit)
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
+    function  TestFullText: String;
+    property ViewedTextBuffer;
   end;
 
   { TTestBase }
@@ -28,11 +32,19 @@ type
   protected
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
+    // Relpl,must be an alteration of LineNum, LineText+
+    function  LinesReplace(Lines: Array of String; Repl: Array of const): TStringArray;
   protected
     procedure ReCreateEdit;
     procedure SetLines(Lines: Array of String);
+    // Locical Caret
     procedure SetCaret(X, Y: Integer);
-    procedure SetCaretAndSel(X1, Y1, X2, Y2: Integer);
+    procedure SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+    procedure SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+    // Physical Caret
+    procedure SetCaretPhys(X, Y: Integer);
+    procedure SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+    procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
     procedure DoKeyPress(Key: Word; Shift: TShiftState);
 
     procedure TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
@@ -45,6 +57,19 @@ type
   protected
     procedure SetUp; override;
     procedure TearDown; override;
+  public
+    procedure TestIsCaret(Name: String; X, Y: Integer);
+    procedure TestIsCaretPhys(Name: String; X, Y: Integer);
+
+    // exclude trimspaces, as seen by other objects
+    procedure TestIsText(Name, Text: String; FullText: Boolean = False);
+    procedure TestIsText(Name: String; Lines: Array of String);
+    procedure TestIsText(Name: String; Lines: Array of String; Repl: Array of const);
+    // include trim-spaces
+    procedure TestIsFullText(Name, Text: String);
+    procedure TestIsFullText(Name: String; Lines: Array of String);
+    procedure TestIsFullText(Name: String; Lines: Array of String; Repl: Array of const);
+
   end;
 
 
@@ -81,6 +106,11 @@ begin
   KeyUp(Key, Shift);
 end;
 
+function TTestSynEdit.TestFullText: String;
+begin
+  Result := ViewedTextBuffer.Text;
+end;
+
 { TTestBase }
 
 procedure TTestBase.SetUp;
@@ -96,6 +126,79 @@ begin
   inherited TearDown;
   FreeAndNil(FSynEdit);
   FreeAndNil(FForm);
+end;
+
+procedure TTestBase.TestIsCaret(Name: String; X, Y: Integer);
+begin
+  if (SynEdit.LogicalCaretXY.X <> X) or (SynEdit.LogicalCaretXY.Y <> Y) then
+    TestFail(Name, 'IsCaret',
+             Format('X/Y=(%d, %d)', [X, Y]),
+             Format('X/Y=(%d, %d)', [SynEdit.LogicalCaretXY.X, SynEdit.LogicalCaretXY.Y]));
+end;
+
+procedure TTestBase.TestIsCaretPhys(Name: String; X, Y: Integer);
+begin
+  if (SynEdit.CaretXY.X <> X) or (SynEdit.CaretXY.Y <> Y) then
+    TestFail(Name, 'IsCaret(Phys)',
+             Format('X/Y=(%d, %d)', [X, Y]),
+             Format('X/Y=(%d, %d)', [SynEdit.CaretXY.X, SynEdit.CaretXY.Y]));
+end;
+
+procedure TTestBase.TestIsText(Name, Text: String; FullText: Boolean = False);
+var
+  i, j, x, y: Integer;
+  s: String;
+begin
+  if FullText then
+    s := SynEdit.TestFullText
+  else
+    s := SynEdit.Text;
+  if (s <> Text) then begin
+    i := 1; j := 1; x:= 1; y:= 1;
+    while i <= Min(length(s), length(Text)) do begin
+      if s[i] <> Text[i] then break;
+      if copy(Text, i, length(LineEnding)) = LineEnding then begin
+        inc(y);
+        x := 1;
+        j := i + length(lineEnding);
+        inc(i, length(LineEnding));
+      end
+      else
+        inc(i);
+    end;
+
+    TestFail(Name, Format('IsText - Failed at x/y=(%d, %d)%sExpected: "%s"...%sGot: "%s"%s%s ',
+                          [x, y, LineEnding,
+                           DbgStr(copy(Text,j, i-j+5)), LineEnding,
+                           DbgStr(copy(s,j, i-j+5)), LineEnding, LineEnding]),
+             '"'+DbgStr(Text)+'"', '"'+DbgStr(s)+'"');
+  end;
+end;
+
+procedure TTestBase.TestIsText(Name: String; Lines: array of String);
+begin
+  TestIsText(Name, LinesToText(Lines));
+end;
+
+procedure TTestBase.TestIsText(Name: String; Lines: Array of String; Repl: array of const);
+begin
+  TestIsText(Name, LinesToText(LinesReplace(Lines, Repl)));
+end;
+
+procedure TTestBase.TestIsFullText(Name, Text: String);
+begin
+  TestIsText(Name, Text, True);
+end;
+
+procedure TTestBase.TestIsFullText(Name: String; Lines: array of String);
+begin
+  TestIsFullText(Name, LinesToText(Lines));
+end;
+
+procedure TTestBase.TestIsFullText(Name: String; Lines: array of String;
+  Repl: array of const);
+begin
+  TestIsFullText(Name, LinesToText(LinesReplace(Lines, Repl)));
 end;
 
 procedure TTestBase.TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
@@ -126,6 +229,44 @@ begin
   end;
 end;
 
+function TTestBase.LinesReplace(Lines: Array of String; Repl: array of const): TStringArray;
+var
+  i, j, k: Integer;
+  s: String;
+begin
+  SetLength(Result, length(Lines));
+  for i := low(Lines) to high(Lines) do
+    Result[i-low(Lines)] := Lines[i];
+  i := low(Repl);
+  j := 0;
+  while i <= high(Repl) do begin
+    case Repl[i].VType of
+      vtInteger:
+        begin
+          j := Repl[i].vinteger - 1;
+          for k := j to high(Result) - 1 do
+            Result[k] := Result[k+1];
+          SetLength(Result, length(Result)-1);
+        end;
+      vtString, vtAnsiString, vtChar:
+        begin
+          case Repl[i].VType of
+            vtString:     s := Repl[i].VString^;
+            vtAnsiString: s := AnsiString(Repl[i].VAnsiString);
+            vtChar:       s := Repl[i].VChar;
+          end;
+          SetLength(Result, length(Result)+1);
+          for k := high(Result) - 1 downto j do
+            Result[k+1] := Result[k];
+          Result[j] := s;
+          inc(j);
+        end;
+      else Fail('???');
+    end;
+    inc(i);
+  end;
+end;
+
 procedure TTestBase.ReCreateEdit;
 begin
   FreeAndNil(FSynEdit);
@@ -148,11 +289,54 @@ begin
   SynEdit.LogicalCaretXY := Point(X, Y);
 end;
 
-procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer);
+procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
 begin
+  if DoLock then
+    SynEdit.BeginUpdate;
   SynEdit.LogicalCaretXY := Point(X2, Y2);
   SynEdit.BlockBegin := Point(X1, Y1);
   SynEdit.BlockEnd   := Point(X2, Y2);
+  if DoLock then
+    SynEdit.EndUpdate;
+end;
+
+procedure TTestBase.SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+begin
+  if DoLock then
+    SynEdit.BeginUpdate;
+  SynEdit.LogicalCaretXY := Point(X1, Y1);
+  SynEdit.BlockBegin := Point(X1, Y1);
+  SynEdit.BlockEnd   := Point(X2, Y2);
+  if DoLock then
+    SynEdit.EndUpdate;
+end;
+
+procedure TTestBase.SetCaretPhys(X, Y: Integer);
+begin
+  SynEdit.LogicalCaretXY := Point(X, Y);
+  SynEdit.BlockBegin := SynEdit.LogicalCaretXY;
+end;
+
+procedure TTestBase.SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
+begin
+  if DoLock then
+    SynEdit.BeginUpdate;
+  SynEdit.CaretXY := Point(X2, Y2);
+  SynEdit.BlockBegin := SynEdit.PhysicalToLogicalPos(Point(X1, Y1));
+  SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
+  if DoLock then
+    SynEdit.EndUpdate;
+end;
+
+procedure TTestBase.SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
+begin
+  if DoLock then
+    SynEdit.BeginUpdate;
+  SynEdit.LogicalCaretXY := Point(X1, Y1);
+  SynEdit.BlockBegin := SynEdit.PhysicalToLogicalPos(Point(X1, Y1));
+  SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
+  if DoLock then
+    SynEdit.EndUpdate;
 end;
 
 procedure TTestBase.DoKeyPress(Key: Word; Shift: TShiftState);
