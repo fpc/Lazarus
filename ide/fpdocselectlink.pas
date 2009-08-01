@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel, FileUtil,
+  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType,
   PackageIntf, ProjectIntf,
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs, Laz_DOM;
 
@@ -50,10 +50,16 @@ type
 
   TFPDocLinkCompletionList = class
   private
+    FBGColor: TColor;
+    FItemHeight: integer;
     FItems: TFPList; // list of TFPDocLinkCompletionItem
     FPrefix: string;
     FSelected: integer;
+    FSelectedBGColor: TColor;
+    FSelectedTextColor: TColor;
+    FTextColor: TColor;
     FTop: integer;
+    FVisibleItems: integer;
     function GetCount: integer;
     function GetItems(Index: integer): TFPDocLinkCompletionItem;
     procedure SetSelected(const AValue: integer);
@@ -69,9 +75,15 @@ type
     procedure Draw(Canvas: TCanvas; Width, Height: integer);
     property Count: integer read GetCount;
     property Items[Index: integer]: TFPDocLinkCompletionItem read GetItems;
+    property ItemHeight: integer read FItemHeight write FItemHeight;// pixel per item
+    property VisibleItems: integer read FVisibleItems write FVisibleItems;// visible lines
     property Top: integer read FTop write SetTop;
     property Selected: integer read FSelected write SetSelected;
     property Prefix: string read FPrefix write FPrefix;
+    property BGColor: TColor read FBGColor write FBGColor;
+    property TextColor: TColor read FTextColor write FTextColor;
+    property SelectedBGColor: TColor read FSelectedBGColor write FSelectedBGColor;
+    property SelectedTextColor: TColor read FSelectedTextColor write FSelectedTextColor;
   end;
 
   { TFPDocLinkEditorDlg }
@@ -167,8 +179,12 @@ end;
 
 procedure TFPDocLinkEditorDlg.CompletionBoxPaint(Sender: TObject);
 begin
-  CompletionBox.Canvas.Brush.Color:=clInfoBk;
-  CompletionBox.Canvas.Font.Color:=clInfoText;
+  fItems.BGColor:=clWindow;
+  fItems.TextColor:=clWindowText;
+  fItems.SelectedBGColor:=clHighlight;
+  fItems.SelectedTextColor:=clHighlightText;
+  fItems.ItemHeight:=Canvas.TextHeight('ABCTWSMgqp')+4;
+  fItems.VisibleItems:=CompletionBox.ClientHeight div fItems.ItemHeight;
   fItems.Draw(CompletionBox.Canvas,
               CompletionBox.ClientWidth,CompletionBox.ClientHeight);
 end;
@@ -181,8 +197,34 @@ end;
 
 procedure TFPDocLinkEditorDlg.LinkEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  Handled: Boolean;
 begin
-
+  if Shift=[] then begin
+    Handled:=true;
+    case Key of
+    VK_UP:
+      if FItems.Selected>0 then begin
+        FItems.Selected:=FItems.Selected-1;
+        if FItems.Top>fItems.Selected then
+          FItems.Top:=fItems.Selected;
+        CompletionBox.Invalidate;
+      end;
+    VK_DOWN:
+      if FItems.Selected<fItems.Count-1 then begin
+        FItems.Selected:=FItems.Selected+1;
+        if FItems.Selected>=fItems.Top+fItems.VisibleItems then
+          FItems.Top:=FItems.Top+1;
+        CompletionBox.Invalidate;
+      end;
+    VK_RETURN:
+      if (FItems.Selected>=0) and (FItems.Selected<fItems.Count) then
+        Link:=FItems.Items[fItems.Selected].Text;
+    else
+      Handled:=false;
+    end;
+    if Handled then Key:=VK_UNKNOWN;
+  end;
 end;
 
 procedure TFPDocLinkEditorDlg.SetSourceFilename(const AValue: string);
@@ -484,6 +526,8 @@ var
 begin
   for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
   FItems.Clear;
+  FSelected:=0;
+  FTop:=0;
 end;
 
 procedure TFPDocLinkCompletionList.AddPackage(Pkg: TLazPackage);
@@ -519,9 +563,18 @@ begin
   DebugLn(['TFPDocLinkCompletionList.Draw ',Width,' ',Height,' Count=',Count]);
   i:=Top;
   y:=0;
-  dy:=Canvas.TextHeight('ABCTWSMgqp')+4;
+  dy:=ItemHeight;
   while (y<Height) and (i<Count) do begin
     Item:=Items[i];
+    Canvas.Brush.Style:=bsSolid;
+    Canvas.Font.Style:=[];
+    if i=Selected then begin
+      Canvas.Brush.Color:=SelectedBGColor;
+      Canvas.Font.Color:=SelectedTextColor;
+    end else begin
+      Canvas.Brush.Color:=BGColor;
+      Canvas.Font.Color:=TextColor;
+    end;
     Canvas.FillRect(0,y,Width,y+dy);
     s:=Item.Text;
     Canvas.TextOut(2,y+2,s);
@@ -531,6 +584,7 @@ begin
     inc(i);
   end;
   if y<Height then begin
+    Canvas.Brush.Color:=BGColor;
     Canvas.FillRect(0,y,Width,Height);
   end;
 end;

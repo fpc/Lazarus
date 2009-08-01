@@ -10,10 +10,10 @@
         <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="lazres"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -36,11 +36,6 @@
         <Filename Value="lazres.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazRes"/>
-        <CursorPos X="23" Y="101"/>
-        <TopLine Value="82"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="21"/>
-        <Loaded Value="True"/>
       </Unit0>
     </Units>
   </ProjectOptions>
