@@ -908,8 +908,10 @@ var
   s: string;
 begin
   s := Strings[LogY - 1];
-  if LogX - 1 > Length(s) then
+  if LogX - 1 > Length(s) then begin
     AText := StringOfChar(' ', LogX - 1 - Length(s)) + AText;
+    LogX := Length(s) + 1;
+  end;
   Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s));
   UndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
   MarkModified(LogY, LogY);
@@ -921,6 +923,8 @@ var
   s: string;
 begin
   s := Strings[LogY - 1];
+  if LogX - 1 > Length(s) then
+    exit;
   Result := copy(s, LogX, ByteLen);
   Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
   UndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
