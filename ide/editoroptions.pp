@@ -550,7 +550,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 4;
+  EditorOptsFormatVersion = 5;
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -731,6 +731,7 @@ type
     FUseCodeFolding: Boolean;
 
     function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
+    function OldAdditionalAttributeName(NewAha:String): string;
   public
     class function GetGroupCaption:string; override;
   public
@@ -1147,8 +1148,7 @@ begin
   if PropCount>0 then begin
     try
       for i := 0 to PropCount-1 do
-        if IsStoredProp(Obj, PropList^[i]) then
-          WriteProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
+        WriteProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
     finally
       Freemem(PropList);
     end;
@@ -1410,8 +1410,7 @@ begin
   if PropCount>0 then begin
     try
       for i := 0 to PropCount-1 do
-        if IsStoredProp(Obj, PropList^[i]) then
-          ReadProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
+        ReadProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
     finally
       Freemem(PropList);
     end;
@@ -2602,6 +2601,17 @@ begin
   result:=GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
 end;
 
+function TEditorOptions.OldAdditionalAttributeName(NewAha: String): string;
+var
+  AttriIdx: Integer;
+begin
+  AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), NewAha);
+  if AttriIdx < 0 then
+    Result := NewAha
+  else
+    Result := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
+end;
+
 class function TEditorOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupEditor;
@@ -2929,43 +2939,48 @@ begin
     for i := 0 to Syn.AttrCount - 1 do
     begin
       Attri := Syn.Attribute[i];
-      //AttriName := StrToValidXMLName(Attri.StoredName);
-      AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute),
-        StrToValidXMLName(Attri.StoredName));
-      if AttriIdx < 0 then
+      // Read version <= 4 if exist, or keep values
+      AttriName := OldAdditionalAttributeName(Attri.StoredName);
+      if AttriName <> '' then begin
+        Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
+          Syn.LanguageName) + '/Scheme' + StrToValidXMLName(
+          SynColorScheme) + '/' + StrToValidXMLName(AttriName) + '/';
+        Attri.BackGround := XMLConfig.GetValue(Path + 'BackgroundColor/Value',
+          Attri.Background);
+        Attri.ForeGround := XMLConfig.GetValue(Path + 'ForegroundColor/Value',
+          Attri.Foreground);
+        Attri.FrameColor := XMLConfig.GetValue(Path + 'FrameColor/Value',
+          Attri.FrameColor);
+        fs   := [];
+        b    := XMLConfig.GetValue(Path + 'Style/Bold', fsBold in Attri.Style);
+        if b then
+          Include(fs, fsBold);
+        b := XMLConfig.GetValue(Path + 'Style/Italic', fsItalic in Attri.Style);
+        if b then
+          Include(fs, fsItalic);
+        b := XMLConfig.GetValue(Path + 'Style/Underline', fsUnderline in Attri.Style);
+        if b then
+          Include(fs, fsUnderline);
+        Attri.Style := fs;
+        fs   := [];
+        b    := XMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Attri.StyleMask);
+        if b then
+          Include(fs, fsBold);
+        b := XMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Attri.StyleMask);
+        if b then
+          Include(fs, fsItalic);
+        b := XMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Attri.StyleMask);
+        if b then
+          Include(fs, fsUnderline);
+        Attri.StyleMask := fs;
+      end;
+      // Read the Version >= 5 if exist, or keep values
+      if Attri.StoredName = '' then
         continue;
-      AttriName := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
       Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
         Syn.LanguageName) + '/Scheme' + StrToValidXMLName(
-        SynColorScheme) + '/' + StrToValidXMLName(AttriName) + '/';
-      Attri.BackGround := XMLConfig.GetValue(Path + 'BackgroundColor/Value',
-        Attri.Background);
-      Attri.ForeGround := XMLConfig.GetValue(Path + 'ForegroundColor/Value',
-        Attri.Foreground);
-      Attri.FrameColor := XMLConfig.GetValue(Path + 'FrameColor/Value',
-        Attri.FrameColor);
-      fs   := [];
-      b    := XMLConfig.GetValue(Path + 'Style/Bold', fsBold in Attri.Style);
-      if b then
-        Include(fs, fsBold);
-      b := XMLConfig.GetValue(Path + 'Style/Italic', fsItalic in Attri.Style);
-      if b then
-        Include(fs, fsItalic);
-      b := XMLConfig.GetValue(Path + 'Style/Underline', fsUnderline in Attri.Style);
-      if b then
-        Include(fs, fsUnderline);
-      Attri.Style := fs;
-      fs   := [];
-      b    := XMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Attri.StyleMask);
-      if b then
-        Include(fs, fsBold);
-      b := XMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Attri.StyleMask);
-      if b then
-        Include(fs, fsItalic);
-      b := XMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Attri.StyleMask);
-      if b then
-        Include(fs, fsUnderline);
-      Attri.StyleMask := fs;
+        SynColorScheme) + '/' + StrToValidXMLName(Attri.StoredName) + '/';
+      XMLConfig.ReadObject(Path, Attri, Attri);
     end// read all attributes
   else
   if Syn is TPreviewPasSyn then
@@ -3008,7 +3023,6 @@ var
   AttriName: String;
   Attri, OldAttri: TSynHighlightElement;
   Path:   String;
-  AttriIdx: Integer;
 begin
   // read the old settings, compare and write only the differences
   if SynColorScheme = '' then
@@ -3016,7 +3030,7 @@ begin
   OldSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
   try
     AddSpecialHilightAttribsToHighlighter(OldSyn);
-    ReadHighlighterSettings(OldSyn, SynColorScheme);
+    ReadDefaultsForHighlighterSettings(OldSyn, SynColorScheme, nil);
     // write colorscheme
     XMLConfig.SetValue('EditorOptions/Color/Lang' +
       StrToValidXMLName(Syn.LanguageName) + '/Version',
@@ -3026,35 +3040,18 @@ begin
     begin
       Attri := Syn.Attribute[i];
       OldAttri := OldSyn.Attribute[i];
-      //AttriName := StrToValidXMLName(Attri.StoredName);
-      AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute),
-        StrToValidXMLName(Attri.StoredName));
-      if AttriIdx < 0 then
+      Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(Syn.LanguageName) +
+              '/Scheme' + StrToValidXMLName(SynColorScheme) + '/';
+               ;
+      // Delete Version <= 4
+      AttriName := OldAdditionalAttributeName(Attri.StoredName);
+      if AttriName <> '' then
+        XMLConfig.DeletePath(Path + StrToValidXMLName(AttriName));
+      // Write Version >= 5
+      if Attri.StoredName = '' then
         continue;
-      AttriName := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
-      //if AttriName = '' then
-      //  continue;
-      Path := 'EditorOptions/Color/Lang' + StrToValidXMLName(
-        Syn.LanguageName) + '/Scheme' + StrToValidXMLName(
-        SynColorScheme) + '/' + StrToValidXMLName(AttriName) + '/';
-      if Attri.Background <> OldAttri.Background then
-        XMLConfig.SetValue(Path + 'BackgroundColor/Value', Attri.Background);
-      if Attri.Foreground <> OldAttri.Foreground then
-        XMLConfig.SetValue(Path + 'ForegroundColor/Value', Attri.Foreground);
-      if Attri.FrameColor <> OldAttri.FrameColor then
-        XMLConfig.SetValue(Path + 'FrameColor/Value', Attri.FrameColor);
-      if Attri.Style <> OldAttri.Style then
-      begin
-        XMLConfig.SetValue(Path + 'Style/Bold', fsBold in Attri.Style);
-        XMLConfig.SetValue(Path + 'Style/Italic', fsItalic in Attri.Style);
-        XMLConfig.SetValue(Path + 'Style/Underline', fsUnderline in Attri.Style);
-      end;
-      if Attri.StyleMask <> OldAttri.StyleMask then
-      begin
-        XMLConfig.SetValue(Path + 'StyleMask/Bold', fsBold in Attri.StyleMask);
-        XMLConfig.SetValue(Path + 'StyleMask/Italic', fsItalic in Attri.StyleMask);
-        XMLConfig.SetValue(Path + 'StyleMask/Underline', fsUnderline in Attri.StyleMask);
-      end;
+      XMLConfig.WriteObject(Path + StrToValidXMLName(Attri.StoredName) + '/',
+                             Attri, OldAttri);
     end;
   finally
     OldSyn.Free;
