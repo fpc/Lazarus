@@ -169,7 +169,12 @@ begin
   LinkEdit.Text:='';
   TitleEdit.Text:='';
 
+  // disable return key
+  ButtonPanel1.OKButton.Default:=false;
+
   FItems:=TFPDocLinkCompletionList.Create;
+
+  ActiveControl:=LinkEdit;
 end;
 
 procedure TFPDocLinkEditorDlg.FormDestroy(Sender: TObject);
@@ -473,7 +478,7 @@ end;
 procedure TFPDocLinkEditorDlg.SetLink(const AValue: string);
 begin
   if FItems=nil then exit;
-  if Link=fItems.Prefix then exit;
+  if AValue=fItems.Prefix then exit;
   LinkEdit.Text:=AValue;
   UpdateCompletionBox;
 end;

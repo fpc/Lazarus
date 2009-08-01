@@ -3,7 +3,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   Height = 282
   Top = 304
   Width = 408
-  ActiveControl = LinkEdit
+  ActiveControl = TitleEdit
   Caption = 'FPDocLinkEditorDlg'
   ClientHeight = 282
   ClientWidth = 408
