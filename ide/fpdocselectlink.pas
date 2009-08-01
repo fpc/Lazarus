@@ -51,6 +51,7 @@ type
   TFPDocLinkCompletionList = class
   private
     FItems: TFPList; // list of TFPDocLinkCompletionItem
+    FPrefix: string;
     FSelected: integer;
     FTop: integer;
     function GetCount: integer;
@@ -70,6 +71,7 @@ type
     property Items[Index: integer]: TFPDocLinkCompletionItem read GetItems;
     property Top: integer read FTop write SetTop;
     property Selected: integer read FSelected write SetSelected;
+    property Prefix: string read FPrefix write FPrefix;
   end;
 
   { TFPDocLinkEditorDlg }
@@ -173,6 +175,7 @@ end;
 
 procedure TFPDocLinkEditorDlg.LinkEditChange(Sender: TObject);
 begin
+  DebugLn(['TFPDocLinkEditorDlg.LinkEditChange "',LinkEdit.Text,'"']);
   Link:=LinkEdit.Text;
 end;
 
@@ -232,6 +235,7 @@ begin
   if FItems=nil then exit;
   fItems.Clear;
   l:=LinkEdit.Text;
+  FItems.Prefix:=l;
   DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
   AddSubIdentifiers(l);
   CompletionBox.Invalidate;
@@ -311,24 +315,40 @@ procedure TFPDocLinkEditorDlg.AddIdentifiers(ModuleOwner: TObject;
 var
   DOMNode: TDOMNode;
   ElementName: String;
+  p: Integer;
+  ModuleName: String;
 begin
   if FPDocFile=nil then exit;
   DOMNode:=FPDocFile.GetFirstElement;
   while DOMNode<>nil do begin
     if (DOMNode is TDomElement) then begin
       ElementName:=TDomElement(DOMNode).GetAttribute('name');
-      if (System.Pos('.',ElementName)<1)
-      and (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
+      if (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
       then begin
-        if (FPDocFile<>nil) and (FPDocFile<>StartFPDocFile) then begin
-          // different unit
-          ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
+        // same prefix
+        // skip sub identifiers
+        p:=length(Prefix)+1;
+        while (p<=length(ElementName)) and (ElementName[p]<>'.') do inc(p);
+        if p>length(ElementName) then begin
+          if (FPDocFile<>nil) and (FPDocFile<>StartFPDocFile) then begin
+            // different unit
+            ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
+          end;
+          if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
+            // different module
+            if ModuleOwner is TLazProject then begin
+              ModuleName:=lowercase(ExtractFileNameOnly(TLazProject(ModuleOwner).ProjectInfoFile));
+            end else if ModuleOwner is TLazPackage then begin
+              ModuleName:=TLazPackage(ModuleOwner).Name;
+            end;
+            if ModuleName<>'' then
+              ElementName:=ModuleName+'.'+ElementName
+            else
+              ElementName:='';
+          end;
+          if ElementName<>'' then
+            FItems.AddIdentifier(ElementName);
         end;
-        if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
-          // different unit
-          //ElementName:=ExtractFileNameOnly(FPDocFile.Filename)+'.'+ElementName;
-        end;
-        FItems.AddIdentifier(ElementName);
       end;
     end;
     DOMNode:=DOMNode.NextSibling;
@@ -354,17 +374,19 @@ begin
     // empty  : show all packages, all units of current project/package and all identifiers of unit
     // #l     : show all packages beginning with the letter l
     // f      : show all units and all identifiers beginning with the letter f
-    if (Path='') or (Path[1]='#') then
-      AddPackagesToCompletion(copy(Path,2,length(Path)));
-    if (Path='') or (Path[1]<>'#') then begin
-      AddModuleUnits(StartModuleOwner,Path);
-      AddIdentifiers(StartModuleOwner,StartFPDocFile,Path);
+    if (Prefix='') or (Prefix[1]='#') then
+      AddPackagesToCompletion(copy(Prefix,2,length(Prefix)));
+    if (Prefix='') or (Prefix[1]<>'#') then begin
+      AddModuleUnits(StartModuleOwner,Prefix);
+      AddIdentifiers(StartModuleOwner,StartFPDocFile,Prefix);
     end;
   end else begin
     // sub identifier
+    DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers searching context ..']);
     HelpResult:=CodeHelpBoss.GetLinkedFPDocNode(StartFPDocFile,nil,Path,
       [chofUpdateFromDisk,chofQuiet],ModuleOwner,FPDocFile,DOMNode,CacheWasUsed);
     if HelpResult<>chprSuccess then exit;
+    DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers context found: ModuleOwner=',DbgSName(ModuleOwner),' FPDocFile=',FPDocFile<>nil,' DOMNode=',DOMNode<>nil]);
     if DOMNode is TDomElement then begin
       DOMElement:=TDomElement(DOMNode);
       AddIdentifiers(ModuleOwner,FPDocFile,DOMElement.GetAttribute('name')+'.'+Prefix);
@@ -408,7 +430,8 @@ end;
 
 procedure TFPDocLinkEditorDlg.SetLink(const AValue: string);
 begin
-  if Link=AValue then exit;
+  if FItems=nil then exit;
+  if Link=fItems.Prefix then exit;
   LinkEdit.Text:=AValue;
   UpdateCompletionBox;
 end;
