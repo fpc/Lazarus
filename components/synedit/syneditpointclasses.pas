@@ -882,8 +882,8 @@ var
             if xe > xb then
               FLines.EditDelete(xb, y, xe - xb);
           end;
-          BB.X := Min(BB.X, BE.X);
-          FInternalCaret.LineBytePos := BB;
+          FInternalCaret.LineCharPos := Point(l, BB.Y);
+          BB := FInternalCaret.LineBytePos;
           // Column deletion never removes a line entirely, so no mark
           // updating is needed here.
         end;
@@ -1297,9 +1297,17 @@ end;
 
 function TSynEditSelection.SelAvail : Boolean;
 begin
-  Result := (not FHide) and
-            ( (FStartBytePos <> FEndBytePos) or
-              ((FStartLinePos <> FEndLinePos) and (FActiveSelectionMode <> smColumn)) );
+  if FHide then exit(False);
+  if (FActiveSelectionMode = smColumn) then begin
+    Result := (FStartBytePos <> FEndBytePos) and (FStartLinePos = FEndLinePos);
+    if (not Result) and (FStartLinePos <> FEndLinePos) then begin
+      // Todo: Cache values, but we need notification, if ines are modified (even only by change of tabwidth...)
+      Result := Lines.LogicalToPhysicalPos(StartLineBytePos).X <>
+                Lines.LogicalToPhysicalPos(EndLineBytePos).X;
+    end;
+  end
+  else
+    Result := (FStartBytePos <> FEndBytePos) or (FStartLinePos <> FEndLinePos);
 end;
 
 function TSynEditSelection.SelCanContinue(ACaret: TSynEditCaret): Boolean;
