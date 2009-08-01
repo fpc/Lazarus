@@ -35,7 +35,7 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
-uses Classes, SysUtils, FileUtil, LCLProc, LResources;
+uses Classes, SysUtils, FileUtil, LCLProc;
 
 function StreamIsFormInTextFormat(Stream: TMemoryStream): boolean;
 const
