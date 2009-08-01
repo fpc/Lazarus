@@ -1539,11 +1539,12 @@ begin
   NewFileTreeView.BeginUpdate;
   NewFileTreeView.Items.Clear;
   Category:=NewIDEItems.FindByName(FileDescGroupName);
-  NewParentNode:=NewFileTreeView.Items.AddObject(nil,Category.Name,Category);
+  NewParentNode:=NewFileTreeView.Items.AddObject(nil,Category.LocalizedName,
+                                                 Category);
   for TemplateID:=0 to Category.Count-1 do begin
     Template:=Category[TemplateID];
     if Template.VisibleInNewDialog and (Template is TNewItemProjectFile) then
-      NewFileTreeView.Items.AddChildObject(NewParentNode,Template.Name,
+      NewFileTreeView.Items.AddChildObject(NewParentNode,Template.LocalizedName,
                                            Template);
   end;
   NewParentNode.Expand(true);
