@@ -319,7 +319,7 @@ begin
     ACursorWasSet := False;
     
     // if widget has default cursor set - get it from Carbon
-    if TCarbonCursor(Widget.Cursor).Default then
+    if (Widget.Cursor<>0) and TCarbonCursor(Widget.Cursor).Default then
     begin
       GlobalToLocal(ALocation);
 
