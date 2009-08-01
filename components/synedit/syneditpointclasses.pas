@@ -848,12 +848,12 @@ var
             end;
             if BE.Y > BB.Y then begin
               l := length(FLines[BB.Y - 1]);
-              if BB.X > l + 1 then BB.X := l + 1;
-              BE.X := BE.X + l;
-              FLines.EditLineJoin(BB.Y);
+              BE.X := BE.X + BB.X - 1;
+              FLines.EditLineJoin(BB.Y, StringOfChar(' ', Max(0, BB.X - (l+1))));
               BE.Y := BB.Y;
             end;
-            FLines.EditDelete(BB.X, BB.Y, BE.X - BB.X);
+            if BE.X <> BB.X then
+              FLines.EditDelete(BB.X, BB.Y, BE.X - BB.X);
           end;
           FInternalCaret.LineBytePos := BB;
         end;
