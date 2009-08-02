@@ -752,7 +752,6 @@ begin
     FCursor := AValue;
     WidgetSet.SetCursor(Cursors[FCursor]);
   end;
-  Inc(FCursorCount);
 end;
 
 {------------------------------------------------------------------------------

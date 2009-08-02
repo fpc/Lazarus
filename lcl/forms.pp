@@ -844,7 +844,6 @@ type
     FActiveCustomForm: TCustomForm;
     FActiveForm: TForm;
     FCursor: TCursor;
-    FCursorCount: integer;
     FCursorMap: TMap;
     FCustomForms: TList;
     FCustomFormsZOrdered: TList;
