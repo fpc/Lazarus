@@ -108,7 +108,7 @@ end;
 Procedure RegisterTemplateCategory;
 
 begin
-  NewIDEItems.Add(STemplateCategory);
+  NewIDEItems.Add(TNewIDEItemCategory.Create(STemplateCategory));
 end;
 
 Procedure DoProject(Sender : TObject);
