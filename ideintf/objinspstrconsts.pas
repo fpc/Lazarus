@@ -451,6 +451,8 @@ resourcestring
   pirsDebugSearchPath = 'Debug search path';
   pirsLinkerOptions = 'Linker options';
   pirsCustomOptions = 'Custom options';
+  oisIndexOutOfBounds = 'Index out of bounds';
+  oisNotSupported = 'not supported';
 
 implementation
 

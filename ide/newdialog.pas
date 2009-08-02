@@ -50,26 +50,8 @@ type
   { TNewLazIDEItemCategory }
 
   TNewLazIDEItemCategory = class(TNewIDEItemCategory)
-  private
-    FItems: TList;
-  protected
-    function GetCount: integer; override;
-    function GetItems(Index: integer): TNewIDEItemTemplate; override;
   public
-    constructor Create;
-    constructor Create(const AName: string); override;
-    destructor Destroy; override;
-    procedure Clear; override;
-    procedure Add(ATemplate: TNewIDEItemTemplate); override;
-    function LocalizedName: string; override;
     function Description: string; override;
-    function IndexOfTemplate(const TemplateName: string): integer; override;
-    function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; override;
-    function IndexOfCategory(const CategoryName: string): integer; override;
-    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; override;
-  public
-    property Count: integer Read GetCount;
-    property Items[Index: integer]: TNewIDEItemTemplate Read GetItems; default;
   end;
 
 
@@ -86,7 +68,6 @@ type
     destructor Destroy; override;
     procedure Clear; override;
     procedure Add(ACategory: TNewIDEItemCategory); override;
-    procedure Add(ACategoryName: string); override;
     function Count: integer; override;
     function IndexOf(const CategoryName: string): integer; override;
     function FindByName(const CategoryName: string): TNewIDEItemCategory; override;
@@ -401,58 +382,6 @@ end;
 
 { TNewLazIDEItemCategory }
 
-function TNewLazIDEItemCategory.GetCount: integer;
-begin
-  Result := FItems.Count;
-end;
-
-function TNewLazIDEItemCategory.GetItems(Index: integer): TNewIDEItemTemplate;
-begin
-  Result := TNewIDEItemTemplate(FItems[Index]);
-end;
-
-constructor TNewLazIDEItemCategory.Create;
-begin
-  raise Exception.Create('TNewLazIDEItemCategory.Create: call Create(Name) instead');
-end;
-
-constructor TNewLazIDEItemCategory.Create(const AName: string);
-begin
-  inherited Create(AName);
-  FItems := TList.Create;
-  FName  := AName;
-  //debugln('TNewLazIDEItemCategory.Create ',Name);
-end;
-
-destructor TNewLazIDEItemCategory.Destroy;
-begin
-  Clear;
-  FItems.Free;
-  inherited Destroy;
-end;
-
-procedure TNewLazIDEItemCategory.Clear;
-var
-  i: integer;
-begin
-  for i := 0 to FItems.Count - 1 do
-    Items[i].Free;
-  FItems.Clear;
-end;
-
-procedure TNewLazIDEItemCategory.Add(ATemplate: TNewIDEItemTemplate);
-begin
-  //debugln('TNewLazIDEItemCategory.Add ',Name);
-  FItems.Add(ATemplate);
-  ATemplate.Category := Self;
-end;
-
-function TNewLazIDEItemCategory.LocalizedName: string;
-begin
-  // ToDo:
-  Result := Name;
-end;
-
 function TNewLazIDEItemCategory.Description: string;
 begin
   if Name = 'File' then
@@ -461,43 +390,6 @@ begin
     Result := Format(lisNewDlgCreateANewProjectChooseAType, [#13])
   else
     Result := '';
-end;
-
-function TNewLazIDEItemCategory.IndexOfTemplate(const TemplateName: string): integer;
-begin
-  Result:=FItems.Count-1;
-  while (Result>=0) and (SysUtils.CompareText(Items[Result].Name,TemplateName)<>0) do
-    dec(Result);
-end;
-
-function TNewLazIDEItemCategory.FindTemplateByName(
-  const TemplateName: string): TNewIDEItemTemplate;
-var
-  i: longint;
-begin
-  i := IndexOfTemplate(TemplateName);
-  if i >= 0 then
-    Result := Items[i]
-  else
-    Result := nil;
-end;
-
-function TNewLazIDEItemCategory.IndexOfCategory(const CategoryName: string
-  ): integer;
-begin
-  Result:=-1; // Todo
-end;
-
-function TNewLazIDEItemCategory.FindCategoryByName(const CategoryName: string
-  ): TNewIDEItemCategory;
-var
-  i: LongInt;
-begin
-  i := IndexOfCategory(CategoryName);
-  if i >= 0 then
-    Result := nil // ToDo
-  else
-    Result := nil;
 end;
 
 { TNewLazIDEItemCategories }
@@ -537,19 +429,6 @@ end;
 procedure TNewLazIDEItemCategories.Add(ACategory: TNewIDEItemCategory);
 begin
   FItems.Add(ACategory);
-end;
-
-procedure TNewLazIDEItemCategories.Add(ACategoryName: string);
-var
-  I: integer;
-begin
-  I := IndexOf(ACategoryName);
-  if I <> -1 then
-  begin
-    Items[I].Free;
-    FItems.Delete(I);
-  end;
-  Add(TNewLazIDEItemCategoryFile.Create(ACategoryName));
 end;
 
 function TNewLazIDEItemCategories.Count: integer;

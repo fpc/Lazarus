@@ -79,13 +79,13 @@ Resourcestring
 Procedure Register;
 
 begin
-  RegisterNewItemCategory(SDaemonApps);
+  RegisterNewItemCategory(TNewIDEItemCategory.Create(SDaemonApps));
   RegisterProjectDescriptor(TDaemonProjectDescriptor.Create,SDaemonApps);
   RegisterProjectFileDescriptor(TDaemonFileDescriptor.Create,SDaemonApps);
   RegisterProjectFileDescriptor(TDaemonMapperDescriptor.Create,SDaemonApps);
   FormEditingHook.RegisterDesignerBaseClass(TDaemonMapper);
   FormEditingHook.RegisterDesignerBaseClass(TDaemon);
- end;
+end;
 
 
 { TDaemonFileDescriptor }

@@ -8,8 +8,7 @@ uses
   Classes, SysUtils, Forms;
 
 Type
-  TFormClass = Class of TForm;
-  
+
   { TCustomFormDescr }
 
   TCustomFormDescr = Class
@@ -161,7 +160,9 @@ begin
     For I:=0 to CustomFormList.Count-1 do
       L.Add(TCustomFormDescr(CustomFormList[i]).Category);
     For I:=0 to L.Count-1 do
-      RegisterNewItemCategory(L[i]);
+    begin
+      RegisterNewItemCategory(TNewIDEItemCategory.Create(L[i]));
+    end;
   Finally
     L.Free;
   end;

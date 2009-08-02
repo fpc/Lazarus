@@ -22,7 +22,7 @@ unit NewItemIntf;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, ObjInspStrConsts;
 
 type
   // Flags/Options for the items
@@ -43,18 +43,20 @@ type
     FVisibleInNewDialog: boolean;
   protected
     FName: string;
-    function GetCount: integer; virtual; abstract;
-    function GetItems(Index: integer): TNewIDEItemTemplate; virtual; abstract;
+    FItems: TFPList;
+    function GetCount: integer; virtual;
+    function GetItems(Index: integer): TNewIDEItemTemplate; virtual;
   public
     constructor Create(const AName: string); virtual;
-    procedure Clear; virtual; abstract;
-    procedure Add(ATemplate: TNewIDEItemTemplate); virtual; abstract;
-    function LocalizedName: string;  virtual; abstract;
-    function Description: string;  virtual; abstract;
-    function IndexOfTemplate(const TemplateName: string): integer; virtual; abstract;
-    function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; virtual; abstract;
-    function IndexOfCategory(const CategoryName: string): integer; virtual; abstract;
-    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; virtual; abstract;
+    destructor Destroy; override;
+    procedure Clear; virtual;
+    procedure Add(ATemplate: TNewIDEItemTemplate); virtual;
+    function LocalizedName: string;  virtual;
+    function Description: string;  virtual;
+    function IndexOfTemplate(const TemplateName: string): integer; virtual;
+    function FindTemplateByName(const TemplateName: string): TNewIDEItemTemplate; virtual;
+    function IndexOfCategory(const CategoryName: string): integer; virtual;
+    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; virtual;
   public
     property Count: integer read GetCount;
     property Items[Index: integer]: TNewIDEItemTemplate read GetItems; default;
@@ -72,7 +74,6 @@ type
   public
     procedure Clear; virtual; abstract;
     procedure Add(ACategory: TNewIDEItemCategory); virtual; abstract;
-    Procedure Add(ACategoryName : String); virtual; abstract; 
     function Count: integer; virtual; abstract;
     function IndexOf(const CategoryName: string): integer; virtual; abstract;
     function FindByName(const CategoryName: string): TNewIDEItemCategory; virtual; abstract;
@@ -123,13 +124,13 @@ procedure RegisterNewDialogItem(const Paths: string;
   NewItem: TNewIDEItemTemplate);
 procedure UnregisterNewDialogItem(NewItem: TNewIDEItemTemplate);
 
-procedure RegisterNewItemCategory(const ACategory: String);
+procedure RegisterNewItemCategory(ACategory: TNewIDEItemCategory);
 
 
 implementation
 
 
-procedure RegisterNewItemCategory(const ACategory: String);
+procedure RegisterNewItemCategory(ACategory: TNewIDEItemCategory);
 begin
   NewIdeItems.Add(ACategory);
 end;
@@ -151,9 +152,91 @@ end;
 
 { TNewIDEItemCategory }
 
+function TNewIDEItemCategory.GetCount: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TNewIDEItemCategory.GetItems(Index: integer): TNewIDEItemTemplate;
+begin
+  Result:=TNewIDEItemTemplate(FItems[Index]);
+end;
+
 constructor TNewIDEItemCategory.Create(const AName: string);
 begin
   FVisibleInNewDialog:=true;
+  FItems := TFPList.Create;
+  FName  := AName;
+end;
+
+destructor TNewIDEItemCategory.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TNewIDEItemCategory.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FItems.Count - 1 do
+    Items[i].Free;
+  FItems.Clear;
+end;
+
+procedure TNewIDEItemCategory.Add(ATemplate: TNewIDEItemTemplate);
+begin
+  FItems.Add(ATemplate);
+  ATemplate.Category := Self;
+end;
+
+function TNewIDEItemCategory.LocalizedName: string;
+begin
+  Result:=Name;
+end;
+
+function TNewIDEItemCategory.Description: string;
+begin
+  Result:='';
+end;
+
+function TNewIDEItemCategory.IndexOfTemplate(const TemplateName: string
+  ): integer;
+begin
+  Result:=FItems.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(Items[Result].Name,TemplateName)<>0) do
+    dec(Result);
+end;
+
+function TNewIDEItemCategory.FindTemplateByName(const TemplateName: string
+  ): TNewIDEItemTemplate;
+var
+  i: LongInt;
+begin
+  i := IndexOfTemplate(TemplateName);
+  if i >= 0 then
+    Result := Items[i]
+  else
+    Result := nil;
+end;
+
+function TNewIDEItemCategory.IndexOfCategory(const CategoryName: string
+  ): integer;
+begin
+  Result:=-1; // ToDo
+end;
+
+function TNewIDEItemCategory.FindCategoryByName(const CategoryName: string
+  ): TNewIDEItemCategory;
+var
+  i: LongInt;
+begin
+  i := IndexOfCategory(CategoryName);
+  if i >= 0 then
+    Result := nil // ToDo
+  else
+    Result := nil;
 end;
 
 { TNewIDEItemTemplate }
