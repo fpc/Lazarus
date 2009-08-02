@@ -8569,13 +8569,14 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
-  if (not Project1.IsVirtual) and (not (sfDoNotSaveVirtualFiles in Flags)) then
+  if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
     // (this can alter the mainunit: e.g. used unit names)
     for i:=0 to Project1.UnitCount-1 do begin
       AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.Loaded) and (AnUnitInfo.IsVirtual)
+      if (AnUnitInfo.Loaded) and AnUnitInfo.IsVirtual
+      and AnUnitInfo.IsPartOfProject
       and (Project1.MainUnitID<>i) then begin
         SaveFileFlags:=[sfSaveAs,sfProjectSaving]
                        +[sfCheckAmbiguousFiles]*Flags;
