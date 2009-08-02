@@ -2324,6 +2324,8 @@ begin
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
+    end else if CreateNodes and UpAtomIs('ON') then begin
+      ReadOnStatement(true,CreateNodes);
     end else begin
       // check for unexpected keywords
       case BlockType of
