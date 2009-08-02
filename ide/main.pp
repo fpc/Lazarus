@@ -8789,7 +8789,6 @@ begin
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
     RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
-  Ext:=lowercase(ExtractFileExt(AFilename));
 
   // check if file exists
   if not FileExistsUTF8(AFilename) then begin
@@ -8802,6 +8801,7 @@ begin
   // check symbolic link
   Result:=ChooseSymlink(AFilename);
   if Result<>mrOk then exit;
+  Ext:=lowercase(ExtractFileExt(AFilename));
 
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then begin
