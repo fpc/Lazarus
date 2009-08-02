@@ -1352,6 +1352,7 @@ begin
     NeedIdentifier:=true;
     IsArrayType:=UpAtomIs('ARRAY');
     if IsArrayType then begin
+      //DebugLn(['TPascalParserTool.ReadParamType is array ',MainFilename,' ',CleanPosToStr(curPos.StartPos)]);
       if (phpCreateNodes in Attr) then begin
         CreateChildNode;
         CurNode.Desc:=ctnOpenArrayType;

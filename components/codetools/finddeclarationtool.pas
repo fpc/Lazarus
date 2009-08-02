@@ -2954,7 +2954,7 @@ begin
           begin
             BuildSubTreeForProcHead(ContextNode);
             if ContextNode.FirstChild<>nil then
-              ContextNode:=ContextNode.FirstChild;
+              ContextNode:=ContextNode.FirstChild; // the ctnParameterList
           end;
 
         ctnProgram, ctnPackage, ctnLibrary, ctnUnit:
