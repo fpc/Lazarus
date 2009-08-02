@@ -1625,6 +1625,8 @@ begin
     end;
   end;
 
+  SourceChangeCache.Clear;
+
   // adjust error topline
   AdjustErrorTopLine;
   // write error
