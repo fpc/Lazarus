@@ -6789,6 +6789,14 @@ begin
   EnvironmentOptions.AddToRecentProjectFiles(NewLPIFilename);
   SetRecentProjectFilesMenu;
 
+  // switch working directory
+  try
+    SetCurrentDirUTF8(ExtractFilePath(NewLPIFilename));
+  except
+    on E: Exception do
+      DebugLn(['TMainIDE.DoShowSaveProjectAsDialog SetCurrentDirUTF8: ',E.Message]);
+  end;
+
   // change main source
   if (Project1.MainUnitID >= 0) then
   begin
@@ -8804,7 +8812,8 @@ begin
   Ext:=lowercase(ExtractFileExt(AFilename));
 
   // if there is a project info file, load that instead
-  if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then begin
+  if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then
+  begin
     // load instead of program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
     Ext:='.lpi';
@@ -8829,6 +8838,14 @@ begin
 
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
+
+  // switch working directory
+  try
+    SetCurrentDirUTF8(ExtractFilePath(AFilename));
+  except
+    on E: Exception do
+      DebugLn(['TMainIDE.DoOpenProjectFile SetCurrentDirUTF8: ',E.Message]);
+  end;
 
   // create a new project
   {$IFDEF IDE_VERBOSE}
