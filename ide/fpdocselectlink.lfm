@@ -54,6 +54,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
+    OnMouseDown = CompletionBoxMouseDown
     OnPaint = CompletionBoxPaint
   end
   object ButtonPanel1: TButtonPanel

@@ -268,6 +268,7 @@ type
                           Flags: TCodeHelpOpenFileFlags;
                           out ModuleOwner: TObject;
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
+                          out InvalidPath: integer;
                           out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
                                  out ListOfPCodeXYPosition: TFPList;
@@ -1688,7 +1689,7 @@ end;
 function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
   StartDOMNode: TDOMNode; const Path: string; Flags: TCodeHelpOpenFileFlags;
   out ModuleOwner: TObject; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
-  out CacheWasUsed: boolean): TCodeHelpParseResult;
+  out InvalidPath: integer; out CacheWasUsed: boolean): TCodeHelpParseResult;
 
   function FindFPDocFilename(BaseDir, SearchPath, UnitName: string): string;
   begin
@@ -1711,6 +1712,7 @@ begin
   ModuleOwner:=nil;
   FPDocFile:=nil;
   DOMNode:=nil;
+  InvalidPath:=0;
   CacheWasUsed:=false;
   Result:=chprFailed;
 
@@ -1728,6 +1730,7 @@ begin
     if PkgName='' then exit;
     Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
     if Pkg=nil then exit;
+    InvalidPath:=p;
     ModuleOwner:=Pkg;
     if p>length(Path) then begin
       // link to the module, no unit
@@ -1775,6 +1778,7 @@ begin
   // load FPDocFile
   Result:=LoadFPDocFile(FPDocFilename,Flags,FPDocFile,CacheWasUsed);
   if Result<>chprSuccess then exit;
+  InvalidPath:=p;
   if p>length(Path) then begin
     // link to a unit, no element
     Result:=chprSuccess;
@@ -1784,14 +1788,23 @@ begin
   p:=StartPos;
 
   // find element
-  while (p<=length(Path)) and (Path[p]<>'.') do inc(p);
-  ElementName:=copy(Path,p+1,length(Path));
-  //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode ElementName=',ElementName]);
-  DOMNode:=FPDocFile.GetElementWithName(ElementName);
-  if DOMNode<>nil then
-    Result:=chprSuccess
-  else
-    Result:=chprFailed;
+  p:=length(Path)+1;
+  while p>StartPos do begin
+    ElementName:=copy(Path,StartPos,p-StartPos);
+    //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode ElementName=',ElementName]);
+    DOMNode:=FPDocFile.GetElementWithName(ElementName);
+    if DOMNode<>nil then begin
+      InvalidPath:=p;
+      if p>length(Path) then
+        Result:=chprSuccess
+      else
+        Result:=chprFailed;
+      exit;
+    end;
+    dec(p);
+    while (p>StartPos) and (Path[p]<>'.') do dec(p);
+  end;
+  Result:=chprFailed;
 end;
 
 function TCodeHelpManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;

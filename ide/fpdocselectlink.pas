@@ -99,6 +99,8 @@ type
     TitleLabel: TLabel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
+    procedure CompletionBoxMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure CompletionBoxPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -220,9 +222,21 @@ begin
               CompletionBox.ClientWidth,CompletionBox.ClientHeight);
 end;
 
+procedure TFPDocLinkEditorDlg.CompletionBoxMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Line: Integer;
+begin
+  if fItems.ItemHeight<=0 then exit;
+  Line:=fItems.Top+(Y div fItems.ItemHeight);
+  if Line>=fItems.Count then exit;
+  Link:=FItems.Items[Line].Text;
+  LinkEdit.SelStart:=length(LinkEdit.Text);
+end;
+
 procedure TFPDocLinkEditorDlg.LinkEditChange(Sender: TObject);
 begin
-  DebugLn(['TFPDocLinkEditorDlg.LinkEditChange "',LinkEdit.Text,'"']);
+  //DebugLn(['TFPDocLinkEditorDlg.LinkEditChange "',LinkEdit.Text,'"']);
   Link:=LinkEdit.Text;
 end;
 
@@ -263,13 +277,6 @@ end;
 procedure TFPDocLinkEditorDlg.LinkEditUTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
-  if UTF8Key='.' then begin
-    if (FItems.Selected>=0) and (FItems.Selected<fItems.Count) then begin
-      Link:=FItems.Items[fItems.Selected].Text+'.';
-      LinkEdit.SelStart:=length(LinkEdit.Text);
-    end;
-    UTF8Key:='';
-  end;
 end;
 
 procedure TFPDocLinkEditorDlg.SetSourceFilename(const AValue: string);
@@ -323,7 +330,7 @@ begin
   fItems.Clear;
   l:=LinkEdit.Text;
   FItems.Prefix:=l;
-  DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
+  //DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
   AddSubIdentifiers(l);
   CompletionBox.Invalidate;
 end;
@@ -376,7 +383,7 @@ begin
           Identifier:=ExtractFileNameOnly(ProjFile.Filename);
           if AProject<>StartModuleOwner then
             Identifier:='#'+ExtractFileNameOnly(AProject.ProjectInfoFile)+'.'+Identifier;
-          fItems.Add(Identifier,'project unit');
+          fItems.Add(Identifier, lisProjectUnit);
         end;
       end;
     end;
@@ -402,7 +409,7 @@ begin
           Identifier:=ExtractFileNameOnly(Filename);
           if APackage<>StartModuleOwner then
             Identifier:='#'+APackage.Name+'.'+Identifier;
-          fItems.Add(Identifier,'package unit');
+          fItems.Add(Identifier, lisPackageUnit);
         end;
       end;
     end;
@@ -452,44 +459,51 @@ procedure TFPDocLinkEditorDlg.AddSubIdentifiers(Path: string);
 var
   p: LongInt;
   Prefix: String;
-  HelpResult: TCodeHelpParseResult;
   ModuleOwner: TObject;
   FPDocFile: TLazFPDocFile;
   DOMNode: TDOMNode;
+  InvalidPath: integer;
   CacheWasUsed: boolean;
   DOMElement: TDOMElement;
 begin
   p:=length(Path);
   while (p>0) and (Path[p]<>'.') do dec(p);
-  Prefix:=copy(Path,p+1,length(Path));
-  Path:=copy(Path,1,p-1);
   if p<1 then begin
     // empty  : show all packages, all units of current project/package and all identifiers of unit
     // #l     : show all packages beginning with the letter l
     // f      : show all units and all identifiers beginning with the letter f
-    if (Prefix='') or (Prefix[1]='#') then
-      AddPackagesToCompletion(copy(Prefix,2,length(Prefix)));
-    if (Prefix='') or (Prefix[1]<>'#') then begin
-      AddModuleUnits(StartModuleOwner,Prefix);
-      AddIdentifiers(StartModuleOwner,StartFPDocFile,Prefix);
+    if (Path='') or (Path[1]='#') then
+      AddPackagesToCompletion(copy(Path,2,length(Path)));
+    if (Path='') or (Path[1]<>'#') then begin
+      AddModuleUnits(StartModuleOwner,Path);
+      AddIdentifiers(StartModuleOwner,StartFPDocFile,Path);
     end;
   end else begin
     // sub identifier
-    DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers searching context ..']);
-    HelpResult:=CodeHelpBoss.GetLinkedFPDocNode(StartFPDocFile,nil,Path,
-      [chofUpdateFromDisk,chofQuiet],ModuleOwner,FPDocFile,DOMNode,CacheWasUsed);
-    if HelpResult<>chprSuccess then exit;
-    DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers context found: ModuleOwner=',DbgSName(ModuleOwner),' FPDocFile=',FPDocFile<>nil,' DOMNode=',DOMNode<>nil]);
+    //DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers searching context ..']);
+    CodeHelpBoss.GetLinkedFPDocNode(StartFPDocFile,nil,Path,
+      [chofUpdateFromDisk,chofQuiet],ModuleOwner,FPDocFile,DOMNode,InvalidPath,
+      CacheWasUsed);
+    // get rest path as filter
+    Prefix:=copy(Path,InvalidPath,length(Path));
+    if (Prefix<>'') and (Prefix[1]='.') then System.Delete(Prefix,1,1);
+    //DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers context found: ModuleOwner=',DbgSName(ModuleOwner),' FPDocFile=',FPDocFile<>nil,' DOMNode=',DOMNode<>nil,' invalid path="',Prefix,'"']);
     if DOMNode is TDomElement then begin
       DOMElement:=TDomElement(DOMNode);
-      AddIdentifiers(ModuleOwner,FPDocFile,DOMElement.GetAttribute('name')+'.'+Prefix);
+      Prefix:=DOMElement.GetAttribute('name')+'.'+Prefix;
+      AddIdentifiers(ModuleOwner,FPDocFile,Prefix);
     end else if FPDocFile<>nil then begin
+      // show elements of unit, beginning with prefix
       AddIdentifiers(ModuleOwner,FPDocFile,Prefix);
     end else if ModuleOwner<>nil then begin
+      // show units of module, beginning with first part of prefix
+      p:=1;
+      while (p<=length(Prefix)) and (Prefix[p]<>'.') do inc(p);
+      Prefix:=copy(Prefix,1,p-1);
       if ModuleOwner is TLazPackage then
         AddPackageUnits(TLazPackage(ModuleOwner),Prefix)
       else if ModuleOwner is TLazProject then
-        AddProjectUnits(TLazProject(ModuleOwner),Prefix)
+        AddProjectUnits(TLazProject(ModuleOwner),Prefix);
     end;
   end;
 end;
@@ -556,8 +570,10 @@ end;
 procedure TFPDocLinkCompletionList.SetSorted(const AValue: Boolean);
 begin
   if FSorted=AValue then exit;
-  FSorted:=AValue;
-  if FSorted then Sort;
+  if AValue then
+    Sort
+  else
+    FSorted:=false;
 end;
 
 procedure TFPDocLinkCompletionList.SetTop(const AValue: integer);
@@ -610,7 +626,7 @@ end;
 
 procedure TFPDocLinkCompletionList.AddPackage(Pkg: TLazPackage);
 begin
-  Add('#'+Pkg.Name,'package '+Pkg.IDAsString);
+  Add('#'+Pkg.Name, Format(lisPackage2, [Pkg.IDAsString]));
 end;
 
 procedure TFPDocLinkCompletionList.Add(Identifier, Description: string);
@@ -628,7 +644,7 @@ end;
 
 procedure TFPDocLinkCompletionList.AddIdentifier(Identifier: string);
 begin
-  Add(Identifier,'identifier');
+  Add(Identifier, lisIdentifier);
 end;
 
 procedure TFPDocLinkCompletionList.Draw(Canvas: TCanvas; Width, Height: integer);
@@ -639,7 +655,7 @@ var
   Item: TFPDocLinkCompletionItem;
   s: String;
 begin
-  DebugLn(['TFPDocLinkCompletionList.Draw ',Width,' ',Height,' Count=',Count]);
+  //DebugLn(['TFPDocLinkCompletionList.Draw ',Width,' ',Height,' Count=',Count]);
   Sorted:=true;
   i:=Top;
   y:=0;

@@ -4215,6 +4215,10 @@ resourcestring
     +'sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.'
     +'Identifier';
   lisTitleLeaveEmptyForDefault = 'Title (leave empty for default)';
+  lisPackageUnit = 'package unit';
+  lisPackage2 = 'package %s';
+  lisIdentifier = 'identifier';
+  lisProjectUnit = 'project unit';
   lisSyntaxMode = 'Syntax mode';
   lisObjectPascalDefault = 'Object Pascal - default';
   lisDelphi = 'Delphi';
