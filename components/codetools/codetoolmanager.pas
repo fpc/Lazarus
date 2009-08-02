@@ -2232,9 +2232,9 @@ var
   Code: TCodeBuffer;
 begin
   Result:=false;
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
-  { $ENDIF}
+  {$ENDIF}
   if TreeOfPCodeXYPosition=nil then begin
     Result:=true;
     exit;
@@ -2254,7 +2254,7 @@ begin
     CurCodePos:=PCodeXYPosition(ANode.Data);
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
+    //DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
@@ -2273,19 +2273,19 @@ begin
     if CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
        PChar(Pointer(NewIdentifier)))<>0
     then begin
-      DebugLn('TCodeToolManager.RenameIdentifier Change ');
+      //DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
          IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
     end else begin
-      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
+      //DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
     end;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
   end;
   // apply
-  DebugLn('TCodeToolManager.RenameIdentifier Apply');
+  //DebugLn('TCodeToolManager.RenameIdentifier Apply');
   if not SourceChangeCache.Apply then exit;
 
-  DebugLn('TCodeToolManager.RenameIdentifier Success');
+  //DebugLn('TCodeToolManager.RenameIdentifier Success');
   Result:=true;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier END ');
