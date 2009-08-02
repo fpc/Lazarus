@@ -2048,7 +2048,7 @@ var
                                 VarNameAtom, ProcNameAtom, ParameterIndex)
     then begin
       if VarNameAtom.StartPos=0 then ;
-      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
+      //DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
       exit;
     end;
     //DebugLn('CheckContextIsParameter Variable=',GetAtom(VarNameAtom),' Proc=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
@@ -2115,7 +2115,7 @@ begin
 
     if CursorNode<>nil then begin
       if not CheckContextIsParameter(Result) then begin
-        DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
+        //DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
         exit;
       end;
     end;

@@ -1183,7 +1183,7 @@ var CloseBracket: char;
   procedure ReadPrefixModifier;
   begin
     // read parameter prefix modifier
-    if (UpAtomIs('VAR')) or (UpAtomIs('CONST'))
+    if UpAtomIs('VAR') or UpAtomIs('CONST')
     or (UpAtomIs('OUT') and (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmFPC]))
     then begin
       Desc:=ctnVarDefinition;
@@ -1288,7 +1288,9 @@ begin
             // read default value
             ReadDefaultValue;
           end;
-        end else begin
+        end else if (CurPos.Flag in [cafSemicolon,cafRoundBracketClose,
+          cafEdgedBracketClose])
+        then begin
           // no type -> variant
           if (phpCreateNodes in Attr) then begin
             CreateChildNode;
@@ -1296,7 +1298,8 @@ begin
             CurNode.EndPos:=CurNode.StartPos;
             EndChildNode;
           end;
-        end;
+        end else
+          break;
         if (phpCreateNodes in Attr) then begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
@@ -1340,6 +1343,7 @@ end;
 
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
+// after reading, CurPos is the atom after the type
 var
   copying: boolean;
   IsArrayType: Boolean;
@@ -1368,13 +1372,15 @@ begin
         if (phpCreateNodes in Attr) then begin
           CreateChildNode;
           CurNode.Desc:=ctnOfConstType;
+        end;
+        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+        if (phpCreateNodes in Attr) then begin
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          // close ctnOpenArrayType
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
         end;
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(copying,Attr);
         Result:=true;
         exit;
       end;
@@ -1399,21 +1405,12 @@ begin
         CurNode.Desc:=ctnIdentifier;
         CurNode.EndPos:=CurPos.EndPos;
       end;
-      if not Extract then
-        ReadNextAtom
-      else
-        ExtractNextAtom(copying,Attr);
+      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if CurPos.Flag=cafPoint then begin
         //  first identifier was unitname -> read '.' + identifier
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(copying,Attr);
+        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
         if not AtomIsIdentifier(ExceptionOnError) then exit;
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(copying,Attr);
+        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       end;
       if (phpCreateNodes in Attr) then
         EndChildNode;
