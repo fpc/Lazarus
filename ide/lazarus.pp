@@ -103,7 +103,11 @@ begin
 
   MainIDE:=TMainIDE.Create(Application);
   MainIDE.CreateOftenUsedForms;
-  MainIDE.StartIDE;
+  try
+    MainIDE.StartIDE;
+  except
+    Application.HandleException(MainIDE);
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
 
   try
