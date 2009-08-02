@@ -366,6 +366,7 @@ begin
     FCompletingStartNode:=nil;
     exit;
   end;
+  ClearIgnoreErrorAfter;
   BuildSubTreeForClass(FCodeCompleteClassNode);
   if FCodeCompleteClassNode.Desc=ctnClassInterface then
     FCompletingStartNode:=FCodeCompleteClassNode
