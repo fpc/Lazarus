@@ -6789,14 +6789,6 @@ begin
   EnvironmentOptions.AddToRecentProjectFiles(NewLPIFilename);
   SetRecentProjectFilesMenu;
 
-  // switch working directory
-  try
-    SetCurrentDirUTF8(ExtractFilePath(NewLPIFilename));
-  except
-    on E: Exception do
-      DebugLn(['TMainIDE.DoShowSaveProjectAsDialog SetCurrentDirUTF8: ',E.Message]);
-  end;
-
   // change main source
   if (Project1.MainUnitID >= 0) then
   begin
@@ -8838,14 +8830,6 @@ begin
 
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
-
-  // switch working directory
-  try
-    SetCurrentDirUTF8(ExtractFilePath(AFilename));
-  except
-    on E: Exception do
-      DebugLn(['TMainIDE.DoOpenProjectFile SetCurrentDirUTF8: ',E.Message]);
-  end;
 
   // create a new project
   {$IFDEF IDE_VERBOSE}
