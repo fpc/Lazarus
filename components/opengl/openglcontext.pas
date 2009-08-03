@@ -108,7 +108,6 @@ type
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure UpdateFrameTimeDiff;
     procedure OpenGLAttributesChanged;
-    procedure EraseBackground(DC: HDC); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -121,6 +120,7 @@ type
     function SharingControlCount: integer;
     property SharingControls[Index: integer]: TCustomOpenGLControl read GetSharingControls;
     procedure Invalidate; override;
+    procedure EraseBackground(DC: HDC); override;
   public
     property FrameDiffTimeInMSecs: integer read FFrameDiffTime;
     property OnMakeCurrent: TOpenGlCtrlMakeCurrentEvent read FOnMakeCurrent
@@ -171,7 +171,7 @@ type
   { TWSOpenGLControl }
 
   TWSOpenGLControl = class(TWidgetSetWSWinControl)
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
