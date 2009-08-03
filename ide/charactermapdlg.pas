@@ -161,7 +161,7 @@ begin
   if (Button = mbLeft) and (StringGrid1.MouseToGridZone(X, Y) = gzNormal) then
   begin
     StringGrid1.MouseToCell(X, Y, Col, Row);
-    if Assigned(OnInsertCharacter) then
+    if (StringGrid1.Cells[Col, Row] <> '') and (Assigned(OnInsertCharacter)) then
       OnInsertCharacter(StringGrid1.Cells[Col, Row]);
   end;
 end;
@@ -176,9 +176,14 @@ begin
   begin
     StringGrid1.MouseToCell(X, Y, Col, Row);
     
-    CharOrd := Ord(UTF8ToAnsi(StringGrid1.Cells[Col, Row])[1]);
-    CharInfoLabel.Caption := 'Decimal = ' + IntToStr(CharOrd) +
-                             ', Hex = $'  + HexStr(CharOrd, 2);
+    if StringGrid1.Cells[Col, Row] <> '' then 
+    begin
+      CharOrd := Ord(UTF8ToAnsi(StringGrid1.Cells[Col, Row])[1]);
+      CharInfoLabel.Caption := 'Decimal = ' + IntToStr(CharOrd) +
+                               ', Hex = $'  + HexStr(CharOrd, 2);
+    end 
+    else
+      CharInfoLabel.Caption := '-';
   end
   else
   begin
