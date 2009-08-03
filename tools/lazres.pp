@@ -35,33 +35,7 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
-uses Classes, SysUtils, FileUtil, LCLProc;
-
-function StreamIsFormInTextFormat(Stream: TMemoryStream): boolean;
-const
-  FormTextStart = 'object ';
-var s: string;
-  OldPos: integer;
-begin
-  SetLength(s,length(FormTextStart));
-  OldPos:=Stream.Position;
-  Stream.Read(s[1],length(s));
-  Result:=AnsiCompareText(s,FormTextStart)=0;
-  Stream.Position:=OldPos;
-end;
-
-function StreamIsFormInFCLFormat(Stream: TMemoryStream): boolean;
-const
-  FormFCLStart = 'TPF0';
-var s: string;
-  OldPos: integer;
-begin
-  SetLength(s,length(FormFCLStart));
-  OldPos:=Stream.Position;
-  Stream.Read(s[1],length(s));
-  Result:=s=FormFCLStart;
-  Stream.Position:=OldPos;
-end;
+uses Classes, SysUtils, FileUtil, LCLProc, LResources;
 
 procedure ConvertFormToText(Stream: TMemoryStream);
 var TextStream: TMemoryStream;
