@@ -696,7 +696,10 @@ var
   TheFilename: String;
   s: String;
 begin
-  //DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
+  {$IFDEF VerboseCTSave}
+  DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
+  CTDumpStack;
+  {$ENDIF}
   Result := True;
   try
     InvalidateFileStateCache;

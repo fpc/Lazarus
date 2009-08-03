@@ -1186,6 +1186,7 @@ var
   ShiftState: TShiftState;
 begin
   Result := CallBackDefaultReturn;
+
   MousePositionValid:=false;
 
   {$IFDEF VerboseMouseBugfix}
@@ -1251,7 +1252,7 @@ end;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
-  Result := True; // stop event propagation
+  Result := true; // stop event propagation
   MousePositionValid := False;
 
   {$IFDEF VerboseMouseBugfix}
