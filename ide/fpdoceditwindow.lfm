@@ -1,7 +1,7 @@
 object FPDocEditor: TFPDocEditor
-  Left = 303
+  Left = 313
   Height = 126
-  Top = 548
+  Top = 596
   Width = 753
   ActiveControl = LeftBtnPanel
   Caption = 'FPDoc editor'
@@ -16,17 +16,17 @@ object FPDocEditor: TFPDocEditor
     Height = 126
     Top = 0
     Width = 713
-    ActivePage = ShortTabSheet
+    ActivePage = SeeAlsoTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
@@ -58,7 +58,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 627
+        Width = 625
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
@@ -104,7 +104,7 @@ object FPDocEditor: TFPDocEditor
         Left = 72
         Height = 27
         Top = 29
-        Width = 637
+        Width = 635
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
@@ -117,13 +117,13 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object InheritedShortLabel: TLabel
         Left = 0
         Height = 14
         Top = 2
-        Width = 711
+        Width = 709
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -138,7 +138,7 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 27
         Top = 18
-        Width = 711
+        Width = 709
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -190,13 +190,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object DescrMemo: TMemo
         Left = 0
-        Height = 95
+        Height = 91
         Top = 0
-        Width = 709
+        Width = 707
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -209,13 +209,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object ErrorsMemo: TMemo
         Left = 0
-        Height = 95
+        Height = 91
         Top = 0
-        Width = 709
+        Width = 707
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -228,87 +228,30 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
-      object LinkListBox: TListBox
-        AnchorSideTop.Control = AddLinkButton
-        AnchorSideTop.Side = asrBottom
+      ClientHeight = 95
+      ClientWidth = 709
+      object SeeAlsoMemo: TMemo
         Left = 0
-        Height = 68
-        Top = 27
+        Height = 95
+        Top = 0
         Width = 709
-        Align = alBottom
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        BorderSpacing.Top = 4
-        BorderSpacing.Right = 2
-        BorderSpacing.Bottom = 4
-        ItemHeight = 0
-        OnClick = LinkListBoxClick
+        Align = alClient
+        Lines.Strings = (
+          'SeeAlsoMemo'
+        )
+        OnEditingDone = SeeAlsoMemoEditingDone
         TabOrder = 0
-        TopIndex = -1
-      end
-      object AddLinkButton: TButton
-        AnchorSideRight.Control = DeleteLinkButton
-        Left = 501
-        Height = 23
-        Top = 0
-        Width = 95
-        Anchors = [akTop, akRight]
-        AutoSize = True
-        BorderSpacing.Right = 6
-        Caption = 'AddLinkButton'
-        OnClick = AddLinkButtonClick
-        TabOrder = 1
-      end
-      object DeleteLinkButton: TButton
-        AnchorSideRight.Control = SeeAlsoTabSheet
-        AnchorSideRight.Side = asrBottom
-        Left = 602
-        Height = 23
-        Top = 0
-        Width = 107
-        Anchors = [akTop, akRight]
-        AutoSize = True
-        BorderSpacing.Right = 2
-        Caption = 'DeleteLinkButton'
-        OnClick = DeleteLinkButtonClick
-        TabOrder = 2
-      end
-      object LinkTextEdit: TEdit
-        AnchorSideLeft.Control = LinkIdComboBox
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideRight.Control = AddLinkButton
-        Left = 229
-        Height = 27
-        Top = 1
-        Width = 268
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 4
-        BorderSpacing.Right = 4
-        OnChange = LinkChange
-        TabOrder = 3
-        Text = 'LinkTextEdit'
-      end
-      object LinkIdComboBox: TComboBox
-        Left = 0
-        Height = 21
-        Top = 1
-        Width = 225
-        ItemHeight = 0
-        OnChange = LinkChange
-        TabOrder = 4
-        Text = 'LinkIdComboBox'
       end
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object ExampleEdit: TEdit
         Left = 0
         Height = 27
         Top = 0
-        Width = 709
+        Width = 707
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
@@ -320,7 +263,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 572
+        Left = 570
         Height = 23
         Top = 33
         Width = 133

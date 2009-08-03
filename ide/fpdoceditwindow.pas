@@ -38,14 +38,13 @@ uses
   // Synedit
   SynEdit,
   // codetools
-  FileProcs, CodeAtom, CodeCache, CodeToolManager,
+  BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
   ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf,
   // IDE
-  IDEOptionDefs, EnvironmentOpts,
-  IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, FPDocSelectLink,
-  PackageSystem, CodeHelp;
+  IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
+  FPDocSelectInherited, FPDocSelectLink, CodeHelp;
 
 type
   TFPDocEditorFlag = (
@@ -54,74 +53,66 @@ type
     fpdefChainNeedsUpdate,
     fpdefCaptionNeedsUpdate,
     fpdefValueControlsNeedsUpdate,
-    fpdefInheritedControlsNeedsUpdate,
-    fpdefLinkIDComboNeedsUpdate
+    fpdefInheritedControlsNeedsUpdate
     );
   TFPDocEditorFlags = set of TFPDocEditorFlag;
   
   { TFPDocEditor }
 
   TFPDocEditor = class(TForm)
-    AddLinkButton: TButton;
-    BrowseExampleButton: TButton;
-    ShortLabel: TLabel;
-    LinkEdit: TEdit;
-    LinkLabel: TLabel;
     AddLinkToInheritedButton: TButton;
-    RightBtnPanel: TPanel;
-    SaveButton: TButton;
-    CreateButton: TButton;
-    CopyFromInheritedButton: TButton;
-    MoveToInheritedButton: TButton;
-    InheritedShortEdit: TEdit;
-    ExampleEdit: TEdit;
-    InheritedShortLabel: TLabel;
-    LinkIdComboBox: TComboBox;
-    DeleteLinkButton: TButton;
-    DescrMemo: TMemo;
-    LinkTextEdit: TEdit;
-    LinkListBox: TListBox;
-    OpenDialog: TOpenDialog;
-    LeftBtnPanel: TPanel;
-    ShortEdit: TEdit;
-    ErrorsMemo: TMemo;
-    PageControl: TPageControl;
-    DescrTabSheet: TTabSheet;
-    ErrorsTabSheet: TTabSheet;
-    ShortTabSheet: TTabSheet;
     BoldFormatButton: TSpeedButton;
-    ItalicFormatButton: TSpeedButton;
+    BrowseExampleButton: TButton;
+    ControlDocker: TLazControlDocker;
+    CopyFromInheritedButton: TButton;
+    CreateButton: TButton;
+    DescrMemo: TMemo;
+    DescrTabSheet: TTabSheet;
+    ErrorsMemo: TMemo;
+    ErrorsTabSheet: TTabSheet;
+    ExampleEdit: TEdit;
+    ExampleTabSheet: TTabSheet;
+    InheritedShortEdit: TEdit;
+    InheritedShortLabel: TLabel;
+    InheritedTabSheet: TTabSheet;
     InsertCodeTagButton: TSpeedButton;
+    InsertLinkSpeedButton: TSpeedButton;
+    InsertParagraphSpeedButton: TSpeedButton;
     InsertRemarkButton: TSpeedButton;
     InsertVarTagButton: TSpeedButton;
-    ExampleTabSheet: TTabSheet;
-    InheritedTabSheet: TTabSheet;
-    InsertParagraphSpeedButton: TSpeedButton;
-    InsertLinkSpeedButton: TSpeedButton;
-    UnderlineFormatButton: TSpeedButton;
+    ItalicFormatButton: TSpeedButton;
+    LeftBtnPanel: TPanel;
+    LinkEdit: TEdit;
+    LinkLabel: TLabel;
+    SeeAlsoMemo: TMemo;
+    MoveToInheritedButton: TButton;
+    OpenDialog: TOpenDialog;
+    PageControl: TPageControl;
+    RightBtnPanel: TPanel;
+    SaveButton: TButton;
     SeeAlsoTabSheet: TTabSheet;
-    ControlDocker: TLazControlDocker;
-    procedure AddLinkButtonClick(Sender: TObject);
-    procedure LinkEditEditingDone(Sender: TObject);
+    ShortEdit: TEdit;
+    ShortLabel: TLabel;
+    ShortTabSheet: TTabSheet;
+    UnderlineFormatButton: TSpeedButton;
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
+    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
-    procedure DeleteLinkButtonClick(Sender: TObject);
     procedure DescrMemoChange(Sender: TObject);
     procedure ErrorsMemoChange(Sender: TObject);
     procedure ExampleEditChange(Sender: TObject);
+    procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure FormatButtonClick(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
-    procedure LinkChange(Sender: TObject);
-    procedure LinkListBoxClick(Sender: TObject);
-    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
   private
     FCaretXY: TPoint;
@@ -139,7 +130,6 @@ type
 
     function GetContextTitle(Element: TCodeHelpElement): string;
 
-    function MakeLink: String;
     function FindInheritedIndex: integer;
     procedure Save;
     function GetGUIValues: TFPDocElementValues;
@@ -149,15 +139,12 @@ type
     procedure UpdateCodeCache;
     procedure UpdateChain;
     procedure UpdateCaption;
-    procedure UpdateLinkIdComboBox;
     procedure UpdateValueControls;
     procedure UpdateInheritedControls;
     procedure OnLazDocChanging(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure LoadGUIValues(Element: TCodeHelpElement);
     procedure MoveToInherited(Element: TCodeHelpElement);
-    procedure AddSeeAlsoLink(Link, LinkTitle: string);
-    function FindSeeAlsoLink(Link: string): integer;
     function ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string): boolean;
     function CreateElement(Element: TCodeHelpElement): Boolean;
     procedure UpdateButtons;
@@ -208,39 +195,6 @@ begin
   Result:=CurDocFile.GetFirstElement;
 end;
 
-procedure TFPDocEditor.UpdateLinkIdComboBox;
-// fills LinkIdComboBox.Items
-var
-  sl: TStringList;
-  Node: TDOMNode;
-begin
-  if fUpdateLock>0 then begin
-    Include(FFlags,fpdefLinkIDComboNeedsUpdate);
-    exit;
-  end;
-  Exclude(FFlags,fpdefLinkIDComboNeedsUpdate);
-
-  {$IFDEF VerboseCodeHelp}
-  DebugLn(['TFPDocEditForm.UpdateLinkIdComboBox START']);
-  {$ENDIF}
-  LinkIdComboBox.Clear;
-  if Doc=nil then exit;
-  Node:=DocFile.GetElementWithName('seealso',false);
-  if Node=nil then exit;
-  Node:=Node.FirstChild;
-  if Node=nil then exit;
-
-  sl:=TStringList.Create;
-  // element nodes
-  while Node<>nil do begin
-    if (Node.NodeName='link') and (Node is TDomElement) then
-      sl.Add(TDomElement(Node)['name']);
-    Node := Node.NextSibling;
-  end;
-  LinkIdComboBox.Items.Assign(sl);
-  sl.Free;
-end;
-
 procedure TFPDocEditor.FormCreate(Sender: TObject);
 begin
   Caption := lisCodeHelpMainFormCaption;
@@ -269,9 +223,6 @@ begin
   CreateButton.Enabled:=false;
   SaveButton.Caption := lisCodeHelpSaveButton;
   SaveButton.Enabled:=false;
-
-  AddLinkButton.Caption := lisCodeHelpAddLinkButton;
-  DeleteLinkButton.Caption := lisCodeHelpDeleteLinkButton;
 
   BrowseExampleButton.Caption := lisCodeHelpBrowseExampleButton;
   
@@ -312,7 +263,7 @@ end;
 
 procedure TFPDocEditor.FormResize(Sender: TObject);
 begin
-  LinkIdComboBox.Width := (AddLinkButton.Left - LinkIdComboBox.Left - 8) div 2;
+
 end;
 
 procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
@@ -371,39 +322,11 @@ begin
     ShortEdit.SelText := LinkSrc;
   if PageControl.ActivePage = DescrTabSheet then
     DescrMemo.SelText := LinkSrc;
+  if PageControl.ActivePage = SeeAlsoTabSheet then
+    SeeAlsoMemo.SelText := LinkSrc;
   if PageControl.ActivePage = ErrorsTabSheet then
     ErrorsMemo.SelText := LinkSrc;
-end;
-
-procedure TFPDocEditor.LinkChange(Sender: TObject);
-var
-  NewLink: String;
-  OldLink: string;
-begin
-  if LinkListBox.ItemIndex<0 then
-    Exit;
-  NewLink:=MakeLink;
-  OldLink:=LinkListBox.Items[LinkListBox.ItemIndex];
-  if NewLink<>OldLink then begin
-    LinkListBox.Items[LinkListBox.ItemIndex] := NewLink;
-    Modified:=true;
-  end;
-end;
-
-procedure TFPDocEditor.LinkListBoxClick(Sender: TObject);
-var
-  LinkIndex: LongInt;
-  LinkTag: string;
-  ID: string;
-  Title: string;
-begin
-  LinkIndex := LinkListBox.ItemIndex;
-  if LinkIndex = -1 then
-    Exit;
-  LinkTag:=LinkListBox.Items[LinkIndex];
-  ExtractIDFromLinkTag(LinkTag,ID,Title);
-  LinkIdComboBox.Text := ID;
-  LinkTextEdit.Text := Title;
+  Modified:=true;
 end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -424,8 +347,6 @@ begin
     UpdateValueControls
   else if fpdefInheritedControlsNeedsUpdate in FFlags then
     UpdateInheritedControls
-  else if fpdefLinkIDComboNeedsUpdate in FFlags then
-    UpdateLinkIdComboBox
   else
     Done:=true;
 end;
@@ -502,6 +423,12 @@ end;
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
 begin
   Save;
+end;
+
+procedure TFPDocEditor.SeeAlsoMemoEditingDone(Sender: TObject);
+begin
+  if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
+    Modified:=true;
 end;
 
 procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
@@ -720,9 +647,6 @@ begin
     FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
     FOldVisualValues[fpdiExample]:=ConvertLineEndings(FOldValues[fpdiExample]);
     DebugLn(['TFPDocEditor.LoadGUIValues Short="',dbgstr(FOldValues[fpdiShort]),'"']);
-    LinkListBox.Items.Text := FOldVisualValues[fpdiSeeAlso];
-    LinkIdComboBox.Text := '';
-    LinkTextEdit.Clear;
   end
   else
   begin
@@ -732,25 +656,19 @@ begin
     FOldVisualValues[fpdiErrors]:=lisCodeHelpNoDocumentation;
     FOldVisualValues[fpdiSeeAlso]:=lisCodeHelpNoDocumentation;
     FOldVisualValues[fpdiExample]:=lisCodeHelpNoDocumentation;
-    LinkIdComboBox.Text := lisCodeHelpNoDocumentation;
-    LinkTextEdit.Text := lisCodeHelpNoDocumentation;
-    LinkListBox.Clear;
   end;
   ShortEdit.Text := FOldVisualValues[fpdiShort];
   LinkEdit.Text := FOldVisualValues[fpdiElementLink];
   DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
+  SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
   ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
   ExampleEdit.Text := FOldVisualValues[fpdiExample];
 
   ShortEdit.Enabled := EnabledState;
   LinkEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
+  SeeAlsoMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
-  LinkIdComboBox.Enabled := EnabledState;
-  LinkTextEdit.Enabled := EnabledState;
-  LinkListBox.Enabled := EnabledState;
-  AddLinkButton.Enabled := EnabledState;
-  DeleteLinkButton.Enabled := EnabledState;
   ExampleEdit.Enabled := EnabledState;
   BrowseExampleButton.Enabled := EnabledState;
 
@@ -763,59 +681,6 @@ var
 begin
   Values:=GetGUIValues;
   WriteNode(Element,Values,true);
-end;
-
-procedure TFPDocEditor.AddSeeAlsoLink(Link, LinkTitle: string);
-var
-  s: String;
-begin
-  DebugLn(['TFPDocEditor.AddSeeAlsoLink Link="',Link,'" LinkTitle="',LinkTitle,'"']);
-  if FindSeeAlsoLink(Link)>=0 then exit;
-  s:='<link id="'+Link+'"';
-  if LinkTitle<>'' then begin
-    s:=s+'>'+LinkTitle+'</link';
-  end else begin
-    s:=s+'/>';
-  end;
-  DebugLn(['TFPDocEditor.AddSeeAlsoLink Adding: ',s]);
-  LinkListBox.Items.Add(s);
-  Modified:=true;
-end;
-
-function TFPDocEditor.FindSeeAlsoLink(Link: string): integer;
-var
-  LinkTag: string;
-  ID: string;
-  Element: TCodeHelpElement;
-  ExpandedLink: String;
-  ExpandedID: String;
-  Title: string;
-begin
-  ExpandedLink:='';
-  Result:=LinkListBox.Items.Count-1;
-  while (Result>=0) do begin
-    LinkTag:=LinkListBox.Items[Result];
-    if ExtractIDFromLinkTag(LinkTag,ID,Title) then begin
-      // check absolute: ID=Link
-      if SysUtils.CompareText(ID,Link)=0 then
-        exit;
-      // check relative
-      if (System.Pos(Link,'.')>0) and (ID<>'') then begin
-        if (fChain<>nil) and (fChain.Count>0) then begin
-          Element:=fChain[0];
-          if (ExpandedLink='') then begin
-            ExpandedLink:=CodeHelpBoss.ExpandFPDocLinkID(Link,
-                             Element.ElementUnitName,Element.ElementOwnerName);
-          end;
-          ExpandedID:=CodeHelpBoss.ExpandFPDocLinkID(ID,
-                             Element.ElementUnitName,Element.ElementOwnerName);
-          if SysUtils.CompareText(ExpandedID,ExpandedLink)=0 then
-            exit;
-        end;
-      end;
-    end;
-    dec(Result);
-  end;
 end;
 
 function TFPDocEditor.ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string
@@ -882,6 +747,7 @@ var
 begin
   HasEdit:=(PageControl.ActivePage = ShortTabSheet)
         or (PageControl.ActivePage = DescrTabSheet)
+        or (PageControl.ActivePage = SeeAlsoTabSheet)
         or (PageControl.ActivePage = ErrorsTabSheet);
   BoldFormatButton.Enabled:=HasEdit;
   ItalicFormatButton.Enabled:=HasEdit;
@@ -917,10 +783,8 @@ begin
   ShortEdit.Clear;
   LinkEdit.Clear;
   DescrMemo.Clear;
+  SeeAlsoMemo.Clear;
   ErrorsMemo.Clear;
-  LinkIdComboBox.Text := '';
-  LinkTextEdit.Clear;
-  LinkListBox.Clear;
   ExampleEdit.Clear;
 
   Modified := False;
@@ -932,7 +796,7 @@ begin
   FreeAndNil(fChain);
   FFlags:=FFlags+[fpdefCodeCacheNeedsUpdate,fpdefChainNeedsUpdate,
       fpdefCaptionNeedsUpdate,fpdefValueControlsNeedsUpdate,
-      fpdefInheritedControlsNeedsUpdate,fpdefLinkIDComboNeedsUpdate];
+      fpdefInheritedControlsNeedsUpdate];
 end;
 
 procedure TFPDocEditor.UpdateFPDocEditor(const SrcFilename: string;
@@ -977,8 +841,8 @@ begin
   Modified:=true;
   ShortEdit.Text:='';
   DescrMemo.Text:='';
+  SeeAlsoMemo.Text:='';
   ErrorsMemo.Text:='';
-  LinkListBox.Items.Clear;
   ExampleEdit.Text:='';
   if DoSave then Save;
 end;
@@ -1007,11 +871,11 @@ begin
   Result[fpdiShort]:=ShortEdit.Text;
   Result[fpdiDescription]:=DescrMemo.Text;
   Result[fpdiErrors]:=ErrorsMemo.Text;
-  Result[fpdiSeeAlso]:=LinkListBox.Items.Text;
+  Result[fpdiSeeAlso]:=SeeAlsoMemo.Text;
   Result[fpdiExample]:=ExampleEdit.Text;
   Result[fpdiElementLink]:=LinkEdit.Text;
   for i:=Low(TFPDocItem) to High(TFPDocItem) do
-    if Result[i]=lisCodeHelpNoDocumentation then
+    if Trim(Result[i])=lisCodeHelpNoDocumentation then
       Result[i]:='';
 end;
 
@@ -1115,15 +979,6 @@ begin
     Modified:=true;
 end;
 
-function TFPDocEditor.MakeLink: String;
-begin
-  if Trim(LinkTextEdit.Text) = '' then
-    Result := '<link id="' + Trim(LinkIdComboBox.Text) + '"/>'
-  else
-    Result := '<link id="' + Trim(LinkIdComboBox.Text) + '">' +
-      LinkTextEdit.Text + '</link>';
-end;
-
 function TFPDocEditor.FindInheritedIndex: integer;
 // returns Index in chain of an overriden Element with a short description
 // returns -1 if not found
@@ -1142,15 +997,6 @@ begin
     end;
   end;
   Result:=-1;
-end;
-
-procedure TFPDocEditor.AddLinkButtonClick(Sender: TObject);
-begin
-  if Trim(LinkIdComboBox.Text) <> '' then
-  begin
-    LinkListBox.Items.Add(MakeLink);
-    Modified := True;
-  end;
 end;
 
 procedure TFPDocEditor.LinkEditEditingDone(Sender: TObject);
@@ -1210,15 +1056,6 @@ procedure TFPDocEditor.CreateButtonClick(Sender: TObject);
 begin
   if (fChain=nil) or (fChain.Count=0) then exit;
   CreateElement(fChain[0]);
-end;
-
-procedure TFPDocEditor.DeleteLinkButtonClick(Sender: TObject);
-begin
-  if LinkListBox.ItemIndex >= 0 then begin
-    LinkListBox.Items.Delete(LinkListBox.ItemIndex);
-    DebugLn(['TFPDocEditForm.DeleteLinkButtonClick ']);
-    Modified := True;
-  end;
 end;
 
 procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
