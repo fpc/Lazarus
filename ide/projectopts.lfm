@@ -1,13 +1,13 @@
 object ProjectOptionsDialog: TProjectOptionsDialog
-  Left = 383
-  Height = 495
-  Top = 105
-  Width = 512
+  Left = 398
+  Height = 501
+  Top = 177
+  Width = 517
   ActiveControl = Notebook
   BorderIcons = [biSystemMenu]
   Caption = 'ProjectOptionsDialog'
-  ClientHeight = 495
-  ClientWidth = 512
+  ClientHeight = 501
+  ClientWidth = 517
   Constraints.MinHeight = 490
   Constraints.MinWidth = 510
   OnClose = ProjectOptionsClose
@@ -15,28 +15,28 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   LCLVersion = '0.9.27'
   object Notebook: TNotebook
     Left = 0
-    Height = 447
+    Height = 453
     Top = 0
-    Width = 512
+    Width = 517
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 3
+    PageIndex = 4
     TabOrder = 0
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
-      ClientWidth = 508
-      ClientHeight = 416
+      ClientWidth = 513
+      ClientHeight = 422
       object AppSettingsGroupBox: TGroupBox
         Left = 6
         Height = 286
         Top = 6
-        Width = 496
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'AppSettingsGroupBox'
         ClientHeight = 267
-        ClientWidth = 492
+        ClientWidth = 497
         TabOrder = 0
         object TitleLabel: TLabel
           AnchorSideLeft.Control = AppSettingsGroupBox
@@ -81,7 +81,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 106
           Height = 27
           Top = 6
-          Width = 380
+          Width = 385
           Align = alTop
           BorderSpacing.Left = 100
           BorderSpacing.Around = 6
@@ -131,9 +131,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           TabOrder = 3
           object IconImage: TImage
             Left = 1
-            Height = 124
+            Height = 122
             Top = 1
-            Width = 124
+            Width = 122
             Align = alClient
             Center = True
             OnPictureChanged = IconImagePictureChanged
@@ -207,13 +207,13 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 82
         Top = 298
-        Width = 496
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
         ClientHeight = 63
-        ClientWidth = 492
+        ClientWidth = 497
         TabOrder = 1
         object TargetFileLabel: TLabel
           AnchorSideLeft.Control = OutputSettingsGroupBox
@@ -235,7 +235,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 27
           Top = 30
-          Width = 480
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -260,8 +260,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
     object FormsPage: TPage
       Caption = 'FormsPage'
-      ClientWidth = 508
-      ClientHeight = 426
+      ClientWidth = 513
+      ClientHeight = 422
       OnResize = FormsPageResize
       object FormsAutoCreatedLabel: TLabel
         Left = 36
@@ -337,7 +337,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 36
-        Height = 367
+        Height = 363
         Top = 30
         Width = 194
         Anchors = [akTop, akLeft, akBottom]
@@ -356,9 +356,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 266
-        Height = 367
+        Height = 363
         Top = 30
-        Width = 236
+        Width = 241
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -371,129 +371,29 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Control = FormsAutoCreatedListBox
         Left = 6
         Height = 17
-        Top = 403
-        Width = 496
+        Top = 399
+        Width = 501
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'FormsAutoCreateNewFormsCheckBox'
         TabOrder = 2
       end
     end
-    object MiscPage: TPage
-      Caption = 'MiscPage'
-      ClientWidth = 508
-      ClientHeight = 426
-      object Bevel1: TBevel
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = MiscPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 3
-        Top = 98
-        Width = 496
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Around = 6
-      end
-      object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 29
-        Width = 238
-        BorderSpacing.Around = 6
-        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
-        TabOrder = 0
-      end
-      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 52
-        Width = 235
-        BorderSpacing.Around = 6
-        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
-        TabOrder = 1
-      end
-      object MainUnitIsPascalSourceCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = MiscPage
-        Left = 6
-        Height = 17
-        Top = 6
-        Width = 183
-        BorderSpacing.Around = 6
-        Caption = 'MainUnitIsPascalSourceCheckBox'
-        TabOrder = 2
-      end
-      object MainUnitHasTitleStatementCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 75
-        Width = 196
-        BorderSpacing.Around = 6
-        Caption = 'MainUnitHasTitleStatementCheckBox'
-        TabOrder = 5
-      end
-      object RunnableCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = Bevel1
-        Left = 6
-        Height = 17
-        Top = 104
-        Width = 113
-        BorderSpacing.Around = 6
-        Caption = 'RunnableCheckBox'
-        TabOrder = 3
-      end
-      object AlwaysBuildCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = RunnableCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 127
-        Width = 123
-        BorderSpacing.Around = 6
-        Caption = 'AlwaysBuildCheckBox'
-        TabOrder = 4
-      end
-      object LRSInOutputDirCheckBox: TCheckBox
-        AnchorSideLeft.Control = MiscPage
-        AnchorSideTop.Control = AlwaysBuildCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 17
-        Top = 150
-        Width = 142
-        BorderSpacing.Around = 6
-        Caption = 'LRSInOutputDirCheckBox'
-        TabOrder = 6
-      end
-    end
     object LazDocPage: TPage
       Caption = 'LazDocPage'
-      ClientWidth = 508
-      ClientHeight = 416
+      ClientWidth = 513
+      ClientHeight = 422
       object LazDocPathsGroupBox: TGroupBox
         Left = 6
-        Height = 207
+        Height = 192
         Top = 6
-        Width = 496
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 188
-        ClientWidth = 492
+        ClientHeight = 173
+        ClientWidth = 497
         TabOrder = 0
         object LazDocListBox: TListBox
           AnchorSideLeft.Control = LazDocPathsGroupBox
@@ -503,7 +403,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 108
           Top = 6
-          Width = 480
+          Width = 485
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 0
@@ -518,7 +418,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 27
           Top = 120
-          Width = 456
+          Width = 461
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -534,7 +434,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = LazDocPathEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 462
+          Left = 467
           Height = 27
           Top = 120
           Width = 24
@@ -579,13 +479,13 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
     object SavePage: TPage
       Caption = 'SavePage'
-      ClientWidth = 508
-      ClientHeight = 426
+      ClientWidth = 513
+      ClientHeight = 422
       object SaveClosedUnitInfoCheckBox: TCheckBox
         Left = 6
         Height = 17
         Top = 6
-        Width = 496
+        Width = 501
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'SaveClosedUnitInfoCheckBox'
@@ -597,7 +497,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 17
         Top = 29
-        Width = 496
+        Width = 501
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'SaveOnlyProjectUnitInfoCheckBox'
@@ -611,7 +511,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 4
         Top = 58
-        Width = 496
+        Width = 501
         Align = alTop
         AutoFill = True
         AutoSize = True
@@ -631,30 +531,30 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
     object VersionInfoPage: TPage
       Caption = 'VersionInfoPage'
-      ClientWidth = 508
-      ClientHeight = 426
+      ClientWidth = 513
+      ClientHeight = 422
       object VersionInfoGroupBox: TGroupBox
         AnchorSideLeft.Control = LanguageSettingsGroupBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 102
-        Top = 29
-        Width = 496
+        Height = 116
+        Top = 34
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Version Numbering'
-        ClientHeight = 83
-        ClientWidth = 492
+        ClientHeight = 97
+        ClientWidth = 497
         TabOrder = 1
         object VersionLabel: TLabel
           AnchorSideLeft.Control = VersionInfoGroupBox
           AnchorSideTop.Control = VersionInfoGroupBox
           Left = 6
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 40
+          Width = 52
           BorderSpacing.Around = 6
           Caption = 'Version:'
           ParentColor = False
@@ -664,9 +564,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = VersionInfoGroupBox
           Left = 106
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 75
+          Width = 95
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'Major Revision:'
@@ -677,9 +577,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = VersionInfoGroupBox
           Left = 206
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 74
+          Width = 95
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'Minor Revision:'
@@ -690,9 +590,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = VersionInfoGroupBox
           Left = 306
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 27
+          Width = 36
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'Build:'
@@ -703,8 +603,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = VersionLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 23
-          Top = 26
+          Height = 27
+          Top = 30
           Width = 70
           MaxValue = 65535
           TabOrder = 0
@@ -714,8 +614,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = MajorRevisionLabel
           AnchorSideTop.Side = asrBottom
           Left = 106
-          Height = 23
-          Top = 26
+          Height = 27
+          Top = 30
           Width = 70
           MaxValue = 65535
           TabOrder = 1
@@ -725,8 +625,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = MinorRevisionLabel
           AnchorSideTop.Side = asrBottom
           Left = 206
-          Height = 23
-          Top = 26
+          Height = 27
+          Top = 30
           Width = 70
           MaxValue = 65535
           TabOrder = 2
@@ -736,9 +636,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = VersionSpinEdit
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 17
-          Top = 61
-          Width = 149
+          Height = 22
+          Top = 69
+          Width = 204
           BorderSpacing.Top = 6
           BorderSpacing.Around = 6
           Caption = 'Automatically increase Build'
@@ -749,8 +649,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = BuildLabel
           AnchorSideTop.Side = asrBottom
           Left = 306
-          Height = 23
-          Top = 26
+          Height = 27
+          Top = 30
           Width = 70
           MaxValue = 65535
           TabOrder = 3
@@ -758,9 +658,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object UseVersionInfoCheckBox: TCheckBox
         Left = 6
-        Height = 17
+        Height = 22
         Top = 6
-        Width = 496
+        Width = 501
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Include Version Info in executable'
@@ -771,23 +671,23 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 71
-        Top = 137
-        Width = 496
+        Height = 84
+        Top = 156
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Language Options'
-        ClientHeight = 52
-        ClientWidth = 492
+        ClientHeight = 65
+        ClientWidth = 497
         TabOrder = 2
         object LanguageSelectionLabel: TLabel
           AnchorSideLeft.Control = LanguageSettingsGroupBox
           AnchorSideTop.Control = LanguageSettingsGroupBox
           Left = 6
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 98
+          Width = 131
           BorderSpacing.Around = 6
           Caption = 'Language Selection:'
           ParentColor = False
@@ -797,9 +697,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = LanguageSettingsGroupBox
           Left = 260
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 72
+          Width = 94
           BorderSpacing.Around = 6
           Caption = 'Character Set:'
           ParentColor = False
@@ -809,8 +709,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = LanguageSelectionLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 21
-          Top = 26
+          Height = 29
+          Top = 30
           Width = 248
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
@@ -824,9 +724,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Control = LanguageSettingsGroupBox
           AnchorSideRight.Side = asrBottom
           Left = 260
-          Height = 21
-          Top = 26
-          Width = 226
+          Height = 29
+          Top = 30
+          Width = 231
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
@@ -839,23 +739,23 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 105
-        Top = 214
-        Width = 496
+        Height = 126
+        Top = 246
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Other Info'
-        ClientHeight = 86
-        ClientWidth = 492
+        ClientHeight = 107
+        ClientWidth = 497
         TabOrder = 3
         object DescriptionLabel: TLabel
           AnchorSideTop.Control = DescriptionEdit
           AnchorSideTop.Side = asrCenter
           Left = 6
-          Height = 14
-          Top = 4
-          Width = 58
+          Height = 18
+          Top = 10
+          Width = 77
           BorderSpacing.Left = 6
           Caption = 'Description:'
           ParentColor = False
@@ -865,23 +765,25 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = CopyrightEdit
           AnchorSideTop.Side = asrCenter
           Left = 6
-          Height = 14
-          Top = 33
-          Width = 52
+          Height = 18
+          Top = 43
+          Width = 66
           Caption = 'Copyright:'
           ParentColor = False
         end
         object DescriptionEdit: TEdit
           AnchorSideLeft.Control = DescriptionLabel
           AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = OtherInfoGroupBox
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 74
-          Height = 23
-          Top = 0
-          Width = 412
+          Left = 93
+          Height = 27
+          Top = 6
+          Width = 398
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 10
+          BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           TabOrder = 0
         end
@@ -891,10 +793,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 74
-          Height = 23
-          Top = 29
-          Width = 412
+          Left = 93
+          Height = 27
+          Top = 39
+          Width = 398
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -906,10 +808,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Control = OtherInfoGroupBox
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 390
-          Height = 23
-          Top = 58
-          Width = 96
+          Left = 386
+          Height = 29
+          Top = 72
+          Width = 105
           Anchors = [akTop, akRight]
           AutoSize = True
           BorderSpacing.Around = 6
@@ -922,8 +824,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
     object i18nPage: TPage
       Caption = 'i18n'
-      ClientWidth = 508
-      ClientHeight = 426
+      ClientWidth = 513
+      ClientHeight = 422
       object I18NGroupBox: TGroupBox
         AnchorSideLeft.Control = OtherInfoGroupBox
         AnchorSideTop.Control = VersionInfoGroupBox
@@ -931,21 +833,21 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AnchorSideRight.Control = OtherInfoGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 73
-        Top = 29
-        Width = 496
+        Height = 84
+        Top = 34
+        Width = 501
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'i18n Options'
-        ClientHeight = 54
-        ClientWidth = 492
+        ClientHeight = 65
+        ClientWidth = 497
         TabOrder = 0
         object PoOutDirLabel: TLabel
           Left = 6
-          Height = 14
+          Height = 18
           Top = 6
-          Width = 103
+          Width = 132
           BorderSpacing.Around = 6
           Caption = 'PO Output Directory:'
           ParentColor = False
@@ -956,9 +858,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = POOutDirButton
           Left = 6
-          Height = 23
-          Top = 26
-          Width = 456
+          Height = 27
+          Top = 30
+          Width = 461
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -972,9 +874,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = POOutDirEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 462
-          Height = 23
-          Top = 26
+          Left = 467
+          Height = 27
+          Top = 30
           Width = 24
           Anchors = [akTop, akRight, akBottom]
           BorderSpacing.Right = 6
@@ -985,9 +887,9 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object EnableI18NCheckBox: TCheckBox
         Left = 6
-        Height = 17
+        Height = 22
         Top = 6
-        Width = 496
+        Width = 501
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Enable i18n'
@@ -995,12 +897,112 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         TabOrder = 1
       end
     end
+    object MiscPage: TPage
+      Caption = 'MiscPage'
+      ClientWidth = 513
+      ClientHeight = 422
+      object Bevel1: TBevel
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = MiscPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 3
+        Top = 118
+        Width = 501
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+      end
+      object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 34
+        Width = 316
+        BorderSpacing.Around = 6
+        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
+        TabOrder = 0
+      end
+      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 62
+        Width = 320
+        BorderSpacing.Around = 6
+        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
+        TabOrder = 1
+      end
+      object MainUnitIsPascalSourceCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MiscPage
+        Left = 6
+        Height = 22
+        Top = 6
+        Width = 238
+        BorderSpacing.Around = 6
+        Caption = 'MainUnitIsPascalSourceCheckBox'
+        TabOrder = 2
+      end
+      object MainUnitHasTitleStatementCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 90
+        Width = 263
+        BorderSpacing.Around = 6
+        Caption = 'MainUnitHasTitleStatementCheckBox'
+        TabOrder = 5
+      end
+      object RunnableCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = Bevel1
+        Left = 6
+        Height = 22
+        Top = 124
+        Width = 145
+        BorderSpacing.Around = 6
+        Caption = 'RunnableCheckBox'
+        TabOrder = 3
+      end
+      object AlwaysBuildCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = RunnableCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 152
+        Width = 161
+        BorderSpacing.Around = 6
+        Caption = 'AlwaysBuildCheckBox'
+        TabOrder = 4
+      end
+      object LRSInOutputDirCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = AlwaysBuildCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 22
+        Top = 180
+        Width = 184
+        BorderSpacing.Around = 6
+        Caption = 'LRSInOutputDirCheckBox'
+        TabOrder = 6
+      end
+    end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 36
-    Top = 453
-    Width = 500
+    Top = 459
+    Width = 505
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

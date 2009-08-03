@@ -174,11 +174,11 @@ type
     procedure SetProject(AProject: TProject);
     procedure SetupApplicationPage(PageIndex: Integer);
     procedure SetupFormsPage(PageIndex: Integer);
-    procedure SetupMiscPage(PageIndex: Integer);
     procedure SetupLazDocPage(PageIndex: Integer);
     procedure SetupSavePage(PageIndex: Integer);
     procedure SetupVersionInfoPage(PageIndex: Integer);
     procedure SetupI18NPage(PageIndex: Integer);
+    procedure SetupMiscPage(PageIndex: Integer);
     procedure EnableVersionInfo(UseVersionInfo: boolean);
     procedure Enablei18nInfo(Usei18n: boolean);
     procedure FillAutoCreateFormsListbox;
@@ -274,11 +274,11 @@ begin
 
   SetupApplicationPage(0);
   SetupFormsPage(1);
-  SetupMiscPage(2);
-  SetupLazDocPage(3);
-  SetupSavePage(4);
-  SetupVersionInfoPage(5);
-  SetupI18NPage(6);
+  SetupLazDocPage(2);
+  SetupSavePage(3);
+  SetupVersionInfoPage(4);
+  SetupI18NPage(5);
+  SetupMiscPage(6);
 
   IDEDialogLayoutList.ApplyLayout(Self, 430, 375);
 end;
