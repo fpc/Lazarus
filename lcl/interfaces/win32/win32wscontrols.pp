@@ -38,7 +38,7 @@ uses
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { LCL }
-  InterfaceBase, LCLType, LCLIntf, LCLProc, Themes;
+  InterfaceBase, LCLType, LCLIntf, LCLProc, Themes, Forms;
 
 type
   { TWin32WSDragImageList }
@@ -473,10 +473,31 @@ end;
 
 class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
+var
+  P: TPoint;
+  BoundsOffset: TRect;
+  Hnd: HWND;
+  lControl: TControl;
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
-  if csDesigning in AWinControl.ComponentState then
+  if csDesigning in AWinControl.ComponentState then begin
+    Windows.SetCursor(ACursor);
+    exit;
+  end;
+
+  if Screen.Cursor <> crDefault then exit;
+
+  Windows.GetCursorPos(Windows.POINT(P));
+  Windows.ScreenToClient(AWinControl.Handle, Windows.POINT(P));
+  if (P.X < 0) or (P.Y < 0) or
+     (P.X >= AWinControl.Width) or (P.Y > AWinControl.Height)
+  then
+    exit;
+
+  lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas,
+                                          capfAllowWinControls, capfRecursive]);
+  if (lControl = nil) or (lControl = AWinControl) then
     Windows.SetCursor(ACursor);
 end;
 
