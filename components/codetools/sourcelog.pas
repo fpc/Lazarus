@@ -697,7 +697,7 @@ var
   s: String;
 begin
   {$IFDEF VerboseCTSave}
-  DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
+  DebugLn(['TSourceLog.SaveToFile Self=',DbgS(Self),' ',Filename,' Size=',length(Source)]);
   CTDumpStack;
   {$ENDIF}
   Result := True;
