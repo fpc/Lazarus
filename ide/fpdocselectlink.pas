@@ -424,6 +424,7 @@ var
   ModuleName: String;
 begin
   if FPDocFile=nil then exit;
+  //DebugLn(['TFPDocLinkEditorDlg.AddIdentifiers ',FPDocFile.Filename,' Prefix=',Prefix]);
   DOMNode:=FPDocFile.GetFirstElement;
   while DOMNode<>nil do begin
     if (DOMNode is TDomElement) then begin
@@ -489,6 +490,7 @@ begin
     if (Prefix<>'') and (Prefix[1]='.') then System.Delete(Prefix,1,1);
     //DebugLn(['TFPDocLinkEditorDlg.AddSubIdentifiers context found: ModuleOwner=',DbgSName(ModuleOwner),' FPDocFile=',FPDocFile<>nil,' DOMNode=',DOMNode<>nil,' invalid path="',Prefix,'"']);
     if DOMNode is TDomElement then begin
+      // show elements of unit, beginning with prefix
       DOMElement:=TDomElement(DOMNode);
       Prefix:=DOMElement.GetAttribute('name')+'.'+Prefix;
       AddIdentifiers(ModuleOwner,FPDocFile,Prefix);

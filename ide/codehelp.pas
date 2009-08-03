@@ -1493,6 +1493,10 @@ var
     // check if the file is in the search path
     Path:=ExtractFilePath(FPDocFile.Filename);
     SearchPath:=Pkg.LazDocPaths;
+    if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,Pkg.Directory) then
+      exit;
+    SearchPath:=MinimizeSearchPath(SearchPath);
+    //DebugLn(['InPackage Path="',Path,'" SearchPath="',SearchPath,'"']);
     p:=FindPathInSearchPath(PChar(Path),length(Path),
                             PChar(SearchPath),length(SearchPath));
     if p<>nil then begin
@@ -1699,13 +1703,37 @@ function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
     Result:=SearchFileInPath(UnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault);
   end;
 
+  function FindElement(StartPos: integer; aFPDocFile: TLazFPDocFile): boolean;
+  var
+    ElementName: String;
+    p: integer;
+  begin
+    p:=length(Path)+1;
+    while p>StartPos do begin
+      ElementName:=copy(Path,StartPos,p-StartPos);
+      //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode ElementName=',ElementName]);
+      DOMNode:=aFPDocFile.GetElementWithName(ElementName);
+      if DOMNode<>nil then begin
+        InvalidPath:=p;
+        if p>length(Path) then
+          GetLinkedFPDocNode:=chprSuccess
+        else
+          GetLinkedFPDocNode:=chprFailed;
+        FPDocFile:=aFPDocFile;
+        exit(true);
+      end;
+      dec(p);
+      while (p>StartPos) and (Path[p]<>'.') do dec(p);
+    end;
+    Result:=false;
+  end;
+
 var
   StartPos, p: LongInt;
   PkgName: String;
   Pkg: TLazPackage;
   UnitName: String;
   AProject: TLazProject;
-  ElementName: String;
   FPDocFilename: String;
   BaseDir: String;
 begin
@@ -1742,15 +1770,10 @@ begin
   end else begin
     // relative link (either in the same fpdoc file or of the same module)
     // use same package
-    ModuleOwner:=FindModuleOwner(FPDocFile);
+    ModuleOwner:=FindModuleOwner(StartFPDocFile);
     if ModuleOwner=nil then exit;
     // try in the same fpdoc file
-    DOMNode:=FPDocFile.GetElementWithName(Path);
-    if DOMNode<>nil then begin
-      // target is in same file
-      FPDocFile:=StartFPDocFile;
-      exit(chprSuccess);
-    end;
+    if FindElement(StartPos,StartFPDocFile) then exit;
   end;
 
   // search in another unit
@@ -1785,25 +1808,10 @@ begin
     exit;
   end;
   StartPos:=p+1;
-  p:=StartPos;
 
   // find element
-  p:=length(Path)+1;
-  while p>StartPos do begin
-    ElementName:=copy(Path,StartPos,p-StartPos);
-    //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode ElementName=',ElementName]);
-    DOMNode:=FPDocFile.GetElementWithName(ElementName);
-    if DOMNode<>nil then begin
-      InvalidPath:=p;
-      if p>length(Path) then
-        Result:=chprSuccess
-      else
-        Result:=chprFailed;
-      exit;
-    end;
-    dec(p);
-    while (p>StartPos) and (Path[p]<>'.') do dec(p);
-  end;
+  if FindElement(StartPos,FPDocFile) then exit;
+
   Result:=chprFailed;
 end;
 
