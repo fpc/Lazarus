@@ -9484,6 +9484,14 @@ begin
   Result:=PrepareForCompile;
   if Result<>mrOk then exit;
 
+  if (AReason in [crCompile,crBuild])
+  and ([pbfDoNotCompileProject,pbfSkipTools]*Flags=[]) then
+  begin
+    // warn if nothing to do
+    Result:=CheckCompileReasons(AReason,Project1.CompilerOptions,false);
+    if Result<>mrOk then exit;
+  end;
+
   // show messages
   if EnvironmentOptions.MsgViewFocus then
     MessagesView.EnsureVisible

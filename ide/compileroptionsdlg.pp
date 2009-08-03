@@ -306,6 +306,9 @@ function CaptionToSyntaxMode(const Caption: string): string;
 function ProcessorToCaption(const Processor: string): string;
 function CaptionToProcessor(const Caption: string): string;
 
+function CheckCompileReasons(Reason: TCompileReason;
+  Options: TProjectCompilerOptions; Quiet: boolean): TModalResult; // check if Reason is handled at least once
+
 implementation
 
 type
@@ -379,6 +382,34 @@ begin
     Result:='pentium'
   else
     Result:='';
+end;
+
+function CheckCompileReasons(Reason: TCompileReason;
+  Options: TProjectCompilerOptions; Quiet: boolean): TModalResult;
+var
+  ProjToolOpts: TProjectCompilationToolOptions;
+begin
+  if (Reason in Options.CompileReasons)
+  and (Options.CompilerPath<>'') then
+    exit(mrOk);
+  if Options.ExecuteBefore is TProjectCompilationToolOptions then begin
+    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteBefore);
+    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
+      exit(mrOk);
+  end;
+  if Options.ExecuteAfter is TProjectCompilationToolOptions then begin
+    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteAfter);
+    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
+      exit(mrOk);
+  end;
+  // reason is not handled
+  if Quiet then exit(mrCancel);
+  Result:=MessageDlg('Nothing to do',
+    'The project''s compiler options has no compile command.'#13
+    +'See Project / Compiler Options ... / Compilation',mtInformation,
+    [mbCancel,mbIgnore],0);
+  if Result=mrIgnore then
+    Result:=mrOk;
 end;
 
 {------------------------------------------------------------------------------
