@@ -52,6 +52,7 @@ type
     AutoIndentCheckBox: TCheckBox;
     BlockIndentTypeLabel: TLabel;
     BlockGroupLabel: TLabel;
+    AutoHideCursorCheckBox: TCheckBox;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     OverwriteBlockCheckBox: TCheckBox;
@@ -80,6 +81,7 @@ type
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
+    procedure AutoHideCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
@@ -159,6 +161,7 @@ begin
   // mouse, drag&drop
   MouseGroupLabel.Caption := dlgMouseGroupOptions;
   DropFilesCheckBox.Caption := dlgDropFiles;
+  AutoHideCursorCheckBox.Caption := dlgAutoHideCursor;
 
   // caret + key navigation
   CursorGroupLabel.Caption := dlgCursorGroupOptions;
@@ -204,6 +207,7 @@ begin
 
     // mouse
     DropFilesCheckBox.Checked := eoDropFiles in SynEditOptions;
+    AutoHideCursorCheckBox.Checked := eoAutoHideCursor in SynEditOptions2;
 
     // cursor
     KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
@@ -285,6 +289,7 @@ begin
 
     // mouse
     UpdateOptionFromBool(DropFilesCheckBox.Checked, eoDropFiles);
+    UpdateOptionFromBool(AutoHideCursorCheckBox.Checked, eoAutoHideCursor);
 
     // cursor
     UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
@@ -350,6 +355,11 @@ procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
+end;
+
+procedure TEditorGeneralOptionsFrame.AutoHideCursorCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(AutoHideCursorCheckBox.Checked, eoAutoHideCursor);
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboboxOnKeyDown(

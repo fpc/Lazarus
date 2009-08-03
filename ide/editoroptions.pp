@@ -2190,6 +2190,8 @@ begin
           SynEditOptName := 'PersistentBlock';
         eoOverwriteBlock:
           SynEditOptName := 'OverwriteBlock';
+        eoAutoHideCursor:
+          SynEditOptName := 'AutoHideCursor';
         else
           SynEditOptName := '';
       end;
@@ -2458,6 +2460,8 @@ begin
           SynEditOptName := 'PersistentBlock';
         eoOverwriteBlock:
           SynEditOptName := 'OverwriteBlock';
+        eoAutoHideCursor:
+          SynEditOptName := 'AutoHideCursor';
         else
           SynEditOptName := '';
       end;

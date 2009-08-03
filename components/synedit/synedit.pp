@@ -177,7 +177,7 @@ type
 
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
 
-  TSynStateFlag = (sfCaretVisible, sfCaretChanged,
+  TSynStateFlag = (sfCaretVisible, sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfIgnoreNextChar, sfPainting, sfHasScrolled, sfLinesChanging,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
@@ -235,7 +235,8 @@ type
     eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
     eoFoldedCopyPaste,         // Remember folds in copy/paste operations
     eoPersistentBlock,         // Keep block if caret moves away or text is edited
-    eoOverwriteBlock           // Non persitent block, gets overwritten on insert/del
+    eoOverwriteBlock,          // Non persitent block, gets overwritten on insert/del
+    eoAutoHideCursor           // Hide the mouse cursor, on keyboard action
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -268,7 +269,7 @@ const
   SYNEDIT_DEFAULT_OPTIONS2 = [
     eoFoldedCopyPaste,
     eoOverwriteBlock
-    ];
+  ];
   {$ENDIF}
 
 type
@@ -2218,7 +2219,6 @@ begin
   inherited;
   if assigned(fMarkupCtrlMouse) then
     fMarkupCtrlMouse.UpdateCtrlState(Shift);
-  UpdateCursor;
   Data := nil;
   C := #0;
   try
@@ -2241,7 +2241,8 @@ begin
     end;
 
     if Cmd <> ecNone then begin
-      LastMouseCaret:=Point(-1,-1);
+      Include(FStateFlags, sfHideCursor);
+      LastMouseCaret := Point(-1,-1);                                           // includes update cursor
       //DebugLn(['[TCustomSynEdit.KeyDown] key translated ',cmd]);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
@@ -2256,6 +2257,7 @@ begin
     if Data <> nil then
       FreeMem(Data);
   end;
+  UpdateCursor;
   //DebugLn('[TCustomSynEdit.KeyDown] END ',dbgs(Key),' ',dbgs(Shift));
 end;
 
@@ -2285,6 +2287,7 @@ begin
   if Key='' then exit;
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
+    Include(FStateFlags, sfHideCursor);
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
     // The key will be handled in UTFKeyPress always and KeyPress won't be called
     // so we we fire the OnKeyPress here
@@ -2310,6 +2313,7 @@ begin
   if Key=#0 then exit;
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
+    Include(FStateFlags, sfHideCursor);
     {$IFDEF VerboseKeyboard}
     DebugLn('TCustomSynEdit.KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
@@ -2529,6 +2533,7 @@ var
   CType: TSynMAClickCount;
 begin
   //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  Exclude(FStateFlags, sfHideCursor);
   FInMouseClickEvent := True;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
@@ -2581,6 +2586,7 @@ procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Z: integer;
 begin
+  Exclude(FStateFlags, sfHideCursor);
   {$IF defined(LCLGTK) or defined(LCLGTK2)}
   // This is to temporarily address issue http://bugs.freepascal.org/view.php?id=12460
   if (sfMouseSelecting in fStateFlags) and not MouseCapture then
@@ -2736,6 +2742,8 @@ end;
 procedure TCustomSynEdit.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
 begin
   Handled := FInMouseClickEvent;
+  if not Handled then
+    Exclude(FStateFlags, sfHideCursor);
 end;
 
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -2744,6 +2752,7 @@ var
   wasDragging : Boolean;
   CType: TSynMAClickCount;
 begin
+  Exclude(FStateFlags, sfHideCursor);
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
@@ -4296,6 +4305,7 @@ end;
 
 procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
+  Exclude(FStateFlags, sfHideCursor);
   inherited;
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
@@ -4317,6 +4327,7 @@ end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
+  Exclude(FStateFlags, sfHideCursor);
   LastMouseCaret:=Point(-1,-1);
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
@@ -4763,6 +4774,11 @@ end;
 
 procedure TCustomSynEdit.UpdateCursor;
 begin
+  if (sfHideCursor in FStateFlags) and (eoAutoHideCursor in fOptions2) then begin
+    SetCursor(crNone);
+    exit;
+  end;
+
   if (FLastMousePoint.X >= FGutterWidth) and (FLastMousePoint.X < ClientWidth - ScrollBarWidth) and
      (FLastMousePoint.Y >= 0) and (FLastMousePoint.Y < ClientHeight - ScrollBarWidth) then
   begin
@@ -6854,6 +6870,8 @@ begin
       MoveCaretToVisibleArea;
     if eoPersistentBlock in ChangedOptions then
       FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
+    if (eoAutoHideCursor in ChangedOptions) and not(eoAutoHideCursor in fOptions2) then
+      UpdateCursor;
   end;
 end;
 {$ENDIF}
