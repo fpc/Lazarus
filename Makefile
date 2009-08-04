@@ -3588,9 +3588,7 @@ debcopy: distclean
 	$(LINKTREE) debugger $(DEBSRCDIR)
 	$(LINKTREE) designer $(DEBSRCDIR)
 	$(LINKTREE) doceditor $(DEBSRCDIR)
-ifndef NODOCS
 	$(LINKTREE) docs $(DEBSRCDIR)
-endif
 	$(LINKTREE) install $(DEBSRCDIR)
 	$(LINKTREE) examples $(DEBSRCDIR)
 	$(LINKTREE) ide $(DEBSRCDIR)
@@ -3607,11 +3605,7 @@ endif
 	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
 	chmod 755 $(DEBSRCDIR)/debian/rules
 debbuild:
-ifdef NODOCS
-	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc -B
-else
 	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc
-endif
 	mv -v -t . \
 	$(DEBSRCDIR)/../*.changes \
 	$(DEBSRCDIR)/../*.deb \

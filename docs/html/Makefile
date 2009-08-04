@@ -10,6 +10,10 @@ ifndef LAZBUILD
 LAZBUILD=$(firstword $(wildcard ../../lazbuild) lazbuild)
 endif
 
+ifndef FPC
+FPC=/usr/bin/fpc
+endif
+
 build: htmldocs
 
 htmldocs: build_lcl_docs
@@ -18,8 +22,13 @@ htmldocs: build_lcl_docs
 chmdocs: build_lcl_docs
 	./$< --outfmt chm --arg --make-searchable
 
-build_lcl_docs: build_lcl_docs.lpi
+build_lcl_docs: build_lcl_docs.lpi build_lcl_docs.lpr
+ifeq ($(wildcard(${LAZBUILD})),)
+	echo 'Executable "lazbuild" not found, trying direct FPC call.'
+	${FPC} -o$@ build_lcl_docs.lpr
+else
 	${LAZBUILD} $<
+endif
 
 clean:
 	${RM} build_lcl_docs lcl
