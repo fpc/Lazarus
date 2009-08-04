@@ -894,11 +894,12 @@ end;
 function TCodeBuffer.SaveToFile(const AFilename: string): boolean;
 begin
   Result:=inherited SaveToFile(AFilename);
-  //DebugLn('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
+  //DebugLn(['TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result]);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if Result then begin
       IsDeleted:=false;
       MakeFileDateValid;
+      Modified:=false;
     end;
   end;
 end;
