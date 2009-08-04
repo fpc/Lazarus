@@ -1470,6 +1470,7 @@ end;
 function TUnitInfo.NeedsSaveToDisk: boolean;
 begin
   Result:=IsVirtual or Modified or ChangedOnDisk(true);
+  //DebugLn(['TUnitInfo.NeedsSaveToDisk ',filename,' Result=',Result,' Modified=',Modified]);
   if not Result then begin
     if Source<>nil then
       Result:=Source.FileOnDiskNeedsUpdate

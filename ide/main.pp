@@ -4692,6 +4692,7 @@ var
   UnitOwners: TFPList;
   APackage: TLazPackage;
   i: Integer;
+  LRSFilename: String;
 begin
   Result:=mrCancel;
 
@@ -4942,10 +4943,13 @@ begin
   {$ENDIF}
   // save binary stream (.lrs)
   if ResourceCode<>nil then begin
-    if (not (sfSaveToTestDir in Flags)) and (not ResourceCode.IsVirtual) then
+    if (not (sfSaveToTestDir in Flags)) then
     begin
       if (ResourceCode.Modified) then begin
-        Result:=SaveCodeBufferToFile(ResourceCode,ResourceCode.Filename);
+        LRSFilename:=ResourceCode.Filename;
+        if not FilenameIsAbsolute(LRSFilename) then
+          LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+        Result:=SaveCodeBufferToFile(ResourceCode,LRSFilename);
         if not Result=mrOk then exit;
       end;
     end else begin
@@ -5029,7 +5033,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
-  //debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil]);
+  //debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -5113,7 +5117,8 @@ begin
       NewResFilename:=NewResFilePath
                       +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end;
-    CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
+    if FilenameIsAbsolute(NewResFilename) then
+      CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
     if (AnUnitInfo.Component<>nil) then
       FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
@@ -5134,7 +5139,7 @@ begin
   if FilenameIsAbsolute(OldLFMFilename) and FileExistsUTF8(OldLFMFilename) then
   begin
     LFMBuf:=CodeToolBoss.LoadFile(OldLFMFilename,false,false);
-    if LFMBuf<>nil then begin
+    if (LFMBuf<>nil) and FilenameIsAbsolute(NewLFMFilename) then begin
       Result:=SaveCodeBufferToFile(LFMBuf,NewLFMFilename,true);
       if Result<>mrOk then begin
         DebugLn(['TMainIDE.DoRenameUnit SaveCodeBufferToFile failed for ',NewLFMFilename]);
@@ -5173,8 +5178,11 @@ begin
   end;
 
   // save file
-  Result:=SaveCodeBufferToFile(NewSource,NewSource.Filename);
-  if Result<>mrOk then exit;
+  if not NewSource.IsVirtual then begin
+    Result:=AnUnitInfo.WriteUnitSource;
+    if Result<>mrOk then exit;
+    AnUnitInfo.Modified:=false;
+  end;
 
   // change packages containing the file
   Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename,
