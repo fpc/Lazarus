@@ -1945,6 +1945,9 @@ begin
     SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
     SM_CYSCREEN,
     SM_CYVIRTUALSCREEN : Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CXSMICON,
+    SM_CYSMICON:
+      Result := 16;
     SM_CXICON,
     SM_CYICON:
       Result := 128;
