@@ -108,7 +108,7 @@ type
     FOnValidate: TValidateEvent;
     FOnCancel: TNotifyEvent;
     FClSelect: TColor;
-    FAnsi: boolean;
+    FCaseSensitive: boolean;
     {$IFDEF SYN_LAZARUS}
     FBackgroundColor: TColor;
     FOnSearchPosition: TSynBaseCompletionSearchPosition;
@@ -173,7 +173,7 @@ type
     property NbLinesInWindow: Integer read FNbLinesInWindow
       write SetNbLinesInWindow;
     property ClSelect: TColor read FClSelect write FClSelect;
-    property ffAnsi: boolean read fansi write fansi;
+    property CaseSensitive: boolean read FCaseSensitive write FCaseSensitive;
     property CurrentEditor: TComponent read fCurrentEditor write fCurrentEditor;
     {$IFDEF SYN_LAZARUS}
     property FontHeight:integer read FFontHeight;
@@ -198,12 +198,12 @@ type
     OldPersistentCaret: boolean;
     FOnExecute: TNotifyEvent;
     FWidth: Integer;
-    RFAnsi: boolean;
-    SFAnsi: boolean;
+    function GetCaseSensitive: boolean;
     function GetClSelect: TColor;
     {$IFDEF SYN_LAZARUS}
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
     function GetOnPositionChanged: TNotifyEvent;
+    procedure SetCaseSensitive(const AValue: boolean);
     {$ENDIF}
     procedure SetClSelect(const Value: TColor);
     function GetCurrentString: string;
@@ -284,7 +284,7 @@ type
                                              write SetOnPositionChanged;
     {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
-    property AnsiStrings: boolean read SFAnsi write RFAnsi;
+    property CaseSensitive: boolean read GetCaseSensitive write SetCaseSensitive;
     property Width: Integer read FWidth write SetWidth;
   end;
 
@@ -806,9 +806,9 @@ begin
     Position:=i;
   end else begin
   {$ENDIF}
-    if ffAnsi then begin
+    if FCaseSensitive then begin
       for i := 0 to Pred(ItemList.Count) do
-        if 0 = CompareText(fCurrentString,
+        if 0 = CompareStr(fCurrentString,
           Copy(ItemList[i], 1, Length(fCurrentString)))
         then begin
           Position := i;
@@ -816,8 +816,8 @@ begin
         end;
     end else begin
       for i := 0 to Pred(ItemList.Count) do
-        if 0 = CompareStr(fCurrentString,
-          Copy(ItemList[i], 1, Length(fCurrentString)))
+        if 0 = WideCompareText(UTF8Decode(fCurrentString),
+                       UTF8Decode(Copy(ItemList[i], 1, Length(fCurrentString))))
         then begin
           Position := i;
           break;
@@ -1132,6 +1132,11 @@ begin
   Result := Form.ClSelect;
 end;
 
+function TSynBaseCompletion.GetCaseSensitive: boolean;
+begin
+  Result := Form.CaseSensitive;
+end;
+
 {$IFDEF SYN_LAZARUS}
 function TSynBaseCompletion.GetOnMeasureItem: TSynBaseCompletionMeasureItem;
 begin
@@ -1142,6 +1147,12 @@ function TSynBaseCompletion.GetOnPositionChanged: TNotifyEvent;
 begin
   Result := Form.OnPositionChanged;
 end;
+
+procedure TSynBaseCompletion.SetCaseSensitive(const AValue: boolean);
+begin
+  Form.CaseSensitive := AValue;
+end;
+
 {$ENDIF}
 
 procedure TSynBaseCompletion.SetClSelect(const Value: TColor);
@@ -1335,12 +1346,15 @@ begin
           Value := ItemList[Position];
           FOnCodeCompletion(Value, TextBetweenPoints[NewBlockBegin, NewBlockEnd],
                             NewBlockBegin, NewBlockEnd, KeyChar, Shift);
-          //SelText := Value;
           if (CompareCarets(NewBlockBegin, NewBlockEnd) <> 0) or (Value <> '') then
+          begin
             TextBetweenPoints[NewBlockBegin, NewBlockEnd] := Value;
-        end else
+            TCustomSynEdit(F.CurrentEditor).SetFocus;
+          end;
+        end else begin
           TextBetweenPoints[NewBlockBegin, NewBlockEnd] := ItemList[Position];
-          //SelText := ItemList[Position];
+          TCustomSynEdit(F.CurrentEditor).SetFocus;
+        end;
       end;       
       EndUndoBlock;
     end;
