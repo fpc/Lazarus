@@ -65,7 +65,7 @@ type
     destructor destroy; override;
     procedure OutputString(S:string);
     function BlockFor(var w: word):integer;
-
+    procedure ResetLastFont;
     property Font: string read FFont write SetFont;
     property FontSize: Integer read FFontSize write SetFontSize;
     property FOntStyle: Integer read FFontStyle write SetFontStyle;
@@ -521,6 +521,11 @@ begin
     FFontStyle := 0
   else
     FFontStyle := AValue;
+end;
+
+procedure TPsUnicode.ResetLastFont;
+begin
+  FLastFontIndex:=-1;
 end;
 
 end.

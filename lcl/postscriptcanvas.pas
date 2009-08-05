@@ -70,6 +70,7 @@ Type
     fPenPos        : TPoint;
     FPsUnicode     : TPSUnicode;
     FFs            : TFormatSettings;
+    fSaveCount     : Integer;
 
     procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
@@ -112,6 +113,7 @@ Type
     procedure RegionChanging(APen: TObject); override;
     procedure RequiredState(ReqState: TCanvasState); override;
     procedure DoEllipseAndFill(const Bounds: TRect); override;
+    procedure SetClipRect(const ARect:TRect);override;
     
     procedure BeginDoc; override;
     procedure EndDoc;   override;
@@ -1457,6 +1459,7 @@ begin
   write('newpath');
 
   Self.fcPenWidth:=-1; // prevent cached line width affect new page
+  fSaveCount:=0;
   UpdateLineWidth;
 end;
 
@@ -1922,6 +1925,20 @@ var
   PenUnder : Real;
   PosUnder : Integer;
   pp:TpsPoint;
+  saved:boolean;
+
+  procedure rotate;
+  begin
+    if Font.Orientation<>0 then
+    begin
+      write('gsave');
+      inc(fSaveCount);
+      Self.FPsUnicode.ResetLastFont;
+      saved:=true;
+      write(format('%.2f rotate',[Font.Orientation / 10],fFS));
+    end;
+  end;
+
 begin
   pp:=TranslateCoord(X,Y);
 
@@ -1931,9 +1948,10 @@ begin
   FPSUnicode.FontSize:=Font.Size;
   FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
-  //The Y origine for ps text it's Left bottom corner
-  //Dec(Y,Abs(Font.Size));
-  pp.fy:=pp.fy-abs(Font.Size); // in points
+  //The Y origin for ps text it's Left bottom corner
+  pp.fy := pp.fy - abs(Font.Size); // in points
+
+  saved:=false;
   
   if fsUnderline in Font.Style then
   begin
@@ -1941,6 +1959,7 @@ begin
     if fsBold in Font.Style then
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
+    rotate();
     Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
     FPSUnicode.OutputString(MapedString(Text));
     write(Format('%.3f %d ule',[PenUnder,PosUnder],FFs));
@@ -1948,7 +1967,14 @@ begin
   else
   begin
     write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
+    rotate();
     FPSUnicode.OutputString(MapedString(Text));
+  end;
+
+  if saved then
+  begin
+    write('grestore');
+    dec(fSaveCount);
   end;
 
   MoveToLastPos;
@@ -2028,13 +2054,13 @@ begin
   WriteB(Format('%f %f scale',[DrawWidth,DrawHeight],FFs));
   {$IFDEF ASCII85}
   WriteB('<<');
-	WriteB('  /ImageType 1');
-	WriteB('  /Width '+IntToStr(ImgWidth));
-	WriteB('  /Height '+IntToStr(ImgHeight));
-	WriteB('  /BitsPerComponent 8');
-	WriteB('  /Decode [0 1 0 1 0 1]');
-	WriteB('  /ImageMatrix '+Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
-	WriteB('  /DataSource currentfile /ASCII85Decode filter');
+  WriteB('  /ImageType 1');
+  WriteB('  /Width '+IntToStr(ImgWidth));
+  WriteB('  /Height '+IntToStr(ImgHeight));
+  WriteB('  /BitsPerComponent 8');
+  WriteB('  /Decode [0 1 0 1 0 1]');
+  WriteB('  /ImageMatrix '+Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
+  WriteB('  /DataSource currentfile /ASCII85Decode filter');
   WriteB('>>');
   WriteB('image');
   Write(fBuffer);
@@ -2134,6 +2160,39 @@ begin
   TextOut(X,Y, Text);
 end;
 
+function IsMaxClip(ARect:TRect):boolean;
+begin
+  Result:=(Arect.Right=MaxInt) and (ARect.Bottom=MaxInt) and (Arect.Left=0) and (ARect.Top=0);
+end;
+
+procedure TPostScriptPrinterCanvas.SetClipRect(const ARect:TRect);
+begin
+  inherited SetClipRect(ARect);
+  if (fSaveCount>0) then // restore original clipping
+  begin
+    Self.Write('grestore');
+    dec(fSaveCount);
+  end;
+
+  // if the rect is empty or max-possible - do not clip
+  if (IsRectEmpty(ARect) or IsMaxClip(ARect)) then
+    exit;
+
+  // save PS state and clip
+  UpdateLineWidth;
+  UpdateLineColor;
+  UpdateFillColor;
+  UpdateFont;
+  Self.Write('gsave');
+  Self.WriteComment('This is clip path');
+  inc(fSaveCount);
+  psDrawRect(ARect);
+  Self.WriteB('clip');
+  Self.Write(fBuffer);
+ // Self.MovetoLastpos;
+
+
+end;
 
 procedure TPostScriptPrinterCanvas.FloodFill(X, Y: Integer; FillColor: TColor;  FillStyle: TFillStyle);
 begin
