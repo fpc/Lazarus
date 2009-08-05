@@ -574,6 +574,7 @@ begin
         if Key<>#0 then
         {$ENDIF}
           CurrentString := CurrentString + key;
+        Key:=#0;
       end;
     #8: ;
   else
@@ -787,6 +788,7 @@ begin
       CurrentString := CurrentString + UTF8Key;
       if Assigned(OnUTF8KeyPress) then
         OnUTF8KeyPress(Self, UTF8Key);
+      UTF8Key := '';
     end;
   end;
   //debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
