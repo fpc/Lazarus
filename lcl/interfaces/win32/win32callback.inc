@@ -1414,7 +1414,10 @@ begin
         if lWinControl = nil then
           lWinControl := GetWin32WindowInfo(HWND(LParam))^.AWinControl;
 
-        if lWinControl is TCustomCheckbox then begin
+        // TToggleBox is a TCustomCheckBox too, but we don't want to handle
+        // state changes of TToggleBox ourselfves
+        if (lWinControl is TCustomCheckBox) and not (lWinControl is TToggleBox) then
+        begin
           case HIWORD(WParam) of
             BN_CLICKED:
               begin
