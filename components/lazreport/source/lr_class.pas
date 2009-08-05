@@ -789,7 +789,25 @@ type
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
-  
+
+  TfrExportFilter = class(TObject)
+  protected
+    Stream: TStream;
+    Lines: TFpList;
+    procedure ClearLines;
+  public
+    constructor Create(AStream: TStream); virtual;
+    destructor Destroy; override;
+    procedure OnBeginDoc; virtual;
+    procedure OnEndDoc; virtual;
+    procedure OnBeginPage; virtual;
+    procedure OnEndPage; virtual;
+    procedure OnData(x, y: Integer; View: TfrView); virtual;
+    procedure OnText(x, y: Integer; const text: String; View: TfrView); virtual;
+  end;
+
+  TfrExportFilterClass = class of TfrExportFilter;
+
   TfrDataType = (dtDataSet,dtDataSource);
 
   { TfrReport }
@@ -910,7 +928,7 @@ type
     // report manipulation methods
     procedure DesignReport;
     function PrepareReport: Boolean;
-    procedure ExportTo(Filter: TClass; const aFileName: String);
+    procedure ExportTo(FilterClass: TfrExportFilterClass; const aFileName: String);
     procedure ShowReport;
     procedure ShowPreparedReport;
     procedure PrintPreparedReport(const PageNumbers: String; Copies: Integer);
@@ -1007,22 +1025,6 @@ type
     procedure ShowEditor(t: TfrView); virtual;
   end;
 
-  TfrExportFilter = class(TObject)
-  protected
-    Stream: TStream;
-    Lines: TFpList;
-    procedure ClearLines;
-  public
-    constructor Create(AStream: TStream); virtual;
-    destructor Destroy; override;
-    procedure OnBeginDoc; virtual;
-    procedure OnEndDoc; virtual;
-    procedure OnBeginPage; virtual;
-    procedure OnEndPage; virtual;
-    procedure OnData(x, y: Integer; View: TfrView); virtual;
-    procedure OnText(x, y: Integer; const text: String; View: TfrView); virtual;
-  end;
-
   TfrFunctionDescription = class(TObject)
     funName:string;
     funGroup:string;
@@ -1055,7 +1057,7 @@ type
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
 procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
   const ButtonHint: String; EditorForm: TfrObjEditorForm);
-procedure frRegisterExportFilter(ClassRef: TClass;
+procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
 procedure frRegisterTool(const MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
@@ -1092,7 +1094,7 @@ type
   end;
 
   TfrExportFilterInfo = record
-    ClassRef: TClass;
+    ClassRef: TfrExportFilterClass;
     FilterDesc, FilterExt: String;
   end;
 
@@ -1360,7 +1362,7 @@ begin
   Inc(frAddInsCount);
 end;
 
-procedure frRegisterExportFilter(ClassRef: TClass;
+procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 begin
   frFilters[frFiltersCount].ClassRef := ClassRef;
@@ -8219,13 +8221,12 @@ begin
   frProgressForm.ModalResult := mrOk;
 end;
 
-procedure TfrReport.ExportTo(Filter: TClass; const aFileName: String);
+procedure TfrReport.ExportTo(FilterClass: TfrExportFilterClass; const aFileName: String);
 var
   s: String;
 begin
   ExportStream := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
-  FCurrentFilter := TfrExportFilter(Filter.NewInstance);
-  FCurrentFilter.Create(ExportStream);
+  FCurrentFilter := FilterClass.Create(ExportStream);
   FCurrentFilter.OnBeginDoc;
 
   CurReport := Self;
@@ -8244,8 +8245,7 @@ begin
     Show_Modal(Self);
   end;
 
-  FCurrentFilter.Free;
-  FCurrentFilter := nil;
+  FreeAndNil(FCurrentFilter);
   ExportStream.Free;
 end;
 
