@@ -1543,7 +1543,7 @@ begin
 
   Child := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
   Gtk2WidgetSet.SetWidgetColor(Child, AWinControl.Font.Color, AWinControl.Color,
-   [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+   [GTK_STATE_NORMAL,GTK_STYLE_BASE]);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
