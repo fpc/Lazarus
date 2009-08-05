@@ -209,6 +209,10 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
 
     procedure CheckCursor;
+    property    EditMask  : string  read FRealMask   write SetMask;
+    property    isMasked  : Boolean read GetIsMasked;
+    property    EditText  : string  read GetEditText write SetEditText;
+    property    SpaceChar : Char    read FSpaceChar  write SetSpaceChar;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -216,16 +220,15 @@ type
     constructor Create(Aowner : TComponent); override;
     procedure   Clear;
     procedure   ValidateEdit; virtual;
-    property    EditMask  : string  read FRealMask   write SetMask;
-    property    isMasked  : Boolean read GetIsMasked;
     property    Text      : string  read GetText     write SetText;
-    property    EditText  : string  read GetEditText write SetEditText;
-    property    SpaceChar : Char    read FSpaceChar  write SetSpaceChar;
   end;
 
   { TMaskEdit }
 
   TMaskEdit = class(TCustomMaskEdit)
+  Public
+    property    isMasked  : Boolean read GetIsMasked;
+    property    EditText  : string  read GetEditText write SetEditText;
   published
     property Anchors;
     property AutoSelect;

@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs, CalendarPopup;
+  ExtDlgs, CalendarPopup, MaskEdit;
 
 const
   NullDate: TDateTime = 0;
@@ -37,7 +37,7 @@ const
 type
   { TCustomEditButton }
 
-  TCustomEditButton = class(TCustomEdit)
+  TCustomEditButton = class(TCustomMaskEdit)
   private
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
@@ -318,11 +318,13 @@ type
   TAcceptDateEvent = procedure (Sender : TObject; var ADate : TDateTime;
     var AcceptDate: Boolean) of object;
   TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
+  TDateOrder = (doNone,doMDY,doDMY,doYMd);
 
   { TDateEdit }
 
   TDateEdit = class(TCustomEditButton)
   private
+    FDateOrder: TDateOrder;
     FDefaultToday: Boolean;
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
@@ -335,11 +337,13 @@ type
     function IsStoreTitle: boolean;
     procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
+    procedure SetDateOrder(const AValue: TDateOrder);
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
     procedure DoButtonClick(Sender: TObject); override;
     procedure DblClick; override;
+    Procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure DateFormatChanged; virtual;
@@ -355,6 +359,7 @@ type
     property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly;
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
+    Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property Action;
@@ -918,7 +923,7 @@ end;
 
 procedure TDateEdit.DateFormatChanged;
 begin
-  FDateFormat := LongDateFormat;
+  FDateFormat := ShortDateFormat;
 end;
 
 function TDateEdit.GetDateFormat: string;
@@ -943,16 +948,80 @@ begin
   inherited DoButtonClick(Sender);
 
   PopupOrigin := ControlToScreen(Point(0, Height));
-  if Trim(Text) = EmptyStr then
-    ShowCalendarPopup(PopupOrigin, Now, @CalendarPopupReturnDate)
+  if (GetDate=NullDate) then
+    ShowCalendarPopup(PopupOrigin, SysUtils.Date, @CalendarPopupReturnDate)
   else
-    ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate)
+    ShowCalendarPopup(PopupOrigin, GetDate, @CalendarPopupReturnDate)
 end;
 
 procedure TDateEdit.DblClick;
 begin
   inherited DblClick;
   DoButtonClick(nil);
+end;
+
+procedure TDateEdit.SetDateMask;
+
+Var
+  S : String;
+  D : TDateTime;
+begin
+  Case DateOrder of
+    doNone :
+       begin
+       S:=''; // no mask
+       FDateFormat:='';
+       end;
+    doDMY,
+    doMDY  :
+      begin
+      S:='99/99/9999;1;_';
+      if DateOrder=doMDY then
+        FDateFormat:='mm/dd/yyyy'
+      else
+        FDateFormat:='dd/mm/yyyy';
+      end;
+    doYMD  :
+      begin
+      S:='9999/99/99;1;_';
+      FDateFormat:='yyyy/mm/dd';
+      end;
+  end;
+  D:=GetDate;
+  EditMask:=S;
+  SetDate(D);
+end;
+
+Function ParseDate(S : String; Order : TDateOrder; Def: TDateTime) : TDateTime;
+
+Var
+  P,N1,N2,N3 : Integer;
+  B : Boolean;
+
+begin
+  Result:=Def;
+  P:=Pos(DateSeparator,S);
+  If (P=0) then
+    Exit;
+  N1:=StrToIntDef(Copy(S,1,P-1),-1);
+  If (N1=-1) then Exit;
+  Delete(S,1,P);
+  P:=Pos(DateSeparator,S);
+  If (P=0) then
+    Exit;
+  N2:=StrToIntDef(Copy(S,1,P-1),-1);
+  If (N1=0) then Exit;
+  Delete(S,1,P);
+  N3:=StrToIntDef(S,-1);
+  If (N3=-1) then
+    exit;
+  Case Order of
+    doYMD : B:=TryEncodeDate(N1,N2,N3,Result);
+    doMDY : B:=TryEncodeDate(N3,N1,N2,Result);
+    doDMY : B:=TryEncodeDate(N3,N2,N1,Result);
+  end;
+  If not B then // Not sure if TryEncodeDate touches Result.
+    Result:=Def;
 end;
 
 function TDateEdit.GetDate: TDateTime;
@@ -968,7 +1037,10 @@ begin
   begin
     if Assigned(FOnCustomDate) then
       FOnCustomDate(Self, ADate);
-    Result := StrToDateDef(ADate, Result);
+    If (DateOrder=doNone) then
+      Result := StrToDateDef(ADate, Result)
+    else
+      Result:=ParseDate(ADate,DateOrder,Result)
   end;
 end;
 
@@ -992,7 +1064,12 @@ begin
   if Value = NullDate then
     Text := ''
   else
-    Text := DateToStr(Value);
+    begin
+    If (FDateFormat='') then
+      Text:=DateToStr(Value)
+    else
+      Text:=FormatDateTime(FDateFormat,Value)
+    end;
   if D <> Date then
     Change;
 end;
@@ -1014,6 +1091,13 @@ begin
     on E:Exception do
       MessageDlg(E.Message, mtError, [mbOK], 0);
   end;
+end;
+
+procedure TDateEdit.SetDateOrder(const AValue: TDateOrder);
+begin
+  if FDateOrder=AValue then exit;
+  FDateOrder:=AValue;
+  SetDateMask;
 end;
 
 { TCalcEdit }
