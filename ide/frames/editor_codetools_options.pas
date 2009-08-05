@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ComCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin;
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls;
 
 type
   { TEditorCodetoolsOptionsFrame }
@@ -39,6 +39,8 @@ type
     AutoDelayTrackBar: TTrackBar;
     AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
+    MarkupWordBevel: TBevel;
+    ToolTipBevel: TBevel;
     MarkupWordDelayLabel: TLabel;
     MarkupWordNoTimerCheckBox: TCheckBox;
     MarkupWordFullCheckBox: TCheckBox;
