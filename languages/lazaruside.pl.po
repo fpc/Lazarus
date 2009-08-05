@@ -182,6 +182,10 @@ msgstr "Automatycznie usuń plik"
 msgid "Auto create form when opening unit"
 msgstr "Automatycznie twórz formularz przy otwieraniu jednostki"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr "Automatyczne wcięcia"
@@ -1812,7 +1816,9 @@ msgid "Naming"
 msgstr "Nazewnictwo"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "bez automatycznej zmiany nazwy"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -3812,6 +3818,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
@@ -6354,6 +6364,10 @@ msgstr ""
 msgid "IDE Interface"
 msgstr ""
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr ""
@@ -7534,6 +7548,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislfmfilenotfound
 msgid "LFM file not found"
+msgstr ""
+
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
 msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
@@ -8857,6 +8875,10 @@ msgstr ""
 msgid "No IDE window selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "noname"
@@ -8871,6 +8893,10 @@ msgstr "brak"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -9169,6 +9195,10 @@ msgstr ""
 msgid "Package"
 msgstr "Pakiet"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "Informacje o pakiecie"
@@ -9188,6 +9218,10 @@ msgstr ""
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Pakiety do zainstalowania w IDE"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10638,6 +10672,10 @@ msgstr "Ścieżka źródeł projektu"
 msgid "Project %s%s%s successfully built. :)"
 msgstr "Projekt %s%s%s poprawnie zbudowany. :)"
 
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
 msgstr "Ścieżka do modułów projektu"
@@ -11720,6 +11758,10 @@ msgstr ""
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "ten komunikat pomocy"
@@ -12104,6 +12146,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Nie można znaleźć metody. Popraw błąd wypisany w oknie komunikatów."
+
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."

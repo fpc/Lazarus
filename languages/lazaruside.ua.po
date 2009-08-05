@@ -173,6 +173,10 @@ msgstr "Автовидалення файлу"
 msgid "Auto create form when opening unit"
 msgstr "Автостворювання форми при відкритті модуля"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr ""
@@ -1805,7 +1809,9 @@ msgid "Naming"
 msgstr "Надання назви"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "без автоперейменування"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -3819,6 +3825,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
@@ -6361,6 +6371,10 @@ msgstr ""
 msgid "IDE Interface"
 msgstr ""
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr "Ідентифікатор починається з ..."
@@ -7542,6 +7556,10 @@ msgstr "Зламався файл LFM"
 #: lazarusidestrconsts.lislfmfilenotfound
 msgid "LFM file not found"
 msgstr "Не знайдено LFM файлу"
+
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
+msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -8868,6 +8886,10 @@ msgstr "Не успадковані параметри компілятора"
 msgid "No IDE window selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "без назви"
@@ -8882,6 +8904,10 @@ msgstr "нічого"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -9180,6 +9206,10 @@ msgstr "Переписати файл на диску"
 msgid "Package"
 msgstr "Пакунок"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "Пакунок Info"
@@ -9199,6 +9229,10 @@ msgstr "Потрібне встановлення пакунку"
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Пакунки для встановлення в IDE"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10649,6 +10683,10 @@ msgstr "Шлях до кодів проекту"
 msgid "Project %s%s%s successfully built. :)"
 msgstr "Проект %s%s%s успішно зібрано. :)"
 
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
 msgstr "Шлях до модулів проекту"
@@ -11731,6 +11769,10 @@ msgstr ""
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "це довідкове повідомлення"
@@ -12115,6 +12157,10 @@ msgstr "Не можу знайти %s в LFM Потоці"
 #: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Не можу знайти метод. Виправте помилки в вікні повідомлень."
+
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."

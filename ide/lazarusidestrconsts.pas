@@ -1045,7 +1045,7 @@ resourcestring
   lisNever = 'Never';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
-  dlgnoAutomaticRenaming = 'no automatic renaming';
+  dlgnoAutomaticRenaming = 'No automatic renaming';
   lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update '
     +'references ...';
   lisAlways = 'Always';

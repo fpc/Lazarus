@@ -178,6 +178,10 @@ msgstr "Auto cancellazione file"
 msgid "Auto create form when opening unit"
 msgstr "Auto crea form durante l'apertura della unit"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr ""
@@ -1810,7 +1814,9 @@ msgid "Naming"
 msgstr "Naming"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "nessuna rinomina automatica"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -3824,6 +3830,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
@@ -6366,6 +6376,10 @@ msgstr "IDE"
 msgid "IDE Interface"
 msgstr "Interfaccia IDE"
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr "L'identificatore comincia con ..."
@@ -7547,6 +7561,10 @@ msgstr "File LFM danneggiato"
 #: lazarusidestrconsts.lislfmfilenotfound
 msgid "LFM file not found"
 msgstr "File LFM non trovato"
+
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
+msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -8873,6 +8891,10 @@ msgstr "Nessuna opzione di compilazione ereditata."
 msgid "No IDE window selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "senzanome"
@@ -8887,6 +8909,10 @@ msgstr "nessuno"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -9185,6 +9211,10 @@ msgstr "Sovrascrivi il file su disco"
 msgid "Package"
 msgstr "Pacchetto"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "Informazioni sul pacchetto"
@@ -9204,6 +9234,10 @@ msgstr "Il pacchetto necessita di installazione"
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Pacchetti da installare nell'IDE"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10654,6 +10688,10 @@ msgstr "Percorso dei sorgenti del progetto"
 msgid "Project %s%s%s successfully built. :)"
 msgstr "La build del progetto %s%s%s è stata completata con successo. :)"
 
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
 msgstr "Percorso della unit del progetto"
@@ -11736,6 +11774,10 @@ msgstr ""
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "questo messaggio di aiuto"
@@ -12120,6 +12162,10 @@ msgstr "Impossibile trovare %s nello stream LFM."
 #: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Impossibile trovare il metodo. Correggere l'errore mostrato nella finestra messaggi."
+
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."

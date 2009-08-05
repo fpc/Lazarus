@@ -446,6 +446,10 @@ msgstr "Nesuderinamas identifikatorius"
 msgid "Incompatible Method"
 msgstr "Nesuderinamas metodas"
 
+#: objinspstrconsts.oisindexoutofbounds
+msgid "Index out of bounds"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Įvedimo kaukė:"
@@ -493,6 +497,10 @@ msgstr "Metodas"
 #: objinspstrconsts.oisnone
 msgid "(none)"
 msgstr "(jokia)"
+
+#: objinspstrconsts.oisnotsupported
+msgid "not supported"
+msgstr ""
 
 #: objinspstrconsts.oisobject
 msgid "Object"

@@ -177,6 +177,10 @@ msgstr "自動的にファイル削除"
 msgid "Auto create form when opening unit"
 msgstr "ユニットを開くとき自動的にフォーム生成"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr ""
@@ -1809,7 +1813,9 @@ msgid "Naming"
 msgstr "ネーミング"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "自動的にリネームしない"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -3824,6 +3830,10 @@ msgstr ""
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr "クラスはlfmファイルと衝突します。%sユニット%s%sはクラス%sを含むユニット%s%sを用いていますが、lfmファイルは既に他のクラス%sを含んでいます。%s一つのユニットには一つの設計クラスしか存在できません%s %sを他のユニットに移動してください。"
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
+msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6365,6 +6375,10 @@ msgstr ""
 msgid "IDE Interface"
 msgstr "IDEインターフェース"
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr "識別子が次から始まる ..."
@@ -7546,6 +7560,10 @@ msgstr "LFMファイル破損"
 #: lazarusidestrconsts.lislfmfilenotfound
 msgid "LFM file not found"
 msgstr "LFMファイルが見つかりません"
+
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
+msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -8872,6 +8890,10 @@ msgstr "コンパイラオプションが継承されていません。"
 msgid "No IDE window selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "名無し"
@@ -8886,6 +8908,10 @@ msgstr "なし"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -9184,6 +9210,10 @@ msgstr "ディスク上のファイルを上書き"
 msgid "Package"
 msgstr "パッケージ"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "パッケージ情報"
@@ -9203,6 +9233,10 @@ msgstr "パッケージはインストールが必要です"
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "IDEにインストールするパッケージ"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10653,6 +10687,10 @@ msgstr "プロジェクトのソースパス"
 msgid "Project %s%s%s successfully built. :)"
 msgstr "プロジェクト%s%s%sの構築に成功しました。"
 
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
 msgstr "プロジェクトのユニットパス"
@@ -11735,6 +11773,10 @@ msgstr "%s%s%sのユニット検索パスはソースディレクトリ%s%s%sの
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。メニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "このヘルプメッセージ"
@@ -12119,6 +12161,10 @@ msgstr "が見つかりません。"
 #: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "メソッドが見つかりません。メッセージウィンドウに表示されているエラーを修復してください。"
+
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."

@@ -183,6 +183,10 @@ msgstr "Auto zmazanie súboru"
 msgid "Auto create form when opening unit"
 msgstr "Auto vytvorenie formulára pri otvorení jednotky"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr ""
@@ -1815,7 +1819,9 @@ msgid "Naming"
 msgstr "Pomenovanie"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "Bez automatického premenovania"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -3830,6 +3836,10 @@ msgstr ""
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr "Konflikt triedy so súborom .lfm:%sJednotka %s%spoužíva jednotku %s%s, ktorá obsahuje triedu %s,%s, ale súbor .lfm už obsahuje inú triedu.%sMôže byť len jeden návrh triedy na jednotku.%sPresuňte prosím %s do inej jednotky."
+
+#: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
+msgid "Classes and properties exist. Values were not checked."
+msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6371,6 +6381,10 @@ msgstr "IDE"
 msgid "IDE Interface"
 msgstr "Rozhranie IDE"
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr "Identifikátor začína s ..."
@@ -7552,6 +7566,10 @@ msgstr "LFM súbor poškodený"
 #: lazarusidestrconsts.lislfmfilenotfound
 msgid "LFM file not found"
 msgstr "LFM súbor nenájdený"
+
+#: lazarusidestrconsts.lislfmisok
+msgid "LFM is ok"
+msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -8878,6 +8896,10 @@ msgstr "Žiadne zdedené voľby prekladača"
 msgid "No IDE window selected"
 msgstr "6iadne vybrané okno IDE"
 
+#: lazarusidestrconsts.lisnolfmfile
+msgid "No LFM file"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "bez mena"
@@ -8893,6 +8915,10 @@ msgstr "žiadne"
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "nie je vybratý žiadny uzol"
+
+#: lazarusidestrconsts.lisnopascalfile
+msgid "No pascal file"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
@@ -9190,6 +9216,10 @@ msgstr "Prepísať súbor na disku"
 msgid "Package"
 msgstr "Balíček"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "Informácie o balíčku"
@@ -9209,6 +9239,10 @@ msgstr "Balíček potrebuje inštaláciu"
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Balíčky pre nainštalovanie do IDE"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10659,6 +10693,10 @@ msgstr "Cesta k zdrojovým kódom projektu"
 msgid "Project %s%s%s successfully built. :)"
 msgstr "Projekt %s%s%s úspešne vybudovaný. :)"
 
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
 msgstr "Cesta k jednotkám projektu"
@@ -11741,6 +11779,10 @@ msgstr "Cesta hľadania jednotiek %s%s%s obsahuje zdrojový adresár %s%s%s bal�
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovný adresár %s%s%s neexistuje.%sProsím skontrolujte pracovný adresár v Spustiť > Parametre spustenia."
 
+#: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
+msgid "This function needs an open .lfm file in the source editor."
+msgstr ""
+
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "táto pomocná správa"
@@ -12125,6 +12167,10 @@ msgstr "Nemožno nájsť %s v streame LFM."
 #: lazarusidestrconsts.lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Nemožno nájsť metódu, prosím opravte chyby zobrazené v okne správ."
+
+#: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
+msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."

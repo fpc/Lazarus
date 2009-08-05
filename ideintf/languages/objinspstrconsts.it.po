@@ -444,6 +444,10 @@ msgstr ""
 msgid "Incompatible Method"
 msgstr ""
 
+#: objinspstrconsts.oisindexoutofbounds
+msgid "Index out of bounds"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Maschera di input:"
@@ -491,6 +495,10 @@ msgstr "Metodo"
 #: objinspstrconsts.oisnone
 msgid "(none)"
 msgstr "(nessuno)"
+
+#: objinspstrconsts.oisnotsupported
+msgid "not supported"
+msgstr ""
 
 #: objinspstrconsts.oisobject
 msgid "Object"

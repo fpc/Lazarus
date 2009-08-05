@@ -178,6 +178,10 @@ msgstr "Автоматически удалить файл"
 msgid "Auto create form when opening unit"
 msgstr "Автосоздание форм при открытии модуля"
 
+#: lazarusidestrconsts.dlgautohidecursor
+msgid "Hide mouse when typing"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr "Автоматический отступ"
@@ -1808,7 +1812,9 @@ msgid "Naming"
 msgstr "Именование"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-msgid "no automatic renaming"
+#, fuzzy
+#| msgid "no automatic renaming"
+msgid "No automatic renaming"
 msgstr "Не переименовывать автоматически"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
@@ -6352,6 +6358,10 @@ msgstr "IDE"
 msgid "IDE Interface"
 msgstr "Интерфейс IDE"
 
+#: lazarusidestrconsts.lisidentifier
+msgid "identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
 msgstr "Идентификатор начинается с ..."
@@ -9171,6 +9181,10 @@ msgstr "Перезаписать файл на диске"
 msgid "Package"
 msgstr "Пакет"
 
+#: lazarusidestrconsts.lispackage2
+msgid "package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
 msgstr "Информация о пакете"
@@ -9190,6 +9204,10 @@ msgstr "Пакет требует установки"
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Пакеты для установки в IDE"
+
+#: lazarusidestrconsts.lispackageunit
+msgid "package unit"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10639,6 +10657,10 @@ msgstr "Путь к исходному коду проекта"
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
 msgid "Project %s%s%s successfully built. :)"
 msgstr "Проект %s%s%s успешно собран. :)"
+
+#: lazarusidestrconsts.lisprojectunit
+msgid "project unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"

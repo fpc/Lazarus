@@ -448,6 +448,10 @@ msgstr "Nekompatibilný identifikátor"
 msgid "Incompatible Method"
 msgstr "Nekompatibilná metóda"
 
+#: objinspstrconsts.oisindexoutofbounds
+msgid "Index out of bounds"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Vstupná maska:"
@@ -495,6 +499,10 @@ msgstr "Metóda"
 #: objinspstrconsts.oisnone
 msgid "(none)"
 msgstr "(žiadna)"
+
+#: objinspstrconsts.oisnotsupported
+msgid "not supported"
+msgstr ""
 
 #: objinspstrconsts.oisobject
 msgid "Object"
