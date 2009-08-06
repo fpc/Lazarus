@@ -1387,6 +1387,25 @@ begin
     Key := 0;
     Exit;
   end;
+
+  // goto a dot
+  if (Key = VK_OEM_PERIOD) then
+  begin
+    FCursorPos := FCursorPos+Pos('.', Copy(Text, (FCursorPos+1), Length(Text)-(FCursorPos+1)));
+    Key := 0;
+    SetCursorPos;
+    Exit;
+  end;
+
+  // goto a comma
+  if (Key = VK_OEM_COMMA) then
+  begin
+    FCursorPos := FCursorPos+Pos(',', Copy(Text, (FCursorPos+1), Length(Text)-(FCursorPos+1)));
+    SetCursorPos;
+    Key := 0;
+    Exit;
+  end;
+
 end;
 
 
