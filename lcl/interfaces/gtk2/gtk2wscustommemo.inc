@@ -206,6 +206,10 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
     Exit;
 
+  // temporary fix, exit is Lines is not a TGTk2MemoStrings
+  if not (TCustomMemo(ACustomEdit).Lines is TGtk2MemoStrings) then
+    exit;
+
   MemoStrings := TCustomMemo(ACustomEdit).Lines as TGtk2MemoStrings;
   MemoStrings.QueueCursorMove(NewStart);
 end;
@@ -217,6 +221,10 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
     Exit;
+
+  // temporary fix, exit is Lines is not a TGTk2MemoStrings
+  if not (TCustomMemo(ACustomEdit).Lines is TGtk2MemoStrings) then
+    exit;
 
   MemoStrings := TCustomMemo(ACustomEdit).Lines as TGtk2MemoStrings;
   MemoStrings.QueueSelectLength(NewLength);
