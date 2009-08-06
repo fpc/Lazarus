@@ -99,6 +99,9 @@ var
 begin
   dlg:=TReplaceDialogForm(FFindForm);
   dlg.EditFind.Text:=FFindText;
+  Dlg.EditFind.SelectAll;
+  Dlg.ActiveControl:=Dlg.EditFind;
+
   dlg.EditReplace.Text:=FReplaceText;
 
   dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;

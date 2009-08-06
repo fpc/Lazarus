@@ -196,6 +196,8 @@ var
 begin
   Dlg:=TFindDialogForm(FFindForm);
   Dlg.EditFind.Text:=FFindText;
+  Dlg.EditFind.SelectAll;
+  Dlg.ActiveControl:=Dlg.EditFind;
 
   Dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
   Dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
