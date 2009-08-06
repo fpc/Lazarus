@@ -1037,7 +1037,7 @@ begin
     exit;
   end;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(Filename);
+    Result:=fOnFileBackup(AFilename);
     if Result=mrAbort then exit;
   end;
   repeat
