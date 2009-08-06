@@ -430,7 +430,7 @@ type
     Info: PEditorOptionsDividerInfoList;
   end;
 
-const
+var
 
   EditorOptionsDividerInfoPas: Array [0..8] of TEditorOptionsDividerInfo
   = (
@@ -444,6 +444,8 @@ const
       (Name: dlgDivPasBeginEndName;     Xml: 'Begin';   BoolOpt: False; MaxLevel: 0),
       (Name: dlgDivPasTryName;          Xml: 'Try';     BoolOpt: False; MaxLevel: 0)
     );
+
+const
 
   EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsDividerRecord =
@@ -2059,6 +2061,16 @@ begin
   EditorOptionsFoldInfoPas[17].Name := dlgFoldPasNestedComment;
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
   EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
+
+  EditorOptionsDividerInfoPas[0].Name:=dlgDivPasUnitSectionName;
+  EditorOptionsDividerInfoPas[1].Name:=dlgDivPasUsesName;
+  EditorOptionsDividerInfoPas[2].Name:=dlgDivPasVarGlobalName;
+  EditorOptionsDividerInfoPas[3].Name:=dlgDivPasVarLocalName;
+  EditorOptionsDividerInfoPas[4].Name:=dlgDivPasStructGlobalName;
+  EditorOptionsDividerInfoPas[5].Name:=dlgDivPasStructLocalName;
+  EditorOptionsDividerInfoPas[6].Name:=dlgDivPasProcedureName;
+  EditorOptionsDividerInfoPas[7].Name:=dlgDivPasBeginEndName;
+  EditorOptionsDividerInfoPas[8].Name:=dlgDivPasTryName;
 
   AdditionalHighlightAttributes[ahaNone]                := '';
   AdditionalHighlightAttributes[ahaTextBlock]           := dlgAddHiAttrTextBlock;
