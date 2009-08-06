@@ -718,11 +718,16 @@ begin
         if (FileInfo.Name='.') or (FileInfo.Name='..')
         or (FileInfo.Name='')
         or ((FileInfo.Attr and faDirectory)<>0) then continue;
-        if (ShortFilename=FileInfo.Name) then continue;
-        if (AnsiCompareText(ShortFilename,FileInfo.Name)<>0)
-        and ((not IsPascalUnit) or (not FilenameIsPascalUnit(FileInfo.Name))
-           or (AnsiCompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))<>0))
-        then
+        if CompareFilenames(ShortFilename,FileInfo.Name)=0 then continue;
+
+        if (SysUtils.CompareText(ShortFilename,FileInfo.Name)=0)
+        then begin
+          // same name different case => ambiguous
+        end else if IsPascalUnit and FilenameIsPascalUnit(FileInfo.Name)
+           and (SysUtils.CompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))=0)
+        then begin
+          // same unit name => ambiguous
+        end else
           continue;
 
         CurFilename:=ADirectory+FileInfo.Name;
@@ -743,7 +748,7 @@ begin
         end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
         begin
           Result:=BackupFile(CurFilename);
-          if Result=mrABort then exit;
+          if Result=mrAbort then exit;
           Result:=mrOk;
         end;
       until FindNextUTF8(FileInfo)<>0;
