@@ -35,7 +35,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'AppSettingsGroupBox'
-        ClientHeight = 267
+        ClientHeight = 282
         ClientWidth = 499
         TabOrder = 0
         object TitleLabel: TLabel
@@ -126,8 +126,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BevelOuter = bvNone
           BorderWidth = 1
           BorderStyle = bsSingle
-          ClientHeight = 126
-          ClientWidth = 126
+          ClientHeight = 124
+          ClientWidth = 124
           TabOrder = 3
           object IconImage: TImage
             Left = 1
@@ -212,7 +212,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
-        ClientHeight = 63
+        ClientHeight = 78
         ClientWidth = 499
         TabOrder = 1
         object TargetFileLabel: TLabel
@@ -392,7 +392,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 173
+        ClientHeight = 188
         ClientWidth = 499
         TabOrder = 0
         object LazDocListBox: TListBox
@@ -643,7 +643,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Around = 6
           Caption = 'Automatically increase Build'
           TabOrder = 4
-          Visible = False
         end
         object BuildSpinEdit: TSpinEdit
           AnchorSideLeft.Control = BuildLabel
@@ -841,7 +840,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'i18n Options'
-        ClientHeight = 65
+        ClientHeight = 80
         ClientWidth = 499
         TabOrder = 0
         object PoOutDirLabel: TLabel

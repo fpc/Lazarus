@@ -9394,7 +9394,7 @@ begin
     if (not AnUnitInfo.IsPartOfProject)
     and FileExistsUTF8(AnUnitInfo.Filename)
     and (StateFileAge<FileAgeUTF8(AnUnitInfo.Filename)) then begin
-      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       exit(mrYes);
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
