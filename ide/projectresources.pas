@@ -51,7 +51,7 @@ type
     FModified: Boolean;
     FOnModified: TNotifyEvent;
     FInModified: Boolean;
-    FCanHasLrsInclude: Boolean;
+    FCanHaveLrsInclude: Boolean;
 
     FSystemResources: TStringList;
     FLazarusResources: TStringList;
@@ -70,7 +70,7 @@ type
     procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
-    procedure UpdateCanHasLrsInclude(const AFileName: string);
+    procedure UpdateCanHaveLrsInclude(const AFileName: string);
     function Save: Boolean;
     procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
@@ -163,7 +163,7 @@ begin
   inherited Create;
 
   FInModified := False;
-  FCanHasLrsInclude := False;
+  FCanHaveLrsInclude := False;
 
   FSystemResources := TStringList.Create;
   FLazarusResources := TStringList.Create;
@@ -242,7 +242,7 @@ begin
   SetFileNames(MainFileName);
 
   if UpdateSource then
-    UpdateCanHasLrsInclude(MainFileName);
+    UpdateCanHaveLrsInclude(MainFileName);
 
   try
     // update resources (FLazarusResources, FSystemResources, ...)
@@ -349,7 +349,7 @@ begin
     // update LResources uses
     if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos) then
     begin
-      if not (FCanHasLrsInclude and HasLazarusResources) then
+      if not (FCanHaveLrsInclude and HasLazarusResources) then
       begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
@@ -361,7 +361,7 @@ begin
       end;
     end
     else
-    if FCanHasLrsInclude and HasLazarusResources then
+    if FCanHaveLrsInclude and HasLazarusResources then
     begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
@@ -408,8 +408,8 @@ begin
                                NewTopLine, Filename, false) then
     begin
       // there is a resource directive in the source
-      //debugln(['TProjectResources.UpdateMainSourceFile include directive found: FCanHasLrsInclude=',FCanHasLrsInclude,' HasLazarusResources=',HasLazarusResources]);
-      if not (FCanHasLrsInclude and HasLazarusResources) then
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive found: FCanHaveLrsInclude=',FCanHaveLrsInclude,' HasLazarusResources=',HasLazarusResources]);
+      if not (FCanHaveLrsInclude and HasLazarusResources) then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
@@ -422,9 +422,9 @@ begin
       end;
     end
     else
-    if FCanHasLrsInclude and HasLazarusResources then
+    if FCanHaveLrsInclude and HasLazarusResources then
     begin
-      //debugln(['TProjectResources.UpdateMainSourceFile include directive not found: FCanHasLrsInclude=',FCanHasLrsInclude,' HasLazarusResources=',HasLazarusResources]);
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive not found: FCanHaveLrsInclude=',FCanHaveLrsInclude,' HasLazarusResources=',HasLazarusResources]);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
         Filename,'') then
       begin
@@ -437,12 +437,12 @@ begin
   end;
 end;
 
-procedure TProjectResources.UpdateCanHasLrsInclude(const AFileName: string);
+procedure TProjectResources.UpdateCanHaveLrsInclude(const AFileName: string);
 var
   CodeBuf: TCodeBuffer;
   NamePos, InPos: Integer;
 begin
-  FCanHasLrsInclude := False;
+  FCanHaveLrsInclude := False;
 
   CodeBuf := CodeToolBoss.LoadFile(AFileName, False, False);
   if CodeBuf = nil then
@@ -450,7 +450,7 @@ begin
 
   // Check that .lrs contains Forms and Interfaces in the uses section. If it does not
   // we cannot add LResources (it is not lazarus application)
-  FCanHasLrsInclude :=
+  FCanHaveLrsInclude :=
     CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos) and
     CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos);
 end;
@@ -482,7 +482,7 @@ begin
     newLrsFileName := ExtractFileName(lrsFileName);
 
     // update resources (FLazarusResources, FSystemResources, ...)
-    UpdateCanHasLrsInclude(CurFileName);
+    UpdateCanHaveLrsInclude(CurFileName);
     if not Update then
       Exit;
     // update codebuffers of new .lrs and .rc files
@@ -586,7 +586,7 @@ procedure TProjectResources.UpdateCodeBuffers;
 begin
   if HasSystemResources then
     UpdateCodeBuffer(rcFileName, FSystemResources.Text);
-  if FCanHasLrsInclude and HasLazarusResources then
+  if FCanHaveLrsInclude and HasLazarusResources then
     UpdateCodeBuffer(lrsFileName, FLazarusResources.Text);
 end;
 
