@@ -35,6 +35,8 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
   TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
+  TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
+  TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
 end;
 
 {------------------------------------------------------------------------------
