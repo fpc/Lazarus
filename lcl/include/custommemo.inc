@@ -116,13 +116,13 @@ begin
   RegisterCustomMemo;
 end;
 
-procedure TCustomMemo.CreateHandle;
+procedure TCustomMemo.InitializeWnd;
 var
   NewStrings : TStrings;
 begin
-  //DebugLn('[TCustomMemo.CreateHandle] A ',FLines.ClassName);
-  inherited CreateHandle;
-  //DebugLn('[TCustomMemo.CreateHandle] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+  //DebugLn('[TCustomMemo.InitializeWnd] A ',FLines.ClassName);
+  inherited InitializeWnd;
+  //DebugLn('[TCustomMemo.InitializeWnd] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
   
   // fetch/create the interface item list
   NewStrings := TWSCustomMemoClass(WidgetSetClass).GetStrings(Self);
@@ -135,10 +135,10 @@ begin
   // new item list is the interface item list
   FLines:= NewStrings;
 
-  //DebugLn('[TCustomMemo.CreateHandle] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+  //DebugLn('[TCustomMemo.InitializeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
 end;
 
-procedure TCustomMemo.DestroyHandle;
+procedure TCustomMemo.FinalizeWnd;
 var
   NewStrings : TStrings;
 begin
@@ -155,7 +155,7 @@ begin
     // new item list is the internal item list
     FLines:= NewStrings;
   end;
-  inherited DestroyHandle;
+  inherited FinalizeWnd;
 end;
 
 function TCustomMemo.RealGetText: TCaption;

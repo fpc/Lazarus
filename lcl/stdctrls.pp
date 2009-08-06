@@ -789,8 +789,8 @@ type
     function StoreScrollBars: boolean;
   protected
     class procedure WSRegisterClass; override;
-    procedure CreateHandle; override;
-    procedure DestroyHandle; override;
+    procedure InitializeWnd; override;
+    procedure FinalizeWnd; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
