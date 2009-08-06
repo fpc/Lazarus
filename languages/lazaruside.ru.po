@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-30 01:31+0300\n"
+"PO-Revision-Date: 2009-08-06 03:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -180,7 +180,7 @@ msgstr "Автосоздание форм при открытии модуля"
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
-msgstr ""
+msgstr "Скрывать курсор мыши во время набора текста"
 
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
@@ -740,15 +740,15 @@ msgstr "Begin/End"
 
 #: lazarusidestrconsts.dlgdivpasprocedurename
 msgid "Procedure/Function"
-msgstr "Procedure/Function"
+msgstr "Процедура/функция"
 
 #: lazarusidestrconsts.dlgdivpasstructglobalname
 msgid "Class/Struct"
-msgstr "Class/Struct"
+msgstr "Класс/объект/запись"
 
 #: lazarusidestrconsts.dlgdivpasstructlocalname
 msgid "Class/Struct (local)"
-msgstr "Class/Struct (локальная)"
+msgstr "Класс/объект/запись (локальные)"
 
 #: lazarusidestrconsts.dlgdivpastryname
 msgid "Try/Except"
@@ -764,12 +764,12 @@ msgstr "Выражение Uses"
 
 #: lazarusidestrconsts.dlgdivpasvarglobalname
 msgid "Var/Type"
-msgstr "Var/Type"
+msgstr "Секции Var/Type"
 
 #: lazarusidestrconsts.dlgdivpasvarlocalname
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
-msgstr "Var/Type (локальная)"
+msgstr "Секции Var/Type (локальные)"
 
 #: lazarusidestrconsts.dlgdoesnotexist
 msgid "\" does not exist."
@@ -782,7 +782,7 @@ msgstr "Вниз"
 
 #: lazarusidestrconsts.dlgdropfiles
 msgid "Drop files"
-msgstr "Перетаскивание файлов в редактор"
+msgstr "Перетаскивать файлы в редактор"
 
 #: lazarusidestrconsts.dlgedadd
 msgid "Add..."
@@ -983,11 +983,11 @@ msgstr "Поиск текста под курсором"
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
-msgstr "Var/Type (локальная)"
+msgstr "Секции Var/Type (локальные)"
 
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
-msgstr "Asm"
+msgstr "Секция Asm"
 
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
@@ -999,11 +999,11 @@ msgstr "Case"
 
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
-msgstr "Class/Object"
+msgstr "Класс/объект"
 
 #: lazarusidestrconsts.dlgfoldpasclasssection
 msgid "public/private"
-msgstr "public/private"
+msgstr "Секции public/private"
 
 #: lazarusidestrconsts.dlgfoldpasexcept
 msgid "Except/Finally"
@@ -1033,7 +1033,7 @@ msgstr "Программа"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgid "Record"
-msgstr "Record"
+msgstr "Запись"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
@@ -1063,7 +1063,7 @@ msgstr "Используемые модули"
 
 #: lazarusidestrconsts.dlgfoldpasvartype
 msgid "Var/Type (global)"
-msgstr "Var/Type (глобальная)"
+msgstr "Секции Var/Type (глобальные)"
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -1812,7 +1812,6 @@ msgid "Naming"
 msgstr "Именование"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#, fuzzy
 #| msgid "no automatic renaming"
 msgid "No automatic renaming"
 msgstr "Не переименовывать автоматически"
@@ -6360,7 +6359,7 @@ msgstr "Интерфейс IDE"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
-msgstr ""
+msgstr "идентификатор"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -9183,7 +9182,7 @@ msgstr "Пакет"
 
 #: lazarusidestrconsts.lispackage2
 msgid "package %s"
-msgstr ""
+msgstr "пакет %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package Info"
@@ -9207,7 +9206,7 @@ msgstr "Пакеты для установки в IDE"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
-msgstr ""
+msgstr "модуль пакета"
 
 #: lazarusidestrconsts.lispascalsourcefile
 msgid "Pascal source file"
@@ -10660,7 +10659,7 @@ msgstr "Проект %s%s%s успешно собран. :)"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
-msgstr ""
+msgstr "модуль проекта"
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
