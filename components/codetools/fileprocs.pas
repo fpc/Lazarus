@@ -298,6 +298,11 @@ function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
 // debugging
 procedure RaiseCatchableException(const Msg: string);
 
+type
+  TCTDbgOutEvent = procedure(const s: string);
+var
+  CTDbgOutEvent: TCTDbgOutEvent = nil;
+
 procedure DebugLn(Args: array of const);
 procedure DebugLn(const S: String; Args: array of const);// similar to Format(s,Args)
 procedure DebugLn;
@@ -2455,7 +2460,9 @@ end;
 
 procedure DBGOut(const s: string);
 begin
-  if TextRec(Output).Mode<>fmClosed then
+  if Assigned(CTDbgOutEvent) then
+    CTDbgOutEvent(s)
+  else if TextRec(Output).Mode<>fmClosed then
     write(s);
 end;
 
