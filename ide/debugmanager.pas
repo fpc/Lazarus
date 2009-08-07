@@ -1475,7 +1475,8 @@ begin
     end
     else if (OldState in [dsRun]) then
     begin
-      MainIDE.UnhideIDE;
+      if EnvironmentOptions.HideIDEOnRun
+      then MainIDE.UnhideIDE;
       FPrevShownWindow := GetForegroundWindow;
       Application.BringToFront;
     end;
