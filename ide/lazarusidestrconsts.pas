@@ -1143,7 +1143,6 @@ resourcestring
   dlgBlockGroupOptions = 'Selection:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
-  dlgDropFiles = 'Drop files';
   dlgAutoHideCursor  = 'Hide mouse when typing';
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';

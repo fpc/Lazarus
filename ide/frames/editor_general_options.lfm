@@ -4,8 +4,8 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientHeight = 516
   ClientWidth = 459
   Visible = False
-  DesignLeft = 230
-  DesignTop = 230
+  DesignLeft = 164
+  DesignTop = 185
   object BlockIndentLabel: TLabel[0]
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -168,7 +168,6 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   object CursorGroupLabel: TLabel[11]
     AnchorSideLeft.Control = Bevel5a
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = DropFilesCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 16
@@ -507,20 +506,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnChange = TabsToSpacesCheckBoxChange
     TabOrder = 12
   end
-  object DropFilesCheckBox: TCheckBox[35]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MouseGroupLabel
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 19
-    Top = 272
-    Width = 121
-    BorderSpacing.Around = 6
-    Caption = 'DropFilesCheckBox'
-    OnChange = DropFilesCheckBoxChange
-    TabOrder = 13
-  end
-  object KeepCursorXCheckBox: TCheckBox[36]
+  object KeepCursorXCheckBox: TCheckBox[35]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CursorGroupLabel
     AnchorSideTop.Side = asrBottom
@@ -532,9 +518,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Top = 6
     Caption = 'KeepCursorXCheckBox'
     OnChange = KeepCursorXCheckBoxChange
-    TabOrder = 14
+    TabOrder = 13
   end
-  object PersistentCursorCheckBox: TCheckBox[37]
+  object PersistentCursorCheckBox: TCheckBox[36]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = KeepCursorXCheckBox
     AnchorSideTop.Side = asrBottom
@@ -545,9 +531,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Left = 6
     Caption = 'PersistentCursorCheckBox'
     OnChange = PersistentCursorCheckBoxChange
-    TabOrder = 15
+    TabOrder = 14
   end
-  object AlwaysVisibleCursorCheckBox: TCheckBox[38]
+  object AlwaysVisibleCursorCheckBox: TCheckBox[37]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PersistentCursorCheckBox
     AnchorSideTop.Side = asrBottom
@@ -558,9 +544,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Left = 6
     Caption = 'AlwaysVisibleCursorCheckBox'
     OnChange = AlwaysVisibleCursorCheckBoxChange
-    TabOrder = 16
+    TabOrder = 15
   end
-  object CursorSkipsSelectionCheckBox: TCheckBox[39]
+  object CursorSkipsSelectionCheckBox: TCheckBox[38]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CursorGroupLabel
     AnchorSideTop.Side = asrBottom
@@ -572,9 +558,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Around = 6
     Caption = 'CursorSkipsSelectionCheckBox'
     OnChange = CursorSkipsSelectionCheckBoxChange
-    TabOrder = 17
+    TabOrder = 16
   end
-  object HomeKeyJumpsToNearestStartCheckBox: TCheckBox[40]
+  object HomeKeyJumpsToNearestStartCheckBox: TCheckBox[39]
     AnchorSideLeft.Control = CursorSkipsSelectionCheckBox
     AnchorSideTop.Control = PersistentCursorCheckBox
     Left = 236
@@ -583,9 +569,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 236
     Caption = 'HomeKeyJumpsToNearestStartCheckBox'
     OnChange = HomeKeyJumpsToNearestStartCheckBoxChange
-    TabOrder = 18
+    TabOrder = 17
   end
-  object EndKeyJumpsToNearestStartCheckBox: TCheckBox[41]
+  object EndKeyJumpsToNearestStartCheckBox: TCheckBox[40]
     AnchorSideLeft.Control = HomeKeyJumpsToNearestStartCheckBox
     AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
     Left = 236
@@ -594,9 +580,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Width = 223
     Caption = 'EndKeyJumpsToNearestStartCheckBox'
     OnChange = EndKeyJumpsToNearestStartCheckBoxChange
-    TabOrder = 19
+    TabOrder = 18
   end
-  object BlockIndentTypeComboBox: TComboBox[42]
+  object BlockIndentTypeComboBox: TComboBox[41]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BlockIndentComboBox
     AnchorSideTop.Side = asrBottom
@@ -613,9 +599,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
     Style = csDropDownList
-    TabOrder = 20
+    TabOrder = 19
   end
-  object PersistentBlockCheckBox: TCheckBox[43]
+  object PersistentBlockCheckBox: TCheckBox[42]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BlockGroupLabel
     AnchorSideTop.Side = asrBottom
@@ -627,9 +613,9 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Top = 6
     Caption = 'PersistentBlockCheckBox'
     OnChange = PersistentBlockCheckBoxChange
-    TabOrder = 21
+    TabOrder = 20
   end
-  object OverwriteBlockCheckBox: TCheckBox[44]
+  object OverwriteBlockCheckBox: TCheckBox[43]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BlockGroupLabel
     AnchorSideTop.Side = asrBottom
@@ -641,18 +627,19 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Around = 6
     Caption = 'OverwriteBlockCheckBox'
     OnChange = OverwriteBlockCheckBoxChange
-    TabOrder = 22
+    TabOrder = 21
   end
-  object AutoHideCursorCheckBox: TCheckBox[45]
+  object AutoHideCursorCheckBox: TCheckBox[44]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = DropFilesCheckBox
-    Left = 236
+    AnchorSideTop.Control = MouseGroupLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 19
     Top = 272
     Width = 158
-    BorderSpacing.Left = 236
+    BorderSpacing.Around = 6
     Caption = 'AutoHideCursorCheckBox'
     OnChange = AutoHideCursorCheckBoxChange
-    TabOrder = 23
+    TabOrder = 22
   end
 end
