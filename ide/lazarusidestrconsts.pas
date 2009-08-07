@@ -1287,10 +1287,11 @@ resourcestring
   dlgEdCompleteBlocks = 'Complete blocks';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
+  dlgMarkupGroup = 'Word under Caret Highlight';
   dlgMarkupWordFull = 'Current Word match word boundaries';
-  dlgMarkupWordFullLen = 'Only if shorter than';
+  dlgMarkupWordFullLen = 'Ignore bounds for words longer than';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
-  dlgMarkupWordTrim = 'Trim Spaces';
+  dlgMarkupWordTrim = 'Trim Spaces (when highlighting current selection)';
   dlgMarkupWordNoTimer = 'Disable Timer for Markup Current Word';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgEdDelay = 'Delay';

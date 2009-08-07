@@ -39,6 +39,8 @@ type
     AutoDelayTrackBar: TTrackBar;
     AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
+    MarkupWordBevel1: TBevel;
+    MarkupWordGroupLabel: TLabel;
     MarkupWordBevel: TBevel;
     ToolTipBevel: TBevel;
     MarkupWordDelayLabel: TLabel;
@@ -84,6 +86,7 @@ begin
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
 
+  MarkupWordGroupLabel.Caption := dlgMarkupGroup;
   MarkupWordFullCheckBox.Caption := dlgMarkupWordFull;
   MarkupWordDelayLabel.Caption := dlgEdDelay;
   MarkupWordMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;;
