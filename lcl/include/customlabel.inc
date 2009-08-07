@@ -165,8 +165,10 @@ end;
 
 procedure TCustomLabel.TextChanged;
 begin
-  invalidate;
+  Invalidate;
   InvalidatePreferredSize;
+  if OptimalFill and (not AutoSize) then
+    AdjustFontForOptimalFill;
   if (Parent<>nil) and Parent.AutoSize then
     Parent.AdjustSize;
   AdjustSize;
