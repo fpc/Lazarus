@@ -54,8 +54,6 @@ type
   TCarbonContext = class
   public
     CGContext : CGContextRef;
-    isClipped : Boolean;
-    constructor Create;
     procedure Reset; virtual; abstract;
   end;
 
@@ -353,16 +351,7 @@ begin
 
   Result := Node.UPP;
 end;
-  
-{ TCarbonContext }
 
-constructor TCarbonContext.Create;
-begin
-  inherited;
-
-  CGContext := nil;
-end;
-  
 { TCarbonWidget }
 
 {------------------------------------------------------------------------------

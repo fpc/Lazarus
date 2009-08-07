@@ -84,6 +84,9 @@ type
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
 
+    fLastClipRegion : TCarbonRegion;
+    isClipped : Boolean;
+
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(const AValue: Integer);
     procedure SetCurrentBrush(const AValue: TCarbonBrush);
@@ -136,8 +139,12 @@ type
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCarbonBitmapContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCarbonBitmap; XMsk,
       YMsk: Integer; Rop: DWORD): Boolean;
+    function SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+    function CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
   public
     property Size: TPoint read GetSize;
+
+    property LastClipRegion: TCarbonRegion read fLastClipRegion;
 
     property CurrentFont: TCarbonFont read FCurrentFont write SetCurrentFont;
     property CurrentBrush: TCarbonBrush read FCurrentBrush write SetCurrentBrush;
@@ -397,6 +404,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonDeviceContext.Create;
 begin
+  inherited Create;
   FBkBrush := TCarbonBrush.Create(False);
   FTextBrush := TCarbonBrush.Create(False);
   
@@ -1453,6 +1461,35 @@ begin
   //  X, Y]));
 end;
 
+function TCarbonDeviceContext.SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+begin
+  if isClipped  then
+  begin
+    isClipped := false;
+    CGContextRestoreGState(CGContext);
+  end;
+  fLastClipRegion := AClipRegion;
+
+  if not Assigned(AClipRegion) then
+  begin
+    HIShapeSetEmpty(FClipRegion.Shape);
+    Result := LCLType.NullRegion;
+  end
+  else
+  begin
+    CGContextSaveGState(CGContext);
+    FClipRegion.CombineWith(AClipRegion, Mode);
+    FClipRegion.Apply(Self);
+    isClipped := true;
+    Result := LCLType.ComplexRegion;
+  end;
+end;
+
+function TCarbonDeviceContext.CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
+begin
+  Result := ADstRegion.CombineWith(FClipRegion, RGN_COPY);
+end;
+
 { TCarbonScreenContext }
 
 {------------------------------------------------------------------------------
@@ -1473,7 +1510,6 @@ end;
 constructor TCarbonScreenContext.Create;
 begin
   inherited Create;
-
   Reset;
 end;
 

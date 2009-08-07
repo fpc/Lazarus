@@ -72,8 +72,10 @@ type
     function GetBounds: TRect;
     function GetType: Integer;
     function ContainsPoint(const P: TPoint): Boolean;
+    procedure SetShape(AShape: HIShapeRef);
+    function CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
   public
-    property Shape: HIShapeRef read FShape;
+    property Shape: HIShapeRef read FShape write SetShape;
   end;
   
   TCarbonFont = class;
@@ -739,10 +741,8 @@ procedure TCarbonRegion.Apply(ADC: TCarbonContext);
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
-
   if OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
     Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
-
   CGContextClip(ADC.CGContext);
 end;
 
@@ -784,6 +784,39 @@ end;
 function TCarbonRegion.ContainsPoint(const P: TPoint): Boolean;
 begin
   Result := HIShapeContainsPoint(FShape, PointToHIPoint(P));
+end;
+
+procedure TCarbonRegion.SetShape(AShape: HIShapeRef);
+begin
+  if Assigned(FShape) then CFRelease(FShape);
+  FShape := AShape;
+end;
+
+function TCarbonRegion.CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
+var
+  sh1, sh2: HIShapeRef;
+begin
+  if not Assigned(ARegion) then
+    Result := LCLType.Error
+  else
+  begin
+    Result := LCLType.ComplexRegion;
+    case CombineMode of
+      RGN_AND: Shape:=HIShapeCreateIntersection(FShape, ARegion.Shape);
+      RGN_XOR:
+      begin
+        sh1 := HIShapeCreateUnion(FShape, ARegion.Shape);
+        sh2 := HIShapeCreateIntersection(FShape, ARegion.Shape);
+        Shape  := HIShapeCreateDifference(sh1, sh2);
+        CFRelease(sh1); CFRelease(sh2);
+      end;
+      RGN_OR:   Shape:=HIShapeCreateUnion(FShape, ARegion.Shape);
+      RGN_DIFF: Shape:=HIShapeCreateDifference(FShape, ARegion.Shape);
+      RGN_COPY: Shape:=HIShapeCreateCopy(ARegion.Shape);
+    else
+      Result := LCLType.Error;
+    end;
+  end;
 end;
 
 { TCarbonTextLayout }

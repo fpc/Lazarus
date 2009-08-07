@@ -212,9 +212,19 @@ end;
 
 function TCarbonWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
+var
+  rd, r1, r2 : TCarbonRegion;
+  sh         : HIShapeRef;
+  sh1, sh2   :  HIShapeRef;
 begin
-  DebugLn('TCarbonWidgetSet.CombineRgn TODO');
-  Result:=inherited CombineRgn(Dest, Src1, Src2, fnCombineMode);
+  Result := LCLType.Error;
+  if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
+  if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
+
+  TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src1), RGN_COPY);
+
+  if fnCombineMode <> RGN_COPY then
+    TCarbonRegion(Dest). CombineWith(TCarbonRegion(Src2), fnCombineMode);
 end;
 
 {------------------------------------------------------------------------------
@@ -952,11 +962,18 @@ begin
   {$ENDIF}
 end;
 
-function TCarbonWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
-  ): Integer;
+function TCarbonWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint): Integer;
+const
+  SName = 'TCarbonWidgetSet.ExtSelectClipRGN';
 begin
-  DebugLn('TCarbonWidgetSet.ExtSelectClipRGN TODO');
-  Result:=inherited ExtSelectClipRGN(dc, rgn, Mode);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ExtSelectClipRGN DC: ' + DbgS(DC) + ' RGN: ' +
+      DbgS(RGN));
+  {$ENDIF}
+  Result := LCLType.Error;
+  if (DC = 0) then Exit;
+  if not CheckDC(DC, SName) then Exit;
+  Result := TCarbonDeviceContext(DC).SetClipRegion(TCarbonRegion(RGN), Mode);
 end;
 
 {------------------------------------------------------------------------------
@@ -1247,8 +1264,13 @@ end;
 
 function TCarbonWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
 begin
-  DebugLn('TCarbonWidgetSet.GetClipRGN TODO');
-  Result:=inherited GetClipRGN(DC, RGN);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetClipRGN DC: ' + DbgS(DC));
+  {$ENDIF}
+  Result := LCLType.Error;
+  if RGN = 0 then Exit;
+  if not CheckDC(DC, 'GetClipRGN') then Exit;
+  Result := TCarbonDeviceContext(DC).CopyClipRegion(TCarbonRegion(RGN));
 end;
 
 function TCarbonWidgetSet.GetCmdLineParamDescForInterface: string;
@@ -2829,28 +2851,15 @@ begin
 end;
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
-var
-  ctx : TCarbonContext;
+const
+  SName = 'TCarbonWidgetSet.SelectClipRGN';
 begin
-  Result := 0;
-  if (DC = 0) then Exit;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SelectClipRGN DC: ' + DbgS(DC) + ' RGN: ' +
+      DbgS(RGN));
+  {$ENDIF}
 
-  ctx := TCarbonContext(DC);
-
-  if ctx.isClipped and Assigned(TCarbonContext(DC).CGContext) then
-  begin
-    ctx.isClipped := false;
-    CGContextRestoreGState(ctx.CGContext);
-  end;
-
-  if RGN <> 0 then
-  begin
-    if Assigned(ctx.CGContext) then CGContextSaveGState(ctx.CGContext);
-    TCarbonRegion(RGN).Apply( ctx );
-    ctx.isClipped := true;
-  end;
-
-  Result := 0;
+  Result := ExtSelectClipRGN(DC, RGN, RGN_COPY)
 end;
 
 {------------------------------------------------------------------------------
