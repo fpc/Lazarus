@@ -13446,6 +13446,7 @@ end;
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);
 begin
   FDisplayState:= dsSource;
+  DoCheckFilesOnDisk;
 end;
 
 Procedure TMainIDE.OnDesignerActivated(Sender: TObject);
