@@ -36,6 +36,22 @@ interface
 
 uses
   SysUtils,
+ {$ifdef IP_MSEGUI}
+  msegui,
+  msegraphics,
+  msegraphutils,
+  mseimage,
+  msebitmap,
+  msedataedits,
+  mseedit,
+  msestrings,
+  msesimplewidgets,
+  msewidgets,
+  msetypes,
+  msesysintf,
+  msesys,
+  Classes;
+ {$else}  
   {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
@@ -53,6 +69,7 @@ uses
   Controls,
   Registry,
   ComCtrls;
+ {$endif}
 
 const
   InternetProfessionalVersion = 1.15;
@@ -62,6 +79,9 @@ resourcestring
   sShortVersion = 'v%.2f';
 
 const
+ {$ifdef IP_MSEGUI}
+ 	WM_USER = $0F000000;
+ {$endif}
   IpMsgBase = WM_USER + $0E90;
 
   CM_IPASYNCRESULT      = IpMsgBase + 0;
@@ -88,11 +108,25 @@ const
   CM_IPSMTPEVENT        = IpMsgBase + 21;                              {!!.02}
   CM_IPPOP3EVENT        = IpMsgBase + 22;                              {!!.02}
   CM_IPNNTPEVENT        = IpMsgBase + 23;                              {!!.02}
-  {$IFDEF IP_LAZARUS}
+  {$IF (DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI))}
   CM_IPHOTINVOKE        = IpMsgBase + 24;
   {$ENDIF}
 
 type
+  {$ifdef IP_MSEGUI}
+  	TSize = sizety;
+  	TFontStyles = fontstylesty;
+  	TColor = colorty;
+  	TWinControl = TWidget;
+  	TPicture = TImage;
+  	HRgn = regionty;
+  	PRect = prectty;
+  	TEdit = tstringedit;
+  
+    {$macro on}
+    {$define UTF8ToSys:=UTF8ToAnsi}
+  {$endif}
+
   { Hack for Delphi 3 compatibility -- THandle is defined as Integer }
   { in D3, and Cardinal in others -- causing a problem with event    }
   { properties for applications shared amongst the compilers, such   }
@@ -131,7 +165,9 @@ type
     { Property variables }
     FModule : TIpHandle;
     { Internal variables }
-   {$IFDEF IP_LAZARUS}
+   {$IF DEFINED(IP_MSEGUI)}
+    baPropCS : mutexty;
+   {$ELSEIF DEFINED(IP_LAZARUS)}
     baPropCS : TCriticalSection;
    {$ELSE}
     baPropCS : TRTLCriticalSection; //JMN
@@ -147,7 +183,9 @@ type
 
   TIpBasePersistent = class(TPersistent)
   private
-   {$IFDEF IP_LAZARUS}
+   {$IF DEFINED(IP_MSEGUI)}
+    bpPropCS : mutexty;
+   {$ELSEIF DEFINED(IP_LAZARUS)}
     bpPropCS : TCriticalSection;
    {$ELSE}
     bpPropCS : TRTLCriticalSection; //JMN
@@ -236,7 +274,7 @@ type
     QueryDelim : AnsiChar;
   end;
   
-  {$IFDEF IP_LAZARUS}
+  {$IF (DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI))}
   procedure Initialize(var AddrRec: TIpAddrRec);
   procedure Finalize(var AddrRec: TIpAddrRec);
   {$ENDIF}
@@ -277,16 +315,19 @@ type
 
 implementation
 { misc utility routines }
+{$ifdef IP_MSEGUI}
+uses msefileutils;
+{$endif}
 
 { Allow other processes a chance to run }
 function SafeYield : LongInt;
-{$IFNDEF IP_LAZARUS}
+{$IF NOT (DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI))}
 var
   Msg : TMsg;
 {$ENDIF}
 begin
   SafeYield := 0;
-  {$IFDEF IP_LAZARUS}
+  {$IF (DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI))}
   writeln('ToDo: IpUtils.SafeYield');
   exit;
   {$ELSE}
@@ -483,7 +524,7 @@ begin
     Result := Result + (Idx - 1);
 end;
 
-{$IFDEF IP_LAZARUS}
+{$IF (DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI))}
 procedure Initialize(var AddrRec: TIpAddrRec);
 begin
   AddrRec.QueryDelim:=#0;
@@ -887,8 +928,8 @@ end;
 
 { Compares two fixed size structures }
 function IpCompStruct(const S1, S2; Size : Cardinal) : Integer;
-{$IFDEF IP_LAZARUS}
-{$IFDEF CPUI386}
+{$IF DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI)}
+{$IF DEFINED(CPUI386) AND NOT DEFINED(IP_MSEGUI)}
 asm
   push   edi
   push   esi
@@ -945,7 +986,7 @@ end;
 
 function IpCharCount(const Buffer; BufSize : DWORD; C : AnsiChar) : DWORD;
   register;
-{$IFDEF CPUI386}
+{$IF DEFINED(CPUI386) AND NOT DEFINED(IP_MSEGUI)}
 asm
   push  ebx
   xor   ebx, ebx
@@ -1048,13 +1089,21 @@ end;
 constructor TIpBaseAccess.Create;
 begin
   inherited;
+  {$ifdef IP_MSEGUI}
+  sys_mutexcreate(baPropCS);
+  {$else}
   InitializeCriticalSection(baPropCS);
+  {$endif}
 end;
 
 { Destroy instance of TIpBaseAccess }
 destructor TIpBaseAccess.Destroy;
 begin
+  {$ifdef IP_MSEGUI}
+  sys_mutexdestroy(baPropCS);
+  {$else}
   DeleteCriticalSection(baPropCS);
+  {$endif}
   inherited;
 end;
 
@@ -1062,14 +1111,22 @@ end;
 procedure TIpBaseAccess.LockProperties;
 begin
   if IsMultiThread then
+  {$ifdef IP_MSEGUI}
+    sys_mutexlock(baPropCS);
+  {$else}
     EnterCriticalSection(baPropCS);
+  {$endif}
 end;
 
 { Leaves TIpBaseAccess critical section }
 procedure TIpBaseAccess.UnlockProperties;
 begin
   if IsMultiThread then
+  {$ifdef IP_MSEGUI}
+    sys_mutexunlock(baPropCS);
+  {$else}
     LeaveCriticalSection(baPropCS);
+  {$endif}
 end;
 
 { TIpBasePersistent }
@@ -1078,13 +1135,21 @@ end;
 constructor TIpBasePersistent.Create;
 begin
   inherited;
+  {$ifdef IP_MSEGUI}
+  sys_mutexcreate(bpPropCS);
+  {$else}
   InitializeCriticalSection(bpPropCS);
+  {$endif}
 end;
 
 { Destroy instance of TIpBasePersistent }
 destructor TIpBasePersistent.Destroy;
 begin
+  {$ifdef IP_MSEGUI}
+  sys_mutexdestroy(bpPropCS);
+  {$else}
   DeleteCriticalSection(bpPropCS);
+  {$endif}
   inherited;
 end;
 
@@ -1092,14 +1157,22 @@ end;
 procedure TIpBasePersistent.LockProperties;
 begin
   if IsMultiThread then
+  {$ifdef IP_MSEGUI}
+    sys_mutexlock(bpPropCS);
+  {$else}
     EnterCriticalSection(bpPropCS);
+  {$endif}
 end;
 
 { Leaves TIpBasePersistent critical section }
 procedure TIpBasePersistent.UnlockProperties;
 begin
   if IsMultiThread then
+  {$ifdef IP_MSEGUI}
+    sys_mutexunlock(bpPropCS);
+  {$else}
     LeaveCriticalSection(bpPropCS);
+  {$endif}
 end;
 
 { TIpBaseComponent }
@@ -2683,7 +2756,7 @@ end;
 
 { returns the current local TimeZone "bias" in minutes from UTC (GMT) }
 function TimeZoneBias : Integer;
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI)}
 begin
   Result:=0;
   writeln('TimeZoneBias ToDo');
@@ -2727,29 +2800,31 @@ end;
 { File/Directory Stuff }
 
 { Retreive Windows "MIME" type for a particular file extension }
-{$IFDEF IP_LAZARUS}
-{$ifndef MSWindows}
+{$IF DEFINED(IP_LAZARUS) OR DEFINED(IP_MSEGUI)}
+{$if not defined(MSWindows) or defined(IP_MSEGUI)}
 {define some basic mime types}
 const MimeTypeExt : Array[0..4] of String = ('.htm','.html','.txt','.jpg','.png');
       MimeTypes   : Array[0..4] of String = ('text/html','text/html','text/plain','image/jpeg','image/png');
 {$endif}
 
-{$IFDEF VER2_0_2}
+{$IF DEFINED(VER2_0_2) AND NOT DEFINED(IP_MSEGUI)}
 type
  TMyRegistry=Class(TRegistry);
 {$ENDIF}
 function GetLocalContent(const TheFileName: string): string;
 var
+  {$ifndef IP_MSEGUI}
   Reg : TRegistry;
+  {$endif}
   Ext : string;
-  {$ifndef MSWindows}
+  {$if not defined(MSWindows) or defined(IP_MSEGUI)}
   ExtU: string;
   i : integer;
   {$ENDIF}
 begin
   Result := '';
   Ext := ExtractFileExt(TheFileName);
-  {$ifndef MSWindows}
+  {$if not defined(MSWindows) or defined(IP_MSEGUI)}
   ExtU := AnsiLowerCase(Ext);
   for i := 0 to high(MimeTypeExt) do
     if MimeTypeExt[i] = ExtU then
@@ -2759,6 +2834,9 @@ begin
     end;
   {$endif}
   if result = '' then
+{$ifdef IP_MSEGUI}
+	result := 'unknown';  
+{$else}
   begin
     Reg := nil;
     try
@@ -2777,6 +2855,7 @@ begin
       Reg.Free;
     end;
   end;
+{$endif}  
   //DebugLn('IpUtils.GetLocalContent File:'+TheFileName+' Result:'+result);
 end;
 
@@ -2805,7 +2884,11 @@ end;
 
 { Determine if a directory exists }
 function DirExists(Dir : string): Boolean;
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_MSEGUI)}
+begin
+  Result:=finddir(Dir);
+end;
+{$ELSEIF DEFINED(IP_LAZARUS)}
 begin
   Result:=DirPathExists(Dir);
 end;
@@ -2822,7 +2905,11 @@ end;
 {Begin !!.12}
 { Get temporary filename as string }
 function GetTemporaryFile(const Path : string) : string;
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_MSEGUI)}
+begin
+  Result:=uniquefilename(filepath(Path,'IP_'));
+end;
+{$ELSEIF DEFINED(IP_LAZARUS)}
 begin
   Result:=FileUtil.GetTempFileName(Path,'IP_');
 end;
@@ -2839,7 +2926,7 @@ end;
 
 { Get Windows system TEMP path in a string }
 function GetTemporaryPath: string;
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_LAZARUS) or DEFINED(IP_MSEGUI)}
 begin
   writeln('ToDo: IpUtils.GetTemporaryPath');
   Result:='';
@@ -2856,7 +2943,9 @@ end;
 { Append backslash to DOS path if needed }
 function AppendBackSlash(APath : string) : string;
 begin
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_MSEGUI)}
+  result := filepath(APath);
+{$ELSEIF DEFINED(IP_LAZARUS)}
   Result := AppendPathDelim(APath);
 {$ELSE}
   Result := APath;
@@ -2868,7 +2957,11 @@ end;
 { Remove trailing backslash from a DOS path if needed }
 function RemoveBackSlash(APath: string) : string;
 begin
-{$IFDEF IP_LAZARUS}
+{$IF DEFINED(IP_MSEGUI)}
+  Result := APath;
+  if (Result[Length(Result)] = '\') or (Result[Length(Result)] = '/') then
+    Delete(Result, Length(Result), 1);
+{$ELSEIF DEFINED(IP_LAZARUS)}
   Result := ChompPathDelim(APath);
 {$ELSE}
   Result := APath;

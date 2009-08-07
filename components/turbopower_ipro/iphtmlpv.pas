@@ -27,7 +27,7 @@
  *
  * ***** END LICENSE BLOCK ***** *)
 
-{ Global defines potentially affecting this unit }
+{ Global defi        nes potentially affecting this unit }
 {$I IPDEFINE.INC}
 
 unit IpHtmlPv;

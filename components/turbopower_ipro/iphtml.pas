@@ -48,6 +48,25 @@ unit IpHtml;
 interface
 
 uses
+{$ifdef IP_MSEGUI}
+  classes,
+  msegui,
+  msegraphics,
+  msegraphutils,
+  mseimage,
+  msebitmap,
+  msedataedits,
+  mseedit,
+  msestrings,
+  msesimplewidgets,
+  msewidgets,
+  msetypes,
+  IpConst,
+  IpStrms,
+  IpUtils,
+  IpMsg,
+  TypInfo; {!!.10}
+{$else}
   {$IFDEF IP_LAZARUS}
   //MemCheck,
   Types,
@@ -98,304 +117,769 @@ uses
   Dialogs,
   IpMsg,
   TypInfo; {!!.10}
+{$endif}
 
 type
+  {$ifdef IP_MSEGUI}
+  	TSize = sizety;
+  	TFontStyles = fontstylesty;
+  	TColor = colorty;
+  	TWinControl = TWidget;
+  	TPicture = TImage;
+  	HRgn = regionty;
+  	PRect = prectty;
+  	TEdit = tstringedit;
+  {$endif}
   {$IFNDEF IP_LAZARUS} //JMN
     PtrInt = Longint;
   {$ENDIF}
+
   {Note: Some of the code below relies on the fact that
    the end tag (when present) immediately follows the
    start tag.}
+
+//
+// To preprocess this file use on command line
+// lua lpp.lua onefile-with-lua-inside
+//
+
+(*lua
+--
+-- the following tables should be ordered
+--
+htmlTags = {
+  {'!--', false, 'COMMENT'},
+  {'!DOCTYPE', false, 'DOCTYPE'},
+  {'<eof>', false, 'Eof'},
+  {'<text>', false, 'Text'},
+  {'<unknown>', false, 'Unknown'},
+  {'A', true},
+  {'ABBR', true},
+  {'ACRONYM', true},
+  {'ADDRESS', true},
+  {'APPLET', true},
+  {'AREA', false},
+  {'B', true},
+  {'BASE', false},
+  {'BASEFONT', false},
+  {'BIG', true},
+  {'BLINK', true},
+  {'BLOCKQUOTE', true},
+  {'BODY', true},
+  {'BR', false},
+  {'BUTTON', true},
+  {'CAPTION', true},
+  {'CENTER', true},
+  {'CITE', true},
+  {'CODE', true},
+  {'COL', false},
+  {'COLGROUP', true},
+  {'DD', true},
+  {'DEL', true},
+  {'DFN', true},
+  {'DIR', true},
+  {'DIV', true},
+  {'DL', true},
+  {'DT', true},
+  {'EM', true},
+  {'FIELDSET', true},
+  {'FONT', true},
+  {'FORM', true},
+  {'FRAME', false},
+  {'FRAMESET', true},
+  {'H1', true},
+  {'H2', true},
+  {'H3', true},
+  {'H4', true},
+  {'H5', true},
+  {'H6', true},
+  {'HEAD', true},
+  {'HR', false},
+  {'HTML', true},
+  {'I', true},
+  {'IFRAME', true},
+  {'IMG', false},
+  {'INPUT', false},
+  {'INS', true},
+  {'ISINDEX', false},
+  {'KBD', true},
+  {'LABEL', true},
+  {'LEFT', true},
+  {'LEGEND', true},
+  {'LI', true},
+  {'LINK', false},
+  {'MAP', true},
+  {'MENU', true},
+  {'META', false},
+  {'NOBR', true},
+  {'NOFRAMES', true},
+  {'NOSCRIPT', true},
+  {'OBJECT', true},
+  {'OL', true},
+  {'OPTGROUP', true},
+  {'OPTION', true},
+  {'P', true},
+  {'PARAM', false},
+  {'PRE', true},
+  {'Q', true},
+  {'RIGHT', true},
+  {'S', true},
+  {'SAMP', true},
+  {'SCRIPT', true},
+  {'SELECT', true},
+  {'SMALL', true},
+  {'SPAN', true},
+  {'STRIKE', true},
+  {'STRONG', true},
+  {'STYLE', true},
+  {'SUB', true},
+  {'SUP', true},
+  {'TABLE', true},
+  {'TBODY', true},
+  {'TD', true},
+  {'TEXTAREA', true},
+  {'TFOOT', true},
+  {'TH', true},
+  {'THEAD', true},
+  {'TITLE', true},
+  {'TR', true},
+  {'TT', true},
+  {'U', true},
+  {'UL', true},
+  {'VAR', true},
+}
+
+table.sort(htmlTags, function(a,b) return a[1] < b[1] end)
+
+function getHtmlTagsTable()
+  local k,v, tbl
+  tbl = {}
+  for k,v in(htmlTags) do
+      table.insert(tbl, v[1])
+      if v[2] then table.insert(tbl, '/' .. v[2]) end
+  end
+  table.sort(tbl)
+  return tbl
+end
+
+function genTIpHtmlToken()
+  local k,v, nEnd
+  nEnd = #htmlTags
+  _putsnl_('  TIpHtmlToken = (')
+  for k,v in pairs(htmlTags) do
+      _puts_('\tIpHtmlTag')
+      if v[3] then
+         _puts_(v[3])
+      else
+         _puts_(v[1])
+      end
+      if v[2] then
+         _puts_(', IpHtmlTag' .. v[1] .. 'end' )
+      end
+      if k < nEnd then  _putsnl_(', ') end
+  end
+  _putsnl_('  );')
+end
+
+function genIpEndTokenSet()
+  local k,v, nEnd
+  nEnd = #htmlTags
+  _putsnl_('  IpEndTokenSet : TIpHtmlTokenSet = [')
+  for k,v in pairs(htmlTags) do
+      if v[2] then
+         _puts_('\tIpHtmlTag' .. v[1] .. 'end' )
+         if k < nEnd then  _putsnl_(', ') end
+      end
+  end
+  _putsnl_('  ];')
+end
+
+function genIpHtmlTokens()
+  local k,v, tbl, nEnd, line
+  tbl = {}
+  for k,v in pairs(htmlTags) do
+      line = "\t(pc:'" .. v[1] .. "'; tk:IpHtmlTag"
+      if v[3] then
+         line = line .. v[3]
+      else
+         line = line .. v[1]
+      end
+	  line = line .. ')'
+	  table.insert(tbl, line)
+
+      if v[2] then
+		  line = "\t(pc:'/" .. v[1] .. "'; tk:IpHtmlTag"
+		  if v[3] then
+			 line = line .. v[3]
+		  else
+			 line = line .. v[1]
+		  end
+		  line = line .. 'end)'
+		  table.insert(tbl, line)
+      end
+
+  end
+  table.sort(tbl)
+  nEnd = #tbl
+  _putsnl_('  IpHtmlTokens : array[0..' .. nEnd-1 ..
+	'] of record\n\tpc: PAnsiChar;\n\ttk: TIpHtmlToken;\n  end = ( // alphabetically ordered')
+  _puts_(table.concat(tbl,',\n'))
+  _putsnl_('  );')
+end
+
+htmlNodeAttributes = {
+'ACCEPT',
+'ACCEPT-CHARSET',
+'ACTION',
+'ALIGN',
+'ALINK',
+'ALT',
+'ARCHIVE',
+'BACKGROUND',
+'BGCOLOR',
+'BORDER',
+'CELLPADDING',
+'CELLSPACING',
+'CHECKED',
+'CITE',
+'CLASS',
+'CLASSID',
+'CLEAR',
+'CODE',
+'CODEBASE',
+'CODETYPE',
+'COLOR',
+'COLS',
+'COLSPAN',
+'COMBOBOX',
+'COMPACT',
+'CONTENT',
+'COORDS',
+'DATA',
+'DATETIME',
+'DECLARE',
+'DIR',
+'DISABLED',
+'ENCTYPE',
+'FACE',
+'FRAME',
+'HEIGHT',
+'HREF',
+'HSPACE',
+'HTTP-EQUIV',
+'ID',
+'ISMAP',
+'LABEL',
+'LANG',
+'LANGUAGE',
+'LINK',
+'LONGDESC',
+'MARGINHEIGHT',
+'MARGINWIDTH',
+'MAXLENGTH',
+'MEDIA',
+'METHOD',
+'MULTIPLE',
+'NAME',
+'NOHREF',
+'NORESIZE',
+'NOSHADE',
+'NOWRAP',
+'OBJECT',
+'PROMPT',
+'READONLY',
+'REL',
+'REV',
+'ROWS',
+'ROWSPAN',
+'RULES',
+'SCHEME',
+'SCROLLING',
+'SELECTED',
+'SHAPE',
+'SIZE',
+'SPAN',
+'SRC',
+'STANDBY',
+'START',
+'STYLE',
+'SUMMARY',
+'TABINDEX',
+'TARGET',
+'TEXT',
+'TITLE',
+'TYPE',
+'USEMAP',
+'VALIGN',
+'VALUE',
+'VALUETYPE',
+'VERSION',
+'VLINK',
+'VSPACE',
+'WIDTH',
+}
+
+table.sort(htmlNodeAttributes)
+
+function genHtmlNodeAttributesSet()
+  local k,v, nEnd
+  nEnd = #htmlNodeAttributes
+  _putsnl_('  TIpHtmlAttributesSet = (')
+  for k,v in pairs(htmlNodeAttributes) do
+      if (k % 5) == 0 then _putsnl_('') end
+      _puts_('htmlAttr' .. v:gsub('-', '_') )
+      if k < nEnd then  _puts_(', ') end
+  end
+  _putsnl_('  );')
+end
+
+function genHtmlNodeAttributesNames()
+  local k,v, nEnd
+  nEnd = #htmlNodeAttributes
+  _putsnl_("  TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (")
+  for k,v in pairs(htmlNodeAttributes) do
+      if (k % 5) == 0 then _putsnl_('') end
+      _puts_("'" .. v .. "'")
+      if k < nEnd then  _puts_(', ') end
+  end
+  _putsnl_('  );')
+end
+
+lua*)
+
+//#genTIpHtmlToken()
+// generated-code:begin
   TIpHtmlToken = (
-    IpHtmlTagEof,
-    IpHtmlTagUnknown, IpHtmlTagText,
-    IpHtmlTagHtml, IpHtmlTagHtmlend,
-    IpHtmlTagHEAD, IpHtmlTagHEADend,
-    IpHtmlTagTITLE, IpHtmlTagTITLEend,
-    IpHtmlTagSTYLE, IpHtmlTagSTYLEend,
-    IpHtmlTagSCRIPT, IpHtmlTagSCRIPTend,
-    IpHtmlTagNOSCRIPT, IpHtmlTagNOSCRIPTend,
-    IpHtmlTagISINDEX,
-    IpHtmlTagBASE,
-    IpHtmlTagMETA,
-    IpHtmlTagLINK,
-    IpHtmlTagBODY, IpHtmlTagBODYend,
-    IpHtmlTagH1, IpHtmlTagH1end,
-    IpHtmlTagH2, IpHtmlTagH2end,
-    IpHtmlTagH3, IpHtmlTagH3end,
-    IpHtmlTagH4, IpHtmlTagH4end,
-    IpHtmlTagH5, IpHtmlTagH5end,
-    IpHtmlTagH6, IpHtmlTagH6end,
-    IpHtmlTagFONT, IpHtmlTagFONTend,
-    IpHtmlTagP, IpHtmlTagPend,
-    IpHtmlTagUL, IpHtmlTagULen,
-    IpHtmlTagOL, IpHtmlTagOLend,
-    IpHtmlTagLI, IpHtmlTagLIend,
-    IpHtmlTagDL, IpHtmlTagDLend,
-    IpHtmlTagDT, IpHtmlTagDTend,
-    IpHtmlTagDD, IpHtmlTagDDend,
-    IpHtmlTagDIR, IpHtmlTagDIRend,
-    IpHtmlTagMENU, IpHtmlTagMENUend,
-    IpHtmlTagPRE, IpHtmlTagPREend,
-    IpHtmlTagDIV, IpHtmlTagDIVend,
-    IpHtmlTagSPAN, IpHtmlTagSPANend,
-    IpHtmlTagCENTER, IpHtmlTagCENTERend,
-    IpHtmlTagLEFT, IpHtmlTagLEFTend,
-    IpHtmlTagRIGHT, IpHtmlTagRIGHTend,
-    IpHtmlTagBLINK, IpHtmlTagBLINKend,
-    IpHtmlTagBLOCKQUOTE, IpHtmlTagBLOCKQUOTEend,
-    IpHtmlTagQ, IpHtmlTagQend,
-    IpHtmlTagHR,
-    IpHtmlTagTT, IpHtmlTagTTend,
-    IpHtmlTagI, IpHtmlTagIend,
-    IpHtmlTagB, IpHtmlTagBend,
-    IpHtmlTagU, IpHtmlTagUend,
-    IpHtmlTagSTRIKE, IpHtmlTagSTRIKEend,
-    IpHtmlTagS, IpHtmlTagSend,
-    IpHtmlTagBIG, IpHtmlTagBIGend,
-    IpHtmlTagSMALL, IpHtmlTagSMALLend,
-    IpHtmlTagSUB, IpHtmlTagSUBend,
-    IpHtmlTagSUP, IpHtmlTagSUPend,
-    IpHtmlTagEM, IpHtmlTagEMend,
-    IpHtmlTagSTRONG, IpHtmlTagSTRONGend,
-    IpHtmlTagDFN, IpHtmlTagDFNend,
-    IpHtmlTagCODE, IpHtmlTagCODEend,
-    IpHtmlTagSAMP, IpHtmlTagSAMPend,
-    IpHtmlTagKBD, IpHtmlTagKBDend,
-    IpHtmlTagVAR, IpHtmlTagVARend,
-    IpHtmlTagCITE, IpHtmlTagCITEend,
-    IpHtmlTagABBR, IpHtmlTagABBRend,
-    IpHtmlTagACRONYM, IpHtmlTagACRONYMend,
-    IpHtmlTagA, IpHtmlTagAend,
-    IpHtmlTagIMG,
-    IpHtmlTagAPPLET, IpHtmlTagAPPLETend,
-    IpHtmlTagOBJECT, IpHtmlTagOBJECTend,
-    IpHtmlTagPARAM,
-    IpHtmlTagBASEFONT,
-    IpHtmlTagBR,
-    IpHtmlTagNOBR, IpHtmlTagNOBRend,
-    IpHtmlTagMAP, IpHtmlTagMAPend,
-    IpHtmlTagAREA,
-    IpHtmlTagDOCTYPE,
-    IpHtmlTagCOMMENT,
-    IpHtmlTagADDRESS, IpHtmlTagADDRESSend,
-    IpHtmlTagFORM, IpHtmlTagFORMend,
-    IpHtmlTagTABLE, IpHtmlTagTABLEend,
-    IpHtmlTagCAPTION, IpHtmlTagCAPTIONend,
-    IpHtmlTagTR, IpHtmlTagTRend,
-    IpHtmlTagTH, IpHtmlTagTHend,
-    IpHtmlTagTD, IpHtmlTagTDend,
-    IpHtmlTagTBODY, IpHtmlTagTBODYend,
-    IpHtmlTagTHEAD, IpHtmlTagTHEADend,
-    IpHtmlTagTFOOT, IpHtmlTagTFOOTend,
-    IpHtmlTagCOLGROUP, IpHtmlTagCOLGROUPend,
-    IpHtmlTagCOL,
-    IpHtmlTagINPUT,
-    IpHtmlTagBUTTON, IpHtmlTagBUTTONend,
-    IpHtmlTagSELECT, IpHtmlTagSELECTend,
-    IpHtmlTagOPTGROUP, IpHtmlTagOPTGROUPend,
-    IpHtmlTagOPTION, IpHtmlTagOPTIONend,
-    IpHtmlTagTEXTAREA, IpHtmlTagTEXTAREAend,
-    IpHtmlTagLABEL, IpHtmlTagLABELend,
-    IpHtmlTagFIELDSET, IpHtmlTagFIELDSETend,
-    IpHtmlTagLEGEND, IpHtmlTagLEGENDend,
-    IpHtmlTagINS, IpHtmlTagINSend,
-    IpHtmlTagDEL, IpHtmlTagDELend,
-    IpHtmlTagFRAMESET, IpHtmlTagFRAMESETend,
-    IpHtmlTagFRAME,
-    IpHtmlTagNOFRAMES, IpHtmlTagNOFRAMESend,
-    IpHtmlTagIFRAME, IpHtmlTagIFRAMEend
-    );
+	IpHtmlTagCOMMENT, 
+	IpHtmlTagDOCTYPE, 
+	IpHtmlTagEof, 
+	IpHtmlTagText, 
+	IpHtmlTagUnknown, 
+	IpHtmlTagA, IpHtmlTagAend, 
+	IpHtmlTagABBR, IpHtmlTagABBRend, 
+	IpHtmlTagACRONYM, IpHtmlTagACRONYMend, 
+	IpHtmlTagADDRESS, IpHtmlTagADDRESSend, 
+	IpHtmlTagAPPLET, IpHtmlTagAPPLETend, 
+	IpHtmlTagAREA, 
+	IpHtmlTagB, IpHtmlTagBend, 
+	IpHtmlTagBASE, 
+	IpHtmlTagBASEFONT, 
+	IpHtmlTagBIG, IpHtmlTagBIGend, 
+	IpHtmlTagBLINK, IpHtmlTagBLINKend, 
+	IpHtmlTagBLOCKQUOTE, IpHtmlTagBLOCKQUOTEend, 
+	IpHtmlTagBODY, IpHtmlTagBODYend, 
+	IpHtmlTagBR, 
+	IpHtmlTagBUTTON, IpHtmlTagBUTTONend, 
+	IpHtmlTagCAPTION, IpHtmlTagCAPTIONend, 
+	IpHtmlTagCENTER, IpHtmlTagCENTERend, 
+	IpHtmlTagCITE, IpHtmlTagCITEend, 
+	IpHtmlTagCODE, IpHtmlTagCODEend, 
+	IpHtmlTagCOL, 
+	IpHtmlTagCOLGROUP, IpHtmlTagCOLGROUPend, 
+	IpHtmlTagDD, IpHtmlTagDDend, 
+	IpHtmlTagDEL, IpHtmlTagDELend, 
+	IpHtmlTagDFN, IpHtmlTagDFNend, 
+	IpHtmlTagDIR, IpHtmlTagDIRend, 
+	IpHtmlTagDIV, IpHtmlTagDIVend, 
+	IpHtmlTagDL, IpHtmlTagDLend, 
+	IpHtmlTagDT, IpHtmlTagDTend, 
+	IpHtmlTagEM, IpHtmlTagEMend, 
+	IpHtmlTagFIELDSET, IpHtmlTagFIELDSETend, 
+	IpHtmlTagFONT, IpHtmlTagFONTend, 
+	IpHtmlTagFORM, IpHtmlTagFORMend, 
+	IpHtmlTagFRAME, 
+	IpHtmlTagFRAMESET, IpHtmlTagFRAMESETend, 
+	IpHtmlTagH1, IpHtmlTagH1end, 
+	IpHtmlTagH2, IpHtmlTagH2end, 
+	IpHtmlTagH3, IpHtmlTagH3end, 
+	IpHtmlTagH4, IpHtmlTagH4end, 
+	IpHtmlTagH5, IpHtmlTagH5end, 
+	IpHtmlTagH6, IpHtmlTagH6end, 
+	IpHtmlTagHEAD, IpHtmlTagHEADend, 
+	IpHtmlTagHR, 
+	IpHtmlTagHTML, IpHtmlTagHTMLend, 
+	IpHtmlTagI, IpHtmlTagIend, 
+	IpHtmlTagIFRAME, IpHtmlTagIFRAMEend, 
+	IpHtmlTagIMG, 
+	IpHtmlTagINPUT, 
+	IpHtmlTagINS, IpHtmlTagINSend, 
+	IpHtmlTagISINDEX, 
+	IpHtmlTagKBD, IpHtmlTagKBDend, 
+	IpHtmlTagLABEL, IpHtmlTagLABELend, 
+	IpHtmlTagLEFT, IpHtmlTagLEFTend, 
+	IpHtmlTagLEGEND, IpHtmlTagLEGENDend, 
+	IpHtmlTagLI, IpHtmlTagLIend, 
+	IpHtmlTagLINK, 
+	IpHtmlTagMAP, IpHtmlTagMAPend, 
+	IpHtmlTagMENU, IpHtmlTagMENUend, 
+	IpHtmlTagMETA, 
+	IpHtmlTagNOBR, IpHtmlTagNOBRend, 
+	IpHtmlTagNOFRAMES, IpHtmlTagNOFRAMESend, 
+	IpHtmlTagNOSCRIPT, IpHtmlTagNOSCRIPTend, 
+	IpHtmlTagOBJECT, IpHtmlTagOBJECTend, 
+	IpHtmlTagOL, IpHtmlTagOLend, 
+	IpHtmlTagOPTGROUP, IpHtmlTagOPTGROUPend, 
+	IpHtmlTagOPTION, IpHtmlTagOPTIONend, 
+	IpHtmlTagP, IpHtmlTagPend, 
+	IpHtmlTagPARAM, 
+	IpHtmlTagPRE, IpHtmlTagPREend, 
+	IpHtmlTagQ, IpHtmlTagQend, 
+	IpHtmlTagRIGHT, IpHtmlTagRIGHTend, 
+	IpHtmlTagS, IpHtmlTagSend, 
+	IpHtmlTagSAMP, IpHtmlTagSAMPend, 
+	IpHtmlTagSCRIPT, IpHtmlTagSCRIPTend, 
+	IpHtmlTagSELECT, IpHtmlTagSELECTend, 
+	IpHtmlTagSMALL, IpHtmlTagSMALLend, 
+	IpHtmlTagSPAN, IpHtmlTagSPANend, 
+	IpHtmlTagSTRIKE, IpHtmlTagSTRIKEend, 
+	IpHtmlTagSTRONG, IpHtmlTagSTRONGend, 
+	IpHtmlTagSTYLE, IpHtmlTagSTYLEend, 
+	IpHtmlTagSUB, IpHtmlTagSUBend, 
+	IpHtmlTagSUP, IpHtmlTagSUPend, 
+	IpHtmlTagTABLE, IpHtmlTagTABLEend, 
+	IpHtmlTagTBODY, IpHtmlTagTBODYend, 
+	IpHtmlTagTD, IpHtmlTagTDend, 
+	IpHtmlTagTEXTAREA, IpHtmlTagTEXTAREAend, 
+	IpHtmlTagTFOOT, IpHtmlTagTFOOTend, 
+	IpHtmlTagTH, IpHtmlTagTHend, 
+	IpHtmlTagTHEAD, IpHtmlTagTHEADend, 
+	IpHtmlTagTITLE, IpHtmlTagTITLEend, 
+	IpHtmlTagTR, IpHtmlTagTRend, 
+	IpHtmlTagTT, IpHtmlTagTTend, 
+	IpHtmlTagU, IpHtmlTagUend, 
+	IpHtmlTagUL, IpHtmlTagULend, 
+	IpHtmlTagVAR, IpHtmlTagVARend  );
+// generated-code:end
   TIpHtmlTokenSet = set of TIpHtmlToken;
+
+//#genHtmlNodeAttributesSet()
+// generated-code:begin
+  TIpHtmlAttributesSet = (
+htmlAttrACCEPT, htmlAttrACCEPT_CHARSET, htmlAttrACTION, htmlAttrALIGN, 
+htmlAttrALINK, htmlAttrALT, htmlAttrARCHIVE, htmlAttrBACKGROUND, htmlAttrBGCOLOR, 
+htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING, htmlAttrCHECKED, htmlAttrCITE, 
+htmlAttrCLASS, htmlAttrCLASSID, htmlAttrCLEAR, htmlAttrCODE, htmlAttrCODEBASE, 
+htmlAttrCODETYPE, htmlAttrCOLOR, htmlAttrCOLS, htmlAttrCOLSPAN, htmlAttrCOMBOBOX, 
+htmlAttrCOMPACT, htmlAttrCONTENT, htmlAttrCOORDS, htmlAttrDATA, htmlAttrDATETIME, 
+htmlAttrDECLARE, htmlAttrDIR, htmlAttrDISABLED, htmlAttrENCTYPE, htmlAttrFACE, 
+htmlAttrFRAME, htmlAttrHEIGHT, htmlAttrHREF, htmlAttrHSPACE, htmlAttrHTTP_EQUIV, 
+htmlAttrID, htmlAttrISMAP, htmlAttrLABEL, htmlAttrLANG, htmlAttrLANGUAGE, 
+htmlAttrLINK, htmlAttrLONGDESC, htmlAttrMARGINHEIGHT, htmlAttrMARGINWIDTH, htmlAttrMAXLENGTH, 
+htmlAttrMEDIA, htmlAttrMETHOD, htmlAttrMULTIPLE, htmlAttrNAME, htmlAttrNOHREF, 
+htmlAttrNORESIZE, htmlAttrNOSHADE, htmlAttrNOWRAP, htmlAttrOBJECT, htmlAttrPROMPT, 
+htmlAttrREADONLY, htmlAttrREL, htmlAttrREV, htmlAttrROWS, htmlAttrROWSPAN, 
+htmlAttrRULES, htmlAttrSCHEME, htmlAttrSCROLLING, htmlAttrSELECTED, htmlAttrSHAPE, 
+htmlAttrSIZE, htmlAttrSPAN, htmlAttrSRC, htmlAttrSTANDBY, htmlAttrSTART, 
+htmlAttrSTYLE, htmlAttrSUMMARY, htmlAttrTABINDEX, htmlAttrTARGET, htmlAttrTEXT, 
+htmlAttrTITLE, htmlAttrTYPE, htmlAttrUSEMAP, htmlAttrVALIGN, htmlAttrVALUE, 
+htmlAttrVALUETYPE, htmlAttrVERSION, htmlAttrVLINK, htmlAttrVSPACE, htmlAttrWIDTH  );
+// generated-code:end
+
 const
+//#genIpEndTokenSet()
+// generated-code:begin
   IpEndTokenSet : TIpHtmlTokenSet = [
-    IpHtmlTagHtmlend,
-    IpHtmlTagHEADend,
-    IpHtmlTagTITLEend,
-    IpHtmlTagSTYLEend,
-    IpHtmlTagSCRIPTend,
-    IpHtmlTagNOSCRIPTend,
-    IpHtmlTagBODYend,
-    IpHtmlTagH1end,
-    IpHtmlTagH2end,
-    IpHtmlTagH3end,
-    IpHtmlTagH4end,
-    IpHtmlTagH5end,
-    IpHtmlTagH6end,
-    IpHtmlTagFONTend,
-    IpHtmlTagPend,
-    IpHtmlTagULen,
-    IpHtmlTagOLend,
-    IpHtmlTagLIend,
-    IpHtmlTagDLend,
-    IpHtmlTagDDend,
-    IpHtmlTagDIRend,
-    IpHtmlTagMENUend,
-    IpHtmlTagPREend,
-    IpHtmlTagDIVend,
-    IpHtmlTagSPANend,
-    IpHtmlTagCENTERend,
-    IpHtmlTagLEFTend,
-    IpHtmlTagRIGHTend,
-    IpHtmlTagBLINKend,
-    IpHtmlTagBLOCKQUOTEend,
-    IpHtmlTagQend,
-    IpHtmlTagTTend,
-    IpHtmlTagIend,
-    IpHtmlTagBend,
-    IpHtmlTagUend,
-    IpHtmlTagSTRIKEend,
-    IpHtmlTagSend,
-    IpHtmlTagBIGend,
-    IpHtmlTagSMALLend,
-    IpHtmlTagSUBend,
-    IpHtmlTagSUPend,
-    IpHtmlTagEMend,
-    IpHtmlTagSTRONGend,
-    IpHtmlTagDFNend,
-    IpHtmlTagCODEend,
-    IpHtmlTagSAMPend,
-    IpHtmlTagKBDend,
-    IpHtmlTagVARend,
-    IpHtmlTagCITEend,
-    IpHtmlTagABBRend,
-    IpHtmlTagACRONYMend,
-    IpHtmlTagAend,
-    IpHtmlTagAPPLETend,
-    IpHtmlTagOBJECTend,
-    IpHtmlTagNOBRend,
-    IpHtmlTagMAPend,
-    IpHtmlTagADDRESSend,
-    IpHtmlTagFORMend,
-    IpHtmlTagTABLEend,
-    IpHtmlTagCAPTIONend,
-    IpHtmlTagTRend,
-    IpHtmlTagTHend,
-    IpHtmlTagTDend,
-    IpHtmlTagTBODYend,
-    IpHtmlTagTHEADend,
-    IpHtmlTagTFOOTend,
-    IpHtmlTagCOLGROUPend,
-    IpHtmlTagBUTTONend,
-    IpHtmlTagSELECTend,
-    IpHtmlTagOPTGROUPend,
-    IpHtmlTagOPTIONend,
-    IpHtmlTagTEXTAREAend,
-    IpHtmlTagLABELend,
-    IpHtmlTagFIELDSETend,
-    IpHtmlTagLEGENDend,
-    IpHtmlTagINSend,
-    IpHtmlTagDELend,
-    IpHtmlTagFRAMESETend,
-    IpHtmlTagNOFRAMESend,
-    IpHtmlTagIFRAMEend
-  ];
-  IpHtmlTokens : array[TIpHtmlToken] of PAnsiChar = (
-  '<eof>',
-  '<unknown>',
-  '<text>',
-  'HTML', '/HTML',
-  'HEAD', '/HEAD',
-  'TITLE', '/TITLE',
-  'STYLE', '/STYLE',
-  'SCRIPT', '/SCRIPT',
-  'NOSCRIPT','/NOSCRIPT',
-  'ISINDEX',
-  'BASE',
-  'META',
-  'LINK',
-  'BODY','/BODY',
-  'H1','/H1',
-  'H2','/H2',
-  'H3','/H3',
-  'H4','/H4',
-  'H5','/H5',
-  'H6','/H6',
-  'FONT', '/FONT',
-  'P','/P',
-  'UL','/UL',
-  'OL','/OL',
-  'LI','/LI',
-  'DL','/DL',
-  'DT', '/DT',
-  'DD', '/DD',
-  'DIR','/DIR',
-  'MENU','/MENU',
-  'PRE','/PRE',
-  'DIV','/DIV',
-  'SPAN','/SPAN',
-  'CENTER','/CENTER',
-  'LEFT', '/LEFT',
-  'RIGHT', '/RIGHT',
-  'BLINK', '/BLINK',
-  'BLOCKQUOTE','/BLOCKQUOTE',
-  'Q', '/Q',
-  'HR',
-  'TT', '/TT',
-  'I', '/I',
-  'B', '/B',
-  'U', '/U',
-  'STRIKE', '/STRIKE',
-  'S', '/S',
-  'BIG', '/BIG',
-  'SMALL', '/SMALL',
-  'SUB', '/SUB',
-  'SUP', '/SUP',
-  'EM', '/EM',
-  'STRONG', '/STRONG',
-  'DFN', '/DFN',
-  'CODE', '/CODE',
-  'SAMP', '/SAMP',
-  'KBD', '/KBD',
-  'VAR', '/VAR',
-  'CITE', '/CITE',
-  'ABBR','/ABBR',
-  'ACRONYM','/ACRONYM',
-  'A', '/A',
-  'IMG',
-  'APPLET','/APPLET',
-  'OBJECT','/OBJECT',
-  'PARAM',
-  'BASEFONT',
-  'BR',
-  'NOBR', '/NOBR',
-  'MAP','/MAP',
-  'AREA',
-  '!DOCTYPE',
-  '!--',
-  'ADDRESS','/ADDRESS',
-  'FORM','/FORM',
-  'TABLE','/TABLE',
-  'CAPTION','/CAPTION',
-  'TR','/TR',
-  'TH','/TH',
-  'TD','/TD',
-  'TBODY','/TBODY',
-  'THEAD','/THEAD',
-  'TFOOT','/TFOOT',
-  'COLGROUP','/COLGROUP',
-  'COL',
-  'INPUT',
-  'BUTTON', '/BUTTON',
-  'SELECT','/SELECT',
-  'OPTGROUP','/OPTGROUP',
-  'OPTION', '/OPTION',
-  'TEXTAREA','/TEXTAREA',
-  'LABEL','/LABEL',
-  'FIELDSET','/FIELDSET',
-  'LEGEND','/LEGEND',
-  'INS','/INS',
-  'DEL','/DEL',
-  'FRAMESET','/FRAMESET',
-  'FRAME',
-  'NOFRAMES','/NOFRAMES',
-  'IFRAME', '/IFRAME'
-  );
+	IpHtmlTagAend, 
+	IpHtmlTagABBRend, 
+	IpHtmlTagACRONYMend, 
+	IpHtmlTagADDRESSend, 
+	IpHtmlTagAPPLETend, 
+	IpHtmlTagBend, 
+	IpHtmlTagBIGend, 
+	IpHtmlTagBLINKend, 
+	IpHtmlTagBLOCKQUOTEend, 
+	IpHtmlTagBODYend, 
+	IpHtmlTagBUTTONend, 
+	IpHtmlTagCAPTIONend, 
+	IpHtmlTagCENTERend, 
+	IpHtmlTagCITEend, 
+	IpHtmlTagCODEend, 
+	IpHtmlTagCOLGROUPend, 
+	IpHtmlTagDDend, 
+	IpHtmlTagDELend, 
+	IpHtmlTagDFNend, 
+	IpHtmlTagDIRend, 
+	IpHtmlTagDIVend, 
+	IpHtmlTagDLend, 
+	IpHtmlTagDTend, 
+	IpHtmlTagEMend, 
+	IpHtmlTagFIELDSETend, 
+	IpHtmlTagFONTend, 
+	IpHtmlTagFORMend, 
+	IpHtmlTagFRAMESETend, 
+	IpHtmlTagH1end, 
+	IpHtmlTagH2end, 
+	IpHtmlTagH3end, 
+	IpHtmlTagH4end, 
+	IpHtmlTagH5end, 
+	IpHtmlTagH6end, 
+	IpHtmlTagHEADend, 
+	IpHtmlTagHTMLend, 
+	IpHtmlTagIend, 
+	IpHtmlTagIFRAMEend, 
+	IpHtmlTagINSend, 
+	IpHtmlTagKBDend, 
+	IpHtmlTagLABELend, 
+	IpHtmlTagLEFTend, 
+	IpHtmlTagLEGENDend, 
+	IpHtmlTagLIend, 
+	IpHtmlTagMAPend, 
+	IpHtmlTagMENUend, 
+	IpHtmlTagNOBRend, 
+	IpHtmlTagNOFRAMESend, 
+	IpHtmlTagNOSCRIPTend, 
+	IpHtmlTagOBJECTend, 
+	IpHtmlTagOLend, 
+	IpHtmlTagOPTGROUPend, 
+	IpHtmlTagOPTIONend, 
+	IpHtmlTagPend, 
+	IpHtmlTagPREend, 
+	IpHtmlTagQend, 
+	IpHtmlTagRIGHTend, 
+	IpHtmlTagSend, 
+	IpHtmlTagSAMPend, 
+	IpHtmlTagSCRIPTend, 
+	IpHtmlTagSELECTend, 
+	IpHtmlTagSMALLend, 
+	IpHtmlTagSPANend, 
+	IpHtmlTagSTRIKEend, 
+	IpHtmlTagSTRONGend, 
+	IpHtmlTagSTYLEend, 
+	IpHtmlTagSUBend, 
+	IpHtmlTagSUPend, 
+	IpHtmlTagTABLEend, 
+	IpHtmlTagTBODYend, 
+	IpHtmlTagTDend, 
+	IpHtmlTagTEXTAREAend, 
+	IpHtmlTagTFOOTend, 
+	IpHtmlTagTHend, 
+	IpHtmlTagTHEADend, 
+	IpHtmlTagTITLEend, 
+	IpHtmlTagTRend, 
+	IpHtmlTagTTend, 
+	IpHtmlTagUend, 
+	IpHtmlTagULend, 
+	IpHtmlTagVARend  ];
+// generated-code:end
+
+//#genIpHtmlTokens()
+// generated-code:begin
+  IpHtmlTokens : array[0..179] of record
+	pc: PAnsiChar;
+	tk: TIpHtmlToken;
+  end = ( // alphabetically ordered
+	(pc:'!--'; tk:IpHtmlTagCOMMENT),
+	(pc:'!DOCTYPE'; tk:IpHtmlTagDOCTYPE),
+	(pc:'/A'; tk:IpHtmlTagAend),
+	(pc:'/ABBR'; tk:IpHtmlTagABBRend),
+	(pc:'/ACRONYM'; tk:IpHtmlTagACRONYMend),
+	(pc:'/ADDRESS'; tk:IpHtmlTagADDRESSend),
+	(pc:'/APPLET'; tk:IpHtmlTagAPPLETend),
+	(pc:'/B'; tk:IpHtmlTagBend),
+	(pc:'/BIG'; tk:IpHtmlTagBIGend),
+	(pc:'/BLINK'; tk:IpHtmlTagBLINKend),
+	(pc:'/BLOCKQUOTE'; tk:IpHtmlTagBLOCKQUOTEend),
+	(pc:'/BODY'; tk:IpHtmlTagBODYend),
+	(pc:'/BUTTON'; tk:IpHtmlTagBUTTONend),
+	(pc:'/CAPTION'; tk:IpHtmlTagCAPTIONend),
+	(pc:'/CENTER'; tk:IpHtmlTagCENTERend),
+	(pc:'/CITE'; tk:IpHtmlTagCITEend),
+	(pc:'/CODE'; tk:IpHtmlTagCODEend),
+	(pc:'/COLGROUP'; tk:IpHtmlTagCOLGROUPend),
+	(pc:'/DD'; tk:IpHtmlTagDDend),
+	(pc:'/DEL'; tk:IpHtmlTagDELend),
+	(pc:'/DFN'; tk:IpHtmlTagDFNend),
+	(pc:'/DIR'; tk:IpHtmlTagDIRend),
+	(pc:'/DIV'; tk:IpHtmlTagDIVend),
+	(pc:'/DL'; tk:IpHtmlTagDLend),
+	(pc:'/DT'; tk:IpHtmlTagDTend),
+	(pc:'/EM'; tk:IpHtmlTagEMend),
+	(pc:'/FIELDSET'; tk:IpHtmlTagFIELDSETend),
+	(pc:'/FONT'; tk:IpHtmlTagFONTend),
+	(pc:'/FORM'; tk:IpHtmlTagFORMend),
+	(pc:'/FRAMESET'; tk:IpHtmlTagFRAMESETend),
+	(pc:'/H1'; tk:IpHtmlTagH1end),
+	(pc:'/H2'; tk:IpHtmlTagH2end),
+	(pc:'/H3'; tk:IpHtmlTagH3end),
+	(pc:'/H4'; tk:IpHtmlTagH4end),
+	(pc:'/H5'; tk:IpHtmlTagH5end),
+	(pc:'/H6'; tk:IpHtmlTagH6end),
+	(pc:'/HEAD'; tk:IpHtmlTagHEADend),
+	(pc:'/HTML'; tk:IpHtmlTagHTMLend),
+	(pc:'/I'; tk:IpHtmlTagIend),
+	(pc:'/IFRAME'; tk:IpHtmlTagIFRAMEend),
+	(pc:'/INS'; tk:IpHtmlTagINSend),
+	(pc:'/KBD'; tk:IpHtmlTagKBDend),
+	(pc:'/LABEL'; tk:IpHtmlTagLABELend),
+	(pc:'/LEFT'; tk:IpHtmlTagLEFTend),
+	(pc:'/LEGEND'; tk:IpHtmlTagLEGENDend),
+	(pc:'/LI'; tk:IpHtmlTagLIend),
+	(pc:'/MAP'; tk:IpHtmlTagMAPend),
+	(pc:'/MENU'; tk:IpHtmlTagMENUend),
+	(pc:'/NOBR'; tk:IpHtmlTagNOBRend),
+	(pc:'/NOFRAMES'; tk:IpHtmlTagNOFRAMESend),
+	(pc:'/NOSCRIPT'; tk:IpHtmlTagNOSCRIPTend),
+	(pc:'/OBJECT'; tk:IpHtmlTagOBJECTend),
+	(pc:'/OL'; tk:IpHtmlTagOLend),
+	(pc:'/OPTGROUP'; tk:IpHtmlTagOPTGROUPend),
+	(pc:'/OPTION'; tk:IpHtmlTagOPTIONend),
+	(pc:'/P'; tk:IpHtmlTagPend),
+	(pc:'/PRE'; tk:IpHtmlTagPREend),
+	(pc:'/Q'; tk:IpHtmlTagQend),
+	(pc:'/RIGHT'; tk:IpHtmlTagRIGHTend),
+	(pc:'/S'; tk:IpHtmlTagSend),
+	(pc:'/SAMP'; tk:IpHtmlTagSAMPend),
+	(pc:'/SCRIPT'; tk:IpHtmlTagSCRIPTend),
+	(pc:'/SELECT'; tk:IpHtmlTagSELECTend),
+	(pc:'/SMALL'; tk:IpHtmlTagSMALLend),
+	(pc:'/SPAN'; tk:IpHtmlTagSPANend),
+	(pc:'/STRIKE'; tk:IpHtmlTagSTRIKEend),
+	(pc:'/STRONG'; tk:IpHtmlTagSTRONGend),
+	(pc:'/STYLE'; tk:IpHtmlTagSTYLEend),
+	(pc:'/SUB'; tk:IpHtmlTagSUBend),
+	(pc:'/SUP'; tk:IpHtmlTagSUPend),
+	(pc:'/TABLE'; tk:IpHtmlTagTABLEend),
+	(pc:'/TBODY'; tk:IpHtmlTagTBODYend),
+	(pc:'/TD'; tk:IpHtmlTagTDend),
+	(pc:'/TEXTAREA'; tk:IpHtmlTagTEXTAREAend),
+	(pc:'/TFOOT'; tk:IpHtmlTagTFOOTend),
+	(pc:'/TH'; tk:IpHtmlTagTHend),
+	(pc:'/THEAD'; tk:IpHtmlTagTHEADend),
+	(pc:'/TITLE'; tk:IpHtmlTagTITLEend),
+	(pc:'/TR'; tk:IpHtmlTagTRend),
+	(pc:'/TT'; tk:IpHtmlTagTTend),
+	(pc:'/U'; tk:IpHtmlTagUend),
+	(pc:'/UL'; tk:IpHtmlTagULend),
+	(pc:'/VAR'; tk:IpHtmlTagVARend),
+	(pc:'<eof>'; tk:IpHtmlTagEof),
+	(pc:'<text>'; tk:IpHtmlTagText),
+	(pc:'<unknown>'; tk:IpHtmlTagUnknown),
+	(pc:'A'; tk:IpHtmlTagA),
+	(pc:'ABBR'; tk:IpHtmlTagABBR),
+	(pc:'ACRONYM'; tk:IpHtmlTagACRONYM),
+	(pc:'ADDRESS'; tk:IpHtmlTagADDRESS),
+	(pc:'APPLET'; tk:IpHtmlTagAPPLET),
+	(pc:'AREA'; tk:IpHtmlTagAREA),
+	(pc:'B'; tk:IpHtmlTagB),
+	(pc:'BASE'; tk:IpHtmlTagBASE),
+	(pc:'BASEFONT'; tk:IpHtmlTagBASEFONT),
+	(pc:'BIG'; tk:IpHtmlTagBIG),
+	(pc:'BLINK'; tk:IpHtmlTagBLINK),
+	(pc:'BLOCKQUOTE'; tk:IpHtmlTagBLOCKQUOTE),
+	(pc:'BODY'; tk:IpHtmlTagBODY),
+	(pc:'BR'; tk:IpHtmlTagBR),
+	(pc:'BUTTON'; tk:IpHtmlTagBUTTON),
+	(pc:'CAPTION'; tk:IpHtmlTagCAPTION),
+	(pc:'CENTER'; tk:IpHtmlTagCENTER),
+	(pc:'CITE'; tk:IpHtmlTagCITE),
+	(pc:'CODE'; tk:IpHtmlTagCODE),
+	(pc:'COL'; tk:IpHtmlTagCOL),
+	(pc:'COLGROUP'; tk:IpHtmlTagCOLGROUP),
+	(pc:'DD'; tk:IpHtmlTagDD),
+	(pc:'DEL'; tk:IpHtmlTagDEL),
+	(pc:'DFN'; tk:IpHtmlTagDFN),
+	(pc:'DIR'; tk:IpHtmlTagDIR),
+	(pc:'DIV'; tk:IpHtmlTagDIV),
+	(pc:'DL'; tk:IpHtmlTagDL),
+	(pc:'DT'; tk:IpHtmlTagDT),
+	(pc:'EM'; tk:IpHtmlTagEM),
+	(pc:'FIELDSET'; tk:IpHtmlTagFIELDSET),
+	(pc:'FONT'; tk:IpHtmlTagFONT),
+	(pc:'FORM'; tk:IpHtmlTagFORM),
+	(pc:'FRAME'; tk:IpHtmlTagFRAME),
+	(pc:'FRAMESET'; tk:IpHtmlTagFRAMESET),
+	(pc:'H1'; tk:IpHtmlTagH1),
+	(pc:'H2'; tk:IpHtmlTagH2),
+	(pc:'H3'; tk:IpHtmlTagH3),
+	(pc:'H4'; tk:IpHtmlTagH4),
+	(pc:'H5'; tk:IpHtmlTagH5),
+	(pc:'H6'; tk:IpHtmlTagH6),
+	(pc:'HEAD'; tk:IpHtmlTagHEAD),
+	(pc:'HR'; tk:IpHtmlTagHR),
+	(pc:'HTML'; tk:IpHtmlTagHTML),
+	(pc:'I'; tk:IpHtmlTagI),
+	(pc:'IFRAME'; tk:IpHtmlTagIFRAME),
+	(pc:'IMG'; tk:IpHtmlTagIMG),
+	(pc:'INPUT'; tk:IpHtmlTagINPUT),
+	(pc:'INS'; tk:IpHtmlTagINS),
+	(pc:'ISINDEX'; tk:IpHtmlTagISINDEX),
+	(pc:'KBD'; tk:IpHtmlTagKBD),
+	(pc:'LABEL'; tk:IpHtmlTagLABEL),
+	(pc:'LEFT'; tk:IpHtmlTagLEFT),
+	(pc:'LEGEND'; tk:IpHtmlTagLEGEND),
+	(pc:'LI'; tk:IpHtmlTagLI),
+	(pc:'LINK'; tk:IpHtmlTagLINK),
+	(pc:'MAP'; tk:IpHtmlTagMAP),
+	(pc:'MENU'; tk:IpHtmlTagMENU),
+	(pc:'META'; tk:IpHtmlTagMETA),
+	(pc:'NOBR'; tk:IpHtmlTagNOBR),
+	(pc:'NOFRAMES'; tk:IpHtmlTagNOFRAMES),
+	(pc:'NOSCRIPT'; tk:IpHtmlTagNOSCRIPT),
+	(pc:'OBJECT'; tk:IpHtmlTagOBJECT),
+	(pc:'OL'; tk:IpHtmlTagOL),
+	(pc:'OPTGROUP'; tk:IpHtmlTagOPTGROUP),
+	(pc:'OPTION'; tk:IpHtmlTagOPTION),
+	(pc:'P'; tk:IpHtmlTagP),
+	(pc:'PARAM'; tk:IpHtmlTagPARAM),
+	(pc:'PRE'; tk:IpHtmlTagPRE),
+	(pc:'Q'; tk:IpHtmlTagQ),
+	(pc:'RIGHT'; tk:IpHtmlTagRIGHT),
+	(pc:'S'; tk:IpHtmlTagS),
+	(pc:'SAMP'; tk:IpHtmlTagSAMP),
+	(pc:'SCRIPT'; tk:IpHtmlTagSCRIPT),
+	(pc:'SELECT'; tk:IpHtmlTagSELECT),
+	(pc:'SMALL'; tk:IpHtmlTagSMALL),
+	(pc:'SPAN'; tk:IpHtmlTagSPAN),
+	(pc:'STRIKE'; tk:IpHtmlTagSTRIKE),
+	(pc:'STRONG'; tk:IpHtmlTagSTRONG),
+	(pc:'STYLE'; tk:IpHtmlTagSTYLE),
+	(pc:'SUB'; tk:IpHtmlTagSUB),
+	(pc:'SUP'; tk:IpHtmlTagSUP),
+	(pc:'TABLE'; tk:IpHtmlTagTABLE),
+	(pc:'TBODY'; tk:IpHtmlTagTBODY),
+	(pc:'TD'; tk:IpHtmlTagTD),
+	(pc:'TEXTAREA'; tk:IpHtmlTagTEXTAREA),
+	(pc:'TFOOT'; tk:IpHtmlTagTFOOT),
+	(pc:'TH'; tk:IpHtmlTagTH),
+	(pc:'THEAD'; tk:IpHtmlTagTHEAD),
+	(pc:'TITLE'; tk:IpHtmlTagTITLE),
+	(pc:'TR'; tk:IpHtmlTagTR),
+	(pc:'TT'; tk:IpHtmlTagTT),
+	(pc:'U'; tk:IpHtmlTagU),
+	(pc:'UL'; tk:IpHtmlTagUL),
+	(pc:'VAR'; tk:IpHtmlTagVAR)  );
+// generated-code:end
+
+//#genHtmlNodeAttributesNames()
+// generated-code:begin
+  TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (
+'ACCEPT', 'ACCEPT-CHARSET', 'ACTION', 'ALIGN', 
+'ALINK', 'ALT', 'ARCHIVE', 'BACKGROUND', 'BGCOLOR', 
+'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHECKED', 'CITE', 
+'CLASS', 'CLASSID', 'CLEAR', 'CODE', 'CODEBASE', 
+'CODETYPE', 'COLOR', 'COLS', 'COLSPAN', 'COMBOBOX', 
+'COMPACT', 'CONTENT', 'COORDS', 'DATA', 'DATETIME', 
+'DECLARE', 'DIR', 'DISABLED', 'ENCTYPE', 'FACE', 
+'FRAME', 'HEIGHT', 'HREF', 'HSPACE', 'HTTP-EQUIV', 
+'ID', 'ISMAP', 'LABEL', 'LANG', 'LANGUAGE', 
+'LINK', 'LONGDESC', 'MARGINHEIGHT', 'MARGINWIDTH', 'MAXLENGTH', 
+'MEDIA', 'METHOD', 'MULTIPLE', 'NAME', 'NOHREF', 
+'NORESIZE', 'NOSHADE', 'NOWRAP', 'OBJECT', 'PROMPT', 
+'READONLY', 'REL', 'REV', 'ROWS', 'ROWSPAN', 
+'RULES', 'SCHEME', 'SCROLLING', 'SELECTED', 'SHAPE', 
+'SIZE', 'SPAN', 'SRC', 'STANDBY', 'START', 
+'STYLE', 'SUMMARY', 'TABINDEX', 'TARGET', 'TEXT', 
+'TITLE', 'TYPE', 'USEMAP', 'VALIGN', 'VALUE', 
+'VALUETYPE', 'VERSION', 'VLINK', 'VSPACE', 'WIDTH'  );
+// generated-code:end
+
 const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
   MAXINTS = 4096; {buffer size - this should be way more than needed}
   TINTARRGROWFACTOR = 64;
   DEFAULT_PRINTMARGIN = 0.5; {inches}                                  {!!.10}
+  FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
+
 type
   {$IFDEF IP_LAZARUS}
   TIpEnumItemsMethod = TLCLEnumItemsMethod;
@@ -425,16 +909,16 @@ type
 
   TIpHtml = class;
   
+  TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar, haUnknown);
+  TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
+  TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
+
   {$IFDEF IP_LAZARUS}
   TIpAbstractHtmlDataProvider = class;
   {$DEFINE CSS_INTERFACE}
 {$I ipcss.inc}
   {$UNDEF CSS_INTERFACE}
   {$ENDIF}
-
-  TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar);
-  TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
-  TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
 
   TIpHtmlInteger = class(TPersistent)
   {!!.10 new - Integer property which can be scaled}
@@ -497,7 +981,7 @@ type
   private
     {Entries : Integer;}                                               {!!.10}
     {Values : array[0..Pred(IPMAXFRAMES)] of TIpHtmlMultiLength;}      {!!.10}
-    List: TList;                                                       {!!.10}
+    List: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};              {!!.10}
     function GetEntries: Integer;
     function GetValues(Index: Integer): TIpHtmlMultiLength;{record}    {!!.10}
   public
@@ -527,18 +1011,23 @@ type
   TIpHtmlNode = class;
   TIpHtmlNodeBlock = class;
 
+  TFontNameStr = string[50];
+  TIpHtmlPropAFieldsRec = record
+    BaseFontSize: Integer;
+    FontSize: Integer;
+    FontStyle: TFontStyles;
+    FontName: TFontNameStr;
+  end;
+
   {display properties that affect the font size}
   TIpHtmlPropA = class
   private
-    FKnownSizeOfSpace: TSize;
-    FBaseFontSize: Integer;
-    FFontSize: Integer;
-    FFontName: string;
-    FFontStyle: TFontStyles;
+    FPropRec : TIpHtmlPropAFieldsRec;
     FUseCount: Integer;
+    FKnownSizeOfSpace: TSize;
     FSizeOfSpaceKnown : Boolean;
     procedure SetBaseFontSize(const Value: Integer);
-    procedure SetFontName(const Value: string);
+    procedure SetFontName(const Value: TFontNameStr);
     procedure SetFontSize(const Value: Integer);
     procedure SetFontStyle(const Value: TFontStyles);
   public
@@ -549,13 +1038,13 @@ type
     property SizeOfSpaceKnown: Boolean read FSizeOfSpaceKnown;
     procedure SetKnownSizeOfSpace(const Size:TSize);
     property KnownSizeOfSpace : TSize read FKnownSizeOfSpace;
-    property BaseFontSize : Integer read FBaseFontSize
+    property BaseFontSize : Integer read FPropRec.BaseFontSize
       write SetBaseFontSize;
-    property FontName : string read FFontName
+    property FontName : TFontNameStr read FPropRec.FontName
       write SetFontName;
-    property FontSize : Integer read FFontSize
+    property FontSize : Integer read FPropRec.FontSize
       write SetFontSize;
-    property FontStyle : TFontStyles read FFontStyle
+    property FontStyle : TFontStyles read FPropRec.FontStyle
       write SetFontStyle;
     property UseCount : Integer read FUseCount
       write FUseCount;
@@ -565,32 +1054,41 @@ type
     constructor CreateCopy(Source: TIpHtmlPropA);
   end;
 
+  TIpHtmlPropBFieldsRec = record
+    FontBaseline: Integer;
+    Alignment: TIpHtmlAlign;
+    FontColor: TColor;
+    VAlignment: TIpHtmlVAlign3;
+    LinkColor : TColor;
+    VLinkColor : TColor;
+    ALinkColor : TColor;
+    HoverColor : TColor;
+    HoverBgColor : TColor;
+    BgColor : TColor;
+    Preformatted : Boolean;
+    NoBreak : Boolean;
+  end;
+
   {display properties that don't affect the font size}
   TIpHtmlPropB = class
   private
-    FFontBaseline: Integer;
-    FAlignment: TIpHtmlAlign;
-    FFontColor: TColor;
-    FVAlignment: TIpHtmlVAlign3;
-    FLinkColor : TColor;
-    FVLinkColor : TColor;
-    FALinkColor : TColor;
-    FBgColor : TColor;
-    FPreformatted : Boolean;
-    FNoBreak : Boolean;
+    FPropRec : TIpHtmlPropBFieldsRec;
     FUseCount: Integer;
     FOwner: TIpHtml;
   public
-    property FontBaseline : Integer read FFontBaseline write FFontBaseline;
-    property FontColor : TColor read FFontColor write FFontColor;
-    property Alignment : TIpHtmlAlign read FAlignment write FAlignment;
-    property VAlignment : TIpHtmlVAlign3 read FVAlignment write FVAlignment;
-    property LinkColor : TColor read FLinkColor write FLinkColor;
-    property VLinkColor : TColor read FVLinkColor write FVLinkColor;
-    property ALinkColor : TColor read FALinkColor write FALinkColor;
-    property BgColor : TColor read FBgColor write FBgColor;
-    property Preformatted : Boolean read FPreformatted write FPreformatted;
-    property NoBreak : Boolean read FNoBreak write FNoBreak;
+    property FontBaseline : Integer read FPropRec.FontBaseline
+             write FPropRec.FontBaseline;
+    property FontColor : TColor read FPropRec.FontColor write FPropRec.FontColor;
+    property Alignment : TIpHtmlAlign read FPropRec.Alignment write FPropRec.Alignment;
+    property VAlignment : TIpHtmlVAlign3 read FPropRec.VAlignment write FPropRec.VAlignment;
+    property LinkColor : TColor read FPropRec.LinkColor write FPropRec.LinkColor;
+    property VLinkColor : TColor read FPropRec.VLinkColor write FPropRec.VLinkColor;
+    property ALinkColor : TColor read FPropRec.ALinkColor write FPropRec.ALinkColor;
+    property HoverColor : TColor read FPropRec.HoverColor write FPropRec.HoverColor;
+    property HoverBgColor : TColor read FPropRec.HoverBgColor write FPropRec.HoverBgColor;
+    property BgColor : TColor read FPropRec.BgColor write FPropRec.BgColor;
+    property Preformatted : Boolean read FPropRec.Preformatted write FPropRec.Preformatted;
+    property NoBreak : Boolean read FPropRec.NoBreak write FPropRec.NoBreak;
     property UseCount : Integer read FUseCount write FUseCount;
     procedure Assign(const Source: TIpHtmlPropB);
     procedure DecUse;
@@ -617,6 +1115,8 @@ type
     function GetPreformatted: Boolean;
     function GetVAlignment: TIpHtmlVAlign3;
     function GetVLinkColor: TColor;
+    function GetHoverColor: TColor;
+    function GetHoverBgColor: TColor;
     procedure SetAlignment(const Value: TIpHtmlAlign);
     procedure SetALinkColor(const Value: TColor);
     procedure SetBaseFontSize(const Value: Integer);
@@ -630,16 +1130,29 @@ type
     procedure SetPreformatted(const Value: Boolean);
     procedure SetVAlignment(const Value: TIpHtmlVAlign3);
     procedure SetVLinkColor(const Value: TColor);
+    procedure SetHoverColor(const Value: TColor);
+    procedure SetHoverBgColor(const Value: TColor);
     function GetNoBreak: Boolean;
     procedure SetNoBreak(const Value: Boolean);
+    procedure CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);inline;
+    procedure CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);inline;
+    procedure CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);inline;
+    procedure CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);inline;
+    procedure FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
+    procedure FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
+    procedure SetDelayCache(b: boolean);
+    function getDelayCache: boolean;
   protected
     FOwner : TIpHtml;
     PropA : TIpHtmlPropA;
     PropB : TIpHtmlPropB;
+    FDelayCache: integer;
+    FDirtyA, FDirtyB: Boolean;
   public
     constructor Create(Owner: TIpHtml);
     destructor Destroy; override;
     procedure Assign(Source : TIpHtmlProps);
+    procedure CommitCache;
     function IsEqualTo(Compare: TIpHtmlProps): Boolean;
     function AIsEqualTo(Compare: TIpHtmlProps): Boolean;
     function BIsEqualTo(Compare: TIpHtmlProps): Boolean;
@@ -654,9 +1167,12 @@ type
     property LinkColor : TColor read GetLinkColor write SetLinkColor;
     property VLinkColor : TColor read GetVLinkColor write SetVLinkColor;
     property ALinkColor : TColor read GetALinkColor write SetALinkColor;
+    property HoverColor : TColor read GetHoverColor write SetHoverColor;
+    property HoverBgColor : TColor read GetHoverBgColor write SetHoverBgColor;
     property BgColor : TColor read GetBgColor write SetBgColor;
     property Preformatted : Boolean read GetPreformatted write SetPreformatted;
     property NoBreak : Boolean read GetNoBreak write SetNoBreak;
+    property DelayCache : Boolean read getDelayCache write setDelayCache;
   end;
   
   TIpHtmlNodeAlignInline = class;
@@ -747,7 +1263,8 @@ type
 
   TIpHtmlNodeMulti = class(TIpHtmlNode)
   private
-    FChildren : TList;
+    FProps: TIpHtmlProps;
+    FChildren : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     function GetChildNode(Index: Integer): TIpHtmlNode;
     function GetChildCount: Integer;
   protected
@@ -762,6 +1279,7 @@ type
     destructor Destroy; override;
     property ChildCount : Integer read GetChildCount;
     property ChildNode[Index : Integer] : TIpHtmlNode read GetChildNode;
+    property Props : TIpHtmlProps read FProps;
   end;
 
   { TIpHtmlNodeCore }
@@ -778,11 +1296,11 @@ type
     FTitle: string;
     FId: string;
   protected
-    procedure ParseBaseProps(Owner : TIpHtml); {virtual;}              {!!.12}
+    procedure ParseBaseProps(aOwner : TIpHtml); {virtual;}              {!!.12}
     {$IFDEF IP_LAZARUS}
     function SelectCSSFont(const aFont: string): string;
     procedure ApplyCSSProps(const Element: TCSSProps; const props: TIpHtmlProps);
-    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
+    procedure LoadCSSProps(aOwner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
     function ElementName: String;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
     {$ENDIF}
@@ -811,7 +1329,6 @@ type
   private
     FAlignment: TIpHtmlImageAlign;
   protected
-    Props : TIpHtmlProps;
     Element : PIpHtmlElement;
     procedure Enqueue; override;
     procedure Draw(Block: TIpHtmlNodeBlock); virtual; abstract;
@@ -829,6 +1346,7 @@ type
   protected
     FControl : TWinControl;
     Shown : Boolean;
+    FAlt: string;
     procedure Draw(Block: TIpHtmlNodeBlock); override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     function GetDim(ParentWidth: Integer): TSize; override;
@@ -838,17 +1356,19 @@ type
     procedure AddValues(NameList, ValueList : TStringList); virtual; abstract;
     procedure Reset; virtual; abstract;
     function Successful: Boolean; virtual; abstract;
+    function adjustFromCss: boolean;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    property Control: TWinControl read FControl;
+    property Alt : string read FAlt write FAlt;
   end;
 
   TIpHtmlNodeBlock = class(TIpHtmlNodeCore)
   protected
     FPageRect : TRect;
-    ElementQueue : TList;
+    ElementQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FMin, FMax : Integer;
-    Props : TIpHtmlProps;
     LastW, LastH : Integer;
     procedure RenderQueue;
     procedure CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps;
@@ -869,7 +1389,7 @@ type
       const Width: Integer): Integer; {virtual;}                       {!!.12}
     procedure InvalidateSize; override;
     function Level0: Boolean;
-    procedure ReportCurDrawRects(Owner: TIpHtmlNode; M : TRectMethod); override;
+    procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
     property PageRect : TRect read FPageRect;
     procedure AppendSelection(var S : string); override;
     procedure UpdateCurrent(Start: Integer; CurProps : TIpHtmlProps);
@@ -905,6 +1425,8 @@ type
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
   public
+    constructor Create(ParentNode : TIpHtmlNode);
+    destructor Destroy; override;
     property ANSIText : string read GetAnsiText write SetAnsiText;
     property EscapedText : string read FEscapedText write SetEscapedText;
   end;
@@ -966,7 +1488,6 @@ type
   private
     FAlign : TIpHtmlAlign;
     FSize : TIpHtmlHeaderSize;
-    Props : TIpHtmlProps;
   protected
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
@@ -982,7 +1503,6 @@ type
     FAlign : TIpHtmlAlign;
     procedure SetAlign(const Value: TIpHtmlAlign);
   protected
-    Props : TIpHtmlProps;
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   public
@@ -1015,9 +1535,9 @@ type
   private
     FCompact : Boolean;
     FStart : Integer;
-    FStyle : TIpHtmlOLStyle;
+    FOLStyle : TIpHtmlOLStyle;
     procedure SetStart(const Value: Integer);
-    procedure SetStyle(const Value: TIpHtmlOLStyle);
+    procedure SetOLStyle(const Value: TIpHtmlOLStyle);
   protected
     Counter : Integer;
     procedure Enqueue; override;
@@ -1025,7 +1545,7 @@ type
   public                                                   {!!.10}
     property Compact : Boolean read FCompact write FCompact;
     property Start : Integer read FStart write SetStart;
-    property Style : TIpHtmlOLStyle read FStyle write SetStyle;
+    property Style : TIpHtmlOLStyle read FOLStyle write SetOLStyle;
   end;
 
   TIpHtmlNodeLI = class(TIpHtmlNodeAlignInline)
@@ -1062,18 +1582,17 @@ type
     FAction: string;
     FMethod: TIpHtmlFormMethod;
   protected
-    Props : TIpHtmlProps;
     procedure AddChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure ResetControl(Node: TIpHtmlNode; const UserData: Pointer);
-    procedure ResetForm;
     procedure ResetRequest; override;
     {$IFNDEF HtmlWithoutHttp}
-    procedure SubmitForm;
     procedure SubmitRequest; override;
     {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    procedure ResetForm;
+    procedure SubmitForm;
     property Accept : string read FAccept write FAccept;
     property AcceptCharset : string read FAcceptCharset write FAcceptCharset;
     property Action : string read FAction write FAction;
@@ -1227,23 +1746,27 @@ type
     FCompact : Boolean;
   protected
     procedure Enqueue; override;                                       {!!.16}
-  public                                                   {!!.10}
+  public
+    constructor Create(ParentNode : TIpHtmlNode);
     property Compact : Boolean read FCompact write FCompact;
   end;
 
   TIpHtmlNodeDT = class(TIpHtmlNodeInline)
   protected
     procedure Enqueue; override;
+  public
+    constructor Create(ParentNode : TIpHtmlNode);
   end;
 
   TIpHtmlNodeDD = class(TIpHtmlNodeInline)
   protected
     procedure Enqueue; override;
+  public
+    constructor Create(ParentNode : TIpHtmlNode);
   end;
 
   TIpHtmlNodePRE = class(TIpHtmlNodeInline)
   private
-    Props : TIpHtmlProps;
   protected
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
@@ -1255,7 +1778,6 @@ type
   TIpHtmlNodeDIV = class(TIpHtmlNodeInline)
   private
     FAlign : TIpHtmlAlign;
-    Props : TIpHtmlProps;
   protected
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
@@ -1311,22 +1833,22 @@ type
    hfsBIG, hfsSMALL, hfsSUB, hfsSUP);
   TIpHtmlNodeFontStyle = class(TIpHtmlNodeGenInline)
   private
-    FStyle : TIpHtmlFontStyles;
+    FHFStyle : TIpHtmlFontStyles;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public                                                   {!!.10}
-    property Style : TIpHtmlFontStyles read FStyle write FStyle;
+    property Style : TIpHtmlFontStyles read FHFStyle write FHFStyle;
   end;
 
   TIpHtmlPhraseStyle = (hpsEM, hpsSTRONG, hpsDFN, hpsCODE, hpsSAMP,
     hpsKBD, hpsVAR, hpsCITE, hpsABBR, hpsACRONYM);
   TIpHtmlNodePhrase = class(TIpHtmlNodeGenInline)
   private
-    FStyle : TIpHtmlPhraseStyle;
+    FPhrStyle : TIpHtmlPhraseStyle;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public                                                   {!!.10}
-    property Style : TIpHtmlPhraseStyle read FStyle write FStyle;
+    property Style : TIpHtmlPhraseStyle read FPhrStyle write FPhrStyle;
   end;
 
   TIpHtmlNodeHR = class(TIpHtmlNodeAlignInline)
@@ -1356,20 +1878,22 @@ type
   TIpHtmlBreakClear = (hbcNone, hbcLeft, hbcRight, hbcAll);
   TIpHtmlNodeBR = class(TIpHtmlNodeInline)
   private
-    FClassId: string;
     FClear: TIpHtmlBreakClear;
-    FStyle: string;
-    FTitle: string;
-    FId: string;
+    //Already defined on base class
+    //FClassId: string;
+    //FStyle: string;
+    //FTitle: string;
+    //FId: string;
   protected
     procedure Enqueue; override;
     procedure SetClear(const Value: TIpHtmlBreakClear);
   public                                                   {!!.10}
-    property ClassId : string read FClassId write FClassId;
     property Clear : TIpHtmlBreakClear read FClear write SetClear;
     property Id : string read FId write FId;
-    property Style : string read FStyle write FStyle;
-    property Title : string read FTitle write FTitle;
+    //Already defined on base class
+    //property ClassId : string read FClassId write FClassId;
+    //property Style : string read FStyle write FStyle;
+    //property Title : string read FTitle write FTitle;
   end;
 
   TIpHtmlNodeNOBR = class(TIpHtmlNodeGenInline)
@@ -1391,11 +1915,10 @@ type
     procedure SetHRef(const Value: string);
     procedure SetName(const Value: string);
   protected
-    AreaList : TList;
+    AreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FHasRef : Boolean;
     FHot: Boolean;
-    MapAreaList : TList;
-    Props : TIpHtmlProps;
+    MapAreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     {FHasFocus : Boolean;}                                             {!!.12}
     procedure ClearAreaList;
     function PtInRects(const P : TPoint) : Boolean;
@@ -1485,11 +2008,12 @@ type
   TIpHtmlNodeAPPLET = class(TIpHtmlNodeInline)
   private
     FArchive: string;
-    FClassID: string;
-    FStyle: string;
+    //already defined on base class
+    //FClassID: string;
+    //FStyle: string;
+    //FTitle: string;
+    //FId: string;
     FObjectCode: string;
-    FTitle: string;
-    FId: string;
     FVSpace: Integer;
     FHSpace: Integer;
     FHeight: Integer;
@@ -1507,16 +2031,17 @@ type
     property Align : TIpHtmlImageAlign read FAlignment write FAlignment;
     property Archive : string read FArchive write FArchive;
     property Alt : string read FAlt write FAlt;
-    property ClassID : string read FClassID write FClassID;
     property Code : string read FCode write FCode;
     property Codebase : string read FCodebase write FCodebase;
     property Height : Integer read FHeight write FHeight;
     property HSpace : Integer read FHSpace write FHSpace;
-    property Id : string read FId write FId;
+    //already defined on base class
+    //property Id : string read FId write FId;
+    //property ClassID : string read FClassID write FClassID;
+    //property Style : string read FStyle write FStyle;
+    //property Title : string read FTitle write FTitle;
     property Name : string read FName write FName;
     property ObjectCode : string read FObjectCode write FObjectCode;
-    property Style : string read FStyle write FStyle;
-    property Title : string read FTitle write FTitle;
     property VSpace : Integer read FVSpace write FVSpace;
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
@@ -1526,7 +2051,8 @@ type
     FAlignment: TIpHtmlImageAlign;
     FArchive: string;
     FBorder: Integer;
-    FClassID: string;
+    //already defined on base class
+    //FClassID: string;
     FCodebase: string;
     FCodeType: string;
     FData: string;
@@ -1545,7 +2071,8 @@ type
     property Align : TIpHtmlImageAlign read FAlignment write FAlignment;
     property Archive : string read FArchive write FArchive;
     property Border : Integer read FBorder write FBorder;
-    property ClassID : string read FClassID write FClassID;
+    //already defined on base class
+    //property ClassID : string read FClassID write FClassID;
     property Codebase : string read FCodebase write FCodebase;
     property CodeType : string read FCodeType write FCodeType;
     property Data : string read FData write FData;
@@ -1608,20 +2135,15 @@ type
     function PtInRects(const P : TPoint) : Boolean;
   public
     destructor Destroy; override;                                      {!!.10}
-    {$IFDEF CBuilder}
-    property Rect : TRect read FRect;
-    {$ENDIF}
-    {$IFDEF IP_LAZARUS}
+    {$IF DEFINED(CBuilder) OR DEFINED(IP_LAZARUS)}
     property Rect : TRect read FRect;
     {$ENDIF}
     property Alt : string read FAlt write FAlt;
     property Coords : string read FCoords write FCoords;
     property HRef : string read FHRef write FHRef;
     property NoHRef : Boolean read FNoHRef write FNoHRef;
-    {$IFNDEF CBuilder}
-    {$IFNDEF IP_LAZARUS}
+    {$IF NOT (DEFINED(CBuilder) OR DEFINED(IP_LAZARUS))}
     property Rect : TRect read FRect;
-    {$ENDIF}
     {$ENDIF}
     property Shape : TIpHtmlMapShape read FShape write FShape;
     property TabIndex : Integer read FTabIndex write FTabIndex;
@@ -1643,7 +2165,8 @@ type
 
   TIpHtmlNodeLINK = class(TIpHtmlNodeCore)
   private
-    FTitle: string;
+    //already defined on base class
+    //FTitle: string;
     FHRef: string;
     FRev: string;
     FRel: string;
@@ -1654,7 +2177,8 @@ type
     property HRef : string read FHRef write FHRef;
     property Rel : string read FRel write FRel;
     property Rev : string read FRev write FRev;
-    property Title : string read FTitle write FTitle;
+    //already defined on base class
+    //property Title : string read FTitle write FTitle;
     {$IFDEF IP_LAZARUS}
     property Type_ : string read FType write FType;
     {$ENDIF}
@@ -1903,7 +2427,6 @@ type
 
   TIpHtmlNodeINPUT = class(TIpHtmlNodeControl)
   private
-    FAlt: string;
     FChecked: Boolean;
     FDisabled: Boolean;
     FInputType: TIpHtmlInputType;
@@ -1922,17 +2445,20 @@ type
     procedure SubmitClick(Sender: TObject);
     procedure ResetClick(Sender: TObject);
     procedure FileSelect(Sender: TObject);
+    procedure getControlValue;
     procedure ButtonClick(Sender: TObject);
+    procedure ControlOnEditingDone(Sender: TObject);
+    procedure ControlOnChange(Sender: TObject);
     function GetHint: string; override;
     procedure SetImageGlyph(Picture: TPicture);
     procedure CreateControl(Parent : TWinControl); override;
     function Successful: Boolean; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
-    procedure Reset; override;
   public
+    constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    procedure Reset; override;
     procedure ImageChange(NewPicture : TPicture); override;
-    property Alt : string read FAlt write FAlt;
     property Checked : Boolean read FChecked write FChecked;
     property Disabled : Boolean read FDisabled write FDisabled;
     property InputType : TIpHtmlInputType read FInputType write FInputType;
@@ -1976,21 +2502,32 @@ type
   private
     FDisabled: Boolean;
     FMultiple: Boolean;
+    FComboBox: Boolean;
     FName: string;
     FSize: Integer;
+    FWidth: integer;
     FTabIndex: Integer;
   protected
     procedure CreateControl(Parent : TWinControl); override;
     function Successful: Boolean; override;
     procedure Reset; override;
-    procedure ButtonClick(Sender: TObject);                            {!!.01}
+    procedure ButtonClick(Sender: TObject);
+    procedure ControlOnEditingDone(Sender: TObject);
+    procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure setText(aText: string);                           {!!.01}
+    function getText: string;
   public
+    constructor Create(ParentNode : TIpHtmlNode);
+    destructor Destroy; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
     property Disabled : Boolean read FDisabled write FDisabled;
     property Multiple : Boolean read FMultiple write FMultiple;
+    property ComboBox : Boolean read FComboBox write FComboBox;
     property Name : string read FName write FName;
     property Size : Integer read FSize write FSize;
+    property Width : Integer read FWidth write FWidth;
     property TabIndex : Integer read FTabIndex write FTabIndex;
+    property Text : string read getText write setText;
   end;
 
   TIpHtmlNodeOPTION = class(TIpHtmlNodeCore)
@@ -2028,7 +2565,10 @@ type
     function Successful: Boolean; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
     procedure Reset; override;
+    procedure ControlOnEditingDone(Sender: TObject);
   public                                                   {!!.10}
+    constructor Create(ParentNode: TIpHtmlNode);
+    destructor Destroy; override;
     property Cols : Integer read FCols write FCols;
     property Disabled : Boolean read FDisabled write FDisabled;
     property Name : string read FName write FName;
@@ -2095,11 +2635,15 @@ type
   TControlEvent = procedure(Sender: TIpHtml; Node: TIpHtmlNodeControl)
     of object;
 
+  TControlEvent2 = procedure(Sender: TIpHtml; Node: TIpHtmlNodeControl; var cancel: boolean)
+    of object;
+
   TIpHtml = class
   private
     FHotNode : TIpHtmlNode;
     FCurElement : PIpHtmlElement;
     FHotPoint : TPoint;
+    FMouseLastPoint : TPoint;
     FOnInvalidateRect : TInvalidateEvent;
     FTarget : TCanvas;
     FVLinkColor: TColor;
@@ -2107,6 +2651,7 @@ type
     FALinkColor: TColor;
     FTextColor: TColor;
     FBgColor: TColor; //JMN
+    FFactBAParag: Real;
     FHasFrames : Boolean;
     FOnGetImageX : TIpHtmlDataGetImageEvent;
     FOnScroll : TIpHtmlScrollEvent;
@@ -2117,8 +2662,11 @@ type
     FOnURLCheck: TURLCheckEvent;
     FOnReportURL: TReportURLEvent;
     FControlClick : TControlEvent;
+    FControlClick2 : TControlEvent2;
+    FControlOnEditingDone : TControlEvent;
+    FControlOnChange : TControlEvent;
     FControlCreate : TControlEvent;
-    CurFrameSet : TIpHtmlNodeFRAMESET;
+    FCurFrameSet : TIpHtmlNodeFRAMESET;
     FCanPaint : Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
@@ -2129,7 +2677,7 @@ type
   protected
     CharStream : TStream;
     CurToken : TIpHtmlToken;
-    ParmList, ValueList : TStringList;
+    ParmValueArray : array[TIpHtmlAttributesSet] of string;
     FHtml : TIpHtmlNodeHtml;
     CharStack : array [0..7] of AnsiChar;
     LastWasSpace: Boolean;                                             {!!.10}
@@ -2149,13 +2697,13 @@ type
     FTitleNode : TIpHtmlNodeTITLE;
    {$IFDEF IP_LAZARUS}
       {$IFDEF UseGifImageUnit}
-      GifImages : TList;
+      GifImages : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
       {$ELSE}
-      AnimationFrames : TList;
+      AnimationFrames : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
       {$ENDIF}
    {$ELSE}
-    GifImages : TList;
-    OtherImages: TList; //JMN
+    GifImages : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    OtherImages: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}; //JMN
    {$ENDIF}
     LIndent, LOutdent : PIpHtmlElement;
     SoftLF,
@@ -2163,13 +2711,13 @@ type
     HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
     NameList : TStringList;
     {PanelWidth : Integer;}                                            {!!.12}
-    GifQueue : TList;
+    GifQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     InPre : Integer;
     InBlock : Integer;
-    MapList : TList;
-    AreaList : TList;
+    MapList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    AreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     DefaultImage : TPicture;
-    MapImgList : TList;
+    MapImgList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     GlobalPos, LineNumber, LineOffset : Integer;
     PaintBufferBitmap : TBitmap;
     PaintBuffer : TCanvas;
@@ -2177,19 +2725,18 @@ type
     TBW : Integer;
     Destroying : Boolean;
     AllSelected : Boolean;
-    HtmlTokenList : TStringList;
-    RectList : TList;
+    RectList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FStartSel, FEndSel : TPoint;
     ElementPool : TIpHtmlPoolManager;
 
-    AnchorList : TList;
-    ControlList : TList;
-    CURURL : string;
+    AnchorList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    FControlList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    FCURURL : string;
     DoneLoading : Boolean;
     ListLevel : Integer;
 
-    PropACache : TList;
-    PropBCache : TList;
+    PropACache : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    PropBCache : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     DummyA : TIpHtmlPropA;
     DummyB : TIpHtmlPropB;
 
@@ -2207,14 +2754,10 @@ type
     procedure ResetBlocks(Node: TIpHtmlNode);
     procedure ResetImages(Node: TIpHtmlNode);                          {!!.02}
     procedure ResetElementMetrics(P: Pointer);
-    function FindPropA(const pFontName: string; const pFontSize: Integer;
-      const pFontStyle: TFontStyles;
-      const pBaseFontSize: Integer): TIpHtmlPropA;
-    function FindPropB(const pFontBaseline: Integer;
-      const pFontColor: TColor; const pAlignment: TIpHtmlAlign;
-      const pVAlignment: TIpHtmlVAlign3; const pLinkColor, pVLinkColor,
-      pALinkColor: TColor; const pBgColor: TColor; const pPreformatted,
-      pNoBreak: Boolean): TIpHtmlPropB;
+    function FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
+    procedure DelDuplicatePropA(aProp: TIpHtmlPropA);
+    function FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
+    procedure DelDuplicatePropB(aProp: TIpHtmlPropB);
     procedure ClearCache;
     function CheckKnownURL(URL: string): boolean;
     procedure ReportReference(URL: string);
@@ -2284,27 +2827,28 @@ type
     procedure ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseTABLE(Parent: TIpHtmlNode;
         const EndTokens: TIpHtmlTokenSet);
-    function FindAttribute(const AttrName: string): string;
+    function FindAttribute(const AttrNameSet: TIpHtmlAttributesSet): string;inline;
     function ColorFromString(S: string): TColor;
     function ParseAlignment: TIpHtmlAlign;
     function ParseCellAlign(Default : TIpHtmlAlign) : TIpHtmlAlign;
     function ParseFrameProp(Default: TIpHtmlFrameProp) : TIpHtmlFrameProp;
     function ParseRules(Default : TIpHtmlRules) : TIpHtmlRules;
     function ParseULStyle(Default : TIpHtmlULType): TIpHtmlULType;
-    function ParseBoolean(const AttrName: string): Boolean;
-    function ParseInteger(const AttrName: string;
-      Default: Integer): Integer;
-    function ParseHtmlInteger(const AttrName: string;
-      Default: Integer): TIpHtmlInteger;                               {!!.10}
-    function ParsePixels(const AttrName, Default: string): TIpHtmlPixels; {!!.10}
-    function ParseHyperLength(const AttrName: string;
-      const Default: string): TIpHtmlLength;
-    function ParseHyperMultiLength(const AttrName: string;
-      const Default: string): TIpHtmlMultiLength;
-    function ParseHyperMultiLengthList(const AttrName: string;
-      const Default: string): TIpHtmlMultiLengthList;                  {!!.10}
+    function ParseBoolean(const AttrNameSet: TIpHtmlAttributesSet): Boolean;
+    function ParseInteger(const AttrNameSet: TIpHtmlAttributesSet;
+      aDefault : Integer): Integer;
+    function ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
+      aDefault: Integer): TIpHtmlInteger;                               {!!.10}
+    function ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
+             const aDefault: string): TIpHtmlPixels; {!!.10}
+    function ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlLength;
+    function ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlMultiLength;
+    function ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlMultiLengthList;                  {!!.10}
     function ParseOLStyle(Default: TIpHtmlOLStyle): TIpHtmlOLStyle;
-    function ParseImageAlignment(const Default: string): TIpHtmlImageAlign;
+    function ParseImageAlignment(aDefault: TIpHtmlImageAlign): TIpHtmlImageAlign;
     function ParseVAlignment : TIpHtmlVAlign;
     function ParseVAlignment2 : TIpHtmlVAlignment2;
     function ParseVAlignment3 : TIpHtmlVAlign3;
@@ -2316,6 +2860,9 @@ type
     {procedure ParseDocType;}
     procedure ParseHtml;
     function GetChar: AnsiChar;
+    procedure ClearParmValueArray;
+    procedure ParmValueArrayAdd(const sName, sValue: string);
+    function HtmlTokenListIndexOf(const TokenString: PAnsiChar): integer;
     procedure NextToken;
     procedure PutChar(Ch: AnsiChar);
     procedure ParseHead(Parent : TIpHtmlNode);
@@ -2397,6 +2944,9 @@ type
     procedure SelectAll;
     procedure DeselectAll;
     procedure ControlClick(Sender: TIpHtmlNodeControl);
+    procedure ControlClick2(Sender: TIpHtmlNodeControl; var cancel: boolean);
+    procedure ControlOnEditingDone(Sender: TIpHtmlNodeControl);
+    procedure ControlOnChange(Sender: TIpHtmlNodeControl);
     procedure ControlCreate(Sender: TIpHtmlNodeControl);
     property HotNode : TIpHtmlNode read FHotNode;
     property CurElement : PIpHtmlElement read FCurElement write FCurElement;
@@ -2428,9 +2978,14 @@ type
                 read FOnReportURL write FOnReportURL;
     property OnControlClick : TControlEvent
                 read FControlClick write FControlClick;
+    property OnControlClick2 : TControlEvent2
+                read FControlClick2 write FControlClick2;
+    property OnControlEditingDone : TControlEvent
+                read FControlOnEditingDone write FControlOnEditingDone;
+    property OnControlChange : TControlEvent
+                read FControlOnChange write FControlOnChange;
     property OnControlCreate : TControlEvent
                 read FControlCreate write FControlCreate;
-    property FrameSet : TIpHtmlNodeFRAMESET read CurFrameSet;
     property CanPaint : Boolean read FCanPaint;
     property MarginWidth : Integer
                 read FMarginWidth write FMarginWidth default 20;
@@ -2445,6 +3000,8 @@ type
     function GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
     property CSS: TCSSGlobalProps read FCSS write FCSS;
     {$ENDIF}
+    function getControlCount:integer;
+    function getControl(i:integer):TIpHtmlNode;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2453,6 +3010,7 @@ type
     property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
     property DefaultFontSize: integer read FDefaultFontSize write FDefaultFontSize;
     property HtmlNode : TIpHtmlNodeHtml read FHtml;
+    property CurUrl: string read FCurUrl;
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint);                 {!!.10}
@@ -2461,6 +3019,11 @@ type
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure DebugAll;
     {$ENDIF}
+    property ControlsCount: integer read getControlCount;
+    property Controls[i:integer]: TIpHtmlNode read getControl;
+    property FrameSet : TIpHtmlNodeFRAMESET read FCurFrameSet;
+    property FactBAParag: Real read FFactBAParag write FFactBAParag; //JMN
+    property MouseLastPoint : TPoint read FMouseLastPoint;
   end;
 
   TIpHtmlFocusRect = class(TCustomControl)
@@ -2640,22 +3203,22 @@ type
   
   TIpHtmlFrame = class
   protected
-    CURURL : string;
-    CurAnchor : string;
+    FCURURL : string;
+    FCurAnchor : string;
     FViewer: TIpHtmlCustomPanel;
     FNoScroll: Boolean;
-    FramePanel : TPanel;
+    FFramePanel : TPanel;
     Pnl : array[0..Pred(IPMAXFRAMES)] of TPanel;
     FMarginWidth, FMarginHeight : Integer;
     FFlagErrors : Boolean;
     PostData : TIpFormDataEntity;
-    Html : TIpHtml;
+    FHtml : TIpHtml;
     HyperPanel : TIpHtmlInternalPanel;
-    FrameCount : Integer;
-    Frames : array[0..Pred(IPMAXFRAMES)] of TIpHtmlFrame;
+    FFrameCount : Integer;
+    FFrames : array[0..Pred(IPMAXFRAMES)] of TIpHtmlFrame;
     FDataProvider : TIpAbstractHtmlDataProvider;
     FParent : TCustomPanel;
-    Name : string;
+    FName : string;
     InOpen: Boolean;                                                   {!!.10}
     procedure InvalidateRect(Sender: TIpHtml; const R : TRect);
     procedure FramePanelResize(Sender: TObject);
@@ -2669,6 +3232,9 @@ type
     procedure InitHtml;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure ControlClick(Sender: TIpHtml; Node: TIpHtmlNodeControl);
+    procedure ControlClick2(Sender: TIpHtml; Node: TIpHtmlNodeControl; var cancel: boolean);
+    procedure ControlOnChange(Sender: TIpHtml; Node: TIpHtmlNodeControl);
+    procedure ControlOnEditingDone(Sender: TIpHtml; Node: TIpHtmlNodeControl);
     procedure ControlCreate(Sender: TIpHtml; Node: TIpHtmlNodeControl);
     procedure OpenRelativeURL(const URL: string);
     procedure SelectAll;
@@ -2682,27 +3248,38 @@ type
     function IsExternal(const URL: string): Boolean;
     procedure SetHtml(NewHtml : TIpHtml);
     procedure Stop;
+    function getFrame(i: integer): TIpHtmlFrame;
+    procedure InternalFreeFrames;
+    procedure InternalCreateFrames;
   public
     constructor Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel;
       DataProvider : TIpAbstractHtmlDataProvider; FlagErrors, NoScroll: Boolean;
       MarginWidth, MarginHeight: Integer);
     destructor Destroy; override;
     procedure OpenURL(const URL: string; Delayed: Boolean);
+    property CurUrl: string read FCurUrl;
+    property CurAnchor : string read FCurAnchor;
+    property Html: TIpHtml read FHtml;
+    property FramePanel : TPanel read FFramePanel;
+    property Name: string read FName;
+    property FrameCount: integer read FFrameCount;
+    property Frames[i:integer] : TIpHtmlFrame read getFrame;
+    property Viewer: TIpHtmlCustomPanel read FViewer;
   end;
 
   TIpHtmlCustomScanner = class;
   TIpHtmlNVFrame = class
   protected
-    CURURL : string;
-    CurAnchor : string;
+    FCURURL : string;
+    FCurAnchor : string;
     FScanner: TIpHtmlCustomScanner;
     FFlagErrors : Boolean;
     PostData : TIpFormDataEntity;
-    Html : TIpHtml;
-    FrameCount : Integer;
-    Frames : array[0..Pred(IPMAXFRAMES)] of TIpHtmlNVFrame;
+    FHtml : TIpHtml;
+    FFrameCount : Integer;
+    FFrames : array[0..Pred(IPMAXFRAMES)] of TIpHtmlNVFrame;
     FDataProvider : TIpAbstractHtmlDataProvider;
-    Name : string;
+    FName : string;
     procedure InitHtml;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure OpenRelativeURL(const URL: string);
@@ -2713,15 +3290,28 @@ type
     procedure MakeAnchorVisible(const URL: string);
     procedure Home;
     procedure Stop;
+    function getFrame(i: integer): TIpHtmlNVFrame;
   public
     constructor Create(Scanner: TIpHtmlCustomScanner;
       DataProvider : TIpAbstractHtmlDataProvider; FlagErrors: Boolean);
     destructor Destroy; override;
     procedure OpenURL(const URL: string);
+    property CurUrl: string read FCurUrl;
+    property CurAnchor : string read FCurAnchor;
+    property Html: TIpHtml read FHtml;
+    property Name: string read FName;
+    property FrameCount: integer read FFrameCount;
+    property Frames[i:integer] : TIpHtmlNVFrame read getFrame;
+    property Scanner: TIpHtmlCustomScanner read FScanner;
   end;
 
   TIpHtmlControlEvent = procedure(Sender: TIpHtmlCustomPanel;
     Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl)
+      of object;
+
+  TIpHtmlControlEvent2 = procedure(Sender: TIpHtmlCustomPanel;
+    Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl;
+    var cancel: boolean)
       of object;
 
   {!!.10 new}
@@ -2748,6 +3338,9 @@ type
     FHotChange : TNotifyEvent;
     FHotClick : TNotifyEvent;
     FControlClick : TIpHtmlControlEvent;
+    FControlClick2 : TIpHtmlControlEvent2;
+    FControlOnEditingDone : TIpHtmlControlEvent;
+    FControlOnChange : TIpHtmlControlEvent;
     FControlCreate : TIpHtmlControlEvent;
     FCurElementChange: TNotifyEvent;                                   {!!.10}
     FDocumentOpen: TNotifyEvent;                                       {!!.10}
@@ -2769,7 +3362,7 @@ type
     URLStack : TStringList;
     TargetStack : TStringList;
     Stp : Integer;
-    {CurURL : string;}                                                 {!!.12}
+    {FCurURL : string;}                                                 {!!.12}
     VisitedList : TStringList;
     FVLinkColor: TColor;
     FLinkColor: TColor;
@@ -2779,7 +3372,7 @@ type
     FShowHints: Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
-    MasterFrame : TIpHtmlFrame;
+    FMasterFrame : TIpHtmlFrame;
     FHotNode : TIpHtmlNode;                                            {!!.12}
     GetURL : string;
     PostURL : string;
@@ -2802,11 +3395,18 @@ type
     procedure WMGetDlgCode(var Msg : TMessage); message WM_GETDLGCODE;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure CMIpHttpGetRequest(var Message: TMessage); message CM_IpHttpGetRequest;
-    procedure ControlClick(Frame: TIpHtmlFrame; Html: TIpHtml;
-      Node: TIpHtmlNodeControl);
-    procedure ControlCreate(Frame: TIpHtmlFrame; Html: TIpHtml;
-      Node: TIpHtmlNodeControl);
+    procedure ControlClick(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+      pNode: TIpHtmlNodeControl);
+    procedure ControlClick2(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+      pNode: TIpHtmlNodeControl; var pCancel: boolean);
+    procedure ControlOnChange(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+      pNode: TIpHtmlNodeControl);
+    procedure ControlOnEditingdone(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+      pNode: TIpHtmlNodeControl);
+    procedure ControlCreate(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+      pNode: TIpHtmlNodeControl);
     function GetVersion : string;
+    function GetCurUrl: string;
     procedure SetVersion(const Value : string);
     procedure SetDefaultTypeFace(const Value: string);
     procedure SetDefaultFontSize(const Value: integer);
@@ -2823,6 +3423,7 @@ type
     procedure GoForward;
     function canGoForward : boolean;
     function HaveSelection: Boolean;
+    property MasterFrame : TIpHtmlFrame read FMasterFrame;
     property HotNode : TIpHtmlNode read FHotNode;                      {!!.12}
     function IsURLHtml(const URL: string): Boolean;
     procedure MakeAnchorVisible(const Name: string);
@@ -2834,6 +3435,8 @@ type
     procedure SelectAll;
     procedure DeselectAll;                                             {!!.10}
     procedure SetHtml(NewHtml : TIpHtml);
+    procedure SetHtmlFromStr(NewHtml : string);
+    procedure SetHtmlFromStream(NewHtml : TStream);
     procedure Stop;
 
     procedure Print(FromPg, ToPg: LongInt);
@@ -2883,6 +3486,12 @@ type
 
     property OnControlClick : TIpHtmlControlEvent
                 read FControlClick write FControlClick;
+    property OnControlClick2 : TIpHtmlControlEvent2
+                read FControlClick2 write FControlClick2;
+    property OnControlEditingDone : TIpHtmlControlEvent
+                read FControlOnEditingDone write FControlOnEditingDone;
+    property OnControlChange : TIpHtmlControlEvent
+                read FControlOnChange write FControlOnChange;
     property OnControlCreate : TIpHtmlControlEvent
                 read FControlCreate write FControlCreate;
     property OnCurElementChange: TNotifyEvent
@@ -2893,6 +3502,7 @@ type
                 read FHotChange write FHotChange;
     property OnHotClick : TNotifyEvent
                 read FHotClick write FHotClick;
+    property CurURL: string read GetCurUrl;
   published
     property Version : string
       read GetVersion write SetVersion stored False;
@@ -2924,6 +3534,8 @@ type
     property PopupMenu;
     property PrintSettings;                                            {!!.10}
     property ShowHints;
+    property TabOrder;
+    property TabStop;
     property TextColor;
     property Visible;                                                  {!!.10}
     property VLinkColor;
@@ -2938,6 +3550,9 @@ type
     property OnContextPopup;                                           {!!.10}
     {$ENDIF}
     property OnControlClick;
+    property OnControlClick2;
+    property OnControlChange;
+    property OnControlEditingDone;
     property OnControlCreate;
     property OnCurElementChange;                                       {!!.10}
     property OnDocumentOpen;                                           {!!.10}
@@ -2958,8 +3573,8 @@ type
     URLStack : TStringList;
     TargetStack : TStringList;
     Stp : Integer;
-    CurURL : string;
-    MasterFrame : TIpHtmlNVFrame;
+    FCurURL : string;
+    FMasterFrame : TIpHtmlNVFrame;
     procedure Push(const Target, URL: string);
     procedure InternalOpenURL(const Target, HRef: string);
   public
@@ -2971,11 +3586,13 @@ type
     procedure OpenURL(const URL: string);
     procedure Stop;
 
+    property MasterFrame : TIpHtmlNVFrame read FMasterFrame;
     property DataProvider: TIpAbstractHtmlDataProvider
                 read FDataProvider write FDataProvider;
     property FlagErrors : Boolean
                 read FFlagErrors write FFlagErrors;
     property Title : string read GetTitle;
+    property CurUrl: string read FCurUrl;
 {Begin !!.14}
   published
     property Version : string
@@ -2999,13 +3616,16 @@ function MinI2(const I1, I2: Integer) : Integer;
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;                     {!!.10}
 
+function GetAlignmentForStr(str: string;
+         pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
+
 procedure Register;
 
 implementation
 
 uses
   Printers,
-  IpHtmlPv; {!!.10}
+  IpHtmlPv;  {!!.10}
 
 {$IFNDEF IP_LAZARUS}
 {$R *.res}
@@ -3013,7 +3633,6 @@ uses
 
 {$IFDEF IP_LAZARUS}
 {$I ipcss.inc}
-
 {$ENDIF}
 
 var
@@ -3033,6 +3652,7 @@ const
   NbspChar = #2; {character used to represent no-break space in strings}
   NAnchorChar = #3 ; {character used to represent an Anchor }
   WheelDelta = 8;
+
 const
   WSB_PROP_CYVSCROLL      = $00000001;
   WSB_PROP_CXHSCROLL      = $00000002;
@@ -3055,9 +3675,45 @@ var
   ScaleBitmaps : Boolean = False;                                      {!!.02}
   BWPrinter: Boolean;                                                  {!!.10}
   Aspect : Double;                                                     {!!.02}
-  FactBAParagG: Real; //JMN
 
-{$IFDEF IP_LAZARUS}
+{$IFDEF IP_LAZARUS_DBG}
+procedure DumpTIpHtmlProps(aProps: TIpHtmlProps);
+var
+   propA : TIpHtmlPropAFieldsRec;
+   propB : TIpHtmlPropBFieldsRec;
+begin
+     if aProps = nil then
+     begin
+          writeln('TIpHtmlProps is nil');
+          exit;
+     end;
+     writeln('>>> ', aProps.FOwner.ClassName, ': ', Integer(@aProps));
+     if aProps.PropA <> nil then
+     begin
+     propA := aProps.PropA.FPropRec;
+     writeln('PropA >>>:');
+     writeln('BaseFontSize :', propA.BaseFontSize);
+     writeln('FontSize :', propA.FontSize);
+     //writeln('FontStyle :', propA.FontStyle);
+     writeln('FontName :', propA.FontName);
+     end;
+
+     if aProps.PropB <> nil then
+     begin
+     propB := aProps.PropB.FPropRec;
+     writeln('PropB >>>:');
+     writeln('FontBaseline :', propB.FontBaseline);
+     writeln('Alignment :', Ord(propB.Alignment));
+     writeln('FontColor :', propB.FontColor);
+     writeln('VAlignment :', Ord(propB.VAlignment));
+     writeln('LinkColor :', propB.LinkColor);
+     writeln('VLinkColor :', propB.VLinkColor);
+     writeln('ALinkColor :', propB.ALinkColor);
+     writeln('BgColor :', propB.BgColor);
+     writeln('NoBreak :', propB.NoBreak);
+     end;
+end;
+
 procedure DebugBox(Canvas: TCanvas; R: Trect; cl:TColor; dbg:boolean=false);
 var
   OldPenColor: TColor;
@@ -3145,6 +3801,27 @@ end;
 
 {$ENDIF}
 
+function GetAlignmentForStr(str: string;
+         pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
+var
+  S : string;
+begin
+  S := UpperCase(str);
+  if length(S) = 0 then
+  begin
+       Result := pDefault;
+       exit;
+  end;
+  case S[1] of
+    'C','M': if S = 'CHAR' then Result := haChar
+             else if (S = 'CENTER') or (S = 'MIDDLE') then
+               Result := haCenter;
+    'J': if S = 'JUSTIFY' then Result := haJustify;
+    'L': if (S = 'LEFT') then Result := haLeft;
+    'R': if S = 'RIGHT' then Result := haRight;
+    else Result := pDefault;
+  end;
+end;
 
 {!!.02 new}
 procedure GetRelativeAspect(PrinterDC : hDC);
@@ -3249,137 +3926,138 @@ Const
   Codes: array[0..Pred(CodeCount)] of record
     Size: Integer;
     Name: String;
-    Value: AnsiChar;
+    Value: String;
+    ValueUtf8: String; //UTF8 DiBo33
   end = (
-    (Size: 2; Name: 'gt'; Value: '>'),
-    (Size: 2; Name: 'lt'; Value: '<'),
-    (Size: 3; Name: 'amp'; Value: '&'),
-    (Size: 3; Name: 'deg'; Value: #176),
-    (Size: 3; Name: 'ETH'; Value: #208),
-    (Size: 3; Name: 'eth'; Value: #240),
-    (Size: 3; Name: 'not'; Value: #172),
-    (Size: 3; Name: 'reg'; Value: #174),
-    (Size: 3; Name: 'shy'; Value: ShyChar),
-    (Size: 3; Name: 'uml'; Value: #168),
-    (Size: 3; Name: 'yen'; Value: #165),
-    (Size: 4; Name: 'Auml'; Value: #196),
-    (Size: 4; Name: 'auml'; Value: #228),
-    (Size: 4; Name: 'bull'; Value: #149),
-    (Size: 4; Name: 'cent'; Value: #162),
-    (Size: 4; Name: 'circ'; Value: '^'),
-    (Size: 4; Name: 'copy'; Value: #169),
-    (Size: 4; Name: 'Euml'; Value: #203),
-    (Size: 4; Name: 'euml'; Value: #235),
-    (Size: 4; Name: 'euro'; Value: #128),
-    (Size: 4; Name: 'fnof'; Value: #131),
-    (Size: 4; Name: 'Iuml'; Value: #207),
-    (Size: 4; Name: 'iuml'; Value: #239),
-    (Size: 4; Name: 'macr'; Value: #175),
-    (Size: 4; Name: 'nbsp'; Value: NbspChar),
-    (Size: 4; Name: 'ordf'; Value: #170),
-    (Size: 4; Name: 'ordm'; Value: #186),
-    (Size: 4; Name: 'Ouml'; Value: #214),
-    (Size: 4; Name: 'ouml'; Value: #246),
-    (Size: 4; Name: 'para'; Value: #182),
-    (Size: 4; Name: 'quot'; Value: '"'),
-    (Size: 4; Name: 'sect'; Value: #167),
-    (Size: 4; Name: 'sup1'; Value: #185),
-    (Size: 4; Name: 'sup2'; Value: #178),
-    (Size: 4; Name: 'sup3'; Value: #179),
-    (Size: 4; Name: 'Uuml'; Value: #220),
-    (Size: 4; Name: 'uuml'; Value: #252),
-    (Size: 4; Name: 'Yuml'; Value: #159),
-    (Size: 4; Name: 'yuml'; Value: #255),
-    (Size: 5; Name: 'Acirc'; Value: #194),
-    (Size: 5; Name: 'acirc'; Value: #226),
-    (Size: 5; Name: 'acute'; Value: #180),
-    (Size: 5; Name: 'AElig'; Value: #198),
-    (Size: 5; Name: 'aelig'; Value: #230),
-    (Size: 5; Name: 'Aring'; Value: #197),
-    (Size: 5; Name: 'aring'; Value: #229),
-    (Size: 5; Name: 'cedil'; Value: #184),
-    (Size: 5; Name: 'Ecirc'; Value: #202),
-    (Size: 5; Name: 'ecirc'; Value: #234),
-    (Size: 5; Name: 'frasl'; Value: '/'),
-    (Size: 5; Name: 'Icirc'; Value: #206),
-    (Size: 5; Name: 'icirc'; Value: #238),
-    (Size: 5; Name: 'iexcl'; Value: #161),
-    (Size: 5; Name: 'laquo'; Value: #171),
-    (Size: 5; Name: 'ldquo'; Value: #147),
-    (Size: 5; Name: 'lsquo'; Value: #145),
-    (Size: 5; Name: 'mdash'; Value: #151),
-    (Size: 5; Name: 'micro'; Value: #181),
-    (Size: 5; Name: 'minus'; Value: '-'),
-    (Size: 5; Name: 'ndash'; Value: #150),
-    (Size: 5; Name: 'Ocirc'; Value: #212),
-    (Size: 5; Name: 'ocirc'; Value: #244),
-    (Size: 5; Name: 'OElig'; Value: #140),
-    (Size: 5; Name: 'oelig'; Value: #156),
-    (Size: 5; Name: 'pound'; Value: #163),
-    (Size: 5; Name: 'raquo'; Value: #187),
-    (Size: 5; Name: 'rdquo'; Value: #148),
-    (Size: 5; Name: 'rsquo'; Value: #146),
-    (Size: 5; Name: 'szlig'; Value: #223),
-    (Size: 5; Name: 'THORN'; Value: #222),
-    (Size: 5; Name: 'thorn'; Value: #254),
-    (Size: 5; Name: 'tilde'; Value: '~'),
-    (Size: 5; Name: 'times'; Value: #215),
-    (Size: 5; Name: 'trade'; Value: #153),
-    (Size: 5; Name: 'Ucirc'; Value: #219),
-    (Size: 5; Name: 'ucirc'; Value: #251),
-    (Size: 6; Name: 'Aacute'; Value: #193),
-    (Size: 6; Name: 'aacute'; Value: #225),
-    (Size: 6; Name: 'Agrave'; Value: #192),
-    (Size: 6; Name: 'agrave'; Value: #224),
-    (Size: 6; Name: 'Atilde'; Value: #195),
-    (Size: 6; Name: 'atilde'; Value: #227),
-    (Size: 6; Name: 'brvbar'; Value: #166),
-    (Size: 6; Name: 'Ccedil'; Value: #199),
-    (Size: 6; Name: 'ccedil'; Value: #231),
-    (Size: 6; Name: 'curren'; Value: #164),
-    (Size: 6; Name: 'dagger'; Value: #134),
-    (Size: 6; Name: 'Dagger'; Value: #135),
-    (Size: 6; Name: 'divide'; Value: #247),
-    (Size: 6; Name: 'Eacute'; Value: #201),
-    (Size: 6; Name: 'eacute'; Value: #233),
-    (Size: 6; Name: 'Egrave'; Value: #200),
-    (Size: 6; Name: 'egrave'; Value: #232),
-    (Size: 6; Name: 'frac12'; Value: #189),
-    (Size: 6; Name: 'frac14'; Value: #188),
-    (Size: 6; Name: 'frac34'; Value: #190),
-    (Size: 6; Name: 'hellip'; Value: #133),
-    (Size: 6; Name: 'Iacute'; Value: #205),
-    (Size: 6; Name: 'iacute'; Value: #237),
-    (Size: 6; Name: 'Igrave'; Value: #204),
-    (Size: 6; Name: 'igrave'; Value: #236),
-    (Size: 6; Name: 'iquest'; Value: #191),
-    (Size: 6; Name: 'lsaquo'; Value: #139),
-    (Size: 6; Name: 'middot'; Value: #183),
-    (Size: 6; Name: 'Ntilde'; Value: #209),
-    (Size: 6; Name: 'ntilde'; Value: #241),
-    (Size: 6; Name: 'Oacute'; Value: #211),
-    (Size: 6; Name: 'oacute'; Value: #243),
-    (Size: 6; Name: 'Ograve'; Value: #210),
-    (Size: 6; Name: 'ograve'; Value: #242),
-    (Size: 6; Name: 'Oslash'; Value: #216),
-    (Size: 6; Name: 'oslash'; Value: #248),
-    (Size: 6; Name: 'Otilde'; Value: #213),
-    (Size: 6; Name: 'otilde'; Value: #245),
-    (Size: 6; Name: 'permil'; Value: #137),
-    (Size: 6; Name: 'plusmn'; Value: #177),
-    (Size: 6; Name: 'rsaquo'; Value: #155),
-    (Size: 6; Name: 'Scaron'; Value: #138),
-    (Size: 6; Name: 'scaron'; Value: #154),
-    (Size: 6; Name: 'Uacute'; Value: #218),
-    (Size: 6; Name: 'uacute'; Value: #250),
-    (Size: 6; Name: 'Ugrave'; Value: #217),
-    (Size: 6; Name: 'ugrave'; Value: #249),
-    (Size: 6; Name: 'Yacute'; Value: #221),
-    (Size: 6; Name: 'yacute'; Value: #253),
-    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar) //JMN
+    (Size: 2; Name: 'gt';   Value: '>'; ValueUtf8: #$3E),
+    (Size: 2; Name: 'lt';   Value: '<'; ValueUtf8: #$3C),
+    (Size: 3; Name: 'amp';  Value: '&'; ValueUtf8: #$26),
+    (Size: 3; Name: 'deg';  Value: #176; ValueUtf8: #$C2#$B0),
+    (Size: 3; Name: 'ETH';  Value: #208; ValueUtf8: #$C3#$90),
+    (Size: 3; Name: 'eth';  Value: #240; ValueUtf8: #$C3#$B0),
+    (Size: 3; Name: 'not';  Value: #172; ValueUtf8: #$C2#$AC),
+    (Size: 3; Name: 'reg';  Value: #174; ValueUtf8: #$C2#$AE),
+    (Size: 3; Name: 'shy';  Value: ShyChar; ValueUtf8: ShyChar),
+    (Size: 3; Name: 'uml';  Value: #168; ValueUtf8: #$C2#$A8),
+    (Size: 3; Name: 'yen';  Value: #165; ValueUtf8: #$C2#$A5),
+    (Size: 4; Name: 'Auml'; Value: #196; ValueUtf8: #$C3#$84),
+    (Size: 4; Name: 'auml'; Value: #228; ValueUtf8: #$C3#$A4),
+    (Size: 4; Name: 'bull'; Value: #149; ValueUtf8: #$E2#$80#$A2),
+    (Size: 4; Name: 'cent'; Value: #162; ValueUtf8: #$C2#$A2),
+    (Size: 4; Name: 'circ'; Value: '^';  ValueUtf8: #$5E),
+    (Size: 4; Name: 'copy'; Value: #169; ValueUtf8: #$C2#$A9),
+    (Size: 4; Name: 'Euml'; Value: #203; ValueUtf8: #$C3#$8B),
+    (Size: 4; Name: 'euml'; Value: #235; ValueUtf8: #$C3#$AB),
+    (Size: 4; Name: 'euro'; Value: #128; ValueUtf8: #$E2#$82#$AC),
+    (Size: 4; Name: 'fnof'; Value: #131; ValueUtf8: #$C6#$92),
+    (Size: 4; Name: 'Iuml'; Value: #207; ValueUtf8: #$C3#$8F),
+    (Size: 4; Name: 'iuml'; Value: #239; ValueUtf8: #$C3#$AF),
+    (Size: 4; Name: 'macr'; Value: #175; ValueUtf8: #$C2#$AF),
+    (Size: 4; Name: 'nbsp'; Value: NbspChar; ValueUtf8: NbspChar),
+    (Size: 4; Name: 'ordf'; Value: #170; ValueUtf8: #$C2#$AA),
+    (Size: 4; Name: 'ordm'; Value: #186; ValueUtf8: #$C2#$BA),
+    (Size: 4; Name: 'Ouml'; Value: #214; ValueUtf8: #$C3#$96),
+    (Size: 4; Name: 'ouml'; Value: #246; ValueUtf8: #$C3#$B6),
+    (Size: 4; Name: 'para'; Value: #182; ValueUtf8: #$C2#$B6),
+    (Size: 4; Name: 'quot'; Value: '"';  ValueUtf8: #$22),
+    (Size: 4; Name: 'sect'; Value: #167; ValueUtf8: #$C2#$A7),
+    (Size: 4; Name: 'sup1'; Value: #185; ValueUtf8: #$C2#$B9),
+    (Size: 4; Name: 'sup2'; Value: #178; ValueUtf8: #$C2#$B2),
+    (Size: 4; Name: 'sup3'; Value: #179; ValueUtf8: #$C2#$B3),
+    (Size: 4; Name: 'Uuml'; Value: #220; ValueUtf8: #$C3#$9C),
+    (Size: 4; Name: 'uuml'; Value: #252; ValueUtf8: #$C3#$BC),
+    (Size: 4; Name: 'Yuml'; Value: #159; ValueUtf8: #$C5#$B8),
+    (Size: 4; Name: 'yuml'; Value: #255; ValueUtf8: #$C3#$BF),
+    (Size: 5; Name: 'Acirc'; Value: #194; ValueUtf8: #$C3#$82),
+    (Size: 5; Name: 'acirc'; Value: #226; ValueUtf8: #$C3#$A2),
+    (Size: 5; Name: 'acute'; Value: #180; ValueUtf8: #$C2#$B4),
+    (Size: 5; Name: 'AElig'; Value: #198; ValueUtf8: #$C3#$86),
+    (Size: 5; Name: 'aelig'; Value: #230; ValueUtf8: #$C3#$A6),
+    (Size: 5; Name: 'Aring'; Value: #197; ValueUtf8: #$C3#$85),
+    (Size: 5; Name: 'aring'; Value: #229; ValueUtf8: #$C3#$A5),
+    (Size: 5; Name: 'cedil'; Value: #184; ValueUtf8: #$C2#$B8),
+    (Size: 5; Name: 'Ecirc'; Value: #202; ValueUtf8: #$C3#$8A),
+    (Size: 5; Name: 'ecirc'; Value: #234; ValueUtf8: #$C3#$AA),
+    (Size: 5; Name: 'frasl'; Value: '/';  ValueUtf8: #$2F),
+    (Size: 5; Name: 'Icirc'; Value: #206; ValueUtf8: #$C3#$8E),
+    (Size: 5; Name: 'icirc'; Value: #238; ValueUtf8: #$C3#$AE),
+    (Size: 5; Name: 'iexcl'; Value: #161; ValueUtf8: #$C2#$A1),
+    (Size: 5; Name: 'laquo'; Value: #171; ValueUtf8: #$C2#$AB),
+    (Size: 5; Name: 'ldquo'; Value: #147; ValueUtf8: #$E2#$80#$9C),
+    (Size: 5; Name: 'lsquo'; Value: #145; ValueUtf8: #$E2#$80#$98),
+    (Size: 5; Name: 'mdash'; Value: #151; ValueUtf8: #$E2#$80#$94),
+    (Size: 5; Name: 'micro'; Value: #181; ValueUtf8: #$C2#$B5),
+    (Size: 5; Name: 'minus'; Value: '-';  ValueUtf8: #$2D),
+    (Size: 5; Name: 'ndash'; Value: #150; ValueUtf8: #$E2#$80#$93),
+    (Size: 5; Name: 'Ocirc'; Value: #212; ValueUtf8: #$C3#$94),
+    (Size: 5; Name: 'ocirc'; Value: #244; ValueUtf8: #$C3#$B4),
+    (Size: 5; Name: 'OElig'; Value: #140; ValueUtf8: #$C5#$92),
+    (Size: 5; Name: 'oelig'; Value: #156; ValueUtf8: #$C5#$93),
+    (Size: 5; Name: 'pound'; Value: #163; ValueUtf8: #$C2#$A3),
+    (Size: 5; Name: 'raquo'; Value: #187; ValueUtf8: #$C2#$BB),
+    (Size: 5; Name: 'rdquo'; Value: #148; ValueUtf8: #$E2#$80#$9D),
+    (Size: 5; Name: 'rsquo'; Value: #146; ValueUtf8: #$E2#$80#$99),
+    (Size: 5; Name: 'szlig'; Value: #223; ValueUtf8: #$C3#$9F),
+    (Size: 5; Name: 'THORN'; Value: #222; ValueUtf8: #$C3#$9E),
+    (Size: 5; Name: 'thorn'; Value: #254; ValueUtf8: #$C3#$BE),
+    (Size: 5; Name: 'tilde'; Value: '~';  ValueUtf8: #$7E),
+    (Size: 5; Name: 'times'; Value: #215; ValueUtf8: #$C3#$97),
+    (Size: 5; Name: 'trade'; Value: #153; ValueUtf8: #$E2#$84#$A2),
+    (Size: 5; Name: 'Ucirc'; Value: #219; ValueUtf8: #$C3#$9B),
+    (Size: 5; Name: 'ucirc'; Value: #251; ValueUtf8: #$C3#$BB),
+    (Size: 6; Name: 'Aacute'; Value: #193; ValueUtf8: #$C3#$81),
+    (Size: 6; Name: 'aacute'; Value: #225; ValueUtf8: #$C3#$A1),
+    (Size: 6; Name: 'Agrave'; Value: #192; ValueUtf8: #$C3#$80),
+    (Size: 6; Name: 'agrave'; Value: #224; ValueUtf8: #$C3#$A0),
+    (Size: 6; Name: 'Atilde'; Value: #195; ValueUtf8: #$C3#$83),
+    (Size: 6; Name: 'atilde'; Value: #227; ValueUtf8: #$C3#$A3),
+    (Size: 6; Name: 'brvbar'; Value: #166; ValueUtf8: #$C2#$A6),
+    (Size: 6; Name: 'Ccedil'; Value: #199; ValueUtf8: #$C3#$87),
+    (Size: 6; Name: 'ccedil'; Value: #231; ValueUtf8: #$C3#$A7),
+    (Size: 6; Name: 'curren'; Value: #164; ValueUtf8: #$C2#$A4),
+    (Size: 6; Name: 'dagger'; Value: #134; ValueUtf8: #$E2#$80#$A0),
+    (Size: 6; Name: 'Dagger'; Value: #135; ValueUtf8: #$E2#$80#$A1),
+    (Size: 6; Name: 'divide'; Value: #247; ValueUtf8: #$C3#$B7),
+    (Size: 6; Name: 'Eacute'; Value: #201; ValueUtf8: #$C3#$89),
+    (Size: 6; Name: 'eacute'; Value: #233; ValueUtf8: #$C3#$A9),
+    (Size: 6; Name: 'Egrave'; Value: #200; ValueUtf8: #$C3#$88),
+    (Size: 6; Name: 'egrave'; Value: #232; ValueUtf8: #$C3#$A8),
+    (Size: 6; Name: 'frac12'; Value: #189; ValueUtf8: #$C2#$BD),
+    (Size: 6; Name: 'frac14'; Value: #188; ValueUtf8: #$C2#$BC),
+    (Size: 6; Name: 'frac34'; Value: #190; ValueUtf8: #$C2#$BE),
+    (Size: 6; Name: 'hellip'; Value: #133; ValueUtf8: #$E2#$80#$A6),
+    (Size: 6; Name: 'Iacute'; Value: #205; ValueUtf8: #$C3#$8D),
+    (Size: 6; Name: 'iacute'; Value: #237; ValueUtf8: #$C3#$AD),
+    (Size: 6; Name: 'Igrave'; Value: #204; ValueUtf8: #$C3#$8C),
+    (Size: 6; Name: 'igrave'; Value: #236; ValueUtf8: #$C3#$AC),
+    (Size: 6; Name: 'iquest'; Value: #191; ValueUtf8: #$C2#$BF),
+    (Size: 6; Name: 'lsaquo'; Value: #139; ValueUtf8: #$E2#$80#$B9),
+    (Size: 6; Name: 'middot'; Value: #183; ValueUtf8: #$C2#$B7),
+    (Size: 6; Name: 'Ntilde'; Value: #209; ValueUtf8: #$C3#$91),
+    (Size: 6; Name: 'ntilde'; Value: #241; ValueUtf8: #$C3#$B1),
+    (Size: 6; Name: 'Oacute'; Value: #211; ValueUtf8: #$C3#$93),
+    (Size: 6; Name: 'oacute'; Value: #243; ValueUtf8: #$C3#$B3),
+    (Size: 6; Name: 'Ograve'; Value: #210; ValueUtf8: #$C3#$92),
+    (Size: 6; Name: 'ograve'; Value: #242; ValueUtf8: #$C3#$B2),
+    (Size: 6; Name: 'Oslash'; Value: #216; ValueUtf8: #$C3#$98),
+    (Size: 6; Name: 'oslash'; Value: #248; ValueUtf8: #$C3#$B8),
+    (Size: 6; Name: 'Otilde'; Value: #213; ValueUtf8: #$C3#$95),
+    (Size: 6; Name: 'otilde'; Value: #245; ValueUtf8: #$C3#$B5),
+    (Size: 6; Name: 'permil'; Value: #137; ValueUtf8: #$E2#$80#$B0),
+    (Size: 6; Name: 'plusmn'; Value: #177; ValueUtf8: #$C2#$B1),
+    (Size: 6; Name: 'rsaquo'; Value: #155; ValueUtf8: #$E2#$80#$BA),
+    (Size: 6; Name: 'Scaron'; Value: #138; ValueUtf8: #$C5#$A0),
+    (Size: 6; Name: 'scaron'; Value: #154; ValueUtf8: #$C5#$A1),
+    (Size: 6; Name: 'Uacute'; Value: #218; ValueUtf8: #$C3#$9A),
+    (Size: 6; Name: 'uacute'; Value: #250; ValueUtf8: #$C3#$BA),
+    (Size: 6; Name: 'Ugrave'; Value: #217; ValueUtf8: #$C3#$99),
+    (Size: 6; Name: 'ugrave'; Value: #249; ValueUtf8: #$C3#$B9),
+    (Size: 6; Name: 'Yacute'; Value: #221; ValueUtf8: #$C3#$9D),
+    (Size: 6; Name: 'yacute'; Value: #253; ValueUtf8: #$C3#$BD),
+    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar; ValueUtf8: NAnchorChar) //JMN
     );
 {$IFDEF IP_LAZARUS}
-function ParseConstant(const S: string): AnsiChar;
+function ParseConstant(const S: string; onUtf8: boolean=false): string;
 {$ENDIF}
 var
   Error: Integer;
@@ -3395,7 +4073,8 @@ begin {'Complete boolean eval' must be off}
   begin
     Val(S, Index1, Error);
     if (Error = 0) and (Index1 >= 32) and (Index1 <= 255) then
-      Result := Chr(Index1);
+      if onUtf8 then Result := SysToUTF8(Chr(Index1))
+      else Result := Chr(Index1);
   end else
   begin
     Index1 := 0;
@@ -3415,7 +4094,8 @@ begin {'Complete boolean eval' must be off}
         end;
         if Found then
         begin
-          Result := Codes[Index1].Value;
+          if onUtf8 then Result := Codes[Index1].ValueUTF8
+          else Result := Codes[Index1].Value;
           Break;
         end;
       end;
@@ -3423,192 +4103,6 @@ begin {'Complete boolean eval' must be off}
     until (Index1 >= CodeCount) or (Codes[Index1].Size > Size1);
   end;
 end;
-
-{$IFDEF IP_LAZARUS}
-{UTF8 DiBo33}
-const
-  CodeCountUTF8 = 126;
-  {Sorted by Size where size is Length(Name).
-  Make sure you respect this when adding new items}
-  CodesUTF8: array[0..Pred(CodeCountUTF8)] of record
-    Size: Integer;// = length(Name)
-    Name: String;
-    Value: String;
-  end = (
-    (Size: 2; Name: 'gt'; Value: #$3E),
-    (Size: 2; Name: 'lt'; Value: #$3C),
-    (Size: 3; Name: 'amp'; Value: #$26),
-    (Size: 3; Name: 'deg'; Value: #$C2#$B0),
-    (Size: 3; Name: 'ETH'; Value: #$C3#$90),
-    (Size: 3; Name: 'eth'; Value: #$C3#$B0),
-    (Size: 3; Name: 'not'; Value: #$C2#$AC),
-    (Size: 3; Name: 'reg'; Value: #$C2#$AE),
-    (Size: 3; Name: 'shy'; Value: ShyChar),
-    (Size: 3; Name: 'uml'; Value: #$C2#$A8),
-    (Size: 3; Name: 'yen'; Value: #$C2#$A5),
-    (Size: 4; Name: 'Auml'; Value: #$C3#$84),
-    (Size: 4; Name: 'auml'; Value: #$C3#$A4),
-    (Size: 4; Name: 'bull'; Value: #$E2#$80#$A2),
-    (Size: 4; Name: 'cent'; Value: #$C2#$A2),
-    (Size: 4; Name: 'circ'; Value: #$5E),
-    (Size: 4; Name: 'copy'; Value: #$C2#$A9),
-    (Size: 4; Name: 'Euml'; Value: #$C3#$8B),
-    (Size: 4; Name: 'euml'; Value: #$C3#$AB),
-    (Size: 4; Name: 'euro'; Value: #$E2#$82#$AC),
-    (Size: 4; Name: 'fnof'; Value: #$C6#$92),
-    (Size: 4; Name: 'Iuml'; Value: #$C3#$8F),
-    (Size: 4; Name: 'iuml'; Value: #$C3#$AF),
-    (Size: 4; Name: 'macr'; Value: #$C2#$AF),
-    (Size: 4; Name: 'nbsp'; Value: NbspChar),
-    (Size: 4; Name: 'ordf'; Value: #$C2#$AA),
-    (Size: 4; Name: 'ordm'; Value: #$C2#$BA),
-    (Size: 4; Name: 'Ouml'; Value: #$C3#$96),
-    (Size: 4; Name: 'ouml'; Value: #$C3#$B6),
-    (Size: 4; Name: 'para'; Value: #$C2#$B6),
-    (Size: 4; Name: 'quot'; Value: #$22),
-    (Size: 4; Name: 'sect'; Value: #$C2#$A7),
-    (Size: 4; Name: 'sup1'; Value: #$C2#$B9),
-    (Size: 4; Name: 'sup2'; Value: #$C2#$B2),
-    (Size: 4; Name: 'sup3'; Value: #$C2#$B3),
-    (Size: 4; Name: 'Uuml'; Value: #$C3#$9C),
-    (Size: 4; Name: 'uuml'; Value: #$C3#$BC),
-    (Size: 4; Name: 'Yuml'; Value: #$C5#$B8),
-    (Size: 4; Name: 'yuml'; Value: #$C3#$BF),
-    (Size: 5; Name: 'Acirc'; Value: #$C3#$82),
-    (Size: 5; Name: 'acirc'; Value: #$C3#$A2),
-    (Size: 5; Name: 'acute'; Value: #$C2#$B4),
-    (Size: 5; Name: 'AElig'; Value: #$C3#$86),
-    (Size: 5; Name: 'aelig'; Value: #$C3#$A6),
-    (Size: 5; Name: 'Aring'; Value: #$C3#$85),
-    (Size: 5; Name: 'aring'; Value: #$C3#$A5),
-    (Size: 5; Name: 'cedil'; Value: #$C2#$B8),
-    (Size: 5; Name: 'Ecirc'; Value: #$C3#$8A),
-    (Size: 5; Name: 'ecirc'; Value: #$C3#$AA),
-    (Size: 5; Name: 'frasl'; Value: #$2F),
-    (Size: 5; Name: 'Icirc'; Value: #$C3#$8E),
-    (Size: 5; Name: 'icirc'; Value: #$C3#$AE),
-    (Size: 5; Name: 'iexcl'; Value: #$C2#$A1),
-    (Size: 5; Name: 'laquo'; Value: #$C2#$AB),
-    (Size: 5; Name: 'ldquo'; Value: #$E2#$80#$9C),
-    (Size: 5; Name: 'lsquo'; Value: #$E2#$80#$98),
-    (Size: 5; Name: 'mdash'; Value: #$E2#$80#$94),
-    (Size: 5; Name: 'micro'; Value: #$C2#$B5),
-    (Size: 5; Name: 'minus'; Value: #$2D),
-    (Size: 5; Name: 'ndash'; Value: #$E2#$80#$93),
-    (Size: 5; Name: 'Ocirc'; Value: #$C3#$94),
-    (Size: 5; Name: 'ocirc'; Value: #$C3#$B4),
-    (Size: 5; Name: 'OElig'; Value: #$C5#$92),
-    (Size: 5; Name: 'oelig'; Value: #$C5#$93),
-    (Size: 5; Name: 'pound'; Value: #$C2#$A3),
-    (Size: 5; Name: 'raquo'; Value: #$C2#$BB),
-    (Size: 5; Name: 'rdquo'; Value: #$E2#$80#$9D),
-    (Size: 5; Name: 'rsquo'; Value: #$E2#$80#$99),
-    (Size: 5; Name: 'szlig'; Value: #$C3#$9F),
-    (Size: 5; Name: 'THORN'; Value: #$C3#$9E),
-    (Size: 5; Name: 'thorn'; Value: #$C3#$BE),
-    (Size: 5; Name: 'tilde'; Value: #$7E),
-    (Size: 5; Name: 'times'; Value: #$C3#$97),
-    (Size: 5; Name: 'trade'; Value: #$E2#$84#$A2),
-    (Size: 5; Name: 'Ucirc'; Value: #$C3#$9B),
-    (Size: 5; Name: 'ucirc'; Value: #$C3#$BB),
-    (Size: 6; Name: 'Aacute'; Value: #$C3#$81),
-    (Size: 6; Name: 'aacute'; Value: #$C3#$A1),
-    (Size: 6; Name: 'Agrave'; Value: #$C3#$80),
-    (Size: 6; Name: 'agrave'; Value: #$C3#$A0),
-    (Size: 6; Name: 'Atilde'; Value: #$C3#$83),
-    (Size: 6; Name: 'atilde'; Value: #$C3#$A3),
-    (Size: 6; Name: 'brvbar'; Value: #$C2#$A6),
-    (Size: 6; Name: 'Ccedil'; Value: #$C3#$87),
-    (Size: 6; Name: 'ccedil'; Value: #$C3#$A7),
-    (Size: 6; Name: 'curren'; Value: #$C2#$A4),
-    (Size: 6; Name: 'dagger'; Value: #$E2#$80#$A0),
-    (Size: 6; Name: 'Dagger'; Value: #$E2#$80#$A1),
-    (Size: 6; Name: 'divide'; Value: #$C3#$B7),
-    (Size: 6; Name: 'Eacute'; Value: #$C3#$89),
-    (Size: 6; Name: 'eacute'; Value: #$C3#$A9),
-    (Size: 6; Name: 'Egrave'; Value: #$C3#$88),
-    (Size: 6; Name: 'egrave'; Value: #$C3#$A8),
-    (Size: 6; Name: 'frac12'; Value: #$C2#$BD),
-    (Size: 6; Name: 'frac14'; Value: #$C2#$BC),
-    (Size: 6; Name: 'frac34'; Value: #$C2#$BE),
-    (Size: 6; Name: 'hellip'; Value: #$E2#$80#$A6),
-    (Size: 6; Name: 'Iacute'; Value: #$C3#$8D),
-    (Size: 6; Name: 'iacute'; Value: #$C3#$AD),
-    (Size: 6; Name: 'Igrave'; Value: #$C3#$8C),
-    (Size: 6; Name: 'igrave'; Value: #$C3#$AC),
-    (Size: 6; Name: 'iquest'; Value: #$C2#$BF),
-    (Size: 6; Name: 'lsaquo'; Value: #$E2#$80#$B9),
-    (Size: 6; Name: 'middot'; Value: #$C2#$B7),
-    (Size: 6; Name: 'Ntilde'; Value: #$C3#$91),
-    (Size: 6; Name: 'ntilde'; Value: #$C3#$B1),
-    (Size: 6; Name: 'Oacute'; Value: #$C3#$93),
-    (Size: 6; Name: 'oacute'; Value: #$C3#$B3),
-    (Size: 6; Name: 'Ograve'; Value: #$C3#$92),
-    (Size: 6; Name: 'ograve'; Value: #$C3#$B2),
-    (Size: 6; Name: 'Oslash'; Value: #$C3#$98),
-    (Size: 6; Name: 'oslash'; Value: #$C3#$B8),
-    (Size: 6; Name: 'Otilde'; Value: #$C3#$95),
-    (Size: 6; Name: 'otilde'; Value: #$C3#$B5),
-    (Size: 6; Name: 'permil'; Value: #$E2#$80#$B0),
-    (Size: 6; Name: 'plusmn'; Value: #$C2#$B1),
-    (Size: 6; Name: 'rsaquo'; Value: #$E2#$80#$BA),
-    (Size: 6; Name: 'Scaron'; Value: #$C5#$A0),
-    (Size: 6; Name: 'scaron'; Value: #$C5#$A1),
-    (Size: 6; Name: 'Uacute'; Value: #$C3#$9A),
-    (Size: 6; Name: 'uacute'; Value: #$C3#$BA),
-    (Size: 6; Name: 'Ugrave'; Value: #$C3#$99),
-    (Size: 6; Name: 'ugrave'; Value: #$C3#$B9),
-    (Size: 6; Name: 'Yacute'; Value: #$C3#$9D),
-    (Size: 6; Name: 'yacute'; Value: #$C3#$BD),
-    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar)
-    );
-function ParseConstantUTF8(const S: string): string;
-var
-  Error: Integer;
-  Index1: Integer;
-  Index2: Integer;
-  Size1: Integer;
-  Found: Boolean;
-begin {'Complete boolean eval' must be off}
-  Result := ' ';
-  Size1 := Length(S);
-  if Size1 = 0 then Exit;
-  if (S[1] in ['$', '0'..'9']) then
-  begin
-    Val(S, Index1, Error);
-    if (Error = 0) then
-      if (Index1 >= 32) and (Index1 < 128) then
-        Result := Chr(Index1)
-      else if (Index1 >= 128) and (Index1<256) then
-        Result := SysToUTF8(Chr(Index1));
-  end else
-  begin
-    Index1 := 0;
-    repeat
-      if Size1 = CodesUTF8[Index1].Size then
-      begin
-        Found := True;
-        Index2 := 1;
-        while Index2 <= Size1 do
-        begin
-          if S[Index2] <> CodesUTF8[Index1].Name[Index2] then
-          begin
-            Found := False;
-            Break;
-          end;
-          Inc(Index2);
-        end;
-        if Found then
-        begin
-          Result := CodesUTF8[Index1].Value;
-          Break;
-        end;
-      end;
-      Inc(Index1);
-    until (Index1 >= CodeCountUTF8) or (CodesUTF8[Index1].Size > Size1);
-  end;
-end;
-{$ENDIF}
 
 procedure ExpandEscapes(var S: string);
 {- returns the string with & escapes expanded}
@@ -3638,14 +4132,14 @@ begin
         Delete(S, i, j - i + 1);
       {$IFDEF IP_LAZARUS}
         if SystemCharSetIsUTF8 then begin
-          St := ParseConstantUTF8(Co);
+          St := ParseConstant(Co, true);
           Insert(St, S, i)
         end else begin
-          Ch := ParseConstant(Co);
+          Ch := ParseConstant(Co)[1];
           Insert(Ch, S, i);
         end;
       {$ELSE}
-        Ch := ParseConstant(Co);
+        Ch := ParseConstant(Co)[1];
         Insert(Ch, S, i);
       {$ENDIF}
       end;
@@ -3723,13 +4217,13 @@ begin
     Result := 16;
 end;
 
-function SizeRec(cx, cy: Integer): TSize;
+function SizeRec(cx, cy: Integer): TSize;inline;
 begin
   Result.cx := cx;
   Result.cy := cy;
 end;
 
-function MaxI2(const I1, I2: Integer) : Integer;
+function MaxI2(const I1, I2: Integer) : Integer;inline;
 begin
   Result := I1;
   if I2 > I1 then
@@ -3750,7 +4244,7 @@ begin
       Result := I1;
 end;
 
-function MinI2(const I1, I2: Integer) : Integer;
+function MinI2(const I1, I2: Integer) : Integer;inline;
 begin
   Result := I1;
   if I2 < I1 then
@@ -3923,7 +4417,7 @@ end;
 
 constructor TIpHtmlMultiLengthList.Create;
 begin
-  List := TList.Create;
+  List := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
 end;
 
 destructor TIpHtmlMultiLengthList.Destroy;
@@ -4004,15 +4498,19 @@ procedure TIpHtmlNode.ScreenLine(
   const Color : TColor);
 var
   SaveWidth : Integer;
+  aPen: TPen;
+  aCanvas: TCanvas;
 begin
   StartPoint := PagePtToScreen(StartPoint);
   EndPoint := PagePtToScreen(EndPoint);
-  SaveWidth := Owner.Target.Pen.Width;
-  Owner.Target.Pen.Width := Width;
-  Owner.Target.Pen.Color := Color;
-  Owner.Target.MoveTo(StartPoint.x, StartPoint.y);
-  Owner.Target.LineTo(EndPoint.x, EndPoint.y);
-  Owner.Target.Pen.Width := SaveWidth;
+  aCanvas := Owner.Target;
+  aPen:= aCanvas.Pen;
+  SaveWidth := aPen.Width;
+  aPen.Width := Width;
+  aPen.Color := Color;
+  aCanvas.MoveTo(StartPoint.x, StartPoint.y);
+  aCanvas.LineTo(EndPoint.x, EndPoint.y);
+  aPen.Width := SaveWidth;
 end;
 
 procedure TIpHtmlNode.ScreenRect(
@@ -4020,11 +4518,13 @@ procedure TIpHtmlNode.ScreenRect(
       const Color : TColor);
 begin
   if PageRectToScreen(R, R) then begin
-    {$IFDEF IP_LAZARUS}
-    Owner.Target.Brush.Style := bsSolid;
-    {$ENDIF}
-    Owner.Target.Brush.Color := Color;
-    Owner.Target.FrameRect(R);
+    with Owner.Target do begin
+      {$IFDEF IP_LAZARUS}
+      Brush.Style := bsSolid;
+      {$ENDIF}
+      Brush.Color := Color;
+      FrameRect(R);
+    end;
   end;
 end;
 {$IFDEF IP_LAZARUS}
@@ -4035,10 +4535,12 @@ var
   SaveWidth: Integer;
   procedure DoLine(X1,Y1,X2,Y2: Integer; Clr: TColor);
   begin
-    Owner.Target.Pen.Color := Clr;
-    Owner.Target.Line(X1,Y1,X2,Y2);
-    //Owner.Target.MoveTo(X1, Y1);
-    //Owner.Target.LineTo(X2, Y2);
+    with Owner.Target do begin
+      Pen.Color := Clr;
+      Line(X1,Y1,X2,Y2);
+      //MoveTo(X1, Y1);
+      //LineTo(X2, Y2);
+    end;
   end;
 begin
   if PageRectToScreen(R, R) then
@@ -4057,7 +4559,7 @@ begin
       DoLine(R.Left, R.Top, r.Left, R.Bottom-1, RGB(128,128,128)); // Left
       DoLine(R.Right-1, R.Bottom-1, R.Right-1, R.Top, RGB(192,192,192)); // Right
     end;
-    Pen.Color := SaveWidth;
+    Pen.Width := SaveWidth;
   end;
 end;
 {$ENDIF}
@@ -4073,11 +4575,13 @@ begin
     Pt := PagePtToScreen(Points[i]);
     Points[i] := Pt;
   end;
-  Owner.Target.Pen.Color := Color;
-  SaveColor := Owner.Target.Brush.Color;
-  Owner.Target.Brush.Color := Color;
-  Owner.Target.Polygon(Points);
-  Owner.Target.Brush.Color := SaveColor;
+  with Owner.Target do begin
+    Pen.Color := Color;
+    SaveColor := Brush.Color;
+    Brush.Color := Color;
+    Polygon(Points);
+    Brush.Color := SaveColor;
+  end;
 end;
 
 function TIpHtmlNode.PagePtToScreen(const Pt : TPoint): TPoint;
@@ -4185,26 +4689,22 @@ end;
 
 function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
 
-  function GetPropType : PTypeInfo;
+  function GetPropType : PTypeInfo;inline;
   begin
-    {$IFDEF VERSION3}
-    Result := PI.PropType^;
-    {$ELSE}
-    Result := PI.PropType;
-    {$ENDIF}
+    Result := PI.PropType{$IFDEF VERSION3}^{$ENDIF};
   end;
 
-  function GetIntegerProperty : string;
+  function GetIntegerProperty : string;inline;
   begin
     Result := IntToStr(GetOrdProp(AObject, PI));
   end;
 
-  function GetCharProperty : string;
+  function GetCharProperty : string;inline;
   begin
     Result := Char(GetOrdProp(AObject, PI));
   end;
 
-  function GetEnumProperty : string;
+  function GetEnumProperty : string;inline;
   begin
     Result := GetEnumName(GetPropType, GetOrdProp(AObject, PI));
   end;
@@ -4217,17 +4717,17 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
       Precisions[GetTypeData(GetPropType)^.FloatType], 0);
   end;
 
-  function GetLStringProperty : string;
+  function GetLStringProperty : string;inline;
   begin
     Result := GetStrProp(AObject, PI);
   end;
 
-  function GetWCharProperty : string;
+  function GetWCharProperty : string;inline;
   begin
     Result := Char(GetOrdProp(AObject, PI));
   end;
 
-  function GetVariantProperty : string;
+  function GetVariantProperty : string;inline;
   begin
     {$IFDEF FPC}
     Result := AnsiString(GetVariantProp(AObject, PI));
@@ -4236,7 +4736,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
     {$ENDIF}
   end;
 
-  function GetStringProperty : string;
+  function GetStringProperty : string;inline;
   begin
     Result := GetStrProp(AObject, PI);
   end;
@@ -4283,38 +4783,34 @@ end;
 procedure SetPropertyValueLow(PI: PPropInfo;
   const AObject: TObject; const NewValue: string);
 
-  function GetPropType : PTypeInfo;
+  function GetPropType : PTypeInfo;inline;
   begin
-    {$IFDEF VERSION3}
-    Result := PI.PropType^;
-    {$ELSE}
-    Result := PI.PropType;
-    {$ENDIF}
+    Result := PI.PropType{$IFDEF VERSION3}^{$ENDIF};
   end;
 
-  procedure SetIntegerProperty;
+  procedure SetIntegerProperty;inline;
   begin
     SetOrdProp(AObject, PI, StrToInt(NewValue));
   end;
 
-  procedure SetCharProperty;
+  procedure SetCharProperty;inline;
   begin
     SetOrdProp(AObject, PI, ord(NewValue[1]));
   end;
 
-  procedure SetEnumProperty;
+  procedure SetEnumProperty;inline;
   begin
     {$IFDEF VERSION5}
     SetEnumProp(AObject, PI, NewValue);
     {$ENDIF}
   end;
 
-  procedure SetFloatProperty;
+  procedure SetFloatProperty;inline;
   begin
     SetFloatProp(AObject, PI, StrToFloat(NewValue));
   end;
 
-  procedure SetStringProperty;
+  procedure SetStringProperty;inline;
   begin
     SetStrProp(AObject, PI, NewValue);
   end;
@@ -4322,7 +4818,7 @@ procedure SetPropertyValueLow(PI: PPropInfo;
   type
     TCardinalSet = set of 0..SizeOf(Cardinal) * 8 - 1;
 
-  procedure SetSetProperty;
+  procedure SetSetProperty;inline;
   begin
     {$IFDEF VERSION5}
     SetSetProp(AObject, PI, NewValue);
@@ -4476,7 +4972,12 @@ end;
 constructor TIpHtmlNodeMulti.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  FChildren := TList.Create;
+  FChildren := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  //Maybe this will create some unespected behavior (Owner=nil)
+  if Owner <> nil then
+  begin
+       FProps := TIpHtmlProps.Create(FOwner);
+  end;
 end;
 
 destructor TIpHtmlNodeMulti.Destroy;
@@ -4491,6 +4992,7 @@ begin
       TIpHtmlNode(FChildren[FChildren.Count - 1]).Free;
     end;
   FChildren.Free;
+  if Assigned(FProps) then FreeAndNil(FProps);
   inherited Destroy;
 end;
 
@@ -4513,19 +5015,84 @@ begin
   end;
 end;
 
+{
+var
+   DebugParseLevel : integer = 1;
+function debugDashs: string;
+var
+   i: integer;
+begin
+     setLength(result, DebugParseLevel);
+     for i:=1 to DebugParseLevel do
+       result[i] := '-';
+end;
+}
+
 procedure TIpHtmlNodeMulti.SetProps(const RenderProps: TIpHtmlProps);
 var
   i : Integer;
+  savedColor, savedBgColor : TColor;
+  IsMouseOver: boolean;
+  vRect: TRect;
+  //propb : TIpHtmlPropB;
 {$IFDEF IP_LAZARUS}
   Elem: TCSSProps = nil;
 {$ENDIF}
 begin
+//DebugLn(ClassName, ':', FParentNode.className, ':', IntToStr(RenderProps.BgColor));
+  Props.Assign(RenderProps);
   {$IFDEF IP_LAZARUS}
   if Self.InheritsFrom(TIpHtmlNodeCore)then
-    TIpHtmlNodeCore(Self).LoadCSSProps(Owner, Elem, RenderProps);
+    TIpHtmlNodeCore(Self).LoadCSSProps(Owner, Elem, Props);
   {$ENDIF}
+//DebugLn(ClassName, ':', FParentNode.className, ':', IntToStr(RenderProps.BgColor));
+//  Inc(DebugParseLevel);
+  {if Owner.FCurElement <> nil then
+  begin
+    PageRectToScreen(Owner.FCurElement.WordRect2, vRect);
+    IsMouseOver := PtInRect(vRect, Owner.MouseLastPoint);
+  end
+  else IsMouseOver := False;}
+
+  IsMouseOver := Self = Owner.FHotNode;
+  if IsMouseOver then
+  begin
+    //DebugLn('MouseOver: ', classname);
+    Props.DelayCache:=True;
+    if Props.HoverColor <> -1 then
+    begin
+      savedColor := Props.FontColor;
+      Props.FontColor := Props.HoverColor;
+    end;
+    if Props.HoverBgColor <> -1 then
+    begin
+      savedBgColor := Props.BgColor;
+      Props.BgColor := Props.HoverBgColor;
+    end;
+    Props.DelayCache:=False;
+  end;
   for i := 0 to Pred(FChildren.Count) do
-    TIpHtmlNode(FChildren[i]).SetProps(RenderProps);
+  begin
+    //propb := Props.PropB;
+    TIpHtmlNode(FChildren[i]).SetProps(Props);
+    //if propb <> Props.PropB then
+    //begin
+    //  DebugLn('PropB altered by: ', TIpHtmlNode(FChildren[i]).ClassName);
+    //end;
+{
+    DebugLn(debugDashs , TIpHtmlNode(FChildren[i]).ClassName,
+      ':', TIpHtmlNode(FChildren[i]).FParentNode.ClassName,
+      ':', IntToStr(RenderProps.BgColor));
+}
+  end;
+  if IsMouseOver then
+  begin
+    Props.DelayCache:=True;
+    if Props.HoverColor <> -1 then Props.FontColor := savedColor;
+    if Props.HoverBgColor <> -1 then Props.BgColor := savedBgColor;
+    Props.DelayCache:=False;
+  end;
+//  Dec(DebugParseLevel);
 end;
 
 procedure TIpHtmlNodeMulti.ReportDrawRects(M: TRectMethod);
@@ -4648,6 +5215,7 @@ procedure TIpHtmlNodeBODY.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps; c
 var
   LinkElement: TCSSProps;
 begin
+  Props.DelayCache := True;
   inherited LoadCSSProps(Owner, Element, Props);
   LinkElement := Owner.CSS.GetElement('a:link', '');
   if (LinkElement <> nil) and (LinkElement.Color <> -1) then
@@ -4658,13 +5226,17 @@ begin
   LinkElement := Owner.CSS.GetElement('a:active', '');
   if (LinkElement <> nil) and (LinkElement.Color <> -1) then
     ALink := LinkElement.Color;
-    
+
   if Element = nil then
     exit;
     
   if Element.Color <> -1 then
     Text := Element.Color;
 
+  if Element.BgColor <> -1 then
+    BgColor := Element.BgColor;
+
+  Props.DelayCache := True;
 end;
 {$ENDIF}
 
@@ -4836,9 +5408,6 @@ end;
 
 function TIpHtml.NextChar : AnsiChar;
 begin
-  {$IFDEF IP_LAZARUS}
-  Result:=#0;
-  {$ENDIF}
   if CharStream.Read(Result, 1) = 0 then
     Result := #0
   else begin
@@ -4863,8 +5432,15 @@ begin
 end;
 
 procedure TIpHtml.ReportExpectedToken(const Token: TIpHtmlToken);
+var
+   n: integer;
 begin
-  ReportExpectedError(IpHtmlTokens[Token]);
+  for n:=low(IpHtmlTokens) to high(IpHtmlTokens) do
+      if IpHtmlTokens[n].tk = Token then
+      begin
+         ReportExpectedError(IpHtmlTokens[n].pc);
+         break;
+      end;
 end;
 
 procedure TIpHtml.ReportReferences(Node : TIpHtmlNode);
@@ -4887,16 +5463,9 @@ begin
 end;
 
 procedure TIpHtml.LoadFromStream(S: TStream);
-var
-  T : TIpHtmlToken;
 begin
-  HtmlTokenList := nil;
   DoneLoading := False;
   try
-    HtmlTokenList := TStringList.Create;
-    for t := low(IpHtmlTokens) to high(IpHtmlTokens) do
-      HtmlTokenList.AddObject(IpHtmlTokens[T], TObject(Integer(T)));
-    HtmlTokenList.Sorted := True;
     FHasFrames := False;
     Clear;
     CharStream := S;
@@ -4906,8 +5475,6 @@ begin
     Parse;
     ReportReferences(HtmlNode);
   finally
-    HtmlTokenList.Free;
-    HtmlTokenList := nil;
     DoneLoading := True;
     FCanPaint := True;
   end;                      
@@ -4972,40 +5539,23 @@ function AnsiToEscape(const S: string): string;
 {- returns the string with & escapes}
 var
   i : Integer;
+  procedure replaceCharBy(newStr: string);inline;
+  begin
+    Result[i] := '&';
+    Insert(newStr, Result, i + 1);
+  end;
+
 begin
   Result := S;
   i := length(Result);
   while i > 0 do begin
     case Result[i] of
-    ShyChar :
-      begin
-        Result[i] := '&';
-        Insert('shy;', Result, i + 1);
-      end;
-    NbspChar :
-      begin
-        Result[i] := '&';
-        Insert('nbsp;', Result, i + 1);
-      end;
-    '"' :
-      begin
-        Result[i] := '&';
-        Insert('quot;', Result, i + 1);
-      end;
-    '&' :
-      begin
-        Insert('amp;', Result, i + 1);
-      end;
-    '<' :
-      begin
-        Result[i] := '&';
-        Insert('lt;', Result, i + 1);
-      end;
-    '>' :
-      begin
-        Result[i] := '&';
-        Insert('gt;', Result, i + 1);
-      end;
+    ShyChar : replaceCharBy('shy;');
+    NbspChar : replaceCharBy('nbsp;');
+    '"' : replaceCharBy('quot;');
+    '&' : replaceCharBy('amp;');
+    '<' : replaceCharBy('lt;');
+    '>' : replaceCharBy('gt;');
     end;
     Dec(i);
   end;
@@ -5120,6 +5670,86 @@ begin
   Result := StrPas(TokenStringBuf);
 end;
 
+procedure TIpHtml.ClearParmValueArray;
+var
+   n: TIpHtmlAttributesSet;
+begin
+   for n:=Low(ParmValueArray) to High(ParmValueArray) do
+       setLength(ParmValueArray[n],0);
+end;
+
+procedure TIpHtml.ParmValueArrayAdd(const sName, sValue: string);
+var
+  vFirst: TIpHtmlAttributesSet;
+  vLast: TIpHtmlAttributesSet;
+  vPivot: TIpHtmlAttributesSet;
+  //vFound: boolean;
+begin
+  vFirst  := Low(TIpHtmlAttributesSet); //Sets the first item of the range
+  vLast   := High(TIpHtmlAttributesSet); //Sets the last item of the range
+  //vFound  := False; //Initializes the Found flag (Not found yet)
+
+  if (TIpHtmlAttributesNames[vFirst] > sName)
+  or (TIpHtmlAttributesNames[vLast] < sName)
+  then
+    Exit;
+
+  //If First > Last then the searched item doesn't exist
+  //If the item is found the loop will stop
+  while (vFirst <= vLast) {and (not vFound)} do
+  begin
+    //Gets the middle of the selected range
+    vPivot := TIpHtmlAttributesSet((ord(vFirst) + ord(vLast)) div 2);
+    //Compares the String in the middle with the searched one
+    if TIpHtmlAttributesNames[vPivot] = sName then
+    begin
+      ParmValueArray[vPivot] := sValue;
+      exit; //vFound  := True;
+    end
+    //If the Item in the middle has a bigger value than
+    //the searched item, then select the first half
+    else if TIpHtmlAttributesNames[vPivot] > sName then
+      vLast := Pred(vPivot)
+        //else select the second half
+    else
+      vFirst := Succ(vPivot);
+  end;
+end;
+
+function TIpHtml.HtmlTokenListIndexOf(const TokenString: PAnsiChar): integer;
+var
+  vFirst: Integer;
+  vLast: Integer;
+  vPivot: Integer;
+  vicmp: integer;
+begin
+  vFirst  := Low(IpHtmlTokens); //Sets the first item of the range
+  vLast   := High(IpHtmlTokens); //Sets the last item of the range
+  Result  := -1; //Initializes the Found flag (Not found yet)
+
+  //If First > Last then the searched item doesn't exist
+  //If the item is found the loop will stop
+  while (vFirst <= vLast) do
+  begin
+    //Gets the middle of the selected range
+    vPivot := (vFirst + vLast) div 2;
+    //Compares the String in the middle with the searched one
+    vicmp := strcomp(IpHtmlTokens[vPivot].pc, TokenString);
+    if vicmp = 0 then
+    begin
+      Result  := vPivot;
+      exit;
+    end
+    //If the Item in the middle has a bigger value than
+    //the searched item, then select the first half
+    else if vicmp > 0 then
+      vLast := vPivot - 1
+        //else select the second half
+    else
+      vFirst := vPivot + 1;
+  end;
+end;
+
 procedure TIpHtml.NextToken;
 var
   ParmName : string;
@@ -5171,8 +5801,7 @@ begin
   repeat
     TBW := 0;
     PBW := 0;
-    ParmList.Clear;
-    ValueList.Clear;
+    ClearParmValueArray;
     Ch := GetChar;
     if Ch = #0 then begin
       CurToken := IpHtmlTagEof;
@@ -5246,13 +5875,12 @@ begin
             #1..#31 :
               if InAttr then begin
                 InAttr := False;
-                ParmName := UpperCase(ParmString);
+                ParmName := ParmString;
                 SeenEqual := False;
               end else
               if InValue then begin
                 if ParmName <> '' then begin
-                  ParmList.Add(UpperCase(ParmName));
-                  ValueList.Add(ParmString);
+                  ParmValueArrayAdd(UpperCase(ParmName), ParmString);
                   ParmName := '';
                 end;
                 InValue := False;
@@ -5265,13 +5893,12 @@ begin
               else
               if InAttr then begin
                 InAttr := False;
-                ParmName := UpperCase(ParmString);
+                ParmName := ParmString;
                 SeenEqual := False;
               end else
               if InValue then begin
                 if ParmName <> '' then begin
-                  ParmList.Add(UpperCase(ParmName));
-                  ValueList.Add(ParmString);
+                  ParmValueArrayAdd(UpperCase(ParmName), ParmString);
                   ParmName := '';
                 end;
                 InValue := False;
@@ -5307,8 +5934,7 @@ begin
                 else begin                                             {!!.01}
                   if InValue then begin
                     if ParmName <> '' then begin
-                      ParmList.Add(UpperCase(ParmName));
-                      ValueList.Add(ParmString);
+                      ParmValueArrayAdd(UpperCase(ParmName), ParmString);
                       ParmName := '';
                     end;
                   end;
@@ -5334,8 +5960,8 @@ begin
                   AddParmChar(Ch);
                 end else begin
                   if (ParmName <> '') and not SeenQuotes then begin
-                    ParmList.Add(UpperCase(ParmName));
-                    ValueList.Add(ParmName);
+                    ParmName := UpperCase(ParmName);
+                    ParmValueArrayAdd(ParmName, ParmName);
                   end;
                   ParmName := '';
                   AddParmChar(Ch);
@@ -5350,8 +5976,7 @@ begin
           if InAttr then begin
             ParmName := UpperCase(ParmString);
             if (ParmName <> '') then begin
-              ParmList.Add(ParmName);
-              ValueList.Add(ParmName);
+              ParmValueArrayAdd(ParmName, ParmName);
             end;
           end;
         end;
@@ -5365,13 +5990,9 @@ begin
           EndFound := False;
         TokenStringBuf[TBW] := #0;
         CurToken := IpHtmlTagUnknown;
-        i := HtmlTokenList.IndexOf(string(TokenStringBuf));
+        i := HtmlTokenListIndexOf(TokenStringBuf);
         if i <> -1 then
-          {$IFDEF IP_LAZARUS}
-          CurToken := TIpHtmlToken(PtrInt(HtmlTokenList.Objects[i]));
-          {$ELSE}
-          CurToken := TIpHtmlToken(PtrInt(HtmlTokenList.Objects[i]));
-          {$ENDIF}
+          CurToken := IpHtmlTokens[i].tk;
 
         {If the token was a single terminated token ( <tok/>
          as opposed to normal a <tok></tok> sequence), we fake
@@ -5443,6 +6064,10 @@ begin
           CurToken := IpHtmlTagCOMMENT;
       until Done;
     end;
+    //eat script blocks that could confuse the parsing
+    //example www.sqlite.org has javascript to write dynamic
+    //content inside a table
+    if CurToken = IpHtmlTagSCRIPT then ParseScript(FHtml,[]);
   until
     (CurToken <> IpHtmlTagCOMMENT)
   and ((CurToken <> IpHtmlTagText) or (InBlock > 0) or (InPre > 0)
@@ -5511,10 +6136,10 @@ var
 begin
   CurStyle := TIpHtmlNodeSTYLE.Create(ParentNode);
   with CurStyle do begin
-    Media := FindAttribute('MEDIA');
-    Title := FindAttribute('TITLE');
+    Media := FindAttribute(htmlAttrMEDIA);
+    Title := FindAttribute(htmlAttrTITLE);
     {$IFDEF IP_LAZARUS}
-    Type_ := FindAttribute('TYPE');
+    Type_ := FindAttribute(htmlAttrTYPE);
     {$ENDIF}
   end;
   NextToken;
@@ -5565,24 +6190,24 @@ end;
 
 procedure TIpHtml.ParseIsIndex;
 begin
-  IndexPhrase := FindAttribute('PROMPT');
+  IndexPhrase := FindAttribute(htmlAttrPROMPT);
   {IsIndexPresent := IndexPhrase <> '';}                               {!!.12}
   NextToken;
 end;
 
 procedure TIpHtml.ParseBase;
 begin
-  {Base := FindAttribute('HREF');}                                     {!!.12}
+  {Base := FindAttribute(htmlAttrHREF);}                                     {!!.12}
   NextToken;
 end;
 
 procedure TIpHtml.ParseMeta;
 begin
   with TIpHtmlNodeMETA.Create(Parent) do begin
-    HttpEquiv := FindAttribute('HTTP-EQUIV');
-    Name := FindAttribute('NAME');
-    Content := FindAttribute('CONTENT');
-    Scheme := FindAttribute('SCHEME');
+    HttpEquiv := FindAttribute(htmlAttrHTTP_EQUIV);
+    Name := FindAttribute(htmlAttrNAME);
+    Content := FindAttribute(htmlAttrCONTENT);
+    Scheme := FindAttribute(htmlAttrSCHEME);
   end;
   NextToken;
 end;
@@ -5590,12 +6215,12 @@ end;
 procedure TIpHtml.ParseLink(Parent : TIpHtmlNode);
 begin
   with TIpHtmlNodeLINK.Create(Parent) do begin
-    HRef := FindAttribute('HREF');
-    Rel := FindAttribute('REL');
-    Rev := FindAttribute('REV');
-    Title := FindAttribute('TITLE');
+    HRef := FindAttribute(htmlAttrHREF);
+    Rel := FindAttribute(htmlAttrREL);
+    Rev := FindAttribute(htmlAttrREV);
+    Title := FindAttribute(htmlAttrTITLE);
     {$IFDEF IP_LAZARUS}
-    Type_ := LowerCase(FindAttribute('TYPE'));
+    Type_ := LowerCase(FindAttribute(htmlAttrTYPE));
     if (LowerCase(Rel) = 'stylesheet') and (Type_ = 'text/css') then
       ParseStyleSheet(Parent, Href);
     {$ENDIF}
@@ -5650,11 +6275,11 @@ var
 begin
   CurFONT := TIpHtmlNodeFONT.Create(Parent);
   with CurFONT do begin                                                {!!.10}
-    Face := FindAttribute('FACE');
+    Face := FindAttribute(htmlAttrFACE);
     Size.Free;                                                         {!!.10}
     Size := ParseRelSize{('+0')};                                      {!!.10}
     Size.OnChange := SizeChanged;                                      {!!.10}
-    Color := ColorFromString(FindAttribute('COLOR'));
+    Color := ColorFromString(FindAttribute(htmlAttrCOLOR));
     ParseBaseProps(Self);
   end;
   NextToken;
@@ -5772,8 +6397,8 @@ begin
         NewListItem.ParseBaseProps(Self);
         {NewListItem.DefListType := DefaultListStyle;}                 {!!.12}
         NewListItem.ListType := ParseULStyle(DefaultListStyle);
-        NewListItem.Value := ParseInteger('VALUE', -1);
-        NewListItem.Compact := ParseBoolean('COMPACT');
+        NewListItem.Value := ParseInteger(htmlAttrVALUE, -1);
+        NewListItem.Compact := ParseBoolean(htmlAttrCOMPACT);
         NextToken;
         ParseBodyText(NewListItem,
                       EndTokens + [EndToken, IpHtmlTagLI, IpHtmlTagLIend] -
@@ -5805,7 +6430,7 @@ begin
   else
     NewList.ListType := ParseULStyle(ulSquare);
   end;
-  NewList.Compact := ParseBoolean('COMPACT');
+  NewList.Compact := ParseBoolean(htmlAttrCOMPACT);
   NextToken;
   Inc(ListLevel);
   ParseListItems(NewList,
@@ -5822,50 +6447,34 @@ var
 begin
   NewList := TIpHtmlNodeOL.Create(Parent);
   NewList.Style := ParseOLStyle(olArabic);
-  NewList.Start := ParseInteger('START', 1);
-  NewList.Compact := ParseBoolean('COMPACT');
+  NewList.Start := ParseInteger(htmlAttrSTART, 1);
+  NewList.Compact := ParseBoolean(htmlAttrCOMPACT);
   NextToken;
   ParseListItems(NewList, IpHtmlTagOLend, EndTokens + [IpHtmlTagOLend], ulDisc);
   EnsureClosure(IpHtmlTagOLend, EndTokens);
 end;
+
+const
+  TIpHtmlButtonTypeNames : array[TIpHtmlButtonType] of string = (
+    'SUBMIT','RESET','BUTTON');
+  TIpHtmlInputTypeNames : array[TIpHtmlInputType] of string = (
+    'TEXT', 'PASSWORD', 'CHECKBOX', 'RADIO',
+    'SUBMIT', 'RESET', 'FILE', 'HIDDEN', 'IMAGE', 'BUTTON');
 
 function TIpHtml.ParseInputType : TIpHtmlInputType;
 var
   S : string;
 begin
   Result := hitText;
-  S := UpperCase(FindAttribute('TYPE'));
-  if (S = '') or (S = 'TEXT') or (S = 'TEXTAREA') then
+  S := UpperCase(FindAttribute(htmlAttrTYPE));
+  if (length(S) = 0) or (S = 'TEXTAREA') then
   else
-  if S = 'PASSWORD' then
-    Result := hitPassword
-  else
-  if S = 'CHECKBOX' then
-    Result := hitCheckbox
-  else
-  if S = 'RADIO' then
-    Result := hitRadio
-  else
-  if S = 'SUBMIT' then
-    Result := hitSubmit
-  else
-  if S = 'RESET' then
-    Result := hitReset
-  else
-  if S = 'FILE' then
-    Result := hitFile
-  else
-  if S = 'HIDDEN' then
-    Result := hitHidden
-  else
-  if S = 'IMAGE' then
-    Result := hitImage
-  else
-  if S = 'BUTTON' then
-    Result := hitButton
-  else
+  begin
+    for Result:=low(TIpHtmlInputType) to high(TIpHtmlInputType) do
+      if S = TIpHtmlInputTypeNames[Result] then exit;
     if FlagErrors then
       ReportError(SHtmlInvType);
+  end;
 end;
 
 function TIpHtml.ParseButtonType : TIpHtmlButtonType;
@@ -5873,17 +6482,14 @@ var
   S : string;
 begin
   Result := hbtSubmit;
-  S := UpperCase(FindAttribute('TYPE'));
-  if (S = '') or (S = 'SUBMIT') then
-  else
-  if S = 'RESET' then
-    Result := hbtReset
-  else
-  if S = 'BUTTON' then
-    Result := hbtButton
-  else
+  S := UpperCase(FindAttribute(htmlAttrTYPE));
+  if length(S) > 0 then
+  begin
+    for Result:=low(TIpHtmlButtonType) to high(TIpHtmlButtonType) do
+      if S = TIpHtmlButtonTypeNames[Result] then exit;
     if FlagErrors then
       ReportError(SHtmlInvType);
+  end;
 end;
 
 procedure TIpHtml.ParseFormFields(Parent: TIpHtmlNode;
@@ -5905,17 +6511,17 @@ begin
         with TIpHtmlNodeINPUT.Create(Parent) do begin
           ParseBaseProps(Self);
           InputType := ParseInputType;
-          Name := FindAttribute('NAME');
-          Value := FindAttribute('VALUE');
-          Checked := ParseBoolean('CHECKED');
-          Size := ParseInteger('SIZE', -1);
-          MaxLength := ParseInteger('MAXLENGTH', -1);
-          Src := FindAttribute('SRC');
-          Align := ParseImageAlignment('BOTTOM');
-          Disabled := ParseBoolean('DISABLED');
-          ReadOnly := ParseBoolean('READONLY');
-          Alt := FindAttribute('ALT');
-          TabIndex := ParseInteger('TABINDEX', -1);
+          Name := FindAttribute(htmlAttrNAME);
+          Value := FindAttribute(htmlAttrVALUE);
+          Checked := ParseBoolean(htmlAttrCHECKED);
+          Size := ParseInteger(htmlAttrSIZE, -1);
+          MaxLength := ParseInteger(htmlAttrMAXLENGTH, -1);
+          Src := FindAttribute(htmlAttrSRC);
+          Align := ParseImageAlignment(hiaBottom);
+          Disabled := ParseBoolean(htmlAttrDISABLED);
+          ReadOnly := ParseBoolean(htmlAttrREADONLY);
+          Alt := FindAttribute(htmlAttrALT);
+          TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
         end;
         NextToken;
       end;
@@ -5925,10 +6531,10 @@ begin
         with CurButton do begin
           ParseBaseProps(Self);
           ButtonType := ParseButtonType;
-          Name := FindAttribute('NAME');
-          Value := FindAttribute('VALUE');
-          Disabled := ParseBoolean('DISABLED');
-          TabIndex := ParseInteger('TABINDEX', -1);
+          Name := FindAttribute(htmlAttrNAME);
+          Value := FindAttribute(htmlAttrVALUE);
+          Disabled := ParseBoolean(htmlAttrDISABLED);
+          TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
         end;
         NextToken;
         ParseBodyText(CurButton, EndTokens + [IpHtmlTagBUTTONend]);
@@ -5942,12 +6548,15 @@ begin
       begin
         CurSelect := TIpHtmlNodeSELECT.Create(Parent);
         with CurSelect do begin
-          Name := FindAttribute('NAME');
-          Size := ParseInteger('SIZE', -1);
+          Name := FindAttribute(htmlAttrNAME);
+          Size := ParseInteger(htmlAttrSIZE, -1);
+          Width := ParseInteger(htmlAttrWIDTH, -1);
           ParseBaseProps(Self);
-          Multiple := ParseBoolean('MULTIPLE');
-          Disabled := ParseBoolean('DISABLED');
-          TabIndex := ParseInteger('TABINDEX', -1);
+          Multiple := ParseBoolean(htmlAttrMULTIPLE);
+          ComboBox := ParseBoolean(htmlAttrCOMBOBOX);
+          Disabled := ParseBoolean(htmlAttrDISABLED);
+          TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
+          Alt := FindAttribute(htmlAttrALT);
         end;
         NextNonBlankToken;
         repeat
@@ -5957,10 +6566,10 @@ begin
               CurOption := TIpHtmlNodeOPTION.Create(CurSelect);
               with CurOption do begin
                 ParseBaseProps(Self);
-                Selected := ParseBoolean('SELECTED');
-                Value := FindAttribute('VALUE');
-                Disabled := ParseBoolean('DISABLED');
-                OptionLabel := FindAttribute('LABEL');
+                Selected := ParseBoolean(htmlAttrSELECTED);
+                Value := FindAttribute(htmlAttrVALUE);
+                Disabled := ParseBoolean(htmlAttrDISABLED);
+                OptionLabel := FindAttribute(htmlAttrLABEL);
               end;
               NextNonBlankToken;
               ParseText(EndTokens +
@@ -5974,18 +6583,18 @@ begin
               CurOptGroup := TIpHtmlNodeOPTGROUP.Create(CurSelect);
               with CurOptGroup do begin
                 ParseBaseProps(Self);
-                Disabled := ParseBoolean('DISABLED');
-                GroupLabel := FindAttribute('LABEL');
+                Disabled := ParseBoolean(htmlAttrDISABLED);
+                GroupLabel := FindAttribute(htmlAttrLABEL);
               end;
               NextNonBlankToken;
               while CurToken = IpHtmlTagOPTION do begin
                 CurOption := TIpHtmlNodeOPTION.Create(CurOptGroup);
                 with CurOption do begin
                   ParseBaseProps(Self);
-                  Selected := ParseBoolean('SELECTED');
-                  Value := FindAttribute('VALUE');
-                  Disabled := ParseBoolean('DISABLED');
-                  OptionLabel := FindAttribute('LABEL');
+                  Selected := ParseBoolean(htmlAttrSELECTED);
+                  Value := FindAttribute(htmlAttrVALUE);
+                  Disabled := ParseBoolean(htmlAttrDISABLED);
+                  OptionLabel := FindAttribute(htmlAttrLABEL);
                 end;
                 NextNonBlankToken;
                 ParseText(EndTokens +
@@ -6017,13 +6626,14 @@ begin
       begin
         CurTextArea := TIpHtmlNodeTEXTAREA.Create(Parent);
         with CurTextArea do begin
-          Name := FindAttribute('NAME');
-          Rows := ParseInteger('ROWS', 20);
-          Cols := ParseInteger('COLS', 20);
+          Name := FindAttribute(htmlAttrNAME);
+          Rows := ParseInteger(htmlAttrROWS, 20);
+          Cols := ParseInteger(htmlAttrCOLS, 20);
           ParseBaseProps(Self);
-          Disabled := ParseBoolean('DISABLED');
-          ReadOnly := ParseBoolean('READONLY');
-          TabIndex := ParseInteger('TABINDEX', -1);
+          Disabled := ParseBoolean(htmlAttrDISABLED);
+          ReadOnly := ParseBoolean(htmlAttrREADONLY);
+          TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
+          Alt := FindAttribute(htmlAttrALT);
         end;
         NextToken;
         ParseText([IpHtmlTagTEXTAREAend], CurTextArea);
@@ -6038,7 +6648,7 @@ begin
         CurLabel := TIpHtmlNodeLABEL.Create(Parent);
         with CurLabel do begin
           ParseBaseProps(Self);
-          LabelFor := FindATTRIBUTE('LABEL');
+          LabelFor := FindAttribute(htmlAttrLABEL);
         end;
         NextToken;
         ParseBodyText(CurLabel, [IpHtmlTagLABELend]);
@@ -6088,12 +6698,12 @@ var
 begin
   NewForm := TIpHtmlNodeFORM.Create(Parent);
   with NewForm do begin
-    Action := FindAttribute('ACTION');
+    Action := FindAttribute(htmlAttrACTION);
     Method := ParseMethod;
-    Enctype := FindAttribute('ENCTYPE');
-    Name := FindAttribute('NAME');
-    AcceptCharset := FindAttribute('ACCEPT-CHARSET');
-    Accept := FindAttribute('ACCEPT');
+    Enctype := FindAttribute(htmlAttrENCTYPE);
+    Name := FindAttribute(htmlAttrNAME);
+    AcceptCharset := FindAttribute(htmlAttrACCEPT_CHARSET);
+    Accept := FindAttribute(htmlAttrACCEPT);
     if Enctype = '' then
       Enctype := 'application/x-www-form-urlencoded';
     if AcceptCharset = '' then
@@ -6144,7 +6754,7 @@ var
 begin
   NewDL := TIpHtmlNodeDL.Create(Parent);
   NewDL.ParseBaseProps(Self);
-  NewDL.Compact := ParseBoolean('COMPACT');
+  NewDL.Compact := ParseBoolean(htmlAttrCOMPACT);
   NextToken;
   ParseDefListItems(NewDL, EndTokens + [IpHtmlTagDLend]);
   EnsureClosure(IpHtmlTagDLend, EndTokens);
@@ -6264,8 +6874,8 @@ var
 begin
   BQ := TIpHtmlNodeINS.Create(Parent);
   BQ.ParseBaseProps(Self);
-  BQ.Cite := FindAttribute('CITE');
-  BQ.Datetime := FindAttribute('DATETIME');
+  BQ.Cite := FindAttribute(htmlAttrCITE);
+  BQ.Datetime := FindAttribute(htmlAttrDATETIME);
   NextToken;
   ParseBodyText(BQ, EndTokens + [IpHtmlTagINSend]);
   EnsureClosure(IpHtmlTagINSend, EndTokens);
@@ -6278,8 +6888,8 @@ var
 begin
   BQ := TIpHtmlNodeDEL.Create(Parent);
   BQ.ParseBaseProps(Self);
-  BQ.Cite := FindAttribute('CITE');
-  BQ.Datetime := FindAttribute('DATETIME');
+  BQ.Cite := FindAttribute(htmlAttrCITE);
+  BQ.Datetime := FindAttribute(htmlAttrDATETIME);
   NextToken;
   ParseBodyText(BQ, EndTokens + [IpHtmlTagDELend]);
   EnsureClosure(IpHtmlTagDELend, EndTokens);
@@ -6325,13 +6935,13 @@ var
 begin
   NewRule := TIpHtmlNodeHR.Create(Parent);
   with NewRule do begin
-    Align := ParseImageAlignment('CENTER');
-    NoShade := ParseBoolean('NOSHADE');
-    Size := ParseHtmlInteger('SIZE', 1);                               {!!.10}
+    Align := ParseImageAlignment(hiaCenter);
+    NoShade := ParseBoolean(htmlAttrNOSHADE);
+    Size := ParseHtmlInteger2(htmlAttrSIZE, 1);                               {!!.10}
     Size.OnChange := WidthChanged;                                     {!!.10}
-    Width := ParseHyperLength('WIDTH', '100%');
+    Width := ParseHyperLength(htmlAttrWIDTH, '100%');
     Width.OnChange := WidthChanged;                                    {!!.10}
-    Color := ColorFromString(FindAttribute('COLOR'));
+    Color := ColorFromString(FindAttribute(htmlAttrCOLOR));
     ParseBaseProps(Self);
   end;
   NextToken;
@@ -6343,10 +6953,13 @@ var
 begin
   BR := TIpHtmlNodeBR.Create(Parent);
   BR.Clear := ParseBRClear;
-  BR.Id := FindAttribute('ID');
-  BR.ClassId :=FindAttribute('CLASS');
-  BR.Title :=FindAttribute('TITLE');
-  BR.Style :=FindAttribute('STYLE');
+  BR.Id := FindAttribute(htmlAttrID);
+  BR.ClassId :=FindAttribute(htmlAttrCLASS);
+  BR.Title :=FindAttribute(htmlAttrTITLE);
+  BR.Style :=FindAttribute(htmlAttrSTYLE);
+  {$ifdef IP_LAZARUS}
+  BR.FElementName := 'br';
+  {$endif}
   NextToken;
 end;
 
@@ -6409,15 +7022,15 @@ var
 begin
   CurAnchor := TIpHtmlNodeA.Create(Parent);
   with CurAnchor do begin
-    Name := FindAttribute('NAME');
-    HRef := FindAttribute('HREF');
-    Rel := FindAttribute('REL');
-    Rev := FindAttribute('REV');
-    Title := FindAttribute('TITLE');
+    Name := FindAttribute(htmlAttrNAME);
+    HRef := FindAttribute(htmlAttrHREF);
+    Rel := FindAttribute(htmlAttrREL);
+    Rev := FindAttribute(htmlAttrREV);
+    Title := FindAttribute(htmlAttrTITLE);
     ParseBaseProps(Self);
     Shape := ParseShape;
-    TabIndex := ParseInteger('TABINDEX', -1);
-    Target := FindAttribute('TARGET');
+    TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
+    Target := FindAttribute(htmlAttrTARGET);
   end;
   NextToken;
   ParseBodyText(CurAnchor, EndTokens + [IpHtmlTagAend] - [IpHtmlTagA]);
@@ -6441,22 +7054,22 @@ var
 begin
   CurIMG := TIpHtmlNodeIMG.Create(Parent);
   with CurIMG do begin
-    Src := FindAttribute('SRC');
-    Alt := FindAttribute('ALT');
-    Align := ParseImageAlignment('BOTTOM');
-    Height := ParsePixels('HEIGHT', '');                               {!!.10}
-      {ParseInteger('HEIGHT', -1);}                                    {!!.10}
+    Src := FindAttribute(htmlAttrSRC);
+    Alt := FindAttribute(htmlAttrALT);
+    Align := ParseImageAlignment(hiaBottom);
+    Height := ParsePixels(htmlAttrHEIGHT, '');                               {!!.10}
+      {ParseInteger(htmlAttrHEIGHT, -1);}                                    {!!.10}
     Height.OnChange := DimChanged;                                     {!!.10}
-    Width := ParseHyperLength('WIDTH', '');                            {!!.10}
+    Width := ParseHyperLength(htmlAttrWIDTH, '');                            {!!.10}
     Width.OnChange := DimChanged;                                      {!!.10}
-    Border := ParseInteger('BORDER', 0);
-    HSpace := ParseInteger('HSPACE', 0);
-    VSpace := ParseInteger('VSPACE', 0);
-    UseMap := FindAttribute('USEMAP');
-    IsMap := ParseBoolean('ISMAP');
+    Border := ParseInteger(htmlAttrBORDER, 0);
+    HSpace := ParseInteger(htmlAttrHSPACE, 0);
+    VSpace := ParseInteger(htmlAttrVSPACE, 0);
+    UseMap := FindAttribute(htmlAttrUSEMAP);
+    IsMap := ParseBoolean(htmlAttrISMAP);
     ParseBaseProps(Self);
-    LongDesc := FindAttribute('LONGDESC');
-    Name := FindAttribute('NAME');
+    LongDesc := FindAttribute(htmlAttrLONGDESC);
+    Name := FindAttribute(htmlAttrNAME);
   end;
   NextToken;
 end;
@@ -6469,22 +7082,22 @@ var
 begin
   CurApplet := TIpHtmlNodeAPPLET.Create(Parent);
   with CurApplet do begin
-    Codebase := FindAttribute('CODEBASE');
-    Code := FindAttribute('CODE');
-    Alt := FindAttribute('ALT');
-    Name := FindAttribute('NAME');
-    Height := ParseInteger('HEIGHT', -1);
-    Width := ParseHyperLength('WIDTH', '');
+    Codebase := FindAttribute(htmlAttrCODEBASE);
+    Code := FindAttribute(htmlAttrCODE);
+    Alt := FindAttribute(htmlAttrALT);
+    Name := FindAttribute(htmlAttrNAME);
+    Height := ParseInteger(htmlAttrHEIGHT, -1);
+    Width := ParseHyperLength(htmlAttrWIDTH, '');
     Width.OnChange := WidthChanged;                                    {!!.10}
-    Align := ParseImageAlignment('BOTTOM');
-    HSpace := ParseInteger('HSPACE', 1);
-    VSpace := ParseInteger('VSPACE', 1);
-    Archive := FindAttribute('ARCHIVE');
-    ObjectCode := FindAttribute('OBJECT');
-    Id := FindAttribute('ID');
-    ClassID := FindAttribute('CLASS');
-    Title := FindAttribute('TITLE');
-    Style := FindAttribute('STYLE');
+    Align := ParseImageAlignment(hiaBottom);
+    HSpace := ParseInteger(htmlAttrHSPACE, 1);
+    VSpace := ParseInteger(htmlAttrVSPACE, 1);
+    Archive := FindAttribute(htmlAttrARCHIVE);
+    ObjectCode := FindAttribute(htmlAttrOBJECT);
+    Id := FindAttribute(htmlAttrID);
+    ClassID := FindAttribute(htmlAttrCLASS);
+    Title := FindAttribute(htmlAttrTITLE);
+    Style := FindAttribute(htmlAttrSTYLE);
   end;
   NextToken;
   while not (CurToken in EndTokens + [IpHtmlTagAPPLETend]) do begin
@@ -6494,9 +7107,9 @@ begin
         CurParam := TIpHtmlNodePARAM.Create(CurApplet);                {!!.12}
         with CurParam do begin
           {CurParam := TIpHtmlNodePARAM.Create(CurApplet);}            {!!.12}
-          Name := FindAttribute('NAME');
-          Value := FindAttribute('VALUE');
-          Id := FindAttribute('ID');
+          Name := FindAttribute(htmlAttrNAME);
+          Value := FindAttribute(htmlAttrVALUE);
+          Id := FindAttribute(htmlAttrID);
           ValueType := ParseObjectValueType;
         end;
         NextToken;
@@ -6515,23 +7128,23 @@ var
 begin
   CurOBJECT := TIpHtmlNodeOBJECT.Create(Parent);
   with CurOBJECT do begin
-    ClassID := FindAttribute('CLASSID');
-    Codebase := FindAttribute('CODEBASE');
-    Data := FindAttribute('DATA');
-    CodeType := FindAttribute('CODETYPE');
-    Archive := FindAttribute('ARCHIVE');
-    Standby := FindAttribute('STANDBY');
-    Align := ParseImageAlignment('BOTTOM');
-    Height := ParseInteger('HEIGHT', -1);
-    Width := ParseHyperLength('WIDTH', '');
+    ClassID := FindAttribute(htmlAttrCLASSID);
+    Codebase := FindAttribute(htmlAttrCODEBASE);
+    Data := FindAttribute(htmlAttrDATA);
+    CodeType := FindAttribute(htmlAttrCODETYPE);
+    Archive := FindAttribute(htmlAttrARCHIVE);
+    Standby := FindAttribute(htmlAttrSTANDBY);
+    Align := ParseImageAlignment(hiaBottom);
+    Height := ParseInteger(htmlAttrHEIGHT, -1);
+    Width := ParseHyperLength(htmlAttrWIDTH, '');
     Width.OnChange := WidthChanged;                                    {!!.10}
-    Border := ParseInteger('BORDER', 0);
-    HSpace := ParseInteger('HSPACE', 1);
-    VSpace := ParseInteger('VSPACE', 1);
-    UseMap := FindAttribute('USEMAP');
-    Declare := ParseBoolean('DECLARE');
+    Border := ParseInteger(htmlAttrBORDER, 0);
+    HSpace := ParseInteger(htmlAttrHSPACE, 1);
+    VSpace := ParseInteger(htmlAttrVSPACE, 1);
+    UseMap := FindAttribute(htmlAttrUSEMAP);
+    Declare := ParseBoolean(htmlAttrDECLARE);
     ParseBaseProps(Self);
-    Name := FindAttribute('NAME');
+    Name := FindAttribute(htmlAttrNAME);
   end;
   NextToken;
   while not (CurToken = IpHtmlTagOBJECTend) do begin
@@ -6540,9 +7153,9 @@ begin
       begin
         CurParam := TIpHtmlNodePARAM.Create(CurObject);
         with CurParam do begin
-          Name := FindAttribute('NAME');
-          Value := FindAttribute('VALUE');
-          Id := FindAttribute('ID');
+          Name := FindAttribute(htmlAttrNAME);
+          Value := FindAttribute(htmlAttrVALUE);
+          Id := FindAttribute(htmlAttrID);
           ValueType := ParseObjectValueType;
         end;
         NextToken;
@@ -6570,18 +7183,18 @@ begin
       begin
         CurHeader := TIpHtmlNodeTH.Create(Parent);
         with CurHeader do begin
-          Nowrap := ParseBoolean('NOWRAP');
-          Rowspan := ParseInteger('ROWSPAN', 1);
-          Colspan := ParseInteger('COLSPAN', 1);
+          Nowrap := ParseBoolean(htmlAttrNOWRAP);
+          Rowspan := ParseInteger(htmlAttrROWSPAN, 1);
+          Colspan := ParseInteger(htmlAttrCOLSPAN, 1);
           ParseBaseProps(Self);
           Align := ParseCellAlign(haCenter{haDefault});
           VAlign := ParseVAlignment3;
-          Width := ParseHyperLength('WIDTH', '');
+          Width := ParseHyperLength(htmlAttrWIDTH, '');
           Width.OnChange := DimChanged;                                {!!.10}
-          Height := ParsePixels('HEIGHT', '');                         {!!.10}
-            {ParseInteger('HEIGHT', -1);}                              {!!.10}
+          Height := ParsePixels(htmlAttrHEIGHT, '');                         {!!.10}
+            {ParseInteger(htmlAttrHEIGHT, -1);}                              {!!.10}
           Height.OnChange := DimChanged;
-          BgColor := ColorFromString(FindAttribute('BGCOLOR'));
+          BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
         end;
         NextToken;
         ParseBodyText(CurHeader,
@@ -6596,18 +7209,19 @@ begin
           {$IFDEF IP_LAZARUS}
           FElementName := 'td';
           {$ENDIF}
-          Nowrap := ParseBoolean('NOWRAP');
-          Rowspan := ParseInteger('ROWSPAN', 1);
-          Colspan := ParseInteger('COLSPAN', 1);
+          Nowrap := ParseBoolean(htmlAttrNOWRAP);
+          Rowspan := ParseInteger(htmlAttrROWSPAN, 1);
+          Colspan := ParseInteger(htmlAttrCOLSPAN, 1);
           ParseBaseProps(Self);
-          Align := ParseCellAlign(haLeft{haDefault});
+          //Align := ParseCellAlign(haLeft{haDefault});
+          Align := ParseCellAlign(haDefault);
           VAlign := ParseVAlignment3;
-          Width := ParseHyperLength('WIDTH', '');
+          Width := ParseHyperLength(htmlAttrWIDTH, '');
           Width.OnChange := DimChanged;                                {!!.10}
-          Height := ParsePixels('HEIGHT', '');                         {!!.10}
-            {ParseInteger('HEIGHT', -1);}                              {!!.10}
+          Height := ParsePixels(htmlAttrHEIGHT, '');                         {!!.10}
+            {ParseInteger(htmlAttrHEIGHT, -1);}                              {!!.10}
           Height.OnChange := DimChanged;
-          BgColor := ColorFromString(FindAttribute('BGCOLOR'));
+          BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
         end;
         NextToken;
         ParseBodyText(CurTableCell, EndTokens + [IpHtmlTagTD, IpHtmlTagTDend]);
@@ -6642,10 +7256,11 @@ procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
       Pt := (100 - Pt) div P0;
       for i := 0 to CurRow.ChildCount - 1 do
         if CurRow.ChildNode[i] is TIpHtmlNodeTableHeaderOrCell then
-          if TIpHtmlNodeTableHeaderOrCell(CurRow.ChildNode[i]).Width.LengthType = hlUndefined then begin
-           TIpHtmlNodeTableHeaderOrCell(CurRow.ChildNode[i]).Width.LengthType := hlPercent;
-           TIpHtmlNodeTableHeaderOrCell(CurRow.ChildNode[i]).Width.LengthValue := Pt;
-          end;
+          with TIpHtmlNodeTableHeaderOrCell(CurRow.ChildNode[i]).Width do
+            if LengthType = hlUndefined then begin
+              LengthType := hlPercent;
+              LengthValue := Pt;
+            end;
     end;
   end;
 
@@ -6753,8 +7368,8 @@ begin
     CurColGroup := TIpHtmlNodeCOLGROUP.Create(Parent);
     with CurColGroup do begin
       ParseBaseProps(Self);
-      Span := ParseInteger('SPAN', 1);
-      Width := ParseHyperMultiLength('WIDTH', '');
+      Span := ParseInteger(htmlAttrSPAN, 1);
+      Width := ParseHyperMultiLength(htmlAttrWIDTH, '');
     end;
     NextToken;
     SkipTextTokens;                                                    {!!.10}     
@@ -6762,8 +7377,8 @@ begin
       CurCol := TIpHtmlNodeCOL.Create(CurColGroup);
       with CurCol do begin
         ParseBaseProps(Self);
-        Span := ParseInteger('SPAN', 1);
-        Width := ParseHyperMultiLength('WIDTH', '');
+        Span := ParseInteger(htmlAttrSPAN, 1);
+        Width := ParseHyperMultiLength(htmlAttrWIDTH, '');
       end;
       NextToken;
       SkipTextTokens;
@@ -6781,10 +7396,10 @@ var
 begin
   CurTable := TIpHtmlNodeTABLE.Create(Parent);
   with CurTable do begin
-    Align := ParseImageAlignment('BOTTOM');
-    Width := ParseHyperLength('WIDTH', '');
+    Align := ParseImageAlignment(hiaBottom);
+    Width := ParseHyperLength(htmlAttrWIDTH, '');
     Width.OnChange := WidthChanged;                                    {!!.10}
-    Border := ParseInteger('BORDER', 0);
+    Border := ParseInteger(htmlAttrBORDER, 0);
     if Border = 0 then begin
       Frame := hfVoid;
       Rules := hrNone;
@@ -6792,13 +7407,13 @@ begin
       Frame := hfBorder;
       Rules := hrAll;
     end;
-    CellSpacing := ParseInteger('CELLSPACING', 2);
-    CellPadding := ParseInteger('CELLPADDING', 2);
+    CellSpacing := ParseInteger(htmlAttrCELLSPACING, 2);
+    CellPadding := ParseInteger(htmlAttrCELLPADDING, 2);
     ParseBaseProps(Self);
-    Summary := FindAttribute('SUMMARY');
+    Summary := FindAttribute(htmlAttrSUMMARY);
     Frame := ParseFrameProp(Frame);
     Rules := ParseRules(Rules);
-    BgColor := ColorFromString(FindAttribute('BGCOLOR'));
+    BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
   end;
 
   repeat
@@ -6843,7 +7458,7 @@ var
   CurMap : TIpHtmlNodeMAP;
 begin
   CurMap := TIpHtmlNodeMAP.Create(Parent);
-  CurMap.Name := FindAttribute('NAME');
+  CurMap.Name := FindAttribute(htmlAttrNAME);
   CurMap.ParseBaseProps(Self);
   NextToken;
   while not (CurToken in EndTokens + [IpHtmlTagMAPend]) do begin
@@ -6852,12 +7467,12 @@ begin
       begin
         with TIpHtmlNodeAREA.Create(CurMap) do begin
           Shape := ParseShape;
-          Coords := FindAttribute('COORDS');
-          HRef := FindAttribute('HREF');
-          NoHRef := ParseBoolean('NOHREF');
-          Alt := FindAttribute('ALT');
-          TabIndex := ParseInteger('TABINDEX', -1);
-          Target := FindAttribute('TARGET');
+          Coords := FindAttribute(htmlAttrCOORDS);
+          HRef := FindAttribute(htmlAttrHREF);
+          NoHRef := ParseBoolean(htmlAttrNOHREF);
+          Alt := FindAttribute(htmlAttrALT);
+          TabIndex := ParseInteger(htmlAttrTABINDEX, -1);
+          Target := FindAttribute(htmlAttrTARGET);
           ParseBaseProps(Self);
         end;
         NextToken;
@@ -6878,7 +7493,7 @@ var
 begin
   CurBasefont := TIpHtmlNodeBASEFONT.Create(Parent);
   if CurBasefont=nil then ;
-  CurBasefont.Size := ParseInteger('SIZE', 3);
+  CurBasefont.Size := ParseInteger(htmlAttrSIZE, 3);
   NextToken;
 end;
 
@@ -6949,7 +7564,7 @@ begin
   {IpHtmlTagP : ParseParagraph(Parent, EndTokens);} {moved to inline}  {!!.10}
   IpHtmlTagDIR : ParseUnorderedList(Parent, IpHtmlTagDIRend, EndTokens);
   IpHtmlTagMENU : ParseUnorderedList(Parent, IpHtmlTagMENUend, EndTokens);
-  IpHtmlTagUL : ParseUnorderedList(Parent, IpHtmlTagULen, EndTokens);
+  IpHtmlTagUL : ParseUnorderedList(Parent, IpHtmlTagULend, EndTokens);
   IpHtmlTagDL : ParseDefinitionList(Parent, EndTokens);
   IpHtmlTagOL :
     ParseOrderedList(Parent,  EndTokens);
@@ -6982,7 +7597,7 @@ begin
   
   if Parent is TIpHtmlNodeHEAD then begin
     if FDataProvider<>nil then begin
-      Href := FDataProvider.BuildURL(CurURL, HRef);
+      Href := FDataProvider.BuildURL(FCurURL, HRef);
       StyleStream := FDataProvider.DoGetStream(HRef);
     end;
   end else
@@ -7051,33 +7666,28 @@ begin
   end;
 end;
 
-function TIpHtml.FindAttribute(const AttrName : string) : string;
-var
-  i : Integer;
+function TIpHtml.FindAttribute(const AttrNameSet : TIpHtmlAttributesSet) : string;inline;
 begin
-  for i := 0 to Pred(ParmList.Count) do
-    if ParmList[i] = AttrName then begin
-      Result := ValueList[i];
-      Exit;
-    end;
-  Result := '';
+  Result := ParmValueArray[AttrNameSet];
 end;
 
-function TIpHtml.ParseInteger(const AttrName : string; Default : Integer) : Integer;
+function TIpHtml.ParseInteger(const AttrNameSet: TIpHtmlAttributesSet; aDefault : Integer): Integer;
 var
   S : string;
   Err : Integer;
+  AttrName: string;
 begin
-  S := FindAttribute(AttrName);
-  if (S = '') then
-    Result := Default
+  AttrName := TIpHtmlAttributesNames[AttrNameSet];
+  S := FindAttribute(AttrNameSet);
+  if length(S) = 0 then
+    Result := aDefault
   else
   if CompareText(S, AttrName) = 0 then
     Result := 1
   else begin
     Val(S, Result, Err);
     if Err <> 0 then begin
-      Result := Default;
+      Result := aDefault;
       if FlagErrors then
         ReportError(SHtmlInvInt)
     end;
@@ -7085,26 +7695,10 @@ begin
 end;
 
 {!!.10 new}
-function TIpHtml.ParseHtmlInteger(const AttrName : string; Default : Integer) : TIpHtmlInteger;
-var
-  S : string;
-  N, Err : Integer;
+function TIpHtml.ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
+         aDefault : Integer) : TIpHtmlInteger;
 begin
-  S := FindAttribute(AttrName);
-  if (S = '') then
-    N := Default
-  else
-  if CompareText(S, AttrName) = 0 then
-    N := 1
-  else begin
-    Val(S, N, Err);
-    if Err <> 0 then begin
-      N := Default;
-      if FlagErrors then
-        ReportError(SHtmlInvInt)
-    end;
-  end;
-  Result := TIpHtmlInteger.Create(N);
+  Result := TIpHtmlInteger.Create(ParseInteger(AttrNameSet, aDefault));
 end;
 
 function TIpHtml.ParseRelSize{(const Default : string)} : TIpHtmlRelSize; {!!.10}
@@ -7114,8 +7708,8 @@ var
 begin
   Result := TIpHtmlRelSize.Create;                                     {!!.10}
   Result.FSizeType := hrsUnspecified;                                  {!!.10}
-  S := FindAttribute('SIZE');
-  if (S = '') then
+  S := FindAttribute(htmlAttrSIZE);
+  if length(S) = 0 then
     Exit; {S := Default;}                                              {!!.10}
   Result.Value := 0;
   if (length(S) > 1) and (S[1] = '+') then begin
@@ -7133,16 +7727,16 @@ begin
 end;
 
 {!!.10 new}
-function TIpHtml.ParsePixels(const AttrName: string;
-      const Default: string): TIpHtmlPixels;
+function TIpHtml.ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlPixels;
 var
   S : string;
   Err : Integer;
 begin
   Result := TIpHtmlPixels.Create;
-  S := FindAttribute(AttrName);
+  S := FindAttribute(AttrNameSet);
   if (S = '') then
-    S := Default;
+    S := aDefault;
   if S = '' then                                                       {!!.12}
     Result.PixelsType := hpUndefined                                   {!!.12}
   else begin
@@ -7157,19 +7751,18 @@ begin
   end;
 end;
 
-function TIpHtml.ParseHyperLength(const AttrName: string;
-      const Default: string): TIpHtmlLength;
+function TIpHtml.ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlLength;
 var
   S : string;
   P, Err : Integer;
 begin
   Result := TIpHtmlLength.Create;                                      {!!.10}
   Result.LengthType := hlUndefined;
-  S := FindAttribute(AttrName);
-  if (S = '') then
-    S := Default;
-  if (S = '') then
-    Exit;
+  S := FindAttribute(AttrNameSet);
+  if length(S) = 0 then
+    if length(aDefault) = 0 then exit
+    else S := aDefault;
   P := CharPos('%', S);
   if P <> 0 then begin
     Result.LengthType := hlPercent;
@@ -7188,19 +7781,18 @@ begin
       Result.LengthValue := 100;                                       {!!.12}
 end;
 
-function TIpHtml.ParseHyperMultiLength(const AttrName: string;
-      const Default: string): TIpHtmlMultiLength;
+function TIpHtml.ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlMultiLength;
 var
   S : string;
   P, Err : Integer;
 begin
   Result := TIpHtmlMultiLength.Create;
   Result.LengthType := hmlUndefined;
-  S := FindAttribute(AttrName);
-  if (S = '') then
-    S := Default;
-  if (S = '') then
-    Exit;
+  S := FindAttribute(AttrNameSet);
+  if length(S) = 0 then
+    if length(aDefault) = 0 then exit
+    else S := aDefault;
   P := CharPos('%', S);
   if P <> 0 then begin
     Result.LengthType := hmlPercent;
@@ -7222,8 +7814,8 @@ begin
   end;
 end;
 
-function TIpHtml.ParseHyperMultiLengthList(const AttrName: string;
-      const Default: string): TIpHtmlMultiLengthList;                  {!!.10}
+function TIpHtml.ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
+      const aDefault: string): TIpHtmlMultiLengthList;                  {!!.10}
 var
   S, S2 : string;
   B, E, P, Err : Integer;
@@ -7231,11 +7823,10 @@ var
 begin
   {List.Entries := 0;}
   Result := TIpHtmlMultiLengthList.Create;
-  S := FindAttribute(AttrName);
-  if (S = '') then
-    S := Default;
-  if (S = '') then
-    Exit;
+  S := FindAttribute(AttrNameSet);
+  if length(S) = 0 then
+    if length(aDefault) = 0 then exit
+    else S := aDefault;
   B := 1;
   while B <= length(S) do begin
     E := B;
@@ -7356,43 +7947,28 @@ begin
   until S = 0;
 end;
 
-function TIpHtml.ParseBoolean(const AttrName : string) : Boolean;
-var
-  i : Integer;
+function TIpHtml.ParseBoolean(const AttrNameSet: TIpHtmlAttributesSet): Boolean;
 begin
-  for i := 0 to Pred(ParmList.Count) do
-    if ParmList[i] = AttrName then begin
-      Result := True;
-      Exit;
-    end;
-  Result := False;
+  Result := length(ParmValueArray[AttrNameSet]) > 0;
 end;
+
+const
+  TIpHtmlOLStyleNames : array[TIpHtmlOLStyle] of char = (
+   '1', 'a', 'A', 'i', 'I');
 
 function TIpHtml.ParseOLStyle(Default : TIpHtmlOLStyle) : TIpHtmlOLStyle;
 var
   S : string;
 begin
   Result := Default;
-  S := FindAttribute('TYPE');
-  if (S = '') then
-  else
-  if (S = '1') then
-    Result := olArabic
-  else
-  if S = 'a' then
-    Result := olLowerAlpha
-  else
-  if S = 'A' then
-    Result := olUpperAlpha
-  else
-  if S = 'i' then
-    Result := olLowerRoman
-  else
-  if S = 'I' then
-    Result := olUpperRoman
-  else
+  S := FindAttribute(htmlAttrTYPE);
+  if length(S) > 0 then
+  begin
+    for result:= low(TIpHtmlOLStyle) to high(TIpHtmlOLStyle) do
+      if S = TIpHtmlOLStyleNames[result] then exit;
     if FlagErrors then
       ReportError(SHtmlInvType);
+  end;
 end;
 
 function TIpHtml.ParseULStyle(Default : TIpHtmlULType) : TIpHtmlULType;
@@ -7400,45 +7976,25 @@ var
   S : string;
 begin
   Result := Default;
-  S := UpperCase(FindAttribute('TYPE'));
-  if (S = '') then
-  else
-  if (S = 'DISC') then
-    Result := ulDisc
-  else
-  if S = 'SQUARE' then
-    Result := ulSquare
-  else
-  if S = 'CIRCLE' then
-    Result := ulCircle
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvType);
+  S := UpperCase(FindAttribute(htmlAttrTYPE));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'C': if S = 'CIRCLE' then Result := ulCircle;
+    'D': if S = 'DISC' then Result := ulDisc;
+    'S': if S = 'SQUARE' then Result := ulSquare;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvType);
+  end;
 end;
 
 function TIpHtml.ParseAlignment : TIpHtmlAlign;
 var
   S : string;
 begin
-  Result := haLeft;
-  S := UpperCase(FindAttribute('ALIGN'));
-  if (S = '') then
-    Result := haDefault
-  else
-  if (S = 'LEFT') then
-    Result := haLeft
-  else
-  if (S = 'CENTER') or (S = 'MIDDLE') then
-    Result := haCenter
-  else
-  if S = 'RIGHT' then
-    Result := haRight
-  else
-  if S = 'JUSTIFY' then
-    Result := haJustify
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haLeft);
+//  if FlagErrors then
+//    ReportError(SHtmlInvAlign);
 end;
 
 function TIpHtml.ParseVAlignment : TIpHtmlVAlign;
@@ -7446,17 +8002,16 @@ var
   S : string;
 begin
   Result := hvaMiddle;
-  S := UpperCase(FindAttribute('VALIGN'));
-  if (S = '') or (S = 'MIDDLE') or (S = 'CENTER') then
-  else
-  if S = 'TOP' then
-    Result := hvaTop
-  else
-  if S = 'BOTTOM' then
-    Result := hvaBottom
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  S := UpperCase(FindAttribute(htmlAttrVALIGN));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'B': if S = 'BOTTOM' then Result := hvaBottom;
+    'C','M': if (S = 'MIDDLE') or (S = 'CENTER') then exit;
+    'T': if S = 'TOP' then Result := hvaTop;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvAlign);
+  end;
 end;
 
 function TIpHtml.ParseVAlignment2: TIpHtmlVAlignment2;
@@ -7464,50 +8019,34 @@ var
   S : string;
 begin
   Result := hva2Top;
-  S := UpperCase(FindAttribute('ALIGN'));
-  if (S = '') or (S = 'TOP') then
-  else
-  if S = 'BOTTOM' then
-    Result := hva2Bottom
-  else
-  if S = 'LEFT' then
-    Result := hva2Left
-  else
-  if S = 'RIGHT' then
-    Result := hva2Right
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  S := UpperCase(FindAttribute(htmlAttrALIGN));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'B': if S = 'BOTTOM' then Result := hva2Bottom;
+    'L': if S = 'LEFT' then Result := hva2Left;
+    'R': if S = 'RIGHT' then Result := hva2Right;
+    'T': if (S = 'TOP') then exit;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvAlign);
+  end;
 end;
 
-function TIpHtml.ParseImageAlignment(const Default: string) : TIpHtmlImageAlign;
+const
+  TIpHtmlImageAlignNames : array[TIpHtmlImageAlign] of string = (
+    'TOP', 'MIDDLE', 'BOTTOM', 'LEFT', 'RIGHT', 'CENTER');
+
+function TIpHtml.ParseImageAlignment(aDefault: TIpHtmlImageAlign) : TIpHtmlImageAlign;
 var
   S : string;
 begin
-  Result := hiaBottom;
-  S := UpperCase(FindAttribute('ALIGN'));
-  if S = '' then
-    S := Default;
-  if (S = 'BOTTOM') then
-  else
-  if S = 'TOP' then
-    Result := hiaTop
-  else
-  if (S = 'MIDDLE')
-  or (S = 'ABSCENTER') then
-    Result := hiaMiddle
-  else
-  if S = 'LEFT' then
-    Result := hiaLeft
-  else
-  if S = 'CENTER' then
-    Result := hiaCenter
-  else
-  if S = 'RIGHT' then
-    Result := hiaRight
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  Result := aDefault;
+  S := UpperCase(FindAttribute(htmlAttrALIGN));
+  if length(S) = 0 then exit;
+  for result:=low(TIpHtmlImageAlign) to high(TIpHtmlImageAlign) do
+    if S = TIpHtmlImageAlignNames[result] then exit;
+  if FlagErrors then
+    ReportError(SHtmlInvAlign);
 end;
 
 function TIpHtml.ParseObjectValueType: TIpHtmlObjectValueType;
@@ -7515,17 +8054,16 @@ var
   S : string;
 begin
   Result := hovtData;
-  S := UpperCase(FindAttribute('VALUETYPE'));
-  if (S = '') or (S = 'DATA') then
-  else
-  if S = 'REF' then
-    Result := hovtRef
-  else
-  if S = 'OBJECT' then
-    Result := hovtObject
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvValType);
+  S := UpperCase(FindAttribute(htmlAttrVALUETYPE));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'D': if S = 'DATA' then exit;
+    'O': if S = 'OBJECT' then Result := hovtObject;
+    'R': if S = 'REF' then Result := hovtRef;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvValType);
+  end;
 end;
 
 function TIpHtml.ParseShape : TIpHtmlMapShape;
@@ -7533,20 +8071,18 @@ var
   S : string;
 begin
   Result := hmsDefault;
-  S := UpperCase(FindAttribute('SHAPE'));
-  if (S = '') or (S = 'DEFAULT') then
-  else
-  if (S = 'RECT') then
-    Result := hmsRect
-  else
-  if S = 'CIRCLE' then
-    Result := hmsCircle
-  else
-  if (S = 'POLY') or (S = 'POLYGON') then
-    Result := hmsPoly
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvShape);
+  S := UpperCase(FindAttribute(htmlAttrSHAPE));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'C': if S = 'CIRCLE' then Result := hmsCircle;
+    'D': if S = 'DEFAULT' then exit;
+    'P': if (S = 'POLY') or (S = 'POLYGON') then
+           Result := hmsPoly;
+    'R': if (S = 'RECT') then Result := hmsRect;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvShape);
+  end;
 end;
 
 function TIpHtml.ParseMethod : TIpHtmlFormMethod;
@@ -7554,8 +8090,8 @@ var
   S : string;
 begin
   Result := hfmGet;
-  S := UpperCase(FindAttribute('METHOD'));
-  if (S = '') or (S = 'GET') then
+  S := UpperCase(FindAttribute(htmlAttrMETHOD));
+  if (length(S) = 0) or (S = 'GET') then
   else
   if S = 'POST' then
     Result := hfmPost
@@ -7569,20 +8105,17 @@ var
   S : string;
 begin
   Result := hbcNone;
-  S := UpperCase(FindAttribute('CLEAR'));
-  if (S = '') then
-  else
-  if (S = 'ALL') or (S = 'CLEAR') then
-    Result := hbcAll
-  else
-  if S = 'LEFT' then
-    Result := hbcLeft
-  else
-  if S = 'RIGHT' then
-    Result := hbcRight
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  S := UpperCase(FindAttribute(htmlAttrCLEAR));
+  if length(S) = 0 then exit;
+  case S[1] of
+    'A','C': if (S = 'ALL') or (S = 'CLEAR') then
+               Result := hbcAll;
+    'L': if S = 'LEFT' then Result := hbcLeft;
+    'R': if S = 'RIGHT' then Result := hbcRight;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvAlign);
+  end;
 end;
 
 function TIpHtml.ParseDir : TIpHtmlDirection;
@@ -7590,8 +8123,8 @@ var
   S : string;
 begin
   Result := hdLTR;
-  S := UpperCase(FindAttribute('DIR'));
-  if (S = '') or (S = 'LTR') then
+  S := UpperCase(FindAttribute(htmlAttrDIR));
+  if (length(S) = 0) or (S = 'LTR') then
   else
   if (S = 'RTL') then
     Result := hdRTL
@@ -7626,53 +8159,7 @@ begin
       Result := RGB(R, G, B);
     end
   else
-  if S = 'BLACK' then
-    Result := clBlack
-  else
-  if S = 'SILVER' then
-    Result := clSilver
-  else
-  if S = 'GRAY' then
-    Result := clGray
-  else
-  if S = 'WHITE' then
-    Result := clWhite
-  else
-  if S = 'MAROON' then
-    Result := clMaroon
-  else
-  if S = 'RED' then
-    Result := clRed
-  else
-  if S = 'PURPLE' then
-    Result := clPurple
-  else
-  if S = 'FUCHSIA' then
-    Result := clFuchsia
-  else
-  if S = 'GREEN' then
-    Result := clGreen
-  else
-  if S = 'LIME' then
-    Result := clLime
-  else
-  if S = 'OLIVE' then
-    Result := clOlive
-  else
-  if S = 'YELLOW' then
-    Result := clYellow
-  else
-  if S = 'NAVY' then
-    Result := clNavy
-  else
-  if S = 'BLUE' then
-    Result := clBlue
-  else
-  if S = 'TEAL' then
-    Result := clTeal
-  else
-  if S = 'AQUA' then
-    Result := clAqua
+  if BinSearchNamedColor(S, result) then exit
   else
   if length(S) = 6 then
     try
@@ -7700,13 +8187,13 @@ var
 begin
   CurFrame := TIpHtmlNodeFRAME.Create(Parent);
   with CurFrame do begin
-    LongDesc := FindAttribute('LONGDESC');
-    Name := FindAttribute('NAME');
-    Src := FindAttribute('SRC');
-    FrameBorder := ParseInteger('BORDER', 1);
-    MarginWidth := ParseInteger('MARGINWIDTH', 1);
-    MarginHeight := ParseInteger('MARGINHEIGHT', 1);
-    NoResize := ParseBoolean('NORESIZE');
+    LongDesc := FindAttribute(htmlAttrLONGDESC);
+    Name := FindAttribute(htmlAttrNAME);
+    Src := FindAttribute(htmlAttrSRC);
+    FrameBorder := ParseInteger(htmlAttrBORDER, 1);
+    MarginWidth := ParseInteger(htmlAttrMARGINWIDTH, 1);
+    MarginHeight := ParseInteger(htmlAttrMARGINHEIGHT, 1);
+    NoResize := ParseBoolean(htmlAttrNORESIZE);
     Scrolling := ParseFrameScrollingProp;
     ParseBaseProps(Self);
   end;
@@ -7719,17 +8206,17 @@ var
 begin
   CurFrame := TIpHtmlNodeIFRAME.Create(Parent);
   with CurFrame do begin
-    LongDesc := FindAttribute('LONGDESC');
-    Name := FindAttribute('NAME');
-    Src := FindAttribute('SRC');
-    FrameBorder := ParseInteger('BORDER', 1);
-    MarginWidth := ParseInteger('MARGINWIDTH', 1);
-    MarginHeight := ParseInteger('MARGINHEIGHT', 1);
+    LongDesc := FindAttribute(htmlAttrLONGDESC);
+    Name := FindAttribute(htmlAttrNAME);
+    Src := FindAttribute(htmlAttrSRC);
+    FrameBorder := ParseInteger(htmlAttrBORDER, 1);
+    MarginWidth := ParseInteger(htmlAttrMARGINWIDTH, 1);
+    MarginHeight := ParseInteger(htmlAttrMARGINHEIGHT, 1);
     Scrolling := ParseFrameScrollingProp;
     Align := ParseAlignment;
-    Height := ParseHyperLength('HEIGHT', '');
+    Height := ParseHyperLength(htmlAttrHEIGHT, '');
     Height.OnChange := WidthChanged;                                   {!!.10}
-    Width := ParseHyperLength('WIDTH', '');
+    Width := ParseHyperLength(htmlAttrWIDTH, '');
     Width.OnChange := WidthChanged;                                    {!!.10}
     ParseBaseProps(Self);
   end;
@@ -7753,29 +8240,29 @@ end;
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
- {$IFDEF IP_LAZARUS} //JMN
+ {$IFDEF IP_LAZARUS_DBG} //JMN
   DebugLn('TIpHtml.ParseFrameSet A');
  {$ENDIF}
   FHasFrames := True;
   while CurToken = IpHtmlTagFRAMESET do begin
-    CurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
-    with CurFrameSet do begin
-      {ParseHyperMultiLengthList('ROWS', '100%', FRows);}              {!!.10}
-      FRows := ParseHyperMultiLengthList('ROWS', '100%');              {!!.10}
-      {ParseHyperMultiLengthList('COLS', '100%', FCols);}              {!!.10}
-      FCols := ParseHyperMultiLengthList('COLS', '100%');              {!!.10}
-      Id := FindAttribute('ID');
-      ClassId := FindAttribute('CLASS');
-      Title := FindAttribute('TITLE');
-      Style := FindAttribute('STYLE');
+    FCurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
+    with FCurFrameSet do begin
+      {ParseHyperMultiLengthList(htmlAttrROWS, '100%', FRows);}              {!!.10}
+      FRows := ParseHyperMultiLengthList(htmlAttrROWS, '100%');              {!!.10}
+      {ParseHyperMultiLengthList(htmlAttrCOLS, '100%', FCols);}              {!!.10}
+      FCols := ParseHyperMultiLengthList(htmlAttrCOLS, '100%');              {!!.10}
+      Id := FindAttribute(htmlAttrID);
+      ClassId := FindAttribute(htmlAttrCLASS);
+      Title := FindAttribute(htmlAttrTITLE);
+      Style := FindAttribute(htmlAttrSTYLE);
     end;
     NextToken;
     if CurToken = IpHtmlTagFRAMESET then
-      ParseFrameSet(CurFrameSet, EndTokens + [IpHtmlTagFRAMESETend]);
+      ParseFrameSet(FCurFrameSet, EndTokens + [IpHtmlTagFRAMESETend]);
     while CurToken = IpHtmlTagFRAME do
-      ParseFrame(CurFrameSet);
+      ParseFrame(FCurFrameSet);
     if CurToken = IpHtmlTagNOFRAMES then
-      ParseNOFRAMES(CurFrameSet);
+      ParseNOFRAMES(FCurFrameSet);
     if CurToken = IpHtmlTagFRAMESETend then
       NextToken;
   end;
@@ -7800,12 +8287,12 @@ begin
   if CurToken = IpHtmlTagBODY then begin
     TIpHtmlNodeBODY.Create(Parent);
     with Body do begin
-      BgColor := ColorFromString(FindAttribute('BGCOLOR'));
-      Text := ColorFromString(FindAttribute('TEXT'));
-      Link := ColorFromString(FindAttribute('LINK'));
-      VLink := ColorFromString(FindAttribute('VLINK'));
-      ALink := ColorFromString(FindAttribute('ALINK'));
-      Background := FindAttribute('BACKGROUND');
+      BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
+      Text := ColorFromString(FindAttribute(htmlAttrTEXT));
+      Link := ColorFromString(FindAttribute(htmlAttrLINK));
+      VLink := ColorFromString(FindAttribute(htmlAttrVLINK));
+      ALink := ColorFromString(FindAttribute(htmlAttrALINK));
+      Background := FindAttribute(htmlAttrBACKGROUND);
       ParseBaseProps(Self);
       {$IFDEF IP_LAZARUS}
       LoadCSSProps(Owner, Element, props);
@@ -7849,8 +8336,8 @@ procedure TIpHtml.ParseHtml;
 begin
   {lead token is optional}
   if CurToken = IpHtmlTagHtml then begin
-    HtmlNode.Version := FindAttribute('VERSION');
-    HtmlNode.Lang := FindAttribute('LANG');
+    HtmlNode.Version := FindAttribute(htmlAttrVERSION);
+    HtmlNode.Lang := FindAttribute(htmlAttrLANG);
     HtmlNode.Dir := ParseDir;
     NextToken;
     ParseHead(HtmlNode); {may not be present}
@@ -7903,8 +8390,8 @@ var
   TmpBitmap: TGraphic;
 begin
   inherited Create;
-  PropACache := TList.Create;
-  PropBCache := TList.Create;
+  PropACache := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  PropBCache := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   DummyA := TIpHtmlPropA.Create;
   DummyA.UseCount := 1;
   DummyB := TIpHtmlPropB.Create(Self);
@@ -7923,27 +8410,25 @@ begin
   DefaultProps := TIpHtmlProps.Create(Self);
   FHtml := TIpHtmlNodeHtml.Create(nil);
   FHtml.FOwner := Self;
-  ParmList := TStringList.Create;
-  ValueList := TStringList.Create;
-  AnchorList := TList.Create;
-  MapList := TList.Create;
-  AreaList := TList.Create;
-  MapImgList := TList.Create;
-  RectList := TList.Create;
-  ControlList := TList.Create;
+  AnchorList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  MapList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  AreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  MapImgList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  RectList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  FControlList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   LinkColor := clBlue;
   VLinkColor := clPurple;
   ALinkColor := clRed;
   {$IFDEF IP_LAZARUS}
   FCSS := TCSSGlobalProps.Create;
     {$IFDEF UseGifImageUnit}
-    GifImages := TList.Create;
+    GifImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
     {$ELSE}
-    AnimationFrames := TList.Create;
+    AnimationFrames := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
     {$ENDIF}
   {$ELSE}
-  GifImages := TList.Create;
-  OtherImages := TList.Create; //JMN
+  GifImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  OtherImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create; //JMN
   {$ENDIF}
   NameList := TStringList.Create;
   DefaultImage := TPicture.Create;
@@ -7964,10 +8449,12 @@ begin
   finally
     TmpBitmap.Free;
   end;
-  GifQueue := TList.Create;
+  GifQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   FStartSel.x := -1;
   FEndSel.x := -1;
   //FixedTypeface := 'Courier New';                                      {!!.10}  //JMN
+  FBgColor := -1;
+  FFactBAParag := 1;
 end;
 
 function TIpHtml.LinkVisited(const URL : string): Boolean;
@@ -8053,8 +8540,6 @@ begin
   GifQueue.Free;
   DefaultImage.Free;
   NameList.Free;
-  ParmList.Free;
-  ValueList.Free;
   FHtml.Free;
   AnchorList.Free;
   MapList.Free;
@@ -8062,7 +8547,7 @@ begin
   ClearRectList;
   RectList.Free;
   MapImgList.Free;
-  ControlList.Free;
+  FControlList.Free;
   DefaultProps.Free;
  {$IFDEF IP_LAZARUS} //JMN
   {$IFDEF UseGifImageUnit}
@@ -8085,38 +8570,27 @@ var
   S : string;
 begin
   Result := hfVoid;
-  S := UpperCase(FindAttribute('FRAME'));
-  if (S = '') then
-    Result := Default
-  else
-  if (S = 'VOID') then
-  else
-  if (S = 'ABOVE') then
-    Result := hfAbove
-  else
-  if S = 'BELOW' then
-    Result := hfBelow
-  else
-  if S = 'HSIDES' then
-    Result := hfHSides
-  else
-  if S = 'LHS' then
-    Result := hfLhs
-  else
-  if S = 'RHS' then
-    Result := hfRhs
-  else
-  if S = 'VSIDES' then
-    Result := hfvSides
-  else
-  if S = 'BOX' then
-    Result := hfBox
-  else
-  if S = 'BORDER' then
-    Result := hfBorder
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvFrame);
+  S := UpperCase(FindAttribute(htmlAttrFRAME));
+  if length(S) = 0 then
+  begin
+    Result := Default;
+    exit;
+  end;
+  case S[1] of
+    'A': if (S = 'ABOVE') then Result := hfAbove;
+    'B': if S = 'BELOW' then Result := hfBelow
+         else if S = 'BOX' then Result := hfBox
+         else if S = 'BORDER' then Result := hfBorder;
+    'H': if S = 'HSIDES' then Result := hfHSides;
+    'L': if S = 'LHS' then Result := hfLhs;
+    'R': if S = 'RHS' then Result := hfRhs;
+    'V': if (S = 'VOID') then exit
+         else if S = 'VSIDES' then
+           Result := hfvSides;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvFrame);
+  end;
 end;
 
 function TIpHtml.ParseRules(Default : TIpHtmlRules): TIpHtmlRules;
@@ -8124,53 +8598,36 @@ var
   S : string;
 begin
   Result := hrNone;
-  S := UpperCase(FindAttribute('RULES'));
-  if (S = '') then
-    Result := Default
-  else
-  if (S = 'NONE') then
-  else
-  if (S = 'GROUPS') then
-    Result := hrGroups
-  else
-  if S = 'ROWS' then
-    Result := hrRows
-  else
-  if S = 'COLS' then
-    Result := hrCols
-  else
-  if S = 'ALL' then
-    Result := hrAll
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvRule);
+  S := UpperCase(FindAttribute(htmlAttrRULES));
+  if length(S) = 0 then
+  begin
+    Result := Default;
+    exit;
+  end;
+  case S[1] of
+    'A': if S = 'ALL' then Result := hrAll;
+    'C': if S = 'COLS' then Result := hrCols;
+    'G': if S = 'GROUPS' then Result := hrGroups;
+    'N': if S = 'NONE' then exit;
+    'R': if S = 'ROWS' then Result := hrRows;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvRule);
+  end;
 end;
 
 function TIpHtml.ParseCellAlign(Default : TIpHtmlAlign): TIpHtmlAlign;
 var
   S : string;
 begin
-  Result := haCenter;
-  S := UpperCase(FindAttribute('ALIGN'));
-  if (S = '') then
-    Result := Default
-  else
-  if (S = 'CENTER') or (S = 'MIDDLE') then
-  else
-  if (S = 'LEFT') then
-    Result := haLeft
-  else
-  if S = 'RIGHT' then
-    Result := haRight
-  else
-  if S = 'JUSTIFY' then
-    Result := haJustify
-  else
-  if S = 'CHAR' then
-    Result := haChar
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  if length(S) = 0 then
+  begin
+    Result := Default;
+    exit;
+  end;
+  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haCenter);
+//  if FlagErrors then
+//    ReportError(SHtmlInvAlign);
 end;
 
 function TIpHtml.ParseFrameScrollingProp: TIpHtmlFrameScrolling;
@@ -8178,17 +8635,16 @@ var
   S : string;
 begin
   Result := hfsAuto;
-  S := UpperCase(FindAttribute('SCROLLING'));
-  if (S = '') or (S = 'AUTO') then
-  else
-  if S = 'YES' then
-    Result := hfsYes
-  else
-  if S = 'NO' then
-    Result := hfsNo
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvScroll);
+  S := UpperCase(FindAttribute(htmlAttrSCROLLING));
+  if (length(S) = 0) then exit;
+  case S[1] of
+    'A': if (S = 'AUTO') then exit;
+    'N': if S = 'NO' then Result := hfsNo;
+    'Y': if S = 'YES' then Result := hfsYes;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvScroll);
+  end;
 end;
 
 function TIpHtml.ParseVAlignment3: TIpHtmlVAlign3;
@@ -8196,23 +8652,21 @@ var
   S : string;
 begin
   Result := hva3Middle;
-  S := UpperCase(FindAttribute('VALIGN'));
-  if (S = '') then
-    Result := hva3Default
-  else
-  if (S = 'MIDDLE') or (S = 'CENTER') then
-  else
-  if (S = 'TOP') then
-    Result := hva3Top
-  else
-  if S = 'BOTTOM' then
-    Result := hva3Bottom
-  else
-  if S = 'BASELINE' then
-    Result := hva3Baseline
-  else
-    if FlagErrors then
-      ReportError(SHtmlInvAlign);
+  S := UpperCase(FindAttribute(htmlAttrVALIGN));
+  if length(S) = 0 then
+  begin
+    Result := hva3Default;
+    exit;
+  end;
+  case S[1] of
+    'B': if S = 'BOTTOM' then Result := hva3Bottom
+         else if S = 'BASELINE' then Result := hva3Baseline;
+    'C','M': if (S = 'MIDDLE') or (S = 'CENTER') then exit;
+    'T': if (S = 'TOP') then Result := hva3Top;
+    else
+      if FlagErrors then
+        ReportError(SHtmlInvAlign);
+  end;
 end;
 
 procedure TIpHtml.SetDefaultProps;
@@ -8235,7 +8689,7 @@ begin
   DefaultProps.LinkColor := LinkColor;
   DefaultProps.VLinkColor := VLinkColor;
   DefaultProps.ALinkColor := ALinkColor;
-  DefaultProps.BgColor := BgColor; //JMN 
+  DefaultProps.BgColor := BgColor; //JMN
   DefaultProps.Preformatted := False;
   DefaultProps.NoBreak := False;
   if Body <> nil then begin
@@ -8368,6 +8822,16 @@ begin
   Result := True;
 end;
 {$ENDIF}
+
+function TIpHtml.getControlCount:integer;
+begin
+     result := FControlList.Count;
+end;
+
+function TIpHtml.getControl(i:integer):TIpHtmlNode;
+begin
+     result := FControlList[i];
+end;
 
 procedure TIpHtml.PaintSelection;
 var
@@ -8544,8 +9008,8 @@ begin
         if Painters <> nil then
           PaintStop;
  {$ENDIF}
-  for i := 0 to Pred(ControlList.Count) do
-    TIpHtmlNode(ControlList[i]).UnmarkControl;
+  for i := 0 to Pred(FControlList.Count) do
+    TIpHtmlNode(FControlList[i]).UnmarkControl;
   SetDefaultProps;
   PageViewRect := TargetPageRect;
   if UsePaintBuffer then begin
@@ -8567,8 +9031,8 @@ begin
   if FHtml <> nil then
     FHtml.Render(DefaultProps);
 
-  for i := 0 to Pred(ControlList.Count) do
-    TIpHtmlNode(ControlList[i]).HideUnmarkedControl;
+  for i := 0 to Pred(FControlList.Count) do
+    TIpHtmlNode(FControlList[i]).HideUnmarkedControl;
   {$IFNDEF IP_LAZARUS}
   PaintSelection;
   {$ENDIF}
@@ -8850,7 +9314,9 @@ end;
 procedure TIpHtml.MouseMove(Pt: TPoint);
 var
   i : Integer;
+  rectEntry : PIpHtmlRectListEntry;
 begin
+  FMouseLastPoint := Pt;
   FHotPoint := Point(-1, -1);
   if (MapList.Count > 0) and (AreaList.Count = 0) then
     BuildAreaList;
@@ -8895,10 +9361,10 @@ function TIpHtml.BuildPath(const Ext: string): string;
 begin
   {$IFDEF IP_LAZARUS}
   if FDataProvider <> nil then
-    Result := FDataProvider.BuildURL(CurURL,Ext)
+    Result := FDataProvider.BuildURL(FCurURL,Ext)
   else
   {$ENDIF}
-  Result :=  BuildURL(CurURL, Ext);
+  Result :=  BuildURL(FCurURL, Ext);
 end;
 
 function TIpHtml.NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
@@ -9145,6 +9611,24 @@ begin
     FControlClick(Self, Sender);
 end;
 
+procedure TIpHtml.ControlClick2(Sender: TIpHtmlNodeControl; var cancel: boolean);
+begin
+  if assigned(FControlClick2) then
+    FControlClick2(Self, Sender, cancel);
+end;
+
+procedure TIpHtml.ControlOnEditingDone(Sender: TIpHtmlNodeControl);
+begin
+  if assigned(FControlOnEditingDone) then
+    FControlOnEditingDone(Self, Sender);
+end;
+
+procedure TIpHtml.ControlOnChange(Sender: TIpHtmlNodeControl);
+begin
+  if assigned(FControlOnChange) then
+    FControlOnChange(Self, Sender);
+end;
+
 procedure TIpHtml.ControlCreate(Sender: TIpHtmlNodeControl);
 begin
   if assigned(FControlCreate) then
@@ -9155,7 +9639,7 @@ end;
 
 constructor TIpHtmlGifQueueEntry.Create(AGraphic: TGraphic; ARect: TRect);
 begin
-  {$IFDEF IP_LAZARUS}
+  {$IFDEF IP_LAZARUS_DBG}
   DebugLn('TIpHtmlGifQueueEntry.Create ToDo NOT IMPLEMENTED YET');
   {$ELSE}
   FGraphic := AGraphic;
@@ -9190,10 +9674,27 @@ begin
 end;
 
 { TIpHtmlNodeText }
+//var
+//   NodetextCount : integer = 0;
+
+constructor TIpHtmlNodeText.Create(ParentNode : TIpHtmlNode);
+begin
+  inherited Create(ParentNode);
+  PropsR := TIpHtmlProps.Create(Owner);
+//  inc(NodetextCount);
+//  DebugLn('NodeText: ', InttoStr(NodetextCount));
+end;
+
+destructor TIpHtmlNodeText.Destroy;
+begin
+  inherited;
+  PropsR.Free;
+end;
 
 procedure TIpHtmlNodeText.SetProps(const RenderProps: TIpHtmlProps);
 begin
-  PropsR := RenderProps;
+  //PropsR := RenderProps;
+  PropsR.Assign(RenderProps);
 end;
 
 procedure TIpHtmlNodeText.Enqueue;
@@ -9397,32 +9898,17 @@ begin
     Props.FontName := FirstString(Face);
   case Size.SizeType of
   hrsAbsolute :
-    case Size.Value of
-    1 : Props.FontSize := 8;
-    2 : Props.FontSize := 10;
-    3 : Props.FontSize := 12;
-    4 : Props.FontSize := 14;
-    5 : Props.FontSize := 18;
-    6 : Props.FontSize := 24;
-    7 : Props.FontSize := 36;
-    end;
+    Props.FontSize := FONTSIZESVALUSARRAY[Size.Value-1];
   hrsRelative :
     begin
       TmpSize := Props.BaseFontSize + Size.Value;
       if TmpSize <= 1 then                                             {!!.10}
         Props.FontSize := 8                                            {!!.10}
-      else                                                             {!!.10}
-        case TmpSize of
-        {0,
-        1 : Props.FontSize := 8;}                                      {!!.10}
-        2 : Props.FontSize := 10;
-        3 : Props.FontSize := 12;
-        4 : Props.FontSize := 14;
-        5 : Props.FontSize := 18;
-        6 : Props.FontSize := 24;
-        else
-          Props.FontSize := 36;
-        end;
+      else
+      if TmpSize > 7 then
+          Props.FontSize := 36
+      else
+        Props.FontSize := FONTSIZESVALUSARRAY[TmpSize-1];                                                         {!!.10}
     end;
   end;
   if Color <> -1 then
@@ -9517,10 +10003,9 @@ end;
 constructor TIpHtmlNodeBlock.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  ElementQueue := TList.Create;
+  ElementQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   FMin := -1;
   FMax := -1;
-  Props := TIpHtmlProps.Create(Owner);
 end;
 
 destructor TIpHtmlNodeBlock.Destroy;
@@ -9528,8 +10013,6 @@ begin
   ClearWordList;
   ElementQueue.Free;
   ElementQueue := nil;
-  Props.Free;
-  Props := nil;
   inherited;
 end;
 
@@ -9541,16 +10024,34 @@ var
   R : TRect;
   P : TPoint;
   L0 : Boolean;
+  aCanvas : TCanvas;
   {$IFDEF IP_LAZARUS}
   OldBrushcolor: TColor;
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
+
+  procedure saveCanvasProperties;
+  begin
+    OldBrushColor := aCanvas.Brush.Color;
+    OldBrushStyle := aCanvas.Brush.Style;
+    OldFontColor := aCanvas.Font.Color;
+    OldFontStyle := aCanvas.Font.Style;
+  end;
+
+  procedure restoreCanvasProperties;
+  begin
+    aCanvas.Font.Color := OldFontColor;
+    aCanvas.Brush.Color := OldBrushColor;
+    aCanvas.Brush.Style := OldBrushStyle;
+    aCanvas.Font.Style := OldFontStyle;
+  end;
   {$ENDIF}
+
 begin
   L0 := Level0;
   LastProp := nil;
-
+  aCanvas := Owner.Target;
 
   for i := 0 to Pred(ElementQueue.Count) do begin
     CurWord := PIpHtmlElement(ElementQueue[i]);
@@ -9558,27 +10059,31 @@ begin
     if (CurWord.Props <> nil) and (CurWord.Props <> LastProp) then begin
 
       {$IFDEF IP_LAZARUS}
-      Owner.Target.Font.BeginUpdate; // for speedup
+      aCanvas.Font.BeginUpdate; // for speedup
       {$ENDIF}
       if (LastProp = nil) or not LastProp.AIsEqualTo(CurWord.Props) then
         with CurWord.Props do begin
-          Owner.Target.Font.Name := FontName;
+          aCanvas.Font.Name := FontName;
           if ScaleFonts then                                           {!!.10}
-            Owner.Target.Font.Size := round(FontSize * Aspect)         {!!.10}
+            aCanvas.Font.Size := round(FontSize * Aspect)         {!!.10}
           else                                                         {!!.10}
-            Owner.Target.Font.Size := FontSize;
-          Owner.Target.Font.Style := FontStyle;
+            aCanvas.Font.Size := FontSize;
+          aCanvas.Font.Style := FontStyle;
         end;
       if ScaleBitmaps and BWPRinter then                               {!!.10}
         Owner.Target.Font.Color := clBlack                             {!!.10}
       else                                                             {!!.10}
         if (LastProp = nil) or not LastProp.BIsEqualTo(CurWord.Props) then
-          Owner.Target.Font.Color := CurWord.Props.FontColor;
+          aCanvas.Font.Color := CurWord.Props.FontColor;
       {$IFDEF IP_LAZARUS}
       Owner.Target.Font.EndUpdate;
       {$ENDIF}
       LastProp := CurWord.Props;
     end;
+
+    {$IFDEF IP_LAZARUS_DBG}
+    //DumpTIpHtmlProps(LastProp);
+    {$endif}
 
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
@@ -9586,39 +10091,41 @@ begin
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
           {$IFDEF IP_LAZARUS}
-          OldBrushColor := Owner.Target.Brush.Color;
-          OldBrushStyle := Owner.Target.Brush.Style;
-          OldFontColor := Owner.Target.Font.Color;
-          OldFontStyle := Owner.Target.Font.Style;
+          //if (LastOwner <> CurWord.Owner) then LastPoint := P;
+          saveCanvasProperties;
           if CurWord.IsSelected  then begin
-            Owner.Target.Font.color := clHighlightText;
-            Owner.Target.brush.Style := bsSolid;
-            Owner.Target.brush.color := clHighLight;
-            Owner.PageRectToScreen(curWord.WordRect2, R);
-            Owner.Target.FillRect(R);
-          end else
+            aCanvas.Font.color := clHighlightText;
+            aCanvas.brush.Style := bsSolid;
+            aCanvas.brush.color := clHighLight;
+            Owner.PageRectToScreen(CurWord.WordRect2, R);
+            aCanvas.FillRect(R);
+          end
+          else if LastProp.BgColor > 0 then
+          begin
+               aCanvas.brush.Style := bsSolid;
+               aCanvas.brush.color := LastProp.BgColor;
+          end
+          else
           {$ENDIF}
-          Owner.Target.Brush.Style := bsClear;
-          if  CurWord.AnsiWord <> NAnchorChar  //JMN
-          then  Owner.Target.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
+          aCanvas.Brush.Style := bsClear;
+          if  CurWord.AnsiWord <> NAnchorChar then //JMN
+               aCanvas.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
-          Owner.Target.Font.Color := OldFontColor;
-          Owner.Target.Brush.Color := OldBrushColor;
-          Owner.Target.Brush.Style := OldBrushStyle;
-          Owner.Target.Font.Style := OldFontStyle;
+          restoreCanvasProperties;
           {$ENDIF}
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
         end;
       etObject :
         begin
           TIpHtmlNodeAlignInline(CurWord.Owner).Draw(Self);
+          //Owner.AddRect(CurWord.WordRect2, CurWord, Self);
           LastProp := nil;
         end;
       etSoftHyphen :
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
-          Owner.Target.Brush.Style := bsClear;
-          Owner.Target.TextOut(P.x, P.y, '-');
+          aCanvas.Brush.Style := bsClear;
+          aCanvas.TextOut(P.x, P.y, '-');
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
         end;
       end
@@ -9656,7 +10163,7 @@ var
   i : Integer;
   CurElement : PIpHtmlElement;                                       {!!.10}
 
-    function GetExt(const S: string): TSize;
+    function GetExt(const S: string): TSize;inline;
     begin
       Result := Owner.Target.TextExtent(
                 NoBreakToSpace(S));
@@ -9706,6 +10213,7 @@ var
   CurFontStyle : TFontStyles;
   SizeOfSpace : TSize;
   SizeOfHyphen : TSize;
+  aCanvas: TCanvas;
 
   procedure ApplyProps;
   var
@@ -9717,17 +10225,17 @@ var
         Changed := False;
 
         if (CurProps = nil) or (CurFontName <> FontName) or (CurFontName = '') then begin
-          Owner.Target.Font.Name := FontName;
+          aCanvas.Font.Name := FontName;
           CurFontName := FontName;
           Changed := True;
         end;
         if (CurProps = nil) or (CurFontSize <> FontSize) or (CurFontSize = 0) then begin
-          Owner.Target.Font.Size := FontSize;
+          aCanvas.Font.Size := FontSize;
           CurFontSize := FontSize;
           Changed := True;
         end;
         if (CurProps = nil) or (CurFontStyle <> FontStyle) then begin
-          Owner.Target.Font.Style := FontStyle;
+          aCanvas.Font.Style := FontStyle;
           CurFontStyle := FontStyle;
           Changed := True;
         end;
@@ -9736,18 +10244,18 @@ var
           SizeOfHyphen := PropA.KnownSizeOfHyphen;
         end else begin
           SizeOfSpace := Owner.Target.TextExtent(' ');
-          {$IFDEF IP_LAZARUS}
+          {$IFDEF IP_LAZARUS_DBG}
           if SizeOfSpace.CX=0 then begin
-            DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',Owner.Target.Font.Name,'" Size=',dbgs(Owner.Target.Font.Size));
+            DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',aCanvas.Font.Name,'" Size=',dbgs(aCanvas.Font.Size));
           end;
           {$ENDIF}
-          SizeOfHyphen := Owner.Target.TextExtent('-');
+          SizeOfHyphen := aCanvas.TextExtent('-');
           PropA.SetKnownSizeOfSpace(SizeOfSpace);
           PropA.KnownSizeOfHyphen := SizeOfHyphen;
         end;
         if Changed then begin
           if PropA.tmHeight = 0 then begin
-            GetTextMetrics(Owner.Target.Handle, TextMetrics);
+            GetTextMetrics(aCanvas.Handle, TextMetrics);
             PropA.tmAscent := TextMetrics.tmAscent;
             PropA.tmDescent := TextMetrics.tmDescent;
             PropA.tmHeight := TextMetrics.tmHeight;
@@ -9790,6 +10298,7 @@ var
   *)
 
 begin
+  aCanvas := Owner.Target;
   Min := 0;
   Max := 0;
   if ElementQueue.Count = 0 then Exit;
@@ -9818,9 +10327,9 @@ begin
   CurFontName := '';
   CurFontSize := 0;
   CurFontStyle := [];
-  Owner.Target.Font.Style := CurFontStyle;
-  SizeOfSpace := Owner.Target.TextExtent(' ');
-  SizeOfHyphen := Owner.Target.TextExtent('-');
+  aCanvas.Font.Style := CurFontStyle;
+  SizeOfSpace := aCanvas.TextExtent(' ');
+  SizeOfHyphen := aCanvas.TextExtent('-');
   i := 0;
   NoBr := False;
   while i <= LastElement do begin
@@ -9849,7 +10358,7 @@ begin
             MaxW := CurElement.Size.cx
           else begin
             CurElement.Size :=
-              Owner.Target.TextExtent(
+              aCanvas.TextExtent(
                 NoBreakToSpace(CurElement.AnsiWord));
             if CurElement.AnsiWord = NAnchorChar
             then  CurElement.Size.cx := 1; //JMN
@@ -10028,8 +10537,8 @@ var
   FirstWord, LastWord, {dx,} m, X0 : Integer;
   CurHeight, CurAscent, CurDescent : Integer;
   LineBreak : Boolean;
-  LeftQueue : TList;
-  RightQueue : TList;
+  LeftQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+  RightQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
   tmAscent,
   tmDescent,
   tmHeight : Integer;
@@ -10061,6 +10570,7 @@ var
   HyphenSpace : Integer;
   SoftLF : Boolean;
   HyphensPresent : Boolean;
+  aCanvas: Tcanvas;
 
   procedure QueueLeadingObjects;
   var
@@ -10274,18 +10784,18 @@ var
           SizeOfSpace := PropA.KnownSizeOfSpace;
           SizeOfHyphen := PropA.KnownSizeOfHyphen;
         end else begin
-          Owner.Target.Font.Name := FontName;
-          Owner.Target.Font.Size := FontSize;
-          Owner.Target.Font.Style := FontStyle;
-          SizeOfSpace := Owner.Target.TextExtent(' ');
-          SizeOfHyphen := Owner.Target.TextExtent('-');
+          aCanvas.Font.Name := FontName;
+          aCanvas.Font.Size := FontSize;
+          aCanvas.Font.Style := FontStyle;
+          SizeOfSpace := aCanvas.TextExtent(' ');
+          SizeOfHyphen := aCanvas.TextExtent('-');
           PropA.SetKnownSizeOfSpace(SizeOfSpace);
           PropA.KnownSizeOfHyphen := SizeOfHyphen;
         end;
         if PropA.tmHeight = 0 then begin
-          Owner.Target.Font.Name := FontName;
-          Owner.Target.Font.Size := FontSize;
-          Owner.Target.Font.Style := FontStyle;
+          aCanvas.Font.Name := FontName;
+          aCanvas.Font.Size := FontSize;
+          aCanvas.Font.Style := FontStyle;
           GetTextMetrics(Owner.Target.Handle, TextMetrics);
           PropA.tmAscent := TextMetrics.tmAscent;
           PropA.tmDescent := TextMetrics.tmDescent;
@@ -10309,7 +10819,7 @@ var
   var
     TextMetrics : TTextMetric;
   begin
-    GetTextMetrics(Owner.Target.Handle, TextMetrics);
+    GetTextMetrics(aCanvas.Handle, TextMetrics);
     tmAscent := TextMetrics.tmAscent;
     tmDescent := TextMetrics.tmDescent;
     tmHeight := TextMetrics.tmHeight;
@@ -10346,14 +10856,25 @@ var
     end;
   end;
 
-  (*
-  procedure DumpQueue;
+{$IFDEF IP_LAZARUS_DBG}
+  procedure DumpQueue(bStart: boolean=true);
   var
     i: Integer;
     CurElement : PIpHtmlElement;
   begin
+    if bStart then writeln('<<<<<')
+    else writeln('>>>>>');
     for i := 0 to ElementQueue.Count - 1 do begin
       CurElement := PIpHtmlElement(ElementQueue[i]);
+      if CurElement.owner <> nil then
+         write(CurElement.owner.classname,':');
+
+      write(
+            CurElement.WordRect2.Left,':',
+            CurElement.WordRect2.Top,':',
+            CurElement.WordRect2.Right,':',
+            CurElement.WordRect2.Bottom,':'
+            );
       case CurElement.ElementType of
       etWord :
         write(' wrd:', CurElement.AnsiWord);
@@ -10376,14 +10897,19 @@ var
       etSoftHyphen :
         write(' softhyphen');
       end;
+      writeln;
     end;
-    writeln('/////////////////');
+    if bStart then writeln('<<<<<')
+    else writeln('>>>>>');
   end;
-  *)
+{$endif}
   
 begin
+  aCanvas := Owner.Target;
   if ElementQueue.Count = 0 then Exit;
-  {DumpQueue;} {debug}
+  {$IFDEF IP_LAZARUS_DBG}
+  //DumpQueue; {debug}
+  {$endif}
   LeftQueue := nil;
   RightQueue := nil;
   WordInfoSize := 0;
@@ -10392,8 +10918,8 @@ begin
   try
     RectWidth := TargetRect.Right - TargetRect.Left;
     Y := TargetRect.Top;
-    LeftQueue := TList.Create;
-    RightQueue := TList.Create;
+    LeftQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+    RightQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
     SizeOfSpace := Owner.Target.TextExtent(' ');
     SizeOfHyphen := Owner.Target.TextExtent('-');
     InitMetrics;
@@ -10507,11 +11033,11 @@ begin
                 if (CurElement.SizeProp = CurProps.PropA) then
                   Size := CurElement.Size
                 else begin
-                  Owner.Target.Font.Name := CurProps.FontName;
-                  Owner.Target.Font.Size := CurProps.FontSize;
-                  Owner.Target.Font.Style := CurProps.FontStyle;
+                  aCanvas.Font.Name := CurProps.FontName;
+                  aCanvas.Font.Size := CurProps.FontSize;
+                  aCanvas.Font.Style := CurProps.FontStyle;
                   CurElement.Size :=
-                    Owner.Target.TextExtent(
+                    aCanvas.TextExtent(
                       NoBreakToSpace(CurElement.AnsiWord));
                   Size := CurElement.Size;
                   CurElement.SizeProp := CurProps.PropA;
@@ -10553,8 +11079,7 @@ begin
                 CurAscent := -1;
                 CurDescent := Size.cy;
               end;
-            hiaMiddle
-             :
+            hiaMiddle :
               begin
                 ExpBreak := False;
                 LTrim := False;
@@ -10629,8 +11154,8 @@ begin
             LastWord := i - 1;
             if not IgnoreHardLF then begin
               if LineBreak then  begin
-                MaxAscent := Round (MaxAscent * FactBAParagG); //JMN
-                MaxDescent := Round (MaxDescent * FactBAParagG);  //JMN
+                MaxAscent := Round (MaxAscent * Owner.FactBAParag); //JMN
+                MaxDescent := Round (MaxDescent * Owner.FactBAParag);  //JMN
               end;
               Inc(i);
               break;
@@ -10833,6 +11358,9 @@ begin
     RightQueue.Free;
     if WordInfo <> nil then
       FreeMem(WordInfo);
+    {$IFDEF IP_LAZARUS_DBG}
+    //DumpQueue(false); {debug}
+    {$endif}
   end;
 end;
 
@@ -10860,7 +11388,7 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.ReportCurDrawRects(Owner: TIpHtmlNode;
+procedure TIpHtmlNodeBlock.ReportCurDrawRects(aOwner: TIpHtmlNode;
   M : TRectMethod);
 var
   i : Integer;
@@ -10868,7 +11396,7 @@ var
 begin
   for i := 0 to Pred(ElementQueue.Count) do begin
     CurElement := PIpHtmlElement(ElementQueue[i]);
-    if CurElement.Owner = Owner then
+    if CurElement.Owner = aOwner then
       M(CurElement.WordRect2);
   end;
 end;
@@ -10969,12 +11497,10 @@ begin
   {$IFDEF IP_LAZARUS}
   FElementName := 'p';
   {$ENDIF}
-  Props := TIpHtmlProps.Create(Owner);
 end;
 
 destructor TIpHtmlNodeP.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
@@ -11090,10 +11616,10 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeOL.SetStyle(const Value: TIpHtmlOLStyle);
+procedure TIpHtmlNodeOL.SetOLStyle(const Value: TIpHtmlOLStyle);
 begin
-  if Value <> FStyle then begin
-    FStyle := Value;
+  if Value <> FOLStyle then begin
+    FOLStyle := Value;
     InvalidateSize;
   end;
 end;
@@ -11132,28 +11658,21 @@ end;
 constructor TIpHtmlNodeHeader.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  Props := TIpHtmlProps.Create(Owner);
 end;
 
 destructor TIpHtmlNodeHeader.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
 procedure TIpHtmlNodeHeader.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
-  case Size of
-  1 : Props.FontSize := 24;
-  2 : Props.FontSize := 18;
-  3 : Props.FontSize := 14;
-  4 : Props.FontSize := 12;
-  5 : Props.FontSize := 10;
-  6 : Props.FontSize :=  8;
-  end;
+  Props.DelayCache:=True;
+  Props.FontSize := FONTSIZESVALUSARRAY[abs(Size-6)];
   Props.FontStyle := [fsBold];
   Props.Alignment := Align;
+  Props.DelayCache:=False;
   inherited SetProps(Props);
 end;
 
@@ -11184,6 +11703,9 @@ end;
 constructor TIpHtmlNodeLI.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'li';
+  {$ENDIF}
   Align := hiaBottom;
   WordEntry := Owner.NewElement(etWord, Self);
   WordEntry.Props := Props;
@@ -11314,7 +11836,9 @@ var
   Dim : TSize;
   SaveBrushColor,
   SavePenColor : TColor;
+  aCanvas: TCanvas;
 begin
+  aCanvas := Owner.Target;
   TopLeft := GrossDrawRect.TopLeft;
   R.TopLeft := TopLeft;
   Dim := GetDim(0);
@@ -11323,33 +11847,33 @@ begin
   if not PageRectToScreen(R, R) then
     Exit;
   if NoShade or (Color <> -1) then begin
-    SavePenColor := Owner.Target.Pen.Color;
-    SaveBrushColor := Owner.Target.Brush.Color;
+    SavePenColor := aCanvas.Pen.Color;
+    SaveBrushColor := aCanvas.Brush.Color;
     if Color = -1 then begin
-      Owner.Target.Pen.Color := clBlack;
-      Owner.Target.Brush.Color := clBlack;
+      aCanvas.Pen.Color := clBlack;
+      aCanvas.Brush.Color := clBlack;
     end else begin
-      Owner.Target.Pen.Color := Color;
-      Owner.Target.Brush.Color := Color;
+      aCanvas.Pen.Color := Color;
+      aCanvas.Brush.Color := Color;
     end;
-    Owner.Target.FillRect(R);
-    Owner.Target.Pen.Color := SavePenColor;
-    Owner.Target.Brush.Color := SaveBrushColor;
+    aCanvas.FillRect(R);
+    aCanvas.Pen.Color := SavePenColor;
+    aCanvas.Brush.Color := SaveBrushColor;
   end else begin
-    SavePenColor := Owner.Target.Pen.Color;
-    SaveBrushColor := Owner.Target.Brush.Color;
-    Owner.Target.Pen.Color := clGray;
-    Owner.Target.Brush.Color := clGray;
-    Owner.Target.FillRect(R);
-    Owner.Target.Pen.Color := clWhite;
-    Owner.Target.MoveTo(R.Left - 1, R.Bottom + 1);
-    Owner.Target.LineTo(R.Left - 1, R.Top - 1);
-    Owner.Target.LineTo(R.Right + 1, R.Top - 1);
-    Owner.Target.Pen.Color := clBlack;
-    Owner.Target.LineTo(R.Right + 1, R.Bottom + 1);
-    Owner.Target.LineTo(R.Left - 1, R.Bottom + 1);
-    Owner.Target.Pen.Color := SavePenColor;
-    Owner.Target.Brush.Color := SaveBrushColor;
+    SavePenColor := aCanvas.Pen.Color;
+    SaveBrushColor := aCanvas.Brush.Color;
+    aCanvas.Pen.Color := clGray;
+    aCanvas.Brush.Color := clGray;
+    aCanvas.FillRect(R);
+    aCanvas.Pen.Color := clWhite;
+    aCanvas.MoveTo(R.Left - 1, R.Bottom + 1);
+    aCanvas.LineTo(R.Left - 1, R.Top - 1);
+    aCanvas.LineTo(R.Right + 1, R.Top - 1);
+    aCanvas.Pen.Color := clBlack;
+    aCanvas.LineTo(R.Right + 1, R.Bottom + 1);
+    aCanvas.LineTo(R.Left - 1, R.Bottom + 1);
+    aCanvas.Pen.Color := SavePenColor;
+    aCanvas.Brush.Color := SaveBrushColor;
   end;
 end;
 
@@ -11476,16 +12000,14 @@ begin
   {$IFDEF IP_LAZARUS}
   FElementName := 'a';
   {$ENDIF}
-  AreaList := TList.Create;
-  MapAreaList := TList.Create;
-  Props := TIpHtmlProps.Create(Owner);
+  AreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  MapAreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
 end;
 
 destructor TIpHtmlNodeA.Destroy;
 begin
   if HasRef then
     Owner.AnchorList.Remove(Self);
-  Props.Free;
   ClearAreaList;
   AreaList.Free;
   MapAreaList.Free;
@@ -11603,9 +12125,10 @@ end;
 
 procedure TIpHtmlNodeA.SetProps(const RenderProps: TIpHtmlProps);
 begin
-  Props.Assign(RenderProps);        
+  Props.Assign(RenderProps);
+  Props.DelayCache:=True;
   if FHot then begin
-    Props.FontColor := Props.ALinkColor;
+    Props.FontColor := Props.LinkColor;
     Props.FontStyle := Props.FontStyle + [fsUnderline];
   end else
     if HasRef then begin
@@ -11615,6 +12138,7 @@ begin
       else
         Props.FontColor := Props.LinkColor;
     end;
+  Props.DelayCache:=False;
   inherited SetProps(Props);
 end;
 
@@ -11628,12 +12152,13 @@ end;
 constructor TIpHtmlNodeDIV.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  Props := TIpHtmlProps.Create(Owner);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'div';
+  {$ENDIF}
 end;
 
 destructor TIpHtmlNodeDIV.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
@@ -11662,10 +12187,12 @@ var
 {$ENDIF}
 begin
   Props.Assign(RenderProps);
+  Props.DelayCache:=True;
   Props.Alignment := Align;
   {$IFDEF IP_LAZARUS}
   LoadCSSProps(Owner, Elem, Props);
   {$ENDIF}
+  Props.DelayCache:=False;
 end;
 
 { TIpHtmlNodeTABLE }
@@ -12942,13 +13469,14 @@ var
   z, i, j : Integer;
   R : TRect;
   Al : TIpHtmlVAlign3;
+  aCanvas : TCanvas;
 begin
-  if (BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
-    Owner.Target.Brush.Color := BGColor;
-    Owner.Target.FillRect(R);
-
+  aCanvas := Owner.Target;
+  if (Props.BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
+    aCanvas.Brush.Color := Props.BGColor;
+    aCanvas.FillRect(R);
   end;
-  Owner.Target.Pen.Color := clBlack;
+  aCanvas.Pen.Color := clBlack;
 
   Al := Props.VAlignment;
 
@@ -12981,11 +13509,8 @@ begin
                     else
                       Al := VAlign;
                     end;
-
                     Props.VAlignment := Al;
-                    
                     Render(Props);
-
                     {paint left rule if selected}
                     case Rules of
                     hrNone,
@@ -13198,6 +13723,8 @@ end;
 
 procedure TIpHtmlNodeTABLE.Enqueue;
 begin
+//The commented code bellow prevent a blank line before the table
+{
   case Align of
   hiaTop,
   hiaMiddle,
@@ -13205,7 +13732,9 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
+}
   EnqueueElement(Element);
+{
   case Align of
   hiaTop,
   hiaMiddle,
@@ -13213,6 +13742,7 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
+}
 end;
 
 procedure TIpHtmlNodeTABLE.SetBorder(const Value: Integer);
@@ -13284,10 +13814,10 @@ procedure TIpHtmlNodeTABLE.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
   const Props: TIpHtmlProps);
 begin
   inherited LoadCSSProps(Owner, Element, Props);
-  if Element = nil then
-    exit;
-  if Element.BGColor <> -1 then
-    BgColor := Element.BGColor;
+//  if Element = nil then
+//    exit;
+//  if Element.BGColor <> -1 then
+//    BgColor := Element.BGColor;
 end;
 {$ENDIF}
 
@@ -13804,6 +14334,9 @@ end;
 constructor TIpHtmlNodeIMG.Create;
 begin
   inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'img';
+  {$ENDIF}
   SizeWidth := TIpHtmlPixels.Create;
 end;
 
@@ -13823,12 +14356,13 @@ end;
 constructor TIpHtmlNodeFORM.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Props := TIpHtmlProps.Create(Owner);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'form';
+  {$ENDIF}  
 end;
 
 destructor TIpHtmlNodeFORM.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
@@ -13836,13 +14370,13 @@ procedure TIpHtmlNodeFORM.AddChild(Node: TIpHtmlNode; const UserData: Pointer);
 begin
   if Node is TIpHtmlNodeControl then
     if TIpHtmlNodeControl(Node).SuccessFul then
-      TList(UserData).Add(Node);
+      {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}(UserData).Add(Node);
 end;
 
 {$IFNDEF HtmlWithoutHttp}
 procedure TIpHtmlNodeFORM.SubmitForm;
 var
-  CList : TList;
+  CList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
   FList,
   VList : TStringList;
   URLData: string;
@@ -13930,7 +14464,7 @@ begin
   FList := nil;
   VList := nil;
   try
-    CList := TList.Create;
+    CList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
     FList := TStringList.Create;
     VList := TStringList.Create;
     IndentifySuccessfulControls;
@@ -13980,6 +14514,14 @@ end;
 
 { TIpHtmlNodeDL }
 
+constructor TIpHtmlNodeDL.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'dl';
+  {$ENDIF}
+end;
+
 {!!.16 new}
 procedure TIpHtmlNodeDL.Enqueue;
 begin
@@ -13991,6 +14533,14 @@ end;
 
 { TIpHtmlNodeDT }
 
+constructor TIpHtmlNodeDT.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'dt';
+  {$ENDIF}
+end;
+
 procedure TIpHtmlNodeDT.Enqueue;
 begin
   inherited;
@@ -13998,6 +14548,14 @@ begin
 end;
 
 { TIpHtmlNodeDD }
+
+constructor TIpHtmlNodeDD.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'dd';
+  {$ENDIF}
+end;
 
 procedure TIpHtmlNodeDD.Enqueue;
 begin
@@ -14013,21 +14571,24 @@ end;
 constructor TIpHtmlNodePRE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Props := TIpHtmlProps.Create(Owner);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'pre';
+  {$ENDIF}
 end;
 
 destructor TIpHtmlNodePRE.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
 procedure TIpHtmlNodePRE.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
+  Props.DelayCache:=True;
   Props.Preformatted := True;
   Props.FontName := Owner.FixedTypeface;
   Props.FontSize := Props.FontSize - 2;
+  Props.DelayCache:=False;
   inherited SetProps(Props);
 end;
 
@@ -14095,15 +14656,7 @@ procedure TIpHtmlNodeBASEFONT.ApplyProps(
   const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
-  case Size of
-  1 : Props.FontSize := 8;
-  2 : Props.FontSize := 10;
-  3 : Props.FontSize := 12;
-  4 : Props.FontSize := 14;
-  5 : Props.FontSize := 18;
-  6 : Props.FontSize := 24;
-  7 : Props.FontSize := 36;
-  end;
+  Props.FontSize := FONTSIZESVALUSARRAY[Size-1];
   Props.BaseFontSize := Size;
 end;
 
@@ -14164,6 +14717,9 @@ begin
 end;
 
 procedure TIpHtmlNodeINPUT.CreateControl(Parent: TWinControl);
+var
+   iCurFontSize: integer;
+   aCanvas : TCanvas;
 
   function OwnerForm: TIpHtmlNode;
   begin
@@ -14172,52 +14728,69 @@ procedure TIpHtmlNodeINPUT.CreateControl(Parent: TWinControl);
       Result := Result.FParentNode;
   end;
 
+  procedure setCommonProperties;
+  begin
+      FControl.Visible := False;
+      FControl.Parent := Parent;
+      adjustFromCss;
+      aCanvas.Font.Size := FControl.Font.Size;
+  end;
+
+  procedure setWidhtHeight(iSize, iTopPlus, iSidePlus: integer);
+  begin
+        if iSize <> -1 then
+          FControl.Width := iSize * aCanvas.TextWidth('0') + iSidePlus
+        else
+          FControl.Width := 20 * aCanvas.TextWidth('0')  + iSidePlus;
+        FControl.Height := aCanvas.TextHeight('Wy') + iTopPlus;
+  end;
+
 begin
   Owner.ControlCreate(Self);
+  aCanvas := TFriendPanel(Parent).Canvas;
+  iCurFontSize := aCanvas.Font.Size;
   case InputType of
   hitText :
     begin
       FControl := TEdit.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TEdit(FControl) do begin
         Text := Value;
         MaxLength := Self.MaxLength;
-        if Self.Size <> -1 then
-          Width := Self.Size * TFriendPanel(Parent).Canvas.TextWidth('0')
-        else
-          Width := 20 * TFriendPanel(Parent).Canvas.TextWidth('0');
+        setWidhtHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         OnChange := ButtonClick; {!!.03}
+        OnEditingDone := ControlOnEditingDone;
       end;
     end;
   hitPassword :
     begin
       FControl := TEdit.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TEdit(FControl) do begin
         Text := Value;
         MaxLength := Self.MaxLength;
-        Width := Self.Size * TFriendPanel(Parent).Canvas.TextWidth('0');
+        setWidhtHeight(1, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
         OnChange := ButtonClick; {!!.03}
+        OnEditingDone := ControlOnEditingDone;
       end;
     end;
   hitCheckbox :
     begin
       FControl := TCheckBox.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TCheckBox(FControl) do begin
-        Width := 13;
-        Height := 13;
+        setWidhtHeight(1, 8, 0);
+        //Width := 13;
+        //if Height < 13 then Height := 13;
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
+        OnEditingDone := ControlOnEditingDone;
       end;
     end;
   hitRadio :
@@ -14229,33 +14802,33 @@ begin
       FControl := THtmlRadioButton.Create(Parent);
 {$ENDIF}
       FControl.Tag := PtrInt(OwnerForm);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
 {$IFDEF VERSION3ONLY}
       with TRadioButton(FControl) do begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
 {End !!.14}
-        Width := 13;
-        Height := 13;
+        setWidhtHeight(1, 8, 0);
+        //Width := 13;
+        //if Height < 13 then Height := 13;
         Checked := Self.Checked;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
+        OnEditingDone := ControlOnEditingDone;
       end;
     end;
   hitSubmit :
     begin
       FControl := TButton.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TButton(FControl) do begin
         if Self.Value <> '' then
           Caption := Self.Value
         else
           Caption := SHtmlDefSubmitCaption;
-        Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-        Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+        Width := aCanvas.TextWidth(Caption) + 40;
+        Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := SubmitClick;
       end;
@@ -14263,15 +14836,14 @@ begin
   hitReset :
     begin
       FControl := TButton.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TButton(FControl) do begin
         if Self.Value <> '' then
           Caption := Self.Value
         else
           Caption := SHtmlDefResetCaption;
-        Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-        Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+        Width := aCanvas.TextWidth(Caption) + 40;
+        Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ResetClick;
       end;
@@ -14279,11 +14851,10 @@ begin
   hitFile :
     begin
       FControl := TPanel.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TPanel(FControl) do begin
         Width := 200;
-        Height := TFriendPanel(Parent).Canvas.TextHeight('Wy') + 12;
+        Height := aCanvas.TextHeight('Wy') + 12;
         Enabled := not Self.Disabled and not Self.Readonly;
         BevelInner := bvNone;
         BevelOuter := bvNone;
@@ -14292,8 +14863,8 @@ begin
       FFileSelect := TButton.Create(Parent);
       with FFileSelect do begin
         Parent := FControl;
-        Height := TFriendPanel(Parent).Canvas.TextHeight(SHtmlDefBrowseCaption) + 10;
-        Width := TFriendPanel(Parent).Canvas.TextWidth(SHtmlDefBrowseCaption) + 40;
+        Height := aCanvas.TextHeight(SHtmlDefBrowseCaption) + 10;
+        Width := aCanvas.TextWidth(SHtmlDefBrowseCaption) + 40;
         Left := FControl.Left + FControl.Width - Width;
         Top := 1;
         Caption := SHtmlDefBrowseCaption;
@@ -14314,8 +14885,7 @@ begin
   hitImage :
     begin
       FControl := TBitbtn.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       Owner.DoGetImage(Self, Owner.BuildPath(Src), FPicture);
       if FPicture = nil
         then FPicture := Owner.DefaultImage;
@@ -14328,23 +14898,34 @@ begin
   hitButton :
     begin
       FControl := TButton.Create(Parent);
-      FControl.Visible := False;
-      FControl.Parent := Parent;
+      setCommonProperties;
       with TButton(FControl) do begin
         Caption := Self.Value;
-        Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-        Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
+        Width := aCanvas.TextWidth(Caption) + 40;
+        Height := aCanvas.TextHeight(Caption) + 10;
         Enabled := not Self.Disabled and not Self.Readonly;
         OnClick := ButtonClick;
       end;
     end;
   end;
   if FControl <> nil then
+  begin
     FControl.Hint := Alt;
+    FControl.ShowHint:=True;
+  end;
+  aCanvas.Font.Size := iCurFontSize;
 end;
 
 procedure TIpHtmlNodeINPUT.Draw;
 begin
+{
+  if Assigned(FCSS) then
+  begin
+       if FCSS.BGColor <> -1 then FControl.Color := FCSS.BGColor;
+       if FCSS.Color <> -1 then FControl.Font.Color := FCSS.Color;
+       if FCSS.Font.Size <> '' then FControl.Font.size := GetFontSizeFromCSS(FControl.Font.size, FCSS.Font.Size);
+  end;
+}
   inherited;
 {Begin !!.14}
 {$IFDEF VERSION3ONLY}
@@ -14431,8 +15012,12 @@ begin
 end;
 
 procedure TIpHtmlNodeINPUT.SubmitClick(Sender: TObject);
+var
+   vCancel: boolean;
 begin
-  SubmitRequest;
+  vCancel := False;
+  Owner.ControlClick2(Self, vCancel);
+  if not vCancel then SubmitRequest;
 end;
 
 procedure TIpHtmlNodeINPUT.ResetClick(Sender: TObject);
@@ -14440,7 +15025,7 @@ begin
   ResetRequest;
 end;
 
-procedure TIpHtmlNodeINPUT.ButtonClick(Sender: TObject);
+procedure TIpHtmlNodeINPUT.getControlValue;
 begin
   case InputType of
   hitText,                                                             {!!.03}
@@ -14455,7 +15040,24 @@ begin
     Checked := THtmlRadioButton(FControl).Checked;
 {$ENDIF}
   end;
+end;
+
+procedure TIpHtmlNodeINPUT.ButtonClick(Sender: TObject);
+begin
+  getControlValue;
   Owner.ControlClick(Self);
+end;
+
+procedure TIpHtmlNodeINPUT.ControlOnEditingDone(Sender: TObject);
+begin
+  getControlValue;
+  Owner.ControlOnEditingDone(Self);
+end;
+
+procedure TIpHtmlNodeINPUT.ControlOnChange(Sender: TObject);
+begin
+  getControlValue;
+  Owner.ControlOnChange(Self);
 end;
 
 function TIpHtmlNodeINPUT.GetHint: string;
@@ -14474,6 +15076,14 @@ begin
     end;
 end;
 
+constructor TIpHtmlNodeINPUT.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'input';
+  {$ENDIF}
+end;
+
 destructor TIpHtmlNodeINPUT.Destroy;
 begin
   inherited;
@@ -14481,6 +15091,21 @@ begin
 end;
 
 { TIpHtmlNodeSELECT }
+
+constructor TIpHtmlNodeSELECT.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'select';
+  {$ENDIF}
+  FWidth := -1;
+  FSize := -1;
+end;
+
+destructor TIpHtmlNodeSELECT.Destroy;
+begin
+  inherited;
+end;
 
 procedure TIpHtmlNodeSELECT.AddValues(NameList, ValueList : TStringList);
 var
@@ -14505,28 +15130,40 @@ var
   i, j, k, MinW : Integer;
   S, SelectedText : string;
   B : PAnsiChar;
+  iCurFontSize: integer;
+  aCanvas : TCanvas;
 begin
   Owner.ControlCreate(Self);
+  aCanvas := TFriendPanel(Parent).Canvas;
+  iCurFontSize := aCanvas.Font.Size;
+  i := Size;
+  if i = -1 then i:= 1;
+
   if Self.Multiple then begin
     FControl := TListBox.Create(Parent);
     FControl.Visible := False;
     FControl.Parent := Parent;
+    adjustFromCss;
     with TListBox(FControl) do begin
       IntegralHeight := True;
-      Height := (4 + ItemHeight) * Self.Size;
+      Height := (4 + aCAnvas.TextHeight('Wy')) * i;
       MultiSelect := True;
       Enabled := not Self.Disabled;
-      OnClick := ButtonClick;                                          {!!.01}
+      OnClick := ButtonClick;
+      OnSelectionChange := ListBoxSelectionChange;
     end;
   end else begin
     FControl := TComboBox.Create(Parent);
     FControl.Visible := False;
     FControl.Parent := Parent;
+    adjustFromCss;
     with TComboBox(FControl) do begin
       Style := csDropDownList;
-      Height := (4 + ItemHeight) * Self.Size;
+      Height := (4 + aCAnvas.TextHeight('Wy')) * i;
       Enabled := not Self.Disabled;
+      ReadOnly := not Self.ComboBox;
       OnClick := ButtonClick;                                          {!!.01}
+      OnEditingDone := ControlOnEditingdone;
     end;
   end;
   MinW := 50;
@@ -14540,15 +15177,16 @@ begin
           Getmem(B, length(S) + 1);
           try
             TrimFormattingNormal(S, B);
+            S := Trim(B);
             if Self.Multiple then begin
-              j := TListBox(FControl).Items.Add(Trim(B));
-              MinW := MaxI2(MinW, TFriendPanel(Parent).Canvas.TextWidth(Trim(B)));
+              j := TListBox(FControl).Items.Add(S);
+              MinW := MaxI2(MinW, aCanvas.TextWidth(S));
               TListBox(FControl).Selected[j] := Selected;
             end else begin
-              TComboBox(FControl).Items.Add(Trim(B));
-              MinW := MaxI2(MinW, TFriendPanel(Parent).Canvas.TextWidth(Trim(B)));
+              TComboBox(FControl).Items.Add(S);
+              MinW := MaxI2(MinW, aCanvas.TextWidth(S));
               if Selected then
-                SelectedText := Trim(B);
+                SelectedText := S;
             end;
           finally
             FreeMem(B);
@@ -14567,15 +15205,16 @@ begin
                 GetMem(B, length(S) + 1);
                 try
                   TrimFormattingNormal(S, B);
+                  S := Trim(B);
                   if Self.Multiple then begin
-                    k := TListBox(FControl).Items.Add(Trim(B));
-                    MinW := MaxI2(MinW, TFriendPanel(Parent).Canvas.TextWidth(Trim(B)));
+                    k := TListBox(FControl).Items.Add(S);
+                    MinW := MaxI2(MinW, aCanvas.TextWidth(S));
                     TListBox(FControl).Selected[k] := Selected;
                   end else begin
                     TComboBox(FControl).Items.Add(Trim(B));
-                    MinW := MaxI2(MinW, TFriendPanel(Parent).Canvas.TextWidth(Trim(B)));
+                    MinW := MaxI2(MinW, aCanvas.TextWidth(S));
                     if Selected then
-                      SelectedText := Trim(B);
+                      SelectedText := S;
                   end;
                 finally
                   FreeMem(B);
@@ -14586,7 +15225,11 @@ begin
   if SelectedText <> '' then
     with TComboBox(FControl) do
       ItemIndex := Items.IndexOf(SelectedText);
-  FControl.Width := MinW + 40;
+  if FComboBox and (Width <> -1) then FControl.Width := Width*aCanvas.TextWidth('0')+ 20
+  else FControl.Width := MinW + 40;
+  FControl.ShowHint:=True;
+  FControl.Hint:= Alt;
+  aCanvas.Font.Size := iCurFontSize;
 end;
 
 procedure TIpHtmlNodeSELECT.Reset;
@@ -14673,7 +15316,43 @@ begin
   Owner.ControlClick(Self);
 end;
 
+procedure TIpHtmlNodeSELECT.ControlOnEditingDone(Sender: TObject);
+begin
+     Owner.ControlOnEditingDone(Self);
+end;
+
+procedure TIpHtmlNodeSELECT.ListBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+     Owner.ControlOnEditingDone(Self);
+end;
+
+procedure TIpHtmlNodeSELECT.setText(aText: string);
+begin
+     if FComboBox then TComboBox(FControl).Text := aText;
+end;
+
+function TIpHtmlNodeSELECT.getText: string;
+begin
+     if FComboBox then
+        result := TComboBox(FControl).Text
+     else if FMultiple then  result := IntToStr(TComboBox(FControl).ItemIndex)
+     else result := IntToStr(TComboBox(FControl).ItemIndex);
+end;
+
 { TIpHtmlNodeTEXTAREA }
+
+constructor TIpHtmlNodeTEXTAREA.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'textarea';
+  {$ENDIF}
+end;
+
+destructor TIpHtmlNodeTEXTAREA.Destroy;
+begin
+  inherited;
+end;
 
 procedure TIpHtmlNodeTEXTAREA.AddValues(NameList,
   ValueList: TStringList);
@@ -14687,16 +15366,24 @@ var
   i : Integer;
   S : string;
   B : PAnsiChar;
+  iCurFontSize: integer;
+  aCanvas : TCanvas;
 begin
   Owner.ControlCreate(Self);
+  aCanvas := TFriendPanel(Parent).Canvas;
+  iCurFontSize := aCanvas.Font.Size;
   FControl := TMemo.Create(Parent);
   FControl.Visible := False;
   FControl.Parent := Parent;
+  TMemo(FControl).OnEditingDone:= ControlOnEditingDone;
+  adjustFromCss;
+
   with TMemo(FControl) do begin
     Width := Cols * TFriendPanel(Parent).Canvas.TextWidth('0'); 
     Height := Rows * TFriendPanel(Parent).Canvas.TextHeight('Wy');
     Enabled := not Self.Disabled;
   end;
+
   for i := 0 to Pred(FChildren.Count) do
     if TObject(FChildren[i]) is TIpHtmlNodeText then begin
       S := TIpHtmlNodeText(FChildren[i]).EscapedText;
@@ -14708,6 +15395,7 @@ begin
         FreeMem(B);
       end;
     end;
+    aCanvas.Font.Size := iCurFontSize;
 end;
 
 procedure TIpHtmlNodeTEXTAREA.Reset;
@@ -14733,6 +15421,11 @@ end;
 function TIpHtmlNodeTEXTAREA.Successful: Boolean;
 begin
   Result := trim(TMemo(FControl).Text) <> '';
+end;
+
+procedure TIpHtmlNodeTEXTAREA.ControlOnEditingDone(Sender: TObject);
+begin
+     Owner.ControlOnEditingDone(Self);
 end;
 
 { TIpHtmlNodeHtml }
@@ -14800,17 +15493,17 @@ end;
 
 { TIpHtmlNodeCore }
 
-procedure TIpHtmlNodeCore.ParseBaseProps(Owner : TIpHtml);
+procedure TIpHtmlNodeCore.ParseBaseProps(aOwner : TIpHtml);
 {$IFDEF IP_LAZARUS}
 var
   Commands: TStringList;
 {$ENDIF}
 begin
-  with Owner do begin
-    Id := FindAttribute('ID');
-    ClassId := FindAttribute('CLASS');
-    Title := FindAttribute('TITLE');
-    Style := FindAttribute('STYLE');
+  with aOwner do begin
+    Id := FindAttribute(htmlAttrID);
+    ClassId := FindAttribute(htmlAttrCLASS);
+    Title := FindAttribute(htmlAttrTITLE);
+    Style := FindAttribute(htmlAttrSTYLE);
   end;
   {$IFDEF IP_LAZARUS}
   if Style <> '' then
@@ -14825,11 +15518,11 @@ begin
 end;
 
 {$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeCore.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
+procedure TIpHtmlNodeCore.LoadCSSProps(aOwner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
 var
   TmpElement: TCSSProps;
 begin
-  if Owner.CSS = nil then
+  if aOwner.CSS = nil then
     exit;
   {
   WriteLn('FCSSPropsLoaded=',TIpHtmlNodeCore(Self).FCSSPropsLoaded);
@@ -14837,16 +15530,29 @@ begin
     exit;
   FCSSPropsLoaded:=True;
   }
+  Props.DelayCache:=True;
   TmpElement := Element;
   if Element = nil then
   begin
 
     // process first the Main element
-    Element := Owner.CSS.GetElement(ElementName, '');
+    Element := aOwner.CSS.GetElement(ElementName, '');
     if Element <> nil then begin
       ApplyCSSProps(Element, Props);
     end;
-    
+
+    // process Main element hover
+    Element := aOwner.CSS.GetElement(ElementName + ':hover', '');
+    if Element <> nil then begin
+      Props.DelayCache:=True;
+      if Element.Color <> -1 then
+        Props.HoverColor := Element.Color;
+      if Element.BgColor <> -1 then
+        Props.HoverBgColor := Element.BgColor;
+      Props.DelayCache:=False;
+      //ApplyCSSProps(Element, Props);
+    end;
+
     // load the .class if there is one
     if ClassID<>'' then begin
       Element := Owner.CSS.GetElement('', ClassId);
@@ -14869,7 +15575,7 @@ begin
   if TmpElement = nil then
   begin
     // lookup id elements
-    TmpElement := Owner.CSS.GetElement(Id);
+    TmpElement := aOwner.CSS.GetElement(Id);
     if TmpElement <> nil then begin
       ApplyCSSProps(TmpElement, Props);
     end;
@@ -14879,6 +15585,7 @@ begin
       ApplyCSSProps(TmpElement, Props);
     end;
   end;
+  Props.DelayCache:=False;
 end;
 
 function TIpHtmlNodeCore.SelectCSSFont(const aFont: string): string;
@@ -14892,13 +15599,18 @@ procedure TIpHtmlNodeCore.ApplyCSSProps(const Element: TCSSProps;
 begin
   if (Element<>nil) and (props<>nil) then
   begin
+    props.DelayCache:=True;
     {$WARNING Setting these font colors and name messes up the alignment for some reason}
     if Element.Color <> -1 then begin
       Props.FontColor := Element.Color;
     end;
 
     if Element.BGColor <> -1 then begin
-      Props.BgColor := Element.Color;
+      Props.BgColor := Element.BGColor;
+    end;
+
+    if Element.Alignment <> haUnknown then begin
+      Props.Alignment := Element.Alignment;
     end;
 
     if Element.Font.Name <> '' then begin
@@ -14936,6 +15648,7 @@ begin
         cfw900     : ;
       end;
     end;
+    props.DelayCache:=False;
   end;
 end;
 
@@ -15151,15 +15864,31 @@ end;
 constructor TIpHtmlNodeBUTTON.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Owner.ControlList.Add(Self);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'button';
+  {$ENDIF}
+  Owner.FControlList.Add(Self);
+end;
+
+destructor TIpHtmlNodeBUTTON.Destroy;
+begin
+  Owner.FControlList.Remove(Self);
+  inherited;
 end;
 
 procedure TIpHtmlNodeBUTTON.CreateControl(Parent: TWinControl);
+var
+   iCurFontSize: integer;
+   aCanvas : TCanvas;
 begin
   Owner.ControlCreate(Self);
+  aCanvas := TFriendPanel(Parent).Canvas;
+  iCurFontSize := aCanvas.Font.Size;
   FControl := TButton.Create(Parent);
   FControl.Visible := False;
   FControl.Parent := Parent;
+  adjustFromCss;
+
   with TButton(FControl) do begin
     Enabled := not Self.Disabled;
     Caption := Value;
@@ -15184,12 +15913,7 @@ begin
     Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
     Height := TFriendPanel(Parent).Canvas.TextHeight(Caption) + 10;
   end;
-end;
-
-destructor TIpHtmlNodeBUTTON.Destroy;
-begin
-  Owner.ControlList.Remove(Self);
-  inherited;
+  aCanvas.Font.Size := iCurFontSize;
 end;
 
 procedure TIpHtmlNodeBUTTON.Reset;
@@ -15239,12 +15963,12 @@ end;
 constructor TIpHtmlNodeLABEL.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Owner.ControlList.Add(Self);
+  Owner.FControlList.Add(Self);
 end;
 
 destructor TIpHtmlNodeLABEL.Destroy;
 begin
-  Owner.ControlList.Remove(Self);
+  Owner.FControlList.Remove(Self);
   inherited;
 end;
 
@@ -15291,6 +16015,7 @@ begin
   PropA.IncUse;
   PropB := Owner.DummyB;
   PropB.IncUse;
+  //BgColor := -1;
 end;
 
 destructor TIpHtmlProps.Destroy;
@@ -15370,6 +16095,16 @@ begin
   Result := PropB.VLinkColor;
 end;
 
+function TIpHtmlProps.GetHoverColor: TColor;
+begin
+  Result := PropB.HoverColor;
+end;
+
+function TIpHtmlProps.GetHoverBgColor: TColor;
+begin
+  Result := PropB.HoverBgColor;
+end;
+
 function TIpHtmlProps.IsEqualTo(Compare: TIpHtmlProps): Boolean;
 begin
   Result :=
@@ -15377,316 +16112,336 @@ begin
     and (PropB = Compare.PropB);
 end;
 
-function TIpHtml.FindPropA(
-  const pFontName : string;
-  const pFontSize : Integer;
-  const pFontStyle : TFontStyles;
-  const pBaseFontSize : Integer): TIpHtmlPropA;
+function TIpHtml.FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
 var
   i: Integer;
 begin
   for i := 0 to Pred(PropACache.Count) do begin
     Result := TIpHtmlPropA(PropACache[i]);
-    with Result do begin
-      if FontStyle <> pFontStyle then Continue;
-      if FontSize <> pFontSize then Continue;
-      if FontName <> pFontName then Continue;
-      if BaseFontSize <> pBaseFontSize then Continue;
-      Exit;
-    end;
+    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec)) = 0 then
+       exit;
   end;
   Result := nil;
 end;
 
-function TIpHtml.FindPropB(
-  const pFontBaseline : Integer;
-  const pFontColor : TColor;
-  const pAlignment : TIpHtmlAlign;
-  const pVAlignment : TIpHtmlVAlign3;
-  const pLinkColor : TColor;
-  const pVLinkColor : TColor;
-  const pALinkColor : TColor;
-  const pBgColor : TColor;
-  const pPreformatted : Boolean;
-  const pNoBreak : Boolean
-  ): TIpHtmlPropB;
+procedure TIpHtml.DelDuplicatePropA(aProp: TIpHtmlPropA);
+var
+  i: Integer;
+  vProp : TIpHtmlPropA;
+begin
+  for i := Pred(PropACache.Count) downto 0 do begin
+    vProp := TIpHtmlPropA(PropACache[i]);
+    if CompareByte(vProp.FPropRec, aProp.FPropRec, sizeof(TIpHtmlPropAFieldsRec)) = 0 then
+       if vProp <> aProp then
+       begin
+         PropACache.Delete(i);
+         exit;
+       end;
+  end;
+end;
+
+function TIpHtml.FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
 var
   i: Integer;
 begin
   for i := 0 to Pred(PropBCache.Count) do begin
     Result := TIpHtmlPropB(PropBCache[i]);
-    with Result do begin
-      if VAlignment <> pVAlignment then Continue;
-      if FontColor <> pFontColor then Continue;
-      if Alignment <> pAlignment then Continue;
-      if LinkColor <> pLinkColor then Continue;
-      if VLinkColor <> pVLinkColor then Continue;
-      if ALinkColor <> pALinkColor then Continue;
-      if BgColor <> pBgColor then Continue;
-      if Preformatted <> pPreformatted then Continue;
-      if NoBreak <> pNoBreak then Continue;
-      if FontBaseline <> pFontBaseline then Continue;
-      Exit;
-    end;
+    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec)) = 0 then
+       exit;
   end;
   Result := nil;
 end;
 
-procedure TIpHtmlProps.SetAlignment(const Value: TIpHtmlAlign);
+procedure TIpHtml.DelDuplicatePropB(aProp: TIpHtmlPropB);
+var
+  i: Integer;
+  vProp : TIpHtmlPropB;
+begin
+  for i := Pred(PropBCache.Count) downto 0 do begin
+    vProp := TIpHtmlPropB(PropBCache[i]);
+    if CompareByte(vProp.FPropRec, aProp.FPropRec, sizeof(TIpHtmlPropBFieldsRec)) = 0 then
+       if vProp <> aProp then
+       begin
+            PropBCache.Delete(i);
+            exit;
+       end;
+  end;
+end;
+
+procedure TIpHtmlProps.CommitCache;
+begin
+  if FDelayCache > 0 then
+  begin
+    FDelayCache := 1;
+    SetDelayCache(false);
+  end;
+end;
+
+function TIpHtmlProps.GetDelayCache: boolean;
+begin
+  result := FDelayCache > 0;
+end;
+
+procedure TIpHtmlProps.SetDelayCache(b: boolean);
+begin
+  if b then Inc(FDelayCache)
+  else if FDelayCache > 0 then
+    Dec(FDelayCache);
+
+  if (not b) and (FDelayCache = 0) then
+  begin
+      if FDirtyA then
+      begin
+        //Finish/Commit transaction
+        FDirtyA := False;
+      end;
+      if FDirtyB then
+      begin
+        //Finish/Commit transaction
+        FDirtyB := False;
+      end;
+  end;
+end;
+
+procedure TIpHtmlProps.CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);
+begin
+    Move(PropA.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec))
+end;
+
+procedure TIpHtmlProps.CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);
+begin
+    Move(PropB.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec))
+end;
+
+procedure TIpHtmlProps.CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);
+begin
+    Move(pRec, PropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
+end;
+
+procedure TIpHtmlProps.CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);
+begin
+    Move(pRec, PropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
+end;
+
+procedure TIpHtmlProps.FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
+var
+  NewPropA : TIpHtmlPropA;
+begin
+  if FDirtyA then
+    //we are in a transaction updating a new unique entry
+    CopyPropARecFrom(pRec)
+  else
+  begin
+    NewPropA := FOwner.FindPropARec(pRec);
+    if NewPropA = nil then begin
+      NewPropA := TIpHtmlPropA.Create;
+      Move(pRec, NewPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
+      //Start Transaction if DelayCache is set
+      if DelayCache then FDirtyA := True;
+      FOwner.PropACache.Add(NewPropA);
+    end;
+    NewPropA.IncUse;
+    PropA.DecUse;
+    PropA := NewPropA;
+  end;
+end;
+
+procedure TIpHtmlProps.FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
 var
   NewPropB : TIpHtmlPropB;
 begin
-  if (Value <> haDefault) and (Value <> Alignment) then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Value,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      BgColor, Preformatted, NoBreak);
+  if FDirtyB then
+    //we are in a transaction updating a new unique entry
+    CopyPropBRecFrom(pRec)
+  else
+  begin
+    NewPropB := FOwner.FindPropBRec(pRec);
     if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FAlignment := Value;
+      NewPropB := TIpHtmlPropB.Create(FOwner);
+      Move(pRec, NewPropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
+      //Start Transaction if DelayCache is set
+      if DelayCache then FDirtyB := True;
       FOwner.PropBCache.Add(NewPropB);
     end;
     NewPropB.IncUse;
     PropB.DecUse;
     PropB := NewPropB;
+  end;
+end;
+
+procedure TIpHtmlProps.SetAlignment(const Value: TIpHtmlAlign);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if (Value <> haDefault) and (Value <> Alignment) then begin
+    CopyPropBRecTo(pRec);
+    pRec.Alignment:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetALinkColor(const Value: TColor);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> ALinkColor then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, LinkColor, VLinkColor, Value,
-      BgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FALinkColor := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.ALinkColor:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetBaseFontSize(const Value: Integer);
 var
-  NewPropA : TIpHtmlPropA;
+  pRec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> BaseFontSize then begin
-    NewPropA := FOwner.FindPropA(FontName, FontSize, FontStyle, Value);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.CreateCopy(PropA);
-      NewPropA.FBaseFontSize := Value;
-      FOwner.PropACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    PropA.DecUse;
-    PropA := NewPropA;
+    CopyPropARecTo(pRec);
+    pRec.BaseFontSize:=Value;
+    FindOrCreatePropA(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetBgColor(const Value: TColor);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> BgColor then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      Value, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FBgColor := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.BgColor:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontBaseline(const Value: Integer);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> FontBaseline then begin
-    NewPropB := FOwner.FindPropB(Value, FontColor, Alignment,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      bgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FFontBaseline := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.FontBaseline:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontColor(const Value: TColor);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> FontColor then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, Value, Alignment,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      bgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FFontColor := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.FontColor:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontName(const Value: string);
 var
-  NewPropA : TIpHtmlPropA;
+  pRec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontName then begin
-    NewPropA := FOwner.FindPropA(Value, FontSize, FontStyle, BaseFontSize);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.CreateCopy(PropA);
-      NewPropA.FFontName := Value;
-      FOwner.PropACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    PropA.DecUse;
-    PropA := NewPropA;
+    CopyPropARecTo(pRec);
+    pRec.FontName:=Value;
+    FindOrCreatePropA(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontSize(const Value: Integer);
 var
-  NewPropA : TIpHtmlPropA;
+  pRec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontSize then begin
-    NewPropA := FOWner.FindPropA(FontName, Value, FontStyle, BaseFontSize);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.CreateCopy(PropA);
-      NewPropA.FFontSize := Value;
-      FOwner.PropACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    PropA.DecUse;
-    PropA := NewPropA;
+    CopyPropARecTo(pRec);
+    pRec.FontSize:=Value;
+    FindOrCreatePropA(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontStyle(const Value: TFontStyles);
 var
-  NewPropA : TIpHtmlPropA;
+  pRec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontStyle then begin
-    NewPropA := FOwner.FindPropA(FontName, FontSize, Value, BaseFontSize);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.CreateCopy(PropA);
-      NewPropA.FFontStyle := Value;
-      FOwner.PropACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    PropA.DecUse;
-    PropA := NewPropA;
+    CopyPropARecTo(pRec);
+    pRec.FontStyle:=Value;
+    FindOrCreatePropA(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetLinkColor(const Value: TColor);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> LinkColor then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, Value, VLinkColor, ALinkColor,
-      bgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FLinkColor := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.LinkColor:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetNoBreak(const Value: Boolean);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> NoBreak then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      bgColor, Preformatted, Value);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FNoBreak := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.NoBreak:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetPreformatted(const Value: Boolean);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> Preformatted then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, LinkColor, VLinkColor, ALinkColor,
-      bgColor, Value, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FPreformatted := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.Preformatted:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetVAlignment(const Value: TIpHtmlVAlign3);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> VAlignment then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      Value, LinkColor, VLinkColor, ALinkColor,
-      bgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FVAlignment := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.VAlignment:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
 procedure TIpHtmlProps.SetVLinkColor(const Value: TColor);
 var
-  NewPropB : TIpHtmlPropB;
+  pRec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> VLinkColor then begin
-    NewPropB := FOwner.FindPropB(FontBaseline, FontColor, Alignment,
-      VAlignment, LinkColor, Value, ALinkColor,
-      bgColor, Preformatted, NoBreak);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.CreateCopy(FOwner, PropB);
-      NewPropB.FVLinkColor := Value;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
+    CopyPropBRecTo(pRec);
+    pRec.VLinkColor:=Value;
+    FindOrCreatePropB(pRec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetHoverColor(const Value: TColor);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> HoverColor then begin
+    CopyPropBRecTo(pRec);
+    pRec.HoverColor:=Value;
+    FindOrCreatePropB(pRec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetHoverBgColor(const Value: TColor);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> HoverBgColor then begin
+    CopyPropBRecTo(pRec);
+    pRec.HoverBgColor:=Value;
+    FindOrCreatePropB(pRec);
   end;
 end;
 
@@ -15695,10 +16450,7 @@ end;
 procedure TIpHtmlPropA.Assign(const Source: TIpHtmlPropA);
 begin
   if Source <> nil then begin
-    FontName := Source.FontName;
-    FontSize := Source.FontSize;
-    FontStyle := Source.FontStyle;
-    BaseFontSize := Source.BaseFontSize;
+    Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropAFieldsRec));
   end;
 end;
 
@@ -15710,7 +16462,7 @@ end;
 
 procedure TIpHtmlPropA.DecUse;
 begin
-  Dec(FUseCount);
+  if FUseCount > 0 then Dec(FUseCount);
 end;
 
 procedure TIpHtmlPropA.IncUse;
@@ -15720,32 +16472,32 @@ end;
 
 procedure TIpHtmlPropA.SetBaseFontSize(const Value: Integer);
 begin
-  if Value <> FBaseFontSize then begin
-    FBaseFontSize := Value;
+  if Value <> FPropRec.BaseFontSize then begin
+    FPropRec.BaseFontSize := Value;
     FSizeOfSpaceKnown := False;
   end;
 end;
 
-procedure TIpHtmlPropA.SetFontName(const Value: string);
+procedure TIpHtmlPropA.SetFontName(const Value: TFontNameStr);
 begin
-  if Value <> FFontName then begin
-    FFontName := Value;
+  if Value <> FPropRec.FontName then begin
+    FPropRec.FontName := Value;
     FSizeOfSpaceKnown := False;
   end;
 end;
 
 procedure TIpHtmlPropA.SetFontSize(const Value: Integer);
 begin
-  if Value <> FFontSize then begin
-    FFontSize := Value;
+  if Value <> FPropRec.FontSize then begin
+    FPropRec.FontSize := Value;
     FSizeOfSpaceKnown := False;
   end;
 end;
 
 procedure TIpHtmlPropA.SetFontStyle(const Value: TFontStyles);
 begin
-  if Value <> FFontStyle then begin
-    FFontStyle := Value;
+  if Value <> FPropRec.FontStyle then begin
+    FPropRec.FontStyle := Value;
     FSizeOfSpaceKnown := False;
   end;
 end;
@@ -15763,22 +16515,15 @@ end;
 procedure TIpHtmlPropB.Assign(const Source: TIpHtmlPropB);
 begin
   if Source <> nil then begin
-    FontBaseline := Source.Fontbaseline;
-    FontColor := Source.FontColor;
-    Alignment := Source.Alignment;
-    VAlignment := Source.VAlignment;
-    LinkColor := Source.LinkColor;
-    ALinkColor := Source.ALinkColor;
-    VLinkColor := Source.VLinkColor;
-    Preformatted := Source.Preformatted;
-    BgColor := Source.BgColor;
-    NoBreak := Source.NoBreak;
+    Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropBFieldsRec));
   end;
 end;
 
 constructor TIpHtmlPropB.Create(Owner: TIpHtml);
 begin
   inherited Create;
+  FPropRec.HoverColor := -1;
+  FPropRec.HoverBgColor := -1;
   FOwner := Owner;
 end;
 
@@ -15797,11 +16542,7 @@ begin
   if UseCount = 0 then begin
     for i := Pred(FOwner.PropBCache.Count) downto 0 do
       if FOwner.PropBCache[i] = Self then begin
-        c := FOwner.PropBCache.Count;
-        if (c > 1)
-        and (i < c - 1) then
-          FOwner.PropBCache[i] := FOwner.PropBCache[c - 1];
-        FOwner.PropBCache.Delete(c - 1);
+        FOwner.PropBCache.Delete(i);
         Free;
         Exit;
       end;
@@ -15839,30 +16580,54 @@ procedure TIpHtmlNodeTableHeaderOrCell.Render(
   const RenderProps: TIpHtmlProps);
 var
   R : TRect;
+{$IFDEF IP_LAZARUS}
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   Props.Assign(RenderProps);
+  Props.DelayCache:=True;
+  {$IFDEF IP_LAZARUS}
+  LoadCSSProps(Owner, Elem, Props);
+{
+  if (Elem <> nil) then
+  begin
+       if Elem.BGColor <> -1 then BgColor := Elem.BGColor;
+  end
+  else if (Props.BgColor <> -1) then
+     BgColor := Props.BgColor;
+}
+  {$ENDIF}
+//DebugLn('td :', IntToStr(Integer(Props.Alignment)));
+  if BgColor <> -1 then
+    Props.BgColor := BgColor;
   if Align <> haDefault then
     Props.Alignment := Align
-  else
+  else if Props.Alignment = haDefault then
+  begin
     if Self is TIpHtmlNodeTH then
       Props.Alignment := haCenter
     else
       Props.Alignment := haLeft;
+  end;
   if Self is TIpHtmlNodeTH then
     Props.FontStyle := Props.FontStyle + [fsBold];
   Props.VAlignment := VAlign;
   if NoWrap then
     Props.NoBreak := True;
-  {$IFDEF IP_LAZARUS}
-  //DebugBox(Owner.Target, PadRect, clYellow, True);
+  {$IFDEF IP_LAZARUS_DBG}
+  DebugBox(Owner.Target, PadRect, clYellow, True);
   {$ENDIF}
   if PageRectToScreen(PadRect, R) then begin
-    if (BgColor <> -1) then begin
-      Props.BgColor := BgColor;
-      Owner.Target.Brush.Color := BGColor;
+    if (Props.BgColor <> -1) then begin
+      //Props.BgColor := BgColor;
+      //if PtInRect(R, Owner.MousePoint) then
+      //  Owner.Target.Brush.Color := clYellow
+      //else
+        Owner.Target.Brush.Color := Props.BGColor;
       Owner.Target.FillRect(R);
     end;
   end;
+  Props.DelayCache:=False;
   inherited Render(Props);
 end;
 
@@ -15937,14 +16702,12 @@ end;
 constructor TIpHtmlNodeAlignInline.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  Props := TIpHtmlProps.Create(FOwner);
   Element := Owner.NewElement(etObject, Self);
   Element.Props := Props;
 end;
 
 destructor TIpHtmlNodeAlignInline.Destroy;
 begin
-  Props.Free;
   inherited;
 end;
 
@@ -15978,13 +16741,13 @@ end;
 constructor TIpHtmlNodeControl.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Owner.ControlList.Add(Self);
+  Owner.FControlList.Add(Self);
   Align := hiaBottom;
 end;
 
 destructor TIpHtmlNodeControl.Destroy;
 begin
-  Owner.ControlList.Remove(Self);
+  Owner.FControlList.Remove(Self);
   inherited;
 end;
 
@@ -16008,6 +16771,25 @@ begin
     end else
       FControl.Visible := False;
   end;
+end;
+
+function TIpHtmlNodeControl.adjustFromCss:boolean;
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
+begin
+   result := false;
+   {$IFDEF IP_LAZARUS}
+   LoadCSSProps(Owner, Elem, Props);
+   if (props.FontSize <> -1) then
+     FControl.Font.Size:= Props.FontSize;
+     if Props.FontColor <> -1 then
+       FControl.Font.Color:= Props.FontColor;
+     if Props.BGColor <> -1 then
+       FControl.Brush.Color:= Props.BGColor;
+   result := True;
+   {$ENDIF}
 end;
 
 procedure TIpHtmlNodeControl.SetProps(const RenderProps: TIpHtmlProps);
@@ -16380,9 +17162,9 @@ begin
           Point(0, 0))                                                 {!!.10}
   else
     Canvas.FillRect(CR);
-  {$IFDEF IP_LAZARUS}
-  //DebugBox(CR, clYellow);
-  //Debugbox(Canvas.ClipRect,clLime, true);
+  {$IFDEF IP_LAZARUS_DBG}
+  DebugBox(CR, clYellow);
+  Debugbox(Canvas.ClipRect,clLime, true);
   {$ENDIF}
 end;
 
@@ -16830,7 +17612,7 @@ begin
       if FCalcRange > 32767 then
         SetPosition(GetRealScrollPosition)
       else
-        SetPosition(Pos);
+          SetPosition( FPosition + (Pos - FPosition) * FIncrement );
     SB_THUMBTRACK:
       if Tracking then
         if FCalcRange > 32767 then
@@ -16897,6 +17679,7 @@ const
 var
   Code: Word;
   ScrollInfo: TScrollInfo;
+  iPi: integer;
 
   procedure UpdateScrollProperties(Redraw: Boolean);
   begin
@@ -16922,14 +17705,19 @@ begin
     ScrollInfo.nMax := Range
   else
     ScrollInfo.nMax := 0;
-  ScrollInfo.nPage := ControlSize(ControlSB, AssumeSB) + 1;
+  iPi := ControlSize(ControlSB, AssumeSB) + 1;
+  if iPi < 1 then iPi := 1;
+  ScrollInfo.nPage := iPi;
   ScrollInfo.nPos := FPosition;
   ScrollInfo.nTrackPos := FPosition;
   UpdateScrollProperties(FUpdateNeeded);
   FUpdateNeeded := False;
   FlatSB_SetScrollInfo(FControl.Handle, Code, ScrollInfo, True);
   SetPosition(FPosition);
-  FPageIncrement := (ControlSize(True, False) * 9) div 10;
+  iPi := (ControlSize(True, False) * 9) div 10;
+  if iPi < low(TScrollbarInc) then iPi := low(TScrollbarInc)
+  else if iPi > high(TScrollbarInc) then iPi := high(TScrollbarInc);
+  FPageIncrement := iPi;
 end;
 
 { TIpHtmlFocusRect }
@@ -16988,26 +17776,30 @@ end;
 
 procedure TIpHtmlFrame.InitHtml;
 begin
-  Html.TextColor := FViewer.TextColor;
-  Html.LinkColor := FViewer.LinkColor;
-  Html.ALinkColor := FViewer.ALinkColor;
-  Html.VLinkColor := FViewer.VLinkColor;
+  FHtml.FixedTypeface := Viewer.FixedTypeface;                          {!!.10}
+  FHtml.DefaultTypeFace := Viewer.DefaultTypeFace;
+  FHtml.DefaultFontSize := Viewer.DefaultFontSize;
+  FHtml.TextColor := FViewer.TextColor;
+  FHtml.LinkColor := FViewer.LinkColor;
+  FHtml.ALinkColor := FViewer.ALinkColor;
+  FHtml.VLinkColor := FViewer.VLinkColor;
   if FViewer.DataProvider <> nil then
-    Html.OnGetImageX := FViewer.DataProvider.DoGetImage;
-  Html.OnInvalidateRect := InvalidateRect;
-  Html.OnInvalidateSize := InvalidateSize;
-  Html.OnGet := Get;
-  Html.OnPost := Post;
-  Html.OnIFrameCreate := IFrameCreate;
-  Html.OnURLCheck := FViewer.URLCheck;
-  Html.OnReportURL := FViewer.ReportURL;
-  Html.FlagErrors := FFlagErrors;
-  Html.MarginWidth := FMarginWidth;
-  Html.MarginHeight := FMarginHeight;
+    FHtml.OnGetImageX := FViewer.DataProvider.DoGetImage;
+  FHtml.OnInvalidateRect := InvalidateRect;
+  FHtml.OnInvalidateSize := InvalidateSize;
+  FHtml.OnGet := Get;
+  FHtml.OnPost := Post;
+  FHtml.OnIFrameCreate := IFrameCreate;
+  FHtml.OnURLCheck := FViewer.URLCheck;
+  FHtml.OnReportURL := FViewer.ReportURL;
+  FHtml.FlagErrors := FFlagErrors;
+  FHtml.MarginWidth := FMarginWidth;
+  FHtml.MarginHeight := FMarginHeight;
   {$IFDEF IP_LAZARUS}
   if FDataProvider <> nil then
-    Html.FDataProvider := FDataProvider;
+    FHtml.FDataProvider := FDataProvider;
   {$ENDIF}
+  FHtml.FactBAParag := FViewer.FactBAParag;
 end;
 
 constructor TIpHtmlFrame.Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel;
@@ -17018,10 +17810,7 @@ begin
   FParent := Parent;
   FViewer := Viewer;
   FDataProvider := DataProvider;
-  Html := TIpHtml.Create;
-  Html.FixedTypeface := Viewer.FixedTypeface;                          {!!.10}
-  Html.DefaultTypeFace := Viewer.DefaultTypeFace;
-  Html.DefaultFontSize := Viewer.DefaultFontSize;
+  FHtml := TIpHtml.Create;
   FFlagErrors := FlagErrors;
   FMarginWidth := MarginWidth;
   FMarginheight := MarginHeight;
@@ -17032,18 +17821,18 @@ destructor TIpHtmlFrame.Destroy;
 var
   i : Integer;
 begin
-  if FramePanel <> nil then                                            {!!.12}
-    FramePanel.OnResize := nil;                                        {!!.12}
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].Free;
+  if FFramePanel <> nil then                                            {!!.12}
+    FFramePanel.OnResize := nil;                                        {!!.12}
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].Free;
   if HyperPanel <> nil then begin
     HyperPanel.Hyper := nil;
     HyperPanel.Free;
     HyperPanel := nil;
   end;
   if (FDataProvider <> nil) and (not (csDestroying in FDataProvider.ComponentState)) then
-    FDataProvider.DoLeave(Html);
-  Html.Free;
+    FDataProvider.DoLeave(FHtml);
+  FHtml.Free;
   inherited;
 end;
 
@@ -17082,12 +17871,12 @@ var
   ColWCount, RowHCount : Integer;
   N, i, R, C, L, T : Integer;
 begin
-  if (Html = nil) or (Html.FrameSet = nil) then Exit;
-  if FramePanel = nil then Exit;
-  ColW := CalcMultiLength(Html.FrameSet.Cols, FramePanel.ClientWidth,
+  if (FHtml = nil) or (FHtml.FrameSet = nil) then Exit;
+  if FFramePanel = nil then Exit;
+  ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth,
     ColWCount);{!!.10}
   try
-    RowH := CalcMultiLength(Html.FrameSet.Rows, FramePanel.ClientHeight,
+    RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight,
       RowHCount); {!!.10}
     try
       R := 0;
@@ -17095,8 +17884,8 @@ begin
       L := 0;
       T := 0;
       N := 0;
-      for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-        if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
+      for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
+        if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
           if Pnl[N] <> nil then                                            {!!.03}
             Pnl[N].SetBounds(L, T, ColW[C], RowH[R]);
           Inc(L, ColW[C]);
@@ -17124,9 +17913,9 @@ var
   St, ResourceType : string;
 begin
   if Assigned(FDataProvider) then
-    St := FDataProvider.BuildURL(CurURL, URL)
+    St := FDataProvider.BuildURL(FCurURL, URL)
   else
-    St := IpUtils.BuildURL(CurURL, URL);
+    St := IpUtils.BuildURL(FCurURL, URL);
   if FDataProvider = nil then
     raise EIpHtmlException.Create(SHtmlNoDataProvider);        {!!.02}
   if not FDataProvider.DoCheckURL(St, ResourceType) then
@@ -17154,31 +17943,171 @@ begin
   Result.Seek(0, 0);
 end;
 
-procedure TIpHtmlFrame.OpenRelativeURL(const URL: string);
+procedure TIpHtmlFrame.InternalFreeFrames;
 var
-  S : TStream;
+   i: integer;
+begin
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].Free;
+  FFramePanel.Free;
+  FFramePanel := nil;
+  FFrameCount := 0;
+  if HyperPanel <> nil then begin
+    FHtml.OnScroll := nil;
+    HyperPanel.Hyper := nil;
+    HyperPanel.Free;
+    HyperPanel := nil;
+  end;
+  if FDataProvider <> nil then
+    FDataProvider.DoLeave(FHtml);
+  FHtml.Clear;
+  FHtml.Free;
+end;
+
+procedure TIpHtmlFrame.InternalCreateFrames;
+var
   MW, MH,
   i, R, C, L, T : Integer;
   ColW : TIntArr;
   RowH : TIntArr;
   ColWCount, RowHCount : Integer;
   Scroll : Boolean;
-  St, ResourceType : string;
   CurFrameDef : TIpHtmlNodeFrame;
+begin
+  ColWCount := 0;
+  RowHCount := 0;
+
+  if FHtml.HasFrames then begin
+    FFramePanel := TPanel.Create(FParent);
+    FFramePanel.BevelOuter := bvNone;
+    FFramePanel.Align := alClient;
+    FFramePanel.Parent := FParent;
+    FFramePanel.OnResize := FramePanelResize;
+    FFramePanel.FullRepaint := False;
+    ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth,
+      ColWCount); {!!.10}
+    try
+      RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight,
+        RowHCount); {!!.10}
+      try
+        R := 0;
+        C := 0;
+        L := 0;
+        T := 0;
+        FFrameCount := 0;
+        for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
+          if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
+            CurFrameDef := TIpHtmlNodeFrame(FHtml.FrameSet.ChildNode[i]);
+            Pnl[FFrameCount] := TPanel.Create(FFramePanel);
+            Pnl[FFrameCount].BevelOuter := bvNone;
+            Pnl[FFrameCount].SetBounds(L, T, ColW[C], RowH[R]);
+            Pnl[FFrameCount].Parent := FFramePanel;
+            Pnl[FFrameCount].FullRepaint := False;
+
+            if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
+              Pnl[FFrameCount].BorderStyle := bsSingle;                {!!.02}
+              Pnl[FFrameCount].BorderWidth := CurFrameDef.FrameBorder; {!!.02}
+            end;                                                      {!!.02}
+
+            Inc(L, ColW[C]);
+
+            case CurFrameDef.Scrolling of
+            hfsAuto, hfsYes :
+              Scroll := True;
+            else //hfsNo :
+              Scroll := False;
+            end;
+
+            if CurFrameDef.MarginWidth <> -1 then
+              MW := CurFrameDef.MarginWidth
+            else
+              MW := FViewer.MarginWidth;
+            if CurFrameDef.MarginHeight <> -1 then
+              MH:= CurFramedef.MarginHeight
+            else
+              MH := FViewer.MarginHeight;
+
+            FFrames[FFrameCount] :=
+              TIpHtmlFrame.Create(FViewer, Pnl[FFrameCount], FDataProvider,
+                FViewer.FlagErrors, not Scroll, MW, MH);
+            FFrames[FFrameCount].FName := CurFrameDef.FName;
+            if C < ColWCount - 1 then
+              Inc(C)
+            else begin
+              C := 0;
+              L := 0;
+              Inc(T, RowH[R]);
+              Inc(R);
+            end;
+            Inc(FFrameCount);
+          end;
+        end;
+      finally
+        RowH.Free;
+      end;
+    finally
+      ColW.Free;
+    end;
+    Application.ProcessMessages;
+    FFrameCount := 0;
+    for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
+      if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
+        FFrames[FFrameCount].FCurURL := FCurURL;
+        FFrames[FFrameCount].OpenRelativeURL({Base,}
+          TIpHtmlNodeFrame(FHtml.FrameSet.ChildNode[i]).Src);
+        Inc(FFrameCount);
+      end;
+    end;
+  end else begin
+    HyperPanel := TIpHtmlInternalPanel.Create(FParent);
+    if FNoScroll then begin
+      HyperPanel.HScroll.Visible := False;
+      HyperPanel.VScroll.Visible := False;
+    end;
+    HyperPanel.Parent := FParent;
+    HyperPanel.Align := alClient;
+    HyperPanel.OnHotChange := FViewer.HotChange;
+    HyperPanel.OnCurElementChange := FViewer.CurElementChange;
+    HyperPanel.OnHotClick := FViewer.HotClick;
+    HyperPanel.OnClick := FViewer.ClientClick;
+    HyperPanel.TabStop := True;
+    FHtml.OnScroll := HyperPanel.ScrollRequest;
+    FHtml.OnControlClick := ControlClick;
+    FHtml.OnControlClick2 := ControlClick2;
+    FHtml.OnControlChange := ControlOnChange;
+    FHtml.OnControlEditingdone := ControlOnEditingDone;
+    FHtml.OnControlCreate := ControlCreate;
+    for i := 0 to Pred(FHtml.AnchorList.Count) do
+      with TIpHtmlFocusRect.Create(HyperPanel) do begin
+        SetBounds(-100, -100, 10, 10);
+        TabStop := True;
+        Parent := HyperPanel;
+        Anchor := FHtml.AnchorList[i];
+      end;
+    for i := 0 to Pred(FHtml.FControlList.Count) do
+      TIpHtmlNode(FHtml.FControlList[i]).CreateControl(HyperPanel);
+    HyperPanel.Hyper := FHtml;
+  end;
+end;
+
+procedure TIpHtmlFrame.OpenRelativeURL(const URL: string);
+var
+  S : TStream;
+  St, ResourceType : string;
   IsImage : Boolean;
 begin
   InOpen := True;                                                      {!!.10}
   try                                                                  {!!.10}
     if Assigned(FDataProvider) then
-      St := FDataProvider.BuildURL(CurURL, URL)
+      St := FDataProvider.BuildURL(FCurURL, URL)
     else
-      St := IpUtils.BuildURL(CurURL, URL);
+      St := IpUtils.BuildURL(FCurURL, URL);
 
     if FDataProvider = nil then
       raise EIpHtmlException.Create(SHtmlNoDataProvider);              {!!.02}
     if not FDataProvider.DoCheckURL(St, ResourceType) then
       raise EIpHtmlException.Create(SHtmlResUnavail + St);             {!!.02}
-    {if CompareText(St, CurURL) = 0 then Exit;}                        {!!.12}
+    {if CompareText(St, FCurURL) = 0 then Exit;}                        {!!.12}
     IsImage := False;
     S := nil;
     if pos('image/', LowerCase(ResourceType)) <> 0 then begin
@@ -17191,147 +18120,30 @@ begin
       FViewer.DoHotClick;
       Exit;
     end;
-    CurURL := St;
-    CurAnchor := '';
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].Free;
-    FramePanel.Free;
-    FramePanel := nil;
-    FrameCount := 0;
-    if HyperPanel <> nil then begin
-      Html.OnScroll := nil;
-      HyperPanel.Hyper := nil;
-      HyperPanel.Free;
-      HyperPanel := nil;
-    end;
-    if FDataProvider <> nil then
-      FDataProvider.DoLeave(Html);
-    Html.Clear;
-    ColWCount := 0;
-    RowHCount := 0;
+    FCurURL := St;
+    FCurAnchor := '';
+    InternalFreeFrames;
+    //Memory comsumption is too high without free
+    FHtml := TIpHtml.Create;
+    InitHtml;
+    //see above
     if FDataProvider <> nil then begin
       if not IsImage then
-        S := FDataProvider.DoGetHtmlStream(CurURL, PostData);
+        S := FDataProvider.DoGetHtmlStream(FCurURL, PostData);
       if S <> nil then
         try
-          Html.CurURL := CurURL;
-          Html.LoadFromStream(S);
-          if Html.HasFrames then begin
-            FramePanel := TPanel.Create(FParent);
-            FramePanel.BevelOuter := bvNone;
-            FramePanel.Align := alClient;
-            FramePanel.Parent := FParent;
-            FramePanel.OnResize := FramePanelResize;
-            FramePanel.FullRepaint := False;
-            ColW := CalcMultiLength(Html.FrameSet.Cols, FramePanel.ClientWidth,
-              ColWCount); {!!.10}
-            try
-              RowH := CalcMultiLength(Html.FrameSet.Rows, FramePanel.ClientHeight,
-                RowHCount); {!!.10}
-              try
-                R := 0;
-                C := 0;
-                L := 0;
-                T := 0;
-                FrameCount := 0;
-                for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-                  if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-                    CurFrameDef := TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]);
-                    Pnl[FrameCount] := TPanel.Create(FramePanel);
-                    Pnl[FrameCount].BevelOuter := bvNone;
-                    Pnl[FrameCount].SetBounds(L, T, ColW[C], RowH[R]);
-                    Pnl[FrameCount].Parent := FramePanel;
-                    Pnl[FrameCount].FullRepaint := False;
-
-                    if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
-                      Pnl[FrameCount].BorderStyle := bsSingle;                {!!.02}
-                      Pnl[FrameCount].BorderWidth := CurFrameDef.FrameBorder; {!!.02}
-                    end;                                                      {!!.02}
-
-                    Inc(L, ColW[C]);
-
-                    case CurFrameDef.Scrolling of
-                    hfsAuto, hfsYes :
-                      Scroll := True;
-                    else //hfsNo :
-                      Scroll := False;
-                    end;
-
-                    if CurFrameDef.MarginWidth <> -1 then
-                      MW := CurFrameDef.MarginWidth
-                    else
-                      MW := FViewer.MarginWidth;
-                    if CurFrameDef.MarginHeight <> -1 then
-                      MH:= CurFramedef.MarginHeight
-                    else
-                      MH := FViewer.MarginHeight;
-
-                    Frames[FrameCount] :=
-                      TIpHtmlFrame.Create(FViewer, Pnl[FrameCount], FDataProvider,
-                        FViewer.FlagErrors, not Scroll, MW, MH);
-                    Frames[FrameCount].Name := CurFrameDef.Name;
-                    if C < ColWCount - 1 then
-                      Inc(C)
-                    else begin
-                      C := 0;
-                      L := 0;
-                      Inc(T, RowH[R]);
-                      Inc(R);
-                    end;
-                    Inc(FrameCount);
-                  end;
-                end;
-              finally
-                RowH.Free;
-              end;
-            finally
-              ColW.Free;
-            end;
-            Application.ProcessMessages;
-            FrameCount := 0;
-            for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-              if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-                Frames[FrameCount].CurURL := CurURL;
-                Frames[FrameCount].OpenRelativeURL({Base,}
-                  TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]).Src);
-                Inc(FrameCount);
-              end;
-            end;
-          end else begin
-            HyperPanel := TIpHtmlInternalPanel.Create(FParent);
-            if FNoScroll then begin
-              HyperPanel.HScroll.Visible := False;
-              HyperPanel.VScroll.Visible := False;
-            end;
-            HyperPanel.Parent := FParent;
-            HyperPanel.Align := alClient;
-            HyperPanel.OnHotChange := FViewer.HotChange;
-            HyperPanel.OnCurElementChange := FViewer.CurElementChange;
-            HyperPanel.OnHotClick := FViewer.HotClick;
-            HyperPanel.OnClick := FViewer.ClientClick;
-            HyperPanel.TabStop := True;
-            Html.OnScroll := HyperPanel.ScrollRequest;
-            Html.OnControlClick := ControlClick;
-            Html.OnControlCreate := ControlCreate;
-            for i := 0 to Pred(Html.AnchorList.Count) do
-              with TIpHtmlFocusRect.Create(HyperPanel) do begin
-                SetBounds(-100, -100, 10, 10);
-                TabStop := True;
-                Parent := HyperPanel;
-                Anchor := Html.AnchorList[i];
-              end;
-            for i := 0 to Pred(Html.ControlList.Count) do
-              TIpHtmlNode(Html.ControlList[i]).CreateControl(HyperPanel);
-            HyperPanel.Hyper := Html;
-          end;
+          FHtml.FCurURL := FCurURL;
+          FHtml.LoadFromStream(S);
+          InternalCreateFrames;
         finally
           S.Free;
         end;
     end;
   finally                                                              {!!.10}
-    InOpen := False;                                                   {!!.10}
-    if HyperPanel <> nil then
-      HyperPanel.InvalidateSize;                                         {!!.10}
+    InOpen := False;
+//Already done when:  HyperPanel.Hyper := FHtml;
+//    if HyperPanel <> nil then
+//      HyperPanel.InvalidateSize;                                         {!!.10}
   end;                                                                 {!!.10}
 end;
 
@@ -17345,32 +18157,32 @@ var
   E : TIpHtmlNode;
   i : Integer;
 begin
-  E := Html.FindElement(URL);
-  CurAnchor := '';
+  E := FHtml.FindElement(URL);
+  FCurAnchor := '';
   if E <> nil then begin
     E.MakeVisible;
-    CurAnchor := '#'+URL;
+    FCurAnchor := '#'+URL;
   end else
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].MakeAnchorVisible(URL);
+    for i := 0 to Pred(FFrameCount) do
+      FFrames[i].MakeAnchorVisible(URL);
 end;
 
 procedure TIpHtmlFrame.Home;
 begin
-  if Html <> nil then
-    Html.Home;
+  if FHtml <> nil then
+    FHtml.Home;
 end;
 
 function TIpHtmlFrame.FindFrame(const FrameName: string): TIpHtmlFrame;
 var
   i : Integer;
 begin
-  if AnsiCompareText(FrameName, Name) = 0 then
+  if AnsiCompareText(FrameName, FName) = 0 then
     Result := Self
   else begin
     Result := nil;
-    for i := 0 to Pred(FrameCount) do begin
-      Result := Frames[i].FindFrame(FrameName);
+    for i := 0 to Pred(FFrameCount) do begin
+      Result := FFrames[i].FindFrame(FrameName);
       if Result <> nil then
         Exit;
     end;
@@ -17398,15 +18210,15 @@ function TIpHtmlFrame.HaveSelection: Boolean;
 var
   i : Integer;
 begin
-  if Html = nil then
+  if FHtml = nil then
     Result := False
   else
-    if Html.HaveSelection then
+    if FHtml.HaveSelection then
       Result := True
     else begin
       Result := False;
-      for i := 0 to Pred(FrameCount) do
-        if Frames[i].HaveSelection then begin
+      for i := 0 to Pred(FFrameCount) do
+        if FFrames[i].HaveSelection then begin
           Result := True;
           break;
         end;
@@ -17417,13 +18229,13 @@ procedure TIpHtmlFrame.CopyToClipboard;
 var
   i : Integer;
 begin
-  if Html <> nil then
-    if Html.HaveSelection then
-      Html.CopyToClipboard
+  if FHtml <> nil then
+    if FHtml.HaveSelection then
+      FHtml.CopyToClipboard
     else begin
-      for i := 0 to Pred(FrameCount) do
-        if Frames[i].HaveSelection then begin
-          Frames[i].CopyToClipboard;
+      for i := 0 to Pred(FFrameCount) do
+        if FFrames[i].HaveSelection then begin
+          FFrames[i].CopyToClipboard;
           Exit;
         end;
     end;
@@ -17433,10 +18245,10 @@ procedure TIpHtmlFrame.SelectAll;
 var
   i : Integer;
 begin
-  if Html <> nil then begin
-    Html.SelectAll;
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].SelectAll;
+  if FHtml <> nil then begin
+    FHtml.SelectAll;
+    for i := 0 to Pred(FFrameCount) do
+      FFrames[i].SelectAll;
   end;
 end;
 
@@ -17445,10 +18257,10 @@ procedure TIpHtmlFrame.DeselectAll;
 var
   i : Integer;
 begin
-  if Html <> nil then begin
-    Html.DeselectAll;
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].DeselectAll;
+  if FHtml <> nil then begin
+    FHtml.DeselectAll;
+    for i := 0 to Pred(FFrameCount) do
+      FFrames[i].DeselectAll;
   end;
 end;
 
@@ -17460,7 +18272,7 @@ var
   NewFrame : TIpHtmlFrame;
 begin
   Control := TPanel.Create(Parent);
-  Pnl[FrameCount] := TPanel(Control);
+  Pnl[FFrameCount] := TPanel(Control);
   TPanel(Control).BevelOuter := bvNone;
   case Frame.Width.LengthType of
   hlAbsolute :
@@ -17514,168 +18326,56 @@ begin
   NewFrame :=
     TIpHtmlFrame.Create(FViewer, TCustomPanel(Control), FDataProvider,
       FViewer.FlagErrors, not Scroll, MW, MH);
-  Frames[FrameCount] := NewFrame;
-  NewFrame.Name := Frame.Name;
+  FFrames[FFrameCount] := NewFrame;
+  NewFrame.FName := Frame.FName;
   Application.ProcessMessages;
-  NewFrame.CurURL := CurURL;
+  NewFrame.FCurURL := FCurURL;
   NewFrame.OpenRelativeURL(Frame.Src);
-  Inc(FrameCount);
+  Inc(FFrameCount);
   Frame.FFrame := NewFrame;
 end;
 
 procedure TIpHtmlFrame.SetHtml(NewHtml: TIpHtml);
-var
-  MW, MH,
-  ColWCount, RowHCount,
-  i, R, C, L, T : Integer;
-  ColW : TIntArr;
-  RowH : TIntArr;
-  Scroll : Boolean;
-  CurFrameDef : TIpHtmlNodeFrame;
 begin
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].Free;
-  FramePanel.Free;
-  FramePanel := nil;
-  FrameCount := 0;
-  if HyperPanel <> nil then begin
-    Html.OnScroll := nil;
-    HyperPanel.Hyper := nil;
-    HyperPanel.Free;
-    HyperPanel := nil;
-  end;
-  if FDataProvider <> nil then
-    FDataProvider.DoLeave(Html);
-  Html.Clear;
-  ColWCount := 0;
-  RowHCount := 0;
-  Html.Free;
-  Html := NewHtml;
+  InternalFreeFrames;
+  FHtml := NewHtml;
   InitHtml;
-  Html.DoneLoading := True;
-  if Html.HasFrames then begin
-    FramePanel := TPanel.Create(FParent);
-    FramePanel.BevelOuter := bvNone;
-    FramePanel.Align := alClient;
-    FramePanel.Parent := FParent;
-    FramePanel.OnResize := FramePanelResize;
-    FramePanel.FullRepaint := False;
-    ColW := CalcMultiLength(Html.FrameSet.Cols, FramePanel.ClientWidth,
-      ColWCount); {!!.10}
-    try
-      RowH := CalcMultiLength(Html.FrameSet.Rows, FramePanel.ClientHeight,
-        RowHCount); {!!.10}
-      try
-        R := 0;
-        C := 0;
-        L := 0;
-        T := 0;
-        FrameCount := 0;
-        for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-          if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-            CurFrameDef := TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]);
-            Pnl[FrameCount] := TPanel.Create(FramePanel);
-            Pnl[FrameCount].BevelOuter := bvNone;
-            Pnl[FrameCount].SetBounds(L, T, ColW[C], RowH[R]);
-            Pnl[FrameCount].Parent := FramePanel;
-            Pnl[FrameCount].FullRepaint := False;
-
-            if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
-              Pnl[FrameCount].BorderStyle := bsSingle;                {!!.02}
-              Pnl[FrameCount].BorderWidth := CurFrameDef.FrameBorder; {!!.02}
-            end;                                                      {!!.02}
-        
-            Inc(L, ColW[C]);
-
-            case CurFrameDef.Scrolling of
-            hfsAuto, hfsYes :
-              Scroll := True;
-            else //hfsNo :
-              Scroll := False;
-            end;
-
-            if CurFrameDef.MarginWidth <> -1 then
-              MW := CurFrameDef.MarginWidth
-            else
-              MW := FViewer.MarginWidth;
-            if CurFrameDef.MarginHeight <> -1 then
-              MH:= CurFramedef.MarginHeight
-            else
-              MH := FViewer.MarginHeight;
-
-            Frames[FrameCount] :=
-              TIpHtmlFrame.Create(FViewer, Pnl[FrameCount], FDataProvider,
-                FViewer.FlagErrors, not Scroll, MW, MH);
-            Frames[FrameCount].Name := CurFrameDef.Name;
-            if C < ColWCount - 1 then
-              Inc(C)
-            else begin
-              C := 0;
-              L := 0;
-              Inc(T, RowH[R]);
-              Inc(R);
-            end;
-            Inc(FrameCount);
-          end;
-        end;
-      finally
-        RowH.Free;
-      end;
-    finally
-      ColW.Free;
-    end;
-    Application.ProcessMessages;
-    FrameCount := 0;
-    for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-      if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-        Frames[FrameCount].CurURL := CurURL;
-        Frames[FrameCount].OpenRelativeURL(
-          TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]).Src);
-        Inc(FrameCount);
-      end;
-    end;
-  end else begin
-    HyperPanel := TIpHtmlInternalPanel.Create(FParent);
-    if FNoScroll then begin
-      HyperPanel.HScroll.Visible := False;
-      HyperPanel.VScroll.Visible := False;
-    end;
-    HyperPanel.Parent := FParent;
-    HyperPanel.Align := alClient;
-    HyperPanel.OnHotChange := FViewer.HotChange;
-    HyperPanel.OnCurElementChange := FViewer.CurElementChange;
-    HyperPanel.OnHotClick := FViewer.HotClick;
-    HyperPanel.OnClick := FViewer.ClientClick;
-    HyperPanel.TabStop := True;
-    Html.OnScroll := HyperPanel.ScrollRequest;
-    for i := 0 to Pred(Html.AnchorList.Count) do
-      with TIpHtmlFocusRect.Create(HyperPanel) do begin
-        SetBounds(-100, -100, 10, 10);
-        TabStop := True;
-        Parent := HyperPanel;
-        Anchor := Html.AnchorList[i];
-      end;
-    for i := 0 to Pred(Html.ControlList.Count) do begin
-      TIpHtmlNode(Html.ControlList[i]).CreateControl(HyperPanel);
-    end;
-    HyperPanel.Hyper := Html;
-  end;
+  FHtml.DoneLoading := True;
+  InternalCreateFrames;
 end;
 
 procedure TIpHtmlFrame.EnumDocuments(Enumerator: TIpHtmlEnumerator);
 var
   i : Integer;
 begin
-  if Html <> nil then
-    Enumerator(Html);
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].EnumDocuments(Enumerator);
+  if FHtml <> nil then
+    Enumerator(FHtml);
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].EnumDocuments(Enumerator);
 end;
 
 procedure TIpHtmlFrame.ControlClick(Sender: TIpHtml;
   Node: TIpHtmlNodeControl);
 begin
   FViewer.ControlClick(Self, Sender, Node);
+end;
+
+procedure TIpHtmlFrame.ControlClick2(Sender: TIpHtml;
+  Node: TIpHtmlNodeControl; var cancel: boolean);
+begin
+  FViewer.ControlClick2(Self, Sender, Node, cancel);
+end;
+
+procedure TIpHtmlFrame.ControlOnChange(Sender: TIpHtml;
+  Node: TIpHtmlNodeControl);
+begin
+  FViewer.ControlOnChange(Self, Sender, Node);
+end;
+
+procedure TIpHtmlFrame.ControlOnEditingDone(Sender: TIpHtml;
+  Node: TIpHtmlNodeControl);
+begin
+  FViewer.ControlOnEditingdone(Self, Sender, Node);
 end;
 
 procedure TIpHtmlFrame.ControlCreate(Sender: TIpHtml;
@@ -17689,9 +18389,9 @@ var
   R : TRect;
   H, W : Integer;
 begin
-  if Html = nil then Exit;
+  if FHtml = nil then Exit;
   if HyperPanel = nil then Exit;
-  R := Html.PageViewRect;
+  R := FHtml.PageViewRect;
   H := R.Bottom - R.Top;
   W := R.Right - R.Left;
   case Action of
@@ -17702,7 +18402,7 @@ begin
     end;
   hsaEnd :
     begin
-      R.Bottom := Html.FPageRect.Bottom;
+      R.Bottom := FHtml.FPageRect.Bottom;
       R.Top := R.Bottom - H;
     end;
   hsaPgUp :
@@ -17716,8 +18416,8 @@ begin
   hsaPgDn :
     begin
       OffsetRect(R, 0, H);
-      if R.Bottom > Html.FPageRect.Bottom then begin
-        R.Bottom := Html.FPageRect.Bottom;
+      if R.Bottom > FHtml.FPageRect.Bottom then begin
+        R.Bottom := FHtml.FPageRect.Bottom;
         R.Top := R.Bottom - H;
       end;
     end;
@@ -17732,8 +18432,8 @@ begin
   hsaRight :
     begin
       OffsetRect(R, 100, 0);
-      if R.Right > Html.FPageRect.Right then begin
-        R.Bottom := Html.FPageRect.Right;
+      if R.Right > FHtml.FPageRect.Right then begin
+        R.Bottom := FHtml.FPageRect.Right;
         R.Left := R.Right - W;
       end;
     end;
@@ -17748,8 +18448,8 @@ begin
   hsaDown :
     begin
       OffsetRect(R, 0, 100);
-      if R.Bottom > Html.FPageRect.Bottom then begin
-        R.Bottom := Html.FPageRect.Bottom;
+      if R.Bottom > FHtml.FPageRect.Bottom then begin
+        R.Bottom := FHtml.FPageRect.Bottom;
         R.Top := R.Bottom - H;
       end;
     end;
@@ -17760,7 +18460,12 @@ end;
 procedure TIpHtmlFrame.Stop;
 begin
   if FDataProvider <> nil then
-    FDataProvider.DoLeave(Html);
+    FDataProvider.DoLeave(FHtml);
+end;
+
+function TIpHtmlFrame.getFrame(i: integer): TIpHtmlFrame;
+begin
+     result := FFrames[i];
 end;
 
 { TIpHtmlNvFrame }
@@ -17768,8 +18473,8 @@ end;
 procedure TIpHtmlNvFrame.InitHtml;
 begin
   if FScanner.DataProvider <> nil then
-    Html.OnGetImageX := FScanner.DataProvider.DoGetImage;
-  Html.FlagErrors := FFlagErrors;
+    FHtml.OnGetImageX := FScanner.DataProvider.DoGetImage;
+  FHtml.FlagErrors := FFlagErrors;
 end;
 
 constructor TIpHtmlNvFrame.Create(Scanner: TIpHtmlCustomScanner;
@@ -17777,7 +18482,7 @@ constructor TIpHtmlNvFrame.Create(Scanner: TIpHtmlCustomScanner;
 begin
   FScanner := Scanner;
   FDataProvider := DataProvider;
-  Html := TIpHtml.Create;
+  FHtml := TIpHtml.Create;
   FFlagErrors := FlagErrors;
   InitHtml;
 end;
@@ -17786,9 +18491,9 @@ destructor TIpHtmlNvFrame.Destroy;
 var
   i : Integer;
 begin
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].Free;
-  Html.Free;
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].Free;
+  FHtml.Free;
   inherited;
 end;
 
@@ -17806,9 +18511,9 @@ var
   CurFrameDef : TIpHtmlNodeFrame;
 begin
   if Assigned(FDataProvider) then
-    St := FDataProvider.BuildURL(CurURL, URL)
+    St := FDataProvider.BuildURL(FCurURL, URL)
   else
-    St := IpUtils.BuildURL(CurURL, URL);
+    St := IpUtils.BuildURL(FCurURL, URL);
 
   if FDataProvider = nil then
     raise EIpHtmlException.Create(SHtmlNoDataProvider);        {!!.02}
@@ -17816,47 +18521,47 @@ begin
     raise EIpHtmlException.Create(SHtmlResUnavail + St);       {!!.02}
   if CompareText(ResourceType, 'text/html') <> 0 then
     Exit;
-  if CompareText(St, CurURL) = 0 then Exit;
-  CurURL := St;
-  CurAnchor := '';
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].Free;
-  FrameCount := 0;
-  FDataProvider.DoLeave(Html);
-  Html.Clear;
+  if CompareText(St, FCurURL) = 0 then Exit;
+  FCurURL := St;
+  FCurAnchor := '';
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].Free;
+  FFrameCount := 0;
+  FDataProvider.DoLeave(FHtml);
+  FHtml.Clear;
   ColWCount := 0;
   if FDataProvider <> nil then begin
-    S := FDataProvider.DoGetHtmlStream(CurURL, PostData);
+    S := FDataProvider.DoGetHtmlStream(FCurURL, PostData);
     if S <> nil then
       try
-        Html.CurURL := CurURL;
-        Html.LoadFromStream(S);
-        if Html.HasFrames then begin
+        FHtml.FCurURL := FCurURL;
+        FHtml.LoadFromStream(S);
+        if FHtml.HasFrames then begin
           C := 0;
-          FrameCount := 0;
-          for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-            if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-              CurFrameDef := TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]);
-              Frames[FrameCount] :=
+          FFrameCount := 0;
+          for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
+            if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
+              CurFrameDef := TIpHtmlNodeFrame(FHtml.FrameSet.ChildNode[i]);
+              FFrames[FFrameCount] :=
                 TIpHtmlNvFrame.Create(FScanner, FDataProvider,
                   FScanner.FlagErrors);
-              Frames[FrameCount].Name := CurFrameDef.Name;
+              FFrames[FFrameCount].FName := CurFrameDef.Name;
               if C < ColWCount - 1 then
                 Inc(C)
               else begin
                 C := 0;
               end;
-              Inc(FrameCount);
+              Inc(FFrameCount);
             end;
           end;
           Application.ProcessMessages;
-          FrameCount := 0;
-          for i := 0 to Pred(Html.FrameSet.ChildCount) do begin
-            if Html.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-              Frames[FrameCount].CurURL := CurURL;
-              Frames[FrameCount].OpenRelativeURL({Base,}
-                TIpHtmlNodeFrame(Html.FrameSet.ChildNode[i]).Src);
-              Inc(FrameCount);
+          FFrameCount := 0;
+          for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
+            if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
+              FFrames[FFrameCount].FCurURL := FCurURL;
+              FFrames[FFrameCount].OpenRelativeURL({Base,}
+                TIpHtmlNodeFrame(FHtml.FrameSet.ChildNode[i]).Src);
+              Inc(FFrameCount);
             end;
           end;
         end;
@@ -17871,32 +18576,32 @@ var
   E : TIpHtmlNode;
   i : Integer;
 begin
-  E := Html.FindElement(URL);
-  CurAnchor := '';
+  E := FHtml.FindElement(URL);
+  FCurAnchor := '';
   if E <> nil then begin
     E.MakeVisible;
-    CurAnchor := '#'+URL;
+    FCurAnchor := '#'+URL;
   end else
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].MakeAnchorVisible(URL);
+    for i := 0 to Pred(FFrameCount) do
+      FFrames[i].MakeAnchorVisible(URL);
 end;
 
 procedure TIpHtmlNvFrame.Home;
 begin
-  if Html <> nil then
-    Html.Home;
+  if FHtml <> nil then
+    FHtml.Home;
 end;
 
 function TIpHtmlNvFrame.FindFrame(const FrameName: string): TIpHtmlNvFrame;
 var
   i : Integer;
 begin
-  if AnsiCompareText(FrameName, Name) = 0 then
+  if AnsiCompareText(FrameName, FName) = 0 then
     Result := Self
   else begin
     Result := nil;
-    for i := 0 to Pred(FrameCount) do begin
-      Result := Frames[i].FindFrame(FrameName);
+    for i := 0 to Pred(FFrameCount) do begin
+      Result := FFrames[i].FindFrame(FrameName);
       if Result <> nil then
         Exit;
     end;
@@ -17907,15 +18612,15 @@ function TIpHtmlNvFrame.HaveSelection: Boolean;
 var
   i : Integer;
 begin
-  if Html = nil then
+  if FHtml = nil then
     Result := False
   else
-    if Html.HaveSelection then
+    if FHtml.HaveSelection then
       Result := True
     else begin
       Result := False;
-      for i := 0 to Pred(FrameCount) do
-        if Frames[i].HaveSelection then begin
+      for i := 0 to Pred(FFrameCount) do
+        if FFrames[i].HaveSelection then begin
           Result := True;
           break;
         end;
@@ -17926,13 +18631,13 @@ procedure TIpHtmlNvFrame.CopyToClipboard;
 var
   i : Integer;
 begin
-  if Html <> nil then
-    if Html.HaveSelection then
-      Html.CopyToClipboard
+  if FHtml <> nil then
+    if FHtml.HaveSelection then
+      FHtml.CopyToClipboard
     else begin
-      for i := 0 to Pred(FrameCount) do
-        if Frames[i].HaveSelection then begin
-          Frames[i].CopyToClipboard;
+      for i := 0 to Pred(FFrameCount) do
+        if FFrames[i].HaveSelection then begin
+          FFrames[i].CopyToClipboard;
           Exit;
         end;
     end;
@@ -17942,10 +18647,10 @@ procedure TIpHtmlNvFrame.SelectAll;
 var
   i : Integer;
 begin
-  if Html <> nil then begin
-    Html.SelectAll;
-    for i := 0 to Pred(FrameCount) do
-      Frames[i].SelectAll;
+  if FHtml <> nil then begin
+    FHtml.SelectAll;
+    for i := 0 to Pred(FFrameCount) do
+      FFrames[i].SelectAll;
   end;
 end;
 
@@ -17953,16 +18658,21 @@ procedure TIpHtmlNvFrame.EnumDocuments(Enumerator: TIpHtmlEnumerator);
 var
   i : Integer;
 begin
-  if Html <> nil then
-    Enumerator(Html);
-  for i := 0 to Pred(FrameCount) do
-    Frames[i].EnumDocuments(Enumerator);
+  if FHtml <> nil then
+    Enumerator(FHtml);
+  for i := 0 to Pred(FFrameCount) do
+    FFrames[i].EnumDocuments(Enumerator);
 end;
 
 procedure TIpHtmlNVFrame.Stop;
 begin
   if FDataProvider <> nil then
-    FDataProvider.DoLeave(Html);
+    FDataProvider.DoLeave(FHtml);
+end;
+
+function TIpHtmlNVFrame.getFrame(i: integer): TIpHtmlNVFrame;
+begin
+     result := FFrames[i];
 end;
 
 { TIpHtmlCustomPanel }
@@ -18000,20 +18710,20 @@ end;
 procedure TIpHtmlCustomPanel.HotChange(Sender: TObject);
 var
   P : TIpHtmlInternalPanel;
-  Html : TIpHtml;
+  vHtml : TIpHtml;
 begin
   P := TIpHtmlInternalPanel(Sender);
-  Html := P.Hyper;
-  if Html.HotNode <> nil then begin
-    if Html.HotPoint.x >= 0 then
-      FHotURL := TIpHtmlNodeA(Html.HotNode).HRef+
-        '?'+IntToStr(Html.HotPoint.x)+','+IntToStr(Html.HotPoint.y)
+  vHtml := P.Hyper;
+  if vHtml.HotNode <> nil then begin
+    if vHtml.HotPoint.x >= 0 then
+      FHotURL := TIpHtmlNodeA(vHtml.HotNode).HRef+
+        '?'+IntToStr(vHtml.HotPoint.x)+','+IntToStr(vHtml.HotPoint.y)
     else
-      if Html.HotNode is TIpHtmlNodeA then
-       FHotURL := TIpHtmlNodeA(Html.HotNode).HRef
+      if vHtml.HotNode is TIpHtmlNodeA then
+       FHotURL := TIpHtmlNodeA(vHtml.HotNode).HRef
       else
-       FHotURL := TIpHtmlNodeAREA(Html.HotNode).HRef;
-    FHotNode := Html.HotNode;
+       FHotURL := TIpHtmlNodeAREA(vHtml.HotNode).HRef;
+    FHotNode := vHtml.HotNode;
     P.Cursor := crHandPoint;
   end else begin
     FHotNode := nil;
@@ -18026,21 +18736,21 @@ end;
 procedure TIpHtmlCustomPanel.CurElementChange(Sender: TObject);
 var
   P : TIpHtmlInternalPanel;
-  Html : TIpHtml;
+  vHtml : TIpHtml;
 begin
   P := TIpHtmlInternalPanel(Sender);
-  Html := P.Hyper;
-  FCurElement := Html.CurElement;
+  vHtml := P.Hyper;
+  FCurElement := vHtml.CurElement;
   if assigned(FCurElementChange) then                                  {!!.10}
     FCurElementChange(Self);                                           {!!.10}
 end;
 
 function TIpHtmlCustomPanel.GetTitle: string;
 begin
-  if (MasterFrame <> nil)
-  and (MasterFrame.Html <> nil)
-  and (MasterFrame.Html.TitleNode <> nil) then
-    Result := MasterFrame.Html.TitleNode.Title
+  if (FMasterFrame <> nil)
+  and (FMasterFrame.FHtml <> nil)
+  and (FMasterFrame.FHtml.TitleNode <> nil) then
+    Result := FMasterFrame.FHtml.TitleNode.Title
   else
     Result := '';
 end;
@@ -18077,8 +18787,8 @@ begin
   FPrintSettings.Free;                                                 {!!.10}
   TargetStack.Free;
   URLStack.Free;
-  MasterFrame.Free;
-  MasterFrame := nil;
+  FMasterFrame.Free;
+  FMasterFrame := nil;
   VisitedList.Free;
   inherited;
 end;
@@ -18095,8 +18805,8 @@ end;
 
 procedure TIpHtmlCustomPanel.MakeAnchorVisible(const Name: string);
 begin
-  if MasterFrame <> nil then
-    MasterFrame.MakeAnchorVisible(Name)
+  if FMasterFrame <> nil then
+    FMasterFrame.MakeAnchorVisible(Name)
 end;
 
 procedure TIpHtmlCustomPanel.InternalOpenURL(const Target, HRef : string);
@@ -18112,11 +18822,11 @@ begin
     BaseURL := '';
   end
   else begin
-    if MasterFrame <> nil then begin
+    if FMasterFrame <> nil then begin
       if Assigned(FDataProvider) then
-        URL := FDataProvider.BuildURL(MasterFrame.Html.CURURL, HRef)
+        URL := FDataProvider.BuildURL(FMasterFrame.FHtml.FCurURL, HRef)
       else
-        URL := IpUtils.BuildURL(MasterFrame.Html.CURURL, HRef);
+        URL := IpUtils.BuildURL(FMasterFrame.FHtml.FCurURL, HRef);
     end
     else
       URL := HRef;
@@ -18130,50 +18840,50 @@ begin
     end;
   end;
   if BaseURL = '' then begin //JMN
-    if MasterFrame <> nil then
+    if FMasterFrame <> nil then
       Push('', RelURL);
   end
   else  begin
     if VisitedList.IndexOf(BaseURL) = -1 then
       VisitedList.Add(BaseURL);
-    if (Target <> '') and (MasterFrame <> nil) then
-      TargetFrame := MasterFrame.FindFrame(Target)
+    if (Target <> '') and (FMasterFrame <> nil) then
+      TargetFrame := FMasterFrame.FindFrame(Target)
     else
       TargetFrame := nil;
     if TargetFrame = nil then begin
-      if MasterFrame <> nil then
-        Push('', MasterFrame.CURURL + MasterFrame.CurAnchor);
+      if FMasterFrame <> nil then
+        Push('', FMasterFrame.FCurURL + FMasterFrame.FCurAnchor);
       if DataProvider = nil then
         raise EIpHtmlException.Create(SHtmlNoDataProvider);    {!!.02}
-      if (MasterFrame = nil)
-      or ((MasterFrame <> nil) and (not MasterFrame.IsExternal(URL))) then begin //JMN
-        if (MasterFrame <> nil)
-        and (MasterFrame.Html <> nil) then
-          FDataProvider.DoLeave(MasterFrame.Html);
-        MasterFrame.Free;
-        MasterFrame := nil;
+      if (FMasterFrame = nil)
+      or ((FMasterFrame <> nil) and (not FMasterFrame.IsExternal(URL))) then begin //JMN
+        if (FMasterFrame <> nil)
+        and (FMasterFrame.FHtml <> nil) then
+          FDataProvider.DoLeave(FMasterFrame.FHtml);
+        FMasterFrame.Free;
+        FMasterFrame := nil;
         Application.ProcessMessages;
-        MasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
+        FMasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
           MarginWidth, MarginHeight);
         // LazDebug try
-          MasterFrame.OpenURL(URL, False);
+          FMasterFrame.OpenURL(URL, False);
         { LazDebug except
-          MasterFrame.Free;
-          MasterFrame := nil;
+          FMasterFrame.Free;
+          FMasterFrame := nil;
           raise;
         end;}
-        {CurURL := URL;}                                               {!!.12}
+        {FCurURL := URL;}                                               {!!.12}
       end;
     end else begin
-      Push(Target, TargetFrame.CURURL +  TargetFrame.CurAnchor);
+      Push(Target, TargetFrame.FCurURL +  TargetFrame.FCurAnchor);
       TargetFrame.OpenURL(BaseURL, False);
     end;
   end;
   if RelURL <> '' then
-    MasterFrame.MakeAnchorVisible(RelURL)
+    FMasterFrame.MakeAnchorVisible(RelURL)
   else
-    if MasterFrame <> nil then                                         {!!.02}
-      MasterFrame.Home;
+    if FMasterFrame <> nil then                                         {!!.02}
+      FMasterFrame.Home;
   if assigned(FDocumentOpen) then                                      {!!.10}
     FDocumentOpen(Self);                                               {!!.10}
 end;
@@ -18293,9 +19003,9 @@ end;
 
 procedure TIpHtmlCustomPanel.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
-  if (MasterFrame = nil)
-  or (MasterFrame.Html = nil)
-  or (not MasterFrame.Html.CanPaint) then
+  if (FMasterFrame = nil)
+  or (FMasterFrame.FHtml = nil)
+  or (not FMasterFrame.FHtml.CanPaint) then
     if not (csDesigning in ComponentState) then
       FillRect(Message.DC, ClientRect, Brush.Handle);
   Message.Result := 1;
@@ -18315,6 +19025,8 @@ begin
     {$ENDIF}
   end else                       {!!.12}
     FB.OpenRelativeURL(GetURL);
+  if assigned(FDocumentOpen) then                                      {!!.10}
+    FDocumentOpen(Self);                                               {!!.10}
 end;
 
 procedure TIpHtmlCustomPanel.ClientClick(Sender: TObject);
@@ -18325,57 +19037,78 @@ end;
 function TIpHtmlCustomPanel.HaveSelection: Boolean;
 begin
   Result :=
-    (MasterFrame <> nil)
-    and (MasterFrame.HaveSelection);
+    (FMasterFrame <> nil)
+    and (FMasterFrame.HaveSelection);
 end;
 
 procedure TIpHtmlCustomPanel.SelectAll;
 begin
-  if MasterFrame <> nil then begin
-    MasterFrame.SelectAll;
+  if FMasterFrame <> nil then begin
+    FMasterFrame.SelectAll;
     Invalidate;
   end;
 end;
 
 procedure TIpHtmlCustomPanel.DeselectAll;
 begin
-  if MasterFrame <> nil then begin
-    MasterFrame.DeselectAll;
+  if FMasterFrame <> nil then begin
+    FMasterFrame.DeselectAll;
     Invalidate;
   end;
 end;
 
 procedure TIpHtmlCustomPanel.CopyToClipboard;
 begin
-  if MasterFrame <> nil then
-    MasterFrame.CopyToClipboard;
+  if FMasterFrame <> nil then
+    FMasterFrame.CopyToClipboard;
 end;
 
 procedure TIpHtmlCustomPanel.SetHtml(NewHtml: TIpHtml);
 begin
-  if (MasterFrame <> nil)
-  and (MasterFrame.Html <> nil)
+  if (FMasterFrame <> nil)
+  and (FMasterFrame.FHtml <> nil)
   and (FDataProvider <> nil) then
-    FDataProvider.DoLeave(MasterFrame.Html);
-  MasterFrame.Free;
-  MasterFrame := nil;
-  MasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
+    FDataProvider.DoLeave(FMasterFrame.FHtml);
+  FMasterFrame.Free;
+  FMasterFrame := nil;
+  FMasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
     MarginWidth, MarginHeight);
   // LazDebug try
     if NewHtml <> nil then  begin //JMN
-      FactBAParagG := FactBAParag;
+      NewHtml.FactBAParag := FactBAParag;
       NewHtml.BgColor := BgColor; //JMN
       NewHtml.FixedTypeface := FixedTypeface;                          {!!.10}
       NewHtml.DefaultTypeFace := DefaultTypeFace;
       NewHtml.DefaultFontSize := FDefaultFontSize;
-      MasterFrame.SetHtml(NewHtml);
+      FMasterFrame.SetHtml(NewHtml);
     end;
   { LazDebug
   except
-    MasterFrame.Free;
-    MasterFrame := nil;
+    FMasterFrame.Free;
+    FMasterFrame := nil;
     raise;
   end;}
+end;
+
+procedure TIpHtmlCustomPanel.SetHtmlFromStr(NewHtml: string);
+var
+   iphtml: TIpHtml;
+   strm: TStringStream;
+begin
+     iphtml:= TIpHtml.Create;
+     strm:= TStringStream.Create(NewHtml);
+     iphtml.LoadFromStream(strm);
+     SetHtml(iphtml);
+     strm.Free;
+end;
+
+procedure TIpHtmlCustomPanel.SetHtmlFromStream(NewHtml: TStream);
+var
+   iphtml: TIpHtml;
+begin
+     iphtml:= TIpHtml.Create;
+     iphtml.LoadFromStream(NewHtml);
+     SetHtml(iphtml);
 end;
 
 procedure TIpHtmlCustomPanel.URLCheck(Sender: TIpHtml; const URL: string;
@@ -18392,22 +19125,43 @@ end;
 
 procedure TIpHtmlCustomPanel.EnumDocuments(Enumerator: TIpHtmlEnumerator);
 begin
-  if MasterFrame <> nil then
-    MasterFrame.EnumDocuments(Enumerator);
+  if FMasterFrame <> nil then
+    FMasterFrame.EnumDocuments(Enumerator);
 end;
 
-procedure TIpHtmlCustomPanel.ControlClick(Frame: TIpHtmlFrame; Html: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlCustomPanel.ControlClick(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+  pNode: TIpHtmlNodeControl);
 begin
   if assigned(FControlClick) then
-    FControlClick(Self, Frame, Html, Node);
+    FControlClick(Self, pFrame, pHtml, pNode);
 end;
 
-procedure TIpHtmlCustomPanel.ControlCreate(Frame: TIpHtmlFrame; Html: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlCustomPanel.ControlClick2(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+  pNode: TIpHtmlNodeControl; var pCancel: boolean);
+begin
+  if assigned(FControlClick2) then
+    FControlClick2(Self, pFrame, pHtml, pNode, pCancel);
+end;
+
+procedure TIpHtmlCustomPanel.ControlOnChange(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+  pNode: TIpHtmlNodeControl);
+begin
+  if assigned(FControlOnChange) then
+    FControlOnChange(Self, pFrame, pHtml, pNode);
+end;
+
+procedure TIpHtmlCustomPanel.ControlOnEditingDone(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+  pNode: TIpHtmlNodeControl);
+begin
+  if assigned(FControlOnEditingDone) then
+    FControlOnEditingDone(Self, pFrame, pHtml, pNode);
+end;
+
+procedure TIpHtmlCustomPanel.ControlCreate(pFrame: TIpHtmlFrame; pHtml: TIpHtml;
+  pNode: TIpHtmlNodeControl);
 begin
   if assigned(FControlCreate) then
-    FControlCreate(Self, Frame, Html, Node);
+    FControlCreate(Self, pFrame, pHtml, pNode);
 end;
 
 function TIpHtmlCustomPanel.IsURLHtml(const URL: string): Boolean;
@@ -18421,8 +19175,8 @@ end;
 
 procedure TIpHtmlCustomPanel.Stop;
 begin
-  if assigned(MasterFrame) then
-    MasterFrame.Stop;
+  if assigned(FMasterFrame) then
+    FMasterFrame.Stop;
 end;
 
 {New in !!.16}
@@ -18437,15 +19191,15 @@ end;
 
 function TIpHtmlCustomPanel.GetPrintPageCount: Integer;
 begin
-  if Assigned(MasterFrame)
-  and Assigned(MasterFrame.HyperPanel) then begin
+  if Assigned(FMasterFrame)
+  and Assigned(FMasterFrame.HyperPanel) then begin
     { !!.10 logic moved to InternalPanel
     Printer.BeginDoc;
     try
       ScaleBitmaps := True;
       GetRelativeAspect(Printer.Canvas.Handle);
     }
-      Result := MasterFrame.HyperPanel.GetPrintPageCount;
+      Result := FMasterFrame.HyperPanel.GetPrintPageCount;
     {
       !!.10 logic moved to InternalPanel
     finally
@@ -18460,8 +19214,8 @@ end;
 
 procedure TIpHtmlCustomPanel.Print(FromPg, ToPg: LongInt);
 begin
-  if Assigned(MasterFrame) then
-    MasterFrame.HyperPanel.PrintPages(FromPg, ToPg);
+  if Assigned(FMasterFrame) then
+    FMasterFrame.HyperPanel.PrintPages(FromPg, ToPg);
 end;
 
 procedure TIpHtmlCustomPanel.PrintPreview;
@@ -18474,15 +19228,15 @@ begin
       'or PrintDialog is in uses clause of main unit');
   end;
   {$ENDIF}
-  if Assigned(MasterFrame) then
-    MasterFrame.HyperPanel.PrintPreview;
+  if Assigned(FMasterFrame) then
+    FMasterFrame.HyperPanel.PrintPreview;
 end;
 
 function TIpHtmlCustomPanel.GetContentSize: TSize;
 begin
-  if MasterFrame <> nil then
+  if FMasterFrame <> nil then
   begin
-    with MasterFrame.HTML.FPageRect do
+    with FMasterFrame.FHtml.FPageRect do
     begin
       Result.cx := Right - Left;
       Result.cy := Bottom - Top;
@@ -18494,8 +19248,8 @@ end;
 
 procedure TIpHtmlCustomPanel.Scroll(Action: TIpScrollAction);
 begin
-  if MasterFrame <> nil then
-    MasterFrame.Scroll(Action);
+  if FMasterFrame <> nil then
+    FMasterFrame.Scroll(Action);
 end;                    
 
 procedure TIpHtmlCustomPanel.WMGetDlgCode(var Msg: TMessage);
@@ -18515,6 +19269,11 @@ begin
   Result := IpShortVersion;
 end;
 
+function TIpHtmlCustomPanel.GetCurUrl: string;
+begin
+     result := FMasterFrame.FCurURL;
+end;
+
 procedure TIpHtmlCustomPanel.SetVersion(const Value : string);
 begin
   { Intentionally empty }
@@ -18524,8 +19283,8 @@ procedure TIpHtmlCustomPanel.SetDefaultTypeFace(const Value: string);
 begin
   if FDefaultTypeFace<>Value then begin
     FDefaultTypeFace := Value;
-    if (MasterFrame<>nil)and(MasterFrame.Html<>nil) then begin
-      MasterFrame.Html.DefaultTypeFace := FDefaultTypeFace;
+    if (FMasterFrame<>nil)and(FMasterFrame.FHtml<>nil) then begin
+      FMasterFrame.FHtml.DefaultTypeFace := FDefaultTypeFace;
       Invalidate;
     end;
   end;
@@ -18535,8 +19294,8 @@ procedure TIpHtmlCustomPanel.SetDefaultFontSize(const Value: integer);
 begin
   if FDefaultFontSize<>Value then begin
     FDefaultFontSize := Value;
-    if (MasterFrame<>nil)and(MasterFrame.Html<>nil) then begin
-      MasterFrame.Html.DefaultFontSize := FDefaultFontSize;
+    if (FMasterFrame<>nil)and(FMasterFrame.FHtml<>nil) then begin
+      FMasterFrame.FHtml.DefaultFontSize := FDefaultFontSize;
       Invalidate;
     end;
   end;
@@ -18561,25 +19320,25 @@ end;
 
 function TIpHtmlCustomPanel.GetVScrollPos: Integer; //JMN
 begin
-  if  MasterFrame <> nil
-  then  Result := MasterFrame.HyperPanel.VScroll.Position
+  if  FMasterFrame <> nil
+  then  Result := FMasterFrame.HyperPanel.VScroll.Position
   else  Result := -1;
 end;
 
 procedure TIpHtmlCustomPanel.SetVScrollPos(const Value: Integer); //JMN
 begin
-  if  (MasterFrame <> nil) and (Value >= 0)
-  then  MasterFrame.HyperPanel.VScroll.Position := Value;
+  if  (FMasterFrame <> nil) and (Value >= 0)
+  then  FMasterFrame.HyperPanel.VScroll.Position := Value;
 end;
 
 { TIpHtmlCustomScanner }
 
 function TIpHtmlCustomScanner.GetTitle: string;
 begin
-  if (MasterFrame <> nil)
-  and (MasterFrame.Html <> nil)
-  and (MasterFrame.Html.TitleNode <> nil) then
-    Result := MasterFrame.Html.TitleNode.Title
+  if (FMasterFrame <> nil)
+  and (FMasterFrame.FHtml <> nil)
+  and (FMasterFrame.FHtml.TitleNode <> nil) then
+    Result := FMasterFrame.FHtml.TitleNode.Title
   else
     Result := '';
 end;
@@ -18595,8 +19354,8 @@ destructor TIpHtmlCustomScanner.Destroy;
 begin
   TargetStack.Free;
   URLStack.Free;
-  MasterFrame.Free;
-  MasterFrame := nil;
+  FMasterFrame.Free;
+  FMasterFrame := nil;
   inherited;
 end;
 
@@ -18617,11 +19376,11 @@ begin
     RelURL := copy(HRef, 2, length(HRef) - 1);
     BaseURL := '';
   end else begin
-    if MasterFrame <> nil then begin
+    if FMasterFrame <> nil then begin
       if Assigned(FDataProvider) then
-        URL := FDataProvider.BuildURL(MasterFrame.Html.CURURL, HRef)
+        URL := FDataProvider.BuildURL(FMasterFrame.FHtml.FCurURL, HRef)
       else
-        URL := IpUtils.BuildURL(MasterFrame.Html.CURURL, HRef);
+        URL := IpUtils.BuildURL(FMasterFrame.FHtml.FCurURL, HRef);
     end
     else
       URL := HRef;
@@ -18635,39 +19394,39 @@ begin
     end;
   end;
   if BaseURL <> '' then begin
-    if (Target <> '') and (MasterFrame <> nil) then
-      TargetFrame := MasterFrame.FindFrame(Target)
+    if (Target <> '') and (FMasterFrame <> nil) then
+      TargetFrame := FMasterFrame.FindFrame(Target)
     else
       TargetFrame := nil;
     if TargetFrame = nil then begin
-      if MasterFrame <> nil then
-        Push('', MasterFrame.CURURL + MasterFrame.CurAnchor);
+      if FMasterFrame <> nil then
+        Push('', FMasterFrame.FCurURL + FMasterFrame.FCurAnchor);
       if DataProvider = nil then
         raise EIpHtmlException.Create(SHtmlNoDataProvider);    {!!.02}
-      if (MasterFrame <> nil)
-      and (MasterFrame.Html <> nil) then
-        FDataProvider.DoLeave(MasterFrame.Html);
-      MasterFrame.Free;
-      MasterFrame := nil;
+      if (FMasterFrame <> nil)
+      and (FMasterFrame.FHtml <> nil) then
+        FDataProvider.DoLeave(FMasterFrame.FHtml);
+      FMasterFrame.Free;
+      FMasterFrame := nil;
       Application.ProcessMessages;
-      MasterFrame := TIpHtmlNVFrame.Create(Self, DataProvider, FlagErrors);
+      FMasterFrame := TIpHtmlNVFrame.Create(Self, DataProvider, FlagErrors);
       // LazDebug try
-        MasterFrame.OpenURL(URL);
+        FMasterFrame.OpenURL(URL);
       { LazDebug except
-        MasterFrame.Free;
-        MasterFrame := nil;
+        FMasterFrame.Free;
+        FMasterFrame := nil;
         raise;
       end;}
-      CurURL := URL;
+      FCurURL := URL;
     end else begin
-      Push(Target, TargetFrame.CURURL +  TargetFrame.CurAnchor);
+      Push(Target, TargetFrame.FCurURL +  TargetFrame.FCurAnchor);
       TargetFrame.OpenURL(BaseURL);
     end;
   end;
   if RelURL <> '' then
-    MasterFrame.MakeAnchorVisible(RelURL)
+    FMasterFrame.MakeAnchorVisible(RelURL)
   else
-    MasterFrame.Home;
+    FMasterFrame.Home;
 end;
 
 procedure TIpHtmlCustomScanner.Push(const Target, URL: string);
@@ -18686,8 +19445,8 @@ end;
 
 procedure TIpHtmlCustomScanner.EnumDocuments(Enumerator: TIpHtmlEnumerator);
 begin
-  if MasterFrame <> nil then
-    MasterFrame.EnumDocuments(Enumerator);
+  if FMasterFrame <> nil then
+    FMasterFrame.EnumDocuments(Enumerator);
 end;
 
 function TIpHtmlCustomScanner.IsURLHtml(const URL: string): Boolean;
@@ -18701,8 +19460,8 @@ end;
 
 procedure TIpHtmlCustomScanner.Stop;
 begin
-  if assigned(MasterFrame) then
-    MasterFrame.Stop;
+  if assigned(FMasterFrame) then
+    FMasterFrame.Stop;
 end;
 
 {Begin !!.14}
@@ -18973,5 +19732,8 @@ initialization
 {$I iphtml.lrs}
 {$ENDIF}
   InitScrollProcs;
+
+finalization
+
 end.
 
