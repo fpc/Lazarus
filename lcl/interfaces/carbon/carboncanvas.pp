@@ -1487,7 +1487,9 @@ end;
 
 function TCarbonDeviceContext.CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
 begin
-  Result := ADstRegion.CombineWith(FClipRegion, RGN_COPY);
+  if Assigned(ADstRegion)
+    then Result := ADstRegion.CombineWith(FClipRegion, RGN_COPY)
+    else Result := LCLType.Error;
 end;
 
 { TCarbonScreenContext }
