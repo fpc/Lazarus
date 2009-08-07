@@ -700,12 +700,17 @@ end;
 
 function TCustomPropertyStorage.ReadInteger(const Ident: string; DefaultValue: Longint): Longint;
 begin
+  StorageNeeded(True);
+  try
   Result := DoReadInteger(RootSection, Ident, DefaultValue);
+  finally
+    FreeStorage;
+  end;
 end;
 
 function TCustomPropertyStorage.ReadBoolean(const Ident: string; DefaultValue: Boolean): Boolean;
 begin
-  Result := DoReadInteger(RootSection, Ident, Ord(DefaultValue)) <> Ord(False);
+  Result := ReadInteger(Ident, Ord(DefaultValue)) <> Ord(False);
 end;
 
 procedure TCustomPropertyStorage.ReadRect(const Ident: string;
@@ -746,12 +751,17 @@ end;
 
 procedure TCustomPropertyStorage.WriteInteger(const Ident: string; Value: Longint);
 begin
-  DoWriteInteger(RootSection, Ident, Value);
+  StorageNeeded(False);
+  try
+    DoWriteInteger(RootSection, Ident, Value);
+  finally
+    FreeStorage;
+  end;
 end;
 
 procedure TCustomPropertyStorage.WriteBoolean(const Ident: string; Value: Boolean);
 begin
-  DoWriteInteger(RootSection, Ident, Ord(Value));
+  WriteInteger(Ident, Ord(Value));
 end;
 
 procedure TCustomPropertyStorage.WriteRect(const Ident: string;
@@ -775,7 +785,12 @@ end;
 
 procedure TCustomPropertyStorage.EraseSections;
 begin
-  DoEraseSections(RootSection);
+  StorageNeeded(False);
+  try
+    DoEraseSections(RootSection);
+  finally
+    FreeStorage;
+  end;
 end;
 
 procedure TCustomPropertyStorage.SetStoredValues(Value: TStoredValues);
