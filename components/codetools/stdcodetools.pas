@@ -4184,6 +4184,7 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
   var
     p: Integer;
   begin
+    //DebugLn(['CommentBelongsToPrior Comment=',dbgstr(copy(Src,CommentStart,20))]);
     if (CommentStart<SrcLen) and (Src[CommentStart]='{')
     and (Src[CommentStart+1]='<') then
       Result:=true
@@ -4196,6 +4197,7 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
     else begin
       p:=CommentStart-1;
       while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
+      //DebugLn(['CommentBelongsToPrior Code in front: ',dbgstr(copy(Src,p,20))]);
       if (p<1) or (Src[p] in [#10,#13]) then
         Result:=false
       else
@@ -4227,10 +4229,7 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
         if not CommentBelongsToPrior(p) then
           Add(p);
       end else if (p<EndPos) then begin
-        // comment in the middle
-        Add(p);
-      end else begin
-        // comment behind
+        // comment in the middle or behind
         if CommentBelongsToPrior(p) then
           Add(p);
       end;
@@ -4271,7 +4270,7 @@ begin
     EndPos:=ANode.EndPos;
 
   // scan range for comments
-  if not Scan(Anode.StartPos,EndPos) then exit;
+  if not Scan(ANode.StartPos,EndPos) then exit;
 
   if ANode.Desc in AllIdentifierDefinitions then begin
     // scan behind type

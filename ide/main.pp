@@ -10830,7 +10830,6 @@ begin
   end;
   FCheckFilesOnDiskNeeded:=false;
 
-  //debugln('TMainIDE.DoCheckFilesOnDisk');
   FCheckingFilesOnDisk:=true;
   AnUnitList:=nil;
   APackageList:=nil;
