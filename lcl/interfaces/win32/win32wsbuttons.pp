@@ -477,6 +477,8 @@ function BitBtnWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 var
   Info: PWin32WindowInfo;
   Control: TWinControl;
+  ButtonImageList: BUTTON_IMAGELIST;
+  ImageList: HIMAGELIST;
 begin
   Info := GetWin32WindowInfo(Window);
   if (Info = nil) or (Info^.WinControl = nil) then
@@ -488,6 +490,22 @@ begin
     Control := Info^.WinControl;
 
   case Msg of
+    WM_DESTROY:
+      begin
+        if ThemeServices.ThemesAvailable and
+           (Windows.SendMessage(Window, BCM_GETIMAGELIST, 0, Windows.LPARAM(@ButtonImageList)) <> 0) then
+        begin
+          // delete and destroy button imagelist
+          if ButtonImageList.himl <> 0 then
+          begin
+            ImageList:=ButtonImageList.himl;
+            ButtonImageList.himl:=0;
+            Windows.SendMessage(Window, BCM_SETIMAGELIST, 0, Windows.LPARAM(@ButtonImageList));
+            ImageList_Destroy(ImageList);
+          end;
+        end;
+        Result := WindowProc(Window, Msg, WParam, LParam);
+      end;
     WM_GETFONT:
       begin
         Result := LResult(Control.Font.Reference.Handle);
