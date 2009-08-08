@@ -101,6 +101,7 @@ type
     procedure SetParams; virtual;
     procedure BoundsChanged; override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
+    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
   end;
 
 implementation
@@ -472,6 +473,18 @@ begin
   end;
 
   Result := GetValue;
+end;
+
+procedure TCarbonScrollBar.GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo);  
+begin
+  ScrollInfo.fMask := SIF_RANGE or SIF_POS or SIF_PAGE;
+  with ScrollInfo do 
+  begin
+    nMin := GetControl32BitMinimum(ControlRef(Widget));
+    nMax := GetControl32BitMaximum(ControlRef(Widget));
+    nPos := GetControl32BitValue(ControlRef(Widget));
+    nPage := GetControlViewSize(ControlRef(Widget));  
+  end;
 end;
 
 end.
