@@ -2822,6 +2822,11 @@ begin
     rcClip := Canvas.ClipRect;
     //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
     {$ENDIF}
+
+      {$IFDEF SYNSCROLLDEBUG}
+      debugln(['PAINT sfHasScrolled=',dbgs(sfHasScrolled in fStateFlags)]);
+      {$ENDIF}
+
   Include(fStateFlags,sfPainting);
   Exclude(fStateFlags, sfHasScrolled);
   {$ELSE}
@@ -2846,6 +2851,9 @@ begin
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight, Lines.Count
              {$ENDIF}
              );
+      {$IFDEF SYNSCROLLDEBUG}
+      debugln(['PAINT rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
+      {$ENDIF}
   //DebugLn('TCustomSynEdit.Paint LinesInWindow=',dbgs(LinesInWindow),' nL1=',dbgs(nL1),' nL2=',dbgs(nL2));
   // Now paint everything while the caret is hidden.
   HideCaret;
@@ -4027,6 +4035,10 @@ procedure TCustomSynEdit.SetTopLine(Value: Integer);
 begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
+  {$IFDEF SYNSCROLLDEBUG}
+  if fPaintLock = 0 then debugln(['SetTopline outside Paintlock']);
+  if (sfHasScrolled in fStateFlags) then debugln(['SetTopline with sfHasScrolled Value=',Value, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
+  {$ENDIF}
   if (eoScrollPastEof in Options) then
     Value := Min(Value, FTheLinesView.Count)
   else
@@ -4047,6 +4059,9 @@ begin
   end
   else
     fMarkupManager.TopLine:= fTopLine;
+  {$IFDEF SYNSCROLLDEBUG}
+  if fPaintLock = 0 then debugln('SetTopline outside Paintlock EXIT');
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ScrollAfterTopLineChanged;
@@ -4055,16 +4070,29 @@ var
 begin
   if (sfPainting in fStateFlags) or (fPaintLock <> 0) then exit;
   Delta := FOldTopView - TopView;
+  {$IFDEF SYNSCROLLDEBUG}
+  if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' Ftopline=',FTopLine, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
+  {$ENDIF}
   if Delta <> 0 then begin
     // TODO: SW_SMOOTHSCROLL --> can't get it work
-    if (Abs(Delta) >= fLinesInWindow) or (sfHasScrolled in FStateFlags) then
-      Invalidate
-    else
+    if (Abs(Delta) >= fLinesInWindow) or (sfHasScrolled in FStateFlags) then begin
+      {$IFDEF SYNSCROLLDEBUG}
+      debugln(['ScrollAfterTopLineChanged does invalidet Delta=',Delta]);
+      {$ENDIF}
+      Invalidate;
+    end else
     if ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, SW_INVALIDATE)
-    then
-      include(fStateFlags, sfHasScrolled)
-    else
+    then begin
+      {$IFDEF SYNSCROLLDEBUG}
+      debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
+      {$ENDIF}
+      include(fStateFlags, sfHasScrolled);
+    end else begin
       Invalidate;    // scrollwindow failed, invalidate all
+      {$IFDEF SYNSCROLLDEBUG}
+      debugln(['ScrollAfterTopLineChanged does invalidet (scroll failed) Delta=',Delta]);
+      {$ENDIF}
+    end;
   end;
   FOldTopLine := FTopLine;
   FOldTopView := TopView;
