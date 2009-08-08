@@ -60,7 +60,6 @@ type
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
     LazDocGroupBox: TGroupBox;
-    AutoIncrementOnBuildCheckBox: TCheckBox;
     ProvidesMemo: TMemo;
     i18n: TPage;
     POOutDirButton: TButton;
@@ -337,7 +336,6 @@ begin
   LazPackage.Description:=DescriptionMemo.Text;
   LazPackage.Author:=AuthorEdit.Text;
   LazPackage.License:=LicenseMemo.Text;
-  LazPackage.AutoIncrementVersionOnBuild:=AutoIncrementOnBuildCheckBox.Checked;
 
   // Usage page
   LazPackage.PackageType:=NewPackageType;
@@ -418,8 +416,7 @@ begin
   VersionMinorLabel.Caption:=lisPckOptsMinor;
   VersionReleaseLabel.Caption:=lisPckOptsRelease;
   VersionBuildLabel.Caption:=lisBuildNumber;
-  AutoIncrementOnBuildCheckBox.Caption:=lisPckOptsAutomaticallyIncrementVersionOnBuild;
-  
+
   //Provides page
   ProvidesGroupBox.Caption:=lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages;
   
@@ -546,7 +543,6 @@ begin
   VersionMinorSpinEdit.Value:=LazPackage.Version.Minor;
   VersionReleaseSpinEdit.Value:=LazPackage.Version.Release;
   VersionBuildSpinEdit.Value:=LazPackage.Version.Build;
-  AutoIncrementOnBuildCheckBox.Checked:=LazPackage.AutoIncrementVersionOnBuild;
 
   // Usage page
   ReadPkgTypeFromPackage;
