@@ -624,8 +624,9 @@ begin
 
   WidgetInfo := GetWidgetInfo(Widget, False);
   if WidgetInfo <> nil then begin
-    if (dy < 0) and (WidgetInfo^.UpdateRect.Bottom > 0) then begin
-      Rect1.Height := Min(Rect1.height, WidgetInfo^.UpdateRect.Top);
+    if (dy < 0) then begin
+      if (WidgetInfo^.UpdateRect.Bottom > 0) then
+        Rect1.Height := Min(Rect1.height, WidgetInfo^.UpdateRect.Top);
       Rect2 := Rect(0, Rect1.height + dy, Rect1.width, Widget^.Allocation.Height);
     end;
     if dy > 0 then begin
@@ -640,7 +641,8 @@ begin
   // Rect2 includes the Area at the scroll-in side of Rect1
   // gdk_window_move_region is supposed to have invalidated it, but some
   // implementations seem not to do this. (bug 14297)
-  InvalidateRect(hWnd, @Rect2, false);
+  if dy <> 0 then
+    InvalidateRect(hWnd, @Rect2, false);
   {$ELSE}
   gdk_window_scroll(Window, dx, dy);
   {$ENDIF}
