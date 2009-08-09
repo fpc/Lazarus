@@ -1,16 +1,5 @@
 { This is an automatically generated lazarus resource file }
 
-LazarusResources.Add('TLocalsDlg','FORMDATA',[
-  'TPF0'#10'TLocalsDlg'#9'LocalsDlg'#13'ActiveControl'#7#8'lvLocals'#7'Caption'
-  +#6#6'Locals'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#13'PixelsPerIn'
-  +'ch'#2'p'#18'HorzScrollBar.Page'#3#243#1#18'VertScrollBar.Page'#3#199#0#4'Le'
-  +'ft'#3'g'#1#6'Height'#3#200#0#3'Top'#2'~'#5'Width'#3#244#1#0#9'TListView'#8
-  +'lvLocals'#5'Align'#7#8'alClient'#7'Columns'#14#1#7'Caption'#6#4'Name'#5'Wid'
-  +'th'#3#150#0#0#1#7'Caption'#6#5'Value'#0#0#11'MultiSelect'#9#9'RowSelect'#9#8
-  +'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#6'Height'#3#200#0#5'Width'#3#244#1
-  +#0#0#0
-]);
-
 LazarusResources.Add('TRegistersDlg','FORMDATA',[
   'TPF0'#241#13'TRegistersDlg'#12'RegistersDlg'#4'Left'#3'V'#1#6'Height'#3#253#0
   +#3'Top'#2'u'#5'Width'#3'Z'#1#13'ActiveControl'#7#11'lvRegisters'#7'Caption'#6
