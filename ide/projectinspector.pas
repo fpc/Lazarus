@@ -815,7 +815,6 @@ end;
 
 initialization
   {$I projectinspector.lrs}
-  {$I projectinspector.lrs}
 
 end.
 
