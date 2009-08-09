@@ -1065,7 +1065,9 @@ begin
 end;
 
 initialization
-  {$I lazdoc.lrs}
+  // first include the lfm
   {$I fpdoceditwindow.lrs}
+  // then the items
+  {$I lazdoc.lrs}
 
 end.
