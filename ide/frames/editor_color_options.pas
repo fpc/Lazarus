@@ -584,13 +584,22 @@ begin
     Exit;
   UpdatingColor := True;
 
-  TextBoldRadioPanel.Visible := CurHighlightElementIsExtra;
-  TextItalicRadioPanel.Visible := CurHighlightElementIsExtra;
-  TextUnderlineRadioPanel.Visible := CurHighlightElementIsExtra;
+  TextBoldRadioPanel.Visible      := CurHighlightElementIsExtra and
+                                    ahaSupportedFeatures[CurExtraElement].Style;
+  TextItalicRadioPanel.Visible    := CurHighlightElementIsExtra and
+                                    ahaSupportedFeatures[CurExtraElement].Style;
+  TextUnderlineRadioPanel.Visible := CurHighlightElementIsExtra and
+                                    ahaSupportedFeatures[CurExtraElement].Style;
 
-  TextBoldCheckBox.Enabled := not CurHighlightElementIsSingle;
-  TextItalicCheckBox.Enabled := not CurHighlightElementIsSingle;
-  TextUnderlineCheckBox.Enabled := not CurHighlightElementIsSingle;
+  TextBoldCheckBox.Visible      := not(CurHighlightElementIsSingle or
+                                       (CurHighlightElementIsExtra and
+                                        not ahaSupportedFeatures[CurExtraElement].Style));
+  TextItalicCheckBox.Visible    := not(CurHighlightElementIsSingle or
+                                       (CurHighlightElementIsExtra and
+                                        not ahaSupportedFeatures[CurExtraElement].Style));
+  TextUnderlineCheckBox.Visible := not(CurHighlightElementIsSingle or
+                                       (CurHighlightElementIsExtra and
+                                        not ahaSupportedFeatures[CurExtraElement].Style));
 
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
@@ -654,10 +663,22 @@ begin
     TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
   end;
 
-  BackGroundColorBox.Enabled := not CurHighlightElementIsSingle;
-  FrameColorBox.Enabled := not CurHighlightElementIsSingle;
-  BackGroundUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
-  FrameColorUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
+  if CurHighlightElementIsExtra then begin
+    BackGroundColorBox.Enabled           := ahaSupportedFeatures[CurExtraElement].BG;
+    BackGroundUseDefaultCheckBox.Enabled := ahaSupportedFeatures[CurExtraElement].BG;
+    ForegroundColorBox.Enabled           := ahaSupportedFeatures[CurExtraElement].FG;
+    ForeGroundUseDefaultCheckBox.Enabled := ahaSupportedFeatures[CurExtraElement].FG;
+    FrameColorBox.Enabled                := ahaSupportedFeatures[CurExtraElement].FF;
+    FrameColorUseDefaultCheckBox.Enabled := ahaSupportedFeatures[CurExtraElement].FF;
+  end else begin
+    BackGroundColorBox.Enabled           := not CurHighlightElementIsSingle;
+    BackGroundUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
+    ForegroundColorBox.Enabled           := True;
+    ForeGroundUseDefaultCheckBox.Enabled := True;
+    FrameColorBox.Enabled                := not CurHighlightElementIsSingle;
+    FrameColorUseDefaultCheckBox.Enabled := not CurHighlightElementIsSingle;
+  end;
+
   if not CurHighlightElementIsSingle then
   begin
     ForegroundColorBox.Selected := NoneToDefault(CurHighlightElement.Foreground);

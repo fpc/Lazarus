@@ -101,9 +101,15 @@ type
     ahaMouseLink, ahaLineNumber, ahaLineHighlight, ahaModifiedLine,
     ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode, ahaWordGroup,
     ahaTemplateEditCur, ahaTemplateEditSync, ahaTemplateEditOther,
-    ahaSyncroEditCur, ahaSyncroEditSync, ahaSyncroEditOther, ahaSyncroEditArea);
+    ahaSyncroEditCur, ahaSyncroEditSync, ahaSyncroEditOther, ahaSyncroEditArea,
+    ahaGutterSeparator);
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
+
+  TAhaSupportedFeatures = Record
+    FG, BG, FF: Boolean; // ForeGround, BackGroun, Frame
+    Style: Boolean;
+  end;
 
 const
   ahaXmlNames: array[TAdditionalHilightAttribute] of String =
@@ -133,8 +139,41 @@ const
     'SyncronEdit Current Cells',
     'SyncronEdit Syncron Cells',
     'SyncronEdit Other Cells',
-    'SyncronEdit Range'
+    'SyncronEdit Range',
+    '' // scaGutterSeparator => uses RTTI only
   );
+
+  ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TAhaSupportedFeatures =
+  (
+    { ahaNone }               (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaTextBlock }          (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaExecutionPoint }     (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaEnabledBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaDisabledBreakpoint } (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaInvalidBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaUnknownBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaErrorLine }          (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaIncrementalSearch }  (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaHighlightAll }       (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaBracketMatch }       (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaMouseLink }          (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaLineNumber }         (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaLineHighlight }      (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaModifiedLine }       (FG: True;  BG: False; FF: True;  Style: False),
+    { ahaCodeFoldingTree }    (FG: True;  BG: True;  FF: False; Style: False),
+    { ahaHighlightWord }      (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaFoldedCode }         (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaWordGroup }          (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaTemplateEditCur }    (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaTemplateEditSync }   (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaTemplateEditOther }  (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaSyncroEditCur }      (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True),
+    { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False)
+  );
+
 
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
@@ -222,11 +261,12 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;     FC: clFuchsia;     Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
-      { shaGutter      } clBtnFace,
-      { shaRightMargin } clSilver
+      { scaGutter      } clBtnFace,
+      { scaRightMargin } clSilver
     )
   );
 
@@ -268,11 +308,12 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;     FC: clFuchsia;     Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
-      { shaGutter      } clBtnFace,
-      { shaRightMargin } clSilver
+      { scaGutter      } clBtnFace,
+      { scaRightMargin } clSilver
     )
   );
 
@@ -314,11 +355,12 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;     FC: clFuchsia;     Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
-      { shaGutter      } clBtnFace,
-      { shaRightMargin } clSilver
+      { scaGutter      } clBtnFace,
+      { scaRightMargin } clSilver
     )
   );
 
@@ -360,11 +402,12 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;     FC: clFuchsia;     Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
-      { shaGutter      } clBtnFace,
-      { shaRightMargin } clSilver
+      { scaGutter      } clBtnFace,
+      { scaRightMargin } clSilver
     )
   );
 
@@ -406,11 +449,12 @@ const
       { ahaSyncroEditCur      } (BG: clNone;      FG: clNone;      FC: clFuchsia; Styles: []; StylesMask: []),
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;      FC: clRed;     Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;      FC: clBlue;    Styles: []; StylesMask: []),
-      { ahaSyncroEditArea     } (BG: $FAFFE6;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: [])
+      { ahaSyncroEditArea     } (BG: $FAFFE6;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: []),
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
     );
     Single: (
-      { shaGutter      } clBtnFace,
-      { shaRightMargin } clSilver
+      { scaGutter      } clBtnFace,
+      { scaRightMargin } clSilver
     )
   );
 
@@ -2098,6 +2142,7 @@ begin
   AdditionalHighlightAttributes[ahaSyncroEditSync]      := dlgAddHiAttrSyncroEditSync;
   AdditionalHighlightAttributes[ahaSyncroEditOther]     := dlgAddHiAttrSyncroEditOther;
   AdditionalHighlightAttributes[ahaSyncroEditArea]      := dlgAddHiAttrSyncroEditArea;
+  AdditionalHighlightAttributes[ahaGutterSeparator]     := dlgAddHiAttrGutterSeparator;
 
 end;
 
@@ -3316,6 +3361,7 @@ begin
   SetGutterColorByClass(ahaLineNumber, TSynGutterLineNumber);
   SetGutterColorByClass(ahaModifiedLine, TSynGutterChanges);
   SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
+  SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
 
   i := aSynEd.PluginCount - 1;
   while (i >= 0) and not(aSynEd.Plugin[i] is TSynPluginTemplateEdit) do

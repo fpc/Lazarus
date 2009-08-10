@@ -388,19 +388,21 @@ constructor TSynGutterSeparator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWidth := 2;
+  MarkupInfo.Background := clWhite;
+  MarkupInfo.Foreground := clDkGray;
 end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 begin
   with Canvas do
   begin
-    Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
+    Pen.Color := MarkupInfo.Background;
     Pen.Width := 1;
     with AClip do
     begin
       MoveTo(AClip.Left, AClip.Top);
       LineTo(AClip.Left, AClip.Bottom);
-      Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
+      Pen.Color := MarkupInfo.Foreground;
       MoveTo(AClip.Left+1, AClip.Top);
       LineTo(AClip.Left+1, AClip.Bottom);
     end;

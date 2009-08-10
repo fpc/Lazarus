@@ -1386,6 +1386,7 @@ resourcestring
   dlgAddHiAttrSyncroEditSync      = 'SyncronEdit Syncron Cells';
   dlgAddHiAttrSyncroEditOther     = 'SyncronEdit Other Cells';
   dlgAddHiAttrSyncroEditArea      = 'SyncronEdit Range';
+  dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
