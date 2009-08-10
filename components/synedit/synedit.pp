@@ -2665,9 +2665,9 @@ begin
       fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
       if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
         Include(fStateFlags, sfMouseDoneSelecting);
-      if sfIsDragging in fStateFlags then
-        FBlockSelection.DecPersistentLock;
     end;
+    if sfIsDragging in fStateFlags then
+      FBlockSelection.DecPersistentLock;
   end
   else
   if MouseCapture and (not(sfIsDragging in fStateFlags))
