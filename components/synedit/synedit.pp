@@ -183,7 +183,7 @@ type
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
-    sfWaitForDragging, sfIsDragging, sfMouseSelecting
+    sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -551,6 +551,7 @@ type
     procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
     {$ENDIF}
+    function  CurrentMaxLeftChar: Integer;
     procedure SetLeftChar(Value: Integer);
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
@@ -569,6 +570,7 @@ type
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string);
+    function  CurrentMaxTopLine: Integer;
     procedure SetTopLine(Value: Integer);
     procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
@@ -2546,7 +2548,7 @@ begin
   fMouseDownY := Y;
 
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
-                                sfGutterClick, sfMouseSelecting,
+                                sfGutterClick, sfMouseSelecting, sfMouseDoneSelecting,
                                 sfWaitForDragging
                                ];
 
@@ -2622,43 +2624,50 @@ begin
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
-    if (X >= fGutterWidth) and (X < ClientWidth-ScrollBarWidth) and
-      (Y >= 0) and (Y < ClientHeight-ScrollBarWidth)
+    if ((X >= fGutterWidth) or (fLeftChar <= 1)) and
+       ((X < ClientWidth-ScrollBarWidth) or (LeftChar >= CurrentMaxLeftChar)) and
+       ((Y >= 0) or (fTopLine <= 1)) and
+       ((Y < ClientHeight-ScrollBarWidth) or (fTopLine >= CurrentMaxTopLine))
     then begin
+      if (sfMouseSelecting in fStateFlags) and not FInternalCaret.IsAtPos(FCaret) then
+        Include(fStateFlags, sfMouseDoneSelecting);
       FBlockSelection.AutoExtend := sfMouseSelecting in fStateFlags;
       FCaret.LineBytePos := FInternalCaret.LineBytePos;
       FBlockSelection.AutoExtend := False;
+    end
+    else begin
+      // begin scrolling?
+      Dec(X, fGutterWidth);
+      // calculate chars past right
+      Z := X - (fCharsInWindow * fCharWidth);
+      if Z > 0 then
+        Inc(Z, fCharWidth);
+      fScrollDeltaX := Max(Z div fCharWidth, 0);
+      if fScrollDeltaX = 0 then begin
+        // calculate chars past left
+        Z := X;
+        if Z < 0 then
+          Dec(Z, fCharWidth);
+        fScrollDeltaX := Min(Z div fCharWidth, 0);
+      end;
+      // calculate lines past bottom
+      Z := Y - (fLinesInWindow * fTextHeight);
+      if Z > 0 then
+        Inc(Z, fTextHeight);
+      fScrollDeltaY := Max(Z div fTextHeight, 0);
+      if fScrollDeltaY = 0 then begin
+        // calculate lines past top
+        Z := Y;
+        if Z < 0 then
+          Dec(Z, fTextHeight);
+        fScrollDeltaY := Min(Z div fTextHeight, 0);
+      end;
+      fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
+      if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
+        Include(fStateFlags, sfMouseDoneSelecting);
+      if sfIsDragging in fStateFlags then
+        FBlockSelection.DecPersistentLock;
     end;
-
-    // should we begin scrolling?
-    Dec(X, fGutterWidth);
-    // calculate chars past right
-    Z := X - (fCharsInWindow * fCharWidth);
-    if Z > 0 then
-      Inc(Z, fCharWidth);
-    fScrollDeltaX := Max(Z div fCharWidth, 0);
-    if fScrollDeltaX = 0 then begin
-      // calculate chars past left
-      Z := X;
-      if Z < 0 then
-        Dec(Z, fCharWidth);
-      fScrollDeltaX := Min(Z div fCharWidth, 0);
-    end;
-    // calculate lines past bottom
-    Z := Y - (fLinesInWindow * fTextHeight);
-    if Z > 0 then
-      Inc(Z, fTextHeight);
-    fScrollDeltaY := Max(Z div fTextHeight, 0);
-    if fScrollDeltaY = 0 then begin
-      // calculate lines past top
-      Z := Y;
-      if Z < 0 then
-        Dec(Z, fTextHeight);
-      fScrollDeltaY := Min(Z div fTextHeight, 0);
-    end;
-    fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
-    if sfIsDragging in fStateFlags then
-      FBlockSelection.DecPersistentLock;
   end
   else
   if MouseCapture and (not(sfIsDragging in fStateFlags))
@@ -2749,15 +2758,17 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  wasDragging : Boolean;
+  wasDragging, wasSelecting : Boolean;
   CType: TSynMAClickCount;
 begin
   Exclude(FStateFlags, sfHideCursor);
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
+  wasSelecting := (sfMouseDoneSelecting in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
   Exclude(fStateFlags, sfMouseSelecting);
+  Exclude(fStateFlags, sfMouseDoneSelecting);
   fScrollTimer.Enabled := False;
   inherited MouseUp(Button, Shift, X, Y);
   MouseCapture := False;
@@ -2792,7 +2803,7 @@ begin
     exit;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
 
-  if wasDragging then exit;
+  if wasDragging or wasSelecting then exit;
 
   IncPaintLock;
   try
@@ -3914,16 +3925,17 @@ begin
     fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
 end;
 
-procedure TCustomSynEdit.SetLeftChar(Value: Integer);
-{begin}                                                                         //mh 2000-10-19
-var
-  MaxVal: integer;
+function TCustomSynEdit.CurrentMaxLeftChar: Integer;
 begin
-  MaxVal := FTheLinesView.LengthOfLongestLine;
-  if (eoScrollPastEol in Options) and (MaxVal < fMaxLeftChar) then
-    MaxVal := fMaxLeftChar;
-  Value := Min(Value, MaxVal - fCharsInWindow + 1 + FCaretWidth);
-{end}                                                                           //mh 2000-10-19
+  Result := FTheLinesView.LengthOfLongestLine;
+  if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
+    Result := fMaxLeftChar;
+  Result := Result - fCharsInWindow + 1 + FCaretWidth;
+end;
+
+procedure TCustomSynEdit.SetLeftChar(Value: Integer);
+begin
+  Value := Min(Value, CurrentMaxLeftChar);
   Value := Max(Value, 1);
   if Value <> fLeftChar then begin
     fLeftChar := Value;
@@ -4031,6 +4043,15 @@ begin
 end;
 {$ENDIF}
 
+function TCustomSynEdit.CurrentMaxTopLine: Integer;
+begin
+  if (eoScrollPastEof in Options) then
+    Result := FTheLinesView.Count
+  else
+    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -fLinesInWindow);
+  Result := Max(Result, 1);
+end;
+
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
 begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
@@ -4039,10 +4060,7 @@ begin
   if fPaintLock = 0 then debugln(['SetTopline outside Paintlock']);
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopline with sfHasScrolled Value=',Value, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
   {$ENDIF}
-  if (eoScrollPastEof in Options) then
-    Value := Min(Value, FTheLinesView.Count)
-  else
-    Value := Min(Value, FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -fLinesInWindow));
+  Value := Min(Value, CurrentMaxTopLine);
   Value := Max(Value, 1);
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
@@ -5477,6 +5495,7 @@ begin
     fMarkupCtrlMouse.LastMouseCaret := AValue;
   UpdateCursor;
 end;
+
 {$ENDIF}
 
 procedure TCustomSynEdit.SetDefaultKeystrokes;
