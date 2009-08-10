@@ -159,7 +159,7 @@ const
     { ahaMouseLink }          (FG: True;  BG: True;  FF: True;  Style: True),
     { ahaLineNumber }         (FG: True;  BG: True;  FF: True;  Style: True),
     { ahaLineHighlight }      (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaModifiedLine }       (FG: True;  BG: False; FF: True;  Style: False),
+    { ahaModifiedLine }       (FG: True;  BG: True;  FF: True;  Style: False),
     { ahaCodeFoldingTree }    (FG: True;  BG: True;  FF: False; Style: False),
     { ahaHighlightWord }      (FG: True;  BG: True;  FF: True;  Style: True),
     { ahaFoldedCode }         (FG: True;  BG: True;  FF: True;  Style: True),
