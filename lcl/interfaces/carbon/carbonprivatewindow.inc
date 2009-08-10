@@ -922,7 +922,9 @@ begin
     Exit;
   end;
 
-  LCLSendActivateMsg(AWidget.LCLObject, DoActivate, false);
+  if DoActivate
+  then LCLSendActivateMsg(AWidget.LCLObject, true, false)
+  else LCLSendDeactivateStartMsg(AWidget.LCLObject);
 
   // force set and kill focus of focused control
   Control := nil;
