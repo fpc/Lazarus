@@ -550,8 +550,10 @@ var
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   NotebookPos: TPoint;
+  {$IFDEF GTK2}
   Window: PGdkWindow;
   WindowOrg,ClientOrg: TPoint;
+  {$ENDIF}
   Count: guint;
 begin
   Result:=-1;
