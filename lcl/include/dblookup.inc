@@ -122,6 +122,12 @@ begin
   FKeyFieldNames := Value;
 end;
 
+procedure TDBLookup.SetListFieldName(const Value: string);
+begin
+  FListFieldName := Value;
+  FListLink.FieldName := Value;
+end;
+
 procedure TDBLookup.SetListSource(Value: TDataSource);
 begin
   if FListSource = Value then
@@ -249,11 +255,16 @@ begin
 
   if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) then
   begin
-    ListFields := TList.Create;
     FListLinkTmpSetActive := not FListLink.DataSet.Active;
+    if FListLinkTmpSetActive then
     try
-      if FListLinkTmpSetActive then
-        FListLink.DataSet.Open;
+      FListLink.DataSet.Open;
+    except
+      FListLinkTmpSetActive := False;
+      Exit;
+    end;
+    ListFields := TList.Create;
+    try
       if FListLink.DataSet.Active then
       begin
         FListLink.DataSet.GetFieldList(ListFields, FListFieldName);

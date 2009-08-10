@@ -151,6 +151,7 @@ Type
     procedure LinkGetBookMark;
     procedure LinkGotoBookMark;
     procedure SetKeyFieldName(const Value: string);
+    procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
   protected
@@ -166,7 +167,7 @@ Type
     // properties to be published by owner control
     // these are not used where data control Field is dbLookup
     property KeyField: string read GetKeyFieldName write SetKeyFieldName;
-    property ListField: string read FListFieldName write FListFieldName;
+    property ListField: string read FListFieldName write SetListFieldName;
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
   end;
