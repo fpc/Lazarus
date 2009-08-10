@@ -1124,10 +1124,6 @@ begin
       NewWindowClass := kDocumentWindowClass;
       Attributes := kWindowInWindowMenuAttribute;
     end;
-    case (LCLObject as TCustomForm).BorderStyle of
-    bsDialog:
-      NewWindowClass := kMovableModalWindowClass;
-    end;
     Attributes := Attributes or
       GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
         (LCLObject as TCustomForm).BorderIcons);
