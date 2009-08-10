@@ -106,9 +106,12 @@ type
 
   TSingleColorAttribute = (scaGutter, scaRightMargin);
 
+  TAhaGroupName = (agnText, agnLine, agnGutter, agnSpecialMode);
+
   TAhaSupportedFeatures = Record
     FG, BG, FF: Boolean; // ForeGround, BackGroun, Frame
     Style: Boolean;
+    Group: TAhaGroupName;
   end;
 
 const
@@ -145,38 +148,39 @@ const
 
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TAhaSupportedFeatures =
   (
-    { ahaNone }               (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaTextBlock }          (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaExecutionPoint }     (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaEnabledBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaDisabledBreakpoint } (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaInvalidBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaUnknownBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaErrorLine }          (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaIncrementalSearch }  (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaHighlightAll }       (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaBracketMatch }       (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaMouseLink }          (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaLineNumber }         (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaLineHighlight }      (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaModifiedLine }       (FG: True;  BG: True;  FF: True;  Style: False),
-    { ahaCodeFoldingTree }    (FG: True;  BG: True;  FF: False; Style: False),
-    { ahaHighlightWord }      (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaFoldedCode }         (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaWordGroup }          (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaTemplateEditCur }    (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaTemplateEditSync }   (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaTemplateEditOther }  (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaSyncroEditCur }      (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True),
-    { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False)
+    { ahaNone }               (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaTextBlock }          (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaExecutionPoint }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaEnabledBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaDisabledBreakpoint } (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaInvalidBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaUnknownBreakpoint }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaErrorLine }          (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaIncrementalSearch }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaHighlightAll }       (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaBracketMatch }       (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaMouseLink }          (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaLineNumber }         (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnGutter),
+    { ahaLineHighlight }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnLine),
+    { ahaModifiedLine }       (FG: True;  BG: True;  FF: True;  Style: False; Group: agnGutter),
+    { ahaCodeFoldingTree }    (FG: True;  BG: True;  FF: False; Style: False; Group: agnGutter),
+    { ahaHighlightWord }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaFoldedCode }         (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnGutter),
+    { ahaWordGroup }          (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
+    { ahaTemplateEditCur }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaTemplateEditSync }   (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaTemplateEditOther }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaSyncroEditCur }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False; Group: agnGutter)
   );
 
 
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
+  AdditionalHighlightGroupNames: array[TAhaGroupName] of String;
 
 const
   SingleColorAttributes: array[TSingleColorAttribute] of String =
@@ -2143,6 +2147,11 @@ begin
   AdditionalHighlightAttributes[ahaSyncroEditOther]     := dlgAddHiAttrSyncroEditOther;
   AdditionalHighlightAttributes[ahaSyncroEditArea]      := dlgAddHiAttrSyncroEditArea;
   AdditionalHighlightAttributes[ahaGutterSeparator]     := dlgAddHiAttrGutterSeparator;
+
+  AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
+  AdditionalHighlightGroupNames[agnLine]         := dlgAddHiAttrGroupLine;
+  AdditionalHighlightGroupNames[agnSpecialMode]  := dlgAddHiAttrGroupSpecial;
+  AdditionalHighlightGroupNames[agnGutter]       := dlgAddHiAttrGroupGutter;
 
 end;
 

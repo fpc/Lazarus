@@ -1388,6 +1388,11 @@ resourcestring
   dlgAddHiAttrSyncroEditArea      = 'SyncronEdit Range';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
 
+  dlgAddHiAttrGroupText     = 'Text';
+  dlgAddHiAttrGroupLine     = 'Line';
+  dlgAddHiAttrGroupGutter   = 'Gutter';
+  dlgAddHiAttrGroupSpecial  = 'Special';
+
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';

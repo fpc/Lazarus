@@ -29,7 +29,7 @@ uses
   SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
-  IDEProcs, ColorBox, SynEditMarkupBracket;
+  IDEProcs, ColorBox, ComCtrls, SynEditMarkupBracket;
 
 type
 
@@ -60,8 +60,8 @@ type
     TextUnderlineRadioOff: TRadioButton;
     TextUnderlineRadioOn: TRadioButton;
     TextUnderlineRadioPanel: TPanel;
+    ColorElementTree: TTreeView;
     UseSyntaxHighlightCheckBox: TCheckBox;
-    ColorElementListBox: TListBox;
     ColorPreview: TSynEdit;
     ColorSchemeComboBox: TComboBox;
     ColorSchemeLabel: TLabel;
@@ -74,8 +74,8 @@ type
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
     ElementAttributesGroupBox: TGroupBox;
-    procedure ColorElementListBoxClick(Sender: TObject);
-    procedure ColorElementListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ColorElementTreeChange(Sender: TObject; Node: TTreeNode);
+    procedure ColorElementTreeClick(Sender: TObject);
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ForegroundColorBoxChange(Sender: TObject);
@@ -106,6 +106,7 @@ type
     function GetCurFileExtensions(const LanguageName: String): String;
     procedure SetCurFileExtensions(const LanguageName, FileExtensions: String);
     procedure ShowCurAttribute;
+    function  IsAhaElement(aName: String; var aha: TAdditionalHilightAttribute): Boolean;
     procedure FindCurHighlightElement;
     procedure FillColorElementListBox;
     procedure SetColorElementsToDefaults(OnlySelected: Boolean);
@@ -157,13 +158,12 @@ end;
 
 { TEditorColorOptionsFrame }
 
-procedure TEditorColorOptionsFrame.ColorElementListBoxClick(Sender: TObject);
+procedure TEditorColorOptionsFrame.ColorElementTreeChange(Sender: TObject; Node: TTreeNode);
 begin
   FindCurHighlightElement;
 end;
 
-procedure TEditorColorOptionsFrame.ColorElementListBoxSelectionChange(
-  Sender: TObject; User: boolean);
+procedure TEditorColorOptionsFrame.ColorElementTreeClick(Sender: TObject);
 begin
   FindCurHighlightElement;
 end;
@@ -171,15 +171,16 @@ end;
 procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  i, NewIndex: Integer;
+  i: Integer;
   Token: String;
   Attri: TSynHighlightElement;
   MouseXY, XY: TPoint;
   AddAttr: TAdditionalHilightAttribute;
+  NewNode: TTreeNode;
 begin
   MouseXY := Point(X, Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
-  NewIndex := -1;
+  NewNode := nil;
   // Gutter Colors
   if X <= ColorPreview.GutterWidth then begin
     for i := 0 to ColorPreview.Gutter.Parts.Count-1 do begin
@@ -194,7 +195,7 @@ begin
           Token := AdditionalHighlightAttributes[ahaCodeFoldingTree]
         else
           Token := dlgGutter;
-        NewIndex := ColorElementListBox.Items.IndexOf(Token);
+        NewNode := ColorElementTree.Items.FindNodeWithText(Token);
         break;
       end;
       X := X - ColorPreview.Gutter.Parts[i].Width;
@@ -206,13 +207,14 @@ begin
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr <> ahaNone then
-      NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[AddAttr]);
+      NewNode := ColorElementTree.Items.FindNodeWithText(AdditionalHighlightAttributes[AddAttr]);
   end;
-  if (NewIndex < 0) and (XY.Y = ColorPreview.CaretY) and
-     (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1) then
-    NewIndex := ColorElementListBox.Items.IndexOf(AdditionalHighlightAttributes[ahaLineHighlight]);
+  if (NewNode = nil) and (XY.Y = ColorPreview.CaretY) and
+     (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1)
+  then
+    NewNode := ColorElementTree.Items.FindNodeWithText(AdditionalHighlightAttributes[ahaLineHighlight]);
   // Pascal Highlights
-  if NewIndex < 0 then
+  if NewNode = nil then
   begin
     Token := '';
     Attri := nil;
@@ -220,11 +222,10 @@ begin
     if Attri = nil then
       Attri := PreviewSyn.WhitespaceAttribute;
     if Attri <> nil then
-      NewIndex := ColorElementListBox.Items.IndexOf(Attri.Name);
+      NewNode := ColorElementTree.Items.FindNodeWithText(Attri.Name);
   end;
-  if NewIndex >= 0 then
-  begin
-    ColorElementListBox.ItemIndex := NewIndex;
+  if NewNode <> nil then begin
+    NewNode.Selected := True;
     FindCurHighlightElement;
   end;
 end;
@@ -715,30 +716,51 @@ begin
   UpdatingColor := False;
 end;
 
+function TEditorColorOptionsFrame.IsAhaElement(aName: String;
+  var aha: TAdditionalHilightAttribute): Boolean;
+var
+  h: TAdditionalHilightAttribute;
+begin
+  Result := False;
+  for h := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
+    if aName = AdditionalHighlightAttributes[h] then
+    begin
+      Result := True;
+      aha := h;
+      break;
+    end;
+end;
+
 procedure TEditorColorOptionsFrame.FindCurHighlightElement;
 var
-  a, i: Integer;
-  h: TAdditionalHilightAttribute;
+  i: Integer;
   s: TSingleColorAttribute;
   Old: TSynHighlightElement;
+  NewName: String;
 begin
+  if (ColorElementTree.Selected <> nil) and
+     (ColorElementTree.Selected.Parent = nil) and
+     (ColorElementTree.Selected.GetFirstChild <> nil)
+  then
+    ColorElementTree.Selected.GetFirstChild.Selected := True;
+  if (ColorElementTree.Selected = nil) then
+    exit;
+
+  NewName := ColorElementTree.Selected.Text;
+
   Old := CurHighlightElement;
   CurHighlightElement := nil;
   CurSingleElement := Low(TSingleColorAttribute);
   CurExtraElement := Low(TAdditionalHilightAttribute);
-  a := ColorElementListBox.ItemIndex;
-  if (a >= 0) then
+  i := PreviewSyn.AttrCount - 1;
+  while (i >= 0) do
   begin
-    i := PreviewSyn.AttrCount - 1;
-    while (i >= 0) do
+    if NewName = PreviewSyn.Attribute[i].Name then
     begin
-      if ColorElementListBox.Items[a] = PreviewSyn.Attribute[i].Name then
-      begin
-        CurHighlightElement := PreviewSyn.Attribute[i];
-        break;
-      end;
-      dec(i);
+      CurHighlightElement := PreviewSyn.Attribute[i];
+      break;
     end;
+    dec(i);
   end;
 
   if (Old <> CurHighlightElement) or (CurHighlightElement = nil) then
@@ -748,18 +770,12 @@ begin
 
     if CurHighlightElement <> nil then
     begin
-      for h := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
-        if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h] then
-        begin
-          CurHighlightElementIsExtra := True;
-          CurExtraElement := h;
-          break;
-        end;
+      CurHighlightElementIsExtra := IsAhaElement(NewName, CurExtraElement);
     end
     else
     begin
       for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
-        if ColorElementListBox.Items[a] = SingleColorAttributes[s] then
+        if NewName = SingleColorAttributes[s] then
         begin
           CurHighlightElementIsSingle := True;
           CurSingleElement := s;
@@ -774,30 +790,45 @@ procedure TEditorColorOptionsFrame.FillColorElementListBox;
 var
   i: Integer;
   s: TSingleColorAttribute;
+  ParentName: String;
+  h: TAdditionalHilightAttribute;
+  ParentNode: TTreeNode;
 begin
-  with ColorElementListBox.Items do
-  begin
-    BeginUpdate;
-    Clear;
+  ColorElementTree.BeginUpdate;
+  ColorElementTree.Items.Clear;
 
     for i := 0 to PreviewSyn.AttrCount - 1 do
-      if PreviewSyn.Attribute[i].Name <> '' then
-        Add(PreviewSyn.Attribute[i].Name);
+      if PreviewSyn.Attribute[i].Name <> '' then begin
+        ParentName := PreviewSyn.LanguageName;
+        if IsAhaElement(PreviewSyn.Attribute[i].Name, h) then
+          ParentName := AdditionalHighlightGroupNames[ahaSupportedFeatures[h].Group];
+        ParentNode := ColorElementTree.Items.FindNodeWithText(ParentName);
+        if ParentNode = nil then begin
+          ParentNode := ColorElementTree.Items.Add(nil, ParentName);
+        end;
+        ColorElementTree.Items.AddChild(ParentNode, PreviewSyn.Attribute[i].Name);
+      end;
 
     // add single color attributes there
-    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do
-      Add(SingleColorAttributes[s]);
-
-    EndUpdate;
-  end;
+    for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do begin
+      ParentName := AdditionalHighlightGroupNames[agnGutter];
+      ParentNode := ColorElementTree.Items.FindNodeWithText(ParentName);
+      if ParentNode = nil then
+        ParentNode := ColorElementTree.Items.Add(nil, ParentName);
+      ColorElementTree.Items.AddChild(ParentNode, SingleColorAttributes[s]);
+    end;
+  for i := 0 to ColorElementTree.Items.Count - 1 do
+    ColorElementTree.Items[i].AlphaSort;
+  ColorElementTree.EndUpdate;
+  ColorElementTree.FullExpand;
+  if ColorElementTree.Items.GetFirstNode <> nil then
+    ColorElementTree.Items.GetFirstNode.Selected := True;
 
   CurHighlightElement := nil;
   CurSingleElement := Low(TSingleColorAttribute);
   CurExtraElement := Low(TAdditionalHilightAttribute);
   CurHighlightElementIsExtra := False;
   CurHighlightElementIsSingle := False;
-  if ColorElementListBox.Items.Count > 0 then
-    ColorElementListBox.Selected[0] := True;
   FindCurHighlightElement;
 end;
 

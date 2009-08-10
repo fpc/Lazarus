@@ -133,7 +133,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ColorElementListBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 250
@@ -149,7 +148,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ClientWidth = 527
     TabOrder = 4
     object ForeGroundLabel: TLabel
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SetAttributeToDefaultButton
       AnchorSideTop.Side = asrBottom
@@ -163,7 +162,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       ParentColor = False
     end
     object BackGroundLabel: TLabel
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ForegroundColorBox
       AnchorSideTop.Side = asrBottom
@@ -177,7 +176,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       ParentColor = False
     end
     object FrameColorLabel: TLabel
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BackGroundColorBox
       AnchorSideTop.Side = asrBottom
@@ -189,25 +188,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 3
       Caption = 'FrameColorLabel'
       ParentColor = False
-    end
-    object ColorElementListBox: TListBox
-      AnchorSideLeft.Control = ElementAttributesGroupBox
-      AnchorSideTop.Control = ElementAttributesGroupBox
-      AnchorSideBottom.Control = TextItalicCheckBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 220
-      Top = 6
-      Width = 200
-      Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      ClickOnSelChange = False
-      ItemHeight = 0
-      OnClick = ColorElementListBoxClick
-      OnSelectionChange = ColorElementListBoxSelectionChange
-      TabOrder = 11
     end
     object ForeGroundUseDefaultCheckBox: TCheckBox
       AnchorSideLeft.Control = BackGroundColorBox
@@ -267,7 +247,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 3
     end
     object TextUnderlineCheckBox: TCheckBox
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FrameColorBox
       AnchorSideTop.Side = asrBottom
@@ -282,7 +262,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 4
     end
     object TextBoldCheckBox: TCheckBox
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TextUnderlineCheckBox
       AnchorSideTop.Side = asrBottom
@@ -296,7 +276,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 5
     end
     object TextItalicCheckBox: TCheckBox
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TextBoldCheckBox
       AnchorSideTop.Side = asrBottom
@@ -496,7 +476,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       end
     end
     object SetAttributeToDefaultButton: TButton
-      AnchorSideLeft.Control = ColorElementListBox
+      AnchorSideLeft.Control = ColorElementTree
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ElementAttributesGroupBox
       AnchorSideRight.Control = ElementAttributesGroupBox
@@ -526,7 +506,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 2
       ItemHeight = 16
       OnChange = ForegroundColorBoxChange
-      TabOrder = 12
+      TabOrder = 11
     end
     object FrameColorUseDefaultCheckBox: TCheckBox
       AnchorSideLeft.Control = FrameColorBox
@@ -540,7 +520,29 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Left = 6
       Caption = 'FrameColorUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
+      TabOrder = 12
+    end
+    object ColorElementTree: TTreeView
+      AnchorSideLeft.Control = ElementAttributesGroupBox
+      AnchorSideTop.Control = ElementAttributesGroupBox
+      AnchorSideBottom.Control = TextItalicCheckBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 220
+      Top = 6
+      Width = 200
+      Anchors = [akTop, akLeft, akBottom]
+      AutoExpand = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      DefaultItemHeight = 17
+      ShowButtons = False
+      ShowRoot = False
       TabOrder = 13
+      OnChange = ColorElementTreeChange
+      OnClick = ColorElementTreeClick
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowLines, tvoToolTips]
     end
   end
   object ColorPreview: TSynEdit[9]
@@ -566,6 +568,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     TabOrder = 5
     OnMouseUp = ColorPreviewMouseUp
     BookMarkOptions.Xoffset = 30
+    BookMarkOptions.OnChange = nil
     Gutter.Width = 59
     Gutter.MouseActions = <    
       item
