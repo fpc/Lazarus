@@ -802,7 +802,7 @@ begin
         ParentName := PreviewSyn.LanguageName;
         if IsAhaElement(PreviewSyn.Attribute[i].Name, h) then
           ParentName := AdditionalHighlightGroupNames[ahaSupportedFeatures[h].Group];
-        ParentNode := ColorElementTree.Items.FindNodeWithText(ParentName);
+        ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
         if ParentNode = nil then begin
           ParentNode := ColorElementTree.Items.Add(nil, ParentName);
         end;
@@ -812,7 +812,7 @@ begin
     // add single color attributes there
     for s := Low(TSingleColorAttribute) to High(TSingleColorAttribute) do begin
       ParentName := AdditionalHighlightGroupNames[agnGutter];
-      ParentNode := ColorElementTree.Items.FindNodeWithText(ParentName);
+      ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
       if ParentNode = nil then
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
       ColorElementTree.Items.AddChild(ParentNode, SingleColorAttributes[s]);
