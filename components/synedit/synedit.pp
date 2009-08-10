@@ -2513,7 +2513,7 @@ begin
   then
     exit;
   // mouse event occured in Gutter ?
-  if  (X <= fGutterWidth) then begin
+  if  (X < fGutterWidth) then begin
     FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
     exit;
     // No fallback to text actions
