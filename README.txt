@@ -54,7 +54,7 @@ There is a very active and helpful mailing list for lazarus, where the
 developers interact, share ideas, discuss problems, and of course answer
 questions.
 You can subscribe at
-http://www.lazarus.freepascal.org/mailman/listinfo/lazarus
+http://list.lazarus.freepascal.org/mailman/listinfo/lazarus
 
 --------------------------------------------------------------------------------
 How to help lazarus:
