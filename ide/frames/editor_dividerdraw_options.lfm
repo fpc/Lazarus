@@ -14,7 +14,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 16
-    Top = 8
+    Top = 9
     Width = 81
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -30,13 +30,13 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 301
-    Top = 33
+    Height = 299
+    Top = 35
     Width = 521
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BevelOuter = bvNone
-    ClientHeight = 301
+    ClientHeight = 299
     ClientWidth = 521
     TabOrder = 1
     object DividerSpinPanel: TPanel
@@ -45,14 +45,14 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
       AnchorSideRight.Control = DividerConfPanel
       AnchorSideRight.Side = asrBottom
       Left = 206
-      Height = 23
+      Height = 25
       Top = 0
       Width = 315
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
       BevelOuter = bvNone
-      ClientHeight = 23
+      ClientHeight = 25
       ClientWidth = 315
       TabOrder = 1
       object DividerSpinLabel: TLabel
@@ -64,7 +64,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         AnchorSideRight.Side = asrBottom
         Left = 53
         Height = 16
-        Top = 3
+        Top = 4
         Width = 262
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 3
@@ -75,7 +75,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         AnchorSideLeft.Control = DividerSpinPanel
         AnchorSideTop.Control = DividerSpinPanel
         Left = 0
-        Height = 23
+        Height = 25
         Top = 0
         Width = 50
         OnChange = DividerSpinEditChange
@@ -90,7 +90,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 206
       Height = 44
-      Top = 79
+      Top = 81
       Width = 315
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -121,10 +121,8 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         Width = 100
         DefaultColorColor = clWhite
         Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
-        AutoComplete = False
         BorderSpacing.Top = 6
         ItemHeight = 16
-        ItemWidth = 0
         OnChange = NestLvlColorBoxChange
         TabOrder = 0
       end
@@ -136,7 +134,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         Left = 106
         Height = 19
         Top = 24
-        Width = 129
+        Width = 140
         BorderSpacing.Left = 6
         Caption = 'NestLvlColorCheckBox'
         OnChange = NestLvlColorCheckBoxChange
@@ -151,7 +149,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 206
       Height = 44
-      Top = 29
+      Top = 31
       Width = 315
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -181,10 +179,8 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         Width = 100
         DefaultColorColor = clWhite
         Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
-        AutoComplete = False
         BorderSpacing.Top = 6
         ItemHeight = 16
-        ItemWidth = 0
         OnChange = TopLvlColorBoxChange
         TabOrder = 0
       end
@@ -196,7 +192,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
         Left = 106
         Height = 19
         Top = 24
-        Width = 126
+        Width = 137
         BorderSpacing.Left = 6
         Caption = 'TopLvlColorCheckBox'
         OnChange = TopLvlColorCheckBoxChange
@@ -210,7 +206,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
       AnchorSideBottom.Control = DividerConfPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 301
+      Height = 299
       Top = 0
       Width = 200
       Anchors = [akTop, akLeft, akBottom]
@@ -226,17 +222,15 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 21
+    Height = 23
     Top = 6
     Width = 200
-    AutoComplete = False
     BorderSpacing.Top = 6
-    ItemHeight = 13
-    ItemWidth = 0
+    ItemHeight = 15
     OnChange = LanguageComboBoxChange
     OnExit = LanguageComboBoxExit
     OnKeyDown = LanguageComboBoxKeyDown
+    Style = csDropDownList
     TabOrder = 0
-    Text = 'LanguageComboBox'
   end
 end

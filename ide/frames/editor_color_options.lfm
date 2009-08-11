@@ -57,8 +57,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
+    Style = csDropDownList
     TabOrder = 0
-    Text = 'LanguageComboBox'
   end
   object ColorSchemeComboBox: TComboBox[4]
     AnchorSideLeft.Control = Owner
@@ -73,8 +73,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
+    Style = csDropDownList
     TabOrder = 1
-    Text = 'ColorSchemeComboBox'
   end
   object FileExtensionsComboBox: TComboBox[5]
     AnchorSideLeft.Control = Owner
@@ -555,7 +555,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     TabOrder = 5
     OnMouseUp = ColorPreviewMouseUp
     BookMarkOptions.Xoffset = 30
-    BookMarkOptions.OnChange = nil
     Gutter.Width = 59
     Gutter.MouseActions = <    
       item

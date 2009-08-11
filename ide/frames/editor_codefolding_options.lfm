@@ -25,7 +25,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 16
-    Top = 33
+    Top = 34
     Width = 81
     BorderSpacing.Left = 6
     Caption = 'LanguageLabel'
@@ -37,7 +37,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     Left = 0
     Height = 19
     Top = 0
-    Width = 136
+    Width = 149
     Caption = 'chkCodeFoldingEnabled'
     TabOrder = 0
   end
@@ -45,18 +45,16 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
     Left = 0
-    Height = 21
+    Height = 23
     Top = 31
     Width = 200
-    AutoComplete = False
     BorderSpacing.Top = 6
-    ItemHeight = 13
-    ItemWidth = 0
+    ItemHeight = 15
     OnChange = LanguageComboBoxChange
     OnExit = LanguageComboBoxExit
     OnKeyDown = LanguageComboBoxKeyDown
+    Style = csDropDownList
     TabOrder = 1
-    Text = 'LanguageComboBox'
   end
   object FoldConfPanel: TPanel[4]
     AnchorSideLeft.Control = Owner
@@ -67,13 +65,13 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 276
-    Top = 58
+    Height = 274
+    Top = 60
     Width = 521
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BevelOuter = bvNone
-    ClientHeight = 276
+    ClientHeight = 274
     ClientWidth = 521
     TabOrder = 2
     object FoldConfigCheckListBox: TCheckListBox
@@ -82,7 +80,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
       AnchorSideBottom.Control = FoldConfPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 276
+      Height = 274
       Top = 0
       Width = 200
       Anchors = [akTop, akLeft, akBottom]
