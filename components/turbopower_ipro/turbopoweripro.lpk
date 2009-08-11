@@ -4,12 +4,13 @@
     <Name Value="TurboPowerIPro"/>
     <Author Value="Turbopower, portiert fuer Lazarus von Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <IncludeFiles Value="$(LazarusDir)/components/turbopower_ipro/"/>
-        <OtherUnitFiles Value="$(LazarusDir)/components/turbopower_ipro/"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
         <Verbosity>
           <ShowHints Value="False"/>
