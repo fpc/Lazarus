@@ -315,7 +315,7 @@ begin
           Token := AdditionalHighlightAttributes[ahaCodeFoldingTree]
         else
           Token := dlgGutter;
-        NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+Token);
+        NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+Token);
         break;
       end;
       X := X - ColorPreview.Gutter.Parts[i].Width;
@@ -327,12 +327,12 @@ begin
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr <> ahaNone then
-      NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+AdditionalHighlightAttributes[AddAttr]);
+      NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+AdditionalHighlightAttributes[AddAttr]);
   end;
   if (NewNode = nil) and (XY.Y = ColorPreview.CaretY) and
      (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1)
   then
-    NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+AdditionalHighlightAttributes[ahaLineHighlight]);
+    NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+AdditionalHighlightAttributes[ahaLineHighlight]);
   // Pascal Highlights
   if NewNode = nil then
   begin
@@ -342,7 +342,7 @@ begin
     if Attri = nil then
       Attri := PreviewSyn.WhitespaceAttribute;
     if Attri <> nil then
-      NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+Attri.Name);
+      NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+Attri.Name);
   end;
   if NewNode <> nil then begin
     NewNode.Selected := True;
