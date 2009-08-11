@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
-  Spin, LCLType, SynEdit, Controls,
+  Spin, LCLType, SynEdit, Controls, SynEditMouseCmds,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
   editor_general_options, IDEProcs, SynGutterLineNumber, SynGutter;
 
@@ -68,6 +68,8 @@ type
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
 
     procedure FontDialogApplyClicked(Sender: TObject);
+    function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -89,6 +91,12 @@ begin
 
   SetComboBoxText(EditorFontComboBox, DisplayPreview.Font.Name);
   SetComboBoxText(EditorFontHeightComboBox, IntToStr(DisplayPreview.Font.Height));
+end;
+
+function TEditorDisplayOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := true;
 end;
 
 procedure TEditorDisplayOptionsFrame.EditorFontButtonClick(Sender: TObject);
@@ -248,6 +256,8 @@ end;
 
 procedure TEditorDisplayOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  // Prevent the caret from moving
+  DisplayPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
   FDialog := ADialog;
 
   MarginAndGutterGroupBox.Caption := dlgMarginGutter;

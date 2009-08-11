@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, LCLIntf,
-  SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
+  SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges, SynEditMouseCmds,
   ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
   IDEProcs, ColorBox, ComCtrls, SynEditMarkupBracket, SynEditHighlighter, math,
@@ -124,6 +124,8 @@ type
       var Special: boolean; aMarkup: TSynSelectedColor);
 
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
+    function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
   public
     destructor Destroy; override;
 
@@ -1006,6 +1008,12 @@ begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
 end;
 
+function TEditorColorOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := True;
+end;
+
 destructor TEditorColorOptionsFrame.Destroy;
 begin
   FFileExtensions.Free;
@@ -1021,6 +1029,8 @@ end;
 
 procedure TEditorColorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  // Prevent the caret from moving
+  ColorPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
   FDialog := ADialog;
   UpdatingColor := False;
   CurHighlightElement := nil;
@@ -1258,29 +1268,17 @@ begin
   end;
 end;
 
-type
-  // This is only needed until SynEdit does the ScrollWindowEx in Paint, instead of SetTopline
-  TSynEditAccess = class(TSynEdit);
 procedure TEditorColorOptionsFrame.OnStatusChange(Sender : TObject; Changes : TSynStatusChanges);
 var
-  Syn: TSynEditAccess;
+  Syn: TSynEdit;
   p: TPoint;
   tl, lc: Integer;
 begin
   p := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
-  Syn := TSynEditAccess(Pointer(Sender as TSynEdit));
+  Syn := Sender as TSynEdit;
   if p.y > Syn.Lines.Count then exit;
   if (Syn.CaretX = p.x) and (Syn.Carety = p.y) then exit;
-  try
-    Syn.IncPaintLock;
-    tl := Syn.TopLine;
-    lc := Syn.LeftChar;
-    Syn.CaretXY:= p;
-    Syn.TopLine := tl;
-    Syn.LeftChar := lc;
-  finally
-    Syn.DecPaintLock;
-  end;
+  Syn.CaretXY:= p;
 end;
 
 initialization
