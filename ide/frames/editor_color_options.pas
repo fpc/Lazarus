@@ -245,7 +245,7 @@ begin
        //(ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) )       // if no BG, then FG was used
   then begin
     c := Attri.Foreground;
-    if (c = clDefault) or (c = clNone) then
+    if ((c = clDefault) or (c = clNone)) and not (AttriIdx = ord(ahaLineNumber)) then
       c := Scheme.Default.FG;
     if (c = clNone) or (c = clDefault) then
       c := ColorPreview.Font.Color;
