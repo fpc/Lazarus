@@ -167,7 +167,6 @@ var
   FullAbcWidth, AbcWidth: Integer;
   Attri: TSynHighlighterAttributes;
   TextY: Integer;
-  ts: TTextStyle;
   AttriIdx: LongInt;
   c: TColor;
   Scheme: TPascalColorScheme;

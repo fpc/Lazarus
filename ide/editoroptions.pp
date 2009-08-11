@@ -3415,7 +3415,6 @@ end;
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
   AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
 var
-  i: Integer;
   Attrib: TSynHighlighterAttributes;
 begin
   Attrib := GetSynAttributeByAha(Syn, AddHilightAttr);
