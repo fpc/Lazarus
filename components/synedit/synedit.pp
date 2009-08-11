@@ -714,6 +714,7 @@ type
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     {$ENDIF}
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
+    function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
   public
     procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
@@ -723,7 +724,6 @@ type
                                  ): TPoint; virtual;
     //code fold
     procedure CodeFoldAction(iLine: integer); deprecated;
-    function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     procedure EraseBackground(DC: HDC); override;
@@ -6223,6 +6223,7 @@ begin
     ScanFromAfterLock;
     FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;
+    TopLine := TopLine;
   end;
 end;
 

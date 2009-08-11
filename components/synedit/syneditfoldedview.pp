@@ -2965,13 +2965,17 @@ begin
         nd := hl.FoldNodeInfo[i, j, [sfaOpen, sfaFold]];
         if (sfaDefaultCollapsed in nd.FoldAction) and
            (not IsFoldedAtTextIndex(i, j))
-        then
+        then begin
           fFoldTree.InsertNewFold(i+2, j, LengthForFoldAtTextIndex(i, j));
+          if Assigned(fOnFoldChanged) then
+            fOnFoldChanged(i);
+        end;
       inc(j);
       end;
     end;
     inc(i);
   end;
+  CalculateMaps;
 end;
 
 function TSynEditFoldedView.GetFoldDescription(AStartIndex, AStartCol, AEndIndex,
