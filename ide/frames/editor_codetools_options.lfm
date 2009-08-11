@@ -1,17 +1,17 @@
 inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
-  Height = 465
-  Width = 496
-  ClientHeight = 465
-  ClientWidth = 496
+  Height = 501
+  Width = 537
+  ClientHeight = 501
+  ClientWidth = 537
   Visible = False
-  DesignLeft = 398
-  DesignTop = 291
+  DesignLeft = 348
+  DesignTop = 299
   object AutoDelayMaxLabel: TLabel[0]
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 384
+    Left = 425
     Height = 16
     Top = 177
     Width = 106
@@ -36,12 +36,13 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     ParentColor = False
   end
   object AutoDelayLabel: TLabel[2]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = AutoDelayTrackBar
-    AnchorSideTop.Side = asrBottom
-    Left = 6
+    AnchorSideLeft.Control = AutoDelayMinLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = AutoDelayMinLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 117
     Height = 16
-    Top = 199
+    Top = 177
     Width = 84
     BorderSpacing.Left = 6
     BorderSpacing.Top = 24
@@ -54,7 +55,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 16
-    Top = 385
+    Top = 365
     Width = 149
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
@@ -66,9 +67,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 340
+    Left = 381
     Height = 16
-    Top = 385
+    Top = 365
     Width = 150
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
@@ -78,12 +79,13 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     ParentColor = False
   end
   object MarkupWordDelayLabel: TLabel[5]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MarkupWordTimeTrackBar
-    AnchorSideTop.Side = asrBottom
-    Left = 6
+    AnchorSideLeft.Control = MarkupWordMinLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MarkupWordMinLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 161
     Height = 16
-    Top = 407
+    Top = 365
     Width = 128
     BorderSpacing.Left = 6
     BorderSpacing.Top = 24
@@ -91,16 +93,15 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     ParentColor = False
   end
   object MarkupWordFullLenLabel: TLabel[6]
-    AnchorSideLeft.Control = MarkupWordFullCheckBox
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordFullCheckBox
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = MarkupWordFullLenSpin
-    Left = 197
+    Left = 6
     Height = 16
-    Top = 269
+    Top = 271
     Width = 137
-    BorderSpacing.Left = 30
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordFullLenLabel'
     ParentColor = False
@@ -113,7 +114,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 4
-    Top = 227
+    Top = 205
     Width = 60
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -127,7 +128,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 0
     Height = 4
     Top = 100
-    Width = 496
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -139,7 +140,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 66
     Height = 16
-    Top = 221
+    Top = 199
     Width = 139
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -157,14 +158,77 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 211
     Height = 4
-    Top = 227
-    Width = 285
+    Top = 205
+    Width = 326
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
   end
-  object AutoIdentifierCompletionCheckBox: TCheckBox[11]
+  object MarkupBevel: TBevel[11]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MarkupWordDelayLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 4
+    Top = 387
+    Width = 537
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+  end
+  object BracketLabel: TLabel[12]
+    AnchorSideLeft.Control = BracketCombo
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BracketCombo
+    AnchorSideTop.Side = asrCenter
+    Left = 112
+    Height = 16
+    Top = 400
+    Width = 68
+    BorderSpacing.Around = 6
+    Caption = 'BracketLabel'
+    ParentColor = False
+  end
+  object BracketLink: TLabel[13]
+    AnchorSideLeft.Control = BracketLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BracketLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 186
+    Height = 16
+    Top = 400
+    Width = 62
+    BorderSpacing.Around = 6
+    Caption = 'BracketLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = BracketLinkClick
+    OnMouseEnter = BracketLinkMouseEnter
+    OnMouseLeave = BracketLinkMouseLeave
+  end
+  object MarkupColorLink: TLabel[14]
+    AnchorSideLeft.Control = MarkupWordNoTimerCheckBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MarkupWordNoTimerCheckBox
+    AnchorSideTop.Side = asrCenter
+    Left = 201
+    Height = 16
+    Top = 222
+    Width = 62
+    BorderSpacing.Left = 6
+    Caption = 'BracketLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = MarkupColorLinkClick
+    OnMouseEnter = BracketLinkMouseEnter
+    OnMouseLeave = BracketLinkMouseLeave
+  end
+  object AutoIdentifierCompletionCheckBox: TCheckBox[15]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
@@ -175,7 +239,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoIdentifierCompletionCheckBox'
     TabOrder = 0
   end
-  object AutoRemoveEmptyMethodsOnSave: TCheckBox[12]
+  object AutoRemoveEmptyMethodsOnSave: TCheckBox[16]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AutoIdentifierCompletionCheckBox
     AnchorSideTop.Side = asrBottom
@@ -188,7 +252,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoRemoveEmptyMethodsOnSave'
     TabOrder = 1
   end
-  object AutoToolTipSymbToolsCheckBox: TCheckBox[13]
+  object AutoToolTipSymbToolsCheckBox: TCheckBox[17]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AutoRemoveEmptyMethodsOnSave
     AnchorSideTop.Side = asrBottom
@@ -201,7 +265,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoToolTipSymbToolsCheckBox'
     TabOrder = 2
   end
-  object AutoCompleteBlockCheckBox: TCheckBox[14]
+  object AutoCompleteBlockCheckBox: TCheckBox[18]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AutoToolTipSymbToolsCheckBox
     AnchorSideTop.Side = asrBottom
@@ -214,7 +278,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoCompleteBlockCheckBox'
     TabOrder = 3
   end
-  object AutoToolTipExprEvalCheckBox: TCheckBox[15]
+  object AutoToolTipExprEvalCheckBox: TCheckBox[19]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ToolTipBevel
     AnchorSideTop.Side = asrBottom
@@ -227,7 +291,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoToolTipExprEvalCheckBox'
     TabOrder = 4
   end
-  object AutoDelayTrackBar: TTrackBar[16]
+  object AutoDelayTrackBar: TTrackBar[20]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AutoToolTipExprEvalCheckBox
     AnchorSideTop.Side = asrBottom
@@ -236,7 +300,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 40
     Top = 135
-    Width = 484
+    Width = 525
     Frequency = 250
     Max = 4000
     Min = 500
@@ -247,7 +311,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Right = 6
     TabOrder = 5
   end
-  object MarkupWordTimeTrackBar: TTrackBar[17]
+  object MarkupWordTimeTrackBar: TTrackBar[21]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordTrim
     AnchorSideTop.Side = asrBottom
@@ -255,8 +319,8 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 40
-    Top = 343
-    Width = 484
+    Top = 323
+    Width = 525
     Frequency = 250
     Max = 4000
     Min = 500
@@ -267,71 +331,89 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Right = 6
     TabOrder = 6
   end
-  object MarkupWordFullCheckBox: TCheckBox[18]
+  object MarkupWordFullCheckBox: TCheckBox[22]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordNoTimerCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 268
+    Top = 246
     Width = 161
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordFullCheckBox'
     TabOrder = 7
   end
-  object MarkupWordNoKeyword: TCheckBox[19]
+  object MarkupWordNoKeyword: TCheckBox[23]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MarkupWordFullCheckBox
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = MarkupWordTrim
+    AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 19
-    Top = 293
+    Top = 298
     Width = 152
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordNoKeyword'
     TabOrder = 8
   end
-  object MarkupWordFullLenSpin: TSpinEdit[20]
+  object MarkupWordFullLenSpin: TSpinEdit[24]
     AnchorSideLeft.Control = MarkupWordFullLenLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = MarkupWordFullLenLabel
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 340
+    Left = 149
     Height = 25
-    Top = 265
+    Top = 267
     Width = 48
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
     TabOrder = 9
   end
-  object MarkupWordNoTimerCheckBox: TCheckBox[21]
+  object MarkupWordNoTimerCheckBox: TCheckBox[25]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordGroupLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 243
+    Top = 221
     Width = 189
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordNoTimerCheckBox'
     TabOrder = 10
   end
-  object MarkupWordTrim: TCheckBox[22]
+  object MarkupWordTrim: TCheckBox[26]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MarkupWordNoKeyword
+    AnchorSideTop.Control = MarkupWordFullLenSpin
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 230
     Height = 19
-    Top = 318
+    Top = 298
     Width = 115
-    BorderSpacing.Left = 6
+    BorderSpacing.Left = 230
     BorderSpacing.Top = 6
     Caption = 'MarkupWordTrim'
     TabOrder = 11
+  end
+  object BracketCombo: TComboBox[27]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MarkupBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 397
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    OnChange = BracketComboChange
+    OnExit = BracketComboExit
+    OnKeyDown = BracketComboKeyDown
+    Style = csDropDownList
+    TabOrder = 12
   end
 end

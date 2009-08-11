@@ -762,7 +762,6 @@ type
     // Code Folding
     FUseCodeFolding: Boolean;
 
-    function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
     function OldAdditionalAttributeName(NewAha:String): string;
   public
     class function GetGroupCaption:string; override;
@@ -771,6 +770,7 @@ type
     destructor Destroy; override;
     procedure Load;
     procedure Save;
+    function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
     function GetSynBeautifierIndentName(IndentType: TSynBeautifierIndentType): string;
     function GetSynBeautifierIndentType(IndentName: String): TSynBeautifierIndentType;

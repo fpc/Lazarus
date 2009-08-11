@@ -109,6 +109,7 @@ type
 
   TAbstractOptionsEditorDialog = class(TForm)
   public
+    procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
   end;
 

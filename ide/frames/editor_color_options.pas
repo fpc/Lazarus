@@ -29,7 +29,7 @@ uses
   SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges, SynEditMouseCmds,
   ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
-  IDEProcs, ColorBox, ComCtrls, SynEditMarkupBracket, SynEditHighlighter, math,
+  IDEProcs, ColorBox, ComCtrls, SynEditHighlighter, math,
   typinfo;
 
 type
@@ -38,8 +38,6 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
-    BracketCombo: TComboBox;
-    BracketLabel: TLabel;
     FrameColorBox: TColorBox;
     BackGroundLabel: TLabel;
     FrameColorLabel: TLabel;
@@ -133,6 +131,7 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure SelectAhaColor(aha: TAdditionalHilightAttribute);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -584,21 +583,6 @@ begin
     end;
   end
   else
-  if Sender = BracketCombo then
-  begin
-    with GeneralPage do
-      for a := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[a] <> nil then
-        begin
-          if BracketCombo.ItemIndex = 0 then
-            PreviewEdits[a].Options := PreviewEdits[a].Options - [eoBracketHighlight]
-          else
-          begin
-            PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
-            PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
-          end;
-        end;
-  end;
 end;
 
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
@@ -1073,12 +1057,6 @@ begin
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
 
-  BracketLabel.Caption := dlgBracketHighlight;
-  BracketCombo.Items.Add(dlgNoBracketHighlight);
-  BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
-  BracketCombo.Items.Add(dlgHighlightRightOfCursor);
-  BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
-
   with GeneralPage do
     AddPreviewEdit(ColorPreview);
 end;
@@ -1100,10 +1078,6 @@ begin
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlightCheckBox.Checked := UseSyntaxHighlight;
-    if eoBracketHighlight in SynEditOptions then
-      BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
-    else
-      BracketCombo.ItemIndex := 0;
 
     with LanguageComboBox do
       with Items do
@@ -1158,14 +1132,6 @@ begin
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Checked;
 
-    if BracketCombo.ItemIndex = 0 then
-      SynEditOptions := SynEditOptions - [eoBracketHighlight]
-    else
-    begin
-      SynEditOptions := SynEditOptions + [eoBracketHighlight];
-      BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
-    end;
-
     if FFileExtensions <> nil then
     begin
       for i := 0 to FFileExtensions.Count - 1 do
@@ -1192,6 +1158,21 @@ begin
       end;
     end;
 
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.SelectAhaColor(aha: TAdditionalHilightAttribute);
+var
+  i: Integer;
+begin
+  for i := 0 to ColorElementTree.Items.Count - 1 do begin
+    if ColorElementTree.Items[i].Data = nil then continue;
+    if TSynHighlighterAttributes(ColorElementTree.Items[i].Data).StoredName <>
+       EditorOpts.GetAdditionalAttributeName(aha)
+    then
+      continue;
+    ColorElementTree.Items[i].Selected := True;
+    break;
   end;
 end;
 

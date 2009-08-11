@@ -60,7 +60,7 @@ type
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+    procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
