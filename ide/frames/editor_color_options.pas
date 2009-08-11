@@ -572,6 +572,7 @@ begin
           GetCurColorScheme(PreviewSyn.LanguageName));
         SetComboBoxText(FileExtensionsComboBox,
           GetCurFileExtensions(PreviewSyn.LanguageName));
+        SetPreviewSynInAllPreviews;
         with GeneralPage do
           for a := Low(PreviewEdits) to High(PreviewEdits) do
           begin
@@ -579,12 +580,15 @@ begin
             PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
             PreviewEdits[a].TopLine := 1;
             PreviewEdits[a].LeftChar := 1;
-            PreviewEdits[a].AfterLoadFromFile;
+            PreviewEdits[a].Keystrokes.Clear;
+            PreviewEdits[a].MouseActions.Clear;
           end;
-        SetPreviewSynInAllPreviews;
+        InvalidatePreviews;
+        with GeneralPage do
+          for a := Low(PreviewEdits) to High(PreviewEdits) do
+            PreviewEdits[a].AfterLoadFromFile;
         FillColorElementListBox;
         FindCurHighlightElement;
-        InvalidatePreviews;
       end;
     end;
   end
@@ -1116,6 +1120,8 @@ begin
             TopLine := 1;
             LeftChar := 1;
             AfterLoadFromFile;
+            Keystrokes.Clear;
+            MouseActions.Clear;
           end;
 
     LanguageComboBox.Text := PreviewSyn.LanguageName;
