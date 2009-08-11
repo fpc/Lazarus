@@ -102,9 +102,7 @@ type
     ahaCodeFoldingTree, ahaHighlightWord, ahaFoldedCode, ahaWordGroup,
     ahaTemplateEditCur, ahaTemplateEditSync, ahaTemplateEditOther,
     ahaSyncroEditCur, ahaSyncroEditSync, ahaSyncroEditOther, ahaSyncroEditArea,
-    ahaGutterSeparator);
-
-  TSingleColorAttribute = (scaGutter, scaRightMargin);
+    ahaGutterSeparator, ahaGutter, ahaRightMargin);
 
   TAhaGroupName = (agnText, agnLine, agnGutter, agnSpecialMode);
 
@@ -143,7 +141,9 @@ const
     'SyncronEdit Syncron Cells',
     'SyncronEdit Other Cells',
     'SyncronEdit Range',
-    '' // scaGutterSeparator => uses RTTI only
+    '', // scaGutterSeparator => uses RTTI only
+    '', // ahaGutter
+    ''  // ahaRightMargin
   );
 
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TAhaSupportedFeatures =
@@ -174,20 +174,15 @@ const
     { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
     { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
     { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False; Group: agnGutter)
+    { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False; Group: agnGutter),
+    { ahaGutter }             (FG: False; BG: True;  FF: False; Style: False; Group: agnGutter),
+    { ahaRightMargin}         (FG: True;  BG: False; FF: False; Style: False; Group: agnGutter)
   );
 
 
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
   AdditionalHighlightGroupNames: array[TAhaGroupName] of String;
-
-const
-  SingleColorAttributes: array[TSingleColorAttribute] of String =
-  (
-    dlgGutter,
-    dlgRightMargin
-  );
 
 type
   TSchemeAttribute = record
@@ -201,7 +196,6 @@ type
     Default: TSchemeAttribute;
     Attributes: array[TPascalHilightAttribute] of TSchemeAttribute;
     Additional: array[TAdditionalHilightAttribute] of TSchemeAttribute;
-    Single: array[TSingleColorAttribute] of TColor;
   end;
 
   TColorSchemeMapping = class(TObject)
@@ -266,12 +260,10 @@ const
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
       { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutter             } (BG: clBtnFace;   FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaRightMargin        } (BG: clNone;      FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
-    Single: (
-      { scaGutter      } clBtnFace,
-      { scaRightMargin } clSilver
-    )
   );
 
   TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
@@ -313,12 +305,10 @@ const
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
       { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutter             } (BG: clBtnFace;   FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaRightMargin        } (BG: clNone;      FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
-    Single: (
-      { scaGutter      } clBtnFace,
-      { scaRightMargin } clSilver
-    )
   );
 
   CLASSIC_COLOR_SCHEME: TPascalColorScheme = (
@@ -360,12 +350,10 @@ const
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
       { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutter             } (BG: clBtnFace;   FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaRightMargin        } (BG: clNone;      FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
-    Single: (
-      { scaGutter      } clBtnFace,
-      { scaRightMargin } clSilver
-    )
   );
 
   OCEAN_COLOR_SCHEME: TPascalColorScheme = (
@@ -407,12 +395,10 @@ const
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;     FC: clRed;        Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;     FC: $94b094;      Styles: []; StylesMask: []),
       { ahaSyncroEditArea     } (BG: clMoneyGreen;      FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
-      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutter             } (BG: clBtnFace;   FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaRightMargin        } (BG: clNone;      FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
-    Single: (
-      { scaGutter      } clBtnFace,
-      { scaRightMargin } clSilver
-    )
   );
 
   DELPHI_COLOR_SCHEME: TPascalColorScheme = (
@@ -454,12 +440,10 @@ const
       { ahaSyncroEditSync     } (BG: clNone;      FG: clNone;      FC: clRed;     Styles: []; StylesMask: []),
       { ahaSyncroEditOther    } (BG: clNone;      FG: clNone;      FC: clBlue;    Styles: []; StylesMask: []),
       { ahaSyncroEditArea     } (BG: $FAFFE6;     FG: clNone;      FC: clNone;    Styles: []; StylesMask: []),
-      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: [])
+      { ahaGutterSeparator    } (BG: clWhite;     FG: clDkGray;   FC: clNone; Styles: []; StylesMask: []),
+      { ahaGutter             } (BG: clBtnFace;   FG: clNone;     FC: clNone; Styles: []; StylesMask: []),
+      { ahaRightMargin        } (BG: clNone;      FG: clSilver;   FC: clNone; Styles: []; StylesMask: [])
     );
-    Single: (
-      { scaGutter      } clBtnFace,
-      { scaRightMargin } clSilver
-    )
   );
 
 type
@@ -730,11 +714,9 @@ type
     fVisibleGutter: Boolean;
     fShowLineNumbers: Boolean;
     fShowOnlyLineNumbersMultiplesOf: integer;
-    fGutterColor: TColor;
     fGutterWidth: Integer;
     FGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
-    fRightMarginColor: TColor;
     fEditorFont:  String;
     fEditorFontHeight: Integer;
     fExtraCharSpacing: Integer;
@@ -829,6 +811,8 @@ type
     function GetLineColors(Syn: TSrcIDEHighlighter;
           AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
           out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
+    function  GetSynAttributeByAha(Syn : TSrcIDEHighlighter;
+                   Aha: TAdditionalHilightAttribute): TSynHighlighterAttributes;
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
                              aMarkup: TSynSelectedColor);
@@ -870,16 +854,12 @@ type
       write fShowLineNumbers default False;
     property ShowOnlyLineNumbersMultiplesOf: integer read fShowOnlyLineNumbersMultiplesOf
       write fShowOnlyLineNumbersMultiplesOf;
-    property GutterColor: TColor
-      read fGutterColor write fGutterColor default clBtnFace;
     property GutterWidth: Integer
       read fGutterWidth write fGutterWidth default 30;
     property GutterSeparatorIndex: Integer read FGutterSeparatorIndex
       write FGutterSeparatorIndex default 3;
     property RightMargin: Integer
       read fRightMargin write fRightMargin default 80;
-    property RightMarginColor: Integer
-      read fRightMarginColor write fRightMarginColor default clBtnFace;
     property EditorFont: String read fEditorFont write fEditorFont;
     property EditorFontHeight: Integer
       read fEditorFontHeight write FEditorFontHeight;
@@ -2147,6 +2127,8 @@ begin
   AdditionalHighlightAttributes[ahaSyncroEditOther]     := dlgAddHiAttrSyncroEditOther;
   AdditionalHighlightAttributes[ahaSyncroEditArea]      := dlgAddHiAttrSyncroEditArea;
   AdditionalHighlightAttributes[ahaGutterSeparator]     := dlgAddHiAttrGutterSeparator;
+  AdditionalHighlightAttributes[ahaGutter]              := dlgGutter;
+  AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
 
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
   AdditionalHighlightGroupNames[agnLine]         := dlgAddHiAttrGroupLine;
@@ -2324,17 +2306,12 @@ begin
       fShowOnlyLineNumbersMultiplesOf :=
         XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 5);
     end;
-    fGutterColor :=
-      XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
       XMLConfig.GetValue('EditorOptions/Display/GutterWidth', 30);
     FGutterSeparatorIndex :=
       XMLConfig.GetValue('EditorOptions/Display/GutterSeparatorIndex', 3);
     fRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
-    fRightMarginColor :=
-      XMLConfig.GetValue('EditorOptions/Display/RightMarginColor'
-      , clBtnFace);
     fEditorFont  :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
     fEditorFontHeight :=
@@ -2572,16 +2549,12 @@ begin
       fShowLineNumbers, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf',
       fShowOnlyLineNumbersMultiplesOf, 5);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
-      fGutterColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
       fGutterWidth, 30);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterSeparatorIndex',
       fGutterSeparatorIndex, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMargin',
       fRightMargin, 80);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/RightMarginColor',
-      fRightMarginColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
       fEditorFont, SynDefaultFontName);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
@@ -3043,6 +3016,11 @@ begin
           Include(fs, fsUnderline);
         Attri.StyleMask := fs;
       end;
+      // Read old single colrs
+      if Attri.StoredName = GetAdditionalAttributeName(ahaRightMargin) then
+        Attri.Foreground := XMLConfig.GetValue('EditorOptions/Display/RightMarginColor', clBtnFace);
+      if Attri.StoredName = GetAdditionalAttributeName(ahaGutter) then
+        Attri.Background := XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
       // Read the Version >= 5 if exist, or keep values
       if Attri.StoredName = '' then
         continue;
@@ -3116,7 +3094,14 @@ begin
       AttriName := OldAdditionalAttributeName(Attri.StoredName);
       if AttriName <> '' then
         XMLConfig.DeletePath(Path + StrToValidXMLName(AttriName));
-      // Write Version >= 5
+      // Delete old single colors
+      if (Syn is TPreviewPasSyn) or (Syn is TSynPasSyn) then begin
+        if Attri.StoredName = GetAdditionalAttributeName(ahaRightMargin) then
+          XMLConfig.DeleteValue('EditorOptions/Display/RightMarginColor');
+        if Attri.StoredName = GetAdditionalAttributeName(ahaGutter) then
+          XMLConfig.DeleteValue('EditorOptions/Display/GutterColor');
+      end;
+    // Write Version >= 5
       if Attri.StoredName = '' then
         continue;
       XMLConfig.WriteObject(Path + StrToValidXMLName(Attri.StoredName) + '/',
@@ -3340,6 +3325,9 @@ begin
 end;
 
 procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
+  (* ASynEd.Highlighter has a copy of all the ahaAttributes
+     SetMarkupColors copies them from the highlighter to the synedit
+   *)
   procedure SetMarkupColorByClass(AddHilightAttr: TAdditionalHilightAttribute;
                                   aClass: TSynEditMarkupClass);
   begin
@@ -3357,7 +3345,15 @@ procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEd
 
 var
   i: integer;
+  Attri: TSynHighlighterAttributes;
 begin
+  Attri := GetSynAttributeByAha(aSynEd.Highlighter, ahaGutter);
+  if Attri <> nil then
+    aSynEd.Gutter.Color := Attri.Background;
+  Attri := GetSynAttributeByAha(aSynEd.Highlighter, ahaRightMargin);
+  if Attri <> nil then
+    aSynEd.RightEdgeColor := Attri.Foreground;
+
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
   SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
@@ -3398,28 +3394,38 @@ begin
   end;
 end;
 
+function TEditorOptions.GetSynAttributeByAha(Syn : TSrcIDEHighlighter;
+  Aha: TAdditionalHilightAttribute): TSynHighlighterAttributes;
+var
+  i: Integer;
+begin
+  if Syn <> nil
+  then begin
+    for i := 0 to Syn.AttrCount - 1 do
+    begin
+      Result := Syn.Attribute[i];
+      if Result.StoredName = '' then Continue;
+      if SysUtils.CompareText(Result.StoredName, GetAdditionalAttributeName(Aha))= 0
+      then exit;
+    end;
+  end;
+  Result := nil;
+end;
+
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
   AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
 var
   i: Integer;
   Attrib: TSynHighlighterAttributes;
 begin
-  if Syn <> nil
-  then begin
-    for i := 0 to Syn.AttrCount - 1 do
-    begin
-      Attrib := Syn.Attribute[i];
-      if Attrib.Name = '' then Continue;
-      if SysUtils.CompareText(Attrib.Name,AdditionalHighlightAttributes[AddHilightAttr])<>0
-      then Continue;
-
-      aMarkup.Foreground := Attrib.Foreground;
-      aMarkup.Background := Attrib.Background;
-      aMarkup.FrameColor := Attrib.FrameColor;
-      aMarkup.Style      := Attrib.Style;
-      aMarkup.StyleMask  := Attrib.StyleMask;
-      Exit;
-    end;
+  Attrib := GetSynAttributeByAha(Syn, AddHilightAttr);
+  if Attrib <> nil then begin
+    aMarkup.Foreground := Attrib.Foreground;
+    aMarkup.Background := Attrib.Background;
+    aMarkup.FrameColor := Attrib.FrameColor;
+    aMarkup.Style      := Attrib.Style;
+    aMarkup.StyleMask  := Attrib.StyleMask;
+    Exit;
   end;
 
   // set default
@@ -3467,9 +3473,7 @@ begin
   if not FUseCodeFolding then
     ASynEdit.UnfoldAll;
 
-  ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
-
   ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
   if FGutterSeparatorIndex <> -1 then
   ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
@@ -3478,7 +3482,6 @@ begin
     ASynEdit.RightEdge := fRightMargin
   else
     ASynEdit.RightEdge := 0;
-  ASynEdit.RightEdgeColor := fRightMarginColor;
 
   ApplyFontSettingsTo(ASynEdit);
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
@@ -3527,6 +3530,7 @@ procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 // copy settings from a synedit to the options
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  Attri: TSynHighlighterAttributes;
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -3543,7 +3547,9 @@ begin
   fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf;
   FUseCodeFolding := ASynEdit.Gutter.CodeFoldPart.Visible;
 
-  fGutterColor := ASynEdit.Gutter.Color;
+  Attri := GetSynAttributeByAha(ASynEdit.Highlighter, ahaGutter);
+  if Attri <> nil then
+    Attri.Background := ASynEdit.Gutter.Color;
   fGutterWidth := ASynEdit.Gutter.Width;
   if ASynEdit.Gutter.SeparatorPart.Visible then
     FGutterSeparatorIndex := ASynEdit.Gutter.SeparatorPart(0).Index
@@ -3552,7 +3558,11 @@ begin
   fVisibleRightMargin := ASynEdit.RightEdge>0;
   if fVisibleRightMargin then
     fRightMargin:= ASynEdit.RightEdge;
-  fRightMarginColor := ASynEdit.RightEdgeColor;
+
+  Attri := GetSynAttributeByAha(ASynEdit.Highlighter, ahaRightMargin);
+  if Attri <> nil then
+    Attri.Foreground := ASynEdit.RightEdgeColor;
+
   fEditorFont := ASynEdit.Font.Name;
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraCharSpacing := ASynEdit.ExtraCharSpacing;
@@ -3590,11 +3600,11 @@ begin
   for i := 0 to Syn.AttrCount - 1 do
     with Syn.Attribute[i] do
     begin
-      if Name = '' then
+      if StoredName = '' then
         continue;
       for a := Low(TAdditionalHilightAttribute)
         to High(TAdditionalHilightAttribute) do
-        if AdditionalHighlightAttributes[a] = Name then
+        if GetAdditionalAttributeName(a) = StoredName then
           HasSpecialAttribute[a] := True;
     end;
   for a := Low(TAdditionalHilightAttribute)
