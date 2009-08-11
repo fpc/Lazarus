@@ -339,7 +339,12 @@ begin
   if CurLanguageID >= 0 then
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
-    if AddAttr <> ahaNone then
+    if AddAttr = ahaFoldedCode then begin
+      if (XY.X >= Length(ColorPreview.Lines[XY.Y-1]) + 4) and
+         (XY.X <= Length(ColorPreview.Lines[XY.Y-1]) + 7) then
+        NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
+    end
+    else if AddAttr <> ahaNone then
       NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
   end;
   if (NewNode = nil) and (XY.Y = ColorPreview.CaretY) and
@@ -574,6 +579,7 @@ begin
             PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
             PreviewEdits[a].TopLine := 1;
             PreviewEdits[a].LeftChar := 1;
+            PreviewEdits[a].AfterLoadFromFile;
           end;
         SetPreviewSynInAllPreviews;
         FillColorElementListBox;
@@ -1109,6 +1115,7 @@ begin
             CaretXY := HighlighterList[CurLanguageID].CaretXY;
             TopLine := 1;
             LeftChar := 1;
+            AfterLoadFromFile;
           end;
 
     LanguageComboBox.Text := PreviewSyn.LanguageName;
@@ -1229,7 +1236,7 @@ begin
   if CurLanguageID >= 0 then
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Line);
-    if AddAttr <> ahaNone then
+    if (AddAttr <> ahaNone) and (AddAttr <> ahaFoldedCode) then
     begin
       i := PreviewSyn.AttrCount - 1;
       while (i >= 0) do

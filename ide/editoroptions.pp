@@ -1546,6 +1546,8 @@ begin
       '  asm'#13 + '    MOV AX,1234h'#13 +
       '    MOV Number,AX'#13 +
       '  end;'#13 +
+      '  {%region /fold}'#13 +
+      '  {%endregion}'#13 +
       '  X := 10;'#13 +
       '  inc(X); {$R+} { Search Match, Text Block }'#13 +
       '  for I := 0 to Number do {$R-} { execution point }'#13 +
@@ -1558,13 +1560,14 @@ begin
       '    ListBox1.Items.Add(IntToStr(X));'#13 +
       '  end;'#13 +
       'end;'#13 + #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint] := 18;
-    AddAttrSampleLines[ahaEnabledBreakpoint] := 17;
-    AddAttrSampleLines[ahaInvalidBreakpoint] := 19;
-    AddAttrSampleLines[ahaUnknownBreakpoint] := 20;
-    AddAttrSampleLines[ahaErrorLine] := 21;
-    AddAttrSampleLines[ahaExecutionPoint] := 15;
-    AddAttrSampleLines[ahaTextBlock] := 14;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 20;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 19;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 21;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 22;
+    AddAttrSampleLines[ahaErrorLine] := 23;
+    AddAttrSampleLines[ahaExecutionPoint] := 17;
+    AddAttrSampleLines[ahaTextBlock] := 16;
+    AddAttrSampleLines[ahaFoldedCode] := 13;
     CaretXY := Point(21, 7);
   end;
   Add(NewInfo);
