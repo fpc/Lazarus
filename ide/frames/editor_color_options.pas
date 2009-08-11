@@ -136,6 +136,9 @@ type
 
 implementation
 
+const
+  COLOR_NODE_PREFIX = ' abc  ';
+
 function DefaultToNone(AColor: TColor): TColor;
 begin
   if AColor = clDefault then
@@ -170,6 +173,7 @@ var
   AttriIdx: LongInt;
   c: TColor;
   Scheme: TPascalColorScheme;
+  s: String;
 begin
   DefaultDraw := (node.Data = nil) or not (stage=cdPostPaint);
   if DefaultDraw  then exit;
@@ -187,7 +191,7 @@ begin
     ColorElementTree.Canvas.Font.Color := Font.Color;
   end;
   NodeRect := Node.DisplayRect(true);
-  FullAbcWidth := ColorElementTree.Canvas.TextExtent(' abc  ').cx;
+  FullAbcWidth := ColorElementTree.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
   TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(Node.Text)) div 2;
   ColorElementTree.Canvas.FillRect(NodeRect);
   ColorElementTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, Attri.Name);
@@ -197,10 +201,10 @@ begin
   if (AttriIdx < 0) or (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) then begin
     if (Attri.Background <> clDefault) and (Attri.Background <> clNone) then
       c := Attri.Background;
-  end
-  else begin // Bg not used; use FG
-    if (Attri.Foreground <> clDefault) and (Attri.Foreground <> clNone) then
-      c := Attri.Foreground;
+  //end
+  //else begin // Bg not used; use FG
+  //  if (Attri.Foreground <> clDefault) and (Attri.Foreground <> clNone) then
+  //    c := Attri.Foreground;
   end;
   // Fallback color for gutter
   if ((c = clNone) or (c = clDefault)) and
@@ -237,9 +241,8 @@ begin
   end;
 
   // Draw preview ForeGround
-  if (AttriIdx < 0) or
-     ( (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].FG) and
-       (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) )       // if no BG, then FG was used
+  if (AttriIdx < 0) or (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].FG) //and
+       //(ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) )       // if no BG, then FG was used
   then begin
     c := Attri.Foreground;
     if (c = clDefault) or (c = clNone) then
@@ -265,15 +268,25 @@ begin
       ColorElementTree.Canvas.Pen.Color := c;
       ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+2);
       ColorElementTree.Canvas.LineTo(NodeRect.Left+6, NodeRect.Bottom-2);
-    end else
-    begin
+    end
+    else if AttriIdx = ord(ahaRightMargin) then begin
+      ColorElementTree.Canvas.Pen.Color := c;
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Top+2);
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Bottom-2);
+    end
+    else begin
+      s := 'abc';
+      if AttriIdx = ord(ahaFoldedCode) then
+        s:= '...';
+      if AttriIdx = ord(ahaLineNumber) then
+        s:= '123';
       ColorElementTree.Canvas.Font.Color := c;
       ColorElementTree.Canvas.Font.Style := Attri.Style;
       ColorElementTree.Canvas.Font.Height := NodeRect.Bottom - NodeRect.Top - 5;
-      TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight('abc')) div 2;
-      AbcWidth := ColorElementTree.Canvas.TextExtent('abc').cx;
+      TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(s)) div 2;
+      AbcWidth := ColorElementTree.Canvas.TextExtent(s).cx;
       SetBkMode(ColorElementTree.Canvas.Handle, TRANSPARENT);
-      ColorElementTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, 'abc');
+      ColorElementTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, s);
       SetBkMode(ColorElementTree.Canvas.Handle, OPAQUE);
 
       ColorElementTree.Canvas.Font.Height := Font.Height;
@@ -314,7 +327,7 @@ begin
           Token := AdditionalHighlightAttributes[ahaCodeFoldingTree]
         else
           Token := dlgGutter;
-        NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+Token);
+        NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+Token);
         break;
       end;
       X := X - ColorPreview.Gutter.Parts[i].Width;
@@ -326,12 +339,12 @@ begin
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr <> ahaNone then
-      NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+AdditionalHighlightAttributes[AddAttr]);
+      NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
   end;
   if (NewNode = nil) and (XY.Y = ColorPreview.CaretY) and
      (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1)
   then
-    NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+AdditionalHighlightAttributes[ahaLineHighlight]);
+    NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[ahaLineHighlight]);
   // Pascal Highlights
   if NewNode = nil then
   begin
@@ -341,7 +354,7 @@ begin
     if Attri = nil then
       Attri := PreviewSyn.WhitespaceAttribute;
     if Attri <> nil then
-      NewNode := ColorElementTree.Items.FindNodeWithText(' abc  '+Attri.Name);
+      NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+Attri.Name);
   end;
   if NewNode <> nil then begin
     NewNode.Selected := True;
@@ -853,7 +866,7 @@ begin
       if ParentNode = nil then begin
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
       end;
-      with ColorElementTree.Items.AddChild(ParentNode, ' abc  '+PreviewSyn.Attribute[i].Name) do
+      with ColorElementTree.Items.AddChild(ParentNode, COLOR_NODE_PREFIX+PreviewSyn.Attribute[i].Name) do
         Data := Pointer(PreviewSyn.Attribute[i]);
     end;
 
