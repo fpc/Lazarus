@@ -25,11 +25,12 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit,
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, LCLIntf,
   SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
   ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
-  IDEProcs, ColorBox, ComCtrls, SynEditMarkupBracket;
+  IDEProcs, ColorBox, ComCtrls, SynEditMarkupBracket, SynEditHighlighter, math,
+  typinfo;
 
 type
 
@@ -74,6 +75,8 @@ type
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
     ElementAttributesGroupBox: TGroupBox;
+    procedure ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
+      State: TCustomDrawState; Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
     procedure ColorElementTreeChange(Sender: TObject; Node: TTreeNode);
     procedure ColorElementTreeClick(Sender: TObject);
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
@@ -156,6 +159,130 @@ begin
   FindCurHighlightElement;
 end;
 
+procedure TEditorColorOptionsFrame.ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage; var PaintImages,
+  DefaultDraw: Boolean);
+var
+  NodeRect: TRect;
+  FullAbcWidth, AbcWidth: Integer;
+  Attri: TSynHighlighterAttributes;
+  TextY: Integer;
+  ts: TTextStyle;
+  AttriIdx: LongInt;
+  c: TColor;
+  Scheme: TPascalColorScheme;
+begin
+  DefaultDraw := (node.Data = nil) or not (stage=cdPostPaint);
+  if DefaultDraw  then exit;
+
+  Attri := TSynHighlighterAttributes(node.Data);
+  AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), Attri.StoredName);
+  Scheme := EditorOpts.GetColorScheme(ColorSchemeComboBox.Text);
+
+  // Draw node background and name
+  if cdsSelected in State then begin
+    ColorElementTree.Canvas.Brush.Color := ColorElementTree.SelectionColor;
+    ColorElementTree.Canvas.Font.Color := InvertColor(ColorElementTree.SelectionColor);
+  end else begin
+    ColorElementTree.Canvas.Brush.Color := ColorElementTree.BackgroundColor;
+    ColorElementTree.Canvas.Font.Color := Font.Color;
+  end;
+  NodeRect := Node.DisplayRect(true);
+  FullAbcWidth := ColorElementTree.Canvas.TextExtent(' abc  ').cx;
+  TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(Node.Text)) div 2;
+  ColorElementTree.Canvas.FillRect(NodeRect);
+  ColorElementTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, Attri.Name);
+
+  // Draw preview box
+  c := clNone;
+  if (AttriIdx < 0) or (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) then begin
+    if (Attri.Background <> clDefault) and (Attri.Background <> clNone) then
+      c := Attri.Background;
+  end
+  else begin // Bg not used; use FG
+    if (Attri.Foreground <> clDefault) and (Attri.Foreground <> clNone) then
+      c := Attri.Foreground;
+  end;
+  // Fallback color for gutter
+  if ((c = clNone) or (c = clDefault)) and
+     (AttriIdx in [ord(ahaModifiedLine), ord(ahaCodeFoldingTree),
+                   ord(ahaLineNumber), ord(ahaGutterSeparator)]) and
+     (EditorOpts.GetSynAttributeByAha(PreviewSyn, ahaGutter) <> nil)
+  then
+    c := EditorOpts.GetSynAttributeByAha(PreviewSyn, ahaGutter).Background;
+  // Fallback color for text
+  if ((c = clNone) or (c = clDefault)) and (PreviewSyn.WhitespaceAttribute <> nil) then
+    c := PreviewSyn.WhitespaceAttribute.Background;
+  if (c = clNone) or (c = clDefault) then
+    c := Scheme.Default.BG;
+  if (c = clNone) or (c = clDefault) then
+    c := ColorPreview.Color;
+  ColorElementTree.Canvas.Brush.Color := c;
+  ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
+
+  // Special draw Modified line gutter
+  if AttriIdx = ord(ahaModifiedLine) then begin
+    TextY := NodeRect.Bottom - NodeRect.Top - 4;
+    ColorElementTree.Canvas.Brush.Color := Attri.Foreground;
+    ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+5, NodeRect.Bottom-2);
+    ColorElementTree.Canvas.Brush.Color := Attri.FrameColor;
+    ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2+ (TextY div 2), NodeRect.Left+5, NodeRect.Bottom-2);
+    exit;
+  end;
+
+  // Draw preview Frame
+  ColorElementTree.Canvas.Pen.Color := Attri.FrameColor;
+  if (AttriIdx < 0) or (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].FF) then begin
+    if (Attri.FrameColor <> clDefault) and (Attri.FrameColor <> clNone) then
+      ColorElementTree.Canvas.Rectangle(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
+  end;
+
+  // Draw preview ForeGround
+  if (AttriIdx < 0) or
+     ( (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].FG) and
+       (ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) )       // if no BG, then FG was used
+  then begin
+    c := Attri.Foreground;
+    if (c = clDefault) or (c = clNone) then
+      c := Scheme.Default.FG;
+    if (c = clNone) or (c = clDefault) then
+      c := ColorPreview.Font.Color;
+
+    if AttriIdx = ord(ahaCodeFoldingTree) then begin
+      // Special draw fold gutter
+      TextY := NodeRect.Bottom - NodeRect.Top - 8;
+      ColorElementTree.Canvas.Brush.Color := clWhite;
+      ColorElementTree.Canvas.FillRect(NodeRect.Left+4, NodeRect.Top+4,
+                                       NodeRect.Left+4+TextY, NodeRect.Bottom-4);
+      ColorElementTree.Canvas.Pen.Color := c;
+      ColorElementTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
+                                        NodeRect.Left+4+TextY, NodeRect.Bottom-4);
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
+    end
+    else if AttriIdx = ord(ahaGutterSeparator) then begin
+      ColorElementTree.Canvas.Pen.Color := c;
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+2);
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+6, NodeRect.Bottom-2);
+    end else
+    begin
+      ColorElementTree.Canvas.Font.Color := c;
+      ColorElementTree.Canvas.Font.Style := Attri.Style;
+      ColorElementTree.Canvas.Font.Height := NodeRect.Bottom - NodeRect.Top - 5;
+      TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight('abc')) div 2;
+      AbcWidth := ColorElementTree.Canvas.TextExtent('abc').cx;
+      SetBkMode(ColorElementTree.Canvas.Handle, TRANSPARENT);
+      ColorElementTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, 'abc');
+      SetBkMode(ColorElementTree.Canvas.Handle, OPAQUE);
+
+      ColorElementTree.Canvas.Font.Height := Font.Height;
+      ColorElementTree.Canvas.Font.Style := [];
+    end;
+  end;
+end;
+
 procedure TEditorColorOptionsFrame.ColorElementTreeClick(Sender: TObject);
 begin
   FindCurHighlightElement;
@@ -188,7 +315,7 @@ begin
           Token := AdditionalHighlightAttributes[ahaCodeFoldingTree]
         else
           Token := dlgGutter;
-        NewNode := ColorElementTree.Items.FindNodeWithText(Token);
+        NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+Token);
         break;
       end;
       X := X - ColorPreview.Gutter.Parts[i].Width;
@@ -200,12 +327,12 @@ begin
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr <> ahaNone then
-      NewNode := ColorElementTree.Items.FindNodeWithText(AdditionalHighlightAttributes[AddAttr]);
+      NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+AdditionalHighlightAttributes[AddAttr]);
   end;
   if (NewNode = nil) and (XY.Y = ColorPreview.CaretY) and
      (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1)
   then
-    NewNode := ColorElementTree.Items.FindNodeWithText(AdditionalHighlightAttributes[ahaLineHighlight]);
+    NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+AdditionalHighlightAttributes[ahaLineHighlight]);
   // Pascal Highlights
   if NewNode = nil then
   begin
@@ -215,7 +342,7 @@ begin
     if Attri = nil then
       Attri := PreviewSyn.WhitespaceAttribute;
     if Attri <> nil then
-      NewNode := ColorElementTree.Items.FindNodeWithText(Attri.Name);
+      NewNode := ColorElementTree.Items.FindNodeWithText(' abc '+Attri.Name);
   end;
   if NewNode <> nil then begin
     NewNode.Selected := True;
@@ -679,10 +806,10 @@ begin
      (ColorElementTree.Selected.GetFirstChild <> nil)
   then
     ColorElementTree.Selected.GetFirstChild.Selected := True;
-  if (ColorElementTree.Selected = nil) then
+  if (ColorElementTree.Selected = nil) or (ColorElementTree.Selected.Data = nil) then
     exit;
 
-  NewName := ColorElementTree.Selected.Text;
+  NewName := TSynHighlighterAttributes(ColorElementTree.Selected.Data).Name;
 
   Old := CurHighlightElement;
   CurHighlightElement := nil;
@@ -727,7 +854,8 @@ begin
       if ParentNode = nil then begin
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
       end;
-      ColorElementTree.Items.AddChild(ParentNode, PreviewSyn.Attribute[i].Name);
+      with ColorElementTree.Items.AddChild(ParentNode, ' abc  '+PreviewSyn.Attribute[i].Name) do
+        Data := Pointer(PreviewSyn.Attribute[i]);
     end;
 
   for i := 0 to ColorElementTree.Items.Count - 1 do
@@ -750,7 +878,6 @@ var
   PascalSyn: TPreviewPasSyn;
   i, j: Integer;
   CurSynClass: TCustomSynClass;
-  Scheme: TPascalColorScheme;
 begin
   PascalSyn := TPreviewPasSyn(GetHighlighter(TPreviewPasSyn,
     ColorSchemeComboBox.Text, True));
@@ -760,7 +887,6 @@ begin
     EditorOpts.AddSpecialHilightAttribsToHighlighter(DefaultSyn);
     EditorOpts.ReadDefaultsForHighlighterSettings(DefaultSyn,
       ColorSchemeComboBox.Text, PascalSyn);
-    Scheme := EditorOpts.GetColorScheme(ColorSchemeComboBox.Text);
     for i := 0 to DefaultSyn.AttrCount - 1 do
     begin
       if DefaultSyn.Attribute[i].Name = '' then
@@ -840,6 +966,7 @@ procedure TEditorColorOptionsFrame.InvalidatePreviews;
 var
   a: Integer;
 begin
+  ColorElementTree.Invalidate;
   with GeneralPage do
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then

@@ -4,8 +4,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientHeight = 577
   ClientWidth = 531
   Visible = False
-  DesignLeft = 88
-  DesignTop = 116
+  DesignLeft = 83
+  DesignTop = 146
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -537,12 +537,14 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       DefaultItemHeight = 17
+      ReadOnly = True
       ShowButtons = False
       ShowRoot = False
       TabOrder = 13
+      OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
       OnClick = ColorElementTreeClick
-      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowLines, tvoToolTips]
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand]
     end
   end
   object ColorPreview: TSynEdit[9]
