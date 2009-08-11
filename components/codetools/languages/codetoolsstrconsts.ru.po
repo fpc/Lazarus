@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-27 02:21+0300\n"
+"PO-Revision-Date: 2009-08-12 01:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -447,7 +447,7 @@ msgstr "недостаточно памяти"
 
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr "раздел описаний (interface) не найден"
+msgstr "секция interface не найдена"
 
 #: codetoolsstrconsts.ctsintfdirectory
 msgid "interface directory"
@@ -707,7 +707,7 @@ msgstr "идентификатор типа"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr "секция типа класса не найдена"
+msgstr "секция type класса не найдена"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
