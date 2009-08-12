@@ -131,10 +131,6 @@ type
     FDragImageListIcon: PGtkWidget;
     FDragHotStop: TPoint;
 
-    // cache for WindowFromPoint
-    FLastWFPMousePos: TPoint;
-    FLastWFPResult: HWND;
-
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; virtual; abstract;
   public

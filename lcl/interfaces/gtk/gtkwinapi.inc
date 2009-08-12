@@ -9695,8 +9695,8 @@ var
   p: TPoint;
 begin
   // return cached value to prevent heavy gdk_window_at_pointer call
-  if (APoint = FLastWFPMousePos) and GTK_IS_WIDGET(Pointer(FLastWFPResult)) then
-    Exit(FLastWFPResult);
+  //if (APoint = FLastWFPMousePos) and GTK_IS_WIDGET(Pointer(FLastWFPResult)) then
+  //  Exit(FLastWFPResult);
   //DebugLn('WindowFromPoint: ', dbgs(APoint));
   //DumpStack;
   Result := 0;
@@ -9712,8 +9712,8 @@ begin
     Widget := gtk_get_event_widget(@ev);
     Result := PtrUInt(Widget);
   end;
-  FLastWFPMousePos := APoint;
-  FLastWFPResult := Result;
+  //FLastWFPMousePos := APoint;
+  //FLastWFPResult := Result;
 end;
 
 //##apiwiz##eps##   // Do not remove
