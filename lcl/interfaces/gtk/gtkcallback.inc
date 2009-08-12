@@ -1527,10 +1527,12 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
 
 var
   DesignOnlySignal: boolean;
+  AWinControl: TWinControl;
+  {$IFDEF GTK1}
   CaptureWidget: PGtkWidget;
   EventXY: TPoint;
   MappedXY: TPoint;
-  AWinControl: TWinControl;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
@@ -1564,13 +1566,13 @@ begin
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data), Widget) then Exit;
 
-    CaptureWidget := PGtkWidget(AWinControl.Handle);
     if Event^.button = 1 then
     begin
-      EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
-      MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
       {$IFDEF Gtk1}
       // gtk2: the LCL will capture itself if DragMode=dmAutomatic
+      CaptureWidget := PGtkWidget(AWinControl.Handle);
+      EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
+      MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
       SetCaptureControl(AWinControl, MappedXY);
       {$ENDIF}
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
