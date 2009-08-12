@@ -214,8 +214,8 @@ type
     property LastCell: Integer read FLastCell;
   protected
     procedure SelectCurrentCell(Reverse: Boolean = False);
-    procedure PreviousCell(SetSelect: Boolean = True);
-    procedure NextCell(SetSelect: Boolean = True);
+    procedure PreviousCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False);
+    procedure NextCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False);
     procedure CellCaretHome;
     procedure CellCaretEnd;
   public
@@ -1057,20 +1057,23 @@ begin
   end;
 end;
 
-procedure TSynPluginCustomSyncroEdit.PreviousCell(SetSelect: Boolean);
+procedure TSynPluginCustomSyncroEdit.PreviousCell(SetSelect: Boolean; SkipSameIndex: Boolean = False);
 var
-  i, j: Integer;
+  i, j, x: Integer;
   Pos: TPoint;
 begin
   Pos := CaretObj.LineBytePos;
   i := Cells.IndexOf(Pos.x, Pos.y, True);
   if i < 0 then begin
+    x := -1;
     i := 0;
     while (i < Cells.Count) and
       ((Cells[i].Group < 0) or (CompareCarets(Cells[i].LogEnd, Pos) >= 0))
     do
       inc(i);
-  end;
+  end
+  else
+    x := Cells[i].Group;
 
   j := 0;
   Repeat
@@ -1078,7 +1081,9 @@ begin
     inc(j);
     if i < 0 then
       i := Cells.Count - 1;
-  until (j > Cells.Count) or (Cells[i].Group >= 0);
+  until (j > Cells.Count) or
+        ((Cells[i].Group >= 0) and
+         ((not SkipSameIndex) or (Cells[i].Group <> x)) );
   CurrentCell := i;
 
   if CurrentCell < 0 then
@@ -1090,20 +1095,24 @@ begin
     Editor.BlockBegin := Cells[CurrentCell].LogEnd;
 end;
 
-procedure TSynPluginCustomSyncroEdit.NextCell(SetSelect: Boolean);
+procedure TSynPluginCustomSyncroEdit.NextCell(SetSelect: Boolean; SkipSameIndex: Boolean = False);
 var
   Pos: TPoint;
-  i, j: Integer;
+  i, j, x: Integer;
 begin
   Pos := CaretObj.LineBytePos;
   i := Cells.IndexOf(Pos.x, Pos.y, True);
   if i < 0 then begin
+    x := -1;
     i := Cells.Count - 1;
     while (i >= 0) and
       ((Cells[i].Group < 0) or (CompareCarets(Cells[i].LogEnd, Pos) <= 0))
     do
       dec(i);
-  end;
+  end
+  else
+    x := Cells[i].Group;
+
 
   j := 0;
   Repeat
@@ -1111,7 +1120,9 @@ begin
     inc(j);
     if i >= Cells.Count then
       i := 0
-  until (j > Cells.Count) or (Cells[i].Group >= 0);
+  until (j > Cells.Count) or
+        ((Cells[i].Group >= 0) and
+         ((not SkipSameIndex) or (Cells[i].Group <> x)) );
   CurrentCell := i;
   if CurrentCell < 0 then
     exit;

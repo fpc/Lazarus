@@ -1221,7 +1221,7 @@ begin
             (AnInfo.MouseY >= r.Top) and (AnInfo.MouseY < r.Bottom);
 
   if Result then
-    Result := HandleActionProc(FMouseActions, AnInfo);
+    HandleActionProc(FMouseActions, AnInfo);
 end;
 
 function TSynPluginSyncroEdit.DoHandleMouseAction(AnAction: TSynEditMouseAction;
@@ -1336,10 +1336,10 @@ begin
 
     Handled := True;
     case Cmd of
-      ecSynPSyncroEdNextCell:          NextCell(False);
-      ecSynPSyncroEdNextCellSel:       NextCell(True);
-      ecSynPSyncroEdPrevCell:          PreviousCell(False);
-      ecSynPSyncroEdPrevCellSel:       PreviousCell(True);
+      ecSynPSyncroEdNextCell:          NextCell(False, True);
+      ecSynPSyncroEdNextCellSel:       NextCell(True, True);
+      ecSynPSyncroEdPrevCell:          PreviousCell(False, True);
+      ecSynPSyncroEdPrevCellSel:       PreviousCell(True, True);
       ecSynPSyncroEdCellHome:          CellCaretHome;
       ecSynPSyncroEdCellEnd:           CellCaretEnd;
       ecSynPSyncroEdCellSelect:        SelectCurrentCell;
