@@ -250,7 +250,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     {$IFDEF SYN_LAZARUS}
-    function AddSpecialAttribute(const AttribName: string): TSynHighlighterAttributes;
+    function AddSpecialAttribute(const AttribName: string;
+                     const aStoredName: String = ''): TSynHighlighterAttributes;
     {$ENDIF}
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
@@ -1042,9 +1043,10 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string):TSynHighlighterAttributes;
+function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string;
+  const aStoredName: string):TSynHighlighterAttributes;
 begin
-  result := TSynHighlighterAttributes.Create(AttribName);
+  result := TSynHighlighterAttributes.Create(AttribName,aStoredName);
   AddAttribute(result);
 end;
 {$ENDIF}
