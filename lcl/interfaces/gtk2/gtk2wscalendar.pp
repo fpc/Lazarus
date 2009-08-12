@@ -146,18 +146,7 @@ end;
 
 class procedure TGtk2WSCustomCalendar.DestroyHandle(
   const AWinControl: TWinControl);
-var
-  CalendarCtrl: TCustomCalendar;
-  CalendarWidget: PGtkCalendar;
 begin
-  // When the user drags a day number, the gtk2 starts a mouse capture.
-  // when the TCalendar is on a TDateEdit, the LCL destroys the widget while the
-  // gtk is still capturing. Result: The capture hangs.
-  // thaw it:
-  CalendarCtrl:=TCustomCalendar(AWinControl);
-  CalendarWidget:=GetCalendar(CalendarCtrl);
-  gtk_calendar_thaw(CalendarWidget);
-
   TGtk2WSWinControl.DestroyHandle(AWinControl);
   //inherited DestroyHandle(AWinControl);
 end;

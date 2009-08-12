@@ -4799,24 +4799,27 @@ var
   i: integer;
   AWinControl: TWinControl;
 begin
+  ///DebugLn(['TWinControl.DestroyHandle START ',DbgSName(Self)]);
   if not HandleAllocated then begin
     DebugLn('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
     //RaiseGDBException('');
   end;
 
   // First destroy all children handles
+  //DebugLn(['TWinControl.DestroyHandle DESTROY CHILDS ',DbgSName(Self)]);
   Include(FControlState, csDestroyingHandle);
   if FWinControls <> nil then begin
     for i:= 0 to FWinControls.Count - 1 do begin
-      //DebugLn(['  i=',i]);
-      //DebugLn(['  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName]);
+      //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
       AWinControl:=TWinControl(FWinControls[i]);
       if AWinControl.HandleAllocated then
         AWinControl.DestroyHandle;
     end;
   end;
+  //DebugLn(['TWinControl.DestroyHandle DESTROY SELF ',DbgSName(Self)]);
   DestroyWnd;
   Exclude(FControlState, csDestroyingHandle);
+  //DebugLn(['TWinControl.DestroyHandle END ',DbgSName(Self)]);
 end;
 
 {------------------------------------------------------------------------------
@@ -7012,9 +7015,9 @@ begin
 
     TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
     Handle := 0;
-    // We don't know why we here. Maybe because handle is not needed at moment
-    // but later it will be created once again. To propely initialize control
-    // after we need to restore color and font. Therefore request update here.
+    // Maybe handle is not needed at moment but later it will be created once
+    // again. To propely initialize control after we need to restore color
+    // and font. Request update.
     FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
   end;
 end;

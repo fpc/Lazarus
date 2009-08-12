@@ -4835,8 +4835,8 @@ begin
       if GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
       begin
         // Paul Ishenin:
-        // listbox grabs pointer and other control for itself, when we click on lisebox item
-        // aslo it change its state to drag_selection
+        // listbox grabs pointer and other control for itself, when we click on listbox item
+        // also it changes its state to drag_selection
         // this is not expected in LCL and as result cause bugs, such as 7892
         // so we need end drag selection manually
         OldMouseCaptureWidget := Info^.CoreWidget;

@@ -1530,17 +1530,19 @@ var
   CaptureWidget: PGtkWidget;
   EventXY: TPoint;
   MappedXY: TPoint;
+  AWinControl: TWinControl;
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
+  AWinControl:=TWinControl(Data);
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   DebugLn('[gtkMouseBtnPress] ',
-    DbgSName(TObject(Data)),
+    DbgSName(AWinControl,
     ' Widget=',DbgS(Widget),
-    ' ControlWidget=',DbgS(TWinControl(Data).Handle),
+    ' ControlWidget=',DbgS(AWinControl.Handle),
     ' DSO='+dbgs(DesignOnlySignal),
     ' '+dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),
     ' Type='+dbgs(gdk_event_get_type(Event)));
@@ -1562,19 +1564,22 @@ begin
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data), Widget) then Exit;
 
-    CaptureWidget := PGtkWidget(TWinControl(Data).Handle);
+    CaptureWidget := PGtkWidget(AWinControl.Handle);
     if Event^.button = 1 then
     begin
       EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
       MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
-      SetCaptureControl(TWinControl(Data), MappedXY);
+      {$IFDEF Gtk1}
+      // gtk2: the LCL will capture itself if DragMode=dmAutomatic
+      SetCaptureControl(AWinControl, MappedXY);
+      {$ENDIF}
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end
     else
     // how to skip default right click handling? LCL can tell only on mouse up
     // if handling can be skiped but gtk needs on mouse down
     if (Event^.button = 3) and
-       ((TWinControl(Data).PopupMenu <> nil) or
+       ((AWinControl.PopupMenu <> nil) or
         (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
       {$IFDEF GTK1}
       if (TControl(Data) is TCustomNoteBook) then
