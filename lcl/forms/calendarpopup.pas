@@ -77,6 +77,7 @@ end;
 procedure TCalendarPopupForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  //DebugLn(['TCalendarPopupForm.FormClose ']);
   FClosed := true;
   CloseAction := caFree;
 end;
@@ -112,7 +113,8 @@ end;
 
 procedure TCalendarPopupForm.FormDeactivate(Sender: TObject);
 begin
-  if not FClosed then
+  //DebugLn(['TCalendarPopupForm.FormDeactivate ',DbgSName(GetCaptureControl)]);
+  if (not FClosed) then
     Close;
 end;
 

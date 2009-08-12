@@ -18,6 +18,7 @@ object CalendarPopupForm: TCalendarPopupForm
     Height = 153
     Top = 1
     Width = 162
+    AutoSize = True
     BorderSpacing.Around = 1
     DateTime = 38823
     OnDblClick = CalendarDblClick

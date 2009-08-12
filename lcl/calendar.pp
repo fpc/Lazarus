@@ -110,6 +110,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoSize;
     property BorderSpacing;
     property Constraints;
     property Date;
