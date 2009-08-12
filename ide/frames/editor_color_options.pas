@@ -283,7 +283,7 @@ begin
         s:= '123';
       ColorElementTree.Canvas.Font.Color := c;
       ColorElementTree.Canvas.Font.Style := Attri.Style;
-      ColorElementTree.Canvas.Font.Height := NodeRect.Bottom - NodeRect.Top - 5;
+      ColorElementTree.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
       TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(s)) div 2;
       AbcWidth := ColorElementTree.Canvas.TextExtent(s).cx;
       SetBkMode(ColorElementTree.Canvas.Handle, TRANSPARENT);
