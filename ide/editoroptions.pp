@@ -2927,10 +2927,10 @@ begin
         if MappedAttriName = '' then
           for aha := Low(TAdditionalHilightAttribute)
             to High(TAdditionalHilightAttribute) do
-            if AnsiCompareText(GetAdditionalAttributeName(aha), AttriName) = 0 then
-              MappedAttriName :=
-                AttriName// all special line color attributes can be mapped 1:1
-        ;
+            if AnsiCompareText(GetAdditionalAttributeName(aha), AttriName) = 0 then begin
+              MappedAttriName := AttriName;  // all special line color attributes can be mapped 1:1
+              break;
+            end;
         if MappedAttriName <> '' then
           DefaultSyn := DefaultPascalSyn
         else
@@ -2939,11 +2939,9 @@ begin
         j := DefaultSyn.AttrCount - 1;
         while (j >= 0) do
         begin
-          if AnsiCompareText(StrToValidXMLName(DefaultSyn.Attribute[j].Name),
-            MappedAttriName) = 0 then
+          if AnsiCompareText(DefaultSyn.Attribute[j].StoredName, MappedAttriName) = 0 then
           begin
-            CopyHiLightAttributeValues(DefaultSyn.Attribute[j],
-              Syn.Attribute[i]);
+            CopyHiLightAttributeValues(DefaultSyn.Attribute[j], Syn.Attribute[i]);
             break;
           end;
           dec(j);
