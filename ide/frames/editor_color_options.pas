@@ -311,7 +311,7 @@ var
   AddAttr: TAdditionalHilightAttribute;
   NewNode: TTreeNode;
 begin
-  MouseXY := Point(X, Y);
+  MouseXY := Point(X - (ColorPreview.CharWidth div 2), Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
   NewNode := nil;
   // Gutter Colors
@@ -341,7 +341,7 @@ begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr = ahaFoldedCode then begin
       if (XY.X >= Length(ColorPreview.Lines[XY.Y-1]) + 4) and
-         (XY.X <= Length(ColorPreview.Lines[XY.Y-1]) + 7) then
+         (XY.X <= Length(ColorPreview.Lines[XY.Y-1]) + 6) then
         NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
     end
     else if AddAttr <> ahaNone then
