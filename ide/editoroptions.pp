@@ -77,6 +77,7 @@ type
   TLazSynPluginSyncroEditFormOff = class(TForm)    end;
 
 const
+  // Initialized *before* localisation. Compared witl StoredName
   PascalHilightAttributeNames: array[TPascalHilightAttribute] of String = (
     SYNS_AttrAssembler,
     SYNS_AttrComment,
@@ -2822,7 +2823,7 @@ var
   pha: TPascalHilightAttribute;
   aha: TAdditionalHilightAttribute;
 begin
-  AttriName := LowerCase(Attr.Name);
+  AttriName := Attr.StoredName;
   if AttriName = '' then
     exit;
 
@@ -2830,7 +2831,7 @@ begin
 
   for pha := low(pha) to High(pha) do
   begin
-    if AttriName <> LowerCase(PascalHilightAttributeNames[pha]) then Continue;
+    if AttriName <> PascalHilightAttributeNames[pha] then Continue;
     if Scheme.Attributes[pha].FG = clDefault
     then Attr.Foreground := Scheme.Default.FG
     else Attr.Foreground := Scheme.Attributes[pha].FG;
@@ -2848,7 +2849,7 @@ begin
 
   for aha := low(aha) to High(aha) do
   begin
-    if AttriName <> LowerCase(AdditionalHighlightAttributes[aha]) then Continue;
+    if AttriName <> GetAdditionalAttributeName(aha) then Continue;
     if Scheme.Additional[aha].FG = clDefault
     then Attr.Foreground := Scheme.Default.FG
     else Attr.Foreground := Scheme.Additional[aha].FG;
@@ -2913,7 +2914,7 @@ begin
       // map attributes
       for i := 0 to Syn.AttrCount - 1 do
       begin
-        AttriName := StrToValidXMLName(Syn.Attribute[i].Name);
+        AttriName := StrToValidXMLName(Syn.Attribute[i].StoredName);
         if AttriName = '' then
           continue;
         // check, if there is a known mapping for this attribute
@@ -2925,9 +2926,7 @@ begin
         if MappedAttriName = '' then
           for aha := Low(TAdditionalHilightAttribute)
             to High(TAdditionalHilightAttribute) do
-            if AnsiCompareText(
-              StrToValidXMLName(AdditionalHighlightAttributes[aha]), AttriName) =
-              0 then
+            if AnsiCompareText(GetAdditionalAttributeName(aha), AttriName) = 0 then
               MappedAttriName :=
                 AttriName// all special line color attributes can be mapped 1:1
         ;
