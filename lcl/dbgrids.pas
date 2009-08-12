@@ -751,26 +751,32 @@ end;
 procedure TCustomDBGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
   {$Ifdef dbgDBGrid}
-  DBGOut('('+name+') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
-  if aDataSet=nil then DebugLn('nil)')
-  else DebugLn(aDataSet.Name,')');
+  DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) INIT',[name,dbgsname(ADataset)]);
   {$endif}
   if EditorMode then
     EditorMode := False;
   LayoutChanged;
   UpdateActive;
+  SelectEditor;
   if (dgAlwaysShowEditor in Options) then
     EditorMode := true;
+  {$Ifdef dbgDBGrid}
+  DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) DONE',[name,dbgsname(ADataset)]);
+  {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
 begin
   {$Ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnDataSetOpen');
+  DebugLn('(%s) TCustomDBDrid.OnDataSetOpen INIT',[name]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
+  SelectEditor;
+  {$Ifdef dbgDBGrid}
+  DebugLn('(%s) TCustomDBDrid.OnDataSetOpen DONE',[name]);
+  {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetClose(aDataSet: TDataSet);
@@ -821,12 +827,16 @@ end;
 
 procedure TCustomDBGrid.OnNewDataSet(aDataSet: TDataset);
 begin
-  {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnNewDataSet');
+  {$Ifdef dbgDBGrid}
+  DebugLn('(%s) TCustomDBDrid.OnNewDataset INIT',[name]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
+  SelectEditor;
+  {$Ifdef dbgDBGrid}
+  DebugLn('(%s) TCustomDBDrid.OnNewDataset DONE',[name]);
+  {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
@@ -2180,6 +2190,9 @@ procedure TCustomDBGrid.SelectEditor;
 var
   aEditor: TWinControl;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('TCustomDBGrid.SelectEditor INIT Editor=',dbgsname(editor));
+  {$endif}
   if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
     if Assigned(OnSelectEditor) then begin
@@ -2189,6 +2202,9 @@ begin
     end;
   end else
     Editor := nil;
+  {$ifdef dbgDBGrid}
+  DebugLn('TCustomDBGrid.SelectEditor DONE Editor=',dbgsname(editor));
+  {$endif}
 end;
 
 procedure TCustomDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
