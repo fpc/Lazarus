@@ -1272,7 +1272,6 @@ procedure TEditorColorOptionsFrame.OnStatusChange(Sender : TObject; Changes : TS
 var
   Syn: TSynEdit;
   p: TPoint;
-  tl, lc: Integer;
 begin
   p := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
   Syn := Sender as TSynEdit;
