@@ -463,8 +463,9 @@ end;
 procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
 begin
   FActive:=false;
-  if Application<>nil then Application.Deactivate;
   Deactivate;
+  if Application<>nil then
+    Application.QueueAsyncCall(@Application.Deactivate,0);
 end;
 
 procedure TCustomForm.CMShowingChanged(var Message: TLMessage);

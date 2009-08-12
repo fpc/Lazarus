@@ -1282,8 +1282,10 @@ begin
   NotifyActivateHandler;
 end;
 
-procedure TApplication.Deactivate;
+procedure TApplication.Deactivate(Data: PtrInt);
 begin
+  if (AppDestroying in FFlags) then exit;
+
   if (not (AppActive in FFlags)) then exit;
   if (FindControl(GetFocus)<>nil) then begin
     // another control of this application has got the focus

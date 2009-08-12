@@ -1174,7 +1174,7 @@ type
                             const Handler: TMethod);
     procedure RunLoop;
     procedure Activate;
-    procedure Deactivate;
+    procedure Deactivate(Data: PtrInt);
   protected
     function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler(var Done: Boolean);

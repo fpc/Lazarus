@@ -33,6 +33,7 @@ type
   TReturnDateEvent = procedure (Sender: TObject;const Date: TDateTime) of object;
 
   { TCalendarPopupForm }
+
   TCalendarPopupForm = class(TForm)
     Calendar: TCalendar;
     procedure CalendarDblClick(Sender: TObject);
@@ -40,7 +41,6 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormDeactivate(Sender: TObject);
   private
-    { private declarations }
     FClosed: boolean;
     FOnReturnDate: TReturnDateEvent;
     procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime);
@@ -48,7 +48,6 @@ type
   protected
     procedure Paint;override;
   public
-    { public declarations }
   end;
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
@@ -145,9 +144,9 @@ end;
 procedure TCalendarPopupForm.Paint;
 begin
   inherited Paint;
-  Canvas.Pen.Color:=clWindowText;
+  Canvas.Pen.Color := clWindowText;
   Canvas.Pen.Style := psSolid;
-  Canvas.Rectangle(0, 0, Width-1, Height-1)
+  Canvas.Rectangle(0, 0, Width-1, Height-1);
 end;
 
 initialization
