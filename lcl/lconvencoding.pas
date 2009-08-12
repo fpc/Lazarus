@@ -33,7 +33,7 @@ const
   EncodingAnsi = 'ansi';
   EncodingUTF8BOM = 'utf8bom'; // UTF-8 with byte order mark
   EncodingUCS2LE = 'ucs2le'; // UCS 2 byte little endian
-  EncodingUCS2BE = 'ucs2le'; // UCS 2 byte big endian
+  EncodingUCS2BE = 'ucs2be'; // UCS 2 byte big endian
 
 function GuessEncoding(const s: string): string;
 
