@@ -475,8 +475,6 @@ class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 var
   P: TPoint;
-  BoundsOffset: TRect;
-  Hnd: HWND;
   lControl: TControl;
 begin
   // in win32 controls have no cursor property. they can change their cursor
@@ -497,8 +495,9 @@ begin
 
   lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas,
                                           capfAllowWinControls, capfRecursive]);
-  if (lControl = nil) or (lControl = AWinControl) then
-    Windows.SetCursor(ACursor);
+  if (lControl = nil) then
+    lControl := AWinControl;
+  Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
 end;
 
 class procedure TWin32WSWinControl.SetShape(const AWinControl: TWinControl;
