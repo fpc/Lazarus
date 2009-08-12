@@ -3571,6 +3571,7 @@ ifneq ($(wildcard ${DEBDIR}/changelog),)
 DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
 DEBVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
 DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBVERSION)
+BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
 debcheck:
 ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
 	@$(ECHO) "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
@@ -3580,6 +3581,10 @@ debcopy: distclean
 	rm -rf ${BUILDDIR}
 	install -d $(DEBSRCDIR)
 	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
+ifdef SNAPSHOT
+	sed s+${DEBPACKAGEVERSION}+${DEBPACKAGEVERSION}-${BUILDDATE}+ $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
+	mv $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
+endif
 	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
 	$(LINKTREE) COPYING.* $(DEBSRCDIR)
 	$(LINKTREE) README.txt $(DEBSRCDIR)
