@@ -161,8 +161,10 @@ var
   TotalBytesAvailable: dword;
   R: LongBool;
   n: integer;
+  Step: Integer;
 begin
   Result := 0;
+  Step:=0;
 
   while Result=0 do
   begin
@@ -184,6 +186,11 @@ begin
       end;
     end;
     // process messages
+    inc(Step);
+    if Step=20 then begin
+      Step:=0;
+      Application.Idle(false);
+    end;
     Application.ProcessMessages;
     if Application.Terminated then Break;
     // sleep a bit
