@@ -523,6 +523,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Right = 6
       DefaultItemHeight = 17
       ReadOnly = True
+      ScrollBars = ssAutoBoth
       ShowButtons = False
       ShowRoot = False
       TabOrder = 13

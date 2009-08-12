@@ -795,8 +795,7 @@ var
 begin
   Result := False;
   for h := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
-    if aName = AdditionalHighlightAttributes[h] then
-    begin
+    if aName = EditorOpts.GetAdditionalAttributeName(h) then begin
       Result := True;
       aha := h;
       break;
@@ -817,7 +816,7 @@ begin
   if (ColorElementTree.Selected = nil) or (ColorElementTree.Selected.Data = nil) then
     exit;
 
-  NewName := TSynHighlighterAttributes(ColorElementTree.Selected.Data).Name;
+  NewName := TSynHighlighterAttributes(ColorElementTree.Selected.Data).StoredName;
 
   Old := CurHighlightElement;
   CurHighlightElement := nil;
@@ -825,7 +824,7 @@ begin
   i := PreviewSyn.AttrCount - 1;
   while (i >= 0) do
   begin
-    if NewName = PreviewSyn.Attribute[i].Name then
+    if NewName = PreviewSyn.Attribute[i].StoredName then
     begin
       CurHighlightElement := PreviewSyn.Attribute[i];
       break;
@@ -849,14 +848,19 @@ var
   ParentName: String;
   h: TAdditionalHilightAttribute;
   ParentNode: TTreeNode;
+  j: TAhaGroupName;
 begin
   ColorElementTree.BeginUpdate;
   ColorElementTree.Items.Clear;
 
+  ColorElementTree.Items.Add(nil, PreviewSyn.LanguageName);
+  for j := low(TAhaGroupName) to high(TAhaGroupName) do
+    ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]);
+
   for i := 0 to PreviewSyn.AttrCount - 1 do
     if PreviewSyn.Attribute[i].Name <> '' then begin
       ParentName := PreviewSyn.LanguageName;
-      if IsAhaElement(PreviewSyn.Attribute[i].Name, h) then
+      if IsAhaElement(PreviewSyn.Attribute[i].StoredName, h) then
         ParentName := AdditionalHighlightGroupNames[ahaSupportedFeatures[h].Group];
       ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
       if ParentNode = nil then begin

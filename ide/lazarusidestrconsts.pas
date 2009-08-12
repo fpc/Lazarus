@@ -1369,8 +1369,8 @@ resourcestring
   dlgAddHiAttrInvalidBreakpoint   = 'Invalid breakpoint';
   dlgAddHiAttrUnknownBreakpoint   = 'Unknown breakpoint';
   dlgAddHiAttrErrorLine           = 'Error line';
-  dlgAddHiAttrIncrementalSearch   = 'Incremental search match';
-  dlgAddHiAttrHighlightAll        = 'Incremental search others';
+  dlgAddHiAttrIncrementalSearch   = 'Incremental search';
+  dlgAddHiAttrHighlightAll        = 'Incremental others';
   dlgAddHiAttrBracketMatch        = 'Brackets highlight';
   dlgAddHiAttrMouseLink           = 'Mouse link';
   dlgAddHiAttrLineNumber          = 'Line number';
@@ -1380,19 +1380,20 @@ resourcestring
   dlgAddHiAttrHighlightWord       = 'Highlight current word';
   dlgAddHiAttrFoldedCode          = 'Folded code marker';
   dlgAddHiAttrWordGroup           = 'Word-Brackets';
-  dlgAddHiAttrTemplateEditCur     = 'TemplateEdit Current';
-  dlgAddHiAttrTemplateEditSync    = 'TemplateEdit Sync';
-  dlgAddHiAttrTemplateEditOther   = 'TemplateEdit Cells';
-  dlgAddHiAttrSyncroEditCur       = 'SyncronEdit Current Cells';
-  dlgAddHiAttrSyncroEditSync      = 'SyncronEdit Syncron Cells';
-  dlgAddHiAttrSyncroEditOther     = 'SyncronEdit Other Cells';
-  dlgAddHiAttrSyncroEditArea      = 'SyncronEdit Range';
+  dlgAddHiAttrTemplateEditCur     = 'Active Cell';
+  dlgAddHiAttrTemplateEditSync    = 'Syncronized Cells';
+  dlgAddHiAttrTemplateEditOther   = 'Other Cells';
+  dlgAddHiAttrSyncroEditCur       = 'Active Cell';
+  dlgAddHiAttrSyncroEditSync      = 'Syncronized Cells';
+  dlgAddHiAttrSyncroEditOther     = 'Other Cells';
+  dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
 
   dlgAddHiAttrGroupText     = 'Text';
   dlgAddHiAttrGroupLine     = 'Line';
   dlgAddHiAttrGroupGutter   = 'Gutter';
-  dlgAddHiAttrGroupSpecial  = 'Special';
+  dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
+  dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';

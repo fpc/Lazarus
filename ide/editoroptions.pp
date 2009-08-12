@@ -105,7 +105,7 @@ type
     ahaSyncroEditCur, ahaSyncroEditSync, ahaSyncroEditOther, ahaSyncroEditArea,
     ahaGutterSeparator, ahaGutter, ahaRightMargin);
 
-  TAhaGroupName = (agnText, agnLine, agnGutter, agnSpecialMode);
+  TAhaGroupName = (agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
 
   TAhaSupportedFeatures = Record
     FG, BG, FF: Boolean; // ForeGround, BackGroun, Frame
@@ -168,13 +168,13 @@ const
     { ahaHighlightWord }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
     { ahaFoldedCode }         (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnGutter),
     { ahaWordGroup }          (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnText),
-    { ahaTemplateEditCur }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaTemplateEditSync }   (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaTemplateEditOther }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaSyncroEditCur }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
-    { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSpecialMode),
+    { ahaTemplateEditCur }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnTemplateMode),
+    { ahaTemplateEditSync }   (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnTemplateMode),
+    { ahaTemplateEditOther }  (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnTemplateMode),
+    { ahaSyncroEditCur }      (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSyncronMode),
+    { ahaSyncroEditSync }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSyncronMode),
+    { ahaSyncroEditOther }    (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSyncronMode),
+    { ahaSyncroEditArea }     (FG: True;  BG: True;  FF: True;  Style: True;  Group: agnSyncronMode),
     { ahaGutterSeparator }    (FG: True;  BG: True;  FF: False; Style: False; Group: agnGutter),
     { ahaGutter }             (FG: False; BG: True;  FF: False; Style: False; Group: agnGutter),
     { ahaRightMargin}         (FG: True;  BG: False; FF: False; Style: False; Group: agnGutter)
@@ -2136,7 +2136,8 @@ begin
 
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
   AdditionalHighlightGroupNames[agnLine]         := dlgAddHiAttrGroupLine;
-  AdditionalHighlightGroupNames[agnSpecialMode]  := dlgAddHiAttrGroupSpecial;
+  AdditionalHighlightGroupNames[agnTemplateMode] := dlgAddHiAttrGroupTemplateEdit;
+  AdditionalHighlightGroupNames[agnSyncronMode]  := dlgAddHiAttrGroupSyncroEdit;
   AdditionalHighlightGroupNames[agnGutter]       := dlgAddHiAttrGroupGutter;
 
 end;
@@ -3608,13 +3609,10 @@ begin
         if GetAdditionalAttributeName(a) = StoredName then
           HasSpecialAttribute[a] := True;
     end;
-  for a := Low(TAdditionalHilightAttribute)
-    to High(TAdditionalHilightAttribute) do
+  for a := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
     if not HasSpecialAttribute[a] then
-    begin
-      Attr := Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
-      Attr.StoredName := GetAdditionalAttributeName(a);
-    end;
+      Attr := Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a],
+                                      GetAdditionalAttributeName(a));
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
