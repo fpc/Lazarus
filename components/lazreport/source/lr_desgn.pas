@@ -6002,7 +6002,7 @@ procedure TfrDesignerForm.HelpBtnClick(Sender: TObject);
 begin
   HelpBtn.Down := True;
   Screen.Cursor := crHelp;
-  SetCapture(Handle);
+  SetCaptureControl(Self);
   //** THackBtn(HelpBtn).FMouseInControl := False;
   HelpBtn.Invalidate;
 end;
@@ -6013,9 +6013,11 @@ var
   c: TControl;
   t: Integer;
 begin
+  if HelpBtn.Down and (GetCaptureControl=Self) then
+    SetCaptureControl(nil);
   HelpBtn.Down := False;
   Screen.Cursor := crDefault;
-  c := frControlAtPos(Self, Point(X, Y));
+  c := FindControlAtPosition(Mouse.CursorPos, true);
   if (c <> nil) and (c <> HelpBtn) then
   begin
     t := c.Tag;
@@ -6024,6 +6026,7 @@ begin
     if c.Parent = Panel4 then
       Inc(t, 430) else
       Inc(t, 400);
+    //DebugLn('TODO: HelpContext for tag=%d',[t]);
     //** Application.HelpCommand(HELP_CONTEXTPOPUP, t);
   end;
 end;
