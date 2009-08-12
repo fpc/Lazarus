@@ -58,6 +58,9 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar;
       const ADisplaySettings: TDisplaySettings); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
 
@@ -290,6 +293,14 @@ begin
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
   gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
+end;
+
+class procedure TGtk2WSCustomCalendar.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl, PreferredWidth, PreferredHeight,
+                          WithThemeSpace);
 end;
 
 end.

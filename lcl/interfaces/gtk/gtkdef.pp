@@ -77,6 +77,7 @@ type
     lgsTreeView,      // for gtk2
     lgsToolBar,       // toolbar
     lgsToolButton,    // button placed on toolbar
+    lgsCalendar,      // button placed on toolbar
     // user defined
     lgsUserDefined
     );
@@ -107,6 +108,7 @@ const
     'treeview',
     'toolbar',
     'toolbutton',
+    'calendar',
     ''
     );
 

@@ -7936,6 +7936,12 @@ begin
         StyleObject^.Widget := gtk_statusbar_new;
       end
     else
+      If CompareText(WName,LazGtkStyleNames[lgsCalendar])=0 then begin
+        lgs:=lgsCalendar;
+        AddToStyleWindow:=true;
+        StyleObject^.Widget := gtk_calendar_new;
+      end
+    else
       If CompareText(WName,LazGtkStyleNames[lgsList])=0 then begin
         lgs:=lgsList;
         StyleObject^.Widget := gtk_list_new;
