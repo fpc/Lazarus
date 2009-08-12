@@ -1248,8 +1248,10 @@ begin
       while (i >= 0) do
       begin
         e := PreviewSyn.Attribute[i];
-        if e.Name = '' then
+        if e.Name = '' then begin
+          dec(i);
           continue;
+        end;
         if e.Name = AdditionalHighlightAttributes[AddAttr] then
         begin
           Special := True;
