@@ -7,25 +7,27 @@ object SearchResultsView: TSearchResultsView
   Caption = 'SearchResultsView'
   ClientHeight = 273
   ClientWidth = 799
+  KeyPreview = True
   OnCreate = Form1Create
-  OnKeyDown = TreeViewKeyDown
-  ParentFont = False
+  OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ResultsNoteBook: TNotebook
     AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 247
     Top = 26
     Width = 799
     Align = alClient
-    Anchors = [akTop, akLeft]
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnPageChanged = ResultsNoteBookPageChanged
     Options = [nboShowCloseButtons, nboMultiLine]
     TabOrder = 0
   end
   object ToolBar: TToolBar
+    Left = 0
     Height = 26
+    Top = 0
     Width = 799
     Caption = 'ToolBar'
     Images = ImageList
@@ -74,7 +76,7 @@ object SearchResultsView: TSearchResultsView
     end
     object SearchInListEdit: TEdit
       Left = 116
-      Height = 22
+      Height = 23
       Top = 2
       Width = 348
       Anchors = [akTop, akRight]

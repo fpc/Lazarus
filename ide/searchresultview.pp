@@ -141,6 +141,7 @@ type
     ResetResultsButton: TToolButton;
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchAgainButtonClick(Sender: TObject);
@@ -249,6 +250,16 @@ begin
   ShowHint:= True;
   fMouseOverIndex:= -1;
 end;//Create
+
+procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word; 
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then  
+  begin
+    Key := VK_UNKNOWN;
+    Close;
+  end;  
+end;
 
 procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
 begin
@@ -696,16 +707,11 @@ end;//PageExists
 procedure TSearchResultsView.TreeViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-  begin
-    Key:=VK_UNKNOWN;
-    Close;
-  end
-  else if (Key = VK_RETURN) and (Shift = []) then
+  if (Key = VK_RETURN) and (Shift = []) then
   begin
     Key:=VK_UNKNOWN;
     FOnSelectionChanged(Self);
-  end;
+  end;     
 end;
 
 { Add Result will create a tab in the Results view window with an new
