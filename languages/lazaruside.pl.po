@@ -45,11 +45,42 @@ msgid "Execution point"
 msgstr "Punkt wykonania"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
-msgid "Folded code"
+#, fuzzy
+#| msgid "Folded code"
+msgid "Folded code marker"
 msgstr "Zwinięty kod"
 
+#: lazarusidestrconsts.dlgaddhiattrgroupgutter
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
+msgid "Gutter"
+msgstr "Kolektor"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupline
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
+msgid "Line"
+msgstr "Wiersz"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
+msgid "Syncron Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
+msgid "Template Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptext
+msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
+msgid "Text"
+msgstr "Tekst"
+
+#: lazarusidestrconsts.dlgaddhiattrgutterseparator
+msgid "Gutter Separator"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
-msgid "Highlight all"
+#, fuzzy
+#| msgid "Highlight all"
+msgid "Incremental others"
 msgstr "Podświetl wszystko"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -57,7 +88,7 @@ msgid "Highlight current word"
 msgstr "Podświetl bieżący wyraz"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
-msgid "Incremental search match"
+msgid "Incremental search"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
@@ -65,7 +96,9 @@ msgid "Invalid breakpoint"
 msgstr "Nieprawidłowa pułapka"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
-msgid "Line highlight"
+#, fuzzy
+#| msgid "Line highlight"
+msgid "Current line highlight"
 msgstr "Podświetlenie wiersza"
 
 #: lazarusidestrconsts.dlgaddhiattrlinenumber
@@ -81,31 +114,37 @@ msgid "Mouse link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
-msgid "SyncronEdit Range"
+msgid "Selected Area"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
-msgid "SyncronEdit Current Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
+msgid "Active Cell"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
-msgid "SyncronEdit Other Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditother"
+msgid "Other Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
-msgid "SyncronEdit Syncron Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
+msgid "Syncronized Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
-msgid "TemplateEdit Current"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
+msgid "Active Cell"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
-msgid "TemplateEdit Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditother"
+msgid "Other Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
-msgid "TemplateEdit Sync"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
+msgid "Syncronized Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
@@ -177,11 +216,13 @@ msgstr "Nowe formularze dodawaj do tworzonych automatycznie"
 msgid "Auto delete file"
 msgstr "Automatycznie usuń plik"
 
-#: lazarusidestrconsts.dlgautoform #tomek - poprawka
+#: lazarusidestrconsts.dlgautoform
+msgctxt "lazarusidestrconsts.dlgautoform"
 msgid "Auto create form when opening unit"
 msgstr "Twórz formularz przy otwieraniu modułu"
 
-#: lazarusidestrconsts.dlgautohidecursor #tomek
+#: lazarusidestrconsts.dlgautohidecursor
+msgctxt "lazarusidestrconsts.dlgautohidecursor"
 msgid "Hide mouse when typing"
 msgstr "Ukryj wskaźnik myszy podczas pisania"
 
@@ -209,7 +250,8 @@ msgstr "Dostępne formularze:"
 msgid "Background"
 msgstr "Tło"
 
-#: lazarusidestrconsts.dlgbaknosubdirectory #tomek
+#: lazarusidestrconsts.dlgbaknosubdirectory
+msgctxt "lazarusidestrconsts.dlgbaknosubdirectory"
 msgid "(no subdirectory)"
 msgstr "(brak podkatalogu)"
 
@@ -221,15 +263,18 @@ msgstr "Taka sama nazwa (w podkatalogu)"
 msgid "Behind methods"
 msgstr "Za metodami"
 
-#: lazarusidestrconsts.dlgblockgroupoptions #tomek
+#: lazarusidestrconsts.dlgblockgroupoptions
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection:"
 msgstr "Zaznaczenie:"
 
-#: lazarusidestrconsts.dlgblockindent #tomek
+#: lazarusidestrconsts.dlgblockindent
+msgctxt "lazarusidestrconsts.dlgblockindent"
 msgid "Block indent"
 msgstr "Blok wcięć"
 
-#: lazarusidestrconsts.dlgblockindenttype #tomek
+#: lazarusidestrconsts.dlgblockindenttype
+msgctxt "lazarusidestrconsts.dlgblockindenttype"
 msgid "Indent method"
 msgstr "Metoda wcięć"
 
@@ -508,6 +553,10 @@ msgstr "Załaduj/Zapisz"
 msgid "Color"
 msgstr "Kolor"
 
+#: lazarusidestrconsts.dlgcolorlink
+msgid "(Edit Color)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parametry linii poleceń"
@@ -784,10 +833,6 @@ msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "W dół"
 
-#: lazarusidestrconsts.dlgdropfiles
-msgid "Drop files"
-msgstr ""
-
 #: lazarusidestrconsts.dlgedadd
 msgid "Add..."
 msgstr "Dodaj..."
@@ -964,15 +1009,18 @@ msgstr "Typ"
 msgid "Focus messages after compilation"
 msgstr ""
 
-#: lazarusidestrconsts.dlgextracharspacing #tomek
+#: lazarusidestrconsts.dlgextracharspacing
+msgctxt "lazarusidestrconsts.dlgextracharspacing"
 msgid "Extra char spacing"
 msgstr "Odstęp między znakami"
 
-#: lazarusidestrconsts.dlgextralinespacing #tomek - krotsze
+#: lazarusidestrconsts.dlgextralinespacing
+msgctxt "lazarusidestrconsts.dlgextralinespacing"
 msgid "Extra line spacing"
 msgstr "Odstęp między wierszami"
 
-#: lazarusidestrconsts.dlgextsymb #tomek
+#: lazarusidestrconsts.dlgextsymb
+msgctxt "lazarusidestrconsts.dlgextsymb"
 msgid "Use external gdb debug symbols file"
 msgstr "Użyj zewnętrznego pliku symboli odpluskiwacza"
 
@@ -984,7 +1032,7 @@ msgstr "Rozszerzenia plików"
 msgid "Find text at cursor"
 msgstr "Wyszukaj tekst przy kursorze"
 
-#: lazarusidestrconsts.dlgfoldlocalpasvartype #tomek
+#: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (lokalne)"
@@ -993,7 +1041,8 @@ msgstr "Var/Type (lokalne)"
 msgid "Asm"
 msgstr ""
 
-#: lazarusidestrconsts.dlgfoldpasbeginend #tomek
+#: lazarusidestrconsts.dlgfoldpasbeginend
+msgctxt "lazarusidestrconsts.dlgfoldpasbeginend"
 msgid "Begin/End (nested)"
 msgstr "Begin/End (zagnieżdżone)"
 
@@ -1017,11 +1066,13 @@ msgstr ""
 msgid "{$IfDef}"
 msgstr ""
 
-#: lazarusidestrconsts.dlgfoldpasnestedcomment #tomek
+#: lazarusidestrconsts.dlgfoldpasnestedcomment
+msgctxt "lazarusidestrconsts.dlgfoldpasnestedcomment"
 msgid "Nested Comment"
 msgstr "Zagnieżdżony komentarz"
 
-#: lazarusidestrconsts.dlgfoldpasprocbeginend #tomek
+#: lazarusidestrconsts.dlgfoldpasprocbeginend
+msgctxt "lazarusidestrconsts.dlgfoldpasprocbeginend"
 msgid "Begin/End (procedure)"
 msgstr "Begin/End (procedura)"
 
@@ -1030,10 +1081,10 @@ msgctxt "lazarusidestrconsts.dlgfoldpasprocedure"
 msgid "Procedure"
 msgstr "Procedura"
 
-#: lazarusidestrconsts.dlgfoldpasprogram   #tomek ususwam przy takim samym tekscie
+#: lazarusidestrconsts.dlgfoldpasprogram
 msgctxt "lazarusidestrconsts.dlgfoldpasprogram"
 msgid "Program"
-msgstr ""
+msgstr "Program"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgid "Record"
@@ -1065,7 +1116,8 @@ msgctxt "lazarusidestrconsts.dlgfoldpasuses"
 msgid "Uses"
 msgstr ""
 
-#: lazarusidestrconsts.dlgfoldpasvartype #tomek
+#: lazarusidestrconsts.dlgfoldpasvartype
+msgctxt "lazarusidestrconsts.dlgfoldpasvartype"
 msgid "Var/Type (global)"
 msgstr "Var/Type (globalne)"
 
@@ -1428,12 +1480,16 @@ msgstr "Margines i pasek ikon"
 msgid "Marker color"
 msgstr "Kolor zaznaczenia"
 
+#: lazarusidestrconsts.dlgmarkupgroup
+msgid "Word under Caret Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfull
 msgid "Current Word match word boundaries"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Only if shorter than"
+msgid "Ignore bounds for words longer than"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1445,7 +1501,9 @@ msgid "Disable Timer for Markup Current Word"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
-msgid "Trim Spaces"
+#, fuzzy
+#| msgid "Trim Spaces"
+msgid "Trim Spaces (when highlighting current selection)"
 msgstr "Końcowe spacje"
 
 #: lazarusidestrconsts.dlgmaxcntr
@@ -1993,11 +2051,13 @@ msgstr "Nazwa właściwości"
 msgid "Open last project at start"
 msgstr "Otwieraj poprzedni projekt po uruchomieniu"
 
-#: lazarusidestrconsts.dlgqshowborderspacing #tomek
+#: lazarusidestrconsts.dlgqshowborderspacing
+msgctxt "lazarusidestrconsts.dlgqshowborderspacing"
 msgid "Show border spacing"
 msgstr "Pokaż obramowanie odstępu"
 
-#: lazarusidestrconsts.dlgqshowcompiledialog #tomek
+#: lazarusidestrconsts.dlgqshowcompiledialog
+msgctxt "lazarusidestrconsts.dlgqshowcompiledialog"
 msgid "Show compile dialog"
 msgstr "Pokaż okno kompilacji"
 
@@ -5584,7 +5644,7 @@ msgstr ""
 #: lazarusidestrconsts.lisenabled
 msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
-msgstr ""
+msgstr "Włączone"
 
 #: lazarusidestrconsts.lisenablegroup
 msgid "Enable Group"
@@ -5680,7 +5740,7 @@ msgstr ""
 #: lazarusidestrconsts.liseotabwidths
 msgctxt "lazarusidestrconsts.liseotabwidths"
 msgid "Tab widths"
-msgstr ""
+msgstr "Szerokość tabulatora"
 
 #: lazarusidestrconsts.liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
@@ -11853,6 +11913,7 @@ msgid "Refresh todo items"
 msgstr "Odśwież zawartość"
 
 #: lazarusidestrconsts.listodolline
+msgctxt "lazarusidestrconsts.listodolline"
 msgid "Line"
 msgstr "Wiersz"
 
@@ -13669,7 +13730,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsynptmplednextcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
 msgid "Next Cell"
-msgstr ""
+msgstr "Następna komórka"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellrotate
 msgid "Next Cell (rotate)"
@@ -13678,7 +13739,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsynptmplednextcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
 msgid "Next Cell (all selected)"
-msgstr ""
+msgstr "Następna komórka (wszystkie zaznaczone)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
 msgid "Next Cell (rotate / all selected)"
@@ -13687,12 +13748,12 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
-msgstr ""
+msgstr "Poprzednia komórka"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
-msgstr ""
+msgstr "Poprzednia komórka (wszystkie wybrane)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"

@@ -44,11 +44,42 @@ msgid "Execution point"
 msgstr "Ponto execução"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
-msgid "Folded code"
+#, fuzzy
+#| msgid "Folded code"
+msgid "Folded code marker"
 msgstr "Código retraído"
 
+#: lazarusidestrconsts.dlgaddhiattrgroupgutter
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
+msgid "Gutter"
+msgstr "Medianiz"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupline
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
+msgid "Line"
+msgstr "Linha"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
+msgid "Syncron Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
+msgid "Template Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptext
+msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
+msgid "Text"
+msgstr "Texto"
+
+#: lazarusidestrconsts.dlgaddhiattrgutterseparator
+msgid "Gutter Separator"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
-msgid "Highlight all"
+#, fuzzy
+#| msgid "Highlight all"
+msgid "Incremental others"
 msgstr "Realçar tudo"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -56,7 +87,9 @@ msgid "Highlight current word"
 msgstr "Realçar palavra atual"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
-msgid "Incremental search match"
+#, fuzzy
+#| msgid "Incremental search match"
+msgid "Incremental search"
 msgstr "Coincidência busca incremental"
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
@@ -64,7 +97,9 @@ msgid "Invalid breakpoint"
 msgstr "Ponto de parada inválido"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
-msgid "Line highlight"
+#, fuzzy
+#| msgid "Line highlight"
+msgid "Current line highlight"
 msgstr "Realçar linha"
 
 #: lazarusidestrconsts.dlgaddhiattrlinenumber
@@ -80,31 +115,51 @@ msgid "Mouse link"
 msgstr "Vínculo \"mouse\""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
-msgid "SyncronEdit Range"
+#, fuzzy
+#| msgid "SyncronEdit Range"
+msgid "Selected Area"
 msgstr "Faixa Edição Sincron."
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
-msgid "SyncronEdit Current Cells"
+#, fuzzy
+#| msgid "SyncronEdit Current Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
+msgid "Active Cell"
 msgstr "Células Atuais Edição Sincron."
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
-msgid "SyncronEdit Other Cells"
+#, fuzzy
+#| msgid "SyncronEdit Other Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditother"
+msgid "Other Cells"
 msgstr "Outras Células Edição Sincron."
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
-msgid "SyncronEdit Syncron Cells"
+#, fuzzy
+#| msgid "SyncronEdit Syncron Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
+msgid "Syncronized Cells"
 msgstr "Células sincron. Edição Sincron."
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
-msgid "TemplateEdit Current"
+#, fuzzy
+#| msgid "TemplateEdit Current"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
+msgid "Active Cell"
 msgstr "Atual Edição Modelo"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
-msgid "TemplateEdit Cells"
+#, fuzzy
+#| msgid "TemplateEdit Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditother"
+msgid "Other Cells"
 msgstr "Células Edição Modelo"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
-msgid "TemplateEdit Sync"
+#, fuzzy
+#| msgid "TemplateEdit Sync"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
+msgid "Syncronized Cells"
 msgstr "Sincron. Edição Modelo"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
@@ -507,6 +562,10 @@ msgstr "Carregar/Salvar"
 msgid "Color"
 msgstr "Cor"
 
+#: lazarusidestrconsts.dlgcolorlink
+msgid "(Edit Color)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parâmetros linha de comando"
@@ -781,10 +840,6 @@ msgstr "\" não existe."
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "Abaixo"
-
-#: lazarusidestrconsts.dlgdropfiles
-msgid "Drop files"
-msgstr "Soltar arquivos"
 
 #: lazarusidestrconsts.dlgedadd
 msgid "Add..."
@@ -1428,12 +1483,18 @@ msgstr "Margem e medianiz"
 msgid "Marker color"
 msgstr "Cor dos marcadores"
 
+#: lazarusidestrconsts.dlgmarkupgroup
+msgid "Word under Caret Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfull
 msgid "Current Word match word boundaries"
 msgstr "Palavra atual coincide com palavra limítrofe"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Only if shorter than"
+#, fuzzy
+#| msgid "Only if shorter than"
+msgid "Ignore bounds for words longer than"
 msgstr "Somente se menor que"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1445,7 +1506,9 @@ msgid "Disable Timer for Markup Current Word"
 msgstr "Desabilite cronômetro para remarcar palavra atual"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
-msgid "Trim Spaces"
+#, fuzzy
+#| msgid "Trim Spaces"
+msgid "Trim Spaces (when highlighting current selection)"
 msgstr "Remover espaços"
 
 #: lazarusidestrconsts.dlgmaxcntr
@@ -11886,6 +11949,7 @@ msgid "Refresh todo items"
 msgstr "Atualizar items ToDo (Para Fazer)"
 
 #: lazarusidestrconsts.listodolline
+msgctxt "lazarusidestrconsts.listodolline"
 msgid "Line"
 msgstr "Linha"
 

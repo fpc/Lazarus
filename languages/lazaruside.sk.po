@@ -47,11 +47,38 @@ msgid "Execution point"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
-msgid "Folded code"
+msgid "Folded code marker"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupgutter
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
+msgid "Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupline
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
+msgid "Line"
+msgstr "Riadok"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
+msgid "Syncron Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
+msgid "Template Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptext
+msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
+msgid "Text"
+msgstr "Text"
+
+#: lazarusidestrconsts.dlgaddhiattrgutterseparator
+msgid "Gutter Separator"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
-msgid "Highlight all"
+msgid "Incremental others"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -59,7 +86,7 @@ msgid "Highlight current word"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
-msgid "Incremental search match"
+msgid "Incremental search"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
@@ -67,7 +94,7 @@ msgid "Invalid breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
-msgid "Line highlight"
+msgid "Current line highlight"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrlinenumber
@@ -83,31 +110,37 @@ msgid "Mouse link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
-msgid "SyncronEdit Range"
+msgid "Selected Area"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
-msgid "SyncronEdit Current Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
+msgid "Active Cell"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
-msgid "SyncronEdit Other Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditother"
+msgid "Other Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
-msgid "SyncronEdit Syncron Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
+msgid "Syncronized Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
-msgid "TemplateEdit Current"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
+msgid "Active Cell"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
-msgid "TemplateEdit Cells"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditother"
+msgid "Other Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
-msgid "TemplateEdit Sync"
+msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
+msgid "Syncronized Cells"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
@@ -510,6 +543,10 @@ msgstr "Otvoriť/Uložiť"
 msgid "Color"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolorlink
+msgid "(Edit Color)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parametre príkazového riadka"
@@ -785,10 +822,6 @@ msgstr "\" neexistuje."
 msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "Down"
-
-#: lazarusidestrconsts.dlgdropfiles
-msgid "Drop files"
-msgstr "Zahodiť súbory"
 
 #: lazarusidestrconsts.dlgedadd
 msgid "Add..."
@@ -1432,12 +1465,16 @@ msgstr "Okraj a gutter"
 msgid "Marker color"
 msgstr "Farba markera"
 
+#: lazarusidestrconsts.dlgmarkupgroup
+msgid "Word under Caret Highlight"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfull
 msgid "Current Word match word boundaries"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Only if shorter than"
+msgid "Ignore bounds for words longer than"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1449,7 +1486,7 @@ msgid "Disable Timer for Markup Current Word"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
-msgid "Trim Spaces"
+msgid "Trim Spaces (when highlighting current selection)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmaxcntr
@@ -11875,6 +11912,7 @@ msgid "Refresh todo items"
 msgstr "Obnoviť položky ToDo"
 
 #: lazarusidestrconsts.listodolline
+msgctxt "lazarusidestrconsts.listodolline"
 msgid "Line"
 msgstr "Riadok"
 

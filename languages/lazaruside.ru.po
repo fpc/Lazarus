@@ -56,9 +56,13 @@ msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
 msgid "Line"
 msgstr "Строка"
 
-#: lazarusidestrconsts.dlgaddhiattrgroupspecial
-msgid "Special"
-msgstr "Специальные"
+#: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
+msgid "Syncron Edit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
+msgid "Template Edit"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
@@ -70,8 +74,9 @@ msgid "Gutter Separator"
 msgstr "Линия отделения поля (лев)"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
-#| msgid "Highlight all"
-msgid "Incremental search others"
+#, fuzzy
+#| msgid "Incremental search others"
+msgid "Incremental others"
 msgstr "Остальные совпадения при инкрементном поиске"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -79,7 +84,9 @@ msgid "Highlight current word"
 msgstr "Подсветка текущего слова"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
-msgid "Incremental search match"
+#, fuzzy
+#| msgid "Incremental search match"
+msgid "Incremental search"
 msgstr "Текущее совпадение при инкрементном поиске"
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
@@ -104,31 +111,45 @@ msgid "Mouse link"
 msgstr "Ссылка при наведении мыши"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
-msgid "SyncronEdit Range"
+#, fuzzy
+#| msgid "SyncronEdit Range"
+msgid "Selected Area"
 msgstr "Область синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
-msgid "SyncronEdit Current Cells"
+#, fuzzy
+#| msgid "SyncronEdit Current Cells"
+msgid "Active Cell"
 msgstr "Текущие поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
-msgid "SyncronEdit Other Cells"
+#, fuzzy
+#| msgid "SyncronEdit Other Cells"
+msgid "Other Cells"
 msgstr "Прочие поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
-msgid "SyncronEdit Syncron Cells"
+#, fuzzy
+#| msgid "SyncronEdit Syncron Cells"
+msgid "Syncronized Cells"
 msgstr "Синхронизируемые поля синхронного редактирования"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
-msgid "TemplateEdit Current"
+#, fuzzy
+#| msgid "TemplateEdit Current"
+msgid "Active Cell"
 msgstr "Текущее поле редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
-msgid "TemplateEdit Cells"
+#, fuzzy
+#| msgid "TemplateEdit Cells"
+msgid "Other Cells"
 msgstr "Поля редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
-msgid "TemplateEdit Sync"
+#, fuzzy
+#| msgid "TemplateEdit Sync"
+msgid "Syncronized Cells"
 msgstr "Синхронизируемые поля редактирования шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
@@ -530,6 +551,10 @@ msgstr "Загрузка/сохранение"
 #: lazarusidestrconsts.dlgcolor
 msgid "Color"
 msgstr "Цвет"
+
+#: lazarusidestrconsts.dlgcolorlink
+msgid "(Edit Color)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
