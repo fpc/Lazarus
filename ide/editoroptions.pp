@@ -3592,7 +3592,6 @@ var
   HasSpecialAttribute: THasSpecialAttribute;
   a: TAdditionalHilightAttribute;
   i: Integer;
-  Attr: TSynHighlighterAttributes;
 begin
   for a := Low(TAdditionalHilightAttribute)
     to High(TAdditionalHilightAttribute) do
@@ -3609,8 +3608,8 @@ begin
     end;
   for a := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do
     if not HasSpecialAttribute[a] then
-      Attr := Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a],
-                                      GetAdditionalAttributeName(a));
+      Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a],
+                              GetAdditionalAttributeName(a));
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
