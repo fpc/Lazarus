@@ -795,17 +795,17 @@ var
     if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState)
       and (LOWORD(LParam) = HTCLIENT) then
     begin
-      Windows.GetCursorPos(Windows.POINT(P));
-      Windows.ScreenToClient(Window, Windows.POINT(P));
-      if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
-      begin
-        Dec(P.X, BoundsOffset.Left);
-        Dec(P.Y, BoundsOffset.Top);
-      end;
       ACursor := Screen.Cursor;
       if ACursor = crDefault then
       begin
-        // statictext controls do not get WM_SETCURSOR messages...
+        Windows.GetCursorPos(Windows.POINT(P));
+        Windows.ScreenToClient(Window, Windows.POINT(P));
+        if GetLCLClientBoundsOffset(lWinControl, BoundsOffset) then
+        begin
+          Dec(P.X, BoundsOffset.Left);
+          Dec(P.Y, BoundsOffset.Top);
+        end;
+        // TGraphicControl controls do not get WM_SETCURSOR messages...
         lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
           capfAllowWinControls, capfHasScrollOffset, capfRecursive]);
         if lControl = nil then
