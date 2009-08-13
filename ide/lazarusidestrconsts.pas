@@ -1175,6 +1175,8 @@ resourcestring
   dlgMouseOptNodeGutterFoldCol = 'Collapsed [+]';
   dlgMouseOptNodeGutterFoldExp = 'Expanded [-]';
   dlgMouseOptNodeGutterLines = 'Line Numbers';
+  dlgMouseOptHeadOrder = 'Order';
+  dlgMouseOptHeadContext = 'Context';
   dlgMouseOptHeadDesc = 'Action';
   dlgMouseOptHeadBtn = 'Button';
   dlgMouseOptHeadCount = 'Click';
@@ -1207,6 +1209,9 @@ resourcestring
   dlgMouseOptModAlt   = 'Alt';
   dlgMouseOptModCtrl  = 'Ctrl';
   dlgMouseOptBtnDel  = 'Delete';
+  dlgMouseOptOtherAct  = 'Other actions using the same button';
+  dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down...';
+  dlgMouseOptOtherActToggle = 'Filter Mod-Keys';
   dlgMouseOptBtnUdp  = 'Change';
   dlgMouseOptBtnAdd  = 'Add';
   dlgMouseOptBtnImport = 'Import';
