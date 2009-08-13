@@ -140,6 +140,7 @@ function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
                              data: gPointer): GBoolean; cdecl;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkdeleteCB(widget: PGtkWidget; event: PGdkEvent;
                      data: gPointer): GBoolean; cdecl;
 function gtkresizeCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;

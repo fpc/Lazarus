@@ -9695,10 +9695,8 @@ var
   p: TPoint;
 begin
   // return cached value to prevent heavy gdk_window_at_pointer call
-  if (APoint = FLastWFPMousePos) and GTK_IS_WIDGET(Pointer(FLastWFPResult)) then
-    Exit(FLastWFPResult);
-  //DebugLn('WindowFromPoint: ', dbgs(APoint));
-  //DumpStack;
+  if (APoint = LastWFPMousePos) then
+    Exit(LastWFPResult);
   Result := 0;
 
   // !!!gdk_window_at_pointer changes the coordinates!!!
@@ -9712,8 +9710,16 @@ begin
     Widget := gtk_get_event_widget(@ev);
     Result := PtrUInt(Widget);
   end;
-  FLastWFPMousePos := APoint;
-  FLastWFPResult := Result;
+  // disconnect old handler
+  if LastWFPResult<>0 then
+    g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
+                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+  LastWFPMousePos := APoint;
+  LastWFPResult := Result;
+  // connect handler
+  if LastWFPResult<>0 then
+    g_signal_connect(GPointer(LastWFPResult), 'destroy',
+                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
 end;
 
 //##apiwiz##eps##   // Do not remove

@@ -181,7 +181,7 @@ begin
 
   inherited Create;
 
-  FLastWFPMousePos := Point(MaxInt, MaxInt);
+  LastWFPMousePos := Point(MaxInt, MaxInt);
 
   {$IFDEF EnabledGtkThreading}
     {$IFNDEF Win32}

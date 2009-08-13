@@ -69,6 +69,10 @@ var
   MousePosition: TPoint;
   MousePositionTime: TDateTime;
 
+  // cache for WindowFromPoint
+  LastWFPMousePos: TPoint;
+  LastWFPResult: HWND;
+
 const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick

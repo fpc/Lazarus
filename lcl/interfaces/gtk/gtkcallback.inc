@@ -1057,6 +1057,15 @@ begin
   FreeWidgetInfo(Widget);
 end;
 
+function DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer
+  ): GBoolean; cdecl;
+begin
+  Result:=CallBackDefaultReturn;
+  if PGtkWidget(LastWFPResult)<>Widget then exit;
+  LastWFPResult:=0;
+  LastWFPMousePos:=Point(High(Integer),High(Integer));
+end;
+
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;
   data : gPointer) : GBoolean; cdecl;
 var Mess : TLMessage;
@@ -1542,7 +1551,7 @@ begin
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   DebugLn('[gtkMouseBtnPress] ',
-    DbgSName(AWinControl,
+    DbgSName(AWinControl),
     ' Widget=',DbgS(Widget),
     ' ControlWidget=',DbgS(AWinControl.Handle),
     ' DSO='+dbgs(DesignOnlySignal),
