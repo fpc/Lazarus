@@ -149,7 +149,7 @@ procedure TEditorMouseOptionsFrame.ActionGridCompareCells(Sender: TObject; ACol,
   BRow: Integer; var Result: integer);
   function CompareCol(i : Integer) : Integer;
   var
-    j, a, b: Integer;
+    j: Integer;
   begin
     j := i;
     if Sender = OtherActionGrid then
