@@ -473,10 +473,20 @@ end;
 
 class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
+  function WndClassName(Wnd: HWND): String; inline;
+  var
+    winClassName: array[0..19] of char;
+  begin
+    GetClassName(Wnd, @winClassName, 20);
+    Result := winClassName;
+  end;
 var
   P: TPoint;
   lControl: TControl;
   BoundsOffset: TRect;
+  h: HWND;
+  c: HCURSOR;
+  Info: TComboboxInfo;
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
@@ -504,9 +514,18 @@ begin
 
   lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas, capfHasScrollOffset,
                                           capfAllowWinControls, capfRecursive]);
-
   if (lControl = nil) then
     lControl := AWinControl;
+  if lControl.Cursor = crDefault then begin
+    // comboboxes, groupboxes,... may have internal child handles
+    h := Windows.ChildWindowFromPointEx(AWinControl.Handle, Windows.POINT(p),CWP_ALL);
+    if h = 0 then exit;
+    c := HCURSOR(GetClassLong(h, GCL_HCURSOR));
+    if c <> 0 then begin
+      Windows.SetCursor(c);
+      exit;
+    end;
+  end;
   Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
 end;
 
