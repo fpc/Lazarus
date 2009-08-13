@@ -1003,6 +1003,9 @@ begin
         FixedCols := FixedCols - 1;
     end;
 
+    if (dgAutoSizeColumns in ChangedOptions) then begin
+      Exclude(FGridStatus, gsAutoSized);
+    end;
 
     inherited Options := OldOptions;
 
@@ -1502,6 +1505,7 @@ end;
 procedure TCustomDBGrid.UpdateAutoSizeColumns;
 var
   ACol,ARow,w: Integer;
+  DatalinkActive: boolean;
   CurActiveRecord: Integer;
   Field: TField;
   ColWidth: Integer;
@@ -1513,7 +1517,9 @@ begin
   if gsAutoSized in GridStatus then
     exit;
 
-  CurActiveRecord := FDatalink.ActiveRecord;
+  DatalinkActive := FDatalink.Active;
+  if DatalinkActive then
+    CurActiveRecord := FDatalink.ActiveRecord;
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
     for aCol:=FixedCols to ColCount-1 do begin
@@ -1530,7 +1536,7 @@ begin
         tmpCanvas.Font := Font;
       end;
 
-      if Field<>nil then
+      if (Field<>nil) and DatalinkActive then
         for ARow := FixedRows to RowCount-1 do begin
 
           FDatalink.ActiveRecord := ARow - FixedRows;
@@ -1554,7 +1560,8 @@ begin
     if TmpCanvas<>Canvas then
       FreeWorkingCanvas(tmpCanvas);
 
-    FDatalink.ActiveRecord := CurActiveRecord;
+    if DatalinkActive then
+      FDatalink.ActiveRecord := CurActiveRecord;
     include(FGridStatus, gsAutoSized);
   end;
 
