@@ -476,6 +476,7 @@ class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
 var
   P: TPoint;
   lControl: TControl;
+  BoundsOffset: TRect;
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
@@ -493,8 +494,17 @@ begin
   then
     exit;
 
-  lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas,
+  // BoundsOffset also corrects for tabbed controls
+  // -capfHasScrollOffset only corrects scrolled controls
+  if GetLCLClientBoundsOffset(aWinControl, BoundsOffset) then
+  begin
+    Dec(P.X, BoundsOffset.Left);
+    Dec(P.Y, BoundsOffset.Top);
+  end;
+
+  lControl := AWinControl.ControlAtPos(P, [capfOnlyClientAreas, capfHasScrollOffset,
                                           capfAllowWinControls, capfRecursive]);
+
   if (lControl = nil) then
     lControl := AWinControl;
   Windows.SetCursor(Screen.Cursors[lControl.Cursor]);
