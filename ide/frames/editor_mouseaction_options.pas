@@ -581,6 +581,7 @@ var
       try
         MActions.IncAssertLock;
         try
+          Mact.Clear;
           xml.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
           MActions.Add.Assign(MAct);
         finally

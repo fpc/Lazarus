@@ -2183,6 +2183,7 @@ var
     MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     c := XMLConfig.GetValue(Path + 'CountDel', 0);
     for i := 0 to c - 1 do begin
+      Mact.Clear;
       XMLConfig.ReadObject(Path + 'Del' + IntToStr(i) + '/', MAct);
       j := MActions.IndexOf(MAct, True);
       if j >= 0 then MActions.Delete(j);
@@ -2193,6 +2194,8 @@ var
       try
         MActions.IncAssertLock;
         try
+          // If the object would ever be extended, old configs will not have all properties.
+          Mact.Clear;
           XMLConfig.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
           j := MActions.IndexOf(MAct, True);
           if j >= 0 then

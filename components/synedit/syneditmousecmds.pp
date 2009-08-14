@@ -134,6 +134,7 @@ type
     function GetDisplayName: string; override;
   public
     procedure Assign(Source: TPersistent); override;
+    procedure Clear;
     function IsMatchingShiftState(AShift: TShiftState): Boolean;
     function IsMatchingClick(ABtn: TMouseButton; ACCount: TSynMAClickCount;
                              ACDir: TSynMAClickDir): Boolean;
@@ -381,6 +382,19 @@ begin
     inherited Assign(Source);
   if Collection <> nil then
     TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
+procedure TSynEditMouseAction.Clear;
+begin
+  FCommand    := 0;
+  FClickCount := ccSingle;
+  FClickDir   := cdUp;
+  FButton     := mbLeft;
+  FShift      := [];
+  FShiftMask  := [];
+  FMoveCaret  := False;
+  FOption     := 0;
+  FPriority   := 0;
 end;
 
 function TSynEditMouseAction.IsMatchingShiftState(AShift: TShiftState): Boolean;
