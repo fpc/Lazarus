@@ -300,6 +300,7 @@ begin
           EndUpdate;
         end;
         Application.ProcessMessages;
+        Application.Idle(false);
         BeginUpdate;
         EndUpdateNeeded:=true;
       end;
