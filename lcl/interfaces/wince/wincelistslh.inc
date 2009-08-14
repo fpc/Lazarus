@@ -69,6 +69,8 @@ type
     property Sorted: Boolean Read FSorted Write SetSorted;
   end;
 
+  { TWinCEComboBoxStringList }
+
   TWinCEComboBoxStringList = class(TWinCEListStringList)
   private
     FEditHeight: Integer;
@@ -77,6 +79,7 @@ type
   protected
     function  GetComboHeight: integer;
     procedure InitFlags; override;
+    procedure UpdateComboHeight;
   public
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;

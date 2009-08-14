@@ -42,18 +42,6 @@ Begin
   Result := WideCompareStr(widestring(AStr), widestring(BStr));//roozbeh:does this work?!
 end;
 
-procedure SetComboHeight(Sender: TWinControl; AHeight:Integer);
-var
-  Left, Top, Width: integer;
-begin
-  Left := Sender.Left;
-  Top := Sender.Top;
-  Width := Sender.Width;
-  LCLBoundsToWin32Bounds(Sender, Left, Top, Width, AHeight);
-  MoveWindow(Sender.Handle, Left, Top, Width, AHeight, true);//roozbeh check if this works!
-  LCLControlSizeNeedsUpdate(Sender, true);
-end;
-
 {*************************************************************}
 {                      TWinCEListStringList methods           }
 {*************************************************************}
@@ -324,6 +312,19 @@ begin
     FDropDownCount := 8;
 end;
 
+procedure TWinCEComboBoxStringList.UpdateComboHeight;
+var
+  Left, Top, Width, Height: integer;
+begin
+  Left := FSender.Left;
+  Top := FSender.Top;
+  Width := FSender.Width;
+  Height := ComboHeight;
+  LCLBoundsToWin32Bounds(FSender, Left, Top, Width, Height);
+  MoveWindow(FSender.Handle, Left, Top, Width, Height, true);
+  LCLControlSizeNeedsUpdate(FSender, true);
+end;
+
 procedure TWinCEComboBoxStringList.Assign(Source: TPersistent);
 var
   EditText: string;
@@ -337,7 +338,7 @@ begin
     inherited Assign(Source);
     
     // restore text in edit box
-    SetComboHeight(FSender, ComboHeight);
+    UpdateComboHeight;
     TWinCEWSCustomComboBox.SetText(FSender, EditText);
     lItemIndex := IndexOf(EditText);
     if lItemIndex <> -1 then
@@ -348,32 +349,47 @@ end;
 
 function TWinCEComboBoxStringList.GetComboHeight: integer;
 begin
-  if Count = 0 then
+  if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then
   begin
-    Result := FEditHeight + FItemHeight + 2;
-  end else begin
-    Result := FEditHeight + FDropDownCount*FItemHeight + 2;
+    // combobox workaround:
+    // if style = csSimple follow the LCL height.
+    Result := FSender.Height;
+  end else
+  begin
+    if Count = 0 then
+    begin
+      Result := FEditHeight + FItemHeight + 2;
+    end else
+    begin
+      Result := FEditHeight + FDropDownCount * FItemHeight + 2;
+    end;
   end;
 end;
 
 procedure TWinCEComboBoxStringList.Clear;
+var
+  SaveText: String;
 begin
-  SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
+  if not TCustomComboBox(FSender).ReadOnly then
+    SaveText := TCustomComboBox(FSender).Text;
   inherited;
+  UpdateComboHeight;
+  if not TCustomComboBox(FSender).ReadOnly then
+    TCustomComboBox(FSender).Text := SaveText;
 end;
 
 procedure TWinCEComboBoxStringList.Delete(Index: integer);
 begin
-  if GetCount <= 1 then
-    SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
   inherited Delete(Index);
+  if Count <= 1 then
+    UpdateComboHeight;
 end;
 
 procedure TWinCEComboBoxStringList.Insert(Index: integer; const S: string);
 begin
-  if GetCount = 0 then
-    SetComboHeight(FSender, FEditHeight + FDropDownCount*FItemHeight + 2);
   inherited Insert(Index, S);
+  if GetCount = 1 then
+    UpdateComboHeight;
 end;
 
     
