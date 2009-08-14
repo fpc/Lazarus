@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, LResources, ComCtrls, ButtonPanel,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
+  EditorOptions, IDECommands, LCLType;
 
 type
   { TIDEOptionsDialog }
@@ -41,6 +42,7 @@ type
     CategoryTree: TTreeView;
 
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
+    procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -128,6 +130,18 @@ begin
     AEditor.Visible := True;
 
     PrevEditor := AEditor;
+  end;
+end;
+
+procedure TIDEOptionsDialog.CategoryTreeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Command: Word;
+begin
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
+  if (Command=ecContextHelp) and (PrevEditor <> nil) then begin
+    Key:=VK_UNKNOWN;
+    ShowContextHelpForIDE(PrevEditor);
   end;
 end;
 

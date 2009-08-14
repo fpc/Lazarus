@@ -41,10 +41,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Constraints.MinWidth = 206
-    DefaultItemHeight = 15
+    DefaultItemHeight = 17
     ReadOnly = True
     TabOrder = 0
     OnChange = CategoryTreeChange
+    OnKeyDown = CategoryTreeKeyDown
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end
