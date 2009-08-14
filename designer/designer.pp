@@ -2526,8 +2526,7 @@ begin
         IconRect := Rect(ItemLeft, ItemTop, ItemRight, ItemBottom);
         Frame3D(IconRect, 1, bvRaised);
         Brush.Color := clBtnFace;
-        FillRect(Rect(IconRect.Left, IconRect.Top,
-           IconRect.Right, IconRect.Bottom));
+        FillRect(IconRect);
         if NonVisualCompBorder > 1 then
           InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
       end;

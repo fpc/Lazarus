@@ -351,11 +351,12 @@ end;
 function TDesignerDeviceContext.GetDCSize: TPoint;
 // returns the DC size
 begin
-  if not (ddcSizeValid in FFlags) then begin
-    GetDeviceSize(FDC,FDCSize);
-    Include(FFlags,ddcSizeValid);
+  if not (ddcSizeValid in FFlags) then 
+  begin
+    GetDeviceSize(DC, FDCSize);
+    Include(FFlags, ddcSizeValid);
   end;
-  Result:=FDCSize;
+  Result := FDCSize;
 end;
 
 function TDesignerDeviceContext.GetFormClientOrigin: TPoint;
@@ -377,7 +378,7 @@ var
 begin
   if not (ddcFormOriginValid in FFlags) then 
   begin
-    if not GetDCOriginRelativeToWindow(FDC, FForm.Handle, FFormOrigin) then
+    if not GetDCOriginRelativeToWindow(DC, FForm.Handle, FFormOrigin) then
     begin
       // For some reason we cannot retrieve DC origin. It can happen for exmample
       // when DC is not controld DC but double buffer DC. Lets use another trick
@@ -390,7 +391,7 @@ begin
       end
       else
         FFormOrigin := Point(0, 0);
-      if GetWindowOrgEx(FDC, @AControlOrigin) <> 0 then
+      if GetWindowOrgEx(DC, @AControlOrigin) <> 0 then
       begin
         Dec(FFormOrigin.X, AControlOrigin.X);
         Dec(FFormOrigin.Y, AControlOrigin.Y);
@@ -434,7 +435,7 @@ begin
   if FSavedDC = 0 then 
   begin
     FSavedDC := SaveDC(DC);
-    FCanvas.Handle := FDC;
+    FCanvas.Handle := DC;
   end;
 end;
 
