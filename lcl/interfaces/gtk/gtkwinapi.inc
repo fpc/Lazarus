@@ -9711,9 +9711,15 @@ begin
     Result := PtrUInt(Widget);
   end;
   // disconnect old handler
-  if LastWFPResult<>0 then
+  if LastWFPResult<>0 then begin
+    {$IFDEF gtk1}
+    gtk_signal_disconnect_by_func(GPointer(LastWFPResult),
+                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$ELSE}
     g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$ENDIF}
+  end;
   LastWFPMousePos := APoint;
   LastWFPResult := Result;
   // connect handler
