@@ -341,6 +341,7 @@ type
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FInternalBlockSelection: TSynEditSelection;
+    FMouseSelectionMode: TSynSelectionMode;
     fCtrlMouseActive: boolean;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
@@ -1464,7 +1465,7 @@ begin
     if length(FoldInfo) > 0 then
       ClipHelper.AddTag(synClipTagFold, @FoldInfo[1], length(FoldInfo));
     if not ClipHelper.WriteToClipboard(Clipboard) then
-      raise ESynEditError.Create('Clipboard copy operation failed: AddFormat');
+      raise ESynEditError.Create('Clipboard copy operation failed');
   finally
     ClipHelper.Free;
   end;
@@ -2403,15 +2404,21 @@ begin
           MoveCaret;
           case ACommand of
             emcStartColumnSelections:
-              FBlockSelection.ActiveSelectionMode := smColumn;
+              FMouseSelectionMode := smColumn;
             emcStartLineSelections:
               begin
                 if ACommand = emcStartLineSelections then
                   SetLineBlock(AnInfo.NewCaret.LineBytePos, True);
-                FBlockSelection.ActiveSelectionMode := smLine;
+                FMouseSelectionMode := smLine;
               end;
             else
-              FBlockSelection.ActiveSelectionMode := FBlockSelection.SelectionMode;
+              FMouseSelectionMode := FBlockSelection.SelectionMode;
+          end;
+          if (AnAction.Option = emcoSelectionContinue) then begin
+            // only set ActiveSelectionMode if we continue an existing selection
+            // Otherwise we are just setting the caret, selection will start on mouse move
+            FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+            Include(fStateFlags, sfMouseDoneSelecting);
           end;
           MouseCapture := True;
           Include(fStateFlags, sfMouseSelecting);
@@ -2666,6 +2673,8 @@ begin
       if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
         Include(fStateFlags, sfMouseDoneSelecting);
     end;
+    if sfMouseDoneSelecting in fStateFlags then
+      FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
     if sfIsDragging in fStateFlags then
       FBlockSelection.DecPersistentLock;
   end
