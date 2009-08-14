@@ -515,6 +515,19 @@ type
     Info: PEditorOptionsFoldInfoList;
   end;
 
+type
+
+  { TSynEditMouseActionKeyCmdHelper }
+
+  TSynEditMouseActionKeyCmdHelper = class(TSynEditMouseAction)
+  private
+    function GetOptionKeyCmd: TSynEditorCommand;
+    procedure SetOptionKeyCmd(const AValue: TSynEditorCommand);
+  published
+    property Option: TSynEditorCommand read GetOptionKeyCmd write SetOptionKeyCmd;
+  end;
+
+
 const
 
   EditorOptionsFoldInfoPas: Array [0..19] of TEditorOptionsFoldInfo
@@ -990,18 +1003,6 @@ const
     lshSQL,
     lshJScript
     );
-
-type
-
-  { TSynEditMouseActionKeyCmdHelper }
-
-  TSynEditMouseActionKeyCmdHelper = class(TSynEditMouseAction)
-  private
-    function GetOptionKeyCmd: TSynEditorCommand;
-    procedure SetOptionKeyCmd(const AValue: TSynEditorCommand);
-  published
-    property Option: TSynEditorCommand read GetOptionKeyCmd write SetOptionKeyCmd;
-  end;
 
 { TSynEditMouseActionKeyCmdHelper }
 

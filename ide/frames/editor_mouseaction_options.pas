@@ -532,18 +532,25 @@ end;
 procedure TEditorMouseOptionsFrame.BtnExportClick(Sender: TObject);
 var
   xml: TRttiXMLConfig;
+  MAct: TSynEditMouseActionKeyCmdHelper;
 
   Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
   var
     i: Integer;
   begin
     for i := 0 to MActions.Count - 1 do
-      xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
+      if MActions[i].Command = emcSynEditCommand then begin
+        MAct.Assign(MActions[i]);
+        xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MAct);
+      end
+      else
+        xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
     xml.SetValue(Path + 'Count', MActions.Count);
   end;
 
 begin
   if SaveDialog1.Execute then begin
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     xml := TRttiXMLConfig.CreateClean(SaveDialog1.FileName);
     SaveMouseAct('Mouse/Main/', FMainActions);
     SaveMouseAct('Mouse/MainSel/', FSelActions);
@@ -554,6 +561,7 @@ begin
     SaveMouseAct('Mouse/GutterLineNum/', FGutterActionsLines);
     xml.Flush;
     xml.Free;
+    MAct.Free;
   end;
 end;
 
@@ -564,16 +572,17 @@ var
   Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
   var
     i, c: Integer;
-    MAct: TSynEditMouseAction;
+    MAct: TSynEditMouseActionKeyCmdHelper;
   begin
     MActions.Clear;
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     c := xml.GetValue(Path + 'Count', 0);
     for i := 0 to c - 1 do begin
       try
         MActions.IncAssertLock;
         try
-          MAct := MActions.Add;
           xml.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
+          MActions.Add.Assign(MAct);
         finally
           MActions.DecAssertLock;
         end;
@@ -585,6 +594,7 @@ var
                    mtError, [mbOk], 0);
       end;
     end;
+    Mact.Free;
   end;
 
 begin
