@@ -383,7 +383,7 @@ begin
   FUpdateLock:=PackageGraph.UpdateLock;
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
-  Caption:=lisMenuPackageGraph;
+  Caption:=dlgPackageGraph;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);

@@ -383,10 +383,7 @@ resourcestring
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
   lisMenuGeneralOptions = 'Options ...';
-  lisMenuEditorOptions = 'Editor options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
-  lisMenDebuggerOptions = 'Debugger Options ...';
-  lisMenuCodeToolsOptions = 'CodeTools Options ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
   lisMenuOnlineHelp = 'Online Help';
@@ -1253,6 +1250,7 @@ resourcestring
   dlgMouseOptDescButton = 'Click';
   dlgMouseOptionsynCommand = 'IDE-Command';
   dlgUseDividerDraw = 'Divider drawing';
+  dlgEditorOptions = 'Editor options';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
@@ -3641,6 +3639,7 @@ resourcestring
   lisPckOptsPackageOptions = 'Package Options';
 
   // package explorer (package graph)
+  dlgPackageGraph = 'Package Graph';
   lisPckExplLoadedPackages = 'Loaded Packages:';
   lisPckExplIsRequiredBy = 'Selected package is required by:';
   lisPckExplPackageNotFound = 'Package %s not found';

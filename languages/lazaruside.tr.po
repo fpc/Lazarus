@@ -9,6 +9,96 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
+#: lazarusidestrconsts.dlfmouseresetall
+msgid "Set all settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresetgutter
+msgid "Set all gutter settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresettext
+msgid "Set all text settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplediff
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftdown
+msgid "Standard, All actions (breakpoint, fold) on Mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftup
+msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpleguttersect
+msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
+msgid "Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplerightmovecaret
+msgid "Right mouse includes caret move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsect
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
+msgid "Text"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectalt
+msgid "Alt-Key sets column mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
+msgid "Ctrl Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
+msgid "jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
+msgid "Double Click selects line"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdrag
+msgid "Drag Selection (copy/paste)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
+msgid "Middle Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
+msgid "paste selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewarning
+msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr ""
@@ -895,6 +985,11 @@ msgstr ""
 msgid "Editor font height"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditoroptions
+msgctxt "lazarusidestrconsts.dlgeditoroptions"
+msgid "Editor options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
 msgstr ""
@@ -1773,6 +1868,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptions"
 msgid "Mouse"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptionsadv
+msgid "Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
 msgstr ""
@@ -1928,6 +2027,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpackagegraph
+msgid "Package Graph"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -6897,6 +7000,7 @@ msgid "Edit context sensitive help"
 msgstr "Bağlama duyarlı yardımı düzenle"
 
 #: lazarusidestrconsts.liskmeditoroptions
+msgctxt "lazarusidestrconsts.liskmeditoroptions"
 msgid "Editor options"
 msgstr ""
 
@@ -7784,10 +7888,6 @@ msgstr ""
 msgid "Memory Dump"
 msgstr ""
 
-#: lazarusidestrconsts.lismendebuggeroptions
-msgid "Debugger Options ..."
-msgstr "Hata Ayıklayıcı Seçenekleri ..."
-
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "Oluşturmayı İptal Et"
@@ -7863,10 +7963,6 @@ msgstr "Projeyi Kapat"
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "Kod Araçları tanımlamaları düzenleyici ..."
-
-#: lazarusidestrconsts.lismenucodetoolsoptions
-msgid "CodeTools Options ..."
-msgstr "Kod Araçları seçenekleri ..."
 
 #: lazarusidestrconsts.lismenucollectpofil
 msgid "Collect .po files"
@@ -8024,10 +8120,6 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
 msgid "New Template Description..."
 msgstr ""
-
-#: lazarusidestrconsts.lismenueditoroptions
-msgid "Editor options ..."
-msgstr "Düzenleyici seçenekleri ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
 msgid "Save As Template..."

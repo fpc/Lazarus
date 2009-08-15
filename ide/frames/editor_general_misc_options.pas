@@ -61,7 +61,7 @@ end;
 procedure TEditorGeneralMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
-  EditorOptionsGroupBox.Caption := lismenueditoroptions;
+  EditorOptionsGroupBox.Caption := dlgEditorOptions;
   with EditorOptionsGroupBox do
   begin
     // visual effects

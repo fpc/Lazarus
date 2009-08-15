@@ -11,6 +11,96 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 
+#: lazarusidestrconsts.dlfmouseresetall
+msgid "Set all settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresetgutter
+msgid "Set all gutter settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresettext
+msgid "Set all text settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplediff
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftdown
+msgid "Standard, All actions (breakpoint, fold) on Mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftup
+msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpleguttersect
+msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
+msgid "Gutter"
+msgstr "Medianiz"
+
+#: lazarusidestrconsts.dlfmousesimplerightmovecaret
+msgid "Right mouse includes caret move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsect
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
+msgid "Text"
+msgstr "Texto"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectalt
+msgid "Alt-Key sets column mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
+msgid "Ctrl Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
+msgid "jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
+msgid "Double Click selects line"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdrag
+msgid "Drag Selection (copy/paste)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
+msgid "Middle Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
+msgid "paste selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewarning
+msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "Minúscula, primeira letra maiúscula"
@@ -921,6 +1011,11 @@ msgstr "Fonte do Editor"
 msgid "Editor font height"
 msgstr "Altura da fonte do Editor"
 
+#: lazarusidestrconsts.dlgeditoroptions
+msgctxt "lazarusidestrconsts.dlgeditoroptions"
+msgid "Editor options"
+msgstr "Opções do editor"
+
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
 msgstr "Misc."
@@ -1806,6 +1901,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptions"
 msgid "Mouse"
 msgstr "Mouse"
 
+#: lazarusidestrconsts.dlgmouseoptionsadv
+msgid "Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
 msgstr "Comando IDE"
@@ -1964,6 +2063,10 @@ msgstr "Outros arquivos de unidade (-Fu) (ponto e vírgula como delimitador)"
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
 msgstr "Sobrescrever Bloco"
+
+#: lazarusidestrconsts.dlgpackagegraph
+msgid "Package Graph"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -6967,6 +7070,7 @@ msgid "Edit context sensitive help"
 msgstr "Editar ajuda contextual"
 
 #: lazarusidestrconsts.liskmeditoroptions
+msgctxt "lazarusidestrconsts.liskmeditoroptions"
 msgid "Editor options"
 msgstr "Opções do editor"
 
@@ -7854,10 +7958,6 @@ msgstr "Máximo %d"
 msgid "Memory Dump"
 msgstr "Despejo Memória"
 
-#: lazarusidestrconsts.lismendebuggeroptions
-msgid "Debugger Options ..."
-msgstr "Opções do Depurador ..."
-
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "Abortar Construção"
@@ -7932,10 +8032,6 @@ msgstr "Fechar Projeto"
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "Editor definições das ferramentas de código ..."
-
-#: lazarusidestrconsts.lismenucodetoolsoptions
-msgid "CodeTools Options ..."
-msgstr "Opções das Ferramentas de Código ..."
 
 #: lazarusidestrconsts.lismenucollectpofil
 msgid "Collect .po files"
@@ -8093,10 +8189,6 @@ msgstr "Mover Acima (ou esquerda)"
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
 msgid "New Template Description..."
 msgstr "Nova Descrição de Modelo..."
-
-#: lazarusidestrconsts.lismenueditoroptions
-msgid "Editor options ..."
-msgstr "Opções do Editor ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
 msgid "Save As Template..."

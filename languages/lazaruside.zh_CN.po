@@ -12,6 +12,96 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lazarusidestrconsts.dlfmouseresetall
+msgid "Set all settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresetgutter
+msgid "Set all gutter settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmouseresettext
+msgid "Set all text settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplediff
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftdown
+msgid "Standard, All actions (breakpoint, fold) on Mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftup
+msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpleguttersect
+msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
+msgid "Gutter"
+msgstr "边缝"
+
+#: lazarusidestrconsts.dlfmousesimplerightmovecaret
+msgid "Right mouse includes caret move"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsect
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
+msgid "Text"
+msgstr "文本"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectalt
+msgid "Alt-Key sets column mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
+msgid "Ctrl Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
+msgid "jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
+msgid "Double Click selects line"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectdrag
+msgid "Drag Selection (copy/paste)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
+msgid "jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
+msgid "Middle Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
+msgid "nothing"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
+msgid "paste selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewarning
+msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "转换为小写, 首字母大写"
@@ -902,6 +992,11 @@ msgstr "编辑器字体"
 msgid "Editor font height"
 msgstr "编辑器字体高度"
 
+#: lazarusidestrconsts.dlgeditoroptions
+msgctxt "lazarusidestrconsts.dlgeditoroptions"
+msgid "Editor options"
+msgstr "编辑器选项"
+
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
 msgstr "杂项"
@@ -1784,6 +1879,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptions"
 msgid "Mouse"
 msgstr "鼠标"
 
+#: lazarusidestrconsts.dlgmouseoptionsadv
+msgid "Advanced"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
 msgstr ""
@@ -1941,6 +2040,10 @@ msgstr "补充单元文件 (-Fu) (分号格开):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpackagegraph
+msgid "Package Graph"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -6932,6 +7035,7 @@ msgid "Edit context sensitive help"
 msgstr "编辑上下文敏感帮助"
 
 #: lazarusidestrconsts.liskmeditoroptions
+msgctxt "lazarusidestrconsts.liskmeditoroptions"
 msgid "Editor options"
 msgstr "编辑器选项"
 
@@ -7819,10 +7923,6 @@ msgstr ""
 msgid "Memory Dump"
 msgstr "内存转储"
 
-#: lazarusidestrconsts.lismendebuggeroptions
-msgid "Debugger Options ..."
-msgstr "调试器选项 ..."
-
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "中断编译"
@@ -7898,10 +7998,6 @@ msgstr "关闭工程"
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
 msgstr "代码工具自定义编辑器 ..."
-
-#: lazarusidestrconsts.lismenucodetoolsoptions
-msgid "CodeTools Options ..."
-msgstr "代码工具选项 ..."
 
 #: lazarusidestrconsts.lismenucollectpofil
 msgid "Collect .po files"
@@ -8059,10 +8155,6 @@ msgstr "上移 (或左移)"
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
 msgid "New Template Description..."
 msgstr "新建模板描述..."
-
-#: lazarusidestrconsts.lismenueditoroptions
-msgid "Editor options ..."
-msgstr "编辑器选项 ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
 msgid "Save As Template..."
