@@ -486,7 +486,6 @@ var
   BoundsOffset: TRect;
   h: HWND;
   c: HCURSOR;
-  Info: TComboboxInfo;
 begin
   // in win32 controls have no cursor property. they can change their cursor
   // by listening WM_SETCURSOR and adjusting global cursor
