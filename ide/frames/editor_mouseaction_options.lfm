@@ -1,210 +1,445 @@
 inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
-  Height = 420
-  Width = 610
+  Height = 455
+  Width = 607
   Anchors = [akTop]
-  ClientHeight = 420
-  ClientWidth = 610
+  AutoSize = False
+  ClientHeight = 455
+  ClientWidth = 607
   Visible = False
-  DesignLeft = 246
-  DesignTop = 209
-  object ActionGrid: TStringGrid[0]
-    Left = 135
-    Height = 243
-    Top = 46
-    Width = 475
-    Align = alClient
-    AutoEdit = False
-    ColCount = 10
-    ExtendedSelect = False
-    FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll, goHeaderHotTracking]
-    RowCount = 1
-    ScrollBars = ssAutoVertical
-    TabOrder = 0
-    TitleStyle = tsNative
-    OnCompareCells = ActionGridCompareCells
-    OnDblClick = UpdateButtonClick
-    OnHeaderClick = ActionGridHeaderClick
-    OnHeaderSized = ActionGridHeaderSized
-    OnMouseDown = ActionGridMouseDown
-    OnMouseMove = ActionGridMouseMove
-    OnMouseUp = ActionGridMouseUp
-    OnResize = ActionGridResize
-    OnSelection = ActionGridSelection
+  DesignLeft = 153
+  DesignTop = 291
+  object DiffLabel: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BottomDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ResetAllButton
+    Left = 6
+    Height = 16
+    Top = 329
+    Width = 485
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'DiffLabel'
+    Font.Color = clRed
+    ParentColor = False
+    ParentFont = False
+    WordWrap = True
   end
-  object ContextTree: TTreeView[1]
-    Left = 0
-    Height = 243
-    Top = 46
-    Width = 130
-    Align = alLeft
-    AutoExpand = True
-    Constraints.MinWidth = 50
-    DefaultItemHeight = 17
-    ReadOnly = True
-    ShowButtons = False
-    ShowRoot = False
-    TabOrder = 1
-    OnChange = ContextTreeChange
-    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand]
+  object GutterDividerRight: TBevel[1]
+    AnchorSideLeft.Control = GutterDividerLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = GutterDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 189
+    Height = 3
+    Top = 7
+    Width = 418
+    Anchors = [akTop, akLeft, akRight]
   end
-  object Splitter1: TSplitter[2]
-    Left = 130
-    Height = 243
-    Top = 46
-    Width = 5
-    AutoSnap = False
-  end
-  object ToolBar1: TToolBar[3]
-    Left = 0
-    Height = 46
+  object GutterDividerLabel: TLabel[2]
+    AnchorSideLeft.Control = GutterDividerLeft
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 70
+    Height = 16
     Top = 0
-    Width = 610
+    Width = 109
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'GutterDividerLabel'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object GutterDividerLeft: TBevel[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GutterDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 7
+    Width = 60
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+  end
+  object TextDividerLeft: TBevel[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TextDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 110
+    Width = 60
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+  end
+  object TextDividerLabel: TLabel[5]
+    AnchorSideLeft.Control = GutterDividerLeft
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ResetGutterButton
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 16
+    Top = 103
+    Width = 97
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'TextDividerLabel'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object TextDividerRight: TBevel[6]
+    AnchorSideLeft.Control = GutterDividerLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TextDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 189
+    Height = 3
+    Top = 110
+    Width = 418
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object BottomDivider: TBevel[7]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ResetTextButton
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 320
+    Width = 607
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+  end
+  object WarnLabel: TLabel[8]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BottomDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ResetAllButton
+    Left = 6
+    Height = 16
+    Top = 329
+    Width = 485
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'WarnLabel'
+    Font.Color = clRed
+    ParentColor = False
+    ParentFont = False
+    WordWrap = True
+  end
+  object MiddleBtnLabel: TLabel[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelTextCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 16
+    Top = 169
+    Width = 84
+    BorderSpacing.Left = 6
+    Caption = 'MiddleBtnLabel'
+    ParentColor = False
+  end
+  object CtrLLeftLabel: TLabel[10]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelTextMiddle
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 16
+    Top = 229
+    Width = 71
+    BorderSpacing.Left = 6
+    Caption = 'CtrLLeftLabel'
+    ParentColor = False
+  end
+  object ResetAllButton: TButton[11]
+    AnchorSideTop.Control = BottomDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 497
+    Height = 25
+    Top = 329
+    Width = 104
+    Anchors = [akTop, akRight]
     AutoSize = True
-    ButtonHeight = 46
-    Caption = 'ToolBar1'
-    EdgeBorders = []
-    ShowCaptions = True
-    TabOrder = 3
-    object BtnImport: TToolButton
-      Left = 1
-      Top = 0
-      Caption = 'BtnImport'
-      OnClick = BtnImportClick
-    end
-    object BtnExport: TToolButton
-      Left = 63
-      Top = 0
-      Caption = 'BtnExport'
-      OnClick = BtnExportClick
-    end
-    object ToolButton3: TToolButton
-      Left = 145
-      Top = 0
-      Width = 3
-      Caption = 'ToolButton3'
-      Style = tbsDivider
-    end
-    object UpdateButton: TToolButton
-      Left = 148
-      Top = 0
-      Caption = 'UpdateButton'
-      OnClick = UpdateButtonClick
-    end
-    object AddNewButton: TToolButton
-      Left = 230
-      Top = 0
-      Caption = 'AddNewButton'
-      OnClick = AddNewButtonClick
-    end
-    object DelButton: TToolButton
-      Left = 320
-      Top = 0
-      Caption = 'DelButton'
-      OnClick = DelButtonClick
-    end
-    object ToolButton1: TToolButton
-      Left = 122
-      Top = 0
-      Width = 23
-      Caption = 'ToolButton1'
-      Style = tbsSeparator
-    end
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'ResetAllButton'
+    OnClick = ResetAllButtonClick
+    TabOrder = 0
   end
-  object OtherActionPanel: TPanel[4]
-    Left = 0
-    Height = 126
-    Top = 294
-    Width = 610
-    Align = alBottom
-    ClientHeight = 126
-    ClientWidth = 610
-    TabOrder = 4
-    object Panel1: TPanel
-      Left = 1
+  object PanelGutter: TPanel[12]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GutterDividerLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 44
+    Top = 22
+    Width = 595
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 44
+    ClientWidth = 595
+    TabOrder = 1
+    object GutterLeftRadio1: TRadioButton
+      AnchorSideTop.Side = asrBottom
+      Left = 0
       Height = 19
-      Top = 1
-      Width = 608
-      Align = alTop
-      AutoSize = True
-      ClientHeight = 19
-      ClientWidth = 608
+      Top = 0
+      Width = 595
+      AutoSize = False
+      Caption = 'GutterLeftRadio1'
+      OnChange = CheckOrRadioChange
       TabOrder = 0
-      object OtherActionLabel: TLabel
-        Left = 1
-        Height = 17
-        Top = 1
-        Width = 94
-        Align = alLeft
-        Caption = 'OtherActionLabel'
-        ParentColor = False
-        ParentShowHint = False
-        ShowHint = True
-      end
-      object OtherActToggleBox: TToggleBox
-        AnchorSideRight.Control = Panel1
-        AnchorSideRight.Side = asrBottom
-        Left = 484
-        Height = 19
-        Top = 0
-        Width = 124
-        Anchors = [akTop, akRight]
-        AutoSize = True
-        Caption = 'OtherActToggleBox'
-        Checked = True
-        OnChange = OtherActToggleBoxChange
-        State = cbChecked
-        TabOrder = 0
-      end
     end
-    object OtherActionGrid: TStringGrid
-      Left = 1
-      Height = 105
-      Top = 20
-      Width = 608
-      Align = alClient
-      AutoEdit = False
-      ColCount = 12
-      Constraints.MinHeight = 40
-      ExtendedSelect = False
-      FixedCols = 0
-      MouseWheelOption = mwGrid
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goSmoothScroll, goHeaderHotTracking]
-      RowCount = 1
-      ScrollBars = ssAutoVertical
+    object GutterLeftRadio2: TRadioButton
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 19
+      Width = 595
+      AutoSize = False
+      BorderSpacing.Bottom = 6
+      Caption = 'GutterLeftRadio2'
+      OnChange = CheckOrRadioChange
       TabOrder = 1
-      TitleStyle = tsNative
-      OnCompareCells = ActionGridCompareCells
-      OnHeaderClick = OtherActionGridHeaderClick
-      OnHeaderSized = OtherActionGridHeaderSized
-      OnMouseDown = OtherActionGridMouseDown
-      OnMouseMove = OtherActionGridMouseMove
-      OnMouseUp = OtherActionGridMouseUp
-      OnResize = OtherActionGridResize
-      OnSelectCell = OtherActionGridSelectCell
     end
   end
-  object Splitter2: TSplitter[5]
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
+  object PanelTextMiddle: TPanel[13]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MiddleBtnLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 38
+    Top = 185
+    Width = 595
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 38
+    ClientWidth = 595
+    TabOrder = 2
+    object TextMidRadio1: TRadioButton
+      AnchorSideLeft.Control = PanelTextMiddle
+      AnchorSideTop.Control = PanelTextMiddle
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 99
+      Caption = 'TextMidRadio1'
+      OnChange = CheckOrRadioChange
+      TabOrder = 0
+    end
+    object TextMidRadio2: TRadioButton
+      AnchorSideLeft.Control = PanelTextMiddle
+      AnchorSideTop.Control = PanelTextMiddle
+      Left = 250
+      Height = 19
+      Top = 0
+      Width = 99
+      BorderSpacing.Left = 250
+      Caption = 'TextMidRadio2'
+      OnChange = CheckOrRadioChange
+      TabOrder = 1
+    end
+    object TextMidRadio3: TRadioButton
+      AnchorSideLeft.Control = PanelTextMiddle
+      AnchorSideTop.Control = TextMidRadio1
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 19
+      Width = 99
+      Caption = 'TextMidRadio3'
+      OnChange = CheckOrRadioChange
+      TabOrder = 2
+    end
+  end
+  object ResetGutterButton: TButton[14]
+    AnchorSideTop.Control = PanelGutter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 478
+    Height = 25
+    Top = 72
+    Width = 123
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'ResetGutterButton'
+    OnClick = ResetGutterButtonClick
+    TabOrder = 3
+  end
+  object ResetTextButton: TButton[15]
+    AnchorSideTop.Control = PanelTextCtrlLeft
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 489
+    Height = 25
     Top = 289
-    Width = 610
-    Align = alBottom
-    MinSize = 40
-    ResizeAnchor = akBottom
+    Width = 112
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'ResetTextButton'
+    OnClick = ResetTextButtonClick
+    TabOrder = 4
   end
-  object SaveDialog1: TSaveDialog[6]
-    DefaultExt = '.xml'
-    Filter = 'xml|*.xml|any|*.*'
-    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 24
-    top = 184
+  object PanelTextCheckBox: TPanel[16]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TextDividerLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 38
+    Top = 125
+    Width = 595
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 38
+    ClientWidth = 595
+    TabOrder = 5
+    object TextAltMode: TCheckBox
+      AnchorSideLeft.Control = PanelTextCheckBox
+      AnchorSideTop.Control = PanelTextCheckBox
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 88
+      Caption = 'TextAltMode'
+      OnChange = CheckOrRadioChange
+      TabOrder = 0
+    end
+    object TextDrag: TCheckBox
+      AnchorSideLeft.Control = PanelTextCheckBox
+      AnchorSideTop.Control = TextAltMode
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 19
+      Width = 67
+      Caption = 'TextDrag'
+      OnChange = CheckOrRadioChange
+      TabOrder = 1
+    end
+    object RightMoveCaret: TCheckBox
+      AnchorSideLeft.Control = PanelTextCheckBox
+      AnchorSideTop.Control = TextAltMode
+      Left = 250
+      Height = 19
+      Top = 0
+      Width = 106
+      BorderSpacing.Left = 250
+      Caption = 'RightMoveCaret'
+      OnChange = CheckOrRadioChange
+      TabOrder = 2
+    end
+    object TextDoubleSelLine: TCheckBox
+      AnchorSideLeft.Control = PanelTextCheckBox
+      AnchorSideTop.Control = RightMoveCaret
+      AnchorSideTop.Side = asrBottom
+      Left = 250
+      Height = 19
+      Top = 19
+      Width = 117
+      BorderSpacing.Left = 250
+      Caption = 'TextDoubleSelLine'
+      OnChange = CheckOrRadioChange
+      TabOrder = 3
+    end
   end
-  object OpenDialog1: TOpenDialog[7]
-    DefaultExt = '.xml'
-    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 72
-    top = 184
+  object PanelTextCtrlLeft: TPanel[17]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CtrLLeftLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 38
+    Top = 245
+    Width = 595
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 38
+    ClientWidth = 595
+    TabOrder = 6
+    object CtrlLeftRadio1: TRadioButton
+      AnchorSideLeft.Control = PanelTextCtrlLeft
+      AnchorSideTop.Control = PanelTextCtrlLeft
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 95
+      Caption = 'CtrlLeftRadio1'
+      OnChange = CheckOrRadioChange
+      TabOrder = 0
+    end
+    object CtrlLeftRadio2: TRadioButton
+      AnchorSideLeft.Control = PanelTextCtrlLeft
+      AnchorSideTop.Control = PanelTextCtrlLeft
+      Left = 250
+      Height = 19
+      Top = 0
+      Width = 95
+      BorderSpacing.Left = 250
+      Caption = 'CtrlLeftRadio2'
+      OnChange = CheckOrRadioChange
+      TabOrder = 1
+    end
+    object CtrlLeftRadio3: TRadioButton
+      AnchorSideLeft.Control = PanelTextCtrlLeft
+      AnchorSideTop.Control = CtrlLeftRadio1
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 19
+      Width = 95
+      Caption = 'CtrlLeftRadio3'
+      OnChange = CheckOrRadioChange
+      TabOrder = 2
+    end
   end
 end

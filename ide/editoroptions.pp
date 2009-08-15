@@ -683,6 +683,54 @@ type
       default;
   end;
 
+  TEditorOptions = class;
+  TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
+  TMouseOptTextMiddleType = (moTMPaste, moTMIgnore, moTMDeclarationJump);
+  TMouseOptTextCtrlLeft = (moTCLJump, moTCLNone, moTCLJumpOrBlock);
+
+  { TEditorMouseOptions }
+
+  TEditorMouseOptions = class(TPersistent)
+  private
+    FAltColumnMode: Boolean;
+    FGutterLeft: TMouseOptGutterLeftType;
+    FTextMiddleClick: TMouseOptTextMiddleType;
+    FTextCtrlLeftClick: TMouseOptTextCtrlLeft;
+    FTextDoubleSelLine: Boolean;
+    FTextDrag: Boolean;
+    FTextRightMoveCaret: Boolean;
+  private
+    FOptions: TEditorOptions;
+    FMainActions, FSelActions: TSynEditMouseActions;
+    FGutterActions: TSynEditMouseActions;
+    FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
+    FGutterActionsLines: TSynEditMouseActions;
+  public
+    constructor Create(AOptions: TEditorOptions);
+    destructor Destroy; override;
+    procedure Read;
+    procedure WriteBack;
+    procedure ResetGutterToDefault;
+    procedure ResetTextToDefault;
+    procedure Assign(Src: TEditorMouseOptions); reintroduce;
+
+    property MainActions: TSynEditMouseActions read FMainActions;
+    property SelActions: TSynEditMouseActions read FSelActions;
+    property GutterActions: TSynEditMouseActions read FGutterActions;
+    property GutterActionsFold: TSynEditMouseActions read FGutterActionsFold;
+    property GutterActionsFoldExp: TSynEditMouseActions read FGutterActionsFoldExp;
+    property GutterActionsFoldCol: TSynEditMouseActions read FGutterActionsFoldCol;
+    property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
+  published
+    property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft;
+    property AltColumnMode: Boolean read FAltColumnMode write FAltColumnMode;
+    property TextDrag: Boolean read FTextDrag write FTextDrag;
+    property TextDoubleSelLine: Boolean read FTextDoubleSelLine write FTextDoubleSelLine;
+    property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret;
+    property TextMiddleClick: TMouseOptTextMiddleType read FTextMiddleClick write FTextMiddleClick;
+    property TextCtrlLeftClick: TMouseOptTextCtrlLeft read FTextCtrlLeftClick write FTextCtrlLeftClick;
+  end;
+
   { TRttiXMLConfig }
 
   TRttiXMLConfig = class(TXMLConfig)
@@ -750,6 +798,7 @@ type
     FMouseGutterActionsFoldCol: TSynEditMouseActions;
     FMouseGutterActionsFoldExp: TSynEditMouseActions;
     FMouseGutterActionsLines: TSynEditMouseActions;
+    FTempMouseSettings: TEditorMouseOptions;
 
     // Color options
     fHighlighterList: TEditOptLangList;
@@ -899,6 +948,8 @@ type
     property MouseGutterActionsFoldExp: TSynEditMouseActions read FMouseGutterActionsFoldExp;
     property MouseGutterActionsFoldCol: TSynEditMouseActions read FMouseGutterActionsFoldCol;
     property MouseGutterActionsLines: TSynEditMouseActions read FMouseGutterActionsLines;
+    // Used by the 2 Mouse-option pages, so they share data
+    property TempMouseSettings: TEditorMouseOptions read FTempMouseSettings write FTempMouseSettings;
 
     // Color options
     property HighlighterList: TEditOptLangList
@@ -1976,6 +2027,184 @@ begin
     Result:=nil;
 end;
 
+{ TEditorMouseOptions }
+
+constructor TEditorMouseOptions.Create(AOptions: TEditorOptions);
+begin
+  inherited Create;
+  FAltColumnMode := True;
+  FTextDrag := True;
+  FOptions := AOptions;
+  FMainActions := TSynEditMouseActions.Create(nil);
+  FSelActions := TSynEditMouseActions.Create(nil);
+  FGutterActions := TSynEditMouseActions.Create(nil);
+  FGutterActionsFold := TSynEditMouseActions.Create(nil);
+  FGutterActionsFoldExp := TSynEditMouseActions.Create(nil);
+  FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
+  FGutterActionsLines := TSynEditMouseActions.Create(nil);
+end;
+
+destructor TEditorMouseOptions.Destroy;
+begin
+  FMainActions.Free;
+  FSelActions.Free;
+  FGutterActions.Free;
+  FGutterActionsFold.Free;
+  FGutterActionsFoldExp.Free;
+  FGutterActionsFoldCol.Free;
+  FGutterActionsLines.Free;
+  inherited Destroy;
+end;
+
+procedure TEditorMouseOptions.Read;
+begin
+  FMainActions.Assign(FOptions.MouseMap);
+  FSelActions.Assign(FOptions.MouseSelMap);
+  FGutterActions.Assign(FOptions.MouseGutterActions);
+  FGutterActionsFold.Assign(FOptions.MouseGutterActionsFold);
+  FGutterActionsFoldExp.Assign(FOptions.MouseGutterActionsFoldExp);
+  FGutterActionsFoldCol.Assign(FOptions.MouseGutterActionsFoldCol);
+  FGutterActionsLines.Assign(FOptions.MouseGutterActionsLines);
+end;
+
+procedure TEditorMouseOptions.WriteBack;
+begin
+  FOptions.MouseMap.Assign(FMainActions);
+  FOptions.MouseSelMap.Assign(FSelActions);
+  FOptions.MouseGutterActions.Assign(FGutterActions);
+  FOptions.MouseGutterActionsFold.Assign(FGutterActionsFold);
+  FOptions.MouseGutterActionsFoldExp.Assign(FGutterActionsFoldExp);
+  FOptions.MouseGutterActionsFoldCol.Assign(FGutterActionsFoldCol);
+  FOptions.MouseGutterActionsLines.Assign(FGutterActionsLines);
+end;
+
+procedure TEditorMouseOptions.ResetGutterToDefault;
+var
+  CDir: TSynMAClickDir;
+begin
+  FGutterActions.Clear;
+  FGutterActionsFold.Clear;
+  FGutterActionsFoldExp.Clear;
+  FGutterActionsFoldCol.Clear;
+  FGutterActionsLines.Clear;
+  //TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
+
+  with FGutterActions do begin
+    AddCommand(emcContextMenu,         False, mbRight,  ccSingle, cdUp, [], []);
+  end;
+  with FGutterActionsFold do begin
+    AddCommand(emcCodeFoldContextMenu, False, mbRight,  ccSingle, cdUp, [], []);
+  end;
+
+  CDir := cdDown;
+  if FGutterLeft = moglUpClickAndSelect then begin
+    CDir := cdUp;
+    with FGutterActions do begin
+      if FAltColumnMode then begin
+        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift, ssAlt], emcoSelectionStart);
+        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift, ssAlt], emcoSelectionContinue);
+        AddCommand(emcStartColumnSelections, True, mbLeft, ccAny, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+        AddCommand(emcStartColumnSelections, True, mbLeft, ccAny, cdDown, [ssAlt, ssShift], [ssShift, ssAlt], emcoSelectionContinue);
+      end else begin
+        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
+        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
+      end;
+    end;
+  end;
+  with FGutterActions do begin
+    AddCommand(emcOnMainGutterClick,   False, mbLeft,   ccAny,    CDir, [], []);  // breakpoint
+  end;
+  with FGutterActionsFold do begin
+    AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny,    CDir, [], [ssShift], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny,    CDir, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+    AddCommand(emcNone,                False, mbLeft,   ccAny,    CDir, [], []);
+  end;
+  with FGutterActionsFoldCol do begin
+    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [], [], emcoCodeFoldCollapsOne);
+  end;
+  with FGutterActionsFoldExp do begin
+    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
+    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [], [ssCtrl], emcoCodeFoldExpandAll);
+  end;
+
+end;
+
+procedure TEditorMouseOptions.ResetTextToDefault;
+begin
+  FMainActions.Clear;
+  FSelActions.Clear;
+
+  with FMainActions do begin
+    if FAltColumnMode then begin
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
+      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
+    end else begin
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        [ssShift], emcoSelectionStart);
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift], emcoSelectionContinue);
+    end;
+
+    if FTextDoubleSelLine then begin
+      AddCommand(emcSelectLine, True, mbLeft, ccDouble, cdDown, [], [], emcoSelectLineSmart);
+      AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], [], emcoSelectLineFull);
+    end else begin
+      AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
+      AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);
+    end;
+    AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
+
+    case FTextMiddleClick of
+      moTMPaste:
+        AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
+      moTMIgnore: {nothing} ;
+      moTMDeclarationJump:
+        AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], []);
+    end;
+
+    AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], []);
+
+    case FTextCtrlLeftClick of
+      moTCLJump:
+        AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+      moTCLNone: {nothing};
+      moTCLJumpOrBlock: begin
+          AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+          AddCommand(emcSynEditCommand, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl], ecFindBlockOtherEnd, 1);
+        end;
+    end;
+  end;
+
+  if FTextDrag then
+    with FSelActions do begin
+      AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
+    end;
+
+  with FMainActions do begin
+    AddCommand(emcSynEditCommand, False, mbExtra1, ccAny, cdDown, [], [], ecJumpBack);
+    AddCommand(emcSynEditCommand, False, mbExtra2, ccAny, cdDown, [], [], ecJumpForward);
+  end;
+end;
+
+procedure TEditorMouseOptions.Assign(Src: TEditorMouseOptions);
+begin
+  FAltColumnMode      := Src.AltColumnMode;
+  FGutterLeft         := Src.GutterLeft;
+  FTextMiddleClick    := Src.TextMiddleClick;
+  FTextCtrlLeftClick  := Src.TextCtrlLeftClick;
+  FTextDoubleSelLine  := Src.TextDoubleSelLine;
+  FTextDrag           := Src.TextDrag;
+  FTextRightMoveCaret := Src.TextRightMoveCaret;
+
+  FMainActions.Assign         (Src.MainActions);
+  FSelActions.Assign          (Src.SelActions);
+  FGutterActions.Assign       (Src.GutterActions);
+  FGutterActionsFold.Assign   (Src.GutterActionsFold);
+  FGutterActionsFoldExp.Assign(Src.GutterActionsFoldExp);
+  FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
+  FGutterActionsLines.Assign  (Src.GutterActionsLines);
+end;
+
 { TEditorOptions }
 
 constructor TEditorOptions.Create;
@@ -1985,6 +2214,7 @@ var
   res: TLResource;
 begin
   inherited Create;
+  FTempMouseSettings := TEditorMouseOptions.Create(self);
   ConfFileName := SetDirSeparators(GetPrimaryConfigPath + '/' +
     EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
@@ -2155,6 +2385,7 @@ begin
   FMouseGutterActionsLines.Free;
   fKeyMap.Free;
   XMLConfig.Free;
+  FTempMouseSettings.Free;
   inherited Destroy;
 end;
 
@@ -2176,7 +2407,6 @@ var
     MAct: TSynEditMouseActionKeyCmdHelper;
     //ErrShown: Boolean;
   begin
-    MActions.ResetDefaults;
     //ErrShown := False;
 
     // Deleted Defaults
@@ -2259,15 +2489,6 @@ begin
         else
           Exclude(fSynEditOptions2, SynEditOpt2);
     end;
-
-    // Read deprecated value
-    // It is on by default, so only if a user switched it off, actions is required
-    if not XMLConfig.GetValue('EditorOptions/General/Editor/CtrlMouseLinks', True) then
-      for i := fMouseMap.Count-1 downto 0 do
-        if fMouseMap[i].Command = emcMouseLink then
-          fMouseMap.Delete(i);
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/CtrlMouseLinks');
-
 
     fShowTabCloseButtons :=
       XMLConfig.GetValue(
@@ -2400,6 +2621,29 @@ begin
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
 
+    // Read deprecated value
+    // It is on by default, so only if a user switched it off, actions is required
+    if not XMLConfig.GetValue('EditorOptions/General/Editor/DragDropEditing', True) then
+      FTempMouseSettings.TextDrag := False;
+    XMLConfig.DeleteValue('EditorOptions/General/Editor/DragDropEditing');
+
+    if XMLConfig.GetValue('EditorOptions/General/Editor/AltSetsColumnMode', False) then
+      FTempMouseSettings.AltColumnMode := True;
+    XMLConfig.DeleteValue('EditorOptions/General/Editor/AltSetsColumnMode');
+
+    if not XMLConfig.GetValue('EditorOptions/General/Editor/CtrlMouseLinks', True) then
+      FTempMouseSettings.TextCtrlLeftClick := moTCLNone;
+    XMLConfig.DeleteValue('EditorOptions/General/Editor/CtrlMouseLinks');
+
+    if XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickSelectsLine', False) then
+      FTempMouseSettings.TextDoubleSelLine := True;
+    XMLConfig.DeleteValue('EditorOptions/General/Editor/DoubleClickSelectsLine');
+
+    XMLConfig.ReadObject('EditorOptions/Mouse/Default/', FTempMouseSettings);
+    FTempMouseSettings.ResetTextToDefault;
+    FTempMouseSettings.ResetGutterToDefault;
+    FTempMouseSettings.WriteBack;
+    // Load the differences
     LoadMouseAct('EditorOptions/Mouse/Main/', MouseMap);
     LoadMouseAct('EditorOptions/Mouse/MainSelection/', MouseSelMap);
     LoadMouseAct('EditorOptions/Mouse/Gutter/', MouseGutterActions);
@@ -2407,23 +2651,6 @@ begin
     LoadMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
     LoadMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
     LoadMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
-
-    // update depricated values
-    if not XMLConfig.GetValue('EditorOptions/General/Editor/DragDropEditing', True) then
-      for i := fMouseMap.Count-1 downto 0 do
-        if fMouseMap[i].Command = emcStartDragMove then
-          fMouseMap.Delete(i);
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/DragDropEditing');
-
-    if XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickSelectsLine', False) then
-      for i := fMouseMap.Count-1 downto 0 do
-        if (fMouseMap[i].Button = mbLeft) and
-           (fMouseMap[i].ClickCount = ccDouble) and
-           (fMouseMap[i].IsMatchingShiftState([])) and
-           ( (fMouseMap[i].Command = emcSelectWord) or
-             (fMouseMap[i].Command = emcSelectLine) )
-        then fMouseMap[i].Command := emcSelectLine;
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/DoubleClickSelectsLine');
 
   except
     on E: Exception do
@@ -2439,15 +2666,12 @@ var
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
 
-  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
+  Procedure SaveMouseAct(Path: String; MActions, MADef: TSynEditMouseActions);
   var
     i, j, k, OldCnt: Integer;
     MAct: TSynEditMouseActionKeyCmdHelper;
-    MADef: TSynEditMouseActions;
   begin
-    MaDef := TSynEditMouseSelActionsClass(MActions.ClassType).Create(nil);
     MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
-    MADef.ResetDefaults;
     OldCnt := XMLConfig.GetValue(Path + 'Count', 0);
     j := 0;
     for i := 0 to MActions.Count - 1 do begin
@@ -2481,7 +2705,6 @@ var
       XMLConfig.DeletePath(Path + 'Del' + IntToStr(i));
 
     MAct.Free;
-    MADef.Free;
   end;
 
 begin
@@ -2632,13 +2855,20 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
 
-    SaveMouseAct('EditorOptions/Mouse/Main/', MouseMap);
-    SaveMouseAct('EditorOptions/Mouse/MainSelection/', MouseSelMap);
-    SaveMouseAct('EditorOptions/Mouse/Gutter/', MouseGutterActions);
-    SaveMouseAct('EditorOptions/Mouse/GutterFold/', MouseGutterActionsFold);
-    SaveMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
-    SaveMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
-    SaveMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
+    XMLConfig.WriteObject('EditorOptions/Mouse/Default/', FTempMouseSettings);
+    // Create defaults, but do not WriteBack
+    FTempMouseSettings.ResetTextToDefault;
+    FTempMouseSettings.ResetGutterToDefault;
+    // Save differences
+    SaveMouseAct('EditorOptions/Mouse/Main/',          MouseMap,                  FTempMouseSettings.MainActions);
+    SaveMouseAct('EditorOptions/Mouse/MainSelection/', MouseSelMap,               FTempMouseSettings.SelActions);
+    SaveMouseAct('EditorOptions/Mouse/Gutter/',        MouseGutterActions,        FTempMouseSettings.GutterActions);
+    SaveMouseAct('EditorOptions/Mouse/GutterFold/',    MouseGutterActionsFold,    FTempMouseSettings.GutterActionsFold);
+    SaveMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp, FTempMouseSettings.GutterActionsFoldExp);
+    SaveMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol, FTempMouseSettings.GutterActionsFoldCol);
+    SaveMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines,   FTempMouseSettings.GutterActionsLines);
+    // Set back to user values (after create defaults above
+    FTempMouseSettings.Read;
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -2673,14 +2903,10 @@ function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption
   ): string;
 begin
   case SynOption of
-    eoAltSetsColumnMode:
-      Result := 'AltSetsColumnMode';
     eoAutoIndent:
       Result := 'AutoIndent';
     eoBracketHighlight:
       Result := 'BracketHighlight';
-    eoDropFiles:
-      Result := 'DropFiles';
     eoEnhanceHomeKey:
       Result := 'EnhanceHomeKey';
     eoGroupUndo:

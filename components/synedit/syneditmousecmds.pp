@@ -169,6 +169,7 @@ type
     function Add: TSynEditMouseAction;
     procedure Assign(Source: TPersistent); override;
     procedure AssertNoConflict(MAction: TSynEditMouseAction);
+    function Equals(Other: TSynEditMouseActions): Boolean;
     function FindCommand(AnInfo: TSynEditMouseActionInfo;
                          APrevious: TSynEditMouseAction = nil): TSynEditMouseAction;
     procedure ResetDefaults; virtual;
@@ -180,7 +181,8 @@ type
              const AMoveCaret: Boolean;
              const AButton: TMouseButton; const AClickCount: TSynMAClickCount;
              const ADir: TSynMAClickDir; const AShift, AShiftMask: TShiftState;
-             const AOpt: TSynEditorMouseCommandOpt = 0);
+             const AOpt: TSynEditorMouseCommandOpt = 0;
+             const APrior: Integer = 0);
   public
     property Items[Index: Integer]: TSynEditMouseAction read GetItem
       write SetItem; default;
@@ -531,6 +533,19 @@ begin
   end;
 end;
 
+function TSynEditMouseActions.Equals(Other: TSynEditMouseActions): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if Count <> Other.Count then exit;
+
+  for i := 0 to Count - 1 do
+    if Other.IndexOf(Items[i]) < 0 then
+      exit;
+  Result := True;
+end;
+
 function TSynEditMouseActions.FindCommand(AnInfo: TSynEditMouseActionInfo;
   APrevious: TSynEditMouseAction = nil): TSynEditMouseAction;
 var
@@ -575,7 +590,8 @@ end;
 procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
   const AMoveCaret: Boolean; const AButton: TMouseButton;
   const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
-  const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0);
+  const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0;
+  const APrior: Integer = 0);
 var
   new: TSynEditMouseAction;
 begin
@@ -591,6 +607,7 @@ begin
       Shift := AShift;
       ShiftMask := AShiftMask;
       Option := AOpt;
+      Priority := APrior;
     end;
   finally
     dec(FAssertLock);

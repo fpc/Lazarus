@@ -136,6 +136,7 @@ const
     EdtOptionsDisplay     = 200;
     EdtOptionsKeys        = 300;
     EdtOptionsMouse       = 400;
+    EdtOptionsMouseAdv    = 401;
     EdtOptionsColors      = 500;
     EdtOptionsCodetools   = 600;
     EdtOptionsCodeFolding = 700;
