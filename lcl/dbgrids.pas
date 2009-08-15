@@ -1527,7 +1527,7 @@ begin
       Field := GetFieldFromGridColumn(ACol);
       C := ColumnFromGridColumn(ACol);
 
-      if C<>nil then begin
+      if (C<>nil) and (C.Title<>nil) then begin
         tmpCanvas.Font := C.Title.Font;
         ColWidth := tmpCanvas.TextWidth(trim(C.Title.Caption));
         tmpCanvas.Font := C.Font;
