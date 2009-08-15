@@ -685,6 +685,7 @@ begin
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
     ChildData:=Childs[Child];
+    if not ChildData.Visible then continue;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if ComputePosition(ChildData,a,assddLeftTop)<>crSuccess then begin
         DebugLn(['TAutoSizeCtrlData.ComputePositions Failed to compute LeftTop ',DbgSName(Child),' ',dbgs(a)]);
@@ -1025,6 +1026,7 @@ begin
       Child:=WinControl.Controls[i];
       ChildData:=Childs[Child];
       ChildData.ClearSides;
+      if not ChildData.Visible then continue;
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
         ChildData.Sides[a].Side:=asrLeft;
         if (Child.Align in [alLeft,alRight,alTop,alBottom,alClient])
@@ -1061,6 +1063,7 @@ begin
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
     ChildData:=Childs[Child];
+    if not ChildData.Visible then continue;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if (ChildData.Sides[a].DistanceState[assddLeftTop]=assdfValid)
       and (ChildData.Sides[a].DistanceState[assddRightBottom]=assdfValid)
@@ -1085,8 +1088,9 @@ begin
     begin
       Child:=WinControl.Controls[i];
       ChildData:=Childs[Child];
-      if (Child.Align=alNone)
-      and (akLeft in Child.Anchors) and (Child.AnchorSide[akLeft].Control=nil)
+      if not ChildData.Visible then continue;
+      if (Child.Align<>alNone) then continue;
+      if (akLeft in Child.Anchors) and (Child.AnchorSide[akLeft].Control=nil)
       then begin
         if (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
           MoveNonAlignedToLeft:=Max(MoveNonAlignedToLeft,
@@ -1098,8 +1102,7 @@ begin
             -(PreferredClientWidth
               -ChildData.Sides[akLeft].Distance[assddRightBottom]));}
       end;
-      if (Child.Align=alNone)
-      and (akTop in Child.Anchors) and (Child.AnchorSide[akTop].Control=nil)
+      if (akTop in Child.Anchors) and (Child.AnchorSide[akTop].Control=nil)
       then begin
         if (ChildData.Sides[akTop].DistanceState[assddLeftTop]=assdfValid) then
           MoveNonAlignedToTop:=Max(MoveNonAlignedToTop,
