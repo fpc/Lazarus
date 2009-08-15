@@ -1464,8 +1464,9 @@ begin
     // Fold
     if length(FoldInfo) > 0 then
       ClipHelper.AddTag(synClipTagFold, @FoldInfo[1], length(FoldInfo));
-    if not ClipHelper.WriteToClipboard(Clipboard) then
-      raise ESynEditError.Create('Clipboard copy operation failed');
+    if not ClipHelper.WriteToClipboard(Clipboard) then begin
+      {$IFDEF SynClipboardExceptions}raise ESynEditError.Create('Clipboard copy operation failed');{$ENDIF}
+    end;
   finally
     ClipHelper.Free;
   end;
