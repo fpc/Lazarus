@@ -1314,6 +1314,10 @@ msgstr "标识符自动完成"
 msgid "Identifier policy"
 msgstr "标识符规则"
 
+#: lazarusidestrconsts.dlgideoptions
+msgid "IDE Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "忽略"
@@ -1733,6 +1737,10 @@ msgstr "按钮"
 msgid "Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptheadcontext
+msgid "Context"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
 msgid "Click"
@@ -1755,6 +1763,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
 msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadorder
+msgctxt "lazarusidestrconsts.dlgmouseoptheadorder"
+msgid "Order"
+msgstr "次序"
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
 msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
@@ -1838,6 +1851,18 @@ msgstr "文本"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "所选的"
+
+#: lazarusidestrconsts.dlgmouseoptotheract
+msgid "Other actions using the same button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracthint
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracttoggle
+msgid "Filter Mod-Keys"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
@@ -2596,6 +2621,7 @@ msgid "Mirror Vertical"
 msgstr "垂直翻转"
 
 #: lazarusidestrconsts.fdmorder
+msgctxt "lazarusidestrconsts.fdmorder"
 msgid "Order"
 msgstr "次序"
 

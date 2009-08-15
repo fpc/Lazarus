@@ -1306,6 +1306,10 @@ msgstr "Завершення ідентифікаторів"
 msgid "Identifier policy"
 msgstr "Політика ідентифікаторів"
 
+#: lazarusidestrconsts.dlgideoptions
+msgid "IDE Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Ігнорувати"
@@ -1721,6 +1725,10 @@ msgstr ""
 msgid "Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptheadcontext
+msgid "Context"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
 msgid "Click"
@@ -1743,6 +1751,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
 msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadorder
+msgctxt "lazarusidestrconsts.dlgmouseoptheadorder"
+msgid "Order"
+msgstr "Порядок"
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
 msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
@@ -1826,6 +1839,18 @@ msgstr "Текст"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Виділення"
+
+#: lazarusidestrconsts.dlgmouseoptotheract
+msgid "Other actions using the same button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracthint
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracttoggle
+msgid "Filter Mod-Keys"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
@@ -2584,6 +2609,7 @@ msgid "Mirror Vertical"
 msgstr "Вертикальне дзеркало"
 
 #: lazarusidestrconsts.fdmorder
+msgctxt "lazarusidestrconsts.fdmorder"
 msgid "Order"
 msgstr "Порядок"
 

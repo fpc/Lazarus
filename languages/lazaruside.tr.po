@@ -1307,6 +1307,10 @@ msgstr ""
 msgid "Identifier policy"
 msgstr ""
 
+#: lazarusidestrconsts.dlgideoptions
+msgid "IDE Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr ""
@@ -1722,6 +1726,10 @@ msgstr ""
 msgid "Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptheadcontext
+msgid "Context"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
 msgid "Click"
@@ -1743,6 +1751,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadorder
+msgctxt "lazarusidestrconsts.dlgmouseoptheadorder"
+msgid "Order"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
@@ -1826,6 +1839,18 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheract
+msgid "Other actions using the same button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracthint
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracttoggle
+msgid "Filter Mod-Keys"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
@@ -2575,6 +2600,7 @@ msgid "Mirror Vertical"
 msgstr ""
 
 #: lazarusidestrconsts.fdmorder
+msgctxt "lazarusidestrconsts.fdmorder"
 msgid "Order"
 msgstr ""
 

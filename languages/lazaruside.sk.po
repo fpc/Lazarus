@@ -1316,6 +1316,10 @@ msgstr "Dokončovanie identifikátorov"
 msgid "Identifier policy"
 msgstr "Pravidlá identifikátora"
 
+#: lazarusidestrconsts.dlgideoptions
+msgid "IDE Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Ignorovať"
@@ -1731,6 +1735,10 @@ msgstr ""
 msgid "Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptheadcontext
+msgid "Context"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
 msgid "Click"
@@ -1753,6 +1761,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
 msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptheadorder
+msgctxt "lazarusidestrconsts.dlgmouseoptheadorder"
+msgid "Order"
+msgstr "Poradie"
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
 msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
@@ -1836,6 +1849,18 @@ msgstr "Text"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Výber"
+
+#: lazarusidestrconsts.dlgmouseoptotheract
+msgid "Other actions using the same button"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracthint
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptotheracttoggle
+msgid "Filter Mod-Keys"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
@@ -2594,6 +2619,7 @@ msgid "Mirror Vertical"
 msgstr "Preklopiť zvislo"
 
 #: lazarusidestrconsts.fdmorder
+msgctxt "lazarusidestrconsts.fdmorder"
 msgid "Order"
 msgstr "Poradie"
 

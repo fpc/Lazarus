@@ -81,7 +81,7 @@ begin
   PrevEditor := nil;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
-  Caption := lisMenuGeneralOptions;
+  Caption := dlgIDEOptions;
 
   CreateEditors;
 

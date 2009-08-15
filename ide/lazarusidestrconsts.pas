@@ -875,6 +875,7 @@ resourcestring
   dlgGroupHelp = 'Help';
 
   // Options dialog
+  dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   
