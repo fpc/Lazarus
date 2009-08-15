@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-15 02:45+0300\n"
+"PO-Revision-Date: 2009-08-15 18:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -752,7 +752,7 @@ msgstr "Стиль модулей"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
-msgstr "Генерировать код для valgrind"
+msgstr "Генерировать код для Valgrind"
 
 #: lazarusidestrconsts.dlgcoverbosity
 msgid "Verbosity"
@@ -1243,7 +1243,7 @@ msgstr "Параметры"
 
 #: lazarusidestrconsts.dlggeneratedwarf
 msgid "Generate dwarf debug information"
-msgstr "Генерировать отладочную информацию в формате dwarf"
+msgstr "Генерировать отладочную информацию в формате DWARF"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -1347,7 +1347,7 @@ msgstr "Цвет границы поля (лев)"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr "Положение разделителя поля (лев)"
+msgstr "Положение отделителя поля (лев)"
 
 #: lazarusidestrconsts.dlggutterwidth
 msgid "Gutter width"
@@ -2047,7 +2047,7 @@ msgstr "Заменять выделение"
 
 #: lazarusidestrconsts.dlgpackagegraph
 msgid "Package Graph"
-msgstr ""
+msgstr "Диаграмма пакетов"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
