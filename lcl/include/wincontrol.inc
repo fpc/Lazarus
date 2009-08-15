@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'OIMiscGroupBox';
+const CheckPostionName = 'Button1';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -1002,7 +1002,7 @@ begin
   VisibleCount:=0;
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    if Child.Align=alCustom then begin
+    if (Child.Align=alCustom) and Child.IsControlVisible then begin
       // this is not LCL business
       exit;
     end;
@@ -3259,7 +3259,7 @@ begin
       AdjustClientRect(CurClientRect);
       // get minimum left, top of non aligned childs
       GetMoveDiffForNonAlignedChilds(CurClientRect,dx,dy);
-      //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' ChildsBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect)]);
+      //DebugLn(['TWinControl.DoAutoSize ',DbgSName(Self),' CurClientRect=',dbgs(CurClientRect)]);
 
       if (dx<>0) or (dy<>0) then begin
         // move all free childs to left and top of client area

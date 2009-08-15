@@ -3070,9 +3070,9 @@ begin
   if CheckPosition(Self) then
     DebugLn(['TControl.UpdateBaseBounds '+DbgSName(Self),
     ' OldBounds='+dbgs(FBaseBounds),
-    ' OldClientSize='+dbgs(FBaseParentClientSize),
+    ' OldParentClientSize='+dbgs(FBaseParentClientSize),
     ' NewBounds='+dbgs(NewBaseBounds),
-    ' NewClientSize='+dbgs(NewBaseParentClientSize),
+    ' NewParentClientSize='+dbgs(NewBaseParentClientSize),
     '']);
   {$ENDIF}
   FBaseBounds:=NewBaseBounds;
