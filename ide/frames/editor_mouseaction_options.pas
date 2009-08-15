@@ -151,7 +151,7 @@ begin
   ResetGutterButtonClick(nil);
 end;
 
-function TEditorMouseOptionsFrame.IsTextSettingsChanged: Boolean;
+function TEditorMouseOptionsFrame.IsGutterSettingsChanged: Boolean;
 begin
   Result := not (
     ( (GutterLeftRadio1.Checked and (FTempMouseSettings.GutterLeft = moGLDownClick)) or
@@ -161,7 +161,7 @@ begin
 
 end;
 
-function TEditorMouseOptionsFrame.IsGutterSettingsChanged: Boolean;
+function TEditorMouseOptionsFrame.IsTextSettingsChanged: Boolean;
 begin
   Result := not (
     (FTempMouseSettings.AltColumnMode = TextAltMode.Checked) and
