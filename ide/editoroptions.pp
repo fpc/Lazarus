@@ -2101,13 +2101,13 @@ begin
     CDir := cdUp;
     with FGutterActions do begin
       if FAltColumnMode then begin
-        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift, ssAlt], emcoSelectionStart);
-        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift, ssAlt], emcoSelectionContinue);
+        AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift, ssAlt], emcoSelectionStart);
+        AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift, ssAlt], emcoSelectionContinue);
         AddCommand(emcStartColumnSelections, True, mbLeft, ccAny, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
         AddCommand(emcStartColumnSelections, True, mbLeft, ccAny, cdDown, [ssAlt, ssShift], [ssShift, ssAlt], emcoSelectionContinue);
       end else begin
-        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
-        AddCommand(emcStartLineSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
+        AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
+        AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
       end;
     end;
   end;
@@ -2120,11 +2120,11 @@ begin
     AddCommand(emcNone,                False, mbLeft,   ccAny,    CDir, [], []);
   end;
   with FGutterActionsFoldCol do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [], [], emcoCodeFoldCollapsOne);
-  end;
-  with FGutterActionsFoldExp do begin
     AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
     AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [], [ssCtrl], emcoCodeFoldExpandAll);
+  end;
+  with FGutterActionsFoldExp do begin
+    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [], [], emcoCodeFoldCollapsOne);
   end;
 
 end;
