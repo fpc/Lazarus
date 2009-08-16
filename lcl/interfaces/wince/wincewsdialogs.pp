@@ -21,7 +21,7 @@
 }
 unit WinCEWSDialogs;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 
@@ -110,21 +110,32 @@ type
     ShellTreeView: TShellTreeView;
     ShellListView: TShellListView;
     Panel: TPanel;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
+    SaveEdit: TEdit;
     // Communication fields
     LCLDialog: TFileDialog;
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent; ALCLDialog: TFileDialog);
     procedure HandleOkClick(ASender: TObject);
     procedure HandleCancelClick(ASender: TObject);
+    procedure HandleSelectItem(Sender: TObject;
+     Item: TListItem; Selected: Boolean);
   end;
 
 { TWinCEFileDialogForm }
 
-constructor TWinCEFileDialogForm.Create(AOwner: TComponent);
+{
+  The size of the window is determined only when creating the
+  handle, so any reference to TForm.Width and TForm.Height
+  here doesnt correspond to the final value.
+}
+constructor TWinCEFileDialogForm.Create(AOwner: TComponent; ALCLDialog: TFileDialog);
 var
-  AButton: TBitBtn;
   AImage: TPortableNetworkGraphic;
 begin
   inherited Create(AOwner);
+
+  LCLDialog := ALCLDialog;
 
   {$ifdef VerboseWinCE}
     WriteLn(':>TWinCEFileDialogForm.Create Width=', Width,
@@ -143,24 +154,27 @@ begin
   AImage := TPortableNetworkGraphic.Create;
 
   // ok button
-  AButton := TBitBtn.Create(Panel);
-  AButton.Parent := Panel;
-  AButton.Height := 17;
-  AButton.Width := 17;
+  OkButton := TBitBtn.Create(Panel);
+  OkButton.Parent := Panel;
+  OkButton.Height := 17;
+  OkButton.Width := 17;
   AImage.LoadFromLazarusResource('wincedialog_ok');
-  AButton.Glyph.Assign(AImage);
-  AButton.OnClick := @HandleOkClick;
-  AButton.Left := 0;
+  OkButton.Glyph.Assign(AImage);
+  OkButton.OnClick := HandleOkClick;
+  OkButton.Left := 0;
+  // In a TOpenDialog the Ok button is only enabled when a file is selected
+  if (LCLDialog is TOpenDialog) then
+    OkButton.Enabled := False;
 
   // cancel button
-  AButton := TBitBtn.Create(Panel);
-  AButton.Parent := Panel;
-  AButton.Height := 17;
-  AButton.Width := 17;
+  CancelButton := TBitBtn.Create(Panel);
+  CancelButton.Parent := Panel;
+  CancelButton.Height := 17;
+  CancelButton.Width := 17;
   AImage.LoadFromLazarusResource('wincedialog_cancel');
-  AButton.Glyph.Assign(AImage);
-  AButton.OnClick := @HandleCancelClick;
-  AButton.Left := 20;
+  CancelButton.Glyph.Assign(AImage);
+  CancelButton.OnClick := HandleCancelClick;
+  CancelButton.Left := 20;
 
   // dialog images
   // the wincedialogs.lrs image is compiled with the script at
@@ -186,21 +200,62 @@ begin
   ShellListView.Top := ShellTreeView.Height;
   ShellListView.Width := Width;
   ShellListView.Height := Height - ShellTreeView.Height - Panel.Height;
+  ShellListView.Align := alClient;
   ShellListView.ShellTreeView := ShellTreeView;
   ShellListView.ScrollBars := ssNone;
+  ShellListView.OnSelectItem := HandleSelectItem;
+
+  // TEdit for save dialog
+  if LCLDialog is TSaveDialog then
+  begin
+    SaveEdit := TEdit.Create(Self);
+    SaveEdit.Parent := Self;
+    SaveEdit.Left := 0;
+    SaveEdit.Height := 20;
+    SaveEdit.Top := Height - Panel.Height - SaveEdit.Height;
+    SaveEdit.Width := Width;
+    SaveEdit.Align := alBottom;
+  end;
 end;
 
 procedure TWinCEFileDialogForm.HandleOkClick(ASender: TObject);
 begin
-  if ShellListView.Selected = nil then Exit;
+  if (LCLDialog is TSaveDialog) then
+  begin
+    if SaveEdit.Text = '' then Exit;
 
-  LCLDialog.FileName := ShellListView.GetPathFromItem(ShellListView.Selected);
-  ModalResult := mrOk;
+    LCLDialog.FileName := SaveEdit.Text;
+    ModalResult := mrOk;
+  end
+  else
+  begin
+    if ShellListView.Selected = nil then Exit;
+
+    LCLDialog.FileName := ShellListView.GetPathFromItem(ShellListView.Selected);
+    ModalResult := mrOk;
+  end;
 end;
 
 procedure TWinCEFileDialogForm.HandleCancelClick(ASender: TObject);
 begin
   ModalResult := mrCancel;
+end;
+
+procedure TWinCEFileDialogForm.HandleSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+begin
+  // Selecting an item changes the filename in the TEdit
+  // in save dialogs
+  if (LCLDialog is TSaveDialog) and Selected then
+  begin
+    SaveEdit.Text := Item.Caption;
+  end
+  // In the OpenDialog the state of the Ok button is dependent
+  // on the selection of an item
+  else
+  begin
+    OkButton.Enabled := Selected;
+  end;
 end;
 
 { TWinCEWSFileDialog }
@@ -209,9 +264,8 @@ class function TWinCEWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialo
 var
   ResultForm: TWinCEFileDialogForm absolute Result;
 begin
-  Result := THandle(TWinCEFileDialogForm.Create(Application));
-
-  ResultForm.LCLDialog := TFileDialog(ACommonDialog);
+  Result := THandle(TWinCEFileDialogForm.Create(Application,
+    TFileDialog(ACommonDialog)));
 end;
 
 class procedure TWinCEWSFileDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
