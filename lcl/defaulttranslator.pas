@@ -183,15 +183,26 @@ procedure TDefaultTranslator.TranslateStringProperty(Sender: TObject;
   const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
 var
   s: String;
+  Section: String;
+  Component: TComponent;
 begin
   if not Assigned(FMOFile) then exit;
   if not Assigned(PropInfo) then exit;
-{DO we really need this?}
+  // do not translate at design time
   if Instance is TComponent then
-   if csDesigning in (Instance as TComponent).ComponentState then exit;
-{End DO :)}
-  if (AnsiUpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING') then exit;
+    if csDesigning in (Instance as TComponent).ComponentState then exit;
+
+  if (UpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING') then exit;
   s:=FMOFile.Translate(Content);
+  if s = '' then
+  begin
+    Component := Instance as TComponent;
+    if Component.Owner<>nil then
+      Section := UpperCase(Component.Owner.Name) + '.';
+    Section := 'T' + Section + UpperCase(Component.Name) + '.' +
+      UpperCase(PropInfo^.Name);
+    s := FMoFile.Translate(Section + #4 + Content);
+  end;
   if s<>'' then Content:=s;
 end;
 
