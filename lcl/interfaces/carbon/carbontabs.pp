@@ -89,6 +89,7 @@ type
     function GetControlTabIndex: Integer; // visible index, without hidden or scrolled tabs
     function GetTabIndex(APageIndex: Integer): Integer;
     function TabIndexToPageIndex(AIndex: Integer): Integer;
+    function SetText(const S: String): Boolean; override;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
@@ -348,20 +349,30 @@ var
   Err: OSStatus;
   Ver: SInt32;
 begin
-  FShowTabBar:=True;
+  FShowTabBar := (LCLObject as TCustomNotebook).ShowTabs;
+
   case (LCLObject as TCustomNotebook).TabPosition of
   tpTop: Direction := kControlTabDirectionNorth;
   tpBottom: Direction := kControlTabDirectionSouth;
   tpRight: Direction := kControlTabDirectionEast;
   tpLeft: Direction := kControlTabDirectionWest;
   end;
-  
-  FillChar(TabEntry, SizeOf(TabEntry), 0);
-  if OSError(
-    CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      kControlTabSizeLarge, Direction, 0, TabEntry, Control),
-    Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
-    
+
+  if FShowTabBar then
+  begin
+    FillChar(TabEntry, SizeOf(TabEntry), 0);
+    if OSError(
+      CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
+        kControlTabSizeLarge, Direction, 0, TabEntry, Control),
+      Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
+  end
+  else
+  begin
+    if OSError(
+      CreateGroupBoxControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
+        nil, True, Control),
+      Self, SCreateWidget, 'CreateGroupBoxControl') then RaiseCreateWidgetError(LCLObject);
+  end;
   FOldTabIndex := -1;
   FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
   FTabs := TObjectList.Create(False);
@@ -373,43 +384,46 @@ begin
     DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
     Exit;
   end;
-  
-  // create arrows for tabs scrolling
-  OSError(
-    CreateDisclosureTriangleControl(GetTopParentWindow,
-      GetCarbonRect(GetPrevArrowBounds(R)),
-      kControlDisclosureTrianglePointRight, nil, 0, False, False, FPrevArrow),
-    Self, SCreateWidget, 'CreatePopupArrowControl');
-  OSError(HIViewSetVisible(FPrevArrow, False), Self, SCreateWidget, SViewVisible);
-  OSError(HIViewAddSubview(Widget, FPrevArrow), Self, SCreateWidget,
-    SViewAddView);
 
-  OSError(
-    CreateDisclosureTriangleControl(GetTopParentWindow,
-      GetCarbonRect(GetNextArrowBounds(R)),
-      kControlDisclosureTrianglePointRight, nil, 0, False, False, FNextArrow),
-    Self, SCreateWidget, 'CreatePopupArrowControl');
-  OSError(HIViewSetVisible(FNextArrow, False), Self, SCreateWidget, SViewVisible);
-  OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
-    SViewAddView);
+  if FShowTabBar then
+  begin
+    // create arrows for tabs scrolling
+    OSError(
+      CreateDisclosureTriangleControl(GetTopParentWindow,
+        GetCarbonRect(GetPrevArrowBounds(R)),
+        kControlDisclosureTrianglePointRight, nil, 0, False, False, FPrevArrow),
+      Self, SCreateWidget, 'CreatePopupArrowControl');
+    OSError(HIViewSetVisible(FPrevArrow, False), Self, SCreateWidget, SViewVisible);
+    OSError(HIViewAddSubview(Widget, FPrevArrow), Self, SCreateWidget,
+      SViewAddView);
 
-  if csDesigning in LCLObject.ComponentState then
-    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit)
-  else
-    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-  InstallControlEventHandler(FPrevArrow,
-    RegisterEventHandler(@CarbonTabsPrevArrow_Track),
-    1, @TmpSpec, Pointer(Self), nil);
-  InstallControlEventHandler(FNextArrow,
-    RegisterEventHandler(@CarbonTabsNextArrow_Track),
-    1, @TmpSpec, Pointer(Self), nil);
+    OSError(
+      CreateDisclosureTriangleControl(GetTopParentWindow,
+        GetCarbonRect(GetNextArrowBounds(R)),
+        kControlDisclosureTrianglePointRight, nil, 0, False, False, FNextArrow),
+      Self, SCreateWidget, 'CreatePopupArrowControl');
+    OSError(HIViewSetVisible(FNextArrow, False), Self, SCreateWidget, SViewVisible);
+    OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
+      SViewAddView);
 
-  Err:=Gestalt(gestaltSystemVersion, Ver);
-  if (Err <> 0) or (Ver >= $1040) then begin
-    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+    if csDesigning in LCLObject.ComponentState then
+      TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit)
+    else
+      TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
     InstallControlEventHandler(FPrevArrow,
-      RegisterEventHandler(@CarbonTabsPrevArrow_Reverse),
+      RegisterEventHandler(@CarbonTabsPrevArrow_Track),
       1, @TmpSpec, Pointer(Self), nil);
+    InstallControlEventHandler(FNextArrow,
+      RegisterEventHandler(@CarbonTabsNextArrow_Track),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    Err:=Gestalt(gestaltSystemVersion, Ver);
+    if (Err <> 0) or (Ver >= $1040) then begin
+      TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+      InstallControlEventHandler(FPrevArrow,
+        RegisterEventHandler(@CarbonTabsPrevArrow_Reverse),
+        1, @TmpSpec, Pointer(Self), nil);
+    end;
   end;
 
   FFirstIndex := 0;
@@ -509,10 +523,12 @@ begin
       FFirstIndex := 0;
       FLastIndex := 0;
 
-      SetControl32BitMaximum(ControlRef(Widget), 0);
+      if not FShowTabBar then
+        FLastIndex := FTabs.Count - 1;
+
+      SetControl32BitMaximum(ControlRef(Widget), FTabs.Count);
 
       UpdateTabIndex;
-      // set tab count
       Exit;
     end;
 
@@ -632,8 +648,8 @@ begin
     // update arrows visible
     if FShowTabBar then
     begin
-      OSError(HIViewSetVisible(FPrevArrow, FFirstIndex > 0), Self, SName, SViewVisible);
-      OSError(HIViewSetVisible(FNextArrow, FLastIndex < FTabs.Count - 1), Self, SName, SViewVisible);
+      OSError(HIViewSetVisible(FPrevArrow, (FFirstIndex > 0)), Self, SName, SViewVisible);
+      OSError(HIViewSetVisible(FNextArrow, (FLastIndex < FTabs.Count - 1)), Self, SName, SViewVisible);
     end;
 
     if UpdateIndex then UpdateTabIndex;
@@ -703,6 +719,12 @@ begin
     if not (LCLObject as TCustomNotebook).Page[I].TabVisible then Inc(Result);
     Inc(I);
   end;
+end;
+
+function TCarbonTabsControl.SetText(const S: String): Boolean;
+begin
+  // caption is not supported
+  Result := True;
 end;
 
 
@@ -799,7 +821,12 @@ var
   AClientRect: MacOSAll.Rect;
 begin
   Result := False;
-  
+
+  if not FShowTabBar then
+  begin
+    Result := GetControlContentRect(ARect);
+    Exit;
+  end;
   //DebugLn('TCarbonTabsControl.GetClientRect');
 
   if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
@@ -834,12 +861,15 @@ begin
     UpdateContentBounds;
     
     GetClientRect(R);
-    
-    OSError(HIViewSetFrame(FPrevArrow, RectToCGRect(GetPrevArrowBounds(R))),
-      Self, SSetBounds, SViewFrame);
-    OSError(HIViewSetFrame(FNextArrow, RectToCGRect(GetNextArrowBounds(R))),
-      Self, SSetBounds, SViewFrame);
-    
+
+    if FShowTabBar then
+    begin
+      OSError(HIViewSetFrame(FPrevArrow, RectToCGRect(GetPrevArrowBounds(R))),
+        Self, SSetBounds, SViewFrame);
+      OSError(HIViewSetFrame(FNextArrow, RectToCGRect(GetNextArrowBounds(R))),
+        Self, SSetBounds, SViewFrame);
+    end;
+
     Result := True;
   end;
   
@@ -993,28 +1023,31 @@ var
   Notebook: TCustomNotebook;
   Page: TCustomPage;
 begin
-  FShowTabBar := AShow;
-  if AShow then // add all tabs
+  if FShowTabBar <> AShow then
   begin
-    Notebook := LCLObject as TCustomNotebook;
-    for I := 0 to Notebook.PageCount - 1 do
+    RecreateWnd(LCLObject);
+    Exit;
+  end
+  else
+    FShowTabBar := AShow;
+
+  Notebook := LCLObject as TCustomNotebook;
+  for I := 0 to Notebook.PageCount - 1 do
+  begin
+    Page := Notebook.Page[I];
+    //DebugLn('TCarbonTabsControl.ShowTabs True ' + DbgS(I) + ' Handle ' +
+    //  DbgS(Page.Handle) + ' TabVisible: ' + DbgS(Page.TabVisible));
+
+    if Page.TabVisible or (csDesigning in Page.ComponentState) then
     begin
-      Page := Notebook.Page[I];
-      //DebugLn('TCarbonTabsControl.ShowTabs True ' + DbgS(I) + ' Handle ' +
-      //  DbgS(Page.Handle) + ' TabVisible: ' + DbgS(Page.TabVisible));
-      
-      if Page.TabVisible or (csDesigning in Page.ComponentState) then
+      if FTabs.IndexOf(TCarbonTab(Page.Handle)) < 0 then
       begin
-        if FTabs.IndexOf(TCarbonTab(Page.Handle)) < 0 then
-        begin
-          FTabs.Insert(Page.VisibleIndex, TCarbonTab(Page.Handle));
-          TCarbonTab(Page.Handle).Attach(Self);
-        end;
+        FTabs.Insert(Page.VisibleIndex, TCarbonTab(Page.Handle));
+        TCarbonTab(Page.Handle).Attach(Self);
       end;
     end;
   end;
-  //else FTabs.Clear; // remove all tabs
-  
+
   UpdateTabs;
   ShowTab;
 end;
