@@ -713,6 +713,7 @@ type
     procedure ResetGutterToDefault;
     procedure ResetTextToDefault;
     procedure Assign(Src: TEditorMouseOptions); reintroduce;
+    function IsEqualToMouseActions: Boolean;
 
     property MainActions: TSynEditMouseActions read FMainActions;
     property SelActions: TSynEditMouseActions read FSelActions;
@@ -2203,6 +2204,25 @@ begin
   FGutterActionsFoldExp.Assign(Src.GutterActionsFoldExp);
   FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
   FGutterActionsLines.Assign  (Src.GutterActionsLines);
+end;
+
+function TEditorMouseOptions.IsEqualToMouseActions: Boolean;
+var
+  Temp: TEditorMouseOptions;
+begin
+  Temp := TEditorMouseOptions.Create(nil);
+  Temp.Assign(self);
+  Temp.ResetTextToDefault;
+  Temp.ResetGutterToDefault;
+  Result :=
+    Temp.MainActions.Equals(self.MainActions) and
+    Temp.SelActions.Equals (self.SelActions) and
+    Temp.GutterActions.Equals       (self.GutterActions) and
+    Temp.GutterActionsFold.Equals   (self.GutterActionsFold) and
+    Temp.GutterActionsFoldCol.Equals(self.GutterActionsFoldCol) and
+    Temp.GutterActionsFoldExp.Equals(self.GutterActionsFoldExp) and
+    Temp.GutterActionsLines.Equals  (self.GutterActionsLines);
+  Temp.Free;
 end;
 
 { TEditorOptions }

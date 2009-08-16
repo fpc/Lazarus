@@ -1,9 +1,9 @@
 inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
-  Height = 455
+  Height = 487
   Width = 607
   Anchors = [akTop]
   AutoSize = False
-  ClientHeight = 455
+  ClientHeight = 487
   ClientWidth = 607
   Visible = False
   DesignLeft = 153
@@ -13,6 +13,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Control = BottomDivider
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ResetAllButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 16
     Top = 329
@@ -127,6 +129,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Control = BottomDivider
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ResetAllButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 16
     Top = 329

@@ -77,7 +77,6 @@ type
     FTempMouseSettings: TEditorMouseOptions;
     function IsTextSettingsChanged: Boolean;
     function IsGutterSettingsChanged: Boolean;
-    function IsEqualToMouseActions: Boolean;
   protected
     procedure SetVisible(Value: Boolean); override;
   public
@@ -98,7 +97,7 @@ procedure TEditorMouseOptionsFrame.CheckOrRadioChange(Sender: TObject);
 var
   MouseDiff: Boolean;
 begin
-  MouseDiff := not IsEqualToMouseActions;
+  MouseDiff := not FTempMouseSettings.IsEqualToMouseActions;
   ResetTextButton.Enabled   := MouseDiff or IsTextSettingsChanged;
   ResetGutterButton.Enabled := MouseDiff or IsGutterSettingsChanged;
   ResetAllButton.Enabled    := ResetTextButton.Enabled or ResetGutterButton.Enabled;
@@ -177,25 +176,6 @@ begin
       (CtrlLeftRadio3.Checked and (FTempMouseSettings.TextCtrlLeftClick = moTCLJumpOrBlock))
     )
   );
-end;
-
-function TEditorMouseOptionsFrame.IsEqualToMouseActions: Boolean;
-var
-  Current: TEditorMouseOptions;
-begin
-  Current := TEditorMouseOptions.Create(nil);
-  Current.Assign(FTempMouseSettings);
-  Current.ResetTextToDefault;
-  Current.ResetGutterToDefault;
-  Result :=
-    Current.MainActions.Equals(FTempMouseSettings.MainActions) and
-    Current.SelActions.Equals (FTempMouseSettings.SelActions) and
-    Current.GutterActions.Equals       (FTempMouseSettings.GutterActions) and
-    Current.GutterActionsFold.Equals   (FTempMouseSettings.GutterActionsFold) and
-    Current.GutterActionsFoldCol.Equals(FTempMouseSettings.GutterActionsFoldCol) and
-    Current.GutterActionsFoldExp.Equals(FTempMouseSettings.GutterActionsFoldExp) and
-    Current.GutterActionsLines.Equals(FTempMouseSettings.GutterActionsLines);
-  Current.Free;
 end;
 
 procedure TEditorMouseOptionsFrame.SetVisible(Value: Boolean);
