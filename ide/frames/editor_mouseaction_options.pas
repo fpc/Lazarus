@@ -97,7 +97,7 @@ procedure TEditorMouseOptionsFrame.CheckOrRadioChange(Sender: TObject);
 var
   MouseDiff: Boolean;
 begin
-  MouseDiff := not FTempMouseSettings.IsEqualToMouseActions;
+  MouseDiff := not FTempMouseSettings.IsPresetEqualToMouseActions;
   ResetTextButton.Enabled   := MouseDiff or IsTextSettingsChanged;
   ResetGutterButton.Enabled := MouseDiff or IsGutterSettingsChanged;
   ResetAllButton.Enabled    := ResetTextButton.Enabled or ResetGutterButton.Enabled;
