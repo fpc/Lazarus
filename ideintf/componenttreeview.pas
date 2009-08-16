@@ -238,8 +238,10 @@ begin
     if (AnObject is TWinControl) and 
        (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
        not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
-       (TWinControl(AnObject).Owner<>nil) and // TReader/TWriter only supports this
-       (TWinControl(AnObject).Owner.Owner=nil) then // TReader/TWriter only supports this
+       ( // TReader/TWriter only supports this
+         (TWinControl(AnObject).Owner = nil) or // root
+         (TWinControl(AnObject).Owner.Owner = nil) // child of a root
+       ) then
     begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
