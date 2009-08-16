@@ -1684,49 +1684,46 @@ end;
   Returns: true on success
 
   Returns the current widget Width and Height
+
+  Note: Windows.GetWindowInfo doesnt exist in wince, but
+  we can use GetWindowLong and other APIs for most information
+
+  Also GetWindowPlacement doesnt exist
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 var
-  WP: WINDOWPLACEMENT;
   R: TRect;
-  Style, ExStyle: LongInt;
   WindowInfo: PWindowInfo;
+  Style, ExStyle: longint;
 
-    procedure AdjustForBuddySize;
-    var
-      BuddyWidth, BuddyHeight: integer;
-    begin
-      GetWindowSize(Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0), BuddyWidth, BuddyHeight);
-      Inc(Width, BuddyWidth);
-    end;
+{  procedure AdjustForBuddySize;
+  var
+    BuddyHandle: HWND;
+    BuddyWP: WINDOWPLACEMENT;
+  begin
+    BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
+    if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
+      then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
+  end;}
 
 begin
-  WP.length := SizeOf(WP);
-//  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
-//  if (WP.showCmd=SW_MAXIMIZE) then
-  begin
-    // if the form is maximized, you can't use the normal size
-    Result := Boolean(Windows.GetWindowRect(Handle,@R));
-    with R do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;
-  end;
-{  else
-    with WP.rcNormalPosition do
-    begin
-      Width := Right - Left;
-      Height := Bottom - Top;
-    end;}
-  WindowInfo := GetWindowInfo(Handle);
+  Result := Boolean(Windows.GetWindowRect(Handle, R));
 
-  //debugln('TWinCEWidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
+  if not Result then
+    Exit;
+
+  // No special handling for maximized windows
+  // they dont exist in wince anyway, they are
+  // emulated by calculating the desktop size
+  Width := R.Right - R.Left;
+  Height := R.Bottom - R.Top;
+
+  WindowInfo := winceproc.GetWindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
-  Style := Windows.GetWindowLong(Handle, GWL_STYLE);
-  ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
+  Style := Windows.GetWindowLongW(Handle, GWL_STYLE);
+  ExStyle := Windows.GetWindowLongW(Handle, GWL_EXSTYLE);
   if (Style and WS_THICKFRAME) <> 0 then
   begin
     // thick, sizing border
@@ -1740,6 +1737,8 @@ begin
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
     Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
   end;
+
+  // ExcludeCaption
   if (Style and WS_CAPTION) <> 0 then
     if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
       Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
@@ -1751,8 +1750,6 @@ begin
 end;
 
 {
-
-
 function TWinCEWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint
   ): Boolean;

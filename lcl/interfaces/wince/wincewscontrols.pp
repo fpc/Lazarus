@@ -246,7 +246,7 @@ begin
       WindowInfo^.WinControl := AWinControl;
       AWinControl.Handle := Window;
       if SubClassWndProc <> nil then
-        WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
+        WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLongW(
           Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
         lhFont := WinCEWidgetset.MessageFont

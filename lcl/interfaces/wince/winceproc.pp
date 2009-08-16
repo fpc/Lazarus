@@ -1311,16 +1311,16 @@ Begin
 end;
 
 function GetWinCEPlatform: TApplicationType;
-{$ifndef Win32}
+{$ifdef Win32}
+begin
+  Result := atDesktop;
+end;
+{$else}
 var
   buf: array[0..50] of WideChar;
-{$endif}
 begin
   Result := atDefault;
 
-{$ifdef Win32}
-  Result := atDefault;//atDesktop;
-{$else}
   if Windows.SystemParametersInfo(SPI_GETPLATFORMTYPE, sizeof(buf), @buf, 0) then
   begin
     if WideStrCmp(@buf, 'PocketPC') = 0 then
@@ -1330,8 +1330,8 @@ begin
     else if GetLastError = ERROR_ACCESS_DENIED then
       Result := atSmartphone;
   end;
-{$endif}
 end;
+{$endif}
 
 
 {-------------------------------------------------------------------------------

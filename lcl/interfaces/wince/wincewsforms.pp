@@ -273,16 +273,17 @@ begin
   // customization of Params
   with Params do
   begin
-    //TODO: Make control respond to user scroll request
-    pClassName := @ClsName;
+    // Different from win32
     FlagsEx := 0;
     Flags := WS_OVERLAPPEDWINDOW;
-    WindowTitle := StrCaption;
+    SubClassWndProc := nil; // Otherwise crash in wince, works in win32
+    BorderStyle := TCustomForm(AWinControl).BorderStyle;
+
+    // Same as in win32
     lForm := TCustomForm(AWinControl);
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
-    SubClassWndProc := nil;
-    Parent := 0;
-    BorderStyle := TCustomForm(AWinControl).BorderStyle;
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
     AdjustFormBounds(lForm, Bounds);
 
     // Gets the work area
@@ -337,9 +338,11 @@ begin
       end;
     end
     else
-    { On Desktop mode we need to take into consideration the size of
-      the window decoration }
+    begin
+      { On Desktop mode we need to take into consideration the size of
+        the window decoration }
       CalculateDialogPosition(Params, Bounds, lForm);
+    end;
   end;
   
   // create window

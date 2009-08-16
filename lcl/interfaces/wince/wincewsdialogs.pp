@@ -230,6 +230,9 @@ begin
   ResultForm := TWinCEFileDialogForm(ACommonDialog.Handle);
 
   ResultForm.ShowModal;
+
+  // Without setting UserChoice the app will be locked
+  ACommonDialog.UserChoice := ResultForm.ModalResult;
 end;
 
 initialization
