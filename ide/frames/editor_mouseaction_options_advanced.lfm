@@ -4,6 +4,7 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
   Anchors = [akTop]
   ClientHeight = 420
   ClientWidth = 610
+  TabOrder = 0
   Visible = False
   DesignLeft = 246
   DesignTop = 209
@@ -40,7 +41,7 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     Align = alLeft
     AutoExpand = True
     Constraints.MinWidth = 50
-    DefaultItemHeight = 17
+    DefaultItemHeight = 15
     ReadOnly = True
     ShowButtons = False
     ShowRoot = False
@@ -73,42 +74,35 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
       OnClick = BtnImportClick
     end
     object BtnExport: TToolButton
-      Left = 63
+      Left = 57
       Top = 0
       Caption = 'BtnExport'
       OnClick = BtnExportClick
     end
     object ToolButton3: TToolButton
-      Left = 145
+      Left = 113
       Top = 0
       Width = 3
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object UpdateButton: TToolButton
-      Left = 148
+      Left = 116
       Top = 0
       Caption = 'UpdateButton'
       OnClick = UpdateButtonClick
     end
     object AddNewButton: TToolButton
-      Left = 230
+      Left = 191
       Top = 0
       Caption = 'AddNewButton'
       OnClick = AddNewButtonClick
     end
     object DelButton: TToolButton
-      Left = 320
+      Left = 271
       Top = 0
       Caption = 'DelButton'
       OnClick = DelButtonClick
-    end
-    object ToolButton1: TToolButton
-      Left = 122
-      Top = 0
-      Width = 23
-      Caption = 'ToolButton1'
-      Style = tbsSeparator
     end
   end
   object OtherActionPanel: TPanel[4]
@@ -122,19 +116,19 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     TabOrder = 4
     object Panel1: TPanel
       Left = 1
-      Height = 19
+      Height = 17
       Top = 1
       Width = 608
       Align = alTop
       AutoSize = True
-      ClientHeight = 19
+      ClientHeight = 17
       ClientWidth = 608
       TabOrder = 0
       object OtherActionLabel: TLabel
         Left = 1
-        Height = 17
+        Height = 15
         Top = 1
-        Width = 94
+        Width = 84
         Align = alLeft
         Caption = 'OtherActionLabel'
         ParentColor = False
@@ -144,10 +138,10 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
       object OtherActToggleBox: TToggleBox
         AnchorSideRight.Control = Panel1
         AnchorSideRight.Side = asrBottom
-        Left = 484
-        Height = 19
+        Left = 496
+        Height = 17
         Top = 0
-        Width = 124
+        Width = 112
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = 'OtherActToggleBox'
@@ -159,8 +153,8 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     end
     object OtherActionGrid: TStringGrid
       Left = 1
-      Height = 105
-      Top = 20
+      Height = 107
+      Top = 18
       Width = 608
       Align = alClient
       AutoEdit = False

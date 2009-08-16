@@ -46,7 +46,6 @@ type
     ToolBar1: TToolBar;
     BtnImport: TToolButton;
     BtnExport: TToolButton;
-    ToolButton1: TToolButton;
     ToolButton3: TToolButton;
     UpdateButton: TToolButton;
     AddNewButton: TToolButton;
