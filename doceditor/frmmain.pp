@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,
+  FileUtil, Menus, ActnList, ExtCtrls, ComCtrls, pgeditor,
   process, UTF8Process, fpdeutil;
 
 type
