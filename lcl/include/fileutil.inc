@@ -840,30 +840,31 @@ function FileSize(const Filename: string): int64;
 {$IFDEF Unix}
 var
   st: baseunix.stat;
-{$ELSE}
-var
-  FileInfo: TSearchRec;
-{$ENDIF}
 begin
-  {$IFDEF Unix}
   if not fpstat(pointer(Filename),st)>=0 then
     exit(-1);
   Result:=st.st_size;
-  {$ELSE}
-  {$IFDEF WINCE}
-  FileInfo.Name:=UTF8Decode(Filename);
-  {$ELSE}
-  FileInfo.Name:=UTF8ToSys(Filename);
-  {$ENDIF}
-  FileInfo.FindHandle:=Windows.FindFirstFile(Windows.LPTSTR(FileInfo.Name),FileInfo.FindData);
-  if FileInfo.FindHandle=Windows.Invalid_Handle_value then begin
+end;
+{$ELSE}
+var
+  FindData: TWIN32FindDataW;
+  FindHandle: THandle;
+  Str: widestring;
+begin
+  // Fix for the bug 14360:
+  // Don't assign the widestring to TSearchRec.name because it is of type
+  // string, which will generate a conversion to the system encoding
+  Str := UTF8Decode(Filename);
+  FindHandle:=Windows.FindFirstFileW(PWideChar(Str), FindData);
+  if FindHandle=Windows.Invalid_Handle_value then
+  begin
     Result:=-1;
     exit;
   end;
-  Result:=(int64(FileInfo.FindData.nFileSizeHigh) shl 32)+FileInfo.FindData.nFileSizeLow;
-  Windows.FindClose(FileInfo.FindHandle);
-  {$ENDIF}
+  Result:=(int64(FindData.nFileSizeHigh) shl 32)+FindData.nFileSizeLow;
+  Windows.FindClose(FindHandle);
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   GetFileDescription

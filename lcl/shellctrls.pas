@@ -520,6 +520,7 @@ begin
   begin
     FRoot := Value;
     Clear;
+    Items.Clear;
     PopulateWithRoot();
   end;
 end;
@@ -551,15 +552,14 @@ begin
   inherited Create(AOwner);
 
   // Initial property values
-
+  ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
 
-  Self.Columns.Clear;
+  Self.Columns.Add;
+  Self.Columns.Add;
   Self.Columns.Add;
   Self.Column[0].Caption := 'Name';
-  Self.Columns.Add;
   Self.Column[1].Caption := 'Size';
-  Self.Columns.Add;
   Self.Column[2].Caption := 'Type';
   // Initial sizes, necessary under Windows CE
   HandleResize(Self);

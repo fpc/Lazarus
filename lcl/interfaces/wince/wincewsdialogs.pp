@@ -31,7 +31,7 @@ uses
   Windows,
   // LCL
   ShellCtrls, Forms, Dialogs, FileCtrl, Controls, ComCtrls,
-  LResources, ExtCtrls, Buttons, Graphics,
+  LResources, ExtCtrls, Buttons, Graphics, StdCtrls,
   // Widgetset
   WSDialogs, WSLCLClasses, InterfaceBase;
 
@@ -187,6 +187,7 @@ begin
   ShellListView.Width := Width;
   ShellListView.Height := Height - ShellTreeView.Height - Panel.Height;
   ShellListView.ShellTreeView := ShellTreeView;
+  ShellListView.ScrollBars := ssNone;
 end;
 
 procedure TWinCEFileDialogForm.HandleOkClick(ASender: TObject);
