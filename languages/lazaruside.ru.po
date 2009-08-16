@@ -5,33 +5,33 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-15 18:59+0300\n"
+"PO-Revision-Date: 2009-08-16 18:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Set all settings"
-msgstr ""
+msgstr "Установить все параметры"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Set all gutter settings"
-msgstr ""
+msgstr "Установить все параметры поля (лев)"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Set all text settings"
-msgstr ""
+msgstr "Установить все параметры текста"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
-msgstr ""
+msgstr "Эта страница не отражает текущие значения параметров. См. страницу расширенных параметров. Используйте эту страницу для сброса любых изменений на странице расширенных параметров"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
-msgstr ""
+msgstr "Стандартное, все действия - при нажимании кнопки мыши"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
-msgstr ""
+msgstr "Расширенное, действия - при отпускании кнопки мыши. Выделение - при нажимании и перемещении"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -40,7 +40,7 @@ msgstr "Поле (лев)"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
-msgstr ""
+msgstr "Перемещать курсор по правой кнопке мыши"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -49,55 +49,55 @@ msgstr "Текст"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectalt
 msgid "Alt-Key sets column mode"
-msgstr ""
+msgstr "Режим выделения столбца по кнопке Alt"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
-msgstr ""
+msgstr "По Ctrl - левой кнопке мыши"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "переходить к реализации"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
 msgid "jumps to implementation/other block end"
-msgstr ""
+msgstr "переходить к реализации/другому концу блока"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
 msgid "nothing"
-msgstr ""
+msgstr "ничего не делать"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 msgid "Double Click selects line"
-msgstr ""
+msgstr "Выделять строку двойным щелчком"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag Selection (copy/paste)"
-msgstr ""
+msgstr "Копировать/вставлять перетаскиванием"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "переходить к реализации"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
-msgstr ""
+msgstr "По средней кнопке мыши"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
 msgid "nothing"
-msgstr ""
+msgstr "ничего не делать"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
 msgid "paste selection"
-msgstr ""
+msgstr "вставлять выделенное"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
-msgstr ""
+msgstr "Имеются несохранённые изменения. Использование этой страницы сбросит изменения на странице расширенных параметров"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
@@ -1885,7 +1885,7 @@ msgstr "Мышь"
 
 #: lazarusidestrconsts.dlgmouseoptionsadv
 msgid "Advanced"
-msgstr ""
+msgstr "Расширенные"
 
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
