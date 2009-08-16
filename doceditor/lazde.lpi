@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
@@ -40,10 +42,9 @@
       </Unit1>
       <Unit2>
         <Filename Value="fmmakeskel.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="fmmakeskel.lrs"/>
         <UnitName Value="fmMakeskel"/>
       </Unit2>
       <Unit3>
@@ -53,81 +54,71 @@
       </Unit3>
       <Unit4>
         <Filename Value="frmabout.pp"/>
-        <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmabout.lrs"/>
+        <HasResources Value="True"/>
         <UnitName Value="frmabout"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmbuild.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="BuildForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmbuild.lrs"/>
         <UnitName Value="frmBuild"/>
       </Unit5>
       <Unit6>
         <Filename Value="frmexample.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="ExampleForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmexample.lrs"/>
         <UnitName Value="FrmExample"/>
       </Unit6>
       <Unit7>
         <Filename Value="frmlink.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="LinkForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmlink.lrs"/>
         <UnitName Value="FrmLink"/>
       </Unit7>
       <Unit8>
         <Filename Value="frmmain.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmmain.lrs"/>
         <UnitName Value="FrmMain"/>
       </Unit8>
       <Unit9>
         <Filename Value="frmmakeskel.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmmakeskel.lrs"/>
         <UnitName Value="FrmMakeSkel"/>
       </Unit9>
       <Unit10>
         <Filename Value="frmnewnode.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="NewNodeForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmnewnode.lrs"/>
         <UnitName Value="frmNewNode"/>
       </Unit10>
       <Unit11>
         <Filename Value="frmoptions.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="OptionsForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmoptions.lrs"/>
         <UnitName Value="frmOptions"/>
       </Unit11>
       <Unit12>
         <Filename Value="frmsource.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="SourceForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmsource.lrs"/>
         <UnitName Value="frmSource"/>
       </Unit12>
       <Unit13>
         <Filename Value="frmtable.pp"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="TableForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmtable.lrs"/>
         <UnitName Value="frmTable"/>
       </Unit13>
       <Unit14>

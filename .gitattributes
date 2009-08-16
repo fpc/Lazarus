@@ -2031,6 +2031,7 @@ doceditor/images/treenode_add24.bmp -text
 doceditor/images/underline_blue24.bmp -text
 doceditor/lazde.lpi svneol=native#text/plain
 doceditor/lazde.lpr svneol=native#text/pascal
+doceditor/lazde.rc svneol=native#text/plain
 doceditor/lazdemsg.pp svneol=native#text/pascal
 doceditor/lazdeopts.pp svneol=native#text/pascal
 doceditor/pgeditor.pp svneol=native#text/pascal
