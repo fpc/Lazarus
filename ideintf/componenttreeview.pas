@@ -38,7 +38,7 @@ type
   private
     FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
-    FImageList :TImageList;
+    FImageList: TImageList;
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
     procedure SetSelection(const NewSelection: TPersistentSelectionList);
@@ -236,10 +236,11 @@ begin
   begin
     AnObject := TObject(Node.Data);
     if (AnObject is TWinControl) and 
-       (csAcceptsControls in TWinControl(AnObject).ControlStyle)
-    and (TWinControl(AnObject).Owner<>nil) // TReader/TWriter only supports this
-    and (TWinControl(AnObject).Owner.Owner=nil) // TReader/TWriter only supports this
-    then begin
+       (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
+       not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
+       (TWinControl(AnObject).Owner<>nil) and // TReader/TWriter only supports this
+       (TWinControl(AnObject).Owner.Owner=nil) then // TReader/TWriter only supports this
+    begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
     end;
