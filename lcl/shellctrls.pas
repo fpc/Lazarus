@@ -526,9 +526,24 @@ end;
 
 procedure TCustomShellListView.HandleResize(Sender: TObject);
 begin
-  if Column[0] <> nil then Column[0].Width := (70 * Width) div 100;
-  if Column[1] <> nil then Column[1].Width := (15 * Width) div 100;
-  if Column[2] <> nil then Column[2].Width := (15 * Width) div 100;
+  {$ifdef DEBUG_SHELLCTRLS}
+    WriteLn(':>TCustomShellListView.HandleResize');
+  {$endif}
+
+  // The correct check is with count,
+  // if Column[0] <> nil then
+  // will raise an exception
+  if Self.Columns.Count < 3 then Exit;
+
+  Column[0].Width := (70 * Width) div 100;
+  Column[1].Width := (15 * Width) div 100;
+  Column[2].Width := (15 * Width) div 100;
+
+  {$ifdef DEBUG_SHELLCTRLS}
+    WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
+     Column[0].Width, ' C1.Width=', Column[1].Width,
+     ' C2.Width=', Column[2].Width);
+  {$endif}
 end;
 
 constructor TCustomShellListView.Create(AOwner: TComponent);
@@ -539,6 +554,7 @@ begin
 
   ObjectTypes := [otNonFolders];
 
+  Self.Columns.Clear;
   Self.Columns.Add;
   Self.Column[0].Caption := 'Name';
   Self.Columns.Add;

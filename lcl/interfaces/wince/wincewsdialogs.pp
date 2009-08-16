@@ -112,14 +112,87 @@ type
     Panel: TPanel;
     // Communication fields
     LCLDialog: TFileDialog;
+    constructor Create(AOwner: TComponent); override;
     procedure HandleOkClick(ASender: TObject);
     procedure HandleCancelClick(ASender: TObject);
   end;
 
 { TWinCEFileDialogForm }
 
+constructor TWinCEFileDialogForm.Create(AOwner: TComponent);
+var
+  AButton: TBitBtn;
+  AImage: TPortableNetworkGraphic;
+begin
+  inherited Create(AOwner);
+
+  {$ifdef VerboseWinCE}
+    WriteLn(':>TWinCEFileDialogForm.Create Width=', Width,
+     ' Height=', Height);
+  {$endif}
+
+  // Add the Panel to the dialog (Toolbar didn't work well)
+  Panel := TPanel.Create(Self);
+  Panel.Parent := Self;
+  Panel.Left := 0;
+  Panel.Height := 20;
+  Panel.Top := Height - Panel.Height;
+  Panel.Width := Width;
+  Panel.Align := alBottom;
+
+  AImage := TPortableNetworkGraphic.Create;
+
+  // ok button
+  AButton := TBitBtn.Create(Panel);
+  AButton.Parent := Panel;
+  AButton.Height := 17;
+  AButton.Width := 17;
+  AImage.LoadFromLazarusResource('wincedialog_ok');
+  AButton.Glyph.Assign(AImage);
+  AButton.OnClick := @HandleOkClick;
+  AButton.Left := 0;
+
+  // cancel button
+  AButton := TBitBtn.Create(Panel);
+  AButton.Parent := Panel;
+  AButton.Height := 17;
+  AButton.Width := 17;
+  AImage.LoadFromLazarusResource('wincedialog_cancel');
+  AButton.Glyph.Assign(AImage);
+  AButton.OnClick := @HandleCancelClick;
+  AButton.Left := 20;
+
+  // dialog images
+  // the wincedialogs.lrs image is compiled with the script at
+  // lcl/images/wince/build.bat
+  //ToolBar.Images := TImageList.Create(Self);
+  //ToolBar.Images.AddLazarusResource('wincedialog_ok');
+  //ToolBar.Images.AddLazarusResource('wincedialog_cancel');
+  AImage.Free;
+
+  // Add the ShellTreeView to the dialog
+  ShellTreeView := TShellTreeView.Create(Self);
+  ShellTreeView.Parent := Self;
+  ShellTreeView.Left := 0;
+  ShellTreeView.Top := 0;
+  ShellTreeView.Width := Width;
+  ShellTreeView.Height := 100;
+  ShellTreeView.Align := alTop;
+
+  // Add the ShellListView to the dialog
+  ShellListView := TShellListView.Create(Self);
+  ShellListView.Parent := Self;
+  ShellListView.Left := 0;
+  ShellListView.Top := ShellTreeView.Height;
+  ShellListView.Width := Width;
+  ShellListView.Height := Height - ShellTreeView.Height - Panel.Height;
+  ShellListView.ShellTreeView := ShellTreeView;
+end;
+
 procedure TWinCEFileDialogForm.HandleOkClick(ASender: TObject);
 begin
+  if ShellListView.Selected = nil then Exit;
+
   LCLDialog.FileName := ShellListView.GetPathFromItem(ShellListView.Selected);
   ModalResult := mrOk;
 end;
@@ -134,72 +207,10 @@ end;
 class function TWinCEWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
   ResultForm: TWinCEFileDialogForm absolute Result;
-  AButton: TBitBtn;
-  AImage: TPortableNetworkGraphic;
 begin
   Result := THandle(TWinCEFileDialogForm.Create(Application));
 
   ResultForm.LCLDialog := TFileDialog(ACommonDialog);
-
-  // Add the Panel to the dialog (Toolbar didn't work well)
-  ResultForm.Panel := TPanel.Create(ResultForm);
-  ResultForm.Panel.Parent := ResultForm;
-  ResultForm.Panel.Left := 0;
-  ResultForm.Panel.Height := 20;
-  ResultForm.Panel.Top := ResultForm.Height -
-    ResultForm.Panel.Height;
-  ResultForm.Panel.Width := ResultForm.Width;
-  ResultForm.Panel.Align := alBottom;
-
-  AImage := TPortableNetworkGraphic.Create;
-
-  // ok button
-  AButton := TBitBtn.Create(ResultForm);
-  AButton.Parent := ResultForm.Panel;
-  AButton.Height := 17;
-  AButton.Width := 17;
-  AImage.LoadFromLazarusResource('wincedialog_ok');
-  AButton.Glyph.Assign(AImage);
-  AButton.OnClick := @ResultForm.HandleOkClick;
-  AButton.Left := 0;
-
-  // cancel button
-  AButton := TBitBtn.Create(ResultForm);
-  AButton.Parent := ResultForm.Panel;
-  AButton.Height := 17;
-  AButton.Width := 17;
-  AImage.LoadFromLazarusResource('wincedialog_cancel');
-  AButton.Glyph.Assign(AImage);
-  AButton.OnClick := @ResultForm.HandleCancelClick;
-  AButton.Left := 20;
-
-  // dialog images
-  // the wincedialogs.lrs image is compiled with the script at
-  // lcl/images/wince/build.bat
-  //ResultForm.ToolBar.Images := TImageList.Create(ResultForm);
-  //ResultForm.ToolBar.Images.AddLazarusResource('wincedialog_ok');
-  //ResultForm.ToolBar.Images.AddLazarusResource('wincedialog_cancel');
-  AImage.Free;
-
-  // Add the ShellTreeView to the dialog
-  ResultForm.ShellTreeView := TShellTreeView.Create(ResultForm);
-  ResultForm.ShellTreeView.Parent := ResultForm;
-  ResultForm.ShellTreeView.Left := 0;
-  ResultForm.ShellTreeView.Top := 0;
-  ResultForm.ShellTreeView.Width := ResultForm.Width;
-  ResultForm.ShellTreeView.Height := 100;
-  ResultForm.ShellTreeView.Align := alTop;
-
-  // Add the ShellListView to the dialog
-  ResultForm.ShellListView := TShellListView.Create(ResultForm);
-  ResultForm.ShellListView.Parent := ResultForm;
-  ResultForm.ShellListView.Left := 0;
-  ResultForm.ShellListView.Top := ResultForm.ShellTreeView.Height;
-  ResultForm.ShellListView.Width := ResultForm.Width;
-  ResultForm.ShellListView.Height :=
-    ResultForm.Height - ResultForm.ShellTreeView.Height
-    - ResultForm.Panel.Height;
-  ResultForm.ShellListView.ShellTreeView := ResultForm.ShellTreeView;
 end;
 
 class procedure TWinCEWSFileDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
