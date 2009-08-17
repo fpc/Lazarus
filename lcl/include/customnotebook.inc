@@ -110,9 +110,9 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    APage:=TCustomPage(fPageList[Index]);
+    APage := TCustomPage(fPageList[Index]);
     // delete handle
-    APage.Parent:=nil;
+    APage.Parent := nil;
     // free the page
     APage.Free;
   end;

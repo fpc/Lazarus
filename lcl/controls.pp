@@ -827,7 +827,7 @@ type
     FAlign: TAlign;
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
-    fAnchoredControls: TFPList; // list of TControl anchored to this control
+    FAnchoredControls: TFPList; // list of TControl anchored to this control
     FAutoSizingLockCount: Integer;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;

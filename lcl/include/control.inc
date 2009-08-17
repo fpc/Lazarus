@@ -1401,7 +1401,7 @@ end;
 
 function TControl.GetAnchoredControls(Index: integer): TControl;
 begin
-  Result:=TControl(fAnchoredControls[Index]);
+  Result := TControl(FAnchoredControls[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -2321,11 +2321,11 @@ begin
   AControl:=TheAnchorSide.Owner;
   //debugln('TControl.ForeignAnchorSideChanged A Self=',DbgSName(Self),' TheAnchorSide.Owner=',DbgSName(TheAnchorSide.Owner),' Operation=',dbgs(ord(Operation)),' Anchor=',dbgs(TheAnchorSide.Kind));
   if TheAnchorSide.Control=Self then begin
-    if fAnchoredControls=nil then
-      fAnchoredControls:=TFPList.Create;
-    if fAnchoredControls.IndexOf(AControl)<0 then
-      fAnchoredControls.Add(AControl);
-  end else if fAnchoredControls<>nil then begin
+    if FAnchoredControls=nil then
+      FAnchoredControls:=TFPList.Create;
+    if FAnchoredControls.IndexOf(AControl)<0 then
+      FAnchoredControls.Add(AControl);
+  end else if FAnchoredControls<>nil then begin
     if TheAnchorSide.Owner<>nil then begin
       for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
         if (AControl.FAnchorSides[Side]<>nil)
@@ -2335,7 +2335,7 @@ begin
         end;
       end;
     end;
-    fAnchoredControls.Remove(AControl);
+    FAnchoredControls.Remove(AControl);
   end;
 end;
 
@@ -3948,7 +3948,7 @@ var
 begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
   // make sure the capture is released
-  MouseCapture := false;
+  MouseCapture := False;
   Application.ControlDestroyed(Self);
   if (FHostDockSite <> nil) and not (csDestroying in FHostDockSite.ComponentState) then
   begin
@@ -3959,24 +3959,26 @@ begin
   end else
     SetParent(nil);
   FreeThenNil(FActionLink);
-  for Side:=Low(FAnchorSides) to High(FAnchorSides) do
+  for Side := Low(FAnchorSides) to High(FAnchorSides) do
     FreeThenNil(FAnchorSides[Side]);
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
-  if fAnchoredControls<>nil then begin
-    for i:=0 to fAnchoredControls.Count-1 do
-      for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        CurAnchorSide:=AnchoredControls[i].AnchorSide[Side];
-        if CurAnchorSide.FControl=Self then
-          CurAnchorSide.FControl:=nil;
+  if FAnchoredControls <> nil then
+  begin
+    for i := 0 to FAnchoredControls.Count - 1 do
+      for Side := Low(TAnchorKind) to High(TAnchorKind) do
+      begin
+        CurAnchorSide := AnchoredControls[i].AnchorSide[Side];
+        if CurAnchorSide.FControl = Self then
+          CurAnchorSide.FControl := nil;
       end;
-    FreeThenNil(fAnchoredControls);
+    FreeThenNil(FAnchoredControls);
   end;
   FreeThenNil(FFont);
   //DebugLn('[TControl.Destroy] B ',DbgSName(Self));
   inherited Destroy;
   //DebugLn('[TControl.Destroy] END ',DbgSName(Self));
-  for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
+  for HandlerType := Low(TControlHandlerType) to High(TControlHandlerType) do
     FreeThenNil(FControlHandlers[HandlerType]);
 end;
 
@@ -4283,10 +4285,10 @@ end;
 
 function TControl.AnchoredControlCount: integer;
 begin
-  if fAnchoredControls=nil then
-    Result:=0
+  if FAnchoredControls = nil then
+    Result := 0
   else
-    Result:=fAnchoredControls.Count;
+    Result := FAnchoredControls.Count;
 end;
 
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
