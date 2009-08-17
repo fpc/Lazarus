@@ -4443,6 +4443,8 @@ resourcestring
   lisLFMIsOk = 'LFM is ok';
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
+  lisAppendShortDescriptionToLongDescription = 'Append short description to '
+    +'long description';
 
 implementation
 

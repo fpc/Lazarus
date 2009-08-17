@@ -41,7 +41,7 @@ uses
   BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf,
+  ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
@@ -84,6 +84,8 @@ type
     LeftBtnPanel: TPanel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
+    CopyShortToDescrMenuItem: TMenuItem;
+    PopupMenu1: TPopupMenu;
     SeeAlsoMemo: TMemo;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
@@ -99,6 +101,7 @@ type
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
+    procedure CopyShortToDescrMenuItemClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
     procedure DescrMemoChange(Sender: TObject);
     procedure ErrorsMemoChange(Sender: TObject);
@@ -111,6 +114,7 @@ type
     procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
@@ -229,6 +233,8 @@ begin
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
   AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
+
+  CopyShortToDescrMenuItem.Caption:=lisAppendShortDescriptionToLongDescription;
 
   Reset;
   
@@ -418,6 +424,13 @@ end;
 procedure TFPDocEditor.PageControlChange(Sender: TObject);
 begin
   UpdateButtons;
+end;
+
+procedure TFPDocEditor.PopupMenu1Popup(Sender: TObject);
+begin
+  CopyShortToDescrMenuItem.Visible:=
+    (PageControl.ActivePage = DescrTabSheet)
+    or (PageControl.ActivePage = ShortTabSheet);
 end;
 
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
@@ -1049,6 +1062,12 @@ begin
       mtConfirmation,[mrYes,'Replace',mrCancel],0)<>mrYes then exit;
   end;
   LoadGUIValues(fChain[i]);
+  Modified:=true;
+end;
+
+procedure TFPDocEditor.CopyShortToDescrMenuItemClick(Sender: TObject);
+begin
+  DescrMemo.Append(ShortEdit.Text);
   Modified:=true;
 end;
 

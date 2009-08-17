@@ -1,9 +1,9 @@
 object FPDocEditor: TFPDocEditor
-  Left = 313
+  Left = 318
   Height = 126
-  Top = 596
+  Top = 620
   Width = 753
-  ActiveControl = LeftBtnPanel
+  ActiveControl = ShortEdit
   Caption = 'FPDoc editor'
   ClientHeight = 126
   ClientWidth = 753
@@ -16,9 +16,10 @@ object FPDocEditor: TFPDocEditor
     Height = 126
     Top = 0
     Width = 713
-    ActivePage = SeeAlsoTabSheet
+    ActivePage = ShortTabSheet
     Align = alClient
-    TabIndex = 4
+    PopupMenu = PopupMenu1
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
@@ -204,6 +205,7 @@ object FPDocEditor: TFPDocEditor
           'DescrMemo'
         )
         OnChange = DescrMemoChange
+        PopupMenu = PopupMenu1
         TabOrder = 0
       end
     end
@@ -402,5 +404,14 @@ object FPDocEditor: TFPDocEditor
     FilterIndex = 0
     left = 240
     top = 16
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 280
+    top = 16
+    object CopyShortToDescrMenuItem: TMenuItem
+      Caption = 'CopyShortToDescrMenuItem'
+      OnClick = CopyShortToDescrMenuItemClick
+    end
   end
 end
