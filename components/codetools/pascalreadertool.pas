@@ -164,6 +164,7 @@ type
     function GetSourceName(DoBuildTree: boolean = true): string;
     function GetSourceType: TCodeTreeNodeDesc;
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
+    function PositionInSourceName(CleanPos: integer): boolean;
     function ExtractSourceName: string;
     function FindInterfaceNode: TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
@@ -1497,6 +1498,16 @@ begin
   ReadNextAtom; // read name
   NamePos:=CurPos;
   Result:=(NamePos.StartPos<=SrcLen);
+end;
+
+function TPascalReaderTool.PositionInSourceName(CleanPos: integer): boolean;
+begin
+  Result:=false;
+  if Tree.Root=nil then exit;
+  MoveCursorToNodeStart(Tree.Root);
+  ReadNextAtom; // read source type 'program', 'unit' ...
+  ReadNextAtom; // read name
+  Result:=(CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos);
 end;
 
 function TPascalReaderTool.ExtractSourceName: string;

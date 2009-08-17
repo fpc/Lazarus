@@ -3601,6 +3601,9 @@ var
     else if (NewNode.Desc=ctnProperty)
     and (PositionInPropertyName(NewNode,CleanPos)) then
       Result:=true
+    else if (NewNode.Desc in AllSourceTypes)
+    and (PositionInSourceName(CleanPos)) then
+      Result:=true
     else
       Result:=false;
   end;
@@ -3648,6 +3651,10 @@ begin
     if StartPositionAtFunctionResult then begin
       AddPos;
       // the function result has no overloads => stop search
+      exit;
+    end;
+    if NewNode.Desc in AllSourceTypes then begin
+      // the unit name has no overloads => stop search
       exit;
     end;
 
