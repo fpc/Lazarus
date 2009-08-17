@@ -409,10 +409,6 @@ begin
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-
-  // Why would we want to supress the move?
-  // Form moving is indispensable to have message dialogs
-
   MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
 
   LCLControlSizeNeedsUpdate(AWinControl, false);

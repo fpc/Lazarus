@@ -798,7 +798,8 @@ begin
   and (not Sender.ClientRectNeedsInterfaceUpdate) then
     exit;
   Result:=true;
-  if SendSizeMsgOnDiff then begin
+  if SendSizeMsgOnDiff then
+  begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
     Sender.InvalidateClientRectCache(true);
     // send message directly to LCL, some controls not subclassed -> message
@@ -1313,7 +1314,7 @@ end;
 function GetWinCEPlatform: TApplicationType;
 {$ifdef Win32}
 begin
-  Result := atPDA; // just for testing, should actually be atDesktop
+  Result := atDesktop;
 end;
 {$else}
 var

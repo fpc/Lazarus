@@ -2406,6 +2406,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  SetForegroundWindow
+  Params:  HWnd - The handle of the window
+  Returns: True if succesful
+
+  The SetForegroundWindow function brings the specified window to top
+    (highest z-index level).
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
+begin
+  Result := Windows.SetForegroundWindow(HWnd);
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle - handle of window
            Str    - string
