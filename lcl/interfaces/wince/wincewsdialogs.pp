@@ -113,6 +113,7 @@ type
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     SaveEdit: TEdit;
+    FilterComboBox: TFilterComboBox;
     // Communication fields
     LCLDialog: TFileDialog;
     constructor Create(AOwner: TComponent; ALCLDialog: TFileDialog);
@@ -216,6 +217,18 @@ begin
     SaveEdit.Width := Width;
     SaveEdit.Align := alBottom;
   end;
+
+  // TFilterComboBox
+  FilterComboBox := TFilterComboBox.Create(Self);
+  FilterComboBox.Parent := Self;
+  FilterComboBox.Left := 0;
+  FilterComboBox.Height := 20;
+  FilterComboBox.Top := Height - Panel.Height - FilterComboBox.Height;
+  if SaveEdit <> nil then Dec(FilterComboBox.Top, SaveEdit.Height);
+  FilterComboBox.Width := Width;
+  FilterComboBox.Align := alBottom;
+  FilterComboBox.Filter := LCLDialog.Filter;
+  FilterComboBox.ShellListView := ShellListView;
 end;
 
 procedure TWinCEFileDialogForm.HandleOkClick(ASender: TObject);

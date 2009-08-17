@@ -35,7 +35,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, StdCtrls, FileUtil, Masks, Graphics;
+  Classes, SysUtils, StdCtrls, FileUtil, Masks, Graphics,
+  ShellCtrls;
 
 Type
 
@@ -136,13 +137,17 @@ Type
     property Visible;
   end;
 
-  { TFilterComboBox }
+  { TCustomFilterComboBox }
 
-  TFilterComboBox = class(TCustomComboBox)
+  TCustomFilterComboBox = class(TCustomComboBox)
   private
     FFilter: string;
+    FShellListView: TShellListView;
     function GetMask: string;
     procedure SetFilter(const AValue: string);
+    procedure SetShellListView(const AValue: TShellListView);
+  protected
+    procedure Select; override;
   public
     { Base methods }
     constructor Create(TheOwner: TComponent); override;
@@ -152,6 +157,10 @@ Type
       AStrings: TStrings; AClearStrings, AAddDescription, AAddFilter: Boolean);
     { properties }
     property Mask: string read GetMask; // Can be used to conect to other controls
+    property ShellListView: TShellListView read FShellListView write SetShellListView;
+  end;
+
+  TFilterComboBox = class(TCustomFilterComboBox)
   published
     { properties }
     property Align;
@@ -468,9 +477,9 @@ begin
   inherited Destroy; 
 end;
 
-{ TFilterComboBox }
+{ TCustomFilterComboBox }
 
-function TFilterComboBox.GetMask: string;
+function TCustomFilterComboBox.GetMask: string;
 var
   FilterList: TStrings;
 begin
@@ -478,9 +487,9 @@ begin
 
   FilterList := TStringList.Create;
   try
-    TFilterComboBox.ConvertFilterToStrings(FFilter, FilterList, True, False, True);
+    TCustomFilterComboBox.ConvertFilterToStrings(FFilter, FilterList, True, False, True);
 
-    if (ItemIndex >= 0) and (ItemIndex <= FilterList.Count) then
+    if (ItemIndex >= 0) and (ItemIndex < FilterList.Count) then
     begin
       Result := FilterList[ItemIndex];
     end;
@@ -489,7 +498,7 @@ begin
   end;
 end;
 
-procedure TFilterComboBox.SetFilter(const AValue: string);
+procedure TCustomFilterComboBox.SetFilter(const AValue: string);
 begin
   if AValue = FFilter then Exit;
 
@@ -498,6 +507,24 @@ begin
   TFilterComboBox.ConvertFilterToStrings(AValue, Items, True, True, False);
 
   ItemIndex := 0;
+end;
+
+procedure TCustomFilterComboBox.SetShellListView(const AValue: TShellListView);
+begin
+  if FShellListView=AValue then exit;
+
+  FShellListView:=AValue;
+
+  if FShellListView <> nil then
+   FShellListView.Mask := Mask;
+end;
+
+procedure TCustomFilterComboBox.Select;
+begin
+  if FShellListView <> nil then
+   FShellListView.Mask := Mask;
+
+  inherited Select;
 end;
 
 {------------------------------------------------------------------------------
@@ -520,7 +547,7 @@ Binaries (*.exe)
 
 Adapted from the converter initially created for QtWSDialogs.pas
 ------------------------------------------------------------------------------}
-class procedure TFilterComboBox.ConvertFilterToStrings(AFilter: string;
+class procedure TCustomFilterComboBox.ConvertFilterToStrings(AFilter: string;
   AStrings: TStrings; AClearStrings, AAddDescription, AAddFilter: Boolean);
 var
   ParserState, Position, i: Integer;
@@ -556,14 +583,14 @@ begin
   end;
 end;
 
-constructor TFilterComboBox.Create(TheOwner: TComponent);
+constructor TCustomFilterComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
   Text := '';
 end;
 
-destructor TFilterComboBox.Destroy;
+destructor TCustomFilterComboBox.Destroy;
 begin
 
   inherited Destroy;

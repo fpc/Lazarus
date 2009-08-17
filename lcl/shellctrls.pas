@@ -66,7 +66,7 @@ type
     { Methods specific to Lazarus - useful for other classes }
     class function  GetBasePath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
-      AObjectTypes: TObjectTypes; AResult: TStrings);
+      AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
 
@@ -137,10 +137,12 @@ type
 
   TCustomShellListView = class(TCustomListView)
   private
+    FMask: string;
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
     { Setters and getters }
+    procedure SetMask(const AValue: string);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
     { Other internal methods }
@@ -155,6 +157,7 @@ type
     { Methods specific to Lazarus }
     function GetPathFromItem(ANode: TListItem): string;
     { Properties }
+    property Mask: string read FMask write SetMask; // Can be used to conect to other controls
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
@@ -344,15 +347,19 @@ end;
   Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories. }
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
-  AObjectTypes: TObjectTypes; AResult: TStrings);
+  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings);
 var
   DirInfo: TSearchRec;
   FindResult: Integer;
   IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
   ObjectData: TObject;
   SearchStr: string;
+  MaskStr: string;
 begin
-  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask;
+  if Trim(AMask) = '' then MaskStr := AllFilesMask
+  else MaskStr := AMask;
+
+  SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr;
 
   FindResult := FindFirst(SearchStr, faAnyFile, DirInfo);
 
@@ -412,7 +419,7 @@ var
 begin
   Files := TStringList.Create;
   try
-    GetFilesInDir(ANodePath, FObjectTypes, Files);
+    GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files);
 
     Result := Files.Count > 0;
 
@@ -514,6 +521,17 @@ begin
   if Value.ShellListView <> Self then Value.ShellListView := Self;
 end;
 
+procedure TCustomShellListView.SetMask(const AValue: string);
+begin
+  if AValue <> FMask then
+  begin
+    FMask := AValue;
+    Clear;
+    Items.Clear;
+    PopulateWithRoot();
+  end;
+end;
+
 procedure TCustomShellListView.SetRoot(const Value: string);
 begin
   if FRoot <> Value then
@@ -586,11 +604,11 @@ begin
   if (csDesigning in ComponentState) then Exit;
 
   // Check inputs
-  if FRoot = '' then Exit;
+  if Trim(FRoot) = '' then Exit;
 
   Files := TStringList.Create;
   try
-    TCustomShellTreeView.GetFilesInDir(FRoot, FObjectTypes, Files);
+    TCustomShellTreeView.GetFilesInDir(FRoot, FMask, FObjectTypes, Files);
 
     for i := 0 to Files.Count - 1 do
     begin
