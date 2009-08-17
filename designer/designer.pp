@@ -1547,8 +1547,12 @@ var
     end;
 
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
-    if NewComponentClass=nil then exit;
-    if LookupRoot.InheritsFrom(NewComponentClass) then begin
+    if NewComponentClass = nil then exit;
+
+    // check circles
+    if LookupRoot.InheritsFrom(NewComponentClass) or
+       TheFormEditor.HasCircularDependencies(NewComponentClass, LookupRoot) then
+    begin
       IDEMessageDialog(lisInvalidCircle,
         Format(lisIsAThisCircleDependencyIsNotAllowed, [dbgsName(LookupRoot),
           dbgsName(NewComponentClass), #13]),

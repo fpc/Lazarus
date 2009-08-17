@@ -256,6 +256,7 @@ each control that's dropped onto the form
                                  var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
                                        const NewName, NewClassName: shortstring);
+    function HasCircularDependencies(AClass: TComponentClass; AComponent: TComponent): Boolean;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -1838,6 +1839,33 @@ begin
   JITList:=GetJITListOfType(TComponentClass(AComponent.ClassType));
   JITList.RenameComponentClass(AComponent,NewClassName);
   AComponent.Name:=NewName;
+end;
+
+function TCustomFormEditor.HasCircularDependencies(AClass: TComponentClass; AComponent: TComponent): Boolean;
+
+  function HasChild(WhatToTraverse, WhatToSearch: TComponent): Boolean;
+  var
+    i: integer;
+  begin
+    Result := False;
+    for i := 0 to WhatToTraverse.ComponentCount - 1 do
+    begin
+      Result := WhatToTraverse.Components[i].InheritsFrom(WhatToSearch.ClassType) or
+        HasChild(WhatToTraverse.Components[i], WhatToSearch);
+      if Result then Exit;
+    end;
+  end;
+
+var
+  AnUnitInfo: TUnitInfo;
+  Cmp: TComponent;
+begin
+  Result := False;
+  AnUnitInfo := Project1.UnitWithComponentClass(AClass);
+  if AnUnitInfo = nil then Exit;
+  Cmp := AnUnitInfo.Component;
+  if Cmp = nil then Exit;
+  Result := HasChild(Cmp, AComponent);
 end;
 
 function TCustomFormEditor.GetAncestorLookupRoot(AComponent: TComponent
