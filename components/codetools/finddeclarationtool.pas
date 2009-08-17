@@ -4623,7 +4623,7 @@ begin
   ClassIdentNode:=ClassNode.Parent;
   // check class name
   if (ClassIdentNode=nil)
-  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericName])) then
+  or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
   begin
     MoveCursorToNodeStart(ClassNode);
     RaiseException('class without name');
