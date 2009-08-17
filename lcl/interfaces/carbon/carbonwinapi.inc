@@ -212,10 +212,6 @@ end;
 
 function TCarbonWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
-var
-  rd, r1, r2 : TCarbonRegion;
-  sh         : HIShapeRef;
-  sh1, sh2   :  HIShapeRef;
 begin
   Result := LCLType.Error;
   if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;

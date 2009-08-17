@@ -69,10 +69,10 @@ type
   { TCarbonMovableBar }
 
   TCarbonMovableBar = class(TCarbonCustomBar)
-  protected
-    class function GetValidEvents: TCarbonControlEvents; override;
+  public
     procedure IndicatorMoved; override;
     procedure ValueChanged; override;
+    class function GetValidEvents: TCarbonControlEvents; override;
   end;
 
   { TCarbonTrackBar }

@@ -131,6 +131,12 @@ type
     function GetReadOnly: Boolean; dynamic; abstract;
     function MultiSelect: Boolean; virtual; abstract;
     function IsOwnerDrawn: Boolean; virtual; abstract;
+  protected  
+    function DataCallBack(ID: DataBrowserItemId; PropID: DataBrowserPropertyID; 
+      Data: DataBrowserItemDataRef; ASetValue: Boolean): OSStatus; virtual;
+    procedure NotificationCallBack(ID: DataBrowserItemId; 
+      AMessage: DataBrowserItemNotification); virtual;
+
   public
     procedure BoundsChanged; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
@@ -186,14 +192,41 @@ type
     procedure UpdateItems;
   end;
 
+  TCarbonListView = class;
 
+  TViewMode = class(TObject)
+  protected
+    class procedure Apply(View: TCarbonListView); virtual; abstract;
+    class procedure Resized(View: TCarbonListView); virtual; abstract;
+    class function DataCallBack(View: TCarbonListView; ID: DataBrowserItemId; 
+      PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef; 
+      ASetValue: Boolean): OSStatus; virtual; abstract;
+  end;
+  TViewModeClass = class of TViewMode;
+
+  { TReportViewMode }
+
+  TReportViewMode = class(TViewMode)
+  protected
+    class procedure Apply(View: TCarbonListView); override;
+    class procedure Resized(View: TCarbonListView); override;
+    class function DataCallBack(View: TCarbonListView; ID: DataBrowserItemId; 
+      PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef; 
+      ASetValue: Boolean): OSStatus; override;
+  end;
+  
+ 
   { TCarbonListView }
-
+  
   TCarbonListView = class(TCarbonDataBrowser)
   private
     FIcons  : TFPList;
+    FStyle  : TViewStyle;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    
+    function DataCallBack(ID: DataBrowserItemId; PropID: DataBrowserPropertyID; 
+      Data: DataBrowserItemDataRef; ASetValue: Boolean): OSStatus; override;
   protected
     function GetItemCaption(AIndex, ASubIndex: Integer): String; override;
     function GetItemIcon(AIndex, ASubIndex: Integer): IconRef; override;
@@ -211,6 +244,8 @@ type
     procedure UpdateColumnView; override;
 
     procedure ClearIconCache;
+    
+    procedure SetViewStyle(AStyle: TViewStyle);
 
     procedure DoColumnClicked(MouseX,MouseY: Integer);
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
@@ -253,6 +288,11 @@ uses InterfaceBase, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings,
 var CarbonItemDataCallBackUPP        : DataBrowserItemDataUPP;
     CarbonItemNotificationCallBackUPP: DataBrowserItemNotificationUPP;
     CarbonDrawItemCallBackUPP        : DataBrowserDrawItemUPP;
+    
+const 
+  ListViewModes : array [TViewStyle] of TViewModeClass = 
+    (TReportViewMode, TReportViewMode, TReportViewMode, TReportViewMode);    
+    
 
 function GetIconRefFromBitmap(bmp: TBitmap; IconSize: Integer): IconRef;
 var
@@ -612,91 +652,13 @@ function CarbonItemDataCallBack(AControl: ControlRef; ID: DataBrowserItemId;
   SetValue: Boolean): OSStatus; {$IFDEF darwin} mwpascal;{$ENDIF}
 var
   ACarbonDataBrowser: TCarbonDataBrowser;
-  ALCLDataBrowser: TWInControl;
-  CheckboxValue: ThemeButtonValue;
-  CheckboxState: ThemeDrawState;
-  CFString: CFStringRef;
-  ItemIcon: IconRef;
-  SubIndex: Integer;
 begin
   Result := noErr;
   // DebugLn('CarbonItemDataCallBack ID: ' + DbgS(ID));
   ACarbonDataBrowser := TCarbonDataBrowser(GetCarbonControl(AControl));
   if ACarbonDataBrowser = nil then Exit;
-  ALCLDataBrowser := ACarbonDataBrowser.LCLObject;
-
-  if (ID < 1) or (ID > DataBrowserItemId(ACarbonDataBrowser.GetItemsCount)) then
-  begin
-    Result := errDataBrowserItemNotFound;
-    Exit;
-  end;
   
-  if SetValue then
-  begin
-    if PropID = CheckPropertyID then // check has changed
-    begin
-      Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue);
-      if Result <> noErr then Exit;
-
-      ACarbonDataBrowser.CheckChanged(ID - 1, CheckboxValue = kThemeButtonOn);
-    end;
-    Exit;
-  end;
-
-  case PropID of
-    kDataBrowserItemIsActiveProperty:
-      Result := SetDataBrowserItemDataBooleanValue(Data, ALCLDataBrowser.Enabled);
-    kDataBrowserItemIsSelectableProperty:
-      Result := SetDataBrowserItemDataBooleanValue(Data, ALCLDataBrowser.Enabled);
-    kDataBrowserItemIsEditableProperty:
-      Result := SetDataBrowserItemDataBooleanValue(Data, not ACarbonDataBrowser.GetReadOnly);
-    kDataBrowserItemIsContainerProperty:
-      Result := SetDataBrowserItemDataBooleanValue(Data, False);
-    CheckPropertyID:
-      begin
-        if ACarbonDataBrowser.GetItemChecked(ID - 1) then CheckboxValue := kThemeButtonOn
-        else CheckboxValue := kThemeButtonOff;
-        
-        Result := SetDataBrowserItemDataButtonValue(Data, CheckboxValue);
-        if Result <> noErr then Exit;
-        
-        if ALCLDataBrowser.Enabled then CheckboxState := kThemeStateActive
-        else CheckboxState := kThemeStateInactive;
-        
-        Result := SetDataBrowserItemDataDrawState(Data, CheckboxState);
-      end;
-    else
-      begin
-        if (PropID >= CaptionPropertyID) and
-          (PropID <= CaptionPropertyID + DataBrowserPropertyID(ACarbonDataBrowser.FColumns.Count)) then
-        begin
-          if PropID = CaptionPropertyID then
-          begin
-            SubIndex := 0;
-          end else begin
-            SubIndex :=
-              TCarbonListColumn(ACarbonDataBrowser.FColumns[PropID - CaptionPropertyID - 1]).FListColumn.Index;
-          end;
-          
-          CreateCFString(ACarbonDataBrowser.GetItemCaption(ID - 1, SubIndex),
-            CFString);
-          try
-            SetDataBrowserItemDataText(Data, CFString);
-          finally
-            FreeCFString(CFString);
-          end;
-
-          ItemIcon := ACarbonDataBrowser.GetItemIcon(ID-1, SubIndex);
-          if Assigned(ItemIcon) then
-            OSError(
-              SetDataBrowserItemDataIcon(Data, ItemIcon),
-              'CarbonItemDataCallBack', 'SetDataBrowserItemDataIcon');
-
-        end
-        else
-          Result := errDataBrowserPropertyNotFound;
-      end;
-  end;
+  Result := ACarbonDataBrowser.DataCallBack(ID, PropID, Data, SetValue)
 end;
 
 {------------------------------------------------------------------------------
@@ -713,22 +675,7 @@ begin
   // DebugLn('CarbonItemNotificationCallBack ID: ' + DbgS(ID));
   ACarbonDataBrowser := TCarbonDataBrowser(GetCarbonControl(AControl));
   if ACarbonDataBrowser = nil then Exit;
-  
-  if (ID < 1) or (ID > DataBrowserItemId(ACarbonDataBrowser.GetItemsCount)) then Exit;
-
-  case AMessage of
-    kDataBrowserItemSelected:
-      begin
-        ACarbonDataBrowser.SelectionChanged(ID - 1, True);
-      end;
-    kDataBrowserItemDeselected:
-      begin
-        ACarbonDataBrowser.SelectionChanged(ID - 1, False);
-      end;
-    kDataBrowserSelectionSetChanged: // the selection order has changed
-      ACarbonDataBrowser.SelectionChanged(ID - 1, True);
-    // kDataBrowserItemDoubleClicked:;
-  end;
+  ACarbonDataBrowser.NotificationCallBack(ID, AMessage);
 end;
 
 {------------------------------------------------------------------------------
@@ -1102,6 +1049,108 @@ begin
   Result := nil;
 end;
 
+function TCarbonDataBrowser.DataCallBack(ID: DataBrowserItemId;  
+  PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef; ASetValue: Boolean): OSStatus;
+var
+  CheckboxValue: ThemeButtonValue;
+  CheckboxState: ThemeDrawState;
+  CFString: CFStringRef;
+  ItemIcon: IconRef;
+  SubIndex: Integer;
+ 
+begin
+  if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then
+  begin
+    Result := errDataBrowserItemNotFound;
+    Exit;
+  end;
+  
+  if ASetValue then
+  begin
+    if PropID = CheckPropertyID then // check has changed
+    begin
+      Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+      if Result <> noErr then Exit;
+
+      CheckChanged(ID - 1, CheckboxValue = kThemeButtonOn);
+    end;
+    Exit;
+  end;
+
+  case PropID of
+    kDataBrowserItemIsActiveProperty:
+      Result := SetDataBrowserItemDataBooleanValue(Data, LCLObject.Enabled);
+    kDataBrowserItemIsSelectableProperty:
+      Result := SetDataBrowserItemDataBooleanValue(Data, LCLObject.Enabled);
+    kDataBrowserItemIsEditableProperty:
+      Result := SetDataBrowserItemDataBooleanValue(Data, not GetReadOnly);
+    kDataBrowserItemIsContainerProperty:
+      Result := SetDataBrowserItemDataBooleanValue(Data, False);
+    CheckPropertyID:
+      begin
+        if GetItemChecked(ID - 1) then CheckboxValue := kThemeButtonOn
+        else CheckboxValue := kThemeButtonOff;
+        
+        Result := SetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+        if Result <> noErr then Exit;
+        
+        if LCLObject.Enabled then CheckboxState := kThemeStateActive
+        else CheckboxState := kThemeStateInactive;
+        
+        Result := SetDataBrowserItemDataDrawState(Data, CheckboxState);
+      end;
+    else
+      begin
+        if (PropID >= CaptionPropertyID) and
+          (PropID <= CaptionPropertyID + DataBrowserPropertyID(FColumns.Count)) then
+        begin
+          if PropID = CaptionPropertyID then
+          begin
+            SubIndex := 0;
+          end else begin
+            SubIndex :=
+              TCarbonListColumn(FColumns[PropID - CaptionPropertyID - 1]).FListColumn.Index;
+          end;
+          
+          CFString:=nil;
+          CreateCFString(GetItemCaption(ID - 1, SubIndex), CFString);
+          try
+            SetDataBrowserItemDataText(Data, CFString);
+          finally
+            FreeCFString(CFString);
+          end;
+
+          ItemIcon := GetItemIcon(ID-1, SubIndex);
+          if Assigned(ItemIcon) then
+            OSError(
+              SetDataBrowserItemDataIcon(Data, ItemIcon),
+              'CarbonItemDataCallBack', 'SetDataBrowserItemDataIcon');
+
+        end
+        else
+          Result := errDataBrowserPropertyNotFound;
+      end;
+  end;
+
+end;
+
+procedure TCarbonDataBrowser.NotificationCallBack(ID: DataBrowserItemId; 
+  AMessage: DataBrowserItemNotification); 
+begin
+  if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then Exit;
+
+  case AMessage of
+    kDataBrowserItemSelected:
+      SelectionChanged(ID - 1, True);
+    kDataBrowserItemDeselected:
+      SelectionChanged(ID - 1, False);
+    kDataBrowserSelectionSetChanged: // the selection order has changed
+      SelectionChanged(ID - 1, True);
+    // kDataBrowserItemDoubleClicked:;
+  end;
+
+end;
+
 function TCarbonDataBrowser.GetTopItem: Integer;
 begin
   Result := GetItemAt(0, GetHeaderHeight);
@@ -1437,6 +1486,13 @@ begin
   inherited;
 end;
 
+function TCarbonListView.DataCallBack(ID: DataBrowserItemId;  
+  PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef;  
+  ASetValue: Boolean): OSStatus;  
+begin
+  Result := ListViewModes[FStyle].DataCallBack(Self, ID, PropID, Data, ASetValue);
+end;
+
 function TCarbonListView.GetItemCaption(AIndex, ASubIndex: Integer): String;
 begin
   if (AIndex >= 0) and (AIndex < (LCLObject as TCustomListView).Items.Count) then
@@ -1609,6 +1665,12 @@ begin
       ReleaseIconRef(FIcons[i]);
   end;
   FIcons.Clear;
+end;
+
+procedure TCarbonListView.SetViewStyle(AStyle: TViewStyle); 
+begin
+  FStyle:=AStyle;
+  ListViewModes[FStyle].Apply(Self);
 end;
 
 procedure TCarbonListView.DoColumnClicked(MouseX, MouseY: Integer);
@@ -1802,6 +1864,118 @@ procedure TCarbonCheckListBox.CheckChanged(AIndex: Integer; AChecked: Boolean);
 begin
   inherited;
   LCLSendChangedMsg(LCLObject, AIndex);
+end;
+
+{ TReportViewMode }
+
+class procedure TReportViewMode.Apply(View: TCarbonListView);  
+var
+  C : TCarbonListColumn;
+  firstIconed : Boolean;
+begin
+  with View do 
+    if (FColumns.Count > 0) then
+    begin
+      firstIconed := Assigned(TListView(view.LCLObject).SmallImages);
+      C := TCarbonListColumn(FColumns[0]);
+      if C.TextWithIcon <> firstIconed then
+      begin
+        C.TextWithIcon := firstIconed;
+        C.ReCreate;
+      end;
+    end;                                
+end;
+
+class procedure TReportViewMode.Resized(View: TCarbonListView);  
+begin
+  // nothing needs to be done here
+end;
+
+class function TReportViewMode.DataCallBack(View: TCarbonListView; ID: DataBrowserItemId;  
+  PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef;  
+  ASetValue: Boolean): OSStatus;  
+var
+  CheckboxValue: ThemeButtonValue;
+  CheckboxState: ThemeDrawState;
+  CFString: CFStringRef;
+  ItemIcon: IconRef;
+  SubIndex: Integer;
+ 
+begin
+  with View do begin
+    if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then
+    begin
+      Result := errDataBrowserItemNotFound;
+      Exit;
+    end;
+    
+    if ASetValue then
+    begin
+      if PropID = CheckPropertyID then // check has changed
+      begin
+        Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+        if Result <> noErr then Exit;
+  
+        CheckChanged(ID - 1, CheckboxValue = kThemeButtonOn);
+      end;
+      Exit;
+    end;
+  
+    case PropID of
+      kDataBrowserItemIsActiveProperty:
+        Result := SetDataBrowserItemDataBooleanValue(Data, LCLObject.Enabled);
+      kDataBrowserItemIsSelectableProperty:
+        Result := SetDataBrowserItemDataBooleanValue(Data, LCLObject.Enabled);
+      kDataBrowserItemIsEditableProperty:
+        Result := SetDataBrowserItemDataBooleanValue(Data, not GetReadOnly);
+      kDataBrowserItemIsContainerProperty:
+        Result := SetDataBrowserItemDataBooleanValue(Data, False);
+      CheckPropertyID:
+        begin
+          if GetItemChecked(ID - 1) then CheckboxValue := kThemeButtonOn
+          else CheckboxValue := kThemeButtonOff;
+          
+          Result := SetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+          if Result <> noErr then Exit;
+          
+          if LCLObject.Enabled then CheckboxState := kThemeStateActive
+          else CheckboxState := kThemeStateInactive;
+          
+          Result := SetDataBrowserItemDataDrawState(Data, CheckboxState);
+        end;
+      else
+        begin
+          if (PropID >= CaptionPropertyID) and
+            (PropID <= CaptionPropertyID + DataBrowserPropertyID(FColumns.Count)) then
+          begin
+            if PropID = CaptionPropertyID then
+            begin
+              SubIndex := 0;
+            end else begin
+              SubIndex :=
+                TCarbonListColumn(FColumns[PropID - CaptionPropertyID - 1]).FListColumn.Index;
+            end;
+            
+            CFString:=nil;
+            CreateCFString(GetItemCaption(ID - 1, SubIndex), CFString);
+            try
+              SetDataBrowserItemDataText(Data, CFString);
+            finally
+              FreeCFString(CFString);
+            end;
+  
+            ItemIcon := GetItemIcon(ID-1, SubIndex);
+            if Assigned(ItemIcon) then
+              OSError(
+                SetDataBrowserItemDataIcon(Data, ItemIcon),
+                'CarbonItemDataCallBack', 'SetDataBrowserItemDataIcon');
+  
+          end
+          else
+            Result := errDataBrowserPropertyNotFound;
+        end;
+    end;
+  end;
 end;
 
 initialization

@@ -591,7 +591,7 @@ class procedure TCarbonWSCustomListView.SetViewStyle(const ALV: TCustomListView;
 begin
   if not CheckHandle(ALV, Self, 'SetViewStyle') then Exit;
 
-  TCarbonListView(ALV.Handle).ShowAsList(AValue <> vsReport);
+  TCarbonListView(ALV.Handle).SetViewStyle(AValue);
 end;
 
 { TCarbonWSProgressBar }
