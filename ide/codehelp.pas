@@ -485,6 +485,20 @@ function TLazFPDocFile.GetElementWithName(const ElementName: string;
 var
   ModuleNode: TDOMNode;
 begin
+  // get first module node
+  ModuleNode:=GetModuleNode;
+  if ModuleNode=nil then begin
+    DebugLn(['TLazFPDocFile.GetElementWithName create failed: missing module name. ElementName=',ElementName]);
+    exit;
+  end;
+  // check module name
+  if (ModuleNode is TDomElement)
+  and (SysUtils.CompareText(TDomElement(ModuleNode).GetAttribute('name'),ElementName)=0)
+  then begin
+    Result:=ModuleNode;
+    exit;
+  end;
+  // check elements
   Result:=GetFirstElement;
   //DebugLn(['TLazFPDocFile.GetElementWithName ',ElementName,' GetFirstElement=',GetFirstElement<>nil]);
   while Result<>nil do begin
@@ -498,11 +512,6 @@ begin
   end;
   if (Result=nil) and CreateIfNotExists then begin
     DebugLn(['TLazFPDocFile.GetElementWithName creating ',ElementName]);
-    ModuleNode:=GetModuleNode;
-    if ModuleNode=nil then begin
-      DebugLn(['TLazFPDocFile.GetElementWithName create failed: missing module name. ElementName=',ElementName]);
-      exit;
-    end;
     Result:=Doc.CreateElement('element');
     DocChanging;
     TDOMElement(Result).SetAttribute('name',ElementName);
@@ -627,7 +636,6 @@ begin
     if (Node.NodeType = ELEMENT_NODE) then
     begin
       S := Node.NodeName;
-
       if S = FPDocItemNames[fpdiShort] then
         Result[fpdiShort] := GetChildValuesAsString(Node);
 
@@ -1633,27 +1641,31 @@ var
   NodeName: String;
 begin
   Result:='';
-  while CodeNode<>nil do begin
-    case CodeNode.Desc of
-    ctnVarDefinition, ctnConstDefinition, ctnTypeDefinition, ctnGenericType:
-      NodeName:=Tool.ExtractDefinitionName(CodeNode);
-    ctnProperty:
-      NodeName:=Tool.ExtractPropName(CodeNode,false);
-    ctnProcedure:
-      NodeName:=Tool.ExtractProcName(CodeNode,[]);
-    ctnEnumIdentifier:
-      NodeName:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
-    ctnIdentifier:
-      if Tool.NodeIsResultType(CodeNode) then
-        NodeName:='Result';
-    else NodeName:='';
+  if CodeNode.Desc in AllSourceTypes then begin
+    Result:=Tool.ExtractSourceName;
+  end else begin
+    while CodeNode<>nil do begin
+      case CodeNode.Desc of
+      ctnVarDefinition, ctnConstDefinition, ctnTypeDefinition, ctnGenericType:
+        NodeName:=Tool.ExtractDefinitionName(CodeNode);
+      ctnProperty:
+        NodeName:=Tool.ExtractPropName(CodeNode,false);
+      ctnProcedure:
+        NodeName:=Tool.ExtractProcName(CodeNode,[]);
+      ctnEnumIdentifier:
+        NodeName:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
+      ctnIdentifier:
+        if Tool.NodeIsResultType(CodeNode) then
+          NodeName:='Result';
+      else NodeName:='';
+      end;
+      if NodeName<>'' then begin
+        if Result<>'' then
+          Result:='.'+Result;
+        Result:=NodeName+Result;
+      end;
+      CodeNode:=CodeNode.Parent;
     end;
-    if NodeName<>'' then begin
-      if Result<>'' then
-        Result:='.'+Result;
-      Result:=NodeName+Result;
-    end;
-    CodeNode:=CodeNode.Parent;
   end;
 end;
 
@@ -1876,7 +1888,7 @@ begin
       Node:=Node.Parent;
   end;
   if (not (Node.Desc in
-    (AllIdentifierDefinitions
+    (AllIdentifierDefinitions+AllSourceTypes
       +[ctnProperty,ctnProcedure,ctnEnumIdentifier])))
   and (not CurTool.NodeIsResultType(Node))
   then begin
@@ -1942,7 +1954,7 @@ begin
       CHElement:=Chain.Add;
       CHElement.CodeXYPos:=CodePos^;
       CHElement.CodeContext:=FindContext;
-      DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
+      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
 
       // find corresponding FPDoc file
       CHElement.ElementUnitFileName:=CHElement.CodeContext.Tool.MainFilename;
