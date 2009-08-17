@@ -1313,7 +1313,7 @@ end;
 function GetWinCEPlatform: TApplicationType;
 {$ifdef Win32}
 begin
-  Result := atDesktop;
+  Result := atPDA; // just for testing, should actually be atDesktop
 end;
 {$else}
 var

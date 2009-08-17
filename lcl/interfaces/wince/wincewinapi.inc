@@ -1724,19 +1724,34 @@ begin
   // convert top level lcl window coordinaties to win32 coord
   Style := Windows.GetWindowLongW(Handle, GWL_STYLE);
   ExStyle := Windows.GetWindowLongW(Handle, GWL_EXSTYLE);
-  if (Style and WS_THICKFRAME) <> 0 then
-  begin
-    // thick, sizing border
-    // add twice, top+bottom border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
-  end else
-  if (Style and WS_BORDER) <> 0 then
-  begin
-    // thin, non-sizing border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
-  end;
+
+  // The borders are not given by the same constants in Win32 and WinCE
+  // Bug http://bugs.freepascal.org/view.php?id=11456
+  //
+  // SM_CXSIZEFRAME returns 3 in my tests, but the real border
+  // is only 1 pixel wide, like SM_CXBORDER
+  {$IFDEF WinCE}
+    if (Style and WS_BORDER) <> 0 then
+    begin
+      // thin, non-sizing border
+      Dec(Width, 2*Windows.GetSystemMetrics(SM_CXBORDER));
+      Dec(Height, 2*Windows.GetSystemMetrics(SM_CYBORDER));
+    end;
+  {$ELSE}
+    if (Style and WS_THICKFRAME) <> 0 then
+    begin
+      // thick, sizing border
+      // add twice, top+bottom border
+      Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+      Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+    end else
+    if (Style and WS_BORDER) <> 0 then
+    begin
+      // thin, non-sizing border
+      Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+      Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
+    end;
+  {$ENDIF}
 
   // ExcludeCaption
   if (Style and WS_CAPTION) <> 0 then
