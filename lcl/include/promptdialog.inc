@@ -380,7 +380,23 @@ begin
 end;
 
 {
-  Executed the layout of TPromptDialog for small devices
+  Executes the layout of TPromptDialog for small devices
+
+  Two layout options are present, both to optimize space if
+  only 1 button is present and also to allow many buttons.
+
+  If only 1 button is present:
+
+  ====================
+  Caption
+  ====================
+        Button 1        > button in the middle
+   Some text and so on
+   ...       ...
+   ...       ...
+  ====================
+
+  If more buttons are present:
 
   ====================
   Caption
@@ -397,10 +413,13 @@ end;
 }
 procedure TPromptDialog.LayoutDialogSmallDevice;
 Const
+  cDialogWidth = 200;
+  cDialogHalfWidth = cDialogWidth div 2;
   cTextWidth = 100;
   cHorizontalSpacing = 5;
   cVerticalSpacing = 5;
-  cButtonWidth = 200 - cTextWidth - 3 * cHorizontalSpacing;
+  cButtonWidth = cDialogWidth - cTextWidth - 3 * cHorizontalSpacing;
+  cOneButtonTextWidth = cTextWidth + cHorizontalSpacing + cButtonWidth;
 var
   i        : integer;
   CurButton: TBitBtn;
@@ -411,56 +430,99 @@ var
    MinHeightForButtons,
    reqHeight: Integer;
 begin
+  // Create buttons without positioning and
+  // Calculate the minimum size for the buttons
+  // First thing so that ComponentCount is updated
+  MinHeightForButtons := CreateButtons(True, cVerticalSpacing);
+
   // calculate the width & height we need to display the Message
 
   // calculate the needed size for the text
-  TextBox := Rect(0, 0, cTextWidth, Screen.Height - 100);
-  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
-  DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
-    TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
+  if ComponentCount = 1 then { one button layout }
+    TextBox := Rect(0, 0, cOneButtonTextWidth, Screen.Height - 100)
+  else
+    TextBox := Rect(0, 0, cTextWidth, Screen.Height - 100);
 
-  // Create buttons without positioning and
-  // Calculate the minimum size for the buttons
-  MinHeightForButtons := CreateButtons(True, cVerticalSpacing);
+  DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
+    TextBox, DT_WORDBREAK or DT_CALCRECT);
 
   // calculate the height of the text+icon
   MinHeightForText := TextBox.Bottom;
 
-  TextBox.Top := cVerticalSpacing;
-  Inc(TextBox.Bottom, cVerticalSpacing);
-  TextBox.Left := cHorizontalSpacing;
-  TextBox.Right := cTextWidth + cHorizontalSpacing;
+  if ComponentCount = 1 then { one button layout }
+  begin
+    TextBox.Top := 2*cVerticalSpacing + MinHeightForButtons;
+    Inc(TextBox.Bottom, TextBox.Top);
+    TextBox.Left := cHorizontalSpacing;
+    TextBox.Right := cOneButtonTextWidth + TextBox.Left;
+  end
+  else
+  begin
+    TextBox.Top := cVerticalSpacing;
+    Inc(TextBox.Bottom, TextBox.Top);
+    TextBox.Left := cHorizontalSpacing;
+    TextBox.Right := cTextWidth + TextBox.Left;
+  end;
 
   reqHeight := Max(MinHeightForText, MinHeightForButtons);
 
-  // set size of form
-  Height := reqHeight + cVerticalSpacing;
-  Width := 200;
-
-  // calculate the left of the buttons
-  ButtonLeft := cTextWidth + 2 * cHorizontalSpacing;
-  ButtonTop := cVerticalSpacing;
-
-  // position buttons and activate default
-  for i:=0 to ComponentCount-1 do
+  if ComponentCount = 1 then { one button layout }
   begin
-    if (Components[i] is TBitBtn) then
+    // set size of form
+    Height := (TextBox.Bottom - TextBox.Top) + 3*cVerticalSpacing + MinHeightForButtons;
+    Width := 200;
+
+    // position buttons and activate default
+    if (Components[0] is TBitBtn) then
     begin
-      CurButton:=TBitBtn(Components[i]);
-      CurButton.Left := ButtonLeft;
-      CurButton.Top := ButtonTop;
+      CurButton:=TBitBtn(Components[0]);
+      CurButton.Left := cDialogHalfWidth - cButtonWidth div 2;
+      CurButton.Top := cVerticalSpacing;
       CurButton.Width := cButtonWidth;
-
-      inc(ButtonTop, CurButton.Height + cVerticalSpacing);
-
       if (CurButton.Default) then
       begin
         ActiveControl:=CurButton;
         DefaultControl:=CurButton;
       end;
     end;
+  end
+  else
+  begin
+    // set size of form
+    Height := reqHeight + cVerticalSpacing;
+    Width := 200;
+
+    // calculate the left of the buttons
+    ButtonLeft := cTextWidth + 2 * cHorizontalSpacing;
+    ButtonTop := cVerticalSpacing;
+
+    // position buttons and activate default
+    for i:=0 to ComponentCount-1 do
+    begin
+      if (Components[i] is TBitBtn) then
+      begin
+        CurButton:=TBitBtn(Components[i]);
+        CurButton.Left := ButtonLeft;
+        CurButton.Top := ButtonTop;
+        CurButton.Width := cButtonWidth;
+
+        inc(ButtonTop, CurButton.Height + cVerticalSpacing);
+
+        if (CurButton.Default) then
+        begin
+          ActiveControl:=CurButton;
+          DefaultControl:=CurButton;
+        end;
+      end;
+    end;
   end;
+
+  // We need to avoid a too high dialog which would go out
+  // of the screen and be maybe impossible to close
+  if Height > Screen.Height - 50 then
+    Height := Screen.Height - 50;
 end;
+
 
 function ShowPromptDialog(const DialogCaption,
   DialogMessage : String;
