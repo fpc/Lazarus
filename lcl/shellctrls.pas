@@ -50,11 +50,11 @@ type
     FShellListView: TCustomShellListView;
     { Setters and getters }
     procedure SetShellListView(const Value: TCustomShellListView);
-    { Other internal methods }
-    procedure HandleOnExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
-    procedure HandleSelectionChanged(Sender: TObject);
   protected
-    { Other methods specific to Lazarus }
+    { Other internal methods }
+    function CanExpand(Node: TTreeNode): Boolean; override;
+    procedure DoSelectionChanged; override;
+
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
     procedure PopulateWithBaseFiles;
@@ -67,7 +67,6 @@ type
     class function  GetBasePath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings);
-    { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
 
     { Properties }
@@ -141,22 +140,17 @@ type
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
-    { Setters and getters }
     procedure SetMask(const AValue: string);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
-    { Other internal methods }
-    procedure HandleResize(Sender: TObject);
   protected
-    { Methods specific to Lazarus }
-    procedure PopulateWithRoot();
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure PopulateWithRoot;
   public
-    { Basic methods }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    { Methods specific to Lazarus }
     function GetPathFromItem(ANode: TListItem): string;
-    { Properties }
+  public
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
@@ -304,15 +298,17 @@ begin
     Value.ShellTreeView := Self;
 end;
 
-procedure TCustomShellTreeView.HandleOnExpanding(Sender: TObject;
-  Node: TTreeNode; var AllowExpansion: Boolean);
+function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
   Node.DeleteChildren;
-  AllowExpansion := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
+  Result:=inherited CanExpand(Node);
+  if Result then
+    Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
 end;
 
-procedure TCustomShellTreeView.HandleSelectionChanged(Sender: TObject);
+procedure TCustomShellTreeView.DoSelectionChanged;
 begin
+  inherited DoSelectionChanged;
   if Assigned(FShellListView) then
   begin
     FShellListView.Root := GetPathFromNode(Selected);
@@ -327,11 +323,6 @@ begin
   // Initial property values
 
   ObjectTypes:= [otFolders];
-
-  // Necessary event handlers
-
-  OnExpanding := @HandleOnExpanding;
-  OnSelectionChanged := @HandleSelectionChanged;
 
   // Populates the base dirs
 
@@ -543,10 +534,12 @@ begin
   end;
 end;
 
-procedure TCustomShellListView.HandleResize(Sender: TObject);
+procedure TCustomShellListView.ChangeBounds(ALeft, ATop,
+  AWidth, AHeight: integer);
 begin
+  inherited ChangeBounds(ALeft,ATop,AWidth,AHeight);
   {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':>TCustomShellListView.HandleResize');
+    debugLn([':>TCustomShellListView.HandleResize']);
   {$endif}
 
   // The correct check is with count,
@@ -554,14 +547,14 @@ begin
   // will raise an exception
   if Self.Columns.Count < 3 then Exit;
 
-  Column[0].Width := (70 * Width) div 100;
-  Column[1].Width := (15 * Width) div 100;
-  Column[2].Width := (15 * Width) div 100;
+  Column[0].Width := (70 * AWidth) div 100;
+  Column[1].Width := (15 * AWidth) div 100;
+  Column[2].Width := (15 * AWidth) div 100;
 
   {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
+    debugLn([':<TCustomShellListView.HandleResize C0.Width=',
      Column[0].Width, ' C1.Width=', Column[1].Width,
-     ' C2.Width=', Column[2].Width);
+     ' C2.Width=', Column[2].Width]);
   {$endif}
 end;
 
@@ -580,10 +573,7 @@ begin
   Self.Column[1].Caption := 'Size';
   Self.Column[2].Caption := 'Type';
   // Initial sizes, necessary under Windows CE
-  HandleResize(Self);
-
-  // Internal event handlers
-  OnResize := @HandleResize;
+  ChangeBounds(Left,Top,Width,Height);
 end;
 
 destructor TCustomShellListView.Destroy;
@@ -592,7 +582,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomShellListView.PopulateWithRoot();
+procedure TCustomShellListView.PopulateWithRoot;
 var
   i: Integer;
   Files: TStringList;

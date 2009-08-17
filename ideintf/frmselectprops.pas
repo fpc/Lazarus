@@ -93,23 +93,11 @@ begin
 end;
 
 procedure TSelectPropertiesForm.LBPropertiesClick(Sender: TObject);
-//var
-  //I: Integer;
 begin
-  //writeln('TSelectPropertiesForm.LBPropertiesClick START ');
-  //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then writeln(i);
-  //writeln('');
-  //writeln('TSelectPropertiesForm.LBPropertiesClick END ');
 end;
 
 procedure TSelectPropertiesForm.LBPropertiesDblClick(Sender: TObject);
-//var
-  //I: Integer;
 begin
-  //writeln('TSelectPropertiesForm.LBPropertiesDblClick START ');
-  //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then writeln(i);
-  //writeln('');
-  //writeln('TSelectPropertiesForm.LBPropertiesDblClick END ');
   AddSelectedProperties;
 end;
 
