@@ -200,12 +200,12 @@ type
     fFrames    : TfrFrameBorders;
     fFrameStyle: TfrFrameStyle;
     fFrameWidth: Double;
-    fStretched : Boolean;
     fStreamMode: TfrStreamMode;
     fFormat    : Integer;
     fFormatStr : string;
     function GetHeight: Double;
     function GetLeft: Double;
+    function GetStretched: Boolean;
     function GetTop: Double;
     function GetWidth: Double;
     procedure P1Click(Sender: TObject);
@@ -277,7 +277,7 @@ type
     property Canvas : TCanvas read fCanvas write fCanvas;
 
     property FillColor : TColor read fFillColor write SetFillColor;
-    property Stretched : Boolean read fStretched write SetStretched;
+    property Stretched : Boolean read GetStretched write SetStretched;
 
     property Frames : TfrFrameBorders read fFrames write SetFrames;
     property FrameColor : TColor read fFrameColor write SetFrameColor;
@@ -1505,7 +1505,6 @@ begin
   OffsY := 0;
   Flags := flStretched;
   
-  fStretched:=True;
   fFrames:=[]; //No frame
 end;
 
@@ -2052,7 +2051,7 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sStretched;
   m.OnClick := @P1Click;
-  m.Checked := (Flags and flStretched) <> 0;
+  m.Checked := Stretched;
   Popup.Items.Add(m);
 end;
 
@@ -2069,7 +2068,7 @@ begin
     begin
       t := TfrView(frDesigner.Page.Objects[i]);
       if t.Selected then
-        t.Flags := (t.Flags and not flStretched) + Word(Checked);
+        SetBit(t.Flags, Checked, flStretched);
     end;
   end;
   frDesigner.AfterChange;
@@ -2081,6 +2080,11 @@ begin
     result := frDesigner.PointsToUnits(x)
   else
     result := x;
+end;
+
+function TfrView.GetStretched: Boolean;
+begin
+  Result:=((Flags and flStretched)<>0);
 end;
 
 function TfrView.GetHeight: Double;
@@ -2199,10 +2203,10 @@ end;
 
 procedure TfrView.SetStretched(const AValue: Boolean);
 begin
-  if fStretched<>AValue then
+  if Stretched<>AValue then
   begin
     BeforeChange;
-    fStretched := AValue;
+    SetBit(Flags, AValue, flStretched);
     AfterChange;
   end;
 end;
@@ -3278,13 +3282,13 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sWordWrap;
   m.OnClick := @P2Click;
-  m.Checked := (Flags and flWordWrap) <> 0;
+  m.Checked := WordWrap;
   Popup.Items.Add(m);
 
   m := TMenuItem.Create(Popup);
   m.Caption := sWordBreak;
   m.OnClick := @P3Click;
-  m.Enabled := (Flags and flWordWrap) <> 0;
+  m.Enabled := WordWrap;
   if m.Enabled then
      m.Checked := (Flags and flWordBreak) <> 0;
   Popup.Items.Add(m);
@@ -3292,7 +3296,7 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sAutoSize;
   m.OnClick := @P5Click;
-  m.Checked := (Flags and flAutoSize) <> 0;
+  m.Checked := AutoSize;
   Popup.Items.Add(m);
 end;
 
@@ -4201,7 +4205,7 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sKeepAspectRatio;
   m.OnClick := @P2Click;
-  m.Enabled := (Flags and flStretched) <> 0;
+  m.Enabled := Stretched;
   if m.Enabled then
     m.Checked := (Flags and flPictRatio) <> 0;
   Popup.Items.Add(m);

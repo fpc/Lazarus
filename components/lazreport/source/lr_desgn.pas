@@ -4335,6 +4335,7 @@ procedure TfrDesignerForm.AfterChange;
 begin
   PageView.DrawPage(dmSelection);
   PageView.Draw(TopSelected, 0);
+  ObjInspRefresh;
 end;
 
 //Move selected object from front
