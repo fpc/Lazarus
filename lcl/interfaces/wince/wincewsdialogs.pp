@@ -203,7 +203,7 @@ begin
   ShellListView.Height := Height - ShellTreeView.Height - Panel.Height;
   ShellListView.Align := alClient;
   ShellListView.ShellTreeView := ShellTreeView;
-  ShellListView.ScrollBars := ssNone;
+  ShellListView.ScrollBars := ssVertical;
   ShellListView.OnSelectItem := HandleSelectItem;
 
   // TEdit for save dialog
