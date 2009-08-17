@@ -1080,7 +1080,7 @@ begin
         bsNone:
           Result := Result or WS_POPUP;
         else
-          Result := WS_VISIBLE;
+          Result := 0; // Never add WS_VISIBLE here, bug http://bugs.freepascal.org/view.php?id=12193
         end;
       end;
   end;
