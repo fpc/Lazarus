@@ -54,6 +54,8 @@ type
     { Other internal methods }
     function CanExpand(Node: TTreeNode): Boolean; override;
     procedure DoSelectionChanged; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+                   override;
 
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
@@ -146,6 +148,8 @@ type
   protected
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure PopulateWithRoot;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+                   override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -289,7 +293,11 @@ begin
 procedure TCustomShellTreeView.SetShellListView(
   const Value: TCustomShellListView);
 begin
+  if FShellListView=Value then exit;
+
+  if FShellListView<>nil then FShellListView.RemoveFreeNotification(Self);
   FShellListView := Value;
+  if FShellListView<>nil then FShellListView.FreeNotification(Self);
 
   // Update the pair, it will then update itself
   // in the setter of this property
@@ -314,6 +322,13 @@ begin
     FShellListView.Root := GetPathFromNode(Selected);
     FShellListView.Refresh; // Repaint
   end;
+end;
+
+procedure TCustomShellTreeView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if AComponent=FShellListView then FShellListView:=nil;
 end;
 
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
@@ -497,14 +512,16 @@ procedure TCustomShellListView.SetShellTreeView(
 begin
   if FShellTreeView <> Value then
   begin
+    if FShellTreeView<>nil then FShellTreeView.RemoveFreeNotification(Self);
     FShellTreeView := Value;
+    if FShellTreeView<>nil then FShellTreeView.FreeNotification(Self);
 
     Clear;
 
     if Value <> nil then
     begin
       FRoot := Value.GetPathFromNode(Value.Selected);
-      PopulateWithRoot();
+      PopulateWithRoot;
     end;
   end;
 
@@ -621,6 +638,13 @@ begin
   finally
     Files.Free;
   end;
+end;
+
+procedure TCustomShellListView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if AComponent=FShellTreeView then FShellTreeView:=nil;
 end;
 
 function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
