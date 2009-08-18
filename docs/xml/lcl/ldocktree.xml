@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="LDockTree">
-	    <short>This unit defines TLazDockTree, the default TDockTree for the LCL</short>
+      <short>This unit defines TLazDockTree, the default TDockTree for the LCL</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -418,7 +418,9 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TLazDockPage">
-        <short/>
+        <short>
+          <var>TLazDockPage</var> - an entity similar to a <var>TLazDockForm</var>, but forming a page in a notebook of <var>TLazDockPages</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -449,7 +451,9 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TLazDockPages">
-        <short/>
+        <short>
+          <var>TLazDockPages</var> a notebook in which each page is a <var>TLazDockPage</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -532,7 +536,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TLazDockSplitter">
-        <short/>
+        <short>
+          <var>TLazDockSplitter</var> - a spltter used with Lazarus Docking components</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -849,7 +854,7 @@
       </element>
       <element name="TCustomAnchoredDockManager.EnableLayout">
         <short>
-          <var>EnableLayout</var> - laceholder for a virtual procedure to enable the layout of the specified control</short>
+          <var>EnableLayout</var> - placeholder for a virtual procedure to enable the layout of the specified control</short>
       </element>
       <element name="TCustomAnchoredDockManager.DockControl">
         <short>
