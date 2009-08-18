@@ -49,7 +49,6 @@ type
   private
     FClassHeaderComments: boolean;
     FFilename: string;
-    FIdentComplAddAssignOperator: Boolean;
 
     // General
     FSrcPath: string;
@@ -84,10 +83,12 @@ type
     FPropertyStoredIdentPostfix: string;
     FPrivateVariablePrefix: string;
     FSetPropertyVariablename: string;
+    FUsesInsertPolicy: TUsesInsertPolicy;
 
     // identifier completion
     FIdentComplAddSemicolon: Boolean;
-    FUsesInsertPolicy: TUsesInsertPolicy;
+    FIdentComplAddAssignOperator: Boolean;
+    FIdentComplAutoStartAfterPoint: boolean;
 
     procedure SetFilename(const AValue: string);
   public
@@ -174,6 +175,8 @@ type
                                              write FIdentComplAddSemicolon;
     property IdentComplAddAssignOperator: Boolean read FIdentComplAddAssignOperator
                                              write FIdentComplAddAssignOperator;
+    property IdentComplAutoStartAfterPoint: boolean read FIdentComplAutoStartAfterPoint
+                                           write FIdentComplAutoStartAfterPoint;
   end;
 
 var
@@ -389,6 +392,8 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AddSemicolon',true);
     FIdentComplAddAssignOperator:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AddAssignOperator',true);
+    FIdentComplAutoStartAfterPoint:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
 
     XMLConfig.Free;
   except
@@ -493,6 +498,8 @@ begin
       FIdentComplAddSemicolon,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AddAssignOperator',
       FIdentComplAddAssignOperator,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',
+      FIdentComplAutoStartAfterPoint,true);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -576,6 +583,7 @@ begin
     // identifier completion
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
+    FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
   end
   else
     Clear;
@@ -622,6 +630,7 @@ begin
   // identifier completion
   FIdentComplAddSemicolon:=true;
   FIdentComplAddAssignOperator:=true;
+  FIdentComplAutoStartAfterPoint:=true;
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
@@ -672,6 +681,11 @@ begin
     and (FPrivateVariablePrefix=CodeToolsOpts.FPrivateVariablePrefix)
     and (FSetPropertyVariablename=CodeToolsOpts.FSetPropertyVariablename)
     and (FUsesInsertPolicy=CodeToolsOpts.FUsesInsertPolicy)
+
+    // identifier completion
+    and (FIdentComplAddSemicolon=CodeToolsOpts.FIdentComplAddSemicolon)
+    and (FIdentComplAddAssignOperator=CodeToolsOpts.FIdentComplAddAssignOperator)
+    and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
    ;
 end;
 

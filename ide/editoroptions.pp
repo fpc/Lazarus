@@ -821,7 +821,6 @@ type
     fAutoBlockCompletion: Boolean;
     fAutoCodeParameters: Boolean;
     fAutoDelayInMSec: Integer;
-    fAutoIdentifierCompletion: Boolean;
     FAutoRemoveEmptyMethods: Boolean;
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
@@ -976,8 +975,6 @@ type
       read FMarkupCurWordNoTimer write FMarkupCurWordNoTimer default False;
 
     // Code Tools options
-    property AutoIdentifierCompletion: Boolean
-      read fAutoIdentifierCompletion write fAutoIdentifierCompletion default True;
     property AutoBlockCompletion: Boolean
       read fAutoBlockCompletion write FAutoBlockCompletion default True;
     property AutoCodeParameters: Boolean
@@ -2628,9 +2625,6 @@ begin
       'EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
 
     // Code Tools options
-    fAutoIdentifierCompletion :=
-      XMLConfig.GetValue(
-      'EditorOptions/CodeTools/AutoIdentifierCompletion', True);
     fAutoBlockCompletion :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/AutoBlockCompletion', True);
@@ -2851,8 +2845,6 @@ begin
       FMarkupCurWordNoTimer, False);
 
     // Code Tools options
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
-      , fAutoIdentifierCompletion, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'
       , fAutoBlockCompletion, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoCodeParameters'

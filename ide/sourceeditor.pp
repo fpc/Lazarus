@@ -60,7 +60,7 @@ uses
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
-  CodeTemplatesDlg, TodoDlg, TodoList,
+  CodeTemplatesDlg, TodoDlg, TodoList, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, FPDocEditWindow,
@@ -1563,7 +1563,7 @@ begin
       end else if (not FEditor.IsIdentChar(aChar))
       and AutoCompleteChar(aChar,AddChar,acoWordEnd) then begin
         // completed
-      end else if EditorOpts.AutoIdentifierCompletion then begin
+      end else if CodeToolsOpts.IdentComplAutoStartAfterPoint then begin
         // store caret position to detect caret changes
         SourceCompletionCaretXY:=FEditor.CaretXY;
         // add the char

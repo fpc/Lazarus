@@ -1,15 +1,20 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TCodetoolsIndentifierComplietionOptionsFrame','FORMDATA',[
-  'TPF0,TCodetoolsIndentifierComplietionOptionsFrame+CodetoolsIndentifierCompli'
-  +'etionOptionsFrame'#6'Height'#3','#1#5'Width'#3#144#1#12'ClientHeight'#3','#1
-  +#11'ClientWidth'#3#144#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#223#3
-  +#9'DesignTop'#3'A'#1#0#9'TCheckBox'#22'ICAddSemicolonCheckBox'#22'AnchorSide'
-  +'Left.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#6'Height'#2#19
-  +#5'Width'#3#150#0#7'Caption'#6#22'ICAddSemicolonCheckBox'#8'TabOrder'#2#0#0#0
-  +#9'TCheckBox'#27'ICAddAssignOperatorCheckBox'#22'AnchorSideLeft.Control'#7#5
-  +'Owner'#21'AnchorSideTop.Control'#7#22'ICAddSemicolonCheckBox'#18'AnchorSide'
-  +'Top.Side'#7#9'asrBottom'#6'Height'#2#19#3'Top'#2#25#5'Width'#3#178#0#17'Bor'
-  +'derSpacing.Top'#2#6#7'Caption'#6#27'ICAddAssignOperatorCheckBox'#8'TabOrder'
-  +#2#1#0#0#0
+  'TPF0'#241',TCodetoolsIndentifierComplietionOptionsFrame+CodetoolsIndentifier'
+  +'ComplietionOptionsFrame'#6'Height'#3','#1#5'Width'#3#144#1#12'ClientHeight'
+  +#3','#1#11'ClientWidth'#3#144#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3
+  +#139#2#9'DesignTop'#3#6#1#0#242#2#0#9'TCheckBox'#22'ICAddSemicolonCheckBox'
+  +#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4
+  +'Left'#2#0#6'Height'#2#22#3'Top'#2#0#5'Width'#3#191#0#7'Caption'#6#22'ICAddS'
+  +'emicolonCheckBox'#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#27'ICAddAssignOp'
+  +'eratorCheckBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Cont'
+  +'rol'#7#22'ICAddSemicolonCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'L'
+  +'eft'#2#0#6'Height'#2#22#3'Top'#2#28#5'Width'#3#223#0#17'BorderSpacing.Top'#2
+  +#6#7'Caption'#6#27'ICAddAssignOperatorCheckBox'#8'TabOrder'#2#1#0#0#242#2#2#9
+  +'TCheckBox'#29'ICAutoStartAfterPointCheckBox'#22'AnchorSideLeft.Control'#7#22
+  +'ICAddSemicolonCheckBox'#21'AnchorSideTop.Control'#7#27'ICAddAssignOperatorC'
+  +'heckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2#22#3
+  +'Top'#2'8'#5'Width'#3#224#0#17'BorderSpacing.Top'#2#6#7'Caption'#6#29'ICAuto'
+  +'StartAfterPointCheckBox'#8'TabOrder'#2#2#0#0#0
 ]);

@@ -39,7 +39,6 @@ type
     AutoDelayMaxLabel: TLabel;
     AutoDelayMinLabel: TLabel;
     AutoDelayTrackBar: TTrackBar;
-    AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
@@ -162,7 +161,6 @@ procedure TEditorCodetoolsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDial
 begin
   FDialog := ADialog;
 
-  AutoIdentifierCompletionCheckBox.Caption := dlgEdIdComlet;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoToolTipExprEvalCheckBox.Caption := dlgTooltipEval;
   AutoToolTipSymbToolsCheckBox.Caption := dlgTooltipTools;
@@ -196,7 +194,6 @@ procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOption
 begin
   with AOptions as TEditorOptions do
   begin
-    AutoIdentifierCompletionCheckBox.Checked := AutoIdentifierCompletion;
     AutoCompleteBlockCheckBox.Checked := AutoBlockCompletion;
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
@@ -220,7 +217,6 @@ procedure TEditorCodetoolsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptio
 begin
   with AOptions as TEditorOptions do
   begin
-    AutoIdentifierCompletion := AutoIdentifierCompletionCheckBox.Checked;
     AutoBlockCompletion := AutoCompleteBlockCheckBox.Checked;
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
