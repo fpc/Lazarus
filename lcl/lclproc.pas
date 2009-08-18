@@ -146,7 +146,7 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
-procedure FreeThenNil(var AnObject: TObject);
+procedure FreeThenNil(var obj);
 
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
@@ -1326,11 +1326,12 @@ Begin
     Result := False;
 end;
 
-procedure FreeThenNil(var AnObject: TObject);
+procedure FreeThenNil(var obj);
 begin
-  if AnObject<>nil then begin
-    AnObject.Free;
-    AnObject:=nil;
+  if Pointer(obj) <> nil then 
+  begin
+    TObject(obj).Free;
+    Pointer(obj) := nil;
   end;
 end;
 

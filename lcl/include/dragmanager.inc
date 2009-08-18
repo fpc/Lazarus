@@ -267,7 +267,7 @@ var
   APoint: TPoint;
 begin
   inherited Create(AManager, AControl);
-  AControl.DoStartDock(FDockObject);
+  AControl.DoStartDock(TDragObject(FDockObject));
   if FDockObject = nil then
     FDockObject := TDragDockObject.AutoCreate(AControl);
 
