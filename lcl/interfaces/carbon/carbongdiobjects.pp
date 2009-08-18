@@ -801,6 +801,9 @@ begin
   else
   begin
     Result := LCLType.ComplexRegion;
+    if (CombineMode in [RGN_AND, RGN_OR, RGN_XOR]) and HIShapeIsEmpty(FShape) then 
+      CombineMode := RGN_COPY;
+      
     case CombineMode of
       RGN_AND: Shape:=HIShapeCreateIntersection(FShape, ARegion.Shape);
       RGN_XOR:

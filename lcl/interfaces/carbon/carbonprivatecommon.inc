@@ -101,6 +101,10 @@ begin
       Dispose(AStruct);
     end;
     if AWidget.HasCaret then DrawCaret;
+    
+    // resetting clip region for the next paint
+    TCarbonControlContext(AWidget.Context).SetClipRegion(nil, 0);
+    
 
   finally
     FreeAndNil(AWidget.Context);

@@ -84,7 +84,6 @@ type
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
 
-    fLastClipRegion : TCarbonRegion;
     isClipped : Boolean;
 
     procedure SetBkColor(AValue: TColor);
@@ -99,6 +98,7 @@ type
     function GetSize: TPoint; virtual; abstract;
     function SaveDCData: TCarbonDCData; virtual;
     procedure RestoreDCData(const AData: TCarbonDCData); virtual;
+    procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -119,7 +119,6 @@ type
     procedure DrawGrid(const ARect: TRect; DX, DY: Integer);
     
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
-    procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
     function ExtTextOut(X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
     procedure FillRect(Rect: TRect; Brush: TCarbonBrush);
     procedure Frame(X1, Y1, X2, Y2: Integer);
@@ -143,8 +142,6 @@ type
     function CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
   public
     property Size: TPoint read GetSize;
-
-    property LastClipRegion: TCarbonRegion read fLastClipRegion;
 
     property CurrentFont: TCarbonFont read FCurrentFont write SetCurrentFont;
     property CurrentBrush: TCarbonBrush read FCurrentBrush write SetCurrentBrush;
@@ -492,6 +489,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
 begin
+  if isClipped then CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
+
   Result := 0;
   if CGContext = nil then
   begin
@@ -507,6 +506,13 @@ begin
   {$IFDEF VerboseCanvas}
     DebugLn('TCarbonDeviceContext.SaveDC Result: ', DbgS(Result));
   {$ENDIF}
+  
+  if isClipped then 
+  begin
+    // should clip rect be restored?
+    isClipped:=false;
+    FClipRegion.Shape := HIShapeCreateEmpty;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -518,6 +524,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.RestoreDC(ASavedDC: Integer): Boolean;
 begin
+  if isClipped then CGContextRestoreGState(CGContext);
+  
   Result := False;
   if (FSavedDCList = nil) or (ASavedDC <= 0) or (ASavedDC > FSavedDCList.Count) then
   begin
@@ -549,6 +557,14 @@ begin
   {$ENDIF}
   
   if FSavedDCList.Count = 0 then FreeAndNil(FSavedDCList);
+  
+  
+  if isClipped then 
+  begin
+    // should clip be restored?
+    isClipped:=false;
+    FClipRegion.Shape := HIShapeCreateEmpty;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1468,8 +1484,7 @@ begin
     isClipped := false;
     CGContextRestoreGState(CGContext);
   end;
-  fLastClipRegion := AClipRegion;
-
+  
   if not Assigned(AClipRegion) then
   begin
     HIShapeSetEmpty(FClipRegion.Shape);

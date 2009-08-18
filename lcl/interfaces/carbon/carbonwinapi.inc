@@ -904,18 +904,8 @@ end;
 function TCarbonWidgetSet.ExcludeClipRect(DC: HDC; Left, Top, Right,
   Bottom: Integer): Integer;
 begin
-  Result := ERROR;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.ExcludeClipRect DC: ' + DbgS(DC) + ' R: ' +
-      DbgS(Classes.Rect(Left, Top, Right, Bottom)));
-  {$ENDIF}
-  
-  if not CheckDC(DC, 'ExcludeClipRect') then Exit;
-  
-  TCarbonDeviceContext(DC).ExcludeClipRect(Left, Top, Right, Bottom);
-  
-  Result := COMPLEXREGION;
+  //todo: remove, as unused
+  Result := inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 function TCarbonWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
@@ -2249,19 +2239,8 @@ end;
 function TCarbonWidgetSet.IntersectClipRect(DC: HDC; Left, Top, Right,
   Bottom: Integer): Integer;
 begin
-  Result := ERROR;
-  
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.IntersectClipRect DC: ' + DbgS(DC) + ' R: ' +
-      DbgS(Classes.Rect(Left, Top, Right, Bottom)));
-  {$ENDIF}
-  
-  if not CheckDC(DC, 'IntersectClipRect') then Exit;
-  
-  CGContextClipToRect(TCarbonContext(DC).CGContext,
-    RectToCGRect(Classes.Rect(Left, Top, Right, Bottom)));
-    
-  Result := COMPLEXREGION;
+  //todo: remove, as not used  
+  Result := inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -2461,10 +2440,10 @@ function TCarbonWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
   Result := False;
 
-  {$IFDEF VerboseWinAPI}
+  {.$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX)
       + ', ' + DbgS(DY));
-  {$ENDIF}
+  {.$ENDIF}
   
   if not CheckDC(DC, 'MoveWindowOrgEx') then Exit;
   
@@ -3447,7 +3426,6 @@ const
   SName = 'TCarbonWidgetSet.StretchMaskBlt';
 begin
   Result := False;
-
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.StretchMaskBlt DestDC: ' + DbgS(DestDC) + ' SrcDC: ',
       DbgS(SrcDC) + ' X: ' +  DbgS(X) + ' Y: ' + DbgS(Y),
