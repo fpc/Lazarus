@@ -34,7 +34,7 @@ uses
   {$ifdef Win32}win32compat,{$endif}
   // RTL, FCL, LCL
   SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc,
-  InterfaceBase,
+  InterfaceBase, LMessages, LCLMessageGlue,
   // Widgetset
   WSControls, WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra,
   WSProc;

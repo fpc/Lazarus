@@ -16,7 +16,7 @@ TWinCEMemoStrings = class(TStrings)
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     //procedure SetSorted(Val : boolean); virtual;
-     procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
@@ -24,7 +24,7 @@ TWinCEMemoStrings = class(TStrings)
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
+    procedure SetTextStr(const Value: string); override;
     //procedure Sort; virtual;
   public
     //property Sorted: boolean read FSorted write SetSorted;
@@ -148,9 +148,17 @@ begin
   end;
 end;
 
-procedure TWinCEMemoStrings.SetText(TheText: PChar);
+procedure TWinCEMemoStrings.SetTextStr(const Value: string);
+var
+  Msg: TLMessage;
 begin
-  Windows.SetWindowTextW(fHandle, PWideChar(Utf8Decode(TheText)))
+  if (Value <> Text) then
+  begin
+    Windows.SetWindowTextW(fHandle, PWideChar(Utf8Decode(Value)));
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.Msg := CM_TEXTCHANGED;
+    DeliverMessage(Owner, Msg);
+  end;
 end;
 
 {$ENDIF}
