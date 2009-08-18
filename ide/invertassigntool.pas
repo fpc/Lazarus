@@ -178,7 +178,7 @@ Lines: TStringList;
 PreList,
 AList,
 BList,
-PostList: TStringList;
+PostList: TStrings;
 Indents: PInteger;
 X, Y: Integer;
 EqPos: Integer;

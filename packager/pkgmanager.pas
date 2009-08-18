@@ -50,7 +50,7 @@ uses
   CodeToolManager, CodeCache, NonPascalCodeTools, BasicCodeTools,
   DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
   // IDE Interface
-  IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
+  SrcEditorIntf, IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
   PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
@@ -692,7 +692,7 @@ end;
 
 procedure TPkgManager.MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
 var
-  ActiveSourceEditor: TSourceEditor;
+  ActiveSourceEditor: TSourceEditorInterface;
   ActiveUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
   Filename: String;
@@ -2850,8 +2850,8 @@ var
 
   function RemoveExistingUnitnames: TModalResult;
   var
-    ImplementationUsesSection: TStringList;
-    MainUsesSection: TStringList;
+    ImplementationUsesSection: TStrings;
+    MainUsesSection: TStrings;
     j: LongInt;
     i: Integer;
   begin
@@ -3403,7 +3403,7 @@ end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;
 var
-  ActiveSourceEditor: TSourceEditor;
+  ActiveSourceEditor: TSourceEditorInterface;
   ActiveUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
   Filename: String;

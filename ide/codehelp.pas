@@ -676,7 +676,7 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
   
   procedure ReadXMLFragmentFromString(AParentNode: TDOMNode; const s: string);
   var
-    MemStream: TMemoryStream;
+    MemStream: TStream;
   begin
     if s='' then exit;
     try

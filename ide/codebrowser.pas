@@ -1667,7 +1667,7 @@ var
               NewUnit:=List.AddUnit('');
           end;
           //DebugLn(['AddUnits AddUnitNodes ',CurUnit.Filename]);
-          AddUnitNodes(CurUnit,NewUnit);
+          AddUnitNodes(CurUnit,TObject(NewUnit));
           if (DestParentList=nil) then
             DestParentList:=NewUnit;
         end;
@@ -1709,7 +1709,7 @@ var
       end;
     end;
     // create nodes for units
-    AddUnits(SrcList,NewList);
+    AddUnits(SrcList,TObject(NewList));
     // update DestParentList
     if (DestParentList=nil) then
       DestParentList:=NewList;

@@ -125,7 +125,7 @@ var
   ContentsDir: String;
   MacOSDir: String;
   ResourcesDir: String;
-  sl: TStringList;
+  sl: TStrings;
 begin
   AppBundleDir := ExtractFileNameWithoutExt(Filename) + ApplicationBundleExt + PathDelim;
   if not Recreate and DirectoryExistsUTF8(AppBundleDir) then exit(mrOk);

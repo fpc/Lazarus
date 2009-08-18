@@ -1980,7 +1980,7 @@ begin
          begin
            //MenuItem.Remove(MenuItem[index_sequence[Ind]]);
            temp_menuitem:=MenuItem[index_sequence[Ind]];
-           GlobalDesignHook.DeletePersistent(temp_menuitem);
+           GlobalDesignHook.DeletePersistent(TPersistent(temp_menuitem));
            //MenuItem[index_sequence[Ind]].Free;
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
@@ -1992,7 +1992,7 @@ begin
            for i := MenuItem[index_sequence[Ind]].Count - 1 downto 0 do
            begin
              temp_menuitem:=MenuItem[index_sequence[Ind]].Items[i];
-             GlobalDesignHook.DeletePersistent(temp_menuitem);
+             GlobalDesignHook.DeletePersistent(TPersistent(temp_menuitem));
              //MenuItem[index_sequence[Ind]].Delete(i);
              //MenuItem[index_sequence[Ind]].Items.Free
            end;

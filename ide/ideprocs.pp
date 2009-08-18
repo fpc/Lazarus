@@ -231,7 +231,6 @@ function ProgramDirectory: string;
 procedure RaiseException(const Msg: string);
 
 // miscellaneous
-procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 function CompareBoolean(b1, b2: boolean): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
@@ -1121,12 +1120,6 @@ begin
   ProgramFilename:=Copy(CmdLine,s,l);
   while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
   Params:=RightStr(CmdLine,length(CmdLine)-p+1);
-end;
-
-procedure FreeThenNil(var Obj: TObject);
-begin
-  Obj.Free;
-  Obj:=nil;
 end;
 
 {-------------------------------------------------------------------------------

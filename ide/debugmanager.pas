@@ -45,7 +45,7 @@ uses
   { for Get/SetForegroundWindow }
   LCLType, LCLIntf,
   SynEdit, CodeCache, CodeToolManager,
-  MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
+  SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   LazConf,
   CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger, CmdLineDebugger,
@@ -2409,7 +2409,7 @@ end;
 
 function TDebugManager.DoRunToCursor: TModalResult;
 var
-  ActiveSrcEdit: TSourceEditor;
+  ActiveSrcEdit: TSourceEditorInterface;
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
@@ -2446,7 +2446,7 @@ begin
   DebugLn('TDebugManager.DoRunToCursor C');
 {$endif}
   FDebugger.RunTo(ExtractFilename(UnitFilename),
-                  ActiveSrcEdit.EditorComponent.CaretY);
+                  TSourceEditor(ActiveSrcEdit).EditorComponent.CaretY);
 
 {$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor D');

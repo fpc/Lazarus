@@ -346,7 +346,7 @@ function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): int
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 
-function TryFreeComponent(var AComponent: TComponent): boolean;
+function TryFreeComponent(var obj): boolean;
 
 procedure RegisterStandardClasses;
 
@@ -393,16 +393,17 @@ begin
   RegisterClasses([TStringList]);
 end;
 
-function TryFreeComponent(var AComponent: TComponent): boolean;
+function TryFreeComponent(var obj): boolean;
 var
   OldName, OldClassName: string;
+  AComponent: TComponent absolute obj;
 Begin
-  Result:=false;
+  Result := False;
   {$IFNDEF NoCompCatch}
   try
   {$ENDIF}
-    OldName:=AComponent.Name;
-    OldClassName:=AComponent.ClassName;
+    OldName := AComponent.Name;
+    OldClassName := AComponent.ClassName;
     AComponent.Free;
     Result := True;
   {$IFNDEF NoCompCatch}
@@ -432,7 +433,7 @@ Begin
       end;
     end;
   end;
-  AComponent:=nil;
+  AComponent := nil;
 end;
 
 { TComponentInterface }

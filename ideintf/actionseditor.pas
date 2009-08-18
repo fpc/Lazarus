@@ -749,7 +749,7 @@ begin
   if Assigned(OldAction) then
   begin
     try
-      FDesigner.PropertyEditorHook.DeletePersistent(OldAction);
+      FDesigner.PropertyEditorHook.DeletePersistent(TPersistent(OldAction));
       OldAction:=nil;
     except
       on E: Exception do begin

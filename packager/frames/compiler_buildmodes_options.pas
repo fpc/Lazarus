@@ -157,7 +157,7 @@ var
   i: LongInt;
   Editor: TCompOptsExprEditor;
 begin
-  SelTVNode:=GetSelectedNode(BuildProperty,NodeType);
+  SelTVNode:=GetSelectedNode(TLazBuildProperty(BuildProperty),NodeType);
   if BuildProperty=nil then exit;
   if MessageDlg(lisConfirmDelete,
     Format(lisDeleteBuildMode, ['"', BuildProperty.Identifier, '"']),
