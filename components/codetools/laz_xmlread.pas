@@ -997,6 +997,7 @@ var
     IsEmpty: Boolean;
     attr: TDOMAttr;
     name: string;
+    FoundName: String;
   begin
     {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('  CreateNameElement A');{$ENDIF}
     GetName(name);
@@ -1035,8 +1036,9 @@ var
 
       // Get ETag [42]
       ExpectString('</');
-      if ExpectName <> name then
-        RaiseExc('Unmatching element end tag (expected "</' + name + '>")');
+      FoundName:=ExpectName;
+      if FoundName <> name then
+        RaiseExc('Unmatching element end tag (expected "</' + name + '>", found "</'+FoundName+'>")');
       SkipWhitespace;
       ExpectString('>');
     end;
