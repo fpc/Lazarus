@@ -15775,7 +15775,7 @@ and that description should be read to understand their definitions more fully.
 				      the wrong order. That's why SetClientWidth/SetClientHeight calls are stored
 				      and set at end of loading again.
 				      This way the LCL can restore the distances (e.g. akRight) used during
-				      designing.<p>
+				      designing.</p>
 					      
 					      <ul>
 						      <li>FReadBounds: TRect</li></ul>
