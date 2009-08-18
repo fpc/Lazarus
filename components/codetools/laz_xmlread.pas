@@ -189,11 +189,13 @@ type
 
   TSetOfChar = set of Char;
 
+  { TXMLReader }
+
   TXMLReader = class
   protected
     buf, BufStart: PChar;
     Filename: String;
-
+    function BufPosToStr(p: PChar): string;
     procedure RaiseExc(const descr: String);
     function  SkipWhitespace: Boolean;
     procedure ExpectWhitespace;
@@ -252,17 +254,17 @@ begin
 end;
 
 
-
-procedure TXMLReader.RaiseExc(const descr: String);
+function TXMLReader.BufPosToStr(p: PChar): string;
 var
   apos: PChar;
-  x, y: Integer;
+  x: Integer;
+  y: Integer;
 begin
   // find out the line in which the error occured
   apos := BufStart;
   x := 1;
   y := 1;
-  while apos < buf do begin
+  while apos < p do begin
     if apos^ in [#10,#13] then begin
       Inc(y);
       x := 1;
@@ -272,8 +274,12 @@ begin
       Inc(x);
     Inc(apos);
   end;
+  Result:=IntToStr(y)+','+IntToStr(x);
+end;
 
-  raise EXMLReadError.Create(Filename+'('+IntToStr(y)+','+IntToStr(x)+') Error: ' + descr);
+procedure TXMLReader.RaiseExc(const descr: String);
+begin
+  raise EXMLReadError.Create(Filename+'('+BufPosToStr(buf)+') Error: ' + descr);
 end;
 
 function TXMLReader.SkipWhitespace: Boolean;
@@ -998,8 +1004,10 @@ var
     attr: TDOMAttr;
     name: string;
     FoundName: String;
+    StartPos: PChar;
   begin
     {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('  CreateNameElement A');{$ENDIF}
+    StartPos:=buf;
     GetName(name);
     NewElem := doc.CreateElement(name);
     AOwner.AppendChild(NewElem);
@@ -1038,7 +1046,7 @@ var
       ExpectString('</');
       FoundName:=ExpectName;
       if FoundName <> name then
-        RaiseExc('Unmatching element end tag (expected "</' + name + '>", found "</'+FoundName+'>")');
+        RaiseExc('Unmatching element end tag (expected "</' + name + '>", found "</'+FoundName+'>", start tag at '+BufPosToStr(StartPos)+')');
       SkipWhitespace;
       ExpectString('>');
     end;
