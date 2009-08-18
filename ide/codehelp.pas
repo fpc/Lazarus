@@ -91,6 +91,7 @@ type
   public
     Filename: string;// the fpdoc xml filename
     Doc: TXMLdocument;// IMPORTANT: if you change this, call DocChanging and DocChanged to notify the references
+    DocErrorMsg: string; // if xml is broken, Doc could not be created
     DocModified: boolean;
     ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
     CodeBuffer: TCodeBuffer;
@@ -485,10 +486,12 @@ function TLazFPDocFile.GetElementWithName(const ElementName: string;
 var
   ModuleNode: TDOMNode;
 begin
+  Result:=nil;
   // get first module node
   ModuleNode:=GetModuleNode;
   if ModuleNode=nil then begin
-    DebugLn(['TLazFPDocFile.GetElementWithName create failed: missing module name. ElementName=',ElementName]);
+    if CreateIfNotExists then
+      DebugLn(['TLazFPDocFile.GetElementWithName create failed: missing module name. ElementName=',ElementName]);
     exit;
   end;
   // check module name
@@ -1099,15 +1102,22 @@ begin
     FreeAndNil(ADocFile.Doc);
     exit;
   end;
-  if (ADocFile.Doc<>nil) then begin
-    if (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
-      // CodeBuffer has not changed
-      if ADocFile.DocModified and (chofRevert in Flags) then begin
-        // revert the modifications => rebuild the Doc from the CodeBuffer
-      end else begin
-        // no update needed
-        exit(chprSuccess);
+  if (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
+    // CodeBuffer has not changed
+    if ADocFile.DocErrorMsg<>'' then begin
+      if not (chofQuiet in Flags) then begin
+        // for example: Filename(y,x) Error: description
+        IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,
+                              ExtractFilePath(ADocFile.CodeBuffer.Filename),-1);
       end;
+      // no update needed
+      exit(chprFailed);
+    end;
+    if ADocFile.DocModified and (chofRevert in Flags) then begin
+      // revert the modifications => rebuild the Doc from the CodeBuffer
+    end else begin
+      // no update needed
+      exit(chprSuccess);
     end;
   end;
   CacheWasUsed:=false;
@@ -1120,6 +1130,7 @@ begin
   // parse XML
   ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
   ADocFile.DocModified:=false;
+  ADocFile.DocErrorMsg:='Unknown error';
   FreeAndNil(ADocFile.Doc);
   CurFilename:=ADocFile.CodeBuffer.Filename;
 
@@ -1133,14 +1144,16 @@ begin
       Result:=chprSuccess;
     except
       on E: EXMLReadError do begin
+        ADocFile.DocErrorMsg:=E.Message;
         DebugLn(['TCodeHelpManager.LoadFPDocFile ',E.Message]);
         if not (chofQuiet in Flags) then begin
           // for example: Filename(y,x) Error: description
-          IDEMessagesWindow.AddMsg(E.Message,ExtractFilePath(CurFilename),-1);
+          IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,ExtractFilePath(CurFilename),-1);
         end;
       end;
       on E: Exception do begin
-        DebugLn(['TCodeHelpManager.LoadFPDocFile Error reading xml file "'+CurFilename+'" '+E.Message]);
+        ADocFile.DocErrorMsg:='Error reading xml file "'+CurFilename+'" '+E.Message;
+        DebugLn(['TCodeHelpManager.LoadFPDocFile '+ADocFile.DocErrorMsg]);
         if not (chofQuiet in Flags) then begin
           MessageDlg(lisErrorReadingXML,
             Format(lisErrorReadingXmlFile, ['"', CurFilename,
