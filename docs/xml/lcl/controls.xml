@@ -15711,7 +15711,7 @@ and that description should be read to understand their definitions more fully.
 			      
 			      <p>Returns the screen coordinate of the top left coordinate 0,0 of the client area. Note that this value is the position as stored in the interface and is not always in sync with the LCL. When a control is moved, the LCL sets the bounds to the desired position and sends a move message to the interface. It is up to the interface to handle moves instantly or queued.</p>
 			      <ul>
-			      </li>LCLIntf.GetClientBounds</li></ul>
+			      <li>LCLIntf.GetClientBounds</li></ul>
 	      
 	      <p>Returns the client bounds of a control. Like ClientRect, but Left and Top are the pixel distances to the control's left, top. For example on a TGroupBox the Left, Top are the width and height of the left and top frame border. Scrolling has no effect on GetClientBounds.</p>
 	      <ul>
