@@ -521,9 +521,9 @@ end;
 function TWin32WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
-    lcAsyncProcess: Result := LCLC_HAS_CAPACITY;
-    lcModalWindow: Result := LCLC_DOES_NOT_HAVE_CAPACITY;
-    lcDragDockStartOnTitleClick: Result := LCLC_HAS_CAPACITY;
+    lcAsyncProcess: Result := LCL_CAPABILITY_YES;
+    lcModalWindow: Result := LCL_CAPABILITY_NO;
+    lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;

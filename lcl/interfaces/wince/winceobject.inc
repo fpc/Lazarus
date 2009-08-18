@@ -429,8 +429,8 @@ end;
 function TWinCEWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
-    lcModalWindow: Result := LCLC_DOES_NOT_HAVE_CAPACITY;
-    lcDragDockStartOnTitleClick: Result := LCLC_HAS_CAPACITY;
+    lcModalWindow: Result := LCL_CAPABILITY_NO;
+    lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;

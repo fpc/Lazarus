@@ -579,7 +579,7 @@ begin
       begin
         if Showing then
           FWindowState := wsMinimized;
-        if (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> 0)
+        if (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO)
           and (Application.MainForm = Self) then
             Application.Minimize;
       end;
@@ -2251,7 +2251,7 @@ begin
   ModalResult := 0;
 
   try
-    if WidgetSet.GetLCLCapability(lcModalWindow) = 0 then
+    if WidgetSet.GetLCLCapability(lcModalWindow) = LCL_CAPABILITY_NO then
       DisabledList := Screen.DisableForms(Self)
     else
       DisabledList := nil;

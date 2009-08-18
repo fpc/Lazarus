@@ -144,8 +144,8 @@ const
     );
     
   { Constants for the routine TWidgetSet.GetLCLCapability }
-  LCLC_DOES_NOT_HAVE_CAPACITY = 0;
-  LCLC_HAS_CAPACITY = 1;
+  LCL_CAPABILITY_NO = 0;
+  LCL_CAPABILITY_YES = 1;
 
 type
   EInterfaceException = class(Exception);
