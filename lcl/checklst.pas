@@ -61,8 +61,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
-    procedure ClickCheck; dynamic;
-    procedure ItemClick(const AIndex: Integer); dynamic;
+    procedure ClickCheck; virtual;
+    procedure ItemClick(const AIndex: Integer); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure FontChanged(Sender: TObject); override;
     procedure ParentFontChanged; override;

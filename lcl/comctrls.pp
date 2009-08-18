@@ -157,7 +157,7 @@ type
 
     function DoSetApplicationHint(AHintStr: String): Boolean; virtual;
     function DoHint: Boolean; virtual;
-    procedure DrawPanel(Panel: TStatusPanel; const Rect: TRect); dynamic;
+    procedure DrawPanel(Panel: TStatusPanel; const Rect: TRect); virtual;
     procedure LMDrawItem(var Message: TLMDrawItems); message LM_DRAWITEM;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -487,9 +487,9 @@ type
     procedure SetTabs(const AValue: TStrings);
     procedure SetTabWidth(const AValue: Smallint);
   protected
-    function CanChange: Boolean; dynamic;
+    function CanChange: Boolean; virtual;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
-    procedure Change; dynamic;
+    procedure Change; virtual;
     procedure DrawTab(ATabIndex: Integer; const Rect: TRect; Active: Boolean); virtual;
     function GetImageIndex(ATabIndex: Integer): Integer; virtual;
     procedure Loaded; override;
@@ -992,13 +992,13 @@ type
 
     procedure DestroyWnd; override;
     procedure BeginAutoDrag; override;
-    procedure Change(AItem: TListItem; AChange: Integer); dynamic;
-    procedure ColClick(AColumn: TListColumn); dynamic;
+    procedure Change(AItem: TListItem; AChange: Integer); virtual;
+    procedure ColClick(AColumn: TListColumn); virtual;
 
     procedure Delete(Item : TListItem);
-    procedure DoDeletion(AItem: TListItem); dynamic;
-    procedure DoInsert(AItem: TListItem); dynamic;
-    procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
+    procedure DoDeletion(AItem: TListItem); virtual;
+    procedure DoInsert(AItem: TListItem); virtual;
+    procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); virtual;
     procedure InsertItem(Item : TListItem);
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
@@ -1299,9 +1299,9 @@ type
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
     class function GetControlClassDefaultSize: TPoint; override;
-    function CanChange: Boolean; dynamic;
+    function CanChange: Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Click(Button: TUDBtnType); dynamic; overload;
+    procedure Click(Button: TUDBtnType); virtual; overload;
     property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property Associate: TWinControl read FAssociate write SetAssociate;
@@ -1463,7 +1463,7 @@ type
     procedure DoAutoSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function CheckMenuDropdown: Boolean; dynamic;
+    function CheckMenuDropdown: Boolean; virtual;
     procedure Click; override;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
@@ -1577,8 +1577,8 @@ type
     procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
                     PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
-    procedure ClickButton(Button: TToolButton); dynamic;
+    function CheckMenuDropdown(Button: TToolButton): Boolean; virtual;
+    procedure ClickButton(Button: TToolButton); virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure ControlsAligned; override;
@@ -2317,10 +2317,10 @@ type
     procedure BeginAutoDrag; override;
     procedure BeginEditing;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
-    function CanChange(Node: TTreeNode): Boolean; dynamic;
-    function CanCollapse(Node: TTreeNode): Boolean; dynamic;
-    function CanEdit(Node: TTreeNode): Boolean; dynamic;
-    function CanExpand(Node: TTreeNode): Boolean; dynamic;
+    function CanChange(Node: TTreeNode): Boolean; virtual;
+    function CanCollapse(Node: TTreeNode): Boolean; virtual;
+    function CanEdit(Node: TTreeNode): Boolean; virtual;
+    function CanExpand(Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; virtual;
     function CustomDraw(const ARect: TRect;
       Stage: TCustomDrawStage): Boolean; virtual;
@@ -2339,11 +2339,11 @@ type
     function IsNodeVisible(ANode: TTreeNode): Boolean;
     function IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
     function IsInsertMarkVisible: boolean; virtual;
-    procedure Change(Node: TTreeNode); dynamic;
-    procedure Collapse(Node: TTreeNode); dynamic;
+    procedure Change(Node: TTreeNode); virtual;
+    procedure Collapse(Node: TTreeNode); virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure Delete(Node: TTreeNode); dynamic;
+    procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -2355,7 +2355,7 @@ type
                        var Accept: Boolean); override;
     procedure EndEditing(Cancel: boolean = false);
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
-    procedure Expand(Node: TTreeNode); dynamic;
+    procedure Expand(Node: TTreeNode); virtual;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
@@ -2718,12 +2718,12 @@ type
     function CreateSection: THeaderSection; virtual;
     function CreateSections: THeaderSections; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SectionClick(Section: THeaderSection); dynamic;
-    procedure SectionResize(Section: THeaderSection); dynamic;
-    procedure SectionTrack(Section: THeaderSection; State: TSectionTrackState); dynamic;
-    procedure SectionSeparatorDblClick(Section: THeaderSection); dynamic;
-    procedure SectionEndDrag; dynamic;
-    function SectionDrag(FromSection, ToSection: THeaderSection): Boolean; dynamic;
+    procedure SectionClick(Section: THeaderSection); virtual;
+    procedure SectionResize(Section: THeaderSection); virtual;
+    procedure SectionTrack(Section: THeaderSection; State: TSectionTrackState); virtual;
+    procedure SectionSeparatorDblClick(Section: THeaderSection); virtual;
+    procedure SectionEndDrag; virtual;
+    function SectionDrag(FromSection, ToSection: THeaderSection): Boolean; virtual;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;

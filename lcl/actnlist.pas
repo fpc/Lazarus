@@ -184,7 +184,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function DoHint(var HintStr: string): Boolean; dynamic;
+    function DoHint(var HintStr: string): Boolean; virtual;
     function Execute: Boolean; override;
   public
     property AutoCheck: Boolean

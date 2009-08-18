@@ -100,7 +100,7 @@ type
   private
     FOnChange: TNotifyEvent;
   protected
-    procedure Changed; dynamic;
+    procedure Changed; virtual;
     procedure Lock;
     procedure UnLock;
   public

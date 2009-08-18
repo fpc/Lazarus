@@ -66,11 +66,11 @@ type
   public
     class function GetFrameCount: Integer; virtual;
     class function GetValidEvents: TCarbonControlEvents; virtual;
-    procedure Hit(AControlPart: ControlPartCode); dynamic;
+    procedure Hit(AControlPart: ControlPartCode); virtual;
     procedure Draw; virtual;
-    procedure ValueChanged; dynamic;
-    procedure IndicatorMoved; dynamic;
-    procedure DoAction(AControlPart: ControlPartCode); dynamic;
+    procedure ValueChanged; virtual;
+    procedure IndicatorMoved; virtual;
+    procedure DoAction(AControlPart: ControlPartCode); virtual;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;

@@ -128,7 +128,7 @@ type
   protected
     function GetItemCaption(AIndex, ASubIndex: Integer): String; virtual; abstract;
     function GetItemIcon(AIndex, ASubIndex: Integer): IconRef; virtual;
-    function GetReadOnly: Boolean; dynamic; abstract;
+    function GetReadOnly: Boolean; virtual; abstract;
     function MultiSelect: Boolean; virtual; abstract;
     function IsOwnerDrawn: Boolean; virtual; abstract;
   protected  
@@ -141,9 +141,9 @@ type
     procedure BoundsChanged; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); virtual; abstract;
-    procedure CheckChanged(AIndex: Integer; AChecked: Boolean); dynamic;
-    procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); dynamic;
-    procedure FocusedChanged(AIndex: Integer); dynamic; abstract;
+    procedure CheckChanged(AIndex: Integer; AChecked: Boolean); virtual;
+    procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); virtual;
+    procedure FocusedChanged(AIndex: Integer); virtual; abstract;
   public
     procedure CheckNeedsScrollBars;
     

@@ -93,8 +93,8 @@ type
     class procedure WSRegisterClass; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure Change; dynamic;
-    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
+    procedure Change; virtual;
+    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax, APageSize: Integer);
@@ -308,12 +308,12 @@ type
                        State: TOwnerDrawState); virtual;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
-    procedure Change; dynamic;
-    procedure Select; dynamic;
-    procedure DropDown; dynamic;
-    procedure GetItems; dynamic;
+    procedure Change; virtual;
+    procedure Select; virtual;
+    procedure DropDown; virtual;
+    procedure GetItems; virtual;
     procedure SetItems(const Value: TStrings); virtual;
-    procedure CloseUp; dynamic;
+    procedure CloseUp; virtual;
     procedure AdjustDropDown; virtual;
 
     function GetItemCount: Integer; //override;
@@ -701,7 +701,7 @@ type
                                      WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
     procedure TextChanged; override;
-    procedure Change; dynamic;
+    procedure Change; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
     function GetCaretPos: TPoint; virtual;

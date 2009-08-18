@@ -64,7 +64,7 @@ type
     procedure SetColorList;
     procedure Loaded; override;
     procedure InitializeWnd; override;
-    procedure DoGetColors; dynamic;
+    procedure DoGetColors; virtual;
     procedure Change; override;
     function PickCustomColor: Boolean; virtual;
   public
@@ -167,7 +167,7 @@ type
     procedure SetColorList;
     procedure Loaded; override;
     procedure InitializeWnd; override;
-    procedure DoGetColors; dynamic;
+    procedure DoGetColors; virtual;
     procedure DoSelectionChange(User: Boolean); override;
     function PickCustomColor: Boolean; virtual;
   public

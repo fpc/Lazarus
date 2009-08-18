@@ -138,9 +138,9 @@ type
     function TitleStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
-    procedure Change; dynamic;
-    procedure CalcKey(var Key: char); dynamic;
-    procedure DisplayChange; dynamic;
+    procedure Change; virtual;
+    procedure CalcKey(var Key: char); virtual;
+    procedure DisplayChange; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

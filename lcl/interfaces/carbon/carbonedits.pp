@@ -51,7 +51,7 @@ type
     function GetEditPart: ControlPartCode; virtual;
     procedure RegisterEvents; override;
   public
-    procedure TextDidChange; dynamic;
+    procedure TextDidChange; virtual;
   public
     function GetPreferredSize: TPoint; override;
 

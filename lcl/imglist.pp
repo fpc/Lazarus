@@ -72,7 +72,7 @@ type
     FOnChange: TNotifyEvent;
   public
     destructor Destroy; override;
-    procedure Change; dynamic;
+    procedure Change; virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Sender: TCustomImageList read FSender write FSender;
   end;

@@ -64,7 +64,7 @@ type
     destructor Destroy; override;
     function Add(Item: Pointer): Integer;
     function AddObject(Item, Associated: Pointer): Integer;
-    procedure Clear; dynamic;
+    procedure Clear; virtual;
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
     function First: Pointer;

@@ -535,7 +535,7 @@ type
     FOptions: TSizeConstraintsOptions;
     procedure SetOptions(const AValue: TSizeConstraintsOptions);
   protected
-    procedure Change; dynamic;
+    procedure Change; virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure SetMaxHeight(Value: TConstraintSize); virtual;
     procedure SetMaxWidth(Value: TConstraintSize); virtual;
@@ -652,7 +652,7 @@ type
     procedure SetSpace(Kind: TAnchorKind; const AValue: integer);
     procedure SetTop(const AValue: TSpacingSize);
   protected
-    procedure Change(InnerSpaceChanged: Boolean); dynamic;
+    procedure Change(InnerSpaceChanged: Boolean); virtual;
   public
     constructor Create(OwnerControl: TControl; ADefault: PControlBorderSpacingDefault = nil);
     procedure Assign(Source: TPersistent); override;
@@ -992,7 +992,7 @@ type
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(Value: Boolean); virtual;
-    procedure BoundsChanged; dynamic;
+    procedure BoundsChanged; virtual;
     function CreateControlBorderSpacing: TControlBorderSpacing; virtual;
     procedure DoConstraintsChange(Sender: TObject); virtual;
     procedure DoBorderSpacingChange(Sender: TObject;
@@ -1008,11 +1008,11 @@ type
     procedure DoOnChangeBounds; virtual;// call OnChangeBounds
     procedure CheckOnChangeBounds;// checks for changes and calls DoOnChangeBounds
     procedure Resize; virtual;// checks for changes and calls DoOnResize
-    procedure RequestAlign; dynamic;// smart calling Parent.AlignControls
+    procedure RequestAlign; virtual;// smart calling Parent.AlignControls
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
-    procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
+    procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
@@ -1076,35 +1076,35 @@ type
     // drag and drop
     procedure CalculateDockSizes;
     function CreateFloatingDockSite(const Bounds: TRect): TWinControl;
-    function GetDockEdge(const MousePos: TPoint): TAlign; dynamic;
+    function GetDockEdge(const MousePos: TPoint): TAlign; virtual;
     function GetDragImages: TDragImageList; virtual;
     function GetFloating: Boolean; virtual;
     function GetFloatingDockSiteClass: TWinControlClass; virtual;
-    procedure BeginAutoDrag; dynamic;
-    procedure DoFloatMsg(ADockSource: TDragDockObject);dynamic;//CM_FLOAT
-    procedure DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer); dynamic;
-    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
+    procedure BeginAutoDrag; virtual;
+    procedure DoFloatMsg(ADockSource: TDragDockObject);virtual;//CM_FLOAT
+    procedure DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer); virtual;
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); virtual;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT; virtual;//Cm_Drag
-    procedure DoEndDock(Target: TObject; X, Y: Integer); dynamic;
-    procedure DoEndDrag(Target: TObject; X,Y: Integer); dynamic;
-    procedure DoStartDock(var DragObject: TDragObject); dynamic;
-    procedure DoStartDrag(var DragObject: TDragObject); dynamic;
-    procedure DragCanceled; dynamic;
+    procedure DoEndDock(Target: TObject; X, Y: Integer); virtual;
+    procedure DoEndDrag(Target: TObject; X,Y: Integer); virtual;
+    procedure DoStartDock(var DragObject: TDragObject); virtual;
+    procedure DoStartDrag(var DragObject: TDragObject); virtual;
+    procedure DragCanceled; virtual;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
-                       var Accept: Boolean); dynamic;
-    procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
+                       var Accept: Boolean); virtual;
+    procedure PositionDockRect(DragDockObject: TDragDockObject); virtual;
     procedure SetDragMode(Value: TDragMode); virtual;
     function GetDefaultDockCaption: String; virtual;
     //procedure SendDockNotification; virtual; MG: probably not needed
   protected
     // key and mouse
-    procedure Click; dynamic;
-    procedure DblClick; dynamic;
-    procedure TripleClick; dynamic;
-    procedure QuadClick; dynamic;
-    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
-    procedure MouseMove(Shift: TShiftState; X,Y: Integer); Dynamic;
-    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    procedure Click; virtual;
+    procedure DblClick; virtual;
+    procedure TripleClick; virtual;
+    procedure QuadClick; virtual;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); virtual;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
     procedure MouseEnter; virtual;
     procedure MouseLeave; virtual;
     function  DialogChar(var Message: TLMKey): boolean; virtual;
@@ -1140,13 +1140,13 @@ type
     function CanTab: Boolean; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     function GetEnabled: Boolean; virtual;
-    function GetPopupMenu: TPopupMenu; dynamic;
+    function GetPopupMenu: TPopupMenu; virtual;
     procedure DoOnShowHint(HintInfo: Pointer);
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    procedure VisibleChanging; dynamic;
-    procedure VisibleChanged; dynamic;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; virtual;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
+    procedure VisibleChanging; virtual;
+    procedure VisibleChanged; virtual;
     procedure AddHandler(HandlerType: TControlHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
@@ -1158,8 +1158,8 @@ type
     function ColorIsStored: boolean; virtual;
   protected
     // actions
-    function GetActionLinkClass: TControlActionLinkClass; dynamic;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    function GetActionLinkClass: TControlActionLinkClass; virtual;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
   protected
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
@@ -1199,14 +1199,14 @@ type
       // So, don't use it anymore.
   public
     // drag and dock
-    procedure DragDrop(Source: TObject; X,Y: Integer); dynamic;
-    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
+    procedure DragDrop(Source: TObject; X,Y: Integer); virtual;
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); virtual;
     function ManualDock(NewDockSite: TWinControl;
                         DropControl: TControl = nil;
                         ControlSide: TAlign = alNone;
-                        KeepDockSiteSize: Boolean = true): Boolean; dynamic;
+                        KeepDockSiteSize: Boolean = true): Boolean; virtual;
     function ManualFloat(TheScreenRect: TRect;
-                         KeepDockSiteSize: Boolean = true): Boolean; dynamic;
+                         KeepDockSiteSize: Boolean = true): Boolean; virtual;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
                            DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
@@ -1496,7 +1496,7 @@ type
     procedure SetTopBottomSpacing(const AValue: integer);
     procedure SetVerticalSpacing(const AValue: integer);
   protected
-    procedure Change; dynamic;
+    procedure Change; virtual;
   public
     constructor Create(OwnerControl: TWinControl);
     procedure Assign(Source: TPersistent); override;
@@ -1712,45 +1712,45 @@ type
                        TControl; ADocking: Boolean): LRESULT; override;
     function DoDockClientMsg(DragDockObject: TDragDockObject; Position: TPoint): boolean; virtual;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; virtual;
-    procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); virtual;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
-                       State: TDragState; var Accept: Boolean); dynamic;
+                       State: TDragState; var Accept: Boolean); virtual;
     procedure DoDockOver(Source: TDragDockObject; X, Y: Integer;
-                         State: TDragState; var Accept: Boolean); dynamic;
-    procedure DoRemoveDockClient(Client: TControl); dynamic;
+                         State: TDragState; var Accept: Boolean); virtual;
+    procedure DoRemoveDockClient(Client: TControl); virtual;
     function  DoUnDock(NewTarget: TWinControl; Client: TControl;
-                       KeepDockSiteSize: Boolean = true): Boolean; dynamic;
+                       KeepDockSiteSize: Boolean = true): Boolean; virtual;
     procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
-                          MousePos: TPoint; var CanDock: Boolean); dynamic;
+                          MousePos: TPoint; var CanDock: Boolean); virtual;
     procedure ReloadDockedControl(const AControlName: string;
-                                  var AControl: TControl); dynamic;
-    function CreateDockManager: TDockManager; dynamic;
+                                  var AControl: TControl); virtual;
+    function CreateDockManager: TDockManager; virtual;
     procedure SetDockManager(AMgr: TDockManager);
     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
     procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   protected
     // mouse and keyboard
-    procedure DoEnter; dynamic;
-    procedure DoExit; dynamic;
+    procedure DoEnter; virtual;
+    procedure DoExit; virtual;
     function  DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
-    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
+    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; virtual;
     function  DoKeyUpBeforeInterface(var Message: TLMKey): Boolean;
-    function  ChildKey(var Message: TLMKey): boolean; dynamic;
+    function  ChildKey(var Message: TLMKey): boolean; virtual;
     function  SendDialogChar(var Message: TLMKey): Boolean;
     function  DialogChar(var Message: TLMKey): boolean; override;
-    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
-    procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyPress(var Key: char); dynamic;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); virtual;
+    procedure ControlKeyUp(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyPress(var Key: char); virtual;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); virtual;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); virtual;
   protected
     function  FindNextControl(CurrentControl: TWinControl; GoForward,
                               CheckTabStop, CheckParent: Boolean): TWinControl;
@@ -1767,7 +1767,7 @@ type
     procedure CreateWnd; virtual; //creates the window
     procedure DestroyHandle; virtual;
     procedure DestroyWnd; virtual;
-    procedure DoFlipChildren; dynamic;
+    procedure DoFlipChildren; virtual;
     procedure FinalizeWnd; virtual; // gets called before the Handle is destroyed.
     procedure FixupTabList;
     procedure FontChanged(Sender: TObject); override;
@@ -1854,7 +1854,7 @@ type
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
-    procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); dynamic;
+    procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); virtual;
     function CanFocus: Boolean; virtual;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
@@ -1877,7 +1877,7 @@ type
     procedure Update; override;
     procedure SetFocus; virtual;
     function FindChildControl(const ControlName: String): TControl;
-    procedure FlipChildren(AllLevels: Boolean); dynamic;
+    procedure FlipChildren(AllLevels: Boolean); virtual;
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
@@ -1886,7 +1886,7 @@ type
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-                              RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
+                              RepeatCount: integer; SystemKey: boolean): boolean; virtual;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
     procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload;
     procedure SetShape(AShape: TBitmap); overload;

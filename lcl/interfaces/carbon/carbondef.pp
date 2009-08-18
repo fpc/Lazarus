@@ -80,11 +80,11 @@ type
     Context: TCarbonContext; // Carbon content area context
     Widget: HIViewRef;       // Reference to the Carbon control
   public
-    procedure FocusSet; dynamic;
-    procedure FocusKilled; dynamic;
+    procedure FocusSet; virtual;
+    procedure FocusKilled; virtual;
     procedure BoundsChanged; virtual;
-    procedure ControlAdded; dynamic;
-    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; dynamic;
+    procedure ControlAdded; virtual;
+    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; virtual;
     procedure ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus); virtual;
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; virtual;
   public

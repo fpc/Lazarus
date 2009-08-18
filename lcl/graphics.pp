@@ -439,8 +439,8 @@ type
     FOnChange: TNotifyEvent;
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
-    procedure Changing; dynamic;
-    procedure Changed; dynamic;
+    procedure Changing; virtual;
+    procedure Changed; virtual;
     procedure Lock;
     procedure UnLock;
   public
@@ -772,10 +772,10 @@ type
     function GetWidth: Integer; virtual; abstract;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-      const Msg: string; var DoContinue: boolean); dynamic;
+      const Msg: string; var DoContinue: boolean); virtual;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-      const Msg: string); dynamic;
+      const Msg: string); virtual;
     procedure ReadData(Stream: TStream); virtual; // used by Filer
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
@@ -897,11 +897,11 @@ type
     procedure WriteData(Stream: TStream);
   protected
     procedure AssignTo(Dest: TPersistent); override;
-    procedure Changed(Sender: TObject); dynamic;
+    procedure Changed(Sender: TObject); virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
                        PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                       const Msg: string; var DoContinue: boolean); dynamic;
+                       const Msg: string; var DoContinue: boolean); virtual;
   public
     constructor Create;
     destructor Destroy; override;

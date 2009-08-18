@@ -169,11 +169,11 @@ type
     procedure DoActionChange(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BitmapChange(Sender: TObject);
     function GetAction: TBasicAction;
-    function GetActionLinkClass: TMenuActionLinkClass; dynamic;
+    function GetActionLinkClass: TMenuActionLinkClass; virtual;
     function GetHandle: HMenu;
     procedure DoClicked(var msg); message LM_ACTIVATE;
     procedure CheckChildrenHandles;

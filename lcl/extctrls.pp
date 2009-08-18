@@ -68,8 +68,8 @@ type
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
     function  DialogChar(var Message: TLMKey): boolean; override;
-    procedure DoHide; dynamic;
-    procedure DoShow; dynamic;
+    procedure DoHide; virtual;
+    procedure DoShow; virtual;
     procedure DestroyHandle; override;
     procedure RealSetText(const AValue: TCaption); override;
   public
