@@ -663,8 +663,20 @@ begin
   ActionGrid.Cells[7,0] := dlgMouseOptHeadPriority;
   ActionGrid.Cells[8,0] := dlgMouseOptHeadCaret;
   ActionGrid.Cells[9,0] := dlgMouseOptHeadOpt;
-  ActionGrid.ColWidths[0] := ActionGrid.ColWidths[0] * 3;
-  ActionGrid.ColWidths[9] := ActionGrid.ColWidths[8] * 3;
+
+  SetLength(FColWidths, ActionGrid.ColCount);
+  FColWidths[0] := 40;
+  FColWidths[1] := 15;
+  FColWidths[2] := 15;
+  FColWidths[3] := 13;
+  FColWidths[4] :=  7;
+  FColWidths[5] :=  7;
+  FColWidths[6] :=  7;
+  FColWidths[7] :=  7;
+  FColWidths[8] :=  7;
+  FColWidths[9] := 30;
+  ActionGridResize(nil);
+
   ActionGridHeaderSized(nil, true, 0);
 
   OtherActionGrid.Constraints.MinWidth := OtherActionGrid.ColCount * MinGridColSize;
@@ -680,10 +692,20 @@ begin
   OtherActionGrid.Cells[9,0] := dlgMouseOptHeadPriority;
   OtherActionGrid.Cells[10,0] := dlgMouseOptHeadCaret;
   OtherActionGrid.Cells[11,0] := dlgMouseOptHeadOpt;
-  OtherActionGrid.ColWidths[1] := OtherActionGrid.ColWidths[0] * 2;
-  OtherActionGrid.ColWidths[2] := OtherActionGrid.ColWidths[1] * 3;
-  OtherActionGrid.ColWidths[11] := OtherActionGrid.ColWidths[9] * 3;
-  OtherActionGridHeaderSized(nil, true, 0);
+  SetLength(FOtherActColWidths, OtherActionGrid.ColCount);
+  FOtherActColWidths[0] :=  7;
+  FOtherActColWidths[1] := 20;
+  FOtherActColWidths[2] := 40;
+  FOtherActColWidths[3] := 15;
+  FOtherActColWidths[4] := 15;
+  FOtherActColWidths[5] := 13;
+  FOtherActColWidths[6] :=  7;
+  FOtherActColWidths[7] :=  7;
+  FOtherActColWidths[8] :=  7;
+  FOtherActColWidths[9] :=  7;
+  FOtherActColWidths[10] :=  7;
+  FOtherActColWidths[11] := 30;
+  OtherActionGridResize(nil);
 
   MMoveName[false] := dlgMouseOptMoveMouseFalse;
   MMoveName[true] := dlgMouseOptMoveMouseTrue;
