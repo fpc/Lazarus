@@ -15648,6 +15648,219 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TGraphicControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <topic name="AutoSize">
+	      <short><var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space</short>
+	      <descr><p><var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space</p>
+		      
+		      <p>When setting <var>AutoSize</var> = true the LCL autosizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
+		      
+		      <p>The LCL will only autosize the Width or Height if it is free to resize. In other words - the width is not autosized if:</p>
+		      <ul><li>the left and right side is anchored. You can anchor the sides with the <var>Anchors</var> property or by setting the <var>Align</var> property to <var>alTop</var>, <var>alBottom</var> or <var>alClient</var></li>
+			      <li>the Width and Height are bound by the <var>Constraints</var> properties. The Contraints can also be overriden by the widgetset. For example the winapi does not allow resizing the height of a combobox. And the gtk widgetset does not allow resizing the width of a vertical scrollbar</li></ul>
+		      
+		      <p>The new size is calculated by the protected method <link id="#lcl.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>.
+			      This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not autosize the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
+		      
+		      <p>Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.</p>
+		      
+		      <p>The widgetsets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).</p>
+		      
+		      <b>Parent.AutoSize</b>
+		      
+		      <p>The above described the simple explanation. The real algorithm provides far more possibilities and is therefore far more complex.</p>
+		      
+		      <b>Properties / Methods</b>
+		      <ul>
+			      <li>Left</li>
+			      <li>Top</li>
+			      
+			      <p>If <var>Parent</var> is not nil then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users: Some VCL controls like TGroupbox define the client area as the whole control including the frame and some not - the LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widgetsets define a minimum/maximum somewhere around 10.000 or more.</p>
+			      
+			      <p>When the client area is scrolled the Left and Top are kept unchanged. </p>
+			      
+			      <p>During resizing/moving Left and Top are not always in sync with the coordinates of the Handle object.</p>
+			      
+			      <p>If Parent=nil then Left, Top depend on the widgetset and the window manager. Till Lazarus 0.9.25 this is typically the screen coordinate of the left,top of the client area of the form. This is Delphi incompatible. It is planned to change this to the Left, Top of the window.</p>
+			      
+			      
+			      <p>Hint:</p>
+			      <p>Each time you change Left and Top the LCL moves instantly. If you want to change Left ''and'' Top use instead:</p><code>
+				      with Button1 do
+				      SetBounds(NewLeft,NewTop,Width,Height);</code>
+			      <ul>
+				      <li>Width</li>
+				      <li>Height</li></ul>
+			      
+			      <p>The Size in pixels must not be negative, and most widgetsets do not allow Width=0 and/or Height=0. Some controls on some platforms define a bigger minimum constraint. Instead of sizing a control to Width=0 and/or Height=0, set Visible=false. During resizing/moving Width and Height are not always in sync with the size of the Handle object.</p>
+			      
+			      <ul>
+				      <li>BoundsRect</li></ul>
+			      
+			      <p>Same as Bounds(Left,Top,Width,Height).</p>
+			      
+			      <p>Common newbie mistake:</p><code>
+				      BoundsRect.Left:=3; // WRONG: common newbie mistake</code>
+			      <p>This has no effect, because reading BoundsRect is a function. It creates a temporary TRect on the stack.</p>
+			      
+			      <ul>
+				      <li>ClientRect</li></ul>
+			      
+			      <p>Left and Top are always 0,0. Width and Height are the visible size in pixels of the client area. Remember the client area is without the frame and without scrollbars. In a scrollable client area the logical client area can be bigger than the visible.</p>
+			      <ul>
+				      <li>ClientOrigin</li></ul>
+			      
+			      <p>Returns the screen coordinate of the top left coordinate 0,0 of the client area. Note that this value is the position as stored in the interface and is not always in sync with the LCL. When a control is moved, the LCL sets the bounds to the desired position and sends a move message to the interface. It is up to the interface to handle moves instantly or queued.</p>
+			      <ul>
+			      </li>LCLIntf.GetClientBounds</li></ul>
+	      
+	      <p>Returns the client bounds of a control. Like ClientRect, but Left and Top are the pixel distances to the control's left, top. For example on a TGroupBox the Left, Top are the width and height of the left and top frame border. Scrolling has no effect on GetClientBounds.</p>
+	      <ul>
+		      <li>LCLIntf.GetWindowRect</li></ul>
+	      
+	      <p>After the call, ARect will be the control area in screen coordinates. That means, Left and Top will be the screen coordinate of the TopLeft pixel of the Handle object and Right and Bottom will be the screen coordinate of the BottomRight pixel.</p>
+	      
+	      <ul>
+		      <li>FBaseBoundsLock: integer</li></ul>
+	      
+	      <p>Increased/Decreased by LockBaseBounds/UnlockBaseBounds.
+		      Used to keep FBaseBounds during SetBounds calls.</p>
+	      <ul>
+		      
+		      <li>FBaseParentClientSize: TPoint</li></ul>
+	      
+	      <p>The Parent.ClientRect size valid for the FBaseBounds.
+		      FBaseBounds and FBaseParentClientSize are used to calculate the distance for
+		      akRight (akBottom).
+		      When the parent is resized, the LCL knows what distance to keep.</p>
+	      
+	      <ul>
+		      <li>FBoundsRectForNewParent: TRect</li></ul>
+	      
+	      <p>When changing the Parent of a control the Handle is recreated and many
+		      things can happen. Especially for docking forms the process is too
+		      unreliable. Therefore the BoundsRect is saved. The VCL uses a similar
+		      mechanism.</p>
+	      
+	      <ul>
+		      <li>fLastAlignedBounds: TRect</li></ul>
+	      
+	      <p>See <link id="#lcl.TControl.SetAlignedBounds">TControl.SetAlignedBounds</link> for an explanation.
+		      In short: It stops some circles between interface and LCL autosizing.</p>
+	      
+	      <ul>
+		      <li>FLastChangebounds: TRect</li></ul>
+	      
+	      <p>Used to stop calling ChangeBounds with the same coordinates. This happens
+		      very often.</p>
+	      
+	      <ul>
+		      <li>FLastDoChangeBounds: TRect</li><ul>
+			      
+			      <p>Used to avoid calling OnChangeBounds with the same coordinates. This reduces
+				      user defined autosizing.</p>
+			      
+			      <ul>
+				      <li>FLastResizeClientHeight: integer</li>
+				      <li>FLastResizeClientWidth: integer</li>
+				      <li>FLastResizeHeight: integer</li>
+				      <li>FLastResizeWidth: integer</li></ul>
+			      
+			      <p>Used to avoid calling OnResize with the same coordinates. This reduces user
+				      defined autosizing.</p>
+			      
+			      <ul>
+				      <li>FLoadedClientSize: TPoint</li></ul>
+			      
+			      <p>During loading many things are delayed and many things are set and worse: in
+				      the wrong order. That's why SetClientWidth/SetClientHeight calls are stored
+				      and set at end of loading again.
+				      This way the LCL can restore the distances (e.g. akRight) used during
+				      designing.<p>
+					      
+					      <ul>
+						      <li>FReadBounds: TRect</li></ul>
+					      
+					      <p>Same as FLoadedClientSize, but for SetLeft, SetTop, SetWidth, SetHeight.</p>
+					      
+					      <ul>
+						      <li>procedure SetBoundsRectForNewParent(const AValue: TRect);</li></ul>
+					      
+					      <p>Used to set FBoundsRectForNewParent. See above.</p>
+					      
+					      <ul>
+						      <li>procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;  </li></ul>
+					      
+					      <p>Sets fLastAlignedBounds, see above.</p>
+					      
+					      <ul>
+						      <li>procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;</li></ul>
+					      
+					      <p>A smart version of SetBounds, reducing overhead during creation and loading.</p>
+					      
+					      <ul>
+						      <li>procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize, UseLoadedValues: boolean); virtual;</li></ul>
+					      
+					      <p>Commit current bounds to base bounds.</p>
+					      <ul>
+						      <li>procedure SetClientHeight(Value: Integer);</li>
+						      <li>procedure SetClientSize(Value: TPoint);</li>
+						      <li>procedure SetClientWidth(Value: Integer);  </li></ul>
+					      
+					      <p>Exists for Delphi compatibility too. Resizes the control, to get the wanted ClientRect size.</p>
+					      
+					      <ul>
+						      <li>procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;</li></ul>
+					      
+					      <p>This is the internal SetBounds.
+						      Applies constraints, updates base bounds, calls OnChangeBound, OnResize,
+						      locks bounds.</p>
+					      
+					      <ul>
+						      <li>procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;</li></ul>
+					      
+					      <p>This really sets the FLeft, FTop, FWidth, FHeight private variables.</p>
+					      
+					      <ul>
+						      <li>procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;</li></ul>
+					      
+					      <p>This is the standard procedure overriden by many Delphi controls.
+						      TWinControl overrides it too. </p><pre>
+						      ignores calls when bounds are locked
+						      lock the FBoundsRealized to avoid overhead to the interface during auto sizing.</pre>
+					      <p>ChangeBounds is not locked this way.</p>
+					      
+					      <ul> 
+						      <li>Function GetClientOrigin: TPoint; virtual;</li></ul>
+					      
+					      <p>Screen coordinate of Left, Top of client area.</p>
+					      <ul>
+						      <li>Function GetClientRect: TRect; virtual;</li></ul>
+					      
+					      <p>Size of client area. (always Left=0, Top=0)</p>
+					      <ul>
+						      <li>Function GetScrolledClientRect: TRect; virtual;</li></ul>
+					      <p>
+						      Visible client area in ClientRect.</p>
+					      
+					      <ul>
+						      <li>function GetChildsRect(Scrolled: boolean): TRect; virtual;</li></ul>
+					      
+					      <p>Returns the Client rectangle relative to the control's Left, Top.
+						      If Scrolled is true, the rectangle is moved by the current scrolling values
+						      (for an example see TScrollingWincontrol).</p>
+					      <ul>
+						      <li>function GetClientScrollOffset: TPoint; virtual;</li></ul>
+					      
+					      <p>Returns the scrolling offset of the client area.</p>
+					      
+					      <ul>
+						      <li>function GetControlOrigin: TPoint; virtual;</li></ul>
+					      
+					      <p>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
+						      Note that this value is the position as stored in the interface and is not always in sync with the LCL. When a control is moved, the LCL sets the
+bounds to the wanted position and sends a move message to the interface. It is up to the interface to handle moves instantly or queued.</p>
+		</descr>
+	</topic>
     </module>
     <!-- Controls -->
   </package>
