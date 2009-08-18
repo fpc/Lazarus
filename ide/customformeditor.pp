@@ -1812,7 +1812,9 @@ procedure TCustomFormEditor.WriterFindAncestor(Writer: TWriter;
 var
   AnUnitInfo: TUnitInfo;
 begin
-  //DebugLn(['TCustomFormEditor.WriterFindAncestor START ',DbgSName(Component)]);
+  {$IFDEF VerboseFormEditor}
+  DebugLn(['TCustomFormEditor.WriterFindAncestor START Component=',DbgSName(Component)]);
+  {$ENDIF}
   AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(Component.ClassType));
   if (AnUnitInfo<>nil) then begin
     if (AnUnitInfo.Component=Component) then begin
@@ -1827,7 +1829,7 @@ begin
       Ancestor:=AnUnitInfo.Component;
       RootAncestor:=AnUnitInfo.Component;
     end;
-    DebugLn(['TCustomFormEditor.WriterFindAncestor Component=',DbgSName(Component),' Ancestor=',DbgSName(Ancestor)]);
+    DebugLn(['TCustomFormEditor.WriterFindAncestor Component=',DbgSName(Component),' Ancestor=',DbgSName(Ancestor),' RootAncestor=',DbgSName(RootAncestor)]);
   end;
 end;
 
@@ -1893,12 +1895,15 @@ begin
   repeat
     // search in next ancestor
     AncestorRoot:=GetAncestorInstance(CurRoot);
-    if AncestorRoot=nil then exit;
-    if AncestorRoot.FindComponent(AComponent.Name)=nil then exit;
+    if AncestorRoot=nil then break;
+    if AncestorRoot.FindComponent(AComponent.Name)=nil then break;
     // a better ancestor was found
     Result:=AncestorRoot;
     CurRoot:=AncestorRoot;
   until false;
+  {$IFDEF VerboseFormEditor}
+  DebugLn(['TCustomFormEditor.GetAncestorLookupRoot AComponent=',DbgSName(AComponent),' Result=',DbgSName(Result)]);
+  {$ENDIF}
 end;
 
 function TCustomFormEditor.GetAncestorInstance(AComponent: TComponent

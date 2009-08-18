@@ -4758,6 +4758,7 @@ begin
           Ancestor:=nil;
           if AncestorUnit<>nil then
             Ancestor:=AncestorUnit.Component;
+          DebugLn(['TMainIDE.DoSaveUnitComponent Writer.WriteDescendent ARoor=',AnUnitInfo.Component,' Ancestor=',DbgSName(Ancestor)]);
           Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);
