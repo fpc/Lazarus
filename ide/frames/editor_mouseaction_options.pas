@@ -25,7 +25,7 @@ unit editor_mouseaction_options;
 interface
 
 uses
-  LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
+  LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit,
   StdCtrls, ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced;
 
 type
@@ -33,7 +33,11 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
+    HideMouseCheckBox: TCheckBox;
     DiffLabel: TLabel;
+    GenericDividerLeft: TBevel;
+    GenericDividerLabel: TLabel;
+    GenericDividerRight: TBevel;
     TextDoubleSelLine: TCheckBox;
     CtrLLeftLabel: TLabel;
     MiddleBtnLabel: TLabel;
@@ -75,6 +79,7 @@ type
     FDialog: TAbstractOptionsEditorDialog;
     FOptions: TAbstractIDEOptions;
     FTempMouseSettings: TEditorMouseOptions;
+    FInClickHandler: Integer;
     function IsTextSettingsChanged: Boolean;
     function IsGutterSettingsChanged: Boolean;
   protected
@@ -97,12 +102,27 @@ procedure TEditorMouseOptionsFrame.CheckOrRadioChange(Sender: TObject);
 var
   MouseDiff: Boolean;
 begin
-  MouseDiff := not FTempMouseSettings.IsPresetEqualToMouseActions;
-  ResetTextButton.Enabled   := MouseDiff or IsTextSettingsChanged;
-  ResetGutterButton.Enabled := MouseDiff or IsGutterSettingsChanged;
-  ResetAllButton.Enabled    := ResetTextButton.Enabled or ResetGutterButton.Enabled;
-  WarnLabel.Visible := IsTextSettingsChanged or IsGutterSettingsChanged;
-  DiffLabel.Visible := (not WarnLabel.Visible) and MouseDiff;
+  if FInClickHandler > 0 then exit;
+  Inc(FInClickHandler);
+  try
+    MouseDiff := not FTempMouseSettings.IsPresetEqualToMouseActions;
+    if not MouseDiff then begin
+      ResetAllButtonClick(nil);
+      ResetTextButton.Visible   := False;
+      ResetGutterButton.Visible := False;
+      ResetAllButton.Visible    := False;
+      WarnLabel.Visible := False;
+      DiffLabel.Visible := False;
+      exit;
+    end;
+    ResetTextButton.Visible   := True; // MouseDiff or IsTextSettingsChanged;
+    ResetGutterButton.Visible := True; // MouseDiff or IsGutterSettingsChanged;
+    ResetAllButton.Visible    := True; // ResetTextButton.Enabled or ResetGutterButton.Enabled;
+    WarnLabel.Visible := IsTextSettingsChanged or IsGutterSettingsChanged;
+    DiffLabel.Visible := (not WarnLabel.Visible) and MouseDiff;
+  finally
+    Dec(FInClickHandler);
+  end;
 end;
 
 procedure TEditorMouseOptionsFrame.ResetGutterButtonClick(Sender: TObject);
@@ -214,11 +234,13 @@ begin
   ResetAllButton.Caption := dlfMouseResetAll;
   ResetGutterButton.Caption := dlfMouseResetGutter;
   ResetTextButton.Caption := dlfMouseResetText;
+  HideMouseCheckBox.Caption := dlgAutoHideCursor;
 end;
 
 procedure TEditorMouseOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  Inc(FInClickHandler);
   FOptions := AOptions;
   FTempMouseSettings := TEditorOptions(AOptions).TempMouseSettings;
   FTempMouseSettings.Read;
@@ -240,13 +262,22 @@ begin
     moTCLNone: CtrlLeftRadio2.Checked := True;
     moTCLJumpOrBlock: CtrlLeftRadio3.Checked := True;
   end;
+  Dec(FInClickHandler);
   CheckOrRadioChange(nil);
+
+  HideMouseCheckBox.Checked := eoAutoHideCursor in TEditorOptions(AOptions).SynEditOptions2;
 end;
 
 procedure TEditorMouseOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
   FTempMouseSettings.WriteBack;
+  with TEditorOptions(AOptions) do begin
+    if HideMouseCheckBox.Checked then
+      SynEditOptions2 := SynEditOptions2 + [eoAutoHideCursor]
+    else
+      SynEditOptions2 := SynEditOptions2 - [eoAutoHideCursor]
+  end;
 end;
 
 class function TEditorMouseOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -39,9 +39,7 @@ type
     Bevel2: TBevel;
     Bevel3a: TBevel;
     Bevel3: TBevel;
-    Bevel4a: TBevel;
     Bevel5a: TBevel;
-    Bevel4: TBevel;
     Bevel5: TBevel;
     Bevel1a: TBevel;
     Bevel6: TBevel;
@@ -52,7 +50,6 @@ type
     AutoIndentCheckBox: TCheckBox;
     BlockIndentTypeLabel: TLabel;
     BlockGroupLabel: TLabel;
-    AutoHideCursorCheckBox: TCheckBox;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     OverwriteBlockCheckBox: TCheckBox;
@@ -61,7 +58,6 @@ type
     CursorSkipsSelectionCheckBox: TCheckBox;
     HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
     CursorGroupLabel: TLabel;
-    MouseGroupLabel: TLabel;
     PersistentBlockCheckBox: TCheckBox;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
@@ -80,7 +76,6 @@ type
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
-    procedure AutoHideCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
@@ -156,10 +151,6 @@ begin
   SmartTabsCheckBox.Caption := dlgSmartTabs;
   TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
 
-  // mouse, drag&drop
-  MouseGroupLabel.Caption := dlgMouseGroupOptions;
-  AutoHideCursorCheckBox.Caption := dlgAutoHideCursor;
-
   // caret + key navigation
   CursorGroupLabel.Caption := dlgCursorGroupOptions;
   KeepCursorXCheckBox.Caption := dlgKeepCursorX;
@@ -201,9 +192,6 @@ begin
     TabIndentBlocksCheckBox.Checked := eoTabIndent in SynEditOptions;
     SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
     TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
-
-    // mouse
-    AutoHideCursorCheckBox.Checked := eoAutoHideCursor in SynEditOptions2;
 
     // cursor
     KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
@@ -283,9 +271,6 @@ begin
     BlockIndent := i;
     BlockIndentType := TSynBeautifierIndentType(BlockIndentTypeComboBox.ItemIndex);
 
-    // mouse
-    UpdateOptionFromBool(AutoHideCursorCheckBox.Checked, eoAutoHideCursor);
-
     // cursor
     UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
@@ -350,11 +335,6 @@ procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
-end;
-
-procedure TEditorGeneralOptionsFrame.AutoHideCursorCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(AutoHideCursorCheckBox.Checked, eoAutoHideCursor);
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboboxOnKeyDown(

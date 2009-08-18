@@ -1182,10 +1182,10 @@ resourcestring
   dlfMouseSimpleTextSectCtrlLeftRNone = 'nothing';
   dlfMouseSimpleTextSectCtrlLeftRJumpOrBlock = 'jumps to implementation/other block end';
   dlfMouseSimpleWarning = 'You have unsaved changes. Using this page will undo changes made on the advanced page';
-  dlfMouseSimpleDiff = 'This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes';
-  dlfMouseResetAll = 'Set all settings';
-  dlfMouseResetText = 'Set all text settings';
-  dlfMouseResetGutter = 'Set all gutter settings';
+  dlfMouseSimpleDiff = 'This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes';
+  dlfMouseResetAll = 'Reset all settings';
+  dlfMouseResetText = 'Reset all text settings';
+  dlfMouseResetGutter = 'Reset all gutter settings';
 
   dlgMouseOptions = 'Mouse';
   dlgMouseOptionsAdv = 'Advanced';

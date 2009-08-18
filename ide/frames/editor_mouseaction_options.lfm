@@ -17,7 +17,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 16
-    Top = 329
+    Top = 376
     Width = 485
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -37,19 +37,21 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 189
     Height = 3
-    Top = 7
+    Top = 54
     Width = 418
     Anchors = [akTop, akLeft, akRight]
   end
   object GutterDividerLabel: TLabel[2]
     AnchorSideLeft.Control = GutterDividerLeft
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
+    AnchorSideTop.Control = HideMouseCheckBox
+    AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 16
-    Top = 0
+    Top = 47
     Width = 109
     BorderSpacing.Left = 10
+    BorderSpacing.Top = 6
     BorderSpacing.Right = 10
     BorderSpacing.Bottom = 6
     Caption = 'GutterDividerLabel'
@@ -64,7 +66,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 7
+    Top = 54
     Width = 60
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -76,7 +78,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 110
+    Top = 157
     Width = 60
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -88,7 +90,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 16
-    Top = 103
+    Top = 150
     Width = 97
     BorderSpacing.Left = 10
     BorderSpacing.Right = 10
@@ -107,7 +109,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 189
     Height = 3
-    Top = 110
+    Top = 157
     Width = 418
     Anchors = [akTop, akLeft, akRight]
   end
@@ -119,7 +121,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 320
+    Top = 367
     Width = 607
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -133,7 +135,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 16
-    Top = 329
+    Top = 376
     Width = 485
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -150,7 +152,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 16
-    Top = 169
+    Top = 216
     Width = 84
     BorderSpacing.Left = 6
     Caption = 'MiddleBtnLabel'
@@ -162,13 +164,53 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 16
-    Top = 229
+    Top = 276
     Width = 71
     BorderSpacing.Left = 6
     Caption = 'CtrLLeftLabel'
     ParentColor = False
   end
-  object ResetAllButton: TButton[11]
+  object GenericDividerLeft: TBevel[11]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GenericDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 7
+    Width = 60
+    BorderSpacing.Bottom = 6
+  end
+  object GenericDividerLabel: TLabel[12]
+    AnchorSideLeft.Control = GenericDividerLeft
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 70
+    Height = 16
+    Top = 0
+    Width = 115
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'GenericDividerLabel'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object GenericDividerRight: TBevel[13]
+    AnchorSideLeft.Control = GenericDividerLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = GenericDividerLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 195
+    Height = 3
+    Top = 7
+    Width = 412
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object ResetAllButton: TButton[14]
     AnchorSideTop.Control = BottomDivider
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
@@ -177,7 +219,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 497
     Height = 25
-    Top = 329
+    Top = 376
     Width = 104
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -187,7 +229,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     OnClick = ResetAllButtonClick
     TabOrder = 0
   end
-  object PanelGutter: TPanel[12]
+  object PanelGutter: TPanel[15]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = GutterDividerLabel
     AnchorSideTop.Side = asrBottom
@@ -195,7 +237,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 44
-    Top = 22
+    Top = 69
     Width = 595
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -231,7 +273,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 1
     end
   end
-  object PanelTextMiddle: TPanel[13]
+  object PanelTextMiddle: TPanel[16]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MiddleBtnLabel
     AnchorSideTop.Side = asrBottom
@@ -239,7 +281,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 38
-    Top = 185
+    Top = 232
     Width = 595
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -287,14 +329,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 2
     end
   end
-  object ResetGutterButton: TButton[14]
+  object ResetGutterButton: TButton[17]
     AnchorSideTop.Control = PanelGutter
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 478
     Height = 25
-    Top = 72
+    Top = 119
     Width = 123
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -304,14 +346,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     OnClick = ResetGutterButtonClick
     TabOrder = 3
   end
-  object ResetTextButton: TButton[15]
+  object ResetTextButton: TButton[18]
     AnchorSideTop.Control = PanelTextCtrlLeft
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 489
     Height = 25
-    Top = 289
+    Top = 336
     Width = 112
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -321,7 +363,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     OnClick = ResetTextButtonClick
     TabOrder = 4
   end
-  object PanelTextCheckBox: TPanel[16]
+  object PanelTextCheckBox: TPanel[19]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TextDividerLabel
     AnchorSideTop.Side = asrBottom
@@ -329,7 +371,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 38
-    Top = 125
+    Top = 172
     Width = 595
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -390,7 +432,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 3
     end
   end
-  object PanelTextCtrlLeft: TPanel[17]
+  object PanelTextCtrlLeft: TPanel[20]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CtrLLeftLabel
     AnchorSideTop.Side = asrBottom
@@ -398,7 +440,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 38
-    Top = 245
+    Top = 292
     Width = 595
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -445,5 +487,18 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       OnChange = CheckOrRadioChange
       TabOrder = 2
     end
+  end
+  object HideMouseCheckBox: TCheckBox[21]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GenericDividerLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 22
+    Width = 133
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'HideMouseCheckBox'
+    TabOrder = 7
   end
 end

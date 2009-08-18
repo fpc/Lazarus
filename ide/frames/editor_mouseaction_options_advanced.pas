@@ -761,6 +761,7 @@ end;
 
 procedure TEditorMouseOptionsAdvFrame.RefreshSettings;
 begin
+  if (FMainNode = nil) or (FKeyMap = nil) then exit;
   ContextTree.Selected := FMainNode;
   ContextTreeChange(ContextTree, FMainNode);
 end;
