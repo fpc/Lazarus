@@ -2440,10 +2440,10 @@ function TCarbonWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
   Result := False;
 
-  {.$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX)
       + ', ' + DbgS(DY));
-  {.$ENDIF}
+  {$ENDIF}
   
   if not CheckDC(DC, 'MoveWindowOrgEx') then Exit;
   
