@@ -213,6 +213,7 @@ end;
 procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
+  GenericDividerLabel.Caption := dlfMouseSimpleGenericSect;
   GutterDividerLabel.Caption := dlfMouseSimpleGutterSect;
   GutterLeftRadio1.Caption := dlfMouseSimpleGutterLeftDown;
   GutterLeftRadio2.Caption := dlfMouseSimpleGutterLeftUp;
