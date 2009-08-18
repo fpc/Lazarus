@@ -79,9 +79,9 @@ begin
     lcApplicationTitle,
     lcFormIcon,
     lcModalWindow:
-      Result := 1;
+      Result := LCLC_HAS_CAPACITY;
   else
-    Result := 0;
+    Result := LCLC_DOES_NOT_HAVE_CAPACITY;
   end;
 end;
 

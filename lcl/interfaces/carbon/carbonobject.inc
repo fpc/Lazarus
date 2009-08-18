@@ -1063,7 +1063,7 @@ begin
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
     lcFormIcon:
-      Result := 0;
+      Result := LCLC_DOES_NOT_HAVE_CAPACITY;
   else
     Result := inherited;
   end;

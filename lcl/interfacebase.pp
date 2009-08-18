@@ -143,6 +143,10 @@ const
       'cocoa'
     );
     
+  { Constants for the routine TWidgetSet.GetLCLCapability }
+  LCLC_DOES_NOT_HAVE_CAPACITY = 0;
+  LCLC_HAS_CAPACITY = 1;
+
 type
   EInterfaceException = class(Exception);
   EInterfaceError = class(EInterfaceException);
