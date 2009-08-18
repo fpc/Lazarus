@@ -1844,14 +1844,14 @@ end;
 
 function TCustomFormEditor.HasCircularDependencies(AClass: TComponentClass; AComponent: TComponent): Boolean;
 
-  function HasChild(WhatToTraverse, WhatToSearch: TComponent): Boolean;
+  function HasChild(WhatToTraverse: TComponent; WhatToSearch: TClass): Boolean;
   var
     i: integer;
   begin
     Result := False;
     for i := 0 to WhatToTraverse.ComponentCount - 1 do
     begin
-      Result := WhatToTraverse.Components[i].InheritsFrom(WhatToSearch.ClassType) or
+      Result := WhatToTraverse.Components[i].InheritsFrom(WhatToSearch) or
         HasChild(WhatToTraverse.Components[i], WhatToSearch);
       if Result then Exit;
     end;
@@ -1866,7 +1866,7 @@ begin
   if AnUnitInfo = nil then Exit;
   Cmp := AnUnitInfo.Component;
   if Cmp = nil then Exit;
-  Result := HasChild(Cmp, AComponent);
+  Result := HasChild(Cmp, AComponent.ClassType);
 end;
 
 function TCustomFormEditor.GetAncestorLookupRoot(AComponent: TComponent
