@@ -4694,6 +4694,7 @@ var
   APackage: TLazPackage;
   i: Integer;
   LRSFilename: String;
+  PropPath: String;
 begin
   Result:=mrCancel;
 
@@ -4758,18 +4759,23 @@ begin
           Ancestor:=nil;
           if AncestorUnit<>nil then
             Ancestor:=AncestorUnit.Component;
-          DebugLn(['TMainIDE.DoSaveUnitComponent Writer.WriteDescendent ARoor=',AnUnitInfo.Component,' Ancestor=',DbgSName(Ancestor)]);
+          //DebugLn(['TMainIDE.DoSaveUnitComponent Writer.WriteDescendent ARoot=',AnUnitInfo.Component,' Ancestor=',DbgSName(Ancestor)]);
           Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
         except
           on E: Exception do begin
+            PropPath:='';
+            if Writer.Driver is TLRSObjectWriter then
+              PropPath:=TLRSObjectWriter(Writer.Driver).GetStackPath(AnUnitInfo.Component);
             DumpExceptionBackTrace;
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
                           AnUnitInfo.ComponentName])+#13
                           +E.Message;
+            if PropPath<>'' then
+              AText:=Atext+#13#13+'Path: '+PropPath;
             Result:=MessageDlg(ACaption, AText, mtError,
                        [mbAbort, mbRetry, mbIgnore], 0);
             if Result=mrAbort then exit;
