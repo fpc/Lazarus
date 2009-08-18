@@ -1696,7 +1696,7 @@ begin
   // remember old path
   NewProcPath:=nil;
   try
-    if not CreatePathForNewProc(InsertPos,CleanProcHead,NewProcPath) then exit;
+    if not CreatePathForNewProc(InsertPos,CleanProcHead,TStrings(NewProcPath)) then exit;
     if not SourceChangeCache.Apply then exit;
     if not FindJumpPointToNewProc(NewProcPath) then exit;
     Result:=true;

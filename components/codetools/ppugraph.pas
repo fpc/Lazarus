@@ -819,7 +819,7 @@ begin
     Member:=TPPUMember(AVLNode.Data);
     if not (pmfAutoDisabled in Member.Flags) then begin
       List.Clear;
-      Member.GetMissingUnits(List);
+      Member.GetMissingUnits(TStrings(List));
       if List.Count>0 then begin
         DebugLn(['TPPUGroups.AutoDisableUnitsWithBrokenDependencies auto disabling unit ',Member.Unitname,' due to missing units: ',List.DelimitedText]);
         AutoDisableMember(Member);
