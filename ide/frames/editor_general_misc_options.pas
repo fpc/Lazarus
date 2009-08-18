@@ -65,7 +65,7 @@ begin
   with EditorOptionsGroupBox do
   begin
     // visual effects
-    Items.Add(dlgShowGutterHints);
+    //Items.Add(dlgShowGutterHints);  // unimplemented
     Items.Add(lisShowSpecialCharacters);
     // spaces
     Items.Add(dlgTrimTrailingSpaces);
@@ -92,7 +92,7 @@ begin
       Checked[Items.IndexOf(lisShowSpecialCharacters)] := eoShowSpecialChars in SynEditOptions;
       Checked[Items.IndexOf(dlgTrimTrailingSpaces)] := eoTrimTrailingSpaces in SynEditOptions;
       Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := ShowTabCloseButtons;
-      Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
+      //Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
       Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
       Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
       Checked[Items.IndexOf(dlgCopyPasteKeepFolds)] := eoFoldedCopyPaste in SynEditOptions2;
@@ -126,7 +126,7 @@ begin
     UpdateOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
     ShowTabCloseButtons := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCloseButtonsNotebook);
     CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
-    ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
+    //ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
     if EditorOptionsGroupBox.Checked[EditorOptionsGroupBox.Items.IndexOf
