@@ -15672,7 +15672,7 @@ and that description should be read to understand their definitions more fully.
 		      <b>Properties / Methods</b>
 		      <ul>
 			      <li>Left</li>
-			      <li>Top</li>
+			      <li>Top</li></ul>
 			      
 			      <p>If <var>Parent</var> is not nil then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users: Some VCL controls like TGroupbox define the client area as the whole control including the frame and some not - the LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widgetsets define a minimum/maximum somewhere around 10.000 or more.</p>
 			      
@@ -15754,7 +15754,7 @@ and that description should be read to understand their definitions more fully.
 		      very often.</p>
 	      
 	      <ul>
-		      <li>FLastDoChangeBounds: TRect</li><ul>
+		      <li>FLastDoChangeBounds: TRect</li></ul>
 			      
 			      <p>Used to avoid calling OnChangeBounds with the same coordinates. This reduces
 				      user defined autosizing.</p>
