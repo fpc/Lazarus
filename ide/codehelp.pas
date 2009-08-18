@@ -2061,8 +2061,10 @@ var
     if not IsHTML then begin
       IsHTML:=true;
       if HTMLHint<>'' then
-        HTMLHint:=TextToHTML(HTMLHint)+le+le;
+        HTMLHint:=TextToHTML(HTMLHint)+le;
     end;
+    if HTMLHint<>'' then
+      HTMLHint:=HTMLHint+le;
     HTMLHint:=HTMLHint+s;
   end;
   
@@ -2116,7 +2118,7 @@ begin
           if Item.ElementNode<>nil then
           begin
             NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
-           {$ifdef VerboseHints}
+            {$ifdef VerboseHints}
             for f:=Low(TFPDocItem) to High(TFPDocItem) do
               DebugLn(['TCodeHelpManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
             {$endif}
@@ -2173,9 +2175,9 @@ begin
     if IsHTML then
       HTMLHint:='<HTML><BODY>'+HTMLHint+'</BODY></HTML>';
   end;
-  {$ifdef VerboseHints}
+  { $ifdef VerboseHints}
   DebugLn(['TCodeHelpManager.GetHint END Hint="',HTMLHint,'"']);
-  {$endif}
+  { $endif}
 end;
 
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
