@@ -2034,6 +2034,19 @@ begin
     IdentAdded:=false;
     // identifier category and identifier
     if NewNode<>nil then begin
+      // class visibility
+      if NewNode.Parent<>nil then begin
+        case NewNode.Parent.Desc of
+        ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
+          Result:=Result+'private ';
+        ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
+          Result:=Result+'protected ';
+        ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
+          Result:=Result+'public ';
+        ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
+          Result:=Result+'published ';
+        end;
+      end;
       case NewNode.Desc of
       ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
       ctnEnumIdentifier, ctnGenericType:

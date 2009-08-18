@@ -256,7 +256,8 @@ each control that's dropped onto the form
                                  var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
                                        const NewName, NewClassName: shortstring);
-    function HasCircularDependencies(AClass: TComponentClass; AComponent: TComponent): Boolean;
+    function HasCircularDependencies(AClass: TComponentClass;
+                                     AComponent: TComponent): Boolean;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -1842,7 +1843,8 @@ begin
   AComponent.Name:=NewName;
 end;
 
-function TCustomFormEditor.HasCircularDependencies(AClass: TComponentClass; AComponent: TComponent): Boolean;
+function TCustomFormEditor.HasCircularDependencies(AClass: TComponentClass;
+  AComponent: TComponent): Boolean;
 
   function HasChild(WhatToTraverse: TComponent; WhatToSearch: TClass): Boolean;
   var
