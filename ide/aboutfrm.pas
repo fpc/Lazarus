@@ -362,7 +362,7 @@ end;
 
 function TScrollingText.ActiveLineIsURL: boolean;
 begin
-  if (FActiveLine > 0) and (FActiveLine < FLines.Count -1) then
+  if (FActiveLine > 0) and (FActiveLine < FLines.Count) then
     Result := Pos('http://', FLines[FActiveLine]) = 1
   else
     Result := False;
