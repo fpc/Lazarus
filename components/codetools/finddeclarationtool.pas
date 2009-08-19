@@ -2014,7 +2014,7 @@ function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition
   ): string;
 var
   NewTool: TFindDeclarationTool;
-  NewNode, IdentNode, TypeNode: TCodeTreeNode;
+  NewNode, IdentNode, TypeNode, ANode: TCodeTreeNode;
   NewPos: TCodeXYPosition;
   NewTopLine: integer;
   AbsCursorPos: integer;
@@ -2036,17 +2036,26 @@ begin
     if NewNode<>nil then begin
       // class visibility
       if NewNode.Parent<>nil then begin
-        case NewNode.Parent.Desc of
-        ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
-          Result:=Result+'private ';
-        ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
-          Result:=Result+'protected ';
-        ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
-          Result:=Result+'public ';
-        ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
-          Result:=Result+'published ';
+        ANode:=NewNode.Parent;
+        while ANode<>nil do begin
+          if ANode.Desc in AllClassSections then begin
+            case ANode.Desc of
+            ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
+              Result:=Result+'private ';
+            ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
+              Result:=Result+'protected ';
+            ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
+              Result:=Result+'public ';
+            ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
+              Result:=Result+'published ';
+            end;
+            break;
+          end else if ANode.Desc in [ctnParameterList,ctnClass,ctnClassInterface] then
+            break;
+          ANode:=ANode.Parent;
         end;
       end;
+
       case NewNode.Desc of
       ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
       ctnEnumIdentifier, ctnGenericType:
