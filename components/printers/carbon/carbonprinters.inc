@@ -91,7 +91,6 @@ begin
           PMPaper(CFArrayGetValueAtIndex(FPaperArray, I))),
         Self, SName, 'PMCreatePageFormatWithPMPaper');
 
-      ValidatePageFormat;
     end;
   finally
     if S <> nil then
