@@ -282,7 +282,8 @@ var
 const
   MAX_CACHE = 50; // Amount of lower-cased lines cached
   MAX_SYNC_ED_WORDS = 50;// 250;
-  MAX_WORDS_PER_SCAN = 50000;
+  MAX_WORDS_PER_SCAN = 5000;
+  MIN_PROCESS_MSG_TIME = (1/86400)/15;
 
 Operator = (P1, P2 : TPoint) : Boolean;
 begin
@@ -1119,7 +1120,9 @@ var
 
 var
   i, j: Integer;
+  StartTime, t: Double;
 begin
+  StartTime := now();
   while (FCallQueued) and (FMode = spseSelecting) do begin
     FCallQueued := False;
     FWordScanCount := 0;
@@ -1178,7 +1181,12 @@ begin
 
     if FWordScanCount > MAX_WORDS_PER_SCAN then begin
       FCallQueued := True;
-      Application.ProcessMessages;
+      t := Now;
+      if (t - StartTime > MIN_PROCESS_MSG_TIME) then begin
+        Application.ProcessMessages;
+        Application.Idle(False);
+        StartTime := t;
+      end;
     end;
   end;
   FCallQueued := False;
