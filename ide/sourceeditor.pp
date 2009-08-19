@@ -578,7 +578,7 @@ type
     States: TSourceNotebookStates;
     // hintwindow stuff
     FHintWindow: THintWindow;
-    FHintTimer: TTimer;
+    FHintTimer: TIdleTimer;
 
 
     function CreateNotebook: Boolean;
@@ -3408,11 +3408,12 @@ begin
   BuildPopupMenu;
 
   // HintTimer
-  FHintTimer := TTimer.Create(Self);
+  FHintTimer := TIdleTimer.Create(Self);
   with FHintTimer do begin
     Name:=Self.Name+'_HintTimer';
     Interval := EditorOpts.AutoDelayInMSec;
     Enabled := False;
+    AutoEnabled := False;
     OnTimer := @HintTimer;
   end;
 
@@ -5512,7 +5513,12 @@ procedure TSourceNotebook.HideHint;
 begin
   //DebugLn(['TSourceNotebook.HideHint ']);
   if FHintTimer<>nil then
+  begin
+    FHintTimer.AutoEnabled := (EditorOpts.AutoToolTipSymbTools or
+                              EditorOpts.AutoToolTipExprEval)
+                              and Visible;
     FHintTimer.Enabled:=false;
+  end;
   if SourceCompletionTimer<>nil then
     SourceCompletionTimer.Enabled:=false;
   if FHintWindow<>nil then
@@ -6645,23 +6651,14 @@ end;
 Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X,Y: Integer);
 begin
-  // restart hint timer
-  //DebugLn(['TSourceNotebook.EditorMouseMove ']);
-  FHintTimer.Enabled := False;
-  FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
-                         EditorOpts.AutoToolTipExprEval)
-                        and Visible;
+  HideHint;
 end;
 
 procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
-  // restart hint timer
-  //DebugLn(['TSourceNotebook.EditorMouseWheel ']);
   HideHint;
-  FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
-                         EditorOpts.AutoToolTipExprEval) and Visible;
-  //handled:=true; //The scrooling is not done: it's not handled! See TWinControl.DoMouseWheel
+  //handled:=true; //The scrolling is not done: it's not handled! See TWinControl.DoMouseWheel
 end;
 
 procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
@@ -6693,6 +6690,7 @@ var
 begin
   //DebugLn(['TSourceNotebook.HintTimer ']);
   FHintTimer.Enabled := False;
+  FHintTimer.AutoEnabled := False;
   MousePos := Mouse.CursorPos;
   AControl:=FindLCLControl(MousePos);
   if (AControl=nil) or (GetParentForm(AControl)<>Self) then exit;
