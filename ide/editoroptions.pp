@@ -64,6 +64,7 @@ type
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript);
 
+  // TODO: add defaults for other highlighters too (like html, xml...)
   TPascalHilightAttribute = (
     phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
     phaString, phaSymbol
@@ -221,6 +222,43 @@ type
 
 
 const
+  (* How it works:
+     - All color settings (highlighter, markup, others are stored on the Highlighters.
+        For this each Highlighter is extended by:
+        AddSpecialHilightAttribsToHighlighter
+
+     - GetDefaultsForPascalAttribute
+        replaces all clDefault with the values from the 'Default' colors
+        which can be clNone (The SynEdit default is Black on White; see SetMarkupColors)
+
+     - ReadDefaultsForHighlighterSettings
+       - for a 'pascal' highlighter
+          will set all values as provided by:  GetDefaultsForPascalAttribute
+       - for any other highlighte
+         ^ Will read the user's configuration (ReadHighlighterSettings) for 'pascal',
+           which starts with GetDefaultsForPascalAttribute
+         ^ All defaults for  AdditionalAttributes  and  selected language attributes
+           (MappedAttributes) will be set to the user's pascal config
+         ^ The remaining language attributes are left to the Values defined in the
+           Highlighters Create
+           //Todo: Add them to TPascalHilightAttribute, so they can have defaults
+                   per colorscheme too
+
+     - ReadHighlighterSettings
+        loads the differences between the users setting and the defaults
+
+   * clDefault vs clNone
+     - clDefault is replaced with the values from the 'Default' colors (GetDefaultsForPascalAttribute)
+       this can be clNone
+     - clDefault should not make it outside GetDefaultsForPascalAttribute
+     - editor_color_option_frame expects clNone (but will take and convert clDefault)
+     - clNone is handled inside SynEdit / clDefault is not expected in SynEdit
+       ^ clnone in Additional Attributes means the pascal/ language Attribute is used
+       ^ clnone in pascal/ language Attributes means the SynEdit.Font.Color is used
+         for forground / SynEdit.Color is used for BackGround
+
+   * Additional Attributes should use clNone. They always fallback to a pascal/language attribute
+  *)
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
     Default: (BG: clNone;  FG: clNone; FC: clNone; Styles: []; StylesMask: []);
@@ -882,7 +920,7 @@ type
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
                              aMarkup: TSynSelectedColor);
-    procedure SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
+    procedure SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit; SynColorScheme: String = '');
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -3165,8 +3203,7 @@ begin
           continue;
         // check, if there is a known mapping for this attribute
         if HilightInfo.MappedAttributes <> Nil then
-          MappedAttriName :=
-            HilightInfo.MappedAttributes.Values[AttriName]
+          MappedAttriName := HilightInfo.MappedAttributes.Values[AttriName]
         else
           MappedAttriName := '';
         if MappedAttriName = '' then
@@ -3570,9 +3607,12 @@ begin
   Result := True;
 end;
 
-procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
-  (* ASynEd.Highlighter has a copy of all the ahaAttributes
-     SetMarkupColors copies them from the highlighter to the synedit
+procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit;
+  SynColorScheme: String = '');
+  (* - ASynEd.Highlighter has a copy of all the ahaAttributes
+       SetMarkupColors copies them from the highlighter to the synedit
+     - For this reason (if called from SourceNotebook)
+       Syn and aSynEd.Highlighter should be equal
    *)
   procedure SetMarkupColorByClass(AddHilightAttr: TAdditionalHilightAttribute;
                                   aClass: TSynEditMarkupClass);
@@ -3592,7 +3632,23 @@ procedure TEditorOptions.SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEd
 var
   i: integer;
   Attri: TSynHighlighterAttributes;
+  Scheme: TPascalColorScheme;
 begin
+  // Find current color scheme for default colors
+  if (SynColorScheme = '') and (aSynEd.Highlighter <> nil) then
+    SynColorScheme := ReadColorScheme(aSynEd.Highlighter.LanguageName);
+  if (SynColorScheme <> '') then
+    try
+      Scheme := GetColorScheme(SynColorScheme);
+      if (Scheme.Default.BG = clNone) or (Scheme.Default.BG = clDefault)
+      then aSynEd.Color := clWhite
+      else aSynEd.Color := Scheme.Default.BG;
+      if (Scheme.Default.FG = clNone) or (Scheme.Default.FG = clDefault)
+      then aSynEd.Font.Color := clBlack
+      else aSynEd.Font.Color := Scheme.Default.FG;
+    except
+    end;
+
   Attri := GetSynAttributeByAha(aSynEd.Highlighter, ahaGutter);
   if Attri <> nil then
     aSynEd.Gutter.Color := Attri.Background;
@@ -3734,6 +3790,9 @@ begin
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
+  // The Highlighter on the SynEdit will have been initialized with the configured
+  // values already (including all the additional-attributes.
+  // Just copy the colors from the SynEdit's highlighter to the SynEdit's Markup and co
   SetMarkupColors(ASynEdit.Highlighter, ASynEdit);
 
   MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);

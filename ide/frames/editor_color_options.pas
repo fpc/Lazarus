@@ -982,7 +982,8 @@ begin
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
       begin
-        EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a]);
+        EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a],
+                                   GetCurColorScheme(PreviewSyn.LanguageName));
         PreviewEdits[a].Invalidate;
       end;
 end;
