@@ -45,7 +45,7 @@ begin
   Defines:=TStringList.Create;
   try
     if Paramcount>0 then begin
-      if Paramcount<>4 then begin
+      if Paramcount<4 then begin
         writeln('Usage: '+ParamStrUTF8(0)+' filename line column define1 define2');
         exit;
       end;
@@ -79,17 +79,21 @@ begin
     end;
     CodeToolBoss.DefineTree.Add(DirDef);
 
-    writeln('StartFile=',Code.Filename);
-    writeln('StartX=',X);
-    writeln('StartY=',Y);
+    if Defines.IndexOf('fpcunit')<0 then begin
+      writeln('StartFile=',Code.Filename);
+      writeln('StartX=',X);
+      writeln('StartY=',Y);
+    end;
     if not CodeToolBoss.CompleteBlock(Code,X,Y,NewCode,NewX,NewY,NewTopLine) then begin
       writeln('ERROR: complete block failed at ',Code.Filename,' X=',X,' Y=',Y);
       exit;
     end;
-    writeln('File=',NewCode.Filename);
-    writeln('X=',NewX);
-    writeln('Y=',NewY);
-    writeln('TopLine=',NewTopLine);
+    if Defines.IndexOf('fpcunit')<0 then begin
+      writeln('File=',NewCode.Filename);
+      writeln('X=',NewX);
+      writeln('Y=',NewY);
+      writeln('TopLine=',NewTopLine);
+    end;
     writeln(NewCode.Source);
   finally
     Defines.Free;
