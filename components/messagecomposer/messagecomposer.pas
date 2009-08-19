@@ -39,9 +39,9 @@ type
     MsgMemo: TMemo;
     UpdateQuestioDlgResult: TAction;
     SetIfOrCase: TAction;
-    Bevel1: TBevel;
+    PositionBevel: TBevel;
     Bevel2: TBevel;
-    Bevel3: TBevel;
+    HelpCtxBevel: TBevel;
     CaseResultCheckGroup: TCheckGroup;
     BeginEndCheckBox: TCheckBox;
     IfResultComboBox: TComboBox;
