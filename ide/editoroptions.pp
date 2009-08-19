@@ -2162,16 +2162,20 @@ begin
     AddCommand(emcOnMainGutterClick,   False, mbLeft,   ccAny,    CDir, [], []);  // breakpoint
   end;
   with FGutterActionsFold do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny,    CDir, [], [ssShift], emcoCodeFoldCollapsOne);
-    AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny,    CDir, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
     AddCommand(emcNone,                False, mbLeft,   ccAny,    CDir, [], []);
   end;
   with FGutterActionsFoldCol do begin
-    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
-    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [], [ssCtrl], emcoCodeFoldExpandAll);
+    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssAlt],   [ssAlt, ssCtrl], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [ssCtrl],  [ssAlt, ssCtrl], emcoCodeFoldExpandAll);
+    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
+    if FTextMiddleClick <> moTMIgnore then
+      AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
   end;
   with FGutterActionsFoldExp do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [], [], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [],       [ssCtrl], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldCollapsAll);
+    if FTextMiddleClick <> moTMIgnore then
+      AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
   end;
 
 end;
