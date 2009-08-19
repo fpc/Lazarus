@@ -176,7 +176,7 @@ begin
 
   // make URL absolute
   SplitURL(URL,URLType,URLPath,URLParams);
-  debugln('THTMLHelpDatabase.ShowURL A NewNode.URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+  //debugln('THTMLHelpDatabase.ShowURL A NewNode.URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
 
   if URLType='file' then begin
     if not URLFilenameIsAbsolute(URLPath) then begin
