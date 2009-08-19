@@ -1184,7 +1184,8 @@ begin
       t := Now;
       if (t - StartTime > MIN_PROCESS_MSG_TIME) then begin
         Application.ProcessMessages;
-        Application.Idle(False);
+        if not FEditModeQueued then
+          Application.Idle(False);
         StartTime := t;
       end;
     end;
