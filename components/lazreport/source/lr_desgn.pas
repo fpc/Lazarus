@@ -1426,6 +1426,7 @@ begin
   end;
   {$ENDIF}
 
+  {$IFDEF LCLCarbon}Invalidate;{$endif}
   Down := False;
   if FDesigner.ShapeMode = smFrame then
     DrawPage(dmShape);
@@ -1716,6 +1717,9 @@ begin
   {$ENDIF}
   Moved := True;
   w := 2;
+
+  {$ifdef LCLCarbon}if Down then Invalidate;{$endif}
+
   if FirstChange and Down and not RFlag then
   begin
     kx := x - LastX;
