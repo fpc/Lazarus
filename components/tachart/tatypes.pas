@@ -488,8 +488,8 @@ begin
   FAlignment := laRight;
   FVisible := false;
 
-  InitHelper(FFont, TFont);
-  InitHelper(FFrame, TChartPen);
+  InitHelper(TFPCanvasHelper(FFont), TFont);
+  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
 end;
 
 destructor TChartLegend.Destroy;
@@ -540,11 +540,11 @@ begin
   inherited Create(AOwner);
 
   FAlignment := taCenter;
-  InitHelper(FBrush, TBrush);
+  InitHelper(TFPCanvasHelper(FBrush), TBrush);
   FBrush.Color := FOwner.Color;
-  InitHelper(FFont, TFont);
+  InitHelper(TFPCanvasHelper(FFont), TFont);
   FFont.Color := clBlue;
-  InitHelper(FFrame, TChartPen);
+  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
   FText := TStringList.Create;
 end;
 
@@ -605,7 +605,7 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_TITLE_DISTANCE;
-  InitHelper(FFont, TFont);
+  InitHelper(TFPCanvasHelper(FFont), TFont);
 end;
 
 destructor TChartAxisTitle.Destroy;
@@ -966,11 +966,11 @@ constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_MARKS_DISTANCE;
-  InitHelper(FFrame, TChartPen);
-  InitHelper(FLabelBrush, TChartLabelBrush);
+  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
+  InitHelper(TFPCanvasHelper(FLabelBrush), TChartLabelBrush);
   FLabelBrush.Color := clYellow;
-  InitHelper(FLabelFont, TFont);
-  InitHelper(FLinkPen, TChartLinkPen);
+  InitHelper(TFPCanvasHelper(FLabelFont), TFont);
+  InitHelper(TFPCanvasHelper(FLinkPen), TChartLinkPen);
   FLinkPen.Color := clWhite;
   FStyle := smsNone;
   FVisible := true;
@@ -1072,8 +1072,8 @@ constructor TSeriesPointer.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
 
-  InitHelper(FBrush, TBrush);
-  InitHelper(FPen, TChartPen);
+  InitHelper(TFPCanvasHelper(FBrush), TBrush);
+  InitHelper(TFPCanvasHelper(FPen), TChartPen);
 
   FHorizSize := DEF_POINTER_SIZE;
   FStyle := psRectangle;
