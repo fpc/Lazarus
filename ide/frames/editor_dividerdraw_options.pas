@@ -265,9 +265,9 @@ begin
   LanguageLabel.Caption := dlgLang;
   DividerSpinLabel.Caption := dlgDividerDrawDepth;
   TopLvlColorLabel.Caption := dlgDividerTopColor;
-  TopLvlColorCheckBox.Caption := dlgDividerTopColorDefault;
+  TopLvlColorCheckBox.Caption := dlgDividerColorDefault;
   NestLvlColorLabel.Caption := dlgDividerNestColor;
-  NestLvlColorCheckBox.Caption := dlgDividerNestColorDefault;
+  NestLvlColorCheckBox.Caption := dlgDividerColorDefault;
 end;
 
 procedure TEditorDividerDrawOptionsFrame.ReadSettings(

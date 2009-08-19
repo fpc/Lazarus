@@ -1337,9 +1337,8 @@ resourcestring
   dlgDividerOnOff = 'Draw divider';
   dlgDividerDrawDepth = 'Draw divider level';
   dlgDividerTopColor = 'Line color';
-  dlgDividerTopColorDefault = 'Use Default';
+  dlgDividerColorDefault = 'Use right margin color';
   dlgDividerNestColor = 'Nested line color';
-  dlgDividerNestColorDefault = 'Use Default';
 
   dlgDivPasUnitSectionName  = 'Unit sections';
   dlgDivPasUsesName         = 'Uses clause';
