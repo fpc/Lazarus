@@ -30,7 +30,7 @@
   How was the example created:
       Put a THTMLHelpDatabase on a form.
       Set AutoRegister to true.
-      Set KeywordPrefix to 'HTML/'                                an
+      Set KeywordPrefix to 'HTML/'
       Set BaseURL to 'file://html/'
 
       Put a THTMLBrowserHelpViewer on the form.
@@ -88,7 +88,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  HTMLHelpDatabase1.BaseURL:='/usr';
+  HTMLHelpDatabase1.BaseURL:='file://html';
 end;
 
 initialization
