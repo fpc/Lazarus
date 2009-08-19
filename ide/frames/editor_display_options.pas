@@ -28,7 +28,8 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
   Spin, LCLType, SynEdit, Controls, SynEditMouseCmds,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
-  editor_general_options, IDEProcs, SynGutterLineNumber, SynGutter;
+  editor_general_options, editor_color_options, IDEProcs, SynGutterLineNumber,
+  SynGutter;
 
 type
   { TEditorDisplayOptionsFrame }
@@ -47,6 +48,7 @@ type
     ExtraLineSpacingLabel: TLabel;
     GutterSeparatorIndexLabel: TLabel;
     MarginAndGutterGroupBox: TGroupBox;
+    RightMarginColorLink: TLabel;
     RightMarginComboBox: TComboBox;
     RightMarginLabel: TLabel;
     ShowLineNumbersCheckBox: TCheckBox;
@@ -62,6 +64,9 @@ type
       Shift: TShiftState);
     procedure ComboboxOnChange(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
+    procedure RightMarginColorLinkClick(Sender: TObject);
+    procedure RightMarginColorLinkMouseEnter(Sender: TObject);
+    procedure RightMarginColorLinkMouseLeave(Sender: TObject);
     procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -238,6 +243,28 @@ begin
       end;
 end;
 
+procedure TEditorDisplayOptionsFrame.RightMarginColorLinkClick(Sender: TObject);
+var
+  col: TEditorColorOptionsFrame;
+begin
+  col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
+  if col = nil then exit;
+  FDialog.OpenEditor(TEditorColorOptionsFrame);
+  col.SelectAhaColor(ahaRightMargin);
+end;
+
+procedure TEditorDisplayOptionsFrame.RightMarginColorLinkMouseEnter(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := True;
+  (Sender as TLabel).Font.Color := clRed;
+end;
+
+procedure TEditorDisplayOptionsFrame.RightMarginColorLinkMouseLeave(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := False;
+  (Sender as TLabel).Font.Color := clBlue;
+end;
+
 procedure TEditorDisplayOptionsFrame.ShowLineNumbersCheckBoxClick(Sender: TObject);
 begin
   ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
@@ -272,6 +299,7 @@ begin
   ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
+  RightMarginColorLink.Caption := dlgColorLink;
 
   with GeneralPage do
     AddPreviewEdit(DisplayPreview);
