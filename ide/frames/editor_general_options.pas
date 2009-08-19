@@ -25,7 +25,7 @@ unit editor_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
+  Classes, SysUtils, LResources, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, SynBeautifier;
 
