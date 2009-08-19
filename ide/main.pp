@@ -4772,10 +4772,11 @@ begin
             DumpExceptionBackTrace;
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-                          AnUnitInfo.ComponentName])+#13
+                          AnUnitInfo.ComponentName]) + LineEnding
                           +E.Message;
             if PropPath<>'' then
-              AText:=Atext+#13#13+'Path: '+PropPath;
+              AText := Atext + LineEnding + LineEnding + lisPathToInstance
+                     + LineEnding + PropPath;
             Result:=MessageDlg(ACaption, AText, mtError,
                        [mbAbort, mbRetry, mbIgnore], 0);
             if Result=mrAbort then exit;

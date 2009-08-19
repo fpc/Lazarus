@@ -463,6 +463,7 @@ resourcestring
   lisDeletingOfFileFailed = 'Deleting of file %s%s%s failed.';
   lisStreamingError = 'Streaming error';
   lisUnableToStreamT = 'Unable to stream %s:T%s.';
+  lisPathToInstance = 'Path to failed Instance:';
   lisResourceSaveError = 'Resource save error';
   lisUnableToAddResourceHeaderCommentToResourceFile = 'Unable to add resource '
     +'header comment to resource file %s%s%s%s.%sProbably a syntax error.';
