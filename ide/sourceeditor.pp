@@ -6515,8 +6515,11 @@ var
 Begin
   // this reloads the colors for the highlighter and other editor settings.
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    if Highlighters[h]<>nil then
+    if Highlighters[h]<>nil then begin
+      Highlighters[h].BeginUpdate;
       EditorOpts.GetHighlighterSettings(Highlighters[h]);
+      Highlighters[h].EndUpdate;
+    end;
   ReloadHighlighters;
   for i := 0 to EditorCount-1 do
     Editors[i].RefreshEditorSettings;
