@@ -578,7 +578,7 @@ type
     States: TSourceNotebookStates;
     // hintwindow stuff
     FHintWindow: THintWindow;
-    FHintTimer: TIdleTimer;
+    FMouseHintTimer: TIdleTimer;
 
 
     function CreateNotebook: Boolean;
@@ -3408,9 +3408,9 @@ begin
   BuildPopupMenu;
 
   // HintTimer
-  FHintTimer := TIdleTimer.Create(Self);
-  with FHintTimer do begin
-    Name:=Self.Name+'_HintTimer';
+  FMouseHintTimer := TIdleTimer.Create(Self);
+  with FMouseHintTimer do begin
+    Name:=Self.Name+'_MouseHintTimer';
     Interval := EditorOpts.AutoDelayInMSec;
     Enabled := False;
     AutoEnabled := False;
@@ -3448,7 +3448,7 @@ begin
   FreeThenNil(CodeContextFrm);
   FreeThenNil(SrcEditHintWindow);
   FreeThenNil(aCompletion);
-  FreeThenNil(FHintTimer);
+  FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
   SourceEditorWindow:=nil;
 
@@ -5512,12 +5512,10 @@ end;
 procedure TSourceNotebook.HideHint;
 begin
   //DebugLn(['TSourceNotebook.HideHint ']);
-  if FHintTimer<>nil then
+  if FMouseHintTimer<>nil then
   begin
-    FHintTimer.AutoEnabled := (EditorOpts.AutoToolTipSymbTools or
-                              EditorOpts.AutoToolTipExprEval)
-                              and Visible;
-    FHintTimer.Enabled:=false;
+    FMouseHintTimer.AutoEnabled := false;
+    FMouseHintTimer.Enabled:=false;
   end;
   if SourceCompletionTimer<>nil then
     SourceCompletionTimer.Enabled:=false;
@@ -6549,7 +6547,7 @@ Begin
   end;
 
   SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
-  FHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  FMouseHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
 
   Exclude(States,snWarnedFont);
   CheckFont;
@@ -6652,6 +6650,11 @@ Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X,Y: Integer);
 begin
   HideHint;
+  if not Visible then exit;
+  if (MainIDEInterface.ToolStatus=itDebugger) then
+    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipExprEval
+  else
+    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipSymbTools;
 end;
 
 procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -6689,8 +6692,8 @@ var
   AControl: TControl;
 begin
   //DebugLn(['TSourceNotebook.HintTimer ']);
-  FHintTimer.Enabled := False;
-  FHintTimer.AutoEnabled := False;
+  FMouseHintTimer.Enabled := False;
+  FMouseHintTimer.AutoEnabled := False;
   MousePos := Mouse.CursorPos;
   AControl:=FindLCLControl(MousePos);
   if (AControl=nil) or (GetParentForm(AControl)<>Self) then exit;
