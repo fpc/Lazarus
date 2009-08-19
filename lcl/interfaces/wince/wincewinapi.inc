@@ -1697,15 +1697,29 @@ var
   WindowInfo: PWindowInfo;
   Style, ExStyle: longint;
 
-{  procedure AdjustForBuddySize;
+  procedure AdjustForBuddySize;
+  {$IFDEF WinCE}
   var
     BuddyHandle: HWND;
-    BuddyWP: WINDOWPLACEMENT;
+    BuddyR: TRect;
   begin
+    BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
+    if (BuddyHandle<>HWND(nil)) then
+      if Windows.GetWindowRect(BuddyHandle, BuddyR) then
+        Width := BuddyR.Right - BuddyR.Left;
+  end;
+  {$ELSE}
+  var
+    BuddyHandle: HWND;
+    BuddyWP, WP: WINDOWPLACEMENT;
+  begin
+    WP.length := SizeOf(WP);
+    Windows.GetWindowPlacement(Handle, WP);
     BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
     if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
       then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
-  end;}
+  end;
+  {$ENDIF}
 
 begin
   Result := Boolean(Windows.GetWindowRect(Handle, R));
@@ -1760,8 +1774,8 @@ begin
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
 
-//  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
-//    AdjustForBuddySize;
+  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+    AdjustForBuddySize;
 end;
 
 {

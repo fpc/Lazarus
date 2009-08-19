@@ -409,7 +409,9 @@ begin
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-  MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+  // Some controls, like spins, may set suppressMove in AdaptBounds
+  if not suppressMove then
+    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
 
   LCLControlSizeNeedsUpdate(AWinControl, false);
 end;

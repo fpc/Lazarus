@@ -187,7 +187,7 @@ begin
   // Felipe: With this code, the edit part gets invisible
   // Is the same as win32 code, need to check why
 
-{  WinHandle := AWinControl.Handle;
+  WinHandle := AWinControl.Handle;
   BuddyHandle := Windows.SendMessage(WinHandle, UDM_GETBUDDY, 0, 0);
 
   GetWindowRect(WinHandle, @R);
@@ -196,7 +196,7 @@ begin
   MoveWindow(BuddyHandle, Left, Top, Width - WindowWidth + 2, Height, True);
   MoveWindow(WinHandle, Left + Width - WindowWidth, Top, WindowWidth, Height, True);
 
-  SuppressMove := True;}
+  SuppressMove := True;
 end;
 
 class function  TWinCEWSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
