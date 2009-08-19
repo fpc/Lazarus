@@ -3411,7 +3411,7 @@ begin
   FHintTimer := TTimer.Create(Self);
   with FHintTimer do begin
     Name:=Self.Name+'_HintTimer';
-    Interval := 1000;
+    Interval := EditorOpts.AutoDelayInMSec;
     Enabled := False;
     OnTimer := @HintTimer;
   end;
@@ -6543,6 +6543,7 @@ Begin
   end;
 
   SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  FHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
 
   Exclude(States,snWarnedFont);
   CheckFont;
