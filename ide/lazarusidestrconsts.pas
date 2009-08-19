@@ -1317,8 +1317,7 @@ resourcestring
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Word under Caret Highlight';
-  dlgMarkupWordFull = 'Current Word match word boundaries';
-  dlgMarkupWordFullLen = 'Ignore bounds for words longer than';
+  dlgMarkupWordFullLen = 'Match word boundaries for words up to this length:';
   dlgMarkupWordNoKeyword = 'Ignore Keywords';
   dlgMarkupWordTrim = 'Trim Spaces (when highlighting current selection)';
   dlgMarkupWordNoTimer = 'Disable Timer for Markup Current Word';

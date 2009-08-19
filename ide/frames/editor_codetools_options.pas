@@ -50,7 +50,6 @@ type
     ToolTipBevel: TBevel;
     MarkupWordDelayLabel: TLabel;
     MarkupWordNoTimerCheckBox: TCheckBox;
-    MarkupWordFullCheckBox: TCheckBox;
     MarkupWordFullLenSpin: TSpinEdit;
     MarkupWordFullLenLabel: TLabel;
     MarkupWordNoKeyword: TCheckBox;
@@ -171,7 +170,6 @@ begin
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
 
   MarkupWordGroupLabel.Caption := dlgMarkupGroup;
-  MarkupWordFullCheckBox.Caption := dlgMarkupWordFull;
   MarkupWordDelayLabel.Caption := dlgEdDelay;
   MarkupWordMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;;
   MarkupWordMaxLabel.Caption := '4.0 ' + DlgTimeSecondUnit;;
@@ -199,7 +197,6 @@ begin
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
-    MarkupWordFullCheckBox.Checked := MarkupCurWordFull;
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
     MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
     MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
@@ -222,7 +219,6 @@ begin
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
-    MarkupCurWordFull := MarkupWordFullCheckBox.Checked;
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
     MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;

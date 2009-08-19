@@ -811,7 +811,6 @@ type
 
     // Markup Current Word
     FMarkupCurWordTime: Integer;
-    FMarkupCurWordFull: Boolean;
     FMarkupCurWordFullLen: Integer;
     FMarkupCurWordNoKeyword: Boolean;
     FMarkupCurWordTrim: Boolean;
@@ -963,8 +962,6 @@ type
     // Markup Current Word
     property MarkupCurWordTime: Integer
       read FMarkupCurWordTime write FMarkupCurWordTime default 1500;
-    property MarkupCurWordFull: Boolean
-      read FMarkupCurWordFull write FMarkupCurWordFull default True;
     property MarkupCurWordFullLen: Integer
       read FMarkupCurWordFullLen write FMarkupCurWordFullLen default 3;
     property MarkupCurWordNoKeyword: Boolean
@@ -2321,7 +2318,6 @@ begin
   fHighlighterList := TEditOptLangList.Create;
 
   FMarkupCurWordTime := 1500;
-  FMarkupCurWordFull := True;
   FMarkupCurWordFullLen := 3;
   FMarkupCurWordNoKeyword := True;
   FMarkupCurWordTrim := True;
@@ -2608,12 +2604,13 @@ begin
     FMarkupCurWordTime :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
-    FMarkupCurWordFull :=
-      XMLConfig.GetValue(
-      'EditorOptions/Display/MarkupCurrentWord/FullWord', True);
     FMarkupCurWordFullLen :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/FullLen', 3);
+    // check deprecated value
+    if not XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/FullWord', True) then
+      FMarkupCurWordFullLen := 0;
+    XMLConfig.DeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord');
     FMarkupCurWordNoKeyword :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/NoKeyword', True);
@@ -2833,8 +2830,6 @@ begin
 
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Time',
       FMarkupCurWordTime, 1500);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullWord',
-      FMarkupCurWordFull, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/FullLen',
       FMarkupCurWordFullLen, 3);
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/NoKeyword',
@@ -3749,7 +3744,7 @@ begin
       MarkCaret.WaitTime := 0
     else
       MarkCaret.WaitTime := FMarkupCurWordTime;
-    MarkCaret.FullWord := FMarkupCurWordFull;
+    MarkCaret.FullWord := FMarkupCurWordFullLen > 0;
     MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
     MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
     MarkCaret.Trim := FMarkupCurWordTrim;
@@ -3829,8 +3824,9 @@ begin
       FMarkupCurWordTime := 1500
     else
       FMarkupCurWordTime := MarkCaret.WaitTime;
-    FMarkupCurWordFull := MarkCaret.FullWord;
     FMarkupCurWordFullLen := MarkCaret.FullWordMaxLen;
+    if not MarkCaret.FullWord then
+      FMarkupCurWordFullLen := 0;
     FMarkupCurWordNoKeyword := MarkCaret.IgnoreKeywords;
     FMarkupCurWordTrim := MarkCaret.Trim;
   end;
