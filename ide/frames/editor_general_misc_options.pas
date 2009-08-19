@@ -25,10 +25,9 @@ unit editor_general_misc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
-  StdCtrls, SynEdit, Controls, ExtCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  editor_general_options, SynEditTextTrimmer;
+  LResources, LCLProc, StdCtrls, SynEdit, ExtCtrls, EditorOptions,
+  LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, editor_general_options,
+  SynEditTextTrimmer;
 
 type
   { TEditorGeneralMiscOptionsFrame }

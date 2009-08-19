@@ -25,12 +25,11 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, LCLIntf,
+  Classes, LResources, StdCtrls, SynEdit, LCLIntf,
   SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges, SynEditMouseCmds,
-  ExtCtrls, Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
+  ExtCtrls, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
-  IDEProcs, ColorBox, ComCtrls, SynEditHighlighter, math,
-  typinfo;
+  IDEProcs, ColorBox, ComCtrls, SynEditHighlighter, typinfo;
 
 type
 

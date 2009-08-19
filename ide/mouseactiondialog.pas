@@ -5,8 +5,8 @@ unit MouseActionDialog;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ButtonPanel, Spin, SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
+  Classes, LResources, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin,
+  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 var
   ButtonName: Array [TMouseButton] of String;

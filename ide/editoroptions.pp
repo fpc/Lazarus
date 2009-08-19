@@ -50,10 +50,9 @@ uses
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
-  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
+  IDECommands, SrcEditorIntf, IDEOptionsIntf,
   // IDE
-  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf, typinfo, Dialogs;
+  LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
 
 type
   TPreviewPasSyn = TSynFreePascalSyn;
@@ -1027,8 +1026,7 @@ function ColorSchemeFactory: TColorSchemeFactory;
 
 implementation
 
-uses
-  IDEContextHelpEdit;
+
 
 const
   ValidAttribChars = ['a'..'z', 'A'..'Z', '_', '0'..'9'];

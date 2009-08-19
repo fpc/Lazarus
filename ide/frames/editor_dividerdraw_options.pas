@@ -25,9 +25,9 @@ unit editor_dividerdraw_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls, Graphics,
-  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
-  SynEditHighlighter, Spin, ComCtrls, ColorBox, CheckLst, Buttons;
+  Classes, SysUtils, LResources, StdCtrls, ExtCtrls, Graphics,
+  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
+  SynEditHighlighter, Spin, ColorBox, CheckLst;
 
 type
 

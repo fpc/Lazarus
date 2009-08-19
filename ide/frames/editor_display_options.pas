@@ -25,11 +25,10 @@ unit editor_display_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
-  Spin, LCLType, SynEdit, Controls, SynEditMouseCmds,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
-  editor_general_options, editor_color_options, IDEProcs, SynGutterLineNumber,
-  SynGutter;
+  Classes, SysUtils, LResources, Graphics, Dialogs, StdCtrls,
+  Spin, LCLType, SynEdit, SynEditMouseCmds, EditorOptions, LazarusIDEStrConsts,
+  IDEOptionsIntf, editor_general_options, editor_color_options, IDEProcs,
+  SynGutterLineNumber, SynGutter;
 
 type
   { TEditorDisplayOptionsFrame }
