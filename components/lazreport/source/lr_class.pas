@@ -2384,36 +2384,44 @@ type
   TWordBreaks = string;
 
 const
-  gl: set of Char = ['À', 'Å', '¨', 'È', 'Î', 'Ó', 'Û', 'Ý', 'Þ', 'ß'];
-  r_sogl: set of Char = ['Ú', 'Ü'];
+  gl:string='Ã€Ã…Â¨ÃˆÃŽÃ“Ã›ÃÃžÃŸÃ Ã¥Ã¨Ã®Ã³Ã»Ã½Ã¾';
+  r_sogl:string='ÃšÃœÃºÃ¼';
   spaces: set of Char = [' ', '.', ',', '-'];
 
-function BreakWord(s: String): TWordBreaks;
+function BreakWord(s: string): TWordBreaks;
+
+  function IsCharIn(i:integer; target:string):boolean;
+  begin
+    result := Pos(UTF8Copy(s, i, 1), target)>0;
+  end;
+
 var
-  i: Integer;
-  CanBreak: Boolean;
+  i,len: Integer;
+  IsCh1,IsCh2,CanBreak: Boolean;
 begin
   Result := '';
-  s := AnsiUpperCase(s);
-  if Length(s) > 4 then
+  Len := UTF8Length(s);
+  if  Len > 4 then
   begin
     i := 2;
     repeat
       CanBreak := False;
-      if s[i] in gl then
+      IsCh1 := IsCharIn(i + 1,gl);
+      IsCh2 := IsCharIn(i + 2,gl);
+      if IsCharIn(i,gl) then
       begin
-        if (s[i + 1] in gl) or (s[i + 2] in gl) then CanBreak := True;
+        if IsCh1 or IsCh2 then
+          CanBreak := True;
       end
       else
       begin
-        if not (s[i + 1] in gl) and not (s[i + 1] in r_sogl) and
-           (s[i + 2] in gl) then
+        if not IsCh1 and not IsCharIn(i + 1,r_sogl) and IsCh2 then
           CanBreak := True;
       end;
       if CanBreak then
-        Result := Result + Chr(i);
+        Result := Result + Chr(UTF8CharToByteIndex(pchar(s),length(s),i));
       Inc(i);
-    until i > Length(s) - 2;
+    until i > Len - 2;
   end;
   {$IFDEF DebugLR}
   debugLn('        breakword: s=',dbgstr(s),' result=',dbgstr(result));
