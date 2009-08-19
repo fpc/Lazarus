@@ -1,8 +1,12 @@
 {%MainUnit unit1.pas}
 type
-  TMyRecord = record
+  TMyRecord1 = record
 
-  PMyRecord = ^TMyRecord;
+  PMyRecord1 = ^TMyRecord1;
+
+  TMyRecord2 = packed record
+
+  TMyRecord3 = bitpacked record
 
 procedure Do1;
 begin

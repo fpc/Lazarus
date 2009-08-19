@@ -10,6 +10,7 @@ uses
 implementation
 
 {$IFDEF record} {$I record1.inc} {$ENDIF}
+{$IFDEF class} {$I class1.inc} {$ENDIF}
 
 {$IFDEF procedurebegin} {$I procedurebegin1.inc} {$ENDIF}
 {$IFDEF procedurebeginend} {$I procedurebeginend1.inc} {$ENDIF}
