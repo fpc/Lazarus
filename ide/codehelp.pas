@@ -2189,9 +2189,9 @@ begin
     if IsHTML then
       HTMLHint:='<HTML><BODY>'+HTMLHint+'</BODY></HTML>';
   end;
-  { $ifdef VerboseHints}
+  {$ifdef VerboseHints}
   DebugLn(['TCodeHelpManager.GetHint END Hint="',HTMLHint,'"']);
-  { $endif}
+  {$endif}
 end;
 
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
