@@ -111,7 +111,7 @@
     <Node11 Name="EditorKeymappingOptionsFrame" Path="Editor_Options" HasHelp="True" IsRoot="True"/>
     <Node12 Name="EditorColorOptionsFrame" Path="Editor_Options" HasHelp="True" IsRoot="True"/>
     <Node13 Name="EditorCodetoolsOptionsFrame" Path="Editor_Options" HasHelp="True" IsRoot="True"/>
-    <Node14 Name="EditorCodefoldingOptionsFrame" Path="Editor_Options" HasHelp="True" IsRoot="True"/>
+    <Node14 Name="EditorCodefoldingOptionsFrame" Path="Editor_Options_Code_Folding" HasHelp="True" IsRoot="True"/>
     <Node15 Name="CodetoolsGeneralOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
     <Node16 Name="CodetoolsCodeCreationOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
     <Node17 Name="CodetoolsWordPolicyOptionsFrame" Path="Codetools_Options" HasHelp="True" IsRoot="True"/>
