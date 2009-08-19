@@ -1550,8 +1550,7 @@ var
     if NewComponentClass = nil then exit;
 
     // check circles
-    if LookupRoot.InheritsFrom(NewComponentClass) or
-       TheFormEditor.HasCircularDependencies(NewComponentClass, LookupRoot) then
+    if TheFormEditor.ClassDependsOnComponent(NewComponentClass, LookupRoot) then
     begin
       IDEMessageDialog(lisInvalidCircle,
         Format(lisIsAThisCircleDependencyIsNotAllowed, [dbgsName(LookupRoot),

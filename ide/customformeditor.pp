@@ -256,8 +256,10 @@ each control that's dropped onto the form
                                  var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
                                        const NewName, NewClassName: shortstring);
-    function HasCircularDependencies(AClass: TComponentClass;
+    function ClassDependsOnComponent(AClass: TComponentClass;
                                      AComponent: TComponent): Boolean;
+    function ComponentDependsOnClass(AComponent: TComponent;
+                                     AClass: TComponentClass): Boolean;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -1845,32 +1847,36 @@ begin
   AComponent.Name:=NewName;
 end;
 
-function TCustomFormEditor.HasCircularDependencies(AClass: TComponentClass;
+function TCustomFormEditor.ClassDependsOnComponent(AClass: TComponentClass;
   AComponent: TComponent): Boolean;
+{ Check if AClass uses AComponent.
 
-  function HasChild(WhatToTraverse: TComponent; WhatToSearch: TClass): Boolean;
-  var
-    i: integer;
-  begin
-    Result := False;
-    for i := 0 to WhatToTraverse.ComponentCount - 1 do
-    begin
-      Result := WhatToTraverse.Components[i].InheritsFrom(WhatToSearch) or
-        HasChild(WhatToTraverse.Components[i], WhatToSearch);
-      if Result then Exit;
-    end;
-  end;
-
+  For example:
+    Add frame2 to frame1 ( frame1 uses frame2 )
+    Add frame3 to frame2 ( frame2 uses frame3 => frame 2 uses frame1)
+    Add frame1 to frame3 => circle
+}
 var
   AnUnitInfo: TUnitInfo;
-  Cmp: TComponent;
 begin
-  Result := False;
+  if AClass.InheritsFrom(AComponent.ClassType) then exit(true);
   AnUnitInfo := Project1.UnitWithComponentClass(AClass);
-  if AnUnitInfo = nil then Exit;
-  Cmp := AnUnitInfo.Component;
-  if Cmp = nil then Exit;
-  Result := HasChild(Cmp, AComponent.ClassType);
+  if AnUnitInfo = nil then Exit(false);
+  Result := ComponentDependsOnClass(AnUnitInfo.Component,
+                                    TComponentClass(AComponent.ClassType));
+end;
+
+function TCustomFormEditor.ComponentDependsOnClass(AComponent: TComponent;
+  AClass: TComponentClass): Boolean;
+var
+  i: Integer;
+begin
+  if AComponent is AClass then exit(true);
+  if AComponent<>nil then
+    for i:=0 to AComponent.ComponentCount-1 do
+      if ComponentDependsOnClass(AComponent.Components[i],AClass) then
+        exit(true);
+  Result:=false;
 end;
 
 function TCustomFormEditor.GetAncestorLookupRoot(AComponent: TComponent
