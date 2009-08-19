@@ -251,16 +251,6 @@ examples/gridexamples/grid_semaphor/example/units
 examples/gridexamples/grid_semaphor/units
 examples/gridexamples/gridcelleditor/*.bak
 examples/gridexamples/gridcelleditor/units
-examples/help/*.bak
-examples/help/units
-examples/helpforpackage/*.bak
-examples/helpforpackage/html/*.bak
-examples/helpforpackage/html/pkghelpdemounit1/*.bak
-examples/helpforpackage/html/pkghelpdemounit1/units
-examples/helpforpackage/html/units
-examples/helpforpackage/units
-examples/helpforpackage/xml/*.bak
-examples/helpforpackage/xml/units
 examples/helphtml/*.bak
 examples/helphtml/html/*.bak
 examples/helphtml/html/units
