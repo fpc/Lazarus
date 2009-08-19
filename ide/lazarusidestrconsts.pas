@@ -4445,6 +4445,7 @@ resourcestring
     +'exist. Values were not checked.';
   lisAppendShortDescriptionToLongDescription = 'Append short description to '
     +'long description';
+  lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
 
 implementation
 

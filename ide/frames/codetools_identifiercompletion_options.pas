@@ -60,7 +60,7 @@ procedure TCodetoolsIndentifierComplietionOptionsFrame.Setup(
 begin
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
-  ICAutoStartAfterPointCheckBox.Caption:=dlgEdIdComlet;
+  ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
 end;
 
 procedure TCodetoolsIndentifierComplietionOptionsFrame.ReadSettings(
