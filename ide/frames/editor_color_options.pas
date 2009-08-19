@@ -406,6 +406,7 @@ begin
   if Sender = UseSyntaxHighlightCheckBox then
   begin
     SetPreviewSynInAllPreviews;
+    InvalidatePreviews;
     Exit;
   end;
 
@@ -982,8 +983,11 @@ begin
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
       begin
-        EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a],
-                                   GetCurColorScheme(PreviewSyn.LanguageName));
+        if UseSyntaxHighlightCheckBox.Checked and (PreviewSyn <> nil) then
+          EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a],
+                                     GetCurColorScheme(PreviewSyn.LanguageName))
+        else
+          EditorOpts.SetMarkupColors(nil, PreviewEdits[a]);
         PreviewEdits[a].Invalidate;
       end;
 end;

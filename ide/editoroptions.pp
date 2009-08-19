@@ -3637,7 +3637,7 @@ begin
   // Find current color scheme for default colors
   if (SynColorScheme = '') and (aSynEd.Highlighter <> nil) then
     SynColorScheme := ReadColorScheme(aSynEd.Highlighter.LanguageName);
-  if (SynColorScheme <> '') then
+  if (SynColorScheme <> '') then begin
     try
       Scheme := GetColorScheme(SynColorScheme);
       if (Scheme.Default.BG = clNone) or (Scheme.Default.BG = clDefault)
@@ -3647,7 +3647,14 @@ begin
       then aSynEd.Font.Color := clBlack
       else aSynEd.Font.Color := Scheme.Default.FG;
     except
+      aSynEd.Color := clWhite;
+      aSynEd.Font.Color := clBlack;
     end;
+  end
+  else begin
+    aSynEd.Color := clWhite;
+    aSynEd.Font.Color := clBlack;
+  end;
 
   Attri := GetSynAttributeByAha(aSynEd.Highlighter, ahaGutter);
   if Attri <> nil then
