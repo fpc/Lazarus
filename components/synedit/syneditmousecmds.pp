@@ -595,9 +595,9 @@ procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
 var
   new: TSynEditMouseAction;
 begin
-  new := Add;
+  inc(FAssertLock);
   try
-    inc(FAssertLock);
+    new := Add;
     with new do begin
       Command := ACmd;
       MoveCaret := AMoveCaret;
