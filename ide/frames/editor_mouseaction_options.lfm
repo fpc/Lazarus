@@ -101,16 +101,16 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     ParentFont = False
   end
   object TextDividerRight: TBevel[6]
-    AnchorSideLeft.Control = GutterDividerLabel
+    AnchorSideLeft.Control = TextDividerLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TextDividerLabel
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 189
+    Left = 177
     Height = 3
     Top = 157
-    Width = 418
+    Width = 430
     Anchors = [akTop, akLeft, akRight]
   end
   object BottomDivider: TBevel[7]
