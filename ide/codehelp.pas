@@ -1141,6 +1141,7 @@ begin
     Result:=chprFailed;
     try
       ReadXMLFile(ADocFile.Doc,MemStream,CurFilename);
+      ADocFile.DocErrorMsg:='';
       Result:=chprSuccess;
     except
       on E: EXMLReadError do begin
