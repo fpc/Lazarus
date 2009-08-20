@@ -180,9 +180,7 @@ type
   end;
 
  type
-
   { Default cell editor for TStringGrid }
-
   { TStringCellEditor }
 
   TStringCellEditor=class(TCustomMaskEdit)
@@ -308,6 +306,10 @@ type
   TUserCheckBoxBitmapEvent =
     procedure(Sender: TObject; const CheckedState: TCheckboxState;
               ABitmap: TBitmap) of object;
+
+  TValidateEntryEvent =
+    procedure(sender: TObject; aCol, aRow: Integer;
+              const OldValue: string; var NewValue: String) of object;
 
   { TVirtualGrid }
 
@@ -602,6 +604,7 @@ type
     FEditor: TWinControl;
     FEditorHidingCount: Integer;
     FEditorMode: Boolean;
+    FEditorOldValue: string;
     FEditorShowing: Boolean;
     FEditorKey: Boolean;
     FEditorOptions: Integer;
@@ -622,6 +625,7 @@ type
     FOnPickListSelect: TNotifyEvent;
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
+    FOnValidateEntry: TValidateEntryEvent;
     FGridLineColor: TColor;
     FFixedcolor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
     FFocusRectVisible: boolean;
@@ -699,7 +703,7 @@ type
     procedure DrawXORVertLine(X: Integer);
     procedure DrawXORHorzLine(Y: Integer);
     function  EditorCanProcessKey(var Key: TUTF8Char): boolean;
-    procedure EditorGetValue;
+    function  EditorGetValue(validate:boolean=false): boolean;
     procedure EditorPos;
     procedure EditorShowChar(Ch: TUTF8Char);
     procedure EditorSetMode(const AValue: Boolean);
@@ -935,6 +939,7 @@ type
     procedure UpdateSelectionRange;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure UpdateBorderStyle;
+    function  ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; virtual;
     procedure VisualChange; virtual;
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
     procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
@@ -1019,6 +1024,7 @@ type
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
+    property OnValidateEntry: TValidateEntryEvent read FOnValidateEntry write FOnValidateEntry;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -1533,6 +1539,7 @@ type
     property OnStartDrag;
     property OnTopLeftChanged;
     property OnUTF8KeyPress;
+    property OnValidateEntry;
     property OnContextPopup;
   end;
 
@@ -5784,10 +5791,12 @@ function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean
 var
   OldRange: TRect;
 begin
+
   Result:=TryMoveSelection(Relative,DCol,DRow);
   if (not Result) then Exit;
 
-  EditorGetValue;
+  Result:=EditorGetValue(true);
+  if (not Result) then Exit;
 
   {$IfDef dbgGrid}DebugLn(' MoveExtend INIT FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
   BeforeMoveSelection(DCol,DRow);
@@ -5955,6 +5964,24 @@ begin
     VisualChange;
     if CheckTopLeft(Col, Row, True, True) then
       VisualChange;
+  end;
+end;
+
+function TCustomGrid.ValidateEntry(const ACol, ARow: Integer;
+  const OldValue:string; var NewValue:string): boolean;
+begin
+  result := true;
+  if assigned(OnValidateEntry) then begin
+    try
+      OnValidateEntry(Self, ACol, ARow, OldValue, NewValue);
+    except
+      on E:Exception do begin
+        result := false;
+        if FGridState=gsSelecting then
+          FGridState := gsNormal;
+        Application.HandleException(E);
+      end;
+    end;
   end;
 end;
 
@@ -6152,11 +6179,31 @@ begin
     inherited EditingDone;
 end;
 
-procedure TCustomGrid.EditorGetValue;
+function TCustomGrid.EditorGetValue(validate:boolean=false): boolean;
+var
+  CurValue,NewValue: string;
 begin
+  result := true;
   if not (csDesigning in ComponentState) and (Editor<>nil) and Editor.Visible then begin
-    EditorDoGetValue;
-    EditorHide;
+
+    if validate then begin
+      CurValue := GetEditText(FCol,FRow);
+      NewValue := CurValue;
+      result := ValidateEntry(FCol,FRow,FEditorOldValue,NewValue);
+      if (CurValue<>NewValue) then begin
+        SetEditText(FCol,FRow,NewValue);
+        if result then
+          EditorHide
+        else
+          EditorDoSetValue;
+        exit;
+      end;
+    end;
+
+    if result then begin
+      EditorDoGetValue;
+      EditorHide;
+    end;
   end;
 end;
 
@@ -6213,6 +6260,7 @@ begin
   begin
     {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;
+    FEditorOldValue := GetEditText(FCol,FRow);
     FEditorShowing:=True;
     doEditorShow;
     FEditorShowing:=False;
