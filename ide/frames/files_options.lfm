@@ -1,17 +1,19 @@
 inherited FilesOptionsFrame: TFilesOptionsFrame
-  Height = 403
-  Width = 534
-  ClientHeight = 403
-  ClientWidth = 534
+  Height = 462
+  Width = 569
+  ClientHeight = 462
+  ClientWidth = 569
   TabOrder = 0
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 353
+  DesignTop = 175
   object MaxRecentOpenFilesLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Height = 14
-    Width = 127
+    Left = 0
+    Height = 18
+    Top = 0
+    Width = 165
     Caption = 'MaxRecentOpenFilesLabel'
     ParentColor = False
   end
@@ -19,9 +21,10 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MaxRecentOpenFilesComboBox
     AnchorSideTop.Side = asrBottom
-    Height = 14
-    Top = 41
-    Width = 135
+    Left = 0
+    Height = 18
+    Top = 53
+    Width = 175
     BorderSpacing.Top = 6
     Caption = 'MaxRecentProjectFilesLabel'
     ParentColor = False
@@ -32,11 +35,12 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 21
-    Top = 14
-    Width = 534
+    Left = 0
+    Height = 29
+    Top = 18
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 13
+    ItemHeight = 0
     Items.Strings = (
       '5'
       '10'
@@ -45,7 +49,6 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       '25'
       '30'
     )
-    MaxLength = -1
     TabOrder = 0
   end
   object MaxRecentProjectFilesComboBox: TComboBox[3]
@@ -54,11 +57,12 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 21
-    Top = 55
-    Width = 534
+    Left = 0
+    Height = 29
+    Top = 71
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 13
+    ItemHeight = 0
     Items.Strings = (
       '5'
       '10'
@@ -67,7 +71,6 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       '25'
       '30'
     )
-    MaxLength = -1
     TabOrder = 1
   end
   object OpenLastProjectAtStartCheckBox: TCheckBox[4]
@@ -75,9 +78,10 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Control = MaxRecentProjectFilesComboBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Height = 19
-    Top = 82
-    Width = 188
+    Left = 0
+    Height = 22
+    Top = 106
+    Width = 238
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
     TabOrder = 2
@@ -87,9 +91,10 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Height = 19
-    Top = 101
-    Width = 165
+    Left = 0
+    Height = 22
+    Top = 128
+    Width = 213
     Caption = 'ShowCompileDialogCheckBox'
     TabOrder = 3
   end
@@ -99,26 +104,26 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 54
-    Top = 126
-    Width = 534
+    Top = 156
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'LazarusDirGroupBox'
-    ClientHeight = 36
-    ClientWidth = 530
+    ClientHeight = 35
+    ClientWidth = 565
     TabOrder = 4
     object LazarusDirComboBox: TComboBox
       AnchorSideLeft.Control = LazarusDirGroupBox
       AnchorSideRight.Control = LazarusDirButton
       Left = 6
-      Height = 21
+      Height = 29
       Top = 3
-      Width = 493
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      ItemHeight = 13
-      MaxLength = -1
+      ItemHeight = 0
       TabOrder = 0
       Text = 'LazarusDirComboBox'
     end
@@ -130,8 +135,8 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = LazarusDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 499
-      Height = 21
+      Left = 534
+      Height = 29
       Top = 3
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -147,25 +152,25 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 54
-    Top = 180
-    Width = 534
+    Top = 210
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
     Caption = 'CompilerPathGroupBox'
-    ClientHeight = 36
-    ClientWidth = 530
+    ClientHeight = 35
+    ClientWidth = 565
     TabOrder = 5
     object CompilerPathComboBox: TComboBox
       AnchorSideLeft.Control = CompilerPathGroupBox
       AnchorSideRight.Control = CompilerPathButton
       Left = 6
-      Height = 21
+      Height = 29
       Top = 3
-      Width = 493
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      ItemHeight = 13
-      MaxLength = -1
+      ItemHeight = 0
       TabOrder = 0
       Text = 'CompilerPathComboBox'
     end
@@ -175,8 +180,8 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = CompilerPathComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 499
-      Height = 21
+      Left = 534
+      Height = 29
       Top = 3
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -192,25 +197,25 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 54
-    Top = 234
-    Width = 534
+    Top = 264
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
     Caption = 'FPCSourceDirGroupBox'
-    ClientHeight = 36
-    ClientWidth = 530
+    ClientHeight = 35
+    ClientWidth = 565
     TabOrder = 6
     object FPCSourceDirComboBox: TComboBox
       AnchorSideLeft.Control = FPCSourceDirGroupBox
       AnchorSideRight.Control = FPCSourceDirButton
       Left = 6
-      Height = 21
+      Height = 29
       Top = 3
-      Width = 493
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      ItemHeight = 13
-      MaxLength = -1
+      ItemHeight = 0
       TabOrder = 0
       Text = 'FPCSourceDirComboBox'
     end
@@ -220,8 +225,8 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FPCSourceDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 499
-      Height = 21
+      Left = 534
+      Height = 29
       Top = 3
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -237,25 +242,25 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 54
-    Top = 288
-    Width = 534
+    Top = 318
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
     Caption = 'MakePathGroupBox'
-    ClientHeight = 36
-    ClientWidth = 530
+    ClientHeight = 35
+    ClientWidth = 565
     TabOrder = 7
     object MakePathComboBox: TComboBox
       AnchorSideLeft.Control = MakePathGroupBox
       AnchorSideRight.Control = MakePathButton
       Left = 6
-      Height = 21
+      Height = 29
       Top = 3
-      Width = 493
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      ItemHeight = 13
-      MaxLength = -1
+      ItemHeight = 0
       TabOrder = 0
       Text = 'MakePathComboBox'
     end
@@ -265,8 +270,8 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MakePathComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 499
-      Height = 21
+      Left = 534
+      Height = 29
       Top = 3
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -282,25 +287,25 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 54
-    Top = 342
-    Width = 534
+    Top = 372
+    Width = 569
     Anchors = [akTop, akLeft, akRight]
     Caption = 'TestBuildDirGroupBox'
-    ClientHeight = 36
-    ClientWidth = 530
+    ClientHeight = 35
+    ClientWidth = 565
     TabOrder = 8
     object TestBuildDirComboBox: TComboBox
       AnchorSideLeft.Control = TestBuildDirGroupBox
       AnchorSideRight.Control = TestBuildDirButton
       Left = 6
-      Height = 21
+      Height = 29
       Top = 3
-      Width = 493
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      ItemHeight = 13
-      MaxLength = -1
+      ItemHeight = 0
       TabOrder = 0
       Text = 'TestBuildDirComboBox'
     end
@@ -310,8 +315,8 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = TestBuildDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 499
-      Height = 21
+      Left = 534
+      Height = 29
       Top = 3
       Width = 25
       Anchors = [akTop, akRight, akBottom]

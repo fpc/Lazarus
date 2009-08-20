@@ -35,7 +35,7 @@ Gtk2, GLib2, GtkDef,
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages,
+  CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages, LCLProc,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses,
   Gtk2WSStdCtrls;
@@ -67,17 +67,22 @@ implementation
 uses
   GtkWSControls, GtkProc;
 
+const
+  gtk2CLBState = 0; // byte
+  gtk2CLBText = 1; // PGChar
+  gtk2CLBDisabled = 3; // gboolean
+
 { TGtk2WSCheckListBox }
 
 procedure Gtk2WS_CheckListBoxDataFunc(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; data: Pointer); cdecl;
 var
   b: byte;
-  ADisabled: Boolean;
+  ADisabled: gboolean;
   AValue: TCheckBoxState;
 begin
-  gtk_tree_model_get(tree_model, iter, [0, @b, -1]);
-  gtk_tree_model_get(tree_model, iter, [3, @ADisabled, -1]);
+  gtk_tree_model_get(tree_model, iter, [gtk2CLBState, @b, -1]);
+  gtk_tree_model_get(tree_model, iter, [gtk2CLBDisabled, @ADisabled, -1]);
   AValue := TCheckBoxState(b); // TCheckBoxState is 4 byte
   g_object_set(cell, 'inconsistent', [gboolean(AValue = cbGrayed), nil]);
   if AValue <> cbGrayed then
@@ -180,7 +185,7 @@ begin
   // Text Column
   renderer := gtk_cell_renderer_text_new();
   column := gtk_tree_view_column_new_with_attributes(
-                                       'LISTITEMS', renderer, ['text', 1, nil]);
+                             'LISTITEMS', renderer, ['text', gtk2CLBText, nil]);
   gtk_tree_view_append_column(GTK_TREE_VIEW(TreeViewWidget), column);
   gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), True);
 
@@ -210,6 +215,7 @@ var
   TreeView: PGtkTreeView;
   WidgetInfo: PWidgetInfo;
   ListStore: PGtkTreeModel;
+  Disabled: gboolean;
 begin
   Result := True;
   WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
@@ -218,8 +224,8 @@ begin
   ListStore := gtk_tree_view_get_model(TreeView);
   if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, AIndex) then
   begin
-    gtk_tree_model_get(ListStore, @Iter, [3, @Result, -1]);
-    Result := not Result;
+    gtk_tree_model_get(ListStore, @Iter, [gtk2CLBDisabled, @Disabled, -1]);
+    Result := not Disabled;
   end;
 end;
 
@@ -240,7 +246,7 @@ begin
   ListStore := gtk_tree_view_get_model(TreeView);
   if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, AIndex) then
   begin
-    gtk_tree_model_get(ListStore, @Iter, [0, @b, -1]);
+    gtk_tree_model_get(ListStore, @Iter, [gtk2CLBState, @b, -1]);
     Result := TCheckBoxState(b);
   end;
 end;
@@ -253,13 +259,16 @@ var
   TreeView: PGtkTreeView;
   WidgetInfo: PWidgetInfo;
   ListStore: PGtkTreeModel;
+  Disabled: gboolean;
 begin
   WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
 
   TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
   ListStore := gtk_tree_view_get_model(TreeView);
-  if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, AIndex) then
-    gtk_list_store_set(ListStore, @Iter, [3, not AEnabled, -1]);
+  if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, AIndex) then begin
+    Disabled:=not AEnabled;
+    gtk_list_store_set(ListStore, @Iter, [gtk2CLBDisabled, Disabled, -1]);
+  end;
 end;
 
 class procedure TGtk2WSCustomCheckListBox.SetState(
@@ -277,7 +286,7 @@ begin
   ListStore := gtk_tree_view_get_model(TreeView);
   if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, AIndex) then
   begin
-    gtk_list_store_set(ListStore, @Iter, [0, Byte(AState), -1]);
+    gtk_list_store_set(ListStore, @Iter, [gtk2CLBState, Byte(AState), -1]);
   end;
 end;
 

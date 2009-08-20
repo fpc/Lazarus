@@ -482,7 +482,7 @@ function UnitRenameReferencesActionNameToType(const Action: string): TUnitRename
 
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
-  const ErrorCaption, ErrorMsg: string): boolean;
+  const ErrorCaption, ErrorMsg: string; SearchInPath: boolean = false): boolean;
 function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 function SimpleDirectoryCheck(const OldDir, NewDir,
@@ -549,12 +549,22 @@ begin
 end;
 
 function CheckExecutable(const OldFilename,
-  NewFilename: string; const ErrorCaption, ErrorMsg: string): boolean;
+  NewFilename: string; const ErrorCaption, ErrorMsg: string;
+  SearchInPath: boolean): boolean;
+var
+  Filename: String;
 begin
   Result:=true;
   if not CheckFileChanged(OldFilename,NewFilename) then exit;
-  if (not FileIsExecutable(NewFilename)) then begin
-    if MessageDlg(ErrorCaption,Format(ErrorMsg,[NewFilename]),
+  Filename:=NewFilename;
+  if (not FilenameIsAbsolute(NewFilename)) and SearchInPath then begin
+    Filename:=FindDefaultExecutablePath(NewFilename);
+    if Filename='' then
+      Filename:=NewFilename;
+  end;
+
+  if (not FileIsExecutable(Filename)) then begin
+    if MessageDlg(ErrorCaption,Format(ErrorMsg,[Filename]),
       mtWarning,[mbIgnore,mbCancel],0)=mrCancel
     then begin
       Result:=false;

@@ -106,7 +106,7 @@ begin
           lisEnvOptDlgInvalidCompilerFilename,
           lisEnvOptDlgInvalidCompilerFilenameMsg);
       end else if Sender=MakePathButton then begin
-        //check make filename
+        // check make filename
         SetComboBoxText(MakePathComboBox,AFilename);
         CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
           lisEnvOptDlgInvalidMakeFilename,
@@ -184,7 +184,8 @@ begin
   with MakePathComboBox.Items do
   begin
     BeginUpdate;
-    Add('/usr/bin/make');
+    Add('make');
+    Add('gmake');
     EndUpdate;
   end;
 
@@ -221,7 +222,8 @@ begin
     Exit;
   // check make filename
   if not CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
-    lisEnvOptDlgInvalidMakeFilename,lisEnvOptDlgInvalidMakeFilenameMsg) then 
+    lisEnvOptDlgInvalidMakeFilename,lisEnvOptDlgInvalidMakeFilenameMsg,true)
+  then
     Exit;
   // check test directory
   if not CheckTestDir then 
