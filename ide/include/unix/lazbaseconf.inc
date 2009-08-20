@@ -73,7 +73,11 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
+  {$IFDEF FreeBSD}
+  Result:=FindDefaultExecutablePath('gmake');
+  {$ELSE}
   Result:=FindDefaultExecutablePath('make');
+  {$ENDIF}
 end;
 
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
