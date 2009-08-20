@@ -1180,19 +1180,24 @@ begin
               BN_CLICKED:   LMessage.Msg := LM_CLICKED;
               BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
             end
+          // TCustomMemo and TCustomFloatSpinEdit are also TCustomEdit
+          // so dont check first only for TCustomEdit
+          // Fixes bug http://bugs.freepascal.org/view.php?id=14378
           else if (lWinControl is TCustomEdit) then
-            case Hi(WParam) of
-              EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
-            end
-          else if (lWinControl is TCustomFloatSpinEdit) then
-            case Hi(WParam) of
-              EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
-            end
-          else if (lWinControl is TCustomMemo) then
-            case Hi(WParam) of
+          begin
+            if (lWinControl is TCustomMemo) then
+            case HIWORD(WParam) of
               // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
               EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
             end
+            else
+            case HIWORD(WParam) of
+              EN_CHANGE:
+                if (lWinControl is TCustomFloatSpinEdit) then
+                  HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl))
+                else LMessage.Msg := CM_TEXTCHANGED;
+            end;
+          end
           else if (lWinControl is TCustomListBox) then
             case Hi(WParam) of
               LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
