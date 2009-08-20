@@ -47,7 +47,21 @@ end;
 
 procedure TCodeBlocksTest.TestCompleteBlocks;
 begin
-  CompareComplete('ifbeginelse1.inc','6 28 ifbeginelse fpcunit', 'ifbeginelse1.result');
+  CompareComplete('ifbeginelse1.inc','6 28 ifbeginelse fpcunit', 'ifbeginelse1_result.inc');
+  CompareComplete('whilebegin1.inc','5 10 whilebegin fpcunit', 'whilebegin1_result.inc');
+  CompareComplete('beginwithoutindent1.inc','4 21 beginwithoutindent fpcunit', 'beginwithoutindent1_result1.inc');
+  CompareComplete('beginwithoutindent1.inc','5 6 beginwithoutindent fpcunit', 'beginwithoutindent1_result2.inc');
+  CompareComplete('casecolon1.inc','5 5 casecolon fpcunit', 'casecolon1_result.inc');
+  CompareComplete('caseelseend1.inc','5 7 caseelseend fpcunit', 'caseelseend1_result.inc');
+  CompareComplete('caseend1.inc','4 12 caseend fpcunit', 'caseend1_result.inc');
+  CompareComplete('class1.inc','3 19 class fpcunit', 'class1_result.inc');
+  CompareComplete('ifbegin1.inc','4 21 ifbegin fpcunit', 'ifbegin1_result.inc');
+  CompareComplete('ifbeginelse1.inc','6 28 ifbeginelse fpcunit', 'ifbeginelse1_result.inc');
+  CompareComplete('procedurebegin1.inc','3 6 procedurebegin fpcunit', 'procedurebegin1_result.inc');
+  CompareComplete('procedurebeginend1.inc','4 8 procedurebeginend fpcunit', 'procedurebeginend1_result.inc');
+  CompareComplete('procedurebeginifbegin1.inc','11 74 procedurebeginifbegin fpcunit', 'procedurebeginifbegin1_result.inc');
+  CompareComplete('record1.inc','3 22 record fpcunit', 'record1_result1.inc');
+  CompareComplete('repeatifelse1.inc','11 18 repeatifelse fpcunit', 'repeatifelse1_result.inc');
 end;
 
 end.
