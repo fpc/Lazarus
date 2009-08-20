@@ -5206,8 +5206,8 @@ begin
     exit;
   end;
   Exclude(FFlags,ptfCustomDefinesChanged);
-  UpdateDefinesForCustomDefines;
-  CodeToolBoss.DefineTree.ClearCache;
+  UpdateDefinesForCustomDefines; // maybe custom defines changed
+  IncreaseCompilerParseStamp; // invalidate macros
 end;
 
 procedure TProjectDefineTemplates.UpdateGlobalValues;
