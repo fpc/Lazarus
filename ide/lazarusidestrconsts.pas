@@ -4180,6 +4180,9 @@ resourcestring
   lisEvalExpression = 'Eval expression';
   lisLogMessage = 'Log message';
 
+  // Debug Output Dialog
+  lisCopyAllOutputClipboard = 'Copy all output to clipboard';
+
   // Designer Size Components Dialog
   lisShrinkToSmal = 'Shrink to smallest';
   lisGrowToLarges = 'Grow to Largest';
