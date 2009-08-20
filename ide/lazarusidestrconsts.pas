@@ -1499,6 +1499,7 @@ resourcestring
   dlgCOOpts = 'Options: ';
   dlgCOAsmStyle = 'Assembler style:';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
+  lisAllInheritedOptions = 'All inherited options';
   lisunitPath = 'unit path';
   lisincludePath = 'include path';
   lisobjectPath = 'object path';
