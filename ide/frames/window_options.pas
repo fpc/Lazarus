@@ -302,6 +302,7 @@ begin
     nmiwCodeBrowser: Result := lisCodeBrowser;
     nmiwIssueBrowser: Result := lisMenuViewRestrictionBrowser;
     nmiwJumpHistory: Result := lisMenuViewJumpHistory;
+    nmiwInspect: Result := lisInspectDialog;
   else
     Result := NonModalIDEWindowNames[AWindow];
   end;
