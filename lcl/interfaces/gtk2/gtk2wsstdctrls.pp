@@ -1227,8 +1227,10 @@ begin
 
   // And now the same for the Button in the combo
   if AButton<>nil then begin
-    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
-    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSELEAVE, AButton, AWinControl);
+    if not GtkWidgetIsA(PGtkWidget(AButton),GTK_TYPE_CELL_VIEW) then begin
+      Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
+      Gtk2WidgetSet.SetCallbackDirect(LM_MOUSELEAVE, AButton, AWinControl);
+    end;
     Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEMOVE, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONDOWN, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, AButton, AWinControl);
