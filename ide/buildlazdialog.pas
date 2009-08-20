@@ -333,7 +333,7 @@ var
 
 begin
   Result:=mrCancel;
-  
+
   if (blfOnlyIDE in Flags) and (blfWithoutLinkingIDE in Flags)
   and (blfWithoutCompilingIDE in Flags) then
     exit(mrOk); // only IDE, but skip both parts -> nothing to do
@@ -347,9 +347,11 @@ begin
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
+    if not FileExistsUTF8(Tool.Filename) then
+      Tool.Filename:=FindDefaultExecutablePath(Tool.Filename);
     if not FileExistsUTF8(Tool.Filename) then begin
       Tool.Filename:=FindDefaultMakePath;
-      if not FileExistsUTF8(Tool.Filename) then begin
+      if not FileExistsUTF8(MakePath) then begin
         MessageDlg(lisMakeNotFound,
           Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, ['"',
             '"', #13, #13])
