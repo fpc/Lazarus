@@ -5540,7 +5540,9 @@ var
   NestedClass: TComponentClass;
   NestedUnitInfo: TUnitInfo;
 begin
+  {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
+  {$ENDIF}
 
   ReferencesLocked:=false;
   MissingClasses:=nil;
@@ -6236,8 +6238,9 @@ begin
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
+    {$ifdef VerboseFormEditor}
     debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
-
+    {$endif}
     // first search the resource of ComponentUnitInfo
     if ComponentUnitInfo<>nil then begin
       if TryUnit(ComponentUnitInfo.Filename,Result,false) then exit;

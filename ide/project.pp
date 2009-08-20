@@ -3729,7 +3729,9 @@ procedure TProject.UpdateUnitComponentDependencies;
   begin
     if AComponent<>AnUnitInfo.Component then begin
       ReferenceUnit:=UnitWithComponentClass(TComponentClass(AComponent.ClassType));
+      {$ifdef VerboseFormEditor}
       DebugLn(['Search UnitComponent=',DbgSName(AnUnitInfo.Component),' AComponent=',DbgSName(AComponent),' ReferenceUnit=',ReferenceUnit<>nil]);
+      {$endif}
       if (ReferenceUnit<>nil) then begin
         // component class references another unit
         {$IFDEF VerboseIDEMultiForm}
