@@ -125,6 +125,11 @@ const
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase
     ];
 
+  // restrict cdecl etc to places where they can be.
+  // this needs a better parser
+  ProcModifierAllowed: TPascalCodeFoldBlockTypes =
+    [cfbtNone, cfbtProcedure, cfbtProgram, cfbtUnitSection]; // unitsection, actually interface only
+
 type
 
   TPascalCompilerMode = (
@@ -953,7 +958,10 @@ end;
 
 function TSynPasSyn.Func27: TtkTokenKind;
 begin
-  if KeyComp('Cdecl') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Cdecl') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func28: TtkTokenKind;
@@ -1245,7 +1253,7 @@ end;
 
 function TSynPasSyn.Func71: TtkTokenKind;
 begin
-  if KeyComp('Stdcall') then
+  if KeyComp('Stdcall') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
     Result := tkKey
   else if KeyComp('Const') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -1372,7 +1380,10 @@ begin
     if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtProgram);
     Result := tkKey;
   end
-  else Result := tkIdentifier;
+  else if KeyComp('Mwpascal') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func89: TtkTokenKind;
