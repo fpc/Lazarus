@@ -35,7 +35,7 @@ Gtk2, GLib2, GtkDef,
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages,
+  CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages, LCLProc,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses,
   Gtk2WSStdCtrls;
@@ -73,11 +73,24 @@ procedure Gtk2WS_CheckListBoxDataFunc(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; data: Pointer); cdecl;
 var
   b: byte;
+  gap1: byte;
   ADisabled: Boolean;
+  gap2: byte;
   AValue: TCheckBoxState;
 begin
+  gap1:=112;
+  gap2:=123;
+  {$IFDEF VerboseGtk2CheckList}
+  DebugLn(['Gtk2WS_CheckListBoxDataFunc AAA1 gap1=',gap1,' gap2=',gap2]);
+  {$ENDIF}
   gtk_tree_model_get(tree_model, iter, [0, @b, -1]);
+  {$IFDEF VerboseGtk2CheckList}
+  DebugLn(['Gtk2WS_CheckListBoxDataFunc AAA2 gap1=',gap1,' gap2=',gap2]);
+  {$ENDIF}
   gtk_tree_model_get(tree_model, iter, [3, @ADisabled, -1]);
+  {$IFDEF VerboseGtk2CheckList}
+  DebugLn(['Gtk2WS_CheckListBoxDataFunc AAA3 gap1=',gap1,' gap2=',gap2]);
+  {$ENDIF}
   AValue := TCheckBoxState(b); // TCheckBoxState is 4 byte
   g_object_set(cell, 'inconsistent', [gboolean(AValue = cbGrayed), nil]);
   if AValue <> cbGrayed then

@@ -383,8 +383,6 @@ begin
 
       gtk_tree_view_column_set_cell_data_func(GtkColumn, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFunc), WidgetInfo, nil);
       gtk_tree_view_column_set_cell_data_func(GtkColumn, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
-      //gtk_tree_view_column_set_cell_data_func(gtkcolumn, textrenderer, TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetTextDataFunc), WidgetInfo, nil);
-
 
       // insert column
       gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets^.MainView), GtkColumn, 0);
