@@ -97,6 +97,7 @@ type
     ShortLabel: TLabel;
     ShortTabSheet: TTabSheet;
     UnderlineFormatButton: TSpeedButton;
+    InsertPrintShortTag: TMenuItem;
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure BrowseExampleButtonClick(Sender: TObject);
@@ -118,6 +119,7 @@ type
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
+    procedure InsertPrintShortTagClick(Sender: TObject);
   private
     FCaretXY: TPoint;
     FModified: Boolean;
@@ -235,6 +237,7 @@ begin
   AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
 
   CopyShortToDescrMenuItem.Caption:=lisAppendShortDescriptionToLongDescription;
+  InsertPrintShortTag.Caption:=lisInsertPrintShortTag;
 
   Reset;
   
@@ -431,6 +434,7 @@ begin
   CopyShortToDescrMenuItem.Visible:=
     (PageControl.ActivePage = DescrTabSheet)
     or (PageControl.ActivePage = ShortTabSheet);
+  InsertPrintShortTag.Visible := CopyShortToDescrMenuItem.Visible;
 end;
 
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
@@ -448,6 +452,14 @@ procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
 begin
   if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
     Modified:=true;
+end;
+
+procedure TFPDocEditor.InsertPrintShortTagClick(Sender: TObject);
+const
+  cPrintShort = '<printshort id="%s"/>';
+begin
+  DescrMemo.SelText:=Format(cPrintShort, [fChain[0].ElementName]);
+  Modified:=true;
 end;
 
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;

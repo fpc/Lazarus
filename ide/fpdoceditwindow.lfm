@@ -3,7 +3,7 @@ object FPDocEditor: TFPDocEditor
   Height = 126
   Top = 620
   Width = 753
-  ActiveControl = ShortEdit
+  ActiveControl = LeftBtnPanel
   Caption = 'FPDoc editor'
   ClientHeight = 126
   ClientWidth = 753
@@ -26,8 +26,8 @@ object FPDocEditor: TFPDocEditor
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
@@ -59,7 +59,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 625
+        Width = 623
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
@@ -105,7 +105,7 @@ object FPDocEditor: TFPDocEditor
         Left = 72
         Height = 27
         Top = 29
-        Width = 635
+        Width = 633
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
@@ -118,13 +118,13 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object InheritedShortLabel: TLabel
         Left = 0
         Height = 14
         Top = 2
-        Width = 709
+        Width = 707
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -139,7 +139,7 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 27
         Top = 18
-        Width = 709
+        Width = 707
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -191,13 +191,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object DescrMemo: TMemo
         Left = 0
-        Height = 91
+        Height = 87
         Top = 0
-        Width = 707
+        Width = 705
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -211,13 +211,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object ErrorsMemo: TMemo
         Left = 0
-        Height = 91
+        Height = 87
         Top = 0
-        Width = 707
+        Width = 705
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -230,13 +230,13 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object SeeAlsoMemo: TMemo
         Left = 0
-        Height = 95
+        Height = 91
         Top = 0
-        Width = 709
+        Width = 707
         Align = alClient
         Lines.Strings = (
           'SeeAlsoMemo'
@@ -247,13 +247,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 95
-      ClientWidth = 709
+      ClientHeight = 91
+      ClientWidth = 707
       object ExampleEdit: TEdit
         Left = 0
         Height = 27
         Top = 0
-        Width = 707
+        Width = 705
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
@@ -265,7 +265,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 570
+        Left = 568
         Height = 23
         Top = 33
         Width = 133
@@ -412,6 +412,10 @@ object FPDocEditor: TFPDocEditor
     object CopyShortToDescrMenuItem: TMenuItem
       Caption = 'CopyShortToDescrMenuItem'
       OnClick = CopyShortToDescrMenuItemClick
+    end
+    object InsertPrintShortTag: TMenuItem
+      Caption = 'InsertPrintShortTag'
+      OnClick = InsertPrintShortTagClick
     end
   end
 end
