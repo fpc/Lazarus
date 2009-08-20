@@ -447,9 +447,9 @@ begin
       Identifier:=TCodeBrowserNode(Node).Identifier
     else
       Identifier:='';
-    CopyDescriptionMenuItem.Caption:='Copy description to clipboard';
-    CopyIdentifierMenuItem.Caption:='Copy "'+Identifier+'" to clipboard';
-
+    CopyDescriptionMenuItem.Caption:=lisCopyDescription;
+    CopyIdentifierMenuItem.Caption:=Format(lisCopyIdentifier, ['"', Identifier,
+     '"']);
     CopyDescriptionMenuItem.Visible:=true;
     CopyIdentifierMenuItem.Visible:=Identifier<>'';
     CopySeparatorMenuItem.Visible:=true;
@@ -1912,7 +1912,7 @@ end;
 function TCodeBrowserView.InitTreeView: TTreeNode;
 begin
   ClearTreeView;
-  Result:=BrowseTreeView.Items.Add(nil,'Root');
+  Result:=BrowseTreeView.Items.Add(nil, lisRoot);
 end;
 
 function TCodeBrowserView.ListOwnerToText(const ListOwner: string): string;

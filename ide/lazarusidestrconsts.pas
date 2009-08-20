@@ -1840,6 +1840,9 @@ resourcestring
   lisEMDOnlyPublished = 'Only published';
   lisEMDFoundEmptyMethods = 'Found empty methods:';
   lisEMDRemoveMethods = 'Remove methods';
+  lisRoot = 'Root';
+  lisCopyDescription = 'Copy description to clipboard';
+  lisCopyIdentifier = 'Copy %s%s%s to clipboard';
   lisExpandAllPackages = 'Expand all packages';
   lisCollapseAllPackages = 'Collapse all packages';
   lisExpandAllUnits = 'Expand all units';
