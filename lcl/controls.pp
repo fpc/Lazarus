@@ -725,8 +725,8 @@ type
 
   TAnchorSide = class(TPersistent)
   private
+    FKind: TAnchorKind; // keep FKind the first property. see bug 14364
     FControl: TControl;
-    FKind: TAnchorKind;
     FOwner: TControl;
     FSide: TAnchorSideReference;
     function IsSideStored: boolean;
