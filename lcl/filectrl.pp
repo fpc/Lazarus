@@ -538,6 +538,8 @@ The parses states are:
 A LCL filter string looks like this:
 
 Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe
+or
+Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe|
 
 The TStrings will contain the following strings if
 AAddDescription = True, AAddFilter = False

@@ -32,6 +32,7 @@ uses
   // LCL
   ShellCtrls, Forms, Dialogs, FileCtrl, Controls, ComCtrls,
   LResources, ExtCtrls, Buttons, Graphics, StdCtrls,
+  LCLStrConsts, FileUtil,
   // Widgetset
   WSDialogs, WSLCLClasses, InterfaceBase;
 
@@ -105,6 +106,8 @@ type
   { TWinCEFileDialogForm }
 
   TWinCEFileDialogForm = class(TForm)
+  private
+    procedure SetFilter();
   public
     // User interface
     ShellTreeView: TShellTreeView;
@@ -119,11 +122,21 @@ type
     constructor Create(AOwner: TComponent; ALCLDialog: TFileDialog);
     procedure HandleOkClick(ASender: TObject);
     procedure HandleCancelClick(ASender: TObject);
+    procedure HandleCloseQuery(Sender : TObject; var CanClose : boolean);
+    procedure HandleEditChange(ASender: TObject);
     procedure HandleSelectItem(Sender: TObject;
      Item: TListItem; Selected: Boolean);
   end;
 
 { TWinCEFileDialogForm }
+
+procedure TWinCEFileDialogForm.SetFilter();
+begin
+  if LCLDialog.Filter = '' then
+    FilterComboBox.Filter := Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,''])
+  else
+    FilterComboBox.Filter := LCLDialog.Filter;
+end;
 
 {
   The size of the window is determined only when creating the
@@ -163,9 +176,6 @@ begin
   OkButton.Glyph.Assign(AImage);
   OkButton.OnClick := HandleOkClick;
   OkButton.Left := 0;
-  // In a TOpenDialog the Ok button is only enabled when a file is selected
-  if (LCLDialog is TOpenDialog) then
-    OkButton.Enabled := False;
 
   // cancel button
   CancelButton := TBitBtn.Create(Panel);
@@ -216,6 +226,8 @@ begin
     SaveEdit.Top := Height - Panel.Height - SaveEdit.Height;
     SaveEdit.Width := Width;
     SaveEdit.Align := alBottom;
+    SaveEdit.Text := SysUtils.ExtractFileName(LCLDialog.FileName);
+    SaveEdit.OnChange := HandleEditChange;
   end;
 
   // TFilterComboBox
@@ -227,31 +239,67 @@ begin
   if SaveEdit <> nil then Dec(FilterComboBox.Top, SaveEdit.Height);
   FilterComboBox.Width := Width;
   FilterComboBox.Align := alBottom;
-  FilterComboBox.Filter := LCLDialog.Filter;
+  SetFilter();
   FilterComboBox.ShellListView := ShellListView;
+
+  // In the save dialog it is enabled when there is a text in the TEdit
+  if (LCLDialog is TSaveDialog) then
+    OkButton.Enabled := SaveEdit.Text <> ''
+  // In a TOpenDialog the Ok button is only enabled when a file is selected
+  else
+    OkButton.Enabled := False;
+
+  // Form events
+  OnCloseQuery := HandleCloseQuery;
 end;
 
+// The Ok button code should be only a simple mrOk,
+// because there is the dialog Ok button, which will
+// always be active and will set the ModalResult to mrOk
+// so the code needs to affect it too, and this can be
+// done in CloseQuery
 procedure TWinCEFileDialogForm.HandleOkClick(ASender: TObject);
 begin
+  ModalResult := mrOk;
+end;
+
+procedure TWinCEFileDialogForm.HandleCancelClick(ASender: TObject);
+begin
+  ModalResult := mrCancel;
+end;
+
+procedure TWinCEFileDialogForm.HandleCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+begin
+  if ModalResult = mrCancel then
+  begin
+    CanClose := True;
+    Exit;
+  end;
+
+  CanClose := False;
+
   if (LCLDialog is TSaveDialog) then
   begin
     if SaveEdit.Text = '' then Exit;
 
-    LCLDialog.FileName := SaveEdit.Text;
-    ModalResult := mrOk;
+    LCLDialog.FileName := ShellTreeView.GetPathFromNode(ShellTreeView.Selected);
+    LCLDialog.FileName := IncludeTrailingPathDelimiter(LCLDialog.FileName);
+    LCLDialog.FileName := LCLDialog.FileName + SaveEdit.Text;
+    CanClose := True;
   end
   else
   begin
     if ShellListView.Selected = nil then Exit;
 
     LCLDialog.FileName := ShellListView.GetPathFromItem(ShellListView.Selected);
-    ModalResult := mrOk;
+    CanClose := True;
   end;
 end;
 
-procedure TWinCEFileDialogForm.HandleCancelClick(ASender: TObject);
+procedure TWinCEFileDialogForm.HandleEditChange(ASender: TObject);
 begin
-  ModalResult := mrCancel;
+  OkButton.Enabled := SaveEdit.Text <> '';
 end;
 
 procedure TWinCEFileDialogForm.HandleSelectItem(Sender: TObject;
