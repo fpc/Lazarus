@@ -10,19 +10,24 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
@@ -834,6 +839,10 @@ msgstr ""
 msgid "Disable anti-aliasing"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr ""
@@ -842,22 +851,12 @@ msgstr ""
 msgid "Nested line color"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
@@ -1559,12 +1558,8 @@ msgstr ""
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1724,6 +1719,7 @@ msgid "Down"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr ""
 
@@ -3205,6 +3201,10 @@ msgstr ""
 msgid "All Files"
 msgstr ""
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr ""
@@ -3281,6 +3281,10 @@ msgstr ""
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr ""
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr ""
@@ -3319,6 +3323,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -4940,6 +4948,14 @@ msgstr ""
 msgid "Copy all messages to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "إنسخ الخطأ"
@@ -4947,6 +4963,10 @@ msgstr "إنسخ الخطأ"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "إنسخ الخطأ"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6720,6 +6740,10 @@ msgstr ""
 msgid "Insert name of current procedure"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -8248,6 +8272,7 @@ msgid "Current date and time"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr ""
 
@@ -9393,6 +9418,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
@@ -11086,6 +11115,10 @@ msgstr ""
 msgid "Right space equally"
 msgstr ""
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr ""
@@ -11935,6 +11968,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
+msgstr ""
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
 msgstr ""
 
 #: lazarusidestrconsts.listodogoto

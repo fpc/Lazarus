@@ -756,7 +756,7 @@ msgstr "Del"
 #: objinspstrconsts.oistdacteditdeleteshorthint
 msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: objinspstrconsts.oistdacteditpasteheadline
 msgid "&Paste"

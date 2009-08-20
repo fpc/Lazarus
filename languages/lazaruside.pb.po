@@ -12,20 +12,25 @@ msgstr ""
 "X-Poedit-Country: BRAZIL\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "Geral"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -859,6 +864,10 @@ msgstr "Diretório não existe"
 msgid "Disable anti-aliasing"
 msgstr "Desabilitar \"anti-aliasing\""
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr "Desenhar nível divisor"
@@ -867,11 +876,6 @@ msgstr "Desenhar nível divisor"
 msgid "Nested line color"
 msgstr "Cor linha aninhada"
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr "Usar Padrão"
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr "Desenhar divisor"
@@ -879,11 +883,6 @@ msgstr "Desenhar divisor"
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
 msgstr "Cor linha"
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
-msgstr "Usar Padrão"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
@@ -1586,14 +1585,10 @@ msgstr "Cor dos marcadores"
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr "Palavra atual coincide com palavra limítrofe"
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 #, fuzzy
-#| msgid "Only if shorter than"
-msgid "Ignore bounds for words longer than"
+#| msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr "Somente se menor que"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1755,6 +1750,7 @@ msgid "Down"
 msgstr "Abaixo"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr "Exportar"
 
@@ -3263,6 +3259,10 @@ msgstr "Todos os blocos parecem OK."
 msgid "All Files"
 msgstr "Todos os arquivos"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Permitir Chamadas de Funções"
@@ -3344,6 +3344,10 @@ msgstr "Âncora no lado superior do irmão, manter espaço da borda"
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "Ocorreu um erro na última inicialização carregando %s!%s%sCarregar este projeto novamente?"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O arquivo do programa é automaticamente mantido pelo Lazarus."
@@ -3383,6 +3387,10 @@ msgstr "Continuar Automaticamente"
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
 msgstr "Continuar autom. depois:"
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -5012,6 +5020,14 @@ msgstr "Copiar todas as mensagens, incluse as escondidas, para Área de Transfer
 msgid "Copy all messages to clipboard"
 msgstr "Copiar todas as mensagens para Área de Transferência"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "Erro na cópia"
@@ -5019,6 +5035,10 @@ msgstr "Erro na cópia"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Erro na cópia"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6792,6 +6812,10 @@ msgstr "inserir fim se necessário"
 msgid "Insert name of current procedure"
 msgstr "inserir nome do procedimento atual"
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "inserir cabeçalho procedimento"
@@ -8321,6 +8345,7 @@ msgid "Current date and time"
 msgstr "Data e hora atuais"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "Geral"
 
@@ -9474,6 +9499,10 @@ msgstr "Caminhos de busca:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "Selecione o diretório"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11168,6 +11197,10 @@ msgstr "Lados Direito"
 msgid "Right space equally"
 msgstr "Justificar à direita"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Arquivo não executável"
@@ -12026,6 +12059,11 @@ msgstr "Função: extrair caminho do arquivo"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(macro desconhecida: %s)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr "Exportar"
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

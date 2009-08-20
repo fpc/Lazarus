@@ -756,7 +756,7 @@ msgstr "Canc"
 #: objinspstrconsts.oistdacteditdeleteshorthint
 msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
 msgid "Delete"
-msgstr ""
+msgstr "Cancella"
 
 #: objinspstrconsts.oistdacteditpasteheadline
 msgid "&Paste"

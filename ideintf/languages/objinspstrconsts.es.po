@@ -753,7 +753,7 @@ msgstr "Supr"
 #: objinspstrconsts.oistdacteditdeleteshorthint
 msgctxt "objinspstrconsts.oistdacteditdeleteshorthint"
 msgid "Delete"
-msgstr ""
+msgstr "Suprimir"
 
 #: objinspstrconsts.oistdacteditpasteheadline
 msgid "&Paste"
