@@ -2430,6 +2430,7 @@ resourcestring
   dlgUnitDepRefresh     = 'Refresh';
   lisPrint = 'Print';
   lisToDoGoto = 'Goto';
+  lisToDoExport = 'Export';
   
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';

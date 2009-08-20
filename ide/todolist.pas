@@ -475,6 +475,7 @@ begin
   tbPrint.Caption := lisPrint;
   tbRefresh.Caption := dlgUnitDepRefresh;
   tbGoto.Caption := lisToDoGoto;
+  tbExport.Caption := lisToDoExport;
 
   with lvTodo do
   begin
