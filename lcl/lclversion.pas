@@ -29,9 +29,9 @@ interface
 const
   lcl_major = 0;
   lcl_minor = 9;
-  lcl_release = 27;
+  lcl_release = 29;
   lcl_patch = 0;
-  lcl_version = '0.9.27';
+  lcl_version = '0.9.29';
 
 implementation
 
