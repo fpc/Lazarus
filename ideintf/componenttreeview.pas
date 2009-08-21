@@ -50,6 +50,9 @@ type
                        var Accept: Boolean); override;
     procedure DragCanceled; override;
     procedure MouseLeave; override;
+    procedure GetComponentInsertMarkAt(X, Y: Integer;
+                              out AnInsertMarkNode: TTreeNode;
+                              out AnInsertMarkType: TTreeViewInsertMarkType);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -209,7 +212,7 @@ var
   InsertType: TTreeViewInsertMarkType;
   ok: Boolean;
 begin
-  GetInsertMarkAt(X,Y,Node,InsertType);
+  GetComponentInsertMarkAt(X,Y,Node,InsertType);
   SetInsertMark(nil,tvimNone);
   ParentNode:=Node;
   if InsertType in [tvimAsNextSibling,tvimAsPrevSibling] then
@@ -262,7 +265,7 @@ begin
   AcceptContainer := False;
   AcceptControl := True;
 
-  GetInsertMarkAt(X,Y,Node,InsertType);
+  GetComponentInsertMarkAt(X,Y,Node,InsertType);
   SetInsertMark(Node,InsertType);
 
   // check new parent
@@ -274,11 +277,6 @@ begin
     AnObject := TObject(ParentNode.Data);
     if (AnObject is TWinControl) then
     begin
-      // TWinControl can only add or remove childs, but not at a specific index
-      Node:=ParentNode;
-      InsertType:=tvimAsFirstChild;
-      SetInsertMark(Node,InsertType);
-
       if (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
          not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
          ( // TReader/TWriter only supports this
@@ -340,6 +338,22 @@ procedure TComponentTreeView.MouseLeave;
 begin
   SetInsertMark(nil,tvimNone);
   inherited MouseLeave;
+end;
+
+procedure TComponentTreeView.GetComponentInsertMarkAt(X, Y: Integer; out
+  AnInsertMarkNode: TTreeNode; out AnInsertMarkType: TTreeViewInsertMarkType);
+var
+  Node: TTreeNode;
+begin
+  Node:=GetFirstMultiSelected;
+  if (Node<>nil) and (TObject(Node.Data) is TControl) then
+  begin
+    // TWinControl allows only to add/remove childs, but not at a specific position
+    AnInsertMarkNode:=GetNodeAt(X,Y);
+    AnInsertMarkType:=tvimAsFirstChild;
+  end else begin
+    GetInsertMarkAt(X,Y,AnInsertMarkNode,AnInsertMarkType);
+  end;
 end;
 
 function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
