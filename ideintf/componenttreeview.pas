@@ -28,8 +28,9 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits,
-  ExtCtrls, LResources;
+  Classes, SysUtils, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
+  ExtCtrls, LResources,
+  ObjInspStrConsts, PropEdits;
   
 type
   { TComponentTreeView }
@@ -47,6 +48,8 @@ type
     function GetImageFor(AComponent: TComponent):integer;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
+    procedure DragCanceled; override;
+    procedure MouseLeave; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,18 +203,44 @@ end;
 procedure TComponentTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
   Node, SelNode: TTreeNode;
-  AContainer, AControl: TControl;
+  AContainer: TWinControl;
+  AControl: TControl;
+  ParentNode: TTreeNode;
+  InsertType: TTreeViewInsertMarkType;
+  ok: Boolean;
 begin
-  Node := GetNodeAt(X, Y);
-  if Assigned(Node) then 
+  GetInsertMarkAt(X,Y,Node,InsertType);
+  SetInsertMark(nil,tvimNone);
+  ParentNode:=Node;
+  if InsertType in [tvimAsNextSibling,tvimAsPrevSibling] then
+    ParentNode:=ParentNode.Parent;
+  if Assigned(ParentNode) then
   begin
-    AContainer := TControl(Node.Data);
-    SelNode := GetFirstMultiSelected;
-    while Assigned(SelNode) do 
+    if TObject(ParentNode.Data) is TWinControl then
     begin
-      AControl := TControl(SelNode.Data);
-      AControl.Parent := AContainer as TWinControl;
-      SelNode := SelNode.GetNextMultiSelected;
+      AContainer := TWinControl(ParentNode.Data);
+      SelNode := GetFirstMultiSelected;
+      while Assigned(SelNode) do
+      begin
+        if TObject(SelNode.Data) is TControl then
+        begin
+          AControl := TControl(SelNode.Data);
+          ok:=false;
+          try
+            AControl.Parent := AContainer;
+            ok:=true;
+          except
+            on E: Exception do begin
+              MessageDlg(oisError,
+                Format(oisUnableToChangeParentOfControlToNewParent, ['"',
+                  DbgSName(AControl), '"', '"', DbgSName(AContainer), '"', #13,
+                  E.Message]), mtError, [mbCancel], 0);
+            end;
+          end;
+          if not ok then break;
+        end;
+        SelNode := SelNode.GetNextMultiSelected;
+      end;
     end;
     RebuildComponentNodes;
   end;
@@ -225,29 +254,43 @@ var
   AnObject: TObject;
   AContainer,AControl: TControl;
   AcceptControl, AcceptContainer: Boolean;
+  InsertType: TTreeViewInsertMarkType;
+  ParentNode: TTreeNode;
 begin
   //debugln('TComponentTreeView.DragOver START ',dbgs(Accept));
 
   AcceptContainer := False;
   AcceptControl := True;
 
+  GetInsertMarkAt(X,Y,Node,InsertType);
+  SetInsertMark(Node,InsertType);
+
   // check new parent
-  Node:=GetNodeAt(X, Y);
-  if Assigned(Node) and Assigned(Node.Data) then 
+  ParentNode:=Node;
+  if InsertType in [tvimAsNextSibling,tvimAsPrevSibling] then
+    ParentNode:=ParentNode.Parent;
+  if Assigned(ParentNode) and Assigned(ParentNode.Data) then
   begin
-    AnObject := TObject(Node.Data);
-    if (AnObject is TWinControl) and 
-       (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
-       not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
-       ( // TReader/TWriter only supports this
-         (TWinControl(AnObject).Owner = nil) or // root
-         (TWinControl(AnObject).Owner.Owner = nil) // child of a root
-       )
-       then
+    AnObject := TObject(ParentNode.Data);
+    if (AnObject is TWinControl) then
     begin
-      AContainer := TWinControl(AnObject);
-      //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
-      AcceptContainer := True;
+      // TWinControl can only add or remove childs, but not at a specific index
+      Node:=ParentNode;
+      InsertType:=tvimAsFirstChild;
+      SetInsertMark(Node,InsertType);
+
+      if (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
+         not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
+         ( // TReader/TWriter only supports this
+           (TWinControl(AnObject).Owner = nil) or // root
+           (TWinControl(AnObject).Owner.Owner = nil) // child of a root
+         )
+         then
+      begin
+        AContainer := TWinControl(AnObject);
+        //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
+        AcceptContainer := True;
+      end;
     end;
   end;
 
@@ -285,6 +328,18 @@ begin
 
   Accept := AcceptContainer and AcceptControl
             and ((OnDragOver=nil) or Accept);
+end;
+
+procedure TComponentTreeView.DragCanceled;
+begin
+  SetInsertMark(nil,tvimNone);
+  inherited DragCanceled;
+end;
+
+procedure TComponentTreeView.MouseLeave;
+begin
+  SetInsertMark(nil,tvimNone);
+  inherited MouseLeave;
 end;
 
 function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
