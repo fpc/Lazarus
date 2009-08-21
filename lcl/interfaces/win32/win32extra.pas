@@ -683,11 +683,12 @@ procedure Initialize;
 var
   p: Pointer;
 begin
+  if WindowsVersion = wvUnknown then
+    UpdateWindowsVersion;
+
   GetComboBoxInfo := nil;
   GetMenuBarInfo := nil;
   GetWindowInfo := nil;
-
-  AlphaBlend := @_AlphaBlend;
 
   msimg32handle := LoadLibrary(msimg32lib);
   if msimg32handle <> 0
@@ -700,13 +701,16 @@ begin
       then begin
         // windows 98
         // Pointer(AlphaBlend98) := p;
-        AlphaBlend := @_AlphaBlend98;
+        Pointer(AlphaBlend) := @_AlphaBlend98;
       end
       else begin
         // other
         Pointer(AlphaBlend) := p;
       end;
-    end;
+    end
+    else
+      Pointer(AlphaBlend) := @_AlphaBlend;
+
     p := GetProcAddress(msimg32handle, 'GradientFill');
     if p <> nil then
       Pointer(GradientFill) := p

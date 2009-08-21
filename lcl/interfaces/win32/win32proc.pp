@@ -124,6 +124,7 @@ function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cToleran
 
 { String functions that may be moved to the RTL in the future }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+procedure UpdateWindowsVersion;
 
 type 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
@@ -1747,20 +1748,11 @@ begin
 end;
 
 
-procedure DoInitialization;
+procedure UpdateWindowsVersion;
 begin
-  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
-  DefaultWindowInfo.DrawItemIndex := -1;
-  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
-  ChangedMenus := TList.Create;
-
- {$ifdef WindowsUnicodeSupport}
-  UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
- {$endif}
- 
- case Win32MajorVersion of
-   0..3:;
-   4: begin
+  case Win32MajorVersion of
+    0..3:;
+    4: begin
      if Win32Platform = VER_PLATFORM_WIN32_NT
      then WindowsVersion := wvNT4
      else
@@ -1770,8 +1762,8 @@ begin
        else
          WindowsVersion :=wv95;
        end;
-   end;
-   5: begin
+    end;
+    5: begin
      case Win32MinorVersion of
        0: WindowsVersion := wv2000;
        1: WindowsVersion := wvXP;
@@ -1780,19 +1772,32 @@ begin
        // we could detect that based on arch and versioninfo.Producttype
        WindowsVersion := wvServer2003;
      end;
-   end;
-   6: begin
+    end;
+    6: begin
      case Win32MinorVersion of
        0: WindowsVersion := wvVista;
        1: WindowsVersion := wv7;
      else
        WindowsVersion := wvLater;
      end;
-   end;
- else
-   WindowsVersion := wvLater;
- end;
- 
+    end;
+  else
+    WindowsVersion := wvLater;
+  end;
+end;
+
+procedure DoInitialization;
+begin
+  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo.DrawItemIndex := -1;
+  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
+  ChangedMenus := TList.Create;
+
+  {$ifdef WindowsUnicodeSupport}
+  UnicodeEnabledOS := (Win32Platform = VER_PLATFORM_WIN32_NT);
+  {$endif}
+  if WindowsVersion = wvUnknown then
+    UpdateWindowsVersion;
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -1801,11 +1806,9 @@ end;
 {$ENDIF}
 
 initialization
-  
   DoInitialization;
 
 finalization
-
   Windows.GlobalDeleteAtom(WindowInfoAtom);
   WindowInfoAtom := 0;
   ChangedMenus.Free;
