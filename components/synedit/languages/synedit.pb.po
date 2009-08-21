@@ -32,7 +32,7 @@ msgstr "Bloco"
 #: syneditstrconst.syns_attrbrackets
 #, fuzzy
 msgid "Brackets"
-msgstr "Chaves"
+msgstr "Parênteses"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
@@ -137,7 +137,7 @@ msgstr "Caractere ilegal"
 #: syneditstrconst.syns_attrinclude
 #, fuzzy
 msgid "Include"
-msgstr "Incluir"
+msgstr "Incluem"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -220,9 +220,8 @@ msgid "Preprocessor"
 msgstr "Pré-processador"
 
 #: syneditstrconst.syns_attrprocessinginstr
-#, fuzzy
 msgid "Processing Instruction"
-msgstr "Instrução Processando"
+msgstr "Processando Instrução"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
