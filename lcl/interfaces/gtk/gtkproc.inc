@@ -8149,13 +8149,16 @@ begin
         
       // ToDo: create all gc of the style
       //gtk_widget_set_rc_style(StyleObject^.Widget);
+
+      if lgs = lgsTooltip then
+        gtk_widget_hide_all(StyleObject^.Widget);
     end
     else begin
       // no success, clean up
       FreeStyleObject(StyleObject);
       DebugLn('WARNING: GetStyleWithName ',WName,' failed');
     end;
-    
+
     // clean up
     if Tp <> nil then
       gtk_object_destroy(Tp);
