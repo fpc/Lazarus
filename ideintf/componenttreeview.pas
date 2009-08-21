@@ -231,6 +231,7 @@ begin
   AcceptContainer := False;
   AcceptControl := True;
 
+  // check new parent
   Node:=GetNodeAt(X, Y);
   if Assigned(Node) and Assigned(Node.Data) then 
   begin
@@ -241,9 +242,11 @@ begin
        ( // TReader/TWriter only supports this
          (TWinControl(AnObject).Owner = nil) or // root
          (TWinControl(AnObject).Owner.Owner = nil) // child of a root
-       ) then
+       )
+       then
     begin
       AContainer := TWinControl(AnObject);
+      //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
       AcceptContainer := True;
     end;
   end;
@@ -251,23 +254,28 @@ begin
   if AcceptContainer then 
   begin
     Node := GetFirstMultiSelected;
-    while Assigned(Node) do 
+    while Assigned(Node) and AcceptControl do
     begin
       AnObject := TObject(Node.Data);
-      AcceptControl := AcceptControl and (AnObject is TControl) and 
-        AContainer.CheckChildClassAllowed(AnObject.ClassType, False);
-      // Check if one of the parent of the container is the control itself
-      if AcceptControl then 
+      if AnObject is TControl then
       begin
-        while Assigned(AContainer) do 
-        begin
-          AControl := TControl(AnObject);
-          AcceptControl := AcceptControl and (AControl <> AContainer);
-          AContainer := AContainer.Parent;
-        end;
+        AControl := TControl(AnObject);
+        if AControl=AContainer then break;
+        //DebugLn(['TComponentTreeView.DragOver AControl=',DbgSName(AControl),' Parent=',DbgSName(AControl.Parent),' OldAccepts=',csAcceptsControls in AControl.Parent.ControlStyle]);
+        // check if new parent allows this control class
+        if not AContainer.CheckChildClassAllowed(AnObject.ClassType, False) then
+          break;
+        // check if one of the parent of the container is the control itself
+        if AControl.IsParentOf(AContainer) then break;
+        // do not move childs of a restricted parent to another parent
+        // e.g. TPage of TPageControl
+        if (AControl.Parent<>nil) and (AControl.Parent<>AContainer)
+        and (not (csAcceptsControls in AControl.Parent.ControlStyle)) then
+          break;
       end;
       Node := Node.GetNextMultiSelected;
     end;
+    AcceptControl:=(Node=nil);
   end;
 
   Accept := AcceptContainer and AcceptControl;
