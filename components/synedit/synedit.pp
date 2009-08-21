@@ -183,7 +183,8 @@ type
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
-    sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting
+    sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
+    sfIgnoreUpClick
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -2516,25 +2517,31 @@ begin
     MouseY := Y;
     CCount := ACCount;
     Dir := ADir;
+    IgnoreUpClick := False;
   end;
-  // Check plugins/external handlers
-  if FMouseActionSearchHandlerList.CallSearchHandlers(Info,
-                                       {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction)
-  then
-    exit;
-  // mouse event occured in Gutter ?
-  if  (X < fGutterWidth) then begin
-    FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
-    exit;
-    // No fallback to text actions
-  end;
-  // mouse event occured in selected block ?
-  if SelAvail and (X >= fGutterWidth + 2) and
-     IsPointInSelection(FInternalCaret.LineBytePos)
-  then
-    if DoHandleMouseAction(FMouseSelActions, Info) then
+  try
+    // Check plugins/external handlers
+    if FMouseActionSearchHandlerList.CallSearchHandlers(Info,
+                                         {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction)
+    then
       exit;
-  DoHandleMouseAction(FMouseActions, Info);
+    // mouse event occured in Gutter ?
+    if  (X < fGutterWidth) then begin
+      FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
+      exit;
+      // No fallback to text actions
+    end;
+    // mouse event occured in selected block ?
+    if SelAvail and (X >= fGutterWidth + 2) and
+       IsPointInSelection(FInternalCaret.LineBytePos)
+    then
+      if DoHandleMouseAction(FMouseSelActions, Info) then
+        exit;
+    DoHandleMouseAction(FMouseActions, Info);
+  finally
+    if Info.IgnoreUpClick then
+      include(fStateFlags, sfIgnoreUpClick);
+  end;
 end;
 
 procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -2557,7 +2564,7 @@ begin
 
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
                                 sfGutterClick, sfMouseSelecting, sfMouseDoneSelecting,
-                                sfWaitForDragging
+                                sfWaitForDragging, sfIgnoreUpClick
                                ];
 
   if ssQuad in Shift then begin
@@ -2768,7 +2775,7 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  wasDragging, wasSelecting : Boolean;
+  wasDragging, wasSelecting, ignoreUp : Boolean;
   CType: TSynMAClickCount;
 begin
   Exclude(FStateFlags, sfHideCursor);
@@ -2776,9 +2783,11 @@ begin
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
   wasSelecting := (sfMouseDoneSelecting in fStateFlags);
+  ignoreUp := (sfIgnoreUpClick in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
   Exclude(fStateFlags, sfMouseSelecting);
   Exclude(fStateFlags, sfMouseDoneSelecting);
+  Exclude(fStateFlags, sfIgnoreUpClick);
   fScrollTimer.Enabled := False;
   inherited MouseUp(Button, Shift, X, Y);
   MouseCapture := False;
@@ -2813,7 +2822,7 @@ begin
     exit;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
 
-  if wasDragging or wasSelecting then exit;
+  if wasDragging or wasSelecting or ignoreUp then exit;
 
   IncPaintLock;
   try
@@ -4368,8 +4377,10 @@ begin
   {$ENDIF}
   {$IF defined(LCLGTK) or defined(LCLGTK2)}
   // This is to temporarily address issue http://bugs.freepascal.org/view.php?id=12460
-  if (sfMouseSelecting in fStateFlags) and not MouseCapture then
+  if (sfMouseSelecting in fStateFlags) and not MouseCapture then begin
     Exclude(fStateFlags, sfMouseSelecting);
+    Exclude(fStateFlags, sfIgnoreUpClick);
+  end;
   {$ENDIF}
   LastMouseCaret:=Point(-1,-1);
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret

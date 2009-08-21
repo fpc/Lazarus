@@ -1229,8 +1229,10 @@ begin
   Result := (AnInfo.MouseX >= r.Left) and (AnInfo.MouseX < r.Right) and
             (AnInfo.MouseY >= r.Top) and (AnInfo.MouseY < r.Bottom);
 
-  if Result then
+  if Result then begin
     HandleActionProc(FMouseActions, AnInfo);
+    AnInfo.IgnoreUpClick := True;
+  end;
 end;
 
 function TSynPluginSyncroEdit.DoHandleMouseAction(AnAction: TSynEditMouseAction;

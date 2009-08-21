@@ -107,6 +107,7 @@ type
     CCount: TSynMAClickCount;
     Dir: TSynMAClickDir;
     CaretDone: Boolean; // Return Value
+    IgnoreUpClick: Boolean;
   end;
 
   { TSynEditMouseAction }
