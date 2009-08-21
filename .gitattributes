@@ -1843,6 +1843,7 @@ debian/lazarus-ide.menu svneol=native#text/plain
 debian/lazarus-src.install svneol=native#text/plain
 debian/lazarus.substvars svneol=native#text/plain
 debian/orig-tar.sh svneol=native#text/plain
+debian/overrides/lazarus-ide svneol=native#text/plain
 debian/overrides/lazarus-src svneol=native#text/plain
 debian/patches/01_topmakefile.diff svneol=native#text/plain
 debian/patches/02_components.diff svneol=native#text/plain
