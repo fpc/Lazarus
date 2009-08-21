@@ -23,6 +23,7 @@ FPCVER=$(shell ${FPC} -iV)
 # Get version information from changelog file
 DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
 DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
+DEB_UPSTREAM_MAIN_VERSION:=$(shell echo ${DEB_UPSTREAM_VERSION} | sed -e 's/^\([0-9\.]*\).*/\1/')
 # Get directories
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
@@ -80,7 +81,6 @@ clean-patched:
 	$(MAKE) distclean ${BUILDOPTS}
 	$(MAKE) -C docs/html clean
 	find '(' -name '*.a' -or -name '*.o' -or -name '*.so' -or -name '*.ppu' ')' -exec ${RM} '{}' ';'
-	dh_prep
 
 patch: patch-stamp
 
@@ -134,6 +134,7 @@ install-arch-stamp:
 	@echo "--- Installing"
 	dh_testdir
 	dh_testroot
+	dh_prep
 	dh_installdirs
 	# create all necessary directories
 	install -d $(INSTALL_DIR)/usr/bin
@@ -185,7 +186,7 @@ install-indep:
 # Documentation
 #
 
-build-doc: patch debian-files build-doc-stamp
+build-doc: build-arch build-doc-stamp
 build-doc-stamp:
 	@echo "--- Building Documentation"
 	dh_testdir
@@ -197,6 +198,7 @@ install-doc-stamp:
 	@echo "--- Installing Documentation"
 	dh_testdir
 	dh_testroot
+	dh_prep
 	${MAKE} -C docs/html ${DOCTYPE}install INSTALL_PREFIX=${INSTALL_DIR}/usr INSTALL_DOCDIR=${DOC_DIR}
 	touch install-doc-stamp
 
@@ -242,7 +244,7 @@ binary: binary-arch binary-indep
 # Deb building
 #
 
-binary-indep: clean-patched build-doc install-doc install-source debian-files
+binary-indep: build-doc install-doc clean-patched install-source debian-files
 	@echo "--- Building: arch-indep packages"
 	dh_testdir
 	dh_testroot
@@ -269,6 +271,7 @@ binary-arch: arrange-arch
 	dh_installmenu
 	fpc-depends
 	dh_installman -s
+	dh_desktop
 	dh_strip -s
 	dh_compress -a
 	dh_fixperms -a
