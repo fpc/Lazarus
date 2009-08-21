@@ -6163,7 +6163,9 @@ var
       end;
     end;
 
+    {$ifdef VerboseFormEditor}
     debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading referenced form ',UnitFilename);
+    {$endif}
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
     if TheModalResult<>mrOk then begin
@@ -6188,7 +6190,9 @@ var
     if (TheModalResult=mrOk) then begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
+      {$ifdef VerboseFormEditor}
       debugln('TMainIDE.DoLoadComponentDependencyHidden Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
+      {$endif}
       TheModalResult:=mrOk;
     end else begin
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed to load component ',AComponentClassName);
