@@ -4787,8 +4787,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoAutoSize">
         <short>
-          <var>DoAutoSize </var>
-- method for actually performing the AutoSize</short>
+          <var>DoAutoSize </var>- method for actually performing the AutoSize</short>
         <descr>
           <p>
             <var>TControl.DoAutoSize</var>
@@ -4797,17 +4796,20 @@ mrLast=mrYesToAll=10</descr>
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
           <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
         </descr>
+        <seealso>
+          <link id="#lcl.Controls.AutoSize">AutoSize topic</link>
+          <link id="#lcl.Controls.TControl.AdjustSize">TControl.AdjustSize</link>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.AutoSizeCanStart">
         <short>
-          <var>AutoSizeCanStart</var>
- - checks whether 
-          
-          <var>DoAutoSize </var>is permitted to start</short>
+          <var>AutoSizeCanStart</var> - checks whether  <var>DoAutoSize</var> is permitted to start</short>
         <descr>
-          <pre>{------------------------------------------------------------------------------
-  function TControl.AutoSizeCanStart: boolean;
+          <p>
+            <printshort id="TControl.AutoSizeCanStart"/>
+          </p>
+          <pre>function TControl.AutoSizeCanStart: boolean;
   
   Returns true if DoAutoSize can start. That means, it tests the minimum
   requirements to start. Some controls need even more.
@@ -4817,7 +4819,7 @@ mrLast=mrYesToAll=10</descr>
   - or the control is currently autosizing
   - or the control is not visible
   - or the control is destroying
-------------------------------------------------------------------------------}
+
 </pre>
         </descr>
       </element>
@@ -6375,6 +6377,9 @@ mrLast=mrYesToAll=10</descr>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
           <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
         </descr>
+        <seealso>
+          <link id="#lcl.Controls.Autosize">Autosize topic</link>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.Ctl3D">
@@ -6665,10 +6670,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
         <short>
-          <var>AdjustSize</var>
- - Smart way to 
-          
-          <var>DoAutoSize</var>
+          <var>AdjustSize</var> - Smart way to  <var>DoAutoSize</var>
         </short>
         <descr>
           <p>
@@ -6679,6 +6681,9 @@ mrLast=mrYesToAll=10</descr>
           <p>During loading and handle creation the calls are delayed.</p>
           <p>This method initially does the same as <var>TWinControl.DoAutoSize</var>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
         </descr>
+        <seealso>
+          <link id="#lcl.Controls.AutoSize">AutoSize topic</link>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeDelayed">
@@ -9151,11 +9156,21 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoSetBounds" name="TWinControl.DoSetBounds">
-        <short/>
-        <descr/>
+      <element name="TWinControl.DoSetBounds">
+        <short>
+          <var>DoSetBounds</var> - anticipate the new clientwidth/height and call inherited method</short>
+        <descr>
+          <p>TWinControl DoSetBounds</p>
+          <p>Params: ALeft, ATop, AWidth, AHeight : integer</p>
+          <p>Anticipate the new clientwidth/height and call inherited method</p>
+          <p>Normally the clientwidth/clientheight is adjusted automatically by the interface. But it is up to interface when this will be done. The gtk for example just puts resize requests into a queue. The LCL would resize the child components just after this procedure due to the clientrect. On complex forms with lots of nested controls, this would result in thousands of resizes.</p>
+          <p>Changing the clientrect in the LCL to the most probable size reduces
+  unneccessary resizes.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.DoSetBounds">Control.DoSetBounds</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DoSetBounds.ALeft">
@@ -9174,18 +9189,56 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoAutoSize" name="TWinControl.DoAutoSize">
-        <short/>
-        <descr/>
+      <element name="TWinControl.DoAutoSize">
+        <short>
+          <var>DoAutoSize</var> - performs a lot of calculations and adjustments of child components in the window before automatically adjusting the size of the window itself</short>
+        <descr>
+          <p>
+            <printshort id="TWinControl.DoAutoSize"/>
+          </p>
+          <ul>
+            <li>Checks whether Autosize is in fact permitted</li>
+            <li>Checks for unaligned child components and fits them in as best it can</li>
+            <li>Moves the constrained (aligned) child components to the correct position</li>
+            <li>Adjusts the size of the client rectangle</li>
+            <li>Adjusts the bounds of the whole control</li>
+          </ul>
+          <p>Because this method involves so much overhead, the simpler <link id="#lcl.Controls.TControl.AdjustSize">TControl.AdjustSize</link> is often called instead.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.CalculatePreferredSize" name="TWinControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
+      <element name="TWinControl.CalculatePreferredSize">
+        <short>
+          <var>CalculatePreferredSize</var> - calculates the default/preferred width and height for a TWinControl, which is used by the LCL autosizing algorithms as default size</short>
+        <descr>
+          <p>procedure <var>TWinControl.CalculatePreferredSize</var>(var <var>PreferredWidth</var>,
+    <var>PreferredHeight</var>: integer; <var>WithThemeSpace</var>: Boolean);</p>
+          <p>Calls the inherited method to calculate the default/preferred width and height for a <var>TWinControl</var>, which is used by the LCL autosizing algorithms as default size. Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
+          <p>
+            <var>TWinControl</var> overrides this:</p>
+          <ul>
+            <li>If there are child components, their total preferred size is calculated</li>
+            <li>If this value can not be computed (e.g. the children depend too much on their
+  parent clientrect), then the interface is asked for the preferred size</li>
+          </ul>
+          <p>For example the preferred size of a <var>TButton</var> is the size, where the label fits
+  exactly. This depends heavily on the current theme and widgetset.</p>
+          <p>This value is independent of constraints and siblings, only the inner parts
+  are relevant.</p>
+          <p>
+            <var>WithThemeSpace</var>: If true, adds space for stacking. For example: <var>TRadioButton</var>
+  has a minimum size. But for stacking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it is passed as a parameter to
+  the widgetset. </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.CalculatePreferredSize.PreferredWidth">
@@ -10317,8 +10370,14 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateWnd">
-        <short>Creates the Window</short>
-        <descr/>
+        <short>
+          <var>CreateWnd</var> - Creates the Window</short>
+        <descr>
+          <p>
+            <printshort id="TWinControl.CreateWnd"/>
+          </p>
+          <p>Creates the interface object, sets parameters and assigns the handle</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -10334,7 +10393,12 @@ End;
       <element name="TWinControl.DestroyWnd">
         <short>
           <var>DestroyWnd</var> - destroy the window for this control</short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TWinControl.DestroyWnd"/>
+          </p>
+          <p>Removes handles and restores colour and font flags</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -10373,6 +10437,7 @@ End;
           <p>
             <var>InitializeWnd</var> - initialise the window for this control</p>
           <p>Gets called after the Handle is created and before the child handles are created</p>
+          <p>Works out the correct bounds, sets style, fonts and colours, performs any pending resize operations</p>
         </descr>
         <errors/>
         <seealso/>
@@ -10582,7 +10647,8 @@ End;
       <!-- property Visibility: public -->
       <element name="TWinControl.BorderWidth">
         <short>Property to determine width of the window's border</short>
-        <descr>// properties which are supported by all descendants<br/><br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
+        <descr>// properties which are supported by all descendants<br/>
+          <br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BoundsLockCount">
@@ -14363,7 +14429,8 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.NeedParentForAutoSize">
-        <short>True - need to know parent's properties to do autosize. False - can autosize independently</short>
+        <short>
+          <var>NeedParentForAutoSize</var>:  True - need to know parent's properties to do autosize. False - can autosize independently</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.NeedParentForAutoSize.Result">
@@ -15846,14 +15913,14 @@ and that description should be read to understand their definitions more fully.
         <descr>
           <p>
             <var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space</p>
-    <p>Many controls call  <link id="#lcl.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing. </p>
-    <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
-    <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
+          <p>Many controls call  <link id="#lcl.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing. </p>
+          <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
+          <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
           <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
-	  
-	  <p><var>TControl.AdjustSize</var> calls <var>DoAutoSize</var> in a smart fashion.</p>
-	  <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <link id="TWinControl.DoAutoSize"/>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
+          <p>
+            <var>TControl.AdjustSize</var> calls <var>DoAutoSize</var> in a smart fashion.</p>
+          <p>During loading and handle creation the calls are delayed.</p>
+          <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
           <p>When setting <var>AutoSize</var> = true the LCL autosizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
           <p>The LCL will only autosize the Width or Height if it is free to resize. In other words - the width is not autosized if:</p>
           <ul>

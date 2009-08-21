@@ -439,7 +439,12 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateParams">
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomScrollBar.CreateParams"/>
+          </p>
+          <p>The inherited method creates parameters such as caption, style, size and position for a Control</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.CreateParams">WinControl.CreateParams</link>
@@ -453,7 +458,13 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateWnd">
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomScrollBar.CreateWnd"/>
+          </p>
+          <p>The inherited method creates the interface object, sets parameters and assigns the handle</p>
+          <p>Then the size of scrollbar, maximum and minimum values, page size and position of scrollbar are set</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
@@ -1769,7 +1780,12 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.InitializeWnd">
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.InitializeWnd"/>
+          </p>
+          <p>Inherited method works out the correct bounds, sets style, fonts and colours, performs any pending resize operations</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
@@ -1779,7 +1795,12 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DestroyWnd">
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.DestroyWnd"/>
+          </p>
+          <p>Inherited method removes handles and restores colour and font flags</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
