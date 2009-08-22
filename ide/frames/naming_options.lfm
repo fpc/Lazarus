@@ -1,8 +1,8 @@
 inherited NamingOptionsFrame: TNamingOptionsFrame
   Height = 367
   Width = 507
-  ClientHeight = 363
-  ClientWidth = 503
+  ClientHeight = 367
+  ClientWidth = 507
   TabOrder = 0
   Visible = False
   DesignLeft = 374
@@ -15,7 +15,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Left = 0
     Height = 47
     Top = 0
-    Width = 503
+    Width = 507
     Align = alTop
     AutoFill = True
     Caption = 'PascalFileExtRadiogroup'
@@ -38,7 +38,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Left = 0
     Height = 100
     Top = 53
-    Width = 503
+    Width = 507
     Align = alTop
     AutoFill = True
     BorderSpacing.Top = 6
@@ -62,7 +62,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Left = 0
     Height = 85
     Top = 159
-    Width = 503
+    Width = 507
     Align = alTop
     AutoFill = True
     BorderSpacing.Top = 6
@@ -81,11 +81,12 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   object UnitReferencesRadioGroup: TRadioGroup[3]
     Left = 0
     Height = 50
-    Top = 244
-    Width = 503
+    Top = 250
+    Width = 507
     Align = alTop
     AutoFill = True
     AutoSize = True
+    BorderSpacing.Top = 6
     Caption = 'UnitReferencesRadioGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
