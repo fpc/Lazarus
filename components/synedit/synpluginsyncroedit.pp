@@ -722,13 +722,17 @@ var
 begin
   if not Enabled then exit;
   if FGlyphLastLine <> -2 then begin
-    rcInval := GetGutterGlyphRect(FGlyphLastLine);
+    if SynEdit.HandleAllocated then begin
+      rcInval := GetGutterGlyphRect(FGlyphLastLine);
+      InvalidateRect(SynEdit.Handle, @rcInval, False);
+    end;
+  end;
+  if SynEdit.HandleAllocated then begin
+    rcInval := GetGutterGlyphRect;
+    // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
+    rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).GutterWidth + 2);
     InvalidateRect(SynEdit.Handle, @rcInval, False);
   end;
-  rcInval := GetGutterGlyphRect;
-  // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
-  rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).GutterWidth + 2);
-  InvalidateRect(SynEdit.Handle, @rcInval, False);
 end;
 
 procedure TSynPluginSyncroEditMarkup.DoCaretChanged(Sender: TObject);
@@ -744,8 +748,10 @@ begin
   inherited DoTopLineChanged(OldTopLine);
   // Glyph may have drawn up to one Line above
   if FGlyphLastLine > 1 then begin
-    rcInval := GetGutterGlyphRect(FGlyphLastLine - 1);
-    InvalidateRect(SynEdit.Handle, @rcInval, False);
+    if SynEdit.HandleAllocated then begin
+      rcInval := GetGutterGlyphRect(FGlyphLastLine - 1);
+      InvalidateRect(SynEdit.Handle, @rcInval, False);
+    end;
   end;
   DoInvalidate;
 end;
@@ -763,8 +769,10 @@ begin
   inherited DoEnabledChanged(Sender);
   if not Enabled then begin
     if FGlyphLastLine <> -2 then begin
-      rcInval := GetGutterGlyphRect(FGlyphLastLine);
-      InvalidateRect(SynEdit.Handle, @rcInval, False);
+      if SynEdit.HandleAllocated then begin
+        rcInval := GetGutterGlyphRect(FGlyphLastLine);
+        InvalidateRect(SynEdit.Handle, @rcInval, False);
+      end;
     end;
     FGlyphLastLine := -2;
   end
