@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Arrow, StdCtrls, Buttons, Grids,
+  Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
   ObjInspStrConsts;
 
 type
@@ -40,6 +40,8 @@ type
     GroupBox: TGroupBox;
     LabelMove: TLabel;
     OpenDialog: TOpenDialog;
+    BtnPanel: TPanel;
+    LoadSavePanel: TPanel;
     SaveDialog: TSaveDialog;
     StringGrid: TStringGrid;
     procedure BtnApplyClick(Sender: TObject);
@@ -127,6 +129,10 @@ begin
   BtnLoad.Caption := sccsSGEdtLoad;
   BtnSave.Caption := sccsSGEdtSave;
   LabelMove.Caption := sccsSGEdtMoveRowsCols;
+
+  BtnHelp.Caption:=cActionListEditorHelpCategory;
+  BtnCancel.Caption:=oiStdActDataSetCancel1Hint;
+  BtnOK.Caption:=oisOk2;
 
   OpenDialog.Title := sccsSGEdtOpenDialog;
   SaveDialog.Title := sccsSGEdtSaveDialog;
