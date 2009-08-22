@@ -1088,7 +1088,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Align = alTop
         ResizeAnchor = akTop
       end
-      inline BuildModesFrame: TCompOptBuildModesFrame
+      inline BuildVarsFrame: TCompOptBuildVarsFrame
         Height = 234
         Top = 219
         Width = 667
@@ -1097,12 +1097,12 @@ object frmCompilerOptions: TfrmCompilerOptions
         ClientWidth = 667
         TabOrder = 2
         Visible = True
-        inherited BuildModesGroupBox: TGroupBox
+        inherited BuildVarsGroupBox: TGroupBox
           Height = 234
           Width = 667
           ClientHeight = 215
           ClientWidth = 663
-          inherited BuildModesTreeView: TTreeView
+          inherited BuildVarsTreeView: TTreeView
             Height = 230
             Width = 663
             DefaultItemHeight = 15
