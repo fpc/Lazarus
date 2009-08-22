@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Compiler_BuildModes_Options;
+unit Compiler_BuildVar_Options;
 
 {$mode objfpc}{$H+}
 
@@ -457,7 +457,7 @@ begin
 end;
 
 initialization
-  {$I compiler_buildmodes_options.lrs}
+  {$I compiler_buildvar_options.lrs}
 
 end.
 

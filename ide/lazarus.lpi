@@ -267,12 +267,12 @@
         <UnitName Value="Compiler_Conditionals_Options"/>
       </Unit32>
       <Unit33>
-        <Filename Value="../packager/frames/compiler_buildmodes_options.pas"/>
+        <Filename Value="../packager/frames/compiler_buildvar_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptBuildModesFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_BuildModes_Options"/>
+        <UnitName Value="Compiler_BuildVar_Options"/>
       </Unit33>
       <Unit34>
         <Filename Value="sourceeditor.pp"/>
@@ -358,7 +358,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/"/>
+      <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/;/home/mattias/pascal/wichtig/lazarus/packager/frames/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
