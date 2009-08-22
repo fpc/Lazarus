@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
-  Laz_XMLCfg, Laz_XMLWrite, Laz_XMLRead, CodeCache, CodeToolManager, AVL_Tree,
+  Laz_XMLCfg, Laz_XMLWrite, CodeCache, CodeToolManager, AVL_Tree,
   LazIDEIntf,
   IDEProcs, LazarusIDEStrConsts, IDEDialogs;
 

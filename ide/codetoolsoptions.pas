@@ -36,10 +36,9 @@ interface
 
 uses
   Classes, SysUtils, LazConf, Laz_XMLCfg, FileUtil,
-  LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
-  Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEWindowIntf, IDEOptionsIntf, IDEContextHelpEdit,
-  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs, ButtonPanel;
+  LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, ComCtrls,
+  Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit, IDEOptionsIntf, IDEContextHelpEdit,
+  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
 
 type
 

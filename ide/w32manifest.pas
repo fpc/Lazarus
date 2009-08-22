@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, projectresourcesintf;
+  CodeToolManager, LazConf, LResources, projectresourcesintf;
    
 type
   { TProjectXPManifest }

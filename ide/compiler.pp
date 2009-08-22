@@ -39,7 +39,7 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Process, AsyncProcess, LCLProc, Forms, Controls, FileUtil,
+  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process;
 
 type
