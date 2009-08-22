@@ -573,6 +573,10 @@ end;
 {$ifdef Unix}
 
 procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
+{ This method is the WakeMainThread of the unit classes.
+  It is called in TThread.Synchronize to wake up the main thread = LCL GUI thread.
+  see: TGtkWidgetSet.InitSynchronizeSupport
+}
 var
   thrash: char;
 begin
@@ -638,6 +642,10 @@ begin
 end;
 
 procedure TGtkWidgetSet.InitSynchronizeSupport;
+{ When a thread calls its Synchronize, it calls
+  WakeMainThread (defined in the unit classes).
+  Set
+}
 begin
   { TThread.Synchronize ``glue'' }
   WakeMainThread := @PrepareSynchronize;
