@@ -52,6 +52,18 @@ unit Main;
 
 interface
 
+// TODO: Test on all platforms
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+    {$IFDEF CPUI386}
+      {off $DEFINE UseAsyncProcess}
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF windows}
+    {$DEFINE UseAsyncProcess}
+  {$ENDIF}
+{$ENDIF}
+
 {$I ide.inc}
 
 uses

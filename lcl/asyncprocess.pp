@@ -107,7 +107,6 @@ procedure TAsyncProcess.Execute;
 begin
   inherited Execute;
 
-  writeln('TAsyncProcess.Execute ',poUsePipes in Options);
   if poUsePipes in Options then
     FPipeHandler := AddPipeEventHandler(Output.Handle, @HandlePipeInput, 0);
   FProcessHandler := AddProcessEventHandler(ProcessHandle, @HandleProcessTermination, 0);
