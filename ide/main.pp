@@ -12372,6 +12372,7 @@ end;
 procedure TMainIDE.OnCompilerParseStampIncreased;
 begin
   FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
