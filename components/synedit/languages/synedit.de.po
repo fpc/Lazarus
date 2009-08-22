@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-21 16:20+0100\n"
+"PO-Revision-Date: 2009-08-22 23:20+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -389,7 +389,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
-msgstr ""
+msgstr "Kontextmenü"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -413,7 +413,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Zeile markieren"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
@@ -421,11 +421,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Abschnitt markieren"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Wort markieren"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-21 14:34+0100\n"
+"PO-Revision-Date: 2009-08-22 23:17+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -450,7 +450,7 @@ msgstr "Klassenreihenfolge"
 
 #: lazarusidestrconsts.dlgcdtlast
 msgid "Last"
-msgstr "Letzter"
+msgstr "als letzte"
 
 #: lazarusidestrconsts.dlgcdtlower
 msgid "lowercase"
@@ -803,7 +803,7 @@ msgstr "Vorlage löschen"
 
 #: lazarusidestrconsts.dlgdeplhicomp
 msgid "Delphi Compatible"
-msgstr "Delphikompatibel"
+msgstr "Delphi-kompatibel"
 
 #: lazarusidestrconsts.dlgdesktop
 msgid "Desktop"
@@ -831,7 +831,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmisc
 msgid "Misc Options"
-msgstr "Div. Optionen"
+msgstr "Diverse Optionen"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -847,7 +847,7 @@ msgstr "Antialiasing abschalten"
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
-msgstr ""
+msgstr "Verwende Farbe des rechten Randes"
 
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
@@ -1578,7 +1578,7 @@ msgstr "Schlüsselworte übergehen"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
 msgid "Disable Timer for Markup Current Word"
-msgstr "Timer für Worthervorhebung deaktivieren"
+msgstr "Timer für Wort-Hervorhebung deaktivieren"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 #, fuzzy
@@ -1906,7 +1906,7 @@ msgstr "-"
 #: lazarusidestrconsts.dlgmouseoptmodkeytrue
 msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
 msgid "Y"
-msgstr "J"
+msgstr "j"
 
 #: lazarusidestrconsts.dlgmouseoptmodshift
 msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
@@ -3407,7 +3407,7 @@ msgstr "beginnt"
 
 #: lazarusidestrconsts.lisbehindrelated
 msgid "Behind related"
-msgstr "Nach zugehörigen"
+msgstr "nach ähnlichen"
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -3779,7 +3779,7 @@ msgstr "Quellknoten anzeigen"
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treating as \"many\""
-msgstr "Zählung der geschachtelten Prozeduren als \"viele\" behandelns"
+msgstr "Zählung der geschachtelten Prozeduren als \"viele\" behandeln"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
@@ -4018,7 +4018,7 @@ msgstr "Die Klasse steht in Konflikt mit der .lfm-Datei:%sDie Unit %s%snutzt die
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
-msgstr ""
+msgstr "Klassen und Eigenschaften existieren. Werte wurden nicht geprüft."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6283,7 +6283,7 @@ msgstr "Tastenkombination suchen"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
-msgstr "Erster"
+msgstr "als erste"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -6742,7 +6742,7 @@ msgstr "Informationen zu %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
-msgstr "vor zugehörigen"
+msgstr "vor ähnlichen"
 
 #: lazarusidestrconsts.lisinheritedcomponent
 msgid "Inherited Component"
@@ -9043,7 +9043,7 @@ msgstr "%s - (Neues Projekt)"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
-msgstr ""
+msgstr "Neue Units werden zum Uses-Abschnitt hinzugefügt:"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -9435,7 +9435,7 @@ msgstr "Zwischenablage einfügen"
 
 #: lazarusidestrconsts.lispastetextfromclipboard
 msgid "Paste text from clipboard"
-msgstr ""
+msgstr "Text aus der Zwischenablage einfügen"
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -11962,7 +11962,7 @@ msgstr "Das Arbeitsverzeichnis %s%s%s fehlt.%sBitte prüfen Sie das Arbeitsverze
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
-msgstr ""
+msgstr "Diese Funktion benötigt eine geöffnete .lfm Datei im Quelltexteditor."
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
