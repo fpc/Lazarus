@@ -1095,6 +1095,8 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisDirectoryNotFound = 'Directory %s%s%s not found.';
+  lisRemoveFromSearchPath = 'Remove from search path';
   lisTheDirectoryWasNotFound = 'The directory %s was not found.';
   lisInstallationFailed = 'Installation failed';
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package %'
