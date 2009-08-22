@@ -19,9 +19,11 @@
  ***************************************************************************
 }
 
+// !!! if you change any of these flags, you have to make cleanide !!!
+{$inline on}
+
 { $DEFINE IDE_VERBOSE}
 
-// !!! if you change any of these flags, you have to make cleanide !!!
 { $DEFINE IDE_MEM_CHECK}
 
 { $DEFINE IDE_DEBUG}
@@ -44,8 +46,17 @@
 { $DEFINE VerboseJITForms}
 { $DEFINE VerboseFormEditor}
 
-
-{$inline on}
+// TODO: Test on all platforms
+{$IFNDEF DisableAsyncProcess}
+  {$IFDEF Linux}
+    {$IFDEF CPUI386}
+      {off $DEFINE UseAsyncProcess}
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF windows}
+    {$DEFINE UseAsyncProcess}
+  {$ENDIF}
+{$ENDIF}
 
 // end.
 
