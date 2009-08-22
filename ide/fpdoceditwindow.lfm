@@ -1,7 +1,7 @@
 object FPDocEditor: TFPDocEditor
-  Left = 318
+  Left = 520
   Height = 126
-  Top = 620
+  Top = 745
   Width = 753
   ActiveControl = LeftBtnPanel
   Caption = 'FPDoc editor'
@@ -10,7 +10,7 @@ object FPDocEditor: TFPDocEditor
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object PageControl: TPageControl
     Left = 40
     Height = 126
@@ -18,7 +18,6 @@ object FPDocEditor: TFPDocEditor
     Width = 713
     ActivePage = ShortTabSheet
     Align = alClient
-    PopupMenu = PopupMenu1
     TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
@@ -26,8 +25,8 @@ object FPDocEditor: TFPDocEditor
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
@@ -59,7 +58,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 623
+        Width = 627
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
@@ -105,7 +104,7 @@ object FPDocEditor: TFPDocEditor
         Left = 72
         Height = 27
         Top = 29
-        Width = 633
+        Width = 637
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
@@ -118,13 +117,13 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object InheritedShortLabel: TLabel
         Left = 0
         Height = 14
         Top = 2
-        Width = 707
+        Width = 711
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -139,7 +138,7 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 27
         Top = 18
-        Width = 707
+        Width = 711
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -191,13 +190,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object DescrMemo: TMemo
         Left = 0
-        Height = 87
+        Height = 95
         Top = 0
-        Width = 705
+        Width = 709
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -205,19 +204,18 @@ object FPDocEditor: TFPDocEditor
           'DescrMemo'
         )
         OnChange = DescrMemoChange
-        PopupMenu = PopupMenu1
         TabOrder = 0
       end
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object ErrorsMemo: TMemo
         Left = 0
-        Height = 87
+        Height = 95
         Top = 0
-        Width = 705
+        Width = 709
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -230,13 +228,13 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object SeeAlsoMemo: TMemo
         Left = 0
-        Height = 91
+        Height = 99
         Top = 0
-        Width = 707
+        Width = 711
         Align = alClient
         Lines.Strings = (
           'SeeAlsoMemo'
@@ -247,13 +245,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 91
-      ClientWidth = 707
+      ClientHeight = 99
+      ClientWidth = 711
       object ExampleEdit: TEdit
         Left = 0
         Height = 27
         Top = 0
-        Width = 705
+        Width = 709
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
@@ -265,7 +263,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 568
+        Left = 572
         Height = 23
         Top = 33
         Width = 133
@@ -397,6 +395,19 @@ object FPDocEditor: TFPDocEditor
       ShowHint = True
       ParentShowHint = False
     end
+    object InsertPrintShortSpeedButton: TSpeedButton
+      Tag = 7
+      Left = 0
+      Height = 23
+      Top = 69
+      Width = 20
+      Caption = 'PS'
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = FormatButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
   end
   object OpenDialog: TOpenDialog
     Title = 'Open example file'
@@ -404,18 +415,5 @@ object FPDocEditor: TFPDocEditor
     FilterIndex = 0
     left = 240
     top = 16
-  end
-  object PopupMenu1: TPopupMenu
-    OnPopup = PopupMenu1Popup
-    left = 280
-    top = 16
-    object CopyShortToDescrMenuItem: TMenuItem
-      Caption = 'CopyShortToDescrMenuItem'
-      OnClick = CopyShortToDescrMenuItemClick
-    end
-    object InsertPrintShortTag: TMenuItem
-      Caption = 'InsertPrintShortTag'
-      OnClick = InsertPrintShortTagClick
-    end
   end
 end

@@ -4251,6 +4251,7 @@ resourcestring
   lisEveryNThLineNumber = 'Every n-th line number:';
   lisLink = 'Link:';
   lisShort = 'Short:';
+  lisInsertPrintshortTag2 = 'Insert printshort tag';
   lisDeleteOldFile2 = 'Delete old file?';
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
     +'path of %s%s%s contains the source directory %s%s%s of package %s';

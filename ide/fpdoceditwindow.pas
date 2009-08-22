@@ -84,8 +84,6 @@ type
     LeftBtnPanel: TPanel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
-    CopyShortToDescrMenuItem: TMenuItem;
-    PopupMenu1: TPopupMenu;
     SeeAlsoMemo: TMemo;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
@@ -96,8 +94,8 @@ type
     ShortEdit: TEdit;
     ShortLabel: TLabel;
     ShortTabSheet: TTabSheet;
+    InsertPrintShortSpeedButton: TSpeedButton;
     UnderlineFormatButton: TSpeedButton;
-    InsertPrintShortTag: TMenuItem;
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure BrowseExampleButtonClick(Sender: TObject);
@@ -115,11 +113,9 @@ type
     procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
-    procedure PopupMenu1Popup(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
-    procedure InsertPrintShortTagClick(Sender: TObject);
   private
     FCaretXY: TPoint;
     FModified: Boolean;
@@ -222,6 +218,7 @@ begin
   InsertVarTagButton.Hint := lisCodeHelpHintVarTag;
   InsertParagraphSpeedButton.Hint := lisCodeHelpInsertParagraphFormattingTag;
   InsertLinkSpeedButton.Hint := lisCodeHelpInsertALink;
+  InsertPrintShortSpeedButton.Hint:=lisInsertPrintshortTag2;
 
   ShortLabel.Caption:=lisShort;
   LinkLabel.Caption:=lisLink;
@@ -235,9 +232,6 @@ begin
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
   AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
-
-  CopyShortToDescrMenuItem.Caption:=lisAppendShortDescriptionToLongDescription;
-  InsertPrintShortTag.Caption:=lisInsertPrintShortTag;
 
   Reset;
   
@@ -280,11 +274,14 @@ procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
   procedure InsertTag(const StartTag, EndTag: String);
   begin
     if PageControl.ActivePage = ShortTabSheet then
-      ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag;
-    if PageControl.ActivePage = DescrTabSheet then
-      DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag;
-    if PageControl.ActivePage = ErrorsTabSheet then
-      ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag;
+      ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag
+    else if PageControl.ActivePage = DescrTabSheet then
+      DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag
+    else if PageControl.ActivePage = ErrorsTabSheet then
+      ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag
+    else
+      exit;
+    Modified:=true;
   end;
 
 begin
@@ -310,6 +307,10 @@ begin
     //paragraph tag
     6:
       InsertTag('<p>', '</p>');
+    //printshort
+    7:
+      if (fChain<>nil) and (fChain.Count>0) then
+        InsertTag('<printshort id="'+fChain[0].ElementName+'"/>','');
   end;
 end;
 
@@ -429,14 +430,6 @@ begin
   UpdateButtons;
 end;
 
-procedure TFPDocEditor.PopupMenu1Popup(Sender: TObject);
-begin
-  CopyShortToDescrMenuItem.Visible:=
-    (PageControl.ActivePage = DescrTabSheet)
-    or (PageControl.ActivePage = ShortTabSheet);
-  InsertPrintShortTag.Visible := CopyShortToDescrMenuItem.Visible;
-end;
-
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
 begin
   Save;
@@ -452,14 +445,6 @@ procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
 begin
   if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
     Modified:=true;
-end;
-
-procedure TFPDocEditor.InsertPrintShortTagClick(Sender: TObject);
-const
-  cPrintShort = '<printshort id="%s"/>';
-begin
-  DescrMemo.SelText:=Format(cPrintShort, [fChain[0].ElementName]);
-  Modified:=true;
 end;
 
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
