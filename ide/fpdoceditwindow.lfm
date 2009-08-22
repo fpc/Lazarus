@@ -1,7 +1,7 @@
 object FPDocEditor: TFPDocEditor
-  Left = 520
+  Left = 510
   Height = 126
-  Top = 745
+  Top = 737
   Width = 753
   ActiveControl = LeftBtnPanel
   Caption = 'FPDoc editor'

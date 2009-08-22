@@ -1,15 +1,15 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TFPDocEditor','FORMDATA',[
-  'TPF0'#12'TFPDocEditor'#11'FPDocEditor'#4'Left'#3#8#2#6'Height'#2'~'#3'Top'#3
-  +#233#2#5'Width'#3#241#2#13'ActiveControl'#7#12'LeftBtnPanel'#7'Caption'#6#12
-  +'FPDoc editor'#12'ClientHeight'#2'~'#11'ClientWidth'#3#241#2#8'OnCreate'#7#10
-  +'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#8'OnResize'#7#10'FormResize'#10
-  +'LCLVersion'#6#6'0.9.29'#0#12'TPageControl'#11'PageControl'#4'Left'#2'('#6'H'
-  +'eight'#2'~'#3'Top'#2#0#5'Width'#3#201#2#10'ActivePage'#7#13'ShortTabSheet'#5
-  +'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#0#11'TabPosition'#7#8'tp'
-  +'Bottom'#8'OnChange'#7#17'PageControlChange'#13'OnPageChanged'#7#17'PageCont'
-  +'rolChange'#0#9'TTabSheet'#13'ShortTabSheet'#7'Caption'#6#13'ShortTabSheet'
+  'TPF0'#12'TFPDocEditor'#11'FPDocEditor'#4'Left'#3#254#1#6'Height'#2'~'#3'Top'
+  +#3#225#2#5'Width'#3#241#2#13'ActiveControl'#7#12'LeftBtnPanel'#7'Caption'#6
+  +#12'FPDoc editor'#12'ClientHeight'#2'~'#11'ClientWidth'#3#241#2#8'OnCreate'#7
+  +#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#8'OnResize'#7#10'FormResize'
+  +#10'LCLVersion'#6#6'0.9.29'#0#12'TPageControl'#11'PageControl'#4'Left'#2'('#6
+  +'Height'#2'~'#3'Top'#2#0#5'Width'#3#201#2#10'ActivePage'#7#13'ShortTabSheet'
+  +#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#0#11'TabPosition'#7#8
+  +'tpBottom'#8'OnChange'#7#17'PageControlChange'#13'OnPageChanged'#7#17'PageCo'
+  +'ntrolChange'#0#9'TTabSheet'#13'ShortTabSheet'#7'Caption'#6#13'ShortTabSheet'
   +#12'ClientHeight'#2'c'#11'ClientWidth'#3#199#2#0#6'TLabel'#9'LinkLabel'#21'A'
   +'nchorSideTop.Control'#7#8'LinkEdit'#18'AnchorSideTop.Side'#7#9'asrCenter'#4
   +'Left'#2#6#6'Height'#2#18#3'Top'#2'!'#5'Width'#2'<'#17'BorderSpacing.Top'#2#6

@@ -153,6 +153,12 @@ type
     piFrame
   );
 
+  TIDECodetoolsDefines = (
+    ctdReady,
+    ctdNeedUpdate,
+    ctdUpdating
+    );
+
   { TMainIDE }
 
   TMainIDE = class(TMainIDEBase)
@@ -545,7 +551,7 @@ type
     FRemoteControlTimer: TTimer;
     FRemoteControlFileValid: boolean;
 
-    FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
+    FIDECodeToolsDefines: TIDECodetoolsDefines;
 
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
@@ -12337,12 +12343,12 @@ end;
 
 procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
 begin
-  if FRebuildingCompilerGraphCodeToolsDefinesNeeded then begin
-    FRebuildingCompilerGraphCodeToolsDefinesNeeded:=false;
-    CodeToolBoss.DefineTree.ClearCache;
+  if FIDECodeToolsDefines=ctdNeedUpdate then begin
+    FIDECodeToolsDefines:=ctdUpdating;
     if Project1<>nil then
       Project1.DefineTemplates.AllChanged;
     PkgBoss.RebuildDefineTemplates;
+    FIDECodeToolsDefines:=ctdReady;
     //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
   end;
 end;
@@ -12371,7 +12377,8 @@ end;
 
 procedure TMainIDE.OnCompilerParseStampIncreased;
 begin
-  FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
+  if FIDECodeToolsDefines=ctdUpdating then exit;
+  FIDECodeToolsDefines:=ctdNeedUpdate;
   CodeToolBoss.DefineTree.ClearCache;
 end;
 

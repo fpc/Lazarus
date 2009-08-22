@@ -861,17 +861,25 @@ procedure TFPDocEditor.Save;
 var
   Values: TFPDocElementValues;
 begin
-  if not FModified then Exit; // nothing changed => exit
+  //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
+  if not FModified then begin
+    SaveButton.Enabled:=false;
+    Exit; // nothing changed => exit
+  end;
   FModified:=false;
-  if (fChain=nil) or (fChain.Count=0) then exit;
-  if not fChain.IsValid then exit;
+  SaveButton.Enabled:=false;
+  if (fChain=nil) or (fChain.Count=0) then begin
+    DebugLn(['TFPDocEditor.Save failed: no chain']);
+    exit;
+  end;
+  if not fChain.IsValid then begin
+    DebugLn(['TFPDocEditor.Save failed: chain not valid']);
+    exit;
+  end;
   Values:=GetGUIValues;
   if not WriteNode(fChain[0],Values,true) then begin
-    DebugLn(['TLazDocForm.Save FAILED']);
-  end else begin
-    FModified := False;
+    DebugLn(['TLazDocForm.Save WriteNode FAILED']);
   end;
-  SaveButton.Enabled:=false;
 end;
 
 function TFPDocEditor.GetGUIValues: TFPDocElementValues;

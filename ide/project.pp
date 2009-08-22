@@ -2257,12 +2257,12 @@ end;
 
 function TProject.IDAsString: string;
 begin
-  Result:='Project'; // TODO: see TLazPackage
+  Result:='Project'; // TODO: see TLazPackage, when this is changed change also TProjectDefineTemplates.UpdateSrcDirIfDef
 end;
 
 function TProject.IDAsWord: string;
 begin
-  Result:='Project'; // TODO: see TLazPackage
+  Result:='Project'; // TODO: see TLazPackage when this is changed change also TProjectDefineTemplates.UpdateSrcDirIfDef
 end;
 
 {------------------------------------------------------------------------------
@@ -5082,12 +5082,14 @@ procedure TProjectDefineTemplates.UpdateDefinesForCustomDefines;
 var
   OptionsDefTempl: TDefineTemplate;
   NewCustomOptions: String;
+  Changed: Boolean;
 begin
   if (not Project.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
   NewCustomOptions:=Project.CompilerOptions.GetOptionsForCTDefines;
   if (FLastCustomOptions=NewCustomOptions) then exit;
+  Changed:=false;
 
   FLastCustomOptions:=NewCustomOptions;
   OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
@@ -5096,13 +5098,15 @@ begin
     // no custom options -> delete old template
     if FSrcDirIfDef<>nil then begin
       if FSrcDirIfDef.DeleteChild('Custom Options') then
-        CodeToolBoss.DefineTree.ClearCache;
+        Changed:=true;
     end;
   end else begin
     UpdateSrcDirIfDef;
     FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
-    CodeToolBoss.DefineTree.ClearCache;
+    Changed:=true;
   end;
+  if Changed then
+    CodeToolBoss.DefineTree.ClearCache;
 end;
 
 constructor TProjectDefineTemplates.Create(OwnerProject: TProject);
@@ -5207,7 +5211,6 @@ begin
   end;
   Exclude(FFlags,ptfCustomDefinesChanged);
   UpdateDefinesForCustomDefines; // maybe custom defines changed
-  IncreaseCompilerParseStamp; // invalidate macros
 end;
 
 procedure TProjectDefineTemplates.UpdateGlobalValues;

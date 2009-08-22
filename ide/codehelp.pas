@@ -2355,6 +2355,7 @@ function TCodeHelpElementChain.IsValid: boolean;
 begin
   Result:=(IDEChangeStep=CompilerParseStamp)
     and (CodetoolsChangeStep=CodeToolBoss.CodeTreeNodesDeletedStep);
+  //DebugLn(['TCodeHelpElementChain.IsValid Result=',Result,' IDEChangeStep=',IDEChangeStep,' CompilerParseStamp=',CompilerParseStamp,' CodetoolsChangeStep=',CodetoolsChangeStep,' CodeToolBoss.CodeTreeNodesDeletedStep=',CodeToolBoss.CodeTreeNodesDeletedStep]);
 end;
 
 procedure TCodeHelpElementChain.MakeValid;
