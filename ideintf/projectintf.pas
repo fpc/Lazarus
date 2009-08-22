@@ -154,7 +154,7 @@ type
 
   { TLazBuildProperty }
 
-  TLazBuildProperty = class
+  TLazBuildVariable = class
   protected
     FDefaultValue: TLazCompOptConditionals;
     FIdentifier: string;
@@ -166,7 +166,7 @@ type
     procedure SetValueDescriptions(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
-    procedure Assign(Source: TLazBuildProperty); virtual; abstract;
+    procedure Assign(Source: TLazBuildVariable); virtual; abstract;
     procedure SetDefaultValue(const AValue: string); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property Description: string read FDescription write SetDescription;
@@ -181,17 +181,17 @@ type
   private
     FOwner: TObject;
   protected
-    function GetItems(Index: integer): TLazBuildProperty; virtual; abstract;
+    function GetItems(Index: integer): TLazBuildVariable; virtual; abstract;
   public
     constructor Create(TheOwner: TObject); virtual;
-    function Add(Identifier: string): TLazBuildProperty; virtual; abstract;
+    function Add(Identifier: string): TLazBuildVariable; virtual; abstract;
     procedure Delete(Index: integer); virtual; abstract;
     procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
     function IndexOfIdentifier(Identifier: string): integer; virtual; abstract;
-    function ModeWithIdentifier(Identifier: string): TLazBuildProperty; virtual; abstract;
+    function ModeWithIdentifier(Identifier: string): TLazBuildVariable; virtual; abstract;
     function Count: integer; virtual; abstract;
     procedure Clear; virtual; abstract;
-    property Items[Index: integer]: TLazBuildProperty read GetItems; default;
+    property Items[Index: integer]: TLazBuildVariable read GetItems; default;
     property Owner: TObject read FOwner;
   end;
 

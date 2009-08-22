@@ -65,15 +65,15 @@ type
     FEditors: TFPList;// list of TCompOptsExprEditor
     procedure SetBuildProperties(const AValue: TIDEBuildProperties);
     procedure RebuildTreeView;
-    procedure TreeViewAddBuildVar(BuildProperty: TLazBuildProperty);
+    procedure TreeViewAddBuildVar(BuildProperty: TLazBuildVariable);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
-    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildProperty): TCBMNodeType;
-    function GetSelectedNode(out BuildProperty: TLazBuildProperty;
+    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildVariable): TCBMNodeType;
+    function GetSelectedNode(out BuildProperty: TLazBuildVariable;
                              out NodeType: TCBMNodeType): TTreeNode;
-    function GetBuildVarTVNode(BuildProperty: TLazBuildProperty): TTreeNode;
-    function GetValuesTVNode(BuildProperty: TLazBuildProperty): TTreeNode;
+    function GetBuildVarTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
+    function GetValuesTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
     procedure FreeEditors;
-    function GetEditor(BuildProperty: TLazBuildProperty): TCompOptsExprEditor;
+    function GetEditor(BuildProperty: TLazBuildVariable): TCompOptsExprEditor;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,7 +87,7 @@ implementation
 procedure TCompOptBuildVarsFrame.NewBuildVarClick(Sender: TObject);
 var
   NewIdentifier: String;
-  NewBuildProperty: TLazBuildProperty;
+  NewBuildProperty: TLazBuildVariable;
   SetResultNode: TCompOptCondNode;
 begin
   NewIdentifier:=GlobalBuildProperties.GetUniqueModeName(BuildProperties);
@@ -105,7 +105,7 @@ end;
 
 procedure TCompOptBuildVarsFrame.NewValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   i: Integer;
   NewValueStr: String;
@@ -129,7 +129,7 @@ end;
 
 procedure TCompOptBuildVarsFrame.DeleteValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   SelTVNode: TTreeNode;
   aValue: String;
@@ -151,13 +151,13 @@ end;
 
 procedure TCompOptBuildVarsFrame.DeleteBuildVarClick(Sender: TObject);
 var
-  BuildProperty: TIDEBuildProperty;
+  BuildProperty: TIDEBuildVariable;
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
   i: LongInt;
   Editor: TCompOptsExprEditor;
 begin
-  SelTVNode:=GetSelectedNode(TLazBuildProperty(BuildProperty),NodeType);
+  SelTVNode:=GetSelectedNode(TLazBuildVariable(BuildProperty),NodeType);
   if BuildProperty=nil then exit;
   if MessageDlg(lisConfirmDelete,
     Format(lisDeleteBuildVar, ['"', BuildProperty.Identifier, '"']),
@@ -175,7 +175,7 @@ end;
 
 procedure TCompOptBuildVarsFrame.BuildVarsTVPopupMenuPopup(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   Editor: TCompOptsExprEditor;
 
@@ -217,7 +217,7 @@ end;
 procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
@@ -233,9 +233,9 @@ end;
 procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
-  ConflictBuildProperty: TIDEBuildProperty;
+  ConflictBuildProperty: TIDEBuildVariable;
   Index: LongInt;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
@@ -305,7 +305,7 @@ begin
 end;
 
 procedure TCompOptBuildVarsFrame.TreeViewAddBuildVar(
-  BuildProperty: TLazBuildProperty);
+  BuildProperty: TLazBuildVariable);
 var
   TVNode: TTreeNode;
   ValuesTVNode: TTreeNode;
@@ -356,7 +356,7 @@ begin
 end;
 
 function TCompOptBuildVarsFrame.GetNodeInfo(Node: TTreeNode; out
-  BuildProperty: TLazBuildProperty): TCBMNodeType;
+  BuildProperty: TLazBuildVariable): TCBMNodeType;
 
   function GetNodeType(CurNode: TTreeNode): TCBMNodeType;
   var
@@ -364,8 +364,8 @@ function TCompOptBuildVarsFrame.GetNodeInfo(Node: TTreeNode; out
   begin
     if CurNode=nil then
       Result:=cbmntNone
-    else if TObject(CurNode.Data) is TLazBuildProperty then begin
-      BuildProperty:=TLazBuildProperty(CurNode.Data);
+    else if TObject(CurNode.Data) is TLazBuildVariable then begin
+      BuildProperty:=TLazBuildVariable(CurNode.Data);
       Result:=cbmntBuildVar;
     end else begin
       ParentType:=GetNodeType(CurNode.Parent);
@@ -389,13 +389,13 @@ begin
 end;
 
 function TCompOptBuildVarsFrame.GetSelectedNode(out
-  BuildProperty: TLazBuildProperty; out NodeType: TCBMNodeType): TTreeNode;
+  BuildProperty: TLazBuildVariable; out NodeType: TCBMNodeType): TTreeNode;
 begin
   Result:=BuildVarsTreeView.Selected;
   NodeType:=GetNodeInfo(Result,BuildProperty);
 end;
 
-function TCompOptBuildVarsFrame.GetBuildVarTVNode(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetBuildVarTVNode(BuildProperty: TLazBuildVariable
   ): TTreeNode;
 begin
   Result:=BuildVarsTreeView.Items.GetFirstNode;
@@ -403,7 +403,7 @@ begin
     Result:=Result.GetNextSibling;
 end;
 
-function TCompOptBuildVarsFrame.GetValuesTVNode(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetValuesTVNode(BuildProperty: TLazBuildVariable
   ): TTreeNode;
 var
   BuildVarTVNode: TTreeNode;
@@ -424,7 +424,7 @@ begin
   FEditors.Clear;
 end;
 
-function TCompOptBuildVarsFrame.GetEditor(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetEditor(BuildProperty: TLazBuildVariable
   ): TCompOptsExprEditor;
 var
   i: Integer;
