@@ -20,6 +20,8 @@ FPC=/usr/bin/fpc
 endif
 # Set FPCVER
 FPCVER=$(shell ${FPC} -iV)
+
+FPCTARGET=$(CPU_TARGET)-linux
 # Get version information from changelog file
 DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
 DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
@@ -99,7 +101,7 @@ unpatch:
 debian-files: patch debian-files-stamp
 debian-files-stamp:
 	@echo "--- Creating/fixing *.install files"
-	#/bin/bash debian/fixdeb debian $(FPCTARGET) $(PPNEW)
+	/bin/bash debian/fixdeb debian $(FPCTARGET) $(PPNEW)
 	touch debian-files-stamp
 
 ###################
@@ -138,20 +140,20 @@ install-arch-stamp:
 	dh_installdirs
 	# create all necessary directories
 	install -d $(INSTALL_DIR)/usr/bin
-	install -d $(INSTALL_DIR)/usr/lib/lazarus/tools
+	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/tools
 	# Install the IDE & its accessories
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus \
+	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION} \
 		$(CURDIR)/lazarus \
 		$(CURDIR)/lazbuild \
 		$(CURDIR)/startlazarus \
 		$(CURDIR)/languages
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/tools \
+	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/tools \
 		$(CURDIR)/tools/lazres \
 		$(CURDIR)/tools/lrstolfm \
 		$(CURDIR)/tools/svn2revisioninc \
 		$(CURDIR)/tools/updatepofiles
 	# Install the library files
-	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus
+	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
@@ -164,8 +166,8 @@ install-arch-stamp:
 	${MKDIR} $(INSTALL_DIR)/etc/lazarus
 	fpcsubst -d FPCVER=${FPCVER} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus/environmentoptions.xml
 	# Install contributer list
-	install -d $(INSTALL_DIR)/usr/lib/lazarus/docs
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/docs \
+	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs
+	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs \
 		$(CURDIR)/docs/Contributors.txt \
 		$(CURDIR)/docs/contributors.utf8 \
 		$(CURDIR)/docs/acknowledgements.txt
@@ -228,7 +230,7 @@ install-source-stamp:
 		$(CURDIR)/test \
 		$(CURDIR)/tools
 	find $(INSTALL_DIR) -name '*.bmp' -exec chmod 644 '{}' ';'
-	$(RM) $(INSTALL_DIR)/usr/lib/lazarus/components/lazreport/license*.txt
+	$(RM) $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/components/lazreport/license*.txt
 	touch install-source-stamp
 
 ###################
