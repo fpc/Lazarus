@@ -224,7 +224,7 @@ begin
       if CurDir<>'' then begin
         IDEMacros.SubstituteMacros(CurDir);
         LazPackage.LongenFilename(CurDir);
-        if not FileExistsUTF8(CurDir) then begin
+        if not DirPathExists(CurDir) then begin
           DlgResult:=QuestionDlg('Directory not found',
             'Directory "'+CurDir+'" not found.',
             mtError,[mrIgnore,mrYes,'Remove from search path',mrCancel],0);
