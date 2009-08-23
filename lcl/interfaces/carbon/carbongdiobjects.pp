@@ -741,7 +741,7 @@ procedure TCarbonRegion.Apply(ADC: TCarbonContext);
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
-  if OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
+  if HIShapeIsEmpty(FShape) or OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
     Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
   CGContextClip(ADC.CGContext);
 end;

@@ -57,6 +57,7 @@ cd %FPCSVNDIR%\fpcsrc
 rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 :: create a native compiler + utils
 %MAKEEXE% compiler_cycle FPC=%RELEASE_PPC%
+%MAKEEXE% rtl_clean rtl PP=%COMPILER% >> %LOGFILE%
 
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%%L
 FOR /F %%L IN ('%COMPILER% -iSO') DO SET FPCSourceOS=%%L

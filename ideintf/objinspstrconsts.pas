@@ -453,6 +453,8 @@ resourcestring
   pirsCustomOptions = 'Custom options';
   oisIndexOutOfBounds = 'Index out of bounds';
   oisNotSupported = 'not supported';
+  oisUnableToChangeParentOfControlToNewParent = 'Unable to change parent of '
+    +'control %s%s%s to new parent %s%s%s.%s%s';
 
 implementation
 

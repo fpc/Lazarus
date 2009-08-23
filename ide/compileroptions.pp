@@ -4038,7 +4038,7 @@ begin
     
     SetDefault(false);
      
-    temp := TStringList.create;
+    temp := TStringList.Create;
     try 
       temp.LoadFromFile(FileName); 
       i := 0;

@@ -1027,27 +1027,28 @@ begin
   //DebugLn(['gtkdestroyCB ',GetWidgetDebugReport(Widget)]);
   
   Info:=GetWidgetInfo(Widget,false);
-  if Info=nil then begin
-    // this widget is already destroyed
-    exit;
-  end;
-  if (Info^.LCLObject<>TObject(Data)) then begin
-    // this LCLObject does not use this widget anymore
-    exit;
-  end;
-  if (TObject(Data) is TWinControl)
-  and ((not TWinControl(Data).HandleAllocated)
-       or (PGtkWidget(TWinControl(Data).Handle)<>Widget))
-  then begin
-    // the TWinControl does not use this widget anymore.
-    exit;
+  if Info = nil then // this widget is already destroyed
+    Exit;
+
+  if (Info^.LCLObject <> TObject(Data)) then // this LCLObject does not use this widget anymore
+    Exit;
+
+  if (TObject(Data) is TWinControl) then
+  begin
+    if (not TWinControl(Data).HandleAllocated) then
+    begin
+      FreeWidgetInfo(Widget);
+      Exit;
+    end else
+    if (PGtkWidget(TWinControl(Data).Handle) <> Widget) then // the TWinControl does not use this widget anymore.
+      Exit;
   end;
 
   {$IFDEF EventTrace}
   EventTrace('destroyCB', data);
   {$ENDIF}
   //DebugLn('gtkdestroyCB Data="',DbgSName(TObject(Data)),'" LCLObject="',DbgSName(Info^.LCLObject),'" ',GetWidgetDebugReport(Widget));
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.msg := LM_DESTROY;
   DeliverMessage(Data, Mess);
 

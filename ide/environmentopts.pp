@@ -35,7 +35,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileUtil, Dialogs,
-  Laz_XMLCfg, AvgLvlTree, NewItemIntf, ProjectIntf,
+  Laz_XMLCfg, AvgLvlTree, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
   IDEOptionsIntf;

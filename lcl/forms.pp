@@ -1785,7 +1785,6 @@ begin
     Screen.DestroyCursors;
     Screen.DestroyMonitors;
   end;
-  if Application=nil then exit;
   Application.Free;
   Application:=nil;
   FreeAllClipBoards;

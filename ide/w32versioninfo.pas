@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, CodeCache, LazConf, ProjectResourcesIntf;
+  CodeToolManager, LazConf, ProjectResourcesIntf;
    
 type
   { TProjectVersionInfo }

@@ -213,7 +213,7 @@ begin
   FLoadedPageIndex:=-1;
   FPageIndexOnLastShow:=-1;
 
-  ControlStyle := [csAcceptsControls];
+  ControlStyle := []; // do not add csAcceptsControls
   TabPosition := tpTop;
   TabStop := true;
   ShowTabs := True;

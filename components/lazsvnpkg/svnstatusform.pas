@@ -289,7 +289,6 @@ end;
 
 initialization
   {$I svnstatusform.lrs}
-  {$I lazsvnpkg_images.lrs}
 
 end.
 

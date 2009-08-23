@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
   ProjectResourcesIntf, LazarusIDEStrConsts,
   W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
-  BasicCodeTools, CodeToolManager, CodeCache, CodeAtom;
+  CodeToolManager, CodeCache;
 
 type
 

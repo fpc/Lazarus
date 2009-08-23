@@ -1357,7 +1357,7 @@ procedure CallInterfaceFinalizationHandlers;
 var
   i: Integer;
 begin
-  for i:=0 to InterfaceFinalizationHandlers.Count-1 do
+  for i:=InterfaceFinalizationHandlers.Count-1 downto 0 do
     TProcedure(InterfaceFinalizationHandlers[i])();
 end;
 
