@@ -5533,7 +5533,7 @@ begin
   Result:=inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then begin
     GridMouseWheel(Shift, 1);
-    Result := true;
+    // keep Result=false to let the interface scroll
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelDown END');{$endif}
 end;
@@ -5545,7 +5545,7 @@ begin
   Result:=inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then begin
     GridMouseWheel(Shift, -1);
-    Result := true;
+    // keep Result=false to let the interface scroll
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelUP END');{$endif}
 end;
