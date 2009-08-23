@@ -15823,15 +15823,15 @@ and that description should be read to understand their definitions more fully.
       </element>
       <element name="TControl.DoMouseWheel">
         <short>
-          <var>DoMouseWheel</var> - performs the action to deal with a movement of the mouse wheel; returns True if successful</short>
+          <var>DoMouseWheel</var> - performs the action to deal with a movement of the mouse wheel; returns True if handled</short>
       </element>
       <element name="TControl.DoMouseWheelDown">
         <short>
-          <var>DoMouseWheelDown</var> - performs the action for a downward movement of the mouse wheel; returns True if successful</short>
+          <var>DoMouseWheelDown</var> - performs the action for a downward movement of the mouse wheel; returns True if handled</short>
       </element>
       <element name="TControl.DoMouseWheelUp">
         <short>
-          <var>DoMouseWheelUp</var> - performs the action for an upward movement of the mouse wheel; returns True if successful</short>
+          <var>DoMouseWheelUp</var> - performs the action for an upward movement of the mouse wheel; returns True if handled</short>
       </element>
       <element link="#LCL.Controls.TDockManager.MouseMessage" name="TDockTree.MouseMessage"/>
       <element name="TControl.CreateControlBorderSpacing">
