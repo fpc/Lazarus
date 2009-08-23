@@ -5260,6 +5260,7 @@ constructor TProjectProgramDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameProgram;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
 end;
 
 function TProjectProgramDescriptor.GetLocalizedName: string;
@@ -5453,6 +5454,7 @@ constructor TProjectLibraryDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameLibrary;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
 end;
 
 function TProjectLibraryDescriptor.GetLocalizedName: string;
@@ -5671,6 +5673,7 @@ constructor TProjectConsoleApplicationDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameConsoleApplication;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
 end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedName: string;
