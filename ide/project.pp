@@ -3615,6 +3615,7 @@ begin
   Dependency.Owner:=Self;
   Dependency.HoldPackage:=true;
   FDefineTemplates.CustomDefinesChanged;
+  IncreaseCompilerParseStamp;
   Modified:=true;
   EndUpdate;
 end;
@@ -3627,6 +3628,7 @@ begin
   Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
   FDefineTemplates.CustomDefinesChanged;
+  IncreaseCompilerParseStamp;
   Modified:=true;
   EndUpdate;
 end;
@@ -3638,6 +3640,7 @@ begin
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   Dependency.Free;
   FDefineTemplates.CustomDefinesChanged;
+  IncreaseCompilerParseStamp;
   EndUpdate;
 end;
 
@@ -3672,6 +3675,7 @@ begin
   BeginUpdate(true);
   Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
   FDefineTemplates.CustomDefinesChanged;
+  IncreaseCompilerParseStamp;
   EndUpdate;
 end;
 
@@ -3681,6 +3685,7 @@ begin
   BeginUpdate(true);
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
   FDefineTemplates.CustomDefinesChanged;
+  IncreaseCompilerParseStamp;
   EndUpdate;
 end;
 

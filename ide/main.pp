@@ -12390,6 +12390,13 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnCompilerParseStampIncreased;
+begin
+  if FIDECodeToolsDefines=ctdUpdating then exit;
+  FIDECodeToolsDefines:=ctdNeedUpdate;
+  CodeToolBoss.DefineTree.ClearCache;
+end;
+
 function TMainIDE.CTMacroFunctionProject(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -12410,13 +12417,6 @@ begin
     FuncData^.Result:='<unknown parameter for CodeTools Macro project:"'+Param+'">';
     debugln('TMainIDE.MacroFunctionProject WARNING: ',FuncData^.Result);
   end;
-end;
-
-procedure TMainIDE.OnCompilerParseStampIncreased;
-begin
-  if FIDECodeToolsDefines=ctdUpdating then exit;
-  FIDECodeToolsDefines:=ctdNeedUpdate;
-  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
