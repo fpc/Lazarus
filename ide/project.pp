@@ -603,6 +603,7 @@ type
     FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
     FSessionStorePathDelim: TPathDelimSwitch;
+    FSkipCheckLCLInterfaces: boolean;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
@@ -630,6 +631,7 @@ type
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetMainProject(const AValue: boolean);
+    procedure SetSkipCheckLCLInterfaces(const AValue: boolean);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetPOOutputDirectory(const AValue: string);
@@ -825,6 +827,8 @@ type
                                          read FAutoOpenDesignerFormsDisabled
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
+    property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
+                                             write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions
                                  read FCompilerOptions write SetCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
@@ -1875,6 +1879,7 @@ begin
   inherited Create(ProjectDescription);
 
   fActiveEditorIndexAtStart := -1;
+  FSkipCheckLCLInterfaces:=false;
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
@@ -1998,13 +2003,15 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   begin
     aConfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value',
                            ActiveEditorIndexAtStart,-1);
+    aConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
+                           FSkipCheckLCLInterfaces,false);
 
     if (not (pfSaveOnlyProjectUnits in Flags))
     and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
       FJumpHistory.DeleteInvalidPositions;
       FJumpHistory.SaveToXMLConfig(aConfig,Path);
     end;
-    
+
     // save custom session data
     SaveStringToStringTree(aConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
@@ -2395,6 +2402,8 @@ var
     // load editor info
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
+    FSkipCheckLCLInterfaces:=xmlconfig.GetValue(
+       Path+'SkipCheckLCLInterfaces/Value',false);
     FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
 
     // load custom session data
@@ -2720,14 +2729,13 @@ begin
   FRunParameterOptions.Clear;
 
   fActiveEditorIndexAtStart := -1;
+  FSkipCheckLCLInterfaces:=false;
   FAutoOpenDesignerFormsDisabled := false;
   FBookmarks.Clear;
   FCompilerOptions.Clear;
   FDefineTemplates.Clear;
   FJumpHistory.Clear;
   fMainUnitID := -1;
-  Modified := false;
-  SessionModified := false;
   fProjectInfoFile := '';
   ProjectSessionFile:='';
   FStateFileDate:=0;
@@ -2737,6 +2745,9 @@ begin
   FPublishOptions.Clear;
   FTargetFileExt := GetExecutableExt;
   Title := '';
+
+  Modified := false;
+  SessionModified := false;
   EndUpdate;
 end;
 
@@ -4215,6 +4226,13 @@ begin
     SourceDirectories.AddFilename(VirtualDirectory)
   else
     SourceDirectories.RemoveFilename(VirtualDirectory);
+end;
+
+procedure TProject.SetSkipCheckLCLInterfaces(const AValue: boolean);
+begin
+  if FSkipCheckLCLInterfaces=AValue then exit;
+  FSkipCheckLCLInterfaces:=AValue;
+  SessionModified:=true;
 end;
 
 function TProject.JumpHistoryCheckPosition(

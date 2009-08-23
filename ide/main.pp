@@ -767,6 +767,7 @@ type
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
+    function CheckMainSrcLCLInterfaces: TModalResult;
     function QuitIDE: boolean;
 
     // edit menu
@@ -8587,6 +8588,8 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
+  if CheckMainSrcLCLInterfaces<>mrOk then exit;
+
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
@@ -9464,6 +9467,53 @@ begin
     Result:=CheckCompilerOptsDlg.ShowModal;
   finally
     FreeThenNil(CheckCompilerOptsDlg);
+  end;
+end;
+
+function TMainIDE.CheckMainSrcLCLInterfaces: TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+  MainUsesSection,ImplementationUsesSection: TStrings;
+  MsgResult: TModalResult;
+begin
+  Result:=mrOk;
+  if (Project1=nil) then exit;
+  if Project1.SkipCheckLCLInterfaces then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
+  if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
+  if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
+    PackageGraph.LCLPackage)=nil
+  then
+    exit; // project does not use LCL
+  // project uses LCL
+  MainUsesSection:=nil;
+  ImplementationUsesSection:=nil;
+  try
+    if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
+      MainUsesSection,ImplementationUsesSection) then exit;
+    if (AnsiSearchInStringList(MainUsesSection,'forms')<0)
+    and (AnsiSearchInStringList(ImplementationUsesSection,'forms')<0) then
+      exit;
+    // project uses lcl unit Forms
+    if (AnsiSearchInStringList(MainUsesSection,'interfaces')>=0)
+    or (AnsiSearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
+      exit;
+    // project uses lcl unit Forms, but not unit interfaces
+    // this will result in strange linker error
+    MsgResult:=IDEQuestionDialog('Warning',
+      'The project does not use the LCL unit interfaces, but it seems it needs it.'#13
+      +'You will get strange linker errors if you use the LCL forms without interfaces.'
+      ,mtWarning,[mrYes,'Add unit interfaces',mrNo,'Ignore',
+                  mrNoToAll,'Always ignore',mrCancel]);
+    case MsgResult of
+    mrNo: exit;
+    mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
+    mrCancel: exit(mrCancel);
+    end;
+    CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,'Interfaces','');
+  finally
+    MainUsesSection.Free;
+    ImplementationUsesSection.Free;
   end;
 end;
 
