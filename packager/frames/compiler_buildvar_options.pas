@@ -87,19 +87,19 @@ implementation
 procedure TCompOptBuildVarsFrame.NewBuildVarClick(Sender: TObject);
 var
   NewIdentifier: String;
-  NewBuildProperty: TLazBuildVariable;
+  NewBuildVar: TLazBuildVariable;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=GlobalBuildProperties.GetUniqueModeName(BuildProperties);
-  NewBuildProperty:=BuildProperties.Add(NewIdentifier);
+  NewIdentifier:=GlobalBuildProperties.GetUniqueVarName(BuildProperties);
+  NewBuildVar:=BuildProperties.Add(NewIdentifier);
   // add a node
-  SetResultNode:=TCompOptCondNode.Create(NewBuildProperty.DefaultValue);
+  SetResultNode:=TCompOptCondNode.Create(NewBuildVar.DefaultValue);
   SetResultNode.NodeType:=cocntSetValue;
   SetResultNode.ValueType:=cocvtResult;
-  NewBuildProperty.DefaultValue.Root.AddLast(SetResultNode);
+  NewBuildVar.DefaultValue.Root.AddLast(SetResultNode);
   // add to TreeView
   BuildVarsTreeView.BeginUpdate;
-  TreeViewAddBuildVar(NewBuildProperty);
+  TreeViewAddBuildVar(NewBuildVar);
   BuildVarsTreeView.EndUpdate;
 end;
 

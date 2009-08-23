@@ -78,7 +78,7 @@ type
   TIDEBuildProperties = class(TLazBuildProperties)
   private
     FBuildPropertySet: TBuildModeSet;
-    fPrevModes, fNextModes: TIDEBuildProperties;
+    fPrevVars, fNextVars: TIDEBuildProperties;
     procedure SetBuildPropertySet(const AValue: TBuildModeSet);
   protected
     FItems: TFPList;// list of TIDEBuildVariable
@@ -108,14 +108,14 @@ type
   TBuildModeSet = class
   private
     FEvaluator: TExpressionEvaluator;
-    FFirstBuildModes: TIDEBuildProperties;
+    FFirstBuildVars: TIDEBuildProperties;
     procedure Changed;
   public
     constructor Create;
     destructor Destroy; override;
-    function FindModeWithIdentifier(Identifier: string; out BuildModes: TIDEBuildProperties;
-      out BuildMode: TIDEBuildVariable): boolean;
-    function GetUniqueModeName(CheckToo: TIDEBuildProperties): string;
+    function FindVarWithIdentifier(Identifier: string; out BuildVars: TIDEBuildProperties;
+      out BuildVar: TIDEBuildVariable): boolean;
+    function GetUniqueVarName(CheckToo: TIDEBuildProperties): string;
     property Evaluator: TExpressionEvaluator read FEvaluator;
   end;
 
@@ -3456,44 +3456,44 @@ end;
 
 destructor TBuildModeSet.Destroy;
 var
-  BuildMode: TIDEBuildProperties;
-  NextMode: TIDEBuildProperties;
+  BuildVar: TIDEBuildProperties;
+  NextVar: TIDEBuildProperties;
 begin
-  BuildMode:=FFirstBuildModes;
-  while BuildMode<>nil do begin
-    NextMode:=BuildMode.fNextModes;
-    if BuildMode.Owner=Self then
-      BuildMode.Free;
-    BuildMode:=NextMode;
+  BuildVar:=FFirstBuildVars;
+  while BuildVar<>nil do begin
+    NextVar:=BuildVar.fNextVars;
+    if BuildVar.Owner=Self then
+      BuildVar.Free;
+    BuildVar:=NextVar;
   end;
   FreeAndNil(FEvaluator);
   inherited Destroy;
 end;
 
-function TBuildModeSet.FindModeWithIdentifier(Identifier: string; out
-  BuildModes: TIDEBuildProperties; out BuildMode: TIDEBuildVariable): boolean;
+function TBuildModeSet.FindVarWithIdentifier(Identifier: string; out
+  BuildVars: TIDEBuildProperties; out BuildVar: TIDEBuildVariable): boolean;
 begin
-  BuildMode:=nil;
-  BuildModes:=FFirstBuildModes;
-  while BuildModes<>nil do begin
-    BuildMode:=BuildModes.ModeWithIdentifier(Identifier);
-    if BuildMode<>nil then exit(true);
-    BuildModes:=BuildModes.fNextModes;
+  BuildVar:=nil;
+  BuildVars:=FFirstBuildVars;
+  while BuildVars<>nil do begin
+    BuildVar:=BuildVars.ModeWithIdentifier(Identifier);
+    if BuildVar<>nil then exit(true);
+    BuildVars:=BuildVars.fNextVars;
   end;
   Result:=false;
 end;
 
-function TBuildModeSet.GetUniqueModeName(CheckToo: TIDEBuildProperties): string;
+function TBuildModeSet.GetUniqueVarName(CheckToo: TIDEBuildProperties): string;
 var
   i: Integer;
-  BuildModes: TIDEBuildProperties;
-  BuildMode: TIDEBuildVariable;
+  BuildVars: TIDEBuildProperties;
+  BuildVar: TIDEBuildVariable;
 begin
   i:=0;
   repeat
     inc(i);
-    Result:='Mode'+IntToStr(i);
-  until (not FindModeWithIdentifier(Result,BuildModes,BuildMode))
+    Result:='Variable'+IntToStr(i);
+  until (not FindVarWithIdentifier(Result,BuildVars,BuildVar))
     and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
 end;
 
@@ -3616,19 +3616,19 @@ procedure TIDEBuildProperties.SetBuildPropertySet(const AValue: TBuildModeSet);
 begin
   if FBuildPropertySet=AValue then exit;
   if FBuildPropertySet<>nil then begin
-    if FBuildPropertySet.FFirstBuildModes=Self then
-      FBuildPropertySet.FFirstBuildModes:=fNextModes;
-    if fNextModes<>nil then fNextModes.fPrevModes:=fPrevModes;
-    if fPrevModes<>nil then fPrevModes.fNextModes:=fNextModes;
-    fPrevModes:=nil;
-    fNextModes:=nil;
+    if FBuildPropertySet.FFirstBuildVars=Self then
+      FBuildPropertySet.FFirstBuildVars:=fNextVars;
+    if fNextVars<>nil then fNextVars.fPrevVars:=fPrevVars;
+    if fPrevVars<>nil then fPrevVars.fNextVars:=fNextVars;
+    fPrevVars:=nil;
+    fNextVars:=nil;
     FBuildPropertySet.Changed;
   end;
   FBuildPropertySet:=AValue;
   if FBuildPropertySet<>nil then begin
-    fNextModes:=FBuildPropertySet.FFirstBuildModes;
-    FBuildPropertySet.FFirstBuildModes:=Self;
-    if fNextModes<>nil then fNextModes.fPrevModes:=Self;
+    fNextVars:=FBuildPropertySet.FFirstBuildVars;
+    FBuildPropertySet.FFirstBuildVars:=Self;
+    if fNextVars<>nil then fNextVars.fPrevVars:=Self;
     FBuildPropertySet.Changed;
   end;
 end;
