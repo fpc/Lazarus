@@ -561,7 +561,7 @@ type
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
-          ImplementationUsesSection: TStrings): boolean;
+          ImplementationUsesSection: TStrings): boolean; // ignoring 'in'
     function FindMissingUnits(Code: TCodeBuffer; var MissingUnits: TStrings;
           FixCase: boolean = false; SearchImplementation: boolean = true): boolean;
     function FindDelphiProjectUnits(Code: TCodeBuffer;
