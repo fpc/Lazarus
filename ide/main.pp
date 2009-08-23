@@ -9500,11 +9500,10 @@ begin
       exit;
     // project uses lcl unit Forms, but not unit interfaces
     // this will result in strange linker error
-    MsgResult:=IDEQuestionDialog('Warning',
-      'The project does not use the LCL unit interfaces, but it seems it needs it.'#13
-      +'You will get strange linker errors if you use the LCL forms without interfaces.'
-      ,mtWarning,[mrYes,'Add unit interfaces',mrNo,'Ignore',
-                  mrNoToAll,'Always ignore',mrCancel]);
+    MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
+      Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [#13])
+      , mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+                  mrNoToAll, lisAlwaysIgnore, mrCancel]);
     case MsgResult of
     mrNo: exit;
     mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;

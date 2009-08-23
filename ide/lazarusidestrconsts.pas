@@ -1050,6 +1050,7 @@ resourcestring
   lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
+  lisAlwaysIgnore = 'Always ignore';
   // OI colors
   dlgBackColor = 'Background';
   dlgSubPropColor = 'SubProperties';
@@ -1688,6 +1689,10 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
+    +'not use the LCL unit interfaces, but it seems it needs it.%sYou will '
+    +'get strange linker errors if you use the LCL forms without interfaces.';
+  lisAddUnitInterfaces = 'Add unit interfaces';
   lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
     +' differ more than one hour.%s'
     +'This can mean, they are from two different installations.%s'
