@@ -6891,7 +6891,7 @@ begin
   EnvironmentOptions.Save(false);
 
   {$IFDEF EnableBuildModes}
-  TIDEBuildProperties(Project1.CompilerOptions.BuildProperties)
+  TIDEBuildVariables(Project1.CompilerOptions.BuildVariables)
     .BuildPropertySet:=GlobalBuildProperties;
   {$ENDIF}
 
@@ -8763,7 +8763,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
   // deactivate project build properties
   if Project1<>nil then
-    TIDEBuildProperties(Project1.CompilerOptions.BuildProperties).BuildPropertySet:=nil;
+    TIDEBuildVariables(Project1.CompilerOptions.BuildVariables).BuildPropertySet:=nil;
   IncreaseCompilerParseStamp;
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;

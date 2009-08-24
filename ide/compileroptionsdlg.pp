@@ -756,7 +756,7 @@ begin
     // conditional
     {$IFDEF EnableBuildModes}
     ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
-    BuildVarsFrame.BuildProperties:=Options.BuildProperties as TIDEBuildProperties;
+    BuildVarsFrame.BuildVariables:=Options.BuildVariables as TIDEBuildVariables;
     {$ENDIF}
 
     // inherited tab

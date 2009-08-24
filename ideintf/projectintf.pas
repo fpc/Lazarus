@@ -175,9 +175,9 @@ type
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 
-  { TLazBuildProperties }
+  { TLazBuildVariables }
 
-  TLazBuildProperties = class
+  TLazBuildVariables = class
   private
     FOwner: TObject;
   protected
@@ -232,7 +232,7 @@ type
 
     // conditionals / build modes
     FConditionals: TLazCompOptConditionals;
-    fBuildProperties: TLazBuildProperties;
+    fBuildVariables: TLazBuildVariables;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -344,7 +344,7 @@ type
 
     // conditional / build modes
     property Conditionals: TLazCompOptConditionals read FConditionals;
-    property BuildProperties: TLazBuildProperties read fBuildProperties;
+    property BuildVariables: TLazBuildVariables read fBuildVariables;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
@@ -1628,9 +1628,9 @@ begin
   inherited Destroy;
 end;
 
-{ TLazBuildProperties }
+{ TLazBuildVariables }
 
-constructor TLazBuildProperties.Create(TheOwner: TObject);
+constructor TLazBuildVariables.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner
 end;

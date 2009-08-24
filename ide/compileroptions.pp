@@ -73,12 +73,12 @@ type
 
   TBuildModeSet = class;
 
-  { TIDEBuildProperties }
+  { TIDEBuildVariables }
 
-  TIDEBuildProperties = class(TLazBuildProperties)
+  TIDEBuildVariables = class(TLazBuildVariables)
   private
     FBuildPropertySet: TBuildModeSet;
-    fPrevVars, fNextVars: TIDEBuildProperties;
+    fPrevVars, fNextVars: TIDEBuildVariables;
     procedure SetBuildPropertySet(const AValue: TBuildModeSet);
   protected
     FItems: TFPList;// list of TIDEBuildVariable
@@ -97,9 +97,9 @@ type
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
-    procedure CreateDiff(OtherProperties: TLazBuildProperties;
+    procedure CreateDiff(OtherProperties: TLazBuildVariables;
                          Tool: TCompilerDiffTool);
-    procedure Assign(Source: TLazBuildProperties);
+    procedure Assign(Source: TLazBuildVariables);
     property BuildPropertySet: TBuildModeSet read FBuildPropertySet write SetBuildPropertySet;// active in BuildModeSet
   end;
 
@@ -108,14 +108,14 @@ type
   TBuildModeSet = class
   private
     FEvaluator: TExpressionEvaluator;
-    FFirstBuildVars: TIDEBuildProperties;
+    FFirstBuildVars: TIDEBuildVariables;
     procedure Changed;
   public
     constructor Create;
     destructor Destroy; override;
-    function FindVarWithIdentifier(Identifier: string; out BuildVars: TIDEBuildProperties;
+    function FindVarWithIdentifier(Identifier: string; out BuildVars: TIDEBuildVariables;
       out BuildVar: TIDEBuildVariable): boolean;
-    function GetUniqueVarName(CheckToo: TIDEBuildProperties): string;
+    function GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
     property Evaluator: TExpressionEvaluator read FEvaluator;
   end;
 
@@ -124,11 +124,11 @@ type
   TGlobalBuildProperties = class(TBuildModeSet)
   private
     FMainProperty: TIDEBuildVariable;
-    FStdProperties: TIDEBuildProperties;
+    FStdProperties: TIDEBuildVariables;
     FTargetOS: TIDEBuildVariable;
   public
     procedure AddStandardModes;
-    property StdModes: TIDEBuildProperties read FStdProperties;
+    property StdModes: TIDEBuildVariables read FStdProperties;
     property MainProperty: TIDEBuildVariable read FMainProperty;
     property TargetOS: TIDEBuildVariable read FTargetOS;
   end;
@@ -952,7 +952,7 @@ begin
   FParsedOpts := TParsedCompilerOptions.Create(TCompOptConditionals(FConditionals));
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
-  fBuildProperties := TIDEBuildProperties.Create(Self);
+  fBuildVariables := TIDEBuildVariables.Create(Self);
   FCompilerMessages:=TCompilerMessagesList.Create;
   Clear;
 end;
@@ -968,7 +968,7 @@ end;
 destructor TBaseCompilerOptions.Destroy;
 begin
   FreeAndNil(FCompilerMessages);
-  FreeAndNil(fBuildProperties);
+  FreeAndNil(fBuildVariables);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
@@ -1231,8 +1231,8 @@ begin
   { Conditionals }
   TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
                                           Path+'Conditionals/',PathDelimChange);
-  TIDEBuildProperties(fBuildProperties).LoadFromXMLConfig(XMLConfigFile,
-                                       Path+'BuildProperties/',PathDelimChange);
+  TIDEBuildVariables(fBuildVariables).LoadFromXMLConfig(XMLConfigFile,
+                                       Path+'BuildVariables/',PathDelimChange);
   // ToDo: replace this with conditional compiler options
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
 
@@ -1432,8 +1432,8 @@ begin
   { Conditionals }
   TCompOptConditionals(FConditionals).SaveToXMLConfig(XMLConfigFile,
                                              Path+'Conditionals/',UsePathDelim);
-  TIDEBuildProperties(fBuildProperties).SaveToXMLConfig(XMLConfigFile,
-                                          Path+'BuildProperties/',UsePathDelim);
+  TIDEBuildVariables(fBuildVariables).SaveToXMLConfig(XMLConfigFile,
+                                          Path+'BuildVariables/',UsePathDelim);
   // ToDo: remove
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
@@ -2777,7 +2777,7 @@ begin
 
   // conditionals
   Conditionals.Assign(CompOpts.Conditionals);
-  TIDEBuildProperties(BuildProperties).Assign(CompOpts.BuildProperties);
+  TIDEBuildVariables(BuildVariables).Assign(CompOpts.BuildVariables);
   fLCLWidgetType := CompOpts.fLCLWidgetType;
 
   // Parsing
@@ -2906,7 +2906,7 @@ begin
   // conditionals
   Tool.Path:='Conditionals';
   TCompOptConditionals(Conditionals).CreateDiff(CompOpts.Conditionals,Tool);
-  TIDEBuildProperties(fBuildProperties).CreateDiff(CompOpts.BuildProperties,Tool);
+  TIDEBuildVariables(fBuildVariables).CreateDiff(CompOpts.BuildVariables,Tool);
   Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
 
   // parsing
@@ -3456,8 +3456,8 @@ end;
 
 destructor TBuildModeSet.Destroy;
 var
-  BuildVar: TIDEBuildProperties;
-  NextVar: TIDEBuildProperties;
+  BuildVar: TIDEBuildVariables;
+  NextVar: TIDEBuildVariables;
 begin
   BuildVar:=FFirstBuildVars;
   while BuildVar<>nil do begin
@@ -3471,7 +3471,7 @@ begin
 end;
 
 function TBuildModeSet.FindVarWithIdentifier(Identifier: string; out
-  BuildVars: TIDEBuildProperties; out BuildVar: TIDEBuildVariable): boolean;
+  BuildVars: TIDEBuildVariables; out BuildVar: TIDEBuildVariable): boolean;
 begin
   BuildVar:=nil;
   BuildVars:=FFirstBuildVars;
@@ -3483,10 +3483,10 @@ begin
   Result:=false;
 end;
 
-function TBuildModeSet.GetUniqueVarName(CheckToo: TIDEBuildProperties): string;
+function TBuildModeSet.GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
 var
   i: Integer;
-  BuildVars: TIDEBuildProperties;
+  BuildVars: TIDEBuildVariables;
   BuildVar: TIDEBuildVariable;
 begin
   i:=0;
@@ -3610,9 +3610,9 @@ begin
   DefaultValue.Root.AddLast(Node);
 end;
 
-{ TIDEBuildProperties }
+{ TIDEBuildVariables }
 
-procedure TIDEBuildProperties.SetBuildPropertySet(const AValue: TBuildModeSet);
+procedure TIDEBuildVariables.SetBuildPropertySet(const AValue: TBuildModeSet);
 begin
   if FBuildPropertySet=AValue then exit;
   if FBuildPropertySet<>nil then begin
@@ -3633,21 +3633,21 @@ begin
   end;
 end;
 
-function TIDEBuildProperties.GetItems(Index: integer): TLazBuildVariable;
+function TIDEBuildVariables.GetItems(Index: integer): TLazBuildVariable;
 begin
   Result:=TLazBuildVariable(FItems[Index]);
 end;
 
-function TIDEBuildProperties.Add(Identifier: string): TLazBuildVariable;
+function TIDEBuildVariables.Add(Identifier: string): TLazBuildVariable;
 begin
   if IndexOfIdentifier(Identifier)>=0 then
-    raise Exception.Create('TIDEBuildProperties.Add identifier already exists');
+    raise Exception.Create('TIDEBuildVariables.Add identifier already exists');
   Result:=TIDEBuildVariable.Create;
   Result.Identifier:=Identifier;
   FItems.Add(Result);
 end;
 
-procedure TIDEBuildProperties.Clear;
+procedure TIDEBuildVariables.Clear;
 var
   i: Integer;
 begin
@@ -3656,24 +3656,24 @@ begin
   FItems.Clear;
 end;
 
-function TIDEBuildProperties.Count: integer;
+function TIDEBuildVariables.Count: integer;
 begin
   Result:=FItems.Count;
 end;
 
-constructor TIDEBuildProperties.Create(TheOwner: TObject);
+constructor TIDEBuildVariables.Create(TheOwner: TObject);
 begin
   inherited Create(TheOwner);
   FItems:=TFPList.Create;
 end;
 
-procedure TIDEBuildProperties.Delete(Index: integer);
+procedure TIDEBuildVariables.Delete(Index: integer);
 begin
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
 end;
 
-destructor TIDEBuildProperties.Destroy;
+destructor TIDEBuildVariables.Destroy;
 begin
   BuildPropertySet:=nil;
   Clear;
@@ -3681,14 +3681,14 @@ begin
   inherited Destroy;
 end;
 
-function TIDEBuildProperties.IndexOfIdentifier(Identifier: string): integer;
+function TIDEBuildVariables.IndexOfIdentifier(Identifier: string): integer;
 begin
   Result:=FItems.Count-1;
   while (Result>=0) and (SysUtils.CompareText(Identifier,Items[Result].Identifier)<>0) do
     dec(Result);
 end;
 
-function TIDEBuildProperties.ModeWithIdentifier(Identifier: string): TIDEBuildVariable;
+function TIDEBuildVariables.ModeWithIdentifier(Identifier: string): TIDEBuildVariable;
 var
   i: LongInt;
 begin
@@ -3699,12 +3699,12 @@ begin
     Result:=TIDEBuildVariable(Items[i]);
 end;
 
-procedure TIDEBuildProperties.Move(OldIndex, NewIndex: integer);
+procedure TIDEBuildVariables.Move(OldIndex, NewIndex: integer);
 begin
   FItems.Move(OldIndex,NewIndex);
 end;
 
-procedure TIDEBuildProperties.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+procedure TIDEBuildVariables.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 var
   NewItem: TIDEBuildVariable;
@@ -3721,7 +3721,7 @@ begin
   end;
 end;
 
-procedure TIDEBuildProperties.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+procedure TIDEBuildVariables.SaveToXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; UsePathDelim: TPathDelimSwitch);
 var
   i: Integer;
@@ -3732,7 +3732,7 @@ begin
                                     Path+'Item'+IntToStr(i+1)+'/',UsePathDelim);
 end;
 
-procedure TIDEBuildProperties.CreateDiff(OtherProperties: TLazBuildProperties;
+procedure TIDEBuildVariables.CreateDiff(OtherProperties: TLazBuildVariables;
   Tool: TCompilerDiffTool);
 var
   i: Integer;
@@ -3744,7 +3744,7 @@ begin
   end;
 end;
 
-procedure TIDEBuildProperties.Assign(Source: TLazBuildProperties);
+procedure TIDEBuildVariables.Assign(Source: TLazBuildVariables);
 var
   i: Integer;
   Item: TLazBuildVariable;
@@ -3760,7 +3760,7 @@ end;
 
 procedure TGlobalBuildProperties.AddStandardModes;
 begin
-  FStdProperties:=TIDEBuildProperties.Create(Self);
+  FStdProperties:=TIDEBuildVariables.Create(Self);
 
   FMainProperty:=TIDEBuildVariable(StdModes.Add('BuildVariable'));
   MainProperty.Description:='Main build mode';

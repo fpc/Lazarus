@@ -57,13 +57,13 @@ type
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
-    FBuildProperties: TIDEBuildProperties;
+    FBuildVariables: TIDEBuildVariables;
     fModeImgID: LongInt;
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     FEditors: TFPList;// list of TCompOptsExprEditor
-    procedure SetBuildProperties(const AValue: TIDEBuildProperties);
+    procedure SetBuildProperties(const AValue: TIDEBuildVariables);
     procedure RebuildTreeView;
     procedure TreeViewAddBuildVar(BuildProperty: TLazBuildVariable);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
@@ -77,7 +77,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property BuildProperties: TIDEBuildProperties read FBuildProperties write SetBuildProperties;
+    property BuildVariables: TIDEBuildVariables read FBuildVariables write SetBuildProperties;
   end;
 
 implementation
@@ -90,8 +90,8 @@ var
   NewBuildVar: TLazBuildVariable;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=GlobalBuildProperties.GetUniqueVarName(BuildProperties);
-  NewBuildVar:=BuildProperties.Add(NewIdentifier);
+  NewIdentifier:=GlobalBuildProperties.GetUniqueVarName(BuildVariables);
+  NewBuildVar:=BuildVariables.Add(NewIdentifier);
   // add a node
   SetResultNode:=TCompOptCondNode.Create(NewBuildVar.DefaultValue);
   SetResultNode.NodeType:=cocntSetValue;
@@ -163,11 +163,11 @@ begin
     Format(lisDeleteBuildVar, ['"', BuildProperty.Identifier, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
-  i:=BuildProperties.IndexOfIdentifier(BuildProperty.Identifier);
+  i:=BuildVariables.IndexOfIdentifier(BuildProperty.Identifier);
   Editor:=GetEditor(BuildProperty);
   FEditors.Remove(Editor);
   Editor.Free;
-  BuildProperties.Delete(i);
+  BuildVariables.Delete(i);
   BuildVarsTreeView.BeginUpdate;
   SelTVNode.Delete;
   BuildVarsTreeView.EndUpdate;
@@ -252,7 +252,7 @@ begin
         S:=BuildProperty.Identifier;
         exit;
       end;
-      ConflictBuildProperty:=BuildProperties.ModeWithIdentifier(S);
+      ConflictBuildProperty:=BuildVariables.ModeWithIdentifier(S);
       if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildProperty) then
       begin
         MessageDlg(lisCCOErrorCaption,
@@ -282,10 +282,10 @@ begin
 end;
 
 procedure TCompOptBuildVarsFrame.SetBuildProperties(
-  const AValue: TIDEBuildProperties);
+  const AValue: TIDEBuildVariables);
 begin
-  if FBuildProperties=AValue then exit;
-  FBuildProperties:=AValue;
+  if FBuildVariables=AValue then exit;
+  FBuildVariables:=AValue;
   RebuildTreeView;
 end;
 
@@ -296,10 +296,10 @@ begin
   BuildVarsTreeView.BeginUpdate;
   BuildVarsTreeView.Items.Clear;
   FreeEditors;
-  if BuildProperties<>nil then begin
+  if BuildVariables<>nil then begin
     // first level: build modes
-    for i:=0 to BuildProperties.Count-1 do
-      TreeViewAddBuildVar(BuildProperties.Items[i]);
+    for i:=0 to BuildVariables.Count-1 do
+      TreeViewAddBuildVar(BuildVariables.Items[i]);
   end;
   BuildVarsTreeView.EndUpdate;
 end;
