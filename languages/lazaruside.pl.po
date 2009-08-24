@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2009-08-10 21:10+0100\n"
+"PO-Revision-Date: 2009-08-21 18:48+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,19 +14,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
-msgstr ""
+msgstr "Przywróć wszystkie ustawienia"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
-msgstr ""
+msgstr "Przywróć wszystkie ustawienia kolektora"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
-msgstr ""
+msgstr "Przywróć wszystkie ustawienia tekstu"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
-msgstr ""
+msgstr "Ta strona nie przedstawia bieżących ustawień. Zobacz stronę zaawansowane. Użyj tej strony do przywrócenia zmian zaawansowanych"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -35,11 +35,11 @@ msgstr "Ogólne"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
-msgstr ""
+msgstr "Standardowe, wszystkie działania (pułapka, zwijanie) przy wciśnięciu klawisza myszy"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
-msgstr ""
+msgstr "Rozszerzone, działania (połapka, zwijanie) przy puszczeniu klawisza myszy. Zaznaczenie przy wciśnieciu klawisza myszy i ruchu "
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -48,7 +48,7 @@ msgstr "Kolektor"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
-msgstr ""
+msgstr "Prawy klawisz myszy wywołuje przesunięcie kursora"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -61,51 +61,51 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
-msgstr ""
+msgstr "Kombinacja  lewy przycisk + Ctrl"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "skocz do implementacji"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
 msgid "jumps to implementation/other block end"
-msgstr ""
+msgstr "skocz do implementacji/skocz do końca bloku"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
 msgid "nothing"
-msgstr ""
+msgstr "nie rób nic"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 msgid "Double Click selects line"
-msgstr ""
+msgstr "Podwójne kliknięcie zaznacza wiersz"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag Selection (copy/paste)"
-msgstr ""
+msgstr "Przeciągaj zaznaczenie (kopiuj/wklej)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "skocz do implementacji"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
-msgstr ""
+msgstr "Środkowy klawisz"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
 msgid "nothing"
-msgstr ""
+msgstr "nie rób nic"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
 msgid "paste selection"
-msgstr ""
+msgstr "wstaw zaznaczenie"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
-msgstr ""
+msgstr "Posiadasz niezapisane zmiany. Użycie tej strony spowoduje cofnięcie zmian na stronie zaawansowane"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
@@ -157,11 +157,11 @@ msgstr "Wiersz"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
 msgid "Syncron Edit"
-msgstr ""
+msgstr "Edycja Syncron"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
 msgid "Template Edit"
-msgstr ""
+msgstr "Edycja szablonów"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
@@ -170,13 +170,12 @@ msgstr "Tekst"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
-msgstr ""
+msgstr "Separator kolektora"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
-#, fuzzy
 #| msgid "Highlight all"
 msgid "Incremental others"
-msgstr "Podświetl wszystko"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -184,17 +183,16 @@ msgstr "Podświetl bieżący wyraz"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
 msgid "Incremental search"
-msgstr ""
+msgstr "Wyszukiwanie przyrostowe"
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
 msgid "Invalid breakpoint"
 msgstr "Nieprawidłowa pułapka"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
-#, fuzzy
 #| msgid "Line highlight"
 msgid "Current line highlight"
-msgstr "Podświetlenie wiersza"
+msgstr "Podświetlenie bieżącego wiersza"
 
 #: lazarusidestrconsts.dlgaddhiattrlinenumber
 msgid "Line number"
@@ -210,17 +208,17 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
-msgstr ""
+msgstr "Zaznaczony obszar"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
 msgid "Active Cell"
-msgstr ""
+msgstr "Aktywna komórka"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditother"
 msgid "Other Cells"
-msgstr ""
+msgstr "Inne komórki"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
@@ -230,12 +228,12 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
 msgid "Active Cell"
-msgstr ""
+msgstr "Aktywna komórka"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditother"
 msgid "Other Cells"
-msgstr ""
+msgstr "Inne komórki"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
@@ -395,7 +393,7 @@ msgstr "Podświetlanie nawiasów"
 
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
-msgstr ""
+msgstr "Plik komunikatów kompilatora Free Pascal (*.msg)|*.msg|Any Files (*.*)|*.*"
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
@@ -650,7 +648,7 @@ msgstr "Kolor"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
-msgstr ""
+msgstr "(Edytuj kolor)"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
@@ -949,7 +947,7 @@ msgstr "Kolor"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Complete blocks"
-msgstr ""
+msgstr "Kompletuj bloki"
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
@@ -991,7 +989,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
-msgstr "Pochyły"
+msgstr "Pochylony"
 
 #: lazarusidestrconsts.dlgeditorfont
 msgid "Editor font"
@@ -1004,11 +1002,11 @@ msgstr "Wysokość czcionki"
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
-msgstr ""
+msgstr "Opcje edytora"
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
-msgstr ""
+msgstr "Różne"
 
 #: lazarusidestrconsts.dlgednoerr
 msgid "No errors in key mapping found."
@@ -1319,7 +1317,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlggroupdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "Odpluskiwacz"
 
 #: lazarusidestrconsts.dlggroupeditor
 msgid "Editor"
@@ -1358,7 +1356,7 @@ msgstr "Kolor krawędzi kolektora"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr ""
+msgstr "Indeks separatora kolektora"
 
 #: lazarusidestrconsts.dlggutterwidth
 msgid "Gutter width"
@@ -1390,7 +1388,7 @@ msgstr "Kolor podświetlenia"
 
 #: lazarusidestrconsts.dlghighlightfontcolor
 msgid "Highlight Font Color"
-msgstr ""
+msgstr "Kolor czcionki podświetlenia"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
@@ -1427,7 +1425,7 @@ msgstr "Identyfikatorów"
 
 #: lazarusidestrconsts.dlgideoptions
 msgid "IDE Options"
-msgstr ""
+msgstr "Opcje IDE"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
@@ -1471,7 +1469,7 @@ msgstr "Skoki (np. skoki do metod)"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
-msgstr ""
+msgstr "Zachowaj pozycję X kursora"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -1580,25 +1578,24 @@ msgstr "Kolor zaznaczenia"
 
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Word under Caret Highlight"
-msgstr ""
+msgstr "Podświetlenie słowa przy kursorze"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
-msgstr ""
+msgstr "Dopasowywuj granice słowa dla słów od długości:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore Keywords"
-msgstr ""
+msgstr "Ignoruj słowa kluczowe"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
 msgid "Disable Timer for Markup Current Word"
-msgstr ""
+msgstr "Wyłącz licznik czasu dla zaznaczenia bieżącego słowa (Edytuj kolor)"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
-#, fuzzy
 #| msgid "Trim Spaces"
 msgid "Trim Spaces (when highlighting current selection)"
-msgstr "Końcowe spacje"
+msgstr "Spacje końcowe (gdy podświetlone bieżące zaznaczenie)"
 
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
@@ -1631,7 +1628,7 @@ msgstr "Mieszanie metod i właściwości"
 #: lazarusidestrconsts.dlgmousefoldbutton
 msgctxt "lazarusidestrconsts.dlgmousefoldbutton"
 msgid "Button"
-msgstr ""
+msgstr "Przycisk"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonleft
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonleft"
@@ -1641,7 +1638,7 @@ msgstr "W lewo"
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
-msgstr ""
+msgstr "Środkowy"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonright
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonright"
@@ -1650,19 +1647,19 @@ msgstr "W prawo"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
 msgid "Fold All (Some Colapsed)"
-msgstr ""
+msgstr "Zwiń wszystko"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldone
 msgid "Fold One (Some Colapsed)"
-msgstr ""
+msgstr "Zwiń jeden"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldall
 msgid "Unfold All (Some Colapsed)"
-msgstr ""
+msgstr "Odwiń wszystko"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldone
 msgid "Unfold One (Some Colapsed)"
-msgstr ""
+msgstr "Odwiń jeden"
 
 #: lazarusidestrconsts.dlgmousefoldenabled
 msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
@@ -1679,11 +1676,11 @@ msgstr "Zwiń jedno (wszystko rozwinięte)"
 
 #: lazarusidestrconsts.dlgmousefoldgroup1
 msgid "Setting 1"
-msgstr ""
+msgstr "Ustawienia 1"
 
 #: lazarusidestrconsts.dlgmousefoldgroup2
 msgid "Setting 2"
-msgstr ""
+msgstr "Ustawienia 2"
 
 #: lazarusidestrconsts.dlgmousefoldmodifieralt
 msgctxt "lazarusidestrconsts.dlgmousefoldmodifieralt"
@@ -1706,19 +1703,19 @@ msgstr "Mysz:"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
-msgstr ""
+msgstr "Pojedyncze"
 
 #: lazarusidestrconsts.dlgmouseoptbtn2
 msgid "Double"
-msgstr ""
+msgstr "Podwójne"
 
 #: lazarusidestrconsts.dlgmouseoptbtn3
 msgid "Triple"
-msgstr ""
+msgstr "Potrójne"
 
 #: lazarusidestrconsts.dlgmouseoptbtn4
 msgid "Quad"
-msgstr ""
+msgstr "Poczwórne"
 
 #: lazarusidestrconsts.dlgmouseoptbtnadd
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnadd"
@@ -1747,7 +1744,7 @@ msgstr "W dół"
 #: lazarusidestrconsts.dlgmouseoptbtnexport
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgid "Extra 1"
@@ -1759,7 +1756,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
 msgid "Import"
-msgstr ""
+msgstr "Import"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -1769,7 +1766,7 @@ msgstr "W lewo"
 #: lazarusidestrconsts.dlgmouseoptbtnmiddle
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
 msgid "Middle"
-msgstr ""
+msgstr "Środkowy"
 
 #: lazarusidestrconsts.dlgmouseoptbtnmoddef
 msgid "Make Fallback"
@@ -1810,7 +1807,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptdescaction
 msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
 msgid "Action"
-msgstr ""
+msgstr "Działanie"
 
 #: lazarusidestrconsts.dlgmouseoptdescbutton
 msgctxt "lazarusidestrconsts.dlgmouseoptdescbutton"
@@ -1823,11 +1820,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseopterrordup
 msgid "Duplicate Entry"
-msgstr ""
+msgstr "Zduplikowany wpis"
 
 #: lazarusidestrconsts.dlgmouseopterrorduptext
 msgid "This entry conflicts with an existing entry"
-msgstr ""
+msgstr "Ten wpis jest w konflikcie z istniejącym"
 
 #: lazarusidestrconsts.dlgmouseoptheadalt
 msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
@@ -1841,7 +1838,7 @@ msgstr "Przycisk"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
 msgid "Caret"
-msgstr ""
+msgstr "Kursor"
 
 #: lazarusidestrconsts.dlgmouseoptheadcontext
 msgid "Context"
@@ -1860,11 +1857,11 @@ msgstr "Ctrl"
 #: lazarusidestrconsts.dlgmouseoptheaddesc
 msgctxt "lazarusidestrconsts.dlgmouseoptheaddesc"
 msgid "Action"
-msgstr ""
+msgstr "Działanie"
 
 #: lazarusidestrconsts.dlgmouseoptheaddir
 msgid "Up/Down"
-msgstr ""
+msgstr "W górę/W dół"
 
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
@@ -1873,7 +1870,7 @@ msgstr "Opcje"
 #: lazarusidestrconsts.dlgmouseoptheadorder
 msgctxt "lazarusidestrconsts.dlgmouseoptheadorder"
 msgid "Order"
-msgstr ""
+msgstr "Inne"
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
 msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
@@ -1892,11 +1889,11 @@ msgstr "Mysz"
 
 #: lazarusidestrconsts.dlgmouseoptionsadv
 msgid "Advanced"
-msgstr ""
+msgstr "Zaawansowane"
 
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
-msgstr ""
+msgstr "Polecenie IDE"
 
 #: lazarusidestrconsts.dlgmouseoptmodalt
 msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
@@ -1964,7 +1961,7 @@ msgstr "Wybór"
 
 #: lazarusidestrconsts.dlgmouseoptotheract
 msgid "Other actions using the same button"
-msgstr ""
+msgstr "Inne działania przy użyciu tego samego przycisku"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
 msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
@@ -2051,11 +2048,11 @@ msgstr "Inne pliki modułów (-Fu) (średnik jest separatorem):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
-msgstr ""
+msgstr "Nadpisz blok"
 
 #: lazarusidestrconsts.dlgpackagegraph
 msgid "Package Graph"
-msgstr ""
+msgstr "Lista pakietów"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -2075,7 +2072,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
-msgstr ""
+msgstr "Niezmienny kursor"
 
 #: lazarusidestrconsts.dlgpldpackagegroup
 msgid "Package group"
@@ -3363,7 +3360,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
-msgstr ""
+msgstr "Automatycznie wywołaj po kropce"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -3407,7 +3404,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbehindrelated
 msgid "Behind related"
-msgstr ""
+msgstr "Za spokrewnionym"
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -3707,7 +3704,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscecategories
 msgid "Categories"
-msgstr ""
+msgstr "Kategorie"
 
 #: lazarusidestrconsts.liscecomplexitygroup
 msgid "Complexity"
@@ -3799,20 +3796,20 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceomode
 msgid "Preferred Exhibition Mode"
-msgstr ""
+msgstr "Preferowany tryp pokazywania"
 
 #: lazarusidestrconsts.lisceomodecategory
 msgctxt "lazarusidestrconsts.lisceomodecategory"
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
 #: lazarusidestrconsts.lisceomodesource
 msgid "Source"
-msgstr ""
+msgstr "Źródło"
 
 #: lazarusidestrconsts.lisceoneveronlymanually
 msgid "Never, only manually"
-msgstr ""
+msgstr "Nigdy, tylko ręcznie"
 
 #: lazarusidestrconsts.lisceonlyusedincategorymode
 msgid "Only used in category mode"
@@ -3820,11 +3817,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
-msgstr ""
+msgstr "Podczas działania"
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
-msgstr ""
+msgstr "Automatycznie odświeżaj"
 
 #: lazarusidestrconsts.lisceothergroup
 msgctxt "lazarusidestrconsts.lisceothergroup"
@@ -3833,7 +3830,7 @@ msgstr "Inne"
 
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
-msgstr ""
+msgstr "Aktualizacja"
 
 #: lazarusidestrconsts.lisceowhenswitchingfile
 msgid "When switching file in source editor"
@@ -3854,12 +3851,12 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceshowcodeobserver
 msgid "Show observerations about"
-msgstr ""
+msgstr "Pokaż obserwacje o"
 
 #: lazarusidestrconsts.liscestylegroup
 msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
-msgstr ""
+msgstr "Styl"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -4010,7 +4007,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
-msgstr ""
+msgstr "Wypełnianie klas"
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
@@ -4294,7 +4291,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
-msgstr ""
+msgstr "Obserwator kodu"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
@@ -5218,7 +5215,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
-msgstr ""
+msgstr "Dodatkowa ścieżka wyszukiwania"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -5226,15 +5223,15 @@ msgstr "Pułapka"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
-msgstr ""
+msgstr "Czyść dziennik przy uruchomieniu"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
-msgstr ""
+msgstr "Główne opcje odpluskiwacza"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
-msgstr ""
+msgstr "Specyficzne opcje odpluskiwacza (zależne od typu odpluskiwacza)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
@@ -5246,19 +5243,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgid "Event Log"
-msgstr ""
+msgstr "Dziennik zdarzeń"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmhandledby
 msgid "Handled by"
-msgstr ""
+msgstr "Przejęty przez"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmhandledbydebugger
 msgid "Handled by Debugger"
-msgstr ""
+msgstr "Przejęty przez odpluskiwacza"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmhandledbyprogram
 msgid "Handled by Program"
-msgstr ""
+msgstr "Przejęty przez program"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmid
 msgid "ID"
@@ -5278,7 +5275,7 @@ msgstr "Wyjątki językowe"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
-msgstr ""
+msgstr "Ogranicz ilość linii do"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
@@ -5292,7 +5289,7 @@ msgstr "Nazwa"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Lazarus Exceptions"
-msgstr ""
+msgstr "Informuj o wyjątkach Lazarusa"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -5300,15 +5297,15 @@ msgstr "Wyjątki systemowe"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmoutput
 msgid "Output"
-msgstr ""
+msgstr "Wyjście"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmprocess
 msgid "Process"
-msgstr ""
+msgstr "Proces"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresume
 msgid "Resume"
-msgstr ""
+msgstr "Wznowiony"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
 msgid "Resume Handled"
@@ -5320,15 +5317,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
-msgstr ""
+msgstr "Pokaż komunikat przy zatrzymaniu"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmsignals
 msgid "Signals"
-msgstr ""
+msgstr "Sygnały"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmthread
 msgid "Thread"
-msgstr ""
+msgstr "Wątek"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindow
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
@@ -6283,7 +6280,7 @@ msgstr "Znajdź kombinację klawiszy"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
-msgstr ""
+msgstr "Na początku"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -6457,7 +6454,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
-msgstr ""
+msgstr "Komentarz w nagłówku dla klas"
 
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
@@ -6542,11 +6539,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
-msgstr ""
+msgstr "Bazy"
 
 #: lazarusidestrconsts.lishlpoptshelpoptions
 msgid "Help Options"
-msgstr ""
+msgstr "Opcje pomocy"
 
 #: lazarusidestrconsts.lishlpoptsproperties
 msgid "Properties:"
@@ -6554,11 +6551,11 @@ msgstr "Właściwości:"
 
 #: lazarusidestrconsts.lishlpoptsviewers
 msgid "Viewers"
-msgstr ""
+msgstr "Przeglądarki"
 
 #: lazarusidestrconsts.lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "Ścieżka FPC Doc HTML"
 
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
@@ -6570,7 +6567,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
-msgstr ""
+msgstr "Interfejs IDE"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -6742,7 +6739,7 @@ msgstr "Informacja o %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
-msgstr ""
+msgstr "Przed spokrewnionym"
 
 #: lazarusidestrconsts.lisinheritedcomponent
 msgid "Inherited Component"
@@ -7289,7 +7286,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
-msgstr ""
+msgstr "Ustaw wolną zakładkę"
 
 #: lazarusidestrconsts.liskmsetmarker0
 msgid "Set marker 0"
@@ -8857,7 +8854,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
-msgstr ""
+msgstr "Przeglądarka ograniczeń"
 
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
@@ -8888,10 +8885,9 @@ msgid "Unit Dependencies"
 msgstr "Zależności modułów"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
 #| msgid "View Unit Information"
 msgid "Unit Information"
-msgstr "Pokaż informacje o module"
+msgstr "Informacje o module"
 
 #: lazarusidestrconsts.lismenuviewunits
 msgid "Units..."
@@ -9051,7 +9047,7 @@ msgstr "%s - (nowy projekt)"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
-msgstr ""
+msgstr "Dodawanie nowych modułów do sekcji uses:"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -11375,7 +11371,7 @@ msgstr "Pokaż"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
-msgstr ""
+msgstr "Pokaż kolektor"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"
@@ -11387,7 +11383,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowinfoboxinobjectinspector
 msgid "Show information box"
-msgstr ""
+msgstr "Pokaż pole z informacją"
 
 #: lazarusidestrconsts.lisshowoldtaborder
 msgid "Show old tab order"
@@ -14247,7 +14243,7 @@ msgstr "Informacja o module"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
-msgstr "&Wstaw zakładkę"
+msgstr "&Ustaw zakładkę"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "&Toggle Breakpoint"

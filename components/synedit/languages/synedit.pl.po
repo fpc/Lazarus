@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-13 23:36+0100\n"
+"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
+"PO-Revision-Date: 2009-08-21 18:50+0100\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,19 +23,19 @@ msgstr ""
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr ""
+msgstr "Nazwa atrybutu"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
-msgstr ""
+msgstr "Wartość atrybutu"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "Blok"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
-msgstr ""
+msgstr "Nawiasy"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
@@ -43,7 +43,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
-msgstr ""
+msgstr "Znak"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
-msgstr ""
+msgstr "Komentarz"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
@@ -59,7 +59,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
-msgstr ""
+msgstr "Typ danych"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentacja"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
@@ -373,7 +373,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Zwiń kod"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
@@ -417,7 +417,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Zaznacz wiersz"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
@@ -441,15 +441,15 @@ msgstr ""
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Zaznaczenie wiersza"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr ""
+msgstr "Zaznaczenie"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "Polecenie IDE"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
