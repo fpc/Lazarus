@@ -5037,7 +5037,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
-  //debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
+  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -5097,6 +5097,7 @@ begin
     // the resource include line in the code will be changed later after
     // changing the unitname
     if AnUnitInfo.IsPartOfProject
+    and (not Project1.IsVirtual)
     and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
       NewResFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
       NewResFilename:=AppendPathDelim(ExtractFilePath(NewResFilename))
@@ -5114,23 +5115,24 @@ begin
         if not DirPathExists(NewResFilePath) then
           NewResFilePath:=NewFilePath;
       end else begin
-        // resource code was not in the same or in a sub dircetoy of source
+        // resource code was not in the same or in a sub directory of source
         // copy resource into the same directory as the source
         NewResFilePath:=NewFilePath;
       end;
       NewResFilename:=NewResFilePath
                       +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end;
-    if FilenameIsAbsolute(NewResFilename) then
-      CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
+    if not CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode)
+    then
+      DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
     if (AnUnitInfo.Component<>nil) then
       FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.DoRenameUnit C ',ResourceCode<>nil);
-    writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"');
-    if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
-    if AnUnitInfo.Component<>nil then writeln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
+    debugln(['TMainIDE.DoRenameUnit C ',ResourceCode<>nil]);
+    debugln(['   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"']);
+    if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
+    if AnUnitInfo.Component<>nil then debugln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
     {$ENDIF}
   end else begin
     NewResFilename:='';
@@ -5163,8 +5165,10 @@ begin
   AnUnitInfo.UnitName:=NewUnitName;
   if ResourceCode<>nil then begin
     // change resource filename in the source include directive
-    CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
-      ExtractFilename(ResourceCode.Filename),false);
+    if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
+      ExtractFilename(ResourceCode.Filename),false)
+    then
+      DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(ResourceCode.Filename),'"']);
   end;
 
   // change unitname on SourceNotebook
