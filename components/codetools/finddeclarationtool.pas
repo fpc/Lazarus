@@ -3635,12 +3635,15 @@ var
     Node: TCodeTreeNode;
   begin
     Result:=false;
-    if (NewNode.Desc=ctnProcedureHead)
+    if (NewNode.Desc in [ctnProcedureHead,ctnIdentifier])
     and PositionInFuncResultName(NewNode,CleanPos) then begin
-      Node:=NewNode.FirstChild;
-      if Node=nil then exit;
-      if Node.Desc=ctnParameterList then Node:=Node.NextBrother;
-      if Node=nil then exit;
+      Node:=NewNode;
+      if Node.Desc=ctnProcedureHead then begin
+        Node:=Node.FirstChild;
+        if Node=nil then exit;
+        if Node.Desc=ctnParameterList then Node:=Node.NextBrother;
+        if Node=nil then exit;
+      end;
       if Node.Desc in [ctnVarDefinition,ctnIdentifier] then begin
         // return the function result type or the operator variable name
         NewNode:=Node;

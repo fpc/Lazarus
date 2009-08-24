@@ -849,6 +849,12 @@ begin
     ProcNode:=ProcNode.FirstChild;
     if ProcNode=nil then exit;
   end;
+  if (ProcNode.Desc in [ctnIdentifier,ctnVarDefinition])
+  and (ProcNode.Parent<>nil)
+  and (ProcNode.Parent.Desc=ctnProcedureHead)
+  and (CleanPos>=ProcNode.StartPos) and (CleanPos<=ProcNode.EndPos) then begin
+    exit(true);
+  end;
   // read behind parameter list
   if ProcNode.Desc<>ctnProcedureHead then exit;
   if (ProcNode.FirstChild<>nil) and (ProcNode.FirstChild.Desc=ctnParameterList)
