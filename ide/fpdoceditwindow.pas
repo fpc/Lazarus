@@ -84,12 +84,11 @@ type
     LeftBtnPanel: TPanel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
+    SaveButton: TSpeedButton;
     SeeAlsoMemo: TMemo;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
-    RightBtnPanel: TPanel;
-    SaveButton: TButton;
     SeeAlsoTabSheet: TTabSheet;
     ShortEdit: TEdit;
     ShortLabel: TLabel;
@@ -225,8 +224,10 @@ begin
   LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
-  SaveButton.Caption := lisCodeHelpSaveButton;
+  SaveButton.Caption := '';
   SaveButton.Enabled:=false;
+  SaveButton.Hint:=lisHintSave;
+  SaveButton.ShowHint:=true;
 
   BrowseExampleButton.Caption := lisCodeHelpBrowseExampleButton;
   
@@ -254,6 +255,7 @@ begin
   InsertVarTagButton.LoadGlyphFromLazarusResource('insertvartag');
   InsertCodeTagButton.LoadGlyphFromLazarusResource('insertcodetag');
   InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
+  SaveButton.LoadGlyphFromLazarusResource('laz_save');
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
