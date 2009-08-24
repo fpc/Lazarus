@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, StrUtils,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  LDockCtrl, ExtCtrls, Forms, Graphics,
+  LDockCtrl, ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit,
   // codetools
@@ -108,6 +108,7 @@ type
     procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
@@ -262,6 +263,15 @@ begin
   if assigned(CodeHelpBoss) then
     CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
+end;
+
+procedure TFPDocEditor.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_S) and (Shift=[ssCtrl]) then begin
+    Save;
+    Key:=VK_UNKNOWN;
+  end;
 end;
 
 procedure TFPDocEditor.FormResize(Sender: TObject);

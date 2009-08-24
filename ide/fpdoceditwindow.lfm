@@ -7,8 +7,10 @@ object FPDocEditor: TFPDocEditor
   Caption = 'FPDoc editor'
   ClientHeight = 126
   ClientWidth = 753
+  KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnResize = FormResize
   LCLVersion = '0.9.29'
   object PageControl: TPageControl
@@ -25,8 +27,8 @@ object FPDocEditor: TFPDocEditor
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
@@ -58,7 +60,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 627
+        Width = 625
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
@@ -104,7 +106,7 @@ object FPDocEditor: TFPDocEditor
         Left = 72
         Height = 27
         Top = 29
-        Width = 637
+        Width = 635
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
@@ -117,13 +119,13 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object InheritedShortLabel: TLabel
         Left = 0
         Height = 14
         Top = 2
-        Width = 711
+        Width = 709
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -138,7 +140,7 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 27
         Top = 18
-        Width = 711
+        Width = 709
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -190,13 +192,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object DescrMemo: TMemo
         Left = 0
-        Height = 95
+        Height = 91
         Top = 0
-        Width = 709
+        Width = 707
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -209,13 +211,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object ErrorsMemo: TMemo
         Left = 0
-        Height = 95
+        Height = 91
         Top = 0
-        Width = 709
+        Width = 707
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -228,13 +230,13 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object SeeAlsoMemo: TMemo
         Left = 0
-        Height = 99
+        Height = 95
         Top = 0
-        Width = 711
+        Width = 709
         Align = alClient
         Lines.Strings = (
           'SeeAlsoMemo'
@@ -245,13 +247,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 99
-      ClientWidth = 711
+      ClientHeight = 95
+      ClientWidth = 709
       object ExampleEdit: TEdit
         Left = 0
         Height = 27
         Top = 0
-        Width = 709
+        Width = 707
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
@@ -263,7 +265,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 572
+        Left = 570
         Height = 23
         Top = 33
         Width = 133
