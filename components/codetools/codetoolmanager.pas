@@ -811,6 +811,7 @@ begin
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
   DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
+  DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
@@ -1033,7 +1034,7 @@ end;
 function TCodeToolManager.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=SourceCache.CreateFile(AFilename);
-  DirectoryCachePool.IncreaseTimeStamp;
+  DirectoryCachePool.IncreaseFileTimeStamp;
   {$IFDEF CTDEBUG}
   DebugLn('****** TCodeToolManager.CreateFile "',AFilename,'" ',dbgs(Result<>nil));
   {$ENDIF}
