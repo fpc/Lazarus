@@ -680,6 +680,7 @@ begin
   begin
     FDialog := DlgClass.Create(Self);
     FDialog.Name := DlgClass.ClassName;
+    FDialog.SetSubComponent(True);
   end;
 end;
 
