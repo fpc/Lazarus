@@ -12391,12 +12391,19 @@ begin
     PkgBoss.RebuildDefineTemplates;
     FIDECodeToolsDefines:=ctdReady;
     //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
+    {$IFDEF VerboseAddProjPkg}
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA1 "',CodeToolBoss.GetUnitPathForDirectory('',true),'"']);
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
+    {$ENDIF}
   end;
 end;
 
 procedure TMainIDE.OnCompilerParseStampIncreased;
 begin
   if FIDECodeToolsDefines=ctdUpdating then exit;
+  {$IFDEF VerboseAddProjPkg}
+  DebugLn(['TMainIDE.OnCompilerParseStampIncreased ']);
+  {$ENDIF}
   FIDECodeToolsDefines:=ctdNeedUpdate;
   CodeToolBoss.DefineTree.ClearCache;
 end;

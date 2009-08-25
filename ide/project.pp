@@ -3615,6 +3615,9 @@ begin
   Dependency.Owner:=Self;
   Dependency.HoldPackage:=true;
   FDefineTemplates.CustomDefinesChanged;
+  {$IFDEF VerboseAddProjPkg}
+  DebugLn(['TProject.AddRequiredDependency ']);
+  {$ENDIF}
   IncreaseCompilerParseStamp;
   Modified:=true;
   EndUpdate;
