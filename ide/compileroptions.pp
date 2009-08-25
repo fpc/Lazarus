@@ -71,15 +71,15 @@ type
     procedure SetDefaultValue(const AValue: string); override;
   end;
 
-  TBuildModeSet = class;
+  TBuildModeGraph = class;
 
   { TIDEBuildVariables }
 
   TIDEBuildVariables = class(TLazBuildVariables)
   private
-    FBuildPropertySet: TBuildModeSet;
+    FBuildModeGraph: TBuildModeGraph;
     fPrevVars, fNextVars: TIDEBuildVariables;
-    procedure SetBuildPropertySet(const AValue: TBuildModeSet);
+    procedure SetBuildPropertySet(const AValue: TBuildModeGraph);
   protected
     FItems: TFPList;// list of TIDEBuildVariable
     function GetItems(Index: integer): TLazBuildVariable; override;
@@ -100,12 +100,12 @@ type
     procedure CreateDiff(OtherProperties: TLazBuildVariables;
                          Tool: TCompilerDiffTool);
     procedure Assign(Source: TLazBuildVariables);
-    property BuildPropertySet: TBuildModeSet read FBuildPropertySet write SetBuildPropertySet;// active in BuildModeSet
+    property BuildPropertySet: TBuildModeGraph read FBuildModeGraph write SetBuildPropertySet;// active in BuildModeSet
   end;
 
-  { TBuildModeSet }
+  { TBuildModeGraph }
 
-  TBuildModeSet = class
+  TBuildModeGraph = class
   private
     FEvaluator: TExpressionEvaluator;
     FFirstBuildVars: TIDEBuildVariables;
@@ -121,7 +121,7 @@ type
 
   { TGlobalBuildProperties }
 
-  TGlobalBuildProperties = class(TBuildModeSet)
+  TGlobalBuildProperties = class(TBuildModeGraph)
   private
     FMainProperty: TIDEBuildVariable;
     FStdProperties: TIDEBuildVariables;
@@ -3442,19 +3442,19 @@ begin
   FTargetOS:=AValue;
 end;
 
-{ TBuildModeSet }
+{ TBuildModeGraph }
 
-procedure TBuildModeSet.Changed;
+procedure TBuildModeGraph.Changed;
 begin
   IncreaseCompilerParseStamp;
 end;
 
-constructor TBuildModeSet.Create;
+constructor TBuildModeGraph.Create;
 begin
   FEvaluator:=TExpressionEvaluator.Create;
 end;
 
-destructor TBuildModeSet.Destroy;
+destructor TBuildModeGraph.Destroy;
 var
   BuildVar: TIDEBuildVariables;
   NextVar: TIDEBuildVariables;
@@ -3470,7 +3470,7 @@ begin
   inherited Destroy;
 end;
 
-function TBuildModeSet.FindVarWithIdentifier(Identifier: string; out
+function TBuildModeGraph.FindVarWithIdentifier(Identifier: string; out
   BuildVars: TIDEBuildVariables; out BuildVar: TIDEBuildVariable): boolean;
 begin
   BuildVar:=nil;
@@ -3483,7 +3483,7 @@ begin
   Result:=false;
 end;
 
-function TBuildModeSet.GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
+function TBuildModeGraph.GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
 var
   i: Integer;
   BuildVars: TIDEBuildVariables;
@@ -3612,24 +3612,24 @@ end;
 
 { TIDEBuildVariables }
 
-procedure TIDEBuildVariables.SetBuildPropertySet(const AValue: TBuildModeSet);
+procedure TIDEBuildVariables.SetBuildPropertySet(const AValue: TBuildModeGraph);
 begin
-  if FBuildPropertySet=AValue then exit;
-  if FBuildPropertySet<>nil then begin
-    if FBuildPropertySet.FFirstBuildVars=Self then
-      FBuildPropertySet.FFirstBuildVars:=fNextVars;
+  if FBuildModeGraph=AValue then exit;
+  if FBuildModeGraph<>nil then begin
+    if FBuildModeGraph.FFirstBuildVars=Self then
+      FBuildModeGraph.FFirstBuildVars:=fNextVars;
     if fNextVars<>nil then fNextVars.fPrevVars:=fPrevVars;
     if fPrevVars<>nil then fPrevVars.fNextVars:=fNextVars;
     fPrevVars:=nil;
     fNextVars:=nil;
-    FBuildPropertySet.Changed;
+    FBuildModeGraph.Changed;
   end;
-  FBuildPropertySet:=AValue;
-  if FBuildPropertySet<>nil then begin
-    fNextVars:=FBuildPropertySet.FFirstBuildVars;
-    FBuildPropertySet.FFirstBuildVars:=Self;
+  FBuildModeGraph:=AValue;
+  if FBuildModeGraph<>nil then begin
+    fNextVars:=FBuildModeGraph.FFirstBuildVars;
+    FBuildModeGraph.FFirstBuildVars:=Self;
     if fNextVars<>nil then fNextVars.fPrevVars:=Self;
-    FBuildPropertySet.Changed;
+    FBuildModeGraph.Changed;
   end;
 end;
 
