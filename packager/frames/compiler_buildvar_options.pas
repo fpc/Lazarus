@@ -90,7 +90,7 @@ var
   NewBuildVar: TLazBuildVariable;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=GlobalBuildProperties.GetUniqueVarName(BuildVariables);
+  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(BuildVariables);
   NewBuildVar:=BuildVariables.Add(NewIdentifier);
   // add a node
   SetResultNode:=TCompOptCondNode.Create(NewBuildVar.DefaultValue);
