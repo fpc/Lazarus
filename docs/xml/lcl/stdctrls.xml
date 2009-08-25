@@ -474,10 +474,13 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.Change">
-        <short>Change the scroll Bar</short>
+        <short>
+          <var>Change</var> - method to signal that a change has occured</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.Changed">TControl.Changed</link>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.Scroll">
@@ -1806,7 +1809,7 @@ False is set when the edit or combobox control loses focus.
           <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
         </seealso>
         <short>
-          <var>DestroyWnd</var> - finds somewhere to store locally held variables then frees lists, cals inherited <var>DestroyWnd</var>
+          <var>DestroyWnd</var> - finds somewhere to store locally held variables then frees lists, calls inherited <var>DestroyWnd</var>
         </short>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5497,7 +5500,13 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.RealGetText.Result">
-        <short/>
+        <short>Returns the value found in <var>Lines.Text</var>, the area allocated for storage of the textual data of the Memo.</short>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.RealGetText.Result"/>
+          </p>
+          <p>The result is of type <var>TCaption</var>, a string type for the caption of a control: may be translated</p>
+        </descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.RealSetText">
@@ -5522,11 +5531,11 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.GetCachedText.Result">
-        <short/>
+        <short>Returns a False result</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.GetCachedText.CachedText">
-        <short/>
+        <short>The <var>CachedText</var> of type TCaption that is being fetched</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetAlignment">
@@ -5616,7 +5625,12 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       <element name="TCustomMemo.Loaded">
         <short>
           <var>Loaded</var> calls inherited method then sets the ScrollBar and WordWrap properties</short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.Loaded"/>
+          </p>
+          <p>The <var>Loaded</var> method is called when a component has finished loading; the various ancestor classes copy properties from client and parent classes into the newly loaded component, and notify any child components of changes that have been made</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
@@ -5633,7 +5647,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.WordWrapIsStored.Result">
-        <short/>
+        <short>The result of a test to see whether the property <var>WordWrap</var> has been stored</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.ControlKeyDown" link="#LCL.Controls.TWinControl.ControlKeyDown">
@@ -5664,7 +5678,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       <!-- function Visibility: protected -->
       <element name="TCustomMemo.GetControlClassDefaultSize">
         <short>
-          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding inherited method</short>
+          <var>GetControlClassDefaultSize</var> - makes its own defaults, overriding inherited method</short>
         <descr/>
         <errors/>
         <seealso>
@@ -5673,15 +5687,20 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>Returns the default size, stored as a TPoint</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomMemo.Create">
-        <descr>Create the Custom memo widget
-</descr>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.Create"/>
+          </p>
+          <p>The various ancestor methods first create the object, then initialise sizes, styles, fonts and positions of subsidiary objects</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#LCL.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomMemo</var>: calls inherited <var>Create</var> then initialises some variables, creates the stringlist and creates scrollbars</short>
@@ -5692,8 +5711,12 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomMemo.Destroy">
-        <descr>Destroy the CustomMemo widget when you have finished with it
-</descr>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.Destroy"/>
+          </p>
+          <p>The ancestor destructor removes the resources that have been used, in a systematic and orderly way</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
@@ -10015,6 +10038,35 @@ Reads or Writes flag if control is re-sized.
       <element name="TToggleBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomLabel.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TStaticText.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TCustomMemo.InitializeWnd">
+        <short>
+          <var>InitializeWnd</var> - initialises the window by creating the borders and outline, then loading up any strings that have already been specified for display</short>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.InitializeWnd"/>
+          </p>
+          <p>Calls the inherited method which works out the correct bounds, sets style, fonts and colours, performs any pending resize operations</p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
+      </element>
+      <element name="TCustomMemo.FinalizeWnd">
+        <short>
+          <var>FinalizeWnd</var> - getting ready to close down the window: first stores the text strings in a safe place, then frees the storage occupied by them</short>
+        <descr>
+          <p>
+            <printshort id="TCustomMemo.FinalizeWnd"/>
+          </p>
+          <p>Calls the inherited method, which prepares to free the handle for this window</p>
+        </descr>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
+        </seealso>
+      </element>
+      <element name="TCustomMemo.GetCaretPos.Result">
+        <short>Returns the position of the cursor marker or caret</short>
+      </element>
     </module>
     <!-- StdCtrls -->
   </package>
