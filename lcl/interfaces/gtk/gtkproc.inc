@@ -2067,7 +2067,7 @@ var
   begin
     Length := 1;
     {$ifndef gtk1}
-    if C in [#1..#20] then
+    if C in [#$1..#$20] then
     begin
       KeyVal := $FF00 or Ord(C);
       if KeyVal = GDK_KEY_BackSpace then
@@ -2342,7 +2342,7 @@ begin
           StopKeyEvent;
       end;
 
-      if (not EventStopped) and aBeforeEvent
+      if (not EventStopped) and ABeforeEvent
       then begin
         if KeyActivatedAccelerator then exit;
       end;
