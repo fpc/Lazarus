@@ -302,7 +302,7 @@ begin
     FactBAParag := 0.5;
     C_GoBackward := SB_GoBackward;
     C_GoForward := SB_GoForward;
-    OpenHTMLFile ('Index.html', True, False);
+    OpenHTMLFile ('index.html', True, False);
   end;
 end {FormCreate};
 
