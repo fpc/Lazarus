@@ -33,7 +33,8 @@ uses
   qt4,
   qtwidgets, qtprivate, qtobjects, qtproc, qtwscontrols,
   // LCL
-  SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
+  SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, StdCtrls,
+  LCLProc, LCLIntf, Forms,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
@@ -110,6 +111,8 @@ type
 
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
+
+    class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
 
     (*
     // Column
@@ -1303,6 +1306,20 @@ begin
 
   for i := Low(TListViewProperty) to High(TListViewProperty) do
     SetProperty(ALV, i, i in AProps);
+end;
+
+class procedure TQtWSCustomListView.SetScrollBars(const ALV: TCustomListView;
+  const AValue: TScrollStyle);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetScrollBars') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  {always reset before applying new TScrollStyle}
+  QtTreeWidget.setScrollStyle(ssNone);
+  if AValue <> ssNone then
+    QtTreeWidget.setScrollStyle(AValue);
 end;
 
 end.
