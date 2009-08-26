@@ -2517,12 +2517,13 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+    OpenDialog.Filter := lisLazarusFile + ' (*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm)|*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm'
+                 + '|' + lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
+                 + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
+                 + '|' + lisLazarusForm + ' (*.lfm)|*.lfm'
+                 + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
+                 + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
+                 + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
