@@ -1831,7 +1831,9 @@ begin
       Ancestor:=AnUnitInfo.Component;
       RootAncestor:=AnUnitInfo.Component;
     end;
+    {$IFDEF VerboseFormEditor}
     DebugLn(['TCustomFormEditor.WriterFindAncestor Component=',DbgSName(Component),' Ancestor=',DbgSName(Ancestor),' RootAncestor=',DbgSName(RootAncestor)]);
+    {$ENDIF}
   end;
 end;
 
@@ -2356,7 +2358,9 @@ begin
   //DebugLn(['TCustomFormEditor.JITListFindAncestors Class=',DbgSName(AClass)]);
   AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AClass));
   while AnUnitInfo<>nil do begin
+    {$IFDEF VerboseFormEditor}
     DebugLn(['TCustomFormEditor.JITListFindAncestors FOUND ancestor ',DbgSName(AnUnitInfo.Component),', streaming ...']);
+    {$ENDIF}
     Ancestor:=AnUnitInfo.Component;
     BinStream:=nil;
     if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then begin

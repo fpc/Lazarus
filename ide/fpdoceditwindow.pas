@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, StrUtils,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  LDockCtrl, ExtCtrls, Forms, Graphics,
+  LDockCtrl, ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit,
   // codetools
@@ -84,12 +84,11 @@ type
     LeftBtnPanel: TPanel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
+    SaveButton: TSpeedButton;
     SeeAlsoMemo: TMemo;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
-    RightBtnPanel: TPanel;
-    SaveButton: TButton;
     SeeAlsoTabSheet: TTabSheet;
     ShortEdit: TEdit;
     ShortLabel: TLabel;
@@ -108,6 +107,7 @@ type
     procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
@@ -224,8 +224,10 @@ begin
   LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
-  SaveButton.Caption := lisCodeHelpSaveButton;
+  SaveButton.Caption := '';
   SaveButton.Enabled:=false;
+  SaveButton.Hint:=lisHintSave;
+  SaveButton.ShowHint:=true;
 
   BrowseExampleButton.Caption := lisCodeHelpBrowseExampleButton;
   
@@ -253,6 +255,7 @@ begin
   InsertVarTagButton.LoadGlyphFromLazarusResource('insertvartag');
   InsertCodeTagButton.LoadGlyphFromLazarusResource('insertcodetag');
   InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
+  SaveButton.LoadGlyphFromLazarusResource('laz_save');
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
@@ -262,6 +265,15 @@ begin
   if assigned(CodeHelpBoss) then
     CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
+end;
+
+procedure TFPDocEditor.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_S) and (Shift=[ssCtrl]) then begin
+    Save;
+    Key:=VK_UNKNOWN;
+  end;
 end;
 
 procedure TFPDocEditor.FormResize(Sender: TObject);
@@ -861,17 +873,25 @@ procedure TFPDocEditor.Save;
 var
   Values: TFPDocElementValues;
 begin
-  if not FModified then Exit; // nothing changed => exit
+  //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
+  if not FModified then begin
+    SaveButton.Enabled:=false;
+    Exit; // nothing changed => exit
+  end;
   FModified:=false;
-  if (fChain=nil) or (fChain.Count=0) then exit;
-  if not fChain.IsValid then exit;
+  SaveButton.Enabled:=false;
+  if (fChain=nil) or (fChain.Count=0) then begin
+    DebugLn(['TFPDocEditor.Save failed: no chain']);
+    exit;
+  end;
+  if not fChain.IsValid then begin
+    DebugLn(['TFPDocEditor.Save failed: chain not valid']);
+    exit;
+  end;
   Values:=GetGUIValues;
   if not WriteNode(fChain[0],Values,true) then begin
-    DebugLn(['TLazDocForm.Save FAILED']);
-  end else begin
-    FModified := False;
+    DebugLn(['TLazDocForm.Save WriteNode FAILED']);
   end;
-  SaveButton.Enabled:=false;
 end;
 
 function TFPDocEditor.GetGUIValues: TFPDocElementValues;

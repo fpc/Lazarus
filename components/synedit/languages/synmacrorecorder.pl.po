@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-13 23:35+0100\n"
+"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
+"PO-Revision-Date: 2009-08-21 18:54+0100\n"
 "Project-Id-Version: synmacrorecorder\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,17 +15,17 @@ msgstr ""
 
 #: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
-msgstr ""
+msgstr "Mozna tylko zatrzymac gdy trwa nagrywanie"
 
 #: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
-msgstr ""
+msgstr "Nie mozna odtwarzac makra gdy trwa nagrywanie"
 
 #: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
-msgstr ""
+msgstr "Nie mozna nagrac makra podczas nagrywania"
 
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
-msgstr ""
+msgstr "Mozna tylko wznowic gdy zatrzymane"
 

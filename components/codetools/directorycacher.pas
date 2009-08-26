@@ -58,10 +58,10 @@ type
     ctdcsUnitLinks,
     ctdcsFPCUnitPath  // unit paths reported by FPC
     );
-    
+
   TCTDirCacheStringRecord = record
     Value: string;
-    TimeStamp: cardinal;
+    ConfigTimeStamp: cardinal;
   end;
   
   TCTDirectoryUnitSources = (
@@ -84,14 +84,15 @@ const
 type
   TCTDirCacheUnitSrcRecord = record
     Files: TStringToStringTree;
-    TimeStamp: cardinal;
+    ConfigTimeStamp: Cardinal;
+    FileTimeStamp: cardinal;
   end;
 
   { TCTDirectoryListing }
 
   TCTDirectoryListing = class
   public
-    TimeStamp: cardinal;
+    FileTimeStamp: cardinal;
     Names: PChar; // all filenames separated with #0
     NameCount: integer; // number of filenames
     NamesLength: PtrInt; // length of Names in bytes
@@ -159,10 +160,11 @@ type
 
   TCTDirectoryCachePool = class
   private
+    FConfigTimeStamp: cardinal;
+    FFileTimeStamp: cardinal;
+    FDirectories: TAVLTree;// tree of TCTDirectoryCache
     FOnFindVirtualFile: TCTDirCacheFindVirtualFile;
     FOnGetString: TCTDirCacheGetString;
-    FTimeStamp: cardinal;
-    FDirectories: TAVLTree;// tree of TCTDirectoryCache
     procedure DoRemove(ACache: TCTDirectoryCache);
     procedure OnFileStateCacheChangeTimeStamp(Sender: TObject);
   public
@@ -174,7 +176,8 @@ type
                       DoReference: boolean = true): TCTDirectoryCache;
     function GetString(const Directory: string; AStringType: TCTDirCacheString;
                        UseCache: boolean = true): string;
-    procedure IncreaseTimeStamp;
+    procedure IncreaseFileTimeStamp;
+    procedure IncreaseConfigTimeStamp;
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
     function FindDiskFilename(const Filename: string): string;
     function FindUnitInDirectory(const Directory, UnitName: string;
@@ -187,7 +190,8 @@ type
     function FindCompiledUnitInCompletePath(const Directory: string;
                                             var ShortFilename: string;
                                             AnyCase: boolean = false): string;
-    property TimeStamp: cardinal read FTimeStamp;
+    property FileTimeStamp: cardinal read FFileTimeStamp;
+    property ConfigTimeStamp: cardinal read FConfigTimeStamp;
     property OnGetString: TCTDirCacheGetString read FOnGetString write FOnGetString;
     property OnFindVirtualFile: TCTDirCacheFindVirtualFile read FOnFindVirtualFile
                                                    write FOnFindVirtualFile;
@@ -436,7 +440,8 @@ end;
 function TCTDirectoryCache.GetStrings(const AStringType: TCTDirCacheString
   ): string;
 begin
-  if FStrings[AStringType].TimeStamp<>Pool.TimeStamp then begin
+  //if AStringType=ctdcsUnitPath then DebugLn(['TCTDirectoryCache.GetStrings ctdcsUnitPath ',Directory,' ',FStrings[AStringType].ConfigTimeStamp,' ',Pool.ConfigTimeStamp]);
+  if FStrings[AStringType].ConfigTimeStamp<>Pool.ConfigTimeStamp then begin
     Strings[AStringType]:=Pool.GetString(Directory,AStringType,false);
   end;
   Result:=FStrings[AStringType].Value;
@@ -446,7 +451,7 @@ procedure TCTDirectoryCache.SetStrings(const AStringType: TCTDirCacheString;
   const AValue: string);
 begin
   FStrings[AStringType].Value:=AValue;
-  FStrings[AStringType].TimeStamp:=Pool.TimeStamp;
+  FStrings[AStringType].ConfigTimeStamp:=Pool.ConfigTimeStamp;
 end;
 
 procedure TCTDirectoryCache.ClearUnitLinks;
@@ -468,11 +473,11 @@ var
   CurFilenameLen: Integer;
   NewCapacity: Integer;
 begin
-  if (FListing<>nil) and (FListing.TimeStamp=Pool.TimeStamp) then exit;
+  if (FListing<>nil) and (FListing.FileTimeStamp=Pool.FileTimeStamp) then exit;
   if FListing=nil then
     FListing:=TCTDirectoryListing.Create;
   FListing.Clear;
-  FListing.TimeStamp:=Pool.TimeStamp;
+  FListing.FileTimeStamp:=Pool.FileTimeStamp;
   if Directory='' then exit;// virtual directory
   
   // Note: do not add a 'if not DirectoryExistsUTF8 then exit'. This will not
@@ -546,11 +551,13 @@ var
   Files: TStringToStringTree;
 begin
   Files:=FUnitSources[UnitSrc].Files;
-  if (FUnitSources[UnitSrc].TimeStamp<>Pool.TimeStamp) then begin
+  if (FUnitSources[UnitSrc].FileTimeStamp<>Pool.FileTimeStamp)
+  or (FUnitSources[UnitSrc].ConfigTimeStamp<>Pool.ConfigTimeStamp) then begin
     // cache is invalid -> clear to make it valid
     if Files<>nil then
       Files.Clear;
-    FUnitSources[UnitSrc].TimeStamp:=Pool.TimeStamp;
+    FUnitSources[UnitSrc].FileTimeStamp:=Pool.FileTimeStamp;
+    FUnitSources[UnitSrc].ConfigTimeStamp:=Pool.ConfigTimeStamp;
     Result:=false;
   end else begin
     // cache is valid
@@ -671,10 +678,10 @@ var
   AliasFilename: String;
   pe: TCTPascalExtType;
 begin
-  if (FUnitLinksTree=nil) or (FUnitLinksTreeTimeStamp<>Pool.TimeStamp) then
+  if (FUnitLinksTree=nil) or (FUnitLinksTreeTimeStamp<>Pool.FileTimeStamp) then
   begin
     ClearUnitLinks;
-    FUnitLinksTreeTimeStamp:=Pool.TimeStamp;
+    FUnitLinksTreeTimeStamp:=Pool.FileTimeStamp;
     FUnitLinksTree:=CreateUnitLinksTree(Strings[ctdcsUnitLinks]);
   end;
   Node:=FUnitLinksTree.FindKey(Pointer(UnitName),
@@ -1070,13 +1077,14 @@ end;
 procedure TCTDirectoryCachePool.OnFileStateCacheChangeTimeStamp(Sender: TObject
   );
 begin
-  IncreaseTimeStamp;
+  IncreaseFileTimeStamp;
 end;
 
 constructor TCTDirectoryCachePool.Create;
 begin
   FDirectories:=TAVLTree.Create(@CompareCTDirectoryCaches);
-  FTimeStamp:=1;
+  FFileTimeStamp:=1;
+  FConfigTimeStamp:=1;
   if FileStateCache<>nil then
     FileStateCache.AddChangeTimeStampHandler(@OnFileStateCacheChangeTimeStamp);
 end;
@@ -1147,13 +1155,22 @@ begin
   end;
 end;
 
-procedure TCTDirectoryCachePool.IncreaseTimeStamp;
+procedure TCTDirectoryCachePool.IncreaseFileTimeStamp;
 begin
   //DebugLn(['TCTDirectoryCachePool.IncreaseTimeStamp ']);
-  if FTimeStamp<>High(FTimeStamp) then
-    inc(FTimeStamp)
+  if FFileTimeStamp<>High(FFileTimeStamp) then
+    inc(FFileTimeStamp)
   else
-    FTimeStamp:=Low(FTimeStamp);
+    FFileTimeStamp:=Low(FFileTimeStamp);
+end;
+
+procedure TCTDirectoryCachePool.IncreaseConfigTimeStamp;
+begin
+  //DebugLn(['TCTDirectoryCachePool.IncreaseConfigTimeStamp ']);
+  if FConfigTimeStamp<>High(FConfigTimeStamp) then
+    inc(FConfigTimeStamp)
+  else
+    FConfigTimeStamp:=Low(FConfigTimeStamp);
 end;
 
 function TCTDirectoryCachePool.FindUnitInUnitLinks(const Directory,

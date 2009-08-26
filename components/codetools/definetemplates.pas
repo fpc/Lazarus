@@ -1974,7 +1974,6 @@ begin
         RemoveDoubles(Result);
         FCache.Add(Result);
       end else begin
-        //DebugLn('[TDefineTree.GetDirDefinesForDirectory] D failed');
         Result.Free;
         Result:=nil;
       end;
@@ -2632,7 +2631,7 @@ begin
     inc(FChangeStep)
   else
     FChangeStep:=-$7fffffff;
-  if DirectoryCachePool<>nil then DirectoryCachePool.IncreaseTimeStamp;
+  if DirectoryCachePool<>nil then DirectoryCachePool.IncreaseConfigTimeStamp;
 end;
 
 procedure TDefineTree.SetDirectoryCachePool(const AValue: TCTDirectoryCachePool
@@ -2643,6 +2642,7 @@ begin
 end;
 
 procedure TDefineTree.RemoveDoubles(Defines: TDirectoryDefines);
+// use only one copy of each ansistring
 begin
   if Defines=nil then exit;
   Defines.Values.RemoveDoubles(@FDefineStrings.ReplaceString);

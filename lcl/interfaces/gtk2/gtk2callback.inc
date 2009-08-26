@@ -149,6 +149,7 @@ begin
 
   // send the message directly to the LCL
   NotifyApplicationUserInput(MessE.Msg);
-  DeliverMessage(AWinControl, MessE);
+  if DeliverMessage(AWinControl, MessE)<>0 then
+    Result:=not Result; // message handled by LCL, stop processing
 end;
 

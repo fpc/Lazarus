@@ -10,20 +10,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "Algemeen"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -836,6 +841,10 @@ msgstr "Folder bestaat niet"
 msgid "Disable anti-aliasing"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr ""
@@ -844,22 +853,12 @@ msgstr ""
 msgid "Nested line color"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
@@ -1563,12 +1562,8 @@ msgstr "Marker kleur"
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1728,6 +1723,7 @@ msgid "Down"
 msgstr "Omlaag"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr ""
 
@@ -3231,6 +3227,10 @@ msgstr "Alle blokken zien er goed uit"
 msgid "All Files"
 msgstr "Alle bestanden"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr ""
@@ -3307,6 +3307,10 @@ msgstr "Anker naar bovenzijde van verwante, behoud randruimte"
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "Bij het laden van %s is er laatst een fout opgetreden!%s%sDit project opnieuw laden?"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Applicatie%sEen grafisch lcl/freepascal programma. Het bestand wordt automatisch door Lazarus bijgehouden."
@@ -3345,6 +3349,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -4968,6 +4976,14 @@ msgstr "Kopieer alle (ook verborgen) berichten naar het klembord"
 msgid "Copy all messages to clipboard"
 msgstr "Kopieer alle berichten naar klipbord"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "Kopieerfout"
@@ -4975,6 +4991,10 @@ msgstr "Kopieerfout"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Kopieerfout"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6748,6 +6768,10 @@ msgstr ""
 msgid "Insert name of current procedure"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -8278,6 +8302,7 @@ msgid "Current date and time"
 msgstr "Huidige datum en tijd"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "Algemeen"
 
@@ -9440,6 +9465,10 @@ msgstr "Doorzoek paden:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "Selecteer directory"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11132,6 +11161,10 @@ msgstr "Rechter kanten"
 msgid "Right space equally"
 msgstr "Verdeel rechter kant evenredig"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Bestand niet uitvoerbaar"
@@ -11982,6 +12015,11 @@ msgstr "Functie: destilleer pad naar bestand"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(onbekende macro: %s)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr ""
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

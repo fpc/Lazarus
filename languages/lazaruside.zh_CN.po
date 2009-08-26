@@ -13,20 +13,25 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "普通"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -839,6 +844,10 @@ msgstr "目录不存在"
 msgid "Disable anti-aliasing"
 msgstr "禁用反锯齿"
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr "绘制隔离"
@@ -847,11 +856,6 @@ msgstr "绘制隔离"
 msgid "Nested line color"
 msgstr "嵌套线颜色"
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr "使用默认值"
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr "绘制隔离区"
@@ -859,11 +863,6 @@ msgstr "绘制隔离区"
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
 msgstr "线色"
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
-msgstr "使用默认值"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
@@ -1566,12 +1565,8 @@ msgstr "书签颜色"
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1735,6 +1730,7 @@ msgid "Down"
 msgstr "下移"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr ""
 
@@ -3238,6 +3234,10 @@ msgstr "所有块看起来正常。"
 msgid "All Files"
 msgstr "所有文件"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "允许函数调用"
@@ -3314,6 +3314,10 @@ msgstr "与同级控件上边距相同, 维持与边缘的空白"
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "装载时发生错误 %s!%s%s 重新载入工程?"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "应用程序%s图形界面 lcl/freepascal 程序这个程序将自动的为Lazarus维护."
@@ -3352,6 +3356,10 @@ msgstr "自动继续"
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -4977,6 +4985,14 @@ msgstr "复制所有和隐藏的错误到剪贴板"
 msgid "Copy all messages to clipboard"
 msgstr "复制所有消息到剪贴板"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "复制错误"
@@ -4984,6 +5000,10 @@ msgstr "复制错误"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "复制错误"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6757,6 +6777,10 @@ msgstr ""
 msgid "Insert name of current procedure"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -8287,6 +8311,7 @@ msgid "Current date and time"
 msgstr "当前时间日期"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "普通"
 
@@ -9445,6 +9470,10 @@ msgstr "查找路径:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "选择目录"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11137,6 +11166,10 @@ msgstr "右边"
 msgid "Right space equally"
 msgstr "相等的隔开右边"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "文件不是可执行程序"
@@ -11987,6 +12020,11 @@ msgstr "功能: 获取文件路径"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(未知的宏: %s)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr ""
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

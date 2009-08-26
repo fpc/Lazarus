@@ -349,8 +349,9 @@ type
   published
     property Action;
     property Align;
-    property Anchors;
     property AllowAllUp;
+    property Anchors;
+    property AutoSize;
     property BorderSpacing;
     property Constraints;
     property Caption;

@@ -1,7 +1,7 @@
 inherited CallStackDlg: TCallStackDlg
-  Left = 516
+  Left = 466
   Height = 246
-  Top = 219
+  Top = 191
   Width = 562
   ActiveControl = lvCallStack
   Caption = 'CallStack'
@@ -20,8 +20,9 @@ inherited CallStackDlg: TCallStackDlg
         Width = 20
       end    
       item
+        AutoSize = True
         Caption = 'Index'
-        Width = 35
+        Width = 57
       end    
       item
         Caption = 'Source'
@@ -32,7 +33,7 @@ inherited CallStackDlg: TCallStackDlg
       end    
       item
         Caption = 'Function'
-        Width = 290
+        Width = 280
       end>
     PopupMenu = mnuPopup
     ReadOnly = True
@@ -134,7 +135,7 @@ inherited CallStackDlg: TCallStackDlg
       TabOrder = 0
       object txtGoto: TEdit
         Left = 2
-        Height = 22
+        Height = 23
         Top = 8
         Width = 46
         OnKeyPress = txtGotoKeyPress
@@ -144,14 +145,14 @@ inherited CallStackDlg: TCallStackDlg
     end
   end
   object mnuPopup: TPopupMenu[2]
-    left = 16
-    top = 120
+    left = 224
+    top = 80
     object popShow: TMenuItem
       Action = actShow
       Default = True
       OnClick = actShowClick
     end
-    object MenuItem1: TMenuItem
+    object popToggle: TMenuItem
       Action = actToggleBreakPoint
       OnClick = actToggleBreakPointExecute
     end
@@ -168,7 +169,7 @@ inherited CallStackDlg: TCallStackDlg
     end
   end
   object aclActions: TActionList[3]
-    left = 16
+    left = 48
     top = 80
     object actShow: TAction
       Caption = 'Show'
@@ -213,8 +214,8 @@ inherited CallStackDlg: TCallStackDlg
     end
   end
   object mnuLimit: TPopupMenu[4]
-    left = 48
-    top = 120
+    left = 136
+    top = 80
     object popLimit10: TMenuItem
       Tag = 10
       Caption = 'Max 10'

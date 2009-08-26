@@ -4,10 +4,29 @@ lazarus (0.9.27-0) unstable; urgency=low
 
  -- Mazen Neifer <mazen@freepascal.org>  Mon, 28 Apr 2009 22:33:00 +0200
 
+lazarus (0.9.26.2-3) unstable; urgency=low
+
+  * Fixed linitan error.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Wed, 17 Jun 2009 00:49:00 +0200
+
+lazarus (0.9.26.2-2) unstable; urgency=low
+
+  * Fixed typos and errors reported by Lintian.
+  * Fixed mouse event handling on scrolled controls.
+  * Fixed painting of scrolled windows.
+  * Updated FPC version required for building and using Lazarus to fix crash
+    on power PC architecture.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Fri, 05 Jun 2009 23:49:00 +0200
+
 lazarus (0.9.26.2-1) unstable; urgency=low
 
   * New upstream version.
   * Used GTK2 and dropped GTK1 dependency. (Closes: Bug#521326)
+  * Added LCL docs to lazarus-doc package.
+  * Fixed bug in code tool making LFM tree search for properties not working.
+  * Made mouse events propagated from controls to their parents until handled.
 
  -- Mazen Neifer <mazen@freepascal.org>  Wed, 17 Feb 2009 16:17:00 +0100
 

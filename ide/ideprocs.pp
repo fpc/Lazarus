@@ -1250,6 +1250,7 @@ end;
 -------------------------------------------------------------------------------}
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 begin
+  if List=nil then exit(-1);
   Result:=List.Count-1;
   while (Result>=0) and (AnsiCompareText(List[Result],s)<>0) do dec(Result);
 end;

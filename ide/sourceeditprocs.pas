@@ -467,6 +467,7 @@ var
   ProcHeadFlags: TProcHeadAttributes;
   CanAddSemicolon: Boolean;
   CanAddComma: Boolean;
+  ClassNode: TCodeTreeNode;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -550,13 +551,16 @@ begin
         then
           Exclude(ProcHeadFlags,phpWithStart);
         Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,ProcHeadFlags);
-        // replace virtual and dynamic with override
-        ProcModifierPos:=System.Pos('VIRTUAL;',UpperCaseStr(Result));
-        if ProcModifierPos<1 then
-          ProcModifierPos:=System.Pos('DYNAMIC;',UpperCaseStr(Result));
-        if ProcModifierPos>0 then
-          Result:=copy(Result,1,ProcModifierPos-1)+'override;'
-                  +copy(Result,ProcModifierPos+8,length(Result));
+        ClassNode:=IdentItem.Node.GetNodeOfTypes([ctnClass,ctnClassInterface]);
+        if (ClassNode<>nil) and (IdentItem.Tool.IsClassNode(ClassNode)) then begin
+          // replace virtual and dynamic with override
+          ProcModifierPos:=System.Pos('VIRTUAL;',UpperCaseStr(Result));
+          if ProcModifierPos<1 then
+            ProcModifierPos:=System.Pos('DYNAMIC;',UpperCaseStr(Result));
+          if ProcModifierPos>0 then
+            Result:=copy(Result,1,ProcModifierPos-1)+'override;'
+                    +copy(Result,ProcModifierPos+8,length(Result));
+        end;
         // remove abstract
         ProcModifierPos:=System.Pos('ABSTRACT;',UpperCaseStr(Result));
         if ProcModifierPos>0 then

@@ -15,20 +15,25 @@ msgstr ""
 "Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "Všeobecné"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -841,6 +846,10 @@ msgstr "Adresár neexistuje"
 msgid "Disable anti-aliasing"
 msgstr "Vypnúť anti-aliasing"
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr ""
@@ -849,22 +858,12 @@ msgstr ""
 msgid "Nested line color"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
@@ -1568,12 +1567,8 @@ msgstr "Farba markera"
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1733,6 +1728,7 @@ msgid "Down"
 msgstr "Down"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr ""
 
@@ -3236,6 +3232,10 @@ msgstr "Všetky bloky vyzerajú OK."
 msgid "All Files"
 msgstr "Všetky súbory"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Povoliť Function Calls"
@@ -3312,6 +3312,10 @@ msgstr "Ukotviť·k·hornej·strane·súrodenca,·zachovať·medzeru·okraja"
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "Pri poslednom štarte nastala chyba pri otváraní %s!%s%sOtvoriť projekt znova?"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Aplkácia%sGrafický lcl/freepascal program. Súbor programu je automaticky spravovaný Lazarom."
@@ -3350,6 +3354,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -4975,6 +4983,14 @@ msgstr "Kopírovať všetky skryté správy do schánky"
 msgid "Copy all messages to clipboard"
 msgstr "Kopírovať všetky správy do schránky"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "Chyba kopírovania"
@@ -4982,6 +4998,10 @@ msgstr "Chyba kopírovania"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Chyba kopírovania"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6755,6 +6775,10 @@ msgstr ""
 msgid "Insert name of current procedure"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -8285,6 +8309,7 @@ msgid "Current date and time"
 msgstr "Aktuálny dátum a čas"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "Všeobecné"
 
@@ -9447,6 +9472,10 @@ msgstr "Prehľadávať cesty:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "Vyberte adresár"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11139,6 +11168,10 @@ msgstr "Pravé strany"
 msgid "Right space equally"
 msgstr "Rovnaká pravá vzdialenosť"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Súbor nie je spustiteľný"
@@ -11989,6 +12022,11 @@ msgstr "Funkcia: vybrať cestu súboru"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(neznáme makro: %s)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr ""
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

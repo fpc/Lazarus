@@ -55,7 +55,7 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
-    MenuItem1: TMenuItem;
+    popToggle: TMenuItem;
     ToolButtonTop: TToolButton;
     ToolButtonBottom: TToolButton;
     ToolButtonCopyAll: TToolButton;
@@ -497,7 +497,6 @@ begin
   ToolButtonTop.ImageIndex := IDEImages.LoadImage(16, 'callstack_top');
   ToolButtonBottom.ImageIndex := IDEImages.LoadImage(16, 'callstack_bottom');
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
-  ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
   ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
 
   lvCallStack.SmallImages := IDEImages.Images_16;
@@ -506,6 +505,12 @@ begin
   imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
   imgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
   imgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
+
+  popShow.Caption:= lisShow;
+  popToggle.Caption:= uemToggleBreakpoint;
+  popSetAsCurrent.Caption:= lisCurrent;
+  popCopyAll.Caption:= lisCopyAll;
+
 end;
 
 procedure TCallStackDlg.lvCallStackClick(Sender: TObject);

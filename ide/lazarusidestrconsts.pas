@@ -1050,6 +1050,7 @@ resourcestring
   lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
+  lisAlwaysIgnore = 'Always ignore';
   // OI colors
   dlgBackColor = 'Background';
   dlgSubPropColor = 'SubProperties';
@@ -1095,6 +1096,8 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisDirectoryNotFound = 'Directory %s%s%s not found.';
+  lisRemoveFromSearchPath = 'Remove from search path';
   lisTheDirectoryWasNotFound = 'The directory %s was not found.';
   lisInstallationFailed = 'Installation failed';
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package %'
@@ -1184,7 +1187,7 @@ resourcestring
   dlfMouseSimpleTextSectCtrlLeftRNone = 'nothing';
   dlfMouseSimpleTextSectCtrlLeftRJumpOrBlock = 'jumps to implementation/other block end';
   dlfMouseSimpleWarning = 'You have unsaved changes. Using this page will undo changes made on the advanced page';
-  dlfMouseSimpleDiff = 'This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes';
+  dlfMouseSimpleDiff = 'This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes';
   dlfMouseResetAll = 'Reset all settings';
   dlfMouseResetText = 'Reset all text settings';
   dlfMouseResetGutter = 'Reset all gutter settings';
@@ -1499,6 +1502,7 @@ resourcestring
   dlgCOOpts = 'Options: ';
   dlgCOAsmStyle = 'Assembler style:';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
+  lisAllInheritedOptions = 'All inherited options';
   lisunitPath = 'unit path';
   lisincludePath = 'include path';
   lisobjectPath = 'object path';
@@ -1685,6 +1689,10 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
+    +'not use the LCL unit interfaces, but it seems it needs it.%sYou will '
+    +'get strange linker errors if you use the LCL forms without interfaces.';
+  lisAddUnitInterfaces = 'Add unit interfaces';
   lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
     +' differ more than one hour.%s'
     +'This can mean, they are from two different installations.%s'
@@ -1840,6 +1848,9 @@ resourcestring
   lisEMDOnlyPublished = 'Only published';
   lisEMDFoundEmptyMethods = 'Found empty methods:';
   lisEMDRemoveMethods = 'Remove methods';
+  lisRoot = 'Root';
+  lisCopyDescription = 'Copy description to clipboard';
+  lisCopyIdentifier = 'Copy %s%s%s to clipboard';
   lisExpandAllPackages = 'Expand all packages';
   lisCollapseAllPackages = 'Collapse all packages';
   lisExpandAllUnits = 'Expand all units';
@@ -2427,6 +2438,7 @@ resourcestring
   dlgUnitDepRefresh     = 'Refresh';
   lisPrint = 'Print';
   lisToDoGoto = 'Goto';
+  lisToDoExport = 'Export';
   
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';
@@ -4175,6 +4187,9 @@ resourcestring
   lisActions = 'Actions:';
   lisEvalExpression = 'Eval expression';
   lisLogMessage = 'Log message';
+
+  // Debug Output Dialog
+  lisCopyAllOutputClipboard = 'Copy all output to clipboard';
 
   // Designer Size Components Dialog
   lisShrinkToSmal = 'Shrink to smallest';

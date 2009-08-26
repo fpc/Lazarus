@@ -1174,21 +1174,21 @@ begin
   ClearInheritedTree;
   if OptionsList<>nil then begin
     // add All node
-    AncestorNode:=InhTreeView.Items.Add(nil,'All inherited options');
+    AncestorNode:=InhTreeView.Items.Add(nil,lisAllInheritedOptions);
     AncestorNode.ImageIndex:=ImageIndexInherited;
     AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
     with CompilerOpts do begin
-      AddChildNode('unit path',
+      AddChildNode(lisunitPath,
         GetInheritedOption(icoUnitPath,true),icoUnitPath);
-      AddChildNode('include path',
+      AddChildNode(lisincludePath,
         GetInheritedOption(icoIncludePath,true),icoIncludePath);
-      AddChildNode('object path',
+      AddChildNode(lisobjectPath,
         GetInheritedOption(icoObjectPath,true),icoObjectPath);
-      AddChildNode('library path',
+      AddChildNode(lislibraryPath,
         GetInheritedOption(icoLibraryPath,true),icoLibraryPath);
-      AddChildNode('linker options',GetInheritedOption(icoLinkerOptions,true),
+      AddChildNode(lislinkerOptions,GetInheritedOption(icoLinkerOptions,true),
         icoLinkerOptions);
-      AddChildNode('custom options',GetInheritedOption(icoCustomOptions,true),
+      AddChildNode(liscustomOptions,GetInheritedOption(icoCustomOptions,true),
         icoCustomOptions);
     end;
     AncestorNode.Expanded:=true;

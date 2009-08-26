@@ -347,11 +347,11 @@ begin
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
-    if not FileExistsUTF8(Tool.Filename) then
+    if (Tool.Filename<>'') and (not FileExistsUTF8(Tool.Filename)) then
       Tool.Filename:=FindDefaultExecutablePath(Tool.Filename);
-    if not FileExistsUTF8(Tool.Filename) then begin
+    if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
       Tool.Filename:=FindDefaultMakePath;
-      if not FileExistsUTF8(MakePath) then begin
+      if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
         MessageDlg(lisMakeNotFound,
           Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, ['"',
             '"', #13, #13])

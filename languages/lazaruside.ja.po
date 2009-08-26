@@ -9,20 +9,25 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+msgid "Reset all settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "一般"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -835,6 +840,10 @@ msgstr "ディレクトリが存在しません"
 msgid "Disable anti-aliasing"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr ""
@@ -843,22 +852,12 @@ msgstr ""
 msgid "Nested line color"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
@@ -1562,12 +1561,8 @@ msgstr "マーカーの色"
 msgid "Word under Caret Highlight"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1727,6 +1722,7 @@ msgid "Down"
 msgstr "下へ"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr ""
 
@@ -3230,6 +3226,10 @@ msgstr "全てのブロックが大丈夫そうです。"
 msgid "All Files"
 msgstr "すべてのファイル"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "関数呼び出しを許す"
@@ -3306,6 +3306,10 @@ msgstr "上端へのアンカー。境界間隔を保持"
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "最近の%s!%s%sの読み込み時に起動時にエラーが起こりました。またこのプロジェクトを読み込みますか？"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "アプリケーション%sグラフィカルなlcl/freepascalプログラム。プログラムファイルはlazarusにより自動的に管理されます。"
@@ -3344,6 +3348,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
@@ -4969,6 +4977,14 @@ msgstr "全てのメッセージ（隠しメッセージも）をクリップボ
 msgid "Copy all messages to clipboard"
 msgstr "全てのメッセージをクリップボードへコピー"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "コピーエラー"
@@ -4976,6 +4992,10 @@ msgstr "コピーエラー"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "コピーエラー"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6749,6 +6769,10 @@ msgstr ""
 msgid "Insert name of current procedure"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -8279,6 +8303,7 @@ msgid "Current date and time"
 msgstr "現在の日付と時刻"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "一般"
 
@@ -9441,6 +9466,10 @@ msgstr "検索パス:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "ディレクトリを選択"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11133,6 +11162,10 @@ msgstr "右側"
 msgid "Right space equally"
 msgstr "右側の間隔を均等に"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "ファイルは実行可能ではありません"
@@ -11983,6 +12016,11 @@ msgstr "機能：ファイルのパス（フォルダ名）を抽出"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(不明マクロ: %S)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr ""
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

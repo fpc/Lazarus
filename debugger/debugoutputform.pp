@@ -93,6 +93,9 @@ procedure TDbgOutputForm.FormCreate(Sender: TObject);
 begin
   txtOutput.Lines.Clear;
   Caption:= lisMenuViewDebugOutput;
+
+  popClear.Caption:=lisUIDClear;
+  popCopyAll.Caption:=lisCopyAllOutputClipboard;
 end;
 
 procedure TDbgOutputForm.Loaded;

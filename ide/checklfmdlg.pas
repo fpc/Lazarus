@@ -184,7 +184,7 @@ var
   end;
   
 begin
-  DebugLn(['QuickCheckLFMBuffer LFMBuffer=',LFMBuffer.Filename]);
+  //DebugLn(['QuickCheckLFMBuffer LFMBuffer=',LFMBuffer.Filename]);
   LCLVersion:='';
   MissingClasses:=nil;
 

@@ -153,6 +153,12 @@ type
     piFrame
   );
 
+  TIDECodetoolsDefines = (
+    ctdReady,
+    ctdNeedUpdate,
+    ctdUpdating
+    );
+
   { TMainIDE }
 
   TMainIDE = class(TMainIDEBase)
@@ -545,7 +551,7 @@ type
     FRemoteControlTimer: TTimer;
     FRemoteControlFileValid: boolean;
 
-    FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
+    FIDECodeToolsDefines: TIDECodetoolsDefines;
 
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
@@ -773,6 +779,7 @@ type
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
+    function CheckMainSrcLCLInterfaces: TModalResult;
     function QuitIDE: boolean;
 
     // edit menu
@@ -5042,7 +5049,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
-  //debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
+  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -5102,6 +5109,7 @@ begin
     // the resource include line in the code will be changed later after
     // changing the unitname
     if AnUnitInfo.IsPartOfProject
+    and (not Project1.IsVirtual)
     and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
       NewResFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
       NewResFilename:=AppendPathDelim(ExtractFilePath(NewResFilename))
@@ -5119,23 +5127,24 @@ begin
         if not DirPathExists(NewResFilePath) then
           NewResFilePath:=NewFilePath;
       end else begin
-        // resource code was not in the same or in a sub dircetoy of source
+        // resource code was not in the same or in a sub directory of source
         // copy resource into the same directory as the source
         NewResFilePath:=NewFilePath;
       end;
       NewResFilename:=NewResFilePath
                       +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end;
-    if FilenameIsAbsolute(NewResFilename) then
-      CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
+    if not CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode)
+    then
+      DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
     if (AnUnitInfo.Component<>nil) then
       FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.DoRenameUnit C ',ResourceCode<>nil);
-    writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"');
-    if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
-    if AnUnitInfo.Component<>nil then writeln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
+    debugln(['TMainIDE.DoRenameUnit C ',ResourceCode<>nil]);
+    debugln(['   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"']);
+    if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
+    if AnUnitInfo.Component<>nil then debugln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
     {$ENDIF}
   end else begin
     NewResFilename:='';
@@ -5168,8 +5177,10 @@ begin
   AnUnitInfo.UnitName:=NewUnitName;
   if ResourceCode<>nil then begin
     // change resource filename in the source include directive
-    CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
-      ExtractFilename(ResourceCode.Filename),false);
+    if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
+      ExtractFilename(ResourceCode.Filename),false)
+    then
+      DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(ResourceCode.Filename),'"']);
   end;
 
   // change unitname on SourceNotebook
@@ -5540,7 +5551,9 @@ var
   NestedClass: TComponentClass;
   NestedUnitInfo: TUnitInfo;
 begin
+  {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
+  {$ENDIF}
 
   ReferencesLocked:=false;
   MissingClasses:=nil;
@@ -6161,7 +6174,9 @@ var
       end;
     end;
 
+    {$ifdef VerboseFormEditor}
     debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading referenced form ',UnitFilename);
+    {$endif}
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
     if TheModalResult<>mrOk then begin
@@ -6186,7 +6201,9 @@ var
     if (TheModalResult=mrOk) then begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
+      {$ifdef VerboseFormEditor}
       debugln('TMainIDE.DoLoadComponentDependencyHidden Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
+      {$endif}
       TheModalResult:=mrOk;
     end else begin
       debugln('TMainIDE.DoLoadComponentDependencyHidden Failed to load component ',AComponentClassName);
@@ -6236,8 +6253,9 @@ begin
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
+    {$ifdef VerboseFormEditor}
     debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
-
+    {$endif}
     // first search the resource of ComponentUnitInfo
     if ComponentUnitInfo<>nil then begin
       if TryUnit(ComponentUnitInfo.Filename,Result,false) then exit;
@@ -8586,6 +8604,8 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
+  if CheckMainSrcLCLInterfaces<>mrOk then exit;
+
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
@@ -9463,6 +9483,52 @@ begin
     Result:=CheckCompilerOptsDlg.ShowModal;
   finally
     FreeThenNil(CheckCompilerOptsDlg);
+  end;
+end;
+
+function TMainIDE.CheckMainSrcLCLInterfaces: TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+  MainUsesSection,ImplementationUsesSection: TStrings;
+  MsgResult: TModalResult;
+begin
+  Result:=mrOk;
+  if (Project1=nil) then exit;
+  if Project1.SkipCheckLCLInterfaces then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
+  if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
+  if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
+    PackageGraph.LCLPackage)=nil
+  then
+    exit; // project does not use LCL
+  // project uses LCL
+  MainUsesSection:=nil;
+  ImplementationUsesSection:=nil;
+  try
+    if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
+      MainUsesSection,ImplementationUsesSection) then exit;
+    if (AnsiSearchInStringList(MainUsesSection,'forms')<0)
+    and (AnsiSearchInStringList(ImplementationUsesSection,'forms')<0) then
+      exit;
+    // project uses lcl unit Forms
+    if (AnsiSearchInStringList(MainUsesSection,'interfaces')>=0)
+    or (AnsiSearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
+      exit;
+    // project uses lcl unit Forms, but not unit interfaces
+    // this will result in strange linker error
+    MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
+      Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [#13])
+      , mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+                  mrNoToAll, lisAlwaysIgnore, mrCancel]);
+    case MsgResult of
+    mrNo: exit;
+    mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
+    mrCancel: exit(mrCancel);
+    end;
+    CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,'Interfaces','');
+  finally
+    MainUsesSection.Free;
+    ImplementationUsesSection.Free;
   end;
 end;
 
@@ -12330,14 +12396,28 @@ end;
 
 procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
 begin
-  if FRebuildingCompilerGraphCodeToolsDefinesNeeded then begin
-    FRebuildingCompilerGraphCodeToolsDefinesNeeded:=false;
-    CodeToolBoss.DefineTree.ClearCache;
+  if FIDECodeToolsDefines=ctdNeedUpdate then begin
+    FIDECodeToolsDefines:=ctdUpdating;
     if Project1<>nil then
       Project1.DefineTemplates.AllChanged;
     PkgBoss.RebuildDefineTemplates;
+    FIDECodeToolsDefines:=ctdReady;
     //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
+    {$IFDEF VerboseAddProjPkg}
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA1 "',CodeToolBoss.GetUnitPathForDirectory('',true),'"']);
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
+    {$ENDIF}
   end;
+end;
+
+procedure TMainIDE.OnCompilerParseStampIncreased;
+begin
+  if FIDECodeToolsDefines=ctdUpdating then exit;
+  {$IFDEF VerboseAddProjPkg}
+  DebugLn(['TMainIDE.OnCompilerParseStampIncreased ']);
+  {$ENDIF}
+  FIDECodeToolsDefines:=ctdNeedUpdate;
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 function TMainIDE.CTMacroFunctionProject(Data: Pointer): boolean;
@@ -12360,11 +12440,6 @@ begin
     FuncData^.Result:='<unknown parameter for CodeTools Macro project:"'+Param+'">';
     debugln('TMainIDE.MacroFunctionProject WARNING: ',FuncData^.Result);
   end;
-end;
-
-procedure TMainIDE.OnCompilerParseStampIncreased;
-begin
-  FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
 end;
 
 function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;

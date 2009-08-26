@@ -10,20 +10,33 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-msgid "Set all settings"
+#, fuzzy
+#| msgid "Set all settings"
+msgid "Reset all settings"
 msgstr "Установить все параметры"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-msgid "Set all gutter settings"
+#, fuzzy
+#| msgid "Set all gutter settings"
+msgid "Reset all gutter settings"
 msgstr "Установить все параметры поля (лев)"
 
 #: lazarusidestrconsts.dlfmouseresettext
-msgid "Set all text settings"
+#, fuzzy
+#| msgid "Set all text settings"
+msgid "Reset all text settings"
 msgstr "Установить все параметры текста"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+#, fuzzy
+#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
+msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgstr "Эта страница не отражает текущие значения параметров. См. страницу расширенных параметров. Используйте эту страницу для сброса любых изменений на странице расширенных параметров"
+
+#: lazarusidestrconsts.dlfmousesimplegenericsect
+msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
+msgid "General"
+msgstr "Общие"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
@@ -846,6 +859,10 @@ msgstr "Каталог не существует"
 msgid "Disable anti-aliasing"
 msgstr "Отключить сглаживание"
 
+#: lazarusidestrconsts.dlgdividercolordefault
+msgid "Use right margin color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
 msgstr "Уровень отображения разделителя"
@@ -854,11 +871,6 @@ msgstr "Уровень отображения разделителя"
 msgid "Nested line color"
 msgstr "Цвет вложенной линии"
 
-#: lazarusidestrconsts.dlgdividernestcolordefault
-msgctxt "lazarusidestrconsts.dlgdividernestcolordefault"
-msgid "Use Default"
-msgstr "Цвет по умолчанию"
-
 #: lazarusidestrconsts.dlgdivideronoff
 msgid "Draw divider"
 msgstr "Отображать разделитель"
@@ -866,11 +878,6 @@ msgstr "Отображать разделитель"
 #: lazarusidestrconsts.dlgdividertopcolor
 msgid "Line color"
 msgstr "Цвет линии"
-
-#: lazarusidestrconsts.dlgdividertopcolordefault
-msgctxt "lazarusidestrconsts.dlgdividertopcolordefault"
-msgid "Use Default"
-msgstr "Цвет по умолчанию"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
@@ -1571,13 +1578,10 @@ msgstr "Цвет маркера"
 msgid "Word under Caret Highlight"
 msgstr "Подсветка текущего слова под курсором"
 
-#: lazarusidestrconsts.dlgmarkupwordfull
-msgid "Current Word match word boundaries"
-msgstr "Текущее слово задавать границами"
-
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-#| msgid "Only if shorter than"
-msgid "Ignore bounds for words longer than"
+#, fuzzy
+#| msgid "Ignore bounds for words longer than"
+msgid "Match word boundaries for words up to this length:"
 msgstr "Игнорировать границы для слов длиннее, чем"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
@@ -1739,6 +1743,7 @@ msgid "Down"
 msgstr "Вниз"
 
 #: lazarusidestrconsts.dlgmouseoptbtnexport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
 msgstr "Экспорт"
 
@@ -3229,6 +3234,10 @@ msgstr "Все блоки выглядят нормально."
 msgid "All Files"
 msgstr "Все файлы"
 
+#: lazarusidestrconsts.lisallinheritedoptions
+msgid "All inherited options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Разрешить вызовы функций"
@@ -3305,6 +3314,10 @@ msgstr "Привязка к верхней части соседа, сохран
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgstr "Во время загрузки %s при последнем запуске произошла ошибка!%s%sЗагрузить проект снова?"
 
+#: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
+msgid "Append short description to long description"
+msgstr ""
+
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Приложение%sГрафическая программа на LCL/FreePascal. Программный файл автоматически поддерживается lazarus."
@@ -3344,6 +3357,10 @@ msgstr "Продолжать автоматически"
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
 msgstr "Продолжить после:"
+
+#: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
+msgid "Automatically invoke after point"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -4964,6 +4981,14 @@ msgstr "Копировать все (и скрытые тоже) сообщен�
 msgid "Copy all messages to clipboard"
 msgstr "Скопировать все сообщения в буфер"
 
+#: lazarusidestrconsts.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopydescription
+msgid "Copy description to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
 msgstr "Ошибка копирования"
@@ -4971,6 +4996,10 @@ msgstr "Ошибка копирования"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Ошибка копирования"
+
+#: lazarusidestrconsts.liscopyidentifier
+msgid "Copy %s%s%s to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6744,6 +6773,10 @@ msgstr "Вставить при необходимости слово 'end'"
 msgid "Insert name of current procedure"
 msgstr "Вставить имя текущей процедуры."
 
+#: lazarusidestrconsts.lisinsertprintshorttag
+msgid "Insert PrintShort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "Вставить заголовок процедуры"
@@ -8273,6 +8306,7 @@ msgid "Current date and time"
 msgstr "Текущие дата и время"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
+msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
 msgstr "Общие"
 
@@ -9424,6 +9458,10 @@ msgstr "Пути поиска"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "Выбрать каталог"
+
+#: lazarusidestrconsts.lispathtoinstance
+msgid "Path to failed Instance:"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11116,6 +11154,10 @@ msgstr "Правые края"
 msgid "Right space equally"
 msgstr "Равномерно по правым краям"
 
+#: lazarusidestrconsts.lisroot
+msgid "Root"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Файл не исполняемый"
@@ -11969,6 +12011,11 @@ msgstr "Функция: извлечь путь файла"
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(неизвестный макрос: %s)"
+
+#: lazarusidestrconsts.listodoexport
+msgctxt "lazarusidestrconsts.listodoexport"
+msgid "Export"
+msgstr "Экспорт"
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"

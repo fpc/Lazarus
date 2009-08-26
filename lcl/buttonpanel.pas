@@ -162,7 +162,7 @@ constructor TPanelBitBtn.Create(AOwner: TComponent);
 begin
   inherited;
 
-  Include(FComponentStyle, csSubComponent);
+  SetSubComponent(True);
 end;
 
 procedure TCustomButtonPanel.DoShowButtons;

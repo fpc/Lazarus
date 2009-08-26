@@ -2067,7 +2067,7 @@ var
   begin
     Length := 1;
     {$ifndef gtk1}
-    if C in [#1..#20] then
+    if C in [#$01..#$1B] then
     begin
       KeyVal := $FF00 or Ord(C);
       if KeyVal = GDK_KEY_BackSpace then
@@ -2342,7 +2342,7 @@ begin
           StopKeyEvent;
       end;
 
-      if (not EventStopped) and aBeforeEvent
+      if (not EventStopped) and ABeforeEvent
       then begin
         if KeyActivatedAccelerator then exit;
       end;
@@ -8149,13 +8149,16 @@ begin
         
       // ToDo: create all gc of the style
       //gtk_widget_set_rc_style(StyleObject^.Widget);
+
+      if lgs = lgsTooltip then
+        gtk_widget_hide_all(StyleObject^.Widget);
     end
     else begin
       // no success, clean up
       FreeStyleObject(StyleObject);
       DebugLn('WARNING: GetStyleWithName ',WName,' failed');
     end;
-    
+
     // clean up
     if Tp <> nil then
       gtk_object_destroy(Tp);

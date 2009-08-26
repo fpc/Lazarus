@@ -141,6 +141,7 @@ type
         ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
+    function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
 
     // records
     function ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode): string;
@@ -849,6 +850,12 @@ begin
     ProcNode:=ProcNode.FirstChild;
     if ProcNode=nil then exit;
   end;
+  if (ProcNode.Desc in [ctnIdentifier,ctnVarDefinition])
+  and (ProcNode.Parent<>nil)
+  and (ProcNode.Parent.Desc=ctnProcedureHead)
+  and (CleanPos>=ProcNode.StartPos) and (CleanPos<=ProcNode.EndPos) then begin
+    exit(true);
+  end;
   // read behind parameter list
   if ProcNode.Desc<>ctnProcedureHead then exit;
   if (ProcNode.FirstChild<>nil) and (ProcNode.FirstChild.Desc=ctnParameterList)
@@ -1461,6 +1468,17 @@ begin
   while (p<ANode.EndPos) and (IsIdentChar[Src[p]]) do inc(p);
   if (p=ANode.StartPos) then exit;
   Result:=true;
+end;
+
+function TPascalReaderTool.IsClassNode(Node: TCodeTreeNode): boolean;
+begin
+  if Node.Desc<>ctnClass then exit(false);
+  MoveCursorToNodeStart(Node);
+  ReadNextAtom;
+  if UpAtomIs('PACKED') then
+    ReadNextAtom;
+  if UpAtomIs('CLASS') then exit(true);
+  Result:=false;
 end;
 
 function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode
