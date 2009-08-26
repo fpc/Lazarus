@@ -484,7 +484,10 @@ end;
 
 procedure TMainForm.SetStayOnTop(const AValue: Boolean);
 begin
-  FormStyle:=fsStayOnTop;
+  if AValue then
+    FormStyle:=fsStayOnTop
+  else
+    FormStyle:=fsNormal;
 end;
 
 Const
