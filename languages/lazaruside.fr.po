@@ -6191,7 +6191,7 @@ msgstr "Fichier %s%s%s non trouvé.%s"
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
-msgstr "Fichier %s%s% non trouvé.%sSouhaitez-vous le créer ?%s"
+msgstr "Fichier %s%s%s non trouvé.%sSouhaitez-vous le créer ?%s"
 
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
