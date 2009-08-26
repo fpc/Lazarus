@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="42">
+    <Units Count="45">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -334,6 +334,21 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="editor_mouseaction_options_advanced"/>
       </Unit41>
+      <Unit42>
+        <Filename Value="main.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Main"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="../designer/designer.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Designer"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="../designer/designerprocs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="DesignerProcs"/>
+      </Unit44>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
