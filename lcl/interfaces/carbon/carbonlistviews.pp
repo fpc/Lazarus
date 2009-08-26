@@ -222,8 +222,10 @@ type
   private
     FIcons  : TFPList;
     FStyle  : TViewStyle;
+    FDestroying : Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
     
     function DataCallBack(ID: DataBrowserItemId; PropID: DataBrowserPropertyID; 
       Data: DataBrowserItemDataRef; ASetValue: Boolean): OSStatus; override;
@@ -1486,6 +1488,12 @@ begin
   inherited;
 end;
 
+procedure TCarbonListView.DestroyWidget;  
+begin
+  FDestroying := True; 
+  inherited DestroyWidget;  
+end;
+
 function TCarbonListView.DataCallBack(ID: DataBrowserItemId;  
   PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef;  
   ASetValue: Boolean): OSStatus;  
@@ -1553,6 +1561,7 @@ var
   NMLV: TNMListView;
 begin
   inherited;
+  if FDestroying then Exit;
   //DebugLn('TCarbonListView.SelectionChanged Index: ' + DbgS(AIndex) + ' Select: ' +  DbgS(ASelect));
   
   FillChar(Msg, SizeOf(Msg), #0);
@@ -1583,6 +1592,7 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  if FDestroying then Exit;
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -1596,7 +1606,7 @@ begin
   NMLV.iSubItem := 0;
   NMLV.uNewState := LVIS_FOCUSED;
   NMLV.uChanged := LVIF_STATE;
-
+  
   Msg.NMHdr := @NMLV.hdr;
 
   DeliverMessage(LCLObject, Msg);
