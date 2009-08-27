@@ -951,8 +951,6 @@ begin
   ATab.Attach(Self);
   
   UpdateTabs;
-  // sync PageIndex with LCL
-  SetPageIndex(TCustomNotebook(LCLObject).PageIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -964,8 +962,6 @@ end;
 procedure TCarbonTabsControl.Remove(AIndex: Integer);
 begin
   Remove(FTabs[AIndex] as TCarbonTab);
-  // sync PageIndex with LCL
-  SetPageIndex(TCustomNotebook(LCLObject).PageIndex);
 end;
 
 {------------------------------------------------------------------------------
