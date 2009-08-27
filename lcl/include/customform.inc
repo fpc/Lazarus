@@ -2048,7 +2048,7 @@ begin
   end;
   //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
   if fsVisible in FormState then
-    Visible:=true;
+    Visible := True;
 end;
 
 {------------------------------------------------------------------------------

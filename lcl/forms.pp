@@ -428,13 +428,13 @@ type
     function GetPixelsPerInch: Longint;
     function GetRestoredLeft: integer;
     function GetRestoredTop: integer;
-    function IsForm : Boolean;
-    function IsHelpFileStored: boolean;
+    function IsForm: Boolean;
+    function IsHelpFileStored: Boolean;
     function IsIconStored: Boolean;
     procedure CloseModal;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    function IsKeyPreviewStored: boolean;
+    function IsKeyPreviewStored: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);

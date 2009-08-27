@@ -2691,17 +2691,17 @@ end;
 {------------------------------------------------------------------------------
   TControl IsCaptionStored
 ------------------------------------------------------------------------------}
-function TControl.IsCaptionStored : Boolean;
+function TControl.IsCaptionStored: Boolean;
 Begin
   Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
 end;
 
-function TControl.IsClientHeightStored: boolean;
+function TControl.IsClientHeightStored: Boolean;
 begin
   Result:=false;
 end;
 
-function TControl.IsClientWidthStored: boolean;
+function TControl.IsClientWidthStored: Boolean;
 begin
   Result:=false;
 end;
