@@ -892,13 +892,14 @@ begin
     Result:=DoCreateJITComponent('',NewClassName,NewUnitName,AncestorClass,Visible);
     if Result<0 then exit;
     ReadAncestorStreams;
-    ReadStream(BinStream,FCurReadJITComponent.ClassType);
+    ReadStream(BinStream, FCurReadJITComponent.ClassType);
 
-    if FCurReadJITComponent.Name='' then begin
-      NewName:=FCurReadJITComponent.ClassName;
-      if NewName[1] in ['T','t'] then
-        System.Delete(NewName,1,1);
-      FCurReadJITComponent.Name:=NewName;
+    if FCurReadJITComponent.Name = '' then
+    begin
+      NewName := FCurReadJITComponent.ClassName;
+      if NewName[1] in ['T', 't'] then
+        System.Delete(NewName, 1, 1);
+      FCurReadJITComponent.Name := NewName;
     end;
   except
     on E: Exception do begin
