@@ -1,361 +1,361 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-12 21:44+0300\n"
+"PO-Revision-Date: 2009-08-22 00:00+0300\n"
 "Project-Id-Version: synedit\n"
-"Language-Team: Lithuanian\n"
-"X-Generator: KBabel 1.11.4\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
-msgstr ""
+msgstr "ASP"
 
 #: syneditstrconst.syns_attrassembler
 msgid "Assembler"
-msgstr ""
+msgstr "Asembleris"
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr ""
+msgstr "Atributo pavadinimas"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
-msgstr ""
+msgstr "Atributo vertė"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "Blokas"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
-msgstr ""
+msgstr "Skliaustai"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr ""
+msgstr "Sekcija „CDATA“"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
-msgstr ""
+msgstr "Rašmuo"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
-msgstr ""
+msgstr "Klasė"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
-msgstr ""
+msgstr "Komentaras"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
-msgstr ""
+msgstr "Sąlyga"
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
-msgstr ""
+msgstr "Duomenų tipas"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr ""
+msgstr "Numatytieji paketai"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
-msgstr ""
+msgstr "Kryptis"
 
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
-msgstr ""
+msgstr "Direktyva"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr ""
+msgstr "Sekcija „DOCTYPE“"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentacija"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
-msgstr ""
+msgstr "Elemento pavadinimas"
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
-msgstr ""
+msgstr "Įstatytas SQL"
 
 #: syneditstrconst.syns_attrembedtext
 msgid "Embedded text"
-msgstr ""
+msgstr "Įstatytas tekstas"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Rodyklė į esinį"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Kaitos ampersandas"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
-msgstr ""
+msgstr "Įvykis"
 
 #: syneditstrconst.syns_attrexception
 msgid "Exception"
-msgstr ""
+msgstr "Išimtinė situacija"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Slankaus kablelio"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Forma"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
-msgstr ""
+msgstr "Funkcija"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Šešioliktainis"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Rodyklė į piktogramą"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Identifikatorius"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
-msgstr ""
+msgstr "Neleistinas ženklas"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Įtrauktas"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
-msgstr ""
+msgstr "Netiesioginis"
 
 #: syneditstrconst.syns_attrinternalfunction
 msgid "Internal function"
-msgstr ""
+msgstr "Vidinė funkcija"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
-msgstr ""
+msgstr "Klaidingas simbolis"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Klavišas"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr ""
+msgstr "Etiketė"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
-msgstr ""
+msgstr "Makrokomanda"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
-msgstr ""
+msgstr "Žymuo"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr ""
+msgstr "Matematikos veiksena"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "Pranešimas"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Kita"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr ""
+msgstr "Vardų srities atributo pavadinimas"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr ""
+msgstr "Vardų srities atributo vertė"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
-msgstr ""
+msgstr "Nerezervuotas bazinis žodis"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
-msgstr ""
+msgstr "Tuščias"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Skaičius"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
-msgstr ""
+msgstr "Aštuntainis"
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
-msgstr ""
+msgstr "Operatorius"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
-msgstr ""
+msgstr "Rezervuotas žodis (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Pragma"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
-msgstr ""
+msgstr "Parengiamoji doroklė"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Apdorojamoji komanda"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Patikslintojas"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "Registras"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
-msgstr ""
+msgstr "Rezervuotas žodis"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "Paprastasis skliaustas"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "RPL"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "RPL komentaras"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
-msgstr ""
+msgstr "RPL klavišas"
 
 #: syneditstrconst.syns_attrsasm
 msgid "SASM"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
 msgid "SASM Comment"
-msgstr ""
+msgstr "SASM komentaras"
 
 #: syneditstrconst.syns_attrsasmkey
 msgid "SASM Key"
-msgstr ""
+msgstr "SASM klavišas"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr ""
+msgstr "Antras rezervuotas žodis"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr ""
+msgstr "Sekcija"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
-msgstr ""
+msgstr "Tarpas"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "Specialus kintamasis"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
-msgstr ""
+msgstr "SQL reikšminis žodis"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr ""
+msgstr "SQL*Plus komanda"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Laužtiniai skliaustai"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
-msgstr ""
+msgstr "Teksto eilutė"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
-msgstr ""
+msgstr "Simbolis"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "Sintaksės klaida"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Sistemos funkcijos ir kintamieji"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
-msgstr ""
+msgstr "Sisteminė vertė"
 
 #: syneditstrconst.syns_attrtablename
 msgid "Table Name"
-msgstr ""
+msgstr "Lentelės pavadinimas"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Terminatorius"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "TeX komanda"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
-msgstr ""
+msgstr "Tekstas"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Tekstas matematikos veiksenoje"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
-msgstr ""
+msgstr "Nežinomas žodis"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr ""
+msgstr "Naudotojo funkcijos ir kintamieji"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
-msgstr ""
+msgstr "Naudotojo funkcijos"
 
 #: syneditstrconst.syns_attrvalue
 msgid "Value"
-msgstr ""
+msgstr "Vertė"
 
 #: syneditstrconst.syns_attrvariable
 msgid "Variable"
-msgstr ""
+msgstr "Kintamasis"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr ""
+msgstr "Matomas tarpas"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
 #| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klavišo paspaudimas „%s“ jau yra priskirtas kitai rengyklės komandai. (%s)"
@@ -366,87 +366,87 @@ msgstr "Toks šaukinys jau yra"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "Perjungimo stabdos taškas"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Sulankstyti kodą"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Mazgai,Vienas,Visi,\"Nuo žymeklio\",\"Dabartinis mazgas\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Sulankstymo meniu"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Išlankstyti kodą"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr ""
+msgstr "Mazgai,Vienas,Visi"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
-msgstr ""
+msgstr "Iškylantis meniu"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "Pirminis saitas"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Pabraukti,taip,ne"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr ""
+msgstr "Jokio veiksmo"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Spartusis atrankos įdėjimas"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Veiksena,Pradėti,Tęsti"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Pažymėti eilutę"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Įtraukti tarpus\",ne,taip"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Pažymėti paragrafą"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Pažymėti žodį"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Stulpelio žymėjimas"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Vilkti atranką"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Eilutės žymėjimas"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr ""
+msgstr "Žymėjimas"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "IKA komanda"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -654,5 +654,6 @@ msgstr "<nieks>"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr ""
+msgstr "Bevardis"
+
 
