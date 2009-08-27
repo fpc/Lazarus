@@ -113,6 +113,7 @@ type
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
 
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
+    class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
 
     (*
     // Column
@@ -1331,6 +1332,72 @@ begin
   QtTreeWidget.setScrollStyle(ssNone);
   if AValue <> ssNone then
     QtTreeWidget.setScrollStyle(AValue);
+end;
+
+class procedure TQtWSCustomListView.SetViewStyle(const ALV: TCustomListView;
+  const Avalue: TViewStyle);
+var
+  QtTreeWidget: TQtTreeWidget;
+  TreeWidget: QTreeWidgetH;
+  Item: QTreeWidgetItemH;
+  Size: TSize;
+  x: Integer;
+  j: Integer;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetViewStyle') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  TreeWidget := QTreeWidgetH(QtTreeWidget.Widget);
+  case AValue of
+    vsIcon:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_IconViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+        if Assigned(TListView(ALV).LargeImages) then
+        begin
+          Size.cy := TListView(ALV).LargeImages.Height;
+          Size.cx := TListView(ALV).LargeImages.Width;
+        end;
+      end;
+    vsSmallIcon:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+        if Assigned(TListView(ALV).SmallImages) then
+        begin
+          Size.cy := TListView(ALV).SmallImages.Height;
+          Size.cx := TListView(ALV).SmallImages.Width;
+        end;
+      end;
+    vsList, vsReport:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+      end;
+  end;
+
+  QAbstractItemView_setIconSize(TreeWidget, @Size);
+  Item := QTreeWidget_topLevelItem(TreeWidget, 0);
+  if Item <> nil then
+  begin
+    X := Size.CY;
+    QTreeWidgetItem_sizeHint(Item, @Size, 0);
+    Size.Cy := X;
+    QTreeWidgetItem_setSizeHint(Item, 0, @Size);
+    for j := 0 to QTreeWidget_columnCount(TreeWidget) - 1 do
+    begin
+      Item := QTreeWidget_itemAt(TreeWidget, j, 0);
+      QTreeWidgetItem_setSizeHint(Item, j, @Size);
+    end;
+    QTreeView_setUniformRowHeights(TreeWidget, True);
+  end;
+
 end;
 
 end.
