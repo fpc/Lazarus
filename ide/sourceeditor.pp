@@ -1385,7 +1385,11 @@ begin
   end;
 
   OldCaretXY:=EditorComponent.CaretXY;
-  if EditorComponent.SelAvail then begin
+  if EditorComponent.SelAvail and
+     not(ssoSelectedOnly in LazFindReplaceDialog.Options)
+  then begin
+    // Adjust the cursor. to exclude the selection from being searched
+    // needed for find next / find previous
     if ssoBackwards in LazFindReplaceDialog.Options then
       EditorComponent.LogicalCaretXY:=EditorComponent.BlockBegin
     else
