@@ -1282,9 +1282,12 @@ const
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
-
   case AProp of
-    lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
+    lvpMultiSelect:
+      begin
+        if (TQtTreeWidget(ALV.Handle).getSelectionMode <> QAbstractItemViewNoSelection) then
+          TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
+      end;
     lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).setHeaderVisible(AIsSet);
     lvpReadOnly: TQtTreeWidget(ALV.Handle).setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
@@ -1293,6 +1296,15 @@ begin
         TQtTreeWidget(ALV.Handle).setSelectionBehavior(BoolToSelectionBehavior[AIsSet]);
       end;
     lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet);
+    lvpHideSelection:
+      begin
+        if AIsSet then
+        begin
+          TQtTreeWidget(ALV.Handle).clearSelection;
+          TQtTreeWidget(ALV.Handle).setSelectionMode(QAbstractItemViewNoSelection);
+        end else
+          TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[ALV.MultiSelect]);
+      end;
   end;
 end;
 
@@ -1303,7 +1315,6 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperties')
   then Exit;
-
   for i := Low(TListViewProperty) to High(TListViewProperty) do
     SetProperty(ALV, i, i in AProps);
 end;
