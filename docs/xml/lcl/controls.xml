@@ -796,7 +796,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csSetCaption">
-        <short/>
+        <short>As long as Name=Text, changing the Name will set the Caption</short>
+        <descr>When for example a button's Name and Caption have the value 'Button1' and the Name is changed to 'Button2' then the Caption is changed as well. When Name and Caption differs this flag has no effect. This flag has no effect during loading.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csOpaque">
