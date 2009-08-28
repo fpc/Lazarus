@@ -1,11 +1,12 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-09-21 22:03+0300\n"
+"PO-Revision-Date: 2009-08-21 22:44+0300\n"
 "Project-Id-Version: frmtemplatevariables\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -16,7 +17,7 @@ msgstr "Aprašas"
 
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
-msgstr ""
+msgstr "Šiame projekte papildomų kintamųjų nėra."
 
 #: frmtemplatevariables.svalue
 msgid "Value"
@@ -25,4 +26,5 @@ msgstr "Vertė"
 #: frmtemplatevariables.svariable
 msgid "Variable"
 msgstr "Kintamasis"
+
 

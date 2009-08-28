@@ -235,11 +235,13 @@ type
 
     // search & replace
     function ReplaceWords(IdentList: TStrings; ChangeStrings: boolean;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          SkipPointWords: boolean = false): boolean;
     function FindNearestIdentifierNode(const CursorPos: TCodeXYPosition;
           IdentTree: TAVLTree): TAVLTreeNode;
     function ReplaceWord(const OldWord, NewWord: string; ChangeStrings: boolean;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          SkipPointWords: boolean = false): boolean;
 
     // expressions
     function GetStringConstBounds(const CursorPos: TCodeXYPosition;
@@ -2969,8 +2971,20 @@ end;
   ChangeStrings = true, means to replace in string constants too
 -------------------------------------------------------------------------------}
 function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
-  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache): boolean;
-  
+  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache;
+  SkipPointWords: boolean): boolean;
+
+  function CheckIdentifier(const CurSource: string;
+    IdentStart: integer): boolean;
+  var
+    p: integer;
+  begin
+    if not SkipPointWords then exit(true);
+    p:=IdentStart-1;
+    while (p>0) and (IsSpaceChar[CurSource[p]]) do dec(p);
+    Result:=(p<1) or (CurSource[p]<>'.');
+  end;
+
   procedure ReplaceWordsInSource(ACode: TCodeBuffer);
   var
     StartPos, EndPos, MaxPos, IdentStart, IdentEnd: integer;
@@ -2992,32 +3006,31 @@ function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
           IdentStart:=FindNextIdentifier(CurSource,StartPos,EndPos-1)
         else
           IdentStart:=FindNextIdentifierSkipStrings(CurSource,StartPos,EndPos-1);
-        if IdentStart<EndPos then begin
-          i:=0;
-          while i<IdentList.Count do begin
-            if (IdentList[i]<>'')
-            and (BasicCodeTools.CompareIdentifiers(PChar(Pointer(IdentList[i])),
-                                                   @CurSource[IdentStart])=0)
-            and (IdentList[i]<>IdentList[i+1]) then
-            begin
-              // identifier found -> replace
-              IdentEnd:=IdentStart+length(IdentList[i]);
-              //DebugLn('TStandardCodeTool.ReplaceWords replacing: ',
-              //' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
-              //);
-              SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
-                ACode,IdentStart,IdentEnd,IdentList[i+1]);
-              break;
-            end;
-            inc(i,2);
-          end;
-          // skip identifier
-          StartPos:=IdentStart;
-          while (StartPos<MaxPos) and IsIdentChar[CurSource[StartPos]] do
-            inc(StartPos);
-        end else begin
+        if IdentStart>=EndPos then
           break;
+        i:=0;
+        while i<IdentList.Count do begin
+          if (IdentList[i]<>'')
+          and (BasicCodeTools.CompareIdentifiers(PChar(Pointer(IdentList[i])),
+                                                 @CurSource[IdentStart])=0)
+          and CheckIdentifier(CurSource,IdentStart)
+          and (IdentList[i]<>IdentList[i+1])
+          then begin
+            // identifier found -> replace
+            IdentEnd:=IdentStart+length(IdentList[i]);
+            //DebugLn('TStandardCodeTool.ReplaceWords replacing: ',
+            //' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
+            //);
+            SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
+              ACode,IdentStart,IdentEnd,IdentList[i+1]);
+            break;
+          end;
+          inc(i,2);
         end;
+        // skip identifier
+        StartPos:=IdentStart;
+        while (StartPos<MaxPos) and IsIdentChar[CurSource[StartPos]] do
+          inc(StartPos);
       until false;
       if EndPos<=MaxPos then begin
         // skip comment
@@ -3084,7 +3097,8 @@ begin
 end;
 
 function TStandardCodeTool.ReplaceWord(const OldWord, NewWord: string;
-  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache): boolean;
+  ChangeStrings: boolean; SourceChangeCache: TSourceChangeCache;
+  SkipPointWords: boolean): boolean;
 var
   IdentList: TStringList;
 begin
@@ -3096,7 +3110,7 @@ begin
   try
     IdentList.Add(OldWord);
     IdentList.Add(NewWord);
-    Result:=ReplaceWords(IdentList,ChangeStrings,SourceChangeCache);
+    Result:=ReplaceWords(IdentList,ChangeStrings,SourceChangeCache,SkipPointWords);
   finally
     IdentList.Free;
   end;
@@ -4661,7 +4675,8 @@ begin
       end;
     end;
     // rename variable in source
-    if not ReplaceWord(UpperOldVarName,NewVarName,false,SourceChangeCache) then
+    if not ReplaceWord(UpperOldVarName,NewVarName,false,SourceChangeCache,true)
+    then
       exit;
     Result:=(not ApplyNeeded) or SourceChangeCache.Apply;
   end else begin

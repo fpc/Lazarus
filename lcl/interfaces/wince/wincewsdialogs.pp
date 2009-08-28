@@ -236,7 +236,8 @@ begin
   FilterComboBox.Left := 0;
   FilterComboBox.Height := 20;
   FilterComboBox.Top := Height - Panel.Height - FilterComboBox.Height;
-  if SaveEdit <> nil then Dec(FilterComboBox.Top, SaveEdit.Height);
+  if SaveEdit <> nil then
+    FilterComboBox.Top := FilterComboBox.Top - SaveEdit.Height;
   FilterComboBox.Width := Width;
   FilterComboBox.Align := alBottom;
   SetFilter();
