@@ -59,11 +59,11 @@ rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 %MAKEEXE% compiler_cycle FPC=%RELEASE_PPC%
 
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%%L
-%MAKEEXE% rtl_clean rtl PP=%COMPILER% >> %LOGFILE%
-
 FOR /F %%L IN ('%COMPILER% -iSO') DO SET FPCSourceOS=%%L
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO SET PPCNAME=%%L
 
+:: rebuild the rtl without WPO information
+%MAKEEXE% rtl_clean rtl PP=%COMPILER%
 %MAKEEXE% -C utils/fpcm all FPC=%COMPILER% 
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
