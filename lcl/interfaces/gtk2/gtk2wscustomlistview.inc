@@ -266,7 +266,6 @@ begin
     PGtkCellRendererPixbuf(cell)^.pixbuf := PGdkPixbuf(Images.Items[ImageIndex])
   else
     PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
-
 end;
 
 
