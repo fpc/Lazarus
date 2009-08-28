@@ -874,6 +874,8 @@ var
   NewName: string;
   IsInherited: Boolean;
   Action: TModalResult;
+  OldSetCaption: boolean;
+  AControl: TControl;
 begin
   Result:=-1;
   FContextObject:=ContextObj;
@@ -899,7 +901,16 @@ begin
       NewName := FCurReadJITComponent.ClassName;
       if NewName[1] in ['T', 't'] then
         System.Delete(NewName, 1, 1);
+      if FCurReadJITComponent is TControl then
+        AControl:=TControl(FCurReadJITComponent)
+      else
+        AControl:=nil;
+      OldSetCaption:=(AControl<>nil) and (csSetCaption in AControl.ControlStyle);
+      if OldSetCaption then
+        AControl.ControlStyle:=AControl.ControlStyle-[csSetCaption];
       FCurReadJITComponent.Name := NewName;
+      if OldSetCaption then
+        AControl.ControlStyle:=AControl.ControlStyle+[csSetCaption];
     end;
   except
     on E: Exception do begin
@@ -975,6 +986,7 @@ var
   Instance:TComponent;
   ok: boolean;
   Action: TModalResult;
+  OldSetCaption: boolean;
 begin
   Result:=-1;
   Instance:=nil;
@@ -1002,8 +1014,16 @@ begin
                             TControl(Instance).ControlStyle+[csNoDesignVisible];
       // finish 'create' component
       Instance.Create(nil);
-      if NewComponentName<>'' then
+      if NewComponentName<>'' then begin
+        // set Name, without changing Caption
+        OldSetCaption:=(Instance is TControl)
+                       and (csSetCaption in TControl(Instance).ControlStyle);
+        if OldSetCaption then
+          TControl(Instance).ControlStyle:=TControl(Instance).ControlStyle-[csSetCaption];
         Instance.Name:=NewComponentName;
+        if OldSetCaption then
+          TControl(Instance).ControlStyle:=TControl(Instance).ControlStyle+[csSetCaption];
+      end;
       DoRenameClass(FCurReadClass,NewClassName);
       ok:=true;
     //debugln('[TJITForms.DoCreateJITComponent] Initialization was successful! FormName="',NewFormName,'"');

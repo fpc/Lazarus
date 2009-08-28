@@ -2567,7 +2567,6 @@ begin
     (csSetCaption in ControlStyle) and not (csLoading in ComponentState) and
     (Name = Text) and
     ((Owner = nil) or not (Owner is TControl) or not (csLoading in TControl(Owner).ComponentState));
-
   inherited SetName(Value);
   if ChangeText then Text := Value;
 end;
@@ -3905,8 +3904,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
 begin
-  //if CompareText(Name,'TextToFindComboBox')=0 then
-  //  debugln('TControl.SetText A ',DbgSName(Self),' GetText="',GetText,'" Value="',Value,'" FCaption="',FCaption,'"');
+  //if CompareText(Name,'MainForm')=0 then debugln('TControl.SetText A ',DbgSName(Self),' GetText="',GetText,'" Value="',Value,'" FCaption="',FCaption,'"');
   if GetText = Value then Exit;
   
   // Check if SetTextBuf is overridden, otherwise

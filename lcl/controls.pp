@@ -809,7 +809,7 @@ type
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
  * exchange text between widgets and VCL. This means a lot of
- * (unnecesary) text copies.
+ * (unnecessary) text copies.
  * The LCL uses strings for exchanging text (more efficient).
  * To maintain VCL compatibility, the virtual RealGet/SetText is
  * introduced. These functions interface with the LCLInterface. The
