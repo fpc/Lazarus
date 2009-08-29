@@ -262,7 +262,7 @@ constructor TScrollingWinControl.Create(TheOwner : TComponent);
 begin
   Inherited Create(TheOwner);
 
-  FAutoScroll := true;
+  FAutoScroll := False;
   FVertScrollbar := TControlScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TControlScrollBar.Create(Self, sbHorizontal);
 

@@ -159,7 +159,7 @@ type
     function StoreScrollBars : Boolean;
   protected
     class procedure WSRegisterClass; override;
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default true;
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     function GetClientScrollOffset: TPoint; override;
@@ -197,7 +197,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    property AutoScroll;
+    property AutoScroll default True;
     property BorderSpacing;
     property BiDiMode;
     property BorderStyle default bsSingle;
@@ -428,13 +428,12 @@ type
     function GetPixelsPerInch: Longint;
     function GetRestoredLeft: integer;
     function GetRestoredTop: integer;
+    function IsAutoScrollStored: Boolean;
     function IsForm: Boolean;
-    function IsHelpFileStored: Boolean;
     function IsIconStored: Boolean;
     procedure CloseModal;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    function IsKeyPreviewStored: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
@@ -574,6 +573,7 @@ type
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
     property AllowDropFiles: Boolean read FAllowDropFiles write SetAllowDropFiles default False;
+    property AutoScroll stored IsAutoScrollStored;
     property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons
       default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle
@@ -588,11 +588,9 @@ type
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;
-    property HelpFile: string read FHelpFile write FHelpFile
-                              stored IsHelpFileStored;
+    property HelpFile: string read FHelpFile write FHelpFile;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
-    property KeyPreview: Boolean read FKeyPreview write FKeyPreview
-                                 stored IsKeyPreviewStored default False;
+    property KeyPreview: Boolean read FKeyPreview write FKeyPreview default False;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Monitor: TMonitor read GetMonitor;
@@ -610,7 +608,7 @@ type
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChange: TNotifyEvent
-                         read fOnWindowStateChange write fOnWindowStateChange;
+                         read FOnWindowStateChange write FOnWindowStateChange;
     property ParentFont default False;
     property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;

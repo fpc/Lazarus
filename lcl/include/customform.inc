@@ -20,6 +20,9 @@
 
 { $DEFINE CHECK_POSITION}
 
+const
+  FormStylesAllowAutoScroll = [bsSizeable, bsSizeToolWin];
+
 { TCustomForm }
 
 {------------------------------------------------------------------------------
@@ -186,14 +189,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomForm.IsKeyPreviewStored: boolean;
- ------------------------------------------------------------------------------}
-function TCustomForm.IsKeyPreviewStored: boolean;
-begin
-  Result:=FKeyPreview=true;
-end;
-
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
 var
   OldCancelControl: TControl;
@@ -258,15 +253,6 @@ procedure TCustomForm.SetModalResult(const AValue: TModalResult);
 begin
   if FModalResult=AValue then exit;
   FModalResult:=AValue;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomForm.IsIconStored
-  Returns: if form icon should be stored in the stream
- ------------------------------------------------------------------------------}
-function TCustomForm.IsIconStored: Boolean;
-begin
-  Result := IsForm and (Icon <> nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -1326,15 +1312,20 @@ var
 begin
   if FFormBorderStyle = NewStyle then exit;
   //TODO: Finish SETBORDERSTYLE
+
+  // AutoScroll is only available for bsSizeable, bsSizeToolWin windows
+  if not (NewStyle in FormStylesAllowAutoScroll) then
+    AutoScroll := False;
+
   AdaptBorderIcons := not (csLoading in ComponentState) and
-                          (BorderIcons=DefaultBorderIcons[FFormBorderStyle]);
+                      (BorderIcons = DefaultBorderIcons[FFormBorderStyle]);
   FFormBorderStyle := NewStyle;
   
   // if Form had default border icons before change, it should keep the default
   if AdaptBorderIcons then
     BorderIcons := DefaultBorderIcons[FFormBorderStyle];
     
-  Include(FFormState,fsBorderStyleChanged);
+  Include(FFormState, fsBorderStyleChanged);
   // ToDo: implement it.
   // We can not use inherited SetBorderStyle(NewStyle),
   // because TBorderStyle <> TFormBorderStyle;
@@ -1714,12 +1705,32 @@ begin
   Result := False;
 end;
 
-{------------------------------------------------------------------------------
-       TCustomForm Method IsForm
-------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{  Method: TCustomForm.IsAutoScrollStored                                      }
+{  Returns: if form AutoScroll should be stored in the stream                  }
+{------------------------------------------------------------------------------}
+function TCustomForm.IsAutoScrollStored: Boolean;
+begin
+  // store autoscroll only if BorderStyle allows this
+  Result := IsForm and (BorderStyle in FormStylesAllowAutoScroll);
+end;
+
+{------------------------------------------------------------------------------}
+{  Method: TCustomForm.IsForm                                                  }
+{  Returns: if form properties should be stored in the stream                  }
+{------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
 begin
   Result := True;
+end;
+
+{------------------------------------------------------------------------------}
+{  Method: TCustomForm.IsIconStored                                            }
+{  Returns: if form icon should be stored in the stream                        }
+{------------------------------------------------------------------------------}
+function TCustomForm.IsIconStored: Boolean;
+begin
+  Result := IsForm and (Icon <> nil);
 end;
 
 function TCustomForm.GetPixelsPerInch: Longint;
@@ -1767,14 +1778,6 @@ begin
     Result := Top
   else
     Result := FRestoredTop;
-end;
-
-{------------------------------------------------------------------------------
-  function TCustomForm.IsHelpFileStored: boolean;
-------------------------------------------------------------------------------}
-function TCustomForm.IsHelpFileStored: boolean;
-begin
-  Result:=FHelpFile<>'';
 end;
 
 {------------------------------------------------------------------------------
