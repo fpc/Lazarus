@@ -153,13 +153,11 @@ type
     FVertScrollBar: TControlScrollBar;
     FAutoScroll: Boolean;
     FIsUpdating: Boolean;
-    procedure SetAutoScroll(Value: Boolean);
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
-    function StoreScrollBars : Boolean;
+    function StoreScrollBars: Boolean;
   protected
     class procedure WSRegisterClass; override;
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default true;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     function GetClientScrollOffset: TPoint; override;
@@ -170,7 +168,9 @@ type
     function ComputeScrollbars: Boolean; virtual;
     procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
                                OldPosition: Integer); virtual;
+    procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
@@ -197,7 +197,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    property AutoScroll;
+    property AutoScroll default True;
     property BorderSpacing;
     property BiDiMode;
     property BorderStyle default bsSingle;
@@ -428,13 +428,12 @@ type
     function GetPixelsPerInch: Longint;
     function GetRestoredLeft: integer;
     function GetRestoredTop: integer;
-    function IsForm : Boolean;
-    function IsHelpFileStored: boolean;
+    function IsAutoScrollStored: Boolean;
+    function IsForm: Boolean;
     function IsIconStored: Boolean;
     procedure CloseModal;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
-    function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
@@ -509,6 +508,7 @@ type
     procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
     procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoScroll(Value: Boolean); override;
   protected
     // drag and dock
     procedure BeginAutoDrag; override;
@@ -574,6 +574,7 @@ type
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
     property AllowDropFiles: Boolean read FAllowDropFiles write SetAllowDropFiles default False;
+    property AutoScroll stored IsAutoScrollStored;
     property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons
       default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle
@@ -588,11 +589,9 @@ type
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;
-    property HelpFile: string read FHelpFile write FHelpFile
-                              stored IsHelpFileStored;
+    property HelpFile: string read FHelpFile write FHelpFile;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
-    property KeyPreview: Boolean read FKeyPreview write FKeyPreview
-                                 stored IsKeyPreviewStored default False;
+    property KeyPreview: Boolean read FKeyPreview write FKeyPreview default False;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Monitor: TMonitor read GetMonitor;
@@ -610,7 +609,7 @@ type
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChange: TNotifyEvent
-                         read fOnWindowStateChange write fOnWindowStateChange;
+                         read FOnWindowStateChange write FOnWindowStateChange;
     property ParentFont default False;
     property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
