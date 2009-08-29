@@ -153,13 +153,11 @@ type
     FVertScrollBar: TControlScrollBar;
     FAutoScroll: Boolean;
     FIsUpdating: Boolean;
-    procedure SetAutoScroll(Value: Boolean);
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
-    function StoreScrollBars : Boolean;
+    function StoreScrollBars: Boolean;
   protected
     class procedure WSRegisterClass; override;
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     function GetClientScrollOffset: TPoint; override;
@@ -170,7 +168,9 @@ type
     function ComputeScrollbars: Boolean; virtual;
     procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
                                OldPosition: Integer); virtual;
+    procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
@@ -508,6 +508,7 @@ type
     procedure DoSendBoundsToInterface; override;
     procedure DoAutoSize; override;
     procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoScroll(Value: Boolean); override;
   protected
     // drag and dock
     procedure BeginAutoDrag; override;

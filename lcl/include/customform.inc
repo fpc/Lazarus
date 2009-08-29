@@ -21,7 +21,7 @@
 { $DEFINE CHECK_POSITION}
 
 const
-  FormStylesAllowAutoScroll = [bsSizeable, bsSizeToolWin];
+  BorderStylesAllowAutoScroll = [bsSizeable, bsSizeToolWin];
 
 { TCustomForm }
 
@@ -1092,6 +1092,11 @@ begin
   inherited SetAutoSize(Value);
 end;
 
+procedure TCustomForm.SetAutoScroll(Value: Boolean);
+begin
+  inherited SetAutoScroll(Value and (BorderStyle in BorderStylesAllowAutoScroll));
+end;
+
 procedure TCustomForm.BeginAutoDrag;
 begin
   // allow form dragging only if it is docked into a site without DockManager
@@ -1314,7 +1319,7 @@ begin
   //TODO: Finish SETBORDERSTYLE
 
   // AutoScroll is only available for bsSizeable, bsSizeToolWin windows
-  if not (NewStyle in FormStylesAllowAutoScroll) then
+  if not (NewStyle in BorderStylesAllowAutoScroll) then
     AutoScroll := False;
 
   AdaptBorderIcons := not (csLoading in ComponentState) and
@@ -1712,7 +1717,7 @@ end;
 function TCustomForm.IsAutoScrollStored: Boolean;
 begin
   // store autoscroll only if BorderStyle allows this
-  Result := IsForm and (BorderStyle in FormStylesAllowAutoScroll);
+  Result := IsForm and (BorderStyle in BorderStylesAllowAutoScroll);
 end;
 
 {------------------------------------------------------------------------------}
