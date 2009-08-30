@@ -23,17 +23,8 @@ begin
   begin
     HorzScrollBar.AutoCalcRange;
     VertScrollBar.AutoCalcRange;
-    UpdateScrollBars;
-  end
-  else
-  begin
-    // If AutoScroll is false, then the scrollbars are always invisible
-    if HandleAllocated then
-    begin
-      ShowScrollBar(Handle, SB_HORZ, False);
-      ShowScrollBar(Handle, SB_VERT, False);
-    end;
   end;
+  UpdateScrollBars;
 end;
 
 procedure TScrollingWinControl.CreateWnd;
@@ -196,13 +187,23 @@ begin
 
   if FIsUpdating then Exit;
 
-  if not FAutoScroll then Exit;
-
   FIsUpdating := True;
   try
-    ComputeScrollbars; // page, autorange, visible
-    FVertScrollbar.UpdateScrollbar;
-    FHorzScrollbar.UpdateScrollbar;
+    if AutoScroll then
+    begin
+      ComputeScrollbars; // page, autorange, visible
+      FVertScrollbar.UpdateScrollbar;
+      FHorzScrollbar.UpdateScrollbar;
+    end
+    else
+    begin
+      // If AutoScroll is false, then the scrollbars are always invisible
+      if HandleAllocated then
+      begin
+        ShowScrollBar(Handle, SB_HORZ, False);
+        ShowScrollBar(Handle, SB_VERT, False);
+      end;
+    end;
   finally
     FIsUpdating := False;
   end;
