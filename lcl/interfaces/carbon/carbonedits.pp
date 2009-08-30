@@ -36,7 +36,8 @@ uses
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonGDIObjects;
+  CarbonDef, CarbonPrivate, CarbonGDIObjects,
+  CarbonProc, CarbonDbgConsts, CarbonUtils;
   
 type
 
@@ -153,12 +154,15 @@ type
     FIsPassword: Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    function GetFrameBounds(var r: TRect): Boolean; override;    
   public
     procedure BoundsChanged; override;
   public
     function GetText(var S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
+    function GetPreferredSize: TPoint; override;
     procedure SetPasswordChar(AChar: Char); override;
+    function SetBounds(const ARect: TRect): Boolean; override;
   end;
 
   { TCarbonMemo }
@@ -207,8 +211,16 @@ type
 
 implementation
 
-uses CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonWSStdCtrls;
-
+// Edit's frame bounds cannot be received or set directly by using HIViewGetFrame/HIViewSetFrame
+// http://lists.apple.com/archives/carbon-dev/2009/Jul/msg00044.html
+// Region can be used, but constants are used instead
+                                                      
+const
+  EditExtraTop     = 3; 
+  EditExtraBottom  = 3;
+  EditExtraLeft    = 3;
+  EditExtraRight   = 3;
+  
 { TCarbonControlWithEdit }
 
 {------------------------------------------------------------------------------
@@ -1351,6 +1363,12 @@ begin
   end;
 end;
 
+function TCarbonEdit.GetPreferredSize: TPoint;  
+begin
+  Result:=inherited GetPreferredSize;  
+  inc(Result.Y, EditExtraBottom+EditExtraTop);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonEdit.SetPasswordChar
   Params:  AChar     - New password char
@@ -1361,6 +1379,28 @@ procedure TCarbonEdit.SetPasswordChar(AChar: Char);
 begin
   if FIsPassword <> (AChar <> #0) then RecreateWnd(LCLObject);
 end;
+
+function TCarbonEdit.SetBounds(const ARect: TRect): Boolean; 
+var
+  r : TRect;
+begin
+  r := ARect;
+  inc(r.Top, EditExtraTop);
+  dec(r.Bottom, EditExtraBottom);
+  inc(r.Left, EditExtraLeft);
+  dec(r.Right, EditExtraRight);
+  Result := inherited SetBounds(r);
+end;
+
+function TCarbonEdit.GetFrameBounds(var r: TRect): Boolean; 
+begin
+  Result := inherited GetFrameBounds(r);
+  dec(r.Top, EditExtraTop);
+  inc(r.Bottom, EditExtraBottom);
+  dec(r.Left, EditExtraLeft);
+  inc(r.Right, EditExtraRight);
+end;
+
 
 { TCarbonMemo }
 
