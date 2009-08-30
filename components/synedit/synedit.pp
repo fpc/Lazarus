@@ -6040,11 +6040,18 @@ begin
       ecBlockMove:
         begin
           if SelAvail then begin
+            helper := FBlockSelection.SelText;
             FInternalBlockSelection.AssignFrom(FBlockSelection);
-            FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
-            InsertTextAtCaret(FBlockSelection.SelText);
-            FBlockSelection.EndLineBytePos := FCaret.LineBytePos;
+            FBlockSelection.IncPersistentLock;
+            FBlockSelection.StartLineBytePos := FCaret.LineBytePos;             // Track the Adjustment of the insert position
             FInternalBlockSelection.SelText := '';
+            FCaret.LineBytePos := FBlockSelection.StartLineBytePos;
+            Caret := FCaret.LineBytePos;
+            FBlockSelection.SelText := Helper;
+            FBlockSelection.DecPersistentLock;
+            CaretNew := FCaret.LineBytePos;
+            FBlockSelection.StartLineBytePos := Caret;
+            FBlockSelection.EndLineBytePos := CaretNew;
           end;
         end;
       ecBlockCopy:
