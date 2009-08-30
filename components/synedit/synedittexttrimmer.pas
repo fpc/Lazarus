@@ -717,8 +717,8 @@ begin
   t := fSynStrings[LogY - 1];
   s := copy(t, 1 + length(t) - Len, Len) + Spaces(LogY - 1);
   t := copy(t, 1, length(t) - Len);
-  fSynStrings[LogY - 1] := t;
   StoreSpacesForLine(LogY - 1, s, t);
+  fSynStrings[LogY - 1] := t;
   UndoList.AddChange(TSynEditUndoTrimMoveTo.Create(LogY, Len));
 end;
 
@@ -731,8 +731,8 @@ begin
   s := Spaces(LogY - 1);
   t := fSynStrings[LogY - 1] + copy(s, 1, Len);
   s := copy(s, 1 + Len, Len);
-  fSynStrings[LogY - 1] := t;
   StoreSpacesForLine(LogY - 1, s, t);
+  fSynStrings[LogY - 1] := t;
   UndoList.AddChange(TSynEditUndoTrimMoveFrom.Create(LogY, Len));
 end;
 
