@@ -1859,6 +1859,7 @@ resourcestring
   lisCollapseAllClasses = 'Collapse all classes';
   lisExport = 'Export ...';
   lisBegins = 'begins';
+  lisAddPackageDependencyToProject = 'Add package dependency to project';
   lisIdentifierBeginsWith = 'Identifier begins with ...';
   lisUnitNameBeginsWith = 'Unit name begins with ...';
   lisPackageNameBeginsWith = 'Package name begins with ...';

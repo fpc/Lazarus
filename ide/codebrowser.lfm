@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 320
+  Left = 303
   Height = 563
-  Top = 333
+  Top = 292
   Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -51,7 +51,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 41
+    Height = 26
     Top = 190
     Width = 611
     Anchors = [akTop, akLeft, akRight]
@@ -63,7 +63,7 @@ object CodeBrowserView: TCodeBrowserView
     ChildSizing.EnlargeHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 22
+    ClientHeight = 7
     ClientWidth = 607
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
@@ -98,8 +98,8 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 285
-    Top = 237
+    Height = 300
+    Top = 222
     Width = 623
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -324,6 +324,13 @@ object CodeBrowserView: TCodeBrowserView
       OnClick = CopyIdentifierMenuItemClick
     end
     object CopySeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object AddPkgToProjectMenuItem: TMenuItem
+      Caption = 'AddPkgToProjectMenuItem'
+      OnClick = AddPkgToProjectMenuItemClick
+    end
+    object UseSeparatorMenuItem: TMenuItem
       Caption = '-'
     end
     object ExpandAllPackagesMenuItem: TMenuItem

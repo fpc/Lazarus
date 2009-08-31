@@ -32,9 +32,6 @@
     The codetools provides TCodeTree of every unit.
 
   ToDo:
-    - double click on package: open package editor
-    - double click on project: open project inspector
-    - add package to project
     - add package to package of editor unit
     - add package+unit to editor unit
     - add package+unit+identifier to editor caret
@@ -59,7 +56,7 @@ uses
   DialogProcs,
   // IDE
   PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
-  EnvironmentOpts, Menus;
+  BasePkgManager, AddToProjectDlg, EnvironmentOpts, Menus;
 
 
 type
@@ -174,6 +171,8 @@ type
     AllUnitsSeparatorMenuItem: TMenuItem;
     BrowseTreeView: TTreeView;
     IdleTimer1: TIdleTimer;
+    AddPkgToProjectMenuItem: TMenuItem;
+    UseSeparatorMenuItem: TMenuItem;
     ShowEmptyNodesCheckBox: TCheckBox;
     CollapseAllClassesMenuItem: TMenuItem;
     CollapseAllPackagesMenuItem: TMenuItem;
@@ -208,6 +207,7 @@ type
     UnitFilterBeginsSpeedButton: TSpeedButton;
     UnitFilterContainsSpeedButton: TSpeedButton;
     UnitFilterEdit: TEdit;
+    procedure AddPkgToProjectMenuItemClick(Sender: TObject);
     procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
@@ -314,6 +314,7 @@ type
                                                Expand: boolean);
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
     procedure InvalidateStage(AStage: TCodeBrowserWorkStage);
+    function GetSelectedPackage: TLazPackage;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -404,6 +405,7 @@ begin
   ExpandAllClassesMenuItem.Caption:=lisExpandAllClasses;
   CollapseAllClassesMenuItem.Caption:=lisCollapseAllClasses;
   ExportMenuItem.Caption:=lisExport;
+  AddPkgToProjectMenuItem.Caption:=lisAddPackageDependencyToProject;
   
   PackageFilterBeginsSpeedButton.Caption:=lisBegins;
   PackageFilterBeginsSpeedButton.Hint:=lisPackageNameBeginsWith;
@@ -458,6 +460,9 @@ var
   TVNode: TTreeNode;
   Node: TObject;
   Identifier: String;
+  UnitList: TCodeBrowserUnitList;
+  EnableAddPkgToProject: Boolean;
+  APackage: TLazPackage;
 begin
   ExpandAllPackagesMenuItem.Visible:=Options.HasLevel(cblPackages);
   CollapseAllPackagesMenuItem.Visible:=ExpandAllPackagesMenuItem.Visible;
@@ -475,11 +480,30 @@ begin
   Node:=nil;
   if TVNode<>nil then
     Node:=TOBject(TVNode.Data);
+  EnableAddPkgToProject:=false;
   if Node<>nil then begin
     if Node is TCodeBrowserNode then
       Identifier:=TCodeBrowserNode(Node).Identifier
     else
       Identifier:='';
+    APackage:=nil;
+    if Node is TCodeBrowserUnitList then begin
+      UnitList:=TCodeBrowserUnitList(Node);
+      if UnitList.Owner=CodeBrowserProjectName then begin
+        // project
+      end else if UnitList.Owner=CodeBrowserIDEName then begin
+        // IDE
+      end else if UnitList.Owner=CodeBrowserHidden then begin
+        // nothing
+      end else begin
+        // package
+        APackage:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
+        if APackage<>nil then begin
+          if Project1.FindDependencyByName(APackage.Name)=nil then
+            EnableAddPkgToProject:=true;
+        end;
+      end;
+    end;
     CopyDescriptionMenuItem.Caption:=lisCopyDescription;
     CopyIdentifierMenuItem.Caption:=Format(lisCopyIdentifier, ['"', Identifier,
      '"']);
@@ -491,6 +515,7 @@ begin
     CopyIdentifierMenuItem.Visible:=false;
     CopySeparatorMenuItem.Visible:=false;
   end;
+  AddPkgToProjectMenuItem.Enabled:=EnableAddPkgToProject;
 end;
 
 procedure TCodeBrowserView.ScopeComboBoxGetItems(Sender: TObject);
@@ -2161,6 +2186,22 @@ begin
     fStage:=AStage;
 end;
 
+function TCodeBrowserView.GetSelectedPackage: TLazPackage;
+var
+  TVNode: TTreeNode;
+  Node: TObject;
+  UnitList: TCodeBrowserUnitList;
+begin
+  Result:=nil;
+  TVNode:=BrowseTreeView.Selected;
+  if TVNode=nil then exit;
+  Node:=TObject(TVNode.Data);
+  if Node=nil then exit;
+  if not (Node is TCodeBrowserUnitList) then exit;
+  UnitList:=TCodeBrowserUnitList(Node);
+  Result:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
+end;
+
 procedure TCodeBrowserView.BeginUpdate;
 begin
   inc(fUpdateCount);
@@ -2357,6 +2398,15 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCodeBrowserView.AddPkgToProjectMenuItemClick(Sender: TObject);
+var
+  APackage: TLazPackage;
+begin
+  APackage:=GetSelectedPackage;
+  if APackage=nil then exit;
+  PkgBoss.AddProjectDependency(Project1,APackage);
 end;
 
 { TCodeBrowserViewOptions }
