@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-06 03:19+0300\n"
+"PO-Revision-Date: 2009-08-31 18:28+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -923,6 +923,10 @@ msgstr "Метод %s%s%s несовместим с этим событием (%
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Метод %s%s%s не опубликован.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
+
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr "Невозможно сменить родителя компонента %s%s%s на %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
