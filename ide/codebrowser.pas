@@ -86,6 +86,7 @@ type
 
   TCodeBrowserViewOptions = class
   private
+    FChangeStamp: integer;
     FModified: boolean;
     FScope: string;
     FLevels: TStrings;
@@ -109,6 +110,7 @@ type
     procedure SetShowPrivate(const AValue: boolean);
     procedure SetShowProtected(const AValue: boolean);
     procedure SetWithRequiredPackages(const AValue: boolean);
+    procedure IncreaseChangeStamp;
   public
     constructor Create;
     destructor Destroy; override;
@@ -116,6 +118,7 @@ type
     procedure LoadFromConfig(ConfigStore: TConfigStorage; const Path: string);
     procedure SaveToConfig(ConfigStore: TConfigStorage; const Path: string);
     function HasLevel(Level: TCodeBrowserLevel): boolean;
+  public
     property Scope: string read FScope write SetScope;
     property WithRequiredPackages: boolean read FWithRequiredPackages write SetWithRequiredPackages;
     property Levels: TStrings read FLevels write SetLevels;
@@ -125,6 +128,7 @@ type
     property LevelFilterText[Level: TCodeBrowserLevel]: string read GetLevelFilterText write SetLevelFilterText;
     property LevelFilterType[Level: TCodeBrowserLevel]: TCodeBrowserTextFilter read GetLevelFilterType write SetLevelFilterType;
     property Modified: boolean read FModified write SetModified;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
 
@@ -221,6 +225,7 @@ type
   private
     FIDEDescription: string;
     FOptions: TCodeBrowserViewOptions;
+    FOptionsChangeStamp: integer;
     FProjectDescription: string;
     FParserRoot: TCodeBrowserUnitList;
     FScannedBytes: PtrInt;
@@ -691,6 +696,7 @@ begin
   cbwsGetViewOptions:      WorkGetViewOptions;
   cbwsUpdateTreeView:      WorkUpdateTreeView;
   else
+    FOptionsChangeStamp:=Options.ChangeStamp;
     UpdateNeeded:=false;
     Done:=true;
     ProgressBar1.Position:=ProgressTotal;
@@ -1339,10 +1345,10 @@ begin
   if IdentifierFilterContainsSpeedButton.Down then
     Options.LevelFilterType[cblIdentifiers]:=cbtfContains;
 
-  DebugLn(['TCodeBrowserView.WorkGetViewOptions ',UpdateNeeded,' ',Options.Modified]);
+  DebugLn(['TCodeBrowserView.WorkGetViewOptions UpdateNeeded=',UpdateNeeded,' ChangeStamp=',Options.ChangeStamp<>FOptionsChangeStamp]);
 
   // this stage finished -> next stage
-  if UpdateNeeded or Options.Modified then
+  if UpdateNeeded or (Options.ChangeStamp<>FOptionsChangeStamp) then
     fStage:=cbwsUpdateTreeView
   else
     fStage:=cbwsFinished;
@@ -1914,7 +1920,7 @@ begin
     LevelFilterText[lvl]:=Options.LevelFilterText[lvl];
     LevelFilterType[lvl]:=Options.LevelFilterType[lvl];
   end;
-  //DebugLn(['TCodeBrowserView.UpdateTreeView UnitFilter=',LevelFilterText[cblUnits]]);
+  DebugLn(['TCodeBrowserView.UpdateTreeView UnitFilter=',LevelFilterText[cblUnits]]);
   
   //DebugLn(['TCodeBrowserView.UpdateTreeView ShowPackages=',ShowPackages,' ShowUnits=',ShowUnits,' ShowIdentifiers=',ShowIdentifiers]);
 
@@ -2335,6 +2341,8 @@ end;
 
 procedure TCodeBrowserViewOptions.SetModified(const AValue: boolean);
 begin
+  if AValue then
+    IncreaseChangeStamp;
   if FModified=AValue then exit;
   FModified:=AValue;
 end;
@@ -2411,6 +2419,14 @@ begin
   Modified:=true;
 end;
 
+procedure TCodeBrowserViewOptions.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
+end;
+
 constructor TCodeBrowserViewOptions.Create;
 begin
   FLevels:=TStringList.Create;
@@ -2439,6 +2455,7 @@ begin
     FLevelFilterType[l]:=cbtfContains;
     FLevelFilterText[l]:='';
   end;
+  IncreaseChangeStamp;
   Modified:=false;
 end;
 
