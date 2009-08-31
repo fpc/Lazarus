@@ -37,7 +37,7 @@ uses
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, Menus,
  // LCL Carbon
-  CarbonDef, CarbonGDIObjects;
+  CarbonDef, CarbonGDIObjects, CarbonProc, CarbonDbgConsts;
   
 type
 
@@ -81,9 +81,6 @@ function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: Str
 
 
 implementation
-
-uses
-  CarbonProc, CarbonDbgConsts;
 
 {------------------------------------------------------------------------------
   Name:    CheckMenu
