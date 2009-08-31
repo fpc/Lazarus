@@ -32,8 +32,6 @@
     The codetools provides TCodeTree of every unit.
 
   ToDo:
-    - at the moment editing the filter texts only update on editing done
-      Update after some idle time
     - double click on package: open package editor
     - double click on project: open project inspector
     - add package to project
@@ -175,6 +173,7 @@ type
     AllPackagesSeparatorMenuItem: TMenuItem;
     AllUnitsSeparatorMenuItem: TMenuItem;
     BrowseTreeView: TTreeView;
+    IdleTimer1: TIdleTimer;
     ShowEmptyNodesCheckBox: TCheckBox;
     CollapseAllClassesMenuItem: TMenuItem;
     CollapseAllPackagesMenuItem: TMenuItem;
@@ -224,6 +223,8 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure IdleTimer1Timer(Sender: TObject);
+    procedure PackageFilterEditChange(Sender: TObject);
     procedure PackageFilterEditEditingDone(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure ScopeComboBoxGetItems(Sender: TObject);
@@ -436,6 +437,17 @@ begin
   FreeAndNil(FOptions);
 end;
 
+procedure TCodeBrowserView.IdleTimer1Timer(Sender: TObject);
+begin
+  InvalidateStage(cbwsGetViewOptions);
+  IdleTimer1.Enabled:=false;
+end;
+
+procedure TCodeBrowserView.PackageFilterEditChange(Sender: TObject);
+begin
+  IdleTimer1.Enabled:=true;
+end;
+
 procedure TCodeBrowserView.PackageFilterEditEditingDone(Sender: TObject);
 begin
   InvalidateStage(cbwsGetViewOptions);
@@ -498,12 +510,8 @@ begin
 end;
 
 procedure TCodeBrowserView.OnIdle(Sender: TObject; var Done: Boolean);
-var
-  AControl: TWinControl;
 begin
-  AControl:=FindOwnerControl(GetFocus);
-  if (AControl=nil) or (GetFirstParentForm(AControl)<>Self) then exit;
-  // this form is focused -> let's work
+  if (Screen.GetCurrentModalForm<>nil) then exit;
   Work(Done);
 end;
 
@@ -724,6 +732,8 @@ end;
 procedure TCodeBrowserView.WorkGetScopeOptions;
 begin
   DebugLn(['TCodeBrowserView.WorkGetScopeOptions START']);
+  IdleTimer1.Enabled:=false;
+
   ProgressBar1.Position:=ProgressGetScopeStart;
   Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
   Options.Scope:=ScopeComboBox.Text;

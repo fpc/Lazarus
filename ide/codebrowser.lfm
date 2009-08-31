@@ -1,12 +1,12 @@
 object CodeBrowserView: TCodeBrowserView
   Left = 320
-  Height = 564
+  Height = 563
   Top = 333
-  Width = 634
+  Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
-  ClientHeight = 564
-  ClientWidth = 634
+  ClientHeight = 563
+  ClientWidth = 623
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -15,12 +15,12 @@ object CodeBrowserView: TCodeBrowserView
     Left = 6
     Height = 50
     Top = 6
-    Width = 622
+    Width = 611
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
     ClientHeight = 31
-    ClientWidth = 618
+    ClientWidth = 607
     TabOrder = 0
     object ScopeComboBox: TComboBox
       Left = 3
@@ -53,7 +53,7 @@ object CodeBrowserView: TCodeBrowserView
     Left = 6
     Height = 41
     Top = 190
-    Width = 622
+    Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -64,31 +64,31 @@ object CodeBrowserView: TCodeBrowserView
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
     ClientHeight = 22
-    ClientWidth = 618
+    ClientWidth = 607
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
       Left = 0
       Height = 22
       Top = 0
-      Width = 185
+      Width = 182
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
     end
     object ShowProtectedCheckBox: TCheckBox
-      Left = 185
+      Left = 182
       Height = 22
       Top = 0
-      Width = 205
+      Width = 202
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 1
     end
     object ShowEmptyNodesCheckBox: TCheckBox
-      Left = 390
+      Left = 384
       Height = 22
       Top = 0
-      Width = 228
+      Width = 223
       Caption = 'ShowEmptyNodesCheckBox'
       OnEditingDone = ShowPrivateCheckBoxChange
       TabOrder = 2
@@ -98,9 +98,9 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 286
+    Height = 285
     Top = 237
-    Width = 634
+    Width = 623
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -118,8 +118,8 @@ object CodeBrowserView: TCodeBrowserView
   object StatusBar1: TStatusBar
     Left = 0
     Height = 21
-    Top = 543
-    Width = 634
+    Top = 542
+    Width = 623
     Panels = <>
   end
   object LevelsGroupBox: TGroupBox
@@ -131,12 +131,12 @@ object CodeBrowserView: TCodeBrowserView
     Left = 6
     Height = 122
     Top = 62
-    Width = 622
+    Width = 611
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'LevelsGroupBox'
     ClientHeight = 103
-    ClientWidth = 618
+    ClientWidth = 607
     TabOrder = 3
     object PackageFilterBeginsSpeedButton: TSpeedButton
       AnchorSideLeft.Control = PackageFilterEdit
@@ -266,6 +266,7 @@ object CodeBrowserView: TCodeBrowserView
       Height = 27
       Top = 2
       Width = 201
+      OnChange = PackageFilterEditChange
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 3
       Text = 'PackageFilterEdit'
@@ -277,6 +278,7 @@ object CodeBrowserView: TCodeBrowserView
       Height = 27
       Top = 30
       Width = 201
+      OnChange = PackageFilterEditChange
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 4
       Text = 'UnitFilterEdit'
@@ -288,6 +290,7 @@ object CodeBrowserView: TCodeBrowserView
       Height = 27
       Top = 57
       Width = 201
+      OnChange = PackageFilterEditChange
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 5
       Text = 'IdentifierFilterEdit'
@@ -296,8 +299,8 @@ object CodeBrowserView: TCodeBrowserView
   object ProgressBar1: TProgressBar
     Left = 0
     Height = 20
-    Top = 523
-    Width = 634
+    Top = 522
+    Width = 623
     Align = alBottom
     Max = 10000
     TabOrder = 5
@@ -360,5 +363,10 @@ object CodeBrowserView: TCodeBrowserView
       Caption = 'ExportMenuItem'
       OnClick = ExportMenuItemClick
     end
+  end
+  object IdleTimer1: TIdleTimer
+    OnTimer = IdleTimer1Timer
+    left = 350
+    top = 196
   end
 end
