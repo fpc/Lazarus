@@ -1378,6 +1378,44 @@ end;
 procedure TCodeBrowserView.UpdateStatusBar(Lazy: boolean);
 const
   SmallTimeStep = 1/86400;
+
+  function BigIntToStr(i: integer): string;
+  var
+    p: Integer;
+  begin
+    if i=0 then begin
+      Result:='0';
+      exit;
+    end;
+    Result:='';
+    if i>=100000 then begin
+      i:=i div 1000;
+      Result:='k';
+      if i>=100000 then begin
+        i:=i div 1000;
+        Result:='m';
+        if i>=100000 then begin
+          i:=i div 1000;
+          Result:='g';
+          if i>=100000 then begin
+            i:=i div 1000;
+            Result:='t';
+          end;
+        end;
+      end;
+    end;
+
+    p:=0;
+    while i>0 do begin
+      if p=3 then begin
+        Result:=DefaultFormatSettings.ThousandSeparator+Result;
+        p:=0;
+      end;
+      Result:=chr((i mod 10)+ord('0'))+Result;
+      i:=i div 10;
+      inc(p);
+    end;
+  end;
 var
   s: String;
 begin
@@ -1387,11 +1425,11 @@ begin
     exit;
   end;
   fLastStatusBarUpdate:=Now;
-  s:='packages='+IntToStr(VisiblePackages)+'/'+IntToStr(ScannedPackages)
-    +' units='+IntToStr(VisibleUnits)+'/'+IntToStr(ScannedUnits)
-    +' identifiers='+IntToStr(VisibleIdentifiers)+'/'+IntToStr(ScannedIdentifiers)
-    +' lines='+IntToStr(ScannedLines)
-    +' bytes='+IntToStr(ScannedBytes);
+  s:='packages='+BigIntToStr(VisiblePackages)+'/'+BigIntToStr(ScannedPackages)
+    +' units='+BigIntToStr(VisibleUnits)+'/'+BigIntToStr(ScannedUnits)
+    +' identifiers='+BigIntToStr(VisibleIdentifiers)+'/'+BigIntToStr(ScannedIdentifiers)
+    +' lines='+BigIntToStr(ScannedLines)
+    +' bytes='+BigIntToStr(ScannedBytes);
   if fStage<>cbwsFinished then
     s:=s+'. Scanning ...';
   StatusBar1.SimpleText:=s;

@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 295
+  Left = 300
   Height = 564
-  Top = 213
+  Top = 237
   Width = 634
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -10,7 +10,7 @@ object CodeBrowserView: TCodeBrowserView
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ScopeGroupBox: TGroupBox
     Left = 6
     Height = 50
@@ -27,9 +27,7 @@ object CodeBrowserView: TCodeBrowserView
       Height = 29
       Top = 0
       Width = 315
-      AutoComplete = False
       ItemHeight = 0
-      ItemWidth = 0
       OnEditingDone = ScopeComboBoxEditingDone
       OnGetItems = ScopeComboBoxGetItems
       TabOrder = 0
@@ -134,7 +132,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 424
       Height = 22
-      Top = 4
+      Top = 2
       Width = 86
       Color = clBtnFace
       GroupIndex = 1
@@ -149,7 +147,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       Left = 510
       Height = 22
-      Top = 4
+      Top = 2
       Width = 86
       Color = clBtnFace
       GroupIndex = 1
@@ -253,8 +251,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = ShowPackagesCheckBox
       AnchorSideTop.Side = asrCenter
       Left = 223
-      Height = 23
-      Top = 4
+      Height = 27
+      Top = 2
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 3
@@ -264,8 +262,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = ShowUnitsCheckBox
       AnchorSideTop.Side = asrCenter
       Left = 223
-      Height = 23
-      Top = 32
+      Height = 27
+      Top = 30
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 4
@@ -275,8 +273,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = ShowIdentifiersCheckBox
       AnchorSideTop.Side = asrCenter
       Left = 223
-      Height = 23
-      Top = 59
+      Height = 27
+      Top = 57
       Width = 201
       OnEditingDone = PackageFilterEditEditingDone
       TabOrder = 5
@@ -294,7 +292,6 @@ object CodeBrowserView: TCodeBrowserView
   end
   object ImageList1: TImageList
     Height = 18
-    Masked = False
     Width = 18
     left = 298
     top = 196
