@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 300
+  Left = 310
   Height = 564
-  Top = 237
+  Top = 285
   Width = 634
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -51,42 +51,55 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 50
+    Height = 41
     Top = 190
     Width = 622
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'OptionsGroupBox'
-    ClientHeight = 31
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 22
     ClientWidth = 618
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
-      Left = 12
+      Left = 0
       Height = 22
-      Top = 8
-      Width = 165
+      Top = 0
+      Width = 185
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
     end
     object ShowProtectedCheckBox: TCheckBox
-      Left = 272
+      Left = 185
       Height = 22
-      Top = 8
-      Width = 183
+      Top = 0
+      Width = 205
       Caption = 'ShowProtectedCheckBox'
-      OnChange = ShowProtectedCheckBoxChange
+      OnChange = ShowPrivateCheckBoxChange
       TabOrder = 1
+    end
+    object ShowEmptyNodesCheckBox: TCheckBox
+      Left = 390
+      Height = 22
+      Top = 0
+      Width = 228
+      Caption = 'ShowEmptyNodesCheckBox'
+      OnEditingDone = ShowPrivateCheckBoxChange
+      TabOrder = 2
     end
   end
   object BrowseTreeView: TTreeView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 277
-    Top = 246
+    Height = 286
+    Top = 237
     Width = 634
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
