@@ -139,7 +139,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
     CurMax: Integer;
     OldVisible: Boolean;
   begin
-    OldVisible:=p_Bar.FVisible;
+    OldVisible := p_Bar.FVisible;
     if p_Bar.Kind = sbVertical then
       CurMax := ClientHeight
     else
@@ -157,7 +157,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
 var
   NewPage: Integer;
 begin
-  Result := false;
+  Result := False;
   // page
   NewPage := Max(1,Min(ClientWidth - 1, High(HorzScrollbar.FPage)));
   if NewPage <> HorzScrollbar.FPage then
@@ -190,20 +190,9 @@ begin
   FIsUpdating := True;
   try
     if AutoScroll then
-    begin
       ComputeScrollbars; // page, autorange, visible
-      FVertScrollbar.UpdateScrollbar;
-      FHorzScrollbar.UpdateScrollbar;
-    end
-    else
-    begin
-      // If AutoScroll is false, then the scrollbars are always invisible
-      if HandleAllocated then
-      begin
-        ShowScrollBar(Handle, SB_HORZ, False);
-        ShowScrollBar(Handle, SB_VERT, False);
-      end;
-    end;
+    FVertScrollbar.UpdateScrollbar;
+    FHorzScrollbar.UpdateScrollbar;
   finally
     FIsUpdating := False;
   end;

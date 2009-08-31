@@ -91,7 +91,7 @@ type
     FPage: TScrollBarInc;
     FPosition: Integer;
     FRange: Integer;
-    FSmooth : Boolean;
+    FSmooth: Boolean;
     FVisible: Boolean;
     FOldScrollInfo: TScrollInfo;
     FOldScrollInfoValid: Boolean;
@@ -108,8 +108,6 @@ type
     function GetSmooth: Boolean; virtual;
     function GetVisible: Boolean; virtual;
     function HandleAllocated: boolean; virtual;
-    function SmoothIsStored: boolean; virtual;
-    function VisibleIsStored: boolean; virtual;
     procedure AutoCalcRange; virtual;
     procedure ControlUpdateScrollBars; virtual;
     procedure ScrollHandler(var Message: TLMScroll);
@@ -134,16 +132,15 @@ type
     function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
-    property Size: integer read GetSize write SetSize stored false;
+    property Size: integer read GetSize write SetSize stored False;
   published
     property Increment: TScrollBarInc read GetIncrement write SetIncrement default 8;
     property Page: TScrollBarInc read GetPage write SetPage default 80;
-    property Smooth : Boolean read GetSmooth write SetSmooth stored SmoothIsStored;
+    property Smooth: Boolean read GetSmooth write SetSmooth default False;
     property Position: Integer read GetPosition write SetPosition default 0;
     property Range: Integer read GetRange write SetRange default 0;
-    property Visible: Boolean read GetVisible write SetVisible stored VisibleIsStored;
+    property Visible: Boolean read GetVisible write SetVisible default True;
   end;
-
 
   { TScrollingWinControl }
 
