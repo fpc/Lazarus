@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: SynMacroRecorder.pas, released 2001-10-17.
 
-Author of this file is Fl·vio Etrusco.
-Portions created by Fl·vio Etrusco are Copyright 2001 Fl·vio Etrusco.
+Author of this file is Fl√°vio Etrusco.
+Portions created by Fl√°vio Etrusco are Copyright 2001 Fl√°vio Etrusco.
 All Rights Reserved.
 
 Contributors to the SynEdit project are listed in the Contributors.txt file.

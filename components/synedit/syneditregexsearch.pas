@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: SynEditRegexSearch.pas, released 2002-07-26.
 
-Original Code by Eduardo Mauro, Gerald Nunn and Fl·vio Etrusco.
+Original Code by Eduardo Mauro, Gerald Nunn and Fl√°vio Etrusco.
 All Rights Reserved.
 
 Contributors to the SynEdit project are listed in the Contributors.txt file.

@@ -1,4 +1,4 @@
-//Converted by Nyitrai PÈter
+//Converted by Nyitrai P√©ter
 {-------------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -12,7 +12,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: SynHighlighterVB.pas, released 2000-04-20.
 The Original Code is based on the wbADSP21xxSyn.pas file from the
 mwEdit component suite by Martin Waldenburg and other developers, the Initial
-Author of this file is Max Horvﬂth.
+Author of this file is Max Horv√üth.
 All Rights Reserved.
 
 Contributors to the SynEdit and mwEdit projects are listed in the
@@ -37,7 +37,7 @@ Known Issues:
 -------------------------------------------------------------------------------}
 {
 @abstract(Provides a Visual Basic highlighter for SynEdit)
-@author(Max Horvﬂth <TheProfessor@gmx.de>, converted to SynEdit by David Muir <david@loanhead45.freeserve.co.uk>)
+@author(Max Horv√üth <TheProfessor@gmx.de>, converted to SynEdit by David Muir <david@loanhead45.freeserve.co.uk>)
 @created(5 December 1999, converted to SynEdit April 21, 2000)
 @lastmod(2000-06-23)
 The SynHighlighterVB unit provides SynEdit with a Visual Basic (.bas) highlighter.
