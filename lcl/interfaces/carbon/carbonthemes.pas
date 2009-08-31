@@ -156,10 +156,17 @@ var
   HeaderDrawInfo: HiThemeHeaderDrawInfo;
   PaintRect: HIRect;
 begin
+  if (R.Bottom - R.Top = 0) or (R.Right - R.Left = 0) then
+  begin
+    Result := R;
+    Exit;
+  end;
+
   HeaderDrawInfo.version := 0;
   HeaderDrawInfo.State := GetDrawState(Details);
   HeaderDrawInfo.kind := kHiThemeHeaderKindList;
   PaintRect := RectToCGRect(R);
+
   OSError(
     HIThemeDrawHeader(PaintRect, HeaderDrawInfo, DC.CGContext,
       kHIThemeOrientationNormal),
