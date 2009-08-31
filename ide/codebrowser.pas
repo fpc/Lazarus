@@ -30,6 +30,18 @@
 
   Notes:
     The codetools provides TCodeTree of every unit.
+
+  ToDo:
+    - at the moment editing the filter texts only update on editing done
+      Update after some idle time
+    - double click on package: open package editor
+    - double click on project: open project inspector
+    - add package to project
+    - add package to package of editor unit
+    - add package+unit to editor unit
+    - add package+unit+identifier to editor caret
+    - scan recently used packages
+    - scan packages in global links
 }
 unit CodeBrowser;
 
