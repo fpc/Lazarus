@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 315
+  Left = 320
   Height = 564
-  Top = 309
+  Top = 333
   Width = 634
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -51,7 +51,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
+    Height = 41
     Top = 190
     Width = 622
     Anchors = [akTop, akLeft, akRight]
@@ -63,7 +63,7 @@ object CodeBrowserView: TCodeBrowserView
     ChildSizing.EnlargeHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 7
+    ClientHeight = 22
     ClientWidth = 618
     TabOrder = 1
     object ShowPrivateCheckBox: TCheckBox
@@ -98,8 +98,8 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 301
-    Top = 222
+    Height = 286
+    Top = 237
     Width = 634
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -110,11 +110,10 @@ object CodeBrowserView: TCodeBrowserView
     PopupMenu = PopupMenu1
     ReadOnly = True
     ShowHint = True
-    ShowRoot = False
     TabOrder = 2
     OnMouseDown = BrowseTreeViewMouseDown
     OnShowHint = BrowseTreeViewShowHint
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object StatusBar1: TStatusBar
     Left = 0
