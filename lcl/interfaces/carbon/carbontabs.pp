@@ -827,15 +827,19 @@ begin
     Result := GetControlContentRect(ARect);
     Exit;
   end;
-  //DebugLn('TCarbonTabsControl.GetClientRect');
+  //DebugLn('TCarbonTabsControl.GetClientRect, TabControl ', DbgS(Widget) );
 
-  if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlTabContentRectTag, SizeOf(MacOSAll.Rect), @AClientRect, nil),
-    Self, 'GetClientRect', 'GetControlData') then begin
-    // exitting with False, causes crashes
-    //Exit;
+  // it's normal sitation if GetControlData fails with error code.
+  // (TabControl is not large enough to return client rect).
+  // so there's no need to report the error.
+
+  // if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
+  //    kControlTabContentRectTag, SizeOf(MacOSAll.Rect), @AClientRect, nil),
+  //    Self, 'GetClientRect', 'GetControlData') then begin
+
+  if GetControlData(ControlRef(Widget), kControlEntireControl,
+    kControlTabContentRectTag, SizeOf(MacOSAll.Rect), @AClientRect, nil) <> noErr then
     AClientRect := GetCarbonRect(0, 0, 0, 0);
-  end;
 
   ARect := CarbonRectToRect(AClientRect);
   
