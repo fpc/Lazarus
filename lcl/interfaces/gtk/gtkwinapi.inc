@@ -8900,7 +8900,10 @@ end;
   Params:  none
   Returns: The new position value
 
-
+  nPage >= 0
+  nPage <= nMax-nMin+1
+  nPos >= nMin
+  nPos <= nMax - Max(nPage-1,0)
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
@@ -8939,7 +8942,16 @@ begin
   Result := 0;
   if (Handle = 0) then exit;
 
-  //DebugLn('TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
+  {DebugLn(['TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetDebugReport(PGtkWidget(Handle)),' SBStyle=',SBStyle,
+    ' ScrollInfo=[',
+      'cbSize=',ScrollInfo.cbSize,
+      ',fMask=',ScrollInfo.fMask,
+      ',nMin=',ScrollInfo.nMin,
+      ',nMax=',ScrollInfo.nMax,
+      ',nPage=',ScrollInfo.nPage,
+      ',nPos=',ScrollInfo.nPos,
+      ',nTrackPos=',ScrollInfo.nTrackPos,
+      ']']);}
 
   Scroll := gtk_object_get_data(PGTKObject(Handle), odnScrollArea);
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
@@ -8993,7 +9005,7 @@ begin
       // obsolete stuff
       else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type)
       then begin
-        // this one shouldn't be possible, scrolbar messages are sent to the CTL
+        // this one shouldn't be possible, scrollbar messages are sent to the CTL
         DebugLN('!!! direct SB_HORZ set call to scrollbar');
         Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       end
@@ -9019,7 +9031,7 @@ begin
       // obsolete stuff
       else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type)
       then begin
-        // this one shouldn't be possible, scrolbar messages are sent to the CTL
+        // this one shouldn't be possible, scrollbar messages are sent to the CTL
         DebugLN('!!! direct SB_VERT call to scrollbar');
         Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment;
       end
@@ -9046,10 +9058,6 @@ begin
 
   if Adjustment = nil then exit;
 
-  if (ScrollInfo.fMask and SIF_POS) <> 0
-  then begin
-    Adjustment^.value := ScrollInfo.nPos;
-  end;
   if (ScrollInfo.fMask and SIF_RANGE) <> 0
   then begin
     Adjustment^.lower := ScrollInfo.nMin;
@@ -9057,8 +9065,19 @@ begin
   end;
   if (ScrollInfo.fMask and SIF_PAGE) <> 0
   then begin
+    // 0 <= nPage <= nMax-nMin+1
     Adjustment^.page_size := ScrollInfo.nPage;
-    Adjustment^.page_increment := (ScrollInfo.nPage div 6)+1;
+    Adjustment^.page_size := Min(Max(Adjustment^.page_size,0),
+                                 Adjustment^.upper-Adjustment^.lower+1);
+    Adjustment^.page_increment := (Adjustment^.page_size/6)+1;
+  end;
+  if (ScrollInfo.fMask and SIF_POS) <> 0
+  then begin
+    // nMin <= nPos <= nMax - Max(nPage-1,0)
+    Adjustment^.value := ScrollInfo.nPos;
+    Adjustment^.value := Max(Adjustment^.value,Adjustment^.lower);
+    Adjustment^.value := Min(Adjustment^.value,
+                              Adjustment^.upper-Max(Adjustment^.page_size-1,0));
   end;
 
   Result := Round(Adjustment^.value);
