@@ -189,6 +189,7 @@ type
     IdentifierFilterEdit: TEdit;
     ImageList1: TImageList;
     LevelsGroupBox: TGroupBox;
+    OpenMenuItem: TMenuItem;
     OptionsGroupBox: TGroupBox;
     PackageFilterBeginsSpeedButton: TSpeedButton;
     PackageFilterContainsSpeedButton: TSpeedButton;
@@ -230,6 +231,7 @@ type
     procedure ScopeComboBoxEditingDone(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OpenMenuItemClick(Sender: TObject);
     procedure ShowIdentifiersCheckBoxChange(Sender: TObject);
     procedure ShowPackagesCheckBoxChange(Sender: TObject);
     procedure ShowPrivateCheckBoxChange(Sender: TObject);
@@ -314,6 +316,7 @@ type
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
     procedure InvalidateStage(AStage: TCodeBrowserWorkStage);
     function GetSelectedPackage: TLazPackage;
+    procedure OpenTVNode(TVNode: TTreeNode);
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -404,6 +407,7 @@ begin
   ExpandAllClassesMenuItem.Caption:=lisExpandAllClasses;
   CollapseAllClassesMenuItem.Caption:=lisCollapseAllClasses;
   ExportMenuItem.Caption:=lisExport;
+  OpenMenuItem.Caption:=lisHintOpen;
   AddPkgToProjectMenuItem.Caption:=lisAddPackageDependencyToProject;
   
   PackageFilterBeginsSpeedButton.Caption:=lisBegins;
@@ -503,18 +507,22 @@ begin
         end;
       end;
     end;
+    OpenMenuItem.Visible:=true;
     CopyDescriptionMenuItem.Caption:=lisCopyDescription;
     CopyIdentifierMenuItem.Caption:=Format(lisCopyIdentifier, ['"', Identifier,
      '"']);
     CopyDescriptionMenuItem.Visible:=true;
     CopyIdentifierMenuItem.Visible:=Identifier<>'';
     CopySeparatorMenuItem.Visible:=true;
+    AddPkgToProjectMenuItem.Enabled:=EnableAddPkgToProject;
+    AddPkgToProjectMenuItem.Visible:=true;
   end else begin
+    OpenMenuItem.Visible:=false;
     CopyDescriptionMenuItem.Visible:=false;
     CopyIdentifierMenuItem.Visible:=false;
     CopySeparatorMenuItem.Visible:=false;
+    AddPkgToProjectMenuItem.Visible:=false;
   end;
-  AddPkgToProjectMenuItem.Enabled:=EnableAddPkgToProject;
 end;
 
 procedure TCodeBrowserView.ScopeComboBoxGetItems(Sender: TObject);
@@ -537,6 +545,11 @@ procedure TCodeBrowserView.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if (Screen.GetCurrentModalForm<>nil) then exit;
   Work(Done);
+end;
+
+procedure TCodeBrowserView.OpenMenuItemClick(Sender: TObject);
+begin
+  OpenTVNode(BrowseTreeView.Selected);
 end;
 
 procedure TCodeBrowserView.ShowIdentifiersCheckBoxChange(Sender: TObject);
@@ -2201,6 +2214,51 @@ begin
   Result:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
 end;
 
+procedure TCodeBrowserView.OpenTVNode(TVNode: TTreeNode);
+var
+  NodeData: TObject;
+  List: TCodeBrowserUnitList;
+  APackage: TLazPackage;
+  CurUnit: TCodeBrowserUnit;
+  Node: TCodeBrowserNode;
+  Line,Column: integer;
+begin
+  if (TVNode=nil) or (TVNode.Data=nil) then exit;
+  NodeData:=TObject(TVNode.Data);
+  if NodeData is TCodeBrowserUnitList then begin
+    List:=TCodeBrowserUnitList(NodeData);
+    DebugLn(['TCodeBrowserView.OpenSelected "',List.Owner,'=',CodeBrowserProjectName,'"']);
+    if List.Owner=CodeBrowserProjectName then begin
+      // open project inspector
+      DebugLn(['TCodeBrowserView.OpenSelected open project inspector']);
+      ExecuteIDECommand(Self,ecProjectInspector);
+    end else if List.Owner=CodeBrowserIDEName then begin
+      // open the IDE -> already open
+    end else if List.Owner=CodeBrowserHidden then begin
+      // nothing
+    end else begin
+      // open package
+      APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
+      if APackage<>nil then begin
+        PackageEditingInterface.DoOpenPackageWithName(List.Owner,[],false);
+      end;
+    end;
+  end else if NodeData is TCodeBrowserUnit then begin
+    CurUnit:=TCodeBrowserUnit(NodeData);
+    if CurUnit.Filename<>'' then begin
+      LazarusIDE.DoOpenEditorFile(CurUnit.Filename,-1,[ofOnlyIfExists]);
+    end;
+  end else if NodeData is TCodeBrowserNode then begin
+    Node:=TCodeBrowserNode(NodeData);
+    if (Node.CodePos.Code<>nil)
+    and (Node.CodePos.Code.Filename<>'') then begin
+      Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
+      LazarusIDE.DoOpenFileAndJumpToPos(Node.CodePos.Code.Filename,
+        Point(Column,Line),-1,-1,[ofOnlyIfExists]);
+    end;
+  end;
+end;
+
 procedure TCodeBrowserView.BeginUpdate;
 begin
   inc(fUpdateCount);
@@ -2345,52 +2403,9 @@ end;
 
 procedure TCodeBrowserView.BrowseTreeViewMouseDown(Sender: TOBject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  NodeData: TObject;
-  Node: TCodeBrowserNode;
-  CurUnit: TCodeBrowserUnit;
-  Line, Column: integer;
-  TVNode: TTreeNode;
-  List: TCodeBrowserUnitList;
-  APackage: TLazPackage;
 begin
-  if ssDouble in Shift then begin
-    TVNode:=BrowseTreeView.GetNodeAt(X,Y);
-    if (TVNode=nil) or (TVNode.Data=nil) then exit;
-    NodeData:=TObject(TVNode.Data);
-    if NodeData is TCodeBrowserUnitList then begin
-      List:=TCodeBrowserUnitList(NodeData);
-      DebugLn(['TCodeBrowserView.BrowseTreeViewMouseDown "',List.Owner,'=',CodeBrowserProjectName,'"']);
-      if List.Owner=CodeBrowserProjectName then begin
-        // open project inspector
-        DebugLn(['TCodeBrowserView.BrowseTreeViewMouseDown open project inspector']);
-        ExecuteIDECommand(Self,ecProjectInspector);
-      end else if List.Owner=CodeBrowserIDEName then begin
-        // open the IDE -> already open
-      end else if List.Owner=CodeBrowserHidden then begin
-        // nothing
-      end else begin
-        // open package
-        APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
-        if APackage<>nil then begin
-          PackageEditingInterface.DoOpenPackageWithName(List.Owner,[],false);
-        end;
-      end;
-    end else if NodeData is TCodeBrowserUnit then begin
-      CurUnit:=TCodeBrowserUnit(NodeData);
-      if CurUnit.Filename<>'' then begin
-        LazarusIDE.DoOpenEditorFile(CurUnit.Filename,-1,[ofOnlyIfExists]);
-      end;
-    end else if NodeData is TCodeBrowserNode then begin
-      Node:=TCodeBrowserNode(NodeData);
-      if (Node.CodePos.Code<>nil)
-      and (Node.CodePos.Code.Filename<>'') then begin
-        Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
-        LazarusIDE.DoOpenFileAndJumpToPos(Node.CodePos.Code.Filename,
-          Point(Column,Line),-1,-1,[ofOnlyIfExists]);
-      end;
-    end;
-  end;
+  if ssDouble in Shift then
+    OpenTVNode(BrowseTreeView.GetNodeAt(X,Y));
 end;
 
 procedure TCodeBrowserView.AddPkgToProjectMenuItemClick(Sender: TObject);

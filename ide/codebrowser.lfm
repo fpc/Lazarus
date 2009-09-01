@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 303
+  Left = 315
   Height = 563
-  Top = 183
+  Top = 203
   Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -44,7 +44,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 327
       Height = 22
       Top = 9
-      Width = 276
+      Width = 269
       BorderSpacing.Left = 6
       Caption = 'ScopeWithRequiredPackagesCheckBox'
       OnChange = ScopeWithRequiredPackagesCheckBoxChange
@@ -77,7 +77,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 6
-      Width = 170
+      Width = 165
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'ShowPrivateCheckBox'
@@ -88,10 +88,10 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideLeft.Control = OptionsGroupBox
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = OptionsGroupBox
-      Left = 210
+      Left = 212
       Height = 22
       Top = 6
-      Width = 186
+      Width = 183
       BorderSpacing.Around = 6
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowPrivateCheckBoxChange
@@ -101,10 +101,10 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = OptionsGroupBox
       AnchorSideRight.Control = OptionsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 394
+      Left = 398
       Height = 22
       Top = 6
-      Width = 207
+      Width = 203
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       Caption = 'ShowEmptyNodesCheckBox'
@@ -276,7 +276,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 8
-      Width = 185
+      Width = 181
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'ShowPackagesCheckBox'
@@ -290,7 +290,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 41
-      Width = 158
+      Width = 154
       BorderSpacing.Left = 6
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
@@ -303,7 +303,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 6
       Height = 22
       Top = 74
-      Width = 189
+      Width = 183
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'ShowIdentifiersCheckBox'
@@ -375,6 +375,10 @@ object CodeBrowserView: TCodeBrowserView
     OnPopup = PopupMenu1Popup
     left = 248
     top = 196
+    object OpenMenuItem: TMenuItem
+      Caption = 'OpenMenuItem'
+      OnClick = OpenMenuItemClick
+    end
     object CopyDescriptionMenuItem: TMenuItem
       Caption = 'CopyDescriptionMenuItem'
       OnClick = CopyDescriptionMenuItemClick
