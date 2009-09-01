@@ -32,7 +32,9 @@
     The codetools provides TCodeTree of every unit.
 
   ToDo:
-    - add package to package of editor unit
+    - do not scan on IDE start
+    - check if options changes on editing done
+    - add refresh button
     - add package+unit to editor unit
     - add package+unit+identifier to editor caret
     - scan recently used packages
@@ -791,16 +793,19 @@ begin
 end;
 
 procedure TCodeBrowserView.WorkGetScopeOptions;
+var
+  CurChangStamp: LongInt;
 begin
   DebugLn(['TCodeBrowserView.WorkGetScopeOptions START']);
   IdleTimer1.Enabled:=false;
 
   ProgressBar1.Position:=ProgressGetScopeStart;
+  CurChangStamp:=Options.ChangeStamp;
   Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
   Options.Scope:=ScopeComboBox.Text;
 
   // this stage finished -> next stage
-  if UpdateNeeded or Options.Modified then
+  if UpdateNeeded or (Options.ChangeStamp<>CurChangStamp) then
     fStage:=cbwsGatherPackages
   else
     fStage:=cbwsGetViewOptions;

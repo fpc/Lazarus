@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 325
+  Left = 330
   Height = 563
-  Top = 251
+  Top = 275
   Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -12,14 +12,14 @@ object CodeBrowserView: TCodeBrowserView
   LCLVersion = '0.9.29'
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 60
+    Height = 45
     Top = 6
     Width = 611
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 41
+    ClientHeight = 26
     ClientWidth = 607
     TabOrder = 0
     object ScopeComboBox: TComboBox
@@ -60,7 +60,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 53
-    Top = 202
+    Top = 187
     Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -116,8 +116,8 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 261
-    Top = 261
+    Height = 276
+    Top = 246
     Width = 623
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -148,7 +148,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 124
-    Top = 72
+    Top = 57
     Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
