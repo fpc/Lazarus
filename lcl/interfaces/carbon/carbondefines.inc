@@ -1,7 +1,7 @@
 {%MainUnit carbonint.pas}
 {
  /***************************************************************************
-                    carbondebug.inc  -  Carbon debugging defines
+                    carbondefines.inc  -  Carbon defines
  ***************************************************************************/
 
  *****************************************************************************
@@ -17,7 +17,13 @@
  *                                                                           *
  *****************************************************************************
  }
-  
+
+// Cocoa related defines
+
+{$ifndef CarbonDontUseCocoa}
+  {$define CarbonUseCocoa}
+{$endif}
+
 // Show debug info when tracing:
 
 {off $define DebugBitmaps}

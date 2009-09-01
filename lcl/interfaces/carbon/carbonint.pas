@@ -32,8 +32,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-// debugging defines
-{$I carbondebug.inc}
+// defines
+{$I carbondefines.inc}
 
 uses
   // rtl+ftl

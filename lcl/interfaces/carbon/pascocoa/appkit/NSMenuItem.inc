@@ -132,8 +132,8 @@
     procedure setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
     procedure setImage(_menuImage: objc.id {NSImage});
     function image: objc.id;{NSImage}
-    procedure setState(_state: Integer);
-    function state: Integer;
+    procedure setState(_state: NSCellStateValue);
+    function state: NSCellStateValue;
     procedure setOnStateImage(_image: objc.id {NSImage});
     //  checkmark by default
     function onStateImage: objc.id;{NSImage}
@@ -418,19 +418,19 @@ begin
   Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_image)), []));
 end;
 
-procedure NSMenuItem.setState(_state: Integer);
+procedure NSMenuItem.setState(_state: NSCellStateValue);
 type
   TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_state: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  vmethod(Handle, sel_registerName(PChar(StrNSMenuItem_setState)), _state);
+  vmethod(Handle, sel_registerName(PChar(StrNSMenuItem_setState)), Integer(_state));
 end;
 
-function NSMenuItem.state: Integer;
+function NSMenuItem.state: NSCellStateValue;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_state)), []));
+  Result := NSCellStateValue(Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_state)), [])));
 end;
 
 procedure NSMenuItem.setOnStateImage(_image: objc.id {NSImage});

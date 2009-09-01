@@ -15,6 +15,12 @@ type
     item: NSStatusItem;
     image: NSImage;
     menu: NSMenu;
+    // The following lists store the items and are used
+    // to be able to release them in ReleaseMenu
+    //
+    // MenuItems: Holds all items directly in the menu
+    // SubMenuOwners: Holds all internal owners of the submenus
+    // SubMenuItems: Holds all items in submenus
     MenuItems: array of NSMenuItem;
     SubMenuOwners: array of NSMenu;
     SubMenuItems: array of NSMenuItem;
@@ -25,8 +31,11 @@ type
     { Pascal Methods }
     function TrimAllChar(const S: string; const ch: Char): string;
     function CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
+    function RecursiveCreateMenuItems(AMenuItem: TMenuItem;
+      ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+    procedure ReleaseMenu();
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
@@ -98,28 +107,50 @@ begin
   begin
     index := Length(MenuItems);
     SetLength(MenuItems, index + 1);
-    MenuItems[index] := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
-    Result.addItem(MenuItems[index].Handle);
 
     { If the submenu has a submenu it needs special treatment }
     if APopUpMenu.Items[i].Count > 0 then
-    begin
-      subindex := Length(SubMenuOwners);
-      SetLength(SubMenuOwners, subindex + 1);
-      SubMenuOwners[subindex] := NSMenu.initWithTitle(MenuTitle);
+      MenuItems[index] := RecursiveCreateMenuItems(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self)
+    else
+      MenuItems[index] := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
 
-      { Add all submenus in this submenu }
-      for j := 0 to APopUpMenu.Items[i].Count - 1 do
-      begin
-        subitemindex := Length(SubMenuItems);
-        SetLength(SubMenuItems, subitemindex + 1);
-        SubMenuItems[subitemindex] := CreateMenuItem(APopUpMenu.Items[i].Items[j], Str_HandleMenuItemClick, Self);
-        SubMenuOwners[subindex].addItem(SubMenuItems[subitemindex].Handle);
-      end;
-
-      MenuItems[index].setSubmenu(SubMenuOwners[subindex].Handle);
-    end;
+    Result.addItem(MenuItems[index].Handle);
   end;
+end;
+
+function TPrivateCocoaCarbonTrayIcon.RecursiveCreateMenuItems(
+  AMenuItem: TMenuItem; ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+var
+  j, subindex: Integer;
+  InternalOwner: NSMenu;
+  SubItem: NSMenuItem;
+  MenuTitle: CFStringRef;
+begin
+  MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+
+  // First create the menu
+  Result := CreateMenuItem(AMenuItem, Str_HandleMenuItemClick, Self);
+
+  // Then a owner for the children
+  InternalOwner := NSMenu.initWithTitle(MenuTitle);
+
+  subindex := Length(SubMenuOwners);
+  SetLength(SubMenuOwners, subindex + 1);
+  SubMenuOwners[subindex] := InternalOwner;
+
+  { Add all submenus in this submenu }
+  for j := 0 to AMenuItem.Count - 1 do
+  begin
+    if AMenuItem.Items[j].Count > 0 then
+      SubItem := RecursiveCreateMenuItems(AMenuItem.Items[j], Str_HandleMenuItemClick, Self)
+    else
+      SubItem := CreateMenuItem(AMenuItem.Items[j], Str_HandleMenuItemClick, Self);
+
+    InternalOwner.addItem(SubItem.Handle);
+  end;
+
+  // And set the submenu to the item
+  Result.setSubmenu(InternalOwner.Handle);
 end;
 
 function TPrivateCocoaCarbonTrayIcon.CreateMenuItem(AMenuItem: TMenuItem;
@@ -127,6 +158,7 @@ function TPrivateCocoaCarbonTrayIcon.CreateMenuItem(AMenuItem: TMenuItem;
 var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
+  subitemindex: Integer;
 begin
   { The MenuItem is a separator }
   if AMenuItem.Caption = '-' then
@@ -149,10 +181,41 @@ begin
     Result.setTarget(ACallbackClass.Handle);
     Result.setAction(sel_registerName(PChar(ACallbackName)));
 
+    { Assign the checked state }
+    if AMenuItem.Checked then Result.setState(NSOnState)
+    else Result.setState(NSOffState);
+
     { We use the Tag to hold the LCL MenuItem
       RepresentedObject was also tried, by it crashed.
       Cocoa probably tryes to use it as a real Cocoa object }
     Result.setTag(PtrInt(AMenuItem));
+  end;
+
+  subitemindex := Length(SubMenuItems);
+  SetLength(SubMenuItems, subitemindex + 1);
+  SubMenuItems[subitemindex] := Result;
+end;
+
+procedure TPrivateCocoaCarbonTrayIcon.ReleaseMenu();
+var
+  i: Integer;
+begin
+  for i := 0 to Length(SubMenuOwners) - 1 do
+    if SubMenuOwners[i] <> nil then SubMenuOwners[i].release;
+  for i := 0 to Length(SubMenuItems) - 1 do
+    if SubMenuItems[i] <> nil then SubMenuItems[i].release;
+  for i := 0 to Length(MenuItems) - 1 do
+    if MenuItems[i] <> nil then MenuItems[i].release;
+
+  SetLength(SubMenuOwners, 0);
+  SetLength(SubMenuItems, 0);
+  SetLength(MenuItems, 0);
+
+  item.setMenu(nil);
+  if menu <> nil then
+  begin
+    menu.release;
+    menu := nil;
   end;
 end;
 
@@ -267,8 +330,19 @@ begin
 end;
 
 class procedure TCarbonWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+var
+  APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
 begin
+  APrivateTrayIcon := TPrivateCocoaCarbonTrayIcon(ATrayIcon.Handle);
 
+  { Inserts the menu }
+
+  APrivateTrayIcon.ReleaseMenu();
+  if ATrayIcon.PopUpMenu <> nil then
+  begin
+    APrivateTrayIcon.menu := APrivateTrayIcon.CreateMenu(ATrayIcon.PopUpMenu);
+    APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
+  end;
 end;
 
 class function TCarbonWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
