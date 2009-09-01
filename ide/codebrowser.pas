@@ -32,8 +32,6 @@
     The codetools provides TCodeTree of every unit.
 
   ToDo:
-    - do not scan on IDE start
-    - add refresh button
     - add package+unit to editor unit
     - add package+unit+identifier to editor caret
     - scan recently used packages
@@ -174,6 +172,7 @@ type
     AllPackagesSeparatorMenuItem: TMenuItem;
     AllUnitsSeparatorMenuItem: TMenuItem;
     BrowseTreeView: TTreeView;
+    RescanButton: TButton;
     IdleTimer1: TIdleTimer;
     AddPkgToProjectMenuItem: TMenuItem;
     AddPkgToCurUnitMenuItem: TMenuItem;
@@ -233,6 +232,7 @@ type
     procedure PackageFilterEditChange(Sender: TObject);
     procedure PackageFilterEditEditingDone(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure RescanButtonClick(Sender: TObject);
     procedure ScopeComboBoxGetItems(Sender: TObject);
     procedure ScopeComboBoxEditingDone(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
@@ -397,6 +397,7 @@ begin
   
   ScopeGroupBox.Caption:=dlgScope;
   ScopeWithRequiredPackagesCheckBox.Caption:=lisWithRequiredPackages;
+  RescanButton.Caption:=lisRescan;
   LevelsGroupBox.Caption:=lisLevels;
   ShowPackagesCheckBox.Caption:=lisShowPackages;
   ShowUnitsCheckBox.Caption:=lisShowUnits;
@@ -551,6 +552,12 @@ begin
     AddPkgToProjectMenuItem.Visible:=false;
     AddPkgToCurUnitMenuItem.Visible:=false;
   end;
+end;
+
+procedure TCodeBrowserView.RescanButtonClick(Sender: TObject);
+begin
+  UpdateNeeded:=true;
+  InvalidateStage(cbwsGetScopeOptions);
 end;
 
 procedure TCodeBrowserView.ScopeComboBoxGetItems(Sender: TObject);

@@ -4468,6 +4468,7 @@ resourcestring
   lisAddPackageDependencyToActiveUnit = 'Add package dependency to active unit';
   lisAddPackageToProject = 'Add package %s to project';
   lisAddPackageToPackage = 'Add package %s to package %s';
+  lisRescan = 'Rescan';
 
 implementation
 

@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 330
+  Left = 340
   Height = 563
-  Top = 275
+  Top = 323
   Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -12,14 +12,14 @@ object CodeBrowserView: TCodeBrowserView
   LCLVersion = '0.9.29'
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 45
+    Height = 60
     Top = 6
     Width = 611
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 26
+    ClientHeight = 41
     ClientWidth = 607
     TabOrder = 0
     object ScopeComboBox: TComboBox
@@ -46,9 +46,22 @@ object CodeBrowserView: TCodeBrowserView
       Top = 9
       Width = 269
       BorderSpacing.Left = 6
+      BorderSpacing.Right = 50
       Caption = 'ScopeWithRequiredPackagesCheckBox'
       OnChange = ScopeWithRequiredPackagesCheckBoxChange
       TabOrder = 1
+    end
+    object RescanButton: TButton
+      Left = 507
+      Height = 41
+      Top = 0
+      Width = 100
+      Align = alRight
+      AutoSize = True
+      Caption = 'RescanButton'
+      Constraints.MinWidth = 60
+      OnClick = RescanButtonClick
+      TabOrder = 2
     end
   end
   object OptionsGroupBox: TGroupBox
@@ -150,14 +163,14 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 124
-    Top = 57
+    Height = 109
+    Top = 72
     Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'LevelsGroupBox'
-    ClientHeight = 105
+    ClientHeight = 90
     ClientWidth = 607
     TabOrder = 3
     object PackageFilterBeginsSpeedButton: TSpeedButton
