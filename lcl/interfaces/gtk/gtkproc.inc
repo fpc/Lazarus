@@ -3002,7 +3002,9 @@ procedure InitKeyboardTables;
       $E4: AFreeVK := $E6;
       $E6: AFreeVK := $E9;
       $F5: begin
+        {$ifndef HideKeyTableWarnings}
         DebugLn('[WARNING] Out of OEM specific VK codes, changing to unassigned');
+        {$endif}
         AFreeVK := $88;
       end;
       $8F: AFreeVK := $97;
@@ -3010,7 +3012,9 @@ procedure InitKeyboardTables;
       $DA: AFreeVK := $E5;
       $E5: AFreeVK := $E8;
       $E8: begin
+        {$ifndef HideKeyTableWarnings}
         DebugLn('[WARNING] Out of unassigned VK codes, assigning $FF');
+        {$endif}
         AFreeVK := $FF;
       end;
       $FF: AFreeVK := $FF; // stay there
