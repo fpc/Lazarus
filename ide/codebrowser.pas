@@ -33,7 +33,6 @@
 
   ToDo:
     - do not scan on IDE start
-    - check if options changes on editing done
     - add refresh button
     - add package+unit to editor unit
     - add package+unit+identifier to editor caret
@@ -102,6 +101,7 @@ type
     FShowEmptyNodes: boolean;
     FShowPrivate: boolean;
     FShowProtected: boolean;
+    FStoreWithRequiredPackages: boolean;
     FWithRequiredPackages: boolean;
     FLevelFilterText: array[TCodeBrowserLevel] of string;
     FLevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
@@ -118,6 +118,7 @@ type
     procedure SetShowEmptyNodes(const AValue: boolean);
     procedure SetShowPrivate(const AValue: boolean);
     procedure SetShowProtected(const AValue: boolean);
+    procedure SetStoreWithRequiredPackages(const AValue: boolean);
     procedure SetWithRequiredPackages(const AValue: boolean);
     procedure IncreaseChangeStamp;
   public
@@ -130,6 +131,7 @@ type
   public
     property Scope: string read FScope write SetScope;
     property WithRequiredPackages: boolean read FWithRequiredPackages write SetWithRequiredPackages;
+    property StoreWithRequiredPackages: boolean read FStoreWithRequiredPackages write SetStoreWithRequiredPackages;
     property Levels: TStrings read FLevels write SetLevels;
     property ShowPrivate: boolean read FShowPrivate write SetShowPrivate;
     property ShowProtected: boolean read FShowProtected write SetShowProtected;
@@ -2564,6 +2566,13 @@ begin
   Modified:=true;
 end;
 
+procedure TCodeBrowserViewOptions.SetStoreWithRequiredPackages(
+  const AValue: boolean);
+begin
+  if FStoreWithRequiredPackages=AValue then exit;
+  FStoreWithRequiredPackages:=AValue;
+end;
+
 procedure TCodeBrowserViewOptions.SetWithRequiredPackages(const AValue: boolean
   );
 begin
@@ -2640,9 +2649,12 @@ procedure TCodeBrowserViewOptions.SaveToConfig(ConfigStore: TConfigStorage;
 var
   l: TCodeBrowserLevel;
   SubPath: String;
+  b: Boolean;
 begin
-  ConfigStore.SetDeleteValue(Path+'WithRequiredPackages/Value',
-                             WithRequiredPackages,false);
+  b:=WithRequiredPackages;
+  if not StoreWithRequiredPackages then
+    b:=false;
+  ConfigStore.SetDeleteValue(Path+'WithRequiredPackages/Value',b,false);
   ConfigStore.SetDeleteValue(Path+'Scope/Value',Scope,'Project');
   ConfigStore.SetDeleteValue(Path+'ShowPrivate/Value',ShowPrivate,false);
   ConfigStore.SetDeleteValue(Path+'ShowProtected/Value',ShowProtected,true);
