@@ -1850,6 +1850,7 @@ resourcestring
   lisEMDRemoveMethods = 'Remove methods';
   lisRoot = 'Root';
   lisCopyDescription = 'Copy description to clipboard';
+  lisUseIdentifierInAt = 'Use identifier %s in %s at %s';
   lisCopyIdentifier = 'Copy %s%s%s to clipboard';
   lisExpandAllPackages = 'Expand all packages';
   lisCollapseAllPackages = 'Collapse all packages';
@@ -4469,6 +4470,7 @@ resourcestring
   lisRescan = 'Rescan';
   lisUseUnitInUnit = 'Use unit %s in unit %s';
   lisUsePackageInProject2 = 'Use package in project';
+  lisUseIdentifier = 'Use identifier';
   lisUsePackageInPackage2 = 'Use package in package';
 
 implementation

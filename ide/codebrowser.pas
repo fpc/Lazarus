@@ -32,8 +32,7 @@
     The codetools provides TCodeTree of every unit.
 
   ToDo:
-    - add package+unit+identifier to editor caret
-    - show first results after parsing every package
+    - pause
     - scan recently used packages
     - scan packages in global links
 }
@@ -44,12 +43,13 @@ unit CodeBrowser;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons, Menus,
+  Classes, SysUtils, types, LCLProc, LResources, Forms, Controls, Graphics,
+  Dialogs, Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
+  Menus,
   // codetools
   CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
   CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
-  StdCodeTools,
+  StdCodeTools, SourceLog,
   // IDEIntf
   SrcEditorIntf, IDEDialogs, LazConfigStorage, Project, PackageIntf,
   IDECommands, LazIDEIntf, DialogProcs,
@@ -172,11 +172,12 @@ type
     AllPackagesSeparatorMenuItem: TMenuItem;
     AllUnitsSeparatorMenuItem: TMenuItem;
     BrowseTreeView: TTreeView;
-    AddUnitToCurUnitMenuItem: TMenuItem;
+    UseIdentifierInCurUnitMenuItem: TMenuItem;
+    UseUnitInCurUnitMenuItem: TMenuItem;
     RescanButton: TButton;
     IdleTimer1: TIdleTimer;
-    AddPkgToProjectMenuItem: TMenuItem;
-    AddPkgToCurUnitMenuItem: TMenuItem;
+    UsePkgInProjectMenuItem: TMenuItem;
+    UsePkgInCurUnitMenuItem: TMenuItem;
     UseSeparatorMenuItem: TMenuItem;
     ShowEmptyNodesCheckBox: TCheckBox;
     CollapseAllClassesMenuItem: TMenuItem;
@@ -213,9 +214,10 @@ type
     UnitFilterBeginsSpeedButton: TSpeedButton;
     UnitFilterContainsSpeedButton: TSpeedButton;
     UnitFilterEdit: TEdit;
-    procedure AddPkgToCurUnitMenuItemClick(Sender: TObject);
-    procedure AddPkgToProjectMenuItemClick(Sender: TObject);
-    procedure AddUnitToCurUnitMenuItemClick(Sender: TObject);
+    procedure UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
+    procedure UsePkgInCurUnitMenuItemClick(Sender: TObject);
+    procedure UsePkgInProjectMenuItemClick(Sender: TObject);
+    procedure UseUnitInCurUnitMenuItemClick(Sender: TObject);
     procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
@@ -329,6 +331,7 @@ type
                                    out UnitCode: TCodeBuffer): boolean;
     function GetCurPackageInSrcEditor: TLazPackage;
     procedure OpenTVNode(TVNode: TTreeNode);
+    procedure UseUnitInSrcEditor(InsertIdentifier: boolean);
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -421,9 +424,9 @@ begin
   CollapseAllClassesMenuItem.Caption:=lisCollapseAllClasses;
   ExportMenuItem.Caption:=lisExport;
   OpenMenuItem.Caption:=lisHintOpen;
-  // AddPkgToProjectMenuItem.Caption: see PopupMenu1Popup
-  // AddPkgToCurUnitMenuItem.Caption: see PopupMenu1Popup
-  // AddUnitToCurUnitMenuItem.Caption: see PopupMenu1Popup
+  // UsePkgInProjectMenuItem.Caption: see PopupMenu1Popup
+  // UsePkgInCurUnitMenuItem.Caption: see PopupMenu1Popup
+  // UseUnitInCurUnitMenuItem.Caption: see PopupMenu1Popup
 
   PackageFilterBeginsSpeedButton.Caption:=lisBegins;
   PackageFilterBeginsSpeedButton.Hint:=lisPackageNameBeginsWith;
@@ -479,16 +482,19 @@ var
   Node: TObject;
   Identifier: String;
   UnitList: TCodeBrowserUnitList;
-  EnableAddPkgToProject: Boolean;
+  EnableUsePkgInProject: Boolean;
   APackage: TLazPackage;
-  EnableAddPkgToCurUnit: Boolean;
+  EnableUsePkgInCurUnit: Boolean;
   TargetPackage: TLazPackage;
-  EnableUnitToCurUnit: Boolean;
+  EnableUseUnitInCurUnit: Boolean;
   CurUnit: TCodeBrowserUnit;
   SrcEditUnitOwner: TObject;
   SrcEditUnitCode: TCodeBuffer;
   CurUnitName: String;
   SrcEditUnitName: String;
+  CBNode: TCodeBrowserNode;
+  EnableUseIdentifierInCurUnit: Boolean;
+  SrcEdit: TSourceEditorInterface;
 begin
   ExpandAllPackagesMenuItem.Visible:=Options.HasLevel(cblPackages);
   CollapseAllPackagesMenuItem.Visible:=ExpandAllPackagesMenuItem.Visible;
@@ -506,19 +512,23 @@ begin
   Node:=nil;
   if TVNode<>nil then
     Node:=TObject(TVNode.Data);
-  EnableAddPkgToProject:=false;
-  EnableAddPkgToCurUnit:=false;
-  EnableUnitToCurUnit:=false;
+  EnableUsePkgInProject:=false;
+  EnableUsePkgInCurUnit:=false;
+  EnableUseUnitInCurUnit:=false;
+  EnableUseIdentifierInCurUnit:=false;
   if Node<>nil then begin
-    if Node is TCodeBrowserNode then
-      Identifier:=TCodeBrowserNode(Node).Identifier
-    else
-      Identifier:='';
+    Identifier:='';
     APackage:=nil;
     UnitList:=nil;
     CurUnit:=nil;
     TargetPackage:=nil;
-    if Node is TCodeBrowserUnit then begin
+    if Node is TCodeBrowserNode then begin
+      Identifier:=TCodeBrowserNode(Node).Identifier;
+      CBNode:=TCodeBrowserNode(Node);
+      CurUnit:=CBNode.CBUnit;
+      if CurUnit<>nil then
+        UnitList:=CurUnit.UnitList;
+    end else if Node is TCodeBrowserUnit then begin
       CurUnit:=TCodeBrowserUnit(Node);
       UnitList:=CurUnit.UnitList;
     end else if Node is TCodeBrowserUnitList then begin
@@ -537,8 +547,8 @@ begin
         if APackage<>nil then begin
           // check if package can be added to project
           if Project1.FindDependencyByName(APackage.Name)=nil then begin
-            EnableAddPkgToProject:=true;
-            AddPkgToProjectMenuItem.Caption:=Format(lisUsePackageInProject, [
+            EnableUsePkgInProject:=true;
+            UsePkgInProjectMenuItem.Caption:=Format(lisUsePackageInProject, [
               APackage.Name]);
           end;
           // check if package can be added to package of src editor unit
@@ -546,8 +556,8 @@ begin
           if (TargetPackage<>nil)
           and (SysUtils.CompareText(TargetPackage.Name,APackage.Name)<>0)
           and (TargetPackage.FindDependencyByName(APackage.Name)=nil) then begin
-            EnableAddPkgToCurUnit:=true;
-            AddPkgToCurUnitMenuItem.Caption:=Format(
+            EnableUsePkgInCurUnit:=true;
+            UsePkgInCurUnitMenuItem.Caption:=Format(
               lisUsePackageInPackage, [APackage.Name,
               TargetPackage.Name]);
           end;
@@ -557,9 +567,16 @@ begin
             CurUnitName:=ExtractFileNameOnly(CurUnit.Filename);
             SrcEditUnitName:=ExtractFileNameOnly(SrcEditUnitCode.Filename);
             if SysUtils.CompareText(CurUnitName,SrcEditUnitName)<>0 then begin
-              EnableUnitToCurUnit:=true;
-              AddUnitToCurUnitMenuItem.Caption:=
+              EnableUseUnitInCurUnit:=true;
+              UseUnitInCurUnitMenuItem.Caption:=
                 Format(lisUseUnitInUnit, [CurUnitName, SrcEditUnitName]);
+              if (Node is TCodeBrowserNode) and (Identifier<>'') then begin
+                EnableUseIdentifierInCurUnit:=true;
+                SrcEdit:=SourceEditorWindow.ActiveEditor;
+                UseIdentifierInCurUnitMenuItem.Caption:=
+                  Format(lisUseIdentifierInAt, [Identifier, ExtractFilename(
+                    SrcEdit.FileName), dbgs(SrcEdit.CursorScreenXY)]);
+              end;
             end;
           end;
         end;
@@ -572,26 +589,35 @@ begin
     CopyDescriptionMenuItem.Visible:=true;
     CopyIdentifierMenuItem.Visible:=Identifier<>'';
     CopySeparatorMenuItem.Visible:=true;
-    AddUnitToCurUnitMenuItem.Enabled:=EnableUnitToCurUnit;
-    AddUnitToCurUnitMenuItem.Visible:=true;
-    if not EnableUnitToCurUnit then
-      AddUnitToCurUnitMenuItem.Caption:=lisPkgMangUseUnit;
-    AddPkgToProjectMenuItem.Enabled:=EnableAddPkgToProject;
-    AddPkgToProjectMenuItem.Visible:=true;
-    if not EnableAddPkgToProject then
-      AddPkgToProjectMenuItem.Caption:=lisUsePackageInProject2;
-    AddPkgToCurUnitMenuItem.Enabled:=EnableAddPkgToCurUnit;
-    AddPkgToCurUnitMenuItem.Visible:=true;
-    if not EnableAddPkgToCurUnit then
-      AddPkgToCurUnitMenuItem.Caption:=lisUsePackageInPackage2;
+
+    UseUnitInCurUnitMenuItem.Enabled:=EnableUseUnitInCurUnit;
+    UseUnitInCurUnitMenuItem.Visible:=true;
+    if not EnableUseUnitInCurUnit then
+      UseUnitInCurUnitMenuItem.Caption:=lisPkgMangUseUnit;
+
+    UseIdentifierInCurUnitMenuItem.Enabled:=EnableUseIdentifierInCurUnit;
+    UseIdentifierInCurUnitMenuItem.Visible:=true;
+    if not EnableUseIdentifierInCurUnit then
+      UseIdentifierInCurUnitMenuItem.Caption:=lisUseIdentifier;
+
+    UsePkgInProjectMenuItem.Enabled:=EnableUsePkgInProject;
+    UsePkgInProjectMenuItem.Visible:=true;
+    if not EnableUsePkgInProject then
+      UsePkgInProjectMenuItem.Caption:=lisUsePackageInProject2;
+
+    UsePkgInCurUnitMenuItem.Enabled:=EnableUsePkgInCurUnit;
+    UsePkgInCurUnitMenuItem.Visible:=true;
+    if not EnableUsePkgInCurUnit then
+      UsePkgInCurUnitMenuItem.Caption:=lisUsePackageInPackage2;
   end else begin
     OpenMenuItem.Visible:=false;
     CopyDescriptionMenuItem.Visible:=false;
     CopyIdentifierMenuItem.Visible:=false;
     CopySeparatorMenuItem.Visible:=false;
-    AddUnitToCurUnitMenuItem.Visible:=false;
-    AddPkgToProjectMenuItem.Visible:=false;
-    AddPkgToCurUnitMenuItem.Visible:=false;
+    UseUnitInCurUnitMenuItem.Visible:=false;
+    UseIdentifierInCurUnitMenuItem.Visible:=false;
+    UsePkgInProjectMenuItem.Visible:=false;
+    UsePkgInCurUnitMenuItem.Visible:=false;
     UseSeparatorMenuItem.Visible:=false;
   end;
 end;
@@ -810,6 +836,164 @@ procedure TCodeBrowserView.SetVisibleUnits(const AValue: integer);
 begin
   if FVisibleUnits=AValue then exit;
   FVisibleUnits:=AValue;
+end;
+
+procedure TCodeBrowserView.UseUnitInSrcEditor(InsertIdentifier: boolean);
+var
+  // temporary data, that can be freed on next idle
+  SelectedUnit: TCodeBrowserUnit;
+  TVNode: TTreeNode;
+  Node: TObject;
+  IdentifierNode: TCodeBrowserNode;
+  // normal vars
+  SelectedUnitName: String;
+  SelectedCode: TCodeBuffer;
+  List: TFPList;
+  SelectedOwner: TObject;
+  APackage: TLazPackage;
+  TargetCode: TCodeBuffer;
+  TargetOwner: TObject;
+  SrcEdit: TSourceEditorInterface;
+  InsertPos: TPoint;
+  Code: TCodeBuffer;
+  CodeMarker: TSourceLogMarker;
+  Identifier: String;
+  SelectedUnitFilename: String;
+begin
+  TVNode:=BrowseTreeView.Selected;
+  if TVNode=nil then exit;
+  Node:=TObject(TVNode.Data);
+  IdentifierNode:=nil;
+  SelectedUnit:=nil;
+  if Node is TCodeBrowserNode then begin
+    IdentifierNode:=TCodeBrowserNode(Node);
+    Identifier:=IdentifierNode.Identifier;
+    SelectedUnit:=IdentifierNode.CBUnit;
+  end else if Node is TCodeBrowserUnit then begin
+    SelectedUnit:=TCodeBrowserUnit(Node);
+  end else
+    exit;
+  if (SelectedUnit=nil) then exit;
+  SelectedUnitFilename:=SelectedUnit.Filename;
+
+  if InsertIdentifier then begin
+    if (IdentifierNode=nil) or (Identifier='') then exit;
+  end;
+  if SelectedUnit.UnitList=nil then begin
+    DebugLn(['TCodeBrowserView.UseUnitInSrcEditor not implemented: '
+      +'SelectedUnit.UnitList=nil']);
+    MessageDlg('Implement me',
+      'TCodeBrowserView.UseUnitInSrcEditor not implemented: '
+        +'SelectedUnit.UnitList=nil',
+      mtInformation, [mbOk], 0);
+    exit;
+  end;
+  SelectedOwner:=nil;
+  if SelectedUnit.UnitList.Owner=CodeBrowserProjectName then begin
+    // project
+    SelectedOwner:=Project1;
+  end else if SelectedUnit.UnitList.Owner=CodeBrowserIDEName then begin
+    // IDE can not be added as dependency
+    DebugLn(['TCodeBrowserView.UseUnitInSrcEditor IDE can not be '
+      +'added as dependency']);
+    exit;
+  end else if SelectedUnit.UnitList.Owner=CodeBrowserHidden then begin
+    // nothing
+    DebugLn(['TCodeBrowserView.UseUnitInSrcEditor hidden unitlist']
+      );
+    exit;
+  end else begin
+    // package
+    APackage:=PackageGraph.FindAPackageWithName(SelectedUnit.UnitList.Owner,nil);
+    if APackage=nil then begin
+      DebugLn(['TCodeBrowserView.UseUnitInSrcEditor package not '
+        +'found: ', SelectedUnit.UnitList.Owner]);
+      exit;
+    end;
+    SelectedOwner:=APackage;
+  end;
+
+  // get target unit
+  if not GetCurUnitInSrcEditor(TargetOwner, TargetCode) then exit;
+  if (not (TargetOwner is TProject))
+  and (not (TargetOwner is TLazPackage)) then begin
+    DebugLn(['TCodeBrowserView.UseUnitInSrcEditor not implemented: '
+      +'TargetOwner=', DbgSName(TargetOwner)]);
+    MessageDlg('Implement me',
+      'TCodeBrowserView.UseUnitInSrcEditor not implemented: '
+        +'TargetOwner='+DbgSName(TargetOwner),
+      mtInformation, [mbOk], 0);
+    exit;
+  end;
+
+  if (SelectedOwner is TProject) and (TargetOwner<>SelectedOwner) then begin
+    // unit of project can not be used by other packages/projects
+    MessageDlg('Impossible',
+      'unit of project can not be used by other packages/projects',
+      mtError, [mbCancel], 0);
+    exit;
+  end;
+
+  // safety first: clear the references, they will become invalid on next idle
+  SelectedUnit:=nil;
+  IdentifierNode:=nil;
+  Node:=nil;
+  TVNode:=nil;
+
+
+  List:=TFPList.Create;
+  CodeMarker:=nil;
+  try
+    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    if SrcEdit=nil then exit;
+    InsertPos:=SrcEdit.CursorTextXY;
+    Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
+    CodeMarker:=Code.AddMarkerXY(InsertPos.Y,InsertPos.X,Self);
+
+    List.Add(TargetOwner);
+    if (SelectedOwner is TLazPackage) then begin
+      // add package to TargetOwner
+      APackage:=TLazPackage(SelectedOwner);
+      if PkgBoss.AddDependencyToOwners(List, APackage)<>mrOk then begin
+        DebugLn(['TCodeBrowserView.UseUnitInSrcEditor PkgBoss.'
+          +'AddDependencyToOwners failed']);
+        exit;
+      end;
+    end;
+
+    // get nice unit name
+    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1) then begin
+      DebugLn(['TCodeBrowserView.UseUnitInSrcEditor LazarusIDE.'
+        +'SaveSourceEditorChangesToCodeCache failed']);
+      exit;
+    end;
+    SelectedCode:=CodeToolBoss.LoadFile(SelectedUnitFilename, true, false);
+    if SelectedCode=nil then exit;
+    SelectedUnitName:=CodeToolBoss.GetSourceName(SelectedCode, false);
+
+    // add unit to uses section
+    if not CodeToolBoss.AddUnitToMainUsesSection(TargetCode, SelectedUnitName,
+      '') then
+    begin
+      DebugLn(['TCodeBrowserView.UseUnitInSrcEditor CodeToolBoss.'
+        +'AddUnitToMainUsesSection failed: TargetCode=', TargetCode.Filename, ' '
+          +'SelectedUnitName=', SelectedUnitName]);
+      LazarusIDE.DoJumpToCodeToolBossError;
+    end;
+
+    // insert identifier
+    if InsertIdentifier then begin
+      if CodeMarker.Deleted then begin
+        DebugLn(['TCodeBrowserView.UseUnitInSrcEditor insert place was deleted']);
+        exit;
+      end;
+      Code.AbsoluteToLineCol(CodeMarker.NewPosition,InsertPos.Y,InsertPos.X);
+      SrcEdit.ReplaceText(InsertPos,InsertPos,Identifier);
+    end;
+  finally
+    List.Free;
+    CodeMarker.Free;
+  end;
 end;
 
 procedure TCodeBrowserView.Work(var Done: Boolean);
@@ -2553,7 +2737,7 @@ begin
     OpenTVNode(BrowseTreeView.GetNodeAt(X,Y));
 end;
 
-procedure TCodeBrowserView.AddPkgToProjectMenuItemClick(Sender: TObject);
+procedure TCodeBrowserView.UsePkgInProjectMenuItemClick(Sender: TObject);
 var
   APackage: TLazPackage;
 begin
@@ -2562,100 +2746,12 @@ begin
   PkgBoss.AddProjectDependency(Project1,APackage);
 end;
 
-procedure TCodeBrowserView.AddUnitToCurUnitMenuItemClick(Sender: TObject);
-var
-  SelectedUnit: TCodeBrowserUnit;
-  TargetOwner: TObject;
-  TargetCode: TCodeBuffer;
-  APackage: TLazPackage;
-  SelectedOwner: TObject;
-  List: TFPList;
-  SelectedCode: TCodeBuffer;
-  SelectedUnitName: String;
+procedure TCodeBrowserView.UseUnitInCurUnitMenuItemClick(Sender: TObject);
 begin
-  SelectedUnit:=GetSelectedUnit;
-  if (SelectedUnit=nil) then exit;
-  if SelectedUnit.UnitList=nil then begin
-    DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick not implemented: SelectedUnit.UnitList=nil']);
-    MessageDlg('Implement me',
-      'TCodeBrowserView.AddUnitToCurUnitMenuItemClick not implemented: SelectedUnit.UnitList=nil',
-      mtInformation,[mbOk],0);
-    exit;
-  end;
-  SelectedOwner:=nil;
-  if SelectedUnit.UnitList.Owner=CodeBrowserProjectName then begin
-    // project
-    SelectedOwner:=Project1;
-  end else if SelectedUnit.UnitList.Owner=CodeBrowserIDEName then begin
-    // IDE can not be added as dependency
-    DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick IDE can not be added as dependency']);
-    exit;
-  end else if SelectedUnit.UnitList.Owner=CodeBrowserHidden then begin
-    // nothing
-    DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick hidden unitlist']);
-    exit;
-  end else begin
-    // package
-    APackage:=PackageGraph.FindAPackageWithName(SelectedUnit.UnitList.Owner,nil);
-    if APackage=nil then begin
-      DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick package not found: ',SelectedUnit.UnitList.Owner]);
-      exit;
-    end;
-    SelectedOwner:=APackage;
-  end;
-
-  // get target unit
-  if not GetCurUnitInSrcEditor(TargetOwner,TargetCode) then exit;
-  if (not (TargetOwner is TProject))
-  and (not (TargetOwner is TLazPackage)) then begin
-    DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick not implemented: TargetOwner=',DbgSName(TargetOwner)]);
-    MessageDlg('Implement me',
-      'TCodeBrowserView.AddUnitToCurUnitMenuItemClick not implemented: TargetOwner='+DbgSName(TargetOwner),
-      mtInformation,[mbOk],0);
-    exit;
-  end;
-
-  if (SelectedOwner is TProject) and (TargetOwner<>SelectedOwner) then begin
-    // unit of project can not be used by other packages/projects
-    MessageDlg('Impossible',
-      'unit of project can not be used by other packages/projects',
-      mtError,[mbCancel],0);
-    exit;
-  end;
-
-  List:=TFPList.Create;
-  try
-    List.Add(TargetOwner);
-    if (SelectedOwner is TLazPackage) then begin
-      // add package to TargetOwner
-      APackage:=TLazPackage(SelectedOwner);
-      if PkgBoss.AddDependencyToOwners(List,APackage)<>mrOk then begin
-        DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick PkgBoss.AddDependencyToOwners failed']);
-        exit;
-      end;
-    end;
-
-    // get nice unit name
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1) then begin
-      DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick LazarusIDE.SaveSourceEditorChangesToCodeCache failed']);
-      exit;
-    end;
-    SelectedCode:=CodeToolBoss.LoadFile(SelectedUnit.Filename,true,false);
-    if SelectedCode=nil then exit;
-    SelectedUnitName:=CodeToolBoss.GetSourceName(SelectedCode,false);
-
-    // add unit to uses section
-    if not CodeToolBoss.AddUnitToMainUsesSection(TargetCode,SelectedUnitName,'')
-    then begin
-      DebugLn(['TCodeBrowserView.AddUnitToCurUnitMenuItemClick CodeToolBoss.AddUnitToMainUsesSection failed: TargetCode=',TargetCode.Filename,' SelectedUnitName=',SelectedUnitName]);
-      LazarusIDE.DoJumpToCodeToolBossError;
-    end;
-  finally
-    List.Free;
-  end;
+  UseUnitInSrcEditor(false);
 end;
 
-procedure TCodeBrowserView.AddPkgToCurUnitMenuItemClick(Sender: TObject);
+procedure TCodeBrowserView.UsePkgInCurUnitMenuItemClick(Sender: TObject);
 var
   APackage: TLazPackage;
   TargetPackage: TLazPackage;
@@ -2674,6 +2770,11 @@ begin
   finally
     List.Free;
   end;
+end;
+
+procedure TCodeBrowserView.UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
+begin
+  UseUnitInSrcEditor(true);
 end;
 
 { TCodeBrowserViewOptions }
