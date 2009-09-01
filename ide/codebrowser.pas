@@ -220,7 +220,6 @@ type
     procedure ExpandAllPackagesMenuItemClick(Sender: TObject);
     procedure ExpandAllUnitsMenuItemClick(Sender: TObject);
     procedure ExportMenuItemClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure IdleTimer1Timer(Sender: TObject);
@@ -2279,12 +2278,6 @@ begin
   finally
     List.Free;
   end;
-end;
-
-procedure TCodeBrowserView.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-
 end;
 
 procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject;
