@@ -43,6 +43,8 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips];
+  
+  FOwnerDataItem := TOwnerDataListItem.Create(FListItems);
 end;
 
 {------------------------------------------------------------------------------
@@ -167,6 +169,7 @@ begin
       //Check
     end;
     LVN_ITEMCHANGED: begin
+      if OwnerData then Exit;
       Item := Items[nm^.iItem];
       //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
       if (lifDestroying in Item.FFlags) then begin
@@ -282,10 +285,18 @@ begin
   LVC.SetSort(Self, FSortType, FSortColumn);
 
   // add items
-  FListItems.WSCreateItems;
+  if not OwnerData then 
+  begin
+    FListItems.WSCreateItems;
+    // set other properties
+    LVC.SetAllocBy(Self, FAllocBy);
+  end 
+  else 
+  begin
+    LVC.SetOwnerData(Self, True);
+    LVC.SetItemsCount(Self, FListItems.Count);
+  end;
   
-  // set other properties
-  LVC.SetAllocBy(Self, FAllocBy);
   LVC.SetDefaultItemHeight(Self, FDefaultItemHeight);
   LVC.SetHotTrackStyles(Self, FHotTrackStyles);
   LVC.SetHoverTime(Self, FHoverTime);
@@ -433,6 +444,11 @@ begin
   // if we are here, a custom step returned false, so no default drawing
   if AStage = cdPrePaint
   then Result := [cdrSkipDefault];
+end;
+
+procedure TCustomListView.DoGetOwnerData(Item: TListItem); 
+begin
+  if Assigned(OnData) then OnData(Self, Item);
 end;
 
 {------------------------------------------------------------------------------}
@@ -860,6 +876,8 @@ procedure TCustomListView.SetOwnerData(const AValue: Boolean);
 begin
   if FOwnerData=AValue then exit;
   FOwnerData:=AValue;
+  if HandleAllocated then 
+    TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);
 end;
 
 procedure TCustomListView.SetProperty(const ALvpOrd: Integer;

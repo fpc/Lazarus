@@ -966,6 +966,58 @@ var
     end;
   end;
 
+  type
+    PNMLVOwnerData = PLVDISPINFO;
+  
+  procedure HandleListViewOwnerData(ALV: TCustomListViewAccess);
+  var
+    DataInfo: PNMLVOwnerData; // absolute NMHdr;
+    txt: String;
+    LVInfo: PWin32WindowInfo;
+    idx: Integer;
+    listitem: TListItem;
+  begin
+    LVInfo:= GetWin32WindowInfo(ALV.Handle);
+    if not Assigned(LVInfo) then Exit;
+    DataInfo := PNMLVOwnerData(NMHdr);
+    if not Assigned(DataInfo) or (not ALV.OwnerData) then Exit;
+    
+    listitem := ALV.Items[DataInfo^.item.iItem];
+    if not Assigned(listitem) then Exit;
+    
+    if DataInfo^.item.iSubItem = 0 then
+    begin
+      txt := listitem.Caption;
+      DataInfo^.item.mask := DataInfo^.item.mask or LVIF_IMAGE;
+      DataInfo^.item.iImage := listitem.ImageIndex;      
+    end
+    else 
+    begin
+      idx := DataInfo^.item.iSubItem - 1;
+      if idx < listitem.SubItems.Count then 
+        txt := listitem.SubItems[idx] 
+      else
+        txt := '';      
+    end;
+    
+    if txt <> '' then 
+    begin
+      if DataInfo^.hdr.code = UInt(LVN_GETDISPINFOA) then
+      begin
+        LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
+        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex][1]);
+      end
+      else
+      begin
+        LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
+        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex][1]);
+      end;
+      inc(LVInfo^.DispInfoIndex);
+      if LVInfo^.DispInfoIndex=LV_DISP_INFO_COUNT then LVInfo^.DispInfoIndex:=0;
+    end else
+      DataInfo^.item.pszText := nil;
+  end;
+  
   procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
     function ConvState(const State: uint): TCustomDrawState;
     begin
@@ -2119,6 +2171,12 @@ begin
             case code of
               TCN_SELCHANGE:
                 idFrom := ShowHideTabPage(HWndFrom, True);
+              LVN_GETDISPINFOA, LVN_GETDISPINFOW: 
+              begin
+                if WindowInfo^.WinControl is TCustomListView then
+                  HandleListViewOwnerData(TCustomListViewAccess(WindowInfo^.WinControl))
+                //WinProcess := false;
+              end;
               NM_CUSTOMDRAW:
               begin
                 if WindowInfo^.WinControl is TCustomListView then

@@ -34,23 +34,44 @@ begin
   Result:=FItems.Count;
 end;
 
+procedure TListItems.SetCount(const ACount: Integer); 
+begin
+  if not FOwner.OwnerData then Exit;
+  FItems.Count:=ACount;
+  if WSUpdateAllowed then 
+    WSSetItemsCount(FItems.Count);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItems GetItem                                                         }
 {------------------------------------------------------------------------------}
 function TListItems.GetItem(const AIndex: Integer): TListItem;
 begin
-  if (FCacheIndex <> -1) and (FCacheIndex = AIndex)
-  then begin
-    Result := FCacheItem;
-    Exit;
-  end;
-  
-  if FItems.Count - 1 < AIndex
-  then Result := nil
-  else begin
-    Result := TListItem(FItems.Items[AIndex]);
-    FCacheItem := Result;
-    FCacheIndex := AIndex;
+  if not FOwner.OwnerData then
+  begin
+    if (FCacheIndex <> -1) and (FCacheIndex = AIndex)
+    then begin
+      Result := FCacheItem;
+      Exit;
+    end;
+    
+    if FItems.Count - 1 < AIndex
+    then Result := nil
+    else begin
+      Result := TListItem(FItems.Items[AIndex]);
+      FCacheItem := Result;
+      FCacheIndex := AIndex;
+    end;
+  end 
+  else 
+  begin
+    if (AIndex < 0) or (AIndex >= FItems.Count) then 
+    begin
+      Result := nil;
+      Exit;
+    end;
+    FOwner.FOwnerDataItem.SetDataIndex(AIndex);
+    Result := FOwner.FOwnerDataItem;
   end;
 end;
 
@@ -116,8 +137,20 @@ end;
    TListItems Clear
 ------------------------------------------------------------------------------}
 procedure TListItems.Clear;
+var
+  i : Integer;
 begin
-  while Count > 0 do Delete(Count-1);
+  if not Owner.OwnerData then 
+    while Count > 0 do Delete(Count-1)
+  else 
+  begin
+    for i := 0 to FItems.Count - 1 do
+    begin
+      TListItem(FItems[i]).Free;
+      FItems[i]:=nil;
+    end;
+    Count := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -175,6 +208,11 @@ end;
 procedure TListItems.WSUpdateItem(const AIndex: Integer; const AValue: TListItem);
 begin
   TWSCustomListViewClass(FOwner.WidgetSetClass).ItemUpdate(FOwner, AIndex, AValue);
+end;
+
+procedure TListItems.WSSetItemsCount(const ACount: Integer); 
+begin
+  TWSCustomListViewClass(FOwner.WidgetSetClass).SetItemsCount(FOwner, ACount);
 end;
 
 {------------------------------------------------------------------------------}
@@ -260,11 +298,15 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItems.Destroy;
 begin
-  FCacheIndex := 0;
-  while FItems.Count > 0 do
+  if not FOwner.FOwnerData then  
   begin
-    FCacheItem := TListItem(FItems[0]);
-    FCacheItem.Free;
+    // to call Self.Clear instead?
+    FCacheIndex := 0;
+    while FItems.Count > 0 do
+    begin
+      FCacheItem := TListItem(FItems[0]);
+      FCacheItem.Free;
+    end;
   end;
   FCacheIndex := -1;
   FreeAndNil(FItems);

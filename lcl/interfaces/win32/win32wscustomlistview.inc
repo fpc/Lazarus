@@ -488,6 +488,8 @@ begin
     pClassName := WC_LISTVIEW;
     WindowTitle := StrCaption;
     Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL or LVS_SHAREIMAGELISTS;
+    if TCustomListView(AWinControl).OwnerData then 
+      Flags := Flags or LVS_OWNERDATA;
     if TCustomListView(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
   end;
@@ -759,6 +761,20 @@ begin
     SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Reference._Handle)
   else
     SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], 0);
+end;
+
+class procedure TWin32WSCustomListView.SetItemsCount(const ALV: TCustomListView; const AValue: Integer); 
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetItemsCount')
+  then Exit;
+  SendMessage(ALV.Handle, LVM_SETITEMCOUNT, AValue, 0);
+end;
+
+class procedure TWin32WSCustomListView.SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); 
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetOwnerData')
+  then Exit;
+  RecreateWnd(ALV);
 end;
 
 class procedure TWin32WSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);

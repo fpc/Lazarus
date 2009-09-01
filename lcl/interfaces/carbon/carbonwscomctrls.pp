@@ -117,6 +117,8 @@ type
     //class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     //class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
+    class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
@@ -524,6 +526,18 @@ begin
   TCarbonListView(ALV.Handle).ClearIconCache;
   TCarbonListView(ALV.Handle).UpdateItems;
   TCarbonListView(ALV.Handle).UpdateColumnView;
+end;
+
+class procedure TCarbonWSCustomListView.SetItemsCount(const ALV: TCustomListView; const Avalue: Integer);  
+begin
+  if not CheckHandle(ALV, Self, 'SetOwnerData') then Exit;
+  TCarbonListView(ALV.Handle).SetItemsCount(Avalue);
+end;
+
+class procedure TCarbonWSCustomListView.SetOwnerData(const ALV: TCustomListView; const AValue: Boolean);  
+begin
+  if not CheckHandle(ALV, Self, 'SetOwnerData') then Exit;
+  TCarbonListView(ALV.Handle).OwnerData := true;
 end;
 
 class procedure TCarbonWSCustomListView.SetProperty(const ALV: TCustomListView;

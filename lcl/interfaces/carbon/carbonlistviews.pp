@@ -222,6 +222,7 @@ type
   private
     FIcons  : TFPList;
     FStyle  : TViewStyle;
+    FOwnerData  : Boolean;
     FDestroying : Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -250,7 +251,9 @@ type
     procedure SetViewStyle(AStyle: TViewStyle);
 
     procedure DoColumnClicked(MouseX,MouseY: Integer);
+    procedure SetItemsCount(ACount: Integer); 
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
+    property OwnerData: Boolean read FOwnerData write FOwnerData;
   end;
   
   { TCarbonListBox }
@@ -1734,6 +1737,17 @@ begin
   end;
 end;
 
+procedure TCarbonListView.SetItemsCount(ACount: Integer); 
+begin
+  if not FOwnerData then Exit;
+  
+  RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty);
+  OSError(
+     AddDataBrowserItems( Widget, kDataBrowserNoItem, ACount, nil, kDataBrowserItemNoProperty),
+     Self, 'SetItemsCount', 'AddDataBrowserItems');
+  UpdateDataBrowserItems( Widget, kDataBrowserNoItem, ACount, nil, kDataBrowserItemNoProperty, kDataBrowserNoItem);
+end;
+
 function TCarbonListView.NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean;
 type
   PLMMouse = ^TLMMouse;
@@ -1910,10 +1924,15 @@ var
   CFString: CFStringRef;
   ItemIcon: IconRef;
   SubIndex: Integer;
- 
+  ItemsCnt : integer; 
 begin
   with View do begin
-    if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then
+    
+    if FOwnerData 
+    then ItemsCnt := TListView(View.LCLObject).Items.Count+1
+    else ItemsCnt := GetItemsCount + 1;
+
+    if (ID < 1) or (ID > ItemsCnt) then
     begin
       Result := errDataBrowserItemNotFound;
       Exit;

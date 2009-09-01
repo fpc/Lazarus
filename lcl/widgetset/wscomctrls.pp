@@ -130,6 +130,8 @@ type
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
 //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); virtual;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
+    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); virtual;
+    class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); virtual;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
@@ -456,6 +458,10 @@ class procedure TWSCustomListView.SetImageList(const ALV: TCustomListView; const
 begin
 end;
 
+class procedure TWSCustomListView.SetOwnerData(const ALV: TCustomListView; const Avalue: Boolean); 
+begin
+end;
+
 class procedure TWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
 begin
 end;
@@ -480,6 +486,9 @@ class procedure TWSCustomListView.SetViewStyle(const ALV: TCustomListView; const
 begin
 end;
 
+class procedure TWSCustomListView.SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); 
+begin
+end;
 
 { TWSProgressBar }
 
