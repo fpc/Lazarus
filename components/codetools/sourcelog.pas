@@ -71,6 +71,8 @@ type
   TOnSourceChange = procedure(Sender: TSourceLog; Entry: TSourceLogEntry)
                          of object;
 
+  { TSourceLogMarker }
+
   TSourceLogMarker = class
   private
   public
@@ -78,6 +80,8 @@ type
     NewPosition: integer;
     Deleted: boolean;
     Data: Pointer;
+    Log: TSourceLog;
+    destructor Destroy; override;
   end;
 
   TLineRange = record
@@ -134,8 +138,8 @@ type
     property ChangeStep: integer read FChangeStep;
     property Markers[Index: integer]: TSourceLogMarker read GetMarkers;
     function MarkerCount: integer;
-    procedure AddMarker(Position: integer; SomeData: Pointer);
-    procedure AddMarkerXY(Line, Column: integer; SomeData: Pointer);
+    function AddMarker(Position: integer; SomeData: Pointer): TSourceLogMarker;
+    function AddMarkerXY(Line, Column: integer; SomeData: Pointer): TSourceLogMarker;
     procedure AdjustPosition(var APosition: integer);
     procedure NotifyHooks(Entry: TSourceLogEntry);
     procedure IncreaseHookLock;
@@ -274,12 +278,18 @@ begin
 end;
 
 destructor TSourceLog.Destroy;
+var
+  i: Integer;
 begin
   if FChangeHooks<>nil then begin
     FreeMem(FChangeHooks);
     FChangeHooks:=nil;
   end;
   Clear;
+  for i:=FMarkers.Count-1 downto 0 do begin
+    Markers[i].Log:=nil;
+    Markers[i].Free;
+  end;
   FMarkers.Free;
   FLog.Free;
   inherited Destroy;
@@ -322,10 +332,15 @@ end;
 
 procedure TSourceLog.Clear;
 var i: integer;
+  m: TSourceLogMarker;
 begin
   ClearEntries;
-  for i:=0 to MarkerCount-1 do Markers[i].Free;
-  FMarkers.Clear;
+  // markers are owned by someone else, do not free them
+  for i:=0 to FMarkers.Count-1 do begin
+    m:=Markers[i];
+    if m.Position>1 then
+      m.Deleted:=true;
+  end;
   FSource:='';
   FSrcLen:=0;
   FModified:=false;
@@ -512,26 +527,28 @@ begin
   IncreaseChangeStep;
 end;
 
-procedure TSourceLog.AddMarker(Position: integer; SomeData: Pointer);
-var NewMarker: TSourceLogMarker;
+function TSourceLog.AddMarker(Position: integer; SomeData: Pointer
+  ): TSourceLogMarker;
 begin
-  NewMarker:=TSourceLogMarker.Create;
-  NewMarker.Position:=Position;
-  NewMarker.NewPosition:=NewMarker.Position;
-  NewMarker.Data:=SomeData;
-  NewMarker.Deleted:=false;
-  FMarkers.Add(NewMarker);
+  Result:=TSourceLogMarker.Create;
+  Result.Position:=Position;
+  Result.NewPosition:=Result.Position;
+  Result.Data:=SomeData;
+  Result.Deleted:=false;
+  Result.Log:=Self;
+  FMarkers.Add(Result);
 end;
 
-procedure TSourceLog.AddMarkerXY(Line, Column: integer; SomeData: Pointer);
-var NewMarker: TSourceLogMarker;
+function TSourceLog.AddMarkerXY(Line, Column: integer; SomeData: Pointer
+  ): TSourceLogMarker;
 begin
-  NewMarker:=TSourceLogMarker.Create;
-  LineColToPosition(Line,Column,NewMarker.Position);
-  NewMarker.NewPosition:=NewMarker.Position;
-  NewMarker.Data:=SomeData;
-  NewMarker.Deleted:=false;
-  FMarkers.Add(NewMarker);
+  Result:=TSourceLogMarker.Create;
+  LineColToPosition(Line,Column,Result.Position);
+  Result.NewPosition:=Result.Position;
+  Result.Data:=SomeData;
+  Result.Deleted:=false;
+  Result.Log:=Self;
+  FMarkers.Add(Result);
 end;
 
 procedure TSourceLog.AdjustPosition(var APosition: integer);
@@ -916,6 +933,15 @@ begin
       FChangeHooks[j]:=FChangeHooks[j+1];
     ReAllocMem(FChangeHooks,SizeOf(TOnSourceChange) * FChangeHookCount);
   end;
+end;
+
+{ TSourceLogMarker }
+
+destructor TSourceLogMarker.Destroy;
+begin
+  if Log<>nil then Log.FMarkers.Remove(Self);
+  Log:=nil;
+  inherited Destroy;
 end;
 
 end.
