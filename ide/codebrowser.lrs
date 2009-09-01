@@ -1,8 +1,8 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TCodeBrowserView','FORMDATA',[
-  'TPF0'#16'TCodeBrowserView'#15'CodeBrowserView'#4'Left'#3'n'#1#6'Height'#3'3'
-  +#2#3'Top'#3'Q'#1#5'Width'#3'o'#2#13'ActiveControl'#7#13'ScopeComboBox'#7'Cap'
+  'TPF0'#16'TCodeBrowserView'#15'CodeBrowserView'#4'Left'#3'c'#1#6'Height'#3'3'
+  +#2#3'Top'#3'A'#1#5'Width'#3'o'#2#13'ActiveControl'#7#13'ScopeComboBox'#7'Cap'
   +'tion'#6#15'CodeBrowserView'#12'ClientHeight'#3'3'#2#11'ClientWidth'#3'o'#2#8
   +'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#10'LCLVersion'#6#6
   +'0.9.29'#0#9'TGroupBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'#2'<'#3'Top'#2
@@ -26,7 +26,7 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'onsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'
   +#7#14'LevelsGroupBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRig'
   +'ht.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#21'AnchorSid'
-  +'eBottom.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'5'#3'Top'#3#187#0#5'Wi'
+  +'eBottom.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'5'#3'Top'#3#202#0#5'Wi'
   +'dth'#3'c'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#18
   +'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#19'BorderSpacing.Right'#2
   +#6#7'Caption'#6#15'OptionsGroupBox'#29'ChildSizing.EnlargeHorizontal'#7#24'c'
@@ -49,8 +49,8 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'g.Around'#2#6#7'Caption'#6#22'ShowEmptyNodesCheckBox'#13'OnEditingDone'#7#25
   +'ShowPrivateCheckBoxChange'#8'TabOrder'#2#2#0#0#0#9'TTreeView'#14'BrowseTree'
   +'View'#21'AnchorSideTop.Control'#7#15'OptionsGroupBox'#18'AnchorSideTop.Side'
-  +#7#9'asrBottom'#4'Left'#2#0#6'Height'#3#20#1#3'Top'#3#246#0#5'Width'#3'o'#2#5
-  +'Align'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'
+  +#7#9'asrBottom'#4'Left'#2#0#6'Height'#3#5#1#3'Top'#3#5#1#5'Width'#3'o'#2#5'A'
+  +'lign'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'
   +#0#17'BorderSpacing.Top'#2#6#17'DefaultItemHeight'#2#19#6'Images'#7#10'Image'
   +'List1'#14'ParentShowHint'#8#9'PopupMenu'#7#10'PopupMenu1'#8'ReadOnly'#9#8'S'
   +'howHint'#9#8'TabOrder'#2#2#11'OnMouseDown'#7#23'BrowseTreeViewMouseDown'#10
@@ -61,9 +61,9 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'anels'#14#0#0#0#9'TGroupBox'#14'LevelsGroupBox'#22'AnchorSideLeft.Control'#7
   +#5'Owner'#21'AnchorSideTop.Control'#7#13'ScopeGroupBox'#18'AnchorSideTop.Sid'
   +'e'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight'
-  +'.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'm'#3'Top'#2'H'#5'Width'#3'c'#2
+  +'.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'|'#3'Top'#2'H'#5'Width'#3'c'#2
   +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#20'BorderSpacin'
-  +'g.Around'#2#6#7'Caption'#6#14'LevelsGroupBox'#12'ClientHeight'#2'Z'#11'Clie'
+  +'g.Around'#2#6#7'Caption'#6#14'LevelsGroupBox'#12'ClientHeight'#2'i'#11'Clie'
   +'ntWidth'#3'_'#2#8'TabOrder'#2#3#0#12'TSpeedButton'#30'PackageFilterBeginsSp'
   ,'eedButton'#22'AnchorSideLeft.Control'#7#17'PackageFilterEdit'#19'AnchorSide'
   +'Left.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#17'PackageFilterEdit'
@@ -151,25 +151,27 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'tem'#7'OnClick'#7#28'CopyDescriptionMenuItemClick'#0#0#9'TMenuItem'#22'Copy'
   +'IdentifierMenuItem'#7'Caption'#6#22'CopyIdentifierMenuItem'#7'OnClick'#7#27
   +'CopyIdentifierMenuItemClick'#0#0#9'TMenuItem'#21'CopySeparatorMenuItem'#7'C'
-  +'aption'#6#1'-'#0#0#9'TMenuItem'#23'AddPkgToProjectMenuItem'#7'Caption'#6#23
-  +'AddPkgToProjectMenuItem'#7'OnClick'#7#28'AddPkgToProjectMenuItemClick'#0#0#9
-  +'TMenuItem'#23'AddPkgToCurUnitMenuItem'#7'Caption'#6#23'AddPkgToCurUnitMenuI'
-  +'tem'#7'OnClick'#7#28'AddPkgToCurUnitMenuItemClick'#0#0#9'TMenuItem'#20'UseS'
-  +'eparatorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#25'ExpandAllPackagesMe'
-  +'nuItem'#7'Caption'#6#25'ExpandAllPackagesMenuItem'#7'OnClick'#7#30'ExpandAl'
-  +'lPackagesMenuItemClick'#0#0#9'TMenuItem'#27'CollapseAllPackagesMenuItem'#7
-  +'Caption'#6#27'CollapseAllPackagesMenuItem'#7'OnClick'#7' CollapseAllPackage'
-  +'sMenuItemClick'#0#0#9'TMenuItem'#28'AllPackagesSeparatorMenuItem'#7'Caption'
-  +#6#1'-'#0#0#9'TMenuItem'#22'ExpandAllUnitsMenuItem'#7'Caption'#6#22'ExpandAl'
-  +'lUnitsMenuItem'#7'OnClick'#7#27'ExpandAllUnitsMenuItemClick'#0#0#9'TMenuIte'
-  +'m'#24'CollapseAllUnitsMenuItem'#7'Caption'#6#24'CollapseAllUnitsMenuItem'#7
-  +'OnClick'#7#29'CollapseAllUnitsMenuItemClick'#0#0#9'TMenuItem'#25'AllUnitsSe'
-  +'paratorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#24'ExpandAllClassesMenu'
-  +'Item'#7'Caption'#6#24'ExpandAllClassesMenuItem'#7'OnClick'#7#29'ExpandAllCl'
-  +'assesMenuItemClick'#0#0#9'TMenuItem'#26'CollapseAllClassesMenuItem'#7'Capti'
-  +'on'#6#26'CollapseAllClassesMenuItem'#7'OnClick'#7#31'CollapseAllClassesMenu'
-  +'ItemClick'#0#0#9'TMenuItem'#27'AllClassesSeparatorMenuItem'#7'Caption'#6#1
-  +'-'#0#0#9'TMenuItem'#14'ExportMenuItem'#7'Caption'#6#14'ExportMenuItem'#7'On'
-  +'Click'#7#19'ExportMenuItemClick'#0#0#0#10'TIdleTimer'#10'IdleTimer1'#7'OnTi'
-  +'mer'#7#15'IdleTimer1Timer'#4'left'#3'^'#1#3'top'#3'@'#1#0#0#0
+  +'aption'#6#1'-'#0#0#9'TMenuItem'#24'AddUnitToCurUnitMenuItem'#7'Caption'#6#24
+  +'AddUnitToCurUnitMenuItem'#7'OnClick'#7#29'AddUnitToCurUnitMenuItemClick'#0#0
+  +#9'TMenuItem'#23'AddPkgToProjectMenuItem'#7'Caption'#6#23'AddPkgToProjectMen'
+  +'uItem'#7'OnClick'#7#28'AddPkgToProjectMenuItemClick'#0#0#9'TMenuItem'#23'Ad'
+  +'dPkgToCurUnitMenuItem'#7'Caption'#6#23'AddPkgToCurUnitMenuItem'#7'OnClick'#7
+  +#28'AddPkgToCurUnitMenuItemClick'#0#0#9'TMenuItem'#20'UseSeparatorMenuItem'#7
+  +'Caption'#6#1'-'#0#0#9'TMenuItem'#25'ExpandAllPackagesMenuItem'#7'Caption'#6
+  +#25'ExpandAllPackagesMenuItem'#7'OnClick'#7#30'ExpandAllPackagesMenuItemClic'
+  +'k'#0#0#9'TMenuItem'#27'CollapseAllPackagesMenuItem'#7'Caption'#6#27'Collaps'
+  +'eAllPackagesMenuItem'#7'OnClick'#7' CollapseAllPackagesMenuItemClick'#0#0#9
+  +'TMenuItem'#28'AllPackagesSeparatorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuIt'
+  +'em'#22'ExpandAllUnitsMenuItem'#7'Caption'#6#22'ExpandAllUnitsMenuItem'#7'On'
+  +'Click'#7#27'ExpandAllUnitsMenuItemClick'#0#0#9'TMenuItem'#24'CollapseAllUni'
+  +'tsMenuItem'#7'Caption'#6#24'CollapseAllUnitsMenuItem'#7'OnClick'#7#29'Colla'
+  +'pseAllUnitsMenuItemClick'#0#0#9'TMenuItem'#25'AllUnitsSeparatorMenuItem'#7
+  +'Caption'#6#1'-'#0#0#9'TMenuItem'#24'ExpandAllClassesMenuItem'#7'Caption'#6
+  +#24'ExpandAllClassesMenuItem'#7'OnClick'#7#29'ExpandAllClassesMenuItemClick'
+  +#0#0#9'TMenuItem'#26'CollapseAllClassesMenuItem'#7'Caption'#6#26'CollapseAll'
+  +'ClassesMenuItem'#7'OnClick'#7#31'CollapseAllClassesMenuItemClick'#0#0#9'TMe'
+  +'nuItem'#27'AllClassesSeparatorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'
+  +#14'ExportMenuItem'#7'Caption'#6#14'ExportMenuItem'#7'OnClick'#7#19'ExportMe'
+  +'nuItemClick'#0#0#0#10'TIdleTimer'#10'IdleTimer1'#7'OnTimer'#7#15'IdleTimer1'
+  +'Timer'#4'left'#3'^'#1#3'top'#3'@'#1#0#0#0
 ]);
