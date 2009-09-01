@@ -567,6 +567,7 @@ begin
   FreeAndNil(FColumns);
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
     FreeAndNil(FImageChangeLinks[lvil]);
+  FreeAndNil(FOwnerDataItem);
   FreeAndNil(FListItems);
 end;
 
