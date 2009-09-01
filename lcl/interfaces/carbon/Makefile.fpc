@@ -15,8 +15,9 @@ implicitunits=carbonint
 
 [compiler]
 options=-gl -dcarbon1
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . objc pascocoa/appkit pascocoa/foundation
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/carbon
+includedir=objc pascocoa/appkit pascocoa/foundation
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
