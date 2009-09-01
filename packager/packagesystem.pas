@@ -1885,23 +1885,18 @@ var
   Dependency: TPkgDependency;
 begin
   if Count=0 then exit;
-  // mark all packages as unneeded
-  for i:=0 to FItems.Count-1 do begin
-    Pkg:=TLazPackage(FItems[i]);
-    Pkg.Flags:=Pkg.Flags-[lpfNeeded];
-  end;
   // create stack
   GetMem(PkgStack,SizeOf(Pointer)*Count);
   StackPtr:=0;
-  // put all needed packages on stack
+  // put all needed packages on stack and set lpfNeeded
   for i:=0 to FItems.Count-1 do begin
     Pkg:=TLazPackage(FItems[i]);
-    if PackageIsNeeded(Pkg)
-    and (not (lpfNeeded in Pkg.Flags)) then begin
+    if PackageIsNeeded(Pkg) then begin
       Pkg.Flags:=Pkg.Flags+[lpfNeeded];
       PkgStack[StackPtr]:=Pkg;
       inc(StackPtr);
-    end;
+    end else
+      Pkg.Flags:=Pkg.Flags-[lpfNeeded];
   end;
   // mark all needed packages
   while StackPtr>0 do begin
