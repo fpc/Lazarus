@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="2"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="objcparser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="objcparser"/>
+        <CursorPos X="29" Y="24"/>
+        <TopLine Value="10"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <UnitName Value="ObjCParserUtils"/>
+        <CursorPos X="37" Y="888"/>
+        <TopLine Value="880"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <UnitName Value="ObjCParserTypes"/>
+        <CursorPos X="18" Y="503"/>
+        <TopLine Value="503"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="gnuccFeatures.pas"/>
+        <UnitName Value="gnuccFeatures"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit3>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1834" Column="30" TopLine="1824"/>
+      </Position1>
+      <Position2>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="7" Column="1" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1171" Column="8" TopLine="1139"/>
+      </Position3>
+      <Position4>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="144" Column="138" TopLine="128"/>
+      </Position5>
+      <Position6>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="293" Column="14" TopLine="283"/>
+      </Position6>
+      <Position7>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="284" Column="9" TopLine="274"/>
+      </Position8>
+      <Position9>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="284" Column="9" TopLine="274"/>
+      </Position10>
+      <Position11>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="285" Column="9" TopLine="274"/>
+      </Position11>
+      <Position12>
+        <Filename Value="objcparser.pas"/>
+        <Caret Line="17" Column="18" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1754" Column="3" TopLine="1751"/>
+      </Position13>
+      <Position14>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="422" Column="12" TopLine="412"/>
+      </Position14>
+      <Position15>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="5" Column="18" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="16" Column="1" TopLine="11"/>
+      </Position16>
+      <Position17>
+        <Filename Value="ObjCParserTypes.pas"/>
+        <Caret Line="117" Column="29" TopLine="107"/>
+      </Position17>
+      <Position18>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="54" Column="34" TopLine="46"/>
+      </Position18>
+      <Position19>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="124" Column="5" TopLine="93"/>
+      </Position19>
+      <Position20>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position20>
+      <Position21>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="159" Column="143" TopLine="143"/>
+      </Position21>
+      <Position22>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="838" Column="36" TopLine="822"/>
+      </Position22>
+      <Position23>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="880" Column="51" TopLine="872"/>
+      </Position23>
+      <Position24>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position24>
+      <Position25>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="151" Column="1" TopLine="143"/>
+      </Position25>
+      <Position26>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="159" Column="143" TopLine="143"/>
+      </Position26>
+      <Position27>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="838" Column="36" TopLine="822"/>
+      </Position27>
+      <Position28>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="888" Column="26" TopLine="872"/>
+      </Position28>
+      <Position29>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position29>
+      <Position30>
+        <Filename Value="ObjCParserUtils.pas"/>
+        <Caret Line="159" Column="143" TopLine="143"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="cocoa_pkg"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <SearchPaths>
+        <IncludeFiles Value="foundation/;appkit/;../objc/"/>
+        <OtherUnitFiles Value="foundation/;appkit/;../objc/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="appkit/appkit.pas"/>
+        <UnitName Value="appkit"/>
+      </Item1>
+      <Item2>
+        <Filename Value="foundation/foundation.pas"/>
+        <UnitName Value="foundation"/>
+      </Item2>
+      <Item3>
+        <Filename Value="../objc/objc.pas"/>
+        <UnitName Value="objc"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
