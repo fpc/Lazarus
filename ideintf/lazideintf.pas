@@ -45,6 +45,9 @@ type
     );
   TOpenFlags = set of TOpenFlag;
 
+const
+  OpnFlagsPlainFile = [ofOnlyIfExists,ofQuiet,ofRegularFile,ofVirtualFile,ofDoNotLoadResource];
+type
   // new file flags
   TNewFlag = (
     nfIsPartOfProject, // force IsPartOfProject,

@@ -74,7 +74,7 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 53
-    Top = 187
+    Top = 202
     Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -133,8 +133,8 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 276
-    Top = 246
+    Height = 261
+    Top = 261
     Width = 623
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -164,14 +164,14 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 109
+    Height = 124
     Top = 72
     Width = 611
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'LevelsGroupBox'
-    ClientHeight = 90
+    ClientHeight = 105
     ClientWidth = 607
     TabOrder = 3
     object PackageFilterBeginsSpeedButton: TSpeedButton

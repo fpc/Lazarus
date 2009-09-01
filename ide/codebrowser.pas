@@ -51,10 +51,10 @@ uses
   CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
   StdCodeTools, SourceLog,
   // IDEIntf
-  SrcEditorIntf, IDEDialogs, LazConfigStorage, Project, PackageIntf,
-  IDECommands, LazIDEIntf, DialogProcs,
+  SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage, Project, PackageIntf,
+  TextTools, IDECommands, LazIDEIntf, DialogProcs,
   // IDE
-  PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
+  PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, MsgQuickFixes,
   BasePkgManager, AddToProjectDlg, EnvironmentOpts;
 
 
@@ -324,7 +324,6 @@ type
     procedure ExpandCollapseAllNodesInTreeView(NodeType: TExpandableNodeType;
                                                Expand: boolean);
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
-    procedure InvalidateStage(AStage: TCodeBrowserWorkStage);
     function GetSelectedUnit: TCodeBrowserUnit;
     function GetSelectedPackage: TLazPackage;
     function GetCurUnitInSrcEditor(out FileOwner: TObject;
@@ -337,6 +336,12 @@ type
     procedure EndUpdate;
     function ExportTree: TModalResult;
     function ExportTreeAsText(Filename: string): TModalResult;
+    function GetScopeToCurUnitOwner(UseFCLAsDefault: boolean): string;
+    function SetScopeToCurUnitOwner(UseFCLAsDefault,
+                                    WithRequiredPackages: boolean): boolean;
+    procedure SetFilterToSimpleIdentifier(Identifier: string);
+    procedure InvalidateStage(AStage: TCodeBrowserWorkStage);
+  public
     property ParserRoot: TCodeBrowserUnitList read FParserRoot;
     property WorkingParserRoot: TCodeBrowserUnitList read FWorkingParserRoot;
     property ViewRoot: TCodeBrowserUnitList read FViewRoot;
@@ -354,10 +359,22 @@ type
     property UpdateNeeded: boolean read FUpdateNeeded write SetUpdateNeeded;
   end;
   
+  { TQuickFixIdentifierNotFound_Search }
+
+  TQuickFixIdentifierNotFound_Search = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
 var
   CodeBrowserView: TCodeBrowserView = nil;
   
 function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
+
+procedure InitCodeBrowserQuickFixItems;
+procedure CreateCodeBrowser;
 
 implementation
 
@@ -387,6 +404,17 @@ begin
   for Result:=Low(TCodeBrowserTextFilter) to High(TCodeBrowserTextFilter) do
     if SysUtils.CompareText(CodeBrowserTextFilterNames[Result],s)=0 then exit;
   Result:=cbtfBegins;
+end;
+
+procedure InitCodeBrowserQuickFixItems;
+begin
+  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create);
+end;
+
+procedure CreateCodeBrowser;
+begin
+  if CodeBrowserView=nil then
+    CodeBrowserView:=TCodeBrowserView.Create(LazarusIDE.OwningComponent);
 end;
 
 
@@ -2667,6 +2695,73 @@ begin
   end;
 end;
 
+function TCodeBrowserView.GetScopeToCurUnitOwner(UseFCLAsDefault: boolean
+  ): string;
+var
+  SrcEdit: TSourceEditorInterface;
+  Code: TCodeBuffer;
+  MainCode: TCodeBuffer;
+  Owners: TFPList;
+begin
+  Result:='';
+  if UseFCLAsDefault then
+    Result:=PackageGraph.FCLPackage.Name;
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  if SrcEdit=nil then exit;
+  Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
+  if Code=nil then exit;
+  MainCode:=CodeToolBoss.GetMainCode(Code);
+  if MainCode<>nil then
+    Code:=MainCode;
+
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(Code.FileName,[]);
+  try
+    if (Owners=nil) or (Owners.Count=0) then exit;
+    if TObject(Owners[0])=Project1 then begin
+      Result:=ProjectDescription;
+      exit;
+    end;
+    if TObject(Owners[0]) is TLazPackage then begin
+      Result:=TLazPackage(Owners[0]).Name;
+      exit;
+    end;
+  finally
+    Owners.Free;
+  end;
+end;
+
+function TCodeBrowserView.SetScopeToCurUnitOwner(UseFCLAsDefault,
+  WithRequiredPackages: boolean): boolean;
+var
+  NewScope: String;
+begin
+  Result:=false;
+  NewScope:=GetScopeToCurUnitOwner(UseFCLAsDefault);
+  if NewScope='' then exit;
+  ScopeComboBox.Text:=NewScope;
+  ScopeWithRequiredPackagesCheckBox.Checked:=WithRequiredPackages;
+  InvalidateStage(cbwsGetScopeOptions);
+end;
+
+procedure TCodeBrowserView.SetFilterToSimpleIdentifier(Identifier: string);
+begin
+  ShowPackagesCheckBox.Checked:=true;
+  PackageFilterEdit.Text:='';
+  PackageFilterContainsSpeedButton.Down:=true;
+
+  ShowUnitsCheckBox.Checked:=true;
+  UnitFilterEdit.Text:='';
+  UnitFilterContainsSpeedButton.Down:=true;
+
+  ShowIdentifiersCheckBox.Checked:=true;
+  IdentifierFilterEdit.Text:=Identifier;
+  IdentifierFilterBeginsSpeedButton.Down:=true;
+
+  ShowEmptyNodesCheckBox.Checked:=false;
+
+  InvalidateStage(cbwsGetViewOptions);
+end;
+
 procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject;
   HintInfo: PHintInfo);
 var
@@ -2958,6 +3053,84 @@ end;
 function TCodeBrowserViewOptions.HasLevel(Level: TCodeBrowserLevel): boolean;
 begin
   Result:=Levels.IndexOf(CodeBrowserLevelNames[Level])>=0;
+end;
+
+{ TQuickFixIdentifierNotFound_Search }
+
+constructor TQuickFixIdentifierNotFound_Search.Create;
+begin
+  Name:='Search identifier: Error: Identifier not found "identifier"';
+  Caption:='Search identifier';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixIdentifierNotFound_Search.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+const
+  SearchStr = ') Error: Identifier not found "';
+var
+  Msg: String;
+  p: integer;
+  Code: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+begin
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit;
+  inc(p,length(SearchStr));
+  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
+  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixIdentifierNotFound_Search.Execute(
+  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
+var
+  Identifier: String;
+  CodeBuf: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute ']);
+    // get source position
+    // (FPC reports position right after the unknown identifier
+    //  for example right after FilenameIsAbsolute)
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixIdentifierNotFound_Search.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get identifier
+    if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
+      DebugLn('TQuickFixIdentifierNotFound_Search invalid message ',Msg.Msg);
+      exit;
+    end;
+    Identifier:=REVar(1);
+    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Identifier=',Identifier]);
+
+    if (Identifier='') or (not IsValidIdent(Identifier)) then begin
+      DebugLn(['TQuickFixIdentifierNotFound_Search.Execute not an identifier "',dbgstr(Identifier),'"']);
+      exit;
+    end;
+
+    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,OpnFlagsPlainFile
+      )<>mrOk
+    then exit;
+
+    // start code browser
+    CreateCodeBrowser;
+    CodeBrowserView.SetScopeToCurUnitOwner(true,true);
+    CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
+    CodeBrowserView.ShowOnTop;
+  end;
 end;
 
 initialization
