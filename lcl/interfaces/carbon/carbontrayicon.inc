@@ -11,6 +11,7 @@ type
   TPrivateCocoaCarbonTrayIcon = class(NSObject)
   public
     { Fields }
+    LCLTrayIcon: TCustomTrayIcon;
     bar: NSStatusBar;
     item: NSStatusItem;
     image: NSImage;
@@ -229,7 +230,7 @@ var
 begin
   AMenuItem := NSMenuItem.CreateWithHandle(sender);
   LCLMenu := TMenuItem(PtrInt(AMenuItem.Tag()));
-  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(nil);
+  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(LCLMenu);
 end;
 
 { TCarbonWSCustomTrayIcon }
@@ -272,6 +273,7 @@ begin
   APrivateTrayIcon := TPrivateCocoaCarbonTrayIcon.Create;
   
   APrivateTrayIcon.bar := NSStatusBar.systemStatusBar();
+  APrivateTrayIcon.LCLTrayIcon := ATrayIcon;
 
   ATrayIcon.Handle := PtrInt(APrivateTrayIcon);
   
