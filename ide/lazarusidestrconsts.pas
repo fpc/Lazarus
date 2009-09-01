@@ -4465,6 +4465,9 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
+  lisAddPackageDependencyToActiveUnit = 'Add package dependency to active unit';
+  lisAddPackageToProject = 'Add package %s to project';
+  lisAddPackageToPackage = 'Add package %s to package %s';
 
 implementation
 

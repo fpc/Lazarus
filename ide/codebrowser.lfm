@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 315
+  Left = 325
   Height = 563
-  Top = 203
+  Top = 251
   Width = 623
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -393,6 +393,10 @@ object CodeBrowserView: TCodeBrowserView
     object AddPkgToProjectMenuItem: TMenuItem
       Caption = 'AddPkgToProjectMenuItem'
       OnClick = AddPkgToProjectMenuItemClick
+    end
+    object AddPkgToCurUnitMenuItem: TMenuItem
+      Caption = 'AddPkgToCurUnitMenuItem'
+      OnClick = AddPkgToCurUnitMenuItemClick
     end
     object UseSeparatorMenuItem: TMenuItem
       Caption = '-'

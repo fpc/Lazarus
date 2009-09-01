@@ -52,8 +52,8 @@ uses
   CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
   StdCodeTools,
   // IDEIntf
-  IDEDialogs, LazConfigStorage, Project, PackageIntf, IDECommands, LazIDEIntf,
-  DialogProcs,
+  SrcEditorIntf, IDEDialogs, LazConfigStorage, Project, PackageIntf,
+  IDECommands, LazIDEIntf, DialogProcs,
   // IDE
   PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
   BasePkgManager, AddToProjectDlg, EnvironmentOpts, Menus;
@@ -172,6 +172,7 @@ type
     BrowseTreeView: TTreeView;
     IdleTimer1: TIdleTimer;
     AddPkgToProjectMenuItem: TMenuItem;
+    AddPkgToCurUnitMenuItem: TMenuItem;
     UseSeparatorMenuItem: TMenuItem;
     ShowEmptyNodesCheckBox: TCheckBox;
     CollapseAllClassesMenuItem: TMenuItem;
@@ -208,6 +209,7 @@ type
     UnitFilterBeginsSpeedButton: TSpeedButton;
     UnitFilterContainsSpeedButton: TSpeedButton;
     UnitFilterEdit: TEdit;
+    procedure AddPkgToCurUnitMenuItemClick(Sender: TObject);
     procedure AddPkgToProjectMenuItemClick(Sender: TObject);
     procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -316,6 +318,7 @@ type
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
     procedure InvalidateStage(AStage: TCodeBrowserWorkStage);
     function GetSelectedPackage: TLazPackage;
+    function GetCurPackageInSrcEditor: TLazPackage;
     procedure OpenTVNode(TVNode: TTreeNode);
   public
     procedure BeginUpdate;
@@ -409,7 +412,8 @@ begin
   ExportMenuItem.Caption:=lisExport;
   OpenMenuItem.Caption:=lisHintOpen;
   AddPkgToProjectMenuItem.Caption:=lisAddPackageDependencyToProject;
-  
+  AddPkgToCurUnitMenuItem.Caption:=lisAddPackageDependencyToActiveUnit;
+
   PackageFilterBeginsSpeedButton.Caption:=lisBegins;
   PackageFilterBeginsSpeedButton.Hint:=lisPackageNameBeginsWith;
   PackageFilterContainsSpeedButton.Caption:=lisContains;
@@ -466,6 +470,8 @@ var
   UnitList: TCodeBrowserUnitList;
   EnableAddPkgToProject: Boolean;
   APackage: TLazPackage;
+  EnableAddPkgToCurUnit: Boolean;
+  TargetPackage: TLazPackage;
 begin
   ExpandAllPackagesMenuItem.Visible:=Options.HasLevel(cblPackages);
   CollapseAllPackagesMenuItem.Visible:=ExpandAllPackagesMenuItem.Visible;
@@ -482,8 +488,9 @@ begin
   TVNode:=BrowseTreeView.Selected;
   Node:=nil;
   if TVNode<>nil then
-    Node:=TOBject(TVNode.Data);
+    Node:=TObject(TVNode.Data);
   EnableAddPkgToProject:=false;
+  EnableAddPkgToCurUnit:=false;
   if Node<>nil then begin
     if Node is TCodeBrowserNode then
       Identifier:=TCodeBrowserNode(Node).Identifier
@@ -502,8 +509,22 @@ begin
         // package
         APackage:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
         if APackage<>nil then begin
-          if Project1.FindDependencyByName(APackage.Name)=nil then
+          // check if package can be added to project
+          if Project1.FindDependencyByName(APackage.Name)=nil then begin
             EnableAddPkgToProject:=true;
+            AddPkgToProjectMenuItem.Caption:=Format(lisAddPackageToProject, [
+              APackage.Name]);
+          end;
+          // check if package can be added to package of src editor unit
+          TargetPackage:=GetCurPackageInSrcEditor;
+          if (TargetPackage<>nil)
+          and (SysUtils.CompareText(TargetPackage.Name,APackage.Name)<>0)
+          and (TargetPackage.FindDependencyByName(APackage.Name)=nil) then begin
+            EnableAddPkgToCurUnit:=true;
+            AddPkgToCurUnitMenuItem.Caption:=Format(
+              lisAddPackageToPackage, [APackage.Name,
+              TargetPackage.Name]);
+          end;
         end;
       end;
     end;
@@ -516,12 +537,15 @@ begin
     CopySeparatorMenuItem.Visible:=true;
     AddPkgToProjectMenuItem.Enabled:=EnableAddPkgToProject;
     AddPkgToProjectMenuItem.Visible:=true;
+    AddPkgToCurUnitMenuItem.Enabled:=EnableAddPkgToCurUnit;
+    AddPkgToCurUnitMenuItem.Visible:=true;
   end else begin
     OpenMenuItem.Visible:=false;
     CopyDescriptionMenuItem.Visible:=false;
     CopyIdentifierMenuItem.Visible:=false;
     CopySeparatorMenuItem.Visible:=false;
     AddPkgToProjectMenuItem.Visible:=false;
+    AddPkgToCurUnitMenuItem.Visible:=false;
   end;
 end;
 
@@ -2214,6 +2238,29 @@ begin
   Result:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
 end;
 
+function TCodeBrowserView.GetCurPackageInSrcEditor: TLazPackage;
+var
+  SrcEdit: TSourceEditorInterface;
+  Owners: TFPList;
+  i: Integer;
+begin
+  Result:=nil;
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  if SrcEdit=nil then exit;
+  Owners:=PkgBoss.GetOwnersOfUnit(SrcEdit.FileName);
+  try
+    if (Owners=nil) then exit;
+    for i:=0 to Owners.Count-1 do begin
+      if TObject(Owners[i]) is TLazPackage then begin
+        Result:=TLazPackage(Owners[i]);
+        exit;
+      end;
+    end;
+  finally
+    Owners.Free;
+  end;
+end;
+
 procedure TCodeBrowserView.OpenTVNode(TVNode: TTreeNode);
 var
   NodeData: TObject;
@@ -2415,6 +2462,27 @@ begin
   APackage:=GetSelectedPackage;
   if APackage=nil then exit;
   PkgBoss.AddProjectDependency(Project1,APackage);
+end;
+
+procedure TCodeBrowserView.AddPkgToCurUnitMenuItemClick(Sender: TObject);
+var
+  APackage: TLazPackage;
+  TargetPackage: TLazPackage;
+  List: TFPList;
+begin
+  APackage:=GetSelectedPackage;
+  if APackage=nil then exit;
+  TargetPackage:=GetCurPackageInSrcEditor;
+  if TargetPackage=nil then exit;
+  List:=TFPList.Create;
+  try
+    List.Add(TargetPackage);
+    if PkgBoss.AddDependencyToOwners(List,APackage)=mrOk then begin
+      PackageEditingInterface.DoOpenPackageWithName(TargetPackage.Name,[],false);
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 { TCodeBrowserViewOptions }
