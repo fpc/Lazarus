@@ -107,7 +107,12 @@ begin
     NewHeight := Height;
 
   //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
-  SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
+  FInternalSetBounds := True;
+  try
+    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
+  finally
+    FInternalSetBounds := False;
+  end;
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
@@ -211,6 +216,7 @@ begin
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
   SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   FShowAccelChar := True;
+  FInternalSetBounds := False;
   Color := clNone;
   AutoSize := True;
 end;
@@ -478,7 +484,7 @@ end;
 
 procedure TCustomLabel.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
-  if AutoSize and WordWrap then
+  if not FInternalSetBounds and AutoSize and WordWrap then
     InvalidatePreferredSize;
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;

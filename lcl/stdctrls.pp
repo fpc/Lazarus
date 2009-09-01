@@ -1363,6 +1363,7 @@ type
     FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     FLayout: TTextLayout;
+    FInternalSetBounds: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
