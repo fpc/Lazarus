@@ -556,7 +556,7 @@ begin
             CurUnitName:=ExtractFileNameOnly(CurUnit.Filename);
             SrcEditUnitName:=ExtractFileNameOnly(SrcEditUnitFilename);
             if SysUtils.CompareText(CurUnitName,SrcEditUnitName)<>0 then begin
-              EnableUnitToCurUnit:=true;
+              // ToDo EnableUnitToCurUnit:=true;
               AddUnitToCurUnitMenuItem.Caption:=
                 Format(lisUseUnitInUnit, [CurUnitName, SrcEditUnitName]);
             end;
@@ -1857,11 +1857,14 @@ var
         if (not ShowEmptyNodes) and (NewUnit.ChildNodeCount=0) then begin
           // remove empty unit
           List.DeleteUnit(NewUnit);
+          NewUnit:=nil;
           if OldDestParentList=nil then begin
             DestParentList.Free;
             DestParentList:=nil;
           end;
         end;
+        if (NewUnit<>nil) and (NewUnit.UnitList=nil) and (List<>nil) then
+          List.AddUnit(NewUnit);
       end;
       Node:=SrcList.Units.FindSuccessor(Node);
     end;
