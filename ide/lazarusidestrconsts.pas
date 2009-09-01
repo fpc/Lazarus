@@ -1859,7 +1859,6 @@ resourcestring
   lisCollapseAllClasses = 'Collapse all classes';
   lisExport = 'Export ...';
   lisBegins = 'begins';
-  lisAddPackageDependencyToProject = 'Add package dependency to project';
   lisIdentifierBeginsWith = 'Identifier begins with ...';
   lisUnitNameBeginsWith = 'Unit name begins with ...';
   lisPackageNameBeginsWith = 'Package name begins with ...';
@@ -4465,10 +4464,12 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
-  lisAddPackageDependencyToActiveUnit = 'Add package dependency to active unit';
-  lisAddPackageToProject = 'Add package %s to project';
-  lisAddPackageToPackage = 'Add package %s to package %s';
+  lisUsePackageInProject = 'Use package %s in project';
+  lisUsePackageInPackage = 'Use package %s in package %s';
   lisRescan = 'Rescan';
+  lisUseUnitInUnit = 'Use unit %s in unit %s';
+  lisUsePackageInProject2 = 'Use package in project';
+  lisUsePackageInPackage2 = 'Use package in package';
 
 implementation
 
