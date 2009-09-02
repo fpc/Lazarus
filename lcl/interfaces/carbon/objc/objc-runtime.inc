@@ -94,6 +94,8 @@ function objc_msgSendSuper(super: Pobjc_super; op: SEL; param3: array of const):
 
 {$if defined(CPUI386) or defined(__i386__)}
 function objc_msgSend_fpret(self: id; op: SEL; param3: array of const): cdouble; cdecl; external;
+{$else}
+function objc_msgSend_fpret(self: id; op: SEL; param3: array of const): cdouble; cdecl; external name 'objc_msgSend';
 {$endif}
 
 
