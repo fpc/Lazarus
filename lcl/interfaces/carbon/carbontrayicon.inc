@@ -16,13 +16,12 @@ type
     item: NSStatusItem;
     image: NSImage;
     menu: NSMenu;
+    EmptyMenuTitle: CFStringRef;
     // The following lists store the items and are used
     // to be able to release them in ReleaseMenu
     //
-    // MenuItems: Holds all items directly in the menu
     // SubMenuOwners: Holds all internal owners of the submenus
     // SubMenuItems: Holds all items in submenus
-    MenuItems: array of NSMenuItem;
     SubMenuOwners: array of NSMenu;
     SubMenuItems: array of NSMenuItem;
     { Structural Methods }
@@ -71,11 +70,15 @@ begin
   // so now we just stuck our method into NSObject
 //  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
 
+  EmptyMenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+
   inherited Create;
 end;
 
 destructor TPrivateCocoaCarbonTrayIcon.Destroy;
 begin
+//  CFRelease(EmptyMenuTitle);
+
   RemoveIcon();
   ReleaseMenu();
 
@@ -120,12 +123,10 @@ end;
 { Creates a NSMenu structure representing a TPopUpMenu }
 function TPrivateCocoaCarbonTrayIcon.CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
 var
-  MenuTitle: CFStringRef;
   i, index: Integer;
   Item: NSMenuItem;
 begin
-  MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-  Result := NSMenu.initWithTitle(MenuTitle);
+  Result := NSMenu.initWithTitle(EmptyMenuTitle);
 
   for i := 0 to APopUpMenu.Items.Count - 1 do
   begin
@@ -134,13 +135,6 @@ begin
       Item := RecursiveCreateMenuItems(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self)
     else
       Item := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
-
-    if APopUpMenu.Items[i].Caption <> '-' then
-    begin
-      index := Length(MenuItems);
-      SetLength(MenuItems, index + 1);
-      MenuItems[index] := Item;
-    end;
 
     Result.addItem(Item.Handle);
   end;
@@ -152,15 +146,12 @@ var
   j, subindex: Integer;
   InternalOwner: NSMenu;
   SubItem: NSMenuItem;
-  MenuTitle: CFStringRef;
 begin
-  MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-
   // First create the menu
   Result := CreateMenuItem(AMenuItem, Str_HandleMenuItemClick, Self);
 
   // Then a owner for the children
-  InternalOwner := NSMenu.initWithTitle(MenuTitle);
+  InternalOwner := NSMenu.initWithTitle(EmptyMenuTitle);
 
   subindex := Length(SubMenuOwners);
   SetLength(SubMenuOwners, subindex + 1);
@@ -217,36 +208,32 @@ begin
       RepresentedObject was also tried, by it crashed.
       Cocoa probably tryes to use it as a real Cocoa object }
     Result.setTag(PtrInt(AMenuItem));
-  end;
 
-  subitemindex := Length(SubMenuItems);
-  SetLength(SubMenuItems, subitemindex + 1);
-  SubMenuItems[subitemindex] := Result;
+    { Never add separators to the list of items to be freed }
+    subitemindex := Length(SubMenuItems);
+    SetLength(SubMenuItems, subitemindex + 1);
+    SubMenuItems[subitemindex] := Result;
+  end;
 end;
 
 procedure TPrivateCocoaCarbonTrayIcon.ReleaseMenu();
 var
   i: Integer;
 begin
-// ToDo: Check why freeing the menus crashes separators,
-// and if this is necessary
-//  for i := 0 to Length(SubMenuOwners) - 1 do
-//    if SubMenuOwners[i] <> nil then SubMenuOwners[i].release;
-//  for i := 0 to Length(SubMenuItems) - 1 do
-//    if (SubMenuItems[i] <> nil) then SubMenuItems[i].release;
-//  for i := 0 to Length(MenuItems) - 1 do
-//    if (MenuItems[i] <> nil) then MenuItems[i].release;
+  for i := 0 to Length(SubMenuOwners) - 1 do
+    if SubMenuOwners[i] <> nil then SubMenuOwners[i].Free;
+  for i := 0 to Length(SubMenuItems) - 1 do
+    if (SubMenuItems[i] <> nil) then SubMenuItems[i].Free;
 
-//  SetLength(SubMenuOwners, 0);
-//  SetLength(SubMenuItems, 0);
-//  SetLength(MenuItems, 0);
+  SetLength(SubMenuOwners, 0);
+  SetLength(SubMenuItems, 0);
 
   if item <> nil then
     item.setMenu(nil);
 
   if menu <> nil then
   begin
-    menu.release;
+    menu.Free;
     menu := nil;
   end;
 end;
