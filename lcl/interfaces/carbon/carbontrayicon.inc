@@ -27,6 +27,7 @@ type
     SubMenuItems: array of NSMenuItem;
     { Structural Methods }
     constructor Create; override;
+    destructor Destroy; override;
     class function getClass: objc.id; override;
     procedure AddMethods; override;
     { Pascal Methods }
@@ -70,6 +71,25 @@ begin
 //  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
 
   inherited Create;
+end;
+
+destructor TPrivateCocoaCarbonTrayIcon.Destroy;
+begin
+  ReleaseMenu();
+
+  if item <> nil then
+  begin
+    item.Free;
+    item := nil;
+  end;
+
+  if image <> nil then
+  begin
+    image.Free;
+    image := nil;
+  end;
+
+  inherited Destroy;
 end;
 
 class function TPrivateCocoaCarbonTrayIcon.getClass: objc.id;
@@ -212,7 +232,9 @@ begin
   SetLength(SubMenuItems, 0);
   SetLength(MenuItems, 0);
 
-  item.setMenu(nil);
+  if item <> nil then
+    item.setMenu(nil);
+
   if menu <> nil then
   begin
     menu.release;
@@ -241,11 +263,7 @@ var
 begin
   APrivateTrayIcon := TPrivateCocoaCarbonTrayIcon(ATrayIcon.Handle);
 
-  if APrivateTrayIcon.item <> nil then
-  begin
-    APrivateTrayIcon.item.Free;
-    APrivateTrayIcon.item := nil;
-  end;
+  APrivateTrayIcon.Free;
 
   Result := True;
 end;
@@ -337,13 +355,19 @@ var
 begin
   APrivateTrayIcon := TPrivateCocoaCarbonTrayIcon(ATrayIcon.Handle);
 
+  if APrivateTrayIcon = nil then Exit;
+
+  // The update is only necessary for a visible TTrayIcon
+  if not ATrayIcon.Visible then Exit;
+
   { Inserts the menu }
 
   APrivateTrayIcon.ReleaseMenu();
   if ATrayIcon.PopUpMenu <> nil then
   begin
     APrivateTrayIcon.menu := APrivateTrayIcon.CreateMenu(ATrayIcon.PopUpMenu);
-    APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
+    if APrivateTrayIcon.item <> nil then
+      APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
   end;
 end;
 
