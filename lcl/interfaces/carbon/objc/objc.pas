@@ -46,7 +46,9 @@ implementation
 { Macros from error.h }
 procedure NX_RAISE(code: cint; const data1, data2: Pointer);
 begin
-  _NXRaiseError(code, data1, data2);
+  //the function is not avaialbe in OX 10.5
+  //todo: (use objcrtl?)
+  //_NXRaiseError(code, data1, data2);
 end;
 
 procedure NX_RERAISE();
