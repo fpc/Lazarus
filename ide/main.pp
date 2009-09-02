@@ -437,7 +437,7 @@ type
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerUnselectComponentClass(Sender: TObject);
+    procedure OnDesignerComponentAdded(Sender: TObject);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
@@ -3152,7 +3152,7 @@ begin
     OnRenameComponent:=@OnDesignerRenameComponent;
     OnSetDesigning:=@OnDesignerSetDesigning;
     OnShowOptions:=@OnDesignerShowOptions;
-    OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
+    OnComponentAdded:=@OnDesignerComponentAdded;
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
@@ -11812,9 +11812,9 @@ begin
   RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
 end;
 
-procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
+procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject);
 begin
-  TComponentPalette(IDEComponentPalette).Selected:=nil;
+  TComponentPalette(IDEComponentPalette).DoAfterComponentAdded;
 end;
 
 procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject;
