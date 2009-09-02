@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-12 00:11-0600\n"
-"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2009-09-02 13:42-0600\n"
+"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -290,7 +290,7 @@ msgstr "INPUT(<Encabezado> [,Default])/Muestra una ventana de diálogo con encab
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<String>)/Devuelve la longitud de <String>."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -350,7 +350,7 @@ msgstr "UPPERCASE(<Cadena>)/Convierte <Cadena> a mayúsculas."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Date>)/Devuelve el año de la fecha <Date> proporcionada."
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -508,7 +508,7 @@ msgstr "Verisón"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Ya existe un objeto de nombre \"%s\""
 
 #: lr_const.seditorformbig
 msgid "&Big font"
