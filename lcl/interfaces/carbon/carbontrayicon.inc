@@ -38,6 +38,7 @@ type
     function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     procedure ReleaseMenu();
+    procedure RemoveIcon();
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
@@ -75,6 +76,7 @@ end;
 
 destructor TPrivateCocoaCarbonTrayIcon.Destroy;
 begin
+  RemoveIcon();
   ReleaseMenu();
 
   if item <> nil then
@@ -119,23 +121,28 @@ end;
 function TPrivateCocoaCarbonTrayIcon.CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
 var
   MenuTitle: CFStringRef;
-  i, j, index, subindex, subitemindex: Integer;
+  i, index: Integer;
+  Item: NSMenuItem;
 begin
   MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
   Result := NSMenu.initWithTitle(MenuTitle);
 
   for i := 0 to APopUpMenu.Items.Count - 1 do
   begin
-    index := Length(MenuItems);
-    SetLength(MenuItems, index + 1);
-
     { If the submenu has a submenu it needs special treatment }
     if APopUpMenu.Items[i].Count > 0 then
-      MenuItems[index] := RecursiveCreateMenuItems(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self)
+      Item := RecursiveCreateMenuItems(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self)
     else
-      MenuItems[index] := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
+      Item := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
 
-    Result.addItem(MenuItems[index].Handle);
+    if APopUpMenu.Items[i].Caption <> '-' then
+    begin
+      index := Length(MenuItems);
+      SetLength(MenuItems, index + 1);
+      MenuItems[index] := Item;
+    end;
+
+    Result.addItem(Item.Handle);
   end;
 end;
 
@@ -221,16 +228,18 @@ procedure TPrivateCocoaCarbonTrayIcon.ReleaseMenu();
 var
   i: Integer;
 begin
-  for i := 0 to Length(SubMenuOwners) - 1 do
-    if SubMenuOwners[i] <> nil then SubMenuOwners[i].release;
-  for i := 0 to Length(SubMenuItems) - 1 do
-    if SubMenuItems[i] <> nil then SubMenuItems[i].release;
-  for i := 0 to Length(MenuItems) - 1 do
-    if MenuItems[i] <> nil then MenuItems[i].release;
+// ToDo: Check why freeing the menus crashes separators,
+// and if this is necessary
+//  for i := 0 to Length(SubMenuOwners) - 1 do
+//    if SubMenuOwners[i] <> nil then SubMenuOwners[i].release;
+//  for i := 0 to Length(SubMenuItems) - 1 do
+//    if (SubMenuItems[i] <> nil) then SubMenuItems[i].release;
+//  for i := 0 to Length(MenuItems) - 1 do
+//    if (MenuItems[i] <> nil) then MenuItems[i].release;
 
-  SetLength(SubMenuOwners, 0);
-  SetLength(SubMenuItems, 0);
-  SetLength(MenuItems, 0);
+//  SetLength(SubMenuOwners, 0);
+//  SetLength(SubMenuItems, 0);
+//  SetLength(MenuItems, 0);
 
   if item <> nil then
     item.setMenu(nil);
@@ -240,6 +249,12 @@ begin
     menu.release;
     menu := nil;
   end;
+end;
+
+procedure TPrivateCocoaCarbonTrayIcon.RemoveIcon();
+begin
+  if item <> nil then
+    bar.removeStatusItem(item.Handle);
 end;
 
 { Here we try to get the LCL MenuItem from the Tag and then call
