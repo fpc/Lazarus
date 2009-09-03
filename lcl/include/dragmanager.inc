@@ -253,7 +253,7 @@ begin
 
   finally
     //erase global variables (dragging stopped)
-    if ADragObjectCopy.AutoCreated then
+    if ADragObjectCopy.AutoFree then
       ADragObjectCopy.Free;
   end;
 end;
@@ -532,7 +532,7 @@ begin
       ADockObjectCopy.Control.DragCanceled;
     ADockObjectCopy.EndDrag(ADockObjectCopy.DragTarget,TargetPos.X,TargetPos.Y);
   finally
-    if ADockObjectCopy.AutoCreated then
+    if ADockObjectCopy.AutoFree then
       ADockObjectCopy.Free
   end;
 end;

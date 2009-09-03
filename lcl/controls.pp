@@ -343,6 +343,7 @@ type
     FControl: TControl;
     FDragTarget: TControl;
     FDragTargetPos: TPoint;
+    FAutoFree: Boolean;
     FAutoCreated: Boolean;
     FDropped: Boolean;
   protected
@@ -358,6 +359,7 @@ type
 
     property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
     property AutoCreated: Boolean read FAutoCreated;
+    property AutoFree: Boolean read FAutoFree;
     property Control: TControl read FControl write FControl;
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTarget: TControl read FDragTarget write FDragTarget;
