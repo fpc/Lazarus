@@ -3090,7 +3090,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);
   {$ENDIF}
-  Result:=InitCurCodeTool(Code);
+  Result:=false;
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
