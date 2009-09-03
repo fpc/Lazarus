@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="46">
+    <Units Count="47">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -357,6 +357,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="CodeBrowser"/>
       </Unit45>
+      <Unit46>
+        <Filename Value="frames/buildmodeseditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BuildModesEditorFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="BuildModesEditor"/>
+      </Unit46>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
