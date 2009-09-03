@@ -110,12 +110,16 @@ end;
   Initialize Windows
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+const
+  Win32ClassesToInit: array[0..3] of DWord = (ICC_DATE_CLASSES,
+    ICC_UPDOWN_CLASS, ICC_TAB_CLASSES, ICC_PROGRESS_CLASS);
 var
   ICC: TINITCOMMONCONTROLSEX;
   SysMenu: HMENU;
   Handle: HWND;
   DC: HDC;
   AIcon: HICON;
+  i: integer;
 begin
   Assert(False, 'Trace:Win32Object.Init - Start');
   if not WinRegister then
@@ -133,12 +137,11 @@ begin
   if InitCommonControlsEx <> nil then
   begin
     ICC.dwSize := SizeOf(TINITCOMMONCONTROLSEX);
-
-    ICC.dwICC := ICC_DATE_CLASSES;
-    InitCommonControlsEx(@ICC);
-
-    ICC.dwICC := ICC_UPDOWN_CLASS;
-    InitCommonControlsEx(@ICC);
+    for i := Low(Win32ClassesToInit) to High(Win32ClassesToInit) do
+    begin
+      ICC.dwICC := Win32ClassesToInit[i];
+      InitCommonControlsEx(@ICC);
+    end;
   end;
 
   // Create parent of all windows, 'button on taskbar'
