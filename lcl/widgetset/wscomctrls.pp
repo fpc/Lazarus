@@ -128,7 +128,7 @@ type
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
-//    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); virtual;
+    class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); virtual;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); virtual;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); virtual;
@@ -451,6 +451,11 @@ begin
 end;
 
 class procedure TWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer);
+begin
+end;
+
+class procedure TWSCustomListView.SetIconArrangement(
+  const ALV: TCustomListView; const AValue: TIconArrangement);
 begin
 end;
 

@@ -477,6 +477,7 @@ class function TWin32WSCustomListView.CreateHandle(const AWinControl: TWinContro
   const AParams: TCreateParams): HWND;
 const
   LISTVIEWSTYLES: array[TViewStyle] of DWORD = (LVS_ICON, LVS_SMALLICON, LVS_LIST, LVS_REPORT);
+  Arrangement: array[TIconArrangement] of DWord = (LVS_ALIGNTOP, LVS_ALIGNLEFT);
 var
   Params: TCreateWindowExParams;
 begin
@@ -487,7 +488,9 @@ begin
   begin
     pClassName := WC_LISTVIEW;
     WindowTitle := StrCaption;
-    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL or LVS_SHAREIMAGELISTS;
+    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or
+      LVS_SINGLESEL or LVS_SHAREIMAGELISTS or
+      Arrangement[TListView(AWinControl).IconOptions.Arrangement];
     if TCustomListView(AWinControl).OwnerData then 
       Flags := Flags or LVS_OWNERDATA;
     if TCustomListView(AWinControl).BorderStyle = bsSingle then
@@ -744,6 +747,21 @@ begin
   then Exit;
 
   SendMessage(ALV.Handle, LVM_SETHOVERTIME, 0, AValue);
+end;
+
+class procedure TWin32WSCustomListView.SetIconArrangement(
+  const ALV: TCustomListView; const AValue: TIconArrangement);
+const
+  ArrangementMap: array[TIconArrangement] of DWord = (
+    { iaTop  } LVS_ALIGNTOP,
+    { iaLeft } LVS_ALIGNLEFT
+  );
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetIconArrangement')
+  then Exit;
+
+  // LVM_ALIGN styles are not implemented in windows (according to w7 sdk) => change style
+  UpdateStyle(ALV.Handle, LVS_ALIGNMASK, ArrangementMap[AValue]);
 end;
 
 class procedure TWin32WSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);

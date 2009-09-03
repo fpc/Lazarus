@@ -13,6 +13,60 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{ TIconOptions }
+
+procedure TIconOptions.SetArrangement(Value: TIconArrangement);
+begin
+  if FArrangement <> Value then
+  begin
+    FArrangement := Value;
+    if FListView.HandleAllocated then
+      TWSCustomListViewClass(FListView.WidgetSetClass).SetIconArrangement(FListView, Arrangement);
+  end;
+end;
+
+function TIconOptions.GetAutoArrange: Boolean;
+begin
+  Result := FListView.GetProperty(Ord(lvpAutoArrange));
+end;
+
+function TIconOptions.GetWrapText: Boolean;
+begin
+  Result := FListView.GetProperty(Ord(lvpWrapText));
+end;
+
+procedure TIconOptions.SetAutoArrange(Value: Boolean);
+begin
+  FListView.SetProperty(Ord(lvpAutoArrange), Value);
+end;
+
+procedure TIconOptions.SetWrapText(Value: Boolean);
+begin
+  FListView.SetProperty(Ord(lvpWrapText), Value);
+end;
+
+procedure TIconOptions.AssignTo(Dest: TPersistent);
+var
+  DestOptions: TIconOptions absolute Dest;
+begin
+  if Dest is TIconOptions then
+  begin
+    DestOptions.Arrangement := Arrangement;
+    DestOptions.AutoArrange := AutoArrange;
+    DestOptions.WrapText := WrapText;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+constructor TIconOptions.Create(AOwner: TCustomListView);
+begin
+  inherited Create;
+  FListView := AOwner;
+  FArrangement := iaTop;
+end;
+
 {------------------------------------------------------------------------------
    TCustomListView Constructor
 ------------------------------------------------------------------------------}
@@ -22,8 +76,9 @@ var
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csCaptureMouse];
-  FColumns := TListColumns.Create(self);
-  FListItems := TListItems.Create(self);
+  FIconOptions := TIconOptions.Create(Self);
+  FColumns := TListColumns.Create(Self);
+  FListItems := TListItems.Create(Self);
   BorderStyle := bsSingle;
   FScrollBars := ssBoth;
   FCompStyle := csListView;
@@ -42,7 +97,7 @@ begin
   Color := clWindow;  
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips];
+  FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders, lvpToolTips, lvpWrapText];
   
   FOwnerDataItem := TOwnerDataListItem.Create(FListItems);
 end;
@@ -569,6 +624,7 @@ begin
     FreeAndNil(FImageChangeLinks[lvil]);
   FreeAndNil(FOwnerDataItem);
   FreeAndNil(FListItems);
+  FreeAndNil(FIconOptions);
 end;
 
 {------------------------------------------------------------------------------
@@ -812,6 +868,11 @@ begin
   FHoverTime := AValue;
   if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).SetHoverTime(Self, FHoverTime);
+end;
+
+procedure TCustomListView.SetIconOptions(const AValue: TIconOptions);
+begin
+  FIconOptions.Assign(AValue);
 end;
 
 procedure TCustomListView.SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);

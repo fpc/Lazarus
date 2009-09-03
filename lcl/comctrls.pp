@@ -655,6 +655,29 @@ type
 
   TDisplayCode = (drBounds, drIcon, drLabel, drSelectBounds);
   
+{ TIconOptions }
+
+  TIconArrangement = (iaTop, iaLeft);
+
+  TIconOptions = class(TPersistent)
+  private
+    FListView: TCustomListView;
+    FArrangement: TIconArrangement;
+    function GetAutoArrange: Boolean;
+    function GetWrapText: Boolean;
+    procedure SetArrangement(Value: TIconArrangement);
+    procedure SetAutoArrange(Value: Boolean);
+    procedure SetWrapText(Value: Boolean);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(AOwner: TCustomListView);
+  published
+    property Arrangement: TIconArrangement read FArrangement write SetArrangement default iaTop;
+    property AutoArrange: Boolean read GetAutoArrange write SetAutoArrange default False;
+    property WrapText: Boolean read GetWrapText write SetWrapText default True;
+  end;
+
   { TListItem }
 
   TListItem = class(TPersistent)
@@ -930,6 +953,7 @@ type
     FCanvas: TCanvas;
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
+    FIconOptions: TIconOptions;
     FOwnerData: Boolean;
     FOwnerDataItem: TOwnerDataListItem;
     FListItems: TListItems;
@@ -984,6 +1008,7 @@ type
     procedure SetFocused(const AValue: TListItem);
     procedure SetHotTrackStyles(const AValue: TListHotTrackStyles);
     procedure SetHoverTime(const AValue: Integer);
+    procedure SetIconOptions(const AValue: TIconOptions);
     procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
     procedure SetItems(const AValue : TListItems);
     procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
@@ -1079,6 +1104,7 @@ type
     property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
     property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty default False;
     property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
+    property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property ItemFocused: TListItem read GetFocused write SetFocused;
     property Items: TListItems read FListItems write SetItems;
     // MultiSelect and ReadOnly should be protected, but can't because Carbon Interface
@@ -1124,6 +1150,7 @@ type
 //    property HotTrack;
 //    property HotTrackStyles;
 //    property HoverTime;
+    property IconOptions;
     property Items;
     property LargeImages;
     property MultiSelect;
