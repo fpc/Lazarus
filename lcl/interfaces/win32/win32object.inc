@@ -111,8 +111,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 const
-  Win32ClassesToInit: array[0..3] of DWord = (ICC_DATE_CLASSES,
-    ICC_UPDOWN_CLASS, ICC_TAB_CLASSES, ICC_PROGRESS_CLASS);
+  Win32ClassesToInit: array[0..5] of DWord = (ICC_DATE_CLASSES,
+    ICC_UPDOWN_CLASS, ICC_TAB_CLASSES, ICC_PROGRESS_CLASS, ICC_BAR_CLASSES,
+    ICC_PAGESCROLLER_CLASS);
 var
   ICC: TINITCOMMONCONTROLSEX;
   SysMenu: HMENU;
