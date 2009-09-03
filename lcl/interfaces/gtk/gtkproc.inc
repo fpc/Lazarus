@@ -2161,7 +2161,8 @@ var
   begin
     // some widgets eats keys, but do not do anything useful for the LCL
     // emulate the keys
-    if not ABeforeEvent then exit;
+    if not ABeforeEvent then Exit;
+    if EventStopped then Exit;
 
     //DebugLn(['EmulateEatenKeys TargetWidget=',dbghex(PtrInt(TargetWidget))]);
     //DebugLn(['EmulateEatenKeys ',GetWidgetDebugReport(TargetWidget),' gdk_event_get_type(AEvent)=',gdk_event_get_type(AEvent),' GDK_KEY_PRESS=',GDK_KEY_PRESS,' VKey=',VKey]);
