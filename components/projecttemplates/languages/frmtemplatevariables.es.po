@@ -15,7 +15,7 @@ msgstr "Descripcion"
 
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
-msgstr ""
+msgstr "Este proyecto no tiene variables adicionales"
 
 #: frmtemplatevariables.svalue
 msgid "Value"
