@@ -429,6 +429,26 @@ begin
   end;
 end;
 
+function GroupBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  WindowInfo: PWin32WindowInfo;
+begin
+  // move groupbox specific code here
+  case Msg of
+    WM_UPDATEUISTATE:
+    begin
+      if ThemeServices.ThemesEnabled then
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
+          WindowInfo^.WinControl.Invalidate;
+      end;
+    end;
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 class function TWin32WSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -463,9 +483,10 @@ begin
         BuddyWindowInfo^.needParentPaint := true;
       Parent := Buddy;
     end;
+    SubClassWndProc := @GroupBoxWindowProc;
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    Flags := Flags Or BS_GROUPBOX;
+    Flags := Flags or BS_GROUPBOX;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
