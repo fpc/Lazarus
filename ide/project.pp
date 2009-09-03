@@ -568,6 +568,7 @@ type
     FAutoCreateForms: boolean;
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
+    FBuildModes: TBuildModeGraph;
     fChanged: boolean;
     FCompilerOptions: TProjectCompilerOptions;
     fCurStorePathDelim: TPathDelimSwitch; // used by OnLoadSaveFilename
@@ -629,6 +630,7 @@ type
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
+    procedure SetBuildModes(const AValue: TBuildModeGraph);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetMainProject(const AValue: boolean);
     procedure SetSkipCheckLCLInterfaces(const AValue: boolean);
@@ -827,6 +829,7 @@ type
                                          read FAutoOpenDesignerFormsDisabled
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
+    property BuildModes: TBuildModeGraph read FBuildModes write SetBuildModes;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions
@@ -1879,6 +1882,7 @@ begin
   inherited Create(ProjectDescription);
 
   fActiveEditorIndexAtStart := -1;
+  FBuildModes:=TBuildModeGraph.Create;
   FSkipCheckLCLInterfaces:=false;
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
@@ -1924,6 +1928,7 @@ begin
   FreeThenNil(FRunParameterOptions);
   FreeThenNil(FCompilerOptions);
   FreeThenNil(FDefineTemplates);
+  FreeThenNil(FBuildModes);
 
   inherited Destroy;
 end;
@@ -2118,8 +2123,12 @@ begin
       RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
       
       // save dependencies
-      SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
+      SavePkgDependencyList(xmlconfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
+
+      // save build modes
+      BuildModes.SaveToXMLConfig(xmlconfig,Path+'BuildModes/',true,SaveSessionInfoInLPI,
+                                 fCurStorePathDelim);
 
       // save units
       SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
@@ -2189,12 +2198,17 @@ begin
       try
         Path:='ProjectSession/';
         fCurStorePathDelim:=SessionStorePathDelim;
-        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',
+                                PathDelimSwitchToDelim[fCurStorePathDelim],'/');
         xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
         // save all units
         SaveUnits(XMLConfig,Path,true,true);
-        
+
+        // build modes
+        FBuildModes.SaveToXMLConfig(xmlconfig,Path+'BuildModes/',false,true,
+                                    fCurStorePathDelim);
+
         // save session
         SaveSessionInfo(XMLConfig,Path);
 
@@ -2474,6 +2488,10 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
+      // build modes
+      FBuildModes.LoadFromXMLConfig(xmlconfig,Path+'BuildModes/',false,
+                                    fPathDelimChanged);
+
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
@@ -2554,6 +2572,10 @@ begin
           fCurStorePathDelim:=SessionStorePathDelim;
 
           FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+
+          // load user sepcific build modes
+          FBuildModes.LoadFromXMLConfig(xmlconfig,Path+'BuildModes/',true,
+                                        fPathDelimChanged);
 
           // load session info
           LoadSessionInfo(XMLConfig,Path,true);
@@ -2714,6 +2736,8 @@ procedure TProject.Clear;
 var i:integer;
 begin
   BeginUpdate(true);
+
+  FBuildModes.ClearModes;
 
   // break and free removed dependencies
   while FFirstRemovedDependency<>nil do
@@ -4217,6 +4241,12 @@ procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
 begin
   if FAutoOpenDesignerFormsDisabled=AValue then exit;
   FAutoOpenDesignerFormsDisabled:=AValue;
+end;
+
+procedure TProject.SetBuildModes(const AValue: TBuildModeGraph);
+begin
+  if FBuildModes=AValue then exit;
+  FBuildModes:=AValue;
 end;
 
 procedure TProject.SetCompilerOptions(const AValue: TProjectCompilerOptions);
