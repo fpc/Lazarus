@@ -1111,7 +1111,7 @@ begin
   if MeasureText(AWinControl, 'Fj', PreferredWidth, PreferredHeight) then
   begin
     PreferredWidth := 0;
-    Inc(PreferredHeight, 10);
+    Inc(PreferredHeight, 8);
   end;
 end;
 
