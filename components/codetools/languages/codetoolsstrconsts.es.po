@@ -1,11 +1,13 @@
 msgid ""
 msgstr ""
-"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
-"PO-Revision-Date: 2008-02-26\n"
+"Last-Translator: javivf <javivf@gmail.com>\n"
+"PO-Revision-Date: 2009-09-03 15:48+0100\n"
 "Project-Id-Version: codetools\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -157,7 +159,7 @@ msgstr "Por defecto ppc386 procesador de destino"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "propiedad por defecto no encontrada"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -409,7 +411,7 @@ msgstr "Detectado círculo en incluido"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "incluir directorios: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""
@@ -665,7 +667,7 @@ msgstr "fuente no encontrada: unidad %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
-msgstr ""
+msgstr "código fuente de la unidad no encontrado : %s"
 
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
