@@ -1915,6 +1915,10 @@ begin
     R := GetThemeBrushAsColor(kThemeBrushAlternatePrimaryHighlightColor, Depth, True, C);
   COLOR_INACTIVECAPTION:
     R := GetThemeBrushAsColor(kThemeBrushSecondaryHighlightColor, Depth, True, C);
+  COLOR_MENUBAR:
+    R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C);
+  COLOR_MENUHILIGHT:
+    R := GetThemeBrushAsColor(kThemeBrushMenuBackgroundSelected, Depth, True, C);
   else
     DebugLn('TCarbonWidgetSet.GetSysColor TODO ', DbgS(NIndex));
   end;
