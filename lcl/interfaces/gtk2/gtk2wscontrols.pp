@@ -121,8 +121,27 @@ function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
                   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Msg: TLMVScroll;
+  MaxValue: gdouble;
+  ScrolledBeyondMaximum: Boolean;
 begin
   Result := CallBackDefaultReturn;
+
+  ScrolledBeyondMaximum:=false;
+  if (ARange^.adjustment<>nil) then begin
+    MaxValue:=ARange^.adjustment^.upper-Max(ARange^.adjustment^.page_size-1,0);
+    //debugln(['Gtk2RangeScrollCB AValue=',AValue,' MaxValue=',MaxValue]);
+    if AValue>MaxValue then begin
+      // limit to maximum
+      ScrolledBeyondMaximum:=true;
+      AValue:=MaxValue;
+      if AValue=ARange^.adjustment^.value then begin
+        // already at maximum
+        Result:=not Result;
+        exit;
+      end;
+    end;
+  end;
+
   //Assert(False, Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
   if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
     Msg.Msg := LM_HSCROLL
@@ -140,6 +159,18 @@ begin
     ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
   end;
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+
+  if (Result=CallBackDefaultReturn) and ScrolledBeyondMaximum
+  and (ARange^.adjustment<>nil) then begin
+    // scroll to maximum
+    // otherwise when dragging fast with the mouse the bar will not reach the maximum
+    MaxValue:=ARange^.adjustment^.upper-Max(ARange^.adjustment^.page_size-1,0);
+    if ARange^.adjustment^.value<>MaxValue then begin
+      ARange^.adjustment^.value:=MaxValue;
+      gtk_adjustment_changed(ARange^.adjustment);
+    end;
+    Result:=not Result;
+  end;
 end;
 
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;

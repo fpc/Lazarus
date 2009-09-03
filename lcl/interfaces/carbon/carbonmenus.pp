@@ -37,7 +37,7 @@ uses
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, Menus,
  // LCL Carbon
-  CarbonDef, CarbonGDIObjects;
+  CarbonDef, CarbonGDIObjects, CarbonProc, CarbonDbgConsts;
   
 type
 
@@ -48,7 +48,7 @@ type
     FParentMenu: TCarbonMenu;
     FRoot: Boolean;
     FItems: TObjectList; // of TCarbonMenu
-    procedure MenuNeeded;
+    procedure MenuNeeded(UpdateWithParent: Boolean=True);
     function GetIndex: Integer;
   protected
     procedure RegisterEvents;
@@ -81,9 +81,6 @@ function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: Str
 
 
 implementation
-
-uses
-  CarbonProc, CarbonDbgConsts;
 
 {------------------------------------------------------------------------------
   Name:    CheckMenu
@@ -152,7 +149,7 @@ end;
 
   Creates Carbon menu object for sub menu
  ------------------------------------------------------------------------------}
-procedure TCarbonMenu.MenuNeeded;
+procedure TCarbonMenu.MenuNeeded(UpdateWithParent: Boolean);
 begin
   if Menu <> nil then Exit;
   
@@ -165,7 +162,7 @@ begin
   
   RegisterEvents;
   
-  if FParentMenu <> nil then
+  if (FParentMenu <> nil) and UpdateWithParent then
   begin
     SetCaption(LCLMenuItem.Caption);
 
@@ -376,8 +373,8 @@ begin
   {$ENDIF}
   
   Index := GetIndex;
-  if FParentMenu.FRoot then MenuNeeded; // menu item is in toplevel of root menu
-  
+  if FParentMenu.FRoot then MenuNeeded(False); // menu item is in toplevel of root menu.
+
   if LCLMenuItem.Caption = cLineCaption then // menu item is separator
     OSError(
       InsertMenuItemTextWithCFString(FParentMenu.Menu, nil, Index,

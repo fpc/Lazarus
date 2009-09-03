@@ -5,33 +5,29 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-16 18:04+0300\n"
+"PO-Revision-Date: 2009-08-31 18:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
-#, fuzzy
 #| msgid "Set all settings"
 msgid "Reset all settings"
-msgstr "Установить все параметры"
+msgstr "Сбросить все параметры"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
-#, fuzzy
 #| msgid "Set all gutter settings"
 msgid "Reset all gutter settings"
-msgstr "Установить все параметры поля (лев)"
+msgstr "Сбросить все параметры поля (лев)"
 
 #: lazarusidestrconsts.dlfmouseresettext
-#, fuzzy
 #| msgid "Set all text settings"
 msgid "Reset all text settings"
-msgstr "Установить все параметры текста"
+msgstr "Сбросить все параметры текста"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-#, fuzzy
-#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advnaced changes"
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
-msgstr "Эта страница не отражает текущие значения параметров. См. страницу расширенных параметров. Используйте эту страницу для сброса любых изменений на странице расширенных параметров"
+#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
+msgstr "Эта страница не отражает текущие значения расширенных параметров. Используйте данную страницу для сброса любых их изменений"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -861,7 +857,7 @@ msgstr "Отключить сглаживание"
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
-msgstr ""
+msgstr "Использовать цвет правой границы"
 
 #: lazarusidestrconsts.dlgdividerdrawdepth
 msgid "Draw divider level"
@@ -1579,10 +1575,9 @@ msgid "Word under Caret Highlight"
 msgstr "Подсветка текущего слова под курсором"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-#, fuzzy
 #| msgid "Ignore bounds for words longer than"
 msgid "Match word boundaries for words up to this length:"
-msgstr "Игнорировать границы для слов длиннее, чем"
+msgstr "Искать границы для слов не длиннее "
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore Keywords"
@@ -3161,6 +3156,10 @@ msgstr "Добавить %s к проекту?"
 msgid "Add to unit search path?"
 msgstr "Добавить к путям поиска модулей?"
 
+#: lazarusidestrconsts.lisaddunitinterfaces
+msgid "Add unit interfaces"
+msgstr "Добавить модуль Interfaces"
+
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Добавить значение:"
@@ -3236,7 +3235,7 @@ msgstr "Все файлы"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
-msgstr ""
+msgstr "Все унаследованные параметры"
 
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
@@ -3261,6 +3260,10 @@ msgstr "Альтернативная клавиша (или двухклавиш
 #: lazarusidestrconsts.lisalways
 msgid "Always"
 msgstr "Всегда"
+
+#: lazarusidestrconsts.lisalwaysignore
+msgid "Always ignore"
+msgstr "Всегда игнорировать"
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3316,7 +3319,7 @@ msgstr "Во время загрузки %s при последнем запус
 
 #: lazarusidestrconsts.lisappendshortdescriptiontolongdescription
 msgid "Append short description to long description"
-msgstr ""
+msgstr "Добавить краткое описание к подробному"
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
@@ -3360,7 +3363,7 @@ msgstr "Продолжить после:"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
-msgstr ""
+msgstr "Автоматически вызывать после ввода точки"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -4979,15 +4982,15 @@ msgstr "Копировать все (и скрытые тоже) сообщен�
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
-msgstr "Скопировать все сообщения в буфер"
+msgstr "Копировать все сообщения в буфер обмена"
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
-msgstr ""
+msgstr "Копировать весь вывод в буфер обмена"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
-msgstr ""
+msgstr "Копировать описание в буфер обмена"
 
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
@@ -4999,7 +5002,7 @@ msgstr "Ошибка копирования"
 
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy %s%s%s to clipboard"
-msgstr ""
+msgstr "Копировать %s%s%s в буфер обмена"
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -5380,9 +5383,9 @@ msgstr "Удалить точку останова"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
 
-#: lazarusidestrconsts.lisdeletebuildmode
-msgid "Delete build mode %s%s%s?"
-msgstr "Удалить режим сборки %s%s%s?"
+#: lazarusidestrconsts.lisdeletebuildvar
+msgid "Delete build variable %s%s%s?"
+msgstr "Удалить переменную сборки %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -5483,6 +5486,10 @@ msgstr "Разряды:"
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
 msgstr "Директивы"
+
+#: lazarusidestrconsts.lisdirectorynotfound
+msgid "Directory %s%s%s not found."
+msgstr "Каталог %s%s%s не найден."
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6775,7 +6782,11 @@ msgstr "Вставить имя текущей процедуры."
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
-msgstr ""
+msgstr "Вставить тег вывода краткого описания"
+
+#: lazarusidestrconsts.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Вставить тег вывода краткого описания"
 
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
@@ -6830,9 +6841,9 @@ msgstr "Установить выбранное"
 msgid "Internal Name:"
 msgstr "Внутреннее имя:"
 
-#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
-msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
-msgstr "Неверный режим сборки %s%s%s. Режим сборки должен быть идентификатором Паскаля."
+#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
+msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
+msgstr "Неверная переменная сборки %s%s%s. Она должна являться идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -9461,7 +9472,7 @@ msgstr "Выбрать каталог"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
-msgstr ""
+msgstr "Путь к необработанному экземпляру:"
 
 #: lazarusidestrconsts.lispckeditaddanitem
 msgid "Add an item"
@@ -11065,6 +11076,10 @@ msgstr "Удалить все модули"
 msgid "Remove from project"
 msgstr "Удалить из проекта"
 
+#: lazarusidestrconsts.lisremovefromsearchpath
+msgid "Remove from search path"
+msgstr "Удалить из путей поиска"
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Удалить выбранные модули"
@@ -11156,7 +11171,7 @@ msgstr "Равномерно по правым краям"
 
 #: lazarusidestrconsts.lisroot
 msgid "Root"
-msgstr ""
+msgstr "Корневой элемент"
 
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
@@ -11868,6 +11883,10 @@ msgstr "Пакет уже содержит модуль с таким имене
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "Программа %smake%s не найдена.%sЭто средство нужно, чтобы собрать lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgstr "Проект не использует LCL-модуль Interfaces, но, вероятно, требует его.%sКомпоновщик будет выдавать странные ошибки, если формы LCL будут использоваться без модуля Interfaces."
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Файл сведений проекта %s%s%s%sсовпадает с главным файлом исходного кода!"
@@ -11888,9 +11907,9 @@ msgstr "В каталоге есть и другие файлы с таким ж
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "На диске есть файл с таким же именем и похожим расширением%sФайл: %s%sПохожий файл: %s%s%sУдалить второй файл?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
-msgid "There is already a build mode with the name %s%s%s."
-msgstr "Режим сборки с именем %s%s%s уже существует."
+#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
+msgid "There is already a build variable with the name %s%s%s."
+msgstr "Переменная сборки с именем %s%s%s уже имеется."
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12225,7 +12244,7 @@ msgstr "Невозможно преобразовать двоичный пот�
 
 #: lazarusidestrconsts.lisunablecopycomponentstoclipboard
 msgid "Unable copy components to clipboard"
-msgstr "Невозможно скопировать компоненты в буфер"
+msgstr "Невозможно скопировать компоненты в буфер обмена"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
 msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."

@@ -30,23 +30,23 @@ procedure TCustomLabel.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 // assumes: (Parent <> nil) and Parent.HandleAllocated
 var
-  R : TRect;
-  DC : hDC;
+  R: TRect;
+  DC: HDC;
   Flags: Cardinal;
   OldFont: HGDIOBJ;
   LabelText: string;
 begin
-  if (Parent=nil) or (not Parent.HandleAllocated) then Exit;
+  if (Parent = nil) or (not Parent.HandleAllocated) then Exit;
   DC := GetDC(Parent.Handle);
   try
     R := Rect(0, 0, Width, Height);
     OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
     Flags := DT_CALCRECT or DT_EXPANDTABS;
     if WordWrap then
-      inc(Flags, DT_WORDBREAK)
+      Flags := Flags or DT_WORDBREAK
     else
     if not HasMultiLine then
-      inc(Flags, DT_SINGLELINE);
+      Flags := Flags or DT_SINGLELINE;
 
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
@@ -62,10 +62,7 @@ end;
 procedure TCustomLabel.FontChanged(Sender: TObject);
 begin
   inherited FontChanged(Sender);
-  InvalidatePreferredSize;
-  if (Parent<>nil) and Parent.AutoSize then
-    Parent.AdjustSize;
-  AdjustSize;
+  UpdateSize;
 end;
 
 class function TCustomLabel.GetControlClassDefaultSize: TPoint;
@@ -79,7 +76,7 @@ var
   s: String;
 begin
   s := GetLabelText;
-  result := (pos(#10, s) > 0) or (pos(#13, s) > 0);
+  Result := (pos(#10, s) > 0) or (pos(#13, s) > 0);
 end;
 
 procedure TCustomLabel.DoAutoSize;
@@ -91,24 +88,31 @@ begin
   if OptimalFill and (not AutoSize) then
   begin
     AdjustFontForOptimalFill;
-    exit;
+    Exit;
   end;
   
   if AutoSizeDelayed then
-    exit;
+    Exit;
+
   GetPreferredSize(NewWidth, NewHeight);
   //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
-  CurAnchors:=[];
-  if Align in [alLeft,alRight,alBottom,alTop,alClient] then
-    CurAnchors:=AnchorAlign[Align];
-  CurAnchors:=Anchors+CurAnchors;
-  if CurAnchors*[akLeft,akRight]=[akLeft,akRight] then
-    NewWidth:=Width;
-  if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
-    NewHeight:=Height;
+  CurAnchors := [];
+  if Align in [alLeft, alRight, alBottom, alTop, alClient] then
+    CurAnchors := AnchorAlign[Align];
+  CurAnchors := Anchors + CurAnchors;
+  if (CurAnchors * [akLeft, akRight] = [akLeft, akRight]) or
+     (WordWrap and (NewWidth < Width)) then
+    NewWidth := Width;
+  if CurAnchors * [akTop, akBottom] = [akTop, akBottom] then
+    NewHeight := Height;
 
   //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
-  SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
+  FInternalSetBounds := True;
+  try
+    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
+  finally
+    FInternalSetBounds := False;
+  end;
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
@@ -125,7 +129,7 @@ procedure TCustomLabel.Notification(AComponent : TComponent; Operation : TOperat
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FFocusControl) and (Operation = opRemove) then
-    FFocusControl:= nil;
+    FFocusControl := nil;
 end;
 
 procedure TCustomLabel.SetFocusControl(Value : TWinControl);
@@ -166,12 +170,7 @@ end;
 procedure TCustomLabel.TextChanged;
 begin
   Invalidate;
-  InvalidatePreferredSize;
-  if OptimalFill and (not AutoSize) then
-    AdjustFontForOptimalFill;
-  if (Parent<>nil) and Parent.AutoSize then
-    Parent.AdjustSize;
-  AdjustSize;
+  UpdateSize;
 end;
 
 procedure TCustomLabel.Resize;
@@ -188,7 +187,7 @@ end;
 
 function TCustomLabel.CanTab: boolean;
 begin
-  Result:=false;
+  Result := False;
 end;
 
 procedure TCustomLabel.DoMeasureTextPosition(var TextTop: integer;
@@ -217,6 +216,7 @@ begin
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
   SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   FShowAccelChar := True;
+  FInternalSetBounds := False;
   Color := clNone;
   AutoSize := True;
 end;
@@ -271,9 +271,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomLabel.SetWordWrap(Value: Boolean);
 begin
-  if fWordWrap <> value then begin
-    fWordWrap:= value;
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
     Invalidate;
+    UpdateSize;
   end;
 end;
 
@@ -294,6 +296,16 @@ end;
 procedure TCustomLabel.Loaded;
 begin
   inherited Loaded;
+  AdjustSize;
+end;
+
+procedure TCustomLabel.UpdateSize;
+begin
+  InvalidatePreferredSize;
+  if OptimalFill and (not AutoSize) then
+    AdjustFontForOptimalFill;
+  if (Parent <> nil) and Parent.AutoSize then
+    Parent.AdjustSize;
   AdjustSize;
 end;
 
@@ -387,14 +399,14 @@ var
   NewFontHeight: Integer;
   OldFontHeight: LongInt;
 begin
-  Result:=false;
-  if not CalcFittingFontHeight(GetLabelText,Width,Height,NewFontHeight,NeededWidth,
-                               NeededHeight) then exit;
-  if Font.Height=NewFontHeight then exit;
+  Result := False;
+  if not CalcFittingFontHeight(GetLabelText, Width, Height, NewFontHeight,
+                               NeededWidth, NeededHeight) then Exit;
+  if Font.Height = NewFontHeight then Exit;
   //debugln('TCustomLabel.AdjustFontForOptimalFill OldFontHeight=',dbgs(Font.Height),' NewFontHeight=',dbgs(NewFontHeight));
-  OldFontHeight:=Font.Height;
-  Font.Height:=NewFontHeight;
-  Result:=OldFontHeight<>Font.Height;
+  OldFontHeight := Font.Height;
+  Font.Height := NewFontHeight;
+  Result := OldFontHeight <> Font.Height;
 end;
 
 procedure TCustomLabel.Paint;
@@ -470,12 +482,19 @@ begin
   end;
 end;
 
+procedure TCustomLabel.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  if not FInternalSetBounds and AutoSize and WordWrap then
+    InvalidatePreferredSize;
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+end;
+
 procedure TCustomLabel.SetOptimalFill(const AValue: Boolean);
 begin
-  if FOptimalFill=AValue then exit;
-  FOptimalFill:=AValue;
+  if FOptimalFill = AValue then Exit;
+  FOptimalFill := AValue;
   if OptimalFill and AutoSize then
-    AutoSize:=false;
+    AutoSize := False;
   Invalidate;
 end;
 

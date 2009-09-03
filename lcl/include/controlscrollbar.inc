@@ -91,11 +91,6 @@ begin
   end;
 end;
 
-function TControlScrollBar.SmoothIsStored: boolean;
-begin
-  Result := FSmooth;
-end;
-
 function TControlScrollBar.GetIncrement: TScrollBarInc;
 begin
   Result := FIncrement;
@@ -171,11 +166,6 @@ begin
   ControlUpdateScrollBars;
 end;
 
-function TControlScrollBar.VisibleIsStored: boolean;
-begin
-  Result := FVisible;
-end;
-
 function TControlScrollBar.GetSize: integer;
 var
   KindID: integer;
@@ -211,7 +201,7 @@ end;
 
 procedure TControlScrollBar.SetSize(const AValue: integer);
 begin
-  raise EScrollBar.Create('[TControlScrollBar.SetPage] Size is readonly');
+  raise EScrollBar.Create('[TControlScrollBar.SetSize] Size is readonly');
 end;
 
 procedure TControlScrollBar.SetVisible(const Value: Boolean);
@@ -300,6 +290,7 @@ end;
 procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
+  NewVisible: Boolean;
 begin
   if HandleAllocated and (FControl is TScrollingWinControl) then
   begin
@@ -317,10 +308,11 @@ begin
       FOldScrollInfoValid := True;
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
-    if FOldHandleVisible <> FVisible then
+    NewVisible := Visible and (ScrollInfo.nMax - ScrollInfo.nPage > 0);
+    if FOldHandleVisible <> NewVisible then
     begin
-      FOldHandleVisible := FVisible;
-      ShowScrollBar(FControl.Handle, IntfBarKind[Kind], FVisible);
+      FOldHandleVisible := NewVisible;
+      ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
     end;
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
@@ -427,8 +419,9 @@ begin
   FIncrement := 8;
   FPosition := 0;
   FRange := 0;
-  FSmooth := false;
-  FVisible := false;
+  FSmooth := False;
+  FVisible := True;
+  FOldHandleVisible := True;
 end;
 
 procedure TControlScrollBar.Assign(Source: TPersistent);

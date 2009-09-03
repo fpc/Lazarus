@@ -88,6 +88,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function AddNode(const Description, Identifier: string): TCodeBrowserNode;
+    function ChildNodeCount: integer;
     procedure DeleteNode(var Node: TCodeBrowserNode);
     property Filename: string read FFilename;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -123,6 +124,9 @@ type
     procedure Clear;
     function FindUnit(const Filename: string): TCodeBrowserUnit;
     function FindUnitList(const OwnerName: string): TCodeBrowserUnitList;
+    function UnitCount: integer;
+    function UnitListCount: integer;
+    function IsEmpty: boolean;
     procedure DeleteUnit(AnUnit: TCodeBrowserUnit);
     function AddUnit(const Filename: string): TCodeBrowserUnit;
     property Owner: string read FOwner write SetOwner;// IDE, project, package
@@ -267,6 +271,14 @@ begin
   FChildNodes.Add(Result);
 end;
 
+function TCodeBrowserUnit.ChildNodeCount: integer;
+begin
+  if FChildNodes=nil then
+    Result:=0
+  else
+    Result:=FChildNodes.Count;
+end;
+
 procedure TCodeBrowserUnit.DeleteNode(var Node: TCodeBrowserNode);
 begin
   if Node=nil then exit;
@@ -376,6 +388,27 @@ begin
   Node:=FUnitLists.FindKey(@OwnerName,@ComparePAnsiStringWithUnitListOwner);
   if Node=nil then exit;
   Result:=TCodeBrowserUnitList(Node.Data);
+end;
+
+function TCodeBrowserUnitList.UnitCount: integer;
+begin
+  if FUnits=nil then
+    Result:=0
+  else
+    Result:=FUnits.Count;
+end;
+
+function TCodeBrowserUnitList.UnitListCount: integer;
+begin
+  if FUnitLists=nil then
+    Result:=0
+  else
+    Result:=FUnitLists.Count;
+end;
+
+function TCodeBrowserUnitList.IsEmpty: boolean;
+begin
+  Result:=(UnitCount=0) and (UnitListCount=0);
 end;
 
 procedure TCodeBrowserUnitList.DeleteUnit(AnUnit: TCodeBrowserUnit);

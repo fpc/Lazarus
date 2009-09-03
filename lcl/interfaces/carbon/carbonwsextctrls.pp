@@ -256,6 +256,8 @@ begin
   AChild.HandleNeeded;
   // add page
   TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), AIndex);
+  // sync PageIndex with LCL
+  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(ANotebook.PageIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -271,7 +273,7 @@ class procedure TCarbonWSCustomNotebook.MovePage(const ANotebook: TCustomNoteboo
 begin
   if not CheckHandle(ANotebook, Self, 'MovePage') then Exit;
   if not CheckHandle(AChild, Self, 'MovePage AChild') then Exit;
-  
+
   TCarbonTabsControl(ANotebook.Handle).Remove(AChild.PageIndex);
   TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), NewIndex);
 end;
@@ -289,6 +291,8 @@ begin
   if not CheckHandle(ANotebook, Self, 'RemovePage') then Exit;
   
   TCarbonTabsControl(ANotebook.Handle).Remove(AIndex);
+  // sync PageIndex with LCL
+  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(ANotebook.PageIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -302,7 +306,7 @@ class procedure TCarbonWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNot
   const AIndex: integer);
 begin
   if not CheckHandle(ANotebook, Self, 'SetPageIndex') then Exit;
-  
+
   TCarbonTabsControl(ANotebook.Handle).SetPageIndex(AIndex);
 end;
 

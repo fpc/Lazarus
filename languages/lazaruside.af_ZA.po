@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Lazarus 0.9.19\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-09-21 10:58+0200\n"
-"PO-Revision-Date: 2006-09-22 16:53+0200\n"
+"PO-Revision-Date: 2009-09-02 13:07+0200\n"
 "Last-Translator: Graeme Geldenhuys <graemeg@gmail.com>\n"
 "Language-Team: English <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
 msgid "nothing"
-msgstr ""
+msgstr "niks"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 msgid "Double Click selects line"
@@ -96,7 +96,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectmidnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
 msgid "nothing"
-msgstr ""
+msgstr "niks"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
 msgid "paste selection"
@@ -132,7 +132,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrerrorline
 msgid "Error line"
-msgstr ""
+msgstr "Fout reël"
 
 #: lazarusidestrconsts.dlgaddhiattrexecutionpoint
 msgid "Execution point"
@@ -150,7 +150,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrgroupline
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
 msgid "Line"
-msgstr ""
+msgstr "Reël"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
 msgid "Syncron Edit"
@@ -1230,7 +1230,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfropts
 msgctxt "lazarusidestrconsts.dlgfropts"
 msgid "Options"
-msgstr ""
+msgstr "Opsies"
 
 #: lazarusidestrconsts.dlggeneratedwarf
 msgid "Generate dwarf debug information"
@@ -2003,7 +2003,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgoioptions
 msgctxt "lazarusidestrconsts.dlgoioptions"
 msgid "Options"
-msgstr ""
+msgstr "Opsies"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -5615,7 +5615,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "Alle projekte"
 
 #: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
@@ -5651,11 +5651,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
-msgstr ""
+msgstr "gebruik HeapTrc eenheid"
 
 #: lazarusidestrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
-msgstr ""
+msgstr "gebruik LineInfo eenheid"
 
 #: lazarusidestrconsts.lisedtexttoolalt
 msgctxt "lazarusidestrconsts.lisedtexttoolalt"
@@ -5685,7 +5685,7 @@ msgstr "Sleutel"
 
 #: lazarusidestrconsts.lisedtexttoolmacros
 msgid "Macros"
-msgstr ""
+msgstr "Makro's"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
@@ -5718,7 +5718,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisemdall
 msgid "All"
-msgstr ""
+msgstr "Alles"
 
 #: lazarusidestrconsts.lisemdemtpymethods
 msgid "Emtpy Methods"
@@ -5734,11 +5734,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisemdpublic
 msgid "Public"
-msgstr ""
+msgstr "Publiek"
 
 #: lazarusidestrconsts.lisemdpublished
 msgid "Published"
-msgstr ""
+msgstr "Gepubliseerde"
 
 #: lazarusidestrconsts.lisemdremovemethods
 msgid "Remove methods"
@@ -5875,7 +5875,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liserror
 msgid "Error: "
-msgstr ""
+msgstr "Fout:"
 
 #: lazarusidestrconsts.liserrorcreatingfile
 msgid "Error creating file"
@@ -5940,7 +5940,7 @@ msgstr ""
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
-msgstr ""
+msgstr "Foute"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -6012,7 +6012,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
-msgstr ""
+msgstr "Programme"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -6057,7 +6057,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External tools"
-msgstr ""
+msgstr "Eksterne nutsgoed"
 
 #: lazarusidestrconsts.lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -6065,7 +6065,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
-msgstr ""
+msgstr "Maksimum Nutsgoed bereik"
 
 #: lazarusidestrconsts.lisexttoolmovedown
 msgctxt "lazarusidestrconsts.lisexttoolmovedown"
@@ -6079,7 +6079,7 @@ msgstr "Op"
 
 #: lazarusidestrconsts.lisexttoolremove
 msgid "Remove"
-msgstr ""
+msgstr "Verwyder"
 
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
@@ -6129,7 +6129,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
-msgstr ""
+msgstr "Lêer is nie skryfbaar nie"
 
 #: lazarusidestrconsts.lisfileissymlink
 msgid "File is symlink"
@@ -6149,7 +6149,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Lêer nie gevind nie"
 
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
@@ -6165,7 +6165,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilenottext
 msgid "File not text"
-msgstr ""
+msgstr "Lêer is nie teks nie"
 
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings ..."
@@ -6217,7 +6217,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
-msgstr ""
+msgstr "Alleenlik teks lêers"
 
 #: lazarusidestrconsts.lisfindfileregularexpressions
 msgid "&Regular expressions"
@@ -6241,7 +6241,7 @@ msgstr "Teks om te vind:"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
-msgstr ""
+msgstr "Waar"
 
 #: lazarusidestrconsts.lisfindfilewholewordsonly
 msgid "&Whole words only"
@@ -6253,7 +6253,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
-msgstr ""
+msgstr "Eerste"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -6269,15 +6269,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
-msgstr ""
+msgstr "Vorm"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
-msgstr ""
+msgstr "Formaat fout"
 
 #: lazarusidestrconsts.lisformloaderror
 msgid "Form load error"
-msgstr ""
+msgstr "Vorm laai fout"
 
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
@@ -6294,16 +6294,16 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
-msgstr ""
+msgstr "FPC Weergawe:"
 
 #: lazarusidestrconsts.lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
-msgstr ""
+msgstr "FPC Weergawe (b.v. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "FPDoc Redigeerder"
 
 #: lazarusidestrconsts.lisfpfindpalettecomponent
 msgid "Find palette component"
@@ -6311,7 +6311,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
-msgstr ""
+msgstr "Raam"
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -6319,7 +6319,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
-msgstr ""
+msgstr "Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -8229,11 +8229,11 @@ msgstr ""
 #: lazarusidestrconsts.lismenufpdoceditor
 msgctxt "lazarusidestrconsts.lismenufpdoceditor"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "FPDoc Redigeerder"
 
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
-msgstr ""
+msgstr "Opsies..."
 
 #: lazarusidestrconsts.lismenugotoincludedirective
 msgid "Goto include directive"
@@ -8253,7 +8253,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuhelp
 msgid "&Help"
-msgstr "&Hulp"
+msgstr "&Help"
 
 #: lazarusidestrconsts.lismenuideinternals
 msgid "IDE internals"
@@ -8286,7 +8286,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenuinsertgeneral
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
-msgstr ""
+msgstr "Algemeen"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
 msgid "GPL notice"
@@ -8310,7 +8310,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinspect
 msgid "Inspect ..."
-msgstr ""
+msgstr "Inspekteur..."
 
 #: lazarusidestrconsts.lismenujumpback
 msgid "Jump back"
@@ -8326,7 +8326,7 @@ msgstr "Spring na"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
-msgstr ""
+msgstr "Spring na volgende boekmerk"
 
 #: lazarusidestrconsts.lismenujumptonexterror
 msgid "Jump to next error"
@@ -8334,7 +8334,7 @@ msgstr "Spring na volgende vout"
 
 #: lazarusidestrconsts.lismenujumptoprevbookmark
 msgid "Jump to previous bookmark"
-msgstr ""
+msgstr "Spring na vorige boekmerk"
 
 #: lazarusidestrconsts.lismenujumptopreverror
 msgid "Jump to previous error"
@@ -8350,72 +8350,72 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenunewform
 msgid "New Form"
-msgstr ""
+msgstr "Nuwe Vorm"
 
 #: lazarusidestrconsts.lismenunewother
 msgid "New ..."
-msgstr ""
+msgstr "Nuwe..."
 
 #: lazarusidestrconsts.lismenunewpackage
 msgid "New package ..."
-msgstr ""
+msgstr "Nuwe pakket..."
 
 #: lazarusidestrconsts.lismenunewproject
 msgid "New Project ..."
-msgstr ""
+msgstr "Nuwe Projek..."
 
 #: lazarusidestrconsts.lismenunewprojectfromfile
 msgid "New Project from file ..."
-msgstr ""
+msgstr "Nuwe Projek van lêer..."
 
 #: lazarusidestrconsts.lismenunewunit
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
-msgstr ""
+msgstr "Nuwe Eenheid"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
-msgstr ""
+msgstr "Kry hulp aanlyn"
 
 #: lazarusidestrconsts.lismenuopen
 msgid "&Open ..."
-msgstr ""
+msgstr "&Laai..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr ""
+msgstr "Laai lêer by merker"
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr ""
+msgstr "Maak gelaaide pakket oop..."
 
 #: lazarusidestrconsts.lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Laai pakket lêer (.lpk)..."
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
 msgid "Open package of current unit"
-msgstr ""
+msgstr "Laai pakket van huidige eenheid"
 
 #: lazarusidestrconsts.lismenuopenproject
 msgid "Open Project ..."
-msgstr ""
+msgstr "Laai Projek..."
 
 #: lazarusidestrconsts.lismenuopenrecent
 msgid "Open &Recent ..."
-msgstr ""
+msgstr "Laai &Onlangse..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr ""
+msgstr "Laai onlangse pakket..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
 msgid "Open Recent Project ..."
-msgstr ""
+msgstr "Laai onlangse Projek..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "&Package"
-msgstr ""
+msgstr "&Pakket"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -8428,12 +8428,12 @@ msgstr ""
 #: lazarusidestrconsts.lismenupaste
 msgctxt "lazarusidestrconsts.lismenupaste"
 msgid "Paste"
-msgstr ""
+msgstr "Plak"
 
 #: lazarusidestrconsts.lismenupause
 msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
-msgstr ""
+msgstr "Rus"
 
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
@@ -8441,20 +8441,20 @@ msgstr "&Projek"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr ""
+msgstr "Projek Inspekteur"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
-msgstr ""
+msgstr "Projek Opsies..."
 
 #: lazarusidestrconsts.lismenuprojectrun
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "Run"
-msgstr ""
+msgstr "Hardloop"
 
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
-msgstr ""
+msgstr "Publieseer Projek..."
 
 #: lazarusidestrconsts.lismenuquickcompile
 msgid "Quick compile"
@@ -8469,10 +8469,9 @@ msgid "Quick syntax check OK"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuquit
-#, fuzzy
 #| msgid "Quit"
 msgid "&Quit"
-msgstr "Staak"
+msgstr "&Staak"
 
 #: lazarusidestrconsts.lismenuredo
 msgctxt "lazarusidestrconsts.lismenuredo"
@@ -8481,7 +8480,7 @@ msgstr "Herdoen"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
-msgstr ""
+msgstr "Verwyder van Projek..."
 
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
@@ -8490,15 +8489,15 @@ msgstr ""
 #: lazarusidestrconsts.lismenureplace
 msgctxt "lazarusidestrconsts.lismenureplace"
 msgid "Replace"
-msgstr ""
+msgstr "Vervang"
 
 #: lazarusidestrconsts.lismenureplace2
 msgid "&Replace ..."
-msgstr ""
+msgstr "&Vervang..."
 
 #: lazarusidestrconsts.lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "Rapporteer 'n probleem..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -8514,7 +8513,7 @@ msgstr "Herlaai"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
-msgstr ""
+msgstr "Terugkeer"
 
 #: lazarusidestrconsts.lismenurun
 msgid "&Run"
@@ -8522,7 +8521,7 @@ msgstr "&Hardloop"
 
 #: lazarusidestrconsts.lismenurunfile
 msgid "Run File"
-msgstr ""
+msgstr "Hardloop Lêer"
 
 #: lazarusidestrconsts.lismenurunparameters
 msgid "Run Parameters ..."
@@ -8530,24 +8529,22 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Run to cursor"
-msgstr ""
+msgstr "Hardloop tot by merker"
 
 #: lazarusidestrconsts.lismenusave
-#, fuzzy
 #| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
-msgstr "Stoor"
+msgstr "&Stoor"
 
 #: lazarusidestrconsts.lismenusaveall
 msgid "Save All"
 msgstr "Stoor Alles"
 
 #: lazarusidestrconsts.lismenusaveas
-#, fuzzy
 #| msgid "Save As ..."
 msgid "Save &As ..."
-msgstr "Stoor As ..."
+msgstr "Stoor &As ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
@@ -8563,31 +8560,31 @@ msgstr "&Deursoek"
 
 #: lazarusidestrconsts.lismenuselect
 msgid "Select"
-msgstr ""
+msgstr "Kies"
 
 #: lazarusidestrconsts.lismenuselectall
 msgid "Select all"
-msgstr ""
+msgstr "Kies alles"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
 msgid "Select code block"
-msgstr ""
+msgstr "Kies bron blok"
 
 #: lazarusidestrconsts.lismenuselectline
 msgid "Select line"
-msgstr ""
+msgstr "Kies lyne"
 
 #: lazarusidestrconsts.lismenuselectparagraph
 msgid "Select paragraph"
-msgstr ""
+msgstr "Kies paragraaf"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to brace"
-msgstr ""
+msgstr "Kies tot krulhakie"
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select word"
-msgstr ""
+msgstr "Kies woord"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgid "Set a free bookmark"
@@ -8595,15 +8592,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
-msgstr ""
+msgstr "Sorteer seleksie"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
-msgstr ""
+msgstr "Stap in"
 
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
-msgstr ""
+msgstr "Stap oor"
 
 #: lazarusidestrconsts.lismenustop
 msgctxt "lazarusidestrconsts.lismenustop"
@@ -8657,20 +8654,20 @@ msgstr "Redigeer"
 #: lazarusidestrconsts.lismenutemplateexit
 msgctxt "lazarusidestrconsts.lismenutemplateexit"
 msgid "Exit"
-msgstr ""
+msgstr "Verlaat"
 
 #: lazarusidestrconsts.lismenutemplatefile
 msgid "File"
-msgstr ""
+msgstr "Lêer"
 
 #: lazarusidestrconsts.lismenutemplatefind
 msgctxt "lazarusidestrconsts.lismenutemplatefind"
 msgid "Find"
-msgstr ""
+msgstr "Soek"
 
 #: lazarusidestrconsts.lismenutemplatefindnext
 msgid "Find Next"
-msgstr ""
+msgstr "Soek Volgende"
 
 #: lazarusidestrconsts.lismenutemplatehelp
 msgctxt "lazarusidestrconsts.lismenutemplatehelp"
@@ -8684,17 +8681,17 @@ msgstr "Nuwe"
 #: lazarusidestrconsts.lismenutemplateopen
 msgctxt "lazarusidestrconsts.lismenutemplateopen"
 msgid "Open"
-msgstr ""
+msgstr "Maak oop"
 
 #: lazarusidestrconsts.lismenutemplateopenrecent
 msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
 msgid "Open Recent"
-msgstr ""
+msgstr "Maak Onlangse Oop"
 
 #: lazarusidestrconsts.lismenutemplatepaste
 msgctxt "lazarusidestrconsts.lismenutemplatepaste"
 msgid "Paste"
-msgstr ""
+msgstr "Plak"
 
 #: lazarusidestrconsts.lismenutemplateredo
 msgctxt "lazarusidestrconsts.lismenutemplateredo"
@@ -8712,12 +8709,12 @@ msgstr "Stoor Alles"
 
 #: lazarusidestrconsts.lismenutemplatetutorial
 msgid "Tutorial"
-msgstr ""
+msgstr "Tutoriaal"
 
 #: lazarusidestrconsts.lismenutemplateundo
 msgctxt "lazarusidestrconsts.lismenutemplateundo"
 msgid "Undo"
-msgstr ""
+msgstr "Ontdoen"
 
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle comment"
@@ -8750,7 +8747,7 @@ msgstr "&Aansig"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
-msgstr ""
+msgstr "Anker Redigeerder"
 
 #: lazarusidestrconsts.lismenuviewassembler
 msgid "Assembler"
@@ -8758,7 +8755,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr ""
+msgstr "Breekpunte"
 
 #: lazarusidestrconsts.lismenuviewcallstack
 msgid "Call Stack"
@@ -8787,7 +8784,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewforms
 msgid "Forms..."
-msgstr ""
+msgstr "Vorms..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
@@ -10635,7 +10632,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprint
 msgid "Print"
-msgstr ""
+msgstr "Druk"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
@@ -10660,16 +10657,16 @@ msgstr ""
 
 #: lazarusidestrconsts.lisproductname
 msgid "Product Name:"
-msgstr ""
+msgstr "Produk Naam:"
 
 #: lazarusidestrconsts.lisproductversion
 msgid "Product Version:"
-msgstr ""
+msgstr "Produk Weergawe:"
 
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
-msgstr ""
+msgstr "Program"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
@@ -10701,7 +10698,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Las lêers by"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -10717,7 +10714,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
-msgstr ""
+msgstr "Ongeldige weergawe"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -10733,11 +10730,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
-msgstr ""
+msgstr "Pakket Naam:"
 
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Pakket is nie gevind nie"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
@@ -10781,15 +10778,15 @@ msgstr ""
 #: lazarusidestrconsts.lisprojaddtoproject
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
 msgid "Add to project"
-msgstr ""
+msgstr "Las by projek"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
-msgstr ""
+msgstr "Eenheid naam bestaan alreeds"
 
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
-msgstr ""
+msgstr "Projek het verander"
 
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
@@ -10798,7 +10795,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
-msgstr ""
+msgstr "Projek lêer"
 
 #: lazarusidestrconsts.lisprojectincpath
 msgid "Project Include Path"
@@ -10806,15 +10803,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
-msgstr ""
+msgstr "Projek informasie lêer is geskrap"
 
 #: lazarusidestrconsts.lisprojectinformation
 msgid "Project Information"
-msgstr ""
+msgstr "Projek Informasie"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
-msgstr ""
+msgstr "Projek is hardloopbaar"
 
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
@@ -10838,7 +10835,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
-msgstr ""
+msgstr "projek eenheid"
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
@@ -10887,7 +10884,7 @@ msgstr ""
 #: lazarusidestrconsts.lisprojoptserror
 msgctxt "lazarusidestrconsts.lisprojoptserror"
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: lazarusidestrconsts.lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
@@ -10899,7 +10896,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
-msgstr ""
+msgstr "Vra vir waarde"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
@@ -10972,28 +10969,28 @@ msgstr ""
 
 #: lazarusidestrconsts.lispwnewproject
 msgid "New Project"
-msgstr ""
+msgstr "Nuwe Projek"
 
 #: lazarusidestrconsts.lispwopenproject
 msgid "Open Project"
-msgstr ""
+msgstr "Laai Projek"
 
 #: lazarusidestrconsts.lispwopenrecentproject
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent"
-msgstr ""
+msgstr "Laai Onlangse"
 
 #: lazarusidestrconsts.lispwrecentprojects
 msgid "Recent Projects"
-msgstr ""
+msgstr "Onlangse Projekte"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
-msgstr ""
+msgstr "Verlaat Lazarus"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
-msgstr ""
+msgstr "Lees Fout"
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
@@ -11002,17 +10999,17 @@ msgstr ""
 #: lazarusidestrconsts.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
-msgstr ""
+msgstr "Registers"
 
 #: lazarusidestrconsts.lisregistersdlgname
 msgctxt "lazarusidestrconsts.lisregistersdlgname"
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: lazarusidestrconsts.lisregistersdlgvalue
 msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
 msgid "Value"
-msgstr ""
+msgstr "Waarde"
 
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
@@ -11024,7 +11021,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremove
 msgid "remove"
-msgstr ""
+msgstr "verwyder"
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
@@ -11032,11 +11029,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
-msgstr ""
+msgstr "Verwyder alle eenhede"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
-msgstr ""
+msgstr "Verwyder van projek"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
@@ -11157,7 +11154,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissamideisbusy
 msgid "IDE is busy"
-msgstr ""
+msgstr "IDE is besig"
 
 #: lazarusidestrconsts.lissamisanabstractclassithasabstractmethods
 msgid "%s is an abstract class, it has %s abstract methods."
@@ -11197,11 +11194,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lissave
 msgid "Save ..."
-msgstr ""
+msgstr "Stoor..."
 
 #: lazarusidestrconsts.lissaveallmessagestofile
 msgid "Save all messages to file"
-msgstr ""
+msgstr "Stoor alle boodskappe na leêr"
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "save all modified files"
@@ -11440,7 +11437,7 @@ msgstr ""
 #: lazarusidestrconsts.lissortseloptions
 msgctxt "lazarusidestrconsts.lissortseloptions"
 msgid "Options"
-msgstr ""
+msgstr "Opsies"
 
 #: lazarusidestrconsts.lissortselparagraphs
 msgid "Paragraphs"
@@ -11932,7 +11929,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
-msgstr ""
+msgstr "hierdie hulp boodskap"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -11948,7 +11945,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
-msgstr ""
+msgstr "&Titel"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
@@ -11994,7 +11991,7 @@ msgstr ""
 #: lazarusidestrconsts.listodoldescription
 msgctxt "lazarusidestrconsts.listodoldescription"
 msgid "Description"
-msgstr ""
+msgstr "Beskrywing"
 
 #: lazarusidestrconsts.listodoldone
 msgid "Done"
@@ -12008,7 +12005,7 @@ msgstr ""
 #: lazarusidestrconsts.listodolistcaption
 msgctxt "lazarusidestrconsts.listodolistcaption"
 msgid "ToDo List"
-msgstr ""
+msgstr "Taaklys"
 
 #: lazarusidestrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -12020,7 +12017,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr ""
+msgstr "Druk taaklys items"
 
 #: lazarusidestrconsts.listodolistrefresh
 msgid "Refresh todo items"
@@ -12029,7 +12026,7 @@ msgstr ""
 #: lazarusidestrconsts.listodolline
 msgctxt "lazarusidestrconsts.listodolline"
 msgid "Line"
-msgstr ""
+msgstr "Reël"
 
 #: lazarusidestrconsts.listodolowner
 msgid "Owner"
@@ -14131,36 +14128,36 @@ msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Skyf bladsy links"
 
 #: lazarusidestrconsts.uemmovepageleftmost
 msgid "Move page leftmost"
-msgstr ""
+msgstr "Skyf bladsy na vêr links"
 
 #: lazarusidestrconsts.uemmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Skyf bladsy regs"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
-msgstr ""
+msgstr "Skyf bladsy na vêr regs"
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"
-msgstr ""
+msgstr "Gaan na volgende Boekmerk"
 
 #: lazarusidestrconsts.uemodified
 msgid "Modified"
-msgstr ""
+msgstr "Gemodifiseer"
 
 #: lazarusidestrconsts.uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr ""
+msgstr "&Laai lêer by merker"
 
 #: lazarusidestrconsts.uempaste
 msgctxt "lazarusidestrconsts.uempaste"
 msgid "Paste"
-msgstr ""
+msgstr "Plak"
 
 #: lazarusidestrconsts.uemprevbookmark
 msgid "Goto previous Bookmark"
@@ -14184,7 +14181,7 @@ msgstr ""
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
-msgstr ""
+msgstr "&Hardloop tot by Merker"
 
 #: lazarusidestrconsts.uemsetbookmark
 msgid "&Set Bookmark"
@@ -14197,11 +14194,11 @@ msgstr ""
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr ""
+msgstr "Wys Lyn Nommers"
 
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
-msgstr ""
+msgstr "Eenheid Informasie"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
@@ -14217,7 +14214,7 @@ msgstr ""
 
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
-msgstr ""
+msgstr "Nog nie geimplementeer nie"
 
 #: lazarusidestrconsts.uenotimplcapagain
 msgid "I told You: Not implemented yet"
@@ -14241,5 +14238,5 @@ msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
-msgstr ""
+msgstr "Druk taaklys items"
 

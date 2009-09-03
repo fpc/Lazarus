@@ -29,6 +29,7 @@ constructor TDragObject.AutoCreate(AControl: TControl);
 begin
   Create(AControl);
   FAutoCreated := True;
+  FAutoFree := True;
 end;
 
 procedure TDragObject.EndDrag(Target: TObject; X, Y: Integer);
@@ -67,7 +68,7 @@ end;
 constructor TDragObjectEx.Create(AControl: TControl);
 begin
   inherited Create(AControl);
-  FAutoCreated := True;
+  FAutoFree := True;
 end;
 
 { TDragControlObject }
@@ -90,7 +91,7 @@ end;
 constructor TDragControlObjectEx.Create(AControl: TControl);
 begin
   inherited Create(AControl);
-  FAutoCreated := True;
+  FAutoFree := True;
 end;
 
 { TDragDockObject }
@@ -160,7 +161,7 @@ end;
 constructor TDragDockObjectEx.Create(AControl: TControl);
 begin
   inherited Create(AControl);
-  FAutoCreated := True;
+  FAutoFree := True;
 end;
 
 // included by controls.pp

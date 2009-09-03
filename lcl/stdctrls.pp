@@ -1363,6 +1363,7 @@ type
     FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     FLayout: TTextLayout;
+    FInternalSetBounds: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetOptimalFill(const AValue: Boolean);
   protected
@@ -1395,6 +1396,7 @@ type
     procedure SetTransparent(NewTransparent: boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure Loaded; override;
+    procedure UpdateSize;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
@@ -1411,6 +1413,7 @@ type
     function ColorIsStored: boolean; override;
     function AdjustFontForOptimalFill: Boolean;
     procedure Paint; override;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     property AutoSize default True;
     property Color default clNone;
   end;

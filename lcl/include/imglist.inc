@@ -108,10 +108,10 @@ begin
     if HandleAllocated
     then begin
       p := @FData[OldCount];
-      for n := OldCount to FCount - AValue.FCount - 1 do
+      for n := OldCount to FCount - 1 do
       begin
         TWSCustomImageListClass(WidgetSetClass).Insert(Self, n, p);
-        Inc(p, DataSize);
+        Inc(PByte(p), DataSize);
       end;
     end;
   end

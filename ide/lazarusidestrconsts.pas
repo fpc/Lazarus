@@ -4463,6 +4463,7 @@ resourcestring
     +'long description';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
+  lisShowEmptyUnitsPackages = 'Show empty units/packages';
 
 implementation
 

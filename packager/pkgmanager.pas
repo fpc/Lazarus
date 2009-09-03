@@ -3245,6 +3245,7 @@ var
   i: Integer;
   Item: TObject;
   NewDependency: TPkgDependency;
+  ADependency: TPkgDependency;
 begin
   if not OnlyTestIfPossible then begin
     Result:=AddDependencyToOwners(OwnerList,APackage,true);
@@ -3265,7 +3266,9 @@ begin
         if not CheckAddingDependency(TLazPackage(Item),NewDependency) then
           exit;
         if not OnlyTestIfPossible then begin
-          PackageGraph.AddDependencyToPackage(TLazPackage(Item),NewDependency);
+          ADependency:=NewDependency;
+          NewDependency:=nil;
+          PackageGraph.AddDependencyToPackage(TLazPackage(Item),ADependency);
         end;
       finally
         NewDependency.Free;
