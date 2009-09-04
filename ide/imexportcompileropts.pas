@@ -132,7 +132,7 @@ begin
     Path:=GetXMLPathForCompilerOptions(XMLConfig);
     CompilerOpts.LoadFromXMLConfig(XMLConfig,Path);
     if CompOptsDialog<>nil then
-      CompOptsDialog.GetCompilerOptions(CompilerOpts);
+      CompOptsDialog.LoadOptionsToForm(CompilerOpts);
   finally
     if FreeCompilerOpts then
       CompilerOpts.Free;
@@ -151,7 +151,7 @@ begin
   if (CompOptsDialog<>nil) then begin
     CompilerOpts:=TBaseCompilerOptions.Create(nil);
     FreeCompilerOpts:=true;
-    CompOptsDialog.PutCompilerOptions(ccomlNone,CompilerOpts);
+    CompOptsDialog.SaveFormToOptions(ccomlNone,CompilerOpts);
   end;
   try
     Result:=mrCancel;

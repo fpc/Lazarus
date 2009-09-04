@@ -1226,7 +1226,7 @@ begin
   CompilerOptsDlg.OnImExportCompilerOptions:=
                                        PackageEditors.OnImExportCompilerOptions;
   with CompilerOptsDlg do begin
-    GetCompilerOptions;
+    LoadOptionsToForm();
     Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
     ReadOnly:=LazPackage.ReadOnly;
     if ShowModal=mrOk then begin

@@ -285,16 +285,16 @@ type
     procedure SetCompilerMessages;
   public
     CompilerOpts: TBaseCompilerOptions;
-    OldCompOpts: TBaseCompilerOptions;
+    OldCompOpts: TBaseCompilerOptions; // set on loading, used for revert
 
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure GetCompilerOptions; // options to dialog
-    procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
-    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean; // dlg to options
-    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
-                            DestCompilerOptions: TBaseCompilerOptions): boolean;
+    procedure LoadOptionsToForm;
+    procedure LoadOptionsToForm(SrcCompilerOptions: TBaseCompilerOptions);
+    function SaveFormToOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
+    function SaveFormToOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
+                               DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property OnImExportCompilerOptions: TNotifyEvent
@@ -478,9 +478,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrmCompilerOptions.GetCompilerOptions;
+procedure TfrmCompilerOptions.LoadOptionsToForm;
 begin
-  GetCompilerOptions(nil);
+  LoadOptionsToForm(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -492,7 +492,7 @@ begin
   Assert(False, 'Trace:Accept compiler options changes');
   
   { Save the options and hide the dialog }
-  if not PutCompilerOptions(ccomlErrors) then exit;
+  if not SaveFormToOptions(ccomlErrors) then exit;
   ModalResult:=mrOk;
 end;
 
@@ -502,7 +502,7 @@ end;
 procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
-  if not PutCompilerOptions(ccomlHints) then exit;
+  if not SaveFormToOptions(ccomlHints) then exit;
   if Assigned(TestCompilerOptions) then begin
     btnCheck.Enabled:=false;
     try
@@ -521,7 +521,7 @@ end;
 procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
 begin
   // Test MakeOptionsString function
-  if PutCompilerOptions(ccomlWarning) then
+  if SaveFormToOptions(ccomlWarning) then
     ShowCompilerOptionsDialog(Self, CompilerOpts);
 end;
 
@@ -612,7 +612,7 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions GetCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.GetCompilerOptions(
+procedure TfrmCompilerOptions.LoadOptionsToForm(
   SrcCompilerOptions: TBaseCompilerOptions);
 var
   i: integer;
@@ -867,7 +867,7 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions PutCompilerOptions
 ------------------------------------------------------------------------------}
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptions.SaveFormToOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl;
   DestCompilerOptions: TBaseCompilerOptions): boolean;
 
@@ -1148,10 +1148,10 @@ begin
   end;
 end;
 
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptions.SaveFormToOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
 begin
-  Result:=PutCompilerOptions(CheckAndWarn,nil);
+  Result:=SaveFormToOptions(CheckAndWarn,nil);
 end;
 
 procedure TfrmCompilerOptions.UpdateInheritedTab;

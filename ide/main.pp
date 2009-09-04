@@ -3739,7 +3739,7 @@ begin
     frmCompilerOptions.Caption:=Format(lisCompilerOptionsForProject, [NewCaption
       ]);
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
-    frmCompilerOptions.GetCompilerOptions;
+    frmCompilerOptions.LoadOptionsToForm;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
       MainBuildBoss.RescanCompilerDefines(true,true);

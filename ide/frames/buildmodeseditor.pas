@@ -28,6 +28,8 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms; 
 
 type
+
+
   TBuildModesEditorFrame = class(TFrame)
   private
   public
