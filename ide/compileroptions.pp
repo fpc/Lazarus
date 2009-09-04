@@ -125,7 +125,7 @@ type
 
   { TBuildModeFlag }
 
-  TBuildModeFlag = class
+  TBuildModeFlag = class(TPersistent)
   private
     FFlagType: TBuildModeFlagType;
     FValue: string;
@@ -133,6 +133,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure  Assign(Source: TPersistent); override;
+    function IsEqual(aFlag: TBuildModeFlag): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -149,7 +151,7 @@ type
     - has a list of flags OR a list of modes to activate, but not both
     - one mode is selected by the graph, and activates it  }
 
-  TBuildMode = class
+  TBuildMode = class(TPersistent)
   private
     FActive: boolean;
     FFlags: TFPList; // lost TBuildModeFlag
@@ -177,6 +179,8 @@ type
     function AddFlag(FlagType: TBuildModeFlagType; Value: string;
                      Variable: string = ''): TBuildModeFlag;
     procedure DeleteFlag(Index: integer);
+    procedure Assign(Source: TPersistent); override; // copy without Name
+    function IsEqual(aMode: TBuildMode): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -196,7 +200,7 @@ type
 
   { TBuildModeGraph }
 
-  TBuildModeGraph = class
+  TBuildModeGraph = class(TPersistent)
   private
     FChangeStamp: integer;
     FEvaluator: TExpressionEvaluator;
@@ -214,6 +218,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    function IsEqual(Graph: TBuildModeGraph): boolean;
     procedure ClearModes;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -581,7 +587,7 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions; Diff: TStrings);
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); virtual;
@@ -3661,6 +3667,45 @@ begin
   inherited Destroy;
 end;
 
+procedure TBuildModeGraph.Assign(Source: TPersistent);
+var
+  Src: TBuildModeGraph;
+  i: Integer;
+begin
+  if Source is TBuildModeGraph then begin
+    Src:=TBuildModeGraph(Source);
+    if IsEqual(Src) then exit;
+    IncreaseChangeStamp;
+    ClearModes;
+    // modes referene each other by name, so first create all modes
+    for i:=0 to Src.ModeCount-1 do
+      AddMode(Src.Modes[i].Name);
+    for i:=0 to ModeCount-1 do
+      Modes[i].Assign(Src.Modes[i]);
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildModeGraph.IsEqual(Graph: TBuildModeGraph): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if (ModeCount<>Graph.ModeCount) then exit;
+
+  // check SelectedMode
+  if (SelectedMode=nil)<>(Graph.SelectedMode=nil) then exit;
+  if (SelectedMode<>nil)
+  and (SysUtils.CompareText(SelectedMode.Name,Graph.SelectedMode.Name)<>0) then
+    exit;
+
+  // check modes
+  for i:=0 to ModeCount-1 do
+    if not Modes[i].IsEqual(Graph.Modes[i]) then exit;
+
+  Result:=true;
+end;
+
 procedure TBuildModeGraph.ClearModes;
 var
   i: Integer;
@@ -4858,6 +4903,50 @@ begin
   FFlags.Delete(Index);
 end;
 
+procedure TBuildMode.Assign(Source: TPersistent);
+var
+  Src: TBuildMode;
+  i: Integer;
+begin
+  if Source is TBuildMode then begin
+    Src:=TBuildMode(Source);
+    // name is not copied
+    FStoredInSession:=Src.FStoredInSession;
+    // copy includes
+    FIncludes.Clear;
+    for i:=0 to Src.IncludeCount-1 do
+      Include(Graph.FindModeWithName(Src.Includes[i].Name));
+    // copy flags
+    ClearFlags;
+    for i:=0 to Src.FlagCount-1 do begin
+      FFlags.Add(TBuildModeFlag.Create);
+      Flags[i].Assign(Src.Flags[i]);
+    end;
+
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildMode.IsEqual(aMode: TBuildMode): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if StoredInSession<>aMode.StoredInSession then exit;
+  if Name<>aMode.Name then exit;
+  if IncludeCount<>aMode.IncludeCount then exit;
+  for i:=0 to IncludeCount-1 do
+    if SysUtils.CompareText(Includes[i].Name,aMode.Includes[i].Name)<>0 then
+      exit;
+  // Note: do not compare includedby
+  if FlagCount<>aMode.FlagCount then exit;
+  for i:=0 to FlagCount-1 do
+    if not Flags[i].IsEqual(aMode.Flags[i]) then
+      exit;
+
+  Result:=true;
+end;
+
 procedure TBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 var
@@ -4912,6 +5001,28 @@ end;
 destructor TBuildModeFlag.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TBuildModeFlag.Assign(Source: TPersistent);
+var
+  Src: TBuildModeFlag;
+begin
+  if Source is TBuildModeFlag then begin
+    Src:=TBuildModeFlag(Source);
+    FFlagType:=Src.FFlagType;
+    FValue:=Src.FValue;
+    FVariable:=Src.FVariable;
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildModeFlag.IsEqual(aFlag: TBuildModeFlag): boolean;
+begin
+  Result:=false;
+  if FFlagType<>aFlag.FFlagType then exit;
+  if FValue<>aFlag.FValue then exit;
+  if FVariable<>aFlag.FVariable then exit;
+  Result:=true;
 end;
 
 procedure TBuildModeFlag.LoadFromXMLConfig(XMLConfig: TXMLConfig;

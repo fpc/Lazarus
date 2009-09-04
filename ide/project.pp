@@ -368,6 +368,7 @@ type
   //---------------------------------------------------------------------------
 
   { TProjectCompilationToolOptions }
+
   TProjectCompilationToolOptions = class(TCompilationToolOptions)
   public
     CompileReasons: TCompileReasons;
@@ -413,6 +414,7 @@ type
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     procedure Assign(Source: TPersistent); override;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
     procedure InvalidateOptions;
@@ -4843,13 +4845,31 @@ begin
 end;
 
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
+var
+  ProjCompOptions: TProjectCompilerOptions;
 begin
   inherited Assign(Source);
-  if Source is TProjectCompilerOptions
-  then FCompileReasons := TProjectCompilerOptions(Source).FCompileReasons
-  else FCompileReasons := [crCompile, crBuild, crRun];
-  
+  if Source is TProjectCompilerOptions then begin
+    ProjCompOptions:=TProjectCompilerOptions(Source);
+    FCompileReasons := ProjCompOptions.FCompileReasons;
+    FBuildModes.Assign(ProjCompOptions.BuildModes);
+  end else begin
+    FCompileReasons := [crCompile, crBuild, crRun];
+    // keep BuildModes
+  end;
   UpdateGlobals;
+end;
+
+function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions
+  ): boolean;
+begin
+  Result:=false;
+  if not inherited IsEqual(CompOpts) then exit;
+  if CompOpts is TProjectCompilerOptions then begin
+    if not TProjectCompilerOptions(CompOpts).BuildModes.IsEqual(BuildModes) then
+      exit;
+  end;
+  Result:=true;
 end;
 
 procedure TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
