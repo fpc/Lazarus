@@ -122,6 +122,7 @@ type
     grpTargetPlatform: TGroupBox;
     lblTargetOS : TLabel;
     ConditionalSplitter: TSplitter;
+    CategorySplitter: TSplitter;
     TargetOSComboBox: TComboBox;
     lblTargetCPU : TLabel;
     TargetCPUComboBox: TComboBox;
@@ -239,11 +240,13 @@ type
     btnCheck: TBitBtn;
     btnLoadSave: TBitBtn;
     HelpButton: TBitBtn;
+    CategoryTreeView: TTreeView;
 
     procedure ButtonOKClicked(Sender: TObject);
     procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
+    procedure CategoryTreeViewSelectionChanged(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
@@ -432,6 +435,7 @@ begin
     ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
 
     MainNotebook.PageIndex:=0;
+    MainNoteBook.ShowTabs:=false;
     Page:=0;
 
     SetupSearchPathsTab(Page);
@@ -455,6 +459,9 @@ begin
     SetupCompilationTab(Page);
     inc(Page);
     SetupButtonBar;
+
+    CategoryTreeView.Selected:=CategoryTreeView.Items.GetFirstNode;
+    CategoryTreeViewSelectionChanged(nil);
   finally
     EnableAlign;
   end;
@@ -516,6 +523,17 @@ begin
   // Test MakeOptionsString function
   if PutCompilerOptions(ccomlWarning) then
     ShowCompilerOptionsDialog(Self, CompilerOpts);
+end;
+
+procedure TfrmCompilerOptions.CategoryTreeViewSelectionChanged(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node:=CategoryTreeView.Selected;
+  if Node=nil then exit;
+  if TObject(Node.Data) is TPage then begin
+    MainNoteBook.ActivePageComponent:=TPage(Node.Data);
+  end;
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
@@ -1259,6 +1277,7 @@ var
   s: String;
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOParsing;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   // Setup the Parsing Tab
   with grpAsmStyle do begin
@@ -1306,6 +1325,7 @@ procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
   MainNoteBook.Page[Page].Caption:= dlgCodeGeneration;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpSmartLinkUnit.Caption := dlgCOUnitStyle;
   chkSmartLinkUnit.Caption := dlgCOSmartLinkable + ' (-CX)';
@@ -1406,6 +1426,7 @@ end;
 procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOLinking;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   // Setup the Linking Tab
   with grpDebugging do begin
@@ -1440,6 +1461,7 @@ procedure TfrmCompilerOptions.SetupVerbosityTab(Page: integer);
 begin
   // Setup the Messages Tab
   MainNoteBook.Page[Page].Caption:= dlgCOVerbosity;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   with grpVerbosity do begin
     Caption := dlgVerbosity;
@@ -1474,6 +1496,7 @@ end;
 procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOOther;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpConfigFile.Caption := dlgConfigFiles;
   chkConfigFile.Caption := dlgUseFpcCfg+' (If not checked: -n)';
@@ -1489,6 +1512,9 @@ begin
   ConditionalPage.TabVisible:=false;
   {$ENDIF}
   MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
+  {$IFNDEF EnableBuildModes}
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+  {$ENDIF}
   ConditionalsGroupBox.Caption:=dlgOIOptions;
 end;
 
@@ -1498,6 +1524,7 @@ end;
 procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOInherited;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   InhNoteLabel.Caption:=lisAdditionalCompilerOptionsInheritedFromPackages;
 
@@ -1516,6 +1543,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
 
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOCompilation;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
@@ -1562,6 +1590,7 @@ var
 begin
   // Setup the Search Paths Tab
   MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   lblOtherUnits.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
@@ -1877,6 +1906,7 @@ end;
 procedure TfrmCompilerOptions.SetupConfigMsgTab(Page: integer);
 begin
   MainNotebook.Page[Page].Caption := dlgCOCfgCmpMessages;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpCompilerMessages.Caption := dlgCompilerMessage;
   chkUseMsgFile.Caption := dlgUseMsgFile;
