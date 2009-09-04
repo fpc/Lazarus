@@ -369,7 +369,7 @@
   <CompilerOptions>
     <Version Value="8"/>
     <Target>
-      <Filename Value="../lazarus.win32.exe"/>
+      <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
       <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/;/home/mattias/pascal/wichtig/lazarus/packager/frames/"/>
