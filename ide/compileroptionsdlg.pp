@@ -1512,7 +1512,7 @@ begin
   ConditionalPage.TabVisible:=false;
   {$ENDIF}
   MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
-  {$IFNDEF EnableBuildModes}
+  {$IFDEF EnableBuildModes}
   CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
   {$ENDIF}
   ConditionalsGroupBox.Caption:=dlgOIOptions;
