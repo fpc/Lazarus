@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-31 18:22+0300\n"
+"PO-Revision-Date: 2009-09-04 03:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11116,6 +11116,10 @@ msgstr "Замена выделенного не удалась."
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
+#: lazarusidestrconsts.lisrescan
+msgid "Rescan"
+msgstr "Пересмотреть"
+
 #: lazarusidestrconsts.lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr "Это - файл ресурсов, автоматически созданный lazarus"
@@ -11372,6 +11376,10 @@ msgstr "Краткое:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Показать"
+
+#: lazarusidestrconsts.lisshowemptyunitspackages
+msgid "Show empty units/packages"
+msgstr "Показывать пустые модули/пакеты"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -12614,6 +12622,14 @@ msgstr "Сообщение со справкой (параметр -h)"
 msgid "Use Exclude Filter"
 msgstr "Использовать исключающий фильтр"
 
+#: lazarusidestrconsts.lisuseidentifier
+msgid "Use identifier"
+msgstr "Использовать идентификатор"
+
+#: lazarusidestrconsts.lisuseidentifierinat
+msgid "Use identifier %s in %s at %s"
+msgstr "Использовать идентификатор %s в %s (%s)"
+
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
 msgstr "Использовать включающий фильтр"
@@ -12622,9 +12638,29 @@ msgstr "Использовать включающий фильтр"
 msgid "Launching application"
 msgstr "Запускающее приложение"
 
+#: lazarusidestrconsts.lisusepackageinpackage
+msgid "Use package %s in package %s"
+msgstr "Использовать пакет %s в пакете %s"
+
+#: lazarusidestrconsts.lisusepackageinpackage2
+msgid "Use package in package"
+msgstr "Использовать пакет в пакете"
+
+#: lazarusidestrconsts.lisusepackageinproject
+msgid "Use package %s in project"
+msgstr "Использовать пакет %s в проекте"
+
+#: lazarusidestrconsts.lisusepackageinproject2
+msgid "Use package in project"
+msgstr "Использовать пакет в проекте"
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Домашний каталог пользователя"
+
+#: lazarusidestrconsts.lisuseunitinunit
+msgid "Use unit %s in unit %s"
+msgstr "Использовать модуль %s в модуле %s"
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
