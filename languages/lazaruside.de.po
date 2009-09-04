@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-22 23:17+0100\n"
+"PO-Revision-Date: 2009-09-03 22:45+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -7985,11 +7985,11 @@ msgstr "Zeilen in der Auswahl umbrechen"
 #: lazarusidestrconsts.lismenubuild
 msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
-msgstr "Lazarus kompilieren"
+msgstr "Kompilieren"
 
 #: lazarusidestrconsts.lismenubuildall
 msgid "Build all"
-msgstr "Alles komplieren"
+msgstr "Alles kompilieren"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
