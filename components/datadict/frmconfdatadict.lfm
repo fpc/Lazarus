@@ -9,51 +9,51 @@ object ConfigIDEDataDictForm: TConfigIDEDataDictForm
   ClientHeight = 152
   ClientWidth = 463
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 8
-    Height = 13
+    Height = 18
     Top = 8
-    Width = 169
+    Width = 184
     Caption = 'Database desktop application:'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 8
-    Height = 13
+    Height = 18
     Top = 64
-    Width = 179
+    Width = 199
     Caption = 'Default datadictionary directory:'
     ParentColor = False
   end
   object FEDD: TFileNameEdit
     Left = 32
-    Height = 23
+    Height = 27
     Top = 32
     Width = 392
+    DialogOptions = []
     Filter = 'Applications|*.exe|Any file|*.*'
+    FilterIndex = 0
+    HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
-    ParentColor = False
     TabOrder = 0
   end
   object DEDD: TDirectoryEdit
     Left = 32
-    Height = 23
+    Height = 27
     Top = 80
     Width = 392
+    ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
-    ParentColor = False
     TabOrder = 1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 110
+    Height = 35
+    Top = 111
     Width = 451
-    Align = alBottom
-    AutoSize = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
   end

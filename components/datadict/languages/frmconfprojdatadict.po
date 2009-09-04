@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: frmconfprojdatadict.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr ""
+
+#: frmconfprojdatadict.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr ""
+

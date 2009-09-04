@@ -3,18 +3,15 @@
   <Package Version="3">
     <Name Value="lazdatadict"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="17">
+    <Files Count="18">
       <Item1>
         <Filename Value="frmconfprojdatadict.pp"/>
         <UnitName Value="frmconfprojdatadict"/>
@@ -84,7 +81,15 @@
         <Filename Value="reglazdatadict.lrs"/>
         <Type Value="LRS"/>
       </Item17>
+      <Item18>
+        <Filename Value="ldd_consts.pas"/>
+        <UnitName Value="ldd_consts"/>
+      </Item18>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>
@@ -105,7 +110,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

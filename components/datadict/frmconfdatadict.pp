@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  EditBtn, StdCtrls, idedatadict, ButtonPanel;
+  EditBtn, StdCtrls, idedatadict, ButtonPanel, ldd_consts;
 
 type
 
@@ -35,10 +35,6 @@ var
 Function ShowConfigIDEDataDictDialog : Boolean;
 
 implementation
-
-Resourcestring
-  SErrSelectExe = 'Please select an existing database desktop application';
-  SErrSelectDir = 'Please select an existing directory';
 
 Function ShowConfigIDEDataDictDialog : Boolean;
 
@@ -73,6 +69,11 @@ end;
 
 procedure TConfigIDEDataDictForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption := ldd_Configuredatadictionary;
+  Label1.Caption:= ldd_Databasedesktopapplication;
+  FEDD.Filter:= ldd_Filenameapplicationsfilter;
+  Label2.Caption:= ldd_Defaultdatadictdirectory;
   InitDDSettings;
   DataDictToForm;
 end;

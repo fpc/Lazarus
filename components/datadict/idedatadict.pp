@@ -5,7 +5,7 @@ unit idedatadict;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpdatadict, ProjectIntf, LazIDEIntf;
+  Classes, SysUtils, FileUtil, fpdatadict, ProjectIntf, LazIDEIntf, ldd_consts;
 
 Type
 
@@ -57,10 +57,6 @@ implementation
 
 uses inifiles,BaseIDEIntf,idemsgintf;
 
-resourcestring
-  SLoadingDataDict = 'Loading data dictionary ';
-  SFromfile = 'from file: ';
-  
 Const
   // Do not localize
   DDXML      = 'datadict.xml';

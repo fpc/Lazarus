@@ -1,5 +1,5 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Este arquivo foi automaticamente criado pelo Lazarus. Não edite!
+  Este fonte é usado apenas para compilar e instalar o pacote.
  }
 
 unit lazdatadict; 
@@ -7,9 +7,9 @@ unit lazdatadict;
 interface
 
 uses
-  frmconfprojdatadict, idedatadict, reglazdatadict, frmconfdatadict, 
-    frmSelectCodeGenerator, fpcodegenerator, frmBaseConfigCodeGenerator, 
-    frmgeneratedcode, LazarusPackageIntf; 
+    frmconfprojdatadict, idedatadict, reglazdatadict, frmconfdatadict, 
+  frmSelectCodeGenerator, fpcodegenerator, frmBaseConfigCodeGenerator, 
+  frmgeneratedcode, ldd_consts, LazarusPackageIntf;
 
 implementation
 

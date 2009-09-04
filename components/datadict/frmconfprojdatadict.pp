@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  EditBtn, StdCtrls, idedatadict;
+  EditBtn, StdCtrls, idedatadict, ldd_consts;
 
 type
 
@@ -43,10 +43,6 @@ var
 Function ShowConfigProjectDDDialog : Boolean;
 
 implementation
-
-Resourcestring
-  SErrSelectDD   = 'Please select a known data dictionary';
-  SErrSelectFile = 'Please select an existing data dictionary file';
 
 Function ShowConfigProjectDDDialog : Boolean;
 
@@ -92,6 +88,15 @@ end;
 
 procedure TConfigureProjectDDForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption     := ldd_SetProjectDataDictionary;
+  FEDD.Filter := ldd_Filenameedit;
+  CBUseDataDict.Caption := ldd_UseDatadictionary;
+  RBUseKnownDD.Caption  := ldd_Knowndatadictionary;
+  RBUseFile.Caption     := ldd_Datadictionary;
+  OpenDialog1.Title     := ldd_Openexistingfile;
+  BOK.Caption           := ldd_Ok;
+  BCancel.Caption       := ldd_Cancel;
   FDD:=IDEDataDictionary;
   FDD.Update;
   DataDictToForm;
