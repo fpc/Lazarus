@@ -44,10 +44,10 @@ var
   end;
 begin
   DoTest('test.pas', 'test');
-  DoTest('test.pas.bak', 'test');
+  DoTest('test.pas.bak', 'test.pas');
   DirName := AppendPathDelim('testdir');
   DoTest(DirName + 'test.pas', DirName + 'test');
-  DoTest(DirName + 'test.pas.bak', DirName + 'test');
+  DoTest(DirName + 'test.pas.bak', DirName + 'test.pas');
 end;
 
 procedure TTestFileUtil.TestTrimFileName;
