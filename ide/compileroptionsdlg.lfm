@@ -21,17 +21,17 @@ object frmCompilerOptions: TfrmCompilerOptions
     Top = 0
     Width = 543
     Align = alClient
-    PageIndex = 4
+    PageIndex = 1
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
-      ClientWidth = 663
+      ClientWidth = 537
       ClientHeight = 441
       object lblOtherUnits: TLabel
         Left = 6
         Height = 18
         Top = 6
-        Width = 651
+        Width = 525
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -45,8 +45,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 57
-        Width = 87
+        Top = 52
+        Width = 86
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -59,8 +59,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 108
-        Width = 103
+        Top = 98
+        Width = 100
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -73,8 +73,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 159
-        Width = 69
+        Top = 144
+        Width = 68
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -87,8 +87,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 210
-        Width = 103
+        Top = 190
+        Width = 101
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -101,8 +101,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 261
-        Width = 85
+        Top = 236
+        Width = 83
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -115,8 +115,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 318
-        Width = 128
+        Top = 288
+        Width = 133
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
         Caption = 'LCLWidgetTypeLabel'
@@ -129,9 +129,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
+        Height = 22
         Top = 24
-        Width = 651
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -146,9 +146,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
-        Top = 75
-        Width = 651
+        Height = 22
+        Top = 70
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -163,9 +163,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
-        Top = 126
-        Width = 651
+        Height = 22
+        Top = 116
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -180,9 +180,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
-        Top = 177
-        Width = 651
+        Height = 22
+        Top = 162
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -197,9 +197,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
-        Top = 228
-        Width = 651
+        Height = 22
+        Top = 208
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -214,9 +214,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = PathPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 27
-        Top = 279
-        Width = 651
+        Height = 22
+        Top = 254
+        Width = 525
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -229,15 +229,18 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = LCLWidgetTypeLabel
         AnchorSideTop.Side = asrCenter
-        Left = 140
+        Left = 145
         Height = 20
-        Top = 317
+        Top = 287
         Width = 171
         BorderSpacing.Left = 6
         ItemHeight = 0
         Style = csDropDownList
         TabOrder = 6
       end
+    end
+    object BuildModesPage: TPage
+      Caption = 'BuildModesPage'
     end
     object ParsingPage: TPage
       Caption = 'ParsingPage'

@@ -62,8 +62,7 @@ type
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
-    chkGenerateDwarf: TCheckBox;
-    lblOptMiddle: TLabel;
+    CategoryTreeView: TTreeView;
     MainNoteBook: TNoteBook;
 
     { Search Paths Controls }
@@ -95,6 +94,9 @@ type
 
     LCLWidgetTypeLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
+
+    { Build modes }
+    BuildModesPage: TPage;
 
     { Parsing Controls }
     ParsingPage: TPage;
@@ -135,6 +137,7 @@ type
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
     chkOptVarsInReg: TCheckBox;
+    lblOptMiddle: TLabel;
     chkOptUncertain: TCheckBox;
     chkOptSmaller: TCheckBox;
 
@@ -143,6 +146,7 @@ type
     grpDebugging: TGroupBox;
     chkDebugGDB: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
+    chkGenerateDwarf: TCheckBox;
     chkUseHeaptrc: TCheckBox;
     chkUseValgrind: TCheckBox;
     chkGenGProfCode: TCheckBox;
@@ -240,7 +244,6 @@ type
     btnCheck: TBitBtn;
     btnLoadSave: TBitBtn;
     HelpButton: TBitBtn;
-    CategoryTreeView: TTreeView;
 
     procedure ButtonOKClicked(Sender: TObject);
     procedure btnTestClicked(Sender: TObject);
@@ -258,7 +261,10 @@ type
     procedure chklistCompMsgClick(Sender: TObject);
     procedure chkUseMsgFileChange(Sender: TObject);
   private
+    fPathsTVNode: TTreeNode;
+    FBuildModesTVNode: TTreeNode;
     procedure SetupSearchPathsTab(Page: integer);
+    procedure SetupBuildModesTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
     procedure SetupCodeGenerationTab(Page: integer);
     procedure SetupLinkingTab(Page: integer);
@@ -440,6 +446,8 @@ begin
 
     SetupSearchPathsTab(Page);
     inc(Page);
+    SetupBuildModesTab(Page);
+    inc(Page);
     SetupParsingTab(Page);
     inc(Page);
     SetupCodeGenerationTab(Page);
@@ -619,6 +627,7 @@ var
   LCLPlatform: TLCLPlatform;
   EnabledLinkerOpts: Boolean;
   Options: TBaseCompilerOptions;
+  HasBuildModes: boolean;
 begin
   if SrcCompilerOptions<>nil then
     Options:=SrcCompilerOptions
@@ -649,6 +658,25 @@ begin
       LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
     else
       LCLWidgetTypeComboBox.ItemIndex := 0;
+
+    // build modes
+    HasBuildModes:=(Options is TProjectCompilerOptions);
+    {$IFNDEF EnableBuildModes}
+    HasBuildModes:=false;
+    {$ENDIF}
+    if HasBuildModes then begin
+      // show build modes
+      if FBuildModesTVNode=nil then begin
+        FBuildModesTVNode:=CategoryTreeView.Items.AddObject(fPathsTVNode,
+                                         BuildModesPage.Caption,BuildModesPage);
+      end;
+    end else begin
+      // hide build modes
+      if FBuildModesTVNode<>nil then begin
+        CategoryTreeView.Items.Delete(FBuildModesTVNode);
+        FBuildModesTVNode:=nil;
+      end;
+    end;
 
     // parsing
     if (Options.AssemblerStyle in [1,2,3])  then
@@ -1590,7 +1618,7 @@ var
 begin
   // Setup the Search Paths Tab
   MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
-  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+  fPathsTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   lblOtherUnits.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
@@ -1714,6 +1742,13 @@ begin
     Constraints.MinWidth:=150;
     // MG: does not work in win32 intf: AutoSize:=True;
   end;
+end;
+
+procedure TfrmCompilerOptions.SetupBuildModesTab(Page: integer);
+begin
+  // Setup the Build Modes Tab
+  MainNoteBook.Page[Page].Caption:='Build modes';
+  fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 end;
 
 {------------------------------------------------------------------------------
