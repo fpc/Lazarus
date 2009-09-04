@@ -77,13 +77,14 @@ end;
 
 destructor TPrivateCocoaCarbonTrayIcon.Destroy;
 begin
-//  CFRelease(EmptyMenuTitle);
+  CFRelease(EmptyMenuTitle);
 
   RemoveIcon();
   ReleaseMenu();
 
   if item <> nil then
   begin
+    item.setImage(nil);
     item.Free;
     item := nil;
   end;
