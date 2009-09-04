@@ -46,7 +46,7 @@ uses
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
-  CompilerOptions, CheckCompilerOpts, CompOptsModes,
+  CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
   Compiler_Conditionals_Options, Compiler_BuildVar_Options, CheckLst;
 
 type
@@ -263,6 +263,7 @@ type
   private
     fPathsTVNode: TTreeNode;
     FBuildModesTVNode: TTreeNode;
+    fBuildModeGrid: TBuildModesGrid;
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupBuildModesTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -670,6 +671,8 @@ begin
         FBuildModesTVNode:=CategoryTreeView.Items.AddObject(fPathsTVNode,
                                          BuildModesPage.Caption,BuildModesPage);
       end;
+      fBuildModeGrid.Graph.Assign(TProjectCompilerOptions(Options).BuildModes);
+      fBuildModeGrid.RebuildGrid;
     end else begin
       // hide build modes
       if FBuildModesTVNode<>nil then begin
@@ -1749,6 +1752,13 @@ begin
   // Setup the Build Modes Tab
   MainNoteBook.Page[Page].Caption:='Build modes';
   fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+
+  fBuildModeGrid:=TBuildModesGrid.Create(Self);
+  with fBuildModeGrid do begin
+    Name:='fBuildModeGrid';
+    Align:=alClient;
+    Parent:=BuildModesPage;
+  end;
 end;
 
 {------------------------------------------------------------------------------

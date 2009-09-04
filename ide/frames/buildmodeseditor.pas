@@ -25,10 +25,36 @@ unit BuildModesEditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms; 
+  Classes, SysUtils, FileUtil, LResources, Forms, Grids,
+  CompilerOptions;
 
 type
 
+  { TBuildModeGridRow }
+
+  TBuildModeGridRow = class
+  private
+    FFlag: TBuildModeFlag;
+    FMode: TBuildMode;
+  public
+    constructor Create(aMode: TBuildMode; aFlag: TBuildModeFlag);
+    destructor Destroy; override;
+    property Mode: TBuildMode read FMode;
+    property Flag: TBuildModeFlag read FFlag;
+  end;
+
+  { TBuildModesGrid }
+
+  TBuildModesGrid = class(TStringGrid)
+  private
+    FGraph: TBuildModeGraph;
+    FModeRows: array of TBuildModeGridRow;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Graph: TBuildModeGraph read FGraph;
+    procedure RebuildGrid; // call this after Graph changed
+  end;
 
   TBuildModesEditorFrame = class(TFrame)
   private
@@ -36,6 +62,45 @@ type
   end;
 
 implementation
+
+{ TBuildModesGrid }
+
+constructor TBuildModesGrid.Create(TheOwner: TComponent);
+begin
+  fGraph:=TBuildModeGraph.Create;
+  inherited Create(TheOwner);
+end;
+
+destructor TBuildModesGrid.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FGraph);
+end;
+
+procedure TBuildModesGrid.RebuildGrid;
+var
+  i: Integer;
+  Cnt: Integer;
+begin
+  for i:=0 to Length(FModeRows)-1 do FModeRows[i].Free;
+  Cnt:=0;
+  for i:=0 to FGraph.ModeCount-1 do
+    ;
+  SetLength(FModeRows,Cnt);
+end;
+
+{ TBuildModeGridRow }
+
+constructor TBuildModeGridRow.Create(aMode: TBuildMode; aFlag: TBuildModeFlag);
+begin
+  FMode:=aMode;
+  FFlag:=aFlag;
+end;
+
+destructor TBuildModeGridRow.Destroy;
+begin
+  inherited Destroy;
+end;
 
 initialization
   {$I buildmodeseditor.lrs}
