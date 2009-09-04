@@ -137,8 +137,8 @@ procedure TFrameDesignerForm.DoLoadBounds;
 
 var
   CurControl: TControl;
-  NewLeft: integer;
-  NewTop: integer;
+  NewLeft: SmallInt;
+  NewTop: SmallInt;
 begin
   inherited;
 
@@ -146,8 +146,7 @@ begin
   begin
     CurControl := TControl(LookupRoot);
     // restore designer position
-    NewLeft:=LongRec(LookupRoot.DesignInfo).Lo;
-    NewTop:=LongRec(LookupRoot.DesignInfo).Hi;
+    DesignInfoTo(LookupRoot.DesignInfo, NewLeft, NewTop);
     // resize designer form
     SetNewBounds(NewLeft,NewTop,CurControl.Width,CurControl.Height);
     //DebugLn(['TFrameDesignerForm.DoLoadBounds ',NewLeft,',',NewTop]);

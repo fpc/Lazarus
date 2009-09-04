@@ -1684,19 +1684,16 @@ begin
       end
       else begin
         // non TControl
-        if CompWidth<=0 then CompWidth:=50;
-        if CompHeight<=0 then CompHeight:=50;
-        if CompLeft<0 then
-          CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
-        if CompTop<0 then
-          CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
-        with LongRec(Temp.Component.DesignInfo) do begin
-          Lo:=word(Min(32000,CompLeft));
-          Hi:=word(Min(32000,CompTop));
-        end;
-        if (ParentComponent<>nil) then begin
-          DesignForm:=GetDesignerForm(ParentComponent);
-          if DesignForm<>nil then DesignForm.Invalidate;
+        if CompWidth <= 0 then CompWidth := 50;
+        if CompHeight <= 0 then CompHeight := 50;
+
+        CompLeft := Max(Low(SmallInt), Min(High(SmallInt), CompLeft));
+        CompTop := Max(Low(SmallInt), Min(High(SmallInt), CompTop));
+        Temp.Component.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
+        if ParentComponent <> nil then 
+        begin
+          DesignForm := GetDesignerForm(ParentComponent);
+          if DesignForm <> nil then DesignForm.Invalidate;
         end;
       end;
     except

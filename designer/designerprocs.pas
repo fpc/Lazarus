@@ -112,8 +112,10 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
-function DesignInfoFrom(const Left, Top: Word): LongInt;
-
+function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
+procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
+function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
 
 implementation
 
@@ -141,8 +143,8 @@ begin
     end;
   end else
   begin
-    Result.X := LongRec(Component.DesignInfo).Lo;
-    Result.Y := LongRec(Component.DesignInfo).Hi;
+    Result.X := LeftFromDesignInfo(Component.DesignInfo);
+    Result.Y := TopFromDesignInfo(Component.DesignInfo);
   end;
 end;
 
@@ -214,53 +216,51 @@ end;
 procedure GetComponentBounds(AComponent: TComponent;
   var Left, Top, Width, Height: integer);
 begin
-  if AComponent is TControl then begin
-    Left:=TControl(AComponent).Left;
-    Top:=TControl(AComponent).Top;
-    Width:=TControl(AComponent).Width;
-    Height:=TControl(AComponent).Height;
-  end else begin
-    Left:=LongRec(AComponent.DesignInfo).Lo;
-    Top:=LongRec(AComponent.DesignInfo).Hi;
-    Width:=NonVisualCompWidth;
-    Height:=Width;
+  if AComponent is TControl then 
+  begin
+    Left := TControl(AComponent).Left;
+    Top := TControl(AComponent).Top;
+    Width := TControl(AComponent).Width;
+    Height := TControl(AComponent).Height;
+  end else 
+  begin
+    Left := LeftFromDesignInfo(AComponent.DesignInfo);
+    Top := TopFromDesignInfo(AComponent.DesignInfo);
+    Width := NonVisualCompWidth;
+    Height := Width;
   end;
 end;
 
 function GetComponentLeft(AComponent: TComponent): integer;
 begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Left;
-  end else begin
-    Result:=LongRec(AComponent.DesignInfo).Lo;
-  end;
+  if AComponent is TControl then
+    Result := TControl(AComponent).Left
+  else
+    Result := LeftFromDesignInfo(AComponent.DesignInfo);
 end;
 
 function GetComponentTop(AComponent: TComponent): integer;
 begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Top;
-  end else begin
-    Result:=LongRec(AComponent.DesignInfo).Hi;
-  end;
+  if AComponent is TControl then
+    Result := TControl(AComponent).Top
+  else
+    Result := TopFromDesignInfo(AComponent.DesignInfo);
 end;
 
 function GetComponentWidth(AComponent: TComponent): integer;
 begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Width;
-  end else begin
-    Result:=NonVisualCompWidth;
-  end;
+  if AComponent is TControl then
+    Result := TControl(AComponent).Width
+  else
+    Result := NonVisualCompWidth;
 end;
 
 function GetComponentHeight(AComponent: TComponent): integer;
 begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Height;
-  end else begin
-    Result:=NonVisualCompWidth;
-  end;
+  if AComponent is TControl then
+    Result := TControl(AComponent).Height
+  else
+    Result := NonVisualCompWidth;
 end;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
@@ -323,10 +323,46 @@ begin
   end;
 end;
 
-function DesignInfoFrom(const Left, Top: Word): LongInt;
+function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
+var
+  ResultRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute Result;
 begin
-  LongRec(Result).Hi := Top;
-  LongRec(Result).Lo := Left;
+  ResultRec.Left := ALeft;
+  ResultRec.Top := ATop;
+end;
+
+procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  ALeft := DesignInfoRec.Left;
+  ATop := DesignInfoRec.Top;
+end;
+
+function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  Result := DesignInfoRec.Left;
+end;
+
+function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  Result := DesignInfoRec.Top;
 end;
 
 { TDesignerDeviceContext }
