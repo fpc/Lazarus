@@ -344,7 +344,7 @@ begin
     // a special Apple menu and put Quit, About there.
     // See issue: http://bugs.freepascal.org/view.php?id=12294
     // See http://lists.apple.com/archives/carbon-development/2002/Apr/msg01183.html, for details
-    CreateMainMenuItem(mnuApple,'AppleApplication','');
+    //CreateMainMenuItem(mnuApple,'AppleApplication','');
     {$endif}
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
@@ -791,17 +791,22 @@ begin
     CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
                    lisMenuReportingBug, 'menu_reportingbug');
 
-    {$ifdef LCLCarbon}
+    // old behavior restored, until Tiger issue is fixed.
+    // http://bugs.freepascal.org/view.php?id=14411
+    (*
+   {$ifdef LCLCarbon}
     // under Carbon: add About item to the Apple menu
     CreateMenuItem(mnuApple, itmHelpAboutLazarus,'itmHelpAboutLazarus',
                    lisAboutLazarus, 'menu_information');
-    {$else}
+    
+    CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
+    {$else}*)
     // otherwise: add About item to the Help menu
     CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
     ParentMI:=itmInfoHelps;
     CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',
                  lisAboutLazarus, 'menu_information');
-    {$endif}
+    //{$endif}
 
     CreateMenuSeparatorSection(mnuHelp,itmHelpTools,'itmHelpTools');
     ParentMI:=itmHelpTools;
