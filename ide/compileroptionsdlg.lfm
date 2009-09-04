@@ -857,10 +857,10 @@ object frmCompilerOptions: TfrmCompilerOptions
       ClientHeight = 441
       object grpVerbosity: TCheckGroup
         Left = 6
-        Height = 196
+        Height = 356
         Top = 6
         Width = 525
-        Align = alTop
+        Align = alClient
         AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'grpVerbosity'
@@ -877,14 +877,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpErrorCnt: TGroupBox
         Left = 6
-        Height = 56
-        Top = 208
+        Height = 67
+        Top = 368
         Width = 525
-        Align = alTop
+        Align = alBottom
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpErrorCnt'
-        ClientHeight = 34
+        ClientHeight = 45
         ClientWidth = 517
         TabOrder = 1
         object edtErrorCnt: TEdit
