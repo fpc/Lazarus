@@ -179,6 +179,7 @@ type
     FAdjustToNextChar: Boolean;
     FMaxLeftChar: PInteger;
     FChangeOnTouch: Boolean;
+    FSkipTabs: Boolean;
     FTouched: Boolean;
 
     procedure AdjustToChar;
@@ -197,6 +198,7 @@ type
     procedure SetLineBytePos(const AValue: TPoint);
     function  GetLineText: string;
     procedure SetLineText(const AValue : string);
+    procedure SetSkipTabs(const AValue: Boolean);
   protected
     procedure DoLock; override;
     Procedure DoUnlock; override;
@@ -222,6 +224,7 @@ type
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
+    property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
     property MaxLeftChar: PInteger write FMaxLeftChar;
@@ -386,7 +389,7 @@ begin
   while LogPos < LogLen do begin
     if ScreenPos = FCharPos then exit;
     if ScreenPos + CharWidths[LogPos] > FCharPos then begin
-      if L[LogPos+1] = #9 then exit;
+      if (L[LogPos+1] = #9) and (not FSkipTabs) then exit;
       if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
         FCharPos := ScreenPos + CharWidths[LogPos]
       else
@@ -503,6 +506,17 @@ procedure TSynEditCaret.SetLineText(const AValue : string);
 begin
   if (LinePos >= 1) and (LinePos <= Max(1, FLines.Count)) then
     FLines[LinePos - 1] := AValue;
+end;
+
+procedure TSynEditCaret.SetSkipTabs(const AValue: Boolean);
+begin
+  if FSkipTabs = AValue then exit;
+  FSkipTabs := AValue;
+  if FSkipTabs then begin
+    Lock;
+    AdjustToChar;
+    Unlock;
+  end;
 end;
 
 procedure TSynEditCaret.DoLock;

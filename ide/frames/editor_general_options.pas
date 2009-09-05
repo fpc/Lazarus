@@ -50,6 +50,7 @@ type
     AutoIndentCheckBox: TCheckBox;
     BlockIndentTypeLabel: TLabel;
     BlockGroupLabel: TLabel;
+    CursorSkipsTabCheckBox: TCheckBox;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     OverwriteBlockCheckBox: TCheckBox;
@@ -82,6 +83,7 @@ type
       Shift: TShiftState);
     procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
+    procedure CursorSkipsTabCheckBoxChange(Sender: TObject);
     procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure GroupUndoCheckBoxChange(Sender: TObject);
     procedure HalfPageScrollCheckBoxChange(Sender: TObject);
@@ -157,6 +159,7 @@ begin
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
+  CursorSkipsTabCheckBox.Caption := dlgCursorSkipsTab;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
 
@@ -198,6 +201,7 @@ begin
     PersistentCursorCheckBox.Checked := eoPersistentCaret in SynEditOptions;
     AlwaysVisibleCursorCheckBox.Checked := eoAlwaysVisibleCaret in SynEditOptions2;
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
+    CursorSkipsTabCheckBox.Checked := eoCaretSkipTab in SynEditOptions2;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
 
@@ -276,6 +280,7 @@ begin
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
     UpdateOptionFromBool(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
+    UpdateOptionFromBool(CursorSkipsTabCheckBox.Checked, eoCaretSkipTab);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
 
@@ -371,6 +376,11 @@ begin
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].TabWidth := NewVal;
   end
+end;
+
+procedure TEditorGeneralOptionsFrame.CursorSkipsTabCheckBoxChange(Sender: TObject);
+begin
+  SetPreviewOption(CursorSkipsTabCheckBox.Checked, eoCaretSkipTab);
 end;
 
 procedure TEditorGeneralOptionsFrame.EndKeyJumpsToNearestStartCheckBoxChange(

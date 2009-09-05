@@ -518,10 +518,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   end
   object HomeKeyJumpsToNearestStartCheckBox: TCheckBox[36]
     AnchorSideLeft.Control = CursorSkipsSelectionCheckBox
-    AnchorSideTop.Control = PersistentCursorCheckBox
+    AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
     Left = 236
     Height = 19
-    Top = 291
+    Top = 310
     Width = 236
     Caption = 'HomeKeyJumpsToNearestStartCheckBox'
     OnChange = HomeKeyJumpsToNearestStartCheckBoxChange
@@ -529,10 +529,10 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   end
   object EndKeyJumpsToNearestStartCheckBox: TCheckBox[37]
     AnchorSideLeft.Control = HomeKeyJumpsToNearestStartCheckBox
-    AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
+    AnchorSideTop.Control = ScrollPastEndLineCheckBox
     Left = 236
     Height = 19
-    Top = 310
+    Top = 329
     Width = 223
     Caption = 'EndKeyJumpsToNearestStartCheckBox'
     OnChange = EndKeyJumpsToNearestStartCheckBoxChange
@@ -584,5 +584,16 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'OverwriteBlockCheckBox'
     OnChange = OverwriteBlockCheckBoxChange
     TabOrder = 21
+  end
+  object CursorSkipsTabCheckBox: TCheckBox[41]
+    AnchorSideLeft.Control = CursorSkipsSelectionCheckBox
+    AnchorSideTop.Control = PersistentCursorCheckBox
+    Left = 236
+    Height = 19
+    Top = 291
+    Width = 154
+    Caption = 'CursorSkipsTabCheckBox'
+    OnChange = CursorSkipsTabCheckBoxChange
+    TabOrder = 22
   end
 end

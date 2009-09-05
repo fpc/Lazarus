@@ -1153,6 +1153,7 @@ resourcestring
   dlgPersistentBlock = 'Persistent Block';
   dlgOverwriteBlock = 'Overwrite Block';
   dlgCursorSkipsSelection = 'Cursor skips selection';
+  dlgCursorSkipsTab = 'Cursor skips tabs';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
   dlgScrollPastEndLine = 'Caret past end of line';

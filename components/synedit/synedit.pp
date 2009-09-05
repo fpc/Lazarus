@@ -232,6 +232,7 @@ type
 
   TSynEditorOption2 = (
     eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
+    eoCaretSkipTab,            // Caret can not enter tabs
     eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
     eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
     eoFoldedCopyPaste,         // Remember folds in copy/paste operations
@@ -6946,6 +6947,7 @@ begin
       MoveCaretToVisibleArea;
     if eoPersistentBlock in ChangedOptions then
       FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
+    FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
     if (eoAutoHideCursor in ChangedOptions) and not(eoAutoHideCursor in fOptions2) then
       UpdateCursor;
   end;

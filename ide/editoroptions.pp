@@ -2535,6 +2535,8 @@ begin
       case SynEditOpt2 of
         eoCaretSkipsSelection:
           SynEditOptName := 'CaretSkipsSelection';
+        eoCaretSkipTab:
+          SynEditOptName := 'CaretSkipTab';
         eoAlwaysVisibleCaret:
           SynEditOptName := 'AlwaysVisibleCaret';
         eoEnhanceEndKey:
@@ -2777,6 +2779,8 @@ begin
       case SynEditOpt2 of
         eoCaretSkipsSelection:
           SynEditOptName := 'CaretSkipsSelection';
+        eoCaretSkipTab:
+          SynEditOptName := 'CaretSkipTab';
         eoAlwaysVisibleCaret:
           SynEditOptName := 'AlwaysVisibleCaret';
         eoEnhanceEndKey:
