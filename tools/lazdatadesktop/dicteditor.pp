@@ -713,7 +713,7 @@ begin
     case EOT of
       eotField : NewField(N,CurrentTable);
       eotIndex : NewIndex(N,CurrentTable);
-      eotForeignKey : NewIndex(N,CurrentTable);
+      eotForeignKey : NewForeignKey(N,CurrentTable);
     else
       NewGlobalObject(N,EOT);
     end;
