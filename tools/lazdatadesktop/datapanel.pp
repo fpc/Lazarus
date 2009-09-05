@@ -26,7 +26,7 @@ interface
 
 uses
   Graphics, Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls,
-  buttons, fpdatadict;
+  buttons, fpdatadict, lclstrconsts;
   
 Type
 
@@ -159,6 +159,19 @@ begin
   FNavigator.Left:=4;
   FNavigator.Height:=22;
   FNavigator.DataSource:=FDatasource;
+  // Non translated in DBCTRLS.pas !!!!
+  FNavigator.Hints.Clear;
+  FNavigator.Hints.Add(rsFirstRecordHint);
+  FNavigator.Hints.Add(rsPriorRecordHint);
+  FNavigator.Hints.Add(rsNextRecordHint);
+  FNavigator.Hints.Add(rsLastRecordHint);
+  FNavigator.Hints.Add(rsInsertRecordHint);
+  FNavigator.Hints.Add(rsDeleteRecordHint);
+  FNavigator.Hints.Add(rsEditRecordHint);
+  FNavigator.Hints.Add(rsPostRecordHint);
+  FNavigator.Hints.Add(rsCancelRecordHint);
+  FNavigator.Hints.Add(rsRefreshRecordsHint);
+  //
   CheckButtons;
   FExportSB:=TSpeedButton.Create(Self);
   FExportSB.Parent:=FTopPanel;

@@ -1,12 +1,12 @@
 object MainForm: TMainForm
-  Left = 570
-  Height = 374
-  Top = 141
-  Width = 487
+  Left = 450
+  Height = 480
+  Top = 226
+  Width = 666
   ActiveControl = PCDD
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 352
-  ClientWidth = 487
+  ClientHeight = 455
+  ClientWidth = 666
   Menu = MainMenu1
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -20,10 +20,9 @@ object MainForm: TMainForm
     Left = 0
     Height = 26
     Top = 0
-    Width = 487
+    Width = 666
     ButtonHeight = 24
     ButtonWidth = 24
-    Caption = 'TBMain'
     Images = ILMain
     ParentShowHint = False
     ShowHint = True
@@ -36,6 +35,8 @@ object MainForm: TMainForm
     object TBOPen: TToolButton
       Left = 25
       Top = 2
+      HelpType = htKeyword
+      HelpKeyword = 'Open a new Data Dictionary'
       Action = AOpen
     end
     object TBNew: TToolButton
@@ -47,7 +48,6 @@ object MainForm: TMainForm
       Left = 73
       Top = 2
       Width = 15
-      Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object TBNewTable: TToolButton
@@ -64,12 +64,10 @@ object MainForm: TMainForm
       Left = 232
       Top = 2
       Width = 16
-      Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object TBDeleteTable: TToolButton
       Left = 248
-      Hint = 'Delete the selected object'
       Top = 2
       Action = ADeleteObject
     end
@@ -77,7 +75,6 @@ object MainForm: TMainForm
       Left = 272
       Top = 2
       Width = 15
-      Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object TBGenerateSQL: TToolButton
@@ -113,22 +110,22 @@ object MainForm: TMainForm
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 306
+    Height = 409
     Top = 26
-    Width = 487
+    Width = 666
     ActivePage = TSRecent
     Align = alClient
     TabIndex = 0
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 278
-      ClientWidth = 483
+      ClientHeight = 379
+      ClientWidth = 658
       object LVDicts: TListView
         Left = 0
-        Height = 278
+        Height = 379
         Top = 0
-        Width = 483
+        Width = 658
         Align = alClient
         Columns = <        
           item
@@ -136,7 +133,7 @@ object MainForm: TMainForm
             Width = 10
           end        
           item
-            Caption = 'FileName'
+            Caption = 'Filename'
             Width = 10
           end        
           item
@@ -154,13 +151,13 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 278
-      ClientWidth = 483
+      ClientHeight = 379
+      ClientWidth = 658
       object LVConnections: TListView
         Left = 0
-        Height = 278
+        Height = 379
         Top = 0
-        Width = 483
+        Width = 658
         Align = alClient
         Columns = <        
           item
@@ -173,10 +170,11 @@ object MainForm: TMainForm
           end        
           item
             Caption = 'Last used'
+            Width = 150
           end        
           item
             Caption = 'Description'
-            Width = 217
+            Width = 260
           end>
         PopupMenu = PMRecentConnections
         ReadOnly = True
@@ -192,12 +190,12 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 332
-    Width = 487
+    Top = 435
+    Width = 666
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 20
-    ClientWidth = 487
+    ClientWidth = 666
     TabOrder = 2
     Visible = False
     object PBSTatus: TProgressBar
@@ -212,7 +210,7 @@ object MainForm: TMainForm
       Left = 128
       Height = 20
       Top = 0
-      Width = 359
+      Width = 538
       Align = alClient
       Alignment = taLeftJustify
       BevelOuter = bvLowered
@@ -221,8 +219,8 @@ object MainForm: TMainForm
   end
   object MainMenu1: TMainMenu
     Images = ILMain
-    left = 18
-    top = 79
+    left = 40
+    top = 80
     object MFIle: TMenuItem
       Caption = '&File'
       object MenuItem1: TMenuItem
@@ -751,7 +749,7 @@ object MainForm: TMainForm
         }
         OnClick = AGenerateSQLExecute
       end
-      object MIDeleteField: TMenuItem
+      object MICreateCode: TMenuItem
         Action = ACreateCode
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -795,7 +793,8 @@ object MainForm: TMainForm
     object MIConnection: TMenuItem
       Caption = 'Connections'
       object MINewConnection: TMenuItem
-        Caption = 'New'
+        Action = ANewConnection
+        OnClick = ANewConnectionExecute
       end
       object MIOpenRecentConnection: TMenuItem
         Action = AOpenConnection
@@ -809,8 +808,8 @@ object MainForm: TMainForm
   end
   object ALMain: TActionList
     Images = ILMain
-    left = 88
-    top = 128
+    left = 104
+    top = 136
     object ASave: TAction
       Category = 'File'
       Caption = '&Save'
@@ -839,7 +838,7 @@ object MainForm: TMainForm
     object AOpen: TAction
       Category = 'File'
       Caption = '&Open...'
-      Hint = 'Open a new Data Dictionary'
+      HelpKeyword = 'Open a new Data Dictionary'
       ImageIndex = 0
       OnExecute = AOpenExecute
       ShortCut = 16463
@@ -963,7 +962,7 @@ object MainForm: TMainForm
     end
     object AAddForeignKey: TAction
       Category = 'Dictionary'
-      Caption = 'New Foreign Key'
+      Caption = 'New Foreign key'
       Hint = 'Add a foreign key to the table'
       ImageIndex = 12
       OnExecute = AAddForeignKeyExecute
@@ -999,8 +998,8 @@ object MainForm: TMainForm
     end
   end
   object ILMain: TImageList
-    left = 47
-    top = 123
+    left = 43
+    top = 136
     Bitmap = {
       4C690F0000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00EAC39DFFE6BF96FFE4BB92FFE4BB92FFD1A06CFFD09E6DFFCC96
@@ -1486,32 +1485,29 @@ object MainForm: TMainForm
     }
   end
   object ODDD: TOpenDialog
-    Title = 'Open data dictionary'
     DefaultExt = '.fpd'
-    Filter = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*'
     FilterIndex = 0
     Options = [ofReadOnly, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 64
-    top = 79
+    left = 104
+    top = 80
   end
   object PSMain: TIniPropStorage
     StoredValues = <>
     IniFileName = 'lazdde'
     IniSection = 'main'
-    left = 43
-    top = 192
+    left = 160
+    top = 136
   end
   object SDDD: TSaveDialog
     DefaultExt = '.fpd'
-    Filter = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*'
     FilterIndex = 0
-    left = 184
-    top = 112
+    left = 160
+    top = 80
   end
   object PMRecentConnections: TPopupMenu
     Images = ILMain
-    left = 121
-    top = 163
+    left = 160
+    top = 200
     object PMIOpenConnection: TMenuItem
       Action = AOpenConnection
       OnClick = OpenRecentConnection
@@ -1527,15 +1523,55 @@ object MainForm: TMainForm
   end
   object PMDataDict: TPopupMenu
     Images = ILMain
-    left = 158
-    top = 161
+    left = 43
+    top = 200
     object PMIOpenDataDict: TMenuItem
       Action = AOpenRecentDatadict
       OnClick = OpenRecentDatadict
     end
     object PMINewDataDict: TMenuItem
       Action = ANew
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00BB6A
+        3400BA6530FFBB6631FFBA6630FFBA6630FFBA6630FFBA6530FFBA652FFFB965
+        2EFFB9652EFFB9642EFFB9642EFFB7622CFFB7622E00FFFFFF00FFFFFF00BC69
+        33FFF8F1EAFFF7ECDFFFF6EBDEFFF6EADEFFF6EADCFFF6EADCFFFAF3EBFFFAF3
+        EBFFFAF2EAFFFCF7F3FFFCF8F4FFFEFEFDFFB7602AFFFFFFFF00FFFFFF00BF71
+        38FFF5EBDFFFFDBF68FFFCBD67FFFBBE65FFFCBE64FFFCBE64FFFCBD62FFFBBD
+        63FFFBBC61FFFCBE60FFFCBC62FFFDFBF8FFB9642DFFFFFFFF00FFFFFF00C178
+        3CFFF7EDE3FFFDC26EFFFFD8A0FFFFD79EFFFFD69BFFFFD798FFFFD696FFFFD6
+        95FFFFD594FFFFD493FFFBBE65FFFBF7F4FFBB6731FFFFFFFF00FFFFFF00C47C
+        40FFF7F0E6FFF8B455FFF7B456FFF7B554FFF8B453FFF8B253FFF7B352FFF7B3
+        52FFF7B251FFF7B24FFFF7B24FFFFCF9F5FFBF6F36FFFFFFFF00FFFFFF00C580
+        42FFF8F1E8FFFEE5D5FFFDE5D3FFFDE5D3FFFCE5D3FFFCE5D3FFFCE4D1FFFCE2
+        CEFFFCE2CCFFFBE0C9FFFBE1C8FFFDFAF7FFC1763BFFFFFFFF00FFFFFF00C582
+        45FFF8F2EBFFFEE7D6FFFDE7D6FFFDE7D6FFFDE7D6FFFDE6D5FFFDE5D3FFFCE4
+        D1FFFCE2CDFFFBE1CBFFFBE1C9FFFBF7F2FFC57C3FFFFFFFFF00FFFFFF00C684
+        47FFF9F3ECFFFEE8D6FFFEE8D7FFFDE7D6FFFDE7D6FFFDE7D5FFFDE5D3FFFBE4
+        D0FFFBE3CCFFFADFC7FFFADFC6FFFAF2EAFFC68042FFFFFFFF00FFFFFF00C688
+        49FFF9F4EDFFFEE8D8FFFEE8D8FFFEE8D7FFFEE7D6FFFDE5D3FFFCE4D1FFFBE1
+        CCFFFAE0C7FFF9DDC3FFF8DCC2FFFAF4EDFFC68245FFFFFFFF00FFFFFF00C688
+        4AFFF9F4EFFFFEE7D7FFFDE7D6FFFDE7D5FFFDE6D4FFFCE6D2FFFBE1CCFFFADF
+        C7FFF8DCC2FFF6DABDFFF6D8BBFFFAF4EFFFC68346FFFFFFFF00FFFFFF00C689
+        4BFFF9F4F0FFFCE6D3FFFCE6D4FFFDE7D3FFFCE4D1FFFBE3CDFFFAE0C8FFF8DC
+        C2FFF5D6BBFFF3D4B5FFF1D2B3FFF8F4F0FFC48246FFFFFFFF00FFFFFF00C689
+        4BFFF9F5F1FFFCE3CFFFFBE4D0FFFCE4CFFFFCE3CDFFFAE1CAFFF9DDC4FFF6D9
+        BCFFF4E9DFFFF7F2ECFFFBF7F3FFF5EFE9FFC27E45FFFFFFFF00FFFFFF00C689
+        4CFFF9F5F1FFFCE3CDFFFBE3CEFFFBE3CDFFFBE2CBFFF9E0C8FFF8DCC2FFF5D6
+        BAFFFDFBF8FFFCE6CDFFFAE5C9FFE2B684FFBF7942FFFFFFFF00FFFFFF00C588
+        4BFFFAF6F2FFFAE0C7FFFBE1C9FFFBE2C9FFFBE0C8FFF9DFC5FFF8DBC1FFF4D6
+        B8FFFFFBF8FFF6D8B4FFE1B07DFFDB9264FFB46B3E00FFFFFF00FFFFFF00C485
+        49FFF7F2ECFFF8F4EEFFF8F4EDFFF8F3EDFFF8F3EDFFF8F3EDFFF8F2ECFFF7F2
+        ECFFF2E6D7FFE2B27DFFDB9465FFB3683B00FFFFFF00FFFFFF00FFFFFF00C17D
+        4400C88B4DFFC88C4FFFC88C4FFFC88C4FFFC88C4FFFC88D4FFFC98C4FFFC78B
+        4FFFC5894BFFC4763BFFB3683C00FFFFFF00FFFFFF00FFFFFF00
+      }
       OnClick = ANewExecute
+    end
+    object MenuItem8: TMenuItem
+      Action = ADeleteRecentDataDict
+      OnClick = ADeleteRecentDataDictExecute
     end
   end
 end

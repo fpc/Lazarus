@@ -1,28 +1,28 @@
 object ImportDDform: TImportDDform
   Left = 368
-  Height = 300
+  Height = 375
   Top = 279
-  Width = 369
-  HorzScrollBar.Page = 368
-  VertScrollBar.Page = 299
+  Width = 508
   ActiveControl = LBItems
   Caption = 'Import/Update datadictionary'
-  ClientHeight = 300
-  ClientWidth = 369
+  ClientHeight = 375
+  ClientWidth = 508
+  OnCreate = FormCreate
   OnShow = FormShow
+  LCLVersion = '0.9.27'
   object LBItems: TCheckListBox
     Left = 8
-    Height = 249
+    Height = 324
     Top = 8
-    Width = 248
+    Width = 387
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     TabOrder = 0
-    TopIndex = -1
   end
   object BOK: TButton
-    Left = 264
+    Left = 403
     Height = 25
-    Top = 263
+    Top = 338
     Width = 98
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -32,9 +32,9 @@ object ImportDDform: TImportDDform
     TabOrder = 1
   end
   object BCancel: TButton
-    Left = 264
+    Left = 403
     Height = 25
-    Top = 232
+    Top = 307
     Width = 101
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -44,7 +44,7 @@ object ImportDDform: TImportDDform
     TabOrder = 2
   end
   object BSelectNone: TButton
-    Left = 264
+    Left = 403
     Height = 25
     Top = 40
     Width = 98
@@ -54,7 +54,7 @@ object ImportDDform: TImportDDform
     TabOrder = 3
   end
   object BSelectAll: TButton
-    Left = 264
+    Left = 403
     Height = 25
     Top = 8
     Width = 98
@@ -64,27 +64,25 @@ object ImportDDform: TImportDDform
     TabOrder = 4
   end
   object CBUpdateExisting: TCheckBox
-    Left = 9
-    Height = 22
-    Top = 263
-    Width = 167
+    Left = 8
+    Height = 21
+    Top = 338
+    Width = 155
     Caption = 'Update existing tables'
     Checked = True
     State = cbChecked
     TabOrder = 5
   end
   object ActionList1: TActionList
-    left = 106
-    top = 297
+    left = 440
+    top = 120
     object ASelectNone: TAction
       Caption = 'Select &none'
-      DisableIfNoHandler = True
       OnExecute = DoSelection
       OnUpdate = HaveItems
     end
     object ASelectAll: TAction
       Caption = 'Select &all'
-      DisableIfNoHandler = True
       OnExecute = DoSelection
       OnUpdate = HaveItems
       ShortCut = 16449

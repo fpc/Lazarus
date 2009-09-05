@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, StdCtrls, Spin, RTTICtrls, fpdatadict;
+  ExtCtrls, Buttons, StdCtrls, {Spin,} RTTICtrls, fpdatadict, lazdatadeskstr;
 
 type
 
@@ -101,10 +101,6 @@ var
 implementation
 
 { TGenerateSQLForm }
-
-ResourceString
-  SErrSelectTable  = 'No table selected. Please select a table';
-  SErrSelectFields = 'No fields selected. Please select some fields';
   
 procedure TGenerateSQLForm.TSResize(Sender: TObject);
 
@@ -287,6 +283,25 @@ end;
 
 procedure TGenerateSQLForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption:= sld_Generatesqlstatements;
+  TSFields.Caption:= sld_Tableandfields;
+  TSSelect.Caption:= sld_Select;
+  TSInsert.Caption:= sld_Insert;
+  TSUpdate.Caption:= sld_Update;
+  TSDelete.Caption:= sld_Delete;
+  TSCreate.Caption:= sld_Createtable;
+  LCBTables.Caption:= sld_Table;
+  LLBKeyFields.Caption:= sld_Keyfields;
+  Label2.Caption:= sld_Selectupdateinsertfields;
+  CLBOptions.Caption:= sld_Options;
+  LSEIndent.Caption:= sld_Indent;
+  LSELineLength.Caption:= sld_Linelength;
+  CBIgnoreSelection.Caption:= sld_Createfulltablecreationsql;
+  BGenerate.Caption:= sld_Generatesql;
+  BCancel.Caption:= sld_Cancel;
+  BOK.Caption:= sld_Ok;
+  //
   FGenerator:=TFPDDSQLEngine.Create;
   CLBOptions.Link.TIObject:=FGenerator;
   SEIndent.Link.TIObject:=FGenerator;

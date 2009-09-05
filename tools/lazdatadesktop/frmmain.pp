@@ -30,7 +30,8 @@ interface
 uses
   Classes, SysUtils, LResources, FileUtil, Forms, Controls, Graphics, Dialogs,
   Menus, ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
-  conneditor, LCLType, RTTICtrls, ExtCtrls, StdCtrls, ddfiles;
+  conneditor, LCLType, RTTICtrls, ExtCtrls, {StdCtrls,} ddfiles, LCLProc,
+  Translations, lazdatadeskstr;
 
 type
   TEngineMenuItem = Class(TMenuItem)
@@ -84,6 +85,8 @@ type
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MICreateCode: TMenuItem;
     PMINewConnection: TMenuItem;
     PMINewDataDict: TMenuItem;
     PMIOpenDataDict: TMenuItem;
@@ -96,7 +99,6 @@ type
     MISaveAs: TMenuItem;
     MIGenerateSQL: TMenuItem;
     MIDDSep3: TMenuItem;
-    MIDeleteField: TMenuItem;
     MIDeleteTable: TMenuItem;
     MIDDSep2: TMenuItem;
     MINewField: TMenuItem;
@@ -188,7 +190,6 @@ type
     procedure OpenRecentDatadict(Sender: TObject);
     procedure LVDictsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MIDataDictClick(Sender: TObject);
-    procedure PCDDChange(Sender: TObject);
     procedure SaveAsExecute(Sender: TObject);
   private
     FRecentDicts : TRecentDataDicts;
@@ -270,40 +271,6 @@ uses
   fpddodbc,    // Any ODBC supported
   frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect,fpstdexports;
 
-ResourceString
-  SSaveData     = 'Save changes';
-  SDontSave     = 'Discard changes';
-  SDontClose    = 'Do not close editor';
-  SConfirmClose = 'Confirm close';
-  SDDModified   = 'Data dictionary "%s" has changed.'#13#10+
-                  'What do you want to do with the changes?';
-  SImportDictInto = 'Import datadictionary';
-  SWhichCurrentDictToUse = 'A data dictionary is active.'+
-                           'Would you like to import into this data dictionary ?';
-  SUseCurrentDict = 'Yes, use the active dictionary';
-  SUseNewDict     = 'No, import in a new dictionary';
-  SNewTable       = 'Create new table';
-  SNewTableName   = 'Enter a name for the new table:';
-  SNewSequence    = 'Create new sequence';
-  SNewSequenceName  = 'Enter a name for the new sequence:';
-  SNewDomain      = 'Create new domain';
-  SNewDomainName  = 'Enter a name for the new domain:';
-  SNewField       = 'Create new field in table %s';
-  SNewFieldName   = 'Enter a name for the new field:';
-  SNewIndex       = 'Create new index on table %s';
-  SNewIndexName   = 'Enter a name for the new index:';
-  SNewForeignKey  = 'Create new foreign key in table %s';
-  SNewForeignKeyName   = 'Enter a name for the new foreign key:';
-  SSelectDBFDir   = 'Select a directory with DBF files';
-  SNewConnection  = 'New connection';
-  SConnectionDescription = 'Enter a descriptive name for the connection';
-  SConnectionNameExists = 'There is already a connection named "%s"'#13#10+
-                          'Would you like to override the connection data ?';
-  SUnknownDictionary = 'Unknown data dictionary: %s';
-  SUnknownConnection = 'Unknown connection: %s';
-  SCreateConnection = 'Would you like to create a new connection for this database ?';
-
-  
 { ---------------------------------------------------------------------
   TMainform events
   ---------------------------------------------------------------------}
@@ -333,30 +300,116 @@ Var
   FN : String;
 
 begin
+  //
+  Caption := sld_Lazarusdatabasedesktop;
+  //
+  MFile.Caption:= sld_Menufile;
+  MenuItem2.Caption:= sld_Menuedit;
+  MIDataDict.Caption:= sld_Menudictionary;
+  MIConnection.Caption:= sld_Menuconnections;
+  MIImport.Caption:= sld_Menudictionaryimport;
+  MICloseSep.Caption:= sld_Separator;
+  MISep.Caption:= sld_Separator;
+  MIDDSep.Caption:= sld_Separator;
+  MIDDSep2.Caption:= sld_Separator;
+  MIDDSep3.Caption:= sld_Separator;
+  //
+  ASave.Caption:= sld_Actionsave;
+  ASave.Hint:= sld_ActionsaveH;
+  ANew.Caption:= sld_Actionnew;
+  ANew.Hint:= sld_ActionnewH;
+  AExit.Caption:= sld_Actionexit;
+  AExit.Hint:= sld_ActionexitH;
+  AOpen.Caption:= sld_Actionopen;
+  AOpen.Hint:= sld_ActionopenH;
+  AClose.Caption:= sld_Actionclose;
+  AClose.Hint:= sld_ActioncloseH;
+  ACloseAll.Caption:= sld_Actioncloseall;
+  ACloseAll.Hint:= sld_ActioncloseallH;
+  ASaveAs.Caption:= sld_Actionsaveas;
+  ASaveAs.Hint:= sld_ActionsaveasH;
+  AOpenRecentDatadict.Caption:= sld_Actionopenrecentdatadict;
+  AOpenRecentDatadict.Hint:= sld_ActionopenrecentdatadictH;
+  ADeleteRecentDataDict.Caption:= sld_Actiondeleterecentdatadict;
+  //
+  ACut.Caption:= sld_Actioncut;
+  ACut.Hint:= sld_ActioncutH;
+  ACopy.Caption:= sld_Actioncopy;
+  ACopy.Hint:= sld_ActioncopyH;
+  APaste.Caption:= sld_Actionpaste;
+  APaste.Hint:= sld_ActionpasteH;
+  //
+  ANewTable.Caption:= sld_Actionnewtable;
+  ANewTable.Hint:= sld_ActionnewtableH;
+  ANewField.Caption:= sld_Actionnewfield;
+  ANewField.Hint:= sld_ActionnewfieldH;
+  ADeleteObject.Caption:= sld_Actiondeleteobject;
+  ADeleteObject.Hint:= sld_ActiondeleteobjectH;
+  AGenerateSQL.Caption:= sld_Actiongeneratesql;
+  AGenerateSQL.Hint:= sld_ActiongeneratesqlH;
+  ANewIndex.Caption:= sld_Actionnewindex;
+  ANewIndex.Hint:= sld_ActionnewindexH;
+  ACreateCode.Caption:= sld_Actioncreatecode;
+  ACreateCode.Hint:= sld_ActioncreatecodeH;
+  AAddForeignKey.Caption:= sld_Actionaddforeignkey;
+  AAddForeignKey.Hint:= sld_ActionaddforeignkeyH;
+  AAddDomain.Caption:= sld_Actionadddomain;
+  AAddDomain.Hint:= sld_ActionadddomainH;
+  AAddSequence.Caption:= sld_Actionaddsequence;
+  AAddSequence.Hint:= sld_ActionaddsequenceH;
+  //
+  ANewConnection.Caption:= sld_Actionnewconnection;
+  ADeleteConnection.Caption:= sld_Actiondeleteconnection;
+  ACopyConnection.Caption:= sld_Actioncopyconnection;
+  AOpenConnection.Caption:= sld_Actionopenconnection;
+  AOpenConnection.Hint:= sld_ActionopenconnectionH;
+  //
+  //
+  TSRecent.Caption:= sld_Dictionaries;
+  TSConnections.Caption:= sld_Connections;
+  LVDicts.Column[0].Caption:= sld_Recentlv1;
+  LVDicts.Column[1].Caption:= sld_Recentlv2;
+  LVDicts.Column[2].Caption:= sld_Recentlv3;
+  LVConnections.Column[0].Caption:= sld_Connectionlv1;
+  LVConnections.Column[1].Caption:= sld_Connectionlv2;
+  LVConnections.Column[2].Caption:= sld_Connectionlv3;
+  LVConnections.Column[3].Caption:= sld_Connectionlv4;
+  //
+  ODDD.Title:= sld_opendatadictionarytitle;
+  ODDD.Filter:= sld_opendatadictionaryfilter;
+  SDDD.Title:= sld_savefileastitle;
+  SDDD.Filter:= sld_savefileasfilter;
+  //
+  //
   // Register DD engines.
   RegisterDDEngines;
   // Register standard export formats.
   RegisterStdFormats;
   FRecentDicts:=TRecentDataDicts.Create(TRecentDataDict);
   FRecentConnections:=TRecentConnections.Create(TRecentConnection);
-  FN:=GetAppConfigDirUTF8(False);
+  FN:=SysToUTF8(GetAppConfigDir(False));
   ForceDirectoriesUTF8(FN);
-  FN:=GetAppConfigFile(False);
+  FN:=SysToUTF8(GetAppConfigFile(False));
   FRecentDicts.LoadFromFile(UTF8ToSys(FN),'RecentDicts');
   FRecentConnections.LoadFromFile(UTF8ToSys(FN),'RecentConnections');
   ShowRecentDictionaries;
   ShowRecentConnections;
   ShowDDImports;
   ShowNewConnectionTypes;
-  PSMain.IniFileName:=ChangeFileExt(FN,'.ini');
-  LVDicts.Columns[0].Width:=150;
-  LVDicts.Columns[1].Width:=150;
+  PSMain.IniFileName:=ChangeFileExt(UTF8ToSys(FN),'.ini');
+  LVDicts.Columns[0].Width:=120;
+  LVDicts.Columns[1].Width:=380;
   LVDicts.Columns[2].Width:=150;
+  LVConnections.Column[0].Width:=120;
+  LVConnections.Column[1].Width:=120;
+  LVConnections.Column[2].Width:=150;
+  LVConnections.Column[3].Width:=260;
   RegisterConnectionCallBacks;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(FRecentConnections);
   FreeAndNil(FRecentDicts);
 end;
 
@@ -571,7 +624,7 @@ begin
   If (FRecentConnections.Count>0) then
     begin
     MR:=TMenuItem.Create(Self);
-    MR.Caption:='From connection';
+    MR.Caption:=sld_Fromconnection;
     MIimport.Insert(0,MR);
     L:=TStringList.Create;
     Try
@@ -758,6 +811,7 @@ begin
     CurrentConnection.CreateCode;
     end;
 end;
+
 
 procedure TMainForm.ACreateCodeUpdate(Sender: TObject);
 
@@ -1088,7 +1142,8 @@ Var
 begin
   CE:=CurrentConnection;
   CE.DisConnect;
-  Application.ReleaseComponent(ce);
+  Application.ReleaseComponent(CE);
+  CE.Free;
   Result:=mrOK;
 end;
 
@@ -1348,11 +1403,6 @@ begin
   ShowDDImports;
 end;
 
-procedure TMainForm.PCDDChange(Sender: TObject);
-begin
-
-end;
-
 
 Function TMainForm.FindLi(LV : TListView;RI : TRecentItem) : TListItem;
 
@@ -1466,8 +1516,6 @@ begin
 end;
 
 procedure TMainForm.NewConnection(EngineName : String);
-
-
 Var
   DDE : TFPDDengine;
   CDE : TConnectionEditor;
@@ -1525,9 +1573,43 @@ begin
     end;
 end;
 
+procedure TranslateStrs;
+const
+  ext      = '.%s.po';
+var
+  LangID1, LangID2, basedir, olddir: String;
+begin
+  olddir := GetCurrentDir;
+  //
+  SetCurrentDir(ExtractFilePath(Application.Exename));
+  basedir := AppendPathDelim('..') + AppendPathDelim('..');
+  //
+  LangID1 := Application.GetOptionValue('language');
+  LangID2 := '';
+  if Trim(LangId1) = '' then
+  begin
+    LCLGetLanguageIDs(LangID1,LangID2);
+    if LangID2 = 'pt' then
+    begin
+       LangID1 := 'pb';
+       LangID2 := '';
+    end;
+  end;
+  TranslateUnitResourceStrings('sdb_consts',basedir+
+               'components/dbexport/languages/sdb_consts'+ext, LangID1,LangID2);
+  TranslateUnitResourceStrings('ldd_consts',basedir+
+               'components/datadict/languages/ldd_consts'+ext, LangID1,LangID2);
+  TranslateUnitResourceStrings('lclstrconsts',basedir+
+               'lcl/languages/lclstrconsts'+ext, LangID1,LangID2);
+  TranslateUnitResourceStrings('lazdatadeskstr',basedir+
+               'tools/lazdatadesktop/languages/lazdatadeskstr'+ext, LangID1,LangID2);
+  //
+  SetCurrentDir(olddir);
+end;
 
 initialization
   {$I frmmain.lrs}
+  TranslateStrs;
 
 end.
 

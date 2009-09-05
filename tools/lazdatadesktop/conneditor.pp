@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls,
-  graphics, imglist, lresources, RTTIGrids, querypanel;
+  graphics, imglist, lresources, RTTIGrids, querypanel, lazdatadeskstr;
 
 Type
 
@@ -101,28 +101,6 @@ Const
   iiProcedure  = 8;
 }
 
-ResourceString
-  SNodeTables         = 'Tables';
-  SNodeFields         = 'Fields';
-  SNodeIndexes        = 'Indexes';
-  SNewDictionary      = 'New database';
-  SNodeDataBase       = 'Database';
-  SNodeTableData      = 'Table Data';
-  SNodeIndexOptions   = 'Index options: ';
-  SNodeIndexFields    = 'Index fields: ';
-  SParameter          = 'Parameter';
-  SValue              = 'Value';
-  SEngineType         = 'Engine';
-  SDescription        = 'Description';
-  SColName            = 'Name';
-  SColType            = 'Type';
-  SColSize            = 'Size';
-  SColFields          = 'Fields';
-  SColOptions         = 'Options';
-  SQuery              = 'Run query';
-  SObject             = 'Selected object';
-
-
 implementation
 
 uses typinfo, datapanel;
@@ -194,7 +172,7 @@ begin
   FTSDisplay:=TTabsheet.Create(Self);
   FTSDisplay.Name:='FTSDisplay';
   FTSDisplay.parent:=FPC;
-  FTSDisplay.Caption:=SObject;
+  FTSDisplay.Caption:=SSelectedObject;
   // Query tab sheet
   FTSQuery:=TTabsheet.Create(Self);
   FTSQuery.Name:='FTSQuery';

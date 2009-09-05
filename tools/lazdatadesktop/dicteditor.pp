@@ -174,29 +174,7 @@ Const
 
 implementation
 
-uses DB, MemDS, fpcodegenerator, TypInfo;
-
-ResourceString
-  SNodeDataDictionary = 'Datadictionary';
-  SNodeTables         = 'Tables';
-  SNodeFields         = 'Fields';
-  SNodeDomains        = 'Domains';
-  SNodeSequences      = 'Sequences';
-  SNodeForeignkeys    = 'Foreign keys';
-  SNewDictionary      = 'New dictionary';
-  SNodeIndexes         = 'Indexes';
-  STable = 'Table';
-  SField = 'Field';
-  SIndex = 'Index';
-  SSequence = 'Sequence';
-  SForeignKey = 'Foreign key';
-  SDomain = 'Domain';
-  SNew = 'New %s';
-  SErrUnknownType = 'Unknown object type: %d';
-  SNewObject = 'Create new %s';
-  SNameFor = 'Enter a name for the new %s';
-  SDeleteObject = 'Delete this %s';
-  SObject = 'Object';
+uses DB, MemDS, fpcodegenerator, TypInfo, lazdatadeskstr;
 
 Function ObjectTypeName(ObjectType : TEditObjectType) : String;
 

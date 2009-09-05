@@ -12,7 +12,11 @@
       <AutoCreateForms Value="False"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Data Desktop"/>
+      <Icon Value="0"/>
     </General>
+    <i18n>
+      <OutDir Value="languages"/>
+    </i18n>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -26,29 +30,29 @@
     </RunParams>
     <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="lazdatadict"/>
+        <PackageName Value="lazdbexport"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="SQLDBLaz"/>
+        <PackageName Value="lazdatadict"/>
       </Item3>
       <Item4>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="SynEdit"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SQLDBLaz"/>
       </Item5>
       <Item6>
-        <PackageName Value="DBFLaz"/>
-        <MinVersion Minor="1" Release="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item6>
       <Item7>
-        <PackageName Value="lazdbexport"/>
+        <PackageName Value="DBFLaz"/>
+        <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -70,6 +74,7 @@
         <Filename Value="frmimportdd.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ImportDDform"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmimportdd"/>
       </Unit3>
       <Unit4>
@@ -117,6 +122,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmselectconnectiontype"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="lazdatadeskstr.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazdatadeskstr"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -125,7 +135,7 @@
       <Filename Value="lazdatadesktop"/>
     </Target>
     <SearchPaths>
-      <Libraries Value="/opt/gnome/lib/"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Options>
