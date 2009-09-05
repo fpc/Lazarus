@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ButtonPanel, EditBtn, CheckLst, ComCtrls, RTTIGrids, fpdbexport,
-  Buttons, ActnList;
+  Buttons, ActnList, sdb_consts;
 
 type
   { TBaseConfigExportForm }
@@ -249,6 +249,16 @@ end;
 
 procedure TBaseConfigExportForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption:= sdb_Configuredataexport;
+  LEFileName.Caption:= sdb_Filename;
+  TSFields.Caption:= sdb_Fields;
+  TSFormatting.Caption:= sdb_Formatting;
+  LCLBFields.Caption:= sdb_Selectfieldstoexport;
+  Label2.Caption:= sdb_Propertiesforselectedfield;
+  SBup.Hint:= sdb_Moveselectedfieldup;
+  SBDown.Hint:= sdb_Moveselectedfielddown;
+  //
   PButtons.OKButton.OnClick:=@OnOKClick;
 end;
 

@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls;
+  ComCtrls, sdb_consts;
 
 type
 
@@ -31,6 +31,7 @@ type
     BCancel: TButton;
     LProgress: TLabel;
     PBExport: TProgressBar;
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
     FCount : Integer;
@@ -47,10 +48,16 @@ var
 
 implementation
 
-resourcestring
-  SProgress = 'Exporting %d records';
-
 { TExportProgressForm }
+
+procedure TExportProgressForm.FormCreate(Sender: TObject);
+begin
+  //
+  Caption := sdb_Exportprogress;
+  LProgress.Caption:= Format(SProgress,[0]);
+  BCancel.Caption:= sdb_Cancel;
+  //
+end;
 
 function TExportProgressForm.GetOnCancel: TNotifyEvent;
 begin

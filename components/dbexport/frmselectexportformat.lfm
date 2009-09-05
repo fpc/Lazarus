@@ -3,14 +3,14 @@ object SelectExportFormatForm: TSelectExportFormatForm
   Height = 295
   Top = 254
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 294
   ActiveControl = BPButtons.CancelButton
   Caption = 'Select data export Format'
   ClientHeight = 295
   ClientWidth = 400
+  OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object RGFormats: TRadioGroup
     Left = 8
     Height = 224
@@ -32,11 +32,9 @@ object SelectExportFormatForm: TSelectExportFormatForm
   end
   object BPButtons: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 253
+    Height = 35
+    Top = 254
     Width = 388
-    Align = alBottom
-    AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowGlyphs = [pbOK, pbCancel]

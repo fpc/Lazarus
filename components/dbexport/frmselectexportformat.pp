@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ButtonPanel, fpdbexport;
+  ButtonPanel, fpdbexport, sdb_consts;
 
 type
 
@@ -30,6 +30,7 @@ type
   TSelectExportFormatForm = class(TForm)
     BPButtons: TButtonPanel;
     RGFormats: TRadioGroup;
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     function GetSelected: TExportFormatItem;
     procedure RGFormatsClick(Sender: TObject);
@@ -52,6 +53,14 @@ implementation
 procedure TSelectExportFormatForm.FormShow(Sender: TObject);
 begin
   FillFormats;
+end;
+
+procedure TSelectExportFormatForm.FormCreate(Sender: TObject);
+begin
+  //
+  Caption:= sdb_Selectdataexportformat;
+  RGFormats.Caption:=sdb_Availableexportformats;
+  //
 end;
 
 function TSelectExportFormatForm.GetSelected: TExportFormatItem;

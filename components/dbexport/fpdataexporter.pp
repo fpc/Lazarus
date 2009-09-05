@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, DB, fpdbexport,
-  forms, controls, dialogs, frmexportprogress;
+  forms, controls, dialogs, frmexportprogress, sdb_consts;
 
 Type
 
@@ -56,10 +56,6 @@ Type
 implementation
 
 uses typinfo, frmSelectExportFormat, frmBaseConfigExport;
-
-Resourcestring
-  SNRecordsExported = 'Succesfully exported %d records.';
-  SCancelRecordsExported = 'Exported %d before user canceled.';
   
 procedure TFPDataExporter.SetDataset(const AValue: TDataset);
 begin

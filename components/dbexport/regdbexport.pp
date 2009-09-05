@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, lresources, dbPropEdits, propedits,
-  componenteditors, fpdataexporter, dialogs;
+  componenteditors, fpdataexporter, dialogs, sdb_consts;
 
 Type
   { TExportFieldProperty }
@@ -41,11 +41,6 @@ Type
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
-
-Resourcestring
-  SExecute = 'Execute...';
-  SErrNoDatasetAssigned = 'DataExporter has no Dataset assigned.';
-  SErrOpeningDataset = 'Could not open dataset for exporting: %s';
 
 Procedure Register;
 
