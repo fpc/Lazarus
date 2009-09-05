@@ -282,6 +282,7 @@ components/datadict/languages/ldd_consts.pb.po svneol=native#text/plain
 components/datadict/languages/ldd_consts.po svneol=native#text/plain
 components/datadict/lazdatadict.lpk svneol=native#text/plain
 components/datadict/lazdatadict.pas svneol=native#text/plain
+components/datadict/ldd_consts.pas svneol=native#text/plain
 components/datadict/reglazdatadict.lrs svneol=native#text/pascal
 components/datadict/reglazdatadict.pp svneol=native#text/plain
 components/datadict/testdatadict.lpi svneol=native#text/plain
