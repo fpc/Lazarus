@@ -2057,6 +2057,7 @@ resourcestring
   srkmecEditorTop             = 'Move cursor to absolute beginning';
   srkmecEditorBottom          = 'Move cursor to absolute end';
   srkmecGotoXY                = 'Goto XY';
+  srkmecLineTextStart         = 'Move cursor to text start in line';
   srkmecSelLeft               = 'SelLeft';
   srkmecSelRight              = 'SelRight';
   srkmecSelUp                 = 'Select Up';
@@ -2073,6 +2074,7 @@ resourcestring
   srkmecSelPageBottom         = 'Select Page Bottom';
   srkmecSelEditorTop          = 'Select to absolute beginning';
   srkmecSelEditorBottom       = 'Select to absolute end';
+  srkmecSelLineTextStart      = 'Select to text start in line';
   srkmecColSelUp              = 'Column Select Up';
   srkmecColSelDown            = 'Column Select Down';
   srkmecColSelLeft            = 'Column Select Left';
@@ -2087,6 +2089,7 @@ resourcestring
   srkmecColSelLineEnd         = 'Column Select Line End';
   srkmecColSelEditorTop       = 'Column Select to absolute beginning';
   srkmecColSelEditorBottom    = 'Column Select to absolute end';
+  srkmecColSelLineTextStart   = 'Column Select to text start in line';
   srkmecSelGotoXY             = 'Select Goto XY';
   srkmecSelectAll             = 'Select All';
   srkmecDeleteLastChar        = 'Delete Last Char';

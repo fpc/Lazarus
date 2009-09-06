@@ -314,6 +314,7 @@ type
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
+  TSynHomeMode = (synhmDefault, synhmFirstWord);
   { TCustomSynEdit }
 
   TCustomSynEdit = class(TSynEditBase)
@@ -475,7 +476,7 @@ type
     procedure ComputeCaret(X, Y: Integer);
     procedure DoBlockIndent;
     procedure DoBlockUnindent;
-    procedure DoHomeKey;
+    procedure DoHomeKey(aMode: TSynHomeMode = synhmDefault);
     procedure DoEndKey;
     procedure DoTabKey;
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
@@ -5648,6 +5649,10 @@ begin
         begin
           DoHomeKey;
         end;
+      ecLineTextStart, ecSelLineTextStart, ecColSelLineTextStart:
+        begin
+          DoHomeKey(synhmFirstWord);
+        end;
       ecLineEnd, ecSelLineEnd, ecColSelLineEnd:
         begin
           DoEndKey;
@@ -7341,7 +7346,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.DoHomeKey;
+procedure TCustomSynEdit.DoHomeKey(aMode: TSynHomeMode = synhmDefault);
 // jump to start of line (x=1),
 // or if already there, jump to first non blank char
 // or if blank line, jump to line indent position
@@ -7356,7 +7361,7 @@ begin
   OldPos := LogicalCaretXY;
   NewPos := OldPos;
 
-  if not (eoEnhanceHomeKey in fOptions) and (CaretX > 1) then 
+  if not(eoEnhanceHomeKey in fOptions) and (CaretX > 1) and (aMode in [synhmDefault]) then
   begin
     // not at start of line -> jump to start of line
     NewPos.X := 1;
@@ -7377,7 +7382,7 @@ begin
     end else
       s := '';
 
-    if FirstNonBlank >= 1 then 
+    if (FirstNonBlank >= 1) or (aMode in [synhmFirstWord]) then
     begin
       // this line is not blank
       LineStart := FirstNonBlank;
@@ -7389,7 +7394,8 @@ begin
     end;
 
     NewPos.X:=LineStart;
-    if (eoEnhanceHomeKey in fOptions) and (OldPos.X>1) and (OldPos.X<=NewPos.X)
+    if (eoEnhanceHomeKey in fOptions)  and (aMode in [synhmDefault]) and
+       (OldPos.X>1) and (OldPos.X<=NewPos.X)
     then begin
       NewPos.X:=1;
     end;

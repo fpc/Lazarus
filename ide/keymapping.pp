@@ -1751,6 +1751,7 @@ begin
     ecEditorTop               : Result:= srkmecEditorTop;
     ecEditorBottom            : Result:= srkmecEditorBottom;
     ecGotoXY                  : Result:= srkmecGotoXY;
+    ecLineTextStart           : Result:= srkmecLineTextStart;
     ecSelLeft                 : Result:= srkmecSelLeft;
     ecSelRight                : Result:= srkmecSelRight;
     ecSelUp                   : Result:= srkmecSelUp;
@@ -1767,6 +1768,7 @@ begin
     ecSelPageBottom           : Result:= srkmecSelPageBottom;
     ecSelEditorTop            : Result:= srkmecSelEditorTop;
     ecSelEditorBottom         : Result:= srkmecSelEditorBottom;
+    ecSelLineTextStart        : Result:= srkmecSelLineTextStart;
     ecColSelUp                : Result:= srkmecColSelUp;
     ecColSelDown              : Result:= srkmecColSelDown;
     ecColSelLeft              : Result:= srkmecColSelLeft;
@@ -1781,6 +1783,7 @@ begin
     ecColSelLineEnd           : Result:= srkmecColSelLineEnd;
     ecColSelEditorTop         : Result:= srkmecColSelEditorTop;
     ecColSelEditorBottom      : Result:= srkmecColSelEditorBottom;
+    ecColSelLineTextStart     : Result:= srkmecColSelLineTextStart;
     ecSelGotoXY               : Result:= srkmecSelGotoXY;
     ecSelectAll               : Result:= srkmecSelectAll;
     ecDeleteLastChar          : Result:= srkmecDeleteLastChar;
@@ -2257,6 +2260,7 @@ begin
   AddDefault(C, 'Move cursor word left', srkmecWordLeft, ecWordLeft);
   AddDefault(C, 'Move cursor word right', srkmecWordRight, ecWordRight);
   AddDefault(C, 'Move cursor to line start', srkmecLineStart, ecLineStart);
+  AddDefault(C, 'Move cursor to text start in line', srkmecLineTextStart, ecLineTextStart);
   AddDefault(C, 'Move cursor to line end', srkmecLineEnd, ecLineEnd);
   AddDefault(C, 'Move cursor up one page', srkmecPageUp, ecPageUp);
   AddDefault(C, 'Move cursor down one page', srkmecPageDown, ecPageDown);
@@ -2304,6 +2308,7 @@ begin
   AddDefault(C, 'Select word left', lisKMSelectWordLeft, ecSelWordLeft);
   AddDefault(C, 'Select word right', lisKMSelectWordRight, ecSelWordRight);
   AddDefault(C, 'Select line start', lisKMSelectLineStart, ecSelLineStart);
+  AddDefault(C, 'Select to text start in line', srkmecSelLineTextStart, ecSelLineTextStart);
   AddDefault(C, 'Select line end', lisKMSelectLineEnd, ecSelLineEnd);
   AddDefault(C, 'Select page top', lisKMSelectPageTop, ecSelPageTop);
   AddDefault(C, 'Select page bottom', lisKMSelectPageBottom, ecSelPageBottom);
@@ -2344,6 +2349,7 @@ begin
   AddDefault(C, 'Column Select Page Up', srkmecColSelPageUp, ecColSelPageUp);
   AddDefault(C, 'Column Select Page Top', srkmecColSelPageTop, ecColSelPageTop);
   AddDefault(C, 'Column Select Line Start', srkmecColSelLineStart, ecColSelLineStart);
+  AddDefault(C, 'Column Select to text start in line', srkmecColSelLineTextStart, ecColSelLineTextStart);
   AddDefault(C, 'Column Select Line End', srkmecColSelLineEnd, ecColSelLineEnd);
   AddDefault(C, 'Column Select to absolute beginning', srkmecColSelEditorTop, ecColSelEditorTop);
   AddDefault(C, 'Column Select to absolute end', srkmecColSelEditorBottom, ecColSelEditorBottom);
