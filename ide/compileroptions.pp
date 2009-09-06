@@ -745,7 +745,11 @@ const
     'Run'
     );
   LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
+{$IFDEF DARWIN}
+    ' -Fl/usr/X11R6/lib -Fl/sw/lib' // gtk
+{$ELSE}
     '', // gtk
+{$ENDIF}
     '', // gtk2
     '', // win32
     '', // wince
