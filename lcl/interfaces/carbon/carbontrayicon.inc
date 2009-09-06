@@ -24,6 +24,7 @@ type
     // SubMenuItems: Holds all items in submenus
     SubMenuOwners: array of NSMenu;
     SubMenuItems: array of NSMenuItem;
+    SubMenuImages: array of NSImage;
     { Structural Methods }
     constructor Create; override;
     destructor Destroy; override;
@@ -38,7 +39,8 @@ type
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     procedure ReleaseMenu();
     procedure RemoveIcon();
-    function IconToNSImage(AIcon: TIcon): NSImage;
+    function ConvertTIconToNSImage(AIcon: TIcon): NSImage;
+    function ConvertTBitmapToNSImage(ABitmap: TBitmap): NSImage;
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
@@ -180,6 +182,8 @@ var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
   subitemindex: Integer;
+  subimageindex: Integer;
+  AImage: NSImage;
 begin
   { The MenuItem is a separator }
   if AMenuItem.Caption = '-' then
@@ -206,6 +210,18 @@ begin
     if AMenuItem.Checked then Result.setState(NSOnState)
     else Result.setState(NSOffState);
 
+    { Assign the item image, if any }
+    if (AMenuItem.Bitmap <> nil) and (not AMenuItem.Bitmap.Empty) then
+    begin
+      AImage := ConvertTBitmapToNSImage(AMenuItem.Bitmap);
+      Result.setImage(AImage.Handle);
+
+      // We also need to free the images
+      subimageindex := Length(SubMenuImages);
+      SetLength(SubMenuImages, subimageindex + 1);
+      SubMenuImages[subimageindex] := AImage;
+    end;
+
     { We use the Tag to hold the LCL MenuItem
       RepresentedObject was also tried, by it crashed.
       Cocoa probably tryes to use it as a real Cocoa object }
@@ -226,9 +242,12 @@ begin
     if SubMenuOwners[i] <> nil then SubMenuOwners[i].Free;
   for i := 0 to Length(SubMenuItems) - 1 do
     if (SubMenuItems[i] <> nil) then SubMenuItems[i].Free;
+  for i := 0 to Length(SubMenuImages) - 1 do
+    if (SubMenuImages[i] <> nil) then SubMenuImages[i].Free;
 
   SetLength(SubMenuOwners, 0);
   SetLength(SubMenuItems, 0);
+  SetLength(SubMenuImages, 0);
 
   if item <> nil then
     item.setMenu(nil);
@@ -246,7 +265,7 @@ begin
     bar.removeStatusItem(item.Handle);
 end;
 
-function TPrivateCocoaCarbonTrayIcon.IconToNSImage(AIcon: TIcon): NSImage;
+function TPrivateCocoaCarbonTrayIcon.ConvertTIconToNSImage(AIcon: TIcon): NSImage;
 var
   ASize: NSSize;
   ACGRect: CGRect;
@@ -270,6 +289,41 @@ begin
   Result.lockFocus;
   AcurrentContext := NSGraphicsContext.currentContext();
   CGContextDrawImage(AcurrentContext.graphicsPort, ACGRect, TCarbonBitmap(AIcon.Handle).CGImage);
+  {$ifdef VerboseCarbonTrayIcon}
+    WriteLn('::[TCarbonWSCustomTrayIcon.Show]',
+     ' AcurrentContext ', IntToHex(PtrUInt(Pointer(AcurrentContext)), 8),
+     ' AcurrentContext.ClassID ', IntToHex(Int64(AcurrentContext.ClassID), 8),
+     ' AcurrentContext.Handle ', IntToHex(Int64(AcurrentContext.Handle), 8),
+     ' AcurrentContext.graphicsPort ', IntToHex(Int64(AcurrentContext.graphicsPort), 8)
+     );
+  {$endif VerboseCarbonTrayIcon}
+  Result.unlockFocus;
+end;
+
+function TPrivateCocoaCarbonTrayIcon.ConvertTBitmapToNSImage(ABitmap: TBitmap): NSImage;
+var
+  ASize: NSSize;
+  ACGRect: CGRect;
+  AcurrentContext: NSGraphicsContext;
+begin
+  Result := nil;
+
+  if (ABitmap = nil) or (ABitmap.Empty) then Exit;
+
+  { Convert our CFImageRef to a NSImage }
+
+  ASize.width := TCarbonBitmap(ABitmap.Handle).Width;
+  ASize.height := TCarbonBitmap(ABitmap.Handle).Height;
+  ACGRect.size.width := ASize.width;
+  ACGRect.size.height := ASize.height;
+  ACGRect.origin.x := 0;
+  ACGRect.origin.y := 0;
+
+  Result := NSImage.initWithSize(ASize);
+  Result.setCacheMode(NSImageCacheNever);
+  Result.lockFocus;
+  AcurrentContext := NSGraphicsContext.currentContext();
+  CGContextDrawImage(AcurrentContext.graphicsPort, ACGRect, TCarbonBitmap(ABitmap.Handle).CGImage);
   {$ifdef VerboseCarbonTrayIcon}
     WriteLn('::[TCarbonWSCustomTrayIcon.Show]',
      ' AcurrentContext ', IntToHex(PtrUInt(Pointer(AcurrentContext)), 8),
@@ -333,7 +387,7 @@ begin
 
   { Converts the icon to NSImage }
 
-  APrivateTrayIcon.image := APrivateTrayIcon.IconToNSImage(ATrayIcon.Icon);
+  APrivateTrayIcon.image := APrivateTrayIcon.ConvertTIconToNSImage(ATrayIcon.Icon);
 
   { Shows the icon }
 
@@ -381,7 +435,7 @@ begin
 
   APrivateTrayIcon.image.Free;
 
-  APrivateTrayIcon.image := APrivateTrayIcon.IconToNSImage(ATrayIcon.Icon);
+  APrivateTrayIcon.image := APrivateTrayIcon.ConvertTIconToNSImage(ATrayIcon.Icon);
   APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
 
   { Inserts the menu }
