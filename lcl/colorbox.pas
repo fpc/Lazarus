@@ -431,6 +431,9 @@ procedure TCustomColorBox.SetSelected(Value: TColor);
 var
   c: integer;
 begin
+  if Selected = Value then
+    Exit;
+
   if HandleAllocated then
   begin
     FSelected := Value;
@@ -439,6 +442,7 @@ begin
       if Colors[c] = Value then
       begin
         ItemIndex := c;
+        inherited Change;
         Exit;
       end;
     end;
@@ -453,6 +457,7 @@ begin
   end
   else
     FSelected := Value;
+  inherited Change;
 end;
 
 procedure TCustomColorBox.SetStyle(const AValue: TColorBoxStyle);
