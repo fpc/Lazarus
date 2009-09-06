@@ -9714,7 +9714,7 @@ var
   p: TPoint;
 begin
   // return cached value to prevent heavy gdk_window_at_pointer call
-  if (APoint = LastWFPMousePos) then
+  if (APoint = LastWFPMousePos) and GTK_IS_OBJECT(Pointer(LastWFPResult)) then
     Exit(LastWFPResult);
   Result := 0;
 
