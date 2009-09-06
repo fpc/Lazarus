@@ -38,6 +38,7 @@ type
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     procedure ReleaseMenu();
     procedure RemoveIcon();
+    function IconToNSImage(AIcon: TIcon): NSImage;
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
@@ -245,6 +246,41 @@ begin
     bar.removeStatusItem(item.Handle);
 end;
 
+function TPrivateCocoaCarbonTrayIcon.IconToNSImage(AIcon: TIcon): NSImage;
+var
+  ASize: NSSize;
+  ACGRect: CGRect;
+  AcurrentContext: NSGraphicsContext;
+begin
+  Result := nil;
+
+  if (AIcon = nil) or (AIcon.Empty) then Exit;
+
+  { Convert our CFImageRef to a NSImage }
+
+  ASize.width := TCarbonBitmap(AIcon.Handle).Width;
+  ASize.height := TCarbonBitmap(AIcon.Handle).Height;
+  ACGRect.size.width := ASize.width;
+  ACGRect.size.height := ASize.height;
+  ACGRect.origin.x := 0;
+  ACGRect.origin.y := 0;
+
+  Result := NSImage.initWithSize(ASize);
+  Result.setCacheMode(NSImageCacheNever);
+  Result.lockFocus;
+  AcurrentContext := NSGraphicsContext.currentContext();
+  CGContextDrawImage(AcurrentContext.graphicsPort, ACGRect, TCarbonBitmap(AIcon.Handle).CGImage);
+  {$ifdef VerboseCarbonTrayIcon}
+    WriteLn('::[TCarbonWSCustomTrayIcon.Show]',
+     ' AcurrentContext ', IntToHex(PtrUInt(Pointer(AcurrentContext)), 8),
+     ' AcurrentContext.ClassID ', IntToHex(Int64(AcurrentContext.ClassID), 8),
+     ' AcurrentContext.Handle ', IntToHex(Int64(AcurrentContext.Handle), 8),
+     ' AcurrentContext.graphicsPort ', IntToHex(Int64(AcurrentContext.graphicsPort), 8)
+     );
+  {$endif VerboseCarbonTrayIcon}
+  Result.unlockFocus;
+end;
+
 { Here we try to get the LCL MenuItem from the Tag and then call
   it's OnClick method }
 class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: objc.id;
@@ -279,9 +315,6 @@ end;
 class function TCarbonWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
-  ASize: NSSize;
-  ACGRect: CGRect;
-  AcurrentContext: NSGraphicsContext;
 begin
   {$ifdef VerboseCarbonTrayIcon}
     WriteLn(':>[TCarbonWSCustomTrayIcon.Show]');
@@ -297,30 +330,10 @@ begin
   APrivateTrayIcon.LCLTrayIcon := ATrayIcon;
 
   ATrayIcon.Handle := PtrInt(APrivateTrayIcon);
-  
-  { Convert our CFImageRef to a NSImage }
 
-  ASize.width := TCarbonBitmap(ATrayIcon.Icon.Handle).Width;
-  ASize.height := TCarbonBitmap(ATrayIcon.Icon.Handle).Height;
-  ACGRect.size.width := ASize.width;
-  ACGRect.size.height := ASize.height;
-  ACGRect.origin.x := 0;
-  ACGRect.origin.y := 0;
-  
-  APrivateTrayIcon.image := NSImage.initWithSize(ASize);
-  APrivateTrayIcon.image.setCacheMode(NSImageCacheNever);
-  APrivateTrayIcon.image.lockFocus;
-  AcurrentContext := NSGraphicsContext.currentContext();
-  CGContextDrawImage(AcurrentContext.graphicsPort, ACGRect, TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage);
-  {$ifdef VerboseCarbonTrayIcon}
-    WriteLn('::[TCarbonWSCustomTrayIcon.Show]',
-     ' AcurrentContext ', IntToHex(PtrUInt(Pointer(AcurrentContext)), 8),
-     ' AcurrentContext.ClassID ', IntToHex(Int64(AcurrentContext.ClassID), 8),
-     ' AcurrentContext.Handle ', IntToHex(Int64(AcurrentContext.Handle), 8),
-     ' AcurrentContext.graphicsPort ', IntToHex(Int64(AcurrentContext.graphicsPort), 8)
-     );
-  {$endif VerboseCarbonTrayIcon}
-  APrivateTrayIcon.image.unlockFocus;
+  { Converts the icon to NSImage }
+
+  APrivateTrayIcon.image := APrivateTrayIcon.IconToNSImage(ATrayIcon.Icon);
 
   { Shows the icon }
 
@@ -335,7 +348,8 @@ begin
   if ATrayIcon.PopUpMenu <> nil then
   begin
     APrivateTrayIcon.menu := APrivateTrayIcon.CreateMenu(ATrayIcon.PopUpMenu);
-    APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
+    if APrivateTrayIcon.item <> nil then
+      APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
   end;
 
   Result := True;
@@ -362,6 +376,13 @@ begin
 
   // The update is only necessary for a visible TTrayIcon
   if not ATrayIcon.Visible then Exit;
+
+  { Updates the image }
+
+  APrivateTrayIcon.image.Free;
+
+  APrivateTrayIcon.image := APrivateTrayIcon.IconToNSImage(ATrayIcon.Icon);
+  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
 
   { Inserts the menu }
 
