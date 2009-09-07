@@ -9744,8 +9744,13 @@ begin
   LastWFPResult := Result;
   // connect handler
   if LastWFPResult <> 0 then
+    {$IFDEF gtk1}
+    gtk_signal_connect(PGtkObject(LastWFPResult), 'destroy',
+      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$else}
     g_signal_connect(GPointer(LastWFPResult), 'destroy',
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$endif}
 end;
 
 //##apiwiz##eps##   // Do not remove
