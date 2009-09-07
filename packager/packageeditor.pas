@@ -1849,7 +1849,8 @@ begin
       ANode:=FilesTreeView.Items.GetFirstNode
     else
       ANode:=ANode.GetFirstChild;
-    while ANode.Text<>CurText do ANode:=ANode.GetNextSibling;
+    while (ANode<>nil) and (ANode.Text<>CurText) do
+      ANode:=ANode.GetNextSibling;
     if ANode=nil then break;
     ASelection.Delete(0);
   end;
