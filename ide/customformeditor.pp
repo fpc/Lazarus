@@ -124,6 +124,7 @@ each control that's dropped onto the form
     FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
     FDesignerBaseClasses: TFPList; // list of TComponentClass
+    FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAVLTreeNode;
@@ -216,6 +217,12 @@ each control that's dropped onto the form
     function GetDesigner(Index: integer): TIDesigner; override;
     function GetCurrentDesigner: TIDesigner; override;
     function GetDesignerByComponent(AComponent: TComponent): TIDesigner; override;
+
+    // designer mediators
+    function GetDesignerMediators(Index: integer): TDesignerMediatorClass; override;
+    procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
+    procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
+    function DesignerMediatorCount: integer; override;
 
     // component editors
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
@@ -864,6 +871,7 @@ begin
   FNonFormForms := TAVLTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
+  FDesignerMediatorClasses:=TFPList.Create;
   for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
@@ -888,6 +896,7 @@ begin
   end;
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
+  FreeAndNil(FDesignerMediatorClasses);
   FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
@@ -1494,6 +1503,29 @@ begin
     Result:=nil
   else
     Result:=AForm.Designer;
+end;
+
+function TCustomFormEditor.GetDesignerMediators(Index: integer
+  ): TDesignerMediatorClass;
+begin
+  Result:=TDesignerMediatorClass(FDesignerMediatorClasses[Index]);
+end;
+
+procedure TCustomFormEditor.RegisterDesignerMediator(
+  MediatorClass: TDesignerMediatorClass);
+begin
+  FDesignerMediatorClasses.Add(MediatorClass);
+end;
+
+procedure TCustomFormEditor.UnregisterDesignerMediator(
+  MediatorClass: TDesignerMediatorClass);
+begin
+  FDesignerMediatorClasses.Remove(MediatorClass);
+end;
+
+function TCustomFormEditor.DesignerMediatorCount: integer;
+begin
+  Result:=FDesignerMediatorClasses.Count;
 end;
 
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent

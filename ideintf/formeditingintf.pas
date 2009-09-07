@@ -85,6 +85,17 @@ type
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 
+  { TDesignerMediator
+    To edit designer forms which do not use the LCL register a TDesignerMediator,
+    which will emulate the painting and handle the mouse. }
+
+  TDesignerMediator = class
+  public
+    class function FormClass: TComponentClass; virtual; abstract;
+    class function CreateMediator(Form: TComponent): TDesignerMediator; virtual; abstract;
+  end;
+  TDesignerMediatorClass = TDesignerMediator;
+
 
   { TAbstractFormEditor }
   
@@ -92,6 +103,7 @@ type
   protected
     function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
+    function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
   public
     // components
     function FindComponentByName(const Name: ShortString
@@ -149,6 +161,12 @@ type
     function CutSelectionToClipboard: Boolean; virtual; abstract;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; virtual; abstract;
+
+    // mediators for non LCL forms
+    procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract;
+    procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract;
+    function DesignerMediatorCount: integer; virtual; abstract;
+    property DesignerMediators[Index: integer]: TDesignerMediatorClass read GetDesignerMediators;
   end;
 
 type
