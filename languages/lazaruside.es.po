@@ -1245,15 +1245,15 @@ msgstr "&Global"
 
 #: lazarusidestrconsts.dlgglyphshowalways
 msgid "Show Always"
-msgstr "Siempre mostrar"
+msgstr "Mostrar"
 
 #: lazarusidestrconsts.dlgglyphshownever
 msgid "Show Never"
-msgstr "Nunca Mostrar"
+msgstr "Ocultar"
 
 #: lazarusidestrconsts.dlgglyphshowsystem
 msgid "Use System Defaults"
-msgstr "Usar opciones predeterminadas del sistema"
+msgstr "Según el sistema"
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -1527,7 +1527,7 @@ msgstr "Visualizar números de líneas en los errores de tiempo de ejecución en
 
 #: lazarusidestrconsts.dlgloaddfile
 msgid "Load desktop settings from file"
-msgstr "Cargar configuraciones del escritorio desde archivo"
+msgstr "Cargar configuración del escritorio"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -1587,11 +1587,11 @@ msgstr "Longitud mínima de línea:"
 
 #: lazarusidestrconsts.dlgmaxrecentfiles
 msgid "Max recent files"
-msgstr "Nº Max de Archivos recientes"
+msgstr "Nº Máximo de Archivos recientes"
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr "Nº Max de Archivos de proyectos recientes"
+msgstr "Nº Máximo de Archivos de Proyecto recientes"
 
 #: lazarusidestrconsts.dlgmethodinspolicy
 msgid "Method insert policy"
@@ -2261,7 +2261,7 @@ msgstr "Parámetros de ejecución"
 
 #: lazarusidestrconsts.dlgsavedfile
 msgid "Save desktop settings to file"
-msgstr "Guardar configuraciones del escritorio a un archivo"
+msgstr "Guardar configuración del escritorio"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -8882,7 +8882,7 @@ msgstr "Unidades..."
 
 #: lazarusidestrconsts.lismenuviewwatches
 msgid "Watches"
-msgstr "Vigilantes"
+msgstr "Watches"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
@@ -12711,7 +12711,7 @@ msgstr "&Propiedades"
 
 #: lazarusidestrconsts.liswlwatchlist
 msgid "Watch list"
-msgstr "Lista de vigilantes"
+msgstr "Lista de Watches"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -13142,7 +13142,7 @@ msgstr "Añadir punto de salto"
 
 #: lazarusidestrconsts.srkmecaddwatch
 msgid "add watch"
-msgstr "añadir vigilante"
+msgstr "añadir watch"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
@@ -13980,7 +13980,7 @@ msgstr "Ver Editor de Fuente"
 
 #: lazarusidestrconsts.srkmectogglewatches
 msgid "View watches"
-msgstr "Ver vigilantes"
+msgstr "Ver watches"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgid "Unfold all"
