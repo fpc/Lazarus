@@ -193,3 +193,10 @@ procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
+
+{$ifdef ver2_2}
+{$ifdef darwin}
+// this linklib statement is not present in gtk2.pas
+{linklib gthread-2.0}
+{$endif}
+{$endif}
