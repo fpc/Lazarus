@@ -197,6 +197,6 @@ function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external
 {$ifdef ver2_2}
 {$ifdef darwin}
 // this linklib statement is not present in gtk2.pas
-{linklib gthread-2.0}
+{$linklib gthread-2.0}
 {$endif}
 {$endif}
