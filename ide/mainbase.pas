@@ -193,10 +193,10 @@ implementation
 uses
   IDEImagesIntf;
 
-{$IFDEF LCLCarbon}
-var
-  mnuApple: TIDEMenuSection = nil;
-{$ENDIF}
+//{$IFDEF LCLCarbon}
+//var
+//  mnuApple: TIDEMenuSection = nil;
+//{$ENDIF}
 
 { TMainIDEBase }
 
