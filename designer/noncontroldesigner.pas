@@ -112,6 +112,8 @@ begin
     ARect:=Rect(0,0,Self.ClientWidth+1,Self.ClientHeight+1);
     Pen.Color:=clBlack;
     Frame3d(ARect, FrameWidth, bvLowered);
+    if Mediator<>nil then
+      Mediator.Paint(ClientRect);
   end;
 end;
 

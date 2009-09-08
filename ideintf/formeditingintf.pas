@@ -103,6 +103,7 @@ type
   public
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual; abstract;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual; abstract;
+    procedure Paint(aRect: TRect); virtual;
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
   end;
@@ -207,6 +208,11 @@ begin
 end;
 
 class procedure TDesignerMediator.InitFormInstance(aForm: TComponent);
+begin
+
+end;
+
+procedure TDesignerMediator.Paint(aRect: TRect);
 begin
 
 end;
