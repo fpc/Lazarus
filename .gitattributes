@@ -845,6 +845,7 @@ components/lazreport/images/bitmaps/tfrhtmexport.png -text svneol=unset#image/pn
 components/lazreport/images/bitmaps/tfroleobject.bmp -text
 components/lazreport/images/bitmaps/tfropendbdialog.bmp -text
 components/lazreport/images/bitmaps/tfrpreview.bmp -text
+components/lazreport/images/bitmaps/tfrpreview.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrprintgrid.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrreport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrichobject.bmp -text

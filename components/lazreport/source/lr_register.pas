@@ -19,8 +19,9 @@ uses
   LR_E_TXT,
   LR_E_HTM,
   LR_E_CSV,
-  
+
   LR_PGrid,
+  LR_View,
   
   ComponentEditors,
   LazarusPackageIntf;
@@ -48,7 +49,7 @@ begin
      TfrBarCodeObject,TfrRoundRectObject,TfrShapeObject,
      TfrCheckBoxObject,TfrCompositeReport,TfrUserDataset,
      TfrTextExport,TfrHTMExport,TfrCSVExport,
-     TfrPrintGrid,TfrDesigner]);
+     TfrPrintGrid,TfrDesigner,TfrPreview]);
   RegisterComponentEditor(TfrReport, TfrRepEditor);
 end;
 

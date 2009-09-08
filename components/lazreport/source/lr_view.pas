@@ -277,7 +277,8 @@ end;
 procedure TfrPreview.DoOnChangeBounds;
 begin
   inherited DoOnChangeBounds;
-  FWindow.FormResize(nil);
+  if FWindow<>nil then
+    FWindow.FormResize(nil);
 end;
 
 procedure TfrPreview.OnePage;
