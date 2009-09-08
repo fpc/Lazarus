@@ -4476,6 +4476,7 @@ resourcestring
   lisUsePackageInProject2 = 'Use package in project';
   lisUseIdentifier = 'Use identifier';
   lisUsePackageInPackage2 = 'Use package in package';
+  lisCenterForm = 'Center form';
 
 implementation
 

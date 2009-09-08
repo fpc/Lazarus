@@ -215,6 +215,7 @@ type
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
     procedure OnViewLFMMenuClick(Sender: TObject);
     procedure OnSaveAsXMLMenuClick(Sender: TObject);
+    procedure OnCenterFormMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -353,6 +354,7 @@ var
   DesignerMenuChangeParent: TIDEMenuSection;
   DesignerMenuViewLFM: TIDEMenuCommand;
   DesignerMenuSaveAsXML: TIDEMenuCommand;
+  DesignerMenuCenterForm: TIDEMenuCommand;
 
   DesignerMenuSnapToGridOption: TIDEMenuCommand;
   DesignerMenuSnapToGuideLinesOption: TIDEMenuCommand;
@@ -443,6 +445,8 @@ begin
                                                 'View LFM',lisViewSourceLfm);
     DesignerMenuSaveAsXML:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                 'Save as XML',fdmSaveFormAsXML);
+    DesignerMenuCenterForm:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                'Center form', lisCenterForm);
 
   // register options section
   DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,
@@ -2403,6 +2407,17 @@ begin
   if Assigned(OnSaveAsXML) then OnSaveAsXML(Self);
 end;
 
+procedure TDesigner.OnCenterFormMenuClick(Sender: TObject);
+var
+  NewLeft: Integer;
+  NewTop: Integer;
+begin
+  if Form=nil then exit;
+  NewLeft:=Max(30,(Screen.Width-Form.Width) div 2);
+  NewTop:=Max(30,(Screen.Height-Form.Height) div 2);
+  Form.SetBounds(NewLeft,NewTop,Form.Width,Form.Height);
+end;
+
 procedure TDesigner.OnCopyMenuClick(Sender: TObject);
 begin
   CopySelection;
@@ -2883,6 +2898,7 @@ begin
   DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
   DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
   DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
+  DesignerMenuCenterForm.OnClick:=@OnCenterFormMenuClick;
 
   DesignerMenuSnapToGridOption.OnClick:=@OnSnapToGridOptionMenuClick;
   DesignerMenuSnapToGridOption.ShowAlwaysCheckable:=true;
