@@ -7434,7 +7434,7 @@ begin
 
     FMessageQueue.AddMessage(AMessage);
 
-    if GetThreadID <> MainThreadID then
+    if GetCurrentThreadId <> MainThreadID then
     begin
       // awake gtk loop
       // when the main thread is currently processing messages it will process
