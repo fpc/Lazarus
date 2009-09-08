@@ -89,12 +89,12 @@ type
     To edit designer forms which do not use the LCL register a TDesignerMediator,
     which will emulate the painting and handle the mouse. }
 
-  TDesignerMediator = class
+  TDesignerMediator = class(TInterfacedObject)
   public
     class function FormClass: TComponentClass; virtual; abstract;
-    class function CreateMediator(Form: TComponent): TDesignerMediator; virtual; abstract;
+    class function CreateMediator(aForm: TComponent): TDesignerMediator; virtual; abstract;
   end;
-  TDesignerMediatorClass = TDesignerMediator;
+  TDesignerMediatorClass = class of TDesignerMediator;
 
 
   { TAbstractFormEditor }
@@ -150,6 +150,12 @@ type
     function GetDesignerByComponent(AComponent: TComponent
                                     ): TIDesigner; virtual; abstract;
 
+    // mediators for non LCL forms
+    procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract; // auto calls RegisterDesignerBaseClass
+    procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract; // auto calls UnregisterDesignerBaseClass
+    function DesignerMediatorCount: integer; virtual; abstract;
+    property DesignerMediators[Index: integer]: TDesignerMediatorClass read GetDesignerMediators;
+
     // selection
     function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
     function InsertFromStream(s: TStream; Parent: TWinControl;
@@ -161,12 +167,6 @@ type
     function CutSelectionToClipboard: Boolean; virtual; abstract;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; virtual; abstract;
-
-    // mediators for non LCL forms
-    procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract;
-    procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract;
-    function DesignerMediatorCount: integer; virtual; abstract;
-    property DesignerMediators[Index: integer]: TDesignerMediatorClass read GetDesignerMediators;
   end;
 
 type

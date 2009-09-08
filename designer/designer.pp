@@ -41,7 +41,7 @@ uses
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
   ClipBrd,
   // IDEIntf
-  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
+  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf, FormEditingIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
@@ -89,6 +89,7 @@ type
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FLookupRoot: TComponent;
+    FMediator: TDesignerMediator;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
@@ -127,6 +128,7 @@ type
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
+    procedure SetMediator(const AValue: TDesignerMediator);
     procedure SetShowBorderSpacing(const AValue: boolean);
     procedure SetShowComponentCaptions(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
@@ -283,6 +285,7 @@ type
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property LookupRoot: TComponent read FLookupRoot;
+    property Mediator: TDesignerMediator read FMediator write SetMediator;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
     property OnPersistentDeleted: TOnPersistentDeleted
@@ -519,6 +522,13 @@ end;
 
 destructor TDesigner.Destroy;
 Begin
+  try
+    FreeAndNil(FMediator);
+  except
+    on E: Exception do begin
+      debugln(['TDesigner.Destroy freeing mediator failed: ',E.Message]);
+    end;
+  end;
   FreeAndNil(DesignerPopupMenu);
   FreeAndNil(FHintWIndow);
   FreeAndNil(FHintTimer);
@@ -2482,6 +2492,12 @@ end;
 procedure TDesigner.SetIsControl(Value: Boolean);
 begin
 
+end;
+
+procedure TDesigner.SetMediator(const AValue: TDesignerMediator);
+begin
+  if FMediator=AValue then exit;
+  FMediator:=AValue;
 end;
 
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);

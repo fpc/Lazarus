@@ -85,7 +85,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList, ComponentReg,
+  JITForms, ComponentPalette, ComponentList, ComponentReg, FormEditingIntf,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   MenuEditorForm,
@@ -3123,6 +3123,7 @@ end;
 procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
 var
   DesignerForm: TCustomForm;
+  MediatorClass: TDesignerMediatorClass;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
@@ -3132,6 +3133,11 @@ begin
     DesignerForm := TCustomForm(AComponent)
   else
     DesignerForm := FormEditor1.CreateNonFormForm(AComponent);
+  // set component and designer form into design mode (csDesigning)
+  SetDesigning(AComponent, True);
+  if AComponent <> DesignerForm then
+    SetDesigning(DesignerForm, True);
+  SetDesignInstance(AComponent, True);
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
@@ -3158,12 +3164,11 @@ begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
-  // set component and designer form into design mode (csDesigning)
-  SetDesigning(AComponent, True);
-  if AComponent <> DesignerForm then
-    SetDesigning(DesignerForm, True);
-  if (AComponent is TForm) or (AComponent is TFrame) or (AComponent is TDataModule) then
-    SetDesignInstance(AComponent, True);
+
+  // finally: create the mediator, if needed
+  MediatorClass:=FormEditor1.GetDesignerMediatorClass(TComponentClass(AComponent.ClassType));
+  if MediatorClass<>nil then
+    TDesigner(DesignerForm.Designer).Mediator:=MediatorClass.CreateMediator(AComponent);
 end;
 
 {-------------------------------------------------------------------------------

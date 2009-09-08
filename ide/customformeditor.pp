@@ -212,6 +212,16 @@ each control that's dropped onto the form
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
       var BinCompStream: TExtMemoryStream): TModalResult;
 
+    // ancestors
+    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
+    function GetAncestorInstance(AComponent: TComponent): TComponent; override;
+    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DesignerBaseClassCount: Integer; override;
+    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
+    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
+
     // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
@@ -223,6 +233,7 @@ each control that's dropped onto the form
     procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
     procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
     function DesignerMediatorCount: integer; override;
+    function GetDesignerMediatorClass(ComponentClass: TComponentClass): TDesignerMediatorClass;
 
     // component editors
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
@@ -267,16 +278,6 @@ each control that's dropped onto the form
                                      AComponent: TComponent): Boolean;
     function ComponentDependsOnClass(AComponent: TComponent;
                                      AClass: TComponentClass): Boolean;
-
-    // ancestors
-    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
-    function GetAncestorInstance(AComponent: TComponent): TComponent; override;
-    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function DesignerBaseClassCount: Integer; override;
-    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
-    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
@@ -1514,18 +1515,36 @@ end;
 procedure TCustomFormEditor.RegisterDesignerMediator(
   MediatorClass: TDesignerMediatorClass);
 begin
+  if FDesignerMediatorClasses.IndexOf(MediatorClass)>=0 then
+    raise Exception.Create('TCustomFormEditor.RegisterDesignerMediator already registered: '+DbgSName(MediatorClass));
   FDesignerMediatorClasses.Add(MediatorClass);
+  RegisterDesignerBaseClass(MediatorClass.FormClass);
 end;
 
 procedure TCustomFormEditor.UnregisterDesignerMediator(
   MediatorClass: TDesignerMediatorClass);
 begin
+  UnregisterDesignerBaseClass(MediatorClass.FormClass);
   FDesignerMediatorClasses.Remove(MediatorClass);
 end;
 
 function TCustomFormEditor.DesignerMediatorCount: integer;
 begin
   Result:=FDesignerMediatorClasses.Count;
+end;
+
+function TCustomFormEditor.GetDesignerMediatorClass(
+  ComponentClass: TComponentClass): TDesignerMediatorClass;
+var
+  i: Integer;
+  Candidate: TDesignerMediatorClass;
+begin
+  Result:=nil;
+  for i:=0 to DesignerMediatorCount-1 do begin
+    Candidate:=DesignerMediators[i];
+    if not (ComponentClass.InheritsFrom(Candidate.FormClass)) then continue;
+    if (Result<>nil) and Result.InheritsFrom(Candidate.FormClass) then continue;
+  end;
 end;
 
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent
