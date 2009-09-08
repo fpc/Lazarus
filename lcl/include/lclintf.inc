@@ -219,7 +219,7 @@ end;
 function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
   const Style: TGraphicsBevelCut) : boolean;
 begin
-  Result:= WidgetSet.Frame3d(DC, ARect, FrameWidth, Style);
+  Result := WidgetSet.Frame3d(DC, ARect, FrameWidth, Style);
 end;
 
 {$ifdef OldRawImageProcs}

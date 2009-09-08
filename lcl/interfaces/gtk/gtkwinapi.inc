@@ -4340,6 +4340,7 @@ var
   TheStyle: PGtkStyle;
   i: integer;
   gc1, gc2: PGdkGC;
+  OldGC1Values, OldGC2Values: TGdkGCValues;
 begin
   Result := IsValidDC(DC);
   if not Result or (FrameWidth = 0) then Exit;
@@ -4371,6 +4372,14 @@ begin
 
   with TGtkDeviceContext(DC) do
   begin
+    if WithChildWindows then
+    begin
+      gdk_gc_get_values(gc1, @OldGC1Values);
+      gdk_gc_get_values(gc2, @OldGC2Values);
+      gdk_gc_set_subwindow(gc1, GDK_INCLUDE_INFERIORS);
+      gdk_gc_set_subwindow(gc2, GDK_INCLUDE_INFERIORS);
+    end;
+
     for i := 1 to FrameWidth do
     begin
       gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
@@ -4384,6 +4393,13 @@ begin
       // inflate the rectangle (! ARect will be returned to the user with this)
       InflateRect(ARect, -1, -1);
     end;
+
+    if WithChildWindows then
+    begin
+      gdk_gc_set_values(gc1, @OldGC1Values, GDK_GC_SUBWINDOW);
+      gdk_gc_set_values(gc2, @OldGC2Values, GDK_GC_SUBWINDOW);
+    end;
+
   end;
 end;
 
@@ -7818,7 +7834,7 @@ begin
 
   if not IsValidDC(DC) then Exit(False);
   if SavedDC <= 0 then Exit(False);
-  
+
   repeat
     SavedDevCtx := DevCtx.SavedContext;
     Dec(SavedDC);
