@@ -1,0 +1,8 @@
+object MyForm1: TMyForm1
+  Left = 319
+  Top = 231
+  Width = 400
+  Height = 300
+  Visible = False
+  Caption = 'MyForm1'
+end
