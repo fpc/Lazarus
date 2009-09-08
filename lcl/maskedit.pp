@@ -44,8 +44,8 @@ unit MaskEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, LMessages, Clipbrd, LCLType, LCLProc;
+  Classes, SysUtils, strutils, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls, LMessages, Clipbrd, LCLType, LCLProc;
 
 const
   { Mask Type }
@@ -165,6 +165,7 @@ type
     procedure SelectPrevChar;
     procedure SelectFirstChar;
     procedure GotoEnd;
+    procedure JumpToNextDot(Dot: Char);
     function  HasSelection: Boolean;
     function  HasExtSelection: Boolean;
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
@@ -301,6 +302,8 @@ const
 
 const
   MaskSeparator = ';';
+  Period = '.';
+  Comma = ',';
 
 { Component registration procedure }
 procedure Register;
@@ -598,6 +601,57 @@ procedure TCustomMaskEdit.GotoEnd;
 begin
   FCursorPos := Length(FMask);
   SetCursorPos;
+end;
+
+//Jump to next period or comma if possible, otherwise do nothing
+procedure TCustomMaskEdit.JumpToNextDot(Dot: Char);
+{
+  Jumping occurs only if
+  - Dot must be in the mask
+  - There is a Dot after the current cursorposition
+  - If the mask contains both periods and comma's, only the first one
+    is jumpable
+  - There is no literal after the next dot
+  - The next dot is not the last character in the mask
+}
+var
+  HasNextDot, HasCommaAndPeriod, CanJump: Boolean;
+  P, P2: Integer;
+begin
+  //DebugLn('TCustomMaskEdit.JumpToNextDot A');
+  //DebugLn('  Dot = ',Dot);
+  if not (Dot in [Period, Comma]) then Exit;
+  P := PosEx(Dot, FMask, FCursorPos + 1);
+  HasNextDot := P > 0;
+  //DebugLn('  HasNextDot = ',DbgS(HasNextDot));
+  If (Dot = Period) then
+  begin
+    P2 := Pos(Comma, FMask);
+    HasCommaAndPeriod := HasNextDot and (P2 >0)
+  end
+  else
+  begin
+    P2 := Pos(Period, FMask);
+    HasCommaAndPeriod := HasNextDot and (P2 >0);
+  end;
+  //DebugLn('  HasCommaAndPeriod = ',DbgS(HasCommaAndPeriod));
+  //DebugLn('  FCursorPos = ',DbgS(FCursorPos));
+  //DebugLn('  P  = ',DbgS(P));
+  //DebugLn('  P2 = ',DbgS(P));
+  if HasCommaAndPeriod then
+  begin
+    //When mask has both period and comma only the first occurence is jumpable
+    if P2 < P then HasNextDot := False;
+    //DebugLn('  Recalc: HasNextDot = ',DbgS(HasNextDot));
+  end;
+  CanJump := HasNextDot and (P < Length(FMask)) and (not IsLiteral(FMask[P+1]));
+  //DebugLn('  CanJump := ',DbgS(CanJump));
+  if CanJump then
+  begin
+    FCursorPos := P;
+    SetCursorPos;
+  end;
+  //DebugLn('TCustomMaskEdit.JumpToNextDot B');
 end;
 
 function TCustomMaskEdit.HasSelection: Boolean;
@@ -1387,25 +1441,6 @@ begin
     Key := 0;
     Exit;
   end;
-
-  // goto a dot
-  if (Key = VK_OEM_PERIOD) then
-  begin
-    FCursorPos := FCursorPos+Pos('.', Copy(Text, (FCursorPos+1), Length(Text)-(FCursorPos+1)));
-    Key := 0;
-    SetCursorPos;
-    Exit;
-  end;
-
-  // goto a comma
-  if (Key = VK_OEM_COMMA) then
-  begin
-    FCursorPos := FCursorPos+Pos(',', Copy(Text, (FCursorPos+1), Length(Text)-(FCursorPos+1)));
-    SetCursorPos;
-    Key := 0;
-    Exit;
-  end;
-
 end;
 
 
@@ -1421,7 +1456,14 @@ begin
   // Insert a char
   if (Key In [#32..#255]) then
   begin
-    InsertChar(Key);
+    if (Key in [Period, Comma]) and not (CanInsertChar(FCursorPos + 1, Key)) then
+    begin//Try to jump to next period or comma, if at all possible
+      JumpToNextDot(Key);
+    end
+    else
+    begin//any other key
+      InsertChar(Key);
+    end;
     //We really need to "eat" all keys we handle ourselves
     //(or widgetset will insert char second time)
     Key:= #0;
