@@ -1660,21 +1660,21 @@ begin
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
       NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass);
-      if NewJITIndex >= 0 then
-        // create component interface
-        Temp := TComponentInterface(CreateComponentInterface(JITList[NewJITIndex],false))
-      else
+      if NewJITIndex < 0 then
         exit;
+      // create component interface
+      NewComponent:=JITList[NewJITIndex];
+      Temp := TComponentInterface(CreateComponentInterface(NewComponent,false))
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
     try
-      NewComponentName := CreateUniqueComponentName(Temp.Component);
-      Temp.Component.Name := NewComponentName;
+      NewComponentName := CreateUniqueComponentName(NewComponent);
+      NewComponent.Name := NewComponentName;
     except
       on e: Exception do begin
         MessageDlg('Error naming component',
           'Error setting the name of a component '
-          +dbgsName(Temp.Component)+' to '+NewComponentName,
+          +dbgsName(NewComponent)+' to '+NewComponentName,
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1686,9 +1686,9 @@ begin
       CompTop:=Y;
       CompWidth:=W;
       CompHeight:=H;
-      if (Temp.IsTControl) then
+      if NewComponent is TControl then
       Begin
-        AControl:=TControl(Temp.Component);
+        AControl:=TControl(NewComponent);
         // calc bounds
         if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
         if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
@@ -1719,9 +1719,9 @@ begin
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end
-      else if (Temp.Component is TDataModule) then begin
+      else if (NewComponent is TDataModule) then begin
         // data module
-        with TDataModule(Temp.Component) do begin
+        with TDataModule(NewComponent) do begin
           if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
           if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
           if CompLeft<30 then
@@ -1730,7 +1730,7 @@ begin
             CompTop:=Max(30,Min(250,Screen.Height-CompHeight-50));
           DesignOffset:=Point(CompLeft,CompTop);
           DesignSize:=Point(CompWidth,CompHeight);
-          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(Temp.Component),8),' ',DbgS(Cardinal(@DesignOffset));
+          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(NewComponent),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(NewComponent),8),' ',DbgS(Cardinal(@DesignOffset));
         end;
       end
       else begin
@@ -1740,7 +1740,7 @@ begin
 
         CompLeft := Max(Low(SmallInt), Min(High(SmallInt), CompLeft));
         CompTop := Max(Low(SmallInt), Min(High(SmallInt), CompTop));
-        Temp.Component.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
+        NewComponent.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
         if ParentComponent <> nil then 
         begin
           DesignForm := GetDesignerForm(ParentComponent);
@@ -1752,8 +1752,8 @@ begin
         DebugLn(e.Message);
         DumpExceptionBackTrace;
         MessageDlg(lisErrorMovingComponent,
-          Format(lisErrorMovingComponent2, [Temp.Component.Name,
-            Temp.Component.ClassName]),
+          Format(lisErrorMovingComponent2, [NewComponent.Name,
+            NewComponent.ClassName]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1761,12 +1761,12 @@ begin
 
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
     // add to component list
-    DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(Temp.Component),' ',FindComponent(Temp.Component)<>nil]);
-    if FindComponent(Temp.Component)=nil then
+    DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(NewComponent),' ',FindComponent(NewComponent)<>nil]);
+    if FindComponent(NewComponent)=nil then
       FComponentInterfaces.Add(Temp);
 
-    if Temp.Component.Owner<>nil then
-      CreateChildComponentInterfaces(Temp.Component.Owner);
+    if NewComponent.Owner<>nil then
+      CreateChildComponentInterfaces(NewComponent.Owner);
 
     Result := Temp;
   finally
