@@ -135,6 +135,7 @@ var
   CurDataModule: TDataModule;
   NewLeft, NewTop: integer;
   NewWidth, NewHeight: Integer;
+  NewBounds: TRect;
 begin
   inherited DoLoadBounds;
 
@@ -150,8 +151,18 @@ begin
   end else 
   if LookupRoot <> nil then 
   begin
-    GetComponentLeftTopOrDesignInfo(LookupRoot,NewLeft,NewTop);
-    SetNewBounds(NewLeft, NewTop, Width, Height);
+    if Mediator<>nil then begin
+      Mediator.GetBounds(LookupRoot,NewBounds);
+      NewLeft:=NewBounds.Left;
+      NewTop:=NewBounds.Top;
+      NewWidth:=NewBounds.Right-NewBounds.Left;
+      NewHeight:=NewBounds.Bottom-NewBounds.Top;
+    end else begin
+      GetComponentLeftTopOrDesignInfo(LookupRoot,NewLeft,NewTop);
+      NewWidth:=Width;
+      NewHeight:=Height;
+    end;
+    SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;
 end;
 
@@ -164,8 +175,12 @@ begin
       //debugln('TNonControlDesignerForm.DoSaveBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y));
     end;
   end else if LookupRoot<>nil then begin
-    //debugln('TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
-    SetComponentLeftTopOrDesignInfo(LookupRoot,Left,Top);
+    //debugln(['TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top),' ',DbgSName(Mediator)]);
+    if Mediator<>nil then begin
+      Mediator.SetBounds(LookupRoot,BoundsRect);
+    end else begin
+      SetComponentLeftTopOrDesignInfo(LookupRoot,Left,Top);
+    end;
   end;
   inherited DoSaveBounds;
 end;

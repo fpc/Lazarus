@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, LCLType, LCLProc, Controls, Forms,
-  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits, DesignerProcs;
+  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits,
+  FormEditingIntf, NonControlDesigner, DesignerProcs;
 
 type
   TControlSelection = class;
@@ -265,7 +266,9 @@ type
   { TControlSelection }
 
   TControlSelection = class(TObject)
+  private
     FControls: TList;  // list of TSelectedControl
+    FMediator: TDesignerMediator;
 
     // current bounds of the selection (only valid if Count>0)
     // These are the values set by the user
@@ -494,6 +497,7 @@ type
     property Visible:boolean read GetVisible write SetVisible;
 
     property SelectionForm: TCustomForm read FForm;
+    property Mediator: TDesignerMediator read FMediator;
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
     property LookupRoot: TComponent read FLookupRoot;
@@ -971,6 +975,10 @@ begin
   InvalidateGrabbers;
   OldCustomForm:=FForm;
   FForm:=NewCustomForm;
+  if FForm is TNonControlDesignerForm then
+    FMediator:=TNonControlDesignerForm(FForm).Mediator
+  else
+    FMediator:=nil;
   FLookupRoot:=GetSelectionOwner;
   if Assigned(FOnSelectionFormChanged) then
     FOnSelectionFormChanged(Self,OldCustomForm,NewCustomForm);
@@ -1950,6 +1958,7 @@ begin
   FControls.Clear;
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;
+  FMediator:=nil;
   UpdateBounds;
   SaveBounds;
   DoChange;
