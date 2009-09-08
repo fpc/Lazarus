@@ -1231,6 +1231,8 @@ begin
 end;
 
 function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+var
+  MediatorClass: TDesignerMediatorClass;
 begin
   if FindNonFormFormNode(LookupRoot) <> nil then
     RaiseException('TCustomFormEditor.CreateNonFormForm already exists');
@@ -1242,6 +1244,14 @@ begin
       Result := TNonControlDesignerForm.Create(nil);
     Result.LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
+
+    if Result is TNonControlDesignerForm then begin
+      // create the mediator
+      MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
+      debugln(['TCustomFormEditor.CreateNonFormForm AAA1 ',MediatorClass<>nil]);
+      if MediatorClass<>nil then
+        TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
+    end;
   end else
     RaiseException('TCustomFormEditor.CreateNonFormForm Unknown type '
       +LookupRoot.ClassName);
@@ -1544,6 +1554,7 @@ begin
     Candidate:=DesignerMediators[i];
     if not (ComponentClass.InheritsFrom(Candidate.FormClass)) then continue;
     if (Result<>nil) and Result.InheritsFrom(Candidate.FormClass) then continue;
+    Result:=Candidate;
   end;
 end;
 

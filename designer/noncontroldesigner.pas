@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, DesignerProcs, CustomNonFormDesigner;
+  IDEProcs, DesignerProcs, FormEditingIntf, CustomNonFormDesigner;
   
 type
 
@@ -42,15 +42,18 @@ type
   TNonControlDesignerForm = class(TCustomNonFormDesignerForm)
   private
     FFrameWidth: integer;
+    FMediator: TDesignerMediator;
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Paint; override;
     procedure DoLoadBounds; override;
     procedure DoSaveBounds; override;
   public
     property FrameWidth: integer read FFrameWidth write SetFrameWidth;
+    property Mediator: TDesignerMediator read FMediator write FMediator;
   end;
   
   
@@ -72,6 +75,18 @@ begin
   inherited Create(TheOwner);
   FFrameWidth := 1;
   ControlStyle := ControlStyle - [csAcceptsControls];
+end;
+
+destructor TNonControlDesignerForm.Destroy;
+begin
+  try
+    FreeAndNil(FMediator);
+  except
+    on E: Exception do begin
+      debugln(['TNonControlDesignerForm.Destroy freeing mediator failed: ',E.Message]);
+    end;
+  end;
+  inherited Destroy;
 end;
 
 procedure TNonControlDesignerForm.Paint;

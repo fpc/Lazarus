@@ -86,13 +86,13 @@ type
   end;
 
   { TDesignerMediator
-    To edit designer forms which do not use the LCL register a TDesignerMediator,
-    which will emulate the painting and handle the mouse. }
+    To edit designer forms which do not use the LCL, register a TDesignerMediator,
+    which will emulate the painting, handle the mouse and editing bounds. }
 
-  TDesignerMediator = class(TInterfacedObject)
+  TDesignerMediator = class(TComponent)
   public
     class function FormClass: TComponentClass; virtual; abstract;
-    class function CreateMediator(aForm: TComponent): TDesignerMediator; virtual; abstract;
+    class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual; abstract;
   end;
   TDesignerMediatorClass = class of TDesignerMediator;
 

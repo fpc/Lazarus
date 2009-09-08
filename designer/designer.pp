@@ -464,10 +464,11 @@ constructor TDesigner.Create(TheDesignerForm: TCustomForm;
 begin
   inherited Create;
   FForm := TheDesignerForm;
-  if FForm is TNonControlDesignerForm then
-    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot
-  else
-  if FForm is TFrameDesignerForm then
+  if FForm is TNonControlDesignerForm then begin
+    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot;
+    FMediator:=TNonControlDesignerForm(FForm).Mediator;
+  end
+  else if FForm is TFrameDesignerForm then
     FLookupRoot := TFrameDesignerForm(FForm).LookupRoot
   else
     FLookupRoot := FForm;
@@ -520,19 +521,13 @@ begin
     if Form <> nil then
       Form.Designer := nil;
     TheFormEditor.DeleteComponent(FLookupRoot, FreeComponent);
+    FMediator:=nil;
   end;
   Free;
 end;
 
 destructor TDesigner.Destroy;
 Begin
-  try
-    FreeAndNil(FMediator);
-  except
-    on E: Exception do begin
-      debugln(['TDesigner.Destroy freeing mediator failed: ',E.Message]);
-    end;
-  end;
   FreeAndNil(DesignerPopupMenu);
   FreeAndNil(FHintWIndow);
   FreeAndNil(FHintTimer);

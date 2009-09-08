@@ -3123,7 +3123,6 @@ end;
 procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
 var
   DesignerForm: TCustomForm;
-  MediatorClass: TDesignerMediatorClass;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
@@ -3164,11 +3163,6 @@ begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
-
-  // finally: create the mediator, if needed
-  MediatorClass:=FormEditor1.GetDesignerMediatorClass(TComponentClass(AComponent.ClassType));
-  if MediatorClass<>nil then
-    TDesigner(DesignerForm.Designer).Mediator:=MediatorClass.CreateMediator(AComponent);
 end;
 
 {-------------------------------------------------------------------------------
