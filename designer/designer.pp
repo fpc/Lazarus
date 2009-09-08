@@ -2501,9 +2501,8 @@ var
   Diff, ItemLeftTop: TPoint;
   IconRect, TextRect: TRect;
   TextSize: TSize;
-  IsSelected, IsSaved: Boolean;
+  IsSelected: Boolean;
 begin
-  IsSaved := False;
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
     AComponent := FLookupRoot.Components[i];
@@ -2517,18 +2516,12 @@ begin
       ItemTop := ItemLeftTop.Y - Diff.Y;
       ItemRight := ItemLeft + NonVisualCompWidth;
       ItemBottom := ItemTop + NonVisualCompWidth;
-
-      if not IsSaved then
-      begin
-        aDDC.Save;
-        IsSaved := True;
-      end;
-
       if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
         Continue;
 
       IsSelected := ControlSelection.IsSelected(AComponent);
-      with aDDC.Canvas do
+      aDDC.Save;
+      with aDDC.Canvas do 
       begin
         // draw component frame
         Pen.Width := 1;
@@ -2568,11 +2561,9 @@ begin
       if (ControlSelection.Count > 1) and IsSelected then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
+      aDDC.Restore;
     end;
   end;
-
-  if IsSaved then
-    aDDC.Restore;
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
