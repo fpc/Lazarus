@@ -61,6 +61,7 @@ type
   TJITReaderErrorEvent = procedure(Sender: TObject; Reader: TReader;
                                    ErrorType: TJITFormError;
                                    var Action: TModalResult) of object;
+  TJITBeforeCreateEvent = procedure(Sender: TObject; Instance: TPersistent) of object;
   TJITExceptionEvent = procedure(Sender: TObject; E: Exception;
                                  var Action: TModalResult) of object;
   TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
@@ -88,6 +89,7 @@ type
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
+    FOnBeforeCreate: TJITBeforeCreateEvent;
     FOnException: TJITExceptionEvent;
     FOnFindAncestors: TJITFindAncestors;
     FOnFindClass: TJITFindClass;
@@ -189,6 +191,7 @@ type
     property OnPropertyNotFound: TJITPropertyNotFoundEvent
                              read FOnPropertyNotFound write FOnPropertyNotFound;
     property OnException: TJITExceptionEvent read FOnException write FOnException;
+    property OnBeforeCreate: TJITBeforeCreateEvent read FOnBeforeCreate write FOnBeforeCreate;
     property OnFindAncestors: TJITFindAncestors read FOnFindAncestors
                                                 write FOnFindAncestors;
     property OnFindClass: TJITFindClass read FOnFindClass write FOnFindClass;
@@ -1012,6 +1015,9 @@ begin
       if (not Visible) and (Instance is TControl) then
         TControl(Instance).ControlStyle:=
                             TControl(Instance).ControlStyle+[csNoDesignVisible];
+      // event
+      if Assigned(OnBeforeCreate) then
+        OnBeforeCreate(Self,Instance);
       // finish 'create' component
       Instance.Create(nil);
       if NewComponentName<>'' then begin

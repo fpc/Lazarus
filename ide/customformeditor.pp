@@ -137,6 +137,7 @@ each control that's dropped onto the form
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
     procedure JITListReaderError(Sender: TObject; Reader: TReader;
           ErrorType: TJITFormError; var Action: TModalResult); virtual;
+    procedure JITListBeforeCreate(Sender: TObject; Instance: TPersistent);
     procedure JITListException(Sender: TObject; E: Exception;
                                var Action: TModalResult);
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
@@ -858,6 +859,7 @@ constructor TCustomFormEditor.Create;
   procedure InitJITList(List: TJITComponentList);
   begin
     List.OnReaderError:=@JITListReaderError;
+    List.OnBeforeCreate:=@JITListBeforeCreate;
     List.OnException:=@JITListException;
     List.OnPropertyNotFound:=@JITListPropertyNotFound;
     List.OnFindAncestors:=@JITListFindAncestors;
@@ -1248,7 +1250,6 @@ begin
     if Result is TNonControlDesignerForm then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
-      debugln(['TCustomFormEditor.CreateNonFormForm AAA1 ',MediatorClass<>nil]);
       if MediatorClass<>nil then
         TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
     end;
@@ -2312,6 +2313,18 @@ begin
     Action:=QuestionDlg(aCaption,aMsg,DlgType,
       [mrCancel,'Cancel loading this resource',
        mrAbort,'Stop all loading'],HelpCtx);
+  end;
+end;
+
+procedure TCustomFormEditor.JITListBeforeCreate(Sender: TObject;
+  Instance: TPersistent);
+var
+  MediatorClass: TDesignerMediatorClass;
+begin
+  if Instance is TComponent then begin
+    MediatorClass:=GetDesignerMediatorClass(TComponentClass(Instance.ClassType));
+    if MediatorClass<>nil then
+      MediatorClass.InitFormInstance(TComponent(Instance));
   end;
 end;
 

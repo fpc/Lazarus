@@ -93,6 +93,7 @@ type
   public
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual; abstract;
+    class procedure InitFormInstance(aForm: TComponent); virtual; // called after NewInstance, before constructor
   end;
   TDesignerMediatorClass = class of TDesignerMediator;
 
@@ -178,6 +179,13 @@ var
   FormEditingHook: TAbstractFormEditor; // will be set by the IDE
 
 implementation
+
+{ TDesignerMediator }
+
+class procedure TDesignerMediator.InitFormInstance(aForm: TComponent);
+begin
+
+end;
 
 end.
 
