@@ -407,7 +407,8 @@ begin
   if (ASource.FGC <> nil) and (FDrawable <> nil)
   then begin
     gdk_gc_get_values(ASource.FGC, @FGCValues);
-    FGC := gdk_gc_new_with_values(FDrawable, @FGCValues, 3 { $3FF});
+    FGC := gdk_gc_new_with_values(FDrawable, @FGCValues,
+      GDK_GC_FOREGROUND or GDK_GC_BACKGROUND or GDK_GC_SUBWINDOW);
     Exclude(FFlags, dcfPenSelected);
   end;
 
