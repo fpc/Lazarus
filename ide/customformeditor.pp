@@ -1740,8 +1740,9 @@ begin
 
         CompLeft := Max(Low(SmallInt), Min(High(SmallInt), CompLeft));
         CompTop := Max(Low(SmallInt), Min(High(SmallInt), CompTop));
-        NewComponent.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
-        if ParentComponent <> nil then 
+
+        SetComponentLeftTopOrDesignInfo(NewComponent,CompLeft,CompTop);
+        if ParentComponent <> nil then
         begin
           DesignForm := GetDesignerForm(ParentComponent);
           if DesignForm <> nil then DesignForm.Invalidate;

@@ -109,7 +109,7 @@ procedure TNonControlDesignerForm.DoLoadBounds;
 
 var
   CurDataModule: TDataModule;
-  NewLeft, NewTop: SmallInt;
+  NewLeft, NewTop: integer;
   NewWidth, NewHeight: Integer;
 begin
   inherited DoLoadBounds;
@@ -126,7 +126,7 @@ begin
   end else 
   if LookupRoot <> nil then 
   begin
-    DesignInfoTo(LookupRoot.DesignInfo, NewLeft, NewTop);
+    GetComponentLeftTopOrDesignInfo(LookupRoot,NewLeft,NewTop);
     SetNewBounds(NewLeft, NewTop, Width, Height);
   end;
 end;
@@ -141,7 +141,7 @@ begin
     end;
   end else if LookupRoot<>nil then begin
     //debugln('TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
-    LookupRoot.DesignInfo := DesignInfoFrom(Left, Top)
+    SetComponentLeftTopOrDesignInfo(LookupRoot,Left,Top);
   end;
   inherited DoSaveBounds;
 end;
