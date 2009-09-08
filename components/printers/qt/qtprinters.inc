@@ -179,7 +179,7 @@ begin
   PrnInfo := QPrinterInfo_create();
   try
     Lst.Clear;
-    QPrinterInfo_availablePrinters(PrnInfo, @PrnList);
+    QPrinterInfo_availablePrinters(@PrnList);
     for i := Low(PrnList) to High(PrnList) do
     begin
       Prntr := QPrinterInfoH(PrnList[i]);
