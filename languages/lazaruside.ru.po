@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-04 03:22+0300\n"
+"PO-Revision-Date: 2009-09-07 20:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -782,6 +782,10 @@ msgstr "Параметры курсора:"
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
 msgstr "Курсор пропускает выделенное"
+
+#: lazarusidestrconsts.dlgcursorskipstab
+msgid "Cursor skips tabs"
+msgstr "Курсор пропускает ТАБы"
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -7269,19 +7273,19 @@ msgstr "Сохранить проект как"
 
 #: lazarusidestrconsts.liskmselectlineend
 msgid "Select line end"
-msgstr "Выделить конец строки"
+msgstr "Выделить до конца строки"
 
 #: lazarusidestrconsts.liskmselectlinestart
 msgid "Select line start"
-msgstr "Выделить начало строки"
+msgstr "Выделить до начала строки"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgid "Select page bottom"
-msgstr "Выделить низ страницы"
+msgstr "Выделить страницу снизу"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgid "Select page top"
-msgstr "Выделить верх страницы"
+msgstr "Выделить страницу сверху"
 
 #: lazarusidestrconsts.liskmselectwordleft
 msgid "Select word left"
@@ -13310,6 +13314,10 @@ msgstr "Выделить до конца строки"
 msgid "Column Select Line Start"
 msgstr "Выделить до начала строки"
 
+#: lazarusidestrconsts.srkmeccolsellinetextstart
+msgid "Column Select to text start in line"
+msgstr "Выделить до начала текста в строке"
+
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
 msgstr "Выделить всю страницу снизу"
@@ -13616,6 +13624,10 @@ msgstr "Режим выбора строк"
 msgid "Move cursor to line start"
 msgstr "Переместить курсор в начало строки"
 
+#: lazarusidestrconsts.srkmeclinetextstart
+msgid "Move cursor to text start in line"
+msgstr "Переместить курсор на начало текста в строке"
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Создать строку ресурсов"
@@ -13796,6 +13808,10 @@ msgstr "Выделить конец строки"
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
 msgstr "Выделить начало строки"
+
+#: lazarusidestrconsts.srkmecsellinetextstart
+msgid "Select to text start in line"
+msgstr "Выделить до начала текста в строке"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"

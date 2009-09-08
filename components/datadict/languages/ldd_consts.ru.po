@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Доступные кодогенераторы"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "О&тмена"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Настройка словаря данных"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Настройка генерируемого кода"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Приложение рабочего стола базы данных"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "&Файл словаря данных"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Каталог словаря данных по умолчанию"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Поля"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Генерировать код для полей"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Приложения|*.exe|Все файлы|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Словари данных|*.fdd|Все файлы|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Сгенерированный код"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Известный словарь данных"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&ОК"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Открыть существующий файл"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Параметры"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Свойства выбранных полей"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "&Сохранить"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Сохранить в"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Файлы Паскаля|*.pp;*.pas;*.inc|Все файлы|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Сохранить файл как"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Выбор кода для генерации"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Назначение словаря данных для проекта"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Показать сгенерированный код"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "&Использовать словарь данных для этого проекта"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Приложения|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr "Словарь данных применяется для модификации набора данных %s"
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr "Словарь данных применяется для модификации поля %s"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+"Невозможно найти приложение рабочего стола базы данных.\n"
+"Хотите выбрать его?\n"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+"Отсутствует активный словарь данных.\n"
+"Назначьте словарь данных для проекта.\n"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Выберите известный словарь данных"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Выберите существующий каталог"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Выберите существующее приложение рабочего стола базы данных"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Выберите существующий файл словаря данных"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "из файла: "
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Загрузка словаря данных "
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Настройка"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set..."
+msgstr "Назначить ..."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Рабочий стол базы данных"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Словарь данных"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Применить"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Создать код из набора данных"
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "Воплотить в коде SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Открыть"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Ещё не реализовано"
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Предупреждение: для поля %s отсутствует определение в словаре данных"
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr "Неверное число выборок: %d"
+
