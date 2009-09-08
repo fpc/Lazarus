@@ -1724,10 +1724,10 @@ begin
         with TDataModule(Temp.Component) do begin
           if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
           if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
-          if CompLeft<0 then
-            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
-          if CompTop<0 then
-            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
+          if CompLeft<30 then
+            CompLeft:=Max(30,Min(250,Screen.Width-CompWidth-50));
+          if CompTop<30 then
+            CompTop:=Max(30,Min(250,Screen.Height-CompHeight-50));
           DesignOffset:=Point(CompLeft,CompTop);
           DesignSize:=Point(CompWidth,CompHeight);
           //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(Temp.Component),8),' ',DbgS(Cardinal(@DesignOffset));
