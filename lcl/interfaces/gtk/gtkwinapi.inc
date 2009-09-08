@@ -4396,8 +4396,8 @@ begin
 
     if WithChildWindows then
     begin
-      gdk_gc_set_values(gc1, @OldGC1Values, GDK_GC_SUBWINDOW);
-      gdk_gc_set_values(gc2, @OldGC2Values, GDK_GC_SUBWINDOW);
+      gdk_gc_set_subwindow(gc1, OldGC1Values.subwindow_mode);
+      gdk_gc_set_subwindow(gc2, OldGC2Values.subwindow_mode);
     end;
 
   end;
