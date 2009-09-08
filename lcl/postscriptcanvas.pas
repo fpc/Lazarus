@@ -1522,14 +1522,13 @@ begin
       Write(Format('%f %f lineto',[pp.fx,pp.fy],FFs),Lst);
     end;
 
-    if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
-    begin
-      UpdateLineColor(clNone);
-      UpdateLineWidth;
-      UpdateLineStyle;
-      Write(Lst);
-      write('stroke');
-    end;
+    UpdateLineColor(clNone);
+    UpdateLineWidth;
+    UpdateLineStyle;
+
+    write(Lst);
+    write('stroke');
+
   finally
     Lst.Free;
   end;
@@ -2186,8 +2185,10 @@ begin
   Self.Write('gsave');
   Self.WriteComment('This is clip path');
   inc(fSaveCount);
+  Self.WriteB('[] 0 setdash');
   psDrawRect(ARect);
   Self.WriteB('clip');
+  Self.WriteB('stroke');
   Self.Write(fBuffer);
  // Self.MovetoLastpos;
 
