@@ -90,10 +90,21 @@ type
     which will emulate the painting, handle the mouse and editing bounds. }
 
   TDesignerMediator = class(TComponent)
+  private
+    FDesigner: TComponentEditorDesigner;
+    FLCLForm: TForm;
+  protected
+    procedure SetDesigner(const AValue: TComponentEditorDesigner);
+    procedure SetLCLForm(const AValue: TForm); virtual;
   public
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual; abstract;
     class procedure InitFormInstance(aForm: TComponent); virtual; // called after NewInstance, before constructor
+  public
+    procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual; abstract;
+    procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual; abstract;
+    property LCLForm: TForm read FLCLForm write SetLCLForm;
+    property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
   end;
   TDesignerMediatorClass = class of TDesignerMediator;
 
@@ -181,6 +192,19 @@ var
 implementation
 
 { TDesignerMediator }
+
+procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner
+  );
+begin
+  if FDesigner=AValue then exit;
+  FDesigner:=AValue;
+end;
+
+procedure TDesignerMediator.SetLCLForm(const AValue: TForm);
+begin
+  if FLCLForm=AValue then exit;
+  FLCLForm:=AValue;
+end;
 
 class procedure TDesignerMediator.InitFormInstance(aForm: TComponent);
 begin

@@ -43,6 +43,7 @@ type
   private
     FFrameWidth: integer;
     FMediator: TDesignerMediator;
+    procedure SetMediator(const AValue: TDesignerMediator);
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
   public
@@ -53,7 +54,7 @@ type
     procedure DoSaveBounds; override;
   public
     property FrameWidth: integer read FFrameWidth write SetFrameWidth;
-    property Mediator: TDesignerMediator read FMediator write FMediator;
+    property Mediator: TDesignerMediator read FMediator write SetMediator;
   end;
   
   
@@ -61,6 +62,14 @@ implementation
 
 
 { TNonControlDesignerForm }
+
+procedure TNonControlDesignerForm.SetMediator(const AValue: TDesignerMediator);
+begin
+  if FMediator=AValue then exit;
+  if FMediator<>nil then FMediator.LCLForm:=nil;
+  FMediator:=AValue;
+  if FMediator<>nil then FMediator.LCLForm:=Self;
+end;
 
 procedure TNonControlDesignerForm.SetFrameWidth(const AValue: integer);
 begin

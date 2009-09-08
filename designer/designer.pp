@@ -2507,7 +2507,9 @@ end;
 procedure TDesigner.SetMediator(const AValue: TDesignerMediator);
 begin
   if FMediator=AValue then exit;
+  if FMediator<>nil then FMediator.Designer:=nil;
   FMediator:=AValue;
+  if FMediator<>nil then FMediator.Designer:=Self;
 end;
 
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);
