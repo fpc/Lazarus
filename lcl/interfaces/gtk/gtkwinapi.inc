@@ -7828,7 +7828,7 @@ begin
     ClipRegionChanged := DevCtx.ClipRegion <> SavedDevCtx.ClipRegion;
     
     // clear the GDIObjects in pSavedDC, so they are not freed by DeleteDC
-    Result := DevCtx.CopyDataFrom(SavedDevCtx, true, true, true);
+    Result := DevCtx.CopyDataFrom(SavedDevCtx, True, True, True);
     DevCtx.SavedContext := SavedDevCtx.SavedContext;
     SavedDevCtx.SavedContext := nil;
 
@@ -7869,20 +7869,18 @@ end;
 function TGtkWidgetSet.SaveDC(DC: HDC): Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
-  aDC, aSavedDC: TGtkDeviceContext;
+  aSavedDC: TGtkDeviceContext;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
 
   Result := 0;
-  if IsValidDC(DC)
-  then begin
-    aDC := TGtkDeviceContext(DC);
+  if IsValidDC(DC) then
+  begin
     aSavedDC := NewDC;
-    aSavedDC.CopyDataFrom(aDC,false,true,false);
-    aSavedDC.SavedContext:=aDC.SavedContext;
-    aDC.SavedContext:= aSavedDC;
-    Result:=1;
+    aSavedDC.CopyDataFrom(DevCtx, False, True, False);
+    aSavedDC.SavedContext := DevCtx.SavedContext;
+    DevCtx.SavedContext:= aSavedDC;
+    Result := 1;
   end;
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
