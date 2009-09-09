@@ -239,6 +239,7 @@ type
     procedure BeforeChange;
     procedure AfterChange;
     procedure ResetLastValue; virtual;
+    function GetFrames: TfrFrameBorders; virtual;
   public
     Parent: TfrBand;
     ID: Integer;
@@ -279,7 +280,7 @@ type
     property FillColor : TColor read fFillColor write SetFillColor;
     property Stretched : Boolean read GetStretched write SetStretched;
 
-    property Frames : TfrFrameBorders read fFrames write SetFrames;
+    property Frames : TfrFrameBorders read GetFrames write SetFrames;
     property FrameColor : TColor read fFrameColor write SetFrameColor;
     property FrameStyle : TfrFrameStyle read fFrameStyle write SetFrameStyle;
     property FrameWidth : Double read fFrameWidth write SetFrameWidth;
@@ -487,7 +488,11 @@ type
     property Stretched;
   end;
 
+  { TfrLineView }
+
   TfrLineView = class(TfrView)
+  protected
+    function GetFrames: TfrFrameBorders; override;
   public
     constructor Create; override;
 
@@ -2093,6 +2098,11 @@ begin
     result := frDesigner.PointsToUnits(dy)
   else
     result := dy;
+end;
+
+function TfrView.GetFrames: TfrFrameBorders;
+begin
+  result :=  fFrames;
 end;
 
 function TfrView.GetTop: Double;
@@ -4308,6 +4318,21 @@ begin
   Result := '(' + Result + ')|'+Result;
 end;
 
+function TfrLineView.GetFrames: TfrFrameBorders;
+begin
+  if dx > dy then
+  begin
+    dy := 0;
+    fFrames:=[frbTop];
+  end
+  else
+  begin
+    dx := 0;
+    fFrames:=[frbLeft];
+  end;
+  Result:=fFrames;
+end;
+
 {----------------------------------------------------------------------------}
 constructor TfrLineView.Create;
 begin
@@ -4320,16 +4345,7 @@ end;
 procedure TfrLineView.Draw(aCanvas: TCanvas);
 begin
   BeginDraw(aCanvas);
-  if dx > dy then
-  begin
-    dy := 0;
-    fFrames:=[frbTop];
-  end
-  else
-  begin
-    dx := 0;
-    fFrames:=[frbLeft];
-  end;
+  GetFrames;
   CalcGaps;
   ShowFrame;
   RestoreCoord;
