@@ -22,7 +22,8 @@ unit FormEditingIntf;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, ProjectIntf, ComponentEditors;
+  Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls,
+  ProjectIntf, ComponentEditors;
   
 const
   ComponentPaletteImageWidth = 24;
@@ -101,9 +102,16 @@ type
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual; abstract;
     class procedure InitFormInstance(aForm: TComponent); virtual; // called after NewInstance, before constructor
   public
-    procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual; abstract;
-    procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual; abstract;
-    procedure Paint(aRect: TRect); virtual;
+    procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual;
+    procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual;
+    procedure SetFormBounds(RootComponent: TComponent; NewBounds, ClientRect: TRect); virtual;
+    procedure GetFormBounds(RootComponent: TComponent; out CurBounds, CurClientRect: TRect); virtual;
+    procedure GetClientArea(AComponent: TComponent; out CurClientArea: TRect;
+                            out ScrollOffset: TPoint); virtual;
+    function GetComponentOriginOnForm(AComponent: TComponent): TPoint; virtual;
+    procedure Paint; virtual;
+    function ComponentIsIcon(AComponent: TComponent): boolean; virtual;
+    function ParentAcceptsChild(Parent: TComponent; Child: TComponentClass): boolean; virtual;
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
   end;
@@ -168,6 +176,7 @@ type
     procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); virtual; abstract; // auto calls UnregisterDesignerBaseClass
     function DesignerMediatorCount: integer; virtual; abstract;
     property DesignerMediators[Index: integer]: TDesignerMediatorClass read GetDesignerMediators;
+    function GetDesignerMediatorByComponent(AComponent: TComponent): TDesignerMediator; virtual; abstract;
 
     // selection
     function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
@@ -190,7 +199,110 @@ type
 var
   FormEditingHook: TAbstractFormEditor; // will be set by the IDE
 
+procedure GetComponentLeftTopOrDesignInfo(AComponent: TComponent; out aLeft, aTop: integer); // get properties if exists, otherwise get DesignInfo
+procedure SetComponentLeftTopOrDesignInfo(AComponent: TComponent; aLeft, aTop: integer); // set properties if exists, otherwise set DesignInfo
+function TrySetOrdProp(Instance: TPersistent; const PropName: string;
+                       Value: integer): boolean;
+function TryGetOrdProp(Instance: TPersistent; const PropName: string;
+                       out Value: integer): boolean;
+function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;
+procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
+
+
 implementation
+
+
+procedure GetComponentLeftTopOrDesignInfo(AComponent: TComponent; out aLeft,
+  aTop: integer);
+var
+  Info: LongInt;
+begin
+  Info:=AComponent.DesignInfo;
+  if not TryGetOrdProp(AComponent,'Left',aLeft) then
+    aLeft:=LeftFromDesignInfo(Info);
+  if not TryGetOrdProp(AComponent,'Top',aTop) then
+    aTop:=TopFromDesignInfo(Info);
+end;
+
+procedure SetComponentLeftTopOrDesignInfo(AComponent: TComponent;
+  aLeft, aTop: integer);
+var
+  HasLeft: Boolean;
+  HasTop: Boolean;
+begin
+  HasLeft:=TrySetOrdProp(AComponent,'Left',aLeft);
+  HasTop:=TrySetOrdProp(AComponent,'Top',aTop);
+  if HasLeft and HasTop then exit;
+  ALeft := Max(Low(SmallInt), Min(ALeft, High(SmallInt)));
+  ATop := Max(Low(SmallInt), Min(ATop, High(SmallInt)));
+  AComponent.DesignInfo:=LeftTopToDesignInfo(aLeft,aTop);
+end;
+
+function TrySetOrdProp(Instance: TPersistent; const PropName: string;
+  Value: integer): boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo:=GetPropInfo(Instance.ClassType,PropName);
+  if PropInfo=nil then exit(false);
+  SetOrdProp(Instance,PropInfo,Value);
+  Result:=true;
+end;
+
+function TryGetOrdProp(Instance: TPersistent; const PropName: string; out
+  Value: integer): boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo:=GetPropInfo(Instance.ClassType,PropName);
+  if PropInfo=nil then exit(false);
+  Value:=GetOrdProp(Instance,PropInfo);
+  Result:=true;
+end;
+
+function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  Result := DesignInfoRec.Left;
+end;
+
+function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  Result := DesignInfoRec.Top;
+end;
+
+function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;
+var
+  ResultRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute Result;
+begin
+  ResultRec.Left := ALeft;
+  ResultRec.Top := ATop;
+end;
+
+procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
+var
+  DesignInfoRec: packed record
+    Left: SmallInt;
+    Top: SmallInt;
+  end absolute ADesignInfo;
+begin
+  ALeft := DesignInfoRec.Left;
+  ATop := DesignInfoRec.Top;
+end;
 
 { TDesignerMediator }
 
@@ -212,9 +324,87 @@ begin
 
 end;
 
-procedure TDesignerMediator.Paint(aRect: TRect);
+procedure TDesignerMediator.SetBounds(AComponent: TComponent; NewBounds: TRect
+  );
+begin
+  SetComponentLeftTopOrDesignInfo(AComponent,NewBounds.Left,NewBounds.Top);
+end;
+
+procedure TDesignerMediator.GetBounds(AComponent: TComponent; out
+  CurBounds: TRect);
+var
+  aLeft: integer;
+  aTop: integer;
+begin
+  GetComponentLeftTopOrDesignInfo(AComponent,aLeft,aTop);
+  CurBounds:=Rect(aLeft,aTop,aLeft+ComponentPaletteBtnWidth,aTop+ComponentPaletteBtnHeight);
+end;
+
+procedure TDesignerMediator.SetFormBounds(RootComponent: TComponent; NewBounds,
+  ClientRect: TRect);
+// default: use NewBounds as position and the ClientRect as size
+var
+  r: TRect;
+begin
+  r:=Bounds(NewBounds.Left,NewBounds.Top,
+            ClientRect.Right-ClientRect.Left,ClientRect.Bottom-ClientRect.Top);
+  //debugln(['TDesignerMediator.SetFormBounds NewBounds=',dbgs(NewBounds),' ClientRect=',dbgs(ClientRect),' r=',dbgs(r)]);
+  SetBounds(RootComponent,r);
+end;
+
+procedure TDesignerMediator.GetFormBounds(RootComponent: TComponent; out
+  CurBounds, CurClientRect: TRect);
+// default: clientarea is whole bounds and CurBounds.Width/Height=0
+// The IDE will use the clientarea to determine the size of the form
+begin
+  GetBounds(RootComponent,CurBounds);
+  //debugln(['TDesignerMediator.GetFormBounds ',dbgs(CurBounds)]);
+  CurClientRect:=Rect(0,0,CurBounds.Right-CurBounds.Left,
+                      CurBounds.Bottom-CurBounds.Top);
+  CurBounds.Right:=CurBounds.Left;
+  CurBounds.Bottom:=CurBounds.Top;
+  //debugln(['TDesignerMediator.GetFormBounds ',dbgs(CurBounds),' ',dbgs(CurClientRect)]);
+end;
+
+procedure TDesignerMediator.GetClientArea(AComponent: TComponent; out
+  CurClientArea: TRect; out ScrollOffset: TPoint);
+// default: no ScrollOffset and client area is whole bounds
+begin
+  GetBounds(AComponent,CurClientArea);
+  OffsetRect(CurClientArea,-CurClientArea.Left,-CurClientArea.Top);
+  ScrollOffset:=Point(0,0);
+end;
+
+function TDesignerMediator.GetComponentOriginOnForm(AComponent: TComponent): TPoint;
+var
+  Parent: TComponent;
+  ClientArea: TRect;
+  ScrollOffset: TPoint;
+begin
+  Result:=Point(0,0);
+  while AComponent<>nil do begin
+    Parent:=AComponent.GetParentComponent;
+    if Parent=nil then break;
+    GetClientArea(Parent,ClientArea,ScrollOffset);
+    inc(Result.X,ClientArea.Left+ScrollOffset.X);
+    inc(Result.Y,ClientArea.Top+ScrollOffset.Y);
+  end;
+end;
+
+procedure TDesignerMediator.Paint;
 begin
 
+end;
+
+function TDesignerMediator.ComponentIsIcon(AComponent: TComponent): boolean;
+begin
+  Result:=true;
+end;
+
+function TDesignerMediator.ParentAcceptsChild(Parent: TComponent;
+  Child: TComponentClass): boolean;
+begin
+  Result:=false;
 end;
 
 end.

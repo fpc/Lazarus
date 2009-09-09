@@ -44,6 +44,8 @@ type
   public
     procedure PaintAllDesignerItems;
     procedure CheckDesignerPositions;
+    function GetDesignerMediatorByComponent(AComponent: TComponent
+            ): TDesignerMediator; override;
   end;
 
 var
@@ -114,6 +116,18 @@ begin
     ADesigner:=TDesigner(AForm.Designer);
     if ADesigner<>nil then ADesigner.CheckFormBounds;
   end;
+end;
+
+function TFormEditor.GetDesignerMediatorByComponent(AComponent: TComponent
+  ): TDesignerMediator;
+var
+  ADesigner: TIDesigner;
+begin
+  ADesigner:=GetDesignerByComponent(AComponent);
+  if ADesigner is TDesigner then
+    Result:=TDesigner(ADesigner).Mediator
+  else
+    Result:=nil;
 end;
 
 end.

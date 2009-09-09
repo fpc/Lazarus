@@ -51,6 +51,7 @@ type
 
   TMyWidget = class(TComponent)
   private
+    FAcceptChildsAtDesignTime: boolean;
     FBorderBottom: integer;
     FBorderLeft: integer;
     FBorderRight: integer;
@@ -77,6 +78,10 @@ type
     procedure SetWidth(const AValue: integer);
   protected
     procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); virtual;
+    procedure SetName(const NewName: TComponentName); override;
+    procedure SetParentComponent(Value: TComponent); override;
+    function HasParent: Boolean; override;
+    function GetParentComponent: TComponent; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -86,6 +91,7 @@ type
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); virtual;
     procedure InvalidateRect(ARect: TRect; Erase: boolean);
     procedure Invalidate;
+    property AcceptChildsAtDesignTime: boolean read FAcceptChildsAtDesignTime;
   published
     property Left: integer read FLeft write SetLeft;
     property Top: integer read FTop write SetTop;
@@ -110,6 +116,20 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property Designer: IMyWidgetDesigner read FDesigner write FDesigner;
+  end;
+
+  { TMyButton
+    A widget that does not allow childs at design time }
+
+  TMyButton = class(TMyWidget)
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+  { TMyGroupBox
+    A widget that does allow childs at design time }
+
+  TMyGroupBox = class(TMyWidget)
   end;
 
 implementation
@@ -199,7 +219,29 @@ end;
 
 procedure TMyWidget.InternalInvalidateRect(ARect: TRect; Erase: boolean);
 begin
+  // see TMyForm
+end;
 
+procedure TMyWidget.SetName(const NewName: TComponentName);
+begin
+  if Name=Caption then Caption:=NewName;
+  inherited SetName(NewName);
+end;
+
+procedure TMyWidget.SetParentComponent(Value: TComponent);
+begin
+  if Value is TMyWidget then
+    Parent:=TMyWidget(Value);
+end;
+
+function TMyWidget.HasParent: Boolean;
+begin
+  Result:=Parent<>nil;
+end;
+
+function TMyWidget.GetParentComponent: TComponent;
+begin
+  Result:=Parent;
 end;
 
 constructor TMyWidget.Create(AOwner: TComponent);
@@ -210,6 +252,7 @@ begin
   FBorderRight:=5;
   FBorderBottom:=5;
   FBorderTop:=20;
+  FAcceptChildsAtDesignTime:=true;
 end;
 
 destructor TMyWidget.Destroy;
@@ -267,6 +310,14 @@ end;
 constructor TMyForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+end;
+
+{ TMyButton }
+
+constructor TMyButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAcceptChildsAtDesignTime:=false;
 end;
 
 end.

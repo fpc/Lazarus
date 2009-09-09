@@ -1727,7 +1727,7 @@ begin
         end else begin
           // no parent and not a form
           AControl.SetBounds(0,0,CompWidth,CompHeight);
-          AControl.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
+          AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end
@@ -2581,6 +2581,7 @@ function TCustomFormEditor.GetDefaultComponentParent(TypeClass: TComponentClass
 var
   NewParent: TComponent;
   Root: TPersistent;
+  Mediator: TDesignerMediator;
 begin
   Result:=nil;
   // find selected component
@@ -2603,8 +2604,19 @@ begin
       // New TypeClass or selected component is not a TControl =>
       // use Root component as parent
       Root:=GetLookupRootForComponent(NewParent);
-      if Root is TComponent then
-        NewParent:=TComponent(Root);
+      if Root is TComponent then begin
+        Mediator:=GetDesignerMediatorByComponent(TComponent(Root));
+        if (Mediator<>nil) then begin
+          while (NewParent<>nil) do begin
+            if Mediator.ParentAcceptsChild(NewParent,TypeClass) then
+              break;
+            NewParent:=NewParent.GetParentComponent;
+          end;
+          if NewParent=nil then
+            NewParent:=TComponent(Root);
+        end else
+          NewParent:=TComponent(Root);
+      end;
     end;
   end;
   if NewParent<>nil then
@@ -2625,86 +2637,82 @@ var
   MaxX: Integer;
   MaxY: Integer;
 begin
-  // TODO: Frames
   Result:=true;
   X:=10;
   Y:=10;
   if ParentCI=nil then
     ParentCI:=GetDefaultComponentParent(TypeClass);
-  if (ParentCI=nil) or (ParentCI.Component=nil) then exit;
-  if TypeClass<>nil then begin
-    if not (TypeClass.InheritsFrom(TControl)) then begin
-      // a non visual component
-      // put it somewhere right or below the other non visual components
-      ParentComponent:=ParentCI.Component;
-      MinX:=-1;
-      MinY:=-1;
-      if (ParentComponent is TWinControl) then 
-      begin
-        MaxX:=TWinControl(ParentComponent).ClientWidth-ComponentPaletteBtnWidth;
-        MaxY:=TWinControl(ParentComponent).ClientHeight-ComponentPaletteBtnHeight;
-      end else 
-      begin
-        AForm:=FindNonFormForm(ParentComponent);
-        if AForm<>nil then begin
-          MaxX:=AForm.ClientWidth-ComponentPaletteBtnWidth;
-          MaxY:=AForm.ClientHeight-ComponentPaletteBtnHeight;
-        end else begin
-          MaxX:=300;
-          MaxY:=0;
-        end;
-      end;
-      // find top left most non visual component
-      for i:=0 to ParentComponent.ComponentCount-1 do begin
-        CurComponent:=ParentComponent.Components[i];
-        if ComponentIsNonVisual(CurComponent) then begin
-          P:=GetParentFormRelativeTopLeft(CurComponent);
-          if (P.X>=0) and (P.Y>=0) then begin
-            if (MinX<0) or (P.Y<MinY) or ((P.Y=MinY) and (P.X<MinX)) then begin
-              MinX:=P.X;
-              MinY:=P.Y;
-            end;
-          end;
-        end;
-      end;
-      if MinX<0 then begin
-        MinX:=10;
-        MinY:=10;
-      end;
-      // find a position without intersection
-      X:=MinX;
-      Y:=MinY;
-      //debugln('TCustomFormEditor.GetDefaultComponentPosition Min=',dbgs(MinX),',',dbgs(MinY));
-      i:=0;
-      while i<ParentComponent.ComponentCount do begin
-        CurComponent:=ParentComponent.Components[i];
-        inc(i);
-        if ComponentIsNonVisual(CurComponent) then begin
-          P:=GetParentFormRelativeTopLeft(CurComponent);
-          //debugln('TCustomFormEditor.GetDefaultComponentPosition ',dbgsName(CurComponent),' P=',dbgs(P));
-          if (P.X>=0) and (P.Y>=0) then begin
-            if (X+ComponentPaletteBtnWidth>=P.X)
-            and (X<=P.X+ComponentPaletteBtnWidth)
-            and (Y+ComponentPaletteBtnHeight>=P.Y)
-            and (Y<=P.Y+ComponentPaletteBtnHeight) then begin
-              // intersection found
-              // move position
-              inc(X,ComponentPaletteBtnWidth+2);
-              if X>MaxX then begin
-                inc(Y,ComponentPaletteBtnHeight+2);
-                X:=MinX;
-              end;
-              // restart intersection test
-              i:=0;
-            end;
-          end;
-        end;
-      end;
-      // keep it visible
-      if X>MaxX then X:=MaxX;
-      if Y>MaxY then Y:=MaxY;
+  if (ParentCI=nil) or (ParentCI.Component=nil) or (TypeClass=nil) then exit;
+  if (TypeClass.InheritsFrom(TControl)) then exit;
+  // a non visual component
+  // put it somewhere right or below the other non visual components
+  ParentComponent:=ParentCI.Component;
+  MinX:=-1;
+  MinY:=-1;
+  if (ParentComponent is TWinControl) then
+  begin
+    MaxX:=TWinControl(ParentComponent).ClientWidth-ComponentPaletteBtnWidth;
+    MaxY:=TWinControl(ParentComponent).ClientHeight-ComponentPaletteBtnHeight;
+  end else
+  begin
+    AForm:=FindNonFormForm(ParentComponent);
+    if AForm<>nil then begin
+      MaxX:=AForm.ClientWidth-ComponentPaletteBtnWidth;
+      MaxY:=AForm.ClientHeight-ComponentPaletteBtnHeight;
+    end else begin
+      MaxX:=300;
+      MaxY:=0;
     end;
   end;
+  // find top left most non visual component
+  for i:=0 to ParentComponent.ComponentCount-1 do begin
+    CurComponent:=ParentComponent.Components[i];
+    if ComponentIsNonVisual(CurComponent) then begin
+      P:=GetParentFormRelativeTopLeft(CurComponent);
+      if (P.X>=0) and (P.Y>=0) then begin
+        if (MinX<0) or (P.Y<MinY) or ((P.Y=MinY) and (P.X<MinX)) then begin
+          MinX:=P.X;
+          MinY:=P.Y;
+        end;
+      end;
+    end;
+  end;
+  if MinX<0 then begin
+    MinX:=10;
+    MinY:=10;
+  end;
+  // find a position without intersection
+  X:=MinX;
+  Y:=MinY;
+  //debugln('TCustomFormEditor.GetDefaultComponentPosition Min=',dbgs(MinX),',',dbgs(MinY));
+  i:=0;
+  while i<ParentComponent.ComponentCount do begin
+    CurComponent:=ParentComponent.Components[i];
+    inc(i);
+    if ComponentIsNonVisual(CurComponent) then begin
+      P:=GetParentFormRelativeTopLeft(CurComponent);
+      //debugln('TCustomFormEditor.GetDefaultComponentPosition ',dbgsName(CurComponent),' P=',dbgs(P));
+      if (P.X>=0) and (P.Y>=0) then begin
+        if (X+ComponentPaletteBtnWidth>=P.X)
+        and (X<=P.X+ComponentPaletteBtnWidth)
+        and (Y+ComponentPaletteBtnHeight>=P.Y)
+        and (Y<=P.Y+ComponentPaletteBtnHeight) then begin
+          // intersection found
+          // move position
+          inc(X,ComponentPaletteBtnWidth+2);
+          if X>MaxX then begin
+            inc(Y,ComponentPaletteBtnHeight+2);
+            X:=MinX;
+          end;
+          // restart intersection test
+          i:=0;
+        end;
+      end;
+    end;
+  end;
+  // keep it visible
+  if X>MaxX then X:=MaxX;
+  if Y>MaxY then Y:=MaxY;
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);

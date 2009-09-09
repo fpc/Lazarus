@@ -279,6 +279,7 @@ type
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); override;
     procedure CheckFormBounds;
     procedure DoPaintDesignerItems;
+    function ComponentIsIcon(AComponent: TComponent): boolean;
   public
     property Flags: TDesignerFlags read FFlags;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
@@ -843,7 +844,7 @@ var
         or (P.Y+NonVisualCompWidth>Form.ClientHeight) then
           break;
       until false;
-      AComponent.DesignInfo := DesignInfoFrom(
+      AComponent.DesignInfo := LeftTopToDesignInfo(
         SmallInt(Max(0, Min(P.x, Form.ClientWidth - NonVisualCompWidth))),
         SmallInt(Max(0, Min(P.y, Form.ClientHeight - NonVisualCompWidth))));
     end;
@@ -2534,7 +2535,7 @@ begin
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
     AComponent := FLookupRoot.Components[i];
-    if ComponentIsNonVisual(AComponent) then 
+    if ComponentIsIcon(AComponent) then
     begin
       Diff := aDDC.FormOrigin;
       //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
@@ -2664,6 +2665,13 @@ begin
   end;
 end;
 
+function TDesigner.ComponentIsIcon(AComponent: TComponent): boolean;
+begin
+  Result:=DesignerProcs.ComponentIsNonVisual(AComponent);
+  if Result and (Mediator<>nil) then
+    Result:=Mediator.ComponentIsIcon(AComponent);
+end;
+
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
 begin
   Result:=AComponent;
@@ -2715,8 +2723,7 @@ var i: integer;
 begin
   for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
     Result:=FLookupRoot.Components[i];
-    if (not (Result is TControl))
-    and (not ComponentIsInvisible(Result)) then begin
+    if ComponentIsIcon(Result) then begin
       with Result do begin
         LeftTop:=NonVisualComponentLeftTop(Result);
         if (LeftTop.x<=x) and (LeftTop.y<=y)
@@ -2732,7 +2739,7 @@ end;
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
 begin
   with NonVisualComponentLeftTop(AComponent) do
-    AComponent.DesignInfo := DesignInfoFrom(x, y);
+    AComponent.DesignInfo := LeftTopToDesignInfo(x, y);
 end;
 
 procedure TDesigner.MoveNonVisualComponentsIntoForm;
@@ -2742,8 +2749,7 @@ var
 begin
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if (not (AComponent is TControl))
-    and (not ComponentIsInvisible(AComponent)) then begin
+    if ComponentIsIcon(AComponent) then begin
       MoveNonVisualComponentIntoForm(AComponent);
     end;
   end;

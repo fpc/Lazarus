@@ -1,4 +1,6 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TMyForm1','FORMDATA',[
-  'TPF0'#8'TMyForm1'#7'MyForm1'#4'Left'#3'?'#1#3'Top'#3#231#0#5'Width'#3#144#1#6
-  +'Height'#3','#1#7'Visible'#8#7'Caption'#6#7'MyForm1'#0#0
+  'TPF0'#8'TMyForm1'#7'MyForm1'#4'Left'#3'?'#1#3'Top'#3#231#0#5'Width'#3'B'#1#6
+  +'Height'#3#236#0#7'Visible'#8#7'Caption'#6#7'MyForm1'#0#0
 ]);

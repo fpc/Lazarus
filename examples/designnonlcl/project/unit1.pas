@@ -9,6 +9,7 @@ uses
 
 type
   TMyForm1 = class(TMyForm)
+    MyButton1: TMyButton;
   private
     { private declarations }
   public

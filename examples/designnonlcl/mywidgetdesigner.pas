@@ -52,7 +52,10 @@ type
     class function FormClass: TComponentClass; override;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); override;
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); override;
-    procedure Paint(aRect: TRect); override;
+    procedure Paint; override;
+    function ComponentIsIcon(AComponent: TComponent): boolean; override;
+    function ParentAcceptsChild(Parent: TComponent;
+                Child: TComponentClass): boolean; override;
   public
     // needed by TMyWidget
     constructor Create(AOwner: TComponent); override;
@@ -68,6 +71,7 @@ implementation
 procedure Register;
 begin
   FormEditingHook.RegisterDesignerMediator(TMyWidgetMediator);
+  RegisterComponents('MyWidgets',[TMyButton,TMyGroupBox]);
 end;
 
 { TMyWidgetMediator }
@@ -102,7 +106,8 @@ begin
   if AComponent is TMyWidget then begin
     w:=TMyWidget(AComponent);
     CurBounds:=Bounds(w.Left,w.Top,w.Width,w.Height);
-  end;
+  end else
+    inherited GetBounds(AComponent,CurBounds);
 end;
 
 procedure TMyWidgetMediator.InvalidateRect(Sender: TObject; ARect: TRect;
@@ -115,12 +120,14 @@ end;
 procedure TMyWidgetMediator.SetBounds(AComponent: TComponent; NewBounds: TRect
   );
 begin
-  if AComponent is TMyWidget then
+  if AComponent is TMyWidget then begin
     TMyWidget(AComponent).SetBounds(NewBounds.Left,NewBounds.Top,
       NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+  end else
+    inherited SetBounds(AComponent,NewBounds);
 end;
 
-procedure TMyWidgetMediator.Paint(aRect: TRect);
+procedure TMyWidgetMediator.Paint;
 
   procedure PaintWidget(AWidget: TMyWidget);
   var
@@ -139,10 +146,12 @@ procedure TMyWidgetMediator.Paint(aRect: TRect);
       Pen.Color:=clRed;
       Rectangle(0,0,AWidget.Width,AWidget.Height);
       // inner frame
-      Pen.Color:=clMaroon;
-      Rectangle(AWidget.BorderLeft,AWidget.BorderTop,
-                AWidget.Width-AWidget.BorderRight,
-                AWidget.Height-AWidget.BorderBottom);
+      if AWidget.AcceptChildsAtDesignTime then begin
+        Pen.Color:=clMaroon;
+        Rectangle(AWidget.BorderLeft,AWidget.BorderTop,
+                  AWidget.Width-AWidget.BorderRight,
+                  AWidget.Height-AWidget.BorderBottom);
+      end;
       // caption
       TextOut(5,2,AWidget.Caption);
       // childs
@@ -170,9 +179,20 @@ procedure TMyWidgetMediator.Paint(aRect: TRect);
   end;
 
 begin
-  //debugln(['TMyWidgetMediator.Paint ',dbgs(aRect)]);
   PaintWidget(MyForm);
-  inherited Paint(aRect);
+  inherited Paint;
+end;
+
+function TMyWidgetMediator.ComponentIsIcon(AComponent: TComponent): boolean;
+begin
+  Result:=not (AComponent is TMyWidget);
+end;
+
+function TMyWidgetMediator.ParentAcceptsChild(Parent: TComponent;
+  Child: TComponentClass): boolean;
+begin
+  Result:=(Parent is TMyWidget) and (Child.InheritsFrom(TMyWidget))
+    and (TMyWidget(Parent).AcceptChildsAtDesignTime);
 end;
 
 end.

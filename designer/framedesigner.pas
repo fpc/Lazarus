@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, DesignerProcs, CustomNonFormDesigner;
+  FormEditingIntf, IDEProcs, DesignerProcs, CustomNonFormDesigner;
   
 type
 
@@ -146,7 +146,7 @@ begin
   begin
     CurControl := TControl(LookupRoot);
     // restore designer position
-    DesignInfoTo(LookupRoot.DesignInfo, NewLeft, NewTop);
+    DesignInfoToLeftTop(LookupRoot.DesignInfo, NewLeft, NewTop);
     // resize designer form
     SetNewBounds(NewLeft,NewTop,CurControl.Width,CurControl.Height);
     //DebugLn(['TFrameDesignerForm.DoLoadBounds ',NewLeft,',',NewTop]);
@@ -161,7 +161,7 @@ begin
   if LookupRoot is TControl then
   begin
     // store designer position
-    LookupRoot.DesignInfo := DesignInfoFrom(Left, Top);
+    LookupRoot.DesignInfo := LeftTopToDesignInfo(Left, Top);
     // always fill the whole designer form
     TControl(LookupRoot).SetBounds(0, 0, Width, Height);
     //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);

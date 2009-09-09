@@ -32,6 +32,7 @@
       <Item1>
         <PackageName Value="NotLCLDesigner"/>
         <MinVersion Valid="True"/>
+        <DefaultFilename Value="../notlcldesigner.lpk"/>
       </Item1>
     </RequiredPackages>
     <Units Count="2">

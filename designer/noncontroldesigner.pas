@@ -46,6 +46,7 @@ type
     procedure SetMediator(const AValue: TDesignerMediator);
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,6 +78,14 @@ begin
     Exit;
   FFrameWidth := AValue;
   Invalidate;
+end;
+
+procedure TNonControlDesignerForm.DoSetBounds(ALeft, ATop, AWidth,
+  AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  if Mediator<>nil then
+    Mediator.SetFormBounds(LookupRoot,BoundsRect,ClientRect);
 end;
 
 constructor TNonControlDesignerForm.Create(TheOwner: TComponent);
@@ -113,7 +122,7 @@ begin
     Pen.Color:=clBlack;
     Frame3d(ARect, FrameWidth, bvLowered);
     if Mediator<>nil then
-      Mediator.Paint(ClientRect);
+      Mediator.Paint;
   end;
 end;
 
@@ -137,7 +146,7 @@ var
   CurDataModule: TDataModule;
   NewLeft, NewTop: integer;
   NewWidth, NewHeight: Integer;
-  NewBounds: TRect;
+  NewBounds, NewClientRect: TRect;
 begin
   inherited DoLoadBounds;
 
@@ -154,11 +163,17 @@ begin
   if LookupRoot <> nil then 
   begin
     if Mediator<>nil then begin
-      Mediator.GetBounds(LookupRoot,NewBounds);
+      Mediator.GetFormBounds(LookupRoot,NewBounds,NewClientRect);
       NewLeft:=NewBounds.Left;
       NewTop:=NewBounds.Top;
       NewWidth:=NewBounds.Right-NewBounds.Left;
       NewHeight:=NewBounds.Bottom-NewBounds.Top;
+      if (NewClientRect.Left<>NewClientRect.Right)
+      or (NewClientRect.Top<>NewClientRect.Bottom) then begin
+        // use the clientrect (the Width, Height depends on window theme)
+        NewWidth:=NewClientRect.Right-NewClientRect.Left+Width-ClientWidth;
+        NewHeight:=NewClientRect.Bottom-NewClientRect.Top+Height-ClientHeight;
+      end;
     end else begin
       GetComponentLeftTopOrDesignInfo(LookupRoot,NewLeft,NewTop);
       NewWidth:=Width;
@@ -179,7 +194,7 @@ begin
   end else if LookupRoot<>nil then begin
     //debugln(['TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top),' ',DbgSName(Mediator)]);
     if Mediator<>nil then begin
-      Mediator.SetBounds(LookupRoot,BoundsRect);
+      Mediator.SetFormBounds(LookupRoot,BoundsRect,ClientRect);
     end else begin
       SetComponentLeftTopOrDesignInfo(LookupRoot,Left,Top);
     end;

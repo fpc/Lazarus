@@ -112,16 +112,6 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
-function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
-procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
-function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-procedure GetComponentLeftTopOrDesignInfo(AComponent: TComponent; out aLeft, aTop: integer); // get properties if exists, otherwise get DesignInfo
-procedure SetComponentLeftTopOrDesignInfo(AComponent: TComponent; aLeft, aTop: integer); // set properties if exists, otherwise set DesignInfo
-function TrySetOrdProp(Instance: TPersistent; const PropName: string;
-                       Value: integer): boolean;
-function TryGetOrdProp(Instance: TPersistent; const PropName: string;
-                       out Value: integer): boolean;
 
 implementation
 
@@ -329,93 +319,6 @@ begin
   end;
 end;
 
-function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
-var
-  ResultRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute Result;
-begin
-  ResultRec.Left := ALeft;
-  ResultRec.Top := ATop;
-end;
-
-procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  ALeft := DesignInfoRec.Left;
-  ATop := DesignInfoRec.Top;
-end;
-
-function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  Result := DesignInfoRec.Left;
-end;
-
-function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  Result := DesignInfoRec.Top;
-end;
-
-procedure GetComponentLeftTopOrDesignInfo(AComponent: TComponent; out aLeft,
-  aTop: integer);
-var
-  Info: LongInt;
-begin
-  Info:=AComponent.DesignInfo;
-  if not TryGetOrdProp(AComponent,'Left',aLeft) then
-    aLeft:=LeftFromDesignInfo(Info);
-  if not TryGetOrdProp(AComponent,'Top',aTop) then
-    aTop:=TopFromDesignInfo(Info);
-end;
-
-procedure SetComponentLeftTopOrDesignInfo(AComponent: TComponent;
-  aLeft, aTop: integer);
-var
-  HasLeft: Boolean;
-  HasTop: Boolean;
-begin
-  HasLeft:=TrySetOrdProp(AComponent,'Left',aLeft);
-  HasTop:=TrySetOrdProp(AComponent,'Top',aTop);
-  if HasLeft and HasTop then exit;
-  AComponent.DesignInfo:=DesignInfoFrom(aLeft,aTop);
-end;
-
-function TrySetOrdProp(Instance: TPersistent; const PropName: string;
-  Value: integer): boolean;
-var
-  PropInfo: PPropInfo;
-begin
-  PropInfo:=GetPropInfo(Instance.ClassType,PropName);
-  if PropInfo=nil then exit(false);
-  SetOrdProp(Instance,PropInfo,Value);
-  Result:=true;
-end;
-
-function TryGetOrdProp(Instance: TPersistent; const PropName: string; out
-  Value: integer): boolean;
-var
-  PropInfo: PPropInfo;
-begin
-  PropInfo:=GetPropInfo(Instance.ClassType,PropName);
-  if PropInfo=nil then exit(false);
-  Value:=GetOrdProp(Instance,PropInfo);
-  Result:=true;
-end;
 
 { TDesignerDeviceContext }
 
