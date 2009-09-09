@@ -109,25 +109,25 @@ procedure TNonControlDesignerForm.DoLoadBounds;
 
 var
   CurDataModule: TDataModule;
-  NewLeft: Integer;
-  NewTop: Integer;
-  NewWidth: Integer;
-  NewHeight: Integer;
+  NewLeft, NewTop: SmallInt;
+  NewWidth, NewHeight: Integer;
 begin
   inherited DoLoadBounds;
 
-  if LookupRoot is TDataModule then begin
-    CurDataModule:=TDataModule(LookupRoot);
-    NewLeft:=CurDataModule.DesignOffset.X;
-    NewTop:=CurDataModule.DesignOffset.Y;
-    NewWidth:=CurDataModule.DesignSize.X;
-    NewHeight:=CurDataModule.DesignSize.Y;
+  if LookupRoot is TDataModule then 
+  begin
+    CurDataModule := TDataModule(LookupRoot);
+    NewLeft := CurDataModule.DesignOffset.X;
+    NewTop := CurDataModule.DesignOffset.Y;
+    NewWidth := CurDataModule.DesignSize.X;
+    NewHeight := CurDataModule.DesignSize.Y;
     
-    SetNewBounds(NewLeft,NewTop,NewWidth,NewHeight);
-  end else if LookupRoot<>nil then begin
-    NewLeft:=LongRec(LookupRoot.DesignInfo).Lo;
-    NewTop:=LongRec(LookupRoot.DesignInfo).Hi;
-    SetNewBounds(NewLeft,NewTop,Width,Height);
+    SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight);
+  end else 
+  if LookupRoot <> nil then 
+  begin
+    DesignInfoTo(LookupRoot.DesignInfo, NewLeft, NewTop);
+    SetNewBounds(NewLeft, NewTop, Width, Height);
   end;
 end;
 

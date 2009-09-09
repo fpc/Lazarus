@@ -835,8 +835,8 @@ var
           break;
       until false;
       AComponent.DesignInfo := DesignInfoFrom(
-        Word(Max(0, Min(P.x, Form.ClientWidth - NonVisualCompWidth))),
-        Word(Max(0, Min(P.y, Form.ClientHeight - NonVisualCompWidth))));
+        SmallInt(Max(0, Min(P.x, Form.ClientWidth - NonVisualCompWidth))),
+        SmallInt(Max(0, Min(P.y, Form.ClientHeight - NonVisualCompWidth))));
     end;
   end;
 
@@ -1113,10 +1113,8 @@ end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
 begin
-  Result.X:=Max(0, Min(LongRec(AComponent.DesignInfo).Lo,
-                Form.ClientWidth-NonVisualCompWidth));
-  Result.Y:=Max(0, Min(LongRec(AComponent.DesignInfo).Hi,
-                Form.ClientHeight-NonVisualCompWidth));
+  Result.X := LeftFromDesignInfo(AComponent.DesignInfo);
+  Result.Y := TopFromDesignInfo(AComponent.DesignInfo);
 end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);

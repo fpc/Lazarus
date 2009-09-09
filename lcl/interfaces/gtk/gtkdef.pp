@@ -377,6 +377,7 @@ type
     property Drawable: PGDKDrawable read FDrawable;
     property Widget: PGtkWidget read FWidget; // the owner
     property GC: pgdkGC read GetGC write FGC;
+    property WithChildWindows: Boolean read FWithChildWindows;
     // winapi
     property ROP2: Integer read GetRop2 write SetRop2;
   end;

@@ -621,8 +621,16 @@ const
     );
     
 const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
+{$IFDEF DARWIN}
+    ' -Fl/usr/X11R6/lib -Fl/sw/lib', // gtk
+{$ELSE}
     '', // gtk
+{$ENDIF}
+{$IFDEF DARWIN}
+    ' -Fl/usr/X11R6/lib -Fl/sw/lib -Fl/sw/lib/pango-ft219/lib', // gtk2
+{$ELSE}
     '', // gtk2
+{$ENDIF}
     '', // win32
     '', // wince
 {$IFDEF DARWIN}

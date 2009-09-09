@@ -700,15 +700,16 @@ var
   AForm: TCustomForm;
   CompRect: TRect;
 begin
-  AForm:=DesignerForm;
-  if (AForm=nil) or (not FIsTComponent) then exit;
-  CompRect.Left:=LongRec(TComponent(FPersistent).DesignInfo).Lo;
-  CompRect.Top:=LongRec(TComponent(FPersistent).DesignInfo).Hi;
-  CompRect.Right:=CompRect.Left+NonVisualCompWidth;
-  CompRect.Bottom:=CompRect.Top+NonVisualCompWidth;
-  //writeln('TSelectedControl.InvalidateNonVisualComponent A ',CompRect.Left,',',CompRect.Top,',',CompRect.Right,',',CompRect.Bottom);
+  AForm := DesignerForm;
+  if (AForm = nil) or (not FIsTComponent) then Exit;
+
+  CompRect.Left := LeftFromDesignInfo(TComponent(FPersistent).DesignInfo);
+  CompRect.Top := TopFromDesignInfo(TComponent(FPersistent).DesignInfo);
+  CompRect.Right := CompRect.Left+NonVisualCompWidth;
+  CompRect.Bottom := CompRect.Top+NonVisualCompWidth;
+
   if AForm.HandleAllocated then
-    InvalidateDesignerRect(AForm.Handle,@CompRect);
+    InvalidateDesignerRect(AForm.Handle, @CompRect);
 end;
 
 function TSelectedControl.GetLeft: integer;
@@ -721,34 +722,29 @@ begin
     Result:=0;
 end;
 
-procedure TSelectedControl.SetLeft(ALeft: integer);
-var
-  M: Word;
+procedure TSelectedControl.SetLeft(ALeft: Integer);
 begin
   if FIsTControl then
-    TControl(FPersistent).Left:=Aleft
+    TControl(FPersistent).Left := Aleft
   else
-    if FIsTComponent then
-    begin
-      M := 32000;
-      if DesignerForm <> nil then
-        M := Max(0, Min(M, DesignerForm.ClientWidth - NonVisualCompWidth));
-      
-      with LongRec(TComponent(FPersistent).DesignInfo) do
-        Lo := Word(Min(M, Max(0, ALeft)));
-    end;
+  if FIsTComponent then
+  begin
+    ALeft := Max(Low(SmallInt), Min(ALeft, High(SmallInt)));
+    TComponent(FPersistent).DesignInfo := DesignInfoFrom(ALeft, Top);
+  end;
      
-  FCachedLeft:=ALeft;
+  FCachedLeft := ALeft;
 end;
 
 function TSelectedControl.GetTop: integer;
 begin
   if FUseCache then
-    Result:=FCachedTop
-  else if FIsTComponent then
-    Result:=GetComponentTop(TComponent(FPersistent))
+    Result := FCachedTop
+  else 
+  if FIsTComponent then
+    Result := GetComponentTop(TComponent(FPersistent))
   else
-    Result:=0;
+    Result := 0;
 end;
 
 procedure TSelectedControl.SetOwner(const AValue: TControlSelection);
@@ -758,31 +754,26 @@ begin
 end;
 
 procedure TSelectedControl.SetTop(ATop: integer);
-var
-  M: Word;
 begin
   if FIsTControl then
-    TControl(FPersistent).Top:=ATop
+    TControl(FPersistent).Top := ATop
   else
-    if FIsTComponent then
-    begin
-      M := 32000;
-      if DesignerForm <> nil then
-        M := Max(0, Min(M, DesignerForm.ClientHeight - NonVisualCompWidth));
-        
-      with LongRec(TComponent(FPersistent).DesignInfo) do
-        Hi := Word(Min(M, Max(0, ATop)));
-    end;
+  if FIsTComponent then
+  begin
+    ATop := Max(Low(SmallInt), Min(ATop, High(SmallInt)));
+    TComponent(FPersistent).DesignInfo := DesignInfoFrom(Left, ATop);
+  end;
     
-  FCachedTop:=ATop;
+  FCachedTop := ATop;
 end;
 
 function TSelectedControl.GetWidth: integer;
 begin
   if FUseCache then
-    Result:=FCachedWidth
-  else if FIsTComponent then
-    Result:=GetComponentWidth(TComponent(FPersistent));
+    Result := FCachedWidth
+  else 
+  if FIsTComponent then
+    Result := GetComponentWidth(TComponent(FPersistent));
 end;
 
 procedure TSelectedControl.SetUseCache(const AValue: boolean);
@@ -802,9 +793,10 @@ end;
 function TSelectedControl.GetHeight: integer;
 begin
   if FUseCache then
-    Result:=FCachedHeight
-  else if FIsTComponent then
-    Result:=GetComponentHeight(TComponent(FPersistent))
+    Result := FCachedHeight
+  else 
+  if FIsTComponent then
+    Result := GetComponentHeight(TComponent(FPersistent))
   else
     Result:=0;
 end;

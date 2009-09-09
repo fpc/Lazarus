@@ -1481,7 +1481,7 @@ begin
       end else
       begin
         new_menuitem^.PrevItem:=nil;
-        Root:=new_menuitem;
+        fRoot:=new_menuitem;
       end;
     end;
     MenuItem^.PrevItem:=new_menuitem;

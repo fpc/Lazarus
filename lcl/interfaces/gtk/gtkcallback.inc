@@ -1058,13 +1058,11 @@ begin
   FreeWidgetInfo(Widget);
 end;
 
-function DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer
-  ): GBoolean; cdecl;
+procedure DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer); cdecl;
 begin
-  Result:=CallBackDefaultReturn;
-  if PGtkWidget(LastWFPResult)<>Widget then exit;
-  LastWFPResult:=0;
-  LastWFPMousePos:=Point(High(Integer),High(Integer));
+  if PGtkWidget(LastWFPResult) <> Widget then Exit;
+  LastWFPResult := 0;
+  LastWFPMousePos := Point(High(Integer), High(Integer));
 end;
 
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;

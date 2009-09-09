@@ -3752,29 +3752,38 @@ var
   Info: PWinWidgetInfo;
 {$ENDIF}
 begin
+  if Widget = nil then Exit;
   {$IFDEF Gtk1}
   MainWidget := Widget;
-  if MainWidget = nil then Exit;
-  if GtkWidgetIsA(Widget,GTK_MENU_ITEM_GET_TYPE) then exit;
+  if GtkWidgetIsA(Widget, GTK_MENU_ITEM_GET_TYPE) then Exit;
 
-  ClientWidget:=GetFixedWidget(MainWidget);
-  WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
-  if WinWidgetInfo<>nil then
-    ImplWidget:=WinWidgetInfo^.CoreWidget
+  ClientWidget := GetFixedWidget(MainWidget);
+  WinWidgetInfo := GetWidgetInfo(MainWidget, False);
+  if WinWidgetInfo <> nil then
+    ImplWidget := WinWidgetInfo^.CoreWidget
   else
-    ImplWidget:=nil;
+    ImplWidget := nil;
+  if MainWidget = PGtkWidget(LastWFPResult) then
+    DestroyWindowFromPointCB(MainWidget, nil);
   g_signal_handlers_destroy(PGtkObject(MainWidget));
-  if (ClientWidget<>nil) and (ClientWidget<>MainWidget) then
+  if (ClientWidget <> nil) and (ClientWidget <> MainWidget) then
+  begin
+    if ClientWidget = PGtkWidget(LastWFPResult) then
+      DestroyWindowFromPointCB(ClientWidget, nil);
     g_signal_handlers_destroy(PGtkObject(ClientWidget));
-  if (ImplWidget<>nil)
-  and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
-    g_signal_handlers_destroy(PGtkObject(ImplWidget));
-  {$ELSE}
-  if Widget=nil then exit;
-  Info:=GetWidgetInfo(Widget,false);
-  if Info<>nil then begin
-    g_signal_handlers_disconnect_matched(Widget,G_SIGNAL_MATCH_DATA,0,0,nil,nil,Info);
   end;
+  if (ImplWidget <> nil) and
+     (ImplWidget <> ClientWidget) and
+     (ImplWidget <> MainWidget) then
+  begin
+    if ImplWidget = PGtkWidget(LastWFPResult) then
+      DestroyWindowFromPointCB(ImplWidget, nil);
+    g_signal_handlers_destroy(PGtkObject(ImplWidget));
+  end;
+  {$ELSE}
+  Info := GetWidgetInfo(Widget, False);
+  if Info <> nil then
+    g_signal_handlers_disconnect_matched(Widget, G_SIGNAL_MATCH_DATA, 0, 0, nil, nil, Info);
   {$ENDIF}
 end;
 

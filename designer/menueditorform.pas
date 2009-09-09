@@ -240,7 +240,7 @@ begin
     if FMenu <> nil then
     begin
       CreateDesignerMenu;
-      DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
+      DesignerMainMenu.RealignDesigner;
     end;
   end;
 end;

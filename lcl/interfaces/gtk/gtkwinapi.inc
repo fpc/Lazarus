@@ -4340,6 +4340,7 @@ var
   TheStyle: PGtkStyle;
   i: integer;
   gc1, gc2: PGdkGC;
+  OldGC1Values, OldGC2Values: TGdkGCValues;
 begin
   Result := IsValidDC(DC);
   if not Result or (FrameWidth = 0) then Exit;
@@ -4371,6 +4372,14 @@ begin
 
   with TGtkDeviceContext(DC) do
   begin
+    if WithChildWindows then
+    begin
+      gdk_gc_get_values(gc1, @OldGC1Values);
+      gdk_gc_get_values(gc2, @OldGC2Values);
+      gdk_gc_set_subwindow(gc1, GDK_INCLUDE_INFERIORS);
+      gdk_gc_set_subwindow(gc2, GDK_INCLUDE_INFERIORS);
+    end;
+
     for i := 1 to FrameWidth do
     begin
       gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
@@ -4384,6 +4393,13 @@ begin
       // inflate the rectangle (! ARect will be returned to the user with this)
       InflateRect(ARect, -1, -1);
     end;
+
+    if WithChildWindows then
+    begin
+      gdk_gc_set_subwindow(gc1, OldGC1Values.subwindow_mode);
+      gdk_gc_set_subwindow(gc2, OldGC2Values.subwindow_mode);
+    end;
+
   end;
 end;
 
@@ -7434,7 +7450,7 @@ begin
 
     FMessageQueue.AddMessage(AMessage);
 
-    if GetThreadID <> MainThreadID then
+    if GetCurrentThreadId <> MainThreadID then
     begin
       // awake gtk loop
       // when the main thread is currently processing messages it will process
@@ -7818,7 +7834,7 @@ begin
 
   if not IsValidDC(DC) then Exit(False);
   if SavedDC <= 0 then Exit(False);
-  
+
   repeat
     SavedDevCtx := DevCtx.SavedContext;
     Dec(SavedDC);
@@ -7828,7 +7844,7 @@ begin
     ClipRegionChanged := DevCtx.ClipRegion <> SavedDevCtx.ClipRegion;
     
     // clear the GDIObjects in pSavedDC, so they are not freed by DeleteDC
-    Result := DevCtx.CopyDataFrom(SavedDevCtx, true, true, true);
+    Result := DevCtx.CopyDataFrom(SavedDevCtx, True, True, True);
     DevCtx.SavedContext := SavedDevCtx.SavedContext;
     SavedDevCtx.SavedContext := nil;
 
@@ -7869,20 +7885,18 @@ end;
 function TGtkWidgetSet.SaveDC(DC: HDC): Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
-  aDC, aSavedDC: TGtkDeviceContext;
+  aSavedDC: TGtkDeviceContext;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
 
   Result := 0;
-  if IsValidDC(DC)
-  then begin
-    aDC := TGtkDeviceContext(DC);
+  if IsValidDC(DC) then
+  begin
     aSavedDC := NewDC;
-    aSavedDC.CopyDataFrom(aDC,false,true,false);
-    aSavedDC.SavedContext:=aDC.SavedContext;
-    aDC.SavedContext:= aSavedDC;
-    Result:=1;
+    aSavedDC.CopyDataFrom(DevCtx, False, True, False);
+    aSavedDC.SavedContext := DevCtx.SavedContext;
+    DevCtx.SavedContext:= aSavedDC;
+    Result := 1;
   end;
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
@@ -9730,7 +9744,8 @@ begin
     Result := PtrUInt(Widget);
   end;
   // disconnect old handler
-  if LastWFPResult<>0 then begin
+  if GTK_IS_OBJECT(Pointer(LastWFPResult)) then
+  begin
     {$IFDEF gtk1}
     gtk_signal_disconnect_by_func(GPointer(LastWFPResult),
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
@@ -9742,9 +9757,14 @@ begin
   LastWFPMousePos := APoint;
   LastWFPResult := Result;
   // connect handler
-  if LastWFPResult<>0 then
+  if LastWFPResult <> 0 then
+    {$IFDEF gtk1}
+    gtk_signal_connect(PGtkObject(LastWFPResult), 'destroy',
+      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$else}
     g_signal_connect(GPointer(LastWFPResult), 'destroy',
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+    {$endif}
 end;
 
 //##apiwiz##eps##   // Do not remove

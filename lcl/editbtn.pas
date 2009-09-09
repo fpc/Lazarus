@@ -165,6 +165,7 @@ type
     FHideDirectories: Boolean;
     FInitialDir: String;
     FOnAcceptFN: TAcceptFileNameEvent;
+    FFileNameChangeLock: Integer;
     procedure SetFileName(const AValue: String);
   protected
     function GetDefaultGlyph: TBitmap; override;
@@ -172,22 +173,22 @@ type
     function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
     procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    procedure RealSetText(const Value: TCaption); override;
     procedure RunDialog; virtual;
+    procedure TextChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property DialogFiles : TStrings read FDialogFiles;
+    property DialogFiles: TStrings read FDialogFiles;
   published
     // TFileName properties.
-    property FileName : String read FFileName write SetFileName;
-    property InitialDir : String read FInitialDir write FInitialDir;
-    property OnAcceptFileName : TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
-    property DialogKind : TDialogKind read FDialogKind write FDialogKind default dkOpen;
-    property DialogTitle : String read FDialogTitle write FDialogTitle;
-    property DialogOptions : TOpenOptions read FDialogOptions write FDialogOptions;
-    property Filter : String read FFilter write FFilter;
-    property FilterIndex : Integer read FFilterIndex write FFIlterIndex;
+    property FileName: String read FFileName write SetFileName;
+    property InitialDir: String read FInitialDir write FInitialDir;
+    property OnAcceptFileName: TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
+    property DialogKind: TDialogKind read FDialogKind write FDialogKind default dkOpen;
+    property DialogTitle: String read FDialogTitle write FDialogTitle;
+    property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions;
+    property Filter: String read FFilter write FFilter;
+    property FilterIndex: Integer read FFilterIndex write FFIlterIndex;
     property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
     property ButtonWidth;
@@ -252,18 +253,18 @@ type
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    function CreateDialog : TCommonDialog; virtual;
+    function CreateDialog: TCommonDialog; virtual;
     function GetDialogResult(D : TCommonDialog) : String; virtual;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
   public
   published
     // TDirectory properties.
-    property Directory : String read GetDirectory write SetDirectory;
-    property RootDir : String read FRootDir write FRootDir;
-    property OnAcceptDirectory : TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
-    property DialogTitle : String read FDialogTitle write FDialogTitle;
-    property ShowHidden : Boolean read FShowHidden write FShowHidden;
+    property Directory: String read GetDirectory write SetDirectory;
+    property RootDir: String read FRootDir write FRootDir;
+    property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
+    property DialogTitle: String read FDialogTitle write FDialogTitle;
+    property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;
@@ -343,7 +344,7 @@ type
     function GetDefaultGlyphName: String; override;
     procedure DoButtonClick(Sender: TObject); override;
     procedure DblClick; override;
-    Procedure SetDateMask; virtual;
+    procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure DateFormatChanged; virtual;
@@ -720,19 +721,18 @@ end;
 
 procedure TFileNameEdit.SetFileName(const AValue: String);
 begin
+  if FFileNameChangeLock > 0 then
+    Exit;
   FFileName := AValue;
-  if FHideDirectories then
-    inherited RealSetText(ExtractFileName(AValue))
-  else
-    inherited RealSetText(AValue)
-end;
-
-procedure TFileNameEdit.RealSetText(const Value: TCaption);
-begin
-  if FHideDirectories and (ExtractFilePath(Value) = '') then
-    FileName := ExtractFilePath(FFileName) + Value
-  else
-    FileName := Value;
+  Inc(FFileNameChangeLock);
+  try
+    if FHideDirectories then
+      inherited RealSetText(ExtractFileName(AValue))
+    else
+      inherited RealSetText(AValue)
+  finally
+    Dec(FFileNameChangeLock);
+  end;
 end;
 
 function TFileNameEdit.CreateDialog(AKind: TDialogKind): TCommonDialog;
@@ -818,6 +818,22 @@ begin
   finally
     D.Free;
   end
+end;
+
+procedure TFileNameEdit.TextChanged;
+begin
+  inherited TextChanged;
+  if FFileNameChangeLock > 0 then
+    Exit;
+  Inc(FFileNameChangeLock);
+  try
+    if FHideDirectories and (ExtractFilePath(Text) = '') then
+      FFileName := ExtractFilePath(FFileName) + Text
+    else
+      FFileName := Text;
+  finally
+    Dec(FFileNameChangeLock);
+  end;
 end;
 
 { TDirectoryEdit }
@@ -1037,16 +1053,16 @@ begin
   begin
     if Assigned(FOnCustomDate) then
       FOnCustomDate(Self, ADate);
-    If (DateOrder=doNone) then
+    if (DateOrder = doNone) then
       Result := StrToDateDef(ADate, Result)
     else
-      Result:=ParseDate(ADate,DateOrder,Result)
+      Result := ParseDate(ADate,DateOrder,Result)
   end;
 end;
 
 function TDateEdit.IsStoreTitle: boolean;
 begin
-  Result:=DialogTitle<>rsPickDate;
+  Result := DialogTitle <> rsPickDate;
 end;
 
 procedure TDateEdit.SetDate(Value: TDateTime);
