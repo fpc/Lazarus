@@ -5,6 +5,6 @@
 #
 # Before running this file, first compile the project build_lcl_docs.lpi
 #
-./build_lcl_docs --outfmt chm --arg --make-searchable
+./build_lcl_docs --outfmt chm
 
 
