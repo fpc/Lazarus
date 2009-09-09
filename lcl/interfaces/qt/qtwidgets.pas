@@ -1857,6 +1857,20 @@ begin
   end
   else
     QEvent_ignore(Event);
+
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
+  {fixes #14544 and others when we loose our LCLObject
+   after delivering message to LCL.}
+  if (LCLObject = nil) and
+     ((QEvent_type(Event) = QEventMouseButtonPress) or
+     (QEvent_type(Event) = QEventMouseButtonRelease) or
+     (QEvent_type(Event) = QEventMouseButtonDblClick) or
+     (QEvent_type(Event) = QEventMouseMove) or
+     (QEvent_type(Event) = QEventKeyPress) or
+     (QEvent_type(Event) = QEventKeyRelease)) then
+    BeginEventProcessing;
+  {$ENDIF}
+
   EndEventProcessing;
 end;
 
