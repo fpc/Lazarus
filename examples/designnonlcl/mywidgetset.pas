@@ -82,6 +82,7 @@ type
     procedure SetParentComponent(Value: TComponent); override;
     function HasParent: Boolean; override;
     function GetParentComponent: TComponent; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -242,6 +243,15 @@ end;
 function TMyWidget.GetParentComponent: TComponent;
 begin
   Result:=Parent;
+end;
+
+procedure TMyWidget.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i: Integer;
+begin
+  for i:=0 to ChildCount-1 do
+    if Childs[i].Owner=Root then
+      Proc(Childs[i]);
 end;
 
 constructor TMyWidget.Create(AOwner: TComponent);

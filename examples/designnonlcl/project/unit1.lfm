@@ -5,4 +5,11 @@ object MyForm1: TMyForm1
   Height = 236
   Visible = False
   Caption = 'MyForm1'
+  object MyButton1: TMyButton
+    Left = 20
+    Top = 10
+    Width = 75
+    Height = 25
+    Caption = 'MyButton1'
+  end
 end

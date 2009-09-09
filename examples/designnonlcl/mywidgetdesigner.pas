@@ -89,7 +89,7 @@ end;
 class function TMyWidgetMediator.CreateMediator(TheOwner, aForm: TComponent
   ): TDesignerMediator;
 begin
-  Result:=TMyWidgetMediator.Create(TheOwner);
+  Result:=inherited CreateMediator(TheOwner,aForm);
   TMyWidgetMediator(Result).FMyForm:=aForm as TMyForm;
 end;
 

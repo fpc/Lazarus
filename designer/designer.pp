@@ -2762,22 +2762,30 @@ function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
   var
     i: integer;
     Bounds: TRect;
+    Flags: TDMCompAtPosFlags;
   begin
-    for i := FLookupRoot.ComponentCount - 1 downto 0 do
-    begin
-      Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
-      if not Result.InheritsFrom(AClass) then Continue;
-      if Result is TControl then begin
-        if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
-        then
-          Continue;
-        if csNoDesignSelectable in TControl(Result).ControlStyle then
-          continue;
+    if Mediator<>nil then begin
+      Flags:=[];
+      if IgnoreHidden then
+        Include(Flags,dmcapfOnlyVisible);
+      Result:=Mediator.ComponentAtPos(APos,AClass,Flags);
+    end else begin
+      for i := FLookupRoot.ComponentCount - 1 downto 0 do
+      begin
+        Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
+        if not Result.InheritsFrom(AClass) then Continue;
+        if Result is TControl then begin
+          if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
+          then
+            Continue;
+          if csNoDesignSelectable in TControl(Result).ControlStyle then
+            continue;
+        end;
+        Bounds := GetParentFormRelativeBounds(Result);
+        if PtInRect(Bounds, APos) then Exit;
       end;
-      Bounds := GetParentFormRelativeBounds(Result);
-      if PtInRect(Bounds, APos) then Exit;
+      Result := nil;
     end;
-    Result := nil;
   end;
 
   function DoWinControl: TComponent;

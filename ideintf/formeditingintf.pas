@@ -86,6 +86,12 @@ type
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 
+  TDMCompAtPosFlag = (
+    dmcapfOnlyVisible,
+    dmcapfOnlySelectable
+    );
+  TDMCompAtPosFlags = set of TDMCompAtPosFlag;
+
   { TDesignerMediator
     To edit designer forms which do not use the LCL, register a TDesignerMediator,
     which will emulate the painting, handle the mouse and editing bounds. }
@@ -94,12 +100,16 @@ type
   private
     FDesigner: TComponentEditorDesigner;
     FLCLForm: TForm;
+    FRoot: TComponent;
   protected
-    procedure SetDesigner(const AValue: TComponentEditorDesigner);
+    FCollectedChilds: TFPList;
+    procedure SetDesigner(const AValue: TComponentEditorDesigner); virtual;
     procedure SetLCLForm(const AValue: TForm); virtual;
+    procedure SetRoot(const AValue: TComponent); virtual;
+    procedure CollectChildren(Child: TComponent); virtual;
   public
     class function FormClass: TComponentClass; virtual; abstract;
-    class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual; abstract;
+    class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual;
     class procedure InitFormInstance(aForm: TComponent); virtual; // called after NewInstance, before constructor
   public
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual;
@@ -112,8 +122,14 @@ type
     procedure Paint; virtual;
     function ComponentIsIcon(AComponent: TComponent): boolean; virtual;
     function ParentAcceptsChild(Parent: TComponent; Child: TComponentClass): boolean; virtual;
+    function ComponentIsVisible(AComponent: TComponent): Boolean; virtual;
+    function ComponentIsSelectable(AComponent: TComponent): Boolean; virtual;
+    function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
+                            Flags: TDMCompAtPosFlags): TComponent; virtual;
+    procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
+    property Root: TComponent read FRoot write SetRoot;
   end;
   TDesignerMediatorClass = class of TDesignerMediator;
 
@@ -306,6 +322,24 @@ end;
 
 { TDesignerMediator }
 
+procedure TDesignerMediator.SetRoot(const AValue: TComponent);
+begin
+  if FRoot=AValue then exit;
+  FRoot:=AValue;
+end;
+
+procedure TDesignerMediator.CollectChildren(Child: TComponent);
+begin
+  FCollectedChilds.Add(Child);
+end;
+
+class function TDesignerMediator.CreateMediator(TheOwner, aForm: TComponent
+  ): TDesignerMediator;
+begin
+  Result:=Create(TheOwner);
+  Result.FRoot:=aForm;
+end;
+
 procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner
   );
 begin
@@ -405,6 +439,72 @@ function TDesignerMediator.ParentAcceptsChild(Parent: TComponent;
   Child: TComponentClass): boolean;
 begin
   Result:=false;
+end;
+
+function TDesignerMediator.ComponentIsVisible(AComponent: TComponent): Boolean;
+begin
+  Result:=true;
+end;
+
+function TDesignerMediator.ComponentIsSelectable(AComponent: TComponent
+  ): Boolean;
+begin
+  Result:=true;
+end;
+
+function TDesignerMediator.ComponentAtPos(p: TPoint; MinClass: TComponentClass;
+  Flags: TDMCompAtPosFlags): TComponent;
+var
+  i: Integer;
+  Child: TComponent;
+  ClientArea: TRect;
+  ScrollOffset: TPoint;
+  ChildBounds: TRect;
+  Found: Boolean;
+  Childs: TFPList;
+begin
+  Result:=Root;
+  while Result<>nil do begin
+    GetClientArea(Result,ClientArea,ScrollOffset);
+    Childs:=TFPList.Create;
+    try
+      GetChilds(Result,Childs);
+      Found:=false;
+      // iterate backwards (z-order)
+      for i:=Childs.Count-1 downto 0 do begin
+        Child:=TComponent(Childs[i]);
+        if (MinClass<>nil) and (not Child.InheritsFrom(MinClass)) then
+          continue;
+        if (dmcapfOnlyVisible in Flags) and (not ComponentIsVisible(Child)) then
+          continue;
+        if (dmcapfOnlySelectable in Flags)
+        and (not ComponentIsSelectable(Child)) then
+          continue;
+        GetBounds(Child,ChildBounds);
+        OffsetRect(ChildBounds,ClientArea.Left+ScrollOffset.X,
+                               ClientArea.Top+ScrollOffset.Y);
+        if PtInRect(ChildBounds,p) then begin
+          Found:=true;
+          Result:=Child;
+          break;
+        end;
+      end;
+      if not Found then exit;
+    finally
+      Childs.Free;
+    end;
+  end;
+end;
+
+procedure TDesignerMediator.GetChilds(Parent: TComponent;
+  ChildComponents: TFPList);
+begin
+  FCollectedChilds:=ChildComponents;
+  try
+    TDesignerMediator(Parent).GetChildren(@CollectChildren,Root);
+  finally
+    FCollectedChilds:=nil;
+  end;
 end;
 
 end.
