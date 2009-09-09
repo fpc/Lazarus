@@ -59,6 +59,7 @@ type
     procedure SetSelected(Value: TColor);
     procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
     procedure ColorProc(const s: AnsiString);
+    procedure UpdateCombo;
   protected
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure SetColorList;
@@ -428,35 +429,12 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCustomColorBox.SetSelected(Value: TColor);
-var
-  c: integer;
 begin
   if Selected = Value then
     Exit;
 
-  if HandleAllocated then
-  begin
-    FSelected := Value;
-    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
-    begin
-      if Colors[c] = Value then
-      begin
-        ItemIndex := c;
-        inherited Change;
-        Exit;
-      end;
-    end;
-    if cbCustomColor in Style then
-    begin
-      Items.Objects[0] := TObject(PtrInt(Value));
-      ItemIndex := 0;
-      invalidate;
-    end
-    else
-      ItemIndex := -1;
-  end
-  else
-    FSelected := Value;
+  FSelected := Value;
+  UpdateCombo;
   inherited Change;
 end;
 
@@ -504,6 +482,31 @@ begin
       ColorCaption := s;
 
     Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
+  end;
+end;
+
+procedure TCustomColorBox.UpdateCombo;
+var
+  c: integer;
+begin
+  if HandleAllocated then
+  begin
+    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
+    begin
+      if Colors[c] = FSelected then
+      begin
+        ItemIndex := c;
+        Exit;
+      end;
+    end;
+    if cbCustomColor in Style then
+    begin
+      Items.Objects[0] := TObject(PtrInt(FSelected));
+      ItemIndex := 0;
+      Invalidate;
+    end
+    else
+      ItemIndex := -1;
   end;
 end;
 
@@ -599,7 +602,7 @@ end;
 procedure TCustomColorBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  Selected := FSelected;
+  UpdateCombo;
 end;
 
 procedure TCustomColorBox.DoGetColors;
