@@ -38,7 +38,7 @@ unit DBGrids;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DB,
+  Classes, SysUtils, Math, FileUtil, DB,
   LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
   Controls, StdCtrls, Graphics, Grids, Dialogs, Themes;
 
@@ -1368,7 +1368,7 @@ begin
   {$endif}
   ScrollInfo.nMin := 0;
   ScrollInfo.nMax := aRange;
-  ScrollInfo.nPos := aPos;
+  ScrollInfo.nPos := Min(aPos,aRange-aPage);
   ScrollInfo.nPage := aPage;
   // the redraw argument of SetScrollInfo means under gtk
   // if the scrollbar is visible or not, in windows it
