@@ -145,21 +145,33 @@ begin
   if OutFormat='chm' then
   begin
     ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
-                          +' --auto-toc --auto-index'
+                          +' --auto-toc --auto-index --make-searchable'
                           +' --css-file=..'+PathDelim+'fpdoc.css ';
   end;
   
   ArgParams:=ArgParams+' --format='+OutFormat+' ';
 end;
 
-procedure AddFilesToList(Ext: String; List: TStrings);
+procedure AddFilesToList(Dir: String; Ext: String; List: TStrings);
 var
   FRec: TSearchRec;
   Res: Longint;
+  SubDirs: String; // we dont want the PasSrcDir in this string but the subfolders only
 begin
-  Res := FindFirst(PasSrcDir+'*.'+Ext, faAnyFile, FRec);
+  Res := FindFirst(Dir+'*', faAnyFile, FRec);
   while Res = 0 do begin
-    List.Add(FRec.Name);
+    //WriteLn('Checking file ' +FRec.Name);
+    if ((FRec.Attr and faDirectory) <> 0) and (FRec.Name[1] <> '.')then
+    begin
+      AddFilesToList(IncludeTrailingPathDelimiter(Dir)+FRec.Name, Ext, List);
+      //WriteLn('Checking Subfolder ',Dir+ FRec.Name);
+    end
+    else if Lowercase(ExtractFileExt(FRec.Name)) = Ext then
+    begin
+      SubDirs := IncludeTrailingPathDelimiter(Copy(Dir, Length(PasSrcDir)+1, Length(Dir)));
+      List.Add(SubDirs+FRec.Name);
+
+    end;
     Res := FindNext(FRec);
   end;
   FindClose(FRec);
@@ -198,16 +210,18 @@ var
 begin
   FileList := TStringList.Create;
   InputList := TStringList.Create;
-  AddFilesToList('pas', FileList);
-  AddFilesToList('pp',  FileList);
+  AddFilesToList(PasSrcDir, '.pas', FileList);
+  AddFilesToList(PasSrcDir, '.pp',  FileList);
   
   FileList.Sort;
   for I := 0 to FileList.Count-1 do
   begin
-    InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
     XMLFile := XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
     if FileExists(PackageName+PathDelim+XMLFile) then
-      ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml')
+    begin
+      InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
+      ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
+    end
     else
       WriteLn('Warning! No corresponding xml file for unit ' + FileList[I]);
   end;

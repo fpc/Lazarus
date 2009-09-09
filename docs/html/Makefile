@@ -20,7 +20,7 @@ htmldocs: build_lcl_docs
 	./$< --outfmt html
 
 chmdocs: build_lcl_docs
-	./$< --outfmt chm --arg --make-searchable
+	./$< --outfmt chm
 
 build_lcl_docs: build_lcl_docs.lpi build_lcl_docs.lpr
 ifeq (${LAZBUILD},)
