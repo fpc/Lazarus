@@ -1605,6 +1605,7 @@ type
   end;
 
 
+procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
@@ -1646,6 +1647,50 @@ begin
     if (Editor.GetComponent(0)=AnObject)
     and (Editor.OnSubPropertiesChanged<>nil) then
       Editor.UpdateSubProperties;
+  end;
+end;
+
+Procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
+type
+  PMethod = ^TMethod;
+  TSetMethodProcIndex=procedure(index:longint;p:TMethod) of object;
+  TSetMethodProc=procedure(p:TMethod) of object;
+var
+  AMethod : TMethod;
+begin
+  case (PropInfo^.PropProcs shr 2) and 3 of
+    ptfield:
+      PMethod(Pointer(Instance)+PtrUInt(PropInfo^.SetProc))^ := Value;
+    ptstatic,
+    ptvirtual :
+      begin
+        if ((PropInfo^.PropProcs shr 2) and 3)=ptStatic then
+          AMethod.Code:=PropInfo^.SetProc
+        else
+          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+PtrUInt(PropInfo^.SetProc))^;
+        AMethod.Data:=Instance;
+        if (Value.Code=nil) and (Value.Data<>nil) then begin
+          // this is a fake method
+          // Comparing fake methods with OldValue=NewValue results always in
+          // true. Therefore this will fail:
+          //   if FMethod=NewValue then exit;
+          //   FMethod:=NewValue;
+          // Change the method two times
+          try
+            Value.Code:=Pointer(1);
+            if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
+              TSetMethodProcIndex(AMethod)(PropInfo^.Index,Value)
+            else
+              TSetMethodProc(AMethod)(Value);
+          except
+          end;
+          Value.Code:=nil;
+        end;
+        if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
+          TSetMethodProcIndex(AMethod)(PropInfo^.Index,Value)
+        else
+          TSetMethodProc(AMethod)(Value);
+      end;
   end;
 end;
 
@@ -2586,7 +2631,7 @@ begin
     end;
   if Changed then begin
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetMethodProp(Instance,PropInfo,NewValue);
+      with FPropList^[I] do LazSetMethodProp(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
