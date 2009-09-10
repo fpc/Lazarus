@@ -90,9 +90,13 @@ end;
 
 class function TMyWidgetMediator.CreateMediator(TheOwner, aForm: TComponent
   ): TDesignerMediator;
+var
+  Mediator: TMyWidgetMediator;
 begin
   Result:=inherited CreateMediator(TheOwner,aForm);
-  TMyWidgetMediator(Result).FMyForm:=aForm as TMyForm;
+  Mediator:=TMyWidgetMediator(Result);
+  Mediator.FMyForm:=aForm as TMyForm;
+  Mediator.FMyForm.Designer:=Mediator;
 end;
 
 class function TMyWidgetMediator.FormClass: TComponentClass;
@@ -165,9 +169,9 @@ procedure TMyWidgetMediator.Paint;
       // inner frame
       if AWidget.AcceptChildsAtDesignTime then begin
         Pen.Color:=clMaroon;
-        Rectangle(AWidget.BorderLeft,AWidget.BorderTop,
-                  AWidget.Width-AWidget.BorderRight,
-                  AWidget.Height-AWidget.BorderBottom);
+        Rectangle(AWidget.BorderLeft-1,AWidget.BorderTop-1,
+                  AWidget.Width-AWidget.BorderRight+1,
+                  AWidget.Height-AWidget.BorderBottom+1);
       end;
       // caption
       TextOut(5,2,AWidget.Caption);
