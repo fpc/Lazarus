@@ -1868,7 +1868,10 @@ begin
      (QEvent_type(Event) = QEventMouseMove) or
      (QEvent_type(Event) = QEventKeyPress) or
      (QEvent_type(Event) = QEventKeyRelease)) then
+  begin
+    Result := True;
     BeginEventProcessing;
+  end;
   {$ENDIF}
 
   EndEventProcessing;
