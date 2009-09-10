@@ -52,6 +52,8 @@ type
     class function FormClass: TComponentClass; override;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); override;
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); override;
+    procedure GetClientArea(AComponent: TComponent; out
+            CurClientArea: TRect; out ScrollOffset: TPoint); override;
     procedure Paint; override;
     function ComponentIsIcon(AComponent: TComponent): boolean; override;
     function ParentAcceptsChild(Parent: TComponent;
@@ -125,6 +127,21 @@ begin
       NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
   end else
     inherited SetBounds(AComponent,NewBounds);
+end;
+
+procedure TMyWidgetMediator.GetClientArea(AComponent: TComponent; out
+  CurClientArea: TRect; out ScrollOffset: TPoint);
+var
+  Widget: TMyWidget;
+begin
+  if AComponent is TMyWidget then begin
+    Widget:=TMyWidget(AComponent);
+    CurClientArea:=Rect(Widget.BorderLeft,Widget.BorderTop,
+                        Widget.Width-Widget.BorderRight,
+                        Widget.Height-Widget.BorderBottom);
+    ScrollOffset:=Point(0,0);
+  end else
+    inherited GetClientArea(AComponent, CurClientArea, ScrollOffset);
 end;
 
 procedure TMyWidgetMediator.Paint;

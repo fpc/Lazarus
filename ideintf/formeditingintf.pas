@@ -469,10 +469,12 @@ begin
     Childs:=TFPList.Create;
     try
       GetChilds(Result,Childs);
+      //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',childs.Count,' ']);
       Found:=false;
       // iterate backwards (z-order)
       for i:=Childs.Count-1 downto 0 do begin
         Child:=TComponent(Childs[i]);
+        //DebugLn(['TDesignerMediator.ComponentAtPos Child ',DbgSName(Child)]);
         if (MinClass<>nil) and (not Child.InheritsFrom(MinClass)) then
           continue;
         if (dmcapfOnlyVisible in Flags) and (not ComponentIsVisible(Child)) then

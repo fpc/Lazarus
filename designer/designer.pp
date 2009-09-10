@@ -1385,7 +1385,6 @@ begin
 
   SelectedCompClass := GetSelectedComponentClass;
 
-
   if (TheMessage.Keys and MK_LButton) > 0 then begin
     // left button
     // -> check if a grabber was activated
@@ -2779,6 +2778,7 @@ function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
       if IgnoreHidden then
         Include(Flags,dmcapfOnlyVisible);
       Result:=Mediator.ComponentAtPos(APos,AClass,Flags);
+      //DebugLn(['DoComponent ',dbgs(APos),' AClass=',DbgSName(AClass),' Result=',DbgSName(Result)]);
     end else begin
       for i := FLookupRoot.ComponentCount - 1 downto 0 do
       begin
