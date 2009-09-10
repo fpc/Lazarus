@@ -6389,9 +6389,10 @@ begin
   Assert(False, Format('Trace:> TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
-  if Result then begin
-    UpdateDCTextMetric(TGtkDeviceContext(DC));
-    TM:=TGtkDeviceContext(DC).DCTextMetric.TextMetric;
+  if Result then
+  begin
+    UpdateDCTextMetric(DevCtx);
+    TM := DevCtx.DCTextMetric.TextMetric;
   end;
 
   Assert(False, Format('Trace:< TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));

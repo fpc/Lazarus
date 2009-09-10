@@ -2564,14 +2564,24 @@ begin
       // draw component Name
       if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
       begin
-        TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
-        TextRect.Left := (IconRect.Left + IconRect.Right - TextSize.cx) div 2;
-        TextRect.Top := IconRect.Bottom + NonVisualCompBorder + 2;
-        TextRect.Right := TextRect.Left + TextSize.cx;
-        TextRect.Bottom := TextRect.Top + TextSize.cy;
-        aDDC.Canvas.FillRect(TextRect);
-        DrawText(aDDC.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
-          DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
+        // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
+        // it uses pango drawing and this for some reason does not take subwindow_mode
+        // into account
+        Icon := TBitmap.Create;
+        try
+          TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
+          Icon.SetSize(TextSize.cx, TextSize.cy);
+          TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
+          Icon.Canvas.Brush.Color := clBtnFace;
+          Icon.Canvas.FillRect(TextRect);
+          DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
+            DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
+          aDDC.Canvas.Draw(
+            (IconRect.Left + IconRect.Right - TextSize.cx) div 2,
+            IconRect.Bottom + NonVisualCompBorder + 2, Icon);
+        finally
+          Icon.Free;
+        end;
       end;
       // draw component icon
       if Assigned(FOnGetNonVisualCompIcon) then 
