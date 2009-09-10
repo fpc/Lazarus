@@ -1990,6 +1990,7 @@ function TControlSelection.AssignPersistent(APersistent: TPersistent): boolean;
 begin
   Result:=not IsOnlySelected(APersistent);
   if not Result then exit;
+  DebugLn(['TControlSelection.AssignPersistent ',DbgSName(APersistent)]);
   BeginUpdate;
   Clear;
   Add(APersistent);

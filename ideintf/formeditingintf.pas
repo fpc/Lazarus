@@ -422,6 +422,7 @@ begin
     GetClientArea(Parent,ClientArea,ScrollOffset);
     inc(Result.X,ClientArea.Left+ScrollOffset.X);
     inc(Result.Y,ClientArea.Top+ScrollOffset.Y);
+    AComponent:=Parent;
   end;
 end;
 
