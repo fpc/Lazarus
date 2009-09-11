@@ -284,6 +284,9 @@ begin
     Params.ContextNode:=ClassNode.Parent;
     if not CreateExprListFromMethodTypeData(TypeData,Params,SearchedExprList) then
       exit(false);
+    {$IFDEF ShowAllProcs}
+    DebugLn(['TEventsCodeTool.GetCompatiblePublishedMethods SearchedExprList=',SearchedExprList.AsString]);
+    {$ENDIF}
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
     if CompListSize>0 then begin
@@ -949,7 +952,9 @@ var
   FirstParameterNode: TCodeTreeNode;
   ProcName: PChar;
 begin
-  //DebugLn(['TEventsCodeTool.CollectPublishedMethods Node=',FoundContext.Node.DescAsString]);
+  {$IFDEF ShowAllProcs}
+  DebugLn(['TEventsCodeTool.CollectPublishedMethods Node=',FoundContext.Node.DescAsString]);
+  {$ENDIF}
   if (FoundContext.Node.Desc=ctnProcedure)
   and (FoundContext.Node.Parent<>nil)
   and (FoundContext.Node.Parent.Desc=ctnClassPublished) then begin

@@ -9449,7 +9449,7 @@ var i: integer;
 begin
   Result:='';
   for i:=0 to Count-1 do begin
-    Result:=Result+'{'+ExprTypeToString(Items[i])+'}'#13#10;
+    Result:=Result+'{'+ExprTypeToString(Items[i])+'}'+LineEnding;
   end;
 end;
 
