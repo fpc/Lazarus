@@ -189,7 +189,6 @@ begin
         Add('{$IFDEF UNIX}{$IFDEF UseCThreads}');
         Add('  CThreads,');
         Add('{$ENDIF}{$ENDIF}');
-        Add('  LazDaemon,');
         Add('  DaemonApp');
         Add('  { add your units here };');
         Add('');

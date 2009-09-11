@@ -139,10 +139,12 @@ type
 
   TWinCEWidgetSet = class(TWidgetSet)
   private
-    // The parent of all windows, represents the button of the taskbar
-    // This window is also the owner of the clipboard.
-    // Assoc. windowproc also acts as handler for popup menus
-    FAppHandle: HWND;//roozbeh:in win32 it was parrent of all..a window on taskbar
+    // In win32 it was: The parent of all windows, represents the button of the taskbar
+    // In wince it is just an invisible window, but retains the following functions:
+    // * This window is also the owner of the clipboard.
+    // * Assoc. windowproc also acts as handler for popup menus
+    // * It is indispensable for popupmenus and thread synchronization
+    FAppHandle: HWND;
 
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;

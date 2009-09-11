@@ -2338,7 +2338,7 @@ begin
 
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
-  if GetParent(Handle) = 0 then
+  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
   begin
     FillChar(Info, SizeOf(Info), 0);
     Info.cbSize := SizeOf(Info);
