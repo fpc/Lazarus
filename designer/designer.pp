@@ -280,6 +280,7 @@ type
     procedure CheckFormBounds;
     procedure DoPaintDesignerItems;
     function ComponentIsIcon(AComponent: TComponent): boolean;
+    function GetParentFormRelativeClientOrigin(AComponent: TComponent): TPoint;
   public
     property Flags: TDesignerFlags read FFlags;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
@@ -1505,8 +1506,16 @@ var
     NewComponentClass := SelectedCompClass.GetCreationClass;
 
     // find a parent for the new component
-    if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame) then
-    begin
+    NewParent := FLookupRoot;
+    if Mediator<>nil then begin
+      NewParent:=MouseDownComponent;
+      while (NewParent<>nil)
+      and (not Mediator.ParentAcceptsChild(NewParent,NewComponentClass)) do
+        NewParent:=NewParent.GetParentComponent;
+      if NewParent=nil then
+        NewParent:=FLookupRoot;
+    end else if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame)
+    then begin
       if MouseDownComponent is TWinControl then
         NewParentControl := TWinControl(MouseDownComponent)
       else
@@ -1522,8 +1531,7 @@ var
         NewParentControl := NewParentControl.Parent;
       end;
       NewParent := NewParentControl;
-    end else
-      NewParent := FLookupRoot;
+    end;
 
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
@@ -1537,10 +1545,10 @@ var
     end;
 
     // calculate initial bounds
-    ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
     NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
     NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
     if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
+      ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
       // adjust left,top to parent origin
       dec(NewLeft,ParentClientOrigin.X);
       dec(NewTop,ParentClientOrigin.Y);
@@ -2682,6 +2690,22 @@ begin
   Result:=DesignerProcs.ComponentIsNonVisual(AComponent);
   if Result and (Mediator<>nil) then
     Result:=Mediator.ComponentIsIcon(AComponent);
+end;
+
+function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent
+  ): TPoint;
+var
+  CurClientArea: TRect;
+  ScrollOffset: TPoint;
+begin
+  if Mediator<>nil then begin
+    Result:=Mediator.GetComponentOriginOnForm(AComponent);
+    Mediator.GetClientArea(AComponent,CurClientArea,ScrollOffset);
+    inc(Result.X,CurClientArea.Left+ScrollOffset.X);
+    inc(Result.Y,CurClientArea.Top+ScrollOffset.Y);
+  end else begin
+    Result:=DesignerProcs.GetParentFormRelativeClientOrigin(AComponent);
+  end;
 end;
 
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
