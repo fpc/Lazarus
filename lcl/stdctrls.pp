@@ -246,7 +246,7 @@ type
     csOwnerDrawVariable // like csDropDownList, but custom drawn and with each item can have another height
   );
 
-  TOwnerDrawState = TBaseOwnerDrawState;
+  TOwnerDrawState = LCLType.TOwnerDrawState;
 
   TDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
                              ARect: TRect; State: TOwnerDrawState) of object;

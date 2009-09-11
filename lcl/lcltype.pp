@@ -932,14 +932,14 @@ type
     odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
     odPainted  // item already painted
     );
-  TBaseOwnerDrawState = set of TOwnerDrawStateType;
+  TOwnerDrawState = set of TOwnerDrawStateType;
 
   PDrawListItemStruct = ^TDrawListItemStruct;
   TDrawListItemStruct = record
     ItemID: UINT;
     Area: TRect;
     DC: HDC;
-    ItemState: TBaseOwnerDrawState;
+    ItemState: TOwnerDrawState;
   end;
 
   PMeasureItemStruct = ^TMeasureItemStruct;

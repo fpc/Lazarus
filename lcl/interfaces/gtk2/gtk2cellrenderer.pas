@@ -155,7 +155,7 @@ var
   ItemIndex: Integer;
   ColumnIndex: Integer;
   AreaRect: TRect;
-  State: TBaseOwnerDrawState;
+  State: TOwnerDrawState;
   Msg: TLMDrawListItem;
   DCWidget: PGtkWidget;
   LVTarget: TCustomDrawTarget;
