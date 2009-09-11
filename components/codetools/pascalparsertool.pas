@@ -785,9 +785,7 @@ begin
       begin
         if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
       end else if UpAtomIs('WITH') then
-        ReadWithStatement(true,true)
-      else if UpAtomIs('ON') then
-        ReadOnStatement(true,true);
+        ReadWithStatement(true,true);
     until (CurPos.StartPos>=MaxPos);
     CurrentPhase:=OldPhase;
   except
@@ -2324,7 +2322,8 @@ begin
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
-    end else if CreateNodes and UpAtomIs('ON') then begin
+    end else if CreateNodes and UpAtomIs('ON') and (BlockType=ebtTry)
+    and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
     end else begin
       // check for unexpected keywords
