@@ -158,7 +158,9 @@ begin
     if AWinControl.Parent <> nil then
       Parent := AWinControl.Parent.Handle
     else
-      Parent := TWinCEWidgetSet(WidgetSet).AppHandle;
+      // Never set the parent of a window to AppHandle,
+      // otherwise wince will really try to make it a child
+      Parent := 0;
 
     SubClassWndProc := @WindowProc;
     StrCaption := AWinControl.Caption;
