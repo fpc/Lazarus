@@ -1600,7 +1600,7 @@ var
 
   procedure RubberbandSelect;
   var
-    MaxParentControl: TControl;
+    MaxParentComponent: TComponent;
   begin
     if (ssShift in Shift)
     and (ControlSelection.SelectionForm<>nil)
@@ -1620,14 +1620,17 @@ var
     MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
     // childs of the control, where the mouse started
-    if (ssCtrl in shift) and (MouseDownComponent is TControl) then
-      MaxParentControl:=TControl(MouseDownComponent)
-    else
-      MaxParentControl:=Form;
+    if (ssCtrl in shift) then begin
+      if MouseDownComponent=Form then
+        MaxParentComponent:=FLookupRoot
+      else
+        MaxParentComponent:=MouseDownComponent;
+    end else
+      MaxParentComponent:=FLookupRoot;
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
-      FLookupRoot,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
-      MaxParentControl);
+      FLookupRoot,Mediator,NewRubberbandSelection,ssShift in Shift,
+      SelectionChanged,MaxParentComponent);
     if ControlSelection.Count=0 then begin
       ControlSelection.Add(FLookupRoot);
       SelectionChanged:=true;

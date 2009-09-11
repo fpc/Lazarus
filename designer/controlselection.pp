@@ -488,9 +488,10 @@ type
 
     procedure SelectAll(ALookupRoot: TComponent);
     procedure SelectWithRubberBand(ALookupRoot: TComponent;
+                                   AMediator: TDesignerMediator;
                                    ClearBefore, ExclusiveOr: boolean;
                                    var SelectionChanged: boolean;
-                                   MaxParentControl: TControl);
+                                   MaxParentComponent: TComponent);
 
     property Visible:boolean read GetVisible write SetVisible;
 
@@ -1276,19 +1277,16 @@ procedure TControlSelection.DoDrawMarker(Index: integer;
   DC: TDesignerDeviceContext);
 var
   CompLeft, CompTop, CompWidth, CompHeight: integer;
-  CompOrigin, DCOrigin: TPoint;
+  DCOrigin: TPoint;
   CurItem: TSelectedControl;
-  AComponent: TComponent;
 begin
   CurItem:=Items[Index];
   if not CurItem.IsTComponent then exit;
-  AComponent:=TComponent(CurItem.Persistent);
 
-  GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
-  CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
+  CurItem.GetFormRelativeBounds(CompLeft,CompTop,CompWidth,CompHeight);
   DCOrigin:=DC.FormOrigin;
-  CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
-  CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
+  CompLeft:=CompLeft-DCOrigin.X;
+  CompTop:=CompTop-DCOrigin.Y;
 
   {writeln('DoDrawMarker A ',FForm.Name
     ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
@@ -2480,42 +2478,65 @@ begin
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ALookupRoot: TComponent;
-  ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean;
-  MaxParentControl: TControl);
+  AMediator: TDesignerMediator; ClearBefore, ExclusiveOr: boolean;
+  var SelectionChanged: boolean; MaxParentComponent: TComponent);
 var
   i: integer;
   AComponent: TComponent;
 
-  function ControlInRubberBand(AComponent: TComponent): boolean;
+  function ComponentInRubberBand(AComponent: TComponent): boolean;
   var
     ALeft, ATop, ARight, ABottom: integer;
     Origin: TPoint;
     AControl: TControl;
+    CurBounds: TRect;
+    CurParent: TComponent;
   begin
     Result:=false;
-    if ComponentIsInvisible(AComponent) then exit;
-    if (AComponent is TControl) then begin
-      AControl:=TControl(AComponent);
-      // check if control is visible on form
-      if not ControlIsInDesignerVisible(AControl) then exit;
-      // check if control
-      if (MaxParentControl<>nil) then begin
-        // select only controls, that are childs of MaxParentControl
-        if (not MaxParentControl.IsParentOf(AControl)) then exit;
-        // check if control is a grand child
+    if AMediator<>nil then begin
+      // check if component is visible on form
+      if not AMediator.ComponentIsVisible(AComponent) then exit;
+      if MaxParentComponent<>nil then begin
+        // check if component is a grand child
+        CurParent:=AComponent.GetParentComponent;
         if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
-        and (AControl.Parent<>MaxParentControl) then exit;
+        and (CurParent<>MaxParentComponent) then exit;
+        // check if component is a child (direct or grand)
+        while (CurParent<>nil) and (CurParent<>MaxParentComponent) do
+          CurParent:=CurParent.GetParentComponent;
+        if CurParent=nil then exit;
       end;
-    end;
-    Origin:=GetParentFormRelativeTopLeft(AComponent);
-    ALeft:=Origin.X;
-    ATop:=Origin.Y;
-    if AComponent is TControl then begin
-      ARight:=ALeft+TControl(AComponent).Width;
-      ABottom:=ATop+TControl(AComponent).Height;
+      AMediator.GetBounds(AComponent,CurBounds);
+      Origin:=AMediator.GetComponentOriginOnForm(AComponent);
+      ALeft:=Origin.X;
+      ATop:=Origin.Y;
+      ARight:=ALeft+CurBounds.Right-CurBounds.Left;
+      ABottom:=ATop+CurBounds.Bottom-CurBounds.Top;
     end else begin
-      ARight:=ALeft+NonVisualCompWidth;
-      ABottom:=ATop+NonVisualCompWidth;
+      if ComponentIsInvisible(AComponent) then exit;
+      if (AComponent is TControl) then begin
+        AControl:=TControl(AComponent);
+        // check if control is visible on form
+        if not ControlIsInDesignerVisible(AControl) then exit;
+        // check if control
+        if (MaxParentComponent is TWinControl) then begin
+          // select only controls, that are childs of MaxParentComponent
+          if (not TWinControl(MaxParentComponent).IsParentOf(AControl)) then exit;
+          // check if control is a grand child
+          if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
+          and (AControl.Parent<>MaxParentComponent) then exit;
+        end;
+      end;
+      Origin:=GetParentFormRelativeTopLeft(AComponent);
+      ALeft:=Origin.X;
+      ATop:=Origin.Y;
+      if AComponent is TControl then begin
+        ARight:=ALeft+TControl(AComponent).Width;
+        ABottom:=ATop+TControl(AComponent).Height;
+      end else begin
+        ARight:=ALeft+NonVisualCompWidth;
+        ABottom:=ATop+NonVisualCompWidth;
+      end;
     end;
     Result:=(ALeft<FRubberBandBounds.Right)
         and (ATop<FRubberBandBounds.Bottom)
@@ -2533,7 +2554,7 @@ begin
     end;
     for i:=0 to ALookupRoot.ComponentCount-1 do begin
       AComponent:=ALookupRoot.Components[i];
-      if not ControlInRubberBand(AComponent) then begin
+      if not ComponentInRubberBand(AComponent) then begin
         if IsSelected(AComponent) then begin
           Remove(AComponent);
           SelectionChanged:=true;
@@ -2543,7 +2564,7 @@ begin
   end;
   for i:=0 to ALookupRoot.ComponentCount-1 do begin
     AComponent:=ALookupRoot.Components[i];
-    if ControlInRubberBand(AComponent) then begin
+    if ComponentInRubberBand(AComponent) then begin
       if IsSelected(AComponent) then begin
         if ExclusiveOr then begin
           Remove(AComponent);

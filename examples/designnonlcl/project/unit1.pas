@@ -10,6 +10,7 @@ uses
 type
   TMyForm1 = class(TMyForm)
     MyButton1: TMyButton;
+    MyButton2: TMyButton;
   private
     { private declarations }
   public

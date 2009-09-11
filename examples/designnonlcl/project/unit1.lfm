@@ -12,4 +12,11 @@ object MyForm1: TMyForm1
     Height = 25
     Caption = 'MyButton1'
   end
+  object MyButton2: TMyButton
+    Left = 30
+    Top = 70
+    Width = 75
+    Height = 25
+    Caption = 'MyButton2'
+  end
 end
