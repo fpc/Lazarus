@@ -36,6 +36,7 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE CTDEBUG}
+{off $DEFINE VerboseTypeData}
 {off $DEFINE ShowAllProcs}
 
 uses
@@ -872,17 +873,20 @@ var i, ParamCount, Len, Offset: integer;
   CurTypeIdentifier: string;
   OldInput: TFindDeclarationInput;
   CurExprType: TExpressionType;
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseTypeData}
   CurParamName: string;
   {$ENDIF}
 begin
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseTypeData}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
   {$ENDIF}
   Result:=false;
   List:=TExprTypeList.Create;
   if TypeData=nil then exit(true);
   ParamCount:=TypeData^.ParamCount;
+  {$IFDEF VerboseTypeData}
+  DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount);
+  {$ENDIF}
   if ParamCount>0 then begin
     Offset:=0;
     
@@ -895,7 +899,7 @@ begin
 
       // skip ParamName
       Len:=ord(TypeData^.ParamList[Offset]);
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       SetLength(CurParamName,Len);
       if Len>0 then
         Move(TypeData^.ParamList[Offset+1],CurParamName[1],Len);
@@ -910,7 +914,7 @@ begin
         Move(TypeData^.ParamList[Offset],CurTypeIdentifier[1],Len);
       inc(Offset,Len);
       
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
       ' i=',dbgs(i),'/',dbgs(ParamCount),
       ' ParamName=',CurParamName,
@@ -926,7 +930,7 @@ begin
                      +(fdfGlobals*Params.Flags)
                      -[fdfSearchInAncestors];
       CurExprType:=GetExpressionTypeOfTypeIdentifier(Params);
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
       ' i=',dbgs(i),'/',dbgs(ParamCount),
       ' Ident=',CurTypeIdentifier,
@@ -938,7 +942,7 @@ begin
       Params.Load(OldInput,true);
     end;
   end;
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseTypeData}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] END');
   {$ENDIF}
   Result:=true;
@@ -952,9 +956,7 @@ var
   FirstParameterNode: TCodeTreeNode;
   ProcName: PChar;
 begin
-  {$IFDEF ShowAllProcs}
-  DebugLn(['TEventsCodeTool.CollectPublishedMethods Node=',FoundContext.Node.DescAsString]);
-  {$ENDIF}
+  //DebugLn(['TEventsCodeTool.CollectPublishedMethods Node=',FoundContext.Node.DescAsString]);
   if (FoundContext.Node.Desc=ctnProcedure)
   and (FoundContext.Node.Parent<>nil)
   and (FoundContext.Node.Parent.Desc=ctnClassPublished) then begin
