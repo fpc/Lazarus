@@ -885,7 +885,7 @@ begin
   if TypeData=nil then exit(true);
   ParamCount:=TypeData^.ParamCount;
   {$IFDEF VerboseTypeData}
-  DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount);
+  DebugLn(['[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount]);
   {$ENDIF}
   if ParamCount>0 then begin
     Offset:=0;
