@@ -5905,7 +5905,11 @@ begin
       //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
     end;
     if not (csDestroying in ComponentState) then
+    begin
+      if not (csLoading in ComponentState) then
+        AControl.UpdateAnchorRules;
       AControl.RequestAlign;
+    end;
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
   {$IFDEF NewAutoSize}
   finally
