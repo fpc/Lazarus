@@ -5652,7 +5652,12 @@ begin
   FillChar(Params, SizeOf(Params),0);
   Params.Caption := PChar(FCaption);
   Params.Style := WS_CHILD or WS_CLIPSIBLINGS;
-  if (Parent <> nil) then Params.WndParent := Parent.Handle;
+  if (Parent <> nil)
+  {$IFDEF NewAutoSize}
+  and Parent.HandleAllocated
+  {$ENDIF}
+  then
+    Params.WndParent := Parent.Handle;
   Params.X := FLeft;
   Params.Y := FTop;
   Params.Width := FWidth;
@@ -6841,29 +6846,44 @@ begin
   if (csDestroying in ComponentState)
   or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
     DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     exit;
   end;
 
   if wcfInitializing in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while initializing');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingHandle in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating handle');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingChildHandles in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
   
   if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
     DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     //DumpStack;
     //RaiseGDBException('');
   end;

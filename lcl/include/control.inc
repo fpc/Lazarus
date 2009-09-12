@@ -2383,6 +2383,7 @@ begin
   if AutoSizingAll then exit;
   fAutoSizingAll:=true;
   DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
+  DumpStack;
   try
     while (not AutoSizeDelayed)
     and (cfAutoSizeNeeded in FControlFlags) do begin
