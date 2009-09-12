@@ -118,7 +118,6 @@ var
 
 type
   TCCOSpecialCharType = (
-    ccoscSpaces,
     ccoscNonASCII,
     ccoscWrongPathDelim,
     ccoscUnusualChars,
@@ -139,15 +138,15 @@ procedure FindSpecialCharsInPath(const Path: string; out
 var
   i: Integer;
 begin
-  HasChars:=[];
-  for i:=1 to length(Path) do begin
+  HasChars := [];
+  for i := 1 to length(Path) do
+  begin
     case Path[i] of
-    #10,#13: Include(HasChars,ccoscNewLine);
-    #0..#8,#11,#12,#14..#31: Include(HasChars,ccoscSpecialChars);
-    #9,' ': Include(HasChars,ccoscSpaces);
-    '/','\': if Path[i]<>PathDelim then Include(HasChars,ccoscWrongPathDelim);
-    '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': Include(HasChars,ccoscUnusualChars);
-    #128..#255: Include(HasChars,ccoscNonASCII);
+      #10,#13: Include(HasChars,ccoscNewLine);
+      #0..#9,#11,#12,#14..#31: Include(HasChars,ccoscSpecialChars);
+      '/','\': if Path[i]<>PathDelim then Include(HasChars,ccoscWrongPathDelim);
+      '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': Include(HasChars,ccoscUnusualChars);
+      #128..#255: Include(HasChars,ccoscNonASCII);
     end;
   end;
 end;
@@ -165,7 +164,6 @@ function SpecialCharsToStr(const HasChars: TCCOSpecialChars): string;
 
 begin
   Result:='';
-  if ccoscSpaces in HasChars then AddStr(Result,lisCCOSpaces);
   if ccoscNonASCII in HasChars then AddStr(Result,lisCCONonASCII);
   if ccoscWrongPathDelim in HasChars then AddStr(Result,lisCCOWrongPathDelimiter);
   if ccoscUnusualChars in HasChars then AddStr(Result,lisCCOUnusualChars);
@@ -219,21 +217,22 @@ var
   ErrorMsg: String;
   HasChars: TCCOSpecialChars;
 begin
-  FindSpecialCharsInPath(ExpandedPath,HasChars);
-  Warning:=SpecialCharsToStr(HasChars*[ccoscSpaces,ccoscNonASCII,
-                                       ccoscWrongPathDelim,ccoscUnusualChars]);
-  ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
+  FindSpecialCharsInPath(ExpandedPath, HasChars);
+  Warning := SpecialCharsToStr(HasChars * [ccoscNonASCII, ccoscWrongPathDelim, ccoscUnusualChars]);
+  ErrorMsg := SpecialCharsToStr(HasChars * [ccoscSpecialChars, ccoscNewLine]);
 
-  if Warning<>'' then
-    AddWarning(Title+' '+Warning);
-  if ErrorMsg<>'' then begin
-    Result:=QuestionDlg(lisCCOInvalidSearchPath,Title+' '+ErrorMsg,mtError,
-      [mrIgnore,lisCCOSkip,mrAbort],0);
-  end else begin
-    if Warning='' then
-      Result:=mrOk
+  if Warning <> '' then
+    AddWarning(Title + ' ' + Warning);
+  if ErrorMsg <> '' then
+  begin
+    Result := QuestionDlg(lisCCOInvalidSearchPath, Title + ' ' + ErrorMsg, mtError,
+      [mrIgnore, lisCCOSkip, mrAbort], 0);
+  end else
+  begin
+    if Warning = '' then
+      Result := mrOk
     else
-      Result:=mrIgnore;
+      Result := mrIgnore;
   end;
 end;
 

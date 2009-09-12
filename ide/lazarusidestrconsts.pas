@@ -1633,7 +1633,6 @@ resourcestring
   dlgCCOResults = 'Results';
   lisCCOCopyOutputToCliboard = 'Copy output to clipboard';
   lisCCOContains = 'contains ';
-  lisCCOSpaces = 'spaces';
   lisCCOSpecialCharacters = 'special characters';
   lisCCONonASCII = 'non ASCII';
   lisCCOWrongPathDelimiter = 'wrong path delimiter';
