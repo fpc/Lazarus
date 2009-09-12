@@ -6695,7 +6695,8 @@ begin
     if UseMainSourceFile then begin
       if (Ext='') or (not FilenameIsPascalSource(AFilename)) then
         AFilename:=ChangeFileExt(AFilename,'.pas');
-      SaveDialog.Title:='Save project '+Project1.Title+' (*.'+ExtractFileExt(AFilename)+')';
+      SaveDialog.Title:=Format(lisSaveProject, [Project1.Title, ExtractFileExt(
+        AFilename)]);
     end else begin
       if (Ext='') or FilenameIsPascalSource(AFilename) then
         AFilename:=ChangeFileExt(AFilename,'.lpi');

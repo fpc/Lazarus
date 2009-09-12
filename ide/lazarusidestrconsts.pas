@@ -495,6 +495,7 @@ resourcestring
     +'text form data of file %s%s%s%s%sinto binary stream. (%s)';
   lisFormLoadError = 'Form load error';
   lisSaveProjectLpi = 'Save Project %s (*.lpi)';
+  lisSaveProject = 'Save project %s (*%s)';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
