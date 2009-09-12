@@ -6691,20 +6691,20 @@ begin
       AFilename:=Trim(Project1.Title);
     if AFilename='' then
       AFilename:='project1';
-    Ext:=LowerCase(ExtractFileExt(AFilename));
-    if UseMainSourceFile then begin
-      if (Ext='') or (not FilenameIsPascalSource(AFilename)) then
-        AFilename:=ChangeFileExt(AFilename,'.pas');
-      SaveDialog.Title:=Format(lisSaveProject, [Project1.Title, ExtractFileExt(
-        AFilename)]);
-    end else begin
-      if (Ext='') or FilenameIsPascalSource(AFilename) then
-        AFilename:=ChangeFileExt(AFilename,'.lpi');
-      SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
-    end;
-    SaveDialog.FileName:=AFilename;
+    Ext := LowerCase(ExtractFileExt(AFilename));
+    if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then
+      if UseMainSourceFile then
+        AFilename := ChangeFileExt(AFilename, '.pas')
+      else
+        AFilename := ChangeFileExt(AFilename, '.lpi');
+
+    Ext := ExtractFileExt(AFilename);
+    SaveDialog.Title := Format(lisSaveProject, [Project1.Title, Ext]);
+    SaveDialog.FileName := AFilename;
+    SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext;
+    SaveDialog.DefaultExt := ExtractFileExt(AFilename);
     if not Project1.IsVirtual then
-      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+      SaveDialog.InitialDir := Project1.ProjectDirectory;
 
     repeat
       Result:=mrCancel;
@@ -6717,7 +6717,7 @@ begin
         Result:=mrCancel;
         exit;
       end;
-      AFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+      AFilename:=ExpandFileNameUTF8(SaveDialog.FileName);
       if not FilenameIsAbsolute(AFilename) then
         RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
 
