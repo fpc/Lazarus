@@ -1602,7 +1602,7 @@ begin
   TranslateUnitResourceStrings('lclstrconsts',basedir+
                'lcl/languages/lclstrconsts'+ext, LangID1,LangID2);
   TranslateUnitResourceStrings('lazdatadeskstr',basedir+
-               'tools/lazdatadesktop/languages/lazdatadeskstr'+ext, LangID1,LangID2);
+               'tools/lazdatadesktop/languages/lazdatadesktop'+ext, LangID1,LangID2);
   //
   SetCurrentDir(olddir);
 end;

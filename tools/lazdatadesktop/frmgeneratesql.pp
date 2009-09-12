@@ -67,7 +67,6 @@ type
     procedure BGenerateClick(Sender: TObject);
     procedure CBTablesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure PCSQLChange(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
     FTableDefs : TDDTableDefs;
@@ -301,6 +300,14 @@ begin
   BGenerate.Caption:= sld_Generatesql;
   BCancel.Caption:= sld_Cancel;
   BOK.Caption:= sld_Ok;
+
+  CLBOptions.Link.AliasValues.Values['eoLineFeedAfterField'] := eoLineFeedAfterField;
+  CLBOptions.Link.AliasValues.Values['eoUseOldInWhereParams'] := eoUseOldInWhereParams;
+  CLBOptions.Link.AliasValues.Values['eoAndTermsInBrackets'] := eoAndTermsInBrackets;
+  CLBOptions.Link.AliasValues.Values['eoQuoteFieldNames'] := eoQuoteFieldNames;
+  CLBOptions.Link.AliasValues.Values['eoLineFeedAfterAndTerm'] := eoLineFeedAfterAndTerm;
+  CLBOptions.Link.AliasValues.Values['eoAddTerminator'] := eoAddTerminator;
+  CLBOptions.Link.AliasValues.Values['eoSkipForeignKeys'] := eoSkipForeignKeys;
   //
   FGenerator:=TFPDDSQLEngine.Create;
   CLBOptions.Link.TIObject:=FGenerator;
@@ -310,12 +317,6 @@ begin
   CBIgnoreSelection.Visible:=False;
 {$ENDIF VER2_2}
 end;
-
-procedure TGenerateSQLForm.PCSQLChange(Sender: TObject);
-begin
-
-end;
-
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);
 begin

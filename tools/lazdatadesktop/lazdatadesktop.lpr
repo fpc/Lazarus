@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, LResources
-  { add your units here }, frmmain, dicteditor, DBFLaz, frmimportdd,
+  Forms, frmmain, dicteditor, DBFLaz, frmimportdd,
   frmgeneratesql, SQLDBLaz, lazdatadict, RunTimeTypeInfoControls, frmSQLConnect,
   ddfiles, conneditor, datapanel, querypanel, frmselectconnectiontype,
   lazdatadeskstr, lazdbexport;
@@ -16,7 +15,6 @@ uses
 {$IFDEF WINDOWS}{$R lazdatadesktop.rc}{$ENDIF}
 
 begin
-  {$I lazdatadesktop.lrs}
   Application.Title:='Lazarus Data Desktop';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

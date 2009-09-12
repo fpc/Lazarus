@@ -5,7 +5,7 @@ object MainForm: TMainForm
   Width = 666
   ActiveControl = PCDD
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 455
+  ClientHeight = 460
   ClientWidth = 666
   Menu = MainMenu1
   OnClose = FormClose
@@ -15,7 +15,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object TBMain: TToolBar
     Left = 0
     Height = 26
@@ -110,7 +110,7 @@ object MainForm: TMainForm
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 409
+    Height = 414
     Top = 26
     Width = 666
     ActivePage = TSRecent
@@ -119,11 +119,11 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 379
+      ClientHeight = 388
       ClientWidth = 658
       object LVDicts: TListView
         Left = 0
-        Height = 379
+        Height = 388
         Top = 0
         Width = 658
         Align = alClient
@@ -151,11 +151,11 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 379
+      ClientHeight = 383
       ClientWidth = 658
       object LVConnections: TListView
         Left = 0
-        Height = 379
+        Height = 383
         Top = 0
         Width = 658
         Align = alClient
@@ -190,7 +190,7 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 435
+    Top = 440
     Width = 666
     Align = alBottom
     BevelOuter = bvNone

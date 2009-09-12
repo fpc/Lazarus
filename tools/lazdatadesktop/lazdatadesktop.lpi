@@ -12,9 +12,10 @@
       <AutoCreateForms Value="False"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Data Desktop"/>
-      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
     </General>
     <i18n>
+      <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <PublishOptions>

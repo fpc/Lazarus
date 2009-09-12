@@ -84,6 +84,14 @@ resourcestring
   sld_Generatesql    = 'Generate SQL';
   sld_Ok             = '&OK';
   sld_Cancel         = '&Cancel';
+  //
+  eoLineFeedAfterField = 'Linefeed after each field';
+  eoUseOldInWhereParams = 'Use OLD prefix in where parameters';
+  eoAndTermsInBrackets = 'Put brackets around AND Terms';
+  eoQuoteFieldNames = 'Quote field names';
+  eoLineFeedAfterAndTerm = 'Linefeed after AND terms';
+  eoAddTerminator = 'Add terminator';
+  eoSkipForeignKeys = 'Skip foreign keys';
 
   // Import/Update datadictionary form
   sld_Importupdatedatadictionary = 'Import/Update datadictionary';
