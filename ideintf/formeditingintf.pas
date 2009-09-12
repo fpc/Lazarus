@@ -128,6 +128,8 @@ type
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
     procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
     procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
+    procedure KeyDown(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
+    procedure KeyUp(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
     property Root: TComponent read FRoot write SetRoot;
@@ -525,6 +527,18 @@ procedure TDesignerMediator.InitComponent(AComponent, NewParent: TComponent;
 begin
   SetBounds(AComponent,NewBounds);
   TDesignerMediator(AComponent).SetParentComponent(NewParent);
+end;
+
+procedure TDesignerMediator.KeyDown(Sender: TControl; var Key: word;
+  Shift: TShiftState);
+begin
+
+end;
+
+procedure TDesignerMediator.KeyUp(Sender: TControl; var Key: word;
+  Shift: TShiftState);
+begin
+
 end;
 
 end.

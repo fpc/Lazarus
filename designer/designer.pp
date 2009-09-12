@@ -155,8 +155,8 @@ type
     procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
     procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
-    procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
-    procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
+    procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
+    procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
     // procedures for working with components and persistents
@@ -1886,7 +1886,7 @@ end;
   Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
   moves the selection up one, SHIFT-ARROW resizes, etc.
 }
-Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage:TLMKEY);
+Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage: TLMKEY);
 var
   Shift: TShiftState;
   Command: word;
@@ -1916,8 +1916,12 @@ begin
   Shift := KeyDataToShiftState(TheMessage.KeyData);
 
   Handled := False;
+
+  if Mediator<>nil then
+    Mediator.KeyDown(Sender,TheMessage.CharCode,Shift);
+
   Command := FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                     TheMessage.CharCode, Shift);
+                                                    TheMessage.CharCode, Shift);
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
@@ -1958,11 +1962,17 @@ end;
 
 
 {------------------------------------K E Y U P --------------------------------}
-Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage:TLMKEY);
+Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage: TLMKEY);
+var
+  Shift: TShiftState;
 Begin
   {$IFDEF VerboseDesigner}
   //Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
   {$ENDIF}
+  if Mediator<>nil then begin
+    Shift := KeyDataToShiftState(TheMessage.KeyData);
+    Mediator.KeyUp(Sender,TheMessage.CharCode,Shift);
+  end;
 end;
 
 function TDesigner.DoDeleteSelectedPersistents: boolean;
