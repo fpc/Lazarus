@@ -138,7 +138,7 @@ begin
     // prior to fpc 2.5.1 for non i386 platforms the RTTI is left to right
     {$ELSE}
     // since fpc 2.5.1 for non i386 platforms the RTTI is right to left
-    Reverse:=true;
+    Result:=true;
     {$ENDIF}
   {$ENDIF}
 end;
