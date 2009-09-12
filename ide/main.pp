@@ -6692,12 +6692,15 @@ begin
     if AFilename='' then
       AFilename:='project1';
     Ext := LowerCase(ExtractFileExt(AFilename));
-    if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then
-      if UseMainSourceFile then
-        AFilename := ChangeFileExt(AFilename, '.pas')
-      else
+    if UseMainSourceFile then
+    begin
+      if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then
+        AFilename := ChangeFileExt(AFilename, '.pas');
+    end else
+    begin
+      if (Ext = '') or FilenameIsPascalSource(AFilename) then
         AFilename := ChangeFileExt(AFilename, '.lpi');
-
+    end;
     Ext := ExtractFileExt(AFilename);
     SaveDialog.Title := Format(lisSaveProject, [Project1.Title, Ext]);
     SaveDialog.FileName := AFilename;
