@@ -8,6 +8,6 @@ LazarusResources.Add('TMyForm1','FORMDATA',[
   +'F'#5'Width'#2'K'#6'Height'#2#25#7'Visible'#8#7'Caption'#6#9'MyButton2'#0#0
   +#11'TMyGroupBox'#11'MyGroupBox1'#4'Left'#3#144#0#3'Top'#2'A'#5'Width'#2'i'#6
   +'Height'#2'K'#7'Visible'#8#7'Caption'#6#11'MyGroupBox1'#0#11'TMyGroupBox'#11
-  +'MyGroupBox2'#4'Left'#3#166#0#3'Top'#2'\'#5'Width'#2'F'#6'Height'#2'5'#7'Vis'
-  +'ible'#8#7'Caption'#6#11'MyGroupBox2'#0#0#0#0
+  +'MyGroupBox2'#4'Left'#2#10#3'Top'#2#10#5'Width'#2'F'#6'Height'#2'5'#7'Visibl'
+  +'e'#8#7'Caption'#6#11'MyGroupBox2'#0#0#0#0
 ]);

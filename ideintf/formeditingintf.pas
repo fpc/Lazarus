@@ -415,14 +415,21 @@ var
   Parent: TComponent;
   ClientArea: TRect;
   ScrollOffset: TPoint;
+  ParentBounds: TRect;
+  NextParent: TComponent;
 begin
   Result:=Point(0,0);
   while AComponent<>nil do begin
     Parent:=AComponent.GetParentComponent;
     if Parent=nil then break;
+    NextParent:=Parent.GetParentComponent;
+    if NextParent<>nil then
+      GetBounds(Parent,ParentBounds)
+    else
+      ParentBounds:=Rect(0,0,0,0);
     GetClientArea(Parent,ClientArea,ScrollOffset);
-    inc(Result.X,ClientArea.Left+ScrollOffset.X);
-    inc(Result.Y,ClientArea.Top+ScrollOffset.Y);
+    inc(Result.X,ParentBounds.Left+ClientArea.Left+ScrollOffset.X);
+    inc(Result.Y,ParentBounds.Top+ClientArea.Top+ScrollOffset.Y);
     AComponent:=Parent;
   end;
 end;

@@ -1549,6 +1549,7 @@ var
     NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
     if (Mediator<>nil) then begin
       ParentClientOrigin:=Mediator.GetComponentOriginOnForm(NewParent);
+      DebugLn(['AddComponent ParentClientOrigin=',dbgs(ParentClientOrigin)]);
       // adjust left,top to parent origin
       dec(NewLeft,ParentClientOrigin.X);
       dec(NewTop,ParentClientOrigin.Y);
@@ -1581,7 +1582,7 @@ var
     end;
     
     // create component and component interface
-    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
+    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));

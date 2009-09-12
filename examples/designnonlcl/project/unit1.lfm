@@ -29,8 +29,8 @@ object MyForm1: TMyForm1
     Visible = False
     Caption = 'MyGroupBox1'
     object MyGroupBox2: TMyGroupBox
-      Left = 166
-      Top = 92
+      Left = 10
+      Top = 10
       Width = 70
       Height = 53
       Visible = False
