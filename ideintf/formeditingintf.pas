@@ -415,21 +415,18 @@ var
   Parent: TComponent;
   ClientArea: TRect;
   ScrollOffset: TPoint;
-  ParentBounds: TRect;
-  NextParent: TComponent;
+  CurBounds: TRect;
 begin
   Result:=Point(0,0);
   while AComponent<>nil do begin
     Parent:=AComponent.GetParentComponent;
     if Parent=nil then break;
-    NextParent:=Parent.GetParentComponent;
-    if NextParent<>nil then
-      GetBounds(Parent,ParentBounds)
-    else
-      ParentBounds:=Rect(0,0,0,0);
+    GetBounds(AComponent,CurBounds);
+    inc(Result.X,CurBounds.Left);
+    inc(Result.Y,CurBounds.Top);
     GetClientArea(Parent,ClientArea,ScrollOffset);
-    inc(Result.X,ParentBounds.Left+ClientArea.Left+ScrollOffset.X);
-    inc(Result.Y,ParentBounds.Top+ClientArea.Top+ScrollOffset.Y);
+    inc(Result.X,ClientArea.Left+ScrollOffset.X);
+    inc(Result.Y,ClientArea.Top+ScrollOffset.Y);
     AComponent:=Parent;
   end;
 end;
@@ -471,14 +468,18 @@ var
   ChildBounds: TRect;
   Found: Boolean;
   Childs: TFPList;
+  Offset: TPoint;
 begin
   Result:=Root;
   while Result<>nil do begin
     GetClientArea(Result,ClientArea,ScrollOffset);
+    Offset:=GetComponentOriginOnForm(Result);
+    //DebugLn(['TDesignerMediator.ComponentAtPos Parent=',DbgSName(Result),' Offset=',dbgs(Offset)]);
+    OffsetRect(ClientArea,Offset.X,Offset.Y);
     Childs:=TFPList.Create;
     try
       GetChilds(Result,Childs);
-      //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',childs.Count,' ']);
+      //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',childs.Count,' ClientArea=',dbgs(ClientArea)]);
       Found:=false;
       // iterate backwards (z-order)
       for i:=Childs.Count-1 downto 0 do begin
@@ -494,6 +495,7 @@ begin
         GetBounds(Child,ChildBounds);
         OffsetRect(ChildBounds,ClientArea.Left+ScrollOffset.X,
                                ClientArea.Top+ScrollOffset.Y);
+        //DebugLn(['TDesignerMediator.ComponentAtPos ChildBounds=',dbgs(ChildBounds),' p=',dbgs(p)]);
         if PtInRect(ChildBounds,p) then begin
           Found:=true;
           Result:=Child;

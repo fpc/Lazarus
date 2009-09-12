@@ -2371,4 +2371,3 @@ msgstr "Laužyti tekstą"
 msgid "Yes"
 msgstr "Taip"
 
-

@@ -616,10 +616,14 @@ procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 var
   ParentOffset: TPoint;
+  OldBounds: TRect;
 begin
   if not FIsTComponent then exit;
   if Owner.Mediator<>nil then begin
+    Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
     ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
+    dec(ParentOffset.X,OldBounds.Left);
+    dec(ParentOffset.Y,OldBounds.Top);
     Owner.Mediator.SetBounds(TComponent(FPersistent),
       Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
   end else begin
@@ -639,9 +643,8 @@ begin
     if Owner.Mediator<>nil then begin
       ALeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
       Owner.Mediator.GetBounds(TComponent(FPersistent),CurBounds);
-      OffsetRect(CurBounds,ALeftTop.X,ALeftTop.Y);
-      ALeft:=CurBounds.Left;
-      ATop:=CurBounds.Top;
+      ALeft:=ALeftTop.X;
+      ATop:=ALeftTop.Y;
       AWidth:=CurBounds.Right-CurBounds.Left;
       AHeight:=CurBounds.Bottom-CurBounds.Top;
     end else begin
