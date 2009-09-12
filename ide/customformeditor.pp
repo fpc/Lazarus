@@ -1574,6 +1574,9 @@ end;
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
   TypeClass: TComponentClass; const AUnitName: shortstring; X, Y, W, H: Integer
   ): TIComponentInterface;
+const
+  PreferredDistanceMin = 30;
+  PreferredDistanceMax = 250;
 var
   Temp: TComponentInterface;
   NewJITIndex: Integer;
@@ -1589,6 +1592,19 @@ var
   NewUnitName: String;
   s: String;
   Mediator: TDesignerMediator;
+  MonitorBounds: TRect;
+
+  function ActiveMonitor: TMonitor;
+  begin
+    if Screen.ActiveCustomForm <> nil then
+      Result := Screen.ActiveCustomForm.Monitor
+    else
+    if Application.MainForm <> nil then
+      Result := Application.MainForm.Monitor
+    else
+      Result := Screen.PrimaryMonitor;
+  end;
+
 begin
   Result:=nil;
   Temp:=nil;
@@ -1702,49 +1718,61 @@ begin
       CompWidth:=W;
       CompHeight:=H;
       if NewComponent is TControl then
-      Begin
-        AControl:=TControl(NewComponent);
+      begin
+        AControl := TControl(NewComponent);
         // calc bounds
-        if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
-        if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
-        if CompLeft<0 then begin
-          if AParent<>nil then
-            CompLeft:=(AParent.Width - CompWidth) div 2
-          else if (AControl is TCustomForm) then
-            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
-          else
-            CompLeft:=0;
-        end;
-        if CompTop<0 then begin
-          if AParent<>nil then
-            CompTop:=(AParent.Height - CompHeight) div 2
-          else if (AControl is TCustomForm) then
-            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
-          else
-            CompTop:=0;
-        end;
-        if (AParent<>nil) or (AControl is TCustomForm) then begin
+        if CompWidth <= 0 then CompWidth := Max(5, AControl.Width);
+        if CompHeight <= 0 then CompHeight := Max(5, AControl.Height);
+        MonitorBounds := ActiveMonitor.BoundsRect;
+        if (CompLeft < 0) and (AParent <> nil) then
+          CompLeft := (AParent.Width - CompWidth) div 2
+        else
+        if (AControl is TCustomForm) and (CompLeft < MonitorBounds.Left + PreferredDistanceMin) then
+          with MonitorBounds do
+            CompLeft := Max(Left + PreferredDistanceMin, Min(Left + PreferredDistanceMax, Right - CompWidth - PreferredDistanceMin))
+        else
+        if CompLeft < 0 then
+          CompLeft := 0;
+        if (CompTop < 0) and (AParent <> nil) then
+          CompTop := (AParent.Height - CompHeight) div 2
+        else
+        if (AControl is TCustomForm) and (CompTop < MonitorBounds.Top + PreferredDistanceMin) then
+          with MonitorBounds do
+            CompTop := Max(Top + PreferredDistanceMin, Min(Top + PreferredDistanceMax, Bottom - CompWidth - PreferredDistanceMin))
+        else
+        if CompTop < 0 then
+          CompTop := 0;
+
+        if (AParent <> nil) or (AControl is TCustomForm) then
+        begin
           // set parent after placing control to prevent display at (0,0)
           AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
           AControl.Parent := AParent;
-        end else begin
+        end else
+        begin
           // no parent and not a form
           AControl.SetBounds(0,0,CompWidth,CompHeight);
           AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end
-      else if (NewComponent is TDataModule) then begin
+      else
+      if (NewComponent is TDataModule) then
+      begin
         // data module
-        with TDataModule(NewComponent) do begin
-          if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
-          if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
-          if CompLeft<30 then
-            CompLeft:=Max(30,Min(250,Screen.Width-CompWidth-50));
-          if CompTop<30 then
-            CompTop:=Max(30,Min(250,Screen.Height-CompHeight-50));
-          DesignOffset:=Point(CompLeft,CompTop);
-          DesignSize:=Point(CompWidth,CompHeight);
+        with TDataModule(NewComponent) do
+        begin
+          if CompWidth <= 0 then CompWidth := Max(50, DesignSize.X);
+          if CompHeight <= 0 then CompHeight := Max(50, DesignSize.Y);
+          MonitorBounds := ActiveMonitor.BoundsRect;
+          if CompLeft < MonitorBounds.Left + PreferredDistanceMin then
+            with MonitorBounds do
+              CompLeft := Max(Left + PreferredDistanceMin, Min(Left + PreferredDistanceMax, Right - CompWidth - PreferredDistanceMin));
+          if CompTop < MonitorBounds.Top + PreferredDistanceMin then
+            with MonitorBounds do
+              CompTop := Max(Top + PreferredDistanceMin, Min(Top + PreferredDistanceMax, Bottom - CompWidth - PreferredDistanceMin));
+          DesignOffset := Point(CompLeft, CompTop);
+          DesignSize := Point(CompWidth, CompHeight);
           //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(NewComponent),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(NewComponent),8),' ',DbgS(Cardinal(@DesignOffset));
         end;
       end
