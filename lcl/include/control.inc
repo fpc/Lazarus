@@ -46,7 +46,7 @@ begin
   begin
     if Parent<>nil then
       Parent.AdjustSize
-    else
+    else if AutoSizingLockCount=0 then
       DoAllAutoSize;
   end;
   {$ELSE}
@@ -4722,6 +4722,7 @@ procedure TControl.DisableAutoSizing;
 begin
   {$IFDEF NewAutoSize}
   inc(FAutoSizingLockCount);
+  DebugLn(['TControl.DisableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if FAutoSizingLockCount=1 then
   begin
     if Parent<>nil then
@@ -4754,6 +4755,7 @@ begin
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
   {$IFDEF NewAutoSize}
   dec(FAutoSizingLockCount);
+  DebugLn(['TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if (FAutoSizingLockCount=0) then
   begin
     if (Parent<>nil) then

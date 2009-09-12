@@ -781,6 +781,9 @@ begin
   if FFormUpdateCount=0 then begin
     FormEndUpdated;
     Visible:=(fsVisible in FFormState);
+    {$IFDEF NewAutoSize}
+    EnableAutoSizing;
+    {$ENDIF}
   end;
 end;
 
@@ -1501,7 +1504,13 @@ begin
   try
     BeginFormUpdate;
     try
+      {$IFDEF NewAutoSize}
+      DebugLn(['TCustomForm.Create START ',DbgSName(Self)]);
+      {$ENDIF}
       CreateNew(AOwner, 1);
+      {$IFDEF NewAutoSize}
+      DebugLn(['TCustomForm.Create after createnew ',DbgSName(Self)]);
+      {$ENDIF}
       //DebugLn('[TCustomForm.Create] B Class=',Classname);
       if (ClassType <> TForm) and not (csDesigning in ComponentState) then
       begin
@@ -1521,6 +1530,9 @@ begin
         end;
       end;
     finally
+      {$IFDEF NewAutoSize}
+      DebugLn(['TCustomForm.Create before EndFormUpdate ',DbgSName(Self)]);
+      {$ENDIF}
       EndFormUpdate;
     end;
   finally
@@ -1536,7 +1548,9 @@ constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
+  {$IFNDEF NewAutoSize}
   BeginFormUpdate;
+  {$ENDIF}
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
   FShowInTaskbar := stDefault;
@@ -1565,7 +1579,9 @@ begin
   Color := clBtnFace;
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
+  {$IFNDEF NewAutoSize}
   EndFormUpdate;
+  {$ENDIF}
   FAllowDropFiles := False;
 end;
 
@@ -2077,6 +2093,9 @@ end;
 procedure TCustomForm.BeginFormUpdate;
 begin
   inc(FFormUpdateCount);
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
