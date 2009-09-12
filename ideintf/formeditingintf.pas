@@ -127,6 +127,7 @@ type
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
     procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
+    procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
     property Root: TComponent read FRoot write SetRoot;
@@ -508,6 +509,13 @@ begin
   finally
     FCollectedChilds:=nil;
   end;
+end;
+
+procedure TDesignerMediator.InitComponent(AComponent, NewParent: TComponent;
+  NewBounds: TRect);
+begin
+  SetBounds(AComponent,NewBounds);
+  TDesignerMediator(AComponent).SetParentComponent(NewParent);
 end;
 
 end.

@@ -1547,7 +1547,13 @@ var
     // calculate initial bounds
     NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
     NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-    if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
+    if (Mediator<>nil) then begin
+      ParentClientOrigin:=Mediator.GetComponentOriginOnForm(NewParent);
+      // adjust left,top to parent origin
+      dec(NewLeft,ParentClientOrigin.X);
+      dec(NewTop,ParentClientOrigin.Y);
+    end else if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then
+    begin
       ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
       // adjust left,top to parent origin
       dec(NewLeft,ParentClientOrigin.X);
@@ -1575,6 +1581,7 @@ var
     end;
     
     // create component and component interface
+    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));
