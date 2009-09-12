@@ -3378,12 +3378,16 @@ procedure TWinControl.DoAllAutoSize;
   end;
 
 begin
+  DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // compute all sizes for LCL objects without touching the widgetset
   inherited DoAllAutoSize;
   // send all new bounds to widgetset
+  DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   RealizeBoundsRecursive;
   // make handles visible
+  DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   UpdateShowingRecursive(Self);
+  DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
 end;
 {$ENDIF}
 
@@ -4035,6 +4039,9 @@ procedure TWinControl.UpdateShowing;
     ok: Boolean;
   begin
     if FShowing = bShow then Exit;
+    {$IFDEF NewAutoSize}
+    DumpStack;
+    {$ENDIF}
     FShowing := bShow;
     ok := false;
     try
@@ -7671,6 +7678,9 @@ begin
       Include(FWinControlFlags,wcfHandleVisible)
     else
       Exclude(FWinControlFlags,wcfHandleVisible);
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
+    {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
   end;
 end;
