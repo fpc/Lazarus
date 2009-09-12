@@ -124,7 +124,24 @@ const
         'class procedure', 'class function'
       );
 
+function ReverseRTTIParamList: boolean;
+
 implementation
+
+function ReverseRTTIParamList: boolean;
+begin
+  Result:=false;
+  {$IFDEF i386}
+  // RTTI for i386 uses the calling convention: left to right
+  {$ELSE}
+    {$IF defined(VER2_2) or defined(VER2_3)}
+    // prior to fpc 2.5.1 for non i386 platforms the RTTI is left to right
+    {$ELSE}
+    // since fpc 2.5.1 for non i386 platforms the RTTI is right to left
+    Reverse:=true;
+    {$ENDIF}
+  {$ENDIF}
+end;
 
 { TEventsCodeTool }
 
@@ -140,6 +157,7 @@ type
 var i, ParamCount, Len, Offset: integer;
   ParamType: TParamType;
   s, ParamString, ResultType: string;
+  Reverse: Boolean;
 begin
   Result:='';
   if TypeData=nil then exit;
@@ -155,6 +173,7 @@ begin
   end;
   // transform TypeData into a ProcHead String
   ParamCount:=TypeData^.ParamCount;
+  Reverse:=ReverseRTTIParamList;
   //DebugLn(['TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount]);
   Offset:=0;
   if ParamCount>0 then begin
@@ -203,8 +222,13 @@ begin
       if phpWithParameterNames in Attr then
         s:=s+ParamType.ParamName;
       s:=s+':'+ParamType.TypeName;
-      if i>0 then s:=';'+s;
-      ParamString:=ParamString+s;
+      if Reverse then begin
+        if i>0 then s:=s+';';
+        ParamString:=s+ParamString;
+      end else begin
+        if i>0 then s:=';'+s;
+        ParamString:=ParamString+s;
+      end;
     end;
     Result:=Result+ParamString+')';
   end;
@@ -873,6 +897,7 @@ var i, ParamCount, Len, Offset: integer;
   CurTypeIdentifier: string;
   OldInput: TFindDeclarationInput;
   CurExprType: TExpressionType;
+  Reverse: Boolean;
   {$IFDEF VerboseTypeData}
   CurParamName: string;
   {$ENDIF}
@@ -887,6 +912,7 @@ begin
   {$IFDEF VerboseTypeData}
   DebugLn(['[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount]);
   {$ENDIF}
+  Reverse:=ReverseRTTIParamList;
   if ParamCount>0 then begin
     Offset:=0;
     
@@ -937,8 +963,10 @@ begin
       ' CurExprType=',ExprTypeToString(CurExprType)
       );
       {$ENDIF}
-
-      List.Add(CurExprType);
+      if Reverse then
+        List.AddFirst(CurExprType)
+      else
+        List.Add(CurExprType);
       Params.Load(OldInput,true);
     end;
   end;
