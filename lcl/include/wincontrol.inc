@@ -3372,8 +3372,9 @@ procedure TWinControl.DoAllAutoSize;
     if AWinControl.HandleObjectShouldBeVisible
     and (not AWinControl.Showing) then
       AWinControl.UpdateShowing;
-    for i:=0 to FWinControls.Count-1 do
-      UpdateShowingRecursive(TWinControl(AWinControl.FWinControls[i]));
+    if FWinControls<>nil then
+      for i:=0 to FWinControls.Count-1 do
+        UpdateShowingRecursive(TWinControl(AWinControl.FWinControls[i]));
   end;
 
 begin
@@ -7096,7 +7097,9 @@ var
   LoadedClientSize: TPoint;
   CurControl: TWinControl;
 begin
-  {$IFNDEF NewAutoSize}
+  {$IFDEF NewAutoSize}
+  DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
+  {$ELSE}
   // obsolete
   DisableAlign;
   {$ENDIF}
@@ -7166,8 +7169,13 @@ begin
       DoSendShowHideToInterface;
     {$ENDIF}
   finally
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    {$ENDIF}
     EnableAutoSizing;
-    {$IFNDEF NewAutoSize}
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.Loaded END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    {$ELSE}
     // obsolete
     EnableAlign;
     {$ENDIF}
@@ -7675,12 +7683,12 @@ end;
 procedure TWinControl.DoSendBoundsToInterface;
 var
   NewBounds: TRect;
-  {$IFDEF VerboseResizeFlicker}
+  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
   OldBounds: TRect;
   {$ENDIF}
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  {$IFDEF VerboseResizeFlicker}
+  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
   if HandleAllocated then begin
     GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
     GetWindowSize(Handle,OldBounds.Right,OldBounds.Bottom);
@@ -7692,10 +7700,13 @@ begin
     ' Old=',dbgs(OldBounds),
     ' New=',dbgs(NewBounds),
     ' PosChanged=',(OldBounds.Left<>NewBounds.Left) or (OldBounds.Top<>NewBounds.Top),
-    ' SizeChanged=',(OldBounds.Right-OldBounds.Left<>NewBounds.Right-NewBounds.Left)
-                 , (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
+    ' SizeChanged=w',(OldBounds.Right-OldBounds.Left<>NewBounds.Right-NewBounds.Left),
+                 ',h', (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
     ' CurClient=',FClientWidth,'x',FClientHeight
     ]);
+  {$ENDIF}
+  {$IFDEF NewAutoSize}
+  DumpStack;
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then

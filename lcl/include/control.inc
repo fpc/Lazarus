@@ -461,6 +461,12 @@ begin
       ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
       '');
   {$ENDIF}
+  {$IFDEF NewAutoSize}
+  DebugLn(['TControl.DoSetBounds ',DbgSName(Self),
+      ' Old=',DbgS(Left,Top,Width,Height),
+      ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
+      '']);
+  {$ENDIF}
   FLeft:= ALeft;
   FTop:= ATop;
   FWidth:= AWidth;
@@ -2360,6 +2366,7 @@ procedure TControl.DoAllAutoSize;
     if AControl.AutoSizeDelayed then exit;
 
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
+    DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(Self)]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
     if AutoSize then
       DoAutoSize;
@@ -2375,13 +2382,17 @@ begin
   if Parent<>nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
   if AutoSizingAll then exit;
   fAutoSizingAll:=true;
+  DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
   try
     while (not AutoSizeDelayed)
-    and (cfAutoSizeNeeded in FControlFlags) do
+    and (cfAutoSizeNeeded in FControlFlags) do begin
+      DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self)]);
       AutoSizeControl(Self);
+    end;
   finally
     fAutoSizingAll:=false;
   end;
+  DebugLn(['TControl.DoAllAutoSize END ',DbgSName(Self)]);
 end;
 {$ENDIF}
 
