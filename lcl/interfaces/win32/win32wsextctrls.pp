@@ -177,8 +177,6 @@ type
 
   TWin32WSCustomPanel = class(TWSCustomPanel)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSPanel }
@@ -701,27 +699,6 @@ begin
   else
     SetWindowLong(ANotebook.Handle, GWL_STYLE, currentStyle and not TCS_MULTILINE)
 end;
-
-{ TWin32WSCustomPanel }
-
-class function TWin32WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
-begin
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  // customization of Params
-  with Params do
-  begin
-    pClassName := @ClsName[0];
-    SubClassWndProc := nil;
-  end;
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
-end;
-
 
 {$include win32trayicon.inc}
 
