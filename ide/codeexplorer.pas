@@ -604,8 +604,8 @@ begin
     ctnVarDefinition:                 Result:=ImgIDVariable;
     ctnConstSection,ctnResStrSection: Result:=ImgIDSection;
     ctnConstDefinition:               Result:=ImgIDConst;
-    ctnClass,ctnClassInterface,
-    ctnObject,ctnObjCClass:           Result:=ImgIDClass;
+    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
+                                      Result:=ImgIDClass;
     ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
                                       else
@@ -736,7 +736,7 @@ begin
           ShowNode:=false;
         end;
       end else if (CodeNode.Parent<>nil)
-      and (CodeNode.Parent.Desc in (AllClassSections+[ctnRecordType+ctnClassInterface]))
+      and (CodeNode.Parent.Desc in (AllClassSections+AllClassInterfaces+[ctnRecordType]))
       then begin
         // show class, interface and record nodes
         ShowNode:=true;

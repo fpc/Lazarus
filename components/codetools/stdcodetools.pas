@@ -5762,7 +5762,7 @@ begin
     else if StartNode.Desc in AllClassSections then begin
       if not CompleteClassSection(Stack) then exit;
     end
-    else if StartNode.Desc=ctnClassInterface then begin
+    else if StartNode.Desc in AllClassInterfaces then begin
       if not CompleteClassInterface(Stack) then exit;
     end
     else if StartNode.Desc=ctnRecordType then begin
@@ -6475,7 +6475,7 @@ begin
   Node:=Tree.Root;
   while Node<>nil do begin
     case Node.Desc of
-    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass:
+    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
       BuildSubTreeForClass(Node);
     ctnProcedure,ctnProcedureHead:
       BuildSubTreeForProcHead(Node);

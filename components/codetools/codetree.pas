@@ -84,20 +84,21 @@ const
   ctnClassInterface     = 31;
   ctnObject             = 32;
   ctnObjCClass          = 33;
-  ctnClassInheritance   = 34;
-  ctnClassGUID          = 35;
-  ctnClassTypePrivate   = 36;
-  ctnClassTypeProtected = 37;
-  ctnClassTypePublic    = 38;
-  ctnClassTypePublished = 39;
-  ctnClassVarPrivate    = 40;
-  ctnClassVarProtected  = 41;
-  ctnClassVarPublic     = 42;
-  ctnClassVarPublished  = 43;
-  ctnClassPrivate       = 44;
-  ctnClassProtected     = 45;
-  ctnClassPublic        = 46;
-  ctnClassPublished     = 47;
+  ctnObjCProtocol       = 34;
+  ctnClassInheritance   = 35;
+  ctnClassGUID          = 36;
+  ctnClassTypePrivate   = 37;
+  ctnClassTypeProtected = 38;
+  ctnClassTypePublic    = 39;
+  ctnClassTypePublished = 40;
+  ctnClassVarPrivate    = 41;
+  ctnClassVarProtected  = 42;
+  ctnClassVarPublic     = 43;
+  ctnClassVarPublished  = 44;
+  ctnClassPrivate       = 45;
+  ctnClassProtected     = 46;
+  ctnClassPublic        = 47;
+  ctnClassPublished     = 48;
 
   ctnProperty           = 50;
   ctnMethodMap          = 51;
@@ -161,7 +162,9 @@ const
   AllClassSections =
     AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
   AllClasses =
-     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass];
+     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol];
+  AllClassInterfaces = [ctnClassInterface,ctnObjCProtocol];
+  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];
@@ -360,6 +363,7 @@ begin
   ctnClassInterface: Result:='Class Interface';
   ctnObject: Result:='Object';
   ctnObjCClass: Result:='ObjCClass';
+  ctnObjCProtocol: Result:='ObjCProtocol';
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
   ctnClassPublished: Result:='Published';

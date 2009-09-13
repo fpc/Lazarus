@@ -368,7 +368,7 @@ begin
   end;
   ClearIgnoreErrorAfter;
   BuildSubTreeForClass(FCodeCompleteClassNode);
-  if FCodeCompleteClassNode.Desc=ctnClassInterface then
+  if FCodeCompleteClassNode.Desc in AllClassInterfaces then
     FCompletingStartNode:=FCodeCompleteClassNode
   else
     FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
@@ -480,7 +480,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.AddClassInsertion] CleanDef="',CleanDef,'" Def="',Def,'" Identifiername="',Identifiername,'" Body="',Body,'"');
   {$ENDIF}
-  if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+  if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // a class interface has no section -> put them all into 'public'
     if TheType in NewClassPartProcs then
       TheType:=ncpPublicProcs
@@ -3973,7 +3973,8 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
         end;
       end;
 
-    ctnRecordType, ctnClassInterface, ctnClass, ctnObject, ctnObjCClass:
+    ctnRecordType, ctnClassInterface, ctnClass, ctnObject,
+    ctnObjCClass, ctnObjCProtocol:
       begin
         ChildNode:=SubNode.FirstChild;
         while (ChildNode<>nil) and (ChildNode.HasAsParent(SubNode)) do begin
@@ -4647,7 +4648,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
       or (SysUtils.CompareText(AccessParamPrefix,
               LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-      or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
+      or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
       begin
         // create the default read identifier for a function
         AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
@@ -4704,14 +4705,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if read access variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
-    and (FCodeCompleteClassNode.Desc<>ctnClassInterface)
+    and (FCodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete read access specifier
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-    or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
+    or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
     begin
       // the read identifier is a function
       {$IFDEF CTDEBUG}
@@ -4834,14 +4835,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if write variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
-    and (FCodeCompleteClassNode.Desc<>ctnClassInterface)
+    and (FCodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete class
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-    or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
+    or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
     begin
       // add insert demand for function
       // build function code
@@ -5180,7 +5181,7 @@ begin
           or (ClassSectionNode.Desc in AllClassTypeSections) then begin
             // skip keyword
             inc(InsertPos,GetIdentLen(@Src[InsertPos]));
-          end else if ClassSectionNode.Desc=ctnClassInterface then begin
+          end else if ClassSectionNode.Desc in AllClassInterfaces then begin
             // skip class interface header
             MoveCursorToCleanPos(InsertPos);
             ReadNextAtom; // skip 'interface'
@@ -5250,7 +5251,7 @@ var
 
   function GetFirstVisibilitySectionNode: TCodeTreeNode;
   begin
-    if FCodeCompleteClassNode.Desc=ctnClassInterface then
+    if FCodeCompleteClassNode.Desc in AllClassInterfaces then
       Result:=FCodeCompleteClassNode
     else begin
       Result:=FCodeCompleteClassNode.FirstChild;
@@ -5267,7 +5268,7 @@ var
     ANode: TCodeTreeNode;
     FirstVisibilitySection: TCodeTreeNode;
   begin
-    if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+    if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
       // a class interface has no sections
       exit;
     end;
@@ -5929,7 +5930,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
   {$ENDIF}
-  if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+  if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // interfaces have no implementations
     exit(true);
   end;
@@ -6736,7 +6737,7 @@ begin
 
   // test if in a class
   AClassNode:=CursorNode.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
   if AClassNode<>nil then begin
     CompleteClass(AClassNode);
     exit;
@@ -6932,7 +6933,7 @@ begin
       CursorNode:=CursorNode.LastChild
     else
       CursorNode:=CursorNode.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
     if (CursorNode=nil) or (not (CursorNode.Desc in AllClasses)) then begin
       DebugLn(['TIdentCompletionTool.AddMethods cursor not in a class']);
       exit;

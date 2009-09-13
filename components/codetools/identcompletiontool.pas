@@ -1435,7 +1435,7 @@ begin
       Add('destructor');
     end;
 
-  ctnClassInterface:
+  ctnClassInterface,ctnObjCProtocol:
     begin
       Add('procedure');
       Add('function');
@@ -2184,7 +2184,7 @@ begin
       CursorNode:=CursorNode.LastChild
     else
       CursorNode:=CursorNode.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
     if (CursorNode=nil)
     or (not (CursorNode.Desc in [ctnClass,ctnObject,ctnObjCClass]))
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin

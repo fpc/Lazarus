@@ -1617,7 +1617,8 @@ begin
             Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
             Params.ContextNode:=
                         Context.Node.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+                           [ctnClass,ctnClassInterface,ctnObject,
+                            ctnObjCClass,ctnObjCProtocol]);
             if Params.ContextNode=nil then
               Params.ContextNode:=Context.Node;
             Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
@@ -2078,7 +2079,8 @@ begin
           TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
           if TypeNode<>nil then begin
             case TypeNode.Desc of
-            ctnIdentifier, ctnClass, ctnClassInterface, ctnObject, ctnObjCClass:
+            ctnIdentifier, ctnClass, ctnClassInterface, ctnObject,
+            ctnObjCClass, ctnObjCProtocol:
               begin
                 NewTool.MoveCursorToNodeStart(TypeNode);
                 NewTool.ReadNextAtom;
@@ -2836,7 +2838,8 @@ var
           // of the prior node
           ;
 
-        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
+        ctnClass, ctnClassInterface, ctnObject,
+        ctnObjCClass, ctnObjCProtocol,
         ctnRecordType, ctnRecordCase:
           // do not search again in this node, go on ...
           ;
@@ -2945,7 +2948,8 @@ begin
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
         ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
-        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
+        ctnClass, ctnClassInterface, ctnObject,
+        ctnObjCClass, ctnObjCProtocol,
         ctnRecordType, ctnRecordVariant,
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
@@ -4658,7 +4662,7 @@ begin
   if ClassNode.Desc=ctnClass then begin
     // if this class is not TObject, TObject is class ancestor
     SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
-  end else if ClassNode.Desc=ctnClassInterface then begin
+  end else if ClassNode.Desc in AllClassInterfaces then begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
     SearchBaseClass:=
@@ -6450,7 +6454,8 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
+    ctnClass, ctnClassInterface, ctnObject,
+    ctnObjCClass, ctnObjCProtocol,
     ctnProperty, ctnGlobalProperty:
       begin
         if ExprType.Context.Node.Desc in AllClasses then begin
@@ -7941,7 +7946,8 @@ begin
           // same context type
           case ExprNode.Desc of
           
-          ctnClass,ctnClassInterface, ctnObject, ctnObjCClass:
+          ctnClass,ctnClassInterface, ctnObject,
+          ctnObjCClass, ctnObjCProtocol:
             // check, if ExpressionType.Context is descend of TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
                                   TargetType.Context,Params)
@@ -9020,7 +9026,8 @@ begin
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
 
-        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass:
+        ctnClass, ctnClassInterface, ctnObject,
+        ctnObjCClass, ctnObjCProtocol:
           if (FindContext.Node.Parent<>nil)
           and (FindContext.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
           then

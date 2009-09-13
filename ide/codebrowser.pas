@@ -1890,7 +1890,7 @@ var
           Description:='type '+Identifier;
           if CTNode.FirstChild<>nil then begin
             case CTNode.FirstChild.Desc of
-            ctnClass,ctnClassInterface,ctnObject,ctnObjCClass:
+            ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
               begin
                 case CTNode.FirstChild.Desc of
                 ctnClassInterface:
@@ -1899,6 +1899,8 @@ var
                   Description:=Description+' = object';
                 ctnObjCClass:
                   Description:=Description+' = objcclass';
+                ctnObjCProtocol:
+                  Description:=Description+' = objcprotocol';
                 else
                   Description:=Description+' = class';
                 end;

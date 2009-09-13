@@ -329,7 +329,7 @@ begin
     ClassNode:=ClassNode.LastChild
   else
     ClassNode:=ClassNode.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
   if (ClassNode=nil) then begin
     DebugLn(['TAbstractMethodsDialog.Init no class node at cursor ',CodePos.Code.Filename,' ',CodePos.X,',',CodePos.Y]);
     exit;

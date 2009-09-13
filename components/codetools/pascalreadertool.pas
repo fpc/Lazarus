@@ -374,7 +374,7 @@ begin
   if (phpAddClassname in Attr) then begin
     TheClassName:='';
     TypeDefNode:=ProcNode.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
     if TypeDefNode<>nil then begin
       TheClassName:=ExtractClassName(TypeDefNode,phpInUpperCase in Attr);
     end;
