@@ -318,6 +318,7 @@ type
     //property RaggedRight;
     //property ScrollOpposite;
     property ShowHint;
+    property ShowTabs;
     //property Style;
     //property TabHeight;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
