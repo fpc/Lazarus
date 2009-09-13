@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-22 23:20+0100\n"
+"PO-Revision-Date: 2009-09-13 23:43+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "Block"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
@@ -75,7 +75,7 @@ msgstr "DOCTYPE Abschnitt"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentation"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
@@ -187,7 +187,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
-msgstr ""
+msgstr "Nichtreserviertes Schlüsselwort"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
@@ -231,7 +231,7 @@ msgstr "Register"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
-msgstr ""
+msgstr "Reserviertes Wort"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
@@ -369,7 +369,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Code falten"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
@@ -381,7 +381,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Code entfalten"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
