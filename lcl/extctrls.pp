@@ -127,8 +127,6 @@ type
 
   TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 
-  TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
-
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
