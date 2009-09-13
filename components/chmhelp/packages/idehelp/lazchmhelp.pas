@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazHelpIntf, HelpIntfs, LazConfigStorage,
-  PropEdits, LHelpControl;
+  PropEdits, LHelpControl, Controls;
   
 type
   
@@ -36,10 +36,13 @@ type
     fHelpLabel: String;
     fHelpConnection: TLHelpConnection;
     fChmsFilePath: String;
+    function GetHelpEXE: String;
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpEXE(AValue: String);
     procedure SetHelpLabel(AValue: String);
+    function CheckBuildLHelp: Integer; // modal result
+    function GetLazBuildEXE(out ALazBuild: String): Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -53,7 +56,7 @@ type
     procedure Save(Storage: TConfigStorage); override;
     function GetLocalizedName: string; override;
   published
-    property HelpEXE: String read fHelpEXE write SetHelpEXE;
+    property HelpEXE: String read GetHelpEXE write SetHelpEXE;
     property HelpLabel: String read fHelpLabel write SetHelpLabel;
     property HelpFilesPath: String read fChmsFilePath write fChmsFilePath;
 
@@ -62,9 +65,18 @@ type
   procedure Register;
 
 implementation
+uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc;
 
 { TChmHelpViewer }
 
+function TChmHelpViewer.GetHelpEXE: String;
+begin
+  if fHelpExe <> '' then
+    Exit(fHelpExe);
+  Result := '$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)';
+  if not IDEMacros.SubstituteMacros(Result) then
+    Exit('');
+end;
 
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
   ): Boolean;
@@ -90,11 +102,82 @@ begin
  fHelpLabel := AValue;
 end;
 
+function TChmHelpViewer.CheckBuildLHelp: Integer;
+var
+  Proc: TProcess;
+  Lazbuild: String;
+  LHelpProject: String;
+  WS: String;
+begin
+  Result := mrCancel;
+
+  if FileExistsUTF8(HelpExe) = True then
+    Exit(mrOK);
+
+  if not GetLazBuildEXE(Lazbuild) then
+    Exit;
+
+  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi';
+
+  if not (IDEMacros.SubstituteMacros(LHelpProject)
+          and FileExistsUTF8(LHelpProject))
+  then
+    Exit;
+
+  WS := ' --ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform]+' ';
+
+  Result := MessageDlg('The help viewer is not compiled yet. Try to compile it now?', mtConfirmation, mbYesNo ,0);
+  if Result <> mrYes then
+    Exit;
+
+  Proc := TProcess.Create(nil);
+  Proc.CommandLine := Lazbuild + WS + LHelpProject;
+  Proc.Options := [];
+  Proc.Execute;
+
+  while Proc.Running do begin
+    Application.HandleMessage;
+  end;
+
+  if Proc.ExitStatus = 0 then
+    Result := mrOK;
+  Proc.Free;
+
+  if Result = mrOK then
+end;
+
+function TChmHelpViewer.GetLazBuildEXE(out ALazBuild: String): Boolean;
+var
+  LazBuildMacro: String;
+begin
+   Result := False;
+   LazBuildMacro:= '$(LazarusDir)/$MakeExe(lazbuild)';
+   Result := IDEMacros.SubstituteMacros(LazBuildMacro)
+             and FileExistsUTF8(LazBuildMacro);
+   if Result then
+     ALazBuild := LazBuildMacro;
+end;
+
 constructor TChmHelpViewer.Create(TheOwner: TComponent);
+var
+  i: Integer;
+  DB: TFPDocHTMLHelpDatabase;
+  BaseURL: THelpBaseURLObject;
 begin
   inherited Create(TheOwner);
   fHelpConnection := TLHelpConnection.Create;
+  fHelpConnection.ProcessWhileWaiting:=@Application.ProcessMessages;
   AddSupportedMimeType('text/html');
+  for i := 0 to HelpDatabases.Count-1 do begin
+    DB := TFPDocHTMLHelpDatabase(HelpDatabases.Items[i]);
+    BaseURL := THelpBaseURLObject(DB.BasePathObject);
+    if (DB.ID = 'RTLUnits') and (BaseURL.BaseURL = '') then
+      BaseURL.BaseURL := 'rtl.chm://'
+    else if (DB.ID = 'FCLUnits') and (BaseURL.BaseURL = '') then
+      BaseURL.BaseURL := 'fcl.chm://'
+    else if (DB.ID = 'LCLUnits') and (BaseURL.BaseURL = '') then
+      BaseURL.BaseURL := 'lcl.chm://';
+  end;
 end;
 
 destructor TChmHelpViewer.Destroy;
@@ -118,20 +201,52 @@ function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
 var
 FileName: String;
 Url: String;
+Res: TLHelpResponse;
+DocsDir: String;
 begin
   Result:=shrNone;
-  if not FileExistsUTF8(fHelpEXE) then begin
-    ErrMsg := 'The program "' + fHelpEXE + '" doesn''t seem to exist!';
+  if CheckBuildLHelp <> mrOK then begin
+    ErrMsg := 'The program "' + HelpEXE + '" doesn''t seem to exist'+LineEnding+
+              'or could not be built!';
     Exit(shrViewerNotFound);
   end;
   if not GetFileNameAndURL(Node.Url, FileName, Url) then begin
     ErrMsg := 'Couldn''t read the file/URL correctly';
     Exit(shrDatabaseNotFound);
   end;
-  FileName := fChmsFilePath+FileName;
-  fHelpConnection.StartHelpServer(fHelpLabel, fHelpExe);
-  fHelpConnection.OpenURL(FileName, Url);
-  Result := shrSuccess;
+
+  if HelpFilesPath = '' then
+  begin
+    DocsDir := '$(LazarusDir)/docs/html/';
+    IDEMacros.SubstituteMacros(DocsDir);
+    if not FileExistsUTF8(DocsDir+FileName) then
+    begin
+      Result := shrDatabaseNotFound;
+      ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
+                         +DocsDir+  LineEnding
+                         +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
+                         +' Environment Options -> Help -> Help Options ->'+LineEnding
+                         +' under HelpViewers - CHMHelpViewer';
+      Exit;
+    end;
+
+  end
+  else
+    DocsDir := fChmsFilePath;
+
+  FileName := DocsDir+FileName;
+
+  fHelpConnection.StartHelpServer(fHelpLabel, HelpExe);
+  Res := fHelpConnection.OpenURL(FileName, Url);
+
+  case Res of
+    srSuccess: Result := shrSuccess;
+    srNoAnswer: Result := shrSuccess;
+  else
+    Result := shrNone;
+    ErrMsg := 'Unknown error showing '+URL;
+  end;
+
   //WriteLn('LOADING URL = ', Node.URL);
 end;
 

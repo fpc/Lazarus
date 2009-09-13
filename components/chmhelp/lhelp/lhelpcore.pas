@@ -86,14 +86,16 @@ type
   private
     { private declarations }
     fServerName: String;
-    fServer: TSimpleIPCServer;
+    fInputIPC: TSimpleIPCServer;
+    fOutputIPC: TSimpleIPCClient;
     fServerTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
+    procedure SendResponse(Response: DWord);
     procedure ServerMessage(Sender: TObject);
     procedure ReadCommandLineOptions;
     procedure StartServer(ServerName: String);
     procedure StopServer;
-    procedure OpenURL(const AURL: String; AContext: THelpContext=-1);
+    function  OpenURL(const AURL: String; AContext: THelpContext=-1): DWord;
     procedure LateOpenURL(Url: PStringItem);
     function ActivePage: TContentTab;
     procedure RefreshState;
@@ -231,6 +233,23 @@ begin
     end;
 end;
 
+procedure THelpForm.SendResponse(Response: DWord);
+var
+  Stream: TMemoryStream;
+begin
+  fOutputIPC := TSimpleIPCClient.Create(nil);
+  fOutputIPC.ServerID := fServerName+'client';
+  fOutputIPC.Active := True;
+
+  Stream := TMemoryStream.Create;
+  Stream.WriteDWord(Response);
+  fOutputIPC.SendMessage(mtUnknown, Stream);
+
+  if fOutputIPC.Active then
+    fOutputIPC.Active := False;
+  FreeAndNil(fOutputIPC);
+end;
+
 
 
 procedure THelpForm.ServerMessage(Sender: TObject);
@@ -239,30 +258,32 @@ var
   FileReq:TFileRequest;
   ConReq: TContextRequest;
   Stream: TStream;
+  Res: LongWord;
 begin
-  if fServer.PeekMessage(5, True) then begin
-    Stream := fServer.MsgData;
+  if fInputIPC.PeekMessage(5, True) then begin
+    Stream := fInputIPC.MsgData;
     Stream.Position := 0;
     Stream.Read(FileReq, SizeOf(FileReq));
     case FileReq.RequestType of
       rtFile    : begin
-
-                    OpenURL('file://'+FileReq.FileName);
+                    Res := OpenURL('file://'+FileReq.FileName);
                   end;
       rtUrl     : begin
                     Stream.Position := 0;
                     Stream.Read(UrlReq, SizeOf(UrlReq));
                     if UrlReq.FileRequest.FileName <> '' then
-                      OpenUrl('file://'+UrlReq.FileRequest.FileName+'://'+UrlReq.Url)
+                      Res := OpenUrl('file://'+UrlReq.FileRequest.FileName+'://'+UrlReq.Url)
                     else
-                      OpenURL(UrlReq.Url);
+                      Res := OpenURL(UrlReq.Url);
                   end;
       rtContext : begin
                     Stream.Position := 0;
                     Stream.Read(ConReq, SizeOf(ConReq));
-                    OpenURL('file://'+FileReq.FileName, ConReq.HelpContext);
+                    Res := OpenURL('file://'+FileReq.FileName, ConReq.HelpContext);
                   end;
     end;
+    SendResponse(Res);
+    Self.SendToBack;
     Self.BringToFront;
   end;
 end;
@@ -314,27 +335,32 @@ end;
 
 procedure THelpForm.StartServer(ServerName: String);
 begin
-  fServer := TSimpleIPCServer.Create(nil);
-  fServer.ServerID := ServerName;
-  fServer.Global := True;
-  fServer.Active := True;
+  fInputIPC := TSimpleIPCServer.Create(nil);
+  fInputIPC.ServerID := ServerName;
+  fInputIPC.Global := True;
+  fInputIPC.Active := True;
   fServerTimer := TTimer.Create(nil);
   fServerTimer.OnTimer := @ServerMessage;
   fServerTimer.Interval := 200;
   fServerTimer.Enabled := True;
   ServerMessage(nil);
+
+
 end;
 
 procedure THelpForm.StopServer;
 begin
-   if fServer = nil then exit;
+   if fInputIPC = nil then
+     exit;
+
+   if fInputIPC.Active then
+     fInputIPC.Active := False;
+
+   FreeAndNil(fInputIPC);
    FreeAndNil(fServerTimer);
-   if fServer.Active then fServer.Active := False;
-   FreeAndNil(fServer);
-   
 end;
 
-procedure THelpForm.OpenURL(const AURL: String; AContext: THelpContext);
+function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
   function GetURLPrefix: String;
   var
     fPos: Integer;
@@ -349,18 +375,20 @@ var
  fNewPage: TContentTab;
  I: Integer;
 begin
-
+ Result := Ord(srUnknown);
  fURLPrefix := GetURLPrefix;
  fContentProvider := GetContentProvider(fURLPrefix);
  
  if fContentProvider = nil then begin
-   ShowError('Cannot handle this type of content. "' + fURLPrefix + '"');
+   ShowError('Cannot handle this type of content. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
+   Result := Ord(srInvalidFile);
    Exit;
  end;
  fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
  
  if fRealContentProvider = nil then begin
-   ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '"');
+   ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
+   Result := Ord(srInvalidFile);
    Exit;
  end;
 
@@ -368,7 +396,12 @@ begin
  for I := 0 to PageControl.PageCount-1 do begin
    if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then begin
      if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
+     begin
        PageControl.ActivePage := PageControl.Pages[I];
+       Result := Ord(srSuccess);
+     end
+     else
+       Result := Ord(srInvalidFile);
      Exit;
    end;
  end;
@@ -381,7 +414,12 @@ begin
  ShowOnTop;
  
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
+ begin
    PageControl.ActivePage := fNewPage;
+   Result := Ord(srSuccess);
+ end
+ else
+   Result := Ord(srInvalidFile);
 end;
 
 procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
