@@ -3454,16 +3454,27 @@ begin
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseException(ctsEndForClassNotFound);
   end;
-  if ChildCreated then begin
-    // close class
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
     if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
     then
       ReadNextAtom;
+    if CurPos.Flag=cafSemicolon then
+      ReadNextAtom;
+    if UpAtomIs('EXTERNAL') then begin
+      ReadNextAtom;
+      if UpAtomIs('NAME') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end;
+    end;
+    if CurPos.Flag<>cafSemicolon then
+      UndoReadNextAtom;
+  end;
+  if ChildCreated then begin
+    // close class
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
   end;
   Result:=true;
 end;
