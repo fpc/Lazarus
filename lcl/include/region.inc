@@ -177,7 +177,7 @@ function TRegion.GetClipRect : TRect;
 begin
   if FRegionData.Reference.Allocated
   then begin
-    GetRgnBox(HRGN(FRegionData.Reference.Handle), @Result)
+    GetRgnBox(HRGN(FRegionData.Reference.Handle), @Result);
   end
   else begin
     if FRegionData.Polygon <> nil

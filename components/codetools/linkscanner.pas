@@ -2342,7 +2342,7 @@ var
 begin
   SkipSpace;
   ValStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+  while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
     inc(SrcPos);
   if CompareUpToken('OBJECTIVEC1',Src,ValStart,SrcPos) then begin
     CompilerModeSwitch:=cmsObjectiveC1;
