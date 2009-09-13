@@ -116,6 +116,7 @@ type
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas);
+  TCompilerModeSwitch = (cmsDefault, cmsObjectiveC1);
   TPascalCompiler = (pcFPC, pcDelphi);
   
   TLSSkippingDirective = (
@@ -272,8 +273,10 @@ type
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
+    FCompilerModeSwitch: TCompilerModeSwitch;
     FPascalCompiler: TPascalCompiler;
     procedure SetCompilerMode(const AValue: TCompilerMode);
+    procedure SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     function InternalIfDirective: boolean;
     
@@ -298,6 +301,7 @@ type
     function ReadNextSwitchDirective: boolean;
     function LongSwitchDirective: boolean;
     function ModeDirective: boolean;
+    function ModeSwitchDirective: boolean;
     function ThreadingDirective: boolean;
     function DoDirective(StartPos, DirLen: integer): boolean;
     
@@ -429,6 +433,8 @@ type
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode
                                        read FCompilerMode write SetCompilerMode;
+    property CompilerModeSwitch: TCompilerModeSwitch
+                           read FCompilerModeSwitch write SetCompilerModeSwitch;
     property PascalCompiler: TPascalCompiler
                                      read FPascalCompiler write FPascalCompiler;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
@@ -496,6 +502,9 @@ const
 const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
         'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS'
+     );
+  CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
+        'Default', 'ObjectiveC1'
      );
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
@@ -2205,7 +2214,8 @@ begin
         if CompareIdentifiers(p,'LOCALSYMBOLS')=0 then Result:=true
         else if CompareIdentifiers(p,'LONGSTRINGS')=0 then Result:=true;
       'M':
-        if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective;
+        if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective
+        else if CompareIdentifiers(p,'MODESWITCH')=0 then Result:=ModeSwitchDirective;
       'O':
         if CompareIdentifiers(p,'OPENSTRINGS')=0 then Result:=true
         else if CompareIdentifiers(p,'OVERFLOWCHECKS')=0 then Result:=true;
@@ -2322,6 +2332,22 @@ begin
     if not ModeValid then
       RaiseExceptionFmt(ctsInvalidMode,[copy(Src,ValStart,SrcPos-ValStart)]);
   end;
+  Result:=true;
+end;
+
+function TLinkScanner.ModeSwitchDirective: boolean;
+// $MODESWITCH objectivec1
+var
+  ValStart: LongInt;
+begin
+  SkipSpace;
+  ValStart:=SrcPos;
+  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+    inc(SrcPos);
+  if CompareUpToken('OBJECTIVEC1',Src,ValStart,SrcPos) then begin
+    CompilerModeSwitch:=cmsObjectiveC1;
+  end else
+    RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
   Result:=true;
 end;
 
@@ -3211,7 +3237,15 @@ begin
   FCompilerMode:=AValue;
   FNestedComments:=(PascalCompiler=pcFPC)
                    and (FCompilerMode in [cmFPC,cmOBJFPC]);
+  FCompilerModeSwitch:=cmsDefault;
   //DebugLn(['TLinkScanner.SetCompilerMode ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' Mode=',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
+end;
+
+procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch
+  );
+begin
+  if FCompilerModeSwitch=AValue then exit;
+  FCompilerModeSwitch:=AValue;
 end;
 
 function TLinkScanner.InternalIfDirective: boolean;
