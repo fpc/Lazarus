@@ -97,8 +97,8 @@ type
     FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;
-    function ControlAutoScroll: boolean; virtual;
     function ControlHandle: HWnd; virtual;
+    function GetAutoScroll: boolean; virtual;
     function GetIncrement: TScrollBarInc; virtual;
     function GetPage: TScrollBarInc; virtual;
     function GetPosition: Integer; virtual;
@@ -107,16 +107,19 @@ type
     function GetSmooth: Boolean; virtual;
     function GetVisible: Boolean; virtual;
     function HandleAllocated: boolean; virtual;
+    function IsRangeStored: boolean; virtual;
     procedure AutoCalcRange; virtual;
     procedure ControlUpdateScrollBars; virtual;
+    procedure InternalSetRange(const AValue: Integer); virtual;
     procedure ScrollHandler(var Message: TLMScroll);
+    procedure SetAutoScroll(const AValue: Boolean); virtual;
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
     procedure SetPosition(const Value: Integer); virtual;
-    procedure SetRange(const Value: Integer); virtual;
+    procedure SetRange(const AValue: Integer); virtual;
     procedure SetSize(const AValue: integer); virtual;
-    procedure SetSmooth(const Value: Boolean); virtual;
-    procedure SetVisible(const Value: Boolean); virtual;
+    procedure SetSmooth(const AValue: Boolean); virtual;
+    procedure SetVisible(const AValue: Boolean); virtual;
     procedure UpdateScrollBar; virtual;
     procedure InvalidateScrollInfo;
   {$ifdef VerboseScrollingWinControl}
@@ -137,7 +140,7 @@ type
     property Page: TScrollBarInc read GetPage write SetPage default 80;
     property Smooth: Boolean read GetSmooth write SetSmooth default False;
     property Position: Integer read GetPosition write SetPosition default 0;
-    property Range: Integer read GetRange write SetRange default 0;
+    property Range: Integer read GetRange write SetRange stored IsRangeStored default 0;
     property Visible: Boolean read GetVisible write SetVisible default True;
   end;
 

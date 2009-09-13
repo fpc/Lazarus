@@ -33,7 +33,7 @@ begin
     exit;
   end;
 
-  if ControlAutoScroll then
+  if GetAutoScroll then
   begin
     if FAutoRange < 0 then
       AutoCalcRange;
@@ -182,21 +182,12 @@ begin
     Result := GetSystemMetrics(KindID);
 end;
 
-procedure TControlScrollBar.SetRange(const Value: Integer);
+procedure TControlScrollBar.SetRange(const AValue: Integer);
 begin
-  if Value < 0 then
-  begin
-    Range := 0;
-    exit;
-  end;
-  if FRange = Value then
-    exit;
-  FRange := Value;
-  {$IFDEF VerboseScrollingWinControl}
-  if DebugCondition then
-    DebugLn(['TControlScrollBar.SetRange ',Self,' fRange=',FRange]);
-  {$ENDIF}
-  ControlUpdateScrollBars;
+  if not (csLoading in FControl.ComponentState) then
+    SetAutoScroll(False);
+
+  InternalSetRange(AValue);
 end;
 
 procedure TControlScrollBar.SetSize(const AValue: integer);
@@ -204,18 +195,18 @@ begin
   raise EScrollBar.Create('[TControlScrollBar.SetSize] Size is readonly');
 end;
 
-procedure TControlScrollBar.SetVisible(const Value: Boolean);
+procedure TControlScrollBar.SetVisible(const AValue: Boolean);
 begin
-  if FVisible = Value then
-    exit;
-  FVisible := Value;
+  if FVisible = AValue then
+    Exit;
+  FVisible := AValue;
   ControlUpdateScrollBars;
 end;
 
-procedure TControlScrollBar.SetSmooth(const Value: Boolean);
+procedure TControlScrollBar.SetSmooth(const AValue: Boolean);
 begin
   // only used by the ScrollHandler procedure
-  FSmooth := Value;
+  FSmooth := AValue;
 end;
 
 procedure TControlScrollBar.AutoCalcRange;
@@ -249,7 +240,7 @@ procedure TControlScrollBar.AutoCalcRange;
         continue;
       TmpRange := Max(TmpRange, c.Top + c.Height);
     end;
-    Range := TmpRange;
+    InternalSetRange(TmpRange);
   end;
 
   procedure AutoCalcHRange;
@@ -273,11 +264,11 @@ procedure TControlScrollBar.AutoCalcRange;
         continue;
       TmpRange := Max(TmpRange, c.Left + c.Width);
     end;
-    Range := TmpRange;
+    InternalSetRange(TmpRange);
   end;
 
 begin
-  if ControlAutoScroll then
+  if GetAutoScroll then
   begin
     FVisible := True;
     if Kind = sbVertical then
@@ -339,12 +330,12 @@ begin
 end;
 {$endif}
 
-function TControlScrollBar.ControlAutoScroll: boolean;
+function TControlScrollBar.GetAutoScroll: boolean;
 begin
   if FControl is TScrollingWinControl then
     Result := TScrollingWinControl(FControl).AutoScroll
   else
-    Result := false;
+    Result := False;
 end;
 
 procedure TControlScrollBar.ScrollHandler(var Message: TLMScroll);
@@ -385,19 +376,47 @@ begin
   SetPosition(NewPos);
 end;
 
+procedure TControlScrollBar.SetAutoScroll(const AValue: Boolean);
+begin
+  if FControl is TScrollingWinControl then
+    TScrollingWinControl(FControl).FAutoScroll := False;
+end;
+
 procedure TControlScrollBar.ControlUpdateScrollBars;
 begin
   if ([csLoading, csDestroying] * FControl.ComponentState <> []) then
-    exit;
+    Exit;
   if not HandleAllocated then
-    exit;
+    Exit;
   if FControl is TScrollingWinControl then
     TScrollingWinControl(FControl).UpdateScrollBars;
+end;
+
+procedure TControlScrollBar.InternalSetRange(const AValue: Integer);
+var
+  NewRange: Integer;
+begin
+  NewRange := AValue;
+  if NewRange < 0 then
+    NewRange := 0;
+  if FRange = NewRange then
+    Exit;
+  FRange := AValue;
+  {$IFDEF VerboseScrollingWinControl}
+  if DebugCondition then
+    DebugLn(['TControlScrollBar.SetRange ',Self,' fRange=',FRange]);
+  {$ENDIF}
+  ControlUpdateScrollBars;
 end;
 
 function TControlScrollBar.HandleAllocated: boolean;
 begin
   Result := (FControl <> nil) and FControl.HandleAllocated;
+end;
+
+function TControlScrollBar.IsRangeStored: boolean;
+begin
+  Result := not GetAutoScroll;
 end;
 
 function TControlScrollBar.ControlHandle: HWnd;
