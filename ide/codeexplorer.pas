@@ -529,7 +529,7 @@ begin
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
-    ctnClass:
+    ctnClass,ctnObject,ctnObjCClass,ctnInterface:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
 
     ctnEnumIdentifier:
@@ -594,7 +594,8 @@ begin
     ctnTypeSection:                   Result:=ImgIDSection;
     ctnTypeDefinition:
       begin
-        if (CodeNode.FirstChild <> nil) and (CodeNode.FirstChild.Desc = ctnClass) then
+        if (CodeNode.FirstChild <> nil)
+        and (CodeNode.FirstChild.Desc in AllClasses) then
           Result := ImgIDClass
         else
           Result := ImgIDType;
@@ -603,7 +604,8 @@ begin
     ctnVarDefinition:                 Result:=ImgIDVariable;
     ctnConstSection,ctnResStrSection: Result:=ImgIDSection;
     ctnConstDefinition:               Result:=ImgIDConst;
-    ctnClass:                         Result:=ImgIDClass;
+    ctnClass,ctnClassInterface,
+    ctnObject,ctnObjCClass:           Result:=ImgIDClass;
     ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
                                       else
@@ -662,13 +664,14 @@ begin
     end;
     // don't show forward class definitions
     if (CodeNode.Desc=ctnTypeDefinition)
-    and (CodeNode.FirstChild<>nil) and (CodeNode.FirstChild.Desc=ctnClass)
+    and (CodeNode.FirstChild<>nil)
+    and (CodeNode.FirstChild.Desc in AllClasses)
     and ((CodeNode.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then begin
       ShowNode:=false;
       ShowChilds:=false;
     end;
     // don't show class node (the type node is already shown)
-    if (CodeNode.Desc in [ctnClass,ctnClassInterface]) then begin
+    if (CodeNode.Desc in AllClasses) then begin
       ShowNode:=false;
     end;
 

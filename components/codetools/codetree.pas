@@ -82,20 +82,22 @@ const
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
-  ctnClassInheritance   = 32;
-  ctnClassGUID          = 33;
-  ctnClassTypePrivate   = 34;
-  ctnClassTypeProtected = 35;
-  ctnClassTypePublic    = 36;
-  ctnClassTypePublished = 37;
-  ctnClassVarPrivate    = 38;
-  ctnClassVarProtected  = 39;
-  ctnClassVarPublic     = 40;
-  ctnClassVarPublished  = 41;
-  ctnClassPrivate       = 42;
-  ctnClassProtected     = 43;
-  ctnClassPublic        = 44;
-  ctnClassPublished     = 45;
+  ctnObject             = 32;
+  ctnObjCClass          = 33;
+  ctnClassInheritance   = 34;
+  ctnClassGUID          = 35;
+  ctnClassTypePrivate   = 36;
+  ctnClassTypeProtected = 37;
+  ctnClassTypePublic    = 38;
+  ctnClassTypePublished = 39;
+  ctnClassVarPrivate    = 40;
+  ctnClassVarProtected  = 41;
+  ctnClassVarPublic     = 42;
+  ctnClassVarPublished  = 43;
+  ctnClassPrivate       = 44;
+  ctnClassProtected     = 45;
+  ctnClassPublic        = 46;
+  ctnClassPublished     = 47;
 
   ctnProperty           = 50;
   ctnMethodMap          = 51;
@@ -159,7 +161,7 @@ const
   AllClassSections =
     AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
   AllClasses =
-     [ctnClass,ctnClassInterface];
+     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];
@@ -168,7 +170,8 @@ const
   AllSimpleIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =
-     [ctnClass,ctnClassInterface,ctnGenericType,ctnSpecialize,
+     AllClasses+
+     [ctnGenericType,ctnSpecialize,
       ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,ctnRecordType,
       ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
@@ -176,8 +179,8 @@ const
       ctnClassOfType,ctnVariantType,ctnConstant];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement];
-  AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections +
-     [ctnClass,ctnClassInterface,ctnProcedure];
+  AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections + AllClasses +
+     [ctnProcedure];
 
 
   // CodeTreeNodeSubDescriptors
@@ -355,6 +358,8 @@ begin
 
   ctnClass: Result:='Class';
   ctnClassInterface: Result:='Class Interface';
+  ctnObject: Result:='Object';
+  ctnObjCClass: Result:='ObjCClass';
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
   ctnClassPublished: Result:='Published';

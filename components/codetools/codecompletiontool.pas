@@ -125,7 +125,7 @@ type
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
-    FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed (ctnClass or ctnClassInterface)
+    FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed (ctnClass, ...)
     FCompletingStartNode: TCodeTreeNode; // the first variable/method/GUID node in FCodeCompleteClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
@@ -3973,7 +3973,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
         end;
       end;
 
-    ctnRecordType, ctnClassInterface, ctnClass:
+    ctnRecordType, ctnClassInterface, ctnClass, ctnObject, ctnObjCClass:
       begin
         ChildNode:=SubNode.FirstChild;
         while (ChildNode<>nil) and (ChildNode.HasAsParent(SubNode)) do begin
@@ -5039,7 +5039,8 @@ begin
           ClassSectionNode:=ClassSectionNode.NextBrother;
       end else if ANodeExt.Node<>nil then begin
         // search a section of the same Visibility in front of the node
-        if FCodeCompleteClassNode.Desc=ctnClass then begin
+        if FCodeCompleteClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then
+        begin
           ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
           while (ClassSectionNode<>nil)
           and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
@@ -6228,7 +6229,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
       {$ENDIF}
-      if FCodeCompleteClassNode.Desc=ctnClass then
+      if FCodeCompleteClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then
         SectionNode:=FCodeCompleteClassNode.FirstChild
       else
         SectionNode:=FCodeCompleteClassNode;
@@ -6734,7 +6735,8 @@ begin
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
 
   // test if in a class
-  AClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
+  AClassNode:=CursorNode.GetNodeOfTypes(
+                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
   if AClassNode<>nil then begin
     CompleteClass(AClassNode);
     exit;
@@ -6929,8 +6931,9 @@ begin
     else if CursorNode.Desc=ctnGenericType then
       CursorNode:=CursorNode.LastChild
     else
-      CursorNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
-    if (CursorNode=nil) or (CursorNode.Desc<>ctnClass) then begin
+      CursorNode:=CursorNode.GetNodeOfTypes(
+                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+    if (CursorNode=nil) or (not (CursorNode.Desc in AllClasses)) then begin
       DebugLn(['TIdentCompletionTool.AddMethods cursor not in a class']);
       exit;
     end;

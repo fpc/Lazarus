@@ -1227,7 +1227,7 @@ var CleanCursorPos: integer;
     if CursorNode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
       TypeNode:=FindTypeNodeOfDefinition(CursorNode);
       if (TypeNode<>nil)
-      and (TypeNode.Desc in [ctnClass,ctnClassInterface])
+      and (TypeNode.Desc in AllClasses)
       and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
       begin
         DirectSearch:=true;
@@ -1249,7 +1249,7 @@ var CleanCursorPos: integer;
     if SkipChecks then exit;
     ClassNode:=CursorNode;
     while (ClassNode<>nil)
-    and (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
+    and (not (ClassNode.Desc in AllClasses))
     do
       ClassNode:=ClassNode.Parent;
     if ClassNode<>nil then begin
@@ -1587,7 +1587,7 @@ begin
     // then search the properties
     repeat
       //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
-      if (not (Context.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType]))
+      if (not (Context.Node.Desc in (AllClasses+[ctnRecordType])))
       then
         exit;
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
@@ -1616,7 +1616,8 @@ begin
             //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has not type, searching next ...']);
             Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
             Params.ContextNode:=
-                        Context.Node.GetNodeOfTypes([ctnClass,ctnClassInterface]);
+                        Context.Node.GetNodeOfTypes(
+                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
             if Params.ContextNode=nil then
               Params.ContextNode:=Context.Node;
             Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
@@ -2050,7 +2051,7 @@ begin
               Result:=Result+'published ';
             end;
             break;
-          end else if ANode.Desc in [ctnParameterList,ctnClass,ctnClassInterface] then
+          end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
             break;
           ANode:=ANode.Parent;
         end;
@@ -2077,7 +2078,7 @@ begin
           TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
           if TypeNode<>nil then begin
             case TypeNode.Desc of
-            ctnIdentifier, ctnClass, ctnClassInterface:
+            ctnIdentifier, ctnClass, ctnClassInterface, ctnObject, ctnObjCClass:
               begin
                 NewTool.MoveCursorToNodeStart(TypeNode);
                 NewTool.ReadNextAtom;
@@ -2197,7 +2198,7 @@ begin
     Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
     FindContext:=FindBaseTypeOfNode(Params,ANode);
     if (FindContext.Node<>nil)
-    and (FindContext.Node.Desc in [ctnRecordType,ctnClass,ctnClassInterface])
+    and ((FindContext.Node.Desc in ([ctnRecordType]+AllClasses)))
     and (FindContext.Node.FirstChild<>nil)
     then
       Result:=true;
@@ -2545,7 +2546,7 @@ var
   
   procedure MoveContextNodeToChilds;
   begin
-    if ContextNode.Desc in [ctnClass,ctnClassInterface] then begin
+    if ContextNode.Desc in AllClasses then begin
       // just-in-time parsing for class node
       BuildSubTreeForClass(ContextNode);
     end;
@@ -2610,7 +2611,7 @@ var
       if not (fdfCollect in Params.Flags) then begin
         if (fdfSkipClassForward in Params.Flags)
         and (ContextNode.FirstChild<>nil)
-        and (ContextNode.FirstChild.Desc in [ctnClass,ctnClassInheritance])
+        and (ContextNode.FirstChild.Desc in AllClasses)
         and ((ctnsForwardDeclaration and ContextNode.FirstChild.SubDesc)<>0)
         then begin
           FindNonForwardClass(Params);
@@ -2707,7 +2708,7 @@ var
       if (not (fdfSearchInParentNodes in Params.Flags)) then begin
         // searching in any parent context is not permitted
         if not ((fdfSearchInAncestors in Params.Flags)
-        and (ContextNode.Desc in [ctnClass,ctnClassInterface])) then begin
+        and (ContextNode.Desc in AllClasses)) then begin
           // even searching in ancestors contexts is not permitted
           // -> there is no prior context accessible any more
           // -> identifier not found
@@ -2743,7 +2744,7 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in [ctnClass,ctnClassInterface])
+      if (ContextNode.Desc in AllClasses)
       and (fdfSearchInAncestors in Params.Flags) then begin
         // after searching in a class definiton, search in its ancestors
 
@@ -2835,7 +2836,8 @@ var
           // of the prior node
           ;
 
-        ctnClass, ctnClassInterface, ctnRecordType, ctnRecordCase:
+        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
+        ctnRecordType, ctnRecordCase:
           // do not search again in this node, go on ...
           ;
           
@@ -2943,7 +2945,7 @@ begin
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
         ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
-        ctnClass, ctnClassInterface,
+        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
         ctnRecordType, ctnRecordVariant,
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
@@ -3072,7 +3074,7 @@ begin
   Result:=false;
   if Params.ContextNode=nil then exit;
   CurContextNode:=Params.ContextNode;
-  if CurContextNode.Desc=ctnClass then
+  if CurContextNode.Desc in AllClasses then
     BuildSubTreeForClass(CurContextNode);
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
@@ -3228,7 +3230,7 @@ begin
           break;
         Result.Node:=DummyNode;
       end else
-      if (Result.Node.Desc in [ctnClass,ctnClassInterface])
+      if (Result.Node.Desc in AllClasses)
       and ((Result.Node.SubDesc and ctnsForwardDeclaration)>0) then
       begin
         // this is a forward defined class
@@ -3723,7 +3725,8 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   Result:=false;
   ListOfPFindContext:=nil;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (ClassNode.Parent=nil)
+  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
+  or (ClassNode.Parent=nil)
   or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
     exit;
 
@@ -3744,7 +3747,7 @@ begin
         CurTool:=Params.NewCodeTool;
         ClassNode:=Params.NewNode;
         if (ClassNode=nil)
-        or (not (ClassNode.Desc in [ctnClass,ctnClassInterface])) then
+        or (not (ClassNode.Desc in AllClasses)) then
           break;
       end;
       Result:=true;
@@ -3762,7 +3765,7 @@ end;
 function TFindDeclarationTool.FindContextClassAndAncestors(
   const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList
   ): boolean;
-// returns a list of nodes of ctnClass
+// returns a list of nodes of AllClasses (ctnClass, ...)
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
@@ -4316,7 +4319,7 @@ begin
       Result:=InNodeIdentifier(CurPos.StartPos);
     end;
 
-  ctnBeginBlock,ctnClass:
+  ctnBeginBlock,ctnClass,ctnObject,ctnObjCClass:
     if (Node.SubDesc and ctnsForwardDeclaration)>0 then
       RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
     
@@ -4416,7 +4419,7 @@ begin
     exit;
   TypeNode:=FindTypeNodeOfDefinition(Node);
   if TypeNode=nil then exit;
-  if TypeNode.Desc=ctnClass then begin
+  if TypeNode.Desc in AllClasses then begin
     if (TypeNode.SubDesc and ctnsForwardDeclaration)>0 then begin
       Result:=true;
       exit;
@@ -4504,10 +4507,9 @@ begin
       DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc="',copy(src,ProcContextNode.StartPos,30),'" searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
       {$ENDIF}
       FindIdentifierInContext(Params);
-      ClassContext:=Params.NewCodeTool.FindBaseTypeOfNode(
-                                                       Params,Params.NewNode);
+      ClassContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
       if (ClassContext.Node=nil)
-      or (ClassContext.Node.Desc<>ctnClass) then begin
+      or (not (ClassContext.Node.Desc in AllClasses)) then begin
         MoveCursorToCleanPos(ClassNameAtom.StartPos);
         RaiseException(ctsClassIdentifierExpected);
       end;
@@ -4598,7 +4600,7 @@ begin
       Params.Flags:=Params.Flags+[fdfFindChilds];
       ClassContext:=FindBaseTypeOfNode(Params,Params.NewNode);
       if (ClassContext.Node=nil)
-      or (ClassContext.Node.Desc<>ctnClass) then begin
+      or (not (ClassContext.Node.Desc in AllClasses)) then begin
         MoveCursorToCleanPos(ClassNameAtom.StartPos);
         RaiseException(ctsClassIdentifierExpected);
       end;
@@ -4626,7 +4628,7 @@ var
   AncestorContext: TFindContext;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
-  if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
+  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
   then
     RaiseException('[TFindDeclarationTool.FindAncestorOfClass] '
       +' invalid classnode');
@@ -4656,13 +4658,14 @@ begin
   if ClassNode.Desc=ctnClass then begin
     // if this class is not TObject, TObject is class ancestor
     SearchBaseClass:=not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject');
-  end else begin
+  end else if ClassNode.Desc=ctnClassInterface then begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
     SearchBaseClass:=
               (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IInterface'))
           and (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown'));
-  end;
+  end else
+    exit;
   if not SearchBaseClass then exit;
 
   {$IFDEF ShowTriedContexts}
@@ -4678,8 +4681,10 @@ begin
                 -[fdfTopLvlResolving];
   if ClassNode.Desc=ctnClass then
     Params.SetIdentifier(Self,'TObject',nil)
+  else if ClassNode.Desc=ctnClassInterface then
+    Params.SetIdentifier(Self,'IInterface',nil)
   else
-    Params.SetIdentifier(Self,'IInterface',nil);
+    exit;
   Params.ContextNode:=ClassNode;
   if not FindIdentifierInContext(Params) then begin
     MoveCursorToNodeStart(ClassNode);
@@ -4709,8 +4714,8 @@ begin
     Params.SetResult(AncestorContext);
 
     // check result
-    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface]) then
-    begin
+    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface])
+    then begin
       MoveCursorToNodeStart(ClassNode);
       if ClassNode.Desc=ctnClass then
         RaiseException(ctsDefaultClassAncestorTObjectNotFound)
@@ -4795,7 +4800,7 @@ begin
     Params.SetResult(AncestorContext);
 
     // check result
-    if not (Params.NewNode.Desc in [ctnClass,ctnClassInterface]) then
+    if not (Params.NewNode.Desc in AllClasses) then
     begin
       MoveCursorToCleanPos(AncestorStartPos);
       ReadNextAtom;
@@ -4884,7 +4889,7 @@ begin
     exit;
   Node:=Node.FirstChild;
   if (Node=nil)
-  or (not (Node.Desc in [ctnClass,ctnClassInterface]))
+  or (not (Node.Desc in AllClasses))
   or ((ctnsForwardDeclaration and Node.SubDesc)=0) then
     exit;
   Node:=Params.NewNode;
@@ -4938,7 +4943,7 @@ begin
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
   or (not (WithVarExpr.Context.Node.Desc
-           in [ctnClass,ctnClassInterface,ctnRecordType]))
+           in (AllClasses+[ctnRecordType])))
   then begin
     MoveCursorToCleanPos(WithVarNode.StartPos);
     RaiseException(ctsExprTypeMustBeClassOrRecord);
@@ -6445,9 +6450,10 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnClassInterface, ctnProperty, ctnGlobalProperty:
+    ctnClass, ctnClassInterface, ctnObject, ctnObjCClass,
+    ctnProperty, ctnGlobalProperty:
       begin
-        if ExprType.Context.Node.Desc in [ctnClass,ctnClassInterface] then begin
+        if ExprType.Context.Node.Desc in AllClasses then begin
           // search default property of the class / interface
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
@@ -7876,7 +7882,7 @@ function TFindDeclarationTool.ContextIsDescendOf(const DescendContext,
 var CurContext: TFindContext;
   OldInput: TFindDeclarationInput;
 begin
-  if not (DescendContext.Node.Desc in [ctnClass,ctnClassInterface]) then
+  if not (DescendContext.Node.Desc in AllClasses) then
     RaiseInternalError;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ContextIsDescendOf] ',
@@ -7935,7 +7941,7 @@ begin
           // same context type
           case ExprNode.Desc of
           
-          ctnClass,ctnClassInterface:
+          ctnClass,ctnClassInterface, ctnObject, ctnObjCClass:
             // check, if ExpressionType.Context is descend of TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
                                   TargetType.Context,Params)
@@ -7960,7 +7966,7 @@ begin
     
   end else if ((TargetType.Desc=xtPointer)
       and (ExpressionType.Desc=xtContext)
-      and (ExpressionType.Context.Node.Desc in [ctnClass,ctnClassInterface]))
+      and (ExpressionType.Context.Node.Desc in AllClasses))
   then begin
     // assigning a class to a pointer
     Result:=tcExact;
@@ -7983,8 +7989,7 @@ begin
       Result:=tcCompatible
     else if (TargetType.Desc=xtContext) then begin
       TargetNode:=TargetType.Context.Node;
-      if ((TargetNode.Desc
-             in [ctnClass,ctnClassInterface,ctnProcedure])
+      if ((TargetNode.Desc in (AllClasses+[ctnProcedure]))
         and (ExpressionType.Desc=xtNil))
       or ((TargetNode.Desc in [ctnOpenArrayType,ctnRangedArrayType])
         and (TargetNode.LastChild<>nil)
@@ -9015,8 +9020,11 @@ begin
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
 
-        ctnClass, ctnClassInterface:
-          Result:=GetIdentifier(
+        ctnClass, ctnClassInterface, ctnObject, ctnObjCClass:
+          if (FindContext.Node.Parent<>nil)
+          and (FindContext.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
+          then
+            Result:=GetIdentifier(
                        @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
         ctnEnumerationType:

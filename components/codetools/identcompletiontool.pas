@@ -887,7 +887,7 @@ var
       // => all protected ancestor classes are allowed as well.
       CurClassNode:=FoundContext.Node;
       while (CurClassNode<>nil)
-      and (not (CurClassNode.Desc in [ctnClass,ctnClassInterface])) do
+      and (not (CurClassNode.Desc in AllClasses)) do
         CurClassNode:=CurClassNode.Parent;
       if CurClassNode=nil then exit;
       p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
@@ -1005,7 +1005,7 @@ begin
         Ident:=@FoundContext.Tool.Src[Node.StartPos];
       end;
       if (Node<>nil)
-      and (Node.Desc in [ctnClass,ctnClassInterface])
+      and (Node.Desc in AllClasses)
       and ((ctnsForwardDeclaration and Node.SubDesc)>0)
       then begin
         // forward definition of a class
@@ -1260,7 +1260,8 @@ begin
       CurrentIdentifierList.Add(NewItem);
     end;
     if (UpAtomIs('READ') or UpAtomIs('WRITE'))
-    and (Context.Node.GetNodeOfType(ctnClass)<>nil) then begin
+    and (Context.Node.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass])<>nil)
+    then begin
       // add the default class completion 'read'/'write' specifier variable
       NewItem:=TIdentifierListItem.Create(
           icompUnknown,true,0,
@@ -1420,7 +1421,8 @@ var
 begin
   Node:=Context.Node;
   case Node.Desc of
-  ctnClass,ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
+  ctnClass,ctnObject,ctnObjCClass,
+  ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
     begin
       Add('public');
       Add('private');
@@ -1431,6 +1433,12 @@ begin
       Add('property');
       Add('constructor');
       Add('destructor');
+    end;
+
+  ctnClassInterface:
+    begin
+      Add('procedure');
+      Add('function');
     end;
 
   ctnInterface,ctnImplementation:
@@ -1573,7 +1581,7 @@ begin
   or ((GatherContext.Node.Parent<>nil)
      and (GatherContext.Node.Parent.Desc=ctnClassInheritance))
   then begin
-    while not (GatherContext.Node.Desc in [ctnClass,ctnClassInterface]) do
+    while not (GatherContext.Node.Desc in AllClasses) do
       GatherContext.Node:=GatherContext.Node.Parent;
     GatherContext.Node:=GatherContext.Node.Parent;
     IgnoreCurContext:=true;
@@ -1809,7 +1817,7 @@ begin
         Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
         if not StartInSubContext then
           Include(Params.Flags,fdfSearchInParentNodes);
-        if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
+        if Params.ContextNode.Desc in AllClasses then
           Exclude(Params.Flags,fdfSearchInParentNodes);
         {$IFDEF CTDEBUG}
         DebugLn('TIdentCompletionTool.GatherIdentifiers F');
@@ -2175,8 +2183,10 @@ begin
     else if CursorNode.Desc=ctnGenericType then
       CursorNode:=CursorNode.LastChild
     else
-      CursorNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
-    if (CursorNode=nil) or (CursorNode.Desc<>ctnClass)
+      CursorNode:=CursorNode.GetNodeOfTypes(
+                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
+    if (CursorNode=nil)
+    or (not (CursorNode.Desc in [ctnClass,ctnObject,ctnObjCClass]))
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
       MoveCursorToCleanPos(CleanCursorPos);
       RaiseException('TIdentCompletionTool.FindAbstractMethods cursor is not in a class');
@@ -2537,7 +2547,7 @@ var
   ANode: TCodeTreeNode;
 begin
   Result:=false;
-  if GetDesc in [ctnClass,ctnRecordType,ctnClassInterface] then begin
+  if GetDesc in (AllClasses+[ctnRecordType]) then begin
     Result:=true;
     exit;
   end;
@@ -2546,8 +2556,7 @@ begin
   UpdateBaseContext;
   if (BaseExprType.Desc=xtContext)
     and (BaseExprType.Context.Node<>nil)
-    and (BaseExprType.Context.Node.Desc
-      in [ctnClass,ctnRecordType,ctnClassInterface])
+    and (BaseExprType.Context.Node.Desc in (AllClasses+[ctnRecordType]))
   then
     Include(Flags,iliHasChilds);
 end;

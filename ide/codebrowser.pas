@@ -1890,9 +1890,18 @@ var
           Description:='type '+Identifier;
           if CTNode.FirstChild<>nil then begin
             case CTNode.FirstChild.Desc of
-            ctnClass,ctnClassInterface:
+            ctnClass,ctnClassInterface,ctnObject,ctnObjCClass:
               begin
-                Description:=Description+' = class';
+                case CTNode.FirstChild.Desc of
+                ctnClassInterface:
+                  Description:=Description+' = interface';
+                ctnObject:
+                  Description:=Description+' = object';
+                ctnObjCClass:
+                  Description:=Description+' = objcclass';
+                else
+                  Description:=Description+' = class';
+                end;
                 Inheritance:=Tool.ExtractClassInheritance(CTNode.FirstChild,[]);
                 if Inheritance<>'' then
                   Description:=Description+'('+Inheritance+')';
@@ -1962,8 +1971,7 @@ var
       
       if (CTNode.Desc=ctnTypeDefinition)
       and (CTNode.FirstChild<>nil)
-      and (CTNode.FirstChild.Desc in [ctnClass,ctnClassInterface,ctnRecordType,
-         ctnEnumerationType])
+      and (CTNode.FirstChild.Desc in AllClasses+[ctnRecordType,ctnEnumerationType])
       then begin
         // add child nodes
         ChildCTNode:=CTNode.FirstChild;
@@ -2399,7 +2407,7 @@ begin
       Result:=ImgIDConstSection;
     ctnConstDefinition:
       Result:=ImgIDConst;
-    ctnClass:
+    ctnClass,ctnObject,ctnObjCClass:
       Result:=ImgIDClass;
     ctnProcedure:
       Result:=ImgIDProc;

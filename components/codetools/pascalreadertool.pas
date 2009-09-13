@@ -373,7 +373,8 @@ begin
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
     TheClassName:='';
-    TypeDefNode:=ProcNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
+    TypeDefNode:=ProcNode.GetNodeOfTypes(
+                           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass]);
     if TypeDefNode<>nil then begin
       TheClassName:=ExtractClassName(TypeDefNode,phpInUpperCase in Attr);
     end;
@@ -495,17 +496,10 @@ var
   DefNode: TCodeTreeNode;
 begin
   if ClassNode<>nil then begin
-    if ClassNode.Desc <> ctnClass then
-    begin
-      // find class of node
-      repeat
-        ClassNode := ClassNode.Parent;
-        if (ClassNode = nil) or (ClassNode.Desc in AllCodeSections) then
-        begin
-          Result := '';
-          Exit;
-        end;
-      until ClassNode.Desc = ctnClass;
+    ClassNode:=ClassNode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass]);
+    if (ClassNode = nil) then begin
+      Result := '';
+      Exit;
     end;
 
     DefNode:=ClassNode.Parent;
@@ -528,11 +522,14 @@ function TPascalReaderTool.ExtractClassInheritance(
   ClassNode: TCodeTreeNode; Attr: TProcHeadAttributes): string;
 begin
   Result:='';
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then exit;
+  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses)) then exit;
   MoveCursorToNodeStart(ClassNode);
   ReadNextAtom; // class
   if UpAtomIs('PACKED') then ReadNextAtom;
-  if not UpAtomIs('CLASS') then exit;
+  if not (UpAtomIs('CLASS') or UpAtomIs('OBJECT') or UpAtomIs('OBJCLASS')
+       or (UpAtomIs('INTERFACE')))
+  then
+    exit;
   ReadNextAtom; // '('
   if CurPos.Flag<>cafRoundBracketOpen then exit;
   ReadNextAtom;
@@ -618,7 +615,7 @@ begin
   
   // check proc kind
   //debugln('TPascalReaderTool.FindCorrespondingProcNode Check kind');
-  ClassNode:=ProcNode.GetNodeOfType(ctnClass);
+  ClassNode:=ProcNode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass]);
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
@@ -629,7 +626,7 @@ begin
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
     BuildSubTreeForClass(StartNode);
-    if (StartNode<>nil) and (StartNode.Desc in [ctnClass,ctnClassInterface])
+    if (StartNode<>nil) and (StartNode.Desc in AllClasses)
     then begin
       StartNode:=StartNode.FirstChild;
       while (StartNode<>nil) and (not (StartNode.Desc in AllClassBaseSections))
@@ -1270,7 +1267,8 @@ begin
   while (ANode<>nil) do begin
     if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
       CurClassNode:=FindTypeNodeOfDefinition(ANode);
-      if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
+      if (CurClassNode<>nil)
+      and (CurClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
@@ -1320,7 +1318,8 @@ begin
   while ANode<>nil do begin
     if ANode.Desc=ctnTypeDefinition then begin
       CurClassNode:=ANode.FirstChild;
-      if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
+      if (CurClassNode<>nil)
+      and (CurClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
@@ -1352,7 +1351,7 @@ function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode
   ): TCodeTreeNode;
 begin
   while CursorNode<>nil do begin
-    if CursorNode.Desc=ctnClass then begin
+    if CursorNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then begin
       Result:=CursorNode;
       exit;
     end else if NodeIsMethodBody(CursorNode) then begin
@@ -1472,13 +1471,7 @@ end;
 
 function TPascalReaderTool.IsClassNode(Node: TCodeTreeNode): boolean;
 begin
-  if Node.Desc<>ctnClass then exit(false);
-  MoveCursorToNodeStart(Node);
-  ReadNextAtom;
-  if UpAtomIs('PACKED') then
-    ReadNextAtom;
-  if UpAtomIs('CLASS') then exit(true);
-  Result:=false;
+  Result:=(Node<>nil) and (Node.Desc=ctnClass);
 end;
 
 function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode

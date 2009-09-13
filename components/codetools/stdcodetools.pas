@@ -2067,7 +2067,8 @@ var
     Result:=false;
     IdentContext:=CleanFindContext;
     IsPublished:=false;
-    if (ClassContext.Node=nil) or (ClassContext.Node.Desc<>ctnClass) then begin
+    if (ClassContext.Node=nil)
+    or (not (ClassContext.Node.Desc in AllClasses)) then begin
       DebugLn('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
       exit;
     end;
@@ -2186,7 +2187,8 @@ var
         if StartTool.FindIdentifierInContext(Params) then begin
           Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
+          if (Result.Node=nil)
+          or (not (Result.Node.Desc in AllClasses)) then
             Result:=CleanFindContext;
         end;
       except
@@ -2239,7 +2241,8 @@ var
         if FindIdentifierInContext(Params) then begin
           Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
+          if (Result.Node=nil)
+          or (not (Result.Node.Desc in AllClasses)) then
             Result:=CleanFindContext;
         end;
       except
@@ -4705,7 +4708,8 @@ function TStandardCodeTool.GatherPublishedClassElements(
   begin
     Result:=false;
     ClassNode:=AFindContext^.Node;
-    if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then exit;
+    if (ClassNode=nil)
+    or (not (ClassNode.Desc in AllClasses)) then exit;
     CurTool:=AFindContext^.Tool;
     CurTool.BuildSubTreeForClass(ClassNode);
     SectionNode:=ClassNode.FirstChild;
@@ -6471,7 +6475,7 @@ begin
   Node:=Tree.Root;
   while Node<>nil do begin
     case Node.Desc of
-    ctnClass,ctnClassInterface:
+    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass:
       BuildSubTreeForClass(Node);
     ctnProcedure,ctnProcedureHead:
       BuildSubTreeForProcHead(Node);
