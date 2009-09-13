@@ -131,16 +131,6 @@ implementation
 function ReverseRTTIParamList: boolean;
 begin
   Result:=false;
-  {$IFDEF i386}
-  // RTTI for i386 uses the calling convention: left to right
-  {$ELSE}
-    {$IF defined(VER2_2) or defined(VER2_3)}
-    // prior to fpc 2.5.1 for non i386 platforms the RTTI is left to right
-    {$ELSE}
-    // since fpc 2.5.1 for non i386 platforms the RTTI is right to left
-    Result:=true;
-    {$ENDIF}
-  {$ENDIF}
 end;
 
 { TEventsCodeTool }
