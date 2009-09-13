@@ -5036,6 +5036,7 @@ function TFindDeclarationTool.FindExpressionResultType(
     uniquestring?
     procedure include(set type,enum identifier);
     procedure exclude(set type,enum identifier);
+    function objcselector(string): sel;
 }
 type
   TOperandAndOperator = record
@@ -6916,8 +6917,9 @@ var
   IdentPos: PChar;
   ParamList: TExprTypeList;
   ParamNode: TCodeTreeNode;
+  SubParams: TFindDeclarationParams;
+  NewTool: TFindDeclarationTool;
 begin
-
   Result:=CleanExpressionType;
   IdentPos:=@Src[StartPos];
   Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
@@ -6997,6 +6999,23 @@ begin
           if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
             exit;
           Result.Desc:=xtString;
+        end
+        else if (CompareIdentifiers(IdentPos,'OBJCSELECTOR')=0) then
+        begin
+          // return type is System.SEL
+          NewTool:=FindCodeToolForUsedUnit('system','',true);
+          if NewTool=nil then exit;
+          SubParams:=TFindDeclarationParams.Create;
+          try
+            SubParams.Identifier:='SEL'#0;
+            if (not NewTool.FindIdentifierInInterface(Self,SubParams))
+            or (SubParams.NewNode=nil) then exit;
+            Result.Desc:=xtContext;
+            Result.Context.Node:=SubParams.NewNode;
+            Result.Context.Tool:=SubParams.NewCodeTool;
+          finally
+            SubParams.Free;
+          end;
         end;
       end;
 

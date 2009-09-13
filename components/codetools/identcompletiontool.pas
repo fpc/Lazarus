@@ -1170,6 +1170,7 @@ begin
     AddCompilerFunction('Length','A:Array','Ordinal');
     AddCompilerFunction('Low','Arg:TypeOrVariable','Ordinal');
     AddCompilerProcedure('New','var X:Pointer');
+    AddCompilerFunction('ObjCSelector','String','SEL');
     AddCompilerFunction('Ofs','var X','LongInt');
     AddCompilerFunction('Ord','X:Ordinal', 'Integer');
     AddCompilerProcedure('Pack','A:Array;N:Integer;var A:Array');
