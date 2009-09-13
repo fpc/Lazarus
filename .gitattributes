@@ -4657,6 +4657,7 @@ packager/globallinks/lhelpcontrolpkg-0.lpl svneol=native#text/plain
 packager/globallinks/lr_add_function-0.lpl svneol=native#text/plain
 packager/globallinks/macosfiles-0.lpl svneol=native#text/plain
 packager/globallinks/messagecomposerpkg-0.lpl svneol=native#text/plain
+packager/globallinks/notlcldesigner-0.lpl svneol=native#text/plain
 packager/globallinks/prettyformat-0.lpl svneol=native#text/plain
 packager/globallinks/prettymessages-0.lpl svneol=native#text/plain
 packager/globallinks/printer4lazarus-0.5.lpl svneol=native#text/plain
