@@ -200,6 +200,8 @@ type
     property OnEndDrag;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -246,6 +248,8 @@ type
     property OnExit;
     property OnHide;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -342,6 +346,8 @@ type
     property OnGetImageIndex;
     property OnGetSiteInfo;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnPageChanged;
@@ -580,6 +586,8 @@ type
     property OnGetImageIndex;
     property OnGetSiteInfo;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -1197,6 +1205,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -1283,6 +1293,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDock;
@@ -1402,6 +1414,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
   end;
@@ -2613,6 +2627,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnSelectionChanged;

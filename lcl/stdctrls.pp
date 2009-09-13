@@ -444,6 +444,8 @@ type
     property OnKeyUp;
     property OnMeasureItem;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -866,6 +868,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -1280,6 +1284,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;

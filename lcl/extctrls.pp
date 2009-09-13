@@ -249,6 +249,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -296,6 +298,8 @@ type
     property OnExit;
     property OnGetImageIndex;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnPageChanged;
@@ -1131,6 +1135,8 @@ type
     property OnGetSiteInfo;
     property OnGetDockCaption;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
