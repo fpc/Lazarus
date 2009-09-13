@@ -4,7 +4,6 @@
     <Version Value="7"/>
     <General>
       <Flags>
-        <SaveOnlyProjectUnits Value="True"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
