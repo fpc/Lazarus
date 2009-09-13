@@ -146,6 +146,7 @@ type
   end;
 
 implementation
+uses SynEdit;
 
 { TSynCustomBeautifier }
 
@@ -220,6 +221,8 @@ begin
   if (Command = ecDeleteLastChar) and
      (FAutoIndent) and
      (ACaret.CharPos > 1) and
+     ( (not TSynEdit(FCurrentEditor).SelAvail) or
+       (eoPersistentBlock in TSynEdit(FCurrentEditor).Options2) ) and
      (GetCurrentIndent(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
   then begin
     UnIndentLine(ACaret, x);
