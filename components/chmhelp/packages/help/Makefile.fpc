@@ -1,0 +1,51 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for lhelpcontrolpkg 0.1
+#
+#   This file was generated on 14.09.2009
+
+[package]
+name=lhelpcontrolpkg
+version=0.1
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=./
+options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
+
+[target]
+units=lhelpcontrolpkg.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lhelpcontrolpkg$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) lhelpcontrolpkg$(PPUEXT)
