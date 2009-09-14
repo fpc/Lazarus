@@ -1539,9 +1539,6 @@ end;
 
 procedure TfrmCompilerOptions.SetupConditionalTab(Page: integer);
 begin
-  {$IFNDEF EnableBuildModes}
-  ConditionalPage.TabVisible:=false;
-  {$ENDIF}
   MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
   {$IFDEF EnableBuildModes}
   CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
