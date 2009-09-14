@@ -56,7 +56,6 @@ implementation
 
 function TLHelpConnection.WaitForMsgResponse: TLHelpResponse;
 var
-  I: Integer;
   Stream: TStream;
   WaitTime: Integer = 5000;
 begin
