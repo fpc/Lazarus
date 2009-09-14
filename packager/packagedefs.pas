@@ -602,6 +602,8 @@ type
     FDefineTemplates: TLazPackageDefineTemplates;
     FDescription: string;
     FDirectory: string;
+    FDirectoryExpanded: string;
+    FDirectoryExpandedChangeStamp: integer;
     FEnableI18N: boolean;
     FFilename: string;
     FFileReadOnly: boolean;
@@ -644,6 +646,7 @@ type
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
+    function GetDirectoryExpanded: string;
     function GetRemovedCount: integer;
     function GetRemovedFiles(Index: integer): TPkgFile;
     function GetFileCount: integer;
@@ -798,7 +801,8 @@ type
     property DefineTemplates: TLazPackageDefineTemplates read FDefineTemplates
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
-    property Directory: string read FDirectory; // the directory of the .lpk file
+    property Directory: string read FDirectory; // the directory of the .lpk file with macros
+    property DirectoryExpanded: string read GetDirectoryExpanded;
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
@@ -2217,6 +2221,19 @@ begin
   Result:=TPkgComponent(FComponents[Index]);
 end;
 
+function TLazPackage.GetDirectoryExpanded: string;
+begin
+  if (FDirectoryExpandedChangeStamp<>CompilerParseStamp) then begin
+    FDirectoryExpanded:=FDirectory;
+    // use default macros (not package macros)
+    if IDEMacros<>nil then
+      IDEMacros.SubstituteMacros(FDirectoryExpanded);
+    FDirectoryExpanded:=AppendPathDelim(TrimFilename(FDirectoryExpanded));
+    FDirectoryExpandedChangeStamp:=CompilerParseStamp;
+  end;
+  Result:=FDirectoryExpanded;
+end;
+
 function TLazPackage.GetRemovedCount: integer;
 begin
   Result:=FRemovedFiles.Count;
@@ -2313,6 +2330,7 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
+  FDirectoryExpandedChangeStamp:=InvalidParseStamp;
   FHasDirectory:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
   FHasStaticDirectory:=FHasDirectory and FilenameIsAbsolute(FDirectory);
   FUsageOptions.BaseDirectory:=FDirectory;
@@ -2536,6 +2554,7 @@ begin
   FCompilerOptions.Clear;
   FDescription:='';
   FDirectory:='';
+  FDirectoryExpandedChangeStamp:=InvalidParseStamp;
   FHasDirectory:=false;
   FHasStaticDirectory:=false;
   FVersion.Clear;
@@ -2828,7 +2847,7 @@ var
   CurPath: String;
 begin
   if (not HasDirectory) then exit;
-  PkgDir:=FDirectory;
+  PkgDir:=DirectoryExpanded;
   if HasStaticDirectory and UseUp then
     ExpandedFilename:=CreateRelativePath(ExpandedFilename,PkgDir)
   else begin
@@ -2844,7 +2863,7 @@ procedure TLazPackage.LongenFilename(var AFilename: string);
 begin
   if not HasDirectory then exit;
   if not FilenameIsAbsolute(AFilename) then
-    AFilename:=TrimFilename(Directory+AFilename);
+    AFilename:=TrimFilename(DirectoryExpanded+AFilename);
 end;
 
 function TLazPackage.GetResolvedFilename: string;
