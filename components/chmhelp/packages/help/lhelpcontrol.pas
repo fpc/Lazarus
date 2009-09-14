@@ -95,7 +95,6 @@ begin
   fServerOut.Free;
   fServerIn.Free;
   inherited Destroy;
-
 end;
 
 function TLHelpConnection.ServerRunning: Boolean;
@@ -121,6 +120,7 @@ begin
     with TProcessUTF8.Create(nil) do begin
       CommandLine := ServerExe + ' --ipcname ' + NameForServer;
       Execute;
+      Free;
     end;
     // give the server some time to get started
     for X := 0 to 40 do begin
@@ -135,47 +135,53 @@ end;
 
 function TLHelpConnection.OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
 var
-UrlRequest: TUrlRequest;
-Stream: TMemoryStream;
+  UrlRequest: TUrlRequest;
+  Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
-  UrlRequest.FileRequest.FileName := HelpFileName+#0;
-  UrlRequest.FileRequest.RequestType := rtURL;
-  UrlRequest.Url := Url+#0;
-  Stream.Write(UrlRequest,SizeOf(UrlRequest));
-  Result := SendMessage(Stream);
-
-  // Do I need to free the stream?? the example doesn't
-
-
+  try
+    UrlRequest.FileRequest.FileName := HelpFileName+#0;
+    UrlRequest.FileRequest.RequestType := rtURL;
+    UrlRequest.Url := Url+#0;
+    Stream.Write(UrlRequest,SizeOf(UrlRequest));
+    Result := SendMessage(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 function TLHelpConnection.OpenContext(HelpFileName: String;
   Context: THelpContext) : TLHelpResponse;
 var
-ContextRequest: TContextRequest;
-Stream: TMemoryStream;
+  ContextRequest: TContextRequest;
+  Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
-  ContextRequest.FileRequest.FileName := HelpFileName+#0;
-  ContextRequest.FileRequest.RequestType := rtContext;
-  ContextRequest.HelpContext := Context;
-  Stream.Write(ContextRequest, SizeOf(ContextRequest));
-  Result := SendMessage(Stream);
-  // Do I need to free the stream?? the example doesn't
+  try
+    ContextRequest.FileRequest.FileName := HelpFileName+#0;
+    ContextRequest.FileRequest.RequestType := rtContext;
+    ContextRequest.HelpContext := Context;
+    Stream.Write(ContextRequest, SizeOf(ContextRequest));
+    Result := SendMessage(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 function TLHelpConnection.OpenFile(HelpFileName: String): TLHelpResponse;
 var
-FileRequest : TFileRequest;
-Stream: TMemoryStream;
+  FileRequest : TFileRequest;
+  Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
-  FileRequest.RequestType := rtFile;
-  FileRequest.FileName := HelpFileName+#0;
-  Stream.Write(FileRequest, SizeOf(FileRequest));
-  Result := SendMessage(Stream);
-  // Do I need to free the stream?? the example doesn't
+  try
+    FileRequest.RequestType := rtFile;
+    FileRequest.FileName := HelpFileName+#0;
+    Stream.Write(FileRequest, SizeOf(FileRequest));
+    Result := SendMessage(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 end.
