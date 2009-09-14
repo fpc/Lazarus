@@ -84,10 +84,14 @@ end;
 
 function TIDEMacros.CreateAbsoluteSearchPath(var SearchPath: string;
   const BaseDirectory: string): boolean;
+var
+  BaseDir: String;
 begin
   if SearchPath='' then exit(true);
+  BaseDir:=BaseDirectory;
+  if not SubstituteMacros(BaseDir) then exit(false);
   Result:=SubstituteMacros(SearchPath);
-  SearchPath:=FileUtil.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
+  SearchPath:=FileUtil.CreateAbsoluteSearchPath(SearchPath,BaseDir);
 end;
 
 end.

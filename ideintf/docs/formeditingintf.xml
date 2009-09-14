@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="FormEditingIntf">
+      <element name="ComponentPaletteImageWidth">
+        <short>Maximum width of an icon in the component palette</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

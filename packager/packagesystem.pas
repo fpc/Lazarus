@@ -1563,6 +1563,8 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
+    LazDocPaths:='docs';
+    EnableI18N:=true;
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
