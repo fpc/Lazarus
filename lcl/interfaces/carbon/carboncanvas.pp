@@ -488,8 +488,11 @@ end;
   Note: must be used in pair with RestoreDC!
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
+var
+  current : HIShapeRef;
 begin
-  if isClipped then CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
+  if isClipped then
+    CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
 
   Result := 0;
   if CGContext = nil then
@@ -509,9 +512,8 @@ begin
   
   if isClipped then 
   begin
-    // should clip rect be restored?
-    isClipped:=false;
-    FClipRegion.Shape := HIShapeCreateEmpty;
+    CGContextSaveGState(CGContext);
+    FClipRegion.Apply(Self);
   end;
 end;
 
