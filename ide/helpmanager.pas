@@ -483,7 +483,7 @@ begin
           if (URLPath='index.html')
           or (URLPath='images/laztitle.jpg')
           or (URLPath='images/cheetah1.png') then begin
-            OpenFile(Result,'/home/mattias/pascal/wichtig/lazarus/docs/'+URLPath);
+            OpenFile(Result,EnvironmentOptions.LazarusDirectory+PathDelim+'docs'+PathDelim+URLPath);
           end;
         end;
       end else begin
