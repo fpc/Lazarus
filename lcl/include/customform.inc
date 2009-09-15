@@ -590,7 +590,7 @@ begin
     FRestoredHeight := Height;
     //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
   end;
-End;
+end;
 
 procedure TCustomForm.CMBiDiModeChanged(var Message: TLMessage);
 var

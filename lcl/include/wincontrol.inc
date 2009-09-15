@@ -6465,7 +6465,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
 var
-  NewWidth, NewHeight: integer;
+  NewWidth, NewHeight: Integer;
 begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
@@ -6474,18 +6474,19 @@ begin
     ',',FBoundsRealized.Right-FBoundsRealized.Left,
     'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
   {$ENDIF}
-  NewWidth:=Width;
-  NewHeight:=Height;
-  if Message.MoveType=Move_SourceIsInterface then begin
+  NewWidth := Width;
+  NewHeight := Height;
+  if Message.MoveType = Move_SourceIsInterface then
+  begin
     // interface widget has moved
     // -> update size and realized bounds
-    NewWidth:=FBoundsRealized.Right-FBoundsRealized.Left;
-    NewHeight:=FBoundsRealized.Bottom-FBoundsRealized.Top;
+    NewWidth := FBoundsRealized.Right-FBoundsRealized.Left;
+    NewHeight := FBoundsRealized.Bottom-FBoundsRealized.Top;
     if HandleAllocated then
-      GetWindowSize(Handle,NewWidth,NewHeight);
-    FBoundsRealized:=Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
+      GetWindowSize(Handle, NewWidth, NewHeight);
+    FBoundsRealized := Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
   end;
-  SetBoundsKeepBase(Message.XPos,Message.YPos,NewWidth,NewHeight,Parent<>nil);
+  SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
 end;
 
 {------------------------------------------------------------------------------
