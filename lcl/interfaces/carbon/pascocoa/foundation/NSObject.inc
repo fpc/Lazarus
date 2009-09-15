@@ -19,6 +19,9 @@ const
   Str_alloc = 'alloc';
   Str_init = 'init';
 
+  Str_version = 'version';
+  Str_setVersion = 'setVersion:';
+
   {***************	Basic protocols		***************}
 
   Str_retain = 'retain';
@@ -92,10 +95,10 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 + (BOOL)instancesRespondToSelector:(SEL)aSelector;
 + (BOOL)conformsToProtocol:(Protocol *)protocol;
 - (IMP)methodForSelector:(SEL)aSelector;
-+ (IMP)instanceMethodForSelector:(SEL)aSelector;
-+ (int)version;
-+ (void)setVersion:(int)aVersion;
-- (void)doesNotRecognizeSelector:(SEL)aSelector;
++ (IMP)instanceMethodForSelector:(SEL)aSelector;}
+    function version: PtrInt;
+    procedure setVersion(aVersion: PtrInt);
+{- (void)doesNotRecognizeSelector:(SEL)aSelector;
 - (void)forwardInvocation:(NSInvocation *)anInvocation;
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
 
@@ -290,6 +293,21 @@ begin
   objc_addClass( new_class );
 
   Result := True;
+end;
+
+function NSObject.version: PtrInt;
+begin
+  Result := PtrInt(objc_msgSend(Handle, sel_registerName(PChar(Str_version)), []));
+end;
+
+procedure NSObject.setVersion(aVersion: PtrInt);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: PtrInt); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setVersion)), aVersion);
 end;
 
 {***************	Basic protocols		***************}

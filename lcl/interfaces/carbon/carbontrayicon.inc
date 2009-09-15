@@ -41,14 +41,19 @@ type
     procedure RemoveIcon();
     function ConvertTIconToNSImage(AIcon: TIcon): NSImage;
     function ConvertTBitmapToNSImage(ABitmap: TBitmap): NSImage;
+    function IsMenuVisible: Boolean;
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
+    class procedure HandleMenuWillOpen(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
+    class procedure HandleMenuDidClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
   end;
 
 const
   Str_TPrivateCocoaCarbonTrayIcon = 'TTrayIcon';
 
   Str_HandleMenuItemClick = 'HandleMenuItemClick';
+  Str_HandleMenuWillOpen = 'menuWillOpen:';
+  Str_HandleMenuDidClose = 'menuDidClose:';
 
 { TPrivateCocoaCarbonTrayIcon }
 
@@ -64,6 +69,8 @@ const
 procedure TPrivateCocoaCarbonTrayIcon.AddMethods;
 begin
   AddMethod(Str_HandleMenuItemClick, 'v@:@', Pointer(HandleMenuItemClick));
+  AddMethod(Str_HandleMenuWillOpen, 'v@:@', Pointer(HandleMenuWillOpen));
+  AddMethod(Str_HandleMenuDidClose, 'v@:@', Pointer(HandleMenuDidClose));
 end;
 
 constructor TPrivateCocoaCarbonTrayIcon.Create;
@@ -103,7 +110,7 @@ end;
 
 class function TPrivateCocoaCarbonTrayIcon.getClass: objc.id;
 begin
-  Result := objc_getClass(Str_NSObject);
+  Result := objc_getClass({Str_TPrivateCocoaCarbonTrayIcon} Str_NSObject);
 end;
 
 {Removes/replaces all occurences of a character from a string}
@@ -131,6 +138,8 @@ var
   Item: NSMenuItem;
 begin
   Result := NSMenu.initWithTitle(EmptyMenuTitle);
+//  Result.setVersion(0);
+  Result.setDelegate(Self.Handle);
 
   for i := 0 to APopUpMenu.Items.Count - 1 do
   begin
@@ -335,10 +344,27 @@ begin
   Result.unlockFocus;
 end;
 
+function _NSGetCarbonMenu(AMenu: objc.id {NSMenu}): MenuRef; cdecl; external name '_NSGetCarbonMenu';
+
+function TPrivateCocoaCarbonTrayIcon.IsMenuVisible: Boolean;
+var
+  CarbonMenu: MenuRef;
+  theMenuTrackingData: MenuTrackingData;
+begin
+  Result := False;
+
+  if menu = nil then Exit;
+
+  CarbonMenu := _NSGetCarbonMenu(menu.Handle);
+  if CarbonMenu = nil then Exit;
+
+  Result :=  GetMenuTrackingData(CarbonMenu, theMenuTrackingData) = noErr;
+end;
+
 { Here we try to get the LCL MenuItem from the Tag and then call
   it's OnClick method }
 class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: objc.id;
-  _cmd: SEL; sender: objc.id); cdecl;
+  _cmd: SEL; sender: objc.id); cdecl; //static;
 var
   AMenuItem: NSMenuItem;
   LCLMenu: TMenuItem;
@@ -346,6 +372,28 @@ begin
   AMenuItem := NSMenuItem.CreateWithHandle(sender);
   LCLMenu := TMenuItem(PtrInt(AMenuItem.Tag()));
   if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(LCLMenu);
+end;
+
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuWillOpen(_self: objc.id;
+  _cmd: SEL; sender: objc.id); cdecl; //static;
+var
+  AMenu: NSMenu;
+  LCLMenu: TPopUpMenu;
+begin
+  AMenu := NSMenu.CreateWithHandle(sender);
+//  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));
+//  if (LCLMenu <> nil) and Assigned(LCLMenu.OnPopUp) then LCLMenu.OnPopUp(LCLMenu);
+end;
+
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuDidClose(_self: objc.id;
+  _cmd: SEL; sender: objc.id); cdecl; //static;
+var
+  AMenu: NSMenu;
+  LCLMenu: TPopUpMenu;
+begin
+  AMenu := NSMenu.CreateWithHandle(sender);
+//  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));
+//  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClose) then LCLMenu.OnClose(LCLMenu);
 end;
 
 { TCarbonWSCustomTrayIcon }
@@ -457,6 +505,19 @@ end;
 class function TCarbonWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
+end;
+
+class function TCarbonWSCustomTrayIcon.IsTrayIconMenuVisible(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
+begin
+  Result := False;
+
+  APrivateTrayIcon := TPrivateCocoaCarbonTrayIcon(ATrayIcon.Handle);
+
+  if APrivateTrayIcon = nil then Exit;
+
+  Result := APrivateTrayIcon.IsMenuVisible;
 end;
 
 {$endif CarbonUseCocoa}

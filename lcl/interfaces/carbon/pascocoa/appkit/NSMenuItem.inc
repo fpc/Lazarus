@@ -155,8 +155,8 @@
     function target: objc.id;
     procedure setAction(_aSelector: SEL);
     function action: SEL;
-    procedure setTag(_anInt: Integer);
-    function tag: Integer;
+    procedure setTag(_anInt: PtrInt);
+    function tag: PtrInt;
     procedure setRepresentedObject(_anObject: objc.id);
     function representedObject: objc.id;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -555,9 +555,9 @@ begin
   Result := SEL(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_action)), []));
 end;
 
-procedure NSMenuItem.setTag(_anInt: Integer);
+procedure NSMenuItem.setTag(_anInt: PtrInt);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: PtrInt); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -565,7 +565,7 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenuItem_setTag)), _anInt);
 end;
 
-function NSMenuItem.tag: Integer;
+function NSMenuItem.tag: PtrInt;
 begin
   Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_tag)), []));
 end;
