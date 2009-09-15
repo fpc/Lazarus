@@ -67,13 +67,37 @@ type
 implementation
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc;
 
+function FixSlash(AStr: String): String;
+var
+  WrongSlash: String;
+  FP: Integer;
+begin
+  Result := AStr;
+  case PathDelim of
+    '/': WrongSlash := '\';
+    '\': WrongSlash := '/';
+  end;
+  // fix wrong delim
+  repeat
+    FP := Pos(WrongSlash, Result);
+    if FP > 0 then
+      Result[FP] := PathDelim;
+  until FP = 0;
+  // fix double path delim
+  repeat
+    FP := Pos(PathDelim+PathDelim, Result);
+    if FP <> 0 then
+      Delete(Result, FP, 1);
+  until FP = 0;
+end;
+
 { TChmHelpViewer }
 
 function TChmHelpViewer.GetHelpEXE: String;
 begin
   if fHelpExe <> '' then
     Exit(fHelpExe);
-  Result := '$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)';
+  Result := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
 end;
@@ -117,7 +141,7 @@ begin
   if not GetLazBuildEXE(Lazbuild) then
     Exit;
 
-  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi';
+  LHelpProject := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi');
 
   if not (IDEMacros.SubstituteMacros(LHelpProject)
           and FileExistsUTF8(LHelpProject))
@@ -155,7 +179,7 @@ begin
    Result := IDEMacros.SubstituteMacros(LazBuildMacro)
              and FileExistsUTF8(LazBuildMacro);
    if Result then
-     ALazBuild := LazBuildMacro;
+     ALazBuild := FixSlash(LazBuildMacro);
 end;
 
 constructor TChmHelpViewer.Create(TheOwner: TComponent);
@@ -217,7 +241,7 @@ begin
 
   if HelpFilesPath = '' then
   begin
-    DocsDir := '$(LazarusDir)/docs/html/';
+    DocsDir := FixSlash('$(LazarusDir)/docs/html/');
     IDEMacros.SubstituteMacros(DocsDir);
     if not FileExistsUTF8(DocsDir+FileName) then
     begin
