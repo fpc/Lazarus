@@ -2457,6 +2457,11 @@ begin
   Result := Boolean(Windows.InvalidateRgn(Handle, Rgn, Erase));
 end;
 
+function TWin32WidgetSet.IsIconic(handle: HWND): boolean;
+begin
+  Result := Windows.IsIconic(handle);
+end;
+
 {------------------------------------------------------------------------------
   Function: IntersectClipRect
   Params:  dc, Left, Top, Right, Bottom
@@ -2497,6 +2502,11 @@ end;
 function TWin32WidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result := Boolean(Windows.IsWindowVisible(handle));
+end;
+
+function TWin32WidgetSet.IsZoomed(handle: HWND): boolean;
+begin
+  Result := Windows.IsZoomed(handle);
 end;
 
 {------------------------------------------------------------------------------

@@ -6886,6 +6886,22 @@ begin
   {$EndIf}
 end;
 
+function TGTKWidgetSet.IsIconic(handle: HWND): boolean;
+var
+  GtkWindow: PGtkWindow absolute handle;
+begin
+  Result := False;
+  if GtkWindow = nil then
+    Exit;
+
+  {$ifdef gtk1}
+  // TODO: Result := GDK_WINDOW_GET_MINIMIZED(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
+  {$else}
+  Result := gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_ICONIFIED <> 0;
+  {$endif}
+end;
+
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.IsWindowEnabled(handle: HWND): boolean;
 
@@ -6927,6 +6943,21 @@ end;
 function TGtkWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result:=(handle<>0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
+end;
+
+function TGTKWidgetSet.IsZoomed(handle: HWND): boolean;
+var
+  GtkWindow: PGtkWindow absolute handle;
+begin
+  Result := False;
+  if GtkWindow = nil then
+    Exit;
+
+  {$ifdef gtk1}
+  Result := GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
+  {$else}
+  Result := gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_MAXIMIZED <> 0;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

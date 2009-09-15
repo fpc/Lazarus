@@ -191,6 +191,8 @@ type
     function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
+    function isMinimized: Boolean;
+    function isMaximized: Boolean;
     procedure lowerWidget; virtual;
     procedure move(ANewLeft, ANewTop: Integer);
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
@@ -3135,6 +3137,16 @@ end;
 function TQtWidget.hasFocus: Boolean;
 begin
   Result := QWidget_hasFocus(Widget);
+end;
+
+function TQtWidget.isMinimized: Boolean;
+begin
+  Result := QWidget_isMinimized(Widget);
+end;
+
+function TQtWidget.isMaximized: Boolean;
+begin
+  Result := QWidget_isMaximized(Widget);
 end;
 
 procedure TQtWidget.lowerWidget;

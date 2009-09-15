@@ -6480,11 +6480,11 @@ begin
   begin
     // interface widget has moved
     // -> update size and realized bounds
-    NewWidth := FBoundsRealized.Right-FBoundsRealized.Left;
-    NewHeight := FBoundsRealized.Bottom-FBoundsRealized.Top;
+    NewWidth := FBoundsRealized.Right - FBoundsRealized.Left;
+    NewHeight := FBoundsRealized.Bottom - FBoundsRealized.Top;
     if HandleAllocated then
       GetWindowSize(Handle, NewWidth, NewHeight);
-    FBoundsRealized := Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
+    FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
   end;
   SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
 end;
