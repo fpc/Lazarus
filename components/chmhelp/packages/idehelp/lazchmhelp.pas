@@ -65,7 +65,7 @@ type
   procedure Register;
 
 implementation
-uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc;
+uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
 
 function FixSlash(AStr: String): String;
 var
@@ -97,9 +97,10 @@ function TChmHelpViewer.GetHelpEXE: String;
 begin
   if fHelpExe <> '' then
     Exit(fHelpExe);
-  Result := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
+  Result := '$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)';
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
+  Result := FixSlash(Result);
 end;
 
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
@@ -132,6 +133,11 @@ var
   Lazbuild: String;
   LHelpProject: String;
   WS: String;
+  LastWasEOL: Boolean;
+  EOLP: Integer;
+  BufC: Char;
+  Buffer: array[0..511] of char;
+  BufP: Integer;
 begin
   Result := mrCancel;
 
@@ -150,22 +156,66 @@ begin
 
   WS := ' --ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform]+' ';
 
-  Result := MessageDlg('The help viewer is not compiled yet. Try to compile it now?', mtConfirmation, mbYesNo ,0);
-  if Result <> mrYes then
-    Exit;
+  //Result := MessageDlg('The help viewer is not compiled yet. Try to compile it now?', mtConfirmation, mbYesNo ,0);
+  //if Result <> mrYes then
+  //  Exit;
 
   Proc := TProcess.Create(nil);
   Proc.CommandLine := Lazbuild + WS + LHelpProject;
-  Proc.Options := [];
+  Proc.Options := [poUsePipes, poStderrToOutPut];
   Proc.Execute;
 
+
+  BufP := 0;
+  LastWasEOL:= False;
+
+  IDEMessagesWindow.BeginBlock;
+  IDEMessagesWindow.AddMsg('- Building lhelp -','',0);
+
+  LHelpProject := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/');
+  IDEMacros.SubstituteMacros(LHelpProject);
   while Proc.Running do begin
-    Application.HandleMessage;
+    while Proc.Output.NumBytesAvailable > 0 do
+    begin
+      BufC := Char(Proc.Output.ReadByte);
+      if LastWasEOL then
+      begin
+        if not(BufC in [#13, #10]) then
+        begin
+
+          IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProject,1);
+          Buffer[0] := BufC;
+          BufP := 1;
+          LastWasEOL:=False;
+        end;
+        Continue;
+      end;
+
+      if BufC in [#13, #10] then
+      begin
+        LastWasEOL:=True;
+        Buffer[BufP] := #0;
+        Inc(BufP);
+      end
+      else
+      begin
+        Buffer[BufP] := BufC;
+        Inc(BufP);
+      end;
+    end;
+    Sleep(20);
+    Application.ProcessMessages;
   end;
+
+  if BufP > 0 then
+    IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProject,0);
+
 
   if Proc.ExitStatus = 0 then
     Result := mrOK;
   Proc.Free;
+
+  IDEMessagesWindow.EndBlock;
 
   if Result = mrOK then
 end;
