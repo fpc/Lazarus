@@ -140,6 +140,7 @@ begin
   Result := NSMenu.initWithTitle(EmptyMenuTitle);
 //  Result.setVersion(0);
   Result.setDelegate(Self.Handle);
+  Result.setAutoenablesItems(LongBool(NO)); // For menu enabling/disabling
 
   for i := 0 to APopUpMenu.Items.Count - 1 do
   begin
@@ -166,6 +167,7 @@ begin
 
   // Then a owner for the children
   InternalOwner := NSMenu.initWithTitle(EmptyMenuTitle);
+  InternalOwner.setAutoenablesItems(LongBool(NO)); // For menu enabling/disabling
 
   subindex := Length(SubMenuOwners);
   SetLength(SubMenuOwners, subindex + 1);
