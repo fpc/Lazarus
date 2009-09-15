@@ -3372,22 +3372,40 @@ procedure TWinControl.DoAllAutoSize;
     if AWinControl.HandleObjectShouldBeVisible
     and (not AWinControl.Showing) then
       AWinControl.UpdateShowing;
-    if FWinControls<>nil then
-      for i:=0 to FWinControls.Count-1 do
-        UpdateShowingRecursive(TWinControl(AWinControl.FWinControls[i]));
+    if AWinControl.FControls<>nil then
+      for i:=0 to AWinControl.FControls.Count-1 do
+        if TObject(AWinControl.FControls[i]) is TWinControl then
+          UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]));
   end;
 
 begin
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
-  // compute all sizes for LCL objects without touching the widgetset
-  inherited DoAllAutoSize;
-  // send all new bounds to widgetset
-  DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' ',dbgs(BoundsRect)]);
-  RealizeBoundsRecursive;
-  // make handles visible
-  DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' ',dbgs(BoundsRect)]);
-  UpdateShowingRecursive(Self);
-  DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  if wcfAllAutoSizing in FWinControlFlags then exit;
+  Include(FWinControlFlags,wcfAllAutoSizing);
+  try
+    // create needed handles
+    if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
+      HandleNeeded;
+      exit;
+    end;
+    while (cfAutoSizeNeeded in FControlFlags)
+    and (not AutoSizeDelayed) do begin
+      // compute all sizes for LCL objects without touching the widgetset
+      inherited DoAllAutoSize;
+      if cfAutoSizeNeeded in FControlFlags then RaiseGDBException('');
+      // send all new bounds to widgetset
+      DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+      RealizeBoundsRecursive;
+      // make handles visible
+      if not (cfAutoSizeNeeded in FControlFlags) then begin
+        DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+        UpdateShowingRecursive(Self);
+      end;
+    end;
+    DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  finally
+    Exclude(FWinControlFlags,wcfAllAutoSizing);
+  end;
 end;
 {$ENDIF}
 

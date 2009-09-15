@@ -1565,7 +1565,7 @@ type
     wcfColorChanged,
     wcfFontChanged,          // Set if font was changed before handle creation
     {$IFDEF NewAutoSize}
-    // obsolete
+    wcfAllAutoSizing,
     {$ELSE}
     wcfReAlignNeeded,
     {$ENDIF}

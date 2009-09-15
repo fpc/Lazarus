@@ -46,7 +46,7 @@ begin
   begin
     if Parent<>nil then
       Parent.AdjustSize
-    else if AutoSizingLockCount=0 then
+    else if not AutoSizeDelayed then
       DoAllAutoSize;
   end;
   {$ELSE}
