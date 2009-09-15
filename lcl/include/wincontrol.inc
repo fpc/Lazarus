@@ -3379,8 +3379,9 @@ procedure TWinControl.DoAllAutoSize;
   end;
 
 begin
-  DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  if AutoSizeDelayed then exit;
   if wcfAllAutoSizing in FWinControlFlags then exit;
+  DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   Include(FWinControlFlags,wcfAllAutoSizing);
   try
     // create needed handles
