@@ -149,7 +149,8 @@ begin
     else
       Item := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
 
-    Result.addItem(Item.Handle);
+    if item <> nil then
+      Result.addItem(Item.Handle);
   end;
 end;
 
@@ -178,7 +179,8 @@ begin
     else
       SubItem := CreateMenuItem(AMenuItem.Items[j], Str_HandleMenuItemClick, Self);
 
-    InternalOwner.addItem(SubItem.Handle);
+    if SubItem <> nil then
+      InternalOwner.addItem(SubItem.Handle);
   end;
 
   // And set the submenu to the item
@@ -194,6 +196,12 @@ var
   subimageindex: Integer;
   AImage: NSImage;
 begin
+  Result := nil;
+
+  { Check visibility, invisible menus are implemented by not adding them at all,
+    because NSMenuItem.setHidden was only added in Mac OS X 10.5 }
+  if not AMenuItem.Visible then Exit;
+
   { The MenuItem is a separator }
   if AMenuItem.Caption = '-' then
   begin
@@ -218,6 +226,13 @@ begin
     { Assign the checked state }
     if AMenuItem.Checked then Result.setState(NSOnState)
     else Result.setState(NSOffState);
+
+    { Assign default (=bold) state }
+    //if AMenuItem.Default then MakeMenuItemBold(Result);
+
+    { Assign enabled/disabled state }
+    if AMenuItem.Enabled then Result.setEnabled(LongBool(YES))
+    else Result.setEnabled(LongBool(NO));
 
     { Assign the item image, if any }
     if (AMenuItem.Bitmap <> nil) and (not AMenuItem.Bitmap.Empty) then
