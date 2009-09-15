@@ -81,8 +81,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, DirectoryCacher,
-  AVL_Tree, PascalParserTool,
+  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
+  DirectoryCacher, AVL_Tree, PascalParserTool,
   PascalReaderTool, FileProcs, DefineTemplates, FindDeclarationCache;
 
 type
@@ -1352,11 +1352,18 @@ var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
   IdentifierStart: PChar;
+  LineRange: TLineRange;
 begin
   Result:=false;
   NewTool:=nil;
   NewNode:=nil;
   SkipChecks:=false;
+  // check cursor in source
+  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount)
+  or (CursorPos.X<1) then exit;
+  CursorPos.Code.GetLineRange(CursorPos.Y-1,LineRange);
+  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then exit;
+
   ActivateGlobalWriteLock;
   try
     // build code tree
