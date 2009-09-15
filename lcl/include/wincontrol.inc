@@ -3531,10 +3531,10 @@ begin
 
   if WithChildControls then begin
     // invalidate clients too
-    if Assigned(FWinControls) then
-      for I := 0 to FWinControls.Count - 1 do
-        if Assigned(FWinControls.Items[I]) then
-          TWinControl(FWinControls.Items[I]).InvalidateClientRectCache(true);
+    if Assigned(FControls) then
+      for I := 0 to FControls.Count - 1 do
+        if TObject(FControls.Items[I]) is TWinControl then
+          TWinControl(FControls.Items[I]).InvalidateClientRectCache(true);
   end;
   InvalidatePreferredSize;
 end;
@@ -3872,19 +3872,15 @@ end;
 {------------------------------------------------------------------------------
   TWinControl.SetChildZPosition
 
-  Set the position of the child control in the FControls (in case of a TControl)
-  or in the FWinControls (in all other cases) list.
-
-  Notes:
-  * The FControls are always below the FWinControls.
-  * FControls and FWinControls can be nil
+  Set the position of the child control in the TWinControl(s)
 ------------------------------------------------------------------------------}
 procedure TWinControl.SetChildZPosition(const AChild: TControl;
   const APosition: Integer);
 var
-  list: TFPList;
-  idx, NewPos: Integer;
+  OldPos, NewPos: Integer;
   IsWinControl: boolean;
+  i: Integer;
+  WinControls: TFPList;
 begin
   if AChild = nil
   then begin
@@ -3894,38 +3890,51 @@ begin
 
   IsWinControl :=  AChild is TWincontrol;
   
-  if IsWinControl
-  then list := FWinControls
-  else list := FControls;
-  
-  if list = nil
-  then idx := -1
-  else idx := list.IndexOf(AChild);
-
-  if idx = -1
-  then begin
+  if FControls = nil then
+  begin
     DebugLn('WARNING: TWinControl.SetChildZPosition: Unknown child');
     Exit;
   end;
+  OldPos := FControls.IndexOf(AChild);
+  if OldPos<0 then begin
+    DebugLn('WARNING: TWinControl.SetChildZPosition: Not a child');
+    Exit;
+  end;
+
+  NewPos := APosition;
   
-  if IsWinControl and (FControls <> nil)
-  then NewPos := APosition - FControls.Count
-  else NewPos := APosition;
+  if NewPos < 0 then
+    NewPos := 0;
+  if NewPos >= FControls.Count then
+    NewPos := FControls.Count - 1;
   
-  if NewPos < 0
-  then NewPos := 0
-  else if NewPos >= list.Count
-  then NewPos := list.Count - 1;
+  if NewPos = OldPos then Exit;
   
-  if NewPos = idx then Exit;
+  FControls.Move(OldPos, NewPos);
   
-  list.Move(idx, NewPos);
-  
-  if IsWinControl
-  then begin
-    if HandleAllocated and TWinControl(AChild).HandleAllocated
-    then TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self,
-                            TWinControl(AChild), idx, NewPos, list);
+  if IsWinControl then
+  begin
+    if HandleAllocated and TWinControl(AChild).HandleAllocated then
+    begin
+      // ignore childs without handle
+      WinControls:=TFPList.Create;
+      try
+        for i:=FControls.Count-1 downto 0 do
+        begin
+          if (TObject(FControls[i]) is TWinControl) then
+          begin
+            WinControls.Add(FControls[i]);
+          end else begin
+            if i<OldPos then dec(OldPos);
+            if i<NewPos then dec(NewPos);
+          end;
+        end;
+        TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self,
+                              TWinControl(AChild), OldPos, NewPos, WinControls);
+      finally
+        WinControls.Free;
+      end;
+    end;
   end
   else begin
     AChild.InvalidateControl(AChild.IsVisible, True, True);
@@ -4062,10 +4071,11 @@ begin
   {$IFDEF NewAutoSize}
   if bShow then begin
     if not HandleAllocated then CreateHandle;
-    if FWinControls <> nil
+    if FControls <> nil
     then begin
-      for n := 0 to FWinControls.Count - 1 do
-        TWinControl(FWinControls[n]).UpdateShowing;
+      for n := 0 to FControls.Count - 1 do
+        if TObject(FControls[n]) is TWinControl then
+          TWinControl(FControls[n]).UpdateShowing;
     end;
   end;
   if not HandleAllocated then Exit;
@@ -4082,10 +4092,11 @@ begin
   {$ELSE}
   if bShow then begin
     if not HandleAllocated then CreateHandle;
-    if FWinControls <> nil
+    if FControls <> nil
     then begin
-      for n := 0 to FWinControls.Count - 1 do
-        TWinControl(FWinControls[n]).UpdateShowing;
+      for n := 0 to FControls.Count - 1 do
+        if TObject(FControls[n]) is TWinControl then
+          TWinControl(FControls[n]).UpdateShowing;
     end;
   end;
   if not HandleAllocated then Exit;
@@ -4166,15 +4177,13 @@ function TWinControl.FindChildControl(const ControlName: string): TControl;
 var
   I: Integer;
 begin
-  Result := nil;
-  if FWinControls <> nil then
-    for I := 0 to FWinControls.Count - 1 do
-      if CompareText(TControl(FWinControls[I]).Name, ControlName) = 0 then
-        Exit(TControl(FWinControls[I]));
   if FControls <> nil then
-    for I := 0 to FControls.Count - 1 do
-      if CompareText(TControl(FControls[I]).Name, ControlName) = 0 then
-        Exit(TControl(FControls[I]));
+    for I := 0 to FControls.Count - 1 do begin
+      Result:=TControl(FControls[I]);
+      if CompareText(Result.Name, ControlName) = 0 then
+        exit;
+    end;
+  Result := nil;
 end;
 
 procedure TWinControl.FlipChildren(AllLevels: Boolean);
@@ -4307,16 +4316,21 @@ var
   Count, I, J: Integer;
   List: TFPList;
   Control: TWinControl;
+  WinControls: TFPList;
 begin
-  if FWinControls <> nil then
+  if FControls <> nil then
   begin
     List := TFPList.Create;
+    WinControls:=TFPList.Create;
     try
-      Count := FWinControls.Count;
+      for i:=0 to FControls.Count-1 do
+        if TObject(FControls[i]) is TWinControl then
+          WinControls.Add(TWinControl(FControls[i]));
+      Count := WinControls.Count;
       List.Count := Count;
       for I := 0 to Count - 1 do
       begin
-        Control := TWinControl(FWinControls[I]);
+        Control := TWinControl(WinControls[I]);
         J := Control.FTabOrder;
         if (J >= 0) and (J < Count) then List[J] := Control;
       end;
@@ -4327,6 +4341,7 @@ begin
       end;
     finally
       List.Free;
+      WinControls.Free;
     end;
   end;
 end;
@@ -4555,32 +4570,34 @@ begin
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
-      //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
-      with TempControl do
-        if IsVisible
-        and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
-        begin
-          if csPaintCopy in Self.ControlState then
-            Include(FControlState, csPaintCopy);
-          SaveIndex := SaveDC(DC);
-          MoveWindowOrg(DC, Left, Top);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
-          {$ENDIF}
-          IntersectClipRect(DC, 0, 0, Width, Height);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls C');
-          P:=Point(-1,-1);
-          GetWindowOrgEx(DC,@P);
-          debugln('  DCOrigin=',dbgs(P));
-          {$ENDIF}
-          Perform(LM_PAINT, WParam(DC), 0);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls D TempControl=',DbgSName(TempControl));
-          {$ENDIF}
-          RestoreDC(DC, SaveIndex);
-          Exclude(FControlState, csPaintCopy);
-        end;
+      if not (TempControl is TWinControl) then begin
+        //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
+        with TempControl do
+          if IsVisible
+          and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
+          begin
+            if csPaintCopy in Self.ControlState then
+              Include(FControlState, csPaintCopy);
+            SaveIndex := SaveDC(DC);
+            MoveWindowOrg(DC, Left, Top);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
+            {$ENDIF}
+            IntersectClipRect(DC, 0, 0, Width, Height);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls C');
+            P:=Point(-1,-1);
+            GetWindowOrgEx(DC,@P);
+            debugln('  DCOrigin=',dbgs(P));
+            {$ENDIF}
+            Perform(LM_PAINT, WParam(DC), 0);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls D TempControl=',DbgSName(TempControl));
+            {$ENDIF}
+            RestoreDC(DC, SaveIndex);
+            Exclude(FControlState, csPaintCopy);
+          end;
+      end;
       Inc(I);
     end;
   end;
@@ -4813,16 +4830,21 @@ begin
   end;
 
   LControl := nil;
-  // check wincontrols
-  if (capfAllowWinControls in Flags) and (FWinControls <> nil) then
-    for I := FWinControls.Count - 1 downto 0 do
-      if GetControlAtPos(TControl(FWinControls[I])) then
-        Break;
-  // check controls
-  if (FControls <> nil) and (LControl = nil) then
-    for I := FControls.Count - 1 downto 0 do
-      if GetControlAtPos(TControl(FControls[I])) then
-        Break;
+  if FControls<>nil then
+  begin
+    // check wincontrols
+    if (capfAllowWinControls in Flags) then
+      for I := FControls.Count - 1 downto 0 do
+        if (TObject(FControls[i]) is TWinControl)
+        and GetControlAtPos(TControl(FControls[I])) then
+          Break;
+    // check controls
+    if (LControl = nil) then
+      for I := FControls.Count - 1 downto 0 do
+        if (not (TObject(FControls[i]) is TWinControl))
+        and GetControlAtPos(TControl(FControls[I])) then
+          Break;
+  end;
   Result := LControl;
   
   // check recursive sub childs
@@ -4848,23 +4870,10 @@ end;
 -------------------------------------------------------------------------------}
 function TWinControl.GetControlIndex(AControl: TControl): integer;
 begin
-  if FControls <> nil
-  then begin
-    Result := FControls.IndexOf(AControl);
-    if Result >= 0 then Exit;
-  end;
-  
-  if FWinControls = nil
-  then begin
+  if FControls<>nil then
+    Result:=FControls.IndexOf(AControl)
+  else
     Result:=-1;
-    Exit;
-  end;
-  
-  Result := FWinControls.IndexOf(AControl);
-  if Result = -1 then Exit;
-  if FControls = nil then Exit;
-
-  Inc(Result, FControls.Count);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4875,23 +4884,6 @@ end;
 procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
 begin
   SetChildZPosition(AControl, NewIndex);
-end;
-
-function TWinControl.ControlByName(const ControlName: string): TControl;
-var
-  i: Integer;
-begin
-  if FControls<>nil then
-    for i:=0 to FControls.Count-1 do begin
-      Result:=TControl(FControls[i]);
-      if CompareText(Result.Name,ControlName)=0 then exit;
-    end;
-  if FWinControls<>nil then
-    for i:=0 to FWinControls.Count-1 do begin
-      Result:=TControl(FWinControls[i]);
-      if CompareText(Result.Name,ControlName)=0 then exit;
-    end;
-  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -4911,11 +4903,11 @@ begin
   // First destroy all children handles
   //DebugLn(['TWinControl.DestroyHandle DESTROY CHILDS ',DbgSName(Self)]);
   Include(FControlState, csDestroyingHandle);
-  if FWinControls <> nil then begin
-    for i:= 0 to FWinControls.Count - 1 do begin
+  if FControls <> nil then begin
+    for i:= 0 to FControls.Count - 1 do begin
       //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
-      AWinControl:=TWinControl(FWinControls[i]);
-      if AWinControl.HandleAllocated then
+      AWinControl:=TWinControl(FControls[i]);
+      if (AWinControl is TWinControl) and AWinControl.HandleAllocated then
         AWinControl.DestroyHandle;
     end;
   end;
@@ -5716,24 +5708,14 @@ begin
   if AControl = Self then
     raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
 
+  ListAdd(FControls, AControl);
   if AControl is TWinControl then
   begin
-    if (FControls<>nil) then dec(Index,FControls.Count);
-    if (FWinControls<>nil) and (Index<FWinControls.Count) then
-      FWinControls.Insert(Index,AControl)
-    else
-      ListAdd(FWinControls, AControl);
-
     ListAdd(FTabList, AControl);
 
     if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
     and AControl.CanTab then
       TWinControl(AControl).TabStop := true;
-  end else begin
-    if (FControls<>nil) and (Index<FControls.Count) then
-      FControls.Insert(Index,AControl)
-    else
-      ListAdd(FControls, AControl);
   end;
 
   AControl.FParent := Self;
@@ -5782,11 +5764,8 @@ begin
   begin
     Assert(False, Format('trace:[TWinControl.Remove] %s(%S) --> Remove: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
-    begin
       ListRemove(FTabList, AControl);
-      ListRemove(FWInControls, ACOntrol);
-    end else
-      ListRemove(FControls, AControl);
+    ListRemove(FControls, AControl);
     AControl.FParent := nil;
     {$IFDEF NewAutoSize}
     if AControl.FAutoSizingLockCount>0 then
@@ -6040,9 +6019,10 @@ begin
   finally
     Exclude(FControlState, csAlignmentNeeded);
     EnableAlign;
-    if (FAlignLevel=0) and (not IsAParentAligning) and (FWinControls<>nil) then
-      for i:=0 to FWinControls.Count-1 do
-        TWinControl(FWinControls[i]).RealizeBoundsRecursive;
+    if (FAlignLevel=0) and (not IsAParentAligning) and (FControls<>nil) then
+      for i:=0 to FControls.Count-1 do
+        if TObject(FControls[i]) is TWinControl then
+          TWinControl(FControls[i]).RealizeBoundsRecursive;
   end;
   {$ENDIF}
 end;
@@ -6081,17 +6061,8 @@ end;
   TWinControl GetControl
 ------------------------------------------------------------------------------}
 function TWinControl.GetControl(const Index: Integer): TControl;
-var
-  N: Integer;
 begin
-  if FControls <> nil then
-    N := FControls.Count
-  else
-    N := 0;
-  if Index < N then
-    Result := TControl(FControls[Index])
-  else
-    Result := TControl(FWinControls[Index - N]);
+  Result:=TControl(FControls[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -6099,9 +6070,10 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.GetControlCount: Integer;
 begin
-  Result := 0;
-  if FControls <> nil then Inc(Result, FControls.Count);
-  if FWinControls <> nil then Inc(Result, FWinControls.Count);
+  if FControls <> nil then
+    Result:=FControls.Count
+  else
+    Result:=0;
 end;
 
 function TWinControl.GetDockClientCount: Integer;
@@ -6832,6 +6804,7 @@ procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
   i: Integer;
+  AWinControl: TWinControl;
 
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
@@ -6932,10 +6905,12 @@ begin
       //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
       //WriteClientRect('C');
 
-      if FWinControls <> nil then begin
-        for i := 0 to FWinControls.Count - 1 do
-          with TWinControl(FWinControls.Items[i]) do
-            if IsControlVisible then HandleNeeded;
+      if FControls <> nil then begin
+        for i := 0 to FControls.Count - 1 do begin
+          AWinControl:=TWinControl(FControls.Items[i]);
+          if (AWinControl is TWinControl) and AWinControl.IsControlVisible then
+            AWinControl.HandleNeeded;
+        end;
       end;
 
       ChildHandlesCreated;
@@ -7068,11 +7043,6 @@ var
   i: Integer;
 begin
   inherited ParentFormHandleInitialized;
-  // tell all wincontrols about the final end of the handle creation phase
-  if FWinControls <> nil then begin
-    for i := 0 to FWinControls.Count - 1 do
-      TWinControl(FWinControls.Items[i]).ParentFormHandleInitialized;
-  end;
   // tell all controls about the final end of the handle creation phase
   if FControls<>nil then begin
     for i:=0 to FControls.Count-1 do
@@ -7780,9 +7750,10 @@ procedure TWinControl.RealizeBoundsRecursive;
 var
   i: Integer;
 begin
-  if FWinControls<>nil then begin
-    for i:=0 to FWinControls.Count-1 do
-      TWinControl(FWinControls[i]).RealizeBoundsRecursive;
+  if FControls<>nil then begin
+    for i:=0 to FControls.Count-1 do
+      if TObject(FControls[i]) is TWinControl then
+        TWinControl(FControls[i]).RealizeBoundsRecursive;
   end;
   RealizeBounds;
 end;

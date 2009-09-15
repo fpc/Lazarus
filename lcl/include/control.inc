@@ -2846,12 +2846,13 @@ var
       begin
         Dec(I);
         C := TControl(List[I]);
-        with C do
-          if C.IsControlVisible and (csOpaque in ControlStyle) then
-          begin
-            IntersectRect(R, Rect, BoundsRect);
-            if EqualRect(R, Rect) then Exit;
-          end;
+        if not (C is TWinControl) then
+          with C do
+            if IsControlVisible and (csOpaque in ControlStyle) then
+            begin
+              IntersectRect(R, Rect, BoundsRect);
+              if EqualRect(R, Rect) then Exit;
+            end;
       end;
     end;
     Result := False;
@@ -4745,9 +4746,9 @@ procedure TControl.EnableAutoSizing;
       AControl.AdjustSize;
     if AControl is TWinControl then begin
       AWinControl:=TWinControl(AControl);
-      if AWincontrol.FWinControls<>nil then
-        for i:=0 to AWincontrol.FWinControls.Count-1 do
-          AdjustSizeRecursive(TControl(AWincontrol.FWinControls[i]));
+      if AWincontrol.FControls<>nil then
+        for i:=0 to AWincontrol.FControls.Count-1 do
+          AdjustSizeRecursive(TControl(AWincontrol.FControls[i]));
     end;
   end;
   {$ENDIF}

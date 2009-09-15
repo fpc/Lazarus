@@ -1611,9 +1611,8 @@ type
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
-    FControls: TFPList;    // the child controls (only TControl, no TWinControl)
+    FControls: TFPList;    // the child controls
     FOnGetDockCaption: TGetDockCaptionEvent;
-    FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
     FDockClients: TFPList;
     FClientWidth: Integer;
@@ -1897,7 +1896,7 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     function Focused: Boolean; virtual;
     function PerformTab(ForwardTab: boolean): boolean; virtual;
-    function ControlByName(const ControlName: string): TControl;
+    function FindChildControl(const ControlName: String): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
     procedure SetTempCursor(Value: TCursor); override;
@@ -1913,7 +1912,6 @@ type
     procedure Repaint; override;
     procedure Update; override;
     procedure SetFocus; virtual;
-    function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); virtual;
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);
