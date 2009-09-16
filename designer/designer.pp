@@ -1281,7 +1281,18 @@ begin
       Button:=mbRight;
     end;
   else
-    Button:=mbExtra1;
+    if (TheMessage.keys and MK_MButton)<>0 then begin
+      Include(Shift,ssMiddle);
+      Button:=mbMiddle;
+    end;
+    if (TheMessage.keys and MK_RButton)<>0 then begin
+      Include(Shift,ssRight);
+      Button:=mbRight;
+    end;
+    if (TheMessage.keys and MK_LButton)<>0 then begin
+      Include(Shift,ssLeft);
+      Button:=mbLeft;
+    end;
   end;
 
   case TheMessage.Msg of
@@ -1840,7 +1851,7 @@ begin
   if (ControlSelection.SelectionForm=nil)
   or (ControlSelection.SelectionForm=Form)
   then begin
-    if (TheMessage.keys and MK_LButton) = MK_LButton then begin
+    if Button=mbLeft then begin
       // left button pressed
       if (ControlSelection.ActiveGrabber<>nil) then begin
         // grabber moving -> size selection
