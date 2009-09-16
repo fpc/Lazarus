@@ -13,7 +13,7 @@
 {#import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSArchiver.h>}
 {$include NSArray.inc}
-{#import <Foundation/NSAttributedString.h>   }
+{$include NSAttributedString.inc}
 {$include NSAutoreleasePool.inc}
 {$include NSBundle.inc}
 {#import <Foundation/NSByteOrder.h>
@@ -22,14 +22,14 @@
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSClassDescription.h>
 #import <Foundation/NSCoder.h>
-#import <Foundation/NSConnection.h>
-#import <Foundation/NSData.h>}
+#import <Foundation/NSConnection.h>}
+{$include NSData.inc}
 {$include NSDate.inc}
 {#import <Foundation/NSDateFormatter.h>
 #import <Foundation/NSDecimal.h>
-#import <Foundation/NSDecimalNumber.h>
-#import <Foundation/NSDictionary.h>
-#import <Foundation/NSDistantObject.h>
+#import <Foundation/NSDecimalNumber.h>}
+{$include NSDictionary.inc}
+{#import <Foundation/NSDistantObject.h>
 #import <Foundation/NSDistributedLock.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
 #import <Foundation/NSEnumerator.h>

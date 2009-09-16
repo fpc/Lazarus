@@ -197,6 +197,11 @@ var
   subitemindex: Integer;
   subimageindex: Integer;
   AImage: NSImage;
+  StrBuffer: string;
+  // Default property implementation (=bold)
+  AttrString: NSAttributedString;
+  AttrStringFont: NSFont;
+  AttrDictionary: NSDictionary;
 begin
   Result := nil;
 
@@ -213,8 +218,9 @@ begin
   else
   begin
     { While creating the menus we ignore the & shortcut identifiers }
+    StrBuffer := TrimAllChar(AMenuItem.Caption, '&');
     KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-    ItemText := CFStringCreateWithPascalString(nil, TrimAllChar(AMenuItem.Caption, '&'), kCFStringEncodingUTF8);
+    ItemText := CFStringCreateWithPascalString(nil, StrBuffer, kCFStringEncodingUTF8);
     {$ifdef VerboseCarbonTrayIcon}
     WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', AMenuItem.Caption);
     {$endif}
@@ -230,7 +236,21 @@ begin
     else Result.setState(NSOffState);
 
     { Assign default (=bold) state }
-    //if AMenuItem.Default then MakeMenuItemBold(Result);
+    if AMenuItem.Default then
+    begin
+      AttrStringFont := NSFont.boldSystemFontOfSize(0); // 0 = default size
+      AttrDictionary := NSDictionary.dictionaryWithObject_forKey(AttrStringFont.Handle, objc.id(NSFontAttributeName));
+      AttrString := NSAttributedString.initWithString_attributes(ItemText, CFDictionaryRef(AttrDictionary.Handle));
+      if AttrString.Handle <> nil then
+        Result.setAttributedTitle(AttrString.Handle);
+
+      AttrString.Handle := nil;
+      AttrString.Free;
+      AttrDictionary.Handle := nil;
+      AttrDictionary.Free;
+      AttrStringFont.Handle := nil;
+      AttrStringFont.Free;
+    end;
 
     { Assign enabled/disabled state }
     if AMenuItem.Enabled then Result.setEnabled(LongBool(YES))

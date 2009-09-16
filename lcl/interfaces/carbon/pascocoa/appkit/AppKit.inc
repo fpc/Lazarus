@@ -21,8 +21,8 @@
 {$include NSCell.inc}
 //#import <AppKit/NSClipView.h>
 {$include NSControl.inc}
-{#import <AppKit/NSFont.h>
-#import <AppKit/NSFontDescriptor.h>
+{$include NSFont.inc}
+{#import <AppKit/NSFontDescriptor.h>
 #import <AppKit/NSFontManager.h>
 #import <AppKit/NSFontPanel.h>
 #import <AppKit/NSForm.h>
@@ -98,9 +98,9 @@
 #import <AppKit/NSTableHeaderCell.h>
 #import <AppKit/NSTableHeaderView.h>
 #import <AppKit/NSTableView.h>
-#import <AppKit/NSOutlineView.h>
-#import <AppKit/NSAttributedString.h>
-#import <AppKit/NSLayoutManager.h>
+#import <AppKit/NSOutlineView.h>}
+{$include NSAttributedString.inc}
+{#import <AppKit/NSLayoutManager.h>
 #import <AppKit/NSParagraphStyle.h>
 #import <AppKit/NSTextStorage.h>}
 {$include NSTextView.inc}
