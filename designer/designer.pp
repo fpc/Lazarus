@@ -138,7 +138,7 @@ type
     MouseDownComponent: TComponent;
     MouseDownSender: TComponent;
     MouseDownPos: TPoint;
-    MouseDownClickCount: integer;
+    MouseDownShift: TShiftState;
     MouseUpPos: TPoint;
     LastMouseMovePos: TPoint;
     PopupMenuComponentEditor: TBaseComponentEditor;
@@ -158,6 +158,8 @@ type
     procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
     procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
+    procedure GetMouseMsgShift(TheMessage: TLMMouse; var Shift: TShiftState;
+                               var Button: TMouseButton);
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
@@ -1253,6 +1255,45 @@ begin
   end;
 end;
 
+procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
+  var Shift: TShiftState; var Button: TMouseButton);
+begin
+  Shift := [];
+  if (TheMessage.keys and MK_Shift) = MK_Shift then
+    Include(Shift,ssShift);
+  if (TheMessage.keys and MK_Control) = MK_Control then
+    Include(Shift,ssCtrl);
+
+  case TheMessage.Msg of
+  LM_LBUTTONUP,LM_LBUTTONDBLCLK,LM_LBUTTONTRIPLECLK,LM_LBUTTONQUADCLK:
+    begin
+      Include(Shift,ssLeft);
+      Button:=mbLeft;
+    end;
+  LM_MBUTTONUP,LM_MBUTTONDBLCLK,LM_MBUTTONTRIPLECLK,LM_MBUTTONQUADCLK:
+    begin
+      Include(Shift,ssMiddle);
+      Button:=mbMiddle;
+    end;
+  LM_RBUTTONUP,LM_RBUTTONDBLCLK,LM_RBUTTONTRIPLECLK,LM_RBUTTONQUADCLK:
+    begin
+      Include(Shift,ssRight);
+      Button:=mbRight;
+    end;
+  else
+    Button:=mbExtra1;
+  end;
+
+  case TheMessage.Msg of
+  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
+    Include(Shift,ssDouble);
+  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
+    Include(Shift,ssTriple);
+  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
+    Include(Shift,ssQuad);
+  end;
+end;
+
 function TDesigner.GetDesignControl(AControl: TControl): TControl;
 // checks if AControl is designable.
 // if not check Owner.
@@ -1313,6 +1354,8 @@ var
   ParentForm: TCustomForm;
   Shift: TShiftState;
   DesignSender: TControl;
+  Button: TMouseButton;
+  Handled: Boolean;
 begin
   FHintTimer.Enabled := False;
   Exclude(FFLags, dfHasSized);
@@ -1342,28 +1385,8 @@ begin
   end;
   MouseDownSender := DesignSender;
 
-  case TheMessage.Msg of
-    LM_LBUTTONDOWN, LM_MBUTTONDOWN, LM_RBUTTONDOWN:
-      MouseDownClickCount := 1;
-
-    LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
-      MouseDownClickCount := 2;
-
-    LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
-      MouseDownClickCount := 3;
-
-    LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
-      MouseDownClickCount := 4;
-  else
-    MouseDownClickCount := 1;
-  end;
-
-  Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Include(Shift, ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
-    Include(Shift, ssCtrl);
-
+  GetMouseMsgShift(TheMessage,Shift,Button);
+  MouseDownShift:=Shift;
 
   {$IFDEF VerboseDesigner}
   DebugLn('************************************************************');
@@ -1384,9 +1407,15 @@ begin
     DebugLn(', No CTRL down');
   {$ENDIF}
 
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseDown(Button,Shift,MouseDownPos,Handled);
+    if Handled then exit;
+  end;
+
   SelectedCompClass := GetSelectedComponentClass;
 
-  if (TheMessage.Keys and MK_LButton) > 0 then begin
+  if Button=mbLeft then begin
     // left button
     // -> check if a grabber was activated
     ControlSelection.ActiveGrabber:=
@@ -1460,6 +1489,7 @@ procedure TDesigner.MouseUpOnControl(Sender : TControl;
 var
   ParentCI, NewCI: TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
+  Button: TMouseButton;
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
@@ -1467,28 +1497,6 @@ var
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
   DesignSender: TControl;
-
-  procedure GetShift;
-  begin
-    Shift := [];
-    if (TheMessage.keys and MK_Shift) = MK_Shift then
-      Include(Shift,ssShift);
-    if (TheMessage.keys and MK_Control) = MK_Control then
-      Include(Shift,ssCtrl);
-
-    case TheMessage.Msg of
-    LM_LBUTTONUP: Include(Shift,ssLeft);
-    LM_MBUTTONUP: Include(Shift,ssMiddle);
-    LM_RBUTTONUP: Include(Shift,ssRight);
-    end;
-
-    if MouseDownClickCount=2 then
-      Include(Shift,ssDouble);
-    if MouseDownClickCount=3 then
-      Include(Shift,ssTriple);
-    if MouseDownClickCount=4 then
-      Include(Shift,ssQuad);
-  end;
 
   procedure AddComponent;
   var
@@ -1665,7 +1673,7 @@ var
     begin
       // select only the mouse down component
       ControlSelection.AssignPersistent(MouseDownComponent);
-      if (MouseDownClickCount = 2) and (ControlSelection.SelectionForm = Form) then
+      if (ssDouble in MouseDownShift) and (ControlSelection.SelectionForm = Form) then
       begin
         // Double Click -> invoke 'Edit' of the component editor
         FShiftState := Shift;
@@ -1682,6 +1690,8 @@ var
     end;
   end;
 
+var
+  Handled: Boolean;
 Begin
   FHintTimer.Enabled := False;
   SetCaptureControl(nil);
@@ -1705,7 +1715,7 @@ Begin
   RubberBandWasActive:=ControlSelection.RubberBandActive;
   SelectedCompClass:=GetSelectedComponentClass;
 
-  GetShift;
+  GetMouseMsgShift(TheMessage,Shift,Button);
   MouseUpPos:=GetFormRelativeMousePosition(Form);
 
   {$IFDEF VerboseDesigner}
@@ -1716,7 +1726,13 @@ Begin
   DebugLn('');
   {$ENDIF}
 
-  if TheMessage.Msg=LM_LBUTTONUP then begin
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseUp(Button,Shift,MouseUpPos,Handled);
+    if Handled then exit;
+  end;
+
+  if Button=mbLeft then begin
     if SelectedCompClass = nil then begin
       // layout mode (selection, moving and resizing)
       if not (dfHasSized in FFlags) then begin
@@ -1733,7 +1749,7 @@ Begin
       // create new a component on the form
       AddComponent;
     end;
-  end else if TheMessage.Msg=LM_RBUTTONUP then begin
+  end else if Button=mbRight then begin
     // right click -> popup menu
     DisableRubberBand;
     if EnvironmentOptions.RightClickSelects
@@ -1763,6 +1779,7 @@ end;
 procedure TDesigner.MouseMoveOnControl(Sender: TControl;
   var TheMessage: TLMMouse);
 var
+  Button: TMouseButton;
   Shift : TShiftState;
   SenderParentForm:TCustomForm;
   OldMouseMovePos: TPoint;
@@ -1771,13 +1788,15 @@ var
   SelectedCompClass: TRegisteredComponent;
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
   DesignSender: TControl;
+  Handled: Boolean;
 begin
+  GetMouseMsgShift(TheMessage,Shift,Button);
+
   if [dfShowEditorHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
     // hide hint
-    FHintTimer.Enabled :=
-            (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+    FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
     if FHintWindow.Visible then
       FHintWindow.Visible := False;
   end;
@@ -1791,6 +1810,12 @@ begin
   LastMouseMovePos:= GetFormRelativeMousePosition(Form);
   if (OldMouseMovePos.X=LastMouseMovePos.X)
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
+
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseMove(Shift,LastMouseMovePos,Handled);
+    if Handled then exit;
+  end;
 
   if ControlSelection.SelectionForm=Form then
     Grabber:=ControlSelection.GrabberAtPos(
@@ -1811,12 +1836,6 @@ begin
 
     exit;
   end;
-
-  Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Include(Shift,ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
-    Include(Shift,ssCtrl);
 
   if (ControlSelection.SelectionForm=nil)
   or (ControlSelection.SelectionForm=Form)

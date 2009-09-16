@@ -181,6 +181,13 @@ When you handled a key, set Key:=0.</descr>
       <element name="TDesignerMediator.Root">
         <short>The designed Root component.</short>
       </element>
+      <element name="TDesignerMediator.MouseDown"/>
+      <element name="TDesignerMediator.MouseMove">
+        <short>Called by the IDE before it handles a mouse move message</short>
+      </element>
+      <element name="TDesignerMediator.MouseUp">
+        <short>Called by the IDE before it handles a mouse up message</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

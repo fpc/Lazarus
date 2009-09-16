@@ -119,7 +119,6 @@ type
     procedure GetClientArea(AComponent: TComponent; out CurClientArea: TRect;
                             out ScrollOffset: TPoint); virtual;
     function GetComponentOriginOnForm(AComponent: TComponent): TPoint; virtual;
-    procedure Paint; virtual;
     function ComponentIsIcon(AComponent: TComponent): boolean; virtual;
     function ParentAcceptsChild(Parent: TComponent; Child: TComponentClass): boolean; virtual;
     function ComponentIsVisible(AComponent: TComponent): Boolean; virtual;
@@ -127,9 +126,16 @@ type
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
     procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
+
+    // events
     procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
+    procedure Paint; virtual;
     procedure KeyDown(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
     procedure KeyUp(Sender: TControl; var Key: word; Shift: TShiftState); virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
+    procedure MouseMove(Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; p: TPoint; var Handled: boolean); virtual;
+
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
     property Root: TComponent read FRoot write SetRoot;
@@ -537,6 +543,24 @@ end;
 
 procedure TDesignerMediator.KeyUp(Sender: TControl; var Key: word;
   Shift: TShiftState);
+begin
+
+end;
+
+procedure TDesignerMediator.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  p: TPoint; var Handled: boolean);
+begin
+
+end;
+
+procedure TDesignerMediator.MouseMove(Shift: TShiftState; p: TPoint;
+  var Handled: boolean);
+begin
+
+end;
+
+procedure TDesignerMediator.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  p: TPoint; var Handled: boolean);
 begin
 
 end;
