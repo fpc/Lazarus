@@ -244,7 +244,8 @@ begin
       if AttrString.Handle <> nil then
         Result.setAttributedTitle(AttrString.Handle);
 
-      AttrString.Handle := nil;
+      // Only objects acquired with routines with alloc,
+      // init or copy in the name should be manually released
       AttrString.Free;
       AttrDictionary.Handle := nil;
       AttrDictionary.Free;
