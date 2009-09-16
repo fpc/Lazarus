@@ -736,13 +736,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
-                   '$(FPCSrcDir)/packages/fcl-base/src','*.pp;*.pas',false);
-    HTMLHelp.RegisterItem(DirItem);
-    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
-                   'FCL - Free Pascal Component Library Units',
-                   'file://index.html');
-    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
-                   '$(FPCSrcDir)/packages/fcl-base/src/inc','*.pp;*.pas',false);
+                   '$(FPCSrcDir)/packages/fcl-base/src','*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
