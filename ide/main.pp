@@ -666,6 +666,7 @@ type
     procedure OnProjectGetTestDirectory(TheProject: TProject;
                                         out TestDir: string);
     procedure OnProjectChangeInfoFile(TheProject: TProject);
+    procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
 
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -4305,6 +4306,7 @@ function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;
+  DesignerForm: TCustomForm;
   new_x, new_y: integer;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
@@ -4349,6 +4351,9 @@ begin
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
   CreateDesignerForComponent(NewComponent);
+  DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
+  if Assigned(DesignerForm) then
+    DesignerForm.WindowState := NewUnitInfo.ComponentState;
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
@@ -5732,10 +5737,12 @@ begin
   {$ENDIF}
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-  DesignerForm:=nil;
-  if not (ofLoadHiddenResource in OpenFlags) then begin
+  DesignerForm := nil;
+  if not (ofLoadHiddenResource in OpenFlags) then
+  begin
     CreateDesignerForComponent(NewComponent);
-    DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
+    DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
+    DesignerForm.WindowState := AnUnitInfo.ComponentState;
   end;
 
   // select the new form (object inspector, formeditor, control selection)
@@ -6569,8 +6576,32 @@ begin
   Result.OnFileBackup:=@MainBuildBoss.BackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
+  Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+end;
+
+procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
+
+  function GetWindowState(ACustomForm: TCustomForm): TWindowState;
+  begin
+    Result := wsNormal;
+    if ACustomForm.HandleAllocated then
+      if IsIconic(ACustomForm.Handle) then
+        Result := wsMinimized
+      else
+      if IsZoomed(ACustomForm.Handle) then
+        Result := wsMaximized;
+  end;
+var
+  DesignerForm: TCustomForm;
+begin
+  if (AUnitInfo.Component <> nil) then
+  begin
+    DesignerForm := FormEditor1.GetDesignerForm(AUnitInfo.Component);
+    if DesignerForm <> nil then
+      AUnitInfo.ComponentState := GetWindowState(DesignerForm);
+  end;
 end;
 
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;

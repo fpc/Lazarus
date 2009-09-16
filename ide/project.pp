@@ -75,6 +75,8 @@ type
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
                                          out TestDir: string) of object;
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
+
+  TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
                                  
   TUnitInfoList = (
     uilPartOfProject,
@@ -600,6 +602,7 @@ type
     FOnGetTestDirectory: TOnProjectGetTestDirectory;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
+    FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
     fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
     FPOOutputDirectory: string;
     fProjectDirectory: string;
@@ -873,6 +876,8 @@ type
                                                    write FOnLoadProjectInfo;
     property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
                                                    write FOnSaveProjectInfo;
+    property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
+      read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property POOutputDirectory: string read FPOOutputDirectory
                                        write SetPOOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
@@ -1193,23 +1198,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
-var AFilename:string;
+var
+  AFilename: String;
 begin
   // global data
   AFilename:=Filename;
   if Assigned(fOnLoadSaveFilename) then
-    fOnLoadSaveFilename(AFilename,false);
+    fOnLoadSaveFilename(AFilename, False);
   XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
   if SaveData then
     XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+
+  if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
+    Project.OnSaveUnitSessionInfo(Self);
 
   // context data (project/session)
   if (IsPartOfProject and SaveData)
   or ((not IsPartOfProject) and SaveSession)
   then begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
-    XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
@@ -1220,7 +1228,9 @@ begin
   end;
 
   // session data
-  if SaveSession then begin
+  if SaveSession then 
+  begin
+    XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
     XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
     XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
