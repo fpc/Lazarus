@@ -179,16 +179,13 @@ begin
   XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
 end;
 
-
-
-procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
+function GDK_WINDOW_GET_MINIMIZED(Window: PGdkWindowPrivate): gboolean;
 const
   _NET_WM_STATE_REMOVE    =    0;   // remove/unset property
   _NET_WM_STATE_ADD       =    1;   // add/set property
   _NET_WM_STATE_TOGGLE    =    2;   // toggle property
 var
   XDisplay: PDisplay;
-  XScreen: PScreen;
   XWindow: x.TWindow;
   _NET_WM_STATE,
   _NET_WM_STATE_HIDDEN: Integer;
@@ -196,31 +193,46 @@ var
   format: gint;
   nitems: gulong;
   bytes_after: gulong;
-  windowstates: Pcuchar;
+  state_array: pguint;
   X: Integer;
-
 begin
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XWindow := GDK_WINDOW_XWINDOW (Window);
+  Result := False;
+  XDisplay := GDK_WINDOW_XDISPLAY(Window);
+  XWindow := GDK_WINDOW_XWINDOW(Window);
 
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_HIDDEN := XInternAtom(xdisplay, '_NET_WM_STATE_HIDDEN', false);
+  _NET_WM_STATE := XInternAtom(XDisplay, '_NET_WM_STATE', False);
+  _NET_WM_STATE_HIDDEN := XInternAtom(XDisplay, '_NET_WM_STATE_HIDDEN', False);
 
-  XGetWindowProperty (xdisplay, xwindow, _NET_WM_STATE             ,
-             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
-             @bytes_after, @windowstates);
-  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
+  XGetWindowProperty(XDisplay, XWindow, _NET_WM_STATE,
+             0, MaxInt, False, XA_ATOM, @atomtype, @format, @nitems,
+             @bytes_after, @state_array);
+  if (atomtype = XA_ATOM) and (format = 32) and  (nitems > 0) then
   begin
     // Check to see if the window is already minimized...
-    for X := 0 to nitems do begin
-      if windowstates[X] = _NET_WM_STATE_HIDDEN then begin
-        XFree (windowstates);
-        exit;
+    for X := 0 to nitems - 1 do
+    begin
+      if (state_array[X] = _NET_WM_STATE_HIDDEN) then
+      begin
+        XFree(state_array);
+        Exit(True);
       end;
     end;
-    XFree (windowstates);
+    XFree(state_array);
   end;
+end;
+
+procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XWindow: x.TWindow;
+begin
+  if GDK_WINDOW_GET_MINIMIZED(Window) then
+    Exit;
+
+  XDisplay := GDK_WINDOW_XDISPLAY(Window);
+  XScreen := XDefaultScreenOfDisplay(XDisplay);
+  XWindow := GDK_WINDOW_XWINDOW(Window);
 
   XIconifyWindow(XDisplay, XWindow, XScreenNumberOfScreen(XScreen));
 end;
@@ -242,12 +254,12 @@ var
   maximized_horz, maximized_vert: Boolean;
 begin
   Result := False;
-  XWindow := GDK_WINDOW_XWINDOW (Window);
-  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  XWindow := GDK_WINDOW_XWINDOW(Window);
+  XDisplay := GDK_WINDOW_XDISPLAY(Window);
 
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  _NET_WM_STATE_MAXIMIZED_VERT := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_VERT', false);
-  _NET_WM_STATE_MAXIMIZED_HORZ := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_HORZ', false);
+  _NET_WM_STATE := XInternAtom(XDisplay, '_NET_WM_STATE', False);
+  _NET_WM_STATE_MAXIMIZED_VERT := XInternAtom(XDisplay, '_NET_WM_STATE_MAXIMIZED_VERT', False);
+  _NET_WM_STATE_MAXIMIZED_HORZ := XInternAtom(XDisplay, '_NET_WM_STATE_MAXIMIZED_HORZ', False);
 
   XGetWindowProperty (xdisplay, xwindow,
              _NET_WM_STATE,
@@ -258,14 +270,15 @@ begin
   begin
     maximized_horz := False;
     maximized_vert := False;
-    for X := 0 to nitems-1 do begin
+    for X := 0 to nitems - 1 do
+    begin
       if (state_array[X] = _NET_WM_STATE_MAXIMIZED_VERT) then maximized_vert := True;
       if (state_array[X] = _NET_WM_STATE_MAXIMIZED_HORZ) then maximized_horz := True;
-      Result:=(maximized_horz and maximized_vert);
+      Result := (maximized_horz and maximized_vert);
 
       if Result then Break;
     end;
-    XFree (state_array);
+    XFree(state_array);
   end;
 end;
 

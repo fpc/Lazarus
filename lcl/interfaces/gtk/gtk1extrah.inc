@@ -64,6 +64,7 @@ function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
 procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
 procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
 procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
+function GDK_WINDOW_GET_MINIMIZED(Window: PGdkWindowPrivate): gboolean;
 function GDK_WINDOW_GET_MAXIMIZED(Window: PGdkWindowPrivate): gboolean;
 procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
 
