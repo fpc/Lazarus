@@ -6501,7 +6501,8 @@ begin
     // -> update size and realized bounds
     NewWidth := FBoundsRealized.Right - FBoundsRealized.Left;
     NewHeight := FBoundsRealized.Bottom - FBoundsRealized.Top;
-    if HandleAllocated then
+    // skip size update when window is minimized
+    if HandleAllocated and not IsIconic(Handle) then
       GetWindowSize(Handle, NewWidth, NewHeight);
     FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
   end;
