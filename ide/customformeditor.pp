@@ -878,10 +878,10 @@ begin
   for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
-  JITFormList := TJITForms.Create;
+  JITFormList := TJITForms.Create(nil);
   InitJITList(JITFormList);
 
-  JITNonFormList := TJITNonFormComponents.Create;
+  JITNonFormList := TJITNonFormComponents.Create(nil);
   InitJITList(JITNonFormList);
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
@@ -977,7 +977,7 @@ Begin
       begin
         FNonFormForms.Remove(AForm);
         TCustomNonFormDesignerForm(AForm).LookupRoot := nil;
-        TryFreeComponent(AForm);
+        Application.ReleaseComponent(AForm);
       end;
 
       if FreeComponent then

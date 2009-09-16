@@ -107,6 +107,8 @@ type
     procedure SetLCLForm(const AValue: TForm); virtual;
     procedure SetRoot(const AValue: TComponent); virtual;
     procedure CollectChildren(Child: TComponent); virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+          override;
   public
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual;
@@ -334,12 +336,26 @@ end;
 procedure TDesignerMediator.SetRoot(const AValue: TComponent);
 begin
   if FRoot=AValue then exit;
+  if FRoot<>nil then
+    FRoot.RemoveFreeNotification(Self);
   FRoot:=AValue;
+  if FRoot<>nil then
+    FRoot.FreeNotification(Self);
 end;
 
 procedure TDesignerMediator.CollectChildren(Child: TComponent);
 begin
   FCollectedChilds.Add(Child);
+end;
+
+procedure TDesignerMediator.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=FLCLForm then FLCLForm:=nil;
+    if AComponent=FRoot then FRoot:=nil;
+  end;
 end;
 
 class function TDesignerMediator.CreateMediator(TheOwner, aForm: TComponent
@@ -353,13 +369,20 @@ procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner
   );
 begin
   if FDesigner=AValue then exit;
+  if FDesigner<>nil then begin
+
+  end;
   FDesigner:=AValue;
 end;
 
 procedure TDesignerMediator.SetLCLForm(const AValue: TForm);
 begin
   if FLCLForm=AValue then exit;
+  if FLCLForm<>nil then
+    FLCLForm.RemoveFreeNotification(Self);
   FLCLForm:=AValue;
+  if FLCLForm<>nil then
+    FLCLForm.FreeNotification(Self);
 end;
 
 class procedure TDesignerMediator.InitFormInstance(aForm: TComponent);

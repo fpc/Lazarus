@@ -47,6 +47,8 @@ type
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+          override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,9 +69,15 @@ implementation
 procedure TNonControlDesignerForm.SetMediator(const AValue: TDesignerMediator);
 begin
   if FMediator=AValue then exit;
-  if FMediator<>nil then FMediator.LCLForm:=nil;
+  if FMediator<>nil then begin
+    FMediator.LCLForm:=nil;
+    FMediator.RemoveFreeNotification(Self);
+  end;
   FMediator:=AValue;
-  if FMediator<>nil then FMediator.LCLForm:=Self;
+  if FMediator<>nil then begin
+    FMediator.LCLForm:=Self;
+    FMediator.FreeNotification(Self);
+  end;
 end;
 
 procedure TNonControlDesignerForm.SetFrameWidth(const AValue: integer);
@@ -86,6 +94,15 @@ begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   if Mediator<>nil then
     Mediator.SetFormBounds(LookupRoot,BoundsRect,ClientRect);
+end;
+
+procedure TNonControlDesignerForm.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if FMediator=AComponent then FMediator:=nil;
+  end;
 end;
 
 constructor TNonControlDesignerForm.Create(TheOwner: TComponent);
@@ -121,7 +138,7 @@ begin
     ARect:=Rect(0,0,Self.ClientWidth+1,Self.ClientHeight+1);
     Pen.Color:=clBlack;
     Frame3d(ARect, FrameWidth, bvLowered);
-    if Mediator<>nil then
+    if (Mediator<>nil) and (LookupRoot<>nil) then
       Mediator.Paint;
   end;
 end;
@@ -149,6 +166,7 @@ var
   NewBounds, NewClientRect: TRect;
 begin
   inherited DoLoadBounds;
+  if LookupRoot=nil then exit;
 
   if LookupRoot is TDataModule then 
   begin
@@ -159,9 +177,7 @@ begin
     NewHeight := CurDataModule.DesignSize.Y;
     
     SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight);
-  end else 
-  if LookupRoot <> nil then 
-  begin
+  end else begin
     if Mediator<>nil then begin
       Mediator.GetFormBounds(LookupRoot,NewBounds,NewClientRect);
       NewLeft:=NewBounds.Left;

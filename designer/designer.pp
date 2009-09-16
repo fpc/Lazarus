@@ -524,7 +524,10 @@ begin
     // delete
     if Form <> nil then
       Form.Designer := nil;
-    TheFormEditor.DeleteComponent(FLookupRoot, FreeComponent);
+    if FMediator<>nil then
+      FMediator.Designer:=nil;
+    if FreeComponent then
+      TheFormEditor.DeleteComponent(FLookupRoot,true);
     FMediator:=nil;
   end;
   Free;
