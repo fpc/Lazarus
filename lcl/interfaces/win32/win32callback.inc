@@ -242,6 +242,7 @@ var
   WindowInfo: PWin32WindowInfo;
   Flags: dword;
   WindowDC: HDC;
+  WindowPlacement: TWINDOWPLACEMENT;
 
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
@@ -2514,7 +2515,17 @@ begin
           lWinControl := Application.MainForm;
           Window := Application.MainForm.Handle;
         end;
-        GetWindowSize(Window, NewWidth, NewHeight);
+        if IsIconic(Window) then
+        begin
+          GetWindowPlacement(Window, @WindowPlacement);
+          with WindowPlacement.rcNormalPosition do
+          begin
+            NewWidth := Right - Left;
+            NewHeight := Bottom - Top;
+          end;
+        end
+        else
+          GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
         if lWinControl <> nil then
