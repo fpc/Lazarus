@@ -667,7 +667,11 @@ begin
   //writeln(fURL);
   LoadTOC := (fChms = nil) or (fChms.IndexOf(fFile) < 0);
   DoOpenChm(fFile, False);
-  FileIndex := fChms.IndexOf(fFile);
+  // in case of exception fChms can be still = nil
+  if fChms <> nil then
+    FileIndex := fChms.IndexOf(fFile)
+  else
+    Exit;
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
