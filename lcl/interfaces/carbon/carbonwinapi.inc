@@ -2302,6 +2302,12 @@ begin
   Result := True;
 end;
 
+function TCarbonWidgetSet.IsIconic(Handle: HWND): boolean;
+begin
+  if not CheckWidget(Handle, 'IsIconic') then Exit(False);
+  Result := (TCarbonWidget(Handle) is TCarbonWindow) and TCarbonWindow(Handle).IsIconic;
+end;
+
 {------------------------------------------------------------------------------
   Method:  IsWindowEnabled
   Params:  Handle - Handle of window
@@ -2342,6 +2348,12 @@ begin
    {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.IsWindowVisible Result: ' + DbgS(Result));
   {$ENDIF}
+end;
+
+function TCarbonWidgetSet.IsZoomed(Handle: HWND): boolean;
+begin
+  if not CheckWidget(Handle, 'IsZoomed') then Exit(False);
+  Result := (TCarbonWidget(Handle) is TCarbonWindow) and TCarbonWindow(Handle).IsZoomed;
 end;
 
 {------------------------------------------------------------------------------

@@ -205,6 +205,9 @@ type
     procedure CloseModal; virtual;
     procedure ShowModal; virtual;
 
+    function IsIconic: Boolean; virtual;
+    function IsZoomed: Boolean; virtual;
+
     function SetForeground: Boolean; virtual;
     function Show(AShow: Integer): Boolean; virtual;
 

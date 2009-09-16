@@ -1708,6 +1708,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWindow.IsIconic
+
+  Check if window is minimized
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.IsIconic: Boolean;
+begin
+  if not Assigned(fWindowRef) then Exit(False);
+  Result := IsWindowCollapsed(fWindowRef);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.IsZoomed
+
+  Check if window is maximized
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.IsZoomed: Boolean;
+begin
+  if not Assigned(fWindowRef) then Exit(False);
+  Result := IsWindowInStandardState(fWindowRef, nil, nil);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWindow.SetForeground
   Returns: If the function succeeds
 
