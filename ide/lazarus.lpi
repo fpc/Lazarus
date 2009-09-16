@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="47">
+    <Units Count="49">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -364,6 +364,16 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="BuildModesEditor"/>
       </Unit46>
+      <Unit47>
+        <Filename Value="project.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Project"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="customformeditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CustomFormEditor"/>
+      </Unit48>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
