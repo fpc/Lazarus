@@ -36,10 +36,10 @@
 {$DEFINE VerboseIDEMultiForm}
 {$ENDIF}
 
-{off $apptype console}
+{$apptype console}
 
 {off $define UseTurbopowerInHelp}
-{off $define UseCHMHelp}
+{$define UseCHMHelp}
 {$define UseJCF}
 {off $define EnableBuildModes}
 

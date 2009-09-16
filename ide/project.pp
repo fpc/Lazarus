@@ -167,6 +167,7 @@ type
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
+    FComponentState: TWindowState; // state of component when we save it
     FFoldState: String;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
@@ -321,6 +322,7 @@ type
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
                                            write fComponentResourceName;
+    property ComponentState: TWindowState read FComponentState write FComponentState;
     property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
                                                       write FResourceBaseClass;
     property ComponentLastBinStreamSize: TStreamSeekType
@@ -1126,6 +1128,7 @@ begin
   fComponent := nil;
   fComponentName := '';
   fComponentResourceName := '';
+  FComponentState := wsNormal;
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
   fCustomHighlighter := false;
@@ -1206,6 +1209,7 @@ begin
   or ((not IsPartOfProject) and SaveSession)
   then begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
+    XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
@@ -1256,6 +1260,7 @@ begin
     fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
+    FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
