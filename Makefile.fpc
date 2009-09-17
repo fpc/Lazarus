@@ -56,7 +56,7 @@ idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide: lcl packager/registration ideintf packager bigidecomponents idebig starter
+bigide: lcl packager/registration ideintf packager bigidecomponents idebig starter lazbuilder
 
 #-----------------------------------------------------------------------------
 idebig:
