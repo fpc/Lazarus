@@ -3598,8 +3598,8 @@ begin
   DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,
   ' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
   {$ENDIF}
-  InvalidateClientRectCache(false);
-  inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
+  InvalidateClientRectCache(False);
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -3828,18 +3828,19 @@ var
   AControl: TWinControl;
   IntfBounds: TRect;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     // get the interface idea where the client area is on the screen
     LCLIntf.GetWindowRect(Handle,IntfBounds);
     Result.X := IntfBounds.Left;
     Result.Y := IntfBounds.Top;
     // adjust the result by all bounds, that are not yet sent to the interface
-    AControl:=Self;
+    AControl := Self;
     repeat
-      inc(Result.X,AControl.Left-AControl.FBoundsRealized.Left);
-      inc(Result.Y,AControl.Top-AControl.FBoundsRealized.Top);
-      AControl:=AControl.Parent;
-    until AControl=nil;
+      inc(Result.X, AControl.Left - AControl.FBoundsRealized.Left);
+      inc(Result.Y, AControl.Top - AControl.FBoundsRealized.Top);
+      AControl := AControl.Parent;
+    until AControl = nil;
   end else
     Result:=inherited GetControlOrigin;
 end;
@@ -5138,15 +5139,15 @@ procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
 const
   ADockMargin = 10;
 begin
-  GetWindowRect(Handle,InfluenceRect);
+  GetWindowRect(Handle, InfluenceRect);
   //Margins to test docking (enlarged surface for test)
-  InfluenceRect.Left:= InfluenceRect.Left-ADockMargin;
-  InfluenceRect.Top:= InfluenceRect.Top-ADockMargin;
-  InfluenceRect.Right:= InfluenceRect.Right+ADockMargin;
-  InfluenceRect.Bottom:= InfluenceRect.Bottom+ADockMargin;
+  InfluenceRect.Left := InfluenceRect.Left-ADockMargin;
+  InfluenceRect.Top := InfluenceRect.Top-ADockMargin;
+  InfluenceRect.Right := InfluenceRect.Right+ADockMargin;
+  InfluenceRect.Bottom := InfluenceRect.Bottom+ADockMargin;
 
   if Assigned(FOnGetSiteInfo) then
-    FOnGetSiteInfo(Self,Client,InfluenceRect,MousePos,CanDock);
+    FOnGetSiteInfo(Self, Client, InfluenceRect, MousePos, CanDock);
 end;
 
 {------------------------------------------------------------------------------
