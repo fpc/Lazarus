@@ -1501,7 +1501,10 @@ begin
     end;
   end else begin
     // not left button
-    ControlSelection.ActiveGrabber:=nil;
+    ControlSelection.ActiveGrabber := nil;
+    if (Button = mbRight) and EnvironmentOptions.RightClickSelects and
+       (ControlSelection.SelectionForm <> Form) then
+      ControlSelection.AssignPersistent(MouseDownComponent);
   end;
 
   if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
@@ -1509,7 +1512,7 @@ begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
-End;
+end;
 
 procedure TDesigner.MouseUpOnControl(Sender : TControl;
   var TheMessage:TLMMouse);
