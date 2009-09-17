@@ -784,8 +784,7 @@ begin
     Result := -1;
 end;
 
-procedure TProjectOptionsDialog.FormsAddToAutoCreatedFormsBtnClick(
-  Sender: TObject);
+procedure TProjectOptionsDialog.FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
 var
   i: Integer;
   NewFormName: String;
@@ -809,8 +808,7 @@ begin
   FormsAutoCreatedListBox.Items.EndUpdate;
 end;
 
-procedure TProjectOptionsDialog.FormsRemoveFromAutoCreatedFormsBtnClick(
-  Sender: TObject);
+procedure TProjectOptionsDialog.FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
 var
   i, NewPos, cmp: Integer;
   OldFormName:    String;
