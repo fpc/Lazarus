@@ -1875,7 +1875,7 @@ begin
         SelectedCompClass:=GetSelectedComponentClass;
         if (not ControlSelection.RubberBandActive)
         and (SelectedCompClass=nil)
-        and (Shift=[])
+        and (Shift=[ssLeft])
         and (ControlSelection.Count>=1)
         and (not ControlSelection.LookupRootSelected)
         then begin
