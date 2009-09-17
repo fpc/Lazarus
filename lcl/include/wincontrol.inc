@@ -3253,6 +3253,9 @@ begin
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
   if (not AutoSizeCanStart) or AutoSizeDelayed then begin
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.DoAutoSize DELAYED']);
+    {$ENDIF}
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
@@ -3337,7 +3340,7 @@ begin
       PreferredHeight:=Constraints.MinMaxHeight(Height);
 
     // set new size
-    {$IFDEF VerboseAutoSize}
+    {$IF defined(VerboseAutoSize) or defined(NewAutoSize)}
     debugln(['DoAutoSize A ',DbgSName(Self),' Cur=',Width,'x',Height,' Prefer=',PreferredWidth,'x',PreferredHeight,' WidgetClass=',WidgetSetClass.ClassName,' Fixed=',WidthIsFixed,'x',HeightIsFixed]);
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
@@ -4069,7 +4072,7 @@ procedure TWinControl.UpdateShowing;
   begin
     if FShowing = bShow then Exit;
     {$IFDEF NewAutoSize}
-    DumpStack;
+    //DumpStack;
     {$ENDIF}
     FShowing := bShow;
     ok := false;
@@ -7473,8 +7476,6 @@ begin
   ' Lock=',BoundsLockCount,
   ' Realized=',dbgs(FBoundsRealized)
   ]);
-  if CheckPosition(Self) and (AWidth=37) then
-    DumpStack;
   {$ENDIF}
   if BoundsLockCount<>0 then begin
     //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' ignoring loop Cur=',dbgs(BoundsRect),' ',dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
@@ -7728,7 +7729,7 @@ begin
     ]);
   {$ENDIF}
   {$IFDEF NewAutoSize}
-  DumpStack;
+  //DumpStack;
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
