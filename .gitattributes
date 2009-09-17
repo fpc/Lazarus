@@ -4137,6 +4137,7 @@ lcl/interfaces/carbon/pascocoa/appkit/NSCell.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSColor.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSControl.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSFont.inc svneol=native#text/plain
+lcl/interfaces/carbon/pascocoa/appkit/NSFontManager.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSGraphics.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSGraphicsContext.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/appkit/NSImage.inc svneol=native#text/plain

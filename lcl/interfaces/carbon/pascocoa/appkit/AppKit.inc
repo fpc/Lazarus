@@ -22,9 +22,9 @@
 //#import <AppKit/NSClipView.h>
 {$include NSControl.inc}
 {$include NSFont.inc}
-{#import <AppKit/NSFontDescriptor.h>
-#import <AppKit/NSFontManager.h>
-#import <AppKit/NSFontPanel.h>
+{#import <AppKit/NSFontDescriptor.h>}
+{$include NSFontManager.inc}
+{#import <AppKit/NSFontPanel.h>
 #import <AppKit/NSForm.h>
 #import <AppKit/NSFormCell.h>
 #import <AppKit/NSMatrix.h>}

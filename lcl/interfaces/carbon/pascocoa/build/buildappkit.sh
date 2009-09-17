@@ -4,11 +4,14 @@ DEFAULT_INI="default.ini"
 APPKIT_INI="../build/appkit.ini"
 FRAMEWORK="/System/Library/Frameworks/AppKit.framework/Headers"
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSApplication.h > ../appkit/NSApplication.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSAttributedString.h > ../appkit/NSAttributedString.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSBitmapImageRep.h > ../appkit/NSBitmapImageRep.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSBox.h > ../appkit/NSBox.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSButton.h > ../appkit/NSButton.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSControl.h > ../appkit/NSControl.inc
-./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSColor.h > ../appkit/NSColor.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSColor.h > ../appkit/NSColor.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSFont.h > ../appkit/NSFont.inc
+./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSFontManager.h > ../appkit/NSFontManager.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSGraphics.h > ../appkit/NSGraphics.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSGraphicsContext.h > ../appkit/NSGraphicsContext.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSImage.h > ../appkit/NSImage.inc

@@ -199,6 +199,7 @@ var
   AImage: NSImage;
   StrBuffer: string;
   // Default property implementation (=bold)
+  FontManager: NSFontManager;
   AttrString: NSAttributedString;
   AttrStringFont: NSFont;
   AttrDictionary: NSDictionary;
@@ -238,7 +239,11 @@ begin
     { Assign default (=bold) state }
     if AMenuItem.Default then
     begin
-      AttrStringFont := NSFont.boldSystemFontOfSize(0); // 0 = default size
+      FontManager := NSFontManager.sharedFontManager;
+      // For now hard-code the menu font to 14, because the default size
+      // is 13, which is wrong, and looks bad.
+      AttrStringFont := NSFont.menuFontOfSize(14); // 0 = default size
+      AttrStringFont.Handle := FontManager.convertFont_toHaveTrait_(AttrStringFont.Handle, NSBoldFontMask);
       AttrDictionary := NSDictionary.dictionaryWithObject_forKey(AttrStringFont.Handle, objc.id(NSFontAttributeName));
       AttrString := NSAttributedString.initWithString_attributes(ItemText, CFDictionaryRef(AttrDictionary.Handle));
       if AttrString.Handle <> nil then
@@ -251,6 +256,8 @@ begin
       AttrDictionary.Free;
       AttrStringFont.Handle := nil;
       AttrStringFont.Free;
+      FontManager.Handle := nil;
+      FontManager.Free;
     end;
 
     { Assign enabled/disabled state }
