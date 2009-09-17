@@ -4306,7 +4306,6 @@ function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;
-  DesignerForm: TCustomForm;
   new_x, new_y: integer;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
@@ -4351,9 +4350,6 @@ begin
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
   CreateDesignerForComponent(NewComponent);
-  DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
-  if Assigned(DesignerForm) then
-    DesignerForm.WindowState := NewUnitInfo.ComponentState;
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
@@ -5525,10 +5521,13 @@ begin
 end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
-  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags
-  ): TModalResult;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
+
+  ShowCommands: array[TWindowState] of Integer =
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
+
 var
   TxtLFMStream, BinStream: TExtMemoryStream;
   NewComponent: TComponent;
@@ -5742,24 +5741,24 @@ begin
   begin
     CreateDesignerForComponent(NewComponent);
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
-    DesignerForm.WindowState := AnUnitInfo.ComponentState;
   end;
 
   // select the new form (object inspector, formeditor, control selection)
-  if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then begin
-    FDisplayState:=dsForm;
-    GlobalDesignHook.LookupRoot:=NewComponent;
+  if ([ofProjectLoading,ofLoadHiddenResource] * OpenFlags=[]) then
+  begin
+    FDisplayState := dsForm;
+    GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
   end;
 
   // show new form
-  if DesignerForm<>nil then begin
-    DesignerForm.ControlStyle:=DesignerForm.ControlStyle-[csNoDesignVisible];
+  if DesignerForm <> nil then
+  begin
+    DesignerForm.ControlStyle := DesignerForm.ControlStyle - [csNoDesignVisible];
     if NewComponent is TControl then
-      TControl(NewComponent).ControlStyle:=
-                        TControl(NewComponent).ControlStyle-[csNoDesignVisible];
-    LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
-    FLastFormActivated:=DesignerForm;
+      TControl(NewComponent).ControlStyle:= TControl(NewComponent).ControlStyle - [csNoDesignVisible];
+    LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
+    FLastFormActivated := DesignerForm;
   end;
 
   {$IFDEF IDE_DEBUG}
