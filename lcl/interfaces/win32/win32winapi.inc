@@ -2258,33 +2258,42 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetWindowRelativePosition(Handle : HWND;
-  var Left, Top:integer): boolean;
+function TWin32WidgetSet.GetWindowRelativePosition(Handle: HWND;
+  var Left, Top: Integer): Boolean;
 var
   LeftTop:TPoint;
   R: TRect;
+  WindowPlacement: TWINDOWPLACEMENT;
   ParentHandle: THandle;
   WindowInfo: PWin32WindowInfo;
 begin
-  Result:=false;
+  Result := False;
   WindowInfo := GetWin32WindowInfo(Handle);
   if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
-  if not Windows.GetWindowRect(Handle,@R) then exit;
-  LeftTop.X:=R.Left;
-  LeftTop.Y:=R.Top;
-  ParentHandle:=Windows.GetParent(Handle);
-  if ParentHandle<>0 then
+
+  if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    R := WindowPlacement.rcNormalPosition
+  else
+  if not Windows.GetWindowRect(Handle, @R) then Exit;
+
+  LeftTop.X := R.Left;
+  LeftTop.Y := R.Top;
+  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD) <> 0 then
   begin
-    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
-    if not GetLCLClientBoundsOffset(ParentHandle, R) then
-      exit;
-    dec(LeftTop.X, R.Left);
-    dec(LeftTop.Y, R.Top);
+    ParentHandle := Windows.GetParent(Handle);
+    if ParentHandle <> 0 then
+    begin
+      if not Windows.ScreenToClient(ParentHandle, @LeftTop) then Exit;
+      if not GetLCLClientBoundsOffset(ParentHandle, R) then
+        Exit;
+      Dec(LeftTop.X, R.Left);
+      Dec(LeftTop.Y, R.Top);
+    end;
   end;
-  Left:=LeftTop.X;
-  Top:=LeftTop.Y;
-  Result:=true;
+  Left := LeftTop.X;
+  Top := LeftTop.Y;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
