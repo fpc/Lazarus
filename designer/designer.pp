@@ -171,6 +171,8 @@ type
     function GetSelectedComponentClass: TRegisteredComponent;
     procedure NudgePosition(DiffX, DiffY: Integer);
     procedure NudgeSize(DiffX, DiffY: Integer);
+    procedure NudgeSelection(DiffX, DiffY: Integer); overload;
+    procedure NudgeSelection(SelectNext: Boolean); overload;
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     function GetPasteParent: TWinControl;
@@ -563,6 +565,140 @@ begin
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
   ControlSelection.SizeSelection(DiffX, DiffY);
+  Modified;
+end;
+
+function ComponentsSortByLeft(Item1, Item2: Pointer): Integer;
+var
+  Comp1: TComponent absolute Item1;
+  Comp2: TComponent absolute Item2;
+  L1, L2: Integer;
+begin
+  L1 := GetComponentLeft(Comp1);
+  L2 := GetComponentLeft(Comp2);
+  if L1 < L2 then
+    Result := -1
+  else
+  if L1 > L2 then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function ComponentsSortByTop(Item1, Item2: Pointer): Integer;
+var
+  Comp1: TComponent absolute Item1;
+  Comp2: TComponent absolute Item2;
+  T1, T2: Integer;
+begin
+  T1 := GetComponentTop(Comp1);
+  T2 := GetComponentTop(Comp2);
+  if T1 < T2 then
+    Result := -1
+  else
+  if T1 > T2 then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+procedure TDesigner.NudgeSelection(DiffX, DiffY: Integer);
+const
+  Delta = 50; // radius for searching components
+var
+  List: TFPList;
+  Coord, Test: TPoint;
+  Current, AComponent: TComponent;
+  i: integer;
+begin
+  if (ControlSelection.SelectionForm <> Form) or
+     (ControlSelection.SelectionForm.ComponentCount = 0) or
+     ControlSelection.LookupRootSelected or
+     (ControlSelection.Count <> 1) then Exit;
+  if not ControlSelection[0].IsTComponent then Exit;
+
+  // create a list of components at the similar top/left
+  Current := TComponent(ControlSelection[0].Persistent);
+  AComponent := nil;
+  List := TFPList.Create;
+  try
+    Coord := GetParentFormRelativeClientOrigin(Current);
+    if DiffX <> 0 then
+    begin
+      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      begin
+        AComponent := ControlSelection.SelectionForm.Components[i];
+        if AComponent = Current then
+          Continue;
+        Test := GetParentFormRelativeClientOrigin(AComponent);
+        if (Abs(Test.Y - Coord.Y) <= Delta) and
+           (Sign(Test.X - Coord.X) = Sign(DiffX)) then
+          List.Add(AComponent);
+      end;
+      if List.Count > 0 then
+      begin
+        List.Sort(@ComponentsSortByLeft);
+        if DiffX > 0 then
+          AComponent := TComponent(List[0])
+        else
+          AComponent := TComponent(List[List.Count - 1]);
+      end;
+    end
+    else
+    if DiffY <> 0 then
+    begin
+      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      begin
+        AComponent := ControlSelection.SelectionForm.Components[i];
+        if AComponent = Current then
+          Continue;
+        Test := GetParentFormRelativeClientOrigin(AComponent);
+        if (Abs(Test.X - Coord.X) <= Delta) and
+           (Sign(Test.Y - Coord.Y) = Sign(DiffY)) then
+          List.Add(AComponent);
+      end;
+      if List.Count > 0 then
+      begin
+        List.Sort(@ComponentsSortByTop);
+        if DiffY > 0 then
+          AComponent := TComponent(List[0])
+        else
+          AComponent := TComponent(List[List.Count - 1]);
+      end;
+    end;
+  finally
+    List.Free;
+  end;
+  if AComponent <> nil then
+  begin
+    ControlSelection.AssignPersistent(AComponent);
+    Modified;
+  end;
+end;
+
+procedure TDesigner.NudgeSelection(SelectNext: Boolean);
+var
+  Index: Integer;
+begin
+  if (ControlSelection.SelectionForm <> Form) or
+     (ControlSelection.SelectionForm.ComponentCount = 0) then Exit;
+  if (ControlSelection.Count = 1) and ControlSelection[0].IsTComponent then
+    Index := TComponent(ControlSelection[0].Persistent).ComponentIndex
+  else
+    Index := -1;
+
+  if SelectNext then
+    Inc(Index)
+  else
+    Dec(Index);
+
+  if Index >= ControlSelection.SelectionForm.ComponentCount then
+    Index := 0
+  else
+  if Index < 0 then
+    Index := ControlSelection.SelectionForm.ComponentCount - 1;
+
+  ControlSelection.AssignPersistent(ControlSelection.SelectionForm.Components[Index]);
   Modified;
 end;
 
@@ -1954,7 +2090,10 @@ var
     end
     else
     if (ssShift in Shift) then
-      NudgeSize(x, y);
+      NudgeSize(x, y)
+    else
+    if (Shift = []) then
+      NudgeSelection(x, y);
   end;
 
 begin
@@ -1995,13 +2134,22 @@ begin
       VK_LEFT:
         Nudge(-1,0);
 
+      VK_TAB:
+        if Shift = [ssShift] then
+          NudgeSelection(False)
+        else
+        if Shift = [] then
+          NudgeSelection(True)
+        else
+          Handled := False;
+
       VK_A:
         if Shift = [ssCtrl] then
           DoSelectAll
         else
           Handled := False;
       else
-        Handled:=false;
+        Handled := False;
     end;
   end;
 
@@ -2759,8 +2907,7 @@ begin
     Result:=Mediator.ComponentIsIcon(AComponent);
 end;
 
-function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent
-  ): TPoint;
+function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent): TPoint;
 var
   CurClientArea: TRect;
   ScrollOffset: TPoint;
