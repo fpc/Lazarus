@@ -1262,9 +1262,9 @@ procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
   var Shift: TShiftState; var Button: TMouseButton);
 begin
   Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
+  if (TheMessage.Keys and MK_Shift) = MK_Shift then
     Include(Shift,ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
+  if (TheMessage.Keys and MK_Control) = MK_Control then
     Include(Shift,ssCtrl);
 
   case TheMessage.Msg of
@@ -1284,26 +1284,39 @@ begin
       Button:=mbRight;
     end;
   else
-    if (TheMessage.keys and MK_MButton)<>0 then begin
+    if (TheMessage.Keys and MK_MButton) <> 0 then
+    begin
       Include(Shift,ssMiddle);
       Button:=mbMiddle;
     end;
-    if (TheMessage.keys and MK_RButton)<>0 then begin
+    if (TheMessage.Keys and MK_RButton) <> 0 then
+    begin
       Include(Shift,ssRight);
       Button:=mbRight;
     end;
-    if (TheMessage.keys and MK_LButton)<>0 then begin
+    if (TheMessage.Keys and MK_LButton) <> 0 then
+    begin
       Include(Shift,ssLeft);
       Button:=mbLeft;
+    end;
+    if (TheMessage.Keys and MK_XBUTTON1) <> 0 then
+    begin
+      Include(Shift,ssExtra1);
+      Button:=mbExtra1;
+    end;
+    if (TheMessage.Keys and MK_XBUTTON2) <> 0 then
+    begin
+      Include(Shift,ssExtra2);
+      Button:=mbExtra2;
     end;
   end;
 
   case TheMessage.Msg of
-  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
+  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK,LM_XBUTTONDBLCLK:
     Include(Shift,ssDouble);
-  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
+  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK,LM_XBUTTONTRIPLECLK:
     Include(Shift,ssTriple);
-  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
+  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK,LM_XBUTTONQUADCLK:
     Include(Shift,ssQuad);
   end;
 end;
