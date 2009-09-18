@@ -732,6 +732,14 @@ begin
 end;
 
 procedure TDesigner.SelectParentOfSelection;
+
+  function ParentComponent(AComponent: TComponent): TComponent;
+  begin
+    Result := AComponent.GetParentComponent;
+    if (Result = nil) and ComponentIsIcon(AComponent) then
+      Result := AComponent.Owner;
+  end;
+
 var
   i: Integer;
 begin
@@ -759,13 +767,14 @@ begin
   end;
 
   // if not component moving then select parent
-  i:=ControlSelection.Count-1;
-  while (i>=0)
-  and (   (ControlSelection[i].ParentInSelection)
-       or (not ControlSelection[i].IsTControl)
-       or (TControl(ControlSelection[i].Persistent).Parent=nil)) do dec(i);
-  if i>=0 then
-    SelectOnlyThisComponent(TControl(ControlSelection[i].Persistent).Parent);
+  i := ControlSelection.Count - 1;
+  while (i >= 0) and
+        (ControlSelection[i].ParentInSelection or
+         not ControlSelection[i].IsTComponent or
+         (ParentComponent(TComponent(ControlSelection[i].Persistent)) = nil)) do
+    Dec(i);
+  if i >= 0 then
+    SelectOnlyThisComponent(ParentComponent(TComponent(ControlSelection[i].Persistent)));
 end;
 
 function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
