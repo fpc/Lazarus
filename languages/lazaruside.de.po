@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-03 22:45+0100\n"
+"PO-Revision-Date: 2009-09-13 23:55+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
 msgid "Invalid breakpoint"
-msgstr ""
+msgstr "Ungültiger Haltepunkt"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
 msgid "Current line highlight"
@@ -719,10 +719,9 @@ msgid "Show Errors"
 msgstr "Fehler anzeigen"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-#, fuzzy
 #| msgid "Show Options"
 msgid "&Show Options"
-msgstr "Einstellungen anzeigen"
+msgstr "Ein&stellungen anzeigen"
 
 #: lazarusidestrconsts.dlgcosmaller
 msgid "Smaller Code"
@@ -1714,7 +1713,7 @@ msgstr "Hinzufügen"
 
 #: lazarusidestrconsts.dlgmouseoptbtnany
 msgid "Any"
-msgstr ""
+msgstr "Jeder"
 
 #: lazarusidestrconsts.dlgmouseoptbtncancel
 msgctxt "lazarusidestrconsts.dlgmouseoptbtncancel"
@@ -4889,11 +4888,10 @@ msgid "Open unit"
 msgstr "Unit öffnen"
 
 #: lazarusidestrconsts.liscomptest
-#, fuzzy
 #| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
 msgid "&Test"
-msgstr "Test"
+msgstr "&Test"
 
 #: lazarusidestrconsts.liscondition
 msgid "Condition"
@@ -4990,11 +4988,11 @@ msgstr "Kopiere alle Meldungen in die Zwischenablage"
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
-msgstr ""
+msgstr "Alle Ausgaben in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
-msgstr ""
+msgstr "Beschreibung in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
@@ -5038,27 +5036,27 @@ msgstr "Zielbetriebssystemspezifische Einstellungen"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
-msgstr ""
+msgstr "Konnte %s{$I %s%s} nicht zum Hauptquelltext hinzufügen!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
 msgid "Could not add %s{$R %s%s} to main source!"
-msgstr ""
+msgstr "Konnte %s{$R %s%s} nicht zum Hauptquelltext hinzufügen!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
 msgid "Could not add %s%s%s to main source!"
-msgstr ""
+msgstr "Konnte %s%s%s nicht zum Hauptquelltext hinzufügen!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
 msgid "Could not remove %s%s%s from main source!"
-msgstr ""
+msgstr "Konnte %s%s%s nicht aus dem Hauptquelltext entfernen!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
 msgid "Could not remove %s{$I %s%s} from main source!"
-msgstr ""
+msgstr "Konnte %s{$I %s%s} nicht aus dem Hauptquelltext entfernen!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
 msgid "Could not remove %s{$R %s%s} from main source!"
-msgstr ""
+msgstr "Konnte %s{$R %s%s} nicht aus dem Hauptquelltext entfernen!"
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5832,7 +5830,7 @@ msgstr "Doppelklick für Meldungssprünge (sonst Einfachklick)"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
-msgstr ""
+msgstr "Umgebungsvariable, Name als Parameter"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -8497,7 +8495,7 @@ msgstr "Schnelle Syntaxprüfung"
 
 #: lazarusidestrconsts.lismenuquicksyntaxcheckok
 msgid "Quick syntax check OK"
-msgstr ""
+msgstr "Schnelle Syntaxprüfung OK"
 
 #: lazarusidestrconsts.lismenuquit
 #| msgid "Quit"
@@ -12357,7 +12355,7 @@ msgstr "Kann die Methode nicht finden. Bitte beheben Sie den im Meldungsfenster 
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
-msgstr ""
+msgstr "Kann keine Pascal-Unit (.pas,.pp) finden für .lfm Datei%s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
@@ -12645,7 +12643,7 @@ msgstr "Versionsinformationen in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgid "View Breakpoint Properties"
-msgstr ""
+msgstr "Haltepunkt-Eigenschaften anzeigen"
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
@@ -13158,11 +13156,11 @@ msgstr "Quelltextvervollständigung per Vorlage"
 
 #: lazarusidestrconsts.srkmecblockcopy
 msgid "Copy Block"
-msgstr ""
+msgstr "Block kopieren"
 
 #: lazarusidestrconsts.srkmecblockdelete
 msgid "Delete Block"
-msgstr ""
+msgstr "Block löschen"
 
 #: lazarusidestrconsts.srkmecblockgotobegin
 msgid "Goto Block begin"
@@ -13174,7 +13172,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecblockhide
 msgid "Hide Block"
-msgstr ""
+msgstr "Block verbergen"
 
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
@@ -13194,7 +13192,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecblockshow
 msgid "Show Block"
-msgstr ""
+msgstr "Block zeigen"
 
 #: lazarusidestrconsts.srkmecblocktogglehide
 msgid "Toggle block"

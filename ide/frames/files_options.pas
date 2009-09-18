@@ -26,7 +26,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Controls,
-  EnvironmentOpts, LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, IDEOptionsIntf;
+  EnvironmentOpts, MacroIntf, LazarusIDEStrConsts, InputHistory, LazConf,
+  IDEProcs, IDEOptionsIntf;
 
 type
 
@@ -321,6 +322,12 @@ var
   StopChecking: boolean;
 begin
   NewFPCSrcDir:=FPCSourceDirComboBox.Text;
+  Result:=IDEMacros.SubstituteMacros(NewFPCSrcDir);
+  if not Result then begin
+    Result:=(MessageDlg(Format(lisEnvOptDlgInvalidFPCSrcDir,[NewFPCSrcDir]),
+               mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
+    exit;
+  end;
   Result:=SimpleDirectoryCheck(FOldFPCSourceDir,NewFPCSrcDir,
                                lisEnvOptDlgFPCSrcDirNotFoundMsg,StopChecking);
   if (not Result) or StopChecking then exit;

@@ -593,7 +593,7 @@ begin
     exit;
   end;
   SubResult:=CheckDirPathExists(NewDir,lisEnvOptDlgDirectoryNotFound,
-                                  NotFoundErrMsg);
+                                NotFoundErrMsg);
   if SubResult=mrIgnore then begin
     Result:=true;
     exit;
@@ -1384,10 +1384,8 @@ begin
                  lisTestDirectory,@MacroFuncTestDir,[]));
   AMacroList.Add(TTransferMacro.Create('ConfDir','',
                  lisProjectSrcPath,@MacroFuncConfDir,[]));
-  {$IFNDEF Ver2_2_0}
   AMacroList.Add(TTransferMacro.Create('Home',GetUserDir,
                  lisUserSHomeDirectory, nil, []));
-  {$ENDIF}
 end;
 
 function TEnvironmentOptions.MacroFuncCompPath(const s: string;

@@ -736,7 +736,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
-                   '$(FPCSrcDir)/packages/fcl-base/src/inc','*.pp;*.pas',false);
+                   '$(FPCSrcDir)/packages/fcl-base/src','*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -817,9 +817,7 @@ begin
   FreeThenNil(FHTMLProviders);
   FreeThenNil(CodeHelpBoss);
   FPCMessagesHelpDB:=nil;
-  FreeThenNil(HelpDatabases);
-  FreeThenNil(HelpViewers);
-  HelpIntfs.HelpManager:=nil;
+  FreeLCLHelpSystem;
   FreeThenNil(HelpOpts);
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);

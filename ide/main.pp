@@ -9094,6 +9094,9 @@ begin
     end;
   end;
 
+  // reload file (if the file was open in the IDE, closeproject unloaded it)
+  ProgramBuf.Reload;
+
   // switch codetools to new project directory
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
     ExpandFileNameUTF8(ExtractFilePath(ProgramBuf.Filename));
