@@ -628,7 +628,7 @@ begin
       for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
       begin
         AComponent := ControlSelection.SelectionForm.Components[i];
-        if AComponent = Current then
+        if (AComponent = Current) or ComponentIsInvisible(AComponent) then
           Continue;
         Test := GetParentFormRelativeClientOrigin(AComponent);
         if (Abs(Test.Y - Coord.Y) <= Delta) and
@@ -652,7 +652,7 @@ begin
       for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
       begin
         AComponent := ControlSelection.SelectionForm.Components[i];
-        if AComponent = Current then
+        if (AComponent = Current) or ComponentIsInvisible(AComponent) then
           Continue;
         Test := GetParentFormRelativeClientOrigin(AComponent);
         if (Abs(Test.X - Coord.X) <= Delta) and
@@ -681,8 +681,25 @@ begin
 end;
 
 procedure TDesigner.NudgeSelection(SelectNext: Boolean);
+
+  function StepIndex(Index: Integer): Integer;
+  begin
+    Result := Index;
+    if SelectNext then
+      Inc(Result)
+    else
+      Dec(Result);
+
+    if Result >= ControlSelection.SelectionForm.ComponentCount then
+      Result := 0
+    else
+    if Result < 0 then
+      Result := ControlSelection.SelectionForm.ComponentCount - 1;
+  end;
+
 var
-  Index: Integer;
+  Index, StartIndex: Integer;
+  AComponent: TComponent;
 begin
   if (ControlSelection.SelectionForm <> Form) or
      (ControlSelection.SelectionForm.ComponentCount = 0) then Exit;
@@ -691,19 +708,27 @@ begin
   else
     Index := -1;
 
-  if SelectNext then
-    Inc(Index)
-  else
-    Dec(Index);
+  Index := StepIndex(Index);
+  StartIndex := Index;
 
-  if Index >= ControlSelection.SelectionForm.ComponentCount then
-    Index := 0
-  else
-  if Index < 0 then
-    Index := ControlSelection.SelectionForm.ComponentCount - 1;
+  AComponent := nil;
+  while AComponent = nil do
+  begin
+    AComponent := ControlSelection.SelectionForm.Components[Index];
+    if ComponentIsInvisible(AComponent) then
+    begin
+      AComponent := nil;
+      Index := StepIndex(Index);
+      if Index = StartIndex then
+        break;
+    end;
+  end;
 
-  ControlSelection.AssignPersistent(ControlSelection.SelectionForm.Components[Index]);
-  Modified;
+  if AComponent <> nil then
+  begin
+    ControlSelection.AssignPersistent(AComponent);
+    Modified;
+  end;
 end;
 
 procedure TDesigner.SelectParentOfSelection;
