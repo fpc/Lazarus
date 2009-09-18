@@ -113,6 +113,7 @@ type
   public
     procedure SetPasswordChar(AChar: Char); virtual; abstract;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
+    function GetCaretPos: TPoint; virtual;
   end;
   
   { TCarbonSpinEdit }
@@ -205,6 +206,7 @@ type
     function GetLine(AIndex: Integer): String;
     procedure DeleteLine(AIndex: Integer);
     procedure InsertLine(AIndex: Integer; const S: String);
+    function GetCaretPos: TPoint; override;
   public
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   end;
@@ -985,6 +987,15 @@ end;
 function TCarbonCustomEdit.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
 begin
   Result := (Char = #13);
+end;
+
+function TCarbonCustomEdit.GetCaretPos: TPoint;
+var
+  x  : Integer;
+begin
+  Result.Y := 0;
+  if not GetSelStart(x) then x := 0;
+  Result.X := x;
 end;
 
 { TCarbonSpinEdit }
@@ -1893,6 +1904,46 @@ begin
 
   OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)), kTXNUnicodeTextData, @W[1], Length(W) * 2, AStart, AStart),
     Self, 'InsertLine', 'TXNSetData');
+end;
+
+function TCarbonMemo.GetCaretPos: TPoint;
+var
+  obj     : TXNObject;
+  r       : HIRect;
+  cnt     : ItemCount;
+  i, ly   : Integer;
+  yofs    : Integer;
+  fw,fh   : Fixed;
+  ofs     : TXNOffset;
+  ofs2    : TXNOffset;
+  crtpnt  : HIPoint;
+begin
+  Result.X := 0;
+  Result.Y := 0;
+  obj:=HITextViewGetTXNObject(Widget);
+  if not Assigned(obj) then Exit;
+
+  {looking for the Y-pos}
+  TXNGetHIRect(obj, kTXNTextRectKey, r);
+  TXNGetSelection(obj, ofs, ofs2);
+  TXNOffsetToHIPoint(obj, ofs, crtpnt);
+  yofs := Round(crtpnt.y);
+
+  TXNGetLineCount(obj, cnt);
+  i := 0;
+  ly := Round(r.origin.y);
+  while (i < cnt) and (ly < yofs) do
+  begin
+    TXNGetLineMetrics(obj, i, fw, fh);
+    inc(i);
+    inc(ly, Fix2Long(fh));
+  end;
+  Result.Y := i;
+
+  {looking for the X-pos}
+  crtpnt.X := 0;
+  TXNHIPointToOffset(obj, crtpnt, ofs2);
+  Result.X := ofs-ofs2;
 end;
 
 {------------------------------------------------------------------------------
