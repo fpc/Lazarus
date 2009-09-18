@@ -546,7 +546,7 @@ type
     // uses sections
     function FindUnitInAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string;
-          out NamePos, InPos: integer): boolean;
+          out NamePos, InPos: integer; const IgnoreMissingIncludeFiles: Boolean = False): boolean;
     function RenameUsedUnit(Code: TCodeBuffer;
           const OldUnitName, NewUnitName, NewUnitInFile: string): boolean;
     function ReplaceUsedUnits(Code: TCodeBuffer;
@@ -3879,8 +3879,10 @@ end;
 
 function TCodeToolManager.FindUnitInAllUsesSections(Code: TCodeBuffer;
   const AnUnitName: string;
-  out NamePos, InPos: integer): boolean;
-var NameAtomPos, InAtomPos: TAtomPosition;
+  out NamePos, InPos: integer; const IgnoreMissingIncludeFiles: Boolean = False): boolean;
+var
+  NameAtomPos, InAtomPos: TAtomPosition;
+  OldIgnoreMissingIncludeFiles: Boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3890,7 +3892,9 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
   {$ENDIF}
+  OldIgnoreMissingIncludeFiles := FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
   try
+    FCurCodeTool.Scanner.IgnoreMissingIncludeFiles := IgnoreMissingIncludeFiles;
     Result:=FCurCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
                 NameAtomPos, InAtomPos);
     if Result then begin
@@ -3900,6 +3904,7 @@ begin
   except
     on e: Exception do Result:=HandleException(e);
   end;
+  FCurCodeTool.Scanner.IgnoreMissingIncludeFiles := OldIgnoreMissingIncludeFiles;
 end;
 
 function TCodeToolManager.RenameUsedUnit(Code: TCodeBuffer;
