@@ -234,7 +234,7 @@ var
 begin
   Result := 0;
   BorderIcons := AForm.BorderIcons;
-  if biSystemMenu in BorderIcons then
+  if (biSystemMenu in BorderIcons) or (csDesigning in AForm.ComponentState) then
     Result := Result or WS_SYSMENU;
   if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
