@@ -735,12 +735,14 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
-  if ControlSelection.ActiveGrabber <> nil then
+  // resizing or moving
+  if dfHasSized in FFlags then
   begin
+    ControlSelection.RestoreBounds;
     ControlSelection.ActiveGrabber := nil;
     if ControlSelection.RubberbandActive then
       ControlSelection.RubberbandActive := False;
-    LastMouseMovePos.X:=-1;
+    LastMouseMovePos.X := -1;
     Exclude(FFlags, dfHasSized);
     MouseDownComponent := nil;
     MouseDownSender := nil;
@@ -756,6 +758,7 @@ begin
     Exit;
   end;
 
+  // if not component moving then select parent
   i:=ControlSelection.Count-1;
   while (i>=0)
   and (   (ControlSelection[i].ParentInSelection)

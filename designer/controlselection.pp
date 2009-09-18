@@ -397,7 +397,6 @@ type
     procedure AssignSelection(const ASelection: TPersistentSelectionList);
     function IsSelected(APersistent: TPersistent): Boolean;
     function IsOnlySelected(APersistent: TPersistent): Boolean;
-    procedure SaveBounds;
     function ParentLevel: integer;
     function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
@@ -409,7 +408,9 @@ type
     function IsResizing: boolean;
     procedure BeginResizing;
     procedure EndResizing(ApplyUserBounds: boolean);
+    procedure SaveBounds;
     procedure UpdateBounds;
+    procedure RestoreBounds;
 
     procedure MoveSelection(dx, dy: integer);
     function MoveSelectionWithSnapping(TotalDX, TotalDY: integer): boolean;
@@ -1096,6 +1097,29 @@ begin
   FHeight:=FRealHeight;
   InvalidateGuideLinesCache;
   Exclude(FStates,cssBoundsNeedsUpdate);
+end;
+
+procedure TControlSelection.RestoreBounds;
+var
+  i: integer;
+  OldLeftTop: TPoint;
+begin
+  BeginUpdate;
+  FLeft := OldLeft;
+  FTop := OldTop;
+  FWidth := FOldWidth;
+  FHeight := FOldHeight;
+  for i := 0 to Count - 1 do
+  begin
+    with Items[i] do
+    begin
+      OldLeftTop := OldFormRelativeLeftTop;
+      SetFormRelativeBounds(OldLeftTop.X, OldLeftTop.Y, OldWidth, OldHeight);
+    end;
+    InvalidateGuideLinesCache;
+  end;
+  UpdateRealBounds;
+  EndUpdate;
 end;
 
 procedure TControlSelection.AdjustGrabbers;
@@ -1931,22 +1955,25 @@ begin
 end;
 
 procedure TControlSelection.SaveBounds;
-var i:integer;
-  g:TGrabIndex;
+var
+  i: integer;
+  g: TGrabIndex;
 begin
   if cssNotSavingBounds in FStates then exit;
   //debugln('TControlSelection.SaveBounds');
-  if FUpdateLock>0 then begin
-    Include(FStates,cssBoundsNeedsSaving);
-    exit;
+  if FUpdateLock > 0 then
+  begin
+    Include(FStates, cssBoundsNeedsSaving);
+    Exit;
   end;
-  for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
-  for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
-  FOldLeft:=FRealLeft;
-  FOldTop:=FRealTop;
-  FOldWidth:=FRealWidth;
-  FOldHeight:=FRealHeight;
-  Exclude(FStates,cssBoundsNeedsSaving);
+
+  for i := 0 to FControls.Count - 1 do Items[i].SaveBounds;
+  for g := Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
+  FOldLeft := FRealLeft;
+  FOldTop := FRealTop;
+  FOldWidth := FRealWidth;
+  FOldHeight := FRealHeight;
+  Exclude(FStates, cssBoundsNeedsSaving);
 end;
 
 function TControlSelection.IsResizing: boolean;
