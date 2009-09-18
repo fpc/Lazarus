@@ -642,7 +642,9 @@ begin
           AComponent := TComponent(List[0])
         else
           AComponent := TComponent(List[List.Count - 1]);
-      end;
+      end
+      else
+        AComponent := nil;
     end
     else
     if DiffY <> 0 then
@@ -664,7 +666,9 @@ begin
           AComponent := TComponent(List[0])
         else
           AComponent := TComponent(List[List.Count - 1]);
-      end;
+      end
+      else
+        AComponent := nil;
     end;
   finally
     List.Free;
