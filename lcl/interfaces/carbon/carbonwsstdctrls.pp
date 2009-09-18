@@ -135,6 +135,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
   end;
   
   { TCarbonWSCustomMemo }
@@ -148,6 +149,7 @@ type
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
+
   end;
 
   { TCarbonWSEdit }
@@ -851,6 +853,19 @@ begin
   TCarbonEdit(ACustomEdit.Handle).SetSelLength(NewLength);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomEdit.SetSelLength
+  Params:  ACustomEdit - LCL custom edit
+
+  Returns caret's position
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+begin
+  if not CheckHandle(ACustomEdit, Self, 'GetCaretPos') then Exit;
+
+  Result := TCarbonCustomEdit(ACustomEdit.Handle).GetCaretPos;
+end;
+
 { TCarbonWSCustomMemo }
 
 {------------------------------------------------------------------------------
@@ -944,7 +959,6 @@ class procedure TCarbonWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
 begin
   if not CheckHandle(ACustomMemo, Self, 'SetWordWrap') then Exit;
 
-    
   TCarbonMemo(ACustomMemo.Handle).SetWordWrap(NewWordWrap);
 end;
 
