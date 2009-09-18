@@ -3172,7 +3172,7 @@ end;
 constructor TQtPrinter.Create;
 begin
   FPrinterActive := False;
-  FHandle := QPrinter_create();
+  FHandle := QPrinter_create(QPrinterHighResolution);
 end;
 
 destructor TQtPrinter.Destroy;
