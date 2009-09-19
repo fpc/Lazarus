@@ -33,9 +33,7 @@ begin
   FWantReturns := true;
   FWantTabs := false;
   FWordWrap := True;
-  //FLines := TMemoStrings.Create(Self);
   FLines := TTextStrings.Create;
-  //TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
   AutoSize := False;
@@ -276,7 +274,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetWordWrap(const Value : boolean);
 begin
-  if Value <> FWordWrap then begin
+  if Value <> FWordWrap then
+  begin
     //DebugLn('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
