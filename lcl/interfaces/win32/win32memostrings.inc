@@ -6,7 +6,7 @@ type
 
   TWin32MemoStrings = class(TStrings)
   private
-    fHandle: HWND;
+    FHandle: HWND;
     FOwner: TWinControl;
     function GetLineLength(Index: Integer): Integer;
     function GetLineStart(Index: Integer): Integer;
@@ -36,22 +36,22 @@ type
 
 function TWin32MemoStrings.GetLineLength(Index: Integer): Integer;
 begin
-  Result := SendMessage(fHandle, EM_LINELENGTH, SendMessage(fHandle, EM_LINEINDEX, Index, 0), 0);
+  Result := SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0);
 end;
 
 function TWin32MemoStrings.GetLineStart(Index: Integer): Integer;
 begin
-  Result := SendMessage(fHandle, EM_LINEINDEX, Index, 0);
+  Result := SendMessage(FHandle, EM_LINEINDEX, Index, 0);
 end;
 
 function TWin32MemoStrings.GetTextStr: string;
 begin
-  Result := win32proc.GetControlText(fHandle);
+  Result := win32proc.GetControlText(FHandle);
 end;
 
 function TWin32MemoStrings.GetRealCount: integer;
 begin
-  Result := SendMessage(fHandle, EM_GETLINECOUNT, 0, 0);
+  Result := SendMessage(FHandle, EM_GETLINECOUNT, 0, 0);
 end;
 
 function TWin32MemoStrings.GetCount: integer;
@@ -79,7 +79,7 @@ begin
   begin
     Setlength(WideBuffer, len);
     PWord(@WideBuffer[1])^ := len+1;
-    len := SendMessageW(fHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
+    len := SendMessageW(FHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
 
     Result := UTF16ToUTF8(WideBuffer);
   end
@@ -87,7 +87,7 @@ begin
   begin
     Setlength(AnsiBuffer, len);
     PWord(@AnsiBuffer[1])^ := len+1;
-    len := SendMessage(fHandle, EM_GETLINE, Index, lparam(PChar(AnsiBuffer)));
+    len := SendMessage(FHandle, EM_GETLINE, Index, lparam(PChar(AnsiBuffer)));
 
     Result := AnsiToUtf8(AnsiBuffer);
   end;
@@ -97,7 +97,7 @@ begin
   // no need for temp buf and moving
   // the result is without null terminator.
   PWord(@Result[1])^ := len+1;
-  len := SendMessage(fHandle, EM_GETLINE, Index, lparam(pchar(Result)));
+  len := SendMessage(FHandle, EM_GETLINE, Index, lparam(pchar(Result)));
 
   // read just length in case something went wrong
   Setlength(Result, len);
@@ -106,15 +106,15 @@ end;
 
 procedure TWin32MemoStrings.SetUpdateState(Updating: Boolean);
 begin
-  Windows.SendMessage(fHandle, WM_SETREDRAW, WPARAM(not Updating), 0);
+  Windows.SendMessage(FHandle, WM_SETREDRAW, WPARAM(not Updating), 0);
   if not Updating then
-    Windows.InvalidateRect(fHandle, nil, TRUE);
+    Windows.InvalidateRect(FHandle, nil, TRUE);
 end;
 
 constructor TWin32MemoStrings.Create(Handle: HWND; TheOwner: TWinControl);
 begin
   inherited Create;
-  fHandle := Handle;
+  FHandle := Handle;
   FOwner := TheOwner;
 end;
 
@@ -159,8 +159,8 @@ begin
   LineStart := GetLineStart(Index);
   LineEnd := GetLineStart(Index+1);
   if LineEnd < 0 then LineEnd := LineStart+GetLineLength(Index);
-  SendMessage(fHandle, EM_SETSEL, LineStart, LineEnd);
-  SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar('')));
+  SendMessage(FHandle, EM_SETSEL, LineStart, LineEnd);
+  SendMessage(FHandle, EM_REPLACESEL,0 , lparam(PChar('')));
 end;
 
 procedure TWin32MemoStrings.Insert(Index: integer; const S: string);
@@ -174,30 +174,30 @@ begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
-    SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
+    SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
-    else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
+    then SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
+    else SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
 {$else}
-    SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
+    SendMessage(FHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
 {$endif}
   end
   else
   begin
     //append with a preceding LineEnding
     LineStart := GetLineStart(Index-1)+GetLineLength(Index-1);
-    SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
+    SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
     if GetRealCount = Count then
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
-    else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
+    then SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
+    else SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
 {$else}
-    SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
+    SendMessage(FHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
 {$endif}
   end;
 end;
@@ -210,10 +210,10 @@ begin
   begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then Windows.SetWindowTextW(fHandle, PWideChar(UTF8ToUTF16(Value)))
-    else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(Value)));
+    then Windows.SetWindowTextW(FHandle, PWideChar(UTF8ToUTF16(Value)))
+    else Windows.SetWindowText(FHandle, PChar(Utf8ToAnsi(Value)));
   {$else}
-    SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
+    SendMessage(FHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
   {$endif}
     FillChar(Msg, SizeOf(Msg), 0);
     Msg.Msg := CM_TEXTCHANGED;
