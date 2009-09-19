@@ -805,7 +805,6 @@ type
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
-    function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -815,7 +814,6 @@ type
     procedure Append(const Value: String);
   public
     property Lines: TStrings read FLines write SetLines;
-    //property Font: TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
@@ -823,7 +821,7 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
   end;
 
 

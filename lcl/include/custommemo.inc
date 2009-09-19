@@ -231,14 +231,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomMemo.WordWrapIsStored: boolean;
- ------------------------------------------------------------------------------}
-function TCustomMemo.WordWrapIsStored: boolean;
-begin
-  Result:=not WordWrap;
-end;
-
 procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   if not ReadOnly then
