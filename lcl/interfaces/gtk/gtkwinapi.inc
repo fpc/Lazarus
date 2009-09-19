@@ -7161,14 +7161,17 @@ end;
 function TGtkWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
+  NewOrigin: TPoint;
 begin
   Result:=IsValidDC(DC);
   if Result then
   with TGtkDeviceContext(DC) do begin
-    //DebugLn('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',DbgS(DC),
-    //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
-    inc(Origin.X,dX);
-    inc(Origin.Y,dY);
+    //DebugLn(['[TGtkWidgetSet.MoveWindowOrgEx] B DC=',DbgS(DC),
+    //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ']);
+    NewOrigin:=Origin;
+    inc(NewOrigin.X,dX);
+    inc(NewOrigin.Y,dY);
+    Origin:=NewOrigin;
   end;
 end;
 
