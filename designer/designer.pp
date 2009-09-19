@@ -2008,7 +2008,8 @@ begin
     FHintTimer.Enabled := False;
     // hide hint
     FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
-    FHintWindow.Visible := False;
+    if not (dfHasSized in FFlags) then
+      FHintWindow.Visible := False;
   end;
 
   DesignSender:=GetDesignControl(Sender);
