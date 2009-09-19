@@ -169,7 +169,7 @@ begin
   Result := -1;
   if S = '' then
     Exit;
-  S := UpperCase(S);
+  S := UpperCase(Trim(S));
   if S[1] = '#' then
     if length(S) <> 7 then
       exit
