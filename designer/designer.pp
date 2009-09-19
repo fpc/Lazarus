@@ -121,7 +121,7 @@ type
     function GetShowEditorHints: boolean;
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
-    Procedure HintTimer(sender : TObject);
+    procedure HintTimer(sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
@@ -3411,11 +3411,32 @@ begin
 end;
 
 Procedure TDesigner.HintTimer(Sender: TObject);
+
+  function FormatHintText(AComponent: TComponent): String;
+  const
+    HintNameStr = '%s: %s';
+    HintPositionStr = 'Position: %d, %d';
+    HintSizeStr = 'Size: %d x %d';
+    HintTabStr = 'TabStop: %s; TabOrder: %d';
+  var
+    AControl: TControl absolute AComponent;
+    AWinControl: TWinControl absolute AComponent;
+  begin
+    // component name and classname
+    Result := Format(HintNameStr, [AComponent.Name, AComponent.ClassName]);
+    Result := Result + LineEnding + Format(HintPositionStr, [GetComponentLeft(AComponent), GetComponentTop(AComponent)]);
+    if AComponent is TControl then
+    begin
+      Result := Result + '; ' + Format(HintSizeStr, [AControl.Left, AControl.Top]);
+      if AComponent is TWinControl then
+        Result := Result + LineEnding + Format(HintTabStr, [BoolToStr(AWinControl.TabStop, True), AWinControl.TabOrder]);
+    end;
+  end;
+
 var
-  Rect : TRect;
-  AHint : String;
-  AControl : TControl;
-  Position, ClientPos : TPoint;
+  Rect: TRect;
+  AHint: String;
+  Position, ClientPos: TPoint;
   AWinControl: TWinControl;
   AComponent: TComponent;
 begin
@@ -3442,20 +3463,8 @@ begin
   // create a nice hint:
 
   // component position
-  if (dfShowEditorHints in FFlags) then begin
-    // component name and classname
-    AHint := AComponent.Name+': '+AComponent.ClassName+#10;
-    if AComponent is TControl then begin
-      AControl:=TControl(AComponent);
-      AHint := AHint + 'Left: '+IntToStr(AControl.Left)
-                     + '  Top: '+IntToStr(AControl.Top)
-                + #10+ 'Width: '+IntToStr(AControl.Width)
-                     + '  Height: '+IntToStr(AControl.Height);
-    end else begin
-      AHint := AHint + 'Left: '+IntToStr(GetComponentLeft(AComponent))
-                     + '  Top: '+IntToStr(GetComponentTop(AComponent));
-    end;
-  end;
+  if (dfShowEditorHints in FFlags) then
+    AHint := FormatHintText(AComponent);
 
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
   Rect.Left := Position.X+10;
