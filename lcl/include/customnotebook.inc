@@ -207,6 +207,8 @@ begin
   fCompStyle := csNoteBook;
 
   FPageList := TListWithEvent.Create;
+  FImageListChangeLink := TChangeLink.Create;
+  FImageListChangeLink.OnChange := @DoImageListChange;
 
   fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
   FPageIndex := -1;
@@ -278,6 +280,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomNotebook.Destroy;
 begin
+  FImageListChangeLink.Free;
   Pages.Clear;
   FreeAndNil(FAccess);
   FreeAndNil(FPageList);
@@ -400,20 +403,30 @@ end;
 
 procedure TCustomNotebook.SetActivePageComponent(const AValue: TCustomPage);
 begin
-  PageIndex:=fPageList.IndexOf(AValue);
+  PageIndex := FPageList.IndexOf(AValue);
 end;
 
 procedure TCustomNotebook.SetImages(const AValue: TImageList);
 begin
-  if FImages=AValue then exit;
-  FImages:=AValue;
-  if HandleAllocated then
-    TWSCustomNotebookClass(WidgetSetClass).SetImageList(Self, AValue);
+  if FImages = AValue then Exit;
+  if FImages <> nil then
+  begin
+    FImages.UnRegisterChanges(FImageListChangeLink);
+    FImages.RemoveFreeNotification(Self);
+  end;
+  FImages := AValue;
+  if FImages <> nil then
+  begin
+    FImages.FreeNotification(Self);
+    FImages.RegisterChanges(FImageListChangeLink);
+  end;
+  DoImageListChange(Self);
   UpdateTabProperties;
 end;
 
 procedure TCustomNotebook.SetOptions(const AValue: TNoteBookOptions);
-var ChangedOptions: TNoteBookOptions;
+var
+  ChangedOptions: TNoteBookOptions;
 begin
   if FOptions=AValue then exit;
   ChangedOptions:=(FOptions-AValue)+(AValue-FOptions);
@@ -748,7 +761,8 @@ end;
   Tells the interface to update all tabs.
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.UpdateTabProperties;
-var i: integer;
+var
+  i: integer;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   for i := 0 to PageCount - 1 do
@@ -764,6 +778,14 @@ class function TCustomNotebook.GetControlClassDefaultSize: TPoint;
 begin
   Result.X:=200;
   Result.Y:=200;
+end;
+
+procedure TCustomNotebook.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = Images) then
+    SetImages(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -935,6 +957,12 @@ procedure TCustomNotebook.DoSendTabPosition;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   TWSCustomNotebookClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
+end;
+
+procedure TCustomNotebook.DoImageListChange(Sender: TObject);
+begin
+  if HandleAllocated then
+    TWSCustomNotebookClass(WidgetSetClass).SetImageList(Self, Images);
 end;
 
 

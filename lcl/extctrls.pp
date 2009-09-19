@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, popupnotifier;
+  LCLClasses, Menus, popupnotifier, ImgList;
 
 type
 
@@ -140,6 +140,7 @@ type
     FAccess: TStrings; // TNBPages
     FAddingPages: boolean;
     FImages: TImageList;
+    FImageListChangeLink: TChangeLink;
     FLoadedPageIndex: integer;
     FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;
@@ -156,6 +157,7 @@ type
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
+    procedure DoImageListChange(Sender: TObject);
     function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;
     function GetPage(AIndex: Integer): TCustomPage;
@@ -193,6 +195,7 @@ type
     procedure UpdateTabProperties; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
