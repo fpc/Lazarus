@@ -121,7 +121,7 @@ type
     function GetShowEditorHints: boolean;
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
-    procedure HintTimer(sender : TObject);
+    procedure HintTimer(Sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
@@ -1562,6 +1562,8 @@ var
   Handled: Boolean;
 begin
   FHintTimer.Enabled := False;
+  FHintWindow.Visible := False;
+
   Exclude(FFLags, dfHasSized);
   SetCaptureControl(nil);
   DesignSender := GetDesignControl(Sender);
@@ -1899,8 +1901,10 @@ var
 
 var
   Handled: Boolean;
-Begin
+begin
   FHintTimer.Enabled := False;
+  FHintWindow.Visible := False;
+
   SetCaptureControl(nil);
 
   // check if the message is for the designed form
@@ -1999,13 +2003,12 @@ var
 begin
   GetMouseMsgShift(TheMessage,Shift,Button);
 
-  if [dfShowEditorHints]*FFlags<>[] then begin
+  if [dfShowEditorHints]*FFlags<>[] then
+  begin
     FHintTimer.Enabled := False;
-
     // hide hint
     FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
-    if FHintWindow.Visible then
-      FHintWindow.Visible := False;
+    FHintWindow.Visible := False;
   end;
 
   DesignSender:=GetDesignControl(Sender);
@@ -2102,6 +2105,8 @@ begin
       ControlSelection.ActiveGrabber:=nil;
     end;
   end;
+  if [dfShowEditorHints, dfHasSized] * FFlags = [dfShowEditorHints, dfHasSized] then
+    HintTimer(Self);
 end;
 
 
@@ -3412,7 +3417,7 @@ end;
 
 Procedure TDesigner.HintTimer(Sender: TObject);
 
-  function FormatHintText(AComponent: TComponent): String;
+  function GetComponentHintText(AComponent: TComponent): String;
   const
     HintNameStr = '%s: %s';
     HintPositionStr = 'Position: %d, %d';
@@ -3424,13 +3429,64 @@ Procedure TDesigner.HintTimer(Sender: TObject);
   begin
     // component name and classname
     Result := Format(HintNameStr, [AComponent.Name, AComponent.ClassName]);
+    // component position
     Result := Result + LineEnding + Format(HintPositionStr, [GetComponentLeft(AComponent), GetComponentTop(AComponent)]);
-    if AComponent is TControl then
+    if AComponent is TControl then // more info for controls
     begin
-      Result := Result + '; ' + Format(HintSizeStr, [AControl.Left, AControl.Top]);
+      // size
+      Result := Result + '; ' + Format(HintSizeStr, [AControl.Width, AControl.Height]);
+      // and TabStop, TabOrder for TWinControl
       if AComponent is TWinControl then
         Result := Result + LineEnding + Format(HintTabStr, [BoolToStr(AWinControl.TabStop, True), AWinControl.TabOrder]);
     end;
+  end;
+
+  function GetSelectionSizeHintText: String;
+  begin
+    Result := Format('%d x %d', [ControlSelection.Width, ControlSelection.Height]);
+  end;
+
+  function GetSelectionPosHintText: String;
+
+    function ParentComponent(AComponent: TComponent): TComponent;
+    begin
+      Result := AComponent.GetParentComponent;
+      if (Result = nil) and ComponentIsIcon(AComponent) then
+        Result := AComponent.Owner;
+    end;
+
+  var
+    BaseParent, TestParent: TComponent;
+    BaseFound: Boolean;
+    i: integer;
+    P: TPoint;
+  begin
+    BaseFound := ControlSelection[0].IsTComponent;
+    // search for one parent of our selection
+    if BaseFound then
+    begin
+      BaseParent := ParentComponent(TComponent(ControlSelection[0].Persistent));
+      BaseFound := BaseParent is TWinControl;
+      if BaseFound then
+      begin
+        for i := 1 to ControlSelection.Count - 1 do
+        begin
+          if ControlSelection[0].IsTComponent then
+            TestParent := ParentComponent(TComponent(ControlSelection[0].Persistent))
+          else
+            TestParent := nil;
+          if TestParent <> BaseParent then
+          begin
+            BaseFound := False;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    P := Point(ControlSelection.Left, ControlSelection.Top);
+    if BaseFound then
+      P := TWinControl(BaseParent).ScreenToClient(Form.ClientToScreen(P));
+    Result := Format('%d, %d', [P.X, P.Y]);
   end;
 
 var
@@ -3444,35 +3500,45 @@ begin
   if [dfShowEditorHints]*FFlags=[] then exit;
 
   Position := Mouse.CursorPos;
-  AWinControl := FindLCLWindow(Position);
-  if not (Assigned(AWinControl)) then Exit;
-  if GetDesignerForm(AWinControl)<>Form then exit;
+  if not (dfHasSized in FFlags) then
+  begin
+    AWinControl := FindLCLWindow(Position);
+    if not (Assigned(AWinControl)) then Exit;
+    if GetDesignerForm(AWinControl) <> Form then exit;
 
-  // first search a non visual component at the position
-  ClientPos:=Form.ScreenToClient(Position);
-  AComponent:=NonVisualComponentAtPos(ClientPos.X,ClientPos.Y);
-  if AComponent=nil then begin
-    // then search a control at the position
-    AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
-    if not Assigned(AComponent) then
-      AComponent := AWinControl;
+    // first search a non visual component at the position
+    ClientPos := Form.ScreenToClient(Position);
+    AComponent := NonVisualComponentAtPos(ClientPos.X, ClientPos.Y);
+    if AComponent = nil then
+    begin
+      // then search a control at the position
+      AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
+      if not Assigned(AComponent) then
+        AComponent := AWinControl;
+    end;
+    AComponent := GetDesignedComponent(AComponent);
+    if AComponent = nil then exit;
+    AHint := GetComponentHintText(AComponent);
+  end
+  else
+  begin
+    // components are either resize or move
+    if (ControlSelection.LookupRoot <> Form) or (ControlSelection.Count = 0) then
+      Exit;
+
+    if ControlSelection.ActiveGrabber <> nil then
+      AHint := GetSelectionSizeHintText
+    else
+      AHint := GetSelectionPosHintText;
   end;
-  AComponent:=GetDesignedComponent(AComponent);
-  if AComponent=nil then exit;
 
-  // create a nice hint:
-
-  // component position
-  if (dfShowEditorHints in FFlags) then
-    AHint := FormatHintText(AComponent);
-
-  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := Position.X+10;
-  Rect.Top := Position.Y+5;
+  Rect := FHintWindow.CalcHintRect(0, AHint, nil);  //no maxwidth
+  Rect.Left := Position.X + 15;
+  Rect.Top := Position.Y + 15;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
-  FHintWindow.ActivateHint(Rect,AHint);
+  FHintWindow.ActivateHint(Rect, AHint);
 end;
 
 procedure TDesigner.SetSnapToGrid(const AValue: boolean);
