@@ -788,7 +788,6 @@ type
     FWordWrap: Boolean;
     procedure SetHorzScrollBar(const AValue: TMemoScrollBar);
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
-    function StoreScrollBars: boolean;
   protected
     class procedure WSRegisterClass; override;
     procedure InitializeWnd; override;
@@ -814,10 +813,8 @@ type
     procedure Append(const Value: String);
   public
     property Lines: TStrings read FLines write SetLines;
-    property HorzScrollBar: TMemoScrollBar
-      read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
-    property VertScrollBar: TMemoScrollBar
-      read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+    property HorzScrollBar: TMemoScrollBar read FHorzScrollBar write SetHorzScrollBar;
+    property VertScrollBar: TMemoScrollBar read FVertScrollBar write SetVertScrollBar;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;

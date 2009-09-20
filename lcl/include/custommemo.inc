@@ -19,6 +19,8 @@
  *****************************************************************************
 }
 
+{off $DEFINE DEBUG_MEMO}
+
 {------------------------------------------------------------------------------
   Method: TCustomMemo.Create
   Params: 
@@ -30,8 +32,8 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
-  FWantReturns := true;
-  FWantTabs := false;
+  FWantReturns := True;
+  FWantTabs := False;
   FWordWrap := True;
   FLines := TTextStrings.Create;
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
@@ -60,7 +62,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.Append(const Value : String);
+procedure TCustomMemo.Append(const Value: String);
 begin
   Lines.Add(Value);
 end;
@@ -94,18 +96,10 @@ end;
 procedure TCustomMemo.SetWantReturns(const AValue: Boolean);
 begin
   if FWantReturns = AValue then
-    exit;
+    Exit;
   FWantReturns := AValue;
   if HandleAllocated then
     TWSCustomMemoClass(WidgetSetClass).SetWantReturns(Self, AValue);
-end;
-
-{------------------------------------------------------------------------------
-  function TCustomMemo.StoreScrollBars: boolean;
- ------------------------------------------------------------------------------}
-function TCustomMemo.StoreScrollBars: boolean;
-begin
-  Result:=true;
 end;
 
 class procedure TCustomMemo.WSRegisterClass;
@@ -118,10 +112,14 @@ procedure TCustomMemo.InitializeWnd;
 var
   NewStrings : TStrings;
 begin
-  //DebugLn('[TCustomMemo.InitializeWnd] A ',FLines.ClassName);
+  {$ifdef DEBUG_MEMO}
+  DebugLn('[TCustomMemo.InitializeWnd] A ',FLines.ClassName);
+  {$endif}
   inherited InitializeWnd;
-  //DebugLn('[TCustomMemo.InitializeWnd] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
-  
+  {$ifdef DEBUG_MEMO}
+  DebugLn('[TCustomMemo.InitializeWnd] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+  {$endif}
+
   // fetch/create the interface item list
   NewStrings := TWSCustomMemoClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text)
@@ -133,14 +131,20 @@ begin
   // new item list is the interface item list
   FLines:= NewStrings;
 
-  //DebugLn('[TCustomMemo.InitializeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+  {$ifdef DEBUG_MEMO}
+  DebugLn('[TCustomMemo.InitializeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+  {$endif}
 end;
 
 procedure TCustomMemo.FinalizeWnd;
 var
   NewStrings : TStrings;
 begin
-  if Assigned(FLines) then begin
+  if Assigned(FLines) then
+  begin
+    {$ifdef DEBUG_MEMO}
+    DebugLn('[TCustomMemo.FinalizeWnd] A ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+    {$endif}
     // create internal item list
     NewStrings := TTextStrings.Create;
 
@@ -151,7 +155,10 @@ begin
     TWSCustomMemoClass(WidgetSetClass).FreeStrings(FLines);
 
     // new item list is the internal item list
-    FLines:= NewStrings;
+    FLines := NewStrings;
+    {$ifdef DEBUG_MEMO}
+    DebugLn('[TCustomMemo.FinalizeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
+    {$endif}
   end;
   inherited FinalizeWnd;
 end;
@@ -159,12 +166,16 @@ end;
 function TCustomMemo.RealGetText: TCaption;
 begin
   Result := Lines.Text;
-  //debugln('TCustomMemo.RealGetText "',Result,'"');
+  {$ifdef DEBUG_MEMO}
+  debugln('TCustomMemo.RealGetText "',Result,'"');
+  {$endif}
 end;
 
 procedure TCustomMemo.RealSetText(const Value: TCaption);
 begin
-  //debugln('TCustomMemo.RealSetText "',Value,'"');
+  {$ifdef DEBUG_MEMO}
+  debugln('TCustomMemo.RealSetText "',Value,'"');
+  {$endif}
   Lines.Text := Value;
 end;
 
@@ -187,7 +198,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetLines(const Value : TStrings);
+procedure TCustomMemo.SetLines(const Value: TStrings);
 begin
   if (Value <> nil) then
     FLines.Assign(Value);
@@ -206,7 +217,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
+procedure TCustomMemo.SetScrollbars(const Value: TScrollStyle);
 begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
@@ -272,11 +283,13 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetWordWrap(const Value : boolean);
+procedure TCustomMemo.SetWordWrap(const Value: boolean);
 begin
   if Value <> FWordWrap then
   begin
-    //DebugLn('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
+    {$ifdef DEBUG_MEMO}
+    DebugLn(['TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value]);
+    {$endif}
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
       TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, Value);
