@@ -726,13 +726,8 @@ begin
       gbBitmap: NewDrawable := GDIBitmapObject;
       gbPixbuf:
         begin
-          NewDrawable := gdk_pixmap_new(nil,
-            gdk_pixbuf_get_width(GDIPixbufObject),
-            gdk_pixbuf_get_height(GDIPixbufObject),
-            gdk_pixbuf_get_n_channels(GDIPixbufObject) * gdk_pixbuf_get_bits_per_sample(GDIPixbufObject));
-          Mask := gdk_pixmap_new(nil,
-            gdk_pixbuf_get_width(GDIPixbufObject),
-            gdk_pixbuf_get_height(GDIPixbufObject), 1);
+          NewDrawable := nil;
+          Mask := nil;
           gdk_pixbuf_render_pixmap_and_mask(GDIPixbufObject, NewDrawable, Mask, $80);
           GDIBitmapType := gbPixmap;
           gdk_pixbuf_unref(GDIPixbufObject);
