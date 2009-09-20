@@ -193,6 +193,7 @@ type
     function  ComponentClassAtPos(const AClass: TComponentClass;
                                   const APos: TPoint; const UseRootAsDefault,
                                   IgnoreHidden: boolean): TComponent;
+    procedure SetTempCursor(ARoot: TWinControl; ACursor: TCursor);
 
     // popup menu
     procedure BuildPopupMenu;
@@ -496,7 +497,7 @@ begin
   FHintWindow.AutoHide := True;
 
   DDC:=TDesignerDeviceContext.Create;
-  LastFormCursor:=crDefault;
+  LastFormCursor := crDefault;
   DeletingPersistent:=TList.Create;
   IgnoreDeletingPersistent:=TList.Create;
 end;
@@ -1437,7 +1438,7 @@ begin
   Result := Lo(TheMessage.LParam) = HTCLIENT;
   if Result then
   begin
-    Form.SetTempCursor(LastFormCursor);
+    SetTempCursor(Form, LastFormCursor);
     TheMessage.Result := 1;
   end;
 end;
@@ -2051,7 +2052,7 @@ begin
     if ACursor <> LastFormCursor then
     begin
       LastFormCursor := ACursor;
-      Form.SetTempCursor(ACursor);
+      SetTempCursor(Form, ACursor);
     end;
     Exit;
   end;
@@ -3141,6 +3142,25 @@ begin
   if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass))
   then
     Result := LookupRoot;
+end;
+
+procedure TDesigner.SetTempCursor(ARoot: TWinControl; ACursor: TCursor);
+
+  procedure Traverse(ARoot: TWinControl);
+  var
+    i: integer;
+  begin
+    for i := 0 to ARoot.ControlCount - 1 do
+    begin
+      ARoot.Controls[i].SetTempCursor(ACursor);
+      if ARoot.Controls[i] is TWinControl then
+        Traverse(TWinControl(ARoot.Controls[i]));
+    end;
+  end;
+
+begin
+  Traverse(ARoot);
+  ARoot.SetTempCursor(ACursor);
 end;
 
 function TDesigner.WinControlAtPos(x, y: integer; UseRootAsDefault,
