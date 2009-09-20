@@ -1162,48 +1162,48 @@ begin
           or JITNonFormList.IsJITNonForm(AComponent);
 end;
 
-function TCustomFormEditor.GetJITListOfType(AncestorType: TComponentClass
-  ): TJITComponentList;
+function TCustomFormEditor.GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
 begin
-  if AncestorType.InheritsFrom(TForm) then
-    Result:=JITFormList
-  else if AncestorType.InheritsFrom(TComponent) then
-    Result:=JITNonFormList
+  if AncestorType.InheritsFrom(TCustomForm) then
+    Result := JITFormList
+  else 
+  if AncestorType.InheritsFrom(TComponent) then
+    Result := JITNonFormList
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TCustomFormEditor.FindJITList(AComponent: TComponent
-  ): TJITComponentList;
+function TCustomFormEditor.FindJITList(AComponent: TComponent): TJITComponentList;
 begin
-  if JITFormList.IndexOf(AComponent)>=0 then
-    Result:=JITFormList
-  else if JITNonFormList.IndexOf(AComponent)>=0 then
-    Result:=JITNonFormList
+  if JITFormList.IndexOf(AComponent) >= 0 then
+    Result := JITFormList
+  else 
+  if JITNonFormList.IndexOf(AComponent) >= 0 then
+    Result := JITNonFormList
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TCustomFormEditor.FindJITListByClassName(
-  const AComponentClassName: string): TJITComponentList;
+function TCustomFormEditor.FindJITListByClassName(const AComponentClassName: string): TJITComponentList;
 begin
-  if JITFormList.FindComponentByClassName(AComponentClassName)>=0 then
-    Result:=JITFormList
-  else if JITNonFormList.FindComponentByClassName(AComponentClassName)>=0 then
-    Result:=JITNonFormList
+  if JITFormList.FindComponentByClassName(AComponentClassName) >= 0 then
+    Result := JITFormList
+  else 
+  if JITNonFormList.FindComponentByClassName(AComponentClassName) >= 0 then
+    Result := JITNonFormList
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TCustomFormEditor.FindJITListByClass(AComponentClass: TComponentClass
-  ): TJITComponentList;
+function TCustomFormEditor.FindJITListByClass(AComponentClass: TComponentClass): TJITComponentList;
 begin
-  if JITFormList.FindComponentByClass(AComponentClass)>=0 then
-    Result:=JITFormList
-  else if JITNonFormList.FindComponentByClass(AComponentClass)>=0 then
-    Result:=JITNonFormList
+  if JITFormList.FindComponentByClass(AComponentClass) >= 0 then
+    Result := JITFormList
+  else 
+  if JITNonFormList.FindComponentByClass(AComponentClass) >= 0 then
+    Result := JITNonFormList
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TCustomFormEditor.GetDesignerForm(AComponent: TComponent): TCustomForm;
@@ -1341,15 +1341,17 @@ function TCustomFormEditor.FindJITComponentByClassName(
 var
   i: LongInt;
 begin
-  Result:=nil;
-  i:=JITFormList.FindComponentByClassName(AComponentClassName);
-  if i>=0 then begin
-    Result:=JITFormList[i];
+  Result := nil;
+  i := JITFormList.FindComponentByClassName(AComponentClassName);
+  if i >= 0 then 
+  begin
+    Result := JITFormList[i];
     exit;
   end;
-  i:=JITNonFormList.FindComponentByClassName(AComponentClassName);
-  if i>=0 then begin
-    Result:=JITNonFormList[i];
+  i := JITNonFormList.FindComponentByClassName(AComponentClassName);
+  if i >= 0 then 
+  begin
+    Result := JITNonFormList[i];
     exit;
   end;
 end;
@@ -1359,15 +1361,17 @@ function TCustomFormEditor.FindJITComponentByClass(
 var
   i: LongInt;
 begin
-  Result:=nil;
-  i:=JITFormList.FindComponentByClass(AComponentClass);
-  if i>=0 then begin
-    Result:=JITFormList[i];
+  Result := nil;
+  i := JITFormList.FindComponentByClass(AComponentClass);
+  if i >= 0 then 
+  begin
+    Result := JITFormList[i];
     exit;
   end;
-  i:=JITNonFormList.FindComponentByClass(AComponentClass);
-  if i>=0 then begin
-    Result:=JITNonFormList[i];
+  i := JITNonFormList.FindComponentByClass(AComponentClass);
+  if i >= 0 then 
+  begin
+    Result := JITNonFormList[i];
     exit;
   end;
 end;
@@ -1489,11 +1493,12 @@ function TCustomFormEditor.GetDesigner(Index: integer): TIDesigner;
 var
   AForm: TCustomForm;
 begin
-  if Index<JITFormList.Count then
-    Result:=JITFormList[Index].Designer
-  else begin
-    AForm:=GetDesignerForm(JITNonFormList[Index-JITFormList.Count]);
-    Result:=TIDesigner(AForm.Designer);
+  if Index < JITFormList.Count then
+    Result := JITFormList[Index].Designer
+  else 
+  begin
+    AForm := GetDesignerForm(JITNonFormList[Index-JITFormList.Count]);
+    Result := TIDesigner(AForm.Designer);
   end;
 end;
 

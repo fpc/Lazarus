@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    This unit defines a list of forms descendents. The forms are normal TForm
+    This unit defines a list of forms descendents. The forms are normal TCustomForm
     descendents with one exception: Every form has its own class. These classes
     are changeable at runtime, so that IDEs can add, remove or rename methods
     and such stuff. Also these forms can be loaded from streams and missing
@@ -215,10 +215,10 @@ type
   
   TJITForms = class(TJITComponentList)
   private
-    function GetItem(Index: integer): TForm;
+    function GetItem(Index: integer): TCustomForm;
   public
     function IsJITForm(AComponent: TComponent): boolean;
-    property Items[Index:integer]: TForm read GetItem; default;
+    property Items[Index:integer]: TCustomForm read GetItem; default;
   end;
   
   
@@ -1864,22 +1864,22 @@ end;
 
 { TJITForms }
 
-function TJITForms.IsJITForm(AComponent: TComponent): boolean;
+function TJITForms.IsJITForm(AComponent: TComponent): Boolean;
 begin
-  Result:=(AComponent<>nil) and (AComponent is TForm)
-      and (TForm(AComponent).Parent=nil) and (IndexOf(AComponent)>=0);
+  Result:=(AComponent<>nil) and (AComponent is TCustomForm)
+      and (TCustomForm(AComponent).Parent=nil) and (IndexOf(AComponent)>=0);
 end;
 
-function TJITForms.GetItem(Index: integer): TForm;
+function TJITForms.GetItem(Index: integer): TCustomForm;
 begin
-  Result:=TForm(inherited Items[Index]);
+  Result:=TCustomForm(inherited Items[Index]);
 end;
 
 { TJITNonFormComponents }
 
 function TJITNonFormComponents.IsJITNonForm(AComponent: TComponent): boolean;
 begin
-  Result:=(AComponent<>nil) and (not (AComponent is TForm))
+  Result:=(AComponent<>nil) and (not (AComponent is TCustomForm))
           and (IndexOf(AComponent)>=0);
 end;
 
