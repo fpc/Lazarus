@@ -844,7 +844,18 @@ var
       gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
     end;
 
-    gdk_pixbuf_render_pixmap_and_mask(Src, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
+    if GdiObject^.GDIPixmapObject.Image<>nil then
+    begin
+      gdk_pixmap_unref(GdiObject^.GDIPixmapObject.Image);
+      GdiObject^.GDIPixmapObject.Image:=nil;
+    end;
+    if GdiObject^.GDIPixmapObject.Mask<>nil then
+    begin
+      gdk_bitmap_unref(GdiObject^.GDIPixmapObject.Mask);
+      GdiObject^.GDIPixmapObject.Mask:=nil;
+    end;
+    gdk_pixbuf_render_pixmap_and_mask(Src,
+      GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
     gdk_pixbuf_unref(Src);
 
     GdiObject^.Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject.Image);
