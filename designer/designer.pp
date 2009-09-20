@@ -2063,17 +2063,20 @@ begin
       if (ControlSelection.ActiveGrabber <> nil) then // grabber active => resizing
       begin
         // grabber moving -> size selection
-        if not (dfHasSized in FFlags) then
+        if not ControlSelection.LookupRootSelected then // if not current form is selected then resize selection
         begin
-          ControlSelection.SaveBounds;
-          Include(FFlags, dfHasSized);
+          if not (dfHasSized in FFlags) then
+          begin
+            ControlSelection.SaveBounds;
+            Include(FFlags, dfHasSized);
+          end;
+          OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
+          CurSnappedMousePos:= ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+          ControlSelection.SizeSelection(
+            CurSnappedMousePos.X - OldSnappedMousePos.X,
+            CurSnappedMousePos.Y - OldSnappedMousePos.Y);
+          DoModified;
         end;
-        OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
-        CurSnappedMousePos:= ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
-        ControlSelection.SizeSelection(
-          CurSnappedMousePos.X - OldSnappedMousePos.X,
-          CurSnappedMousePos.Y - OldSnappedMousePos.Y);
-        DoModified;
       end
       else
       begin // no grabber active => moving
