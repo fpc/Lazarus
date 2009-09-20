@@ -45,7 +45,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.SetImages(const AValue: TCustomImageList);
 begin
+  if FImages <> nil then
+  begin
+    FImages.UnRegisterChanges(FImageChangeLink);
+    FImages.RemoveFreeNotification(Self);
+  end;
   FImages := AValue;
+  if FImages <> nil then
+  begin
+    FImages.FreeNotification(Self);
+    FImages.RegisterChanges(FImageChangeLink);
+  end;
   FItems.UpdateImages;
 end;
 
@@ -282,12 +292,8 @@ end;
 procedure TMenu.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-    if AComponent = FImages then
-    begin
-      FImages := nil;
-      FItems.UpdateImages;
-    end;
+  if (Operation = opRemove) and (AComponent = FImages) then
+    Images := nil;
 end;
 
 procedure TMenu.SetChildOrder(Child: TComponent; Order: Integer);
