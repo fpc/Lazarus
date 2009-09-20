@@ -969,7 +969,6 @@ const
 var
   GObject: PGdiObject;
   TmpMask: PGdkBitmap;
-  W, H: Integer;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
@@ -1046,11 +1045,10 @@ begin
                 end;
                 gbPixbuf:
                 begin
-                  W := gdk_pixbuf_get_width(PGdiObject(lbHatch)^.GDIPixbufObject);
-                  H := gdk_pixbuf_get_height(PGdiObject(lbHatch)^.GDIPixbufObject);
-                  GObject^.GDIBrushPixmap := gdk_pixmap_new(nil, W, H, 24);
-                  TmpMask := gdk_pixmap_new(nil, W, H, 1);
-                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject, GObject^.GDIBrushPixmap, TmpMask, $80);
+                  GObject^.GDIBrushPixmap := nil;
+                  TmpMask := nil;
+                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject,
+                    GObject^.GDIBrushPixmap, TmpMask, $80);
                   gdk_pixmap_unref(TmpMask);
                 end;
                 else
