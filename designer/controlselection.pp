@@ -620,16 +620,19 @@ var
   OldBounds: TRect;
 begin
   if not FIsTComponent then exit;
-  if Owner.Mediator<>nil then begin
+  if Owner.Mediator <> nil then 
+  begin
     Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
     ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
     dec(ParentOffset.X,OldBounds.Left);
     dec(ParentOffset.Y,OldBounds.Top);
     Owner.Mediator.SetBounds(TComponent(FPersistent),
       Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
-  end else begin
-    ParentOffset:=GetParentFormRelativeParentClientOrigin(TComponent(FPersistent));
-    SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
+  end 
+  else 
+  begin
+    ParentOffset := GetParentFormRelativeParentClientOrigin(TComponent(FPersistent));
+    SetBounds(ALeft - ParentOffset.X, ATop - ParentOffset.Y, AWidth, AHeight);
   end;
 end;
 

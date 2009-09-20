@@ -479,8 +479,8 @@ end;
 
   Scale contorl by factor Multiplier/Divider
 ------------------------------------------------------------------------------}
-Procedure TControl.ChangeScale(Multiplier, Divider: Integer);
-Begin
+procedure TControl.ChangeScale(Multiplier, Divider: Integer);
+begin
   // TODO: TCONTROL.CHANGESCALE
   //Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;

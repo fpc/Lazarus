@@ -176,6 +176,7 @@ type
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     function GetPasteParent: TWinControl;
+    procedure DoModified;
     function DoPasteSelectionFromClipboard(PasteFlags: TComponentPasteSelectionFlags
                                            ): boolean;
     function DoInsertFromStream(s: TStream; PasteParent: TWinControl;
@@ -949,6 +950,12 @@ begin
   if (Result=nil)
   and (FLookupRoot is TWinControl) then
     Result:=TWinControl(FLookupRoot);
+end;
+
+procedure TDesigner.DoModified;
+begin
+  if Assigned(OnModified) then
+    OnModified(Self)
 end;
 
 function TDesigner.DoPasteSelectionFromClipboard(
@@ -2001,110 +2008,108 @@ var
   DesignSender: TControl;
   Handled: Boolean;
 begin
-  GetMouseMsgShift(TheMessage,Shift,Button);
+  GetMouseMsgShift(TheMessage, Shift, Button);
 
-  if [dfShowEditorHints]*FFlags<>[] then
+  if [dfShowEditorHints] * FFlags <> [] then
   begin
     FHintTimer.Enabled := False;
     // hide hint
-    FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
+    FHintTimer.Enabled := Shift * [ssLeft, ssRight, ssMiddle] = [];
     if not (dfHasSized in FFlags) then
       FHintWindow.Visible := False;
   end;
 
-  DesignSender:=GetDesignControl(Sender);
+  DesignSender := GetDesignControl(Sender);
   //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
-  SenderParentForm:=GetParentForm(DesignSender);
-  if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
+  SenderParentForm := GetParentForm(DesignSender);
+  if (SenderParentForm = nil) or (SenderParentForm <> Form) then Exit;
 
-  OldMouseMovePos:= LastMouseMovePos;
-  LastMouseMovePos:= GetFormRelativeMousePosition(Form);
-  if (OldMouseMovePos.X=LastMouseMovePos.X)
-  and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
+  OldMouseMovePos := LastMouseMovePos;
+  LastMouseMovePos := GetFormRelativeMousePosition(Form);
+  if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
+    Exit;
 
-  if Mediator<>nil then begin
-    Handled:=false;
-    Mediator.MouseMove(Shift,LastMouseMovePos,Handled);
-    if Handled then exit;
+  if Mediator <> nil then
+  begin
+    Handled := False;
+    Mediator.MouseMove(Shift, LastMouseMovePos, Handled);
+    if Handled then Exit;
   end;
 
-  if ControlSelection.SelectionForm=Form then
-    Grabber:=ControlSelection.GrabberAtPos(
-                         LastMouseMovePos.X, LastMouseMovePos.Y)
+  if ControlSelection.SelectionForm = Form then
+    Grabber := ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y)
   else
-    Grabber:=nil;
+    Grabber := nil;
 
-  if MouseDownComponent=nil then begin
+  if MouseDownComponent = nil then
+  begin
     if Grabber = nil then
-      ACursor:= crDefault
+      ACursor := crDefault
     else begin
-      ACursor:= Grabber.Cursor;
+      ACursor := Grabber.Cursor;
     end;
-    if ACursor<>LastFormCursor then begin
-      LastFormCursor:=ACursor;
+    if ACursor <> LastFormCursor then
+    begin
+      LastFormCursor := ACursor;
       Form.SetTempCursor(ACursor);
     end;
-
-    exit;
+    Exit;
   end;
 
-  if (ControlSelection.SelectionForm=nil)
-  or (ControlSelection.SelectionForm=Form)
-  then begin
-    if Button=mbLeft then begin
-      // left button pressed
-      if (ControlSelection.ActiveGrabber<>nil) then begin
+  if (ControlSelection.SelectionForm = nil) or (ControlSelection.SelectionForm = Form) then
+  begin
+    if Button = mbLeft then // left button pressed
+    begin
+      if (ControlSelection.ActiveGrabber <> nil) then // grabber active => resizing
+      begin
         // grabber moving -> size selection
-        if not (dfHasSized in FFlags) then begin
+        if not (dfHasSized in FFlags) then
+        begin
           ControlSelection.SaveBounds;
-          Include(FFlags,dfHasSized);
+          Include(FFlags, dfHasSized);
         end;
-        OldSnappedMousePos:=
-          ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
-        CurSnappedMousePos:=
-          ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+        OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
+        CurSnappedMousePos:= ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
         ControlSelection.SizeSelection(
-          CurSnappedMousePos.X-OldSnappedMousePos.X,
-          CurSnappedMousePos.Y-OldSnappedMousePos.Y);
-        if Assigned(OnModified) then OnModified(Self);
-      end else begin
-        // no grabber active
-        SelectedCompClass:=GetSelectedComponentClass;
-        if (not ControlSelection.RubberBandActive)
-        and (SelectedCompClass=nil)
-        and (Shift=[ssLeft])
-        and (ControlSelection.Count>=1)
-        and (not ControlSelection.LookupRootSelected)
-        then begin
-          // move selection
-          if not (dfHasSized in FFlags) then begin
+          CurSnappedMousePos.X - OldSnappedMousePos.X,
+          CurSnappedMousePos.Y - OldSnappedMousePos.Y);
+        DoModified;
+      end
+      else
+      begin // no grabber active => moving
+        SelectedCompClass := GetSelectedComponentClass;
+        if (not ControlSelection.RubberBandActive) and
+           (SelectedCompClass=nil) and
+           (Shift=[ssLeft]) and
+           (ControlSelection.Count>=1) and
+           (not ControlSelection.LookupRootSelected) then
+        begin // move selection
+          if not (dfHasSized in FFlags) then
+          begin
             ControlSelection.SaveBounds;
-            Include(FFlags,dfHasSized);
+            Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
           if ControlSelection.MoveSelectionWithSnapping(
-            LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
-          then begin
-            if Assigned(OnModified) then OnModified(Self);
-          end;
+              LastMouseMovePos.X - MouseDownPos.X,
+              LastMouseMovePos.Y - MouseDownPos.Y) then
+            DoModified;
         end
         else
         begin
           // rubberband sizing (selection or creation)
-          ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
-                                                  LastMouseMovePos.X,
-                                                  LastMouseMovePos.Y);
-          if SelectedCompClass=nil then
-            ControlSelection.RubberbandType:=rbtSelection
+          ControlSelection.RubberBandBounds := Rect(MouseDownPos.X, MouseDownPos.Y,
+                                                    LastMouseMovePos.X, LastMouseMovePos.Y);
+          if SelectedCompClass = nil then
+            ControlSelection.RubberbandType := rbtSelection
           else
-            ControlSelection.RubberbandType:=rbtCreating;
-          ControlSelection.RubberBandActive:=true;
+            ControlSelection.RubberbandType := rbtCreating;
+          ControlSelection.RubberBandActive := True;
         end;
       end;
     end
-    else begin
+    else
       ControlSelection.ActiveGrabber:=nil;
-    end;
   end;
   if [dfShowEditorHints, dfHasSized] * FFlags = [dfShowEditorHints, dfHasSized] then
     HintTimer(Self);
@@ -2408,7 +2413,7 @@ end;
 procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
-  if Assigned(FOnModified) then FOnModified(Self);
+  DoModified;
 end;
 
 Procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
