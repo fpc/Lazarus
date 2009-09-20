@@ -1936,8 +1936,8 @@ begin
     end;
     W := gdk_pixbuf_get_width(Pixbuf);
     H := gdk_pixbuf_get_height(Pixbuf);
-    Img := gdk_pixmap_new(nil, W, H, 24);
-    Msk := gdk_pixmap_new(nil, W, H, 1);
+    Img := nil;
+    Msk := nil;
     gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Img, Msk, $80);
   end
   else
