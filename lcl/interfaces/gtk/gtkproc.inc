@@ -1138,6 +1138,8 @@ var
   ScaleSrc, ScaleDst: PGdkPixbuf;
 begin
   Result := False;
+  ADst:=nil;
+  ADstMask:=nil;
 
   // Creating PixBuf from pixmap
   ScaleSrc := CreatePixbufFromImageAndMask(ASrc, ASrcX, ASrcY, ASrcWidth, ASrcHeight,
