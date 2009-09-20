@@ -525,8 +525,8 @@ begin
           end;
         gbPixbuf:
           begin
-            Pixmap := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 24);
-            Mask := gdk_pixmap_new(nil, ImageBitmap.Width, ImageBitmap.Height, 1);
+            Pixmap := nil;
+            Mask := nil;
             gdk_pixbuf_render_pixmap_and_mask(GDIObject^.GDIPixbufObject, Pixmap, Mask, $80);
           end;
       end;
