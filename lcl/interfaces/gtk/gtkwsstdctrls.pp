@@ -1260,7 +1260,14 @@ class procedure TGtkWSCustomEdit.SetText(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then
     Exit;
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
+  {$ENDIF}
   gtk_entry_set_text(PGtkEntry(AWinControl.Handle), PChar(AText));
+
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText END ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
+  {$ENDIF}
 end;
 
 class procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
