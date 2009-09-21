@@ -7,17 +7,26 @@ object Form1: TForm1
   ClientHeight = 300
   ClientWidth = 400
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
     Height = 300
     Top = 0
     Width = 400
-    BottomAxis.Grid.Style = psDot
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Offset = 0
+        Scale = 1
+        Title.Font.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Offset = 0
+        Scale = 1
+      end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    LeftAxis.Grid.Style = psDot
-    LeftAxis.Title.Angle = 90
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -32,6 +41,9 @@ object Form1: TForm1
     OnMouseMove = Chart1MouseMove
     OnMouseUp = Chart1MouseUp
     object Chart1LineSeries1: TLineSeries
+      Marks.Format = '%0:g'
+      Marks.Style = smsValue
+      OnGetMark = Chart1LineSeries1GetMark
       Pointer.Brush.Color = clPurple
       Pointer.HorizSize = 6
       Pointer.Style = psDiamond
