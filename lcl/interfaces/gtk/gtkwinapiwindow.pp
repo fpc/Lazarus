@@ -66,7 +66,7 @@ type
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
   var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
 
-function GTKAPIWidget_GetType: guint;
+function GTKAPIWidget_GetType: GType;
 function GTKAPIWidget_New: PGTKWidget;
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
                                  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
@@ -1203,7 +1203,7 @@ begin
   gtk_widget_set_flags(Widget, GTK_CAN_FOCUS);
 end;
 
-function GTKAPIWidget_GetType: Guint;
+function GTKAPIWidget_GetType: GType;
 const 
   WAW_NAME = 'LCLWinapiWidget';
   wawInfo: TGTKTypeInfo = (
