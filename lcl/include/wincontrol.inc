@@ -7604,10 +7604,26 @@ end;
 function TWinControl.RealGetText: TCaption;
 begin
   Result := '';
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealGetText ',DbgSName(Self),' HandleAllocated=',HandleAllocated,' csLoading=',csLoading in ComponentState,' ']);
+  if not HandleAllocated
+  or (csLoading in ComponentState) then begin
+    DebugLn(['TWinControl.RealGetText using inherited RealGetText']);
+    Result := inherited RealGetText;
+  end else begin
+    DebugLn(['TWinControl.RealGetText using ',DbgSName(WidgetSetClass),' GetText']);
+    if (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result)) then begin
+      DebugLn(['TWinControl.RealGetText FAILED, using RealGetText']);
+      Result := inherited RealGetText;
+    end;
+  end;
+  DebugLn(['TWinControl.RealGetText Result="',Result,'"']);
+  {$ELSE}
   if not HandleAllocated 
   or (csLoading in ComponentState) 
   or (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result))
   then Result := inherited RealGetText;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7635,6 +7651,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.RealSetText(const AValue: TCaption);
 begin
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' AValue="',AValue,'" HandleAllocated=',HandleAllocated,' csLoading=',csLoading in ComponentState]);
+  {$ENDIF}
   if HandleAllocated and (not (csLoading in ComponentState)) then
   begin
     WSSetText(AValue);
@@ -7643,6 +7662,9 @@ begin
     AdjustSize;
   end
   else inherited RealSetText(AValue);
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' END']);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
