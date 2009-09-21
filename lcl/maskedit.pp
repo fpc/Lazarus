@@ -149,7 +149,7 @@ type
     FMaskSave     : Boolean;           // Save mask as part of the data
     FTrimType     : TMaskEditTrimType; // Trim leading or trailing spaces in GetText
     FSpaceChar    : Char;              // Char for space (default '_')
-    CurrentText   : String;            //CurrentText is our backup. See notes above!
+    FCurrentText  : String;            // FCurrentText is our backup. See notes above!
     FTextOnEnter  : String;            // Text when user enters the control, used for Reset()
     FCursorPos    : Integer;           // Current caret position
     FChangeAllowed: Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
@@ -321,7 +321,7 @@ begin
   FMaskSave      := True;
   FChangeAllowed := False;
   FTrimType      := metTrimRight;
-  CurrentText    := Inherited Text;
+  FCurrentText    := Inherited Text;
   FTextOnEnter   := Inherited Text;
   FInitialText   := '';
   FInitialMask   := '';
@@ -539,7 +539,7 @@ Begin
           if (CharToMask(FMask[I]) = Char_Space)
           then
             S[I] := FSpaceChar;
-      CurrentText := S;
+      FCurrentText := S;
       SetInheritedText(S);
       SelectFirstChar;
     end;
@@ -842,7 +842,7 @@ begin
     DeleteChars(True);
     S    := Inherited Text;
     S[FCursorPos + 1] := Ch;
-    CurrentText := S;
+    FCurrentText := S;
     SetInheritedText(S);
     SelectNextChar;
   end
@@ -922,7 +922,7 @@ begin
   GetSel(SelectionStart, SelectionStop);
   S := Inherited Text;
   for i := SelectionStart + 1 to SelectionStop do S[i] := ClearChar(i);
-  CurrentText := S;
+  FCurrentText := S;
   SetInheritedText(S);
   SetCursorPos;
 end;
@@ -1043,7 +1043,7 @@ Begin
     begin
       if Length(Value) > Length(FMask) then Value := Copy(Value, 1, Length(FMask));
       while (Length(Value) < Length(FMask)) do Value := Value + FSpaceChar;
-      CurrentText := Value;
+      FCurrentText := Value;
       SetInheritedText(Value);
       Exit;
     end;
@@ -1071,7 +1071,7 @@ Begin
       Inc(j);
     end;
 
-    CurrentText := S;
+    FCurrentText := S;
     SetInheritedText(S);
   end//Ismasked
   else
@@ -1101,7 +1101,7 @@ begin
     //Make sure we don't copy more or less text into the control than FMask allows for
     S := Copy(AValue, 1, Length(FMask));
     while Length(S) < Length(FMask) do S := S + FSpaceChar;
-    CurrentText := S;
+    FCurrentText := S;
     SetInheritedText(S);
   end;
 end;
@@ -1110,9 +1110,9 @@ end;
 procedure TCustomMaskEdit.TextChanged;
 { Purpose: to avoid messing up the control by
   - cut/paste/clear via OS context menu
-    (we try to catch these messages and hadle them,
+    (we try to catch these messages and handle them,
     but this is not garantueed to work)
-  - dragging selected text in the control with the mous
+  - dragging selected text in the control with the mouse
   If one of these happens, then the internal logic of cursorpositioning,
   inserting characters is messed up.
   So, we simply restore the text from our backup: CurrenText
@@ -1130,7 +1130,7 @@ begin
   else
   //if not FChangeAllowed then
   begin
-    SetInheritedText(CurrentText);
+    SetInheritedText(FCurrentText);
     //Reset cursor to last known position
     SetCursorPos;
   end;
@@ -1199,7 +1199,7 @@ begin
       end;
     end;
     S := StringReplace(S, #32, FSpaceChar, [rfReplaceAll]);
-    CurrentText := S;
+    FCurrentText := S;
     SetInheritedText(S);
   end//Ismasked
   else
@@ -1543,7 +1543,7 @@ begin
        else
          Break;
      end;
-     CurrentText := S;
+     FCurrentText := S;
      SetInheritedText(S);
      SetCursorPos;
    end;
@@ -1561,7 +1561,7 @@ begin
   begin
     S  := '';
     for I := 1 To Length(FMask) do S := S + ClearChar(I);
-    CurrentText := S;
+    FCurrentText := S;
     SetinheritedText(S);
     FCursorPos := 0;
     SetCursorPos;
