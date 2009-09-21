@@ -781,14 +781,17 @@ end;
 
 //Set text in the control with FChangeAllowed flag set appropriately
 procedure TCustomMaskEdit.SetInheritedText(const Value: String);
+var
+  OldChange: Boolean;
 begin
   if Value <> Inherited Text then
   begin
+    OldChange:=FChangeAllowed;
     FChangeAllowed := True;
     try
       Inherited Text := Value;
     finally
-      FChangeAllowed := False;
+      FChangeAllowed := OldChange;
     end;
   end;
 end;
