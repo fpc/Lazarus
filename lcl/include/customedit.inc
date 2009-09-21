@@ -35,6 +35,7 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
   TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
+  TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, fCaretPos);
   TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
   TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
 end;
@@ -100,7 +101,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetCaretPos(const Value: TPoint);
 begin
-  TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, Value);
+  fCaretPos:=Value;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -511,7 +514,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetCaretPos: TPoint;
 begin
-  Result := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
+  if HandleAllocated then
+    fCaretPos := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
+  Result:=fCaretPos;
 end;
 
 procedure TCustomEdit.SetAlignment(const AValue: TAlignment);

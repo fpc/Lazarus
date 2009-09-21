@@ -682,6 +682,7 @@ type
     FAutoSelect: Boolean;
     FAutoSelected: Boolean;
     FCharCase: TEditCharCase;
+    fCaretPos: TPoint;
     FEchoMode: TEchoMode;
     FMaxLength: Integer;
     FModified: Boolean;
