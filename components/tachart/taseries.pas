@@ -35,6 +35,9 @@ uses
 type
   EBarError = class(EChartError);
 
+  TChartGetMarkEvent = procedure (
+    out AFormattedMark: String; AIndex: Integer) of object;
+
   { TChartSeries }
 
   TChartSeries = class(TBasicChartSeries)
@@ -42,12 +45,14 @@ type
     FBuiltinSource: TCustomChartSource;
     FListener: TListener;
     FMarks: TChartMarks;
+    FOnGetMark: TChartGetMarkEvent;
     FSource: TCustomChartSource;
 
     function GetSource: TCustomChartSource;
     function GetXMaxVal: Integer;
     function IsSourceStored: boolean;
     procedure SetMarks(const AValue: TChartMarks);
+    procedure SetOnGetMark(const AValue: TChartGetMarkEvent);
     procedure SetSource(AValue: TCustomChartSource);
   protected
     procedure AfterAdd; override;
@@ -74,6 +79,7 @@ type
     function AddXY(X, Y: Double): Integer; overload; inline;
     procedure Clear; inline;
     function Count: Integer; inline;
+    function DefaultFormattedMark(AIndex: integer): String;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
     function FormattedMark(AIndex: integer): String;
@@ -87,6 +93,8 @@ type
     property ShowInLegend;
     property Title;
     property ZPosition;
+  published
+    property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark;
   end;
 
   { TBasicPointSeries }
@@ -437,6 +445,20 @@ begin
   FShowInLegend := true;
 end;
 
+function TChartSeries.DefaultFormattedMark(AIndex: integer): String;
+var
+  total, percent: Double;
+begin
+  total := Source.ValuesTotal;
+  with Source[AIndex]^ do begin
+    if total = 0 then
+      percent := 0
+    else
+      percent := Y / total * 100;
+    Result := Format(FMarks.Format, [y, percent, Text, total, X]);
+  end;
+end;
+
 procedure TChartSeries.Delete(AIndex: Integer);
 begin
   ListSource.Delete(AIndex);
@@ -463,17 +485,11 @@ begin
 end;
 
 function TChartSeries.FormattedMark(AIndex: integer): String;
-var
-  total, percent: Double;
 begin
-  total := Source.ValuesTotal;
-  with Source[AIndex]^ do begin
-    if total = 0 then
-      percent := 0
-    else
-      percent := Y / total * 100;
-    Result := Format(FMarks.Format, [y, percent, Text, total, X]);
-  end;
+  if Assigned(FOnGetMark) then
+    FOnGetMark(Result, AIndex)
+  else
+    Result := DefaultFormattedMark(AIndex);
 end;
 
 procedure TChartSeries.GetCoords(
@@ -543,6 +559,13 @@ procedure TChartSeries.SetMarks(const AValue: TChartMarks);
 begin
   if FMarks = AValue then exit;
   FMarks.Assign(AValue);
+end;
+
+procedure TChartSeries.SetOnGetMark(const AValue: TChartGetMarkEvent);
+begin
+  if FOnGetMark = AValue then exit;
+  FOnGetMark := AValue;
+  UpdateParentChart;
 end;
 
 procedure TChartSeries.SetShowInLegend(AValue: Boolean);
