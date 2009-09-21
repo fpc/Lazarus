@@ -472,7 +472,7 @@ begin
   if not (wcfCreatingHandle in FWinControlFlags) then
   begin
     Modified := True;
-    if HandleAllocated then
+    if ([csLoading,csDestroying]*ComponentState=[]) then
       Change;
   end;
 end;
