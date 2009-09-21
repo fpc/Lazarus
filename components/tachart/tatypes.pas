@@ -162,6 +162,8 @@ type
 
   TChartAxisAlignment = (calLeft, calTop, calRight, calBottom);
   TChartAxisMargins = array [TChartAxisAlignment] of Integer;
+  TChartAxisMarkToTextEvent =
+    procedure (var AText: String; AMark: Double) of object;
 
   TChartAxisPen = class(TChartPen)
   published
@@ -180,6 +182,7 @@ type
     FGrid: TChartAxisPen;
     FInverted: Boolean;
     FOffset: Double;
+    FOnMarkToText: TChartAxisMarkToTextEvent;
     FScale: Double;
     FTickColor: TColor;
     FTickLength: Integer;
@@ -190,6 +193,7 @@ type
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
     procedure SetOffset(AValue: Double);
+    procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
     procedure SetScale(AValue: Double);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
@@ -210,6 +214,8 @@ type
     procedure DrawTitle(
       ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
     function IsVertical: Boolean; inline;
+    function MarkToText(AMark: Double): String;
+    function MarkToTextDefault(AMark: Double): String;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
       var AMargins: TChartAxisMargins);
@@ -225,6 +231,9 @@ type
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Visible: Boolean read FVisible write SetVisible default true;
+  published
+    property OnMarkToText: TChartAxisMarkToTextEvent
+      read FOnMarkToText write SetOnMarkToText;
   end;
 
   { TChartAxisList }
@@ -389,12 +398,6 @@ uses
 
 const
   FONT_SLOPE_VERTICAL = 45 * 10;
-
-function MarkToText(AMark: Double): String;
-begin
-  if Abs(AMark) <= 1e-16 then AMark := 0;
-  Result := Trim(FloatToStr(AMark));
-end;
 
 function SideByAlignment(
   var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
@@ -816,6 +819,19 @@ begin
   Result := Alignment in [calLeft, calRight];
 end;
 
+function TChartAxis.MarkToText(AMark: Double): String;
+begin
+  Result := MarkToTextDefault(AMark);
+  if Assigned(FOnMarkToText) then
+    FOnMarkToText(Result, AMark);
+end;
+
+function TChartAxis.MarkToTextDefault(AMark: Double): String;
+begin
+  if Abs(AMark) <= 1e-16 then AMark := 0;
+  Result := Trim(FloatToStr(AMark));
+end;
+
 procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   var AMargins: TChartAxisMargins);
@@ -900,6 +916,13 @@ procedure TChartAxis.SetOffset(AValue: Double);
 begin
   if FOffset = AValue then exit;
   FOffset := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
+begin
+  if FOnMarkToText = AValue then exit;
+  FOnMarkToText := AValue;
   StyleChanged(Self);
 end;
 
