@@ -83,7 +83,7 @@ procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
 
 procedure GTKAPIWidget_SetShadowType(APIWidget: PGTKAPIWidget; AShadowType: TGtkShadowType);
 
-function GTK_APIWIDGETCLIENT_TYPE: Guint;
+function GTK_APIWIDGETCLIENT_TYPE: GType;
 
 implementation
 
@@ -211,7 +211,7 @@ procedure GTKAPIWidgetClient_Init(Client:PGTypeInstance; theClass: Pointer); cde
 {$else}
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
 {$endif}
-function GTKAPIWidgetClient_GetType: Guint; forward;
+function GTKAPIWidgetClient_GetType: GType; forward;
 function GTKAPIWidgetClient_New: PGTKWidget; forward;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
@@ -248,16 +248,16 @@ begin
 {$endif}
 end;
 
-function GTK_APIWIDGETCLIENT_TYPE: Guint;
+function GTK_APIWIDGETCLIENT_TYPE: GType;
 begin
   GTK_APIWIDGETCLIENT_TYPE := GTKAPIWidgetClient_GetType;
 end;
 
 
-function GTKAPIWidgetClient_GetType: Guint;
+function GTKAPIWidgetClient_GetType: GType;
 const 
   TYPE_NAME = 'LCLWinapiClient';
-  TheType: Guint = 0;
+  TheType: GType = 0;
   Info: TGTKTypeInfo = (
     type_name: TYPE_NAME;
     object_size: SizeOf(TGTKAPIWidgetClient){+100};

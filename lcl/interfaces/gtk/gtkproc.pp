@@ -90,7 +90,7 @@ type
 {$endif}
 
 var
-  GTKAPIWidget_Type: guint = 0;
+  GTKAPIWidget_Type: GType = 0;
 
 // GTKCallback.inc headers
 procedure EventTrace(const TheMessage: string; data: pointer);
