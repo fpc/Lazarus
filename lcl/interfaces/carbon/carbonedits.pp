@@ -1082,11 +1082,15 @@ begin
     SetControlData(Widget, kControlEntireControl, kControlEditTextSingleLineTag,
       SizeOf(Boolean), @SingleLine),
     Self, SCreateWidget, SSetData);
-  
+
+  // bug: #14634
+  // for some reason, OSX 10.5, arrows don't work properly, with
+  // value = 1, min = 0, max = 2. Only lower button is visually pressed (painted).
+  // changed to: value = 0, min = -5, max = 5
   if OSError(
       CreateLittleArrowsControl(GetTopParentWindow,
         HIRectToCarbonRect(GetUpDownBounds(ParamsToHIRect(AParams))),
-        1, 0, 2, 1, FUpDown),
+        0, -5, 5, 1, FUpDown),
       Self, SCreateWidget, 'CreateLittleArrowsControl') then RaiseCreateWidgetError(LCLObject);
     
   AddControlPart(FUpDown);
