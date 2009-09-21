@@ -114,6 +114,7 @@ type
   protected
     procedure PersistentDeleting(APersistent: TPersistent);
     function SearchItemByPanel(DesignerMenuItem: PDesignerMenuItem; APanel: TPanel): PDesignerMenuItem;
+    procedure ClearAllMenus;
   public
     // Constructor and destructor
     constructor CreateWithMenu(AOwner: TComponent; AMenu: TMenu);
@@ -213,7 +214,9 @@ end;
 procedure TDesignerMainMenu.SetRoot(const AValue: PDesignerMenuItem);
 begin
   if FRoot <> nil then
+  begin
     Dispose(FRoot);
+  end;
   FRoot := AValue;
 end;
 
@@ -315,7 +318,7 @@ destructor TDesignerMainMenu.Destroy;
 begin
   if GlobalDesignHook<>nil then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  Root := nil;
+  ClearAllMenus;
   FreeAndNil(XMLConfig);
   inherited Destroy;
 end;
@@ -966,6 +969,21 @@ begin
     end;
   end else
     Result := nil;
+end;
+
+procedure TDesignerMainMenu.ClearAllMenus; 
+
+  procedure DeleteRecursive(var AMenu: PDesignerMenuItem);
+  begin
+    if not Assigned(AMenu) then Exit;
+    if Assigned(AMenu^.NextItem) then DeleteRecursive(AMenu^.NextItem);
+    if Assigned(AMenu^.SubMenu) then DeleteRecursive(AMenu^.SubMenu);   
+    Dispose(AMenu);
+    AMenu:=nil;
+  end;
+
+begin
+  DeleteRecursive(fRoot);
 end;
 
 // -----------------------------------------------------------------//

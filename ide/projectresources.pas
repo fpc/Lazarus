@@ -241,8 +241,7 @@ begin
   LastLrsFileName := lrsFileName;
   SetFileNames(MainFileName);
 
-  if UpdateSource then
-    UpdateCanHaveLrsInclude(MainFileName);
+  UpdateCanHaveLrsInclude(MainFileName);
 
   try
     // update resources (FLazarusResources, FSystemResources, ...)
@@ -448,11 +447,11 @@ begin
   if CodeBuf = nil then
     Exit;
 
-  // Check that .lrs contains Forms and Interfaces in the uses section. If it does not
-  // we cannot add LResources (it is not lazarus application)
+  // Check that .lpr contains Forms and Interfaces in the uses section. If it does not
+  // we cannot add LResources (it is not a lazarus application)
   FCanHaveLrsInclude :=
-    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos) and
-    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos);
+    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos, True) and
+    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos, True);
 end;
 
 function TProjectResources.RenameDirectives(const CurFileName,
