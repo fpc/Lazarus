@@ -185,9 +185,6 @@ type
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
     //Function  SearchDeletedText : Boolean;
-
-
-
   protected
     Function  GetText : String;
     Procedure SetText(Value : String);
@@ -199,7 +196,7 @@ type
 
     procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
     procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
-    procedure LMClearSel(var Message : TLMessage); message LM_CLEAR;
+    procedure LMClearSel(var Message: TLMessage); message LM_CLEAR;
 
     function  EditCanModify: Boolean; virtual;
     procedure Reset; virtual;
@@ -207,21 +204,21 @@ type
     procedure DoExit; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
 
     procedure CheckCursor;
-    property EditText  : string  read GetEditText write SetEditText;
-    property IsMasked  : Boolean read GetIsMasked;
-    property SpaceChar : Char    read FSpaceChar  write SetSpaceChar;
+    property EditText: string read GetEditText write SetEditText;
+    property IsMasked: Boolean read GetIsMasked;
+    property SpaceChar: Char read FSpaceChar write SetSpaceChar;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
     { Required methods }
     constructor Create(Aowner : TComponent); override;
-    procedure   Clear;
-    procedure   ValidateEdit; virtual;
-    property EditMask  : string  read FRealMask   write SetMask;
-    property    Text      : string  read GetText     write SetText;
+    procedure Clear;
+    procedure ValidateEdit; virtual;
+    property EditMask: string read FRealMask write SetMask;
+    property Text: string read GetText write SetText;
   end;
 
   { TMaskEdit }
@@ -788,8 +785,11 @@ begin
   if Value <> Inherited Text then
   begin
     FChangeAllowed := True;
-    Inherited Text := Value;
-    FChangeAllowed := False;
+    try
+      Inherited Text := Value;
+    finally
+      FChangeAllowed := False;
+    end;
   end;
 end;
 
