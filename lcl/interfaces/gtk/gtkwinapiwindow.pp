@@ -39,7 +39,7 @@ uses
   {$IFDEF gtk2}
   GtkExtra, glib2, gdk2pixbuf, gdk2, gtk2,
   {$ELSE}
-  glib, gdk, gtk, gdkpixbuf,
+  glib, gdk, gtk, gdkpixbuf, gtkextra,
   {$ENDIF}
   Controls, GTKProc, GtkDef;
 
