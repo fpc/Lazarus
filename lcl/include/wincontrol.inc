@@ -5366,7 +5366,7 @@ var
   AParent: TWinControl;
 begin
   //debugln('TWinControl.DoKeyDown ',DbgSName(Self),' ShiftState=',dbgs(KeyDataToShiftState(Message.KeyData)),' CharCode=',dbgs(Message.CharCode));
-  Result:=true;
+  Result := True;
 
   with Message do
   begin
@@ -5379,14 +5379,15 @@ begin
     if CharCode = VK_UNKNOWN then Exit;
 
     // let each parent form with keypreview handle the key
-    AParent:=Parent;
-    while (AParent<>nil) do begin
-      if (AParent is TCustomForm) then begin
+    AParent := Parent;
+    while (AParent <> nil) do
+    begin
+      if (AParent is TCustomForm) then
+      begin
         F := TCustomForm(AParent);
-        if  (F.KeyPreview)
-        and (F.DoKeyDownBeforeInterface(Message)) then Exit;
+        if (F.KeyPreview) and (F.DoKeyDownBeforeInterface(Message)) then Exit;
       end;
-      AParent:=AParent.Parent;
+      AParent := AParent.Parent;
     end;
 
     if CharCode = VK_UNKNOWN then Exit;
