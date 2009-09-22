@@ -454,6 +454,7 @@ type
                                  AComponent: TComponent; const NewName: string);
     procedure OnDesignerViewLFM(Sender: TObject);
     procedure OnDesignerSaveAsXML(Sender: TObject);
+    procedure OnDesignerShowObjectInspector(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
@@ -3161,6 +3162,7 @@ begin
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
+    OnShowObjectInspector:=@OnDesignerShowObjectInspector;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -11220,9 +11222,12 @@ end;
 procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
 
   procedure ShowInspector;
+  var
+    Control: TWinControl;
   begin
     if ObjectInspector1=nil then exit;
     ObjectInspector1.ShowOnTop;
+    ObjectInspector1.FocusGrid;
     if FDisplayState <> high(TDisplayState) then
       FDisplayState:= Succ(FDisplayState);
   end;
@@ -13966,6 +13971,11 @@ begin
       MessageDlg('Error',E.Message,mtError,[mbCancel],0);
     end;
   end;
+end;
+
+procedure TMainIDE.OnDesignerShowObjectInspector(Sender: TObject);
+begin
+  DoBringToFrontFormOrInspector(True);
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;

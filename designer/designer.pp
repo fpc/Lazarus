@@ -92,6 +92,7 @@ type
     FMediator: TDesignerMediator;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
+    FOnShowObjectInspector: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
@@ -183,6 +184,7 @@ type
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
+    procedure DoShowObjectInspector;
     procedure DoOrderMoveSelectionToFront;
     procedure DoOrderMoveSelectionToBack;
     procedure DoOrderForwardSelectionOne;
@@ -322,6 +324,7 @@ type
                                        read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
+    property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean
@@ -1145,6 +1148,12 @@ begin
   if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
   then
     ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
+end;
+
+procedure TDesigner.DoShowObjectInspector;
+begin
+  if Assigned(FOnShowObjectInspector) then
+    OnShowObjectInspector(Self);
 end;
 
 procedure TDesigner.DoOrderMoveSelectionToFront;
@@ -2196,6 +2205,12 @@ begin
         else
         if Shift = [] then
           NudgeSelection(True)
+        else
+          Handled := False;
+
+      VK_RETURN:
+        if Shift = [] then
+          DoShowObjectInspector
         else
           Handled := False;
 
