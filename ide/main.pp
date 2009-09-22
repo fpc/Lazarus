@@ -11222,8 +11222,6 @@ end;
 procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
 
   procedure ShowInspector;
-  var
-    Control: TWinControl;
   begin
     if ObjectInspector1=nil then exit;
     ObjectInspector1.ShowOnTop;
