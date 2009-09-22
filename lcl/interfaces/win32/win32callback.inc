@@ -842,7 +842,7 @@ var
         if (lWinControl <> nil) and (lParam <> VK_SPACE) then
         begin
           ParentForm := GetParentForm(lWinControl);
-          if (ParentForm <> nil) and (ParentForm.Menu = nil)
+          if (ParentForm <> nil) and ((ParentForm.Menu = nil) or (csDesigning in ParentForm.ComponentState))
             and (Application <> nil) and (Application.MainForm <> nil)
             and (Application.MainForm <> ParentForm)
             and Application.MainForm.HandleAllocated then
@@ -854,7 +854,7 @@ var
               Windows.SetFocus(targetWindow);
               PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
               Windows.SetFocus(prevFocus);
-              WinProcess := false;
+              WinProcess := False;
             end;
           end;
         end;
