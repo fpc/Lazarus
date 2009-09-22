@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
 //  Calendar,
 ////////////////////////////////////////////////////
-  WSCalendar, WSLCLClasses;
+  Controls, LCLType,
+  WSCalendar, WSLCLClasses, CarbonCalendar;
 
 type
 
@@ -43,10 +44,20 @@ type
 
   TCarbonWSCustomCalendar = class(TWSCustomCalendar)
   published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
 
 implementation
+
+{ TCarbonWSCustomCalendar }
+
+class function TCarbonWSCustomCalendar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonCalendar.Create(AWinControl, AParams));
+end;
 
 initialization
 
