@@ -2074,7 +2074,7 @@ end;
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
   ARect: TRect;
-  FixedY, dy: Integer;
+  dy: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2088,18 +2088,18 @@ begin
     Rotate(-0.1 * Font.Angle);
   end;
 
-  // what about Font.Metrics.descent and Font.Metrics.leading ?
-  FixedY := y + Font.Metrics.ascent;
-
   // manual check for clipping
   if getClipping then
   begin
     dy := Font.Metrics.height;
     ARect := getClipRegion.getBoundingRect;
-    if (FixedY + dy < ARect.Top) or (FixedY > ARect.Bottom) or
+    if (y + dy < ARect.Top) or (y > ARect.Bottom) or
        (x > ARect.Right) then
       Exit;
   end;
+
+  // what about Font.Metrics.descent and Font.Metrics.leading ?
+  y := y + Font.Metrics.ascent;
 
   RestoreTextColor;
 
@@ -2108,13 +2108,14 @@ begin
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Font.Metrics.ascent, s)
   else
-    QPainter_drawText(Widget, x, FixedY, s);
+    QPainter_drawText(Widget, x, y, s);
   
   RestorePenColor;
   
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
+    y := y - Font.Metrics.ascent;
     Rotate(0.1 * Font.Angle);
     Translate(-x, -y);
   end;
