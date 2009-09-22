@@ -269,6 +269,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Color default clBtnFace;
     property DoubleBuffered;
     property DragCursor;
