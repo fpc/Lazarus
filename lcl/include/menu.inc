@@ -241,7 +241,7 @@ begin
   ShiftState := KeyDataToShiftState(Message.KeyData);
   Shortcut := Menus.Shortcut(Message.CharCode, ShiftState);
   Item := FindItem(Shortcut, fkShortcut);
-  Result := Item <> nil;
+  Result := not (csDesigning in ComponentState) and (Item <> nil);
   //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
   if Result then
   begin
