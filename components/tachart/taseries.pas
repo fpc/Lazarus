@@ -277,6 +277,31 @@ type
     property ZPosition;
   end;
 
+  TSeriesDrawEvent = procedure (ACanvas: TCanvas; const ARect: TRect) of object;
+  TSeriesUpdateBoundsEvent = procedure (var ABounds: TDoubleRect) of object;
+
+  { TUserDrawnSeries }
+
+  TUserDrawnSeries = class(TCustomChartSeries)
+  private
+    FOnDraw: TSeriesDrawEvent;
+    FOnUpdateBounds: TSeriesUpdateBoundsEvent;
+    procedure SetOnDraw(AValue: TSeriesDrawEvent);
+    procedure SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+  protected
+    procedure UpdateBounds(var ABounds: TDoubleRect); override;
+  public
+    procedure Draw(ACanvas: TCanvas); override;
+    function IsEmpty: Boolean; override;
+  published
+    property Active default true;
+    property ZPosition;
+  published
+    property OnDraw: TSeriesDrawEvent read FOnDraw write SetOnDraw;
+    property OnUpdateBounds: TSeriesUpdateBoundsEvent
+      read FOnUpdateBounds write SetOnUpdateBounds;
+  end;
+
 implementation
 
 uses
@@ -1171,12 +1196,46 @@ begin
   end;
 end;
 
+{ TUserDrawnSeries }
+
+procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
+begin
+  if Assigned(FOnDraw) then
+     FOnDraw(ACanvas, FChart.ClipRect);
+end;
+
+function TUserDrawnSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(FOnDraw);
+end;
+
+procedure TUserDrawnSeries.SetOnDraw(AValue: TSeriesDrawEvent);
+begin
+  if FOnDraw = AValue then exit;
+  FOnDraw := AValue;
+  UpdateParentChart;
+end;
+
+procedure TUserDrawnSeries.SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+begin
+  if FOnUpdateBounds = AValue then exit;
+  FOnUpdateBounds := AValue;
+  UpdateParentChart;
+end;
+
+procedure TUserDrawnSeries.UpdateBounds(var ABounds: TDoubleRect);
+begin
+  if Assigned(FOnUpdateBounds) then
+    FOnUpdateBounds(ABounds);
+end;
+
 initialization
   RegisterSeriesClass(TLineSeries, 'Line series');
   RegisterSeriesClass(TAreaSeries, 'Area series');
   RegisterSeriesClass(TBarSeries, 'Bar series');
   RegisterSeriesClass(TPieSeries, 'Pie series');
   RegisterSeriesClass(TFuncSeries, 'Function series');
+  RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
   RegisterSeriesClass(TLine, 'Line');
 
 end.
