@@ -27,12 +27,29 @@ uses
   TAChartUtils, TAGraph, TASources, TATypes;
 
 type
+  { TCustomChartSeries }
+
+  TCustomChartSeries = class(TBasicChartSeries)
+  protected
+    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    function GetLegendCount: Integer; override;
+    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure SetActive(AValue: Boolean); override;
+    procedure SetDepth(AValue: TChartDistance); override;
+    procedure SetShowInLegend(AValue: Boolean); override;
+    procedure SetZPosition(AValue: TChartDistance); override;
+    procedure StyleChanged(Sender: TObject);
+    procedure UpdateParentChart;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
   TChartGetMarkEvent = procedure (
     out AFormattedMark: String; AIndex: Integer) of object;
 
   { TChartSeries }
 
-  TChartSeries = class(TBasicChartSeries)
+  TChartSeries = class(TCustomChartSeries)
   private
     FBuiltinSource: TCustomChartSource;
     FListener: TListener;
@@ -50,18 +67,11 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
     function GetLegendCount: Integer; override;
     function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetXMaxVal: Integer;
-    procedure SetActive(AValue: Boolean); override;
-    procedure SetDepth(AValue: TChartDistance); override;
-    procedure SetShowInLegend(AValue: Boolean); override;
-    procedure SetZPosition(AValue: TChartDistance); override;
-    procedure StyleChanged(Sender: TObject);
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
-    procedure UpdateParentChart;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,6 +132,68 @@ begin
   FSeries.UpdateParentChart;
 end;
 
+{ TCustomChartSeries }
+
+constructor TCustomChartSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActive := true;
+end;
+
+procedure TCustomChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+begin
+  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
+end;
+
+function TCustomChartSeries.GetLegendCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TCustomChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+begin
+  Unused(ACanvas);
+  Result := 0;
+end;
+
+procedure TCustomChartSeries.SetActive(AValue: Boolean);
+begin
+  if FActive = AValue then exit;
+  FActive := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetDepth(AValue: TChartDistance);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetShowInLegend(AValue: Boolean);
+begin
+  if FShowInLegend = AValue then exit;
+  FShowInLegend := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetZPosition(AValue: TChartDistance);
+begin
+  if FZPosition = AValue then exit;
+  FZPosition := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.StyleChanged(Sender: TObject);
+begin
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.UpdateParentChart;
+begin
+  if ParentChart <> nil then ParentChart.Invalidate;
+end;
+
 { TChartSeries }
 
 function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
@@ -177,7 +249,6 @@ constructor TChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FActive := true;
   FListener := TChartSeriesListener.Create(Self);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := 'Builtin';
@@ -213,11 +284,6 @@ begin
   FMarks.Free;
 
   inherited Destroy;
-end;
-
-procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-begin
-  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
 end;
 
 function TChartSeries.Extent: TDoubleRect;
@@ -283,19 +349,6 @@ begin
   Result := Source as TListChartSource;
 end;
 
-procedure TChartSeries.SetActive(AValue: Boolean);
-begin
-  FActive := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetDepth(AValue: TChartDistance);
-begin
-  if FDepth = AValue then exit;
-  FDepth := AValue;
-  UpdateParentChart;
-end;
-
 procedure TChartSeries.SetMarks(const AValue: TChartMarks);
 begin
   if FMarks = AValue then exit;
@@ -309,13 +362,6 @@ begin
   UpdateParentChart;
 end;
 
-procedure TChartSeries.SetShowInLegend(AValue: Boolean);
-begin
-  if FShowInLegend = AValue then exit;
-  FShowInLegend := AValue;
-  UpdateParentChart;
-end;
-
 procedure TChartSeries.SetSource(AValue: TCustomChartSource);
 begin
   if FSource = AValue then exit;
@@ -323,18 +369,6 @@ begin
     Source.Unsubscribe(FListener);
   FSource := AValue;
   Source.Subscribe(FListener);
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetZPosition(AValue: TChartDistance);
-begin
-  if FZPosition = AValue then exit;
-  FZPosition := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.StyleChanged(Sender: TObject);
-begin
   UpdateParentChart;
 end;
 
@@ -347,11 +381,6 @@ begin
     if b.X > ABounds.b.X then ABounds.b.X := b.X;
     if b.Y > ABounds.b.Y then ABounds.b.Y := b.Y;
   end;
-end;
-
-procedure TChartSeries.UpdateParentChart;
-begin
-  if ParentChart <> nil then ParentChart.Invalidate;
 end;
 
 end.
