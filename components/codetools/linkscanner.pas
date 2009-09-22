@@ -721,10 +721,10 @@ end;
 destructor TLinkScanner.Destroy;
 begin
   Clear;
-  FIncludeStack.Free;
-  FSourceChangeSteps.Free;
-  Values.Free;
-  FInitValues.Free;
+  FreeAndNil(FIncludeStack);
+  FreeAndNil(FSourceChangeSteps);
+  FreeAndNil(Values);
+  FreeAndNil(FInitValues);
   ReAllocMem(FLinks,0);
   inherited Destroy;
 end;
