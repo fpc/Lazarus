@@ -23,6 +23,8 @@ unit CarbonCalendar;
 interface
 
 uses
+  // System
+  MacOSAll,
   // FCL
   Classes, SysUtils,
   // LCL
@@ -37,6 +39,10 @@ type
   TCarbonCalendar = class(TCarbonControl)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure SetDateTime(const aDate: TDateTime);
+    function GetDateTime: TDateTime;
+  public
+    property DateTime: TDateTime read GetDateTime write SetDateTime;
   end;
 
 implementation
@@ -47,6 +53,29 @@ procedure TCarbonCalendar.CreateWidget(const AParams: TCreateParams);
 begin
   if OSError(CalendarViewCreate(GetTopParentWindow, ParamsToCarbonRect(AParams), Widget),
        Self, 'CreateWidget', 'CalendarViewCreate') then RaiseCreateWidgetError(LCLObject);
+end;
+
+procedure TCarbonCalendar.SetDateTime(const aDate: TDateTime);
+var
+  date    : CFGregorianDate;
+  y, m, d : Word;
+begin
+  DecodeDate(aDate, y,m,d);
+  FillChar(date, sizeof(date), 0);
+  date.day := d;
+  date.month := m;
+  date.year := y;
+  CalendarSetDate(Widget, date);
+end;
+
+function TCarbonCalendar.GetDateTime: TDateTime;
+var
+  date    : CFGregorianDate;
+begin
+  CalendarGetDate(Widget, date);
+  with date do
+    writeln(date.year,' / ',date.month, ' / ',date.day);
+  Result := EncodeDate(date.year, date.month, date.day);
 end;
 
 

@@ -54,12 +54,12 @@ function CalendarSetDate(Calendar: ControlRef; const Date: CFGregorianDate): Boo
 // -----------------------------------------------------------------------------
 //
 const
-	kControlCalendarTitleRatioTag	  = 'tRat';	// float
-	kControlCalendarDayNameRatioTag	= 'nRat';	// float
-	kControlCalendarDayRatioTag		  = 'dRat';	// float
-	kControlCalendarDateTag			    = 'Date';	// CFGregorianDate -- on Set, day, hour, etc are ignored
-	kControlCalendarDrawProcTag		  = 'Draw';	// CalendarDrawUPP
-	kControlCalendarLabelProcTag	  = 'Labl'; // CalendarDrawUPP
+	kControlCalendarTitleRatioTag	  = {$IFDEF FPC_LITTLE_ENDIAN}$74615274{$else}$74526174{$endif}; //tRat float
+	kControlCalendarDayNameRatioTag	= {$IFDEF FPC_LITTLE_ENDIAN}$7461526E{$else}$6E526174{$endif}; //nRat float
+	kControlCalendarDayRatioTag		  = {$IFDEF FPC_LITTLE_ENDIAN}$74615264{$else}$64526174{$endif}; //dRat float
+	kControlCalendarDateTag			    = {$IFDEF FPC_LITTLE_ENDIAN}$65746144{$else}$44617465{$endif}; //Date CFGregorianDate -- on Set, day, hour, etc are ignored
+	kControlCalendarDrawProcTag		  = {$IFDEF FPC_LITTLE_ENDIAN}$77617244{$else}$44726177{$endif}; //Draw CalendarDrawUPP
+	kControlCalendarLabelProcTag	  = {$IFDEF FPC_LITTLE_ENDIAN}$6C62614C{$else}$4C61626C{$endif}; //Labl CalendarDrawUPP
 
 // -----------------------------------------------------------------------------
 // CalendarView Draw/LabelProc callback data and prototypes
@@ -713,10 +713,6 @@ end;
 // -----------------------------------------------------------------------------
 //
 
-type
-  FourCharStr     = string[4];
-  FourCharStrPtr  = ^FourCharStr;
-
 function CalendarViewGetData(inEvent : EventRef; const inData: CalendarViewData): OSStatus;
 var
 	part    : ControlPartCode;
@@ -737,7 +733,7 @@ begin
 	Result := GetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, nil, sizeof( Size ), nil, @sz );
 	if Result <> noErr then Exit;
 
-	case FourCharStrPtr(@tag)^ of
+	case tag of
 		kControlCalendarTitleRatioTag:
     begin
 			if sz = sizeof( single ) then
@@ -767,6 +763,7 @@ begin
 
 		kControlCalendarDateTag:
     begin
+      writeln('getting the date!');
 			if sz = sizeof( CFGregorianDate ) then begin
 				CFGregorianDatePtr(ptr)^ := inData.date;
         if (inData.selDay>0) and (inData.selDay<inData.daysInMonth) then
@@ -827,7 +824,7 @@ begin
 	Result := GetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, nil, sizeof( sz ), nil, @sz );
 	if Result <> noErr then Exit;
 
-	case FourCharStrPtr(@tag)^ of
+	case tag of
 		kControlCalendarTitleRatioTag:
 			if sz = sizeof( single ) then
         inData.titleRowRatio := PSingle(ptr)^
@@ -1066,14 +1063,19 @@ function CalendarGetDate(Calendar: ControlRef; var Date: CFGregorianDate): Boole
 begin
   Result := isValidCalendarControl(Calendar);
   if not Result then Exit;
-  Result := GetControlData(Calendar, kControlEntireControl, LongWord(kControlCalendarDateTag), sizeof(Date), @Date, nil) = noErr;
+  Result := GetControlData(Calendar, kControlEntireControl,
+    kControlCalendarDateTag, sizeof(Date), @Date, nil) = noErr;
 end;
 
 function CalendarSetDate(Calendar: ControlRef; const Date: CFGregorianDate): Boolean;
 begin
   Result := isValidCalendarControl(Calendar);
-  if not Result then Exit;
-  Result := SetControlData(Calendar, kControlEntireControl, LongWord(kControlCalendarDateTag), sizeof(Date), @Date) = noErr;
+  if not Result then begin
+    writeln('not calendar!');
+    Exit;
+  end;
+  writeln('calendar!');
+  Result := SetControlData(Calendar, kControlEntireControl, kControlCalendarDateTag, sizeof(Date), @Date) = noErr;
 end;
 
 
