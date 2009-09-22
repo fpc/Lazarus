@@ -54,6 +54,7 @@ type
     FLines: TSynEditStrings;
     FOnChangeList: TMethodList;
     FLockCount: Integer;
+    procedure SetLines(const AValue: TSynEditStrings); virtual;
     procedure DoLock; virtual;
     Procedure DoUnlock; virtual;
   public
@@ -64,7 +65,7 @@ type
     procedure RemoveChangeHandler(AHandler: TNotifyEvent);
     procedure Lock;
     Procedure Unlock;
-    property  Lines: TSynEditStrings read FLines write FLines;
+    property  Lines: TSynEditStrings read FLines write SetLines;
     property Locked: Boolean read GetLocked;
   end;
 
@@ -168,6 +169,7 @@ type
   TSynEditCaret = class(TSynEditPointBase)
   private
     FAllowPastEOL: Boolean;
+    FAutoMoveOnEdit: Boolean;
     FForcePastEOL: Integer;
     FForceAdjustToNextChar: Integer;
     FKeepCaretX: Boolean;
@@ -200,10 +202,14 @@ type
     procedure SetLineText(const AValue : string);
     procedure SetSkipTabs(const AValue: Boolean);
   protected
+    procedure SetLines(const AValue: TSynEditStrings); override;
     procedure DoLock; override;
     Procedure DoUnlock; override;
+    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+                            aLineBrkCnt: Integer; aText: String);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure AssignFrom(Src: TSynEditCaret);
     procedure IncForcePastEOL;
     procedure DecForcePastEOL;
@@ -228,6 +234,7 @@ type
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
     property MaxLeftChar: PInteger write FMaxLeftChar;
+    property AutoMoveOnEdit: Boolean write FAutoMoveOnEdit;
   end;
 
 implementation
@@ -237,6 +244,11 @@ implementation
 function TSynEditPointBase.GetLocked: Boolean;
 begin
   Result := FLockCount > 0;
+end;
+
+procedure TSynEditPointBase.SetLines(const AValue: TSynEditStrings);
+begin
+  FLines := AValue;
 end;
 
 procedure TSynEditPointBase.DoLock;
@@ -298,6 +310,15 @@ begin
   fCharPos:= 1;
   FAllowPastEOL := True;
   FForcePastEOL := 0;
+  if FLines <> nil then
+    FLines.AddEditHandler(@DoLinesEdited);
+end;
+
+destructor TSynEditCaret.Destroy;
+begin
+  if FLines <> nil then
+    FLines.RemoveEditHandler(@DoLinesEdited);
+  inherited Destroy;
 end;
 
 procedure TSynEditCaret.AssignFrom(Src: TSynEditCaret);
@@ -519,6 +540,16 @@ begin
   end;
 end;
 
+procedure TSynEditCaret.SetLines(const AValue: TSynEditStrings);
+begin
+  if FLines = AValue then exit;
+  if FLines <> nil then
+    FLines.RemoveEditHandler(@DoLinesEdited);
+  inherited SetLines(AValue);
+  if FLines <> nil then
+    FLines.AddEditHandler(@DoLinesEdited);
+end;
+
 procedure TSynEditCaret.DoLock;
 begin
   FTouched := False;
@@ -537,6 +568,47 @@ begin
   FTouched := False;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
+end;
+
+procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+  aLineBrkCnt: Integer; aText: String);
+  // Todo: refactor / this is a copy from selection
+  function AdjustPoint(aPoint: Tpoint): TPoint; inline;
+  begin
+    Result := aPoint;
+    if aLineBrkCnt < 0 then begin
+      (* Lines Deleted *)
+      if aPoint.y > aLinePos then begin
+        Result.y := Max(aLinePos, Result.y + aLineBrkCnt);
+        if Result.y = aLinePos then
+          Result.x := Result.x + aBytePos - 1;
+      end;
+    end
+    else
+    if aLineBrkCnt > 0 then begin
+      (* Lines Inserted *)
+      if (aPoint.y = aLinePos) and (aPoint.x >= aBytePos) then begin
+        Result.x := Result.x - aBytePos + 1;
+        Result.y := Result.y + aLineBrkCnt;
+      end;
+      if aPoint.y > aLinePos then begin
+        Result.y := Result.y + aLineBrkCnt;
+      end;
+    end
+    else
+    if aCount <> 0 then begin
+      (* Chars Insert/Deleted *)
+      if (aPoint.y = aLinePos) and (aPoint.x >= aBytePos) then
+        Result.x := Max(aBytePos, Result.x + aCount);
+    end;
+  end;
+
+begin
+  if FAutoMoveOnEdit then begin
+    IncForcePastEOL;
+    LineBytePos := AdjustPoint(LineBytePos);
+    DecForcePastEOL;
+  end;
 end;
 
 { TSynEditSelection }
