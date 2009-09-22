@@ -73,8 +73,6 @@ var
   date    : CFGregorianDate;
 begin
   CalendarGetDate(Widget, date);
-  with date do
-    writeln(date.year,' / ',date.month, ' / ',date.day);
   Result := EncodeDate(date.year, date.month, date.day);
 end;
 

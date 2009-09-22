@@ -763,7 +763,6 @@ begin
 
 		kControlCalendarDateTag:
     begin
-      writeln('getting the date!');
 			if sz = sizeof( CFGregorianDate ) then begin
 				CFGregorianDatePtr(ptr)^ := inData.date;
         if (inData.selDay>0) and (inData.selDay<inData.daysInMonth) then
@@ -1070,11 +1069,7 @@ end;
 function CalendarSetDate(Calendar: ControlRef; const Date: CFGregorianDate): Boolean;
 begin
   Result := isValidCalendarControl(Calendar);
-  if not Result then begin
-    writeln('not calendar!');
-    Exit;
-  end;
-  writeln('calendar!');
+  if not Result then Exit;
   Result := SetControlData(Calendar, kControlEntireControl, kControlCalendarDateTag, sizeof(Date), @Date) = noErr;
 end;
 
