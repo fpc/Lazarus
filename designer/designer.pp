@@ -1417,22 +1417,18 @@ begin
     LastPaintSender:=Sender;
 
     if IsDesignerDC(Form.Handle, TheMessage.DC) then
-    begin
-      DoPaintDesignerItems;
-    end
+      DoPaintDesignerItems
     else
     begin
       // client grid
-      if (Sender is TWinControl)
-      and (csAcceptsControls in Sender.ControlStyle) then begin
+      if (Sender is TWinControl) and (csAcceptsControls in Sender.ControlStyle) then
         PaintClientGrid(TWinControl(Sender),DDC);
-      end;
 
       if (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) <> 0) and 
          not EnvironmentOptions.DesignerPaintLazy then
           DoPaintDesignerItems;
     end;
-    
+   
     // clean up
     DDC.Clear;
   end;
