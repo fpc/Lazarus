@@ -16,6 +16,8 @@
  TODO: remove QuickDraw deperacted functions
 
  The best size is: width = 180. height = 140
+ 
+ Ported by: Dmitry 'skalogryz' Boyarintsev 
 
  *****************************************************************************
  *                                                                           *
@@ -403,16 +405,14 @@ begin
 
 	// Figure out how tall a row should be
 	rowHeight := bounds.size.height / rowCount;
-	colWidth := Round ( bounds.size.width / 14 );	// round here instead of over and over
+	colWidth := Round ( bounds.size.width) div 14;	// round here instead of over and over
 
-	drawRect := bounds;
-	drawRect.size.width := colWidth * 14;
-  inData.drawProc(kControlStructureMetaPart, drawRect, drawData);
-	
+  inData.drawProc(kControlStructureMetaPart, bounds, drawData);
+
 	drawRect.origin := bounds.origin;
 	drawRect.size.height := Round( rowHeight * inData.titleRowRatio);
-
 	drawRect.size.width := colWidth;
+  
 	inData.drawProc(kCalendarPreviousYearPart, drawRect, drawData);
   inData.labelProc(kCalendarPreviousYearPart, drawRect, drawData);
 	drawRect.origin.x := drawRect.origin.x + drawRect.size.width;
