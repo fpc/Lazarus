@@ -1339,6 +1339,7 @@ begin
         CheckSynchronize;
         TWin32Widgetset(Widgetset).CheckPipeEvents;
       end;
+    WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:
     begin
       case LOWORD(WParam) Of
