@@ -60,7 +60,7 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
-  FAutoSelect := False;
+  FAutoSelect := True;
   FAutoSelected := False;
   AutoSize := True;
 end;

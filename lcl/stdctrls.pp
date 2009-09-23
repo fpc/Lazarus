@@ -377,7 +377,7 @@ type
                            default DefaultComboBoxAutoCompleteText;
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
-    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property AutoSize default True; // Overrides default value
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
@@ -724,7 +724,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
-    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property ParentColor default False;
   public
