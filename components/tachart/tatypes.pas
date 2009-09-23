@@ -270,6 +270,7 @@ type
 
   TChartMarks = class(TChartElement)
   private
+    FClipped: Boolean;
     FDistance: Integer;
     FFormat: String;
     FFrame: TChartPen;
@@ -278,6 +279,7 @@ type
     FLinkPen: TChartLinkPen;
     FStyle: TSeriesMarksStyle;
 
+    procedure SetClipped(const AValue: Boolean);
     procedure SetDistance(const AValue: Integer);
     procedure SetFormat(const AValue: String);
     procedure SetFrame(const AValue: TChartPen);
@@ -294,6 +296,8 @@ type
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
   published
+    // If false, labels may overlap axises and legend.
+    property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between series point and label.
     property Distance: Integer
       read FDistance write SetDistance default DEF_MARKS_DISTANCE;
@@ -988,6 +992,7 @@ end;
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FClipped := true;
   FDistance := DEF_MARKS_DISTANCE;
   InitHelper(TFPCanvasHelper(FFrame), TChartPen);
   InitHelper(TFPCanvasHelper(FLabelBrush), TChartLabelBrush);
@@ -1010,18 +1015,33 @@ end;
 
 procedure TChartMarks.DrawLabel(
   ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
+var
+  wasClipping: Boolean = false;
 begin
+  if not Clipped and ACanvas.Clipping then begin
+    ACanvas.Clipping := false;
+    wasClipping := true;
+  end;
   ACanvas.Brush.Assign(LabelBrush);
   ACanvas.Pen.Assign(Frame);
   ACanvas.Rectangle(ALabelRect);
   ACanvas.Font.Assign(LabelFont);
   ACanvas.TextOut(
     ALabelRect.Left + MARKS_MARGIN_X, ALabelRect.Top + MARKS_MARGIN_Y, AText);
+  if wasClipping then
+    ACanvas.Clipping := true;
 end;
 
 function TChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
+end;
+
+procedure TChartMarks.SetClipped(const AValue: Boolean);
+begin
+  if FClipped = AValue then exit;
+  FClipped := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartMarks.SetDistance(const AValue: Integer);

@@ -14,8 +14,9 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'ft key'#0#13'Title.Visible'#9#5'Align'#7#8'alClient'#14'DoubleBuffered'#9#11
   +'ParentColor'#8#11'OnMouseDown'#7#15'Chart1MouseDown'#11'OnMouseMove'#7#15'C'
   +'hart1MouseMove'#9'OnMouseUp'#7#13'Chart1MouseUp'#0#11'TLineSeries'#17'Chart'
-  +'1LineSeries1'#12'Marks.Format'#6#4'%0:g'#11'Marks.Style'#7#8'smsValue'#9'On'
-  +'GetMark'#7#24'Chart1LineSeries1GetMark'#19'Pointer.Brush.Color'#7#8'clPurpl'
-  +'e'#17'Pointer.HorizSize'#2#6#13'Pointer.Style'#7#9'psDiamond'#16'Pointer.Ve'
-  +'rtSize'#2#6#11'SeriesColor'#7#7'clBlack'#10'ShowPoints'#9#0#0#0#0
+  +'1LineSeries1'#13'Marks.Clipped'#8#12'Marks.Format'#6#4'%0:g'#11'Marks.Style'
+  +#7#8'smsValue'#9'OnGetMark'#7#24'Chart1LineSeries1GetMark'#19'Pointer.Brush.'
+  +'Color'#7#8'clPurple'#17'Pointer.HorizSize'#2#6#13'Pointer.Style'#7#9'psDiam'
+  +'ond'#16'Pointer.VertSize'#2#6#11'SeriesColor'#7#7'clBlack'#10'ShowPoints'#9
+  +#0#0#0#0
 ]);

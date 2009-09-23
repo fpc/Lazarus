@@ -70,17 +70,14 @@ begin
   Unused(Shift);
   pt := Point(X, Y);
   if
-    TLineSeriesAccess(Chart1LineSeries1).
-      GetNearestPoint(@PointDist, pt, newNearest, img, val)
-  then begin
-    if PointDist(pt, img) <= Sqr(Chart1LineSeries1.Pointer.HorizSize) then begin
-      if newNearest <> FNearestIndex then begin
-        FNearestIndex := newNearest;
-        Chart1.Invalidate;
-      end;
-    end
-    else
-      FNearestIndex := -1;
+    not TLineSeriesAccess(Chart1LineSeries1).
+      GetNearestPoint(@PointDist, pt, newNearest, img, val) or
+    (PointDist(pt, img) > Sqr(Chart1LineSeries1.Pointer.HorizSize))
+  then
+    newNearest := -1;
+  if newNearest <> FNearestIndex then begin
+    FNearestIndex := newNearest;
+    Chart1.Invalidate;
   end;
   if FDragIndex < 0 then exit;
   Chart1LineSeries1.SetXValue(FDragIndex, Chart1.XImageToGraph(X));

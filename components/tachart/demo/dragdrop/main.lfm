@@ -41,6 +41,7 @@ object Form1: TForm1
     OnMouseMove = Chart1MouseMove
     OnMouseUp = Chart1MouseUp
     object Chart1LineSeries1: TLineSeries
+      Marks.Clipped = False
       Marks.Format = '%0:g'
       Marks.Style = smsValue
       OnGetMark = Chart1LineSeries1GetMark
