@@ -48,10 +48,9 @@ begin
              @bytes_after, gpointer(@current_desktop));
 
   if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
-  begin
     Result := current_desktop[0];
+  if current_desktop <> nil then
     XFree (current_desktop);
-  end;
 end;
 
 
@@ -75,10 +74,9 @@ begin
              @bytes_after, gpointer(@current_desktop));
 
   if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
-  begin
     Result := current_desktop[0];
+  if current_desktop <> nil then
     XFree (current_desktop);
-  end;
 end;
 
 function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
@@ -217,8 +215,9 @@ begin
         Exit(True);
       end;
     end;
-    XFree(state_array);
   end;
+  if state_array <> nil then
+    XFree(state_array);
 end;
 
 procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
@@ -278,8 +277,9 @@ begin
 
       if Result then Break;
     end;
-    XFree(state_array);
   end;
+  if state_array <> nil then
+    XFree(state_array);
 end;
 
 procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);

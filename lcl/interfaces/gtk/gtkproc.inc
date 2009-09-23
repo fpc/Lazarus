@@ -9802,8 +9802,9 @@ begin
     ay:=current_desktop[1];
     awidth:=current_desktop[2];
     aheight:=current_desktop[3];
-    XFree (current_desktop);
   end;
+  if current_desktop <> nil then
+    XFree (current_desktop);
 end;
 {$ENDIF}
 
