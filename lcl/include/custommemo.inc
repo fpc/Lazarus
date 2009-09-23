@@ -38,6 +38,7 @@ begin
   FLines := TTextStrings.Create;
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
+  AutoSelect := False;
   AutoSize := False;
 end;
 
