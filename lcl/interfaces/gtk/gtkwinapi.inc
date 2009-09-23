@@ -844,7 +844,18 @@ var
       gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
     end;
 
-    gdk_pixbuf_render_pixmap_and_mask(Src, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
+    if GdiObject^.GDIPixmapObject.Image<>nil then
+    begin
+      gdk_pixmap_unref(GdiObject^.GDIPixmapObject.Image);
+      GdiObject^.GDIPixmapObject.Image:=nil;
+    end;
+    if GdiObject^.GDIPixmapObject.Mask<>nil then
+    begin
+      gdk_bitmap_unref(GdiObject^.GDIPixmapObject.Mask);
+      GdiObject^.GDIPixmapObject.Mask:=nil;
+    end;
+    gdk_pixbuf_render_pixmap_and_mask(Src,
+      GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask, $80);
     gdk_pixbuf_unref(Src);
 
     GdiObject^.Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject.Image);
@@ -969,7 +980,6 @@ const
 var
   GObject: PGdiObject;
   TmpMask: PGdkBitmap;
-  W, H: Integer;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
@@ -1046,11 +1056,10 @@ begin
                 end;
                 gbPixbuf:
                 begin
-                  W := gdk_pixbuf_get_width(PGdiObject(lbHatch)^.GDIPixbufObject);
-                  H := gdk_pixbuf_get_height(PGdiObject(lbHatch)^.GDIPixbufObject);
-                  GObject^.GDIBrushPixmap := gdk_pixmap_new(nil, W, H, 24);
-                  TmpMask := gdk_pixmap_new(nil, W, H, 1);
-                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject, GObject^.GDIBrushPixmap, TmpMask, $80);
+                  GObject^.GDIBrushPixmap := nil;
+                  TmpMask := nil;
+                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject,
+                    GObject^.GDIBrushPixmap, TmpMask, $80);
                   gdk_pixmap_unref(TmpMask);
                 end;
                 else
@@ -1936,8 +1945,8 @@ begin
     end;
     W := gdk_pixbuf_get_width(Pixbuf);
     H := gdk_pixbuf_get_height(Pixbuf);
-    Img := gdk_pixmap_new(nil, W, H, 24);
-    Msk := gdk_pixmap_new(nil, W, H, 1);
+    Img := nil;
+    Msk := nil;
     gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Img, Msk, $80);
   end
   else

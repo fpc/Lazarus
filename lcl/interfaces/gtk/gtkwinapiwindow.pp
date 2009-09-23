@@ -39,7 +39,7 @@ uses
   {$IFDEF gtk2}
   GtkExtra, glib2, gdk2pixbuf, gdk2, gtk2,
   {$ELSE}
-  glib, gdk, gtk, gdkpixbuf,
+  glib, gdk, gtk, gdkpixbuf, gtkextra,
   {$ENDIF}
   Controls, GTKProc, GtkDef;
 
@@ -66,7 +66,7 @@ type
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
   var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
 
-function GTKAPIWidget_GetType: guint;
+function GTKAPIWidget_GetType: GType;
 function GTKAPIWidget_New: PGTKWidget;
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
                                  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
@@ -83,7 +83,7 @@ procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
 
 procedure GTKAPIWidget_SetShadowType(APIWidget: PGTKAPIWidget; AShadowType: TGtkShadowType);
 
-function GTK_APIWIDGETCLIENT_TYPE: Guint;
+function GTK_APIWIDGETCLIENT_TYPE: GType;
 
 implementation
 
@@ -211,7 +211,7 @@ procedure GTKAPIWidgetClient_Init(Client:PGTypeInstance; theClass: Pointer); cde
 {$else}
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
 {$endif}
-function GTKAPIWidgetClient_GetType: Guint; forward;
+function GTKAPIWidgetClient_GetType: GType; forward;
 function GTKAPIWidgetClient_New: PGTKWidget; forward;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
@@ -248,16 +248,16 @@ begin
 {$endif}
 end;
 
-function GTK_APIWIDGETCLIENT_TYPE: Guint;
+function GTK_APIWIDGETCLIENT_TYPE: GType;
 begin
   GTK_APIWIDGETCLIENT_TYPE := GTKAPIWidgetClient_GetType;
 end;
 
 
-function GTKAPIWidgetClient_GetType: Guint;
+function GTKAPIWidgetClient_GetType: GType;
 const 
   TYPE_NAME = 'LCLWinapiClient';
-  TheType: Guint = 0;
+  TheType: GType = 0;
   Info: TGTKTypeInfo = (
     type_name: TYPE_NAME;
     object_size: SizeOf(TGTKAPIWidgetClient){+100};
@@ -1203,7 +1203,7 @@ begin
   gtk_widget_set_flags(Widget, GTK_CAN_FOCUS);
 end;
 
-function GTKAPIWidget_GetType: Guint;
+function GTKAPIWidget_GetType: GType;
 const 
   WAW_NAME = 'LCLWinapiWidget';
   wawInfo: TGTKTypeInfo = (

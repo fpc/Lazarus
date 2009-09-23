@@ -325,8 +325,8 @@ begin
   if GDIObject^.GDIBitmapType = gbPixbuf then
   begin
     Pixbuf := GDIObject^.GDIPixbufObject;
-    Pixmap := gdk_pixmap_new(nil, AGlyph.Width, AGlyph.Height, 24);
-    Mask := gdk_pixmap_new(nil, AGlyph.Width, AGlyph.Height, 1);
+    Pixmap := nil;
+    Mask := nil;
     gdk_pixbuf_render_pixmap_and_mask(Pixbuf, Pixmap, Mask, $80);
   end
   else

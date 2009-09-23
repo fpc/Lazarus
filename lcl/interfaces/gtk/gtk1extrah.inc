@@ -30,7 +30,7 @@ uses
 
 type
   PGtkOldEditable = PGtkEditable;
-
+  GType = TGtkType;
 
 function G_OBJECT(p: Pointer): PGtkObject;
 function G_CALLBACK(p: Pointer): TGTKSignalFunc;
