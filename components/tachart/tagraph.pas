@@ -147,6 +147,7 @@ type
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
     FSelectionRect: TRect;
+    FZoomExtent: TDoubleRect;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ACanvas: TCanvas);
@@ -952,7 +953,7 @@ begin
   with FSelectionRect do begin
     FIsZoomed := (Left < Right) and (Top < Bottom);
     if FIsZoomed then
-      with FCurrentExtent do begin
+      with FZoomExtent do begin
         a := ImageToGraph(TopLeft);
         b := ImageToGraph(BottomRight);
         if a.X > b.X then
@@ -1127,7 +1128,10 @@ procedure TChart.UpdateExtent;
 var
   i: Integer;
 begin
-  if FIsZoomed then exit;
+  if FIsZoomed then begin
+    FCurrentExtent := FZoomExtent;
+    exit;
+  end;
   Extent.CheckBoundsOrder;
 
   FCurrentExtent := EmptyExtent;
