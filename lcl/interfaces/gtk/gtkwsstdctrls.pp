@@ -1267,6 +1267,9 @@ begin
   DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
   {$ENDIF}
   Widget:=PGtkWidget(AWinControl.Handle);
+  // some gtk2 versions fire the change event twice
+  // lock the event and send the message afterwards
+  // see bug http://bugs.freepascal.org/view.php?id=14615
   LockOnChange(PgtkObject(Widget), +1);
   try
     gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
