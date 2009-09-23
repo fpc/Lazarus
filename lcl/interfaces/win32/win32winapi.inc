@@ -1796,33 +1796,6 @@ begin
   Result := Windows.GetDeviceCaps(DC, Index);
 end;
 
-function TWin32WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
-var
-  OverlayWindow: HWND;
-  ARect: Windows.RECT;
-  WindowInfo, OverlayWindowInfo: PWin32WindowInfo;
-begin
-  WindowInfo := GetWin32WindowInfo(WindowHandle);
-  OverlayWindow := WindowInfo^.Overlay;
-  if OverlayWindow = HWND(nil) then
-  begin
-    // create 'overlay' window
-    Windows.GetClientRect(WindowHandle, @ARect);
-    OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
-        @ClsName, '', WS_CHILD or WS_VISIBLE,
-        ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
-        WindowHandle, HMENU(nil), HInstance, nil);
-    OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
-    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, PtrInt(@OverlayWindowProc)));
-    OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
-    WindowInfo^.Overlay := OverlayWindow;
-  end;
-  // bring overlay window to front
-  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
-  Result := Windows.GetDC(OverlayWindow);
-end;
-
 function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
@@ -2868,17 +2841,6 @@ function TWin32WidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(Window, DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-end;
-
-function TWin32WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
-var
-  OverlayWindow: HWND;
-begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
-  if OverlayWindow <> HWND(nil) then
-    Result := Windows.ReleaseDC(OverlayWindow, DC);
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 

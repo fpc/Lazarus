@@ -465,6 +465,33 @@ begin
   end;
 end;
 
+function TWin32WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+var
+  OverlayWindow: HWND;
+  ARect: Windows.RECT;
+  WindowInfo, OverlayWindowInfo: PWin32WindowInfo;
+begin
+  WindowInfo := GetWin32WindowInfo(WindowHandle);
+  OverlayWindow := WindowInfo^.Overlay;
+  if OverlayWindow = HWND(nil) then
+  begin
+    // create 'overlay' window
+    Windows.GetClientRect(WindowHandle, @ARect);
+    OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
+        @ClsName, '', WS_CHILD or WS_VISIBLE,
+        ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
+        WindowHandle, HMENU(nil), HInstance, nil);
+    OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
+    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, PtrInt(@OverlayWindowProc)));
+    OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
+    WindowInfo^.Overlay := OverlayWindow;
+  end;
+  // bring overlay window to front
+  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
+  Result := Windows.GetDC(OverlayWindow);
+end;
+
 {------------------------------------------------------------------------------
   function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
 
@@ -476,6 +503,17 @@ begin
   {$else}
   Result := false;
   {$endif}
+end;
+
+function TWin32WidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+var
+  OverlayWindow: HWND;
+begin
+  OverlayWindow := GetWin32WindowInfo(WindowHandle)^.Overlay;
+  if OverlayWindow <> 0 then
+    Result := Windows.WindowFromDC(DC) = OverlayWindow
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -772,6 +810,17 @@ begin
   Result := RawImage_FromBitmap(ARawImage, bmp, 0, @ARect);
   if copyBmp <> 0
   then Windows.DeleteObject(copyBmp);
+end;
+
+function TWin32WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+var
+  OverlayWindow: HWND;
+begin
+  Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
+  if OverlayWindow <> HWND(nil) then
+    Result := Windows.ReleaseDC(OverlayWindow, DC);
+  Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 
 procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
