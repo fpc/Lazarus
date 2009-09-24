@@ -173,6 +173,14 @@ begin
   RegisterCustomTrayIcon;
 end;
 
+procedure TCustomTrayIcon.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FPopUpMenu) then
+    PopupMenu := nil;
+end;
+
 {*******************************************************************
 *  TCustomTrayIcon.InternalUpdate ()
 *
@@ -265,6 +273,15 @@ end;
 procedure TCustomTrayIcon.SetIcon(const AValue: TIcon);
 begin
   FIcon.Assign(AValue);
+end;
+
+procedure TCustomTrayIcon.SetPopUpMenu(const AValue: TPopupMenu);
+begin
+  if FPopUpMenu = AValue then
+    Exit;
+  FPopupMenu := AValue;
+  if FPopupMenu <> nil then
+    FPopUpMenu.FreeNotification(Self);
 end;
 
 // included by extctrls.pp

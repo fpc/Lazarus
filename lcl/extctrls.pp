@@ -1170,12 +1170,14 @@ type
     function  GetCanvas: TCanvas;
     procedure SetHint(const AValue: string);
     procedure SetIcon(const AValue: TIcon);
+    procedure SetPopUpMenu(const AValue: TPopupMenu);
     procedure SetVisible(Value: Boolean);
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
     procedure IconChanged(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1191,7 +1193,7 @@ type
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
     property Canvas: TCanvas read GetCanvas;
-    property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
+    property PopUpMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
