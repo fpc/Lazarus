@@ -914,7 +914,13 @@ begin
       begin
         DoActivate:=true;
         if (AWidget.LCLObject is TCustomForm) then
-          CarbonWidgetSet.SetRootMenu((AWidget.LCLObject as TCustomForm).Menu);
+        begin
+          if (TCustomForm(AWidget.LCLObject).Menu <> nil) and
+             (TCustomForm(AWidget.LCLObject).Menu.HandleAllocated) then
+            CarbonWidgetSet.SetRootMenu(TCarbonMenu(TCustomForm(AWidget.LCLObject).Menu.Handle))
+          else
+            CarbonWidgetSet.SetRootMenu(nil);
+        end;
       end;
     kEventWindowDeactivated: DoActivate:=false;
   else

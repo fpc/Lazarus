@@ -8,7 +8,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -498,18 +498,10 @@ begin
   Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
 end;
 
-procedure TWinCEWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
-var
-  AMenu: TMenu;
-  AWinControl: TWinControl;
+procedure TWinCEWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
 begin
-  AMenu := AMenuObject as TMenu;
-  if AMenu is TMainMenu then
-  begin
-    AWinControl := TWinControl(AMenu.Owner);
-    CeSetMenu(TCustomForm(AWinControl), AWinControl.Handle, AMenu.Handle);
-    AddToChangedMenus(AWinControl.Handle);
-  end;
+  CeSetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
 end;
 
 { Private methods (in no significant order) }

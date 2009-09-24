@@ -49,7 +49,7 @@ begin
   Result := 0;
 end;
 
-procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
 begin
 end;
 

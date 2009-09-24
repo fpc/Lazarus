@@ -351,11 +351,15 @@ type
   { TMainMenu }
 
   TMainMenu = class(TMenu)
+  private
+    FWindowHandle: HWND;
+    procedure SetWindowHandle(const AValue: HWND);
   protected
     procedure ItemChanged;
     class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
+    property WindowHandle: HWND read FWindowHandle write SetWindowHandle;
   published
     property OnChange;
   end;

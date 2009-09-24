@@ -448,7 +448,7 @@ type
     procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
-    procedure SetMenu(Value : TMainMenu);
+    procedure SetMenu(Value: TMainMenu);
     procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
@@ -470,6 +470,7 @@ type
     procedure RemoveHandler(HandlerType: TFormHandlerType;
                             const Handler: TMethod);
     function FindDefaultForActiveControl: TWinControl;
+    procedure UpdateMenu;
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;

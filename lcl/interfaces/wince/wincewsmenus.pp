@@ -90,7 +90,7 @@ var
   MenuItemsList : TStringList;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-procedure CeSetMenu(AOwner: TCustomForm; Wnd: HWND; Menu: HMENU);
+procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
 
 implementation
 
@@ -186,7 +186,7 @@ begin
   end;
 end;
 
-procedure CeSetMenu(AOwner: TCustomForm; Wnd: HWND; Menu: HMENU);
+procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
 {$ifndef Win32}
 var
   mbi: SHMENUBARINFO;
@@ -303,7 +303,7 @@ begin
   // Correction for the position of the window
   // Avoids overlapping the menu, when it doesn't belong to the work area
   if (Application.ApplicationType in [atPDA, atDefault]) and
-    (AOwner.BorderStyle <> bsDialog) and (AOwner.BorderStyle <> bsNone) then
+     (GetWindowLong(Wnd, GWL_STYLE) and WS_POPUP = 0) then // BorderStyle is neither bsDialog nor bsNone
   begin
     GetWindowRect(mbi.hwndMB, R);
     Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);

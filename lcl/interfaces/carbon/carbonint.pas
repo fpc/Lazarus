@@ -67,7 +67,7 @@ type
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
-    FMainMenu: TMainMenu; // Main menu attached to menu bar
+    FMainMenu: TCarbonMenu; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
     FFocusedWidget: HWND; // Forced Focus widgetset (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
@@ -105,7 +105,7 @@ type
 
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
-    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
+    procedure AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU); override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
@@ -134,8 +134,8 @@ type
 
   public
     procedure SetMainMenuEnabled(AEnabled: Boolean);
-    procedure SetRootMenu(const AMenu: TMainMenu);
-    property MainMenu: TMainMenu read FMainMenu;
+    procedure SetRootMenu(const AMenu: TCarbonMenu);
+    property MainMenu: TCarbonMenu read FMainMenu;
   public
     procedure SetCaptureWidget(const AWidget: HWND);
     procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);

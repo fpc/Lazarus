@@ -47,7 +47,7 @@ type
   TWin32WSMenuItem = class(TWSMenuItem)
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
-    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
+    class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
@@ -61,7 +61,7 @@ type
 
   TWin32WSMenu = class(TWSMenu)
   published
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
@@ -75,7 +75,7 @@ type
 
   TWin32WSPopupMenu = class(TWSPopupMenu)
   published
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
@@ -1289,7 +1289,7 @@ begin
 end;
 
 class procedure TWin32WSMenu.SetBiDiMode(const AMenu : TMenu;
-  UseRightToLeftAlign, UseRightToLeftReading : Boolean);
+  UseRightToLeftAlign, UseRightToLeftReading: Boolean);
 begin
   if not WSCheckHandleAllocated(AMenu, 'SetBiDiMode')
   then Exit;

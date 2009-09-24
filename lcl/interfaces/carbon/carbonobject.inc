@@ -1084,15 +1084,17 @@ end;
 
   Attaches the menu of window to menu bar
  ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TCarbonWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
 const SName = 'TCarbonWidgetSet.AttachMenuToWindow';
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
   {$ENDIF}
-  
-  if AMenuObject is TMainMenu then
-    SetRootMenu(AMenuObject as TMainMenu);
+
+  if (AMenuHandle = 0) or not CheckMenu(AMenuHandle, 'AttachMenuToWindow') then
+    SetRootMenu(nil)
+  else
+    SetRootMenu(TCarbonMenu(AMenuHandle));
 end;
 
 {------------------------------------------------------------------------------

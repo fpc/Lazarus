@@ -137,41 +137,39 @@ begin
   inherited Notification(AComponent,Operation);
 
   case Operation of
-
-  opInsert:
-    begin
-      if AComponent is TCustomActionList then begin
-        if FActionLists=nil then FActionLists:=TList.Create;
-        FActionLists.Add(AComponent);
-      end
-      else if not (csLoading in ComponentState) and (Menu = nil)
-      and (AComponent.Owner=Self) and (AComponent is TMainMenu) then
-        Menu:=TMainMenu(AComponent);
-    end;
-
-  opRemove:
-    begin
-      if (FActionLists<>nil) and (AComponent is TCustomActionList) then
-        FActionLists.Remove(AComponent)
-      else
+    opInsert:
       begin
-        if Menu = AComponent then Menu := nil;
-        //if WindowMenu = AComponent then WindowMenu := nil;
-        //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
+        if AComponent is TCustomActionList then
+        begin
+          if FActionLists = nil then FActionLists := TList.Create;
+          FActionLists.Add(AComponent);
+        end
+        else
+        if not (csLoading in ComponentState) and (Menu = nil) and
+          (AComponent.Owner=Self) and (AComponent is TMainMenu) then
+          Menu := TMainMenu(AComponent);
       end;
-      if FActiveControl=AComponent then begin
-        {$IFDEF VerboseFocus}
-        debugln('TCustomForm.Notification opRemove FActiveControl=',DbgSName(AComponent));
-        {$ENDIF}
-        FActiveControl:=nil;
+    opRemove:
+      begin
+        if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+          FActionLists.Remove(AComponent)
+        else
+        if AComponent = Menu then Menu := nil;
+        if FActiveControl=AComponent then
+        begin
+          {$IFDEF VerboseFocus}
+          debugln('TCustomForm.Notification opRemove FActiveControl=',DbgSName(AComponent));
+          {$ENDIF}
+          FActiveControl:=nil;
+        end;
+        if AComponent = FDefaultControl then
+          FDefaultControl := nil;
+        if AComponent = FCancelControl then
+          FCancelControl := nil;
       end;
-      if AComponent=FDefaultControl then
-        FDefaultControl:=nil;
-      if AComponent=FCancelControl then
-        FCancelControl:=nil;
-    end;
   end;
-  if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
+  if FDesigner <> nil then
+    FDesigner.Notification(AComponent, Operation);
 end;
 
 {------------------------------------------------------------------------------
@@ -653,6 +651,19 @@ end;
 function TCustomForm.FindDefaultForActiveControl: TWinControl;
 begin
   Result:=FindNextControl(nil, True, True, False)
+end;
+
+procedure TCustomForm.UpdateMenu;
+begin
+  if HandleAllocated and (FMenu <> nil) then
+  begin
+    // don't show a main menu for the dialog forms (delphi compatible)
+    if (BorderStyle <> bsDialog) or (csDesigning in ComponentState) then
+      FMenu.HandleNeeded
+    else
+      FMenu.DestroyHandle;
+    FMenu.WindowHandle := Handle;
+  end;
 end;
 
 class procedure TCustomForm.WSRegisterClass;
@@ -1272,31 +1283,30 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetMenu
 ------------------------------------------------------------------------------}
-procedure TCustomForm.SetMenu(Value : TMainMenu);
+procedure TCustomForm.SetMenu(Value: TMainMenu);
 var
   I: Integer;
 begin
-  if FMenu=Value then exit;
+  if FMenu = Value then Exit;
+
+  // check duplicate menus
   if Value <> nil then
     for I := 0 to Screen.FormCount - 1 do
       if (Screen.Forms[I].Menu = Value) and (Screen.Forms[I] <> Self) then
         raise EInvalidOperation.CreateFmt(sDuplicateMenus, [Value.Name]);
 
-  if FMenu<>nil then FMenu.Parent:=nil;
+  if FMenu <> nil then FMenu.Parent := nil;
 
   if (csDestroying in ComponentState) or
-    ((Value <> nil) and (csDestroying in Value.ComponentState))
-  then
+     ((Value <> nil) and (csDestroying in Value.ComponentState)) then
     Value := nil;
 
   FMenu := Value;
-  if FMenu<>nil then begin
-    FMenu.Parent:=Self;
-    if HandleAllocated then
-    begin
-      FMenu.HandleNeeded;
-      WidgetSet.AttachMenuToWindow(FMenu);
-    end;
+  if FMenu <> nil then 
+  begin
+    FMenu.FreeNotification(Self);
+    FMenu.Parent := Self;
+    UpdateMenu;
   end;
 end;
 
@@ -1341,6 +1351,7 @@ begin
   begin
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
     Perform(CM_ICONCHANGED, 0, 0);
+    UpdateMenu;
   end;
 end;
 
@@ -2008,11 +2019,7 @@ begin
   FPixelsPerInch:=0;
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
-  if FMenu <> nil then
-  begin
-    FMenu.HandleNeeded;
-    WidgetSet.AttachMenuToWindow(FMenu);
-  end;
+  UpdateMenu;
 
   // activate focus if visible
   if Visible then begin

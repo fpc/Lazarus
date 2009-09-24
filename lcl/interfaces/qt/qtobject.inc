@@ -250,25 +250,27 @@ begin
   QCoreApplication_setApplicationName(@W);
 end;
 
-procedure TQtWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TQtWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
 var
   AWidget, AMenuWidget: TQtWidget;
   QtMainWindow: TQtMainWindow absolute AWidget;
   QtMenuBar: TQtMenuBar absolute AMenuWidget;
   R, R1: TRect;
 begin
-  AMenuWidget := TQtWidget((AMenuObject as TMenu).Handle);
-  if AMenuWidget is TQtMenuBar then
+  AWidget := TQtWidget(AWindowHandle);
+  if AWidget is TQtMainWindow then
   begin
-    AWidget := TQtWidget(TWinControl(AMenuObject.Owner).Handle);
-    if AWidget is TQtMainWindow then
+    AMenuWidget := TQtWidget(AMenuHandle);
+    if AMenuWidget is TQtMenuBar then
     begin
       R := AWidget.LCLObject.ClientRect;
       R1 := QtMainWindow.MenuBar.getGeometry;
       R1.Right := R.Right;
       QtMenuBar.setGeometry(R1);
       QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
-    end;
+    end
+    else
+      QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
   end;
 end;
 

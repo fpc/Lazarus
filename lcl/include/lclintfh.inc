@@ -41,7 +41,7 @@ function AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHa
 function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AllocateHWnd(Method: TLCLWndMethod): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

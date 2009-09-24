@@ -594,20 +594,10 @@ begin
   Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
 end;
 
-procedure TWin32WidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
-var
-  AMenu: TMenu;
-  AWinControl: TWinControl;
+procedure TWin32WidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
 begin
-  AMenu := AMenuObject as TMenu;
-  if AMenu is TMainMenu then
-  begin
-    AWinControl := TWinControl(AMenu.Parent);
-    Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
-    //Set the right order menu after attach the menu
-    SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
-    AddToChangedMenus(AWinControl.Handle);
-  end;
+  Windows.SetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
 end;
 
 { Private methods (in no significant order) }

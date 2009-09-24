@@ -196,7 +196,7 @@ type
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
-    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
+    procedure AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;

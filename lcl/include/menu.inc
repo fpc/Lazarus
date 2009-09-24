@@ -125,10 +125,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.SetParent(const AValue: TComponent);
 begin
-  if FParent=AValue then exit;
-  FParent:=AValue;
-  if (FParent=nil) and (Items<>nil) and Items.HandleAllocated then begin
-    // disconnect from form
+  if FParent = AValue then Exit;
+  FParent := AValue;
+  if (FParent = nil) and (Items <> nil) and Items.HandleAllocated then
+  begin
+    // disconnect from the form
     DestroyHandle;
   end
 end;
@@ -152,7 +153,7 @@ begin
   FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
   // initiate creation of subitems
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
-  for i:=0 to Items.Count-1 do
+  for i := 0 to Items.Count - 1 do
     if Items[i].Visible then
       Items[i].HandleNeeded;
 end;
