@@ -26,6 +26,8 @@ const HeaderBorderSize = 2;
 procedure TCustomHeaderControl.SetImages(const AValue: TCustomImageList);
 begin
   FImages := AValue;
+  if FImages <> nil then
+    FImages.FreeNotification(Self);
 end;
 
 function TCustomHeaderControl.GetSectionFromOriginalIndex(OriginalIndex: Integer): THeaderSection;
