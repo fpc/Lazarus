@@ -917,9 +917,9 @@ begin
         begin
           if (TCustomForm(AWidget.LCLObject).Menu <> nil) and
              (TCustomForm(AWidget.LCLObject).Menu.HandleAllocated) then
-            CarbonWidgetSet.SetRootMenu(TCarbonMenu(TCustomForm(AWidget.LCLObject).Menu.Handle))
+            CarbonWidgetSet.SetRootMenu(TCustomForm(AWidget.LCLObject).Menu.Handle)
           else
-            CarbonWidgetSet.SetRootMenu(nil);
+            CarbonWidgetSet.SetRootMenu(0);
         end;
       end;
     kEventWindowDeactivated: DoActivate:=false;
@@ -1687,7 +1687,8 @@ procedure TCarbonWindow.CloseModal;
 begin
   if not Assigned(fWindowRef) then Exit; // not possible to show modal if not Window mode
 
-  if CarbonWidgetSet.MainMenu <> (LCLObject as TCustomForm).Menu then
+  if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and 
+     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
     CarbonWidgetSet.SetMainMenuEnabled(True);
 
   OSError(
@@ -1709,7 +1710,8 @@ begin
     Self, 'ShowModal', SSetModality);
 
   SelectWindow(fWindowRef);
-  if CarbonWidgetSet.MainMenu <> (LCLObject as TCustomForm).Menu then
+  if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and 
+     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
     CarbonWidgetSet.SetMainMenuEnabled(False);
 end;
 

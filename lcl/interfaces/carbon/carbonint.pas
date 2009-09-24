@@ -67,7 +67,7 @@ type
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
-    FMainMenu: TCarbonMenu; // Main menu attached to menu bar
+    FMainMenu: HMENU; // Main menu attached to menu bar
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
     FFocusedWidget: HWND; // Forced Focus widgetset (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
@@ -134,8 +134,8 @@ type
 
   public
     procedure SetMainMenuEnabled(AEnabled: Boolean);
-    procedure SetRootMenu(const AMenu: TCarbonMenu);
-    property MainMenu: TCarbonMenu read FMainMenu;
+    procedure SetRootMenu(const AMenu: HMENU);
+    property MainMenu: HMENU read FMainMenu;
   public
     procedure SetCaptureWidget(const AWidget: HWND);
     procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);

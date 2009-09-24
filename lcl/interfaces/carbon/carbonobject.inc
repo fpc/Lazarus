@@ -528,7 +528,7 @@ begin
 
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
   FCurrentCursor := 0;
-  FMainMenu := nil;
+  FMainMenu := 0;
   FCaptureWidget := 0;
   
   RegisterEvents;
@@ -1091,10 +1091,7 @@ begin
     DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
   {$ENDIF}
 
-  if (AMenuHandle = 0) or not CheckMenu(AMenuHandle, 'AttachMenuToWindow') then
-    SetRootMenu(nil)
-  else
-    SetRootMenu(TCarbonMenu(AMenuHandle));
+  SetRootMenu(AMenuHandle)
 end;
 
 {------------------------------------------------------------------------------

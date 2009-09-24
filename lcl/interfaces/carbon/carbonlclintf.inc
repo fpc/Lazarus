@@ -612,13 +612,10 @@ begin
     DebugLn('TCarbonWidgetSet.SetMainMenuEnabled AEnabled: ' + DbgS(AEnabled));
   {$ENDIF}
   
-  if FMainMenu <> nil then
+  if FMainMenu <> 0 then
   begin
-    if csDesigning in FMainMenu.ComponentState then Exit;
-    if FMainMenu.Items.HandleAllocated then
-    begin
-      TCarbonMenu(FMainMenu.Items.Handle).SetEnable(AEnabled);
-    end;
+    if csDesigning in TCarbonMenu(FMainMenu).LCLMenuItem.ComponentState then Exit;
+    TCarbonMenu(FMainMenu).SetEnable(AEnabled);
   end;
 end;
 
@@ -628,15 +625,16 @@ end;
 
   Sets the menu to menu bar
  ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.SetRootMenu(const AMenu: TCarbonMenu);
+procedure TCarbonWidgetSet.SetRootMenu(const AMenu: HMENU);
 begin
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCarbonWidgetSet.SetRootMenu AMenu: ' + DbgS(AMenu));
   {$ENDIF}
   
-  if (AMenu <> nil) and not (csDesigning in AMenu.LCLMenuItem.ComponentState) then    
+  if (AMenu <> 0) and CheckMenu(AMenu, 'SetRootMenu') and 
+     not (csDesigning in TCarbonMenu(AMenu).LCLMenuItem.ComponentState) then    
   begin
-    AMenu.AttachToMenuBar;    
+    TCarbonMenu(AMenu).AttachToMenuBar;    
     FMainMenu := AMenu;
   end;
 end;
