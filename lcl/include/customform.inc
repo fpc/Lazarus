@@ -1676,6 +1676,14 @@ begin
     Free;
 end;
 
+function TCustomForm.CanFocus: Boolean;
+begin
+  if Parent = nil then
+    Result := IsControlVisible and Enabled
+  else
+    Result := inherited CanFocus;
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm Method CloseQuery
 ------------------------------------------------------------------------------}

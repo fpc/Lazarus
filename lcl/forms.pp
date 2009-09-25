@@ -551,6 +551,7 @@ type
     procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
     function NeedParentForAutoSize: Boolean; override;
     procedure Release;
+    function CanFocus: Boolean; override;
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; virtual;
     procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);

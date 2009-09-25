@@ -3449,7 +3449,7 @@ end;
   
   
 ------------------------------------------------------------------------------}
-function TWinControl.CanFocus : Boolean;
+function TWinControl.CanFocus: Boolean;
 var
   Control: TWinControl;
   Form: TCustomForm;
@@ -3465,7 +3465,7 @@ begin
       // test all except the Form if it is visible and enabled
       if not (Control.IsControlVisible and Control.Enabled) then Exit;
       Control := Control.Parent;
-    until false;
+    until False;
     Result := True;
   end;
 end;
