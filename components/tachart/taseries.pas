@@ -140,17 +140,21 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
+  TLineType = (ltNone, ltFromPrevious, ltFromOrigin);
+
   { TLineSeries }
 
   TLineSeries = class(TBasicLineSeries)
   private
     FLinePen: TPen;
+    FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
-    FShowLines: Boolean;
     FShowPoints: Boolean;
 
+    function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
+    procedure SetLineType(AValue: TLineType);
     procedure SetPointer(Value: TSeriesPointer);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
@@ -187,12 +191,16 @@ type
   published
     property Depth;
     property LinePen: TPen read FLinePen write SetLinePen;
+    property LineType: TLineType
+      read FLineType write SetLineType default ltFromPrevious;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property SeriesColor;
-    property ShowLines: Boolean read FShowLines write SetShowLines default true;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
+    property ShowLines: Boolean
+      read GetShowLines write SetShowLines stored false default true;
+    property ShowPoints: Boolean
+      read FShowPoints write SetShowPoints default false;
     property Source;
   end;
 
@@ -305,7 +313,7 @@ type
 implementation
 
 uses
-  GraphMath, Math, Types,
+  GraphMath, Math, PropEdits, Types,
   TASources;
 
 { TLineSeries }
@@ -316,8 +324,8 @@ begin
 
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
+  FLineType := ltFromPrevious;
   FPointer := TSeriesPointer.Create(FChart);
-  FShowLines := true;
 end;
 
 destructor TLineSeries.Destroy;
@@ -338,28 +346,39 @@ begin
 end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
+
+  procedure DrawLine(AA, AB: TDoublePoint);
+  var
+    ai, bi: TPoint;
+  begin
+    if not LineIntersectsRect(AA, AB, ParentChart.CurrentExtent) then exit;
+    ai := ParentChart.GraphToImage(AA);
+    bi := ParentChart.GraphToImage(AB);
+    ACanvas.Pen.Assign(LinePen);
+    if Depth = 0 then
+      ACanvas.Line(ai, bi)
+    else begin
+      ACanvas.Brush.Style := bsSolid;
+      ACanvas.Brush.Color := ACanvas.Pen.Color;
+      ACanvas.Pen.Color := clBlack;
+      DrawLineDepth(ACanvas, ai, bi, Depth);
+    end;
+  end;
+
 var
   i: Integer;
-  ai, bi: TPoint;
-  a, b: TDoublePoint;
+  a: TDoublePoint;
+  ai: TPoint;
 begin
-  if FShowLines then
-    for i := 0 to Count - 2 do begin
-      a := DoublePoint(Source[i]^);
-      b := DoublePoint(Source[i + 1]^);
-      if not LineIntersectsRect(a, b, ParentChart.CurrentExtent) then continue;
-      ai := ParentChart.GraphToImage(a);
-      bi := ParentChart.GraphToImage(b);
-      ACanvas.Pen.Assign(LinePen);
-      if Depth = 0 then
-        ACanvas.Line(ai, bi)
-      else begin
-        ACanvas.Brush.Style := bsSolid;
-        ACanvas.Brush.Color := ACanvas.Pen.Color;
-        ACanvas.Pen.Color := clBlack;
-        DrawLineDepth(ACanvas, ai, bi, Depth);
-      end;
-    end;
+  case LineType of
+    ltNone: ;
+    ltFromPrevious:
+      for i := 0 to Count - 2 do
+        DrawLine(DoublePoint(Source[i]^), DoublePoint(Source[i + 1]^));
+    ltFromOrigin:
+      for i := 0 to Count - 1 do
+        DrawLine(ZeroDoublePoint, DoublePoint(Source[i]^));
+  end;
 
   DrawLabels(ACanvas, true);
 
@@ -469,9 +488,21 @@ begin
   Result := FLinePen.Color;
 end;
 
+function TLineSeries.GetShowLines: Boolean;
+begin
+  Result := FLineType <> ltNone;
+end;
+
 procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
   Source[AIndex]^.Color := AColor;
+end;
+
+procedure TLineSeries.SetLineType(AValue: TLineType);
+begin
+  if FLineType = AValue then exit;
+  FLineType := AValue;
+  UpdateParentChart;
 end;
 
 procedure TLineSeries.SetLinePen(AValue: TPen);
@@ -492,7 +523,11 @@ end;
 
 procedure TLineSeries.SetShowLines(Value: Boolean);
 begin
-  FShowLines := Value;
+  if ShowLines = Value then exit;
+  if Value then
+    FLineType := ltFromPrevious
+  else
+    FLineType := ltNone;
   UpdateParentChart;
 end;
 
@@ -1237,5 +1272,7 @@ initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
   RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
   RegisterSeriesClass(TLine, 'Line');
+  RegisterPropertyEditor(
+    TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
 
 end.
