@@ -661,6 +661,8 @@ begin
     ThemeDrawElement(AHDC, Tmp, ARect, nil);
   end;
   IsRightToLeft := AMenuItem.GetIsRightToLeft;
+  if IsRightToLeft then
+    SetLayout(AHDC, LAYOUT_RTL);
   // calc check/image rect
   CheckRect := ARect;
   CheckRect.Right := CheckRect.Left + Metrics.CheckSize.cx + Metrics.CheckMargins.cxRightWidth + Metrics.CheckMargins.cxLeftWidth;

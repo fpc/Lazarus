@@ -3347,7 +3347,11 @@ begin
          ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox)
      {$ENDIF}
        else
+         {$IFDEF VerboseTWinControlRealText}
+         ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_editbox);
+         {$ELSE}
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
+         {$ENDIF}
     end;
 
     LM_CLICKED:

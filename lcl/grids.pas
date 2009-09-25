@@ -4626,7 +4626,10 @@ begin
         if (Index>=0) and (Index<ColCount) then
           Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]))+TLColOff;
         if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
-          Index := ColCount-1;
+          if AllowOutboundEvents then
+            Index := ColCount-1
+          else
+            Index := -1;
           exit;
         end;
       end;
@@ -4645,7 +4648,10 @@ begin
         if (Index>=0) and (Index<RowCount) then
           Offset:=Offset-FixedHeight+integer(PtrUInt(AccumHeight[Index]))+TLRowOff;
         if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
-          Index:=RowCount-1;
+          if AllowOutboundEvents then
+            Index := RowCount-1
+          else
+            Index := -1;
           Exit; // Out of Range
         end;
       end;
@@ -5698,7 +5704,13 @@ var
 begin
   // Do not raise Exception if out of range
   OffsetToColRow(True, True, X, ACol, dummy);
-  OffsetToColRow(False,True, Y, ARow, dummy);
+  if ACol<0 then
+    ARow := -1
+  else begin
+    OffsetToColRow(False,True, Y, ARow, dummy);
+    if ARow<0 then
+      ACol := -1;
+  end;
 end;
 
 { Convert a fisical Mouse coordinate into a logical cell coordinate }

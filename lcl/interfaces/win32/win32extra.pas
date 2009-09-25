@@ -43,6 +43,13 @@ const
   // missed messages
   WM_NCMOUSELEAVE = $2A2; // declared in fpc 2.3.1
 
+  // Layout orientation
+  LAYOUT_RTL                        = $00000001; // Right to left
+  LAYOUT_BTT                        = $00000002; // Bottom to top
+  LAYOUT_VBH                        = $00000004; // Vertical before horizontal
+  LAYOUT_ORIENTATIONMASK            = (LAYOUT_RTL or LAYOUT_BTT or LAYOUT_VBH);
+  LAYOUT_BITMAPORIENTATIONPRESERVED = $00000008;
+
 type
   tagMENUBARINFO = record
     cbSize: DWORD;
@@ -83,6 +90,7 @@ var
   MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
   MonitorFromRect: function(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
   MonitorFromPoint: function(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
+  SetLayout: function(dc: HDC; l: DWord): DWord; stdcall;
 
 const
   // ComCtlVersions
@@ -621,7 +629,7 @@ begin
     Result := False;
 end;
 
-function _MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+function _MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
 begin
   if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0 ) or
       ((ptScreenCoords.x >= 0) and
@@ -633,7 +641,7 @@ begin
     Result := 0;
 end;
 
-function _MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+function _MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
 begin
   if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0) or
       ((lprcScreenCoords^.right > 0) and
@@ -645,7 +653,7 @@ begin
     Result := 0;
 end;
 
-function _MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+function _MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; stdcall;
 var
   wp: TWindowPlacement;
   B: Boolean;
@@ -664,20 +672,27 @@ begin
     Result := 0;
 end;
 
-function _SHGetStockIconInfo(siid: integer; uFlags: UINT; psii: PSHSTOCKICONINFO): HResult;
+function _SHGetStockIconInfo(siid: integer; uFlags: UINT; psii: PSHSTOCKICONINFO): HResult; stdcall;
 begin
   Result := E_NOTIMPL;
+end;
+
+function _SetLayout(dc: HDC; l: DWord): DWord; stdcall;
+begin
+  Result := GDI_ERROR;
 end;
 
 const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
   shell32lib = 'shell32.dll';
+  gdi32lib = 'gdi32.dll';
 
 var
   msimg32handle: THandle = 0;
   user32handle: THandle = 0;
   shell32handle: THandle = 0;
+  gdi32handle: THandle = 0;
 
 procedure Initialize;
 var
@@ -779,6 +794,16 @@ begin
     else
       Pointer(SHGetStockIconInfo) := @_SHGetStockIconInfo;
   end;
+
+  gdi32handle := LoadLibrary(gdi32lib);
+  if gdi32handle <> 0 then
+  begin
+    p := GetProcAddress(gdi32handle, 'SetLayout');
+    if p <> nil then
+      Pointer(SetLayout) := p
+    else
+      Pointer(SetLayout) := @_SetLayout;
+  end;
 end;
 
 procedure Finalize;
@@ -798,6 +823,10 @@ begin
   if shell32handle <> 0 then
     FreeLibrary(shell32handle);
   shell32handle := 0;
+
+  if gdi32handle <> 0 then
+    FreeLibrary(gdi32handle);
+  gdi32handle := 0;
 end;
 
 initialization

@@ -4218,7 +4218,11 @@ begin
   end else begin
     Result := PropertyHook.GetObjectName(GetComponent(0));
     for I := Length(Result) downto 1 do
-      if Result[I] in ['.','[',']'] then
+      if
+        not (
+          (Result[I] in ['a'..'z', 'A'..'Z', '_']) or
+          (I > 1) and (Result[I] in ['0'..'9']))
+      then
         System.Delete(Result, I, 1);
   end;
   if Result = '' then begin
@@ -5935,7 +5939,7 @@ begin
     if Instance is TComponent then
       Result:=TComponent(Instance).Name
     else if instance is TCollectionItem then 
-      Result:=TCollectionItem(Instance).DisplayName;
+      Result:=TCollectionItem(Instance).GetNamePath;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;

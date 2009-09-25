@@ -625,14 +625,16 @@ begin
   if SourceExpressionEvaluator<>nil then begin
     FCount:=SourceExpressionEvaluator.Count;
     Size:=SizeOf(AnsiString) * FCount;
-    GetMem(FNames,Size);
-    FillChar(Pointer(FNames)^,Size,0);
-    GetMem(FValues,Size);
-    FillChar(Pointer(FValues)^,Size,0);
-    FCapacity:=FCount;
-    for i:=0 to FCount-1 do begin
-      FNames[i]:=SourceExpressionEvaluator.FNames[i];
-      FValues[i]:=SourceExpressionEvaluator.FValues[i];
+    if Size>0 then begin
+      GetMem(FNames,Size);
+      FillByte(Pointer(FNames)^,Size,0);
+      GetMem(FValues,Size);
+      FillByte(Pointer(FValues)^,Size,0);
+      FCapacity:=FCount;
+      for i:=0 to FCount-1 do begin
+        FNames[i]:=SourceExpressionEvaluator.FNames[i];
+        FValues[i]:=SourceExpressionEvaluator.FValues[i];
+      end;
     end;
     IncreaseChangeStamp;
   end;
