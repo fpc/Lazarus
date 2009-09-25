@@ -959,6 +959,8 @@ begin
     AdjustSize
   else
     RequestAlign;
+  if (csDesigning in ComponentState) and (Parent <> nil) then
+    Parent.Invalidate;
 end;
 
 function TControl.IsBorderSpacingInnerBorderStored: Boolean;
