@@ -150,10 +150,10 @@ type
     LastPaintSender: TControl;
 
     // event handlers for designed components
-    function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
-    function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
-    function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
-    procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
+    function PaintControl(Sender: TControl; TheMessage: TLMPaint): Boolean;
+    function SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
+    function MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
+    procedure MouseDownOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
     procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
@@ -1371,7 +1371,7 @@ begin
   Form.Invalidate;
 end;
 
-function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
+function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint): Boolean;
 var
   OldDuringPaintControl: boolean;
 begin
@@ -1536,24 +1536,26 @@ begin
   end;
 end;
 
-function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
+function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
-  Result:=true;
+  Result := True;
   Sender.Dispatch(TheMessage);
-  if ControlSelection.SelectionForm=Form then begin
-    ControlSelection.CheckForLCLChanges(true);
+  if ControlSelection.SelectionForm = Form then
+  begin
+    ControlSelection.CheckForLCLChanges(True);
   end;
 end;
 
-function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
+function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
 begin
-  Result:=true;
+  Result := True;
   Sender.Dispatch(TheMessage);
   //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
-  if ControlSelection.SelectionForm=Form then begin
-    if (not ControlSelection.CheckForLCLChanges(true))
-    and (Sender=Form)
-    and ControlSelection.LookupRootSelected then begin
+  if ControlSelection.SelectionForm = Form then
+  begin
+    if not ControlSelection.CheckForLCLChanges(True) and (Sender = Form) and
+       ControlSelection.LookupRootSelected then
+    begin
       // the selected form was moved (nothing else has changed)
       // ControlSelection does not need an update, but properties like
       // Form.Left/Top have to be updated in the OI
