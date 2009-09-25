@@ -49,7 +49,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  Controls, Dialogs,
+  Controls, Dialogs, InterfaceBase,
   Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
@@ -57,7 +57,7 @@ uses
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs;
+  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;
@@ -422,6 +422,7 @@ type
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
     procedure InvalidateOptions;
+    function GetEffectiveLCLWidgetType: string; override;
   public
     property OwnerProject: TProject read FOwnerProject;
     property Project: TProject read FOwnerProject;
@@ -792,7 +793,7 @@ type
     procedure ReaddRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
-    function Requires(APackage: TLazPackage): boolean;
+    function Requires(APackage: TLazPackage; SearchRecursively: boolean): boolean;
     procedure GetAllRequiredPackages(var List: TFPList);
     procedure AddPackageDependency(const PackageName: string); override;
     
@@ -3729,10 +3730,15 @@ begin
   EndUpdate;
 end;
 
-function TProject.Requires(APackage: TLazPackage): boolean;
+function TProject.Requires(APackage: TLazPackage; SearchRecursively: boolean
+  ): boolean;
 begin
-  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
-                                         APackage)<>nil;
+  if SearchRecursively then
+    Result:=PackageGraph.FindDependencyRecursively(FFirstRequiredDependency,
+                                                   APackage)<>nil
+  else
+    Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+                                           APackage)<>nil;
 end;
 
 procedure TProject.GetAllRequiredPackages(var List: TFPList);
@@ -4903,6 +4909,14 @@ procedure TProjectCompilerOptions.InvalidateOptions;
 begin
   if (Project=nil) then exit;
   // TODO: propagate change to all dependant projects
+end;
+
+function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
+begin
+  if OwnerProject.Requires(PackageGraph.LCLPackage,true) then
+    Result:=inherited GetEffectiveLCLWidgetType
+  else
+    Result:=LCLPlatformDirNames[lpNoGUI];
 end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;

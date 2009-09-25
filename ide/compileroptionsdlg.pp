@@ -1615,6 +1615,7 @@ end;
 procedure TfrmCompilerOptions.SetupSearchPathsTab(Page: integer);
 var
   LCLInterface: TLCLPlatform;
+  s: String;
 begin
   // Setup the Search Paths Tab
   MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
@@ -1731,8 +1732,8 @@ begin
   with LCLWidgetTypeComboBox do begin
     with Items do begin
       BeginUpdate;
-      Add(Format(lisCOdefault,
-                   [LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]));
+      s:=LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
+      Add(Format(lisCOdefault,[s]));
       for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
         Items.Add(LCLPlatformDisplayNames[LCLInterface]);
       end;
@@ -1740,7 +1741,6 @@ begin
     end;
     ItemIndex:=1;
     Constraints.MinWidth:=150;
-    // MG: does not work in win32 intf: AutoSize:=True;
   end;
 end;
 

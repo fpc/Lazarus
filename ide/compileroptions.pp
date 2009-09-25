@@ -648,7 +648,7 @@ type
                          MakeAlwaysRelative: boolean): string;
     function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetOptionsForCTDefines: string;
-    function GetEffectiveLCLWidgetType: string;
+    function GetEffectiveLCLWidgetType: string; virtual;
   public
     // Properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
