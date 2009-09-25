@@ -1544,6 +1544,8 @@ begin
   begin
     ControlSelection.CheckForLCLChanges(True);
   end;
+  if (Sender <> Form) and (Sender.Parent <> nil) then
+    Sender.Parent.Invalidate;
 end;
 
 function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
@@ -1562,6 +1564,8 @@ begin
       OnPropertiesChanged(Self);
     end;
   end;
+  if (Sender <> Form) and (Sender.Parent <> nil) then
+    Sender.Parent.Invalidate;
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender: TControl;
@@ -2820,13 +2824,14 @@ end;
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
   AComponent: TComponent;
-  Icon: TBitmap;
+  Icon, Surface: TBitmap;
   i, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
   IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
 begin
+  Surface := nil;
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
     AComponent := FLookupRoot.Components[i];
@@ -2845,17 +2850,20 @@ begin
 
       IsSelected := ControlSelection.IsSelected(AComponent);
       aDDC.Save;
-      with aDDC.Canvas do 
+      if Surface = nil then
       begin
-        // draw component frame
-        Pen.Width := 1;
-        IconRect := Rect(ItemLeft, ItemTop, ItemRight, ItemBottom);
-        Frame3D(IconRect, 1, bvRaised);
-        Brush.Color := clBtnFace;
-        FillRect(IconRect);
-        if NonVisualCompBorder > 1 then
-          InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+        Surface := TBitmap.Create;
+        Surface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
+        Surface.Canvas.Brush.Color := clBtnFace;
+        Surface.Canvas.Pen.Width := 1;
       end;
+
+      IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
+      Surface.Canvas.Frame3D(IconRect, 1, bvRaised);
+      Surface.Canvas.FillRect(IconRect);
+      if NonVisualCompBorder > 1 then
+        InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+
       // draw component Name
       if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
       begin
@@ -2872,8 +2880,8 @@ begin
           DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
             DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
           aDDC.Canvas.Draw(
-            (IconRect.Left + IconRect.Right - TextSize.cx) div 2,
-            IconRect.Bottom + NonVisualCompBorder + 2, Icon);
+            (ItemLeft + ItemRight - TextSize.cx) div 2,
+            ItemBottom + NonVisualCompBorder + 2, Icon);
         finally
           Icon.Free;
         end;
@@ -2889,15 +2897,18 @@ begin
           inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
           IconRect.Right := IconRect.Left + Icon.Width;
           IconRect.Bottom := IconRect.Top + Icon.Height;
-          aDDC.Canvas.StretchDraw(IconRect, Icon);
+          Surface.Canvas.StretchDraw(IconRect, Icon);
         end;
       end;
+      aDDC.Canvas.Draw(ItemLeft, ItemTop, Surface);
       if (ControlSelection.Count > 1) and IsSelected then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
       aDDC.Restore;
     end;
   end;
+  if Surface <> nil then
+    Surface.Free;
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
