@@ -305,7 +305,10 @@ begin
      PixelPerUnit:=double(w-j-6) / VMax;
      NScaleLines:=(w-j-6) div (2*j);
      end;
-  ScaleUnits:=(Vmax div NScaleLines) +1;
+  if NScaleLines=0 then
+    ScaleUnits:=Vmax +1
+  else
+    ScaleUnits:=(Vmax div NScaleLines) +1;
   ScaleUnits:=NormalizeScaleUnits(ScaleUnits);
   if ScaleUnits=0 then
     NScaleLines:=1
