@@ -776,8 +776,13 @@ begin
   Result := WidgetSet.SetCursorPos(X, Y);
 end;
 
+function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
+end;
+
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
-Begin
+begin
   Result := WidgetSet.SetProp(Handle,Str,Data);
 end;
 

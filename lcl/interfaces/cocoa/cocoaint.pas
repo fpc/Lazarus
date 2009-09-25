@@ -90,8 +90,6 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
-
-//    procedure AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU); override;
     
 //    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
 //    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

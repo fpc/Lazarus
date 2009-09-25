@@ -250,30 +250,6 @@ begin
   QCoreApplication_setApplicationName(@W);
 end;
 
-procedure TQtWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
-var
-  AWidget, AMenuWidget: TQtWidget;
-  QtMainWindow: TQtMainWindow absolute AWidget;
-  QtMenuBar: TQtMenuBar absolute AMenuWidget;
-  R, R1: TRect;
-begin
-  AWidget := TQtWidget(AWindowHandle);
-  if AWidget is TQtMainWindow then
-  begin
-    AMenuWidget := TQtWidget(AMenuHandle);
-    if AMenuWidget is TQtMenuBar then
-    begin
-      R := AWidget.LCLObject.ClientRect;
-      R1 := QtMainWindow.MenuBar.getGeometry;
-      R1.Right := R.Right;
-      QtMenuBar.setGeometry(R1);
-      QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
-    end
-    else
-      QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
-  end;
-end;
-
 procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
 begin
   if AValue = nil then

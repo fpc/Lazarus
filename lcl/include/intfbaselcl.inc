@@ -49,10 +49,6 @@ begin
   Result := 0;
 end;
 
-procedure TWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
-begin
-end;
-
 procedure TWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 begin
 end;

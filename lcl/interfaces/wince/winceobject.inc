@@ -498,12 +498,6 @@ begin
   Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
 end;
 
-procedure TWinCEWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
-begin
-  CeSetMenu(AWindowHandle, AMenuHandle);
-  AddToChangedMenus(AWindowHandle);
-end;
-
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------

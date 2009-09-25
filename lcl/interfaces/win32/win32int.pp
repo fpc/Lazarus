@@ -179,7 +179,6 @@ type
     function AppRestoreStayOnTopFlags: Boolean; override;
 
     function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
-    procedure AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU); override;
 
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

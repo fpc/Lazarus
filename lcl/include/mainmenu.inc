@@ -22,11 +22,11 @@ begin
   FWindowHandle := AValue;
   if HandleAllocated then
   begin
-    WidgetSet.AttachMenuToWindow(FWindowHandle, Handle);
+    SetMenu(FWindowHandle, Handle);
     BidiModeChanged;
   end
   else
-    WidgetSet.AttachMenuToWindow(FWindowHandle, 0);
+    SetMenu(FWindowHandle, 0);
 end;
 
 {------------------------------------------------------------------------------

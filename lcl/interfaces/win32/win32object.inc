@@ -594,12 +594,6 @@ begin
   Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
 end;
 
-procedure TWin32WidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
-begin
-  Windows.SetMenu(AWindowHandle, AMenuHandle);
-  AddToChangedMenus(AWindowHandle);
-end;
-
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------

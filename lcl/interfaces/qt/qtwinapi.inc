@@ -4503,6 +4503,31 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+var
+  AWidget, AMenuWidget: TQtWidget;
+  QtMainWindow: TQtMainWindow absolute AWidget;
+  QtMenuBar: TQtMenuBar absolute AMenuWidget;
+  R, R1: TRect;
+begin
+  AWidget := TQtWidget(AWindowHandle);
+  Result := AWidget is TQtMainWindow;
+  if Result then
+  begin
+    AMenuWidget := TQtWidget(AMenuHandle);
+    if AMenuWidget is TQtMenuBar then
+    begin
+      R := AWidget.LCLObject.ClientRect;
+      R1 := QtMainWindow.MenuBar.getGeometry;
+      R1.Right := R.Right;
+      QtMenuBar.setGeometry(R1);
+      QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
+    end
+    else
+      QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  SetWindowOrgEx
   Params:  DC    - handle of device context

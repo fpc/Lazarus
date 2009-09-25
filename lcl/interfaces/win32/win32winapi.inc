@@ -3141,6 +3141,13 @@ begin
   Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Exit');
 end;
 
+function TWin32WidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle - handle of window

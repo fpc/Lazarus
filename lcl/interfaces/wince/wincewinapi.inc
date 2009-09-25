@@ -2432,6 +2432,14 @@ begin
   Result := Windows.SetForegroundWindow(HWnd);
 end;
 
+function TWinCEWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  CeSetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
+  Result := True;
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle - handle of window

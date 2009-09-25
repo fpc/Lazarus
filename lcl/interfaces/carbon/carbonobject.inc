@@ -1079,22 +1079,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.AttachMenuToWindow
-  Params:  AMenuObject - Menu
-
-  Attaches the menu of window to menu bar
- ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.AttachMenuToWindow(AWindowHandle: HWND; AMenuHandle: HMENU);
-const SName = 'TCarbonWidgetSet.AttachMenuToWindow';
-begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
-  {$ENDIF}
-
-  SetRootMenu(AMenuHandle)
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.DCGetPixel
   Params:  CanvasHandle - Canvas handle to get color from
            X, Y         - Position
