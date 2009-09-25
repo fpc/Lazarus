@@ -30,7 +30,7 @@ interface
 uses
   LCLIntF, LCLType, LResources,
   SysUtils, Classes, Controls, Graphics, Dialogs,
-  TAChartUtils, TATypes;
+  TAChartUtils, TATypes, TALegend;
 
 const
   LEGEND_SPACING = 5;
@@ -610,7 +610,7 @@ end;
 
 procedure TChart.DrawLegend(ACanvas: TCanvas);
 var
-  w, h, x1, y1, x2, y2, i, TH: Integer;
+  w, h, x1, y1, x2, y2, i, th: Integer;
   pbf: TPenBrushFontRecall;
   r: TRect;
 begin
@@ -623,7 +623,7 @@ begin
     ACanvas.Font.Assign(FLegend.Font);
 
     w := GetLegendWidth(ACanvas);
-    TH := ACanvas.TextHeight('I');
+    th := ACanvas.TextHeight('I');
     h := 0;
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
@@ -633,21 +633,21 @@ begin
     x1 := FClipRect.Right + 5;
     y1 := FClipRect.Top;
     x2 := x1 + w;
-    y2 := y1 + LEGEND_SPACING + h * (TH + LEGEND_SPACING);
+    y2 := y1 + LEGEND_SPACING + h * (th + LEGEND_SPACING);
 
     // Border
     ACanvas.Brush.Assign(FGraphBrush);
     ACanvas.Pen.Assign(FLegend.Frame);
     ACanvas.Rectangle(x1, y1, x2, y2);
 
-    r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
+    r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, th);
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active and ShowInLegend then begin
           ACanvas.Pen.Color := FLegend.Frame.Color;
           ACanvas.Brush.Assign(FGraphBrush);
           DrawLegend(ACanvas, r);
-          OffsetRect(r, 0, GetLegendCount * (TH + LEGEND_SPACING));
+          OffsetRect(r, 0, GetLegendCount * (th + LEGEND_SPACING));
         end;
   finally
     pbf.Free;

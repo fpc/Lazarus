@@ -1755,6 +1755,7 @@ components/tachart/tacustomseries.pas svneol=native#text/plain
 components/tachart/tadbsource.pas svneol=native#text/pascal
 components/tachart/tagraph.lrs svneol=native#text/pascal
 components/tachart/tagraph.pas svneol=native#text/plain
+components/tachart/talegend.pas svneol=native#text/plain
 components/tachart/taseries.pas svneol=native#text/plain
 components/tachart/taserieseditor.lfm svneol=native#text/plain
 components/tachart/taserieseditor.lrs svneol=native#text/pascal

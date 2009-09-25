@@ -8,7 +8,7 @@ interface
 
 uses
   TASeries, TAGraph, TAChartUtils, TASeriesEditor, TATypes, TASources, 
-  TADbSource, TACustomSeries, LazarusPackageIntf;
+  TADbSource, TACustomSeries, TALegend, LazarusPackageIntf;
 
 implementation
 
