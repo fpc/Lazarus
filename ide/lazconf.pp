@@ -58,7 +58,7 @@ const
       'carbon (beta)',
       'qt (beta)',
       'fpGUI (pre-alpha)',
-      'NoGUI (pre-alpha)',
+      'NoGUI',
       'cocoa (pre-alpha)'
     );
 
