@@ -15,10 +15,12 @@ type
     FAlignment: TLegendAlignment;
     FFont: TFont;
     FFrame: TChartPen;
+    FSpacing: TChartDistance;
 
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
+    procedure SetSpacing(const AValue: TChartDistance);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -29,6 +31,7 @@ type
       read FAlignment write SetAlignment default laRight;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
+    property Spacing: TChartDistance read FSpacing write SetSpacing default 5;
     property Visible default false;
   end;
 
@@ -52,6 +55,7 @@ constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FAlignment := laRight;
+  FSpacing := 5;
   Visible := false;
 
   InitHelper(TFPCanvasHelper(FFont), TFont);
@@ -82,6 +86,13 @@ end;
 procedure TChartLegend.SetFrame(AValue: TChartPen);
 begin
   FFrame.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetSpacing(const AValue: TChartDistance);
+begin
+  if FSpacing = AValue then exit;
+  FSpacing := AValue;
   StyleChanged(Self);
 end;
 

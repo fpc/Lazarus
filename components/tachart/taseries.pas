@@ -939,7 +939,7 @@ begin
       ACanvas.Brush.Color := Color;
     end;
     ACanvas.Rectangle(r);
-    OffsetRect(r, 0, r.Bottom - r.Top + LEGEND_SPACING);
+    OffsetRect(r, 0, r.Bottom - r.Top + ParentChart.Legend.Spacing);
   end;
 end;
 

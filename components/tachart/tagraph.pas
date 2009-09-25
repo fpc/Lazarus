@@ -32,9 +32,6 @@ uses
   SysUtils, Classes, Controls, Graphics, Dialogs,
   TAChartUtils, TATypes, TALegend;
 
-const
-  LEGEND_SPACING = 5;
-
 type
   TChart = class;
 
@@ -633,21 +630,21 @@ begin
     x1 := FClipRect.Right + 5;
     y1 := FClipRect.Top;
     x2 := x1 + w;
-    y2 := y1 + LEGEND_SPACING + h * (th + LEGEND_SPACING);
+    y2 := y1 + FLegend.Spacing + h * (th + FLegend.Spacing);
 
     // Border
     ACanvas.Brush.Assign(FGraphBrush);
     ACanvas.Pen.Assign(FLegend.Frame);
     ACanvas.Rectangle(x1, y1, x2, y2);
 
-    r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, th);
+    r := Bounds(x1 + FLegend.Spacing, y1 + FLegend.Spacing, 17, th);
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active and ShowInLegend then begin
           ACanvas.Pen.Color := FLegend.Frame.Color;
           ACanvas.Brush.Assign(FGraphBrush);
           DrawLegend(ACanvas, r);
-          OffsetRect(r, 0, GetLegendCount * (th + LEGEND_SPACING));
+          OffsetRect(r, 0, GetLegendCount * (th + FLegend.Spacing));
         end;
   finally
     pbf.Free;
