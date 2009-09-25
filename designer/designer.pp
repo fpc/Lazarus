@@ -39,7 +39,7 @@ uses
   // FCL + LCL
   Types, Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd,
+  ClipBrd, TypInfo,
   // IDEIntf
   IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf, FormEditingIntf,
   // IDE
@@ -3469,7 +3469,7 @@ begin
   DoOrderBackSelectionOne;
 end;
 
-Procedure TDesigner.HintTimer(Sender: TObject);
+procedure TDesigner.HintTimer(Sender: TObject);
 
   function GetComponentHintText(AComponent: TComponent): String;
   const
@@ -3490,7 +3490,7 @@ Procedure TDesigner.HintTimer(Sender: TObject);
       // size
       Result := Result + '; ' + Format(HintSizeStr, [AControl.Width, AControl.Height]);
       // and TabStop, TabOrder for TWinControl
-      if AComponent is TWinControl then
+      if (AComponent is TWinControl) and not (AComponent = Form) then
         Result := Result + LineEnding + Format(HintTabStr, [BoolToStr(AWinControl.TabStop, True), AWinControl.TabOrder]);
     end;
   end;
