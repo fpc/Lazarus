@@ -1182,8 +1182,7 @@ begin
   Unused(ADistFunc, APoint);
   AIndex := 0;
   AImg := Point(0, 0);
-  AValue.X := 0;
-  AValue.Y := 0;
+  Avalue := ZeroDoublePoint;
   Result := false;
 end;
 

@@ -112,6 +112,7 @@ const
     '%1:.2f%% of %3:g', // smsLabelPercentTotal
     '%4:g' // smsXValue
   );
+  ZeroDoublePoint: TDoublePoint = (X: 0; Y: 0);
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
   EmptyExtent: TDoubleRect =
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
