@@ -108,7 +108,6 @@ begin
     FChartSrc.Reset;
 end;
 
-
 procedure Register;
 begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TDbChartSource]);

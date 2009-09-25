@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 494
   ClientWidth = 585
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
     Height = 392
@@ -17,15 +17,16 @@ object Form1: TForm1
       item
         Alignment = calLeft
         Grid.Color = clGray
-        Grid.Style = psDot
-        Title.Angle = 90
+        Offset = 0
+        Scale = 1
         Title.Font.Height = -11
         Title.Font.Name = 'MS Sans Serif'
       end    
       item
         Alignment = calBottom
         Grid.Color = clGray
-        Grid.Style = psDot
+        Offset = 0
+        Scale = 1
         Title.Font.Height = -11
         Title.Font.Name = 'MS Sans Serif'
       end>
@@ -254,7 +255,7 @@ object Form1: TForm1
     end
     object edAddCount: TSpinEdit
       Left = 288
-      Height = 23
+      Height = 21
       Top = 24
       Width = 90
       MaxValue = 1000000
