@@ -136,6 +136,8 @@ procedure TCustomLabel.SetFocusControl(Value : TWinControl);
 begin
   if Value <> FFocusControl then
   begin
+    if FFocusControl <> nil then
+      FFocusControl.RemoveFreeNotification(Self);
     FFocusControl:= Value;
     if Value <> nil then
       Value.FreeNotification(Self);

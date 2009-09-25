@@ -89,9 +89,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomStaticText.SetFocusControl(Val: TWinControl);
 begin
-  if Val <> FFocusControl then begin
-    FFocusControl:= Val;
-    if Val <> nil then Val.FreeNotification(Self);
+  if Val <> FFocusControl then 
+  begin
+    if FFocusControl <> nil then
+      FFocusControl.RemoveFreeNotification(Self);
+    FFocusControl := Val;
+    if Val <> nil then 
+      Val.FreeNotification(Self);
   end;
 end;
 

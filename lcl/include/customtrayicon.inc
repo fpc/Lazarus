@@ -279,6 +279,8 @@ procedure TCustomTrayIcon.SetPopUpMenu(const AValue: TPopupMenu);
 begin
   if FPopUpMenu = AValue then
     Exit;
+  if FPopupMenu <> nil then
+    FPopupMenu.RemoveFreeNotification(Self);
   FPopupMenu := AValue;
   if FPopupMenu <> nil then
     FPopUpMenu.FreeNotification(Self);

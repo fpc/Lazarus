@@ -25,6 +25,10 @@ const HeaderBorderSize = 2;
 
 procedure TCustomHeaderControl.SetImages(const AValue: TCustomImageList);
 begin
+  if FImages = AValue then
+    Exit;
+  if FImages <> nil then
+    FImages.RemoveFreeNotification(Self);
   FImages := AValue;
   if FImages <> nil then
     FImages.FreeNotification(Self);
