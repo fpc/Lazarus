@@ -1989,12 +1989,13 @@ begin
   DisableRubberBand;
 
   LastMouseMovePos.X:=-1;
+  if (not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions) or
+     (dfHasSized in FFlags) then
+    Form.Invalidate;
   Exclude(FFlags,dfHasSized);
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-  if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
-    Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseLeftUpOnControl] END');
   {$ENDIF}
