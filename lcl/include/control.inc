@@ -421,11 +421,14 @@ begin
   if FSizeLock>0 then exit;
 
   // invalidate
-  if (not (csLoading in ComponentState))
-  and (not (Self is TWinControl)) then
+  if (csDesigning in ComponentState) and (Parent <> nil) then
+    Parent.Invalidate
+  else
+  if (not (csLoading in ComponentState)) and (not (Self is TWinControl)) then
     Invalidate;
   // notify user about resize
-  if (not (csLoading in ComponentState)) then begin
+  if (not (csLoading in ComponentState)) then
+  begin
     Resize;
     CheckOnChangeBounds;
     // for delphi compatibility send size/move messages
@@ -4815,7 +4818,7 @@ end;
   Event handler for LMSize messages.
   Overriden by TWinControl.WMSize.
  ------------------------------------------------------------------------------}
-procedure TControl.WMSize(Var Message : TLMSize);
+procedure TControl.WMSize(var Message : TLMSize);
 begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then

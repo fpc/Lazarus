@@ -1544,8 +1544,6 @@ begin
   begin
     ControlSelection.CheckForLCLChanges(True);
   end;
-  if (Sender <> Form) and (Sender.Parent <> nil) then
-    Sender.Parent.Invalidate;
 end;
 
 function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
@@ -1564,8 +1562,6 @@ begin
       OnPropertiesChanged(Self);
     end;
   end;
-  if (Sender <> Form) and (Sender.Parent <> nil) then
-    Sender.Parent.Invalidate;
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender: TControl;
