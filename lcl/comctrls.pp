@@ -1147,6 +1147,7 @@ type
     property ColumnClick;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
 //    property DefaultItemHeight;
 //    property DropTarget;
@@ -1200,6 +1201,7 @@ type
     property OnDeletion;
     property OnDragDrop;
     property OnDragOver;
+    property OnEndDock;
     property OnEndDrag;
     property OnKeyDown;
     property OnKeyPress;
@@ -1211,6 +1213,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnSelectItem;
+    property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
   end;
