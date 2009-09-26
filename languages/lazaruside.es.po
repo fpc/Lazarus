@@ -352,11 +352,11 @@ msgstr "Selección:"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
-msgstr "Indentado de bloque"
+msgstr "Sangrado de bloque"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
-msgstr "Metodo de espaciado"
+msgstr "Método de Sangrado"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
@@ -2479,7 +2479,7 @@ msgstr "Opciones de sintaxis"
 
 #: lazarusidestrconsts.dlgtabindent
 msgid "Tab indents blocks"
-msgstr "Tabulador indenta bloques"
+msgstr "Tabulador sangra bloques"
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
@@ -4971,7 +4971,7 @@ msgstr "Copiar Todo"
 
 #: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
 msgid "Copy all and hidden messages to clipboard"
-msgstr "Copiar todos los mensajes al portapapeles y ocultar"
+msgstr "Copiar todos los mensajes (los ocultos también)"
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -5761,7 +5761,7 @@ msgstr "Published"
 
 #: lazarusidestrconsts.lisemdremovemethods
 msgid "Remove methods"
-msgstr "Eliminar metodos"
+msgstr "Eliminar métodos"
 
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
@@ -8606,7 +8606,7 @@ msgstr "Seleccionar párrafo"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to brace"
-msgstr "Seleccionar tira"
+msgstr "Seleccionar Paréntesis"
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select word"
@@ -13194,7 +13194,7 @@ msgstr "Intercabiar Bloque"
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
-msgstr "Bloque de desangrado"
+msgstr "Desangrar Bloque"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
