@@ -118,12 +118,12 @@ type
  Since we want total control over anything that is done to the text in the control
  we have to take into consideration the fact that currently we cannot prevent
  cutting/pasting/clearing or dragging selected text in the control, these are handled by the OS
- and text is changed before can prevent it.
+ and text is changed before we can prevent it.
  Not all widgetsets currently handle the messages for cut/paste/clear. Actually we would
  like to have a LM_BEFORE_PASTE (etc.) message...
  If we allow the OS to cut/clear/paste etc. a situation can occur where mask-literals in the
  control are changed with random chars (and cannot be undone) or text is shorter or larger than
- the editmask calls for, whic again cannot be undone.
+ the editmask calls for, which again cannot be undone.
 
 
  So, as a horrible hack I decided  to only allow changing of the text if we coded
@@ -131,11 +131,13 @@ type
  write action (in SetInherited Text() ).
  We try to intercept the messages for cut/paste/copy/clear and perform the appropriate
  actions instead.
- If this fails, then in TextChanged we check will see that FChangeAllowed = False
+ If this fails, then in TextChanged we check and will see that FChangeAllowed = False
  and we will undo the changes made.
 
- To make this undo possible it is necessary to set CurrentText every time you set
+ To make this undo possible it is necessary to set FCurrentText every time you set
  the text in the control!
+ This is achieved in SetInheritedText() only, so please note:
+ !! It is unsafe to make changes to inherited Text unless done so via SetInheritedText() !!!
 
  (Bart Broersma, januari 2009)
 
@@ -184,7 +186,6 @@ type
     Function  CanInsertChar(Position : Integer; Var Ch : Char) : Boolean;
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
-    //Function  SearchDeletedText : Boolean;
   protected
     Function  GetText : String;
     Procedure SetText(Value : String);
@@ -319,7 +320,7 @@ begin
   FMaskSave      := True;
   FChangeAllowed := False;
   FTrimType      := metTrimRight;
-  FCurrentText    := Inherited Text;
+  FCurrentText   := Inherited Text;
   FTextOnEnter   := Inherited Text;
   FInitialText   := '';
   FInitialMask   := '';
@@ -615,12 +616,9 @@ var
   HasNextDot, HasCommaAndPeriod, CanJump: Boolean;
   P, P2: Integer;
 begin
-  //DebugLn('TCustomMaskEdit.JumpToNextDot A');
-  //DebugLn('  Dot = ',Dot);
   if not (Dot in [Period, Comma]) then Exit;
   P := PosEx(Dot, FMask, FCursorPos + 1);
   HasNextDot := P > 0;
-  //DebugLn('  HasNextDot = ',DbgS(HasNextDot));
   If (Dot = Period) then
   begin
     P2 := Pos(Comma, FMask);
@@ -631,24 +629,17 @@ begin
     P2 := Pos(Period, FMask);
     HasCommaAndPeriod := HasNextDot and (P2 >0);
   end;
-  //DebugLn('  HasCommaAndPeriod = ',DbgS(HasCommaAndPeriod));
-  //DebugLn('  FCursorPos = ',DbgS(FCursorPos));
-  //DebugLn('  P  = ',DbgS(P));
-  //DebugLn('  P2 = ',DbgS(P));
   if HasCommaAndPeriod then
   begin
     //When mask has both period and comma only the first occurence is jumpable
     if P2 < P then HasNextDot := False;
-    //DebugLn('  Recalc: HasNextDot = ',DbgS(HasNextDot));
   end;
   CanJump := HasNextDot and (P < Length(FMask)) and (not IsLiteral(FMask[P+1]));
-  //DebugLn('  CanJump := ',DbgS(CanJump));
   if CanJump then
   begin
     FCursorPos := P;
     SetCursorPos;
   end;
-  //DebugLn('TCustomMaskEdit.JumpToNextDot B');
 end;
 
 function TCustomMaskEdit.HasSelection: Boolean;
@@ -780,14 +771,17 @@ end;
 //Set text in the control with FChangeAllowed flag set appropriately
 procedure TCustomMaskEdit.SetInheritedText(const Value: String);
 begin
-  if Value <> Inherited Text then
+  if (Value <> Inherited Text) then
   begin
     FChangeAllowed := True;
+    FCurrentText := Value;
+    //protect resetting FChangeAllowed := False against unhandled exceptions in user's
+    //OnChange, otherwise risk leaving the control in an "unsafe" state regarding text changes
     try
       Inherited Text := Value;
     finally
       FChangeAllowed := False;
-    end;
+    end;//finally
   end;
 end;
 
@@ -831,18 +825,25 @@ end;
 procedure TCustomMaskEdit.InsertChar(Ch : Char);
 Var
   S    : ShortString;
+  i, SelectionStart, SelectionStop: Integer;
 begin
   if CanInsertChar(FCursorPos + 1, Ch) then
   begin
-    DeleteChars(True);
-    S    := Inherited Text;
+    S := Inherited Text;
+    if HasSelection then
+    begin
+      //replace slection with blank chars
+      //don't do this via DeleteChars(True), since it will do un unneccesary
+      //update of the control and 2 TextChanged's are triggerd for every char we enter
+      GetSel(SelectionStart, SelectionStop);
+      for i := SelectionStart + 1 to SelectionStop do S[i] := ClearChar(i);
+    end;
     S[FCursorPos + 1] := Ch;
-    FCurrentText := S;
     SetInheritedText(S);
     SelectNextChar;
   end
   else
-  //If we have a selcetion (> 1) then Delete the selected text: Delphi compatibility
+  //If we have a selection > 1 (and cannot insert) then Delete the selected text: Delphi compatibility
   if HasExtSelection then DeleteSelected;
 end;
 
@@ -917,7 +918,6 @@ begin
   GetSel(SelectionStart, SelectionStop);
   S := Inherited Text;
   for i := SelectionStart + 1 to SelectionStop do S[i] := ClearChar(i);
-  FCurrentText := S;
   SetInheritedText(S);
   SetCursorPos;
 end;
@@ -1038,7 +1038,6 @@ Begin
     begin
       if Length(Value) > Length(FMask) then Value := Copy(Value, 1, Length(FMask));
       while (Length(Value) < Length(FMask)) do Value := Value + FSpaceChar;
-      FCurrentText := Value;
       SetInheritedText(Value);
       Exit;
     end;
@@ -1065,8 +1064,6 @@ Begin
       Inc(i);
       Inc(j);
     end;
-
-    FCurrentText := S;
     SetInheritedText(S);
   end//Ismasked
   else
@@ -1096,7 +1093,6 @@ begin
     //Make sure we don't copy more or less text into the control than FMask allows for
     S := Copy(AValue, 1, Length(FMask));
     while Length(S) < Length(FMask) do S := S + FSpaceChar;
-    FCurrentText := S;
     SetInheritedText(S);
   end;
 end;
@@ -1110,7 +1106,7 @@ procedure TCustomMaskEdit.TextChanged;
   - dragging selected text in the control with the mouse
   If one of these happens, then the internal logic of cursorpositioning,
   inserting characters is messed up.
-  So, we simply restore the text from our backup: CurrenText
+  So, we simply restore the text from our backup: FCurrenText
 }
 begin
   if not IsMasked then
@@ -1120,16 +1116,16 @@ begin
   end;
   if FChangeAllowed then
   begin
-    Inherited TextChanged
+    Inherited TextChanged;
   end
   else
-  //if not FChangeAllowed then
-  begin
+  begin//Undo changes: restore with value of FCurrentText
+    //we do not call inherited TextChanged here, because the following SetInheritedText
+    //will trigger TextChanged with FChangeAllowed = True and inherited TextChanged is called then
     SetInheritedText(FCurrentText);
     //Reset cursor to last known position
     SetCursorPos;
   end;
-  if (inherited Text = '') then Clear;
 end;
 
 procedure TCustomMaskEdit.Loaded;
@@ -1194,7 +1190,6 @@ begin
       end;
     end;
     S := StringReplace(S, #32, FSpaceChar, [rfReplaceAll]);
-    FCurrentText := S;
     SetInheritedText(S);
   end//Ismasked
   else
@@ -1538,7 +1533,6 @@ begin
        else
          Break;
      end;
-     FCurrentText := S;
      SetInheritedText(S);
      SetCursorPos;
    end;
@@ -1556,7 +1550,6 @@ begin
   begin
     S  := '';
     for I := 1 To Length(FMask) do S := S + ClearChar(I);
-    FCurrentText := S;
     SetinheritedText(S);
     FCursorPos := 0;
     SetCursorPos;
