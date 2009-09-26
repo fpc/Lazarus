@@ -4078,19 +4078,19 @@ var
     case DeclarationNode.Desc of
 
     ctnProcedure:
-      AliasDeclarationNode:=FindCorrespondingProcNode(DeclarationNode,
-                                                      JumpToProcAttr);
+      AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(
+                                                DeclarationNode,JumpToProcAttr);
     ctnProcedureHead:
-      AliasDeclarationNode:=FindCorrespondingProcNode(DeclarationNode.Parent,
-                                                      JumpToProcAttr);
+      AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(
+                                         DeclarationNode.Parent,JumpToProcAttr);
     ctnVarDefinition:
       if DeclarationNode.HasParentOfType(ctnProcedureHead) then begin
         // this is a parameter name
         ProcNode:=DeclarationNode.GetNodeOfType(ctnProcedure);
         // search alias for parameter
-        ProcNode:=FindCorrespondingProcNode(ProcNode,JumpToProcAttr);
+        ProcNode:=DeclarationTool.FindCorrespondingProcNode(ProcNode,JumpToProcAttr);
         if ProcNode<>nil then begin
-          BuildSubTreeForProcHead(ProcNode);
+          DeclarationTool.BuildSubTreeForProcHead(ProcNode);
           AliasDeclarationNode:=ProcNode;
           while (AliasDeclarationNode<>nil) do begin
             if AliasDeclarationNode.Desc
@@ -4099,7 +4099,7 @@ var
               AliasDeclarationNode:=AliasDeclarationNode.FirstChild
             else begin
               if CompareIdentifiers(PChar(Pointer(Identifier)),
-                @Src[AliasDeclarationNode.StartPos])=0 then break;
+                @DeclarationTool.Src[AliasDeclarationNode.StartPos])=0 then break;
               AliasDeclarationNode:=AliasDeclarationNode.NextBrother;
             end;
           end;

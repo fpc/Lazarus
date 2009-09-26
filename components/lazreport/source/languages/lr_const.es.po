@@ -67,7 +67,7 @@ msgstr "Encabezado de grupo"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr "Pîe de grupo"
+msgstr "Pie de grupo"
 
 #: lr_const.sband19
 msgid "Cross header"
@@ -103,7 +103,7 @@ msgstr "Encabezado maestro"
 
 #: lr_const.sband6
 msgid "Master data"
-msgstr "Master data"
+msgstr "Datos maestros"
 
 #: lr_const.sband7
 msgid "Master footer"
@@ -129,7 +129,7 @@ msgstr "Fuente de datos"
 #: lr_const.sbandeditorformreccount
 msgctxt "lr_const.sbandeditorformreccount"
 msgid "&Record count"
-msgstr "Cuenta de &Registros"
+msgstr "Conteo de &Registros"
 
 #: lr_const.sbandtypesformbtype
 msgid "Band type"
@@ -274,11 +274,11 @@ msgstr "DAYOF(<Fecha>)/Regresa el día (1..31) de una <Fecha> dada."
 
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
-msgstr "FORMATDATETIME(<Fmt>, <FechaHora>)/Convierte una valor de <FechaHora> a cadena usando la mascara en <Fmt>."
+msgstr "FORMATDATETIME(<Fmt>, <FechaHora>)/Convierte un valor de <FechaHora> a cadena usando la máscara en <Fmt>."
 
 #: lr_const.sdescriptionformatfloat
 msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr "FORMATFLOAT(<Fmt>, <Numérico>)/Convierte un valor <Numérico> en cadena usando la mascada en <Fmt>."
+msgstr "FORMATFLOAT(<Fmt>, <Numérico>)/Convierte un valor <Numérico> en cadena usando la máscara en <Fmt>."
 
 #: lr_const.sdescriptionformattext
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
@@ -298,19 +298,19 @@ msgstr "LOWERCASE(<Cadena>)/Convierte <Cadena> a minúsculas."
 
 #: lr_const.sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
-msgstr "MAX(<Expresión> [,NombreDeBanda [,1]])/Calcula el máximo de la <Expression> para el las líneas en la [NombreDeBanda] dada. Si el parámetro [1] se usa, calcula el máximo teniendo en cuenta también las líneas ocultas."
+msgstr "MAX(<Expresión> [,NombreDeBanda [,1]])/Calcula el máximo de la <Expression> para las líneas en la [NombreDeBanda] dada. Si se usa el parámetro [1], calcula el máximo teniendo en cuenta también las líneas ocultas."
 
 #: lr_const.sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
-msgstr "MAXNUM(<Valor1>, <Valor2>)/Regresa el máximo de los valores datos."
+msgstr "MAXNUM(<Valor1>, <Valor2>)/Regresa el máximo de los valores dados."
 
 #: lr_const.sdescriptionmessagebox
 msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
-msgstr "MESSAGEBOX(<Texto>, <Titulo>, <Botones>)/Muestra una ventana de diálogo con título, texto y botones."
+msgstr "MESSAGEBOX(<Texto>, <Título>, <Botones>)/Muestra una ventana de diálogo con título, texto y botones."
 
 #: lr_const.sdescriptionmin
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
-msgstr "MIN(<Expresión> [,NombreDeBanda [,1]])/Calcula el míniimo de la <Expresión> para las líneas de [NombreDeBanda] dada. Si el parámetro [1] es usado, también calcula el mínimo para las líneas ocultas."
+msgstr "MIN(<Expresión> [,NombreDeBanda [,1]])/Calcula el mínimo de la <Expresión> para las líneas de [NombreDeBanda] dada. Si se usa el parámetro [1], también calcula el mínimo para las líneas ocultas."
 
 #: lr_const.sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
@@ -326,7 +326,7 @@ msgstr "NAMECASE(<Cadena>)/Convierte la <Cadena> a minúsculas poniendo la prime
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de la subcadena en la cadena dada."
+msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de <Subcadena> en <Cadena>."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -338,11 +338,11 @@ msgstr "STRTOTIME(<Cadena>)/Convertir <Cadena> en hora."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Expresión> [,NombreDeBanda [,1]])/Calcula la suma de la <Expresión> para las líneas de la [NombreDeBanda] dada. Si el parámetro [1] es usado, también calcula la suma para las líneas no visibles."
+msgstr "SUM(<Expresión> [,NombreDeBanda [,1]])/Calcula la suma de la <Expresión> para las líneas de la banda [NombreDeBanda]. Si el parámetro [1] es usado, también calcula la suma para las líneas no visibles."
 
 #: lr_const.sdescriptiontrim
 msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr "TRIM(<Cadena>)/Elimina todos los espacios antes y despues en la <Cadena> y regresa la cadena resultante."
+msgstr "TRIM(<Cadena>)/Elimina todos los espacios antes y después en la <Cadena> y regresa el resultado."
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
@@ -350,7 +350,7 @@ msgstr "UPPERCASE(<Cadena>)/Convierte <Cadena> a mayúsculas."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr "YEAROF(<Date>)/Devuelve el año de la fecha <Date> proporcionada."
+msgstr "YEAROF(<Fecha>)/Devuelve el año de la fecha <Fecha> proporcionada."
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -450,7 +450,7 @@ msgstr ""
 
 #: lr_const.sdocbuild
 msgid "Build"
-msgstr "Contrucción"
+msgstr "Construcción"
 
 #: lr_const.sdocmajor
 msgid "Major"
@@ -504,7 +504,7 @@ msgstr "Lanzamiento"
 
 #: lr_const.sdocversion
 msgid "Version"
-msgstr "Verisón"
+msgstr "Versión"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
@@ -610,7 +610,7 @@ msgstr "Altura promedio de fuente:"
 #: lr_const.sfindtextcaption
 msgctxt "lr_const.sfindtextcaption"
 msgid "Find text"
-msgstr "Bucar texto"
+msgstr "Buscar texto"
 
 #: lr_const.sfindtextcase
 msgid "&Case sensitive"
@@ -712,7 +712,7 @@ msgstr "15 noviembre 1998"
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: lr_const.sformat41
 msgid "02:43:35"
@@ -733,7 +733,7 @@ msgstr ""
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -754,7 +754,7 @@ msgstr "Falso;Cierto"
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: lr_const.sformfile
 msgid "FastReport form"
@@ -783,7 +783,7 @@ msgstr "Alinear superiores"
 
 #: lr_const.sfrdesignerformalignhorzcenter
 msgid "Align horizontal centers"
-msgstr "Alinea centros horizontalmente"
+msgstr "Alinear centros horizontalmente"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
@@ -791,7 +791,7 @@ msgstr "Alinear bordes izquierdos"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr "Alinea bordes derechos"
+msgstr "Alinear bordes derechos"
 
 #: lr_const.sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
@@ -1077,7 +1077,7 @@ msgstr "&Eliminar"
 #: lr_const.sfrdesignerform_edit
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit..."
-msgstr "&Edicion..."
+msgstr "&Edición..."
 
 #: lr_const.sfrdesignerform_edit2
 msgid "&Edit"
@@ -1086,7 +1086,7 @@ msgstr "&Editar"
 #: lr_const.sfrdesignerform_editp
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit..."
-msgstr "&Edicion..."
+msgstr "&Edición..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1277,7 +1277,7 @@ msgstr "Fuente"
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr "Atrubutos de resaltado"
+msgstr "Atributos de resaltado"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
@@ -1349,7 +1349,7 @@ msgstr ""
 
 #: lr_const.sinsroundrect
 msgid "Insert an RoundRect with shadow area"
-msgstr "Insertar un área rectangular con sombra"
+msgstr "Insertar un rectángulo redondeado con sombra"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
@@ -1954,7 +1954,7 @@ msgstr "Papel"
 
 #: lr_const.spgoptformpgmargins
 msgid "Page margins"
-msgstr "Margenes de página"
+msgstr "Márgenes de página"
 
 #: lr_const.spgoptformport
 msgid "&Portrait"
@@ -2024,7 +2024,7 @@ msgstr "Editar página"
 #: lr_const.spreviewformfind
 msgctxt "lr_const.spreviewformfind"
 msgid "Find text"
-msgstr "Bucar texto"
+msgstr "Buscar texto"
 
 #: lr_const.spreviewformhelp
 msgid "Show help"
@@ -2087,7 +2087,7 @@ msgstr "Rango de páginas"
 
 #: lr_const.sprintformprint
 msgid "Print"
-msgstr "Imprimier"
+msgstr "Imprimir"
 
 #: lr_const.sprintformprinter
 msgctxt "lr_const.sprintformprinter"
@@ -2100,7 +2100,7 @@ msgstr "Propiedades"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr "Imprimir si el detalle esta vacio"
+msgstr "Imprimir si el detalle esta vacío"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
@@ -2152,7 +2152,7 @@ msgstr "Degradado"
 
 #: lr_const.sroundrectformhint
 msgid "Click here to define the shadow color or gradian colors"
-msgstr "Haga cllic aquí para definir el color de sombra o degradado de colores"
+msgstr "Haga clic aquí para definir el color de sombra o degradado de colores"
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
@@ -2168,7 +2168,7 @@ msgstr "Estilo"
 
 #: lr_const.sroundrectformstyledif
 msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
-msgstr "Vertical,Horizontal,Elíptica,Rectangulo,Centro_Horiz.,Centro_Vert."
+msgstr "Vertical,Horizontal,Elíptica,Rectángulo,Centro_Horiz.,Centro_Vert."
 
 #: lr_const.sroundrectformvar
 msgid "Variables ..."
@@ -2297,7 +2297,7 @@ msgstr "Hora"
 
 #: lr_const.svar5
 msgid "Line#"
-msgstr "#Linea"
+msgstr "# Linea"
 
 #: lr_const.svar6
 msgid "Line through#"
@@ -2333,7 +2333,7 @@ msgstr ""
 
 #: lr_const.svarformcat
 msgid "&Category:"
-msgstr "&Categoria:"
+msgstr "&Categoría:"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
