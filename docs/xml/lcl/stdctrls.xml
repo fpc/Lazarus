@@ -2140,11 +2140,19 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.RealSetText" link="#LCL.Controls.TControl.RealSetText">
-        <short/>
-        <descr/>
+      <element name="TCustomComboBox.RealSetText">
+        <short>
+          <var>RealSetText</var> - sets the ComboBox text to the caption value specified </short>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.RealSetText"/>
+          </p>
+          <p>If the text <var>AValue</var> occurs in the list of strings, then sets the <var>Itemindex</var>, otherwise does the default action which is to store text as a string rather than performing read-write to a <var>PChar</var> buffer</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.RealSetText">TControl.RealSetText</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.RealSetText.AValue">
@@ -2155,7 +2163,12 @@ False is set when the edit or combobox control loses focus.
         <short>
           <var>KeyDown</var> - performs code for traversing the dropdown list to the correct location before calling inherited <var>KeyDown</var>
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.KeyDown"/>
+          </p>
+          <p>The inherited method provides software emulation of the event handler <var>OnKeyDown</var> which acts if a key has been pressed and is still down</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
@@ -2173,7 +2186,12 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.KeyUp">
         <short>
           <var>KeyUp</var> calls inherited method then performs specific actions depending on which key is being processed</short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.KeyUp"/>
+          </p>
+          <p>The inherited method provides software emulation for the <var>OnKeyUp</var> event.</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
@@ -2191,7 +2209,13 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.KeyPress">
         <short>
           <var>KeyPress</var> adjusts character case if necessary then calls inherited method</short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.KeyPress"/>
+          </p>
+          <p>The inherited method provides software emulation of the <var>OnKeyPress</var> event, which acts when a key is pressed. </p>
+          <p>The <var>OnKeyPress</var> event handler is usually provided by the application programmer as a specific action to be performed when the event occurs; it often contains a case statement or similar choice structure to divert execution along specific pathways in response to pressing different keys</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
@@ -2205,7 +2229,12 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.MouseUp">
         <short>
           <var>MouseUp</var> calls inherited method then sets <var>AutoSelect</var> if left mouse button is clicked for the first time after receiving focus</short>
-        <descr/>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.MouseUp"/>
+          </p>
+          <p>The inherited method allows the programmer to simulate the action to be taken when the mouse is in the Up position over the specified control. It is usually a programmer-supplied method similar to the <var>OnMouseUp</var> event handler.</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TControl.MouseUp">TControl.MouseUp</link>
@@ -9988,6 +10017,12 @@ Reads or Writes flag if control is re-sized.
         <seealso>
           <link id="#LCL.Controls.TWinControl.UTF8KeyPress">TWinControl.UTF8KeyPress</link>
         </seealso>
+        <descr>
+          <p>
+            <printshort id="TCustomComboBox.UTF8KeyPress"/>
+          </p>
+          <p>The inherited method emulates the pressing of a key, with UTF8 coding. The UTF8 coding should be used where there is the possibility that input/output will occur in any language that requires multiple bytes to represent each character, ie almost all languages except the standard Western European languages.</p>
+        </descr>
       </element>
       <element name="TCustomButton.Loaded">
         <short>
