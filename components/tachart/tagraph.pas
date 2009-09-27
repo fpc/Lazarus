@@ -928,7 +928,7 @@ var
   i, j: Integer;
   ColorFound: Boolean;
 begin
-  for i := 1 to MaxColor do begin
+  for i := 1 to High(Colors) do begin
     ColorFound := false;
     for j := 0 to SeriesCount - 1 do begin
       if Series[j].SeriesColor = Colors[i] then

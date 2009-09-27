@@ -83,6 +83,8 @@ type
   { TPieSeries }
 
   TPieSeries = class(TChartSeries)
+  private
+    function SliceColor(AIndex: Integer): TColor;
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -851,7 +853,6 @@ procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
   i, radius: Integer;
   prevAngle, angleStep: Double;
-  graphCoord: PChartDataItem;
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
   a, b, center: TPoint;
@@ -888,13 +889,11 @@ begin
     // if y < 0 then y := -y;
     // if y = 0 then y := 0.1; // just to simulate tchart when y=0
 
-    graphCoord := Source[i];
-    angleStep := graphCoord^.Y / Source.ValuesTotal * 360 * 16;
+    angleStep := Source[i]^.Y / Source.ValuesTotal * 360 * 16;
     ACanvas.Pen.Color := clBlack;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Brush.Style := bsSolid;
-    ACanvas.Brush.Color :=
-      ColorOrDefault(graphCoord^.Color, Colors[i mod MaxColor + 1]);
+    ACanvas.Brush.Color := SliceColor(i);
 
     ACanvas.RadialPie(
       center.x - radius, center.y - radius,
@@ -927,11 +926,7 @@ var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    AItems.Add(
-      TLegendItemColorRect.Create(
-        ColorOrDefault(Source[i]^.Color, Colors[i mod MaxColor + 1]),
-        FormattedMark(i))
-    );
+    AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
 end;
 
 function TPieSeries.GetSeriesColor: TColor;
@@ -943,6 +938,12 @@ procedure TPieSeries.SetSeriesColor(const AValue: TColor);
 begin
   // SeriesColor is meaningless for PieSeries
   Unused(AValue);
+end;
+
+function TPieSeries.SliceColor(AIndex: Integer): TColor;
+begin
+  Result :=
+    ColorOrDefault(Source[AIndex]^.Color, Colors[AIndex mod High(Colors) + 1]);
 end;
 
 { TAreaSeries }
