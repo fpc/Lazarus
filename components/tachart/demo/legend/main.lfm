@@ -1,0 +1,199 @@
+object Form1: TForm1
+  Left = 328
+  Height = 361
+  Top = 151
+  Width = 510
+  Caption = 'Form1'
+  ClientHeight = 361
+  ClientWidth = 510
+  LCLVersion = '0.9.29'
+  object Chart1: TChart
+    Left = 0
+    Height = 299
+    Top = 0
+    Width = 510
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Offset = 0
+        Scale = 1
+        Title.Font.Orientation = 900
+        Visible = False
+      end    
+      item
+        Alignment = calBottom
+        Offset = 0
+        Scale = 1
+        Visible = False
+      end>
+    BackColor = clSkyBlue
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.BackgroundBrush.Color = clMoneyGreen
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clOlive
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      Title = 'Line'
+      LinePen.Color = clRed
+      Pointer.Brush.Color = clRed
+      SeriesColor = clRed
+      ShowPoints = True
+      Source = ListChartSource1
+    end
+    object Chart1AreaSeries1: TAreaSeries
+      Title = 'Area'
+      AreaBrush.Color = clGreen
+      AreaBrush.Style = bsCross
+      SeriesColor = clGreen
+      Source = RandomChartSource2
+    end
+    object Chart1PieSeries1: TPieSeries
+      Marks.Format = '%1:.2f%%'
+      Marks.Style = smsPercent
+      Marks.Visible = False
+      Source = RandomChartSource1
+    end
+  end
+  object pnControls: TPanel
+    Left = 0
+    Height = 62
+    Top = 299
+    Width = 510
+    Align = alBottom
+    ClientHeight = 62
+    ClientWidth = 510
+    TabOrder = 1
+    object seSpacing: TSpinEdit
+      Left = 60
+      Height = 21
+      Top = 8
+      Width = 54
+      MaxValue = 20
+      OnChange = seSpacingChange
+      TabOrder = 0
+      Value = 4
+    end
+    object lblSpacing: TLabel
+      Left = 8
+      Height = 14
+      Top = 8
+      Width = 38
+      Caption = 'Spacing'
+      ParentColor = False
+    end
+    object lblMargin: TLabel
+      Left = 12
+      Height = 14
+      Top = 33
+      Width = 33
+      Caption = 'Margin'
+      ParentColor = False
+    end
+    object seMargin: TSpinEdit
+      Left = 60
+      Height = 21
+      Top = 33
+      Width = 54
+      MaxValue = 20
+      OnChange = seMarginChange
+      TabOrder = 1
+      Value = 4
+    end
+    object seSymbolWidth: TSpinEdit
+      Left = 200
+      Height = 21
+      Top = 8
+      Width = 54
+      MaxValue = 50
+      OnChange = seSymbolWidthChange
+      TabOrder = 2
+      Value = 20
+    end
+    object lblSymbolWidth: TLabel
+      Left = 128
+      Height = 14
+      Top = 8
+      Width = 64
+      Caption = 'Symbol width'
+      ParentColor = False
+    end
+    object rgAlignment: TRadioGroup
+      Left = 324
+      Height = 60
+      Top = 1
+      Width = 185
+      Align = alRight
+      AutoFill = True
+      Caption = ' Alignment '
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclTopToBottomThenLeftToRight
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 42
+      ClientWidth = 181
+      Columns = 2
+      ItemIndex = 2
+      Items.Strings = (
+        'TopLeft'
+        'BottomLeft'
+        'TopRight'
+        'BottomRight'
+      )
+      OnClick = rgAlignmentClick
+      TabOrder = 3
+    end
+    object cbUseSidebar: TCheckBox
+      Left = 128
+      Height = 17
+      Top = 33
+      Width = 56
+      Caption = 'Sidebar'
+      Checked = True
+      OnChange = cbUseSidebarChange
+      State = cbChecked
+      TabOrder = 4
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 103892781
+    XMax = 10
+    XMin = 1
+    YMax = 10
+    YMin = 1
+    left = 380
+    top = 56
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 104675296
+    XMax = 10
+    XMin = 1
+    YMax = 10
+    YMin = 1
+    left = 380
+    top = 112
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '0|0||'
+      '1|2||'
+      '2|5||'
+      '3|1||'
+      '4|6||'
+    )
+    left = 380
+    top = 168
+  end
+end

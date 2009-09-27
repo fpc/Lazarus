@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="TAChartLazarusPkg"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="7">
+      <Unit0>
+        <Filename Value="legenddemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="legenddemo"/>
+        <UsageCount Value="32"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="main"/>
+        <CursorPos X="51" Y="51"/>
+        <TopLine Value="4"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="32"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\tagraph.pas"/>
+        <UnitName Value="TAGraph"/>
+        <CursorPos X="32" Y="148"/>
+        <TopLine Value="92"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="15"/>
+        <Bookmarks Count="3">
+          <Item0 X="3" Y="428" ID="1"/>
+          <Item1 X="1" Y="631" ID="2"/>
+          <Item2 X="3" Y="468" ID="3"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\taseries.pas"/>
+        <UnitName Value="TASeries"/>
+        <CursorPos X="41" Y="87"/>
+        <TopLine Value="23"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\talegend.pas"/>
+        <UnitName Value="TALegend"/>
+        <CursorPos X="52" Y="234"/>
+        <TopLine Value="216"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
+        <CursorPos X="26" Y="27"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\tatypes.pas"/>
+        <UnitName Value="TATypes"/>
+        <CursorPos X="1" Y="59"/>
+        <TopLine Value="19"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit6>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="295" Column="1" TopLine="230"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="253" Column="1" TopLine="191"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="392" Column="20" TopLine="319"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="785" Column="10" TopLine="783"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="435" Column="10" TopLine="421"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="436" Column="10" TopLine="386"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="191" Column="22" TopLine="141"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="458" Column="13" TopLine="408"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="92" Column="5" TopLine="50"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="269" Column="70" TopLine="242"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="270" Column="1" TopLine="231"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="213" Column="42" TopLine="207"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="459" Column="16" TopLine="408"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="213" Column="1" TopLine="175"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="215" Column="6" TopLine="175"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="221" Column="6" TopLine="175"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="451" Column="1" TopLine="426"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="243" Column="21" TopLine="175"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="439" Column="12" TopLine="389"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="91" Column="25" TopLine="90"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="190" Column="15" TopLine="150"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\tagraph.pas"/>
+        <Caret Line="465" Column="38" TopLine="424"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="109" Column="71" TopLine="50"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="333" Column="38" TopLine="260"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="109" Column="1" TopLine="71"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\..\talegend.pas"/>
+        <Caret Line="113" Column="19" TopLine="75"/>
+      </Position26>
+      <Position27>
+        <Filename Value="main.pas"/>
+        <Caret Line="50" Column="43" TopLine="5"/>
+      </Position27>
+      <Position28>
+        <Filename Value="main.pas"/>
+        <Caret Line="49" Column="43" TopLine="4"/>
+      </Position28>
+      <Position29>
+        <Filename Value="main.pas"/>
+        <Caret Line="48" Column="43" TopLine="3"/>
+      </Position29>
+      <Position30>
+        <Filename Value="main.pas"/>
+        <Caret Line="55" Column="43" TopLine="3"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
