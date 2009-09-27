@@ -206,11 +206,11 @@ type
 
   { TLine }
 
-  TLine = class(TBasicPointSeries)
+  TLine = class(TCustomChartSeries)
   private
     FLineStyle: TLineStyle;
     FPen: TPen;
-    FPosGraph: Double;                      // Graph coordinates of line
+    FPosGraph: Double; // Graph coordinate of line
     FUseBounds: Boolean;
 
     procedure SetLineStyle(AValue: TLineStyle);
@@ -229,12 +229,16 @@ type
     procedure Draw(ACanvas: TCanvas); override;
 
   published
+    property Active default true;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
     property SeriesColor;
+    property ShowInLegend;
+    property Title;
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
+    property ZPosition;
   end;
 
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
@@ -546,6 +550,7 @@ constructor TLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FActive := true;
   FLineStyle := lsHorizontal;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
