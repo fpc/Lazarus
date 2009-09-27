@@ -153,11 +153,11 @@ type
     procedure SetShowPoints(Value: Boolean);
   protected
     procedure AfterAdd; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
-    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public

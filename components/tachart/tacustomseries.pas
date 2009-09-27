@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartUtils, TAGraph, TALegend, TASources, TATypes;
+  TAChartUtils, TAGraph, TASources, TATypes;
 
 type
   { TCustomChartSeries }
