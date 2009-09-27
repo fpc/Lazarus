@@ -55,11 +55,17 @@ type
 
   TChartLegendItems = TObjectList;
 
+  TChartLegendBrush = class(TBrush)
+  published
+    property Color default clWhite;
+  end;
+
   { TChartLegend }
 
   TChartLegend = class(TChartElement)
   private
     FAlignment: TLegendAlignment;
+    FBackgroundBrush: TChartLegendBrush;
     FFont: TFont;
     FFrame: TChartPen;
     FMargin: TChartDistance;
@@ -67,6 +73,7 @@ type
     FSymbolWidth: TChartDistance;
 
     procedure SetAlignment(AValue: TLegendAlignment);
+    procedure SetBackgroundBrush(AValue: TChartLegendBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
     procedure SetMargin(AValue: TChartDistance);
@@ -83,6 +90,8 @@ type
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laRight;
+    property BackgroundBrush: TChartLegendBrush
+      read FBackgroundBrush write SetBackgroundBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property Margin: TChartDistance
@@ -183,6 +192,7 @@ begin
   FSymbolWidth := DEF_LEGEND_SYMBOL_WIDTH;
   Visible := false;
 
+  InitHelper(TFPCanvasHelper(FBackgroundBrush), TChartLegendBrush);
   InitHelper(TFPCanvasHelper(FFont), TFont);
   InitHelper(TFPCanvasHelper(FFrame), TChartPen);
 end;
@@ -221,14 +231,14 @@ begin
     y1 := AClipRect.Top;
 
     // Border
-    ACanvas.Brush.Color := clWhite;
+    ACanvas.Brush.Assign(BackgroundBrush);
     ACanvas.Pen.Assign(Frame);
     ACanvas.Rectangle(Bounds(
       x1, y1, w, Spacing + AItems.Count * (th + Spacing)));
 
     r := Bounds(x1 + Spacing, y1 + Spacing, SymbolWidth, th);
     for i := 0 to AItems.Count - 1 do begin
-      ACanvas.Brush.Color := clWhite;
+    ACanvas.Brush.Assign(BackgroundBrush);
       ACanvas.Pen.Assign(Frame);
       (AItems[i] as TLegendItem).Draw(ACanvas, r);
       OffsetRect(r, 0, th + Spacing);
@@ -242,6 +252,12 @@ procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);
 begin
   if FAlignment = AValue then exit;
   FAlignment := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetBackgroundBrush(AValue: TChartLegendBrush);
+begin
+  FBackgroundBrush.Assign(AValue);
   StyleChanged(Self);
 end;
 
