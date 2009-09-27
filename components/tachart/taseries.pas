@@ -890,6 +890,9 @@ begin
 
     graphCoord := Source[i];
     angleStep := graphCoord^.Y / Source.ValuesTotal * 360 * 16;
+    ACanvas.Pen.Color := clBlack;
+    ACanvas.Pen.Style := psSolid;
+    ACanvas.Brush.Style := bsSolid;
     ACanvas.Brush.Color :=
       ColorOrDefault(graphCoord^.Color, Colors[i mod MaxColor + 1]);
 
