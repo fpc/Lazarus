@@ -311,8 +311,7 @@ type
 implementation
 
 uses
-  GraphMath, Math, PropEdits, Types,
-  TASources;
+  GraphMath, Math, PropEdits, Types;
 
 { TLineSeries }
 
@@ -372,17 +371,17 @@ begin
     ltNone: ;
     ltFromPrevious:
       for i := 0 to Count - 2 do
-        DrawLine(DoublePoint(Source[i]^), DoublePoint(Source[i + 1]^));
+        DrawLine(GetGraphPoint(i), GetGraphPoint(i + 1));
     ltFromOrigin:
       for i := 0 to Count - 1 do
-        DrawLine(ZeroDoublePoint, DoublePoint(Source[i]^));
+        DrawLine(ZeroDoublePoint, GetGraphPoint(i));
   end;
 
   DrawLabels(ACanvas, true);
 
   if FShowPoints then
     for i := 0 to Count - 1 do begin
-      a := DoublePoint(Source[i]^);
+      a := GetGraphPoint(i);
       if not ParentChart.IsPointInViewPort(a) then continue;
       ai := ParentChart.GraphToImage(a);
       FPointer.Draw(ACanvas, ai, GetColor(i));
@@ -670,15 +669,14 @@ end;
 procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
 var
   g: TDoublePoint;
-  pt: TPoint;
   i: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    GetCoords(i, g, pt);
+    g := GetGraphPoint(i);
     with ParentChart do
       if IsPointInViewPort(g) then
-        DrawLabel(ACanvas, i, pt, ADrawDown and (g.Y < 0));
+        DrawLabel(ACanvas, i, GraphToImage(g), ADrawDown and (g.Y < 0));
   end;
 end;
 
@@ -792,7 +790,7 @@ begin
 
   ACanvas.Brush.Assign(BarBrush);
   for i := 0 to Count - 1 do begin
-    p := DoublePoint(Source[i]^);
+    p := GetGraphPoint(i);
     w := CalcBarWidth(p.X, i);
     graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
     if not RectIntersectsRect(graphBar, ext2) then continue;
@@ -812,7 +810,7 @@ begin
 
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    p := DoublePoint(Source[i]^);
+    p := GetGraphPoint(i);
     if ParentChart.IsPointInViewPort(p) then
       DrawLabel(ACanvas, i, ParentChart.GraphToImage(p), p.Y < 0);
   end;
@@ -1020,8 +1018,8 @@ begin
   ymin := ParentChart.ClipRect.Bottom - 1;
 
   for i := 0 to Count - 2 do begin
-    a := DoublePoint(Source[i]^);
-    b := DoublePoint(Source[i + 1]^);
+    a := GetGraphPoint(i);
+    b := GetGraphPoint(i + 1);
     if a.X > b.X then begin
       Exchange(a.X, b.X);
       Exchange(a.Y, b.Y);

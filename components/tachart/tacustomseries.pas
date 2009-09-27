@@ -64,7 +64,7 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
-    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+    function GetGraphPoint(AIndex: Integer): TDoublePoint;
     function GetXMaxVal: Integer;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
@@ -278,11 +278,12 @@ begin
     Result := DefaultFormattedMark(AIndex);
 end;
 
-procedure TChartSeries.GetCoords(
-  AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
+function TChartSeries.GetGraphPoint(AIndex: Integer): TDoublePoint;
 begin
-  AG := DoublePoint(Source[AIndex]^);
-  AI := ParentChart.GraphToImage(AG);
+  with Source[AIndex]^ do begin
+    Result.X := X;
+    Result.Y := Y;
+  end;
 end;
 
 function TChartSeries.GetSource: TCustomChartSource;
