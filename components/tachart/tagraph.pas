@@ -177,7 +177,6 @@ type
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
     procedure DrawAxis(ACanvas: TCanvas);
-    procedure DrawLegend(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -187,6 +186,8 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure PrepareLegend(
+      ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
     procedure StyleChanged(Sender: TObject);
     procedure UpdateExtent;
 
@@ -421,6 +422,8 @@ end;
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 var
   i: Integer;
+  legendItems: TChartLegendItems;
+  legendRect: TRect;
 begin
   Clean(ACanvas, ARect);
 
@@ -432,13 +435,36 @@ begin
 
   UpdateExtent;
   DrawTitleFoot(ACanvas);
-  DrawLegend(ACanvas);
-  DrawAxis(ACanvas);
-  DisplaySeries(ACanvas);
+  PrepareLegend(ACanvas, legendItems, legendRect);
+  try
+    DrawAxis(ACanvas);
+    DisplaySeries(ACanvas);
+    Legend.Draw(ACanvas, legendItems, legendRect);
+  finally
+    legendItems.Free;
+  end;
   DrawReticule(ACanvas);
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
+end;
+
+procedure TChart.PrepareLegend(
+  ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
+var
+  i: Integer;
+begin
+  if not Legend.Visible then exit;
+  ALegendItems := TChartLegendItems.Create;
+  try
+    for i := 0 to SeriesCount - 1 do
+      with Series[i] do
+        if Active and ShowInLegend then
+          GetLegendItems(ALegendItems);
+    ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
+  except
+    ALegendItems.Free;
+  end;
 end;
 
 procedure TChart.PrepareXorPen;
@@ -600,24 +626,6 @@ begin
   if Depth > 0 then
     with FClipRect do
       ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
-end;
-
-procedure TChart.DrawLegend(ACanvas: TCanvas);
-var
-  legendItems: TChartLegendItems;
-  i: Integer;
-begin
-  if not Legend.Visible then exit;
-  legendItems := TChartLegendItems.Create;
-  try
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and ShowInLegend then
-          GetLegendItems(legendItems);
-    Legend.Draw(legendItems, ACanvas, FClipRect);
-  finally
-    legendItems.Free;
-  end;
 end;
 
 procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);

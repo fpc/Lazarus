@@ -73,6 +73,7 @@ type
     FMargin: TChartDistance;
     FSpacing: TChartDistance;
     FSymbolWidth: TChartDistance;
+    FUseSidebar: Boolean;
 
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
@@ -81,6 +82,7 @@ type
     procedure SetMargin(AValue: TChartDistance);
     procedure SetSpacing(AValue: TChartDistance);
     procedure SetSymbolWidth(AValue: TChartDistance);
+    procedure SetUseSidebar(AValue: Boolean);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -88,7 +90,9 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
-      AItems: TObjectList; ACanvas: TCanvas; var AClipRect: TRect);
+      ACanvas: TCanvas; AItems: TObjectList; const ABounds: TRect);
+    function Prepare(
+      ACanvas: TCanvas; AItems: TObjectList; var AClipRect: TRect): TRect;
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -102,6 +106,7 @@ type
       read FSpacing write SetSpacing default DEF_LEGEND_SPACING;
     property SymbolWidth: TChartDistance
       read FSymbolWidth write SetSymbolWidth default DEF_LEGEND_SYMBOL_WIDTH;
+    property UseSidebar: Boolean read FUseSidebar write SetUseSidebar default true;
     property Visible default false;
   end;
 
@@ -192,6 +197,7 @@ begin
   FMargin := DEF_LEGEND_MARGIN;
   FSpacing := DEF_LEGEND_SPACING;
   FSymbolWidth := DEF_LEGEND_SYMBOL_WIDTH;
+  FUseSidebar := true;
   Visible := false;
 
   InitHelper(TFPCanvasHelper(FBackgroundBrush), TChartLegendBrush);
@@ -208,15 +214,44 @@ begin
 end;
 
 procedure TChartLegend.Draw(
-  AItems: TObjectList; ACanvas: TCanvas; var AClipRect: TRect);
+  ACanvas: TCanvas; AItems: TObjectList; const ABounds: TRect);
 var
-  w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
+  i, h: Integer;
   pbf: TPenBrushFontRecall;
   r: TRect;
 begin
   if not Visible then exit;
-
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
+  try
+    // Draw the background and the border.
+    ACanvas.Font.Assign(Font);
+    ACanvas.Brush.Assign(BackgroundBrush);
+    ACanvas.Pen.Assign(Frame);
+    ACanvas.Rectangle(ABounds);
+
+    // Draw items.
+    h := ACanvas.TextHeight('Iy');
+    r := Bounds(ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, h);
+    for i := 0 to AItems.Count - 1 do begin
+      ACanvas.Brush.Assign(BackgroundBrush);
+      ACanvas.Pen.Assign(Frame);
+      (AItems[i] as TLegendItem).Draw(ACanvas, r);
+      OffsetRect(r, 0, h + Spacing);
+    end;
+  finally
+    pbf.Free;
+  end;
+end;
+
+function TChartLegend.Prepare(
+  ACanvas: TCanvas; AItems: TObjectList; var AClipRect: TRect): TRect;
+var
+  w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
+  f: TPenBrushFontRecall;
+begin
+  if not Visible then exit;
+
+  f := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
   try
     ACanvas.Font.Assign(Font);
 
@@ -233,32 +268,22 @@ begin
     // Determine position according to the alignment.
     if Alignment in [laTopLeft, laBottomLeft] then begin
       x := AClipRect.Left + Margin;
-      AClipRect.Left += w;
+      if UseSidebar then
+        AClipRect.Left += w;
     end
     else begin
       x := AClipRect.Right - legendWidth - Margin;
-      AClipRect.Right -= w;
+      if UseSidebar then
+        AClipRect.Right -= w;
     end;
     if Alignment in [laTopLeft, laTopRight] then
       y := AClipRect.Top + Margin
     else
       y := AClipRect.Bottom - Margin - legendHeight;
 
-    // Draw the background and the border.
-    ACanvas.Brush.Assign(BackgroundBrush);
-    ACanvas.Pen.Assign(Frame);
-    ACanvas.Rectangle(Bounds(x, y, legendWidth, legendHeight));
-
-    // Draw items.
-    r := Bounds(x + Spacing, y + Spacing, SymbolWidth, textHeight);
-    for i := 0 to AItems.Count - 1 do begin
-    ACanvas.Brush.Assign(BackgroundBrush);
-      ACanvas.Pen.Assign(Frame);
-      (AItems[i] as TLegendItem).Draw(ACanvas, r);
-      OffsetRect(r, 0, textHeight + Spacing);
-    end;
+    Result := Bounds(x, y, legendWidth, legendHeight);
   finally
-    pbf.Free;
+    f.Free;
   end;
 end;
 
@@ -305,6 +330,13 @@ procedure TChartLegend.SetSymbolWidth(AValue: TChartDistance);
 begin
   if FSymbolWidth = AValue then exit;
   FSymbolWidth := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetUseSidebar(AValue: Boolean);
+begin
+  if FUseSidebar = AValue then exit;
+  FUseSidebar := AValue;
   StyleChanged(Self);
 end;
 
