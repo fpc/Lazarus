@@ -55,9 +55,7 @@ type
     procedure AfterAdd; virtual;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
-    function GetLegendCount: Integer; virtual; abstract;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
+    procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -151,7 +149,6 @@ type
     function GetAxis(AIndex: integer): TChartAxis; inline;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
-    function GetLegendWidth(ACanvas: TCanvas): Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
     function GetSeriesInZOrder: TFPList;
@@ -607,47 +604,19 @@ end;
 
 procedure TChart.DrawLegend(ACanvas: TCanvas);
 var
-  w, h, x1, y1, x2, y2, i, th: Integer;
-  pbf: TPenBrushFontRecall;
-  r: TRect;
+  legendItems: TChartLegendItems;
+  i: Integer;
 begin
   if not Legend.Visible then exit;
-
-  // TODO: Legend.Alignment
-
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
+  legendItems := TChartLegendItems.Create;
   try
-    ACanvas.Font.Assign(FLegend.Font);
-
-    w := GetLegendWidth(ACanvas);
-    th := ACanvas.TextHeight('I');
-    h := 0;
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
         if Active and ShowInLegend then
-          Inc(h, GetLegendCount);
-    FClipRect.Right -= w + 10;
-    x1 := FClipRect.Right + 5;
-    y1 := FClipRect.Top;
-    x2 := x1 + w;
-    y2 := y1 + FLegend.Spacing + h * (th + FLegend.Spacing);
-
-    // Border
-    ACanvas.Brush.Assign(FGraphBrush);
-    ACanvas.Pen.Assign(FLegend.Frame);
-    ACanvas.Rectangle(x1, y1, x2, y2);
-
-    r := Bounds(x1 + FLegend.Spacing, y1 + FLegend.Spacing, 17, th);
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and ShowInLegend then begin
-          ACanvas.Pen.Color := FLegend.Frame.Color;
-          ACanvas.Brush.Assign(FGraphBrush);
-          DrawLegend(ACanvas, r);
-          OffsetRect(r, 0, GetLegendCount * (th + FLegend.Spacing));
-        end;
+          GetLegendItems(legendItems);
+    Legend.Draw(legendItems, ACanvas, FClipRect);
   finally
-    pbf.Free;
+    legendItems.Free;
   end;
 end;
 
@@ -683,22 +652,6 @@ begin
   Invalidate;
 end;
 
-
-function TChart.GetLegendWidth(ACanvas: TCanvas): Integer;
-var
-  i: Integer;
-begin
-  Result := 0;
-  if not FLegend.Visible then
-    exit;
-
-  for i := 0 to SeriesCount - 1 do
-    with Series[i] do
-      if Active and ShowInLegend then
-        Result := Max(GetLegendWidth(ACanvas), Result);
-  if Result > 0 then
-    Result += 20 + 10;
-end;
 
 function TChart.GetMargins(ACanvas: TCanvas): TRect;
 var

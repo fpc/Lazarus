@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAGraph, TAChartUtils, TATypes, TACustomSeries;
+  TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
 type
   EBarError = class(EChartError);
@@ -61,7 +61,7 @@ type
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
@@ -85,9 +85,7 @@ type
   TPieSeries = class(TChartSeries)
   protected
     procedure AfterAdd; override;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
@@ -110,7 +108,7 @@ type
     procedure SetInvertedStairs(Value: Boolean);
     procedure SetStairs(Value: Boolean);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
@@ -129,13 +127,6 @@ type
     property Stairs: Boolean read FStairs write SetStairs default false;
   end;
 
-  { TBasicLineSeries }
-
-  TBasicLineSeries  = class(TBasicPointSeries)
-  protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-  end;
-
   TSeriesPointerDrawEvent = procedure (
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
@@ -144,7 +135,7 @@ type
 
   { TLineSeries }
 
-  TLineSeries = class(TBasicLineSeries)
+  TLineSeries = class(TBasicPointSeries)
   private
     FLinePen: TPen;
     FLineType: TLineType;
@@ -164,6 +155,7 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
@@ -212,7 +204,7 @@ type
 
   { TLine }
 
-  TLine = class(TBasicLineSeries)
+  TLine = class(TBasicPointSeries)
   private
     FLineStyle: TLineStyle;
     FPen: TPen;
@@ -224,6 +216,7 @@ type
     procedure SetPos(AValue: Double);
     procedure SetUseBounds(AValue: Boolean);
   protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
@@ -260,9 +253,7 @@ type
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
@@ -515,6 +506,11 @@ begin
   Result := ColorOrDefault(Source[AIndex]^.Color);
 end;
 
+procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(LinePen, Title));
+end;
+
 procedure TLineSeries.SetShowPoints(Value: Boolean);
 begin
   FShowPoints := Value;
@@ -613,6 +609,11 @@ begin
       lsVertical:
         DrawLineVert(ACanvas, XGraphToImage(FPosGraph));
     end;
+end;
+
+procedure TLine.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
 function TLine.GetSeriesColor: TColor;
@@ -810,14 +811,6 @@ begin
   end;
 end;
 
-procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := clBlack;
-  ACanvas.Brush.Assign(BarBrush);
-  ACanvas.Rectangle(ARect);
-end;
-
 function TBarSeries.Extent: TDoubleRect;
 begin
   Result := inherited Extent;
@@ -828,6 +821,11 @@ begin
     Result.a.X := Min(Result.a.X, X - CalcBarWidth(X, 0));
   with Source[Count - 1]^ do
     Result.b.X := Max(Result.b.X, X + CalcBarWidth(X, Count - 1));
+end;
+
+procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemBrushRect.Create(BarBrush, Title));
 end;
 
 function TBarSeries.GetSeriesColor: TColor;
@@ -921,41 +919,16 @@ begin
   end;
 end;
 
-procedure TPieSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  i: Integer;
-  pc, bc: TColor;
-  r: TRect;
-begin
-  r := ARect;
-  pc := ACanvas.Pen.Color;
-  bc := ACanvas.Brush.Color;
-  for i := 0 to Count - 1 do begin
-    ACanvas.Pen.Color := pc;
-    ACanvas.Brush.Color := bc;
-    with Source[i]^ do begin
-      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [Y, Text]));
-      ACanvas.Pen.Color := clBlack;
-      ACanvas.Brush.Color := Color;
-    end;
-    ACanvas.Rectangle(r);
-    OffsetRect(r, 0, r.Bottom - r.Top + ParentChart.Legend.Spacing);
-  end;
-end;
-
-function TPieSeries.GetLegendCount: Integer;
-begin
-  Result := Count;
-end;
-
-function TPieSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
 begin
-  Result := 0;
   for i := 0 to Count - 1 do
-    with Source[i]^ do
-      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [Y, Text])), Result);
+    AItems.Add(
+      TLegendItemColorRect.Create(
+        ColorOrDefault(Source[i]^.Color, Colors[i mod MaxColor + 1]),
+        FormattedMark(i))
+    );
 end;
 
 function TPieSeries.GetSeriesColor: TColor;
@@ -1077,29 +1050,14 @@ begin
   DrawLabels(ACanvas, false);
 end;
 
-procedure TAreaSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := clBlack;
-  ACanvas.Brush.Color := SeriesColor;
-  ACanvas.Rectangle(ARect);
+  AItems.Add(TLegendItemBrushRect.Create(AreaBrush, Title));
 end;
 
 function TAreaSeries.GetSeriesColor: TColor;
 begin
   Result := FAreaBrush.Color;
-end;
-
-{ TBasicLineSeries }
-
-procedure TBasicLineSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  y: Integer;
-begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := SeriesColor;
-  y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.Line(ARect.Left, y, ARect.Right, y);
 end;
 
 { TFuncSeries }
@@ -1156,24 +1114,9 @@ begin
   end;
 end;
 
-procedure TFuncSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  y: Integer;
+procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Assign(Pen);
-  y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.Line(ARect.Left, y, ARect.Right, y);
-end;
-
-function TFuncSeries.GetLegendCount: Integer;
-begin
-  Result := 1;
-end;
-
-function TFuncSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
-begin
-  Result := ACanvas.TextWidth(Title);
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
 function TFuncSeries.GetSeriesColor: TColor;

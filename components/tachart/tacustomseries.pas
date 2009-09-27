@@ -24,16 +24,13 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartUtils, TAGraph, TASources, TATypes;
+  TAChartUtils, TAGraph, TALegend, TASources, TATypes;
 
 type
   { TCustomChartSeries }
 
   TCustomChartSeries = class(TBasicChartSeries)
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -68,8 +65,6 @@ type
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
     function GetXMaxVal: Integer;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
@@ -138,22 +133,6 @@ constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := true;
-end;
-
-procedure TCustomChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-begin
-  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
-end;
-
-function TCustomChartSeries.GetLegendCount: Integer;
-begin
-  Result := 0;
-end;
-
-function TCustomChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
-begin
-  Unused(ACanvas);
-  Result := 0;
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
@@ -304,16 +283,6 @@ procedure TChartSeries.GetCoords(
 begin
   AG := DoublePoint(Source[AIndex]^);
   AI := ParentChart.GraphToImage(AG);
-end;
-
-function TChartSeries.GetLegendCount: Integer;
-begin
-  Result := 1;
-end;
-
-function TChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
-begin
-  Result := ACanvas.TextWidth(Title);
 end;
 
 function TChartSeries.GetSource: TCustomChartSource;
