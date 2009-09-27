@@ -294,6 +294,7 @@ type
     procedure SetOnDraw(AValue: TSeriesDrawEvent);
     procedure SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
   protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
     procedure Draw(ACanvas: TCanvas); override;
@@ -550,7 +551,6 @@ constructor TLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FActive := true;
   FLineStyle := lsHorizontal;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
@@ -1075,7 +1075,6 @@ constructor TFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FExtent := TChartExtent.Create(FChart);
-  FShowInLegend := true;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := 2;
@@ -1189,6 +1188,11 @@ procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
 begin
   if Assigned(FOnDraw) then
      FOnDraw(ACanvas, FChart.ClipRect);
+end;
+
+procedure TUserDrawnSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  Unused(AItems);
 end;
 
 function TUserDrawnSeries.IsEmpty: Boolean;

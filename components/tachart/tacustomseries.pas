@@ -133,6 +133,7 @@ constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := true;
+  FShowInLegend := true;
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
@@ -233,7 +234,6 @@ begin
   FBuiltinSource.Name := 'Builtin';
   FBuiltinSource.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
-  FShowInLegend := true;
 end;
 
 function TChartSeries.DefaultFormattedMark(AIndex: integer): String;

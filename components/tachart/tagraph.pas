@@ -83,7 +83,7 @@ type
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
 
-    property Active: Boolean read FActive write SetActive;
+    property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
     property SeriesColor: TColor
