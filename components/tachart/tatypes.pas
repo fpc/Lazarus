@@ -56,8 +56,6 @@ type
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
-  TLegendAlignment = (laLeft, laRight, laTop, laBottom);
-
   TFPCanvasHelperClass = class of TFPCanvasHelper;
 
   { TChartElement }

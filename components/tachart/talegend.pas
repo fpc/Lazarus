@@ -60,6 +60,8 @@ type
     property Color default clWhite;
   end;
 
+  TLegendAlignment = (laTopLeft, laBottomLeft, laTopRight, laBottomRight);
+
   { TChartLegend }
 
   TChartLegend = class(TChartElement)
@@ -89,7 +91,7 @@ type
       AItems: TObjectList; ACanvas: TCanvas; var AClipRect: TRect);
   published
     property Alignment: TLegendAlignment
-      read FAlignment write SetAlignment default laRight;
+      read FAlignment write SetAlignment default laTopRight;
     property BackgroundBrush: TChartLegendBrush
       read FBackgroundBrush write SetBackgroundBrush;
     property Font: TFont read FFont write SetFont;
@@ -186,7 +188,7 @@ end;
 constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FAlignment := laRight;
+  FAlignment := laTopRight;
   FMargin := DEF_LEGEND_MARGIN;
   FSpacing := DEF_LEGEND_SPACING;
   FSymbolWidth := DEF_LEGEND_SYMBOL_WIDTH;
@@ -208,40 +210,52 @@ end;
 procedure TChartLegend.Draw(
   AItems: TObjectList; ACanvas: TCanvas; var AClipRect: TRect);
 var
-  w, x1, y1, i, th: Integer;
+  w, x, y, i, textHeight, legendWidth, legendHeight: Integer;
   pbf: TPenBrushFontRecall;
   r: TRect;
 begin
   if not Visible then exit;
 
-  // TODO: Legend.Alignment
-
   pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
   try
     ACanvas.Font.Assign(Font);
-    w := 0;
+
+    // Measure the legend.
+    legendWidth := 0;
     for i := 0 to AItems.Count - 1 do
       with AItems[i] as TLegendItem do
-        w := Max(ACanvas.TextWidth(FText), w);
-    w += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
-    th := ACanvas.TextHeight('Iy');
+        legendWidth := Max(ACanvas.TextWidth(FText), legendWidth);
+    legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
+    textHeight := ACanvas.TextHeight('Iy');
+    legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
+    w := legendWidth + 2 * Margin;
 
-    AClipRect.Right -= w + 2 * Margin;
-    x1 := AClipRect.Right + Margin;
-    y1 := AClipRect.Top;
+    // Determine position according to the alignment.
+    if Alignment in [laTopLeft, laBottomLeft] then begin
+      x := AClipRect.Left + Margin;
+      AClipRect.Left += w;
+    end
+    else begin
+      x := AClipRect.Right - legendWidth - Margin;
+      AClipRect.Right -= w;
+    end;
+    if Alignment in [laTopLeft, laTopRight] then
+      y := AClipRect.Top + Margin
+    else
+      y := AClipRect.Bottom - Margin - legendHeight;
 
-    // Border
+    // Draw the background and the border.
     ACanvas.Brush.Assign(BackgroundBrush);
     ACanvas.Pen.Assign(Frame);
-    ACanvas.Rectangle(Bounds(
-      x1, y1, w, Spacing + AItems.Count * (th + Spacing)));
+    ACanvas.Rectangle(Bounds(x, y, legendWidth, legendHeight));
 
-    r := Bounds(x1 + Spacing, y1 + Spacing, SymbolWidth, th);
+    // Draw items.
+    r := Bounds(x + Spacing, y + Spacing, SymbolWidth, textHeight);
     for i := 0 to AItems.Count - 1 do begin
     ACanvas.Brush.Assign(BackgroundBrush);
       ACanvas.Pen.Assign(Frame);
       (AItems[i] as TLegendItem).Draw(ACanvas, r);
-      OffsetRect(r, 0, th + Spacing);
+      OffsetRect(r, 0, textHeight + Spacing);
     end;
   finally
     pbf.Free;
