@@ -422,7 +422,7 @@ end;
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 var
   i: Integer;
-  legendItems: TChartLegendItems;
+  legendItems: TChartLegendItems = nil;
   legendRect: TRect;
 begin
   Clean(ACanvas, ARect);
@@ -463,7 +463,8 @@ begin
           GetLegendItems(ALegendItems);
     ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
   except
-    ALegendItems.Free;
+    FreeAndNil(ALegendItems);
+    raise;
   end;
 end;
 
