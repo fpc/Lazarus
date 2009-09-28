@@ -22,10 +22,10 @@ type
     lblSpacing: TLabel;
     lblMargin: TLabel;
     ListChartSource1: TListChartSource;
+    ListChartSource2: TListChartSource;
     pnControls: TPanel;
     rgAlignment: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
-    RandomChartSource2: TRandomChartSource;
     seSymbolWidth: TSpinEdit;
     seSpacing: TSpinEdit;
     seMargin: TSpinEdit;

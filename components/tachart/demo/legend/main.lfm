@@ -52,13 +52,13 @@ object Form1: TForm1
       AreaBrush.Color = clGreen
       AreaBrush.Style = bsCross
       SeriesColor = clGreen
-      Source = RandomChartSource2
+      Source = RandomChartSource1
     end
     object Chart1PieSeries1: TPieSeries
       Marks.Format = '%1:.2f%%'
       Marks.Style = smsPercent
-      Marks.Visible = False
-      Source = RandomChartSource1
+      Exploded = True
+      Source = ListChartSource2
     end
   end
   object pnControls: TPanel
@@ -167,16 +167,6 @@ object Form1: TForm1
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 7
-    RandSeed = 103892781
-    XMax = 10
-    XMin = 1
-    YMax = 10
-    YMin = 1
-    left = 380
-    top = 56
-  end
-  object RandomChartSource2: TRandomChartSource
-    PointsNumber = 7
     RandSeed = 104675296
     XMax = 10
     XMin = 1
@@ -195,5 +185,16 @@ object Form1: TForm1
     )
     left = 380
     top = 168
+  end
+  object ListChartSource2: TListChartSource
+    DataPoints.Strings = (
+      '0|5||'
+      '0|6||'
+      '0,2|4||'
+      '0|7||'
+      '0|2||'
+    )
+    left = 380
+    top = 228
   end
 end
