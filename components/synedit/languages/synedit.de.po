@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-13 23:43+0100\n"
+"PO-Revision-Date: 2009-09-27 18:15+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "Klammern"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr ""
+msgstr "CDATA Abschnitt"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
@@ -83,11 +83,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
-msgstr ""
+msgstr "Eingebettetes SQL"
 
 #: syneditstrconst.syns_attrembedtext
 msgid "Embedded text"
-msgstr ""
+msgstr "Eingebetteter Text"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
@@ -263,7 +263,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr ""
+msgstr "Zweites reserviertes Wort"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
@@ -287,7 +287,7 @@ msgstr "SQL *Plus Kommando"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Eckige Klammer"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
@@ -397,7 +397,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Unterstreichen, ja, nein"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
@@ -405,7 +405,7 @@ msgstr "Keine Aktion"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Ausgewählten Text einfügen"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -429,15 +429,15 @@ msgstr "Wort markieren"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Spaltenmodus"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Auswahl verschieben"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Zeilenmodus"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"

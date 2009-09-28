@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-13 23:55+0100\n"
+"PO-Revision-Date: 2009-09-27 17:58+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr "Doppelklick markiert Zeile"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag Selection (copy/paste)"
-msgstr ""
+msgstr "Auswahl verschieben (kopieren/einfügen)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
-msgstr ""
+msgstr "Aktuelles Wort hervorheben"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
 msgid "Incremental search"
@@ -638,7 +638,7 @@ msgstr "Farbe"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
-msgstr ""
+msgstr "(Farbe ändern)"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
@@ -2167,7 +2167,7 @@ msgstr "Abstand am Rand"
 
 #: lazarusidestrconsts.dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr "Zeige Kompilierdialog"
+msgstr "Zeige Compilierdialog"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -2550,19 +2550,19 @@ msgstr "Vorlagendateiname"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim Spaces Style"
-msgstr ""
+msgstr "Leerzeichen-Abschneidungsmodus"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
 msgid "Caret or Edit"
-msgstr ""
+msgstr "bei Wechsel oder Bearbeitung"
 
 #: lazarusidestrconsts.dlgtrimspacetypeeditline
 msgid "Line Edited"
-msgstr ""
+msgstr "bei Zeilenbearbeitung"
 
 #: lazarusidestrconsts.dlgtrimspacetypeleaveline
 msgid "Leave line"
-msgstr ""
+msgstr "beim Zeilenwechsel"
 
 #: lazarusidestrconsts.dlgtrimspacetypeposonly
 msgid "Position Only"
@@ -2570,7 +2570,7 @@ msgstr "Nur Position"
 
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr "Zuschneiden überflüssiger Leerzeichen"
+msgstr "Abschneiden von Leerzeichen am Zeilenende"
 
 #: lazarusidestrconsts.dlguncertopt
 msgid "Uncertain Optimizations"
@@ -2626,7 +2626,7 @@ msgstr "Zusätzliche Compiler-Konfigurationsdatei einbinden"
 
 #: lazarusidestrconsts.dlgusedividerdraw
 msgid "Divider drawing"
-msgstr ""
+msgstr "Trennlinien"
 
 #: lazarusidestrconsts.dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -3819,7 +3819,7 @@ msgstr "Nur im Kategorien-Modus verwendet"
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
-msgstr "Wenn nichts ansteht"
+msgstr "im Leerlauf"
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
@@ -5004,7 +5004,7 @@ msgstr "Kopierfehler"
 
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy %s%s%s to clipboard"
-msgstr ""
+msgstr "Kopiere %s%s%s in die Zwischenablage"
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -6127,7 +6127,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr "Aktualisieren des Designer verringern"
+msgstr "Neuzeichnen des Designers verringern"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
@@ -13960,7 +13960,7 @@ msgstr "Marker %d umschalten"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
-msgstr ""
+msgstr "Aktuelles Wort hervorheben (ein/aus)"
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
