@@ -230,7 +230,7 @@ begin
     ACanvas.Rectangle(ABounds);
 
     // Draw items.
-    h := ACanvas.TextHeight('Iy');
+    h := TypicalTextHeight(ACanvas);
     r := Bounds(ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, h);
     for i := 0 to AItems.Count - 1 do begin
       ACanvas.Brush.Assign(BackgroundBrush);
@@ -261,7 +261,7 @@ begin
       with AItems[i] as TLegendItem do
         legendWidth := Max(ACanvas.TextWidth(FText), legendWidth);
     legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
-    textHeight := ACanvas.TextHeight('Iy');
+    textHeight := TypicalTextHeight(ACanvas);
     legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
     w := legendWidth + 2 * Margin;
 

@@ -148,6 +148,8 @@ function RectIntersectsRect(
 
 function RoundChecked(A: Double): Integer; inline;
 
+function TypicalTextHeight(ACanvas: TCanvas): Integer;
+
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
@@ -420,6 +422,13 @@ end;
 function RoundChecked(A: Double): Integer;
 begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
+end;
+
+function TypicalTextHeight(ACanvas: TCanvas): Integer;
+const
+  TYPICAL_TEXT = 'Iy';
+begin
+  Result := ACanvas.TextHeight(TYPICAL_TEXT);
 end;
 
 procedure Unused(const A1);
