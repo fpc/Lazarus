@@ -2541,10 +2541,14 @@ begin
       DrawGrid(ADDC.Canvas.Handle, AWinControl.ClientRect, GridSizeX, GridSizeY);
     end;
     
-    if ShowBorderSpacing then begin
-      aDDC.Canvas.Brush.Color:=clRed;
-      for i:=0 to Count-1 do begin
-        CurControl:=AWinControl.Controls[i];
+    if ShowBorderSpacing then
+    begin
+      aDDC.Canvas.Brush.Color := clRed;
+      for i := 0 to Count - 1 do
+      begin
+        CurControl := AWinControl.Controls[i];
+        if csNoDesignSelectable in CurControl.ControlStyle then
+          Continue;
         aDDC.Canvas.FrameRect(
           CurControl.Left-CurControl.BorderSpacing.GetSpace(akLeft),
           CurControl.Top-CurControl.BorderSpacing.GetSpace(akTop),
