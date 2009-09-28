@@ -84,6 +84,8 @@ type
 
   TPieSeries = class(TChartSeries)
   private
+    FExploded: Boolean;
+    procedure SetExploded(const AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
   protected
     procedure AfterAdd; override;
@@ -94,6 +96,8 @@ type
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
     procedure Draw(ACanvas: TCanvas); override;
   published
+    // Offset slices away from center based on X value.
+    property Exploded: Boolean read FExploded write SetExploded default false;
     property Source;
   end;
 
@@ -768,60 +772,76 @@ end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
-  i, radius: Integer;
-  prevAngle, angleStep: Double;
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
-  a, b, center: TPoint;
+
+  procedure Measure(out ACenter: TPoint; out ARadius: Integer);
+  const
+    MARGIN = 8;
+  var
+    i: Integer;
+  begin
+    SetLength(labelWidths, Count);
+    SetLength(labelHeights, Count);
+    SetLength(labelTexts, Count);
+    for i := 0 to Count - 1 do begin
+      labelTexts[i] := FormattedMark(i);
+      with ACanvas.TextExtent(labelTexts[i]) do begin
+        labelWidths[i] := cx;
+        labelHeights[i] := cy;
+      end;
+    end;
+
+    with ParentChart do begin
+      ACenter := CenterPoint(ClipRect);
+      // Reserve space for labels.
+      ARadius := Min(
+        ClipRect.Right - ACenter.x - MaxIntValue(labelWidths),
+        ClipRect.Bottom - ACenter.y - MaxIntValue(labelHeights));
+    end;
+    if Marks.IsMarkLabelsVisible then
+      ARadius -= Marks.Distance;
+    ARadius := Max(ARadius - MARGIN, 0);
+    if Exploded then
+      ARadius := Trunc(ARadius / (Max(Source.Extent.b.X, 0) + 1));
+  end;
+
+var
+  i, radius: Integer;
+  prevAngle: Double = 0;
+  angleStep, sliceCenterAngle: Double;
+  a, b, c, center: TPoint;
   r: TRect;
 const
-  MARGIN = 8;
+  RAD_TO_DEG16 = 360 * 16;
 begin
   if IsEmpty then exit;
 
-  SetLength(labelWidths, Count);
-  SetLength(labelHeights, Count);
-  SetLength(labelTexts, Count);
+  Measure(center, radius);
   for i := 0 to Count - 1 do begin
-    labelTexts[i] := FormattedMark(i);
-    with ACanvas.TextExtent(labelTexts[i]) do begin
-      labelWidths[i] := cx;
-      labelHeights[i] := cy;
-    end;
-  end;
-
-  with ParentChart do begin
-    center := CenterPoint(ClipRect);
-    // Reserve space for labels.
-    radius := Min(
-      ClipRect.Right - center.x - MaxIntValue(labelWidths),
-      ClipRect.Bottom - center.y - MaxIntValue(labelHeights));
-  end;
-  if Marks.IsMarkLabelsVisible then
-    radius -= Marks.Distance;
-  radius := Max(radius - MARGIN, 0);
-
-  prevAngle := 0;
-  for i := 0 to Count - 1 do begin
-    // if y < 0 then y := -y;
-    // if y = 0 then y := 0.1; // just to simulate tchart when y=0
-
-    angleStep := Source[i]^.Y / Source.ValuesTotal * 360 * 16;
     ACanvas.Pen.Color := clBlack;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Brush.Style := bsSolid;
     ACanvas.Brush.Color := SliceColor(i);
 
+    with Source[i]^ do begin
+      angleStep := Y / Source.ValuesTotal * RAD_TO_DEG16;
+      sliceCenterAngle := prevAngle + angleStep / 2;
+      if Exploded and (X > 0) then
+        c := LineEndPoint(center, sliceCenterAngle, radius * X)
+      else
+        c := center;
+    end;
     ACanvas.RadialPie(
-      center.x - radius, center.y - radius,
-      center.x + radius, center.y + radius, round(prevAngle), round(angleStep));
+      c.x - radius, c.y - radius, c.x + radius, c.y + radius,
+      round(prevAngle), round(angleStep));
 
     prevAngle += angleStep;
 
     if not Marks.IsMarkLabelsVisible then continue;
 
-    a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
-    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + Marks.Distance);
+    a := LineEndPoint(c, sliceCenterAngle, radius);
+    b := LineEndPoint(c, sliceCenterAngle, radius + Marks.Distance);
 
     // line from mark to pie
     ACanvas.Pen.Assign(Marks.LinkPen);
@@ -849,6 +869,13 @@ end;
 function TPieSeries.GetSeriesColor: TColor;
 begin
   Result := clBlack; // SeriesColor is meaningless for PieSeries
+end;
+
+procedure TPieSeries.SetExploded(const AValue: Boolean);
+begin
+  if FExploded = AValue then exit;
+  FExploded := AValue;
+  UpdateParentChart;
 end;
 
 procedure TPieSeries.SetSeriesColor(const AValue: TColor);
