@@ -5094,7 +5094,8 @@ begin
         mtConfirmation,[mbYes,mbNo],0)=mrYes then
       begin
         Project1.CompilerOptions.OtherUnitFiles:=
-                        Project1.CompilerOptions.OtherUnitFiles+';'+NewFilePath;
+                     Project1.CompilerOptions.OtherUnitFiles+';'
+                     +CreateRelativePath(NewFilePath,Project1.ProjectDirectory);
       end;
     end;
   end;
