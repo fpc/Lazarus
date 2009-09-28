@@ -165,20 +165,6 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    function  GetColor(AIndex: Integer): TColor;
-    procedure GetMax(out X, Y: Double);
-    procedure GetMin(out X, Y: Double);
-    function  GetXImgValue(AIndex: Integer): Integer;
-    function  GetXMax: Double;
-    function  GetXMin: Double;
-    function  GetXValue(AIndex: Integer): Double;
-    function  GetYImgValue(AIndex: Integer): Integer;
-    function  GetYMax: Double;
-    function  GetYMin: Double;
-    function  GetYValue(AIndex: Integer): Double;
-    procedure SetColor(AIndex: Integer; AColor: TColor);
-    procedure SetXValue(AIndex: Integer; AValue: Double); inline;
-    procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -315,6 +301,17 @@ uses
 
 { TLineSeries }
 
+procedure TLineSeries.AfterAdd;
+begin
+  inherited AfterAdd;
+  FPointer.SetOwner(FChart);
+end;
+
+procedure TLineSeries.BeginUpdate;
+begin
+  ListSource.BeginUpdate;
+end;
+
 constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -329,17 +326,6 @@ destructor TLineSeries.Destroy;
 begin
   FPointer.Free;
   inherited Destroy;
-end;
-
-procedure TLineSeries.SetPointer(Value: TSeriesPointer);
-begin
-  FPointer.Assign(Value);
-  UpdateParentChart;
-end;
-
-procedure TLineSeries.SetSeriesColor(const AValue: TColor);
-begin
-  FLinePen.Color := AValue;
 end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
@@ -390,72 +376,15 @@ begin
     end;
 end;
 
-procedure TLineSeries.AfterAdd;
+procedure TLineSeries.EndUpdate;
 begin
-  inherited AfterAdd;
-  FPointer.SetOwner(FChart);
+  ListSource.EndUpdate;
+  UpdateParentChart;
 end;
 
-function TLineSeries.GetXValue(AIndex: Integer): Double;
+procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  Result := Source[AIndex]^.X;
-end;
-
-function TLineSeries.GetYValue(AIndex: Integer): Double;
-begin
-  Result := Source[AIndex]^.Y;
-end;
-
-procedure TLineSeries.SetXValue(AIndex: Integer; AValue: Double);
-begin
-  ListSource.SetXValue(AIndex, AValue);
-end;
-
-procedure TLineSeries.SetYValue(AIndex: Integer; AValue: Double);
-begin
-  ListSource.SetYValue(AIndex, AValue);
-end;
-
-function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
-begin
-  Result := ParentChart.XGraphToImage(Source[AIndex]^.X);
-end;
-
-function TLineSeries.GetYImgValue(AIndex: Integer): Integer;
-begin
-  Result := ParentChart.YGraphToImage(Source[AIndex]^.Y);
-end;
-
-function TLineSeries.GetXMin: Double;
-begin
-  Result := Extent.a.X;
-end;
-
-function TLineSeries.GetXMax: Double;
-begin
-  Result := Extent.b.X;
-end;
-
-function TLineSeries.GetYMin: Double;
-begin
-  Result := Extent.a.Y;
-end;
-
-function TLineSeries.GetYMax: Double;
-begin
-  Result := Extent.b.Y;
-end;
-
-procedure TLineSeries.GetMax(out X, Y: Double);
-begin
-  X := Source.XOfMax;
-  Y := Extent.b.Y;
-end;
-
-procedure TLineSeries.GetMin(out X, Y: Double);
-begin
-  X := Source.XOfMin;
-  Y := Extent.a.Y;
+  AItems.Add(TLegendItemLine.Create(LinePen, Title));
 end;
 
 function TLineSeries.GetNearestPoint(
@@ -490,9 +419,9 @@ begin
   Result := FLineType <> ltNone;
 end;
 
-procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
+procedure TLineSeries.SetLinePen(AValue: TPen);
 begin
-  Source[AIndex]^.Color := AColor;
+  FLinePen.Assign(AValue);
 end;
 
 procedure TLineSeries.SetLineType(AValue: TLineType);
@@ -502,25 +431,15 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetLinePen(AValue: TPen);
+procedure TLineSeries.SetPointer(Value: TSeriesPointer);
 begin
-  FLinePen.Assign(AValue);
-end;
-
-function TLineSeries.GetColor(AIndex: Integer): TColor;
-begin
-  Result := ColorOrDefault(Source[AIndex]^.Color);
-end;
-
-procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
-begin
-  AItems.Add(TLegendItemLine.Create(LinePen, Title));
-end;
-
-procedure TLineSeries.SetShowPoints(Value: Boolean);
-begin
-  FShowPoints := Value;
+  FPointer.Assign(Value);
   UpdateParentChart;
+end;
+
+procedure TLineSeries.SetSeriesColor(const AValue: TColor);
+begin
+  FLinePen.Color := AValue;
 end;
 
 procedure TLineSeries.SetShowLines(Value: Boolean);
@@ -533,14 +452,9 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.BeginUpdate;
+procedure TLineSeries.SetShowPoints(Value: Boolean);
 begin
-  ListSource.BeginUpdate;
-end;
-
-procedure TLineSeries.EndUpdate;
-begin
-  ListSource.EndUpdate;
+  FShowPoints := Value;
   UpdateParentChart;
 end;
 

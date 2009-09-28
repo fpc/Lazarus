@@ -70,6 +70,22 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+  public
+    function  GetColor(AIndex: Integer): TColor;
+    procedure GetMax(out X, Y: Double);
+    procedure GetMin(out X, Y: Double);
+    function  GetXImgValue(AIndex: Integer): Integer;
+    function  GetXMax: Double;
+    function  GetXMin: Double;
+    function  GetXValue(AIndex: Integer): Double;
+    function  GetYImgValue(AIndex: Integer): Integer;
+    function  GetYMax: Double;
+    function  GetYMin: Double;
+    function  GetYValue(AIndex: Integer): Double;
+    procedure SetColor(AIndex: Integer; AColor: TColor);
+    procedure SetXValue(AIndex: Integer; AValue: Double); inline;
+    procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
     function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
@@ -278,12 +294,29 @@ begin
     Result := DefaultFormattedMark(AIndex);
 end;
 
+function TChartSeries.GetColor(AIndex: Integer): TColor;
+begin
+  Result := ColorOrDefault(Source[AIndex]^.Color);
+end;
+
 function TChartSeries.GetGraphPoint(AIndex: Integer): TDoublePoint;
 begin
   with Source[AIndex]^ do begin
     Result.X := X;
     Result.Y := Y;
   end;
+end;
+
+procedure TChartSeries.GetMax(out X, Y: Double);
+begin
+  X := Source.XOfMax;
+  Y := Extent.b.Y;
+end;
+
+procedure TChartSeries.GetMin(out X, Y: Double);
+begin
+  X := Source.XOfMin;
+  Y := Extent.a.Y;
 end;
 
 function TChartSeries.GetSource: TCustomChartSource;
@@ -294,12 +327,52 @@ begin
     Result := FBuiltinSource;
 end;
 
+function TChartSeries.GetXImgValue(AIndex: Integer): Integer;
+begin
+  Result := ParentChart.XGraphToImage(Source[AIndex]^.X);
+end;
+
+function TChartSeries.GetXMax: Double;
+begin
+  Result := Extent.b.X;
+end;
+
 function TChartSeries.GetXMaxVal: Integer;
 begin
   if Count > 0 then
     Result := Round(Source[Count - 1]^.X)
   else
     Result := 0;
+end;
+
+function TChartSeries.GetXMin: Double;
+begin
+  Result := Extent.a.X;
+end;
+
+function TChartSeries.GetXValue(AIndex: Integer): Double;
+begin
+  Result := Source[AIndex]^.X;
+end;
+
+function TChartSeries.GetYImgValue(AIndex: Integer): Integer;
+begin
+  Result := ParentChart.YGraphToImage(Source[AIndex]^.Y);
+end;
+
+function TChartSeries.GetYMax: Double;
+begin
+  Result := Extent.b.Y;
+end;
+
+function TChartSeries.GetYMin: Double;
+begin
+  Result := Extent.a.Y;
+end;
+
+function TChartSeries.GetYValue(AIndex: Integer): Double;
+begin
+  Result := Source[AIndex]^.Y;
 end;
 
 function TChartSeries.IsEmpty: Boolean;
@@ -317,6 +390,11 @@ begin
   if not (Source is TListChartSource) then
     raise EEditableSourceRequired.Create('Editable chart source required');
   Result := Source as TListChartSource;
+end;
+
+procedure TChartSeries.SetColor(AIndex: Integer; AColor: TColor);
+begin
+  Source[AIndex]^.Color := AColor;
 end;
 
 procedure TChartSeries.SetMarks(const AValue: TChartMarks);
@@ -340,6 +418,16 @@ begin
   FSource := AValue;
   Source.Subscribe(FListener);
   UpdateParentChart;
+end;
+
+procedure TChartSeries.SetXValue(AIndex: Integer; AValue: Double); inline;
+begin
+  ListSource.SetXValue(AIndex, AValue);
+end;
+
+procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
+begin
+  ListSource.SetYValue(AIndex, AValue);
 end;
 
 procedure TChartSeries.UpdateBounds(var ABounds: TDoubleRect);
