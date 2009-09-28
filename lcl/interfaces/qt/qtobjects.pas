@@ -430,6 +430,8 @@ type
     procedure setIcon(icon: QIconH);
     procedure setToolTip(tip: WideString);
     procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
+    procedure showBaloonHint(const ATitle, AHint: String;
+      const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
     procedure show;
     procedure hide;
   end;
@@ -2897,6 +2899,17 @@ begin
           FTrayIcon.OnMouseUp(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
       end;
   end;
+end;
+
+procedure TQtSystemTrayIcon.showBaloonHint(const ATitle, AHint: String;
+  const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
+var
+  WHint: WideString;
+  WTitle: WideString;
+begin
+  WHint := GetUTF8String(AHint);
+  WTitle := GetUTF8String(ATitle);
+  QSystemTrayIcon_showMessage(Handle, @WTitle, @WHint, AFlag, ATimeOut);
 end;
 
 procedure TQtSystemTrayIcon.show;

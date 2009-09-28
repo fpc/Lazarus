@@ -189,6 +189,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
@@ -536,6 +537,22 @@ begin
   if Assigned(ATrayIcon.PopUpMenu) then
     if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
       SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+end;
+
+class function TQtWSCustomTrayIcon.ShowBalloonHint(
+  const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  QtTrayIcon: TQtSystemTrayIcon;
+begin
+  Result := False;
+  if (ATrayIcon.Handle = 0) then Exit;
+  QtTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
+
+  QtTrayIcon.showBaloonHint(ATrayIcon.BalloonTitle, ATrayIcon.BalloonHint,
+    QSystemTrayIconMessageIcon(Ord(ATrayIcon.BalloonFlags)),
+    ATrayIcon.BalloonTimeout);
+
+  Result := True;
 end;
 
 class function TQtWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
