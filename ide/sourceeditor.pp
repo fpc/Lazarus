@@ -602,7 +602,7 @@ type
     procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure OnSynCompletionPositionChanged(Sender: TObject);
     procedure DeactivateCompletionForm;
-    procedure InitIdentCompletion(S: TStrings);
+    function InitIdentCompletion(S: TStrings): boolean;
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -3930,7 +3930,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.InitIdentCompletion(S: TStrings);
+function TSourceNotebook.InitIdentCompletion(S: TStrings): boolean;
 var
   i: integer;
   Handled: boolean;
@@ -3938,6 +3938,7 @@ var
   Prefix: string;
   ItemCnt: Integer;
 begin
+  Result:=false;
   Prefix := CurCompletionControl.CurrentString;
   if Assigned(OnInitIdentCompletion) then begin
     OnInitIdentCompletion(Self,fIdentCompletionJumpToError,Handled,Abort);
@@ -3950,6 +3951,7 @@ begin
       CurCompletionControl.Position:=0;
       for i:=0 to ItemCnt-1 do
         s.Add('Dummy');
+      Result:=true;
       exit;
     end;
   end;
@@ -4108,7 +4110,7 @@ Begin
   CurEdit:=GetActiveSE.EditorComponent;
   case CurrentCompletionType of
    ctIdentCompletion:
-     InitIdentCompletion(S);
+     if not InitIdentCompletion(S) then exit;
 
    ctWordCompletion:
      begin
