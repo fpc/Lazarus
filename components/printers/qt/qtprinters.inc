@@ -18,92 +18,6 @@
  }
 Uses InterfaceBase, LCLIntf;
 
-{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-{$IFDEF WINDOWS}
-const
-  LibWinSpool = 'winspool.drv';
-  
-  PRINTER_ENUM_DEFAULT         = $00000001;
-  PRINTER_ENUM_LOCAL           = $00000002;
-  PRINTER_ENUM_CONNECTIONS     = $00000004;
-  PRINTER_ENUM_FAVORITE        = $00000004;
-  PRINTER_ENUM_NAME            = $00000008;
-  PRINTER_ENUM_REMOTE          = $00000010;
-  PRINTER_ENUM_SHARED          = $00000020;
-  PRINTER_ENUM_NETWORK         = $00000040;
-  PRINTER_ENUM_EXPAND          = $00004000;
-  PRINTER_ENUM_CONTAINER       = $00008000;
-  PRINTER_ENUM_ICONMASK        = $00ff0000;
-  PRINTER_ENUM_ICON1           = $00010000;
-  PRINTER_ENUM_ICON2           = $00020000;
-  PRINTER_ENUM_ICON3           = $00040000;
-  PRINTER_ENUM_ICON4           = $00080000;
-  PRINTER_ENUM_ICON5           = $00100000;
-  PRINTER_ENUM_ICON6           = $00200000;
-  PRINTER_ENUM_ICON7           = $00400000;
-  PRINTER_ENUM_ICON8           = $00800000;
-  
-type
-  PPRINTER_INFO_1 = ^_PRINTER_INFO_1;
-  _PRINTER_INFO_1 = packed Record
-     Flags        : DWORD;
-     pDescription : PChar;
-     pName        : PChar;
-     pComment     : PChar;
-  end;
-
-  PPRINTER_INFO_2 = ^_PRINTER_INFO_2;
-  _PRINTER_INFO_2 = packed Record
-     pServerName     : PChar;
-     pPrinterName    : PChar;
-     pShareName      : PChar;
-     pPortName       : PChar;
-     pDriverName     : PChar;
-     pComment        : PChar;
-     pLocation       : PChar;
-     pDevMode        : PDeviceMode;
-     pSepFile        : PChar;
-     pPrintProcessor : PChar;
-     pDatatype       : PChar;
-     pParameters     : PChar;
-     pSecurityDescriptor : Pointer;
-     Attributes      : DWORD;
-     Priority        : DWORD;
-     DefaultPriority : DWORD;
-     StartTime       : DWORD;
-     UntilTime       : DWORD;
-     Status          : DWORD;
-     cJobs           : DWORD;
-     AveragePPM      : DWORD;
-  end;
-
-  PPRINTER_INFO_4 = ^_PRINTER_INFO_4;
-  _PRINTER_INFO_4 = packed Record
-     pPrinterName : PChar;
-     pServerName  : PChar;
-     Attributes   : DWORD;
-  end;
-
-  PPRINTER_INFO_5 = ^_PRINTER_INFO_5;
-  _PRINTER_INFO_5 = packed Record
-     pPrinterName : PChar;
-     pPortName    : PChar;
-     Attributes   : DWORD;
-     DeviceNotSelectedTimeout : DWORD;
-     TransmissionRetryTimeout : DWORD;
-  end;
-
-function EnumPrinters(Flags: DWORD;  //Printer objet type
-                      Name : PChar;  //Name of printer object
-                      Level: DWORD;  //Information level
-                      pPrinterEnum: Pointer; //Printer information buffer
-                      cbBuf: DWORD; //Size of printer information buffer
-                  var pcbNeeded,    //Bytes recieved or required
-                      pcReturned: DWORD //Number of printers enumerated
-                      ): BOOL; stdcall; external LibWinSpool name 'EnumPrintersA';
-{$ENDIF}
-{$ENDIF}
-
 { TQtPrinters }
 procedure TQtPrinters.CreatePrintSettings;
 var
@@ -164,7 +78,6 @@ begin
   QtDefaultPrinter.endDoc;
 end;
 
-{$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
 procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
 var
   i: Integer;
@@ -197,113 +110,6 @@ begin
     QPrinterInfo_destroy(PrnInfo);
   end;
 end;
-{$ELSE}
-{$IFDEF WINDOWS}
-procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
-  function getPrnStr(var Str: PChar): PChar;
-  var
-    P: PChar;
-  begin
-    Result := Str;
-    if Str = nil then
-     exit;
-    P := Str;
-    
-    while P^ = ' ' do
-      Inc(P);
-      
-    Result := P;
-    
-    while (P^ <> #0) and (P^ <> ',') do
-      Inc(P);
-      
-    if P^ = ',' then
-    begin
-      P^ := #0;
-      Inc(P);
-    end;
-    Str := P;
-  end;
-
-var
-  CurrLine, Port: PChar;
-  Buffer, PrinterInfo: PChar;
-  I: Integer;
-  Level: Byte;
-  Flags, PrtCount, Needed: DWORD;
-begin
-  Lst.Clear;
-  Level := 5;
-  Flags := PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
-  Needed := 0;
-  
-  EnumPrinters(Flags, nil, Level, nil, 0, Needed, PrtCount);
-  
-  if Needed = 0 then
-    Exit;
-  GetMem(Buffer, Needed);
-  Fillchar(Buffer^, Needed, 0);
-  try
-    if not EnumPrinters(Flags, nil, Level, PByte(Buffer), Needed, Needed, PrtCount) then
-      Exit;
-    PrinterInfo := Buffer;
-    for I := 0 to PrtCount - 1 do
-      if Level = 4 then
-        with PPrinter_Info_4(PrinterInfo)^ do
-        begin
-          Lst.Add(pPrinterName);
-          Inc(PrinterInfo, SizeOf(_PRINTER_INFO_4));
-        end
-      else
-        with PPrinter_Info_5(PrinterInfo)^ do
-        begin
-          CurrLine := pPortName;
-          Port := getPrnStr(CurrLine);
-          while Port^ <> #0 do
-          begin
-            Lst.Add(pPrinterName);
-            Port := getPrnStr(CurrLine);
-          end;
-          Inc(PrinterInfo, SizeOf(_PRINTER_INFO_5));
-        end;
-  finally
-    FreeMem(Buffer, Needed);
-  end;
-end;
-
-{$ELSE}
-procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
-var
-  i, Num: Integer;
-  P: Pcups_dest_t;
-  FCupsPrinters: Pcups_dest_t;
-begin
-  {Qt < 4.4 doesn't have anything to get printers list,
-   but such information will be avaliable with QPrinterInfo in Qt 4.4.
-   So, for qt 4.3 we are using cups printers for linux & darwin.}
-  inherited DoEnumPrinters(Lst);
-
-  if not CUPSLibInstalled then Exit;
-  Lst.Clear;
-  
-  FCupsPrinters := nil;
-  
-  Num := cupsGetDests(@FcupsPrinters);
-  for i := 0 to Num -1 do
-  begin
-    P := nil;
-    P := @FCupsPrinters[i];
-    if Assigned(P) then
-    begin
-      if P^.is_default<>0 then
-        Lst.Insert(0,P^.name)
-      else
-        Lst.Add(P^.name);
-    end;
-  end;
-end;
-{$ENDIF}
-{$ENDIF}
 
 procedure TQtPrinters.EnumQPapers(Lst: TStrings);
 const
@@ -669,6 +475,3 @@ initialization
   
 finalization
   FreeAndNil(Printer);
-  {$IFDEF UNIX}
-  FinalizeCups;
-  {$ENDIF}
