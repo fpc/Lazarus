@@ -1142,13 +1142,13 @@ begin
   MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
   MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1159,36 +1159,40 @@ var
   MenuInfo: MENUITEMINFO;
 begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
-    exit;
-  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+    Exit;
+
   with MenuInfo do
   begin
-    cbsize := menuiteminfosize;
+    cbSize := menuiteminfosize;
     fMask := MIIM_TYPE or MIIM_STATE;
+    dwTypeData := nil;  // don't retrieve caption
+  end;
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+  with MenuInfo do
+  begin
     // change enabled too since we can change from '-' to normal caption and vice versa
     if ACaption <> cLineCaption then
     begin
-      fType := MFT_STRING;
+      fType := (fType or MFT_STRING) and not (MFT_SEPARATOR or MFT_OWNERDRAW);
       fState := EnabledToStateFlag[AMenuItem.Enabled];
       dwTypeData := LPSTR(ACaption);
       cch := StrLen(dwTypeData);
     end
     else
     begin
-      fType := MFT_SEPARATOR;
+      fType := (fType or MFT_SEPARATOR) and not (MFT_STRING or MFT_OWNERDRAW);
       fState := MFS_DISABLED;
     end;
   end;
-  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   with MenuInfo do
   begin
-    cbsize := menuiteminfosize;
     fMask := MIIM_TYPE;
-    fType := MFT_OWNERDRAW;
+    fType := (fType or MFT_OWNERDRAW) and not (MFT_STRING or MFT_SEPARATOR);
     dwTypeData := LPSTR(ACaption);
     cch := StrLen(dwTypeData);
   end;
-  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
