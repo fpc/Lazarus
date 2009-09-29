@@ -100,7 +100,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
-  Method: TMethod;
   ScreenDC: HDC;
 begin
   WakeMainThread := @OnWakeMainThread;
@@ -113,14 +112,12 @@ begin
   }
   // install global event filter
   FAppEvenFilterHook := QObject_hook_create(App);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FAppEvenFilterHook, Method);
+  QObject_hook_hook_events(FAppEvenFilterHook, @EventFilter);
   
   // install focus change slot
 
   FAppFocusChangedHook := QApplication_hook_create(App);
-  QApplication_focusChanged_Event(Method) := @FocusChanged;
-  QApplication_hook_hook_focusChanged(FAppFocusChangedHook, Method);
+  QApplication_hook_hook_focusChanged(FAppFocusChangedHook, @FocusChanged);
 
 
   ScreenDC := GetDC(0);
@@ -180,13 +177,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
-  {$note we must use QEventLoopDefferedDeletion because of SlotClose.
-    Normal forms are NOT closed without this ...}
+  {we must use QEventLoopDefferedDeletion because of SlotClose.
+   Normal forms are NOT closed without this ...}
   QCoreApplication_processEvents(QEventLoopAllEvents);
-  {$ELSE}
-  QCoreApplication_processEvents(QEventLoopAllEvents or QEventLoopDeferredDeletion);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -202,9 +195,6 @@ begin
   QObject_hook_destroy(FAppEvenFilterHook);
   QApplication_hook_destroy(FAppFocusChangedHook);
 
-  {$IFNDEF USE_QT_45}
-  AppProcessMessages; // process pending messages since there can be release messages
-  {$ENDIF}
   QCoreApplication_quit;
 end;
 

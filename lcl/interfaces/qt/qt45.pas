@@ -1,10 +1,8 @@
 unit qt4;
 
-{ Version : 1.70 }
+{ Version : 1.72 }
 
-{$ifdef fpc}
-  {$mode delphi}
-{$endif}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -14,7 +12,7 @@ uses Types;
 
 
 const
-  QT_VERSION = 4 shl 16 + 5 shl 8 + 0;
+  QT_VERSION = 4 shl 16 + 5 shl 8 + 2;
   
   
 {$IFDEF MSWINDOWS}
@@ -28,13 +26,13 @@ const
 {$ENDIF}
 
 {$IFDEF QTOPIA}
-  QtIntf = 'libqt4intf.so';
+  QtIntf = 'libqt4intf.so.5';
 {$ENDIF}
 
 {$IFNDEF QTOPIA}
   {$IF DEFINED(LINUX) or DEFINED(FREEBSD) or DEFINED(NETBSD)}
     {$DEFINE BINUX}
-    QtIntf = 'libqt4intf.so';
+    QtIntf = 'libqt4intf.so.5';
   {$ENDIF}
 {$ENDIF}
 
@@ -45,12 +43,6 @@ const
 
 
 type
-
-{$ifndef fpc}
-  PPtrInt = ^PtrInt;
-  PtrInt = longint; // 32bit dcc 
-  qword = type int64;
-{$endif}
 
   PLong = ^Long;
 {$ifdef CPU64 and not WIN64}
@@ -86,10 +78,6 @@ type
   PQRgb = ^QRgb;
   QRgb = longword;
   
-  TCoreApplicationEventFilter = function(Msg:PChar;Res:PLong):boolean cdecl;
-  TAbstractEventFilter = function(Msg:PChar):boolean cdecl;
-    
-
   PPtrIntArray = ^TPtrIntArray;
   TPtrIntArray = array of PtrInt;
   
@@ -98,7 +86,7 @@ type
   
   
 const
-  NullHook: QHookH = (Code: nil; Data: nil);
+  NilMethod : TMethod = (Code: nil; Data: nil); 
 
 type
 
@@ -138,15 +126,16 @@ type
     pt: TPoint;
   end;
 
-  WINHANDLE = type integer;
-  HCURSOR = type WINHANDLE;
-  HPALETTE = type WINHANDLE;
-  HFONT = type WINHANDLE;
-  HDC = type WINHANDLE;
-  HBITMAP = type WINHANDLE;
-  HBRUSH = type WINHANDLE;
-  HPEN = type WINHANDLE;
-  HRGN = type WINHANDLE;
+  // Extra Q to avoid name clash with other Pascal Units
+  WINHANDLE = System.THandle;
+  QHCURSOR = type WINHANDLE;
+  QHPALETTE = type WINHANDLE;
+  QHFONT = type WINHANDLE;
+  QHDC = type WINHANDLE;
+  QHBITMAP = type WINHANDLE;
+  QHBRUSH = type WINHANDLE;
+  QHPEN = type WINHANDLE;
+  QHRGN = type WINHANDLE;
 {$ENDIF}
 
 {$IFDEF WIN32}
@@ -245,6 +234,7 @@ QLayoutItemH = class(TObject) end;
       QHBoxLayoutH = class(QBoxLayoutH) end;
       QVBoxLayoutH = class(QBoxLayoutH) end;
     QGridLayoutH = class(QLayoutH) end;
+    QStackedLayoutH = class(QLayoutH) end;
   QSpacerItemH = class(QLayoutItemH) end;
   QWidgetItemH = class(QLayoutItemH) end;
 QLineH = class(TObject) end;
@@ -257,6 +247,7 @@ QMatrixH = class(TObject) end;
 QMetaObjectH = class(TObject) end;
 QMimeSourceH = class(TObject) end;
 QModelIndexH = class(TObject) end;
+QNetworkCookieH = class(TObject) end;
 QNetworkProxyH = class(TObject) end;
 QNetworkProxyFactoryH = class(TObject) end;
 QNetworkProxyQueryH = class(TObject) end;
@@ -299,6 +290,7 @@ QObjectH = class(TObject) end;
   QMovieH = class(QObjectH) end;
   QNetworkAccessManagerH = class(QObjectH) end;
   QNetworkCookieJarH = class(QObjectH) end;
+    QLCLNetworkCookieJarH = class(QNetworkCookieJarH) end;
   QSessionManagerH = class(QObjectH) end;
   QSocketNotifierH = class(QObjectH) end;
   QStyleH = class(QObjectH) end;
@@ -310,6 +302,7 @@ QObjectH = class(TObject) end;
     QTextFrameH = class(QTextObjectH) end;
       QTextTableH = class(QTextFrameH) end;
   QThreadH = class(QObjectH) end;
+    QLCLThreadH = class(QThreadH) end;
   QTimerH = class(QObjectH) end;
   QTranslatorH = class(QObjectH) end;
   QUndoStackH = class(QObjectH) end;
@@ -320,6 +313,7 @@ QObjectH = class(TObject) end;
   QWebFrameH = class(QObjectH) end;
   QWebHistoryInterfaceH = class(QObjectH) end;
   QWebPageH = class(QObjectH) end;
+    QLCLWebPageH = class(QWebPageH) end;
   QWebPluginFactoryH = class(QObjectH) end;
   QWidgetH = class(QObjectH) end;
     QAbstractButtonH = class(QWidgetH) end;
@@ -369,6 +363,7 @@ QObjectH = class(TObject) end;
       QLCDNumberH = class(QFrameH) end;
       QLabelH = class(QFrameH) end;
       QSplitterH = class(QFrameH) end;
+      QStackedWidgetH = class(QFrameH) end;
       QToolBoxH = class(QFrameH) end;
     QGroupBoxH = class(QWidgetH) end;
     QLineEditH = class(QWidgetH) end;
@@ -387,6 +382,7 @@ QObjectH = class(TObject) end;
       QLCLTabWidgetH = class(QTabWidgetH) end;
     QToolBarH = class(QWidgetH) end;
     QWebViewH = class(QWidgetH) end;
+      QLCLWebViewH = class(QWebViewH) end;
     QWorkspaceH = class(QWidgetH) end;
 QPaintDeviceH = class(TObject) end;
   QImageH = class(QPaintDeviceH) end;
@@ -511,11 +507,14 @@ QPersistentModelIndex_hookH = class(QObject_hookH) end;
 QAbstractItemModel_hookH = class(QObject_hookH) end;
 QAbstractTableModel_hookH = class(QAbstractItemModel_hookH) end;
 QAbstractListModel_hookH = class(QAbstractItemModel_hookH) end;
+QThread_hookH = class(QObject_hookH) end;
 QIODevice_hookH = class(QObject_hookH) end;
 QProcess_hookH = class(QIODevice_hookH) end;
 QFileSystemWatcher_hookH = class(QObject_hookH) end;
 QApplication_hookH = class(QCoreApplication_hookH) end;
 QWidget_hookH = class(QObject_hookH) end;
+QLayout_hookH = class(QObject_hookH) end;
+QStackedLayout_hookH = class(QLayout_hookH) end;
 QAction_hookH = class(QObject_hookH) end;
 QClipboard_hookH = class(QObject_hookH) end;
 QDesktopWidget_hookH = class(QWidget_hookH) end;
@@ -523,6 +522,7 @@ QDrag_hookH = class(QObject_hookH) end;
 QAbstractTextDocumentLayout_hookH = class(QObject_hookH) end;
 QTextObjectInterface_hookH = class(QObject_hookH) end;
 QFrame_hookH = class(QWidget_hookH) end;
+QStackedWidget_hookH = class(QFrame_hookH) end;
 QAbstractScrollArea_hookH = class(QFrame_hookH) end;
 QAbstractSlider_hookH = class(QWidget_hookH) end;
 QScrollBar_hookH = class(QAbstractSlider_hookH) end;
@@ -598,8 +598,8 @@ QWebSettings_hookH = class(QObject_hookH) end;
 QWebView_hookH = class(QWidget_hookH) end;
 
   TPictureIOHandler = procedure(Pic: QPictureIOH) cdecl;
-  TEventFilterMethod = function (Sender: QObjectH; Event: QEventH): Boolean of object cdecl;
-
+  QCoreApplicationEventFilter = function(Msg:PChar;Res:PLong):boolean cdecl;
+QAbstractEventDispatcherEventFilter = function(Msg:PChar):boolean cdecl;
 QLCLItemDelegate_sizeHint_Override = procedure (option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize) of object cdecl;
 QLCLItemDelegate_paint_Override = procedure (painter : QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
 QLCLItemDelegate_createEditor_Override = procedure (parent : QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH; out editor: QWidgetH) of object cdecl; 
@@ -608,11 +608,18 @@ QLCLItemDelegate_setModelData_Override = procedure (editor : QWidgetH; model: QA
 QLCLItemDelegate_updateEditorGeometry_Override = procedure (editor : QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
 QLCLItemDelegate_editorEvent_Override = procedure (event : QEventH; model: QAbstractItemModelH; option: QStyleOptionViewItemH; index: QModelIndexH; retval: PBoolean) of object cdecl;
 QLCLAbstractScrollArea_viewportEvent_Override = procedure (event: QEventH; retval: PBoolean) of object cdecl;
-function QtPoint(X,Y:integer): TQtPoint;
-function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
-procedure QObject_hook_destroy(handle : QObject_hookH ); cdecl; external QtIntf name 'QObject_hook_destroy';
-procedure QObject_hook_hook_events(handle : QObject_hookH; hook : QHookH); cdecl; external QtIntf name 'QObject_hook_hook_events';
-procedure QObject_hook_hook_destroyed(handle : QObject_hookH; hook : QHookH); cdecl; external QtIntf name 'QObject_hook_hook_destroyed';
+QLCLWebPage_userAgentForUrl_Override = procedure(url : QUrlH;userAgent:PWideString) of object; cdecl;
+QLCLWebView_createWindow_Override = function (WebWindowType : integer):QWebViewH of object cdecl;
+QLCLThread_run_Override = procedure of object cdecl;
+
+type
+  QObjectEventFilter = function (Sender:QObjectH; Event: QEventH):boolean of object cdecl;
+  QObject_destroyed_Event = procedure of object; cdecl;
+  function QtPoint(X,Y:integer): TQtPoint;
+  function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
+  procedure QObject_hook_destroy(handle : QObject_hookH ); cdecl; external QtIntf name 'QObject_hook_destroy';
+  procedure QObject_hook_hook_events(handle : QObject_hookH; hook : QObjectEventFilter); cdecl; external QtIntf name 'QObject_hook_hook_events';
+  procedure QObject_hook_hook_destroyed(handle : QObject_hookH; hook : QObject_destroyed_Event); cdecl; external QtIntf name 'QObject_hook_hook_destroyed';
 
 type
   QtGlobalColor = ( // Qt::GlobalColor (1)
@@ -1016,13 +1023,13 @@ const
     QtWindowContextHelpButtonHint = 65536 { $10000 };
     QtWindowShadeButtonHint = 131072 { $20000 };
     QtWindowStaysOnTopHint = 262144 { $40000 };
-    QtWindowOkButtonHint = 524288 { $80000 };
-    QtWindowCancelButtonHint = 1048576 { $100000 };
     QtCustomizeWindowHint = 33554432 { $2000000 };
     QtWindowStaysOnBottomHint = 67108864 { $4000000 };
     QtWindowCloseButtonHint = 134217728 { $8000000 };
     QtMacWindowToolBarButtonHint = 268435456 { $10000000 };
     QtBypassGraphicsProxyWidget = 536870912 { $20000000 };
+    QtWindowOkButtonHint = 524288 { $80000 };
+    QtWindowCancelButtonHint = 1048576 { $100000 };
 
 type
   QtWidgetAttribute = cardinal; //  Qt::WidgetAttribute (4)
@@ -1723,6 +1730,7 @@ const
     QEventGrabKeyboard = 188 { $bc };
     QEventUngrabKeyboard = 189 { $bd };
     QEventCocoaRequestModal = 190 { $be };
+    QEventMacGLClearDrawable = 191 { $bf };
     QEventUser = 1000 { $3e8 };
     QEventMaxUser = 65535 { $ffff };
 
@@ -1827,7 +1835,7 @@ procedure QCoreApplication_flush(); cdecl; external QtIntf name 'QCoreApplicatio
 {$ifdef BINUX or DARWIN or QTOPIA }
 procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtIntf name 'QCoreApplication_watchUnixSignal';
 {$endif}
-function QCoreApplication_setEventFilter(handle: QCoreApplicationH; filter: TCoreApplicationEventFilter): TCoreApplicationEventFilter; cdecl; external QtIntf name 'QCoreApplication_setEventFilter';
+function QCoreApplication_setEventFilter(handle: QCoreApplicationH; filter: QCoreApplicationEventFilter): QCoreApplicationEventFilter; cdecl; external QtIntf name 'QCoreApplication_setEventFilter';
 function QCoreApplication_filterEvent(handle: QCoreApplicationH; message: Pointer; result: PLong): Boolean; cdecl; external QtIntf name 'QCoreApplication_filterEvent';
 procedure QCoreApplication_quit(); cdecl; external QtIntf name 'QCoreApplication_quit';
 {$ifdef MSWINDOWS }
@@ -2100,7 +2108,7 @@ procedure QAbstractEventDispatcher_interrupt(handle: QAbstractEventDispatcherH);
 procedure QAbstractEventDispatcher_flush(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_flush';
 procedure QAbstractEventDispatcher_startingUp(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_startingUp';
 procedure QAbstractEventDispatcher_closingDown(handle: QAbstractEventDispatcherH); cdecl; external QtIntf name 'QAbstractEventDispatcher_closingDown';
-function QAbstractEventDispatcher_setEventFilter(handle: QAbstractEventDispatcherH; filter: TAbstractEventFilter): TAbstractEventFilter; cdecl; external QtIntf name 'QAbstractEventDispatcher_setEventFilter';
+function QAbstractEventDispatcher_setEventFilter(handle: QAbstractEventDispatcherH; filter: QAbstractEventDispatcherEventFilter): QAbstractEventDispatcherEventFilter; cdecl; external QtIntf name 'QAbstractEventDispatcher_setEventFilter';
 function QAbstractEventDispatcher_filterEvent(handle: QAbstractEventDispatcherH; message: Pointer): Boolean; cdecl; external QtIntf name 'QAbstractEventDispatcher_filterEvent';
 
 function QMimeData_create(): QMimeDataH; cdecl; external QtIntf name 'QMimeData_create';
@@ -2124,6 +2132,41 @@ procedure QMimeData_removeFormat(handle: QMimeDataH; mimetype: PWideString); cde
 function QMimeData_hasFormat(handle: QMimeDataH; mimetype: PWideString): Boolean; cdecl; external QtIntf name 'QMimeData_hasFormat';
 procedure QMimeData_formats(handle: QMimeDataH; retval: QStringListH); cdecl; external QtIntf name 'QMimeData_formats';
 procedure QMimeData_clear(handle: QMimeDataH); cdecl; external QtIntf name 'QMimeData_clear';
+
+
+type
+  QThreadPriority = ( // QThread::Priority (1)
+    QThreadIdlePriority, QThreadLowestPriority, QThreadLowPriority, QThreadNormalPriority, QThreadHighPriority, QThreadHighestPriority, QThreadTimeCriticalPriority, QThreadInheritPriority );
+
+function QThread_currentThreadId(): QtHANDLE; cdecl; external QtIntf name 'QThread_currentThreadId';
+function QThread_currentThread(): QThreadH; cdecl; external QtIntf name 'QThread_currentThread';
+function QThread_idealThreadCount(): Integer; cdecl; external QtIntf name 'QThread_idealThreadCount';
+procedure QThread_yieldCurrentThread(); cdecl; external QtIntf name 'QThread_yieldCurrentThread';
+function QThread_create(parent: QObjectH = nil): QThreadH; cdecl; external QtIntf name 'QThread_create';
+procedure QThread_destroy(handle: QThreadH); cdecl; external QtIntf name 'QThread_destroy'; 
+procedure QThread_setPriority(handle: QThreadH; priority: QThreadPriority); cdecl; external QtIntf name 'QThread_setPriority';
+function QThread_priority(handle: QThreadH): QThreadPriority; cdecl; external QtIntf name 'QThread_priority';
+function QThread_isFinished(handle: QThreadH): Boolean; cdecl; external QtIntf name 'QThread_isFinished';
+function QThread_isRunning(handle: QThreadH): Boolean; cdecl; external QtIntf name 'QThread_isRunning';
+procedure QThread_setStackSize(handle: QThreadH; stackSize: LongWord); cdecl; external QtIntf name 'QThread_setStackSize';
+function QThread_stackSize(handle: QThreadH): LongWord; cdecl; external QtIntf name 'QThread_stackSize';
+procedure QThread_exit(handle: QThreadH; retcode: Integer = 0); cdecl; external QtIntf name 'QThread_exit';
+procedure QThread_start(handle: QThreadH; p1: QThreadPriority = QThreadInheritPriority); cdecl; external QtIntf name 'QThread_start';
+procedure QThread_terminate(handle: QThreadH); cdecl; external QtIntf name 'QThread_terminate';
+procedure QThread_quit(handle: QThreadH); cdecl; external QtIntf name 'QThread_quit';
+function QThread_wait(handle: QThreadH; time: Longword): Boolean; cdecl; external QtIntf name 'QThread_wait';
+
+
+type
+  QThread_started_Event = procedure () of object cdecl;
+  QThread_finished_Event = procedure () of object cdecl;
+  QThread_terminated_Event = procedure () of object cdecl;
+
+
+function QLCLThread_create(parent: QObjectH = nil): QLCLThreadH; cdecl; external QtIntf name 'QLCLThread_create';
+procedure QLCLThread_destroy(handle: QLCLThreadH); cdecl; external QtIntf name 'QLCLThread_destroy'; 
+procedure QLCLThread_override_run(handle: QLCLThreadH; hook: QLCLThread_run_Override); cdecl; external QtIntf name 'QLCLThread_override_run';
+function QLCLThread_exec(handle: QLCLThreadH): Integer; cdecl; external QtIntf name 'QLCLThread_exec';
 
 
 type
@@ -4425,8 +4468,8 @@ function QWidget_autoFillBackground(handle: QWidgetH): Boolean; cdecl; external 
 procedure QWidget_setAutoFillBackground(handle: QWidgetH; enabled: Boolean); cdecl; external QtIntf name 'QWidget_setAutoFillBackground';
 procedure QWidget_inputMethodQuery(handle: QWidgetH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external QtIntf name 'QWidget_inputMethodQuery';
 {$ifdef MSWINDOWS }
-function QWidget_getDC(handle: QWidgetH): HDC; cdecl; external QtIntf name 'QWidget_getDC';
-procedure QWidget_releaseDC(handle: QWidgetH; p1: HDC); cdecl; external QtIntf name 'QWidget_releaseDC';
+function QWidget_getDC(handle: QWidgetH): QHDC; cdecl; external QtIntf name 'QWidget_getDC';
+procedure QWidget_releaseDC(handle: QWidgetH; p1: QHDC); cdecl; external QtIntf name 'QWidget_releaseDC';
 {$endif}
 {$ifdef DARWIN }
 function QWidget_macQDHandle(handle: QWidgetH): QtHANDLE; cdecl; external QtIntf name 'QWidget_macQDHandle';
@@ -4580,6 +4623,38 @@ function QHBoxLayout_create(parent: QWidgetH): QHBoxLayoutH; overload; cdecl; ex
 function QVBoxLayout_create(): QVBoxLayoutH; overload; cdecl; external QtIntf name 'QVBoxLayout_create';
 procedure QVBoxLayout_destroy(handle: QVBoxLayoutH); cdecl; external QtIntf name 'QVBoxLayout_destroy'; 
 function QVBoxLayout_create(parent: QWidgetH): QVBoxLayoutH; overload; cdecl; external QtIntf name 'QVBoxLayout_create2';
+
+
+type
+  QStackedLayoutStackingMode = ( // QStackedLayout::StackingMode (1)
+    QStackedLayoutStackOne, QStackedLayoutStackAll );
+
+function QStackedLayout_create(): QStackedLayoutH; overload; cdecl; external QtIntf name 'QStackedLayout_create';
+procedure QStackedLayout_destroy(handle: QStackedLayoutH); cdecl; external QtIntf name 'QStackedLayout_destroy'; 
+function QStackedLayout_create(parent: QWidgetH): QStackedLayoutH; overload; cdecl; external QtIntf name 'QStackedLayout_create2';
+function QStackedLayout_create(parentLayout: QLayoutH): QStackedLayoutH; overload; cdecl; external QtIntf name 'QStackedLayout_create3';
+function QStackedLayout_addWidget(handle: QStackedLayoutH; w: QWidgetH): Integer; cdecl; external QtIntf name 'QStackedLayout_addWidget';
+function QStackedLayout_insertWidget(handle: QStackedLayoutH; index: Integer; w: QWidgetH): Integer; cdecl; external QtIntf name 'QStackedLayout_insertWidget';
+function QStackedLayout_currentWidget(handle: QStackedLayoutH): QWidgetH; cdecl; external QtIntf name 'QStackedLayout_currentWidget';
+function QStackedLayout_currentIndex(handle: QStackedLayoutH): Integer; cdecl; external QtIntf name 'QStackedLayout_currentIndex';
+function QStackedLayout_widget(handle: QStackedLayoutH; p1: Integer): QWidgetH; cdecl; external QtIntf name 'QStackedLayout_widget';
+function QStackedLayout_count(handle: QStackedLayoutH): Integer; cdecl; external QtIntf name 'QStackedLayout_count';
+function QStackedLayout_stackingMode(handle: QStackedLayoutH): QStackedLayoutStackingMode; cdecl; external QtIntf name 'QStackedLayout_stackingMode';
+procedure QStackedLayout_setStackingMode(handle: QStackedLayoutH; stackingMode: QStackedLayoutStackingMode); cdecl; external QtIntf name 'QStackedLayout_setStackingMode';
+procedure QStackedLayout_addItem(handle: QStackedLayoutH; item: QLayoutItemH); cdecl; external QtIntf name 'QStackedLayout_addItem';
+procedure QStackedLayout_sizeHint(handle: QStackedLayoutH; retval: PSize); cdecl; external QtIntf name 'QStackedLayout_sizeHint';
+procedure QStackedLayout_minimumSize(handle: QStackedLayoutH; retval: PSize); cdecl; external QtIntf name 'QStackedLayout_minimumSize';
+function QStackedLayout_itemAt(handle: QStackedLayoutH; p1: Integer): QLayoutItemH; cdecl; external QtIntf name 'QStackedLayout_itemAt';
+function QStackedLayout_takeAt(handle: QStackedLayoutH; p1: Integer): QLayoutItemH; cdecl; external QtIntf name 'QStackedLayout_takeAt';
+procedure QStackedLayout_setGeometry(handle: QStackedLayoutH; rect: PRect); cdecl; external QtIntf name 'QStackedLayout_setGeometry';
+procedure QStackedLayout_setCurrentIndex(handle: QStackedLayoutH; index: Integer); cdecl; external QtIntf name 'QStackedLayout_setCurrentIndex';
+procedure QStackedLayout_setCurrentWidget(handle: QStackedLayoutH; w: QWidgetH); cdecl; external QtIntf name 'QStackedLayout_setCurrentWidget';
+
+
+type
+  QStackedLayout_widgetRemoved_Event = procedure (index: Integer) of object cdecl;
+  QStackedLayout_currentChanged_Event = procedure (index: Integer) of object cdecl;
+
 
 
 type
@@ -4901,8 +4976,8 @@ function QCursor_create(cursor: QtHANDLE): QCursorH; overload; cdecl; external Q
 function QCursor_x11Screen(): Integer; cdecl; external QtIntf name 'QCursor_x11Screen';
 {$endif}
 {$ifdef MSWINDOWS }
-function QCursor_handle(handle: QCursorH): HCURSOR; overload; cdecl; external QtIntf name 'QCursor_handle2';
-function QCursor_create(cursor: HCURSOR): QCursorH; overload; cdecl; external QtIntf name 'QCursor_create7';
+function QCursor_handle(handle: QCursorH): QHCURSOR; overload; cdecl; external QtIntf name 'QCursor_handle2';
+function QCursor_create(cursor: QHCURSOR): QCursorH; overload; cdecl; external QtIntf name 'QCursor_create7';
 {$endif}
 {$ifdef QTOPIA }
 function QCursor_handle(handle: QCursorH): Integer; overload; cdecl; external QtIntf name 'QCursor_handle3';
@@ -5669,8 +5744,8 @@ function QPaintEngine_painter(handle: QPaintEngineH): QPainterH; cdecl; external
 procedure QPaintEngine_syncState(handle: QPaintEngineH); cdecl; external QtIntf name 'QPaintEngine_syncState';
 function QPaintEngine_isExtended(handle: QPaintEngineH): Boolean; cdecl; external QtIntf name 'QPaintEngine_isExtended';
 {$ifdef MSWINDOWS }
-function QPaintEngine_getDC(handle: QPaintEngineH): HDC; cdecl; external QtIntf name 'QPaintEngine_getDC';
-procedure QPaintEngine_releaseDC(handle: QPaintEngineH; hdc: HDC); cdecl; external QtIntf name 'QPaintEngine_releaseDC';
+function QPaintEngine_getDC(handle: QPaintEngineH): QHDC; cdecl; external QtIntf name 'QPaintEngine_getDC';
+procedure QPaintEngine_releaseDC(handle: QPaintEngineH; hdc: QHDC); cdecl; external QtIntf name 'QPaintEngine_releaseDC';
 {$endif}
 
 
@@ -5701,8 +5776,8 @@ function QPaintDevice_physicalDpiY(handle: QPaintDeviceH): Integer; cdecl; exter
 function QPaintDevice_numColors(handle: QPaintDeviceH): Integer; cdecl; external QtIntf name 'QPaintDevice_numColors';
 function QPaintDevice_depth(handle: QPaintDeviceH): Integer; cdecl; external QtIntf name 'QPaintDevice_depth';
 {$ifdef MSWINDOWS }
-function QPaintDevice_getDC(handle: QPaintDeviceH): HDC; cdecl; external QtIntf name 'QPaintDevice_getDC';
-procedure QPaintDevice_releaseDC(handle: QPaintDeviceH; hdc: HDC); cdecl; external QtIntf name 'QPaintDevice_releaseDC';
+function QPaintDevice_getDC(handle: QPaintDeviceH): QHDC; cdecl; external QtIntf name 'QPaintDevice_getDC';
+procedure QPaintDevice_releaseDC(handle: QPaintDeviceH; hdc: QHDC); cdecl; external QtIntf name 'QPaintDevice_releaseDC';
 {$endif}
 
 
@@ -5745,7 +5820,7 @@ function QRegion_numRects(handle: QRegionH): Integer; cdecl; external QtIntf nam
 function QRegion_handle(handle: QRegionH): Region; overload; cdecl; external QtIntf name 'QRegion_handle';
 {$endif}
 {$ifdef MSWINDOWS }
-function QRegion_handle(handle: QRegionH): HRGN; overload; cdecl; external QtIntf name 'QRegion_handle2';
+function QRegion_handle(handle: QRegionH): QHRGN; overload; cdecl; external QtIntf name 'QRegion_handle2';
 {$endif}
 {$ifdef DARWIN }
 function QRegion_handle(handle: QRegionH): RgnHandle; overload; cdecl; external QtIntf name 'QRegion_handle3';
@@ -5901,8 +5976,8 @@ procedure QPrinter_getPageMargins(handle: QPrinterH; left: PQReal; top: PQReal; 
 {$ifdef MSWINDOWS }
 procedure QPrinter_setWinPageSize(handle: QPrinterH; winPageSize: Integer); cdecl; external QtIntf name 'QPrinter_setWinPageSize';
 function QPrinter_winPageSize(handle: QPrinterH): Integer; cdecl; external QtIntf name 'QPrinter_winPageSize';
-function QPrinter_getDC(handle: QPrinterH): HDC; cdecl; external QtIntf name 'QPrinter_getDC';
-procedure QPrinter_releaseDC(handle: QPrinterH; hdc: HDC); cdecl; external QtIntf name 'QPrinter_releaseDC';
+function QPrinter_getDC(handle: QPrinterH): QHDC; cdecl; external QtIntf name 'QPrinter_getDC';
+procedure QPrinter_releaseDC(handle: QPrinterH; hdc: QHDC); cdecl; external QtIntf name 'QPrinter_releaseDC';
 {$endif}
 
 
@@ -6218,7 +6293,7 @@ procedure QFont_resolve(handle: QFontH; retval: QFontH; p1: QFontH); overload; c
 function QFont_resolve(handle: QFontH): LongWord; overload; cdecl; external QtIntf name 'QFont_resolve2';
 procedure QFont_resolve(handle: QFontH; mask: LongWord); overload; cdecl; external QtIntf name 'QFont_resolve3';
 {$ifdef MSWINDOWS }
-function QFont_handle(handle: QFontH): HFONT; overload; cdecl; external QtIntf name 'QFont_handle2';
+function QFont_handle(handle: QFontH): QHFONT; overload; cdecl; external QtIntf name 'QFont_handle2';
 {$endif}
 {$ifdef DARWIN }
 function QFont_macFontID(handle: QFontH): LongWord; cdecl; external QtIntf name 'QFont_macFontID';
@@ -6800,8 +6875,8 @@ function QPixmap_handle(handle: QPixmapH): QtHANDLE; cdecl; external QtIntf name
 {$endif}
 function QPixmap_paintEngine(handle: QPixmapH): QPaintEngineH; cdecl; external QtIntf name 'QPixmap_paintEngine';
 {$ifdef MSWINDOWS }
-function QPixmap_toWinHBITMAP(handle: QPixmapH; format: QPixmapHBitmapFormat = QPixmapNoAlpha): HBITMAP; cdecl; external QtIntf name 'QPixmap_toWinHBITMAP';
-procedure QPixmap_fromWinHBITMAP(retval: QPixmapH; hbitmap: HBITMAP; format: QPixmapHBitmapFormat = QPixmapNoAlpha); cdecl; external QtIntf name 'QPixmap_fromWinHBITMAP';
+function QPixmap_toWinHBITMAP(handle: QPixmapH; format: QPixmapHBitmapFormat = QPixmapNoAlpha): QHBITMAP; cdecl; external QtIntf name 'QPixmap_toWinHBITMAP';
+procedure QPixmap_fromWinHBITMAP(retval: QPixmapH; hbitmap: QHBITMAP; format: QPixmapHBitmapFormat = QPixmapNoAlpha); cdecl; external QtIntf name 'QPixmap_fromWinHBITMAP';
 {$endif}
 {$ifdef DARWIN }
 function QPixmap_toMacCGImageRef(handle: QPixmapH): CGImageRef; cdecl; external QtIntf name 'QPixmap_toMacCGImageRef';
@@ -7158,6 +7233,25 @@ procedure QFrame_setMidLineWidth(handle: QFrameH; p1: Integer); cdecl; external 
 procedure QFrame_frameRect(handle: QFrameH; retval: PRect); cdecl; external QtIntf name 'QFrame_frameRect';
 procedure QFrame_setFrameRect(handle: QFrameH; p1: PRect); cdecl; external QtIntf name 'QFrame_setFrameRect';
 
+function QStackedWidget_create(parent: QWidgetH = nil): QStackedWidgetH; cdecl; external QtIntf name 'QStackedWidget_create';
+procedure QStackedWidget_destroy(handle: QStackedWidgetH); cdecl; external QtIntf name 'QStackedWidget_destroy'; 
+function QStackedWidget_addWidget(handle: QStackedWidgetH; w: QWidgetH): Integer; cdecl; external QtIntf name 'QStackedWidget_addWidget';
+function QStackedWidget_insertWidget(handle: QStackedWidgetH; index: Integer; w: QWidgetH): Integer; cdecl; external QtIntf name 'QStackedWidget_insertWidget';
+procedure QStackedWidget_removeWidget(handle: QStackedWidgetH; w: QWidgetH); cdecl; external QtIntf name 'QStackedWidget_removeWidget';
+function QStackedWidget_currentWidget(handle: QStackedWidgetH): QWidgetH; cdecl; external QtIntf name 'QStackedWidget_currentWidget';
+function QStackedWidget_currentIndex(handle: QStackedWidgetH): Integer; cdecl; external QtIntf name 'QStackedWidget_currentIndex';
+function QStackedWidget_indexOf(handle: QStackedWidgetH; p1: QWidgetH): Integer; cdecl; external QtIntf name 'QStackedWidget_indexOf';
+function QStackedWidget_widget(handle: QStackedWidgetH; p1: Integer): QWidgetH; cdecl; external QtIntf name 'QStackedWidget_widget';
+function QStackedWidget_count(handle: QStackedWidgetH): Integer; cdecl; external QtIntf name 'QStackedWidget_count';
+procedure QStackedWidget_setCurrentIndex(handle: QStackedWidgetH; index: Integer); cdecl; external QtIntf name 'QStackedWidget_setCurrentIndex';
+procedure QStackedWidget_setCurrentWidget(handle: QStackedWidgetH; w: QWidgetH); cdecl; external QtIntf name 'QStackedWidget_setCurrentWidget';
+
+
+type
+  QStackedWidget_currentChanged_Event = procedure (p1: Integer) of object cdecl;
+  QStackedWidget_widgetRemoved_Event = procedure (index: Integer) of object cdecl;
+
+
 function QAbstractScrollArea_create(parent: QWidgetH = nil): QAbstractScrollAreaH; cdecl; external QtIntf name 'QAbstractScrollArea_create';
 procedure QAbstractScrollArea_destroy(handle: QAbstractScrollAreaH); cdecl; external QtIntf name 'QAbstractScrollArea_destroy'; 
 function QAbstractScrollArea_verticalScrollBarPolicy(handle: QAbstractScrollAreaH): QtScrollBarPolicy; cdecl; external QtIntf name 'QAbstractScrollArea_verticalScrollBarPolicy';
@@ -7180,7 +7274,7 @@ procedure QAbstractScrollArea_sizeHint(handle: QAbstractScrollAreaH; retval: PSi
 
 function QLCLAbstractScrollArea_create(parent: QWidgetH = nil): QLCLAbstractScrollAreaH; cdecl; external QtIntf name 'QLCLAbstractScrollArea_create';
 procedure QLCLAbstractScrollArea_destroy(handle: QLCLAbstractScrollAreaH); cdecl; external QtIntf name 'QLCLAbstractScrollArea_destroy'; 
-procedure QLCLAbstractScrollArea_override_viewportEvent(handle: QLCLAbstractScrollAreaH; hook: QHookH); cdecl; external QtIntf name 'QLCLAbstractScrollArea_override_viewportEvent';
+procedure QLCLAbstractScrollArea_override_viewportEvent(handle: QLCLAbstractScrollAreaH; hook: QLCLAbstractScrollArea_viewportEvent_Override); cdecl; external QtIntf name 'QLCLAbstractScrollArea_override_viewportEvent';
 function QLCLAbstractScrollArea_InheritedViewportEvent(handle: QLCLAbstractScrollAreaH; event: QEventH): Boolean; cdecl; external QtIntf name 'QLCLAbstractScrollArea_InheritedViewportEvent';
 
 
@@ -9769,13 +9863,13 @@ procedure QStyledItemDelegate_displayText(handle: QStyledItemDelegateH; retval: 
 
 function QLCLItemDelegate_create(parent: QObjectH = nil): QLCLItemDelegateH; cdecl; external QtIntf name 'QLCLItemDelegate_create';
 procedure QLCLItemDelegate_destroy(handle: QLCLItemDelegateH); cdecl; external QtIntf name 'QLCLItemDelegate_destroy'; 
-procedure QLCLItemDelegate_override_sizeHint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_sizeHint';
-procedure QLCLItemDelegate_override_paint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_paint';
-function QLCLItemDelegate_override_createEditor(handle: QLCLItemDelegateH; hook: QHookH): QWidgetH; cdecl; external QtIntf name 'QLCLItemDelegate_override_createEditor';
-procedure QLCLItemDelegate_override_setEditorData(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_setEditorData';
-procedure QLCLItemDelegate_override_setModelData(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_setModelData';
-procedure QLCLItemDelegate_override_updateEditorGeometry(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_updateEditorGeometry';
-procedure QLCLItemDelegate_override_editorEvent(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_editorEvent';
+procedure QLCLItemDelegate_override_sizeHint(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_sizeHint_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_sizeHint';
+procedure QLCLItemDelegate_override_paint(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_paint_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_paint';
+function QLCLItemDelegate_override_createEditor(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_createEditor_Override): QWidgetH; cdecl; external QtIntf name 'QLCLItemDelegate_override_createEditor';
+procedure QLCLItemDelegate_override_setEditorData(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_setEditorData_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_setEditorData';
+procedure QLCLItemDelegate_override_setModelData(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_setModelData_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_setModelData';
+procedure QLCLItemDelegate_override_updateEditorGeometry(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_updateEditorGeometry_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_updateEditorGeometry';
+procedure QLCLItemDelegate_override_editorEvent(handle: QLCLItemDelegateH; hook: QLCLItemDelegate_editorEvent_Override); cdecl; external QtIntf name 'QLCLItemDelegate_override_editorEvent';
 function QLCLItemDelegate_InheritedEditorEvent(handle: QLCLItemDelegateH; event: QEventH; model: QAbstractItemModelH; option: QStyleOptionViewItemH; index: QModelIndexH): Boolean; cdecl; external QtIntf name 'QLCLItemDelegate_InheritedEditorEvent';
 
 
@@ -12288,6 +12382,17 @@ procedure QNetworkProxy_applicationProxy(retval: QNetworkProxyH); cdecl; externa
 
 procedure QNetworkProxyFactory_setApplicationProxyFactory(factory: QNetworkProxyFactoryH); cdecl; external QtIntf name 'QNetworkProxyFactory_setApplicationProxyFactory';
 
+function QAuthenticator_create(): QAuthenticatorH; overload; cdecl; external QtIntf name 'QAuthenticator_create';
+procedure QAuthenticator_destroy(handle: QAuthenticatorH); cdecl; external QtIntf name 'QAuthenticator_destroy'; 
+function QAuthenticator_create(other: QAuthenticatorH): QAuthenticatorH; overload; cdecl; external QtIntf name 'QAuthenticator_create2';
+procedure QAuthenticator_user(handle: QAuthenticatorH; retval: PWideString); cdecl; external QtIntf name 'QAuthenticator_user';
+procedure QAuthenticator_setUser(handle: QAuthenticatorH; user: PWideString); cdecl; external QtIntf name 'QAuthenticator_setUser';
+procedure QAuthenticator_password(handle: QAuthenticatorH; retval: PWideString); cdecl; external QtIntf name 'QAuthenticator_password';
+procedure QAuthenticator_setPassword(handle: QAuthenticatorH; password: PWideString); cdecl; external QtIntf name 'QAuthenticator_setPassword';
+procedure QAuthenticator_realm(handle: QAuthenticatorH; retval: PWideString); cdecl; external QtIntf name 'QAuthenticator_realm';
+function QAuthenticator_isNull(handle: QAuthenticatorH): Boolean; cdecl; external QtIntf name 'QAuthenticator_isNull';
+procedure QAuthenticator_detach(handle: QAuthenticatorH); cdecl; external QtIntf name 'QAuthenticator_detach';
+
 
 type
   QNetworkRequestKnownHeaders = ( // QNetworkRequest::KnownHeaders (1)
@@ -12407,6 +12512,39 @@ type
   QNetworkReply_uploadProgress_Event = procedure (bytesSent: int64; bytesTotal: int64) of object cdecl;
   QNetworkReply_downloadProgress_Event = procedure (bytesReceived: int64; bytesTotal: int64) of object cdecl;
 
+
+
+type
+  QNetworkCookieRawForm = ( // QNetworkCookie::RawForm (1)
+    QNetworkCookieNameAndValueOnly, QNetworkCookieFull );
+
+function QNetworkCookie_create(name: QByteArrayH = nil; value: QByteArrayH = nil): QNetworkCookieH; overload; cdecl; external QtIntf name 'QNetworkCookie_create';
+procedure QNetworkCookie_destroy(handle: QNetworkCookieH); cdecl; external QtIntf name 'QNetworkCookie_destroy'; 
+function QNetworkCookie_create(other: QNetworkCookieH): QNetworkCookieH; overload; cdecl; external QtIntf name 'QNetworkCookie_create2';
+function QNetworkCookie_isSecure(handle: QNetworkCookieH): Boolean; cdecl; external QtIntf name 'QNetworkCookie_isSecure';
+procedure QNetworkCookie_setSecure(handle: QNetworkCookieH; enable: Boolean); cdecl; external QtIntf name 'QNetworkCookie_setSecure';
+function QNetworkCookie_isHttpOnly(handle: QNetworkCookieH): Boolean; cdecl; external QtIntf name 'QNetworkCookie_isHttpOnly';
+procedure QNetworkCookie_setHttpOnly(handle: QNetworkCookieH; enable: Boolean); cdecl; external QtIntf name 'QNetworkCookie_setHttpOnly';
+function QNetworkCookie_isSessionCookie(handle: QNetworkCookieH): Boolean; cdecl; external QtIntf name 'QNetworkCookie_isSessionCookie';
+procedure QNetworkCookie_expirationDate(handle: QNetworkCookieH; retval: QDateTimeH); cdecl; external QtIntf name 'QNetworkCookie_expirationDate';
+procedure QNetworkCookie_setExpirationDate(handle: QNetworkCookieH; date: QDateTimeH); cdecl; external QtIntf name 'QNetworkCookie_setExpirationDate';
+procedure QNetworkCookie_domain(handle: QNetworkCookieH; retval: PWideString); cdecl; external QtIntf name 'QNetworkCookie_domain';
+procedure QNetworkCookie_setDomain(handle: QNetworkCookieH; domain: PWideString); cdecl; external QtIntf name 'QNetworkCookie_setDomain';
+procedure QNetworkCookie_path(handle: QNetworkCookieH; retval: PWideString); cdecl; external QtIntf name 'QNetworkCookie_path';
+procedure QNetworkCookie_setPath(handle: QNetworkCookieH; path: PWideString); cdecl; external QtIntf name 'QNetworkCookie_setPath';
+procedure QNetworkCookie_name(handle: QNetworkCookieH; retval: QByteArrayH); cdecl; external QtIntf name 'QNetworkCookie_name';
+procedure QNetworkCookie_setName(handle: QNetworkCookieH; cookieName: QByteArrayH); cdecl; external QtIntf name 'QNetworkCookie_setName';
+procedure QNetworkCookie_value(handle: QNetworkCookieH; retval: QByteArrayH); cdecl; external QtIntf name 'QNetworkCookie_value';
+procedure QNetworkCookie_setValue(handle: QNetworkCookieH; value: QByteArrayH); cdecl; external QtIntf name 'QNetworkCookie_setValue';
+procedure QNetworkCookie_toRawForm(handle: QNetworkCookieH; retval: QByteArrayH; form: QNetworkCookieRawForm = QNetworkCookieFull); cdecl; external QtIntf name 'QNetworkCookie_toRawForm';
+
+function QNetworkCookieJar_create(parent: QObjectH = nil): QNetworkCookieJarH; cdecl; external QtIntf name 'QNetworkCookieJar_create';
+procedure QNetworkCookieJar_destroy(handle: QNetworkCookieJarH); cdecl; external QtIntf name 'QNetworkCookieJar_destroy'; 
+
+function QLCLNetworkCookieJar_create(parent: QObjectH = nil): QLCLNetworkCookieJarH; cdecl; external QtIntf name 'QLCLNetworkCookieJar_create';
+procedure QLCLNetworkCookieJar_destroy(handle: QLCLNetworkCookieJarH); cdecl; external QtIntf name 'QLCLNetworkCookieJar_destroy'; 
+procedure QLCLNetworkCookieJar_setRawCookies(handle: QLCLNetworkCookieJarH; rawCookies: PAnsiChar); cdecl; external QtIntf name 'QLCLNetworkCookieJar_setRawCookies';
+procedure QLCLNetworkCookieJar_getRawCookies(handle: QLCLNetworkCookieJarH; rawCookies: QByteArrayH); cdecl; external QtIntf name 'QLCLNetworkCookieJar_getRawCookies';
 
 function QWebHitTestResult_create(): QWebHitTestResultH; overload; cdecl; external QtIntf name 'QWebHitTestResult_create';
 procedure QWebHitTestResult_destroy(handle: QWebHitTestResultH); cdecl; external QtIntf name 'QWebHitTestResult_destroy'; 
@@ -12674,6 +12812,11 @@ type
   QWebPage_restoreFrameStateRequested_Event = procedure (frame: QWebFrameH) of object cdecl;
 
 
+function QLCLWebPage_create(parent: QObjectH = nil): QLCLWebPageH; cdecl; external QtIntf name 'QLCLWebPage_create';
+procedure QLCLWebPage_destroy(handle: QLCLWebPageH); cdecl; external QtIntf name 'QLCLWebPage_destroy'; 
+procedure QLCLWebPage_override_userAgentForUrl(handle: QLCLWebPageH; hook: QLCLWebPage_userAgentForUrl_Override); cdecl; external QtIntf name 'QLCLWebPage_override_userAgentForUrl';
+procedure QLCLWebPage_DefaultUserAgentForUrl(handle: QLCLWebPageH; retval: PWideString; url: QUrlH); cdecl; external QtIntf name 'QLCLWebPage_DefaultUserAgentForUrl';
+
 
 type
   QWebSettingsFontFamily = ( // QWebSettings::FontFamily (1)
@@ -12761,6 +12904,10 @@ type
   QWebView_urlChanged_Event = procedure (url: QUrlH) of object cdecl;
 
 
+function QLCLWebView_create(parent: QWidgetH = nil): QLCLWebViewH; cdecl; external QtIntf name 'QLCLWebView_create';
+procedure QLCLWebView_destroy(handle: QLCLWebViewH); cdecl; external QtIntf name 'QLCLWebView_destroy'; 
+procedure QLCLWebView_override_createWindow(handle: QLCLWebViewH; hook: QLCLWebView_createWindow_Override); cdecl; external QtIntf name 'QLCLWebView_override_createWindow';
+
 function QEvent_hook_create(handle: QObjectH): QEvent_hookH; cdecl; external QtIntf name 'QEvent_hook_create';
 procedure QEvent_hook_destroy(handle: QEvent_hookH); cdecl; external QtIntf name 'QEvent_hook_destroy'; 
 
@@ -12778,12 +12925,12 @@ procedure QEventLoop_hook_destroy(handle: QEventLoop_hookH); cdecl; external QtI
 
 function QCoreApplication_hook_create(handle: QObjectH): QCoreApplication_hookH; cdecl; external QtIntf name 'QCoreApplication_hook_create';
 procedure QCoreApplication_hook_destroy(handle: QCoreApplication_hookH); cdecl; external QtIntf name 'QCoreApplication_hook_destroy'; 
-procedure QCoreApplication_hook_hook_aboutToQuit(handle: QCoreApplication_hookH; hook: QHookH); cdecl; external QtIntf name 'QCoreApplication_hook_hook_aboutToQuit';
-procedure QCoreApplication_hook_hook_unixSignal(handle: QCoreApplication_hookH; hook: QHookH); cdecl; external QtIntf name 'QCoreApplication_hook_hook_unixSignal';
+procedure QCoreApplication_hook_hook_aboutToQuit(handle: QCoreApplication_hookH; hook: QCoreApplication_aboutToQuit_Event); cdecl; external QtIntf name 'QCoreApplication_hook_hook_aboutToQuit';
+procedure QCoreApplication_hook_hook_unixSignal(handle: QCoreApplication_hookH; hook: QCoreApplication_unixSignal_Event); cdecl; external QtIntf name 'QCoreApplication_hook_hook_unixSignal';
 
 function QTimer_hook_create(handle: QObjectH): QTimer_hookH; cdecl; external QtIntf name 'QTimer_hook_create';
 procedure QTimer_hook_destroy(handle: QTimer_hookH); cdecl; external QtIntf name 'QTimer_hook_destroy'; 
-procedure QTimer_hook_hook_timeout(handle: QTimer_hookH; hook: QHookH); cdecl; external QtIntf name 'QTimer_hook_hook_timeout';
+procedure QTimer_hook_hook_timeout(handle: QTimer_hookH; hook: QTimer_timeout_Event); cdecl; external QtIntf name 'QTimer_hook_hook_timeout';
 
 function QModelIndex_hook_create(handle: QObjectH): QModelIndex_hookH; cdecl; external QtIntf name 'QModelIndex_hook_create';
 procedure QModelIndex_hook_destroy(handle: QModelIndex_hookH); cdecl; external QtIntf name 'QModelIndex_hook_destroy'; 
@@ -12793,20 +12940,20 @@ procedure QPersistentModelIndex_hook_destroy(handle: QPersistentModelIndex_hookH
 
 function QAbstractItemModel_hook_create(handle: QObjectH): QAbstractItemModel_hookH; cdecl; external QtIntf name 'QAbstractItemModel_hook_create';
 procedure QAbstractItemModel_hook_destroy(handle: QAbstractItemModel_hookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_destroy'; 
-procedure QAbstractItemModel_hook_hook_dataChanged(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_dataChanged';
-procedure QAbstractItemModel_hook_hook_headerDataChanged(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_headerDataChanged';
-procedure QAbstractItemModel_hook_hook_layoutChanged(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_layoutChanged';
-procedure QAbstractItemModel_hook_hook_layoutAboutToBeChanged(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_layoutAboutToBeChanged';
-procedure QAbstractItemModel_hook_hook_rowsAboutToBeInserted(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsAboutToBeInserted';
-procedure QAbstractItemModel_hook_hook_rowsInserted(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsInserted';
-procedure QAbstractItemModel_hook_hook_rowsAboutToBeRemoved(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsAboutToBeRemoved';
-procedure QAbstractItemModel_hook_hook_rowsRemoved(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsRemoved';
-procedure QAbstractItemModel_hook_hook_columnsAboutToBeInserted(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsAboutToBeInserted';
-procedure QAbstractItemModel_hook_hook_columnsInserted(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsInserted';
-procedure QAbstractItemModel_hook_hook_columnsAboutToBeRemoved(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsAboutToBeRemoved';
-procedure QAbstractItemModel_hook_hook_columnsRemoved(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsRemoved';
-procedure QAbstractItemModel_hook_hook_modelAboutToBeReset(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_modelAboutToBeReset';
-procedure QAbstractItemModel_hook_hook_modelReset(handle: QAbstractItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_modelReset';
+procedure QAbstractItemModel_hook_hook_dataChanged(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_dataChanged_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_dataChanged';
+procedure QAbstractItemModel_hook_hook_headerDataChanged(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_headerDataChanged_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_headerDataChanged';
+procedure QAbstractItemModel_hook_hook_layoutChanged(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_layoutChanged_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_layoutChanged';
+procedure QAbstractItemModel_hook_hook_layoutAboutToBeChanged(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_layoutAboutToBeChanged_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_layoutAboutToBeChanged';
+procedure QAbstractItemModel_hook_hook_rowsAboutToBeInserted(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_rowsAboutToBeInserted_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsAboutToBeInserted';
+procedure QAbstractItemModel_hook_hook_rowsInserted(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_rowsInserted_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsInserted';
+procedure QAbstractItemModel_hook_hook_rowsAboutToBeRemoved(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_rowsAboutToBeRemoved_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsAboutToBeRemoved';
+procedure QAbstractItemModel_hook_hook_rowsRemoved(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_rowsRemoved_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_rowsRemoved';
+procedure QAbstractItemModel_hook_hook_columnsAboutToBeInserted(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_columnsAboutToBeInserted_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsAboutToBeInserted';
+procedure QAbstractItemModel_hook_hook_columnsInserted(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_columnsInserted_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsInserted';
+procedure QAbstractItemModel_hook_hook_columnsAboutToBeRemoved(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_columnsAboutToBeRemoved_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsAboutToBeRemoved';
+procedure QAbstractItemModel_hook_hook_columnsRemoved(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_columnsRemoved_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_columnsRemoved';
+procedure QAbstractItemModel_hook_hook_modelAboutToBeReset(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_modelAboutToBeReset_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_modelAboutToBeReset';
+procedure QAbstractItemModel_hook_hook_modelReset(handle: QAbstractItemModel_hookH; hook: QAbstractItemModel_modelReset_Event); cdecl; external QtIntf name 'QAbstractItemModel_hook_hook_modelReset';
 
 function QAbstractTableModel_hook_create(handle: QObjectH): QAbstractTableModel_hookH; cdecl; external QtIntf name 'QAbstractTableModel_hook_create';
 procedure QAbstractTableModel_hook_destroy(handle: QAbstractTableModel_hookH); cdecl; external QtIntf name 'QAbstractTableModel_hook_destroy'; 
@@ -12814,70 +12961,84 @@ procedure QAbstractTableModel_hook_destroy(handle: QAbstractTableModel_hookH); c
 function QAbstractListModel_hook_create(handle: QObjectH): QAbstractListModel_hookH; cdecl; external QtIntf name 'QAbstractListModel_hook_create';
 procedure QAbstractListModel_hook_destroy(handle: QAbstractListModel_hookH); cdecl; external QtIntf name 'QAbstractListModel_hook_destroy'; 
 
+function QThread_hook_create(handle: QObjectH): QThread_hookH; cdecl; external QtIntf name 'QThread_hook_create';
+procedure QThread_hook_destroy(handle: QThread_hookH); cdecl; external QtIntf name 'QThread_hook_destroy'; 
+procedure QThread_hook_hook_started(handle: QThread_hookH; hook: QThread_started_Event); cdecl; external QtIntf name 'QThread_hook_hook_started';
+procedure QThread_hook_hook_finished(handle: QThread_hookH; hook: QThread_finished_Event); cdecl; external QtIntf name 'QThread_hook_hook_finished';
+procedure QThread_hook_hook_terminated(handle: QThread_hookH; hook: QThread_terminated_Event); cdecl; external QtIntf name 'QThread_hook_hook_terminated';
+
 function QIODevice_hook_create(handle: QObjectH): QIODevice_hookH; cdecl; external QtIntf name 'QIODevice_hook_create';
 procedure QIODevice_hook_destroy(handle: QIODevice_hookH); cdecl; external QtIntf name 'QIODevice_hook_destroy'; 
-procedure QIODevice_hook_hook_readyRead(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtIntf name 'QIODevice_hook_hook_readyRead';
-procedure QIODevice_hook_hook_bytesWritten(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtIntf name 'QIODevice_hook_hook_bytesWritten';
-procedure QIODevice_hook_hook_aboutToClose(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtIntf name 'QIODevice_hook_hook_aboutToClose';
-procedure QIODevice_hook_hook_readChannelFinished(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtIntf name 'QIODevice_hook_hook_readChannelFinished';
+procedure QIODevice_hook_hook_readyRead(handle: QIODevice_hookH; hook: QIODevice_readyRead_Event); cdecl; external QtIntf name 'QIODevice_hook_hook_readyRead';
+procedure QIODevice_hook_hook_bytesWritten(handle: QIODevice_hookH; hook: QIODevice_bytesWritten_Event); cdecl; external QtIntf name 'QIODevice_hook_hook_bytesWritten';
+procedure QIODevice_hook_hook_aboutToClose(handle: QIODevice_hookH; hook: QIODevice_aboutToClose_Event); cdecl; external QtIntf name 'QIODevice_hook_hook_aboutToClose';
+procedure QIODevice_hook_hook_readChannelFinished(handle: QIODevice_hookH; hook: QIODevice_readChannelFinished_Event); cdecl; external QtIntf name 'QIODevice_hook_hook_readChannelFinished';
 
 function QProcess_hook_create(handle: QObjectH): QProcess_hookH; cdecl; external QtIntf name 'QProcess_hook_create';
 procedure QProcess_hook_destroy(handle: QProcess_hookH); cdecl; external QtIntf name 'QProcess_hook_destroy'; 
-procedure QProcess_hook_hook_started(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_started';
-procedure QProcess_hook_hook_finished(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_finished';
-procedure QProcess_hook_hook_finished2(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_finished2';
-procedure QProcess_hook_hook_error(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_error';
-procedure QProcess_hook_hook_stateChanged(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_stateChanged';
-procedure QProcess_hook_hook_readyReadStandardOutput(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_readyReadStandardOutput';
-procedure QProcess_hook_hook_readyReadStandardError(handle: QProcess_hookH; hook: QHookH); cdecl; external QtIntf name 'QProcess_hook_hook_readyReadStandardError';
+procedure QProcess_hook_hook_started(handle: QProcess_hookH; hook: QProcess_started_Event); cdecl; external QtIntf name 'QProcess_hook_hook_started';
+procedure QProcess_hook_hook_finished(handle: QProcess_hookH; hook: QProcess_finished_Event); cdecl; external QtIntf name 'QProcess_hook_hook_finished';
+procedure QProcess_hook_hook_finished2(handle: QProcess_hookH; hook: QProcess_finished2_Event); cdecl; external QtIntf name 'QProcess_hook_hook_finished2';
+procedure QProcess_hook_hook_error(handle: QProcess_hookH; hook: QProcess_error_Event); cdecl; external QtIntf name 'QProcess_hook_hook_error';
+procedure QProcess_hook_hook_stateChanged(handle: QProcess_hookH; hook: QProcess_stateChanged_Event); cdecl; external QtIntf name 'QProcess_hook_hook_stateChanged';
+procedure QProcess_hook_hook_readyReadStandardOutput(handle: QProcess_hookH; hook: QProcess_readyReadStandardOutput_Event); cdecl; external QtIntf name 'QProcess_hook_hook_readyReadStandardOutput';
+procedure QProcess_hook_hook_readyReadStandardError(handle: QProcess_hookH; hook: QProcess_readyReadStandardError_Event); cdecl; external QtIntf name 'QProcess_hook_hook_readyReadStandardError';
 
 function QFileSystemWatcher_hook_create(handle: QObjectH): QFileSystemWatcher_hookH; cdecl; external QtIntf name 'QFileSystemWatcher_hook_create';
 procedure QFileSystemWatcher_hook_destroy(handle: QFileSystemWatcher_hookH); cdecl; external QtIntf name 'QFileSystemWatcher_hook_destroy'; 
-procedure QFileSystemWatcher_hook_hook_fileChanged(handle: QFileSystemWatcher_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileSystemWatcher_hook_hook_fileChanged';
-procedure QFileSystemWatcher_hook_hook_directoryChanged(handle: QFileSystemWatcher_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileSystemWatcher_hook_hook_directoryChanged';
+procedure QFileSystemWatcher_hook_hook_fileChanged(handle: QFileSystemWatcher_hookH; hook: QFileSystemWatcher_fileChanged_Event); cdecl; external QtIntf name 'QFileSystemWatcher_hook_hook_fileChanged';
+procedure QFileSystemWatcher_hook_hook_directoryChanged(handle: QFileSystemWatcher_hookH; hook: QFileSystemWatcher_directoryChanged_Event); cdecl; external QtIntf name 'QFileSystemWatcher_hook_hook_directoryChanged';
 
 function QApplication_hook_create(handle: QObjectH): QApplication_hookH; cdecl; external QtIntf name 'QApplication_hook_create';
 procedure QApplication_hook_destroy(handle: QApplication_hookH); cdecl; external QtIntf name 'QApplication_hook_destroy'; 
-procedure QApplication_hook_hook_lastWindowClosed(handle: QApplication_hookH; hook: QHookH); cdecl; external QtIntf name 'QApplication_hook_hook_lastWindowClosed';
-procedure QApplication_hook_hook_focusChanged(handle: QApplication_hookH; hook: QHookH); cdecl; external QtIntf name 'QApplication_hook_hook_focusChanged';
-procedure QApplication_hook_hook_fontDatabaseChanged(handle: QApplication_hookH; hook: QHookH); cdecl; external QtIntf name 'QApplication_hook_hook_fontDatabaseChanged';
+procedure QApplication_hook_hook_lastWindowClosed(handle: QApplication_hookH; hook: QApplication_lastWindowClosed_Event); cdecl; external QtIntf name 'QApplication_hook_hook_lastWindowClosed';
+procedure QApplication_hook_hook_focusChanged(handle: QApplication_hookH; hook: QApplication_focusChanged_Event); cdecl; external QtIntf name 'QApplication_hook_hook_focusChanged';
+procedure QApplication_hook_hook_fontDatabaseChanged(handle: QApplication_hookH; hook: QApplication_fontDatabaseChanged_Event); cdecl; external QtIntf name 'QApplication_hook_hook_fontDatabaseChanged';
 
 function QWidget_hook_create(handle: QObjectH): QWidget_hookH; cdecl; external QtIntf name 'QWidget_hook_create';
 procedure QWidget_hook_destroy(handle: QWidget_hookH); cdecl; external QtIntf name 'QWidget_hook_destroy'; 
-procedure QWidget_hook_hook_customContextMenuRequested(handle: QWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QWidget_hook_hook_customContextMenuRequested';
+procedure QWidget_hook_hook_customContextMenuRequested(handle: QWidget_hookH; hook: QWidget_customContextMenuRequested_Event); cdecl; external QtIntf name 'QWidget_hook_hook_customContextMenuRequested';
+
+function QLayout_hook_create(handle: QObjectH): QLayout_hookH; cdecl; external QtIntf name 'QLayout_hook_create';
+procedure QLayout_hook_destroy(handle: QLayout_hookH); cdecl; external QtIntf name 'QLayout_hook_destroy'; 
+
+function QStackedLayout_hook_create(handle: QObjectH): QStackedLayout_hookH; cdecl; external QtIntf name 'QStackedLayout_hook_create';
+procedure QStackedLayout_hook_destroy(handle: QStackedLayout_hookH); cdecl; external QtIntf name 'QStackedLayout_hook_destroy'; 
+procedure QStackedLayout_hook_hook_widgetRemoved(handle: QStackedLayout_hookH; hook: QStackedLayout_widgetRemoved_Event); cdecl; external QtIntf name 'QStackedLayout_hook_hook_widgetRemoved';
+procedure QStackedLayout_hook_hook_currentChanged(handle: QStackedLayout_hookH; hook: QStackedLayout_currentChanged_Event); cdecl; external QtIntf name 'QStackedLayout_hook_hook_currentChanged';
 
 function QAction_hook_create(handle: QObjectH): QAction_hookH; cdecl; external QtIntf name 'QAction_hook_create';
 procedure QAction_hook_destroy(handle: QAction_hookH); cdecl; external QtIntf name 'QAction_hook_destroy'; 
-procedure QAction_hook_hook_changed(handle: QAction_hookH; hook: QHookH); cdecl; external QtIntf name 'QAction_hook_hook_changed';
-procedure QAction_hook_hook_triggered(handle: QAction_hookH; hook: QHookH); cdecl; external QtIntf name 'QAction_hook_hook_triggered';
-procedure QAction_hook_hook_triggered2(handle: QAction_hookH; hook: QHookH); cdecl; external QtIntf name 'QAction_hook_hook_triggered2';
-procedure QAction_hook_hook_hovered(handle: QAction_hookH; hook: QHookH); cdecl; external QtIntf name 'QAction_hook_hook_hovered';
-procedure QAction_hook_hook_toggled(handle: QAction_hookH; hook: QHookH); cdecl; external QtIntf name 'QAction_hook_hook_toggled';
+procedure QAction_hook_hook_changed(handle: QAction_hookH; hook: QAction_changed_Event); cdecl; external QtIntf name 'QAction_hook_hook_changed';
+procedure QAction_hook_hook_triggered(handle: QAction_hookH; hook: QAction_triggered_Event); cdecl; external QtIntf name 'QAction_hook_hook_triggered';
+procedure QAction_hook_hook_triggered2(handle: QAction_hookH; hook: QAction_triggered2_Event); cdecl; external QtIntf name 'QAction_hook_hook_triggered2';
+procedure QAction_hook_hook_hovered(handle: QAction_hookH; hook: QAction_hovered_Event); cdecl; external QtIntf name 'QAction_hook_hook_hovered';
+procedure QAction_hook_hook_toggled(handle: QAction_hookH; hook: QAction_toggled_Event); cdecl; external QtIntf name 'QAction_hook_hook_toggled';
 
 function QClipboard_hook_create(handle: QObjectH): QClipboard_hookH; cdecl; external QtIntf name 'QClipboard_hook_create';
 procedure QClipboard_hook_destroy(handle: QClipboard_hookH); cdecl; external QtIntf name 'QClipboard_hook_destroy'; 
-procedure QClipboard_hook_hook_changed(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtIntf name 'QClipboard_hook_hook_changed';
-procedure QClipboard_hook_hook_selectionChanged(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtIntf name 'QClipboard_hook_hook_selectionChanged';
-procedure QClipboard_hook_hook_findBufferChanged(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtIntf name 'QClipboard_hook_hook_findBufferChanged';
-procedure QClipboard_hook_hook_dataChanged(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtIntf name 'QClipboard_hook_hook_dataChanged';
+procedure QClipboard_hook_hook_changed(handle: QClipboard_hookH; hook: QClipboard_changed_Event); cdecl; external QtIntf name 'QClipboard_hook_hook_changed';
+procedure QClipboard_hook_hook_selectionChanged(handle: QClipboard_hookH; hook: QClipboard_selectionChanged_Event); cdecl; external QtIntf name 'QClipboard_hook_hook_selectionChanged';
+procedure QClipboard_hook_hook_findBufferChanged(handle: QClipboard_hookH; hook: QClipboard_findBufferChanged_Event); cdecl; external QtIntf name 'QClipboard_hook_hook_findBufferChanged';
+procedure QClipboard_hook_hook_dataChanged(handle: QClipboard_hookH; hook: QClipboard_dataChanged_Event); cdecl; external QtIntf name 'QClipboard_hook_hook_dataChanged';
 
 function QDesktopWidget_hook_create(handle: QObjectH): QDesktopWidget_hookH; cdecl; external QtIntf name 'QDesktopWidget_hook_create';
 procedure QDesktopWidget_hook_destroy(handle: QDesktopWidget_hookH); cdecl; external QtIntf name 'QDesktopWidget_hook_destroy'; 
-procedure QDesktopWidget_hook_hook_resized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_resized';
-procedure QDesktopWidget_hook_hook_workAreaResized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_workAreaResized';
+procedure QDesktopWidget_hook_hook_resized(handle: QDesktopWidget_hookH; hook: QDesktopWidget_resized_Event); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_resized';
+procedure QDesktopWidget_hook_hook_workAreaResized(handle: QDesktopWidget_hookH; hook: QDesktopWidget_workAreaResized_Event); cdecl; external QtIntf name 'QDesktopWidget_hook_hook_workAreaResized';
 
 function QDrag_hook_create(handle: QObjectH): QDrag_hookH; cdecl; external QtIntf name 'QDrag_hook_create';
 procedure QDrag_hook_destroy(handle: QDrag_hookH); cdecl; external QtIntf name 'QDrag_hook_destroy'; 
-procedure QDrag_hook_hook_actionChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_actionChanged';
-procedure QDrag_hook_hook_targetChanged(handle: QDrag_hookH; hook: QHookH); cdecl; external QtIntf name 'QDrag_hook_hook_targetChanged';
+procedure QDrag_hook_hook_actionChanged(handle: QDrag_hookH; hook: QDrag_actionChanged_Event); cdecl; external QtIntf name 'QDrag_hook_hook_actionChanged';
+procedure QDrag_hook_hook_targetChanged(handle: QDrag_hookH; hook: QDrag_targetChanged_Event); cdecl; external QtIntf name 'QDrag_hook_hook_targetChanged';
 
 function QAbstractTextDocumentLayout_hook_create(handle: QObjectH): QAbstractTextDocumentLayout_hookH; cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_create';
 procedure QAbstractTextDocumentLayout_hook_destroy(handle: QAbstractTextDocumentLayout_hookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_destroy'; 
-procedure QAbstractTextDocumentLayout_hook_hook_update(handle: QAbstractTextDocumentLayout_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_update';
-procedure QAbstractTextDocumentLayout_hook_hook_update2(handle: QAbstractTextDocumentLayout_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_update2';
-procedure QAbstractTextDocumentLayout_hook_hook_updateBlock(handle: QAbstractTextDocumentLayout_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_updateBlock';
-procedure QAbstractTextDocumentLayout_hook_hook_documentSizeChanged(handle: QAbstractTextDocumentLayout_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_documentSizeChanged';
-procedure QAbstractTextDocumentLayout_hook_hook_pageCountChanged(handle: QAbstractTextDocumentLayout_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_pageCountChanged';
+procedure QAbstractTextDocumentLayout_hook_hook_update(handle: QAbstractTextDocumentLayout_hookH; hook: QAbstractTextDocumentLayout_update_Event); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_update';
+procedure QAbstractTextDocumentLayout_hook_hook_update2(handle: QAbstractTextDocumentLayout_hookH; hook: QAbstractTextDocumentLayout_update2_Event); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_update2';
+procedure QAbstractTextDocumentLayout_hook_hook_updateBlock(handle: QAbstractTextDocumentLayout_hookH; hook: QAbstractTextDocumentLayout_updateBlock_Event); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_updateBlock';
+procedure QAbstractTextDocumentLayout_hook_hook_documentSizeChanged(handle: QAbstractTextDocumentLayout_hookH; hook: QAbstractTextDocumentLayout_documentSizeChanged_Event); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_documentSizeChanged';
+procedure QAbstractTextDocumentLayout_hook_hook_pageCountChanged(handle: QAbstractTextDocumentLayout_hookH; hook: QAbstractTextDocumentLayout_pageCountChanged_Event); cdecl; external QtIntf name 'QAbstractTextDocumentLayout_hook_hook_pageCountChanged';
 
 function QTextObjectInterface_hook_create(handle: QObjectH): QTextObjectInterface_hookH; cdecl; external QtIntf name 'QTextObjectInterface_hook_create';
 procedure QTextObjectInterface_hook_destroy(handle: QTextObjectInterface_hookH); cdecl; external QtIntf name 'QTextObjectInterface_hook_destroy'; 
@@ -12885,232 +13046,237 @@ procedure QTextObjectInterface_hook_destroy(handle: QTextObjectInterface_hookH);
 function QFrame_hook_create(handle: QObjectH): QFrame_hookH; cdecl; external QtIntf name 'QFrame_hook_create';
 procedure QFrame_hook_destroy(handle: QFrame_hookH); cdecl; external QtIntf name 'QFrame_hook_destroy'; 
 
+function QStackedWidget_hook_create(handle: QObjectH): QStackedWidget_hookH; cdecl; external QtIntf name 'QStackedWidget_hook_create';
+procedure QStackedWidget_hook_destroy(handle: QStackedWidget_hookH); cdecl; external QtIntf name 'QStackedWidget_hook_destroy'; 
+procedure QStackedWidget_hook_hook_currentChanged(handle: QStackedWidget_hookH; hook: QStackedWidget_currentChanged_Event); cdecl; external QtIntf name 'QStackedWidget_hook_hook_currentChanged';
+procedure QStackedWidget_hook_hook_widgetRemoved(handle: QStackedWidget_hookH; hook: QStackedWidget_widgetRemoved_Event); cdecl; external QtIntf name 'QStackedWidget_hook_hook_widgetRemoved';
+
 function QAbstractScrollArea_hook_create(handle: QObjectH): QAbstractScrollArea_hookH; cdecl; external QtIntf name 'QAbstractScrollArea_hook_create';
 procedure QAbstractScrollArea_hook_destroy(handle: QAbstractScrollArea_hookH); cdecl; external QtIntf name 'QAbstractScrollArea_hook_destroy'; 
 
 function QAbstractSlider_hook_create(handle: QObjectH): QAbstractSlider_hookH; cdecl; external QtIntf name 'QAbstractSlider_hook_create';
 procedure QAbstractSlider_hook_destroy(handle: QAbstractSlider_hookH); cdecl; external QtIntf name 'QAbstractSlider_hook_destroy'; 
-procedure QAbstractSlider_hook_hook_valueChanged(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_valueChanged';
-procedure QAbstractSlider_hook_hook_sliderPressed(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderPressed';
-procedure QAbstractSlider_hook_hook_sliderMoved(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderMoved';
-procedure QAbstractSlider_hook_hook_sliderReleased(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderReleased';
-procedure QAbstractSlider_hook_hook_rangeChanged(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_rangeChanged';
-procedure QAbstractSlider_hook_hook_actionTriggered(handle: QAbstractSlider_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_actionTriggered';
+procedure QAbstractSlider_hook_hook_valueChanged(handle: QAbstractSlider_hookH; hook: QAbstractSlider_valueChanged_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_valueChanged';
+procedure QAbstractSlider_hook_hook_sliderPressed(handle: QAbstractSlider_hookH; hook: QAbstractSlider_sliderPressed_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderPressed';
+procedure QAbstractSlider_hook_hook_sliderMoved(handle: QAbstractSlider_hookH; hook: QAbstractSlider_sliderMoved_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderMoved';
+procedure QAbstractSlider_hook_hook_sliderReleased(handle: QAbstractSlider_hookH; hook: QAbstractSlider_sliderReleased_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_sliderReleased';
+procedure QAbstractSlider_hook_hook_rangeChanged(handle: QAbstractSlider_hookH; hook: QAbstractSlider_rangeChanged_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_rangeChanged';
+procedure QAbstractSlider_hook_hook_actionTriggered(handle: QAbstractSlider_hookH; hook: QAbstractSlider_actionTriggered_Event); cdecl; external QtIntf name 'QAbstractSlider_hook_hook_actionTriggered';
 
 function QScrollBar_hook_create(handle: QObjectH): QScrollBar_hookH; cdecl; external QtIntf name 'QScrollBar_hook_create';
 procedure QScrollBar_hook_destroy(handle: QScrollBar_hookH); cdecl; external QtIntf name 'QScrollBar_hook_destroy'; 
 
 function QMenu_hook_create(handle: QObjectH): QMenu_hookH; cdecl; external QtIntf name 'QMenu_hook_create';
 procedure QMenu_hook_destroy(handle: QMenu_hookH); cdecl; external QtIntf name 'QMenu_hook_destroy'; 
-procedure QMenu_hook_hook_aboutToShow(handle: QMenu_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenu_hook_hook_aboutToShow';
-procedure QMenu_hook_hook_aboutToHide(handle: QMenu_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenu_hook_hook_aboutToHide';
-procedure QMenu_hook_hook_triggered(handle: QMenu_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenu_hook_hook_triggered';
-procedure QMenu_hook_hook_hovered(handle: QMenu_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenu_hook_hook_hovered';
+procedure QMenu_hook_hook_aboutToShow(handle: QMenu_hookH; hook: QMenu_aboutToShow_Event); cdecl; external QtIntf name 'QMenu_hook_hook_aboutToShow';
+procedure QMenu_hook_hook_aboutToHide(handle: QMenu_hookH; hook: QMenu_aboutToHide_Event); cdecl; external QtIntf name 'QMenu_hook_hook_aboutToHide';
+procedure QMenu_hook_hook_triggered(handle: QMenu_hookH; hook: QMenu_triggered_Event); cdecl; external QtIntf name 'QMenu_hook_hook_triggered';
+procedure QMenu_hook_hook_hovered(handle: QMenu_hookH; hook: QMenu_hovered_Event); cdecl; external QtIntf name 'QMenu_hook_hook_hovered';
 
 function QMenuBar_hook_create(handle: QObjectH): QMenuBar_hookH; cdecl; external QtIntf name 'QMenuBar_hook_create';
 procedure QMenuBar_hook_destroy(handle: QMenuBar_hookH); cdecl; external QtIntf name 'QMenuBar_hook_destroy'; 
-procedure QMenuBar_hook_hook_triggered(handle: QMenuBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenuBar_hook_hook_triggered';
-procedure QMenuBar_hook_hook_hovered(handle: QMenuBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QMenuBar_hook_hook_hovered';
+procedure QMenuBar_hook_hook_triggered(handle: QMenuBar_hookH; hook: QMenuBar_triggered_Event); cdecl; external QtIntf name 'QMenuBar_hook_hook_triggered';
+procedure QMenuBar_hook_hook_hovered(handle: QMenuBar_hookH; hook: QMenuBar_hovered_Event); cdecl; external QtIntf name 'QMenuBar_hook_hook_hovered';
 
 function QButtonGroup_hook_create(handle: QObjectH): QButtonGroup_hookH; cdecl; external QtIntf name 'QButtonGroup_hook_create';
 procedure QButtonGroup_hook_destroy(handle: QButtonGroup_hookH); cdecl; external QtIntf name 'QButtonGroup_hook_destroy'; 
-procedure QButtonGroup_hook_hook_buttonClicked(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonClicked';
-procedure QButtonGroup_hook_hook_buttonClicked2(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonClicked2';
-procedure QButtonGroup_hook_hook_buttonPressed(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonPressed';
-procedure QButtonGroup_hook_hook_buttonPressed2(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonPressed2';
-procedure QButtonGroup_hook_hook_buttonReleased(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonReleased';
-procedure QButtonGroup_hook_hook_buttonReleased2(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonReleased2';
+procedure QButtonGroup_hook_hook_buttonClicked(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonClicked_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonClicked';
+procedure QButtonGroup_hook_hook_buttonClicked2(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonClicked2_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonClicked2';
+procedure QButtonGroup_hook_hook_buttonPressed(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonPressed_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonPressed';
+procedure QButtonGroup_hook_hook_buttonPressed2(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonPressed2_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonPressed2';
+procedure QButtonGroup_hook_hook_buttonReleased(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonReleased_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonReleased';
+procedure QButtonGroup_hook_hook_buttonReleased2(handle: QButtonGroup_hookH; hook: QButtonGroup_buttonReleased2_Event); cdecl; external QtIntf name 'QButtonGroup_hook_hook_buttonReleased2';
 
 function QAbstractButton_hook_create(handle: QObjectH): QAbstractButton_hookH; cdecl; external QtIntf name 'QAbstractButton_hook_create';
 procedure QAbstractButton_hook_destroy(handle: QAbstractButton_hookH); cdecl; external QtIntf name 'QAbstractButton_hook_destroy'; 
-procedure QAbstractButton_hook_hook_pressed(handle: QAbstractButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractButton_hook_hook_pressed';
-procedure QAbstractButton_hook_hook_released(handle: QAbstractButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractButton_hook_hook_released';
-procedure QAbstractButton_hook_hook_clicked(handle: QAbstractButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractButton_hook_hook_clicked';
-procedure QAbstractButton_hook_hook_clicked2(handle: QAbstractButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractButton_hook_hook_clicked2';
-procedure QAbstractButton_hook_hook_toggled(handle: QAbstractButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractButton_hook_hook_toggled';
+procedure QAbstractButton_hook_hook_pressed(handle: QAbstractButton_hookH; hook: QAbstractButton_pressed_Event); cdecl; external QtIntf name 'QAbstractButton_hook_hook_pressed';
+procedure QAbstractButton_hook_hook_released(handle: QAbstractButton_hookH; hook: QAbstractButton_released_Event); cdecl; external QtIntf name 'QAbstractButton_hook_hook_released';
+procedure QAbstractButton_hook_hook_clicked(handle: QAbstractButton_hookH; hook: QAbstractButton_clicked_Event); cdecl; external QtIntf name 'QAbstractButton_hook_hook_clicked';
+procedure QAbstractButton_hook_hook_clicked2(handle: QAbstractButton_hookH; hook: QAbstractButton_clicked2_Event); cdecl; external QtIntf name 'QAbstractButton_hook_hook_clicked2';
+procedure QAbstractButton_hook_hook_toggled(handle: QAbstractButton_hookH; hook: QAbstractButton_toggled_Event); cdecl; external QtIntf name 'QAbstractButton_hook_hook_toggled';
 
 function QPushButton_hook_create(handle: QObjectH): QPushButton_hookH; cdecl; external QtIntf name 'QPushButton_hook_create';
 procedure QPushButton_hook_destroy(handle: QPushButton_hookH); cdecl; external QtIntf name 'QPushButton_hook_destroy'; 
 
 function QLineEdit_hook_create(handle: QObjectH): QLineEdit_hookH; cdecl; external QtIntf name 'QLineEdit_hook_create';
 procedure QLineEdit_hook_destroy(handle: QLineEdit_hookH); cdecl; external QtIntf name 'QLineEdit_hook_destroy'; 
-procedure QLineEdit_hook_hook_textChanged(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_textChanged';
-procedure QLineEdit_hook_hook_textEdited(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_textEdited';
-procedure QLineEdit_hook_hook_cursorPositionChanged(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_cursorPositionChanged';
-procedure QLineEdit_hook_hook_returnPressed(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_returnPressed';
-procedure QLineEdit_hook_hook_editingFinished(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_editingFinished';
-procedure QLineEdit_hook_hook_selectionChanged(handle: QLineEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QLineEdit_hook_hook_selectionChanged';
+procedure QLineEdit_hook_hook_textChanged(handle: QLineEdit_hookH; hook: QLineEdit_textChanged_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_textChanged';
+procedure QLineEdit_hook_hook_textEdited(handle: QLineEdit_hookH; hook: QLineEdit_textEdited_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_textEdited';
+procedure QLineEdit_hook_hook_cursorPositionChanged(handle: QLineEdit_hookH; hook: QLineEdit_cursorPositionChanged_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_cursorPositionChanged';
+procedure QLineEdit_hook_hook_returnPressed(handle: QLineEdit_hookH; hook: QLineEdit_returnPressed_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_returnPressed';
+procedure QLineEdit_hook_hook_editingFinished(handle: QLineEdit_hookH; hook: QLineEdit_editingFinished_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_editingFinished';
+procedure QLineEdit_hook_hook_selectionChanged(handle: QLineEdit_hookH; hook: QLineEdit_selectionChanged_Event); cdecl; external QtIntf name 'QLineEdit_hook_hook_selectionChanged';
 
 function QPlainTextEdit_hook_create(handle: QObjectH): QPlainTextEdit_hookH; cdecl; external QtIntf name 'QPlainTextEdit_hook_create';
 procedure QPlainTextEdit_hook_destroy(handle: QPlainTextEdit_hookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_destroy'; 
-procedure QPlainTextEdit_hook_hook_textChanged(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_textChanged';
-procedure QPlainTextEdit_hook_hook_undoAvailable(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_undoAvailable';
-procedure QPlainTextEdit_hook_hook_redoAvailable(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_redoAvailable';
-procedure QPlainTextEdit_hook_hook_copyAvailable(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_copyAvailable';
-procedure QPlainTextEdit_hook_hook_selectionChanged(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_selectionChanged';
-procedure QPlainTextEdit_hook_hook_cursorPositionChanged(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_cursorPositionChanged';
-procedure QPlainTextEdit_hook_hook_updateRequest(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_updateRequest';
-procedure QPlainTextEdit_hook_hook_blockCountChanged(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_blockCountChanged';
-procedure QPlainTextEdit_hook_hook_modificationChanged(handle: QPlainTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_modificationChanged';
+procedure QPlainTextEdit_hook_hook_textChanged(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_textChanged_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_textChanged';
+procedure QPlainTextEdit_hook_hook_undoAvailable(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_undoAvailable_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_undoAvailable';
+procedure QPlainTextEdit_hook_hook_redoAvailable(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_redoAvailable_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_redoAvailable';
+procedure QPlainTextEdit_hook_hook_copyAvailable(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_copyAvailable_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_copyAvailable';
+procedure QPlainTextEdit_hook_hook_selectionChanged(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_selectionChanged_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_selectionChanged';
+procedure QPlainTextEdit_hook_hook_cursorPositionChanged(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_cursorPositionChanged_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_cursorPositionChanged';
+procedure QPlainTextEdit_hook_hook_updateRequest(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_updateRequest_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_updateRequest';
+procedure QPlainTextEdit_hook_hook_blockCountChanged(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_blockCountChanged_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_blockCountChanged';
+procedure QPlainTextEdit_hook_hook_modificationChanged(handle: QPlainTextEdit_hookH; hook: QPlainTextEdit_modificationChanged_Event); cdecl; external QtIntf name 'QPlainTextEdit_hook_hook_modificationChanged';
 
 function QPlainTextDocumentLayout_hook_create(handle: QObjectH): QPlainTextDocumentLayout_hookH; cdecl; external QtIntf name 'QPlainTextDocumentLayout_hook_create';
 procedure QPlainTextDocumentLayout_hook_destroy(handle: QPlainTextDocumentLayout_hookH); cdecl; external QtIntf name 'QPlainTextDocumentLayout_hook_destroy'; 
 
 function QTextEdit_hook_create(handle: QObjectH): QTextEdit_hookH; cdecl; external QtIntf name 'QTextEdit_hook_create';
 procedure QTextEdit_hook_destroy(handle: QTextEdit_hookH); cdecl; external QtIntf name 'QTextEdit_hook_destroy'; 
-procedure QTextEdit_hook_hook_textChanged(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_textChanged';
-procedure QTextEdit_hook_hook_undoAvailable(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_undoAvailable';
-procedure QTextEdit_hook_hook_redoAvailable(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_redoAvailable';
-procedure QTextEdit_hook_hook_currentCharFormatChanged(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_currentCharFormatChanged';
-procedure QTextEdit_hook_hook_copyAvailable(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_copyAvailable';
-procedure QTextEdit_hook_hook_selectionChanged(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_selectionChanged';
-procedure QTextEdit_hook_hook_cursorPositionChanged(handle: QTextEdit_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextEdit_hook_hook_cursorPositionChanged';
+procedure QTextEdit_hook_hook_textChanged(handle: QTextEdit_hookH; hook: QTextEdit_textChanged_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_textChanged';
+procedure QTextEdit_hook_hook_undoAvailable(handle: QTextEdit_hookH; hook: QTextEdit_undoAvailable_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_undoAvailable';
+procedure QTextEdit_hook_hook_redoAvailable(handle: QTextEdit_hookH; hook: QTextEdit_redoAvailable_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_redoAvailable';
+procedure QTextEdit_hook_hook_currentCharFormatChanged(handle: QTextEdit_hookH; hook: QTextEdit_currentCharFormatChanged_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_currentCharFormatChanged';
+procedure QTextEdit_hook_hook_copyAvailable(handle: QTextEdit_hookH; hook: QTextEdit_copyAvailable_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_copyAvailable';
+procedure QTextEdit_hook_hook_selectionChanged(handle: QTextEdit_hookH; hook: QTextEdit_selectionChanged_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_selectionChanged';
+procedure QTextEdit_hook_hook_cursorPositionChanged(handle: QTextEdit_hookH; hook: QTextEdit_cursorPositionChanged_Event); cdecl; external QtIntf name 'QTextEdit_hook_hook_cursorPositionChanged';
 
 function QTabWidget_hook_create(handle: QObjectH): QTabWidget_hookH; cdecl; external QtIntf name 'QTabWidget_hook_create';
 procedure QTabWidget_hook_destroy(handle: QTabWidget_hookH); cdecl; external QtIntf name 'QTabWidget_hook_destroy'; 
-procedure QTabWidget_hook_hook_currentChanged(handle: QTabWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTabWidget_hook_hook_currentChanged';
-procedure QTabWidget_hook_hook_tabCloseRequested(handle: QTabWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTabWidget_hook_hook_tabCloseRequested';
+procedure QTabWidget_hook_hook_currentChanged(handle: QTabWidget_hookH; hook: QTabWidget_currentChanged_Event); cdecl; external QtIntf name 'QTabWidget_hook_hook_currentChanged';
+procedure QTabWidget_hook_hook_tabCloseRequested(handle: QTabWidget_hookH; hook: QTabWidget_tabCloseRequested_Event); cdecl; external QtIntf name 'QTabWidget_hook_hook_tabCloseRequested';
 
 function QMainWindow_hook_create(handle: QObjectH): QMainWindow_hookH; cdecl; external QtIntf name 'QMainWindow_hook_create';
 procedure QMainWindow_hook_destroy(handle: QMainWindow_hookH); cdecl; external QtIntf name 'QMainWindow_hook_destroy'; 
-procedure QMainWindow_hook_hook_iconSizeChanged(handle: QMainWindow_hookH; hook: QHookH); cdecl; external QtIntf name 'QMainWindow_hook_hook_iconSizeChanged';
-procedure QMainWindow_hook_hook_toolButtonStyleChanged(handle: QMainWindow_hookH; hook: QHookH); cdecl; external QtIntf name 'QMainWindow_hook_hook_toolButtonStyleChanged';
+procedure QMainWindow_hook_hook_iconSizeChanged(handle: QMainWindow_hookH; hook: QMainWindow_iconSizeChanged_Event); cdecl; external QtIntf name 'QMainWindow_hook_hook_iconSizeChanged';
+procedure QMainWindow_hook_hook_toolButtonStyleChanged(handle: QMainWindow_hookH; hook: QMainWindow_toolButtonStyleChanged_Event); cdecl; external QtIntf name 'QMainWindow_hook_hook_toolButtonStyleChanged';
 
 function QToolBar_hook_create(handle: QObjectH): QToolBar_hookH; cdecl; external QtIntf name 'QToolBar_hook_create';
 procedure QToolBar_hook_destroy(handle: QToolBar_hookH); cdecl; external QtIntf name 'QToolBar_hook_destroy'; 
-procedure QToolBar_hook_hook_actionTriggered(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_actionTriggered';
-procedure QToolBar_hook_hook_movableChanged(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_movableChanged';
-procedure QToolBar_hook_hook_allowedAreasChanged(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_allowedAreasChanged';
-procedure QToolBar_hook_hook_orientationChanged(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_orientationChanged';
-procedure QToolBar_hook_hook_iconSizeChanged(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_iconSizeChanged';
-procedure QToolBar_hook_hook_toolButtonStyleChanged(handle: QToolBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBar_hook_hook_toolButtonStyleChanged';
+procedure QToolBar_hook_hook_actionTriggered(handle: QToolBar_hookH; hook: QToolBar_actionTriggered_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_actionTriggered';
+procedure QToolBar_hook_hook_movableChanged(handle: QToolBar_hookH; hook: QToolBar_movableChanged_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_movableChanged';
+procedure QToolBar_hook_hook_allowedAreasChanged(handle: QToolBar_hookH; hook: QToolBar_allowedAreasChanged_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_allowedAreasChanged';
+procedure QToolBar_hook_hook_orientationChanged(handle: QToolBar_hookH; hook: QToolBar_orientationChanged_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_orientationChanged';
+procedure QToolBar_hook_hook_iconSizeChanged(handle: QToolBar_hookH; hook: QToolBar_iconSizeChanged_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_iconSizeChanged';
+procedure QToolBar_hook_hook_toolButtonStyleChanged(handle: QToolBar_hookH; hook: QToolBar_toolButtonStyleChanged_Event); cdecl; external QtIntf name 'QToolBar_hook_hook_toolButtonStyleChanged';
 
 function QLCDNumber_hook_create(handle: QObjectH): QLCDNumber_hookH; cdecl; external QtIntf name 'QLCDNumber_hook_create';
 procedure QLCDNumber_hook_destroy(handle: QLCDNumber_hookH); cdecl; external QtIntf name 'QLCDNumber_hook_destroy'; 
-procedure QLCDNumber_hook_hook_overflow(handle: QLCDNumber_hookH; hook: QHookH); cdecl; external QtIntf name 'QLCDNumber_hook_hook_overflow';
+procedure QLCDNumber_hook_hook_overflow(handle: QLCDNumber_hookH; hook: QLCDNumber_overflow_Event); cdecl; external QtIntf name 'QLCDNumber_hook_hook_overflow';
 
 function QAbstractSpinBox_hook_create(handle: QObjectH): QAbstractSpinBox_hookH; cdecl; external QtIntf name 'QAbstractSpinBox_hook_create';
 procedure QAbstractSpinBox_hook_destroy(handle: QAbstractSpinBox_hookH); cdecl; external QtIntf name 'QAbstractSpinBox_hook_destroy'; 
-procedure QAbstractSpinBox_hook_hook_editingFinished(handle: QAbstractSpinBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractSpinBox_hook_hook_editingFinished';
+procedure QAbstractSpinBox_hook_hook_editingFinished(handle: QAbstractSpinBox_hookH; hook: QAbstractSpinBox_editingFinished_Event); cdecl; external QtIntf name 'QAbstractSpinBox_hook_hook_editingFinished';
 
 function QSpinBox_hook_create(handle: QObjectH): QSpinBox_hookH; cdecl; external QtIntf name 'QSpinBox_hook_create';
 procedure QSpinBox_hook_destroy(handle: QSpinBox_hookH); cdecl; external QtIntf name 'QSpinBox_hook_destroy'; 
-procedure QSpinBox_hook_hook_valueChanged(handle: QSpinBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QSpinBox_hook_hook_valueChanged';
-procedure QSpinBox_hook_hook_valueChanged2(handle: QSpinBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QSpinBox_hook_hook_valueChanged2';
+procedure QSpinBox_hook_hook_valueChanged(handle: QSpinBox_hookH; hook: QSpinBox_valueChanged_Event); cdecl; external QtIntf name 'QSpinBox_hook_hook_valueChanged';
+procedure QSpinBox_hook_hook_valueChanged2(handle: QSpinBox_hookH; hook: QSpinBox_valueChanged2_Event); cdecl; external QtIntf name 'QSpinBox_hook_hook_valueChanged2';
 
 function QDoubleSpinBox_hook_create(handle: QObjectH): QDoubleSpinBox_hookH; cdecl; external QtIntf name 'QDoubleSpinBox_hook_create';
 procedure QDoubleSpinBox_hook_destroy(handle: QDoubleSpinBox_hookH); cdecl; external QtIntf name 'QDoubleSpinBox_hook_destroy'; 
-procedure QDoubleSpinBox_hook_hook_valueChanged(handle: QDoubleSpinBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QDoubleSpinBox_hook_hook_valueChanged';
-procedure QDoubleSpinBox_hook_hook_valueChanged2(handle: QDoubleSpinBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QDoubleSpinBox_hook_hook_valueChanged2';
+procedure QDoubleSpinBox_hook_hook_valueChanged(handle: QDoubleSpinBox_hookH; hook: QDoubleSpinBox_valueChanged_Event); cdecl; external QtIntf name 'QDoubleSpinBox_hook_hook_valueChanged';
+procedure QDoubleSpinBox_hook_hook_valueChanged2(handle: QDoubleSpinBox_hookH; hook: QDoubleSpinBox_valueChanged2_Event); cdecl; external QtIntf name 'QDoubleSpinBox_hook_hook_valueChanged2';
 
 function QSplitter_hook_create(handle: QObjectH): QSplitter_hookH; cdecl; external QtIntf name 'QSplitter_hook_create';
 procedure QSplitter_hook_destroy(handle: QSplitter_hookH); cdecl; external QtIntf name 'QSplitter_hook_destroy'; 
-procedure QSplitter_hook_hook_splitterMoved(handle: QSplitter_hookH; hook: QHookH); cdecl; external QtIntf name 'QSplitter_hook_hook_splitterMoved';
+procedure QSplitter_hook_hook_splitterMoved(handle: QSplitter_hookH; hook: QSplitter_splitterMoved_Event); cdecl; external QtIntf name 'QSplitter_hook_hook_splitterMoved';
 
 function QSplitterHandle_hook_create(handle: QObjectH): QSplitterHandle_hookH; cdecl; external QtIntf name 'QSplitterHandle_hook_create';
 procedure QSplitterHandle_hook_destroy(handle: QSplitterHandle_hookH); cdecl; external QtIntf name 'QSplitterHandle_hook_destroy'; 
 
 function QWorkspace_hook_create(handle: QObjectH): QWorkspace_hookH; cdecl; external QtIntf name 'QWorkspace_hook_create';
 procedure QWorkspace_hook_destroy(handle: QWorkspace_hookH); cdecl; external QtIntf name 'QWorkspace_hook_destroy'; 
-procedure QWorkspace_hook_hook_windowActivated(handle: QWorkspace_hookH; hook: QHookH); cdecl; external QtIntf name 'QWorkspace_hook_hook_windowActivated';
+procedure QWorkspace_hook_hook_windowActivated(handle: QWorkspace_hookH; hook: QWorkspace_windowActivated_Event); cdecl; external QtIntf name 'QWorkspace_hook_hook_windowActivated';
 
 function QComboBox_hook_create(handle: QObjectH): QComboBox_hookH; cdecl; external QtIntf name 'QComboBox_hook_create';
 procedure QComboBox_hook_destroy(handle: QComboBox_hookH); cdecl; external QtIntf name 'QComboBox_hook_destroy'; 
-procedure QComboBox_hook_hook_editTextChanged(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_editTextChanged';
-procedure QComboBox_hook_hook_activated(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_activated';
-procedure QComboBox_hook_hook_activated2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_activated2';
-procedure QComboBox_hook_hook_highlighted(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_highlighted';
-procedure QComboBox_hook_hook_highlighted2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_highlighted2';
-procedure QComboBox_hook_hook_currentIndexChanged(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_currentIndexChanged';
-procedure QComboBox_hook_hook_currentIndexChanged2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QComboBox_hook_hook_currentIndexChanged2';
+procedure QComboBox_hook_hook_editTextChanged(handle: QComboBox_hookH; hook: QComboBox_editTextChanged_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_editTextChanged';
+procedure QComboBox_hook_hook_activated(handle: QComboBox_hookH; hook: QComboBox_activated_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_activated';
+procedure QComboBox_hook_hook_activated2(handle: QComboBox_hookH; hook: QComboBox_activated2_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_activated2';
+procedure QComboBox_hook_hook_highlighted(handle: QComboBox_hookH; hook: QComboBox_highlighted_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_highlighted';
+procedure QComboBox_hook_hook_highlighted2(handle: QComboBox_hookH; hook: QComboBox_highlighted2_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_highlighted2';
+procedure QComboBox_hook_hook_currentIndexChanged(handle: QComboBox_hookH; hook: QComboBox_currentIndexChanged_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_currentIndexChanged';
+procedure QComboBox_hook_hook_currentIndexChanged2(handle: QComboBox_hookH; hook: QComboBox_currentIndexChanged2_Event); cdecl; external QtIntf name 'QComboBox_hook_hook_currentIndexChanged2';
 
 function QCheckBox_hook_create(handle: QObjectH): QCheckBox_hookH; cdecl; external QtIntf name 'QCheckBox_hook_create';
 procedure QCheckBox_hook_destroy(handle: QCheckBox_hookH); cdecl; external QtIntf name 'QCheckBox_hook_destroy'; 
-procedure QCheckBox_hook_hook_stateChanged(handle: QCheckBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QCheckBox_hook_hook_stateChanged';
+procedure QCheckBox_hook_hook_stateChanged(handle: QCheckBox_hookH; hook: QCheckBox_stateChanged_Event); cdecl; external QtIntf name 'QCheckBox_hook_hook_stateChanged';
 
 function QSlider_hook_create(handle: QObjectH): QSlider_hookH; cdecl; external QtIntf name 'QSlider_hook_create';
 procedure QSlider_hook_destroy(handle: QSlider_hookH); cdecl; external QtIntf name 'QSlider_hook_destroy'; 
 
 function QTextBrowser_hook_create(handle: QObjectH): QTextBrowser_hookH; cdecl; external QtIntf name 'QTextBrowser_hook_create';
 procedure QTextBrowser_hook_destroy(handle: QTextBrowser_hookH); cdecl; external QtIntf name 'QTextBrowser_hook_destroy'; 
-procedure QTextBrowser_hook_hook_backwardAvailable(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_backwardAvailable';
-procedure QTextBrowser_hook_hook_forwardAvailable(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_forwardAvailable';
-procedure QTextBrowser_hook_hook_historyChanged(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_historyChanged';
-procedure QTextBrowser_hook_hook_sourceChanged(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_sourceChanged';
-procedure QTextBrowser_hook_hook_highlighted(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_highlighted';
-procedure QTextBrowser_hook_hook_highlighted2(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_highlighted2';
-procedure QTextBrowser_hook_hook_anchorClicked(handle: QTextBrowser_hookH; hook: QHookH); cdecl; external QtIntf name 'QTextBrowser_hook_hook_anchorClicked';
+procedure QTextBrowser_hook_hook_backwardAvailable(handle: QTextBrowser_hookH; hook: QTextBrowser_backwardAvailable_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_backwardAvailable';
+procedure QTextBrowser_hook_hook_forwardAvailable(handle: QTextBrowser_hookH; hook: QTextBrowser_forwardAvailable_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_forwardAvailable';
+procedure QTextBrowser_hook_hook_historyChanged(handle: QTextBrowser_hookH; hook: QTextBrowser_historyChanged_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_historyChanged';
+procedure QTextBrowser_hook_hook_sourceChanged(handle: QTextBrowser_hookH; hook: QTextBrowser_sourceChanged_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_sourceChanged';
+procedure QTextBrowser_hook_hook_highlighted(handle: QTextBrowser_hookH; hook: QTextBrowser_highlighted_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_highlighted';
+procedure QTextBrowser_hook_hook_highlighted2(handle: QTextBrowser_hookH; hook: QTextBrowser_highlighted2_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_highlighted2';
+procedure QTextBrowser_hook_hook_anchorClicked(handle: QTextBrowser_hookH; hook: QTextBrowser_anchorClicked_Event); cdecl; external QtIntf name 'QTextBrowser_hook_hook_anchorClicked';
 
 function QLabel_hook_create(handle: QObjectH): QLabel_hookH; cdecl; external QtIntf name 'QLabel_hook_create';
 procedure QLabel_hook_destroy(handle: QLabel_hookH); cdecl; external QtIntf name 'QLabel_hook_destroy'; 
-procedure QLabel_hook_hook_linkActivated(handle: QLabel_hookH; hook: QHookH); cdecl; external QtIntf name 'QLabel_hook_hook_linkActivated';
-procedure QLabel_hook_hook_linkHovered(handle: QLabel_hookH; hook: QHookH); cdecl; external QtIntf name 'QLabel_hook_hook_linkHovered';
+procedure QLabel_hook_hook_linkActivated(handle: QLabel_hookH; hook: QLabel_linkActivated_Event); cdecl; external QtIntf name 'QLabel_hook_hook_linkActivated';
+procedure QLabel_hook_hook_linkHovered(handle: QLabel_hookH; hook: QLabel_linkHovered_Event); cdecl; external QtIntf name 'QLabel_hook_hook_linkHovered';
 
 function QGroupBox_hook_create(handle: QObjectH): QGroupBox_hookH; cdecl; external QtIntf name 'QGroupBox_hook_create';
 procedure QGroupBox_hook_destroy(handle: QGroupBox_hookH); cdecl; external QtIntf name 'QGroupBox_hook_destroy'; 
-procedure QGroupBox_hook_hook_clicked(handle: QGroupBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QGroupBox_hook_hook_clicked';
-procedure QGroupBox_hook_hook_clicked2(handle: QGroupBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QGroupBox_hook_hook_clicked2';
-procedure QGroupBox_hook_hook_toggled(handle: QGroupBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QGroupBox_hook_hook_toggled';
+procedure QGroupBox_hook_hook_clicked(handle: QGroupBox_hookH; hook: QGroupBox_clicked_Event); cdecl; external QtIntf name 'QGroupBox_hook_hook_clicked';
+procedure QGroupBox_hook_hook_clicked2(handle: QGroupBox_hookH; hook: QGroupBox_clicked2_Event); cdecl; external QtIntf name 'QGroupBox_hook_hook_clicked2';
+procedure QGroupBox_hook_hook_toggled(handle: QGroupBox_hookH; hook: QGroupBox_toggled_Event); cdecl; external QtIntf name 'QGroupBox_hook_hook_toggled';
 
 function QDockWidget_hook_create(handle: QObjectH): QDockWidget_hookH; cdecl; external QtIntf name 'QDockWidget_hook_create';
 procedure QDockWidget_hook_destroy(handle: QDockWidget_hookH); cdecl; external QtIntf name 'QDockWidget_hook_destroy'; 
-procedure QDockWidget_hook_hook_featuresChanged(handle: QDockWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDockWidget_hook_hook_featuresChanged';
-procedure QDockWidget_hook_hook_topLevelChanged(handle: QDockWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDockWidget_hook_hook_topLevelChanged';
-procedure QDockWidget_hook_hook_allowedAreasChanged(handle: QDockWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDockWidget_hook_hook_allowedAreasChanged';
-procedure QDockWidget_hook_hook_visibilityChanged(handle: QDockWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDockWidget_hook_hook_visibilityChanged';
-procedure QDockWidget_hook_hook_dockLocationChanged(handle: QDockWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QDockWidget_hook_hook_dockLocationChanged';
+procedure QDockWidget_hook_hook_featuresChanged(handle: QDockWidget_hookH; hook: QDockWidget_featuresChanged_Event); cdecl; external QtIntf name 'QDockWidget_hook_hook_featuresChanged';
+procedure QDockWidget_hook_hook_topLevelChanged(handle: QDockWidget_hookH; hook: QDockWidget_topLevelChanged_Event); cdecl; external QtIntf name 'QDockWidget_hook_hook_topLevelChanged';
+procedure QDockWidget_hook_hook_allowedAreasChanged(handle: QDockWidget_hookH; hook: QDockWidget_allowedAreasChanged_Event); cdecl; external QtIntf name 'QDockWidget_hook_hook_allowedAreasChanged';
+procedure QDockWidget_hook_hook_visibilityChanged(handle: QDockWidget_hookH; hook: QDockWidget_visibilityChanged_Event); cdecl; external QtIntf name 'QDockWidget_hook_hook_visibilityChanged';
+procedure QDockWidget_hook_hook_dockLocationChanged(handle: QDockWidget_hookH; hook: QDockWidget_dockLocationChanged_Event); cdecl; external QtIntf name 'QDockWidget_hook_hook_dockLocationChanged';
 
 function QTabBar_hook_create(handle: QObjectH): QTabBar_hookH; cdecl; external QtIntf name 'QTabBar_hook_create';
 procedure QTabBar_hook_destroy(handle: QTabBar_hookH); cdecl; external QtIntf name 'QTabBar_hook_destroy'; 
-procedure QTabBar_hook_hook_currentChanged(handle: QTabBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QTabBar_hook_hook_currentChanged';
-procedure QTabBar_hook_hook_tabCloseRequested(handle: QTabBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QTabBar_hook_hook_tabCloseRequested';
-procedure QTabBar_hook_hook_tabMoved(handle: QTabBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QTabBar_hook_hook_tabMoved';
+procedure QTabBar_hook_hook_currentChanged(handle: QTabBar_hookH; hook: QTabBar_currentChanged_Event); cdecl; external QtIntf name 'QTabBar_hook_hook_currentChanged';
+procedure QTabBar_hook_hook_tabCloseRequested(handle: QTabBar_hookH; hook: QTabBar_tabCloseRequested_Event); cdecl; external QtIntf name 'QTabBar_hook_hook_tabCloseRequested';
+procedure QTabBar_hook_hook_tabMoved(handle: QTabBar_hookH; hook: QTabBar_tabMoved_Event); cdecl; external QtIntf name 'QTabBar_hook_hook_tabMoved';
 
 function QProgressBar_hook_create(handle: QObjectH): QProgressBar_hookH; cdecl; external QtIntf name 'QProgressBar_hook_create';
 procedure QProgressBar_hook_destroy(handle: QProgressBar_hookH); cdecl; external QtIntf name 'QProgressBar_hook_destroy'; 
-procedure QProgressBar_hook_hook_valueChanged(handle: QProgressBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QProgressBar_hook_hook_valueChanged';
+procedure QProgressBar_hook_hook_valueChanged(handle: QProgressBar_hookH; hook: QProgressBar_valueChanged_Event); cdecl; external QtIntf name 'QProgressBar_hook_hook_valueChanged';
 
 function QStatusBar_hook_create(handle: QObjectH): QStatusBar_hookH; cdecl; external QtIntf name 'QStatusBar_hook_create';
 procedure QStatusBar_hook_destroy(handle: QStatusBar_hookH); cdecl; external QtIntf name 'QStatusBar_hook_destroy'; 
-procedure QStatusBar_hook_hook_messageChanged(handle: QStatusBar_hookH; hook: QHookH); cdecl; external QtIntf name 'QStatusBar_hook_hook_messageChanged';
+procedure QStatusBar_hook_hook_messageChanged(handle: QStatusBar_hookH; hook: QStatusBar_messageChanged_Event); cdecl; external QtIntf name 'QStatusBar_hook_hook_messageChanged';
 
 function QToolBox_hook_create(handle: QObjectH): QToolBox_hookH; cdecl; external QtIntf name 'QToolBox_hook_create';
 procedure QToolBox_hook_destroy(handle: QToolBox_hookH); cdecl; external QtIntf name 'QToolBox_hook_destroy'; 
-procedure QToolBox_hook_hook_currentChanged(handle: QToolBox_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolBox_hook_hook_currentChanged';
+procedure QToolBox_hook_hook_currentChanged(handle: QToolBox_hookH; hook: QToolBox_currentChanged_Event); cdecl; external QtIntf name 'QToolBox_hook_hook_currentChanged';
 
 function QToolButton_hook_create(handle: QObjectH): QToolButton_hookH; cdecl; external QtIntf name 'QToolButton_hook_create';
 procedure QToolButton_hook_destroy(handle: QToolButton_hookH); cdecl; external QtIntf name 'QToolButton_hook_destroy'; 
-procedure QToolButton_hook_hook_triggered(handle: QToolButton_hookH; hook: QHookH); cdecl; external QtIntf name 'QToolButton_hook_hook_triggered';
+procedure QToolButton_hook_hook_triggered(handle: QToolButton_hookH; hook: QToolButton_triggered_Event); cdecl; external QtIntf name 'QToolButton_hook_hook_triggered';
 
 function QMdiArea_hook_create(handle: QObjectH): QMdiArea_hookH; cdecl; external QtIntf name 'QMdiArea_hook_create';
 procedure QMdiArea_hook_destroy(handle: QMdiArea_hookH); cdecl; external QtIntf name 'QMdiArea_hook_destroy'; 
-procedure QMdiArea_hook_hook_subWindowActivated(handle: QMdiArea_hookH; hook: QHookH); cdecl; external QtIntf name 'QMdiArea_hook_hook_subWindowActivated';
+procedure QMdiArea_hook_hook_subWindowActivated(handle: QMdiArea_hookH; hook: QMdiArea_subWindowActivated_Event); cdecl; external QtIntf name 'QMdiArea_hook_hook_subWindowActivated';
 
 function QMdiSubWindow_hook_create(handle: QObjectH): QMdiSubWindow_hookH; cdecl; external QtIntf name 'QMdiSubWindow_hook_create';
 procedure QMdiSubWindow_hook_destroy(handle: QMdiSubWindow_hookH); cdecl; external QtIntf name 'QMdiSubWindow_hook_destroy'; 
-procedure QMdiSubWindow_hook_hook_windowStateChanged(handle: QMdiSubWindow_hookH; hook: QHookH); cdecl; external QtIntf name 'QMdiSubWindow_hook_hook_windowStateChanged';
-procedure QMdiSubWindow_hook_hook_aboutToActivate(handle: QMdiSubWindow_hookH; hook: QHookH); cdecl; external QtIntf name 'QMdiSubWindow_hook_hook_aboutToActivate';
+procedure QMdiSubWindow_hook_hook_windowStateChanged(handle: QMdiSubWindow_hookH; hook: QMdiSubWindow_windowStateChanged_Event); cdecl; external QtIntf name 'QMdiSubWindow_hook_hook_windowStateChanged';
+procedure QMdiSubWindow_hook_hook_aboutToActivate(handle: QMdiSubWindow_hookH; hook: QMdiSubWindow_aboutToActivate_Event); cdecl; external QtIntf name 'QMdiSubWindow_hook_hook_aboutToActivate';
 
 function QCalendarWidget_hook_create(handle: QObjectH): QCalendarWidget_hookH; cdecl; external QtIntf name 'QCalendarWidget_hook_create';
 procedure QCalendarWidget_hook_destroy(handle: QCalendarWidget_hookH); cdecl; external QtIntf name 'QCalendarWidget_hook_destroy'; 
-procedure QCalendarWidget_hook_hook_selectionChanged(handle: QCalendarWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_selectionChanged';
-procedure QCalendarWidget_hook_hook_clicked(handle: QCalendarWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_clicked';
-procedure QCalendarWidget_hook_hook_activated(handle: QCalendarWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_activated';
-procedure QCalendarWidget_hook_hook_currentPageChanged(handle: QCalendarWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_currentPageChanged';
+procedure QCalendarWidget_hook_hook_selectionChanged(handle: QCalendarWidget_hookH; hook: QCalendarWidget_selectionChanged_Event); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_selectionChanged';
+procedure QCalendarWidget_hook_hook_clicked(handle: QCalendarWidget_hookH; hook: QCalendarWidget_clicked_Event); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_clicked';
+procedure QCalendarWidget_hook_hook_activated(handle: QCalendarWidget_hookH; hook: QCalendarWidget_activated_Event); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_activated';
+procedure QCalendarWidget_hook_hook_currentPageChanged(handle: QCalendarWidget_hookH; hook: QCalendarWidget_currentPageChanged_Event); cdecl; external QtIntf name 'QCalendarWidget_hook_hook_currentPageChanged';
 
 function QPrintPreviewWidget_hook_create(handle: QObjectH): QPrintPreviewWidget_hookH; cdecl; external QtIntf name 'QPrintPreviewWidget_hook_create';
 procedure QPrintPreviewWidget_hook_destroy(handle: QPrintPreviewWidget_hookH); cdecl; external QtIntf name 'QPrintPreviewWidget_hook_destroy'; 
-procedure QPrintPreviewWidget_hook_hook_paintRequested(handle: QPrintPreviewWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QPrintPreviewWidget_hook_hook_paintRequested';
-procedure QPrintPreviewWidget_hook_hook_previewChanged(handle: QPrintPreviewWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QPrintPreviewWidget_hook_hook_previewChanged';
+procedure QPrintPreviewWidget_hook_hook_paintRequested(handle: QPrintPreviewWidget_hookH; hook: QPrintPreviewWidget_paintRequested_Event); cdecl; external QtIntf name 'QPrintPreviewWidget_hook_hook_paintRequested';
+procedure QPrintPreviewWidget_hook_hook_previewChanged(handle: QPrintPreviewWidget_hookH; hook: QPrintPreviewWidget_previewChanged_Event); cdecl; external QtIntf name 'QPrintPreviewWidget_hook_hook_previewChanged';
 
 function QAbstractItemView_hook_create(handle: QObjectH): QAbstractItemView_hookH; cdecl; external QtIntf name 'QAbstractItemView_hook_create';
 procedure QAbstractItemView_hook_destroy(handle: QAbstractItemView_hookH); cdecl; external QtIntf name 'QAbstractItemView_hook_destroy'; 
-procedure QAbstractItemView_hook_hook_pressed(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_pressed';
-procedure QAbstractItemView_hook_hook_clicked(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_clicked';
-procedure QAbstractItemView_hook_hook_doubleClicked(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_doubleClicked';
-procedure QAbstractItemView_hook_hook_activated(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_activated';
-procedure QAbstractItemView_hook_hook_entered(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_entered';
-procedure QAbstractItemView_hook_hook_viewportEntered(handle: QAbstractItemView_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_viewportEntered';
+procedure QAbstractItemView_hook_hook_pressed(handle: QAbstractItemView_hookH; hook: QAbstractItemView_pressed_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_pressed';
+procedure QAbstractItemView_hook_hook_clicked(handle: QAbstractItemView_hookH; hook: QAbstractItemView_clicked_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_clicked';
+procedure QAbstractItemView_hook_hook_doubleClicked(handle: QAbstractItemView_hookH; hook: QAbstractItemView_doubleClicked_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_doubleClicked';
+procedure QAbstractItemView_hook_hook_activated(handle: QAbstractItemView_hookH; hook: QAbstractItemView_activated_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_activated';
+procedure QAbstractItemView_hook_hook_entered(handle: QAbstractItemView_hookH; hook: QAbstractItemView_entered_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_entered';
+procedure QAbstractItemView_hook_hook_viewportEntered(handle: QAbstractItemView_hookH; hook: QAbstractItemView_viewportEntered_Event); cdecl; external QtIntf name 'QAbstractItemView_hook_hook_viewportEntered';
 
 function QListView_hook_create(handle: QObjectH): QListView_hookH; cdecl; external QtIntf name 'QListView_hook_create';
 procedure QListView_hook_destroy(handle: QListView_hookH); cdecl; external QtIntf name 'QListView_hook_destroy'; 
@@ -13120,74 +13286,74 @@ procedure QItemSelectionRange_hook_destroy(handle: QItemSelectionRange_hookH); c
 
 function QItemSelectionModel_hook_create(handle: QObjectH): QItemSelectionModel_hookH; cdecl; external QtIntf name 'QItemSelectionModel_hook_create';
 procedure QItemSelectionModel_hook_destroy(handle: QItemSelectionModel_hookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_destroy'; 
-procedure QItemSelectionModel_hook_hook_currentChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentChanged';
-procedure QItemSelectionModel_hook_hook_currentRowChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentRowChanged';
-procedure QItemSelectionModel_hook_hook_currentColumnChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentColumnChanged';
+procedure QItemSelectionModel_hook_hook_currentChanged(handle: QItemSelectionModel_hookH; hook: QItemSelectionModel_currentChanged_Event); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentChanged';
+procedure QItemSelectionModel_hook_hook_currentRowChanged(handle: QItemSelectionModel_hookH; hook: QItemSelectionModel_currentRowChanged_Event); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentRowChanged';
+procedure QItemSelectionModel_hook_hook_currentColumnChanged(handle: QItemSelectionModel_hookH; hook: QItemSelectionModel_currentColumnChanged_Event); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentColumnChanged';
 
 function QListWidgetItem_hook_create(handle: QObjectH): QListWidgetItem_hookH; cdecl; external QtIntf name 'QListWidgetItem_hook_create';
 procedure QListWidgetItem_hook_destroy(handle: QListWidgetItem_hookH); cdecl; external QtIntf name 'QListWidgetItem_hook_destroy'; 
 
 function QListWidget_hook_create(handle: QObjectH): QListWidget_hookH; cdecl; external QtIntf name 'QListWidget_hook_create';
 procedure QListWidget_hook_destroy(handle: QListWidget_hookH); cdecl; external QtIntf name 'QListWidget_hook_destroy'; 
-procedure QListWidget_hook_hook_itemPressed(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemPressed';
-procedure QListWidget_hook_hook_itemClicked(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemClicked';
-procedure QListWidget_hook_hook_itemDoubleClicked(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemDoubleClicked';
-procedure QListWidget_hook_hook_itemActivated(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemActivated';
-procedure QListWidget_hook_hook_itemEntered(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemEntered';
-procedure QListWidget_hook_hook_itemChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemChanged';
-procedure QListWidget_hook_hook_currentItemChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_currentItemChanged';
-procedure QListWidget_hook_hook_currentTextChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_currentTextChanged';
-procedure QListWidget_hook_hook_currentRowChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_currentRowChanged';
-procedure QListWidget_hook_hook_itemSelectionChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QListWidget_hook_hook_itemSelectionChanged';
+procedure QListWidget_hook_hook_itemPressed(handle: QListWidget_hookH; hook: QListWidget_itemPressed_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemPressed';
+procedure QListWidget_hook_hook_itemClicked(handle: QListWidget_hookH; hook: QListWidget_itemClicked_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemClicked';
+procedure QListWidget_hook_hook_itemDoubleClicked(handle: QListWidget_hookH; hook: QListWidget_itemDoubleClicked_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemDoubleClicked';
+procedure QListWidget_hook_hook_itemActivated(handle: QListWidget_hookH; hook: QListWidget_itemActivated_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemActivated';
+procedure QListWidget_hook_hook_itemEntered(handle: QListWidget_hookH; hook: QListWidget_itemEntered_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemEntered';
+procedure QListWidget_hook_hook_itemChanged(handle: QListWidget_hookH; hook: QListWidget_itemChanged_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemChanged';
+procedure QListWidget_hook_hook_currentItemChanged(handle: QListWidget_hookH; hook: QListWidget_currentItemChanged_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_currentItemChanged';
+procedure QListWidget_hook_hook_currentTextChanged(handle: QListWidget_hookH; hook: QListWidget_currentTextChanged_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_currentTextChanged';
+procedure QListWidget_hook_hook_currentRowChanged(handle: QListWidget_hookH; hook: QListWidget_currentRowChanged_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_currentRowChanged';
+procedure QListWidget_hook_hook_itemSelectionChanged(handle: QListWidget_hookH; hook: QListWidget_itemSelectionChanged_Event); cdecl; external QtIntf name 'QListWidget_hook_hook_itemSelectionChanged';
 
 function QTreeView_hook_create(handle: QObjectH): QTreeView_hookH; cdecl; external QtIntf name 'QTreeView_hook_create';
 procedure QTreeView_hook_destroy(handle: QTreeView_hookH); cdecl; external QtIntf name 'QTreeView_hook_destroy'; 
-procedure QTreeView_hook_hook_expanded(handle: QTreeView_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeView_hook_hook_expanded';
-procedure QTreeView_hook_hook_collapsed(handle: QTreeView_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeView_hook_hook_collapsed';
+procedure QTreeView_hook_hook_expanded(handle: QTreeView_hookH; hook: QTreeView_expanded_Event); cdecl; external QtIntf name 'QTreeView_hook_hook_expanded';
+procedure QTreeView_hook_hook_collapsed(handle: QTreeView_hookH; hook: QTreeView_collapsed_Event); cdecl; external QtIntf name 'QTreeView_hook_hook_collapsed';
 
 function QTreeWidgetItem_hook_create(handle: QObjectH): QTreeWidgetItem_hookH; cdecl; external QtIntf name 'QTreeWidgetItem_hook_create';
 procedure QTreeWidgetItem_hook_destroy(handle: QTreeWidgetItem_hookH); cdecl; external QtIntf name 'QTreeWidgetItem_hook_destroy'; 
 
 function QTreeWidget_hook_create(handle: QObjectH): QTreeWidget_hookH; cdecl; external QtIntf name 'QTreeWidget_hook_create';
 procedure QTreeWidget_hook_destroy(handle: QTreeWidget_hookH); cdecl; external QtIntf name 'QTreeWidget_hook_destroy'; 
-procedure QTreeWidget_hook_hook_itemPressed(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemPressed';
-procedure QTreeWidget_hook_hook_itemClicked(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemClicked';
-procedure QTreeWidget_hook_hook_itemDoubleClicked(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemDoubleClicked';
-procedure QTreeWidget_hook_hook_itemActivated(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemActivated';
-procedure QTreeWidget_hook_hook_itemEntered(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemEntered';
-procedure QTreeWidget_hook_hook_itemChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemChanged';
-procedure QTreeWidget_hook_hook_itemExpanded(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemExpanded';
-procedure QTreeWidget_hook_hook_itemCollapsed(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemCollapsed';
-procedure QTreeWidget_hook_hook_currentItemChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_currentItemChanged';
-procedure QTreeWidget_hook_hook_itemSelectionChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemSelectionChanged';
+procedure QTreeWidget_hook_hook_itemPressed(handle: QTreeWidget_hookH; hook: QTreeWidget_itemPressed_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemPressed';
+procedure QTreeWidget_hook_hook_itemClicked(handle: QTreeWidget_hookH; hook: QTreeWidget_itemClicked_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemClicked';
+procedure QTreeWidget_hook_hook_itemDoubleClicked(handle: QTreeWidget_hookH; hook: QTreeWidget_itemDoubleClicked_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemDoubleClicked';
+procedure QTreeWidget_hook_hook_itemActivated(handle: QTreeWidget_hookH; hook: QTreeWidget_itemActivated_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemActivated';
+procedure QTreeWidget_hook_hook_itemEntered(handle: QTreeWidget_hookH; hook: QTreeWidget_itemEntered_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemEntered';
+procedure QTreeWidget_hook_hook_itemChanged(handle: QTreeWidget_hookH; hook: QTreeWidget_itemChanged_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemChanged';
+procedure QTreeWidget_hook_hook_itemExpanded(handle: QTreeWidget_hookH; hook: QTreeWidget_itemExpanded_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemExpanded';
+procedure QTreeWidget_hook_hook_itemCollapsed(handle: QTreeWidget_hookH; hook: QTreeWidget_itemCollapsed_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemCollapsed';
+procedure QTreeWidget_hook_hook_currentItemChanged(handle: QTreeWidget_hookH; hook: QTreeWidget_currentItemChanged_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_currentItemChanged';
+procedure QTreeWidget_hook_hook_itemSelectionChanged(handle: QTreeWidget_hookH; hook: QTreeWidget_itemSelectionChanged_Event); cdecl; external QtIntf name 'QTreeWidget_hook_hook_itemSelectionChanged';
 
 function QHeaderView_hook_create(handle: QObjectH): QHeaderView_hookH; cdecl; external QtIntf name 'QHeaderView_hook_create';
 procedure QHeaderView_hook_destroy(handle: QHeaderView_hookH); cdecl; external QtIntf name 'QHeaderView_hook_destroy'; 
-procedure QHeaderView_hook_hook_sectionMoved(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionMoved';
-procedure QHeaderView_hook_hook_sectionResized(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionResized';
-procedure QHeaderView_hook_hook_sectionPressed(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionPressed';
-procedure QHeaderView_hook_hook_sectionClicked(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionClicked';
-procedure QHeaderView_hook_hook_sectionEntered(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionEntered';
-procedure QHeaderView_hook_hook_sectionDoubleClicked(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionDoubleClicked';
-procedure QHeaderView_hook_hook_sectionCountChanged(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionCountChanged';
-procedure QHeaderView_hook_hook_sectionHandleDoubleClicked(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionHandleDoubleClicked';
-procedure QHeaderView_hook_hook_sectionAutoResize(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionAutoResize';
-procedure QHeaderView_hook_hook_geometriesChanged(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_geometriesChanged';
-procedure QHeaderView_hook_hook_sortIndicatorChanged(handle: QHeaderView_hookH; hook: QHookH); cdecl; external QtIntf name 'QHeaderView_hook_hook_sortIndicatorChanged';
+procedure QHeaderView_hook_hook_sectionMoved(handle: QHeaderView_hookH; hook: QHeaderView_sectionMoved_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionMoved';
+procedure QHeaderView_hook_hook_sectionResized(handle: QHeaderView_hookH; hook: QHeaderView_sectionResized_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionResized';
+procedure QHeaderView_hook_hook_sectionPressed(handle: QHeaderView_hookH; hook: QHeaderView_sectionPressed_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionPressed';
+procedure QHeaderView_hook_hook_sectionClicked(handle: QHeaderView_hookH; hook: QHeaderView_sectionClicked_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionClicked';
+procedure QHeaderView_hook_hook_sectionEntered(handle: QHeaderView_hookH; hook: QHeaderView_sectionEntered_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionEntered';
+procedure QHeaderView_hook_hook_sectionDoubleClicked(handle: QHeaderView_hookH; hook: QHeaderView_sectionDoubleClicked_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionDoubleClicked';
+procedure QHeaderView_hook_hook_sectionCountChanged(handle: QHeaderView_hookH; hook: QHeaderView_sectionCountChanged_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionCountChanged';
+procedure QHeaderView_hook_hook_sectionHandleDoubleClicked(handle: QHeaderView_hookH; hook: QHeaderView_sectionHandleDoubleClicked_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionHandleDoubleClicked';
+procedure QHeaderView_hook_hook_sectionAutoResize(handle: QHeaderView_hookH; hook: QHeaderView_sectionAutoResize_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sectionAutoResize';
+procedure QHeaderView_hook_hook_geometriesChanged(handle: QHeaderView_hookH; hook: QHeaderView_geometriesChanged_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_geometriesChanged';
+procedure QHeaderView_hook_hook_sortIndicatorChanged(handle: QHeaderView_hookH; hook: QHeaderView_sortIndicatorChanged_Event); cdecl; external QtIntf name 'QHeaderView_hook_hook_sortIndicatorChanged';
 
 function QStandardItem_hook_create(handle: QObjectH): QStandardItem_hookH; cdecl; external QtIntf name 'QStandardItem_hook_create';
 procedure QStandardItem_hook_destroy(handle: QStandardItem_hookH); cdecl; external QtIntf name 'QStandardItem_hook_destroy'; 
 
 function QStandardItemModel_hook_create(handle: QObjectH): QStandardItemModel_hookH; cdecl; external QtIntf name 'QStandardItemModel_hook_create';
 procedure QStandardItemModel_hook_destroy(handle: QStandardItemModel_hookH); cdecl; external QtIntf name 'QStandardItemModel_hook_destroy'; 
-procedure QStandardItemModel_hook_hook_itemChanged(handle: QStandardItemModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QStandardItemModel_hook_hook_itemChanged';
+procedure QStandardItemModel_hook_hook_itemChanged(handle: QStandardItemModel_hookH; hook: QStandardItemModel_itemChanged_Event); cdecl; external QtIntf name 'QStandardItemModel_hook_hook_itemChanged';
 
 function QAbstractItemDelegate_hook_create(handle: QObjectH): QAbstractItemDelegate_hookH; cdecl; external QtIntf name 'QAbstractItemDelegate_hook_create';
 procedure QAbstractItemDelegate_hook_destroy(handle: QAbstractItemDelegate_hookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_destroy'; 
-procedure QAbstractItemDelegate_hook_hook_commitData(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_commitData';
-procedure QAbstractItemDelegate_hook_hook_closeEditor(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor';
-procedure QAbstractItemDelegate_hook_hook_closeEditor2(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor2';
-procedure QAbstractItemDelegate_hook_hook_sizeHintChanged(handle: QAbstractItemDelegate_hookH; hook: QHookH); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_sizeHintChanged';
+procedure QAbstractItemDelegate_hook_hook_commitData(handle: QAbstractItemDelegate_hookH; hook: QAbstractItemDelegate_commitData_Event); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_commitData';
+procedure QAbstractItemDelegate_hook_hook_closeEditor(handle: QAbstractItemDelegate_hookH; hook: QAbstractItemDelegate_closeEditor_Event); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor';
+procedure QAbstractItemDelegate_hook_hook_closeEditor2(handle: QAbstractItemDelegate_hookH; hook: QAbstractItemDelegate_closeEditor2_Event); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_closeEditor2';
+procedure QAbstractItemDelegate_hook_hook_sizeHintChanged(handle: QAbstractItemDelegate_hookH; hook: QAbstractItemDelegate_sizeHintChanged_Event); cdecl; external QtIntf name 'QAbstractItemDelegate_hook_hook_sizeHintChanged';
 
 function QTableView_hook_create(handle: QObjectH): QTableView_hookH; cdecl; external QtIntf name 'QTableView_hook_create';
 procedure QTableView_hook_destroy(handle: QTableView_hookH); cdecl; external QtIntf name 'QTableView_hook_destroy'; 
@@ -13200,79 +13366,79 @@ procedure QTableWidgetItem_hook_destroy(handle: QTableWidgetItem_hookH); cdecl; 
 
 function QTableWidget_hook_create(handle: QObjectH): QTableWidget_hookH; cdecl; external QtIntf name 'QTableWidget_hook_create';
 procedure QTableWidget_hook_destroy(handle: QTableWidget_hookH); cdecl; external QtIntf name 'QTableWidget_hook_destroy'; 
-procedure QTableWidget_hook_hook_itemPressed(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemPressed';
-procedure QTableWidget_hook_hook_itemClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemClicked';
-procedure QTableWidget_hook_hook_itemDoubleClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemDoubleClicked';
-procedure QTableWidget_hook_hook_itemActivated(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemActivated';
-procedure QTableWidget_hook_hook_itemEntered(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemEntered';
-procedure QTableWidget_hook_hook_itemChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemChanged';
-procedure QTableWidget_hook_hook_currentItemChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentItemChanged';
-procedure QTableWidget_hook_hook_itemSelectionChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemSelectionChanged';
-procedure QTableWidget_hook_hook_cellPressed(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellPressed';
-procedure QTableWidget_hook_hook_cellClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellClicked';
-procedure QTableWidget_hook_hook_cellDoubleClicked(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellDoubleClicked';
-procedure QTableWidget_hook_hook_cellActivated(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellActivated';
-procedure QTableWidget_hook_hook_cellEntered(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellEntered';
-procedure QTableWidget_hook_hook_cellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellChanged';
-procedure QTableWidget_hook_hook_currentCellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentCellChanged';
+procedure QTableWidget_hook_hook_itemPressed(handle: QTableWidget_hookH; hook: QTableWidget_itemPressed_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemPressed';
+procedure QTableWidget_hook_hook_itemClicked(handle: QTableWidget_hookH; hook: QTableWidget_itemClicked_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemClicked';
+procedure QTableWidget_hook_hook_itemDoubleClicked(handle: QTableWidget_hookH; hook: QTableWidget_itemDoubleClicked_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemDoubleClicked';
+procedure QTableWidget_hook_hook_itemActivated(handle: QTableWidget_hookH; hook: QTableWidget_itemActivated_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemActivated';
+procedure QTableWidget_hook_hook_itemEntered(handle: QTableWidget_hookH; hook: QTableWidget_itemEntered_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemEntered';
+procedure QTableWidget_hook_hook_itemChanged(handle: QTableWidget_hookH; hook: QTableWidget_itemChanged_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemChanged';
+procedure QTableWidget_hook_hook_currentItemChanged(handle: QTableWidget_hookH; hook: QTableWidget_currentItemChanged_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentItemChanged';
+procedure QTableWidget_hook_hook_itemSelectionChanged(handle: QTableWidget_hookH; hook: QTableWidget_itemSelectionChanged_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_itemSelectionChanged';
+procedure QTableWidget_hook_hook_cellPressed(handle: QTableWidget_hookH; hook: QTableWidget_cellPressed_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellPressed';
+procedure QTableWidget_hook_hook_cellClicked(handle: QTableWidget_hookH; hook: QTableWidget_cellClicked_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellClicked';
+procedure QTableWidget_hook_hook_cellDoubleClicked(handle: QTableWidget_hookH; hook: QTableWidget_cellDoubleClicked_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellDoubleClicked';
+procedure QTableWidget_hook_hook_cellActivated(handle: QTableWidget_hookH; hook: QTableWidget_cellActivated_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellActivated';
+procedure QTableWidget_hook_hook_cellEntered(handle: QTableWidget_hookH; hook: QTableWidget_cellEntered_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellEntered';
+procedure QTableWidget_hook_hook_cellChanged(handle: QTableWidget_hookH; hook: QTableWidget_cellChanged_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellChanged';
+procedure QTableWidget_hook_hook_currentCellChanged(handle: QTableWidget_hookH; hook: QTableWidget_currentCellChanged_Event); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentCellChanged';
 
 function QDialog_hook_create(handle: QObjectH): QDialog_hookH; cdecl; external QtIntf name 'QDialog_hook_create';
 procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtIntf name 'QDialog_hook_destroy'; 
-procedure QDialog_hook_hook_finished(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_finished';
-procedure QDialog_hook_hook_accepted(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_accepted';
-procedure QDialog_hook_hook_rejected(handle: QDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QDialog_hook_hook_rejected';
+procedure QDialog_hook_hook_finished(handle: QDialog_hookH; hook: QDialog_finished_Event); cdecl; external QtIntf name 'QDialog_hook_hook_finished';
+procedure QDialog_hook_hook_accepted(handle: QDialog_hookH; hook: QDialog_accepted_Event); cdecl; external QtIntf name 'QDialog_hook_hook_accepted';
+procedure QDialog_hook_hook_rejected(handle: QDialog_hookH; hook: QDialog_rejected_Event); cdecl; external QtIntf name 'QDialog_hook_hook_rejected';
 
 function QFileDialog_hook_create(handle: QObjectH): QFileDialog_hookH; cdecl; external QtIntf name 'QFileDialog_hook_create';
 procedure QFileDialog_hook_destroy(handle: QFileDialog_hookH); cdecl; external QtIntf name 'QFileDialog_hook_destroy'; 
-procedure QFileDialog_hook_hook_fileSelected(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_fileSelected';
-procedure QFileDialog_hook_hook_filesSelected(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_filesSelected';
-procedure QFileDialog_hook_hook_currentChanged(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_currentChanged';
-procedure QFileDialog_hook_hook_directoryEntered(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_directoryEntered';
-procedure QFileDialog_hook_hook_filterSelected(handle: QFileDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QFileDialog_hook_hook_filterSelected';
+procedure QFileDialog_hook_hook_fileSelected(handle: QFileDialog_hookH; hook: QFileDialog_fileSelected_Event); cdecl; external QtIntf name 'QFileDialog_hook_hook_fileSelected';
+procedure QFileDialog_hook_hook_filesSelected(handle: QFileDialog_hookH; hook: QFileDialog_filesSelected_Event); cdecl; external QtIntf name 'QFileDialog_hook_hook_filesSelected';
+procedure QFileDialog_hook_hook_currentChanged(handle: QFileDialog_hookH; hook: QFileDialog_currentChanged_Event); cdecl; external QtIntf name 'QFileDialog_hook_hook_currentChanged';
+procedure QFileDialog_hook_hook_directoryEntered(handle: QFileDialog_hookH; hook: QFileDialog_directoryEntered_Event); cdecl; external QtIntf name 'QFileDialog_hook_hook_directoryEntered';
+procedure QFileDialog_hook_hook_filterSelected(handle: QFileDialog_hookH; hook: QFileDialog_filterSelected_Event); cdecl; external QtIntf name 'QFileDialog_hook_hook_filterSelected';
 
 function QProgressDialog_hook_create(handle: QObjectH): QProgressDialog_hookH; cdecl; external QtIntf name 'QProgressDialog_hook_create';
 procedure QProgressDialog_hook_destroy(handle: QProgressDialog_hookH); cdecl; external QtIntf name 'QProgressDialog_hook_destroy'; 
-procedure QProgressDialog_hook_hook_canceled(handle: QProgressDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QProgressDialog_hook_hook_canceled';
+procedure QProgressDialog_hook_hook_canceled(handle: QProgressDialog_hookH; hook: QProgressDialog_canceled_Event); cdecl; external QtIntf name 'QProgressDialog_hook_hook_canceled';
 
 function QPrintPreviewDialog_hook_create(handle: QObjectH): QPrintPreviewDialog_hookH; cdecl; external QtIntf name 'QPrintPreviewDialog_hook_create';
 procedure QPrintPreviewDialog_hook_destroy(handle: QPrintPreviewDialog_hookH); cdecl; external QtIntf name 'QPrintPreviewDialog_hook_destroy'; 
-procedure QPrintPreviewDialog_hook_hook_paintRequested(handle: QPrintPreviewDialog_hookH; hook: QHookH); cdecl; external QtIntf name 'QPrintPreviewDialog_hook_hook_paintRequested';
+procedure QPrintPreviewDialog_hook_hook_paintRequested(handle: QPrintPreviewDialog_hookH; hook: QPrintPreviewDialog_paintRequested_Event); cdecl; external QtIntf name 'QPrintPreviewDialog_hook_hook_paintRequested';
 
 function QSystemTrayIcon_hook_create(handle: QObjectH): QSystemTrayIcon_hookH; cdecl; external QtIntf name 'QSystemTrayIcon_hook_create';
 procedure QSystemTrayIcon_hook_destroy(handle: QSystemTrayIcon_hookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_destroy'; 
-procedure QSystemTrayIcon_hook_hook_activated(handle: QSystemTrayIcon_hookH; hook: QHookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_activated';
-procedure QSystemTrayIcon_hook_hook_messageClicked(handle: QSystemTrayIcon_hookH; hook: QHookH); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_messageClicked';
+procedure QSystemTrayIcon_hook_hook_activated(handle: QSystemTrayIcon_hookH; hook: QSystemTrayIcon_activated_Event); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_activated';
+procedure QSystemTrayIcon_hook_hook_messageClicked(handle: QSystemTrayIcon_hookH; hook: QSystemTrayIcon_messageClicked_Event); cdecl; external QtIntf name 'QSystemTrayIcon_hook_hook_messageClicked';
 
 function QGraphicsScene_hook_create(handle: QObjectH): QGraphicsScene_hookH; cdecl; external QtIntf name 'QGraphicsScene_hook_create';
 procedure QGraphicsScene_hook_destroy(handle: QGraphicsScene_hookH); cdecl; external QtIntf name 'QGraphicsScene_hook_destroy'; 
-procedure QGraphicsScene_hook_hook_sceneRectChanged(handle: QGraphicsScene_hookH; hook: QHookH); cdecl; external QtIntf name 'QGraphicsScene_hook_hook_sceneRectChanged';
-procedure QGraphicsScene_hook_hook_selectionChanged(handle: QGraphicsScene_hookH; hook: QHookH); cdecl; external QtIntf name 'QGraphicsScene_hook_hook_selectionChanged';
+procedure QGraphicsScene_hook_hook_sceneRectChanged(handle: QGraphicsScene_hookH; hook: QGraphicsScene_sceneRectChanged_Event); cdecl; external QtIntf name 'QGraphicsScene_hook_hook_sceneRectChanged';
+procedure QGraphicsScene_hook_hook_selectionChanged(handle: QGraphicsScene_hookH; hook: QGraphicsScene_selectionChanged_Event); cdecl; external QtIntf name 'QGraphicsScene_hook_hook_selectionChanged';
 
 function QNetworkAccessManager_hook_create(handle: QObjectH): QNetworkAccessManager_hookH; cdecl; external QtIntf name 'QNetworkAccessManager_hook_create';
 procedure QNetworkAccessManager_hook_destroy(handle: QNetworkAccessManager_hookH); cdecl; external QtIntf name 'QNetworkAccessManager_hook_destroy'; 
-procedure QNetworkAccessManager_hook_hook_proxyAuthenticationRequired(handle: QNetworkAccessManager_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_proxyAuthenticationRequired';
-procedure QNetworkAccessManager_hook_hook_authenticationRequired(handle: QNetworkAccessManager_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_authenticationRequired';
-procedure QNetworkAccessManager_hook_hook_finished(handle: QNetworkAccessManager_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_finished';
+procedure QNetworkAccessManager_hook_hook_proxyAuthenticationRequired(handle: QNetworkAccessManager_hookH; hook: QNetworkAccessManager_proxyAuthenticationRequired_Event); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_proxyAuthenticationRequired';
+procedure QNetworkAccessManager_hook_hook_authenticationRequired(handle: QNetworkAccessManager_hookH; hook: QNetworkAccessManager_authenticationRequired_Event); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_authenticationRequired';
+procedure QNetworkAccessManager_hook_hook_finished(handle: QNetworkAccessManager_hookH; hook: QNetworkAccessManager_finished_Event); cdecl; external QtIntf name 'QNetworkAccessManager_hook_hook_finished';
 
 function QNetworkReply_hook_create(handle: QObjectH): QNetworkReply_hookH; cdecl; external QtIntf name 'QNetworkReply_hook_create';
 procedure QNetworkReply_hook_destroy(handle: QNetworkReply_hookH); cdecl; external QtIntf name 'QNetworkReply_hook_destroy'; 
-procedure QNetworkReply_hook_hook_metaDataChanged(handle: QNetworkReply_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkReply_hook_hook_metaDataChanged';
-procedure QNetworkReply_hook_hook_finished(handle: QNetworkReply_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkReply_hook_hook_finished';
-procedure QNetworkReply_hook_hook_error(handle: QNetworkReply_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkReply_hook_hook_error';
-procedure QNetworkReply_hook_hook_uploadProgress(handle: QNetworkReply_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkReply_hook_hook_uploadProgress';
-procedure QNetworkReply_hook_hook_downloadProgress(handle: QNetworkReply_hookH; hook: QHookH); cdecl; external QtIntf name 'QNetworkReply_hook_hook_downloadProgress';
+procedure QNetworkReply_hook_hook_metaDataChanged(handle: QNetworkReply_hookH; hook: QNetworkReply_metaDataChanged_Event); cdecl; external QtIntf name 'QNetworkReply_hook_hook_metaDataChanged';
+procedure QNetworkReply_hook_hook_finished(handle: QNetworkReply_hookH; hook: QNetworkReply_finished_Event); cdecl; external QtIntf name 'QNetworkReply_hook_hook_finished';
+procedure QNetworkReply_hook_hook_error(handle: QNetworkReply_hookH; hook: QNetworkReply_error_Event); cdecl; external QtIntf name 'QNetworkReply_hook_hook_error';
+procedure QNetworkReply_hook_hook_uploadProgress(handle: QNetworkReply_hookH; hook: QNetworkReply_uploadProgress_Event); cdecl; external QtIntf name 'QNetworkReply_hook_hook_uploadProgress';
+procedure QNetworkReply_hook_hook_downloadProgress(handle: QNetworkReply_hookH; hook: QNetworkReply_downloadProgress_Event); cdecl; external QtIntf name 'QNetworkReply_hook_hook_downloadProgress';
 
 function QWebHitTestResult_hook_create(handle: QObjectH): QWebHitTestResult_hookH; cdecl; external QtIntf name 'QWebHitTestResult_hook_create';
 procedure QWebHitTestResult_hook_destroy(handle: QWebHitTestResult_hookH); cdecl; external QtIntf name 'QWebHitTestResult_hook_destroy'; 
 
 function QWebFrame_hook_create(handle: QObjectH): QWebFrame_hookH; cdecl; external QtIntf name 'QWebFrame_hook_create';
 procedure QWebFrame_hook_destroy(handle: QWebFrame_hookH); cdecl; external QtIntf name 'QWebFrame_hook_destroy'; 
-procedure QWebFrame_hook_hook_javaScriptWindowObjectCleared(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_javaScriptWindowObjectCleared';
-procedure QWebFrame_hook_hook_provisionalLoad(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_provisionalLoad';
-procedure QWebFrame_hook_hook_titleChanged(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_titleChanged';
-procedure QWebFrame_hook_hook_urlChanged(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_urlChanged';
-procedure QWebFrame_hook_hook_initialLayoutCompleted(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_initialLayoutCompleted';
-procedure QWebFrame_hook_hook_iconChanged(handle: QWebFrame_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebFrame_hook_hook_iconChanged';
+procedure QWebFrame_hook_hook_javaScriptWindowObjectCleared(handle: QWebFrame_hookH; hook: QWebFrame_javaScriptWindowObjectCleared_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_javaScriptWindowObjectCleared';
+procedure QWebFrame_hook_hook_provisionalLoad(handle: QWebFrame_hookH; hook: QWebFrame_provisionalLoad_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_provisionalLoad';
+procedure QWebFrame_hook_hook_titleChanged(handle: QWebFrame_hookH; hook: QWebFrame_titleChanged_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_titleChanged';
+procedure QWebFrame_hook_hook_urlChanged(handle: QWebFrame_hookH; hook: QWebFrame_urlChanged_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_urlChanged';
+procedure QWebFrame_hook_hook_initialLayoutCompleted(handle: QWebFrame_hookH; hook: QWebFrame_initialLayoutCompleted_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_initialLayoutCompleted';
+procedure QWebFrame_hook_hook_iconChanged(handle: QWebFrame_hookH; hook: QWebFrame_iconChanged_Event); cdecl; external QtIntf name 'QWebFrame_hook_hook_iconChanged';
 
 function QWebSecurityOrigin_hook_create(handle: QObjectH): QWebSecurityOrigin_hookH; cdecl; external QtIntf name 'QWebSecurityOrigin_hook_create';
 procedure QWebSecurityOrigin_hook_destroy(handle: QWebSecurityOrigin_hookH); cdecl; external QtIntf name 'QWebSecurityOrigin_hook_destroy'; 
@@ -13291,44 +13457,44 @@ procedure QWebHistoryInterface_hook_destroy(handle: QWebHistoryInterface_hookH);
 
 function QWebPage_hook_create(handle: QObjectH): QWebPage_hookH; cdecl; external QtIntf name 'QWebPage_hook_create';
 procedure QWebPage_hook_destroy(handle: QWebPage_hookH); cdecl; external QtIntf name 'QWebPage_hook_destroy'; 
-procedure QWebPage_hook_hook_loadStarted(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_loadStarted';
-procedure QWebPage_hook_hook_loadProgress(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_loadProgress';
-procedure QWebPage_hook_hook_loadFinished(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_loadFinished';
-procedure QWebPage_hook_hook_linkHovered(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_linkHovered';
-procedure QWebPage_hook_hook_statusBarMessage(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_statusBarMessage';
-procedure QWebPage_hook_hook_selectionChanged(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_selectionChanged';
-procedure QWebPage_hook_hook_frameCreated(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_frameCreated';
-procedure QWebPage_hook_hook_geometryChangeRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_geometryChangeRequested';
-procedure QWebPage_hook_hook_repaintRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_repaintRequested';
-procedure QWebPage_hook_hook_scrollRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_scrollRequested';
-procedure QWebPage_hook_hook_windowCloseRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_windowCloseRequested';
-procedure QWebPage_hook_hook_printRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_printRequested';
-procedure QWebPage_hook_hook_linkClicked(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_linkClicked';
-procedure QWebPage_hook_hook_toolBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_toolBarVisibilityChangeRequested';
-procedure QWebPage_hook_hook_statusBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_statusBarVisibilityChangeRequested';
-procedure QWebPage_hook_hook_menuBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_menuBarVisibilityChangeRequested';
-procedure QWebPage_hook_hook_unsupportedContent(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_unsupportedContent';
-procedure QWebPage_hook_hook_downloadRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_downloadRequested';
-procedure QWebPage_hook_hook_microFocusChanged(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_microFocusChanged';
-procedure QWebPage_hook_hook_contentsChanged(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_contentsChanged';
-procedure QWebPage_hook_hook_databaseQuotaExceeded(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_databaseQuotaExceeded';
-procedure QWebPage_hook_hook_saveFrameStateRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_saveFrameStateRequested';
-procedure QWebPage_hook_hook_restoreFrameStateRequested(handle: QWebPage_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebPage_hook_hook_restoreFrameStateRequested';
+procedure QWebPage_hook_hook_loadStarted(handle: QWebPage_hookH; hook: QWebPage_loadStarted_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_loadStarted';
+procedure QWebPage_hook_hook_loadProgress(handle: QWebPage_hookH; hook: QWebPage_loadProgress_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_loadProgress';
+procedure QWebPage_hook_hook_loadFinished(handle: QWebPage_hookH; hook: QWebPage_loadFinished_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_loadFinished';
+procedure QWebPage_hook_hook_linkHovered(handle: QWebPage_hookH; hook: QWebPage_linkHovered_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_linkHovered';
+procedure QWebPage_hook_hook_statusBarMessage(handle: QWebPage_hookH; hook: QWebPage_statusBarMessage_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_statusBarMessage';
+procedure QWebPage_hook_hook_selectionChanged(handle: QWebPage_hookH; hook: QWebPage_selectionChanged_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_selectionChanged';
+procedure QWebPage_hook_hook_frameCreated(handle: QWebPage_hookH; hook: QWebPage_frameCreated_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_frameCreated';
+procedure QWebPage_hook_hook_geometryChangeRequested(handle: QWebPage_hookH; hook: QWebPage_geometryChangeRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_geometryChangeRequested';
+procedure QWebPage_hook_hook_repaintRequested(handle: QWebPage_hookH; hook: QWebPage_repaintRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_repaintRequested';
+procedure QWebPage_hook_hook_scrollRequested(handle: QWebPage_hookH; hook: QWebPage_scrollRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_scrollRequested';
+procedure QWebPage_hook_hook_windowCloseRequested(handle: QWebPage_hookH; hook: QWebPage_windowCloseRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_windowCloseRequested';
+procedure QWebPage_hook_hook_printRequested(handle: QWebPage_hookH; hook: QWebPage_printRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_printRequested';
+procedure QWebPage_hook_hook_linkClicked(handle: QWebPage_hookH; hook: QWebPage_linkClicked_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_linkClicked';
+procedure QWebPage_hook_hook_toolBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QWebPage_toolBarVisibilityChangeRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_toolBarVisibilityChangeRequested';
+procedure QWebPage_hook_hook_statusBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QWebPage_statusBarVisibilityChangeRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_statusBarVisibilityChangeRequested';
+procedure QWebPage_hook_hook_menuBarVisibilityChangeRequested(handle: QWebPage_hookH; hook: QWebPage_menuBarVisibilityChangeRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_menuBarVisibilityChangeRequested';
+procedure QWebPage_hook_hook_unsupportedContent(handle: QWebPage_hookH; hook: QWebPage_unsupportedContent_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_unsupportedContent';
+procedure QWebPage_hook_hook_downloadRequested(handle: QWebPage_hookH; hook: QWebPage_downloadRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_downloadRequested';
+procedure QWebPage_hook_hook_microFocusChanged(handle: QWebPage_hookH; hook: QWebPage_microFocusChanged_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_microFocusChanged';
+procedure QWebPage_hook_hook_contentsChanged(handle: QWebPage_hookH; hook: QWebPage_contentsChanged_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_contentsChanged';
+procedure QWebPage_hook_hook_databaseQuotaExceeded(handle: QWebPage_hookH; hook: QWebPage_databaseQuotaExceeded_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_databaseQuotaExceeded';
+procedure QWebPage_hook_hook_saveFrameStateRequested(handle: QWebPage_hookH; hook: QWebPage_saveFrameStateRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_saveFrameStateRequested';
+procedure QWebPage_hook_hook_restoreFrameStateRequested(handle: QWebPage_hookH; hook: QWebPage_restoreFrameStateRequested_Event); cdecl; external QtIntf name 'QWebPage_hook_hook_restoreFrameStateRequested';
 
 function QWebSettings_hook_create(handle: QObjectH): QWebSettings_hookH; cdecl; external QtIntf name 'QWebSettings_hook_create';
 procedure QWebSettings_hook_destroy(handle: QWebSettings_hookH); cdecl; external QtIntf name 'QWebSettings_hook_destroy'; 
 
 function QWebView_hook_create(handle: QObjectH): QWebView_hookH; cdecl; external QtIntf name 'QWebView_hook_create';
 procedure QWebView_hook_destroy(handle: QWebView_hookH); cdecl; external QtIntf name 'QWebView_hook_destroy'; 
-procedure QWebView_hook_hook_loadStarted(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_loadStarted';
-procedure QWebView_hook_hook_loadProgress(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_loadProgress';
-procedure QWebView_hook_hook_loadFinished(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_loadFinished';
-procedure QWebView_hook_hook_titleChanged(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_titleChanged';
-procedure QWebView_hook_hook_statusBarMessage(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_statusBarMessage';
-procedure QWebView_hook_hook_linkClicked(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_linkClicked';
-procedure QWebView_hook_hook_selectionChanged(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_selectionChanged';
-procedure QWebView_hook_hook_iconChanged(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_iconChanged';
-procedure QWebView_hook_hook_urlChanged(handle: QWebView_hookH; hook: QHookH); cdecl; external QtIntf name 'QWebView_hook_hook_urlChanged';
+procedure QWebView_hook_hook_loadStarted(handle: QWebView_hookH; hook: QWebView_loadStarted_Event); cdecl; external QtIntf name 'QWebView_hook_hook_loadStarted';
+procedure QWebView_hook_hook_loadProgress(handle: QWebView_hookH; hook: QWebView_loadProgress_Event); cdecl; external QtIntf name 'QWebView_hook_hook_loadProgress';
+procedure QWebView_hook_hook_loadFinished(handle: QWebView_hookH; hook: QWebView_loadFinished_Event); cdecl; external QtIntf name 'QWebView_hook_hook_loadFinished';
+procedure QWebView_hook_hook_titleChanged(handle: QWebView_hookH; hook: QWebView_titleChanged_Event); cdecl; external QtIntf name 'QWebView_hook_hook_titleChanged';
+procedure QWebView_hook_hook_statusBarMessage(handle: QWebView_hookH; hook: QWebView_statusBarMessage_Event); cdecl; external QtIntf name 'QWebView_hook_hook_statusBarMessage';
+procedure QWebView_hook_hook_linkClicked(handle: QWebView_hookH; hook: QWebView_linkClicked_Event); cdecl; external QtIntf name 'QWebView_hook_hook_linkClicked';
+procedure QWebView_hook_hook_selectionChanged(handle: QWebView_hookH; hook: QWebView_selectionChanged_Event); cdecl; external QtIntf name 'QWebView_hook_hook_selectionChanged';
+procedure QWebView_hook_hook_iconChanged(handle: QWebView_hookH; hook: QWebView_iconChanged_Event); cdecl; external QtIntf name 'QWebView_hook_hook_iconChanged';
+procedure QWebView_hook_hook_urlChanged(handle: QWebView_hookH; hook: QWebView_urlChanged_Event); cdecl; external QtIntf name 'QWebView_hook_hook_urlChanged';
 
 procedure q_DrawShadeRect(p: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; pal: QPaletteH; sunken: Boolean = False; lineWidth: Integer = 1; midLineWidth: Integer = 0; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawShadeRect';
 procedure q_DrawShadeRect(p: QPainterH; r: PRect; pal: QPaletteH; sunken: Boolean = False; lineWidth: Integer = 1; midLineWidth: Integer = 0; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawShadeRect2';

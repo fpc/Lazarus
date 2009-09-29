@@ -2857,11 +2857,7 @@ begin
   if FCachedColors[nIndex] = nil then
   begin
     case nIndex of
-      {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
       COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      {$ELSE}
-      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
-      {$ENDIF}
       COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
       COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
       COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
@@ -2878,13 +2874,8 @@ begin
       COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
       COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
       COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-      {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
       COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
       COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
-      {$ELSE}
-      COLOR_INFOTEXT                : Result:=GetClInfo(False);
-      COLOR_INFOBK                  : Result:=GetClInfo(True);
-      {$ENDIF}
       COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
 
       // qt does not provide any methods to retrieve titlebar colors

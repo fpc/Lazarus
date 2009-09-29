@@ -47,9 +47,7 @@ type
     FInEventCount: Integer;
     FReleaseInEvent: Boolean;
   public
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater: Boolean;
-    {$ENDIF}
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
     constructor Create; virtual; overload;
@@ -750,9 +748,7 @@ end;
 
 constructor TQtObject.Create;
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := False;
-  {$ENDIF}
   FEventHook := nil;
   FUpdateCount := 0;
   FInEventCount := 0;
@@ -763,17 +759,11 @@ destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
   begin
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     DetachEvents;
     if FDeleteLater then
       QObject_deleteLater(TheObject)
     else
       QObject_destroy(TheObject);
-    {$ELSE}
-    QCoreApplication_removePostedEvents(TheObject);
-    DetachEvents;
-    QObject_deleteLater(TheObject);
-    {$ENDIF}
     TheObject := nil;
   end;
   inherited Destroy;
@@ -783,21 +773,16 @@ procedure TQtObject.Release;
 begin
   if InEvent then
   begin
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater := True;
-    {$ENDIF}
     FReleaseInEvent := True;
   end else
     Free;
 end;
 
 procedure TQtObject.AttachEvents;
-var
-  Method: TMethod;
 begin
   FEventHook := QObject_hook_create(TheObject);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FEventHook, Method);
+  QObject_hook_hook_events(FEventHook, @EventFilter);
 end;
 
 procedure TQtObject.DetachEvents;
@@ -2814,8 +2799,6 @@ end;
 { TQtSystemTrayIcon }
 
 constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
-var
-  Method: TMethod;
 begin
   inherited Create;
 
@@ -2824,8 +2807,7 @@ begin
   else
     Handle := QSystemTrayIcon_create();
   FHook := QSystemTrayIcon_hook_create(Handle);
-  QSystemTrayIcon_activated_Event(Method) := @signalActivated;
-  QSystemTrayIcon_hook_hook_activated(FHook, Method);
+  QSystemTrayIcon_hook_hook_activated(FHook, @signalActivated);
 end;
 
 destructor TQtSystemTrayIcon.Destroy;
@@ -2993,13 +2975,10 @@ begin
 end;
 
 procedure TQtClipboard.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FClipDataChangedHook := QClipboard_hook_create(TheObject);
-  QClipboard_dataChanged_Event(Method) := @signalDataChanged;
-  QClipboard_hook_hook_dataChanged(FClipDataChangedHook, Method);
+  QClipboard_hook_hook_dataChanged(FClipDataChangedHook, @signalDataChanged);
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
@@ -3529,9 +3508,7 @@ constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 begin
   inherited Create;
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
-  {$ENDIF}
   FAppObject := App;
 
   FCallbackFunc := TimerFunc;
@@ -3567,20 +3544,15 @@ begin
 end;
 
 procedure TQtTimer.AttachEvents;
-var
-  Method: TMethod;
 begin
   FTimerHook := QTimer_hook_create(QTimerH(TheObject));
-  QTimer_timeout_Event(Method) := @signalTimeout;
-  QTimer_hook_hook_timeout(FTimerHook, Method);
+  QTimer_hook_hook_timeout(FTimerHook, @signalTimeout);
   inherited AttachEvents;
 end;
 
 procedure TQtTimer.DetachEvents;
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QTimer_stop(QTimerH(TheObject));
-  {$ENDIF}
   if FTimerHook <> nil then
     QTimer_hook_destroy(FTimerHook);
   inherited DetachEvents;
@@ -3727,7 +3699,7 @@ begin
   FWidgetRole := AWidgetColorRole;
   FTextRole := AWidgetTextColorRole;
   initializeSysColors;
-  {$IFDEF USE_QT_45}
+
   // ugly qt mac bug
   {$IFDEF DARWIN}
   if QWidget_backgroundRole(FWidget) <> FWidgetRole then
@@ -3736,7 +3708,7 @@ begin
     QWidget_setForegroundRole(FWidget, FTextRole);
   end;
   {$ENDIF}
-  {$ENDIF}
+
   FHandle := QPalette_create();
 end;
 

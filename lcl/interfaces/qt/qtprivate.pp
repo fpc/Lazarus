@@ -232,8 +232,6 @@ end;
   Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
-var
-  Method: TMethod;
 begin
   inherited Create;
 
@@ -250,8 +248,7 @@ begin
   // Callback Event
   {Method := MemoChanged;   }
   FTextChangedHook := QTextEdit_hook_create(FQtTextEdit);
-  QTextEdit_textChanged_Event(Method) := @TextChangedHandler;
-  QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
+  QTextEdit_hook_hook_textChanged(FTextChangedHook, @TextChangedHandler);
 end;
 
 {------------------------------------------------------------------------------
