@@ -40,6 +40,9 @@ uses
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs,
   LCLProc, FileUtil, IDEProcs, MacroIntf, EnvironmentOpts, PackageDefs, LazConf;
   
+const
+  PkgLinksFileVersion = 2;
+
 type
 
   { TPackageLink
@@ -452,6 +455,7 @@ var
   i: Integer;
   NewPkgLink: TPackageLink;
   ItemPath: String;
+  FileVersion: LongInt;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsUserLinksNeedUpdate);
@@ -470,11 +474,13 @@ begin
   
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
+  FileVersion:=PkgLinksFileVersion;
   XMLConfig:=nil;
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
     
     Path:='UserPkgLinks/';
+    FileVersion:=XMLConfig.GetValue(Path+'Version',0);
     LinkCount:=XMLConfig.GetValue(Path+'Count',0);
     for i:=1 to LinkCount do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
@@ -523,7 +529,7 @@ begin
     end;
   end;
   RemoveOldUserLinks;
-  Modified:=false;
+  Modified:=FileVersion<>PkgLinksFileVersion;
 end;
 
 procedure TPackageLinks.UpdateAll;
@@ -581,6 +587,8 @@ var
   ANode: TAVLTreeNode;
   ItemPath: String;
   i: Integer;
+  LazSrcDir: String;
+  AFilename: String;
 begin
   ConfigFilename:=GetUserLinkFile;
   
@@ -590,6 +598,8 @@ begin
   and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
     exit;
   //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename]);
+
+  LazSrcDir:=EnvironmentOptions.LazarusDirectory;
 
   XMLConfig:=nil;
   try
@@ -604,7 +614,15 @@ begin
       CurPkgLink:=TPackageLink(ANode.Data);
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
       CurPkgLink.Version.SaveToXMLConfig(XMLConfig,ItemPath+'Version/');
-      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',CurPkgLink.Filename,'');
+
+      // save package files in lazarus directory relative
+      AFilename:=CurPkgLink.Filename;
+      if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
+        AFilename:=CreateRelativePath(AFilename,LazSrcDir);
+        //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
+      end;
+      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
+
       XMLConfig.SetDeleteValue(ItemPath+'LastCheckValid/Value',
                                CurPkgLink.LastCheckValid,false);
       if CurPkgLink.LastCheckValid then

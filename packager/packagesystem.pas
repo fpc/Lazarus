@@ -56,8 +56,8 @@ uses
   // package registration
   LazarusPackageIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, DialogProcs,
-  IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
+  LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
+  DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
@@ -450,6 +450,10 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
+    if not FilenameIsAbsolute(AFilename) then begin
+      // a package in the lazarus sources
+      AFilename:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+AFilename);
+    end;
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
