@@ -1,8 +1,8 @@
-lazarus (0.9.27-0) unstable; urgency=low
+lazarus (0.9.28-0) unstable; urgency=low
 
-  * Snapshot building.
+  * New release.
 
- -- Mazen Neifer <mazen@freepascal.org>  Mon, 28 Apr 2009 22:33:00 +0200
+ -- Vincent Snijders <vincents@freepascal.org>  Tue, 29 Sep 2009 20:10:00 +0200
 
 lazarus (0.9.26.2-3) unstable; urgency=low
 
