@@ -3507,7 +3507,7 @@ begin
   //DbgDumpBitmap(Mask, 'StretchMaskBlt - Mask');
 
   // check if the Src has an alpha channel
-  bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
+  Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
   HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
           and (WinBmp.bmBitsPixel = 32)

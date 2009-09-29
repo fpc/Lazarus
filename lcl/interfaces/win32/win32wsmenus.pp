@@ -707,9 +707,18 @@ begin
       IconSize := AMenuItem.GetIconSize;
       ImageRect.Left := (ImageRect.Left + ImageRect.Right - IconSize.x) div 2;
       ImageRect.Top := (ImageRect.Top + ImageRect.Bottom - IconSize.y) div 2;
+      if IsRightToLeft then
+      begin
+        // we can't use RTL layout here since our imagelist does not support
+        // coordinates mirroring
+        SetLayout(AHDC, 0);
+        ImageRect.Left := ARect.Right - ImageRect.Left - IconSize.x;
+      end;
       ImageRect.Right := IconSize.x;
       ImageRect.Bottom := IconSize.y;
       DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+      if IsRightToLeft then
+        SetLayout(AHDC, LAYOUT_RTL);
     end
     else
     if AMenuItem.Checked then
@@ -720,16 +729,29 @@ begin
       ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
     end;
     // draw text
-    TextRect := GutterRect;
-    TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
-    TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
-    TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
-    TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
     TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
     // todo: distinct UseRightToLeftAlignment and UseRightToLeftReading
-    TextFlags := TextFlags or DT_LEFT;
     if IsRightToLeft then
-      TextFlags := TextFlags or DT_RTLREADING;
+    begin
+      // restore layout before the text drawing since windows has bug with
+      // DT_RTLREADING support
+      SetLayout(AHDC, 0);
+      TextFlags := TextFlags or DT_RIGHT or DT_RTLREADING;
+      TextRect.Right := ARect.Right - GutterRect.Right - Metrics.TextMargins.cxLeftWidth;
+      TextRect.Left := ARect.Left + Metrics.TextMargins.cxRightWidth;
+      TextRect.Top := (GutterRect.Top + GutterRect.Bottom - Metrics.TextSize.cy) div 2;
+      TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+    end
+    else
+    begin
+      TextFlags := TextFlags or DT_LEFT;
+      TextRect := GutterRect;
+      TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
+      TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
+      TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
+      TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+    end;
+
     if ANoAccel then
       TextFlags := TextFlags or DT_HIDEPREFIX;
     if AMenuItem.Default then
@@ -737,11 +759,21 @@ begin
     else
       AFont := GetMenuItemFont([]);
     OldFont := SelectObject(AHDC, AFont);
+
     ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
-      TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
-      TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
+      if IsRightToLeft then
+      begin
+        TextRect.Right := TextRect.Left + Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_RIGHT or DT_LEFT;
+      end
+      else
+      begin
+        TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
+      end;
+
       ThemeDrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
     end;
     // exlude menu item rectangle to prevent drawing by windows after us
@@ -1320,15 +1352,13 @@ var
   AppHandle: HWND;
 const
   lAlign: array[Boolean] of DWord = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
-  lLayout: array[Boolean] of DWord = (0, TPM_LAYOUTRTL);
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlign[APopupMenu.IsRightToLeft] or
-    TPM_LEFTBUTTON or TPM_RIGHTBUTTON or
-    lLayout[IsVistaMenu and APopupMenu.IsRightToLeft],
+    TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, nil);
 end;
 
