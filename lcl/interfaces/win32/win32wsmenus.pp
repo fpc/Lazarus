@@ -789,7 +789,6 @@ var
   decoration: TCaptionFlagsSet;
   minimumHeight: Integer;
 begin
-  // TODO: vista menubar
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
@@ -1161,6 +1160,7 @@ begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
     Exit;
 
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   with MenuInfo do
   begin
     cbSize := menuiteminfosize;
@@ -1185,6 +1185,16 @@ begin
     end;
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
+  // MIIM_BITMAP is needed to request new measure item call
+  with MenuInfo do
+  begin
+    fMask := MIIM_BITMAP;
+    dwTypeData := nil;
+  end;
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
+  // set owner drawn
   with MenuInfo do
   begin
     fMask := MIIM_TYPE;
@@ -1193,6 +1203,7 @@ begin
     cch := StrLen(dwTypeData);
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
   TriggerFormUpdate(AMenuItem);
 end;
 
