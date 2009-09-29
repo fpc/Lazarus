@@ -722,12 +722,18 @@ procedure TPackageLinks.IteratePackagesInTree(MustExist: boolean;
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
+  AFilename: String;
 begin
   ANode:=LinkTree.FindLowest;
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
     //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
-    if (not MustExist) or FileExistsUTF8(PkgLink.Filename) then
+    AFilename:=PkgLink.Filename;
+    if not FilenameIsAbsolute(AFilename)
+    and (EnvironmentOptions.LazarusDirectory<>'') then begin
+      AFilename:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+AFilename);
+    end;
+    if (not MustExist) or FileExistsUTF8(AFilename) then
       Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
   end;

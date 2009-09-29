@@ -450,7 +450,8 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
-    if not FilenameIsAbsolute(AFilename) then begin
+    if (not FilenameIsAbsolute(AFilename))
+    and (EnvironmentOptions.LazarusDirectory<>'') then begin
       // a package in the lazarus sources
       AFilename:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+AFilename);
     end;
