@@ -7278,7 +7278,7 @@ msgstr "Seleccionar palabra derecha"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
-msgstr "Establecer Apartador libre"
+msgstr "Establecer Macador libre"
 
 #: lazarusidestrconsts.liskmsetmarker0
 msgid "Set marker 0"
@@ -8345,19 +8345,19 @@ msgstr "Saltar a"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
-msgstr "Saltar a próximo Apartador"
+msgstr "Saltar al marcador siguiente"
 
 #: lazarusidestrconsts.lismenujumptonexterror
 msgid "Jump to next error"
-msgstr "Saltar a próximo error"
+msgstr "Saltar al error siguiente"
 
 #: lazarusidestrconsts.lismenujumptoprevbookmark
 msgid "Jump to previous bookmark"
-msgstr "Saltar a Apartador previo"
+msgstr "Saltar al marcador anterior"
 
 #: lazarusidestrconsts.lismenujumptopreverror
 msgid "Jump to previous error"
-msgstr "Saltar a error previo"
+msgstr "Saltar a error anterior"
 
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase selection"
@@ -8614,7 +8614,7 @@ msgstr "Sleccionar palabra"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgid "Set a free bookmark"
-msgstr "Establecer un Apartador libre"
+msgstr "Establecer un marcador libre"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
@@ -13583,7 +13583,7 @@ msgstr "Mover ventana del editor al último"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
-msgstr "Siguiente Apartador"
+msgstr "Siguiente Marcador"
 
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
@@ -13635,7 +13635,7 @@ msgstr "pausar programa"
 
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
-msgstr "Apartador Anterior"
+msgstr "Marcador Anterior"
 
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
@@ -13781,7 +13781,7 @@ msgstr "Seleccionar palabra derecha"
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr "Establecer un Apartador libre"
+msgstr "Establecer un Marcador libre"
 
 #: lazarusidestrconsts.srkmecsetmarker
 msgid "Set Marker %d"
@@ -14080,7 +14080,7 @@ msgstr "Añadir punto de observación en cursor"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
-msgstr "Apartador"
+msgstr "Marcador"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -14143,7 +14143,7 @@ msgstr "Buscar Referencias a Identificador"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
-msgstr "&Ir al Apartador"
+msgstr "&Ir al Marcador"
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
@@ -14175,7 +14175,7 @@ msgstr "Mover pagina hacia la extrema derecha"
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"
-msgstr "Ir al próximo Apartador"
+msgstr "Ir al próximo Marcador"
 
 #: lazarusidestrconsts.uemodified
 msgid "Modified"
@@ -14192,7 +14192,7 @@ msgstr "Pegar"
 
 #: lazarusidestrconsts.uemprevbookmark
 msgid "Goto previous Bookmark"
-msgstr "Ir al Apartador anterior"
+msgstr "Ir al Marcador anterior"
 
 #: lazarusidestrconsts.uemprocedurejump
 msgid "Procedure Jump"
@@ -14216,12 +14216,12 @@ msgstr "&Ejecutar desde Cursor"
 
 #: lazarusidestrconsts.uemsetbookmark
 msgid "&Set Bookmark"
-msgstr "&Seleccionar Apartador"
+msgstr "&Seleccionar Marcador"
 
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr "Establecer un Apartador libre"
+msgstr "Establecer un Marcador libre"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
@@ -14233,7 +14233,7 @@ msgstr "Información de la unidad"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
-msgstr "&Intercambiar Apartador"
+msgstr "&Intercambiar Marcador"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "&Toggle Breakpoint"
