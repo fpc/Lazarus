@@ -1777,10 +1777,8 @@ var
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
-  if (Result<>0) and (HWnd<>0)
-  and GetLCLClientBoundsOffset(HWnd, ORect) then begin
+  if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
-  end;
   Assert(False, Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
 end;
 
@@ -1808,7 +1806,7 @@ begin
   Result := GetObjectType(PaintDC) = OBJ_DC;
   if not Result then Exit;
   Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
-  if not Result then exit;
+  if not Result then Exit;
   winOrg.X := 0;
   winOrg.Y := 0;
   Result := Windows.ClientToScreen(WindowHandle, winOrg);
