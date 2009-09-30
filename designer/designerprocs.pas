@@ -374,11 +374,14 @@ begin
   begin
     if not GetDCOriginRelativeToWindow(DC, FForm.Handle, FFormOrigin) then
     begin
-      // For some reason we cannot retrieve DC origin. It can happen for exmample
-      // when DC is not controld DC but double buffer DC. Lets use another trick
+      // For some reason we cannot retrieve the DC origin. It can happen for example
+      // when DC is not a control DC but a double buffer DC. Lets use another trick
       if FDCControl <> nil then
       begin
-        AControlOrigin := FDCControl.ClientToScreen(Point(0, 0));
+        if FDCControl.Parent <> nil then
+          AControlOrigin := FDCControl.Parent.ClientToScreen(FDCControl.BoundsRect.TopLeft)
+        else
+          AControlOrigin := FDCControl.ClientToScreen(Point(0, 0));
         FFormOrigin := FForm.ClientToScreen(Point(0, 0));
         FFormOrigin.X := AControlOrigin.X - FFormOrigin.X;
         FFormOrigin.Y := AControlOrigin.Y - FFormOrigin.Y;
