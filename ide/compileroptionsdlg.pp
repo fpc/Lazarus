@@ -1748,7 +1748,9 @@ procedure TfrmCompilerOptions.SetupBuildModesTab(Page: integer);
 begin
   // Setup the Build Modes Tab
   MainNoteBook.Page[Page].Caption:='Build modes';
+  {$IFDEF EnableBuildModes}
   fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+  {$ENDIF}
 
   fBuildModeGrid:=TBuildModesGrid.Create(Self);
   with fBuildModeGrid do begin
