@@ -520,8 +520,7 @@ var
 {$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
-        MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessage(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
+        TWin32ThemeServices(ThemeServices).DrawParentBackground(Window, PaintMsg.DC, nil, False);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (ControlDC = 0) or not needParentPaint then
