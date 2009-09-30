@@ -2021,7 +2021,9 @@ function TControlSelection.AssignPersistent(APersistent: TPersistent): boolean;
 begin
   Result:=not IsOnlySelected(APersistent);
   if not Result then exit;
-  DebugLn(['TControlSelection.AssignPersistent ',DbgSName(APersistent)]);
+  {$IFDEF VerboseDesigner}
+    DebugLn(['TControlSelection.AssignPersistent ',DbgSName(APersistent)]);
+  {$ENDIF}
   BeginUpdate;
   Clear;
   Add(APersistent);
