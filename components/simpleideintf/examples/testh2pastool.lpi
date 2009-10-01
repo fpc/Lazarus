@@ -51,6 +51,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
+    <SearchPaths>
+      <LCLWidgetType Value="nogui"/>
+    </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

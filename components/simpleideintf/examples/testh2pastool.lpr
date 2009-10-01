@@ -24,8 +24,8 @@ program TestH2pasTool;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, H2PasWizard, H2PasConvert, IDETextConverter, SimpleIDEIntf,
-  FileUtil;
+  Interfaces, Classes, SysUtils, H2PasWizard, H2PasConvert, IDETextConverter,
+  SimpleIDEIntf, FileUtil;
 
 procedure TestTReplaceImplicitTypes(Converter: TIDETextConverter);
 var
