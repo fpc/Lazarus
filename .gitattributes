@@ -84,6 +84,7 @@ components/aggpas/interactive_polygon_.pas svneol=native#text/plain
 components/aggpas/lazarus/aggpaslcl.lpk svneol=native#text/plain
 components/aggpas/lazarus/example/AggPasInLCLDemo1.lpi svneol=native#text/plain
 components/aggpas/lazarus/example/AggPasInLCLDemo1.lpr svneol=native#text/plain
+components/aggpas/lazarus/example/AggPasInLCLDemo1.lrs svneol=native#text/plain
 components/aggpas/lazarus/example/unit1.lfm svneol=native#text/plain
 components/aggpas/lazarus/example/unit1.lrs svneol=native#text/plain
 components/aggpas/lazarus/example/unit1.pas svneol=native#text/plain
