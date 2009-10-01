@@ -4067,9 +4067,10 @@ begin
       // some space/comments were skipped
       // -> check if a space must be inserted
       if AddAtom
-      and ((phpCommentsToSpace in Attr)
-      or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
-          and ExtractStreamEndIsIdentChar))
+      and ( ((phpCommentsToSpace in Attr) and (CurPos.StartPos>LastAtomEndPos))
+         or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
+             and ExtractStreamEndIsIdentChar)
+         )
       then begin
         ExtractMemStream.Write(space,1);
         LastStreamPos:=ExtractMemStream.Position;

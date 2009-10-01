@@ -255,6 +255,8 @@ type
           out StartInStringConst, EndInStringConst: boolean): boolean;
     function GetStringConstAsFormatString(StartPos, EndPos: integer;
           out FormatStringConstant, FormatParameters: string): boolean;
+    function ExtractOperand(const CursorPos: TCodeXYPosition;
+          out Operand: string; WithAsOperator: boolean): boolean;
 
     // resource strings
     function GatherResourceStringSections(const CursorPos: TCodeXYPosition;
@@ -3491,6 +3493,25 @@ begin
                        FormatParameters,StartInStringConst,EndInStringConstant);
   if StartInStringConst then ;
   if EndInStringConstant then ;
+end;
+
+function TStandardCodeTool.ExtractOperand(const CursorPos: TCodeXYPosition; out
+  Operand: string; WithAsOperator: boolean): boolean;
+var
+  CleanPos: integer;
+  StartPos: LongInt;
+  EndPos: LongInt;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
+  Node:=FindDeepestNodeAtPos(CleanPos,true);
+  StartPos:=FindStartOfTerm(CleanPos,NodeTermInType(Node));
+  if StartPos<1 then exit;
+  EndPos:=FindEndOfTerm(CleanPos,false,WithAsOperator);
+  if EndPos<1 then exit;
+  Operand:=ExtractCode(StartPos,EndPos,[phpCommentsToSpace]);
+  Result:=true;
 end;
 
 function TStandardCodeTool.GatherResourceStringSections(

@@ -463,6 +463,8 @@ type
           ResolveComments: boolean): boolean;
     function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
           EndX, EndY: integer; const NewCode: string): boolean;
+    function ExtractOperand(Code: TCodeBuffer; X,Y: integer;
+          out Operand: string; WithAsOperator: boolean): boolean;
 
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
@@ -2532,6 +2534,27 @@ begin
   try
     Result:=FCurCodeTool.ReplaceCode(StartCursorPos,EndCursorPos,NewCode,
                                      SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ExtractOperand(Code: TCodeBuffer; X, Y: integer; out
+  Operand: string; WithAsOperator: boolean): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ExtractOperand A ',Code.Filename);
+  {$ENDIF}
+  Operand:='';
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.ExtractOperand(CursorPos,Operand,WithAsOperator);
   except
     on e: Exception do HandleException(e);
   end;
