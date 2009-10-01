@@ -307,6 +307,7 @@ begin
  ey2:=shr_int32(y2 ,poly_subpixel_shift );
  fy1:=y1 and poly_subpixel_mask;
  fy2:=y2 and poly_subpixel_mask;
+ writeln('rasterizer_cells_aa.line x1=',x1,' x2=',x2,' y1=',y1,' y2=',y2,' ex1=',ex1,' ex2=',ex2,' ey1=',ey1,' ey2=',ey1);
 
  if ex1 < m_min_x then
   m_min_x:=ex1;
