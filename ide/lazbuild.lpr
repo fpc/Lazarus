@@ -1117,7 +1117,7 @@ procedure TLazBuildApplication.WriteUsage;
 const
   space = '                      ';
 begin
-  TranslateResourceStrings(ProgramDirectory,'');
+  TranslateResourceStrings(ProgramDirectory(true),'');
   writeln('');
   writeln('lazbuild [options] <project or package-filename>');
   writeln('');
