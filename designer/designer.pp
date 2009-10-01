@@ -1975,7 +1975,9 @@ begin
           // point selection
           PointSelect;
         end;
-      end;
+      end
+      else
+        ControlSelection.UpdateBounds;
     end else
     begin
       // create new a component on the form
