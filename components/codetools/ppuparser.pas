@@ -1856,7 +1856,7 @@ var
   ms: TMemoryStream;
   fs: TFileStream;
 begin
-  fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
+  fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead or fmShareDenyWrite);
   ms:=TMemoryStream.Create;
   try
     ms.Size:=fs.Size;

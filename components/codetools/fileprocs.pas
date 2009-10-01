@@ -1010,7 +1010,7 @@ var fs: TFileStream;
 begin
   Result:=false;
   try
-    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead or fmShareDenyNone);
     try
       // read the first 1024 bytes
       Len:=1024;
