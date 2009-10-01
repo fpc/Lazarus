@@ -312,6 +312,7 @@ components/aggpas/src/platform/win/agg_win32_bmp.pas svneol=native#text/plain
 components/aggpas/src/platform/win/file_utils_.pas svneol=native#text/plain
 components/aggpas/src/svg/agg_svg_exception.pas svneol=native#text/plain
 components/aggpas/src/svg/agg_svg_parser.pas svneol=native#text/plain
+components/aggpas/src/svg/agg_svg_parser_lcl.pas svneol=native#text/plain
 components/aggpas/src/svg/agg_svg_path_renderer.pas svneol=native#text/plain
 components/aggpas/src/svg/agg_svg_path_tokenizer.pas svneol=native#text/plain
 components/aggpas/src/util/agg_color_conv.pas svneol=native#text/plain
