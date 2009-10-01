@@ -410,7 +410,7 @@ begin
 
 end;
 
-{ handleUnknownEncoding {..}
+{ handleUnknownEncoding ..}
 function handleUnknownEncoding(parser : XML_Parser; encodingName : XML_Char_ptr ) : XML_Error;
 begin
 end;
@@ -422,7 +422,7 @@ var
  ok : int;
 
 begin
-{$IFDEF XML_UNICODE {..}
+{$IFDEF XML_UNICODE ..}
 
 
 {$ELSE }
@@ -442,12 +442,12 @@ begin
 
 end;
 
-{ reportDefault {..}
+{ reportDefault ..}
 procedure reportDefault(parser : XML_Parser; enc : ENCODING_ptr; start ,end_ : char_ptr );
 begin
 end;
 
-{ getContext {..}
+{ getContext ..}
 function getContext(parser : XML_Parser ) : XML_Char_ptr;
 begin
 end;
