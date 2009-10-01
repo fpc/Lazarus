@@ -38,9 +38,12 @@
 
 {$ENDIF }
 
+{$IFDEF CPU64}
+{$DEFINE XML_LARGE_SIZE }
+{$ENDIF}
+
 {$IFDEF FPC }
  {$MODE DELPHI }
-
 {$ENDIF }
 
 //----------------------------------------------------------------------------
