@@ -861,6 +861,9 @@ begin
   fIndexView := TListView.Create(fIndexTab);
   with fIndexView do begin
     Parent := fIndexTab;
+    ShowColumnHeaders := False;
+    Columns.Add.AutoSize := True;
+    ViewStyle := vsReport;
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
     AnchorSide[akLeft].Control := fIndexTab;
