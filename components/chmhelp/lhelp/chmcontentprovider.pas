@@ -247,6 +247,7 @@ begin
   fIsUsingHistory := True;
   fHtml.OpenURL(Uri);
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
+
   AddHistory(Uri);
   {WriteLn(iphtml.Aspect);
   iphtml.ScaleFonts := True;
@@ -316,6 +317,8 @@ begin
         Free;
       end;
       Stream.Free;
+      if (fContentsTree.Selected = nil) and (fHistory.Count > 0) then
+        SelectTreeItemFromURL(fHistory.Strings[fHistoryIndex]);
     end;
     fContentsTab.TabVisible := fContentsTree.Items.Count > 1;
 
@@ -824,6 +827,7 @@ begin
     Parent := fContentsPanel;
     Align := alClient;
     BorderSpacing.Around := 6;
+    ReadOnly := True;
     Visible := True;
     OnSelectionChanged := @ContentsTreeSelectionChanged;
     OnExpanded := @TOCExpand;
