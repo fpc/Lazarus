@@ -4963,6 +4963,7 @@ packager/frames/compiler_conditionals_options.lfm svneol=native#text/plain
 packager/frames/compiler_conditionals_options.lrs svneol=native#text/pascal
 packager/frames/compiler_conditionals_options.pas svneol=native#text/plain
 packager/globallinks/README.txt svneol=native#text/plain
+packager/globallinks/aggpaslcl-0.lpl svneol=native#text/plain
 packager/globallinks/appforms-0.lpl svneol=native#text/plain
 packager/globallinks/cgilaz-0.lpl svneol=native#text/plain
 packager/globallinks/chmhelppkg-0.lpl svneol=native#text/plain
