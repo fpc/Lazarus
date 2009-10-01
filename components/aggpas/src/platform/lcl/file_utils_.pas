@@ -10,7 +10,7 @@ INTERFACE
 {$I agg_mode.inc }
 {$I- }
 uses
- agg_basics ;
+ sysutils, FileUtil, agg_basics;
 
 { TYPES DEFINITION }
 type
@@ -77,7 +77,7 @@ type
   );
 
 const
- dir_slash = '/';
+ dir_slash = PathDelim;
 
  pageEqHigh : shortstring =
   #1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16 +
@@ -99,7 +99,7 @@ const
 
 { UNIT IMPLEMENTATION }
 { CUT_STR }
-function cut_str;
+function cut_str(s : shortstring ) : shortstring;
 var
  fcb : byte;
  scn : tSCAN;
@@ -133,14 +133,14 @@ begin
 end;
 
 { CMP_STR }
-function cmp_str;
+function cmp_str(s : shortstring ) : shortstring;
 begin
  cmp_str:=up_str(cut_str(s ) );
 
 end;
 
 { UP_STR }
-function up_str;
+function up_str(s : shortstring ) : shortstring;
 var
  fcb : byte;
 
@@ -155,7 +155,7 @@ begin
 end;
 
 { STR_DIR }
-function str_dir;
+function str_dir(s : shortstring ) : shortstring;
 begin
  s:=cut_str(s );
 
@@ -168,7 +168,7 @@ begin
 end;
 
 { DIR_STR }
-function dir_str;
+function dir_str(s : shortstring ) : shortstring;
 begin
  s:=cut_str(s );
 
@@ -181,7 +181,7 @@ begin
 end;
 
 { STR_DISK }
-function str_disk;
+function str_disk(fn : shortstring ) : shortstring;
 var
  fcb : byte;
  str : shortstring;
@@ -279,7 +279,7 @@ begin
 end;
 
 { STR_PATH }
-function str_path;
+function str_path(fn : shortstring ) : shortstring;
 var
  fcb : byte;
  pth ,
@@ -367,7 +367,7 @@ begin
 end;
 
 { STR_NAME }
-function str_name;
+function str_name(fn : shortstring ) : shortstring;
 var
  fcb : byte;
  str ,
@@ -547,7 +547,7 @@ begin
 end;
 
 { STR_EXT }
-function str_ext;
+function str_ext(fn : shortstring ) : shortstring;
 var
  fcb : byte;
  ext : shortstring;
@@ -639,7 +639,7 @@ begin
 end;
 
 { FOLD_NAME }
-function fold_name;
+function fold_name(p ,n ,x : shortstring ) : shortstring;
 var
  dsk ,
  nme ,
@@ -657,7 +657,7 @@ begin
 end;
 
 { SPREAD_NAME }
-procedure spread_name;
+procedure spread_name(fn : shortstring; var p ,n ,x : shortstring );
 begin
  p:=str_disk(fn ) + str_dir(str_path(fn ) );
  n:=str_name(fn );
@@ -666,7 +666,7 @@ begin
 end;
 
 { FILE_EXISTS }
-function file_exists;
+function file_exists(fn : shortstring ) : boolean;
 var
  f : file;
 
@@ -687,7 +687,7 @@ begin
 end;
 
 { API_OPEN_FILE }
-function api_open_file;
+function api_open_file(var af : api_file; fname : shortstring ) : boolean;
 begin
  result:=false;
 
@@ -705,7 +705,7 @@ begin
   begin
    af.isOpened:=true;
 
-   af.fSize:=filesize(af.df );
+   af.fSize:=System.filesize(af.df );
    af.fRead:=0;
 
   end;
@@ -715,7 +715,7 @@ begin
 end;
 
 { API_READ_FILE }
-function api_read_file;
+function api_read_file(var af : api_file; buff : pointer; aloc : int; var read : int ) : boolean;
 begin
  result:=false;
  read  :=0;
@@ -742,7 +742,7 @@ begin
 end;
 
 { API_CLOSE_FILE }
-function api_close_file;
+function api_close_file(var af : api_file ) : boolean;
 begin
  result:=false;
  
@@ -759,14 +759,14 @@ begin
 end;
 
 { PARAM_COUNT }
-function param_count;
+function param_count: int;
 begin
  result:=ParamCount;
 
 end;
 
 { PARAM_STR }
-function param_str;
+function param_str(i : int ) : shortstring;
 begin
  result:=ParamStr(i );
 

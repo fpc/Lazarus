@@ -8,7 +8,7 @@
       <SearchPaths>
         <IncludeFiles Value="../src/"/>
         <OtherUnitFiles Value="../src/;../src/util/;../src/svg/;../src/ctrl/;../src/platform/lcl/;../expat-pas/"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
@@ -23,7 +23,7 @@
     <License Value="Permission to copy, use, modify, sell and distribute this software is granted provided this copyright notice appears in all copies.
 This software is provided &quot;as is&quot; without express or implied warranty, and with no claim as to its suitability for any purpose."/>
     <Version Major="1"/>
-    <Files Count="211">
+    <Files Count="209">
       <Item1>
         <Filename Value="../src/Agg2D.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -744,154 +744,146 @@ This software is provided &quot;as is&quot; without express or implied warranty,
         <Type Value="Include"/>
       </Item176>
       <Item177>
-        <Filename Value="../src/platform/lcl/agg_linux_mini_libc.pas"/>
-        <UnitName Value="agg_linux_mini_libc"/>
-      </Item177>
-      <Item178>
-        <Filename Value="../src/platform/lcl/agg_platform_support.pas"/>
-        <UnitName Value="agg_platform_support"/>
-      </Item178>
-      <Item179>
         <Filename Value="../src/platform/lcl/file_utils_.pas"/>
         <UnitName Value="file_utils_"/>
-      </Item179>
-      <Item180>
+      </Item177>
+      <Item178>
         <Filename Value="../src/platform/linux/agg_linux_mini_libc.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agg_linux_mini_libc"/>
-      </Item180>
-      <Item181>
+      </Item178>
+      <Item179>
         <Filename Value="../src/platform/linux/agg_platform_support.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agg_platform_support"/>
-      </Item181>
-      <Item182>
+      </Item179>
+      <Item180>
         <Filename Value="../src/platform/linux/file_utils_.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="file_utils_"/>
-      </Item182>
-      <Item183>
+      </Item180>
+      <Item181>
         <Filename Value="../src/platform/mac/agg_mac_pmap.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agg_mac_pmap"/>
+      </Item181>
+      <Item182>
+        <Filename Value="../src/platform/mac/agg_platform_support.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="agg_platform_support"/>
+      </Item182>
+      <Item183>
+        <Filename Value="../src/platform/mac/file_utils_.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="file_utils_"/>
       </Item183>
       <Item184>
-        <Filename Value="../src/platform/mac/agg_platform_support.pas"/>
+        <Filename Value="../src/platform/win/agg_platform_support.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agg_platform_support"/>
       </Item184>
       <Item185>
-        <Filename Value="../src/platform/mac/file_utils_.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="file_utils_"/>
-      </Item185>
-      <Item186>
-        <Filename Value="../src/platform/win/agg_platform_support.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="agg_platform_support"/>
-      </Item186>
-      <Item187>
         <Filename Value="../src/platform/win/agg_win32_bmp.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="agg_win32_bmp"/>
-      </Item187>
-      <Item188>
+      </Item185>
+      <Item186>
         <Filename Value="../src/platform/win/file_utils_.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="file_utils_"/>
-      </Item188>
-      <Item189>
+      </Item186>
+      <Item187>
         <Filename Value="../src/svg/agg_svg_exception.pas"/>
         <UnitName Value="agg_svg_exception"/>
-      </Item189>
-      <Item190>
+      </Item187>
+      <Item188>
         <Filename Value="../src/svg/agg_svg_parser.pas"/>
         <UnitName Value="agg_svg_parser"/>
-      </Item190>
-      <Item191>
+      </Item188>
+      <Item189>
         <Filename Value="../src/svg/agg_svg_path_renderer.pas"/>
         <UnitName Value="agg_svg_path_renderer"/>
-      </Item191>
-      <Item192>
+      </Item189>
+      <Item190>
         <Filename Value="../src/svg/agg_svg_path_tokenizer.pas"/>
         <UnitName Value="agg_svg_path_tokenizer"/>
-      </Item192>
-      <Item193>
+      </Item190>
+      <Item191>
         <Filename Value="../src/util/agg_color_conv.pas"/>
         <UnitName Value="agg_color_conv"/>
+      </Item191>
+      <Item192>
+        <Filename Value="../expat-pas/ascii.inc"/>
+        <Type Value="Include"/>
+      </Item192>
+      <Item193>
+        <Filename Value="../expat-pas/asciitab.inc"/>
+        <Type Value="Include"/>
       </Item193>
       <Item194>
-        <Filename Value="../expat-pas/ascii.inc"/>
+        <Filename Value="../expat-pas/asciitab_bt_colon_.inc"/>
         <Type Value="Include"/>
       </Item194>
       <Item195>
-        <Filename Value="../expat-pas/asciitab.inc"/>
-        <Type Value="Include"/>
-      </Item195>
-      <Item196>
-        <Filename Value="../expat-pas/asciitab_bt_colon_.inc"/>
-        <Type Value="Include"/>
-      </Item196>
-      <Item197>
         <Filename Value="../expat-pas/expat.pas"/>
         <UnitName Value="expat"/>
-      </Item197>
-      <Item198>
+      </Item195>
+      <Item196>
         <Filename Value="../expat-pas/expat_basics.pas"/>
         <UnitName Value="expat_basics"/>
+      </Item196>
+      <Item197>
+        <Filename Value="../expat-pas/expat_external.inc"/>
+        <Type Value="Include"/>
+      </Item197>
+      <Item198>
+        <Filename Value="../expat-pas/expat_external.pas"/>
+        <UnitName Value="expat_external"/>
       </Item198>
       <Item199>
-        <Filename Value="../expat-pas/expat_external.inc"/>
+        <Filename Value="../expat-pas/expat_mode.inc"/>
         <Type Value="Include"/>
       </Item199>
       <Item200>
-        <Filename Value="../expat-pas/expat_external.pas"/>
-        <UnitName Value="expat_external"/>
+        <Filename Value="../expat-pas/iasciitab.inc"/>
+        <Type Value="Include"/>
       </Item200>
       <Item201>
-        <Filename Value="../expat-pas/expat_mode.inc"/>
+        <Filename Value="../expat-pas/iasciitab_bt_colon_.inc"/>
         <Type Value="Include"/>
       </Item201>
       <Item202>
-        <Filename Value="../expat-pas/iasciitab.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../expat-pas/readme.txt"/>
+        <Type Value="Text"/>
       </Item202>
       <Item203>
-        <Filename Value="../expat-pas/iasciitab_bt_colon_.inc"/>
+        <Filename Value="../expat-pas/utf8tab.inc"/>
         <Type Value="Include"/>
       </Item203>
       <Item204>
-        <Filename Value="../expat-pas/readme.txt"/>
-        <Type Value="Text"/>
+        <Filename Value="../expat-pas/winconfig.inc"/>
+        <Type Value="Include"/>
       </Item204>
       <Item205>
-        <Filename Value="../expat-pas/utf8tab.inc"/>
+        <Filename Value="../expat-pas/xmlparse.inc"/>
         <Type Value="Include"/>
       </Item205>
       <Item206>
-        <Filename Value="../expat-pas/winconfig.inc"/>
-        <Type Value="Include"/>
-      </Item206>
-      <Item207>
-        <Filename Value="../expat-pas/xmlparse.inc"/>
-        <Type Value="Include"/>
-      </Item207>
-      <Item208>
         <Filename Value="../expat-pas/xmlrole.pas"/>
         <UnitName Value="xmlrole"/>
-      </Item208>
-      <Item209>
+      </Item206>
+      <Item207>
         <Filename Value="../expat-pas/xmltok.pas"/>
         <UnitName Value="xmltok"/>
-      </Item209>
-      <Item210>
+      </Item207>
+      <Item208>
         <Filename Value="../expat-pas/xmltok_impl.inc"/>
         <Type Value="Include"/>
-      </Item210>
-      <Item211>
+      </Item208>
+      <Item209>
         <Filename Value="../expat-pas/xmltok_ns.inc"/>
         <Type Value="Include"/>
-      </Item211>
+      </Item209>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
