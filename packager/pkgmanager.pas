@@ -2269,6 +2269,7 @@ var
   NewPackage: TLazPackage;
   CurEditor: TPackageEditorForm;
 begin
+  Result:=mrCancel;
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.CreateNewPackage(NameToValidIdentifier(lisPkgMangNewPackage));
   PackageGraph.AddDependencyToPackage(NewPackage,
@@ -2278,7 +2279,8 @@ begin
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
   CurEditor.Show;
-  Result:=mrOk;
+
+  Result:=DoSavePackage(NewPackage,[psfSaveAs]);
 end;
 
 function TPkgManager.DoShowOpenInstalledPckDlg: TModalResult;
