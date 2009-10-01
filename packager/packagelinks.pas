@@ -89,6 +89,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function MakeSense: boolean;
+    function GetEffectiveFilename: string;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property Filename: string read FFilename write SetFilename;
@@ -277,6 +278,14 @@ begin
            and (CompareText(Name,ExtractFileNameOnly(Filename))=0);
 end;
 
+function TPackageLink.GetEffectiveFilename: string;
+begin
+  Result:=Filename;
+  if (not FilenameIsAbsolute(Result))
+  and (EnvironmentOptions.LazarusDirectory<>'') then
+    Result:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+Result);
+end;
+
 { TPackageLinks }
 
 function TPackageLinks.FindLeftMostNode(LinkTree: TAVLTree;
@@ -429,7 +438,11 @@ begin
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(NewFilename);
-      NewPkgLink.Filename:=TrimFilename(NewFilename);
+      NewFilename:=TrimFilename(NewFilename);
+      if (EnvironmentOptions.LazarusDirectory<>'')
+      and (FileIsInDirectory(NewFilename,EnvironmentOptions.LazarusDirectory)) then
+        NewFilename:=CreateRelativePath(NewFilename,EnvironmentOptions.LazarusDirectory);
+      NewPkgLink.Filename:=NewFilename;
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
       //  ' PkgVersion=',NewPkgLink.Version.AsString,
       //  ' Filename="',NewPkgLink.Filename,'"',
@@ -553,7 +566,9 @@ begin
     if NextNode=nil then break;
     OldPkgLink:=TPackageLink(ANode.Data);
     NewPkgLink:=TPackageLink(NextNode.Data);
-    if CompareFilenames(OldPkgLink.Filename,NewPkgLink.Filename)=0 then begin
+    if CompareFilenames(OldPkgLink.GetEffectiveFilename,
+      NewPkgLink.GetEffectiveFilename)=0
+    then begin
       // 2 links to the same file -> delete the older
       //debugln('TPackageLinks.RemoveOldUserLinks Newer=',NewPkgLink.IDAsString,
       // ' Older=',OldPkgLink.IDAsString);
@@ -728,11 +743,7 @@ begin
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
     //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
-    AFilename:=PkgLink.Filename;
-    if not FilenameIsAbsolute(AFilename)
-    and (EnvironmentOptions.LazarusDirectory<>'') then begin
-      AFilename:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+AFilename);
-    end;
+    AFilename:=PkgLink.GetEffectiveFilename;
     if (not MustExist) or FileExistsUTF8(AFilename) then
       Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
@@ -797,7 +808,7 @@ begin
   if (OldLink<>nil) then begin
     // link exists -> check if it is already the right value
     if (OldLink.Compare(APackage)=0)
-    and (OldLink.Filename=APackage.Filename) then begin
+    and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
       Result:=OldLink;
       exit;
     end;
@@ -830,7 +841,7 @@ begin
   OldLink:=FindLinkWithPkgName(PkgName);
   if (OldLink<>nil) then begin
     // link exists
-    if CompareFilenames(OldLink.Filename,PkgFilename)=0 then begin
+    if CompareFilenames(OldLink.GetEffectiveFilename,PkgFilename)=0 then begin
       Result:=OldLink;
       exit;
     end;
