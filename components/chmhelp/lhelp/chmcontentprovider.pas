@@ -68,10 +68,11 @@ type
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
-    procedure SetTitle(const ATitle: String);
+    procedure SetTitle(const AValue: String); override;
     procedure SearchEditChange(Sender: TObject);
     procedure TOCExpand(Sender: TObject; Node: TTreeNode);
     procedure TOCCollapse(Sender: TObject; Node: TTreeNode);
+    procedure SelectTreeItemFromURL(AUrl: String);
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
@@ -294,6 +295,7 @@ begin
   end;
   fFillingToc := True;
   fContentsTree.Visible := False;
+  fContentsPanel.Caption := 'Table of Contents Loading. ' + LineEnding +'Please Wait...';
   Application.ProcessMessages;
   fChm := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
@@ -335,6 +337,7 @@ begin
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
 
   fContentsTree.Visible := True;
+  fContentsPanel.Caption := '';
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
@@ -359,6 +362,7 @@ begin
  if fIsUsingHistory = False then
    AddHistory(TIpChmDataProvider(fHtml.DataProvider).CurrentPage)
  else fIsUsingHistory := False;
+ SelectTreeItemFromURL(TIpChmDataProvider(fHtml.DataProvider).CurrentPage);
 end;
 
 procedure TChmContentProvider.IpHtmlPanelHotChange(Sender: TObject);
@@ -381,10 +385,12 @@ begin
   if not(fContentsTree.Selected is TContentTreeNode) then
   begin
     fChm := TChmReader(fContentsTree.Selected.Data);
+    SetTitle(fChm.Title);
     if fChm.DefaultPage <> '' then
       DoLoadUri(MakeURI(fChm.DefaultPage, fChm));
     Exit;
   end;
+
   ATreeNode := TContentTreeNode(fContentsTree.Selected);
 
   //find the chm associated with this branch
@@ -421,10 +427,11 @@ begin
   //TabPanel.Visible := Splitter1.Visible;
 end;
 
-procedure TChmContentProvider.SetTitle(const ATitle: String);
+procedure TChmContentProvider.SetTitle(const AValue: String);
 begin
   if fHtml.Parent = nil then exit;
-  TTabSheet(fHtml.Parent).Caption := ATitle;
+  TTabSheet(fHtml.Parent).Caption := AValue;
+  inherited SetTitle(AValue);
 end;
 
 procedure TChmContentProvider.SearchEditChange(Sender: TObject);
@@ -463,6 +470,67 @@ begin
     Node.ImageIndex := 1;
     Node.SelectedIndex := 1;
   end;
+end;
+
+procedure TChmContentProvider.SelectTreeItemFromURL(AUrl: String);
+var
+  FileName: String;
+  URL: String;
+  RootNode,
+  FoundNode,
+  Node: TTreeNode;
+  TmpHolder: TNotifyEvent;
+  i: integer;
+begin
+  FileName := GetURIFileName(AUrl);
+  URL      := GetURIURL(AUrl);
+  FoundNode := nil;
+  Node := nil;
+  for i := 0 to fChms.Count-1 do
+  begin
+    if FileName = ExtractFileName(fChms.FileName[i]) then
+    begin
+      SetTitle(fChms.Chm[i].Title);
+
+      RootNode := fContentsTree.Items.FindNodeWithData(fChms.Chm[i]);
+      if URL = fChms.Chm[i].DefaultPage then
+      begin
+        FoundNode := RootNode;
+        Break;
+      end;
+
+      if RootNode <> nil then
+        Node := RootNode.GetFirstChild;
+
+      Break;
+    end;
+
+  end;
+
+  if RootNode = nil then
+    Exit;
+
+  TmpHolder := fContentsTree.OnSelectionChanged;
+  fContentsTree.OnSelectionChanged := nil;
+
+  while (Node<>nil) and (TContentTreeNode(Node).Url<>Url) do
+    Node:=Node.GetNext;
+
+  if (Node <> nil) and (TContentTreeNode(Node).Url = Url) then
+    FoundNode := Node;
+
+  if FoundNode <> nil then
+  begin
+    fContentsTree.Selected := FoundNode;
+    if not FoundNode.IsVisible then
+      FoundNode.MakeVisible;
+  end
+  else
+    fContentsTree.Selected := nil;
+
+  fContentsTree.OnSelectionChanged := TmpHolder;
+
+
 end;
 
 {$IFDEF CHM_SEARCH}
@@ -748,7 +816,7 @@ begin
     Parent := fContentsTab;
     Align := alClient;
     BevelOuter := bvNone;
-    Caption := 'Table of Contents Loading. Please Wait...';
+    Caption := '';
     Visible := True;
   end;
   fContentsTree := TTreeView.Create(fContentsPanel);

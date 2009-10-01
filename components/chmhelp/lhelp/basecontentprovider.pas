@@ -15,8 +15,11 @@ type
   TBaseContentProvider = class(TObject)
   private
     fParent: TWinControl;
+    FTitle: String;
   protected
     fImageList: TImageList;
+    function GetTitle: String; virtual;
+    procedure SetTitle(const AValue: String); virtual;
   public
     function CanGoBack: Boolean; virtual; abstract;
     function CanGoForward: Boolean; virtual; abstract;
@@ -28,6 +31,7 @@ type
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; virtual; abstract;
     constructor Create(AParent: TWinControl; AImageList: TImageList); virtual;
     property Parent: TWinControl read fParent;
+    property Title: String read GetTitle write SetTitle;
   end;
   
 
@@ -75,6 +79,16 @@ end;
 
 
 { TBaseContentProvider }
+
+function TBaseContentProvider.GetTitle: String;
+begin
+  Result := '';
+end;
+
+procedure TBaseContentProvider.SetTitle(const AValue: String);
+begin
+  FTitle := AValue;
+end;
 
 constructor TBaseContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
 begin

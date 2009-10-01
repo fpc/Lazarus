@@ -426,6 +426,7 @@ procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
 begin
   OpenURL(URL^.FString, fContext);
   Dispose(Url);
+  RefreshState;
 end;
 
 function THelpForm.ActivePage: TContentTab;
@@ -443,8 +444,10 @@ begin
   HomeBttn.Enabled := en;
   FileMenuCloseItem.Enabled := en;
   ViewMenuContents.Enabled := en;
-  if en then
-    Caption := 'LHelp - ' + ExtractFileName(OpenDialog1.FileName)
+
+
+  if en and not (csDestroying in ActivePage.ComponentState) then
+    Caption := 'LHelp - ' + ActivePage.fContentProvider.Title
   else
     Caption := 'LHelp';
 end;
