@@ -13517,6 +13517,7 @@ var
   Expression, DebugEval: string;
   BaseURL: String;
 begin
+  //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
 
   SourceNotebook.SetActiveSE(SrcEdit);
@@ -13538,12 +13539,16 @@ begin
     end;
     itDebugger: begin
       Identifier := SrcEdit.GetWordFromCaret(CaretPos);
+      //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource ',Identifier]);
       if Identifier = '' then Exit;
       if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then 
         Expression := SrcEdit.GetText(True)
-      else 
-        Expression := Identifier;
-      if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then 
+      else begin
+        if not CodeToolBoss.ExtractOperand(SrcEdit.CodeBuffer,
+          CaretPos.X,CaretPos.Y,Expression,false) then exit;
+      end;
+      //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expr="',Expression,'"']);
+      if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then
         DebugEval := '???';
       SmartHintStr := Expression + ' = ' + DebugEval;
     end;
