@@ -416,6 +416,7 @@ begin
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
  begin
    PageControl.ActivePage := fNewPage;
+   RefreshState;
    Result := Ord(srSuccess);
  end
  else
