@@ -211,7 +211,7 @@ type
                                  const Filename: string;
                                  UpdateFromDisk, Revert: Boolean;
                                  out CodeBuffer: Pointer): boolean; virtual; abstract;
-    procedure AssignCodeToolBossError(Target: TCustomTextConverterTool); virtual; abstract;
+    procedure AssignCodeToolBossError(Target: TCustomTextConverterTool); virtual;
   end;
   
 var
@@ -958,6 +958,16 @@ procedure TTextConverterToolClasses.FindClass(Reader: TReader;
 begin
   if Reader=nil then ;
   ComponentClass:=FindByName(aClassName);
+end;
+
+procedure TTextConverterToolClasses.AssignCodeToolBossError(
+  Target: TCustomTextConverterTool);
+begin
+  Target.ErrorMsg:='';
+  Target.ErrorLine:=-1;
+  Target.ErrorColumn:=-1;
+  Target.ErrorTopLine:=-1;
+  Target.ErrorFilename:='';
 end;
 
 initialization
