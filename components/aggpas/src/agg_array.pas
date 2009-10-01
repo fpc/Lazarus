@@ -705,6 +705,7 @@ end;
 { ZERO }
 procedure pod_array.zero;
 begin
+ writeln('pod_array.zero m_entry_sz=',m_entry_sz,' m_size=',m_size);
  fillchar(m_array^ ,m_entry_sz * m_size ,0 );
 
 end;
