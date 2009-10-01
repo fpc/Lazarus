@@ -554,19 +554,30 @@ begin
     if IsRightToLeft then
     begin
       BGRect.Left := (Info.rcBar.Left - WndRect.Left);
-      inc(BGRect.Right, 2);
       BGClip.Left := BGRect.Left;
+      if AMenuItem.MenuVisibleIndex = 0 then
+      begin
+        BGRect.Right := (Info.rcBar.Right - WndRect.Left);
+        BGClip.Right := BGRect.Right;
+      end
+      else
+        inc(BGRect.Right, 2);
     end
     else
     begin
       BGRect.Right := (Info.rcBar.Right - WndRect.Left);
-      dec(BGRect.Left, 2);
       BGClip.Right := BGRect.Right;
+      if AMenuItem.MenuVisibleIndex = 0 then
+      begin
+        BGRect.Left := (Info.rcBar.Left - WndRect.Left);
+        BGClip.Left := BGRect.Left;
+      end
+      else
+        dec(BGRect.Left, 2);
     end;
   end
   else
   begin
-    BGRect := ARect;
     if AMenuItem.MenuVisibleIndex > 0 then
     begin
       if IsRightToLeft then
