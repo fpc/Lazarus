@@ -141,7 +141,7 @@ var
 begin
   CurLazDir:=EnvironmentOptions.LazarusDirectory;
   if CurLazDir='' then begin
-    CurLazDir:=ProgramDirectory;
+    CurLazDir:=ProgramDirectory(true);
     if not CheckLazarusDirectory(CurLazDir) then
       CurLazDir:=FindDefaultLazarusSrcDirectory;
   end;
@@ -153,7 +153,7 @@ begin
           ),
         mtWarning,[mbIgnore],0);
     end else begin
-      DefaultLazDir:=ProgramDirectory;
+      DefaultLazDir:=ProgramDirectory(true);
       if CompareFilenames(DefaultLazDir,CurLazDir)<>0 then begin
         r:=MessageDlg(lisLazarusDirectoryNotFound,
            Format(lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou, ['"',

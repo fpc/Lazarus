@@ -225,7 +225,7 @@ procedure StringToStringList(const s: string; List: TStrings);
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 function GetProgramSearchPath: string;
-function ProgramDirectory: string;
+function ProgramDirectory(BundleRoot: boolean): string;
 
 // debugging
 procedure RaiseException(const Msg: string);
@@ -2315,9 +2315,14 @@ begin
   CopyDir(SrcDir,DestDirectory);
 end;
 
-function ProgramDirectory: string;
+function ProgramDirectory(BundleRoot: boolean): string;
+const
+  BundlePostFix='.app/Contents/MacOS';
 begin
   Result:=FileUtil.ProgramDirectory;
+  if BundleRoot
+  and (RightStr(ChompPathDelim(Result),length(BundlePostFix))=BundlePostFix) then
+    Result:=ExtractFilePath(LeftStr(Result,length(Result)-length(BundlePostFix)));
 end;
 
 function CreateEmptyFile(const Filename: string): boolean;

@@ -1027,7 +1027,7 @@ begin
   EnableRemoteControl:=false;
   if IsHelpRequested then
   begin
-    TranslateResourceStrings(ProgramDirectory,'');
+    TranslateResourceStrings(ProgramDirectory(true),'');
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);

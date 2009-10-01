@@ -792,7 +792,7 @@ begin
 
     FileTitles[0]:=lisCodeToolsDefsLazarusDirectory;
     FileDescs[0]:=lisCodeToolsDefsTheLazarusMainDirectory;
-    FileNames[0]:=IDEProcs.ProgramDirectory;
+    FileNames[0]:=IDEProcs.ProgramDirectory(true);
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;

@@ -673,7 +673,7 @@ begin
   FShowMenuGlyphs := sbgSystem;
 
   // files
-  LazarusDirectory:=IDEProcs.ProgramDirectory;
+  LazarusDirectory:=IDEProcs.ProgramDirectory(true);
   FLazarusDirsHistory:=TStringList.Create;
   CompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
@@ -918,7 +918,7 @@ begin
       LoadRecentList(XMLConfig,FLazarusDirsHistory,
          Path+'LazarusDirectory/History/');
       if FLazarusDirsHistory.Count=0 then begin
-        FLazarusDirsHistory.Add(ProgramDirectory);
+        FLazarusDirsHistory.Add(ProgramDirectory(true));
       end;
       CompilerFilename:=TrimFilename(XMLConfig.GetValue(
          Path+'CompilerFilename/Value',FCompilerFilename));

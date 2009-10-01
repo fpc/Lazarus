@@ -174,7 +174,7 @@ begin
   with LazarusDirComboBox.Items do
   begin
     BeginUpdate;
-    Add(ProgramDirectory);
+    Add(ProgramDirectory(true));
     EndUpdate;
   end;
 
