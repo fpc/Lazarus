@@ -13543,10 +13543,10 @@ begin
       if Identifier = '' then Exit;
       if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then 
         Expression := SrcEdit.GetText(True)
-      else begin
-        if not CodeToolBoss.ExtractOperand(SrcEdit.CodeBuffer,
-          CaretPos.X,CaretPos.Y,Expression,false) then exit;
-      end;
+      else
+      if not CodeToolBoss.ExtractOperand(SrcEdit.CodeBuffer,
+         CaretPos.X,CaretPos.Y,Expression,false) then
+        Expression := Identifier;
       //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expr="',Expression,'"']);
       if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then
         DebugEval := '???';
