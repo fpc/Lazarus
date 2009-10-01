@@ -7,7 +7,7 @@
       <Version Value="8"/>
       <SearchPaths>
         <IncludeFiles Value="../src/"/>
-        <OtherUnitFiles Value="../src/;../src/util/;../src/svg/;../src/ctrl/;../src/platform/lcl/;../expat-pas/"/>
+        <OtherUnitFiles Value="../src/;../src/util/;../src/svg/;../src/ctrl/;../expat-pas/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
