@@ -183,7 +183,7 @@ constructor scanline_u8.Construct;
 begin
  m_min_x  :=0;
  m_max_len:=0;
- m_last_x :=$7FFFFFF0;
+ m_last_x :=high(m_last_x);
 
  m_covers  :=NIL;
  m_spans   :=NIL;
@@ -219,7 +219,7 @@ begin
 
   end;
 
- m_last_x  :=$7FFFFFF0;
+ m_last_x  :=high(m_last_x);
  m_min_x   :=min_x;
  m_cur_span:=m_spans;
 
@@ -228,7 +228,7 @@ end;
 { RESET_SPANS }
 procedure scanline_u8.reset_spans;
 begin
- m_last_x  :=$7FFFFFF0;
+ m_last_x  :=high(m_last_x);
  m_cur_span:=m_spans;
 
 end;

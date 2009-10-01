@@ -99,7 +99,7 @@ IMPLEMENTATION
 constructor scanline_bin.Construct;
 begin
  m_max_len:=0;
- m_last_x :=$7FFFFFF0;
+ m_last_x :=high(m_last_x)-15;
 
  m_spans   :=NIL;
  m_cur_span:=NIL;
@@ -130,7 +130,7 @@ begin
 
   end;
 
- m_last_x  :=$7FFFFFF0;
+ m_last_x  :=high(m_last_x)-15;
  m_cur_span:=m_spans;
 
 end;
@@ -138,7 +138,7 @@ end;
 { RESET_SPANS }
 procedure scanline_bin.reset_spans;
 begin
- m_last_x  :=$7FFFFFF0;
+ m_last_x  :=high(m_last_x)-15;
  m_cur_span:=m_spans;
 
 end;

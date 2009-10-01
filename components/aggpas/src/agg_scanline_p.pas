@@ -100,7 +100,7 @@ IMPLEMENTATION
 constructor scanline_p8.Construct;
 begin
  m_max_len:=0;
- m_last_x :=$7FFFFFF0;
+ m_last_x :=high(m_last_x)-15;
 
  m_y:=0;
 
@@ -140,7 +140,7 @@ begin
 
   end;
 
- m_last_x:=$7FFFFFF0;
+ m_last_x:=high(m_last_x)-15;
 
  m_cover_ptr:=m_covers;
  m_cur_span :=m_spans;
@@ -152,7 +152,7 @@ end;
 { RESET_SPANS }
 procedure scanline_p8.reset_spans;
 begin
- m_last_x:=$7FFFFFF0;
+ m_last_x:=high(m_last_x)-15;
 
  m_cover_ptr:=m_covers;
  m_cur_span :=m_spans;

@@ -348,10 +348,10 @@ begin
  m_spans.Construct    (256 - 2 ,sizeof(span_data ) ,10 ); // Block increment size
  m_scanlines.Construct(sizeof(scanline_data ) ,8 );
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
  m_cur_scanline   :=0;
  m_fake_scanline.y:=0;
@@ -378,10 +378,10 @@ begin
  m_scanlines.remove_all;
  m_spans.remove_all;
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
  m_cur_scanline:=0;
 
@@ -827,10 +827,10 @@ begin
  m_dx:=0;
  m_dy:=0;
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
 end;
 
@@ -844,10 +844,10 @@ begin
  m_dx:=trunc(dx + 0.5 );
  m_dy:=trunc(dy + 0.5 );
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
 end;
 
@@ -861,10 +861,10 @@ begin
  m_dx:=trunc(dx + 0.5 );
  m_dy:=trunc(dy + 0.5 );
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
 end;
 

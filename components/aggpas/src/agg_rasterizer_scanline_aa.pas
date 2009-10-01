@@ -337,10 +337,10 @@ begin
 
  m_cur_x:=0;
  m_cur_y:=0;
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
  m_sorted:=false;
 
@@ -421,10 +421,10 @@ begin
 
  m_sorted:=false;
 
- m_min_x:=$7FFFFFFF;
- m_min_y:=$7FFFFFFF;
- m_max_x:=-$7FFFFFFF;
- m_max_y:=-$7FFFFFFF;
+ m_min_x:=high(m_min_x);
+ m_min_y:=high(m_min_y);
+ m_max_x:=low(m_max_x);
+ m_max_y:=low(m_max_y);
 
 end;
 
