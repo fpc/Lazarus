@@ -255,7 +255,7 @@ end;
 procedure TPackageLink.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
-  FFilename:=CleanAndExpandFilename(AValue);
+  FFilename:=TrimFilename(AValue);
 end;
 
 constructor TPackageLink.Create;
