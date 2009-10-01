@@ -2,12 +2,12 @@ unit chmcontentprovider;
 
 {$mode objfpc}{$H+}
 
-{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
+//{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
-{$else}
-{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
-{$endif}
+//{$else}
+//{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
+//{$endif}
 
 {off $DEFINE CHM_DEBUG_TIME}
 {off $DEFINE CHM_SEARCH}
@@ -76,6 +76,7 @@ type
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
+    procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     {$ENDIF}
   public
     function CanGoBack: Boolean; override;
@@ -95,7 +96,7 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF};
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, LCLType;
 
 function GetURIFileName(AURI: String): String;
 var
@@ -296,7 +297,7 @@ begin
   end;
   fFillingToc := True;
   fContentsTree.Visible := False;
-  fContentsPanel.Caption := 'Table of Contents Loading. ' + LineEnding +'Please Wait...';
+  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
   Application.ProcessMessages;
   fChm := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
@@ -402,8 +403,13 @@ begin
     ARootNode := ARootNode.Parent;
 
   fChm := TChmReader(ARootNode.Data);
-  if ATreeNode.Url <> '' then begin
-    DoLoadUri(MakeURI(ATreeNode.Url, fChm));
+  try
+    fContentsTree.OnSelectionChanged := nil;
+    if ATreeNode.Url <> '' then begin
+      DoLoadUri(MakeURI(ATreeNode.Url, fChm));
+    end;
+  finally
+    fContentsTree.OnSelectionChanged := @ContentsTreeSelectionChanged;
   end;
 end;
 
@@ -485,6 +491,8 @@ var
   TmpHolder: TNotifyEvent;
   i: integer;
 begin
+  if fContentsTree.OnSelectionChanged = nil then
+    Exit; // the change was a response to a click and should be ignored
   FileName := GetURIFileName(AUrl);
   URL      := GetURIURL(AUrl);
   FoundNode := nil;
@@ -537,6 +545,15 @@ begin
 end;
 
 {$IFDEF CHM_SEARCH}
+
+procedure TChmContentProvider.SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case key of
+    VK_RETURN: SearchButtonClick(nil);
+
+  end;
+end;
+
 procedure TChmContentProvider.SearchButtonClick ( Sender: TObject ) ;
 type
   TTopicEntry = record
@@ -820,6 +837,7 @@ begin
     Align := alClient;
     BevelOuter := bvNone;
     Caption := '';
+
     Visible := True;
   end;
   fContentsTree := TTreeView.Create(fContentsPanel);
@@ -862,8 +880,14 @@ begin
   with fIndexView do begin
     Parent := fIndexTab;
     ShowColumnHeaders := False;
-    Columns.Add.AutoSize := True;
-    ViewStyle := vsReport;
+    with Columns.Add do
+    begin
+      Width := 400; {$NOTE TListView.Column.AutoSize does not seem to work}
+      AutoSize := True;
+    end;
+
+
+
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
     AnchorSide[akLeft].Control := fIndexTab;
@@ -878,7 +902,7 @@ begin
     ReadOnly := True;
   end;
 
-  {$IFDEF CHM_SEARCH}
+ // {$IFDEF CHM_SEARCH}
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do begin
     Caption := 'Search';
@@ -903,6 +927,7 @@ begin
     AnchorSide[akRight].Side := asrBottom;
     AnchorSide[akTop].Control := fKeywordLabel;
     AnchorSide[akTop].Side := asrBottom;
+    OnKeyDown  := @SearchComboKeyDown;
   end;
 
   fSearchBtn := TButton.Create(fSearchTab);
@@ -959,7 +984,7 @@ begin
     {$ENDIF}
     OnDblClick := @SearchResultsDblClick;
   end;
-  {$ENDIF}
+ // {$ENDIF}
 
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin
