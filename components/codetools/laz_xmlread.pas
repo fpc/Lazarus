@@ -1355,8 +1355,8 @@ var
   MemStream: TMemoryStream;
 begin
   ADoc := nil;
-  FileStream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
-  if FileStream=nil then exit;
+  FileStream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyWrite);
+  if FileStream = nil then exit;
   MemStream := TMemoryStream.Create;
   try
     MemStream.LoadFromStream(FileStream);
@@ -1426,7 +1426,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyWrite);
   try
     ReadXMLFragment(AParentNode, Stream, AFilename);
   finally
@@ -1497,7 +1497,7 @@ var
   Stream: TStream;
 begin
   ADoc := nil;
-  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyWrite);
   try
     ReadDTDFile(ADoc, Stream, AFilename);
   finally
