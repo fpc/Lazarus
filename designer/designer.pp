@@ -1909,9 +1909,8 @@ var
 
   procedure DisableRubberBand;
   begin
-    if ControlSelection.RubberbandActive then begin
-      ControlSelection.RubberbandActive:=false;
-    end;
+    if ControlSelection.RubberbandActive then
+      ControlSelection.RubberbandActive := False;
   end;
 
 var
@@ -1952,30 +1951,40 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  if Mediator<>nil then begin
+  if Mediator<>nil then
+  begin
     Handled:=false;
     Mediator.MouseUp(Button,Shift,MouseUpPos,Handled);
     if Handled then exit;
   end;
 
-  if Button=mbLeft then begin
-    if SelectedCompClass = nil then begin
+  if Button=mbLeft then
+  begin
+    if SelectedCompClass = nil then
+    begin
       // layout mode (selection, moving and resizing)
-      if not (dfHasSized in FFlags) then begin
+      if not (dfHasSized in FFlags) then
+      begin
         // new selection
-        if RubberBandWasActive then begin
+        if RubberBandWasActive then
+        begin
           // rubberband selection
           RubberbandSelect;
-        end else begin
+        end else
+        begin
           // point selection
           PointSelect;
         end;
       end;
-    end else begin
+    end else
+    begin
       // create new a component on the form
       AddComponent;
     end;
-  end else if Button=mbRight then begin
+  end
+  else
+  if Button=mbRight then
+  begin
     // right click -> popup menu
     DisableRubberBand;
     if EnvironmentOptions.RightClickSelects
