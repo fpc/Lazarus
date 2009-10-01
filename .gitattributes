@@ -167,6 +167,7 @@ components/aggpas/src/agg_glyph_raster_bin.pas svneol=native#text/plain
 components/aggpas/src/agg_gradient_lut.pas svneol=native#text/plain
 components/aggpas/src/agg_gsv_text.pas svneol=native#text/plain
 components/aggpas/src/agg_image_filters.pas svneol=native#text/plain
+components/aggpas/src/agg_lcl.pas svneol=native#text/plain
 components/aggpas/src/agg_line_aa_basics.pas svneol=native#text/plain
 components/aggpas/src/agg_math.pas svneol=native#text/plain
 components/aggpas/src/agg_math_stroke.pas svneol=native#text/plain
