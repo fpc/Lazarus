@@ -33,7 +33,7 @@ type
   { TLazyTextConverterToolClasses }
 
   TLazyTextConverterToolClasses = class(TTextConverterToolClasses)
-  protected
+  public
     function SupportsType(aTextType: TTextConverterType): boolean; override;
     
     function GetTempFilename: string; override;
