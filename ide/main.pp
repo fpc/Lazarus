@@ -1840,7 +1840,7 @@ begin
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
   SourceNotebook.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
-  SourceNotebook.OnShowHintForSource :=@OnSrcNotebookShowHintForSource;
+  SourceNotebook.OnShowHintForSource := @OnSrcNotebookShowHintForSource;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
@@ -13539,13 +13539,12 @@ begin
     itDebugger: begin
       Identifier := SrcEdit.GetWordFromCaret(CaretPos);
       if Identifier = '' then Exit;
-      if SrcEdit.SelectionAvailable
-      and SrcEdit.CaretInSelection(CaretPos)
-      then Expression := SrcEdit.GetText(True)
-      else Expression := Identifier;
-      if not DebugBoss.Evaluate(Expression, DebugEval)
-      or (DebugEval = '')
-      then DebugEval := '???';
+      if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then 
+        Expression := SrcEdit.GetText(True)
+      else 
+        Expression := Identifier;
+      if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then 
+        DebugEval := '???';
       SmartHintStr := Expression + ' = ' + DebugEval;
     end;
   else

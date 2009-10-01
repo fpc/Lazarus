@@ -3602,7 +3602,7 @@ begin
     DragManager.MouseMove(Shift, P.X, P.Y);
   end;
 
-  if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
+  if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X, Y);
 end;
 
 {------------------------------------------------------------------------------
