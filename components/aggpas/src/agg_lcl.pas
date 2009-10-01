@@ -2,6 +2,8 @@
 unit
  Agg_LCL;
 
+{$mode objfpc}{$H+}
+
 interface
 
 // With this define you can switch use of FreeType or Win32 TrueType font engine

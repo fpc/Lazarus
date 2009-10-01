@@ -223,7 +223,6 @@ This software is provided &quot;as is&quot; without express or implied warranty,
       </Item48>
       <Item49>
         <Filename Value="../src/agg_lcl.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Agg_LCL"/>
       </Item49>
       <Item50>
@@ -895,11 +894,14 @@ This software is provided &quot;as is&quot; without express or implied warranty,
       </Item211>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item1>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
