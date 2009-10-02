@@ -3509,6 +3509,8 @@ begin
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   StartPos:=FindStartOfTerm(CleanPos,NodeTermInType(Node));
   if StartPos<1 then exit;
+  StartPos:=FindNextNonSpace(Src,StartPos);
+  if StartPos>CleanPos then exit;
   EndPos:=FindEndOfTerm(CleanPos,false,WithAsOperator);
   if not WithPostTokens then begin
     MoveCursorToCleanPos(CleanPos);
@@ -3517,6 +3519,7 @@ begin
       EndPos:=CurPos.EndPos;
   end;
   if EndPos<1 then exit;
+  DebugLn(['TStandardCodeTool.ExtractOperand "',dbgstr(copy(Src,StartPos,EndPOs-StartPos)),'"']);
   Operand:=ExtractCode(StartPos,EndPos,[phpCommentsToSpace]);
   Result:=true;
 end;
