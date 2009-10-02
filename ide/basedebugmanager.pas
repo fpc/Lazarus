@@ -121,7 +121,7 @@ type
                                      ): TModalResult; virtual; abstract;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
-    function ShowWatchProperties(const AWatch: TIDEWatch): TModalresult; virtual; abstract;
+    function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger

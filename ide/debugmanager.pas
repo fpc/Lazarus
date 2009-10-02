@@ -181,7 +181,7 @@ type
                         const ASourceMark: TSourceMark): TModalResult; override;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
-    function ShowWatchProperties(const AWatch: TIDEWatch): TModalresult; override;
+    function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; override;
   end;
 
 
@@ -1330,12 +1330,15 @@ begin
   if Assigned(SE) then
   begin
     WatchVar := SE.GetOperandAtCurrentCaret;
-    if (WatchVar <> '') and (SE.EditorComponent.Focused) and (Watches.Find(WatchVar) = nil) and (Watches.Add(WatchVar) = nil) then
-      Exit;
+    if (WatchVar <> '') and SE.EditorComponent.Focused then
+    begin
+       if (Watches.Find(WatchVar) <> nil) or (Watches.Add(WatchVar) <> nil) then
+        Exit;
+    end;
   end;
 
   // watch was not added automatically => show a dialog
-  // todo: dialog
+  ShowWatchProperties(nil, WatchVar);
 end;
 
 //-----------------------------------------------------------------------------
@@ -1938,8 +1941,7 @@ begin
 
     itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
-    itmRunMenuAddWatch.Enabled := (not DebuggerInvalid)
-                              and (dcWatch in FDebugger.Commands);
+    itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
     // TODO: add other debugger menuitems
     // TODO: implement by actions
   end;
@@ -2480,9 +2482,9 @@ begin
   Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
 end;
 
-function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch): TModalresult;
+function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult;
 begin
-  Result := TWatchPropertyDlg.Create(Self, AWatch).ShowModal;
+  Result := TWatchPropertyDlg.Create(Self, AWatch, AWatchExpression).ShowModal;
 end;
 
 procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);

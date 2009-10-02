@@ -63,7 +63,7 @@ type
   private
     FWatch: TIDEWatch;
   public
-    constructor Create(AOWner: TComponent; const AWatch: TIDEWatch); overload;
+    constructor Create(AOWner: TComponent; const AWatch: TIDEWatch; const AWatchExpression: String = ''); overload;
     destructor Destroy; override;
   end;
   
@@ -91,13 +91,15 @@ begin
   ShowContextHelpForIDE(Self);
 end;
 
-constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch);
+constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch;
+  const AWatchExpression: String = '');
 begin
   FWatch := AWatch;
   inherited Create(AOwner);
   if FWatch = nil
   then begin 
     chkEnabled.Checked := True;
+    txtExpression.Text := AWatchExpression;
   end
   else begin
     txtExpression.Text := FWatch.Expression;
