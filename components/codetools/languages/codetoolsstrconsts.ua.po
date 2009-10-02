@@ -464,6 +464,10 @@ msgstr "неправильне значення прапорця \"%s\" для �
 msgid "invalid mode \"%s\""
 msgstr "неправильний режим \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "неправильний піддіапазон"

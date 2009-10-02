@@ -924,6 +924,10 @@ msgstr ""
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr ""
 
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr ""
+
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"

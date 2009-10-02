@@ -926,6 +926,10 @@ msgstr "Die Methode %s%s%s ist zu diesem Event (%s) inkompatibel.%sAbbrechen um 
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Die Methode %s%s%s ist nicht Published.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr ""
+
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"

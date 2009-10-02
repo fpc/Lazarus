@@ -1224,4 +1224,3 @@ msgstr "Klaidingas leksemos simbolis: tikėtasi %s, tačiau rasta %s"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Klaidingas leksemos tipas: tikėtasi %s, tačiau rasta %s"
 
-

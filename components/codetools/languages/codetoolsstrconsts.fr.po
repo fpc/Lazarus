@@ -470,6 +470,10 @@ msgstr "Valeur bascule invalide \"%s\" pour la directive %s"
 msgid "invalid mode \"%s\""
 msgstr "Mode invalide \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "plage non valide"

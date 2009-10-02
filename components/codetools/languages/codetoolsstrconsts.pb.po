@@ -469,6 +469,10 @@ msgstr "valor \"flag\" inválido \"%s\" para diretiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modo inválido \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "subfaixa inválida"

@@ -21,7 +21,9 @@ msgid "Reset all text settings"
 msgstr "すべてのテキスト設定をリセット"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+#, fuzzy
+#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "このページはあなたの現在の設定を代表していません。この先のページをご覧下さい。このページは先に進んだ設定をリセットするのに利用してください。"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
@@ -767,6 +769,10 @@ msgstr "カーソル："
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
 msgstr "カーソルは選択部分をスキップ"
+
+#: lazarusidestrconsts.dlgcursorskipstab
+msgid "Cursor skips tabs"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -3153,6 +3159,10 @@ msgstr "%s をプロジェクトに追加"
 msgid "Add to unit search path?"
 msgstr "ユニット検索パスに追加しますか？"
 
+#: lazarusidestrconsts.lisaddunitinterfaces
+msgid "Add unit interfaces"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "値を追加"
@@ -3253,6 +3263,10 @@ msgstr "代替キー （あるいは２つのキー配列）"
 #: lazarusidestrconsts.lisalways
 msgid "Always"
 msgstr "常に"
+
+#: lazarusidestrconsts.lisalwaysignore
+msgid "Always ignore"
+msgstr ""
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3654,10 +3668,6 @@ msgstr "複数のFreePascalコンパイラがあなたのpathにあります。%
 msgid "Skip"
 msgstr "スキップ"
 
-#: lazarusidestrconsts.lisccospaces
-msgid "spaces"
-msgstr "スペース"
-
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
 msgstr "特殊文字"
@@ -3777,6 +3787,10 @@ msgstr "コントロールを与えられた兄弟に対し水平に中寄せ"
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
 msgstr "コントロールを与えられた兄弟に対し垂直に中寄せ"
+
+#: lazarusidestrconsts.liscenterform
+msgid "Center form"
+msgstr ""
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5376,9 +5390,9 @@ msgstr "ブレークポイントを削除"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "%d行の%s\"%s\"にあるブレークポイントを削除しますか？"
 
-#: lazarusidestrconsts.lisdeletebuildmode
-msgid "Delete build mode %s%s%s?"
-msgstr "構築モード %s%s%sを削除しますか？"
+#: lazarusidestrconsts.lisdeletebuildvar
+msgid "Delete build variable %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -5479,6 +5493,10 @@ msgstr "桁"
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
 msgstr "指令"
+
+#: lazarusidestrconsts.lisdirectorynotfound
+msgid "Directory %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6773,6 +6791,10 @@ msgstr "現在の手続きの名前を挿入"
 msgid "Insert PrintShort tag"
 msgstr "PrintShortタグを挿入"
 
+#: lazarusidestrconsts.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "手続きのヘッドを挿入"
@@ -6826,9 +6848,9 @@ msgstr "選択対象をインストール"
 msgid "Internal Name:"
 msgstr "内部名称："
 
-#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
-msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
-msgstr "無効な構築モード%s%s%s。この構築モードはpascal識別子でなければなりません。"
+#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
+msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -8919,12 +8941,8 @@ msgid "Missing Packages"
 msgstr "見つからないパッケージ"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do!
-  not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "著作権(C)<年><作者名>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundation が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、以下の修正の上、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。修正点は次のとおり：%s特別な例外として、このライブラリの著作権保有者は、あなたが選択した許諾バージョンの条項に拘らず、実行ファイルを作るためにこのライブラリに独立したモジュールをリンクし、作成された実行ファイルを複製し、あなたが選択した許諾バージョンで配布することを、あなたもまたリンクされた独立モジュールについてそのモジュールの許諾の条項と条件に従っている限りにおいて許可�!
- �ます。独立モジュールとは、このライブラリから派生していたり、基づいていないモジュールのことです。もしあなたがこのライブラリを修正した場合、あなたはあなたのバージョンのライブラリに対して、この例外を拡張することができますが、そうしなければならない義務があるわけではありません。もしそうすることを望む場合、この例外規程をあなたのバージョンから削除してください。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることに�!
- �っても入手できます：Free Software Foundation Inc., 59 Templ
-e Place - Suite 330, Boston, MA 02111-1307, USA"
+msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -10686,8 +10704,7 @@ msgstr "privateメソッド"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと�!
- ��よくない、ということです。"
+msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと�"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -10873,7 +10890,9 @@ msgid "Project Src Path"
 msgstr "プロジェクトのソースパス"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built. :)"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built. :)"
+msgid "Project %s%s%s successfully built"
 msgstr "プロジェクト%s%s%sの構築に成功しました。"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -11078,6 +11097,10 @@ msgstr "すべてのユニットを削除"
 msgid "Remove from project"
 msgstr "プロジェクトから削除"
 
+#: lazarusidestrconsts.lisremovefromsearchpath
+msgid "Remove from search path"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "選択されたユニットを削除"
@@ -11112,6 +11135,10 @@ msgstr "選択部分の置換に失敗"
 
 #: lazarusidestrconsts.lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts.lisrescan
+msgid "Rescan"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourcefilecomment
@@ -11283,9 +11310,9 @@ msgstr "フォーム %s%s%s を閉じる前にファイル %s%s%s%s を保存し
 msgid "Save info of closed editor files"
 msgstr "閉じられるエディタファイルの情報を保存"
 
-#: lazarusidestrconsts.lissaveprojectlpi
-msgid "Save Project %s (*.lpi)"
-msgstr "プロジェクト保存 %s (*.lpi)"
+#: lazarusidestrconsts.lissaveproject
+msgid "Save project %s (*%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -11370,6 +11397,10 @@ msgstr ""
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "表示"
+
+#: lazarusidestrconsts.lisshowemptyunitspackages
+msgid "Show empty units/packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -11878,6 +11909,10 @@ msgstr "そのパッケージは既にこの名前のユニットを含んでい
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "プログラム%smake%sが見つかりませんでした。%sこのツールはlazarusを構築するのに必要です。"
 
+#: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "プロジェクト情報ファイル%s%s%s%sがプロジェクトメインソースファイルに等しいです！"
@@ -11898,9 +11933,9 @@ msgstr "ディレクトリに大文字小文字だけが異なる同じ名前を
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "ディスクに同じ名前で類似した拡張子をもつファイルがあります。%sファイル： %s%s紛らわしいファイル: %s%s%s紛らわしいファイルを削除しますか？"
 
-#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
-msgid "There is already a build mode with the name %s%s%s."
-msgstr "既に%s%s%sという名前の構築モードがあります。"
+#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
+msgid "There is already a build variable with the name %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12025,7 +12060,7 @@ msgstr "(不明マクロ: %S)"
 #: lazarusidestrconsts.listodoexport
 msgctxt "lazarusidestrconsts.listodoexport"
 msgid "Export"
-msgstr ""
+msgstr "エクスポート"
 
 #: lazarusidestrconsts.listodogoto
 msgid "Goto"
@@ -12605,6 +12640,14 @@ msgstr "使用メッセージ（-hオプション）"
 msgid "Use Exclude Filter"
 msgstr "除外フィルタを使用"
 
+#: lazarusidestrconsts.lisuseidentifier
+msgid "Use identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseidentifierinat
+msgid "Use identifier %s in %s at %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
 msgstr "包含フィルタを使用"
@@ -12613,9 +12656,29 @@ msgstr "包含フィルタを使用"
 msgid "Launching application"
 msgstr "アプリケーションの実行"
 
+#: lazarusidestrconsts.lisusepackageinpackage
+msgid "Use package %s in package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinpackage2
+msgid "Use package in package"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject
+msgid "Use package %s in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject2
+msgid "Use package in project"
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "ユーザーのhomeディレクトリ"
+
+#: lazarusidestrconsts.lisuseunitinunit
+msgid "Use unit %s in unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13264,6 +13327,10 @@ msgstr "行の終わりまで列選択"
 msgid "Column Select Line Start"
 msgstr "行の始まりまで列選択"
 
+#: lazarusidestrconsts.srkmeccolsellinetextstart
+msgid "Column Select to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
 msgstr "ページの下端まで列選択"
@@ -13569,6 +13636,10 @@ msgstr "行選択モード"
 msgid "Move cursor to line start"
 msgstr "カーソルを行頭に移動"
 
+#: lazarusidestrconsts.srkmeclinetextstart
+msgid "Move cursor to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "リソース文字列作成"
@@ -13749,6 +13820,10 @@ msgstr "行末を選択"
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
 msgstr "行の先頭を選択"
+
+#: lazarusidestrconsts.srkmecsellinetextstart
+msgid "Select to text start in line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -14140,6 +14215,10 @@ msgstr "選択部分を囲む"
 msgid "Encoding"
 msgstr "エンコード中"
 
+#: lazarusidestrconsts.uemevaluatemodify
+msgid "&Evaluate/Modify..."
+msgstr ""
+
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"
 msgid "Extract Procedure"
@@ -14282,5 +14361,4 @@ msgstr "読み取り専用"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
-
 

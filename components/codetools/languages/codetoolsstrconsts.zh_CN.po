@@ -472,6 +472,10 @@ msgstr "invalid flag value \"%s\" for directive %s"
 msgid "invalid mode \"%s\""
 msgstr "无效模式"
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "无效子界"

@@ -473,6 +473,10 @@ msgstr "błędna wartość flagi \"%s\" dla dyrektywy %s"
 msgid "invalid mode \"%s\""
 msgstr "błędny tryb \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "błędny podzakres"

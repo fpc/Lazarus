@@ -468,6 +468,10 @@ msgstr "valore flag non valido \"%s\" per la direttiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modalità non valida \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "subrange non valido"

@@ -264,7 +264,7 @@ msgstr "Dodaj"
 #: objinspstrconsts.oicoleditdelete
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
 #: objinspstrconsts.oicoleditdown
 msgctxt "objinspstrconsts.oicoleditdown"
@@ -927,6 +927,10 @@ msgstr ""
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr ""
 
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr ""
+
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"
@@ -1476,7 +1480,7 @@ msgstr ""
 #: objinspstrconsts.srvk_next
 msgctxt "objinspstrconsts.srvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Następny"
 
 #: objinspstrconsts.srvk_nonconvert
 msgid "Nonconvert"

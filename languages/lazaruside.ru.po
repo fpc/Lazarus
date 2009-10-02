@@ -3669,10 +3669,6 @@ msgstr "В ваших путях имеется несколько компил�
 msgid "Skip"
 msgstr "Пропуск"
 
-#: lazarusidestrconsts.lisccospaces
-msgid "spaces"
-msgstr "пробелы"
-
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
 msgstr "специальные символы"
@@ -3792,6 +3788,10 @@ msgstr "Расположить компонент по центру по гор�
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
 msgstr "Расположить компонент по центру по вертикали относительно данного"
+
+#: lazarusidestrconsts.liscenterform
+msgid "Center form"
+msgstr ""
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -10875,7 +10875,9 @@ msgid "Project Src Path"
 msgstr "Путь к исходному коду проекта"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built. :)"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built. :)"
+msgid "Project %s%s%s successfully built"
 msgstr "Проект %s%s%s успешно собран. :)"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -11293,9 +11295,9 @@ msgstr "Сохранить файл %s%s%sперед закрытием форм
 msgid "Save info of closed editor files"
 msgstr "Сохранять информацию о файлах, закрытых в редакторе"
 
-#: lazarusidestrconsts.lissaveprojectlpi
-msgid "Save Project %s (*.lpi)"
-msgstr "Сохранить прокет %s (*.lpi)"
+#: lazarusidestrconsts.lissaveproject
+msgid "Save project %s (*%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -14201,6 +14203,10 @@ msgstr "Заключить выделенное"
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
 msgstr "Кодировка"
+
+#: lazarusidestrconsts.uemevaluatemodify
+msgid "&Evaluate/Modify..."
+msgstr ""
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"

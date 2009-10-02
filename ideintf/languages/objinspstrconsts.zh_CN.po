@@ -927,6 +927,10 @@ msgstr "方法 %s%s%s 与此事件(%s)不兼容，按取消按钮撤销或按忽
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "方法 %s%s%s 不属于published，按取消按钮撤销或按忽略按钮强制执行。"
 
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr ""
+
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"

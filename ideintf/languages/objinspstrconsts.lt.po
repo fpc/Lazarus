@@ -926,6 +926,10 @@ msgstr "%s%s%s metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „At
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
+#: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgstr ""
+
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
 msgid "Undo"

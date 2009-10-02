@@ -469,6 +469,10 @@ msgstr "неверное значение флага \"%s\" для директ�
 msgid "invalid mode \"%s\""
 msgstr "неверный режим \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "неверный поддиапазон"

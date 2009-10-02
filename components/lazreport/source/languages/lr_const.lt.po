@@ -508,10 +508,6 @@ msgstr "Laida"
 msgid "Version"
 msgstr "Versija"
 
-#: lr_const.sduplicatedobjectname
-msgid "An object named \"%s\" already exists"
-msgstr "Jau yra toks objektas pavadinimu „%s“"
-
 #: lr_const.seditorformbig
 msgid "&Big font"
 msgstr "&Didelis šriftas"
@@ -528,10 +524,6 @@ msgstr "&DB laukas"
 msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formatas"
-
-#: lr_const.seditorformfunction
-msgid "Function"
-msgstr "Funkcija"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"

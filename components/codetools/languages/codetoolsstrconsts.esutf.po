@@ -468,6 +468,10 @@ msgstr "valor de indicador inválido \"%s\" para directiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modo inválido \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "subrango no válido"

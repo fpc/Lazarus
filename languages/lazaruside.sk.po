@@ -27,7 +27,7 @@ msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
@@ -773,6 +773,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
 msgstr "Kurzor preskakuje výber"
+
+#: lazarusidestrconsts.dlgcursorskipstab
+msgid "Cursor skips tabs"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -3159,6 +3163,10 @@ msgstr "Pridať %s do projektu?"
 msgid "Add to unit search path?"
 msgstr "Pridať do cesty hľadania jednotiek?"
 
+#: lazarusidestrconsts.lisaddunitinterfaces
+msgid "Add unit interfaces"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr ""
@@ -3258,6 +3266,10 @@ msgstr "Alternatívny kláves (ale postupnosť dvoch)"
 
 #: lazarusidestrconsts.lisalways
 msgid "Always"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysignore
+msgid "Always ignore"
 msgstr ""
 
 #: lazarusidestrconsts.lisambiguousfilefound
@@ -3660,10 +3672,6 @@ msgstr ""
 msgid "Skip"
 msgstr "Preskočiť"
 
-#: lazarusidestrconsts.lisccospaces
-msgid "spaces"
-msgstr "medzery"
-
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
 msgstr "špeciálne znaky"
@@ -3783,6 +3791,10 @@ msgstr "Centrovať prvky vodorovne, relatívne k daným súrodencom"
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
 msgstr "Centrovať·prvky·zvislo,·relatívne·k·daným·súrodencom"
+
+#: lazarusidestrconsts.liscenterform
+msgid "Center form"
+msgstr ""
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5382,8 +5394,8 @@ msgstr ""
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Zmazať bod prerušenia na %s\"%s\" riadku %d?"
 
-#: lazarusidestrconsts.lisdeletebuildmode
-msgid "Delete build mode %s%s%s?"
+#: lazarusidestrconsts.lisdeletebuildvar
+msgid "Delete build variable %s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
@@ -5485,6 +5497,10 @@ msgstr "Číslice:"
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
 msgstr "Direktívy"
+
+#: lazarusidestrconsts.lisdirectorynotfound
+msgid "Directory %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6779,6 +6795,10 @@ msgstr ""
 msgid "Insert PrintShort tag"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -6832,8 +6852,8 @@ msgstr "Nainštalovať výber"
 msgid "Internal Name:"
 msgstr "Interné meno:"
 
-#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
-msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
+#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
+msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
@@ -10874,7 +10894,9 @@ msgid "Project Src Path"
 msgstr "Cesta k zdrojovým kódom projektu"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built. :)"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built. :)"
+msgid "Project %s%s%s successfully built"
 msgstr "Projekt %s%s%s úspešne vybudovaný. :)"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -11079,6 +11101,10 @@ msgstr ""
 msgid "Remove from project"
 msgstr "Odstrániť z projektu"
 
+#: lazarusidestrconsts.lisremovefromsearchpath
+msgid "Remove from search path"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr ""
@@ -11114,6 +11140,10 @@ msgstr "Nahradenie výberu zlyhalo."
 #: lazarusidestrconsts.lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report/sk"
+
+#: lazarusidestrconsts.lisrescan
+msgid "Rescan"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -11284,9 +11314,9 @@ msgstr "Uložiť súbor %s%s%s%spred zatvorením formulára %s%s%s?"
 msgid "Save info of closed editor files"
 msgstr "Uložiť informácie o zatvorených súboroch editora"
 
-#: lazarusidestrconsts.lissaveprojectlpi
-msgid "Save Project %s (*.lpi)"
-msgstr "Uložiť projekt %s (*.lpi)"
+#: lazarusidestrconsts.lissaveproject
+msgid "Save project %s (*%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -11371,6 +11401,10 @@ msgstr "Krátky:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Zobraziť"
+
+#: lazarusidestrconsts.lisshowemptyunitspackages
+msgid "Show empty units/packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -11879,6 +11913,10 @@ msgstr "Balíšek už obsahuje jednotku s takýmto menom"
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "Program %smake%s nebol nájdený.%sTento nástroj je potrebný na prebudovanie Lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Informačný súbor projektu %s%s%s%sje zhodný so záladným súborom zdrojového kódu!"
@@ -11899,8 +11937,8 @@ msgstr "V adresári sú iné súbory s rovnakým menom,%s%sktoré sa líšia len
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Na disku už je súbor s rovnakým menom a podobnou koncovkou%sSúbor: %s%sNeplatný súbor: %s%s%sZmazať neplatný súbor?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
-msgid "There is already a build mode with the name %s%s%s."
+#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
+msgid "There is already a build variable with the name %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
@@ -12606,6 +12644,14 @@ msgstr "Správa o použití (voľba -h)"
 msgid "Use Exclude Filter"
 msgstr "Použiť vylučovací filter"
 
+#: lazarusidestrconsts.lisuseidentifier
+msgid "Use identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseidentifierinat
+msgid "Use identifier %s in %s at %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
 msgstr "Použiť zahŕňací filter"
@@ -12614,9 +12660,29 @@ msgstr "Použiť zahŕňací filter"
 msgid "Launching application"
 msgstr "Spúšťanie aplikácie"
 
+#: lazarusidestrconsts.lisusepackageinpackage
+msgid "Use package %s in package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinpackage2
+msgid "Use package in package"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject
+msgid "Use package %s in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject2
+msgid "Use package in project"
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Domovský adresár používateľa"
+
+#: lazarusidestrconsts.lisuseunitinunit
+msgid "Use unit %s in unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13267,6 +13333,10 @@ msgstr ""
 msgid "Column Select Line Start"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeccolsellinetextstart
+msgid "Column Select to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
 msgstr ""
@@ -13572,6 +13642,10 @@ msgstr "Riadkový režim výberu"
 msgid "Move cursor to line start"
 msgstr "Posunúť kurzor na začiatok riadka"
 
+#: lazarusidestrconsts.srkmeclinetextstart
+msgid "Move cursor to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Vytvoriť ResourceString"
@@ -13752,6 +13826,10 @@ msgstr "Vybrať do konca riadka"
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
 msgstr "Vybrať po začiatok riadka"
+
+#: lazarusidestrconsts.srkmecsellinetextstart
+msgid "Select to text start in line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -14142,6 +14220,10 @@ msgstr "Uzavrieť výber"
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
 msgstr "Kódovanie"
+
+#: lazarusidestrconsts.uemevaluatemodify
+msgid "&Evaluate/Modify..."
+msgstr ""
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"

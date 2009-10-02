@@ -24,7 +24,9 @@ msgid "Reset all text settings"
 msgstr "Resetar todas configurações texto"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+#, fuzzy
+#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Esta página não representa suas configurações atuais. Veja página avançado. Use esta página para resetar quaisquer alterações avançadas."
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
@@ -780,6 +782,10 @@ msgstr "Cursor:"
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
 msgstr "Cursor salta seleção"
+
+#: lazarusidestrconsts.dlgcursorskipstab
+msgid "Cursor skips tabs"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -3157,6 +3163,10 @@ msgstr "Adicionar %s ao projeto?"
 msgid "Add to unit search path?"
 msgstr "Adicionar ao caminho de busca das unidades?"
 
+#: lazarusidestrconsts.lisaddunitinterfaces
+msgid "Add unit interfaces"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "Adicionar valor:"
@@ -3257,6 +3267,10 @@ msgstr "Tecla alternativa (ou sequência de 2 teclas)"
 #: lazarusidestrconsts.lisalways
 msgid "Always"
 msgstr "Sempre"
+
+#: lazarusidestrconsts.lisalwaysignore
+msgid "Always ignore"
+msgstr ""
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3658,10 +3672,6 @@ msgstr "Há vários compiladores Free Pascal no caminho. %s%s%sTalvez você tenh
 msgid "Skip"
 msgstr "Pular"
 
-#: lazarusidestrconsts.lisccospaces
-msgid "spaces"
-msgstr "espaços"
-
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
 msgstr "caracteres especiais"
@@ -3781,6 +3791,10 @@ msgstr "Centralizar controle horizontalmente em relação ao controle-irmão esp
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
 msgstr "Centralizar controle verticalmente em relação ao controle-irmão especificado"
+
+#: lazarusidestrconsts.liscenterform
+msgid "Center form"
+msgstr ""
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5378,9 +5392,9 @@ msgstr "Excluir Ponto de parada"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Excluir ponto de parada na%s\"%s\" linha %d?"
 
-#: lazarusidestrconsts.lisdeletebuildmode
-msgid "Delete build mode %s%s%s?"
-msgstr "Excluir modo construção %s%s%s?"
+#: lazarusidestrconsts.lisdeletebuildvar
+msgid "Delete build variable %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -5481,6 +5495,10 @@ msgstr "Dígitos:"
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
 msgstr "Diretivas"
+
+#: lazarusidestrconsts.lisdirectorynotfound
+msgid "Directory %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6775,6 +6793,10 @@ msgstr "inserir nome do procedimento atual"
 msgid "Insert PrintShort tag"
 msgstr "Inserir \"tag PrintShort\""
 
+#: lazarusidestrconsts.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "inserir cabeçalho procedimento"
@@ -6828,9 +6850,9 @@ msgstr "Instalar Seleção"
 msgid "Internal Name:"
 msgstr "Nome Interno:"
 
-#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
-msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
-msgstr "Modos de construção inválido %s%s%s. O modo de construção deve ser um identificador pascal."
+#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
+msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -10859,7 +10881,9 @@ msgid "Project Src Path"
 msgstr "Caminho Fonte do Projeto"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built. :)"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built. :)"
+msgid "Project %s%s%s successfully built"
 msgstr "Projeto %s%s%s criado com sucesso. :)"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -11064,6 +11088,10 @@ msgstr "Remover todas unidades"
 msgid "Remove from project"
 msgstr "Remover do projeto"
 
+#: lazarusidestrconsts.lisremovefromsearchpath
+msgid "Remove from search path"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Remover unidades selecionadas"
@@ -11099,6 +11127,10 @@ msgstr "Substituição da seleção falhou."
 #: lazarusidestrconsts.lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+
+#: lazarusidestrconsts.lisrescan
+msgid "Rescan"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -11269,9 +11301,9 @@ msgstr "Salvar arquivo %s%s%s%santes de fechar o formulário %s%s%s?"
 msgid "Save info of closed editor files"
 msgstr "Salvar informações de arquivos fechados do editor"
 
-#: lazarusidestrconsts.lissaveprojectlpi
-msgid "Save Project %s (*.lpi)"
-msgstr "Salvar Projeto %s (*.lpi)"
+#: lazarusidestrconsts.lissaveproject
+msgid "Save project %s (*%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -11360,6 +11392,10 @@ msgstr "Curto:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Mostrar"
+
+#: lazarusidestrconsts.lisshowemptyunitspackages
+msgid "Show empty units/packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -11871,6 +11907,10 @@ msgstr "O pacote já contém uma unidade com este nome."
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "O programa %s\"make\"%s não foi encontrado.%s Esta ferramenta é necessária para construir o lazarus.%s"
 
+#: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "O arquivo de informações de projeto %s%s%s%sé o mesmo que o fonte principal do projeto!"
@@ -11891,9 +11931,9 @@ msgstr "Há outros arquivos no diretório com o mesmo nome,%sque apenas diferem 
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Há um arquivo com o mesmo nome e extensão similar no disco:%sArquivo: %s%sArquivo Ambíguo: %s%s%sExcluir arquivo ambí­guo?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
-msgid "There is already a build mode with the name %s%s%s."
-msgstr "Já existe um mode de construção com o nome %s%s%s."
+#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
+msgid "There is already a build variable with the name %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12598,6 +12638,14 @@ msgstr "Mensagem forma de uso (opção -h)"
 msgid "Use Exclude Filter"
 msgstr "Usar Filtro de Exclusão"
 
+#: lazarusidestrconsts.lisuseidentifier
+msgid "Use identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseidentifierinat
+msgid "Use identifier %s in %s at %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
 msgstr "Usar Filtro de Inclusão"
@@ -12606,9 +12654,29 @@ msgstr "Usar Filtro de Inclusão"
 msgid "Launching application"
 msgstr "Inicializando aplicação"
 
+#: lazarusidestrconsts.lisusepackageinpackage
+msgid "Use package %s in package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinpackage2
+msgid "Use package in package"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject
+msgid "Use package %s in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject2
+msgid "Use package in project"
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Diretório padrão do usuário"
+
+#: lazarusidestrconsts.lisuseunitinunit
+msgid "Use unit %s in unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13257,6 +13325,10 @@ msgstr "Selecionar fim linha coluna"
 msgid "Column Select Line Start"
 msgstr "Selecionar início linha coluna"
 
+#: lazarusidestrconsts.srkmeccolsellinetextstart
+msgid "Column Select to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
 msgstr "Selecionar fundo página coluna"
@@ -13562,6 +13634,10 @@ msgstr "Modo de seleção de linha"
 msgid "Move cursor to line start"
 msgstr "Mover cursor para o início da linha"
 
+#: lazarusidestrconsts.srkmeclinetextstart
+msgid "Move cursor to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Criar recurso de sequência de caracteres"
@@ -13742,6 +13818,10 @@ msgstr "Selecionar o final da linha"
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
 msgstr "Selecionar o início da Linha"
+
+#: lazarusidestrconsts.srkmecsellinetextstart
+msgid "Select to text start in line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -14131,6 +14211,10 @@ msgstr "Circundar Seleção"
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
 msgstr "Codificação"
+
+#: lazarusidestrconsts.uemevaluatemodify
+msgid "&Evaluate/Modify..."
+msgstr ""
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"

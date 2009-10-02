@@ -472,6 +472,10 @@ msgstr "ungültiges Flag \"%s\" bei Direktive %s"
 msgid "invalid mode \"%s\""
 msgstr "ungültiger Mode \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "ungültiger Teilbereich"

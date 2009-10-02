@@ -25,7 +25,7 @@ msgid "Reset all text settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
-msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
+msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
@@ -770,6 +770,10 @@ msgstr "光标:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcursorskipstab
+msgid "Cursor skips tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcustomext
@@ -3161,6 +3165,10 @@ msgstr "添加 %s 到工程?"
 msgid "Add to unit search path?"
 msgstr "是否添加到单元搜索路径？"
 
+#: lazarusidestrconsts.lisaddunitinterfaces
+msgid "Add unit interfaces"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
 msgstr "添加值:"
@@ -3261,6 +3269,10 @@ msgstr ""
 #: lazarusidestrconsts.lisalways
 msgid "Always"
 msgstr "总是"
+
+#: lazarusidestrconsts.lisalwaysignore
+msgid "Always ignore"
+msgstr ""
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3662,10 +3674,6 @@ msgstr "有多个FPC编译器在路径%s%s%s中，可能你忘记删除旧的编
 msgid "Skip"
 msgstr "跳过"
 
-#: lazarusidestrconsts.lisccospaces
-msgid "spaces"
-msgstr "空格"
-
 #: lazarusidestrconsts.lisccospecialcharacters
 msgid "special characters"
 msgstr "特殊字符"
@@ -3785,6 +3793,10 @@ msgstr "自动与相关控件水平对齐"
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
 msgstr "自动与相关控件垂直对齐"
+
+#: lazarusidestrconsts.liscenterform
+msgid "Center form"
+msgstr ""
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5384,9 +5396,9 @@ msgstr ""
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "删除断点在 %s\"%s\" 行 %d?"
 
-#: lazarusidestrconsts.lisdeletebuildmode
-msgid "Delete build mode %s%s%s?"
-msgstr "删除构建模式%s%s%s？"
+#: lazarusidestrconsts.lisdeletebuildvar
+msgid "Delete build variable %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -5487,6 +5499,10 @@ msgstr "数字:"
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
 msgstr "指示"
+
+#: lazarusidestrconsts.lisdirectorynotfound
+msgid "Directory %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6781,6 +6797,10 @@ msgstr ""
 msgid "Insert PrintShort tag"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -6834,8 +6854,8 @@ msgstr "安装所选"
 msgid "Internal Name:"
 msgstr "内部名称:"
 
-#: lazarusidestrconsts.lisinvalidbuildmodethebuildmodemustbeapascalidentifie
-msgid "Invalid build mode %s%s%s. The build mode must be a pascal identifier."
+#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
+msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
@@ -10872,7 +10892,9 @@ msgid "Project Src Path"
 msgstr "工程源代码路径"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built. :)"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built. :)"
+msgid "Project %s%s%s successfully built"
 msgstr "工程 %s%s%s 成功的编译了 :)"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -11077,6 +11099,10 @@ msgstr "移除所有单元"
 msgid "Remove from project"
 msgstr "从工程移除"
 
+#: lazarusidestrconsts.lisremovefromsearchpath
+msgid "Remove from search path"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "移除选中单元"
@@ -11111,6 +11137,10 @@ msgstr "替换所选失败."
 
 #: lazarusidestrconsts.lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgstr ""
+
+#: lazarusidestrconsts.lisrescan
+msgid "Rescan"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourcefilecomment
@@ -11282,9 +11312,9 @@ msgstr "保存 %s%s%s%s在关闭窗体 %s%s%s 之前 ?"
 msgid "Save info of closed editor files"
 msgstr "保存已经关闭的代码编辑器文件的信息"
 
-#: lazarusidestrconsts.lissaveprojectlpi
-msgid "Save Project %s (*.lpi)"
-msgstr "保存工程 %s (*.lpi)"
+#: lazarusidestrconsts.lissaveproject
+msgid "Save project %s (*%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -11369,6 +11399,10 @@ msgstr "快捷键:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "显示"
+
+#: lazarusidestrconsts.lisshowemptyunitspackages
+msgid "Show empty units/packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -11877,6 +11911,10 @@ msgstr "包已经包含了这个单元."
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
 
+#: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "工程信息文件 %s%s%s%s和工程主文件是等价的!"
@@ -11897,9 +11935,9 @@ msgstr "此目录下另有一个文件有相同的名字,%s而且只有大小写
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "磁盘上面有一个文件有相同的名字后类似的后缀%s文件: %s%s可疑的文件: %s%s%s删除这个可疑文件?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildmodewiththename
-msgid "There is already a build mode with the name %s%s%s."
-msgstr "名为%s%s%s的构造模式已经有了."
+#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
+msgid "There is already a build variable with the name %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12604,6 +12642,14 @@ msgstr ""
 msgid "Use Exclude Filter"
 msgstr "使用排除过滤器"
 
+#: lazarusidestrconsts.lisuseidentifier
+msgid "Use identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseidentifierinat
+msgid "Use identifier %s in %s at %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
 msgstr "使用包含过滤器"
@@ -12612,9 +12658,29 @@ msgstr "使用包含过滤器"
 msgid "Launching application"
 msgstr "运行程序"
 
+#: lazarusidestrconsts.lisusepackageinpackage
+msgid "Use package %s in package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinpackage2
+msgid "Use package in package"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject
+msgid "Use package %s in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisusepackageinproject2
+msgid "Use package in project"
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "用户主目录"
+
+#: lazarusidestrconsts.lisuseunitinunit
+msgid "Use unit %s in unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13263,6 +13329,10 @@ msgstr ""
 msgid "Column Select Line Start"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeccolsellinetextstart
+msgid "Column Select to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
 msgstr ""
@@ -13570,6 +13640,10 @@ msgstr "行选择模式"
 msgid "Move cursor to line start"
 msgstr "移动光标到行首"
 
+#: lazarusidestrconsts.srkmeclinetextstart
+msgid "Move cursor to text start in line"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "制作资源字符串"
@@ -13750,6 +13824,10 @@ msgstr "选择到行末"
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
 msgstr "选择到行首"
+
+#: lazarusidestrconsts.srkmecsellinetextstart
+msgid "Select to text start in line"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -14140,6 +14218,10 @@ msgstr "封装所选"
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
 msgstr "编码"
+
+#: lazarusidestrconsts.uemevaluatemodify
+msgid "&Evaluate/Modify..."
+msgstr ""
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"

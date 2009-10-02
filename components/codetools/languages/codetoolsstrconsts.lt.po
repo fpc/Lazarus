@@ -472,6 +472,10 @@ msgstr "klaidinga vėliavėlės reikšmė „%s“ direktyvai %s"
 msgid "invalid mode \"%s\""
 msgstr "„%s“ veiksena yra klaidinga"
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "klaidingas porėžis"

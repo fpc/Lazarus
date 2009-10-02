@@ -51,10 +51,6 @@ msgstr "Vista previa del Reporte activo"
 msgid "Print directly the active report (i.e. without preview)"
 msgstr "Imprimir directamente el Reporte activo (o sea, sin vista previa)"
 
-#: maincalleditor.cerhintthumbnails
-msgid "This Action will Load and Preview a thumbnails Report"
-msgstr "Esta acción cargará y mostrará una vista preeliminar de un reporte de imágenes."
-
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr "Indice"
@@ -98,11 +94,6 @@ msgstr "Imprimir Rejilla"
 #: maincalleditor.cerprintreport
 msgid "Print report"
 msgstr "Imprimir Reporte"
-
-#: maincalleditor.certhumbnails
-msgctxt "maincalleditor.certhumbnails"
-msgid "Thumbnails"
-msgstr "Imágenes"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"

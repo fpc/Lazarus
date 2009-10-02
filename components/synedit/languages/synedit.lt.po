@@ -656,4 +656,3 @@ msgstr "<nieks>"
 msgid "Untitled"
 msgstr "Bevardis"
 
-

@@ -470,6 +470,10 @@ msgstr "Nilai tanda tidak benar \"%s\" untuk direktif %s"
 msgid "invalid mode \"%s\""
 msgstr "Mode tidak benar \"%s\""
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "sub jangkauan tidak benar"

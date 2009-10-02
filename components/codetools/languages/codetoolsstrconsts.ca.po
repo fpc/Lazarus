@@ -469,6 +469,10 @@ msgstr "el valor del marcador \"%s\" no és vàlid per la directiva %s"
 msgid "invalid mode \"%s\""
 msgstr "el mode \"%s\" no és vàlid"
 
+#: codetoolsstrconsts.ctsinvalidmodeswitch
+msgid "invalid mode switch \"%s\""
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "sotabast no és vàlid"

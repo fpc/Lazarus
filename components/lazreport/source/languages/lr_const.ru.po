@@ -506,10 +506,6 @@ msgstr "Выпуск"
 msgid "Version"
 msgstr "Версия"
 
-#: lr_const.sduplicatedobjectname
-msgid "An object named \"%s\" already exists"
-msgstr "Объект с именем \"%s\" уже существует"
-
 #: lr_const.seditorformbig
 msgid "&Big font"
 msgstr "&Большой шрифт"
@@ -526,10 +522,6 @@ msgstr "&Поле БД"
 msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Формат"
-
-#: lr_const.seditorformfunction
-msgid "Function"
-msgstr "Функция"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
