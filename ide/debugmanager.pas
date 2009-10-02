@@ -79,9 +79,7 @@ type
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
-
-    // SrcNotebook events
-    function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
+    procedure mnuAddWatchClicked(Sender: TObject);
 
     // Debugger events
     procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -146,6 +144,7 @@ type
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
+    procedure SetupSourceMenuShortCuts; override;
     procedure UpdateButtonsAndMenuItems; override;
 
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
@@ -1321,30 +1320,22 @@ begin
   ResetDebugger;
 end;
 
-
-//-----------------------------------------------------------------------------
-// ScrNoteBook events
-//-----------------------------------------------------------------------------
-
-function TDebugManager.OnSrcNotebookAddWatchesAtCursor(Sender : TObject
-  ): boolean;
+procedure TDebugManager.mnuAddWatchClicked(Sender: TObject);
 var
   SE: TSourceEditor;
   WatchVar: String;
 begin
-  Result:=false;
+  SE := SourceNotebook.GetActiveSE;
 
-  // get the sourceEditor.
-  SE := TSourceNotebook(Sender).GetActiveSE;
-  if not Assigned(SE) then Exit;
-  WatchVar := SE.GetOperandAtCurrentCaret;
-  if WatchVar = ''  then Exit;
+  if Assigned(SE) then
+  begin
+    WatchVar := SE.GetOperandAtCurrentCaret;
+    if (WatchVar <> '') and (SE.EditorComponent.Focused) and (Watches.Find(WatchVar) = nil) and (Watches.Add(WatchVar) = nil) then
+      Exit;
+  end;
 
-  if (Watches.Find(WatchVar) = nil)
-  and (Watches.Add(WatchVar) = nil)
-  then Exit;
-
-  Result:=true;
+  // watch was not added automatically => show a dialog
+  // todo: dialog
 end;
 
 //-----------------------------------------------------------------------------
@@ -1685,7 +1676,7 @@ begin
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
   end;
-  if (CurDialog is tEvaluateDlg) and  (sourceNotebook<>nil)
+  if (CurDialog is TEvaluateDlg) and  (sourceNotebook<>nil)
   then begin
     if SourceNotebook.GetActiveSE.SelectionAvailable then
       TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.Selection
@@ -1868,14 +1859,14 @@ begin
 //    itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
     itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
-//    itmRunMenuAddWatch.OnClick := @;
+    itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
 //    itmRunMenuAddBpSource.OnClick := @;
   end;
 end;
 
 procedure TDebugManager.ConnectSourceNotebookEvents;
 begin
-  SourceNotebook.OnAddWatchAtCursor := @OnSrcNotebookAddWatchesAtCursor;
+  SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
 end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
@@ -1901,6 +1892,20 @@ begin
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
   end;
+end;
+
+procedure TDebugManager.SetupSourceMenuShortCuts;
+
+  function GetCommand(ACommand: word): TIDECommand;
+  begin
+    Result:=IDECommandList.FindIDECommand(ACommand);
+  end;
+
+begin
+  SrcEditMenuToggleBreakpoint.Command:=GetCommand(ecToggleBreakPoint);
+  SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
+  SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
+  SrcEditMenuViewCallStack.Command:=GetCommand(ecToggleCallStack);
 end;
 
 procedure TDebugManager.UpdateButtonsAndMenuItems;

@@ -1848,6 +1848,7 @@ begin
   SourceNotebook.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
   SourceNotebook.OnPopupMenu := @OnSrcNoteBookPopupMenu;
   DebugBoss.ConnectSourceNotebookEvents;
+  DebugBoss.SetupSourceMenuShortCuts;
 
   // connect search menu to sourcenotebook
   MainIDEBar.itmSearchFind.OnClick := @SourceNotebook.FindClicked;

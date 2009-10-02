@@ -84,6 +84,7 @@ type
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
+    procedure SetupSourceMenuShortCuts; virtual; abstract;
     procedure UpdateButtonsAndMenuItems; virtual; abstract;
 
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;

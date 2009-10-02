@@ -71,8 +71,6 @@ type
 
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
-  TOnAddWatch = function(Sender: TObject): boolean of object;
-
   TOnProcessUserCommand = procedure(Sender: TObject;
             Command: word; var Handled: boolean) of object;
   TOnUserCommandProcessed = procedure(Sender: TObject;
@@ -230,7 +228,7 @@ type
   public
     constructor Create(AOwner: TComponent; AParent: TWinControl);
     destructor Destroy; override;
-    Function Close: Boolean;
+    function Close: Boolean;
 
     // codebuffer
     procedure BeginUndoBlock; override;
@@ -507,7 +505,6 @@ type
     FKeyStrokes: TSynEditKeyStrokes;
     FLastCodeBuffer: TCodeBuffer;
     FOnAddJumpPoint: TOnAddJumpPoint;
-    FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
@@ -842,8 +839,6 @@ type
                      read FOnUserCommandProcessed write FOnUserCommandProcessed;
     property OnViewJumpHistory: TNotifyEvent
                                read FOnViewJumpHistory write FOnViewJumpHistory;
-    property OnAddWatchAtCursor: TOnAddWatch
-                             read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
     property OnShowSearchResultsView: TNotifyEvent
                    read FOnShowSearchResultsView write FOnShowSearchResultsView;
     property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
@@ -4616,7 +4611,6 @@ begin
   SrcEditMenuPrevBookmark.OnClick:=@BookMarkPrevClicked;
 
   SrcEditMenuToggleBreakpoint.OnClick:=@ToggleBreakpointClicked;
-  SrcEditMenuAddWatchAtCursor.OnClick:=@AddWatchAtCursor;
   SrcEditMenuRunToCursor.OnClick:=@RunToClicked;
   SrcEditMenuViewCallStack.OnClick:=@ViewCallStackClick;
 
@@ -6794,10 +6788,9 @@ begin
   end;
 end;
 
-Procedure TSourceNotebook.AddWatchAtCursor(Sender: TObject);
+procedure TSourceNotebook.AddWatchAtCursor(Sender: TObject);
 begin
-  if Assigned(OnAddWatchAtCursor) then
-    OnAddWatchAtCursor(Self);
+  //
 end;
 
 procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
