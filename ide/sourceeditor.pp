@@ -874,6 +874,7 @@ var
     // debugging
     SrcEditMenuToggleBreakpoint: TIDEMenuCommand;
     SrcEditMenuRunToCursor: TIDEMenuCommand;
+    SrcEditMenuEvaluateModify: TIDEMenuCommand;
     SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
     SrcEditMenuViewCallStack: TIDEMenuCommand;
     // refactoring
@@ -1041,6 +1042,9 @@ begin
       // register the Debug submenu items
       SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand(AParent,'Toggle Breakpoint',
                                                        uemToggleBreakpoint);
+      SrcEditMenuEvaluateModify:=RegisterIDEMenuCommand(AParent,'Evaluate/Modify...',
+                                                       uemEvaluateModify, nil, nil, nil,'debugger_modify');
+      SrcEditMenuEvaluateModify.Enabled:=False;
       SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Add Watch at Cursor',uemAddWatchAtCursor);
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,

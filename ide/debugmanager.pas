@@ -1873,6 +1873,8 @@ end;
 procedure TDebugManager.ConnectSourceNotebookEvents;
 begin
   SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
+  SrcEditMenuEvaluateModify.OnClick:=@mnuViewDebugDialogClick;
+  SrcEditMenuEvaluateModify.Tag := Ord(ddtEvaluate);
 end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
@@ -1910,6 +1912,7 @@ procedure TDebugManager.SetupSourceMenuShortCuts;
 begin
   SrcEditMenuToggleBreakpoint.Command:=GetCommand(ecToggleBreakPoint);
   SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
+  SrcEditMenuEvaluateModify.Command:=GetCommand(ecEvaluate);
   SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
   SrcEditMenuViewCallStack.Command:=GetCommand(ecToggleCallStack);
 end;
@@ -1943,6 +1946,8 @@ begin
     StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
 
     itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
+                              and (dcEvaluate in FDebugger.Commands);
+    SrcEditMenuEvaluateModify.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
     // TODO: add other debugger menuitems

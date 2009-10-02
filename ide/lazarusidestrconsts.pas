@@ -1934,6 +1934,7 @@ resourcestring
   uemShowUnitInfo = 'Unit Info';
   uemDebugWord = 'Debug';
   uemToggleBreakpoint = '&Toggle Breakpoint';
+  uemEvaluateModify = '&Evaluate/Modify...';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
   uemViewCallStack = 'View Call Stack';
