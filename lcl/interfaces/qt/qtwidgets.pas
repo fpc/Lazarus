@@ -98,12 +98,14 @@ type
 
     function GetPalette: TQtWidgetPalette;
     function GetProps(const AnIndex: String): pointer;
+    function GetStyleSheet: WideString;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
+    procedure SetStyleSheet(const AValue: WideString);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
@@ -236,15 +238,16 @@ type
     function windowModality: QtWindowModality;
 
     property Context: HDC read GetContext;
-    property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
-    property Palette: TQtWidgetPalette read GetPalette;
-    property Props[AnIndex:String]:pointer read GetProps write SetProps;
-    property PaintData: TPaintData read FPaintData write FPaintData;
-    property Widget: QWidgetH read GetWidget write SetWidget;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
-    property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
+    property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
+    property StyleSheet: WideString read GetStyleSheet write SetStyleSheet;
+    property PaintData: TPaintData read FPaintData write FPaintData;
+    property Palette: TQtWidgetPalette read GetPalette;
+    property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property TextColorRole: QPaletteColorRole read FTextColorRole write FTextColorRole;
+    property Widget: QWidgetH read GetWidget write SetWidget;
+    property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -3788,6 +3791,14 @@ begin
   result := nil;
 end;
 
+function TQtWidget.GetStyleSheet: WideString;
+var
+  WStr: WideString;
+begin
+  QWidget_styleSheet(Widget, @WStr);
+  Result := UTF16ToUTF8(WStr);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.GetPalette
   Params:  Nothing
@@ -3851,6 +3862,14 @@ begin
   if i < 0 then
     i := FProps.Add(AnIndex);
   Fprops.Objects[i] := TObject(AValue);
+end;
+
+procedure TQtWidget.SetStyleSheet(const AValue: WideString);
+var
+  WStr: WideString;
+begin
+  WStr := GetUTF8String(AValue);
+  QWidget_setStyleSheet(Widget, @WStr);
 end;
 
 procedure TQtWidget.SetWidget(const AValue: QWidgetH);
