@@ -64,6 +64,7 @@ type
     procedure AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
   public
     constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
+    destructor Destroy; override;
     procedure DoFill(ParentNode: TTreeNode);
     
 
@@ -74,18 +75,13 @@ type
   TIndexFiller = class(TObject)
   private
     fListView: TListView;
-    fStream: TStream;
+    fSitemap: TChmSiteMap;
     fChm: Tobject;
-    fText: TStringList;
-    function GetLIEnd(StartLine: Integer): Integer;
-    function GetNextLI(StartLine: Integer): Integer;
-    function AddLIObjects(StartLine: Integer; SubItem: Boolean): Integer;
-    function LineHasLI(ALine: Integer): Boolean;
-    function LineStartsUL(ALine: Integer): Boolean;
-    function LineEndsUL(ALine: Integer): Boolean;
+    procedure AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
     
   public
     constructor Create(AListView: TListView; AStream: TStream; AChm: TObject);
+    destructor Destroy; override;
     procedure DoFill;
 
   end;
@@ -120,7 +116,7 @@ var
 begin
   if fStop^ then Exit;
   NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, AItem.Text));
-  NewNode.Url:='/'+AItem.Local;
+  NewNode.Url:=FixURL('/'+AItem.Local);
   NewNode.Data:=fChm;
   NewNode.ImageIndex := 3;
   NewNode.SelectedIndex := 3;
@@ -148,6 +144,12 @@ begin
   fChm := AChm;
 end;
 
+destructor TContentsFiller.Destroy;
+begin
+  fSitemap.Free;
+  inherited Destroy;
+end;
+
 procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
 var
  OrigEvent: TTVCustomCreateNodeEvent;
@@ -173,116 +175,50 @@ end;
 
 { TIndexFiller }
 
-function TIndexFiller.GetLIEnd(StartLine: Integer): Integer;
-begin
-//  for X := StartLine to
-  Result := -1;
-end;
-
-function TIndexFiller.GetNextLI(StartLine: Integer): Integer;
-begin
-  Result := -1;
-end;
-
-function TIndexFiller.AddLIObjects(StartLine: Integer; SubItem: Boolean): Integer;
+procedure TIndexFiller.AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
 var
-  NeedsUrl: Boolean = True;
-  NeedsName: Boolean = True;
-  ItemNAme: String;
-  ItemUrl: String;
-  Line: String;
-  fPos: Integer;
-  fLength: Integer;
-  Item: TIndexItem;
-  X: LongInt;
+  NewItem: TIndexItem;
+  X: Integer;
 begin
-  for X:= StartLine to fText.Count-1 do begin
-    Line := fText.Strings[X];
-    if NeedsName then begin
-      fPos := Pos('<param name="name" value="', LowerCase(Line));
-      if fPos > 0 then begin
-        fLength := Length('<param name="name" value="');
-        ItemName := Copy(Line, fPos+fLength, Length(Line)-(fLength+fPos));
-        ItemName := Copy(ItemNAme, 1, Pos('"', ItemName)-1);
-        if SubItem then
-          ItemName := '  ' + ItemName;
-        NeedsName := False;
-        NeedsUrl := True;
-      end;
-    end
-    else if NeedsUrl then begin
-      fPos := Pos('<param name="local" value="', LowerCase(Line));
-      if fPos > 0 then begin
-        fLength := Length('<param name="Local" value="');
-        ItemUrl := Copy(Line, fPos+fLength, Length(Line)-(fLength+fPos));
-        ItemUrl := FixUrl('/'+Copy(ItemUrl, 1, Pos('"', ItemUrl)-1));
-        NeedsName := False;
-        NeedsUrl := False;
-        Item := TIndexItem.Create(fListView.Items);
-        fListView.Items.AddItem(Item);
-        Item.Caption := ItemName;
-        Item.Url := ItemUrl;
-        Item.Data := fChm;
-        ItemName := '';
-        ItemUrl := '';
-      end;
-    end;
-    if Pos('</OBJECT>', UpperCase(Line)) > 0 then begin
-      Result := X-StartLine;
-      Break;
-    end;
-  end;
+  NewItem := TIndexItem.Create(fListView.Items);
+  if ASubItem then
+    NewItem.Caption := '  ' + Item.Text
+  else
+    NewItem.Caption := Item.Text;
+  NewItem.Url       := FixURL('/' + Item.Local);
+  NewItem.Data      := fChm;
+  fListView.Items.AddItem(NewItem);
+  if Item.Children.Count > 0 then
+    for X := 0 to Item.Children.Count-1 do
+      AddItem(Item.Children.Item[X], True);
 
-end;
-
-function TIndexFiller.LineHasLI(ALine: Integer): Boolean;
-begin
-  Result := Pos('<LI>', UpperCase(fText.Strings[ALine])) > 0;
-end;
-
-function TIndexFiller.LineStartsUL(ALine: Integer): Boolean;
-begin
-  Result := Pos('<UL>', UpperCase(fText.Strings[ALine])) > 0;
-end;
-
-function TIndexFiller.LineEndsUL(ALine: Integer): Boolean;
-begin
-  Result := Pos('</UL>', UpperCase(fText.Strings[ALine])) > 0;
 end;
 
 constructor TIndexFiller.Create(AListView: TListView; AStream: TStream; AChm: TObject);
 begin
  inherited Create;
  fListView := AListView;
- fStream := AStream;
+ fSitemap := TChmSiteMap.Create(stIndex);
+ fSitemap.LoadFromStream(AStream);
  fChm := AChm;
+end;
+
+destructor TIndexFiller.Destroy;
+begin
+  fSitemap.Free;
+  inherited Destroy;
 end;
 
 procedure TIndexFiller.DoFill;
 var
   X: Integer;
-  IsSubItem: Boolean;
-  HasInitialUL: Boolean;
 begin
-  fStream.Position := 0;
-  fText := TStringList.Create;
-  fText.LoadFromStream(fStream);
   fListView.BeginUpdate;
   fListView.Items.Clear;
-  X := -1;
-  HasInitialUL := False;
-  IsSubItem    := False;
-  while X < fText.Count-1 do begin
-    Inc(X);
-    if LineStartsUL(X) then begin
-      IsSubItem := HasInitialUL and True;
-      HasInitialUL := True;
-    end;
-    if LineEndsUL(X) then
-      IsSubItem := False;
-    if LineHasLI(X) then Inc(X, AddLIObjects(X, IsSubItem));
-  end;
-  fText.Free;
+
+  for X := 0 to fSitemap.Items.Count-1 do
+    AddItem(fSitemap.Items.Item[X], False);
+
   fListView.EndUpdate;
 end;
 
