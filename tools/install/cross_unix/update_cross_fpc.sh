@@ -12,7 +12,7 @@ if [ ! -d "$BuildRoot" ]; then
 fi
 
 # the binutils version to download
-BinutilsVersion=2.19
+BinutilsVersion=2.18
 BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils/
 
 # the FPC targets
@@ -247,6 +247,7 @@ if [ $BuildBinutils = "yes" ]; then
         -e 's#^TARGETS_POWERPC=.*$#TARGETS_POWERPC='"$TARGETS_POWERPC"'#' \
         -e 's#^TARGETS_SPARC=.*$#TARGETS_SPARC='"$TARGETS_SPARC"'#' \
         -e 's#^TARGETS_M68k=.*$#TARGETS_M68k='"$TARGETS_M68k"'#' \
+        -e 's#^rm ./config.cache$##' \
     > buildcrossbinutils.sh
   #debugging: head -n 50 buildcrossbinutils.sh
 
