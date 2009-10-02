@@ -522,7 +522,7 @@ begin
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_F5,[ssAlt],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
 
@@ -1693,7 +1693,7 @@ begin
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_F5,[ssAlt],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_F7,[ssCtrl,ssMeta]);
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_F5,[ssCtrl,ssMeta]);
   end;
