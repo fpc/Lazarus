@@ -1938,6 +1938,8 @@ begin
 
     itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
+    itmRunMenuAddWatch.Enabled := (not DebuggerInvalid)
+                              and (dcWatch in FDebugger.Commands);
     // TODO: add other debugger menuitems
     // TODO: implement by actions
   end;
