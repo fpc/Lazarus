@@ -13541,6 +13541,7 @@ begin
         Expression := SrcEdit.GetText(True)
       else
         Expression := SrcEdit.GetOperandFromCaret(CaretPos);
+      DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
       if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then
         DebugEval := '???';
       SmartHintStr := Expression + ' = ' + DebugEval;
