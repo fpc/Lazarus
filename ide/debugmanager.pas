@@ -1337,7 +1337,7 @@ begin
   // get the sourceEditor.
   SE := TSourceNotebook(Sender).GetActiveSE;
   if not Assigned(SE) then Exit;
-  WatchVar := SE.GetWordAtCurrentCaret;
+  WatchVar := SE.GetOperandAtCurrentCaret;
   if WatchVar = ''  then Exit;
 
   if (Watches.Find(WatchVar) = nil)
