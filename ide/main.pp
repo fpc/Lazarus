@@ -13513,9 +13513,7 @@ procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  Identifier, SmartHintStr: string;
-  Expression, DebugEval: string;
-  BaseURL: String;
+  BaseURL, SmartHintStr, Expression, DebugEval: String;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -13538,16 +13536,10 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
     end;
     itDebugger: begin
-      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
-      //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource ',Identifier]);
-      if Identifier = '' then Exit;
-      if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then 
+      if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
         Expression := SrcEdit.GetText(True)
       else
-      if not CodeToolBoss.ExtractOperand(SrcEdit.CodeBuffer,
-         CaretPos.X,CaretPos.Y,Expression,false) then
-        Expression := Identifier;
-      //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expr="',Expression,'"']);
+        Expression := SrcEdit.GetOperandFromCaret(CaretPos);
       if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then
         DebugEval := '???';
       SmartHintStr := Expression + ' = ' + DebugEval;
@@ -13556,8 +13548,8 @@ begin
     Exit;
   end;
 
-  if SmartHintStr<>'' then
-    SrcEdit.ActivateHint(ClientPos,BaseURL,SmartHintStr);
+  if SmartHintStr <> '' then
+    SrcEdit.ActivateHint(ClientPos, BaseURL, SmartHintStr);
 end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);

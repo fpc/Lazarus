@@ -312,6 +312,8 @@ type
     function GetWordAtPosition(Position: TPoint): String;
     function GetWordFromCaret(const ACaretPos: TPoint): String;
     function GetWordAtCurrentCaret: String;
+    function GetOperandFromCaret(const ACaretPos: TPoint): String;
+    function GetOperandAtCurrentCaret: String;
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
     function PositionInSelection(const APosition: TPoint): Boolean;
 
@@ -3274,14 +3276,28 @@ begin
     FillExecutionMarks;
 end;
 
-Function TSourceEditor.GetWordAtCurrentCaret: String;
+function TSourceEditor.GetWordAtCurrentCaret: String;
 var
   CaretPos: TPoint;
 begin
-  Result := '';
   CaretPos.Y := CurrentCursorYLine;
   CaretPos.X := CurrentCursorXLine;
   Result := GetWordFromCaret(ScreenToTextPosition(CaretPos));
+end;
+
+function TSourceEditor.GetOperandFromCaret(const ACaretPos: TPoint): String;
+begin
+  if not CodeToolBoss.ExtractOperand(CodeBuffer, ACaretPos.X, ACaretPos.Y, Result, False) then
+    Result := GetWordFromCaret(ACaretPos);
+end;
+
+function TSourceEditor.GetOperandAtCurrentCaret: String;
+var
+  CaretPos: TPoint;
+begin
+  CaretPos.Y := CurrentCursorYLine;
+  CaretPos.X := CurrentCursorXLine;
+  Result := GetOperandFromCaret(ScreenToTextPosition(CaretPos));
 end;
 
 function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;

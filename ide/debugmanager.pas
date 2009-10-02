@@ -1690,7 +1690,7 @@ begin
     if SourceNotebook.GetActiveSE.SelectionAvailable then
       TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.Selection
     else
-      TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.GetWordAtCurrentCaret;
+      TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret;
   end;
   FDialogs[ADialogType].Show;
 end;
