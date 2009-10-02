@@ -1329,7 +1329,10 @@ begin
 
   if Assigned(SE) then
   begin
-    WatchVar := SE.GetOperandAtCurrentCaret;
+    if SE.SelectionAvailable then
+      WatchVar := SE.Selection
+    else
+      WatchVar := SE.GetOperandAtCurrentCaret;
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
        if (Watches.Find(WatchVar) <> nil) or (Watches.Add(WatchVar) <> nil) then
