@@ -35,13 +35,7 @@ type
   public
     property Url:String read fUrl write fUrl;
   end;
-  
-  TContentNode = record
-    Name: String;
-    Url: String;
-    LineCount: Integer;
-  end;
-  
+
   TIndexItem = class(TListITem)
   private
     fUrl: String;
@@ -57,7 +51,6 @@ type
     fTreeView: TTreeView;
     fSitemap: TChmSiteMap;
     fChm: TObject;
-
     fBranchCount: DWord;
     fStop: PBoolean;
     procedure CustomCreateContentTreeItem(Sender: TCustomTreeView; var ATreeNode: TTreenode);
@@ -66,8 +59,6 @@ type
     constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
     destructor Destroy; override;
     procedure DoFill(ParentNode: TTreeNode);
-    
-
   end;
   
   { TIndexFiller }
@@ -78,12 +69,10 @@ type
     fSitemap: TChmSiteMap;
     fChm: Tobject;
     procedure AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
-    
   public
     constructor Create(AListView: TListView; AStream: TStream; AChm: TObject);
     destructor Destroy; override;
     procedure DoFill;
-
   end;
 
 implementation
@@ -158,15 +147,10 @@ begin
   OrigEvent := fTreeView.OnCustomCreateItem;
   fTreeView.OnCustomCreateItem := @CustomCreateContentTreeItem;
   
-
   fTreeView.BeginUpdate;
 
   for X := 0 to fSitemap.Items.Count-1 do
     AddItem(fSitemap.Items.Item[X], ParentNode);
-
-
-
-
 
   fTreeView.OnCustomCreateItem := OrigEvent;
 
