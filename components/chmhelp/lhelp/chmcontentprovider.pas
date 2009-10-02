@@ -628,6 +628,8 @@ begin
   SearchWords := TStringList.Create;
   SearchWords.Delimiter := ' ';
   Searchwords.DelimitedText := fKeywordCombo.Text;
+  if fKeywordCombo.Items.IndexOf(fKeywordCombo.Text) = -1 then
+    fKeywordCombo.Items.Add(fKeywordCombo.Text);
   fSearchResults.BeginUpdate;
   fSearchResults.Clear;
   //WriteLn('Search words: ', SearchWords.Text);
@@ -880,6 +882,7 @@ begin
   with fIndexView do begin
     Parent := fIndexTab;
     ShowColumnHeaders := False;
+    ViewStyle := vsReport;
     with Columns.Add do
     begin
       Width := 400; {$NOTE TListView.Column.AutoSize does not seem to work}
