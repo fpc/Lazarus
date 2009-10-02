@@ -566,7 +566,7 @@ resourcestring
     +'be saved before building%sIf you set the Test Directory in the '
     +'environment options,%syou can create new projects and build them at '
     +'once.%sSave project?';
-  lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built. :)';
+  lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
   lisExecutingCommandBefore = 'Executing command before';
   lisExecutingCommandAfter = 'Executing command after';
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
