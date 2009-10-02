@@ -3509,12 +3509,12 @@ begin
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   StartPos:=FindStartOfTerm(CleanPos,NodeTermInType(Node));
   if StartPos<1 then exit;
-  if WithPostTokens then
-    EndPos:=FindEndOfTerm(CleanPos,false,WithAsOperator)
-  else begin
+  EndPos:=FindEndOfTerm(CleanPos,false,WithAsOperator);
+  if not WithPostTokens then begin
     MoveCursorToCleanPos(CleanPos);
     ReadNextAtom;
-    EndPos:=CurPos.EndPos;
+    if CurPos.EndPos<EndPos then
+      EndPos:=CurPos.EndPos;
   end;
   if EndPos<1 then exit;
   Operand:=ExtractCode(StartPos,EndPos,[phpCommentsToSpace]);
