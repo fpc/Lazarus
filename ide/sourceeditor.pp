@@ -3287,7 +3287,7 @@ end;
 function TSourceEditor.GetOperandFromCaret(const ACaretPos: TPoint): String;
 begin
   if not CodeToolBoss.ExtractOperand(CodeBuffer, ACaretPos.X, ACaretPos.Y,
-    Result, False, False)
+    Result, False, False, true)
   then
     Result := GetWordFromCaret(ACaretPos);
 end;

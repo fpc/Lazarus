@@ -464,7 +464,8 @@ type
     function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
           EndX, EndY: integer; const NewCode: string): boolean;
     function ExtractOperand(Code: TCodeBuffer; X,Y: integer;
-          out Operand: string; WithPostTokens, WithAsOperator: boolean): boolean;
+          out Operand: string; WithPostTokens, WithAsOperator,
+          WithoutTrailingPoints: boolean): boolean;
 
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
@@ -2540,7 +2541,8 @@ begin
 end;
 
 function TCodeToolManager.ExtractOperand(Code: TCodeBuffer; X, Y: integer; out
-  Operand: string; WithPostTokens, WithAsOperator: boolean): boolean;
+  Operand: string; WithPostTokens, WithAsOperator,
+  WithoutTrailingPoints: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -2555,7 +2557,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.ExtractOperand(CursorPos,Operand,
-                                        WithPostTokens,WithAsOperator);
+                           WithPostTokens,WithAsOperator,WithoutTrailingPoints);
   except
     on e: Exception do HandleException(e);
   end;

@@ -256,7 +256,8 @@ type
     function GetStringConstAsFormatString(StartPos, EndPos: integer;
           out FormatStringConstant, FormatParameters: string): boolean;
     function ExtractOperand(const CursorPos: TCodeXYPosition;
-          out Operand: string; WithPostTokens, WithAsOperator: boolean): boolean;
+          out Operand: string; WithPostTokens, WithAsOperator,
+          WithoutTrailingPoints: boolean): boolean;
 
     // resource strings
     function GatherResourceStringSections(const CursorPos: TCodeXYPosition;
@@ -3496,7 +3497,8 @@ begin
 end;
 
 function TStandardCodeTool.ExtractOperand(const CursorPos: TCodeXYPosition; out
-  Operand: string; WithPostTokens, WithAsOperator: boolean): boolean;
+  Operand: string; WithPostTokens, WithAsOperator,
+  WithoutTrailingPoints: boolean): boolean;
 var
   CleanPos: integer;
   StartPos: LongInt;
@@ -3521,6 +3523,10 @@ begin
   if EndPos<1 then exit;
   DebugLn(['TStandardCodeTool.ExtractOperand "',dbgstr(copy(Src,StartPos,EndPOs-StartPos)),'"']);
   Operand:=ExtractCode(StartPos,EndPos,[phpCommentsToSpace]);
+  if WithoutTrailingPoints then begin
+    while (Operand<>'') and (Operand[length(Operand)]='.') do
+      Operand:=copy(Operand,1,length(Operand)-1);
+  end;
   Result:=true;
 end;
 
