@@ -866,21 +866,29 @@ procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
   var
     i, pointIndex: Integer;
     value: TDoublePoint;
-    newRetPos: TPoint;
+    newRetPos, bestRetPos: TPoint;
+    d, minDist: Double;
   begin
-    for i := 0 to SeriesCount - 1 do begin
+    minDist := Infinity;
+    for i := 0 to SeriesCount - 1 do
       if
         Series[i].GetNearestPoint(
           DIST_FUNCS[FReticuleMode], APoint, pointIndex, newRetPos, value) and
-        (newRetPos <> FReticulePos) and PtInRect(FClipRect, newRetPos)
+          PtInRect(FClipRect, newRetPos)
       then begin
-        DoDrawReticule(i, pointIndex, newRetPos, value);
+         d := DIST_FUNCS[FReticuleMode](APoint, newRetPos);
+         if d < minDist then begin
+           bestRetPos := newRetPos;
+           minDist := d;
+         end;
+      end;
+      if (minDist < Infinity) and (bestRetPos <> FReticulePos) then begin
+        DoDrawReticule(i, pointIndex, bestRetPos, value);
         DrawReticule(Canvas);
-        FReticulePos := newRetPos;
+        FReticulePos := bestRetPos;
         DrawReticule(Canvas);
         exit;
       end;
-    end;
   end;
 
 var
