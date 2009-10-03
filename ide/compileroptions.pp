@@ -2696,7 +2696,7 @@ begin
        
 }
   // append -o Option if neccessary
-  if not (ccloDoNotAppendOutFileOption in Flags) and
+  if (not (ccloDoNotAppendOutFileOption in Flags)) and
     ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
     NewTargetFilename := CreateTargetFilename(CurMainSrcFile);

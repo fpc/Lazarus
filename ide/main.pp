@@ -9715,10 +9715,9 @@ begin
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType(true)='carbon')
     then begin
-      if Project1.IsVirtual then
-        TargetExeName := EnvironmentOptions.GetTestBuildDirectory + ExtractFilename(Project1.MainUnitInfo.Filename)
-      else
-        TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+      TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+      if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
+        TargetExeName := EnvironmentOptions.GetTestBuildDirectory + TargetExeName;
       Result:=CreateApplicationBundle(TargetExeName, Project1.Title);
       if not (Result in [mrOk,mrIgnore]) then exit;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
