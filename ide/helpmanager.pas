@@ -314,7 +314,7 @@ begin
   inherited Create(AOwner);
   WordWrap := True;
   Layout := tlCenter;
-  Alignment := taCenter;
+  Alignment := taLeftJustify;
   Font.Color := clInfoText;
 end;
 
