@@ -40,12 +40,22 @@ type
   TBasicPointSeries = class(TChartSeries)
   private
     FPrevLabelRect: TRect;
+    procedure SetUseReticule(AValue: Boolean);
+
   protected
+    FUseReticule: Boolean;
+
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
       ADown: Boolean);
     procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      override;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    property UseReticule: Boolean
+      read FUseReticule write SetUseReticule default false;
   end;
 
   { TBarSeries }
@@ -78,6 +88,7 @@ type
     property Depth;
     property SeriesColor;
     property Source;
+    property UseReticule;
   end;
 
   { TPieSeries }
@@ -131,6 +142,7 @@ type
     property SeriesColor;
     property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
+    property UseReticule;
   end;
 
   TSeriesPointerDrawEvent = procedure (
@@ -158,10 +170,6 @@ type
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      override;
     function GetSeriesColor: TColor; override;
     procedure SetSeriesColor(const AValue: TColor); override;
   public
@@ -186,6 +194,7 @@ type
     property ShowPoints: Boolean
       read FShowPoints write SetShowPoints default false;
     property Source;
+    property UseReticule default true;
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
@@ -324,6 +333,7 @@ begin
   FLinePen.OnChange := @StyleChanged;
   FLineType := ltFromPrevious;
   FPointer := TSeriesPointer.Create(FChart);
+  FUseReticule := true;
 end;
 
 destructor TLineSeries.Destroy;
@@ -389,28 +399,6 @@ end;
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(LinePen, Title));
-end;
-
-function TLineSeries.GetNearestPoint(
-  ADistFunc: TPointDistFunc; const APoint: TPoint;
-  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-var
-  dist, minDist, i: Integer;
-  pt: TPoint;
-begin
-  Result := Count > 0;
-  minDist := MaxInt;
-  for i := 0 to Count - 1 do begin
-    pt := Point(GetXImgValue(i), GetYImgValue(i));
-    dist := ADistFunc(APoint, pt);
-    if dist >= minDist then
-      Continue;
-    minDist := dist;
-    AIndex := i;
-    AImg := pt;
-    AValue.X := GetXValue(i);
-    AValue.Y := GetYValue(i);
-  end;
 end;
 
 function TLineSeries.GetSeriesColor: TColor;
@@ -596,6 +584,35 @@ begin
       if IsPointInViewPort(g) then
         DrawLabel(ACanvas, i, GraphToImage(g), ADrawDown and (g.Y < 0));
   end;
+end;
+
+function TBasicPointSeries.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+var
+  dist, minDist, i: Integer;
+  pt: TPoint;
+begin
+  Result := UseReticule and (Count > 0);
+  minDist := MaxInt;
+  for i := 0 to Count - 1 do begin
+    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    dist := ADistFunc(APoint, pt);
+    if dist >= minDist then
+      Continue;
+    minDist := dist;
+    AIndex := i;
+    AImg := pt;
+    AValue.X := GetXValue(i);
+    AValue.Y := GetYValue(i);
+  end;
+end;
+
+procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
+begin
+  if FUseReticule = AValue then exit;
+  FUseReticule := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
