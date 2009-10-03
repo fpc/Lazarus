@@ -2631,7 +2631,7 @@ begin
   { CompilerPath - Nothing needs to be done with this one }
   
   { Unit output directory }
-  if UnitOutputDirectory<>'' then begin
+  if (UnitOutputDirectory<>'') then begin
     CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
     if not (cclAbsolutePaths in Flags) then
       CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
