@@ -281,6 +281,7 @@ type
     FWin32GraphicApp: boolean;
     FExecutableType: TCompilationExecutableType;
     FUseExternalDbgSyms : Boolean;
+    fTargetFilename: string;
 
     // Messages:
     fShowErrors: Boolean;
@@ -325,6 +326,7 @@ type
     procedure SetTargetCPU(const AValue: string); virtual; abstract;
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetTargetOS(const AValue: string); virtual; abstract;
+    procedure SetTargetFilename(const AValue: String); virtual; abstract;
     procedure SetModified(const AValue: boolean); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
@@ -395,6 +397,7 @@ type
     property ExecutableType: TCompilationExecutableType
                                      read FExecutableType write FExecutableType;
     property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write FUseExternalDbgSyms;
+    property TargetFilename: String read fTargetFilename write SetTargetFilename;
 
     // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;

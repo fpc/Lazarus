@@ -536,7 +536,6 @@ type
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
-    fTargetFilename: string;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
 
@@ -552,7 +551,6 @@ type
     fMsgFileName: String;  // messages file name 
     fCompilerMessages: TCompilerMessagesList; 
     
-    procedure SetTargetFilename(const AValue: String);
   protected
     procedure SetBaseDirectory(const AValue: string); override;
     procedure SetCompilerPath(const AValue: String); override;
@@ -568,6 +566,7 @@ type
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
+    procedure SetTargetFilename(const AValue: String); override;
     procedure SetModified(const AValue: boolean); override;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
@@ -653,7 +652,6 @@ type
     // Properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
-    property TargetFilename: String read fTargetFilename write SetTargetFilename;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
