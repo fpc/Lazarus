@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  FPimage, agg_fpimage, Agg_LCL;
+  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
+  Dialogs, FPimage, agg_fpimage, Agg_LCL;
 
 type
 
@@ -30,6 +30,8 @@ implementation
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  FontFilename: String;
 begin
   Bitmap1:=TBitmap.Create;
   AggLCLCanvas:=TAggLCLCanvas.Create;
@@ -56,7 +58,9 @@ begin
     Ellipse(40,65,120,130);
 
     // solid blue text
-    Font.LoadFromFile('../../verdana.ttf');
+    FontFilename:=SetDirSeparators('../../verdana.ttf');
+    DebugLn(['TForm1.FormCreate ',FontFilename,' ',FileExists(FontFilename)]);
+    Font.LoadFromFile(FontFilename);
     Font.Size:=18;
     Font.Color:=clRed;
     TextOut(10,30,'LCL and AggPas');

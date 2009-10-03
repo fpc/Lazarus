@@ -9,11 +9,12 @@
 //
 unit agg_fpimage;
 
+
 {$mode objfpc}{$H+}
 
 interface
 
-{$IFDEF LINUX}
+{$IFNDEF WINDOWS}
 {$DEFINE AGG2D_USE_FREETYPE}
 {$ENDIF}
 
@@ -60,7 +61,7 @@ uses
   {$ENDIF }
 
   Math, types ,
-  {$IFDEF AGG_WINDOWS}
+  {$IFDEF WINDOWS}
   Windows ,
   {$ENDIF}
 
@@ -3377,13 +3378,15 @@ begin
 end;
 
 procedure TAggFPFont.SetAggHeight(const AValue: double);
+{$IFDEF AGG2D_USE_FREETYPE}
 var
   c: TAggFPCanvas;
+{$ENDIF}
 begin
   if FAggHeight=AValue then exit;
   FAggHeight:=AValue;
-  c:=TAggFPCanvas(Canvas);
   {$IFDEF AGG2D_USE_FREETYPE}
+  c:=TAggFPCanvas(Canvas);
   if FAggCache = AGG_VectorFontCache then
     c.m_fontEngine.height_(FAggHeight )
   else
@@ -3448,7 +3451,8 @@ procedure TAggFPFont.LoadFromFile(aFilename: String; const NewHeight: double;
   const NewBold: boolean; const NewItalic: boolean;
   const NewCache: TAggFontCacheType; const NewAngle: double;
   const NewHinting: boolean);
-{$IFNDEF AGG2D_USE_FREETYPE }
+{$IFDEF AGG2D_USE_FREETYPE }
+{$ELSE}
 var
   b : int;
 {$ENDIF}
@@ -3489,7 +3493,7 @@ begin
     b:=400;
 
   if FAggCache = AGG_VectorFontCache then
-    c.m_fontEngine.create_font_(PChar(@AFleName[1 ] ) ,glyph_ren_outline ,
+    c.m_fontEngine.create_font_(PChar(@AFileName[1 ] ) ,glyph_ren_outline ,
       FAggHeight ,0.0 ,b ,Italic )
   else
     c.m_fontEngine.create_font_(PChar(@AFileName[1 ] ) ,glyph_ren_agg_gray8 ,
