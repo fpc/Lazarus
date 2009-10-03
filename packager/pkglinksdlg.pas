@@ -49,7 +49,7 @@ type
   TPkgLinkInfo = class(TPackageLink)
   public
     procedure Assign(Source: TLazPackageID);
-    property Origin: TPkgLinkOrigin read FOrigin write FOrigin;
+    property Origin;
   end;
 
   { TPackageLinksDialog }
