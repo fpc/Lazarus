@@ -791,6 +791,7 @@ type
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                        Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
+    procedure SetupShortCuts;
   public
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -5014,6 +5015,33 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.SetupShortCuts;
+
+  function GetCommand(ACommand: Word): TIDECommand; inline;
+  begin
+    Result := IDECommandList.FindIDECommand(ACommand);
+  end;
+
+begin
+  SrcEditMenuProcedureJump.Command:=GetCommand(ecFindProcedureDefinition);
+  SrcEditMenuFindinFiles.Command:=GetCommand(ecFindInFiles);
+
+  SrcEditMenuCut.Command:=GetCommand(ecCut);
+  SrcEditMenuCopy.Command:=GetCommand(ecCopy);
+  SrcEditMenuPaste.Command:=GetCommand(ecPaste);
+
+  SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
+  SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
+  SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
+  SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
+  SrcEditMenuShowAbstractMethods.Command:=GetCommand(ecShowAbstractMethods);
+  SrcEditMenuShowEmptyMethods.Command:=GetCommand(ecRemoveEmptyMethods);
+  SrcEditMenuShowUnusedUnits.Command:=GetCommand(ecRemoveUnusedUnits);
+  SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
+
+  DebugBoss.SetupSourceMenuShortCuts;
+end;
+
 procedure TSourceNotebook.BeginIncrementalFind;
 var
   TempEditor: TSourceEditor;
@@ -5976,9 +6004,9 @@ end;
 
 {This is called from outside to set a bookmark}
 procedure TSourceNotebook.SetBookmark(Value: Integer);
-Begin
+begin
   BookMarkSet(Value);
-End;
+end;
 
 procedure TSourceNotebook.BookmarkGotoNext(GoForward: boolean);
 var
