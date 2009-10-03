@@ -372,7 +372,7 @@ type
 // thus instead of directly using SHR we emulate c++ solution.
  function  shr_int8 (i ,shift : int8 ) : int8;
  function  shr_int16(i ,shift : int16 ) : int16;
- function  shr_int32(i ,shift : int32 ) : int32;
+ function  shr_int32(i ,shift : int ) : int;
 
 IMPLEMENTATION
 { UNIT IMPLEMENTATION }
