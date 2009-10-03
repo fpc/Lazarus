@@ -1141,7 +1141,7 @@ begin
   Unused(ADistFunc, APoint);
   AIndex := 0;
   AImg := Point(0, 0);
-  Avalue := ZeroDoublePoint;
+  AValue := ZeroDoublePoint;
   Result := false;
 end;
 

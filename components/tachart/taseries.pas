@@ -106,7 +106,7 @@ type
   TAreaSeries = class(TBasicPointSeries)
   private
     FAreaBrush: TBrush;
-    FAreaLinesPen: TChartPen;
+    FAreaLinesPen: TPen;
     FInvertedStairs: Boolean;
     FStairs: Boolean;
 
@@ -119,12 +119,12 @@ type
     procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
   published
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
+    property AreaLinesPen: TPen read FAreaLinesPen write FAreaLinesPen;
     property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
@@ -895,8 +895,11 @@ end;
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAreaLinesPen := TChartPen.Create;
+  FAreaLinesPen := TPen.Create;
+  FAreaLinesPen.OnChange := @StyleChanged;
+
   FAreaBrush := TBrush.Create;
+  FAreaBrush.OnChange := @StyleChanged;
 end;
 
 destructor TAreaSeries.Destroy;

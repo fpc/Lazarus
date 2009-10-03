@@ -397,7 +397,7 @@ begin
   if Source is TChartPen then
     with TChartPen(Source) do
       FVisible := Visible;
-  inherited Assign( Source );
+  inherited Assign(Source);
 end;
 
 constructor TChartPen.Create;
