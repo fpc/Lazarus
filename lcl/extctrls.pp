@@ -1082,7 +1082,6 @@ type
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property Color default clBtnFace;
-    property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
     property ParentColor default true;
     property TabStop default False;
