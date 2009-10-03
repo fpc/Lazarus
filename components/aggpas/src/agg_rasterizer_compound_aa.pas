@@ -221,9 +221,9 @@ begin
  m_cover_buf.Construct(sizeof(cover_type ) );
  m_master_alpha.Construct(sizeof(unsigned ) );
 
- m_min_style:=high(m_min_style);
- m_max_style:=low(m_max_style);
- m_scan_y   :=high(m_scan_y);
+ m_min_style:=$7FFFFFFF;
+ m_max_style:=-$7FFFFFFF;
+ m_scan_y   :=$7FFFFFFF;
  m_sl_start :=0;
  m_sl_len   :=0;
 
@@ -247,9 +247,9 @@ procedure rasterizer_compound_aa.reset;
 begin
  m_outline.reset;
 
- m_min_style:=High(m_min_style);
- m_max_style:=Low(m_max_style);
- m_scan_y   :=High(m_scan_y);
+ m_min_style:=$7FFFFFFF;
+ m_max_style:=-$7FFFFFFF;
+ m_scan_y   :=$7FFFFFFF;
  m_sl_start :=0;
  m_sl_len   :=0;
 
@@ -523,7 +523,7 @@ begin
 
     style_.start_cell:=0;
     style_.num_cells :=0;
-    style_.last_x    :=low(style_.last_x);
+    style_.last_x    :=-$7FFFFFFF;
 
     m_sl_start:=cells^^.x;
     m_sl_len  :=
@@ -907,7 +907,7 @@ begin
 
    style_.start_cell:=0;
    style_.num_cells :=0;
-   style_.last_x    :=low(style_.last_x);
+   style_.last_x    :=-$7FFFFFFF;
 
   end;
 

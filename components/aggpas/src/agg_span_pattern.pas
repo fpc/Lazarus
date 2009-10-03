@@ -271,7 +271,7 @@ end;
 procedure wrap_mode_repeat.init;
 begin
  m_size :=size;
- m_add  :=size * ((high(size) div 4) div size );
+ m_add  :=size * ($3FFFFFFF div size );
  m_value:=0;
 
 end;
@@ -332,7 +332,7 @@ end;
 procedure wrap_mode_repeat_auto_pow2.init;
 begin
  m_size:=size;
- m_add :=size * ((high(size) div 4) div size );
+ m_add :=size * ($3FFFFFFF div size );
 
  if m_size and (m_size - 1 ) <> 0 then
   m_mask:=0
@@ -378,7 +378,7 @@ procedure wrap_mode_reflect.init;
 begin
  m_size :=size;
  m_size2:=size * 2;
- m_add  :=m_size2 * ((high(m_size2) div 4) div m_size2 );
+ m_add  :=m_size2 * ($3FFFFFFF div m_size2 );
  m_value:=0;
 
 end;
@@ -456,7 +456,7 @@ procedure wrap_mode_reflect_auto_pow2.init;
 begin
  m_size :=size;
  m_size2:=size * 2;
- m_add  :=m_size2 * ((high(m_size2) div 4) div m_size2 );
+ m_add  :=m_size2 * ($3FFFFFFF div m_size2 );
 
  if m_size2 and (m_size2 - 1 ) <> 0 then
   m_mask:=0

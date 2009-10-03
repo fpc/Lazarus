@@ -174,8 +174,8 @@ IMPLEMENTATION
 { INITIAL }
 procedure cell_style_aa.initial;
 begin
- x    :=high(x);
- y    :=high(y);
+ x    :=$7FFFFFFF;
+ y    :=$7FFFFFFF;
  cover:=0;
  area :=0;
  left :=-1;
@@ -212,10 +212,10 @@ begin
  m_sorted_cells.Construct(sizeof(cell_style_aa_ptr ) );
  m_sorted_y.Construct(sizeof(sorted_y ) );
 
- m_min_x :=high(m_min_x);
- m_min_y :=high(m_min_y);
- m_max_x :=low(m_max_x);
- m_max_y :=low(m_max_y);
+ m_min_x :=$7FFFFFFF;
+ m_min_y :=$7FFFFFFF;
+ m_max_x :=-$7FFFFFFF;
+ m_max_y :=-$7FFFFFFF;
  m_sorted:=false;
 
  m_style_cell.initial;
@@ -262,10 +262,10 @@ begin
  m_style_cell.initial;
 
  m_sorted:=false;
- m_min_x:=high(m_min_x);
- m_min_y:=high(m_min_y);
- m_max_x:=low(m_max_x);
- m_max_y:=low(m_max_y);
+ m_min_x :=$7FFFFFFF;
+ m_min_y :=$7FFFFFFF;
+ m_max_x :=-$7FFFFFFF;
+ m_max_y :=-$7FFFFFFF;
 
 end;
 
@@ -661,8 +661,8 @@ begin
 
  add_curr_cell;
 
- m_curr_cell.x    :=high(m_curr_cell.x);
- m_curr_cell.y    :=high(m_curr_cell.y);
+ m_curr_cell.x    :=$7FFFFFFF;
+ m_curr_cell.y    :=$7FFFFFFF;
  m_curr_cell.cover:=0;
  m_curr_cell.area :=0;
 

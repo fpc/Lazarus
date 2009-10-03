@@ -805,7 +805,7 @@ begin
           cover_type_ptr(ptrcomp(cover_buffer ) + (sl_start - min_x ) * sizeof(cover_type ) )^ ,
           sl_len * sizeof(cover_type ) ,0 );
 
-         sl_y:=High(sl_y);
+         sl_y:=$7FFFFFFF;
 
          i:=0;
 
