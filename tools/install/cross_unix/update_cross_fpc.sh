@@ -12,7 +12,7 @@ if [ ! -d "$BuildRoot" ]; then
 fi
 
 # the binutils version to download
-BinutilsVersion=2.18
+BinutilsVersion=2.19
 BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils/
 
 # the FPC targets
