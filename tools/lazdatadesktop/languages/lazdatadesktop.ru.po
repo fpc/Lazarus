@@ -194,12 +194,10 @@ msgid "Index"
 msgstr "Индекс"
 
 #: lazdatadeskstr.sld_actionadddomain
-msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Новый домен"
 
 #: lazdatadeskstr.sld_actionadddomainh
-msgctxt "lazdatadeskstr.sld_actionadddomainh"
 msgid "Add a domain to the data dictionary"
 msgstr "Добавить домен к словарю данных"
 
@@ -208,87 +206,70 @@ msgid "New Foreign Key"
 msgstr "Новый внешний ключ"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
-msgctxt "lazdatadeskstr.sld_actionaddforeignkeyh"
 msgid "Add a foreign key to the table"
 msgstr "Добавить внешний ключ к таблице"
 
 #: lazdatadeskstr.sld_actionaddsequence
-msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Новый счётчик"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
-msgctxt "lazdatadeskstr.sld_actionaddsequenceh"
 msgid "Add a sequence"
 msgstr "Добавить счётчик"
 
 #: lazdatadeskstr.sld_actionclose
-msgctxt "lazdatadeskstr.sld_actionclose"
 msgid "&Close"
 msgstr "&Закрыть"
 
 #: lazdatadeskstr.sld_actioncloseall
-msgctxt "lazdatadeskstr.sld_actioncloseall"
 msgid "Close &All"
 msgstr "Закрыть &всё"
 
 #: lazdatadeskstr.sld_actioncloseallh
-msgctxt "lazdatadeskstr.sld_actioncloseallh"
 msgid "Close all Data Dictionaries"
 msgstr "Закрыть все словари данных"
 
 #: lazdatadeskstr.sld_actioncloseh
-msgctxt "lazdatadeskstr.sld_actioncloseh"
 msgid "Close current Data Dictionary"
 msgstr "Закрыть текущий словарь данных"
 
 #: lazdatadeskstr.sld_actioncopy
-msgctxt "lazdatadeskstr.sld_actioncopy"
 msgid "&Copy"
 msgstr "&Копировать"
 
 #: lazdatadeskstr.sld_actioncopyconnection
-msgctxt "lazdatadeskstr.sld_actioncopyconnection"
 msgid "&Copy connection"
 msgstr "К&опировать соединение"
 
 #: lazdatadeskstr.sld_actioncopyh
-msgctxt "lazdatadeskstr.sld_actioncopyh"
 msgid "Copy"
 msgstr "Копировать"
 
 #: lazdatadeskstr.sld_actioncreatecode
-msgctxt "lazdatadeskstr.sld_actioncreatecode"
 msgid "Create &code"
 msgstr "Создать &код"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
-msgctxt "lazdatadeskstr.sld_actioncreatecodeh"
 msgid "Create code from definition or data"
 msgstr "Создать код из определения данных"
 
 #: lazdatadeskstr.sld_actioncut
-msgctxt "lazdatadeskstr.sld_actioncut"
 msgid "Cu&t"
 msgstr "&Вырезать"
 
 #: lazdatadeskstr.sld_actioncuth
-msgctxt "lazdatadeskstr.sld_actioncuth"
 msgid "Cut"
 msgstr "Вырезать"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
-msgctxt "lazdatadeskstr.sld_actiondeleteconnection"
 msgid "&Delete connection"
 msgstr "&Удалить соединение"
 
 #: lazdatadeskstr.sld_actiondeleteobject
-msgctxt "lazdatadeskstr.sld_actiondeleteobject"
 msgid "Delete &Object"
 msgstr "Удалить &объект"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
-msgctxt "lazdatadeskstr.sld_actiondeleteobjecth"
 msgid "Delete the currently selected object"
 msgstr "Удалить выбранный объект"
 
@@ -298,82 +279,66 @@ msgid "&Delete"
 msgstr "&Удалить"
 
 #: lazdatadeskstr.sld_actionexit
-msgctxt "lazdatadeskstr.sld_actionexit"
 msgid "E&xit"
 msgstr "В&ыход"
 
 #: lazdatadeskstr.sld_actionexith
-msgctxt "lazdatadeskstr.sld_actionexith"
 msgid "Quit this program"
 msgstr "Выйти из программы"
 
 #: lazdatadeskstr.sld_actiongeneratesql
-msgctxt "lazdatadeskstr.sld_actiongeneratesql"
 msgid "&Generate SQL"
 msgstr "&Генерировать код SQL"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
-msgctxt "lazdatadeskstr.sld_actiongeneratesqlh"
 msgid "Generate SQL statements for the current table"
 msgstr "Генерировать выражения SQL для текущей таблицы"
 
 #: lazdatadeskstr.sld_actionnew
-msgctxt "lazdatadeskstr.sld_actionnew"
 msgid "&New"
 msgstr "&Новая"
 
 #: lazdatadeskstr.sld_actionnewconnection
-msgctxt "lazdatadeskstr.sld_actionnewconnection"
 msgid "&New connection"
 msgstr "&Новое соединение"
 
 #: lazdatadeskstr.sld_actionnewfield
-msgctxt "lazdatadeskstr.sld_actionnewfield"
 msgid "New &field"
 msgstr "Новое &поле"
 
 #: lazdatadeskstr.sld_actionnewfieldh
-msgctxt "lazdatadeskstr.sld_actionnewfieldh"
 msgid "Create a new field in the current table"
 msgstr "Создать новое поле в текущей таблице"
 
 #: lazdatadeskstr.sld_actionnewh
-msgctxt "lazdatadeskstr.sld_actionnewh"
 msgid "Create a new Data Dictionary"
 msgstr "Создать новый словарь данных"
 
 #: lazdatadeskstr.sld_actionnewindex
-msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Новый индекс"
 
 #: lazdatadeskstr.sld_actionnewindexh
-msgctxt "lazdatadeskstr.sld_actionnewindexh"
 msgid "Add new index to current table"
 msgstr "Добавить новый индекс к текущей таблице"
 
 #: lazdatadeskstr.sld_actionnewtable
-msgctxt "lazdatadeskstr.sld_actionnewtable"
 msgid "New &table"
 msgstr "Новая &таблица"
 
 #: lazdatadeskstr.sld_actionnewtableh
-msgctxt "lazdatadeskstr.sld_actionnewtableh"
 msgid "Create a new table"
 msgstr "Создать новую таблицу"
 
 #: lazdatadeskstr.sld_actionopen
-msgctxt "lazdatadeskstr.sld_actionopen"
 msgid "&Open..."
 msgstr "&Открыть"
 
 #: lazdatadeskstr.sld_actionopenconnection
-msgctxt "lazdatadeskstr.sld_actionopenconnection"
 msgid "&Open connection"
 msgstr "&Открыть соединение"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
-msgctxt "lazdatadeskstr.sld_actionopenconnectionh"
 msgid "Open selected recent connection"
 msgstr "Открыть выбранное недавнее соединение"
 
@@ -382,42 +347,34 @@ msgid "Open a new Data Dictionary"
 msgstr "Открыть новый словарь данных"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
-msgctxt "lazdatadeskstr.sld_actionopenrecentdatadict"
 msgid "Open"
 msgstr "Открыть"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-msgctxt "lazdatadeskstr.sld_actionopenrecentdatadicth"
 msgid "Open selected recent datadictionary"
 msgstr "Открыть выбранный недавний словарь данных"
 
 #: lazdatadeskstr.sld_actionpaste
-msgctxt "lazdatadeskstr.sld_actionpaste"
 msgid "&Paste"
 msgstr "В&ставить"
 
 #: lazdatadeskstr.sld_actionpasteh
-msgctxt "lazdatadeskstr.sld_actionpasteh"
 msgid "Paste"
 msgstr "Вставить"
 
 #: lazdatadeskstr.sld_actionsave
-msgctxt "lazdatadeskstr.sld_actionsave"
 msgid "&Save"
 msgstr "&Сохранить"
 
 #: lazdatadeskstr.sld_actionsaveas
-msgctxt "lazdatadeskstr.sld_actionsaveas"
 msgid "Save &as"
 msgstr "Сохранить &как"
 
 #: lazdatadeskstr.sld_actionsaveash
-msgctxt "lazdatadeskstr.sld_actionsaveash"
 msgid "Save datadictionary as"
 msgstr "Сохранить словарь данных как"
 
 #: lazdatadeskstr.sld_actionsaveh
-msgctxt "lazdatadeskstr.sld_actionsaveh"
 msgid "Save Data Dictionary"
 msgstr "Сохранить словарь данных"
 
@@ -475,7 +432,6 @@ msgid "&Delete"
 msgstr "&Удаление"
 
 #: lazdatadeskstr.sld_dictionaries
-msgctxt "lazdatadeskstr.sld_dictionaries"
 msgid "Dictionaries"
 msgstr "Словари"
 
@@ -512,7 +468,6 @@ msgid "&Key fields"
 msgstr "&Ключевые поля"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
-msgctxt "lazdatadeskstr.sld_lazarusdatabasedesktop"
 msgid "Lazarus Database Desktop"
 msgstr "Рабочий стол базы данных Lazarus"
 
@@ -526,22 +481,18 @@ msgid "Connections"
 msgstr "С&оединения"
 
 #: lazdatadeskstr.sld_menudictionary
-msgctxt "lazdatadeskstr.sld_menudictionary"
 msgid "&Dictionary"
 msgstr "&Словарь"
 
 #: lazdatadeskstr.sld_menudictionaryimport
-msgctxt "lazdatadeskstr.sld_menudictionaryimport"
 msgid "&Import"
 msgstr "&Импорт"
 
 #: lazdatadeskstr.sld_menuedit
-msgctxt "lazdatadeskstr.sld_menuedit"
 msgid "&Edit"
 msgstr "&Правка"
 
 #: lazdatadeskstr.sld_menufile
-msgctxt "lazdatadeskstr.sld_menufile"
 msgid "&File"
 msgstr "&Файл"
 
@@ -577,7 +528,6 @@ msgid "Filename"
 msgstr "Имя файла"
 
 #: lazdatadeskstr.sld_recentlv3
-msgctxt "lazdatadeskstr.sld_recentlv3"
 msgid "Last used on"
 msgstr "Последнее использование"
 
@@ -611,7 +561,6 @@ msgid "Select/Update/Insert fields"
 msgstr "Поля выборки/обновления/вставки"
 
 #: lazdatadeskstr.sld_separator
-msgctxt "lazdatadeskstr.sld_separator"
 msgid "-"
 msgstr "-"
 
@@ -828,303 +777,4 @@ msgstr "Значение"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Словарь данных активен. Хотите импортировать в него?"
-
-#: TMAINFORM.AADDDOMAIN.CAPTION
-msgctxt "TMAINFORM.AADDDOMAIN.CAPTION"
-msgid "New domain"
-msgstr "Новый домен"
-
-#: TMAINFORM.AADDDOMAIN.HINT
-msgctxt "TMAINFORM.AADDDOMAIN.HINT"
-msgid "Add a domain to the data dictionary"
-msgstr "Добавить домен к словарю данных"
-
-#: TMAINFORM.AADDFOREIGNKEY.CAPTION
-msgid "New Foreign key"
-msgstr ""
-
-#: TMAINFORM.AADDFOREIGNKEY.HINT
-msgctxt "TMAINFORM.AADDFOREIGNKEY.HINT"
-msgid "Add a foreign key to the table"
-msgstr "Добавить внешний ключ к таблице"
-
-#: TMAINFORM.AADDSEQUENCE.CAPTION
-msgctxt "TMAINFORM.AADDSEQUENCE.CAPTION"
-msgid "New sequence"
-msgstr "Новый счётчик"
-
-#: TMAINFORM.AADDSEQUENCE.HINT
-msgctxt "TMAINFORM.AADDSEQUENCE.HINT"
-msgid "Add a sequence"
-msgstr "Добавить счётчик"
-
-#: TMAINFORM.ACLOSE.CAPTION
-msgctxt "TMAINFORM.ACLOSE.CAPTION"
-msgid "&Close"
-msgstr "&Закрыть"
-
-#: TMAINFORM.ACLOSE.HINT
-msgctxt "TMAINFORM.ACLOSE.HINT"
-msgid "Close current Data Dictionary"
-msgstr "Закрыть текущий словарь данных"
-
-#: TMAINFORM.ACLOSEALL.CAPTION
-msgctxt "TMAINFORM.ACLOSEALL.CAPTION"
-msgid "Close &All"
-msgstr "Закрыть &всё"
-
-#: TMAINFORM.ACLOSEALL.HINT
-msgctxt "TMAINFORM.ACLOSEALL.HINT"
-msgid "Close all Data Dictionaries"
-msgstr "Закрыть все словари данных"
-
-#: TMAINFORM.ACOPY.CAPTION
-msgctxt "TMAINFORM.ACOPY.CAPTION"
-msgid "&Copy"
-msgstr "&Копировать"
-
-#: TMAINFORM.ACOPY.HINT
-msgctxt "TMAINFORM.ACOPY.HINT"
-msgid "Copy"
-msgstr "Копировать"
-
-#: TMAINFORM.ACOPYCONNECTION.CAPTION
-msgctxt "TMAINFORM.ACOPYCONNECTION.CAPTION"
-msgid "&Copy connection"
-msgstr "К&опировать соединение"
-
-#: TMAINFORM.ACREATECODE.CAPTION
-msgctxt "TMAINFORM.ACREATECODE.CAPTION"
-msgid "Create &code"
-msgstr "Создать &код"
-
-#: TMAINFORM.ACREATECODE.HINT
-msgctxt "TMAINFORM.ACREATECODE.HINT"
-msgid "Create code from definition or data"
-msgstr "Создать код из определения данных"
-
-#: TMAINFORM.ACUT.CAPTION
-msgctxt "TMAINFORM.ACUT.CAPTION"
-msgid "Cu&t"
-msgstr "&Вырезать"
-
-#: TMAINFORM.ACUT.HINT
-msgctxt "TMAINFORM.ACUT.HINT"
-msgid "Cut"
-msgstr "Вырезать"
-
-#: TMAINFORM.ADELETECONNECTION.CAPTION
-msgctxt "TMAINFORM.ADELETECONNECTION.CAPTION"
-msgid "&Delete connection"
-msgstr "&Удалить соединение"
-
-#: TMAINFORM.ADELETEOBJECT.CAPTION
-msgctxt "TMAINFORM.ADELETEOBJECT.CAPTION"
-msgid "Delete &Object"
-msgstr "Удалить &объект"
-
-#: TMAINFORM.ADELETEOBJECT.HINT
-msgctxt "TMAINFORM.ADELETEOBJECT.HINT"
-msgid "Delete the currently selected object"
-msgstr "Удалить выбранный объект"
-
-#: TMAINFORM.ADELETERECENTDATADICT.CAPTION
-msgctxt "TMAINFORM.ADELETERECENTDATADICT.CAPTION"
-msgid "&Delete"
-msgstr "&Удалить"
-
-#: TMAINFORM.AEXIT.CAPTION
-msgctxt "TMAINFORM.AEXIT.CAPTION"
-msgid "E&xit"
-msgstr "В&ыход"
-
-#: TMAINFORM.AEXIT.HINT
-msgctxt "TMAINFORM.AEXIT.HINT"
-msgid "Quit this program"
-msgstr "Выйти из программы"
-
-#: TMAINFORM.AGENERATESQL.CAPTION
-msgctxt "TMAINFORM.AGENERATESQL.CAPTION"
-msgid "&Generate SQL"
-msgstr "&Генерировать код SQL"
-
-#: TMAINFORM.AGENERATESQL.HINT
-msgctxt "TMAINFORM.AGENERATESQL.HINT"
-msgid "Generate SQL statements for the current table"
-msgstr "Генерировать выражения SQL для текущей таблицы"
-
-#: TMAINFORM.ANEW.CAPTION
-msgctxt "TMAINFORM.ANEW.CAPTION"
-msgid "&New"
-msgstr "&Новая"
-
-#: TMAINFORM.ANEW.HINT
-msgctxt "TMAINFORM.ANEW.HINT"
-msgid "Create a new Data Dictionary"
-msgstr "Создать новый словарь данных"
-
-#: TMAINFORM.ANEWCONNECTION.CAPTION
-msgctxt "TMAINFORM.ANEWCONNECTION.CAPTION"
-msgid "&New connection"
-msgstr "&Новое соединение"
-
-#: TMAINFORM.ANEWFIELD.CAPTION
-msgctxt "TMAINFORM.ANEWFIELD.CAPTION"
-msgid "New &field"
-msgstr "Новое &поле"
-
-#: TMAINFORM.ANEWFIELD.HINT
-msgctxt "TMAINFORM.ANEWFIELD.HINT"
-msgid "Create a new field in the current table"
-msgstr "Создать новое поле в текущей таблице"
-
-#: TMAINFORM.ANEWINDEX.CAPTION
-msgctxt "TMAINFORM.ANEWINDEX.CAPTION"
-msgid "New index"
-msgstr "Новый индекс"
-
-#: TMAINFORM.ANEWINDEX.HINT
-msgctxt "TMAINFORM.ANEWINDEX.HINT"
-msgid "Add new index to current table"
-msgstr "Добавить новый индекс к текущей таблице"
-
-#: TMAINFORM.ANEWTABLE.CAPTION
-msgctxt "TMAINFORM.ANEWTABLE.CAPTION"
-msgid "New &table"
-msgstr "Новая &таблица"
-
-#: TMAINFORM.ANEWTABLE.HINT
-msgctxt "TMAINFORM.ANEWTABLE.HINT"
-msgid "Create a new table"
-msgstr "Создать новую таблицу"
-
-#: TMAINFORM.AOPEN.CAPTION
-msgctxt "TMAINFORM.AOPEN.CAPTION"
-msgid "&Open..."
-msgstr "&Открыть"
-
-#: TMAINFORM.AOPENCONNECTION.CAPTION
-msgctxt "TMAINFORM.AOPENCONNECTION.CAPTION"
-msgid "&Open connection"
-msgstr "&Открыть соединение"
-
-#: TMAINFORM.AOPENCONNECTION.HINT
-msgctxt "TMAINFORM.AOPENCONNECTION.HINT"
-msgid "Open selected recent connection"
-msgstr "Открыть выбранное недавнее соединение"
-
-#: TMAINFORM.AOPENRECENTDATADICT.CAPTION
-msgctxt "TMAINFORM.AOPENRECENTDATADICT.CAPTION"
-msgid "Open"
-msgstr "Открыть"
-
-#: TMAINFORM.AOPENRECENTDATADICT.HINT
-msgctxt "TMAINFORM.AOPENRECENTDATADICT.HINT"
-msgid "Open selected recent datadictionary"
-msgstr "Открыть выбранный недавний словарь данных"
-
-#: TMAINFORM.APASTE.CAPTION
-msgctxt "TMAINFORM.APASTE.CAPTION"
-msgid "&Paste"
-msgstr "В&ставить"
-
-#: TMAINFORM.APASTE.HINT
-msgctxt "TMAINFORM.APASTE.HINT"
-msgid "Paste"
-msgstr "Вставить"
-
-#: TMAINFORM.ASAVE.CAPTION
-msgctxt "TMAINFORM.ASAVE.CAPTION"
-msgid "&Save"
-msgstr "&Сохранить"
-
-#: TMAINFORM.ASAVE.HINT
-msgctxt "TMAINFORM.ASAVE.HINT"
-msgid "Save Data Dictionary"
-msgstr "Сохранить словарь данных"
-
-#: TMAINFORM.ASAVEAS.CAPTION
-msgctxt "TMAINFORM.ASAVEAS.CAPTION"
-msgid "Save &as"
-msgstr "Сохранить &как"
-
-#: TMAINFORM.ASAVEAS.HINT
-msgctxt "TMAINFORM.ASAVEAS.HINT"
-msgid "Save datadictionary as"
-msgstr "Сохранить словарь данных как"
-
-#: TMAINFORM.CAPTION
-msgctxt "TMAINFORM.CAPTION"
-msgid "Lazarus Database Desktop"
-msgstr "Рабочий стол базы данных Lazarus"
-
-#: TMAINFORM.LVCONNECTIONS.COLUMNS.CAPTION
-msgctxt "TMAINFORM.LVCONNECTIONS.COLUMNS.CAPTION"
-msgid "Description"
-msgstr "Описание"
-
-#: TMAINFORM.LVDICTS.COLUMNS.CAPTION
-msgctxt "TMAINFORM.LVDICTS.COLUMNS.CAPTION"
-msgid "Last used on"
-msgstr "Последнее использование"
-
-#: TMAINFORM.MENUITEM2.CAPTION
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "&Edit"
-msgstr "&Правка"
-
-#: TMAINFORM.MFILE.CAPTION
-msgctxt "TMAINFORM.MFILE.CAPTION"
-msgid "&File"
-msgstr "&Файл"
-
-#: TMAINFORM.MICLOSESEP.CAPTION
-msgctxt "TMAINFORM.MICLOSESEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MICONNECTION.CAPTION
-msgctxt "TMAINFORM.MICONNECTION.CAPTION"
-msgid "Connections"
-msgstr "С&оединения"
-
-#: TMAINFORM.MIDATADICT.CAPTION
-msgctxt "TMAINFORM.MIDATADICT.CAPTION"
-msgid "&Dictionary"
-msgstr "&Словарь"
-
-#: TMAINFORM.MIDDSEP.CAPTION
-msgctxt "TMAINFORM.MIDDSEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIDDSEP2.CAPTION
-msgctxt "TMAINFORM.MIDDSEP2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIDDSEP3.CAPTION
-msgctxt "TMAINFORM.MIDDSEP3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIIMPORT.CAPTION
-msgctxt "TMAINFORM.MIIMPORT.CAPTION"
-msgid "&Import"
-msgstr "&Импорт"
-
-#: TMAINFORM.MISEP.CAPTION
-msgctxt "TMAINFORM.MISEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.TSCONNECTIONS.CAPTION
-msgctxt "TMAINFORM.TSCONNECTIONS.CAPTION"
-msgid "Connections"
-msgstr "С&оединения"
-
-#: TMAINFORM.TSRECENT.CAPTION
-msgctxt "TMAINFORM.TSRECENT.CAPTION"
-msgid "Dictionaries"
-msgstr "Словари"
 

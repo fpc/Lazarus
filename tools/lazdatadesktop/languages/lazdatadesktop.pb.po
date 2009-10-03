@@ -194,13 +194,11 @@ msgid "Index"
 msgstr "Índice"
 
 #: lazdatadeskstr.sld_actionadddomain
-msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Novo domínio"
 
 #: lazdatadeskstr.sld_actionadddomainh
 #| msgid "Add a domain o the data dictionary"
-msgctxt "lazdatadeskstr.sld_actionadddomainh"
 msgid "Add a domain to the data dictionary"
 msgstr "Adicionar um domínio ao dicionário dados"
 
@@ -209,17 +207,14 @@ msgid "New Foreign Key"
 msgstr "Nova chave estrangeira"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
-msgctxt "lazdatadeskstr.sld_actionaddforeignkeyh"
 msgid "Add a foreign key to the table"
 msgstr "Adicionar uma chave estrangeira à tabela"
 
 #: lazdatadeskstr.sld_actionaddsequence
-msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Nova sequência"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
-msgctxt "lazdatadeskstr.sld_actionaddsequenceh"
 msgid "Add a sequence"
 msgstr "Adicionar uma sequência"
 
@@ -234,62 +229,50 @@ msgid "Close &All"
 msgstr "Fechar &Tudo"
 
 #: lazdatadeskstr.sld_actioncloseallh
-msgctxt "lazdatadeskstr.sld_actioncloseallh"
 msgid "Close all Data Dictionaries"
 msgstr "Fechar todos dicionários dados"
 
 #: lazdatadeskstr.sld_actioncloseh
-msgctxt "lazdatadeskstr.sld_actioncloseh"
 msgid "Close current Data Dictionary"
 msgstr "Fechar dicionário dados atual"
 
 #: lazdatadeskstr.sld_actioncopy
-msgctxt "lazdatadeskstr.sld_actioncopy"
 msgid "&Copy"
 msgstr "&Copiar"
 
 #: lazdatadeskstr.sld_actioncopyconnection
-msgctxt "lazdatadeskstr.sld_actioncopyconnection"
 msgid "&Copy connection"
 msgstr "&Copiar conexão"
 
 #: lazdatadeskstr.sld_actioncopyh
-msgctxt "lazdatadeskstr.sld_actioncopyh"
 msgid "Copy"
 msgstr "Copiar"
 
 #: lazdatadeskstr.sld_actioncreatecode
-msgctxt "lazdatadeskstr.sld_actioncreatecode"
 msgid "Create &code"
 msgstr "Criar &código"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
-msgctxt "lazdatadeskstr.sld_actioncreatecodeh"
 msgid "Create code from definition or data"
 msgstr "Criar código das definições ou dados"
 
 #: lazdatadeskstr.sld_actioncut
-msgctxt "lazdatadeskstr.sld_actioncut"
 msgid "Cu&t"
 msgstr "Recor&tar"
 
 #: lazdatadeskstr.sld_actioncuth
-msgctxt "lazdatadeskstr.sld_actioncuth"
 msgid "Cut"
 msgstr "Recortar"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
-msgctxt "lazdatadeskstr.sld_actiondeleteconnection"
 msgid "&Delete connection"
 msgstr "&Excluir conexão"
 
 #: lazdatadeskstr.sld_actiondeleteobject
-msgctxt "lazdatadeskstr.sld_actiondeleteobject"
 msgid "Delete &Object"
 msgstr "Excluir &Objeto"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
-msgctxt "lazdatadeskstr.sld_actiondeleteobjecth"
 msgid "Delete the currently selected object"
 msgstr "Excluir o objeto selecionado atualmente"
 
@@ -299,12 +282,10 @@ msgid "&Delete"
 msgstr "&Excluir"
 
 #: lazdatadeskstr.sld_actionexit
-msgctxt "lazdatadeskstr.sld_actionexit"
 msgid "E&xit"
 msgstr "&Sair"
 
 #: lazdatadeskstr.sld_actionexith
-msgctxt "lazdatadeskstr.sld_actionexith"
 msgid "Quit this program"
 msgstr "Encerrar programa"
 
@@ -314,7 +295,6 @@ msgid "&Generate SQL"
 msgstr "&Gerar SQL"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
-msgctxt "lazdatadeskstr.sld_actiongeneratesqlh"
 msgid "Generate SQL statements for the current table"
 msgstr "Gerar declarações SQL para a tabela atual"
 
@@ -324,42 +304,34 @@ msgid "&New"
 msgstr "&Novo"
 
 #: lazdatadeskstr.sld_actionnewconnection
-msgctxt "lazdatadeskstr.sld_actionnewconnection"
 msgid "&New connection"
 msgstr "&Nova conexão"
 
 #: lazdatadeskstr.sld_actionnewfield
-msgctxt "lazdatadeskstr.sld_actionnewfield"
 msgid "New &field"
 msgstr "Novo &campo"
 
 #: lazdatadeskstr.sld_actionnewfieldh
-msgctxt "lazdatadeskstr.sld_actionnewfieldh"
 msgid "Create a new field in the current table"
 msgstr "Criar um novo campo na tabela atual"
 
 #: lazdatadeskstr.sld_actionnewh
-msgctxt "lazdatadeskstr.sld_actionnewh"
 msgid "Create a new Data Dictionary"
 msgstr "Criar um novo Dicionário Dados"
 
 #: lazdatadeskstr.sld_actionnewindex
-msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Novo índice"
 
 #: lazdatadeskstr.sld_actionnewindexh
-msgctxt "lazdatadeskstr.sld_actionnewindexh"
 msgid "Add new index to current table"
 msgstr "Adicionar novo índice à tabela atual"
 
 #: lazdatadeskstr.sld_actionnewtable
-msgctxt "lazdatadeskstr.sld_actionnewtable"
 msgid "New &table"
 msgstr "Nova &tabela"
 
 #: lazdatadeskstr.sld_actionnewtableh
-msgctxt "lazdatadeskstr.sld_actionnewtableh"
 msgid "Create a new table"
 msgstr "Criar uma nova tabela"
 
@@ -369,12 +341,10 @@ msgid "&Open..."
 msgstr "&Abrir..."
 
 #: lazdatadeskstr.sld_actionopenconnection
-msgctxt "lazdatadeskstr.sld_actionopenconnection"
 msgid "&Open connection"
 msgstr "&Abrir conexão"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
-msgctxt "lazdatadeskstr.sld_actionopenconnectionh"
 msgid "Open selected recent connection"
 msgstr "Abrir conexão recente selecionada"
 
@@ -388,7 +358,6 @@ msgid "Open"
 msgstr "Abrir"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-msgctxt "lazdatadeskstr.sld_actionopenrecentdatadicth"
 msgid "Open selected recent datadictionary"
 msgstr "Abrir dicionário dados recente selecionado"
 
@@ -398,7 +367,6 @@ msgid "&Paste"
 msgstr "&Colar"
 
 #: lazdatadeskstr.sld_actionpasteh
-msgctxt "lazdatadeskstr.sld_actionpasteh"
 msgid "Paste"
 msgstr "Colar"
 
@@ -408,17 +376,14 @@ msgid "&Save"
 msgstr "Sal&var"
 
 #: lazdatadeskstr.sld_actionsaveas
-msgctxt "lazdatadeskstr.sld_actionsaveas"
 msgid "Save &as"
 msgstr "Salvar c&omo"
 
 #: lazdatadeskstr.sld_actionsaveash
-msgctxt "lazdatadeskstr.sld_actionsaveash"
 msgid "Save datadictionary as"
 msgstr "Salvar dicionário dados como"
 
 #: lazdatadeskstr.sld_actionsaveh
-msgctxt "lazdatadeskstr.sld_actionsaveh"
 msgid "Save Data Dictionary"
 msgstr "Salvar Dicionário Dados"
 
@@ -848,303 +813,4 @@ msgstr "Valor"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Um dicionário dados está ativo.Deseja importar para este dicionário dados ?"
-
-#: TMAINFORM.AADDDOMAIN.CAPTION
-msgctxt "TMAINFORM.AADDDOMAIN.CAPTION"
-msgid "New domain"
-msgstr "Novo domínio"
-
-#: TMAINFORM.AADDDOMAIN.HINT
-msgctxt "TMAINFORM.AADDDOMAIN.HINT"
-msgid "Add a domain to the data dictionary"
-msgstr "Adicionar um domínio ao dicionário dados"
-
-#: TMAINFORM.AADDFOREIGNKEY.CAPTION
-msgid "New Foreign key"
-msgstr ""
-
-#: TMAINFORM.AADDFOREIGNKEY.HINT
-msgctxt "TMAINFORM.AADDFOREIGNKEY.HINT"
-msgid "Add a foreign key to the table"
-msgstr "Adicionar uma chave estrangeira à tabela"
-
-#: TMAINFORM.AADDSEQUENCE.CAPTION
-msgctxt "TMAINFORM.AADDSEQUENCE.CAPTION"
-msgid "New sequence"
-msgstr "Nova sequência"
-
-#: TMAINFORM.AADDSEQUENCE.HINT
-msgctxt "TMAINFORM.AADDSEQUENCE.HINT"
-msgid "Add a sequence"
-msgstr "Adicionar uma sequência"
-
-#: TMAINFORM.ACLOSE.CAPTION
-msgctxt "TMAINFORM.ACLOSE.CAPTION"
-msgid "&Close"
-msgstr "&Fechar"
-
-#: TMAINFORM.ACLOSE.HINT
-msgctxt "TMAINFORM.ACLOSE.HINT"
-msgid "Close current Data Dictionary"
-msgstr "Fechar dicionário dados atual"
-
-#: TMAINFORM.ACLOSEALL.CAPTION
-msgctxt "TMAINFORM.ACLOSEALL.CAPTION"
-msgid "Close &All"
-msgstr "Fechar &Tudo"
-
-#: TMAINFORM.ACLOSEALL.HINT
-msgctxt "TMAINFORM.ACLOSEALL.HINT"
-msgid "Close all Data Dictionaries"
-msgstr "Fechar todos dicionários dados"
-
-#: TMAINFORM.ACOPY.CAPTION
-msgctxt "TMAINFORM.ACOPY.CAPTION"
-msgid "&Copy"
-msgstr "&Copiar"
-
-#: TMAINFORM.ACOPY.HINT
-msgctxt "TMAINFORM.ACOPY.HINT"
-msgid "Copy"
-msgstr "Copiar"
-
-#: TMAINFORM.ACOPYCONNECTION.CAPTION
-msgctxt "TMAINFORM.ACOPYCONNECTION.CAPTION"
-msgid "&Copy connection"
-msgstr "&Copiar conexão"
-
-#: TMAINFORM.ACREATECODE.CAPTION
-msgctxt "TMAINFORM.ACREATECODE.CAPTION"
-msgid "Create &code"
-msgstr "Criar &código"
-
-#: TMAINFORM.ACREATECODE.HINT
-msgctxt "TMAINFORM.ACREATECODE.HINT"
-msgid "Create code from definition or data"
-msgstr "Criar código das definições ou dados"
-
-#: TMAINFORM.ACUT.CAPTION
-msgctxt "TMAINFORM.ACUT.CAPTION"
-msgid "Cu&t"
-msgstr "Recor&tar"
-
-#: TMAINFORM.ACUT.HINT
-msgctxt "TMAINFORM.ACUT.HINT"
-msgid "Cut"
-msgstr "Recortar"
-
-#: TMAINFORM.ADELETECONNECTION.CAPTION
-msgctxt "TMAINFORM.ADELETECONNECTION.CAPTION"
-msgid "&Delete connection"
-msgstr "&Excluir conexão"
-
-#: TMAINFORM.ADELETEOBJECT.CAPTION
-msgctxt "TMAINFORM.ADELETEOBJECT.CAPTION"
-msgid "Delete &Object"
-msgstr "Excluir &Objeto"
-
-#: TMAINFORM.ADELETEOBJECT.HINT
-msgctxt "TMAINFORM.ADELETEOBJECT.HINT"
-msgid "Delete the currently selected object"
-msgstr "Excluir o objeto selecionado atualmente"
-
-#: TMAINFORM.ADELETERECENTDATADICT.CAPTION
-msgctxt "TMAINFORM.ADELETERECENTDATADICT.CAPTION"
-msgid "&Delete"
-msgstr "&Excluir"
-
-#: TMAINFORM.AEXIT.CAPTION
-msgctxt "TMAINFORM.AEXIT.CAPTION"
-msgid "E&xit"
-msgstr "&Sair"
-
-#: TMAINFORM.AEXIT.HINT
-msgctxt "TMAINFORM.AEXIT.HINT"
-msgid "Quit this program"
-msgstr "Encerrar programa"
-
-#: TMAINFORM.AGENERATESQL.CAPTION
-msgctxt "TMAINFORM.AGENERATESQL.CAPTION"
-msgid "&Generate SQL"
-msgstr "&Gerar SQL"
-
-#: TMAINFORM.AGENERATESQL.HINT
-msgctxt "TMAINFORM.AGENERATESQL.HINT"
-msgid "Generate SQL statements for the current table"
-msgstr "Gerar declarações SQL para a tabela atual"
-
-#: TMAINFORM.ANEW.CAPTION
-msgctxt "TMAINFORM.ANEW.CAPTION"
-msgid "&New"
-msgstr "&Novo"
-
-#: TMAINFORM.ANEW.HINT
-msgctxt "TMAINFORM.ANEW.HINT"
-msgid "Create a new Data Dictionary"
-msgstr "Criar um novo Dicionário Dados"
-
-#: TMAINFORM.ANEWCONNECTION.CAPTION
-msgctxt "TMAINFORM.ANEWCONNECTION.CAPTION"
-msgid "&New connection"
-msgstr "&Nova conexão"
-
-#: TMAINFORM.ANEWFIELD.CAPTION
-msgctxt "TMAINFORM.ANEWFIELD.CAPTION"
-msgid "New &field"
-msgstr "Novo &campo"
-
-#: TMAINFORM.ANEWFIELD.HINT
-msgctxt "TMAINFORM.ANEWFIELD.HINT"
-msgid "Create a new field in the current table"
-msgstr "Criar um novo campo na tabela atual"
-
-#: TMAINFORM.ANEWINDEX.CAPTION
-msgctxt "TMAINFORM.ANEWINDEX.CAPTION"
-msgid "New index"
-msgstr "Novo índice"
-
-#: TMAINFORM.ANEWINDEX.HINT
-msgctxt "TMAINFORM.ANEWINDEX.HINT"
-msgid "Add new index to current table"
-msgstr "Adicionar novo índice à tabela atual"
-
-#: TMAINFORM.ANEWTABLE.CAPTION
-msgctxt "TMAINFORM.ANEWTABLE.CAPTION"
-msgid "New &table"
-msgstr "Nova &tabela"
-
-#: TMAINFORM.ANEWTABLE.HINT
-msgctxt "TMAINFORM.ANEWTABLE.HINT"
-msgid "Create a new table"
-msgstr "Criar uma nova tabela"
-
-#: TMAINFORM.AOPEN.CAPTION
-msgctxt "TMAINFORM.AOPEN.CAPTION"
-msgid "&Open..."
-msgstr "&Abrir..."
-
-#: TMAINFORM.AOPENCONNECTION.CAPTION
-msgctxt "TMAINFORM.AOPENCONNECTION.CAPTION"
-msgid "&Open connection"
-msgstr "&Abrir conexão"
-
-#: TMAINFORM.AOPENCONNECTION.HINT
-msgctxt "TMAINFORM.AOPENCONNECTION.HINT"
-msgid "Open selected recent connection"
-msgstr "Abrir conexão recente selecionada"
-
-#: TMAINFORM.AOPENRECENTDATADICT.CAPTION
-msgctxt "TMAINFORM.AOPENRECENTDATADICT.CAPTION"
-msgid "Open"
-msgstr "Abrir"
-
-#: TMAINFORM.AOPENRECENTDATADICT.HINT
-msgctxt "TMAINFORM.AOPENRECENTDATADICT.HINT"
-msgid "Open selected recent datadictionary"
-msgstr "Abrir dicionário dados recente selecionado"
-
-#: TMAINFORM.APASTE.CAPTION
-msgctxt "TMAINFORM.APASTE.CAPTION"
-msgid "&Paste"
-msgstr "&Colar"
-
-#: TMAINFORM.APASTE.HINT
-msgctxt "TMAINFORM.APASTE.HINT"
-msgid "Paste"
-msgstr "Colar"
-
-#: TMAINFORM.ASAVE.CAPTION
-msgctxt "TMAINFORM.ASAVE.CAPTION"
-msgid "&Save"
-msgstr "Sal&var"
-
-#: TMAINFORM.ASAVE.HINT
-msgctxt "TMAINFORM.ASAVE.HINT"
-msgid "Save Data Dictionary"
-msgstr "Salvar Dicionário Dados"
-
-#: TMAINFORM.ASAVEAS.CAPTION
-msgctxt "TMAINFORM.ASAVEAS.CAPTION"
-msgid "Save &as"
-msgstr "Salvar c&omo"
-
-#: TMAINFORM.ASAVEAS.HINT
-msgctxt "TMAINFORM.ASAVEAS.HINT"
-msgid "Save datadictionary as"
-msgstr "Salvar dicionário dados como"
-
-#: TMAINFORM.CAPTION
-msgctxt "TMAINFORM.CAPTION"
-msgid "Lazarus Database Desktop"
-msgstr "Lazarus Database Desktop"
-
-#: TMAINFORM.LVCONNECTIONS.COLUMNS.CAPTION
-msgctxt "TMAINFORM.LVCONNECTIONS.COLUMNS.CAPTION"
-msgid "Description"
-msgstr "Descrição"
-
-#: TMAINFORM.LVDICTS.COLUMNS.CAPTION
-msgctxt "TMAINFORM.LVDICTS.COLUMNS.CAPTION"
-msgid "Last used on"
-msgstr "Última utilização"
-
-#: TMAINFORM.MENUITEM2.CAPTION
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "&Edit"
-msgstr "&Editar"
-
-#: TMAINFORM.MFILE.CAPTION
-msgctxt "TMAINFORM.MFILE.CAPTION"
-msgid "&File"
-msgstr "&Arquivo"
-
-#: TMAINFORM.MICLOSESEP.CAPTION
-msgctxt "TMAINFORM.MICLOSESEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MICONNECTION.CAPTION
-msgctxt "TMAINFORM.MICONNECTION.CAPTION"
-msgid "Connections"
-msgstr "Conexões"
-
-#: TMAINFORM.MIDATADICT.CAPTION
-msgctxt "TMAINFORM.MIDATADICT.CAPTION"
-msgid "&Dictionary"
-msgstr "&Dicionário"
-
-#: TMAINFORM.MIDDSEP.CAPTION
-msgctxt "TMAINFORM.MIDDSEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIDDSEP2.CAPTION
-msgctxt "TMAINFORM.MIDDSEP2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIDDSEP3.CAPTION
-msgctxt "TMAINFORM.MIDDSEP3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.MIIMPORT.CAPTION
-msgctxt "TMAINFORM.MIIMPORT.CAPTION"
-msgid "&Import"
-msgstr "&Importar"
-
-#: TMAINFORM.MISEP.CAPTION
-msgctxt "TMAINFORM.MISEP.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: TMAINFORM.TSCONNECTIONS.CAPTION
-msgctxt "TMAINFORM.TSCONNECTIONS.CAPTION"
-msgid "Connections"
-msgstr "Conexões"
-
-#: TMAINFORM.TSRECENT.CAPTION
-msgctxt "TMAINFORM.TSRECENT.CAPTION"
-msgid "Dictionaries"
-msgstr "Dicionários"
 
