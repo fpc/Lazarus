@@ -1801,7 +1801,6 @@ resourcestring
   lisRunParamsTheHostApplicationIsNotExecutable = 'The host application %s%s%'
     +'s is not executable.';
   dlgTheDirectory = 'The directory "';
-  dlgDoesNotExist = '" does not exist.';
   dlgTextToFing = '&Text to Find';
   dlgReplaceWith = '&Replace With';
   dlgFROpts = 'Options';

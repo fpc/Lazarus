@@ -1847,7 +1847,8 @@ begin
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   SourceNotebook.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
   SourceNotebook.OnPopupMenu := @OnSrcNoteBookPopupMenu;
-  DebugBoss.ConnectSourceNotebookEvents;  
+  DebugBoss.ConnectSourceNotebookEvents;
+  DebugBoss.SetupSourceMenuShortCuts;
 
   // connect search menu to sourcenotebook
   MainIDEBar.itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -2411,7 +2412,6 @@ end;
 procedure TMainIDE.LoadMenuShortCuts;
 begin
   inherited LoadMenuShortCuts;
-  SourceNotebook.SetupShortCuts;
   DebugBoss.SetupMainBarShortCuts;
 end;
 
