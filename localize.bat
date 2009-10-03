@@ -109,6 +109,10 @@ tools\updatepofiles %TP_IPro_RST% components\turbopower_ipro\languages\iputils.p
 @set MessageComposer_RST=components\messagecomposer\lib\%ArchOS%\messagecomposer.rst
 tools\updatepofiles %MessageComposer_RST% components\messagecomposer\languages\messagecomposer.po
 
+@REM LazDataDesktop
+@set LazDataDesktop_RST=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
+tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatadesktop.po
+
 @REM LazReport editor sample
 @set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
 if not exist %LREditor_RST% goto SkipLREditor
