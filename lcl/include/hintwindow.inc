@@ -115,7 +115,7 @@ begin
   InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
   DrawText(Canvas.GetUpdatedHandle([csFontValid]),
            PChar(Caption), Length(Caption), ARect,
-           DT_NOPREFIX or DT_CENTER or DT_VCENTER or DT_WORDBREAK);
+           DT_NOPREFIX or DT_VCENTER or DT_WORDBREAK); // no DT_CENTER in Delphi according to Luiz
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TPoint;
