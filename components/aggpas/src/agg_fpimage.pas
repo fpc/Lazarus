@@ -829,7 +829,6 @@ end;
 
 procedure TAggFPImage.ReallocData;
 begin
-  writeln('TAggFPImage.ReallocData Width=',Width,' Height=',Height,' DataSize=',DataSize);
   ReAllocMem(fData,DataSize);
   RenderingBuffer.Destruct;
   RenderingBuffer.Construct(FData, Width, Height, LineSize);
