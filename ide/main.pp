@@ -9696,8 +9696,6 @@ begin
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
     if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
       UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
-
-    DebugLn(['TMainIDE.DoBuildProject UnitOutputDirectory=',UnitOutputDirectory]);
     if (FilenameIsAbsolute(UnitOutputDirectory))
     and (not DirPathExistsCached(UnitOutputDirectory)) then begin
       if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin

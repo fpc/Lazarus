@@ -5451,7 +5451,7 @@ begin
   // add lcl pp/pas dirs to source search path
   AProject.AddPackageDependency('LCL');
   AProject.LazCompilerOptions.Win32GraphicApp:=true;
-  //AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
 end;
 
 function TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
