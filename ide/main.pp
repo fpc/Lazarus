@@ -9851,6 +9851,7 @@ begin
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
+  DebugLn(['TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
   if not FileExistsUTF8(ProgramFilename)
   then begin
     MessageDlg(lisFileNotFound,

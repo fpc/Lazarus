@@ -421,6 +421,8 @@ begin
 end;
 
 function TBuildManager.GetTestProjectFilename(aProject: TProject): string;
+var
+  TestDir: String;
 begin
   Result:='';
   if aProject=nil then exit;
@@ -428,6 +430,12 @@ begin
   Result:=GetTestUnitFilename(aProject.MainUnitInfo);
   if Result='' then exit;
   Result:=aProject.CompilerOptions.CreateTargetFilename(Result);
+  if Result='' then exit;
+  if (not FilenameIsAbsolute(Result)) then begin
+    TestDir:=GetTestBuildDirectory;
+    if TestDir='' then exit;
+    Result:=TestDir+Result;
+  end;
 end;
 
 function TBuildManager.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
