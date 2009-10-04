@@ -109,7 +109,10 @@ begin
   // see if any are set or set then to a default value
   SetString(OutFormat,   OutFormat,  'FPDOCFORMAT');
   SetString(EnvParams,   '',         'FPDOCPARAMS');
-  SetString(fpdoc,       'fpdoc',    'FPDOC');
+  if fpdoc <> '' then
+    SetString(fpdoc,         fpdoc,    'FPDOC')
+  else
+    SetString(fpdoc,       'fpdoc',    'FPDOC');
   SetString(fpdocfooter, '',         'FPDOCFOOTER');
   SetString(FPCDocsPath, FPCDocsPath, 'FPCDOCS');
   
