@@ -43,12 +43,13 @@ type
     procedure SetHelpLabel(AValue: String);
     function CheckBuildLHelp: Integer; // modal result
     function GetLazBuildEXE(out ALazBuild: String): Boolean;
+    function PassTheBuck(Node: THelpNode; var ErrMsg: string): TShowHelpResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function SupportsTableOfContents: boolean; override;
     procedure ShowTableOfContents(Node: THelpNode); override;
-    //function SupportsMimeType(const AMimeType: string): boolean; virtual;
+    function SupportsMimeType(const AMimeType: string): boolean; override;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
     //procedure Hide; virtual;
     procedure Assign(Source: TPersistent); override;
@@ -232,6 +233,22 @@ begin
      ALazBuild := FixSlash(LazBuildMacro);
 end;
 
+function TChmHelpViewer.PassTheBuck(Node: THelpNode; var ErrMsg: string
+  ): TShowHelpResult;
+var
+ I: Integer;
+ Viewer: THelpViewer;
+begin
+  Result := shrViewerNotFound;
+  ErrMsg := 'Attempted to find viewer for "'+ Node.URL + '" failed.';
+  for I := 0 to HelpViewers.Count-1 do
+  begin
+    Viewer := HelpViewers.Items[I];
+    if (Viewer.ClassType <> ClassType) and Viewer.SupportsMimeType('text/html') then
+      Exit(Viewer.ShowNode(Node, ErrMsg));
+  end;
+end;
+
 constructor TChmHelpViewer.Create(TheOwner: TComponent);
 var
   i: Integer;
@@ -270,6 +287,11 @@ begin
 //  inherited ShowTableOfContents(Node);
 end;
 
+function TChmHelpViewer.SupportsMimeType(const AMimeType: string): boolean;
+begin
+  REsult := inherited;
+end;
+
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
@@ -278,6 +300,11 @@ Url: String;
 Res: TLHelpResponse;
 DocsDir: String;
 begin
+  if Pos('file://', Node.URL) = 1 then
+  begin
+    Result := PassTheBuck(Node, ErrMsg);
+    Exit;
+  end;
   Result:=shrNone;
   if CheckBuildLHelp <> mrOK then begin
     ErrMsg := 'The program "' + HelpEXE + '" doesn''t seem to exist'+LineEnding+
