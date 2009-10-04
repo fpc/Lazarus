@@ -4376,10 +4376,13 @@ function OpenURL(AURL: string): Boolean;
 var
   cf: CFStringRef;
   url: CFURLRef;
+  w : WideString;
 begin
   if AURL = '' then
     Exit(False);
-  CreateCFString(AURL, cf);
+  cf := CFStringCreateWithCString(kCFAllocatorDefault, @AURL[1], kCFStringEncodingUTF8);
+  if not Assigned(cf) then
+    Exit(False);
   url := CFURLCreateWithString(nil, cf, nil);
   Result := LSOpenCFURLRef(url, nil) = 0;
   CFRelease(url);
