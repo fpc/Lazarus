@@ -103,7 +103,7 @@ uses
   ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser, OI_options, IdeOptionsDlg,
+  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, OI_options, IdeOptionsDlg,
   editor_general_options, formed_options,
   files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
@@ -1921,6 +1921,7 @@ procedure TMainIDE.SetupIDEMsgQuickFixItems;
 begin
   InitStandardIDEQuickFixItems;
   InitCodeBrowserQuickFixItems;
+  InitFindUnitQuickFixItems;
 end;
 
 procedure TMainIDE.SetupStartProject;

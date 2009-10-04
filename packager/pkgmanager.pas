@@ -274,6 +274,9 @@ type
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
+    function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
+                                  OnlyTestIfPossible: boolean = false): TModalResult; override;
+
 
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
@@ -3501,6 +3504,29 @@ begin
           Result:=mrOk;
       end;
     end;
+  end;
+end;
+
+function TPkgManager.AddPackageDependency(APackage: TLazPackage;
+  const ReqPackage: string; OnlyTestIfPossible: boolean): TModalResult;
+var
+  NewDependency: TPkgDependency;
+  ADependency: TPkgDependency;
+begin
+  Result:=mrCancel;
+  NewDependency:=TPkgDependency.Create;
+  try
+    NewDependency.PackageName:=ReqPackage;
+    if not CheckAddingDependency(APackage,NewDependency) then
+      exit;
+    if not OnlyTestIfPossible then begin
+      ADependency:=NewDependency;
+      NewDependency:=nil;
+      PackageGraph.AddDependencyToPackage(APackage,ADependency);
+      Result:=mrOk;
+    end;
+  finally
+    NewDependency.Free;
   end;
 end;
 

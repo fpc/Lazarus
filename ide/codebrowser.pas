@@ -51,11 +51,12 @@ uses
   CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
   StdCodeTools, SourceLog,
   // IDEIntf
-  SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage, Project, PackageIntf,
-  TextTools, IDECommands, LazIDEIntf, DialogProcs,
+  SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage, PackageIntf,
+  TextTools, IDECommands, LazIDEIntf,
   // IDE
-  PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, MsgQuickFixes,
-  BasePkgManager, AddToProjectDlg, EnvironmentOpts;
+  Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
+  IDEOptionDefs, MsgQuickFixes, BasePkgManager, AddToProjectDlg,
+  EnvironmentOpts;
 
 
 type

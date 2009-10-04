@@ -709,7 +709,7 @@ type
     function IsVirtual: boolean;
     function HasDirectory: boolean;
     function HasStaticDirectory: boolean;
-    function GetResolvedFilename: string;
+    function GetResolvedFilename(ResolveMacros: boolean): string;
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetOutputDirectory: string;
@@ -2866,10 +2866,15 @@ begin
     AFilename:=TrimFilename(DirectoryExpanded+AFilename);
 end;
 
-function TLazPackage.GetResolvedFilename: string;
+function TLazPackage.GetResolvedFilename(ResolveMacros: boolean): string;
+var
+  s: String;
 begin
-  Result:=ReadAllLinks(FFilename,false);
-  if Result='' then Result:=FFilename;
+  Result:=FFilename;
+  if ResolveMacros then
+    GlobalMacroList.SubstituteStr(Result);
+  s:=ReadAllLinks(Result,false);
+  if s<>'' then Result:=s;
 end;
 
 function TLazPackage.GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean
