@@ -45,13 +45,15 @@ uses
   PackageSystem, BasePkgManager;
 
 type
+  TFindUnitDialog = class;
 
   { TQuickFixMissingUnit }
 
   TQuickFixMissingUnit = class
   public
+    Dlg: TFindUnitDialog;
     Caption: string;
-    constructor Create(aCaption: string);
+    constructor Create(aDlg: TFindUnitDialog; aCaption: string);
   end;
 
   { TQuickFixMissingUnitAddRequirement }
@@ -59,7 +61,7 @@ type
   TQuickFixMissingUnitAddRequirement = class(TQuickFixMissingUnit)
   public
     PackageName: string;
-    constructor Create(aPackageName: string);
+    constructor Create(aDlg: TFindUnitDialog; aPackageName: string);
   end;
 
   { TFindUnitDialog }
@@ -69,6 +71,7 @@ type
     CancelButton: TButton;
     BtnPanel: TPanel;
     InfoGroupBox: TGroupBox;
+    ProgressBar1: TProgressBar;
     QuickFixRadioGroup: TRadioGroup;
     Splitter1: TSplitter;
     InfoTreeView: TTreeView;
@@ -79,20 +82,24 @@ type
   private
     FCode: TCodeBuffer;
     FMainOwner: TObject;
+    FMainOwnerName: string;
     FMissingUnitName: string;
     FSearchPackages: TStrings;
     FSearchPackagesIndex: integer;
     fQuickFixes: TFPList;// list of TQuickFixMissingUnit
+    fLastUpdateProgressBar: TDateTime;
     procedure InitSearchPackages;
     procedure AddQuickFix(Item: TQuickFixMissingUnit);
     procedure AddRequirement(Item: TQuickFixMissingUnitAddRequirement);
     function MainOwnerHasRequirement(PackageName: string): boolean;
+    procedure UpdateProgressBar;
   public
     procedure InitWithMsg(Msg: TIDEMessageLine; Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
     property Code: TCodeBuffer read FCode;
     property MissingUnitName: string read FMissingUnitName;
     property MainOwner: TObject read FMainOwner;
+    property MainOwnerName: string read FMainOwnerName;
   end;
 
   { TQuickFixUnitNotFound_Search }
@@ -252,7 +259,7 @@ begin
             // already in requirements
           end else begin
             // not yet in requirements -> add a quick fix
-            AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(APackage.Name));
+            AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,APackage.Name));
           end;
         end;
       end;
@@ -260,7 +267,12 @@ begin
     // search in package on disk
 
     inc(FSearchPackagesIndex);
+    UpdateProgressBar;
+    Done:=false;
+    exit;
   end;
+
+  Done:=true;
 end;
 
 procedure TFindUnitDialog.InitSearchPackages;
@@ -273,7 +285,7 @@ begin
     FSearchPackages:=TStringList.Create;
   FSearchPackages.Clear;
   FSearchPackagesIndex:=0;
-  if FMainOwner=nil then exit;
+  if MainOwner=nil then exit;
   for i:=0 to PackageGraph.Count-1 do begin
     APackage:=PackageGraph.Packages[i];
     Filename:=APackage.GetResolvedFilename(true);
@@ -283,6 +295,11 @@ begin
   end;
   //DebugLn(['TFindUnitDialog.InitSearchPackages ',FSearchPackages.Text]);
 
+  if FSearchPackages.Count>0 then begin
+    ProgressBar1.Max:=FSearchPackages.Count;
+    fLastUpdateProgressBar:=Now;
+    ProgressBar1.Visible:=true;
+  end;
 end;
 
 procedure TFindUnitDialog.AddQuickFix(Item: TQuickFixMissingUnit);
@@ -300,12 +317,12 @@ var
   AProject: TProject;
   APackage: TLazPackage;
 begin
-  if FMainOwner is TProject then begin
-    AProject:=TProject(FMainOwner);
+  if MainOwner is TProject then begin
+    AProject:=TProject(MainOwner);
     if PkgBoss.AddProjectDependencies(AProject,Item.PackageName)=mrOk then
       ModalResult:=mrOK;
-  end else if FMainOwner is TLazPackage then begin
-    APackage:=TLazPackage(FMainOwner);
+  end else if MainOwner is TLazPackage then begin
+    APackage:=TLazPackage(MainOwner);
     if PkgBoss.AddPackageDependency(APackage,Item.PackageName)=mrOk then
       ModalResult:=mrOK;
   end;
@@ -317,15 +334,27 @@ var
   APackage: TLazPackage;
 begin
   Result:=false;
-  if FMainOwner=nil then exit;
-  if FMainOwner is TProject then begin
-    AProject:=TProject(FMainOwner);
+  if MainOwner=nil then exit;
+  if MainOwner is TProject then begin
+    AProject:=TProject(MainOwner);
     Result:=PackageGraph.FindDependencyRecursively(
                              AProject.FirstRequiredDependency,PackageName)<>nil;
-  end else if FMainOwner is TLazPackage then begin
-    APackage:=TLazPackage(FMainOwner);
+  end else if MainOwner is TLazPackage then begin
+    APackage:=TLazPackage(MainOwner);
     Result:=PackageGraph.FindDependencyRecursively(
                              APackage.FirstRequiredDependency,PackageName)<>nil;
+  end;
+end;
+
+procedure TFindUnitDialog.UpdateProgressBar;
+begin
+  if (FSearchPackages=nil) or (FSearchPackagesIndex>=FSearchPackages.Count) then
+  begin
+    ProgressBar1.Visible:=false;
+  end;
+  if Now-fLastUpdateProgressBar>1/86400 then begin
+    ProgressBar1.Position:=FSearchPackagesIndex;
+    fLastUpdateProgressBar:=Now;
   end;
 end;
 
@@ -365,6 +394,7 @@ begin
   FCode:=aCode;
   FMissingUnitName:=aMissingUnitName;
   FMainOwner:=nil;
+  FMainOwnerName:='';
 
   InfoTreeView.BeginUpdate;
   InfoTreeView.Items.Clear;
@@ -387,7 +417,10 @@ begin
       for i:=0 to Owners.Count-1 do begin
         if TObject(Owners[i]) is TProject then begin
           AProject:=TProject(Owners[i]);
-          if FMainOwner=nil then FMainOwner:=AProject;
+          if FMainOwner=nil then begin
+            FMainOwner:=AProject;
+            FMainOwnerName:='project';
+          end;
           OwnerNode:=InfoTreeView.Items.Add(nil,'Owner: Project');
           AddPaths(OwnerNode,'Unit search paths',AProject.ProjectDirectory,
                    AProject.CompilerOptions.GetUnitPath(true),true);
@@ -395,7 +428,10 @@ begin
         end
         else if TObject(Owners[i]) is TLazPackage then begin
           APackage:=TLazPackage(Owners[i]);
-          if FMainOwner=nil then FMainOwner:=APackage;
+          if FMainOwner=nil then begin
+            FMainOwner:=APackage;
+            FMainOwnerName:=APackage.Name;
+          end;
           OwnerNode:=InfoTreeView.Items.Add(nil,'Owner: Package '+APackage.IDAsString);
           AddPaths(OwnerNode,'Unit search paths',APackage.Directory,
                    APackage.CompilerOptions.GetUnitPath(true),true);
@@ -413,17 +449,19 @@ end;
 
 { TQuickFixMissingUnit }
 
-constructor TQuickFixMissingUnit.Create(aCaption: string);
+constructor TQuickFixMissingUnit.Create(aDlg: TFindUnitDialog; aCaption: string);
 begin
+  Dlg:=aDlg;;
   Caption:=aCaption;
 end;
 
 { TQuickFixMissingUnitAddRequirement }
 
-constructor TQuickFixMissingUnitAddRequirement.Create(aPackageName: string);
+constructor TQuickFixMissingUnitAddRequirement.Create(aDlg: TFindUnitDialog;
+  aPackageName: string);
 begin
   PackageName:=aPackageName;
-  Caption:='Add package '+PackageName+' as requirement';
+  Caption:='Add package '+PackageName+' as requirement to '+aDlg.MainOwnerName;
 end;
 
 initialization
