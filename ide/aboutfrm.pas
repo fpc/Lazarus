@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
-  Clipbrd, FileUtil, Menus, HelpIntfs, LCLProc;
+  Clipbrd, FileUtil, Menus, LCLProc;
 
 type
 
@@ -210,11 +210,8 @@ end;
 
 procedure TAboutForm.URLLabelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  err: string;
 begin
-  if HelpIntfs.ShowHelp(TLabel(Sender).Caption, 'Lazarus', 'text/html', err) <> shrSuccess then
-    ShowMessage(err);
+  OpenURL(TLabel(Sender).Caption);
 end;
 
 procedure TAboutForm.URLLabelMouseLeave(Sender: TObject);
@@ -377,14 +374,11 @@ end;
 
 procedure TScrollingText.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-var
-  err: string;
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
   if ActiveLineIsURL then
-    if HelpIntfs.ShowHelp(FLines[FActiveLine], 'Lazarus', 'text/html', err) <> shrSuccess then
-      ShowMessage(err);
+    OpenURL(FLines[FActiveLine]);
 end;
 
 procedure TScrollingText.MouseMove(Shift: TShiftState; X, Y: Integer);

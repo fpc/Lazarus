@@ -658,7 +658,7 @@ end;
 
 procedure TIDEHelpManager.mnuHelpReportBugClicked(Sender: TObject);
 begin
-  ShowHelpOrError(lisReportingBugURL, lisMenuReportingBug, 'text/html');
+  OpenURL(lisReportingBugURL);
 end;
 
 procedure TIDEHelpManager.RegisterIDEHelpDatabases;

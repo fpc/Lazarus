@@ -11,7 +11,7 @@ object AboutForm: TAboutForm
   OnCreate = AboutFormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object VersionLabel: TLabel
     Left = 14
     Height = 14
