@@ -22,6 +22,11 @@
 
   Abstract:
     Dialog to search a missing unit.
+
+  ToDo:
+    - check if owner has already the dependency
+    - search in packages on disk
+
 }
 unit FindUnitDlg;
 
