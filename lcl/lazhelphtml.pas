@@ -382,56 +382,20 @@ begin
   end;
 end;
 
-procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser,
-  Params: string);
-
-  function Find(const ShortFilename: string): boolean;
-  var
-    Filename: String;
-  begin
-    Filename:=SearchFileInPath(ShortFilename+GetExeExt,'',
-                      GetEnvironmentVariableUTF8('PATH'),PathSeparator,
-                      [sffDontSearchInBasePath]);
-    Result:=Filename<>'';
-    if Result then begin
-      FDefaultBrowser:=Filename;
-      FDefaultBrowserParams:='%s';
-    end;
-  end;
-
+procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser, Params: string);
 begin
-  if FDefaultBrowser='' then begin
+  if FDefaultBrowser='' then
+  begin
     if Assigned(OnFindDefaultBrowser) then
       OnFindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
   end;
-  if FDefaultBrowser='' then begin
-    {$IFDEF MSWindows}
-    FDefaultBrowser:= SearchFileInPath('rundll32.exe','',
-                             GetEnvironmentVariableUTF8('PATH'),';',
-                             [sffDontSearchInBasePath]);
-    FDefaultBrowserParams:='url.dll,FileProtocolHandler %s';
-    {$ENDIF}
-    {$IFDEF DARWIN}
-    // open command launches url in the appropriate browser under Mac OS X
-    Find('open');
-    {$ENDIF}
-  end;
-  if FDefaultBrowser='' then begin
-    // Then search in path. Prefer open source ;)
-    if Find('xdg-open')  // Portland OSDL/FreeDesktop standard on Linux
-    or Find('htmlview')  // some redhat systems
-    or Find('firefox')
-    or Find('mozilla')
-    or Find('galeon')
-    or Find('konqueror')
-    or Find('safari')
-    or Find('netscape')
-    or Find('opera')
-    or Find('iexplore') then ;// some windows systems
-  end;
-  Browser:=FDefaultBrowser;
-  Params:=FDefaultBrowserParams;
-  DebugLn('THTMLBrowserHelpViewer.FindDefaultBrowser Browser=',Browser,' Params=',Params);
+  if FDefaultBrowser = '' then
+    LCLProc.FindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
+
+  Browser := FDefaultBrowser;
+  Params := FDefaultBrowserParams;
+
+  //DebugLn('THTMLBrowserHelpViewer.FindDefaultBrowser Browser=',Browser,' Params=',Params);
 end;
 
 procedure THTMLBrowserHelpViewer.Assign(Source: TPersistent);

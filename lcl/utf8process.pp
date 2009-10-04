@@ -28,7 +28,7 @@ unit UTF8Process;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, FileUtil;
+  Classes, SysUtils, Process, FileUtil;
 
 type
   { TProcessUTF8 }

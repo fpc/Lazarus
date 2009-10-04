@@ -31,7 +31,7 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
+  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil, UTF8Process,
   LCLStrConsts, LCLType, WSReferences
   {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
   ;
@@ -353,6 +353,9 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
+// URL opening
+function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+function OpenURL(AURL: String): Boolean;
 
 implementation
 
@@ -4292,6 +4295,66 @@ begin
   while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
   Result:=copy(Identifier,1,p)
           +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
+end;
+
+function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+
+  function Find(const ShortFilename: String; out ABrowser: String): Boolean; inline;
+  begin
+    ABrowser := SearchFileInPath(ShortFilename + GetExeExt, '',
+                      GetEnvironmentVariableUTF8('PATH'), PathSeparator,
+                      [sffDontSearchInBasePath]);
+    Result := ABrowser <> '';
+  end;
+
+begin
+  {$IFDEF MSWindows}
+  Find('rundll32', ABrowser);
+  AParams := 'url.dll,FileProtocolHandler %s';
+  {$ELSE}
+    {$IFDEF DARWIN}
+    // open command launches url in the appropriate browser under Mac OS X
+    Find('open', ABrowser);
+    AParams := '%s';
+    {$ELSE}
+      ABrowser := '';
+    {$ENDIF}
+  {$ENDIF}
+  if ABrowser = '' then
+  begin
+    AParams := '%s';
+    // Then search in path. Prefer open source ;)
+    if Find('xdg-open', ABrowser)  // Portland OSDL/FreeDesktop standard on Linux
+    or Find('htmlview', ABrowser)  // some redhat systems
+    or Find('firefox', ABrowser)
+    or Find('mozilla', ABrowser)
+    or Find('galeon', ABrowser)
+    or Find('konqueror', ABrowser)
+    or Find('safari', ABrowser)
+    or Find('netscape', ABrowser)
+    or Find('opera', ABrowser)
+    or Find('iexplore', ABrowser) then ;// some windows systems
+  end;
+  Result := ABrowser <> '';
+end;
+
+function OpenURL(AURL: String): Boolean;
+var
+  ABrowser, AParams: String;
+  BrowserProcess: TProcessUTF8;
+begin
+  Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
+  if not Result then
+    Exit;
+
+  // run
+  BrowserProcess := TProcessUTF8.Create(nil);
+  try
+    BrowserProcess.CommandLine := ABrowser + ' ' + Format(AParams, [AURL]);
+    BrowserProcess.Execute;
+  finally
+    BrowserProcess.Free;
+  end;
 end;
 
 
