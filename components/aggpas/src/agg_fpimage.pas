@@ -1449,7 +1449,7 @@ begin
     begin
       // Todo: shrink buffer (m_rbuf.attach only grows)
       if (Image.Width>0) and (Image.Height>0) then begin
-        writeln('TAggFPCanvas.OnImageOperation ',Image.Width,',',Image.Height,' ',Image.LineSize);
+        //writeln('TAggFPCanvas.OnImageOperation ',Image.Width,',',Image.Height,' ',Image.LineSize);
         m_rbuf.attach(
           Image.Data ,
           Image.Width ,
