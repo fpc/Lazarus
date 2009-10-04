@@ -67,18 +67,16 @@ uses
   {$ifndef fpc}
     Windows, ShellAPI, URLMon,
   {$else}
-    LResources, HelpIntfs,
+    LResources, LCLProc,
   {$endif}
   { local }
   JcfVersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
 
 {$ifdef fpc}
 procedure ShowURL(const ps: string);
-var
-  err: String;
 begin
   // do it silent
-  HelpIntfs.ShowHelp(ps, 'JCF', 'text/html', err);
+  OpenURL(ps);
 end;
 {$else}
 procedure ShowURL(const ps: string);
