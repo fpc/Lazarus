@@ -456,10 +456,13 @@ begin
   end;
 end;
 
-procedure TApplication.SetBidiMode ( const AValue : TBiDiMode ) ;
+procedure TApplication.SetBidiMode(const AValue: TBiDiMode) ;
 begin
   if AValue <> FBidiMode then
+  begin
     FBidiMode := AValue;
+    NotifyCustomForms(CM_PARENTBIDIMODECHANGED);
+  end;
 end;
 
 procedure TApplication.SetFlags(const AValue: TApplicationFlags);

@@ -4866,8 +4866,8 @@ end;
 
 procedure TControl.SetParentBiDiMode(AValue: Boolean);
 begin
-  if FParentBiDiMode=AValue then exit;
-  FParentBiDiMode:=AValue;
+  if FParentBiDiMode = AValue then Exit;
+  FParentBiDiMode := AValue;
   if (FParent <> nil) and not (csReading in ComponentState) then
     Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
 end;
@@ -4892,11 +4892,11 @@ procedure TControl.CMParentBidiModeChanged(var Message: TLMessage);
 begin
   if csLoading in ComponentState then exit;
 
-  if FParentBidiMode then
+  if ParentBidiMode then
   begin
     if FParent <> nil then
       BidiMode := FParent.BidiMode;
-    FParentBidiMode := true;
+    ParentBidiMode := True;
   end;
 end;
 
@@ -4905,7 +4905,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.IsBiDiModeStored: boolean;
 begin
-  Result := not FParentBidiMode;
+  Result := not ParentBidiMode;
 end;
 
 

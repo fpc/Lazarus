@@ -610,6 +610,21 @@ begin
   end;
 end;
 
+procedure TCustomForm.CMParentBiDiModeChanged(var Message: TLMessage);
+begin
+  if csLoading in ComponentState then
+    Exit;
+
+  if ParentBidiMode then
+  begin
+    if Parent <> nil then
+      BidiMode := Parent.BidiMode
+    else
+      BidiMode := Application.BidiMode;
+    ParentBidiMode := True;
+  end;
+end;
+
 procedure TCustomForm.CMAppShowBtnGlyphChanged(var Message: TLMessage);
 begin
   NotifyControls(Message.msg);
