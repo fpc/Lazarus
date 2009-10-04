@@ -24,7 +24,6 @@
     Dialog to search a missing unit.
 
   ToDo:
-    - check if owner has already the dependency
     - search in packages on disk
 
 }
@@ -87,6 +86,7 @@ type
     procedure InitSearchPackages;
     procedure AddQuickFix(Item: TQuickFixMissingUnit);
     procedure AddRequirement(Item: TQuickFixMissingUnitAddRequirement);
+    function MainOwnerHasRequirement(PackageName: string): boolean;
   public
     procedure InitWithMsg(Msg: TIDEMessageLine; Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
@@ -243,13 +243,22 @@ begin
   if (FSearchPackages<>nil) and (FSearchPackagesIndex<FSearchPackages.Count)
   then begin
     Filename:=FSearchPackages[FSearchPackagesIndex];
+    // search in open packages
     for i:=0 to PackageGraph.Count-1 do begin
       APackage:=PackageGraph.Packages[i];
       if APackage.Filename=Filename then begin
-        if APackage.FindUnit(MissingUnitName)<>nil then
-          AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(APackage.Name));
+        if APackage.FindUnit(MissingUnitName)<>nil then begin
+          if MainOwnerHasRequirement(APackage.Name) then begin
+            // already in requirements
+          end else begin
+            // not yet in requirements -> add a quick fix
+            AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(APackage.Name));
+          end;
+        end;
       end;
     end;
+    // search in package on disk
+
     inc(FSearchPackagesIndex);
   end;
 end;
@@ -299,6 +308,24 @@ begin
     APackage:=TLazPackage(FMainOwner);
     if PkgBoss.AddPackageDependency(APackage,Item.PackageName)=mrOk then
       ModalResult:=mrOK;
+  end;
+end;
+
+function TFindUnitDialog.MainOwnerHasRequirement(PackageName: string): boolean;
+var
+  AProject: TProject;
+  APackage: TLazPackage;
+begin
+  Result:=false;
+  if FMainOwner=nil then exit;
+  if FMainOwner is TProject then begin
+    AProject:=TProject(FMainOwner);
+    Result:=PackageGraph.FindDependencyRecursively(
+                             AProject.FirstRequiredDependency,PackageName)<>nil;
+  end else if FMainOwner is TLazPackage then begin
+    APackage:=TLazPackage(FMainOwner);
+    Result:=PackageGraph.FindDependencyRecursively(
+                             APackage.FirstRequiredDependency,PackageName)<>nil;
   end;
 end;
 

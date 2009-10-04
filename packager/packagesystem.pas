@@ -229,7 +229,7 @@ type
     function PackageNameExists(const PkgName: string;
                                IgnorePackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
-                                     out List: TFPList);
+                                     out List: TFPList); // for single search use FindDependencyRecursively
     procedure GetConnectionsTree(FirstDependency: TPkgDependency;
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
