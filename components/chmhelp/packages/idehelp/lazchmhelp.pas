@@ -37,6 +37,8 @@ type
     fHelpConnection: TLHelpConnection;
     fChmsFilePath: String;
     function GetHelpEXE: String;
+    function DBFindViewer(HelpDB: THelpDatabase; const MimeType: string;
+      var ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpEXE(AValue: String);
@@ -93,6 +95,14 @@ begin
 end;
 
 { TChmHelpViewer }
+
+function TChmHelpViewer.DBFindViewer(HelpDB: THelpDatabase;
+  const MimeType: string; var ErrMsg: string; out Viewer: THelpViewer
+  ): TShowHelpResult;
+begin
+  Viewer:=Self;
+  Result:=shrSuccess;
+end;
 
 function TChmHelpViewer.GetHelpEXE: String;
 begin
@@ -258,16 +268,23 @@ begin
   inherited Create(TheOwner);
   fHelpConnection := TLHelpConnection.Create;
   fHelpConnection.ProcessWhileWaiting:=@Application.ProcessMessages;
-  AddSupportedMimeType('text/html');
+  AddSupportedMimeType('application/x-chm');
   for i := 0 to HelpDatabases.Count-1 do begin
     DB := TFPDocHTMLHelpDatabase(HelpDatabases.Items[i]);
     BaseURL := THelpBaseURLObject(DB.BasePathObject);
     if (DB.ID = 'RTLUnits') and (BaseURL.BaseURL = '') then
-      BaseURL.BaseURL := 'rtl.chm://'
-    else if (DB.ID = 'FCLUnits') and (BaseURL.BaseURL = '') then
-      BaseURL.BaseURL := 'fcl.chm://'
-    else if (DB.ID = 'LCLUnits') and (BaseURL.BaseURL = '') then
+    begin
+      BaseURL.BaseURL := 'rtl.chm://';
+      DB.OnFindViewer:=@DBFindViewer;
+    end else if (DB.ID = 'FCLUnits') and (BaseURL.BaseURL = '') then
+    begin
+      BaseURL.BaseURL := 'fcl.chm://';
+      DB.OnFindViewer:=@DBFindViewer;
+    end else if (DB.ID = 'LCLUnits') and (BaseURL.BaseURL = '') then
+    begin
       BaseURL.BaseURL := 'lcl.chm://';
+      DB.OnFindViewer:=@DBFindViewer;
+    end;
   end;
 end;
 
