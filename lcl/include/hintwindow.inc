@@ -35,6 +35,7 @@ begin
   Color := clInfoBk;
   Canvas.Font := Screen.HintFont;
   Canvas.Brush.Style := bsClear;
+  FAlignment := taLeftJustify;
   BorderStyle := bsNone;
   Caption := 'THintWindow';
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
@@ -78,6 +79,31 @@ begin
   end;
 end;
 
+function THintWindow.GetDrawTextFlags: Cardinal;
+var
+  EffectiveAlignment: TAlignment;
+begin
+  Result := DT_NOPREFIX or DT_VCENTER or DT_WORDBREAK;
+  EffectiveAlignment := FAlignment;
+  if BiDiMode <> bdLeftToRight then
+  begin
+    Result := Result or DT_RTLREADING;
+    //change alignment if is RTL
+    if BiDiMode = bdRightToLeft then
+    begin
+      case FAlignment of
+        taLeftJustify: EffectiveAlignment := taRightJustify;
+        taRightJustify: EffectiveAlignment := taLeftJustify;
+      end;
+    end;
+  end;
+  case EffectiveAlignment of
+    taLeftJustify: Result := Result or DT_LEFT;
+    taCenter: Result := Result or DT_CENTER;
+    taRightJustify: Result := Result or DT_RIGHT;
+  end;
+end;
+
 procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
@@ -113,9 +139,8 @@ begin
     DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
   end;
   InflateRect(ARect, - 2 * HintBorderWidth, - 2 * HintBorderWidth);
-  DrawText(Canvas.GetUpdatedHandle([csFontValid]),
-           PChar(Caption), Length(Caption), ARect,
-           DT_NOPREFIX or DT_VCENTER or DT_WORDBREAK); // no DT_CENTER in Delphi according to Luiz
+  DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
+    Length(Caption), ARect, GetDrawTextFlags);
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TPoint;

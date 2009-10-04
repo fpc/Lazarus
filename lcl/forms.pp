@@ -753,9 +753,11 @@ type
   THintWindow = class(TCustomForm)
   private
     FActivating: Boolean;
-    FAutoHide : Boolean;
-    FAutoHideTimer : TComponent;
-    FHideInterval : Integer;
+    FAlignment: TAlignment;
+    FAutoHide: Boolean;
+    FAutoHideTimer: TComponent;
+    FHideInterval: Integer;
+    function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
@@ -774,8 +776,10 @@ type
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
-    property AutoHide : Boolean read FAutoHide write SetAutoHide;
-    property HideInterval : Integer read FHideInterval write SetHideInterval;
+    property Alignment: TAlignment read FAlignment write FAlignment;
+    property AutoHide: Boolean read FAutoHide write SetAutoHide;
+    property BiDiMode;
+    property HideInterval: Integer read FHideInterval write SetHideInterval;
   end;
 
   THintWindowClass = class of THintWindow;
@@ -1158,7 +1162,7 @@ type
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
     function GetControlAtMouse: TControl;
-    procedure SetBidiMode ( const AValue : TBiDiMode ) ;
+    procedure SetBidiMode(const AValue: TBiDiMode);
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
