@@ -31,6 +31,7 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
+  {$IFDEF Windows}Windows, ShellApi, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil, UTF8Process,
   LCLStrConsts, LCLType, WSReferences
   {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
@@ -4338,6 +4339,53 @@ begin
   Result := ABrowser <> '';
 end;
 
+{$IFDEF Windows}
+function OpenURL(AURL: String): Boolean;
+
+{$IFDEF WinCE}
+  const
+    UnicodeEnabledOS = True;
+{$ELSE}
+  function UnicodeEnabledOS: Boolean;
+  begin
+    Result := Win32Platform = VER_PLATFORM_WIN32_NT;
+  end;
+{$ENDIF}
+
+var
+  ws: WideString;
+  ans: AnsiString;
+begin
+  Result := False;
+  if AURL = '' then Exit;
+
+  if UnicodeEnabledOS then
+  begin
+    ws := UTF8Decode(AURL);
+    Result := ShellExecuteW(0, 'open', PWideChar(ws), nil, nil, 0) > 32;
+  end
+  else
+  begin
+    ans := Utf8ToAnsi(AURL); // utf8 must be converted to Windows Ansi-codepage
+    Result := ShellExecute(0, 'open', PAnsiChar(ans), nil, nil, 0) > 32;
+  end;
+end;
+{$ELSE}
+{$IFDEF DARWIN}
+function OpenURL(AURL: string): Boolean;
+var
+  cf: CFStringRef;
+  url: CFURLRef;
+begin
+  if AURL = '' then
+    Exit(False);
+  CreateCFString(AURL, cf);
+  url := CFURLCreateWithString(nil, cf, nil);
+  Result := LSOpenCFURLRef(url, nil) = 0;
+  CFRelease(url);
+  CFRelease(cf);
+end;
+{$ELSE}
 function OpenURL(AURL: String): Boolean;
 var
   ABrowser, AParams: String;
@@ -4356,7 +4404,8 @@ begin
     BrowserProcess.Free;
   end;
 end;
-
+{$ENDIF}
+{$ENDIF}
 
 procedure FreeLineInfoCache;
 var
