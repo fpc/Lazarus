@@ -22,7 +22,7 @@ unit LazHelpHTML;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, UTF8Process,
+  Classes, SysUtils, LCLProc, LCLIntf, Forms, Process, FileUtil, UTF8Process,
   LazConfigStorage, LCLStrConsts, HelpIntfs, LazHelpIntf;
   
 type
@@ -390,7 +390,7 @@ begin
       OnFindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
   end;
   if FDefaultBrowser = '' then
-    LCLProc.FindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
+    LCLIntf.FindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
 
   Browser := FDefaultBrowser;
   Params := FDefaultBrowserParams;

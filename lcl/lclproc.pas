@@ -31,8 +31,7 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  {$IFDEF Windows}Windows, ShellApi, {$ENDIF}
-  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil, UTF8Process,
+  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
   LCLStrConsts, LCLType, WSReferences
   {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
   ;
@@ -353,10 +352,6 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
-
-// URL opening
-function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
-function OpenURL(AURL: String): Boolean;
 
 implementation
 
@@ -4297,120 +4292,6 @@ begin
   Result:=copy(Identifier,1,p)
           +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
 end;
-
-function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
-
-  function Find(const ShortFilename: String; out ABrowser: String): Boolean; inline;
-  begin
-    ABrowser := SearchFileInPath(ShortFilename + GetExeExt, '',
-                      GetEnvironmentVariableUTF8('PATH'), PathSeparator,
-                      [sffDontSearchInBasePath]);
-    Result := ABrowser <> '';
-  end;
-
-begin
-  {$IFDEF MSWindows}
-  Find('rundll32', ABrowser);
-  AParams := 'url.dll,FileProtocolHandler %s';
-  {$ELSE}
-    {$IFDEF DARWIN}
-    // open command launches url in the appropriate browser under Mac OS X
-    Find('open', ABrowser);
-    AParams := '%s';
-    {$ELSE}
-      ABrowser := '';
-    {$ENDIF}
-  {$ENDIF}
-  if ABrowser = '' then
-  begin
-    AParams := '%s';
-    // Then search in path. Prefer open source ;)
-    if Find('xdg-open', ABrowser)  // Portland OSDL/FreeDesktop standard on Linux
-    or Find('htmlview', ABrowser)  // some redhat systems
-    or Find('firefox', ABrowser)
-    or Find('mozilla', ABrowser)
-    or Find('galeon', ABrowser)
-    or Find('konqueror', ABrowser)
-    or Find('safari', ABrowser)
-    or Find('netscape', ABrowser)
-    or Find('opera', ABrowser)
-    or Find('iexplore', ABrowser) then ;// some windows systems
-  end;
-  Result := ABrowser <> '';
-end;
-
-{$IFDEF Windows}
-function OpenURL(AURL: String): Boolean;
-var
-{$IFDEF WinCE}
-  Info: SHELLEXECUTEINFO;
-{$ELSE}
-  ws: WideString;
-  ans: AnsiString;
-{$ENDIF}
-begin
-  Result := False;
-  if AURL = '' then Exit;
-
-  {$IFDEF WinCE}
-  FillChar(Info, SizeOf(Info), 0);
-  Info.cbSize := SizeOf(Info);
-  Info.fMask := SEE_MASK_FLAG_NO_UI;
-  Info.lpVerb := 'open';
-  Info.lpFile := PWideChar(UTF8Decode(AURL));
-  Result := ShellExecuteEx(@Info);
-  {$ELSE}
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    ws := UTF8Decode(AURL);
-    Result := ShellExecuteW(0, 'open', PWideChar(ws), nil, nil, 0) > 32;
-  end
-  else
-  begin
-    ans := Utf8ToAnsi(AURL); // utf8 must be converted to Windows Ansi-codepage
-    Result := ShellExecute(0, 'open', PAnsiChar(ans), nil, nil, 0) > 32;
-  end;
-  {$ENDIF}
-end;
-{$ELSE}
-{$IFDEF DARWIN}
-function OpenURL(AURL: string): Boolean;
-var
-  cf: CFStringRef;
-  url: CFURLRef;
-  w : WideString;
-begin
-  if AURL = '' then
-    Exit(False);
-  cf := CFStringCreateWithCString(kCFAllocatorDefault, @AURL[1], kCFStringEncodingUTF8);
-  if not Assigned(cf) then
-    Exit(False);
-  url := CFURLCreateWithString(nil, cf, nil);
-  Result := LSOpenCFURLRef(url, nil) = 0;
-  CFRelease(url);
-  CFRelease(cf);
-end;
-{$ELSE}
-function OpenURL(AURL: String): Boolean;
-var
-  ABrowser, AParams: String;
-  BrowserProcess: TProcessUTF8;
-begin
-  Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
-  if not Result then
-    Exit;
-
-  // run
-  BrowserProcess := TProcessUTF8.Create(nil);
-  try
-    BrowserProcess.CommandLine := ABrowser + ' ' + Format(AParams, [AURL]);
-    BrowserProcess.Execute;
-  finally
-    BrowserProcess.Free;
-  end;
-end;
-{$ENDIF}
-{$ENDIF}
 
 procedure FreeLineInfoCache;
 var
