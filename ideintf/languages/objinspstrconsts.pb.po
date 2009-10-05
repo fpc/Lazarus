@@ -926,7 +926,7 @@ msgstr "O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%s
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
+msgstr "Impossível mudar pai do controle %s%s%s para novo pai %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"

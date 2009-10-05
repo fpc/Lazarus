@@ -24,10 +24,9 @@ msgid "Reset all text settings"
 msgstr "Resetar todas configurações texto"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-#, fuzzy
 #| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
-msgstr "Esta página não representa suas configurações atuais. Veja página avançado. Use esta página para resetar quaisquer alterações avançadas."
+msgstr "Esta página não representa suas configurações atuais. Veja página avançada. Use esta página para resetar quaisquer alterações avançadas."
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -58,7 +57,7 @@ msgstr "Texto"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectalt
 msgid "Alt-Key sets column mode"
-msgstr "Alt-Tecla ajusta modo coluna"
+msgstr "Tecla Alt ajusta modo coluna"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
@@ -785,7 +784,7 @@ msgstr "Cursor salta seleção"
 
 #: lazarusidestrconsts.dlgcursorskipstab
 msgid "Cursor skips tabs"
-msgstr ""
+msgstr "Cursor salta tabulações"
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -1966,7 +1965,7 @@ msgstr "Outras ações usando o mesmo botão"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
 msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
-msgstr ""
+msgstr "Eles podem ser executados dependendo das teclas modificadores, ajustes \"Falltrough\", Simples/Duplo, Acima/Abaixo..."
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
 msgid "Filter Mod-Keys"
@@ -3165,7 +3164,7 @@ msgstr "Adicionar ao caminho de busca das unidades?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
-msgstr ""
+msgstr "Adicionar interfaces unidade"
 
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
@@ -3270,7 +3269,7 @@ msgstr "Sempre"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
-msgstr ""
+msgstr "Sempre ignorar"
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3794,7 +3793,7 @@ msgstr "Centralizar controle verticalmente em relação ao controle-irmão espec
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center form"
-msgstr ""
+msgstr "Centralizar formulário"
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5394,7 +5393,7 @@ msgstr "Excluir ponto de parada na%s\"%s\" linha %d?"
 
 #: lazarusidestrconsts.lisdeletebuildvar
 msgid "Delete build variable %s%s%s?"
-msgstr ""
+msgstr "Excluir variável construção %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -5498,7 +5497,7 @@ msgstr "Diretivas"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
-msgstr ""
+msgstr "Diretório %s%s%s não encontrado."
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6795,7 +6794,7 @@ msgstr "Inserir \"tag PrintShort\""
 
 #: lazarusidestrconsts.lisinsertprintshorttag2
 msgid "Insert printshort tag"
-msgstr ""
+msgstr "Inserir \"tag printshort\""
 
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
@@ -6852,7 +6851,7 @@ msgstr "Nome Interno:"
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr ""
+msgstr "Variável construção inválida %s%s%s. A variável construção deve ser um identificador pascal."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -11090,7 +11089,7 @@ msgstr "Remover do projeto"
 
 #: lazarusidestrconsts.lisremovefromsearchpath
 msgid "Remove from search path"
-msgstr ""
+msgstr "Remover do caminho de busca"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
@@ -11130,7 +11129,7 @@ msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
-msgstr ""
+msgstr "Re-examinar"
 
 #: lazarusidestrconsts.lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -11303,7 +11302,7 @@ msgstr "Salvar informações de arquivos fechados do editor"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
-msgstr ""
+msgstr "Salvar projeto %s (*%s)"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -11395,7 +11394,7 @@ msgstr "Mostrar"
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
-msgstr ""
+msgstr "Mostrar unidades/pacotes vazios"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -11909,7 +11908,7 @@ msgstr "O programa %s\"make\"%s não foi encontrado.%s Esta ferramenta é necess
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
-msgstr ""
+msgstr "O projeto não usa a unidade interfaces LCL, mas parece que necessita dela.%sVocê obterá erros estranhos do vinculador se utilizar formulários LCL sem interfaces."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -11933,7 +11932,7 @@ msgstr "Há um arquivo com o mesmo nome e extensão similar no disco:%sArquivo: 
 
 #: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
 msgid "There is already a build variable with the name %s%s%s."
-msgstr ""
+msgstr "Já existe uma variável construção com o nome %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12640,11 +12639,11 @@ msgstr "Usar Filtro de Exclusão"
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
-msgstr ""
+msgstr "Usar identificador"
 
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
-msgstr ""
+msgstr "Usar identificador %s em %s no %s"
 
 #: lazarusidestrconsts.lisuseincludefilter
 msgid "Use Include Filter"
@@ -12656,19 +12655,19 @@ msgstr "Inicializando aplicação"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
-msgstr ""
+msgstr "Usar pacote %s no pacote %s"
 
 #: lazarusidestrconsts.lisusepackageinpackage2
 msgid "Use package in package"
-msgstr ""
+msgstr "Usar pacote no pacote"
 
 #: lazarusidestrconsts.lisusepackageinproject
 msgid "Use package %s in project"
-msgstr ""
+msgstr "Usar pacote %s no projeto"
 
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
-msgstr ""
+msgstr "Usar pacote no projeto"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -12676,7 +12675,7 @@ msgstr "Diretório padrão do usuário"
 
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
-msgstr ""
+msgstr "Usar unidade %s na unidade %s"
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13327,7 +13326,7 @@ msgstr "Selecionar início linha coluna"
 
 #: lazarusidestrconsts.srkmeccolsellinetextstart
 msgid "Column Select to text start in line"
-msgstr ""
+msgstr "Seleção Coluna para início do texto na linha"
 
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
@@ -13636,7 +13635,7 @@ msgstr "Mover cursor para o início da linha"
 
 #: lazarusidestrconsts.srkmeclinetextstart
 msgid "Move cursor to text start in line"
-msgstr ""
+msgstr "Mover cursor para início do texto na linha"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
@@ -13821,7 +13820,7 @@ msgstr "Selecionar o início da Linha"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
-msgstr ""
+msgstr "Selecionar para ínicio do texto na linha"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
@@ -14214,7 +14213,7 @@ msgstr "Codificação"
 
 #: lazarusidestrconsts.uemevaluatemodify
 msgid "&Evaluate/Modify..."
-msgstr ""
+msgstr "&Avaliar/Modificar..."
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"

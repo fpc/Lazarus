@@ -471,7 +471,7 @@ msgstr "modo inválido \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
 msgid "invalid mode switch \"%s\""
-msgstr ""
+msgstr "opção \"modo\" inválida \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
