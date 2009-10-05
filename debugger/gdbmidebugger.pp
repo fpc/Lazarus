@@ -1650,14 +1650,46 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
     then Result := Result + '''';
   end;
 
+  function SelectParentFrame(var aFrame: Integer): Boolean;
+  var
+    R: TGDBMIExecResult;
+    List: TGDBMINameValueList;
+    ParentFp, Fp: String;
+  begin
+    if not ExecuteCommand('-data-evaluate-expression parentfp', [cfIgnoreError], R)
+    or (R.State = dsError)
+    then Exit(False);
+
+    List := TGDBMINameValueList.Create(R);
+    ParentFP := List.Values['value'];
+    repeat
+      if not ExecuteCommand('-stack-select-frame %u', [aFrame+1], [cfIgnoreError], R)
+      or (R.State = dsError)
+      then begin
+        List.Free;
+        Exit(False);
+      end;
+      Inc(AFrame);
+
+      if not ExecuteCommand('-data-evaluate-expression $fp', [cfIgnoreError], R)
+      or (R.State = dsError)
+      then begin
+        List.Free;
+        Exit(False);
+      end;
+      Fp := List.Values['value'];
+    until ParentFP = Fp;
+  end;
+
 var
-  R: TGDBMIExecResult;
+  R, Rtmp: TGDBMIExecResult;
   S: String;
   ResultList: TGDBMINameValueList;
   ResultInfo: TGDBType;
   addr: TDbgPtr;
   e: Integer;
   Expr: TGDBMIExpression;
+  frame, frameidx: Integer;
 begin
   S := AExpression;
 
@@ -1675,10 +1707,36 @@ begin
     Exit(True);
   end;
 
+  ResultList := TGDBMINameValueList.Create('');
   // original
-  Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
+  frame := -1;
+  frameidx := -1;
+  repeat
+    Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
 
-  ResultList := TGDBMINameValueList.Create(R);
+    if (R.State <> dsError)
+    then Break;
+
+    // check if there is a parentfp and try to evaluate there
+    if frame = -1
+    then begin
+      // store current
+      ExecuteCommand('-stack-info-frame', [cfIgnoreError], Rtmp);
+      ResultList.Init(Rtmp.Values);
+      ResultList.SetPath('frame');
+      frame := StrToIntDef(ResultList.Values['level'], -1);
+      if frame = -1 then Break;
+      frameidx := frame;
+    end;
+  until not SelectParentFrame(frameidx);
+
+  if frameidx <> frame
+  then begin
+    // Restore current frame
+    ExecuteCommand('-stack-select-frame %u', [frame], [cfIgnoreError]);
+  end;
+
+  ResultList.Init(R.Values);
   if R.State = dsError
   then AResult := ResultList.Values['msg']
   else AResult := ResultList.Values['value'];
