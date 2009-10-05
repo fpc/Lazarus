@@ -187,6 +187,7 @@ type
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
+    procedure DoChange; virtual;
     procedure Change; virtual;
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;

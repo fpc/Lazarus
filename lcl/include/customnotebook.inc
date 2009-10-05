@@ -271,6 +271,12 @@ begin
   end;
 end;
 
+procedure TCustomNotebook.DoChange;
+begin
+  if Assigned(OnPageChanged) then
+    OnPageChanged(Self);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomNotebook.Destroy
   Params:  None
@@ -452,9 +458,8 @@ begin
   FPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
-  if ([csDesigning, csLoading, csDestroying] * ComponentState = [])
-    and Assigned(OnPageChanged) then
-     OnPageChanged(Self);
+  if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
+    DoChange;
 end;
 
 {------------------------------------------------------------------------------
@@ -797,7 +802,7 @@ begin
   ShowCurrentPage;
   FPageIndexOnLastChange := FPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[]) and (not FAddingPages) then
-    if Assigned(FOnPageChanged) then FOnPageChanged(Self);
+    DoChange;
 end;
 
 procedure TCustomNotebook.Loaded;

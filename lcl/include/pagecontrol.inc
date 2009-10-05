@@ -118,6 +118,13 @@ begin
   Result := inherited DoUndockClientMsg(NewTarget, Client);
 end;
 
+procedure TPageControl.DoChange;
+begin
+  inherited DoChange;
+  if Assigned(OnChange) then
+    OnChange(Self);
+end;
+
 constructor TPageControl.Create(TheOwner: TComponent);
 begin
   PageClass:=TTabSheet;

@@ -270,8 +270,8 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
-    fOnPageChanged: TNotifyEvent;
     FPageToUndock: TTabSheet;
+    FOnChange: TNotifyEvent;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
     function GetTabIndex: Integer;
@@ -287,6 +287,7 @@ type
                        State: TDragState; var Accept: Boolean); override;
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
+    procedure DoChange; override;
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
@@ -331,7 +332,7 @@ type
     property TabStop;
     //property TabWidth;
     property Visible;
-    property OnChange: TNotifyEvent read fOnPageChanged write fOnPageChanged;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging;
     property OnContextPopup;
     property OnDockDrop;
