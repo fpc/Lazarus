@@ -25,7 +25,8 @@ unit Masks;
 interface
 
 uses
-  Classes, SysUtils, Contnrs;
+  // For Smart Linking: Do not use the LCL!
+  Classes, SysUtils, Contnrs, LCLStrConsts;
 
 type
   TMaskCharType = (mcChar, mcCharSet, mcAnyChar, mcAnyText);
@@ -86,8 +87,6 @@ function MatchesMask(const FileName, Mask: String): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'): Boolean;
 
 implementation
-
-uses LCLProc, LCLStrConsts;
 
 function MatchesMask(const FileName, Mask: String): Boolean;
 var
