@@ -4397,6 +4397,11 @@ begin
     end;
     EditorComp:=ASrcEdit.EditorComponent;
 
+    // Clipboard
+    SrcEditMenuCut.Enabled := ASrcEdit.SelectionAvailable and not ASrcEdit.ReadOnly;
+    SrcEditMenuCopy.Enabled := ASrcEdit.SelectionAvailable;
+    SrcEditMenuPaste.Enabled := not ASrcEdit.ReadOnly;
+
     // Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
     SrcEditMenuShowLineNumbers.MenuItem.Checked :=
