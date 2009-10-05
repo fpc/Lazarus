@@ -4341,25 +4341,26 @@ end;
 
 {$IFDEF Windows}
 function OpenURL(AURL: String): Boolean;
-
-{$IFDEF WinCE}
-  const
-    UnicodeEnabledOS = True;
-{$ELSE}
-  function UnicodeEnabledOS: Boolean;
-  begin
-    Result := Win32Platform = VER_PLATFORM_WIN32_NT;
-  end;
-{$ENDIF}
-
 var
+{$IFDEF WinCE}
+  Info: SHELLEXECUTEINFO;
+{$ELSE}
   ws: WideString;
   ans: AnsiString;
+{$ENDIF}
 begin
   Result := False;
   if AURL = '' then Exit;
 
-  if UnicodeEnabledOS then
+  {$IFDEF WinCE}
+  FillChar(Info, SizeOf(Info), 0);
+  Info.cbSize := SizeOf(Info);
+  Info.fMask := SEE_MASK_FLAG_NO_UI;
+  Info.lpVerb := 'open';
+  Info.lpFile := PWideChar(UTF8Decode(AURL));
+  Result := ShellExecuteEx(@Info);
+  {$ELSE}
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     ws := UTF8Decode(AURL);
     Result := ShellExecuteW(0, 'open', PWideChar(ws), nil, nil, 0) > 32;
@@ -4369,6 +4370,7 @@ begin
     ans := Utf8ToAnsi(AURL); // utf8 must be converted to Windows Ansi-codepage
     Result := ShellExecute(0, 'open', PAnsiChar(ans), nil, nil, 0) > 32;
   end;
+  {$ENDIF}
 end;
 {$ELSE}
 {$IFDEF DARWIN}
@@ -4408,7 +4410,11 @@ begin
   end;
 end;
 {$ENDIF}
-{$ENDIF}
+
+
+end;
+
+  {$ENDIF}
 
 procedure FreeLineInfoCache;
 var
