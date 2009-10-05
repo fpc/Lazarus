@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="SQLDBLaz"/>
+    <AddToProjectUsesSection Value="False"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
       <Version Value="8"/>
