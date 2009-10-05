@@ -18,18 +18,7 @@
  *****************************************************************************
 }
 
-constructor TMouse.Create;
-begin
-  inherited Create;
-end;
-
-destructor TMouse.destroy;
-begin
-  inherited destroy;
-end;
-
-
-function TMouse.GetCapture : HWND;
+function TMouse.GetCapture: HWND;
 begin
   Result := FCapture;
 end;

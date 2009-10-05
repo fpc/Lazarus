@@ -2227,8 +2227,6 @@ type
     function GetDragThreshold: Integer;
     procedure SetDragThreshold(const AValue: Integer);
   public
-    constructor Create;
-    destructor Destroy; override;
     property Capture: HWND read GetCapture write SetCapture;
     property CursorPos: TPoint read GetCursorPos write SetCursorPos;
     property IsDragging: Boolean read GetIsDragging;
