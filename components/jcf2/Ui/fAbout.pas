@@ -67,7 +67,7 @@ uses
   {$ifndef fpc}
     Windows, ShellAPI, URLMon,
   {$else}
-    LResources, LCLProc,
+    LResources, LCLIntf,
   {$endif}
   { local }
   JcfVersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
