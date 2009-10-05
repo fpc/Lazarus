@@ -56,6 +56,13 @@ type
     constructor Create(aDlg: TFindUnitDialog; aCaption: string);
   end;
 
+  { TQuickFixMissingUnitRemoveFromUses }
+
+  TQuickFixMissingUnitRemoveFromUses = class(TQuickFixMissingUnit)
+  public
+    constructor Create(aDlg: TFindUnitDialog);
+  end;
+
   { TQuickFixMissingUnitAddRequirement }
 
   TQuickFixMissingUnitAddRequirement = class(TQuickFixMissingUnit)
@@ -91,6 +98,7 @@ type
     procedure InitSearchPackages;
     procedure AddQuickFix(Item: TQuickFixMissingUnit);
     procedure AddRequirement(Item: TQuickFixMissingUnitAddRequirement);
+    procedure RemoveFromUsesSection(Item: TQuickFixMissingUnitRemoveFromUses);
     function MainOwnerHasRequirement(PackageName: string): boolean;
     procedure UpdateProgressBar;
   public
@@ -237,7 +245,9 @@ begin
     exit;
   end;
   Item:=TQuickFixMissingUnit(fQuickFixes[i]);
-  if Item is TQuickFixMissingUnitAddRequirement then
+  if Item is TQuickFixMissingUnitRemoveFromUses then
+    RemoveFromUsesSection(TQuickFixMissingUnitRemoveFromUses(Item))
+  else if Item is TQuickFixMissingUnitAddRequirement then
     AddRequirement(TQuickFixMissingUnitAddRequirement(Item));
 end;
 
@@ -267,6 +277,10 @@ begin
     // search in package on disk
 
     inc(FSearchPackagesIndex);
+    if FSearchPackagesIndex>=FSearchPackages.Count then begin
+      AddQuickFix(TQuickFixMissingUnitRemoveFromUses.Create(Self));
+    end;
+
     UpdateProgressBar;
     Done:=false;
     exit;
@@ -326,6 +340,16 @@ begin
     if PkgBoss.AddPackageDependency(APackage,Item.PackageName)=mrOk then
       ModalResult:=mrOK;
   end;
+end;
+
+procedure TFindUnitDialog.RemoveFromUsesSection(
+  Item: TQuickFixMissingUnitRemoveFromUses);
+begin
+  if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,MissingUnitName) then
+  begin
+
+  end;
+  ModalResult:=mrOk;
 end;
 
 function TFindUnitDialog.MainOwnerHasRequirement(PackageName: string): boolean;
@@ -462,6 +486,13 @@ constructor TQuickFixMissingUnitAddRequirement.Create(aDlg: TFindUnitDialog;
 begin
   PackageName:=aPackageName;
   Caption:='Add package '+PackageName+' as requirement to '+aDlg.MainOwnerName;
+end;
+
+{ TQuickFixMissingUnitRemoveFromUses }
+
+constructor TQuickFixMissingUnitRemoveFromUses.Create(aDlg: TFindUnitDialog);
+begin
+  Caption:='Remove unit from uses clause';
 end;
 
 initialization

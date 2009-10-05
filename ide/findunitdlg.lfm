@@ -1,7 +1,7 @@
 object FindUnitDialog: TFindUnitDialog
-  Left = 355
+  Left = 360
   Height = 514
-  Top = 321
+  Top = 345
   Width = 584
   ActiveControl = InfoTreeView
   ClientHeight = 514
@@ -49,19 +49,21 @@ object FindUnitDialog: TFindUnitDialog
     end
   end
   object InfoGroupBox: TGroupBox
+    AnchorSideBottom.Control = Splitter1
     Left = 6
-    Height = 343
+    Height = 324
     Top = 6
     Width = 572
-    Align = alClient
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
-    ClientHeight = 324
+    ClientHeight = 305
     ClientWidth = 568
     TabOrder = 1
     object InfoTreeView: TTreeView
       Left = 0
-      Height = 304
+      Height = 285
       Top = 0
       Width = 568
       Align = alClient
@@ -71,27 +73,34 @@ object FindUnitDialog: TFindUnitDialog
     object ProgressBar1: TProgressBar
       Left = 0
       Height = 20
-      Top = 304
+      Top = 285
       Width = 568
       Align = alBottom
       TabOrder = 1
     end
   end
   object Splitter1: TSplitter
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 466
+    Top = 336
     Width = 584
-    Align = alBottom
+    Align = alNone
+    Anchors = [akTop, akLeft, akRight]
     ResizeAnchor = akBottom
   end
   object QuickFixRadioGroup: TRadioGroup
+    AnchorSideTop.Control = Splitter1
+    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 105
-    Top = 355
+    Height = 118
+    Top = 347
     Width = 572
     Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
     BorderSpacing.Around = 6
     Caption = 'QuickFixRadioGroup'
