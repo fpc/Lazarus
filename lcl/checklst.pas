@@ -278,11 +278,10 @@ end;
 procedure TCustomCheckListBox.SetState(AIndex: Integer;
   const AValue: TCheckBoxState);
 begin
-  CheckIndex(AIndex);
-
   if HandleAllocated
   then SendItemState(AIndex, AValue)
   else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.State := AValue;
+  CheckIndex(AIndex);
 end;
 
 class procedure TCustomCheckListBox.WSRegisterClass;
