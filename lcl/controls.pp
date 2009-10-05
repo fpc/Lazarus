@@ -2220,7 +2220,7 @@ type
     function GetCapture: HWND;
     function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
-    procedure SetCursorPos(AValue : TPoint);
+    procedure SetCursorPos(AValue: TPoint);
     function GetWheelScrollLines: Integer;
     function GetDragImmediate: Boolean;
     procedure SetDragImmediate(const AValue: Boolean);

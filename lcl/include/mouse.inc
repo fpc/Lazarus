@@ -34,28 +34,26 @@ begin
   Result := FCapture;
 end;
 
-
-procedure TMouse.SetCapture(const Value : HWND);
+procedure TMouse.SetCapture(const Value: HWND);
 begin
   {$IFDEF VerboseMouseCapture}
   DebugLn('TMouse.SetCapture ');
   {$ENDIF}
   FCapture := Value;
-  if Value = 0 then ReleaseCapture else LCLIntf.SetCapture(Value);
+  if Value = 0 then
+    ReleaseCapture
+  else
+    LCLIntf.SetCapture(Value);
   FCapture := GetCapture;
 end;
 
-function TMouse.GetCursorPos : TPoint;
-var
-  p : TPoint;
+function TMouse.GetCursorPos: TPoint;
 begin
-  if WidgetSet.GetCursorPos(p) then
-    Result := P
-  else
-    Result:=Point(0,0);
+  if not WidgetSet.GetCursorPos(Result) then
+    Result := Point(0,0);
 end;
 
-procedure TMouse.SetCursorPos(AValue : TPoint);
+procedure TMouse.SetCursorPos(AValue: TPoint);
 begin
   WidgetSet.SetCursorPos(AValue.X, AValue.Y);
 end;
