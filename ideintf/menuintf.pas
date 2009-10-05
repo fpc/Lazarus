@@ -1529,10 +1529,8 @@ end;
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
   inherited MenuItemClick(Sender);
-  // dont execute the same twice
-  if (Command <> nil) and
-     ((Command.OnExecute <> OnClick) or
-      (Command.OnExecuteProc <> OnClickProc)) then
+  // dont execute if something is already executed
+  if not Assigned(OnClick) and not Assigned(OnClickProc) and Assigned(Command) then
     Command.Execute(Sender);
 end;
 
