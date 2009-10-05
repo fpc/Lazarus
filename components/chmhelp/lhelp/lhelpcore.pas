@@ -51,6 +51,7 @@ type
   { THelpForm }
   
   THelpForm = class(TForm)
+    ApplicationProperties1: TApplicationProperties;
     FileMenuCloseItem: TMenuItem;
     FileMenuExitItem: TMenuItem;
     FileMenuItem: TMenuItem;

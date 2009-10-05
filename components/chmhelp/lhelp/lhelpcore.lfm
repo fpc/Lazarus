@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 510
+  ClientHeight = 515
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -242,7 +242,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 478
+    Height = 483
     Top = 32
     Width = 758
     Align = alClient
@@ -253,7 +253,8 @@ object HelpForm: THelpForm
     OnPageChanged = PageControlChange
   end
   object MainMenu1: TMainMenu
-    top = 124
+    left = 208
+    top = 80
     object FileMenuItem: TMenuItem
       Caption = '&File'
       object FileMenuOpenItem: TMenuItem
@@ -299,10 +300,11 @@ object HelpForm: THelpForm
   object OpenDialog1: TOpenDialog
     Filter = 'HelpFiles(*.chm)|*.chm|All FIles(*.*)|*'
     FilterIndex = 0
-    top = 156
+    left = 144
+    top = 80
   end
   object ImageList1: TImageList
-    left = 8
+    left = 80
     top = 80
     Bitmap = {
       4C690400000010000000100000007001E300B0CE2A000000000000000000F609
@@ -435,5 +437,11 @@ object HelpForm: THelpForm
       AB00617BAC00607AAC005F79AA005F79AA005E79AB005C79AA005C78AA005C78
       AA005A75AA003158930003080E00
     }
+  end
+  object ApplicationProperties1: TApplicationProperties
+    ShowButtonGlyphs = sbgSystem
+    ShowMenuGlyphs = sbgSystem
+    left = 80
+    top = 136
   end
 end
