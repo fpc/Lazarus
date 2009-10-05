@@ -592,21 +592,22 @@ end;
 
 procedure TCustomForm.CMBiDiModeChanged(var Message: TLMessage);
 var
-  i:Integer;
-  lMessage:TLMessage;
+  i: Integer;
+  lMessage: TLMessage;
 begin
   inherited;
-  //send CM_PARENTBIDIMODECHANGED to All Component owned by Form
-{ This way is usefull for other TMenu components that need BidiMode of form changed
-  Like as TToolbar }
+  // send CM_PARENTBIDIMODECHANGED to all components owned by the form
+  // this is needed for menus
   lMessage.msg := CM_PARENTBIDIMODECHANGED;
   lMessage.wParam := 0;
   lMessage.lParam := 0;
   lMessage.Result := 0;
   for i := 0 to ComponentCount - 1 do
   begin
-    if not (Components[i] is TCustomControl) then //TCustomControl already has this notification
-      Components[i].Dispatch(lMessage);
+    // all TControl descendants have this notification in TWinControl.CMBidiModeChanged
+    if Components[i] is TControl then
+      Continue;
+    Components[i].Dispatch(lMessage);
   end;
 end;
 
