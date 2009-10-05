@@ -5177,10 +5177,14 @@ begin
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
           InsertPos:=ClassSectionNode.StartPos;
-          if (ClassSectionNode.Desc in AllClassBaseSections)
-          or (ClassSectionNode.Desc in AllClassTypeSections) then begin
+          if (ClassSectionNode.Desc in (AllClassBaseSections+AllClassTypeSections))
+          then begin
             // skip keyword
-            inc(InsertPos,GetIdentLen(@Src[InsertPos]));
+            MoveCursorToCleanPos(InsertPos);
+            ReadNextAtom;
+            if UpAtomIs('STRICT') then
+              ReadNextAtom;
+            InsertPos:=CurPos.EndPos;
           end else if ClassSectionNode.Desc in AllClassInterfaces then begin
             // skip class interface header
             MoveCursorToCleanPos(InsertPos);
