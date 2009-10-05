@@ -64,6 +64,8 @@ Type
 
     procedure InitFlags; virtual;
     procedure SetSorted(Val: Boolean); Virtual;
+    function SaveData(AIndex: Integer): Pointer; virtual;
+    procedure RestoreData(AIndex: Integer; AData: Pointer); virtual;
   public
     constructor Create(List : HWND; TheOwner: TWinControl);
     function Add(const S: string): Integer; override;
@@ -118,8 +120,10 @@ Type
   protected
     function GetObject(Index: Integer): TObject; override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
+    function SaveData(AIndex: Integer): Pointer; override;
+    procedure RestoreData(AIndex: Integer; AData: Pointer); override;
   public
-    constructor Create(List : HWND; TheOwner: TWinControl);
+    constructor Create(List: HWND; TheOwner: TWinControl);
     class procedure DeleteItemRecords(const List: HWND);
     class procedure DeleteItemRecord(const List: HWND; const Index: integer);
     procedure Clear; override;

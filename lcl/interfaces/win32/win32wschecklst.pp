@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Classes, CheckLst, StdCtrls,
+  Windows, Classes, Controls, CheckLst, StdCtrls, LCLType, LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Windows;
+  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
 
 type
 
@@ -43,8 +43,9 @@ type
 
   TWin32WSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-
+    class function CreateHandle(const AWinControl: TWinControl;
+       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
@@ -57,6 +58,70 @@ type
 
 
 implementation
+
+function CheckListBoxWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  WindowInfo: PWin32WindowInfo;
+
+  procedure CheckListBoxLButtonDown;
+  var
+    I: Integer;
+    ItemRect: Windows.Rect;
+    MousePos: Windows.Point;
+    Message: TLMessage;
+  begin
+    MousePos.X := GET_X_LPARAM(LParam);
+    MousePos.Y := GET_Y_LPARAM(LParam);
+    for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
+    begin
+      Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
+      ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
+      if Windows.PtInRect(ItemRect, MousePos) then
+      begin
+        // item clicked: toggle
+        if I < TCheckListBox(WindowInfo^.WinControl).Items.Count then
+        begin
+          if TCheckListBox(WindowInfo^.WinControl).ItemEnabled[I] then
+          begin
+            TCheckListBox(WindowInfo^.WinControl).Toggle(I);
+            Message.Msg := LM_CHANGED;
+            Message.WParam := I;
+            DeliverMessage(WindowInfo^.WinControl, Message);
+          end;
+        end;
+        // can only click one item
+        Exit;
+      end;
+    end;
+  end;
+
+begin
+  Result := WindowProc(Window, Msg, WParam, LParam);
+  // move groupbox specific code here
+  case Msg of
+    WM_LBUTTONDOWN, WM_LBUTTONDBLCLK:
+    begin
+      WindowInfo := GetWin32WindowInfo(Window);
+      if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
+        CheckListBoxLButtonDown;
+    end;
+  end;
+end;
+
+class function TWin32WSCustomCheckListBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Params: TCreateWindowExParams;
+begin
+  Params := GetListBoxParams(TCustomListBox(AWinControl), AParams, True);
+  Params.SubClassWndProc := @CheckListBoxWndProc;
+  // create window
+  FinishCreateWindow(AWinControl, Params, False);
+  // listbox is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.needParentPaint := False;
+  Result := Params.Window;
+end;
 
 class function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var

@@ -574,38 +574,6 @@ var
     MoveWindowOrgEx(ControlDC, P.X, P.Y);
   end;
 
-  procedure CheckListBoxLButtonDown;
-  var
-    I: Integer;
-    ItemRect: Windows.Rect;
-    MousePos: Windows.Point;
-    Message: TLMessage;
-  begin
-    MousePos.X := LMMouse.Pos.X;
-    MousePos.Y := LMMouse.Pos.Y;
-    for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
-    begin
-      Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
-      ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
-      if Windows.PtInRect(ItemRect, MousePos) then
-      begin
-        // item clicked: toggle
-        if I < TCheckListBox(lWinControl).Items.Count then
-        begin
-          if TCheckListBox(lWinControl).ItemEnabled[I] then
-          begin
-            TCheckListBox(lWinControl).Toggle(I);
-            Message.Msg := LM_CHANGED;
-            Message.WParam := I;
-            DeliverMessage(lWinControl, Message);
-          end;
-        end;
-        // can only click one item
-        exit;
-      end;
-    end;
-  end;
-
   procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
   var
     Parent: TWinControl;
@@ -1844,10 +1812,6 @@ begin
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       end;
-
-      // CheckListBox functionality
-      if lWinControl is TCheckListBox then
-        CheckListBoxLButtonDown;
     end;
     WM_LBUTTONDOWN:
     begin
@@ -1887,10 +1851,6 @@ begin
         YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       end;
-
-      // CheckListBox functionality
-      if lWinControl is TCheckListBox then
-        CheckListBoxLButtonDown;
     end;
     WM_LBUTTONUP:
     begin

@@ -288,6 +288,9 @@ function  EditGetSelLength(WinHandle: HWND): integer;
 procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
+function GetListBoxParams(AListBox: TCustomListBox;
+  const AParams: TCreateParams; IsCheckList: Boolean): TCreateWindowExParams;
+
 {$DEFINE MEMOHEADER}
 {$I win32memostrings.inc}
 {$UNDEF MEMOHEADER}
@@ -554,17 +557,15 @@ begin
   end;
 end;
 
-class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
+function GetListBoxParams(AListBox: TCustomListBox;
+  const AParams: TCreateParams; IsCheckList: Boolean): TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AListBox, Result);
   // customization of Params
-  with Params do
+  with Result do
   begin
-    with TCustomListBox(AWinControl) do
+    with AListBox do
     begin
       if Sorted then
         Flags := Flags or LBS_SORT;
@@ -576,7 +577,7 @@ begin
       if Columns > 1 then
         Flags := Flags or LBS_MULTICOLUMN;
 
-      if (AWinControl.FCompStyle = csCheckListBox) and (Style = lbStandard) then
+      if IsCheckList and (Style = lbStandard) then
         Flags := Flags or LBS_OWNERDRAWFIXED
       else
         case Style of
@@ -591,10 +592,18 @@ begin
     Flags := Flags or (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
                        LBS_NOTIFY);
   end;
+end;
+
+class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  Params := GetListBoxParams(TCustomListBox(AWinControl), AParams, False);
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
+  FinishCreateWindow(AWinControl, Params, False);
   // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.needParentPaint := false;
+  Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;
 end;
 

@@ -86,6 +86,16 @@ begin
   end;
 end;
 
+function TWin32ListStringList.SaveData(AIndex: Integer): Pointer;
+begin
+  Result := GetObject(AIndex);
+end;
+
+procedure TWin32ListStringList.RestoreData(AIndex: Integer; AData: Pointer);
+begin
+  PutObject(AIndex, TObject(AData));
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Sort
   Params:
@@ -263,8 +273,9 @@ end;
 
 procedure TWin32ListStringList.Put(Index: integer; const S: string);
 var
-  lItemIndex: integer;
-  lSelected: boolean;
+  lItemIndex: Integer;
+  lSelected: Boolean;
+  AData: Pointer;
 begin
   // remember selection
   lItemIndex := -1;
@@ -280,16 +291,19 @@ begin
     lItemIndex := SendMessage(FWin32List, FFlagGetItemIndex, 0, 0);
     lSelected := lItemIndex >= 0;
   end;
+
+  // preserve data
+  AData := SaveData(Index);
   
   inherited;
  
+  if AData <> nil then
+    RestoreData(Index, AData);
+
   if lSelected then
   begin
-    if (FFlagSetSelected = 0) 
-      or (SendMessage(FWin32List, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
-    begin
+    if (FFlagSetSelected = 0) or (SendMessage(FWin32List, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
       SendMessage(FWin32List, FFlagSetItemIndex, lItemIndex, 0);
-    end;
   end;
 end;
     
@@ -435,7 +449,7 @@ end;
     
 { TWin32CheckListBoxStrings }
 
-constructor TWin32CheckListBoxStrings.Create(List : HWND; TheOwner: TWinControl);
+constructor TWin32CheckListBoxStrings.Create(List: HWND; TheOwner: TWinControl);
 begin
   inherited Create(List, TheOwner);
   with FDefaultItem do
@@ -529,23 +543,51 @@ begin
   SetItemRecord(Index, ItemRecord);
 end;
 
+function TWin32CheckListBoxStrings.SaveData(AIndex: Integer): Pointer;
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(AIndex, False);
+  if ItemRecord = nil then
+    Result := nil
+  else
+  begin
+    Result := new(PWin32CheckListBoxItemRecord);
+    PWin32CheckListBoxItemRecord(Result)^ := ItemRecord^;
+  end;
+end;
+
+procedure TWin32CheckListBoxStrings.RestoreData(AIndex: Integer; AData: Pointer);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord absolute AData;
+  OldRecord: PWin32CheckListBoxItemRecord;
+begin
+  if ItemRecord <> nil then
+  begin
+    OldRecord := GetItemRecord(AIndex, True);
+    OldRecord^ := ItemRecord^;
+    SetItemRecord(AIndex, OldRecord);
+    Dispose(ItemRecord);
+  end;
+end;
+
 class procedure TWin32CheckListBoxStrings.DeleteItemRecords(const List: HWND);
 var
   Index: Integer;
   ItemCount: Integer;
 begin
   ItemCount := Windows.SendMessage(List, LB_GETCOUNT, 0, 0);
-  for Index := 0 to ItemCount-1 do
+  for Index := 0 to ItemCount - 1 do
     DeleteItemRecord(List, Index);
 end;
 
-class procedure TWin32CheckListBoxStrings.DeleteItemRecord(const List: HWND;const Index: integer);
+class procedure TWin32CheckListBoxStrings.DeleteItemRecord(const List: HWND; const Index: integer);
 var
   ItemRecord: PWin32CheckListBoxItemRecord;
 begin
   ItemRecord := PWin32CheckListBoxItemRecord(Windows.SendMessage(List, LB_GETITEMDATA, Index, 0));
-  if Assigned(ItemRecord)
-    then Dispose(ItemRecord);
+  if Assigned(ItemRecord) then
+    Dispose(ItemRecord);
 end;
 
 {$IFDEF H_PLUS}
