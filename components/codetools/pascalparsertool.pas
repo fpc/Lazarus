@@ -446,7 +446,8 @@ begin
         end;
     end;
   'S':
-    if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod);
+    if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
+    else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
   'V':
@@ -1009,20 +1010,25 @@ end;
 
 function TPascalParserTool.KeyWordFuncClassSection: boolean;
 // change section in a class (public, private, protected, published)
+var
+  p: PChar;
 begin
   // end last section
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   // start new section
   CreateChildNode;
+  if UpAtomIs('STRICT') then ReadNextAtom;
   if UpAtomIs('PUBLIC') then
     CurNode.Desc:=ctnClassPublic
   else if UpAtomIs('PRIVATE') then
     CurNode.Desc:=ctnClassPrivate
   else if UpAtomIs('PROTECTED') then
     CurNode.Desc:=ctnClassProtected
+  else if UpAtomIs('PUBLISHED') then
+    CurNode.Desc:=ctnClassPublished
   else
-    CurNode.Desc:=ctnClassPublished;
+    RaiseStringExpectedButAtomFound('public');
   Result:=true;
 end;
 
@@ -1033,7 +1039,6 @@ begin
   EndChildNode;
   // start new section
   CreateChildNode;
-  CurNode.Desc:=ctnClassTypePublic;
   ReadNextAtom;
   if UpAtomIs('PUBLIC') then
     CurNode.Desc:=ctnClassTypePublic
@@ -4345,6 +4350,7 @@ begin
   case UpChars[p^] of
   'C': if UpAtomIs('CLASS') then exit(true);
   'F': if UpAtomIs('FUNCTION') then exit(true);
+  'S': if UpAtomIs('STRICT') then exit(true);
   'P':
     case UpChars[p[1]] of
     'R':

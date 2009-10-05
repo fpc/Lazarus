@@ -498,6 +498,10 @@ var
 
   procedure StartClassSection;
   begin
+    if (LastAtomStart>0) and (CompareIdentifiers('STRICT',@Src[LastAtomStart])=0)
+    then begin
+      exit;
+    end;
     if Stack.TopType=bbtClassSection then
       EndBlock;
     if Stack.TopType=bbtClass then
@@ -735,6 +739,9 @@ begin
             StartIdentifierSection(bbtResourceStringSection);
         end;
       end;
+    'S':
+      if (CompareIdentifiers('STRICT',r)=0) then
+        StartClassSection;
     'T':
       case UpChars[r[1]] of
       'H': // TH
