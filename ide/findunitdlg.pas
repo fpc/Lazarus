@@ -37,12 +37,12 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources, ExtCtrls,
   StdCtrls, ComCtrls, FileUtil, AvgLvlTree,
   // codetools
-  CodeCache, CodeToolManager,
+  Laz_XMLCfg, CodeCache, CodeToolManager,
   // IDEIntf
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
   // IDE
-  PackageDefs, Project, IDEProcs, LazarusIDEStrConsts, MsgQuickFixes,
-  PackageSystem, BasePkgManager;
+  DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts, MsgQuickFixes,
+  PackageLinks, PackageSystem, BasePkgManager;
 
 type
   TFindUnitDialog = class;
@@ -96,11 +96,13 @@ type
     fQuickFixes: TFPList;// list of TQuickFixMissingUnit
     fLastUpdateProgressBar: TDateTime;
     procedure InitSearchPackages;
+    procedure OnIteratePkgLinks(APackage: TLazPackageID);
     procedure AddQuickFix(Item: TQuickFixMissingUnit);
     procedure AddRequirement(Item: TQuickFixMissingUnitAddRequirement);
     procedure RemoveFromUsesSection(Item: TQuickFixMissingUnitRemoveFromUses);
     function MainOwnerHasRequirement(PackageName: string): boolean;
     procedure UpdateProgressBar;
+    function CheckPackageOnDisk(PkgFilename: string): boolean;
   public
     procedure InitWithMsg(Msg: TIDEMessageLine; Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
@@ -256,14 +258,20 @@ var
   Filename: string;
   i: Integer;
   APackage: TLazPackage;
+  Found: Boolean;
+  t: TDateTime;
 begin
-  if (FSearchPackages<>nil) and (FSearchPackagesIndex<FSearchPackages.Count)
-  then begin
+  t:=Now;
+  while (FSearchPackages<>nil) and (FSearchPackagesIndex<FSearchPackages.Count)
+  do begin
     Filename:=FSearchPackages[FSearchPackagesIndex];
+    Found:=false;
+
     // search in open packages
     for i:=0 to PackageGraph.Count-1 do begin
       APackage:=PackageGraph.Packages[i];
       if APackage.Filename=Filename then begin
+        Found:=true;
         if APackage.FindUnit(MissingUnitName)<>nil then begin
           if MainOwnerHasRequirement(APackage.Name) then begin
             // already in requirements
@@ -272,9 +280,14 @@ begin
             AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,APackage.Name));
           end;
         end;
+        break;
       end;
     end;
+
     // search in package on disk
+    if not Found then begin
+      if CheckPackageOnDisk(Filename) then Found:=true;
+    end;
 
     inc(FSearchPackagesIndex);
     if FSearchPackagesIndex>=FSearchPackages.Count then begin
@@ -283,9 +296,10 @@ begin
 
     UpdateProgressBar;
     Done:=false;
-    exit;
+    if Now-t>0.5/86400 then
+      exit;
+    // process another package
   end;
-
   Done:=true;
 end;
 
@@ -300,6 +314,8 @@ begin
   FSearchPackages.Clear;
   FSearchPackagesIndex:=0;
   if MainOwner=nil then exit;
+
+  // add open packages
   for i:=0 to PackageGraph.Count-1 do begin
     APackage:=PackageGraph.Packages[i];
     Filename:=APackage.GetResolvedFilename(true);
@@ -309,10 +325,23 @@ begin
   end;
   //DebugLn(['TFindUnitDialog.InitSearchPackages ',FSearchPackages.Text]);
 
+  // add user package links
+  PkgLinks.IteratePackages(false,@OnIteratePkgLinks,[ploUser,ploGlobal]);
+
   if FSearchPackages.Count>0 then begin
     ProgressBar1.Max:=FSearchPackages.Count;
     fLastUpdateProgressBar:=Now;
     ProgressBar1.Visible:=true;
+  end;
+end;
+
+procedure TFindUnitDialog.OnIteratePkgLinks(APackage: TLazPackageID);
+var
+  Link: TPackageLink;
+begin
+  if APackage is TPackageLink then begin
+    Link:=TPackageLink(APackage);
+    FSearchPackages.Add(TrimFilename(Link.GetEffectiveFilename));
   end;
 end;
 
@@ -379,6 +408,58 @@ begin
   if Now-fLastUpdateProgressBar>1/86400 then begin
     ProgressBar1.Position:=FSearchPackagesIndex;
     fLastUpdateProgressBar:=Now;
+  end;
+end;
+
+function TFindUnitDialog.CheckPackageOnDisk(PkgFilename: string): boolean;
+var
+  r: TModalResult;
+  XMLConfig: TXMLConfig;
+  XMLCode: TCodeBuffer;
+  Path: String;
+  FileCount: LongInt;
+  i: Integer;
+  SubPath: String;
+  FileType: TPkgFileType;
+  UnitName: String;
+  Filename: String;
+  PkgName: String;
+begin
+  Result:=false;
+  if not FileExistsCached(PkgFilename) then exit;
+  //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',PkgFilename]);
+
+  PkgName:=ExtractFileNameOnly(PkgFilename);
+
+  XMLConfig:=nil;
+  XMLCode:=nil;
+  try
+    //DebugLn(['TFindUnitDialog.CheckPackageOnDisk loading: ',PkgFilename]);
+    XMLConfig:=TXMLConfig.Create(nil);
+    r:=LoadXMLConfigFromCodeBuffer(PkgFilename,XMLConfig,
+                         XMLCode,[lbfUpdateFromDisk,lbfRevert,lbfQuiet],false);
+    if r<>mrOk then begin
+      //DebugLn(['TFindUnitDialog.CheckPackageOnDisk failed loading: ',PkgFilename]);
+      exit;
+    end;
+    Path:='Package/Files/';
+    FileCount:=XMLConfig.GetValue(Path+'Count',0);
+    //DebugLn(['TFindUnitDialog.CheckPackageOnDisk FileCount=',FileCount,' ',PkgName]);
+    for i:=1 to FileCount do begin
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(SubPath+'Type/Value',''));
+      if FileType<>pftUnit then continue;
+      Filename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
+      UnitName:=ExtractFileNameOnly(Filename);
+      //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',UnitName]);
+      if SysUtils.CompareText(UnitName,MissingUnitName)=0 then begin
+        Result:=true;
+        AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,PkgName));
+        exit;
+      end;
+    end;
+  finally
+    XMLConfig.Free;
   end;
 end;
 
