@@ -101,7 +101,7 @@ type
     function GetStyleSheet: WideString;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
-    function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+    function QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
@@ -531,6 +531,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
   end;
   
   { TQtToolBar }
@@ -2466,7 +2467,7 @@ begin
   DeliverMessage(Msg);
 end;
 
-function TQtWidget.QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+function TQtWidget.QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
 begin
   Result := 0;
   if (QtLeftButton and AButtons) <> 0 then
@@ -4739,6 +4740,16 @@ procedure TQtGroupBox.setText(const W: WideString);
 begin
   QGroupBox_setTitle(QGroupBoxH(Widget), @W);
   setLayoutThemeMargins(QWidget_Layout(Widget), Widget);
+end;
+
+procedure TQtGroupBox.setFocusPolicy(const APolicy: QtFocusPolicy);
+var
+  NewPolicy: QtFocusPolicy;
+begin
+  NewPolicy := APolicy;
+  if Assigned(LCLObject) and not LCLObject.TabStop then
+    NewPolicy := QtNoFocus;
+  inherited setFocusPolicy(NewPolicy);
 end;
 
 { TQtFrame }
