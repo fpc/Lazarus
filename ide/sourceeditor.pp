@@ -4124,35 +4124,41 @@ Begin
   {$ENDIF}
   CurCompletionControl := Sender as TSynCompletion;
   S := TStringList.Create;
-  Prefix := CurCompletionControl.CurrentString;
-  CurEdit:=GetActiveSE.EditorComponent;
-  case CurrentCompletionType of
-   ctIdentCompletion:
-     if not InitIdentCompletion(S) then exit;
+  try
+    Prefix := CurCompletionControl.CurrentString;
+    CurEdit:=GetActiveSE.EditorComponent;
+    case CurrentCompletionType of
+     ctIdentCompletion:
+       if not InitIdentCompletion(S) then begin
+         CurCompletionControl.ItemList.Clear;
+         exit;
+       end;
 
-   ctWordCompletion:
-     begin
-       ccSelection:='';
-     end;
+     ctWordCompletion:
+       begin
+         ccSelection:='';
+       end;
 
-   ctTemplateCompletion:
-     begin
-       ccSelection:='';
-       for I:=0 to FCodeTemplateModul.Completions.Count-1 do begin
-         NewStr:=FCodeTemplateModul.Completions[I];
-         if NewStr<>'' then begin
-           NewStr:=#3'B'+NewStr+#3'b';
-           while length(NewStr)<10+4 do NewStr:=NewStr+' ';
-           NewStr:=NewStr+' '+FCodeTemplateModul.CompletionComments[I];
-           S.Add(NewStr);
+     ctTemplateCompletion:
+       begin
+         ccSelection:='';
+         for I:=0 to FCodeTemplateModul.Completions.Count-1 do begin
+           NewStr:=FCodeTemplateModul.Completions[I];
+           if NewStr<>'' then begin
+             NewStr:=#3'B'+NewStr+#3'b';
+             while length(NewStr)<10+4 do NewStr:=NewStr+' ';
+             NewStr:=NewStr+' '+FCodeTemplateModul.CompletionComments[I];
+             S.Add(NewStr);
+           end;
          end;
        end;
-     end;
 
+    end;
+
+    CurCompletionControl.ItemList := S;
+  finally
+    S.Free;
   end;
-
-  CurCompletionControl.ItemList := S;
-  S.Free;
   CurCompletionControl.CurrentString:=Prefix;
   // set colors
   if (CurEdit<>nil) and (CurCompletionControl.TheForm<>nil) then begin
