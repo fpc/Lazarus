@@ -34,6 +34,12 @@ Bugs:
   is the ActiveControl of the form, then before the form is displayed an exception will
   be raised, because somehow DoExit is executed (which calls ValidateEdit)
   A bugreport on this behaviour is in Mantis: #0012877
+- The Delphi helpt text says that a '_' in EditMask will insert a blank in the text.
+  However all versions of Delphi up to D2010 treat it as a literal '_' (unless
+  specified in the 3rd field of a multifield EditMask), so I rewrote parts to make it behave like
+  that also.
+  If, in the future, Delphi actually treats '_' as a blank, we'll re-implement it, for that
+  purpose I did not remove the concerning code, but commented it out
 - UTF8 support for maskcharacters C and c, probably needs major rewrite!!
 }
 
@@ -63,8 +69,13 @@ const
   cMask_NumberPlusMin = '#'; // only a number or + or -, but not necessary
   cMask_HourSeparator = ':'; // automatically put the hour separator char
   cMask_DateSeparator = '/'; // automatically but the date separator char
-  cMask_SpaceOnly     = '_'; // automatically put a space
+{ cMask_SpaceOnly     = '_'; // automatically put a space          //not Delphi compatible        }
   cMask_NoLeadingBlanks = '!'; //Trim leading blanks, otherwise trim trailing blanks from the data
+
+  {Delphi compatibility: user can change these at runtime}
+  DefaultBlank: Char = '_';
+  MaskFieldSeparator: Char = ';';
+  MaskNoSave: Char = '0';
 
 type
   { Type for mask (internal) }
@@ -90,7 +101,7 @@ type
                  Char_AllDownCase,
                  Char_AllFixedUpCase,
                  Char_AllFixedDownCase,
-                 Char_Space,
+                {Char_Space,                 //not Delphi compatible, see notes above  }
                  Char_HourSeparator,
                  Char_DateSeparator,
                  Char_Stop);
@@ -192,6 +203,10 @@ type
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
     procedure TextChanged; override;
+    procedure SetCharCase(Value: TEditCharCase);
+    function GetCharCase: TEditCharCase;
+    procedure SetMaxLength(Value: Integer);
+    function GetMaxLength: Integer;
 
     procedure Loaded; override;
 
@@ -211,6 +226,8 @@ type
     property EditText: string read GetEditText write SetEditText;
     property IsMasked: Boolean read GetIsMasked;
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength;
+    property CharCase: TEditCharCase read GetCharCase write SetCharCase;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -274,7 +291,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
-
     property EditMask;
     property Text;
     property SpaceChar;
@@ -296,12 +312,11 @@ const
      cMask_Letter, cMask_LetterFixed, cMask_Letter, cMask_Letter, cMask_LetterFixed, cMask_LetterFixed,
      cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNum, cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNumFixed,
      cMask_AllChars, cMask_AllCharsFixed, cMask_AllChars, cMask_AllChars, cMask_AllCharsFixed, cMask_AllCharsFixed,
-     cMask_SpaceOnly, cMask_HourSeparator, cMask_DateSeparator, #0);
+     (*cMask_SpaceOnly,*) cMask_HourSeparator, cMask_DateSeparator, #0);
 }
 
 
 const
-  MaskSeparator = ';';
   Period = '.';
   Comma = ',';
 
@@ -347,6 +362,8 @@ begin
   if FRealMask <> Value then
   begin
     FRealMask := Value;
+    //Assume no FSpaceChar is defined in new mask, so first set it to DefaultBlank
+    FSpaceChar := DefaultBlank;
     {
       First see if Mask is multifield and if we can extract a value for
       FMaskSave and/or FSpaceChar
@@ -355,29 +372,28 @@ begin
 
       A value for FSpaceChar is only valid if also a value for FMaskSave is specified
       (as by Delphi specifications), so Mask must be at least 5 characters
-      (1 for the mask, 4 for 2 * MaskSeparator and 2 value chars)
+      (1 for the mask, 4 for 2 * MaskFieldSeparator and 2 value chars)
       These must be the last 2 or 4 characters of EditMask
     }
-    if (Length(Value) >= 5) and (Value[Length(Value)-1] = MaskSeparator) and
-       (Value[Length(Value)-3] = MaskSeparator) and
+    if (Length(Value) >= 5) and (Value[Length(Value)-1] = MaskFieldSeparator) and
+       (Value[Length(Value)-3] = MaskFieldSeparator) and
        (Value[Length(Value)-2] <> cMask_SpecialChar) and
        (Value[Length(Value)-4] <> cMask_SpecialChar) then
     begin
       FSpaceChar := Value[Length(Value)];
-      FMaskSave := (Value[Length(Value)-2] <> '0');
+      FMaskSave := (Value[Length(Value)-2] <> MaskNosave);
       System.Delete(Value,Length(Value)-3,4);
     end
     //If not both FMaskSave and FSPaceChar are specified, then see if only FMaskSave is specified
-    else if (Length(Value) >= 3) and (Value[Length(Value)-1] = MaskSeparator) and
+    else if (Length(Value) >= 3) and (Value[Length(Value)-1] = MaskFieldSeparator) and
             (Value[Length(Value)-2] <> cMask_SpecialChar) then
     begin
-      FMaskSave := (Value[Length(Value)] <> '0');
+      FMaskSave := (Value[Length(Value)] <> MaskNoSave);
       //Remove this bit from Mask
       System.Delete(Value,Length(Value)-1,2);
     end;
     // Construct Actual Internal Mask
     // init
-    //FMaxChars := 0;
     FMask     := '';
     FTrimType := metTrimRight;
     // Init: No UpCase, No LowerCase, No Special Char
@@ -498,7 +514,7 @@ begin
 
              cMask_DateSeparator: FMask := FMask + MaskToChar(Char_DateSeparator);
 
-             cMask_SpaceOnly: FMask := FMask + MaskToChar(Char_Space);
+            {cMask_SpaceOnly: FMask := FMask + MaskToChar(Char_Space); //not Delphi compatible, see remarks above}
 
              cMask_NoLeadingBlanks:
              begin
@@ -512,6 +528,8 @@ begin
       end;
     end;
     Clear;
+    SetMaxLength(Length(FMask));
+    FTextOnEnter := inherited Text;
   end;
 end;
 
@@ -528,21 +546,25 @@ procedure TCustomMaskEdit.SetSpaceChar(Value : Char);
 Var
   S      : ShortString;
   I      : Integer;
+  OldValue: Char;
 Begin
-  if (Value <> FSpaceChar) And (Not IsMaskChar(Value)) then
+  if (Value <> FSpaceChar) And
+  ((Not IsMaskChar(Value)) {or (CharToMask(Value) = Char_Space)}) then
   begin
+    OldValue := FSpaceChar;
     FSpaceChar := Value;
-
     if isMasked then
     begin
       S := Inherited Text;
       for I := 1 to Length(S) do
-          if (CharToMask(FMask[I]) = Char_Space)
-          then
-            S[I] := FSpaceChar;
+      begin
+        if (S[i] = OldValue) and (not IsLiteral(FMask[i])) then S[i] := FSpaceChar;
+        //also update FTextOnEnter to reflect new SpaceChar!
+        if (FTextOnEnter[i] = OldValue) and (not IsLiteral(FMask[i])) then FTextOnEnter[i] := FSpaceChar;
+      end;
       FCurrentText := S;
       SetInheritedText(S);
-      SelectFirstChar;
+      CheckCursor;
     end;
   end;
 End;
@@ -702,7 +724,7 @@ End;
 function TCustomMaskEdit.IsLiteral(Ch: Char): Boolean;
 begin
   Result := (not IsMaskChar(Ch)) or
-    (IsMaskChar(Ch) and (CharToMask(Ch) in [Char_HourSeparator, Char_DateSeparator]))
+    (IsMaskChar(Ch) and (CharToMask(Ch) in [Char_HourSeparator, Char_DateSeparator{, Char_Space}]))
 end;
 
 
@@ -757,7 +779,7 @@ begin
     Char_AllDownCase         : OK := Ch in [#32..#126]; //True;
     Char_AllFixedUpCase      : OK := Ch in [#32..#126]; //True;
     Char_AllFixedDownCase    : OK := Ch in [#32..#126]; //True;
-    Char_Space               : OK := Ch in [' ', '_'];
+   {Char_Space               : OK := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
     Char_HourSeparator       : OK := Ch in [TimeSeparator];
     Char_DateSeparator       : OK := Ch in [DateSeparator];
     else//it's a literal
@@ -815,7 +837,7 @@ begin
        Char_AllDownCase         : Result := FSpaceChar;
        Char_AllFixedUpCase      : Result := FSpaceChar; //'0';
        Char_AllFixedDownCase    : Result := FSpaceChar; //'0';
-       Char_Space               : Result := FSpaceChar;
+       {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
        Char_HourSeparator       : Result := TimeSeparator;
        Char_DateSeparator       : Result := DateSeparator;
   end;
@@ -835,7 +857,7 @@ begin
     if HasSelection then
     begin
       //replace slection with blank chars
-      //don't do this via DeleteChars(True), since it will do un unneccesary
+      //don't do this via DeleteChars(True), since it will do an unneccesary
       //update of the control and 2 TextChanged's are triggerd for every char we enter
       GetSel(SelectionStart, SelectionStop);
       for i := SelectionStart + 1 to SelectionStop do S[i] := ClearChar(i);
@@ -903,7 +925,7 @@ Begin
        Char_AllDownCase         : Result := Ch in [#32..#126]; //True;
        Char_AllFixedUpCase      : Result := Ch in [#32..#126]; //True;
        Char_AllFixedDownCase    : Result := Ch in [#32..#126]; //True;
-       Char_Space               : Result := Ch in [' ', '_'];
+      {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
        Char_HourSeparator       : Result := Ch in [TimeSeparator];
        Char_DateSeparator       : Result := Ch in [DateSeparator];
   end;
@@ -980,6 +1002,14 @@ Begin
   else
   begin
     S := StringReplace(Inherited Text, FSpaceChar, #32, [rfReplaceAll]);
+    //FSpaceChar can be used as a literal in the mask, so put it back
+    for i := 1 to Length(FMask) do
+    begin
+      if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
+      begin
+        S[i] := FSpaceChar;
+      end;
+    end;
     if not FMaskSave then
     begin
       for i := 1 to Length(FMask) do
@@ -1128,6 +1158,40 @@ begin
     //Reset cursor to last known position
     SetCursorPos;
   end;
+end;
+
+procedure TCustomMaskEdit.SetCharCase(Value: TEditCharCase);
+begin
+  if IsMasked then
+  begin
+    if (GetCharCase <> ecNormal) then inherited CharCase := ecNormal;
+  end
+  else
+  begin
+    inherited CharCase := Value;
+  end;
+end;
+
+function TCustomMaskEdit.GetCharCase: TEditCharCase;
+begin
+  Result := inherited CharCase;
+end;
+
+procedure TCustomMaskEdit.SetMaxLength(Value: Integer);
+begin
+  if IsMasked then
+  begin
+    inherited MaxLength := Length(FMask);
+  end
+  else
+  begin
+    inherited MaxLength := Value;
+  end;
+end;
+
+function TCustomMaskEdit.GetMaxLength: Integer;
+begin
+  Result := inherited Maxlength;
 end;
 
 procedure TCustomMaskEdit.Loaded;
