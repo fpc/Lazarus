@@ -2221,6 +2221,31 @@ begin
     ReallocMem(Childs[o],0);
 end;
 
+{$IFDEF NewAutoSize}
+{------------------------------------------------------------------------------
+  function TWinControl.AutoSizePhase: TControlAutoSizePhase;
+------------------------------------------------------------------------------}
+function TWinControl.AutoSizePhase: TControlAutoSizePhase;
+begin
+  if Parent<>nil then
+    Result:=Parent.AutoSizePhase
+  else begin
+    if ([wcfCreatingHandle,wcfCreatingChildHandles]*FWinControlFlags<>[]) then
+      Result:=caspCreatingHandles
+    else if fAutoSizingAll then
+      Result:=caspComputingBounds
+    else if wcfRealizingBounds in FWinControlFlags then
+      Result:=caspRealizingBounds
+    else if wcfUpdateShowing in FWinControlFlags then
+      Result:=caspShowing
+    else if FAutoSizingLockCount>0 then
+      Result:=caspChangingProperties
+    else
+      Result:=caspNone;
+  end;
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   function TWinControl.AutoSizeDelayed: boolean;
 ------------------------------------------------------------------------------}
@@ -2252,7 +2277,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.AdjustClientRect(var ARect: TRect);
 begin
-  //Not used.  It's a virtual procedure that should be overriden.
+  // Can be overriden.
+  // It's called often, so don't put expensive code here, or cache the result
 end;
 
 {------------------------------------------------------------------------------
@@ -3249,16 +3275,25 @@ var
   NewChildBounds: TRect;
   OldChildBounds: TRect;
 begin
-  {$IFDEF VerboseAutoSize}
+  {$IFDEF NewAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
-  {$ENDIF}
-  if (not AutoSizeCanStart) or AutoSizeDelayed then begin
-    {$IFDEF NewAutoSize}
-    DebugLn(['TWinControl.DoAutoSize DELAYED']);
-    {$ENDIF}
+  if (not AutoSizeCanStart) or (AutoSizePhase<>caspComputingBounds) then begin
+    DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed,' AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
+  {$ELSE}
+    {$IFDEF VerboseAutoSize}
+    debugln('TWinControl.DoAutoSize ',DbgSName(Self));
+    {$ENDIF}
+    if (not AutoSizeCanStart) or AutoSizeDelayed then begin
+      {$IFDEF VerboseAutoSize}
+      DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
+      {$ENDIF}
+      Include(FControlFlags,cfAutoSizeNeeded);
+      exit;
+    end;
+  {$ENDIF}
 
   DisableAutoSizing;
   {$IFNDEF NewAutoSize}
@@ -3372,37 +3407,48 @@ procedure TWinControl.DoAllAutoSize;
   var
     i: Integer;
   begin
-    if AWinControl.HandleObjectShouldBeVisible
-    and (not AWinControl.Showing) then
-      AWinControl.UpdateShowing;
-    if AWinControl.FControls<>nil then
-      for i:=0 to AWinControl.FControls.Count-1 do
-        if TObject(AWinControl.FControls[i]) is TWinControl then
-          UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]));
+    Include(FWinControlFlags,wcfUpdateShowing);
+    try
+      if AWinControl.HandleObjectShouldBeVisible
+      and (not AWinControl.Showing) then
+        AWinControl.UpdateShowing;
+      if AWinControl.FControls<>nil then
+        for i:=0 to AWinControl.FControls.Count-1 do
+          if TObject(AWinControl.FControls[i]) is TWinControl then
+            UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]));
+    finally
+      Exclude(FWinControlFlags,wcfUpdateShowing);
+    end;
   end;
 
 begin
-  if AutoSizeDelayed then exit;
   if wcfAllAutoSizing in FWinControlFlags then exit;
+  if AutoSizeDelayed then exit;
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  // create needed handles
+  if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
+    DebugLn(['TWinControl.DoAllAutoSize CREATE HANDLE ',DbgSName(Self)]);
+    HandleNeeded;
+    // creating the handle called DisableAutoSizing/EnableAutoSizing
+    // so after handle creation the autosizing was done
+    // => exit
+    exit;
+  end;
+
   Include(FWinControlFlags,wcfAllAutoSizing);
   try
-    // create needed handles
-    if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
-      HandleNeeded;
-      exit;
-    end;
     while (cfAutoSizeNeeded in FControlFlags)
     and (not AutoSizeDelayed) do begin
       // compute all sizes for LCL objects without touching the widgetset
+      DebugLn(['TWinControl.DoAllAutoSize COMPUTE BOUNDS ',DbgSName(Self),' old=',dbgs(BoundsRect)]);
       inherited DoAllAutoSize;
       if cfAutoSizeNeeded in FControlFlags then RaiseGDBException('');
       // send all new bounds to widgetset
-      DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+      DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
       RealizeBoundsRecursive;
       // make handles visible
       if not (cfAutoSizeNeeded in FControlFlags) then begin
-        DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+        DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
         UpdateShowingRecursive(Self);
       end;
     end;
@@ -7795,13 +7841,21 @@ end;
 procedure TWinControl.RealizeBoundsRecursive;
 var
   i: Integer;
+  OldRealizing: boolean;
 begin
-  if FControls<>nil then begin
-    for i:=0 to FControls.Count-1 do
-      if TObject(FControls[i]) is TWinControl then
-        TWinControl(FControls[i]).RealizeBoundsRecursive;
+  OldRealizing:=wcfRealizingBounds in FWinControlFlags;
+  Include(FWinControlFlags,wcfRealizingBounds);
+  try
+    if FControls<>nil then begin
+      for i:=0 to FControls.Count-1 do
+        if TObject(FControls[i]) is TWinControl then
+          TWinControl(FControls[i]).RealizeBoundsRecursive;
+    end;
+    RealizeBounds;
+  finally
+    if OldRealizing then
+      Exclude(FWinControlFlags,wcfRealizingBounds);
   end;
-  RealizeBounds;
 end;
 
 {------------------------------------------------------------------------------

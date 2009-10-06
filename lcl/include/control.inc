@@ -2371,10 +2371,10 @@ procedure TControl.DoAllAutoSize;
     if AControl.AutoSizeDelayed then exit;
 
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
-    DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(Self)]);
+    DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
-    if AutoSize then
-      DoAutoSize;
+    if AControl.AutoSize then
+      AControl.DoAutoSize;
     if AControl is TWinControl then begin
       AWinControl:=TWinControl(AControl);
       AWinControl.AlignControl(nil);
@@ -2392,13 +2392,13 @@ begin
   try
     while (not AutoSizeDelayed)
     and (cfAutoSizeNeeded in FControlFlags) do begin
-      DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self)]);
+      DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self),' ',dbgs(BoundsRect)]);
       AutoSizeControl(Self);
     end;
   finally
     fAutoSizingAll:=false;
   end;
-  DebugLn(['TControl.DoAllAutoSize END ',DbgSName(Self)]);
+  DebugLn(['TControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
 end;
 {$ENDIF}
 
@@ -2467,6 +2467,16 @@ begin
   end;
   {$ENDIF}
 end;
+
+{$IFDEF NewAutoSize}
+function TControl.AutoSizePhase: TControlAutoSizePhase;
+begin
+  if Parent<>nil then
+    Result:=Parent.AutoSizePhase
+  else
+    Result:=caspNone;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   function TControl.AutoSizeDelayed: boolean;

@@ -781,6 +781,17 @@ type
 
   { TControl }
 
+  {$IFDEF NewAutoSize}
+  TControlAutoSizePhase = (
+    caspNone,
+    caspChangingProperties,
+    caspCreatingHandles, // create/destroy handles
+    caspComputingBounds,
+    caspRealizingBounds,
+    caspShowing          // make handles visible
+    );
+  {$ENDIF}
+
   TTabOrder = -1..32767;
 
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: PHintInfo) of object;
@@ -1238,6 +1249,9 @@ type
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
+    {$IFDEF NewAutoSize}
+    function AutoSizePhase: TControlAutoSizePhase; virtual;
+    {$ENDIF}
     function AutoSizeDelayed: boolean; virtual;
     function NeedParentForAutoSize: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
@@ -1574,6 +1588,8 @@ type
     wcfCreatingHandle,       // Set while constructing the handle of this control
     wcfInitializing,         // Set while initializing during handle creation
     wcfCreatingChildHandles, // Set while constructing the handles of the childs
+    wcfRealizingBounds,
+    wcfUpdateShowing,
     wcfHandleVisible
     );
   TWinControlFlags = set of TWinControlFlag;
@@ -1866,6 +1882,9 @@ type
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
+    {$IFDEF NewAutoSize}
+    function AutoSizePhase: TControlAutoSizePhase; override;
+    {$ENDIF}
     function AutoSizeDelayed: boolean; override;
     procedure BeginUpdateBounds; // disable SetBounds
     procedure EndUpdateBounds;   // enable SetBounds
@@ -2287,7 +2306,16 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
   AnchorNames: array[TAnchorKind] of string = (
     'akTop', 'akLeft', 'akRight', 'akBottom');
-
+  {$IFDEF NewAutoSize}
+  AutoSizePhaseNames: array[TControlAutoSizePhase] of string = (
+    'caspNone',
+    'caspChangingProperties',
+    'caspCreatingHandles',
+    'caspComputingBounds',
+    'caspRealizingBounds',
+    'caspShowing'
+    );
+  {$ENDIF}
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
