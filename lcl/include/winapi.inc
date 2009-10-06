@@ -961,7 +961,7 @@ end;
  ------------------------------------------------------------------------------}
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 begin
-  Move(SrcRect, DestRect, SizeOf(TRect));
+  System.Move(SrcRect, DestRect, SizeOf(TRect));
   Result := True;
 end;
 
