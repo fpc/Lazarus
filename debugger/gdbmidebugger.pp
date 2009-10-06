@@ -1712,99 +1712,101 @@ begin
   // original
   frame := -1;
   frameidx := -1;
-  repeat
-    Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
-
-    if (R.State <> dsError)
-    then Break;
-
-    // check if there is a parentfp and try to evaluate there
-    if frame = -1
-    then begin
-      // store current
-      ExecuteCommand('-stack-info-frame', [cfIgnoreError], Rtmp);
-      ResultList.Init(Rtmp.Values);
-      ResultList.SetPath('frame');
-      frame := StrToIntDef(ResultList.Values['level'], -1);
-      if frame = -1 then Break;
-      frameidx := frame;
-    end;
-  until not SelectParentFrame(frameidx);
-
-  if frameidx <> frame
-  then begin
-    // Restore current frame
-    ExecuteCommand('-stack-select-frame %u', [frame], [cfIgnoreError]);
-  end;
-
-  ResultList.Init(R.Values);
-  if R.State = dsError
-  then AResult := ResultList.Values['msg']
-  else AResult := ResultList.Values['value'];
-  AResult := DeleteEscapeChars(AResult);
-  ResultList.Free;
-  if R.State = dsError
-  then Exit;
-
-  // Check for strings
-  ResultInfo := GetGDBTypeInfo(S);
-  if (ResultInfo = nil) then Exit;
-
   try
-    case ResultInfo.Kind of
-      skPointer: begin
-        Val(AResult, addr, e);
-        if e <> 0 then Exit;
+    repeat
+      Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
 
-        S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
-          0, 1: begin
-            if Addr = 0
-            then AResult := ''''''
-            else AResult := MakePrintable(GetText(Addr));
-          end;
-          2: begin
-            if Addr = 0
-            then AResult := 'nil'
-            else begin
-              S := GetClassName(Addr);
-              if S = '' then S := '???';
-              AResult := 'class of ' + S + ' ' + AResult;
+      if (R.State <> dsError)
+      then Break;
+
+      // check if there is a parentfp and try to evaluate there
+      if frame = -1
+      then begin
+        // store current
+        ExecuteCommand('-stack-info-frame', [cfIgnoreError], Rtmp);
+        ResultList.Init(Rtmp.Values);
+        ResultList.SetPath('frame');
+        frame := StrToIntDef(ResultList.Values['level'], -1);
+        if frame = -1 then Break;
+        frameidx := frame;
+      end;
+    until not SelectParentFrame(frameidx);
+
+    ResultList.Init(R.Values);
+    if R.State = dsError
+    then AResult := ResultList.Values['msg']
+    else AResult := ResultList.Values['value'];
+    AResult := DeleteEscapeChars(AResult);
+    ResultList.Free;
+    if R.State = dsError
+    then Exit;
+
+    // Check for strings
+    ResultInfo := GetGDBTypeInfo(S);
+    if (ResultInfo = nil) then Exit;
+
+    try
+      case ResultInfo.Kind of
+        skPointer: begin
+          Val(AResult, addr, e);
+          if e <> 0 then Exit;
+
+          S := Lowercase(ResultInfo.TypeName);
+          case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
+            0, 1: begin
+              if Addr = 0
+              then AResult := ''''''
+              else AResult := MakePrintable(GetText(Addr));
             end;
-          end;
-          3: begin
-            // widestring handling
+            2: begin
+              if Addr = 0
+              then AResult := 'nil'
+              else begin
+                S := GetClassName(Addr);
+                if S = '' then S := '???';
+                AResult := 'class of ' + S + ' ' + AResult;
+              end;
+            end;
+            3: begin
+              // widestring handling
+              if Addr = 0
+              then AResult := ''''''
+              else AResult := MakePrintable(GetWideText(Addr));
+            end;
+          else
             if Addr = 0
-            then AResult := ''''''
-            else AResult := MakePrintable(GetWideText(Addr));
+            then AResult := 'nil';
+            if S = 'pointer' then Exit;
+            if Length(S) = 0 then Exit;
+            if S[1] = 't'
+            then begin
+              S[1] := 'T';
+              if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+            end;
+            AResult := '^' + S + ' ' + AResult;
           end;
-        else
+        end;
+        skClass: begin
+          Val(AResult, addr, e);
+          if e <> 0 then Exit;
           if Addr = 0
-          then AResult := 'nil';
-          if S = 'pointer' then Exit;
-          if Length(S) = 0 then Exit;
-          if S[1] = 't'
-          then begin
-            S[1] := 'T';
-            if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+          then AResult := 'nil'
+          else begin
+            S := GetInstanceClassName(Addr);
+            if S = '' then S := '???';
+            AResult := S + ' ' + AResult;
           end;
-          AResult := '^' + S + ' ' + AResult;
         end;
       end;
-      skClass: begin
-        Val(AResult, addr, e);
-        if e <> 0 then Exit;
-        if Addr = 0
-        then AResult := 'nil'
-        else begin
-          S := GetInstanceClassName(Addr);
-          if S = '' then S := '???';
-          AResult := S + ' ' + AResult;
-        end;
-      end;
+    finally
+      ResultInfo.Free;
     end;
   finally
-    ResultInfo.Free;
+    if frameidx <> frame
+    then begin
+      // Restore current frame
+      ExecuteCommand('-stack-select-frame %u', [frame], [cfIgnoreError]);
+    end;
   end;
 end;
 
