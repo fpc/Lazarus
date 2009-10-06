@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Top = 0
     Width = 543
     Align = alClient
-    PageIndex = 1
+    PageIndex = 6
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -904,27 +904,27 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object CfgCmpMsgPage: TPage
       Caption = 'CfgCmpMsgPage'
-      ClientWidth = 667
-      ClientHeight = 453
+      ClientWidth = 537
+      ClientHeight = 441
       object grpCompilerMessages: TGroupBox
         Left = 6
-        Height = 441
+        Height = 429
         Top = 6
-        Width = 655
+        Width = 525
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCompilerMessages'
-        ClientHeight = 419
-        ClientWidth = 647
+        ClientHeight = 407
+        ClientWidth = 517
         TabOrder = 0
         object chkUseMsgFile: TCheckBox
           AnchorSideLeft.Control = grpCompilerMessages
           AnchorSideTop.Control = editMsgFileName
           AnchorSideTop.Side = asrCenter
           Left = 6
-          Height = 17
+          Height = 16
           Top = 9
-          Width = 91
+          Width = 98
           BorderSpacing.Around = 6
           Caption = 'chkUseMsgFile'
           OnChange = chkUseMsgFileChange
@@ -935,10 +935,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = grpCompilerMessages
           AnchorSideRight.Control = btnBrowseMsg
-          Left = 103
-          Height = 23
+          Left = 110
+          Height = 22
           Top = 6
-          Width = 503
+          Width = 331
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -951,10 +951,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = editMsgFileName
           AnchorSideBottom.Side = asrBottom
-          Left = 606
-          Height = 23
+          Left = 441
+          Height = 22
           Top = 6
-          Width = 35
+          Width = 70
           Anchors = [akTop, akRight, akBottom]
           AutoSize = True
           BorderSpacing.Right = 6
@@ -971,9 +971,9 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideBottom.Control = grpCompilerMessages
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 378
-          Top = 35
-          Width = 635
+          Height = 367
+          Top = 34
+          Width = 505
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Around = 6
           ItemHeight = 0
@@ -1078,6 +1078,7 @@ object frmCompilerOptions: TfrmCompilerOptions
             Height = 192
             Width = 659
             DefaultItemHeight = 15
+            PopupMenu = ConditionalOptionsFrame.COCPopupMenu
           end
         end
       end
@@ -1108,6 +1109,7 @@ object frmCompilerOptions: TfrmCompilerOptions
             Height = 212
             Width = 659
             DefaultItemHeight = 15
+            PopupMenu = BuildVarsFrame.BuildVarsTVPopupMenu
           end
         end
       end

@@ -2013,7 +2013,8 @@ begin
   try
     if chkUseMsgFile.Checked and FileExistsUTF8(editMsgFileName.Caption) and (editMsgFileName.Caption <> '') then begin
       try
-        TempMessages.LoadMsgFile(editMsgFileName.Caption)
+        // FPC messages file is expected to be UTF8 encoded, no matter for the current code page is
+        TempMessages.LoadMsgFile(editMsgFileName.Caption, true);
       except
         TempMessages.SetDefault;
       end;
