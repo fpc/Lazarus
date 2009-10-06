@@ -5184,7 +5184,9 @@ begin
             ReadNextAtom;
             if UpAtomIs('STRICT') then
               ReadNextAtom;
-            InsertPos:=CurPos.EndPos;
+            ANode:=ClassSectionNode.Next;
+            if (ANode<>nil) and (CurPos.EndPos<=ANode.StartPos) then
+              InsertPos:=CurPos.EndPos;
           end else if ClassSectionNode.Desc in AllClassInterfaces then begin
             // skip class interface header
             MoveCursorToCleanPos(InsertPos);
