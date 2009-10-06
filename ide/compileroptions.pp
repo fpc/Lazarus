@@ -46,7 +46,7 @@ uses
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
   // IDE
-  IDEProcs, LazConf, TransferMacros, CompOptsModes;
+  IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
 
 type
 
@@ -486,6 +486,7 @@ type
     fHidden       : TStringList; 
     fUsedMsgFile  : string; 
     fUpdating     : Integer; 
+    FErrorNames   : array [TFPCErrorType] of string;
 
     procedure ClearHash;
     procedure AddHash(Msg: TCompilerMessageConfig);
@@ -500,10 +501,11 @@ type
     procedure SetIgnoredArray(const b: array of Boolean);  // to store b[MaxMsgIndex], or function fail
 
     function GetCount: Integer; 
+    function GetErrorNames(errtype: TFPCErrorType): string;
   public
     constructor Create; 
     destructor Destroy; override;
-    procedure Clear;  virtual; 
+    procedure Clear; virtual; 
 
     procedure Assign(Src: TCompilerMessagesList);  virtual; 
 
@@ -522,6 +524,7 @@ type
     property MsgIgnored[i: Integer]: Boolean read GetMsgIgnored write SetMsgIgnored;
     property Count: Integer read GetCount; 
     property UsedMsgFile : string read fUsedMsgFile; 
+    property ErrorNames[errtype: TFPCErrorType]: string read GetErrorNames;
   end;
   
   { TBaseCompilerOptions }
@@ -1495,6 +1498,16 @@ begin
   UseMsgFile := XMLConfigFile.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
   MsgFileName := XMLConfigFile.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
 
+  if UseMsgFile then 
+    with XMLConfigFile do begin
+      // ErrorNames should be stored, because the Message file is not read (or parsed)
+      // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
+      CompilerMessages.fErrorNames[etHint]:=GetValue(p+'CompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
+      CompilerMessages.fErrorNames[etNote]:=GetValue(p+'CompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
+      CompilerMessages.fErrorNames[etWarning]:=GetValue(p+'CompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
+      CompilerMessages.fErrorNames[etError]:=GetValue(p+'CompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
+      CompilerMessages.fErrorNames[etFatal]:=GetValue(p+'CompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
+    end;
   
   
   { Other }
@@ -1671,6 +1684,12 @@ begin
   end;
   XMLConfigFile.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
   XMLConfigFile.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
+  
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Warning', CompilerMessages.ErrorNames[etWarning], FPCErrorTypeNames[etWarning]);
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Error',   CompilerMessages.ErrorNames[etError],   FPCErrorTypeNames[etError]);
+  XMLConfigFile.SetDeleteValue(p+'CompilerMessages/ErrorNames/Fatal',   CompilerMessages.ErrorNames[etFatal],   FPCErrorTypeNames[etFatal]);
 
   { Other }
   p:=Path+'Other/';
@@ -4298,6 +4317,11 @@ begin
   Result := fItems.Count; 
 end;
 
+function TCompilerMessagesList.GetErrorNames(errtype: TFPCErrorType): string;
+begin
+  Result := FErrorNames[errtype];
+end;
+
 constructor TCompilerMessagesList.Create; 
 begin
   inherited Create; 
@@ -4329,8 +4353,9 @@ end;
 
 procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList); 
 var
-  i : Integer; 
-  m : TCompilerMessageConfig; 
+  i   : Integer; 
+  m   : TCompilerMessageConfig; 
+  err : TFPCErrorType;
 begin
   BeginUpdate;
   try
@@ -4348,6 +4373,7 @@ begin
         AddHash(m);
       end;
     end; 
+    for err := Low(err) to High(err) do  FErrorNames[err] := Src.FErrorNames[err];
   finally
     EndUpdate; 
   end;   
@@ -4373,9 +4399,9 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode
     err : Integer; 
     sub : string; 
   begin
-    Result := (s <> '')  and not(s[1] in ['#',';','%']); 
-    if not Result then Exit; 
-  
+    Result := (s <> '')  and not(s[1] in ['#',';','%']);
+    if not Result then Exit;
+        
     p := Pos('=', s);
     Result := p > 0;
     if not Result then Exit;
@@ -4393,7 +4419,7 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode
     if not Result then Exit;
     inc(p); 
     i := p; 
-    while (s[p] <> '_') do inc(p); 
+    while (p <= length(s)) and (s[p] <> '_') do inc(p); 
     msgType := Copy(s, i, p-i); 
     isMultiLine := msgType = '[';
     if isMultiLine then msgType := ''; 
@@ -4417,14 +4443,21 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode
   end; 
 
 var
-  temp  : TStringList; 
-  isMln : Boolean; 
-  midx  : Integer;
-  mtype : string;
-  mtext : string; 
-  i   : Integer; 
-  lst : Boolean; 
-  b   : array of Boolean; 
+  temp    : TStringList; 
+  isMln   : Boolean; 
+  midx    : Integer;
+  mtype   : string;
+  mtext   : string; 
+  i       : Integer; 
+  lst     : Boolean; 
+  b       : array of Boolean; 
+  err     : TFPCErrorType;
+const
+  idxFatal   = 01012;
+  idxError   = 01013;
+  idxWarning = 01014;
+  idxNote    = 01015;
+  idxHint    = 01016;
 begin
   BeginUpdate; 
   try
@@ -4448,13 +4481,31 @@ begin
               fHidden.Add(temp[i]); 
             end; 
           end else begin
-            if (length(mtype) = 1) and (UpperCase(mtype)[1] in ['H','N','W']) 
-              then Add(midx, mtype[1], mtext, b[midx])
-              else fHidden.Add(temp[i]); 
+            if (length(mtype) = 1) and (UpperCase(mtype)[1] in ['H','N','W']) then 
+              Add(midx, mtype[1], mtext, b[midx])
+            else begin
+              case midx of
+                idxFatal: err := etFatal;
+                idxError: err := etError;  
+                idxWarning: err := etWarning;
+                idxNote: err := etNote;
+                idxHint: err := etHint;
+              else
+                err := etNone;
+              end;
+              if err <> etNone then begin
+                mtext := Trim(mtext);
+                if (length(mtext)>1) and (mtext[length(mtext)]=':') then
+                  FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
+                else
+                  FErrorNames[err]:=mtext;
+              end;
+              fHidden.Add(temp[i]); 
+            end;
             inc(i); 
           end; 
-        end else
-          inc(i); 
+        end else 
+          inc(i) 
       end; 
       Result := true; 
       fUsedMsgFile := FileName;    
@@ -4485,23 +4536,6 @@ begin
     FillChar(Result[1], len, FillCh); 
     j := (len - length(s)) + 1; 
     Move(s[1], Result[j], length(s)); 
-  end; 
-end; 
-
-
-const
-  cmpMsgHint = 'Hint'; 
-  cmpMsgNote = 'Note';
-  cmpMsgWarn = 'Warn';
-
-function GetMsgTypeStr(AMsgChar: Char; const DefValue: string=''): string;
-begin
-  case AMsgChar of
-    'h','H': Result := cmpMsgHint;
-    'w','W': Result := cmpMsgWarn;
-    'n','N': Result := cmpMsgNote; 
-  else
-    Result := DefValue; 
   end; 
 end; 
 
@@ -4572,7 +4606,8 @@ end;
 
 procedure TCompilerMessagesList.SetDefault(KeepIgnored: Boolean);
 var
-  b : array of Boolean; 
+  b   : array of Boolean; 
+  err : TFPCErrorType;
 begin
   if KeepIgnored then begin
     SetLength(b, MaxMsgIndex); 
@@ -4581,6 +4616,9 @@ begin
   BeginUpdate;
   try 
     Clear; 
+    for err := low(TFPCErrorType) to High(TFPCErrorType) do
+      FErrorNames[err]:=FPCErrorTypeNames[err];
+      
     Add(03005,'W','Procedure type "$1" ignored'); 
     Add(03011,'W','Relocatable DLL or executable $1 debug info does not work, disabled.'); 
     Add(03012,'W','To allow debugging for win32 code you need to disable relocation with -WN option'); 

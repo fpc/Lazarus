@@ -9589,6 +9589,7 @@ var
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
+  err : TFPCErrorType;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9597,7 +9598,7 @@ begin
 
   Result:=PrepareForCompile;
   if Result<>mrOk then exit;
-
+  
   if (AReason in [crCompile,crBuild])
   and ([pbfDoNotCompileProject,pbfSkipTools]*Flags=[]) then
   begin
@@ -9745,6 +9746,9 @@ begin
         ToolStatus:=itBuilder;
 
         ConnectOutputFilter;
+        for err := Low(TFPCErrorType) to High(TFPCErrorType) do
+          with Project1.CompilerOptions.CompilerMessages do 
+            TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
 
         // compile
         Result:=TheCompiler.Compile(Project1,

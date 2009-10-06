@@ -133,6 +133,7 @@ type
     FTool: TIDEExternalToolOptions;
     DarwinLinkerMultiline: Boolean;
     DarwinLinkerLine : String;
+    FErrorNames : array [TFPCErrorType] of string; {customizable error names}
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -146,6 +147,9 @@ type
     procedure OnAsyncReadData(Sender: TObject);
     function CreateScanners(ScannerOptions: TStrings): boolean;
     procedure ClearScanners;
+  protected    
+    procedure SetErrorName(errtype: TFPCErrorType; const AValue: String );
+    function GetErrorName(errtype: TFPCErrorType): string;
   public
     ErrorExists: boolean;
     Aborted: boolean;
@@ -193,6 +197,7 @@ type
     property Tool: TIDEExternalToolOptions read FTool;
     property ScannerCount: integer read GetScannerCount;
     property Scanners[Index: integer]: TIDEMsgScanner read GetScanners;
+    property ErrorTypeName[errType: TFPCErrorType]: string read GetErrorName write SetErrorName; 
   end;
   
   EOutputFilterError = class(Exception)
@@ -222,6 +227,8 @@ begin
 end;
 
 procedure TOutputFilter.Clear;
+var
+  err : TFPCErrorType;
 begin
   fOutput.Clear;
   FAsyncDataAvailable:=false;
@@ -539,6 +546,8 @@ var i, j, FilenameEndPos: integer;
     if CompStr('Fatal: ',s,p)
     or CompStr('Panic',s,p)
     or CompStr('Error: ',s,p)
+    or CompStr(FErrorNames[etFatal], s, p)
+    or CompStr(FErrorNames[etError], s, p)
     or CompStr('Closing script ppas.sh',s,p)
     then begin
       // always show fatal, panic and linker errors
@@ -558,7 +567,7 @@ var i, j, FilenameEndPos: integer;
         CurrentMessageParts.Values['Stage']:='Linker'
       else
         CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
 
       NewLine:=copy(s,p,length(s));
       if fLastErrorType in [etPanic,etFatal] then begin
@@ -596,7 +605,7 @@ var i, j, FilenameEndPos: integer;
       DoAddFilteredLine(copy(s,p,length(s)));
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
       Result:=true;
       exit;
     end;
@@ -858,20 +867,21 @@ begin
   // search for ') <ErrorType>: '
   if not CheckForChar(s,i,')') then exit;
   if not CheckForChar(s,i,' ') then exit;
-  if (i>=length(s)) or (not (s[i] in ['A'..'Z'])) then exit;
+  if (i>=length(s)) or (not (s[i] in ['A'..'Z',#128..#255])) then exit; {#128..#255 - utf8 encoded strings}
   j:=i+1;
-  while (j<=length(s)) and (s[j] in ['a'..'z']) do inc(j);
+  while (j<=length(s)) and (s[j] in ['a'..'z',#128..#255]) do inc(j); 
   if (j+1>length(s)) or (s[j]<>':') or (s[j+1]<>' ') then exit;
   MessageStartPos:=j+2;
   MsgTypeName:=copy(s,i,j-i);
   for MsgType:=Succ(etNone) to High(TFPCErrorType) do begin
-    if FPCErrorTypeNames[MsgType]=MsgTypeName then begin
+    // FPCErrorTypeNames is checked, in case of badly formed message file
+    if (FErrorNames[MsgType]=MsgTypeName) or (FPCErrorTypeNames[MsgType]=MsgTypeName) then begin
       // this is a freepascal compiler message
       // -> filter message
       fLastErrorType:=MsgType;
       fLastMessageType:=omtFPC;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
       CurrentMessageParts.Values['Line']:=
                  copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
       CurrentMessageParts.Values['Column']:=
@@ -1015,6 +1025,7 @@ end;
 
 function TOutputFilter.IsHintForUnusedUnit(const OutputLine,
   MainSrcFile: string): boolean;
+//todo: multilingual?
 { recognizes hints of the form
 
   mainprogram.pp(5,35) Hint: Unit UNUSEDUNIT not used in mainprogram
@@ -1031,6 +1042,7 @@ begin
 end;
 
 function TOutputFilter.IsHintForParameterSenderNotUsed(const OutputLine: string): boolean;
+//todo: multilingual?
 { recognizes hints of the form
 
   Unit1.pas(15,28) Hint: Parameter "Sender" not used
@@ -1267,6 +1279,16 @@ begin
     for i:=0 to FScanners.Count-1 do TObject(FScanners[i]).Free;
     FreeAndNil(FScanners);
   end;
+end;
+
+procedure TOutputFilter.SetErrorName(errType: TFPCErrorType; const AValue: String); 
+begin
+  FErrorNames[errType]:=AValue;
+end;
+
+function TOutputFilter.GetErrorName(errType: TFPCErrorType): string; 
+begin
+  Result:=FErrorNames[errType];
 end;
 
 destructor TOutputFilter.Destroy;
