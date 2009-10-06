@@ -942,7 +942,7 @@ resourcestring
     +'this name.%sFile: %s';
   lisPEUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
     +'Filename do not match.%sExample: unit1.pas and Unit1';
-  lisOk = '&Ok';
+  lisOk = '&OK';
   lisCMParameter = 'Parameter';
   lisCTPleaseSelectAMacro = 'please select a macro';
   lisA2PCreateNewFile = 'Create new file';
