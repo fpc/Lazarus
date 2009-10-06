@@ -1679,6 +1679,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
       end;
       Fp := List.Values['value'];
     until ParentFP = Fp;
+    List.Free;
   end;
 
 var
