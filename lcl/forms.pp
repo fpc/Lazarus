@@ -1295,6 +1295,8 @@ type
     function  IsShortcut(var Message: TLMKey): boolean;
     procedure IntfQueryEndSession(var Cancel : Boolean);
     procedure IntfEndSession;
+    procedure IntfAppActivate;
+    procedure IntfAppDeactivate;
     procedure IntfAppMinimize;
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);

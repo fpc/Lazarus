@@ -1754,6 +1754,16 @@ begin
   FApplicationHandlers[ahtEndSession].CallNotifyEvents(Self);
 end;
 
+procedure TApplication.IntfAppActivate;
+begin
+  Activate;
+end;
+
+procedure TApplication.IntfAppDeactivate;
+begin
+  Deactivate;
+end;
+
 {------------------------------------------------------------------------------
   procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
 ------------------------------------------------------------------------------}
