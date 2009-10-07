@@ -4656,14 +4656,19 @@ var
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
-      if (ScrollInfo.nPos < ScrollBar.getMin) then
-        ScrollInfo.nPos := ScrollBar.getMin
-      else
-      if (ScrollInfo.nPos > ScrollBar.getMax) then
-        ScrollInfo.nPos := ScrollBar.getMax;
+      ScrollBar.BeginUpdate;
+      try
+        if (ScrollInfo.nPos < ScrollBar.getMin) then
+          ScrollInfo.nPos := ScrollBar.getMin
+        else
+        if (ScrollInfo.nPos > ScrollBar.getMax) then
+          ScrollInfo.nPos := ScrollBar.getMax;
 
-      if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
-        ScrollBar.setValue(ScrollInfo.nPos);
+        if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
+          ScrollBar.setValue(ScrollInfo.nPos);
+      finally
+        ScrollBar.EndUpdate;
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then

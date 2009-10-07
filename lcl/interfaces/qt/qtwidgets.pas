@@ -5061,8 +5061,8 @@ var
   LMScroll: TLMScroll;
 begin
   {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1);
- {$endif}
+  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
+  {$endif}
  
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
@@ -5076,7 +5076,7 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not SliderPressed then
+  if not SliderPressed and not InUpdate then
     DeliverMessage(LMScroll);
 end;
 
