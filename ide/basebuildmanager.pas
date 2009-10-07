@@ -69,7 +69,7 @@ type
 
     function BackupFile(const Filename: string): TModalResult; virtual; abstract;
 
-    function UpdateProjectAutomaticFiles: TModalResult; virtual; abstract;
+    function UpdateProjectAutomaticFiles(TestDir: string): TModalResult; virtual; abstract;
   end;
 
 var

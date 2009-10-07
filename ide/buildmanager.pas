@@ -147,7 +147,7 @@ type
                              UseDefaultIfNotFound: boolean): string;
     function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
     function UpdateLRSFromLFM(AnUnitInfo: TUnitInfo; ShowAbort: boolean): TModalResult;
-    function UpdateProjectAutomaticFiles: TModalResult; override;
+    function UpdateProjectAutomaticFiles(TestDir: string): TModalResult; override;
 
     // methods for building
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
@@ -1072,12 +1072,12 @@ begin
   Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename,ShowAbort);
 end;
 
-function TBuildManager.UpdateProjectAutomaticFiles: TModalResult;
+function TBuildManager.UpdateProjectAutomaticFiles(TestDir: string): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
 begin
   // update project resource
-  Project1.Resources.Regenerate(Project1.MainFileName, False, True);
+  Project1.Resources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin

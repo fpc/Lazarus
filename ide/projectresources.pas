@@ -71,7 +71,7 @@ type
     function Update: Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
     procedure UpdateFlagLrsIncludeAllowed(const AFileName: string);
-    function Save: Boolean;
+    function Save(SaveToTestDir: string): Boolean;
     procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
   public
@@ -83,7 +83,9 @@ type
 
     procedure DoBeforeBuild;
     procedure Clear;
-    function Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
+    function Regenerate(const MainFileName: String;
+                        UpdateSource, PerformSave: boolean;
+                        SaveToTestDir: string): Boolean;
     function RenameDirectives(const CurFileName, NewFileName: String): Boolean;
     procedure DeleteResourceBuffers;
 
@@ -227,7 +229,7 @@ begin
 end;
 
 function TProjectResources.Regenerate(const MainFileName: String;
-  UpdateSource, PerformSave: Boolean): Boolean;
+  UpdateSource, PerformSave: boolean; SaveToTestDir: string): Boolean;
 begin
   //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
   //DumpStack;
@@ -253,7 +255,7 @@ begin
     if UpdateSource and not UpdateMainSourceFile(MainFileName) then
       Exit;
 
-    if PerformSave and not Save then
+    if PerformSave and not Save(SaveToTestDir) then
       Exit;
   finally
     DeleteLastCodeBuffers;
@@ -558,16 +560,24 @@ begin
   DeleteBuffer(lrsFileName);
 end;
 
-function TProjectResources.Save: Boolean;
+function TProjectResources.Save(SaveToTestDir: string): Boolean;
 
   function SaveCodeBuf(Filename: string): boolean;
   var
     CodeBuf: TCodeBuffer;
+    TestFilename: String;
   begin
     CodeBuf := CodeToolBoss.FindFile(Filename);
-    if (CodeBuf = nil) or CodeBuf.IsDeleted or CodeBuf.IsVirtual then
+    if (CodeBuf = nil) or CodeBuf.IsDeleted then
       Exit(true);
-    Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
+    if not CodeBuf.IsVirtual then
+    begin
+      Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
+    end else if SaveToTestDir<>'' then
+    begin
+      TestFilename:=AppendPathDelim(SaveToTestDir)+CodeBuf.Filename;
+      Result := SaveCodeBufferToFile(CodeBuf,TestFilename) in [mrOk,mrIgnore];
+    end;
   end;
 
 begin
