@@ -3542,7 +3542,7 @@ end;
   TWinControl DoAdjustClientRectChange
 
   Asks the interface if clientrect has changed since last AlignControl
-  and calls AlignControl(nil) on change.
+  and calls AdjustSize on change.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
 var
@@ -3556,14 +3556,16 @@ begin
   if not CompareRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
-    {$IFDEF VerboseClientRectBugFix}
+    {$IFDEF NewAutoSize}
     DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
     {$ENDIF}
     FAdjustClientRectRealized := R;
+    {$IFNDEF NewAutoSize}
     ReAlign;
     Resize;
+    {$ENDIF}
     AdjustSize;
   end;
 end;
@@ -3828,7 +3830,9 @@ begin
       // this often anticipates later LM_SIZE messages from the interface
       // and reduces resizes
       LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
-      //debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
+      {$IFDEF NewAutoSize}
+      debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
+      {$ENDIF}
       Result.Right:=Width-(InterfaceWidth-Result.Right);
       Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     end else begin
@@ -6582,6 +6586,12 @@ begin
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
+  {$IFDEF NewAutoSize}
+  DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
+    ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+  {$ENDIF}
+
   NewLeft:=Left;
   NewTop:=Top;
   if (Message.SizeType and Size_SourceIsInterface) > 0 then
@@ -6601,12 +6611,17 @@ begin
   end;
 
   SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
+  {$IFDEF NewAutoSize}
+  if ((Message.SizeType and Size_SourceIsInterface) > 0)
+  and ClientRectNeedsInterfaceUpdate then
+    DoAdjustClientRectChange;
+  {$ELSE}
   if ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
-
   if ((Message.SizeType and Size_SourceIsInterface) > 0) and
      (Parent <> nil) and Parent.AutoSize then
     Parent.AdjustSize;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7624,12 +7639,13 @@ begin
     NewWidth:=Width-OldClientRect.Right+NewClientWidth;
     NewHeight:=Height-OldClientRect.Bottom+NewClientHeight;
 
-    {$IFDEF VerboseAutoSize}
-    debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
-      ' HandleAllocated=',dbgs(HandleAllocated),
-      ' Cur='+dbgs(Width)+'x'+dbgs(Height)+
-      ' Client='+dbgs(OldClientRect.Right)+'x'+dbgs(OldClientRect.Bottom),
-      ' NewWidth='+dbgs(NewWidth)+' NewHeight=',dbgs(NewHeight));
+    {$IF defined(VerboseAutoSize) or defined(NewAutoSize)}
+    debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
+      ' HandleAllocated=',HandleAllocated,
+      ' Cur=',Width,'x',Height,
+      ' Client=',OldClientRect.Right,'x',OldClientRect.Bottom,
+      ' NewWidth=',NewWidth,' NewHeight=',NewHeight,
+      ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight]);
     {$ENDIF}
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
