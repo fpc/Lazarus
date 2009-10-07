@@ -227,8 +227,6 @@ begin
 end;
 
 procedure TOutputFilter.Clear;
-var
-  err : TFPCErrorType;
 begin
   fOutput.Clear;
   FAsyncDataAvailable:=false;
