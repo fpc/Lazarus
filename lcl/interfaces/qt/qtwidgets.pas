@@ -6599,6 +6599,9 @@ begin
     QLineEdit_text(LineEdit, @Result)
   else
     Result := '';
+  {$ifdef VerboseQt}
+  WriteLn('TQtAbstractSpinBox.GetText Result=',Result);
+  {$endif}
 end;
 
 function TQtAbstractSpinBox.getTextStatic: Boolean;
@@ -6619,6 +6622,9 @@ end;
 
 procedure TQtAbstractSpinBox.setText(const W: WideString);
 begin
+  {$ifdef VerboseQt}
+  WriteLn('TQtAbstractSpinBox.SetText W=',w);
+  {$endif}
   if (LineEdit <> nil) then
     QLineEdit_setText(LineEdit, @W)
 end;
@@ -6653,8 +6659,8 @@ begin
      press TabKey to select next control, but if we
      connect OnKeyDown and say eg. VK_RETURN: SelectNext(ActiveControl, true, true)
      then spinedit text is always selected, nothing important but looks ugly.}
-//  Msg.Msg := LM_EXIT;
-//  DeliverMessage(Msg);
+  //  Msg.Msg := LM_EXIT;
+  //  DeliverMessage(Msg);
 end;
 
 { TQtFloatSpinBox }
@@ -6717,7 +6723,8 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 { TQtSpinBox }
@@ -6775,7 +6782,8 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;

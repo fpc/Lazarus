@@ -70,13 +70,18 @@ class procedure TQtWSCustomFloatSpinEdit.InternalUpdateControl(
   const ASpinWidget: TQtAbstractSpinBox;
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 begin
-  if ASpinWidget is TQtFloatSpinBox then
-    TQtFloatSpinBox(ASpinWidget).setDecimals(ACustomFloatSpinEdit.DecimalPlaces);
+  ASpinWidget.BeginUpdate;
+  try
+    if ASpinWidget is TQtFloatSpinBox then
+      TQtFloatSpinBox(ASpinWidget).setDecimals(ACustomFloatSpinEdit.DecimalPlaces);
 
-  ASpinWidget.setValue(ACustomFloatSpinEdit.Value);
-  ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
-  ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
-  ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
+    ASpinWidget.setValue(ACustomFloatSpinEdit.Value);
+    ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
+    ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
+    ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
+  finally
+    ASpinWidget.EndUpdate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
