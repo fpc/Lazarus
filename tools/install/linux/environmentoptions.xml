@@ -5,7 +5,7 @@
     <Debugger Class="TGDBMIDebugger"/>
     <DebuggerFilename Value="/usr/bin/gdb">
     </DebuggerFilename>
-    <LazarusDirectory Value="/usr/lib/lazarus/">
+    <LazarusDirectory Value="/usr/lib/lazarus/%LazarusVersion%">
       <History Count="1">
         <Item1 Value="/usr/lib/lazarus/"/>
       </History>
