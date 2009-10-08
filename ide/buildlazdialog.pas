@@ -397,7 +397,7 @@ begin
         // build the IDE when blfOnlyIDE is set, eg. when installing packages
         // even if that build node is disabled in configure build lazarus dialog
         else if (blfOnlyIDE in Flags) then
-            CurMakeMode := mmBuild;
+          CurMakeMode := mmBuild;
       end;
 
       if CurMakeMode=mmNone then continue;

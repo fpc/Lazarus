@@ -5385,7 +5385,7 @@ begin
     +le;
   AProject.MainFile.SetSourceText(NewSource);
 
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
 end;
 
@@ -5452,7 +5452,7 @@ begin
   // add lcl pp/pas dirs to source search path
   AProject.AddPackageDependency('LCL');
   AProject.LazCompilerOptions.Win32GraphicApp:=true;
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
 end;
 
@@ -5582,7 +5582,7 @@ begin
     +le;
   AProject.MainFile.SetSourceText(NewSource);
 
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
 end;
 
@@ -5807,7 +5807,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
 
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib/$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
 
   // create program source
