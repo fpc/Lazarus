@@ -797,8 +797,17 @@ begin
   ecGotoMarker7: SetResult(VK_Q,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker8: SetResult(VK_Q,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker9: SetResult(VK_Q,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecSetMarker0..ecSetMarker9: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecToggleMarker0..ecToggleMarker9: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker0..ecSetMarker9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker0: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker1: SetResult(VK_K,[ssCtrl],VK_1,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker2: SetResult(VK_K,[ssCtrl],VK_2,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker3: SetResult(VK_K,[ssCtrl],VK_3,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker4: SetResult(VK_K,[ssCtrl],VK_4,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker5: SetResult(VK_K,[ssCtrl],VK_5,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker6: SetResult(VK_K,[ssCtrl],VK_6,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker7: SetResult(VK_K,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker8: SetResult(VK_K,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMarker9: SetResult(VK_K,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // codetools
   ecAutoCompletion: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
