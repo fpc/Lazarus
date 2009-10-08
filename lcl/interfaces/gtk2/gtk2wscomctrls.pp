@@ -308,7 +308,7 @@ begin
   begin
     wHandle := Handle;
     Adjustment := gtk_range_get_adjustment(GTK_RANGE(Pointer(wHandle)));
-    // min >= max cause s crash
+    // min >= max causes crash
     Adjustment^.lower := Min;
     if Min < Max then
     begin
