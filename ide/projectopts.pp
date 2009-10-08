@@ -571,7 +571,7 @@ begin
 
     if Project.Resources.Modified and (Project.MainUnitID >= 0) then
     begin
-      if not Project.Resources.Regenerate(Project.MainFilename, True, False) then
+      if not Project.Resources.Regenerate(Project.MainFilename, True, False,'') then
         MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
     end;
   end;

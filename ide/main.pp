@@ -8555,7 +8555,7 @@ begin
       end;
 
       // init resource files
-      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False) then
+      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False,'') then
         DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
     finally
       Project1.EndUpdate;
@@ -8674,12 +8674,6 @@ begin
     else
       DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
 
-    // if we are saving a project to a temporary folder then we also need to save resources
-    // or compilation will fail
-    if sfSaveToTestDir in Flags then
-      if not Project1.Resources.Regenerate(DestFileName, False, True) then
-        DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
-
     if MainUnitInfo.Loaded then
     begin
       // loaded in source editor
@@ -8736,7 +8730,10 @@ begin
   end;
 
   // update all lrs files
-  MainBuildBoss.UpdateProjectAutomaticFiles;
+  if sfSaveToTestDir in Flags then
+    MainBuildBoss.UpdateProjectAutomaticFiles(EnvironmentOptions.TestBuildDirectory)
+  else
+    MainBuildBoss.UpdateProjectAutomaticFiles('');
 
   // everything went well => clear all modified flags
   Project1.ClearModifieds(true);

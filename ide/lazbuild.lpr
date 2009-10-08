@@ -630,10 +630,10 @@ begin
   SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
   // update all lrs files
-  MainBuildBoss.UpdateProjectAutomaticFiles;
+  MainBuildBoss.UpdateProjectAutomaticFiles('');
 
   // regenerate resources
-  if not Project1.Resources.Regenerate(SrcFileName, False, True) then
+  if not Project1.Resources.Regenerate(SrcFileName, False, True, '') then
     DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
 
   if CompilerOverride <> '' then
