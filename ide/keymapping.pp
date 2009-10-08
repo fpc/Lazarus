@@ -280,8 +280,8 @@ begin
   ecBlockMove       : SetResult2(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
   ecBlockCopy       : SetResult2(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
   ecBlockDelete     : SetResult2(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
-  ecBlockGotoBegin  : SetResult2(VK_Q,[ssCtrl],VK_B,[],  VK_Q,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockGotoEnd    : SetResult2(VK_Q,[ssCtrl],VK_K,[],  VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockGotoBegin  : SetResult2(VK_Q,[ssCtrl],VK_B,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockGotoEnd    : SetResult2(VK_Q,[ssCtrl],VK_K,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // column mode selection
   ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[]);
@@ -713,9 +713,9 @@ begin
   ecBlockShow       : SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockMove       : SetResult(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
   ecBlockCopy       : SetResult(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
-  ecBlockDelete     : SetResult(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
-  ecBlockGotoBegin  : SetResult(VK_Q,[ssCtrl],VK_B,[],  VK_Q,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockGotoEnd    : SetResult(VK_Q,[ssCtrl],VK_K,[],  VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockDelete     : SetResult(VK_K,[ssCtrl],VK_Y,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockGotoBegin  : SetResult(VK_Q,[ssCtrl],VK_B,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockGotoEnd    : SetResult(VK_Q,[ssCtrl],VK_K,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // column mode selection
   ecColSelUp: SetResult(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
