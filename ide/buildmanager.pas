@@ -463,7 +463,7 @@ begin
   Result:=false;
   if Project1.IsVirtual then begin
     TestDir:=GetTestBuildDirectory;
-    Result:=CompareFileNames(TestDir,ExtractFilePath(AFilename))=0;
+    Result:=FileIsInPath(AFilename,TestDir);
   end;
 end;
 
