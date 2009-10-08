@@ -514,6 +514,8 @@ type
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
                                     const Filename: string; var Source: string);
     procedure CodeToolBossPrepareTree(Sender: TObject);
+    procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
+                                   var Abort: boolean);
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
 
@@ -12153,6 +12155,7 @@ begin
   InteractiveSetup:=true;
   OpenEditorsOnCodeToolChange:=false;
 
+  CodeToolBoss.DefinePool.OnProgress:=@CodeToolBossProgress;
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
@@ -12443,6 +12446,12 @@ begin
     DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
     {$ENDIF}
   end;
+end;
+
+procedure TMainIDE.CodeToolBossProgress(Sender: TObject; Index,
+  MaxIndex: integer; var Abort: boolean);
+begin
+  //DebugLn(['TMainIDE.CodeToolBossProgress ',Index,' ',MaxIndex]);
 end;
 
 procedure TMainIDE.OnCompilerParseStampIncreased;

@@ -467,12 +467,18 @@ type
 
   { TDefinePool }
 
+  TDefinePoolProgress = procedure(Sender: TObject;
+    Index, MaxIndex: integer; // MaxIndex=-1 if unknown
+    var Abort: boolean) of object;
+
   TDefinePool = class
   private
     FEnglishErrorMsgFilename: string;
     FItems: TFPList; // list of TDefineTemplate;
+    FOnProgress: TDefinePoolProgress;
     function GetItems(Index: integer): TDefineTemplate;
     procedure SetEnglishErrorMsgFilename(const AValue: string);
+    function CheckAbort(ProgressID, MaxIndex: integer): boolean;
   public
     property Items[Index: integer]: TDefineTemplate read GetItems; default;
     function Count: integer;
@@ -522,9 +528,11 @@ type
     function CreateKylixProjectTemplate(const ProjectDir,
                                  KylixDirectory: string; KylixVersion: integer;
                                  Owner: TObject): TDefineTemplate;
-    procedure Clear;
+
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
+    property OnProgress: TDefinePoolProgress read FOnProgress write FOnProgress;
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
     procedure CalcMemSize(Stats: TCTMemStats);
@@ -2885,6 +2893,13 @@ begin
   FEnglishErrorMsgFilename:=AValue;
 end;
 
+function TDefinePool.CheckAbort(ProgressID, MaxIndex: integer): boolean;
+begin
+  Result:=false;
+  if Assigned(OnProgress) then
+    OnProgress(Self,ProgressID,MaxIndex,Result);
+end;
+
 procedure TDefinePool.Add(ADefineTemplate: TDefineTemplate);
 begin
   if ADefineTemplate<>nil then
@@ -3222,13 +3237,14 @@ var
   DS: char; // dir separator
   UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
   DefaultSrcOS, DefaultSrcOS2: string;
+  ProgressID: integer;
   
   function d(const Filenames: string): string;
   begin
     Result:=SetDirSeparators(Filenames);
   end;
 
-  procedure GatherUnits; forward;
+  function GatherUnits: boolean; forward;
 
   function FindUnitLink(const AnUnitName: string): TDefTemplUnitNameLink;
   var ANode: TAVLTreeNode;
@@ -3249,7 +3265,7 @@ var
     Result:=nil;
   end;
 
-  procedure GatherUnits;
+  function GatherUnits: boolean;
   
     function FileNameMacroCount(const AFilename: string): integer;
     // count number of macros in filename
@@ -3345,7 +3361,7 @@ var
       Result:=Dir+Result;
     end;
     
-    procedure BrowseDirectory(ADirPath: string; Priority: integer);
+    function BrowseDirectory(ADirPath: string; Priority: integer): boolean;
     const
       IgnoreDirs: array[1..16] of shortstring =(
           '.', '..', 'CVS', '.svn', 'examples', 'example', 'tests', 'fake',
@@ -3362,12 +3378,15 @@ var
       SubDirs, GlobalSubDirs, TargetSubDirs: String;
       SubPriority: Integer;
     begin
+      Result:=true;
       {$IFDEF VerboseFPCSrcScan}
       DebugLn('Browse ',ADirPath);
       {$ENDIF}
       if ADirPath='' then exit;
       ADirPath:=AppendPathDelim(ADirPath);
-      
+
+      inc(ProgressID);
+      if CheckAbort(ProgressID,-1) then exit(false);
       // read Makefile.fpc to get some hints
       MakeFileFPC:=ADirPath+'Makefile.fpc';
       SubDirs:='';
@@ -3414,7 +3433,7 @@ var
               // units in directories compiled by the Makefile have higher prio
               inc(SubPriority);
             end;
-            BrowseDirectory(AFilename,SubPriority);
+            if not BrowseDirectory(AFilename,SubPriority) then exit(false);
           end else begin
             Ext:=UpperCaseStr(ExtractFileExt(AFilename));
             if (Ext='.PP') or (Ext='.PAS') or (Ext='.P') then begin
@@ -3543,11 +3562,9 @@ var
     end;
   
   begin
-    if UnitTree=nil then
-      UnitTree:=TAVLTree.Create(@CompareUnitLinkNodes)
-    else
-      UnitTree.FreeAndClear;
-    BrowseDirectory(Dir,0);
+    if UnitTree<>nil then exit(true);
+    UnitTree:=TAVLTree.Create(@CompareUnitLinkNodes);
+    Result:=BrowseDirectory(Dir,0);
   end;
   
 
@@ -3573,17 +3590,18 @@ var
     UnitLinkList:=UnitLinkList+s;
   end;
 
-  procedure FindStandardPPUSources;
+  function FindStandardPPUSources: boolean;
   var PathStart, PathEnd: integer;
     ADirPath, UnitName: string;
     FileInfo: TSearchRec;
     CurMask: String;
   begin
+    Result:=false;
     {$IFDEF VerboseFPCSrcScan}
     DebugLn('FindStandardPPUSources ..');
     {$ENDIF}
     // try every ppu file in every reachable directory (CompUnitPath)
-    if UnitLinkListValid then exit;
+    if UnitLinkListValid then exit(true);
     UnitLinkList:='';
     PathStart:=1;
     CurMask:=PPUExt;
@@ -3606,6 +3624,8 @@ var
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
         {$ENDIF}
+        inc(ProgressID);
+        if CheckAbort(ProgressID,-1) then exit(false);
         // search all ppu files in this directory
         if FindFirstUTF8(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
@@ -3613,6 +3633,7 @@ var
             {$IFDEF VerboseFPCSrcScan}
             DebugLn('FindStandardPPUSources Found: ',UnitName);
             {$ENDIF}
+            if (UnitTree=nil) and (not GatherUnits) then exit;
             AddFPCSourceLinkForUnit(UnitName);
             if (UnitTree=nil) or (UnitTree.Count=0) then exit;
           until FindNextUTF8(FileInfo)<>0;
@@ -3622,6 +3643,7 @@ var
       PathStart:=PathEnd;
     end;
     UnitLinkListValid:=true;
+    Result:=true;
   end;
   
   procedure AddProcessorTypeDefine(ParentDefTempl: TDefineTemplate);
@@ -3706,6 +3728,7 @@ var
   PkgExtraAMunitsDir: TDefineTemplate;
   FCLSubSrcDir: TDefineTemplate;
   FCLSubDir: TDefineTemplate;
+  Ok: Boolean;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3714,279 +3737,290 @@ begin
     DebugLn(['Note: TDefinePool.CreateFPCSrcTemplate UnitSearchPath empty']);
   end;
   Result:=nil;
-  if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-    DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
-    exit;
-  end;
-  DS:=PathDelim;
-  Dir:=AppendPathDelim(FPCSrcDir);
-  SrcOS:='$('+ExternalMacroStart+'SrcOS)';
-  SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
-  TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
-  IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
-  UnitLinks:=UnitLinksMacroName;
-  UnitTree:=nil;
-  DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
-  DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
+  ProgressID:=0;
+  Ok:=false;
+  try
+    if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
+      DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
+      exit;
+    end;
+    DS:=PathDelim;
+    Dir:=AppendPathDelim(FPCSrcDir);
+    SrcOS:='$('+ExternalMacroStart+'SrcOS)';
+    SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
+    TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
+    IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+    UnitLinks:=UnitLinksMacroName;
+    UnitTree:=nil;
+    DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
+    DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
 
 
-  Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
-     Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
-     '','',da_Block);
+    Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
+       Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
+       '','',da_Block);
 
-  // try to find for every reachable ppu file the unit file in the FPC sources
-  FindStandardPPUSources;
-  DefTempl:=TDefineTemplate.Create('FPC Unit Links',
-    ctsSourceFilenamesForStandardFPCUnits,
-    UnitLinks,UnitLinkList,da_DefineRecurse);
-  Result.AddChild(DefTempl);
+    // try to find for every reachable ppu file the unit file in the FPC sources
+    if not FindStandardPPUSources then exit;
+    DefTempl:=TDefineTemplate.Create('FPC Unit Links',
+      ctsSourceFilenamesForStandardFPCUnits,
+      UnitLinks,UnitLinkList,da_DefineRecurse);
+    Result.AddChild(DefTempl);
 
-  // The free pascal sources build a world of their own,
-  // reset search paths
-  MainDir:=TDefineTemplate.Create('Free Pascal Source Directory',
-    ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
-  Result.AddChild(MainDir);
-  DefTempl:=TDefineTemplate.Create('Reset SrcPath',
-    ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
-  MainDir.AddChild(DefTempl);
-  DefTempl:=TDefineTemplate.Create('Reset UnitPath',
-    ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
-  MainDir.AddChild(DefTempl);
-  // turn Nested comments on
-  DefTempl:=TDefineTemplate.Create('Nested Comments',
-    ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
-  MainDir.AddChild(DefTempl);
-  // enable FPDocSystem to find compiler functions like writeln and readln
-  {DefTempl:=TDefineTemplate.Create('FPDocSystem',
-    ctsFPDocSystemOn,'FPDocSystem','',da_DefineRecurse);
-  MainDir.AddChild(DefTempl);}
+    // The free pascal sources build a world of their own,
+    // reset search paths
+    MainDir:=TDefineTemplate.Create('Free Pascal Source Directory',
+      ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
+    Result.AddChild(MainDir);
+    DefTempl:=TDefineTemplate.Create('Reset SrcPath',
+      ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
+    MainDir.AddChild(DefTempl);
+    DefTempl:=TDefineTemplate.Create('Reset UnitPath',
+      ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
+    MainDir.AddChild(DefTempl);
+    // turn Nested comments on
+    DefTempl:=TDefineTemplate.Create('Nested Comments',
+      ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
+    MainDir.AddChild(DefTempl);
+    // enable FPDocSystem to find compiler functions like writeln and readln
+    {DefTempl:=TDefineTemplate.Create('FPDocSystem',
+      ctsFPDocSystemOn,'FPDocSystem','',da_DefineRecurse);
+    MainDir.AddChild(DefTempl);}
 
-  // rtl
-  RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
-  MainDir.AddChild(RTLDir);
+    // rtl
+    RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
+    MainDir.AddChild(RTLDir);
 
-  // rtl include paths
-  s:=IncPathMacro
-    +';'+Dir+'rtl'+DS+'objpas'+DS
-    +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
-    +';'+Dir+'rtl'+DS+'objpas'+DS+'classes'
-    +';'+Dir+'rtl'+DS+'inc'+DS
-    +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS
-    +';'+Dir+'rtl'+DS+SrcOS+DS
-    +';'+Dir+'rtl'+DS+TargetOSMacro+DS
-    +';'+Dir+'rtl'+DS+SrcOS2+DS
-    +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor
-    +';'+Dir+'rtl'+DS+TargetProcessor+DS
-    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS;
-  RTLDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,
-    ['objpas, inc,'+TargetProcessor+','+SrcOS]),
-    ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+    // rtl include paths
+    s:=IncPathMacro
+      +';'+Dir+'rtl'+DS+'objpas'+DS
+      +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
+      +';'+Dir+'rtl'+DS+'objpas'+DS+'classes'
+      +';'+Dir+'rtl'+DS+'inc'+DS
+      +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS
+      +';'+Dir+'rtl'+DS+SrcOS+DS
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS
+      +';'+Dir+'rtl'+DS+SrcOS2+DS
+      +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor
+      +';'+Dir+'rtl'+DS+TargetProcessor+DS
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS;
+    RTLDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,
+      ['objpas, inc,'+TargetProcessor+','+SrcOS]),
+      ExternalMacroStart+'IncPath',s,da_DefineRecurse));
 
-  // rtl/$(#TargetOS)
-  RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
-                                   TargetOSMacro,da_Directory);
-  s:=IncPathMacro
-    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
-    +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS
-    ;
-  RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
-    ExternalMacroStart+'IncPath',
-    s,da_DefineRecurse));
-  s:=SrcPathMacro
-    +';'+Dir+'rtl'+DS+'objpas'+DS;
-  RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
-    Format(ctsAddsDirToSourcePath,[TargetProcessor]),
-    ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
-  RTLDir.AddChild(RTLOSDir);
-
-  // rtl: IF SrcOS=win then add include path rtl/win/wininc
-  IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
-    '',''''+SrcOS+'''=''win''',da_If);
-  IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+    // rtl/$(#TargetOS)
+    RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
+                                     TargetOSMacro,da_Directory);
+    s:=IncPathMacro
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS
+      ;
+    RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
       ExternalMacroStart+'IncPath',
-      IncPathMacro
-      +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
-      +';'+Dir+'rtl'+DS+'win',
-      da_DefineRecurse));
-  RTLDir.AddChild(IFTempl);
+      s,da_DefineRecurse));
+    s:=SrcPathMacro
+      +';'+Dir+'rtl'+DS+'objpas'+DS;
+    RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
+      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
+      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
+    RTLDir.AddChild(RTLOSDir);
 
-  // rtl: IF TargetOS=darwin then add include path rtl/freebsd
-  IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
-    '',''''+TargetOSMacro+'''=''darwin''',da_If);
-  IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
+    // rtl: IF SrcOS=win then add include path rtl/win/wininc
+    IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
+      '',''''+SrcOS+'''=''win''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+        ExternalMacroStart+'IncPath',
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
+        +';'+Dir+'rtl'+DS+'win',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
+    // rtl: IF TargetOS=darwin then add include path rtl/freebsd
+    IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
+      '',''''+TargetOSMacro+'''=''darwin''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
+        ExternalMacroStart+'IncPath',
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'freebsd',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
+    // add processor and SrcOS alias defines for the RTL
+    AddProcessorTypeDefine(RTLDir);
+    AddSrcOSDefines(RTLDir);
+
+
+    // fcl
+    FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
+        da_Directory);
+    MainDir.AddChild(FCLDir);
+    FCLDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
       ExternalMacroStart+'IncPath',
-      IncPathMacro
-      +';'+Dir+'rtl'+DS+'freebsd',
-      da_DefineRecurse));
-  RTLDir.AddChild(IFTempl);
+      d(   DefinePathMacro+'/inc/'
+      +';'+DefinePathMacro+'/classes/'
+      +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
+      +';'+DefinePathMacro+'/'+SrcOS+DS
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // add processor and SrcOS alias defines for the RTL
-  AddProcessorTypeDefine(RTLDir);
-  AddSrcOSDefines(RTLDir);
+    // fcl/db
+    FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
+    FCLDir.AddChild(FCLDBDir);
+    FCLDBInterbaseDir:=TDefineTemplate.Create('interbase','interbase','',
+      'interbase',da_Directory);
+    FCLDBDir.AddChild(FCLDBInterbaseDir);
+    FCLDBInterbaseDir.AddChild(TDefineTemplate.Create('SrcPath',
+      'SrcPath addition',
+      ExternalMacroStart+'SrcPath',
+      d(Dir+'/packages/base/ibase;'+SrcPathMacro)
+      ,da_Define));
 
+    // packages
+    PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
+       'packages',da_Directory);
+    MainDir.AddChild(PackagesDir);
 
-  // fcl
-  FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
-      da_Directory);
-  MainDir.AddChild(FCLDir);
-  FCLDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/inc/'
-    +';'+DefinePathMacro+'/classes/'
-    +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
-    +';'+DefinePathMacro+'/'+SrcOS+DS
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
+    // packages/fcl-base
+    FCLBaseDir:=TDefineTemplate.Create('FCL-base',
+        ctsFreePascalComponentLibrary,'','fcl-base',
+        da_Directory);
+    PackagesDir.AddChild(FCLBaseDir);
+    // packages/fcl-base/src
+    FCLBaseSrcDir:=TDefineTemplate.Create('src',
+        'src','','src',
+        da_Directory);
+    FCLBaseDir.AddChild(FCLBaseSrcDir);
+    FCLBaseSrcDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
+      ExternalMacroStart+'IncPath',
+      d(   DefinePathMacro+'/inc/'
+      +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
+      +';'+DefinePathMacro+'/'+SrcOS+DS
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // fcl/db
-  FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
-  FCLDir.AddChild(FCLDBDir);
-  FCLDBInterbaseDir:=TDefineTemplate.Create('interbase','interbase','',
-    'interbase',da_Directory);
-  FCLDBDir.AddChild(FCLDBInterbaseDir);
-  FCLDBInterbaseDir.AddChild(TDefineTemplate.Create('SrcPath',
-    'SrcPath addition',
-    ExternalMacroStart+'SrcPath',
-    d(Dir+'/packages/base/ibase;'+SrcPathMacro)
-    ,da_Define));
+    // packages/fcl-process
+    FCLSubDir:=TDefineTemplate.Create('FCL-process',
+        'fcl-process','','fcl-process',
+        da_Directory);
+    PackagesDir.AddChild(FCLSubDir);
+    // packages/fcl-process/src
+    FCLSubSrcDir:=TDefineTemplate.Create('src',
+        'src','','src',
+        da_Directory);
+    FCLSubDir.AddChild(FCLSubSrcDir);
+    FCLSubSrcDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
+      ExternalMacroStart+'IncPath',
+      d(   DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
+      +';'+DefinePathMacro+'/'+SrcOS+DS
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // packages
-  PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
-     'packages',da_Directory);
-  MainDir.AddChild(PackagesDir);
-  
-  // packages/fcl-base
-  FCLBaseDir:=TDefineTemplate.Create('FCL-base',
-      ctsFreePascalComponentLibrary,'','fcl-base',
-      da_Directory);
-  PackagesDir.AddChild(FCLBaseDir);
-  // packages/fcl-base/src
-  FCLBaseSrcDir:=TDefineTemplate.Create('src',
-      'src','','src',
-      da_Directory);
-  FCLBaseDir.AddChild(FCLBaseSrcDir);
-  FCLBaseSrcDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/inc/'
-    +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
-    +';'+DefinePathMacro+'/'+SrcOS+DS
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
+    // packages/base
+    PackagesBaseDir:=TDefineTemplate.Create('base','base','','base',da_Directory);
+    PackagesDir.AddChild(PackagesBaseDir);
 
-  // packages/fcl-process
-  FCLSubDir:=TDefineTemplate.Create('FCL-process',
-      'fcl-process','','fcl-process',
-      da_Directory);
-  PackagesDir.AddChild(FCLSubDir);
-  // packages/fcl-process/src
-  FCLSubSrcDir:=TDefineTemplate.Create('src',
-      'src','','src',
-      da_Directory);
-  FCLSubDir.AddChild(FCLSubSrcDir);
-  FCLSubSrcDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
-    +';'+DefinePathMacro+'/'+SrcOS+DS
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
-    
-  // packages/base
-  PackagesBaseDir:=TDefineTemplate.Create('base','base','','base',da_Directory);
-  PackagesDir.AddChild(PackagesBaseDir);
-  
-  // packages/base/libasync
-  LibasyncDir:=TDefineTemplate.Create('libasync','libasync','','libasync',
-                                      da_Directory);
-  PackagesBaseDir.AddChild(LibasyncDir);
-  LibasyncDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['packages/base/libasync']),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/'
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
-    
-  // packages/extra
-  PackagesExtraDir:=TDefineTemplate.Create('extra','extra','','extra',da_Directory);
-  PackagesDir.AddChild(PackagesExtraDir);
+    // packages/base/libasync
+    LibasyncDir:=TDefineTemplate.Create('libasync','libasync','','libasync',
+                                        da_Directory);
+    PackagesBaseDir.AddChild(LibasyncDir);
+    LibasyncDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/base/libasync']),
+      ExternalMacroStart+'IncPath',
+      d(   DefinePathMacro+'/'
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // packages/extra/graph
-  PkgExtraGraphDir:=TDefineTemplate.Create('graph','graph','','graph',
-                                           da_Directory);
-  PackagesExtraDir.AddChild(PkgExtraGraphDir);
-  PkgExtraGraphDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/inc/'
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
+    // packages/extra
+    PackagesExtraDir:=TDefineTemplate.Create('extra','extra','','extra',da_Directory);
+    PackagesDir.AddChild(PackagesExtraDir);
 
-  // packages/extra/amunits
-  PkgExtraAMunitsDir:=TDefineTemplate.Create('amunits','amunits','','amunits',
-                                           da_Directory);
-  PackagesExtraDir.AddChild(PkgExtraAMunitsDir);
-  PkgExtraAMunitsDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
-    ExternalMacroStart+'IncPath',
-    d(   DefinePathMacro+'/inc/'
-    +';'+IncPathMacro)
-    ,da_DefineRecurse));
+    // packages/extra/graph
+    PkgExtraGraphDir:=TDefineTemplate.Create('graph','graph','','graph',
+                                             da_Directory);
+    PackagesExtraDir.AddChild(PkgExtraGraphDir);
+    PkgExtraGraphDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+      ExternalMacroStart+'IncPath',
+      d(   DefinePathMacro+'/inc/'
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // utils
-  UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
-     'utils',da_Directory);
-  MainDir.AddChild(UtilsDir);
+    // packages/extra/amunits
+    PkgExtraAMunitsDir:=TDefineTemplate.Create('amunits','amunits','','amunits',
+                                             da_Directory);
+    PackagesExtraDir.AddChild(PkgExtraAMunitsDir);
+    PkgExtraAMunitsDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+      ExternalMacroStart+'IncPath',
+      d(   DefinePathMacro+'/inc/'
+      +';'+IncPathMacro)
+      ,da_DefineRecurse));
 
-  // utils/debugsvr
-  DebugSvrDir:=TDefineTemplate.Create('DebugSvr','Debug Server','',
-     'debugsvr',da_Directory);
-  UtilsDir.AddChild(DebugSvrDir);
-  DebugSvrDir.AddChild(TDefineTemplate.Create('Interface Path',
-    Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
-    '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
+    // utils
+    UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
+       'utils',da_Directory);
+    MainDir.AddChild(UtilsDir);
 
-  // installer
-  InstallerDir:=TDefineTemplate.Create('Installer',ctsInstallerDirectories,'',
-     'installer',da_Directory);
-  InstallerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-    ExternalMacroStart+'SrcPath',
-    SrcPathMacro+';'+Dir+'ide;'+Dir+'fv',da_Define));
-  MainDir.AddChild(InstallerDir);
+    // utils/debugsvr
+    DebugSvrDir:=TDefineTemplate.Create('DebugSvr','Debug Server','',
+       'debugsvr',da_Directory);
+    UtilsDir.AddChild(DebugSvrDir);
+    DebugSvrDir.AddChild(TDefineTemplate.Create('Interface Path',
+      Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
+      '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
 
-  // compiler
-  CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
-     da_Directory);
-  AddProcessorTypeDefine(CompilerDir);
-  CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-    ExternalMacroStart+'SrcPath',
-    SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
-  CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
-    ExternalMacroStart+'IncPath',
-    IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
-  MainDir.AddChild(CompilerDir);
-  
-  // compiler/utils
-  UtilsDir:=TDefineTemplate.Create('utils',ctsUtilsDirectories,'',
-     'utils',da_Directory);
-  UtilsDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-    ExternalMacroStart+'SrcPath',
-    SrcPathMacro+';..',da_Define));
-  CompilerDir.AddChild(UtilsDir);
+    // installer
+    InstallerDir:=TDefineTemplate.Create('Installer',ctsInstallerDirectories,'',
+       'installer',da_Directory);
+    InstallerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+      ExternalMacroStart+'SrcPath',
+      SrcPathMacro+';'+Dir+'ide;'+Dir+'fv',da_Define));
+    MainDir.AddChild(InstallerDir);
 
-  // clean up
-  if UnitTree<>nil then begin
-    UnitTree.FreeAndClear;
-    UnitTree.Free;
+    // compiler
+    CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
+       da_Directory);
+    AddProcessorTypeDefine(CompilerDir);
+    CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+      ExternalMacroStart+'SrcPath',
+      SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
+    CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
+      ExternalMacroStart+'IncPath',
+      IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
+    MainDir.AddChild(CompilerDir);
+
+    // compiler/utils
+    UtilsDir:=TDefineTemplate.Create('utils',ctsUtilsDirectories,'',
+       'utils',da_Directory);
+    UtilsDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+      ExternalMacroStart+'SrcPath',
+      SrcPathMacro+';..',da_Define));
+    CompilerDir.AddChild(UtilsDir);
+
+    // clean up
+    if UnitTree<>nil then begin
+      UnitTree.FreeAndClear;
+      UnitTree.Free;
+    end;
+
+    Result.SetDefineOwner(Owner,true);
+    Result.SetFlags([dtfAutoGenerated],[],false);
+
+    Ok:=true;
+  finally
+    if not ok then
+      FreeAndNil(Result);
+    if (ProgressID>0) and Assigned(OnProgress) then
+      OnProgress(Self,ProgressID,ProgressID,Ok);
   end;
-
-  Result.SetDefineOwner(Owner,true);
-  Result.SetFlags([dtfAutoGenerated],[],false);
 end;
 
 function TDefinePool.CreateDelphiSrcPath(DelphiVersion: integer;
