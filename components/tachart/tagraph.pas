@@ -200,8 +200,9 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
   public // Helpers for series drawing
-    function GetNewColor: TColor;
-    function GetRectangle: TRect;
+    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
+    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
   public
@@ -209,9 +210,6 @@ type
     procedure ClearSeries;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
-    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
-    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
@@ -753,7 +751,7 @@ begin
   try
     Result.Width := Width;
     Result.Height := Height;
-    PaintOnCanvas(Result.Canvas, GetRectangle);
+    PaintOnCanvas(Result.Canvas, Rect(0, 0, Width, Height));
   except
     Result.Free;
     raise;
@@ -938,33 +936,6 @@ procedure TChart.DoDrawReticule(
 begin
   if Assigned(FOnDrawReticule) then
     FOnDrawReticule(Self, ASeriesIndex, AIndex, AImg, AData);
-end;
-
-function TChart.GetNewColor: TColor;
-var
-  i, j: Integer;
-  ColorFound: Boolean;
-begin
-  for i := 1 to High(Colors) do begin
-    ColorFound := false;
-    for j := 0 to SeriesCount - 1 do begin
-      if Series[j].SeriesColor = Colors[i] then
-        ColorFound := true;
-    end;
-    if not ColorFound then begin
-      Result := Colors[i];
-      exit;
-    end;
-  end;
-  Result := RGB(Random(255), Random(255), Random(255));
-end;
-
-function TChart.GetRectangle: TRect;
-begin
-  Result.Left := 0;
-  Result.Top := 0;
-  Result.Right := Width;
-  Result.Bottom := Height;
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
