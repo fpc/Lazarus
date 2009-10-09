@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="TAChartLazarusPkg">
+    <module name="TASeries">
+      <element name="TBasicPointSeries.UseReticule">
+        <short>Show reticule for points of this series</short>
+        <seealso>
+          <link id="TAGraph.TChart.ReticuleMode">TChart.ReticuleMode</link>
+        </seealso>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
