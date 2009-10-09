@@ -485,7 +485,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
@@ -1651,11 +1650,11 @@ begin
     QEventDragLeave: result:='QEventDragLeave';
     QEventDrop: result:='QEventDrop';
     QEventDragResponse: result:='QEventDragResponse';
-//    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
+    //    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
     QEventChildAdded: result:='QEventChildAdded';
     QEventChildPolished: result:='QEventChildPolished';
-//    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
-//    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
+    //    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
+    //    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
     QEventChildRemoved: result:='QEventChildRemoved';
     QEventShowWindowRequest: result:='QEventShowWindowRequest';
     QEventPolishRequest: result:='QEventPolishRequest';
@@ -4509,27 +4508,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtStaticText.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtStaticText.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtStaticText.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QLabel_destroy(QLabelH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtStaticText.SetText
   Params:  None
   Returns: Nothing
@@ -5399,11 +5377,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtLineEdit.SignalTextChanged(p1: PWideString); cdecl;
 var
-   Msg: TLMessage;
+  Msg: TLMessage;
 begin
-   FillChar(Msg, SizeOf(Msg), #0);
-   Msg.Msg := CM_TEXTCHANGED;
-   DeliverMessage(Msg);
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
 end;
 
 { TQtTextEdit }
@@ -8829,7 +8807,7 @@ begin
   if not FFrameOnlyAroundContents then
   begin
     if (verticalScrollBar.getVisibleTo(Widget)) then
-        dec(Result.Right, verticalScrollBar.getWidth);
+      dec(Result.Right, verticalScrollBar.getWidth);
 
     if (horizontalScrollBar.getVisibleTo(Widget)) then
       dec(Result.Bottom, horizontalScrollBar.getHeight);
