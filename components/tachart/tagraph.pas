@@ -292,7 +292,7 @@ var
 implementation
 
 uses
-  Clipbrd, LCLProc, GraphMath, Math, Types;
+  Clipbrd, GraphMath, LCLProc, Math, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin

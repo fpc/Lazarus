@@ -29,7 +29,7 @@ unit TASeries;
 interface
 
 uses
-  Classes, Graphics, SysUtils,
+  Classes, Graphics,
   TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
 type
@@ -468,47 +468,6 @@ begin
   FPen.Free;
 end;
 
-procedure TLine.SetLineStyle(AValue: TLineStyle);
-begin
-  if FLineStyle = AValue then exit;
-  FLineStyle := AValue;
-  UpdateParentChart;
-end;
-
-procedure TLine.SetPen(AValue: TPen);
-begin
-  FPen.Assign(AValue);
-end;
-
-procedure TLine.SetUseBounds(AValue: Boolean);
-begin
-  if FUseBounds = AValue then exit;
-  FUseBounds := AValue;
-  UpdateParentChart;
-end;
-
-procedure TLine.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  if not UseBounds then exit;
-  case LineStyle of
-    lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
-    lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
-  end;
-end;
-
-procedure TLine.SetPos(AValue: Double);
-begin
-  if FPosGraph = AValue then exit;
-  FPosGraph := AValue;
-  UpdateParentChart;
-end;
-
-procedure TLine.SetSeriesColor(AValue: TColor);
-begin
-  if FPen.Color = AValue then exit;
-  FPen.Color := AValue;
-end;
-
 procedure TLine.Draw(ACanvas: TCanvas);
 begin
   ACanvas.Brush.Style := bsClear;
@@ -531,6 +490,47 @@ end;
 function TLine.GetSeriesColor: TColor;
 begin
   Result := FPen.Color;
+end;
+
+procedure TLine.SetLineStyle(AValue: TLineStyle);
+begin
+  if FLineStyle = AValue then exit;
+  FLineStyle := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLine.SetPen(AValue: TPen);
+begin
+  FPen.Assign(AValue);
+end;
+
+procedure TLine.SetPos(AValue: Double);
+begin
+  if FPosGraph = AValue then exit;
+  FPosGraph := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLine.SetSeriesColor(AValue: TColor);
+begin
+  if FPen.Color = AValue then exit;
+  FPen.Color := AValue;
+end;
+
+procedure TLine.SetUseBounds(AValue: Boolean);
+begin
+  if FUseBounds = AValue then exit;
+  FUseBounds := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLine.UpdateBounds(var ABounds: TDoubleRect);
+begin
+  if not UseBounds then exit;
+  case LineStyle of
+    lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
+    lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
+  end;
 end;
 
 { TBasicPointSeries }
@@ -665,28 +665,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TBarSeries.SetBarBrush(Value: TBrush);
-begin
-  FBarBrush.Assign(Value);
-end;
-
-procedure TBarSeries.SetBarPen(Value:TPen);
-begin
-  FBarPen.Assign(Value);
-end;
-
-procedure TBarSeries.SetBarWidthPercent(Value: Integer);
-begin
-  if (Value < 1) or (Value > 100) then
-    raise EBarError.Create('Wrong BarWidth Percent');
-  FBarWidthPercent := Value;
-end;
-
-procedure TBarSeries.SetSeriesColor(AValue: TColor);
-begin
-  FBarBrush.Color := AValue;
-end;
-
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 
   procedure DrawBar(const AR: TRect);
@@ -771,6 +749,28 @@ end;
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
+end;
+
+procedure TBarSeries.SetBarBrush(Value: TBrush);
+begin
+  FBarBrush.Assign(Value);
+end;
+
+procedure TBarSeries.SetBarPen(Value:TPen);
+begin
+  FBarPen.Assign(Value);
+end;
+
+procedure TBarSeries.SetBarWidthPercent(Value: Integer);
+begin
+  if (Value < 1) or (Value > 100) then
+    raise EBarError.Create('Wrong BarWidth Percent');
+  FBarWidthPercent := Value;
+end;
+
+procedure TBarSeries.SetSeriesColor(AValue: TColor);
+begin
+  FBarBrush.Color := AValue;
 end;
 
 { TPieSeries }
@@ -915,29 +915,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TAreaSeries.SetAreaBrush(Value: TBrush);
-begin
-  FAreaBrush.Assign(Value);
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetStairs(Value: Boolean);
-begin
-  FStairs := Value;
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
-begin
-  FInvertedStairs := Value;
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetSeriesColor(AValue: TColor);
-begin
-  FAreaBrush.Color := AValue;
-end;
-
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
   pts: array [0..4] of TPoint;
@@ -1015,6 +992,29 @@ end;
 function TAreaSeries.GetSeriesColor: TColor;
 begin
   Result := FAreaBrush.Color;
+end;
+
+procedure TAreaSeries.SetAreaBrush(Value: TBrush);
+begin
+  FAreaBrush.Assign(Value);
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
+begin
+  FInvertedStairs := Value;
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetSeriesColor(AValue: TColor);
+begin
+  FAreaBrush.Color := AValue;
+end;
+
+procedure TAreaSeries.SetStairs(Value: Boolean);
+begin
+  FStairs := Value;
+  UpdateParentChart;
 end;
 
 { TFuncSeries }

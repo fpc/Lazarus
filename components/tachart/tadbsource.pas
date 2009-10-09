@@ -21,7 +21,7 @@ unit TADbSource;
 interface
 
 uses
-  Classes, Db, SysUtils, TAChartUtils, TASources;
+  Classes, Db, TAChartUtils, TASources;
 
 type
 

@@ -161,7 +161,7 @@ operator +(const A: TPoint; B: TSize): TPoint;
 implementation
 
 uses
-  LCLIntf, LCLType;
+  LCLIntf;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
