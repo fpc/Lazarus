@@ -38,7 +38,8 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, Themes, Win32UxTheme, TmSchema, Win32Themes, Win32Extra;
+  InterfaceBase, LCLProc, Themes, Win32UxTheme, TmSchema, Win32Themes, Win32Extra,
+  FileUtil;
 
 type
 
@@ -1225,30 +1226,30 @@ var
   ParentOfParent: HMenu;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+  MenuInfo.cbSize := menuiteminfosize;
 
-  {Following part fixes the case when an item is added in runtime
-  but the parent item has not defined the submenu flag (hSubmenu=0) }
+  // Following part fixes the case when an item is added in runtime
+  // but the parent item has not defined the submenu flag (hSubmenu=0)
   if AMenuItem.Parent.Parent <> nil then
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
-    with MenuInfo do
+    MenuInfo.fMask := MIIM_SUBMENU;
+    if GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
     begin
-      cbSize := menuiteminfosize;
-      fMask := MIIM_SUBMENU;
-    end;
-    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                    False, @MenuInfo);
-    if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
-    begin
-      MenuInfo.hSubmenu := ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                      False, @MenuInfo);
+      // the parent menu item is not defined with submenu flag
+      // convert it to submenu
+      if MenuInfo.hSubmenu = 0 then
+      begin
+        MenuInfo.hSubmenu := ParentMenuHandle;
+        if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
+          DebugLn(['SetMenuItemInfo failed: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
+      end;
     end;
   end;
 
   with MenuInfo do
   begin
-    cbsize := menuiteminfosize;
     if AMenuItem.Enabled then
       fState := MFS_ENABLED
     else
@@ -1284,9 +1285,8 @@ begin
     if AMenuItem.RightJustify then
       fType := fType or MFT_RIGHTJUSTIFY;
   end;
-  if dword(InsertMenuItem(ParentMenuHandle,
-       AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
-    DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
+  if not InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo) then
+    DebugLn(['InsertMenuItem failed with error: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1296,9 +1296,35 @@ begin
 end;
 
 class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+var
+  ParentOfParent: HMENU;
+  MenuInfo: MENUITEMINFO;
 begin
   if Assigned(AMenuItem.Parent) then
-    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+  begin
+    RemoveMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+    // convert submenu to a simple menu item if needed
+    if (GetMenuItemCount(AMenuItem.Parent.Handle) = 0) and
+       Assigned(AMenuItem.Parent.Parent) and
+       AMenuItem.Parent.Parent.HandleAllocated then
+    begin
+      ParentOfParent := AMenuItem.Parent.Parent.Handle;
+      FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+      with MenuInfo do
+      begin
+        cbSize := menuiteminfosize;
+        fMask := MIIM_SUBMENU;
+      end;
+      GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
+      // the parent menu item is defined with submenu flag then reset it
+      if MenuInfo.hSubmenu <> 0 then
+      begin
+        MenuInfo.hSubmenu := 0;
+        if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
+          DebugLn(['SetMenuItemInfo failed: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
+      end;
+    end;
+  end;
   DestroyMenu(AMenuItem.Handle);
   TriggerFormUpdate(AMenuItem);
 end;
