@@ -193,7 +193,7 @@ independently of zoom level.</descr>
         <short>Called before the series is drawn.</short>
       </element>
       <element name="TBasicChartSeries.GetLegendItems">
-        <short>Get the list if legend items for this series.</short>
+        <short>Get the list of legend items for this series.</short>
         <descr>Note that the series may return several items.
 For example, <link id="TASeries.TPieSeries">pie series</link> displays a separate legend item for each pie slice.</descr>
       </element>
