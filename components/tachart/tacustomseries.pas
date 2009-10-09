@@ -65,6 +65,7 @@ type
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     function GetGraphPoint(AIndex: Integer): TDoublePoint;
+    function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Integer;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
@@ -233,7 +234,7 @@ begin
   if Result <> clTAColor then exit;
   Result := ADefault;
   if Result <> clTAColor then exit;
-  Result := SeriesColor;
+  Result := GetSeriesColor;
 end;
 
 function TChartSeries.Count: Integer;
@@ -317,6 +318,11 @@ procedure TChartSeries.GetMin(out X, Y: Double);
 begin
   X := Source.XOfMin;
   Y := Extent.a.Y;
+end;
+
+function TChartSeries.GetSeriesColor: TColor;
+begin
+  Result := clTAColor;
 end;
 
 function TChartSeries.GetSource: TCustomChartSource;

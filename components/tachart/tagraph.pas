@@ -60,10 +60,8 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
-    function GetSeriesColor: TColor; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
-    procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
@@ -86,8 +84,6 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
-    property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;

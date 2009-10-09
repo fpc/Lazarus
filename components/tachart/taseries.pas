@@ -70,10 +70,10 @@ type
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
+    procedure SetSeriesColor(AValue: TColor);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -86,7 +86,8 @@ type
     property BarWidthPercent: Integer
       read FBarWidthPercent write SetBarWidthPercent default 70;
     property Depth;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property Source;
     property UseReticule;
   end;
@@ -101,8 +102,6 @@ type
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
     procedure Draw(ACanvas: TCanvas); override;
@@ -123,11 +122,11 @@ type
 
     procedure SetAreaBrush(Value: TBrush);
     procedure SetInvertedStairs(Value: Boolean);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -139,7 +138,8 @@ type
     property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
     property UseReticule;
@@ -165,13 +165,13 @@ type
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
     procedure SetPointer(Value: TSeriesPointer);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -188,7 +188,8 @@ type
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property ShowLines: Boolean
       read GetShowLines write SetShowLines stored false default true;
     property ShowPoints: Boolean
@@ -212,14 +213,14 @@ type
     FPosGraph: Double; // Graph coordinate of line
     FUseBounds: Boolean;
 
+    function GetSeriesColor: TColor;
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPos(AValue: Double);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -233,7 +234,8 @@ type
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property ShowInLegend;
     property Title;
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
@@ -259,8 +261,6 @@ type
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
 
   public
@@ -429,7 +429,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetSeriesColor(const AValue: TColor);
+procedure TLineSeries.SetSeriesColor(AValue: TColor);
 begin
   FLinePen.Color := AValue;
 end;
@@ -503,7 +503,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLine.SetSeriesColor(const AValue: TColor);
+procedure TLine.SetSeriesColor(AValue: TColor);
 begin
   if FPen.Color = AValue then exit;
   FPen.Color := AValue;
@@ -682,7 +682,7 @@ begin
   FBarWidthPercent := Value;
 end;
 
-procedure TBarSeries.SetSeriesColor(const AValue: TColor);
+procedure TBarSeries.SetSeriesColor(AValue: TColor);
 begin
   FBarBrush.Color := AValue;
 end;
@@ -883,22 +883,11 @@ begin
     AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
 end;
 
-function TPieSeries.GetSeriesColor: TColor;
-begin
-  Result := clBlack; // SeriesColor is meaningless for PieSeries
-end;
-
 procedure TPieSeries.SetExploded(const AValue: Boolean);
 begin
   if FExploded = AValue then exit;
   FExploded := AValue;
   UpdateParentChart;
-end;
-
-procedure TPieSeries.SetSeriesColor(const AValue: TColor);
-begin
-  // SeriesColor is meaningless for PieSeries
-  Unused(AValue);
 end;
 
 function TPieSeries.SliceColor(AIndex: Integer): TColor;
@@ -944,7 +933,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TAreaSeries.SetSeriesColor(const AValue: TColor);
+procedure TAreaSeries.SetSeriesColor(AValue: TColor);
 begin
   FAreaBrush.Color := AValue;
 end;
@@ -1086,11 +1075,6 @@ begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
-function TFuncSeries.GetSeriesColor: TColor;
-begin
-  Result := FPen.Color;
-end;
-
 function TFuncSeries.IsEmpty: Boolean;
 begin
   Result := not Assigned(OnCalculate);
@@ -1114,13 +1098,6 @@ procedure TFuncSeries.SetPen(const AValue: TChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.SetSeriesColor(const AValue: TColor);
-begin
-  if FPen.Color = AValue then exit;
-  FPen.Color := AValue;
   UpdateParentChart;
 end;
 
