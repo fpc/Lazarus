@@ -903,7 +903,6 @@ type
   private
     FCurrentItemChangeHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
-    FItemDoubleClickedHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
@@ -914,13 +913,11 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    procedure slotMouseCheckListBox(Sender: QObjectH; Event: QEventH); cdecl;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-    procedure signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-    procedure signalItemClicked(item: QListWidgetItemH); cdecl;
     procedure signalItemTextChanged(ANewText: PWideString); cdecl;
+    procedure signalItemClicked(item: QListWidgetItemH) cdecl;
     procedure signalSelectionChanged(); cdecl;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
@@ -6811,19 +6808,13 @@ begin
   
   FSelectionChangeHook := QListWidget_hook_create(Widget);
   FCurrentItemChangeHook := QListWidget_hook_create(Widget);
-  FItemDoubleClickedHook := QListWidget_hook_create(Widget);
   FItemClickedHook := QListWidget_hook_create(Widget);
   FItemTextChangedHook := QListWidget_hook_create(Widget);
 
   // OnSelectionChange event
   QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
-
   QListWidget_hook_hook_currentItemChanged(FCurrentItemChangeHook, @signalCurrentItemChange);
-
-  QListWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, @signalItemDoubleClicked);
-
-  QListWidget_hook_hook_ItemClicked(FItemClickedHook, @signalItemClicked);
-
+  QListWidget_hook_hook_itemClicked(FSelectionChangeHook, @signalItemClicked);
   QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
 end;
 
@@ -6831,45 +6822,38 @@ procedure TQtListWidget.DetachEvents;
 begin
   QListWidget_hook_destroy(FSelectionChangeHook);
   QListWidget_hook_destroy(FCurrentItemChangeHook);
-  QListWidget_hook_destroy(FItemDoubleClickedHook);
   QListWidget_hook_destroy(FItemClickedHook);
   QListWidget_hook_destroy(FItemTextChangedHook);
 
   inherited DetachEvents;
 end;
 
-procedure TQtListWidget.SlotMouseCheckListBox(Sender: QObjectH; Event: QEventH
-  ); cdecl;
-var
-  MousePos: TQtPoint;
-  x: Integer;
-  w: QListWidgetItemH;
-begin
-  if (QEvent_type(Event) = QEventMouseButtonPress) and
-    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-  begin
-    MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-    w := QListWidget_itemAt(QListWidgetH(Widget), @MousePos);
-    if (w <> nil) and
-     ((QListWidgetItem_flags(w) and QtItemIsUserCheckable) <> 0) then
-    begin
-      x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
-        nil, Widget);
-      if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
-        {we are using signalItemClicked here !}
-      else
-        SlotMouse(Sender, Event);
-    end else
-      SlotMouse(Sender, Event);
-  end else
-    SlotMouse(Sender, Event);
-end;
-
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
+var
+  Item: QListWidgetItemH;
+  MousePos: TQtPoint;
+  X: Integer;
+
+  procedure SendEventToParent;
+  var
+    AEvent: QEventH;
+    Modifiers: QtKeyboardModifiers;
+  begin
+    Modifiers := QApplication_keyboardModifiers();
+    AEvent := QMouseEvent_create(QEvent_type(Event),
+      QMouseEvent_pos(QMouseEventH(Event)),
+      QMouseEvent_globalPos(QMouseEventH(Event)),
+      QMouseEvent_button(QMouseEventH(Event)),
+      QMouseEvent_buttons(QMouseEventH(Event)),
+      Modifiers);
+    QCoreApplication_postEvent(Widget, AEvent, 1);
+  end;
+
 begin
   Result := False;
   QEvent_accept(Event);
+
   if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
@@ -6877,10 +6861,25 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
       begin
-        if (LCLObject.ClassType = TCheckListBox) then
-          SlotMouseCheckListBox(Sender, Event)
-        else
-          SlotMouse(Sender, Event);
+        if (LCLObject.ClassType = TCheckListBox) and
+          (QEvent_type(Event) <> QEventMouseButtonDblClick) and
+          (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := QListWidget_itemAt(QListWidgetH(Widget), @MousePos);
+          if (Item <> nil) and
+            ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
+          begin
+            x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
+              nil, Widget);
+            if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+              {signalItemClicked() fires !}
+            else
+              SendEventToParent;
+          end else
+            SendEventToParent;
+        end else
+          SendEventToParent;
       end;
     end;
   end;
@@ -6922,39 +6921,6 @@ begin
     DeliverMessage(Msg);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.SignalItemDoubleClicked
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtListWidget.signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-begin
-  {does nothing at this time wait more featured LCL implementation
-   eg. OnItemDoubleClick}
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.SignalItemClicked
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH); cdecl;
-var
-  Msg: TLMessage;
-  ItemRow: Integer;
-begin
-  {does nothing at this time wait more featured LCL implementation
-   eg. OnItemClick}
-  if LCLObject.ClassType = TCheckListBox then
-  begin
-    FillChar(Msg, SizeOf(Msg), #0);
-    Msg.Msg := LM_CHANGED;
-    ItemRow := QListWidget_row(QListWidgetH(Widget), item);
-    Msg.WParam := ItemRow;
-    DeliverMessage(Msg);
-  end;
-end;
-
 procedure TQtListWidget.signalItemTextChanged(ANewText: PWideString); cdecl;
 var
   Msg: TLMessage;
@@ -6965,6 +6931,24 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(Msg);
+end;
+
+procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH)cdecl;
+var
+  Msg: TLMessage;
+  ItemRow: Integer;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.signalItemClicked');
+  {$endif}
+  if LCLObject.ClassType = TCheckListBox then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    ItemRow := QListWidget_row(QListWidgetH(Widget), Item);
+    Msg.WParam := ItemRow;
+    DeliverMessage(Msg);
+  end;
 end;
 
 procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
