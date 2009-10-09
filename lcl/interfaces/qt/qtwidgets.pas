@@ -805,6 +805,10 @@ type
 
   TQtFloatSpinBox = class(TQtAbstractSpinBox)
   private
+    {$ifdef CPU64 and not WIN64}
+    FParentShowPassed: Integer;
+    FFixValue: Double;
+    {$endif}
     FValueChangedHook: QDoubleSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -818,7 +822,9 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-
+    {$ifdef CPU64 and not WIN64}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    {$endif}
     procedure SignalValueChanged(p1: Double); cdecl;
   end;
   
@@ -6671,6 +6677,10 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtFloatSpinBox.Create');
   {$endif}
+  {$ifdef CPU64 and not WIN64}
+  FFixValue := 0;
+  FParentShowPassed := 0;
+  {$endif}
   Result := QDoubleSpinBox_create();
 end;
 
@@ -6716,6 +6726,30 @@ begin
   QDoubleSpinBox_hook_destroy(FValueChangedHook);
   inherited DetachEvents;
 end;
+
+{$ifdef CPU64 and not WIN64}
+{$note this is workaround for qt-4.5.2(3) 64bit bug when
+ QDoubleSpinBox looses it's value inside QEventShowToParent}
+function TQtFloatSpinBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  if FParentShowPassed = 0 then
+    FFixValue := getValue;
+
+  Result := inherited EventFilter(Sender, Event);
+
+  if (FParentShowPassed = 1) and
+    (FFixValue <> getValue) then
+  begin
+    inc(FParentShowPassed);
+    setValue(FFixValue);
+  end;
+
+  if (QEvent_type(Event) = QEventShowToParent) and
+    (FParentShowPassed = 0) then
+    inc(FParentShowPassed);
+end;
+{$endif}
 
 procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
 var
