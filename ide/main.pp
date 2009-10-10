@@ -11344,6 +11344,15 @@ begin
   end;
 end;
 
+function GetFPCMessage(ALine: TLazMessageLine; var FileName: String; var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
+begin
+  FileName:=ALine.Filename;
+  CaretPos.x:=ALine.Column;
+  CaretPos.y:=ALine.LineNumber;
+  ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
+  Result:=True;
+end;
+
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
 var MaxMessages: integer;
@@ -11353,7 +11362,7 @@ var MaxMessages: integer;
   MsgType: TFPCErrorType;
   SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
-  CurMsg, CurDir: string;
+  CurDir: string;
   NewFilename: String;
 begin
   Result:=false;
@@ -11364,8 +11373,8 @@ begin
     // search relevant message (first error, first fatal)
     Index:=0;
     while (Index<MaxMessages) do begin
-      CurMsg:=MessagesView.VisibleItems[Index].Msg;
-      if ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType) then
+      // ParseFPCMessage doesn't support multilingual messages, by GetFPCMessage
+      if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
       end;
@@ -11379,9 +11388,9 @@ begin
   if MessagesView.ExecuteMsgLinePlugin(imqfoJump) then exit;
 
   // default: jump to source position
-  MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
-  if ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType)
+  if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) 
   then begin
+    CurDir:=MessagesView.VisibleItems[Index].Directory;
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
       NewFilename:=AppendPathDelim(CurDir)+Filename;
@@ -11441,7 +11450,6 @@ procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
 var
   Index: integer;
   MaxMessages: integer;
-  CurMsg: String;
   Filename: string;
   LogCaretXY: TPoint;
   MsgType: TFPCErrorType;
@@ -11471,8 +11479,7 @@ begin
     if(Index=OldIndex) or (RoundCount>1) then exit;
 
     // check if it is an error
-    CurMsg:=MessagesView.VisibleItems[Index].Msg;
-    if (ParseFPCMessage(CurMsg,Filename,LogCaretXY,MsgType)) then
+    if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) then
     begin
       if MsgType in [etError,etFatal,etPanic] then break;
     end;

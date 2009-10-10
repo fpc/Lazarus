@@ -552,9 +552,9 @@ var i, j, FilenameEndPos: integer;
       fLastMessageType:=omtFPC;
       if CompStr('Panic',s,p) then
         fLastErrorType:=etPanic
-      else if CompStr('Fatal: ',s,p) then
+      else if CompStr('Fatal: ',s,p) or CompStr(FErrorNames[etFatal], s, p) then
         fLastErrorType:=etFatal
-      else if CompStr('Error: ',s,p) then
+      else if CompStr('Error: ',s,p) or CompStr(FErrorNames[etError], s, p) then
         fLastErrorType:=etError
       else if CompStr('Closing script ppas.sh',s,p) then begin
         // linker error
@@ -565,7 +565,7 @@ var i, j, FilenameEndPos: integer;
         CurrentMessageParts.Values['Stage']:='Linker'
       else
         CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
 
       NewLine:=copy(s,p,length(s));
       if fLastErrorType in [etPanic,etFatal] then begin
@@ -599,11 +599,11 @@ var i, j, FilenameEndPos: integer;
   function CheckForNoteMessages(p: integer): boolean;
   begin
     Result:=false;
-    if CompStr('Note: ',s,p) then begin
+    if CompStr('Note: ',s,p) or CompStr(FErrorNames[etNote], s, p) then begin
       DoAddFilteredLine(copy(s,p,length(s)));
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
       Result:=true;
       exit;
     end;
@@ -879,7 +879,7 @@ begin
       fLastErrorType:=MsgType;
       fLastMessageType:=omtFPC;
       CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FErrorNames[fLastErrorType];
+      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
       CurrentMessageParts.Values['Line']:=
                  copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
       CurrentMessageParts.Values['Column']:=
