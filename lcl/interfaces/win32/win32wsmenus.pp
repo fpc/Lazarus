@@ -157,6 +157,11 @@ type
     TextSize: TSize;
   end;
 
+function GetLastErrorReport: AnsiString;
+begin
+  Result := IntToStr(GetLastError) + ' : ' + UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)));
+end;
+
 (* Returns index of the character in the menu item caption that is displayed
    as underlined and is therefore the hot key of the menu item.
    If the caption does not contain any underlined character, 0 is returned.
@@ -1235,6 +1240,7 @@ begin
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
     MenuInfo.fMask := MIIM_SUBMENU;
+
     if GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
     begin
       // the parent menu item is not defined with submenu flag
@@ -1243,7 +1249,7 @@ begin
       begin
         MenuInfo.hSubmenu := ParentMenuHandle;
         if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
-          DebugLn(['SetMenuItemInfo failed: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
+          DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
       end;
     end;
   end;
@@ -1286,7 +1292,7 @@ begin
       fType := fType or MFT_RIGHTJUSTIFY;
   end;
   if not InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo) then
-    DebugLn(['InsertMenuItem failed with error: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
+    DebugLn(['InsertMenuItem failed with error: ', GetLastErrorReport]);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1297,31 +1303,38 @@ end;
 
 class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
-  ParentOfParent: HMENU;
+  ParentOfParentHandle, ParentHandle: HMENU;
   MenuInfo: MENUITEMINFO;
 begin
   if Assigned(AMenuItem.Parent) then
   begin
-    RemoveMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+    ParentHandle := AMenuItem.Parent.Handle;
+    RemoveMenu(ParentHandle, AMenuItem.Command, MF_BYCOMMAND);
     // convert submenu to a simple menu item if needed
-    if (GetMenuItemCount(AMenuItem.Parent.Handle) = 0) and
-       Assigned(AMenuItem.Parent.Parent) and
+    if (GetMenuItemCount(ParentHandle) = 0) and Assigned(AMenuItem.Parent.Parent) and
        AMenuItem.Parent.Parent.HandleAllocated then
     begin
-      ParentOfParent := AMenuItem.Parent.Parent.Handle;
+      ParentOfParentHandle := AMenuItem.Parent.Parent.Handle;
       FillChar(MenuInfo, SizeOf(MenuInfo), 0);
       with MenuInfo do
       begin
         cbSize := menuiteminfosize;
         fMask := MIIM_SUBMENU;
       end;
-      GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
+      GetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
       // the parent menu item is defined with submenu flag then reset it
       if MenuInfo.hSubmenu <> 0 then
       begin
         MenuInfo.hSubmenu := 0;
-        if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
-          DebugLn(['SetMenuItemInfo failed: ', GetLastError, ' : ', UTF8ToConsole(AnsiToUtf8(GetLastErrorText(GetLastError)))]);
+        if not SetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo) then
+          DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
+        // Set menu item info destroys/corrupts our internal popup menu for the
+        // unknown reason. We need to recreate it.
+        if not IsMenu(ParentHandle) then
+        begin
+          ParentHandle := CreatePopupMenu;
+          AMenuItem.Parent.Handle := ParentHandle;
+        end;
       end;
     end;
   end;
