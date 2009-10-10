@@ -574,9 +574,10 @@ function TWinCEWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   LP: TLogPen;
 begin
-  LP := LogPen;
-  Lp.lopnColor := Windows.COLORREF(ColorToRGB(Lp.lopnColor));
   Assert(False, 'Trace:[TWinCEWidgetSet.CreatePenIndirect]');
+  LP := LogPen;
+  LP.lopnColor := Windows.COLORREF(ColorToRGB(LP.lopnColor));
+  LP.lopnStyle := LP.lopnStyle and PS_STYLE_MASK;
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 end;
 
