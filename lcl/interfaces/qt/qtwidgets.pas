@@ -6882,7 +6882,12 @@ begin
           SendEventToParent;
       end;
       else
+      begin
+        {do not change selection if mousepressed and mouse moved}
+        Result := (QEvent_type(Event) = QEventMouseMove) and
+          hasFocus and (QApplication_mouseButtons() > 0);
         QEvent_ignore(Event);
+      end;
     end;
   end;
 end;
@@ -9315,6 +9320,13 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      else
+      begin
+        {do not change selection if mousepressed and mouse moved}
+        Result := (QEvent_type(Event) = QEventMouseMove) and
+          hasFocus and (QApplication_mouseButtons() > 0);
+        QEvent_ignore(Event);
+      end;
     end;
   end;
 end;
