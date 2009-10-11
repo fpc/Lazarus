@@ -56,8 +56,7 @@ type
     procedure CustomCreateContentTreeItem(Sender: TCustomTreeView; var ATreeNode: TTreenode);
     procedure AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
   public
-    constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
-    destructor Destroy; override;
+    constructor Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
     procedure DoFill(ParentNode: TTreeNode);
   end;
   
@@ -70,8 +69,7 @@ type
     fChm: Tobject;
     procedure AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
   public
-    constructor Create(AListView: TListView; AStream: TStream; AChm: TObject);
-    destructor Destroy; override;
+    constructor Create(AListView: TListView; ASiteMap: TChmSiteMap; AChm: TObject);
     procedure DoFill;
   end;
 
@@ -123,20 +121,13 @@ begin
     AddItem(AItem.Children.Item[X], NewNode);
 end;
 
-constructor TContentsFiller.Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean; AChm: TObject);
+constructor TContentsFiller.Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
 begin
   inherited Create;
   fTreeView := ATreeView;
-  fSitemap := TChmSiteMap.Create(stTOC);
-  fSitemap.LoadFromStream(AStream);
+  fSitemap := ASitemap;
   fStop := StopBoolean;
   fChm := AChm;
-end;
-
-destructor TContentsFiller.Destroy;
-begin
-  fSitemap.Free;
-  inherited Destroy;
 end;
 
 procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
@@ -178,19 +169,13 @@ begin
 
 end;
 
-constructor TIndexFiller.Create(AListView: TListView; AStream: TStream; AChm: TObject);
+constructor TIndexFiller.Create(AListView: TListView;  ASiteMap: TChmSiteMap; AChm: TObject);
 begin
  inherited Create;
  fListView := AListView;
- fSitemap := TChmSiteMap.Create(stIndex);
- fSitemap.LoadFromStream(AStream);
+ fSitemap := ASiteMap;
  fChm := AChm;
-end;
 
-destructor TIndexFiller.Destroy;
-begin
-  fSitemap.Free;
-  inherited Destroy;
 end;
 
 procedure TIndexFiller.DoFill;

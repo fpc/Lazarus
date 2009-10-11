@@ -254,7 +254,8 @@ begin
     //WriteLn('LeftLoop');
 
     Result:= fHttpClient.Stream;
-    Result.Position := 0;
+    if Result <> nil then
+      Result.Position := 0;
     //fDataStream.SaveToFile('temp.txt');
     //Application.Terminate;
     fHttpClient.Free;

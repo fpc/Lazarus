@@ -5,9 +5,15 @@ unit chmcontentprovider;
 //{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
+
 //{$else}
 //{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
 //{$endif}
+{$if (fpc_version=2) and (fpc_release>5) ((fpc_version=2) and (fpc_release=5) and (fpc_patch>0))}
+{$Note Compiling lhelp *with* binary index and toc support}
+{$DEFINE CHM_BINARY_INDEX_TOC}
+{$endif}
+
 
 {off $DEFINE CHM_DEBUG_TIME}
 {off $DEFINE CHM_SEARCH}
@@ -96,7 +102,7 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, LCLType;
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType;
 
 function GetURIFileName(AURI: String): String;
 var
@@ -289,6 +295,7 @@ var
  fChm: TChmReader;
  ParentNode: TTreeNode;
  i: Integer;
+ SM: TChmSiteMap;
  HasSearchIndex: Boolean = False;
 begin
   if fFillingToc = True then begin
@@ -307,17 +314,26 @@ begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
+    {$IFDEF CHM_BINARY_INDEX_TOC}
+    SM := fChm.GetTOCSitemap;
+    {$ELSE}
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
-      Stream.position := 0;
+      SM := TChmSiteMap.Create(stTOC);
+      SM.LoadFromStream(Stream);
+      Stream.Free;
+    end;
+    {$ENDIF}
+    if SM <> nil then begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-      with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer, fChm) do begin
+
+      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, fChm) do begin
         DoFill(ParentNode);
         Free;
       end;
-      Stream.Free;
+      SM.Free;
       if (fContentsTree.Selected = nil) and (fHistory.Count > 0) then
         SelectTreeItemFromURL(fHistory.Strings[fHistoryIndex]);
     end;
@@ -326,14 +342,22 @@ begin
     // we fill the index here too but only for the main file
     if fChms.IndexOfObject(fChm) < 1 then
     begin
-      Stream := fchms.GetObject(fChm.IndexFile);
+      {$IFDEF CHM_BINARY_INDEX_TOC}
+      SM := fChm.GetTOCSitemap;
+      {$ELSE}
+      Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
       if Stream <> nil then begin
-        Stream.position := 0;
-        with TIndexFiller.Create(fIndexView, Stream, fChm) do begin;
+        SM := TChmSiteMap.Create(stTOC);
+        SM.LoadFromStream(Stream);
+        Stream.Free;
+      end;
+      {$ENDIF}
+      if SM <> nil then begin
+        with TIndexFiller.Create(fIndexView, SM, fChm) do begin
           DoFill;
           Free;
         end;
-        Stream.Free;
+        SM.Free;
       end;
     end;
   end;
