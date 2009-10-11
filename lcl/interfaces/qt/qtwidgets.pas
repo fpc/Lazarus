@@ -6881,6 +6881,8 @@ begin
         end else
           SendEventToParent;
       end;
+      else
+        QEvent_ignore(Event);
     end;
   end;
 end;

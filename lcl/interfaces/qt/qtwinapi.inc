@@ -1863,8 +1863,23 @@ function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
   Widget: TQtWidget;
+  {$IFDEF MSWINDOWS}
+  AWin: HWND;
+  {$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
+  AWin := Windows.GetCapture;
+  if AWin <> 0 then
+    w := QWidget_find(AWin)
+  else
+    w := nil;
+
+  if (w = nil) and (QApplication_mouseButtons() > 0) then
+    w := QApplication_focusWidget();
+  {$ELSE}
   w := QWidget_mouseGrabber();
+  {$ENDIF}
+
   if w <> nil then
   begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
@@ -3991,7 +4006,13 @@ begin
   w := TQtWidget(GetCapture);
   Result := w <> nil;
   if Result then
+  begin
+    {$IFDEF MSWINDOWS}
+    windows.ReleaseCapture;
+    {$ELSE}
     w.releaseMouse();
+    {$ENDIF}
+  end;
   {$ifdef VerboseQtWinAPI}
   WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
   {$endif}
@@ -4387,7 +4408,11 @@ begin
     if Result <> 0 then
       ReleaseCapture;
     if AHandle <> 0 then
+     {$IFDEF MSWINDOWS}
+      Windows.SetCapture(AHandle);
+     {$ELSE}
       TQtWidget(AHandle).grabMouse();
+     {$ENDIF}
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
