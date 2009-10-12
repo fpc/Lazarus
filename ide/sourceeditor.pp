@@ -612,9 +612,9 @@ type
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     function EditorGetIndent(Sender: TSynCustomBeautifier; Editor: TObject;
-                              LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
-                              Reason: TSynEditorCommand;
-                              SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+                             LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+                             Reason: TSynEditorCommand;
+                             SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -6742,6 +6742,7 @@ function TSourceNotebook.EditorGetIndent(Sender: TSynCustomBeautifier; Editor: T
   LogCaret: TPoint; var FirstLinePos, LinesCount: Integer; Reason: TSynEditorCommand;
   SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 begin
+  Result:=false;
   if Assigned(OnGetIndent) then
     Result := OnGetIndent(Sender, GetActiveSE, LogCaret, FirstLinePos, LinesCount,
                           Reason, SetIndentProc);
