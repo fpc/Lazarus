@@ -53,7 +53,7 @@ type
      LinePos: Integer;
      Indent: Integer;                       // Indent in spaces (Logical = Physical)
      RelativeToLinePos: Integer = 0;        // Intend specifies +/- offset from intend on RTLine
-                                            // 0: for absolute intend
+                                            // 0: for absolute indent
      IndentChars: String = '';              // use the following string to indent; maybe empty, single char, or string
      IndentCharsFromLinePos: Integer = -1;  // Line for tab/space mix; set to -1 if unknown
      KeepOldIndent: Boolean = False         // True: Keep existing indent, and add (or subtract) new indent
