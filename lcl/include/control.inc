@@ -2452,6 +2452,7 @@ begin
   Result:=AutoSize
           and (not AutoSizing)
           and (not (csDestroying in ComponentState))
+          and ((not (csDesigning in ComponentState)) or (Parent<>nil)) // do not autosize forms in the designer
           and IsControlVisible;
   {$IFDEF VerboseCanAutoSize}
   if (not Result) and AutoSize then begin
