@@ -133,7 +133,7 @@ end;
 function FontWeightFromString(S: String): TCSSFontWeight;
 begin
   Result := cfwNormal;
-  S := LowerCase(S);
+  S := trim(LowerCase(S));
   if S = 'bold' then
     Result := cfwBold
   else if S = 'bolder' then
@@ -792,13 +792,13 @@ begin
       if Args.Count > 3 then ; // background attachment
       if Args.Count > 4 then ; // background position
     end
-    else if Command = 'font-family' then
+    else if (Command = 'font-family') and (Args.Count > 0) then
       Font.Name := Args[0]
-    else if Command = 'font-size' then
+    else if (Command = 'font-size') and (Args.Count > 0) then
       Font.Size := Args[0]
-    else if Command = 'font-style' then
+    else if (Command = 'font-style') and (Args.Count > 0) then
       Font.Style := CSSFontStyleFromName(Args[0])
-    else if Command = 'font-weight' then
+    else if (Command = 'font-weight') and (Args.Count > 0) then
       Font.Weight := FontWeightFromString(Args[0]);
 
     Args.Free;
