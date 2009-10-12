@@ -101,12 +101,20 @@ type
     procedure Changing; virtual;
     procedure Changed; virtual;
 
+    // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
+    //procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
+    //procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
+
     procedure FillRect(const ARect: TRect); virtual;
     procedure FillRect(X1,Y1,X2,Y2: Integer);
+
+    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
   end;
 
 procedure InitAggPasRawImageDescriptor(APixelFormat: TAggFPImgPixelFormat;
                        AWidth, AHeight: cardinal; out Desc: TRawImageDescription);
+function AggToLCLColor(const c: TAggColor): TColor;
+function LCLToAggColor(const c: TColor): TAggColor;
 
 implementation
 
@@ -138,6 +146,17 @@ begin
       AlphaShift := 24;
     end;
   end;
+end;
+
+function AggToLCLColor(const c: TAggColor): TColor;
+begin
+  Result:=RGBToColor(c.r,c.g,c.b);
+end;
+
+function LCLToAggColor(const c: TColor): TAggColor;
+begin
+  Result.a:=0;
+  RedGreenBlue(ColorToRGB(c),Result.r,Result.g,Result.b);
 end;
 
 { TAggLCLCanvas }
@@ -247,6 +266,15 @@ begin
   Path.m_path.line_to(X1,Y2);
   AggClosePolygon;
   AggDrawPath(AGG_FillOnly);
+end;
+
+procedure TAggLCLCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor;
+  ADirection: TGradientDirection);
+begin
+  raise Exception.Create('TAggLCLCanvas.GradientFill ToDo');
+  AggFillLinearGradient(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom,
+    LCLToAggColor(AStart),LCLToAggColor(AStop));
+  FillRect(ARect);
 end;
 
 { TAggLCLBrush }

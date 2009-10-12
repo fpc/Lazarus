@@ -53,6 +53,9 @@ begin
     Line(12,12,22,22);
 
     FillRect(40,10,50,20);
+    Ellipse(55,10,65,20);
+
+    GradientFill(Rect(70,10,80,20),clRed,clBlue,gdVertical);
   end;
 
   // convert to LCL native pixel format
@@ -69,6 +72,7 @@ begin
     Line(24,24,34,34);
 
     FillRect(40,22,50,32);
+    Ellipse(55,22,65,32);
   end;
 end;
 
