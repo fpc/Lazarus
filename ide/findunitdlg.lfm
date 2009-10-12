@@ -1,13 +1,14 @@
 object FindUnitDialog: TFindUnitDialog
-  Left = 360
+  Left = 399
   Height = 514
-  Top = 345
+  Top = 202
   Width = 584
   ActiveControl = InfoTreeView
   ClientHeight = 514
   ClientWidth = 584
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poDesktopCenter
   LCLVersion = '0.9.29'
   object BtnPanel: TPanel
     Left = 0
@@ -24,10 +25,10 @@ object FindUnitDialog: TFindUnitDialog
     ClientWidth = 584
     TabOrder = 0
     object CancelButton: TButton
-      Left = 479
+      Left = 465
       Height = 29
       Top = 7
-      Width = 98
+      Width = 112
       Align = alRight
       AutoSize = True
       Caption = 'CancelButton'
@@ -36,10 +37,10 @@ object FindUnitDialog: TFindUnitDialog
       TabOrder = 0
     end
     object OkButton: TButton
-      Left = 398
+      Left = 371
       Height = 29
       Top = 7
-      Width = 75
+      Width = 88
       Align = alRight
       AutoSize = True
       Caption = 'OkButton'
@@ -58,14 +59,14 @@ object FindUnitDialog: TFindUnitDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
-    ClientHeight = 305
-    ClientWidth = 568
+    ClientHeight = 302
+    ClientWidth = 564
     TabOrder = 1
     object InfoTreeView: TTreeView
       Left = 0
-      Height = 285
+      Height = 282
       Top = 0
-      Width = 568
+      Width = 564
       Align = alClient
       DefaultItemHeight = 19
       TabOrder = 0
@@ -73,8 +74,8 @@ object FindUnitDialog: TFindUnitDialog
     object ProgressBar1: TProgressBar
       Left = 0
       Height = 20
-      Top = 285
-      Width = 568
+      Top = 282
+      Width = 564
       Align = alBottom
       TabOrder = 1
     end
