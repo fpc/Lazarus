@@ -674,11 +674,14 @@ begin
 end;
 
 function TCSSReader.FindStatement(out AStatement: String): Boolean;
+const
+  BufSize = 1024;
 var
  Buf: char;
- Buf1: array[0..255] of char;
+ Buf1: array[0..BufSize-1] of char;
  RCount: Integer;
- FStart, FEnd: Integer;
+ FStart, FEnd: PtrInt;
+ cnt: PtrInt;
 begin
   Result := False;
   EatWhiteSpace;
@@ -694,8 +697,12 @@ begin
     if (Buf = '/') and CheckIsComment then
     begin
       FStream.Position := FStart;
-      RCount := FStream.Read(Buf1[0], FEnd-FStart-1);
-      AStatement := AStatement + Copy(Buf1,0,RCount);
+      cnt:=FEnd-FStart-1;
+      if cnt>0 then
+      begin
+        RCount := FStream.Read(Buf1[0], cnt);
+        AStatement := AStatement + Copy(Buf1,0,RCount);
+      end;
       FStream.Position := FEnd+1;
       EatComment;
       FStart := FStream.Position;
@@ -704,9 +711,19 @@ begin
     begin
       Result := True;
       FStream.Position := FStart;
-      RCount := FStream.Read(Buf1[0], FEnd-FStart);
-      AStatement := AStatement + Copy(Buf1,0,RCount);
+      cnt:=FEnd-FStart;
+      if cnt>0 then begin
+        RCount := FStream.Read(Buf1[0], cnt);
+        AStatement := AStatement + Copy(Buf1,0,RCount);
+      end;
       break;
+    end else begin
+      cnt:=FEnd-FStart;
+      if cnt=BufSize then begin
+        RCount := FStream.Read(Buf1[0], cnt);
+        AStatement := AStatement + Copy(Buf1,0,RCount);
+        FStart := FEnd;
+      end;
     end;
   end;
 end;
