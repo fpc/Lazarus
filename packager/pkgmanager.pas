@@ -243,7 +243,7 @@ type
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function AddProjectDependency(AProject: TProject;
-                                  ADependency: TPkgDependency): TModalResult;
+                                  ADependency: TPkgDependency): TModalResult; override;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
@@ -2158,7 +2158,7 @@ begin
     APackage.Name)<>nil
   then begin
     // package already there
-    Result:=mrCancel;
+    Result:=mrOk;
     exit;
   end;
   ProvidingAPackage:=PackageGraph.FindPackageProvidingName(

@@ -92,6 +92,8 @@ type
     procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
+    function AddProjectDependency(AProject: TProject;
+                                  ADependency: TPkgDependency): TModalResult; virtual; abstract;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
