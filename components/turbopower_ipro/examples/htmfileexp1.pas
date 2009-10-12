@@ -20,7 +20,7 @@ uses
     JPeg,
     ImageDLLLoader, PNGLoader, LinarBitmap, //from ImageFileLib of Michael Vinther: http://www.logicnet.dk/lib/
   {$ENDIF}
-  IpHtml, ExtCtrls, StdCtrls, FileUtil;
+  IpUtils, IpHtml, ExtCtrls, StdCtrls, FileUtil;
 
 type
   TSimpleIpHtml = class(TIpHtml)
@@ -63,19 +63,37 @@ type
 var
   FHtmFileExp1: TFHtmFileExp1;
 
+function ProgramDirectory(BundleRoot: boolean): string;
+
 implementation
 
-uses
-  IpUtils;
+function ProgramDirectory(BundleRoot: boolean): string;
+const
+  BundlePostFix='.app/Contents/MacOS';
+begin
+  Result:=FileUtil.ProgramDirectory;
+  if BundleRoot
+  and (RightStr(ChompPathDelim(Result),length(BundlePostFix))=BundlePostFix) then
+    Result:=ExtractFilePath(LeftStr(Result,length(Result)-length(BundlePostFix)));
+end;
+
 
 {--------------------------------------}
 {-EVENTS-----------}
 
 procedure TFHtmFileExp1.FormCreate(Sender: TObject);
+var
+  Dir: String;
+  Filename: String;
 begin
   SL := TStringList.Create;
   CurrPos := -1;
-  OpenHTMLFile ('index.html', True, False);
+  Dir:=ProgramDirectory(false);
+  SetCurrentDirUTF8(Dir);
+  Filename:=ParamStrUTF8(1);
+  if not FileExistsUTF8(Filename) then
+    Filename:='index.html';
+  OpenHTMLFile (Filename, True, False);
 end;
 
 procedure TFHtmFileExp1.FormDestroy(Sender: TObject);
