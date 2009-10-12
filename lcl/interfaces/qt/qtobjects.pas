@@ -274,14 +274,17 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FRopMode: Integer;
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
     SelPen: TQtPen;
     PenColor: TQColor;
+    function GetRop: Integer;
     procedure RestorePenColor;
     procedure RestoreTextColor;
+    procedure SetRop(const AValue: Integer);
   public
     { public fields }
     Widget: QPainterH;
@@ -366,6 +369,7 @@ type
     procedure save;
     procedure restore;
     procedure translate(dx: Double; dy: Double);
+    property Rop2: Integer read GetRop write SetRop;
   end;
   
   { TQtPixmap }
@@ -673,6 +677,26 @@ const
 {ctPrimarySelection  } QClipboardSelection,
 {ctSecondarySelection} QClipboardSelection,
 {ctClipboard         } QClipboardClipboard
+  );
+
+  {TODO: test unsupported modes by real CompositionMode}
+  R2ToQtRasterOp: array [0..R2_XORPEN] of QPainterCompositionMode = (
+    {R2_BLACK      } QPainterCompositionMode_SourceOver, // not supported
+    {R2_COPYPEN    } QPainterCompositionMode_SourceOver, // default
+    {R2_MASKNOTPEN } QPainterRasterOp_NotSourceAndDestination,
+    {R2_MASKPEN    } QPainterRasterOp_SourceAndDestination,
+    {R2_MASKPENNOT } QPainterRasterOp_SourceAndNotDestination,
+    {R2_MERGENOTPEN} QPainterCompositionMode_SourceOver, // not supported
+    {R2_MERGEPEN   } QPainterRasterOp_SourceOrDestination,
+    {R2_MERGEPENNOT} QPainterCompositionMode_SourceOver, // not supported
+    {R2_NOP        } QPainterCompositionMode_Destination, // not supported
+    {R2_NOT        } QPainterCompositionMode_SourceOut, // not supported
+    {R2_NOTCOPYPEN } QPainterRasterOp_NotSource,
+    {R2_NOTMASKPEN } QPainterRasterOp_NotSourceAndNotDestination,
+    {R2_NOTMERGEPEN} QPainterRasterOp_NotSourceOrNotDestination,
+    {R2_NOTXORPEN  } QPainterRasterOp_NotSourceXorDestination,
+    {R2_WHITE      } QPainterCompositionMode_SourceOver, // not supported
+    {R2_XORPEN     } QPainterRasterOp_SourceXorDestination
   );
 
 const
@@ -1749,6 +1773,7 @@ begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
     end;
   end;
+  FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -1759,6 +1784,7 @@ constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
   Parent := nil;
   Widget := QPainter_Create(ADevice);
+  FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -1767,6 +1793,7 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  FRopMode := R2_COPYPEN;
   Widget := APainter;
   Parent := nil;
   FOwnPainter := False;
@@ -2035,6 +2062,11 @@ begin
   Qpainter_setPen(Widget, @PenColor);
 end;
 
+function TQtDeviceContext.GetRop: Integer;
+begin
+  Result := FRopMode;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.RestoreTextColor
   Params:  None
@@ -2052,7 +2084,17 @@ begin
   QPen_color(CurPen, @PenColor);
   TxtColor := PenColor;
   ColorRefToTQColor(vTextColor, TxtColor);
-  Qpainter_setPen(Widget, @txtColor);
+  QPainter_setPen(Widget, @txtColor);
+end;
+
+procedure TQtDeviceContext.SetRop(const AValue: Integer);
+var
+  QtROPMode: QPainterCompositionMode;
+begin
+  FRopMode := AValue;
+  QtRopMode := R2ToQtRasterOp[AValue];
+  if QPainter_compositionMode(Widget) <> QtRopMode then
+    QPainter_setCompositionMode(Widget, QtROPMode);
 end;
 
 {------------------------------------------------------------------------------

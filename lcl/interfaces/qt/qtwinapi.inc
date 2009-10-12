@@ -640,7 +640,6 @@ var
 begin
   Result := 0;
   QtPen := TQtPen.Create(True);
-
   with LogPen do
   begin
     case lopnStyle and PS_STYLE_MASK of
@@ -2609,10 +2608,18 @@ begin
 end;
 
 function TQtWidgetSet.GetROP2(DC: HDC): Integer;
+var
+  QtDC: TQtDeviceContext absolute DC;
 begin
+  {$ifdef VerboseQtWinAPI}
+  writeln('> TQtWidgetSet.GetROP2() DC ',dbghex(DC));
+  {$endif}
   Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetROP2] missing implementation ');
+  if not IsValidDC(DC) then
+    exit;
+  Result := QtDC.Rop2;
+  {$ifdef VerboseQtWinAPI}
+  writeln('< TQtWidgetSet.GetROP2() DC ',dbghex(DC),' Result ',Result);
   {$endif}
 end;
 
@@ -4637,12 +4644,38 @@ begin
     result:=False;
 end;
 
+{------------------------------------------------------------------------------
+  Function: SetROP2
+  Params:  HDC, Raster OP mode
+  Returns: Old Raster OP mode
+
+  Please note that the bitwise raster operation modes, denoted with a
+  RasterOp prefix, are only natively supported in the X11 and
+  raster paint engines.
+  This means that the only way to utilize these modes on the Mac is
+  via a QImage.
+  The RasterOp denoted blend modes are not supported for pens and brushes
+  with alpha components. Also, turning on the QPainter::Antialiasing render
+  hint will effectively disable the RasterOp modes.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+var
+  QtDC: TQtDeviceContext absolute DC;
+begin
+  {$ifdef VerboseQtWinAPI}
+  writeln('TQtWidgetSet.SetROP2() DC ',dbghex(DC),' Mode ',Mode);
+  {$endif}
+  Result := 0;
+  if not IsValidDC(DC) then
+    exit;
+  Result := QtDC.Rop2;
+  QtDC.Rop2 := Mode;
+end;
 
 {------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
   Returns: The new position value
-
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
