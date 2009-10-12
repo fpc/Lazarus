@@ -45,7 +45,7 @@ uses
   { for Get/SetForegroundWindow }
   LCLType, LCLIntf,
   SynEdit, CodeCache, CodeToolManager,
-  SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
+  SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf, IDEDialogs,
   LazConf,
   CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger, CmdLineDebugger,
@@ -1425,6 +1425,7 @@ const
   //);
 var
   Editor: TSourceEditor;
+  MsgResult: TModalResult;
 begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
@@ -1514,8 +1515,12 @@ begin
       then begin
         if EnvironmentOptions.DebuggerShowStopMessage
         then begin
-          MessageDlg(lisExecutionStopped,
-            Format(lisExecutionStoppedOn, [#13#13]), mtInformation, [mbOK],0);
+          MsgResult:=IDEQuestionDialog(lisExecutionStopped,
+            lisExecutionStopped, mtInformation,
+            [mrOK, dlgMouseOptBtnOk, mrYesToAll, lisDoNotShowThisMessageAgain],
+              '');
+          if MsgResult=mrYesToAll then
+            EnvironmentOptions.DebuggerShowStopMessage:=false;
         end;
         FDebugger.FileName := '';
 

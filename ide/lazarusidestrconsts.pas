@@ -1246,6 +1246,7 @@ resourcestring
   dlgMouseOptBtnImport = 'Import';
   dlgMouseOptBtnExport = 'Export';
   dlgMouseOptBtnOk  = 'Ok';
+  lisDoNotShowThisMessageAgain = 'Do not show this message again';
   dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';
   dlgMouseOptPriorLabel = 'Priority';
@@ -3007,7 +3008,6 @@ resourcestring
     +'sOoops, the debugger entered the error state%sSave your work now !%sHit '
     +'Stop, and hope the best, we''re pulling the plug.';
   lisExecutionStopped = 'Execution stopped';
-  lisExecutionStoppedOn = 'Execution stopped%s';
   lisExecutionPaused = 'Execution paused';
   lisExecutionPausedAdress = 'Execution paused%s  Adress: $%s%s  Procedure: %'
     +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
