@@ -14185,6 +14185,7 @@ begin
   if (Reason=ecLineBreak) or (Reason=ecInsertLine) then begin
     SetIndentProc(FirstLinePos+1, Indent, 0,' ');
     DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent]);
+    SrcEditor.CursorScreenXY:=Point(Indent+1,SrcEditor.CursorScreenXY.Y);
   end;
 end;
 
