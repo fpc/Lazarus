@@ -103,6 +103,7 @@ type
     function MainOwnerHasRequirement(PackageName: string): boolean;
     procedure UpdateProgressBar;
     function CheckPackageOnDisk(PkgFilename: string): boolean;
+    function FindQuickFixAddRequirement(PkgName: string): TQuickFixMissingUnitAddRequirement;
   public
     procedure InitWithMsg(Msg: TIDEMessageLine; Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
@@ -275,7 +276,7 @@ begin
         if APackage.FindUnit(MissingUnitName)<>nil then begin
           if MainOwnerHasRequirement(APackage.Name) then begin
             // already in requirements
-          end else begin
+          end else if FindQuickFixAddRequirement(APackage.Name)=nil then begin
             // not yet in requirements -> add a quick fix
             AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,APackage.Name));
           end;
@@ -359,10 +360,14 @@ procedure TFindUnitDialog.AddRequirement(
 var
   AProject: TProject;
   APackage: TLazPackage;
+  NewDependency: TPkgDependency;
 begin
   if MainOwner is TProject then begin
     AProject:=TProject(MainOwner);
-    if PkgBoss.AddProjectDependencies(AProject,Item.PackageName)=mrOk then
+    //debugln(['TFindUnitDialog.AddRequirement project: ',Item.PackageName]);
+    NewDependency:=TPkgDependency.Create;
+    NewDependency.PackageName:=Item.PackageName;
+    if PkgBoss.AddProjectDependency(AProject,NewDependency)=mrOk then
       ModalResult:=mrOK;
   end else if MainOwner is TLazPackage then begin
     APackage:=TLazPackage(MainOwner);
@@ -426,10 +431,10 @@ var
   PkgName: String;
 begin
   Result:=false;
+  PkgName:=ExtractFileNameOnly(PkgFilename);
+  if FindQuickFixAddRequirement(PkgName)<>nil then exit;
   if not FileExistsCached(PkgFilename) then exit;
   //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',PkgFilename]);
-
-  PkgName:=ExtractFileNameOnly(PkgFilename);
 
   XMLConfig:=nil;
   XMLCode:=nil;
@@ -461,6 +466,22 @@ begin
   finally
     XMLConfig.Free;
   end;
+end;
+
+function TFindUnitDialog.FindQuickFixAddRequirement(PkgName: string
+  ): TQuickFixMissingUnitAddRequirement;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if fQuickFixes=nil then exit;
+  for i:=0 to fQuickFixes.Count-1 do begin
+    if TObject(fQuickFixes[i]) is TQuickFixMissingUnitAddRequirement then begin
+      Result:=TQuickFixMissingUnitAddRequirement(fQuickFixes[i]);
+      if SysUtils.CompareText(Result.PackageName,PkgName)=0 then exit;
+    end;
+  end;
+  Result:=nil;
 end;
 
 procedure TFindUnitDialog.InitWithMsg(Msg: TIDEMessageLine; Line: string;
