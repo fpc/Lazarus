@@ -6,12 +6,6 @@ unit
 
 interface
 
-// With this define you can switch use of FreeType or Win32 TrueType font engine
-{DEFINE AGG2D_USE_FREETYPE }
-{$IFDEF AGG_LINUX}
-{$DEFINE AGG2D_USE_FREETYPE}
-{$ENDIF}
-
 uses
  sysutils,
  {$IFDEF AGG_WINDOWS}

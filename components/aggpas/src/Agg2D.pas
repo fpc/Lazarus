@@ -36,9 +36,9 @@ INTERFACE
 {$I agg_mode.inc }
 
 // With this define you can switch use of FreeType or Win32 TrueType font engine
-{DEFINE AGG2D_USE_FREETYPE }
+{off DEFINE AGG2D_USE_FREETYPE }
 {$IFDEF AGG_LINUX}
-{$DEFINE AGG2D_USE_FREETYPE }
+  {$DEFINE AGG2D_USE_FREETYPE }
 {$ENDIF}
 
 uses
@@ -78,10 +78,9 @@ uses
 
 {$IFDEF AGG2D_USE_FREETYPE }
  agg_font_freetype ,
-
-{$ELSE }
+{$ENDIF}
+{$IFDEF AGG2D_USE_WINFONTS}
  agg_font_win32_tt ,
-
 {$ENDIF }
 
  Math ,
@@ -158,10 +157,9 @@ type
 
 {$IFDEF AGG2D_USE_FREETYPE }
  TAggFontEngine = font_engine_freetype_int32;
-
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
  TAggFontEngine = font_engine_win32_tt_int32;
-
 {$ENDIF }
 
  TAggGradient  = (AGG_Solid ,AGG_Linear ,AGG_Radial );
@@ -311,9 +309,8 @@ type
 
    m_imageFlip : boolean;
 
-  {$IFNDEF AGG2D_USE_FREETYPE }
+  {$IFDEF AGG2D_USE_WINFONTS }
    m_fontDC : HDC;
-
   {$ENDIF }
 
    m_fontEngine       : TAggFontEngine;
@@ -579,6 +576,7 @@ type
  function  Rad2Deg(v : double ) : double;
 
  function  Agg2DUsesFreeType : boolean;
+ function  Agg2DUsesWin32TrueType : boolean;
 
  function  BitmapAlphaTransparency(bitmap : TBitmap; alpha : byte ) : boolean;
  
@@ -900,12 +898,18 @@ function Agg2DUsesFreeType : boolean;
 begin
 {$IFDEF AGG2D_USE_FREETYPE }
  result:=true;
-
-{$ELSE }
+{$ELSE}
  result:=false;
-
 {$ENDIF }
+end;
 
+function Agg2DUsesWin32TrueType: boolean;
+begin
+{$IFDEF AGG2D_USE_WINFONTS }
+ result:=true;
+{$ELSE}
+ result:=false;
+{$ENDIF }
 end;
 
 { CONSTRUCT }
@@ -1170,8 +1174,8 @@ begin
 
 {$IFDEF AGG2D_USE_FREETYPE }
  m_fontEngine.Construct;
-
-{$ELSE }
+{$ENDIF}
+{$IFDEF AGG2D_USE_WINFONTS}
  m_fontDC:=GetDC(0 );
 
  m_fontEngine.Construct(m_fontDC );
@@ -1207,7 +1211,7 @@ begin
  m_fontEngine.Destruct;
  m_fontCacheManager.Destruct;
 
-{$IFNDEF AGG2D_USE_FREETYPE }
+{$IFDEF AGG2D_USE_WINFONTS }
  ReleaseDC(0 ,m_fontDC );
 
 {$ENDIF }
@@ -2501,7 +2505,8 @@ begin
  else
   m_fontEngine.height_(worldToScreen(height ) );
 
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
  m_fontEngine.hinting_(m_textHints );
 
  if bold then

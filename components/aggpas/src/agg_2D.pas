@@ -35,7 +35,7 @@ INTERFACE
 {$I agg_mode.inc }
 
 // With this define uncommented you can use FreeType font engine
-{$DEFINE AGG2D_USE_FREETYPE }
+{ $DEFINE AGG2D_USE_FREETYPE }
 
 uses
  agg_basics ,
@@ -74,7 +74,8 @@ uses
 {$IFDEF AGG2D_USE_FREETYPE }
  agg_font_freetype ,
 
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
  agg_font_win32_tt ,
  Windows ,
 
@@ -150,7 +151,8 @@ type
 {$IFDEF AGG2D_USE_FREETYPE }
  FontEngine = font_engine_freetype_int32;
 
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
  FontEngine = font_engine_win32_tt_int32;
 
 {$ENDIF }
@@ -304,13 +306,13 @@ type
 
    m_pathTransform ,m_strokeTransform : conv_transform;
 
-  {$IFNDEF AGG2D_USE_FREETYPE }
-   m_fontDC : HDC;
-
-  {$ENDIF }
-
+  {$IFNDEF AGG2D_NO_FONT}
    m_fontEngine       : FontEngine;
    m_fontCacheManager : font_cache_manager;
+  {$ENDIF}
+  {$IFDEF AGG2D_USE_WINFONTS }
+   m_fontDC : HDC;
+  {$ENDIF }
 
   // Other Pascal-specific members
    m_gammaNone  : gamma_none;
@@ -625,6 +627,7 @@ type
             interpolator : span_interpolator_linear_ptr );
 
  function  Agg2DUsesFreeType : boolean;
+ function  Agg2DUsesWin32TrueType : boolean;
 
 IMPLEMENTATION
 { LOCAL VARIABLES & CONSTANTS }
@@ -810,14 +813,18 @@ begin
 {$IFDEF AGG2D_USE_FREETYPE }
  m_fontEngine.Construct;
 
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
+
  m_fontDC:=GetDC(0 );
 
  m_fontEngine.Construct(m_fontDC );
 
 {$ENDIF }
-
+{$IFNDEF AGG2D_NO_FONT}
  m_fontCacheManager.Construct(@m_fontEngine );
+{$ENDIF}
+
 
  lineCap (m_lineCap );
  lineJoin(m_lineJoin );
@@ -843,10 +850,11 @@ begin
  m_convCurve.Destruct;
  m_convStroke.Destruct;
 
+{$IFNDEF AGG2D_NO_FONT}
  m_fontEngine.Destruct;
  m_fontCacheManager.Destruct;
-
-{$IFNDEF AGG2D_USE_FREETYPE }
+{$ENDIF}
+{$IFDEF AGG2D_USE_WINFONTS }
  ReleaseDC(0 ,m_fontDC );
 
 {$ENDIF }
@@ -2088,8 +2096,9 @@ end;
 { FLIPTEXT }
 procedure Agg2D.flipText(flip : boolean );
 begin
+ {$IFNDEF AGG2D_NO_FONT}
  m_fontEngine.flip_y_(flip );
-
+ {$ENDIF}
 end;
 
 { FONT }
@@ -2120,7 +2129,9 @@ begin
  else
   m_fontEngine.height_(worldToScreen(height ) );
 
-{$ELSE }
+{$ENDIF }
+{$IFDEF AGG2D_USE_WINFONTS}
+
  m_fontEngine.hinting_(m_textHints );
 
  if bold then
@@ -2168,6 +2179,11 @@ end;
 
 { TEXTWIDTH }
 function Agg2D.textWidth(str : char_ptr ) : double;
+{$IFDEF AGG2D_NO_FONT}
+begin
+  Result:=0;
+end;
+{$ELSE}
 var
  x ,y  : double;
  first : boolean;
@@ -2205,6 +2221,7 @@ begin
   result:=screenToWorld(x );
 
 end;
+{$ENDIF}
 
 { TEXT }
 procedure Agg2D.text(
@@ -2212,6 +2229,11 @@ procedure Agg2D.text(
            roundOff : boolean = false;
            ddx : double = 0.0;
            ddy : double = 0.0 );
+{$IFDEF AGG2D_NO_FONT}
+begin
+
+end;
+{$ELSE}
 var
  dx ,dy ,asc ,start_x ,start_y : double;
 
@@ -2329,6 +2351,7 @@ begin
   end;
 
 end;
+{$ENDIF}
 
 { RESETPATH }
 procedure Agg2D.resetPath;
@@ -3294,6 +3317,17 @@ begin
 
 {$ENDIF }
 
+end;
+
+function Agg2DUsesWin32TrueType: boolean;
+begin
+{$IFDEF AGG2D_USE_WINFONTS }
+ result:=true;
+
+{$ELSE }
+ result:=false;
+
+{$ENDIF }
 end;
 
 END.

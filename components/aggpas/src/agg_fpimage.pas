@@ -14,8 +14,19 @@ unit agg_fpimage;
 
 interface
 
-{$IFNDEF WINDOWS}
-{$DEFINE AGG2D_USE_FREETYPE}
+{$IFDEF LINUX}
+  {$DEFINE AGG2D_USE_FREETYPE}
+{$ENDIF}
+{$IFDEF FREEBSD}
+  {$DEFINE AGG2D_USE_FREETYPE}
+{$ENDIF}
+{$IFDEF WINDOWS}
+  {$DEFINE AGG2D_USE_WINFONTS}
+{$ENDIF}
+{$IFNDEF AGG2D_USE_WINFONTS}
+ {$IFNDEF AGG2D_USE_FREETYPE}
+  {$DEFINE AGG2D_NO_FONT}
+ {$ENDIF}
 {$ENDIF}
 
 uses
@@ -56,7 +67,8 @@ uses
 
   {$IFDEF AGG2D_USE_FREETYPE}
   agg_font_freetype,
-  {$ELSE }
+  {$ENDIF }
+  {$IFDEF AGG2D_USE_WINFONTS}
   agg_font_win32_tt,
   {$ENDIF }
 
@@ -133,8 +145,8 @@ type
 
   {$IFDEF AGG2D_USE_FREETYPE }
   TAggFontEngine = font_engine_freetype_int32;
-
-  {$ELSE }
+  {$ENDIF}
+  {$IFDEF AGG2D_USE_WINFONTS }
   TAggFontEngine = font_engine_win32_tt_int32;
 
   {$ENDIF }
@@ -445,12 +457,14 @@ type
 
     m_pathTransform ,m_strokeTransform : conv_transform;
 
-    {$IFNDEF AGG2D_USE_FREETYPE }
+    {$IFDEF AGG2D_USE_WINFONTS }
     m_fontDC : HDC;
     {$ENDIF }
 
+    {$IFNDEF AGG2D_NO_FONT}
     m_fontEngine       : TAggFontEngine;
     m_fontCacheManager : font_cache_manager;
+    {$ENDIF}
 
     // Other Pascal-specific members
     m_gammaNone  : gamma_none;
@@ -1579,12 +1593,14 @@ begin
 
   {$IFDEF AGG2D_USE_FREETYPE }
   m_fontEngine.Construct;
-  {$ELSE }
+  {$ENDIF }
+  {$IFDEF AGG2D_USE_WINFONTS}
   m_fontDC:=GetDC(0);
   m_fontEngine.Construct(m_fontDC);
   {$ENDIF }
-
+  {$IFNDEF AGG2D_NO_FONT}
   m_fontCacheManager.Construct(@m_fontEngine);
+  {$ENDIF}
 
   m_convStroke.line_cap_(Pen.AggLineCap);
   m_convStroke.line_join_(Pen.AggLineJoin);
@@ -1608,10 +1624,12 @@ begin
 
   m_convStroke.Destruct;
 
+  {$IFNDEF AGG2D_NO_FONT}
   m_fontEngine.Destruct;
   m_fontCacheManager.Destruct;
+  {$ENDIF}
 
-  {$IFNDEF AGG2D_USE_FREETYPE}
+  {$IFDEF AGG2D_USE_WINFONTS}
   ReleaseDC(0,m_fontDC);
   {$ENDIF }
 
@@ -2769,6 +2787,11 @@ begin
 end;
 
 function TAggFPCanvas.AggTextWidth(str: AnsiString): double;
+{$IFDEF AGG2D_NO_FONT}
+begin
+
+end;
+{$ELSE}
 var
   x ,y  : double;
   first : boolean;
@@ -2805,14 +2828,24 @@ begin
   else
     result:=AggScreenToWorld(x );
 end;
+{$ENDIF}
 
 function TAggFPCanvas.AggTextHeight(str: AnsiString): double;
 begin
+  {$IFDEF AGG2D_NO_FONT}
+  Result:=0;
+  {$ELSE}
   Result:=m_fontEngine._height;
+  {$ENDIF}
 end;
 
 procedure TAggFPCanvas.AggTextOut(const x, y: double; str: AnsiString;
   roundOff: boolean; const ddx: double; const ddy: double);
+{$IFDEF AGG2D_NO_FONT}
+begin
+
+end;
+{$ELSE}
 var
   dx ,dy ,asc ,start_x ,start_y : double;
 
@@ -2932,6 +2965,7 @@ begin
     inc(i );
   end;
 end;
+{$ENDIF}
 
 { AGG2DRENDERER_RENDER }
 procedure TAggFPCanvas.Agg2DRenderer_render(
@@ -3374,7 +3408,9 @@ procedure TAggFPFont.SetAggFlipY(const AValue: boolean);
 begin
   if FAggFlipY=AValue then exit;
   FAggFlipY:=AValue;
+  {$IFNDEF AGG2D_NO_FONT}
   TAggFPCanvas(Canvas).m_fontEngine.flip_y_(not FAggFlipY);
+  {$ENDIF}
 end;
 
 procedure TAggFPFont.SetAggHeight(const AValue: double);
@@ -3451,8 +3487,7 @@ procedure TAggFPFont.LoadFromFile(aFilename: String; const NewHeight: double;
   const NewBold: boolean; const NewItalic: boolean;
   const NewCache: TAggFontCacheType; const NewAngle: double;
   const NewHinting: boolean);
-{$IFDEF AGG2D_USE_FREETYPE }
-{$ELSE}
+{$IFDEF AGG2D_USE_WINFONTS }
 var
   b : int;
 {$ENDIF}
@@ -3484,7 +3519,9 @@ begin
   else
     c.m_fontEngine.height_(c.AggWorldToScreen(FAggHeight ) );
 
-  {$ELSE }
+  {$ENDIF }
+  {$IFDEF AGG2D_USE_WINFONTS}
+
   c.m_fontEngine.hinting_(FAggHinting );
 
   if Bold then
@@ -3500,7 +3537,9 @@ begin
       c.AggWorldToScreen(FAggHeight) ,0.0 ,b ,Italic );
   {$ENDIF }
 
+  {$IFNDEF AGG2D_NO_FONT}
   TAggFPCanvas(Canvas).m_fontEngine.flip_y_(not FAggFlipY);
+  {$ENDIF}
 end;
 
 { TAggFP_renderer_scanline_aa }
