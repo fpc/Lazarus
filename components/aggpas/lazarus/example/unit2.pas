@@ -48,8 +48,9 @@ begin
     Pen.Color:=clBlue;
     Pen.Width:=1;
 
-    Line(10,10,20,10);
+    Line(12,10,22,10);
     Line(10,12,10,22);
+    Line(12,12,22,22);
   end;
 
   // convert to LCL native pixel format
@@ -61,8 +62,9 @@ begin
     Pen.Color:=clRed;
     Pen.Width:=1;
 
-    Line(22,10,32,10);
+    Line(24,10,34,10);
     Line(10,24,10,34);
+    Line(24,24,34,34);
   end;
 end;
 
