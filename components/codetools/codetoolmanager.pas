@@ -1343,7 +1343,6 @@ end;
 function TCodeToolManager.GetNestedCommentsFlagForFile(
   const Filename: string): boolean;
 var
-  Evaluator: TExpressionEvaluator;
   Directory: String;
 begin
   Result:=false;
@@ -1351,13 +1350,7 @@ begin
   // check pascal compiler is FPC and mode is FPC or OBJFPC
   if GetPascalCompilerForDirectory(Directory)<>pcFPC then exit;
   if not (GetCompilerModeForDirectory(Directory) in [cmFPC,cmOBJFPC]) then exit;
-  // check Nested Compiler define is on
-  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
-  if Evaluator=nil then exit;
-  if ((Evaluator.IsDefined(NestedCompilerDefine))
-    or (CompareFileExt(Filename,'pp',false)=0))
-  then
-    Result:=true;
+  Result:=true;
 end;
 
 function TCodeToolManager.GetPascalCompilerForDirectory(const Directory: string

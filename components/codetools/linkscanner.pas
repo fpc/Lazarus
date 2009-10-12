@@ -54,7 +54,6 @@ uses
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
-  NestedCompilerDefine = ExternalMacroStart+'NestedComments';
 
   MissingIncludeFileCode = Pointer(1);
 
@@ -1187,11 +1186,9 @@ begin
 
   // nested comments
   FNestedComments:=false;
-  if ((PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC]))
-  or FInitValues.IsDefined(NestedCompilerDefine)
-  then
+  if ((PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC])) then
     FNestedComments:=true;
-  //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' ',FInitValues.IsDefined(NestedCompilerDefine),' FNestedComments=',FNestedComments]);
+  //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
     
   //DebugLn(Values.AsString);
   FMacrosOn:=(Values.Variables['MACROS']<>'0');

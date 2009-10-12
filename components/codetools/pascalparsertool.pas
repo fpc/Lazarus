@@ -1010,8 +1010,6 @@ end;
 
 function TPascalParserTool.KeyWordFuncClassSection: boolean;
 // change section in a class (public, private, protected, published)
-var
-  p: PChar;
 begin
   // end last section
   CurNode.EndPos:=CurPos.StartPos;
