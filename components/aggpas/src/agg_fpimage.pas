@@ -1197,7 +1197,7 @@ begin
   if SrcCanvas is TAggFPCanvas then begin
     AggCopyImage(TAggFPCanvas(SrcCanvas).Image,
        SourceRect.Left,SourceRect.Top,SourceRect.Right,SourceRect.Bottom,
-       DstX,DstY);
+       DstX+0.5,DstY+0.5);
   end else begin
     dx:=DstX-SourceRect.Left;
     dy:=DstY-SourceRect.Top;
@@ -1250,7 +1250,7 @@ var
   SrcX: LongInt;
 begin
   if SrcImage is TAggFPImage then begin
-    AggCopyImage(TAggFPImage(SrcImage),x,y);
+    AggCopyImage(TAggFPImage(SrcImage),x+0.5,y+0.5);
   end else begin
     r:=Classes.Rect(0,0,SrcImage.Width,SrcImage.Height);
     r.Left:=Max(r.Left+x,0)-x;
@@ -1279,7 +1279,7 @@ begin
   cy:=(Bounds.Top+Bounds.Bottom) div 2;
   rx:=Abs(Bounds.Right-Bounds.Left) div 2;
   ry:=Abs(Bounds.Bottom-Bounds.Top) div 2;
-  el.Construct(cx ,cy ,rx ,ry ,0 ,2 * pi );
+  el.Construct(cx+0.5 ,cy+0.5 ,rx ,ry ,0 ,2 * pi );
 
   Path.m_path.add_path(@el ,0 ,false );
   Path.m_path.close_polygon;
@@ -1301,7 +1301,7 @@ begin
   cy:=(Bounds.Top+Bounds.Bottom) div 2;
   rx:=Abs(Bounds.Right-Bounds.Left) div 2;
   ry:=Abs(Bounds.Bottom-Bounds.Top) div 2;
-  el.Construct(cx ,cy ,rx ,ry ,0 ,2 * pi );
+  el.Construct(cx+0.5 ,cy+0.5 ,rx ,ry ,0 ,2 * pi );
 
   Path.m_path.add_path(@el ,0 ,false );
   Path.m_path.close_polygon;
@@ -1333,8 +1333,8 @@ end;
 procedure TAggFPCanvas.DoLine(x1, y1, x2, y2: integer);
 begin
   Path.m_path.remove_all;
-  Path.m_path.move_to(x1 ,y1 );
-  Path.m_path.line_to(x2 ,y2 );
+  Path.m_path.move_to(x1+0.5 ,y1+0.5 );
+  Path.m_path.line_to(x2+0.5 ,y2+0.5 );
   AggDrawPath(AGG_StrokeOnly );
 end;
 
@@ -1347,11 +1347,11 @@ begin
   Path.m_path.remove_all;
   i:=low(points);
   p:=points[i];
-  Path.m_path.move_to(p.x ,p.y );
+  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
   inc(i);
   while i<=high(points) do begin
     p:=points[i];
-    Path.m_path.line_to(p.x,p.y);
+    Path.m_path.line_to(p.x+0.5,p.y+0.5);
     inc(i);
   end;
   AggClosePolygon;
@@ -1367,11 +1367,11 @@ begin
   Path.m_path.remove_all;
   i:=low(points);
   p:=points[i];
-  Path.m_path.move_to(p.x ,p.y );
+  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
   inc(i);
   while i<=high(points) do begin
     p:=points[i];
-    Path.m_path.line_to(p.x,p.y);
+    Path.m_path.line_to(p.x+0.5,p.y+0.5);
     inc(i);
   end;
   AggClosePolygon;
@@ -1387,11 +1387,11 @@ begin
   Path.m_path.remove_all;
   i:=low(points);
   p:=points[i];
-  Path.m_path.move_to(p.x ,p.y );
+  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
   inc(i);
   while i<=high(points) do begin
     p:=points[i];
-    Path.m_path.line_to(p.x,p.y);
+    Path.m_path.line_to(p.x+0.5,p.y+0.5);
     inc(i);
   end;
   AggDrawPath(AGG_StrokeOnly );
@@ -1400,10 +1400,10 @@ end;
 procedure TAggFPCanvas.DoRectangle(const Bounds: TRect);
 begin
   Path.m_path.remove_all;
-  Path.m_path.move_to(Bounds.Left,Bounds.Top);
-  Path.m_path.line_to(Bounds.Right,Bounds.Top);
-  Path.m_path.line_to(Bounds.Right,Bounds.Bottom);
-  Path.m_path.line_to(Bounds.Left,Bounds.Bottom);
+  Path.m_path.move_to(Bounds.Left+0.5,Bounds.Top+0.5);
+  Path.m_path.line_to(Bounds.Right+0.5,Bounds.Top+0.5);
+  Path.m_path.line_to(Bounds.Right+0.5,Bounds.Bottom+0.5);
+  Path.m_path.line_to(Bounds.Left+0.5,Bounds.Bottom+0.5);
   AggClosePolygon;
   AggDrawPath(AGG_StrokeOnly);
 end;
@@ -1411,17 +1411,17 @@ end;
 procedure TAggFPCanvas.DoRectangleFill(const Bounds: TRect);
 begin
   Path.m_path.remove_all;
-  Path.m_path.move_to(Bounds.Left,Bounds.Top);
-  Path.m_path.line_to(Bounds.Right,Bounds.Top);
-  Path.m_path.line_to(Bounds.Right,Bounds.Bottom);
-  Path.m_path.line_to(Bounds.Left,Bounds.Bottom);
+  Path.m_path.move_to(Bounds.Left+0.5,Bounds.Top+0.5);
+  Path.m_path.line_to(Bounds.Right+0.5,Bounds.Top+0.5);
+  Path.m_path.line_to(Bounds.Right+0.5,Bounds.Bottom+0.5);
+  Path.m_path.line_to(Bounds.Left+0.5,Bounds.Bottom+0.5);
   AggClosePolygon;
   AggDrawPath(AGG_FillAndStroke);
 end;
 
 procedure TAggFPCanvas.DoTextOut(x, y: integer; str: string);
 begin
-  AggTextOut(x,y,str);
+  AggTextOut(x+0.5,y+0.5,str);
 end;
 
 function TAggFPCanvas.GetColor(x, y: integer): TFPColor;
