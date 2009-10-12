@@ -40,7 +40,7 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, SynEditMiscClasses, SynEditTextBase, SynEditPointClasses,
+  Classes, SysUtils, LCLProc, SynEditMiscClasses, SynEditTextBase, SynEditPointClasses,
   SynEditKeyCmds;
 
 type
@@ -329,7 +329,7 @@ begin
       CharMix := CharMix + CharMix[length(CharMix)]
     else
       CharMix := CharMix + ' ';
-  // to long, maybe too many tabs
+  // too long, maybe too many tabs
   while (CharMix <> '') and
         (GetCurrentIndent(FCurrentEditor, CharMix + OldCharMix, True) > Indent)
   do
@@ -407,15 +407,21 @@ begin
     Indent := 0;
 
   if IndentChars <> '' then
-    IndentChars := AdjustCharMix(Indent, IndentChars, Temp)
+    IndentChars := AdjustCharMix(Indent, IndentChars, {$IFDEF EnableIndenter}''{$ELSE}Temp{$ENDIF})
   else
     IndentChars := GetCharMix(LinePos, Indent, Temp, IndentCharsFromLinePos);
+  {$IFDEF EnableIndenter}
+  DebugLn(['TSynBeautifier.ApplyIndent IndentChars="',dbgstr(IndentChars),'" KeepOldIndent=',KeepOldIndent,' Indent=',Indent]);
+  {$ENDIF}
 
   if not KeepOldIndent then
     FCurrentLines.EditDelete(1, LinePos, OldLen);
   //if not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos] = '')) then
   if IndentChars <> '' then
     FCurrentLines.EditInsert(1, LinePos, IndentChars);
+  {$IFDEF EnableIndenter}
+  DebugLn(['TSynBeautifier.ApplyIndent Line="',dbgstr(FCurrentLines.ExpandedStrings[LinePos-1]),'"']);
+  {$ENDIF}
 end;
 
 function TSynBeautifier.GetCurrentIndent(Editor: TSynEditBase; const Line: string; Physical: boolean): Integer;

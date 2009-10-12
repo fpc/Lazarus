@@ -14162,8 +14162,7 @@ var
   NestedComments: Boolean;
   NewIndent: TFABIndentationPolicy;
   EditorIndex: LongInt;
-  Dummy, Indent: Integer;
-  s: String;
+  Indent: Integer;
 begin
   Result := False;
   {$IFNDEF EnableIndenter}
@@ -14171,6 +14170,7 @@ begin
   {$ENDIF}
   if (Reason <> ecLineBreak) and (Reason <> ecInsertLine) then
     exit;
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LinesCount=',LinesCount]);
   Result := True;
   EditorIndex:=SrcEditor.PageIndex;
   SaveSourceEditorChangesToCodeCache(EditorIndex);
@@ -14181,11 +14181,11 @@ begin
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,NewIndent)
   then exit;
   if not NewIndent.IndentValid then exit;
-  Indent:=NewIndent.Indent+1;
-  Dummy := -1;
-  s := '';
-  SetIndentProc(FirstLinePos, Indent, Dummy, s, Dummy, False);
-  //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent,' ReplaceIndent=',ReplaceIndent,' BasedLine=',BasedLine]);
+  Indent:=NewIndent.Indent;
+  if (Reason=ecLineBreak) or (Reason=ecInsertLine) then begin
+    SetIndentProc(FirstLinePos+1, Indent, 0,' ');
+    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent]);
+  end;
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,
