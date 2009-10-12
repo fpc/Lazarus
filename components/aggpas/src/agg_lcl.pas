@@ -105,8 +105,11 @@ type
     //procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
     //procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
 
-    procedure FillRect(const ARect: TRect); virtual;
-    procedure FillRect(X1,Y1,X2,Y2: Integer);
+    procedure FillRect(const ARect: TRect); virtual; // no border
+    procedure FillRect(X1,Y1,X2,Y2: Integer);        // no border
+
+    procedure Frame(const ARect: TRect); virtual; // border using pen
+    procedure Frame(X1,Y1,X2,Y2: Integer);        // border using pen
 
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
   end;
@@ -266,6 +269,22 @@ begin
   Path.m_path.line_to(X1,Y2);
   AggClosePolygon;
   AggDrawPath(AGG_FillOnly);
+end;
+
+procedure TAggLCLCanvas.Frame(const ARect: TRect);
+begin
+  Frame(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom);
+end;
+
+procedure TAggLCLCanvas.Frame(X1, Y1, X2, Y2: Integer);
+begin
+  Path.m_path.remove_all;
+  Path.m_path.move_to(X1+0.5,Y1+0.5);
+  Path.m_path.line_to(X2+0.5,Y1+0.5);
+  Path.m_path.line_to(X2+0.5,Y2+0.5);
+  Path.m_path.line_to(X1+0.5,Y2+0.5);
+  AggClosePolygon;
+  AggDrawPath(AGG_StrokeOnly);
 end;
 
 procedure TAggLCLCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor;
