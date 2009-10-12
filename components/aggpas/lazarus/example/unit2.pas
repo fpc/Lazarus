@@ -51,6 +51,8 @@ begin
     Line(12,10,22,10);
     Line(10,12,10,22);
     Line(12,12,22,22);
+
+    FillRect(40,10,50,20);
   end;
 
   // convert to LCL native pixel format
@@ -65,6 +67,8 @@ begin
     Line(24,10,34,10);
     Line(10,24,10,34);
     Line(24,24,34,34);
+
+    FillRect(40,22,50,32);
   end;
 end;
 

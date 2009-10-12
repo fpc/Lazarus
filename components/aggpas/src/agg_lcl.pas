@@ -240,7 +240,13 @@ end;
 
 procedure TAggLCLCanvas.FillRect(X1, Y1, X2, Y2: Integer);
 begin
-  Rectangle(X1,Y1,X2,Y2);
+  Path.m_path.remove_all;
+  Path.m_path.move_to(X1,Y1);
+  Path.m_path.line_to(X2,Y1);
+  Path.m_path.line_to(X2,Y2);
+  Path.m_path.line_to(X1,Y2);
+  AggClosePolygon;
+  AggDrawPath(AGG_FillOnly);
 end;
 
 { TAggLCLBrush }
