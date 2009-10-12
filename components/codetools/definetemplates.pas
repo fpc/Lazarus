@@ -4273,21 +4273,6 @@ begin
   MainDir.AddChild(DirTempl);
 
 
-  // <LazarusSrcDir>/doceditor
-  DirTempl:=TDefineTemplate.Create('Doc Editor',ctsDocEditorDirectory,
-    '','doceditor',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('Unit path addition',
-    Format(ctsAddsDirToSourcePath,['lcl, components']),
-    SrcPathMacroName,
-      d('../ideintf'
-       +';../components/codetools'
-       +';../lcl'
-       +';../lcl/interfaces/'+WidgetType)
-       +';'+SrcPath
-    ,da_DefineRecurse));
-  MainDir.AddChild(DirTempl);
-
-
   // <LazarusSrcDir>/packager
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
     '','packager',da_Directory);
@@ -4449,6 +4434,8 @@ begin
       ExtraSrcPath:='../../../interfaces/'+CurWidgetSet;
       if (CurWidgetSet='gtk2') then
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
+      if (CurWidgetSet='carbon') then
+        ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/carbon/pascocoa/appkit';
       if (CurWidgetSet='fpgui') then
         ExtraSrcPath:=ExtraSrcPath
           +';../../../interfaces/fpgui/corelib'
@@ -4528,6 +4515,10 @@ begin
     // then define carbon1
     IntfDirTemplate.AddChild(TDefineTemplate.Create('Define carbon1',
       ctsDefineMacroCarbon1,'carbon1','',da_Define));
+    // add 'pascocoa/appkit' to the SrcPath
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
+      Format(ctsAddsDirToSourcePath,['pascocoa']),ExternalMacroStart+'SrcPath',
+      d('pascocoa/appkit;pascocoa/foundation;')+SrcPath,da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/lcl/interfaces/qt
