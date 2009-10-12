@@ -997,7 +997,10 @@ begin
       exit;
     end;
     SelectedCode:=CodeToolBoss.LoadFile(SelectedUnitFilename, true, false);
-    if SelectedCode=nil then exit;
+    if SelectedCode=nil then begin
+      debugln(['TCodeBrowserView.UseUnitInSrcEditor failed to load SelectedUnitFilename=',SelectedUnitFilename]);
+      exit;
+    end;
     SelectedUnitName:=CodeToolBoss.GetSourceName(SelectedCode, false);
 
     // add unit to uses section
