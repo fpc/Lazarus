@@ -679,26 +679,6 @@ const
 {ctClipboard         } QClipboardClipboard
   );
 
-  {TODO: test unsupported modes by real CompositionMode}
-  R2ToQtRasterOp: array [0..R2_XORPEN] of QPainterCompositionMode = (
-    {R2_BLACK      } QPainterCompositionMode_SourceOver, // not supported
-    {R2_COPYPEN    } QPainterCompositionMode_SourceOver, // default
-    {R2_MASKNOTPEN } QPainterRasterOp_NotSourceAndDestination,
-    {R2_MASKPEN    } QPainterRasterOp_SourceAndDestination,
-    {R2_MASKPENNOT } QPainterRasterOp_SourceAndNotDestination,
-    {R2_MERGENOTPEN} QPainterCompositionMode_SourceOver, // not supported
-    {R2_MERGEPEN   } QPainterRasterOp_SourceOrDestination,
-    {R2_MERGEPENNOT} QPainterCompositionMode_SourceOver, // not supported
-    {R2_NOP        } QPainterCompositionMode_Destination, // not supported
-    {R2_NOT        } QPainterCompositionMode_SourceOut, // not supported
-    {R2_NOTCOPYPEN } QPainterRasterOp_NotSource,
-    {R2_NOTMASKPEN } QPainterRasterOp_NotSourceAndNotDestination,
-    {R2_NOTMERGEPEN} QPainterRasterOp_NotSourceOrNotDestination,
-    {R2_NOTXORPEN  } QPainterRasterOp_NotSourceXorDestination,
-    {R2_WHITE      } QPainterCompositionMode_SourceOver, // not supported
-    {R2_XORPEN     } QPainterRasterOp_SourceXorDestination
-  );
-
 const
   SQTWSPrefix = 'TQTWidgetSet.';
 
@@ -707,6 +687,31 @@ var
   FDefaultContext: TQtDeviceContext = nil;
   FScreenContext: TQtDeviceContext = nil;
   FPrinter: TQtPrinter = nil;
+
+function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
+begin
+  {TODO: test unsupported modes by real CompositionMode}
+  case AValue of
+    R2_BLACK: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_COPYPEN: Result := QPainterCompositionMode_SourceOver; // default
+    R2_MASKNOTPEN: Result := QPainterRasterOp_NotSourceAndDestination;
+    R2_MASKPEN: Result := QPainterRasterOp_SourceAndDestination;
+    R2_MASKPENNOT: Result := QPainterRasterOp_SourceAndNotDestination;
+    R2_MERGENOTPEN: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_MERGEPEN: Result := QPainterRasterOp_SourceOrDestination;
+    R2_MERGEPENNOT: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_NOP: Result := QPainterCompositionMode_Destination; // unsupported
+    R2_NOT: Result := QPainterCompositionMode_SourceOut; // unsupported
+    R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
+    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
+    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+    R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
+    R2_WHITE: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
+    else
+      Result := QPainterCompositionMode_SourceOver;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Name:    CheckGDIObject
@@ -2092,7 +2097,7 @@ var
   QtROPMode: QPainterCompositionMode;
 begin
   FRopMode := AValue;
-  QtRopMode := R2ToQtRasterOp[AValue];
+  QtRopMode := R2ToQtRasterOp(AValue);
   if QPainter_compositionMode(Widget) <> QtRopMode then
     QPainter_setCompositionMode(Widget, QtROPMode);
 end;

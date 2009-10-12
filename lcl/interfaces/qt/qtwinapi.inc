@@ -2614,7 +2614,7 @@ begin
   {$ifdef VerboseQtWinAPI}
   writeln('> TQtWidgetSet.GetROP2() DC ',dbghex(DC));
   {$endif}
-  Result := 0;
+  Result := R2_COPYPEN;
   if not IsValidDC(DC) then
     exit;
   Result := QtDC.Rop2;
@@ -4665,7 +4665,7 @@ begin
   {$ifdef VerboseQtWinAPI}
   writeln('TQtWidgetSet.SetROP2() DC ',dbghex(DC),' Mode ',Mode);
   {$endif}
-  Result := 0;
+  Result := R2_COPYPEN;
   if not IsValidDC(DC) then
     exit;
   Result := QtDC.Rop2;
