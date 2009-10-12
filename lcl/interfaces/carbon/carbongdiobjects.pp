@@ -243,7 +243,8 @@ type
     cbtMono,  // mask or mono bitmap
     cbtGray,  // grayscale bitmap
     cbtRGB,   // color bitmap 8-8-8 R-G-B
-    cbtARGB,  // color bitmap with alpha channel 8-8-8-8 A-R-G-B
+    cbtARGB,  // color bitmap with alpha channel first 8-8-8-8 A-R-G-B
+    cbtRGBA,  // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
     cbtBGR,   // color bitmap 8-8-8 B-G-R (windows compatible)
     cbtBGRA   // color bitmap with alpha channel 8-8-8-8 B-G-R-A (windows compatible)
   );
@@ -406,6 +407,7 @@ const
     {cbtGray} kCGImageAlphaNone,
     {cbtRGB}  kCGImageAlphaNoneSkipFirst,
     {cbtARGB} kCGImageAlphaFirst,
+    {cbtRGBA} kCGImageAlphaLast,
     {cbtBGR}  kCGImageAlphaNoneSkipFirst or kCGBitmapByteOrder32Little,
     {cbtBGRA} kCGImageAlphaFirst or kCGBitmapByteOrder32Little
   );
@@ -1787,6 +1789,7 @@ begin
     cbtRGB,
     cbtBGR:  Result := FDepth div 3;
     cbtARGB,
+    cbtRGBA,
     cbtBGRA: Result := FDepth shr 2;
   else
     Result := 0;

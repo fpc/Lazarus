@@ -741,6 +741,12 @@ begin
       and (ADesc.BlueShift  = 0 )
       then bmpType := cbtARGB
       else
+      if  (ADesc.AlphaShift = 0)
+      and (ADesc.RedShift   = 24)
+      and (ADesc.GreenShift = 16 )
+      and (ADesc.BlueShift  = 8 )
+      then bmpType := cbtRGBA
+      else
       if  (ADesc.AlphaShift = 0 )
       and (ADesc.RedShift   = 8 )
       and (ADesc.GreenShift = 16)
@@ -760,6 +766,12 @@ begin
       and (ADesc.GreenShift = 16)
       and (ADesc.BlueShift  = 24)
       then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 24 )
+      and (ADesc.RedShift   = 0 )
+      and (ADesc.GreenShift = 8)
+      and (ADesc.BlueShift  = 16)
+      then bmpType := cbtRGBA
       else Exit;
     end;
   end

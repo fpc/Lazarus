@@ -431,10 +431,10 @@ var
   bmpType: TCarbonBitmapType;
 begin
   Result := RawImage_DescriptionToBitmapType(ADesc, bmpType);
-  
-  if not Result then
-    Exit;
-
+  if not Result then begin
+    debugln(['TCarbonWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
+    exit;
+  end;
   ABitmap := HBITMAP(TCarbonBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
 
   if ASkipMask or (ADesc.MaskBitsPerPixel = 0)
