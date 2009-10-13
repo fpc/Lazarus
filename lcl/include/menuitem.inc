@@ -1217,15 +1217,15 @@ end;
 
   Enables a menuItem.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetImageIndex(Value: Integer);
+procedure TMenuItem.SetImageIndex(AValue: TImageIndex);
 var
   AImageList: TCustomImageList;
 begin
-  if (FImageIndex = Value) then
+  if (FImageIndex = AValue) then
     Exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
   AImageList := GetImageList;
-  FImageIndex := Value;
+  FImageIndex := AValue;
   if AImageList = nil then
     Exit;
     

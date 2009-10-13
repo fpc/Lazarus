@@ -114,7 +114,7 @@ type
     FHelpContext: THelpContext;
     FHint: String;
     FImageChangeLink: TChangeLink;
-    FImageIndex : Integer;
+    FImageIndex: TImageIndex;
     FItems: TList; // list of TMenuItem
     FMenu: TMenu;
     FOnChange: TMenuChangeEvent;
@@ -188,7 +188,7 @@ type
     procedure SetAction(NewAction: TBasicAction);
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetGroupIndex(AValue: Byte);
-    procedure SetImageIndex(value : Integer);
+    procedure SetImageIndex(AValue : TImageIndex);
     procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
@@ -264,7 +264,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext
                                            stored IsHelpContextStored default 0;
     property Hint: TTranslateString read FHint write FHint stored IsHintStored;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex
                                            stored IsImageIndexStored default -1;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
                                 default False;
