@@ -338,6 +338,7 @@ end;
 
 destructor TLineSeries.Destroy;
 begin
+  FLinePen.Free;
   FPointer.Free;
   inherited Destroy;
 end;

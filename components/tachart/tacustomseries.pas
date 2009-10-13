@@ -278,6 +278,7 @@ begin
     Source.Unsubscribe(FListener);
   FBuiltinSource.Free;
   FMarks.Free;
+  FListener.Free;
 
   inherited Destroy;
 end;
