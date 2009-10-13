@@ -12358,12 +12358,22 @@ var
   i: Integer;
   SrcBuf: TCodeBuffer;
   AnUnitInfo: TUnitInfo;
+  MsgResult: TModalResult;
 begin
   for i:=0 to CodeToolBoss.SourceChangeCache.BuffersToModifyCount-1 do begin
     SrcBuf:=CodeToolBoss.SourceChangeCache.BuffersToModify[i];
     AnUnitInfo:=Project1.UnitInfoWithFilename(SrcBuf.Filename);
     if AnUnitInfo<>nil then
       AnUnitInfo.Modified:=true;
+
+    if SaveClosedSourcesOnCodeToolChange
+    and (not SrcBuf.IsVirtual)
+    and ((AnUnitInfo=nil) or (AnUnitInfo.EditorIndex<0)) then
+    begin
+      // save closed file (closed = not open in editor)
+      MsgResult:=SaveCodeBuffer(SrcBuf);
+      if MsgResult=mrAbort then break;
+    end;
   end;
   SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
 end;

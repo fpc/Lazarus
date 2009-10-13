@@ -141,6 +141,7 @@ type
     FMainBarSubTitle: string;
     FOpenEditorsOnCodeToolChange: boolean;
     FOpenMainSourceOnCodeToolChange: boolean;
+    FSaveClosedSourcesOnCodeToolChange: boolean;
     procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
@@ -226,6 +227,8 @@ type
     function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; // true if something was saved
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
                                              write FOpenEditorsOnCodeToolChange;
+    property SaveClosedSourcesOnCodeToolChange: boolean read FSaveClosedSourcesOnCodeToolChange
+                                             write FSaveClosedSourcesOnCodeToolChange;
     property OpenMainSourceOnCodeToolChange: boolean read FOpenMainSourceOnCodeToolChange
                                              write FOpenMainSourceOnCodeToolChange;
 
