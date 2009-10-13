@@ -1562,49 +1562,6 @@ function ClassTypeInfo(Value: TClass): PTypeInfo;
 function GetClassUnitName(Value: TClass): string;
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
 
-
-//==============================================================================
-// XXX
-// This class is a workaround for the broken typeinfo function
-type
-
-  { TDummyClassForPropTypes }
-
-  TDummyClassForPropTypes = class(TPersistent)
-  private
-    FAnchorSide: TAnchorSide;
-    FDateTime: TDateTime;
-    FList:PPropList;
-    FCount:integer;
-    FComponent:TComponent;
-    FComponentName:TComponentName;
-    FCursor: TCursor;
-    FShortCut: TShortCut;
-    FTabOrder:integer;
-    FCaption: TCaption;
-    FLines:TStrings;
-    FColumns: TListColumns;
-    FModalResult:TModalResult;
-  public
-    function PTypeInfos(const PropName:shortstring): PTypeInfo;
-    constructor Create;
-    destructor Destroy;  override;
-  published
-    property PropCount:integer read FCount;
-    property DummyComponent:TComponent read FComponent;
-    property DummyName:TComponentName read FComponentName;
-    property TabOrder:integer read FTabOrder;
-    property Caption:TCaption read FCaption;
-    property Cursor: TCursor read FCursor;
-    property Lines:TStrings read FLines;
-    property Columns:TListColumns read FColumns;
-    property ModalResult:TModalResult read FModalResult;
-    property ShortCut: TShortCut read FShortCut;
-    property DateTime: TDateTime read FDateTime;
-    property AnchorSide: TAnchorSide read FAnchorSide;
-  end;
-
-
 procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
@@ -6470,43 +6427,6 @@ begin
   Result:=true;
 end;
 
-//******************************************************************************
-// XXX
-// workaround for missing typeinfo function
-constructor TDummyClassForPropTypes.Create;
-var TypeInfo : PTypeInfo;
-begin
-  inherited Create;
-  TypeInfo:=ClassInfo;
-  FCount:=GetTypeData(TypeInfo)^.Propcount;
-  GetMem(FList,FCount * SizeOf(Pointer));
-  GetPropInfos(TypeInfo,FList);
-end;
-
-destructor TDummyClassForPropTypes.Destroy;
-begin
-  FreeMem(FList);
-  inherited Destroy;
-end;
-
-function TDummyClassForPropTypes.PTypeInfos(
-  const PropName:shortstring):PTypeInfo;
-var Index:integer;
-begin
-  Index:=FCount-1;
-  while (Index>=0) do begin
-    Result:=FList^[Index]^.PropType;
-    if (AnsiCompareText(Result^.Name,PropName)=0) then exit;
-    dec(Index);
-  end;
-  Result:=nil;
-end;
-
-var
-  DummyClassForPropTypes: TDummyClassForPropTypes;
-
-//******************************************************************************
-
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 begin
   Result:=APersistent;
@@ -6746,68 +6666,37 @@ begin
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
 
-  // XXX workaround for buggy typinfo function
-  // Normally it should use something like this;
-  // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
-  DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TComponent,'Name',TComponentNamePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
-    TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
-    TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
-    TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
-    TControl, 'Hint', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    nil,'Tag',TTabOrderPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
-    nil,'',TCaptionPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
-    nil,'',TStringsPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    nil,'SessionProperties',TSessionPropertiesPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
-    nil,'ModalResult',TModalResultPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TShortCut'),
-    nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TComponent, 'Name', TComponentNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TControl, 'Hint', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongInt), nil, 'Tag', TTabOrderPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
   //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
   //  nil,'',TDatePropertyEditor);
   //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
   //  nil,'',TTimePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
-    nil,'',TDateTimePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TCursor'),
-    nil,'',TCursorPropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TComponent),nil
-    ,'',TComponentPropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TCollection),
-    nil,'',TCollectionPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TFileDialog, 'Filter', TFileDlgFilterProperty);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TFileNameEdit, 'Filter', TFileDlgFilterProperty);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    TControl, 'AnchorSideLeft', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    TControl, 'AnchorSideTop', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    TControl, 'AnchorSideRight', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
-    TControl, 'AnchorSideBottom', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    TControl, 'ClientWidth', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    TControl, 'ClientHeight', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TCustomForm, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TCustomPage),
-    TCustomNotebook, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideBottom', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientWidth', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientHeight', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomNotebook, 'ActivePage', TNoteBookActiveControlPropertyEditor);
 end;
 
 procedure FinalPropEdits;
@@ -6831,9 +6720,6 @@ begin
 
   FreeAndNil(ListPropertyEditors);
   FreeAndNil(VirtualKeyStrings);
-
-  // XXX workaround for buggy typeinfo function
-  DummyClassForPropTypes.Free;
 end;
 
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
