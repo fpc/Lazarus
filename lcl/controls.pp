@@ -825,7 +825,8 @@ type
     chtOnResize,
     chtOnChangeBounds,
     chtOnVisibleChanging,
-    chtOnVisibleChanged
+    chtOnVisibleChanged,
+    chtOnKeyDown
     );
 
 {* Note on TControl.Caption
@@ -1348,6 +1349,9 @@ type
     procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
                                          AsLast: boolean = false);
     procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
+    procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
+                                  AsLast: boolean = false);
+    procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
   public
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;

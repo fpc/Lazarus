@@ -4051,7 +4051,7 @@ end;
 procedure TControl.AddHandlerOnVisibleChanging(
   const OnVisibleChangingEvent: TNotifyEvent; AsLast: boolean);
 begin
-  AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent));
+  AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent),AsLast);
 end;
 
 procedure TControl.RemoveHandlerOnVisibleChanging(
@@ -4063,13 +4063,24 @@ end;
 procedure TControl.AddHandlerOnVisibleChanged(
   const OnVisibleChangedEvent: TNotifyEvent; AsLast: boolean);
 begin
-  AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
+  AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent),AsLast);
 end;
 
 procedure TControl.RemoveHandlerOnVisibleChanged(
   const OnVisibleChangedEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
+end;
+
+procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
+  AsLast: boolean);
+begin
+  AddHandler(chtOnKeyDown,TMethod(OnKeyDownEvent),AsLast);
+end;
+
+procedure TControl.RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
+begin
+  RemoveHandler(chtOnKeyDown,TMethod(OnKeyDownEvent));
 end;
 
 procedure TControl.RemoveAllHandlersOfObject(AnObject: TObject);

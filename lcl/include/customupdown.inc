@@ -341,8 +341,6 @@ begin
   if FAssociate <> nil then
   begin
     FAssociate.RemoveAllHandlersOfObject(Self);
-    FAssociate.OnKeyDown := OldKeyDown;
-    OldKeyDown := nil;
     FAssociate := nil;
   end;
 
@@ -355,9 +353,7 @@ begin
     FAssociate := Value;
     UpdateUpDownPositionText;
     UpdateAlignButtonPos;
-    if not (csDesigning in ComponentState) then
-      OldKeyDown := FAssociate.OnKeyDown;
-    FAssociate.OnKeyDown := @AssociateKeyDown;
+    FAssociate.AddHandlerOnKeyDown(@AssociateKeyDown,true);
     FAssociate.AddHandlerOnChangeBounds(@OnAssociateChangeBounds,true);
   end;
 end;
@@ -365,8 +361,6 @@ end;
 procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
   ShiftState : TShiftState);
 begin
-  If Assigned(OldKeyDown) then
-    OldKeyDown(Sender,Key,ShiftState);
   If ArrowKeys and (ShiftState = []) then begin
     case FOrientation of
       udVertical:

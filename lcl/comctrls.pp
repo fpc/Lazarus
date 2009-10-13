@@ -1366,7 +1366,6 @@ type
     procedure UpdateOrientation;
     procedure UpdateUpDownPositionText;
   protected
-    OldKeyDown : TKeyEvent;
     class procedure WSRegisterClass; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
