@@ -50,14 +50,13 @@ type
     FShellListView: TCustomShellListView;
     { Setters and getters }
     procedure SetShellListView(const Value: TCustomShellListView);
-    { Other internal methods }
-    procedure HandleOnExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
-    procedure HandleSelectionChanged(Sender: TObject);
   protected
     { Other methods specific to Lazarus }
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
     procedure PopulateWithBaseFiles;
+    procedure DoSelectionChanged; override;
+    function CanExpand(Node: TTreeNode): Boolean; override;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -304,20 +303,12 @@ begin
     Value.ShellTreeView := Self;
 end;
 
-procedure TCustomShellTreeView.HandleOnExpanding(Sender: TObject;
-  Node: TTreeNode; var AllowExpansion: Boolean);
+function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
+  Result:=inherited CanExpand(Node);
+  if not Result then exit;
   Node.DeleteChildren;
-  AllowExpansion := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
-end;
-
-procedure TCustomShellTreeView.HandleSelectionChanged(Sender: TObject);
-begin
-  if Assigned(FShellListView) then
-  begin
-    FShellListView.Root := GetPathFromNode(Selected);
-    FShellListView.Refresh; // Repaint
-  end;
+  Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
 end;
 
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
@@ -327,11 +318,6 @@ begin
   // Initial property values
 
   ObjectTypes:= [otFolders];
-
-  // Necessary event handlers
-
-  OnExpanding := @HandleOnExpanding;
-  OnSelectionChanged := @HandleSelectionChanged;
 
   // Populates the base dirs
 
@@ -434,7 +420,7 @@ begin
 end;
 
 procedure TCustomShellTreeView.PopulateWithBaseFiles;
-  {$if defined(windows) and not defined(wince)}
+{$if defined(windows) and not defined(wince)}
 const
   DRIVE_UNKNOWN = 0;
   DRIVE_NO_ROOT_DIR = 1;
@@ -468,14 +454,21 @@ begin
     Inc(pDrive, 4);
   end;
 end;
-  {$else}
+{$else}
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
 
   PopulateTreeNodeWithFiles(nil, GetBasePath());
 end;
-  {$endif}
+{$endif}
+
+procedure TCustomShellTreeView.DoSelectionChanged;
+begin
+  inherited DoSelectionChanged;
+  if Assigned(FShellListView) then
+    FShellListView.Root := GetPathFromNode(Selected);
+end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 var
