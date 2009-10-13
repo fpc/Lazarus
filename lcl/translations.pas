@@ -479,7 +479,7 @@ var
 begin
   f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
   try
-    Self.Create(f, Full);
+    Create(f, Full);
     if FHeader=nil then
       CreateHeader;
   finally
@@ -492,7 +492,7 @@ var
   Size: Integer;
   s: string;
 begin
-  Self.Create;
+  Create;
   
   FAllEntries := Full;
   
