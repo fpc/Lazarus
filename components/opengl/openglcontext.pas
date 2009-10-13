@@ -152,6 +152,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMakeCurrent;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
