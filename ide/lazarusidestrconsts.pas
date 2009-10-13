@@ -1058,6 +1058,7 @@ resourcestring
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
+  dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';
   dlgDefValueColor = 'Default Value';

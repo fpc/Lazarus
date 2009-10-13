@@ -9,7 +9,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   KeyPreview = True
   OnResize = ObjectInspectorResize
   PopupMenu = MainPopupMenu
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object StatusBar: TStatusBar
     Left = 0
     Height = 23

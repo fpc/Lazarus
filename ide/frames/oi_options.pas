@@ -45,7 +45,8 @@ type
     ocValue,
     ocDefValue,
     ocSubProp,
-    ocReference
+    ocReference,
+    ocReadOnly
   );
 
   TOIOption = (
@@ -117,7 +118,8 @@ const
       { ocValue         } DefValueColor,
       { ocDefValue      } DefDefaultValueColor,
       { ocSubProp       } DefSubPropertiesColor,
-      { ocReference     } DefReferencesColor
+      { ocReference     } DefReferencesColor,
+      { ocReadOnly      } DefReadOnlyColor
       );
     Options: (
       { ooShowHints      } False,
@@ -142,7 +144,8 @@ const
       { ocValue         } clNavy,
       { ocDefValue      } clNavy,
       { ocSubProp       } clGreen,
-      { ocReference     } clMaroon
+      { ocReference     } clMaroon,
+      { ocReadOnly      } clGrayText
       );
     Options: (
       { ooShowHints      } False,
@@ -191,6 +194,7 @@ begin
   Items.Add(dlgDefValueColor);
   Items.Add(dlgSubPropColor);
   Items.Add(dlgReferenceColor);
+  Items.Add(dlfReadOnlyColor)
 end;
 
 procedure TOIOptionsFrame.ChangeColor(AIndex: Integer; NewColor: TColor);
@@ -262,6 +266,7 @@ begin
     ASettings.Colors[ocDefValue] := ObjectInspectorOptions.DefaultValueColor;
     ASettings.Colors[ocSubProp] := ObjectInspectorOptions.SubPropertiesColor;
     ASettings.Colors[ocReference] := ObjectInspectorOptions.ReferencesColor;
+    ASettings.Colors[ocReadOnly] := ObjectInspectorOptions.ReadOnlyColor;
 
     ASettings.Options[ooShowHints] := ObjectInspectorOptions.ShowHints;
     ASettings.Options[ooAutoShow] := ObjectInspectorOptions.AutoShow;
@@ -290,6 +295,7 @@ begin
     ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[Ord(ocDefValue)];
     ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[Ord(ocSubProp)];
     ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
+    ObjectInspectorOptions.ReadOnlyColor :=  ColorsListBox.Colors[Ord(ocReadOnly)];
 
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
     ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;

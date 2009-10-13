@@ -5,7 +5,7 @@ LazarusResources.Add('TObjectInspectorDlg','FORMDATA',[
   +#3#157#2#3'Top'#3#175#0#5'Width'#3#19#1#7'Caption'#6#18'ObjectInspectorDlg'
   +#12'ClientHeight'#3#157#2#11'ClientWidth'#3#19#1#10'KeyPreview'#9#8'OnResize'
   +#7#21'ObjectInspectorResize'#9'PopupMenu'#7#13'MainPopupMenu'#10'LCLVersion'
-  +#6#6'0.9.27'#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#23#3'Top'
+  +#6#6'0.9.29'#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#23#3'Top'
   +#3#134#2#5'Width'#3#19#1#6'Panels'#14#1#5'Width'#2'd'#0#1#5'Width'#2'2'#0#0
   +#11'SimplePanel'#8#0#0#9'TComboBox'#23'AvailPersistentComboBox'#4'Left'#2#0#6
   +'Height'#2#21#3'Top'#2#0#5'Width'#3#19#1#5'Align'#7#5'alTop'#10'ItemHeight'#2
