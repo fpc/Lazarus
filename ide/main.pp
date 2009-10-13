@@ -513,6 +513,8 @@ type
          const Filename: string; var Source, DiskEncoding, MemEncoding: string);
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
                                     const Filename: string; var Source: string);
+    function OnCodeToolBossGetMethodName(const Method: TMethod;
+                                       PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
     procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
                                    var Abort: boolean);
@@ -12294,7 +12296,7 @@ begin
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
     OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
-    OnGetMethodName:=@OnPropHookGetMethodName;
+    OnGetMethodName:=@OnCodeToolBossGetMethodName;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -12491,6 +12493,37 @@ procedure TMainIDE.CodeToolBossProgress(Sender: TObject; Index,
   MaxIndex: integer; var Abort: boolean);
 begin
   //DebugLn(['TMainIDE.CodeToolBossProgress ',Index,' ',MaxIndex]);
+end;
+
+function TMainIDE.OnCodeToolBossGetMethodName(const Method: TMethod;
+  PropOwner: TObject): String;
+var
+  JITMethod: TJITMethod;
+  LookupRoot: TPersistent;
+begin
+  if Method.Code<>nil then begin
+    if Method.Data<>nil then
+      Result:=TObject(Method.Data).MethodName(Method.Code)
+    else
+      Result:='';
+  end else if IsJITMethod(Method) then begin
+    JITMethod:=TJITMethod(Method.Data);
+    Result:=JITMethod.TheMethodName;
+    if PropOwner is TComponent then begin
+      LookupRoot:=GetLookupRootForComponent(TComponent(PropOwner));
+      if LookupRoot is TComponent then begin
+        //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
+        if (LookupRoot.ClassType<>JITMethod.TheClass) then begin
+          Result:=JITMethod.TheClass.ClassName+'.'+Result;
+        end;
+      end;
+    end;
+  end else
+    Result:='';
+  {$IFDEF VerboseDanglingComponentEvents}
+  if IsJITMethod(Method) then
+    DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',IsJITMethod(Method)]);
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnCompilerParseStampIncreased;
