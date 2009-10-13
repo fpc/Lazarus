@@ -12330,6 +12330,13 @@ begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
       CodeBuf:=Manager.SourceChangeCache.BuffersToModify[i];
+
+      // do not open lpr file
+      if (not OpenMainSourceOnCodeToolChange)
+      and (Project1<>nil) and (Project1.MainUnitInfo<>nil)
+      and (CompareFilenames(Project1.MainFilename,CodeBuf.Filename)=0) then
+        continue;
+
       //DebugLn(['TMainIDE.OnBeforeCodeToolBossApplyChanges i=',i,' ',CodeBUf.Filename]);
       Flags:=[ofOnlyIfExists,ofDoNotLoadResource];
       if CodeBuf.IsVirtual then

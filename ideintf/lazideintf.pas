@@ -140,6 +140,7 @@ type
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     FMainBarSubTitle: string;
     FOpenEditorsOnCodeToolChange: boolean;
+    FOpenMainSourceOnCodeToolChange: boolean;
     procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
@@ -223,9 +224,10 @@ type
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;
     function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; // true if something was saved
-    property OpenEditorsOnCodeToolChange: boolean
-                 read FOpenEditorsOnCodeToolChange
-                 write FOpenEditorsOnCodeToolChange;
+    property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
+                                             write FOpenEditorsOnCodeToolChange;
+    property OpenMainSourceOnCodeToolChange: boolean read FOpenMainSourceOnCodeToolChange
+                                             write FOpenMainSourceOnCodeToolChange;
 
     // progress and error messages
     function ShowProgress(const SomeText: string;
