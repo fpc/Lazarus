@@ -24,7 +24,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
   FileUtil, Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs,
-  LCLIntf, ExtDlgs, PropEdits, ImgList, Math, ActnList,
+  LCLIntf, ExtDlgs, PropEdits, ImgList, Math,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -656,7 +656,10 @@ function TImageIndexPropertyEditor.GetImageList: TCustomImageList;
 var
   Persistent: TPersistent;
   Component: TComponent absolute Persistent;
+  PropInfo: PPropInfo;
+  Obj: TObject;
 begin
+  Result := nil;
   Persistent := GetComponent(0);
   if not (Persistent is TComponent) then
     Exit;
@@ -674,13 +677,17 @@ begin
     end;
   end
   else
-  if Component is TCustomAction then
   begin
     Component := Component.GetParentComponent;
-    if Component is TCustomActionList then
-      Exit(TCustomActionList(Component).Images);
+    if Component = nil then
+      Exit;
+    PropInfo := TypInfo.GetPropInfo(Component, 'Images');
+    if PropInfo = nil then
+      Exit;
+    Obj := GetObjectProp(Component, PropInfo);
+    if Obj is TCustomImageList then
+      Exit(TCustomImageList(Obj));
   end;
-  Result := nil;
 end;
 
 function TImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -751,8 +758,7 @@ initialization
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph', TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph', TButtonGlyphPropEditor);
   RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TMenuItem, 'ImageIndex', TImageIndexPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TContainedAction, 'ImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndex', TImageIndexPropertyEditor);
 
 end.
 
