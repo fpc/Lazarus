@@ -817,7 +817,7 @@ type
     function GetTestDirectory: string;
     function GetCompileSourceFilename: string;
     procedure AutoAddOutputDirToIncPath;
-    
+
     // state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
     function SaveStateFile(const CompilerFilename, CompilerParams: string
@@ -4967,7 +4967,7 @@ function TProjectCompilerOptions.GetDefaultMainSourceFileName: string;
 var
   MainUnitInfo: TUnitInfo;
 begin
-  MainUnitInfo:=FOwnerProject.MainUNitInfo;
+  MainUnitInfo:=FOwnerProject.MainUnitInfo;
   if (MainUnitInfo<>nil) then
     Result:=ExtractFileName(MainUnitInfo.Filename);
   if Result='' then

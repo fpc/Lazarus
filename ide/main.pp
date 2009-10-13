@@ -6707,6 +6707,7 @@ var
   TitleWasDefault: Boolean;
   OldSource: String;
   AFilename: String;
+  NewTargetFilename: String;
 begin
   OldProjectDir:=Project1.ProjectDirectory;
 
@@ -6851,6 +6852,20 @@ begin
   end;
 
   TitleWasDefault := Project1.TitleIsDefault(true);
+
+  // set new project target filename
+  if (Project1.TargetFilename<>'')
+  and ((SysUtils.CompareText(ExtractFileNameOnly(Project1.TargetFilename),
+                             ExtractFileNameOnly(Project1.ProjectInfoFile))=0)
+      or (Project1.ProjectInfoFile='')) then
+  begin
+    // target file is default => change, but keep sub directories
+    // Note: Extension is appended automatically => do not add it
+    NewTargetFilename:=ExtractFilePath(Project1.TargetFilename)
+                                       +ExtractFileNameOnly(NewProgramFilename);
+    Project1.TargetFilename:=NewTargetFilename;
+    //DebugLn(['TMainIDE.DoShowSaveProjectAsDialog changed targetfilename to ',Project1.TargetFilename]);
+  end;
 
   // set new project filename
   Project1.ProjectInfoFile:=NewLPIFilename;
