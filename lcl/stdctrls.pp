@@ -306,6 +306,7 @@ type
     procedure DoExit; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
+    procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
     procedure Change; virtual;
@@ -368,7 +369,6 @@ type
     procedure ClearSelection; //override;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
-    procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
     property AutoComplete: boolean
       read GetAutoComplete write SetAutoComplete default False;
