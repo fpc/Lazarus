@@ -4013,9 +4013,13 @@ begin
   GObject^.GDIPenWidth := dwWidth;
   SetGDIColorRef(GObject^.GDIPenColor, lplb.lbColor);
   GObject^.GDIPenDashesCount := dwStyleCount;
-  GetMem(GObject^.GDIPenDashes, dwStyleCount * SizeOf(gint8));
-  for i := 0 to dwStyleCount - 1 do
-    GObject^.GDIPenDashes[i] := lpStyle[i];
+
+  if dwStyleCount > 0 then
+  begin
+    GetMem(GObject^.GDIPenDashes, dwStyleCount * SizeOf(gint8));
+    for i := 0 to dwStyleCount - 1 do
+      GObject^.GDIPenDashes[i] := lpStyle[i];
+  end;
 
   Result := HPEN(PtrUInt(GObject));
 end;
