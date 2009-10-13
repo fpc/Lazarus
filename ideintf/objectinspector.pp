@@ -1456,6 +1456,7 @@ begin
   begin
     CurRow := Rows[FItemIndex];
     CurRow.Editor.ListMeasureHeight('Fj', Index, ValueComboBox.Canvas, AHeight);
+    AHeight := Max(AHeight, ValueComboBox.ItemHeight);
   end;
 end;
 
