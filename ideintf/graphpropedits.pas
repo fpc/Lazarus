@@ -598,7 +598,10 @@ begin
     // set thing up and do work
     Pen.Color := clWindowText;
     i:=GetEnumValue(GetPropInfo^.PropType, CurValue);
+    {$IFNDEF LCLGtk2}
+    {$NOTE FixMe Pen.Style=psPattern gives X crash}
     Pen.Style := TPenStyle(i);
+    {$ENDIF}
     MoveTo(ARect.Left + 1, vTop);
     LineTo(vRight - 1, vTop);
     MoveTo(ARect.Left + 1, vTop + 1);
@@ -749,16 +752,16 @@ end;
 
 initialization
   RegisterPropertyEditor(TypeInfo(TGraphicsColor), nil, '', TColorPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TBrushStyle), nil, '', TBrushStylePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TPenStyle), nil, '', TPenStylePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TBrushStyle), nil, '', TBrushStylePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph', TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph', TButtonGlyphPropEditor);
-  RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndex', TImageIndexPropertyEditor);
 
 end.
 
