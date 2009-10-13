@@ -9,6 +9,7 @@ option to hide various tools
 option to hide menu items for frames
 option to hide menu items for packages
 option to hide menu items for forms
+option to hide components in the component palette
 speed button for single file program
 option component name at create
 option file name at create

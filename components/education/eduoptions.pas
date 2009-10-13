@@ -27,6 +27,9 @@ uses
   Classes, SysUtils, LazConfigStorage, Controls, Forms, BaseIDEIntf, FileUtil,
   LazIDEIntf, IDEOptionsIntf;
 
+resourcestring
+  EduRSEducation = 'Education';
+
 const
   DefaultEduOptionsFilename = 'education.xml';
 
@@ -90,6 +93,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    class function GetGroupCaption: string; override;
     property Root: TEduOptionsNode read FRoot;
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
@@ -248,6 +252,11 @@ destructor TEduOptions.Destroy;
 begin
   FreeAndNil(FRoot);
   inherited Destroy;
+end;
+
+class function TEduOptions.GetGroupCaption: string;
+begin
+  Result:=EduRSEducation;
 end;
 
 function TEduOptions.Load(Config: TConfigStorage): TModalResult;

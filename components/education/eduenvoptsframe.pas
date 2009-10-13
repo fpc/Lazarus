@@ -69,7 +69,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterIDEOptionsGroup(EduOptionID,'Education');
+  RegisterIDEOptionsGroup(EduOptionID,TEduOptions);
   RegisterIDEOptionsEditor(EduOptionID,TEduEnvFrame,EduOptionGeneralID);
   EduGeneralOptions:=TEduGeneralOptions.Create;
   EducationOptions.Root.Add(EduGeneralOptions);
