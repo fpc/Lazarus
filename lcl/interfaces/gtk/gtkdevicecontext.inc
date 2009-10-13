@@ -892,7 +892,7 @@ begin
       CapStyle := GDK_CAP_NOT_LAST;
   end;
 
-  if not IsExtPen and (PenStyle = PS_USERSTYLE) then
+  if (PenStyle = PS_USERSTYLE) and (not IsExtPen or (CurrentPen^.GDIPenDashesCount = 0)) then
     PenStyle := PS_SOLID;
 
   if (PenStyle = PS_SOLID) or (PenStyle = PS_INSIDEFRAME) then
