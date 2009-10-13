@@ -697,7 +697,7 @@ var
   Child: TDOMNode;
   FileAttribute, LinkAttribute: TDOMAttr;
 begin
-  NewValue:=ToUnixLineEnding(NewValue);
+  NewValue:=ToOSLineEnding(NewValue);
   if ChildName=FPDocItemNames[fpdiElementLink] then begin
     // update attribute
     if Node is TDomElement then begin
