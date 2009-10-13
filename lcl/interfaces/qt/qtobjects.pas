@@ -39,6 +39,7 @@ type
   // forward declarations
   TQtImage = class;
   TQtFontMetrics = class;
+  TRop2OrCompositionSupport = (rocNotSupported, rocSupported, rocUndefined);
 
   { TQtObject }
   TQtObject = class(TObject)
@@ -274,6 +275,8 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FSupportRasterOps: TRop2OrCompositionSupport;
+    FSupportComposition: TRop2OrCompositionSupport;
     FRopMode: Integer;
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
@@ -282,6 +285,9 @@ type
     SelPen: TQtPen;
     PenColor: TQColor;
     function GetRop: Integer;
+    function DeviceSupportsComposition: Boolean;
+    function DeviceSupportsRasterOps: Boolean;
+    function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
     procedure RestorePenColor;
     procedure RestoreTextColor;
     procedure SetRop(const AValue: Integer);
@@ -680,6 +686,10 @@ const
   );
 
 const
+  Rop2CompSupported: Array[Boolean] of TRop2OrCompositionSupport =
+    (rocNotSupported, rocSupported);
+
+const
   SQTWSPrefix = 'TQTWidgetSet.';
 
 var
@@ -687,31 +697,6 @@ var
   FDefaultContext: TQtDeviceContext = nil;
   FScreenContext: TQtDeviceContext = nil;
   FPrinter: TQtPrinter = nil;
-
-function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
-begin
-  {TODO: test unsupported modes by real CompositionMode}
-  case AValue of
-    R2_BLACK: Result := QPainterCompositionMode_Clear; // unsupported
-    R2_COPYPEN: Result := QPainterCompositionMode_SourceOver; // default
-    R2_MASKNOTPEN: Result := QPainterRasterOp_NotSourceAndDestination;
-    R2_MASKPEN: Result := QPainterRasterOp_SourceAndDestination;
-    R2_MASKPENNOT: Result := QPainterRasterOp_SourceAndNotDestination;
-    R2_MERGENOTPEN: Result := QPainterCompositionMode_SourceOver; // unsupported
-    R2_MERGEPEN: Result := QPainterRasterOp_SourceOrDestination;
-    R2_MERGEPENNOT: Result := QPainterCompositionMode_SourceOver; // unsupported
-    R2_NOP: Result := QPainterCompositionMode_Destination;
-    R2_NOT: Result := QPainterCompositionMode_SourceOut; // unsupported
-    R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
-    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
-    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
-    R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
-    R2_WHITE: Result := QPainterCompositionMode_Screen; // unsupported
-    R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
-    else
-      Result := QPainterCompositionMode_SourceOver;
-  end;
-end;
 
 {------------------------------------------------------------------------------
   Name:    CheckGDIObject
@@ -1778,6 +1763,7 @@ begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
     end;
   end;
+
   FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
@@ -1832,6 +1818,9 @@ end;
 
 procedure TQtDeviceContext.CreateObjects;
 begin
+  FSupportComposition := rocUndefined;
+  FSupportRasterOps := rocUndefined;
+
   vFont := TQtFont.Create(False);
   vFont.Owner := Self;
 
@@ -2052,6 +2041,106 @@ begin
   {$endif}
   QPainter_restore(Widget);
   Result := True;
+end;
+
+function TQtDeviceContext.DeviceSupportsComposition: Boolean;
+var
+  Engine: QPaintEngineH;
+  AType: QPaintEngineType;
+begin
+
+  Result := (Widget <> nil) and QPainter_isActive(Widget);
+
+  if not Result then
+    exit;
+
+  Result := FSupportComposition = rocSupported;
+
+  if (FSupportComposition <> rocUndefined) then
+    exit;
+
+  Engine := QPainter_paintEngine(Widget);
+
+  if Engine <> nil then
+  begin
+    AType := QPaintEngine_type(Engine);
+    Result := not (AType in
+      [QPaintEngineX11, QPaintEngineWindows,
+       QPaintEngineQuickDraw, QPaintEngineCoreGraphics,
+       QPaintEngineQWindowSystem]);
+
+    FSupportComposition := Rop2CompSupported[Result];
+  end;
+end;
+
+function TQtDeviceContext.DeviceSupportsRasterOps: Boolean;
+var
+  Engine: QPaintEngineH;
+  AType: QPaintEngineType;
+begin
+
+  Result := (Widget <> nil) and QPainter_isActive(Widget);
+
+  if not Result then
+    exit;
+
+  Result := FSupportRasterOps = rocSupported;
+
+  if (FSupportRasterOps <> rocUndefined) then
+    exit;
+
+  Engine := QPainter_paintEngine(Widget);
+  if Engine <> nil then
+  begin
+    AType := QPaintEngine_type(Engine);
+    Result := not (AType in
+      [QPaintEngineQuickDraw, QPaintEngineCoreGraphics,
+       QPaintEngineQWindowSystem]);
+
+    FSupportRasterOps := Rop2CompSupported[Result];
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.R2ToQtRasterOp
+  Params:  Raster ops binary operator
+  Returns: QPainterCompositionMode
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
+begin
+  Result := QPainterCompositionMode_SourceOver;
+
+  if not DeviceSupportsRasterOps then
+    exit;
+
+  case AValue of
+
+    R2_BLACK: if DeviceSupportsComposition then
+                Result := QPainterCompositionMode_Clear;
+
+    R2_COPYPEN: Result := QPainterCompositionMode_SourceOver; // default
+    R2_MASKNOTPEN: Result := QPainterRasterOp_NotSourceAndDestination;
+    R2_MASKPEN: Result := QPainterRasterOp_SourceAndDestination;
+    R2_MASKPENNOT: Result := QPainterRasterOp_SourceAndNotDestination;
+    R2_MERGENOTPEN: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_MERGEPEN: Result := QPainterRasterOp_SourceOrDestination;
+    R2_MERGEPENNOT: Result := QPainterCompositionMode_SourceOver; // unsupported
+
+    R2_NOP: if DeviceSupportsComposition then
+              Result := QPainterCompositionMode_Destination;
+    R2_NOT: if DeviceSupportsComposition then
+              Result := QPainterCompositionMode_SourceOut; // unsupported
+
+    R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
+    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
+    R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
+
+    R2_WHITE: if DeviceSupportsComposition then
+                Result := QPainterCompositionMode_Screen;
+
+    R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
+  end;
 end;
 
 {------------------------------------------------------------------------------
