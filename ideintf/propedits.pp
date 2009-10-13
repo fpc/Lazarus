@@ -2789,14 +2789,14 @@ end;
   object inspector's drop down list editor. You don't need to
   override the two measure procedures if the default width or height don't
   need to be changed. }
-procedure TPropertyEditor.ListMeasureHeight(const AValue:ansistring;
-  Index:integer;  ACanvas:TCanvas;  var AHeight:Integer);
+procedure TPropertyEditor.ListMeasureHeight(const AValue: AnsiString;
+  Index: Integer; ACanvas: TCanvas; var AHeight: Integer);
 begin
-  //
+  AHeight := ACanvas.TextHeight(AValue);
 end;
 
-procedure TPropertyEditor.ListMeasureWidth(const AValue:ansistring;
-  Index:integer; ACanvas:TCanvas; var AWidth:Integer);
+procedure TPropertyEditor.ListMeasureWidth(const AValue: AnsiString;
+  Index: Integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
   //
 end;

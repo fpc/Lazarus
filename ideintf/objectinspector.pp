@@ -383,6 +383,8 @@ type
     procedure ValueComboBoxCloseUp(Sender: TObject);
     procedure ValueComboBoxGetItems(Sender: TObject);
     procedure ValueButtonClick(Sender: TObject);
+    procedure ValueComboBoxMeasureItem(Control: TWinControl; Index: Integer;
+          var AHeight: Integer);
     procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
           ARect: TRect; State: TOwnerDrawState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -883,6 +885,7 @@ begin
     OnMouseUp:=@ValueComboBoxMouseUp;
     OnGetItems:=@ValueComboBoxGetItems;
     OnCloseUp:=@ValueComboBoxCloseUp;
+    OnMeasureItem:=@ValueComboBoxMeasureItem;
     OnDrawItem:=@ValueComboBoxDrawItem;
   end;
 
@@ -1442,6 +1445,18 @@ procedure TOICustomPropertyGrid.ValueButtonClick(Sender: TObject);
 begin
   ScrollToActiveItem;
   DoCallEdit;
+end;
+
+procedure TOICustomPropertyGrid.ValueComboBoxMeasureItem(Control: TWinControl;
+  Index: Integer; var AHeight: Integer);
+var
+  CurRow: TOIPropertyGridRow;
+begin
+  if (FItemIndex >= 0) and (FItemIndex < FRows.Count) then
+  begin
+    CurRow := Rows[FItemIndex];
+    CurRow.Editor.ListMeasureHeight('Fj', Index, ValueComboBox.Canvas, AHeight);
+  end;
 end;
 
 procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
