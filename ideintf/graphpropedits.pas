@@ -24,7 +24,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
   FileUtil, Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs,
-  LCLIntf, ExtDlgs, PropEdits,
+  LCLIntf, ExtDlgs, PropEdits, ImgList, Math,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -131,6 +131,21 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TImageIndexPropertyEditor
+  PropertyEditor editor for ImageIndex. Provides list of glyphs. }
+
+  TImageIndexPropertyEditor = class(TIntegerPropertyEditor)
+  protected
+    function GetImageList: TCustomImageList; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+    procedure ListMeasureHeight(const AValue: ansistring; Index:integer;
+      ACanvas:TCanvas; var AHeight: Integer); override;
+    procedure ListDrawValue(const CurValue: ansistring; Index:integer;
+      ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
   end;
 
 //==============================================================================
@@ -657,6 +672,86 @@ end;
 
 
 //------------------------------------------------------------------------------
+
+{ TImageIndexPropertyEditor }
+
+function TImageIndexPropertyEditor.GetImageList: TCustomImageList;
+var
+  Component: TPersistent;
+begin
+  Component := GetComponent(0);
+  if Component is TMenuItem then
+  begin
+    Component := TMenuItem(Component).GetParentComponent;
+    while (Component <> nil) do
+    begin
+      if (Component is TMenuItem) and (TMenuItem(Component).SubMenuImages <> nil) then
+        Exit(TMenuItem(Component).SubMenuImages);
+      if (Component is TMenu) then
+        Exit(TMenu(Component).Images);
+      Component := TComponent(Component).GetParentComponent;
+    end;
+  end;
+  Result := nil;
+end;
+
+function TImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paCustomDrawn, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
+end;
+
+procedure TImageIndexPropertyEditor.GetValues(Proc: TGetStringProc);
+var
+  Images: TCustomImageList;
+  I: Integer;
+begin
+  Images := GetImageList;
+  if Assigned(Images) then
+    for I := 0 to Images.Count - 1 do
+      Proc(IntToStr(I));
+end;
+
+procedure TImageIndexPropertyEditor.ListMeasureHeight(const AValue: ansistring;
+  Index: integer; ACanvas: TCanvas; var AHeight: Integer);
+var
+  Images: TCustomImageList;
+begin
+  AHeight := ACanvas.TextHeight('1');
+  Images := GetImageList;
+  if Assigned(Images) then
+    AHeight := Max(AHeight, Images.Height + 2);
+end;
+
+procedure TImageIndexPropertyEditor.ListDrawValue(const CurValue: ansistring;
+  Index: integer; ACanvas: TCanvas; const ARect: TRect; AState: TPropEditDrawState);
+var
+  Images: TCustomImageList;
+  R: TRect;
+  OldColor: TColor;
+begin
+  Images := GetImageList;
+  R := ARect;
+  if Assigned(Images) then
+  begin
+    if (pedsInComboList in AState) and not (pedsInEdit in AState) then
+    begin
+      OldColor := ACanvas.Brush.Color;
+      if pedsSelected in AState then
+        ACanvas.Brush.Color := clHighlight
+      else
+        ACanvas.Brush.Color := clWhite;
+      ACanvas.FillRect(R);
+      ACanvas.Brush.Color := OldColor;
+    end;
+
+    Images.Draw(ACanvas, R.Left + 1, R.Top + 1, Index, True);
+    R.Left := R.Left + Images.Width + 2;
+  end;
+  inherited ListDrawValue(CurValue, Index, ACanvas, R, AState);
+end;
+
 initialization
   // XXX workaround for missing typeinfo function
   // Normally it should use something like this;
@@ -677,6 +772,7 @@ initialization
     TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph',
     TButtonGlyphPropEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TMenuItem, 'ImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TFontCharset'),
     nil, 'CharSet', TFontCharsetPropertyEditor);
 

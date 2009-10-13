@@ -246,7 +246,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.GetParentComponent: TComponent;
 begin
-  if (FParent <> nil) and (FParent.FMenu<>nil) then
+  if (FParent <> nil) and (FParent.FMenu <> nil) then
     Result := FParent.FMenu
   else
     Result := FParent;
