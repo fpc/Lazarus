@@ -958,7 +958,9 @@ begin
       NewOwner:=nil;
       exit;
     end;
-      
+
+    IDEMacros.CreateAbsoluteSearchPath(LazDocPaths,BaseDir);
+
     p:=1;
     repeat
       NewPath:=GetNextDirectoryInSearchPath(LazDocPaths,p);
@@ -1254,7 +1256,7 @@ var
   begin
     if Paths='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then exit;
-    //DebugLn(['SearchInPath START ',Paths]);
+    DebugLn(['SearchInPath START ',Paths]);
     if Paths='' then exit;
     p:=1;
     repeat
