@@ -159,30 +159,7 @@ type
   TPenStyleProperty =       TPenStylePropertyEditor;
   TFontProperty =           TFontPropertyEditor;
 
-
-//==============================================================================
-// XXX
-// This class is a workaround for the missing typeinfo function
-type
-  TDummyClassForGraphPropTypes = class(TDummyClassForPropTypes)
-  private
-    FColor:TColor;
-    FBrushStyle:TBrushStyle;
-    FPenStyle:TPenStyle;
-    FCharset: TFontCharset;
-  published
-    property Color:TColor read FColor write FColor;
-    property BrushStyle:TBrushStyle read FBrushStyle;
-    property PenStyle:TPenStyle read FPenStyle;
-    property CharSet: TFontCharset read FCharSet;
-  end;
-//==============================================================================
-
-
 implementation
-
-var
-  DummyClassForPropTypes: TDummyClassForGraphPropTypes;
 
 { TGraphicPropertyEditor }
 
@@ -753,33 +730,17 @@ begin
 end;
 
 initialization
-  // XXX workaround for missing typeinfo function
-  // Normally it should use something like this;
-  // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
-  DummyClassForPropTypes:=TDummyClassForGraphPropTypes.Create;
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TGraphicsColor'),
-    nil,'',TColorPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TBrushStyle'),
-    nil,'',TBrushStylePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TPenStyle'),
-    nil,'',TPenStylePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TGraphicsColor), nil, '', TColorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TBrushStyle), nil, '', TBrushStylePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TPenStyle), nil, '', TPenStylePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TFont,'Name', TFontNamePropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph',
-    TButtonGlyphPropEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph',
-    TButtonGlyphPropEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph', TButtonGlyphPropEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph', TButtonGlyphPropEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TMenuItem, 'ImageIndex', TImageIndexPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TFontCharset'),
-    nil, 'CharSet', TFontCharsetPropertyEditor);
-
-
-finalization
-  // XXX workaround for missing typeinfo function
-  DummyClassForPropTypes.Free;
+  RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
 
 end.
 
