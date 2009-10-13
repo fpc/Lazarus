@@ -73,6 +73,9 @@ begin
   RegisterIDEOptionsEditor(EduOptionID,TEduEnvFrame,EduOptionGeneralID);
   EduGeneralOptions:=TEduGeneralOptions.Create;
   EducationOptions.Root.Add(EduGeneralOptions);
+
+  // load options
+  EducationOptions.Load;
 end;
 
 { TEduEnvFrame }
