@@ -635,7 +635,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem SetImageIndex                                                    }
 {------------------------------------------------------------------------------}
-procedure TListItem.SetImageIndex(const AValue: Integer);
+procedure TListItem.SetImageIndex(const AValue: TImageIndex);
 begin
   if AValue = FImageIndex then Exit;
 
@@ -648,7 +648,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem GetImageIndex                                                    }
 {------------------------------------------------------------------------------}
-function TListItem.GetImageIndex: Integer; 
+function TListItem.GetImageIndex: TImageIndex;
 begin
   Result := FImageIndex;
 end;
@@ -727,13 +727,13 @@ begin
   Result := inherited GetCaption;
 end;
 
-function TOwnerDataListItem.GetImageIndex: Integer; 
+function TOwnerDataListItem.GetImageIndex: TImageIndex;
 begin
   if not FCached then DoCacheItem;
   Result := inherited GetImageIndex;
 end;
 
-procedure TOwnerDataListItem.SetImageIndex(const AValue: Integer); 
+procedure TOwnerDataListItem.SetImageIndex(const AValue: TImageIndex);
 begin
   FImageIndex := AValue;
 end;

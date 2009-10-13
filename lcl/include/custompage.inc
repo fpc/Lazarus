@@ -40,7 +40,7 @@ end;
 
   Set the image index of the image shown in the tabs.
  ------------------------------------------------------------------------------}
-procedure TCustomPage.SetImageIndex(const AValue: integer);
+procedure TCustomPage.SetImageIndex(const AValue: TImageIndex);
 begin
   if FImageIndex=AValue then exit;
   FImageIndex:=AValue;

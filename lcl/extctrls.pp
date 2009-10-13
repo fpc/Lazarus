@@ -53,11 +53,11 @@ type
   private
     FTabVisible: Boolean;
     FFlags: TPageFlags;
-    FImageIndex: integer;
+    FImageIndex: TImageIndex;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     function GetTabVisible: Boolean;
-    procedure SetImageIndex(const AValue: integer);
+    procedure SetImageIndex(const AValue: TImageIndex);
     procedure SetTabVisible(const AValue: Boolean);
   protected
     class procedure WSRegisterClass; override;
@@ -82,7 +82,7 @@ type
     function VisibleIndex: integer;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
-    property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Left stored False;
     property Top stored False;
     property Width stored False;

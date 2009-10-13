@@ -398,7 +398,7 @@ begin
   Update;
 end;
 
-procedure TTreeNode.SetImageIndex(AValue: integer);
+procedure TTreeNode.SetImageIndex(AValue: TImageIndex);
 begin
   if FImageIndex=AValue then exit;
   FImageIndex := AValue;

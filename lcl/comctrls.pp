@@ -697,7 +697,7 @@ type
     FSubItems: TStrings;
     FCaption: String;
     FData: Pointer;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FStates: TListItemStates;
     FChecked: Boolean;
     function GetCaption: String; virtual;
@@ -706,8 +706,11 @@ type
     function GetListView: TCustomListView;
     function GetPosition: TPoint;
     function GetState(const ALisOrd: Integer): Boolean;
-    function GetImageIndex: Integer; virtual;    function GetIndex: Integer; virtual;    function GetSubItemImages(const AIndex: Integer): Integer;
-    function GetSubItems: TStrings; virtual;    function GetTop: Integer;
+    function GetImageIndex: TImageIndex; virtual;
+    function GetIndex: Integer; virtual;
+    function GetSubItemImages(const AIndex: Integer): Integer;
+    function GetSubItems: TStrings; virtual;
+    function GetTop: Integer;
     function WSUpdateAllowed: Boolean;
     procedure WSUpdateText;
     procedure WSUpdateImages;
@@ -717,8 +720,11 @@ type
     procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
     procedure SetData(const AValue: Pointer);
-    procedure SetImageIndex(const AValue: Integer); virtual;    procedure SetLeft(Value: Integer);
-    procedure SetCaption(const AValue : String); virtual;    procedure SetPosition(const AValue: TPoint);    procedure SetSubItemImages(const AIndex, AValue: Integer);
+    procedure SetImageIndex(const AValue: TImageIndex); virtual;
+    procedure SetLeft(Value: Integer);
+    procedure SetCaption(const AValue : String); virtual;
+    procedure SetPosition(const AValue: TPoint);
+    procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetSubItems(const AValue: TStrings);
     procedure SetTop(Value: Integer);
   protected
@@ -741,7 +747,7 @@ type
     property DropTarget: Boolean index Ord(lisDropTarget) read GetState write SetState;
     property Focused: Boolean index Ord(lisFocused) read GetState write SetState;
     property Index: Integer read GetIndex;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property Left: Integer read GetLeft write SetLeft;
     property ListView: TCustomListView read GetListView;
     property Owner: TListItems read FOwner;
@@ -761,10 +767,10 @@ type
     FCached: Boolean;
     function GetCaption: String; override;
     function GetIndex: Integer; override;
-    function GetImageIndex: Integer; override;
+    function GetImageIndex: TImageIndex; override;
 
     procedure SetCaption(const AValue : String); override;
-    procedure SetImageIndex(const AValue: Integer); override;
+    procedure SetImageIndex(const AValue: TImageIndex); override;
     function GetSubItems: TStrings; override;
     procedure DoCacheItem;
   public
@@ -835,7 +841,7 @@ type
     FMaxWidth: TWidth;
     FVisible: Boolean;
     FWidth: TWidth;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FTag: Integer;
     function GetWidth: TWidth;
     procedure WSCreateColumn;
@@ -1957,7 +1963,7 @@ type
     FCount: integer;      // # of first level childs in FItems
     FData: Pointer;       // custom data
     FHeight: integer;     // height in pixels
-    FImageIndex: integer;
+    FImageIndex: TImageIndex;
     FIndex: integer;      // index in parent
     FItems: TTreeNodeArray;  // first level child nodes
     FNextBrother: TTreeNode; // next sibling
@@ -2009,7 +2015,7 @@ type
     procedure SetFocused(AValue: Boolean);
     procedure SetHasChildren(AValue: Boolean);
     procedure SetHeight(AValue: integer);
-    procedure SetImageIndex(AValue: integer);
+    procedure SetImageIndex(AValue: TImageIndex);
     procedure SetIndex(const AValue: Integer);
     procedure SetItems(AnIndex: Integer; AValue: TTreeNode);
     procedure SetMultiSelected(const AValue: Boolean);
@@ -2086,7 +2092,7 @@ type
     property Handle: THandle read GetHandle;
     property HasChildren: Boolean read GetHasChildren write SetHasChildren;
     property Height: integer read GetHeight write SetHeight;
-    property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Index: Integer read GetIndex write SetIndex;
     property IsVisible: Boolean read IsNodeVisible;
     property IsFullHeightVisible: Boolean read IsNodeHeightFullVisible;
