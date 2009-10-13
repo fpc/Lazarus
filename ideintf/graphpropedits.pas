@@ -24,7 +24,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
   FileUtil, Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs,
-  LCLIntf, ExtDlgs, PropEdits, ImgList, Math,
+  LCLIntf, ExtDlgs, PropEdits, ImgList, Math, ActnList,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -654,20 +654,31 @@ end;
 
 function TImageIndexPropertyEditor.GetImageList: TCustomImageList;
 var
-  Component: TPersistent;
+  Persistent: TPersistent;
+  Component: TComponent absolute Persistent;
 begin
-  Component := GetComponent(0);
+  Persistent := GetComponent(0);
+  if not (Persistent is TComponent) then
+    Exit;
+
   if Component is TMenuItem then
   begin
-    Component := TMenuItem(Component).GetParentComponent;
+    Component := Component.GetParentComponent;
     while (Component <> nil) do
     begin
       if (Component is TMenuItem) and (TMenuItem(Component).SubMenuImages <> nil) then
         Exit(TMenuItem(Component).SubMenuImages);
       if (Component is TMenu) then
         Exit(TMenu(Component).Images);
-      Component := TComponent(Component).GetParentComponent;
+      Component := Component.GetParentComponent;
     end;
+  end
+  else
+  if Component is TCustomAction then
+  begin
+    Component := Component.GetParentComponent;
+    if Component is TCustomActionList then
+      Exit(TCustomActionList(Component).Images);
   end;
   Result := nil;
 end;
@@ -739,8 +750,9 @@ initialization
   RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph', TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph', TButtonGlyphPropEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TMenuItem, 'ImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TMenuItem, 'ImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TContainedAction, 'ImageIndex', TImageIndexPropertyEditor);
 
 end.
 
