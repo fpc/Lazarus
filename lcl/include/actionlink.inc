@@ -112,7 +112,7 @@ begin
 
 end;
 
-procedure TActionLink.SetImageIndex(Value: Integer);
+procedure TActionLink.SetImageIndex(Value: TImageIndex);
 begin
 
 end;

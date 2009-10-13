@@ -1453,7 +1453,7 @@ type
   protected
     procedure AssignClient(AClient: TObject); override;
     procedure SetChecked(Value: Boolean); override;
-    procedure SetImageIndex(Value: Integer); override;
+    procedure SetImageIndex(Value: TImageIndex); override;
   public
     function IsCheckedLinked: Boolean; override;
     function IsImageIndexLinked: Boolean; override;
@@ -1469,7 +1469,7 @@ type
     FDown: Boolean;
     FDropdownMenu: TPopupMenu;
     FGrouped: Boolean;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FIndeterminate: Boolean;
     FMarked: Boolean;
     FMenuItem: TMenuItem;
@@ -1487,7 +1487,7 @@ type
     procedure SetDown(Value: Boolean);
     procedure SetDropdownMenu(Value: TPopupMenu);
     procedure SetGrouped(Value: Boolean);
-    procedure SetImageIndex(Value: Integer);
+    procedure SetImageIndex(Value: TImageIndex);
     procedure SetIndeterminate(Value: Boolean);
     procedure SetMarked(Value: Boolean);
     procedure SetMenuItem(Value: TMenuItem);
@@ -1553,7 +1553,7 @@ type
     property Enabled;
     property Grouped: Boolean read FGrouped write SetGrouped default False;
     property Height stored False;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;

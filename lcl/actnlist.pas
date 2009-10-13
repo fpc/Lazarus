@@ -250,7 +250,7 @@ type
     procedure SetHelpKeyword(const Value: string); virtual;
     procedure SetHelpType(Value: THelpType); virtual;
     procedure SetHint(const Value: string); virtual;
-    procedure SetImageIndex(Value: Integer); virtual;
+    procedure SetImageIndex(Value: TImageIndex); virtual;
     procedure SetShortCut(Value: TShortCut); virtual;
     procedure SetVisible(Value: Boolean); virtual;
   public

@@ -116,7 +116,7 @@ begin
   if IsHintLinked then FClient.Hint := Value;
 end;
 
-procedure TMenuActionLink.SetImageIndex(Value: Integer);
+procedure TMenuActionLink.SetImageIndex(Value: TImageIndex);
 begin
   if IsImageIndexLinked then FClient.ImageIndex := Value;
 end;

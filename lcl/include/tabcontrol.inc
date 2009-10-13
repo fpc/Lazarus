@@ -150,8 +150,7 @@ end;
 procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;
   TheTabIndex: Integer; var ImageIndex: Integer);
 begin
-  if Sender=nil then ;
-  ImageIndex:=TabControl.GetImageIndex(TheTabIndex);
+  ImageIndex := TabControl.GetImageIndex(TheTabIndex);
 end;
 
 procedure TTabControlNoteBookStrings.NBChanging(Sender: TObject;
@@ -482,9 +481,9 @@ end;
 
 function TCustomTabControl.GetImageIndex(ATabIndex: Integer): Integer;
 begin
-  Result:=TabIndex;
+  Result := TabIndex;
   if Assigned(FOnGetImageIndex) then
-    FOnGetImageIndex(Self,TabIndex,Result);
+    FOnGetImageIndex(Self, TabIndex, Result);
 end;
 
 procedure TCustomTabControl.Loaded;
