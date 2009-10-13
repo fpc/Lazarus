@@ -152,7 +152,30 @@ const
   INVALID_HANDLE_VALUE  = 0;
   MaxByte               = 255;
 
-  { Ternary raster operations }
+//==============================================
+// Binary raster operations
+//==============================================
+  R2_BLACK       =  1;  {  0   }
+  R2_NOTMERGEPEN =  2;  { DPon }
+  R2_MASKNOTPEN  =  3;  { DPna }
+  R2_NOTCOPYPEN  =  4;  { PN   }
+  R2_MASKPENNOT  =  5;  { PDna }
+  R2_NOT         =  6;  { Dn   }
+  R2_XORPEN      =  7;  { DPx  }
+  R2_NOTMASKPEN  =  8;  { DPan }
+  R2_MASKPEN     =  9;  { DPa  }
+  R2_NOTXORPEN   =  10; { DPxn }
+  R2_NOP         =  11; { D    }
+  R2_MERGENOTPEN =  12; { DPno }
+  R2_COPYPEN     =  13; { P    }
+  R2_MERGEPENNOT =  14; { PDno }
+  R2_MERGEPEN    =  15; { DPo  }
+  R2_WHITE       =  16; { 1    }
+  R2_LAST        =  16;
+
+//==============================================
+// Ternary raster operations
+//==============================================
   SRCCOPY     = $00CC0020;     { dest = source                    }
   SRCPAINT    = $00EE0086;     { dest = source OR dest            }
   SRCAND      = $008800C6;     { dest = source AND dest           }
@@ -1535,44 +1558,6 @@ const
   COLOR_clActiveShadow =  COLOR_clActiveForeground+11;
   COLOR_clActiveHighlight =  COLOR_clActiveForeground+12;
   COLOR_clActiveHighlightedText =  COLOR_clActiveForeground+13;
-
-{$ifndef WINDOWS}
-  R2_BLACK        = 0;
-  R2_COPYPEN      = 1;
-  R2_MASKNOTPEN   = 2;
-  R2_MASKPEN      = 3;
-  R2_MASKPENNOT   = 4;
-  R2_MERGENOTPEN  = 5;
-  R2_MERGEPEN     = 6;
-  R2_MERGEPENNOT  = 7;
-  R2_NOP          = 8;
-  R2_NOT          = 9;
-  R2_NOTCOPYPEN   = 10;
-  R2_NOTMASKPEN   = 11;
-  R2_NOTMERGEPEN  = 12;
-  R2_NOTXORPEN    = 13;
-  R2_WHITE        = 14;
-  R2_XORPEN       = 15;
-
-{$else}
-  R2_BLACK        = Windows.R2_BLACK;
-  R2_COPYPEN      = Windows.R2_COPYPEN;
-  R2_MASKNOTPEN   = Windows.R2_MASKNOTPEN;
-  R2_MASKPEN      = Windows.R2_MASKPEN;
-  R2_MASKPENNOT   = Windows.R2_MASKPENNOT;
-  R2_MERGENOTPEN  = Windows.R2_MERGENOTPEN;
-  R2_MERGEPEN     = Windows.R2_MERGEPEN;
-  R2_MERGEPENNOT  = Windows.R2_MERGEPENNOT;
-  R2_NOP          = Windows.R2_NOP;
-  R2_NOT          = Windows.R2_NOT;
-  R2_NOTCOPYPEN   = Windows.R2_NOTCOPYPEN;
-  R2_NOTMASKPEN   = Windows.R2_NOTMASKPEN;
-  R2_NOTMERGEPEN  = windows.R2_NOTMERGEPEN;
-  R2_NOTXORPEN    = Windows.R2_NOTXORPEN;
-  R2_WHITE        = Windows.R2_WHITE;
-  R2_XORPEN       = windows.R2_XORPEN;
-{$endif}
-
 
 //==============================================
 // Stock Objects
