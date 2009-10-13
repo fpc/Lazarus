@@ -895,6 +895,8 @@ function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string;
   function SelectNewLazDocPaths(const Title, BaseDir: string): string;
   begin
     Result:=LazSelectDirectory('Choose LazDoc directory for '+Title,BaseDir);
+    if (Result<>'') then
+      Result:=CreateRelativePath(Result,BaseDir);
   end;
   
 var
