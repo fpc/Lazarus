@@ -703,8 +703,8 @@ begin
     R2_NOP: Result := QPainterCompositionMode_Destination; // unsupported
     R2_NOT: Result := QPainterCompositionMode_SourceOut; // unsupported
     R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
-    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
-    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
     R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
     R2_WHITE: Result := QPainterCompositionMode_SourceOver; // unsupported
     R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
