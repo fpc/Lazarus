@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-07-12 18:06+0300\n"
+"PO-Revision-Date: 2009-10-14 01:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -506,6 +506,10 @@ msgstr "Выпуск"
 msgid "Version"
 msgstr "Версия"
 
+#: lr_const.sduplicatedobjectname
+msgid "An object named \"%s\" already exists"
+msgstr "Объект с именем \"%s\" уже существует"
+
 #: lr_const.seditorformbig
 msgid "&Big font"
 msgstr "&Большой шрифт"
@@ -522,6 +526,10 @@ msgstr "&Поле БД"
 msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Формат"
+
+#: lr_const.seditorformfunction
+msgid "Function"
+msgstr "Функция"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-12 01:50+0300\n"
+"PO-Revision-Date: 2009-10-14 00:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -231,7 +231,7 @@ msgstr "Каталог редактора документации"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 msgid "duplicate identifier: %s"
-msgstr "дублируется идентификатор: %s"
+msgstr "дублирущийся идентификатор: %s"
 
 #: codetoolsstrconsts.ctselse
 msgid "else"
@@ -423,15 +423,15 @@ msgstr "несовместимые типы: ожидался \"%s\", получ
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
-msgstr "ожидается параметр индекса, найдено %s"
+msgstr "ожидается параметр индекса, но найдено %s"
 
 #: codetoolsstrconsts.ctsindexspecifierredefined
 msgid "index specifier redefined"
-msgstr "модификатор индекса переопределено"
+msgstr "модификатор индекса переопределён"
 
 #: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
-msgstr "ключевое слово inherited (унаследовано) разрешено только в методах"
+msgstr "ключевое слово inherited разрешено только в методах"
 
 #: codetoolsstrconsts.ctsinstalldirectory
 msgid "Install Directory"
@@ -455,11 +455,11 @@ msgstr "каталог интерфейса"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
-msgstr "неправильное имя класса=%s%s%s"
+msgstr "неверное имя класса=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
 msgid "invalid class name %s%s%s"
-msgstr "неправильное имя класса %s%s%s"
+msgstr "неверное имя класса %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -471,7 +471,7 @@ msgstr "неверный режим \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
 msgid "invalid mode switch \"%s\""
-msgstr ""
+msgstr "неверный переключатель режима \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -483,11 +483,11 @@ msgstr "неверный тип"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr "неправильное имя переменной %s%s%s"
+msgstr "неверное имя переменной %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
-msgstr "неправильный тип переменной %s%s%s"
+msgstr "неверный тип переменной %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"

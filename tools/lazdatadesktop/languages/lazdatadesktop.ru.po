@@ -11,31 +11,31 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "Добавление разделителя"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr ""
+msgstr "Выражения AND в скобках"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr ""
+msgstr "Перевод строки после выражений AND"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr ""
+msgstr "Перевод строки после каждого поля"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr ""
+msgstr "Имена полей в кавычках"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr ""
+msgstr "Пропуск внешних ключей"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "Префикс OLD параметров WHERE"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"

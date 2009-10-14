@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-07 20:20+0300\n"
+"PO-Revision-Date: 2009-10-14 01:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -107,6 +107,11 @@ msgstr "вставлять выделенное"
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "Имеются несохранённые изменения. Использование этой страницы сбросит изменения на странице расширенных параметров"
+
+#: lazarusidestrconsts.dlfreadonlycolor
+msgctxt "lazarusidestrconsts.dlfreadonlycolor"
+msgid "Read Only"
+msgstr "Только чтение"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
@@ -915,10 +920,6 @@ msgstr "Секции Var/Type"
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Секции Var/Type (локальные)"
-
-#: lazarusidestrconsts.dlgdoesnotexist
-msgid "\" does not exist."
-msgstr "\" не существует."
 
 #: lazarusidestrconsts.dlgdownword
 msgctxt "lazarusidestrconsts.dlgdownword"
@@ -3791,7 +3792,7 @@ msgstr "Расположить компонент по центру по вер�
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center form"
-msgstr ""
+msgstr "Поместить форму в центре"
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -5567,6 +5568,10 @@ msgstr "не собирать зависимости"
 msgid "Do not show splash screen"
 msgstr "Не показывать начальную заставку"
 
+#: lazarusidestrconsts.lisdonotshowthismessageagain
+msgid "Do not show this message again"
+msgstr "Больше не показывать это сообщение"
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Отображать линии сетки"
@@ -6040,10 +6045,6 @@ msgstr "Выполнение остановлено%s Адрес: %s%s Проц�
 msgid "Execution stopped"
 msgstr "Выполнение остановлено"
 
-#: lazarusidestrconsts.lisexecutionstoppedon
-msgid "Execution stopped%s"
-msgstr "Выполнение остановлено %s"
-
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Программы"
@@ -6284,6 +6285,10 @@ msgstr "&Только целые слова"
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
 msgstr "Найти комбинацию клавиш"
+
+#: lazarusidestrconsts.lisfindmissingunit
+msgid "Find missing unit"
+msgstr "Поиск отсутствующего модуля"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -6739,6 +6744,10 @@ msgstr "Успешно..."
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
 msgstr "Предупреждений:"
+
+#: lazarusidestrconsts.lisinformation
+msgid "Information"
+msgstr "Сведения"
 
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
@@ -9266,7 +9275,8 @@ msgid "%sThis package was automatically created"
 msgstr "%sЭтот пакет был создан автоматически"
 
 #: lazarusidestrconsts.lisok
-msgid "&Ok"
+#| msgid "&Ok"
+msgid "&OK"
 msgstr "&ОК"
 
 #: lazarusidestrconsts.lisold
@@ -10875,10 +10885,9 @@ msgid "Project Src Path"
 msgstr "Путь к исходному коду проекта"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
 #| msgid "Project %s%s%s successfully built. :)"
 msgid "Project %s%s%s successfully built"
-msgstr "Проект %s%s%s успешно собран. :)"
+msgstr "Проект %s%s%s успешно собран"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
@@ -11030,6 +11039,10 @@ msgstr "Открыть недавний проект"
 #: lazarusidestrconsts.lispwrecentprojects
 msgid "Recent Projects"
 msgstr "Недавние проекты:"
+
+#: lazarusidestrconsts.lisquickfixes
+msgid "Quick fixes"
+msgstr "Быстрые исправления"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -11297,7 +11310,7 @@ msgstr "Сохранять информацию о файлах, закрыты�
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
-msgstr ""
+msgstr "Сохранить проект %s (*%s)"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -14206,7 +14219,7 @@ msgstr "Кодировка"
 
 #: lazarusidestrconsts.uemevaluatemodify
 msgid "&Evaluate/Modify..."
-msgstr ""
+msgstr "&Вычислить/Изменить..."
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"
@@ -14279,6 +14292,7 @@ msgid "Procedure Jump"
 msgstr "Перейти к процедуре"
 
 #: lazarusidestrconsts.uemreadonly
+msgctxt "lazarusidestrconsts.uemreadonly"
 msgid "Read Only"
 msgstr "Только чтение"
 
