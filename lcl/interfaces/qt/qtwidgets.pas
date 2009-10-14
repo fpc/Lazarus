@@ -954,8 +954,10 @@ type
     procedure resizeSection(ASection: Integer; ASize: Integer);
     procedure setHighlightSections(AValue: Boolean);
     procedure setDefaultSectionSize(AValue: Integer);
+    function SortIndicatorOrder: QtSortOrder;
+    procedure SetSortIndicator(const AColumn: Integer; const AOrder: QtSortOrder);
+    procedure SetSortIndicatorVisible(AVisible: Boolean);
     procedure setStretchLastSection(AValue: Boolean);
-    function sortIndicatorOrder: QtSortOrder;
     property Clickable: Boolean read getClickable write setClickable;
     property MinSectionSize: Integer read getMinSectionSize write setMinSectionSize;
   end;
@@ -983,8 +985,10 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     FSyncingItems: Boolean;
+    FSorting: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
+    FSortChanged: QHeaderView_hookH;
     FHeaderEventFilterHook: QObject_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
@@ -1040,6 +1044,7 @@ type
     procedure SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
+    procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
     property ItemCount: Integer read getItemCount;
@@ -7149,6 +7154,11 @@ begin
   Result := QHeaderView_minimumSectionSize(QHeaderViewH(Widget));
 end;
 
+function TQtHeaderView.SortIndicatorOrder: QtSortOrder;
+begin
+  Result := QHeaderView_sortIndicatorOrder(QHeaderViewH(Widget));
+end;
+
 procedure TQtHeaderView.setClickable(const AValue: Boolean);
 begin
   QHeaderView_setClickable(QHeaderViewH(Widget), AValue);
@@ -7157,6 +7167,17 @@ end;
 procedure TQtHeaderView.setMinSectionSize(const AValue: Integer);
 begin
   QHeaderView_setMinimumSectionSize(QHeaderViewH(Widget), AValue);
+end;
+
+procedure TQtHeaderView.SetSortIndicator(const AColumn: Integer;
+  const AOrder: QtSortOrder);
+begin
+  QHeaderView_setSortIndicator(QHeaderViewH(Widget), AColumn, AOrder);
+end;
+
+procedure TQtHeaderView.SetSortIndicatorVisible(AVisible: Boolean);
+begin
+  QHeaderView_setSortIndicatorShown(QHeaderViewH(Widget), AVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -7255,11 +7276,6 @@ begin
   QHeaderView_setStretchLastSection(QHeaderViewH(Widget), AValue);
 end;
 
-function TQtHeaderView.sortIndicatorOrder: QtSortOrder;
-begin
-  Result := QHeaderView_sortIndicatorOrder(QHeaderViewH(Widget));
-end;
-
   { TQtTreeView }
 
 function TQtTreeView.getColVisible(AIndex: Integer): Boolean;
@@ -7325,6 +7341,7 @@ begin
     WriteLn('TQtTreeWidget.Create');
   {$endif}
   FSyncingItems := False;
+  FSorting := False;
   Result := QTreeWidget_create();
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7357,7 +7374,11 @@ begin
     QObject_hook_hook_events(FHeaderEventFilterHook, @headerViewEventFilter);
 
     FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
-    QHeaderView_hook_hook_sectionClicked(FSectionClicked, @FHeader.SignalSectionClicked);
+    QHeaderView_hook_hook_sectionClicked(FSectionClicked,
+      @FHeader.SignalSectionClicked);
+    FSortChanged := QHeaderView_hook_create(FHeader.Widget);
+    QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
+      @SignalSortIndicatorChanged);
   end;
   Result := FHeader;
 end;
@@ -7622,6 +7643,8 @@ begin
     QObject_hook_destroy(FHeaderEventFilterHook);
   if FSectionClicked <> nil then
     QHeaderView_hook_destroy(FSectionClicked);
+  if FSortChanged <> nil then
+    QHeaderView_hook_destroy(FSortChanged);
 
   inherited DetachEvents;
 end;
@@ -7892,6 +7915,21 @@ begin
     end;
   finally
     FSyncingItems := False;
+  end;
+end;
+
+procedure TQtTreeWidget.SignalSortIndicatorChanged(ALogicalIndex: Integer;
+  AOrder: QtSortOrder)cdecl;
+begin
+  if FSorting or not Assigned(LCLObject) or not
+    QHeaderView_isSortIndicatorShown(QHeaderViewH(Header.Widget)) then
+    exit;
+  FSorting := True;
+  try
+    if ALogicalIndex >= 0 then
+      sortItems(ALogicalIndex, AOrder);
+  finally
+    FSorting := False;
   end;
 end;
 

@@ -1120,7 +1120,7 @@ begin
   for i := 0 to AItem.SubItems.Count - 1 do
   begin
     AAlignment := QtAlignLeft;
-    if TListView(ALV).Columns.Count > 0 then
+    if (TListView(ALV).Columns.Count > 0) and (i + 1 < TListView(ALV).Columns.Count) then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment];
     Str := GetUtf8String(AItem.Subitems.Strings[i]);
     QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
@@ -1152,7 +1152,7 @@ begin
   if TWI <> NiL then
   begin
     AAlignment := QtAlignLeft;
-    if TListView(ALV).Columns.Count > 0 then
+    if (TListView(ALV).Columns.Count > 0) and (ASubIndex < TListView(ALV).Columns.Count)  then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
     QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
   end;
@@ -1297,17 +1297,15 @@ begin
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
 
   if AType = stNone then
-    QtTreeWidget.SortEnabled := False
+    QtTreeWidget.Header.SetSortIndicatorVisible(False)
   else
   begin
-    QtTreeWidget.SortEnabled := True;
-    {$note for proper implementation of all TSortType
-     we have to implement item sorting roles.
-    if QtTreeWidget.Header.sortIndicatorOrder = QtDescendingOrder then
-      QtTreeWidget.sortItems(AColumn, QtAscendingOrder)
-    else
-      QtTreeWidget.sortItems(AColumn, QtDescendingOrder);
-     }
+    with QtTreeWidget.Header do
+    begin
+      SetSortIndicatorVisible(True);
+      if (AColumn >= 0) and (AColumn < QtTreeWidget.ColCount) then
+        SetSortIndicator(AColumn, QtAscendingOrder);
+    end;
   end;
 
 end;
