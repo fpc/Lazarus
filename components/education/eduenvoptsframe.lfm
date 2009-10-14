@@ -1,8 +1,9 @@
 inherited EduEnvFrame: TEduEnvFrame
-  Height = 268
-  Width = 359
-  ClientHeight = 268
-  ClientWidth = 344
+  Height = 388
+  Width = 495
+  ClientHeight = 388
+  ClientWidth = 495
+  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 358
   DesignTop = 198
@@ -10,11 +11,40 @@ inherited EduEnvFrame: TEduEnvFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 22
     Top = 6
-    Width = 124
+    Width = 130
     BorderSpacing.Around = 6
     Caption = 'EnableCheckBox'
     TabOrder = 0
+  end
+  object ComponentsGroupBox: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EnableCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 348
+    Top = 34
+    Width = 234
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'ComponentsGroupBox'
+    ClientHeight = 329
+    ClientWidth = 230
+    TabOrder = 1
+    object ComponentsTreeView: TTreeView
+      Left = 0
+      Height = 329
+      Top = 0
+      Width = 230
+      Align = alClient
+      DefaultItemHeight = 19
+      ReadOnly = True
+      TabOrder = 0
+      OnMouseDown = ComponentsTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
   end
 end

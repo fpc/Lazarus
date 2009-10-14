@@ -63,6 +63,7 @@ type
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
     procedure Changed; virtual;
+    procedure Apply(Enable: boolean); virtual;
   public
     property Name: string read FName write SetName;
     property Parent: TEduOptionsNode read FParent;
@@ -101,6 +102,7 @@ type
     function SaveToFile(Filename: string): TModalResult; virtual;
     function Load: TModalResult; virtual;
     function Save: TModalResult; virtual;
+    procedure Apply(Enable: boolean); virtual;
     function GetFullFilename: string;
     property Filename: string read FFilename write SetFilename;
   end;
@@ -240,6 +242,14 @@ begin
   if FParent<>nil then FParent.Changed;
 end;
 
+procedure TEduOptionsNode.Apply(Enable: boolean);
+var
+  i: Integer;
+begin
+  for i:=0 to ChildCount-1 do
+    Childs[i].Apply(Enable);
+end;
+
 { TEduOptions }
 
 procedure TEduOptions.SetFilename(const AValue: string);
@@ -315,6 +325,11 @@ begin
     Result:=mrOK;
   Result:=SaveToFile(Filename);
   FLastSavedChangeStep:=TEduOptsRootNode(Root).ChangeStep;
+end;
+
+procedure TEduOptions.Apply(Enable: boolean);
+begin
+  Root.Apply(Enable);
 end;
 
 function TEduOptions.GetFullFilename: string;
