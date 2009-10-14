@@ -18,7 +18,7 @@
  *                                                                           *
  *****************************************************************************
 
-Authors: Luís Rodrigues, Philippe Martinole, Alexander Klenin
+Authors: LuÃ­s Rodrigues, Philippe Martinole, Alexander Klenin
 
 }
 
