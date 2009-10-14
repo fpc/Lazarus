@@ -89,18 +89,14 @@ procedure TCodetoolsLineSplittingOptionsFrame.UpdatePreviewSettings;
 var
   Options: TEditorOptions;
 begin
-  Options := TEditorOptions.Create;
-  try
-    if Assigned(OnSaveIDEOptions) then
-      OnSaveIDEOptions(Self, Options);
-    SplitPreviewSynEdit.Highlighter := GetHighlighter(Options);
-    Options.GetSynEditPreviewSettings(SplitPreviewSynEdit);
-    SplitPreviewSynEdit.Gutter.Visible := False;
-    SplitPreviewSynEdit.Options := SplitPreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
-    SplitPreviewSynEdit.ReadOnly := True;
-  finally
-    Options.Free;
-  end;
+  Options := EditorOpts;
+  if Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, Options);
+  SplitPreviewSynEdit.Highlighter := GetHighlighter(Options);
+  Options.GetSynEditPreviewSettings(SplitPreviewSynEdit);
+  SplitPreviewSynEdit.Gutter.Visible := False;
+  SplitPreviewSynEdit.Options := SplitPreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
+  SplitPreviewSynEdit.ReadOnly := True;
 end;
 
 procedure TCodetoolsLineSplittingOptionsFrame.WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);

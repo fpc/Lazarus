@@ -93,18 +93,14 @@ procedure TCodetoolsSpaceOptionsFrame.UpdatePreviewSettings;
 var
   Options: TEditorOptions;
 begin
-  Options := TEditorOptions.Create;
-  try
-    if Assigned(OnSaveIDEOptions) then
-      OnSaveIDEOptions(Self, Options);
-    SpacePreviewSynEdit.Highlighter := GetHighlighter(Options);
-    Options.GetSynEditPreviewSettings(SpacePreviewSynEdit);
-    SpacePreviewSynEdit.Gutter.Visible := False;
-    SpacePreviewSynEdit.Options := SpacePreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
-    SpacePreviewSynEdit.ReadOnly := True;
-  finally
-    Options.Free;
-  end;
+  Options := EditorOpts;
+  if Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, Options);
+  SpacePreviewSynEdit.Highlighter := GetHighlighter(Options);
+  Options.GetSynEditPreviewSettings(SpacePreviewSynEdit);
+  SpacePreviewSynEdit.Gutter.Visible := False;
+  SpacePreviewSynEdit.Options := SpacePreviewSynEdit.Options + [eoNoCaret, eoNoSelection];
+  SpacePreviewSynEdit.ReadOnly := True;
 end;
 
 procedure TCodetoolsSpaceOptionsFrame.WriteBeautifyCodeOptions(

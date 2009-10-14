@@ -100,15 +100,18 @@ uses SysUtils;
 
 constructor TXMLConfig.Create(const AFilename: String);
 begin
+  //DebugLn(['TXMLConfig.Create ',AFilename]);
   inherited Create(nil);
   SetFilename(AFilename);
 end;
 
 constructor TXMLConfig.CreateClean(const AFilename: String);
 begin
+  //DebugLn(['TXMLConfig.CreateClean ',AFilename]);
   inherited Create(nil);
   fDoNotLoad:=true;
   SetFilename(AFilename);
+  FModified:=FileExistsCached(AFilename);
 end;
 
 destructor TXMLConfig.Destroy;
