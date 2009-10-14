@@ -672,7 +672,7 @@ type
     procedure ShowFPDocEditor;
     procedure UpdateFPDocEditor;
 
-    property Editors[Index:integer]:TSourceEditor read GetEditors;
+    property Editors[Index:integer]:TSourceEditor read GetEditors; // !!! not ordered for PageIndex
     function EditorCount:integer;
     function Count: integer; override;
     function Empty: boolean;
@@ -5394,7 +5394,7 @@ var
 begin
   try
     TheFileList:= TStringList.Create;
-    for i:= 0 to self.EditorCount -1 do
+    for i:= 0 to EditorCount -1 do
     begin
       //only if file exists on disk
       if FilenameIsAbsolute(Editors[i].FileName) and
@@ -6622,7 +6622,7 @@ var
 begin
   for i := 0 to EditorCount-1 do begin
     ASrcEdit:=Editors[i];
-    AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+    AnUnitInfo:=Project1.UnitWithEditorIndex(ASrcEdit.PageIndex);
     if AnUnitInfo<>nil then
       ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
   end;

@@ -3102,6 +3102,7 @@ end;
 
 function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
 begin
+  if Index<0 then exit(nil);
   Result:=fFirst[uilWithEditorIndex];
   while (Result<>nil) and (Result.EditorIndex<>Index) do begin
     Result:=Result.fNext[uilWithEditorIndex];
