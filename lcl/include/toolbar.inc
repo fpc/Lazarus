@@ -322,6 +322,7 @@ begin
   for i := 0 to FButtons.Count - 1 do
   begin
     TControl(FButtons[i]).InvalidatePreferredSize;
+    TControl(FButtons[i]).AdjustSize;
   end;
   ReAlign;
   Invalidate;
