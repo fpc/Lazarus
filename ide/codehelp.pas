@@ -360,7 +360,7 @@ begin
         // single char line ending #13 or #10
         if (length(le)<>1)
         or (le[1]<>s[p]) then begin
-          Result:=copy(Result,1,p-1)+le+copy(Result,p+2,length(Result));
+          Result:=copy(Result,1,p-1)+le+copy(Result,p+1,length(Result));
         end;
       end;
       inc(p);
