@@ -29,7 +29,7 @@ unit TASeries;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, LCLProc,
   TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
 type
@@ -1090,7 +1090,7 @@ end;
 
 procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
 begin
-  if FOnCalculate = AValue then exit;
+  if CompareMethods(TMethod(FOnCalculate),TMethod(AValue)) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
@@ -1139,7 +1139,7 @@ end;
 
 procedure TUserDrawnSeries.SetOnDraw(AValue: TSeriesDrawEvent);
 begin
-  if FOnDraw = AValue then exit;
+  if CompareMethods(TMethod(FOnDraw),TMethod(AValue)) then exit;
   FOnDraw := AValue;
   UpdateParentChart;
 end;
