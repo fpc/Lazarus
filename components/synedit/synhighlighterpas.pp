@@ -382,7 +382,9 @@ type
     procedure DirectiveProc;
     {$ENDIF}
     procedure IdentProc;
-    procedure IntegerProc;
+    procedure HexProc;
+    procedure BinaryProc;
+    procedure OctalProc;
     procedure LFProc;
     procedure LowerProc;
     procedure NullProc;
@@ -567,13 +569,11 @@ var
   Identifiers: array[#0..#255] of ByteBool;
   mHashTable: array[#0..#255] of Integer;
   KeywordsList: TStringList;
-  {$IFDEF SYN_LAZARUS}
   IsIntegerChar: array[char] of Boolean;
   IsNumberChar: array[char] of Boolean;
   IsSpaceChar: array[char] of Boolean;
   IsUnderScoreOrNumberChar: array[char] of Boolean;
   IsLetterChar: array[char] of Boolean;
-  {$ENDIF}
 
 procedure MakeIdentTable;
 var
@@ -590,13 +590,11 @@ begin
       'a'..'z', 'A'..'Z', '_': mHashTable[I] := Ord(J) - 64;
     else mHashTable[Char(I)] := 0;
     end;
-    {$IFDEF SYN_LAZARUS}
     IsIntegerChar[I]:=(I in ['0'..'9', 'A'..'F', 'a'..'f']);
     IsNumberChar[I]:=(I in ['0'..'9', '.', 'e', 'E']);
     IsSpaceChar[I]:=(I in [#1..#9, #11, #12, #14..#32]);
     IsUnderScoreOrNumberChar[I]:=(I in ['_','0'..'9']);
     IsLetterChar[I]:=(I in ['a'..'z','A'..'Z']);
-    {$ENDIF}
   end;
 end;
 
@@ -1832,13 +1830,15 @@ begin
       #1..#9, #11, #12, #14..#32:
         fProcTable[I] := @SpaceProc;
       '#': fProcTable[I] := @AsciiCharProc;
-      '$': fProcTable[I] := @IntegerProc;
+      '$': fProcTable[I] := @HexProc;
+      '%': fProcTable[I] := @BinaryProc;
+      '&': fProcTable[I] := @OctalProc;
       #39: fProcTable[I] := @StringProc;
       '0'..'9': fProcTable[I] := @NumberProc;
       'A'..'Z', 'a'..'z', '_':
         fProcTable[I] := @IdentProc;
       '{': fProcTable[I] := @BraceOpenProc;
-      '}', '!', '"', '%', '&', '('..'/', ':'..'@', '['..'^', '`', '~':
+      '}', '!', '"', '('..'/', ':'..'@', '['..'^', '`', '~':
         begin
           case I of
             '(': fProcTable[I] := @RoundOpenProc;
@@ -1867,7 +1867,7 @@ begin
       #1..#9, #11, #12, #14..#32:
         fProcTable[I] := SpaceProc;
       '#': fProcTable[I] := AsciiCharProc;
-      '$': fProcTable[I] := IntegerProc;
+      '$': fProcTable[I] := HexProc;
       #39: fProcTable[I] := StringProc;
       '0'..'9': fProcTable[I] := NumberProc;
       'A'..'Z', 'a'..'z', '_':
@@ -2183,16 +2183,39 @@ begin
   while Identifiers[fLine[Run]] do inc(Run);
 end;
 
-procedure TSynPasSyn.IntegerProc;
+procedure TSynPasSyn.HexProc;
 begin
   inc(Run);
-  fTokenID := tkNumber;
-  {$IFDEF SYN_LAZARUS}
-  while (IsIntegerChar[FLine[Run]]) do inc(Run);
-  {$ELSE}
-  while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
-  {$ENDIF}
+  if (IsIntegerChar[FLine[Run]]) then begin
+    fTokenID := tkNumber;
+    while (IsIntegerChar[FLine[Run]]) do inc(Run);
+  end
+  else
+    fTokenID := tkSymbol;
 end;
+
+procedure TSynPasSyn.BinaryProc;
+begin
+  inc(Run);
+  if FLine[Run] in ['0'..'1'] then begin
+    fTokenID := tkNumber;
+    while FLine[Run] in ['0'..'1'] do inc(Run);
+  end
+  else
+    fTokenID := tkSymbol;
+end;
+
+procedure TSynPasSyn.OctalProc;
+begin
+  inc(Run);
+  if FLine[Run] in ['0'..'7'] then begin
+    fTokenID := tkNumber;
+    while FLine[Run] in ['0'..'7'] do inc(Run);
+  end
+  else
+    fTokenID := tkSymbol;
+end;
+
 
 procedure TSynPasSyn.LFProc;
 begin
