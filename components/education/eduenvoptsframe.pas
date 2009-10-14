@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, ExtCtrls, StdCtrls, AvgLvlTree,
   FormEditingIntf, LazConfigStorage, IDEOptionsIntf, ComponentReg,
-  IDEImagesIntf,
+  IDEImagesIntf, LazIDEIntf,
   EduOptions;
 
 const
@@ -38,15 +38,11 @@ type
   { TEduGeneralOptions }
 
   TEduGeneralOptions = class(TEduOptionsNode)
-  private
-    FEnabled: boolean;
-    procedure SetEnabled(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
     function Load(Config: TConfigStorage): TModalResult; override;
     function Save(Config: TConfigStorage): TModalResult; override;
-    property Enabled: boolean read FEnabled write SetEnabled default true;
   end;
 
   { TEduComponentPaletteOptions }
@@ -109,6 +105,8 @@ begin
 
   // load options
   EducationOptions.Load;
+
+  LazarusIDE.AddHandlerOnProjectOpened(@EducationOptions.OnProjectOpened);
 end;
 
 { TEduEnvFrame }
@@ -176,6 +174,7 @@ begin
       if Image = nil then
         Image := CreateBitmapFromLazarusResource('default');
       CompNode.ImageIndex:=ComponentsTreeView.Images.Add(Image,nil);
+      Image.Free;
       CompNode.SelectedIndex:=CompNode.ImageIndex;
       if EduComponentPaletteOptions.ComponentVisible[CompName] then
         CompNode.StateIndex:=ShowImgID
@@ -230,17 +229,17 @@ end;
 
 procedure TEduEnvFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  EnableCheckBox.Checked:=EduGeneralOptions.Enabled;
+  EnableCheckBox.Checked:=EducationOptions.Enabled;
 end;
 
 procedure TEduEnvFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  EduGeneralOptions.Enabled:=EnableCheckBox.Checked;
+  EducationOptions.Enabled:=EnableCheckBox.Checked;
   SaveFillComponentTreeView;
 
   if EducationOptions.Save<>mrOk then
     DebugLn(['TEduEnvFrame.WriteSettings Failed']);
-  EducationOptions.Apply(EduGeneralOptions.Enabled);
+  EducationOptions.Apply;
 end;
 
 class function TEduEnvFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -250,18 +249,10 @@ end;
 
 { TEduGeneralOptions }
 
-procedure TEduGeneralOptions.SetEnabled(const AValue: boolean);
-begin
-  if FEnabled=AValue then exit;
-  FEnabled:=AValue;
-  Changed;
-end;
-
 constructor TEduGeneralOptions.Create;
 begin
   inherited Create;
   Name:='General';
-  FEnabled:=true;
 end;
 
 destructor TEduGeneralOptions.Destroy;
@@ -272,13 +263,11 @@ end;
 
 function TEduGeneralOptions.Load(Config: TConfigStorage): TModalResult;
 begin
-  FEnabled:=Config.GetValue('Enabled',True);
   Result:=inherited Load(Config);
 end;
 
 function TEduGeneralOptions.Save(Config: TConfigStorage): TModalResult;
 begin
-  Config.SetDeleteValue('Enabled',Enabled,true);
   Result:=inherited Save(Config);
 end;
 

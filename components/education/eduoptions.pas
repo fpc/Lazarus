@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LazConfigStorage, Controls, Forms, BaseIDEIntf,
-  FileUtil, LazIDEIntf, IDEOptionsIntf;
+  FileUtil, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
 
 resourcestring
   EduRSEducation = 'Education';
@@ -87,9 +87,11 @@ type
 
   TEduOptions = class(TAbstractIDEOptions)
   private
+    FEnabled: boolean;
     FFilename: string;
     FRoot: TEduOptionsNode;
     FLastSavedChangeStep: integer;
+    procedure SetEnabled(const AValue: boolean);
     procedure SetFilename(const AValue: string);
   public
     constructor Create;
@@ -102,9 +104,11 @@ type
     function SaveToFile(Filename: string): TModalResult; virtual;
     function Load: TModalResult; virtual;
     function Save: TModalResult; virtual;
-    procedure Apply(Enable: boolean); virtual;
+    procedure Apply; virtual;
     function GetFullFilename: string;
+    function OnProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     property Filename: string read FFilename write SetFilename;
+    property Enabled: boolean read FEnabled write SetEnabled;
   end;
 
 var
@@ -258,6 +262,14 @@ begin
   FFilename:=AValue;
 end;
 
+procedure TEduOptions.SetEnabled(const AValue: boolean);
+begin
+  if FEnabled=AValue then exit;
+  FEnabled:=AValue;
+  Root.Changed;
+  Apply;
+end;
+
 constructor TEduOptions.Create;
 begin
   FRoot:=TEduOptsRootNode.Create;
@@ -277,11 +289,13 @@ end;
 
 function TEduOptions.Load(Config: TConfigStorage): TModalResult;
 begin
+  FEnabled:=Config.GetValue('Enabled',false);
   Result:=FRoot.Load(Config);
 end;
 
 function TEduOptions.Save(Config: TConfigStorage): TModalResult;
 begin
+  Config.SetDeleteValue('Enabled',Enabled,false);
   Result:=FRoot.Save(Config);
 end;
 
@@ -327,9 +341,9 @@ begin
   FLastSavedChangeStep:=TEduOptsRootNode(Root).ChangeStep;
 end;
 
-procedure TEduOptions.Apply(Enable: boolean);
+procedure TEduOptions.Apply;
 begin
-  Root.Apply(Enable);
+  Root.Apply(Enabled);
 end;
 
 function TEduOptions.GetFullFilename: string;
@@ -337,6 +351,13 @@ begin
   Result:=Filename;
   if FilenameIsAbsolute(Result) then exit;
   Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
+end;
+
+function TEduOptions.OnProjectOpened(Sender: TObject; AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=mrOk;
+  Apply;
 end;
 
 { TEduOptsRootNode }
