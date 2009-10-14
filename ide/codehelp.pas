@@ -170,6 +170,8 @@ type
     property Items[Index: integer]: TCodeHelpElement read GetItems; default;
     property Count: integer read GetCount;
     function IndexOfFile(AFile: TLazFPDocFile): integer;
+    function IndexOfElementName(ElementName: string): integer;
+    function IndexOfElementName(ElementUnitName, ElementName: string): integer;
     function IsValid: boolean;
     procedure MakeValid;
     function DocFile: TLazFPDocFile;
@@ -1941,9 +1943,12 @@ var
   FPDocFilename: String;
   FindContext: TFindContext;
   AnOwner: TObject;
+  NewElementName: String;
+  NewUnitName: String;
 begin
   Chain:=nil;
   ListOfPCodeXYPosition:=nil;
+  CodeToolBoss.ActivateWriteLock;
   try
     //DebugLn(['TCodeHelpManager.GetElementChain GetDeclarationChain...']);
     // get the declaration chain
@@ -1955,7 +1960,7 @@ begin
       exit;
     end;
     if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
-    
+
     {$IFDEF VerboseLazDoc}
     DebugLn(['TCodeHelpManager.GetElementChain init the element chain: ListOfPCodeXYPosition.Count=',ListOfPCodeXYPosition.Count,' ...']);
     {$ENDIF}
@@ -1974,15 +1979,23 @@ begin
       if Result<>chprSuccess then continue;
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
+      // get fpdoc element path
+      NewUnitName:=FindContext.Tool.GetSourceName(false);
+      NewElementName:=CodeNodeToElementName(FindContext.Tool,FindContext.Node);
+
+      // skip code nodes with same fpdoc element
+      if (Chain.IndexOfElementName(NewUnitName,NewElementName)>=0) then continue;
+
       // add element
       CHElement:=Chain.Add;
       CHElement.CodeXYPos:=CodePos^;
       CHElement.CodeContext:=FindContext;
+      CHElement.ElementName:=NewElementName;
       //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
 
       // find corresponding FPDoc file
       CHElement.ElementUnitFileName:=CHElement.CodeContext.Tool.MainFilename;
-      CHElement.ElementUnitName:=CHElement.CodeContext.Tool.GetSourceName(false);
+      CHElement.ElementUnitName:=NewUnitName;
       AnOwner:=Self;
       FPDocFilename:=GetFPDocFilenameForSource(CHElement.ElementUnitFileName,
                                                false,CacheWasUsed,AnOwner);
@@ -2001,9 +2014,6 @@ begin
     // get fpdoc nodes
     for i:=0 to Chain.Count-1 do begin
       CHElement:=Chain[i];
-      // get fpdoc element path
-      CHElement.ElementName:=CodeNodeToElementName(CHElement.CodeContext.Tool,
-                                                   CHElement.CodeContext.Node);
       //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' Element=',CHElement.ElementName]);
       // get fpdoc node
       if (CHElement.FPDocFile<>nil) and (CHElement.ElementName<>'') then begin
@@ -2018,6 +2028,7 @@ begin
   finally
     if Result<>chprSuccess then
       FreeAndNil(Chain);
+    CodeToolBoss.DeactivateWriteLock;
   end;
 end;
 
@@ -2357,6 +2368,28 @@ begin
   Result:=FItems.Count-1;
   while (Result>=0) do begin
     if Items[Result].FPDocFile=AFile then exit;
+    dec(Result);
+  end;
+end;
+
+function TCodeHelpElementChain.IndexOfElementName(ElementName: string
+  ): integer;
+begin
+  Result:=FItems.Count-1;
+  while (Result>=0) do begin
+    if SysUtils.CompareText(Items[Result].ElementName,ElementName)=0 then exit;
+    dec(Result);
+  end;
+end;
+
+function TCodeHelpElementChain.IndexOfElementName(ElementUnitName,
+  ElementName: string): integer;
+begin
+  Result:=FItems.Count-1;
+  while (Result>=0) do begin
+    if (SysUtils.CompareText(Items[Result].ElementUnitName,ElementUnitName)=0)
+    and (SysUtils.CompareText(Items[Result].ElementName,ElementName)=0) then
+      exit;
     dec(Result);
   end;
 end;
