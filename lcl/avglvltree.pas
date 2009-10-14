@@ -193,6 +193,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Contains(const Name: string): Boolean;
+    procedure Delete(const Name: string);
     procedure Add(const Name, Value, Delimiter: string);
     procedure AddNameValues(List: TStrings);
     procedure AddValues(List: TStrings);
@@ -1430,6 +1431,18 @@ end;
 function TStringToStringTree.Contains(const Name: string): Boolean;
 begin
   Result:=FindNode(Name)<>nil;
+end;
+
+procedure TStringToStringTree.Delete(const Name: string);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+begin
+  Node:=FindNode(Name);
+  if Node=nil then exit;
+  Item:=PStringToStringItem(Node.Data);
+  FItems.Delete(Node);
+  Dispose(Item);
 end;
 
 procedure TStringToStringTree.Add(const Name, Value, Delimiter: string);
