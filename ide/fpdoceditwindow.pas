@@ -152,6 +152,7 @@ type
     procedure UpdateButtons;
     function GetCurrentUnitName: string;
     function GetCurrentModuleName: string;
+    procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -797,6 +798,22 @@ begin
     Result:='';
 end;
 
+procedure TFPDocEditor.JumpToError(Item: TFPDocItem; LineCol: TPoint);
+begin
+  case Item of
+  fpdiShort: PageControl.ActivePage:=ShortTabSheet;
+  fpdiElementLink: PageControl.ActivePage:=InheritedTabSheet;
+  fpdiDescription:
+    begin
+      PageControl.ActivePage:=DescrTabSheet;
+
+    end;
+  fpdiErrors: PageControl.ActivePage:=ErrorsTabSheet;
+  fpdiSeeAlso: PageControl.ActivePage:=SeeAlsoTabSheet;
+  fpdiExample: PageControl.ActivePage:=ExampleTabSheet;
+  end;
+end;
+
 procedure TFPDocEditor.Reset;
 begin
   FreeAndNil(fChain);
@@ -941,6 +958,26 @@ var
     end;
   end;
 
+  function SetValue(Item: TFPDocItem): boolean;
+  var
+    NewValue: String;
+  begin
+    Result:=false;
+    NewValue:=Values[Item];
+    try
+      CurDocFile.SetChildValue(TopNode,FPDocItemNames[Item],NewValue);
+      Result:=true;
+    except
+      on E: EXMLReadError do begin
+        DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
+        JumpToError(Item,E.LineCol);
+        MessageDlg('FPDoc syntax error',
+          'There is a syntax error in the fpdoc element "'+FPDocItemNames[Item]+'":'#13#13
+          +E.Message,mtError,[mbOk],'');
+      end;
+    end;
+  end;
+
 begin
   Result:=false;
   if fpdefWriting in FFlags then begin
@@ -968,12 +1005,13 @@ begin
   Include(FFlags,fpdefWriting);
   CurDocFile.BeginUpdate;
   try
-    CurDocFile.SetChildValue(TopNode,'short',Values[fpdiShort]);
-    CurDocFile.SetChildValue(TopNode,'elementlink',Values[fpdiElementLink]);
-    CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
-    CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
-    CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
-    CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
+    if SetValue(fpdiShort)
+    and SetValue(fpdiElementLink)
+    and SetValue(fpdiDescription)
+    and SetValue(fpdiErrors)
+    and SetValue(fpdiSeeAlso)
+    and SetValue(fpdiExample) then
+      ;
   finally
     CurDocFile.EndUpdate;
     fChain.MakeValid;
