@@ -274,10 +274,12 @@ end;
 
 procedure TToolBar.SetImages(const AValue: TCustomImageList);
 begin
-  if FImages=AValue then exit;
-  if FImages <> nil then FImages.UnRegisterChanges(FImageChangeLink);
+  if FImages = AValue then Exit;
+  if FImages <> nil then
+    FImages.UnRegisterChanges(FImageChangeLink);
   FImages := AValue;
-  if FImages <> nil then begin
+  if FImages <> nil then
+  begin
     FImages.RegisterChanges(FImageChangeLink);
     FImages.FreeNotification(Self);
   end;
@@ -291,11 +293,12 @@ end;
 
 procedure TToolBar.SetDisabledImages(const AValue: TCustomImageList);
 begin
-  if FDisabledImages=AValue then exit;
+  if FDisabledImages = AValue then Exit;
   if FDisabledImages <> nil then
     FDisabledImages.UnRegisterChanges(FDisabledImageChangeLink);
   FDisabledImages := AValue;
-  if FDisabledImages <> nil then begin
+  if FDisabledImages <> nil then
+  begin
     FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
     FDisabledImages.FreeNotification(Self);
   end;
@@ -317,7 +320,9 @@ begin
     Exit;
   end;
   for i := 0 to FButtons.Count - 1 do
+  begin
     TControl(FButtons[i]).InvalidatePreferredSize;
+  end;
   ReAlign;
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
@@ -325,11 +330,12 @@ end;
 
 procedure TToolBar.SetHotImages(const AValue: TCustomImageList);
 begin
-  if FHotImages=AValue then exit;
+  if FHotImages = AValue then Exit;
   if FHotImages <> nil then
     FHotImages.UnRegisterChanges(FHotImageChangeLink);
   FHotImages := AValue;
-  if FHotImages <> nil then begin
+  if FHotImages <> nil then
+  begin
     FHotImages.RegisterChanges(FHotImageChangeLink);
     FHotImages.FreeNotification(Self);
   end;
