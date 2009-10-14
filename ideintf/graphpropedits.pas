@@ -598,10 +598,7 @@ begin
     // set thing up and do work
     Pen.Color := clWindowText;
     i:=GetEnumValue(GetPropInfo^.PropType, CurValue);
-    {$IFNDEF LCLGtk2}
-    {$NOTE FixMe Pen.Style=psPattern gives X crash}
     Pen.Style := TPenStyle(i);
-    {$ENDIF}
     MoveTo(ARect.Left + 1, vTop);
     LineTo(vRight - 1, vTop);
     MoveTo(ARect.Left + 1, vTop + 1);
