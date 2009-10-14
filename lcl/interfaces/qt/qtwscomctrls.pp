@@ -716,13 +716,25 @@ class procedure TQtWSCustomListView.ColumnSetAlignment(const ALV: TCustomListVie
 var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
+  i: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAlignment') then
     Exit;
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QtTreeWidget.headerItem;
-  QTreeWidgetItem_setTextAlignment(TWI, AIndex, AlignmentToQtAlignmentMap[AAlignment]);
+  QTreeWidgetItem_setTextAlignment(TWI, AIndex,
+    AlignmentToQtAlignmentMap[AAlignment]);
+
+
+  if not (csLoading in ALV.ComponentState) then
+    for i := 0 to QtTreeWidget.ItemCount - 1 do
+    begin
+      TWI := QtTreeWidget.topLevelItem(i);
+      if TWI <> nil then
+        QTreeWidgetItem_setTextAlignment(TWI, AIndex,
+          AlignmentToQtAlignmentMap[AAlignment]);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -760,7 +772,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
 begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize') then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption') then
     Exit;
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
@@ -779,10 +791,43 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+  TWI: QTreeWidgetItemH;
+  Bmp: TBitmap;
+  ImgList: TImageList;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetImage') then
     Exit;
-  {$note review - must add item into header before adding image ...}
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  TWI := QtTreeWidget.headerItem;
+  if TWI <> NiL then
+  begin
+    ImgList := TImageList.Create(nil);
+    try
+      if (TListView(ALV).ViewStyle = vsIcon) and
+        Assigned(TListView(ALV).LargeImages) then
+        ImgList.Assign(TListView(ALV).LargeImages);
+
+      if (TListView(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
+        Assigned(TListView(ALV).SmallImages) then
+        ImgList.Assign(TListView(ALV).SmallImages);
+
+      if (ImgList.Count > 0) and
+        ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+      begin
+        Bmp := TBitmap.Create;
+        try
+          ImgList.GetBitmap(AImageIndex, Bmp);
+          QTreeWidgetItem_setIcon(TWI, AIndex, TQtImage(Bmp.Handle).AsIcon);
+        finally
+          Bmp.Free;
+        end;
+      end;
+    finally
+      ImgList.Free;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -962,7 +1007,7 @@ begin
   if (TWI <> nil) then
   begin
     ImgList := TImageList.Create(nil);
-      try
+    try
       if (TListView(ALV).ViewStyle = vsIcon) and
         Assigned(TListView(ALV).LargeImages) then
         ImgList.Assign(TListView(ALV).LargeImages);
@@ -1049,6 +1094,7 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   i: Integer;
+  AAlignment: QtAlignment;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1065,11 +1111,19 @@ begin
     	QTreeWidgetItem_setCheckState(TWI, 0, QtUnchecked);
   end;
 
-  QTreeWidgetItem_setText(TWI, 0, @Str);
+  AAlignment := QtAlignLeft;
+  if TListView(ALV).Columns.Count > 0 then
+    AAlignment := AlignmentToQtAlignmentMap[ALV.Column[0].Alignment];
+
+  QtTreeWidget.setItemText(TWI, 0, Str, AAlignment);
+
   for i := 0 to AItem.SubItems.Count - 1 do
   begin
+    AAlignment := QtAlignLeft;
+    if TListView(ALV).Columns.Count > 0 then
+      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment];
     Str := GetUtf8String(AItem.Subitems.Strings[i]);
-    QTreeWidgetItem_setText(TWI, i+1, @Str);
+    QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
   end;
   QtTreeWidget.insertTopLevelItem(AIndex, TWI);
 end;
@@ -1087,6 +1141,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   Str: WideString;
+  AAlignment: QtAlignment;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1095,7 +1150,12 @@ begin
   Str := GetUtf8String(AText);
   TWI := QtTreeWidget.topLevelItem(AIndex);
   if TWI <> NiL then
-    QTreeWidgetItem_setText(TWI, ASubIndex, @Str);
+  begin
+    AAlignment := QtAlignLeft;
+    if TListView(ALV).Columns.Count > 0 then
+      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
+    QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1236,7 +1296,9 @@ begin
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
 
-  if AType <> stNone then
+  if AType = stNone then
+    QtTreeWidget.SortEnabled := False
+  else
   begin
     QtTreeWidget.SortEnabled := True;
     {$note for proper implementation of all TSortType

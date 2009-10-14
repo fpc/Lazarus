@@ -994,6 +994,7 @@ type
     FItemEnteredHook: QTreeWidget_hookH;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
+    function getItemCount: Integer;
     function getMaxColSize(ACol: Integer): Integer;
     function getMinColSize(ACol: Integer): Integer;
     function getSortEnabled: Boolean;
@@ -1019,6 +1020,8 @@ type
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
+    procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
+      const AText: WideString; const AAlignment: QtAlignment);
     function selCount: Integer;
     function selectedItems: TPtrIntArray;
     procedure setHeaderVisible(AVisible: Boolean);
@@ -1039,6 +1042,7 @@ type
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
+    property ItemCount: Integer read getItemCount;
     property Header: TQtHeaderView read getHeader;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
@@ -7358,6 +7362,11 @@ begin
   Result := FHeader;
 end;
 
+function TQtTreeWidget.getItemCount: Integer;
+begin
+  Result := QTreeWidget_topLevelItemCount(QTreeWidgetH(Widget));
+end;
+
 function TQtTreeWidget.getMaxColSize(ACol: Integer): Integer;
 begin
   {$note QSizeH implementation missing for this}
@@ -7496,6 +7505,14 @@ procedure TQtTreeWidget.setItemVisible(AItem: QTreeWidgetItemH;
   const AVisible: Boolean);
 begin
   QTreeWidget_setItemHidden(QTreeWidgetH(Widget), AItem, not AVisible);
+end;
+
+procedure TQtTreeWidget.setItemText(AItem: QTreeWidgetItemH;
+  const AColumn: Integer; const AText: WideString; const AAlignment: QtAlignment
+  );
+begin
+  QTreeWidgetItem_setText(AItem, AColumn, @AText);
+  QTreeWidgetItem_setTextAlignment(AItem, AColumn, AAlignment);
 end;
 
 function TQtTreeWidget.selCount: Integer;
