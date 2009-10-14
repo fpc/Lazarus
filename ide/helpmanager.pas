@@ -297,12 +297,17 @@ begin
         inc(p,length(NewTag));
       end;
     end else if Result[p] in [' ',#9,#10,#13] then begin
-      // replace spaces and newline characters with single space
+      // replace spaces and newline characters with a single space
       EndPos:=p+1;
       while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9,#10,#13]) do
         inc(EndPos);
-      Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
-      inc(p);
+      if (p > 1) and not (Result[p-1] in [' ',#9,#10,#13]) then
+      begin
+        Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
+        inc(p);
+      end
+      else
+        Result:=copy(Result,1,p-1)+copy(Result,EndPos,length(Result));
     end else
       inc(p);
   end;
@@ -316,6 +321,7 @@ begin
   Layout := tlCenter;
   Alignment := taLeftJustify;
   Font.Color := clInfoText;
+  BorderSpacing.Around := 4;
 end;
 
 function TSimpleHTMLControl.GetURL: string;
