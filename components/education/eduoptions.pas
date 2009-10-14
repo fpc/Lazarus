@@ -24,8 +24,8 @@ unit EduOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage, Controls, Forms, BaseIDEIntf, FileUtil,
-  LazIDEIntf, IDEOptionsIntf;
+  Classes, SysUtils, LCLProc, LazConfigStorage, Controls, Forms, BaseIDEIntf,
+  FileUtil, LazIDEIntf, IDEOptionsIntf;
 
 resourcestring
   EduRSEducation = 'Education';
@@ -206,9 +206,12 @@ begin
     Child:=Childs[i];
     if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
     Config.AppendBasePath(Child.Name);
-    Result:=Child.Load(Config);
-    if Result<>mrOK then exit;
-    Config.UndoAppendBasePath;
+    try
+      Result:=Child.Load(Config);
+      if Result<>mrOK then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
   end;
   Result:=mrOk;
 end;
@@ -222,9 +225,12 @@ begin
     Child:=Childs[i];
     if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
     Config.AppendBasePath(Child.Name);
-    Result:=Child.Save(Config);
-    if Result<>mrOK then exit;
-    Config.UndoAppendBasePath;
+    try
+      Result:=Child.Save(Config);
+      if Result<>mrOK then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
   end;
   Result:=mrOk;
 end;
@@ -295,7 +301,7 @@ end;
 
 function TEduOptions.Load: TModalResult;
 begin
-  Result:=LoadFromFile(GetFullFilename);
+  Result:=LoadFromFile(Filename);
   FLastSavedChangeStep:=TEduOptsRootNode(Root).ChangeStep;
 end;
 

@@ -40,10 +40,11 @@ type
     FEnabled: boolean;
     procedure SetEnabled(const AValue: boolean);
   public
+    constructor Create;
     destructor Destroy; override;
     function Load(Config: TConfigStorage): TModalResult; override;
     function Save(Config: TConfigStorage): TModalResult; override;
-    property Enabled: boolean read FEnabled write SetEnabled;
+    property Enabled: boolean read FEnabled write SetEnabled default true;
   end;
 
   { TEduEnvFrame }
@@ -94,17 +95,20 @@ procedure TEduEnvFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   debugln(['TEduEnvFrame.ReadSettings ',EduGeneralOptions.Enabled]);
   EnableCheckBox.Checked:=EduGeneralOptions.Enabled;
+  DebugLn(['TEduEnvFrame.ReadSettings ',EnableCheckBox.Checked,' ',EduGeneralOptions.Enabled]);
 end;
 
 procedure TEduEnvFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   debugln(['TEduEnvFrame.WriteSettings ',EnableCheckBox.Checked]);
   EduGeneralOptions.Enabled:=EnableCheckBox.Checked;
+  if EducationOptions.Save<>mrOk then
+    DebugLn(['TEduEnvFrame.WriteSettings Failed']);
 end;
 
 class function TEduEnvFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TEduOptions;
+  Result := nil;
 end;
 
 { TEduGeneralOptions }
@@ -116,6 +120,13 @@ begin
   Changed;
 end;
 
+constructor TEduGeneralOptions.Create;
+begin
+  inherited Create;
+  Name:='General';
+  FEnabled:=true;
+end;
+
 destructor TEduGeneralOptions.Destroy;
 begin
   if EduGeneralOptions=Self then EduGeneralOptions:=nil;
@@ -124,14 +135,14 @@ end;
 
 function TEduGeneralOptions.Load(Config: TConfigStorage): TModalResult;
 begin
+  FEnabled:=Config.GetValue('Enabled',True);
   Result:=inherited Load(Config);
-  FEnabled:=Config.GetValue('Enabled',true);
 end;
 
 function TEduGeneralOptions.Save(Config: TConfigStorage): TModalResult;
 begin
-  Result:=inherited Save(Config);
   Config.SetDeleteValue('Enabled',Enabled,true);
+  Result:=inherited Save(Config);
 end;
 
 initialization
