@@ -1977,7 +1977,35 @@ procedure TSynPasSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
   inc(Run);
-  while (FLine[Run] in ['0'..'9']) do inc(Run);
+  case FLine[Run] of
+    '%':
+      begin
+        inc(Run);
+        if (FLine[Run] in ['0'..'1']) then
+          while (FLine[Run] in ['0'..'1']) do inc(Run)
+        else
+          fTokenID := tkSymbol;
+      end;
+    '&':
+      begin
+        inc(Run);
+        if (FLine[Run] in ['0'..'7']) then
+          while (FLine[Run] in ['0'..'7']) do inc(Run)
+        else
+          fTokenID := tkSymbol;
+      end;
+    '$':
+      begin
+        inc(Run);
+        if (IsIntegerChar[FLine[Run]]) then
+          while (IsIntegerChar[FLine[Run]]) do inc(Run)
+        else
+          fTokenID := tkSymbol;
+      end;
+    '0'..'9': while (FLine[Run] in ['0'..'9']) do inc(Run);
+    else
+      fTokenID := tkSymbol;
+  end;
 end;
 
 procedure TSynPasSyn.BorProc;
