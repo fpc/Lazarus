@@ -25,11 +25,16 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, Laz_DOM, FileProcs;
+  SysUtils, Classes, types, Laz_DOM, FileProcs;
 
 type
 
-  EXMLReadError = class(Exception);
+  EXMLReadError = class(Exception)
+  public
+    Position: PtrInt;
+    LineCol: TPoint;
+    Descr: string;
+  end;
 
 
 procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String); overload;
@@ -195,6 +200,7 @@ type
   protected
     buf, BufStart: PChar;
     Filename: String;
+    function BufPosToLineCol(p: PChar): TPoint;
     function BufPosToStr(p: PChar): string;
     procedure RaiseExc(const descr: String);
     function  SkipWhitespace: Boolean;
@@ -253,8 +259,7 @@ begin
   inherited Create(ADocument);
 end;
 
-
-function TXMLReader.BufPosToStr(p: PChar): string;
+function TXMLReader.BufPosToLineCol(p: PChar): TPoint;
 var
   apos: PChar;
   x: Integer;
@@ -274,12 +279,31 @@ begin
       Inc(x);
     Inc(apos);
   end;
-  Result:=IntToStr(y)+','+IntToStr(x);
+  Result.X:=X;
+  Result.Y:=Y;
+end;
+
+function TXMLReader.BufPosToStr(p: PChar): string;
+var
+  LineCol: TPoint;
+begin
+  // find out the line in which the error occured
+  LineCol:=BufPosToLineCol(BufStart);
+  Result:=IntToStr(LineCol.y)+','+IntToStr(LineCol.x);
 end;
 
 procedure TXMLReader.RaiseExc(const descr: String);
+var
+  Err: EXMLReadError;
+  LineCol: TPoint;
 begin
-  raise EXMLReadError.Create(Filename+'('+BufPosToStr(buf)+') Error: ' + descr);
+  LineCol:=BufPosToLineCol(buf);
+  Err:=EXMLReadError.Create(
+    Filename+'('+IntToStr(LineCol.y)+','+IntToStr(LineCol.x)+') Error: ' + descr);
+  Err.Position:=buf-BufStart;
+  Err.LineCol:=LineCol;
+  Err.Descr:=descr;
+  raise Err;
 end;
 
 function TXMLReader.SkipWhitespace: Boolean;
