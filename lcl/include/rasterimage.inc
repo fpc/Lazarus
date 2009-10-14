@@ -262,7 +262,14 @@ begin
   if FUpdatecount > 0 then Exit;
 
   if not FUpdateCanvasOnly
-  then FreeCanvasContext;
+  then begin
+    FreeCanvasContext;
+    // delete bitmaphandle too
+    if BitmapHandleAllocated
+    then DeleteObject(InternalReleaseBitmapHandle)
+
+  end;
+
   if not AStreamIsValid
   then FreeSaveStream;
   Changed(Self);
