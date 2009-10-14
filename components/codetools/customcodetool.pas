@@ -705,7 +705,7 @@ end;
 function TCustomCodeTool.AtomIsNumber: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
-      and (Src[CurPos.StartPos] in ['0'..'9','%','$']);
+      and (Src[CurPos.StartPos] in ['0'..'9','%','$','&']);
 end;
 
 function TCustomCodeTool.AtomIsRealNumber: boolean;
@@ -1065,13 +1065,20 @@ begin
             inc(CurPos.EndPos);
         end;
       end;
-    '%':
+    '%': // binary number
       begin
         inc(CurPos.EndPos);
         while (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['0'..'1']) do
           inc(CurPos.EndPos);
       end;
-    '$':
+    '&': // octal number
+      begin
+        inc(CurPos.EndPos);
+        while (CurPos.EndPos<=SrcLen)
+        and (Src[CurPos.EndPos] in ['0'..'7']) do
+          inc(CurPos.EndPos);
+      end;
+    '$': // hex number
       begin
         inc(CurPos.EndPos);
         while (CurPos.EndPos<=SrcLen)

@@ -1774,6 +1774,13 @@ begin
         and (IsHexNumberChar[Source[Position]]) do
           inc(Position);
       end;
+     '&':  // octal constant
+      begin
+        inc(Position);
+        while (Position<=Len)
+        and (Source[Position] in ['0'..'7']) do
+          inc(Position);
+      end;
      '{':  // compiler directive
       begin
         CommentLvl:=1;
