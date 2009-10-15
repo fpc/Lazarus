@@ -17,7 +17,7 @@ Depends: lazarus-ide (= ${source:Version}), lazarus-src (= ${source:Version}),
  lazarus-doc (>= ${source:Upstream-Version})
 Recommends: fpc, fpc-source
 Suggests: fp-utils, fp-docs
-Description: Lazarus - IDE for Free Pascal to create (graphical and console) applications
+Description: IDE for Free Pascal to create (graphical and console) applications
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
@@ -46,7 +46,8 @@ Package: lazarus-src
 Section: devel
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Description: IDE to create (graphical and console) applications with Free
+Description: IDE for Free Pascal to create (graphical and console) applications
+ Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
  .
@@ -69,11 +70,12 @@ Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 arm
 Pre-Depends: dpkg (>= 1.10.24)
 Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.4-3), fp-units-base,
- fp-units-rtl, fp-units-fcl, fp-units-gtk2,
+ fp-units-rtl, fp-units-fcl, fp-units-gtk2, fp-units-misc,
  ${fpc-abi:Depends}, lazarus-src
 Recommends: fpc, gdb
 Suggests: fp-utils
-Description: IDE to create (graphical and console) applications  with Free
+Description: IDE for Free Pascal to create (graphical and console) applications
+ Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
  .
@@ -94,7 +96,8 @@ Description: IDE to create (graphical and console) applications  with Free
 Package: lazarus-doc
 Section: doc
 Architecture: all
-Description: IDE to create (graphical and console) applications with Free
+Description: IDE for Free Pascal to create (graphical and console) applications
+ Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
  .
