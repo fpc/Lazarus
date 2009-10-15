@@ -36,6 +36,7 @@ type
   { TEditorKeymappingOptionsFrame }
 
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
+    KeyMappingClearButton: TButton;
     KeyMappingChooseSchemeButton: TButton;
     KeyMappingConsistencyCheckButton: TButton;
     KeyMappingFilterEdit: TEdit;
@@ -43,6 +44,7 @@ type
     KeyMappingHelpLabel: TLabel;
     KeyMappingTreeView: TTreeView;
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
+    procedure KeyMappingClearButtonClick(Sender: TObject);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
     procedure KeyMappingFilterEditChange(Sender: TObject);
     procedure KeyMappingFilterEditEnter(Sender: TObject);
@@ -148,6 +150,32 @@ begin
   FillKeyMappingTreeView;
 end;
 
+procedure TEditorKeymappingOptionsFrame.KeyMappingClearButtonClick(
+  Sender: TObject);
+var
+  i: integer;
+  ARelation: TKeyCommandRelation;
+  ANode: TTreeNode;
+begin
+  ANode := KeyMappingTreeView.Selected;
+  if (ANode <> nil) and (ANode.Data <> nil) and
+     (TObject(ANode.Data) is TKeyCommandRelation) then
+  begin
+    ARelation := TKeyCommandRelation(ANode.Data);
+    i := EditingKeyMap.IndexOf(ARelation);
+    if (i >= 0) {and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk)} then
+    begin
+      ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
+      ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
+      FillKeyMappingTreeView;
+      with GeneralPage do
+        for i := Low(PreviewEdits) to High(PreviewEdits) do
+          if PreviewEdits[i] <> nil then
+            EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+    end;
+  end;
+end;
+
 procedure TEditorKeymappingOptionsFrame.KeyMappingConsistencyCheckButtonClick(
   Sender: TObject);
 var
@@ -248,6 +276,7 @@ begin
   KeyMappingFilterEdit.Text := lisFilter2;
   KeyMappingFindKeyButton.Caption := lisFindKeyCombination;
   KeyMappingTreeView.Images := IDEImages.Images_16;
+  KeyMappingClearButton.Caption := lisClearKeyMapping;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
 end;

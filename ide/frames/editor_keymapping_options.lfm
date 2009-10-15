@@ -5,8 +5,8 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   ClientWidth = 461
   TabOrder = 0
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 303
+  DesignTop = 99
   object KeyMappingHelpLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -24,11 +24,10 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
+    Height = 21
     Top = 20
     Width = 461
     Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
     BorderSpacing.Top = 6
     OnChange = KeyMappingFilterEditChange
     OnEnter = KeyMappingFilterEditEnter
@@ -44,8 +43,8 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = KeyMappingFindKeyButton
     Left = 0
-    Height = 403
-    Top = 49
+    Height = 405
+    Top = 47
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -80,7 +79,7 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Left = 0
     Height = 23
     Top = 487
-    Width = 191
+    Width = 189
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'KeyMappingChooseSchemeButton'
@@ -92,14 +91,28 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 257
+    Left = 258
     Height = 23
     Top = 487
-    Width = 204
+    Width = 203
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'KeyMappingConsistencyCheckButton'
     OnClick = KeyMappingConsistencyCheckButtonClick
     TabOrder = 4
+  end
+  object KeyMappingClearButton: TButton[6]
+    AnchorSideTop.Control = KeyMappingFindKeyButton
+    AnchorSideRight.Control = KeyMappingConsistencyCheckButton
+    AnchorSideRight.Side = asrBottom
+    Left = 320
+    Height = 23
+    Top = 458
+    Width = 141
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'KeyMappingClearButton'
+    OnClick = KeyMappingClearButtonClick
+    TabOrder = 5
   end
 end
