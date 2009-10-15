@@ -209,7 +209,9 @@ type
     procedure DoOnActivate; override;
     procedure DoOnDeactivate; override;
     procedure DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean); override;
+    procedure DoAfterEdit(aX, aY: Integer; aUndoRedo: Boolean); override;
     procedure UpdateCurrentCell;
+    procedure UpdateCurrentCell(aLogX, aLogY: Integer);
     procedure DoCaretChanged(Sender: TObject);
     property LastCell: Integer read FLastCell;
   protected
@@ -1017,18 +1019,38 @@ begin
     Active := false;
   if aUndoRedo or not Active then exit;
   FRedoRealCount := -1;
-  UpdateCurrentCell;
+  (* TODO / Review
+     - Caret may be outside Cell (eg IdentifierCompletion, TextBetweenPoints)
+       But the edit happens inside a cell => ok
+     - Caret may be in cell, but Codetools inserts text outside the cell => ok
+     - User edit outside a cell (both locations will be outside the cell => deactivate
+     TODO: Check Caret before command processor
+  *)
+  UpdateCurrentCell(aX, aY);
+  if CurrentCell < 0 then
+    UpdateCurrentCell;
   if CurrentCell < 0 then begin
     Clear;
     Active := False;
   end;
 end;
 
+procedure TSynPluginCustomSyncroEdit.DoAfterEdit(aX, aY: Integer; aUndoRedo: Boolean);
+begin
+  inherited DoAfterEdit(aX, aY, aUndoRedo);
+  UpdateCurrentCell;
+end;
+
 procedure TSynPluginCustomSyncroEdit.UpdateCurrentCell;
+begin
+  UpdateCurrentCell(CaretObj.BytePos, CaretObj.LinePos);
+end;
+
+procedure TSynPluginCustomSyncroEdit.UpdateCurrentCell(aLogX, aLogY: Integer);
 var
   i: Integer;
 begin
-  i := Cells.IndexOf(CaretObj.BytePos, CaretObj.LinePos, True);
+  i := Cells.IndexOf(aLogX, aLogY, True);
   if (i <> CurrentCell) and (CurrentCell >= 0) then
     FLastCell := CurrentCell;
   CurrentCell := i;
