@@ -31,6 +31,7 @@ begin
   QtWidgetSet := Self;
   ClearCachedColors;
   FDockImage := nil;
+  FDragImageLock := False;
 end;
 
 {------------------------------------------------------------------------------

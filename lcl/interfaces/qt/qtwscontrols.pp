@@ -672,14 +672,28 @@ class function TQtWSDragImageList.HideDragImage(
   const ADragImageList: TDragImageList; ALockedWindow: HWND; DoUnLock: Boolean
   ): Boolean;
 begin
-  Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(False);
+  Result := True;
+  if DoUnlock then
+  begin
+    TQtWidgetset(Widgetset).DragImageLock := False;
+    Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(False);
+  end;
 end;
 
 class function TQtWSDragImageList.ShowDragImage(
   const ADragImageList: TDragImageList; ALockedWindow: HWND; X, Y: Integer;
   DoLock: Boolean): Boolean;
 begin
-  Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
+  Result := TQtWidgetset(Widgetset).DragImageLock;
+  if not DoLock then
+  begin
+    if not Result then
+      Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
+  end else
+  begin
+    TQtWidgetset(Widgetset).DragImageLock := True;
+    Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
+  end;
 end;
 
 end.
