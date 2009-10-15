@@ -51,6 +51,7 @@ type
     procedure KeyMappingFilterEditExit(Sender: TObject);
     procedure KeyMappingFindKeyButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewDblClick(Sender: TObject);
+    procedure KeyMappingTreeViewSelectionChanged(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     KeyMapNameFilter: string;
@@ -257,6 +258,16 @@ begin
   end;
 end;
 
+procedure TEditorKeymappingOptionsFrame.KeyMappingTreeViewSelectionChanged(
+  Sender: TObject);
+var
+  ANode: TTreeNode;
+begin
+  ANode := KeyMappingTreeView.Selected;
+  KeyMappingClearButton.Enabled:=(ANode <> nil) and (ANode.Data <> nil)
+                               and (TObject(ANode.Data) is TKeyCommandRelation);
+end;
+
 function TEditorKeymappingOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
 begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
@@ -416,6 +427,7 @@ constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   EditingKeyMap := TKeyCommandRelationList.Create;
+  KeyMappingClearButton.Enabled:=false;
 end;
 
 destructor TEditorKeymappingOptionsFrame.Destroy;

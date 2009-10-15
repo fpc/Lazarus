@@ -11,9 +11,9 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 14
+    Height = 18
     Top = 0
-    Width = 105
+    Width = 140
     Caption = 'KeyMappingHelpLabel'
     ParentColor = False
   end
@@ -24,8 +24,8 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 20
+    Height = 27
+    Top = 24
     Width = 461
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -43,18 +43,19 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = KeyMappingFindKeyButton
     Left = 0
-    Height = 405
-    Top = 47
+    Height = 383
+    Top = 57
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
     OnDblClick = KeyMappingTreeViewDblClick
+    OnSelectionChanged = KeyMappingTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object KeyMappingFindKeyButton: TButton[3]
@@ -62,9 +63,9 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = KeyMappingChooseSchemeButton
     Left = 0
-    Height = 23
-    Top = 458
-    Width = 154
+    Height = 29
+    Top = 446
+    Width = 178
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -77,9 +78,9 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 487
-    Width = 189
+    Height = 29
+    Top = 481
+    Width = 232
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'KeyMappingChooseSchemeButton'
@@ -91,10 +92,10 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 258
-    Height = 23
-    Top = 487
-    Width = 203
+    Left = 214
+    Height = 29
+    Top = 481
+    Width = 247
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'KeyMappingConsistencyCheckButton'
@@ -105,10 +106,10 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = KeyMappingFindKeyButton
     AnchorSideRight.Control = KeyMappingConsistencyCheckButton
     AnchorSideRight.Side = asrBottom
-    Left = 320
-    Height = 23
-    Top = 458
-    Width = 141
+    Left = 297
+    Height = 29
+    Top = 446
+    Width = 164
     Anchors = [akTop, akRight]
     AutoSize = True
     Caption = 'KeyMappingClearButton'
