@@ -762,8 +762,8 @@ begin
               CheckNode('collection');
               FElementPosition:=0;
               // go to node 'list'
-              FElement:=FElement.FirstChild as TDOMElement;
-              CheckNode('list');
+              if Assigned(FElement.FirstChild) and (FElement.FirstChild.NodeName='list') then
+                FElement:=FElement.FirstChild as TDOMElement;
             end;
           end;
         end;
