@@ -2027,8 +2027,7 @@ begin
         begin
           // Mouse is over property name...
           fHint := fPropRow.Name;
-          if ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) and 
-             InitHints then 
+          if InitHints and ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) then
           begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fPoint := ClientToScreen(
