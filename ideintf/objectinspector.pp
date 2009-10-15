@@ -3031,7 +3031,8 @@ begin
         HintType := GetHintTypeAt(Index,Position.X);
         if (HintType = pehName) and Assigned(OnPropertyHint) then 
         begin
-          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, Rect, AHint) then
+          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, Rect, AHint) and
+             (AHint <> '') then
           begin
             FHintIndex := Index;
             FShowingLongHint := True;
