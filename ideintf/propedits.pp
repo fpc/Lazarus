@@ -7068,7 +7068,7 @@ begin
     Name:='FKeyComboBox';
     AutoSize:=true;
     Items.BeginUpdate;
-    for i:=1 to 145 do begin
+    for i:=0 to 145 do begin
       s := KeyAndShiftStateToKeyString(i, []);
       if not KeyStringIsIrregular(s) then
         Items.Add(s);
