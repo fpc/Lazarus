@@ -6900,8 +6900,13 @@ begin
              VK_LWIN, VK_RWIN,
              VK_UNKNOWN, VK_UNDEFINED])
   then begin
-    Key:=AKey;
-    ShiftState:=AShift;
+    if (AKey=VK_ESCAPE) and (AShift=[]) then begin
+      Key:=VK_UNKNOWN;
+      ShiftState:=[];
+    end else begin
+      Key:=AKey;
+      ShiftState:=AShift;
+    end;
     FGrabForm.ModalResult:=mrOk;
   end;
 end;

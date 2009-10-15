@@ -1430,7 +1430,7 @@ resourcestring
   dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
   
-  lisClearKeyShortMapping = 'Clear Key Mapping';
+  lisClearKeyMapping = 'Clear Key Mapping';
 
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
