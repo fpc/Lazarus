@@ -242,7 +242,7 @@ const
   CM_DIALOGKEY            = CM_BASE + 5;
   CM_DIALOGCHAR           = CM_BASE + 6;
   CM_FOCUSCHANGED         = CM_BASE + 7;
-//CM_PARENTFONTCHANGED    = CM_BASE + 8; // LCL doesn't send or receive
+  CM_PARENTFONTCHANGED    = CM_BASE + 8;
   CM_PARENTCOLORCHANGED   = CM_BASE + 9;
   CM_HITTEST              = CM_BASE + 10;
   CM_VISIBLECHANGED       = CM_BASE + 11;

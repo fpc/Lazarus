@@ -373,9 +373,13 @@ begin
     begin
       while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
+        if AMessage.message = WM_QUIT then
+        begin
+          PostQuitMessage(AMessage.wParam);
+          break;
+        end;
         AccelTable := GetWin32WindowInfo(AMessage.HWnd)^.Accel;
-        if (AccelTable = HACCEL(nil))
-          or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
+        if (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
         begin
           TranslateMessage(@AMessage);
 {$IFDEF WindowsUnicodeSupport}

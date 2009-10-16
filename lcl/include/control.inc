@@ -276,6 +276,7 @@ procedure TControl.FontChanged(Sender: TObject);
 begin
   ParentFont := False;
   Invalidate;
+  Perform(CM_FONTCHANGED, 0, 0);
 end;
 
 procedure TControl.ParentFontChanged;
@@ -285,8 +286,9 @@ begin
   if FParentFont then
   begin
     Font := FParent.Font;
-    FParentFont := true;
+    FParentFont := True;
   end;
+  Perform(CM_PARENTFONTCHANGED, 0, 0);
 end;
 
 procedure TControl.SetAction(Value: TBasicAction);
