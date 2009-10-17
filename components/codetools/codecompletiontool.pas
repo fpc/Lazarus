@@ -1164,6 +1164,9 @@ var
   NewType: String;
   IgnorePos: TCodePosition;
   MissingUnitName: String;
+  ProcStartPos: LongInt;
+  ExprType: TExpressionType;
+  Context: TFindContext;
 begin
   Result:=false;
 
@@ -1186,9 +1189,9 @@ begin
     exit;
   if not IsValidIdent(GetAtom(VarNameAtom)) then exit;
 
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('  CompleteLocalVariableAsParameter VarNameAtom=',GetAtom(VarNameAtom),' ProcNameAtom=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
-  { $ENDIF}
+  {$ENDIF}
 
   // search variable
   ActivateGlobalWriteLock;
@@ -1205,21 +1208,34 @@ begin
       RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
     end;
 
-    { $IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalVariableAsParameter: Find declaration of parameter list ...  Identifier="',GetAtom(ProcNameAtom),'"');
-    { $ENDIF}
+    {$IFDEF CTDEBUG}
+    DebugLn('  CompleteLocalVariableAsParameter: Find declaration of parameter list ...  procname="',GetAtom(ProcNameAtom),'"');
+    {$ENDIF}
+
+    Context:=CreateFindContext(Self,CursorNode);
+    ProcStartPos:=FindStartOfTerm(ProcNameAtom.EndPos,false);
+    if ProcStartPos<ProcNameAtom.StartPos then begin
+      // for example: Canvas.Line
+      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
+      Params.ContextNode:=Context.Node;
+      ExprType:=FindExpressionResultType(Params,ProcStartPos,ProcNameAtom.StartPos);
+      if ExprType.Desc<>xtContext then exit;
+      Context:=ExprType.Context;
+      //debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context']);
+    end;
+
     // find declaration of parameter list
-    Params.ContextNode:=CursorNode;
+    Params.ContextNode:=Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
-    Params.Flags:=fdfGlobals+[fdfSearchInParentNodes,fdfSearchInAncestors,
+    Params.Flags:=fdfGlobals+[fdfSearchInAncestors,
                               fdfFindVariable,fdfIgnoreCurContextNode];
+    if Context.Node=CursorNode then
+      Include(Params.Flags,fdfSearchInParentNodes);
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
-      if not FindIdentifierInContext(Params) then exit;
-      // TODO: fix the bug, that even if fdfExceptionOnNotFound is not set,
-      //       and exeception is raised
-      //if not FindDeclarationOfIdentAtCursor(Params) then exit;
+      debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter ToDo: check for overloads']);
+      if not Context.Tool.FindIdentifierInContext(Params) then exit;
     finally
       ClearIgnoreErrorAfter;
     end;

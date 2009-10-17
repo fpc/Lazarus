@@ -26,12 +26,10 @@
 
 
   ToDo:
-    - ignore errors behind cursor (implemented, not tested)
     - find declaration in dead code (started)
     - high type expression evaluation
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
-    - caching for procs
     - multi pass find declaration (i.e. searching with timeout)
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
@@ -633,7 +631,7 @@ type
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
       Params: TFindDeclarationParams): TExpressionType;
     function ReadOperandTypeAtCursor(
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams; MaxEndPos: integer = -1): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
@@ -5142,7 +5140,7 @@ begin
   MoveCursorToCleanPos(StartPos);
   repeat
     // read operand
-    CurExprType:=ReadOperandTypeAtCursor(Params);
+    CurExprType:=ReadOperandTypeAtCursor(Params,EndPos);
     {$IFDEF ShowExprEval}
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
       ExprTypeToString(CurExprType));
@@ -6808,7 +6806,7 @@ begin
 end;
 
 function TFindDeclarationTool.ReadOperandTypeAtCursor(
-  Params: TFindDeclarationParams): TExpressionType;
+  Params: TFindDeclarationParams; MaxEndPos: integer): TExpressionType;
 { internally used by FindExpressionResultType
   after reading, the cursor will be on the next atom
 }
@@ -6868,6 +6866,8 @@ begin
     // read variable
     SubStartPos:=CurPos.StartPos;
     EndPos:=FindEndOfTerm(SubStartPos,false,true);
+    if EndPos>MaxEndPos then
+      EndPos:=MaxEndPos;
     OldFlags:=Params.Flags;
     Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
     Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true);
@@ -8775,7 +8775,13 @@ begin
     ReadNextAtom;
     ReadNextAtom;
     if CurPos.Flag=cafWord then begin
+      {$IFDEF ShowExprEval}
+      debugln(['TFindDeclarationTool.FindTermTypeAsString [name check for enumeration type ...']);
+      {$ENDIF}
       ExprType:=FindExpressionResultType(Params,EdgedBracketsStartPos+1,-1);
+      {$IFDEF ShowExprEval}
+      debugln(['TFindDeclarationTool.FindTermTypeAsString [name: ',ExprTypeToString(ExprType)]);
+      {$ENDIF}
       if (ExprType.Desc=xtContext)
       and (ExprType.Context.Node.Desc=ctnEnumerationType) then begin
         SetTool:=ExprType.Context.Tool;
@@ -8850,6 +8856,11 @@ begin
       dec(Lvl);
     cafWord:
       ;
+    cafComma:
+      if Lvl<1 then
+        break
+      else if Lvl>1 then
+        exit;
     else
       if AtomIsChar('+') or AtomIsChar('-') then begin
         // allowed
@@ -9141,7 +9152,10 @@ begin
     xtConstReal:
       Result:=ExpressionTypeDescNames[xtExtended];
     xtConstSet:
-      RaiseTermNotSimple;
+      begin
+
+        RaiseTermNotSimple;
+      end;
     xtConstBoolean:
       Result:=ExpressionTypeDescNames[xtBoolean];
     xtNil:
