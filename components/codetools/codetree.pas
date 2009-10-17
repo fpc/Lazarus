@@ -206,7 +206,7 @@ type
     psSTDCALL, psREGISTER, psPOPSTACK, psVIRTUAL, psABSTRACT, psDYNAMIC,
     psOVERLOAD, psOVERRIDE, psREINTRODUCE, psCDECL, psINLINE, psMESSAGE,
     psEXTERNAL, psFORWARD, psPASCAL, psASSEMBLER, psSAVEREGISTERS,
-    psFAR, psNEAR, psEdgedBracket);
+    psFAR, psNEAR, psFINAL, psEdgedBracket);
   TAllProcedureSpecifiers = set of TProcedureSpecifier;
 
 const
@@ -214,7 +214,7 @@ const
       'STDCALL', 'REGISTER', 'POPSTACK', 'VIRTUAL', 'ABSTRACT', 'DYNAMIC',
       'OVERLOAD', 'OVERRIDE', 'REINTRODUCE', 'CDECL', 'INLINE', 'MESSAGE',
       'EXTERNAL', 'FORWARD', 'PASCAL', 'ASSEMBLER', 'SAVEREGISTERS',
-      'FAR', 'NEAR', '['
+      'FAR', 'NEAR', 'FINAL', '['
     );
 
   

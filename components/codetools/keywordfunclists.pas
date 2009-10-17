@@ -777,6 +777,7 @@ begin
     Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
