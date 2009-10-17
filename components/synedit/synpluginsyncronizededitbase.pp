@@ -812,12 +812,14 @@ var
   chg: Boolean;
   edit: Boolean;
   CaretPos: TPoint;
+  CellAtPos: Integer;
 begin
   if not Active then exit;
   Pos := Point(aBytePos, aLinePos);
   Pos2 := Pos;
   if not FEditing then
     DoBeforeEdit(Pos.x, Pos.y, IsUndoing or IsRedoing);
+  CellAtPos := Cells.IndexOf(Pos.x, Pos.y, True);
 
   // Todo: need do add undo info (start/stop flag),
   // so we know which group (if any) this applies to
@@ -836,15 +838,15 @@ begin
   end;
 
   if (not (FEditing or IsUndoing or IsRedoing)) and
-     (FCurrentCell >= 0) and (FCurrentCell < Cells.Count) and
-     (CompareCarets(Pos, FCells[FCurrentCell].LogStart) <= 0) and
-     (CompareCarets(Pos, FCells[FCurrentCell].LogEnd) >= 0)
+     (CellAtPos >= 0) and (CellAtPos < Cells.Count) and
+     (CompareCarets(Pos, FCells[CellAtPos].LogStart) <= 0) and
+     (CompareCarets(Pos, FCells[CellAtPos].LogEnd) >= 0)
   then begin
     ViewedTextBuffer.BeginUpdate;
     try
       FEditing := True;
       CaretPos := CaretObj.LineBytePos;
-      CurCell := FCells[FCurrentCell];
+      CurCell := FCells[CellAtPos];
       a := CurCell.Group;
       Pos.Y := Pos.Y - CurCell.LogStart.y;
       if Pos.y = 0
@@ -854,7 +856,7 @@ begin
         if FCells[i].LogStart.Y = FCells[i].LogEnd.Y
         then x2 := FCells[i].LogStart.X + Pos.X
         else x2 := 1 + Pos.X;
-        if (i <> FCurrentCell) and (FCells[i].Group = a) and
+        if (i <> CellAtPos) and (FCells[i].Group = a) and
            ( (FCells[i].LogStart.Y + Pos.Y < FCells[i].LogEnd.Y) or
              ( (FCells[i].LogStart.Y + Pos.Y = FCells[i].LogEnd.Y) and
                (x2 <= FCells[i].LogEnd.X) )
@@ -1024,7 +1026,7 @@ begin
        But the edit happens inside a cell => ok
      - Caret may be in cell, but Codetools inserts text outside the cell => ok
      - User edit outside a cell (both locations will be outside the cell => deactivate
-     TODO: Check Caret before command processor
+     TODO: Hook SynEdits Lock, and check Caret before locking only
   *)
   UpdateCurrentCell(aX, aY);
   if CurrentCell < 0 then
