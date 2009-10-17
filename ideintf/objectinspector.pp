@@ -181,7 +181,7 @@ type
     FEditor: TPropertyEditor;
     FWidgetSets: TLCLPlatforms;
 
-    Index:integer;
+    FIndex:integer;
     LastPaintedValue: string;
 
     procedure GetLvl;
@@ -216,6 +216,7 @@ type
     property LastChild:TOIPropertyGridRow read FFirstChild;
     property NextBrother:TOIPropertyGridRow read FNextBrother;
     property PriorBrother:TOIPropertyGridRow read FPriorBrother;
+    property Index: integer read FIndex;
   end;
 
   //----------------------------------------------------------------------------
@@ -712,7 +713,8 @@ type
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
     procedure HookRefreshPropertyValues;
-    procedure FocusGrid;
+    procedure ActivateGrid(Grid: TOICustomPropertyGrid);
+    procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
 
     property AutoShow: Boolean read FAutoShow write FAutoShow;
     property DefaultItemHeight: integer read FDefaultItemHeight
@@ -1784,7 +1786,7 @@ begin
     (PropEditor as TClassPropertyEditor).SubPropsTypeFilter := FFilter;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
-  NewRow.Index:=NewIndex;
+  NewRow.FIndex:=NewIndex;
   FRows.Insert(NewIndex,NewRow);
   if NewIndex<FItemIndex
     then inc(FItemIndex);
@@ -1810,7 +1812,7 @@ begin
   Next:=ParentRow.NextSkipChilds;
   while (Item<>nil) and (Item<>Next) do begin
     FRows[Index]:=Item;
-    Item.Index:=Index;
+    Item.FIndex:=Index;
     Item:=Item.Next;
     inc(Index);
   end;
@@ -2768,7 +2770,7 @@ procedure TOICustomPropertyGrid.SetItemsTops;
 var a:integer;
 begin
   for a:=0 to FRows.Count-1 do begin
-    Rows[a].Index:=a;
+    Rows[a].FIndex:=a;
     Rows[a].MeasureHeight(Canvas);
   end;
   if FRows.Count>0 then
@@ -3190,7 +3192,7 @@ begin
   FName:=FEditor.GetName;
   FTop:=0;
   FHeight:=FTree.DefaultItemHeight;
-  Index:=-1;
+  FIndex:=-1;
   LastPaintedValue:='';
   FWidgetSets := WidgetSets;
 end;
@@ -4905,12 +4907,22 @@ begin
   RefreshPropertyValues;
 end;
 
-procedure TObjectInspectorDlg.FocusGrid;
+procedure TObjectInspectorDlg.ActivateGrid(Grid: TOICustomPropertyGrid);
+begin
+  if Grid=PropertyGrid then NoteBook.PageIndex:=0
+  else if Grid=EventGrid then NoteBook.PageIndex:=1
+  else if Grid=FavouriteGrid then NoteBook.PageIndex:=2
+  else if Grid=RestrictedGrid then NoteBook.PageIndex:=3;
+end;
+
+procedure TObjectInspectorDlg.FocusGrid(Grid: TOICustomPropertyGrid);
 var
-  Grid: TOICustomPropertyGrid;
   Index: Integer;
 begin
-  Grid := GetActivePropertyGrid;
+  if Grid=nil then
+    Grid := GetActivePropertyGrid
+  else
+    ActivateGrid(Grid);
   if Grid <> nil then
   begin
     Index := Grid.ItemIndex;
