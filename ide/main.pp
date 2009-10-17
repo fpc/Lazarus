@@ -11366,8 +11366,10 @@ begin
   FileName:=ALine.Filename;
   CaretPos.x:=ALine.Column;
   CaretPos.y:=ALine.LineNumber;
+  Result := Assigned(ALine.Parts);
+  if not Result then
+    Exit;
   ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
-  Result:=True;
 end;
 
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
