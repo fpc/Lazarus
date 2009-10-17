@@ -1884,6 +1884,7 @@ begin
           );
     end else
       exit;
+    AButton.CurrentPathEditor.BaseDirectory:=CompilerOpts.BaseDirectory;
     AButton.CurrentPathEditor.Path:=OldPath;
     AButton.CurrentPathEditor.Templates:=SetDirSeparators(Templates);
   end;

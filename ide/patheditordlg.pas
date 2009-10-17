@@ -29,7 +29,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  LResources, FileUtil, ButtonPanel, LazarusIDEStrConsts, EditorOptions;
+  LResources, FileUtil, ButtonPanel, MacroIntf,
+  LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -56,14 +57,19 @@ type
     procedure MoveUpButtonClick(Sender: TObject);
     procedure TemplatesListBoxDblClick(Sender: TObject);
   private
+    FBaseDirectory: string;
+    FEffectiveBaseDirectory: string;
     function GetPath: string;
     function GetTemplates: string;
     function PathToText(const APath: string): string;
     procedure SelectCurrentPath;
+    procedure SetBaseDirectory(const AValue: string);
     procedure SetPath(const AValue: string);
     procedure SetTemplates(const AValue: string);
     function TextToPath(const AText: string): string;
   public
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property EffectiveBaseDirectory: string read FEffectiveBaseDirectory;
     property Path: string read GetPath write SetPath;
     property Templates: string read GetTemplates write SetTemplates;
   end;
@@ -116,13 +122,18 @@ end;
 
 procedure TPathEditorDialog.BrowseButtonClick(Sender: TObject);
 var y: integer;
+  NewPath: String;
 begin
   with BrowseDialog do begin
     Title:=lisPathEditSelectDirectory;
     if (not Execute) then exit;
     y:=PathEdit.CaretY;
     if y>PathEdit.Lines.Count then y:=PathEdit.Lines.Count;
-    PathEdit.Lines.Insert(y,Trim(Filename));
+    NewPath:=Filename;
+    if (FEffectiveBaseDirectory<>'')
+    and FilenameIsAbsolute(FEffectiveBaseDirectory) then
+      NewPath:=CreateRelativePath(NewPath,FEffectiveBaseDirectory);
+    PathEdit.Lines.Insert(y,Trim(NewPath));
     PathEdit.CaretY:=y+1;
   end;
   SelectCurrentPath;
@@ -311,6 +322,15 @@ begin
   if y>PathEdit.Lines.Count then exit;
   PathEdit.BlockBegin:=Point(0,y);
   PathEdit.BlockEnd:=Point(length(PathEdit.Lines[y-1])+1,y);
+end;
+
+procedure TPathEditorDialog.SetBaseDirectory(const AValue: string);
+begin
+  if FBaseDirectory=AValue then exit;
+  FBaseDirectory:=AValue;
+  FEffectiveBaseDirectory:=FBaseDirectory;
+  IDEMacros.SubstituteMacros(FEffectiveBaseDirectory);
+  BrowseDialog.InitialDir:=FEffectiveBaseDirectory;
 end;
 
 { TPathEditorButton }
