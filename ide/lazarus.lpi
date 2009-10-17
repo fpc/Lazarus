@@ -40,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="51">
+    <Units Count="52">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -390,6 +390,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="HelpManager"/>
       </Unit50>
+      <Unit51>
+        <Filename Value="../designer/askcompnamedlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AskCompNameDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AskCompNameDlg"/>
+      </Unit51>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -398,7 +405,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/;/home/mattias/pascal/wichtig/lazarus/packager/frames/"/>
+      <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/;../packager/frames/;../designer/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
