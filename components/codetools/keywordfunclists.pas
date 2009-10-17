@@ -812,6 +812,8 @@ begin
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
@@ -832,6 +834,8 @@ begin
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordCallingConvention:=TKeyWordFunctionList.Create;
