@@ -775,6 +775,8 @@ begin
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VIRTUAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;

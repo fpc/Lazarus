@@ -3459,7 +3459,8 @@ begin
   end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
-    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or 
+       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
     then
       ReadNextAtom;
     if CurPos.Flag=cafSemicolon then
@@ -3534,7 +3535,8 @@ begin
   end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
-    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
+       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
     then
       ReadNextAtom;
   end;
@@ -3796,7 +3798,8 @@ begin
         SaveRaiseException(ctsInvalidSubrange);
       CurNode.EndPos:=CurPos.StartPos;
     end;
-    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED')
+    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED') or
+       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
     then
       ReadNextAtom;
   end else begin
@@ -3902,7 +3905,8 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close record
   ReadNextAtom;
-  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED')
+  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED') or
+     UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
   then
     ReadNextAtom;
   Result:=true;
