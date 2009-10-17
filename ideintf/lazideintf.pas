@@ -59,7 +59,8 @@ type
     nfQuiet,           // less messages
     nfConvertMacros,   // replace macros in filename
     nfBeautifySrc,     // beautify custom source
-    nfCreateDefaultSrc // create initial source based on the type
+    nfCreateDefaultSrc,// create initial source based on the type
+    nfAskForFilename   // ask for filename
     );
   TNewFlags = set of TNewFlag;
 
