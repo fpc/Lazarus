@@ -298,9 +298,10 @@ type
     function Func39: TtkTokenKind;
     function Func40: TtkTokenKind;
     function Func41: TtkTokenKind;
-    function Func42: TtkTokenKind; // "alias"
+    function Func42: TtkTokenKind; // "alias", "final"
     function Func44: TtkTokenKind;
     function Func45: TtkTokenKind;
+    function Func46: TtkTokenKind; // "sealed"
     function Func47: TtkTokenKind;
     function Func49: TtkTokenKind;
     function Func52: TtkTokenKind;
@@ -358,7 +359,9 @@ type
     function Func133: TtkTokenKind;
     function Func136: TtkTokenKind;
     function Func141: TtkTokenKind;
+    function Func142: TtkTokenKind; // "experimental"
     function Func143: TtkTokenKind;
+    function Func151: TtkTokenKind; // "unimplemented"
     function Func166: TtkTokenKind;
     function Func167: TtkTokenKind;
     function Func168: TtkTokenKind;
@@ -635,6 +638,7 @@ begin
   fIdentFuncTable[42] := @Func42;
   fIdentFuncTable[44] := @Func44;
   fIdentFuncTable[45] := @Func45;
+  fIdentFuncTable[46] := @Func46;
   fIdentFuncTable[47] := @Func47;
   fIdentFuncTable[49] := @Func49;
   fIdentFuncTable[52] := @Func52;
@@ -696,7 +700,9 @@ begin
   fIdentFuncTable[133] := @Func133;
   fIdentFuncTable[136] := @Func136;
   fIdentFuncTable[141] := @Func141;
+  fIdentFuncTable[142] := @Func142;
   fIdentFuncTable[143] := @Func143;
+  fIdentFuncTable[151] := @Func151;
   fIdentFuncTable[166] := @Func166;
   {$ifdef SYN_LAZARUS}
   fIdentFuncTable[167] := @Func167;
@@ -1071,6 +1077,8 @@ function TSynPasSyn.Func42: TtkTokenKind;
 begin
   if KeyComp('Alias') then
     Result := tkKey
+  else if KeyComp('Final') then
+    Result := tkKey
   else
     Result := tkIdentifier;
 end;
@@ -1088,6 +1096,14 @@ end;
 function TSynPasSyn.Func45: TtkTokenKind;
 begin
   if KeyComp('Shr') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func46: TtkTokenKind;
+begin
+  if KeyComp('Sealed') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func47: TtkTokenKind;
@@ -1708,6 +1724,14 @@ begin
   end else Result := tkIdentifier;
 end;
 
+function TSynPasSyn.Func142: TtkTokenKind;
+begin
+  if KeyComp('Experimental') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynPasSyn.Func143: TtkTokenKind;
 begin
   if KeyComp('Destructor') then
@@ -1726,6 +1750,14 @@ begin
     Result := tkKey;
   end else
   if KeyComp('compilerproc') then // fpc modifier
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func151: TtkTokenKind;
+begin
+  if KeyComp('Unimplemented') then
     Result := tkKey
   else
     Result := tkIdentifier;
