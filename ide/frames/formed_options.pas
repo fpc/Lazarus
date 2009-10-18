@@ -34,6 +34,7 @@ type
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCreateFormsOnOpenCheckBox: TCheckBox;
+    CreateCompFocusNameCheckBox: TCheckBox;
     DesignerPaintLazyCheckBox: TCheckBox;
     FormEditMiscGroupBox: TGroupBox;
     GrabberColorButton: TColorButton;
@@ -119,6 +120,10 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
       Caption:=lisFEPaintDesignerItemsOnIdle;
       Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
     end;
+    with CreateCompFocusNameCheckBox do begin
+      Caption:=lisFocusNameOnCreate;
+      Hint:=lisAfterPuttingANewComponentOnADesignerFormFocusTheNa;
+    end;
   end;
 
   procedure SetupRubberbandBox;
@@ -162,6 +167,7 @@ begin
     RubberbandCreateColorButton.ButtonColor:=RubberbandCreationColor;
     RubberbandSelectsGrandChildsCheckBox.Checked:=RubberbandSelectsGrandChilds;
     DesignerPaintLazyCheckBox.Checked:=DesignerPaintLazy;
+    CreateCompFocusNameCheckBox.Checked:=CreateComponentFocusNameProperty;
   end;
 end;
 
@@ -189,6 +195,7 @@ begin
     RubberbandCreationColor:=RubberbandCreateColorButton.ButtonColor;
     RubberbandSelectsGrandChilds:=RubberbandSelectsGrandChildsCheckBox.Checked;
     DesignerPaintLazy:=DesignerPaintLazyCheckBox.Checked;
+    CreateComponentFocusNameProperty:=CreateCompFocusNameCheckBox.Checked;
   end;
 end;
 

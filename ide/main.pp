@@ -606,12 +606,12 @@ type
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
-        var NewUnitName: string): TModalResult;
+        var NewUnitName: string; AskForFilename: boolean): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer; UseCreateFormStatements: Boolean): TModalResult;
 
     // methods for 'save unit'
-    function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
+    function DoShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
         var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
     function DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
@@ -2477,6 +2477,7 @@ var
   Category: TNewIDEItemCategory;
   Template: TNewIDEItemTemplate;
   Desc: TProjectFileDescriptor;
+  Flags: TNewFlags;
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
@@ -2484,7 +2485,10 @@ begin
     Desc:=TNewItemProjectFile(Template).Descriptor
   else
     Desc:=FileDescriptorUnit;
-  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
+  if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
+    Flags:=Flags+[nfAskForFilename,nfSave];
+  DoNewEditorFile(Desc,'','',Flags);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
@@ -2492,6 +2496,7 @@ var
   Category: TNewIDEItemCategory;
   Template: TNewIDEItemTemplate;
   Desc: TProjectFileDescriptor;
+  Flags: TNewFlags;
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewFormTemplate);
@@ -2499,7 +2504,10 @@ begin
     Desc:=TNewItemProjectFile(Template).Descriptor
   else
     Desc:=FileDescriptorForm;
-  DoNewEditorFile(Desc,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
+  if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
+    Flags:=Flags+[nfAskForFilename,nfSave];
+  DoNewEditorFile(Desc,'','',Flags);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
@@ -4256,12 +4264,17 @@ end;
 
 function TMainIDE.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
   NewOwner: TObject; NewFilename: string;
-  var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
+  var NewCodeBuffer: TCodeBuffer; var NewUnitName: string;
+  AskForFilename: boolean): TModalResult;
 var
   NewShortFilename: String;
   NewFileExt: String;
   SearchFlags: TSearchIDEFileFlags;
+  ResourceCode: TCodeBuffer;
+  CanAbort: Boolean;
 begin
+  CanAbort:=false;
+
   //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
   if NewFilename='' then begin
@@ -4300,6 +4313,12 @@ begin
     if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
       NewFilename:=ExtractFilePath(NewFilename)
                    +lowercase(ExtractFileName(NewFilename));
+  end;
+
+  if AskForFilename then begin
+    ResourceCode:=nil;
+    Result:=DoShowSaveFileAsDialog(NewFilename,nil,ResourceCode,CanAbort);
+    if Result<>mrOk then exit;
   end;
 
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
@@ -4477,7 +4496,8 @@ begin
     Result:=mrCancel;
 end;
 
-function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoShowSaveFileAsDialog(var AFilename: string;
+  AnUnitInfo: TUnitInfo;
   var ResourceCode: TCodeBuffer; CanAbort: boolean): TModalResult;
 var
   SaveDialog: TSaveDialog;
@@ -4490,28 +4510,34 @@ var
   OldUnitName: String;
   IsPascal: Boolean;
 begin
-  SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
+  if AnUnitInfo<>nil then
+    SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo)
+  else
+    SrcEdit:=nil;
   //debugln('TMainIDE.DoShowSaveFileAsDialog ',AnUnitInfo.Filename);
 
   // try to keep the old filename and extension
-  SaveAsFileExt:=ExtractFileExt(AnUnitInfo.FileName);
-  if SaveAsFileExt='' then begin
-    if SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]
+  SaveAsFileExt:=ExtractFileExt(AFileName);
+  if (SaveAsFileExt='') and (SrcEdit<>nil) then begin
+    if (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi])
     then
       SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
     else
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  IsPascal:=FilenameIsPascalSource(AnUnitInfo.Filename);
-  if IsPascal then
-    OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false)
-  else
+  IsPascal:=FilenameIsPascalSource(AFilename);
+  if IsPascal then begin
+    if AnUnitInfo<>nil then
+      OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false)
+    else
+      OldUnitName:=ExtractFileNameOnly(AFilename);
+  end else
     OldUnitName:='';
   //debugln('TMainIDE.DoShowSaveFileAsDialog sourceunitname=',OldUnitName);
   SaveAsFilename:=OldUnitName;
   if SaveAsFilename='' then
-    SaveAsFilename:=ExtractFileNameOnly(AnUnitInfo.Filename);
+    SaveAsFilename:=ExtractFileNameOnly(AFilename);
   if SaveAsFilename='' then
     SaveAsFilename:=lisnoname;
 
@@ -4522,14 +4548,15 @@ begin
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
     // if this is a project file, start in project directory
-    if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
-    and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
-    begin
+    if (AnUnitInfo=nil)
+    or (AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
+        and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)))
+    then begin
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
     end;
     // if this is a package file, then start in package directory
     PkgDefaultDirectory:=
-      PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
+      PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
     if (PkgDefaultDirectory<>'')
     and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
       SaveDialog.InitialDir:=PkgDefaultDirectory;
@@ -4618,8 +4645,8 @@ begin
   end;
 
   // check overwrite existing file
-  if (AnUnitInfo.IsVirtual
-      or (CompareFilenames(NewFilename,AnUnitInfo.Filename)<>0))
+  if ((not FilenameIsAbsolute(AFilename))
+      or (CompareFilenames(NewFilename,AFilename)<>0))
   and FileExistsUTF8(NewFilename) then begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
@@ -4629,7 +4656,15 @@ begin
     if Result=mrCancel then exit;
   end;
 
-  Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
+  if AnUnitInfo<>nil then begin
+    // rename unit
+    Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
+    AFilename:=AnUnitInfo.Filename;
+    if Result<>mrOk then exit;
+  end else begin
+    Result:=mrOk;
+    AFilename:=NewFilename;
+  end;
 end;
 
 { TLRTGrubber }
@@ -7134,7 +7169,7 @@ begin
 
   // create new codebuffer and apply naming conventions
   Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
-                              NewUnitName);
+                              NewUnitName,nfAskForFilename in NewFlags);
   if Result<>mrOk then exit;
 
   NewFilename:=NewBuffer.Filename;
@@ -7415,7 +7450,8 @@ begin
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
-    Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode,CanAbort);
+    NewFilename:=OldFilename;
+    Result:=DoShowSaveFileAsDialog(NewFilename,ActiveUnitInfo,ResourceCode,CanAbort);
     if Result in [mrIgnore,mrOk] then
       Result:=mrCancel
     else
@@ -11886,8 +11922,24 @@ begin
 end;
 
 procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject);
+var
+  Grid: TOICustomPropertyGrid;
+  Row: TOIPropertyGridRow;
 begin
   TComponentPalette(IDEComponentPalette).DoAfterComponentAdded;
+  if EnvironmentOptions.CreateComponentFocusNameProperty
+  and (ObjectInspector1<>nil) then begin
+    if ObjectInspector1.ShowFavorites then
+      Grid:=ObjectInspector1.FavouriteGrid
+    else
+      Grid:=ObjectInspector1.PropertyGrid;
+     ObjectInspector1.ActivateGrid(Grid);
+     Row:=Grid.GetRowByPath('Name');
+     if Row<>nil then begin
+       Grid.ItemIndex:=Row.Index;
+       ObjectInspector1.FocusGrid(Grid);
+     end;
+  end;
 end;
 
 procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject;
