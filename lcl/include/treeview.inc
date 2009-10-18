@@ -4510,7 +4510,7 @@ begin
       else
       begin
         Font.Color := Self.Font.Color;
-        TextOut(x, TextY, Node.Text);
+        TextOut(x + 1, TextY, Node.Text);
       end;
     end;
 
