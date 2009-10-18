@@ -423,6 +423,10 @@ end;
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
+var
+  OpenFileNotify: LPOFNOTIFY;
+  OpenFileName: Windows.POPENFILENAME;
+  DialogRec: POpenFileDialogRec;
 
   procedure Reposition(ADialogWnd: Handle);
   var
@@ -450,10 +454,13 @@ function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
     SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
   end;
 
-var
-  OpenFileNotify: LPOFNOTIFY;
-  OpenFileName: Windows.POPENFILENAME;
-  DialogRec: POpenFileDialogRec;
+  procedure ExtractDataFromNotify;
+  begin
+    OpenFileName := OpenFileNotify^.lpOFN;
+    DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
+    UpdateStorage(Wnd, OpenFileName);
+    UpdateFileProperties(OpenFileName);
+  end;
 begin
   if uMsg = WM_INITDIALOG then
   begin
@@ -468,20 +475,29 @@ begin
     if OpenFileNotify = nil then
       Exit;
 
-    OpenFileName := OpenFileNotify^.lpOFN;
-    DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
-    UpdateStorage(Wnd, OpenFileName);
-    UpdateFileProperties(OpenFileName);
-
     case OpenFileNotify^.hdr.code of
       CDN_INITDONE:
+      begin
+        ExtractDataFromNotify;
         TOpenDialog(DialogRec^.Dialog).DoShow;
+      end;
       CDN_SELCHANGE:
+      begin
+        ExtractDataFromNotify;
         TOpenDialog(DialogRec^.Dialog).DoSelectionChange;
+      end;
       CDN_FOLDERCHANGE:
+      begin
+        ExtractDataFromNotify;
         TOpenDialog(DialogRec^.Dialog).DoFolderChange;
+      end;
+      CDN_FILEOK:
+        ExtractDataFromNotify;
       CDN_TYPECHANGE:
+      begin
+        ExtractDataFromNotify;
         DialogRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
+      end;
     end;
   end;
   Result := 0;
