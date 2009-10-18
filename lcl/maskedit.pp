@@ -41,6 +41,39 @@ Bugs:
   If, in the future, Delphi actually treats '_' as a blank, we'll re-implement it, for that
   purpose I did not remove the concerning code, but commented it out
 - UTF8 support for maskcharacters C and c, probably needs major rewrite!!
+  For now we disallow any UTF8 characters:
+  - in KeyPress only Lower ASCII is handled
+  - in SetText, SetEditText, PasteFromClipboard all UTF8 characters in the given string
+    are replaced with '?' in the UTF8ToAscii() function
+  The reason for this is that an UTF8Char is > 1 byte in lenght, and it will seriously
+  screw up the aritmatic of cursor placing, where to put mask-literals etc.
+  (Alowing it will result in floating point erros when you type/delete in the control)
+
+
+Different behaviour than Delphi, but by design (October 2009, BB)
+- In Delphi (at least up to D2007) when setting the text property while EditMask and the text to be
+  set contain the same literals, confusing things can happen.
+  Delphi fills in text until it finds a matching maskliteral, then skips the remaining text
+  in the control and proceeds filling text after that mask literal.
+  This however leeds to the following problem: if you do Text := Text it might actually change the text
+  in the control (when MaskNoSave is _NOT_ specified)! That seems to be a bug to me.
+  Example in Delphi:
+    Set EditMask := "ccc-ccc-ccc;1;_"
+    You type in the control so it becomes: "1-2-3__-___"
+    If you read the Text property, it is "1-2-3  -   " (as expected)
+    Now (later on, perhaps after storing the text) you set Text property to "1-2-3  -   ".
+    You expect the text in the control to become "1-2-3__-___", but actually it becomes "1__-2__-3__"
+    (if EditMask = "!ccc-ccc-ccc;1;_", the same text becomes "__1-__2-___" which is even more wrong!
+    An entire character ('3') has disappeared.
+    If "!" has no influence on reading Text, it should have no influence on setting Text)
+
+   There is a related problem with setting Text if MaskNoSave is part of the EditMask _and_ "!" is in the EditMask,
+   however it does not affect the Text := Text issue, so storing and retrieving Text is allright.
+   (Actualy in this case in Delphi it is possible to set a text longer than the actual mask!)
+
+   I decided to implement TCustomEdit.SetText in such a way that at least storing and retrieving the
+   Text property results in the same text in the control.
+   So SetText breaks Delphi compatibility (a little), but data integrity is preserved as the result of this.
 }
 
 unit MaskEdit;
@@ -302,7 +335,7 @@ implementation
 
 
 //Define this to prevent validation when the control looses focus
-{ $DEFINE NOVALIDATEONEXIT}
+{ $DEFINE MASKEDIT_NOVALIDATEONEXIT}
 
 
 {
@@ -319,6 +352,91 @@ const
 const
   Period = '.';
   Comma = ',';
+
+
+function UTF8ToASCII(Value: String): String;
+//Replace all UTF8 chars (>#127) with '?'
+//rules based on: http://en.wikipedia.org/wiki/UTF8
+//In the case statement I differentiated between legal and illegal UTF8 byte sequences.
+//Both are skipped, but in later versions we might do different actions on legal
+//sequences, like replace "e with accent egu" with a plain e instead of a '?'
+var
+  b: byte;
+  i,len: Integer;
+begin
+  Result := '';
+  len := Length(Value);
+  if len = 0 then exit;
+  i := 1;
+  while (i <= len) do
+  begin
+    b := Byte(Value[i]);
+    if (b < $80) then
+    begin
+      Result := Result + Value[i];
+    end
+    else
+    begin
+      //UTF8Char, 2 or more bytes
+      //replace with '?'
+      Result := Result + '?';
+      case b of
+        $80..$BF: {just skip and continue after this byte}; //invalid first UTF8Char, only 2nd, 3rd, 4th can be in this range
+        $C0, $C1:
+        begin
+          //illegal 2 byte sequence, just skip and continue after this sequence
+          Inc(i);
+          if (i > len) then exit; //invalid UTF8Char, and out of chars
+        end;
+        $C2..$DF:
+        begin
+          //legal 2 byte sequence, just skip and continue after this sequence
+          Inc(i);
+          if (i > len) then exit; //invalid UTF8Char, and out of chars
+        end;
+        $E0..$EF:
+        begin
+          //legal 3 byte sequence, just skip and continue after this sequence
+          inc(i,2);
+          if (i > len) then Exit; //invalid UTF8 char, and end of string
+        end;
+        $F0..$F4:
+        begin
+          //legal 4 byte sequence, just skip and continue after this sequence
+          Inc(i,3);
+          if (i > len) then Exit; //invalid UTF8 char, and end of string
+        end;
+        $F5..$F7:
+        begin
+          //illegal 4 byte sequence, just skip and continue after this sequence
+          Inc(i,3);
+          if (i > len) then Exit; //invalid UTF8 char, and end of string
+        end;
+        $F8..$FB:
+        begin
+          //illegal 5 byte sequence, just skip and continue after this sequence
+          Inc(i,4);
+          if (i > len) then Exit; //invalid UTF8 char, and end of string
+        end;
+        $FC..$FD:
+        begin
+          //illegal 6 byte sequence, just skip and continue after this sequence
+          Inc(i,5);
+          if (i > len) then Exit; //invalid UTF8 char, and end of string
+        end;
+        $FE..$FF:
+        begin
+          //illegal sequence: not defined by UTF8-specification
+          Exit; //Absolutely illegal, stop processing the string.
+        end;
+      end; //case
+    end;  //UTF8Char 2 or more bytes
+    Inc(i);
+  end; //while (i <= len)
+end;
+
+
+
 
 { Component registration procedure }
 procedure Register;
@@ -358,7 +476,6 @@ begin
     FInitialMask := Value;
     Exit;
   end;
-
   if FRealMask <> Value then
   begin
     FRealMask := Value;
@@ -368,25 +485,27 @@ begin
       First see if Mask is multifield and if we can extract a value for
       FMaskSave and/or FSpaceChar
       If so, extract and remove from Value (so we know the remaining part of
-      Value _IS_ the mask to be set
+      Value _IS_ the mask to be set)
 
       A value for FSpaceChar is only valid if also a value for FMaskSave is specified
-      (as by Delphi specifications), so Mask must be at least 5 characters
-      (1 for the mask, 4 for 2 * MaskFieldSeparator and 2 value chars)
-      These must be the last 2 or 4 characters of EditMask
+      (as by Delphi specifications), so Mask must be at least 4 characters
+      These must be the last 2 or 4 characters of EditMask (and there must not be
+      an escape character in front!)
     }
-    if (Length(Value) >= 5) and (Value[Length(Value)-1] = MaskFieldSeparator) and
+    if (Length(Value) >= 4) and (Value[Length(Value)-1] = MaskFieldSeparator) and
        (Value[Length(Value)-3] = MaskFieldSeparator) and
        (Value[Length(Value)-2] <> cMask_SpecialChar) and
-       (Value[Length(Value)-4] <> cMask_SpecialChar) then
+       //Length = 4 is OK (Value = ";1;_" for example), but if Length > 4 there must be no escape charater in front
+       ((Length(Value) = 4) or ((Length(Value) > 4) and (Value[Length(Value)-4] <> cMask_SpecialChar))) then
     begin
       FSpaceChar := Value[Length(Value)];
       FMaskSave := (Value[Length(Value)-2] <> MaskNosave);
       System.Delete(Value,Length(Value)-3,4);
     end
     //If not both FMaskSave and FSPaceChar are specified, then see if only FMaskSave is specified
-    else if (Length(Value) >= 3) and (Value[Length(Value)-1] = MaskFieldSeparator) and
-            (Value[Length(Value)-2] <> cMask_SpecialChar) then
+    else if (Length(Value) >= 2) and (Value[Length(Value)-1] = MaskFieldSeparator) and
+            //Length = 2 is OK, but if Length > 2 there must be no escape charater in front
+            ((Length(Value) = 2) or ((Length(Value) > 2) and (Value[Length(Value)-2] <> cMask_SpecialChar))) then
     begin
       FMaskSave := (Value[Length(Value)] <> MaskNoSave);
       //Remove this bit from Mask
@@ -527,8 +646,9 @@ begin
         end;
       end;
     end;
-    Clear;
+    //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(Length(FMask));
+    Clear;
     FTextOnEnter := inherited Text;
   end;
 end;
@@ -1030,17 +1150,17 @@ End;
 
 // Set the actual Text
 Procedure TCustomMaskEdit.SetText(Value : String);
-{ This mimics Delphi behaviour (D3):
+{ This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks
   - if mask contains literals then text is set as long as matching literals in the
     text to set are avaiable
   - Text can not be longer than Length(FMask)
   - The text that is set, does not need to match the mask
+  - There are some differences to (irratic?) Delphi behaviour: see notes above.
 }
 Var
   S              : ShortString;
   I, J           : Integer;
-  MaskHasLiterals: Boolean;
 Begin
   //Setting Text while loading has unwanted side-effects
   if (csLoading in ComponentState) then
@@ -1056,46 +1176,65 @@ Begin
       Exit;
     end;
 
-    MaskHasLiterals := False;
-    for i := 1 to Length(FMask) do
-    begin
-      if IsLiteral(FMask[i]) then
-      begin
-        MaskHasLiterals := True;
-        Break;
-      end;
-    end;
-
-    if not MaskHasLiterals then
-    begin
-      if Length(Value) > Length(FMask) then Value := Copy(Value, 1, Length(FMask));
-      while (Length(Value) < Length(FMask)) do Value := Value + FSpaceChar;
-      SetInheritedText(Value);
-      Exit;
-    end;
+    Value := Utf8ToAscii(Value);
 
     //First setup a "blank" string that contains all literals in the mask
     S := '';
     for I := 1 To Length(FMask) do  S := S + ClearChar(I);
 
-    I := 1;
-    J := 1;
-    While (I <= Length(FMask)) and (j <= Length(Value)) do
+    if FMaskSave then
     begin
-      if not IsLiteral(FMask[I]) then
+      //fill in text, stop if there is no matching MaskLiteral left in Value
+      I := 1;
+      J := 1;
+      While (I <= Length(FMask)) and (j <= Length(Value)) do
       begin
-        S[i] := Value[j];
+        if not IsLiteral(FMask[I]) then
+        begin
+          if (Value[i] = #32) then S[i] := FSpaceChar else S[i] := Value[j];
+        end
+        else
+        begin
+          //search for S[i] in Value
+          While (S[i] <> Value[j]) and (j < Length(Value)) do Inc(j);
+          //if not found, make sure we leave the loop
+          if (S[i] <> Value[j]) then J := Length(Value) + 1;
+        end;
+        Inc(i);
+        Inc(j);
+      end;
+    end//FMaskSave = True
+    else
+    begin//FMaskSave = False
+      if FTrimType = metTrimRight then
+      begin
+        //fill text from left to rigth, skipping MaskLiterals
+        j := 1;
+        for i := 1 to Length(FMask) do
+        begin
+          if not IsLiteral(FMask[i]) then
+          begin
+            if (Value[j] = #32) then S[i] := FSpaceChar else S[i] := Value[j];
+            Inc(j);
+            if j > Length(Value) then Break;
+          end;
+        end;
       end
       else
       begin
-        //search for S[i] in Value
-        While (S[i] <> Value[j]) and (j < Length(Value)) do Inc(j);
-        //if not found, make sure we leave the loop
-        if (S[i] <> Value[j]) then J := Length(Value) + 1;
+        //fill text from right to left, skipping MaskLiterals
+        j := Length(Value);
+        for i := Length(FMask) downto 1 do
+        begin
+          if not IsLiteral(FMask[i]) then
+          begin
+            if (Value[j] = #32) then S[i] := FSpaceChar else S[i] := Value[j];
+            Dec(j);
+            if j < 1 then Break;
+          end;
+        end;
       end;
-      Inc(i);
-      Inc(j);
-    end;
+    end;//FMaskSave = False
     SetInheritedText(S);
   end//Ismasked
   else
@@ -1123,7 +1262,7 @@ begin
   else
   begin
     //Make sure we don't copy more or less text into the control than FMask allows for
-    S := Copy(AValue, 1, Length(FMask));
+    S := Copy(UTF8ToAscii(AValue), 1, Length(FMask));
     while Length(S) < Length(FMask) do S := S + FSpaceChar;
     SetInheritedText(S);
   end;
@@ -1195,73 +1334,10 @@ begin
 end;
 
 procedure TCustomMaskEdit.Loaded;
-var
-  i, j: Integer;
-  S: String;
 begin
   inherited Loaded;
   if (FInitialMask <> '') then SetMask(FInitialMask);
-
-  if IsMasked then
-  begin
-    if (FInitialText = '') then
-    begin
-      Clear;
-      Exit;
-    end;
-    //First setup a "blank" string that contains all literals in the mask
-    S := '';
-    for I := 1 To Length(FMask) do  S := S + ClearChar(I);
-    if Length(FInitialText) > Length(FMask) then FInitialText := Copy(FInitialText, 1, Length(FMask));
-    while (Length(FInitialText) < Length(FMask)) do
-    begin
-      if (not FMaskSave) and (FTrimType = metTrimLeft) then FInitialText := #32 + FInitialText
-      else FInitialText := FInitialText + #32;
-    end;
-    //Now we know FInitalText has same length as FMask
-    if FMaskSave then
-    //We simply copy any char from FInitalText that is not a maskliteral
-    begin
-      for i := 1 to Length(S) do
-      begin
-        if not IsLiteral(FMask[i]) then S[i] := FInitialText[i];
-      end;
-    end
-    else
-    //Scan FInitalText left to right or right to left and skip all maskliterals
-    begin
-      if (FTrimType = metTrimLeft) then
-      begin
-        j := Length(S);
-        for i := Length(S) downto 1 do
-        begin
-          if not IsLiteral(FMask[i]) then
-          begin
-            S[i] := FInitialText[j];
-            Dec(j);
-          end;
-        end;
-      end
-      else
-      begin
-        j := 1;
-        for i := 1 to Length(S) do
-        begin
-          if not IsLiteral(FMask[i]) then
-          begin
-            S[i] := FInitialText[j];
-            Inc(j);
-          end;
-        end;
-      end;
-    end;
-    S := StringReplace(S, #32, FSpaceChar, [rfReplaceAll]);
-    SetInheritedText(S);
-  end//Ismasked
-  else
-  begin//not IsMasked
-    SetInheritedText(FInitialText);
-  end;
+  if (FInitialText <> '') then SetText(FInitialText);
 end;
 
 
@@ -1339,7 +1415,11 @@ begin
     FCursorPos := GetSelStart;
     FTextOnEnter := Inherited Text;
     Modified := False;
-    SetCursorPos;
+    if ((FCursorPos = 0) and (IsLiteral(FMask[1]))) then
+      //On entering select first editable char
+      SelectNextChar
+    else
+      SetCursorPos;
   end;
 end;
 
@@ -1349,7 +1429,7 @@ procedure TCustomMaskEdit.DoExit;
 begin
   //First give OnExit a change to prevent a EDBEditError
   inherited DoExit;
-  {$IFNDEF NOVALIDATEONEXIT}
+  {$IFNDEF MASKEDIT_NOVALIDATEONEXIT}
   if IsMasked and (FTextOnEnter <> Inherited Text) then
   begin
     ValidateEdit;
@@ -1577,7 +1657,7 @@ begin
   end;
  if Clipboard.HasFormat(CF_TEXT) then
  begin
-   ClipText := ClipBoard.AsText;
+   ClipText := UTF8ToAscii(ClipBoard.AsText);
    if (Length(ClipText) > 0) then
    begin
      P := FCursorPos + 1;
