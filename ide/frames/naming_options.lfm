@@ -5,8 +5,8 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   ClientWidth = 507
   TabOrder = 0
   Visible = False
-  DesignLeft = 374
-  DesignTop = 366
+  DesignLeft = 353
+  DesignTop = 291
   object PascalFileExtRadiogroup: TRadioGroup[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner

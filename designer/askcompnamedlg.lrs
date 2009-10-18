@@ -1,8 +1,8 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TAskCompNameDialog','FORMDATA',[
-  'TPF0'#18'TAskCompNameDialog'#17'AskCompNameDialog'#4'Left'#3')'#1#6'Height'#2
-  +'['#3'Top'#3#171#0#5'Width'#3'n'#1#7'Caption'#6#17'AskCompNameDialog'#12'Cli'
+  'TPF0'#18'TAskCompNameDialog'#17'AskCompNameDialog'#4'Left'#3'+'#1#6'Height'#2
+  +'['#3'Top'#3#177#0#5'Width'#3'n'#1#7'Caption'#6#17'AskCompNameDialog'#12'Cli'
   +'entHeight'#2'['#11'ClientWidth'#3'n'#1#8'OnCreate'#7#10'FormCreate'#8'Posit'
   +'ion'#7#15'poDesktopCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#6'Label1'
   +#4'Left'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#3','#1#5'Align'#7#5'alTop'#20

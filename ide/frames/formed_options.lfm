@@ -6,8 +6,8 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
   OnResize = FrameResize
   TabOrder = 0
   Visible = False
-  DesignLeft = 308
-  DesignTop = 202
+  DesignLeft = 309
+  DesignTop = 195
   object GridGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner

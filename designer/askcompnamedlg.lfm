@@ -1,7 +1,7 @@
 object AskCompNameDialog: TAskCompNameDialog
-  Left = 297
+  Left = 299
   Height = 91
-  Top = 171
+  Top = 177
   Width = 366
   Caption = 'AskCompNameDialog'
   ClientHeight = 91
