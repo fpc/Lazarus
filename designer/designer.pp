@@ -45,7 +45,7 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
-  TabOrderDlg, DesignerProcs, CustomFormEditor,
+  TabOrderDlg, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
@@ -1728,6 +1728,7 @@ var
     NewParentControl: TWinControl;
     NewComponent: TComponent;
     NewComponentClass: TComponentClass;
+    NewName: String;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -1830,6 +1831,13 @@ var
     end;
     if Assigned(FOnSetDesigning) then
       FOnSetDesigning(Self,NewComponent,True);
+
+    if EnvironmentOptions.CreateComponentFocusNameProperty then begin
+      // ask user for name
+      NewName:=NewComponent.Name;
+      ShowComponentNameDialog(LookupRoot,NewComponent,NewName);
+      NewComponent.Name:=NewName;
+    end;
 
     // tell IDE about the new component (e.g. add it to the source)
     NotifyPersistentAdded(NewComponent);

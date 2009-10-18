@@ -4482,6 +4482,23 @@ resourcestring
   lisUsePackageInPackage2 = 'Use package in package';
   lisCenterForm = 'Center form';
   lisFindMissingUnit = 'Find missing unit';
+  lisFocusNameOnCreate = 'Focus name on create';
+  lisAfterPuttingANewComponentOnADesignerFormFocusTheNa = 'After putting a '
+    +'new component on a designer form, focus the name property in the Object '
+    +'Inspector';
+  lisEmpty = 'Empty';
+  lisNotAValidPascalIdentifier = 'Not a valid pascal identifier';
+  lisThereIsAlreadyAComponentWithThisName = 'There is already a component '
+    +'with this name';
+  lisTheOwnerHasThisName = 'The owner has this name';
+  lisTheOwnerClassHasThisName = 'The owner class has this name';
+  lisTheUnitHasThisName = 'The unit has this name';
+  lisChooseName = 'Choose name';
+  lisChooseANameForTheNewComponent = 'Choose a name for the new component';
+  lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo = 'The component name '
+    +'must be unique in all components on the form/datamodule.The name is '
+    +'compared case insensitive like a normal pascal identifier.';
+  lisAskForFileNameOnNewFile = 'Ask for file name on new file';
 
 implementation
 

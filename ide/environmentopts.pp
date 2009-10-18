@@ -166,6 +166,7 @@ type
     FDebuggerSearchPath: string;
 
     // designer
+    FCreateComponentFocusNameProperty: boolean;
     FDesignerPaintLazy: boolean;
     FShowBorderSpacing: boolean;
     FShowGrid: boolean;
@@ -242,6 +243,7 @@ type
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
     FUnitRenameReferencesAction: TUnitRenameReferencesAction;
+    FAskForFilenameOnNewFile: boolean;
 
     // lazdoc
     FLazDocPaths: string;
@@ -361,6 +363,8 @@ type
                                             write FRubberbandSelectsGrandChilds;
     property DesignerPaintLazy: boolean read FDesignerPaintLazy
                                         write FDesignerPaintLazy;
+    property CreateComponentFocusNameProperty: boolean read FCreateComponentFocusNameProperty
+                                        write FCreateComponentFocusNameProperty;
 
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
@@ -450,6 +454,8 @@ type
                                                      write fCharcaseFileAction;
     property UnitRenameReferencesAction: TUnitRenameReferencesAction
              read FUnitRenameReferencesAction write FUnitRenameReferencesAction;
+    property AskForFilenameOnNewFile: boolean read FAskForFilenameOnNewFile
+                   write FAskForFilenameOnNewFile;
 
     // lazdoc
     property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
@@ -655,6 +661,7 @@ begin
   FRubberbandCreationColor:=clMaroon;
   FRubberbandSelectsGrandChilds:=true;
   FDesignerPaintLazy:=true;
+  FCreateComponentFocusNameProperty:=false;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -717,6 +724,7 @@ begin
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
   FUnitRenameReferencesAction:=urraAsk;
+  FAskForFilenameOnNewFile:=false;
 
   // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
@@ -910,6 +918,8 @@ begin
        false);
     FDesignerPaintLazy:=XMLConfig.GetValue(
        Path+'FormEditor/DesignerPaint/Lazy/Value',true);
+    FCreateComponentFocusNameProperty:=XMLConfig.GetValue(
+       Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
 
     if not OnlyDesktop then begin
       // files
@@ -1036,6 +1046,8 @@ begin
       CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
     FUnitRenameReferencesAction:=UnitRenameReferencesActionNameToType(XMLConfig.GetValue(
       Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
+    FAskForFilenameOnNewFile:=XMLConfig.GetValue(
+      Path+'AskForFilenameOnNewFile/Value',false);
 
     //lazdoc
     FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
@@ -1163,6 +1175,8 @@ begin
        FRubberbandSelectsGrandChilds,false);
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
+    XMLConfig.SetDeleteValue(
+       Path+'FormEditor/CreateComponentFocusNameProperty/Value',FCreateComponentFocusNameProperty,false);
 
     XMLConfig.SetDeleteValue(
        Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
@@ -1249,18 +1263,14 @@ begin
     // naming
     XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
                              PascalExtension[fPascalFileExtension],'.pas');
-
     XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
                              CharCaseFileActionNames[fCharcaseFileAction],
                              CharCaseFileActionNames[ccfaAutoRename]);
-
-    XMLConfig.SetDeleteValue(Path+'UnitRenameReferencesAction/Value',
-                   UnitRenameReferencesActionNames[FUnitRenameReferencesAction],
-                   UnitRenameReferencesActionNames[urraAsk]);
-
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],
       AmbiguousFileActionNames[afaAsk]);
+    XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
+                   FAskForFilenameOnNewFile,false);
 
     // lazdoc
     XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
