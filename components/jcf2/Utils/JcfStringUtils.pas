@@ -93,7 +93,9 @@ const
 
 
 {$IFNDEF DELPHI12}
+{$IFNDEF DELPHI14}
 function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
+{$ENDIF}
 {$ENDIF}
 function CharIsControl(const C: Char): Boolean;
 function CharIsAlpha(const C: Char): Boolean;
@@ -164,17 +166,17 @@ uses
   Unix
 {$endif}
 {$ifdef fpc}
-  , LCLIntf, FileUtil
+  , LCLIntf, fileutil
 {$endif};
 
 {$IFNDEF DELPHI12}
-
+{$IFNDEF DELPHI14}
 // define  CharInSet for Delphi 2007 or earlier
 function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
 begin
   Result := C in testSet;
 end;
-
+{$ENDIF}
 {$ENDIF}
 
 function CharIsAlpha(const C: Char): Boolean;

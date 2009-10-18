@@ -32,7 +32,7 @@ uses
   JcfRegistrySettings, JCFSetBase, JCFSettings, SetAlign, SetAsm, SetCaps, 
   SetClarify, SetComments, SetIndent, SetObfuscate, SetPreProcessor, 
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
-  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, FileUtils, IntList, 
+  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, fileutils, IntList, 
   JcfFontSetFunctions, JCFHelp, JcfLog, JcfMiscFunctions, fAbout, 
   JcfVersionConsts, LazarusPackageIntf;
 

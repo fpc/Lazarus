@@ -412,10 +412,13 @@ begin
       raise TEParseError.Create('Unexpected token, expected ' +
         DescribeTarget, lcCurrentToken);
   end;
-
+  
+  
   Inc(fiTokenCount);
+  {$IFNDEF COMMAND_LINE}
   if (fiTokenCount mod UPDATE_INTERVAL) = 0 then
-    Application.ProcessMessages;
+     Application.ProcessMessages;
+  {$ENDIF}
 
   { add trailing white space
     fixes some problems, causes others

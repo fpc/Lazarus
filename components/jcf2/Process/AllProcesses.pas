@@ -156,8 +156,10 @@ begin
 
       if lc.FinalSummary(lsMessage) then
         OnMessage('', lsMessage, mtFinalSummary, -1, -1);
-
+      
+      {$IFNDEF COMMAND_LINE}
       Application.ProcessMessages;
+      {$ENDIF}
 
       { if the main process fired, do the follow set too }
       for liLoop := Low(pcFollowSet) to High(pcFollowSet) do

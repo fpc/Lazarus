@@ -31,7 +31,7 @@ interface
 
 const
   PROGRAM_VERSION   = '2.44';
-  PROGRAM_DATE      = 'March 2009';
+  PROGRAM_DATE      = 'August 2009';
   PROGRAM_HOME_PAGE = 'http://jedicodeformat.sourceforge.net/';
   PROGRAM_SOURCEFORGE_HOME_PAGE = 'http://sourceforge.net/projects/jedicodeformat/';
   PROGRAM_SVN_TRUNK = 'http://jedicodeformat.svn.sourceforge.net/svnroot/jedicodeformat/trunk/CodeFormat/Jcf2/';

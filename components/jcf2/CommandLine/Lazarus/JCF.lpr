@@ -36,7 +36,7 @@ uses
   SysUtils,
   FileCtrl,
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
-  JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
+  //JcfFileUtils in '..\..\Utils\JcfFileUtils.pas',
   JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
@@ -55,8 +55,8 @@ uses
   JcfLog in '..\..\Utils\JcfLog.pas',
   fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',
-  JCFSetBase in '..\..\Settings\JCFSetBase.pas',
-  JCFSettings in '..\..\Settings\JCFSettings.pas',
+  JcfSetBase in '..\..\Settings\JcfSetBase.pas',
+  JcfSettings in '..\..\Settings\JcfSettings.pas',
   SetAlign in '..\..\Settings\SetAlign.pas',
   SetCaps in '..\..\Settings\SetCaps.pas',
   SetClarify in '..\..\Settings\SetClarify.pas',
@@ -126,7 +126,7 @@ uses
   PreProcessorExpressionTokens in '..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas',
   PreProcessorExpressionParser in '..\..\Parse\PreProcessor\PreProcessorExpressionParser.pas',
   PreProcessorExpressionTokenise in '..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas',
-  JCFHelp in '..\..\Utils\JCFHelp.pas',
+  JcfHelp in '..\..\Utils\JcfHelp.pas',
   SettingsTypes in '..\..\Settings\SettingsTypes.pas',
   SetPreProcessor in '..\..\Settings\SetPreProcessor.pas',
   UnitNameCaps in '..\..\Process\Capitalisation\UnitNameCaps.pas',
@@ -215,7 +215,7 @@ var
     { look for something that is not a -/\ param }
       lsOpt := ParamStr(liLoop);
 
-      if (StrLeft(lsOpt, 1) <> '-') and (StrLeft(lsOpt, 1) <> '/') and
+      if (StrLeft(lsOpt, 1) <> '-') and {$IFNDEF UNIX} (StrLeft(lsOpt, 1) <> '/') and {$ENDIF}
         (StrLeft(lsOpt, 1) <> '\') and (StrLeft(lsOpt, 1) <> '?') then
       begin
       // must be a path

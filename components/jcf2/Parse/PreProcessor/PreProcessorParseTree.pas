@@ -179,13 +179,17 @@ end;
 
 
 procedure TPreProcessorParseTree.NextToken;
+{$IFNDEF COMMAND_LINE}
 const
-  UPDATE_INTERVAL = 512;
+   UPDATE_INTERVAL = 512;
+{$ENDIF}
 begin
   Inc(fiCurrentTokenIndex);
-
+  
+  {$IFNDEF COMMAND_LINE}  
   if (fiCurrentTokenIndex mod UPDATE_INTERVAL) = 0 then
-    Application.ProcessMessages;
+     Application.ProcessMessages;
+  {$ENDIF}
 end;
 
 function TPreProcessorParseTree.CurrentToken: TSourceToken;

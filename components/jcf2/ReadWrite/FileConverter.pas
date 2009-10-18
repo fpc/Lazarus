@@ -362,9 +362,11 @@ begin
       ProcessFile(lsDir + lsNames[liLoop]);
       if fbAbort then
         break;
-
+      
+      {$IFNDEF COMMAND_LINE}
       // refresh the GUI
       Application.ProcessMessages;
+      {$ENDIF}
     end;
 
     { all subdirs }
@@ -396,7 +398,11 @@ begin
   Assert(psFiles <> nil);
 
   { for all pas files in the dir }
+  {$IFDEF FPC}
+  lsSearch := psDir + AllFilesMask;
+  {$ELSE}
   lsSearch := psDir + '*.*';
+  {$ENDIF}
   FillChar(rSearch, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, 0, rSearch) <> 0);
 
@@ -426,7 +432,12 @@ begin
   Assert(psDir <> '');
   Assert(psFiles <> nil);
 
+  {$IFDEF FPC}
+  lsSearch := psDir + AllFilesMask;
+  {$ELSE}
   lsSearch := psDir + '*.*';
+  {$ENDIF}
+  
   FillChar(rSearch, Sizeof(TSearchRec), 0);
   bDone := (FindFirst(lsSearch, faDirectory, rSearch) <> 0);
 

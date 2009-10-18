@@ -67,7 +67,7 @@ uses
     Unix
   {$endif}
   {$ifdef fpc}
-    ,LCLIntf, FileUtil, Dialogs
+    ,LCLIntf, fileutil, Dialogs
   {$endif}
   ;
 

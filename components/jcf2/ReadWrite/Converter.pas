@@ -48,23 +48,23 @@ type
   private
     { the strings for the in and out code }
     fsInputCode, fsOutputCode: WideString;
-    fsFileName: string;
+    fsFileName: String;
 
     { classes to lex and parse the source }
-    fcTokeniser: TBuildTokenList;
+    fcTokeniser:      TBuildTokenList;
     fcBuildParseTree: TBuildParseTree;
 
     { used for testing - just run 1 process }
     fcSingleProcess: TTreeNodeVisitorType;
 
     { state }
-    fiTokenCount: integer;
-    fbConvertError: boolean;
+    fiTokenCount:     Integer;
+    fbConvertError:   Boolean;
     fOnStatusMessage: TStatusMessageProc;
 
     { false for commandline UI - don't put up a parse fail dialog
       This could be in  batch file on a server }
-    fbGuiMessages: boolean;
+    fbGuiMessages: Boolean;
 
     function GetOnStatusMessage: TStatusMessageProc;
     procedure SetOnStatusMessage(const Value: TStatusMessageProc);
@@ -72,9 +72,7 @@ type
     procedure SendExceptionMessage(const pe: Exception);
 
     { call this to report the current state of the proceedings }
-    procedure SendStatusMessage(const psUnit, psMessage: string;
-      const peMessageType: TStatusMessageType;
-      const piY, piX: integer);
+    procedure SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
 
     function GetRoot: TParseTreeNode;
 
@@ -87,24 +85,24 @@ type
     destructor Destroy; override;
 
     procedure Convert;
-    procedure ConvertPart(const piStartIndex, piEndIndex: integer);
+    procedure ConvertPart(const piStartIndex, piEndIndex: Integer);
 
     procedure ShowParseTree;
     procedure Clear;
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
 
-    property InputCode: WideString read fsInputCode write fsInputCode;
-    property OutputCode: WideString read fsOutputCode write fsOutputCode;
-    property FileName: string read fsFileName write fsFileName;
+    property InputCode: WideString Read fsInputCode Write fsInputCode;
+    property OutputCode: WideString Read fsOutputCode Write fsOutputCode;
+    property FileName: String Read fsFileName Write fsFileName;
 
-    property TokenCount: integer Read fiTokenCount;
-    property ConvertError: boolean Read fbConvertError;
-    property GuiMessages: boolean read fbGuiMessages write fbGuiMessages;
+    property TokenCount: Integer Read fiTokenCount;
+    property ConvertError: Boolean Read fbConvertError;
+    property GuiMessages: Boolean Read fbGuiMessages Write fbGuiMessages;
 
     property Root: TParseTreeNode Read GetRoot;
 
-    property OnStatusMessage: TStatusMessageProc read GetOnStatusMessage write SetOnStatusMessage;
+    property OnStatusMessage: TStatusMessageProc Read GetOnStatusMessage Write SetOnStatusMessage;
     property SingleProcess: TTreeNodeVisitorType Read fcSingleProcess Write fcSingleProcess;
   end;
 
@@ -112,16 +110,16 @@ implementation
 
 uses
   { delphi }
-  Controls, Forms,
+  AllProcesses, Controls, Forms,
   { local }
-  JcfStringUtils,
+  fShowParseTree, JcfRegistrySettings,
+  JcfSettings, JcfStringUtils,
   JcfUnicode,
-  SourceTokenList, SourceToken,
-  fShowParseTree, JcfSettings, JcfRegistrySettings,
-  AllProcesses, ParseError, PreProcessorParseTree,
-  TreeWalker, VisitSetXY, VisitSetNesting;
+  ParseError, PreProcessorParseTree,
+  SourceToken,
+  SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY;
 
-function StrInsert(const psSub, psMain: string; const piPos: integer): string;
+function StrInsert(const psSub, psMain: String; const piPos: Integer): String;
 begin
   Result := StrLeft(psMain, piPos - 1) + psSub + StrRestOf(psMain, piPos);
 end;
@@ -132,11 +130,11 @@ begin
   inherited;
 
   { owned objects }
-  fcTokeniser := TBuildTokenList.Create;
+  fcTokeniser      := TBuildTokenList.Create;
   fcTokeniser.FileName := FileName;
   fcBuildParseTree := TBuildParseTree.Create;
-  fcSingleProcess := nil;
-  fbGuiMessages	:= True; // use Ui to show parse errors by default
+  fcSingleProcess  := nil;
+  fbGuiMessages    := True; // use Ui to show parse errors by default
 end;
 
 destructor TConverter.Destroy;
@@ -149,27 +147,31 @@ end;
 
 procedure TConverter.Clear;
 begin
-  fsInputCode := '';
-  fsOutputCode := '';
+  fsInputCode     := '';
+  fsOutputCode    := '';
   fcSingleProcess := nil;
 end;
 
 procedure TConverter.Convert;
 var
   lcTokenList: TSourceTokenList;
+   {$IFNDEF COMMAND_LINE}
   leOldCursor: TCursor;
+   {$ENDIF}
 begin
   fbConvertError := False;
 
+  {$IFNDEF COMMAND_LINE}
   leOldCursor := Screen.Cursor;
   try { finally normal cursor }
-
+     
     // this can take a long time for large files
     Screen.Cursor := crHourGlass;
+  {$ENDIF}
 
     // turn text into tokens
     fcTokeniser.SourceCode := InputCode;
-    fcTokeniser.FileName := FileName;
+    fcTokeniser.FileName   := FileName;
 
     lcTokenList := fcTokeniser.BuildTokenList;
     try   { finally free the list  }
@@ -181,7 +183,7 @@ begin
         if FormatSettings.PreProcessor.Enabled then
           RemoveConditionalCompilation(lcTokenList);
 
-          // make a parse tree from it
+        // make a parse tree from it
         fcBuildParseTree.TokenList := lcTokenList;
         fcBuildParseTree.BuildParseTree;
 
@@ -211,7 +213,7 @@ begin
       lcTokenList.Free;
     end;
 
-    try 
+    try
 
       if not fbConvertError then
       begin
@@ -239,9 +241,11 @@ begin
       end;
     end;
 
+  {$IFNDEF COMMAND_LINE}
   finally
     Screen.Cursor := leOldCursor;
   end;
+  {$ENDIF}
 end;
 
 { this is what alters the code (in parse tree form) from source to output }
@@ -261,7 +265,7 @@ end;
 
 procedure TConverter.ApplySingleProcess;
 var
-  lcProcess: TBaseTreeNodeVisitor;
+  lcProcess:    TBaseTreeNodeVisitor;
   lcTreeWalker: TTreeWalker;
 begin
   lcTreeWalker := TTreeWalker.Create;
@@ -304,7 +308,7 @@ end;
 
 procedure TConverter.CollectOutput(const pcRoot: TParseTreeNode);
 var
-  liLoop: integer;
+  liLoop: Integer;
 begin
   Assert(pcRoot <> nil);
 
@@ -318,7 +322,7 @@ begin
     // recurse, write out all child nodes
     for liLoop := 0 to pcRoot.ChildNodeCount - 1 do
     begin
-      CollectOutput(pcRoot.ChildNodes[liLoop])
+      CollectOutput(pcRoot.ChildNodes[liLoop]);
     end;
   end;
 end;
@@ -335,13 +339,13 @@ end;
 
 procedure TConverter.SendExceptionMessage(const pe: Exception);
 var
-  lsMessage: string;
-  liX, liY: integer;
-  leParseError: TEParseError;
-  leMessageType:  TStatusMessageType;
+  lsMessage:     String;
+  liX, liY:      Integer;
+  leParseError:  TEParseError;
+  leMessageType: TStatusMessageType;
 begin
   lsMessage := 'Exception ' + pe.ClassName +
-        '  ' + pe.Message;
+    '  ' + pe.Message;
 
   if pe is TEParseError then
   begin
@@ -361,9 +365,7 @@ begin
   SendStatusMessage('', lsMessage, leMessageType, liY, liX);
 end;
 
-procedure TConverter.SendStatusMessage(const psUnit, psMessage: string;
-  const peMessageType: TStatusMessageType;
-  const piY, piX: integer);
+procedure TConverter.SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
 begin
   if Assigned(fOnStatusMessage) then
     fOnStatusMessage(psUnit, psMessage, peMessageType, piY, piX);
@@ -375,13 +377,13 @@ begin
     fShowParseTree.ShowParseTree(fcBuildParseTree.Root);
 end;
 
-procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: integer);
+procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer);
 const
   FORMAT_START = '{<JCF_!*$>}';
-  FORMAT_END = '{</JCF_!*$>}';
+  FORMAT_END   = '{</JCF_!*$>}';
 var
-  liRealInputStart, liRealInputEnd: integer;
-  liOutputStart, liOutputEnd: integer;
+  liRealInputStart, liRealInputEnd: Integer;
+  liOutputStart, liOutputEnd: Integer;
   lsNewOutput: WideString;
 begin
   Assert(piStartIndex >= 0);
@@ -390,17 +392,17 @@ begin
 
   { round to nearest end of line }
   liRealInputStart := piStartIndex;
-  liRealInputEnd := piEndIndex;
+  liRealInputEnd   := piEndIndex;
 
   { get to the start of the line }
-  while (liRealInputStart > 1) and (not WideCharIsReturn(InputCode[liRealInputStart -1 ])) do
-    dec(liRealInputStart);
+  while (liRealInputStart > 1) and (not WideCharIsReturn(InputCode[liRealInputStart - 1])) do
+    Dec(liRealInputStart);
 
   { get to the start of the next line }
   while (liRealInputEnd < Length(InputCode)) and (not WideCharIsReturn(InputCode[liRealInputEnd])) do
-    inc(liRealInputEnd);
+    Inc(liRealInputEnd);
   while (liRealInputEnd < Length(InputCode)) and (WideCharIsReturn(InputCode[liRealInputEnd])) do
-    inc(liRealInputEnd);
+    Inc(liRealInputEnd);
 
   { put markers into the input }
   fsInputCode := StrInsert(FORMAT_END, fsInputCode, liRealInputEnd);
@@ -411,7 +413,7 @@ begin
   { locate the markers in the output,
     and replace before and after }
   liOutputStart := Pos(WideString(FORMAT_START), fsOutputCode) + Length(FORMAT_START);
-  liOutputEnd := Pos(WideString(FORMAT_END), fsOutputCode);
+  liOutputEnd   := Pos(WideString(FORMAT_END), fsOutputCode);
 
 
   { splice }

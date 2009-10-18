@@ -479,7 +479,7 @@ var
 begin
   Result := False;
 
-  if not (CharInSet(Current, [':', '+', '-', '*', '/'])) then
+  if not (CharInSet(Char(Current), [':', '+', '-', '*', '/'])) then
     exit;
 
   TwoChars := CurrentChars(2);
@@ -760,11 +760,15 @@ const
 var
   lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
+  {$IFNDEF COMMAND_LINE}
   liCounter: integer;
+  {$ENDIF}
 begin
   Assert(SourceCode <> '');
 
+  {$IFNDEF COMMAND_LINE}
   liCounter := 0;
+  {$ENDIF}
   lcList    := TSourceTokenList.Create;
 
   while not EndOfFile do
@@ -772,9 +776,11 @@ begin
     lcNew := GetNextToken;
     lcList.Add(lcNew);
 
+    {$IFNDEF COMMAND_LINE}
     Inc(liCounter);
     if (liCounter mod UPDATE_INTERVAL) = 0 then
-      Application.ProcessMessages;
+       Application.ProcessMessages;
+    {$ENDIF}
   end;
 
   Result := lcList;
