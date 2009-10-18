@@ -143,6 +143,8 @@ const
   ctnOnIdentifier       =113;// e.g. on E: Exception
   ctnOnStatement        =114;
 
+  ctnClassAbstract      =120;
+  ctnClassSealed        =121;
 
   // combined values
   AllSourceTypes =
@@ -165,6 +167,7 @@ const
      [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol];
   AllClassInterfaces = [ctnClassInterface,ctnObjCProtocol];
   AllClassObjects = [ctnClass,ctnObject,ctnObjCClass];
+  AllClassModifiers = [ctnClassAbstract, ctnClassSealed];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
       ctnLabelSection];

@@ -153,6 +153,7 @@ type
     function KeyWordFuncProc: boolean;
     function KeyWordFuncBeginEnd: boolean;
     // class/object elements
+    function KeyWordFuncClassModifier: boolean;
     function KeyWordFuncClassSection: boolean;
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
@@ -415,6 +416,8 @@ begin
   if StartPos>SrcLen then exit(false);
   p:=@Src[StartPos];
   case UpChars[p^] of
+  'A':
+    if CompareSrcIdentifiers(p,'ABSTRACT') then exit(KeyWordFuncClassModifier);
   'C':
     case UpChars[p[1]] of
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassMethod);
@@ -447,7 +450,8 @@ begin
     end;
   'S':
     if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
-    else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
+    else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection)
+    else if CompareSrcIdentifiers(p,'SEALED') then exit(KeyWordFuncClassModifier);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
   'V':
@@ -2846,6 +2850,23 @@ begin
     EndChildNode;
     CurSection:=ctnNone;
   end;
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncClassModifier: boolean;
+// change class modifier (abstract, sealed)
+begin
+  // end last section
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+  // start modifier
+  CreateChildNode;
+  if UpAtomIs('ABSTRACT') then
+    CurNode.Desc:=ctnClassAbstract
+  else if UpAtomIs('SEALED') then
+    CurNode.Desc:=ctnClassSealed
+  else
+    RaiseStringExpectedButAtomFound('abstract/sealed');
   Result:=true;
 end;
 
