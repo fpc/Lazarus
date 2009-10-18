@@ -2650,7 +2650,7 @@ begin
     ScrollBar := nil;
   if ScrollBar <> nil then
   begin
-    if BarKind in [SM_CYHSCROLL, SM_CYVSCROLL] then
+    if BarKind in [SM_CXHSCROLL, SM_CYVSCROLL] then
       Result := ScrollBar.getWidth
     else
       Result := ScrollBar.getHeight;
