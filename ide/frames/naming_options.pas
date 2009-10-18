@@ -25,7 +25,7 @@ unit naming_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls,
+  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls, StdCtrls,
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -35,6 +35,7 @@ type
   TNamingOptionsFrame = class(TAbstractIDEOptionsEditor)
     AmbiguousFileActionRadioGroup: TRadioGroup;
     CharcaseFileActionRadioGroup: TRadioGroup;
+    AskForFilenameOnNewCheckBox: TCheckBox;
     PascalFileExtRadiogroup: TRadioGroup;
     UnitReferencesRadioGroup: TRadioGroup;
   private
@@ -113,6 +114,8 @@ begin
       EndUpdate;
     end;
   end;
+
+  AskForFilenameOnNewCheckBox.Caption:=lisAskForFileNameOnNewFile;
 end;
 
 procedure TNamingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -128,6 +131,7 @@ begin
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
     UnitReferencesRadioGroup.ItemIndex := ord(UnitRenameReferencesAction);
+    AskForFilenameOnNewCheckBox.Checked:=AskForFilenameOnNewFile;
   end;
 end;
 
@@ -142,6 +146,7 @@ begin
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
     UnitRenameReferencesAction := TUnitRenameReferencesAction(UnitReferencesRadioGroup.ItemIndex);
+    AskForFilenameOnNewFile:=AskForFilenameOnNewCheckBox.Checked;
   end;
 end;
 

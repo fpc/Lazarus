@@ -36,7 +36,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 100
+    Height = 67
     Top = 53
     Width = 507
     Align = alTop
@@ -60,8 +60,8 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 85
-    Top = 159
+    Height = 58
+    Top = 126
     Width = 507
     Align = alTop
     AutoFill = True
@@ -81,7 +81,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   object UnitReferencesRadioGroup: TRadioGroup[3]
     Left = 0
     Height = 50
-    Top = 250
+    Top = 190
     Width = 507
     Align = alTop
     AutoFill = True
@@ -99,5 +99,17 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Columns = 3
     Constraints.MinHeight = 50
     TabOrder = 3
+  end
+  object AskForFilenameOnNewCheckBox: TCheckBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UnitReferencesRadioGroup
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 246
+    Width = 227
+    BorderSpacing.Around = 6
+    Caption = 'AskForFilenameOnNewCheckBox'
+    TabOrder = 4
   end
 end
