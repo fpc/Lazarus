@@ -176,6 +176,7 @@ type
     property Anchors;
     property AutoHint: Boolean read FAutoHint write FAutoHint default false;
     property AutoSize default true;
+    property BorderSpacing;
     property Color default clBtnFace;
     property Constraints;
     property DragCursor;
