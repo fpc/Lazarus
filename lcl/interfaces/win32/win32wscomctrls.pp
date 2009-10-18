@@ -418,7 +418,7 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or CCS_NOPARENTALIGN;
+    Flags := Flags or CCS_NOPARENTALIGN or CCS_NORESIZE;
     if TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled then
       Flags := Flags or SBARS_SIZEGRIP;
     pClassName := STATUSCLASSNAME;
