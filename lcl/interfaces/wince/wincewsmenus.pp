@@ -206,7 +206,6 @@ var
   i, j, k: integer;
   buf: array[0..255] of WideChar;
   R, BR, WR: TRect;
-  hasLMenu, hasRMenu: boolean;
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
   MenuBarRLID: integer;
@@ -240,13 +239,28 @@ begin
     mi.cbSize:=SizeOf(mi);
     mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
     mi.dwTypeData:=@buf;
-    hasLMenu := GetMenuItemInfoW(Menu, 0, True, mi); //does it have left menu?
-    hasRMenu := GetMenuItemInfoW(Menu, 1, True, mi); //does it have right menu?
-    if hasLMenu and hasRMenu then
+
+    // Verifies the menu to find the best match for it's layout in the .rc file
+    if LCLMenu <> nil then
+    begin
+      for j:=0 to LCLMenu.Items.Count - 1 do
+      begin
+        if LCLMenu.Items.Items[j].Visible then
+        begin
+          if LeftMenuCount = -1 then
+            LeftMenuCount := LCLMenu.Items.Items[j].Count
+          else if RightMenuCount = -1 then
+            RightMenuCount := LCLMenu.Items.Items[j].Count
+          else Break;
+        end;
+      end;
+    end;
+
+    if (LeftMenuCount >= 1) and (RightMenuCount >= 1) then
       mbi.nToolBarId := MenuBarID_Popups
-    else if hasLMenu then
+    else if (LeftMenuCount >= 1) then
       mbi.nToolBarId := MenuBarID_PopUp_Item
-    else if hasRMenu then
+    else if (RightMenuCount >= 1) then
       mbi.nToolBarId := MenuBarID_Item_Popup
     else
       mbi.nToolBarId := MenuBarID_Items;
@@ -254,7 +268,10 @@ begin
     if not SHCreateMenuBar(@mbi) then Exit;
   end;
 
-//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'menu bar window = ' + IntToStr(mbi.hwndMB));
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    'menu bar window = ' + IntToStr(mbi.hwndMB) +
+    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
+    );
 
   // Clear any previously set menu items
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
