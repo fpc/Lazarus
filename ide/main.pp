@@ -9642,6 +9642,7 @@ var
   UnitOutputDirectory: String;
   TargetExeName: String;
   err : TFPCErrorType;
+  TargetExeDirectory: String;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9746,7 +9747,7 @@ begin
       end;
     end;
 
-    // create output directories
+    // create unit output directory
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
     if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
       UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
@@ -9763,13 +9764,28 @@ begin
       if Result<>mrOk then exit;
     end;
 
+    // create target output directory
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+    if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
+      TargetExeName := EnvironmentOptions.GetTestBuildDirectory + TargetExeName;
+    TargetExeDirectory:=ExtractFilePath(TargetExeName);
+    if (FilenameIsAbsolute(TargetExeDirectory))
+    and (not DirPathExistsCached(TargetExeDirectory)) then begin
+      if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
+        Result:=IDEQuestionDialog(lisCreateDirectory,
+          Format(lisTheOutputDirectoryIsMissing, ['"', TargetExeDirectory, '"']
+            ),
+          mtConfirmation, [mrYes, lisCreateIt, mrCancel], '');
+        if Result<>mrYes then exit;
+      end;
+      Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
+      if Result<>mrOk then exit;
+    end;
+
     // create application bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType(true)='carbon')
     then begin
-      TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
-      if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
-        TargetExeName := EnvironmentOptions.GetTestBuildDirectory + TargetExeName;
       Result:=CreateApplicationBundle(TargetExeName, Project1.Title);
       if not (Result in [mrOk,mrIgnore]) then exit;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
