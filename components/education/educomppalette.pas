@@ -189,7 +189,7 @@ end;
 
 class function TEduCompPaletteFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=nil;
+  Result:=TEduOptions;
 end;
 
 procedure TEduCompPaletteFrame.WriteSettings(AOptions: TAbstractIDEOptions);

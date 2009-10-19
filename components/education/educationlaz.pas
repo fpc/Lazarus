@@ -16,6 +16,7 @@ procedure Register;
 begin
   RegisterUnit('EduEnvOptsFrame', @EduEnvOptsFrame.Register); 
   RegisterUnit('EduPkgSystem', @EduPkgSystem.Register); 
+  RegisterUnit('EduCompPalette', @EduCompPalette.Register); 
 end; 
 
 initialization

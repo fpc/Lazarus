@@ -36,6 +36,7 @@
       </Item4>
       <Item5>
         <Filename Value="educomppalette.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="EduCompPalette"/>
       </Item5>
     </Files>

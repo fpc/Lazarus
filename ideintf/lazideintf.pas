@@ -131,7 +131,7 @@ type
     lihtOnProjectClose, // called before IDE closes a project
     lihtOnProjectBuilding, // called before IDE builds the project
     lihtOnProjectDependenciesCompiling, // called before IDE compiles dependencies of project
-    lihtOnProjectDependenciesCompiled // called after IDE compiled dependencies of project
+    lihtOnProjectDependenciesCompiled, // called after IDE compiled dependencies of project
     );
     
   { TLazIDEInterface }
