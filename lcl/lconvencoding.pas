@@ -61,6 +61,7 @@ function CP1255ToUTF8(const s: string): string; // hebrew
 function CP1256ToUTF8(const s: string): string; // arabic
 function CP1257ToUTF8(const s: string): string; // baltic
 function CP1258ToUTF8(const s: string): string; // vietnam
+function CP437ToUTF8(const s: string): string;  // DOS central europe
 function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyrillic
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8ToUTF8(const s: string): string;  // russian cyrillic
@@ -80,6 +81,7 @@ function UTF8ToCP1255(const s: string): string; // hebrew
 function UTF8ToCP1256(const s: string): string; // arabic
 function UTF8ToCP1257(const s: string): string; // baltic
 function UTF8ToCP1258(const s: string): string; // vietnam
+function UTF8ToCP437(const s: string): string;  // DOS central europe
 function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
@@ -2764,6 +2766,265 @@ const
     #195#191            // #255
   );
   
+  ArrayCP437ToUTF8 : TCharToUTF8Table = (
+    #0,                 // #0
+    #1,                 // #1
+    #2,                 // #2
+    #3,                 // #3
+    #4,                 // #4
+    #5,                 // #5
+    #6,                 // #6
+    #7,                 // #7
+    #8,                 // #8
+    #9,                 // #9
+    #10,                // #10
+    #11,                // #11
+    #12,                // #12
+    #13,                // #13
+    #14,                // #14
+    #15,                // #15
+    #16,                // #16
+    #17,                // #17
+    #18,                // #18
+    #19,                // #19
+    #20,                // #20
+    #21,                // #21
+    #22,                // #22
+    #23,                // #23
+    #24,                // #24
+    #25,                // #25
+    #26,                // #26
+    #27,                // #27
+    #28,                // #28
+    #29,                // #29
+    #30,                // #30
+    #31,                // #31
+    ' ',                // ' '
+    '!',                // '!'
+    '"',                // '"'
+    '#',                // '#'
+    '$',                // '$'
+    '%',                // '%'
+    '&',                // '&'
+    '''',               // ''''
+    '(',                // '('
+    ')',                // ')'
+    '*',                // '*'
+    '+',                // '+'
+    ',',                // ','
+    '-',                // '-'
+    '.',                // '.'
+    '/',                // '/'
+    '0',                // '0'
+    '1',                // '1'
+    '2',                // '2'
+    '3',                // '3'
+    '4',                // '4'
+    '5',                // '5'
+    '6',                // '6'
+    '7',                // '7'
+    '8',                // '8'
+    '9',                // '9'
+    ':',                // ':'
+    ';',                // ';'
+    '<',                // '<'
+    '=',                // '='
+    '>',                // '>'
+    '?',                // '?'
+    '@',                // '@'
+    'A',                // 'A'
+    'B',                // 'B'
+    'C',                // 'C'
+    'D',                // 'D'
+    'E',                // 'E'
+    'F',                // 'F'
+    'G',                // 'G'
+    'H',                // 'H'
+    'I',                // 'I'
+    'J',                // 'J'
+    'K',                // 'K'
+    'L',                // 'L'
+    'M',                // 'M'
+    'N',                // 'N'
+    'O',                // 'O'
+    'P',                // 'P'
+    'Q',                // 'Q'
+    'R',                // 'R'
+    'S',                // 'S'
+    'T',                // 'T'
+    'U',                // 'U'
+    'V',                // 'V'
+    'W',                // 'W'
+    'X',                // 'X'
+    'Y',                // 'Y'
+    'Z',                // 'Z'
+    '[',                // '['
+    '\',                // '\'
+    ']',                // ']'
+    '^',                // '^'
+    '_',                // '_'
+    '`',                // '`'
+    'a',                // 'a'
+    'b',                // 'b'
+    'c',                // 'c'
+    'd',                // 'd'
+    'e',                // 'e'
+    'f',                // 'f'
+    'g',                // 'g'
+    'h',                // 'h'
+    'i',                // 'i'
+    'j',                // 'j'
+    'k',                // 'k'
+    'l',                // 'l'
+    'm',                // 'm'
+    'n',                // 'n'
+    'o',                // 'o'
+    'p',                // 'p'
+    'q',                // 'q'
+    'r',                // 'r'
+    's',                // 's'
+    't',                // 't'
+    'u',                // 'u'
+    'v',                // 'v'
+    'w',                // 'w'
+    'x',                // 'x'
+    'y',                // 'y'
+    'z',                // 'z'
+    '{',                // '{'
+    '|',                // '|'
+    '}',                // '}'
+    '~',                // '~'
+    #127,               // #127
+    #195#135,           // #128
+    #195#188,           // #129
+    #195#169,           // #130
+    #195#162,           // #131
+    #195#164,           // #132
+    #195#160,           // #133
+    #195#165,           // #134
+    #195#167,           // #135
+    #195#170,           // #136
+    #195#171,           // #137
+    #195#168,           // #138
+    #195#175,           // #139
+    #195#174,           // #140
+    #195#172,           // #141
+    #195#132,           // #142
+    #195#133,           // #143
+    #195#137,           // #144
+    #195#166,           // #145
+    #195#134,           // #146
+    #195#180,           // #147
+    #195#182,           // #148
+    #195#178,           // #149
+    #195#187,           // #150
+    #195#185,           // #151
+    #195#191,           // #152
+    #195#150,           // #153
+    #195#156,           // #154
+    #194#162,           // #155
+    #194#163,           // #156
+    #194#165,           // #157
+    #226#130#167,       // #158
+    #198#146,           // #159
+    #195#161,           // #160
+    #195#173,           // #161
+    #195#179,           // #162
+    #195#186,           // #163
+    #195#177,           // #164
+    #195#145,           // #165
+    #194#170,           // #166
+    #194#186,           // #167
+    #194#191,           // #168
+    #226#140#144,       // #169
+    #194#172,           // #170
+    #194#189,           // #171
+    #194#188,           // #172
+    #194#161,           // #173
+    #194#171,           // #174
+    #194#187,           // #175
+    #226#150#145,       // #176
+    #226#150#146,       // #177
+    #226#150#147,       // #178
+    #226#148#130,       // #179
+    #226#148#164,       // #180
+    #226#149#161,       // #181
+    #226#149#162,       // #182
+    #226#149#150,       // #183
+    #226#149#149,       // #184
+    #226#149#163,       // #185
+    #226#149#145,       // #186
+    #226#149#151,       // #187
+    #226#149#157,       // #188
+    #226#149#156,       // #189
+    #226#149#155,       // #190
+    #226#148#144,       // #191
+    #226#148#148,       // #192
+    #226#148#180,       // #193
+    #226#148#172,       // #194
+    #226#148#156,       // #195
+    #226#148#128,       // #196
+    #226#148#188,       // #197
+    #226#149#158,       // #198
+    #226#149#159,       // #199
+    #226#149#154,       // #200
+    #226#149#148,       // #201
+    #226#149#169,       // #202
+    #226#149#166,       // #203
+    #226#149#160,       // #204
+    #226#149#144,       // #205
+    #226#149#172,       // #206
+    #226#149#167,       // #207
+    #226#149#168,       // #208
+    #226#149#164,       // #209
+    #226#149#165,       // #210
+    #226#149#153,       // #211
+    #226#149#152,       // #212
+    #226#149#146,       // #213
+    #226#149#147,       // #214
+    #226#149#171,       // #215
+    #226#149#170,       // #216
+    #226#148#152,       // #217
+    #226#148#140,       // #218
+    #226#150#136,       // #219
+    #226#150#132,       // #220
+    #226#150#140,       // #221
+    #226#150#144,       // #222
+    #226#150#128,       // #223
+    #206#177,           // #224
+    #195#159,           // #225
+    #206#147,           // #226
+    #207#128,           // #227
+    #206#163,           // #228
+    #207#131,           // #229
+    #194#181,           // #230
+    #207#132,           // #231
+    #206#166,           // #232
+    #206#152,           // #233
+    #206#169,           // #234
+    #206#180,           // #235
+    #226#136#158,       // #236
+    #207#134,           // #237
+    #206#181,           // #238
+    #226#136#169,       // #239
+    #226#137#161,       // #240
+    #194#177,           // #241
+    #226#137#165,       // #242
+    #226#137#164,       // #243
+    #226#140#160,       // #244
+    #226#140#161,       // #245
+    #195#183,           // #246
+    #226#137#136,       // #247
+    #194#176,           // #248
+    #226#136#153,       // #249
+    #194#183,           // #250
+    #226#136#154,       // #251
+    #226#129#191,       // #252
+    #194#178,           // #253
+    #226#150#160,       // #254
+    #194#160            // #255
+  );
+
   ArrayCP866ToUTF8 : TCharToUTF8Table = (
     #0,                 //#0
     #1,                 //#1
@@ -3596,6 +3857,11 @@ begin
   Result:=SingleByteToUTF8(s,ArrayCP1258ToUTF8);
 end;
 
+function CP437ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayCP437ToUTF8);
+end;
+
 function CP866ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayCP866ToUTF8);
@@ -4240,6 +4506,131 @@ begin
   end;
 end;
 
+function UnicodeToCP437(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  160: Result:=255;
+  161: Result:=173;
+  162..163: Result:=Unicode-7;
+  165: Result:=157;
+  170: Result:=166;
+  171: Result:=174;
+  172: Result:=170;
+  176: Result:=248;
+  177: Result:=241;
+  178: Result:=253;
+  181: Result:=230;
+  183: Result:=250;
+  186: Result:=167;
+  187: Result:=175;
+  188: Result:=172;
+  189: Result:=171;
+  191: Result:=168;
+  196..197: Result:=Unicode-54;
+  198: Result:=146;
+  199: Result:=128;
+  201: Result:=144;
+  209: Result:=165;
+  214: Result:=153;
+  220: Result:=154;
+  223: Result:=225;
+  224: Result:=133;
+  225: Result:=160;
+  226: Result:=131;
+  228: Result:=132;
+  229: Result:=134;
+  230: Result:=145;
+  231: Result:=135;
+  232: Result:=138;
+  233: Result:=130;
+  234..235: Result:=Unicode-98;
+  236: Result:=141;
+  237: Result:=161;
+  238: Result:=140;
+  239: Result:=139;
+  241: Result:=164;
+  242: Result:=149;
+  243: Result:=162;
+  244: Result:=147;
+  246: Result:=148;
+  247: Result:=246;
+  249: Result:=151;
+  250: Result:=163;
+  251: Result:=150;
+  252: Result:=129;
+  255: Result:=152;
+  402: Result:=159;
+  915: Result:=226;
+  920: Result:=233;
+  931: Result:=228;
+  934: Result:=232;
+  937: Result:=234;
+  945: Result:=224;
+  948: Result:=235;
+  949: Result:=238;
+  960: Result:=227;
+  963: Result:=229;
+  964: Result:=231;
+  966: Result:=237;
+  8319: Result:=252;
+  8359: Result:=158;
+  8729: Result:=249;
+  8730: Result:=251;
+  8734: Result:=236;
+  8745: Result:=239;
+  8776: Result:=247;
+  8801: Result:=240;
+  8804: Result:=243;
+  8805: Result:=242;
+  8976: Result:=169;
+  8992..8993: Result:=Unicode-8748;
+  9472: Result:=196;
+  9474: Result:=179;
+  9484: Result:=218;
+  9488: Result:=191;
+  9492: Result:=192;
+  9496: Result:=217;
+  9500: Result:=195;
+  9508: Result:=180;
+  9516: Result:=194;
+  9524: Result:=193;
+  9532: Result:=197;
+  9552: Result:=205;
+  9553: Result:=186;
+  9554..9555: Result:=Unicode-9341;
+  9556: Result:=201;
+  9557: Result:=184;
+  9558: Result:=183;
+  9559: Result:=187;
+  9560: Result:=212;
+  9561: Result:=211;
+  9562: Result:=200;
+  9563: Result:=190;
+  9564: Result:=189;
+  9565: Result:=188;
+  9566..9567: Result:=Unicode-9368;
+  9568: Result:=204;
+  9569..9570: Result:=Unicode-9388;
+  9571: Result:=185;
+  9572..9573: Result:=Unicode-9363;
+  9574: Result:=203;
+  9575..9576: Result:=Unicode-9368;
+  9577: Result:=202;
+  9578: Result:=216;
+  9579: Result:=215;
+  9580: Result:=206;
+  9600: Result:=223;
+  9604: Result:=220;
+  9608: Result:=219;
+  9612: Result:=221;
+  9616: Result:=222;
+  9617..9619: Result:=Unicode-9441;
+  9632: Result:=254;
+  else Result:=-1;
+  end;
+end;
+
 function UnicodeToCP866(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -4440,6 +4831,11 @@ begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP1258);
 end;
 
+function UTF8ToCP437(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToCP437);
+end;
+
 function UTF8ToCP866(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP866);
@@ -4589,6 +4985,7 @@ begin
   List.Add('CP1256');
   List.Add('CP1257');
   List.Add('CP1258');
+  List.Add('CP437');
   List.Add('CP866');
   List.Add('CP874');
   List.Add('ISO-8859-1');
@@ -4752,6 +5149,7 @@ begin
     if ATo='cp1256' then begin Result:=UTF8ToCP1256(s); exit; end;
     if ATo='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
     if ATo='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
+    if ATo='cp437' then begin  Result:=UTF8ToCP437(s);  exit; end;
     if ATo='cp866' then begin  Result:=UTF8ToCP866(s);  exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
     if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
@@ -4774,6 +5172,7 @@ begin
     if AFrom='cp1256' then begin Result:=CP1256ToUTF8(s); exit; end;
     if AFrom='cp1257' then begin Result:=CP1257ToUTF8(s); exit; end;
     if AFrom='cp1258' then begin Result:=CP1258ToUTF8(s); exit; end;
+    if AFrom='cp437' then begin  Result:=CP437ToUTF8(s);  exit; end;
     if AFrom='cp866' then begin  Result:=CP866ToUTF8(s);  exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
