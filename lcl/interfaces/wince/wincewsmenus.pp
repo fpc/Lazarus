@@ -41,6 +41,9 @@ type
   { TWinCEWSMenuItem }
 
   TWinCEWSMenuItem = class(TWSMenuItem)
+  public
+    class procedure AttachMenuEx(const AMenuItem: TMenuItem; const AParentHandle: HMENU);
+    class procedure CopyMenuToHandle(const AMenuItem: TMenuItem; const ADest: HMENU);
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -200,14 +203,13 @@ var
   mi: MENUITEMINFO;
   tb: TBButton;
   tbbi: TBBUTTONINFO;
-  i, j: integer;
+  i, j, k: integer;
   buf: array[0..255] of WideChar;
   R, BR, WR: TRect;
   hasLMenu, hasRMenu: boolean;
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
   MenuBarRLID: integer;
-  st: byte;
 {$endif}
 begin
 {$ifndef Win32}
@@ -262,6 +264,11 @@ begin
   // Note that there are two versions of this part of the code
   // First an approach like KOL-CE does, which works better for smartphones
   // and later the original code from lcl-wince, which already works for PDAs
+  FillChar(mi, SizeOf(mi), 0);
+  mi.cbSize:=SizeOf(mi);
+  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+  mi.dwTypeData:=@buf;
+
   if (Application.ApplicationType = atSmartphone) then
   begin
     if (Menu <> 0) and (LCLMenu <> nil) then
@@ -270,46 +277,52 @@ begin
       for j:=0 to LCLMenu.Items.Count - 1 do
         if LCLMenu.Items.Items[j].Visible then
         begin
-  //        if FSavedState and MFS_DISABLED = 0 then
-  //          st:=TBSTATE_ENABLED
-  //        else
-  //          st:=0;
-  //        if FSavedState and MFS_CHECKED <> 0 then
-  //          st:=st or TBSTATE_CHECKED;
-            if (Application.ApplicationType = atSmartphone) then
-            begin
-              if i = 2 then Break; // smartphones have maximum 2 top level menu items.
-              tbbi.cbSize := sizeof(tbbi);
-              tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
-  //            tbbi.idCommand := FID;
-              tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND or TBIF_STATE};
-  //            tbbi.fsState:=st;
-              SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, i + 1, LPARAM(@tbbi));
-  {            if FHandle <> 0 then
-              begin
-                tbbi.dwMask := TBIF_LPARAM;
-                SendMessage (mbi.hwndMB, TB_GETBUTTONINFO, FID, LPARAM(@tbbi));
-                DestroyMenu(FHandle);
-                FHandle:=HMENU(tbbi.lParam);
-                ReCreate;
-              end;}
-            end
+          if LCLMenu.Items.Items[j].Enabled then
+            tbbi.fsState:=TBSTATE_ENABLED
+          else
+            tbbi.fsState:=0;
+          if LCLMenu.Items.Items[j].Checked then
+            tbbi.fsState:=tbbi.fsState or TBSTATE_CHECKED;
+
+          if (Application.ApplicationType = atSmartphone) then
+          begin
+            // Adds a top-level item (We cant really add it, so we find
+            // and modify the existing top-level item)
+            if i = 2 then Break; // smartphones have maximum 2 top level menu items.
+            tbbi.cbSize := sizeof(tbbi);
+            tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
+//            tbbi.idCommand := FID;
+            tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND} or TBIF_STATE;
+            SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, i + 1, LPARAM(@tbbi));
+
+            // Adds subitems to a top-level item
+            tbbi.dwMask := TBIF_LPARAM;
+            SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, i + 1 {FID}, LPARAM(@tbbi));
+
+            // Remove any present buttons, for example the one from the .rc file
+            // Careful that using TB_DELETEBUTTON doesnt work here
+            while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do ;
+
+            for k := 0 to LCLMenu.Items.Items[j].Count - 1 do
+              TWinCEWSMenuItem.AttachMenuEx(
+                LCLMenu.Items.Items[j].Items[k], HMENU(tbbi.lParam));
+          end
+          else
+          begin
+{            FillChar(tb, SizeOf(tb), 0);
+            tb.iBitmap:=I_IMAGENONE;
+            tb.idCommand:=fID;
+            tb.iString:=longint(PKOLChar(Caption));
+            tb.fsState:=st;
+            if SubMenu <> 0 then
+              tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
             else
-            begin
-  {            FillChar(tb, SizeOf(tb), 0);
-              tb.iBitmap:=I_IMAGENONE;
-              tb.idCommand:=fID;
-              tb.iString:=longint(PKOLChar(Caption));
-              tb.fsState:=st;
-              if SubMenu <> 0 then
-                tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
-              else
-                tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
-              tb.dwData:=SubMenu;
-              SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));}
-            end;
-            Inc(i);
+              tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
+            tb.dwData:=SubMenu;
+            SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));}
           end;
+          Inc(i);
+        end;
 
       if (Application.ApplicationType = atSmartphone) and (i = 1) then
       begin
@@ -321,11 +334,6 @@ begin
   end
   else
   begin
-    FillChar(mi, SizeOf(mi), 0);
-    mi.cbSize:=SizeOf(mi);
-    mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-    mi.dwTypeData:=@buf;
-
     // Now we will add the buttons in the menu
   //  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
   //    'Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
@@ -515,16 +523,14 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-class procedure TWinCEWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+class procedure TWinCEWSMenuItem.AttachMenuEx(const AMenuItem: TMenuItem;
+  const AParentHandle: HMENU);
 var
   MenuInfo: MENUITEMINFO;
-  ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
   wCaption: WideString;
   Index, fstate, cmd: integer;
 begin
-  ParentMenuHandle := AMenuItem.Parent.Handle;
-
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
 
   {Following part fixes the case when an item is added in runtime
@@ -543,7 +549,7 @@ begin
     begin
       //roozbeh: wont work on smartphones...i guess i have to remove and add new one with submenu flag
       //not yet found time to do....not so hard
-      MenuInfo.hSubmenu := ParentMenuHandle;
+      MenuInfo.hSubmenu := AParentHandle;
       SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
                       False, @MenuInfo);
     end;
@@ -568,7 +574,7 @@ begin
   wCaption := UTF8Decode(AmenuItem.Caption);
   Index := AMenuItem.Parent.VisibleIndexOf(AMenuItem);
 
-  if not InsertMenuW(ParentMenuHandle, Index, fState, cmd, PWideChar(wCaption)) then
+  if not InsertMenuW(AParentHandle, Index, fState, cmd, PWideChar(wCaption)) then
     DebugLn('InsertMenuW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
 
   MenuInfo.cbSize := SizeOf(MenuInfo);
@@ -576,11 +582,54 @@ begin
   //GetMenuItemInfo(ParentMenuHandle, Index, True, @MenuInfo);
   MenuInfo.dwItemData := PtrInt(AMenuItem);
   //MenuInfo.wID := AMenuItem.Command;
-  if not SetMenuItemInfoW(ParentMenuHandle, Index, True, @MenuInfo) then
+  if not SetMenuItemInfoW(AParentHandle, Index, True, @MenuInfo) then
     DebugLn(['SetMenuItemInfoW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError)]);
 
   MenuItemsList.AddObject(IntToStr(AMenuItem.Command + StartMenuItem), AMenuItem);
   TriggerFormUpdate(AMenuItem);
+end;
+
+class procedure TWinCEWSMenuItem.CopyMenuToHandle(const AMenuItem: TMenuItem;
+  const ADest: HMENU);
+var
+  i: integer;
+  mi: MENUITEMINFO;
+  buf: array[0..255] of WideChar;
+  fState:integer;
+  uIDNewItem  : integer;
+begin
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//   'CeMakeMenusSame Src: ' + IntToStr(SrcMenu) + ' Dst: ' + IntToStr(DstMenu));
+
+  while RemoveMenu(ADest, 0, MF_BYPOSITION)  do ;
+
+  i:=0;
+  mi.cbSize:=SizeOf(mi);
+  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+  mi.dwTypeData:=@buf;
+
+  while GetMenuItemInfo(AMenuItem.Handle, i, True, mi) do
+  begin
+    buf[mi.cch]:=#0;
+    fState:=MF_STRING;
+    if mi.fState and MFS_DISABLED <> 0 then
+      fState:=fState or MF_GRAYED;
+    if mi.fState and MFS_CHECKED <> 0 then
+      fState:=fState or MF_CHECKED;
+    uIDNewItem := mi.wID + StartMenuItem;
+    if mi.hSubMenu <>  0 then
+    begin
+      uIDNewItem  := mi.hSubMenu;
+      fstate := fstate or MF_POPUP;
+    end;
+    Windows.AppendMenu(ADest, fState, uIDNewItem, @buf);
+    inc(i);
+  end;
+end;
+
+class procedure TWinCEWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+begin
+  AttachMenuEx(AMenuItem, AMenuItem.Parent.Handle);
 end;
 
 class function TWinCEWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
