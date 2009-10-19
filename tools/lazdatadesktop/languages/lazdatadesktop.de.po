@@ -15,11 +15,11 @@ msgstr ""
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr "Klammern um AND AusdrÃ¼cke"
+msgstr "Klammern um AND Ausdrücke"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr "Zeilenvorschub nach AND AusdrÃ¼cken"
+msgstr "Zeilenvorschub nach AND Ausdrücken"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
@@ -27,19 +27,19 @@ msgstr "Zeilenvorschub nach jedem Feld"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr "Feldnamen in AnfÃ¼hrungszeichen"
+msgstr "Feldnamen in Anführungszeichen"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr "Foreign Keys Ã¼berspringen"
+msgstr "Foreign Keys überspringen"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr "Verwende OLD PrÃ¤fix in where Parametern"
+msgstr "Verwende OLD Präfix in where Parametern"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
-msgstr "Ergbnis schlieÃen"
+msgstr "Ergbnis schließen"
 
 #: lazdatadeskstr.scolfields
 msgctxt "lazdatadeskstr.scolfields"
@@ -58,7 +58,7 @@ msgstr "Einstellungen"
 
 #: lazdatadeskstr.scolsize
 msgid "Size"
-msgstr "GrÃ¶Ãe"
+msgstr "Größe"
 
 #: lazdatadeskstr.scoltype
 msgid "Type"
@@ -66,11 +66,11 @@ msgstr "Typ"
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
-msgstr "SchlieÃen bestÃ¤tigen"
+msgstr "Schließen bestätigen"
 
 #: lazdatadeskstr.sconnectiondescription
 msgid "Enter a descriptive name for the connection"
-msgstr "Geben Sie einen anschaulichen Namen fÃ¼r die Verbindung ein"
+msgstr "Geben Sie einen anschaulichen Namen für die Verbindung ein"
 
 #: lazdatadeskstr.sconnectionnameexists
 msgid ""
@@ -78,7 +78,7 @@ msgid ""
 "Would you like to override the connection data ?\n"
 msgstr ""
 "Es gibt bereits eine Verbindung namens \"%s\"\n"
-"Wollen Sie die Verbindungsdaten auÃer Kraft setzen?\n"
+"Wollen Sie die Verbindungsdaten außer Kraft setzen?\n"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
@@ -86,15 +86,15 @@ msgstr "Code erzeugen"
 
 #: lazdatadeskstr.screateconnection
 msgid "Would you like to create a new connection for this database ?"
-msgstr "Wollen Sie eine neue Verbindung fÃ¼r diese Datenbank erstellen?"
+msgstr "Wollen Sie eine neue Verbindung für diese Datenbank erstellen?"
 
 #: lazdatadeskstr.sddmodified
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?\n"
 msgstr ""
-"Data dictionary \"%s\" wurde geÃ¤ndert.\n"
-"Was wollen Sie mit den Ãnderungen machen?\n"
+"Data dictionary \"%s\" wurde geändert.\n"
+"Was wollen Sie mit den Änderungen machen?\n"
 
 #: lazdatadeskstr.sdeleteobject
 msgid "Delete this %s"
@@ -111,11 +111,11 @@ msgstr "Domain"
 
 #: lazdatadeskstr.sdontclose
 msgid "Do not close editor"
-msgstr "Den Editor nicht schlieÃen"
+msgstr "Den Editor nicht schließen"
 
 #: lazdatadeskstr.sdontsave
 msgid "Discard changes"
-msgstr "Ãnderungen verwerfen"
+msgstr "Änderungen verwerfen"
 
 #: lazdatadeskstr.senginetype
 msgid "Engine"
@@ -127,11 +127,11 @@ msgstr "Keine Datenbank-Engine!"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
-msgstr "Keine Felder ausgewÃ¤hlt. Bitte wÃ¤hlen Sie einige Felder"
+msgstr "Keine Felder ausgewählt. Bitte wählen Sie einige Felder"
 
 #: lazdatadeskstr.serrselecttable
 msgid "No table selected. Please select a table"
-msgstr "Keine Tabelle ausgewÃ¤hlt. Bitte wÃ¤hlen Sie eine Tabelle"
+msgstr "Keine Tabelle ausgewählt. Bitte wählen Sie eine Tabelle"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
@@ -159,11 +159,11 @@ msgstr ""
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
-msgstr "Pascal-Code fÃ¼r diese Daten erzeugen"
+msgstr "Pascal-Code für diese Daten erzeugen"
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
-msgstr "SQL Anweisung ausfÃ¼hren"
+msgstr "SQL Anweisung ausführen"
 
 #: lazdatadeskstr.shintexport
 msgid "Export this data"
@@ -175,7 +175,7 @@ msgstr "SQL Anweisung aus Datei laden"
 
 #: lazdatadeskstr.shintnext
 msgid "Next SQL statement"
-msgstr "NÃ¤chste SQL Anweisung"
+msgstr "Nächste SQL Anweisung"
 
 #: lazdatadeskstr.shintprevious
 msgid "Previous SQL statement"
@@ -219,11 +219,11 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
-msgstr "SchlieÃen"
+msgstr "Schließen"
 
 #: lazdatadeskstr.sld_actioncloseall
 msgid "Close &All"
-msgstr "&Alle schlieÃen"
+msgstr "&Alle schließen"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
@@ -263,20 +263,20 @@ msgstr "Ausschneiden"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
 msgid "&Delete connection"
-msgstr "Verbin&dung lÃ¶schen"
+msgstr "Verbin&dung löschen"
 
 #: lazdatadeskstr.sld_actiondeleteobject
 msgid "Delete &Object"
-msgstr "&Objekt lÃ¶schen"
+msgstr "&Objekt löschen"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
-msgstr "das aktuell ausgewÃ¤hlte Objekt lÃ¶schen"
+msgstr "das aktuell ausgewählte Objekt löschen"
 
 #: lazdatadeskstr.sld_actiondeleterecentdatadict
 msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
 msgid "&Delete"
-msgstr "LÃ¶schen"
+msgstr "Löschen"
 
 #: lazdatadeskstr.sld_actionexit
 msgid "E&xit"
@@ -292,7 +292,7 @@ msgstr "SQL erzeu&gen"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
-msgstr "Erzeuge SQL Anweisungen fÃ¼r die aktuelle Tabelle"
+msgstr "Erzeuge SQL Anweisungen für die aktuelle Tabelle"
 
 #: lazdatadeskstr.sld_actionnew
 msgid "&New"
@@ -320,7 +320,7 @@ msgstr "Neuer Index"
 
 #: lazdatadeskstr.sld_actionnewindexh
 msgid "Add new index to current table"
-msgstr "FÃ¼ge neuen Index zur aktuellen Tabelle hinzu"
+msgstr "Füge neuen Index zur aktuellen Tabelle hinzu"
 
 #: lazdatadeskstr.sld_actionnewtable
 msgid "New &table"
@@ -332,11 +332,11 @@ msgstr "Erzeuge eine neue Tabelle"
 
 #: lazdatadeskstr.sld_actionopen
 msgid "&Open..."
-msgstr "Ãffnen..."
+msgstr "Öffnen..."
 
 #: lazdatadeskstr.sld_actionopenconnection
 msgid "&Open connection"
-msgstr "Verbindung Ã¶ffnen"
+msgstr "Verbindung öffnen"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
 msgid "Open selected recent connection"
@@ -356,11 +356,11 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actionpaste
 msgid "&Paste"
-msgstr "EinfÃ¼gen"
+msgstr "Einfügen"
 
 #: lazdatadeskstr.sld_actionpasteh
 msgid "Paste"
-msgstr "EinfÃ¼gen"
+msgstr "Einfügen"
 
 #: lazdatadeskstr.sld_actionsave
 msgid "&Save"
@@ -429,7 +429,7 @@ msgstr "Datenbank"
 #: lazdatadeskstr.sld_delete
 msgctxt "lazdatadeskstr.sld_delete"
 msgid "&Delete"
-msgstr "LÃ¶schen"
+msgstr "Löschen"
 
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
@@ -473,7 +473,7 @@ msgstr "Lazarus Datenbank-Desktop"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
-msgstr "ZeilenlÃ¤nge"
+msgstr "Zeilenlänge"
 
 #: lazdatadeskstr.sld_menuconnections
 msgctxt "lazdatadeskstr.sld_menuconnections"
@@ -618,7 +618,7 @@ msgstr "Erzeuge neues Feld in Tabelle %s"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
-msgstr "Geben Sie einen Namen fÃ¼r das neue Feld ein:"
+msgstr "Geben Sie einen Namen für das neue Feld ein:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
@@ -634,7 +634,7 @@ msgstr ""
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
-msgstr "Geben Sie einen Namen fÃ¼r den neuen Index ein:"
+msgstr "Geben Sie einen Namen für den neuen Index ein:"
 
 #: lazdatadeskstr.snewobject
 msgid "Create new %s"
@@ -654,7 +654,7 @@ msgstr ""
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr "Geben Sie einen Namen fÃ¼r die neue Tabelle ein:"
+msgstr "Geben Sie einen Namen für die neue Tabelle ein:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
@@ -732,11 +732,11 @@ msgstr ""
 
 #: lazdatadeskstr.ssavedata
 msgid "Save changes"
-msgstr "Ãnderungen speichern"
+msgstr "Änderungen speichern"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
-msgstr "WÃ¤hlen Sie ein Verzeichnis mit DBF Dateien"
+msgstr "Wählen Sie ein Verzeichnis mit DBF Dateien"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
@@ -764,11 +764,11 @@ msgstr ""
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
-msgstr "Ja, verwende das aktive WÃ¶rterbuch"
+msgstr "Ja, verwende das aktive Wörterbuch"
 
 #: lazdatadeskstr.susenewdict
 msgid "No, import in a new dictionary"
-msgstr "Nein, importiere in ein neues WÃ¶rterbuch"
+msgstr "Nein, importiere in ein neues Wörterbuch"
 
 #: lazdatadeskstr.svalue
 msgid "Value"
