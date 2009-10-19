@@ -22,7 +22,7 @@ program iconvtable;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Unix, LCLProc;
+  Classes, SysUtils, Unix, LCLProc, FileUtil;
 
 var
   Table: array[0..255] of shortstring;
