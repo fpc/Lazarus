@@ -34,8 +34,9 @@ const
   DefaultEduOptionsFilename = 'education.xml';
 
   EduOptionID = 2000;
-    EduOptionGeneralID  = 100;
-    EduOptionPackagesID = 200;
+    EduOptionGeneralID     = 100;
+    EduOptionCompPaletteID = 200;
+    EduOptionPackagesID    = 300;
 
 type
 
@@ -89,6 +90,7 @@ type
   private
     FEnabled: boolean;
     FFilename: string;
+    FNeedLoad: boolean;
     FRoot: TEduOptionsNode;
     FLastSavedChangeStep: integer;
     procedure SetEnabled(const AValue: boolean);
@@ -109,6 +111,7 @@ type
     function OnProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     property Filename: string read FFilename write SetFilename;
     property Enabled: boolean read FEnabled write SetEnabled;
+    property NeedLoad: boolean read FNeedLoad write FNeedLoad;
   end;
 
 var
@@ -274,6 +277,7 @@ constructor TEduOptions.Create;
 begin
   FRoot:=TEduOptsRootNode.Create;
   FFilename:=DefaultEduOptionsFilename;
+  FNeedLoad:=true;
 end;
 
 destructor TEduOptions.Destroy;
@@ -357,6 +361,8 @@ function TEduOptions.OnProjectOpened(Sender: TObject; AProject: TLazProject
   ): TModalResult;
 begin
   Result:=mrOk;
+  if NeedLoad then
+    Load;
   Apply;
 end;
 

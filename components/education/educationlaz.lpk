@@ -15,11 +15,11 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="eduenvoptsframe"/>
+        <UnitName Value="EduEnvOptsFrame"/>
       </Item1>
       <Item2>
         <Filename Value="README.txt"/>
@@ -34,6 +34,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduPkgSystem"/>
       </Item4>
+      <Item5>
+        <Filename Value="educomppalette.pas"/>
+        <UnitName Value="EduCompPalette"/>
+      </Item5>
     </Files>
     <i18n>
       <OutDir Value="languages"/>

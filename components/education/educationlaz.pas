@@ -7,7 +7,8 @@ unit EducationLaz;
 interface
 
 uses
-  EduEnvOptsFrame, EduOptions, EduPkgSystem, LazarusPackageIntf;
+    EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, 
+  LazarusPackageIntf;
 
 implementation
 

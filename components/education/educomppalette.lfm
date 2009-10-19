@@ -1,0 +1,37 @@
+inherited EduCompPaletteFrame: TEduCompPaletteFrame
+  Height = 380
+  Width = 480
+  ClientHeight = 380
+  ClientWidth = 480
+  TabOrder = 0
+  DesignLeft = 395
+  DesignTop = 160
+  object ComponentsGroupBox: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 368
+    Top = 6
+    Width = 290
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'ComponentsGroupBox'
+    ClientHeight = 346
+    ClientWidth = 282
+    TabOrder = 0
+    object ComponentsTreeView: TTreeView
+      Left = 0
+      Height = 346
+      Top = 0
+      Width = 282
+      Align = alClient
+      DefaultItemHeight = 19
+      ReadOnly = True
+      TabOrder = 0
+      OnMouseDown = ComponentsTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+end
