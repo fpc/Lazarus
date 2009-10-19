@@ -628,6 +628,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function:  CreatePatternBrush
+  Params:  HBITMAP
+  Returns: HBRUSH
+ ------------------------------------------------------------------------------}
+
+function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  Image: QImageH;
+  QtBrush: TQtBrush;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI CreatePatternBrush]',' Bitmap=', dbghex(ABitmap));
+  {$endif}
+  Result := 0;
+  if ABitmap = 0 then
+    exit;
+  QtBrush := TQtBrush.Create(True);
+  Image := QImage_create(TQtImage(ABitmap).Handle);
+  try
+    QtBrush.setTextureImage(Image);
+  finally
+    QImage_destroy(Image);
+  end;
+
+  Result := HBRUSH(QtBrush);
+end;
+
+{------------------------------------------------------------------------------
   Function:  CreatePenIndirect
   Params:  none
   Returns: HPEN
