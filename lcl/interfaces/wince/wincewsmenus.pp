@@ -258,6 +258,10 @@ begin
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
 
   // Now we will add the buttons in the menu
+  //
+  // Note that there are two versions of this part of the code
+  // First an approach like KOL-CE does, which works better for smartphones
+  // and later the original code from lcl-wince, which already works for PDAs
   if (Application.ApplicationType = atSmartphone) then
   begin
     if (Menu <> 0) and (LCLMenu <> nil) then

@@ -66,6 +66,8 @@ procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
 
 function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
+function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
+function IsAlphaDC(ADC: HDC): Boolean;
 
 function GetLastErrorText(AErrorCode: Cardinal): WideString;
 
@@ -752,6 +754,21 @@ begin
   DeleteObject(DIBCopy);
 
   Result := True;
+end;
+
+function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
+var
+  Info: Windows.BITMAP;
+begin
+  FillChar(Info, SizeOf(Info), 0);
+  Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
+        and (Info.bmBitsPixel = 32);
+end;
+
+function IsAlphaDC(ADC: HDC): Boolean;
+begin
+  Result := (GetObjectType(ADC) = OBJ_MEMDC)
+        and IsAlphaBitmap(GetCurrentObject(ADC, OBJ_BITMAP));
 end;
 
 function GetLastErrorText(AErrorCode: Cardinal): WideString;

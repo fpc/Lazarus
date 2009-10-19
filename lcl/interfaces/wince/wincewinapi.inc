@@ -2685,9 +2685,10 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
-  Assert(True, Format('Trace:> [TWinCEWidgetSet.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
-  Result := Boolean(Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop));
-//  Assert(True, Format('Trace:< [TWinCEWidgetSet.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
+  if IsAlphaDC(DestDC) or IsAlphaDC(SrcDC) then
+    Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, 0, 0, 0, Rop)
+  else
+    Result := Boolean(Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop));
 end;
 
 {------------------------------------------------------------------------------
