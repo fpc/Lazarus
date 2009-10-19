@@ -2434,8 +2434,15 @@ begin
 end;
 
 function TWinCEWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+var
+  lLCLMenu: TMenu;
+  i: Integer;
 begin
-  CeSetMenu(AWindowHandle, AMenuHandle);
+  for i := 0 to WinCEWSMenus.MenuHandleList.Count - 1 do
+    if WinCEWSMenus.MenuHandleList.Items[i] = Pointer(AMenuHandle) then Break;
+  lLCLMenu := TMenu(MenuLCLObjectList.Items[i]);
+
+  CeSetMenu(AWindowHandle, AMenuHandle, lLCLMenu);
   AddToChangedMenus(AWindowHandle);
   Result := True;
 end;
@@ -2469,6 +2476,7 @@ begin
   Result := Boolean(Windows.SetProp(Handle, PWideChar(WideStr), Windows.HANDLE(Data)));
   {$endif}
 end;
+
 {------------------------------------------------------------------------------
   Method:  SetROP2
   Params:  DC			- Device Context

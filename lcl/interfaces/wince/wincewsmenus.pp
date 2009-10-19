@@ -77,20 +77,20 @@ type
   end;
 
 const
-  //having left or right submenus [true,false] means right have submenu,left doesnt have
-  MenuBarIDS : array[Boolean, Boolean] of integer =
-  (
-    (101,105),
-    (106,107)
-  );
-  MenuBarID_L = 40052;
-  MenuBarID_R = 40053;
+  // IDs corresponding to the file winceres.rc
+  MenuBarID_Items  = 20000;
+  MenuBarID_PopUp_Item = 20001;
+  MenuBarID_Item_Popup = 20002;
+  MenuBarID_Popups = 20003;
+  MenuBarID_L = 1;
+  MenuBarID_R = 2;
   StartMenuItem = 200;
 var
-  MenuItemsList : TStringList;
+  MenuItemsList: TStringList;
+  MenuHandleList, MenuLCLObjectList: TFPList;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
 
 implementation
 
@@ -160,6 +160,9 @@ var
   fState:integer;
   uIDNewItem  : integer;
 begin
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//   'CeMakeMenusSame Src: ' + IntToStr(SrcMenu) + ' Dst: ' + IntToStr(DstMenu));
+
   while RemoveMenu(dstMenu,0,MF_BYPOSITION)  do ;
 
   i:=0;
@@ -186,117 +189,187 @@ begin
   end;
 end;
 
-procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+{
+  The main menu setting routine, it is called by LCLIntf.SetMenu, which
+  associates a menu with a window.
+}
+procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
 {$ifndef Win32}
 var
   mbi: SHMENUBARINFO;
   mi: MENUITEMINFO;
   tb: TBButton;
-  tbbi : TBBUTTONINFO;
-  i: integer;
+  tbbi: TBBUTTONINFO;
+  i, j: integer;
   buf: array[0..255] of WideChar;
   R, BR, WR: TRect;
-  hasLMenu,hasRMenu : boolean;
-  MenuBarRLID : integer;
+  hasLMenu, hasRMenu: boolean;
+  LeftMenuCount: Integer = -1;
+  RightMenuCount: Integer = -1;
+  MenuBarRLID: integer;
+  st: byte;
 {$endif}
 begin
 {$ifndef Win32}
-  hasLMenu := false;
-  hasRMenu := false;
-  FillChar(mi, SizeOf(mi), 0);
-  with mi do
-  begin
-    cbSize:=SizeOf(mi);
-    fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-    dwTypeData:=@buf;
-  end;
-
-  if Menu <> 0 then
-  begin
-    if GetMenuItemInfo(Menu, 0, True, mi) then//does it have left menu?
-      hasLMenu := True;
-    if GetMenuItemInfo(Menu, 1, True, mi) then//does it have right menu?
-      hasRMenu := True;
-  end;
-
   GetWindowRect(Wnd, BR);
   mbi.hwndMB:=SHFindMenuBar(Wnd);
-  FillChar(mbi, SizeOf(mbi), 0);
-  with mbi do
+//  if (mbi.hwndMB <> 0) and (CePlatform = cpSmartphone) then begin
+//    DestroyWindow(mbi.hwndMB);
+//    mbi.hwndMB:=0;
+//  end;
+
+  // If no menu is currently associated in the application
+  // so we create a new one
+  GetWindowRect(Wnd, BR);
+  mbi.hwndMB:=SHFindMenuBar(Wnd);
+
+  if mbi.hwndMB = 0 then
   begin
-    cbSize := SizeOf(mbi);
-    hwndParent := Wnd;
-    dwFlags := SHCMBF_HMENU;
-    nToolBarId := MenuBarIDS[hasLMenu,hasRMenu];
-    hInstRes := HINSTANCE;
+    FillChar(mbi, SizeOf(mbi), 0);
+    mbi.cbSize := SizeOf(mbi);
+    mbi.hwndParent := Wnd;
+    //mbi.dwFlags := SHCMBF_HMENU;// This options ruins smartphone menu setting
+    mbi.hInstRes := HINSTANCE;
+
+//    if (Application.ApplicationType = atSmartphone)
+//      and (LCLMenu <> nil) then
+
+    FillChar(mi, SizeOf(mi), 0);
+    mi.cbSize:=SizeOf(mi);
+    mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+    mi.dwTypeData:=@buf;
+    hasLMenu := GetMenuItemInfoW(Menu, 0, True, mi); //does it have left menu?
+    hasRMenu := GetMenuItemInfoW(Menu, 1, True, mi); //does it have right menu?
+    if hasLMenu and hasRMenu then
+      mbi.nToolBarId := MenuBarID_Popups
+    else if hasLMenu then
+      mbi.nToolBarId := MenuBarID_PopUp_Item
+    else if hasRMenu then
+      mbi.nToolBarId := MenuBarID_Item_Popup
+    else
+      mbi.nToolBarId := MenuBarID_Items;
+
+    if not SHCreateMenuBar(@mbi) then Exit;
   end;
 
-  {if found a menubar check if it matches number of buttons of previous menubar...}
-  if (mbi.hwndMB = 0) or (
-     (not ((boolean(SendMessage (mbi.hwndMB, TB_COMMANDTOINDEX, MenuBarID_L, 0) + 1)) xor (hasLMenu))) and
-     (not ((boolean(SendMessage (mbi.hwndMB, TB_COMMANDTOINDEX, MenuBarID_R, 0) + 1)) xor (hasRMenu))))
-    then
-  begin
-    if not SHCreateMenuBar(@mbi) then
-    begin
-      //MsgBox('not ok',0);
-      exit;
-    end;
-  end;
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'menu bar window = ' + IntToStr(mbi.hwndMB));
 
-  //DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'menu bar window = ' + IntToStr(mbi.hwndMB));
-
+  // Clear any previously set menu items
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
 
-  with mi do
+  // Now we will add the buttons in the menu
+  if (Application.ApplicationType = atSmartphone) then
   begin
-    cbSize:=SizeOf(mi);
-    fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-    dwTypeData:=@buf;
-  end;
-
-  if Menu <> 0 then
-  begin
-    i:=0;
-    while True do
+    if (Menu <> 0) and (LCLMenu <> nil) then
     begin
-      mi.cch:=SizeOf(buf);
-      if not GetMenuItemInfo(Menu, i, True, @mi) then
-        break;
-      buf[mi.cch]:=#0;
-      FillChar(tb, SizeOf(tb), 0);
-      tb.iBitmap:=I_IMAGENONE;
-      tb.idCommand:=mi.wID;
-      tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
-      if mi.fState and MFS_DISABLED = 0 then
-        tb.fsState:=TBSTATE_ENABLED;
-      if mi.fState and MFS_CHECKED <> 0 then
-        tb.fsState:=tb.fsState or TBSTATE_CHECKED;
-      if mi.hSubMenu <> 0 then
-        tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
-      else
-        tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
-      tb.dwData:=mi.hSubMenu;
-      {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
-      SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
-      //MsgBox('i = ' + int2str(i),0);
+      i:=0;
+      for j:=0 to LCLMenu.Items.Count - 1 do
+        if LCLMenu.Items.Items[j].Visible then
+        begin
+  //        if FSavedState and MFS_DISABLED = 0 then
+  //          st:=TBSTATE_ENABLED
+  //        else
+  //          st:=0;
+  //        if FSavedState and MFS_CHECKED <> 0 then
+  //          st:=st or TBSTATE_CHECKED;
+            if (Application.ApplicationType = atSmartphone) then
+            begin
+              if i = 2 then Break; // smartphones have maximum 2 top level menu items.
+              tbbi.cbSize := sizeof(tbbi);
+              tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
+  //            tbbi.idCommand := FID;
+              tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND or TBIF_STATE};
+  //            tbbi.fsState:=st;
+              SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, i + 1, LPARAM(@tbbi));
+  {            if FHandle <> 0 then
+              begin
+                tbbi.dwMask := TBIF_LPARAM;
+                SendMessage (mbi.hwndMB, TB_GETBUTTONINFO, FID, LPARAM(@tbbi));
+                DestroyMenu(FHandle);
+                FHandle:=HMENU(tbbi.lParam);
+                ReCreate;
+              end;}
+            end
+            else
+            begin
+  {            FillChar(tb, SizeOf(tb), 0);
+              tb.iBitmap:=I_IMAGENONE;
+              tb.idCommand:=fID;
+              tb.iString:=longint(PKOLChar(Caption));
+              tb.fsState:=st;
+              if SubMenu <> 0 then
+                tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
+              else
+                tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
+              tb.dwData:=SubMenu;
+              SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));}
+            end;
+            Inc(i);
+          end;
 
-      if (IsSmartphone) and (i < 2) then{Smartphones can have only 2 buttons!}
+      if (Application.ApplicationType = atSmartphone) and (i = 1) then
       begin
-        case i of
-          0:  MenuBarRLID := MenuBarID_L;
-          1 : MenuBarRLID := MenuBarID_R;
-        end;
-        tbbi.cbSize := sizeof(tbbi);
-        tbbi.pszText := @buf;
-        tbbi.dwMask := TBIF_TEXT;
-        SendMessage(mbi.hwndMB,TB_SETBUTTONINFO,MenuBarRLID,LPARAM(@tbbi));
-        tbbi.dwMask := TBIF_LPARAM;
-        SendMessage (mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
-        CeMakeMenuesSame(mi.hSubMenu,HMENU(tbbi.lParam));
+        tbbi.dwMask := TBIF_STATE;
+        tbbi.fsState:=0;
+        SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, 2, LPARAM(@tbbi));
       end;
+    end;
+  end
+  else
+  begin
+    FillChar(mi, SizeOf(mi), 0);
+    mi.cbSize:=SizeOf(mi);
+    mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+    mi.dwTypeData:=@buf;
 
-      Inc(i);
+    // Now we will add the buttons in the menu
+  //  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  //    'Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
+    if (Menu <> 0) then
+    begin
+  //    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'if (Menu <> 0) and (LCLMenu <> nil) then');
+      i:=0;
+      while True do
+      begin
+        mi.cch:=SizeOf(buf);
+        if not GetMenuItemInfo(Menu, i, True, @mi) then
+          break;
+        buf[mi.cch]:=#0;
+        FillChar(tb, SizeOf(tb), 0);
+        tb.iBitmap:=I_IMAGENONE;
+        tb.idCommand:=mi.wID;
+        tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
+        if mi.fState and MFS_DISABLED = 0 then
+          tb.fsState:=TBSTATE_ENABLED;
+        if mi.fState and MFS_CHECKED <> 0 then
+          tb.fsState:=tb.fsState or TBSTATE_CHECKED;
+        if mi.hSubMenu <> 0 then
+          tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
+        else
+          tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
+        tb.dwData:=mi.hSubMenu;
+        {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
+        SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
+        //MsgBox('i = ' + int2str(i),0);
+
+  //      if (IsSmartphone) and (i < 2) then{Smartphones can have only 2 buttons!}
+        if (Application.ApplicationType = atSmartphone) and (i < 2) then{Smartphones can have only 2 buttons!}
+        begin
+          case i of
+            0: MenuBarRLID := MenuBarID_L;
+            1: MenuBarRLID := MenuBarID_R;
+          end;
+          tbbi.cbSize := sizeof(tbbi);
+          tbbi.pszText := @buf;
+          tbbi.dwMask := TBIF_TEXT;
+          SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
+          tbbi.dwMask := TBIF_LPARAM;
+          SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
+          CeMakeMenuesSame(mi.hSubMenu, HMENU(tbbi.lParam));
+        end;
+
+        Inc(i);
+      end;
     end;
   end;
 
@@ -315,8 +388,6 @@ begin
 //DrawMenuBar(wnd);
 {$endif}
 end;
-
-
 
 (* Returns index of the character in the menu item caption that is displayed
    as underlined and is therefore the hot key of the menu item.
@@ -569,6 +640,12 @@ end;
 class function TWinCEWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := CreateMenu;
+  // A pointer to the LCL item is saved to be used latter by CeSetMenu
+  // LCLIntf.SetProp and SetWindowLongW were also tryed but didn't work
+  MenuHandleList.Add(Pointer(Result));
+  MenuLCLObjectList.Add(Pointer(AMenu));
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//   'TWinCEWSMenu.CreateHandle: ' + IntToStr(Result) + ' AMenu: ' + IntToStr(PtrInt(AMenu)));
 end;
 
 { TWinCEWSPopupMenu }
@@ -593,10 +670,18 @@ begin
 end;
 
 initialization
+
   menuiteminfosize := SizeOf(TMenuItemInfo);
   MenuItemsList := TStringList.Create;
 
+  MenuHandleList := TFPList.Create;
+  MenuLCLObjectList := TFPList.Create;
+
 finalization
+
   MenuItemsList.Free;
+
+  MenuHandleList.Free;
+  MenuLCLObjectList.Free;
 
 end.
