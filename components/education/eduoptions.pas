@@ -29,6 +29,9 @@ uses
 
 resourcestring
   EduRSEducation = 'Education';
+  ersShowAll = 'Show all';
+  ersHideAll = 'Hide all';
+  ersVisibleComponents = 'Visible components';
 
 const
   DefaultEduOptionsFilename = 'education.xml';

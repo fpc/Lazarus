@@ -52,13 +52,20 @@ type
   TEduCompPaletteFrame = class(TAbstractIDEOptionsEditor)
     ComponentsGroupBox: TGroupBox;
     ComponentsTreeView: TTreeView;
+    HideAllButton: TButton;
+    LeftPanel: TPanel;
+    ShowAllButton: TButton;
     procedure ComponentsTreeViewMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FrameClick(Sender: TObject);
+    procedure HideAllButtonClick(Sender: TObject);
+    procedure ShowAllButtonClick(Sender: TObject);
   private
     HideImgID: LongInt;
     ShowImgID: LongInt;
     procedure FillComponentTreeView;
     procedure SaveFillComponentTreeView;
+    procedure ShowHideAll(aShow: boolean);
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -94,12 +101,27 @@ begin
   if (Node=nil) then exit;
   if Node.Parent=nil then exit;
   Hit:=ComponentsTreeView.GetHitTestInfoAt(X,Y);
-  if htOnStateIcon in Hit then begin
+  if [htOnIcon,htOnStateIcon]*Hit<>[] then begin
     if Node.StateIndex=ShowImgID then
       Node.StateIndex:=HideImgID
     else
       Node.StateIndex:=ShowImgID;
   end;
+end;
+
+procedure TEduCompPaletteFrame.FrameClick(Sender: TObject);
+begin
+
+end;
+
+procedure TEduCompPaletteFrame.HideAllButtonClick(Sender: TObject);
+begin
+  ShowHideAll(false);
+end;
+
+procedure TEduCompPaletteFrame.ShowAllButtonClick(Sender: TObject);
+begin
+  ShowHideAll(true);
 end;
 
 procedure TEduCompPaletteFrame.FillComponentTreeView;
@@ -171,6 +193,27 @@ begin
   end;
 end;
 
+procedure TEduCompPaletteFrame.ShowHideAll(aShow: boolean);
+var
+  Node: TTreeNode;
+  CompName: String;
+begin
+  Node:=ComponentsTreeView.Items.GetFirstNode;
+  while Node<>nil do begin
+    if Node.Parent<>nil then begin
+      CompName:=Node.Text;
+      EduComponentPaletteOptions.ComponentVisible[CompName]:=aShow;
+      if aShow then
+        Node.StateIndex:=ShowImgID
+      else
+        Node.StateIndex:=HideImgID;
+    end else begin
+
+    end;
+    Node:=Node.GetNext;
+  end;
+end;
+
 function TEduCompPaletteFrame.GetTitle: String;
 begin
   Result:='Component palette';
@@ -178,13 +221,14 @@ end;
 
 procedure TEduCompPaletteFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-
+  FillComponentTreeView;
 end;
 
 procedure TEduCompPaletteFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  ComponentsGroupBox.Caption:='Visible components';
-  FillComponentTreeView;
+  ShowAllButton.Caption:=ersShowAll;
+  HideAllButton.Caption:=ersHideAll;
+  ComponentsGroupBox.Caption:=ersVisibleComponents;
 end;
 
 class function TEduCompPaletteFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
