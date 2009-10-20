@@ -2892,10 +2892,12 @@ end;
  ------------------------------------------------------------------------------}
 
 function TWinCEWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
+var
+  WS: WideString;
 begin
-   Result := false;
-//  Result := Boolean(Windows.ExtTextOut(DC, X, Y, Str, Count));
-//  Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
+  // There is no Windows.TextOut in Windows CE, so we improvise with other routines
+  WS := UTF8ToUTF16(Copy(Str, 1, Count));
+  Result := Boolean(Windows.ExtTextOut(DC, X, Y, 0, nil, PWideChar(WS), Length(WS), nil));
 end;
 
 {------------------------------------------------------------------------------
