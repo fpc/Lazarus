@@ -1345,9 +1345,13 @@ begin
       Result := atPDA
     else if WideStrCmp(@buf, 'SmartPhone') = 0 then
       Result := atSmartphone
-    else if GetLastError = ERROR_ACCESS_DENIED then
-      Result := atSmartphone;
-  end;
+    else
+      Result := atPDA;
+  end
+  else if GetLastError = ERROR_ACCESS_DENIED then
+    Result := atSmartphone
+  else
+    Result := atPDA;
 end;
 {$endif}
 

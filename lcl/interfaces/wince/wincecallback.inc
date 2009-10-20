@@ -264,7 +264,7 @@ Var
     if PopupMenu <> nil then //processing popup menu
     begin
       WindowInfo^.PopupMenu := nil;
-      Result := PopupMenu.FindItem(LOWORD(WParam) - StartMenuItem , fkCommand);
+      Result := PopupMenu.FindItem(LOWORD(WParam) - StartMenuItem, fkCommand);
     end;
     {$ifndef win32}
     if Result = nil then //if Result is still nil, process main menu
@@ -285,6 +285,9 @@ Var
      }
     end;
     {$endif}
+
+//    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//      'MenuClickResponse: ' + IntToStr(PtrInt(Result)));
   end;
 
   function GetIsNativeControl(AWindow: HWND): Boolean;

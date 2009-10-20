@@ -115,53 +115,14 @@ type
 
 //menus
 
-const
-  SPI_GETPLATFORMTYPE = 257;//roozbeh : should be moved to windows unit
-
-  EnabledToStateFlag: array[Boolean] of DWord =
-  (
-    MF_GRAYED,
-    MF_ENABLED
-  );
-
-function WStrCmp( W1, W2: PWideChar ): Integer;
-var
-  counter: Integer;
-begin
-  counter := 0;
-  while W1[counter] = W2[counter] do
-  begin
-    if (W2[counter] = #0) or (W1[counter] = #0) then
-       break;
-    Inc(counter);
-  end;
-  Result := ord(W1[counter]) - ord(W2[counter]);
-end;
-
-function IsSmartPhone: Boolean;
-var
-  buf: array[0..255] of WideChar;
-begin
-  Result := false;
-  if Windows.SystemParametersInfo(SPI_GETPLATFORMTYPE,sizeof(buf),@buf,0) then
-  begin
-    if WStrCmp(@buf,PWideChar('SmartPhone')) = 0  then
-      Result := true
-    else
-      Result := false;//roozbeh : either it is 'PocketPC' or something else :)
-  end
-  else if GetLastError=ERROR_ACCESS_DENIED then
-    Result := true;
-end;
-
 //both menus are popup menus or submenus
 procedure CeMakeMenuesSame(SrcMenu,dstMenu : HMENU);
 var
-  i: integer;
+  i: Integer;
   mi: MENUITEMINFO;
   buf: array[0..255] of WideChar;
   fState:integer;
-  uIDNewItem  : integer;
+  uIDNewItem : Integer;
 begin
 //  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
 //   'CeMakeMenusSame Src: ' + IntToStr(SrcMenu) + ' Dst: ' + IntToStr(DstMenu));
@@ -268,10 +229,10 @@ begin
     if not SHCreateMenuBar(@mbi) then Exit;
   end;
 
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    'menu bar window = ' + IntToStr(mbi.hwndMB) +
-    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
-    );
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//    'menu bar window = ' + IntToStr(mbi.hwndMB) +
+//    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
+//    );
 
   // Clear any previously set menu items
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
@@ -521,7 +482,8 @@ begin
     if ACaption <> cLineCaption then
     begin
       fType := MFT_STRING;
-      fState := EnabledToStateFlag[AMenuItem.Enabled];
+      if AMenuItem.Enabled then fState := MF_ENABLED
+      else fState := MF_GRAYED;
       {$ifdef win32}
       dwTypeData:=PChar(PWideChar(wCaption));
       {$else}
@@ -572,7 +534,9 @@ begin
     end;
   end;
 
-  fState := MF_STRING or MF_BYPOSITION or EnabledToStateFlag[AMenuItem.Enabled];
+  fState := MF_STRING or MF_BYPOSITION;
+  if AMenuItem.Enabled then fState := fState or MF_ENABLED
+  else fState := fState or MF_GRAYED;
   if AMenuItem.Checked then
     fState := fState or MF_CHECKED;
 
@@ -604,6 +568,11 @@ begin
 
   MenuItemsList.AddObject(IntToStr(AMenuItem.Command + StartMenuItem), AMenuItem);
   TriggerFormUpdate(AMenuItem);
+
+//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//    'MenuItemsList.AddObject: ' + IntToStr(AMenuItem.Command + StartMenuItem) +
+//    ' Object: ' + IntToStr(PtrInt(AMenuItem))
+//    );
 end;
 
 class procedure TWinCEWSMenuItem.CopyMenuToHandle(const AMenuItem: TMenuItem;
@@ -689,7 +658,9 @@ class function TWinCEWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enab
 var
   EnableFlag: Integer;
 begin
-  EnableFlag := MF_BYCOMMAND or EnabledToStateFlag[Enabled];
+  EnableFlag := MF_BYCOMMAND;
+  if AMenuItem.Enabled then EnableFlag := EnableFlag or MF_ENABLED
+  else EnableFlag := EnableFlag or MF_GRAYED;
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;
