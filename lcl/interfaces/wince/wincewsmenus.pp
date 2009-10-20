@@ -93,7 +93,9 @@ var
   MenuHandleList, MenuLCLObjectList: TFPList;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
+{$ifndef Win32}
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
+{$endif}
 
 implementation
 
@@ -115,6 +117,7 @@ type
 
 //menus
 
+{$ifndef Win32}
 //both menus are popup menus or submenus
 procedure CeMakeMenuesSame(SrcMenu,dstMenu : HMENU);
 var
@@ -158,7 +161,6 @@ end;
   associates a menu with a window.
 }
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
-{$ifndef Win32}
 var
   mbi: SHMENUBARINFO;
   mi: MENUITEMINFO;
@@ -170,9 +172,7 @@ var
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
   MenuBarRLID: integer;
-{$endif}
 begin
-{$ifndef Win32}
   GetWindowRect(Wnd, BR);
   mbi.hwndMB:=SHFindMenuBar(Wnd);
 //  if (mbi.hwndMB <> 0) and (CePlatform = cpSmartphone) then begin
@@ -376,8 +376,8 @@ begin
   end;
 
 //DrawMenuBar(wnd);
-{$endif}
 end;
+{$endif}
 
 (* Returns index of the character in the menu item caption that is displayed
    as underlined and is therefore the hot key of the menu item.

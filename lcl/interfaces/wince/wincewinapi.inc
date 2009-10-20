@@ -2434,10 +2434,12 @@ begin
 end;
 
 function TWinCEWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+{$ifndef Win32}
 var
   lLCLMenu: TMenu;
   i: Integer;
 begin
+  Result := False;
   for i := 0 to WinCEWSMenus.MenuHandleList.Count - 1 do
     if WinCEWSMenus.MenuHandleList.Items[i] = Pointer(AMenuHandle) then Break;
   lLCLMenu := TMenu(MenuLCLObjectList.Items[i]);
@@ -2446,6 +2448,11 @@ begin
   AddToChangedMenus(AWindowHandle);
   Result := True;
 end;
+{$else}
+begin
+  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
+end;
+{$endif}
 
 
 {------------------------------------------------------------------------------
