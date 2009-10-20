@@ -5469,6 +5469,7 @@ end;
 constructor TProjectManualProgramDescriptor.Create;
 begin
   inherited Create;
+  VisibleInNewDialog:=false;
   Name:=ProjDescNameCustomProgram;
   Flags:=Flags-[pfMainUnitHasUsesSectionForAllUnits,
                 pfMainUnitHasCreateFormStatements,
