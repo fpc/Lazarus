@@ -32,6 +32,8 @@ resourcestring
   ersShowAll = 'Show all';
   ersHideAll = 'Hide all';
   ersVisibleComponents = 'Visible components';
+  ersShowAllChilds = 'Show all childs';
+  ersIDEMenuItems = 'IDE menu items';
 
 const
   DefaultEduOptionsFilename = 'education.xml';
@@ -39,7 +41,8 @@ const
   EduOptionID = 2000;
     EduOptionGeneralID     = 100;
     EduOptionCompPaletteID = 200;
-    EduOptionPackagesID    = 300;
+    EduOptionMenuID        = 300;
+    EduOptionPackagesID    = 400;
 
 type
 
@@ -56,7 +59,7 @@ type
     function GetChilds(Index: integer): TEduOptionsNode;
     procedure SetName(const AValue: string);
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
     procedure Delete(Index: integer); virtual;

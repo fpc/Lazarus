@@ -39,7 +39,7 @@ type
     function GetComponentVisible(ComponentName: string): boolean;
     procedure SetComponentVisible(ComponentName: string; const AValue: boolean);
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function Load(Config: TConfigStorage): TModalResult; override;
     function Save(Config: TConfigStorage): TModalResult; override;
@@ -136,6 +136,8 @@ var
   Image: TCustomBitmap;
   CompName: String;
 begin
+  ComponentsTreeView.BeginUpdate;
+  ComponentsTreeView.Items.Clear;
   if ComponentsTreeView.Images=nil then begin
     ComponentsTreeView.Images:=TImageList.Create(Self);
     ComponentsTreeView.Images.Width:=ComponentPaletteImageWidth;
@@ -145,8 +147,6 @@ begin
     ComponentsTreeView.Images.Clear;
   ShowImgID:=IDEImages.LoadImage(16,'menu_run');
   HideImgID:=IDEImages.LoadImage(16,'menu_stop');
-  ComponentsTreeView.BeginUpdate;
-  ComponentsTreeView.Items.Clear;
   for i:=0 to IDEComponentPalette.Count-1 do begin
     Page:=IDEComponentPalette[i];
     if Page.PageName='' then continue;
@@ -198,6 +198,7 @@ var
   Node: TTreeNode;
   CompName: String;
 begin
+  ComponentsTreeView.BeginUpdate;
   Node:=ComponentsTreeView.Items.GetFirstNode;
   while Node<>nil do begin
     if Node.Parent<>nil then begin
@@ -212,6 +213,7 @@ begin
     end;
     Node:=Node.GetNext;
   end;
+  ComponentsTreeView.EndUpdate;
 end;
 
 function TEduCompPaletteFrame.GetTitle: String;

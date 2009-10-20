@@ -1,0 +1,71 @@
+inherited EduMenuFrame: TEduMenuFrame
+  Height = 301
+  Width = 437
+  ClientHeight = 301
+  ClientWidth = 437
+  OnClick = FrameClick
+  TabOrder = 0
+  DesignLeft = 297
+  DesignTop = 171
+  object MenusGroupBox: TGroupBox[0]
+    Left = 176
+    Height = 289
+    Top = 6
+    Width = 255
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'MenusGroupBox'
+    ClientHeight = 267
+    ClientWidth = 247
+    TabOrder = 0
+    object MenusTreeView: TTreeView
+      Left = 0
+      Height = 267
+      Top = 0
+      Width = 247
+      Align = alClient
+      DefaultItemHeight = 19
+      ReadOnly = True
+      TabOrder = 0
+      OnMouseDown = MenusTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+  object EduMenuBtnPanel: TPanel[1]
+    Left = 0
+    Height = 301
+    Top = 0
+    Width = 170
+    Align = alLeft
+    AutoSize = True
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ClientHeight = 301
+    ClientWidth = 170
+    TabOrder = 1
+    object ShowAllButton: TButton
+      Left = 7
+      Height = 20
+      Top = 7
+      Width = 156
+      Align = alTop
+      AutoSize = True
+      Caption = 'ShowAllButton'
+      OnClick = ShowAllButtonClick
+      TabOrder = 0
+    end
+    object ShowAllChildsButton: TButton
+      Left = 7
+      Height = 20
+      Top = 33
+      Width = 156
+      Align = alTop
+      AutoSize = True
+      Caption = 'ShowAllChildsButton'
+      OnClick = ShowAllChildsButtonClick
+      TabOrder = 1
+    end
+  end
+end
