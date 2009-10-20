@@ -90,6 +90,7 @@ type
     function GetContainerSection: TIDEMenuSection;
     function GetContainerMenuItem: TMenuItem;
     function Size: integer; virtual;
+    function HasAsParent(Item: TIDEMenuItem): boolean;
     procedure WriteDebugReport(const Prefix: string;
                                MenuItemDebugReport: boolean); virtual;
     procedure ConsistencyCheck; virtual;
@@ -795,6 +796,18 @@ end;
 function TIDEMenuItem.Size: integer;
 begin
   Result:=FSize;
+end;
+
+function TIDEMenuItem.HasAsParent(Item: TIDEMenuItem): boolean;
+var
+  CurItem: TIDEMenuSection;
+begin
+  CurItem:=Section;
+  while CurItem<>nil do begin
+    if CurItem=Item then exit(true);
+    CurItem:=CurItem.Section;
+  end;
+  Result:=false;
 end;
 
 procedure TIDEMenuItem.WriteDebugReport(const Prefix: string;

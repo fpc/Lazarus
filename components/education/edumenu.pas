@@ -45,6 +45,8 @@ type
     function Load(Config: TConfigStorage): TModalResult; override;
     function Save(Config: TConfigStorage): TModalResult; override;
     function MenuItemToPath(Item: TIDEMenuItem): string;
+    function FindItemWithPath(Path: string): TIDEMenuItem;
+    function KeepItemVisible(Item: TIDEMenuItem): boolean;
     procedure Apply(Enable: boolean); override;
     property MenuHidden[MenuPath: string]: boolean read GetMenuHidden write SetMenuHidden;
   end;
@@ -200,12 +202,33 @@ end;
 procedure TEduMenuFrame.SaveMenuTree;
 var
   TVNode: TTreeNode;
+  NewHide: Boolean;
+  OldHide: boolean;
+  Item: TIDEMenuItem;
+  Path: String;
+  OldHidden: TStringToStringTree;
 begin
-  EduMenuOptions.ClearHMenuidden;
-  TVNode:=MenusTreeView.Items.GetFirstNode;
-  while TVNode<>nil do begin
-    EduMenuOptions.MenuHidden[TVNodeToIDEMenuPath(TVNode)]:=TVNode.StateIndex=HideImgID;
-    TVNode:=TVNode.GetNext;
+  OldHidden:=TStringToStringTree.Create(false);
+  try
+    OldHidden.Assign(EduMenuOptions.fHidden);
+    EduMenuOptions.ClearHMenuidden;
+    TVNode:=MenusTreeView.Items.GetFirstNode;
+    while TVNode<>nil do begin
+      NewHide:=TVNode.StateIndex=HideImgID;
+      Path:=TVNodeToIDEMenuPath(TVNode);
+      OldHide:=OldHidden.Contains(Path);
+      EduMenuOptions.MenuHidden[Path]:=NewHide;
+      if NewHide<>OldHide then begin
+        Item:=EduMenuOptions.FindItemWithPath(Path);
+        if (Item<>nil) and (not EduMenuOptions.KeepItemVisible(Item)) then begin
+          Item.Visible:=not NewHide;
+          //debugln(['TEduMenuFrame.SaveMenuTree changed visibility: ',Item.GetPath,' visible=',Item.Visible,' Path=',Path,' OldHide=',OldHide,' NewHide=',NewHide]);
+        end;
+      end;
+      TVNode:=TVNode.GetNext;
+    end;
+  finally
+    OldHidden.Free;
   end;
 end;
 
@@ -224,10 +247,8 @@ procedure TEduMenuFrame.UpdateTVNodeImage(TVNode: TTreeNode);
 
   function ContainsHiddenNode(Node: TTreeNode): boolean;
   begin
-    if (Node.StateIndex=HideImgID) and (Node<>TVNode) then begin
-      debugln(['ContainsHiddenNode hidden Node=',Node.Text,' tvNode=',TVNode.Text]);
+    if (Node.StateIndex=HideImgID) and (Node<>TVNode) then
       exit(true);
-    end;
     Node:=Node.GetFirstChild;
     while Node<>nil do begin
       if ContainsHiddenNode(Node) then exit(true);
@@ -236,11 +257,8 @@ procedure TEduMenuFrame.UpdateTVNodeImage(TVNode: TTreeNode);
     Result:=false;
   end;
 
-var
-  OldStateIndex: LongInt;
 begin
   if TVNode=nil then exit;
-  OldStateIndex:=TVNode.StateIndex;
   if TVNode.StateIndex=HideImgID then
     TVNode.StateIndex:=HideImgID
   else if ContainsHiddenNode(TVNode) then
@@ -380,10 +398,40 @@ begin
   end;
 end;
 
+function TEduMenuOptions.FindItemWithPath(Path: string): TIDEMenuItem;
+begin
+  Result:=IDEMenuRoots.FindByPath(Path,false);
+end;
+
+function TEduMenuOptions.KeepItemVisible(Item: TIDEMenuItem): boolean;
+begin
+  if (Item=mnuEnvironment) or (Item.HasAsParent(mnuEnvironment)) then exit(true);
+  Result:=false;
+end;
+
 procedure TEduMenuOptions.Apply(Enable: boolean);
+
+  procedure ApplyRecursive(Item: TIDEMenuItem);
+  var
+    Section: TIDEMenuSection;
+    i: Integer;
+  begin
+    if (not KeepItemVisible(Item)) and MenuHidden[MenuItemToPath(Item)] then
+      Item.Visible:=false;
+    // Note: do not show items. Some items should be hidden independent of education.
+    if Item is TIDEMenuSection then begin
+      Section:=TIDEMenuSection(Item);
+      for i:=0 to Section.Count-1 do
+        ApplyRecursive(Section[i]);
+    end;
+  end;
+
+var
+  i: Integer;
 begin
   inherited Apply(Enable);
-  // ToDo
+  for i:=0 to IDEMenuRoots.Count-1 do
+    ApplyRecursive(IDEMenuRoots[i]);
 end;
 
 initialization

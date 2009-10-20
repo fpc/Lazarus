@@ -192,6 +192,7 @@ type
     constructor Create(const ACompareItems, ACompareNameWithItem: TListSortCompare);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Src: TStringToStringTree);
     function Contains(const Name: string): Boolean;
     procedure Delete(const Name: string);
     procedure Add(const Name, Value, Delimiter: string);
@@ -1426,6 +1427,21 @@ begin
     Node:=FItems.FindSuccessor(Node);
   end;
   FItems.Clear;
+end;
+
+procedure TStringToStringTree.Assign(Src: TStringToStringTree);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+begin
+  Clear;
+  if Src=nil then exit;
+  Node:=Src.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringItem(Node.Data);
+    Values[Item^.Name]:=Item^.Value;
+    Node:=Src.Tree.FindSuccessor(Node);
+  end;
 end;
 
 function TStringToStringTree.Contains(const Name: string): Boolean;

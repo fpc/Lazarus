@@ -38,7 +38,7 @@ type
 
   TEduGeneralOptions = class(TEduOptionsNode)
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function Load(Config: TConfigStorage): TModalResult; override;
     function Save(Config: TConfigStorage): TModalResult; override;
