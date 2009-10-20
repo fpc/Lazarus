@@ -416,9 +416,16 @@ procedure TEduMenuOptions.Apply(Enable: boolean);
     Section: TIDEMenuSection;
     i: Integer;
   begin
-    if (not KeepItemVisible(Item)) and MenuHidden[MenuItemToPath(Item)] then
-      Item.Visible:=false;
-    // Note: do not show items. Some items should be hidden independent of education.
+    if (not KeepItemVisible(Item)) then begin
+      if Enable then begin
+        if MenuHidden[MenuItemToPath(Item)] then
+          Item.Visible:=false;
+        // Note: do not show items. Some items should be hidden independent of education.
+      end else begin
+        if MenuHidden[MenuItemToPath(Item)] then
+          Item.Visible:=true;
+      end;
+    end;
     if Item is TIDEMenuSection then begin
       Section:=TIDEMenuSection(Item);
       for i:=0 to Section.Count-1 do
