@@ -8,7 +8,7 @@ interface
 
 uses
     EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu, 
-  LazarusPackageIntf;
+  EduNewProgram, LazarusPackageIntf;
 
 implementation
 
@@ -18,6 +18,7 @@ begin
   RegisterUnit('EduPkgSystem', @EduPkgSystem.Register); 
   RegisterUnit('EduCompPalette', @EduCompPalette.Register); 
   RegisterUnit('EduMenu', @EduMenu.Register); 
+  RegisterUnit('EduNewProgram', @EduNewProgram.Register); 
 end; 
 
 initialization

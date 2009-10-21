@@ -34,6 +34,28 @@ resourcestring
   ersVisibleComponents = 'Visible components';
   ersShowAllChilds = 'Show all childs';
   ersIDEMenuItems = 'IDE menu items';
+  ersNewSingleFileProgram = 'New single file program';
+  ersNewSingleFileEducationProgram = 'New single file education program';
+  ersNewProgram = 'New program';
+  ersAddIcon = 'Add icon';
+  ersAddASpeedButtonToTheIDEToolbarToCreateANewProgram = 'Add a speed button '
+    +'to the IDE toolbar to create a new program';
+  ersAddMenuItem = 'Add menu item';
+  ersAddAMenuItemTheIDEToolbarToCreateANewProgram = 'Add a menu item the IDE '
+    +'toolbar to create a new program';
+  ersAddToNewDialog = 'Add to %sNew ...%s dialog';
+  ersAddAnEntryToTheNewDialogToCreateANewProgram = 'Add an entry to the %'
+    +'sNew ...%s dialog to create a new program';
+  ersSource = 'Source';
+  ersSingleFileProgram = 'Single file program';
+  ersASimpleProgramOnlyOneFileIsCreatedAndAddedToTheCur = 'A simple program. '
+    +'Only one file is created and added to the current project.';
+  ersLoadDefaultCode = 'Load default code?';
+  ersReplaceCurrentWithDefaultSourceCode = 'Replace current with default '
+    +'source code?';
+  ersReplaceCurrentSourceWithDefaultSourceCode = 'Replace current source with '
+    +'default source code';
+  ersLoadSourceFromFile = 'Load source from file';
 
 const
   DefaultEduOptionsFilename = 'education.xml';
@@ -42,7 +64,7 @@ const
     EduOptionGeneralID     = 100;
     EduOptionCompPaletteID = 200;
     EduOptionMenuID        = 300;
-    EduOptionPackagesID    = 400;
+    EduOptionNewPrgID      = 400;
 
 type
 

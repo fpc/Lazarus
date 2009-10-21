@@ -25,9 +25,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, StdCtrls, ComCtrls,
-  AvgLvlTree,
+  AvgLvlTree, Controls, ExtCtrls,
   LazConfigStorage, IDEOptionsIntf, MenuIntf, IDEImagesIntf, LazIDEIntf,
-  EduOptions, Controls, ExtCtrls;
+  EduOptions;
 
 type
 

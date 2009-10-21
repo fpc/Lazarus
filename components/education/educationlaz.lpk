@@ -15,7 +15,7 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
@@ -44,23 +44,34 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduMenu"/>
       </Item6>
+      <Item7>
+        <Filename Value="edunewprogram.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduNewProgram"/>
+      </Item7>
     </Files>
     <i18n>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
         <MinVersion Major="1" Valid="True"/>
       </Item3>
+      <Item4>
+        <PackageName Value="IDEIntf"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item5>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
