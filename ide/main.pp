@@ -3692,8 +3692,16 @@ begin
 end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
 Begin
-  DoBuildProject(crCompile,[]);
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  if (AnUnitInfo<>nil)
+  and AnUnitInfo.BuildFileIfActive then
+    DoBuildFile
+  else
+    DoBuildProject(crCompile,[]);
 end;
 
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
@@ -7186,6 +7194,8 @@ begin
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
   NewUnitInfo.ImproveUnitNameCache(NewUnitName);
+  NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
+  NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
 
   // create source code
   //debugln('TMainIDE.DoNewEditorFile A nfCreateDefaultSrc=',nfCreateDefaultSrc in NewFlags,' ResourceClass=',dbgs(NewFileDescriptor.ResourceClass));
@@ -10339,7 +10349,7 @@ begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
+  Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
   DirectiveList:=TStringList.Create;
   try
