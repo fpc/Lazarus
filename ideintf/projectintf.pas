@@ -477,6 +477,7 @@ type
   TProjectFileDescriptor = class(TPersistent)
   private
     FAddToProject: boolean;
+    FBuildFileIfActive: boolean;
     FDefaultFileExt: string;
     FDefaultFilename: string;
     FDefaultResFileExt: string;
@@ -488,6 +489,7 @@ type
     FReferenceCount: integer;
     FResourceClass: TPersistentClass;
     FRequiredPackages: string;
+    FRunFileIfActive: boolean;
     FUseCreateFormStatements: boolean;
     FVisibleInNewDialog: boolean;
   protected
@@ -522,6 +524,8 @@ type
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
     property IsPascalUnit: boolean read FIsPascalUnit write FIsPascalUnit;
     property AddToProject: boolean read FAddToProject write FAddToProject;// only if there is choice
+    property BuildFileIfActive: boolean read FBuildFileIfActive write FBuildFileIfActive;
+    property RunFileIfActive: boolean read FRunFileIfActive write FRunFileIfActive;
   end;
   TProjectFileDescriptorClass = class of TProjectFileDescriptor;
 
