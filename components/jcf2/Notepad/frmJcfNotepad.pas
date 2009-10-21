@@ -164,7 +164,7 @@ uses
   ClipBrd,
   { local }
   JcfStringUtils,
-  JCFHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;
+  JcfHelp, fAbout, fRegistrySettings, fAllSettings, JcfFontSetFunctions;
 
 {$ifdef FPC}
   {$R *.lfm}

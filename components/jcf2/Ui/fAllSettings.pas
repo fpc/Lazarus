@@ -38,7 +38,7 @@ uses
   SysUtils, Classes, Controls, Forms,
   StdCtrls, Buttons, ExtCtrls, ComCtrls, ShellAPI, Dialogs,
   { local }
-  JCFSettings, frmBaseSettingsFrame;
+  JcfSettings, frmBaseSettingsFrame;
 
 type
   TFormAllSettings = class(TForm)
@@ -84,7 +84,7 @@ implementation
 
 uses
   Windows,
-  JcfRegistrySettings, JcfFontSetFunctions, JCFHelp,
+  JcfRegistrySettings, JcfFontSetFunctions, JcfHelp,
   { contained frames }
   frFiles, frObfuscateSettings,
   frClarify, frClarifySpaces, frClarifyIndent,

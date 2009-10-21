@@ -114,7 +114,7 @@ uses
   { jcl }
   JclSysInfo,
   { local }
-  ConvertTypes, JcfRegistrySettings, JcfSettings, JCFHelp, JcfFontSetFunctions;
+  ConvertTypes, JcfRegistrySettings, JcfSettings, JcfHelp, JcfFontSetFunctions;
 
 {$ifdef FPC}
   {$R *.lfm}

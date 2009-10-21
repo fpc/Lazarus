@@ -29,7 +29,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  JCFSetBase,
+  JcfSetBase,
   SettingsTypes, SettingsStream;
 
 type

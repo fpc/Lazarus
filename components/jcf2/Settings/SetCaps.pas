@@ -33,7 +33,7 @@ unit SetCaps;
 
 interface
 
-uses JCFSetBase, SettingsTypes, SettingsStream;
+uses JcfSetBase, SettingsTypes, SettingsStream;
 
 type
 

@@ -50,7 +50,7 @@ type
 
 implementation
 
-uses ParseTreeNode, SourceToken, TokenUtils, FormatFlags, JCFSettings;
+uses ParseTreeNode, SourceToken, TokenUtils, FormatFlags, JcfSettings;
 
 constructor TWarning.Create;
 begin

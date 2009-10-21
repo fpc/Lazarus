@@ -69,7 +69,7 @@ const
 
 implementation
 
-uses JCFHelp;
+uses JcfHelp;
 
 {$ifdef FPC}
   {$R *.lfm}

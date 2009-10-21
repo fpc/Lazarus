@@ -34,7 +34,7 @@ interface
 
 uses
   Classes,
-  JCFSetBase, SettingsStream;
+  JcfSetBase, SettingsStream;
 
 type
   // once-offs can be run, not run, or can be the only thing run

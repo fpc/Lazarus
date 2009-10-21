@@ -401,12 +401,12 @@
         <UnitName Value="JcfRegistrySettings"/>
       </Item94>
       <Item95>
-        <Filename Value="..\..\Settings\JCFSetBase.pas"/>
-        <UnitName Value="JCFSetBase"/>
+        <Filename Value="..\..\Settings\JcfSetBase.pas"/>
+        <UnitName Value="JcfSetBase"/>
       </Item95>
       <Item96>
-        <Filename Value="..\..\Settings\JCFSettings.pas"/>
-        <UnitName Value="JCFSettings"/>
+        <Filename Value="..\..\Settings\JcfSettings.pas"/>
+        <UnitName Value="JcfSettings"/>
       </Item96>
       <Item97>
         <Filename Value="..\..\Settings\SetAlign.pas"/>
@@ -493,8 +493,8 @@
         <UnitName Value="JcfFontSetFunctions"/>
       </Item117>
       <Item118>
-        <Filename Value="..\..\Utils\JCFHelp.pas"/>
-        <UnitName Value="JCFHelp"/>
+        <Filename Value="..\..\Utils\JcfHelp.pas"/>
+        <UnitName Value="JcfHelp"/>
       </Item118>
       <Item119>
         <Filename Value="..\..\Utils\JcfLog.pas"/>

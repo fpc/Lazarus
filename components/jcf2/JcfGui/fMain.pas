@@ -39,7 +39,7 @@ uses
   SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, Menus,
   ActnList, StdActns, ToolWin, ImgList, ShellAPI,
   { local }
-  FileConverter, JCFSettings,  ConvertTypes,
+  FileConverter, JcfSettings,  ConvertTypes,
   frBasicSettings, JvMRUManager, JvFormPlacement,
   JvMemo, frDrop, frmBaseSettingsFrame, JvComponent, JvExStdCtrls,
   JvComponentBase;
@@ -139,7 +139,7 @@ uses
   JclFileUtils,
   { local }
   fAbout, fAllSettings, fRegistrySettings,
-  SettingsStream, JCFHelp, JcfRegistrySettings, JcfFontSetFunctions;
+  SettingsStream, JcfHelp, JcfRegistrySettings, JcfFontSetFunctions;
 
 function OkDialog(const psMsg: string): boolean;
 begin

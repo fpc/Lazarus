@@ -37,7 +37,7 @@ uses
   { delphi }
   Classes,
   { local }
-  JCFSetBase, SettingsStream;
+  JcfSetBase, SettingsStream;
 
 type
 

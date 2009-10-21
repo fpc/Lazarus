@@ -94,7 +94,7 @@ uses
   SysUtils, Forms,
   { local }
   PreProcessorExpressionTokenise, PreProcessorExpressionParser,
-  ParseError, JCFSettings;
+  ParseError, JcfSettings;
 
 procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
 var

@@ -70,7 +70,7 @@ uses
     LResources, LCLIntf,
   {$endif}
   { local }
-  JcfVersionConsts, JCFHelp, JcfFontSetFunctions, JcfStringUtils;
+  JcfVersionConsts, JcfHelp, JcfFontSetFunctions, JcfStringUtils;
 
 {$ifdef fpc}
 procedure ShowURL(const ps: string);

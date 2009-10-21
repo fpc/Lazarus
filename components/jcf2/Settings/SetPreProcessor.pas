@@ -36,7 +36,7 @@ uses
   { delphi }
   Classes,
   { local }
-  JCFSetBase, SettingsStream;
+  JcfSetBase, SettingsStream;
 
 type
   TSetPreProcessor = class(TSetBase)

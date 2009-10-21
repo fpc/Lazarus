@@ -155,7 +155,7 @@ begin
   fReg.WriteString(fsSection, psTagName, Float2Str(pdValue));
 end;
 
-// method from JCFSetBase
+// method from JcfSetBase
 procedure TSettingsRegistryOutput.Write(const psTagName: string;
   const pcValue: TStrings);
 var

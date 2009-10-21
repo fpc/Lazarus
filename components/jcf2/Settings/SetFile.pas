@@ -35,7 +35,7 @@ interface
 
 uses
   { local }
-  JCFSetBase, SettingsStream;
+  JcfSetBase, SettingsStream;
 
 type
 

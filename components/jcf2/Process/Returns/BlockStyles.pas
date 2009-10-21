@@ -84,7 +84,7 @@ implementation
 uses
   { local }
   JcfStringUtils,
-  Tokens, SourceToken, TokenUtils, JCFSettings,
+  Tokens, SourceToken, TokenUtils, JcfSettings,
   FormatFlags, SettingsTypes;
 
 const

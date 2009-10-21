@@ -93,7 +93,7 @@ implementation
 {$endif}
 
 uses
-  SourceToken, Tokens, JCFHelp, JcfFontSetFunctions
+  SourceToken, Tokens, JcfHelp, JcfFontSetFunctions
   {$ifdef fpc}, LResources{$endif};
 
 procedure ShowParseTree(const pcRoot: TParseTreeNode);

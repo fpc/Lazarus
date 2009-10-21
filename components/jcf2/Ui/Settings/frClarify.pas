@@ -59,7 +59,7 @@ implementation
   {$R *.dfm}
 {$endif}
 
-uses JcfSettings, JCFHelp, SetClarify;
+uses JcfSettings, JcfHelp, SetClarify;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin

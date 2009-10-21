@@ -33,7 +33,7 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses JCFSetBase, SettingsStream;
+uses JcfSetBase, SettingsStream;
 
 type
 

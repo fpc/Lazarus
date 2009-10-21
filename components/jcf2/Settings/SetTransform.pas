@@ -33,7 +33,7 @@ unit SetTransform;
 
 interface
 
-uses JCFSetBase, SettingsTypes, SettingsStream;
+uses JcfSetBase, SettingsTypes, SettingsStream;
 
 type
   TUsesSortOrder = (eAlpha, eReverseAlpha, eShortToLong, eLongToShort);

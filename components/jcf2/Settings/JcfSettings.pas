@@ -23,7 +23,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-unit JCFSettings;
+unit JcfSettings;
 
 { this is the settings on how to parse. As of 2.0 this is always from a file
   The file name is stored in registry
@@ -138,7 +138,7 @@ uses
   {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, Dialogs,
   { local }
   JcfStringUtils,
-  JCFSetBase,
+  JcfSetBase,
   JcfRegistrySettings;
 
 

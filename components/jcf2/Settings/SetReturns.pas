@@ -31,7 +31,7 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses JCFSetBase, SettingsTypes, SettingsStream;
+uses JcfSetBase, SettingsTypes, SettingsStream;
 
 type
   { rebreak lines has three modes:

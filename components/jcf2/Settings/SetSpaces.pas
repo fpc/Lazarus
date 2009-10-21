@@ -31,7 +31,7 @@ unit SetSpaces;
 
 interface
 
-uses JCFSetBase, SettingsStream, SettingsTypes;
+uses JcfSetBase, SettingsStream, SettingsTypes;
 
 type
 

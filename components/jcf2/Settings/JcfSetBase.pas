@@ -23,7 +23,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-unit JCFSetBase;
+unit JcfSetBase;
 
 { base class for a group of settings
   AFS 29 Dec 1999

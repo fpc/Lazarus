@@ -34,7 +34,7 @@ unit SetObfuscate;
 interface
 
 uses
-  { local }JCFSetBase, SettingsTypes, SettingsStream;
+  { local }JcfSetBase, SettingsTypes, SettingsStream;
 
 type
 

@@ -203,9 +203,9 @@
         <UsageCount Value="40"/>
       </Unit19>
       <Unit20>
-        <Filename Value="../../Settings/JCFSettings.pas"/>
+        <Filename Value="../../Settings/JcfSettings.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFSettings"/>
+        <UnitName Value="JcfSettings"/>
         <CursorPos X="19" Y="43"/>
         <TopLine Value="25"/>
         <EditorIndex Value="1"/>
@@ -576,9 +576,9 @@
         <UsageCount Value="40"/>
       </Unit64>
       <Unit65>
-        <Filename Value="../../Settings/JCFSetBase.pas"/>
+        <Filename Value="../../Settings/JcfSetBase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFSetBase"/>
+        <UnitName Value="JcfSetBase"/>
         <CursorPos X="66" Y="38"/>
         <TopLine Value="34"/>
         <UsageCount Value="40"/>
@@ -688,9 +688,9 @@
         <UsageCount Value="39"/>
       </Unit78>
       <Unit79>
-        <Filename Value="../../Utils/JCFHelp.pas"/>
+        <Filename Value="../../Utils/JcfHelp.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFHelp"/>
+        <UnitName Value="JcfHelp"/>
         <CursorPos X="52" Y="75"/>
         <TopLine Value="58"/>
         <UsageCount Value="39"/>
