@@ -3,7 +3,6 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   Width = 507
   ClientHeight = 367
   ClientWidth = 507
-  TabOrder = 0
   Visible = False
   DesignLeft = 353
   DesignTop = 291
@@ -18,6 +17,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Width = 507
     Align = alTop
     AutoFill = True
+    AutoSize = True
     Caption = 'PascalFileExtRadiogroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -41,6 +41,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Width = 507
     Align = alTop
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'AmbiguousFileActionRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -65,6 +66,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Width = 507
     Align = alTop
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'CharcaseFileActionRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -105,9 +107,9 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideTop.Control = UnitReferencesRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
+    Height = 17
     Top = 246
-    Width = 227
+    Width = 175
     BorderSpacing.Around = 6
     Caption = 'AskForFilenameOnNewCheckBox'
     TabOrder = 4
