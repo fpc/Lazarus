@@ -5349,8 +5349,13 @@ end;
 procedure TQtLineEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QLineEdit_setReadOnly(QLineEditH(Widget), AReadOnly);
-  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
-    setFocusPolicy(QtNoFocus);
+  if Assigned(LCLObject) then
+  begin
+    if AReadOnly and not LCLObject.TabStop then
+      setFocusPolicy(QtNoFocus)
+    else
+      setFocusPolicy(QtClickFocus);
+  end;
 end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
@@ -5484,8 +5489,13 @@ end;
 procedure TQtTextEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QTextEdit_setReadOnly(QTextEditH(Widget), AReadOnly);
-  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
-    setFocusPolicy(QtNoFocus);
+  if Assigned(LCLObject) then
+  begin
+    if AReadOnly and not LCLObject.TabStop then
+      setFocusPolicy(QtNoFocus)
+    else
+      setFocusPolicy(QtClickFocus);
+  end;
 end;
 
 procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
