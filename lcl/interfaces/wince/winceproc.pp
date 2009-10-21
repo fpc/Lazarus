@@ -978,6 +978,10 @@ begin
     DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
+//    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//      'GetLCLClientBoundsOffset Handle: ' + IntToStr(Handle) +
+//      ' Top: ' + IntToStr(TM.TMHeight)
+//    );
     ReleaseDC(Handle, DC);
     { GetTextMetrics may not be supported on all devices, so we
       have fallback to GetSystemMetrics if it doesn't work.

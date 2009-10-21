@@ -1218,11 +1218,6 @@ begin
     Flags := WS_CHILD or WS_VISIBLE;
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    Left := AWinControl.Left;
-    Top := AWinControl.Top;
-    Width := AWinControl.Width;
-    Height := AWinControl.Height;
-    Parent := AWinControl.Parent.Handle;
     MenuHandle := 0;
   end;
 

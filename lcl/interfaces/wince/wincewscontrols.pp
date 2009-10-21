@@ -30,7 +30,7 @@ uses
   // Libs
   Windows, commctrl,
   // RTL, LCL
-  Classes,
+  Classes, LCLProc,
   LCLType, Controls, Forms, Graphics,
   // Widgetset
   winceproc, WinCEInt, Sysutils, WSProc,
@@ -184,6 +184,11 @@ begin
     {$IFDEF VerboseSizeMsg}
     writeln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
+//    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+//      'PrepareCreateWindow Name: ' + AWinControl.Name +
+//      Format(' PrevTopLeft: %d, %d, NewTopLeft: %d, %d',
+//       [AWinControl.Top, AWinControl.Left, Top, Left])
+//    );
 
     //Assert(False, Format('Trace:PrepareCreateWindow - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
     //Assert(False, Format('Trace:PrepareCreateWindow - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));

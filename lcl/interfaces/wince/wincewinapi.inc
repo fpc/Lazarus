@@ -2890,14 +2890,13 @@ end;
   Writes a character string at the specified location, using the currently
   selected font.
  ------------------------------------------------------------------------------}
-
 function TWinCEWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 var
   WS: WideString;
 begin
   // There is no Windows.TextOut in Windows CE, so we improvise with other routines
   WS := UTF8ToUTF16(Copy(Str, 1, Count));
-  Result := Boolean(Windows.ExtTextOut(DC, X, Y, 0, nil, PWideChar(WS), Length(WS), nil));
+  Result := Boolean(Windows.ExtTextOutW(DC, X, Y, 0, nil, PWideChar(WS), Length(WS), nil));
 end;
 
 {------------------------------------------------------------------------------
