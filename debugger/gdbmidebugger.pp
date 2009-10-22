@@ -88,13 +88,17 @@ type
 
   TGDBMIRTLCallingConvention = (ccDefault, ccRegCall, ccStdCall);
 
+  { TGDBMIDebuggerProperties }
+
   TGDBMIDebuggerProperties = class(TDebuggerProperties)
   private
+    FGDBOptions: String;
     FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
   public
     constructor Create;
   published
     property OverrideRTLCallingConvention: TGDBMIRTLCallingConvention read FOverrideRTLCallingConvention write FOverrideRTLCallingConvention;
+    property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
   end;
 
   { TGDBMIDebugger }
@@ -2274,12 +2278,18 @@ procedure TGDBMIDebugger.Init;
       Include(FDebuggerFlags, dfImplicidTypes);
     end;
   end;
-
+var
+  Options: String;
 begin
   FPauseWaitState := pwsNone;
   FInExecuteCount := 0;
 
-  if CreateDebugProcess('-silent -i mi -nx')
+  Options := '-silent -i mi -nx';
+
+  if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
+  then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
+
+  if CreateDebugProcess(Options)
   then begin
     if not ParseInitialization
     then begin
