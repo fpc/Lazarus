@@ -5978,63 +5978,95 @@ var
                       OpenFlags+[ofLoadHiddenResource],[]);
   end;
 
+  procedure GatherRootComponents(AComponent: TComponent; List: TFPList);
+  var
+    i: Integer;
+  begin
+    List.Add(AComponent);
+    for i:=0 to AComponent.ComponentCount-1 do
+      if csInline in AComponent.Components[i].ComponentState then
+        GatherRootComponents(AComponent.Components[i],List);
+  end;
+
 var
   CurRoot: TComponent;
+  i, j: Integer;
+  RefRootName: string;
+  RootComponents: TFPList;
   ReferenceRootNames: TStringList;
   ReferenceInstanceNames: TStringList;
-  i: Integer;
-  RefRootName: string;
+  LoadResult: TModalResult;
 begin
+  Result:=mrOk;
   CurRoot:=RootComponent;
   while CurRoot.Owner<>nil do
     CurRoot:=CurRoot.Owner;
   AnUnitInfo:=Project1.UnitWithComponent(CurRoot);
-  if AnUnitInfo=nil then exit(mrOk);
+  if AnUnitInfo=nil then exit;
 
   UsedUnitFilenames:=nil;
   ComponentNameToUnitFilename:=nil;
+  RootComponents:=TFPList.Create;
   ReferenceRootNames:=TStringList.Create;
   ReferenceInstanceNames:=TStringList.Create;
   try
-    GetFixupReferenceNames(RootComponent,ReferenceRootNames);
-    Result:=mrOk;
-    for i:=0 to ReferenceRootNames.Count-1 do begin
-      RefRootName:=ReferenceRootNames[i];
-      ReferenceInstanceNames.Clear;
-      GetFixupInstanceNames(RootComponent,RefRootName,ReferenceInstanceNames);
+    GatherRootComponents(RootComponent,RootComponents);
+    for i:=0 to RootComponents.Count-1 do begin
+      CurRoot:=TComponent(RootComponents[i]);
 
-      DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' Root=',dbgsName(RootComponent),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+      // load referenced components
+      ReferenceRootNames.Clear;
+      GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+      for j:=0 to ReferenceRootNames.Count-1 do begin
+        RefRootName:=ReferenceRootNames[j];
+        ReferenceInstanceNames.Clear;
+        GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
 
-      // load the referenced component
-      Result:=LoadDependencyHidden(RefRootName);
+        DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',j,' Root=',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
-      try
-        GlobalFixupReferences;
-      except
-        on E: Exception do begin
-          DebugLn(['TMainIDE.DoFixupComponentReferences GlobalFixupReferences ',E.Message]);
-          DumpExceptionBackTrace;
+        // load the referenced component
+        LoadResult:=LoadDependencyHidden(RefRootName);
+
+        if LoadResult<>mrOk then begin
+          // ToDo: give a nice error message and give user the choice between
+          // a) ignore and loose the references
+          // b) undo the opening (close the designer forms)
+          Result:=mrCancel;
         end;
       end;
+    end;
 
-      ReferenceInstanceNames.Clear;
-      GetFixupInstanceNames(RootComponent,RefRootName,ReferenceInstanceNames);
-      DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',i,' ',dbgsName(RootComponent),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+    // fixup references
+    try
+      GlobalFixupReferences;
+    except
+      on E: Exception do begin
+        DebugLn(['TMainIDE.DoFixupComponentReferences GlobalFixupReferences ',E.Message]);
+        DumpExceptionBackTrace;
+      end;
+    end;
 
-      // forget the rest of the dangling references
-      RemoveFixupReferences(RootComponent,RefRootName);
+    for i:=0 to RootComponents.Count-1 do begin
+      CurRoot:=TComponent(RootComponents[i]);
+      // clean up dangling references
+      ReferenceRootNames.Clear;
+      GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+      for j:=0 to ReferenceRootNames.Count-1 do begin
+        RefRootName:=ReferenceRootNames[j];
+        ReferenceInstanceNames.Clear;
+        GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
+        DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',j,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
-      if Result<>mrOk then begin
-        // ToDo: give a nice error message and give user the choice between
-        // a) ignore and loose the references
-        // b) undo the opening (close the designer forms)
+        // forget the rest of the dangling references
+        RemoveFixupReferences(CurRoot,RefRootName);
       end;
     end;
   finally
-    ReferenceRootNames.Free;
-    ReferenceInstanceNames.Free;
+    RootComponents.Free;
     UsedUnitFilenames.Free;
     ComponentNameToUnitFilename.Free;
+    ReferenceRootNames.Free;
+    ReferenceInstanceNames.Free;
   end;
 end;
 
