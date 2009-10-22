@@ -178,22 +178,33 @@ begin
     if ImagePtr^.Description.Width = 0 then Exit;  // no data
     if ImagePtr^.Description.Height = 0 then Exit; // no data
   end;
-  
 
-  // TODO description based on pixelformat
-  if FSharedImage.FSaveStream = nil
+  // use savestream if present
+  if FSharedImage.FSaveStream <> nil
   then begin
-    if FSharedImage.FHandle <> 0
-    then begin
-      if ADescOnly
-      or not RawImage_FromBitmap(ImagePtr^, FSharedImage.FHandle, FMaskHandle)
-      then ImagePtr^.Description := GetDescriptionFromBitmap(FSharedImage.FHandle);
+    FSharedImage.FSaveStream.Position := 0;
+    OldChangeEvent := OnChange;
+    try
+      OnChange := nil;
+      ReadStream(FSharedImage.FSaveStream, FSharedImage.FSaveStream.Size);
       FPixelFormatNeedsUpdate := True;
-      Exit;
+    finally
+      OnChange := OldChangeEvent;
     end;
-  
-    // keep size
-    // ImagePtr^.Description := GetDescriptionFromDevice(0, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
+  end;
+
+  // use handle
+  if FSharedImage.FHandle <> 0
+  then begin
+    if ADescOnly
+    or not RawImage_FromBitmap(ImagePtr^, FSharedImage.FHandle, FMaskHandle)
+    then ImagePtr^.Description := GetDescriptionFromBitmap(FSharedImage.FHandle);
+    FPixelFormatNeedsUpdate := True;
+  end;
+
+  // setup ImagePtr, fill description if not set
+  if ImagePtr^.Description.Format = ricfNone
+  then begin
     // use query to get a default description without alpha, since alpha drawing
     // is not yet supported (unless asked for)
     // use var and not pixelformat property since it requires a rawimagedescription (which we are creating)
@@ -208,18 +219,14 @@ begin
     ImagePtr^.Description := QueryDescription(Flags, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
     // atleast for now let pixelformat reflect the created description
     FPixelFormatNeedsUpdate := True;
-    Exit;
   end;
-  
-  FSharedImage.FSaveStream.Position := 0;
-  OldChangeEvent := OnChange;
-  try
-    OnChange := nil;
-    ReadStream(FSharedImage.FSaveStream, FSharedImage.FSaveStream.Size);
-    FPixelFormatNeedsUpdate := True;
-  finally
-    OnChange := OldChangeEvent;
-  end;
+
+  if ADescOnly then Exit;
+  if ImagePtr^.Data <> nil then Exit;
+  if ImagePtr^.DataSize > 0 then Exit;
+
+  // setup data
+  ImagePtr^.CreateData(True);
 end;
 
 function TCustomBitmap.ReleaseHandle: HBITMAP;
