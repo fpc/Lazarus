@@ -32,9 +32,7 @@
 {$DEFINE DisableFakeMethods}
 {$ENDIF}
 
-{$IFNDEF DisableMultiFormProperties}
 {$DEFINE VerboseIDEMultiForm}
-{$ENDIF}
 
 {off $apptype console}
 

@@ -5998,14 +5998,20 @@ begin
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
 
-      {$IFNDEF DisableMultiFormProperties}
       DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       // load the referenced component
       Result:=LoadDependencyHidden(RefRootName);
-      {$ENDIF}
 
-      GlobalFixupReferences;
+      try
+        GlobalFixupReferences;
+      except
+        on E: Exception do begin
+          DebugLn(['TMainIDE.DoFixupComponentReferences GlobalFixupReferences ',E.Message]);
+          DumpExceptionBackTrace;
+        end;
+      end;
+
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
       DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
