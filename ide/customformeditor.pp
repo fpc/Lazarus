@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEdits, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
-  LazarusIDEStrConsts, Project, JITForms,
+  LazarusIDEStrConsts, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   EnvironmentOpts, DesignerProcs;
@@ -270,6 +270,7 @@ each control that's dropped onto the form
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
+    function FixupReferences(AComponent: TComponent): TModalResult;
     procedure WriterFindAncestor(Writer: TWriter; Component: TComponent;
                                  const Name: string;
                                  var Ancestor, RootAncestor: TComponent);
@@ -1907,6 +1908,11 @@ begin
                                                  
   // create component interface(s) for the new child component(s)
   Result:=CreateComponentInterface(NewComponent,true);
+end;
+
+function TCustomFormEditor.FixupReferences(AComponent: TComponent): TModalResult;
+begin
+  Result:=MainIDEInterface.DoFixupComponentReferences(AComponent,[]);
 end;
 
 procedure TCustomFormEditor.WriterFindAncestor(Writer: TWriter;

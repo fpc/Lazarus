@@ -639,8 +639,9 @@ type
     function FindBaseComponentClass(const AComponentClassName,
                                     DescendantClassName: string;
                                     out AComponentClass: TComponentClass): boolean;
-    function DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
-                                        OpenFlags: TOpenFlags): TModalResult;
+    function DoFixupComponentReferences(
+                           RootComponent: TComponent;
+                           OpenFlags: TOpenFlags): TModalResult; override;
     function DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
                            const DescendantClassName: string;
                            OpenFlags: TOpenFlags;
@@ -5744,7 +5745,7 @@ begin
           AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
         if NewComponent<>nil then begin
           // component loaded, now load the referenced units
-          Result:=DoFixupComponentReferences(AnUnitInfo,OpenFlags);
+          Result:=DoFixupComponentReferences(AnUnitInfo.Component,OpenFlags);
           if Result<>mrOk then begin
             DebugLn(['TMainIDE.DoLoadLFM DoFixupComponentReferences failed']);
             exit;
@@ -5856,10 +5857,10 @@ begin
   Result:=true;
 end;
 
-function TMainIDE.DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
-  OpenFlags: TOpenFlags): TModalResult;
-
+function TMainIDE.DoFixupComponentReferences(
+  RootComponent: TComponent; OpenFlags: TOpenFlags): TModalResult;
 var
+  AnUnitInfo: TUnitInfo;
   UsedUnitFilenames: TStrings;
   ComponentNameToUnitFilename: TStringList;
 
@@ -5984,21 +5985,25 @@ var
   i: Integer;
   RefRootName: string;
 begin
-  CurRoot:=AnUnitInfo.Component;
-  if CurRoot=nil then exit(mrOk);
+  CurRoot:=RootComponent;
+  while CurRoot.Owner<>nil do
+    CurRoot:=CurRoot.Owner;
+  AnUnitInfo:=Project1.UnitWithComponent(CurRoot);
+  if AnUnitInfo=nil then exit(mrOk);
+
   UsedUnitFilenames:=nil;
   ComponentNameToUnitFilename:=nil;
   ReferenceRootNames:=TStringList.Create;
   ReferenceInstanceNames:=TStringList.Create;
   try
-    GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+    GetFixupReferenceNames(RootComponent,ReferenceRootNames);
     Result:=mrOk;
     for i:=0 to ReferenceRootNames.Count-1 do begin
       RefRootName:=ReferenceRootNames[i];
       ReferenceInstanceNames.Clear;
-      GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
+      GetFixupInstanceNames(RootComponent,RefRootName,ReferenceInstanceNames);
 
-      DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+      DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' Root=',dbgsName(RootComponent),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       // load the referenced component
       Result:=LoadDependencyHidden(RefRootName);
@@ -6013,11 +6018,11 @@ begin
       end;
 
       ReferenceInstanceNames.Clear;
-      GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-      DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+      GetFixupInstanceNames(RootComponent,RefRootName,ReferenceInstanceNames);
+      DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',i,' ',dbgsName(RootComponent),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       // forget the rest of the dangling references
-      RemoveFixupReferences(CurRoot,RefRootName);
+      RemoveFixupReferences(RootComponent,RefRootName);
 
       if Result<>mrOk then begin
         // ToDo: give a nice error message and give user the choice between

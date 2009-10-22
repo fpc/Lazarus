@@ -1820,8 +1820,12 @@ var
        ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));
     if NewCI=nil then exit;
-    Modified;
     NewComponent:=NewCI.Component;
+    TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
+
+    // modified
+    Modified;
+
 
     // set initial properties
     if NewComponent is TControl then begin

@@ -161,6 +161,9 @@ type
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;
 
+    function DoFixupComponentReferences(RootComponent: TComponent;
+                        OpenFlags: TOpenFlags): TModalResult; virtual; abstract;
+
     procedure UpdateWindowMenu; virtual; abstract;
     procedure SaveEnvironment; virtual; abstract;
     procedure UpdateHighlighters(Immediately: boolean = false); virtual; abstract;
