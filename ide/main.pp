@@ -639,9 +639,6 @@ type
     function FindBaseComponentClass(const AComponentClassName,
                                     DescendantClassName: string;
                                     out AComponentClass: TComponentClass): boolean;
-    function DoFixupComponentReferences(
-                           RootComponent: TComponent;
-                           OpenFlags: TOpenFlags): TModalResult; override;
     function DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
                            const DescendantClassName: string;
                            OpenFlags: TOpenFlags;
@@ -723,6 +720,9 @@ type
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                              CloseFlags: TCloseFlags;
                              out Component: TComponent): TModalResult; override;
+    function DoFixupComponentReferences(
+                           RootComponent: TComponent;
+                           OpenFlags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
