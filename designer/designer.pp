@@ -2894,7 +2894,10 @@ begin
           TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
           Icon.SetSize(TextSize.cx, TextSize.cy);
           TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
-          Icon.Canvas.Brush.Color := clBtnFace;
+          if aDDC.Form <> nil then
+            Icon.Canvas.Brush.Color := aDDC.Form.Canvas.Brush.Color
+          else
+            Icon.Canvas.Brush.Color := clBtnFace;
           Icon.Canvas.FillRect(TextRect);
           DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
             DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
