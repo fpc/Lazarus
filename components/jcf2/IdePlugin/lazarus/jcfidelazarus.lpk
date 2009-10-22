@@ -22,7 +22,7 @@
     </CompilerOptions>
     <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
     <Version Major="2"/>
-    <Files Count="123">
+    <Files Count="122">
       <Item1>
         <Filename Value="jcfidemain.pas"/>
         <UnitName Value="JcfIdeMain"/>
@@ -481,41 +481,37 @@
         <UnitName Value="Delay"/>
       </Item114>
       <Item115>
-        <Filename Value="..\..\Utils\FileUtils.pas"/>
-        <UnitName Value="FileUtils"/>
-      </Item115>
-      <Item116>
         <Filename Value="..\..\Utils\IntList.pas"/>
         <UnitName Value="IntList"/>
-      </Item116>
-      <Item117>
+      </Item115>
+      <Item116>
         <Filename Value="..\..\Utils\JcfFontSetFunctions.pas"/>
         <UnitName Value="JcfFontSetFunctions"/>
-      </Item117>
-      <Item118>
+      </Item116>
+      <Item117>
         <Filename Value="..\..\Utils\JcfHelp.pas"/>
         <UnitName Value="JcfHelp"/>
-      </Item118>
-      <Item119>
+      </Item117>
+      <Item118>
         <Filename Value="..\..\Utils\JcfLog.pas"/>
         <UnitName Value="JcfLog"/>
-      </Item119>
-      <Item120>
+      </Item118>
+      <Item119>
         <Filename Value="..\..\Utils\JcfMiscFunctions.pas"/>
         <UnitName Value="JcfMiscFunctions"/>
-      </Item120>
-      <Item121>
+      </Item119>
+      <Item120>
         <Filename Value="..\..\Ui\fAbout.lfm"/>
         <Type Value="LFM"/>
-      </Item121>
-      <Item122>
+      </Item120>
+      <Item121>
         <Filename Value="..\..\Ui\fAbout.pas"/>
         <UnitName Value="fAbout"/>
-      </Item122>
-      <Item123>
+      </Item121>
+      <Item122>
         <Filename Value="..\..\JcfVersionConsts.pas"/>
         <UnitName Value="JcfVersionConsts"/>
-      </Item123>
+      </Item122>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

@@ -7,7 +7,7 @@ unit jcfidelazarus;
 interface
 
 uses
-  JcfIdeMain, JcfIdeRegister, AsmKeywords, BuildParseTree, BuildTokenList, 
+    JcfIdeMain, JcfIdeRegister, AsmKeywords, BuildParseTree, BuildTokenList, 
   ParseError, ParseTreeNode, ParseTreeNodeType, PreProcessorExpressionParser, 
   PreProcessorExpressionTokenise, PreProcessorExpressionTokens, 
   PreProcessorParseTree, SourceToken, SourceTokenList, Tokens, TokenUtils, 
@@ -32,7 +32,7 @@ uses
   JcfRegistrySettings, JcfSetBase, JcfSettings, SetAlign, SetAsm, SetCaps, 
   SetClarify, SetComments, SetIndent, SetObfuscate, SetPreProcessor, 
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
-  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, fileutils, IntList, 
+  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, 
   JcfFontSetFunctions, JcfHelp, JcfLog, JcfMiscFunctions, fAbout, 
   JcfVersionConsts, LazarusPackageIntf;
 
