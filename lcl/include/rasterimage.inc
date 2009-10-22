@@ -430,7 +430,10 @@ begin
   UnshareImage(False);
   Clear; // clear old saved stream, allocated handles, etc
   if ASize = 0
-  then Exit;
+  then begin
+    EndUpdate(False);
+    Exit;
+  end;
 
   WorkStream := nil;
   try
