@@ -215,7 +215,7 @@ begin
   OldChangeEvent := OnChange;
   try
     OnChange := nil;
-    LoadFromStream(FSharedImage.FSaveStream);
+    ReadStream(FSharedImage.FSaveStream, FSharedImage.FSaveStream.Size);
     FPixelFormatNeedsUpdate := True;
   finally
     OnChange := OldChangeEvent;
