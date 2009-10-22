@@ -3864,41 +3864,13 @@ var
   FMainUnitInfoValid: boolean;
   FMainOwner: TObject;
   FMainOwnerValid: boolean;
-  FForms: TStrings; // list of VarName:ClassName
-  
-  function ComponentIsAutoCreated(AComponent: TComponent): boolean;
-  var
-    i: Integer;
-    ID: String;
-  begin
-    Result:=false;
-    if AComponent=nil then exit;
-    ID:=AComponent.Name+':'+AComponent.ClassName;
-    for i:=0 to FForms.Count-1 do
-      if SysUtils.CompareText(ID,FForms[i])=0 then exit(true);
-  end;
-
-  function GatherCreateFormStatements: boolean;
-  // returns true if CurRoot is listed in the projects CreateForm statements
-  begin
-    Result:=false;
-    if (Project1=nil)
-    or (not (pfMainUnitHasCreateFormStatements in Project1.Flags))
-    or (Project1.MainUnitInfo=nil) or (Project1.MainUnitInfo.Source=nil)
-    then
-      exit;
-    FForms:=CodeToolBoss.ListAllCreateFormStatements(
-                                               Project1.MainUnitInfo.Source);
-    if (FForms=nil) or (FForms.Count=0) then exit;
-    Result:=true;
-  end;
 
   function MainUnitInfo: TUnitInfo;
   begin
     if not FMainUnitInfoValid then
     begin
       if CurRoot is TComponent then
-        FMainUnitInfo := Project1.UnitWithComponentName(TComponent(CurRoot).Name);
+        FMainUnitInfo := Project1.UnitWithComponent(TComponent(CurRoot));
       FMainUnitInfoValid := True;
     end;
     Result := FMainUnitInfo;
@@ -3936,9 +3908,7 @@ var
     FirstDependency: TPkgDependency;
   begin
     if (AnUnitInfo.Component=nil)
-    or (AnUnitInfo.Component=CurRoot)
-    or (MainOwner=nil)
-    or (not ComponentIsAutoCreated(AnUnitInfo.Component)) then
+    or (AnUnitInfo.Component=CurRoot) then
       exit;
     // check if the component can be used
     // A component can only be used, if it has a CreateForm statement in the lpr
@@ -4008,19 +3978,12 @@ begin
   FMainOwnerValid:=false;
   FMainUnitInfo:=nil;
   FMainUnitInfoValid:=false;
-  FForms:=nil;
-  try
-    // check CreateForm statements in lpr file
-    if not GatherCreateFormStatements then exit;
-
-    // search all open designer forms (can be hidden)
-    AnUnitInfo:=Project1.FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
-      CheckUnit(AnUnitInfo);
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
-    end;
-  finally
-    FForms.Free;
+  if (MainOwner=nil) or (MainUnitInfo=nil) then exit;
+  // search all open designer forms (can be hidden)
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    CheckUnit(AnUnitInfo);
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
 
