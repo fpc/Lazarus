@@ -9189,11 +9189,7 @@ function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
   Result := QWidget_create;
-  {$IFNDEF QTOPIA}
-  {$IFDEF LINUX}
   QWidget_setAutoFillBackground(Result, True);
-  {$ENDIF}
-  {$ENDIF}
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
