@@ -2474,6 +2474,8 @@ begin
             ClipHelper.ReadFromClipboard(PrimarySelection);
             if ClipHelper.TextP <> nil then begin
               MoveCaret;
+              if (not FBlockSelection.Persistent) then
+                FBlockSelection.Clear;
               Result := PasteFromClipboardEx(ClipHelper);
             end
             else
