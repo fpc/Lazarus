@@ -394,9 +394,9 @@ end;
 Procedure TPackageEditor.SelectElement(Sender : TDomElement);
 
 begin
-  If IsElementNode(Sender) then
+  If IsElementNode(Sender) or IsModuleNode(Sender) or IsPackageNode(Sender) then
     CurrentElement:=Sender
-  else // FModuleNode selected.
+  else // No valid node
     CurrentElement:=Nil;
   If Assigned(FOnSelectElement) then
     OnSelectElement(Sender);
@@ -419,10 +419,10 @@ end;
 
 Procedure TPackageEditor.SelectModule(Sender : TDomElement);
 begin
-  Inherited CurrentElement:=Nil;
   Inherited CurrentTopic:=Nil;
-  Inherited CurrentModule:=Sender;
   Inherited CurrentPackage:=FCurrentModule.ParentNode as TDomElement;
+  Inherited CurrentModule:=Sender;
+  Inherited CurrentElement:=Sender;
   ShowModuleElements(FCurrentModule);
   If Assigned(FOnSelectModule) then
     FOnSelectModule(Sender);
@@ -782,6 +782,7 @@ begin
   If Assigned(Module) then
     begin
     FModuleNode:=FElementTree.Items.Add(Nil,Module['name']);
+    FModuleNode.Data:=Module;
     S:=TStringList.Create;
     Try
       // get sorted list of elements
@@ -1116,7 +1117,10 @@ begin
   If (E<>FCurrentElement) and (E <> nil) then
     begin
     Inherited;
-    CurrentModule:=E.ParentNode as TDomElement;
+    If E.NodeName='module' then
+      CurrentModule:=E
+    else
+      CurrentModule:=E.ParentNode as TDomElement;
     SelNode:=FElementTree.Selected;
     //avoid selecting an already selected node (occurs in OnChange event)
     if (SelNode = nil) or (SelNode.Data <> Pointer(E)) then

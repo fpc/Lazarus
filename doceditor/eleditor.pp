@@ -622,7 +622,7 @@ end;
 Function TElementEditor.Save : Boolean;
 
 Var
-  SS : TStringStream;
+  SS : TStream;
   S : String;
   N,NN : TDomNode;
 
