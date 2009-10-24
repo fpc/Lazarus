@@ -343,9 +343,9 @@ begin
     if fChms.IndexOfObject(fChm) < 1 then
     begin
       {$IFDEF CHM_BINARY_INDEX_TOC}
-      SM := fChm.GetTOCSitemap;
+      SM := fChm.GetIndexSitemap;
       {$ELSE}
-      Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
+      Stream := TMemoryStream(fchm.GetObject(fChm.IndexFile));
       if Stream <> nil then begin
         SM := TChmSiteMap.Create(stTOC);
         SM.LoadFromStream(Stream);
