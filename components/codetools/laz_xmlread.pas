@@ -18,6 +18,7 @@ unit Laz_XMLRead;
 
 {$MODE objfpc}
 {$H+}
+{$inline on}
 
 interface
 
@@ -203,8 +204,10 @@ type
     function BufPosToLineCol(p: PChar): TPoint;
     function BufPosToStr(p: PChar): string;
     procedure RaiseExc(const descr: String);
+    procedure RaiseCharNotFound(c : char);
     function  SkipWhitespace: Boolean;
-    procedure ExpectWhitespace;
+    procedure ExpectWhitespace; inline;
+    procedure ExpectChar(c: char); inline;
     procedure ExpectString(const s: String);
     function  CheckFor(s: PChar): Boolean;
     function  CheckForChar(c: Char): Boolean;
@@ -306,6 +309,11 @@ begin
   raise Err;
 end;
 
+procedure TXMLReader.RaiseCharNotFound(c: char);
+begin
+  RaiseExc('Expected "' + c + '", found "' + buf^ + '"');
+end;
+
 function TXMLReader.SkipWhitespace: Boolean;
 begin
   Result := False;
@@ -320,6 +328,13 @@ procedure TXMLReader.ExpectWhitespace;
 begin
   if not SkipWhitespace then
     RaiseExc('Expected whitespace');
+end;
+
+procedure TXMLReader.ExpectChar(c: char);
+begin
+  if buf^ <> c then
+    RaiseCharNotFound(c);
+  Inc(buf);
 end;
 
 procedure TXMLReader.ExpectString(const s: String);
@@ -544,10 +559,10 @@ begin
   SetLength(Result, 0);
   if CheckForChar('''') then begin
     SkipString(PubidChars - ['''']);
-    ExpectString('''');
+    ExpectChar('''');
   end else if CheckForChar('"') then begin
     SkipString(PubidChars - ['"']);
-    ExpectString('"');
+    ExpectChar('"');
   end else
     RaiseExc('Expected quotation marks');
 end;
@@ -556,10 +571,10 @@ procedure TXMLReader.SkipPubidLiteral;
 begin
   if CheckForChar('''') then begin
     SkipString(PubidChars - ['''']);
-    ExpectString('''');
+    ExpectChar('''');
   end else if CheckForChar('"') then begin
     SkipString(PubidChars - ['"']);
-    ExpectString('"');
+    ExpectChar('"');
   end else
     RaiseExc('Expected quotation marks');
 end;
@@ -612,7 +627,7 @@ procedure TXMLReader.ExpectProlog;    // [22]
     repeat
       SkipWhitespace;
     until not (ParseMarkupDecl or ParsePEReference);
-    ExpectString(']');
+    ExpectChar(']');
   end;
 
 
@@ -632,12 +647,12 @@ begin
     begin
       Inc(buf);
       ParseVersionNum;
-      ExpectString('''');
+      ExpectChar('''');
     end else if buf[0] = '"' then
     begin
       Inc(buf);
       ParseVersionNum;
-      ExpectString('"');
+      ExpectChar('"');
     end else
       RaiseExc('Expected single or double quotation mark');
 
@@ -682,7 +697,7 @@ begin
     begin
       ParseDoctypeDecls;
       SkipWhitespace;
-      ExpectString('>');
+      ExpectChar('>');
     end else if not CheckForChar('>') then
     begin
       ParseExternalID;
@@ -692,7 +707,7 @@ begin
         ParseDoctypeDecls;
         SkipWhitespace;
       end;
-      ExpectString('>');
+      ExpectChar('>');
     end;
     ParseMisc(doc);
   end;
@@ -763,7 +778,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
             RaiseExc('Expected "|" or ","');
           Inc(buf);
         end else
-          ExpectString(delimiter);
+          ExpectChar(delimiter);
         SkipWhitespace;
         ExpectCP;
       end;
@@ -786,7 +801,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
           SkipWhitespace;
           if not CheckForChar(')') then
             repeat
-              ExpectString('|');
+              ExpectChar('|');
               SkipWhitespace;
               SkipName;
             until CheckFor(')*');
@@ -803,7 +818,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
         RaiseExc('Invalid content specification');
 
       SkipWhitespace;
-      ExpectString('>');
+      ExpectChar('>');
       Result := True;
     end else
       Result := False;
@@ -832,12 +847,12 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
         else if CheckFor('NMTOKENS') then
         else if CheckFor('NOTATION') then begin   // [57], [58]
           ExpectWhitespace;
-          ExpectString('(');
+          ExpectChar('(');
           SkipWhitespace;
           SkipName;
           SkipWhitespace;
           while not CheckForChar(')') do begin
-            ExpectString('|');
+            ExpectChar('|');
             SkipWhitespace;
             SkipName;
             SkipWhitespace;
@@ -847,7 +862,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
           SkipString(Nmtoken);
           SkipWhitespace;
           while not CheckForChar(')') do begin
-            ExpectString('|');
+            ExpectChar('|');
             SkipWhitespace;
             SkipString(Nmtoken);
             SkipWhitespace;
@@ -924,7 +939,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
         end;
       end;
       SkipWhitespace;
-      ExpectString('>');
+      ExpectChar('>');
       Result := True;
     end else
       Result := False;
@@ -943,7 +958,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
       end else
         RaiseExc('Expected external or public ID');
       SkipWhitespace;
-      ExpectString('>');
+      ExpectChar('>');
       Result := True;
     end else
       Result := False;
@@ -1072,7 +1087,7 @@ var
       if FoundName <> name then
         RaiseExc('Unmatching element end tag (expected "</' + name + '>", found "</'+FoundName+'>", start tag at '+BufPosToStr(StartPos)+')');
       SkipWhitespace;
-      ExpectString('>');
+      ExpectChar('>');
     end;
 
     {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('  CreateNameElement END');{$ENDIF}
@@ -1109,7 +1124,7 @@ function TXMLReader.ParsePEReference: Boolean;    // [69]
 begin
   if CheckForChar('%') then begin
     SkipName;
-    ExpectString(';');
+    ExpectChar(';');
     Result := True;
   end else
     Result := False;
@@ -1130,7 +1145,7 @@ begin
       while buf[0] in ['0'..'9'] do Inc(buf);
   end else
     AOwner.AppendChild(doc.CreateEntityReference(ExpectName));
-  ExpectString(';');
+  ExpectChar(';');
   Result := True;
 end;
 
@@ -1154,7 +1169,7 @@ function TXMLReader.ParseExternalID: Boolean;    // [75]
         Inc(buf);
       end;
       Result := GetString(OldBuf,buf-OldBuf);
-      ExpectString('''');
+      ExpectChar('''');
     end else if buf[0] = '"' then begin
       Inc(buf);
       OldBuf := buf;
@@ -1162,7 +1177,7 @@ function TXMLReader.ParseExternalID: Boolean;    // [75]
         Inc(buf);
       end;
       Result := GetString(OldBuf,buf-OldBuf);
-      ExpectString('"');
+      ExpectChar('"');
     end else
       Result:='';
   end;
@@ -1174,13 +1189,13 @@ function TXMLReader.ParseExternalID: Boolean;    // [75]
       while (buf[0] <> '''') and (buf[0] <> #0) do begin
         Inc(buf);
       end;
-      ExpectString('''');
+      ExpectChar('''');
     end else if buf[0] = '"' then begin
       Inc(buf);
       while (buf[0] <> '"') and (buf[0] <> #0) do begin
         Inc(buf);
       end;
-      ExpectString('"');
+      ExpectChar('"');
     end;
   end;
 
@@ -1226,11 +1241,11 @@ begin
     if buf[0] = '''' then begin
       Inc(buf);
       Result := ParseEncName;
-      ExpectString('''');
+      ExpectChar('''');
     end else if buf[0] = '"' then begin
       Inc(buf);
       Result := ParseEncName;
-      ExpectString('"');
+      ExpectChar('"');
     end;
   end;
 end;
@@ -1252,11 +1267,11 @@ begin
     if buf[0] = '''' then begin
       Inc(buf);
       ParseEncName;
-      ExpectString('''');
+      ExpectChar('''');
     end else if buf[0] = '"' then begin
       Inc(buf);
       ParseEncName;
-      ExpectString('"');
+      ExpectChar('"');
     end;
   end;
 end;
