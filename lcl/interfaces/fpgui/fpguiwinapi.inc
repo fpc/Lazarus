@@ -46,12 +46,17 @@ begin
   {$ifdef VerboseFPGUIWinAPI}
     WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
-
+  {$WARNING TFpGuiWidgetSet.BeginPaint Temporary Fix to prevent Crashing}
+  try
   if PrivateWidget <> nil then
     DC := TFpGuiDeviceContext.Create(PrivateWidget.Widget.Canvas)
   else
     DC := TFpGuiDeviceContext.Create(nil);
-
+    if PrivateWidget <> nil then
+    WriteLn(PrivateWidget.ClassName);
+  except
+    DC := TFpGuiDeviceContext.Create(nil);
+  end;
   PS.hdc := HDC(DC);
 
   Result := PS.hdc;

@@ -27,6 +27,8 @@ unit FpGuiWSControls;
 interface
 
 uses
+  // FCL
+  Classes,
   // Bindings
   fpguiwsprivate,
   // LCL
@@ -62,6 +64,8 @@ type
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
   public
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -156,6 +160,34 @@ begin
   FPWIdget.Invalidate;
 end;
 
+class function TFpGuiWSWinControl.GetClientBounds(
+  const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+var
+  Widget: TFPGWidget;
+begin
+  Widget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+
+  if Widget = nil then
+    Exit;
+
+  with Widget do ARect :=Rect(Left, Top, Width, Height);
+  REsult := True;
+end;
+
+class function TFpGuiWSWinControl.GetClientRect(const AWincontrol: TWinControl;
+  var ARect: TRect): Boolean;
+var
+  Widget: TFPGWidget;
+begin
+  Widget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+
+  if Widget = nil then
+    Exit;
+
+  with Widget do ARect :=Rect(Left, Top, Width, Height);
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFpGuiWSWinControl.SetBounds
   Params:  AWinControl - the calling object
@@ -187,8 +219,8 @@ class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
 var
   FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWIdget.SetPosition(ALeft, ATop, AWinControl.Width, AWinControl.Height);
+  with TFPGUIPrivateWidget(AWinControl.Handle).Widget
+  do SetPosition(ALeft, ATop, AWinControl.Width, AWinControl.Height);
 end;
 
 {------------------------------------------------------------------------------

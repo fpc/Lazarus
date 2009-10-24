@@ -153,9 +153,9 @@ begin
     WriteLn('TFpGuiWSCustomForm.DestroyHandle');
   {$endif}
 
-//  TFPGUIPrivateWindow(AWinControl.Handle).Free;
+  TFPGUIPrivateWindow(AWinControl.Handle).Free;
 
-//  AWinControl.Handle := 0;
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

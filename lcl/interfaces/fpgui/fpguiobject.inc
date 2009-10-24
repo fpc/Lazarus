@@ -15,6 +15,47 @@
 }
 //---------------------------------------------------------------
 
+type
+
+    { TFPGUITimer }
+
+    TFPGUITimer = class
+  private
+    FLCLTimer: TTimer;
+    FTimer: TfpgTimer;
+    FCallback: TFNTimerProc;
+  protected
+    procedure FPGTimer(Sender: TObject);
+  public
+    constructor Create(AInterval: Integer; ACallbackFunc: TFNTimerProc);
+    destructor  Destroy; override;
+
+    property Timer : TfpgTimer read FTimer;
+  end;
+
+{ TFPGUITimer }
+
+procedure TFPGUITimer.FPGTimer(Sender: TObject);
+begin
+  if Assigned(FCallback) then
+    FCallback;
+end;
+
+constructor TFPGUITimer.Create(AInterval: Integer; ACallbackFunc: TFNTimerProc);
+begin
+  FTimer := TfpgTimer.Create(AInterval);
+  FTimer.OnTimer:=@FPGTimer;
+  FCallback := ACallbackFunc;
+  FTimer.Enabled:= True;
+end;
+
+destructor TFPGUITimer.Destroy;
+begin
+  FTimer.Free;
+  inherited Destroy;
+end;
+
+
 {------------------------------------------------------------------------------
   Method: TFpGuiWidgetSet.Create
   Params:  None
@@ -51,8 +92,12 @@ end;
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
 function TFpGuiWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+var
+  Timer: TFPGUITimer;
 begin
-  Result := PtrInt(0);
+  Timer := TFPGUITimer.Create(Interval, TimerFunc);
+
+  Result := PtrInt(Timer);
 end;
 
 {------------------------------------------------------------------------------
@@ -63,7 +108,12 @@ end;
   Destroys a timer.
  ------------------------------------------------------------------------------}
 function TFpGuiWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+var
+  Timer: TFPGUITimer absolute TimerHandle;
 begin
+  if Timer <> nil then
+    Timer.Free;
+
   Result := True;
 end;
 
@@ -114,6 +164,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFpGuiWidgetSet.AppWaitMessage;
 begin
+  fpgWaitWindowMessage;
 end;
 
 {------------------------------------------------------------------------------

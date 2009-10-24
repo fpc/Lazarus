@@ -34,13 +34,13 @@ interface
 uses
   // LCL
   LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
-  LCLIntf, Menus,
+  LCLIntf, Menus, Dialogs, ExtCtrls,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
   fpg_widget, fpg_form, fpg_button, fpg_combobox, fpg_dialogs,
   fpg_edit, fpg_checkbox, fpg_radiobutton, fpg_tab, fpg_memo,
-  fpg_menu;
+  fpg_menu, fpg_base;
 
 
 type
@@ -57,6 +57,10 @@ type
     function _Release : longint;stdcall;
   end;
 
+  { To access protected properties of TfpgWidget }
+  TFPGWidgetHack = class(TfpgWidget)
+  end;
+
   { TFPGUIPrivateWidget }
   { Private class for widgets }
 
@@ -65,7 +69,29 @@ type
     FWidget: TfpgWidget;
     FLCLObject: TWinControl;
     function GetVisible: Boolean;
+    function GetWidgetProtected: TFPGWidgetHack;
     procedure SetVisible(const AValue: Boolean);
+    { Handlers for default properties common to all TfpgWidget descendants}
+    procedure PaintHandler(Sender: TObject{; const ARect: TfpgRect});
+    procedure ClickHandler(Sender: TObject);
+    procedure ResizeHandler(Sender: TObject);
+    procedure MoveHandler(Sender: TObject);
+    procedure EnterHandler(Sender: TObject);
+    procedure ExitHandler(Sender: TObject);
+    procedure   MsgPaint(var fpgmsg: TfpgMessageRec); message FPGM_PAINT;
+    procedure   MsgResize(var fpgmsg: TfpgMessageRec); message FPGM_RESIZE;
+    procedure   MsgMove(var fpgmsg: TfpgMessageRec); message FPGM_MOVE;
+    procedure   MsgKeyChar(var fpgmsg: TfpgMessageRec); message FPGM_KEYCHAR;
+    procedure   MsgKeyPress(var fpgmsg: TfpgMessageRec); message FPGM_KEYPRESS;
+    procedure   MsgKeyRelease(var fpgmsg: TfpgMessageRec); message FPGM_KEYRELEASE;
+    procedure   MsgMouseDown(var fpgmsg: TfpgMessageRec); message FPGM_MOUSEDOWN;
+    procedure   MsgMouseUp(var fpgmsg: TfpgMessageRec); message FPGM_MOUSEUP;
+    procedure   MsgMouseMove(var fpgmsg: TfpgMessageRec); message FPGM_MOUSEMOVE;
+    procedure   MsgDoubleClick(var fpgmsg: TfpgMessageRec); message FPGM_DOUBLECLICK;
+    procedure   MsgMouseEnter(var fpgmsg: TfpgMessageRec); message FPGM_MOUSEENTER;
+    procedure   MsgMouseExit(var fpgmsg: TfpgMessageRec); message FPGM_MOUSEEXIT;
+    procedure   MsgMouseScroll(var fpgmsg: TfpgMessageRec); message FPGM_SCROLL;
+    //procedure MouseDown
   protected
     { Helper methods for descendents }
     function GetParentContainerWidget: TfpgWidget;
@@ -74,7 +100,7 @@ type
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
     { Virtual methods }
-    procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
+    procedure CreateWidget(const AParams: TCreateParams); virtual;
     procedure SetEvents; virtual;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
@@ -86,6 +112,7 @@ type
     property LCLObject: TWinControl read FLCLObject;
     property Visible: Boolean read GetVisible write SetVisible;
     property Widget: TfpgWidget read FWidget write FWidget;
+    property WidgetProtected: TFPGWidgetHack read GetWidgetProtected;
   end;
 
 
@@ -120,7 +147,6 @@ type
   TFPGUIPrivateWindow = class(TFPGUIPrivateBin)
   private
     { Event Handlers }
-    procedure PaintHandler(Sender: TObject{; const ARect: TfpgRect});
     procedure CloseHandler(Sender: TObject; var CloseAction: TCloseAction);
   protected
   public
@@ -145,9 +171,75 @@ type
   { TFPGUIPrivateDialog }
   { Private class for dialogs }
 
-  TFPGUIPrivateDialog = class(TfpgBaseDialog)
+  { TFPGUIPrivateCommonDialog }
+
+  TFPGUIPrivateCommonDialog = class(TFPGUIPrivate)
+  private
+    FDialog: TfpgBaseDialog;
+    FLCLDialog: TCommonDialog;
+  protected
+    procedure   CreateDialog; virtual;
+    function    InternalShowDialog: Boolean; virtual;
+    procedure   UpdatePropsBefore; virtual;
+    procedure   UpdatePropsAfter; virtual;
+  public
+    constructor Create(ALCLDialog: TCommonDialog); virtual;
+    destructor  Destroy; override;
+
+    function    ShowDialog: Boolean;
+
+    property Dialog: TfpgBaseDialog read FDialog write FDialog;
+    property LCLDialog: TCommonDialog read FLCLDialog;
+  end;
+
+  { TFPGUIPrivateFileDialog }
+
+  { TFPGUIPrivateFontDialog }
+
+  TFPGUIPrivateFontDialog = class(TFPGUIPrivateCommonDialog)
+  protected
+    procedure CreateDialog; override;
+    function  InternalShowDialog: Boolean; override;
+    procedure UpdatePropsBefore; override;
+    procedure UpdatePropsAfter; override;
+  public
+    function  FontDialog: TfpgFontSelectDialog;
+  end;
+
+  { TFPGUIPrivateFileDialog }
+
+  TFPGUIPrivateFileDialog = class(TFPGUIPrivateCommonDialog)
   private
   protected
+    procedure UpdatePropsBefore; override;
+    procedure UpdatePropsAfter; override;
+    procedure CreateDialog; override;
+  public
+    function  FileDialog: TfpgFileDialog;
+    function  LCLFileDialog: TFileDialog;
+  end;
+
+  { TFPGUIOpenDialog }
+  { Private class for dialogs }
+
+  { TFPGUIPrivateOpenDialog }
+
+  TFPGUIPrivateOpenDialog = class(TFPGUIPrivateFileDialog)
+  private
+  protected
+    function InternalShowDialog: Boolean; override;
+  public
+  end;
+
+  { TFPGUIPrivateDialog }
+  { Private class for dialogs }
+
+  { TFPGUIPrivateSaveDialog }
+
+  TFPGUIPrivateSaveDialog = class(TFPGUIPrivateFileDialog)
+  private
+  protected
+    function InternalShowDialog: Boolean; override;
   public
   end;
 
@@ -164,7 +256,6 @@ type
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
-    procedure SetEvents; override;
     function  HasStaticText: Boolean; override;
     procedure SetText(const AText: String); override;
     function  GetText: String; override;
@@ -178,9 +269,13 @@ type
   TFPGUIPrivateComboBox = class(TFPGUIPrivateWidget)
   private
   protected
+    procedure HandleChange(Sender: TObject);
+    procedure HandleDropDown(Sender: TObject);
+    procedure HandleCloseUp(Sender: TObject);
   public
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure SetEvents; override;
   public
     { Other methods }
     function ComboBox: TfpgComboBox;
@@ -208,12 +303,14 @@ type
   TFPGUIPrivateCheckBox = class(TFPGUIPrivateWidget)
   private
   protected
+    procedure HandleChange(Sender: TObject);
   public
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
     function  HasStaticText: Boolean; override;
     procedure SetText(const AText: String); override;
     function  GetText: String; override;
+    procedure SetEvents; override;
   public
     { Other methods }
     function CheckBox: TfpgCheckBox;
@@ -281,7 +378,7 @@ type
 implementation
 
 uses
-  LCLMessageGlue, fpg_base;
+  LCLMessageGlue, fpg_main;
 
 { TFPGUIPrivate }
 
@@ -302,6 +399,180 @@ begin
   Widget.Visible := AValue;
 end;
 
+procedure TFPGUIPrivateWidget.PaintHandler(Sender: TObject{; const ARect: TfpgRect});
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+begin
+  {$ifdef VerboseFPGUIPrivate}
+    WriteLn('TFPGUIPrivateWindow.PaintHandler');
+  {$endif}
+
+  if (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    Msg.PaintStruct := AStruct;
+    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+
+//    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+    Msg.PaintStruct^.hdc := Msg.DC;
+
+
+    // send paint message
+    try
+      // Saving clip rect and clip region
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        EndPaint(THandle(Self), AStruct^);
+        Dispose(AStruct);
+      end;
+    except
+      Application.HandleException(nil);
+    end;
+  end;
+
+
+end;
+
+procedure TFPGUIPrivateWidget.ClickHandler(Sender: TObject);
+begin
+  LCLSendClickedMsg(LCLObject);
+end;
+
+procedure TFPGUIPrivateWidget.ResizeHandler(Sender: TObject);
+begin
+  LCLSendSizeMsg(LCLObject, Widget.Width, Widget.Height, SIZENORMAL);
+end;
+
+procedure TFPGUIPrivateWidget.MoveHandler(Sender: TObject);
+begin
+  LCLSendMoveMsg(LCLObject, Widget.Left, Widget.Top);
+end;
+
+procedure TFPGUIPrivateWidget.EnterHandler(Sender: TObject);
+begin
+
+end;
+
+procedure TFPGUIPrivateWidget.ExitHandler(Sender: TObject);
+begin
+
+end;
+
+procedure TFPGUIPrivateWidget.MsgPaint(var fpgmsg: TfpgMessageRec);
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+begin
+  {$ifdef VerboseFPGUIPrivate}
+    WriteLn('TFPGUIPrivateWindow.PaintHandler');
+  {$endif}
+
+  if (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    Msg.PaintStruct := AStruct;
+    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+
+//    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+    Msg.PaintStruct^.hdc := Msg.DC;
+
+
+    // send paint message
+    try
+      // Saving clip rect and clip region
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        EndPaint(THandle(Self), AStruct^);
+        Dispose(AStruct);
+      end;
+    except
+      Application.HandleException(nil);
+    end;
+  end;end;
+
+procedure TFPGUIPrivateWidget.MsgResize(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendSizeMsg(LCLObject, fpgmsg.Params.rect.Width, fpgmsg.Params.rect.Height, SIZENORMAL);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMove(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMoveMsg(LCLObject, fpgmsg.Params.rect.Left, fpgmsg.Params.rect.Top);
+end;
+
+procedure TFPGUIPrivateWidget.MsgKeyChar(var fpgmsg: TfpgMessageRec);
+begin
+
+end;
+
+procedure TFPGUIPrivateWidget.MsgKeyPress(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendKeyDownEvent(LCLObject, fpgmsg.Params.keyboard.keycode, fpgmsg.Params.keyboard.keycode, True, True);
+end;
+
+procedure TFPGUIPrivateWidget.MsgKeyRelease(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendKeyUpEvent(LCLObject, fpgmsg.Params.keyboard.keycode, fpgmsg.Params.keyboard.keycode, True, True);
+end;
+
+function fpgMouseButtonToTButton(AButton: Word): Controls.TMouseButton;
+begin
+  case AButton of
+    MOUSE_LEFT: Result := Controls.mbLeft;
+    MOUSE_MIDDLE: Result := Controls.mbMiddle;
+    MOUSE_RIGHT: Result := Controls.mbRight;
+  else
+    Result := Controls.mbExtra1;
+
+  end;
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseDown(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseDownMsg(LCLObject, fpgmsg.Params.mouse.x, fpgmsg.Params.mouse.y,fpgMouseButtonToTButton(fpgmsg.Params.mouse.Buttons), fpgmsg.Params.mouse.shiftstate);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseUp(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseUpMsg(LCLObject, fpgmsg.Params.mouse.x, fpgmsg.Params.mouse.y,fpgMouseButtonToTButton(fpgmsg.Params.mouse.Buttons), fpgmsg.Params.mouse.shiftstate);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseMove(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseMoveMsg(LCLObject, fpgmsg.Params.mouse.x, fpgmsg.Params.mouse.y, fpgmsg.Params.mouse.shiftstate);
+end;
+
+procedure TFPGUIPrivateWidget.MsgDoubleClick(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseMultiClickMsg(LCLObject, fpgmsg.Params.mouse.x, fpgmsg.Params.mouse.y, fpgMouseButtonToTButton(fpgmsg.Params.mouse.Buttons), 2, fpgmsg.Params.mouse.shiftstate);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseEnter(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseEnterMsg(LCLObject);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseExit(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseLeaveMsg(LCLObject);
+end;
+
+procedure TFPGUIPrivateWidget.MsgMouseScroll(var fpgmsg: TfpgMessageRec);
+begin
+  LCLSendMouseWheelMsg(LCLObject, fpgmsg.Params.mouse.x, fpgmsg.Params.mouse.y,fpgmsg.Params.mouse.delta, fpgmsg.Params.mouse.shiftstate);
+end;
+
 function TFPGUIPrivateWidget.GetParentContainerWidget: TfpgWidget;
 begin
   // Note, if the Handle of the parent doesn't exist, it's automatically
@@ -317,11 +588,18 @@ begin
   Result := Widget.Visible;
 end;
 
+function TFPGUIPrivateWidget.GetWidgetProtected: TFPGWidgetHack;
+begin
+  REsult := TFPGWidgetHack(FWidget);
+end;
+
 constructor TFPGUIPrivateWidget.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   FLCLObject := ALCLObject;
 
   CreateWidget(AParams);
+
+  Widget.SetPosition(AParams.X, AParams.Y, AParams.Width, AParams.Height);
   
   SetEvents;
 end;
@@ -333,9 +611,35 @@ begin
   inherited Destroy;
 end;
 
+procedure TFPGUIPrivateWidget.CreateWidget(const AParams: TCreateParams);
+begin
+  Widget := TfpgWidget.Create(nil);
+end;
+
 procedure TFPGUIPrivateWidget.SetEvents;
 begin
-
+  //WidgetProtected.OnPaint := PaintHandler;
+  WidgetProtected.OnClick := ClickHandler;
+  //WidgetProtected.OnResize:= ResizeHandler;
+  //WidgetProtected.OnMove  := MoveHandler;
+  fpgApplication.SetMessageHook(Widget, FPGM_PAINT, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_ACTIVATE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_DEACTIVATE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_KEYPRESS, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_KEYRELEASE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_KEYCHAR, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOUSEDOWN, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOUSEUP, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOUSEMOVE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_DOUBLECLICK, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOUSEENTER, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOUSEEXIT, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_CLOSE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_SCROLL, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_RESIZE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_MOVE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_POPUPCLOSE, Self);
+  fpgApplication.SetMessageHook(Widget, FPGM_HINTTIMER, Self);
 end;
 
 procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
@@ -428,48 +732,13 @@ end;
 
   Sends a LM_PAINT message to the LCL. This is for windowed controls only
  ------------------------------------------------------------------------------}
-procedure TFPGUIPrivateWindow.PaintHandler(Sender: TObject);
-var
-  Msg: TLMPaint;
-  AStruct: PPaintStruct;
-begin
-  {$ifdef VerboseFPGUIPrivate}
-    WriteLn('TFPGUIPrivateWindow.PaintHandler');
-  {$endif}
-  
-  if (LCLObject is TWinControl) then
-  begin
-    FillChar(Msg, SizeOf(Msg), #0);
-
-    Msg.Msg := LM_PAINT;
-    New(AStruct);
-    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
-    Msg.PaintStruct := AStruct;
-    Msg.DC := BeginPaint(THandle(Self), AStruct^);
-
-//    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
-    Msg.PaintStruct^.hdc := Msg.DC;
-
-
-    // send paint message
-    try
-      // Saving clip rect and clip region
-      try
-        LCLObject.WindowProc(TLMessage(Msg));
-      finally
-        EndPaint(THandle(Self), AStruct^);
-        Dispose(AStruct);
-      end;
-    except
-      Application.HandleException(nil);
-    end;
-  end;
-end;
 
 procedure TFPGUIPrivateWindow.CloseHandler(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   CloseAction := caFree;
+  if LCLSendCloseQueryMsg(LCLObject) = 0 then
+    CloseAction := caNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -510,8 +779,6 @@ end;
 procedure TFPGUIPrivateWindow.SetEvents;
 begin
   inherited SetEvents;
-
-  Form.OnPaint := PaintHandler;
   Form.OnClose := CloseHandler;
 end;
 
@@ -594,16 +861,6 @@ begin
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TFPGUIPrivateButton.SetEvents
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TFPGUIPrivateButton.SetEvents;
-begin
-  Button.OnClick := Clicked;
-end;
-
 function TFPGUIPrivateButton.HasStaticText: Boolean;
 begin
   Result := True;
@@ -651,6 +908,21 @@ begin
   Result := TfpgComboBox(Widget);
 end;
 
+procedure TFPGUIPrivateComboBox.HandleChange(Sender: TObject);
+begin
+  LCLSendSelectionChangedMsg(LCLObject);
+end;
+
+procedure TFPGUIPrivateComboBox.HandleDropDown(Sender: TObject);
+begin
+  LCLSendDropDownMsg(LCLObject);
+end;
+
+procedure TFPGUIPrivateComboBox.HandleCloseUp(Sender: TObject);
+begin
+  LCLSendCloseUpMsg(LCLObject);
+end;
+
 {------------------------------------------------------------------------------
   Method: TFPGUIPrivateComboBox.CreateWidget
   Params:  None
@@ -660,6 +932,14 @@ procedure TFPGUIPrivateComboBox.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := TfpgComboBox.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+procedure TFPGUIPrivateComboBox.SetEvents;
+begin
+  inherited SetEvents;
+  ComboBox.OnChange     := HandleChange;
+  ComboBox.OnDropDown   := HandleDropDown;
+  ComboBox.OnCloseUp    := HandleCloseUp;
 end;
 
 { TFPGUIPrivateEdit }
@@ -717,6 +997,11 @@ begin
   Result := TfpgCheckBox(Widget);
 end;
 
+procedure TFPGUIPrivateCheckBox.HandleChange(Sender: TObject);
+begin
+  LCLSendChangedMsg(LCLObject);
+end;
+
 procedure TFPGUIPrivateCheckBox.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := TfpgCheckBox.Create(GetParentContainerWidget());
@@ -736,6 +1021,12 @@ end;
 function TFPGUIPrivateCheckBox.GetText: String;
 begin
   Result := CheckBox.Text;
+end;
+
+procedure TFPGUIPrivateCheckBox.SetEvents;
+begin
+  inherited SetEvents;
+  CheckBox.OnChange := HandleChange;
 end;
 
 { TFPGUIPrivateRadioButton }
@@ -824,6 +1115,126 @@ end;
 procedure TFPGUIPrivatePopUpMenu.PopUp(X, Y: Integer);
 begin
   PopUpMenu.ShowAt(PopUpMenu, X, Y);
+end;
+
+{ TFPGUIPrivateCommonDialog }
+
+constructor TFPGUIPrivateCommonDialog.Create(ALCLDialog: TCommonDialog);
+begin
+  FLCLDialog := ALCLDialog;
+  CreateDialog;
+  WriteLn('Created ', ClassNAme, ':', Dialog.ClassName);
+end;
+
+destructor TFPGUIPrivateCommonDialog.Destroy;
+begin
+  Dialog.Free;
+  inherited Destroy;
+end;
+
+procedure TFPGUIPrivateCommonDialog.CreateDialog;
+begin
+  Dialog := TfpgBaseDialog.Create(nil);
+end;
+
+function TFPGUIPrivateCommonDialog.InternalShowDialog: Boolean;
+begin
+  Result := Dialog.ShowModal = 1;
+end;
+
+procedure TFPGUIPrivateCommonDialog.UpdatePropsBefore;
+begin
+  Dialog.WindowTitle := LCLDialog.Title;
+end;
+
+procedure TFPGUIPrivateCommonDialog.UpdatePropsAfter;
+begin
+
+end;
+
+function TFPGUIPrivateCommonDialog.ShowDialog: Boolean;
+begin
+  UpdatePropsBefore;
+  Result := InternalShowDialog;
+  LCLDialog.UserChoice := Dialog.ModalResult;
+  UpdatePropsAfter;
+end;
+
+{ TFPGUIPrivateFileDialog }
+
+procedure TFPGUIPrivateFileDialog.UpdatePropsBefore;
+
+
+begin
+  inherited UpdatePropsBefore;
+  FileDialog.Filter := LCLFileDialog.Filter;
+  if Length(LCLFileDialog.FileName) <>  0 then
+    FileDialog.FileName := LCLFileDialog.FileName
+  else
+    FileDialog.FileName := LCLFileDialog.InitialDir;
+end;
+
+procedure TFPGUIPrivateFileDialog.UpdatePropsAfter;
+begin
+  inherited UpdatePropsAfter;
+  LCLFileDialog.FileName := FileDialog.FileName;
+  //LCLFileDialog.Files.Assign(FileDialog.);
+end;
+
+procedure TFPGUIPrivateFileDialog.CreateDialog;
+begin
+  Dialog := TfpgFileDialog.Create(nil);
+end;
+
+function TFPGUIPrivateFileDialog.FileDialog: TfpgFileDialog;
+begin
+  Result :=TfpgFileDialog(Dialog);
+end;
+
+function TFPGUIPrivateFileDialog.LCLFileDialog: TFileDialog;
+begin
+  Result := TFileDialog(LCLDialog) ;
+end;
+
+{ TFPGUIPrivateOpenDialog }
+
+function TFPGUIPrivateOpenDialog.InternalShowDialog: Boolean;
+begin
+  Result:=FileDialog.RunOpenFile;
+end;
+
+{ TFPGUIPrivateSaveDialog }
+
+function TFPGUIPrivateSaveDialog.InternalShowDialog: Boolean;
+begin
+  Result:=FileDialog.RunSaveFile;
+end;
+
+{ TFPGUIPrivateFontDialog }
+
+procedure TFPGUIPrivateFontDialog.CreateDialog;
+begin
+  Dialog := TfpgFontSelectDialog.Create(nil);
+end;
+
+function TFPGUIPrivateFontDialog.InternalShowDialog: Boolean;
+begin
+  FontDialog.ShowModal;
+end;
+
+procedure TFPGUIPrivateFontDialog.UpdatePropsBefore;
+begin
+  inherited;
+end;
+
+procedure TFPGUIPrivateFontDialog.UpdatePropsAfter;
+begin
+  inherited;
+end;
+
+function TFPGUIPrivateFontDialog.FontDialog: TfpgFontSelectDialog;
+begin
+  Result := TfpgFontSelectDialog(Dialog);
 end;
 
 end.

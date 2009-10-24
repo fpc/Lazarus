@@ -319,7 +319,7 @@ var
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
-  Result := vComboBox.FocusItem-1;    // TfpgComboBox is 1-based
+  Result := vComboBox.FocusItem;
 end;
 
 {------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ var
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
-  vComboBox.FocusItem := NewIndex+1;    // TfpgComboBox is 1-based
+  vComboBox.FocusItem := NewIndex;
 end;
 
 {------------------------------------------------------------------------------

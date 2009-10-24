@@ -5,7 +5,7 @@ unit FpGuiWSFactory;
 interface
 
 uses
-  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls,
+  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs,
   WSLCLClasses;
 
 // imglist
@@ -104,7 +104,8 @@ uses
  FpGuiWSExtCtrls,
  FpGuiWSForms,
  FpGuiWSMenus,
- FpGuiWSStdCtrls;
+ FpGuiWSStdCtrls,
+ FpGuiWSDialogs;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -199,22 +200,26 @@ end;
 // dialogs
 function RegisterCommonDialog: Boolean; alias : 'WSRegisterCommonDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TCommonDialog, TFpGuiWSCommonDialog);
+  Result := True;
 end;
 
 function RegisterFileDialog: Boolean; alias : 'WSRegisterFileDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TFileDialog, TFpGuiWSFileDialog);
+  Result := True;
 end;
 
 function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TOpenDialog, TFpGuiWSOpenDialog);
+  Result := True;
 end;
 
 function RegisterSaveDialog: Boolean; alias : 'WSRegisterSaveDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TSaveDialog, TFpGuiWSSaveDialog);
+  Result := True;
 end;
 
 function RegisterSelectDirectoryDialog: Boolean; alias : 'WSRegisterSelectDirectoryDialog';
@@ -234,7 +239,8 @@ end;
 
 function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TFontDialog, TFpGuiWSFontDialog);
+  Result := True;
 end;
 
 // StdCtrls
