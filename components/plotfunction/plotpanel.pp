@@ -903,8 +903,8 @@ begin
   Until Y<=EY;
   if AVAxis.DrawZero and ((AVAxis.Origin<0) and ((AVAxis.Origin+AVAxis.Interval)>0)) then
     begin
-    Y:=OY-Round((OY-EY)*Abs(AHAxis.Origin)/AHAxis.Interval);
-    ACanvas.Pen.Color:=AHAxis.TickColor;
+    Y:=OY-Round((OY-EY)*Abs(AVAxis.Origin)/AVAxis.Interval);
+    ACanvas.Pen.Color:=AVAxis.TickColor;
     ACanvas.Line(OX,Y,EX,Y);
     end;
   L:=AVAxis.Caption.Title;
