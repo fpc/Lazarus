@@ -45,6 +45,11 @@ interface
 
 { $DEFINE ShowCodeBeautifier}
 { $DEFINE ShowCodeBeautifierParser}
+{ $DEFINE ShowCodeBeautifierLearn}
+
+{$IFDEF ShowCodeBeautifierParser}
+{$DEFINE ShowCodeBeautifierLearn}
+{$ENDIF}
 
 uses
   Classes, SysUtils, AVL_Tree, FileProcs, KeywordFuncLists, CodeCache,
@@ -133,24 +138,29 @@ type
     IndentValid: boolean;
   end;
 
-  TFABFoundIndentationPolicy = record
+  TFABFoundIndentationPolicy = packed record
+    Typ, SubTyp: TFABBlockType;
     Indent: integer;
-    Types: array[TFABBlockType] of TFABBlockTypes;
-    AllTypes: TFABBlockTypes;
   end;
+  PFABFoundIndentationPolicy = ^TFABFoundIndentationPolicy;
 
   { TFABPolicies }
 
   TFABPolicies = class
+  private
+    function FindIndentation(Typ, SubType: TFABBlockType;
+                             out InsertPos: integer): boolean;
   public
-    Indentations: array of TFABFoundIndentationPolicy;
+    IndentationCount, IndentationCapacity: integer;
+    Indentations: PFABFoundIndentationPolicy;
     Code: TCodeBuffer;
     CodeChangeStep: integer;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AddIndent(Typ, SubType: TFABBlockType; Indent: integer);
+    procedure AddIndent(Typ, SubType: TFABBlockType; SrcPos, Indent: integer);
     function GetSmallestIndent(Typ: TFABBlockType): integer;// -1 if none found
+    function CodePosToStr(p: integer): string;
   end;
 
 type
@@ -384,7 +394,7 @@ var
   AtomStart: integer;
   FirstAtomOnNewLine: Boolean;
 
-  {$IFDEF ShowCodeBeautifierParser}
+  {$IFDEF ShowCodeBeautifierLearn}
   function PosToStr(p: integer): string;
   var
     X: integer;
@@ -424,9 +434,9 @@ var
       and (Policies<>nil) then begin
         if Block^.InnerIdent<0 then UpdateBlockInnerIndent;
         if Block^.InnerIdent>=0 then begin
-          Policies.AddIndent(Block^.Typ,Typ,Block^.InnerIdent);
-          {$IFDEF ShowCodeBeautifierParser}
-          DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],' to ',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
+          Policies.AddIndent(Block^.Typ,Typ,p,Block^.InnerIdent);
+          {$IFDEF ShowCodeBeautifierLearn}
+          DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],'/',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
           {$ENDIF}
         end;
       end;
@@ -812,9 +822,9 @@ begin
     if FirstAtomOnNewLine then begin
       UpdateBlockInnerIndent;
       if Block^.InnerIdent>=0 then begin
-        Policies.AddIndent(Block^.Typ,bbtNone,Block^.InnerIdent);
-        {$IFDEF ShowCodeBeautifierParser}
-        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent]);
+        Policies.AddIndent(Block^.Typ,bbtNone,p,Block^.InnerIdent);
+        {$IFDEF ShowCodeBeautifierLearn}
+        DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent,' at ',PosToStr(p)]);
         {$ENDIF}
       end;
     end;
@@ -973,6 +983,10 @@ begin
   Policies:=TFABPolicies.Create;
   Stack:=TFABBlockStack.Create;
   try
+    {$IFDEF ShowCodeBeautifierLearn}
+    Policies.Code:=TCodeBuffer.Create;
+    Policies.Code.Source:=Source;
+    {$ENDIF}
     // parse source in front
     //DebugLn(['TFullyAutomaticBeautifier.GetIndent "',copy(Source,1,CleanPos-1),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
@@ -995,7 +1009,7 @@ begin
 
     if Stack.Top>0 then
       ParentBlock:=Stack.Stack[Stack.Top-1];
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' blockindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     if CheckPolicies(Policies,Result) then exit;
 
     // parse source behind
@@ -1005,6 +1019,7 @@ begin
 
   finally
     Stack.Free;
+    FreeAndNil(Policies.Code);
     Policies.Free;
   end;
 
@@ -1110,6 +1125,42 @@ end;
 
 { TFABPolicies }
 
+function TFABPolicies.FindIndentation(Typ, SubType: TFABBlockType;
+  out InsertPos: integer): boolean;
+// binary search
+var
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  Ind: PFABFoundIndentationPolicy;
+begin
+  l:=0;
+  r:=IndentationCount-1;
+  while l<=r do begin
+    m:=(l+r) div 2;
+    Ind:=@Indentations[m];
+    if (Typ>Ind^.Typ) then
+      r:=m-1
+    else if (Typ<Ind^.Typ) then
+      l:=m+1
+    else if SubType>Ind^.SubTyp then
+      r:=m-1
+    else if SubType<Ind^.SubTyp then
+      l:=m+1
+    else begin
+      InsertPos:=m;
+      exit(true);
+    end;
+  end;
+  Result:=false;
+  if IndentationCount=0 then
+    InsertPos:=0
+  else if r<m then
+    InsertPos:=m
+  else
+    InsertPos:=m+1;
+end;
+
 constructor TFABPolicies.Create;
 begin
 
@@ -1117,52 +1168,73 @@ end;
 
 destructor TFABPolicies.Destroy;
 begin
+  Clear;
   inherited Destroy;
 end;
 
 procedure TFABPolicies.Clear;
 begin
-  SetLength(Indentations,0);
+  ReAllocMem(Indentations,0);
 end;
 
-procedure TFABPolicies.AddIndent(Typ, SubType: TFABBlockType; Indent: integer);
+procedure TFABPolicies.AddIndent(Typ, SubType: TFABBlockType;
+  SrcPos, Indent: integer);
 var
   i: Integer;
-  OldLength: Integer;
+  Ind: PFABFoundIndentationPolicy;
 begin
-  //DebugLn(['TFABPolicies.AddIndent Typ=',FABBlockTypeNames[Typ],' SubType=',FABBlockTypeNames[SubType]]);
-  OldLength:=length(Indentations);
-  i:=OldLength-1;
-  while (i>=0) and (Indentations[i].Indent<>Indent) do dec(i);
-  if i<0 then begin
-    i:=OldLength-1;
-    while (i>=0) and (Indentations[i].Indent>Indent) do dec(i);
-    inc(i);
-    SetLength(Indentations,OldLength+1);
-    if i<OldLength then begin
-      System.Move(Indentations[i],Indentations[i+1],
-        SizeOf(TFABFoundIndentationPolicy)*(OldLength-i));
+  if not FindIndentation(Typ,SubType,i) then begin
+    inc(IndentationCount);
+    if IndentationCount>IndentationCapacity then begin
+      IndentationCapacity:=IndentationCapacity*2+12;
+      ReAllocMem(Indentations,SizeOf(TFABFoundIndentationPolicy)*IndentationCapacity);
     end;
-    FillByte(Indentations[i],SizeOf(TFABFoundIndentationPolicy),0);
-    Indentations[i].Indent:=Indent;
+    if i<IndentationCount-1 then
+      System.Move(Indentations[i],Indentations[i+1],
+        SizeOf(TFABFoundIndentationPolicy)*(IndentationCount-i-1));
+    Ind:=@Indentations[i];
+    Ind^.Typ:=Typ;
+    Ind^.SubTyp:=SubType;
+    Ind^.Indent:=Indent;
+    {$IFDEF ShowCodeBeautifierLearn}
+    DebugLn(['TFABPolicies.AddIndent New SubTyp ',FABBlockTypeNames[Typ],'-',FABBlockTypeNames[SubType],': indent=',Indent,' ',CodePosToStr(SrcPos)]);
+    {$ENDIF}
+  end else begin
+    Ind:=@Indentations[i];
+    if Ind^.Indent<>Indent then begin
+      Ind^.Indent:=Indent;
+      {$IFDEF ShowCodeBeautifierLearn}
+      DebugLn(['TFABPolicies.AddIndent Changed SubTyp ',FABBlockTypeNames[Typ],'-',FABBlockTypeNames[SubType],': indent=',Indent,' ',CodePosToStr(SrcPos)]);
+      {$ENDIF}
+    end;
   end;
-  Include(Indentations[i].Types[Typ],SubType);
-  Include(Indentations[i].AllTypes,Typ);
-  //for i:=0 to length(Indentations)-1 do DebugLn(['TFABPolicies.AddIndent i=',i,' indent=',Indentations[i].Indent]);
 end;
 
 function TFABPolicies.GetSmallestIndent(Typ: TFABBlockType): integer;
 var
-  l: Integer;
   i: Integer;
 begin
-  l:=length(Indentations);
-  i:=0;
-  while (i<l) do begin
-    if Typ in Indentations[i].AllTypes then exit(Indentations[i].Indent);
-    inc(i);
+  Result:=High(integer);
+  for i:=0 to IndentationCount-1 do begin
+    if Indentations[i].Typ=Typ then
+      if Indentations[i].Indent<Result then
+        Result:=Indentations[i].Indent;
   end;
-  Result:=-1;
+  if Result=High(integer) then
+    Result:=-1;
+end;
+
+function TFABPolicies.CodePosToStr(p: integer): string;
+var
+  Line: integer;
+  Col: integer;
+begin
+  if Code<>nil then begin
+    Code.AbsoluteToLineCol(p,Line,Col);
+    Result:='('+IntToStr(Line)+','+IntToStr(Col)+')';
+  end else begin
+    Result:='(p='+IntToStr(p)+')';
+  end;
 end;
 
 end.
