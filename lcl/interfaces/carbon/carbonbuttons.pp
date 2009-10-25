@@ -30,13 +30,11 @@ uses
   Types, Classes, SysUtils, Math, Contnrs,
  // carbon bindings
   MacOSAll,
- // widgetset
-  WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonInt, CarbonProc,
   CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonCanvas, CarbonGDIObjects,
  // LCL
-  LCLMessageGlue, LCLType, Graphics, Controls, StdCtrls, Buttons;
+  LCLMessageGlue, LCLType;
 
 type
 
@@ -48,8 +46,8 @@ type
     procedure Hit(AControlPart: ControlPartCode); override;
     procedure ValueChanged; override;
 
-    function RetrieveState: TCheckBoxState; virtual;
-    procedure SetState(AState: TCheckBoxState); virtual;
+    function RetrieveState: Integer; virtual;
+    procedure SetState(AState: Integer); virtual;
   end;
 
   { TCarbonCheckBox }
@@ -103,8 +101,8 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
-    procedure SetGlyph(const AGlyph: TBitmap); virtual;
-    procedure SetLayout(ALayout: TButtonLayout); virtual;
+    procedure SetGlyph(Glyph: CGImageRef); virtual;
+    procedure SetLayout(APlacement: ControlButtonTextPlacement; ATextAlign: ControlButtonTextAlignment); virtual;
     procedure SetDefault(ADefault: Boolean); override;
   end;
 
@@ -146,15 +144,9 @@ end;
   Method:  TCarbonCustomCheckBox.RetrieveState
   Returns: State of Carbon custom check box
  ------------------------------------------------------------------------------}
-function TCarbonCustomCheckBox.RetrieveState: TCheckBoxState;
+function TCarbonCustomCheckBox.RetrieveState: Integer;
 begin
-  case GetControl32BitValue(ControlRef(Widget)) of
-    kControlCheckBoxCheckedValue   : Result := cbChecked;
-    kControlCheckBoxUncheckedValue : Result := cbUnchecked;
-    kControlCheckBoxMixedValue     : Result := cbGrayed;
-  else
-    Result := cbUnchecked;
-  end;
+  Result := GetControl32BitValue(ControlRef(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -163,17 +155,9 @@ end;
 
   Sets the new state of Carbon custom check box
  ------------------------------------------------------------------------------}
-procedure TCarbonCustomCheckBox.SetState(AState: TCheckBoxState);
-var
-  Value: UInt32;
+procedure TCarbonCustomCheckBox.SetState(AState: Integer);
 begin
-  case AState of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
-  SetControl32BitValue(ControlRef(Widget), Value);
+  SetControl32BitValue(ControlRef(Widget), AState);
 end;
 
 { TCarbonCheckBox }
@@ -189,11 +173,7 @@ var
   Control: ControlRef;
   Value: UInt32;
 begin
-  case (LCLObject as TCustomCheckBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
+  Value := 0;
 
   if OSError(
     CreateCheckBoxControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
@@ -232,12 +212,7 @@ var
   Control: ControlRef;
   Value: UInt32;
 begin
-  case (LCLObject as TToggleBox).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
+  Value := 0;
   if OSError(
     CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       nil, kControlBevelButtonNormalBevel,
@@ -265,12 +240,7 @@ var
   Control: ControlRef;
   Value: UInt32;
 begin
-  case (LCLObject as TRadioButton).State of
-    cbChecked  : Value := kControlCheckBoxCheckedValue;
-    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
-    cbGrayed   : Value := kControlCheckBoxMixedValue;
-  end;
-
+  Value := 0;
   if OSError(
     CreateRadioButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       nil, Value, True, Control),
@@ -290,27 +260,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonRadioButton.ValueChanged;
 var
-  RadioButton: TRadioButton;
-  Sibling: TControl;
-  I: Integer;
+  Parent  : HIViewRef;
+  v       : HIViewRef;
+  ctrl    : TCarbonControl;
 begin
-  if GetControl32BitValue(ControlRef(Widget)) = kControlCheckBoxCheckedValue then
-  begin
-    //DebugLn('TCarbonRadioButton.ValueChanged Uncheck Sibling');
+  Parent := HIViewGetSuperview(Widget);
+  if not Assigned(Parent) then Exit;
 
-    // uncheck sibling radio buttons
-    RadioButton := (LCLObject as TRadioButton);
-    if RadioButton.Parent <> nil then
-    begin
-      for I := 0 to RadioButton.Parent.ControlCount - 1 do
-      begin
-        Sibling := RadioButton.Parent.Controls[I];
-        if (Sibling is TRadioButton) and (Sibling <> RadioButton) then
-          (Sibling as TRadioButton).Checked := False;
-      end;
+  v := HIViewGetFirstSubview(v);
+  while Assigned(v) do begin
+    if (v <> Widget) then begin
+      ctrl := GetCarbonControl(v);
+      if ctrl is TCarbonRadioButton then
+        TCarbonRadioButton(ctrl).SetState(kControlCheckBoxUncheckedValue);
     end;
-  end;
 
+    v := HIViewGetNextView(v);
+  end;
   inherited;
 end;
 
@@ -358,7 +324,8 @@ procedure TCarbonCustomButton.SetDefault(ADefault: Boolean);
 var
   value  : Boolean;
 begin
-  value := TCustomButton(LCLObject).Default;
+  //value := TCustomButton(LCLObject).Default;
+  value:=ADefault;
   OSError(
     SetControlData(ControlRef(Widget), kControlEntireControl,
       kControlPushButtonDefaultTag, SizeOf(Boolean), @value),
@@ -440,33 +407,14 @@ end;
 
   Sets the glyph bitmap
  ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.SetGlyph(const AGlyph: TBitmap);
+procedure TCarbonBitBtn.SetGlyph({const AGlyph: TBitmap} Glyph: CGImageRef);
 var
   ContentInfo: ControlButtonContentInfo;
-  BitBtn: TCustomBitBtn;
-  R: TRect;
 begin
-  ContentInfo.imageRef := nil;
-  
-  if TCustomBitBtn(LCLObject).CanShowGlyph and (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) then
-  begin
-    if TObject(AGlyph.Handle) is TCarbonBitmap then
-    begin
-      BitBtn := LCLObject as TCustomBitBtn;
-
-      if BitBtn.NumGlyphs <= 1 then
-        ContentInfo.imageRef :=
-          TCarbonBitmap(AGlyph.Handle).CreateMaskedImage(TCarbonBitmap(AGlyph.MaskHandle))
-      else
-      begin
-        // TODO: consider button style (down, disabled)
-        R := Classes.Rect(0, 0, AGlyph.Width div BitBtn.NumGlyphs, AGlyph.Height);
-        ContentInfo.imageRef :=
-          TCarbonBitmap(AGlyph.Handle).CreateMaskedImage(TCarbonBitmap(AGlyph.MaskHandle), R);
-      end;
-    end;
-    ContentInfo.contentType := kControlContentCGImageRef;
-  end else
+  ContentInfo.imageRef := Glyph;
+  if Assigned(Glyph) then
+    ContentInfo.contentType := kControlContentCGImageRef
+  else
     ContentInfo.contentType := kControlContentTextOnly;
 
   try
@@ -476,7 +424,7 @@ begin
     CGImageRelease(ContentInfo.imageRef);
   end;
 
-  SetLayout((LCLObject as TCustomBitBtn).Layout);
+  //SetLayout((LCLObject as TCustomBitBtn).Layout);
 end;
 
 {------------------------------------------------------------------------------
@@ -485,33 +433,13 @@ end;
 
   Sets the bitmap and caption layout
  ------------------------------------------------------------------------------}
-procedure TCarbonBitBtn.SetLayout(ALayout: TButtonLayout);
-var
-  Placement: ControlButtonTextPlacement;
-  TextAlign: ControlButtonTextAlignment;
+procedure TCarbonBitBtn.SetLayout(APlacement: ControlButtonTextPlacement;
+  ATextAlign: ControlButtonTextAlignment);
 begin
-  with (LCLObject as TCustomBitBtn) do
-  if (TCustomBitBtn(LCLObject).CanShowGlyph) and (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) then
-  begin
-    TextAlign := kControlBevelButtonAlignLeft;
-    case ALayout of
-      blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
-      blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
-      blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
-      blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
-    end;
-  end
-  else // if Glyph is empty, then align center
-  begin
-    TextAlign := kControlBevelButtonAlignTextCenter;
-    Placement := kControlBevelButtonPlaceNormally;
-  end;
-
-  OSError(SetBevelButtonTextPlacement(ControlRef(Widget), Placement),
+  OSError(SetBevelButtonTextPlacement(ControlRef(Widget), APlacement),
     Self, 'SetLayout', 'SetBevelButtonTextPlacement');
-  OSError(SetBevelButtonTextAlignment(ControlRef(Widget), TextAlign, 0),
+  OSError(SetBevelButtonTextAlignment(ControlRef(Widget), ATextAlign, 0),
     Self, 'SetLayout', 'SetBevelButtonTextAlignment');
-
   Invalidate;
 end;
 

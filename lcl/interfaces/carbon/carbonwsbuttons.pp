@@ -37,7 +37,7 @@ uses
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonButtons, CarbonWSControls;
+  CarbonDef, CarbonPrivate, CarbonButtons, CarbonWSControls, CarbonGDIObjects;
 
 type
 
@@ -88,13 +88,33 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
+var
+  Img     : CGImageRef;
+  BitBtn  : TCustomBitBtn;
+  R       : TRect;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
 
-  if ABitBtn.CanShowGlyph then
+  Img := nil;
+  if ABitBtn.CanShowGlyph and (AValue.Glyph <> nil) and (AValue.Glyph.Width > 0) and (AValue.Glyph.Height > 0) then
+  begin
+    if TObject(AValue.Glyph.Handle) is TCarbonBitmap then
+    begin
+      if AValue.NumGlyphs <= 1 then
+        Img := TCarbonBitmap(AValue.Glyph.Handle).CreateMaskedImage(TCarbonBitmap(AValue.Glyph.MaskHandle))
+      else
+      begin
+        // TODO: consider button style (down, disabled)
+        R := Classes.Rect(0, 0, AValue.Glyph.Width div BitBtn.NumGlyphs, AValue.Glyph.Height);
+        Img := TCarbonBitmap(AValue.Glyph.Handle).CreateMaskedImage(TCarbonBitmap(AValue.Glyph.MaskHandle), R);
+      end;
+    end;
+  end;
+
+  {if ABitBtn.CanShowGlyph then
     TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph)
-  else
-    TCarbonBitBtn(ABitBtn.Handle).SetGlyph(nil);
+  else}
+  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(Img);
 end;
 
 {------------------------------------------------------------------------------
@@ -106,10 +126,28 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
+var
+  Placement: ControlButtonTextPlacement;
+  TextAlign: ControlButtonTextAlignment;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetLayout') then Exit;
 
-  TCarbonBitBtn(ABitBtn.Handle).SetLayout(AValue);
+  if (ABitBtn.CanShowGlyph) and (ABitBtn.Glyph <> nil) and (ABitBtn.Glyph.Width > 0) and (ABitBtn.Glyph.Height > 0) then
+  begin
+    TextAlign := kControlBevelButtonAlignLeft;
+    case AValue of
+      blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
+      blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
+      blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
+      blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
+    end;
+  end
+  else // if Glyph is empty, then align center
+  begin
+    TextAlign := kControlBevelButtonAlignTextCenter;
+    Placement := kControlBevelButtonPlaceNormally;
+  end;
+  TCarbonBitBtn(ABitBtn.Handle).SetLayout(Placement, TextAlign);
 end;
 
 end.

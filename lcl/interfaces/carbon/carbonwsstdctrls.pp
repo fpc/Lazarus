@@ -1019,12 +1019,18 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  st  : Integer;
 begin
   Result := cbUnchecked;
   
   if not CheckHandle(ACustomCheckBox, Self, 'RetrieveState') then Exit;
 
-  Result := TCarbonCustomCheckBox(ACustomCheckBox.Handle).RetrieveState;
+  case TCarbonCustomCheckBox(ACustomCheckBox.Handle).RetrieveState of
+    kControlCheckBoxUncheckedValue : Result := cbUnchecked;
+  	kControlCheckBoxCheckedValue   : Result := cbChecked;
+  	kControlCheckBoxMixedValue     : Result := cbGrayed;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1036,10 +1042,13 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+const
+  CarbonBtnState : array [TCheckBoxState] of LongWord =
+    (kControlCheckBoxUncheckedValue, kControlCheckBoxCheckedValue, kControlCheckBoxMixedValue);
 begin
   if not CheckHandle(ACustomCheckBox, Self, 'SetState') then Exit;
 
-  TCarbonCustomCheckBox(ACustomCheckBox.Handle).SetState(NewState);
+  TCarbonCustomCheckBox(ACustomCheckBox.Handle).SetState(CarbonBtnState[NewState]);
 end;
 
 
