@@ -82,6 +82,9 @@ type
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); override;
   end;
 
   { TCarbonWSComboBox }
@@ -479,6 +482,35 @@ begin
   if not CheckHandle(ACustomComboBox, Self, 'Sort') then Exit;
   
   TCarbonComboBoxStrings(AList).Sorted := IsSorted;
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.GetDroppedDown
+  Returns: True if the combobox is dropped down
+ ------------------------------------------------------------------------------}
+class function TCarbonWSCustomComboBox.GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean;
+begin
+  Result := false;
+
+  if not CheckHandle(ACustomComboBox, Self, 'GetDroppedDown') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).IsDroppedDown;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomComboBox.SetDroppedDown
+  Params:  DropDown - Show list
+  Returns: If the function succeeds
+
+  Shows or hides the combo box list
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomComboBox.SetDroppedDown(const ACustomComboBox: TCustomComboBox;
+  ADroppedDown: Boolean);
+begin
+  if not CheckHandle(ACustomComboBox, Self, 'SetDroppedDown') then Exit;
+
+  TCarbonComboBox(ACustomComboBox.Handle).DropDown(ADroppedDown);
 end;
 
 { TCarbonWSCustomListBox }

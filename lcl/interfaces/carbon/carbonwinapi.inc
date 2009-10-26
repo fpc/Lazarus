@@ -224,27 +224,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  ComboBoxDropDown
-  Params:  Handle   - Handle to combo box
-           DropDown - Show list
-  Returns: If the function succeeds
-
-  Shows or hides the combo box list
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
-begin
-  Result := False;
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.ComboBoxDropDown Handle: ' + DbgS(Handle) + ' Drop: ' + DbgS(DropDown));
-  {$ENDIF}
-  
-  if not CheckWidget(Handle, 'ComboBoxDropDown', TCarbonComboBox) then Exit;
-  
-  Result := TCarbonComboBox(Handle).DropDown(DropDown);
-end;
-
-{------------------------------------------------------------------------------
   Method:  CreateBitmap
   Params:  Width      - Bitmap width, in pixels
            Height     - Bitmap height, in pixels
