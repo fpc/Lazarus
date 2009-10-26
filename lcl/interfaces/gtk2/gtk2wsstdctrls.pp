@@ -113,14 +113,16 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
-    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
                                              NewTraverseList: boolean); override;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -1295,6 +1297,22 @@ begin
   PreferredWidth := 0;
 end;
 
+class function TGtk2WSCustomComboBox.GetDroppedDown(
+  const ACustomComboBox: TCustomComboBox): Boolean;
+var
+  WidgetInfo: PWidgetInfo;
+  Combo: PGtkComboBox;
+  AValue: TGValue;
+begin
+  WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle), False);
+  Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
+
+  FillChar(AValue, SizeOf(AValue), 0);
+  g_value_init(@AValue, G_TYPE_BOOLEAN);
+  g_object_get_property(PGObject(Combo), 'popup-shown', @AValue);
+  Result := AValue.data[0].v_int <> 0;
+end;
+
 class function TGtk2WSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
 var
@@ -1390,6 +1408,21 @@ begin
   // TODO
   // This is not an option that is available for this widget
   // we will have to eat the keystrokes to set this to false
+end;
+
+class procedure TGtk2WSCustomComboBox.SetDroppedDown(
+  const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
+var
+  WidgetInfo: PWidgetInfo;
+  Combo: PGtkComboBox;
+begin
+  WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle), False);
+  Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
+
+  case ADroppedDown of
+    True : gtk_combo_box_popup(Combo);
+    False: gtk_combo_box_popdown(Combo);
+  end;
 end;
 
 class procedure TGtk2WSCustomComboBox.SetSelStart(

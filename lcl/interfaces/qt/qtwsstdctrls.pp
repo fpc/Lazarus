@@ -73,6 +73,8 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox
+       ): Boolean; override;
     class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -86,6 +88,8 @@ type
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox;
+       ADroppedDown: Boolean); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
@@ -1133,6 +1137,17 @@ begin
   Result := TLCLIntfHandle(QtComboBox);
 end;
 
+class function TQtWSCustomComboBox.GetDroppedDown(
+  const ACustomComboBox: TCustomComboBox): Boolean;
+var
+  ComboList: QAbstractItemViewH;
+  ComboBox: QComboBoxH;
+begin
+  ComboBox := QComboBoxH(TQtComboBox(ACustomComboBox.Handle).Widget);
+  ComboList := QComboBox_view(ComboBox);
+  Result := QWidget_isVisible(ComboList);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomComboBox.GetItemIndex
   Params:  None
@@ -1246,6 +1261,23 @@ class procedure TQtWSCustomComboBox.SetDropDownCount(
   const ACustomComboBox: TCustomComboBox; NewCount: Integer);
 begin
   TQtComboBox(ACustomComboBox.Handle).setMaxVisibleItems(NewCount);
+end;
+
+class procedure TQtWSCustomComboBox.SetDroppedDown(
+  const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
+var
+  ComboList: QAbstractItemViewH;
+  ComboBox: QComboBoxH;
+begin
+  ComboBox := QComboBoxH(TQtComboBox(ACustomComboBox.Handle).Widget);
+  ComboList := QComboBox_view(ComboBox);
+  if ADroppedDown <> QWidget_isVisible(ComboList) then
+  begin
+    if ADroppedDown then
+      QComboBox_showPopup(ComboBox)
+    else
+      QComboBox_hidePopup(ComboBox);
+  end;
 end;
 
 {------------------------------------------------------------------------------

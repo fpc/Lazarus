@@ -82,15 +82,18 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox;
+       ADroppedDown: Boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -843,8 +846,18 @@ begin
     PreferredHeight := AWinControl.Height;
 end;
 
+class function TWin32WSCustomComboBox.GetDroppedDown(
+  const ACustomComboBox: TCustomComboBox): Boolean;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.GetDroppedDown') then
+    Exit(False);
+  Result := LongBool(SendMessage(ACustomComboBox.Handle, CB_GETDROPPEDSTATE, 0, 0));
+end;
+
 class function TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.GetSelStart') then
+    Exit(-1);
   SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(@Result), Windows.LPARAM(nil));
 end;
 
@@ -913,6 +926,13 @@ begin
     if StringList <> nil then
       StringList.DropDownCount := NewCount;
   end;
+end;
+
+class procedure TWin32WSCustomComboBox.SetDroppedDown(
+  const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
+begin
+  if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
+    SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
 end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);

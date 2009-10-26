@@ -73,14 +73,16 @@ type
 
   TWSCustomComboBox = class(TWSWinControl)
   published
-    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
-    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
-    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; virtual;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
     
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
       NewTraverseList: boolean); virtual;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); virtual;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); virtual;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
@@ -352,6 +354,12 @@ end;
 
 { TWSCustomComboBox }
 
+class function TWSCustomComboBox.GetDroppedDown(
+  const ACustomComboBox: TCustomComboBox): Boolean;
+begin
+  Result := False;
+end;
+
 class function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
@@ -383,6 +391,11 @@ end;
 
 class procedure TWSCustomComboBox.SetDropDownCount(
   const ACustomComboBox: TCustomComboBox; NewCount: Integer);
+begin
+end;
+
+class procedure TWSCustomComboBox.SetDroppedDown(
+  const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
 begin
 end;
 

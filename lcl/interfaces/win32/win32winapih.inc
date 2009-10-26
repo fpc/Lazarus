@@ -45,7 +45,6 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TCl
 function ClipboardRegisterFormat(const AMimeType: String): TClipboardFormat; override;
 
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
-function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean; override;

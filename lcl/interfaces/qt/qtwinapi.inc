@@ -271,35 +271,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.ComboBoxDropDown
-  Params: Handle: HWND; DropDown: boolean
-  Returns:
-
-  Shows or hides combobox dropdown list via DropDown parameter.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
-var
-  ComboList: QAbstractItemViewH;
-  ComboBox: QComboBoxH;
-begin
-  {$ifdef VerboseQtWinAPI}
-	WriteLn('[WinAPI TQtWidgetSet.ComboBoxDropDown] ');
-  {$endif}
-  Result := False;
-  if TQtWidget(Handle) is TQtComboBox then
-  begin
-    ComboBox := QComboBoxH(TQtComboBox(Handle).Widget);
-    ComboList := QComboBox_view(ComboBox);
-    if DropDown <> QWidget_isVisible(ComboList) then
-    begin
-      if DropDown then QComboBox_showPopup(ComboBox)
-      else QComboBox_hidePopup(ComboBox);
-    end;
-    Result := True;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TQtWidgetSet.CreateCompatibleBitmap
   Params:
   Returns:

@@ -84,21 +84,6 @@ begin
   Result := TextOut(DC, X, Y, Str, Count);
 end;
 
-function TGtk2WidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
-var
-  WidgetInfo: PWidgetInfo;
-  Combo: PGtkComboBox;
-begin
-  WidgetInfo := GetWidgetInfo(Pointer(Handle), False);
-  Combo := PGtkComboBox(WidgetInfo^.CoreWidget);
-  
-  case DropDown of
-    True : gtk_combo_box_popup(Combo);
-    False: gtk_combo_box_popdown(Combo);
-  end;
-  Result:=true;
-end;
-
 function TGtk2WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
   MinItemsHeight, MinItemCount: integer): boolean;
 var

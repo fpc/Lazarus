@@ -87,12 +87,6 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.ComboBoxDropDown(Handle: HWND;
-  DropDown: boolean): boolean;
-begin
-  Result := false;
-end;
-
 //todo: remove ?
 function TWidgetSet.CreateEmptyRegion: hRGN;
 begin

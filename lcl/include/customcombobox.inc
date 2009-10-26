@@ -675,7 +675,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetDroppedDown: Boolean;
 begin
-  Result:=FDroppedDown;
+  if HandleAllocated then
+    Result := TWSCustomComboBoxClass(WidgetSetClass).GetDroppedDown(Self)
+  else
+    Result := FDroppedDown;
 end;
 
 function TCustomComboBox.GetAutoComplete: boolean;
@@ -710,9 +713,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetDroppedDown(const AValue: Boolean);
 begin
-  if FDroppedDown=AValue then exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  ComboBoxDropDown(Handle,AValue);
+  if GetDroppedDown = AValue then
+    Exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then
+    Exit;
+  TWSCustomComboBoxClass(WidgetSetClass).SetDroppedDown(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------

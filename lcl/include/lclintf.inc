@@ -93,11 +93,6 @@ begin
   Result := WidgetSet.ClipboardRegisterFormat(AMimeType);
 end;
 
-function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
-begin
-  Result := WidgetSet.ComboBoxDropDown(Handle,DropDown);
-end;
-
 function CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
