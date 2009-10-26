@@ -95,7 +95,6 @@ const
   SynEditPreviewExcludeOptions2 = [eoAlwaysVisibleCaret];
 
   DefaultCodeTemplatesFilename = 'lazarus.dci'; // in directory GetPrimaryConfigPath
-  DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath
 
 type
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
@@ -864,7 +863,6 @@ type
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
     fCodeTemplateFileName: String;
-    fIndentationFilename: String;
     fCTemplIndentToTokenStart: Boolean;
 
     // Code Folding
@@ -1027,8 +1025,6 @@ type
       read fCodeTemplateFileName write fCodeTemplateFileName;
     property CodeTemplateIndentToTokenStart: Boolean
       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
-    property IndentationFileName: String
-      read fIndentationFileName write fIndentationFileName;
     property AutoRemoveEmptyMethods: Boolean read FAutoRemoveEmptyMethods
       write FAutoRemoveEmptyMethods default False;
 
@@ -2393,28 +2389,6 @@ begin
       end;
   end;
 
-  // indentations (laz_indentation.pas)
-  fIndentationFilename:=
-    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
-  CopySecondaryConfigFile(DefaultIndentationFilename);
-  if not FileExistsUTF8(IndentationFilename) then
-  begin
-    res := LazarusResources.Find('indentation');
-    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'PAS') then
-      try
-        InvalidateFileStateCache;
-        fs := TFileStream.Create(UTF8ToSys(IndentationFilename), fmCreate);
-        try
-          fs.Write(res.Value[1], length(res.Value));
-        finally
-          fs.Free;
-        end;
-      except
-        DebugLn('WARNING: unable to write indentation file "',
-          IndentationFilename, '"');
-      end;
-  end;
-
   // update translation
   EditorOptionsFoldInfoPas[ 0].Name := dlgFoldPasProcedure;
   EditorOptionsFoldInfoPas[ 1].Name := dlgFoldLocalPasVarType;
@@ -2712,9 +2686,6 @@ begin
     fCTemplIndentToTokenStart :=
       XMLConfig.GetValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
-    fIndentationFilename :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/IndentationFileName'
-      , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
     fAutoRemoveEmptyMethods :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
 
@@ -2933,8 +2904,6 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
       , fCTemplIndentToTokenStart, False);
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/IndentationFileName'
-      , fIndentationFilename, '');
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/AutoRemoveEmptyMethods'
       , fAutoRemoveEmptyMethods, False);
@@ -4069,7 +4038,6 @@ initialization
   ColorSchemeFactory.RegisterScheme(OCEAN_COLOR_SCHEME.Name, OCEAN_COLOR_SCHEME);
   ColorSchemeFactory.RegisterScheme(DELPHI_COLOR_SCHEME.Name, DELPHI_COLOR_SCHEME);
   {$I lazarus_dci.lrs}
-  {$I lazarus_indentation.lrs}
 
 finalization
   ColorSchemeFactory.Free;

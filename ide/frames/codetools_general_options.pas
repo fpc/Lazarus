@@ -25,7 +25,8 @@ unit codetools_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls,
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Buttons, Dialogs,
+  IDEDialogs,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -34,14 +35,18 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    IndentFileButton: TButton;
     CursorBeyondEOLCheckBox: TCheckBox;
+    IndentFileEdit: TEdit;
+    IndentationGroupBox: TGroupBox;
     JumpCenteredCheckBox: TCheckBox;
     JumpingGroupBox: TGroupBox;
+    IndentFileLabel: TLabel;
     SkipForwardDeclarationsCheckBox: TCheckBox;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
+    procedure IndentFileButtonClick(Sender: TObject);
   private
-    { private declarations }
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -53,6 +58,22 @@ type
 implementation
 
 { TCodetoolsGeneralOptionsFrame }
+
+procedure TCodetoolsGeneralOptionsFrame.IndentFileButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Title:=lisChooseAPascalFileForIndentationExamples;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    if OpenDialog.Execute then
+      IndentFileEdit.Text:=OpenDialog.FileName;
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
 function TCodetoolsGeneralOptionsFrame.GetTitle: String;
 begin
@@ -77,6 +98,10 @@ begin
     Caption:=dlgcursorbeyondeol;
 
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
+
+  IndentationGroupBox.Caption:=lisIndentation;
+  IndentFileLabel.Caption:=lisExampleFile;
+  IndentFileButton.Caption:=lisPathEditBrowse;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
@@ -89,6 +114,7 @@ begin
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
+    IndentFileEdit.Text:=IndentationFileName;
   end;
 end;
 
@@ -102,6 +128,7 @@ begin
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
+    IndentationFileName:=IndentFileEdit.Text;
   end;
 end;
 

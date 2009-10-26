@@ -40,6 +40,9 @@ uses
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit, IDEOptionsIntf, IDEContextHelpEdit,
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
 
+const
+  DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath
+
 type
 
   { TCodeToolsOptions }
@@ -89,6 +92,9 @@ type
     FIdentComplAddAssignOperator: Boolean;
     FIdentComplAutoStartAfterPoint: boolean;
 
+    // auto indentation
+    fIndentationFilename: String;
+
     procedure SetFilename(const AValue: string);
   public
     class function GetGroupCaption:string; override;
@@ -107,6 +113,7 @@ type
     function IsEqual(CodeToolsOpts: TCodeToolsOptions): boolean;
     function CreateCopy: TCodeToolsOptions;
     procedure ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree);
+    procedure CreateDefaultIndentationFile;
     
     // General
     property SrcPath: string read FSrcPath write FSrcPath;
@@ -176,6 +183,10 @@ type
                                              write FIdentComplAddAssignOperator;
     property IdentComplAutoStartAfterPoint: boolean read FIdentComplAutoStartAfterPoint
                                            write FIdentComplAutoStartAfterPoint;
+
+    // indentation
+    property IndentationFileName: String
+      read fIndentationFileName write fIndentationFileName;
   end;
 
 var
@@ -309,6 +320,7 @@ var
   end;
   
 begin
+  CreateDefaultIndentationFile;
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('CodeToolsOptions/Version/Value',0);
@@ -393,6 +405,11 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AddAssignOperator',true);
     FIdentComplAutoStartAfterPoint:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
+
+    // indentation
+    fIndentationFilename :=
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
+      , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
 
     XMLConfig.Free;
   except
@@ -499,6 +516,10 @@ begin
       FIdentComplAddAssignOperator,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',
       FIdentComplAutoStartAfterPoint,true);
+
+    // indentation
+    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/FileName'
+      , fIndentationFilename, '');
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -630,6 +651,10 @@ begin
   FIdentComplAddSemicolon:=true;
   FIdentComplAddAssignOperator:=true;
   FIdentComplAutoStartAfterPoint:=true;
+
+  // indentation
+  fIndentationFilename:=
+    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
@@ -706,6 +731,32 @@ begin
   end;
 end;
 
+procedure TCodeToolsOptions.CreateDefaultIndentationFile;
+var
+  res: TLResource;
+  fs: TFileStream;
+begin
+  // indentations (laz_indentation.pas)
+  CopySecondaryConfigFile(DefaultIndentationFilename);
+  if not FileExistsUTF8(IndentationFilename) then
+  begin
+    res := LazarusResources.Find('indentation');
+    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'PAS') then
+      try
+        InvalidateFileStateCache;
+        fs := TFileStream.Create(UTF8ToSys(IndentationFilename), fmCreate);
+        try
+          fs.Write(res.Value[1], length(res.Value));
+        finally
+          fs.Free;
+        end;
+      except
+        DebugLn('WARNING: unable to write indentation file "',
+          IndentationFilename, '"');
+      end;
+  end;
+end;
+
 procedure TCodeToolsOptions.AssignTo(Dest: TPersistent);
 var
   Boss: TCodeToolManager absolute Dest;
@@ -763,5 +814,6 @@ end;
 
 initialization
   RegisterIDEOptionsGroup(GroupCodetools, TCodeToolsOptions);
+  {$I lazarus_indentation.lrs}
 end.
 

@@ -4499,6 +4499,10 @@ resourcestring
     +'must be unique in all components on the form/datamodule.The name is '
     +'compared case insensitive like a normal pascal identifier.';
   lisAskForFileNameOnNewFile = 'Ask for file name on new file';
+  lisIndentation = 'Indentation';
+  lisExampleFile = 'Example file:';
+  lisChooseAPascalFileForIndentationExamples = 'Choose a pascal file for '
+    +'indentation examples';
 
 implementation
 
