@@ -165,11 +165,11 @@ begin
       fld.Free;
       bModified := True;
     end;
+  SelectionChanged;
   if bModified then
     fDesigner.Modified;
   if PreActive then
     LinkDataSet.Active := True;
-  SelectionChanged;
 end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmClose(Sender: TObject;

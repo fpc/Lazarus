@@ -1,7 +1,7 @@
 object DSFieldsEditorFrm: TDSFieldsEditorFrm
-  Left = 132
+  Left = 44
   Height = 288
-  Top = 174
+  Top = 58
   Width = 215
   HorzScrollBar.Page = 214
   VertScrollBar.Page = 287
@@ -12,10 +12,14 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
   OnClose = FieldsEditorFrmClose
   OnDestroy = FieldsEditorFrmDestroy
   Position = poDefaultPosOnly
+  LCLVersion = '0.9.29'
   object FieldsListBox: TListBox
+    Left = 0
     Height = 288
+    Top = 0
     Width = 215
     Align = alClient
+    ItemHeight = 0
     MultiSelect = True
     OnClick = ListBox1Click
     OnKeyDown = FieldsListBoxKeyDown
@@ -60,7 +64,6 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     object AddFieldsActn: TAction
       Category = 'Fields'
       Caption = '&Add fields'
-      DisableIfNoHandler = True
       Hint = 'Add fields from FieldDefs'
       OnExecute = AddFieldsActnExecute
       ShortCut = 16429
@@ -68,7 +71,6 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     object DeleteFieldsActn: TAction
       Category = 'Fields'
       Caption = '&Delete'
-      DisableIfNoHandler = True
       Hint = 'Delete selected field(s)'
       OnExecute = DeleteFieldsActnExecute
       ShortCut = 46
@@ -76,7 +78,6 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     object NewActn: TAction
       Category = 'Fields'
       Caption = '&New'
-      DisableIfNoHandler = True
       Hint = 'Create new field and add it at current position'
       OnExecute = NewActnExecute
       ShortCut = 45
@@ -84,26 +85,22 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     object MoveUpActn: TAction
       Category = 'Fields'
       Caption = 'Move &Up'
-      DisableIfNoHandler = True
       OnExecute = MoveUpActnExecute
     end
     object MoveDownActn: TAction
       Category = 'Fields'
       Caption = 'Move &Down'
-      DisableIfNoHandler = True
       OnExecute = MoveDownActnExecute
     end
     object SelectAllActn: TAction
       Category = 'Fields'
       Caption = '&Select all'
-      DisableIfNoHandler = True
       OnExecute = SelectAllActnExecute
       ShortCut = 16449
     end
     object UnselectAllActn: TAction
       Category = 'Fields'
       Caption = '&Unselect all'
-      DisableIfNoHandler = True
       OnExecute = UnselectAllActnExecute
     end
   end
