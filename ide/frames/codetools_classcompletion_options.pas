@@ -37,6 +37,7 @@ type
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
     MethodInsertPolicyRadioGroup: TRadioGroup;
     MixMethodsAndPropertiesCheckBox: TCheckBox;
+    PropPrefixesPanel: TPanel;
     PrivateVariablePrefixEdit: TEdit;
     PrivateVariablePrefixLabel: TLabel;
     PropertyCompletionCheckBox: TCheckBox;
