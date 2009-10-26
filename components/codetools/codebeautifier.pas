@@ -128,10 +128,13 @@ const
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 Step: integer; // starting at 0
-                                var CodeBuffers: TFPList // stopping when CodeBuffers=nil
+                                var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
+                                var ExpandedFilenames: TStrings  // and Filenames=nil
                                 ) of object;
   TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
                                       out NestedComments: boolean) of object;
+  TOnGetFABFile = procedure(Sender: TObject; const ExpandedFilename: string;
+                            out Code: TCodeBuffer; var Abort: boolean) of object;
 
   TFABIndentationPolicy = record
     Indent: integer;
@@ -209,6 +212,7 @@ type
     FOnGetExamples: TOnGetFABExamples;
     FCodePolicies: TAVLTree;// tree of TFABPolicies sorted for Code
     FOnGetNestedComments: TOnGetFABNestedComments;
+    FOnLoadFile: TOnGetFABFile;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies;
@@ -241,6 +245,7 @@ type
                                               write FOnGetExamples;
     property OnGetNestedComments: TOnGetFABNestedComments
                            read FOnGetNestedComments write FOnGetNestedComments;
+    property OnLoadFile: TOnGetFABFile read FOnLoadFile write FOnLoadFile;
   end;
 
 const
@@ -843,14 +848,51 @@ end;
 
 function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
   ParentTyp, Typ: TFABBlockType): TFABPolicies;
+
+  function CheckCode(Code: TCodeBuffer; out Policies: TFABPolicies): boolean;
+  // result=false : abort
+  var
+    AVLNode: TAVLTreeNode;
+    Stack: TFABBlockStack;
+  begin
+    Policies:=nil;
+    if Code=nil then exit(true);
+    DebugLn(['TFullyAutomaticBeautifier.FindPolicyInExamples ',Code.Filename]);
+    // search Policies for code
+    AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
+    if AVLNode=nil then begin
+      Policies:=TFABPolicies.Create;
+      Policies.Code:=Code;
+      FCodePolicies.Add(Policies);
+    end else
+      Policies:=TFABPolicies(AVLNode.Data);
+    if Policies.CodeChangeStep<>Code.ChangeStep then begin
+      // parse code
+      Policies.Clear;
+      Policies.CodeChangeStep:=Code.ChangeStep;
+      Stack:=TFABBlockStack.Create;
+      try
+        ParseSource(Code.Source,1,length(Code.Source)+1,
+           GetNestedCommentsForCode(Code),Stack,Policies);
+      finally
+        Stack.Free;
+      end;
+    end;
+    // search policy
+    if Policies.GetSmallestIndent(Typ)>=0 then begin
+      exit;
+    end;
+    Policies:=nil;
+    Result:=true;
+  end;
+
 var
   CodeBuffers: TFPList;
   i: Integer;
   Code: TCodeBuffer;
-  AVLNode: TAVLTreeNode;
-  Policies: TFABPolicies;
-  Stack: TFABBlockStack;
   Step: Integer;
+  Filenames: TStrings;
+  Abort: boolean;
 begin
   Result:=nil;
   if not Assigned(OnGetExamples) then exit;
@@ -858,42 +900,30 @@ begin
   repeat
     // get examples for current step
     CodeBuffers:=nil;
+    Filenames:=nil;
     try
-      OnGetExamples(Self,StartCode,Step,CodeBuffers);
-      if CodeBuffers=nil then exit;
+      OnGetExamples(Self,StartCode,Step,CodeBuffers,Filenames);
+      if (CodeBuffers=nil) and (Filenames=nil) then exit;
       // search policy in every example
-      for i:=0 to CodeBuffers.Count-1 do begin
-        Code:=TCodeBuffer(CodeBuffers[i]);
-        if Code=nil then continue;
-        DebugLn(['TFullyAutomaticBeautifier.FindPolicyInExamples ',Code.Filename]);
-        // search Policies for code
-        AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
-        if AVLNode=nil then begin
-          Policies:=TFABPolicies.Create;
-          Policies.Code:=Code;
-          FCodePolicies.Add(Policies);
-        end else
-          Policies:=TFABPolicies(AVLNode.Data);
-        if Policies.CodeChangeStep<>Code.ChangeStep then begin
-          // parse code
-          Policies.Clear;
-          Policies.CodeChangeStep:=Code.ChangeStep;
-          Stack:=TFABBlockStack.Create;
-          try
-            ParseSource(Code.Source,1,length(Code.Source)+1,
-               GetNestedCommentsForCode(Code),Stack,Policies);
-          finally
-            Stack.Free;
-          end;
+      if CodeBuffers<>nil then
+        for i:=0 to CodeBuffers.Count-1 do begin
+          Code:=TCodeBuffer(CodeBuffers[i]);
+          if not CheckCode(Code,Result) then exit;
+          if Result<>nil then exit;
         end;
-        // search policy
-        if Policies.GetSmallestIndent(Typ)>=0 then begin
-          Result:=Policies;
-          exit;
+      if (Filenames<>nil) and Assigned(OnLoadFile) then
+        for i:=0 to Filenames.Count-1 do begin
+          Abort:=false;
+          Code:=nil;
+          OnLoadFile(Self,Filenames[i],Code,Abort);
+          if Abort then exit;
+          if Code=nil then continue;
+          if not CheckCode(Code,Result) then exit;
+          if Result<>nil then exit;
         end;
-      end;
     finally
       CodeBuffers.Free;
+      Filenames.Free;
     end;
     // next step
     inc(Step);

@@ -140,7 +140,9 @@ type
     procedure OnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
       NestedComments: boolean);
     procedure OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
-      Step: integer; var CodeBuffers: TFPList);
+      Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
+    procedure OnFABLoadFile(Sender: TObject; const ExpandedFilename: string;
+                            out Code: TCodeBuffer; var Abort: boolean);
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
@@ -810,6 +812,7 @@ begin
   Indenter:=TFullyAutomaticBeautifier.Create;
   Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
   Indenter.OnGetExamples:=@OnFABGetExamples;
+  Indenter.OnLoadFile:=@OnFABLoadFile;
   GlobalValues:=TExpressionEvaluator.Create;
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
@@ -4724,10 +4727,16 @@ begin
 end;
 
 procedure TCodeToolManager.OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
-  Step: integer; var CodeBuffers: TFPList);
+  Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
 begin
   if Assigned(OnGetIndenterExamples) then
-    OnGetIndenterExamples(Sender,Code,Step,CodeBuffers);
+    OnGetIndenterExamples(Sender,Code,Step,CodeBuffers,ExpandedFilenames);
+end;
+
+procedure TCodeToolManager.OnFABLoadFile(Sender: TObject;
+  const ExpandedFilename: string; out Code: TCodeBuffer; var Abort: boolean);
+begin
+  Code:=LoadFile(ExpandedFilename,true,false);
 end;
 
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
