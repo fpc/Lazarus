@@ -381,6 +381,8 @@ begin
   ctnClassVarPrivate: Result:='Var Private';
   ctnClassVarProtected: Result:='Var Protected';
   ctnClassVarPublic: Result:='Var Public';
+  ctnClassAbstract: Result:='abstract';
+  ctnClassSealed: Result:='sealed';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';
