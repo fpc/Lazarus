@@ -36,6 +36,16 @@
       - Contexts: statements, declarations
 
   Examples for beautification styles: see scanexamples/indentation.pas
+
+  ToDo:
+    - if true then
+      exit;|
+      |
+    - selection
+    - procedure parameter list
+    - method parameter list
+    - if true then |
+      |exit;
 }
 unit CodeBeautifier;
 
