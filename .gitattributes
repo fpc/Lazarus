@@ -3416,6 +3416,7 @@ ide/lazarus.pp svneol=native#text/pascal
 ide/lazarus.rc svneol=native#text/plain
 ide/lazarus_about_logo.lrs svneol=native#text/pascal
 ide/lazarus_dci.lrs svneol=native#text/pascal
+ide/lazarus_indentation.lrs svneol=native#text/plain
 ide/lazarusidestrconsts.pas svneol=native#text/pascal
 ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazbuild.lpi svneol=native#text/plain
