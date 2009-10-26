@@ -518,6 +518,11 @@ type
     procedure CodeToolBossPrepareTree(Sender: TObject);
     procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
                                    var Abort: boolean);
+    procedure OnCodeToolBossGetIndenterExamples(Sender: TObject;
+                Code: TCodeBuffer; Step: integer; // starting at 0
+                var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
+                var ExpandedFilenames: TStrings
+                );
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
 
@@ -12420,6 +12425,7 @@ begin
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
     OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
     OnGetMethodName:=@OnCodeToolBossGetMethodName;
+    OnGetIndenterExamples:=@OnCodeToolBossGetIndenterExamples;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -12616,6 +12622,74 @@ procedure TMainIDE.CodeToolBossProgress(Sender: TObject; Index,
   MaxIndex: integer; var Abort: boolean);
 begin
   //DebugLn(['TMainIDE.CodeToolBossProgress ',Index,' ',MaxIndex]);
+end;
+
+procedure TMainIDE.OnCodeToolBossGetIndenterExamples(Sender: TObject;
+  Code: TCodeBuffer; Step: integer; var CodeBuffers: TFPList;
+  var ExpandedFilenames: TStrings);
+
+  procedure AddCode(Code: TCodeBuffer);
+  begin
+    if Code=nil then exit;
+    if CodeBuffers=nil then CodeBuffers:=TFPList.Create;
+    CodeBuffers.Add(Code);
+  end;
+
+  procedure AddFile(const Filename: string);
+  begin
+    if Filename='' then exit;
+    if ExpandedFilenames=nil then ExpandedFilenames:=TStringList.Create;
+    ExpandedFilenames.Add(Filename);
+  end;
+
+  procedure AddUnit(AnUnitInfo: TUnitInfo);
+  begin
+    if AnUnitInfo.Source<>nil then
+      AddCode(AnUnitInfo.Source)
+    else
+      AddFile(AnUnitInfo.Filename);
+  end;
+
+var
+  AnUnitInfo: TUnitInfo;
+  Owners: TFPList;
+  i: Integer;
+  AProject: TProject;
+  APackage: TLazPackage;
+  j: Integer;
+begin
+  if Step>0 then exit;
+  if CodeToolsOpts.IndentContextSensitive and (Code<>Nil) then begin
+    Owners:=PkgBoss.GetPossibleOwnersOfUnit(Code.Filename,[piosfIncludeSourceDirectories]);
+    try
+      if Owners<>nil then begin
+        for i:=0 to Owners.Count-1 do begin
+          if TObject(Owners[i]) is TProject then begin
+            AProject:=TProject(Owners[i]);
+            if AProject.MainUnitInfo<>nil then
+              AddUnit(AProject.MainUnitInfo);
+            AnUnitInfo:=AProject.FirstPartOfProject;
+            while AnUnitInfo<>nil do begin
+              if AnUnitInfo<>AProject.MainUnitInfo then
+                AddUnit(AnUnitInfo);
+              AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+            end;
+          end else if TObject(Owners[i]) is TLazPackage then begin
+            APackage:=TLazPackage(Owners[i]);
+            for j:=0 to APackage.FileCount-1 do begin
+              if APackage.Files[j].FileType=pftUnit then
+                AddFile(APackage.Files[j].GetFullFilename);
+            end;
+          end;
+        end;
+      end;
+    finally
+      Owners.Free;
+    end;
+  end;
+  if FilenameIsAbsolute(CodeToolsOpts.IndentationFileName)
+  then
+    AddFile(CodeToolsOpts.IndentationFileName);
 end;
 
 function TMainIDE.OnCodeToolBossGetMethodName(const Method: TMethod;
