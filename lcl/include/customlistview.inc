@@ -224,10 +224,9 @@ begin
       //Check
     end;
     LVN_ITEMCHANGED: begin
-      if OwnerData then Exit;
       Item := Items[nm^.iItem];
       //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
-      if (lifDestroying in Item.FFlags) then begin
+      if (Item <> nil) and (not OwnerData) and (lifDestroying in Item.FFlags) then begin
         if Item=FFocused then
           FFocused:=nil;
         if Item=FSelected then

@@ -65,7 +65,7 @@ begin
   end 
   else 
   begin
-    if (AIndex < 0) or (AIndex >= FItems.Count) then 
+    if (AIndex >= FItems.Count) then
     begin
       Result := nil;
       Exit;
