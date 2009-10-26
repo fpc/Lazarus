@@ -4503,6 +4503,9 @@ resourcestring
   lisExampleFile = 'Example file:';
   lisChooseAPascalFileForIndentationExamples = 'Choose a pascal file for '
     +'indentation examples';
+  lisContextSensitive = 'Context sensitive';
+  lisImitateIndentationOfCurrentUnitProjectOrPackage = 'Imitate indentation '
+    +'of current unit, project or package';
 
 implementation
 

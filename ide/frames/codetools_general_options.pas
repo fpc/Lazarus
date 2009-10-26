@@ -35,6 +35,7 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    IndentContextSensitiveCheckBox: TCheckBox;
     IndentFileButton: TButton;
     CursorBeyondEOLCheckBox: TCheckBox;
     IndentFileEdit: TEdit;
@@ -102,6 +103,10 @@ begin
   IndentationGroupBox.Caption:=lisIndentation;
   IndentFileLabel.Caption:=lisExampleFile;
   IndentFileButton.Caption:=lisPathEditBrowse;
+  IndentContextSensitiveCheckBox.Caption:=lisContextSensitive;
+  IndentContextSensitiveCheckBox.ShowHint:=true;
+  IndentContextSensitiveCheckBox.Hint:=
+    lisImitateIndentationOfCurrentUnitProjectOrPackage;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
@@ -115,6 +120,7 @@ begin
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
     IndentFileEdit.Text:=IndentationFileName;
+    IndentContextSensitiveCheckBox.Checked:=IndentContextSensitive;
   end;
 end;
 
@@ -129,6 +135,7 @@ begin
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
     IndentationFileName:=IndentFileEdit.Text;
+    IndentContextSensitive:=IndentContextSensitiveCheckBox.Checked;
   end;
 end;
 

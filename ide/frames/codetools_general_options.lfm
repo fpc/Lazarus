@@ -5,21 +5,21 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   ClientWidth = 552
   TabOrder = 0
   Visible = False
-  DesignLeft = 288
-  DesignTop = 254
+  DesignLeft = 293
+  DesignTop = 278
   object SrcPathGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 58
+    Height = 43
     Top = 0
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'SrcPathGroupBox'
-    ClientHeight = 39
+    ClientHeight = 24
     ClientWidth = 548
     TabOrder = 0
     object SrcPathEdit: TEdit
@@ -44,7 +44,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 155
-    Top = 64
+    Top = 49
     Width = 552
     Align = alTop
     AutoSize = True
@@ -106,13 +106,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   end
   object IndentationGroupBox: TGroupBox[2]
     Left = 0
-    Height = 60
-    Top = 219
+    Height = 87
+    Top = 204
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'IndentationGroupBox'
-    ClientHeight = 41
+    ClientHeight = 68
     ClientWidth = 548
     TabOrder = 2
     object IndentFileLabel: TLabel
@@ -160,6 +160,18 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Caption = 'IndentFileButton'
       OnClick = IndentFileButtonClick
       TabOrder = 1
+    end
+    object IndentContextSensitiveCheckBox: TCheckBox
+      AnchorSideLeft.Control = IndentationGroupBox
+      AnchorSideTop.Control = IndentFileEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 40
+      Width = 235
+      BorderSpacing.Around = 6
+      Caption = 'IndentContextSensitiveCheckBox'
+      TabOrder = 2
     end
   end
 end

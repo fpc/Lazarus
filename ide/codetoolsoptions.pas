@@ -94,6 +94,7 @@ type
 
     // auto indentation
     fIndentationFilename: String;
+    FIndentContextSensitive: boolean;
 
     procedure SetFilename(const AValue: string);
   public
@@ -187,6 +188,8 @@ type
     // indentation
     property IndentationFileName: String
       read fIndentationFileName write fIndentationFileName;
+    property IndentContextSensitive: boolean read FIndentContextSensitive
+      write FIndentContextSensitive;
   end;
 
 var
@@ -410,6 +413,9 @@ begin
     fIndentationFilename :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
       , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
+    FIndentContextSensitive :=
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive'
+      , true);
 
     XMLConfig.Free;
   except
@@ -520,6 +526,8 @@ begin
     // indentation
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/FileName'
       , fIndentationFilename, '');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/ContextSensitive'
+      , FIndentContextSensitive, true);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -655,6 +663,7 @@ begin
   // indentation
   fIndentationFilename:=
     TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
+  FIndentContextSensitive:=true;
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
