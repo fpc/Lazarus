@@ -358,7 +358,7 @@ type
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
     function OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier; SrcEditor: TSourceEditor;
-      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+      LogCaret: TPoint; var FirstLinePos, LastLine: Integer;
       Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
@@ -14417,7 +14417,7 @@ end;
 
 function TMainIDE.OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier;
   SrcEditor: TSourceEditor; LogCaret: TPoint;
-  var FirstLinePos, LinesCount: Integer; Reason: TSynEditorCommand;
+  var FirstLinePos, LastLine: Integer; Reason: TSynEditorCommand;
   SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 var
   CodeBuf: TCodeBuffer;
@@ -14433,9 +14433,12 @@ begin
   {$ENDIF}
   if not (SrcEditor.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
-  if (Reason <> ecLineBreak) and (Reason <> ecInsertLine) then
+  case Reason of
+  ecLineBreak,ecInsertLine: ;
+  else
     exit;
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LinesCount=',LinesCount]);
+  end;
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LinesCount=',LastLine]);
   Result := True;
   EditorIndex:=SrcEditor.PageIndex;
   SaveSourceEditorChangesToCodeCache(EditorIndex);
