@@ -9,7 +9,7 @@ unit chmcontentprovider;
 //{$else}
 //{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
 //{$endif}
-{$if (fpc_version=2) and (fpc_release>5) ((fpc_version=2) and (fpc_release=5) and (fpc_patch>0))}
+{$if (fpc_version=2) and (fpc_release>4)}
 {$Note Compiling lhelp *with* binary index and toc support}
 {$DEFINE CHM_BINARY_INDEX_TOC}
 {$endif}
@@ -317,6 +317,7 @@ begin
     {$IFDEF CHM_BINARY_INDEX_TOC}
     SM := fChm.GetTOCSitemap;
     {$ELSE}
+    SM := nil;
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       SM := TChmSiteMap.Create(stTOC);
@@ -345,6 +346,7 @@ begin
       {$IFDEF CHM_BINARY_INDEX_TOC}
       SM := fChm.GetIndexSitemap;
       {$ELSE}
+      SM := nil;
       Stream := TMemoryStream(fchm.GetObject(fChm.IndexFile));
       if Stream <> nil then begin
         SM := TChmSiteMap.Create(stTOC);
