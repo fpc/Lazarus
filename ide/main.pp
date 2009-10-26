@@ -14415,9 +14415,10 @@ begin
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
-function TMainIDE.OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier; SrcEditor: TSourceEditor;
-      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
-      Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+function TMainIDE.OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier;
+  SrcEditor: TSourceEditor; LogCaret: TPoint;
+  var FirstLinePos, LinesCount: Integer; Reason: TSynEditorCommand;
+  SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 var
   CodeBuf: TCodeBuffer;
   p: integer;
@@ -14430,6 +14431,8 @@ begin
   {$IFNDEF EnableIndenter}
   exit;
   {$ENDIF}
+  if not (SrcEditor.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    exit;
   if (Reason <> ecLineBreak) and (Reason <> ecInsertLine) then
     exit;
   debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LinesCount=',LinesCount]);
