@@ -1772,7 +1772,7 @@ end;
 procedure TJITComponentList.ReaderReferenceName(Reader: TReader;
   var RefName: Ansistring);
 begin
-  debugln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
+  //debugln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
 end;
 
 procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
