@@ -9293,59 +9293,48 @@ var
   s, ShortUnitName: string;
 begin
   Result:=mrCancel;
-  if BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[])
-    and (ActiveUnitInfo<>nil) then begin
-    if not ActiveUnitInfo.IsPartOfProject then begin
-      if not ActiveUnitInfo.IsVirtual then
-        s:='"'+ActiveUnitInfo.Filename+'"'
-      else
-        s:='"'+ActiveSourceEditor.PageName+'"';
-      if (ActiveUnitInfo.UnitName<>'')
-      and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
-          true,ActiveUnitInfo)>=0) then
-      begin
-        MessageDlg(Format(
-          lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
-          mtInformation, [mbOk], 0);
-      end else begin
-        if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
-          mbCancel], 0) in [mrOk,mrYes]
-        then begin
-          if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then begin
-            Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
-            if Result=mrIgnore then Result:=mrOk;
-            if Result<>mrOk then begin
-              debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-              exit;
-            end;
-          end;
-          ActiveUnitInfo.IsPartOfProject:=true;
-          Project1.Modified:=true;
-          if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-          and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-          then begin
-            ActiveUnitInfo.ReadUnitNameFromSource(false);
-            ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-            if (ShortUnitName<>'') then begin
-              if CodeToolBoss.AddUnitToMainUsesSection(
-                Project1.MainUnitInfo.Source,ShortUnitName,'')
-              then
-                Project1.MainUnitInfo.Modified:=true;
-            end;
-          end;
-          CheckUnitDirIsInSearchPath(ActiveUnitInfo);
+  if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
+  if (ActiveUnitInfo=nil) then exit;
+  if ActiveUnitInfo.IsPartOfProject then begin
+    if not ActiveUnitInfo.IsVirtual then
+      s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
+    else
+      s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
+    s:=Format(lisisAlreadyPartOfTheProject, [s]);
+    MessageDlg(s,mtInformation,[mbOk],0);
+    exit;
+  end;
+  if not ActiveUnitInfo.IsVirtual then
+    s:='"'+ActiveUnitInfo.Filename+'"'
+  else
+    s:='"'+ActiveSourceEditor.PageName+'"';
+  if (ActiveUnitInfo.UnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
+      true,ActiveUnitInfo)>=0) then
+  begin
+    MessageDlg(Format(
+      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
+      mtInformation, [mbOk], 0);
+  end else begin
+    if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
+      mbCancel], 0) in [mrOk,mrYes]
+    then begin
+      ActiveUnitInfo.IsPartOfProject:=true;
+      Project1.Modified:=true;
+      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+      then begin
+        ActiveUnitInfo.ReadUnitNameFromSource(false);
+        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+        if (ShortUnitName<>'') then begin
+          if CodeToolBoss.AddUnitToMainUsesSection(
+            Project1.MainUnitInfo.Source,ShortUnitName,'')
+          then
+            Project1.MainUnitInfo.Modified:=true;
         end;
       end;
-    end else begin
-      if not ActiveUnitInfo.IsVirtual then
-        s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
-      else
-        s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
-      s:=Format(lisisAlreadyPartOfTheProject, [s]);
-      MessageDlg(s,mtInformation,[mbOk],0);
+      CheckUnitDirIsInSearchPath(ActiveUnitInfo);
     end;
-  end else begin
-    Result:=mrOk;
   end;
 end;
 
