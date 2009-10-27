@@ -88,10 +88,10 @@ type
     function AddUnitToUsesSection(UsesNode: TCodeTreeNode;
           const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false): boolean;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function AddUnitToMainUsesSection(const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache;
-          AsLast: boolean = false): boolean;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
                                 const UpperUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
@@ -574,9 +574,28 @@ end;
 
 function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
   const NewUnitName, NewUnitInFile: string;
-  SourceChangeCache: TSourceChangeCache; AsLast: boolean): boolean;
+  SourceChangeCache: TSourceChangeCache; AsLast: boolean;
+  CheckSpecialUnits: boolean): boolean;
+const
+  SpecialUnits: array[1..5] of string = (
+    'cmem',
+    'sharedmem',
+    'lineinfo',
+    'heaptrc',
+    'cthreads'
+    );
 var
   Options: TBeautifyCodeOptions;
+
+  function SpecialUnitPriority(Identifier: PChar): integer;
+  begin
+    Result:=Low(SpecialUnits);
+    while Result<=High(SpecialUnits) do begin
+      if CompareIdentifierPtrs(Pointer(Identifier),Pointer(SpecialUnits[Result]))=0 then
+        exit;
+      inc(Result);
+    end;
+  end;
 
   function NextUseUnitNodeInSameBlock(Node: TCodeTreeNode): boolean;
   var
@@ -652,6 +671,9 @@ var LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
   FirstIndent: Integer;
   InsertCode: String;
   UsesInsertPolicy: TUsesInsertPolicy;
+  Prio: LongInt;
+  FirstNormalUsesNode: TCodeTreeNode;
+  InsertPosFound: Boolean;
 begin
   Result:=false;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) or (NewUnitName='')
@@ -661,95 +683,120 @@ begin
   Options:=SourceChangeCache.BeautifyCodeOptions;
 
   // find nice insert position
-  InsertBehind:=false;
-  InsertNode:=UsesNode.FirstChild;
 
+  Prio:=SpecialUnitPriority(PChar(NewUnitName));
   UsesInsertPolicy:=Options.UsesInsertPolicy;
   if AsLast then
     UsesInsertPolicy:=uipLast;
-
-  case UsesInsertPolicy of
-
-  uipFirst:
-    begin
-      InsertBehind:=false;
-      InsertNode:=UsesNode.FirstChild;
+  InsertPosFound:=false;
+  if CheckSpecialUnits and (Prio<=High(SpecialUnits)) then begin
+    // this is a special unit, insert at the beginning
+    InsertBehind:=false;
+    InsertNode:=UsesNode.FirstChild;
+    while (InsertNode<>nil)
+    and (Prio>SpecialUnitPriority(@Src[InsertNode.StartPos])) do
+      InsertNode:=InsertNode.NextBrother;
+    InsertPosFound:=true;
+    if InsertNode=nil then begin
+      InsertBehind:=true;
+      InsertNode:=UsesNode.LastChild;
+    end;
+  end;
+  if not InsertPosFound then begin
+    FirstNormalUsesNode:=UsesNode.FirstChild;
+    if CheckSpecialUnits and (UsesInsertPolicy<>uipLast) then begin
+      while (FirstNormalUsesNode<>nil)
+      and (SpecialUnitPriority(@Src[FirstNormalUsesNode.StartPos])<Prio) do
+        FirstNormalUsesNode:=FirstNormalUsesNode.NextBrother;
+      if FirstNormalUsesNode=nil then
+        UsesInsertPolicy:=uipLast;
     end;
 
-  uipInFrontOfRelated,uipBehindRelated:
-    begin
-      if UsesInsertPolicy=uipBehindRelated then begin
-        InsertNode:=UsesNode.LastChild;
-        InsertBehind:=true;
+    case UsesInsertPolicy of
+
+    uipFirst:
+      begin
+        InsertBehind:=false;
+        InsertNode:=FirstNormalUsesNode;
       end;
-      NewCode:=FindUnitSource(NewUnitName,'',false);
-      if NewCode<>nil then begin
-        NewFilename:=NewCode.Filename;
-        BestDiffCnt:=High(integer);
-        Node:=UsesNode.FirstChild;
-        while Node<>nil do begin
-          MoveCursorToCleanPos(Node.StartPos);
-          ReadNextAtom;
-          AnUnitName:=GetAtom;
-          ReadNextAtom;
-          if UpAtomIs('IN') then begin
+
+    uipInFrontOfRelated,uipBehindRelated:
+      begin
+        if UsesInsertPolicy=uipBehindRelated then begin
+          InsertNode:=UsesNode.LastChild;
+          InsertBehind:=true;
+        end else begin
+          InsertBehind:=false;
+          InsertNode:=FirstNormalUsesNode;
+        end;
+        NewCode:=FindUnitSource(NewUnitName,'',false);
+        if NewCode<>nil then begin
+          NewFilename:=NewCode.Filename;
+          BestDiffCnt:=High(integer);
+          Node:=FirstNormalUsesNode;
+          while Node<>nil do begin
+            MoveCursorToCleanPos(Node.StartPos);
             ReadNextAtom;
-            AnUnitInFilename:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
-          end else
-            AnUnitInFilename:='';
-          // search unit
-          //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Unit=',AnUnitName,' in "',AnUnitInFilename,'"']);
-          NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
-          if NewCode<>nil then begin
-            // used unit found -> compute distance
-            DiffPath:=CreateRelativePath(NewCode.Filename,ExtractFilePath(NewFilename));
-            DiffCnt:=0;
-            for i:=1 to length(DiffPath) do
-              if DiffPath[i]=PathDelim then
-                inc(DiffCnt);
-            //DebugLn(['TStandardCodeTool.AddUnitToUsesSection DiffCnt=',DiffCnt,' "',NewCode.Filename,'" "',NewFilename,'"']);
-            if UsesInsertPolicy=uipInFrontOfRelated then begin
-              // insert in front of the first node with the lowest DiffCnt
-              if BestDiffCnt>DiffCnt then begin
-                BestDiffCnt:=DiffCnt;
-                InsertNode:=Node;
-                InsertBehind:=false;
-              end;
-            end else begin
-              // insert behind the last node with the lowest DiffCnt
-              if BestDiffCnt>=DiffCnt then begin
-                BestDiffCnt:=DiffCnt;
-                InsertNode:=Node;
-                InsertBehind:=true;
+            AnUnitName:=GetAtom;
+            ReadNextAtom;
+            if UpAtomIs('IN') then begin
+              ReadNextAtom;
+              AnUnitInFilename:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
+            end else
+              AnUnitInFilename:='';
+            // search unit
+            //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Unit=',AnUnitName,' in "',AnUnitInFilename,'"']);
+            NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+            if NewCode<>nil then begin
+              // used unit found -> compute distance
+              DiffPath:=CreateRelativePath(NewCode.Filename,ExtractFilePath(NewFilename));
+              DiffCnt:=0;
+              for i:=1 to length(DiffPath) do
+                if DiffPath[i]=PathDelim then
+                  inc(DiffCnt);
+              //DebugLn(['TStandardCodeTool.AddUnitToUsesSection DiffCnt=',DiffCnt,' "',NewCode.Filename,'" "',NewFilename,'"']);
+              if UsesInsertPolicy=uipInFrontOfRelated then begin
+                // insert in front of the first node with the lowest DiffCnt
+                if BestDiffCnt>DiffCnt then begin
+                  BestDiffCnt:=DiffCnt;
+                  InsertNode:=Node;
+                  InsertBehind:=false;
+                end;
+              end else begin
+                // insert behind the last node with the lowest DiffCnt
+                if BestDiffCnt>=DiffCnt then begin
+                  BestDiffCnt:=DiffCnt;
+                  InsertNode:=Node;
+                  InsertBehind:=true;
+                end;
               end;
             end;
+            Node:=Node.NextBrother;
           end;
-          Node:=Node.NextBrother;
         end;
       end;
-    end;
 
-  uipLast:
-    begin
-      InsertNode:=UsesNode.LastChild;
-      InsertBehind:=true;
-    end;
-
-  uipAlphabetically:
-    begin
-      InsertNode:=UsesNode.FirstChild;
-      InsertBehind:=false;
-      while (InsertNode<>nil)
-      and (CompareIdentifiers(PChar(NewUnitName),@Src[InsertNode.StartPos])<0) do
-        InsertNode:=InsertNode.NextBrother;
-      if InsertNode=nil then begin
+    uipLast:
+      begin
         InsertNode:=UsesNode.LastChild;
         InsertBehind:=true;
       end;
+
+    uipAlphabetically:
+      begin
+        InsertNode:=FirstNormalUsesNode;
+        InsertBehind:=false;
+        while (InsertNode<>nil)
+        and (CompareIdentifiers(PChar(NewUnitName),@Src[InsertNode.StartPos])<0) do
+          InsertNode:=InsertNode.NextBrother;
+        if InsertNode=nil then begin
+          InsertNode:=UsesNode.LastChild;
+          InsertBehind:=true;
+        end;
+      end;
+
     end;
-
   end;
-
 
   // build insert text  "unitname in 'file'"
   NewUsesTerm:=NewUnitName;
@@ -844,7 +891,7 @@ end;
 
 function TStandardCodeTool.AddUnitToMainUsesSection(const NewUnitName,
   NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
-  AsLast: boolean): boolean;
+  AsLast: boolean; CheckSpecialUnits: boolean): boolean;
 var UsesNode, SectionNode: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
@@ -860,7 +907,7 @@ begin
     if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
     then begin
       if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
-                                  SourceChangeCache,AsLast)
+                                  SourceChangeCache,AsLast,CheckSpecialUnits)
       then
         exit;
     end;

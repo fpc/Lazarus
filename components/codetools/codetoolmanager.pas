@@ -558,7 +558,7 @@ type
           UnitNamePairs: TStringToStringTree): boolean;
     function AddUnitToMainUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string;
-          AsLast: boolean = false): boolean;
+          AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
@@ -3961,7 +3961,8 @@ begin
 end;
 
 function TCodeToolManager.AddUnitToMainUsesSection(Code: TCodeBuffer;
-  const NewUnitName, NewUnitInFile: string; AsLast: boolean): boolean;
+  const NewUnitName, NewUnitInFile: string; AsLast: boolean;
+  CheckSpecialUnits: boolean = true): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3970,7 +3971,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
-                                                  SourceChangeCache,AsLast);
+                                    SourceChangeCache,AsLast,CheckSpecialUnits);
   except
     on e: Exception do Result:=HandleException(e);
   end;
