@@ -4635,6 +4635,7 @@ var
   AncestorNode, ClassIdentNode: TCodeTreeNode;
   SearchBaseClass: boolean;
   AncestorContext: TFindContext;
+  InheritanceNode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
@@ -4647,11 +4648,11 @@ begin
 
   // search the ancestor name
   BuildSubTreeForClass(ClassNode);
-  if (ClassNode.FirstChild<>nil)
-  and (ClassNode.FirstChild.Desc=ctnClassInheritance)
-  and (ClassNode.FirstChild.FirstChild<>nil) then begin
-    Result:=FindAncestorOfClassInheritance(ClassNode.FirstChild.FirstChild,
-               Params,FindClassContext);
+  InheritanceNode:=FindInheritanceNode(ClassNode);
+  if (InheritanceNode<>nil)
+  and (InheritanceNode.FirstChild<>nil) then begin
+    Result:=FindAncestorOfClassInheritance(InheritanceNode.FirstChild,
+                                           Params,FindClassContext);
     exit;
   end;
 
@@ -4827,13 +4828,13 @@ function TFindDeclarationTool.FindAncestorsOfClass(ClassNode: TCodeTreeNode;
 var
   Node: TCodeTreeNode;
   Context: TFindContext;
+  InheritanceNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (ClassNode.FirstChild=nil)
-  or (ClassNode.FirstChild.Desc<>ctnClassInheritance)
-  or (ClassNode.FirstChild.FirstChild=nil) then
+  InheritanceNode:=FindInheritanceNode(ClassNode);
+  if (InheritanceNode=nil) then
     exit(true);
-  Node:=ClassNode.FirstChild.FirstChild;
+  Node:=InheritanceNode.FirstChild;
   if Node=nil then begin
     try
       if not FindAncestorOfClass(ClassNode,Params,FindClassContext) then begin

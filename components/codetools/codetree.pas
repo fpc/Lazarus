@@ -85,23 +85,24 @@ const
   ctnObject             = 32;
   ctnObjCClass          = 33;
   ctnObjCProtocol       = 34;
-  ctnClassInheritance   = 35;
-  ctnClassGUID          = 36;
-  ctnClassTypePrivate   = 37;
-  ctnClassTypeProtected = 38;
-  ctnClassTypePublic    = 39;
-  ctnClassTypePublished = 40;
-  ctnClassVarPrivate    = 41;
-  ctnClassVarProtected  = 42;
-  ctnClassVarPublic     = 43;
-  ctnClassVarPublished  = 44;
-  ctnClassPrivate       = 45;
-  ctnClassProtected     = 46;
-  ctnClassPublic        = 47;
-  ctnClassPublished     = 48;
-
-  ctnProperty           = 50;
-  ctnMethodMap          = 51;
+  ctnClassAbstract      = 35;
+  ctnClassSealed        = 36;
+  ctnClassInheritance   = 37;
+  ctnClassGUID          = 38;
+  ctnClassTypePrivate   = 39;
+  ctnClassTypeProtected = 40;
+  ctnClassTypePublic    = 41;
+  ctnClassTypePublished = 42;
+  ctnClassVarPrivate    = 43;
+  ctnClassVarProtected  = 44;
+  ctnClassVarPublic     = 45;
+  ctnClassVarPublished  = 46;
+  ctnClassPrivate       = 47;
+  ctnClassProtected     = 48;
+  ctnClassPublic        = 49;
+  ctnClassPublished     = 50;
+  ctnProperty           = 51;
+  ctnMethodMap          = 52;
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
@@ -142,9 +143,6 @@ const
   ctnOnBlock            =112;
   ctnOnIdentifier       =113;// e.g. on E: Exception
   ctnOnStatement        =114;
-
-  ctnClassAbstract      =120;
-  ctnClassSealed        =121;
 
   // combined values
   AllSourceTypes =

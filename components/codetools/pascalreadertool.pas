@@ -142,6 +142,7 @@ type
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
     function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
+    function FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
 
     // records
     function ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode): string;
@@ -1472,6 +1473,16 @@ end;
 function TPascalReaderTool.IsClassNode(Node: TCodeTreeNode): boolean;
 begin
   Result:=(Node<>nil) and (Node.Desc=ctnClass);
+end;
+
+function TPascalReaderTool.FindInheritanceNode(ClassNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=ClassNode.FirstChild;
+  while (Result<>nil) and (Result.Desc in [ctnClassSealed,ctnClassAbstract]) do
+    Result:=Result.NextBrother;
+  if (Result<>nil) and (Result.Desc<>ctnClassInheritance) then
+    Result:=nil;
 end;
 
 function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode

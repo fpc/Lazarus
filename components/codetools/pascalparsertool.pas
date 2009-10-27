@@ -153,7 +153,6 @@ type
     function KeyWordFuncProc: boolean;
     function KeyWordFuncBeginEnd: boolean;
     // class/object elements
-    function KeyWordFuncClassModifier: boolean;
     function KeyWordFuncClassSection: boolean;
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
@@ -416,8 +415,6 @@ begin
   if StartPos>SrcLen then exit(false);
   p:=@Src[StartPos];
   case UpChars[p^] of
-  'A':
-    if CompareSrcIdentifiers(p,'ABSTRACT') then exit(KeyWordFuncClassModifier);
   'C':
     case UpChars[p[1]] of
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassMethod);
@@ -450,8 +447,7 @@ begin
     end;
   'S':
     if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
-    else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection)
-    else if CompareSrcIdentifiers(p,'SEALED') then exit(KeyWordFuncClassModifier);
+    else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
   'V':
@@ -693,11 +689,11 @@ begin
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
     // parse
+    //   - sealed, abstract
     //   - inheritage
     //   - class sections (GUID, type, var, public, published, private, protected)
     //   - methods (procedures, functions, constructors, destructors)
 
-    // first parse the inheritage
     // read the "class"/"object" keyword
     ReadNextAtom;
     if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
@@ -706,6 +702,27 @@ begin
     then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
+    // parse modifiers
+    if CurPos.Flag=cafWord then begin
+      if UpAtomIs('SEALED') then begin
+        while UpAtomIs('SEALED') do begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassSealed;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          ReadNextAtom;
+        end;
+      end else if UpAtomIs('ABSTRACT') then begin
+        while UpAtomIs('ABSTRACT') do begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassAbstract;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+          ReadNextAtom;
+        end;
+      end;
+    end;
+    // parse the inheritage
     if CurPos.Flag=cafRoundBracketOpen then
       ReadClassInheritance(true)
     else
@@ -2853,23 +2870,6 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncClassModifier: boolean;
-// change class modifier (abstract, sealed)
-begin
-  // end last section
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
-  // start modifier
-  CreateChildNode;
-  if UpAtomIs('ABSTRACT') then
-    CurNode.Desc:=ctnClassAbstract
-  else if UpAtomIs('SEALED') then
-    CurNode.Desc:=ctnClassSealed
-  else
-    RaiseStringExpectedButAtomFound('abstract/sealed');
-  Result:=true;
-end;
-
 function TPascalParserTool.KeyWordFuncType: boolean;
 { The 'type' keyword is the start of a type section.
   examples:
@@ -3406,11 +3406,21 @@ begin
   end else if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then begin
     MoveCursorToNodeStart(CurNode);
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
-  end else if (CurPos.Flag=cafRoundBracketOpen) then begin
-    // read inheritage brackets
-    IsForward:=false;
-    ReadTilBracketClose(true);
-    ReadNextAtom;
+  end else begin
+    if UpAtomIs('SEALED') then begin
+      while UpAtomIs('SEALED') do
+        ReadNextAtom;
+    end else if UpAtomIs('ABSTRACT') then begin
+      IsForward:=false;
+      while UpAtomIs('ABSTRACT') do
+        ReadNextAtom;
+    end;
+    if (CurPos.Flag=cafRoundBracketOpen) then begin
+      // read inheritage brackets
+      IsForward:=false;
+      ReadTilBracketClose(true);
+      ReadNextAtom;
+    end;
   end;
   if CurPos.Flag=cafSemicolon then begin
     if ChildCreated and (ClassDesc in [ctnClass,ctnObject,ctnObjCClass]) then
@@ -3456,7 +3466,8 @@ begin
             and (BracketLvl=0) then
               SaveRaiseException(ctsEndForClassNotFound);
           'I':
-            if CompareSrcIdentifiers(p,'IMPLEMENTATION') then
+            if CompareSrcIdentifiers(p,'INTERFACE')
+            or CompareSrcIdentifiers(p,'IMPLEMENTATION') then
               SaveRaiseException(ctsEndForClassNotFound);
           'R':
             if CompareSrcIdentifiers(p,'RESOURCESTRING') then
