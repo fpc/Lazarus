@@ -9316,6 +9316,18 @@ begin
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
       mtInformation, [mbOk], 0);
   end else begin
+    if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
+    and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+    begin
+      // ask user to apply naming conventions
+      Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result<>mrOk then begin
+        debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+        exit;
+      end;
+    end;
+
     if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
       mbCancel], 0) in [mrOk,mrYes]
     then begin
