@@ -82,7 +82,7 @@ type
   {$IFDEF GTK1}
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; virtual;
+    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
     class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -91,7 +91,7 @@ type
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
       NewTraverseList: boolean); override;
-    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); virtual;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -829,8 +829,6 @@ class function TGtkWSCustomComboBox.GetDroppedDown(
   const ACustomComboBox: TCustomComboBox): Boolean;
 var
   ComboWidget: PGtkCombo;
-  height, width, x, y : gint;
-  old_width, old_height : gint;
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'GetDroppedDown') then
     Exit(False);
@@ -946,8 +944,8 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'SetDroppedDown') then Exit;
   ComboWidget:=PGtkCombo(ACustomComboBox.Handle);
-  if DropDown<>GTK_WIDGET_VISIBLE(ComboWidget^.popwin) then begin
-    if DropDown then begin
+  if ADroppedDown<>GTK_WIDGET_VISIBLE(ComboWidget^.popwin) then begin
+    if ADroppedDown then begin
       old_width := ComboWidget^.popwin^.allocation.width;
       old_height := ComboWidget^.popwin^.allocation.height;
       gtk_combo_get_pos(ComboWidget,x,y,height,width);
