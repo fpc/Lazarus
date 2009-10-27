@@ -470,8 +470,10 @@ type
                                      AnUnitInfo: TUnitInfo): TModalresult;
 
     // Checks if the UnitDirectory is part of the Unit Search Paths,
-    // if not, then ask the user if he wants to include the Unit Search Paths.
-    procedure CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+    // if not, then ask the user if he wants to extend dependencies
+    // or the Unit Search Paths.
+    procedure CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo;
+        AllowAddingDependencies: boolean; out DependencyAdded: boolean);
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
@@ -9291,6 +9293,7 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
+  DependencyAdded: boolean;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
@@ -9331,21 +9334,23 @@ begin
     if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
       mbCancel], 0) in [mrOk,mrYes]
     then begin
-      ActiveUnitInfo.IsPartOfProject:=true;
-      Project1.Modified:=true;
-      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-      then begin
-        ActiveUnitInfo.ReadUnitNameFromSource(false);
-        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-        if (ShortUnitName<>'') then begin
-          if CodeToolBoss.AddUnitToMainUsesSection(
-            Project1.MainUnitInfo.Source,ShortUnitName,'')
-          then
-            Project1.MainUnitInfo.Modified:=true;
+      CheckUnitDirIsInSearchPath(ActiveUnitInfo,true,DependencyAdded);
+      if not DependencyAdded then begin
+        ActiveUnitInfo.IsPartOfProject:=true;
+        Project1.Modified:=true;
+        if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+        and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+        then begin
+          ActiveUnitInfo.ReadUnitNameFromSource(false);
+          ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+          if (ShortUnitName<>'') then begin
+            if CodeToolBoss.AddUnitToMainUsesSection(
+              Project1.MainUnitInfo.Source,ShortUnitName,'')
+            then
+              Project1.MainUnitInfo.Modified:=true;
+          end;
         end;
       end;
-      CheckUnitDirIsInSearchPath(ActiveUnitInfo);
     end;
   end;
 end;
@@ -14622,25 +14627,52 @@ begin
   end;
 end;
 
-procedure TMainIDE.CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo);
+procedure TMainIDE.CheckUnitDirIsInSearchPath(UnitInfo: TUnitInfo;
+  AllowAddingDependencies: boolean; out DependencyAdded: boolean);
 var
   CurDirectory: String;
   CurUnitPath: String;
+  Owners: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
 begin
-  if not UnitInfo.IsVirtual then begin
-    CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-    CurDirectory:=UnitInfo.GetDirectory;
-    if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
-    begin
-      if MessageDlg(lisAddToUnitSearchPath,
-        Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
-          #13, CurDirectory]),
-        mtConfirmation,[mbYes,mbNo],0)=mrYes
-      then begin
-        Project1.CompilerOptions.OtherUnitFiles:=
-              MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
-                               CurDirectory);
+  DependencyAdded:=false;
+  if UnitInfo.IsVirtual then exit;
+  CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
+  if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
+  begin
+    if AllowAddingDependencies then begin
+      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
+      try
+        if (Owners<>nil) then begin
+          for i:=0 to Owners.Count-1 do begin
+            if TObject(Owners[i]) is TLazPackage then begin
+              APackage:=TLazPackage(Owners[i]);
+              if IDEMessageDialog(lisAddPackageRequirement,
+                Format(lisAddPackageToProject, [APackage.IDAsString]),
+                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
+              then
+                exit;
+              PkgBoss.AddProjectDependency(Project1,APackage);
+              DependencyAdded:=true;
+              exit;
+            end;
+          end;
+        end;
+      finally
+        Owners.Free;
       end;
+    end;
+    // unit is not in a package => extend unit path
+    if MessageDlg(lisAddToUnitSearchPath,
+      Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
+        #13, CurDirectory]),
+      mtConfirmation,[mbYes,mbNo],0)=mrYes
+    then begin
+      Project1.CompilerOptions.OtherUnitFiles:=
+            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                             CurDirectory);
     end;
   end;
 end;
@@ -14652,11 +14684,12 @@ var
   ActiveUnitInfo: TUnitInfo;
   ShortUnitName: String;
   Dummy: Boolean;
+  DependencyAdded: boolean;
 begin
   Result:=mrOk;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
-  CheckUnitDirIsInSearchPath(AnUnitInfo);
+  CheckUnitDirIsInSearchPath(AnUnitInfo,false,DependencyAdded);
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin

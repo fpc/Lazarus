@@ -4506,6 +4506,8 @@ resourcestring
   lisContextSensitive = 'Context sensitive';
   lisImitateIndentationOfCurrentUnitProjectOrPackage = 'Imitate indentation '
     +'of current unit, project or package';
+  lisAddPackageRequirement = 'Add package requirement?';
+  lisAddPackageToProject = 'Add package %s to project?';
 
 implementation
 
