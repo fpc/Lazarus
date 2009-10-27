@@ -423,13 +423,22 @@ end;
 procedure TWin32ComboBoxStringList.Clear;
 var
   SaveText: String;
+  SavePos, SaveLen: Integer;
 begin
   if not TCustomComboBox(FSender).ReadOnly then
+  begin
     SaveText := TCustomComboBox(FSender).Text;
+    SavePos := TCustomComboBox(FSender).SelStart;
+    SaveLen := TCustomComboBox(FSender).SelLength;
+  end;
   inherited;
   UpdateComboHeight;
   if not TCustomComboBox(FSender).ReadOnly then
+  begin
     TCustomComboBox(FSender).Text := SaveText;
+    TCustomComboBox(FSender).SelStart := SavePos;
+    TCustomComboBox(FSender).SelLength := SaveLen;
+  end;
 end;
 
 procedure TWin32ComboBoxStringList.Delete(Index: integer); 
