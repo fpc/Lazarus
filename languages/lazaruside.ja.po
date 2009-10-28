@@ -11743,15 +11743,15 @@ msgstr "コンポーネント%sは%sを継承しています。%s継承された
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%sOKを選び、既定の%s%s%sを選んでください。さもなければ%s%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
+msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%sOKを選び、既定の%s%s%sを選んでください。%sさもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
-msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%環境 -> 環境オプション -> ファイルをチェックして下さい。"
+msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "現在のFree Pascalソースディレクトリ%s%s%s%sは正しくないようです。%sOKを選び、既定の%s%s%sを選んでください。さもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
+msgstr "現在のFree Pascalソースディレクトリ%s%s%s%sは正しくないようです。%sOKを選び、既定の%s%s%sを選んでください。%sさもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -11759,7 +11759,7 @@ msgstr "現在のFree Pascalソースディレクトリ%s%s%s%sは正しくな�
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "現在のLazarusディレクトリ%s%s%s%sは正しくないようです。%sこのままではLCLアプリケーションを作成できません。%OKを選び、既定の%s%s%sを選んでください。さもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
+msgstr "現在のLazarusディレクトリ%s%s%s%sは正しくないようです。%sこのままではLCLアプリケーションを作成できません。%sOKを選び、既定の%s%s%sを選んでください。%sさもなければ環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
