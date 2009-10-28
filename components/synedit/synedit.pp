@@ -4567,6 +4567,7 @@ procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  IncreaseChangeStamp;
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 >= FBeautifyEndLineIdx) then
@@ -4599,6 +4600,7 @@ var
   EndIndex: Integer;
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  IncreaseChangeStamp;
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
