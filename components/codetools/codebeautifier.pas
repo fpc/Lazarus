@@ -104,13 +104,15 @@ type
     bbtClass,
     bbtClassInterface,
     bbtClassSection, // public, private, protected, published
+    bbtTypeRoundBracket,
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,
-    bbtMainBegin,
-    bbtCommentaryBegin, // begin without any need
-    bbtRepeat,
+    bbtProcedureParamList,
     bbtProcedureBegin,
+    bbtMainBegin,
+    bbtFreeBegin, // begin without need (e.g. without if-then)
+    bbtRepeat,
     bbtCase,
     bbtCaseOf,    // child of bbtCase
     bbtCaseColon, // child of bbtCase
@@ -122,7 +124,8 @@ type
     bbtIf,
     bbtIfThen,    // child of bbtIf
     bbtIfElse,    // child of bbtIf
-    bbtIfBegin    // child of bbtIfThen or bbtIfElse
+    bbtIfBegin,   // child of bbtIfThen or bbtIfElse
+    bbtStatementRoundBracket
     );
   TFABBlockTypes = set of TFABBlockType;
 
@@ -131,10 +134,54 @@ const
        bbtResourceStringSection,bbtLabelSection];
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
-  bbtAllStatements = [bbtMainBegin,bbtCommentaryBegin,bbtRepeat,bbtProcedureBegin,
+  bbtAllStatements = [bbtMainBegin,bbtFreeBegin,bbtRepeat,bbtProcedureBegin,
                       bbtCaseColon,bbtCaseBegin,bbtCaseElse,
                       bbtTry,bbtFinally,bbtExcept,
-                      bbtIfThen,bbtIfElse,bbtIfBegin];
+                      bbtIfThen,bbtIfElse,bbtIfBegin,bbtStatementRoundBracket];
+const
+  FABBlockTypeNames: array[TFABBlockType] of string = (
+    'bbtNone',
+    // code sections
+    'bbtInterface',
+    'bbtImplementation',
+    'bbtInitialization',
+    'bbtFinalization',
+    // identifier sections
+    'bbtUsesSection',
+    'bbtTypeSection',
+    'bbtConstSection',
+    'bbtVarSection',
+    'bbtResourceStringSection',
+    'bbtLabelSection',
+    // type blocks
+    'bbtRecord',
+    'bbtClass',
+    'bbtClassInterface',
+    'bbtClassSection',
+    'bbtTypeRoundBracket',
+    // statement blocks
+    'bbtProcedure',
+    'bbtFunction',
+    'bbtProcedureParamList',
+    'bbtProcedureBegin',
+    'bbtMainBegin',
+    'bbtFreeBegin',
+    'bbtRepeat',
+    'bbtCase',
+    'bbtCaseOf',
+    'bbtCaseColon',
+    'bbtCaseBegin',
+    'bbtCaseElse',
+    'bbtTry',
+    'bbtFinally',
+    'bbtExcept',
+    'bbtIf',
+    'bbtIfThen',
+    'bbtIfElse',
+    'bbtIfBegin',
+    'bbtStatementRoundBracket'
+    );
+
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 Step: integer; // starting at 0
@@ -257,47 +304,6 @@ type
                            read FOnGetNestedComments write FOnGetNestedComments;
     property OnLoadFile: TOnGetFABFile read FOnLoadFile write FOnLoadFile;
   end;
-
-const
-  FABBlockTypeNames: array[TFABBlockType] of string = (
-    'bbtNone',
-    // code sections
-    'bbtInterface',
-    'bbtImplementation',
-    'bbtInitialization',
-    'bbtFinalization',
-    // identifier sections
-    'bbtUsesSection',
-    'bbtTypeSection',
-    'bbtConstSection',
-    'bbtVarSection',
-    'bbtResourceStringSection',
-    'bbtLabelSection',
-    // type blocks
-    'bbtRecord',
-    'bbtClass',
-    'bbtClassInterface',
-    'bbtClassSection',
-    // statement blocks
-    'bbtProcedure',
-    'bbtFunction',
-    'bbtMainBegin',
-    'bbtCommentaryBegin',
-    'bbtRepeat',
-    'bbtProcedureBegin',
-    'bbtCase',
-    'bbtCaseOf',
-    'bbtCaseColon',
-    'bbtCaseBegin',
-    'bbtCaseElse',
-    'bbtTry',
-    'bbtFinally',
-    'bbtExcept',
-    'bbtIf',
-    'bbtIfThen',
-    'bbtIfElse',
-    'bbtIfBegin'
-    );
 
 function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
 function CompareCodeWithFABPolicy(Key, Data: Pointer): integer;
@@ -566,6 +572,27 @@ begin
 
     r:=@Src[AtomStart];
     case UpChars[r^] of
+    '(':
+      if p-AtomStart=1 then begin
+        // round bracket open
+        case Stack.TopType of
+        bbtProcedure,bbtFunction:
+          BeginBlock(bbtProcedureParamList);
+        else
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtStatementRoundBracket)
+          else
+            BeginBlock(bbtTypeRoundBracket);
+        end;
+      end;
+    ')':
+      if p-AtomStart=1 then begin
+        // round bracket close
+        case Stack.TopType of
+        bbtProcedureParamList,bbtTypeRoundBracket,bbtStatementRoundBracket:
+          EndBlock;
+        end;
+      end;
     'B':
       if CompareIdentifiers('BEGIN',r)=0 then begin
         while Stack.TopType in (bbtAllIdentifierSections+bbtAllCodeSections) do
@@ -576,7 +603,7 @@ begin
         bbtProcedure,bbtFunction:
           BeginBlock(bbtProcedureBegin);
         bbtMainBegin,bbtProcedureBegin:
-          BeginBlock(bbtCommentaryBegin);
+          BeginBlock(bbtFreeBegin);
         bbtCaseElse,bbtCaseColon:
           BeginBlock(bbtCaseBegin);
         bbtIfThen,bbtIfElse:
@@ -624,7 +651,7 @@ begin
             EndBlock;
 
           case Stack.TopType of
-          bbtMainBegin,bbtCommentaryBegin,
+          bbtMainBegin,bbtFreeBegin,
           bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
           bbtCase,bbtCaseBegin,bbtIfBegin:
             EndBlock;
@@ -1137,7 +1164,7 @@ begin
   bbtRecord,
   bbtClassSection,
   bbtMainBegin,
-  bbtCommentaryBegin,
+  bbtFreeBegin,
   bbtRepeat,
   bbtProcedureBegin,
   bbtCaseColon,
