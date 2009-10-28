@@ -38,13 +38,18 @@
   Examples for beautification styles: see scanexamples/indentation.pas
 
   ToDo:
-    - fix last line after pressing return key:
-        if true then
-        exit;|
-        |
-    - if true then |
-      |exit;
-    - paste
+    * ecLineBreak:
+      - indent depends on next atom:
+          if true then |
+            |exit;
+          if true then |
+          |begin
+      - fix last line after pressing return key:
+          if true then
+          exit;|
+          |
+    * long lines
+    * ecPaste
 }
 unit CodeBeautifier;
 
