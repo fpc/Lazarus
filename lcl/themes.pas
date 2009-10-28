@@ -2304,7 +2304,7 @@ begin
     TXTStyle.Layout := tlBottom
   else
     TXTStyle.Layout := tlTop;
-    
+  TXTStyle.RightToLeft := (Flags and DT_RTLREADING) <> 0;
     // set color here, otherwise SystemFont is wrong if the button was disabled before
   TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
 
