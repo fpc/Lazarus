@@ -2365,6 +2365,8 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 
 function IsColorDefault(AControl: TControl): Boolean;
 
+function BidiFlipAlignment(Alignment: TAlignment; Flip: Boolean = True): TAlignment;
+
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
@@ -2466,6 +2468,17 @@ begin
     if Info <> nil then
       Result := (Info^.Default <> NoDefaultValue) and (Info^.Default = AControl.Color);
   end;
+end;
+
+function BidiFlipAlignment(Alignment: TAlignment; Flip: Boolean): TAlignment;
+const
+  BidiAlignment: array[Boolean, TAlignment] of TAlignment =
+  (
+    ( taLeftJustify, taRightJustify, taCenter ),
+    ( taRightJustify, taLeftJustify, taCenter )
+  );
+begin
+  Result := BidiAlignment[Flip, Alignment];
 end;
 
 function DbgS(a: TAnchorKind): string;

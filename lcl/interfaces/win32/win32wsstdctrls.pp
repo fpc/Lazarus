@@ -215,6 +215,9 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl;
+       UseRightToLeftAlign, UseRightToLeftReading,
+       UseRightToLeftScrollBar: Boolean); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -1408,6 +1411,15 @@ begin
       end;
     end;
   end;
+end;
+
+class procedure TWin32WSCustomStaticText.SetBiDiMode(
+  const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading,
+  UseRightToLeftScrollBar: Boolean);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    exit;
+  RecreateWnd(AWinControl);//to adjust the update the Alignment
 end;
 
 class procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);

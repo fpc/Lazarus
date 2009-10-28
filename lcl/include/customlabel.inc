@@ -460,7 +460,7 @@ begin
     FillChar(TR,SizeOf(TR),0);
     with TR do
     begin
-      Alignment := Self.Alignment;
+      Alignment := BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment);
       WordBreak := wordWrap;
       SingleLine:= not WordWrap and not HasMultiLine;
       Clipping := True;
