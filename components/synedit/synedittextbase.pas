@@ -342,31 +342,43 @@ end;
 
 procedure TSynEditStrings.SetTextStr(const Value : string);
 var
-  StartPos: Integer;
-  p: Integer;
-  Len: Integer;
+  StartPos: PChar;
+  p: PChar;
+  Last: PChar;
   sl: TStringList;
+  s: string;
 begin
+  if Value='' then begin
+    Clear;
+    exit;
+  end;
   BeginUpdate;
   sl:=TStringList.Create;
   try
     Clear;
-    p:=1;
+    p:=PChar(Value);
     StartPos:=p;
-    Len:=length(Value);
-    while p<=Len do begin
-      if not (Value[p] in [#10,#13]) then begin
+    Last:=p+length(Value);
+    while p<Last do begin
+      if not (p^ in [#10,#13]) then begin
         inc(p);
       end else begin
-        sl.Add(copy(Value,StartPos,p-StartPos));
-        inc(p);
-        if (p<=Len) and (Value[p] in [#10,#13]) and (Value[p-1]<>Value[p]) then
+        SetLength(s,p-StartPos);
+        if s<>'' then
+          System.Move(StartPos^,s[1],length(s));
+        sl.Add(s);
+        if (p[1] in [#10,#13]) and (p[1]<>p^) then
           inc(p);
+        inc(p);
         StartPos:=p;
       end;
     end;
-    if StartPos<=Len then
-      sl.Add(copy(Value,StartPos,Len-StartPos+1));
+    if StartPos<Last then begin
+      SetLength(s,Last-StartPos);
+      if s<>'' then
+        System.Move(StartPos^,s[1],length(s));
+      sl.Add(s);
+    end;
     AddStrings(sl);
   finally
     sl.Free;
