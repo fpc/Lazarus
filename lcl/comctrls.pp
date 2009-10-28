@@ -238,6 +238,7 @@ type
     property ClientHeight;
     property ClientWidth;
     property Enabled;
+    property Font;
     property Height stored False;
     property ImageIndex default 0;
     property Left stored False;
