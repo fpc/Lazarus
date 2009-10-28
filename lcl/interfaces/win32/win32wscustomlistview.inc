@@ -421,6 +421,14 @@ begin
       AIndex, MAKELPARAM(ANewPosition.X, ANewPosition.Y)) <> 0;
 end;
 
+class procedure TWin32WSCustomListView.ItemSetStateImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AStateImageIndex: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetStateImage')
+  then Exit;
+
+  ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(AStateImageIndex + 1), LVIS_STATEIMAGEMASK);
+end;
+
 class procedure TWin32WSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
 const
   // lisCut, lisDropTarget, lisFocused, lisSelected
@@ -552,6 +560,55 @@ begin
   then Exit;
 
   Result := SendMessage(ALV.Handle, LVM_GETHOVERTIME, 0, 0);
+end;
+
+class function TWin32WSCustomListView.GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests;
+var
+  HitInfo: LV_HITTESTINFO;
+
+begin
+  Result := [];
+  if not WSCheckHandleAllocated(ALV, 'GetHitTestInfoAt')
+  then Exit;
+
+  with HitInfo do
+  begin
+    pt.X := X;
+    pt.Y := Y;
+    ListView_HitTest( ALV.Handle, HitInfo );
+
+    if ((flags and LVHT_ABOVE) <> 0) and (Y < 0) then
+      Include(Result, htAbove);
+
+    if (flags and LVHT_BELOW) <> 0 then
+      Include(Result, htBelow);
+
+    if (flags and LVHT_NOWHERE) <> 0 then
+      Include(Result, ComCtrls.htNowhere);
+
+    if (flags and LVHT_ONITEM) = LVHT_ONITEM then
+      Include(Result, htOnItem)
+
+    else
+      begin
+      if (flags and LVHT_ONITEMICON) <> 0 then
+        Include(Result, htOnIcon);
+
+      if (flags and LVHT_ONITEMLABEL) <> 0 then
+        Include(Result, htOnLabel);
+
+      if (flags and LVHT_ONITEMSTATEICON) <> 0 then
+        Include(Result, htOnStateIcon);
+
+      end;
+
+    if (flags and LVHT_TOLEFT) <> 0 then
+      Include(Result, htToLeft);
+
+    if (flags and LVHT_TORIGHT) <> 0 then
+      Include(Result, htToRight);
+
+  end;
 end;
 
 class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;

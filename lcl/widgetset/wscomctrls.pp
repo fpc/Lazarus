@@ -104,6 +104,7 @@ type
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); virtual;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
     class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; virtual;
+    class procedure ItemSetStateImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AStateImageIndex: Integer); virtual;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); virtual;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); virtual;
@@ -116,6 +117,7 @@ type
     class function GetBoundingRect(const ALV: TCustomListView): TRect; virtual;
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
     class function GetFocused(const ALV: TCustomListView): Integer; virtual;
+    class function GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests; virtual;
     class function GetHoverTime(const ALV: TCustomListView): Integer; virtual;
     class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; virtual;
     class function GetSelCount(const ALV: TCustomListView): Integer; virtual;
@@ -358,6 +360,12 @@ begin
   Result := False;
 end;
 
+class procedure TWSCustomListView.ItemSetStateImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem;
+  const ASubIndex, AStateImageIndex: Integer);
+begin
+end;
+
 class procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
@@ -401,6 +409,11 @@ end;
 class function TWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
+end;
+
+class function TWSCustomListView.GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests;
+begin
+  Result := [];
 end;
 
 class function TWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;

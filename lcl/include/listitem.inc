@@ -659,6 +659,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem SetStateIndex                                                    }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetStateIndex(const AValue: TImageIndex);
+begin
+  if AValue = FStateIndex then Exit;
+
+  FStateIndex := AValue;
+
+  if WSUpdateAllowed then
+    TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetStateImage(FOwner.FOwner, GetIndex, Self, 0, FStateIndex);
+
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem GetStateIndex                                                    }
+{------------------------------------------------------------------------------}
+function TListItem.GetStateIndex: TImageIndex;
+begin
+  Result := FStateIndex;
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
 {------------------------------------------------------------------------------}
 procedure TListItem.SetState(const ALisOrd: Integer; const AIsSet: Boolean);

@@ -108,6 +108,7 @@ type
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class function  ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;
+    class procedure ItemSetStateImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AStateImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
@@ -121,6 +122,7 @@ type
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     class function GetDropTarget(const ALV: TCustomListView): Integer; override;
     class function GetFocused(const ALV: TCustomListView): Integer; override;
+    class function GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests; override;
     class function GetHoverTime(const ALV: TCustomListView): Integer; override;
     class function GetItemAt(const ALV: TCustomListView; x,y: Integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;

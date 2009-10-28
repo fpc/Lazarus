@@ -732,6 +732,13 @@ begin
   else Result := FHoverTime;
 end;
 
+function TCustomListView.GetHitTestInfoAt(X, Y: Integer): THitTests;
+begin
+  Result := [];
+  if HandleAllocated then
+    Result := TWSCustomListViewClass(WidgetSetClass).GetHitTestInfoAt( Self, X, Y );
+end;
+
 function TCustomListView.GetItemAt(x,y: Integer): TListItem;
 var 
   Item: Integer;

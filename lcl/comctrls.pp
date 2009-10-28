@@ -699,6 +699,7 @@ type
     FCaption: String;
     FData: Pointer;
     FImageIndex: TImageIndex;
+    FStateIndex: TImageIndex;
     FStates: TListItemStates;
     FChecked: Boolean;
     function GetCaption: String; virtual;
@@ -709,6 +710,7 @@ type
     function GetState(const ALisOrd: Integer): Boolean;
     function GetImageIndex: TImageIndex; virtual;
     function GetIndex: Integer; virtual;
+    function GetStateIndex: TImageIndex; virtual;
     function GetSubItemImages(const AIndex: Integer): Integer;
     function GetSubItems: TStrings; virtual;
     function GetTop: Integer;
@@ -725,6 +727,7 @@ type
     procedure SetLeft(Value: Integer);
     procedure SetCaption(const AValue : String); virtual;
     procedure SetPosition(const AValue: TPoint);
+    procedure SetStateIndex(const AValue: TImageIndex); virtual;
     procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetSubItems(const AValue: TStrings);
     procedure SetTop(Value: Integer);
@@ -754,6 +757,7 @@ type
     property Owner: TListItems read FOwner;
     property Position: TPoint read GetPosition write SetPosition;
     property Selected: Boolean index Ord(lisSelected) read GetState write SetState;
+    property StateIndex: TImageIndex read GetStateIndex write SetStateIndex;
     property SubItems: TStrings read GetSubItems write SetSubItems;
     property SubItemImages[const AIndex: Integer]: Integer read GetSubItemImages write SetSubItemImages;
     property Top: Integer read GetTop write SetTop;
@@ -1109,6 +1113,7 @@ type
     procedure Clear;
     procedure EndUpdate;
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
+    function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
     property BorderStyle default bsSingle;
