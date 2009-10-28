@@ -74,6 +74,13 @@ Different behaviour than Delphi, but by design (October 2009, BB)
    I decided to implement TCustomEdit.SetText in such a way that at least storing and retrieving the
    Text property results in the same text in the control.
    So SetText breaks Delphi compatibility (a little), but data integrity is preserved as the result of this.
+
+ - SetEditText is not Delphi compatible. Delphi allows setting any text in the control, leaving the control
+   in an unrecoverable state, where it is impossible to leave the control because the text can never be validated
+   (too short, too long, overwritten maskliterals). The app wil crash as a result of this.
+   I have decided to disallow this:
+   - EditText is truncated, or padded with ClearChar if necessary so that Length(EditText) = Length(FMask)
+   - Restore all MaskLiterals in the text
 }
 
 unit MaskEdit;
@@ -1252,8 +1259,11 @@ end;
 
 
 procedure TCustomMaskEdit.SetEditText(const AValue: string);
+//Note: This is not Delphi compatible, but by design
+//Delphi lets you just set EditText of any length, which is extremely dangerous!
 var
   S: String;
+  i: Integer;
 begin
   if (not IsMasked) then
   begin
@@ -1263,7 +1273,12 @@ begin
   begin
     //Make sure we don't copy more or less text into the control than FMask allows for
     S := Copy(UTF8ToAscii(AValue), 1, Length(FMask));
-    while Length(S) < Length(FMask) do S := S + FSpaceChar;
+    //Restore all MaskLiterals, or we will potentially leave the control
+    //in an unrecoverable state, eventually crashing the app
+    for i := 1 to Length(S) do
+      if IsLiteral(FMask[i]) then S[i] := ClearChar(i);
+    //Pad resulting string with ClearChar if text is too short
+    while Length(S) < Length(FMask) do S := S + ClearChar(Length(S)+1);
     SetInheritedText(S);
   end;
 end;
@@ -1724,10 +1739,12 @@ begin
     FMaskSave := _MaskSave;
     if not TextIsValid(S) then
     begin
-      SetFocus;
+      //SetFocus does not always work, and if it works it will cause a double DoExit
+      //(because the default exception handler will steal the focus from us)
+      //and re-raise the exception, before it has been handled
+      //SetFocus;
       SetCursorPos;
       Raise EDBEditError.Create(SMaskEditNoMatch);
-      //DebugLn('TCustomMaskEdit.Validate: The current text does not match the the specified mask');
     end;
   end;
 end;
