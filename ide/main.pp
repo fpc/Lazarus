@@ -14451,6 +14451,9 @@ begin
   CodeBuf:=SrcEditor.CodeBuffer;
   CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
   if p<1 then exit;
+  DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+0=',SrcEditor.Lines[FirstLinePos]]);
+  if FirstLinePos<SrcEditor.LineCount then
+    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+1=',SrcEditor.Lines[FirstLinePos+1]]);
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,NewIndent)
   then exit;

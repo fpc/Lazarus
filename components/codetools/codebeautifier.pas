@@ -38,12 +38,13 @@
   Examples for beautification styles: see scanexamples/indentation.pas
 
   ToDo:
-    - if true then
-      exit;|
-      |
-    - selection
+    - fix last line after pressing return key:
+        if true then
+        exit;|
+        |
     - if true then |
       |exit;
+    - paste
 }
 unit CodeBeautifier;
 
@@ -1079,7 +1080,7 @@ begin
     Policies.Code.Source:=Source;
     {$ENDIF}
     // parse source in front
-    //DebugLn(['TFullyAutomaticBeautifier.GetIndent "',copy(Source,1,CleanPos-1),'"']);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent "',dbgstr(copy(Source,CleanPos-10,10)),'|',dbgstr(copy(Source,CleanPos,10)),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
     WriteDebugReport('After parsing code in front:',Stack);
