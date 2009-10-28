@@ -105,6 +105,7 @@ type
     bbtClassInterface,
     bbtClassSection, // public, private, protected, published
     bbtTypeRoundBracket,
+    bbtTypeEdgedBracket,
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,
@@ -125,7 +126,8 @@ type
     bbtIfThen,    // child of bbtIf
     bbtIfElse,    // child of bbtIf
     bbtIfBegin,   // child of bbtIfThen or bbtIfElse
-    bbtStatementRoundBracket
+    bbtStatementRoundBracket,
+    bbtStatementEdgedBracket
     );
   TFABBlockTypes = set of TFABBlockType;
 
@@ -137,7 +139,8 @@ const
   bbtAllStatements = [bbtMainBegin,bbtFreeBegin,bbtRepeat,bbtProcedureBegin,
                       bbtCaseColon,bbtCaseBegin,bbtCaseElse,
                       bbtTry,bbtFinally,bbtExcept,
-                      bbtIfThen,bbtIfElse,bbtIfBegin,bbtStatementRoundBracket];
+                      bbtIfThen,bbtIfElse,bbtIfBegin,
+                      bbtStatementRoundBracket,bbtStatementEdgedBracket];
 const
   FABBlockTypeNames: array[TFABBlockType] of string = (
     'bbtNone',
@@ -159,6 +162,7 @@ const
     'bbtClassInterface',
     'bbtClassSection',
     'bbtTypeRoundBracket',
+    'bbtTypeEdgedBracket',
     // statement blocks
     'bbtProcedure',
     'bbtFunction',
@@ -179,7 +183,8 @@ const
     'bbtIfThen',
     'bbtIfElse',
     'bbtIfBegin',
-    'bbtStatementRoundBracket'
+    'bbtStatementRoundBracket',
+    'bbtStatementEdgedBracket'
     );
 
 type
@@ -584,6 +589,22 @@ begin
           else
             BeginBlock(bbtTypeRoundBracket);
         end;
+      end;
+    ']':
+      if p-AtomStart=1 then begin
+        // edged bracket close
+        case Stack.TopType of
+        bbtTypeEdgedBracket,bbtStatementEdgedBracket:
+          EndBlock;
+        end;
+      end;
+    '[':
+      if p-AtomStart=1 then begin
+        // edged bracket open
+        if Stack.TopType in bbtAllStatements then
+          BeginBlock(bbtStatementEdgedBracket)
+        else
+          BeginBlock(bbtTypeEdgedBracket);
       end;
     ')':
       if p-AtomStart=1 then begin
