@@ -3570,7 +3570,9 @@ ifneq ($(wildcard ${DEBDIR}/changelog),)
 .PHONY: debcopy deb
 DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
 DEBVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
-DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBVERSION)
+DEBSRC=lazarus-${DEBVERSION}
+DEBSRCDIR=$(BUILDDIR)/${DEBSRC}
+DEBSRC_ORIG=lazarus_${DEBVERSION}.orig
 BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
 debcheck:
 ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
@@ -3580,11 +3582,6 @@ endif
 debcopy: distclean
 	rm -rf ${BUILDDIR}
 	install -d $(DEBSRCDIR)
-	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
-ifdef SNAPSHOT
-	sed s+${DEBPACKAGEVERSION}+${DEBPACKAGEVERSION}-${BUILDDATE}+ $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
-	mv $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
-endif
 	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
 	$(LINKTREE) COPYING.* $(DEBSRCDIR)
 	$(LINKTREE) README.txt $(DEBSRCDIR)
@@ -3606,19 +3603,29 @@ endif
 	$(LINKTREE) test $(DEBSRCDIR)
 	$(LINKTREE) tools $(DEBSRCDIR)
 	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
-	find $(DEBSRCDIR) -name 'CVS*' | xargs -n1 rm -rf
-	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
+debsetup:
+	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
+ifdef SNAPSHOT
+	sed s+${DEBPACKAGEVERSION}+${DEBPACKAGEVERSION}-${BUILDDATE}+ $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
+	mv $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
+endif
 	chmod 755 $(DEBSRCDIR)/debian/rules
+	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
 debbuild:
-	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc
+	cd ${DEBSRCDIR} ; dpkg-buildpackage -us -uc
+ifdef LINTIAN
+	cd ${DEBSRCDIR} ; lintian -i ../*.changes
+endif
+debclean:
 	mv -v -t . \
 	$(DEBSRCDIR)/../*.changes \
 	$(DEBSRCDIR)/../*.deb \
 	$(DEBSRCDIR)/../*.dsc \
-	$(DEBSRCDIR)/../*.tar.gz
-debclean:
+	$(DEBSRCDIR)/../*.gz
 	rm -rf $(DEBSRCDIR)
 	rmdir $(BUILDDIR)
-deb: debcheck debcopy debbuild debclean
+deb: debcheck debcopy deborigtargz debsetup debbuild debcheckpolicy debclean
+deborigtargz:
+	tar -C ${BUILDDIR} -zcf ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz --exclude-vcs ${DEBSRC}
 endif   # changelog found
 endif
