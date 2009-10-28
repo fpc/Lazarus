@@ -48,10 +48,10 @@ uses
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
-  SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter,
-  SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
-  SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks, SynBeautifier,
-  SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
+  SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
+  SynEditMiscClasses, SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks,
+  SynBeautifier, SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -2588,7 +2588,7 @@ begin
         FEditPlugin.Enabled := False;
       FEditor.BeginUpdate;
       FCodeBuffer.AssignTo(FEditor.Lines,true);
-      FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
+      FEditorStampCommitedToCodetools:=(FEditor.Lines as TSynEditLines).TextChangeStamp;
       FEditor.EndUpdate;
       if assigned(FEditPlugin) then
         FEditPlugin.Enabled := True;
@@ -2627,7 +2627,7 @@ begin
   writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
   {$ENDIF}
   if FIgnoreCodeBufferLock>0 then exit;
-  CodeToolsInSync:=FEditorStampCommitedToCodetools=FEditor.ChangeStamp;
+  CodeToolsInSync:=not NeedsUpdateCodeBuffer;
   if SrcLogEntry<>nil then begin
     FEditor.BeginUpdate;
     FEditor.BeginUndoBlock;
@@ -2670,7 +2670,7 @@ begin
   end;
   if CodeToolsInSync then begin
     // synedit and codetools were in sync -> mark as still in sync
-    FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
+    FEditorStampCommitedToCodetools:=TSynEditLines(FEditor.Lines).TextChangeStamp;
   end;
 end;
 
@@ -2725,7 +2725,8 @@ end;
 procedure TSourceEditor.UpdateCodeBuffer;
 // copy the source from EditorComponent to codetools
 begin
-  if FEditor.ChangeStamp=FEditorStampCommitedToCodetools then exit;
+  if TSynEditLines(FEditor.Lines).TextChangeStamp=FEditorStampCommitedToCodetools
+  then exit;
   {$IFDEF IDE_DEBUG}
   if FCodeBuffer=nil then begin
     debugln('');
@@ -2738,14 +2739,14 @@ begin
   IncreaseIgnoreCodeBufferLock;
   FEditor.BeginUpdate;
   FCodeBuffer.Assign(FEditor.Lines);
-  FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
+  FEditorStampCommitedToCodetools:=(FEditor.Lines as TSynEditLines).TextChangeStamp;
   FEditor.EndUpdate;
   DecreaseIgnoreCodeBufferLock;
 end;
 
 function TSourceEditor.NeedsUpdateCodeBuffer: boolean;
 begin
-  Result:=FEditor.ChangeStamp<>FEditorStampCommitedToCodetools;
+  Result:=TSynEditLines(FEditor.Lines).TextChangeStamp<>FEditorStampCommitedToCodetools;
 end;
 
 Function TSourceEditor.GetSource: TStrings;
@@ -2850,7 +2851,7 @@ begin
   begin
     FEditor.Modified:=false; // needed for the undo stack
     FEditor.MarkTextAsSaved;
-    FEditorStampCommitedToCodetools:=FEditor.ChangeStamp;
+    FEditorStampCommitedToCodetools:=TSynEditLines(FEditor.Lines).TextChangeStamp;
   end;
   if OldModified <> Modified then
     UpdatePageName;

@@ -74,6 +74,7 @@ type
 
   TSynEditStrings = class(TStrings)
   protected
+    FTextChangeStamp: int64;
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
@@ -133,11 +134,13 @@ type
     property UndoList: TSynEditUndoList read GetUndoList;
     property RedoList: TSynEditUndoList read GetRedoList;
     property IsUndoing: Boolean write SetIsUndoing;
+    procedure IncreaseTextChangeStamp;
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
     property Ranges: TSynEditStorageMem read GetRange write PutRange;
+    property TextChangeStamp: int64 read FTextChangeStamp;
   end;
 
   { TSynEditStringsLinked }
@@ -441,6 +444,14 @@ begin
   end;
 
   Result := BytePos + 1 + PhysicalPos - ScreenPos;
+end;
+
+procedure TSynEditStrings.IncreaseTextChangeStamp;
+begin
+  if fTextChangeStamp=High(fTextChangeStamp) then
+    fTextChangeStamp:=Low(fTextChangeStamp)
+  else
+    inc(fTextChangeStamp);
 end;
 
 { TSynEditStringsLinked }

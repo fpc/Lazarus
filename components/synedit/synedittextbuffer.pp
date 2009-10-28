@@ -556,6 +556,7 @@ end;
 
 procedure TSynEditStringList.SetCount(const AValue: Integer);
 begin
+  IncreaseTextChangeStamp;
   fList.Count := AValue;
 end;
 
@@ -733,6 +734,7 @@ begin
     BeginUpdate;
     fIndexOfLongestLine := -1;
     FList[Index] := S;
+    IncreaseTextChangeStamp;
     SendNotification(senrLineChange, self, Index, 1);
     EndUpdate;
   end;

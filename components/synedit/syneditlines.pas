@@ -47,6 +47,7 @@ type
     fDosFileFormat: boolean;
     FTextBuffer: TSynEditStrings;
     FOnSaved: TSavedNotification;
+    function GetTextChangeStamp: int64;
   protected
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
@@ -69,6 +70,7 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
+    property TextChangeStamp: int64 read GetTextChangeStamp;
   end;
 
 implementation
@@ -276,6 +278,11 @@ begin
   inherited Create;
   FTextBuffer := ATextBuffer;
   FOnSaved := OnSaved;
+end;
+
+function TSynEditLines.GetTextChangeStamp: int64;
+begin
+  Result:=FTextBuffer.TextChangeStamp;
 end;
 
 function TSynEditLines.Get(Index: integer): string;
