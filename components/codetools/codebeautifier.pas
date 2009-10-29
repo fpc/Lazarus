@@ -1078,13 +1078,16 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 var
   AtomStart: integer;
   r: PChar;
+  p: LongInt;
 begin
   Result:=Stack.Top;
   if Result<0 then exit;
   if (CleanPos<1) or (CleanPos>length(Source))
-  or (Source[CleanPos] in [' ',#9]) then
+  or (Source[CleanPos] in [#0..#31,' ']) then
     exit;
-  ReadRawNextPascalAtom(Source,CleanPos,AtomStart,NestedComments);
+  p:=CleanPos;
+  ReadRawNextPascalAtom(Source,p,AtomStart,NestedComments);
+  if AtomStart<>p then exit;
   DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos Atom=',copy(Source,AtomStart,CleanPos-AtomStart)]);
   r:=@Source[AtomStart];
   case UpChars[r^] of
