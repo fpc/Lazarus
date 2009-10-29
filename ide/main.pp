@@ -5101,7 +5101,7 @@ begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.AUnitName;
-  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
+  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.AUnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
