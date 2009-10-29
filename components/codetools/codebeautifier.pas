@@ -282,15 +282,18 @@ type
     FOnGetNestedComments: TOnGetFABNestedComments;
     FOnLoadFile: TOnGetFABFile;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
-                          NestedComments: boolean;
-                          Stack: TFABBlockStack; Policies: TFABPolicies;
-                          out LastAtomStart, LastAtomEnd: integer);
+      NestedComments: boolean;
+      Stack: TFABBlockStack; Policies: TFABPolicies;
+      out LastAtomStart, LastAtomEnd: integer // set if LastAtomStart<EndPos<LastAtomEnd
+      );
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
                           Stack: TFABBlockStack; Policies: TFABPolicies);
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   ParentTyp, Typ: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
+    function FindStackPosForBlockCloseAtPos(Stack: TFABBlockStack;
+                                            CleanPos: integer): integer;
     procedure WriteDebugReport(Msg: string; Stack: TFABBlockStack);
   public
     DefaultTabWidth: integer;
@@ -1001,6 +1004,17 @@ begin
     OnGetNestedComments(Self,Code,Result);
 end;
 
+function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
+  Stack: TFABBlockStack; CleanPos: integer): integer;
+{ For example:
+    if expr then
+      begin
+
+}
+begin
+  Result:=Stack.Top;
+end;
+
 procedure TFullyAutomaticBeautifier.WriteDebugReport(Msg: string;
   Stack: TFABBlockStack);
 var
@@ -1064,6 +1078,7 @@ var
   Policies: TFABPolicies;
   LastAtomStart, LastAtomEnd: integer;
   ParentBlock: TBlock;
+  StackIndex: LongInt;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -1089,13 +1104,8 @@ begin
     DebugLn(['TFullyAutomaticBeautifier.GetIndent "',dbgstr(copy(Source,CleanPos-10,10)),'|',dbgstr(copy(Source,CleanPos,10)),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
+    if LastAtomStart>0 then CleanPos:=LastAtomStart;
     WriteDebugReport('After parsing code in front:',Stack);
-    if (Stack.Top<0) then begin
-      // no context
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
-      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
-      exit(Indent.IndentValid);
-    end;
     if (LastAtomStart>0) and (CleanPos>LastAtomStart) then begin
       // in comment or atom
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: position in middle of atom, e.g. comment']);
@@ -1103,10 +1113,21 @@ begin
       exit(Indent.IndentValid);
     end;
 
-    Block:=Stack.Stack[Stack.Top];
+    StackIndex:=Stack.Top;
+    if UseLineStart then
+      StackIndex:=FindStackPosForBlockCloseAtPos(Stack,CleanPos);
 
-    if Stack.Top>0 then
-      ParentBlock:=Stack.Stack[Stack.Top-1];
+    if (StackIndex<0) then begin
+      // no context
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
+      exit(Indent.IndentValid);
+    end;
+
+    Block:=Stack.Stack[StackIndex];
+
+    if StackIndex>0 then
+      ParentBlock:=Stack.Stack[StackIndex-1];
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     if CheckPolicies(Policies,Result) then exit;
 
