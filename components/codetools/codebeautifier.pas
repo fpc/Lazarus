@@ -1082,9 +1082,10 @@ begin
   Result:=Stack.Top;
   if Result<0 then exit;
   if (CleanPos<1) or (CleanPos>length(Source))
-  or (not (Source[CleanPos] in [' ',#9])) then
+  or (Source[CleanPos] in [' ',#9]) then
     exit;
   ReadRawNextPascalAtom(Source,CleanPos,AtomStart,NestedComments);
+  DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos Atom=',copy(Source,AtomStart,CleanPos-AtomStart)]);
   r:=@Source[AtomStart];
   case UpChars[r^] of
   'C':
