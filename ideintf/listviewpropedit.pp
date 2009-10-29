@@ -201,6 +201,7 @@ begin
   begin
     TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, -1);
     TreeView1.Selected.StateIndex := StrToIntDef(edtIndexState.Text, -1);
+    TreeView1.Selected.SelectedIndex := TreeView1.Selected.ImageIndex;
 
     edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
     edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
@@ -228,7 +229,8 @@ begin
         with Node do
         begin
           ImageIndex := AListView.Items[I].ImageIndex;
-          //StateIndex := AListView.Items[I].StateIndex;
+          StateIndex := AListView.Items[I].StateIndex;
+          SelectedIndex := ImageIndex;
         end;
 
         //SubItems
@@ -269,7 +271,7 @@ begin
           Item := FListView.Items.Add;
           Item.Caption := Node.Text;
           Item.ImageIndex := Node.ImageIndex;
-          //Item.StateIndex := Node.StateIndex;
+          Item.StateIndex := Node.StateIndex;
 
           //SubItems
           for J := 0 to Node.Count - 1 do
