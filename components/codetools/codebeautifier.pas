@@ -292,8 +292,9 @@ type
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   ParentTyp, Typ: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
-    function FindStackPosForBlockCloseAtPos(Stack: TFABBlockStack;
-                                            CleanPos: integer): integer;
+    function FindStackPosForBlockCloseAtPos(const Source: string;
+                             CleanPos: integer; NestedComments: boolean;
+                             Stack: TFABBlockStack): integer;
     procedure WriteDebugReport(Msg: string; Stack: TFABBlockStack);
   public
     DefaultTabWidth: integer;
@@ -1020,14 +1021,196 @@ begin
 end;
 
 function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
-  Stack: TFABBlockStack; CleanPos: integer): integer;
+  const Source: string; CleanPos: integer; NestedComments: boolean;
+  Stack: TFABBlockStack): integer;
 { For example:
     if expr then
       begin
+        |DoSomething;
 
+    if expr then
+      begin
+      |end;
 }
+
+  procedure EndIdentifierSection;
+  begin
+    if Stack.TopType in bbtAllIdentifierSections then
+      dec(FindStackPosForBlockCloseAtPos);
+  end;
+
+  procedure StartProcedure;
+  begin
+    if Stack.TopType in bbtAllIdentifierSections then
+      dec(FindStackPosForBlockCloseAtPos);
+  end;
+
+  function IsMethodDeclaration: boolean;
+  begin
+    Result:=(Stack.TopType=bbtProcedure)
+      and (Stack.Top>0) and (Stack.Stack[Stack.Top-1].Typ=bbtClassSection);
+  end;
+
+  procedure EndClassSection;
+  begin
+    if Stack.TopType=bbtClassSection then
+      dec(FindStackPosForBlockCloseAtPos)
+    else if IsMethodDeclaration then
+      dec(FindStackPosForBlockCloseAtPos,2);
+  end;
+
+  procedure EndBigSection;
+  begin
+    while Stack.TopType in (bbtAllCodeSections+bbtAllIdentifierSections+bbtAllStatements)
+    do
+      dec(FindStackPosForBlockCloseAtPos);
+  end;
+
+  procedure EndTopMostBlock(BlockTyp: TFABBlockType);
+  var
+    i: LongInt;
+  begin
+    i:=Stack.TopMostIndexOf(BlockTyp);
+    if i>=0 then
+      FindStackPosForBlockCloseAtPos:=i-1;
+  end;
+
+var
+  AtomStart: integer;
+  r: PChar;
 begin
   Result:=Stack.Top;
+  if Result<0 then exit;
+  if (CleanPos<1) or (CleanPos>length(Source))
+  or (not (Source[CleanPos] in [' ',#9])) then
+    exit;
+  ReadRawNextPascalAtom(Source,CleanPos,AtomStart,NestedComments);
+  r:=@Source[AtomStart];
+  case UpChars[r^] of
+  'C':
+    if CompareIdentifiers('CONST',r)=0 then
+      EndIdentifierSection;
+  'E':
+    case UpChars[r[1]] of
+    'L': // EL
+      if CompareIdentifiers('ELSE',r)=0 then begin
+        case Stack.TopType of
+        bbtCaseOf,bbtCaseColon:
+          dec(Result);
+        bbtIfThen:
+          dec(Result);
+        end;
+      end;
+    'N': // EN
+      if CompareIdentifiers('END',r)=0 then begin
+        // if statements can be closed by end without semicolon
+        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+          dec(Result);
+        if IsMethodDeclaration then
+          dec(Result,2);
+        if Stack.TopType=bbtClassSection then
+          dec(Result);
+
+        case Stack.TopType of
+        bbtMainBegin,bbtFreeBegin,
+        bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
+        bbtCase,bbtCaseBegin,bbtIfBegin:
+          dec(Result);
+        bbtCaseOf,bbtCaseColon,bbtCaseElse:
+          begin
+            dec(Result);
+            if Stack.TopType=bbtCase then
+              dec(Result);
+          end;
+        bbtProcedureBegin:
+          dec(Result);
+        bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
+          dec(Result);
+        end;
+      end;
+    'X': // EX
+      if CompareIdentifiers('EXCEPT',r)=0 then begin
+        if Stack.TopType=bbtTry then
+          dec(Result);
+      end;
+    end;
+  'F':
+    case UpChars[r[1]] of
+    'I': // FI
+      if CompareIdentifiers('FINALIZATION',r)=0 then begin
+        EndBigSection;
+      end else if CompareIdentifiers('FINALLY',r)=0 then begin
+        if Stack.TopType=bbtTry then
+          dec(Result);
+      end;
+    end;
+  'I':
+    case UpChars[r[1]] of
+    'N': // IN
+      case UpChars[r[2]] of
+      'I': // INI
+        if CompareIdentifiers('INITIALIZATION',r)=0 then
+          EndBigSection;
+      end;
+    'M': // IM
+      if CompareIdentifiers('IMPLEMENTATION',r)=0 then begin
+        EndBigSection;
+      end;
+    end;
+  'L':
+    if CompareIdentifiers('LABEL',r)=0 then
+      EndIdentifierSection;
+  'P':
+    case UpChars[r[1]] of
+    'R': // PR
+      case UpChars[r[2]] of
+      'I': // PRI
+        if CompareIdentifiers('PRIVATE',r)=0 then
+          EndClassSection;
+      'O': // PRO
+        case UpChars[r[3]] of
+        'C': // PROC
+          if CompareIdentifiers('PROCEDURE',r)=0 then
+            StartProcedure;
+        'T': // PROT
+          if CompareIdentifiers('PROTECTED',r)=0 then
+            EndClassSection;
+        end;
+      end;
+    'U': // PU
+      if (CompareIdentifiers('PUBLIC',r)=0)
+      or (CompareIdentifiers('PUBLISHED',r)=0) then
+        EndClassSection;
+    end;
+  'R':
+    case UpChars[r[1]] of
+    'E': // RE
+      case UpChars[r[2]] of
+      'S': // RES
+        if CompareIdentifiers('RESOURCESTRING',r)=0 then
+          EndIdentifierSection;
+      end;
+    end;
+  'S':
+    if (CompareIdentifiers('STRICT',r)=0) then
+      EndClassSection;
+  'T':
+    case UpChars[r[1]] of
+    'Y': // TY
+      if CompareIdentifiers('TYPE',r)=0 then
+        EndIdentifierSection;
+    end;
+  'U':
+    case UpChars[r[1]] of
+    'N': // UN
+      if CompareIdentifiers('UNTIL',r)=0 then begin
+        EndTopMostBlock(bbtRepeat);
+      end;
+    end;
+  'V':
+    if CompareIdentifiers('VAR',r)=0 then
+      EndIdentifierSection;
+  end;
 end;
 
 procedure TFullyAutomaticBeautifier.WriteDebugReport(Msg: string;
@@ -1130,7 +1313,8 @@ begin
 
     StackIndex:=Stack.Top;
     if UseLineStart then
-      StackIndex:=FindStackPosForBlockCloseAtPos(Stack,CleanPos);
+      StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
+                                                 NewNestedComments,Stack);
 
     if (StackIndex<0) then begin
       // no context
