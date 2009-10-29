@@ -2372,6 +2372,8 @@ function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
 
+operator := (AVariant: Variant): TCaption;
+
 // register (called by the package initialization in design mode)
 procedure Register;
 
@@ -2387,6 +2389,11 @@ var
   // The interface knows, which TWinControl has the capture. This stores
   // what child control of this TWinControl has actually the capture.
   CaptureControl: TControl=nil;
+
+operator := (AVariant: Variant): TCaption;
+begin
+  Result := String(AVariant);
+end;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
