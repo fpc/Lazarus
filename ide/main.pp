@@ -4742,8 +4742,7 @@ var
   DestroyDriver: Boolean;
   Writer: TWriter;
   ACaption, AText: string;
-  CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
-  UnitSaveFilename: String;
+  CompResourceCode, LFMFilename, TestFilename: string;
   ADesigner: TDesigner;
   Grubber: TLRTGrubber;
   LRTFilename: String;
@@ -4769,6 +4768,7 @@ begin
   // by VVI - now a LRT file is saved in addition to LFM and LRS
   // LRT file format (in present) are lines
   // <ClassName>.<PropertyName>=<PropertyValue>
+  LRSFilename:='';
 
   if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
@@ -4780,6 +4780,11 @@ begin
 
     // save designer form properties to the component
     FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
+
+    if (sfSaveToTestDir in Flags) then
+      LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo)
+    else
+      LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
 
     // stream component to binary stream
     BinCompStream:=TExtMemoryStream.Create;
@@ -4849,12 +4854,7 @@ begin
       // create lazarus form resource code
       if ComponentSavingOk then begin
         if ResourceCode=nil then begin
-          if (sfSaveToTestDir in Flags) then
-            UnitSaveFilename:=MainBuildBoss.GetTestUnitFilename(AnUnitInfo)
-          else
-            UnitSaveFilename:=AnUnitInfo.Filename;
-          ResTestFilename:=ChangeFileExt(UnitSaveFilename,ResourceFileExt);
-          ResourceCode:=CodeToolBoss.CreateFile(ResTestFilename);
+          ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
           ComponentSavingOk:=(ResourceCode<>nil);
         end;
         if ComponentSavingOk then begin
@@ -5015,9 +5015,12 @@ begin
     if (not (sfSaveToTestDir in Flags)) then
     begin
       if (ResourceCode.Modified) then begin
-        LRSFilename:=ResourceCode.Filename;
-        if not FilenameIsAbsolute(LRSFilename) then
-          LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+        if FilenameIsAbsolute(ResourceCode.Filename) then
+          LRSFilename:=ResourceCode.Filename
+        else if LRSFilename='' then
+          LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
+        Result:=ForceDirectoryInteractive(ExtractFilePath(LRSFilename),[mbRetry]);
+        if not Result=mrOk then exit;
         Result:=SaveCodeBufferToFile(ResourceCode,LRSFilename);
         if not Result=mrOk then exit;
       end;
@@ -5188,9 +5191,13 @@ begin
       NewResFilename:=NewResFilePath
                       +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     end;
-    if not CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode)
-    then
-      DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
+    Result:=ForceDirectoryInteractive(ExtractFilePath(NewResFilename),[mbRetry,mbIgnore]);
+    if Result=mrCancel then exit;
+    if Result=mrOk then begin
+      if not CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode)
+      then
+        DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
+    end;
     if (AnUnitInfo.Component<>nil) then
       FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 

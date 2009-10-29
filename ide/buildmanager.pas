@@ -1024,10 +1024,14 @@ end;
 function TBuildManager.FindLRSFilename(AnUnitInfo: TUnitInfo;
   UseDefaultIfNotFound: boolean): string;
 begin
-  Result:=ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
-  Result:=FileUtil.SearchFileInPath(Result,'',
+  if AnUnitInfo.IsVirtual then begin
+    Result:='';
+  end else begin
+    Result:=ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
+    Result:=FileUtil.SearchFileInPath(Result,'',
         CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
         ';',[sffDontSearchInBasePath,sffSearchLoUpCase]);
+  end;
   if (Result='') and UseDefaultIfNotFound then
     Result:=GetDefaultLRSFilename(AnUnitInfo);
 end;
