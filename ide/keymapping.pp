@@ -396,7 +396,7 @@ begin
   ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_E,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -817,7 +817,7 @@ begin
   ecShowCodeContext: SetResult(VK_SPACE,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_E,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1416,7 +1416,7 @@ begin
   ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_E,[ssMeta,ssShift],VK_UNKNOWN,[]);
   ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1684,6 +1684,9 @@ begin
   ecSelLineEnd: SetResult(VK_END, [ssShift],VK_RIGHT,[ssMeta,ssShift]);
   ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // codetools
+  ecRenameIdentifier: SetResult(VK_E, [ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
   ecBuild: SetResult(VK_F9,[ssCtrl],VK_F9,[ssCtrl,ssMeta]);
