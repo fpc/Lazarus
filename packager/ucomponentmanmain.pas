@@ -391,7 +391,7 @@ begin
     Add('  ;');
     Add('');
     Add('type');
-    Add('  TRegisterComponentProc = procedure(const Page, UnitName:ShortString;');
+    Add('  TRegisterComponentProc = procedure(const Page, TheUnitName:ShortString;');
     Add('    ComponentClass: TComponentClass);');
     Add('');
     Add('procedure RegisterCustomComponents(RegisterComponent: TRegisterComponentProc);');

@@ -164,7 +164,7 @@ implementation
 
 type
   TUnitFile = record
-    UnitName: string;
+    FileUnitName: string;
     Filename: string;
   end;
   PUnitFile = ^TUnitFile;
@@ -176,14 +176,14 @@ end;
 
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.UnitName),
-                                Pointer(UnitFile2^.UnitName));
+  Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.FileUnitName),
+                                Pointer(UnitFile2^.FileUnitName));
 end;
 
 function CompareUnitNameAndUnitFile(UnitName: PChar;
   UnitFile: PUnitFile): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.UnitName));
+  Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.FileUnitName));
 end;
 
 { TBuildManager }
@@ -848,7 +848,7 @@ begin
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if (ANode<>nil) and (not IgnoreAll) then begin
-              DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.UnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
+              DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
               Result:=QuestionDlg(lisAmbiguousUnitFound2,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
@@ -868,7 +868,7 @@ begin
             end;
             // add unit to tree
             New(AnUnitFile);
-            AnUnitFile^.UnitName:=CurUnitName;
+            AnUnitFile^.FileUnitName:=CurUnitName;
             AnUnitFile^.Filename:=CurFilename;
             CurUnitTree.Add(AnUnitFile);
           until FindNextUTF8(FileInfo)<>0;

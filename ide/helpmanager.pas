@@ -890,7 +890,7 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
     p: LongInt;
     FPCInstallDir: String;
     FPCVersion: String;
-    UnitName: String;
+    CurUnitName: String;
   begin
     Result:=false;
     { Linux:
@@ -899,9 +899,9 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
         and the docs are installed in
           /somewhere/share/doc/fpcdocs-$fpcversion/
       }
-    UnitName:='system.ppu';
+    CurUnitName:='system.ppu';
     SystemPPU:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
-                                                    '',UnitName);
+                                                    '',CurUnitName);
     DebugLn(['SearchInCommonInstallDir SystemPPU=',SystemPPU]);
     // SystemPPU is now e.g. /usr/lib/fpc/2.0.4/units/i386-linux/rtl/system.ppu
     if SystemPPU='' then exit;

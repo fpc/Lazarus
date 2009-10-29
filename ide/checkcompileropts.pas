@@ -651,19 +651,19 @@ end;
 function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
   ): TModalResult;
   
-  function Check(const Unitname: string; Severity: TCompilerCheckMsgLvl
+  function Check(const TheUnitname: string; Severity: TCompilerCheckMsgLvl
     ): Boolean;
   var
     i: Integer;
   begin
     for i:=0 to PPUs.Count-1 do begin
-      if ExtractFileNameOnly(PPUs[i])=UnitName then exit(true);
+      if ExtractFileNameOnly(PPUs[i])=TheUnitname then exit(true);
     end;
-    AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[Unitname]));
+    AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[TheUnitname]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
       if MessageDlg(lisCCOMissingUnit,
-        Format(lisCCOPPUNotFoundDetailed,[Unitname, #13]),
+        Format(lisCCOPPUNotFoundDetailed,[TheUnitname, #13]),
         mtError,[mbIgnore,mbAbort],0)=mrIgnore then
           Result:=true;
     end;
