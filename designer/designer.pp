@@ -533,6 +533,7 @@ begin
       Form.Designer := nil;
     if FMediator<>nil then
       FMediator.Designer:=nil;
+    // free or hide the form
     TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
     FMediator:=nil;
   end;
