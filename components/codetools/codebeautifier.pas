@@ -552,18 +552,33 @@ var
 var
   r: PChar;
   Block: PBlock;
+  LastP: LongInt;
+  CommentStartPos: LongInt;
+  CommentEndPos: LongInt;
 begin
   LastAtomStart:=0;
   LastAtomEnd:=0;
   p:=StartPos;
   if EndPos>length(Src) then EndPos:=length(Src)+1;
   repeat
+    LastP:=p;
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
     //DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>EndPos then begin
       if (AtomStart<EndPos) then begin
         LastAtomStart:=AtomStart;
         LastAtomEnd:=p;
+      end else begin
+        // EndPos between two atom: in space or comment
+        CommentStartPos:=FindNextNonSpace(Src,LastP);
+        if CommentStartPos<EndPos then begin
+          CommentEndPos:=FindCommentEnd(Src,CommentStartPos,NestedComments);
+          if CommentEndPos>EndPos then begin
+            // EndPos is in comment => return bounds of comment
+            LastAtomStart:=CommentStartPos;
+            LastAtomEnd:=CommentEndPos;
+          end;
+        end;
       end;
       break;
     end else if AtomStart=EndPos then
@@ -1104,7 +1119,6 @@ begin
     DebugLn(['TFullyAutomaticBeautifier.GetIndent "',dbgstr(copy(Source,CleanPos-10,10)),'|',dbgstr(copy(Source,CleanPos,10)),'"']);
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
-    if LastAtomStart>0 then CleanPos:=LastAtomStart;
     WriteDebugReport('After parsing code in front:',Stack);
     if (LastAtomStart>0) and (CleanPos>LastAtomStart) then begin
       // in comment or atom
@@ -1112,6 +1126,7 @@ begin
       GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit(Indent.IndentValid);
     end;
+    if LastAtomStart>0 then CleanPos:=LastAtomStart;
 
     StackIndex:=Stack.Top;
     if UseLineStart then
