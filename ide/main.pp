@@ -5796,8 +5796,8 @@ begin
   {$ENDIF}
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-  DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
-  if (DesignerForm = nil) and not (ofLoadHiddenResource in OpenFlags) then
+  DesignerForm := nil;
+  if not (ofLoadHiddenResource in OpenFlags) then
   begin
     CreateDesignerForComponent(NewComponent);
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
