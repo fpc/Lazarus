@@ -1619,20 +1619,22 @@ procedure ReadRawNextPascalAtom(const Source: string;
 var Len:integer;
   c1,c2:char;
   CommentLvl: Integer;
+  Src: PChar;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
   Len:=length(Source);
+  Src:=PChar(Source);
   // read til next atom
   while (Position<=Len) do begin
-    case Source[Position] of
+    case Src[Position-1] of
      #0..#32:  // spaces and special characters
       begin
         inc(Position);
       end;
       #$EF:
-        if (Source[Position+1]=#$BB)
-        and (Source[Position+2]=#$BF) then begin
+        if (Src[Position]=#$BB)
+        and (Src[Position+1]=#$BF) then begin
           // skip UTF BOM
           inc(Position,3);
         end else begin
@@ -1640,7 +1642,7 @@ begin
         end;
      '{':    // comment start or compiler directive
       begin
-        if (Position<Len) and (Source[Position+1]='$') then
+        if (Position<Len) and (Src[Position]='$') then
           // compiler directive
           break
         else begin
@@ -1648,7 +1650,7 @@ begin
           CommentLvl:=1;
           while true do begin
             inc(Position);
-            case Source[Position] of
+            case Src[Position-1] of
             #0:  if Position>Len then break;
             '{': if NestedComments then
               begin
@@ -1667,16 +1669,16 @@ begin
         end;
       end;
      '/':  // comment or real division
-      if (Position<Len) and (Source[Position+1]='/') then begin
+      if (Position<Len) and (Src[Position]='/') then begin
         // comment start -> read til line end
         inc(Position);
-        while (Position<=Len) and (not (Source[Position] in [#10,#13])) do
+        while (Position<=Len) and (not (Src[Position-1] in [#10,#13])) do
           inc(Position);
       end else
         break;
      '(':  // comment, bracket or compiler directive
-      if (Position<Len) and (Source[Position+1]='*') then begin
-        if (Position+2<=Len) and (Source[Position]='$') then
+      if (Position<Len) and (Src[Position]='*') then begin
+        if (Position+2<=Len) and (Src[Position+1]='$') then
           // compiler directive
           break
         else begin
@@ -1684,14 +1686,14 @@ begin
           inc(Position,2);
           CommentLvl:=1;
           while true do begin
-            case Source[Position] of
+            case Src[Position-1] of
             #0:  if Position>Len then break;
-            '(': if NestedComments and (Source[Position+1]='*') then
+            '(': if NestedComments and (Src[Position]='*') then
               begin
                 inc(CommentLvl);
               end;
             '*':
-              if (Source[Position+1]=')') then begin
+              if (Src[Position]=')') then begin
                 dec(CommentLvl);
                 if CommentLvl=0 then begin
                   inc(Position,2);
@@ -1713,52 +1715,50 @@ begin
   // read atom
   AtomStart:=Position;
   if Position<=Len then begin
-    c1:=Source[Position];
+    c1:=Src[Position-1];
     case c1 of
      'A'..'Z','a'..'z','_':
       begin
         // identifier
         inc(Position);
-        while (Position<=Len) and (IsIdentChar[Source[Position]]) do
+        while (Position<=Len) and (IsIdentChar[Src[Position-1]]) do
           inc(Position);
       end;
      '0'..'9': // number
       begin
         inc(Position);
         // read numbers
-        while (Position<=Len) and (Source[Position] in ['0'..'9']) do
+        while (Position<=Len) and (Src[Position-1] in ['0'..'9']) do
           inc(Position);
-        if (Position<Len) and (Source[Position]='.')
-        and (Source[Position+1]<>'.') then begin
+        if (Position<Len) and (Src[Position-1]='.')
+        and (Src[Position]<>'.') then begin
           // real type number
           inc(Position);
-          while (Position<=Len) and (Source[Position] in ['0'..'9']) do
+          while (Position<=Len) and (Src[Position-1] in ['0'..'9']) do
             inc(Position);
         end;
-        if (Position<=Len) and (Source[Position] in ['e','E']) then begin
+        if (Position<=Len) and (Src[Position-1] in ['e','E']) then begin
           // read exponent
           inc(Position);
-          if (Position<=Len) and (Source[Position]='-') then inc(Position);
-          while (Position<=Len) and (Source[Position] in ['0'..'9']) do
+          if (Position<=Len) and (Src[Position-1]='-') then inc(Position);
+          while (Position<=Len) and (Src[Position-1] in ['0'..'9']) do
             inc(Position);
         end;
       end;
      '''','#':  // string constant
       begin
         while (Position<=Len) do begin
-          case (Source[Position]) of
+          case (Src[Position-1]) of
           '#':
             begin
               inc(Position);
-              while (Position<=Len)
-              and (Source[Position] in ['0'..'9']) do
+              while (Position<=Len) and (Src[Position-1] in ['0'..'9']) do
                 inc(Position);
             end;
           '''':
             begin
               inc(Position);
-              while (Position<=Len)
-              and (Source[Position]<>'''') do
+              while (Position<=Len) and (Src[Position-1]<>'''') do
                 inc(Position);
               inc(Position);
             end;
@@ -1771,14 +1771,13 @@ begin
       begin
         inc(Position);
         while (Position<=Len)
-        and (IsHexNumberChar[Source[Position]]) do
+        and (IsHexNumberChar[Src[Position-1]]) do
           inc(Position);
       end;
      '&':  // octal constant
       begin
         inc(Position);
-        while (Position<=Len)
-        and (Source[Position] in ['0'..'7']) do
+        while (Position<=Len) and (Src[Position-1] in ['0'..'7']) do
           inc(Position);
       end;
      '{':  // compiler directive
@@ -1786,7 +1785,7 @@ begin
         CommentLvl:=1;
         while true do begin
           inc(Position);
-          case Source[Position] of
+          case Src[Position-1] of
           #0:  if Position>Len then break;
           '{': if NestedComments then
             begin
@@ -1804,11 +1803,11 @@ begin
         end;
       end;
      '(':  // bracket or compiler directive
-      if (Position<Len) and (Source[Position]='*') then begin
+      if (Position<Len) and (Src[Position-1]='*') then begin
         // compiler directive -> read til comment end
         inc(Position,2);
         while (Position<Len)
-        and ((Source[Position]<>'*') or (Source[Position+1]<>')')) do
+        and ((Src[Position-1]<>'*') or (Src[Position]<>')')) do
           inc(Position);
         inc(Position,2);
       end else
@@ -1817,7 +1816,7 @@ begin
     else
       inc(Position);
       if Position<=Len then begin
-        c2:=Source[Position];
+        c2:=Src[Position-1];
         // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
         if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
         or ((c1='<') and (c2='>'))
@@ -1829,7 +1828,7 @@ begin
           // @@ label
           repeat
             inc(Position);
-          until (Position>Len) or (not IsIdentChar[Source[Position]]);
+          until (Position>Len) or (not IsIdentChar[Src[Position-1]]);
         end;
       end;
     end;
