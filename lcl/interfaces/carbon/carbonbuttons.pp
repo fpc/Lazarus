@@ -34,7 +34,7 @@ uses
   CarbonDef, CarbonPrivate, CarbonInt, CarbonProc,
   CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonCanvas, CarbonGDIObjects,
  // LCL
-  LCLMessageGlue, LCLType;
+  LCLMessageGlue, LCLType, Graphics;
 
 type
 
@@ -98,12 +98,19 @@ type
   { TCarbonBitBtn }
 
   TCarbonBitBtn = class(TCarbonCustomButton)
+  private
+    fPlacement : ControlButtonTextPlacement;
+    fAlignment : ControlButtonTextAlignment;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure UpdateButtonStyle;
   public
+    function GetPreferredSize: TPoint; override;
+    procedure SetFont(const AFont: TFont); override;
     procedure SetGlyph(Glyph: CGImageRef); virtual;
     procedure SetLayout(APlacement: ControlButtonTextPlacement; ATextAlign: ControlButtonTextAlignment); virtual;
     procedure SetDefault(ADefault: Boolean); override;
+    function SetBounds(const ARect: TRect): Boolean; override;
   end;
 
 implementation
@@ -358,15 +365,42 @@ begin
 end;
 
 const
-  // values are used from Interface Builder
-  StdButtonNormalSize = 20;
-  StdButtonSmallSize = 17;
-  StdButtonTinySize = 0; // 14
+  // values are used from Interface Builder, should (can?) be evaluated from themes
+  MaxPushButtonHeight       = 22;
+  StdPushButtonNormalHeight = 20;
+  StdPushButtonSmallHeight  = 17;
+  StdPushButtonTinyHeight   = 0; // 14
+
+procedure GetBevelButtonStyle(const r: TRect; var ButtonStyle: ThemeButtonKind; var ThemeFont: ThemeFontID);
+var
+  h : Integer;
+begin
+  h := r.Bottom - r.Top;
+  if h < StdPushButtonSmallHeight-1 then
+  begin {tiny pushbutton}
+    ButtonStyle := kThemePushButtonMini;
+    ThemeFont := kThemeMiniSystemFont;
+  end
+  else if h < StdPushButtonNormalHeight-1 then
+  begin {small pushbutton}
+    ButtonStyle := kThemePushButtonSmall;
+    ThemeFont := kThemeSmallSystemFont;
+  end
+  else if h <= MaxPushButtonHeight then
+  begin {normal pushbutton}
+    ButtonStyle := kThemePushButtonNormal;
+    ThemeFont := kThemePushButtonFont;
+  end
+  else begin {bevelbutton}
+    ButtonStyle := kThemeRoundedBevelButton;
+    ThemeFont := kThemeSystemFont;
+  end;
+end;
 
 procedure TCarbonButton.BoundsChanged;
 begin
   inherited BoundsChanged;
-  SetControlViewStyle(Widget, StdButtonTinySize, StdButtonSmallSize, StdButtonNormalSize);
+  SetControlViewStyle(Widget, StdPushButtonTinyHeight, StdPushButtonSmallHeight, StdPushButtonNormalHeight);
 end;
 
 { TCarbonBitBtn }
@@ -380,7 +414,6 @@ end;
 procedure TCarbonBitBtn.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  ButtonKind: ThemeButtonKind;
 begin
   if OSError(
     CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
@@ -394,11 +427,41 @@ begin
 
   SetText(AParams.Caption);
 
-  // set round border
-  ButtonKind := kThemeRoundedBevelButton;
+  UpdateButtonStyle;
+end;
+
+procedure TCarbonBitBtn.UpdateButtonStyle;
+var
+  bnds        : TRect;
+  ButtonKind  : ThemeButtonKind;
+  FontStyle   : ControlFontStyleRec;
+  themeid     : ThemeFontID;
+begin
+  FillChar(FontStyle, sizeof(FontStyle), 0);
+  GetBounds(bnds);
+  GetBevelButtonStyle(bnds, ButtonKind, themeid);
+
+  FontStyle.font := themeid;
+  FontStyle.flags := kControlUseThemeFontIDMask;
+  SetControlFontStyle(ControlRef(Widget), FontStyle);
+
+  OSError(SetControlFontStyle(ControlRef(Widget), FontStyle),
+    Self, 'UpdateButtonStyle', SSetFontStyle, 'kControlBevelButtonKindTag');
+
   OSError(SetControlData(ControlRef(Widget), kControlEntireControl,
       kControlBevelButtonKindTag, SizeOf(ThemeButtonKind), @ButtonKind),
-    Self, SCreateWidget, SSetData, 'kControlBevelButtonKindTag');
+    Self, 'UpdateButtonStyle', SSetData, 'kControlBevelButtonKindTag');
+end;
+
+function TCarbonBitBtn.GetPreferredSize: TPoint;
+begin
+  Result:=inherited GetPreferredSize;
+  Result.Y := 20;
+end;
+
+procedure TCarbonBitBtn.SetFont(const AFont: TFont);
+begin
+  // should be prohibited. Font is set by button style
 end;
 
 {------------------------------------------------------------------------------
@@ -423,7 +486,7 @@ begin
   finally
     CGImageRelease(ContentInfo.imageRef);
   end;
-
+  UpdateButtonStyle;
   //SetLayout((LCLObject as TCustomBitBtn).Layout);
 end;
 
@@ -440,6 +503,9 @@ begin
     Self, 'SetLayout', 'SetBevelButtonTextPlacement');
   OSError(SetBevelButtonTextAlignment(ControlRef(Widget), ATextAlign, 0),
     Self, 'SetLayout', 'SetBevelButtonTextAlignment');
+  fPlacement := APlacement;
+  fAlignment := ATextAlign;
+  UpdateButtonStyle;
   Invalidate;
 end;
 
@@ -452,6 +518,12 @@ end;
 procedure TCarbonBitBtn.SetDefault(ADefault: Boolean);
 begin
   // not supported
+end;
+
+function TCarbonBitBtn.SetBounds(const ARect: TRect): Boolean;
+begin
+  Result:=inherited SetBounds(ARect);
+  UpdateButtonStyle;
 end;
 
 end.
