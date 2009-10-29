@@ -679,6 +679,7 @@ type
     procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
 
     // methods for 'save project'
+    function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
     procedure SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
@@ -6705,6 +6706,93 @@ begin
   end;
 end;
 
+function TMainIDE.SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+  MainUnitSrcEdit: TSourceEditor;
+  DestFilename: String;
+  SkipSavingMainSource: Boolean;
+begin
+  if SourceNotebook.Notebook=nil then
+    Project1.ActiveEditorIndexAtStart:=-1
+  else
+    Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
+
+  // update source notebook page names
+  UpdateSourceNames;
+
+  // find mainunit
+  GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
+
+  // save project specific settings of the source editor
+  SaveSourceEditorProjectSpecificSettings;
+
+  if Project1.IsVirtual
+  and (not (sfDoNotSaveVirtualFiles in Flags)) then
+    Include(Flags,sfSaveAs);
+  if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
+    // let user choose a filename
+    Result:=DoShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
+    if Result<>mrOk then exit;
+    Flags:=Flags-[sfSaveAs,sfSaveMainSourceAs];
+  end;
+
+  // update HasResources information
+  DoUpdateProjectResourceInfo;
+
+  // save project info file
+  if (not (sfSaveToTestDir in Flags))
+  and (not Project1.IsVirtual) then begin
+    Result:=Project1.WriteProject([],'');
+    if Result=mrAbort then exit;
+    EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
+    IDEProtocolOpts.LastProjectLoadingCrashed := False;
+    AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
+    SaveIncludeLinks;
+    UpdateCaption;
+    if Result=mrAbort then exit;
+  end;
+
+  // save main source
+  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then
+  begin
+    if not (sfSaveToTestDir in Flags) then
+      DestFilename := MainUnitInfo.Filename
+    else
+      DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
+
+    if MainUnitInfo.Loaded then
+    begin
+      // loaded in source editor
+      Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
+               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
+      if Result=mrAbort then exit;
+    end else
+    begin
+      // not loaded in source editor (hidden)
+      SkipSavingMainSource := false;
+      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then
+        SkipSavingMainSource := true;
+      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then
+      begin
+        Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
+        if Result=mrAbort then exit;
+      end;
+    end;
+
+    // clear modified flags
+    if not (sfSaveToTestDir in Flags) then
+    begin
+      if (Result=mrOk) then begin
+        if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
+        if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
+      end;
+    end;
+  end;
+
+  Result:=mrOk;
+end;
+
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; Merge: boolean);
 begin
@@ -8723,11 +8811,7 @@ end;
 
 function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
 var
-  MainUnitSrcEdit: TSourceEditor;
-  MainUnitInfo: TUnitInfo;
   i: integer;
-  DestFilename: string;
-  SkipSavingMainSource: Boolean;
   AnUnitInfo: TUnitInfo;
   SaveFileFlags: TSaveFlags;
 begin
@@ -8738,8 +8822,6 @@ begin
   end;
 
   SaveSourceEditorChangesToCodeCache(-1);
-  SkipSavingMainSource:=false;
-
 
   {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoSaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
@@ -8748,6 +8830,15 @@ begin
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
   if CheckMainSrcLCLInterfaces<>mrOk then exit;
+
+  // if this is a virtual project then save first the project info file
+  // to get a project directory
+  if Project1.IsVirtual
+  and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
+  then begin
+    Result:=SaveProjectInfo(Flags);
+    if Result<>mrOk then exit;
+  end;
 
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
@@ -8770,80 +8861,8 @@ begin
     end;
   end;
 
-  if SourceNotebook.Notebook=nil then
-    Project1.ActiveEditorIndexAtStart:=-1
-  else
-    Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
-
-  // update source notebook page names
-  UpdateSourceNames;
-
-  // find mainunit
-  GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
-
-  // save project specific settings of the source editor
-  SaveSourceEditorProjectSpecificSettings;
-
-  if Project1.IsVirtual
-  and (not (sfDoNotSaveVirtualFiles in Flags)) then
-    Include(Flags,sfSaveAs);
-  if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
-    // let user choose a filename
-    Result:=DoShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
-    if Result<>mrOk then exit;
-  end;
-
-  // update HasResources information
-  DoUpdateProjectResourceInfo;
-
-  // save project info file
-  if (not (sfSaveToTestDir in Flags))
-  and (not Project1.IsVirtual) then begin
-    Result:=Project1.WriteProject([],'');
-    if Result=mrAbort then exit;
-    EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
-    IDEProtocolOpts.LastProjectLoadingCrashed := False;
-    AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
-    SaveIncludeLinks;
-    UpdateCaption;
-    if Result=mrAbort then exit;
-  end;
-
-  // save main source
-  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then
-  begin
-    if not (sfSaveToTestDir in Flags) then
-      DestFilename := MainUnitInfo.Filename
-    else
-      DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
-
-    if MainUnitInfo.Loaded then
-    begin
-      // loaded in source editor
-      Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
-               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
-      if Result=mrAbort then exit;
-    end else
-    begin
-      // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then
-        SkipSavingMainSource := true;
-      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then
-      begin
-        Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
-        if Result=mrAbort then exit;
-      end;
-    end;
-
-    // clear modified flags
-    if not (sfSaveToTestDir in Flags) then
-    begin
-      if (Result=mrOk) then begin
-        if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
-        if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
-      end;
-    end;
-  end;
+  Result:=SaveProjectInfo(Flags);
+  if Result<>mrOk then exit;
 
   // save all editor files
   if (SourceNoteBook.Notebook<>nil) then begin
