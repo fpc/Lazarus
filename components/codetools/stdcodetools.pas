@@ -3569,7 +3569,7 @@ begin
       EndPos:=CurPos.EndPos;
   end;
   if EndPos<1 then exit;
-  //DebugLn(['TStandardCodeTool.ExtractOperand "',dbgstr(copy(Src,StartPos,EndPOs-StartPos)),'"']);
+  //DebugLn(['TStandardCodeTool.ExtractOperand "',dbgstr(copy(Src,StartPos,EndPos-StartPos)),'"']);
   Operand:=ExtractCode(StartPos,EndPos,[phpCommentsToSpace]);
   if WithoutTrailingPoints then begin
     while (Operand<>'') and (Operand[length(Operand)]='.') do

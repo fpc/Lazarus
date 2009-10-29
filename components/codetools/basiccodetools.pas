@@ -2081,7 +2081,7 @@ var
   c2: Char;
 begin
   Result:=Position;
-  if (Result<1)  then exit;
+  if (Result<1) then exit;
   if Result>length(Source) then begin
     Result:=length(Source);
     exit;

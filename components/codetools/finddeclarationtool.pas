@@ -5924,7 +5924,7 @@ function TFindDeclarationTool.FindStartOfTerm(EndPos: integer; InType: boolean
 var CurAtom, NextAtom: TAtomPosition;
   NextAtomType, CurAtomType: TVariableAtomType;
 begin
-  MoveCursorToCleanPos(EndPos);
+  MoveCursorToCleanPos(FindStartOfAtom(Src,EndPos));
   NextAtom:=CurPos;
   NextAtomType:=vatSpace;
   repeat
