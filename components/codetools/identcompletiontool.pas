@@ -1347,12 +1347,12 @@ begin
     ANode:=TreeOfUnitFiles.FindLowest;
     while ANode<>nil do begin
       UnitFileInfo:=TUnitFileInfo(ANode.Data);
-      if CompareIdentifiers(PChar(Pointer(UnitFileInfo.UnitName)),
+      if CompareIdentifiers(PChar(Pointer(UnitFileInfo.FileUnitName)),
                             PChar(Pointer(CurSourceName)))<>0
       then begin
         NewItem:=TIdentifierListItem.Create(
             icompCompatible,true,0,
-            CurrentIdentifierList.CreateIdentifier(UnitFileInfo.UnitName),
+            CurrentIdentifierList.CreateIdentifier(UnitFileInfo.FileUnitName),
             0,nil,nil,ctnUnit);
         CurrentIdentifierList.Add(NewItem);
       end;

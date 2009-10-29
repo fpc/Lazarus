@@ -38,11 +38,11 @@ uses
 
 procedure AddUnitDependency(P: TPackage; T: TTarget; Filename: string);
 var
-  UnitName: String;
+  FileUnitName: String;
 begin
   if Filename='' then exit;
-  UnitName:=copy(Filename,1,length(Filename)-length(ExtractFileExt(Filename)));
-  T.Dependencies.AddUnit(UnitName);
+  FileUnitName:=copy(Filename,1,length(Filename)-length(ExtractFileExt(Filename)));
+  T.Dependencies.AddUnit(FileUnitName);
   P.Targets.AddUnit(Filename);
 end;
 

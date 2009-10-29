@@ -798,7 +798,7 @@ begin
     end;
   end;
 
-  // build insert text  "unitname in 'file'"
+  // build insert text  "newunitname in 'file'"
   NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
     NewUsesTerm:=NewUsesTerm+' '
@@ -816,12 +816,12 @@ begin
     NewComma:=NewComma+' ';
 
   if InsertBehind then begin
-    // insert behind unitname, in front of semicolon or comma
+    // insert behind unit name, in front of semicolon or comma
     // for example: uses unit1|, unit2 in 'unit2.pp'|;
     InsertPos:=InsertNode.EndPos;
     InsertCode:=NewComma+NewUsesTerm;
   end else begin
-    // insert in front of unitname, behind 'uses' or comma
+    // insert in front of unit name, behind 'uses' or comma
     // for example: uses |unit1, |unit2;
     InsertPos:=InsertNode.StartPos;
     InsertCode:=NewUsesTerm+NewComma;
@@ -1413,7 +1413,7 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
           else
             ToPos:=UnitNameAtom.EndPos;
           SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,s);
-          DebugLn('CheckUsesSection fix case UnitName(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
+          DebugLn('CheckUsesSection fix case Unit Name(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
         end;
       end else begin
         // unit not found
@@ -1726,7 +1726,7 @@ var
   var
     UnitNamePos: TAtomPosition;
     UnitInFilePos: TAtomPosition;
-    UnitName: String;
+    Unit_Name: String;
     UnitInFilename: String;
     Tool: TFindDeclarationTool;
     HasCode: boolean;
@@ -1754,9 +1754,9 @@ var
         ReadNextAtom;
       end else
         UnitInFilePos.StartPos:=-1;
-      UnitName:=copy(Src,UnitNamePos.StartPos,
+      Unit_Name:=copy(Src,UnitNamePos.StartPos,
                      UnitNamePos.EndPos-UnitNamePos.StartPos);
-      if not IsUnitAlreadyChecked(UnitName) then begin
+      if not IsUnitAlreadyChecked(Unit_Name) then begin
         OldPos:=CurPos.StartPos;
         if UnitInFilePos.StartPos>=1 then begin
           UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
@@ -1764,8 +1764,8 @@ var
         end else
           UnitInFilename:='';
         // try to load the used unit
-        DebugLn(['CheckUsesSection ',UnitName,UnitInFilename]);
-        Tool:=FindCodeToolForUsedUnit(UnitName,UnitInFilename,true);
+        DebugLn(['CheckUsesSection ',Unit_Name,UnitInFilename]);
+        Tool:=FindCodeToolForUsedUnit(Unit_Name,UnitInFilename,true);
         // parse the used unit
         CheckUnit(Tool,HasCode,UseInterface);
         Flags:='';
@@ -1775,8 +1775,8 @@ var
           Flags:=Flags+',code';
         if UseInterface then
           Flags:=Flags+',used';
-        DebugLn(['CheckUsesSection ',UnitName,'=',Flags]);
-        Units.Add(UnitName+'='+Flags);
+        DebugLn(['CheckUsesSection ',Unit_Name,'=',Flags]);
+        Units.Add(Unit_Name+'='+Flags);
         // restore cursor
         MoveCursorToCleanPos(OldPos);
         ReadNextAtom;
@@ -4918,7 +4918,7 @@ var
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
-      // skip unitname
+      // skip unit name
       PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
       CurCount:=PWord(PropInfo)^;

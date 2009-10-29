@@ -188,7 +188,7 @@ type
     FUnitName: string;
   public
     constructor Create(const TheUnitName, TheFilename: string);
-    property UnitName: string read FUnitName;
+    property FileUnitName: string read FUnitName;
     property Filename: string read FFilename;
   end;
 
@@ -226,7 +226,7 @@ function FindUnitNameInSource(const Source:string;
    var UnitNameStart,UnitNameEnd:integer):string;
 
 // uses sections
-function UnitIsUsedInSource(const Source,UnitName:string):boolean;
+function UnitIsUsedInSource(const Source,SrcUnitName:string):boolean;
 function RenameUnitInProgramUsesSection(Source:TSourceLog;
    const OldUnitName, NewUnitName, NewInFile:string): boolean;
 function AddToProgramUsesSection(Source:TSourceLog;
@@ -241,14 +241,14 @@ function RemoveFromInterfaceUsesSection(Source:TSourceLog;
    const AUnitName:string):boolean;
 
 // single uses section
-function IsUnitUsedInUsesSection(const Source,UnitName:string;
+function IsUnitUsedInUsesSection(const Source,SrcUnitName:string;
    UsesStart:integer):boolean;
 function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
    const OldUnitName, NewUnitName, NewInFile:string): boolean;
 function AddUnitToUsesSection(Source:TSourceLog;
-   const UnitName,InFilename:string; UsesStart:integer):boolean;
+   const AnUnitName,InFilename:string; UsesStart:integer):boolean;
 function RemoveUnitFromUsesSection(Source:TSourceLog;
-   const UnitName:string; UsesStart:integer):boolean;
+   const AnUnitName:string; UsesStart:integer):boolean;
 
 // compiler directives
 function FindIncludeDirective(const Source,Section:string; Index:integer;
@@ -434,7 +434,7 @@ begin
     Result:='';
 end;
 
-function UnitIsUsedInSource(const Source,UnitName:string):boolean;
+function UnitIsUsedInSource(const Source,SrcUnitName:string):boolean;
 // search in all uses sections
 var UsesStart,UsesEnd:integer;
 begin
@@ -443,7 +443,7 @@ begin
     UsesStart:=SearchCodeInSource(Source,'uses',1,UsesEnd,false);
     if UsesEnd=0 then ;
     if UsesStart>0 then begin
-      if IsUnitUsedInUsesSection(Source,UnitName,UsesStart) then begin
+      if IsUnitUsedInUsesSection(Source,SrcUnitName,UsesStart) then begin
         Result:=true;
         exit;
       end;
@@ -615,20 +615,20 @@ begin
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
-function IsUnitUsedInUsesSection(const Source,UnitName:string;
+function IsUnitUsedInUsesSection(const Source,SrcUnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd:integer;
   Atom:string;
 begin
   Result:=false;
-  if UnitName='' then exit;
+  if SrcUnitName='' then exit;
   if UsesStart<1 then exit;
   if not (lowercase(copy(Source,UsesStart,4))='uses') then exit;
   UsesEnd:=UsesStart+4;
   // parse through all used units and see if it is there
   repeat
     Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(UnitName)) then begin
+    if (lowercase(Atom)=lowercase(SrcUnitName)) then begin
       // unit found
       Result:=true;
       exit;
@@ -692,20 +692,20 @@ begin
 end;
 
 function AddUnitToUsesSection(Source:TSourceLog;
- const UnitName,InFilename:string; UsesStart:integer):boolean;
+ const AnUnitName,InFilename:string; UsesStart:integer):boolean;
 var UsesEnd:integer;
   LineStart,LineEnd:integer;
   s,Atom,NewUnitTerm:string;
 begin
   Result:=false;
-  if (UnitName='') or (UnitName=';') or (UsesStart<1) then exit;
+  if (AnUnitName='') or (AnUnitName=';') or (UsesStart<1) then exit;
   UsesEnd:=UsesStart+4;
   if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
   // parse through all used units and see if it is already there
   s:=', ';
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(UnitName)) then begin
+    if (lowercase(Atom)=lowercase(AnUnitName)) then begin
       // unit found
       Result:=true;
       exit;
@@ -719,9 +719,9 @@ begin
   until Atom<>',';
   // unit not used yet -> add it
   if InFilename<>'' then
-    NewUnitTerm:=UnitName+' in '''+InFileName+''''
+    NewUnitTerm:=AnUnitName+' in '''+InFileName+''''
   else
-    NewUnitTerm:=UnitName;
+    NewUnitTerm:=AnUnitName;
   Source.Insert(UsesStart,s+NewUnitTerm);
   GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
   if (LineEnd-LineStart>MaxLineLength) or (InFileName<>'') then
@@ -729,13 +729,13 @@ begin
   Result:=true;
 end;
 
-function RemoveUnitFromUsesSection(Source:TSourceLog; const UnitName:string;
+function RemoveUnitFromUsesSection(Source:TSourceLog; const AnUnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd,OldUsesStart,OldUsesEnd:integer;
   Atom:string;
 begin
   Result:=false;
-  if (UsesStart<1) or (UnitName='') or (UnitName=',') or (UnitName=';') then
+  if (UsesStart<1) or (AnUnitName='') or (AnUnitName=',') or (AnUnitName=';') then
     exit;
   // search interface section
   UsesEnd:=UsesStart+4;
@@ -744,7 +744,7 @@ begin
   OldUsesEnd:=-1;
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
-    if (lowercase(Atom)=lowercase(UnitName)) then begin
+    if (lowercase(Atom)=lowercase(AnUnitName)) then begin
       // unit found
       OldUsesStart:=UsesStart;
       // find comma or semicolon
@@ -755,7 +755,7 @@ begin
         // first used unit
         Source.Delete(OldUsesStart,UsesStart-OldUsesStart)
       else
-        // not first used unit (remove comma in front of unitname too)
+        // not first used unit (remove comma in front of AnUnitName too)
         Source.Delete(OldUsesEnd,UsesStart-OldUsesEnd);
       Result:=true;
       exit;
@@ -4713,15 +4713,15 @@ end;
 
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareIdentifiers(PChar(TUnitFileInfo(Data1).UnitName),
-                             PChar(TUnitFileInfo(Data2).UnitName));
+  Result:=CompareIdentifiers(PChar(TUnitFileInfo(Data1).FileUnitName),
+                             PChar(TUnitFileInfo(Data2).FileUnitName));
 end;
 
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
   UnitFileInfo: Pointer): integer;
 begin
   Result:=CompareIdentifiers(PChar(UnitnamePAnsiString),
-                             PChar(TUnitFileInfo(UnitFileInfo).UnitName));
+                             PChar(TUnitFileInfo(UnitFileInfo).FileUnitName));
 end;
 
 function CountNeededLineEndsToAddForward(const Src: string;
