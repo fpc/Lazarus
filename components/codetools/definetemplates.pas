@@ -567,7 +567,7 @@ implementation
 type
   TDefTemplUnitNameLink = class
   public
-    UnitName: string;
+    AUnitName: string;
     Filename: string;
     MacroCount: integer;
     UsedMacroCount: integer;
@@ -732,13 +732,13 @@ var Link1, Link2: TDefTemplUnitNameLink;
 begin
   Link1:=TDefTemplUnitNameLink(NodeData1);
   Link2:=TDefTemplUnitNameLink(NodeData2);
-  Result:=CompareText(Link1.UnitName,Link2.UnitName);
+  Result:=CompareText(Link1.AUnitName,Link2.AUnitName);
 end;
 
-function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
+function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(UnitName),TDefTemplUnitNameLink(NodeData).UnitName);
+  Result:=CompareText(String(AUnitName),TDefTemplUnitNameLink(NodeData).AUnitName);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -3254,7 +3254,7 @@ var
     ANode:=UnitTree.Root;
     while ANode<>nil do begin
       Result:=TDefTemplUnitNameLink(ANode.Data);
-      cmp:=CompareText(AnUnitName,Result.UnitName);
+      cmp:=CompareText(AnUnitName,Result.AUnitName);
       if cmp<0 then
         ANode:=ANode.Left
       else if cmp>0 then
@@ -3369,7 +3369,7 @@ var
           'compiler'
         );
     var
-      AFilename, Ext, UnitName, MacroFileName: string;
+      AFilename, Ext, AUnitName, MacroFileName: string;
       FileInfo: TSearchRec;
       NewUnitLink, OldUnitLink: TDefTemplUnitNameLink;
       i: integer;
@@ -3438,10 +3438,10 @@ var
             Ext:=UpperCaseStr(ExtractFileExt(AFilename));
             if (Ext='.PP') or (Ext='.PAS') or (Ext='.P') then begin
               // pascal unit found
-              UnitName:=FileInfo.Name;
-              UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));
-              if UnitName<>'' then begin
-                OldUnitLink:=FindUnitLink(UnitName);
+              AUnitName:=FileInfo.Name;
+              AUnitName:=copy(AUnitName,1,length(AUnitName)-length(Ext));
+              if AUnitName<>'' then begin
+                OldUnitLink:=FindUnitLink(AUnitName);
                 MacroCount:=0;
                 UsedMacroCount:=0;
                 MacroFileName:=
@@ -3449,7 +3449,7 @@ var
                 if OldUnitLink=nil then begin
                   // first unit with this name
                   NewUnitLink:=TDefTemplUnitNameLink.Create;
-                  NewUnitLink.UnitName:=UnitName;
+                  NewUnitLink.AUnitName:=AUnitName;
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.MacroCount:=MacroCount;
                   NewUnitLink.UsedMacroCount:=UsedMacroCount;
@@ -3534,7 +3534,7 @@ var
                      There are no macros and no templates. This is a special case.
                      
                   }
-                  if (UnitName='libc')
+                  if (AUnitName='libc')
                   and (System.Pos(AppendPathDelim(FPCSrcDir)+'packages'+PathDelim,ADirPath)>0)
                   then begin
                     // <FPCSrcDir>/rtl/netwlibc/libc.pp
@@ -3592,7 +3592,7 @@ var
 
   function FindStandardPPUSources: boolean;
   var PathStart, PathEnd: integer;
-    ADirPath, UnitName: string;
+    ADirPath, AUnitName: string;
     FileInfo: TSearchRec;
     CurMask: String;
   begin
@@ -3629,12 +3629,12 @@ var
         // search all ppu files in this directory
         if FindFirstUTF8(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
-            UnitName:=lowercase(ExtractFileNameOnly(FileInfo.Name));
+            AUnitName:=lowercase(ExtractFileNameOnly(FileInfo.Name));
             {$IFDEF VerboseFPCSrcScan}
-            DebugLn('FindStandardPPUSources Found: ',UnitName);
+            DebugLn('FindStandardPPUSources Found: ',AUnitName);
             {$ENDIF}
             if (UnitTree=nil) and (not GatherUnits) then exit;
-            AddFPCSourceLinkForUnit(UnitName);
+            AddFPCSourceLinkForUnit(AUnitName);
             if (UnitTree=nil) or (UnitTree.Count=0) then exit;
           until FindNextUTF8(FileInfo)<>0;
         end;

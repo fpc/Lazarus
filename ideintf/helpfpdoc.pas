@@ -102,7 +102,7 @@ function TFPDocHTMLHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
   var ErrMsg: string): TShowHelpResult;
 var
   ContextList: TPascalHelpContextList;
-  UnitName: String;
+  AUnitName: String;
   URL: String;
   TheBaseURL: String;
   Filename: String;
@@ -117,9 +117,9 @@ begin
     if (ContextList.Count>0) and (ContextList.List[0].Descriptor=pihcFilename)
     then begin
       // extract unit filename
-      UnitName:=lowercase(ExtractFileNameOnly(ContextList.List[0].Context));
-      DebugLn('TFPDocHTMLHelpDatabase.ShowHelp A Unitname=',Unitname,' NewNode.HelpType=',dbgs(ord(NewNode.HelpType)),' NewNode.Title=',NewNode.Title,' NewNode.URL=',NewNode.URL);
-      if UnitName<>'' then begin
+      AUnitName:=lowercase(ExtractFileNameOnly(ContextList.List[0].Context));
+      DebugLn('TFPDocHTMLHelpDatabase.ShowHelp A Unitname=',AUnitname,' NewNode.HelpType=',dbgs(ord(NewNode.HelpType)),' NewNode.Title=',NewNode.Title,' NewNode.URL=',NewNode.URL);
+      if AUnitName<>'' then begin
 
         // create FPDoc context
         Filename:='';
@@ -143,10 +143,10 @@ begin
         
         // default is index.html
         if Filename='' then Filename:='index.';
-        DebugLn('TFPDocHTMLHelpDatabase.ShowHelp Filename="',Filename,'" UnitName="',UnitName,'"');
+        DebugLn('TFPDocHTMLHelpDatabase.ShowHelp Filename="',Filename,'" UnitName="',AUnitName,'"');
 
         // FPDoc Html always has .html as extension
-        Filename:=UnitName+'/'+Filename+'html';
+        Filename:=AUnitName+'/'+Filename+'html';
 
         TheBaseURL:='';
         if NewNode.URLValid then begin

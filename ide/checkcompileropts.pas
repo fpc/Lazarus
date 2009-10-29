@@ -923,7 +923,7 @@ var
   i: Integer;
   OutputDir: String;
   PPUFilename: string;
-  UnitName: String;
+  AUnitName: String;
   SrcPath: String;
   Directory: String;
   CurProject: TLazProject;
@@ -959,16 +959,16 @@ begin
     //DebugLn(['TCheckCompilerOptsDlg.CheckOrphanedPPUs SrcPath="',SrcPath,'" OutDir="',OutputDir,'"']);
     for i:=PPUFiles.Count-1 downto 0 do begin
       PPUFilename:=PPUFiles[i];
-      UnitName:=ExtractFileNameOnly(PPUFilename);
+      AUnitName:=ExtractFileNameOnly(PPUFilename);
       // search .pas/.pp/.p file
-      if SearchPascalUnitInPath(UnitName,'',SrcPath,';',ctsfcAllCase)<>'' then
+      if SearchPascalUnitInPath(AUnitName,'',SrcPath,';',ctsfcAllCase)<>'' then
         PPUFiles.Delete(i)
       // check for main source
       else if (Options.Owner is TLazProject) then begin
         CurProject:=TLazProject(Options.Owner);
         if (CurProject.MainFileID>=0) then begin
           ProjFile:=CurProject.MainFile;
-          if (SysUtils.CompareText(ExtractFileNameOnly(ProjFile.Filename),UnitName)=0)
+          if (SysUtils.CompareText(ExtractFileNameOnly(ProjFile.Filename),AUnitName)=0)
           then
             PPUFiles.Delete(i);
         end;

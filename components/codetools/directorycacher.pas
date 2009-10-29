@@ -65,12 +65,12 @@ type
   end;
   
   TCTDirectoryUnitSources = (
-    ctdusUnitNormal, // e.g. unitname (case depends on OS) -> filename
-    ctdusUnitCaseInsensitive, // unitname case insensitive -> filename
+    ctdusUnitNormal, // e.g. AUnitName (case depends on OS) -> filename
+    ctdusUnitCaseInsensitive, // AUnitName case insensitive -> filename
     ctdusInFilenameNormal, // unit 'in' filename -> filename
     ctdusInFilenameCaseInsensitive, // unit 'in' filename case insensitive -> filename
-    ctdusUnitFileNormal, // unitname.ext (case depends on OS) -> filename
-    ctdusUnitFileCaseInsensitive // unitname.ext case insensitive -> filename
+    ctdusUnitFileNormal, // AUnitName.ext (case depends on OS) -> filename
+    ctdusUnitFileCaseInsensitive // AUnitName.ext case insensitive -> filename
     );
 
 const
@@ -133,13 +133,13 @@ type
     procedure CalcMemSize(Stats: TCTMemStats);
     procedure Reference;
     procedure Release;
-    function FindUnitLink(const UnitName: string): string;
+    function FindUnitLink(const AUnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
-    function FindUnitSource(const UnitName: string; AnyCase: boolean): string;
-    function FindUnitSourceInCleanSearchPath(const Unitname,
+    function FindUnitSource(const AUnitName: string; AnyCase: boolean): string;
+    function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string;
-    function FindUnitSourceInCompletePath(var UnitName, InFilename: string;
+    function FindUnitSourceInCompletePath(var AUnitName, InFilename: string;
                                           AnyCase: boolean): string;
     function FindCompiledUnitInCompletePath(var ShortFilename: string;
                                             AnyCase: boolean): string;
@@ -178,14 +178,14 @@ type
                        UseCache: boolean = true): string;
     procedure IncreaseFileTimeStamp;
     procedure IncreaseConfigTimeStamp;
-    function FindUnitInUnitLinks(const Directory, UnitName: string): string;
+    function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function FindDiskFilename(const Filename: string): string;
-    function FindUnitInDirectory(const Directory, UnitName: string;
+    function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
     function FindVirtualFile(const Filename: string): string;
-    function FindVirtualUnit(const UnitName: string): string;
+    function FindVirtualUnit(const AUnitName: string): string;
     function FindUnitSourceInCompletePath(const Directory: string;
-                                          var UnitName, InFilename: string;
+                                          var AUnitName, InFilename: string;
                                           AnyCase: boolean = false): string;
     function FindCompiledUnitInCompletePath(const Directory: string;
                                             var ShortFilename: string;
@@ -210,7 +210,7 @@ type
 
   TUnitNameLink = class
   public
-    UnitName: string;
+    AUnitName: string;
     Filename: string;
     function CalcMemSize: PtrUInt;
   end;
@@ -219,7 +219,7 @@ function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; out Filename: string): boolean;
 function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
 function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
-function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
+function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 
 
@@ -286,20 +286,20 @@ end;
 
 function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): integer;
 var
-  UnitName: PChar absolute UnitNameP;
+  AUnitName: PChar absolute UnitNameP;
   Filename: PChar absolute FilenameP;
 begin
-  while (FPUpChars[UnitName^]=FPUpChars[Filename^]) and (UnitName^<>#0) do begin
-    inc(UnitName);
+  while (FPUpChars[AUnitName^]=FPUpChars[Filename^]) and (AUnitName^<>#0) do begin
+    inc(AUnitName);
     inc(Filename);
   end;
-  if (UnitName^=#0) then
+  if (AUnitName^=#0) then
      if (Filename^='.') then
         Result:=0
      else
         Result:=ord('.')-ord(Filename^) // TG 2007-10-21
   else
-    Result:=ord(FPUpChars[UnitName^])-ord(FPUpChars[Filename^]);
+    Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
 end;
 
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
@@ -404,7 +404,7 @@ begin
         if UnitLinkEnd>UnitLinkStart then begin
           Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
           NewNode:=TUnitNameLink.Create;
-          NewNode.UnitName:=TheUnitName;
+          NewNode.AUnitName:=TheUnitName;
           NewNode.Filename:=Filename;
           UnitLinksTree.Add(NewNode);
         end;
@@ -426,13 +426,13 @@ var Link1, Link2: TUnitNameLink;
 begin
   Link1:=TUnitNameLink(NodeData1);
   Link2:=TUnitNameLink(NodeData2);
-  Result:=CompareText(Link1.UnitName,Link2.UnitName);
+  Result:=CompareText(Link1.AUnitName,Link2.AUnitName);
 end;
 
-function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
+function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(UnitName),TUnitNameLink(NodeData).UnitName);
+  Result:=CompareText(String(AUnitName),TUnitNameLink(NodeData).AUnitName);
 end;
 
 { TCTDirectoryCache }
@@ -671,7 +671,7 @@ begin
   if FRefCount=0 then Free;
 end;
 
-function TCTDirectoryCache.FindUnitLink(const UnitName: string): string;
+function TCTDirectoryCache.FindUnitLink(const AUnitName: string): string;
 var
   Node: TAVLTreeNode;
   Link: TUnitNameLink;
@@ -684,7 +684,7 @@ begin
     FUnitLinksTreeTimeStamp:=Pool.FileTimeStamp;
     FUnitLinksTree:=CreateUnitLinksTree(Strings[ctdcsUnitLinks]);
   end;
-  Node:=FUnitLinksTree.FindKey(Pointer(UnitName),
+  Node:=FUnitLinksTree.FindKey(Pointer(AUnitName),
                                @CompareUnitNameWithUnitLinkNode);
   if Node<>nil then begin
     Link:=TUnitNameLink(Node.Data);
@@ -759,7 +759,7 @@ begin
   end;
 end;
 
-function TCTDirectoryCache.FindUnitSource(const UnitName: string;
+function TCTDirectoryCache.FindUnitSource(const AUnitName: string;
   AnyCase: boolean): string;
 var
   l: Integer;
@@ -770,14 +770,14 @@ var
   CurFilenameLen: LongInt;
 begin
   Result:='';
-  //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
-  //  DebugLn('TCTDirectoryCache.FindUnitSource UnitName="',Unitname,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
-  if UnitName='' then exit;
+  //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
+  //  DebugLn('TCTDirectoryCache.FindUnitSource AUnitName="',AUnitName,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  if AUnitName='' then exit;
   if Directory<>'' then begin
     UpdateListing;
     if (FListing.Names=nil) then exit;
     // binary search the nearest filename
-    //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
+    //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
     //  WriteListing;
     
     l:=0;
@@ -785,7 +785,7 @@ begin
     while r>=l do begin
       m:=(l+r) shr 1;
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      cmp:=ComparePCharUnitNameWithFilename(Pointer(UnitName),CurFilename);
+      cmp:=ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename);
       if cmp>0 then
         l:=m+1
       else if cmp<0 then
@@ -798,25 +798,25 @@ begin
     // extension
     // go to the first filename with the right unit name
     while (m>0)
-    and (ComparePCharUnitNameWithFilename(Pointer(UnitName),
+    and (ComparePCharUnitNameWithFilename(Pointer(AUnitName),
                       @FListing.Names[FListing.NameStarts[m-1]])=0)
     do
       dec(m);
     // -> now find a filename with correct case and extension
     while m<FListing.NameCount do begin
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-      // check if filename has the right unitname
-      if (ComparePCharUnitNameWithFilename(Pointer(UnitName),CurFilename)<>0)
+      // check if filename has the right AUnitName
+      if (ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename)<>0)
       then
         break;
-      //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
+      //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
       //  DebugLn('TCTDirectoryCache.FindUnitSource NEXT ',CurFilename);
 
       // check if the filename fits
       CurFilenameLen:=strlen(CurFilename);
       if FilenameIsPascalUnit(CurFilename,CurFilenameLen,false) then
       begin
-        // the unitname is ok and the extension is ok
+        // the AUnitName is ok and the extension is ok
         Result:=CurFilename;
         if AnyCase then begin
           exit;
@@ -827,7 +827,7 @@ begin
           {$ELSE}
           if (Result=lowercase(Result))
           or (Result=uppercase(Result))
-          or (ExtractFileNameOnly(Result)=UnitName) then
+          or (ExtractFileNameOnly(Result)=AUnitName) then
             exit;
           {$ENDIF}
         end;
@@ -835,25 +835,25 @@ begin
       inc(m);
     end;
     //if m<FListing.NameCount then
-    //  if (CompareText(UnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
+    //  if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
     //    DebugLn('TCTDirectoryCache.FindUnitSource LAST ',CurFilename);
   end else begin
     // this is a virtual directory
-    Result:=Pool.FindVirtualUnit(UnitName);
+    Result:=Pool.FindVirtualUnit(AUnitName);
     if Result<>'' then exit;
   end;
   Result:='';
 end;
 
-function TCTDirectoryCache.FindUnitSourceInCleanSearchPath(const Unitname,
+function TCTDirectoryCache.FindUnitSourceInCleanSearchPath(const AUnitName,
   SearchPath: string; AnyCase: boolean): string;
 var
   p, StartPos, l: integer;
   CurPath: string;
   IsAbsolute: Boolean;
 begin
-  //if (CompareText(Unitname,'UnitDependencies')=0) then
-  //  DebugLn('TCTDirectoryCache.FindUnitSourceInCleanSearchPath UnitName="',Unitname,'" SearchPath="',SearchPath,'"');
+  //if (CompareText(AUnitName,'UnitDependencies')=0) then
+  //  DebugLn('TCTDirectoryCache.FindUnitSourceInCleanSearchPath AUnitName="',AUnitName,'" SearchPath="',SearchPath,'"');
   StartPos:=1;
   l:=length(SearchPath);
   while StartPos<=l do begin
@@ -869,9 +869,9 @@ begin
       //DebugLn('TCTDirectoryCache.FindUnitSourceInCleanSearchPath CurPath="',CurPath,'"');
       if IsAbsolute then begin
         CurPath:=AppendPathDelim(CurPath);
-        Result:=Pool.FindUnitInDirectory(CurPath,UnitName,AnyCase);
+        Result:=Pool.FindUnitInDirectory(CurPath,AUnitName,AnyCase);
       end else if (CurPath='.') and (Directory='') then begin
-        Result:=Pool.FindVirtualUnit(Unitname);
+        Result:=Pool.FindVirtualUnit(AUnitname);
       end;
       if Result<>'' then exit;
     end;
@@ -881,7 +881,7 @@ begin
 end;
 
 function TCTDirectoryCache.FindUnitSourceInCompletePath(
-  var UnitName, InFilename: string; AnyCase: boolean): string;
+  var AUnitName, InFilename: string; AnyCase: boolean): string;
 
   function FindInFilename(aFilename: string): string;
   var
@@ -921,7 +921,7 @@ var
 begin
   Result:='';
   {$IFDEF ShowTriedUnits}
-  DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath UnitName="',Unitname,'" InFilename="',InFilename,'" Directory="',Directory,'"');
+  DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath AUnitName="',AUnitname,'" InFilename="',InFilename,'" Directory="',Directory,'"');
   {$ENDIF}
   if InFilename<>'' then begin
     // uses IN parameter
@@ -965,7 +965,7 @@ begin
       UnitSrc:=ctdusUnitCaseInsensitive
     else
       UnitSrc:=ctdusUnitNormal;
-    if GetUnitSourceCacheValue(UnitSrc,UnitName,Result) then begin
+    if GetUnitSourceCacheValue(UnitSrc,AUnitName,Result) then begin
       // found in cache
       if Result<>'' then begin
         // unit found
@@ -978,16 +978,16 @@ begin
       SrcPath:=Strings[ctdcsCompleteSrcPath];
 
       // search in search path
-      Result:=FindUnitSourceInCleanSearchPath(UnitName,SrcPath,AnyCase);
+      Result:=FindUnitSourceInCleanSearchPath(AUnitName,SrcPath,AnyCase);
       if Result='' then begin
         // search in unit links
         {$IFDEF ShowTriedUnits}
-        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',UnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'"']);
+        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'"']);
         {$ENDIF}
-        Result:=FindUnitLink(UnitName);
+        Result:=FindUnitLink(AUnitName);
         {$IFDEF ShowTriedUnits}
         if Result='' then begin
-          DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',UnitName,' not found in unitlinks. Directory="',Directory,'"']);
+          DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in unitlinks. Directory="',Directory,'"']);
         end;
         {$ENDIF}
       end;
@@ -995,14 +995,14 @@ begin
         // improve unit name
         NewUnitName:=ExtractFileNameOnly(Result);
         if (NewUnitName<>lowercase(NewUnitName))
-        and (UnitName<>NewUnitName) then
-          UnitName:=NewUnitName;
+        and (AUnitName<>NewUnitName) then
+          AUnitName:=NewUnitName;
       end;
 
-      AddToCache(UnitSrc,UnitName,Result);
+      AddToCache(UnitSrc,AUnitName,Result);
     end;
   end;
-  //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath RESULT UnitName="',UnitName,'" InFilename="',InFilename,'" Result=',Result);
+  //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath RESULT AUnitName="',AUnitName,'" InFilename="',InFilename,'" Result=',Result);
 end;
 
 function TCTDirectoryCache.FindCompiledUnitInCompletePath(
@@ -1174,7 +1174,7 @@ begin
 end;
 
 function TCTDirectoryCachePool.FindUnitInUnitLinks(const Directory,
-  UnitName: string): string;
+  AUnitName: string): string;
   
   procedure RaiseDirNotAbsolute;
   begin
@@ -1187,7 +1187,7 @@ begin
   if (Directory<>'') and not FilenameIsAbsolute(Directory) then
     RaiseDirNotAbsolute;
   Cache:=GetCache(Directory,true,false);
-  Result:=Cache.FindUnitLink(UnitName);
+  Result:=Cache.FindUnitLink(AUnitName);
 end;
 
 function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
@@ -1207,12 +1207,12 @@ begin
 end;
 
 function TCTDirectoryCachePool.FindUnitInDirectory(const Directory,
-  UnitName: string; AnyCase: boolean): string;
+  AUnitName: string; AnyCase: boolean): string;
 var
   Cache: TCTDirectoryCache;
 begin
   Cache:=GetCache(Directory,true,false);
-  Result:=Cache.FindUnitSource(UnitName,AnyCase);
+  Result:=Cache.FindUnitSource(AUnitName,AnyCase);
   if Result='' then exit;
   Result:=Cache.Directory+Result;
 end;
@@ -1225,26 +1225,26 @@ begin
     Result:='';
 end;
 
-function TCTDirectoryCachePool.FindVirtualUnit(const UnitName: string): string;
+function TCTDirectoryCachePool.FindVirtualUnit(const AUnitName: string): string;
 var
   e: TCTPascalExtType;
 begin
   for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
     if CTPascalExtension[e]='' then continue;
-    Result:=FindVirtualFile(UnitName+CTPascalExtension[e]);
+    Result:=FindVirtualFile(AUnitName+CTPascalExtension[e]);
     if Result<>'' then exit;
   end;
   Result:='';
 end;
 
 function TCTDirectoryCachePool.FindUnitSourceInCompletePath(
-  const Directory: string; var UnitName, InFilename: string; AnyCase: boolean
+  const Directory: string; var AUnitName, InFilename: string; AnyCase: boolean
   ): string;
 var
   Cache: TCTDirectoryCache;
 begin
   Cache:=GetCache(Directory,true,false);
-  Result:=Cache.FindUnitSourceInCompletePath(UnitName,InFilename,AnyCase);
+  Result:=Cache.FindUnitSourceInCompletePath(AUnitName,InFilename,AnyCase);
 end;
 
 function TCTDirectoryCachePool.FindCompiledUnitInCompletePath(
@@ -1288,7 +1288,7 @@ end;
 function TUnitNameLink.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(UnitName)
+    +MemSizeString(AUnitName)
     +MemSizeString(Filename);
 end;
 

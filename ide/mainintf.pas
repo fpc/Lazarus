@@ -536,7 +536,7 @@ procedure TFileDescInheritedComponent.SetInheritedUnit(const AValue: TUnitInfo
 begin
   if FInheritedUnit=AValue then exit;
   FInheritedUnit:=AValue;
-  InheritedUnits:=FInheritedUnit.UnitName;
+  InheritedUnits:=FInheritedUnit.AUnitName;
 end;
 
 constructor TFileDescInheritedComponent.Create;

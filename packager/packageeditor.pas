@@ -955,7 +955,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
     // add unit file
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,AUnitName,
                                           FileType,PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     UpdateAll;
@@ -964,7 +964,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
   begin
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,AUnitName,FileType,
                                           PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     UpdateAll;
@@ -975,7 +975,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
     // add file
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,AUnitName,FileType,
                                           PkgFileFlags,cpNormal);
     // add dependency
     if AddParams.Dependency<>nil then begin
@@ -997,7 +997,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   begin
     // add file
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,UnitName,FileType,
+      FNextSelectedPart := LazPackage.AddFile(UnitFilename,AUnitName,FileType,
                                           PkgFileFlags,cpNormal);
     UpdateAll;
   end;

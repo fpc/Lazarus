@@ -426,7 +426,7 @@ var
   i: Integer;
   SubPath: String;
   FileType: TPkgFileType;
-  UnitName: String;
+  AUnitName: String;
   Filename: String;
   PkgName: String;
 begin
@@ -455,9 +455,9 @@ begin
       FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(SubPath+'Type/Value',''));
       if FileType<>pftUnit then continue;
       Filename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
-      UnitName:=ExtractFileNameOnly(Filename);
+      AUnitName:=ExtractFileNameOnly(Filename);
       //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',UnitName]);
-      if SysUtils.CompareText(UnitName,MissingUnitName)=0 then begin
+      if SysUtils.CompareText(AUnitName,MissingUnitName)=0 then begin
         Result:=true;
         AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,PkgName));
         exit;

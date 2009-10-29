@@ -4931,7 +4931,7 @@ end;
 
 function TAddToUsesSection.Execute(aText: TIDETextConverter): TModalResult;
 var
-  UnitName: string;
+  AUnitName: string;
   i: Integer;
 begin
   Result:=mrCancel;
@@ -4940,12 +4940,12 @@ begin
     exit(mrOk);// ignore
   end;
   for i:=0 to FUseUnits.Count-1 do begin
-    UnitName:=FUseUnits[i];
-    if (UnitName='') then continue;
-    if not IsValidIdent(UnitName) then
-      raise Exception.Create('TAddToUsesSection.Execute invalid unitname "'+UnitName+'"');
+    AUnitName:=FUseUnits[i];
+    if (AUnitName='') then continue;
+    if not IsValidIdent(AUnitName) then
+      raise Exception.Create('TAddToUsesSection.Execute invalid unitname "'+AUnitName+'"');
     if not CodeToolBoss.AddUnitToMainUsesSection(
-      TCodeBuffer(aText.CodeBuffer),UnitName,'')
+      TCodeBuffer(aText.CodeBuffer),AUnitName,'')
     then begin
       AssignCodeToolBossError;
       DebugLn(['TAddToUsesSection.Execute failed ',CodeToolBoss.ErrorMessage]);

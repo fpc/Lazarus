@@ -243,7 +243,7 @@ type
     property LazPackage: TLazPackage read FPackage;
     property Removed: boolean read FRemoved write SetRemoved;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
-    property UnitName: string read FUnitName write FUnitName;
+    property AUnitName: string read FUnitName write FUnitName;
   end;
   
   
@@ -253,8 +253,8 @@ type
   private
     FLazPackage: TLazPackage;
   public
-    function FindNodeWithUnitName(const UnitName: string): TAVLTreeNode;
-    function FindPkgFileWithUnitName(const UnitName: string): TPkgFile;
+    function FindNodeWithUnitName(const AUnitName: string): TAVLTreeNode;
+    function FindPkgFileWithUnitName(const AUnitName: string): TPkgFile;
     constructor Create(ThePackage: TLazPackage);
     property LazPackage: TLazPackage read FLazPackage write FLazPackage;
   end;
@@ -1263,10 +1263,10 @@ begin
                            ChangeFileExt(ShortFilename2,''));
   if Result<>0 then exit;
   // if one is a unit, then it is higher
-  if (PkgFile1.UnitName<>'') and (PkgFile2.UnitName='') then begin
+  if (PkgFile1.AUnitName<>'') and (PkgFile2.AUnitName='') then begin
     Result:=-1;
     exit;
-  end else if (PkgFile1.UnitName='') and (PkgFile2.UnitName<>'') then begin
+  end else if (PkgFile1.AUnitName='') and (PkgFile2.AUnitName<>'') then begin
     Result:=1;
     exit;
   end;
@@ -2982,14 +2982,14 @@ begin
     for i:=0 to Cnt-1 do begin
       Result:=Files[i];
       if IgnorePkgFile=Result then continue;
-      if CompareText(Result.UnitName,TheUnitName)=0 then exit;
+      if CompareText(Result.AUnitName,TheUnitName)=0 then exit;
     end;
     if not IgnoreRemoved then begin
       Cnt:=RemovedFilesCount;
       for i:=0 to Cnt-1 do begin
         Result:=RemovedFiles[i];
         if IgnorePkgFile=Result then continue;
-        if CompareText(Result.UnitName,TheUnitName)=0 then exit;
+        if CompareText(Result.AUnitName,TheUnitName)=0 then exit;
       end;
     end;
   end;
@@ -3060,7 +3060,7 @@ begin
   end;
   with Result do begin
     Filename:=NewFilename;
-    UnitName:=NewUnitName;
+    AUnitName:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
     NewComponentPriority:=ComponentPriorityNormal;
@@ -3086,7 +3086,7 @@ begin
   with Result do begin
     AutoReferenceSourceDir:=false;
     Filename:=NewFilename;
-    UnitName:=NewUnitName;
+    AUnitName:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
     NewComponentPriority:=ComponentPriorityNormal;
@@ -3545,7 +3545,7 @@ function TPkgComponent.GetUnitName: string;
 var
   TIUnitName: String;
 begin
-  Result:=PkgFile.UnitName;
+  Result:=PkgFile.AUnitName;
   // compare with RTTI unit name
   if ComponentClass<>nil then begin
     TIUnitName:=GetClassUnitName(ComponentClass);
@@ -4348,7 +4348,7 @@ end;
 
 { TPkgUnitsTree }
 
-function TPkgUnitsTree.FindNodeWithUnitName(const UnitName: string
+function TPkgUnitsTree.FindNodeWithUnitName(const AUnitName: string
   ): TAVLTreeNode;
 var
   Comp: integer;
@@ -4357,7 +4357,7 @@ begin
   Result:=Root;
   while (Result<>nil) do begin
     PkgFile:=TPkgFile(Result.Data);
-    Comp:=CompareText(UnitName,PkgFile.UnitName);
+    Comp:=CompareText(AUnitName,PkgFile.AUnitName);
     if Comp=0 then exit;
     if Comp<0 then begin
       Result:=Result.Left
@@ -4367,12 +4367,12 @@ begin
   end;
 end;
 
-function TPkgUnitsTree.FindPkgFileWithUnitName(const UnitName: string
+function TPkgUnitsTree.FindPkgFileWithUnitName(const AUnitName: string
   ): TPkgFile;
 var
   ANode: TAVLTreeNode;
 begin
-  ANode:=FindNodeWithUnitName(UnitName);
+  ANode:=FindNodeWithUnitName(AUnitName);
   if ANode=nil then
     Result:=nil
   else
@@ -4382,8 +4382,8 @@ end;
 function ComparePkgFilesUnitname(PkgFile1, PkgFile2: Pointer): integer;
 begin
   Result := CompareText(
-              TPkgFile(PkgFile1).UnitName,
-              TPkgFile(PkgFile2).UnitName);
+              TPkgFile(PkgFile1).AUnitName,
+              TPkgFile(PkgFile2).AUnitName);
 end;
 
 constructor TPkgUnitsTree.Create(ThePackage: TLazPackage);

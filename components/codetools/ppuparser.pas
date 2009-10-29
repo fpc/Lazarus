@@ -1636,17 +1636,17 @@ end;
 procedure TPPU.ReadUsedUnits;
 {$IFDEF VerbosePPUParser}
 var
-  Unitname: ShortString;
+  AUnitName: ShortString;
   CRC: LongInt;
   IntfCRC: LongInt;
 {$ENDIF}
 begin
   while not EndOfEntry do begin
-    {$IFDEF VerbosePPUParser}Unitname:={$ENDIF}ReadEntryShortstring;
+    {$IFDEF VerbosePPUParser}AUnitName:={$ENDIF}ReadEntryShortstring;
     {$IFDEF VerbosePPUParser}CRC:={$ENDIF}ReadEntryLongint;
     {$IFDEF VerbosePPUParser}IntfCRC:={$ENDIF}ReadEntryLongint;
     {$IFDEF VerbosePPUParser}
-    DebugLn(['TPPU.ReadUsedUnits Unit=',Unitname,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
+    DebugLn(['TPPU.ReadUsedUnits Unit=',AUnitName,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
     {$ENDIF}
   end;
 end;
@@ -1772,17 +1772,17 @@ end;
 
 procedure TPPU.GetUsesSection(StartPos: integer; var List: TStrings);
 var
-  Unitname: String;
+  AUnitName: String;
 begin
   if StartPos<=0 then exit;
   SetDataPos(StartPos);
   if ReadEntry<>ibloadunit then exit;
   while not EndOfEntry do begin
-    Unitname:=ReadEntryShortstring;
+    AUnitName:=ReadEntryShortstring;
     if List=nil then
       List:=TStringList.Create;
-    if List.IndexOf(Unitname)<0 then
-      List.Add(UnitName);
+    if List.IndexOf(AUnitName)<0 then
+      List.Add(AUnitName);
     ReadEntryLongint; // CRC
     ReadEntryLongint; // IntfCRC
   end;

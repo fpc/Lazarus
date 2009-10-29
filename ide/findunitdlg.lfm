@@ -12,8 +12,8 @@ object FindUnitDialog: TFindUnitDialog
   LCLVersion = '0.9.29'
   object BtnPanel: TPanel
     Left = 0
-    Height = 43
-    Top = 471
+    Height = 37
+    Top = 477
     Width = 584
     Align = alBottom
     AutoSize = True
@@ -21,14 +21,14 @@ object FindUnitDialog: TFindUnitDialog
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
-    ClientHeight = 43
+    ClientHeight = 37
     ClientWidth = 584
     TabOrder = 0
     object CancelButton: TButton
-      Left = 465
-      Height = 29
+      Left = 487
+      Height = 23
       Top = 7
-      Width = 112
+      Width = 90
       Align = alRight
       AutoSize = True
       Caption = 'CancelButton'
@@ -37,10 +37,10 @@ object FindUnitDialog: TFindUnitDialog
       TabOrder = 0
     end
     object OkButton: TButton
-      Left = 371
-      Height = 29
+      Left = 406
+      Height = 23
       Top = 7
-      Width = 88
+      Width = 75
       Align = alRight
       AutoSize = True
       Caption = 'OkButton'
@@ -59,23 +59,23 @@ object FindUnitDialog: TFindUnitDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
-    ClientHeight = 302
-    ClientWidth = 564
+    ClientHeight = 306
+    ClientWidth = 568
     TabOrder = 1
     object InfoTreeView: TTreeView
       Left = 0
-      Height = 282
+      Height = 286
       Top = 0
-      Width = 564
+      Width = 568
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       TabOrder = 0
     end
     object ProgressBar1: TProgressBar
       Left = 0
       Height = 20
-      Top = 282
-      Width = 564
+      Top = 286
+      Width = 568
       Align = alBottom
       TabOrder = 1
     end
@@ -97,7 +97,7 @@ object FindUnitDialog: TFindUnitDialog
     AnchorSideTop.Control = Splitter1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 118
+    Height = 124
     Top = 347
     Width = 572
     Align = alBottom
