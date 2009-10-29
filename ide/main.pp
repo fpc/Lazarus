@@ -14455,7 +14455,8 @@ begin
   if FirstLinePos<SrcEditor.LineCount then
     DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+1=',SrcEditor.Lines[FirstLinePos+1]]);
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
-  if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,NewIndent)
+  if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
+    true,NewIndent)
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent;

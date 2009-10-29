@@ -298,17 +298,13 @@ type
     destructor Destroy; override;
     procedure Clear;
     function GetIndent(const Source: string; CleanPos: integer;
-                       NewNestedComments: boolean;
+                       NewNestedComments: boolean; UseLineStart: boolean;
                        out Indent: TFABIndentationPolicy): boolean;
     procedure GetDefaultSrcIndent(const Source: string; CleanPos: integer;
                                NewNestedComments: boolean;
                                out Indent: TFABIndentationPolicy);
     procedure GetDefaultIndentPolicy(Typ, SubTyp: TFABBlockType;
                                   out Indent: TFABIndentationPolicy);
-    { ToDo:
-      - indent on paste  (position + new source)
-      - indent auto generated code (several snippets)
-       }
     property OnGetExamples: TOnGetFABExamples read FOnGetExamples
                                               write FOnGetExamples;
     property OnGetNestedComments: TOnGetFABNestedComments
@@ -1040,7 +1036,7 @@ end;
 
 function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
-  out Indent: TFABIndentationPolicy): boolean;
+  UseLineStart: boolean; out Indent: TFABIndentationPolicy): boolean;
 var
   Block: TBlock;
 
@@ -1074,6 +1070,11 @@ begin
 
   CleanPos:=FindStartOfAtom(Source,CleanPos);
   if CleanPos<1 then exit;
+
+  if UseLineStart then begin
+    while (CleanPos<=length(Source)) and (Source[CleanPos] in [' ',#9]) do
+      inc(CleanPos);
+  end;
 
   Block:=CleanBlock;
   ParentBlock:=CleanBlock;
