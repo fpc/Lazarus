@@ -114,6 +114,7 @@ type
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,
     bbtProcedureParamList,
+    bbtProcedureModifiers,
     bbtProcedureBegin,
     bbtMainBegin,
     bbtFreeBegin, // begin without need (e.g. without if-then)
@@ -173,6 +174,7 @@ const
     'bbtProcedure',
     'bbtFunction',
     'bbtProcedureParamList',
+    'bbtProcedureModifiers',
     'bbtProcedureBegin',
     'bbtMainBegin',
     'bbtFreeBegin',
@@ -502,9 +504,11 @@ var
     while Stack.TopType in bbtAllStatements do EndBlock;
   end;
 
-  procedure StartIdentifierSection(Section: TFABBlockType);
+  procedure EndIdentifierSectionAndProc;
   begin
     EndStatements;  // fix dangling statements
+    if Stack.TopType=bbtProcedureModifiers then
+      EndBlock;
     if Stack.TopType in [bbtProcedure,bbtFunction] then begin
       if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
       then begin
@@ -516,24 +520,18 @@ var
     end;
     if Stack.TopType in bbtAllIdentifierSections then
       EndBlock;
+  end;
+
+  procedure StartIdentifierSection(Section: TFABBlockType);
+  begin
+    EndIdentifierSectionAndProc;
     if Stack.TopType in (bbtAllCodeSections+[bbtNone,bbtProcedure,bbtFunction]) then
       BeginBlock(Section);
   end;
 
   procedure StartProcedure(Typ: TFABBlockType);
   begin
-    EndStatements; // fix dangling statements
-    if Stack.TopType in [bbtProcedure,bbtFunction] then begin
-      if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
-      then begin
-        // procedure with begin..end
-      end else begin
-        // procedure without begin..end
-        EndBlock;
-      end;
-    end;
-    if Stack.TopType in bbtAllIdentifierSections then
-      EndBlock;
+    EndIdentifierSectionAndProc;
     if Stack.TopType in (bbtAllCodeSections+[bbtNone,bbtProcedure,bbtFunction]) then
       BeginBlock(Typ);
   end;
@@ -553,16 +551,15 @@ var
 var
   r: PChar;
   Block: PBlock;
-  LastP: LongInt;
   CommentStartPos: LongInt;
   CommentEndPos: LongInt;
 begin
-  LastAtomStart:=0;
-  LastAtomEnd:=0;
   p:=StartPos;
   if EndPos>length(Src) then EndPos:=length(Src)+1;
+  AtomStart:=p;
   repeat
-    LastP:=p;
+    LastAtomStart:=AtomStart;
+    LastAtomEnd:=p;
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
     //DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>EndPos then begin
@@ -570,8 +567,10 @@ begin
         LastAtomStart:=AtomStart;
         LastAtomEnd:=p;
       end else begin
+        LastAtomStart:=0;
+        LastAtomEnd:=0;
         // EndPos between two atom: in space or comment
-        CommentStartPos:=FindNextNonSpace(Src,LastP);
+        CommentStartPos:=FindNextNonSpace(Src,LastAtomEnd);
         if CommentStartPos<EndPos then begin
           CommentEndPos:=FindCommentEnd(Src,CommentStartPos,NestedComments);
           if CommentEndPos>EndPos then begin
@@ -597,6 +596,12 @@ begin
     end;
 
     r:=@Src[AtomStart];
+
+    if Stack.TopType=bbtProcedureModifiers then begin
+      // ToDo: check if modifier
+      EndBlock;
+    end;
+
     case UpChars[r^] of
     'B':
       if CompareIdentifiers('BEGIN',r)=0 then begin
@@ -653,6 +658,8 @@ begin
         if CompareIdentifiers('END',r)=0 then begin
           // if statements can be closed by end without semicolon
           while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
+          if Stack.TopType in [bbtProcedure,bbtFunction] then
+            EndBlock;
           if Stack.TopType=bbtClassSection then
             EndBlock;
 
@@ -845,6 +852,8 @@ begin
       bbtIfThen,bbtIfElse:
         while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
           EndBlock;
+      bbtProcedure,bbtFunction:
+        BeginBlock(bbtProcedureModifiers);
       end;
     ':':
       if p-AtomStart=1 then begin
@@ -1033,7 +1042,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
       |end;
 }
 
-  procedure EndIdentifierSection;
+  procedure EndIdentifierSectionAndProc;
   begin
     if Stack.TopType in bbtAllIdentifierSections then
       dec(FindStackPosForBlockCloseAtPos);
@@ -1047,7 +1056,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 
   function IsMethodDeclaration: boolean;
   begin
-    Result:=(Stack.TopType=bbtProcedure)
+    Result:=(Stack.TopType in [bbtProcedure,bbtFunction])
       and (Stack.Top>0) and (Stack.Stack[Stack.Top-1].Typ=bbtClassSection);
   end;
 
@@ -1093,7 +1102,7 @@ begin
   case UpChars[r^] of
   'C':
     if CompareIdentifiers('CONST',r)=0 then
-      EndIdentifierSection;
+      EndIdentifierSectionAndProc;
   'E':
     case UpChars[r[1]] of
     'L': // EL
@@ -1163,7 +1172,7 @@ begin
     end;
   'L':
     if CompareIdentifiers('LABEL',r)=0 then
-      EndIdentifierSection;
+      EndIdentifierSectionAndProc;
   'P':
     case UpChars[r[1]] of
     'R': // PR
@@ -1192,7 +1201,7 @@ begin
       case UpChars[r[2]] of
       'S': // RES
         if CompareIdentifiers('RESOURCESTRING',r)=0 then
-          EndIdentifierSection;
+          EndIdentifierSectionAndProc;
       end;
     end;
   'S':
@@ -1202,7 +1211,7 @@ begin
     case UpChars[r[1]] of
     'Y': // TY
       if CompareIdentifiers('TYPE',r)=0 then
-        EndIdentifierSection;
+        EndIdentifierSectionAndProc;
     end;
   'U':
     case UpChars[r[1]] of
@@ -1213,7 +1222,7 @@ begin
     end;
   'V':
     if CompareIdentifiers('VAR',r)=0 then
-      EndIdentifierSection;
+      EndIdentifierSectionAndProc;
   end;
 end;
 
