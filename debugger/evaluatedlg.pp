@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf, InputHistory;
+  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf, InputHistory,debugger;
 
 type
 
@@ -161,15 +161,18 @@ end;
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);
 var
   S, R: String;
+  DBGType: TDBGType;
 begin
   S := cmbExpression.Text;
   InputHistories.HistoryLists.Add(ClassName, S);
-  if DebugBoss.Evaluate(S, R)
+  DBGType:=nil;
+  if DebugBoss.Evaluate(S, R, DBGType)
   then begin
     if cmbExpression.Items.IndexOf(S) = -1
     then cmbExpression.Items.Insert(0, S);
 //    tbModify.Enabled := True;
   end;
+  FreeAndNil(DBGType);
   txtResult.Lines.Text := R;
 end;
 

@@ -7,12 +7,16 @@ inherited WatchesDlg: TWatchesDlg
   VertScrollBar.Page = 199
   ActiveControl = lvWatches
   Caption = 'Watch list'
+  ClientHeight = 200
+  ClientWidth = 500
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  object lvWatches: TListView
+  object lvWatches: TListView[0]
+    Left = 0
     Height = 200
+    Top = 0
     Width = 500
     Align = alClient
     Columns = <    
@@ -33,7 +37,7 @@ inherited WatchesDlg: TWatchesDlg
     OnKeyDown = lvWatchesKeyDown
     OnSelectItem = lvWatchesSelectItem
   end
-  object mnuPopup: TPopupMenu
+  object mnuPopup: TPopupMenu[1]
     left = 100
     top = 96
     object popAdd: TMenuItem

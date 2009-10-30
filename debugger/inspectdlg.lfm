@@ -1,27 +1,27 @@
 inherited IDEInspectDlg: TIDEInspectDlg
-  Left = 368
-  Height = 400
-  Top = 198
-  Width = 260
+  Left = 366
+  Height = 407
+  Top = 185
+  Width = 295
   BorderStyle = bsSizeToolWin
   Caption = 'IDEInspectDlg'
-  ClientHeight = 400
-  ClientWidth = 260
+  ClientHeight = 407
+  ClientWidth = 295
   Constraints.MinHeight = 200
   Constraints.MinWidth = 200
   OnClose = FormClose
   object StatusBar1: TStatusBar[0]
     Left = 0
     Height = 23
-    Top = 377
-    Width = 260
+    Top = 384
+    Width = 295
     Panels = <>
   end
   object PageControl: TPageControl[1]
     Left = 0
-    Height = 377
-    Top = 0
-    Width = 260
+    Height = 363
+    Top = 21
+    Width = 295
     ActivePage = DataPage
     Align = alClient
     TabIndex = 0
@@ -35,5 +35,16 @@ inherited IDEInspectDlg: TIDEInspectDlg
     object MethodsPage: TTabSheet
       Caption = 'MethodsPage'
     end
+  end
+  object EditInspected: TEdit[2]
+    Left = 0
+    Height = 21
+    Top = 0
+    Width = 295
+    Align = alTop
+    Enabled = False
+    ReadOnly = True
+    TabOrder = 2
+    Text = '(...)'
   end
 end

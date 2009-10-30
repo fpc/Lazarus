@@ -108,8 +108,10 @@ type
 
     function RunDebugger: TModalResult; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
-    function Evaluate(const AExpression: String; var AResult: String
-                     ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
+
+    function Evaluate(const AExpression: String; var AResult: String;
+                     var ATypeInfo: TDBGType): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
+
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
     procedure Inspect(const AExpression: String); virtual; abstract;
 

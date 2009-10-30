@@ -289,11 +289,41 @@ begin
 end;
 
 procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
+  function ClearMultiline(const AValue: ansistring): ansistring;
+  var
+    j: SizeInt;
+    ow: SizeInt;
+    NewLine: Boolean;
+  begin
+    ow:=0;
+    SetLength(Result,Length(AValue));
+    NewLine:=true;
+    for j := 1 to Length(AValue) do begin
+      if (AValue[j]=#13) or (AValue[j]=#10) then begin
+        NewLine:=true;
+      end else if Avalue[j]=#32 then begin
+        if not NewLine then begin
+          inc(ow);
+          Result[ow]:=#32;
+        end;
+      end else begin
+        inc(ow);
+        Result[ow]:=AValue[j];
+        NewLine:=false;
+      end;
+    end;
+    If ow>255 then begin
+      //Limit watch to 255 chars in length
+      Result:=Copy(Result,1,252)+'...';
+    end else begin
+      SetLength(Result,ow);
+    end;
+  end;
 begin
 // Expression
 // Result
   AItem.Caption := AWatch.Expression;
-  AItem.SubItems[0] := AWatch.Value;
+  AItem.SubItems[0] := ClearMultiline(AWatch.Value);
 end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);

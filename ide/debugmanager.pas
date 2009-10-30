@@ -166,8 +166,9 @@ type
 
     function RunDebugger: TModalResult; override;
     procedure EndDebugging; override;
-    function Evaluate(const AExpression: String;
-                      var AResult: String): Boolean; override;
+    function Evaluate(const AExpression: String; var AResult: String;
+                     var ATypeInfo: TDBGType): Boolean; override;
+
     procedure Inspect(const AExpression: String); override;
 
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
@@ -244,6 +245,8 @@ type
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   end;
 
+  { TManagedWatch }
+
   TManagedWatch = class(TIDEWatch)
   private
     FMaster: TDBGWatch;
@@ -252,6 +255,7 @@ type
     procedure DoChanged; override;
     function GetValid: TValidState; override;
     function GetValue: String; override;
+    function GetTypeInfo: TDBGType; override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
   public
@@ -690,6 +694,13 @@ begin
   if FMaster = nil
   then Result := inherited GetValue
   else Result := FMaster.Value;
+end;
+
+function TManagedWatch.GetTypeInfo: TDBGType;
+begin
+  if FMaster = nil
+  then Result := inherited GetTypeInfo
+  else Result := FMaster.TypeInfo;
 end;
 
 procedure TManagedWatch.SetEnabled(const AValue: Boolean);
@@ -1553,8 +1564,7 @@ begin
 
   if SrcLine < 1
   then begin
-    ViewDebugDialog(ddtAssembler);
-
+(*
     if FDialogs[ddtAssembler] = nil
     then begin
       // TODO: change into assemblerview failure
@@ -1563,22 +1573,24 @@ begin
           HexStr(ALocation.Address, FDebugger.TargetWidth div 4), #13,
           ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
         mtInformation, [mbOK],0);
-
-      // jump to the deepest stack frame with debugging info
-      i:=0;
-      while (i < FDebugger.CallStack.Count) do
-      begin
-        StackEntry := FDebugger.CallStack.Entries[i];
-        if StackEntry.Line > 0
-        then begin
-          SrcLine := StackEntry.Line;
-          SrcFile := StackEntry.Source;
-          StackEntry.Current := True;
-          Break;
-        end;
-        Inc(i);
+    end; *)
+    // jump to the deepest stack frame with debugging info
+    i:=0;
+    while (i < FDebugger.CallStack.Count) do
+    begin
+      StackEntry := FDebugger.CallStack.Entries[i];
+      if StackEntry.Line > 0
+      then begin
+        SrcLine := StackEntry.Line;
+        SrcFile := StackEntry.Source;
+        StackEntry.Current := True;
+        Break;
       end;
-      if SrcLine < 1 then Exit;
+      Inc(i);
+    end;
+    if SrcLine < 1 then begin
+      ViewDebugDialog(ddtAssembler);
+      Exit;
     end;
   end;
 
@@ -1760,11 +1772,10 @@ begin
 end;
 
 procedure TDebugManager.InitInspectDlg;
-var
-  TheDialog: TIDEInspectDlg;
+//var
+//  TheDialog: TIDEInspectDlg;
 begin
-  TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
-  TheDialog.Execute(FDebugger, nil, nil, nil);
+//  TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
 end;
 
 procedure TDebugManager.InitCallStackDlg;
@@ -2353,13 +2364,13 @@ begin
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
-  var AResult: String): Boolean;
+  var AResult: String; var ATypeInfo: TDBGType): Boolean;
 begin
   Result := (not Destroying)
         and (MainIDE.ToolStatus = itDebugger)
         and (FDebugger <> nil)
         and (dcEvaluate in FDebugger.Commands)
-        and FDebugger.Evaluate(AExpression, AResult)
+        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo)
 end;
 
 procedure TDebugManager.Inspect(const AExpression: String);
@@ -2368,8 +2379,7 @@ begin
   ViewDebugDialog(ddtInspect);
   if FDialogs[ddtInspect] <> nil then
   begin
-    // todo: fill data, properties, methods
-    TIDEInspectDlg(FDialogs[ddtInspect]).Execute(FDebugger, nil, nil, nil);
+    TIDEInspectDlg(FDialogs[ddtInspect]).Execute(FDebugger, AExpression);
   end;
 end;
 

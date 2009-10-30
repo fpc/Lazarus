@@ -441,6 +441,111 @@ type
   end;
 
 
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   D E B U G   I N F O R M A T I O N                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+  type
+  TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer);
+  TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished);
+  TDBGFieldFlag = (ffVirtual,ffConstructor,ffDestructor);
+  TDBGFieldFlags = set of TDBGFieldFlag;
+
+  TDBGType = class;
+
+  TDBGValue = record
+    AsString: ansistring;
+    case integer of
+      0: (As8Bits: BYTE);
+      1: (As16Bits: WORD);
+      2: (As32Bits: DWORD);
+      3: (As64Bits: QWORD);
+      4: (AsSingle: Single);
+      5: (AsDouble: Double);
+      6: (AsPointer: Pointer);
+  end;
+
+  { TDBGField }
+
+  TDBGField = class(TObject)
+  private
+  protected
+    FName: String;
+    FFlags: TDBGFieldFlags;
+    FLocation: TDBGFieldLocation;
+    FDBGType: TDBGType;
+  public
+    constructor Create(const AName: String; ADBGType: TDBGType; ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags = []);
+    destructor Destroy; override;
+    property Name: String read FName;
+    property DBGType: TDBGType read FDBGType;
+    property Location: TDBGFieldLocation read FLocation;
+    property Flags: TDBGFieldFlags read FFlags;
+  end;
+
+  { TDBGFields }
+
+  TDBGFields = class(TObject)
+  private
+    FList: TList;
+    function GetField(const AIndex: Integer): TDBGField;
+    function GetCount: Integer;
+  protected
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Count: Integer read GetCount;
+    property Items[const AIndex: Integer]: TDBGField read GetField; default;
+    procedure Add(const AField: TDBGField);
+  end;
+
+  TDBGTypes = class(TObject)
+  private
+    function GetType(const AIndex: Integer): TDBGType;
+    function GetCount: Integer;
+  protected
+    FList: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Count: Integer read GetCount;
+    property Items[const AIndex: Integer]: TDBGType read GetType; default;
+  end;
+
+  { TDBGType }
+
+  TDBGType = class(TObject)
+  private
+  protected
+    FAncestor: String;
+    FResult: TDBGType;
+    FResultString: String;
+    FArguments: TDBGTypes;
+    FFields: TDBGFields;
+    FKind: TDBGSymbolKind;
+    FMembers: TStrings;
+    FTypeName: String;
+    FDBGValue: TDBGValue;
+  public
+    Value: TDBGValue;
+    constructor Create(AKind: TDBGSymbolKind; const ATypeName: String);
+    constructor Create(AKind: TDBGSymbolKind; const AArguments: TDBGTypes; AResult: TDBGType = nil);
+    destructor Destroy; override;
+    property Ancestor: String read FAncestor;
+    property Arguments: TDBGTypes read FArguments;
+    property Fields: TDBGFields read FFields;
+    property Kind: TDBGSymbolKind read FKind;
+    property TypeName: String read FTypeName;
+    property Members: TStrings read FMembers;
+    property Result: TDBGType read FResult;
+  end;
+
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -468,6 +573,7 @@ type
     function GetExpression: String; virtual;
     function GetValid: TValidState; virtual;
     function GetValue: String; virtual;
+    function GetTypeInfo: TDBGType; virtual;
 
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
@@ -478,6 +584,7 @@ type
     property Expression: String read GetExpression write SetExpression;
     property Valid: TValidState read GetValid;
     property Value: String read GetValue;
+    property TypeInfo: TDBGType read GetTypeInfo;
   end;
   TBaseWatchClass = class of TBaseWatch;
 
@@ -1102,7 +1209,6 @@ type
                                                         write SetItem; default;
   end;
 
-
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -1214,8 +1320,8 @@ type
     procedure StepInto;
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
-
-    function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
+    function  Evaluate(const AExpression: String; var AResult: String;
+                          var ATypeInfo: TDBGType): Boolean; // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
                           out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
@@ -1597,9 +1703,11 @@ begin
   FCurEnvironment.Assign(FEnvironment);
 end;
 
-function TDebugger.Evaluate(const AExpression: String; var AResult: String): Boolean;
+function TDebugger.Evaluate(const AExpression: String; var AResult: String;
+  var ATypeInfo: TDBGType): Boolean;
 begin
-  Result := ReqCmd(dcEvaluate, [AExpression, @AResult]);
+  FreeAndNIL(ATypeInfo);
+  Result := ReqCmd(dcEvaluate, [AExpression, @AResult, @ATypeInfo]);
 end;
 
 class function TDebugger.ExePaths: String;
@@ -2782,6 +2890,121 @@ end;
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
+(**   D E B U G   I N F O R M A T I O N                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+{ TDBGField }
+
+constructor TDBGField.Create(const AName: String; ADBGType: TDBGType; ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags);
+begin
+  inherited Create;
+  FName := AName;
+  FLocation := ALocation;
+  FDBGType := ADBGType;
+  FFlags := AFlags;
+end;
+
+destructor TDBGField.Destroy;
+begin
+  FreeAndNil(FDBGType);
+  inherited Destroy;
+end;
+
+{ TDBGFields }
+
+constructor TDBGFields.Create;
+begin
+  FList := TList.Create;
+  inherited;
+end;
+
+destructor TDBGFields.Destroy;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    Items[n].Free;
+
+  FreeAndNil(FList);
+  inherited;
+end;
+
+procedure TDBGFields.Add(const AField: TDBGField);
+begin
+  FList.Add(AField);
+end;
+
+function TDBGFields.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TDBGFields.GetField(const AIndex: Integer): TDBGField;
+begin
+  Result := TDBGField(FList[AIndex]);
+end;
+
+{ TDBGPType }
+
+constructor TDBGType.Create(AKind: TDBGSymbolKind; const ATypeName: String);
+begin
+  FKind := AKind;
+  FTypeName := ATypeName;
+  inherited Create;
+end;
+
+constructor TDBGType.Create(AKind: TDBGSymbolKind; const AArguments: TDBGTypes; AResult: TDBGType);
+begin
+  FKind := AKind;
+  FArguments := AArguments;
+  FResult := AResult;
+  inherited Create;
+end;
+
+destructor TDBGType.Destroy;
+begin
+  FreeAndNil(FResult);
+  FreeAndNil(FArguments);
+  FreeAndNil(FFields);
+  FreeAndNil(FMembers);
+  inherited;
+end;
+
+{ TDBGPTypes }
+
+constructor TDBGTypes.Create;
+begin
+  FList := TList.Create;
+  inherited;
+end;
+
+destructor TDBGTypes.Destroy;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    Items[n].Free;
+
+  FreeAndNil(FList);
+  inherited;
+end;
+
+function TDBGTypes.GetCount: Integer;
+begin
+  Result := Flist.Count;
+end;
+
+function TDBGTypes.GetType(const AIndex: Integer): TDBGType;
+begin
+  Result := TDBGType(FList[AIndex]);
+end;
+
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
 (**   W A T C H E S                                                          **)
 (**                                                                          **)
 (******************************************************************************)
@@ -2846,6 +3069,11 @@ begin
     {vsUnknown:}Result := '<unknown>';
     end;
   end;
+end;
+
+function TBaseWatch.GetTypeInfo: TDBGType;
+begin
+  Result:=nil;
 end;
 
 procedure TBaseWatch.SetEnabled(const AValue: Boolean);

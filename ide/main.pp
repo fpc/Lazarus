@@ -92,7 +92,7 @@ uses
   // LRT stuff
   Translations,
   // debugger
-  RunParamsOpts, BaseDebugManager, DebugManager,
+  RunParamsOpts, BaseDebugManager, DebugManager, debugger,
   // packager
   PackageSystem, PkgManager, BasePkgManager,
   // source editing
@@ -13828,7 +13828,8 @@ procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  BaseURL, SmartHintStr, Expression, DebugEval: String;
+  BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
+  DBGType,DBGTypeDerefer: TDBGType;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -13855,9 +13856,20 @@ begin
         Expression := SrcEdit.GetText(True)
       else
         Expression := SrcEdit.GetOperandFromCaret(CaretPos);
+      if Expression='' then exit;
       //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
-      if not DebugBoss.Evaluate(Expression, DebugEval) or (DebugEval = '') then
+      DBGType:=nil;
+      DBGTypeDerefer:=nil;
+      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
         DebugEval := '???';
+      if Assigned(DBGType) and ((DBGType.Kind=skPointer) or (DBGType.Kind=skClass)) then begin
+        if DBGType.Value.AsPointer<>nil then begin
+          if DebugBoss.Evaluate(Expression+'^', DebugEvalDerefer, DBGTypeDerefer) then
+              DebugEval:=DebugEval+' = '+DebugEvalDerefer;
+        end;
+      end;
+      FreeAndNil(DBGType);
+      FreeAndNil(DBGTypeDerefer);
       SmartHintStr := Expression + ' = ' + DebugEval;
     end;
   else
