@@ -139,6 +139,7 @@ type
 const
   bbtAllIdentifierSections = [bbtTypeSection,bbtConstSection,bbtVarSection,
        bbtResourceStringSection,bbtLabelSection];
+  bbtAllProcedures = [bbtProcedure,bbtFunction];
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
   bbtAllStatements = [bbtMainBegin,bbtFreeBegin,bbtRepeat,bbtProcedureBegin,
@@ -509,7 +510,7 @@ var
     EndStatements;  // fix dangling statements
     if Stack.TopType=bbtProcedureModifiers then
       EndBlock;
-    if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+    if Stack.TopType in bbtAllProcedures then begin
       if (Stack.Top=0) or (Stack.Stack[Stack.Top-1].Typ in [bbtImplementation])
       then begin
         // procedure with begin..end
@@ -525,14 +526,14 @@ var
   procedure StartIdentifierSection(Section: TFABBlockType);
   begin
     EndIdentifierSectionAndProc;
-    if Stack.TopType in (bbtAllCodeSections+[bbtNone,bbtProcedure,bbtFunction]) then
+    if Stack.TopType in (bbtAllCodeSections+bbtAllProcedures+[bbtNone]) then
       BeginBlock(Section);
   end;
 
   procedure StartProcedure(Typ: TFABBlockType);
   begin
     EndIdentifierSectionAndProc;
-    if Stack.TopType in (bbtAllCodeSections+[bbtNone,bbtProcedure,bbtFunction]) then
+    if Stack.TopType in (bbtAllCodeSections+bbtAllProcedures+[bbtNone]) then
       BeginBlock(Typ);
   end;
 
@@ -635,8 +636,13 @@ begin
         end;
       'O': // CO
         if CompareIdentifiers('CONST',r)=0 then
-          StartIdentifierSection(bbtConstSection);
+          StartIdentifierSection(bbtConstSection)
+        else if CompareIdentifiers('CONSTRUCTOR',r)=0 then
+          StartProcedure(bbtProcedure);
       end;
+    'D':
+      if CompareIdentifiers('DESTRUCTOR',r)=0 then
+        StartProcedure(bbtProcedure);
     'E':
       case UpChars[r[1]] of
       'L': // EL
@@ -658,7 +664,7 @@ begin
         if CompareIdentifiers('END',r)=0 then begin
           // if statements can be closed by end without semicolon
           while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
-          if Stack.TopType in [bbtProcedure,bbtFunction] then
+          if Stack.TopType in bbtAllProcedures then
             EndBlock;
           if Stack.TopType=bbtClassSection then
             EndBlock;
@@ -677,7 +683,7 @@ begin
           bbtProcedureBegin:
             begin
               EndBlock;
-              if Stack.TopType in [bbtProcedure,bbtFunction] then
+              if Stack.TopType in bbtAllProcedures then
                 EndBlock;
             end;
           bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
@@ -709,7 +715,7 @@ begin
         end;
       'O': // FO
         if CompareIdentifiers('FORWARD',r)=0 then begin
-          if Stack.TopType in [bbtProcedure,bbtFunction] then begin
+          if Stack.TopType in bbtAllProcedures then begin
             EndBlock;
           end;
         end;
@@ -758,13 +764,19 @@ begin
       if CompareIdentifiers('LABEL',r)=0 then
         StartIdentifierSection(bbtLabelSection);
     'O':
-      if CompareIdentifiers('OF',r)=0 then begin
-        case Stack.TopType of
-        bbtCase:
-          BeginBlock(bbtCaseOf);
-        bbtClass,bbtClassInterface:
-          EndBlock;
+      case UpChars[r[1]] of
+      'F': // OF
+        if CompareIdentifiers('OF',r)=0 then begin
+          case Stack.TopType of
+          bbtCase:
+            BeginBlock(bbtCaseOf);
+          bbtClass,bbtClassInterface:
+            EndBlock;
+          end;
         end;
+      'P': // OP
+        if CompareIdentifiers('OPERATOR',r)=0 then
+          StartProcedure(bbtFunction);
       end;
     'P':
       case UpChars[r[1]] of
@@ -1056,7 +1068,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 
   function IsMethodDeclaration: boolean;
   begin
-    Result:=(Stack.TopType in [bbtProcedure,bbtFunction])
+    Result:=(Stack.TopType in bbtAllProcedures)
       and (Stack.Top>0) and (Stack.Stack[Stack.Top-1].Typ=bbtClassSection);
   end;
 
