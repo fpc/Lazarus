@@ -10,17 +10,17 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   OnClose = AddFileToAPackageDlgClose
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object FileGroupBox: TGroupBox
     Left = 6
-    Height = 152
+    Height = 148
     Top = 6
     Width = 457
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FileGroupBox'
-    ClientHeight = 134
+    ClientHeight = 130
     ClientWidth = 453
     TabOrder = 0
     object UnitNameLabel: TLabel
@@ -28,7 +28,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 14
-      Top = 35
+      Top = 33
       Width = 439
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -42,7 +42,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 103
+      Top = 99
       Width = 439
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
@@ -63,7 +63,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
     end
     object FileNameEdit: TEdit
       Left = 6
-      Height = 23
+      Height = 21
       Top = 6
       Width = 439
       Anchors = [akTop, akLeft, akRight]
@@ -76,8 +76,8 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       AnchorSideTop.Control = UnitNameLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 51
+      Height = 21
+      Top = 49
       Width = 439
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
@@ -89,7 +89,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 80
+      Top = 76
       Width = 439
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
@@ -100,7 +100,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   object PackagesGroupBox: TGroupBox
     Left = 6
     Height = 74
-    Top = 164
+    Top = 160
     Width = 457
     Align = alTop
     Anchors = [akLeft, akRight]
@@ -116,10 +116,8 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       Top = 6
       Width = 441
       Align = alTop
-      AutoComplete = False
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 0
       Text = 'PackagesComboBox'
     end

@@ -1679,7 +1679,7 @@ procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
     PkgComponent: TPkgComponent;
   begin
     if (OldPkgFile.ComponentCount>0) then begin
-      OldUnitName:=OldPkgFile.AUnitName;
+      OldUnitName:=OldPkgFile.Unit_Name;
       if OldUnitName='' then RaiseException('MoveInstalledComponents');
       NewPkgFile:=NewPackage.FindUnit(OldUnitName,false);
       if NewPkgFile=nil then begin
@@ -2228,7 +2228,7 @@ var
     PackageTreeOfUnitTrees.Add(Result);
     for i:=0 to Pkg.FileCount-1 do begin
       PkgFile:=Pkg.Files[i];
-      if (PkgFile.FileType in FileTypes) and (PkgFile.AUnitName<>'') then
+      if (PkgFile.FileType in FileTypes) and (PkgFile.Unit_Name<>'') then
         Result.Add(PkgFile);
     end;
   end;
@@ -2255,9 +2255,9 @@ var
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
       if (PkgFile1.FileType in FileTypes)
-      and (PkgFile1.AUnitName<>'') then begin
+      and (PkgFile1.Unit_Name<>'') then begin
         // check if a unit of Pkg1 exists in Pkg2
-        PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.AUnitName);
+        PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.Unit_Name);
         if PkgFile2<>nil then begin
           File1:=PkgFile1;
           File2:=PkgFile2;
@@ -2265,7 +2265,7 @@ var
           exit;
         end;
         // check if a unit of Pkg1 has the same name as Pkg2
-        if AnsiCompareText(PkgFile1.AUnitName,Pkg2.Name)=0 then begin
+        if AnsiCompareText(PkgFile1.Unit_Name,Pkg2.Name)=0 then begin
           File1:=PkgFile1;
           ConflictPkg:=Pkg2;
           Result:=true;
@@ -2349,7 +2349,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
       CurFile:=Pkg1.Files[i];
       if (CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]))
       and (pffAddToPkgUsesSection in CurFile.Flags) then begin
-        Result:=CheckUnitName(CurFile.AUnitName);
+        Result:=CheckUnitName(CurFile.Unit_Name);
         if Result then begin
           File1:=CurFile;
           exit;
@@ -3142,7 +3142,7 @@ begin
     for i:=0 to APackage.FileCount-1 do begin
       CurFile:=APackage.Files[i];
       if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.AUnitName+'.ppu';
+      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.Unit_Name+'.ppu';
       Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
       if Result in [mrCancel,mrAbort] then exit;
     end;
@@ -3214,7 +3214,7 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     if CurFile.FileType<>pftUnit then continue;
-    CurUnitName:=lowercase(CurFile.AUnitName);
+    CurUnitName:=lowercase(CurFile.Unit_Name);
     if CurUnitName='' then continue;
     Result:=CheckFile(CurUnitName+'.ppu');
     if Result<>mrOk then exit;
@@ -3291,13 +3291,13 @@ begin
           if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
             CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
           // if it makes sense, update unitname
-          if SysUtils.CompareText(CurSrcUnitName,CurFile.AUnitName)=0 then
-            CurFile.AUnitName:=CurSrcUnitName;
+          if SysUtils.CompareText(CurSrcUnitName,CurFile.Unit_Name)=0 then
+            CurFile.Unit_Name:=CurSrcUnitName;
         end;
-        if SysUtils.CompareText(CurUnitName,CurFile.AUnitName)=0 then
-          CurUnitName:=CurFile.AUnitName
+        if SysUtils.CompareText(CurUnitName,CurFile.Unit_Name)=0 then
+          CurUnitName:=CurFile.Unit_Name
         else
-          CurFile.AUnitName:=CurUnitName;
+          CurFile.Unit_Name:=CurUnitName;
       end;
 
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin

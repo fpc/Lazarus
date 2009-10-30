@@ -7,9 +7,8 @@ object EditVirtualUnitDialog: TEditVirtualUnitDialog
   ClientHeight = 131
   ClientWidth = 450
   OnCreate = EditVirtualUnitDialogCreate
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object FilenameLabel: TLabel
     Left = 8
     Height = 14
@@ -28,7 +27,7 @@ object EditVirtualUnitDialog: TEditVirtualUnitDialog
   end
   object FilenameEdit: TEdit
     Left = 96
-    Height = 23
+    Height = 21
     Top = 18
     Width = 344
     Anchors = [akTop, akLeft, akRight]
@@ -37,7 +36,7 @@ object EditVirtualUnitDialog: TEditVirtualUnitDialog
   end
   object UnitnameEdit: TEdit
     Left = 96
-    Height = 23
+    Height = 21
     Top = 58
     Width = 128
     TabOrder = 1

@@ -132,9 +132,9 @@ begin
 
   // commit
   if (PkgFile.Filename<>NewFilename)
-  or (PkgFile.AUnitname<>NewUnitName) then begin
+  or (PkgFile.Unit_name<>NewUnitName) then begin
     PkgFile.Filename:=NewFilename;
-    PkgFile.AUnitname:=NewUnitName;
+    PkgFile.Unit_name:=NewUnitName;
     if LazPackage<>nil then LazPackage.Modified:=true;
   end;
   
@@ -147,7 +147,7 @@ begin
   FPkgFile:=AValue;
   if PkgFile<>nil then begin
     FilenameEdit.Text:=PkgFile.Filename;
-    UnitnameEdit.Text:=PkgFile.AUnitName;
+    UnitnameEdit.Text:=PkgFile.Unit_Name;
   end;
 end;
 

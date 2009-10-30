@@ -80,7 +80,7 @@ type
     destructor Destroy; override;
     procedure UpdateAvailablePackages;
     property Filename: string read GetFilename write SetFilename;
-    property AUnitName: string read GetUnitName write SetUnitName;
+    property Unit_Name: string read GetUnitName write SetUnitName;
     property FileType: TPkgFileType read GetFileType write SetFileType;
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
   end;
@@ -100,7 +100,7 @@ var
 begin
   AddFileToAPackageDialog:=TAddFileToAPackageDialog.Create(nil);
   AddFileToAPackageDialog.Filename:=Filename;
-  AddFileToAPackageDialog.AUnitName:=AUnitName;
+  AddFileToAPackageDialog.Unit_Name:=AUnitName;
   AddFileToAPackageDialog.HasRegisterProc:=HasRegisterProc;
   AddFileToAPackageDialog.UpdateAvailablePackages;
   Result:=AddFileToAPackageDialog.ShowModal;
@@ -170,7 +170,7 @@ begin
       Include(FileFlags,pffAddToPkgUsesSection);
     if HasRegisterProc then
       Include(FileFlags,pffHasRegisterProc);
-    APackage.AddFile(Filename,AUnitName,FileType,FileFlags,cpNormal);
+    APackage.AddFile(Filename,Unit_Name,FileType,FileFlags,cpNormal);
     if APackage.Editor<>nil then APackage.Editor.UpdateAll;
     APackage.EndUpdate;
 
@@ -251,7 +251,7 @@ end;
 
 procedure TAddFileToAPackageDialog.SetUnitName(const AValue: string);
 begin
-  if AUnitName=AValue then exit;
+  if Unit_Name=AValue then exit;
   UnitNameEdit.Text:=AValue;
 end;
 

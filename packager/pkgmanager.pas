@@ -754,7 +754,7 @@ begin
   and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
   NewSource:=
-     'unit '+Params.AUnitName+';'+LE
+     'unit '+Params.Unit_Name+';'+LE
     +LE
     +'{$mode objfpc}{$H+}'+LE
     +LE
@@ -2249,7 +2249,7 @@ begin
         #13, #13, #13, #13, #13, #13, #13, #13]);
       for i:=0 to MissingUnits.Count-1 do begin
         PkgFile:=TPkgFile(MissingUnits[i]);
-        Msg:=Format(lisUnitInPackage, [Msg, PkgFile.AUnitName,
+        Msg:=Format(lisUnitInPackage, [Msg, PkgFile.Unit_Name,
           PkgFile.LazPackage.IDAsString, #13]);
       end;
       Result:=IDEMessageDialog(lisPackageNeedsInstallation,

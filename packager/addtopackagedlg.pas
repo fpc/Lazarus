@@ -60,7 +60,7 @@ type
     AddType: TAddToPkgType;
     Dependency: TPkgDependency;
     UnitFilename: string;
-    AUnitName: string;
+    Unit_Name: string;
     AncestorType: string;
     NewClassName: string;
     PageName: string;
@@ -451,7 +451,7 @@ begin
     Params.AddType:=d2ptUnit;
 
     Params.UnitFilename:=AddUnitFilenameEdit.Text;
-    Params.AUnitName:=AddUnitSrcNameEdit.Text;
+    Params.Unit_Name:=AddUnitSrcNameEdit.Text;
     Params.FileType:=pftUnit;
     Params.PkgFileFlags:=[pffAddToPkgUsesSection];
     Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
@@ -463,7 +463,7 @@ begin
     Params.AddType:=d2ptVirtualUnit;
 
     Params.UnitFilename:=ExtractFilename(AddUnitFilenameEdit.Text);
-    Params.AUnitName:=AddUnitSrcNameEdit.Text;
+    Params.Unit_Name:=AddUnitSrcNameEdit.Text;
     Params.FileType:=pftVirtualUnit;
     Params.PkgFileFlags:=[];
     Params.AutoAddLFMFile:=false;
@@ -476,11 +476,11 @@ begin
     OnGetIDEFileInfo,Params.UnitFilename) then exit;
     
   // check unitname
-  if CompareText(Params.AUnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
+  if CompareText(Params.Unit_Name,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
     MessageDlg(lisA2PInvalidUnitName,
       Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
-        Params.AUnitName, '"', #13, '"', Params.UnitFilename, '"']),
+        Params.Unit_Name, '"', #13, '"', Params.UnitFilename, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -556,7 +556,7 @@ begin
   Params.AddType:=d2ptUnit;
   Params.UnitFilename:=Filename;
   Params.FileType:=pftText;
-  Params.AUnitName:='';
+  Params.Unit_Name:='';
   Params.PkgFileFlags:=[];
 
   if not FileExistsUTF8(Params.UnitFilename) then begin
@@ -776,18 +776,18 @@ begin
         CurParams.AutoAddLFMFile:=true;
         CurParams.AutoAddLRSFile:=true;
         if Assigned(OnGetUnitRegisterInfo) then begin
-          OnGetUnitRegisterInfo(Self,Filename,CurParams.AUnitName,HasRegisterProc);
+          OnGetUnitRegisterInfo(Self,Filename,CurParams.Unit_Name,HasRegisterProc);
           if HasRegisterProc then
             Include(CurParams.PkgFileFlags,pffHasRegisterProc);
         end;
 
         // check unitname
-        if CompareText(CurParams.AUnitName,
+        if CompareText(CurParams.Unit_Name,
           ExtractFileNameOnly(CurParams.UnitFilename))<>0
         then begin
           if MessageDlg(lisA2PInvalidUnitName,
               Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
-                CurParams.AUnitName, '"', #13, '"', CurParams.UnitFilename, '"']),
+                CurParams.Unit_Name, '"', #13, '"', CurParams.UnitFilename, '"']),
             mtError,[mbIgnore,mbCancel],0)<>mrIgnore
           then begin
             FilesListView.Items.Delete(i);
@@ -935,7 +935,7 @@ begin
   Params.AncestorType:=AncestorComboBox.Text;
   Params.NewClassName:=ClassNameEdit.Text;
   Params.PageName:=PalettePageCombobox.Text;
-  Params.AUnitName:=ComponentUnitNameEdit.Text;
+  Params.Unit_Name:=ComponentUnitNameEdit.Text;
   Params.UnitFilename:=ComponentUnitFileEdit.Text;
   Params.UsedUnitname:='';
 
@@ -958,11 +958,11 @@ begin
   end;
 
   // check unitname - filename redundancy
-  if AnsiCompareText(Params.AUnitname,ExtractFileNameOnly(Params.UnitFilename))<>0
+  if AnsiCompareText(Params.Unit_name,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
     MessageDlg(lisA2PUnitNameInvalid,
       Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, ['"',
-        Params.AUnitName, '"']),
+        Params.Unit_Name, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -1651,7 +1651,7 @@ begin
   AddType:=d2ptUnit;
   Dependency:=nil;
   UnitFilename:='';
-  AUnitName:='';
+  Unit_Name:='';
   AncestorType:='';
   NewClassName:='';
   PageName:='';

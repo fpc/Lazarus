@@ -12,8 +12,7 @@ object FrmComponentMan: TFrmComponentMan
   OnCreate = FrmMainCREATE
   OnDestroy = FrmMainDESTROY
   OnShow = FrmMainSHOW
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 12
     Height = 14
@@ -80,6 +79,7 @@ object FrmComponentMan: TFrmComponentMan
     Width = 240
     HelpType = htKeyword
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     OnClick = ListCompsCLICK
     Sorted = True
     TabOrder = 0
@@ -115,7 +115,7 @@ object FrmComponentMan: TFrmComponentMan
   end
   object TxtPage: TEdit
     Left = 264
-    Height = 23
+    Height = 21
     Top = 128
     Width = 232
     HelpType = htKeyword
