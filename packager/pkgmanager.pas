@@ -2834,7 +2834,7 @@ var
       end else begin
         ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
         if ClassUnitInfo<>nil then
-          NewUnitName:=ClassUnitInfo.AUnitName;
+          NewUnitName:=ClassUnitInfo.Unit_Name;
       end;
       if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
         // new needed unit

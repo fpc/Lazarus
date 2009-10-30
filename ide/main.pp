@@ -5104,8 +5104,8 @@ begin
   OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
-    NewUnitName:=AnUnitInfo.AUnitName;
-  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.AUnitName,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
+    NewUnitName:=AnUnitInfo.Unit_Name;
+  debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
 
   // check new resource file
   NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -5235,7 +5235,7 @@ begin
                                    // therefore the marks are kept
 
   // change unitname in project and in source
-  AnUnitInfo.AUnitName:=NewUnitName;
+  AnUnitInfo.Unit_Name:=NewUnitName;
   if ResourceCode<>nil then begin
     // change resource filename in the source include directive
     if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
@@ -5748,7 +5748,7 @@ begin
           FormEditor1.ClearSelection;
 
         // create JIT component
-        NewUnitName:=AnUnitInfo.AUnitName;
+        NewUnitName:=AnUnitInfo.Unit_Name;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
@@ -6910,7 +6910,7 @@ begin
     AFilename:='';
     // build a nice project info filename suggestion
     if UseMainSourceFile and (Project1.MainUnitID>=0) then
-      AFilename:=Project1.MainUnitInfo.AUnitName;
+      AFilename:=Project1.MainUnitInfo.Unit_Name;
     if AFilename='' then
       AFilename:=ExtractFileName(Project1.ProjectInfoFile);
     if AFilename='' then
@@ -7094,7 +7094,7 @@ begin
       MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
     // change program name
-    MainUnitInfo.AUnitName:=NewProgramName;
+    MainUnitInfo.Unit_Name:=NewProgramName;
     MainUnitInfo.Modified:=true;
 
     // update source notebook page names
@@ -7213,7 +7213,7 @@ begin
     // update marks and cursor positions in Project1, so that merging the old
     // settings during restoration will work
     SaveSourceEditorProjectSpecificSettings;
-    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.AUnitName,
+    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
       AFilename,-1),AnUnitInfo.Source,false);
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEditorCreated:=true;
@@ -7386,7 +7386,7 @@ begin
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
-    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.AUnitName,
+    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.Unit_Name,
                                                  NewUnitInfo.Filename,-1),
                            NewUnitInfo.Source,true);
     MainIDEBar.itmFileClose.Enabled:=True;
@@ -7741,8 +7741,8 @@ begin
       // ask user
       if ActiveUnitInfo.Filename<>'' then
         AText:=Format(lisFileHasChangedSave, ['"', ActiveUnitInfo.Filename, '"'])
-      else if ActiveUnitInfo.AUnitName<>'' then
-        AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.AUnitname, '"'])
+      else if ActiveUnitInfo.Unit_Name<>'' then
+        AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.Unit_name, '"'])
       else
         AText:=Format(lisSourceOfPageHasChangedSave, ['"',
           ActiveSrcEdit.PageName, '"']);
@@ -8152,7 +8152,7 @@ begin
       begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (Project1.Units[i].ResourceBaseClass = pfcbcFrame)) then
-          ItemList.AddObject(Project1.Units[i].AUnitName,
+          ItemList.AddObject(Project1.Units[i].Unit_Name,
             TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i,
                                    Project1.Units[i] = ActiveUnitInfo));
       end;
@@ -9337,8 +9337,8 @@ begin
     s:='"'+ActiveUnitInfo.Filename+'"'
   else
     s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.AUnitName<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.AUnitName,
+  if (ActiveUnitInfo.Unit_Name<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,
       true,ActiveUnitInfo)>=0) then
   begin
     MessageDlg(Format(
@@ -9413,10 +9413,10 @@ Begin
           if (Project1.MainUnitID >= 0) and
              (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then
           begin
-            if (AnUnitInfo.AUnitName <> '') then
+            if (AnUnitInfo.Unit_Name <> '') then
             begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project1.MainUnitInfo.Source, AnUnitInfo.AUnitName)
+                Project1.MainUnitInfo.Source, AnUnitInfo.Unit_Name)
               then
                 Project1.MainUnitInfo.Modified := true;
             end;
@@ -11073,7 +11073,7 @@ begin
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
-  NewUnitName:=AnUnitInfo.AUnitName;
+  NewUnitName:=AnUnitInfo.Unit_Name;
   if NewUnitName='' then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
@@ -13948,7 +13948,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if SysUtils.CompareText(ActiveUnitInfo.AUnitName,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']
         ));
@@ -14736,7 +14736,7 @@ begin
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
-    ShortUnitName:=AnUnitInfo.AUnitName;
+    ShortUnitName:=AnUnitInfo.Unit_Name;
     if (ShortUnitName<>'') then begin
       Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
                                  Project1.MainUnitInfo.Source,ShortUnitName,'');
@@ -14769,7 +14769,7 @@ begin
     and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
     then begin
       BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-      ShortUnitName:=AnUnitInfo.AUnitName;
+      ShortUnitName:=AnUnitInfo.Unit_Name;
       if (ShortUnitName<>'') then begin
         Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
                                       Project1.MainUnitInfo.Source,ShortUnitName);
