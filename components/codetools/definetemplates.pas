@@ -567,7 +567,7 @@ implementation
 type
   TDefTemplUnitNameLink = class
   public
-    AUnitName: string;
+    Unit_Name: string;
     Filename: string;
     MacroCount: integer;
     UsedMacroCount: integer;
@@ -732,13 +732,13 @@ var Link1, Link2: TDefTemplUnitNameLink;
 begin
   Link1:=TDefTemplUnitNameLink(NodeData1);
   Link2:=TDefTemplUnitNameLink(NodeData2);
-  Result:=CompareText(Link1.AUnitName,Link2.AUnitName);
+  Result:=CompareText(Link1.Unit_Name,Link2.Unit_Name);
 end;
 
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(AUnitName),TDefTemplUnitNameLink(NodeData).AUnitName);
+  Result:=CompareText(String(AUnitName),TDefTemplUnitNameLink(NodeData).Unit_Name);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -3254,7 +3254,7 @@ var
     ANode:=UnitTree.Root;
     while ANode<>nil do begin
       Result:=TDefTemplUnitNameLink(ANode.Data);
-      cmp:=CompareText(AnUnitName,Result.AUnitName);
+      cmp:=CompareText(AnUnitName,Result.Unit_Name);
       if cmp<0 then
         ANode:=ANode.Left
       else if cmp>0 then
@@ -3449,7 +3449,7 @@ var
                 if OldUnitLink=nil then begin
                   // first unit with this name
                   NewUnitLink:=TDefTemplUnitNameLink.Create;
-                  NewUnitLink.AUnitName:=AUnitName;
+                  NewUnitLink.Unit_Name:=AUnitName;
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.MacroCount:=MacroCount;
                   NewUnitLink.UsedMacroCount:=UsedMacroCount;

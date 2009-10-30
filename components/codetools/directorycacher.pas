@@ -210,7 +210,7 @@ type
 
   TUnitNameLink = class
   public
-    AUnitName: string;
+    Unit_Name: string;
     Filename: string;
     function CalcMemSize: PtrUInt;
   end;
@@ -404,7 +404,7 @@ begin
         if UnitLinkEnd>UnitLinkStart then begin
           Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
           NewNode:=TUnitNameLink.Create;
-          NewNode.AUnitName:=TheUnitName;
+          NewNode.Unit_Name:=TheUnitName;
           NewNode.Filename:=Filename;
           UnitLinksTree.Add(NewNode);
         end;
@@ -426,13 +426,13 @@ var Link1, Link2: TUnitNameLink;
 begin
   Link1:=TUnitNameLink(NodeData1);
   Link2:=TUnitNameLink(NodeData2);
-  Result:=CompareText(Link1.AUnitName,Link2.AUnitName);
+  Result:=CompareText(Link1.Unit_Name,Link2.Unit_Name);
 end;
 
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(AUnitName),TUnitNameLink(NodeData).AUnitName);
+  Result:=CompareText(String(AUnitName),TUnitNameLink(NodeData).Unit_Name);
 end;
 
 { TCTDirectoryCache }
@@ -1288,7 +1288,7 @@ end;
 function TUnitNameLink.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(AUnitName)
+    +MemSizeString(Unit_Name)
     +MemSizeString(Filename);
 end;
 

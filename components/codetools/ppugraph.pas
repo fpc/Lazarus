@@ -49,7 +49,7 @@ type
 
   TPPUMember = class
   public
-    AUnitName: string;
+    Unit_Name: string;
     PPUFilename: string;
     KeyNode: TCodeTreeNode;
     InitializationMangledName: string;
@@ -147,13 +147,13 @@ implementation
 
 function ComparePPUMembersByUnitName(Member1, Member2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TPPUMember(Member1).AUnitName),
-                                Pointer(TPPUMember(Member2).AUnitName));
+  Result:=CompareIdentifierPtrs(Pointer(TPPUMember(Member1).Unit_Name),
+                                Pointer(TPPUMember(Member2).Unit_Name));
 end;
 
 function CompareNameWithPPUMemberName(NamePChar, Member: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(NamePChar,Pointer(TPPUMember(Member).AUnitName));
+  Result:=CompareIdentifierPtrs(NamePChar,Pointer(TPPUMember(Member).Unit_Name));
 end;
 
 function ComparePPUGroupsByName(Group1, Group2: Pointer): integer;
@@ -170,7 +170,7 @@ end;
 function PPUGroupObjectAsString(Obj: TObject): string;
 begin
   if Obj is TPPUMember then
-    Result:='unit '+TPPUMember(Obj).AUnitName
+    Result:='unit '+TPPUMember(Obj).Unit_Name
   else if Obj is TPPUGroup then
     Result:='group '+TPPUGroup(Obj).Name
   else
@@ -209,7 +209,7 @@ begin
   if PPU=nil then PPU:=TPPU.Create;
   PPU.LoadFromFile(PPUFilename);
   debugln('================================================================');
-  DebugLn(['TPPUMember.UpdatePPU Group=',Group.Name,' AUnitName=',AUnitName,' Filename=',PPUFilename]);
+  DebugLn(['TPPUMember.UpdatePPU Group=',Group.Name,' AUnitName=',Unit_Name,' Filename=',PPUFilename]);
   //PPU.Dump('');
   PPU.GetMainUsesSectionNames(MainUses);
   if MainUses.Count>0 then
@@ -312,7 +312,7 @@ begin
   Result:=FindMemberWithUnitName(NewUnitName);
   if Result<>nil then exit;
   Result:=TPPUMember.Create;
-  Result.AUnitName:=NewUnitName;
+  Result.Unit_Name:=NewUnitName;
   FMembers.Add(Result);
   Result.Group:=Self;
   Groups.FMembers.Add(Result);
@@ -353,7 +353,7 @@ function TPPUGroup.UpdateDependencies: boolean;
   begin
     UsedMember:=Groups.FindMemberWithUnitName(UsedUnit);
     if UsedMember=nil then begin
-      DebugLn(['AddUnitDependency ',Member.AUnitName,' misses an unit: ',UsedUnit]);
+      DebugLn(['AddUnitDependency ',Member.Unit_Name,' misses an unit: ',UsedUnit]);
       exit;
     end;
     // add to 'global' unit graph
@@ -361,14 +361,14 @@ function TPPUGroup.UpdateDependencies: boolean;
     if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
       Graph.AddEdge(Member.KeyNode,UsedMember.KeyNode)
     else
-      DebugLn(['AddUnitDependency Unit circle found: ',Member.AUnitName,' to ',UsedMember.AUnitName]);
+      DebugLn(['AddUnitDependency Unit circle found: ',Member.Unit_Name,' to ',UsedMember.Unit_Name]);
     if Member.Group=UsedMember.Group then begin
       // add to unit graph of group
       Graph:=Member.Group.UnitGraph;
       if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
         Graph.AddEdge(Member.KeyNode,UsedMember.KeyNode)
       else
-        DebugLn(['AddUnitDependency Unit circle found: ',Member.AUnitName,' to ',UsedMember.AUnitName]);
+        DebugLn(['AddUnitDependency Unit circle found: ',Member.Unit_Name,' to ',UsedMember.Unit_Name]);
     end else begin
       // add to 'global' package graph
       if not Groups.GroupGraph.PathExists(UsedMember.Group.KeyNode,Member.Group.KeyNode) then
@@ -821,7 +821,7 @@ begin
       List.Clear;
       Member.GetMissingUnits(TStrings(List));
       if List.Count>0 then begin
-        DebugLn(['TPPUGroups.AutoDisableUnitsWithBrokenDependencies auto disabling unit ',Member.AUnitName,' due to missing units: ',List.DelimitedText]);
+        DebugLn(['TPPUGroups.AutoDisableUnitsWithBrokenDependencies auto disabling unit ',Member.Unit_Name,' due to missing units: ',List.DelimitedText]);
         AutoDisableMember(Member);
       end;
     end;
@@ -846,7 +846,7 @@ begin
     GraphEdge:=TCodeGraphEdge(AVLNode.Data);
     DependingMember:=TPPUMember(GraphEdge.FromNode.Data);
     if not (pmfAutoDisabled in DependingMember.Flags) then begin
-      DebugLn(['TPPUGroups.AutoDisableMember auto disabling unit ',DependingMember.AUnitName,' because it uses auto disabled unit ',Member.AUnitName]);
+      DebugLn(['TPPUGroups.AutoDisableMember auto disabling unit ',DependingMember.Unit_Name,' because it uses auto disabled unit ',Member.Unit_Name]);
       AutoDisableMember(DependingMember);
     end;
     AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
