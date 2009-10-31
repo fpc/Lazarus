@@ -255,6 +255,25 @@ const
   );
 
 type
+  TFABPositionIndent = record
+    CleanPos: integer;
+    Indent: TFABIndentationPolicy;
+  end;
+  PFABPositionIndent = ^TFABPositionIndent;
+
+  { TFABPositionIndents }
+
+  TFABPositionIndents = class
+  private
+    FCount: integer;
+    procedure SetCount(const AValue: integer);
+  public
+    Items: PFABPositionIndent;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property Count: integer read FCount write SetCount;
+  end;
 
   { TFABBlockStack }
 
@@ -307,6 +326,9 @@ type
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean; UseLineStart: boolean;
                        out Indent: TFABIndentationPolicy): boolean;
+    function GetIndents(const Source: string; Positions: TFABPositionIndents;
+                        NewNestedComments: boolean; UseLineStart: boolean
+                        ): boolean;
     procedure GetDefaultSrcIndent(const Source: string; CleanPos: integer;
                                NewNestedComments: boolean;
                                out Indent: TFABIndentationPolicy);
@@ -1374,6 +1396,13 @@ begin
   //GetDefaultIndentPolicy(ParentBlock.Typ,Block.Typ);
 end;
 
+function TFullyAutomaticBeautifier.GetIndents(const Source: string;
+  Positions: TFABPositionIndents; NewNestedComments: boolean;
+  UseLineStart: boolean): boolean;
+begin
+  Result:=false;
+end;
+
 procedure TFullyAutomaticBeautifier.GetDefaultSrcIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean; out
   Indent: TFABIndentationPolicy);
@@ -1579,6 +1608,33 @@ begin
   end else begin
     Result:='(p='+IntToStr(p)+')';
   end;
+end;
+
+{ TFABPositionIndents }
+
+procedure TFABPositionIndents.SetCount(const AValue: integer);
+begin
+  if FCount=AValue then exit;
+  ReAllocMem(Items,SizeOf(TFABPositionIndent)*AValue);
+  if AValue>FCount then
+    FillByte(Items[FCount],SizeOf(TFABPositionIndent)*(AValue-FCount),0);
+  FCount:=AValue;
+end;
+
+constructor TFABPositionIndents.Create;
+begin
+
+end;
+
+destructor TFABPositionIndents.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TFABPositionIndents.Clear;
+begin
+  Count:=0;
 end;
 
 end.
