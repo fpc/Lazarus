@@ -954,14 +954,10 @@ end;
 function TXMLObjectReader.ReadFloat: Extended;
 var
   Value: String;
-  FloatError: integer;
-  Back: extended;
 begin
   Result:=0;
   Value:=FElement['value'];
-  Val(Value, Back, FloatError);
-  if FloatError=0 then ;
-  Result:=Back;
+  Result:=StrToFloat(Value);
   ReadValue;
   //writeln('TXMLObjectReader.ReadFloat ',Result);
 end;
@@ -984,14 +980,10 @@ end;
 function TXMLObjectReader.ReadCurrency: Currency;
 var
   Value: String;
-  FloatError: integer;
-  Back: currency;
 begin
   Result:=0;
   Value:=FElement['value'];
-  Val(Value, Back, FloatError);
-  if FloatError=0 then ;
-  Result:=Back;
+  Result:=StrToFloat(Value);
   ReadValue;
   //writeln('TXMLObjectReader.ReadCurrency ',Result);
 end;
@@ -999,14 +991,10 @@ end;
 function TXMLObjectReader.ReadDate: TDateTime;
 var
   Value: String;
-  FloatError: integer;
-  Back: Double;
 begin
   Result:=0;
   Value:=FElement['value'];
-  Val(Value, Back, FloatError);
-  if FloatError=0 then ;
-  Result:=Back;
+  Result:=StrToFloat(Value);
   ReadValue;
   //writeln('TXMLObjectReader.ReadDate ',Result);
 end;
