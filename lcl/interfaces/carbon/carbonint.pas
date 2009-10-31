@@ -74,6 +74,7 @@ type
     FQuitEventHandlerUPP: AEEventHandlerUPP;
 
     FAppLoop: TApplicationMainLoop;
+    FAppStdEvents: Boolean;
 
     {$ifdef CarbonUseCocoa}
       pool: NSAutoreleasePool;

@@ -301,14 +301,14 @@ begin
       begin
         if Application.MainForm <> nil then
           Application.MainForm.IntfDropFiles(Files);
-          
+
         Application.IntfDropFiles(Files);
       end;
     end;
   finally
     AEDisposeDesc(DocList);
   end;
-  
+
   Result := noErr;
 end;
 
@@ -432,6 +432,7 @@ begin
 
     SignalFirstAppEvent;
     RunApplicationEventLoop;
+    FAppStdEvents:=True;
 
   finally
     MacOSAll.RemoveEventHandler(EventLoopHandler);
@@ -458,7 +459,9 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppProcessMessages');
   {$ENDIF}
-  
+
+  if not FAppStdEvents then InstallStandardEventHandler(GetApplicationEventTarget);
+
   Target := GetEventDispatcherTarget;
   CurEventClass.Chars[4] := #0;
   CurEventKind.Chars[4] := #0;
@@ -945,6 +948,7 @@ var
 const
   SName = 'RegisterEvents';
 begin
+  DebugLn('TCarbonWidgetSet.RegisterEvents');
   TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
     1, @TmpSpec, nil, nil);
