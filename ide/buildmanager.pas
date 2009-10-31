@@ -1058,9 +1058,11 @@ function TBuildManager.UpdateLRSFromLFM(AnUnitInfo: TUnitInfo;
 var
   LFMFilename: String;
   LRSFilename: String;
+  Dir: String;
 begin
   Result:=mrOk;
   // check if there is a .lfm file
+  if AnUnitInfo.IsVirtual then exit;
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   if not FileExistsCached(LFMFilename) then exit(mrOk);
   // check if there is a .lrs file
@@ -1073,6 +1075,9 @@ begin
   debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAgeUTF8(LFMFilename)),' LRSAge=',dbgs(FileAgeUTF8(LRSFilename)));
   // the .lrs file does not exist, or is older than the .lfm file
   // -> update .lrs file
+  Dir:=ExtractFilePath(LRSFilename);
+  Result:=ForceDirectoryInteractive(Dir,[mbRetry]);
+  if Result<>mrOk then exit;
   Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename,ShowAbort);
 end;
 
