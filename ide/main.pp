@@ -14479,16 +14479,24 @@ begin
     exit;
   case Reason of
   ecLineBreak,ecInsertLine: ;
+  ecPaste: if LastLine<=FirstLinePos then exit; // not a whole line
   else
     exit;
   end;
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LinesCount=',LastLine]);
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLine=',LastLine]);
   Result := True;
   EditorIndex:=SrcEditor.PageIndex;
   SaveSourceEditorChangesToCodeCache(EditorIndex);
   CodeBuf:=SrcEditor.CodeBuffer;
-  CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
+  case Reason of
+  ecLineBreak,ecInsertLine:
+    CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
+  ecPaste:
+    CodeBuf.LineColToPosition(FirstLinePos-1,1,p);
+  end;
   if p<1 then exit;
+  if FirstLinePos>0 then
+    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline-1=',SrcEditor.Lines[FirstLinePos-1]]);
   DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+0=',SrcEditor.Lines[FirstLinePos]]);
   if FirstLinePos<SrcEditor.LineCount then
     DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+1=',SrcEditor.Lines[FirstLinePos+1]]);
@@ -14498,10 +14506,18 @@ begin
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent;
-  if (Reason=ecLineBreak) or (Reason=ecInsertLine) then begin
-    SetIndentProc(FirstLinePos+1, Indent, 0,' ');
-    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent END Indent=',Indent]);
-    SrcEditor.CursorScreenXY:=Point(Indent+1,SrcEditor.CursorScreenXY.Y);
+  DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Indent=',Indent]);
+  case Reason of
+  ecLineBreak,ecInsertLine:
+    begin
+      DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos+1']);
+      SetIndentProc(FirstLinePos+1, Indent, 0,' ');
+      SrcEditor.CursorScreenXY:=Point(Indent+1,SrcEditor.CursorScreenXY.Y);
+    end;
+  ecPaste:
+    begin
+      //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos-1 .. LastLine']);
+    end;
   end;
 end;
 
