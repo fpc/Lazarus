@@ -587,8 +587,11 @@ begin
     +'  public'+LE
     +'    { public declarations }'+LE
     +'  end;'+LE
-    +LE
-    +'var'+LE
+    +LE;
+
+  if DeclareClassVariable then
+    Result := Result +
+     'var'+LE
     +'  '+ResourceName+': T'+ResourceName+';'+LE
     +LE;
 end;
