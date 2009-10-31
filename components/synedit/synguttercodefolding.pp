@@ -222,32 +222,34 @@ begin
       begin
         FPopUp.Items.Clear;
         c := FFoldView.OpenFoldCount(line-1);
-        SetLength(FMenuInf,c);
-        for i := c-1 downto 0 do begin
-          inf := FFoldView.OpenFoldInfo(line-1, i);
-          FMenuInf[i] := inf;
-          if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
-          then begin
+        if c > 0 then begin
+          SetLength(FMenuInf,c);
+          for i := c-1 downto 0 do begin
+            inf := FFoldView.OpenFoldInfo(line-1, i);
+            FMenuInf[i] := inf;
+            if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
+            then begin
+              m := TMenuItem.Create(FPopUp);
+              m.Caption := cLineCaption;
+              m.Tag := -1;
+              FPopUp.Items.Add(m);
+            end;
+            s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
+            if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
+            s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
+            s2 := '';
+            if inf.OpenCount > 1 then
+              s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
             m := TMenuItem.Create(FPopUp);
-            m.Caption := cLineCaption;
-            m.Tag := -1;
+            m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+            m.ShowAlwaysCheckable := true;
+            m.Checked := inf.Folded;
+            m.Tag := i;
+            m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
             FPopUp.Items.Add(m);
           end;
-          s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
-          if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
-          s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
-          s2 := '';
-          if inf.OpenCount > 1 then
-            s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
-          m := TMenuItem.Create(FPopUp);
-          m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-          m.ShowAlwaysCheckable := true;
-          m.Checked := inf.Folded;
-          m.Tag := i;
-          m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
-          FPopUp.Items.Add(m);
+          FPopUp.PopUp;
         end;
-        FPopUp.PopUp;
       end;
     else
       Result := False;
