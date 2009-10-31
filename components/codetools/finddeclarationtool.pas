@@ -5914,7 +5914,8 @@ function TFindDeclarationTool.FindStartOfTerm(EndPos: integer; InType: boolean
   7. (A).
   8. (A as B)
   9. (@A)
-  10. nothing (e.g. cursor behind semicolon, keyword or closing bracket)
+  10. A()[]
+  11. nothing (e.g. cursor behind semicolon, keyword or closing bracket)
 }
   procedure RaiseIdentNotFound;
   begin
@@ -5923,17 +5924,28 @@ function TFindDeclarationTool.FindStartOfTerm(EndPos: integer; InType: boolean
 
 var CurAtom, NextAtom: TAtomPosition;
   NextAtomType, CurAtomType: TVariableAtomType;
+  StartPos: LongInt;
 begin
-  MoveCursorToCleanPos(FindStartOfAtom(Src,EndPos));
+  StartPos:=FindStartOfAtom(Src,EndPos);
+  MoveCursorToCleanPos(StartPos);
   NextAtom:=CurPos;
-  NextAtomType:=vatSpace;
+  ReadNextAtom;
+  NextAtomType:=GetCurrentAtomType;
   repeat
     ReadPriorAtom;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
     if CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose] then begin
-      ReadBackTilBracketOpen(true);
-      CurAtom.StartPos:=CurPos.StartPos;
+      if NextAtomType in [vatRoundBracketOpen,vatRoundBracketClose,
+                     vatEdgedBracketOpen,vatEdgedBracketClose,vatPoint,vatUp,
+                     vatAS,vatNone,vatSpace]
+      then begin
+        ReadBackTilBracketOpen(true);
+        CurAtom.StartPos:=CurPos.StartPos;
+      end else begin
+        Result:=NextAtom.StartPos;
+        exit;
+      end;
     end;
     // check if CurAtom belongs to variable
     if CurAtomType=vatINHERITED then begin
