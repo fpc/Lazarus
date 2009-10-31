@@ -66,7 +66,7 @@ type
       Sender: TSynCustomBeautifier;          // the beautifier
       Editor: TObject;                       // the synedit
       LogCaret: TPoint;
-      var FirstLinePos, LinesCount: Integer; // IF the function returns false, the beautifier shall calculate the indent
+      var FirstLinePos, LastLinePos: Integer;// IF the function returns false, the beautifier shall calculate the indent
       Reason: TSynEditorCommand;             // what caused the evnt
       SetIndentProc: TSynBeautifierSetIndentProc
      ): boolean of object;
