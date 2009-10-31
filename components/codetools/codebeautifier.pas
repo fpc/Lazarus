@@ -112,10 +112,10 @@ type
     bbtTypeEdgeBracket,
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
-    bbtFunction,
-    bbtProcedureParamList,
-    bbtProcedureModifiers,
-    bbtProcedureBegin,
+    bbtFunction,  // function, operator
+    bbtProcedureParamList, // child of bbtProcedure or bbtFunction
+    bbtProcedureModifiers, // child of bbtProcedure or bbtFunction
+    bbtProcedureBegin,     // child of bbtProcedure or bbtFunction
     bbtMainBegin,
     bbtFreeBegin, // begin without need (e.g. without if-then)
     bbtRepeat,
@@ -200,7 +200,7 @@ type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 Step: integer; // starting at 0
                                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
-                                var ExpandedFilenames: TStrings  // and Filenames=nil
+                                var ExpandedFilenames: TStrings  // and ExpandedFilenames=nil
                                 ) of object;
   TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
                                       out NestedComments: boolean) of object;
