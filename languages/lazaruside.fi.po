@@ -2311,7 +2311,7 @@ msgstr "Etsitään..."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
-msgstr ""
+msgstr "Hakupolut"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
@@ -3145,7 +3145,7 @@ msgstr "Lisätäänkö tiedosto %s projektiin?"
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
-msgstr ""
+msgstr "Lisätäänkö käännösyksikkö (unit) hakupolkuun?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -3450,7 +3450,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbottomgroupboxcaption
 msgid "Bottom anchoring"
-msgstr ""
+msgstr "Alaosan kiinnitys"
 
 #: lazarusidestrconsts.lisbottoms
 msgid "Bottoms"
@@ -3714,11 +3714,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceemptygroup
 msgid "Empty constructs"
-msgstr ""
+msgstr "Tyhjät rakenteet"
 
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
-msgstr ""
+msgstr "Tyhjät aliohjelmat"
 
 #: lazarusidestrconsts.liscefilter
 msgid "(Filter)"
@@ -3879,7 +3879,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
-msgstr ""
+msgstr "Muuttujat"
 
 #: lazarusidestrconsts.liscewrongindentation
 msgid "Wrong indentation"
@@ -4949,11 +4949,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvert
 msgid "Convert"
-msgstr ""
+msgstr "Muunna"
 
 #: lazarusidestrconsts.lisconvertencoding
 msgid "Convert encoding"
-msgstr ""
+msgstr "Muunna merkistö"
 
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
@@ -5560,11 +5560,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr ""
+msgstr "Kopioi valitut komponentit leikepöydälle"
 
 #: lazarusidestrconsts.lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
-msgstr ""
+msgstr "Leikkaa valitut komponentit leikepöydälle"
 
 #: lazarusidestrconsts.lisdsgorderbackone
 msgid "Move component one back"
@@ -5584,7 +5584,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdsgpastecomponents
 msgid "Paste selected components from clipboard"
-msgstr ""
+msgstr "Liitä komponentit leikepöydältä"
 
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
@@ -6124,7 +6124,7 @@ msgstr "Vähennä näytön päivittämistä"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr ""
+msgstr "Piirretään suunnitteluaaikaiset kohdat joutoaikana (vähentää hitaiden tietokoineiden kuormaa)"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -6846,7 +6846,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcompilerfilename
 msgid "Invalid Compiler Filename"
-msgstr ""
+msgstr "Virheellinen kääntäjän tiedostonimi"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -7034,11 +7034,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
-msgstr ""
+msgstr "Kopioi valitut komponentit leikepöydälle"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
 msgid "Cut selected Components to clipboard"
-msgstr ""
+msgstr "Leikkaa valitut komponentit leikepöydälle"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -7220,7 +7220,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
-msgstr ""
+msgstr "Liitä komponentit leikepöydältä"
 
 #: lazarusidestrconsts.liskmpauseprogram
 msgid "Pause program"
@@ -7724,7 +7724,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
-msgstr ""
+msgstr "Vasemman reunan kiinnitys"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
@@ -9038,7 +9038,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewencoding
 msgid "New encoding:"
-msgstr ""
+msgstr "Uusi merkistö:"
 
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
@@ -11154,7 +11154,7 @@ msgstr "Oikea"
 
 #: lazarusidestrconsts.lisrightanchoring
 msgid "Right anchoring"
-msgstr ""
+msgstr "Oikean reunan kiinnitys"
 
 #: lazarusidestrconsts.lisrightborderspacespinedithint
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
@@ -11821,7 +11821,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
-msgstr ""
+msgstr "FreePascalin lähdekoodi hakemistoa ei löytynyt. Jotkut toiminnot eivät toimi.%sOn suositeltavaa että lähdekoodit on asennettu ja niiden hakupolku asetettu %sKäyttöliittynä -> Asetukset -> Tiedostot"
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -11853,7 +11853,8 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
-msgstr ""
+msgstr "Tämän käännösyksikön (unit) polku ei vielä ole hakupolussa.%sLisätäänkö
+kansio %s polkuun ?"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
@@ -12107,7 +12108,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
-msgstr ""
+msgstr "Yläosan kiinnitys"
 
 #: lazarusidestrconsts.listopborderspacespinedithint
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
@@ -12837,7 +12838,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
-msgstr "ulje käytössä oleva välilehti"
+msgstr "Sulje käytössä oleva välilehti"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
