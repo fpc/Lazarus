@@ -32,8 +32,7 @@ uses
   Graphics, Math, Types, SysUtils;
 
 const
-  MaxColor = 15;
-  Colors: array [1..MaxColor] of TColor = (
+  Colors: array [1..15] of TColor = (
     clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
   clTAColor = clScrollBar;
@@ -112,6 +111,7 @@ const
     '%1:.2f%% of %3:g', // smsLabelPercentTotal
     '%4:g' // smsXValue
   );
+  ZeroDoublePoint: TDoublePoint = (X: 0; Y: 0);
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
   EmptyExtent: TDoubleRect =
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
@@ -148,6 +148,8 @@ function RectIntersectsRect(
 
 function RoundChecked(A: Double): Integer; inline;
 
+function TypicalTextHeight(ACanvas: TCanvas): Integer;
+
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
@@ -159,7 +161,7 @@ operator +(const A: TPoint; B: TSize): TPoint;
 implementation
 
 uses
-  LCLIntf, LCLType;
+  LCLIntf;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -420,6 +422,13 @@ end;
 function RoundChecked(A: Double): Integer;
 begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
+end;
+
+function TypicalTextHeight(ACanvas: TCanvas): Integer;
+const
+  TYPICAL_TEXT = 'Iy';
+begin
+  Result := ACanvas.TextHeight(TYPICAL_TEXT);
 end;
 
 procedure Unused(const A1);

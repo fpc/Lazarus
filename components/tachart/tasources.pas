@@ -22,7 +22,7 @@ unit TASources;
 interface
 
 uses
-  Classes, Graphics, SysUtils, TAChartUtils;
+  Classes, LCLProc, Graphics, SysUtils, TAChartUtils;
 
 type
   EEditableSourceRequired = class(EChartError);
@@ -191,7 +191,6 @@ type
       read FPointsNumber write SetPointsNumber default 0;
   end;
 
-function DoublePoint(const ACoord: TChartDataItem): TDoublePoint; inline; overload;
 procedure Register;
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 
@@ -217,12 +216,6 @@ type
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
   end;
-
-function DoublePoint(const ACoord: TChartDataItem): TDoublePoint;
-begin
-  Result.X := ACoord.X;
-  Result.Y := ACoord.Y;
-end;
 
 procedure Register;
 begin
@@ -790,7 +783,7 @@ end;
 procedure TUserDefinedChartSource.SetOnGetChartDataItem(
   const AValue: TGetChartDataItemEvent);
 begin
-  if FOnGetChartDataItem = AValue then exit;
+  if CompareMethods(TMethod(FOnGetChartDataItem),TMethod(AValue)) then exit;
   FOnGetChartDataItem := AValue;
   Reset;
 end;

@@ -7,23 +7,32 @@ object Form1: TForm1
   ClientHeight = 397
   ClientWidth = 396
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
     Height = 307
     Top = 0
     Width = 396
-    BottomAxis.Grid.Style = psDot
-    BottomAxis.Grid.Visible = False
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Grid.Visible = False
+        Offset = 0
+        Scale = 1
+        Title.Font.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Grid.Visible = False
+        Offset = 0
+        Scale = 1
+      end>
     Extent.XMin = -1.7
     Extent.YMin = -1.7
     Extent.XMax = 1.7
     Extent.YMax = 1.7
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    LeftAxis.Grid.Style = psDot
-    LeftAxis.Grid.Visible = False
-    LeftAxis.Title.Angle = 90
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -32,6 +41,7 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object Chart1LineSeries: TLineSeries
+      LinePen.Color = clRed
       Pointer.Brush.Color = clRed
       Pointer.Pen.Color = clRed
       SeriesColor = clRed
@@ -116,7 +126,7 @@ object Form1: TForm1
     end
     object fseBounds: TFloatSpinEdit
       Left = 204
-      Height = 23
+      Height = 21
       Top = 17
       Width = 50
       Increment = 0.1

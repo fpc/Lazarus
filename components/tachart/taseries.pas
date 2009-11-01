@@ -18,7 +18,7 @@
  *                                                                           *
  *****************************************************************************
 
-Authors: Luís Rodrigues, Philippe Martinole, Alexander Klenin
+Authors: LuÃ­s Rodrigues, Philippe Martinole, Alexander Klenin
 
 }
 
@@ -29,77 +29,33 @@ unit TASeries;
 interface
 
 uses
-  Classes, Graphics, SysUtils,
-  TAGraph, TAChartUtils, TATypes, TASources;
+  Classes, Graphics, LCLProc,
+  TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
 type
   EBarError = class(EChartError);
-
-  { TChartSeries }
-
-  TChartSeries = class(TBasicChartSeries)
-  private
-    FBuiltinSource: TCustomChartSource;
-    FListener: TListener;
-    FMarks: TChartMarks;
-    FSource: TCustomChartSource;
-
-    function GetSource: TCustomChartSource;
-    function GetXMaxVal: Integer;
-    function IsSourceStored: boolean;
-    procedure SetMarks(const AValue: TChartMarks);
-    procedure SetSource(AValue: TCustomChartSource);
-  protected
-    procedure AfterAdd; override;
-    procedure AfterDraw; override;
-    procedure BeforeDraw; override;
-    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    procedure GetCoords(AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    procedure SetActive(AValue: Boolean); override;
-    procedure SetDepth(AValue: TChartDistance); override;
-    procedure SetShowInLegend(AValue: Boolean); override;
-    procedure SetZPosition(AValue: TChartDistance); override;
-    procedure StyleChanged(Sender: TObject);
-    procedure UpdateBounds(var ABounds: TDoubleRect); override;
-    procedure UpdateParentChart;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  public
-    function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
-    function AddXY(X, Y: Double): Integer; overload; inline;
-    procedure Clear; inline;
-    function Count: Integer; inline;
-    procedure Delete(AIndex: Integer); virtual;
-    function Extent: TDoubleRect; virtual;
-    function FormattedMark(AIndex: integer): String;
-    function IsEmpty: Boolean; override;
-    function ListSource: TListChartSource;
-    property Source: TCustomChartSource
-      read GetSource write SetSource stored IsSourceStored;
-  published
-    property Active default true;
-    property Marks: TChartMarks read FMarks write SetMarks;
-    property ShowInLegend;
-    property Title;
-    property ZPosition;
-  end;
 
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
   private
     FPrevLabelRect: TRect;
+    procedure SetUseReticule(AValue: Boolean);
+
   protected
+    FUseReticule: Boolean;
+
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
       ADown: Boolean);
     procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      override;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    property UseReticule: Boolean
+      read FUseReticule write SetUseReticule default false;
   end;
 
   { TBarSeries }
@@ -114,10 +70,10 @@ type
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
+    procedure SetSeriesColor(AValue: TColor);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -130,24 +86,28 @@ type
     property BarWidthPercent: Integer
       read FBarWidthPercent write SetBarWidthPercent default 70;
     property Depth;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property Source;
+    property UseReticule;
   end;
 
   { TPieSeries }
 
   TPieSeries = class(TChartSeries)
+  private
+    FExploded: Boolean;
+    procedure SetExploded(const AValue: Boolean);
+    function SliceColor(AIndex: Integer): TColor;
   protected
     procedure AfterAdd; override;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     function AddPie(Value: Double; Text: String; Color: TColor): Longint;
     procedure Draw(ACanvas: TCanvas); override;
   published
+    // Offset slices away from center based on X value.
+    property Exploded: Boolean read FExploded write SetExploded default false;
     property Source;
   end;
 
@@ -156,98 +116,86 @@ type
   TAreaSeries = class(TBasicPointSeries)
   private
     FAreaBrush: TBrush;
-    FAreaLinesPen: TChartPen;
+    FAreaLinesPen: TPen;
     FInvertedStairs: Boolean;
     FStairs: Boolean;
 
     procedure SetAreaBrush(Value: TBrush);
     procedure SetInvertedStairs(Value: Boolean);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
   published
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-    property AreaLinesPen: TChartPen read FAreaLinesPen write FAreaLinesPen;
+    property AreaLinesPen: TPen read FAreaLinesPen write FAreaLinesPen;
     property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
     property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
-  end;
-
-  { TBasicLineSeries }
-
-  TBasicLineSeries  = class(TBasicPointSeries)
-  protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
+    property UseReticule;
   end;
 
   TSeriesPointerDrawEvent = procedure (
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
+  TLineType = (ltNone, ltFromPrevious, ltFromOrigin);
+
   { TLineSeries }
 
-  TLineSeries = class(TBasicLineSeries)
+  TLineSeries = class(TBasicPointSeries)
   private
     FLinePen: TPen;
+    FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FPointer: TSeriesPointer;
-    FShowLines: Boolean;
     FShowPoints: Boolean;
 
+    function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
+    procedure SetLineType(AValue: TLineType);
     procedure SetPointer(Value: TSeriesPointer);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
   protected
     procedure AfterAdd; override;
-    function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
-    function  GetColor(AIndex: Integer): TColor;
-    procedure GetMax(out X, Y: Double);
-    procedure GetMin(out X, Y: Double);
-    function  GetXImgValue(AIndex: Integer): Integer;
-    function  GetXMax: Double;
-    function  GetXMin: Double;
-    function  GetXValue(AIndex: Integer): Double;
-    function  GetYImgValue(AIndex: Integer): Integer;
-    function  GetYMax: Double;
-    function  GetYMin: Double;
-    function  GetYValue(AIndex: Integer): Double;
-    procedure SetColor(AIndex: Integer; AColor: TColor);
-    procedure SetXValue(AIndex: Integer; AValue: Double); inline;
-    procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
   published
     property Depth;
     property LinePen: TPen read FLinePen write SetLinePen;
+    property LineType: TLineType
+      read FLineType write SetLineType default ltFromPrevious;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
-    property SeriesColor;
-    property ShowLines: Boolean read FShowLines write SetShowLines default true;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints default false;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
+    property ShowLines: Boolean
+      read GetShowLines write SetShowLines stored false default true;
+    property ShowPoints: Boolean
+      read FShowPoints write SetShowPoints default false;
     property Source;
+    property UseReticule default true;
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
@@ -258,20 +206,21 @@ type
 
   { TLine }
 
-  TLine = class(TBasicLineSeries)
+  TLine = class(TCustomChartSeries)
   private
     FLineStyle: TLineStyle;
     FPen: TPen;
-    FPosGraph: Double;                      // Graph coordinates of line
+    FPosGraph: Double; // Graph coordinate of line
     FUseBounds: Boolean;
 
+    function GetSeriesColor: TColor;
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPos(AValue: Double);
+    procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
-    function GetSeriesColor: TColor; override;
-    procedure SetSeriesColor(const AValue: TColor); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -280,12 +229,17 @@ type
     procedure Draw(ACanvas: TCanvas); override;
 
   published
+    property Active default true;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
     property Position: Double read FPosGraph write SetPos;
-    property SeriesColor;
+    property SeriesColor: TColor
+      read GetSeriesColor write SetSeriesColor default clTAColor;
+    property ShowInLegend;
+    property Title;
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
+    property ZPosition;
   end;
 
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
@@ -294,7 +248,7 @@ type
 
   { TFuncSeries }
 
-  TFuncSeries = class(TBasicChartSeries)
+  TFuncSeries = class(TCustomChartSeries)
   private
     FExtent: TChartExtent;
     FOnCalculate: TFuncCalculateEvent;
@@ -306,18 +260,8 @@ type
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); override;
-    function GetLegendCount: Integer; override;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; override;
-    function GetSeriesColor: TColor; override;
-    procedure SetActive(AValue: Boolean); override;
-    procedure SetDepth(AValue: TChartDistance); override;
-    procedure SetSeriesColor(const AValue: TColor); override;
-    procedure SetShowInLegend(AValue: Boolean); override;
-    procedure SetZPosition(AValue: TChartDistance); override;
-    procedure StyleChanged(Sender: TObject);
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure UpdateBounds(var ABounds: TDoubleRect); override;
-    procedure UpdateParentChart;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -337,260 +281,49 @@ type
     property ZPosition;
   end;
 
+  TSeriesDrawEvent = procedure (ACanvas: TCanvas; const ARect: TRect) of object;
+  TSeriesUpdateBoundsEvent = procedure (var ABounds: TDoubleRect) of object;
+
+  { TUserDrawnSeries }
+
+  TUserDrawnSeries = class(TCustomChartSeries)
+  private
+    FOnDraw: TSeriesDrawEvent;
+    FOnUpdateBounds: TSeriesUpdateBoundsEvent;
+    procedure SetOnDraw(AValue: TSeriesDrawEvent);
+    procedure SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure UpdateBounds(var ABounds: TDoubleRect); override;
+  public
+    procedure Draw(ACanvas: TCanvas); override;
+    function IsEmpty: Boolean; override;
+  published
+    property Active default true;
+    property ZPosition;
+  published
+    property OnDraw: TSeriesDrawEvent read FOnDraw write SetOnDraw;
+    property OnUpdateBounds: TSeriesUpdateBoundsEvent
+      read FOnUpdateBounds write SetOnUpdateBounds;
+  end;
+
 implementation
 
 uses
-  GraphMath, Math, Types;
-
-type
-
-  { TChartSeriesListener }
-
-  TChartSeriesListener = class(TListener)
-  private
-    FSeries: TChartSeries;
-  public
-    constructor Create(ASeries: TChartSeries);
-    procedure Forget; override;
-    procedure Notify; override;
-  end;
-
-{ TChartSeriesListener }
-
-constructor TChartSeriesListener.Create(ASeries: TChartSeries);
-begin
-  FSeries := ASeries;
-end;
-
-procedure TChartSeriesListener.Forget;
-begin
-  inherited Forget;
-  FSeries.FSource := nil;
-end;
-
-procedure TChartSeriesListener.Notify;
-begin
-  FSeries.UpdateParentChart;
-end;
-
-{ TChartSeries }
-
-function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
-begin
-  Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
-end;
-
-function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
-begin
-  Result := ListSource.Add(X, Y, XLabel, Color);
-end;
-
-function TChartSeries.AddXY(X, Y: Double): Integer;
-begin
-  Result := AddXY(X, Y, '', clTAColor);
-end;
-
-procedure TChartSeries.AfterAdd;
-begin
-  FMarks.SetOwner(FChart);
-end;
-
-procedure TChartSeries.AfterDraw;
-begin
-  Source.AfterDraw;
-end;
-
-procedure TChartSeries.BeforeDraw;
-begin
-  Source.BeforeDraw;
-end;
-
-procedure TChartSeries.Clear;
-begin
-  ListSource.Clear;
-end;
-
-function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
-begin
-  Result := AColor;
-  if Result <> clTAColor then exit;
-  Result := ADefault;
-  if Result <> clTAColor then exit;
-  Result := SeriesColor;
-end;
-
-function TChartSeries.Count: Integer;
-begin
-  Result := Source.Count;
-end;
-
-constructor TChartSeries.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  FActive := true;
-  FListener := TChartSeriesListener.Create(Self);
-  FBuiltinSource := TListChartSource.Create(Self);
-  FBuiltinSource.Name := 'Builtin';
-  FBuiltinSource.Subscribe(FListener);
-  FMarks := TChartMarks.Create(FChart);
-  FShowInLegend := true;
-end;
-
-procedure TChartSeries.Delete(AIndex: Integer);
-begin
-  ListSource.Delete(AIndex);
-end;
-
-destructor TChartSeries.Destroy;
-begin
-  if FListener.IsListening then
-    Source.Unsubscribe(FListener);
-  FBuiltinSource.Free;
-  FMarks.Free;
-
-  inherited Destroy;
-end;
-
-procedure TChartSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-begin
-  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
-end;
-
-function TChartSeries.Extent: TDoubleRect;
-begin
-  Result := Source.Extent;
-end;
-
-function TChartSeries.FormattedMark(AIndex: integer): String;
-var
-  total, percent: Double;
-begin
-  total := Source.ValuesTotal;
-  with Source[AIndex]^ do begin
-    if total = 0 then
-      percent := 0
-    else
-      percent := Y / total * 100;
-    Result := Format(FMarks.Format, [y, percent, Text, total, X]);
-  end;
-end;
-
-procedure TChartSeries.GetCoords(
-  AIndex: Integer; out AG: TDoublePoint; out AI: TPoint);
-begin
-  AG := DoublePoint(Source[AIndex]^);
-  AI := ParentChart.GraphToImage(AG);
-end;
-
-function TChartSeries.GetLegendCount: Integer;
-begin
-  Result := 1;
-end;
-
-function TChartSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
-begin
-  Result := ACanvas.TextWidth(Title);
-end;
-
-function TChartSeries.GetSource: TCustomChartSource;
-begin
-  if Assigned(FSource) then
-    Result := FSource
-  else
-    Result := FBuiltinSource;
-end;
-
-function TChartSeries.GetXMaxVal: Integer;
-begin
-  if Count > 0 then
-    Result := Round(Source[Count - 1]^.X)
-  else
-    Result := 0;
-end;
-
-function TChartSeries.IsEmpty: Boolean;
-begin
-  Result := Count = 0;
-end;
-
-function TChartSeries.IsSourceStored: boolean;
-begin
-  Result := FSource <> nil;
-end;
-
-function TChartSeries.ListSource: TListChartSource;
-begin
-  if not (Source is TListChartSource) then
-    raise EEditableSourceRequired.Create('Editable chart source required');
-  Result := Source as TListChartSource;
-end;
-
-procedure TChartSeries.SetActive(AValue: Boolean);
-begin
-  FActive := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetDepth(AValue: TChartDistance);
-begin
-  if FDepth = AValue then exit;
-  FDepth := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetMarks(const AValue: TChartMarks);
-begin
-  if FMarks = AValue then exit;
-  FMarks.Assign(AValue);
-end;
-
-procedure TChartSeries.SetShowInLegend(AValue: Boolean);
-begin
-  if FShowInLegend = AValue then exit;
-  FShowInLegend := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetSource(AValue: TCustomChartSource);
-begin
-  if FSource = AValue then exit;
-  if FListener.IsListening then
-    Source.Unsubscribe(FListener);
-  FSource := AValue;
-  Source.Subscribe(FListener);
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.SetZPosition(AValue: TChartDistance);
-begin
-  if FZPosition = AValue then exit;
-  FZPosition := AValue;
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.StyleChanged(Sender: TObject);
-begin
-  UpdateParentChart;
-end;
-
-procedure TChartSeries.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  if not Active or (Count = 0) then exit;
-  with Extent do begin
-    if a.X < ABounds.a.X then ABounds.a.X := a.X;
-    if a.Y < ABounds.a.Y then ABounds.a.Y := a.Y;
-    if b.X > ABounds.b.X then ABounds.b.X := b.X;
-    if b.Y > ABounds.b.Y then ABounds.b.Y := b.Y;
-  end;
-end;
-
-procedure TChartSeries.UpdateParentChart;
-begin
-  if ParentChart <> nil then ParentChart.Invalidate;
-end;
+  GraphMath, Math, PropEdits, Types;
 
 { TLineSeries }
+
+procedure TLineSeries.AfterAdd;
+begin
+  inherited AfterAdd;
+  FPointer.SetOwner(FChart);
+end;
+
+procedure TLineSeries.BeginUpdate;
+begin
+  ListSource.BeginUpdate;
+end;
 
 constructor TLineSeries.Create(AOwner: TComponent);
 begin
@@ -598,56 +331,58 @@ begin
 
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
+  FLineType := ltFromPrevious;
   FPointer := TSeriesPointer.Create(FChart);
-  FShowLines := true;
+  FUseReticule := true;
 end;
 
 destructor TLineSeries.Destroy;
 begin
+  FLinePen.Free;
   FPointer.Free;
   inherited Destroy;
 end;
 
-procedure TLineSeries.SetPointer(Value: TSeriesPointer);
-begin
-  FPointer.Assign(Value);
-  UpdateParentChart;
-end;
-
-procedure TLineSeries.SetSeriesColor(const AValue: TColor);
-begin
-  FLinePen.Color := AValue;
-end;
-
 procedure TLineSeries.Draw(ACanvas: TCanvas);
+
+  procedure DrawLine(AA, AB: TDoublePoint);
+  var
+    ai, bi: TPoint;
+  begin
+    if not LineIntersectsRect(AA, AB, ParentChart.CurrentExtent) then exit;
+    ai := ParentChart.GraphToImage(AA);
+    bi := ParentChart.GraphToImage(AB);
+    ACanvas.Pen.Assign(LinePen);
+    if Depth = 0 then
+      ACanvas.Line(ai, bi)
+    else begin
+      ACanvas.Brush.Style := bsSolid;
+      ACanvas.Brush.Color := ACanvas.Pen.Color;
+      ACanvas.Pen.Color := clBlack;
+      DrawLineDepth(ACanvas, ai, bi, Depth);
+    end;
+  end;
+
 var
   i: Integer;
-  ai, bi: TPoint;
-  a, b: TDoublePoint;
+  a: TDoublePoint;
+  ai: TPoint;
 begin
-  if FShowLines then
-    for i := 0 to Count - 2 do begin
-      a := DoublePoint(Source[i]^);
-      b := DoublePoint(Source[i + 1]^);
-      if not LineIntersectsRect(a, b, ParentChart.CurrentExtent) then continue;
-      ai := ParentChart.GraphToImage(a);
-      bi := ParentChart.GraphToImage(b);
-      ACanvas.Pen.Assign(LinePen);
-      if Depth = 0 then
-        ACanvas.Line(ai, bi)
-      else begin
-        ACanvas.Brush.Style := bsSolid;
-        ACanvas.Brush.Color := ACanvas.Pen.Color;
-        ACanvas.Pen.Color := clBlack;
-        DrawLineDepth(ACanvas, ai, bi, Depth);
-      end;
-    end;
+  case LineType of
+    ltNone: ;
+    ltFromPrevious:
+      for i := 0 to Count - 2 do
+        DrawLine(GetGraphPoint(i), GetGraphPoint(i + 1));
+    ltFromOrigin:
+      for i := 0 to Count - 1 do
+        DrawLine(ZeroDoublePoint, GetGraphPoint(i));
+  end;
 
   DrawLabels(ACanvas, true);
 
   if FShowPoints then
     for i := 0 to Count - 1 do begin
-      a := DoublePoint(Source[i]^);
+      a := GetGraphPoint(i);
       if not ParentChart.IsPointInViewPort(a) then continue;
       ai := ParentChart.GraphToImage(a);
       FPointer.Draw(ACanvas, ai, GetColor(i));
@@ -656,94 +391,15 @@ begin
     end;
 end;
 
-procedure TLineSeries.AfterAdd;
+procedure TLineSeries.EndUpdate;
 begin
-  inherited AfterAdd;
-  FPointer.SetOwner(FChart);
+  ListSource.EndUpdate;
+  UpdateParentChart;
 end;
 
-function TLineSeries.GetXValue(AIndex: Integer): Double;
+procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  Result := Source[AIndex]^.X;
-end;
-
-function TLineSeries.GetYValue(AIndex: Integer): Double;
-begin
-  Result := Source[AIndex]^.Y;
-end;
-
-procedure TLineSeries.SetXValue(AIndex: Integer; AValue: Double);
-begin
-  ListSource.SetXValue(AIndex, AValue);
-end;
-
-procedure TLineSeries.SetYValue(AIndex: Integer; AValue: Double);
-begin
-  ListSource.SetYValue(AIndex, AValue);
-end;
-
-function TLineSeries.GetXImgValue(AIndex: Integer): Integer;
-begin
-  Result := ParentChart.XGraphToImage(Source[AIndex]^.X);
-end;
-
-function TLineSeries.GetYImgValue(AIndex: Integer): Integer;
-begin
-  Result := ParentChart.YGraphToImage(Source[AIndex]^.Y);
-end;
-
-function TLineSeries.GetXMin: Double;
-begin
-  Result := Extent.a.X;
-end;
-
-function TLineSeries.GetXMax: Double;
-begin
-  Result := Extent.b.X;
-end;
-
-function TLineSeries.GetYMin: Double;
-begin
-  Result := Extent.a.Y;
-end;
-
-function TLineSeries.GetYMax: Double;
-begin
-  Result := Extent.b.Y;
-end;
-
-procedure TLineSeries.GetMax(out X, Y: Double);
-begin
-  X := Source.XOfMax;
-  Y := Extent.b.Y;
-end;
-
-procedure TLineSeries.GetMin(out X, Y: Double);
-begin
-  X := Source.XOfMin;
-  Y := Extent.a.Y;
-end;
-
-function TLineSeries.GetNearestPoint(
-  ADistFunc: TPointDistFunc; const APoint: TPoint;
-  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-var
-  dist, minDist, i: Integer;
-  pt: TPoint;
-begin
-  Result := Count > 0;
-  minDist := MaxInt;
-  for i := 0 to Count - 1 do begin
-    pt := Point(GetXImgValue(i), GetYImgValue(i));
-    dist := ADistFunc(APoint, pt);
-    if dist >= minDist then
-      Continue;
-    minDist := dist;
-    AIndex := i;
-    AImg := pt;
-    AValue.X := GetXValue(i);
-    AValue.Y := GetYValue(i);
-  end;
+  AItems.Add(TLegendItemLine.Create(LinePen, Title));
 end;
 
 function TLineSeries.GetSeriesColor: TColor;
@@ -751,9 +407,9 @@ begin
   Result := FLinePen.Color;
 end;
 
-procedure TLineSeries.SetColor(AIndex: Integer; AColor: TColor);
+function TLineSeries.GetShowLines: Boolean;
 begin
-  Source[AIndex]^.Color := AColor;
+  Result := FLineType <> ltNone;
 end;
 
 procedure TLineSeries.SetLinePen(AValue: TPen);
@@ -761,31 +417,37 @@ begin
   FLinePen.Assign(AValue);
 end;
 
-function TLineSeries.GetColor(AIndex: Integer): TColor;
+procedure TLineSeries.SetLineType(AValue: TLineType);
 begin
-  Result := ColorOrDefault(Source[AIndex]^.Color);
+  if FLineType = AValue then exit;
+  FLineType := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLineSeries.SetPointer(Value: TSeriesPointer);
+begin
+  FPointer.Assign(Value);
+  UpdateParentChart;
+end;
+
+procedure TLineSeries.SetSeriesColor(AValue: TColor);
+begin
+  FLinePen.Color := AValue;
+end;
+
+procedure TLineSeries.SetShowLines(Value: Boolean);
+begin
+  if ShowLines = Value then exit;
+  if Value then
+    FLineType := ltFromPrevious
+  else
+    FLineType := ltNone;
+  UpdateParentChart;
 end;
 
 procedure TLineSeries.SetShowPoints(Value: Boolean);
 begin
   FShowPoints := Value;
-  UpdateParentChart;
-end;
-
-procedure TLineSeries.SetShowLines(Value: Boolean);
-begin
-  FShowLines := Value;
-  UpdateParentChart;
-end;
-
-procedure TLineSeries.BeginUpdate;
-begin
-  ListSource.BeginUpdate;
-end;
-
-procedure TLineSeries.EndUpdate;
-begin
-  ListSource.EndUpdate;
   UpdateParentChart;
 end;
 
@@ -807,6 +469,30 @@ begin
   FPen.Free;
 end;
 
+procedure TLine.Draw(ACanvas: TCanvas);
+begin
+  ACanvas.Brush.Style := bsClear;
+  ACanvas.Pen.Assign(FPen);
+
+  with ParentChart do
+    case LineStyle of
+      lsHorizontal:
+        DrawLineHoriz(ACanvas, YGraphToImage(FPosGraph));
+      lsVertical:
+        DrawLineVert(ACanvas, XGraphToImage(FPosGraph));
+    end;
+end;
+
+procedure TLine.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
+end;
+
+function TLine.GetSeriesColor: TColor;
+begin
+  Result := FPen.Color;
+end;
+
 procedure TLine.SetLineStyle(AValue: TLineStyle);
 begin
   if FLineStyle = AValue then exit;
@@ -817,6 +503,19 @@ end;
 procedure TLine.SetPen(AValue: TPen);
 begin
   FPen.Assign(AValue);
+end;
+
+procedure TLine.SetPos(AValue: Double);
+begin
+  if FPosGraph = AValue then exit;
+  FPosGraph := AValue;
+  UpdateParentChart;
+end;
+
+procedure TLine.SetSeriesColor(AValue: TColor);
+begin
+  if FPen.Color = AValue then exit;
+  FPen.Color := AValue;
 end;
 
 procedure TLine.SetUseBounds(AValue: Boolean);
@@ -833,38 +532,6 @@ begin
     lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
     lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
   end;
-end;
-
-procedure TLine.SetPos(AValue: Double);
-begin
-  if FPosGraph = AValue then exit;
-  FPosGraph := AValue;
-  UpdateParentChart;
-end;
-
-procedure TLine.SetSeriesColor(const AValue: TColor);
-begin
-  if FPen.Color = AValue then exit;
-  FPen.Color := AValue;
-end;
-
-procedure TLine.Draw(ACanvas: TCanvas);
-begin
-  ACanvas.Brush.Style := bsClear;
-  ACanvas.Pen.Assign(FPen);
-
-  with ParentChart do
-    case LineStyle of
-      lsHorizontal:
-        DrawLineHoriz(ACanvas, YGraphToImage(FPosGraph));
-      lsVertical:
-        DrawLineVert(ACanvas, XGraphToImage(FPosGraph));
-    end;
-end;
-
-function TLine.GetSeriesColor: TColor;
-begin
-  Result := FPen.Color;
 end;
 
 { TBasicPointSeries }
@@ -909,16 +576,44 @@ end;
 procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
 var
   g: TDoublePoint;
-  pt: TPoint;
   i: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    GetCoords(i, g, pt);
+    g := GetGraphPoint(i);
     with ParentChart do
       if IsPointInViewPort(g) then
-        DrawLabel(ACanvas, i, pt, ADrawDown and (g.Y < 0));
+        DrawLabel(ACanvas, i, GraphToImage(g), ADrawDown and (g.Y < 0));
   end;
+end;
+
+function TBasicPointSeries.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+var
+  dist, minDist, i: Integer;
+  pt: TPoint;
+begin
+  Result := UseReticule and (Count > 0);
+  minDist := MaxInt;
+  for i := 0 to Count - 1 do begin
+    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    dist := ADistFunc(APoint, pt);
+    if dist >= minDist then
+      Continue;
+    minDist := dist;
+    AIndex := i;
+    AImg := pt;
+    AValue.X := GetXValue(i);
+    AValue.Y := GetYValue(i);
+  end;
+end;
+
+procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
+begin
+  if FUseReticule = AValue then exit;
+  FUseReticule := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
@@ -971,28 +666,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TBarSeries.SetBarBrush(Value: TBrush);
-begin
-  FBarBrush.Assign(Value);
-end;
-
-procedure TBarSeries.SetBarPen(Value:TPen);
-begin
-  FBarPen.Assign(Value);
-end;
-
-procedure TBarSeries.SetBarWidthPercent(Value: Integer);
-begin
-  if (Value < 1) or (Value > 100) then
-    raise EBarError.Create('Wrong BarWidth Percent');
-  FBarWidthPercent := Value;
-end;
-
-procedure TBarSeries.SetSeriesColor(const AValue: TColor);
-begin
-  FBarBrush.Color := AValue;
-end;
-
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 
   procedure DrawBar(const AR: TRect);
@@ -1031,7 +704,7 @@ begin
 
   ACanvas.Brush.Assign(BarBrush);
   for i := 0 to Count - 1 do begin
-    p := DoublePoint(Source[i]^);
+    p := GetGraphPoint(i);
     w := CalcBarWidth(p.X, i);
     graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
     if not RectIntersectsRect(graphBar, ext2) then continue;
@@ -1051,18 +724,10 @@ begin
 
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    p := DoublePoint(Source[i]^);
+    p := GetGraphPoint(i);
     if ParentChart.IsPointInViewPort(p) then
       DrawLabel(ACanvas, i, ParentChart.GraphToImage(p), p.Y < 0);
   end;
-end;
-
-procedure TBarSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := clBlack;
-  ACanvas.Brush.Assign(BarBrush);
-  ACanvas.Rectangle(ARect);
 end;
 
 function TBarSeries.Extent: TDoubleRect;
@@ -1077,9 +742,36 @@ begin
     Result.b.X := Max(Result.b.X, X + CalcBarWidth(X, Count - 1));
 end;
 
+procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemBrushRect.Create(BarBrush, Title));
+end;
+
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
+end;
+
+procedure TBarSeries.SetBarBrush(Value: TBrush);
+begin
+  FBarBrush.Assign(Value);
+end;
+
+procedure TBarSeries.SetBarPen(Value:TPen);
+begin
+  FBarPen.Assign(Value);
+end;
+
+procedure TBarSeries.SetBarWidthPercent(Value: Integer);
+begin
+  if (Value < 1) or (Value > 100) then
+    raise EBarError.Create('Wrong BarWidth Percent');
+  FBarWidthPercent := Value;
+end;
+
+procedure TBarSeries.SetSeriesColor(AValue: TColor);
+begin
+  FBarBrush.Color := AValue;
 end;
 
 { TPieSeries }
@@ -1098,63 +790,76 @@ end;
 
 procedure TPieSeries.Draw(ACanvas: TCanvas);
 var
-  i, radius: Integer;
-  prevAngle, angleStep: Double;
-  graphCoord: PChartDataItem;
   labelWidths, labelHeights: TIntegerDynArray;
   labelTexts: TStringDynArray;
-  a, b, center: TPoint;
+
+  procedure Measure(out ACenter: TPoint; out ARadius: Integer);
+  const
+    MARGIN = 8;
+  var
+    i: Integer;
+  begin
+    SetLength(labelWidths, Count);
+    SetLength(labelHeights, Count);
+    SetLength(labelTexts, Count);
+    for i := 0 to Count - 1 do begin
+      labelTexts[i] := FormattedMark(i);
+      with ACanvas.TextExtent(labelTexts[i]) do begin
+        labelWidths[i] := cx;
+        labelHeights[i] := cy;
+      end;
+    end;
+
+    with ParentChart do begin
+      ACenter := CenterPoint(ClipRect);
+      // Reserve space for labels.
+      ARadius := Min(
+        ClipRect.Right - ACenter.x - MaxIntValue(labelWidths),
+        ClipRect.Bottom - ACenter.y - MaxIntValue(labelHeights));
+    end;
+    if Marks.IsMarkLabelsVisible then
+      ARadius -= Marks.Distance;
+    ARadius := Max(ARadius - MARGIN, 0);
+    if Exploded then
+      ARadius := Trunc(ARadius / (Max(Source.Extent.b.X, 0) + 1));
+  end;
+
+var
+  i, radius: Integer;
+  prevAngle: Double = 0;
+  angleStep, sliceCenterAngle: Double;
+  a, b, c, center: TPoint;
   r: TRect;
 const
-  MARGIN = 8;
+  RAD_TO_DEG16 = 360 * 16;
 begin
   if IsEmpty then exit;
 
-  SetLength(labelWidths, Count);
-  SetLength(labelHeights, Count);
-  SetLength(labelTexts, Count);
+  Measure(center, radius);
   for i := 0 to Count - 1 do begin
-    labelTexts[i] := FormattedMark(i);
-    with ACanvas.TextExtent(labelTexts[i]) do begin
-      labelWidths[i] := cx;
-      labelHeights[i] := cy;
-    end;
-  end;
-
-  with ParentChart do begin
-    center := CenterPoint(ClipRect);
-    // Reserve space for labels.
-    radius := Min(
-      ClipRect.Right - center.x - MaxIntValue(labelWidths),
-      ClipRect.Bottom - center.y - MaxIntValue(labelHeights));
-  end;
-  if Marks.IsMarkLabelsVisible then
-    radius -= Marks.Distance;
-  radius := Max(radius - MARGIN, 0);
-
-  prevAngle := 0;
-  for i := 0 to Count - 1 do begin
-    // if y < 0 then y := -y;
-    // if y = 0 then y := 0.1; // just to simulate tchart when y=0
-
-    graphCoord := Source[i];
-    angleStep := graphCoord^.Y / Source.ValuesTotal * 360 * 16;
     ACanvas.Pen.Color := clBlack;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Brush.Style := bsSolid;
-    ACanvas.Brush.Color :=
-      ColorOrDefault(graphCoord^.Color, Colors[i mod MaxColor + 1]);
+    ACanvas.Brush.Color := SliceColor(i);
 
+    with Source[i]^ do begin
+      angleStep := Y / Source.ValuesTotal * RAD_TO_DEG16;
+      sliceCenterAngle := prevAngle + angleStep / 2;
+      if Exploded and (X > 0) then
+        c := LineEndPoint(center, sliceCenterAngle, radius * X)
+      else
+        c := center;
+    end;
     ACanvas.RadialPie(
-      center.x - radius, center.y - radius,
-      center.x + radius, center.y + radius, round(prevAngle), round(angleStep));
+      c.x - radius, c.y - radius, c.x + radius, c.y + radius,
+      round(prevAngle), round(angleStep));
 
     prevAngle += angleStep;
 
     if not Marks.IsMarkLabelsVisible then continue;
 
-    a := LineEndPoint(center, prevAngle - angleStep / 2, radius);
-    b := LineEndPoint(center, prevAngle - angleStep / 2, radius + Marks.Distance);
+    a := LineEndPoint(c, sliceCenterAngle, radius);
+    b := LineEndPoint(c, sliceCenterAngle, radius + Marks.Distance);
 
     // line from mark to pie
     ACanvas.Pen.Assign(Marks.LinkPen);
@@ -1171,52 +876,25 @@ begin
   end;
 end;
 
-procedure TPieSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  i: Integer;
-  pc, bc: TColor;
-  r: TRect;
-begin
-  r := ARect;
-  pc := ACanvas.Pen.Color;
-  bc := ACanvas.Brush.Color;
-  for i := 0 to Count - 1 do begin
-    ACanvas.Pen.Color := pc;
-    ACanvas.Brush.Color := bc;
-    with Source[i]^ do begin
-      ACanvas.TextOut(r.Right + 3, r.Top, Format('%1.2g %s', [Y, Text]));
-      ACanvas.Pen.Color := clBlack;
-      ACanvas.Brush.Color := Color;
-    end;
-    ACanvas.Rectangle(r);
-    OffsetRect(r, 0, r.Bottom - r.Top + LEGEND_SPACING);
-  end;
-end;
-
-function TPieSeries.GetLegendCount: Integer;
-begin
-  Result := Count;
-end;
-
-function TPieSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
+procedure TPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
 begin
-  Result := 0;
   for i := 0 to Count - 1 do
-    with Source[i]^ do
-      Result := Max(ACanvas.TextWidth(Format('%1.2g %s', [Y, Text])), Result);
+    AItems.Add(TLegendItemColorRect.Create(SliceColor(i), FormattedMark(i)));
 end;
 
-function TPieSeries.GetSeriesColor: TColor;
+procedure TPieSeries.SetExploded(const AValue: Boolean);
 begin
-  Result := clBlack; // SeriesColor is meaningless for PieSeries
+  if FExploded = AValue then exit;
+  FExploded := AValue;
+  UpdateParentChart;
 end;
 
-procedure TPieSeries.SetSeriesColor(const AValue: TColor);
+function TPieSeries.SliceColor(AIndex: Integer): TColor;
 begin
-  // SeriesColor is meaningless for PieSeries
-  Unused(AValue);
+  Result :=
+    ColorOrDefault(Source[AIndex]^.Color, Colors[AIndex mod High(Colors) + 1]);
 end;
 
 { TAreaSeries }
@@ -1224,8 +902,11 @@ end;
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAreaLinesPen := TChartPen.Create;
+  FAreaLinesPen := TPen.Create;
+  FAreaLinesPen.OnChange := @StyleChanged;
+
   FAreaBrush := TBrush.Create;
+  FAreaBrush.OnChange := @StyleChanged;
 end;
 
 destructor TAreaSeries.Destroy;
@@ -1233,29 +914,6 @@ begin
   FAreaLinesPen.Free;
   FAreaBrush.Free;
   inherited Destroy;
-end;
-
-procedure TAreaSeries.SetAreaBrush(Value: TBrush);
-begin
-  FAreaBrush.Assign(Value);
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetStairs(Value: Boolean);
-begin
-  FStairs := Value;
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
-begin
-  FInvertedStairs := Value;
-  UpdateParentChart;
-end;
-
-procedure TAreaSeries.SetSeriesColor(const AValue: TColor);
-begin
-  FAreaBrush.Color := AValue;
 end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
@@ -1288,8 +946,8 @@ begin
   ymin := ParentChart.ClipRect.Bottom - 1;
 
   for i := 0 to Count - 2 do begin
-    a := DoublePoint(Source[i]^);
-    b := DoublePoint(Source[i + 1]^);
+    a := GetGraphPoint(i);
+    b := GetGraphPoint(i + 1);
     if a.X > b.X then begin
       Exchange(a.X, b.X);
       Exchange(a.Y, b.Y);
@@ -1327,12 +985,9 @@ begin
   DrawLabels(ACanvas, false);
 end;
 
-procedure TAreaSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
+procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := clBlack;
-  ACanvas.Brush.Color := SeriesColor;
-  ACanvas.Rectangle(ARect);
+  AItems.Add(TLegendItemBrushRect.Create(AreaBrush, Title));
 end;
 
 function TAreaSeries.GetSeriesColor: TColor;
@@ -1340,16 +995,27 @@ begin
   Result := FAreaBrush.Color;
 end;
 
-{ TBasicLineSeries }
-
-procedure TBasicLineSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  y: Integer;
+procedure TAreaSeries.SetAreaBrush(Value: TBrush);
 begin
-  inherited DrawLegend(ACanvas, ARect);
-  ACanvas.Pen.Color := SeriesColor;
-  y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.Line(ARect.Left, y, ARect.Right, y);
+  FAreaBrush.Assign(Value);
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
+begin
+  FInvertedStairs := Value;
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetSeriesColor(AValue: TColor);
+begin
+  FAreaBrush.Color := AValue;
+end;
+
+procedure TAreaSeries.SetStairs(Value: Boolean);
+begin
+  FStairs := Value;
+  UpdateParentChart;
 end;
 
 { TFuncSeries }
@@ -1357,9 +1023,7 @@ end;
 constructor TFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActive := true;
   FExtent := TChartExtent.Create(FChart);
-  FShowInLegend := true;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := 2;
@@ -1407,48 +1071,14 @@ begin
   end;
 end;
 
-procedure TFuncSeries.DrawLegend(ACanvas: TCanvas; const ARect: TRect);
-var
-  y: Integer;
+procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  ACanvas.TextOut(ARect.Right + 3, ARect.Top, Title);
-  ACanvas.Pen.Assign(Pen);
-  y := (ARect.Top + ARect.Bottom) div 2;
-  ACanvas.Line(ARect.Left, y, ARect.Right, y);
-end;
-
-function TFuncSeries.GetLegendCount: Integer;
-begin
-  Result := 1;
-end;
-
-function TFuncSeries.GetLegendWidth(ACanvas: TCanvas): Integer;
-begin
-  Result := ACanvas.TextWidth(Title);
-end;
-
-function TFuncSeries.GetSeriesColor: TColor;
-begin
-  Result := FPen.Color;
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
 begin
   Result := not Assigned(OnCalculate);
-end;
-
-procedure TFuncSeries.SetActive(AValue: Boolean);
-begin
-  if FActive = AValue then exit;
-  FActive := AValue;
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.SetDepth(AValue: TChartDistance);
-begin
-  if FDepth = AValue then exit;
-  FDepth := AValue;
-  UpdateParentChart;
 end;
 
 procedure TFuncSeries.SetExtent(const AValue: TChartExtent);
@@ -1460,7 +1090,7 @@ end;
 
 procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
 begin
-  if FOnCalculate = AValue then exit;
+  if CompareMethods(TMethod(FOnCalculate),TMethod(AValue)) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
@@ -1472,36 +1102,10 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.SetSeriesColor(const AValue: TColor);
-begin
-  if FPen.Color = AValue then exit;
-  FPen.Color := AValue;
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.SetShowInLegend(AValue: Boolean);
-begin
-  if FShowInLegend = AValue then exit;
-  FShowInLegend := AValue;
-  UpdateParentChart;
-end;
-
 procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.SetZPosition(AValue: TChartDistance);
-begin
-  if FZPosition = AValue then exit;
-  FZPosition := AValue;
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.StyleChanged(Sender: TObject);
-begin
   UpdateParentChart;
 end;
 
@@ -1515,10 +1119,42 @@ begin
   end;
 end;
 
-procedure TFuncSeries.UpdateParentChart;
+{ TUserDrawnSeries }
+
+procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
 begin
-  if ParentChart <> nil then
-    ParentChart.Invalidate;
+  if Assigned(FOnDraw) then
+     FOnDraw(ACanvas, FChart.ClipRect);
+end;
+
+procedure TUserDrawnSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  Unused(AItems);
+end;
+
+function TUserDrawnSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(FOnDraw);
+end;
+
+procedure TUserDrawnSeries.SetOnDraw(AValue: TSeriesDrawEvent);
+begin
+  if CompareMethods(TMethod(FOnDraw),TMethod(AValue)) then exit;
+  FOnDraw := AValue;
+  UpdateParentChart;
+end;
+
+procedure TUserDrawnSeries.SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+begin
+  if FOnUpdateBounds = AValue then exit;
+  FOnUpdateBounds := AValue;
+  UpdateParentChart;
+end;
+
+procedure TUserDrawnSeries.UpdateBounds(var ABounds: TDoubleRect);
+begin
+  if Assigned(FOnUpdateBounds) then
+    FOnUpdateBounds(ABounds);
 end;
 
 initialization
@@ -1527,6 +1163,9 @@ initialization
   RegisterSeriesClass(TBarSeries, 'Bar series');
   RegisterSeriesClass(TPieSeries, 'Pie series');
   RegisterSeriesClass(TFuncSeries, 'Function series');
+  RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
   RegisterSeriesClass(TLine, 'Line');
+  RegisterPropertyEditor(
+    TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
 
 end.

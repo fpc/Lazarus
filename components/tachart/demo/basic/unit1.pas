@@ -67,7 +67,7 @@ type
     procedure InitLine;
     procedure InitPie;
     procedure InitArea;
-    procedure BringToFront(ASeries: TChartSeries);
+    procedure BringToFront(ASeries: TBasicChartSeries);
   end;
 
 var
@@ -80,7 +80,7 @@ uses
 
 { TForm1 }
 
-procedure TForm1.BringToFront(ASeries: TChartSeries);
+procedure TForm1.BringToFront(ASeries: TBasicChartSeries);
 var
   i: Integer;
 begin
@@ -102,6 +102,7 @@ begin
     else Y3 := Y3 - random(5);
     FArea.AddXY(x3, y3, '', clTAColor);
   end;
+  FArea.UseReticule := true;
 end;
 
 procedure TForm1.btnAddBarClick(Sender: TObject);
@@ -112,7 +113,7 @@ begin
   BringToFront(FBar);
   FBar.Marks.Style := TSeriesMarksStyle(cbMarkStyle.ItemIndex);
   for i := 1 to edAddCount.Value do begin
-    FBar.AddXY(x, y, '', clRed);
+    FBar.AddXY(x, y);
     X := X + 1;
     if random(2) >= 0.7 then Y := Y + random(5)
     else if random(2) >= 0.7 then Y := 0

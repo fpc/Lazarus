@@ -56,8 +56,6 @@ type
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
-  TLegendAlignment = (laLeft, laRight, laTop, laBottom);
-
   TFPCanvasHelperClass = class of TFPCanvasHelper;
 
   { TChartElement }
@@ -78,28 +76,6 @@ type
     procedure SetOwner(AOwner: TCustomChart);
 
     property Visible: Boolean read FVisible write SetVisible;
-  end;
-
-  TChartLegend = class(TChartElement)
-  private
-    FAlignment: TLegendAlignment;
-    FFont: TFont;
-    FFrame: TChartPen;
-
-    procedure SetAlignment(AValue: TLegendAlignment);
-    procedure SetFont(AValue: TFont);
-    procedure SetFrame(AValue: TChartPen);
-  public
-    constructor Create(AOwner: TCustomChart);
-    destructor Destroy; override;
-
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Alignment: TLegendAlignment
-      read FAlignment write SetAlignment default laRight;
-    property Font: TFont read FFont write SetFont;
-    property Frame: TChartPen read FFrame write SetFrame;
-    property Visible default false;
   end;
 
   TChartTitle = class(TChartElement)
@@ -162,6 +138,8 @@ type
 
   TChartAxisAlignment = (calLeft, calTop, calRight, calBottom);
   TChartAxisMargins = array [TChartAxisAlignment] of Integer;
+  TChartAxisMarkToTextEvent =
+    procedure (var AText: String; AMark: Double) of object;
 
   TChartAxisPen = class(TChartPen)
   published
@@ -180,6 +158,7 @@ type
     FGrid: TChartAxisPen;
     FInverted: Boolean;
     FOffset: Double;
+    FOnMarkToText: TChartAxisMarkToTextEvent;
     FScale: Double;
     FTickColor: TColor;
     FTickLength: Integer;
@@ -190,6 +169,7 @@ type
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
     procedure SetOffset(AValue: Double);
+    procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
     procedure SetScale(AValue: Double);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
@@ -210,6 +190,8 @@ type
     procedure DrawTitle(
       ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
     function IsVertical: Boolean; inline;
+    function MarkToText(AMark: Double): String;
+    function MarkToTextDefault(AMark: Double): String;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
       var AMargins: TChartAxisMargins);
@@ -225,6 +207,9 @@ type
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Visible: Boolean read FVisible write SetVisible default true;
+  published
+    property OnMarkToText: TChartAxisMarkToTextEvent
+      read FOnMarkToText write SetOnMarkToText;
   end;
 
   { TChartAxisList }
@@ -261,6 +246,7 @@ type
 
   TChartMarks = class(TChartElement)
   private
+    FClipped: Boolean;
     FDistance: Integer;
     FFormat: String;
     FFrame: TChartPen;
@@ -269,6 +255,7 @@ type
     FLinkPen: TChartLinkPen;
     FStyle: TSeriesMarksStyle;
 
+    procedure SetClipped(const AValue: Boolean);
     procedure SetDistance(const AValue: Integer);
     procedure SetFormat(const AValue: String);
     procedure SetFrame(const AValue: TChartPen);
@@ -285,6 +272,8 @@ type
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
   published
+    // If false, labels may overlap axises and legend.
+    property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between series point and label.
     property Distance: Integer
       read FDistance write SetDistance default DEF_MARKS_DISTANCE;
@@ -390,12 +379,6 @@ uses
 const
   FONT_SLOPE_VERTICAL = 45 * 10;
 
-function MarkToText(AMark: Double): String;
-begin
-  if Abs(AMark) <= 1e-16 then AMark := 0;
-  Result := Trim(FloatToStr(AMark));
-end;
-
 function SideByAlignment(
   var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
 var
@@ -414,7 +397,7 @@ begin
   if Source is TChartPen then
     with TChartPen(Source) do
       FVisible := Visible;
-  inherited Assign( Source );
+  inherited Assign(Source);
 end;
 
 constructor TChartPen.Create;
@@ -467,56 +450,6 @@ procedure TChartElement.StyleChanged(Sender: TObject);
 begin
   if FOwner <> nil then
     FOwner.Invalidate;
-end;
-
-{ TChartLegend }
-
-procedure TChartLegend.Assign(Source: TPersistent);
-begin
-  if Source is TChartLegend then
-    with TChartLegend(Source) do begin
-      Self.FAlignment := FAlignment;
-      Self.FVisible := FVisible;
-    end;
-
-  inherited Assign(Source);
-end;
-
-constructor TChartLegend.Create(AOwner: TCustomChart);
-begin
-  inherited Create(AOwner);
-  FAlignment := laRight;
-  FVisible := false;
-
-  InitHelper(TFPCanvasHelper(FFont), TFont);
-  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
-end;
-
-destructor TChartLegend.Destroy;
-begin
-  FFont.Free;
-  FFrame.Free;
-
-  inherited;
-end;
-
-procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);
-begin
-  if FAlignment = AValue then exit;
-  FAlignment := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartLegend.SetFont(AValue: TFont);
-begin
-  FFont.Assign(AValue);
-  StyleChanged(Self);
-end;
-
-procedure TChartLegend.SetFrame(AValue: TChartPen);
-begin
-  FFrame.Assign(AValue);
-  StyleChanged(Self);
 end;
 
 { TChartTitle }
@@ -816,6 +749,19 @@ begin
   Result := Alignment in [calLeft, calRight];
 end;
 
+function TChartAxis.MarkToText(AMark: Double): String;
+begin
+  Result := MarkToTextDefault(AMark);
+  if Assigned(FOnMarkToText) then
+    FOnMarkToText(Result, AMark);
+end;
+
+function TChartAxis.MarkToTextDefault(AMark: Double): String;
+begin
+  if Abs(AMark) <= 1e-16 then AMark := 0;
+  Result := Trim(FloatToStr(AMark));
+end;
+
 procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   var AMargins: TChartAxisMargins);
@@ -903,6 +849,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartAxis.SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
+begin
+  if FOnMarkToText = AValue then exit;
+  FOnMarkToText := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartAxis.SetScale(AValue: Double);
 begin
   if FScale = AValue then exit;
@@ -965,6 +918,7 @@ end;
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FClipped := true;
   FDistance := DEF_MARKS_DISTANCE;
   InitHelper(TFPCanvasHelper(FFrame), TChartPen);
   InitHelper(TFPCanvasHelper(FLabelBrush), TChartLabelBrush);
@@ -987,18 +941,33 @@ end;
 
 procedure TChartMarks.DrawLabel(
   ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
+var
+  wasClipping: Boolean = false;
 begin
+  if not Clipped and ACanvas.Clipping then begin
+    ACanvas.Clipping := false;
+    wasClipping := true;
+  end;
   ACanvas.Brush.Assign(LabelBrush);
   ACanvas.Pen.Assign(Frame);
   ACanvas.Rectangle(ALabelRect);
   ACanvas.Font.Assign(LabelFont);
   ACanvas.TextOut(
     ALabelRect.Left + MARKS_MARGIN_X, ALabelRect.Top + MARKS_MARGIN_Y, AText);
+  if wasClipping then
+    ACanvas.Clipping := true;
 end;
 
 function TChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
+end;
+
+procedure TChartMarks.SetClipped(const AValue: Boolean);
+begin
+  if FClipped = AValue then exit;
+  FClipped := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartMarks.SetDistance(const AValue: Integer);

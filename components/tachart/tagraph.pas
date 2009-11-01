@@ -30,10 +30,7 @@ interface
 uses
   LCLIntF, LCLType, LResources,
   SysUtils, Classes, Controls, Graphics, Dialogs,
-  TAChartUtils, TATypes;
-
-const
-  LEGEND_SPACING = 5;
+  TAChartUtils, TATypes, TALegend;
 
 type
   TChart = class;
@@ -58,17 +55,13 @@ type
     procedure AfterAdd; virtual;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    procedure DrawLegend(ACanvas: TCanvas; const ARect: TRect); virtual; abstract;
-    function GetLegendCount: Integer; virtual; abstract;
-    function GetLegendWidth(ACanvas: TCanvas): Integer; virtual; abstract;
+    procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
-    function GetSeriesColor: TColor; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
-    procedure SetSeriesColor(const AValue: TColor); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
@@ -88,11 +81,9 @@ type
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
 
-    property Active: Boolean read FActive write SetActive;
+    property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
-    property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
     property ShowInLegend: Boolean
       read FShowInLegend write SetShowInLegend default true;
     property Title: String read FTitle write FTitle;
@@ -154,7 +145,6 @@ type
     function GetAxis(AIndex: integer): TChartAxis; inline;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
-    function GetLegendWidth(ACanvas: TCanvas): Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
     function GetSeriesInZOrder: TFPList;
@@ -183,7 +173,6 @@ type
       ASeriesIndex, AIndex: Integer; const AImg: TPoint;
       const AData: TDoublePoint); virtual;
     procedure DrawAxis(ACanvas: TCanvas);
-    procedure DrawLegend(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -193,6 +182,8 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure PrepareLegend(
+      ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
     procedure StyleChanged(Sender: TObject);
     procedure UpdateExtent;
 
@@ -205,8 +196,9 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
 
   public // Helpers for series drawing
-    function GetNewColor: TColor;
-    function GetRectangle: TRect;
+    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
+    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
+    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
   public
@@ -214,9 +206,6 @@ type
     procedure ClearSeries;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
-    procedure DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
-    procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
-    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
@@ -303,7 +292,7 @@ var
 implementation
 
 uses
-  Clipbrd, LCLProc, GraphMath, Math, Types;
+  Clipbrd, GraphMath, LCLProc, Math, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -427,6 +416,8 @@ end;
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
 var
   i: Integer;
+  legendItems: TChartLegendItems = nil;
+  legendRect: TRect;
 begin
   Clean(ACanvas, ARect);
 
@@ -438,13 +429,37 @@ begin
 
   UpdateExtent;
   DrawTitleFoot(ACanvas);
-  DrawLegend(ACanvas);
-  DrawAxis(ACanvas);
-  DisplaySeries(ACanvas);
+  PrepareLegend(ACanvas, legendItems, legendRect);
+  try
+    DrawAxis(ACanvas);
+    DisplaySeries(ACanvas);
+    Legend.Draw(ACanvas, legendItems, legendRect);
+  finally
+    legendItems.Free;
+  end;
   DrawReticule(ACanvas);
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
+end;
+
+procedure TChart.PrepareLegend(
+  ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
+var
+  i: Integer;
+begin
+  if not Legend.Visible then exit;
+  ALegendItems := TChartLegendItems.Create;
+  try
+    for i := 0 to SeriesCount - 1 do
+      with Series[i] do
+        if Active and ShowInLegend then
+          GetLegendItems(ALegendItems);
+    ARect := Legend.Prepare(ACanvas, ALegendItems, FClipRect);
+  except
+    FreeAndNil(ALegendItems);
+    raise;
+  end;
 end;
 
 procedure TChart.PrepareXorPen;
@@ -608,52 +623,6 @@ begin
       ACanvas.Line(Left, Bottom, Left - Depth, Bottom + Depth);
 end;
 
-procedure TChart.DrawLegend(ACanvas: TCanvas);
-var
-  w, h, x1, y1, x2, y2, i, TH: Integer;
-  pbf: TPenBrushFontRecall;
-  r: TRect;
-begin
-  if not Legend.Visible then exit;
-
-  // TODO: Legend.Alignment
-
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfPen, pbfBrush, pbfFont]);
-  try
-    ACanvas.Font.Assign(FLegend.Font);
-
-    w := GetLegendWidth(ACanvas);
-    TH := ACanvas.TextHeight('I');
-    h := 0;
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and ShowInLegend then
-          Inc(h, GetLegendCount);
-    FClipRect.Right -= w + 10;
-    x1 := FClipRect.Right + 5;
-    y1 := FClipRect.Top;
-    x2 := x1 + w;
-    y2 := y1 + LEGEND_SPACING + h * (TH + LEGEND_SPACING);
-
-    // Border
-    ACanvas.Brush.Assign(FGraphBrush);
-    ACanvas.Pen.Assign(FLegend.Frame);
-    ACanvas.Rectangle(x1, y1, x2, y2);
-
-    r := Bounds(x1 + LEGEND_SPACING, y1 + LEGEND_SPACING, 17, TH);
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and ShowInLegend then begin
-          ACanvas.Pen.Color := FLegend.Frame.Color;
-          ACanvas.Brush.Assign(FGraphBrush);
-          DrawLegend(ACanvas, r);
-          OffsetRect(r, 0, GetLegendCount * (TH + LEGEND_SPACING));
-        end;
-  finally
-    pbf.Free;
-  end;
-end;
-
 procedure TChart.DrawLineHoriz(ACanvas: TCanvas; AY: Integer);
 begin
   if (FClipRect.Top < AY) and (AY < FClipRect.Bottom) then
@@ -686,22 +655,6 @@ begin
   Invalidate;
 end;
 
-
-function TChart.GetLegendWidth(ACanvas: TCanvas): Integer;
-var
-  i: Integer;
-begin
-  Result := 0;
-  if not FLegend.Visible then
-    exit;
-
-  for i := 0 to SeriesCount - 1 do
-    with Series[i] do
-      if Active and ShowInLegend then
-        Result := Max(GetLegendWidth(ACanvas), Result);
-  if Result > 0 then
-    Result += 20 + 10;
-end;
 
 function TChart.GetMargins(ACanvas: TCanvas): TRect;
 var
@@ -794,7 +747,7 @@ begin
   try
     Result.Width := Width;
     Result.Height := Height;
-    PaintOnCanvas(Result.Canvas, GetRectangle);
+    PaintOnCanvas(Result.Canvas, Rect(0, 0, Width, Height));
   except
     Result.Free;
     raise;
@@ -907,21 +860,29 @@ procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
   var
     i, pointIndex: Integer;
     value: TDoublePoint;
-    newRetPos: TPoint;
+    newRetPos, bestRetPos: TPoint;
+    d, minDist: Double;
   begin
-    for i := 0 to SeriesCount - 1 do begin
+    minDist := Infinity;
+    for i := 0 to SeriesCount - 1 do
       if
         Series[i].GetNearestPoint(
           DIST_FUNCS[FReticuleMode], APoint, pointIndex, newRetPos, value) and
-        (newRetPos <> FReticulePos) and PtInRect(FClipRect, newRetPos)
+          PtInRect(FClipRect, newRetPos)
       then begin
-        DoDrawReticule(i, pointIndex, newRetPos, value);
+         d := DIST_FUNCS[FReticuleMode](APoint, newRetPos);
+         if d < minDist then begin
+           bestRetPos := newRetPos;
+           minDist := d;
+         end;
+      end;
+      if (minDist < Infinity) and (bestRetPos <> FReticulePos) then begin
+        DoDrawReticule(i, pointIndex, bestRetPos, value);
         DrawReticule(Canvas);
-        FReticulePos := newRetPos;
+        FReticulePos := bestRetPos;
         DrawReticule(Canvas);
         exit;
       end;
-    end;
   end;
 
 var
@@ -971,33 +932,6 @@ procedure TChart.DoDrawReticule(
 begin
   if Assigned(FOnDrawReticule) then
     FOnDrawReticule(Self, ASeriesIndex, AIndex, AImg, AData);
-end;
-
-function TChart.GetNewColor: TColor;
-var
-  i, j: Integer;
-  ColorFound: Boolean;
-begin
-  for i := 1 to MaxColor do begin
-    ColorFound := false;
-    for j := 0 to SeriesCount - 1 do begin
-      if Series[j].SeriesColor = Colors[i] then
-        ColorFound := true;
-    end;
-    if not ColorFound then begin
-      Result := Colors[i];
-      exit;
-    end;
-  end;
-  Result := RGB(Random(255), Random(255), Random(255));
-end;
-
-function TChart.GetRectangle: TRect;
-begin
-  Result.Left := 0;
-  Result.Top := 0;
-  Result.Right := Width;
-  Result.Bottom := Height;
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
@@ -1182,8 +1116,7 @@ begin
   Unused(ADistFunc, APoint);
   AIndex := 0;
   AImg := Point(0, 0);
-  AValue.X := 0;
-  AValue.Y := 0;
+  AValue := ZeroDoublePoint;
   Result := false;
 end;
 

@@ -21,7 +21,7 @@ unit TADbSource;
 interface
 
 uses
-  Classes, Db, SysUtils, TAChartUtils, TASources;
+  Classes, Db, TAChartUtils, TASources;
 
 type
 
@@ -107,7 +107,6 @@ begin
   if FChartSrc.FBookmark = nil then
     FChartSrc.Reset;
 end;
-
 
 procedure Register;
 begin

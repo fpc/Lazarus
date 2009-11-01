@@ -20,7 +20,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="7">
+    <Files Count="9">
       <Item1>
         <Filename Value="taseries.pas"/>
         <UnitName Value="TASeries"/>
@@ -53,7 +53,16 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="TADbSource"/>
       </Item7>
+      <Item8>
+        <Filename Value="tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
+      </Item8>
+      <Item9>
+        <Filename Value="TALegend.pas"/>
+        <UnitName Value="TALegend"/>
+      </Item9>
     </Files>
+    <LazDoc Paths="$(LazarusDir)/components/tachart/fpdoc/"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>

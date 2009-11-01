@@ -4,12 +4,10 @@
     <PathDelim Value="\"/>
     <Version Value="7"/>
     <General>
-      <Flags>
-        <SaveClosedFiles Value="False"/>
-      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
+      <Title Value="TAChart legend demo"/>
       <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
@@ -38,9 +36,9 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="extentdemo.lpr"/>
+        <Filename Value="legenddemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="extentdemo"/>
+        <UnitName Value="legenddemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
