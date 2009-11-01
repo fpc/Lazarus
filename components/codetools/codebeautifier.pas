@@ -258,6 +258,8 @@ type
   TFABPositionIndent = record
     CleanPos: integer;
     Indent: TFABIndentationPolicy;
+    Block: TBlock;
+    ParentBlock: TBlock;
   end;
   PFABPositionIndent = ^TFABPositionIndent;
 
@@ -1399,8 +1401,144 @@ end;
 function TFullyAutomaticBeautifier.GetIndents(const Source: string;
   Positions: TFABPositionIndents; NewNestedComments: boolean;
   UseLineStart: boolean): boolean;
+var
+  Needed: LongInt;
+
+  function CheckPolicies(Policies: TFABPolicies;
+    Item: PFABPositionIndent): boolean;
+  // returns true to stop searching
+  var
+    BlockIndent: LongInt;
+  begin
+    Result:=false;
+    if (Policies=nil) then exit;
+    BlockIndent:=Policies.GetSmallestIndent(Item^.Block.Typ);
+    if (BlockIndent<0) then exit;
+    // policy found
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Item^.Block.Typ],' BlockIndent=',BlockIndent]);
+    Item^.Indent.Indent:=GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)
+                   +BlockIndent;
+    Item^.Indent.IndentValid:=true;
+    dec(Needed);
+    Result:=Needed=0;
+  end;
+
+var
+  Item: PFABPositionIndent;
+  ItemIndex: Integer;
+  LastAtomStart, LastAtomEnd: integer;
+  Stack: TFABBlockStack;
+  StackIndex: LongInt;
+  Policies: TFABPolicies;
 begin
   Result:=false;
+  if (Positions=nil) or (Positions.Count=0) then exit;
+  Needed:=Positions.Count;
+  for ItemIndex:=0 to Positions.Count-1 do begin
+    Item:=@Positions.Items[ItemIndex];
+    Item^.CleanPos:=FindStartOfAtom(Source,Item^.CleanPos);
+    if Item^.CleanPos<1 then exit;
+    FillByte(Item^.Indent,SizeOf(Item^.Indent),0);
+    if (ItemIndex>0)
+    and (Item^.CleanPos<=Positions.Items[ItemIndex-1].CleanPos) then
+      exit;
+    Item^.Block:=CleanBlock;
+    Item^.ParentBlock:=CleanBlock;
+  end;
+
+  if UseLineStart then begin
+    Item:=@Positions.Items[0];
+    while (Item^.CleanPos<=length(Source))
+    and (Source[Item^.CleanPos] in [' ',#9]) do
+      inc(Item^.CleanPos);
+  end;
+
+  Policies:=TFABPolicies.Create;
+  Stack:=TFABBlockStack.Create;
+  try
+    {$IFDEF ShowCodeBeautifierLearn}
+    Policies.Code:=TCodeBuffer.Create;
+    Policies.Code.Source:=Source;
+    {$ENDIF}
+    for ItemIndex:=0 to Positions.Count-1 do begin
+      Item:=@Positions.Items[ItemIndex];
+      if ItemIndex=0 then begin
+        // parse source in front
+        DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' "',dbgstr(copy(Source,Item^.CleanPos-10,10)),'|',dbgstr(copy(Source,Item^.CleanPos,10)),'"']);
+        ParseSource(Source,1,Item^.CleanPos,NewNestedComments,Stack,Policies,
+                    LastAtomStart,LastAtomEnd);
+      end else begin
+        // parse to next position
+        ParseSource(Source,Positions.Items[ItemIndex-1].CleanPos,
+                    Item^.CleanPos,NewNestedComments,Stack,nil,
+                    LastAtomStart,LastAtomEnd);
+      end;
+      WriteDebugReport('After parsing code: ',Stack);
+      if (LastAtomStart>0) and (Item^.CleanPos>LastAtomStart) then begin
+        // in comment or atom
+        DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' parsed code in front: position in middle of atom, e.g. comment']);
+        GetDefaultSrcIndent(Source,Item^.CleanPos,NewNestedComments,Item^.Indent);
+        if Item^.Indent.IndentValid then begin
+          dec(Needed);
+          if Needed=0 then exit;
+        end;
+      end;
+      if not Item^.Indent.IndentValid then begin
+        if LastAtomStart>0 then Item^.CleanPos:=LastAtomStart;
+
+        if UseLineStart then
+          StackIndex:=FindStackPosForBlockCloseAtPos(Source,Item^.CleanPos,
+                                                     NewNestedComments,Stack);
+        if (StackIndex<0) then begin
+          // no context
+          DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' parsed code in front: no context']);
+          GetDefaultSrcIndent(Source,Item^.CleanPos,NewNestedComments,Item^.Indent);
+          if Item^.Indent.IndentValid then begin
+            dec(Needed);
+            if Needed=0 then exit(true);
+          end;
+        end;
+      end;
+      StackIndex:=Stack.Top;
+      if not Item^.Indent.IndentValid then begin
+        if StackIndex=0 then begin
+          dec(Needed);
+          if Needed=0 then exit(true);
+        end else begin
+          Item^.Block:=Stack.Stack[StackIndex];
+
+          if StackIndex>0 then
+            Item^.ParentBlock:=Stack.Stack[StackIndex-1];
+          DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Item^.ParentBlock.Typ],'/',FABBlockTypeNames[Item^.Block.Typ],' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
+          if CheckPolicies(Policies,Item) then exit(true);
+        end;
+      end;
+    end;
+
+    // parse source behind
+    ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
+    for ItemIndex:=0 to Positions.Count-1 do begin
+      Item:=@Positions.Items[ItemIndex];
+      if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then
+        if CheckPolicies(Policies,Item) then exit(true);
+    end;
+  finally
+    Stack.Free;
+    FreeAndNil(Policies.Code);
+    Policies.Free;
+  end;
+
+  // parse examples
+  for ItemIndex:=0 to Positions.Count-1 do begin
+    Item:=@Positions.Items[ItemIndex];
+    if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then begin
+      Policies:=FindPolicyInExamples(nil,Item^.ParentBlock.Typ,Item^.Block.Typ);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
+      if (Policies<>nil) and CheckPolicies(Policies,Item) then
+        exit(true);
+    end;
+  end;
 end;
 
 procedure TFullyAutomaticBeautifier.GetDefaultSrcIndent(const Source: string;
