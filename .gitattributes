@@ -2015,6 +2015,7 @@ components/synedit/syntextdrawer.pp svneol=native#text/pascal
 components/synedit/test/SynTest.lpi svneol=native#text/plain
 components/synedit/test/SynTest.lpr svneol=native#text/pascal
 components/synedit/test/testbase.pas svneol=native#text/pascal
+components/synedit/test/testsynbeautifier.pas svneol=native#text/pascal
 components/synedit/test/testsynselection.pas svneol=native#text/pascal
 components/synunihighlighter/CHANGES.txt svneol=native#text/plain
 components/synunihighlighter/CREDITS.txt svneol=native#text/plain

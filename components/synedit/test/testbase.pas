@@ -1,6 +1,7 @@
 unit TestBase;
 
 {$mode objfpc}{$H+}
+{ $DEFINE WITH_APPMSG}
 
 interface
 
@@ -34,8 +35,14 @@ type
   protected
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
-    // Relpl,must be an alteration of LineNum, LineText+
+    (* Relpl,must be an alteration of LineNum, LineText+
+      [ 3, 'a' ] => replace line 3 with 'a' (old line 3 is deleted)
+      [ 3, 'a', 'b' ] => replace line 3 with 2 new lines 'a', 'b' (only one old line is deleted)
+      [ 3 ] => replace line 3 with nothing => delete line 3
+      [ -3, 'a' ] => insert a line 'a', at line 3 (current line 3 becomes line 4)
+    *)
     function  LinesReplace(Lines: Array of String; Repl: Array of const): TStringArray;
+    function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
   protected
     procedure ReCreateEdit;
     procedure SetLines(Lines: Array of String);
@@ -48,7 +55,8 @@ type
     procedure SetCaretPhys(X, Y: Integer);
     procedure SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
     procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
-    procedure DoKeyPress(Key: Word; Shift: TShiftState);
+    procedure DoKeyPress(Key: Word; Shift: TShiftState = []);
+    procedure DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
 
     procedure TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
     procedure PushBaseName(Add: String);
@@ -61,7 +69,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   public
-    procedure TestIsCaret(Name: String; X, Y: Integer);
+    procedure TestIsCaret(Name: String; X, Y: Integer); // logical caret
     procedure TestIsCaretPhys(Name: String; X, Y: Integer);
 
     // exclude trimspaces, as seen by other objects
@@ -107,6 +115,7 @@ begin
   if c <> '' then
     UTF8KeyPress(c);
   KeyUp(Key, Shift);
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 function TTestSynEdit.TestFullText: String;
@@ -254,9 +263,13 @@ begin
       vtInteger:
         begin
           j := Repl[i].vinteger - 1;
-          for k := j to high(Result) - 1 do
-            Result[k] := Result[k+1];
-          SetLength(Result, length(Result)-1);
+          if j < 0
+          then j := -j-2
+          else begin
+            for k := j to high(Result) - 1 do
+              Result[k] := Result[k+1];
+            SetLength(Result, length(Result)-1);
+          end;
         end;
       vtString, vtAnsiString, vtChar:
         begin
@@ -277,6 +290,12 @@ begin
   end;
 end;
 
+function TTestBase.LinesReplaceText(Lines: array of String;
+  Repl: array of const): String;
+begin
+  Result := LinesToText(LinesReplace(Lines, Repl));
+end;
+
 procedure TTestBase.ReCreateEdit;
 begin
   FreeAndNil(FSynEdit);
@@ -285,18 +304,20 @@ begin
   FSynEdit.Top := 0;
   FSynEdit.Left := 0;
   FSynEdit.Width:= 500;
-  FSynEdit.Height := FSynEdit.Font.Height * 20 + 2;
+  FSynEdit.Height := 200; // FSynEdit.Font.Height * 20 + 2;
 end;
 
 procedure TTestBase.SetLines(Lines: array of String);
 begin
   SynEdit.Text := LinesToText(Lines);
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaret(X, Y: Integer);
 begin
   SynEdit.BlockBegin := Point(X, Y);
   SynEdit.LogicalCaretXY := Point(X, Y);
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
@@ -316,6 +337,7 @@ begin
   SynEdit.BlockEnd   := Point(X2, Y2);
   if DoLock then
     SynEdit.EndUpdate;
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
@@ -335,12 +357,14 @@ begin
   SynEdit.BlockEnd   := Point(X2, Y2);
   if DoLock then
     SynEdit.EndUpdate;
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaretPhys(X, Y: Integer);
 begin
   SynEdit.LogicalCaretXY := Point(X, Y);
   SynEdit.BlockBegin := SynEdit.LogicalCaretXY;
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
@@ -360,6 +384,7 @@ begin
   SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
   if DoLock then
     SynEdit.EndUpdate;
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
 procedure TTestBase.SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
@@ -379,11 +404,19 @@ begin
   SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
   if DoLock then
     SynEdit.EndUpdate;
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.DoKeyPress(Key: Word; Shift: TShiftState);
+procedure TTestBase.DoKeyPress(Key: Word; Shift: TShiftState = []);
 begin
   SynEdit.TestKeyPress(Key, Shift);
+  {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
+end;
+
+procedure TTestBase.DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
+begin
+  SetCaret(X, Y);
+  DoKeyPress(Key, Shift);
 end;
 
 procedure TTestBase.PushBaseName(Add: String);

@@ -34,8 +34,15 @@ type
     procedure TestIsNoBlock(Name: String);
   published
     procedure SelectByKey;
+
+    (* Test for selection via the following Methods:
+       SelectWord /.SelectLine / SelectParagraph / SelectAll / SelectToBrace
+       [ BeginUpdate; BlockBegin := ; BlockEnd := ; EndUpdatel ]
+    *)
     procedure SelectByMethod;
+
     procedure ReplaceSelText;
+
     //Temporarily here, till we have more units
     procedure TextDelCmd;
   end;
@@ -1224,7 +1231,7 @@ procedure TTestSynSelection.ReplaceSelText;
     TestReplace('3 Line Middle, y2 past eol = X/Y/Z',        8,3, 12,5, ['a',' ','ö'],    ['X','Y','Z'], 9,5,  [3,'  Foo(bXr);', 4,'  abc; Y', 5,'  // äüZäabc']);
     TestReplace('3 Line Middle (bck), y2 past eol = X/Y/Z',  9,3, 10,5, ['a',' ','ö'],    ['X','Y','Z'], 9,5,  [3,'  Foo(bXr);', 4,'  abc; Y', 5,'  // äüZäabc']);
 
-    // Todo: multiline insert at last line of text
+    // multiline insert at last line of text
     TestReplace('Below Last Line = X/Y',                      1,7,-1,-1, [''],            ['X','Y','Z'], 2,9,  [7, 'X', 'Y', 'Z']);
 
     {%endregion}
