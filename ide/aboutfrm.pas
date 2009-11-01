@@ -71,13 +71,16 @@ type
     AboutMemo: TMEMO;
     DocumentationLabel: TLabel;
     DocumentationURLLabel: TLabel;
-    Image1: TImage;
     FPCVersionLabel: TLabel;
+    LazarusLabel: TLabel;
+    FPCLabel: TLabel;
     LogoImage: TImage;
     LogoPage: TPage;
     miVerToClipboard: TMenuItem;
     OfficialLabel: TLabel;
     OfficialURLLabel: TLabel;
+    VersionPage: TPage;
+    Panel1: TPanel;
     PlatformLabel: TLabel;
     PopupMenu1: TPopupMenu;
     VersionLabel: TLABEL;
@@ -154,8 +157,8 @@ const
 
 begin
   Notebook.PageIndex:=0;
-  Image1.Picture.LoadFromLazarusResource('splash_logo');
-  LogoImage.Picture := Image1.Picture;
+  //Image1.Picture.LoadFromLazarusResource('splash_logo');
+  LogoImage.Picture.LoadFromLazarusResource('splash_logo');
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
@@ -172,8 +175,8 @@ begin
   LogoPage.Caption:=lisLogo;
   miVerToClipboard.Caption := lisVerToClipboard;
   
-  Constraints.MinWidth:= 600;
-  Constraints.MinHeight:= 300;
+  Constraints.MinWidth:= 455;
+  Constraints.MinHeight:= 380;
 
   AboutMemo.Lines.Text:=
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
