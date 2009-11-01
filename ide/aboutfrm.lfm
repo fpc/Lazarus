@@ -1,7 +1,7 @@
 object AboutForm: TAboutForm
-  Left = 422
+  Left = 420
   Height = 381
-  Top = 165
+  Top = 336
   Width = 454
   ActiveControl = Notebook
   Caption = 'About Lazarus'
@@ -28,7 +28,6 @@ object AboutForm: TAboutForm
       object VersionLabel: TLabel
         AnchorSideLeft.Control = VersionPage
         AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Control = LazarusLabel
         AnchorSideTop.Side = asrBottom
         Left = 187
         Height = 18
@@ -95,35 +94,16 @@ object AboutForm: TAboutForm
         Caption = 'FPCVersionLabel'
         ParentColor = False
       end
-      object LazarusLabel: TLabel
-        AnchorSideLeft.Control = VersionPage
-        AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Control = FPCLabel
-        AnchorSideTop.Side = asrBottom
-        Left = 153
-        Height = 45
-        Top = 60
-        Width = 144
-        Caption = 'Lazarus'
-        Font.Color = clBlue
-        Font.Height = -33
-        ParentColor = False
-        ParentFont = False
-      end
-      object FPCLabel: TLabel
+      object PaintBox1: TPaintBox
         AnchorSideLeft.Control = VersionPage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionPage
-        Left = 182
-        Height = 20
-        Top = 40
-        Width = 87
-        BorderSpacing.Top = 40
-        Caption = 'Free Pascal'
-        Font.Color = clBlue
-        Font.Height = -14
-        ParentColor = False
-        ParentFont = False
+        Left = 110
+        Height = 81
+        Top = 10
+        Width = 231
+        BorderSpacing.Around = 10
+        OnPaint = PaintBox1Paint
       end
     end
     object AboutPage: TPage
