@@ -578,6 +578,10 @@ resourcestring
   lisUnableToSaveFile = 'Unable to save file %s%s%s';
   lisReadError = 'Read Error';
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
+  lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%'
+    +'s%s%s.';
+  lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%'
+    +'s%s%s%s.';
   lisWriteError = 'Write Error';
   lisUnableToWriteToFile = 'Unable to write to file %s%s%s!';
   lisFileDoesNotLookLikeATextFileOpenItAnyway2 = 'File %s%s%s%sdoes not look '

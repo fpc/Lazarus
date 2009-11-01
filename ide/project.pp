@@ -2482,7 +2482,8 @@ begin
       fLastReadLPIFileDate:=Now;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
-      MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
+      MessageDlg(Format(lisUnableToReadTheProjectInfoFile, [#13, '"',
+        ProjectInfoFile, '"'])
           ,mtError,[mbOk],0);
       Result:=mrCancel;
       exit;
@@ -2601,7 +2602,8 @@ begin
             OnLoadProjectInfo(Self,XMLConfig,true);
           end;
         except
-          MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
+          MessageDlg(Format(lisUnableToReadTheProjectInfoFile2, [#13, '"',
+            ProjectInfoFile, '"'])
               ,mtError,[mbOk],0);
           Result:=mrCancel;
           exit;
