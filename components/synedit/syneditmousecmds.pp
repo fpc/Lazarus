@@ -141,7 +141,7 @@ type
                              ACDir: TSynMAClickDir): Boolean;
     function IsFallback: Boolean;
     function Conflicts(Other: TSynEditMouseAction): Boolean;
-    function Equals(Other: TSynEditMouseAction; IgnoreCmd: Boolean = False): Boolean;
+    function Equals(Other: TSynEditMouseAction; IgnoreCmd: Boolean = False): Boolean; reintroduce;
   published
     property Shift: TShiftState read FShift write SetShift;
     property ShiftMask: TShiftState read FShiftMask write SetShiftMask;

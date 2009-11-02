@@ -391,7 +391,7 @@ type
     procedure Remove(APersistent: TPersistent);
     procedure Delete(Index:integer);
     procedure Clear;
-    function Equals(const ASelection: TPersistentSelectionList): boolean;
+    function Equals(const ASelection: TPersistentSelectionList): boolean; reintroduce;
     function AssignPersistent(APersistent: TPersistent): boolean;
     procedure Assign(AControlSelection: TControlSelection);
     procedure AssignSelection(const ASelection: TPersistentSelectionList);

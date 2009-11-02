@@ -1309,7 +1309,7 @@ type
   private
     fEvent: THookedCommandEvent;
     fData: pointer;
-    function Equals(AEvent: THookedCommandEvent): boolean;
+    function Equals(AEvent: THookedCommandEvent): boolean; reintroduce;
   {$IFDEF SYN_LAZARUS}
   public
   {$ENDIF}

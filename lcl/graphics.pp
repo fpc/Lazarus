@@ -761,7 +761,7 @@ type
     FPaletteModified: Boolean;
   protected
     procedure Changed(Sender: TObject); virtual;
-    function Equals(Graphic: TGraphic): Boolean; virtual;
+    function Equals(Graphic: TGraphic): Boolean; virtual; reintroduce;
     procedure DefineProperties(Filer: TFiler); override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
     function GetEmpty: Boolean; virtual; abstract;
