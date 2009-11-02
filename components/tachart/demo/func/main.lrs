@@ -1,30 +1,29 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3'j'#1#3'Top'#3#152#0#5'Wi'
-  +'dth'#3#205#1#7'Caption'#6#5'Form1'#12'ClientHeight'#3'j'#1#11'ClientWidth'#3
-  +#205#1#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TChar'
-  +'t'#6'Chart1'#4'Left'#2#0#6'Height'#3'j'#1#3'Top'#2#0#5'Width'#3#205#1#8'Axi'
-  +'sList'#14#1#9'Alignment'#7#7'calLeft'#6'Offset'#5#0#0#0#0#0#0#0#0#0#0#5'Sca'
-  +'le'#5#0#0#0#0#0#0#0#128#255'?'#22'Title.Font.Orientation'#3#132#3#0#1#9'Ali'
-  +'gnment'#7#9'calBottom'#6'Offset'#5#0#0#0#0#0#0#0#0#0#0#5'Scale'#5#0#0#0#0#0
-  +#0#0#128#255'?'#0#0#16'ExpandPercentage'#2#10#16'Foot.Brush.Color'#7#9'clBtn'
-  +'Face'#15'Foot.Font.Color'#7#6'clBlue'#14'Legend.Visible'#9#17'Title.Brush.C'
-  +'olor'#7#9'clBtnFace'#16'Title.Font.Color'#7#6'clBlue'#18'Title.Text.Strings'
-  +#1#6#7'TAChart'#0#5'Align'#7#8'alClient'#11'ParentColor'#8#0#11'TFuncSeries'
-  +#17'Chart1FuncSeries1'#11'Extent.XMin'#5#0#248'(\'#143#194#245#200#1#192#11
-  +'Extent.YMin'#5#0#0#0#0#0#0#0#128#255#191#11'Extent.XMax'#5#0#248'(\'#143#194
-  +#245#200#1'@'#11'Extent.YMax'#5#0#0#0#0#0#0#0#128#255'?'#14'Extent.UseXMin'#9
-  +#14'Extent.UseYMin'#9#14'Extent.UseXMax'#9#14'Extent.UseYMax'#9#11'OnCalcula'
-  +'te'#7#26'Chart1FuncSeries1Calculate'#9'Pen.Color'#7#7'clOlive'#9'Pen.Width'
-  +#2#2#4'Step'#2#4#5'Title'#6#6'Sin(x)'#0#0#5'TLine'#11'Chart1XAxis'#12'ShowIn'
-  +'Legend'#8#8'Position'#5#0#0#0#0#0#0#0#0#0#0#11'SeriesColor'#7#7'clBlack'#0#0
-  +#5'TLine'#11'Chart1YAxis'#12'ShowInLegend'#8#9'LineStyle'#7#10'lsVertical'#8
-  +'Position'#5#0#0#0#0#0#0#0#0#0#0#11'SeriesColor'#7#7'clBlack'#0#0#10'TBarSer'
-  +'ies'#16'Chart1BarSeries1'#5'Title'#6#6'Cos(x)'#14'BarBrush.Color'#7#12'clMo'
-  +'neyGreen'#11'SeriesColor'#7#12'clMoneyGreen'#6'Source'#7#23'UserDefinedChar'
-  +'tSource1'#0#0#16'TUserDrawnSeries'#22'Chart1UserDrawnSeries1'#6'OnDraw'#7#26
-  +'Chart1UserDrawnSeries1Draw'#0#0#0#23'TUserDefinedChartSource'#23'UserDefine'
-  +'dChartSource1'#18'OnGetChartDataItem'#7'''UserDefinedChartSource1GetChartDa'
-  +'taItem'#12'PointsNumber'#2#14#4'left'#3#135#0#3'top'#2'r'#0#0#0
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#141#2#6'Height'#3'j'#1#3'Top'#3#209#0#5'W'
+  +'idth'#3#205#1#7'Caption'#6#5'Form1'#12'ClientHeight'#3'j'#1#11'ClientWidth'
+  +#3#205#1#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TCh'
+  +'art'#6'Chart1'#4'Left'#2#0#6'Height'#3'j'#1#3'Top'#2#0#5'Width'#3#205#1#8'A'
+  +'xisList'#14#1#9'Alignment'#7#7'calLeft'#6'Offset'#2#0#5'Scale'#2#1#22'Title'
+  +'.Font.Orientation'#3#132#3#0#1#9'Alignment'#7#9'calBottom'#6'Offset'#2#0#5
+  +'Scale'#2#1#0#0#16'ExpandPercentage'#2#10#11'Extent.YMin'#2#250#11'Extent.YM'
+  +'ax'#2#6#14'Extent.UseYMin'#9#14'Extent.UseYMax'#9#16'Foot.Brush.Color'#7#9
+  +'clBtnFace'#15'Foot.Font.Color'#7#6'clBlue'#14'Legend.Visible'#9#17'Title.Br'
+  +'ush.Color'#7#9'clBtnFace'#16'Title.Font.Color'#7#6'clBlue'#18'Title.Text.St'
+  +'rings'#1#6#7'TAChart'#0#5'Align'#7#8'alClient'#11'ParentColor'#8#0#11'TFunc'
+  +'Series'#17'Chart1FuncSeries1'#11'Extent.XMin'#5#195#245'(\'#143#194#245#200
+  +#1#192#11'Extent.XMax'#5#195#245'(\'#143#194#245#200#1'@'#14'Extent.UseXMin'
+  +#9#14'Extent.UseXMax'#9#11'OnCalculate'#7#26'Chart1FuncSeries1Calculate'#9'P'
+  +'en.Color'#7#7'clOlive'#9'Pen.Width'#2#2#4'Step'#2#4#5'Title'#6#10'1 / Sin(x'
+  +')'#0#0#5'TLine'#11'Chart1XAxis'#8'Position'#2#0#11'SeriesColor'#7#7'clBlack'
+  +#12'ShowInLegend'#8#0#0#5'TLine'#11'Chart1YAxis'#9'LineStyle'#7#10'lsVertica'
+  +'l'#8'Position'#2#0#11'SeriesColor'#7#7'clBlack'#12'ShowInLegend'#8#0#0#10'T'
+  +'BarSeries'#16'Chart1BarSeries1'#5'Title'#6#6'Cos(x)'#14'BarBrush.Color'#7#12
+  +'clMoneyGreen'#11'SeriesColor'#7#12'clMoneyGreen'#6'Source'#7#23'UserDefined'
+  +'ChartSource1'#0#0#16'TUserDrawnSeries'#22'Chart1UserDrawnSeries1'#6'OnDraw'
+  +#7#26'Chart1UserDrawnSeries1Draw'#0#0#0#9'TCheckBox'#8'cbDomain'#4'Left'#3
+  +#136#1#6'Height'#2#17#3'Top'#3'<'#1#5'Width'#2'7'#7'Anchors'#11#7'akRight'#8
+  +'akBottom'#0#7'Caption'#6#6'Domain'#8'OnChange'#7#14'cbDomainChange'#8'TabOr'
+  +'der'#2#1#0#0#23'TUserDefinedChartSource'#23'UserDefinedChartSource1'#18'OnG'
+  +'etChartDataItem'#7'''UserDefinedChartSource1GetChartDataItem'#12'PointsNumb'
+  +'er'#2#14#4'left'#3#135#0#3'top'#2'r'#0#0#0
 ]);
