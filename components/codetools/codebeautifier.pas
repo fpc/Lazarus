@@ -592,10 +592,10 @@ begin
         LastAtomStart:=AtomStart;
         LastAtomEnd:=p;
       end else begin
-        LastAtomStart:=0;
-        LastAtomEnd:=0;
         // EndPos between two atom: in space or comment
         CommentStartPos:=FindNextNonSpace(Src,LastAtomEnd);
+        LastAtomStart:=0;
+        LastAtomEnd:=0;
         if CommentStartPos<EndPos then begin
           CommentEndPos:=FindCommentEnd(Src,CommentStartPos,NestedComments);
           if CommentEndPos>EndPos then begin
