@@ -50,24 +50,37 @@ type
   // Callback for indent
   TSynBeautifierSetIndentProc =
     procedure(
-     LinePos: Integer;
-     Indent: Integer;                       // Indent in spaces (Logical = Physical)
-     RelativeToLinePos: Integer = 0;        // Intend specifies +/- offset from intend on RTLine
-                                            // 0: for absolute indent
-     IndentChars: String = '';              // use the following string to indent; maybe empty, single char, or string
-     IndentCharsFromLinePos: Integer = -1;  // Line for tab/space mix; set to -1 if unknown
-     KeepOldIndent: Boolean = False         // True: Keep existing indent, and add (or subtract) new indent
-                                            // False: old indent is stripped/replaced
+      (* LinePos:
+           1-based, the line that should be changed *)
+      LinePos: Integer;
+      (* Indent:
+           New indent in spaces (Logical = Physical *)
+      Indent: Integer;
+      (* RelativeToLinePos:
+           Indent specifies +/- offset from indent on RTLine (0: for absolute indent) *)
+      RelativeToLinePos: Integer = 0;
+      (* IndentChars:
+           String used to build indent; maybe empty, single char, or string (usually 1 tab or 1 space)
+           The String will be repeated and cut as needed, then filled with spaces at the end
+         * NOTE: If this is specified the TSynBeautifierIndentType is ignored
+      *)
+      IndentChars: String = '';
+      (* IndentCharsFromLinePos:
+           Use tab/space mix from this Line for indent (if specified > 0)
+           "IndentChars" will only be used, if the found tab/space mix is to short
+         * NOTE: If this is specified the TSynBeautifierIndentType is ignored
+      *)
+      IndentCharsFromLinePos: Integer = 0
     ) of object;
 
   // Event triggered if Lines may needs Indend
   TSynBeautifierGetIndentEvent =
     function(
-      Sender: TSynCustomBeautifier;          // the beautifier
+      Sender: TObject;                       // the beautifier
       Editor: TObject;                       // the synedit
-      LogCaret: TPoint;
-      var FirstLinePos, LastLinePos: Integer;// IF the function returns false, the beautifier shall calculate the indent
-      Reason: TSynEditorCommand;             // what caused the evnt
+      LogCaret, OldLogCaret: TPoint;         // Caret after and before the edit action
+      FirstLinePos, LastLinePos: Integer;    // Changed lines. this can include lines outside the range of OldLogCaret to LogCaret
+      Reason: TSynEditorCommand;             // what caused the event
       SetIndentProc: TSynBeautifierSetIndentProc
      ): boolean of object;
 
@@ -121,18 +134,17 @@ type
     procedure DoAfterCommand(const ACaret: TSynEditCaret;
                              var Command: TSynEditorCommand;
                              StartLinePos, EndLinePos: Integer); override;
-    function GetIntend(const LinePos: Integer; out BasedOnLine: Integer): Integer;
-    function AdjustCharMix(Indent: Integer; CharMix, OldCharMix: String): String;
-    function GetCharMix(const LinePos, Indent: Integer; const OldIndent: string;
+    function GetIndent(const LinePos: Integer; out BasedOnLine: Integer): Integer;
+    function AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
+    function GetCharMix(const LinePos, Indent: Integer;
                         var IndentCharsFromLinePos: Integer = 0): String;
     procedure ApplyIndent(LinePos: Integer; Indent: Integer;
                           RelativeToLinePos: Integer = 0; IndentChars: String = '';
-                          IndentCharsFromLinePos: Integer = -1;
-                          KeepOldIndent: Boolean = False);
+                          IndentCharsFromLinePos: Integer = 0);
     function UnIndentLine(const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean;
   public
     procedure Assign(Src: TPersistent); override;
-    function GetCurrentIndent(Editor: TSynEditBase; const Line: string;
+    function GetIndentForLine(Editor: TSynEditBase; const Line: string;
                         Physical: boolean): Integer;
     function GetDesiredIndentForLine
              (Editor: TSynEditBase; const Lines: TSynEditStrings;
@@ -223,7 +235,7 @@ begin
      (ACaret.CharPos > 1) and
      ( (not TSynEdit(FCurrentEditor).SelAvail) or
        (eoPersistentBlock in TSynEdit(FCurrentEditor).Options2) ) and
-     (GetCurrentIndent(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
+     (GetIndentForLine(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
   then begin
     UnIndentLine(ACaret, x);
     ACaret.CharPos := x;
@@ -240,8 +252,9 @@ begin
   if EndLinePos < 1 then
     exit;
   if assigned(FOnGetDesiredIndent) and
-    FOnGetDesiredIndent(self, FCurrentEditor, ACaret.LineBytePos, StartLinePos,
-                            EndLinePos, Command, @ApplyIndent)
+    FOnGetDesiredIndent(self, FCurrentEditor, ACaret.LineBytePos,
+                        ACaret.OldLineBytePos, StartLinePos, EndLinePos, Command,
+                        @ApplyIndent)
   then
     exit;
 
@@ -251,14 +264,13 @@ begin
     else
       y := ACaret.LinePos + 1;
 
-    if (Command = ecLineBreak) and
-       (FCurrentLines[y-2] = '') and (FCurrentLines[y-1] <> '')
-    then
+    if (FCurrentLines[y-2] = '') and (FCurrentLines[y-1] <> '') then
       Indent := 0
     else
-      Indent := GetIntend(y, b);
+      Indent := GetIndent(y, b);
+
     if Indent > 0 then begin
-      s := GetCharMix(y, Indent, '', b);
+      s := GetCharMix(y, Indent, b);
       if (FIndentType = sbitPositionCaret) and (FCurrentLines[y-1] = '') then
         s := '';
       FCurrentLines.EditInsert(1, y, s);
@@ -281,13 +293,13 @@ var
   Line, Temp: String;
 begin
   Line := ACaret.LineText;
-  SpaceCount1 := GetCurrentIndent(FCurrentEditor, Line, true);
+  SpaceCount1 := GetIndentForLine(FCurrentEditor, Line, true);
   SpaceCount2 := 0;
   if (SpaceCount1 > 0) then begin
     BackCounter := ACaret.LinePos - 2;
     while BackCounter >= 0 do begin
       Temp := FCurrentLines[BackCounter];
-      SpaceCount2 := GetCurrentIndent(FCurrentEditor, Temp, true);
+      SpaceCount2 := GetIndentForLine(FCurrentEditor, Temp, true);
       if (SpaceCount2 < SpaceCount1) and (temp <> '') then
         break;
       Dec(BackCounter);
@@ -303,7 +315,7 @@ begin
   Result := True;
 end;
 
-function TSynBeautifier.GetIntend(const LinePos: Integer; out BasedOnLine: Integer): Integer;
+function TSynBeautifier.GetIndent(const LinePos: Integer; out BasedOnLine: Integer): Integer;
 var
   Temp: string;
 begin
@@ -312,36 +324,39 @@ begin
     dec(BasedOnLine);
     Temp := FCurrentLines[BasedOnLine];
     if Temp <> '' then begin
-      Result := GetCurrentIndent(FCurrentEditor, Temp, True);
+      Result := GetIndentForLine(FCurrentEditor, Temp, True);
       exit;
     end;
   end;
   BasedOnLine := LinePos;
-  Result := GetCurrentIndent(FCurrentEditor, FCurrentLines[BasedOnLine], True);
+  Result := GetIndentForLine(FCurrentEditor, FCurrentLines[BasedOnLine], True);
 end;
 
-function TSynBeautifier.AdjustCharMix(Indent: Integer; CharMix, OldCharMix: String): String;
+function TSynBeautifier.AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
 var
   i: Integer;
+  CurLen: Integer;
 begin
-  while (GetCurrentIndent(FCurrentEditor, CharMix + OldCharMix, True) < Indent) do
-    if (CharMix <> '') then
-      CharMix := CharMix + CharMix[length(CharMix)]
-    else
-      CharMix := CharMix + ' ';
-  // too long, maybe too many tabs
-  while (CharMix <> '') and
-        (GetCurrentIndent(FCurrentEditor, CharMix + OldCharMix, True) > Indent)
-  do
-    SetLength(CharMix, Length(CharMix) - 1);
-  i := GetCurrentIndent(FCurrentEditor, CharMix + OldCharMix, True) - Indent;
-  if i > 0 then
-    CharMix := CharMix + StringOfChar(' ', i);
+  CurLen := FCurrentLines.LogicalToPhysicalCol(CharMix, -1, length(CharMix)+1) - 1; // TODO: Need the real index of the line
+  if AppendMix <> '' then begin
+    while CurLen < DesiredIndent do begin
+      CharMix := CharMix + AppendMix;
+      CurLen := FCurrentLines.LogicalToPhysicalCol(CharMix, -1, length(CharMix)+1) - 1; // TODO: Need the real index of the line
+    end
+  end;
+
+  i := length(CharMix);
+  while CurLen > DesiredIndent do begin
+    Dec(i);
+    CurLen := FCurrentLines.LogicalToPhysicalCol(CharMix, -1, i+1) - 1; // TODO: Need the real index of the line
+  end;
+
+  CharMix := copy(CharMix, 1, i) + StringOfChar(' ', DesiredIndent - CurLen);
   Result := CharMix;
 end;
 
 function TSynBeautifier.GetCharMix(const LinePos, Indent: Integer;
-  const OldIndent: string; var IndentCharsFromLinePos: Integer = 0): String;
+  var IndentCharsFromLinePos: Integer = 0): String;
 var
   Temp, KnownMix, BasedMix: string;
   KnownPhysLen, PhysLen: Integer;
@@ -349,28 +364,27 @@ var
 begin
   if FIndentType <> sbitCopySpaceTab then begin
     IndentCharsFromLinePos := 0;
-    KnownMix := StringOfChar(' ', Indent - Length(OldIndent));                  // OldIndent is expected Space, tab only; no multibyte UTF8
-    Result := AdjustCharMix(Indent, KnownMix, OldIndent);
+    Result := StringOfChar(' ', Indent);
     exit;
   end;
 
   if (IndentCharsFromLinePos > 0) and (IndentCharsFromLinePos <= FCurrentLines.Count) then
   begin
     Temp := FCurrentLines[IndentCharsFromLinePos];
-    KnownMix := copy(Temp, 1, GetCurrentIndent(FCurrentEditor, Temp, False));
+    KnownMix := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
   end
   else
     KnownMix := '';
   BasedMix := KnownMix;
-  KnownPhysLen := GetCurrentIndent(FCurrentEditor, KnownMix + OldIndent, True);
+  KnownPhysLen := GetIndentForLine(FCurrentEditor, KnownMix, True);
 
   BackCounter := LinePos;
   while (BackCounter > 0) and (KnownPhysLen < Indent) do begin
     dec(BackCounter);
     Temp := FCurrentLines[BackCounter];
     if Temp <> '' then begin
-      Temp := copy(Temp, 1, GetCurrentIndent(FCurrentEditor, Temp, False));
-      PhysLen := GetCurrentIndent(FCurrentEditor, Temp + OldIndent, True);
+      Temp := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
+      PhysLen := GetIndentForLine(FCurrentEditor, Temp, True);
       if (PhysLen > KnownPhysLen) and (copy(temp, 1, length(BasedMix)) = BasedMix) then
       begin
         KnownMix := Temp;
@@ -380,55 +394,61 @@ begin
     end;
   end;
 
-  Result := AdjustCharMix(Indent, KnownMix, OldIndent);
+  Result := AdjustCharMix(Indent, KnownMix, '');
 end;
 
 procedure TSynBeautifier.ApplyIndent(LinePos: Integer;
   Indent: Integer; RelativeToLinePos: Integer; IndentChars: String = '';
-  IndentCharsFromLinePos: Integer = -1; KeepOldIndent: Boolean = False);
+  IndentCharsFromLinePos: Integer = 0);
 var
-  Temp: String;
-  OldLen: Integer;
+  CharMix: String;
+  i: Integer;
 begin
   if (LinePos < 1) or (LinePos > FCurrentEditor.Lines.Count) then
     exit;
 
-  if KeepOldIndent then
-    Temp := ''
-  else begin
-    Temp := FCurrentLines[LinePos - 1];
-    Temp := copy(Temp, 1, GetCurrentIndent(FCurrentEditor, Temp, False));
-  end;
-  OldLen := length(Temp);
-
+  // calculate the final indent needed
   if (RelativeToLinePos > 0) and (RelativeToLinePos <= FCurrentEditor.Lines.Count) then
-    Indent := Indent + GetCurrentIndent(FCurrentEditor, FCurrentLines[RelativeToLinePos], True);
+    Indent := Indent + GetIndentForLine(FCurrentEditor, FCurrentLines[RelativeToLinePos-1], True);
   if Indent< 0 then
     Indent := 0;
 
-  if IndentChars <> '' then
-    IndentChars := AdjustCharMix(Indent, IndentChars, {$IFDEF EnableIndenter}''{$ELSE}Temp{$ENDIF})
-  else
-    IndentChars := GetCharMix(LinePos, Indent, Temp, IndentCharsFromLinePos);
+  // Calculate the charmix
+  CharMix := '';
+  if Indent > 0 then begin
+    if (IndentCharsFromLinePos > 0) and (IndentCharsFromLinePos <= FCurrentEditor.Lines.Count) then begin
+      CharMix := FCurrentLines[IndentCharsFromLinePos-1];
+      i :=  GetIndentForLine(FCurrentEditor, CharMix, False);
+      CharMix := AdjustCharMix(Indent, copy(CharMix, 1, i), IndentChars);
+    end
+    else if IndentChars <> '' then begin
+      CharMix := AdjustCharMix(Indent, '', IndentChars);
+    end
+    else begin
+      i := LinePos;
+      CharMix := GetCharMix(LinePos, Indent, i);
+    end;
+  end;
+
   {$IFDEF EnableIndenter}
-  DebugLn(['TSynBeautifier.ApplyIndent IndentChars="',dbgstr(IndentChars),'" KeepOldIndent=',KeepOldIndent,' Indent=',Indent]);
+  DebugLn(['TSynBeautifier.ApplyIndent IndentChars="',dbgstr(IndentChars),' Indent=',Indent]);
   {$ENDIF}
 
-  if not KeepOldIndent then
-    FCurrentLines.EditDelete(1, LinePos, OldLen);
-  //if not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos] = '')) then
-  if IndentChars <> '' then
-    FCurrentLines.EditInsert(1, LinePos, IndentChars);
+  i :=  GetIndentForLine(FCurrentEditor, FCurrentLines[LinePos-1], False);
+  FCurrentLines.EditDelete(1, LinePos, i);
+  if (CharMix <> '') and not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos-1] = '')) then
+    FCurrentLines.EditInsert(1, LinePos, CharMix);
+
   {$IFDEF EnableIndenter}
   DebugLn(['TSynBeautifier.ApplyIndent Line="',dbgstr(FCurrentLines.ExpandedStrings[LinePos-1]),'"']);
   {$ENDIF}
 end;
 
-function TSynBeautifier.GetCurrentIndent(Editor: TSynEditBase; const Line: string; Physical: boolean): Integer;
+function TSynBeautifier.GetIndentForLine(Editor: TSynEditBase; const Line: string; Physical: boolean): Integer;
 var
   p: PChar;
 begin
-  p := pointer(Line);
+  p := PChar(Line);
   if Assigned(p) then begin
     Result := 0;
     while p^ in [#1..#32] do begin
@@ -456,7 +476,7 @@ begin
     repeat
       Dec(BackCounter);
       Temp := Lines[BackCounter];
-      Result := GetCurrentIndent(Editor, Temp, True) + 1;
+      Result := GetIndentForLine(Editor, Temp, True) + 1;
     until (BackCounter = 0) or (Temp <> '');
 
   FoundLine := BackCounter + 1;
@@ -471,7 +491,7 @@ begin
     Temp := Lines[FoundLine-1]
   else
     FoundLine := BackCounter + 1;
-  Temp := copy(Temp, 1, GetCurrentIndent(Editor, Temp, False));
+  Temp := copy(Temp, 1, GetIndentForLine(Editor, Temp, False));
 
   case FIndentType of
     sbitCopySpaceTab:

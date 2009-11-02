@@ -357,8 +357,8 @@ type
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
-    function OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier; SrcEditor: TSourceEditor;
-      LogCaret: TPoint; var FirstLinePos, LastLine: Integer;
+    function OnSrcNoteBookGetIndent(Sender: TObject; SrcEditor: TSourceEditor;
+      LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
       Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
@@ -14459,9 +14459,9 @@ begin
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
 
-function TMainIDE.OnSrcNoteBookGetIndent(Sender: TSynCustomBeautifier;
-  SrcEditor: TSourceEditor; LogCaret: TPoint;
-  var FirstLinePos, LastLine: Integer; Reason: TSynEditorCommand;
+function TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
+  SrcEditor: TSourceEditor; LogCaret, OldLogCaret: TPoint;
+  FirstLinePos, LastLinePos: Integer; Reason: TSynEditorCommand;
   SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 var
   CodeBuf: TCodeBuffer;
@@ -14479,11 +14479,11 @@ begin
     exit;
   case Reason of
   ecLineBreak,ecInsertLine: ;
-  ecPaste: if LastLine<=FirstLinePos then exit; // not a whole line
+  ecPaste: if LastLinePos<=FirstLinePos then exit; // not a whole line
   else
     exit;
   end;
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLine=',LastLine]);
+  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLinePos=',LastLinePos]);
   Result := True;
   EditorIndex:=SrcEditor.PageIndex;
   SaveSourceEditorChangesToCodeCache(EditorIndex);
@@ -14516,7 +14516,7 @@ begin
     end;
   ecPaste:
     begin
-      //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos-1 .. LastLine']);
+      //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos-1 .. LastLinePos']);
     end;
   end;
 end;

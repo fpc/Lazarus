@@ -421,8 +421,8 @@ type
                                      ) of object;
   TOnShowCodeContext = procedure(JumpToError: boolean;
                                  out Abort: boolean) of object;
-  TOnGetIndentEvent = function(Sender: TSynCustomBeautifier; Editor: TSourceEditor;
-      LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+  TOnGetIndentEvent = function(Sender: TObject; Editor: TSourceEditor;
+      LogCaret, OldLogCaret: TPoint; FirstLinePos, LinesCount: Integer;
       Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc
      ): boolean of object;
 
@@ -611,8 +611,8 @@ type
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
-    function EditorGetIndent(Sender: TSynCustomBeautifier; Editor: TObject;
-                             LogCaret: TPoint; var FirstLinePos, LinesCount: Integer;
+    function EditorGetIndent(Sender: TObject; Editor: TObject;
+                             LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
                              Reason: TSynEditorCommand;
                              SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -6739,13 +6739,13 @@ begin
     OnMouseLink(Sender, X, Y, AllowMouseLink);
 end;
 
-function TSourceNotebook.EditorGetIndent(Sender: TSynCustomBeautifier; Editor: TObject;
-  LogCaret: TPoint; var FirstLinePos, LinesCount: Integer; Reason: TSynEditorCommand;
-  SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+function TSourceNotebook.EditorGetIndent(Sender: TObject; Editor: TObject;
+  LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
+  Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 begin
   Result:=false;
   if Assigned(OnGetIndent) then
-    Result := OnGetIndent(Sender, GetActiveSE, LogCaret, FirstLinePos, LinesCount,
+    Result := OnGetIndent(Sender, GetActiveSE, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
 end;
 

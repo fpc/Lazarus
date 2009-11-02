@@ -185,6 +185,8 @@ type
     FTouched: Boolean;
 
     procedure AdjustToChar;
+    function GetOldLineBytePos: TPoint;
+    function GetOldLineCharPos: TPoint;
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
                                      KeepLastCharPos: Boolean = False;
                                      ForceSet: Boolean = False);
@@ -221,14 +223,19 @@ type
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
     function IsAtPos(aCaret: TSynEditCaret): Boolean;
+
     property OldLinePos: Integer read FOldLinePos;
     property OldCharPos: Integer read FOldCharPos;
+    property OldLineCharPos: TPoint read GetOldLineCharPos;
+    property OldLineBytePos: TPoint read GetOldLineBytePos;
+
     property LinePos: Integer read fLinePos write setLinePos;
     property CharPos: Integer read fCharPos write setCharPos;
     property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
     property BytePos: Integer read GetBytePos write SetBytePos;
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
+
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
@@ -420,6 +427,16 @@ begin
     ScreenPos := ScreenPos + CharWidths[LogPos];
     inc(LogPos);
   end;
+end;
+
+function TSynEditCaret.GetOldLineBytePos: TPoint;
+begin
+  Result := FLines.PhysicalToLogicalPos(OldLineCharPos);
+end;
+
+function TSynEditCaret.GetOldLineCharPos: TPoint;
+begin
+  Result := Point(FOldCharPos, FOldLinePos);
 end;
 
 procedure TSynEditCaret.setCharPos(const AValue : Integer);
