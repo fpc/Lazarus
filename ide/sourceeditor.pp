@@ -439,6 +439,8 @@ type
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     procedure AddBreakpointClicked(Sender: TObject);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
@@ -532,6 +534,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
     FOnPopupMenu: TSrcEditPopupMenuEvent;
+    FMouseDownTabIndex: Integer;
   private
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
@@ -620,6 +623,8 @@ type
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
+          Shift: TShiftState; X,Y: Integer);
+    procedure NotebookMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
 
     // hintwindow stuff
@@ -4231,6 +4236,7 @@ Begin
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseTabClicked;
           OnMouseDown:=@NotebookMouseDown;
+          OnMouseUp:=@NotebookMouseUp;
           ShowHint:=true;
           OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
@@ -6216,6 +6222,12 @@ begin
   SrcEdit.FocusEditor;
 end;
 
+procedure TSourceNotebook.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  Cursor:=crDefault;
+end;
+
 Function TSourceNotebook.ActiveFileName: AnsiString;
 Begin
   Result := GetActiveSE.FileName;
@@ -6442,11 +6454,33 @@ procedure TSourceNotebook.NotebookMouseDown(Sender: TObject;
 var
   TabIndex: Integer;
 begin
-  if Button=mbMiddle then begin
-    TabIndex := Notebook.TabIndexAtClientPos(point(X,Y));
-    if TabIndex>=0 then
-      CloseClicked(Notebook.Page[TabIndex]);
+  TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
+  FMouseDownTabIndex:=-1;
+  case Button of
+    mbLeft: begin
+      FMouseDownTabIndex:=TabIndex;
+      Cursor:=crDrag;
+    end;
+    mbMiddle: begin
+      if TabIndex>=0 then
+        CloseClicked(Notebook.Page[TabIndex])
+    end;
   end;
+end;
+
+procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TabIndex,i: Integer;
+begin
+  TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
+  if
+    (Button=mbLeft) and (FMouseDownTabIndex>=0) and (TabIndex>=0) and
+    (TabIndex<>FMouseDownTabIndex)
+  then
+    MoveEditor(FMouseDownTabIndex,TabIndex);
+  FMouseDownTabIndex:=-1;
+  Cursor:=crDefault;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);

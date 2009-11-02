@@ -7,10 +7,11 @@ inherited SourceNotebook: TSourceNotebook
   Caption = 'SourceNotebook'
   ClientHeight = 300
   ClientWidth = 400
+  OnMouseUp = FormMouseUp
   object StatusBar: TStatusBar[0]
     Left = 0
-    Height = 23
-    Top = 277
+    Height = 20
+    Top = 280
     Width = 400
     Panels = <    
       item
