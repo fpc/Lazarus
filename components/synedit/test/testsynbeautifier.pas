@@ -30,7 +30,7 @@ type
   protected
     FGetIndentCallBackResult: Boolean;
     FCallBackData: Array of TCallBackData;
-    FGotLogCaret: TPoint;
+    FGotLogCaret, FGotOldLogCaret: TPoint;
     FGotFirstLinePos, FGotLastLinePos: Integer;
     FGotReason: TSynEditorCommand;
     function GetIndentCallBack( Sender: TObject;                       // the beautifier
@@ -594,6 +594,7 @@ var
   i: integer;
 begin
   FGotLogCaret := LogCaret;
+  FGotOldLogCaret := OldLogCaret;
   FGotFirstLinePos := FirstLinePos;
   FGotLastLinePos := LastLinePos;
   FGotReason := LastLinePos;
@@ -635,6 +636,7 @@ procedure TTestSynBeautifier.IndentCallBack;
   begin
     FGetIndentCallBackResult := Res;
     FGotLogCaret := Point(-3, -33);
+    FGotOldLogCaret := Point(-3, -33);
     FGotFirstLinePos := -99;
     FGotLastLinePos := -99;
     FGotReason := 27997;
@@ -667,6 +669,10 @@ begin
 
     SetCB(False, []);
     TestRedoUndo('cb result = false',   TestText,  3,2, [ VK_RETURN, 5,3, ExpText([ -3, '    ']) ]  );
+    AssertEquals('Got Caret.x Before', 3, FGotOldLogCaret.x);
+    AssertEquals('Got Caret.y Before', 2, FGotOldLogCaret.y);
+    AssertEquals('Got Caret.x After', 1, FGotLogCaret.x); // x=1 => before auto indent
+    AssertEquals('Got Caret.y After', 3, FGotLogCaret.y);
 
     SetCB(True, []);
     TestRedoUndo('cb result = true ',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ -3, '']) ]  );
