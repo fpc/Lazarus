@@ -67,7 +67,7 @@ type
     //class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     //class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
-    //class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -294,6 +294,17 @@ begin
   TCarbonTabsControl(ANotebook.Handle).Remove(AIndex);
   // sync PageIndex with LCL
   TCarbonTabsControl(ANotebook.Handle).SetPageIndex(ANotebook.PageIndex);
+end;
+
+
+class function TCarbonWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
+var
+  p : TPoint;
+begin
+  if not CheckHandle(ANotebook, Self, 'GetTabIndexAtPos') then Exit;
+  p := AClientPos;
+  inc(p.y, 35); // todo: find out why AClientPos incorrect for TNotebook
+  Result := TCarbonTabsControl(ANotebook.Handle).GetPageIndexAtCursor(p);
 end;
 
 {------------------------------------------------------------------------------

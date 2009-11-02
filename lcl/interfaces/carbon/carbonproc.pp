@@ -83,6 +83,8 @@ function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = [
 
 procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize, NormalSize: Integer; ControlHeight: Boolean = True);
 
+function CarbonHitTest(Control: ControlRef; const X,Y: integer; var part: ControlPartCode): Boolean;
+
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
@@ -667,6 +669,33 @@ begin
   else Data := kControlSizeAuto;
 
   SetControlData(Control, kControlEntireControl, kControlSizeTag, SizeOf(Data), @Data);
+end;
+
+
+{------------------------------------------------------------------------------
+  Name:    CarbonHitTest
+  Params:  Control - control to test
+           x,y     - mouse coordinates in control's local coordinates
+           part    - hit test result
+  Returns: True - if hittest is succsefull, False - overwise
+
+  Performs hit-test on a carbon control (hiview)
+ ------------------------------------------------------------------------------}
+function CarbonHitTest(Control: ControlRef; const X,Y: integer; var part: ControlPartCode): Boolean;
+var
+  event : EventRef;
+  mp    : MacOSAll.point;
+begin
+  Result := false;
+  if CreateEvent(kCFAllocatorDefault, kEventClassControl, kEventControlHitTest, 0, 0, event) <> noErr then
+    Exit;
+  mp.h := X;
+  mp.v := Y;
+  SetEventParameter(event, kEventParamDirectObject, typeControlRef, sizeof(Control), @Control);
+  SetEventParameter(event, kEventParamMouseLocation, typeQDPoint, sizeof(mp), @mp);
+  if SendEventToEventTarget(event, GetControlEventTarget(Control))= noErr then
+    Result:=GetEventParameter(event, kEventParamControlPart, typeControlPartCode, nil, sizeof(part), nil, @part)=noErr;
+  ReleaseEvent(event);
 end;
 
 {------------------------------------------------------------------------------

@@ -98,6 +98,8 @@ type
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
+
+    function GetPageIndexAtCursor(const AClientPos: TPoint): Integer;
     
     function IsDesignInteractive(const P: TPoint): Boolean; override;
     
@@ -878,6 +880,23 @@ begin
   end;
   
   UpdateTabs;
+end;
+
+function TCarbonTabsControl.GetPageIndexAtCursor(const AClientPos: TPoint): Integer;
+var
+  tabno  : ControlPartCode;
+begin
+  Result := -1;
+  if not CarbonHitTest(Widget, AClientPos.X, AClientPos.Y, tabno) then Exit;
+
+  if tabno = kControlNoPart then
+  begin
+    Result := TCustomNotebook(LCLObject).PageIndex
+    //CarbonHitTest(FUserPane, AClientPos.X, AClientPos.Y-35, tabno);
+    //Result := tabno;
+  end
+  else
+    Result := FFirstIndex+tabno-1;
 end;
 
 {------------------------------------------------------------------------------
